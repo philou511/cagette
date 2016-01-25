@@ -127,6 +127,9 @@ class Shop extends sugoi.BaseController
 		var _cids = Lambda.map(products, function(p) return p.contract.id);
 		//available deliveries
 		var distribs = db.Distribution.manager.search(($contractId in _cids) && $orderStartDate <= now && $orderEndDate >= now, { orderBy:date }, false);
+		//tmp : add distribs with no orderDates
+		var distribs = Lambda.concat(distribs, db.Distribution.manager.search(($contractId in _cids) && $orderStartDate == null && $date >= now, { orderBy:date }, false) );
+		
 		
 		//dedups cids
 		var cids = new Map<Int,Int>();
