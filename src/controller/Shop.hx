@@ -9,7 +9,7 @@ class Shop extends sugoi.BaseController
 		view.products = getProducts();
 		
 		//opening and closing order dates + delivery dates
-		var infos = new Array<{open:Date,close:Date,deliv:Date,contracts:Array<db.Contract>}>();		
+		/*var infos = new Array<{open:Date,close:Date,deliv:Date,contracts:Array<db.Contract>}>();		
 		var n = Date.now();
 		for ( c in contracts) {
 		
@@ -54,7 +54,7 @@ class Shop extends sugoi.BaseController
 			
 			
 		}
-		view.infos = infos;
+		view.infos = infos;*/
 	}
 	
 	/**

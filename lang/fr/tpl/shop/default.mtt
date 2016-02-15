@@ -2,7 +2,7 @@
 <div class="col-md-9">
 	<div class="article">
 		
-	<table class="table table-bordered">
+	<!--<table class="table table-bordered">
 		
 		::foreach i infos::
 		<tr>
@@ -29,7 +29,7 @@
 		
 		
 		::end::
-	</table>
+	</table>-->
 		
 		
 	<h2>Produits</h2>

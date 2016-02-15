@@ -38,10 +38,8 @@
 	
 	<div class="row">
 
-		<div class="col-md-3">
-			::if vendor._image!=null::
-				<img src="::file(vendor._image)::" class="img-thumbnail" />
-			::end::
+		<div ::cond vendor._image!=null:: class="col-md-3">
+			<img src="::file(vendor._image)::" class="img-thumbnail" />
 		</div>
 		
 		<div class="col-md-5">
