@@ -134,7 +134,7 @@
 	</div>
 	
 	
-	::if user.isAmapManager()::
+	::if false && user.isAmapManager()::
 	<h3>Tutoriels</h3>
 	<div class="article">
 		

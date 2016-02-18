@@ -8,7 +8,7 @@ css:
 	hss hss/*.hss -output www/css/
 
 templates:
-	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt)
+	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt)
 
 deploy: 
 	#compile

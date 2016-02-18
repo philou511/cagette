@@ -270,7 +270,10 @@ class Member extends Controller
 		if (checkToken()) {
 			if (!app.user.isContractManager()) throw "Vous ne pouvez pas faire ça.";
 			if (user.id == app.user.id) throw Error("/member/view/"+user.id,"Vous ne pouvez pas vous effacer vous même.");
-			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
+			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) {
+				
+				throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
+			}
 		
 		
 			var ua = db.UserAmap.get(user, app.user.amap, true);

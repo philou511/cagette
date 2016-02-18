@@ -85,7 +85,7 @@ class Contract extends Controller
 		if (app.user.isAmapManager()) {
 			
 			
-			if (app.user.tutoState == null) {
+			/*if (app.user.tutoState == null) {
 				app.user.tutoState = new Map<String,Int>();
 			}
 			
@@ -110,11 +110,11 @@ class Contract extends Controller
 				app.user.update();
 				view.popTutoWindow(t, 0);
 				
-			}
+			}*/
 			
 		
 			//tuto state
-			var tutos = new Array<{name:String,completion:Float,key:String}>();
+			/*var tutos = new Array<{name:String,completion:Float,key:String}>();
 			
 			for ( t in Tutorial.all() ) {				
 				var c = app.user.tutoState.get(t);
@@ -123,7 +123,7 @@ class Contract extends Controller
 			
 			
 			view.tutos = tutos;
-			view.tutoEnabled = app.user.flags.has(Tuto);
+			view.tutoEnabled = app.user.flags.has(Tuto);*/
 			
 		}
 		
