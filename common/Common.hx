@@ -2,6 +2,7 @@
  * Shared entities between neko and js
  */
 
+
 //utilisé dans le shop
 @:keep
 typedef Order = {
@@ -87,3 +88,18 @@ typedef UserOrder = {
 	contractName:String,
 }
 
+/**
+	Event enum used for plugins
+**/
+	
+enum Event {
+
+	Page(uri:String);			//a page is displayed
+	Nav(nav:Array<Link>,name:String);		//a navigation is displayed
+	
+	
+	#if sys
+	SendEmail(message : ufront.mail.Email);		//an email is sent
+	#end
+	
+}

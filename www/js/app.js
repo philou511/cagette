@@ -237,6 +237,10 @@ ProductType.CTYahourt = ["CTYahourt",12];
 ProductType.CTYahourt.toString = $estr;
 ProductType.CTYahourt.__enum__ = ProductType;
 ProductType.__empty_constructs__ = [ProductType.CTVegetable,ProductType.CTCheese,ProductType.CTChicken,ProductType.CTUnknown,ProductType.CTWine,ProductType.CTMeat,ProductType.CTEggs,ProductType.CTHoney,ProductType.CTFish,ProductType.CTJuice,ProductType.CTApple,ProductType.CTBread,ProductType.CTYahourt];
+var Event = $hxClasses["Event"] = { __ename__ : ["Event"], __constructs__ : ["Page","Nav"] };
+Event.Page = function(uri) { var $x = ["Page",0,uri]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
+Event.Nav = function(nav,name) { var $x = ["Nav",1,nav,name]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
+Event.__empty_constructs__ = [];
 var EReg = function(r,opt) {
 	opt = opt.split("u").join("");
 	this.r = new RegExp(r,opt);

@@ -17,9 +17,9 @@ class Member extends Controller
 		super();
 		if (!app.user.canAccessMembership()) throw Redirect("/");
 		
-		var e = new event.Event();
-		e.id = "displayMember";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "displayMember";
+		//App.current.eventDispatcher.dispatch(e);
 	}
 	
 	@logged
@@ -357,9 +357,9 @@ class Member extends Controller
 	@tpl('member/import.mtt')
 	function doImport(?args: { confirm:Bool } ) {
 		
-		var e = new event.Event();
-		e.id = "displayMemberImport";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "displayMemberImport";
+		//App.current.eventDispatcher.dispatch(e);
 			
 		var step = 1;
 		var request = Utils.getMultipart(1024 * 1024 * 4); //4mb
@@ -510,9 +510,9 @@ class Member extends Controller
 	@tpl("user/insert.mtt")
 	public function doInsert() {
 		
-		var e = new event.Event();
-		e.id = "wantToAddMember";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "wantToAddMember";
+		//App.current.eventDispatcher.dispatch(e);
 		
 		var m = new db.User();
 		var form = sugoi.form.Form.fromSpod(m);

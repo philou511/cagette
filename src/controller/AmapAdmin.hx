@@ -14,10 +14,9 @@ class AmapAdmin extends Controller
 		
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();
-		var e = new event.NavEvent();
-		e.id = "amapAdmin";
-		App.current.eventDispatcher.dispatch(e);
-		view.nav = e.nav;
+		var e = Nav(nav,"groupAdmin");
+		app.event(e);
+		view.nav = e.getParameters()[0];
 	}
 	
 	

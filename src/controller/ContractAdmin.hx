@@ -12,9 +12,9 @@ class ContractAdmin extends Controller
 	{
 		super();
 		if (!app.user.isContractManager()) throw Error("/", "Vous n'avez pas accès à la gestion des contrats");
-		var e = new event.Event();
-		e.id = "displayContract";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "displayContract";
+		//App.current.eventDispatcher.dispatch(e);
 			
 	}
 	

@@ -1,4 +1,6 @@
 package controller;
+import Common;
+
 
 /**
  * 
@@ -10,6 +12,8 @@ class Controller extends sugoi.BaseController
 	public function new() 
 	{
 		super();
+		
+		
 	}
 	
 	/**

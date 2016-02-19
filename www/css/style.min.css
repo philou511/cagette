@@ -45,4 +45,7 @@ i{color:#008800;}
 .dateBox a:hover{color:#FFFFFF!important;}
 span.tag{color:white;font-size:80%;font-weight:bold;padding:4px;background-color:#666666;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;line-height:30px;}
 span.tag.active{padding:12px;font-size:16px;line-height:45px;}
+.popover{background-color:#583816!important;color:white;}
+.popover .arrow:after{border-right-color:#583816!important;}
+.popover h3.popover-title{padding:4px;color:#BB9931!important;border-bottom:1px solid #BB9931!important;font-weight:bold!important;font-family:'Arial','sans-serif'!important;background-color:#583816!important;}
 

@@ -77,7 +77,7 @@
 							<li ::attr class if(category=="contract" ) 	'active' ::>		<a href="/contract">Mon compte</a></li>
 							<li ::attr class if(category=="amap") 		'active' ::>		<a href="/amap">Mon ::wAmap()::</a></li>
 							<li ::attr class if(category=="members") 	'active' ::>		<a href="/member" ::cond user.canAccessMembership()::>Gestion adhérents</a></li>
-							<li ::attr class if(category=="contractadmin") 'active' ::>		<a href="/contractAdmin" ::cond user.isContractManager(null)::>Gestion contrats</a></li>
+							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>		<a href="/contractAdmin" ::cond user.isContractManager(null)::>Gestion contrats</a></li>
 							<li ::attr class if(category=="messages") 	'active' ::>		<a href="/messages" ::cond user.canAccessMessages()::>Messagerie</a></li>
 							<li ::attr class if(category=="amapadmin") 	'active' ::>		<a href="/amapadmin" ::cond user.isAmapManager()::>Gestion ::wAmap()::</a></li>
 							<li ::cond user.isAdmin()::>									<a href="/admin" >Admin</a></li>
@@ -92,6 +92,8 @@
 			</nav>
 			
 		::end::
+		
+		
 		
 		<div ::cond false:: class="row">
 			<div class="col-md-12">
@@ -266,9 +268,13 @@
 			})();
 		  
 		  
-			//Tooltips
+			//Tooltips & popovers
 			$(function () {
-			  $('[data-toggle="tooltip"]').tooltip()
+			  $('[data-toggle="tooltip"]').tooltip();
+			  $('[data-toggle="popover"]').popover();
+			  
+			  //<!--data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"-->
+			  $("ul.nav #contractadmin").attr("title","Visite guidée AMAP").attr("data-content","Je suis super content<br/> <b>Vraiment</b> quoi....next/close/previous").popover('show');
 			})
 		</script>
 		

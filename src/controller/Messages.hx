@@ -64,10 +64,12 @@ class Messages extends Controller
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
 			e.setHtml(html);
 			
-			var event = new event.MessageEvent();
-			event.id = "sendMessage";
-			event.message = e;
-			App.current.eventDispatcher.dispatch(event);
+			//var event = new event.MessageEvent();
+			//event.id = "sendMessage";
+			//event.message = e;
+			//App.current.eventDispatcher.dispatch(event);
+			
+			app.event(SendEmail(e));
 			
 			App.getMailer().send(e);
 			

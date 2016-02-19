@@ -326,6 +326,7 @@ i{
 	
 }
 
+/* categories */
 span.tag{
 	color:white;
 	font-size:80%;
@@ -339,4 +340,24 @@ span.tag.active{
 	padding:12px;
 	font-size: 16px;
 	line-height: 45px;
+}
+
+
+/* Popover pour les tutos et boutons d'aide */
+.popover{
+	background-color:CSS("#583816 !important");
+	color:white;
+	
+	.arrow:after{
+		border-right-color:CSS("#583816 !important");	
+	}
+	
+	h3.popover-title{
+		padding: 4px;
+		color:CSS("#BB9931 !important");
+		border-bottom:CSS("1px solid #BB9931 !important");
+		font-weight:CSS("bold !important");
+		font-family:CSS("'Arial','sans-serif' !important");
+		background-color:CSS("#583816 !important");	
+	}
 }

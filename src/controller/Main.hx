@@ -14,9 +14,9 @@ class Main extends Controller {
 			
 			if(app.user.amap==null) throw Redirect("/user/choose");
 		
-			var e = new event.Event();
-			e.id = "displayHome";
-			App.current.eventDispatcher.dispatch(e);
+			//var e = new Event();
+			//e.id = "displayHome";
+			//App.current.eventDispatcher.dispatch(e);
 
 			view.amap = app.user.getAmap();
 			

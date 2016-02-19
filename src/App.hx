@@ -1,5 +1,6 @@
 import db.User;
 import thx.semver.Version;
+import Common;
  
 class App extends sugoi.BaseApp {
 
@@ -7,7 +8,7 @@ class App extends sugoi.BaseApp {
 	public static var t : sugoi.i18n.translator.ITranslator;
 	public static var config = sugoi.BaseApp.config;
 	
-	public var eventDispatcher :hxevents.Dispatcher<event.Event>;	
+	public var eventDispatcher :hxevents.Dispatcher<Event>;	
 	public var plugins : Array<plugin.IPlugIn>;
 	
 	/**
@@ -26,12 +27,16 @@ class App extends sugoi.BaseApp {
 	 * Init les plugins et le dispatcher juste avant de faire tourner l'app
 	 */
 	override public function mainLoop() {
-		App.current.eventDispatcher = new hxevents.Dispatcher<event.Event>();
-		App.current.plugins = [];
+		eventDispatcher = new hxevents.Dispatcher<Event>();
+		plugins = [];
 		#if plugins
 		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
-		App.current.plugins.push( new hosted.HostedPlugIn() );
+		plugins.push( new hosted.HostedPlugIn() );
 		#end
+		
+		//send "current page" event
+		var uri = neko.Web.getURI();
+		event( Page(uri+Std.random(46546)) );
 	
 		super.mainLoop();
 	}
@@ -48,6 +53,10 @@ class App extends sugoi.BaseApp {
 			//neko.Web.logMessage(Std.string(t));
 			//Weblog.log(t);
 		}
+	}
+	
+	public function event(e:Event) {
+		return this.eventDispatcher.dispatch(e);
 	}
 	
 	/**
