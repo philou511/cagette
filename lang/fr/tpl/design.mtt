@@ -70,20 +70,20 @@
 					  </button>				  
 					</div>	
 				
-					<div class="collapse navbar-collapse" id="cagette-navbar">					
-						<ul class="nav navbar-nav">
+					<div class="collapse navbar-collapse" id="cagette-navbar">
+						
+						<ul class="nav navbar-nav navbar-left">
 							<li ::attr class if(category=="home") 		'active' ::>		<a href="/">Accueil</a></li>
 							<li ::attr class if(category=="contract" ) 	'active' ::>		<a href="/contract">Mon compte</a></li>
 							<li ::attr class if(category=="amap") 		'active' ::>		<a href="/amap">Mon ::wAmap()::</a></li>
 							
 						</ul>
 						
-						
 						<ul class="nav navbar-nav navbar-right">
-							<li ::attr class if(category=="members") 	'active' ::>		<a href="/member" ::cond user.canAccessMembership()::>Gestion adhérents</a></li>
+							<li id="member" ::attr class if(category=="members") 	'active' ::>		<a href="/member" ::cond user.canAccessMembership()::>Gestion adhérents</a></li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>		<a href="/contractAdmin" ::cond user.isContractManager(null)::>Gestion contrats</a></li>
-							<li ::attr class if(category=="messages") 	'active' ::>		<a href="/messages" ::cond user.canAccessMessages()::>Messagerie</a></li>
-							<li ::attr class if(category=="amapadmin") 	'active' ::>		<a href="/amapadmin" ::cond user.isAmapManager()::>Gestion ::wAmap()::</a></li>
+							<li id="messages" ::attr class if(category=="messages") 	'active' ::>		<a href="/messages" ::cond user.canAccessMessages()::>Messagerie</a></li>
+							<li id="amapadmin" ::attr class if(category=="amapadmin") 	'active' ::>		<a href="/amapadmin" ::cond user.isAmapManager()::>Gestion ::wAmap()::</a></li>
 							<li ::cond user.isAdmin()::>									<a href="/admin" >Admin</a></li>
 						</ul>
 						
@@ -131,9 +131,7 @@
 			</div>	
 		</div>
 		
-		::if popTuto::
-		<!--<script>_.overlay("/tuto/::tutoName::/::tutoStep::",null,false)</script>-->
-		::end::
+	
 		
 		<!-- Modal window -->
 		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -179,8 +177,8 @@
 		<div class="row">
 			<div class="col-md-12" >
 				<div id="footer">
-					<a href="http://www.cagette.net" target="_blank">Cagette.net</a> • 
-					<a href="http://aide.cagette.net" target="_blank">Documentation</a> •
+					<a href="http://www.cagette.net" 	target="_blank">Cagette.net</a> • 
+					<a href="http://aide.cagette.net" 	target="_blank">Documentation</a> •
 					<a href="https://groups.google.com/forum/?hl=fr#!forum/cagette" target="_blank">Forum</a> •
 					<a href="https://cagette.uservoice.com" target="_blank">Suggérer une amélioration</a> •
 					<a href="http://www.cagette.net/legal"> Mentions légales</a> •
@@ -270,11 +268,16 @@
 		  
 			//Tooltips & popovers
 			$(function () {
-			  $('[data-toggle="tooltip"]').tooltip();
-			  $('[data-toggle="popover"]').popover();
+				$('[data-toggle="tooltip"]').tooltip();
+				$('[data-toggle="popover"]').popover();
 			  
-			  //<!--data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"-->
-			  $("ul.nav #contractadmin").attr("title","Visite guidée AMAP").attr("data-content","Je suis super content<br/> <b>Vraiment</b> quoi....next/close/previous").popover('show');
+				//tutorials
+				::if tuto!=null::
+				
+				_.getTuto("::tuto.name::",::tuto.step::);
+			
+				::end::
+			  
 			})
 		</script>
 		

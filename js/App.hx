@@ -2,8 +2,7 @@ import js.JQuery;
 
 class App {
 	
-	function new() {
-	}
+	function new() { }	
 
 	public static inline function j(r:Dynamic) {
 		return new JQuery(r);
@@ -21,22 +20,15 @@ class App {
 		return new Tagger(cid);
 	}
 	
+	public function getTuto(name:String, step:Int) {	
+		return new Tuto(name,step);		
+	}
+	
 	
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;
 	}
-	
-	//public function __overlay(url:String) {
-	//
-		//App.j("body").append("<div class='overlayBackground' onclick='_.closeOverlay()'></div>");
-		//
-		//var r = new haxe.Http(url);
-		//r.onData = function(data) {
-			//App.j("body").append("<div class='overlayContent' >" + data + "<a class='btn btn-default' onclick='_.closeOverlay()'><span class='glyphicon glyphicon-remove'></span> Fermer</a></div>");
-			//
-		//}
-		//r.request();
-	//}
+
 	
 	/**
 	 * Ajax loads a page and display it in a modal window
@@ -62,11 +54,7 @@ class App {
 		}
 		r.request();
 	}
-	
-	//public function closeOverlay() {
-		//App.j(".overlayContent").remove();
-		//App.j(".overlayBackground").remove();
-	//}
+
 	
 	
 }

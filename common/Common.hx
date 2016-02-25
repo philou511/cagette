@@ -1,5 +1,5 @@
 /**
- * Shared entities between neko and js
+ * Shared entities between server and client
  */
 
 
@@ -102,4 +102,33 @@ enum Event {
 	SendEmail(message : ufront.mail.Email);		//an email is sent
 	#end
 	
+}
+
+
+enum TutoAction {
+	TAPage(uri:String);
+	TANext;
+	
+}
+
+class Data {
+
+	/**
+	 * shared datas for tutorials
+	 */
+	public static var TUTOS = [
+		"intro" => { 
+			name:"Visite guidée coordinateur",
+			steps:[
+				{element:"h1", 	text:"Bonjour, bienvenue dans la visite guidée pour les coordinateurs ! Cliquez sur 'suite' pour commencer ce tutoriel.",	action: TANext },
+				{element:"ul.nav.navbar-left", 	text:"Cette partie de la barre de navigation est disponible pour tout les adhérents",	action: TANext },
+				{element:"ul.nav.navbar-right", 	text:"Tandis que celle-ci est réservée aux coordinateurs",		action: TAPage("/contractAdmin")},
+				{element:"ul.nav #contractadmin", 	text:"Salut c'est l'étape 3",		action: TAPage("/contractAdmin")},
+				{element:"ul.nav #contractadmin", 	text:"Salut c'est l'étape 4",		action: TAPage("/contractAdmin")}
+			]
+		},
+		//"AMAP" => [],
+		//"BG" => [],
+	
+	];
 }

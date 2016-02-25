@@ -86,7 +86,7 @@
 							::o.quantity::
 						</td>
 						<td>
-							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::')">
+							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
 								<img src="::o.productImage::" style="width:32px;height:32px;" />
 								 ::o.productName::
 							</a>
@@ -134,7 +134,7 @@
 	</div>
 	
 	
-	::if false && user.isAmapManager()::
+	::if user.isAmapManager()::
 	<h3>Tutoriels</h3>
 	<div class="article">
 		
@@ -147,6 +147,7 @@
 						::if t.completion==null::
 							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs" ::attr disabled !tutoEnabled::>Commencer</a>
 						::else::
+							::t.completion::
 							<div class="progress">
 							  <div class="progress-bar progress-bar-success" role="progressbar" style="width: ::(t.completion*100)::%"></div>
 							</div>	

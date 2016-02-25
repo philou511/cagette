@@ -7,6 +7,7 @@ import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import db.Contract;
 import Common;
+import plugin.Tutorial;
 using Std;
 
 class Contract extends Controller
@@ -84,46 +85,42 @@ class Contract extends Controller
 		// tutorials
 		if (app.user.isAmapManager()) {
 			
-			
-			/*if (app.user.tutoState == null) {
-				app.user.tutoState = new Map<String,Int>();
-			}
-			
+			app.user.lock();
+						
 			//actions
 			if (app.params.get('tutos') != null) {
+				
 				//enable / disable tutos
-				app.user.lock();
 				if (app.params.get('tutos') == "1") {
 					app.user.flags.set(Tuto);
 				}else {
 					app.user.flags.unset(Tuto);
 				}
-				if (app.user.tutoState == null) {
-					app.user.tutoState = new Map<String,Int>();
-				}
 				app.user.update();	
-			}else if (app.params.get('startTuto') != null) {
+				
+			}else if (app.params.exists('startTuto') ) {
+				
 				//start a tuto
 				var t = app.params.get('startTuto'); 
-				app.user.lock();
-				app.user.tutoState.set(t, 0);
-				app.user.update();
-				view.popTutoWindow(t, 0);
 				
-			}*/
+				app.user.tutoState = {name:t,step:0};
+				app.user.update();
+				//view.displayTuto(t, 0);
+				
+			}
 			
 		
 			//tuto state
-			/*var tutos = new Array<{name:String,completion:Float,key:String}>();
+			var tutos = new Array<{name:String,completion:Float,key:String}>();
 			
-			for ( t in Tutorial.all() ) {				
-				var c = app.user.tutoState.get(t);
-				tutos.push( { name:Tutorial.getName(t), completion: c==null?null:(c/Tutorial.getStepNum(t)) , key:t } );
+			for ( k in Tutorial.all().keys() ) {	
+				var t = Tutorial.all().get(k);
+				//var c = app.user.tutoState.get(k);
+				tutos.push( { name:t.name, completion:null/* c==null?null:(c/t.steps.length)*/ , key:k } );
 			}
 			
-			
 			view.tutos = tutos;
-			view.tutoEnabled = app.user.flags.has(Tuto);*/
+			view.tutoEnabled = app.user.flags.has(Tuto);
 			
 		}
 		

@@ -28,17 +28,22 @@ class App extends sugoi.BaseApp {
 	 */
 	override public function mainLoop() {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
-		plugins = [];
+		plugins = [ new plugin.Tutorial() ];
 		#if plugins
 		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
 		plugins.push( new hosted.HostedPlugIn() );
 		#end
 		
-		//send "current page" event
-		var uri = neko.Web.getURI();
-		event( Page(uri+Std.random(46546)) );
 	
 		super.mainLoop();
+	}
+	
+	override function beforeDispatch() {
+		
+		//send "current page" event
+		event( Page(this.uri) );
+		
+		super.beforeDispatch();
 	}
 	
 	public function getPlugin(name:String):plugin.IPlugIn {
@@ -108,8 +113,9 @@ class App extends sugoi.BaseApp {
 		out.set("vendor", "Producteur");
 		out.set("text", "Texte");
 		out.set("flags", "Options");
-		out.set("4h", "Recevoir des notifications par email 4h avant les distributions");
-		out.set("24h", "Recevoir des notifications par email 24h avant les distributions");
+		out.set("HasEmailNotif4h", "Recevoir des notifications par email 4h avant les distributions");
+		out.set("HasEmailNotif24h", "Recevoir des notifications par email 24h avant les distributions");
+		out.set("Tuto", "Activer tutoriels");
 		out.set("HasMembership", "Gestion des adhésions");
 		out.set("DayOfWeek", "Jour de la semaine");
 		out.set("Monday", "Lundi");

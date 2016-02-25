@@ -5,7 +5,7 @@ import db.UserAmap;
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
 	HasEmailNotif24h;	//send notifications by mail 24h before
-	//Tuto;			//enable tutorials
+	Tuto;			//enable tutorials
 }
 
 enum RightSite {
@@ -45,7 +45,7 @@ class User extends Object {
 	
 	public var flags : SFlags<UserFlags>;
 	
-	//public var tutoState : SNull<SData<Map<String,Int>>>; //tutorial state
+	@hideInForms public var tutoState : SNull<SData<{name:String,step:Int}>>; //tutorial state
 	
 	public function new() {
 		super();

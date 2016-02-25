@@ -23,8 +23,21 @@ class View extends sugoi.BaseView {
 		return txt.split("\n").join("<br/>");		
 	}
 	
+	/**
+	 * init view in main loop, just before rendering
+	 */
 	override function init() {
 		super.init();		
+		
+		//tuto widget display
+		var u = App.current.user;
+		if (u.flags.has(Tuto) && u.tutoState!=null) {
+			trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
+			this.displayTuto(u.tutoState.name, u.tutoState.step);	
+		}
+		
+		
+		
 	}
 	
 	
@@ -127,11 +140,16 @@ class View extends sugoi.BaseView {
 	}
 	
 	
-	public function popTutoWindow(tuto:String,step:Int) {
-		this.popTuto = true;
-		this.tutoName = tuto;
-		this.tutoStep = step;
+	public function displayTuto(tuto:String, step:Int) {
+		if (tuto == null) return;
+		var t = plugin.Tutorial.all().get(tuto);
 		
+		
+		//this.popTuto = true;
+		//this.tutoName = t.name;
+		//this.tutoStep = t.steps[step];
+		
+		this.tuto = { name:tuto, step:step };
 		
 	}
 	
