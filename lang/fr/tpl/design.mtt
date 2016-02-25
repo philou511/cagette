@@ -70,12 +70,16 @@
 					  </button>				  
 					</div>	
 				
-					<div class="collapse navbar-collapse" id="cagette-navbar">
-						
+					<div class="collapse navbar-collapse" id="cagette-navbar">					
 						<ul class="nav navbar-nav">
 							<li ::attr class if(category=="home") 		'active' ::>		<a href="/">Accueil</a></li>
 							<li ::attr class if(category=="contract" ) 	'active' ::>		<a href="/contract">Mon compte</a></li>
 							<li ::attr class if(category=="amap") 		'active' ::>		<a href="/amap">Mon ::wAmap()::</a></li>
+							
+						</ul>
+						
+						
+						<ul class="nav navbar-nav navbar-right">
 							<li ::attr class if(category=="members") 	'active' ::>		<a href="/member" ::cond user.canAccessMembership()::>Gestion adhérents</a></li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>		<a href="/contractAdmin" ::cond user.isContractManager(null)::>Gestion contrats</a></li>
 							<li ::attr class if(category=="messages") 	'active' ::>		<a href="/messages" ::cond user.canAccessMessages()::>Messagerie</a></li>
@@ -83,10 +87,6 @@
 							<li ::cond user.isAdmin()::>									<a href="/admin" >Admin</a></li>
 						</ul>
 						
-						<ul class="nav navbar-nav navbar-right">
-							<li><a href="http://www.cagette.net/aviva" target="_blank">Votez pour Cagette.net !</a></li>
-						</ul>
-
 					</div>
 				
 			</nav>
