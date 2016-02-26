@@ -3,6 +3,14 @@ import Common;
 
 /**
  * Tutorials internal plugin
+ * 
+ * Its listening to events to know if 
+ * the user can go to the next step of his tutorial
+ * 
+ * User's tutorial state is stored in user.tutoState.
+ * The JS widget is triggered in view.init()
+ * 
+ * 
  */
 class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 {

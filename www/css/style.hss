@@ -343,7 +343,11 @@ span.tag.active{
 }
 
 
-/* Popover pour les tutos et boutons d'aide */
+/**
+	Popovers for help and tutorials
+
+**/
+
 .popover{
 	background-color:CSS("#583816 !important");
 	color:white;
@@ -360,4 +364,27 @@ span.tag.active{
 		font-family:CSS("'Arial','sans-serif' !important");
 		background-color:CSS("#583816 !important");	
 	}
+}
+
+
+.modal.help{
+	.modal-header{
+		font-size: 1.3em;
+		color:CSS("#BB9931 !important");
+		border-bottom:CSS("1px solid #BB9931 !important");
+		font-weight:CSS("bold !important");
+		font-family:CSS("'Arial','sans-serif' !important");
+		background-color:CSS("#583816 !important");	
+	}
+	
+	.modal-content{
+		background-color:CSS("#583816 !important");
+		color:white;
+		
+	}
+	
+	.modal-footer{
+		border-top:CSS("1px solid #BB9931 !important");
+	}
+	
 }

@@ -48,4 +48,7 @@ span.tag.active{padding:12px;font-size:16px;line-height:45px;}
 .popover{background-color:#583816!important;color:white;}
 .popover .arrow:after{border-right-color:#583816!important;}
 .popover h3.popover-title{padding:4px;color:#BB9931!important;border-bottom:1px solid #BB9931!important;font-weight:bold!important;font-family:'Arial','sans-serif'!important;background-color:#583816!important;}
+.modal.help .modal-header{font-size:1.3em;color:#BB9931!important;border-bottom:1px solid #BB9931!important;font-weight:bold!important;font-family:'Arial','sans-serif'!important;background-color:#583816!important;}
+.modal.help .modal-content{background-color:#583816!important;color:white;}
+.modal.help .modal-footer{border-top:1px solid #BB9931!important;}
 

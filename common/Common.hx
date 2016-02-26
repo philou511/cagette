@@ -120,8 +120,25 @@ class Data {
 		"intro" => { 
 			name:"Visite guidée coordinateur",
 			steps:[
-				{element:"h1", 	text:"Bonjour, bienvenue dans la visite guidée pour les coordinateurs ! Cliquez sur 'suite' pour commencer ce tutoriel.",	action: TANext },
-				{element:"ul.nav.navbar-left", 	text:"Cette partie de la barre de navigation est disponible pour tout les adhérents",	action: TANext },
+				{
+					element:null,
+					text:"<p>Afin de mieux découvrir Cagette.net, nous vous proposons de faire une visite guidée de l'interface du logiciel.
+					<br/> Vous aurez ainsi une vue d'ensemble sur les différents outils qui sont à votre disposition.</p>
+					<p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</p>",
+					action: TANext
+				},
+				{
+					element:"ul.nav.navbar-left",
+					text:"Cette partie de la barre de navigation est visible par tout les adhérents.</br>
+					Elle permet d'accéder aux trois rubriques principales :
+					<ul>
+						<li> La page d'accueil qui permet d'accéder aux commandes et de voir son planning de livraison.</li>
+						<li> La page <b>Mon compte</b> pour mettre à jour mes coordonnées et consulter mon historique de commande</li>
+						<li> La page <b>Mon groupe</b> pour connaître les différents produits et producteurs de mon groupe
+					</ul>",
+					action: TANext
+					
+				},
 				{element:"ul.nav.navbar-right", 	text:"Tandis que celle-ci est réservée aux coordinateurs",		action: TAPage("/contractAdmin")},
 				{element:"ul.nav #contractadmin", 	text:"Salut c'est l'étape 3",		action: TAPage("/contractAdmin")},
 				{element:"ul.nav #contractadmin", 	text:"Salut c'est l'étape 4",		action: TAPage("/contractAdmin")}
