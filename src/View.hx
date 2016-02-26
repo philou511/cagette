@@ -31,7 +31,7 @@ class View extends sugoi.BaseView {
 		
 		//tuto widget display
 		var u = App.current.user;
-		if (u.flags.has(Tuto) && u.tutoState!=null) {
+		if (u!=null && u.flags.has(Tuto) && u.tutoState!=null) {
 			//trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
 			this.displayTuto(u.tutoState.name, u.tutoState.step);	
 		}

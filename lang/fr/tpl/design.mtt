@@ -184,7 +184,7 @@
 					<a href="http://www.cagette.net/legal"> Mentions légales</a> •
 					<a href="https://www.facebook.com/cagette" target="_blank"> Facebook</a> •
 					<a href="https://twitter.com/Cagettenet" target="_blank"> Twitter</a> •
-					v.::VERSION::
+					<span style="color:#666;">version ::VERSION::</span>
 				</div>
 			</div>
 		</div>

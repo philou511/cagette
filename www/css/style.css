@@ -1,32 +1,15 @@
-h1 {
-	font-family :  'Cantora One', sans-serif !important;
-	color :  #583816 !important;
+h1, h2, h3, h4 {
 	margin-top : 4px !important;
 	margin-bottom : 8px !important;
-	font-weight : bold !important;
 }
 h1 {
-	font-size : 28px !important;
-}
-h2 {
-	font-size : 24px !important;
+	color :  #583816 !important;
 }
 h2, h3, h4 {
-	font-family :  'Cantora One', sans-serif !important;
 	color :  #007700 !important;
-	font-weight : normal !important;
-	margin-top : 4px !important;
-	margin-bottom : 8px !important;
 }
 a {
-	color :  #007700 !important;
 	cursor : pointer;
-}
-a.btn {
-	color :  #333333 !important;
-}
-th {
-	background-color :  #fcf8e3 !important;
 }
 #footer {
 	text-align : center;
@@ -39,12 +22,8 @@ th {
 #footer a {
 	color : #333;
 }
-pre {
-	padding : 8px;
-	background : white;
-}
 body {
-	background : #FFE28B url("/img/bg.gif");
+	background : url("/img/bg.gif");
 }
 .sqlLog {
 	margin-top : 24px;
@@ -142,30 +121,6 @@ table.product .desc {
 }
 .vat {
 	color : #999999;
-}
-.overlayBackground {
-	position : fixed;
-	top : 0;
-	left : 0;
-	height : 100%;
-	width : 100%;
-	background-color : #000000;
-	background-color : rgba(0,0,0,0.5);
-	background-color : transparent\9;
-	filter : progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000, endColorstr=#7F000000);
-	zoom : 1;
-	z-index : 10;
-}
-.overlayContent {
-	width : 50%;
-	position : fixed;
-	left : 25%;
-	margin : auto;
-	top : 20px;
-	z-index : 11;
-}
-.overlayContent .article {
-	padding : 24px;
 }
 #cartContainer.scrolled {
 	position : fixed;
@@ -270,11 +225,7 @@ span.tag.active {
 	line-height : 45px;
 }
 .popover {
-	background-color : #583816 !important;
 	color : white;
-}
-.popover .arrow:after {
-	border-right-color : #583816 !important;
 }
 .popover h3.popover-title {
 	padding : 4px;
@@ -282,7 +233,6 @@ span.tag.active {
 	border-bottom : 1px solid #BB9931 !important;
 	font-weight : bold !important;
 	font-family : 'Arial','sans-serif' !important;
-	background-color : #583816 !important;
 }
 .modal.help .modal-header {
 	font-size : 1.3em;
@@ -298,4 +248,10 @@ span.tag.active {
 }
 .modal.help .modal-footer {
 	border-top : 1px solid #BB9931 !important;
+}
+.highlight {
+	border : 2px dashed orange;
+	border-radius : 16px;
+	-moz-border-radius : 16px;
+	-webkit-border-radius : 16px;
 }

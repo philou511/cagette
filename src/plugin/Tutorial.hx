@@ -24,7 +24,7 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 	 */
 	public function onEvent(e:Event) {
 		//no need to continue if tutos are disabled
-		if ( !App.current.user.flags.has(Tuto) ) return;
+		if ( App.current.user==null || !App.current.user.flags.has(Tuto) ) return;
 
 		switch(e) {
 			
@@ -34,27 +34,28 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 				if (ts == null) return;
 				var tuto = Common.Data.TUTOS.get(ts.name);
 				var step = tuto.steps[ts.step];
-				if (step == null) return;
+				if (step == null ) return;
 				
 				//skip steps if action is "next"
 				
 				while (step.action.equals(TANext)) {
-					ts.step++;
+					if (ts.step + 1 >= tuto.steps.length) break;
+					ts.step++;					
 					step = tuto.steps[ts.step];
 				}
 				
-				trace( "tuto active, listening to step="+ts.step );
+				//trace( "tuto active, listening to step="+ts.step );
 				
 				if (step.action.equals(TAPage(uri))) {
 				
 					var _uri = step.action.getParameters()[0];
-					trace(""+_uri+"="+uri+" ?");
+					//trace(""+_uri+"="+uri+" ?");
 					if (_uri == uri) {
-						trace("ok");
+						//trace("ok");
 						var u = App.current.user;
 						u.lock();
 						
-						if ( tuto.steps[ts.step+1] == null ) {
+						if ( ts.step+1 >= tuto.steps.length) {
 							//tuto finished
 							u.tutoState = null;
 							u.flags.unset(Tuto);

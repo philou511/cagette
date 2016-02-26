@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
-	<div class="article">
+	<div class="article" id="contracts">
 		<h2>
 			Contrats
 			::if getParam("old"):: anciens ::end::
@@ -53,7 +53,7 @@
 
 
 <div class="col-md-6">
-	<div class="article">
+	<div class="article" id="vendors">
 		<h2>::wVendors()::</h2>
 		<table class="table">
 			::foreach v vendors::		
@@ -79,7 +79,7 @@
 </div>
 
 <div class="col-md-6">
-	<div class="article">
+	<div class="article" id="places">
 		
 		<h2>Lieux de livraison</h2>
 		<table class="table">

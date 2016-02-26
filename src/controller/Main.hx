@@ -116,6 +116,8 @@ class Main extends Controller {
 		d.dispatch(new controller.Cron());
 	}
 	
+	@tpl("cssDemo.mtt")
+	function doCssdemo() {}
 	
 	@tpl("form.mtt")
 	function doInstall() {

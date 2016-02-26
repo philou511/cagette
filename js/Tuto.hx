@@ -7,9 +7,10 @@ import Common;
  */
 class Tuto
 {
-
 	var name:String;
 	var step:Int;
+	
+	static var LAST_ELEMENT :String = null; //last hightlit element
 	
 	public function new(name:String,step:Int) 
 	{
@@ -17,33 +18,34 @@ class Tuto
 		this.step = step;
 		//close previous popovers
 		var p = App.j(".popover");
-		
-		//if (p.length > 0) {
-			//trace("hide");
-			//p
-			//untyped p.on("hidden.bs.popover", function(?_) { trace("on hide"); init(); } );
-			//untyped p.on("hide.bs.popover", function(?_) { trace("on hide"); init(); } );
-			untyped p.popover('hide');
-		//}else {
-			//trace("new");
-			//init();
-		//}
-		//untyped p.popover("hide");
-		//haxe.Timer.delay(	init ,1000);
+		untyped p.popover('hide');
 		init();
-		
-		
 	}
 	
 	function init() {
 		
 		var tuto = Data.TUTOS.get(name);
 		var s = tuto.steps[step];
-		if (s == null) js.Browser.alert("Invalid Tutorial step : " + step + "@" + name);
+		if (s == null) {
+			//tutorial is finished : display a modal 
+			
+			//js.Browser.alert("Invalid Tutorial step : " + step + "@" + name);
+			var m = App.j('#myModal');
+			untyped m.modal('show');
+			m.addClass("help");			
+			m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
+			m.find(".modal-body").html("<span class='glyphicon glyphicon-ok'></span> Ce tutoriel est terminé."); 
+			var bt = App.j("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> Revenir à la page des tutoriels</a>");
+			bt.click(function(?_) {
+				untyped m.modal('hide');
+				js.Browser.location.href = "/contract";
+			});
+			m.find(".modal-footer").html(bt);
+			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
+			
+		}else if (s.element == null) {
 		
-		if (s.element == null) {
-		
-			//no element, make a modal window
+			//no element, make a modal window (usually its the first step)
 			var m = App.j('#myModal');
 			untyped m.modal('show');
 			m.addClass("help");
@@ -56,23 +58,42 @@ class Tuto
 				new Tuto(name, step + 1);
 			});
 			m.find(".modal-footer").html(bt);
-			
 			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
-			//m.find(".modal-footer").hide();
 			
 		}else {
 			
 			//prepare Bootstrap "popover"
-			var x = App.j(s.element).attr("title", tuto.name);
-			var text = "<p>"+s.text+"</p>";
+			var x = App.j(s.element).attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
+			var text = "<p>" + s.text + "</p>";
+			var bt = null;
 			switch(s.action) {
 				case TANext :
-					text += "<p><a onClick=\"_.getTuto('"+name+"',"+(step+1)+")\" class='btn btn-default btn-sm'><span class='glyphicon glyphicon-chevron-right'></span> Suite</a></p>";
+					
+					bt = App.j("<p><a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-chevron-right'></span> Suite</a></p>");
+					bt.click(function(?_) {
+						//untyped m.modal('hide');
+						new Tuto(name, step + 1);
+						if(LAST_ELEMENT!=null) App.j(s.element).removeClass("highlight");
+					});
+					
 				default:
 			}
 			
-			//configure and open popover
-			untyped x.popover({container:"body",content:text,html:true}).popover('show');	
+			//configure and open popover			
+			var p = switch(s.placement) {
+				case TPTop: "top";
+				case TPBottom : "bottom";
+				case TPLeft : "left";
+				case TPRight : "right";
+				default : null;
+			}
+			var options = { container:"body", content:text, html:true , placement:p};
+			untyped x.popover(options).popover('show');	
+			if (bt != null) App.j(".popover .popover-content").append(bt);
+			
+			//highlight
+			App.j(s.element).addClass("highlight");
+			LAST_ELEMENT = s.element;
 		}
 	}
 	

@@ -4,10 +4,16 @@ class App {
 	
 	function new() { }	
 
+	/**
+	 * Returns a jquery object like $() in javascript
+	 */
 	public static inline function j(r:Dynamic) {
 		return new JQuery(r);
 	}
 
+	/**
+	 * The JS App will be available as "_" in the document.
+	 */
 	public static function main() {		
 		untyped js.Browser.window._ = new App();
 	}
