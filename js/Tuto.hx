@@ -2,7 +2,7 @@ package;
 import Common;
 
 /**
- * Tutorial widget 
+ * Tutorial javascript widget 
  * @author fbarbut<francois.barbut@gmail.com>
  */
 class Tuto
@@ -16,16 +16,16 @@ class Tuto
 	{
 		this.name = name;
 		this.step = step;
-		//close previous popovers
-		var p = App.j(".popover");
-		untyped p.popover('hide');
-		init();
-	}
-	
-	function init() {
 		
 		var tuto = Data.TUTOS.get(name);
 		var s = tuto.steps[step];
+		
+		//close previous popovers
+		var p = App.j(".popover");
+		untyped p.popover('hide');
+		
+		
+		
 		if (s == null) {
 			//tutorial is finished : display a modal 
 			
@@ -38,7 +38,7 @@ class Tuto
 			var bt = App.j("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> Revenir à la page des tutoriels</a>");
 			bt.click(function(?_) {
 				untyped m.modal('hide');
-				js.Browser.location.href = "/contract";
+				js.Browser.location.href = "/contract?stopTuto=1";
 			});
 			m.find(".modal-footer").html(bt);
 			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
@@ -89,12 +89,32 @@ class Tuto
 			}
 			var options = { container:"body", content:text, html:true , placement:p};
 			untyped x.popover(options).popover('show');	
-			if (bt != null) App.j(".popover .popover-content").append(bt);
+			
+			
+			//add a footer
+			var footer = App.j("<div class='footer'><div class='pull-left'></div><div class='pull-right'></div></div>");
+			
+			if (bt != null) footer.find(".pull-right").append(bt);
+			footer.find(".pull-left").append(makeCloseButton('Stop'));
+			
+			App.j(".popover .popover-content").append(footer);
 			
 			//highlight
 			App.j(s.element).addClass("highlight");
 			LAST_ELEMENT = s.element;
 		}
+	}
+	
+	/**
+	 * Make a "close" bt
+	 */
+	function makeCloseButton(?text) {
+		var bt = App.j("<a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-remove'></span> "+text+"</a>");
+		bt.click(function(?_) {
+			
+			js.Browser.location.href = "/contract?stopTuto=1";
+		});
+		return bt;
 	}
 	
 }

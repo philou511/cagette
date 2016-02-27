@@ -144,11 +144,22 @@ class View extends sugoi.BaseView {
 		if (tuto == null) return;
 		var t = plugin.Tutorial.all().get(tuto);
 		
-		
-		//this.popTuto = true;
-		//this.tutoName = t.name;
-		//this.tutoStep = t.steps[step];
-		
+		//check if we are on the correct page (last step page)
+		//otherwise the popovers could be displayed on wrong elements
+		var previous = t.steps[step - 1];
+		if (previous != null) {
+			switch(previous.action) {
+				case TAPage(uri):
+					var here = neko.Web.getURI();
+					if (!plugin.Tutorial.match(uri,here)) {
+						//trace(here+" is not " + uri);
+						return;
+					}
+				default:
+			}
+			
+		}
+	
 		this.tuto = { name:tuto, step:step };
 		
 	}

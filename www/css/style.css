@@ -234,6 +234,21 @@ span.tag.active {
 	font-weight : bold !important;
 	font-family : 'Arial','sans-serif' !important;
 }
+.popover .footer {
+	border-top : 1px solid #BB9931;
+	height : 45px;
+	padding : 12px 0;
+}
+.popover .footer .pull-left .btn {
+	background-color : #583816;
+	color : white;
+	border : 1px solid white;
+}
+.popover .footer .pull-right .btn {
+	background-color : #FC0;
+	color : #583816;
+	border : 1px solid #583816;
+}
 .modal.help .modal-header {
 	font-size : 1.3em;
 	color : #BB9931 !important;

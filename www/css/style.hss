@@ -312,6 +312,32 @@ span.tag.active{
 		font-family:CSS("'Arial','sans-serif' !important");
 		//background-color:CSS("#583816 !important");	
 	}
+	
+	.footer{
+		
+		border-top: 1px solid #BB9931;
+		height: 45px;
+		padding: 12px 0;
+    
+		
+		.pull-left .btn{
+		
+			background-color:#583816;
+			color:white;
+			border:1px solid white;
+		}
+		
+		.pull-right .btn{
+		
+			background-color:#FC0;
+			color:#583816;
+			border:1px solid #583816;
+		}
+	}
+	
+	
+	
+	
 }
 
 

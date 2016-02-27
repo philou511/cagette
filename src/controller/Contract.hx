@@ -105,8 +105,16 @@ class Contract extends Controller
 				
 				app.user.tutoState = {name:t,step:0};
 				app.user.update();
-				//view.displayTuto(t, 0);
 				
+				
+			}else if (app.params.exists('stopTuto')) {
+				
+				//stopped tuto from a tuto window
+				app.user.flags.unset(Tuto);
+				app.user.tutoState = null;
+				app.user.update();	
+				
+				view.stopTuto = true;
 			}
 			
 		

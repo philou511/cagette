@@ -40,6 +40,9 @@ span.tag{color:white;font-size:80%;font-weight:bold;padding:4px;background-color
 span.tag.active{padding:12px;font-size:16px;line-height:45px;}
 .popover{color:white;}
 .popover h3.popover-title{padding:4px;color:#BB9931!important;border-bottom:1px solid #BB9931!important;font-weight:bold!important;font-family:'Arial','sans-serif'!important;}
+.popover .footer{border-top:1px solid #BB9931;height:45px;padding:12px 0;}
+.popover .footer .pull-left .btn{background-color:#583816;color:white;border:1px solid white;}
+.popover .footer .pull-right .btn{background-color:#FC0;color:#583816;border:1px solid #583816;}
 .modal.help .modal-header{font-size:1.3em;color:#BB9931!important;border-bottom:1px solid #BB9931!important;font-weight:bold!important;font-family:'Arial','sans-serif'!important;background-color:#583816!important;}
 .modal.help .modal-content{background-color:#583816!important;color:white;}
 .modal.help .modal-footer{border-top:1px solid #BB9931!important;}

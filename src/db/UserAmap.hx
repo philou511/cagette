@@ -28,10 +28,17 @@ class UserAmap extends Object
 	public var rights : SNull<SData<Array<Right>>>;
 	
 
+	static var CACHE = new Map<String,db.UserAmap>();
 	
 	
 	public static function get(user:User, amap:Amap, ?lock = false) {
-		return manager.select($user == user && $amap == amap, lock);
+		//SPOD doesnt cache elements with double primary key, so lets do it manually
+		var c = CACHE.get(user.id + "-" + amap.id);
+		if (c == null) {
+			c = manager.select($user == user && $amap == amap, lock);		
+			CACHE.set(user.id + "-" + amap.id,c);
+		}
+		return c;	
 	}	
 	
 	

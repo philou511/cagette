@@ -138,20 +138,24 @@
 	<h3>Tutoriels</h3>
 	<div class="article">
 		
+		
+		
 		<table class="table">
 			
 			::foreach t tutos::
 				<tr>
 					<td>::t.name::</td>
 					<td>  
-						::if t.completion==null::
-							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs" ::attr disabled !tutoEnabled::>Commencer</a>
-						::else::
-							::t.completion::
+						::if t.completion==null && tutoEnabled::
+							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-play"></span> Commencer
+							</a>
+						::end::
+							<!--::t.completion::
 							<div class="progress">
 							  <div class="progress-bar progress-bar-success" role="progressbar" style="width: ::(t.completion*100)::%"></div>
 							</div>	
-						::end::
+						-->
 					</td>
 				</tr>
 			::end::
@@ -160,6 +164,18 @@
 		::if tutoEnabled::
 		$$edit(Désactiver les tutoriels,/contract?tutos=0)
 		::else::
+			::if stopTuto:: 
+			<div id="stopTuto" data-toggle="popover" title="Tutoriel stoppé" data-placement="left" data-content="Vous pourrez le réactiver en revenant ici." ></div>
+			<script>
+				
+				$(function(){
+				
+					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);
+					
+				});
+				
+			</script>
+			::end::
 		$$edit(Activer les tutoriels,/contract?tutos=1)
 		::end::
 		

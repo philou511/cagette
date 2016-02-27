@@ -28,6 +28,7 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 
 		switch(e) {
 			
+			//a page is displayed
 			case Page(uri):
 				
 				var ts = App.current.user.tutoState;
@@ -37,7 +38,6 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 				if (step == null ) return;
 				
 				//skip steps if action is "next"
-				
 				while (step.action.equals(TANext)) {
 					if (ts.step + 1 >= tuto.steps.length) break;
 					ts.step++;					
@@ -45,35 +45,59 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 				}
 				
 				//trace( "tuto active, listening to step="+ts.step );
-				
-				if (step.action.equals(TAPage(uri))) {
-				
-					var _uri = step.action.getParameters()[0];
-					//trace(""+_uri+"="+uri+" ?");
-					if (_uri == uri) {
-						//trace("ok");
-						var u = App.current.user;
-						u.lock();
+				switch(step.action) {
+					case TAPage(_uri):
 						
-						if ( ts.step+1 >= tuto.steps.length) {
-							//tuto finished
-							u.tutoState = null;
-							u.flags.unset(Tuto);
-						}else {
-							//next step
-							u.tutoState.step = ts.step+1;	
+						//trace(""+_uri+"="+uri+" ?");
+						if (match(_uri, uri)) {
+							
+							//trace("ok");
+							var u = App.current.user;
+							u.lock();
+							
+							if ( ts.step+1 >= tuto.steps.length) {
+								//tuto finished
+								u.tutoState = null;
+								u.flags.unset(Tuto);
+							}else {
+								//next step
+								u.tutoState.step = ts.step+1;	
+							}
+							
+							u.update();
 						}
-						
-						u.update();
-					}
-					
+					default:	
 					
 				}
+				
 				
 			default : 
 		}
 	}
 
+	/**
+	 * to know if the current uri matches with the tuto step uri
+	 */
+	public static function match(pattern:String, uri:String):Bool {
+		
+		if (pattern.indexOf("*") > -1) {
+			
+			//the url contains a wildcard
+			
+			//  ~/http:\/\/(\w+).com/    match urls like http://anything.com
+			var s = pattern;
+			s = StringTools.replace(s, "/", "\\/"); //escape antislashes
+			s = StringTools.replace(s, "*", "(\\w+)");
+			var e = new EReg(s,"");
+		
+			return e.match(uri);
+			
+		}else {
+			
+			return pattern == uri;
+		}
+		
+	}
 	
 	public static function all() {
 		return Data.TUTOS;
