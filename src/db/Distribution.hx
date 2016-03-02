@@ -1,6 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 /**
  * Distrib
  */
@@ -107,9 +108,51 @@ class Distribution extends Object
 			return n < orderEndDate.getTime() && n > orderStartDate.getTime();
 			
 		}
-		
-		
-		
 	}
+	
+	/**
+	 * Get next multi-devliveries 
+	 * ( deliveries including more than one vendors )
+	 */
+	public static function getNextMultiDeliveries(){
+		
+		var out = new Map<String,{place:Place,startDate:Date,endDate:Date,products:Array<ProductInfo>}>();
+		
+		var now = Date.now();
+	
+		var contracts = Contract.getActiveContracts(App.current.user.amap);
+		var cids = Lambda.map(contracts, function(p) return p.id);
+		//available deliveries
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now, { orderBy:date }, false);
+
+		for (d in distribs) {			
+			
+			var o = out.get(d.getKey());
+			if (o == null) o = {place:d.place, startDate:d.date, endDate:d.end, products:[]};
+			for ( p in d.contract.getProducts()){
+				if (o.products.length < 6){
+					o.products.push(	p.infos() );	
+				}else{
+					break;
+				}
+				
+			}
+			
+			
+			out.set(d.getKey(), o);
+			
+		}
+		return out;
+	}
+	
+	
+	/**
+	 * Return a string like $placeId-$date
+	 */
+	public function getKey():String{
+		return Std.string(place.id) + "-" + date.toString().substr(0, 10);
+	}
+	
+	
 	
 }

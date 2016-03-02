@@ -1,6 +1,48 @@
 ::use 'design.mtt'::
 <div class="col-md-9">
+	
+	
+	<div class="distrib">
+					
+		<div class="header" style="min-height: auto;">
+			<div>
+				Distribution du ::hDate(date)::	
+				
+				::if place!=null:: 
+				<span class="pull-right">
+					<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>			
+				</span>
+				::end::
+			
+			</div>
+			
+			<div>
+				<a href="/shop/choose" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-chevron-left"></span>Autres dates</a>	
+				::if place!=null:: 
+			
+				<div class="address pull-right">
+						$$nullSafe(::place.address1::)
+						$$nullSafe(::place.address2::)
+						$$nullSafe(::place.zipCode::)
+						$$nullSafe(::place.city::)
+				
+				</div>
+				::end::
+			</div>
+			
+			
+			
+			
+				
+			
+
+		</div>
+	</div>
+	
+	
 	<div class="article">
+		
+	
 		
 	<!--<table class="table table-bordered">
 		
@@ -30,15 +72,13 @@
 		
 		::end::
 	</table>-->
-		
-		
-	<h2>Produits</h2>
+	
 	
 	<script language="javascript">
 	var cart;
 	$(function(){
 		cart = _.getCart();
-		cart.init();
+		cart.init("::place.id::","::date.toString().substr(0,10)::");
 	});
 
 	</script>
@@ -60,7 +100,10 @@
 			<table class="product">
 				<tr>
 					<td style="vertical-align:top;">
-						<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus"><img src="::p.image::" style="width:64px;height:64px;" />	</a>
+						<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus">
+							<img src="::p.image::" style="width:64px;height:64px;" />
+							
+						</a>
 					</td>
 					<td>
 						<h4>

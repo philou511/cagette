@@ -20,6 +20,9 @@ class Cart
 	var jWindow : JQuery;
 	var cartContainer : JQuery;
 	
+	var date : String;
+	var place : Int;
+	
 	
 	public function new() 
 	{
@@ -114,10 +117,13 @@ class Cart
 		c.append("<div class='total'>TOTAL : "+total+"€</div>");
 	}
 	
+	/**
+	 * submit cart 
+	 */
 	public function submit() {
 		var req = new haxe.Http("/shop/submit");
 		req.onData = function(d) {
-			js.Browser.location.href = "/shop/validate";
+			js.Browser.location.href = "/shop/validate/"+place+"/"+date;
 			
 		}
 		req.addParameter("data", haxe.Json.stringify(order));
@@ -191,11 +197,14 @@ class Cart
 	/**
 	 * loads products
 	 */
-	public function init() {
+	public function init(place:Int,date:String) {
+		
+		this.place = place;
+		this.date = date;
 		
 		loader = App.j("#cartContainer #loader");
 		
-		var req = new haxe.Http("/shop/init");
+		var req = new haxe.Http("/shop/init/"+place+"/"+date);
 		req.onData = function(data) {
 			loader.hide();
 			

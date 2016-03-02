@@ -3,11 +3,14 @@ import Common;
 class Shop extends sugoi.BaseController
 {
 	
+	var distribs : List<db.Distribution>;
+	
 	@tpl('shop/default.mtt')
-	public function doDefault() {
+	public function doDefault(place:db.Place,date:Date) {
 		
-		view.products = getProducts();
-		
+		view.products = getProducts(place,date);
+		view.place = place;
+		view.date = date;
 		//opening and closing order dates + delivery dates
 		/*var infos = new Array<{open:Date,close:Date,deliv:Date,contracts:Array<db.Contract>}>();		
 		var n = Date.now();
@@ -60,7 +63,7 @@ class Shop extends sugoi.BaseController
 	/**
 	 * prints the full product list and current cart in JSON
 	 */
-	public function doInit() {
+	public function doInit(place:db.Place,date:Date) {
 		
 		//init order serverside if needed		
 		var order :Order = app.session.data.order; 
@@ -68,26 +71,23 @@ class Shop extends sugoi.BaseController
 			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Float}>() };
 		}
 		
-		//
-		var products = getProducts();
+		var products = getProducts(place,date);
 		Sys.print( haxe.Json.stringify( {products:products,order:order} ) );
 	}
 	
 	
 	@tpl('shop/choose.mtt')
 	public function doChoose(){
-		
+		view.distribs = db.Distribution.getNextMultiDeliveries();
 	}
-	
-	
-	
 	
 	var contracts : List<db.Contract>;
 	
 	/**
 	 * Get the available products list
 	 */
-	public function getProducts():Array<ProductInfo> {
+	public function getProducts(place,date):Array<ProductInfo> {
+		
 		contracts = db.Contract.getActiveContracts(app.user.amap);
 	
 		for (c in Lambda.array(contracts)) {
@@ -101,7 +101,15 @@ class Shop extends sugoi.BaseController
 			}
 			
 		}
-		var products = db.Product.manager.search(($contractId in Lambda.map(contracts, function(c) return c.id)) && $active==true, { orderBy:name }, false);
+		var now = Date.now();
+		var cids = Lambda.map(contracts, function(c) return c.id);
+		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+		
+		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2, false);
+		var cids = Lambda.map(distribs, function(d) return d.contract.id);
+		
+		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);
 		
 		return Lambda.array(Lambda.map(products, function(p) return p.infos()));
 	}
@@ -164,97 +172,52 @@ class Shop extends sugoi.BaseController
 	 * valider la commande et selectionner les distributions
 	 */
 	@tpl('shop/validate.mtt')
-	public function doValidate() {
-		//pêche aux datas
+	public function doValidate(place:db.Place,date:Date){
+
 		var order : Order = app.session.data.order;
-		
 		if (order == null || order.products == null || order.products.length == 0) {
 			throw Error("/shop", "Vous devez réaliser votre commande avant de valider.");
 		}
-		var now = Date.now();
-		var pids = Lambda.map(order.products, function(p) return p.productId);
-		var products = db.Product.manager.search($id in pids, false);
-		var _cids = Lambda.map(products, function(p) return p.contract.id);
-		//available deliveries
-		var distribs = db.Distribution.manager.search(($contractId in _cids) && $orderStartDate <= now && $orderEndDate >= now, { orderBy:date }, false);
-		//tmp : add distribs with no orderDates
-		var distribs = Lambda.concat(distribs, db.Distribution.manager.search(($contractId in _cids) && $orderStartDate == null && $date >= now, { orderBy:date }, false) );
 		
+		if (place == null) throw "place cannot be null";
+		if (date == null) throw "date cannot be null";
 		
-		//dedups cids
-		var cids = new Map<Int,Int>();
-		for (c in _cids) cids.set(c, c);
+		var products = getProducts(place, date);
 		
-		//on créé un formulaire
-		var form = new sugoi.form.Form("validate");
-		form.autoGenSubmitButton = false;
-		for (cid in cids) {
-			//liste des produits dans un bloc HTML
-			var html = "<ul>";
-			for ( p in products) {
-				if (p.contract.id == cid) {
-					for (o in order.products) {
-						if(o.productId==p.id) html += "<li>" + o.quantity +" x " + p.name+ "</li>";
-					}
-				}
-			}
-			html += "</ul>";
-			form.addElement(new sugoi.form.elements.Html(html,"Produits "+products.first().contract.name));
+		var errors = [];
+		
+
+		for (o in order.products) {
 			
-			//liste des distributions possibles en radio group
-			var data = new Array<{key:String,value:String}>();
-			for (d in distribs) {
-				if (d.contract.id == cid) data.push( { key:Std.string(d.id), value:view.hDate(d.date)+" - "+d.place.name } );				
-			}
-			if (data.length > 0) {
-				form.addElement(new sugoi.form.elements.RadioGroup("distrib"+cid,"Livraisons",data,data[0].key));	
-			}else {
-				form.addElement(new sugoi.form.elements.Html("Aucune livraison n'est prévue pour l'instant.","Livraisons"));
+			var p = db.Product.manager.get(o.productId, false);
+			//check if the product is available
+			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
+				errors.push("Le produit \"" + p.name+"\" n'est pas disponible pour cette distribution");
+				continue;
 			}
 			
+			//find distrib
+			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
+			if ( d == null ){
+				errors.push("Le produit \"" + p.name+"\" n'est pas disponible pour cette distribution");
+				continue;
+			}
+			
+			//make order
+			db.UserContract.make(app.user,o.quantity, o.productId, d.id);
 			
 		}
 		
-		
-		if (form.isValid()) {
+		if (errors.length > 0) {
+			app.session.addMessage(errors.join("<br/>"), true);
+			app.logError("params : "+App.current.params.toString()+"\n \n"+errors.join("\n"));
 			
-			//collecte quelle distrib choisie pour quel contrat
-			var cd = new Map<Int,Int>();  //contract id -> distrib id
-			for (e in form.elements) {
-				if (e.name == null) continue;//Html form element has no name
-				if (e.name.substr(0, 7) == "distrib") {
-					cd.set(Std.parseInt(e.name.substr(7)), Std.parseInt(e.value));
-				}
-			}
-			
-			var errors = [];
-			
-			//créé les commandes
-			for (o in order.products) {
-				var p = db.Product.manager.get(o.productId,false);
-				
-				var d = cd.get(p.contract.id);
-				if (d == null) {
-					//throw "pas trouvé la distribution du produit " + o.productId+" , contrat "+p.contract.name;
-					errors.push("Le produit \""+p.name+"\" n'ayant pas de livraison associée, il a été retiré de votre commande");
-				}else {
-					//enregistre la commande
-					db.UserContract.make(app.user,o.quantity, o.productId, d);
-				}
-			}
-			
-			if (errors.length > 0) {
-				app.session.addMessage(errors.join("<br/>"), true);
-				app.logError("params : "+App.current.params.toString()+"\n \n"+errors.join("\n"));
-				
-			}
-			
-			app.session.data.order = null;
-			throw Ok("/contract", "Votre commande a bien été enregistrée");
 		}
 		
+		app.session.data.order = null;
+		throw Ok("/contract", "Votre commande a bien été enregistrée");
 		
-		view.form = form;
+		
 	}
 	
 	

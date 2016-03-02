@@ -58,14 +58,14 @@ class Main extends Controller {
 				
 				//do not push empty orders list
 				if (x.orders.length > 0) {
-					var key = d.end.toString().substr(0,10)+"-p"+d.place.id;				
+					var key = d.getKey();			
 					var t = mydistribs.get(key);
 					if (t == null) {
-						t = [];
-						mydistribs.set(key, t);
+						t = [];						
 					}
 					
-					t.push( x );	
+					t.push( x );
+					mydistribs.set(key, t);
 				}
 			}
 			

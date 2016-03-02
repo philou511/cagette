@@ -58,6 +58,8 @@ Cart.prototype = {
 	,cartWidth: null
 	,jWindow: null
 	,cartContainer: null
+	,date: null
+	,place: null
 	,add: function(pid) {
 		var _g = this;
 		this.loader.show();
@@ -118,9 +120,10 @@ Cart.prototype = {
 		c.append("<div class='total'>TOTAL : " + total1 + "€</div>");
 	}
 	,submit: function() {
+		var _g = this;
 		var req = new haxe_Http("/shop/submit");
 		req.onData = function(d) {
-			window.location.href = "/shop/validate";
+			window.location.href = "/shop/validate/" + _g.place + "/" + _g.date;
 		};
 		req.addParameter("data",JSON.stringify(this.order));
 		req.request(true);
@@ -158,10 +161,12 @@ Cart.prototype = {
 		};
 		r.request();
 	}
-	,init: function() {
+	,init: function(place,date) {
 		var _g = this;
+		this.place = place;
+		this.date = date;
 		this.loader = js.JQuery("#cartContainer #loader");
-		var req = new haxe_Http("/shop/init");
+		var req = new haxe_Http("/shop/init/" + place + "/" + date);
 		req.onData = function(data) {
 			_g.loader.hide();
 			var data1 = JSON.parse(data);
