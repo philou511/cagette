@@ -35,7 +35,7 @@ class UserAmap extends Object
 		//SPOD doesnt cache elements with double primary key, so lets do it manually
 		var c = CACHE.get(user.id + "-" + amap.id);
 		if (c == null) {
-			c = manager.select($user == user && $amap == amap, lock);		
+			c = manager.select($user == user && $amap == amap, true/*lock*/);		
 			CACHE.set(user.id + "-" + amap.id,c);
 		}
 		return c;	
