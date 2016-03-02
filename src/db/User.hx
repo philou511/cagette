@@ -5,7 +5,7 @@ import db.UserAmap;
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
 	HasEmailNotif24h;	//send notifications by mail 24h before
-	Tuto;			//enable tutorials
+	//Tuto;			//enable tutorials
 }
 
 enum RightSite {

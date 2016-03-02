@@ -146,24 +146,22 @@
 				<tr>
 					<td>::t.name::</td>
 					<td>  
-						::if t.completion==null && tutoEnabled::
+						::if t.completion==null::
 							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
 								<span class="glyphicon glyphicon-play"></span> Commencer
 							</a>
+						::else::
+							
+							<a href="/contract/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
+								<span class="glyphicon glyphicon-remove"></span> Stop
+							</a>								
 						::end::
-							<!--::t.completion::
-							<div class="progress">
-							  <div class="progress-bar progress-bar-success" role="progressbar" style="width: ::(t.completion*100)::%"></div>
-							</div>	
-						-->
 					</td>
 				</tr>
 			::end::
 			
 		</table>
-		::if tutoEnabled::
-		$$edit(Désactiver les tutoriels,/contract?tutos=0)
-		::else::
+		
 			::if stopTuto:: 
 			<div id="stopTuto" data-toggle="popover" title="Tutoriel stoppé" data-placement="left" data-content="Vous pourrez le réactiver en revenant ici." ></div>
 			<script>
@@ -175,10 +173,7 @@
 				});
 				
 			</script>
-			::end::
-		$$edit(Activer les tutoriels,/contract?tutos=1)
-		::end::
-		
+			::end::		
 	</div>	
 	::end::
 	

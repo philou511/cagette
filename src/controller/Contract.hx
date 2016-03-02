@@ -88,17 +88,7 @@ class Contract extends Controller
 			app.user.lock();
 						
 			//actions
-			if (app.params.get('tutos') != null) {
-				
-				//enable / disable tutos
-				if (app.params.get('tutos') == "1") {
-					app.user.flags.set(Tuto);
-				}else {
-					app.user.flags.unset(Tuto);
-				}
-				app.user.update();	
-				
-			}else if (app.params.exists('startTuto') ) {
+			if (app.params.exists('startTuto') ) {
 				
 				//start a tuto
 				var t = app.params.get('startTuto'); 
@@ -110,7 +100,6 @@ class Contract extends Controller
 			}else if (app.params.exists('stopTuto')) {
 				
 				//stopped tuto from a tuto window
-				app.user.flags.unset(Tuto);
 				app.user.tutoState = null;
 				app.user.update();	
 				
@@ -123,12 +112,14 @@ class Contract extends Controller
 			
 			for ( k in Tutorial.all().keys() ) {	
 				var t = Tutorial.all().get(k);
-				//var c = app.user.tutoState.get(k);
-				tutos.push( { name:t.name, completion:null/* c==null?null:(c/t.steps.length)*/ , key:k } );
+				
+				var completion = null;
+				if (app.user.tutoState!=null && app.user.tutoState.name == k) completion = app.user.tutoState.step / t.steps.length;
+				
+				tutos.push( { name:t.name, completion:completion , key:k } );
 			}
 			
 			view.tutos = tutos;
-			view.tutoEnabled = app.user.flags.has(Tuto);
 			
 		}
 		

@@ -93,6 +93,7 @@ class Install
 				App.current.session.setUser(user);
 				App.current.session.data.amapId  = amap.id;
 				
+				app.session.data.newGroup = true;
 				throw Ok("/", "Groupe et utilisateur 'admin' créé. Votre email est 'admin@cagette.net' et votre mot de passe est 'admin'");
 			}	
 			
