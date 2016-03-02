@@ -2,6 +2,29 @@
 
 <div id="content" class="col-md-8">
 	
+		<!-- Welcoming message + access to tutos-->
+		::if newGroup::
+		<div class="alert alert-success">
+			<h3>Bienvenue dans Cagette.net !</h3>
+			<p>
+				Félicitations, vous venez de créer un compte pour votre groupe.<br/>
+				A titre d'exemple, nous avons ajouté un producteur et quelques produits à votre compte. <br/>
+				Cela vous permettra de voir comment tout cela fonctionne et évite l'angoisse de la page blanche !<br/>
+				Bien sûr, vous serez libre de les effacer ou de les modifier par la suite.
+			</p>
+			<hr/>
+			<p>
+				Pour bien commencer, nous vous recommandons de suivre la <b>visite guidée de Cagette.net</b> afin de découvrir pas à pas les principales
+				rubriques du logiciel.
+			</p>
+			<p>
+				<a href="/contract/?startTuto=intro" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commencer la visite guidée</a>
+			</p>
+			
+		</div>
+		::end::
+	
+	
 		<div class="homeBlock" ::cond ( openContracts!=null && openContracts.length>0 )::>
 			<img src="/img/order.png" width="64" height="64" style="float:right;" />
 			<h2>Commandes ouvertes</h2>

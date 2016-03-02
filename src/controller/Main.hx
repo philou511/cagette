@@ -13,10 +13,6 @@ class Main extends Controller {
 		if (app.user != null) {
 			
 			if(app.user.amap==null) throw Redirect("/user/choose");
-		
-			//var e = new Event();
-			//e.id = "displayHome";
-			//App.current.eventDispatcher.dispatch(e);
 
 			view.amap = app.user.getAmap();
 			
@@ -60,10 +56,6 @@ class Main extends Controller {
 					}
 				}
 				
-				
-				
-				
-				
 				//do not push empty orders list
 				if (x.orders.length > 0) {
 					var key = d.end.toString().substr(0,10)+"-p"+d.place.id;				
@@ -75,9 +67,6 @@ class Main extends Controller {
 					
 					t.push( x );	
 				}
-				
-				
-				
 			}
 			
 			//fix bug du sorting (les distribs du jour se mettent en bas)
@@ -90,8 +79,10 @@ class Main extends Controller {
 			view.distribs = out;	
 			
 			
-			//pass a definir
+			//need to define a password !
 			view.nopass = (app.user.pass == db.User.EMPTY_PASS);
+			//freshly created group
+			view.newGroup = app.session.data.newGroup == true;
 			
 		}else {
 			throw Redirect("/user/login");

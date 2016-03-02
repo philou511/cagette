@@ -48,10 +48,10 @@
 		
 		<div class="row">
 			::set vendor = c._vendor::
-			<div class="col-md-3">
-				::if vendor._image!=null::
-					<img src="::file(vendor._image)::" class="img-thumbnail" />
-				::end::
+			<div class="col-md-3" ::cond vendor._image!=null::>
+				
+				<img src="::file(vendor._image)::" class="img-thumbnail" />
+				
 			</div>
 			<div class="col-md-5">
 				
@@ -102,13 +102,13 @@
 					<div style="margin-bottom:8px;">
 						Livraison du ::dDate(d.date)::<br/>
 						
-						<a href="/contract/order/::c.id::?d=::d.id::" class="btn btn-default btn-xs">Commander</a><br/>
+						<a href="/contract/order/::c.id::?d=::d.id::" class="btn btn-primary btn-xs">Commander</a><br/>
 					</div>
 					::end::
 				</div>
 			::else::
 				<br/>
-				<a href="/contract/order/::c.id::" class="btn btn-default">Commander</a>
+				<a href="/contract/order/::c.id::" class="btn btn-primary">Commander</a>
 			::end::
 
 		::else::

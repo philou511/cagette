@@ -24,7 +24,7 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 	 */
 	public function onEvent(e:Event) {
 		//no need to continue if tutos are disabled
-		if ( App.current.user==null || !App.current.user.flags.has(Tuto) ) return;
+		if ( App.current.user==null || App.current.user.tutoState==null ) return;
 
 		switch(e) {
 			
@@ -58,7 +58,6 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 							if ( ts.step+1 >= tuto.steps.length) {
 								//tuto finished
 								u.tutoState = null;
-								u.flags.unset(Tuto);
 							}else {
 								//next step
 								u.tutoState.step = ts.step+1;	
