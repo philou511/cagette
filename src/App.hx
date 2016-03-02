@@ -1,4 +1,6 @@
 import db.User;
+import thx.semver.Version;
+import Common;
  
 class App extends sugoi.BaseApp {
 
@@ -6,14 +8,14 @@ class App extends sugoi.BaseApp {
 	public static var t : sugoi.i18n.translator.ITranslator;
 	public static var config = sugoi.BaseApp.config;
 	
-	public var eventDispatcher :hxevents.Dispatcher<event.Event>;	
+	public var eventDispatcher :hxevents.Dispatcher<Event>;	
 	public var plugins : Array<plugin.IPlugIn>;
 	
 	/**
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
-	public static var VERSION : thx.semver.Version = [0,9,0];
+	public static var VERSION = ([0,9,1]  : Version).withPre("RC2-"+#if neko "Neko" #else "PHP" #end);
 	
 	public static function main() {
 		
@@ -25,21 +27,23 @@ class App extends sugoi.BaseApp {
 	 * Init les plugins et le dispatcher juste avant de faire tourner l'app
 	 */
 	override public function mainLoop() {
-		App.current.eventDispatcher = new hxevents.Dispatcher<event.Event>();
-		App.current.plugins = [];
+		eventDispatcher = new hxevents.Dispatcher<Event>();
+		plugins = [ new plugin.Tutorial() ];
 		#if plugins
 		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
-		App.current.plugins.push( new hosted.HostedPlugIn() );
+		plugins.push( new hosted.HostedPlugIn() );
 		#end
+		
 	
 		super.mainLoop();
 	}
 	
-	override function setCookie( oldCookie : String ) {
-	
-		if( session != null && session.sid != null && session.sid != oldCookie ) {
-			neko.Web.setHeader("Set-Cookie", cookieName+"=" + session.sid + "; path=/;");			
-		}
+	override function beforeDispatch() {
+		
+		//send "current page" event
+		event( Page(this.uri) );
+		
+		super.beforeDispatch();
 	}
 	
 	public function getPlugin(name:String):plugin.IPlugIn {
@@ -54,6 +58,10 @@ class App extends sugoi.BaseApp {
 			//neko.Web.logMessage(Std.string(t));
 			//Weblog.log(t);
 		}
+	}
+	
+	public function event(e:Event) {
+		return this.eventDispatcher.dispatch(e);
 	}
 	
 	/**
@@ -99,13 +107,15 @@ class App extends sugoi.BaseApp {
 		out.set("orderEndDate", "Date fermeture des commandes");	
 		
 		out.set("date", "Date de distribution");	
+		out.set("active", "actif");	
 		
 		out.set("contact", "Reponsable");
 		out.set("vendor", "Producteur");
 		out.set("text", "Texte");
 		out.set("flags", "Options");
-		out.set("4h", "Recevoir des notifications par email 4h avant les distributions");
-		out.set("24h", "Recevoir des notifications par email 24h avant les distributions");
+		out.set("HasEmailNotif4h", "Recevoir des notifications par email 4h avant les distributions");
+		out.set("HasEmailNotif24h", "Recevoir des notifications par email 24h avant les distributions");
+		out.set("Tuto", "Activer tutoriels");
 		out.set("HasMembership", "Gestion des adhésions");
 		out.set("DayOfWeek", "Jour de la semaine");
 		out.set("Monday", "Lundi");
@@ -123,6 +133,8 @@ class App extends sugoi.BaseApp {
 		out.set("price", "prix TTC");
 		out.set("uname", "Nom");
 		out.set("pname", "Produit");
+		out.set("hasFloatQt", "Autoriser quantités \"à virgule\"");
+		
 		out.set("membershipRenewalDate", "Adhésions : Date de renouvellement");
 		out.set("membershipPrice", "Adhésions : Coût de l'adhésion");
 		out.set("UsersCanOrder", "Les adhérents peuvent saisir leur commande en ligne");
@@ -132,13 +144,14 @@ class App extends sugoi.BaseApp {
 		out.set("percentageValue", "Pourcentage des frais");
 		out.set("percentageName", "Libellé pour ces frais");
 		out.set("fees", "frais");
-		out.set("AmapAdmin", "Accès à la gestion d'Amap");
+		out.set("AmapAdmin", "Administrateur du groupe");
 		out.set("Membership", "Accès à la gestion des adhérents");
 		out.set("Messages", "Accès à la messagerie");
 		out.set("vat", "TVA");
 		out.set("desc", "Description");
 		out.set("ShopMode", "Mode boutique");
 		out.set("IsAmap", "Votre groupe est une AMAP");
+		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");

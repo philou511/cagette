@@ -12,9 +12,9 @@ class ContractAdmin extends Controller
 	{
 		super();
 		if (!app.user.isContractManager()) throw Error("/", "Vous n'avez pas accès à la gestion des contrats");
-		var e = new event.Event();
-		e.id = "displayContract";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "displayContract";
+		//App.current.eventDispatcher.dispatch(e);
 			
 	}
 	
@@ -61,7 +61,7 @@ class ContractAdmin extends Controller
 		//checks
 		if (app.user.amap.hasShopMode()) {
 		
-			for ( p in contract.getProducts()) {
+			for ( p in contract.getProducts(false)) {
 				if (p.getCategories().length == 0) {
 					app.session.addMessage("Attention, un ou plusieurs produits n'ont pas de catégories, <a href='/product/categorize/"+contract.id+"'>cliquez ici pour en ajouter</a>", true);
 					break;

@@ -3,9 +3,9 @@ import sys.db.Object;
 import sys.db.Types;
 import db.UserAmap;
 enum UserFlags {
-	HasEmailNotif4h;
-	HasEmailNotif24h;
-	//Lol;
+	HasEmailNotif4h;	//send notifications by mail 4h before
+	HasEmailNotif24h;	//send notifications by mail 24h before
+	Tuto;			//enable tutorials
 }
 
 enum RightSite {
@@ -15,7 +15,7 @@ enum RightSite {
 @:index(email,unique)
 class User extends Object {
 
-	public static var EMPTY_PASS = "859738d2fed6a98902defb00263f0d35";
+	public static var EMPTY_PASS = "";
 	
 	public var id : SId;
 	public var lang : SString<2>;
@@ -38,13 +38,14 @@ class User extends Object {
 	public var zipCode:SNull<SString<32>>;
 	public var city:SNull<SString<25>>;
 	
-	//@:relation(amapId) public var amap:SNull<db.Amap>;   public var amapId:SNull<SInt>;
 	@:skip public var amap(get_amap, null) : Amap;
 	
 	public var cdate : SDate; 				//creation
 	public var ldate : SNull<SDateTime>;	//derniere connexion
 	
 	public var flags : SFlags<UserFlags>;
+	
+	@hideInForms public var tutoState : SNull<SData<{name:String,step:Int}>>; //tutorial state
 	
 	public function new() {
 		super();
@@ -62,7 +63,15 @@ class User extends Object {
 		return rights.has(Admin) || id==1;
 	}
 	
+	//public function hasTuto() {
+		//return flags.has(Tuto);
+	//}
+
+	/**
+	 * is this user the manager of the current group
+	 */
 	public function isAmapManager() {
+
 		//if (getAmap().contact == null) throw "Cette AMAP n'a pas de responsable général.";
 		var ua = getUserAmap(getAmap());
 		if (ua == null) return false;
@@ -119,28 +128,6 @@ class User extends Object {
 		if (ua.hasRight(Right.ContractAdmin(c.id))) return true;		
 		return false;
 	}
-	
-	/**
-	 * nouvelle gestion des droits
-	 */
-	//public function hasRight(right:db.Rights.RightType, ?subject:Int):Bool {
-		//
-		////ces deux statuts donnent accès à tout
-		//if (isAdmin() || isAmapManager()) return true;
-		//
-		//var rights = db.Rights.manager.search($user == App.current.user && $amap == App.current.user.amap, false);
-		//if (rights.length == 0) return false;
-		//var hasright = Lambda.filter(rights, function(r) return r.rightType == right).length > 0;
-		//
-		//switch(right) {
-			////case db.Rights.RightType.ContractAdmin :
-			//
-			//default:
-				//return hasright;
-			//
-		//}
-		//
-	//}
 	
 	public function getContractManager(?lock=false) {
 		return Contract.manager.search($amap == amap && $contact == this, false);
@@ -413,7 +400,7 @@ class User extends Object {
 		var e = new ufront.mail.Email();		
 		e.setSubject("Invitation "+group.name);
 		e.to(new ufront.mail.EmailAddress(this.email,this.getName()));
-		e.from(new ufront.mail.EmailAddress("noreply@cagette.net","Cagette.net"));			
+		e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),"Cagette.net"));			
 		
 		var html = App.current.processTemplate("mail/invitation.mtt", { email:email, email2:email2, group:group.name,name:firstName,k:k } );		
 		e.setHtml(html);

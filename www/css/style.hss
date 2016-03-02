@@ -1,36 +1,36 @@
-h1{
-	font-family:CSS(" 'Cantora One', sans-serif !important");
-	color: CSS(" #583816 !important");
+
+/**
+
+	Cagette.net stylesheet.
+	
+	This file works with the bootstrap theme.
+	To compile the bootstrap theme go to bower_components/bootstrap
+	and call "grunt dist".
+	The bootstrap theme is defined in less/variables.less
+
+
+**/
+
+
+h1,h2,h3,h4{
+
 	margin-top: CSS("4px !important");
 	margin-bottom: CSS("8px !important");
-	font-weight:bold !important;
-}
-h1{
-	font-size: 28px !important;
-}
-h2{
-	font-size: 24px !important;
+
 }
 
-h2,h3,h4{
-	font-family:CSS(" 'Cantora One', sans-serif !important");
-	color:CSS(" #007700 !important");
-	font-weight:CSS("normal !important");
-	margin-top: CSS("4px !important");
-	margin-bottom: CSS("8px !important");
+h1{
+	color:CSS(" #583816 !important");
 }
-a{
+h2,h3,h4{
 	color:CSS(" #007700 !important");
+}
+
+
+a{
 	cursor:pointer;
 }
-a.btn{
-	color:CSS(" #333333 !important");
-}
-
-th{
-	background-color:CSS(" #fcf8e3 !important");
-}
-
+/*-------------------*/
 
 #footer{
 	text-align:center;
@@ -43,14 +43,14 @@ th{
 	}
 }
 
-pre{
+/*pre{
 	padding:8px;
 	background:white;
-}
+}*/
 
 body{
-	background:#FFE28B url('/img/bg.gif');
-	//position: relative;
+	background:url('/img/bg.gif');
+	
 }
 
 .sqlLog{
@@ -136,7 +136,6 @@ table.product{
 	
 	height:135px;
 	overflow:auto;
-	//border:1px solid #000000 ;
 	
 	.desc{
 		font-size:90%;
@@ -165,49 +164,6 @@ table.product{
 .vat{
 	color:#999999;
 	//font-size:80%;
-}
-
-/*.overlay{
-	position:absolute;
-	width:100%;
-	height:100%;
-	top: 0;
-	left: 0;
-}*/
-
-.overlayBackground{
-	/*position:absolute;
-	top:0;
-	left:0;
-	background:#000;
-	opacity:0.5;
-	width:100%;
-	height:100%;*/
-	position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 10;
-}
-.overlayContent{
-	/*position:fixed;
-	width:50%;
-	*/
-	width: 50%;
-    position: fixed;
-    
-    left: 25%;
-    margin:auto;
-	top:20px;
-	
-    z-index: 11;
-	
-	.article{
-		padding:24px;
-	}
-	
 }
 
 
@@ -320,10 +276,9 @@ i{
 	}
 }
  
-.logo{
-	
-}
 
+
+/* categories */
 span.tag{
 	color:white;
 	font-size:80%;
@@ -337,4 +292,78 @@ span.tag.active{
 	padding:12px;
 	font-size: 16px;
 	line-height: 45px;
+}
+
+
+/**
+	Popovers for help and tutorials
+**/
+
+.popover{
+
+	color:white;
+	
+	
+	h3.popover-title{
+		padding: 4px;
+		color:CSS("#BB9931 !important");
+		border-bottom:CSS("1px solid #BB9931 !important");
+		font-weight:CSS("bold !important");
+		font-family:CSS("'Arial','sans-serif' !important");
+		//background-color:CSS("#583816 !important");	
+	}
+	
+	.footer{
+		
+		border-top: 1px solid #BB9931;
+		height: 45px;
+		padding: 12px 0;
+    
+		
+		.pull-left .btn{
+		
+			background-color:#583816;
+			color:white;
+			border:1px solid white;
+		}
+		
+		.pull-right .btn{
+		
+			background-color:#FC0;
+			color:#583816;
+			border:1px solid #583816;
+		}
+	}
+	
+	
+	
+	
+}
+
+
+.modal.help{
+	.modal-header{
+		font-size: 1.3em;
+		color:CSS("#BB9931 !important");
+		border-bottom:CSS("1px solid #BB9931 !important");
+		font-weight:CSS("bold !important");
+		font-family:CSS("'Arial','sans-serif' !important");
+		background-color:CSS("#583816 !important");	
+	}
+	
+	.modal-content{
+		background-color:CSS("#583816 !important");
+		color:white;
+		
+	}
+	
+	.modal-footer{
+		border-top:CSS("1px solid #BB9931 !important");
+	}
+	
+}
+/* hightlight a zone for tutos */
+.highlight{
+	border: 2px dashed orange;
+    border-radius: 16px;
 }

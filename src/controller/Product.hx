@@ -18,12 +18,13 @@ class Product extends Controller
 		
 		var f = sugoi.form.Form.fromSpod(d);
 		
-		f.removeElement( f.getElement('imageId') );		
-		
 		//type (->icon)
 		f.removeElement( f.getElement("type") );
 		var pt = new form.ProductTypeRadioGroup("type", "type",Std.string(d.type));
 		f.addElement( pt );
+		
+		//stock mgmt ?
+		if (!d.contract.hasStockManagement()) f.removeElementByName('stock');		
 		
 		//vat selector
 		f.removeElement( f.getElement('vat') );		
@@ -54,14 +55,14 @@ class Product extends Controller
 		var d = new db.Product();
 		var f = sugoi.form.Form.fromSpod(d);
 		
-		f.removeElement( f.getElement('imageId') );	
-		
 		f.removeElement( f.getElement("type") );		
 		var pt = new form.ProductTypeRadioGroup("type", "type", "1");
 		f.addElement( pt );
 		f.removeElementByName("contractId");
 		f.getElement("price").addFilter(new sugoi.form.filters.FloatFilter());
 		
+		//stock mgmt ?
+		if (!contract.hasStockManagement()) f.removeElementByName('stock');
 		
 		//vat selector
 		f.removeElement( f.getElement('vat') );

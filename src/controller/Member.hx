@@ -6,6 +6,7 @@ import sugoi.form.Form;
 import sugoi.form.validators.EmailValidator;
 import neko.Web;
 import sugoi.tools.Utils;
+import ufront.mail.*;
 
 
 class Member extends Controller
@@ -16,9 +17,9 @@ class Member extends Controller
 		super();
 		if (!app.user.canAccessMembership()) throw Redirect("/");
 		
-		var e = new event.Event();
-		e.id = "displayMember";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "displayMember";
+		//App.current.eventDispatcher.dispatch(e);
 	}
 	
 	@logged
@@ -221,20 +222,37 @@ class Member extends Controller
 			if (!App.config.DEBUG) {
 				//verif changement d'email
 				if (form.getValueOf("email") != member.email) {
-					var mail = new sugoi.mail.MandrillApiMail();
-					mail.setSender("noreply@cagette.net");
-					mail.setRecipient(member.email);
-					mail.setSubject("Changement d'email sur votre compte Cagette.net");
-					mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email") } );			
-					mail.send();	
+					//var mail = new sugoi.mail.MandrillApiMail();
+					//mail.setSender(App.config.get("default_email"));
+					//mail.setRecipient(member.email);
+					//mail.setSubject("Changement d'email sur votre compte Cagette.net");
+					//mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email") } );			
+					//mail.send();	
+					
+					var m = new Email();
+					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
+					m.to(new EmailAddress(member.email));
+					m.setSubject("Changement d'email sur votre compte Cagette.net");
+					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email")  } ) );
+					App.getMailer().send(m);
+					
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
-					var mail = new sugoi.mail.MandrillApiMail();
-					mail.setSender("noreply@cagette.net");
-					mail.setRecipient(member.email2);
-					mail.setSubject("Changement d'email sur votre compte Cagette.net");
-					mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2") } );			
-					mail.send();	
+					//var mail = new sugoi.mail.MandrillApiMail();
+					//mail.setSender(App.config.get("default_email"));
+					//mail.setRecipient(member.email2);
+					//mail.setSubject("Changement d'email sur votre compte Cagette.net");
+					//mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2") } );			
+					//mail.send();
+					
+					var m = new Email();
+					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
+					m.to(new EmailAddress(member.email2));
+					m.setSubject("Changement d'email sur votre compte Cagette.net");
+					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
+					App.getMailer().send(m);
+					
+					
 				}	
 			}
 			
@@ -252,7 +270,10 @@ class Member extends Controller
 		if (checkToken()) {
 			if (!app.user.isContractManager()) throw "Vous ne pouvez pas faire ça.";
 			if (user.id == app.user.id) throw Error("/member/view/"+user.id,"Vous ne pouvez pas vous effacer vous même.");
-			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
+			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) {
+				
+				throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
+			}
 		
 		
 			var ua = db.UserAmap.get(user, app.user.amap, true);
@@ -334,7 +355,11 @@ class Member extends Controller
 	
 	
 	@tpl('member/import.mtt')
-	function doImport(?args:{confirm:Bool}) {
+	function doImport(?args: { confirm:Bool } ) {
+		
+		//var e = new event.Event();
+		//e.id = "displayMemberImport";
+		//App.current.eventDispatcher.dispatch(e);
 			
 		var step = 1;
 		var request = Utils.getMultipart(1024 * 1024 * 4); //4mb
@@ -345,9 +370,6 @@ class Member extends Controller
 			
 			var csv = new sugoi.tools.Csv();
 			var unregistred = csv.importDatas(data);
-			
-			/*var t = new sugoi.helper.Table("table");
-			trace(t.toString(unregistred));*/
 			
 			//cleaning
 			for ( user in unregistred.copy() ) {
@@ -391,25 +413,7 @@ class Member extends Controller
 				
 				var us = db.User.getSimilar(firstName, lastName, email, firstName2, lastName2, email2);
 				
-				
-				/*var us = db.User.manager.search(
-					(
-					
-						($firstName.like(firstName) && $lastName.like(lastName)) || 
-						($firstName2!=null && $firstName2.like(firstName) && $lastName2.like(lastName)) ||
-						
-						($firstName.like(firstName2) && $lastName.like(lastName2)) || 
-						($firstName2!=null && $firstName2.like(firstName2) && $lastName2.like(lastName2)) ||
-						
-						($email.like(r[2])) ||
-						($email2!=null && $email2.like(r[2])) ||
-						($email.like(r[6])) ||
-						($email2!=null && $email2.like(r[6]))
-					)
-					
-				,false);*/
 				if (us.length > 0) {
-					//trace(r[0]+" "+r[1]+" existe deja : "+us);
 					unregistred.remove(r);
 					registred.push(r);
 				}
@@ -506,9 +510,9 @@ class Member extends Controller
 	@tpl("user/insert.mtt")
 	public function doInsert() {
 		
-		var e = new event.Event();
-		e.id = "wantToAddMember";
-		App.current.eventDispatcher.dispatch(e);
+		//var e = new event.Event();
+		//e.id = "wantToAddMember";
+		//App.current.eventDispatcher.dispatch(e);
 		
 		var m = new db.User();
 		var form = sugoi.form.Form.fromSpod(m);
@@ -565,14 +569,15 @@ class Member extends Controller
 				
 				if (form.getValueOf("warnAmapManager") == "1") {
 					
-					try{
-					var m = new sugoi.mail.MandrillApiMail();
-					m.setSubject(app.user.amap.name+" - Nouvel inscrit : " + u.getCoupleName());
-					m.setSender(app.user.email);
-					m.setRecipient(app.user.getAmap().contact.email);
-					var text = app.user.getName() + " vient de saisir la fiche d'une nouvelle personne  : <br/><strong>" + u.getCoupleName() + "</strong><br/> <a href='http://app.cagette.net/member/view/" + u.id + "'>voir la fiche</a> ";
-					m.setHtmlBody('mail/message.mtt', { text:text } );
-					m.send();
+					try{					
+						var m = new Email();
+						m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));					
+						m.to(new EmailAddress(app.user.getAmap().contact.email));					
+						m.setSubject( app.user.amap.name+" - Nouvel inscrit : " + u.getCoupleName() );
+						var text = app.user.getName() + " vient de saisir la fiche d'une nouvelle personne  : <br/><strong>" + u.getCoupleName() + "</strong><br/> <a href='http://app.cagette.net/member/view/" + u.id + "'>voir la fiche</a> ";
+						m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
+						App.getMailer().send(m);
+					
 					}catch(e:Dynamic){}
 				}
 				

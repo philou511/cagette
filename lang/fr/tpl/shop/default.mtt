@@ -1,6 +1,37 @@
 ::use 'design.mtt'::
 <div class="col-md-9">
 	<div class="article">
+		
+	<!--<table class="table table-bordered">
+		
+		::foreach i infos::
+		<tr>
+			<td ::cond infos.length>1::>
+				
+				::foreach c i.contracts::
+					::c.name::. 
+				::end::
+				
+			</td>
+			<td>
+				
+				::if i.close!=null::
+					<span class="glyphicon glyphicon-calendar"></span> Fermeture des commandes :<br/> ::hDate(i.close)::
+				::else::
+					<span class="glyphicon glyphicon-remove"></span> Commandes fermées, <br/> prochaine commande à partir du ::hDate(i.open)::
+				::end::
+			</td>
+			<td>
+				<span class="glyphicon glyphicon-map-marker"></span>
+				Livraison :<br/> ::hDate(i.deliv)::
+			</td>
+		</tr>
+		
+		
+		::end::
+	</table>-->
+		
+		
 	<h2>Produits</h2>
 	
 	<script language="javascript">
@@ -12,30 +43,48 @@
 
 	</script>
 	
+	<style>
+	.product .warning{
+		font-size:11px;
+		color:#900;
+		font-weight:bold;
+	}
+	</style>
 	
 	<div class="row">
+		
+		
 		::foreach p products::
 		<div class="col-xs-12 col-sm-6 col-lg-4" id="product::p.id::">
 			
 			<table class="product">
 				<tr>
 					<td style="vertical-align:top;">
-						<a onclick="_.overlay('/shop/productInfo/::p.id::')" data-toggle="tooltip" data-placement="top" title="En savoir plus"><img src="::p.image::" style="width:64px;height:64px;" />	</a>
+						<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus"><img src="::p.image::" style="width:64px;height:64px;" />	</a>
 					</td>
 					<td>
 						<h4>
-							<a onclick="_.overlay('/shop/productInfo/::p.id::')">::p.name::</a>
+							<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')">::p.name::</a>
 						</h4>
 						<span class="price">::formatNum(p.price):: €</span>
 											
 						<div>
 							<form class="form-inline">
+							::if p.stock!=null && p.stock==0::
+								<span style="color:#AAA;">Stock épuisé</span>
+								
+							::elseif !p.orderable::	
 							
-							::if p.orderable::	
-							<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="2"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
-							<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">Commander</a>
+								<span style="color:#AAA;">Commande fermée</span>
+								
 							::else::
-							<span style="color:#AAA;">Commande fermée</span>
+								::if p.stock!=null && p.stock>0 && p.stock<=10::
+								<div class="warning" >Plus que ::p.stock:: en stock</div>
+								::end::
+							
+								<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
+								<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">Commander</a>
+								
 							::end::
 							
 							</form>

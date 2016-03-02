@@ -23,8 +23,21 @@ class View extends sugoi.BaseView {
 		return txt.split("\n").join("<br/>");		
 	}
 	
+	/**
+	 * init view in main loop, just before rendering
+	 */
 	override function init() {
 		super.init();		
+		
+		//tuto widget display
+		var u = App.current.user;
+		if (u!=null && u.flags.has(Tuto) && u.tutoState!=null) {
+			//trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
+			this.displayTuto(u.tutoState.name, u.tutoState.step);	
+		}
+		
+		
+		
 	}
 	
 	
@@ -126,6 +139,31 @@ class View extends sugoi.BaseView {
 		return Std.string(e).substr(2).toLowerCase()+".png";
 	}
 	
+	
+	public function displayTuto(tuto:String, step:Int) {
+		if (tuto == null) return;
+		var t = plugin.Tutorial.all().get(tuto);
+		
+		//check if we are on the correct page (last step page)
+		//otherwise the popovers could be displayed on wrong elements
+		var previous = t.steps[step - 1];
+		if (previous != null) {
+			switch(previous.action) {
+				case TAPage(uri):
+					var here = neko.Web.getURI();
+					if (!plugin.Tutorial.match(uri,here)) {
+						//trace(here+" is not " + uri);
+						return;
+					}
+				default:
+			}
+			
+		}
+	
+		this.tuto = { name:tuto, step:step };
+		
+	}
+	
 	/**
 	 * renvoie 0 si c'est user.firstName qui est connecté,
 	 * renvoie 1 si c'est user.firstName2 qui est connecté
@@ -149,5 +187,6 @@ class View extends sugoi.BaseView {
 	public function wVendor() {
 		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap)?"Paysan":"Fournisseur";
 	}
+	
 	
 }

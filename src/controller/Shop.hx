@@ -7,6 +7,54 @@ class Shop extends sugoi.BaseController
 	public function doDefault() {
 		
 		view.products = getProducts();
+		
+		//opening and closing order dates + delivery dates
+		/*var infos = new Array<{open:Date,close:Date,deliv:Date,contracts:Array<db.Contract>}>();		
+		var n = Date.now();
+		for ( c in contracts) {
+		
+			var d = db.Distribution.manager.select( $orderStartDate <= n && $orderEndDate >= n && $contractId==c.id,false);
+			if (d != null) {
+				//open order
+				var inf = null;
+				for ( i in infos) {
+					if ( i.open == null && i.close.getTime() == d.orderEndDate.getTime() && i.deliv.getTime() == d.date.getTime() ) {
+						inf = i;
+						inf.contracts.push(c);
+						break;
+					}
+				}
+				if (inf == null) {
+					inf = { open:null, close:d.orderEndDate, deliv:d.date, contracts:[c] };
+					infos.push(inf);
+				}
+				
+				
+			}else {
+			
+				//TODO : si les commandes sont closes on peut aussi etre entre la fin de commande et la livraison !!
+				
+				//currently close, but orders will open soon
+				var d = db.Distribution.manager.select( $orderStartDate > n && $contractId == c.id, { orderBy: -orderStartDate }, false);
+				
+				var inf = null;
+				for ( i in infos) {
+					if ( i.close == null && i.open.getTime() == d.orderStartDate.getTime() && i.deliv.getTime() == d.date.getTime() ) {
+						inf = i;
+						inf.contracts.push(c);
+						break;
+					}
+				}
+				if (inf == null) {
+					inf = { open:d.orderStartDate, close:null, deliv:d.date, contracts:[c] };
+					infos.push(inf);
+				}
+				
+			}
+			
+			
+		}
+		view.infos = infos;*/
 	}
 	
 	/**
@@ -17,7 +65,7 @@ class Shop extends sugoi.BaseController
 		//init order serverside if needed		
 		var order :Order = app.session.data.order; 
 		if ( order == null) {
-			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Int}>() };
+			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Float}>() };
 		}
 		
 		//
@@ -25,15 +73,17 @@ class Shop extends sugoi.BaseController
 		Sys.print( haxe.Json.stringify( {products:products,order:order} ) );
 	}
 	
+	
+	var contracts : List<db.Contract>;
+	
 	/**
-	 * récupérer les produits des contrats à commande variable en cours 
+	 * Get the available products list
 	 */
 	public function getProducts():Array<ProductInfo> {
-		var contracts = db.Contract.getActiveContracts(app.user.amap);
-		
-		
+		contracts = db.Contract.getActiveContracts(app.user.amap);
+	
 		for (c in Lambda.array(contracts)) {
-			//only varying contracts
+			//only varying orders
 			if (c.type != db.Contract.TYPE_VARORDER) {
 				contracts.remove(c);
 			}
@@ -43,15 +93,7 @@ class Shop extends sugoi.BaseController
 			}
 			
 		}
-		var products = db.Product.manager.search($contractId in Lambda.map(contracts, function(c) return c.id), { orderBy:name }, false);
-		
-		//retire les produits avec un stock à zero
-		for (p in products) {
-			if (p.contract.hasStockManagement() && p.stock <= 0) {
-				products.remove(p);
-			}
-			
-		}
+		var products = db.Product.manager.search(($contractId in Lambda.map(contracts, function(c) return c.id)) && $active==true, { orderBy:name }, false);
 		
 		return Lambda.array(Lambda.map(products, function(p) return p.infos()));
 	}
@@ -82,7 +124,7 @@ class Shop extends sugoi.BaseController
 	public function doAdd(productId:Int, quantity:Int) {
 	
 		var order :Order =  app.session.data.order;
-		if ( order == null) order = { products:new Array<{productId:Int,quantity:Int}>() };
+		if ( order == null) order = { products:new Array<{productId:Int,quantity:Float}>() };
 		
 		order.products.push( { productId:productId, quantity:quantity } );
 		
@@ -137,7 +179,7 @@ class Shop extends sugoi.BaseController
 		
 		//on créé un formulaire
 		var form = new sugoi.form.Form("validate");
-		form.submitButtonLabel = "Valider la commande";
+		form.autoGenSubmitButton = false;
 		for (cid in cids) {
 			//liste des produits dans un bloc HTML
 			var html = "<ul>";
@@ -149,7 +191,7 @@ class Shop extends sugoi.BaseController
 				}
 			}
 			html += "</ul>";
-			form.addElement(new sugoi.form.elements.Html(html,"Produits"));
+			form.addElement(new sugoi.form.elements.Html(html,"Produits "+products.first().contract.name));
 			
 			//liste des distributions possibles en radio group
 			var data = new Array<{key:String,value:String}>();
@@ -161,7 +203,7 @@ class Shop extends sugoi.BaseController
 			}else {
 				form.addElement(new sugoi.form.elements.Html("Aucune livraison n'est prévue pour l'instant.","Livraisons"));
 			}
-			form.addElement(new sugoi.form.elements.Html("<hr/>"));
+			
 			
 		}
 		
@@ -211,7 +253,7 @@ class Shop extends sugoi.BaseController
 	/**
 	 * valider la commande et selectionner les distributions
 	 */
-	@tpl('shop/validate.mtt')
+	/*@tpl('shop/validate.mtt')
 	public function ___doValidate() {
 		
 		//pêche aux datas
@@ -269,5 +311,5 @@ class Shop extends sugoi.BaseController
 		view.form = form;
 		view.out = out;
 		
-	}
+	}*/
 }

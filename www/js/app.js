@@ -26,17 +26,20 @@ App.prototype = {
 	,getTagger: function(cid) {
 		return new Tagger(cid);
 	}
-	,overlay: function(url) {
-		js.JQuery("body").append("<div class='overlayBackground' onclick='_.closeOverlay()'></div>");
+	,getTuto: function(name,step) {
+		return new Tuto(name,step);
+	}
+	,overlay: function(url,title,large) {
+		if(large == null) large = true;
 		var r = new haxe_Http(url);
 		r.onData = function(data) {
-			js.JQuery("body").append("<div class='overlayContent' >" + data + "<a class='btn btn-default' onclick='_.closeOverlay()'><span class='glyphicon glyphicon-remove'></span> Fermer</a></div>");
+			var m = js.JQuery("#myModal");
+			m.find(".modal-body").html(data);
+			if(title != null) m.find(".modal-title").html(title);
+			if(!large) m.find(".modal-dialog").removeClass("modal-lg");
+			js.JQuery("#myModal").modal();
 		};
 		r.request();
-	}
-	,closeOverlay: function() {
-		js.JQuery(".overlayContent").remove();
-		js.JQuery(".overlayBackground").remove();
 	}
 	,__class__: App
 };
@@ -59,9 +62,13 @@ Cart.prototype = {
 		var _g = this;
 		this.loader.show();
 		var q = js.JQuery("#productQt" + pid).val();
-		var qt = Std.parseInt(q);
+		var qt = 0.0;
+		var p = this.products.h[pid];
+		if(p.hasFloatQt) {
+			q = StringTools.replace(q,",",".");
+			qt = parseFloat(q);
+		} else qt = Std.parseInt(q);
 		if(qt == null) qt = 1;
-		haxe_Log.trace("qté : " + qt,{ fileName : "Cart.hx", lineNumber : 40, className : "Cart", methodName : "add"});
 		var r = new haxe_Http("/shop/add/" + pid + "/" + qt);
 		r.onData = function(data) {
 			_g.loader.hide();
@@ -92,7 +99,7 @@ Cart.prototype = {
 		c.empty();
 		c.append(Lambda.map(this.order.products,function(x) {
 			var p = _g.products.h[x.productId];
-			if(p == null) js_Browser.alert("Cant find product " + x.productId + " in " + _g.products.toString());
+			if(p == null) return "";
 			var btn = "<a onClick='cart.remove(" + p.id + ")' class='btn btn-default btn-xs' data-toggle='tooltip' data-placement='top' title='Retirer de la commande'><span class='glyphicon glyphicon-remove'></span></a>&nbsp;";
 			return "<div class='row'> \r\n\t\t\t\t<div class = 'order col-md-9' > <b> " + x.quantity + " </b> x " + p.name + " </div>\r\n\t\t\t\t<div class = 'col-md-3'> " + btn + "</div>\t\t\t\r\n\t\t\t</div>";
 		}).join("\n"));
@@ -103,6 +110,7 @@ Cart.prototype = {
 			var p1 = _g11[_g1];
 			++_g1;
 			var pinfo = this.products.h[p1.productId];
+			if(pinfo == null) continue;
 			total += p1.quantity * pinfo.price;
 		}
 		var ffilter = new sugoi_form_filters_FloatFilter();
@@ -232,6 +240,83 @@ ProductType.CTYahourt = ["CTYahourt",12];
 ProductType.CTYahourt.toString = $estr;
 ProductType.CTYahourt.__enum__ = ProductType;
 ProductType.__empty_constructs__ = [ProductType.CTVegetable,ProductType.CTCheese,ProductType.CTChicken,ProductType.CTUnknown,ProductType.CTWine,ProductType.CTMeat,ProductType.CTEggs,ProductType.CTHoney,ProductType.CTFish,ProductType.CTJuice,ProductType.CTApple,ProductType.CTBread,ProductType.CTYahourt];
+var Event = $hxClasses["Event"] = { __ename__ : ["Event"], __constructs__ : ["Page","Nav"] };
+Event.Page = function(uri) { var $x = ["Page",0,uri]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
+Event.Nav = function(nav,name) { var $x = ["Nav",1,nav,name]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
+Event.__empty_constructs__ = [];
+var TutoAction = $hxClasses["TutoAction"] = { __ename__ : ["TutoAction"], __constructs__ : ["TAPage","TANext"] };
+TutoAction.TAPage = function(uri) { var $x = ["TAPage",0,uri]; $x.__enum__ = TutoAction; $x.toString = $estr; return $x; };
+TutoAction.TANext = ["TANext",1];
+TutoAction.TANext.toString = $estr;
+TutoAction.TANext.__enum__ = TutoAction;
+TutoAction.__empty_constructs__ = [TutoAction.TANext];
+var TutoPlacement = $hxClasses["TutoPlacement"] = { __ename__ : ["TutoPlacement"], __constructs__ : ["TPTop","TPBottom","TPLeft","TPRight"] };
+TutoPlacement.TPTop = ["TPTop",0];
+TutoPlacement.TPTop.toString = $estr;
+TutoPlacement.TPTop.__enum__ = TutoPlacement;
+TutoPlacement.TPBottom = ["TPBottom",1];
+TutoPlacement.TPBottom.toString = $estr;
+TutoPlacement.TPBottom.__enum__ = TutoPlacement;
+TutoPlacement.TPLeft = ["TPLeft",2];
+TutoPlacement.TPLeft.toString = $estr;
+TutoPlacement.TPLeft.__enum__ = TutoPlacement;
+TutoPlacement.TPRight = ["TPRight",3];
+TutoPlacement.TPRight.toString = $estr;
+TutoPlacement.TPRight.__enum__ = TutoPlacement;
+TutoPlacement.__empty_constructs__ = [TutoPlacement.TPTop,TutoPlacement.TPBottom,TutoPlacement.TPLeft,TutoPlacement.TPRight];
+var _$Map_Map_$Impl_$ = {};
+$hxClasses["_Map.Map_Impl_"] = _$Map_Map_$Impl_$;
+_$Map_Map_$Impl_$.__name__ = ["_Map","Map_Impl_"];
+_$Map_Map_$Impl_$._new = null;
+_$Map_Map_$Impl_$.set = function(this1,key,value) {
+	this1.set(key,value);
+};
+_$Map_Map_$Impl_$.get = function(this1,key) {
+	return this1.get(key);
+};
+_$Map_Map_$Impl_$.exists = function(this1,key) {
+	return this1.exists(key);
+};
+_$Map_Map_$Impl_$.remove = function(this1,key) {
+	return this1.remove(key);
+};
+_$Map_Map_$Impl_$.keys = function(this1) {
+	return this1.keys();
+};
+_$Map_Map_$Impl_$.iterator = function(this1) {
+	return this1.iterator();
+};
+_$Map_Map_$Impl_$.toString = function(this1) {
+	return this1.toString();
+};
+_$Map_Map_$Impl_$.arrayWrite = function(this1,k,v) {
+	this1.set(k,v);
+	return v;
+};
+_$Map_Map_$Impl_$.toStringMap = function(t) {
+	return new haxe_ds_StringMap();
+};
+_$Map_Map_$Impl_$.toIntMap = function(t) {
+	return new haxe_ds_IntMap();
+};
+_$Map_Map_$Impl_$.toEnumValueMapMap = function(t) {
+	return new haxe_ds_EnumValueMap();
+};
+_$Map_Map_$Impl_$.toObjectMap = function(t) {
+	return new haxe_ds_ObjectMap();
+};
+_$Map_Map_$Impl_$.fromStringMap = function(map) {
+	return map;
+};
+_$Map_Map_$Impl_$.fromIntMap = function(map) {
+	return map;
+};
+_$Map_Map_$Impl_$.fromObjectMap = function(map) {
+	return map;
+};
+var Data = function() { };
+$hxClasses["Data"] = Data;
+Data.__name__ = ["Data"];
 var EReg = function(r,opt) {
 	opt = opt.split("u").join("");
 	this.r = new RegExp(r,opt);
@@ -672,56 +757,6 @@ _$List_ListIterator.prototype = {
 	}
 	,__class__: _$List_ListIterator
 };
-var _$Map_Map_$Impl_$ = {};
-$hxClasses["_Map.Map_Impl_"] = _$Map_Map_$Impl_$;
-_$Map_Map_$Impl_$.__name__ = ["_Map","Map_Impl_"];
-_$Map_Map_$Impl_$._new = null;
-_$Map_Map_$Impl_$.set = function(this1,key,value) {
-	this1.set(key,value);
-};
-_$Map_Map_$Impl_$.get = function(this1,key) {
-	return this1.get(key);
-};
-_$Map_Map_$Impl_$.exists = function(this1,key) {
-	return this1.exists(key);
-};
-_$Map_Map_$Impl_$.remove = function(this1,key) {
-	return this1.remove(key);
-};
-_$Map_Map_$Impl_$.keys = function(this1) {
-	return this1.keys();
-};
-_$Map_Map_$Impl_$.iterator = function(this1) {
-	return this1.iterator();
-};
-_$Map_Map_$Impl_$.toString = function(this1) {
-	return this1.toString();
-};
-_$Map_Map_$Impl_$.arrayWrite = function(this1,k,v) {
-	this1.set(k,v);
-	return v;
-};
-_$Map_Map_$Impl_$.toStringMap = function(t) {
-	return new haxe_ds_StringMap();
-};
-_$Map_Map_$Impl_$.toIntMap = function(t) {
-	return new haxe_ds_IntMap();
-};
-_$Map_Map_$Impl_$.toEnumValueMapMap = function(t) {
-	return new haxe_ds_EnumValueMap();
-};
-_$Map_Map_$Impl_$.toObjectMap = function(t) {
-	return new haxe_ds_ObjectMap();
-};
-_$Map_Map_$Impl_$.fromStringMap = function(map) {
-	return map;
-};
-_$Map_Map_$Impl_$.fromIntMap = function(map) {
-	return map;
-};
-_$Map_Map_$Impl_$.fromObjectMap = function(map) {
-	return map;
-};
 Math.__name__ = ["Math"];
 var Reflect = function() { };
 $hxClasses["Reflect"] = Reflect;
@@ -1087,6 +1122,94 @@ Tagger.prototype = {
 		req.request(true);
 	}
 	,__class__: Tagger
+};
+var Tuto = function(name,step) {
+	this.name = name;
+	this.step = step;
+	var tuto = Data.TUTOS.get(name);
+	var s = tuto.steps[step];
+	var p = js.JQuery(".popover");
+	p.popover("hide");
+	if(s == null) {
+		var m = js.JQuery("#myModal");
+		m.modal("show");
+		m.addClass("help");
+		m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> " + tuto.name);
+		m.find(".modal-body").html("<span class='glyphicon glyphicon-ok'></span> Ce tutoriel est terminé.");
+		var bt = js.JQuery("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> Revenir à la page des tutoriels</a>");
+		bt.click(function(_) {
+			m.modal("hide");
+			window.location.href = "/contract?stopTuto=1";
+		});
+		m.find(".modal-footer").html(bt);
+		m.find(".modal-dialog").removeClass("modal-lg");
+	} else if(s.element == null) {
+		var m1 = js.JQuery("#myModal");
+		m1.modal("show");
+		m1.addClass("help");
+		m1.find(".modal-body").html(s.text);
+		m1.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> " + tuto.name);
+		var bt1 = js.JQuery("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> OK</a>");
+		bt1.click(function(_1) {
+			m1.modal("hide");
+			new Tuto(name,step + 1);
+		});
+		m1.find(".modal-footer").html(bt1);
+		m1.find(".modal-dialog").removeClass("modal-lg");
+	} else {
+		var x = js.JQuery(s.element).attr("title",tuto.name + " <div class='pull-right'>" + (step + 1) + "/" + tuto.steps.length + "</div>");
+		var text = "<p>" + s.text + "</p>";
+		var bt2 = null;
+		var _g = s.action;
+		switch(_g[1]) {
+		case 1:
+			bt2 = js.JQuery("<p><a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-chevron-right'></span> Suite</a></p>");
+			bt2.click(function(_2) {
+				new Tuto(name,step + 1);
+				if(Tuto.LAST_ELEMENT != null) js.JQuery(s.element).removeClass("highlight");
+			});
+			break;
+		default:
+		}
+		var p1;
+		var _g1 = s.placement;
+		switch(_g1[1]) {
+		case 0:
+			p1 = "top";
+			break;
+		case 1:
+			p1 = "bottom";
+			break;
+		case 2:
+			p1 = "left";
+			break;
+		case 3:
+			p1 = "right";
+			break;
+		}
+		var options = { container : "body", content : text, html : true, placement : p1};
+		x.popover(options).popover("show");
+		var footer = js.JQuery("<div class='footer'><div class='pull-left'></div><div class='pull-right'></div></div>");
+		if(bt2 != null) footer.find(".pull-right").append(bt2);
+		footer.find(".pull-left").append(this.makeCloseButton("Stop"));
+		js.JQuery(".popover .popover-content").append(footer);
+		js.JQuery(s.element).addClass("highlight");
+		Tuto.LAST_ELEMENT = s.element;
+	}
+};
+$hxClasses["Tuto"] = Tuto;
+Tuto.__name__ = ["Tuto"];
+Tuto.prototype = {
+	name: null
+	,step: null
+	,makeCloseButton: function(text) {
+		var bt = js.JQuery("<a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-remove'></span> " + text + "</a>");
+		bt.click(function(_) {
+			window.location.href = "/contract?stopTuto=1";
+		});
+		return bt;
+	}
+	,__class__: Tuto
 };
 var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] };
 ValueType.TNull = ["TNull",0];
@@ -2296,6 +2419,17 @@ q.fn.iterator = function() {
 		return $(this.j[this.pos++]);
 	}};
 };
+Data.TUTOS = (function($this) {
+	var $r;
+	var _g = new haxe_ds_StringMap();
+	{
+		var value = { name : "Visite guidée coordinateur", steps : [{ element : null, text : "<p>Afin de mieux découvrir Cagette.net, nous vous proposons de faire une visite guidée de l'interface du logiciel.\r\n\t\t\t\t\t<br/> Vous aurez ainsi une vue d'ensemble sur les différents outils qui sont à votre disposition.</p>\r\n\t\t\t\t\t<p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</p>", action : TutoAction.TANext, placement : null},{ element : "ul.nav.navbar-left", text : "Cette partie de la barre de navigation est visible par tout les adhérents.</br>\r\n\t\t\t\t\tElle permet d'accéder aux trois rubriques principales :\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li> La <b>page d'accueil</b> qui permet d'accéder aux commandes et de voir son planning de livraison.</li>\r\n\t\t\t\t\t\t<li> La page <b>Mon compte</b> pour mettre à jour mes coordonnées et consulter mon historique de commande</li>\r\n\t\t\t\t\t\t<li> La page <b>Mon groupe</b> pour connaître les différents producteurs et coordinateurs de mon groupe\r\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "ul.nav.navbar-right", text : "Cette partie est exclusivement réservée <b>aux coordinateurs.</b>\r\n\t\t\t\t\tC'est là que vous allez pouvoir administrer les fiches d'adhérents, les commandes, les produits ...etc<br/>\r\n\t\t\t\t\t<p>Cliquez maintenant sur <b>Gestion adhérents</b></p>\r\n\t\t\t\t\t", action : TutoAction.TAPage("/member"), placement : TutoPlacement.TPBottom},{ element : ".article .table td:first", text : "Cette rubrique permet d'administrer la liste des adhérents.<br/>\r\n\t\t\t\t\tA chaque fois que vous saisissez un nouvel adhérent, un compte est créé à son nom. \r\n\t\t\t\t\tIl pourra donc se connecter à Cagette.net pour faire des commandes ou consulter son planning de livraison.\r\n\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>", action : TutoAction.TAPage("/member/view/*"), placement : TutoPlacement.TPRight},{ element : ".article:first", text : "Nous sommes maintenant sur la fiche d'un adhérent. Ici vous pourrez :\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t<li>voir ou modifier ses coordonnées</li>\r\n\t\t\t\t\t<li>gérer ses cotisations à votre association</li>\r\n\t\t\t\t\t<li>voir un récapitulatif de ses commandes</li>\r\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPRight},{ element : "ul.nav #contractadmin", text : "Allons voir maintenant la page de gestion des <b>contrats</b> qui est très importante pour les coordinateurs.", action : TutoAction.TAPage("/contractAdmin"), placement : TutoPlacement.TPBottom},{ element : "#contracts", text : "Ici se trouve la liste des <b>contrats</b>. \r\n\t\t\t\t\tIls comportent une date de début et date de fin et représentent votre relation avec un producteur. <br/>\r\n\t\t\t\t\t<p>\r\n\t\t\t\t\tC'est ici que vous pourrez gérer :\r\n\t\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>la liste de produits de ce producteur</li>\r\n\t\t\t\t\t\t<li>les commandes des adhérents pour ce producteur</li>\r\n\t\t\t\t\t\t<li>planifier les livraisons</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "#vendors", text : "Ici vous pouvez gérer la liste des <b>producteurs ou fournisseurs</b> avec lesquels vous collaborez.<br/>\r\n\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au mieux les adhérents", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#places", text : "Ici vous pouvez gérer la liste des <b>lieux de livraison/distribution</b>.<br/>\r\n\t\t\t\t\tN'oubliez pas de mettre l'adresse complète car une carte s'affiche à partir de l'adresse du lieu.", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#contracts table .btn:first", text : "Allons voir maintenant de plus près comment administrer un contrat. <b>Cliquez sur ce bouton</b>", action : TutoAction.TAPage("/contractAdmin/view/*"), placement : TutoPlacement.TPBottom},{ element : ".table.table-bordered:first", text : "Ici vous avez un récapitulatif du contrat.<br/>Il y a deux types de contrats : <ul>\r\n\t\t\t\t\t<li>Les contrats AMAP : l'adhérent s'engage sur toute la durée du contrat avec une commande fixe.</li>\r\n\t\t\t\t\t<li>Les contrats à commande variable : l'adhérent peut commander ce qu'il veut à chaque livraison.</li>\r\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPRight},{ element : "#subnav #products", text : "Allons voir maintenant la page de gestion des <b>Produits</b>", action : TutoAction.TAPage("/contractAdmin/products/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Sur cette page, vous pouvez gérer la liste des produits proposée par ce producteur.<br/>\r\n\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il est également possible d'ajouter un descriptif et une photo.", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#subnav #deliveries", text : "Allons voir maintenant la page de gestion des <b>livraisons</b>", action : TutoAction.TAPage("/contractAdmin/distributions/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Ici nous pouvons gérer la liste des livraisons/distributions pour ce producteur<br/>\r\n\t\t\t\t\tDans le logiciel une livraison comporte une date avec une heure de début et heure de fin de livraison. \r\n\t\t\t\t\tIl faut aussi préciser le lieu de livraison à partir de la liste que nous avons vue précédement.", action : TutoAction.TANext, placement : TutoPlacement.TPLeft},{ element : "#subnav #orders", text : "Allons voir maintenant la page de gestion des <b>commandes</b>", action : TutoAction.TAPage("/contractAdmin/orders/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Ici nous pouvons gérer la liste des commandes relatives à ce producteur.<br/>\r\n\t\t\t\t\tSi vous choisissez \"d'ouvrir les commandes\" aux adhérents, ils pourront eux-même saisir leur commande en se connectant à Cagette.net.<br/>\r\n\t\t\t\t\tCette page centralisera automatiquement les commandes pour ce producteur. \r\n\t\t\t\t\tSinon vous pouvez en tant que coordinateur saisir les commandes pour les adhérents depuis cette page.", action : TutoAction.TANext, placement : TutoPlacement.TPLeft},{ element : "ul.nav #messages", text : "<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</p><p>Explorons maintenant la messagerie.</p>", action : TutoAction.TAPage("/messages"), placement : TutoPlacement.TPBottom},{ element : null, text : "<p>La messagerie vous permet d'envoyer des emails à différentes listes d'adhérents.\r\n\t\t\t\t\tIl n'est plus nécéssaire de maintenir de nombreuses listes d'emails en fonction des contrats, toutes ces listes\r\n\t\t\t\t\tsont gérées automatiquement.</p>\r\n\t\t\t\t\t<p>Les emails sont envoyés avec votre adresse email en tant qu'expéditeur, vous recevrez donc les réponses sur votre boite email habituelle.</p<\r\n\t\t\t\t\t", action : TutoAction.TANext, placement : null},{ element : "ul.nav #amapadmin", text : "Cliquez maintenant sur cette rubrique", action : TutoAction.TAPage("/amapadmin"), placement : TutoPlacement.TPBottom},{ element : "#subnav", text : "<p>Dans cette dernière rubrique, vous pouvez configurer tout ce qui concerne votre groupe en général.</p>\r\n\t\t\t\t\t<p>La rubrique <b>Droits et accès</b> est importante puisque c'est là que vous pourrez nommer d'autres coordinateurs parmi les adhérents. Ils pourront\r\n\t\t\t\t\tainsi gérer les contrats dont ils s'occupent, utiliser la messagerie ...etc\r\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "#footer", text : "<p>C'est la dernière étape de ce tutoriel, j'espère qu'il vous aura donné une bonne vue d'ensemble du logiciel.<br/>\r\n\t\t\t\t\tPour aller plus loin, n'hésitez pas à consulter la <b>documentation</b> dont le lien est toujours disponible en bas de l'écran.\r\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom}]};
+		if(__map_reserved.intro != null) _g.setReserved("intro",value); else _g.h["intro"] = value;
+	}
+	$r = _g;
+	return $r;
+}(this));
+Tuto.LAST_ELEMENT = null;
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = {}.toString;
 App.main();

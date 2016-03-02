@@ -33,11 +33,19 @@ class Cart
 		loader.show();
 		
 		var q = App.j('#productQt' + pid).val();
-		var qt = Std.parseInt(q);		
+		var qt = 0.0;
+		var p = products.get(pid);
+		if (p.hasFloatQt) {
+			q = StringTools.replace(q, ",", ".");
+			qt = Std.parseFloat(q);
+		}else {
+			qt = Std.parseInt(q);			
+		}
+		
 		if (qt == null) {
 			qt = 1;
 		}
-		trace("qté : "+qt);
+		//trace("qté : "+qt);
 		
 		//add server side
 		var r = new haxe.Http('/shop/add/$pid/$qt');
@@ -60,7 +68,7 @@ class Cart
 	}
 	
 	
-	function subAdd(pid, qt ) {
+	function subAdd(pid, qt:Float ) {
 	
 		for ( p in order.products) {
 			if (p.productId == pid) {
@@ -79,7 +87,11 @@ class Cart
 		
 		c.append( Lambda.map(order.products, function( x ) {
 			var p = products.get(x.productId);
-			if (p == null) js.Browser.alert("Cant find product " + x.productId + " in " + products);
+			if (p == null) {
+				//js.Browser.alert("Cant find product " + x.productId + " in " + products);
+				//the product may have been disabled by an admin
+				return "";
+			}
 			
 			var btn = "<a onClick='cart.remove(" + p.id + ")' class='btn btn-default btn-xs' data-toggle='tooltip' data-placement='top' title='Retirer de la commande'><span class='glyphicon glyphicon-remove'></span></a>&nbsp;";
 			return "<div class='row'> 
@@ -93,6 +105,7 @@ class Cart
 		var total = 0.0;
 		for (p in order.products) {
 			var pinfo = products.get(p.productId);
+			if (pinfo == null) continue;
 			total += p.quantity * pinfo.price;
 		}
 		var ffilter = new sugoi.form.filters.FloatFilter();

@@ -14,9 +14,9 @@ class Main extends Controller {
 			
 			if(app.user.amap==null) throw Redirect("/user/choose");
 		
-			var e = new event.Event();
-			e.id = "displayHome";
-			App.current.eventDispatcher.dispatch(e);
+			//var e = new Event();
+			//e.id = "displayHome";
+			//App.current.eventDispatcher.dispatch(e);
 
 			view.amap = app.user.getAmap();
 			
@@ -116,6 +116,8 @@ class Main extends Controller {
 		d.dispatch(new controller.Cron());
 	}
 	
+	@tpl("cssDemo.mtt")
+	function doCssdemo() {}
 	
 	@tpl("form.mtt")
 	function doInstall() {
@@ -244,6 +246,12 @@ Called from controller/Main.hx line 117
 	function doMember(d:Dispatch) {
 		view.category = 'members';
 		d.dispatch(new controller.Member());
+	}
+	
+	@logged
+	function doTuto(d:Dispatch) {
+		
+		d.dispatch(new controller.Tuto());
 	}
 	
 	@logged
