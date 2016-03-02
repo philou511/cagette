@@ -265,11 +265,12 @@ i{
 	
 	div{
 		margin-top:4px;
-		
 	}
 	
+	/* place link */
 	a{
 		color:CSS(" #FFFFFF !important");
+		font-size: 1.2em;
 	}
 	a:hover{
 		color:CSS(" #FFFFFF !important");

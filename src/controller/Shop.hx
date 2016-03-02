@@ -74,6 +74,14 @@ class Shop extends sugoi.BaseController
 	}
 	
 	
+	@tpl('shop/choose.mtt')
+	public function doChoose(){
+		
+	}
+	
+	
+	
+	
 	var contracts : List<db.Contract>;
 	
 	/**

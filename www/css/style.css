@@ -204,6 +204,7 @@ i {
 }
 .dateBox a {
 	color :  #FFFFFF !important;
+	font-size : 1.2em;
 }
 .dateBox a:hover {
 	color :  #FFFFFF !important;
