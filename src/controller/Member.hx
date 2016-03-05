@@ -96,7 +96,38 @@ class Member extends Controller
 			view.newUsers = db.User.getUsers_NewUsers().length;	
 		}
 		
+		view.waitingList = db.WaitingList.manager.count($amap == app.user.amap);
 		
+	}
+	
+	@tpl('member/waiting.mtt')
+	function doWaiting(?args:{?add:db.User,?remove:db.User}){
+		
+		if (args != null){
+			
+			if (args.add != null){
+				
+				var w = db.WaitingList.manager.select($user == args.add && $amap == app.user.amap , true);
+				
+				var ua = new db.UserAmap();
+				ua.amap = app.user.amap;
+				ua.user = w.user;
+				ua.insert();
+				
+				throw Ok("/member/waiting", "Cette personne a bien été ajoutée aux adhérents");
+				
+			}else if (args.remove != null){
+				
+				var w = db.WaitingList.manager.select($user == args.remove && $amap == app.user.amap , true);
+				w.delete();
+				throw Ok("/member/waiting", "Demande supprimée");
+				
+			}
+			
+		}
+		
+		
+		view.waitingList = db.WaitingList.manager.search($amap == app.user.amap,{orderBy:-date});
 	}
 	
 	/**

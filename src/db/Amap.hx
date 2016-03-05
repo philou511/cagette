@@ -9,6 +9,14 @@ enum AmapFlags {
 	ComputeMargin;	//compute margin instead of percentage
 }
 
+//user registration options
+enum RegOption{
+	Closed;
+	WaitingList; 
+	Open;
+	Full;
+}
+
 /**
  * AMAP
  */
@@ -38,12 +46,15 @@ class Amap extends Object
 	@hideInForms public var cdate : SDateTime;
 	@hideInForms @:relation(placeId) public var mainPlace : SNull<db.Place>;
 	
+	public var regOption : SEnum<RegOption>;
+	
 	public function new() 
 	{
 		super();
 		flags = cast 0;
 		vatRates = ["TVA Alimentaire 5,5%" => 5.5, "TVA 20%" => 20];
 		cdate = Date.now();
+		regOption = WaitingList;
 		
 	}
 	

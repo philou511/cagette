@@ -148,7 +148,14 @@ class Contract extends Object
 		}else {
 			return Product.manager.search($contract==this,false);	
 		}
-		
+	}
+	
+	/**
+	 * get a few products to display
+	 * @param	limit = 6
+	 */
+	public function getProductsPreview(?limit = 6){
+		return Product.manager.search($contract==this && $active==true,{limit:limit,orderBy:-id},false);	
 	}
 	
 		
