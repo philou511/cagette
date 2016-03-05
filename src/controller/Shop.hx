@@ -4,6 +4,7 @@ class Shop extends sugoi.BaseController
 {
 	
 	var distribs : List<db.Distribution>;
+	var contracts : List<db.Contract>;
 	
 	@tpl('shop/default.mtt')
 	public function doDefault(place:db.Place,date:Date) {
@@ -11,53 +12,25 @@ class Shop extends sugoi.BaseController
 		view.products = getProducts(place,date);
 		view.place = place;
 		view.date = date;
-		//opening and closing order dates + delivery dates
-		/*var infos = new Array<{open:Date,close:Date,deliv:Date,contracts:Array<db.Contract>}>();		
-		var n = Date.now();
-		for ( c in contracts) {
 		
-			var d = db.Distribution.manager.select( $orderStartDate <= n && $orderEndDate >= n && $contractId==c.id,false);
-			if (d != null) {
-				//open order
-				var inf = null;
-				for ( i in infos) {
-					if ( i.open == null && i.close.getTime() == d.orderEndDate.getTime() && i.deliv.getTime() == d.date.getTime() ) {
-						inf = i;
-						inf.contracts.push(c);
-						break;
-					}
+		//closing order dates
+		var infos = new Array<{close:Date,contracts:Array<db.Contract>}>();		
+		var n = Date.now();
+		for ( d in distribs) {
+			var inf = null;
+			for ( i in infos) {
+				if ( i.close.getTime() == d.orderEndDate.getTime() ) {
+					inf = i;
+					inf.contracts.push(d.contract);
+					break;
 				}
-				if (inf == null) {
-					inf = { open:null, close:d.orderEndDate, deliv:d.date, contracts:[c] };
-					infos.push(inf);
-				}
-				
-				
-			}else {
-			
-				//TODO : si les commandes sont closes on peut aussi etre entre la fin de commande et la livraison !!
-				
-				//currently close, but orders will open soon
-				var d = db.Distribution.manager.select( $orderStartDate > n && $contractId == c.id, { orderBy: -orderStartDate }, false);
-				
-				var inf = null;
-				for ( i in infos) {
-					if ( i.close == null && i.open.getTime() == d.orderStartDate.getTime() && i.deliv.getTime() == d.date.getTime() ) {
-						inf = i;
-						inf.contracts.push(c);
-						break;
-					}
-				}
-				if (inf == null) {
-					inf = { open:d.orderStartDate, close:null, deliv:d.date, contracts:[c] };
-					infos.push(inf);
-				}
-				
 			}
-			
-			
+			if (inf == null) {
+				inf = { close:d.orderEndDate, contracts:[d.contract] };
+				infos.push(inf);
+			}
 		}
-		view.infos = infos;*/
+		view.infos = infos;
 	}
 	
 	/**
@@ -81,7 +54,7 @@ class Shop extends sugoi.BaseController
 		view.distribs = db.Distribution.getNextMultiDeliveries();
 	}
 	
-	var contracts : List<db.Contract>;
+	
 	
 	/**
 	 * Get the available products list
@@ -106,7 +79,7 @@ class Shop extends sugoi.BaseController
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 		
-		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2, false);
+		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place ==place, false);
 		var cids = Lambda.map(distribs, function(d) return d.contract.id);
 		
 		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);

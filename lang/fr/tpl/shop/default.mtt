@@ -1,41 +1,51 @@
 ::use 'design.mtt'::
 <div class="col-md-9">
-	
-	
+
 	<div class="distrib">
 					
-		<div class="header" style="min-height: auto;">
-			<div>
+		<div class="header row" style="min-height: auto;">
+			<div class="col-md-8">
 				Distribution du ::hDate(date)::	
+				<br/>
 				
+				<div class="closing">
+				<span class="glyphicon glyphicon-time"></span> Fermeture des commandes :					
+				::if infos.length==1::
+					::hDate(infos[0].close)::<br/>
+				
+				::else::
+					<br/>
+					::foreach i infos::
+
+						::foreach c i.contracts::
+							::c.name::,
+						::end:: 
+						: ::hDate(i.close)::<br/>	
+					
+					::end::
+				::end::
+				</div>
+			</div>
+			
+			
+			<div class="col-md-4" style="text-align:right;">
 				::if place!=null:: 
-				<span class="pull-right">
+				<span >
 					<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>			
 				</span>
 				::end::
 			
-			</div>
-			
-			<div>
-				<a href="/shop/choose" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-chevron-left"></span>Autres dates</a>	
-				::if place!=null:: 
-			
-				<div class="address pull-right">
-						$$nullSafe(::place.address1::)
-						$$nullSafe(::place.address2::)
-						$$nullSafe(::place.zipCode::)
-						$$nullSafe(::place.city::)
+					
 				
-				</div>
+				::if place!=null:: 
+					<div class="address">
+					$$nullSafe(::place.address1::)
+					$$nullSafe(::place.address2::)
+					$$nullSafe(::place.zipCode::)
+					$$nullSafe(::place.city::)
+					</div>
 				::end::
 			</div>
-			
-			
-			
-			
-				
-			
-
 		</div>
 	</div>
 	

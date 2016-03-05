@@ -116,33 +116,41 @@ class Distribution extends Object
 	 */
 	public static function getNextMultiDeliveries(){
 		
-		var out = new Map<String,{place:Place,startDate:Date,endDate:Date,products:Array<ProductInfo>}>();
+		var out = new Map<String,{place:Place,startDate:Date,endDate:Date,active:Bool,products:Array<ProductInfo>}>();
 		
 		var now = Date.now();
 	
 		var contracts = Contract.getActiveContracts(App.current.user.amap);
 		var cids = Lambda.map(contracts, function(p) return p.id);
-		//available deliveries
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now, { orderBy:date }, false);
-
+		
+		//available deliveries + some of the next deliveries
+		
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderEndDate >= now, { orderBy:date }, false);
+		var inOneMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30);
 		for (d in distribs) {			
 			
 			var o = out.get(d.getKey());
-			if (o == null) o = {place:d.place, startDate:d.date, endDate:d.end, products:[]};
-			for ( p in d.contract.getProducts()){
-				if (o.products.length < 6){
-					o.products.push(	p.infos() );	
-				}else{
-					break;
-				}
-				
+			if (o == null) o = {place:d.place, startDate:d.date,active:null, endDate:d.end, products:[]};
+			for ( p in d.contract.getProductsPreview(8)){
+				if (o.products.length >= 8) break;
+				o.products.push(	p.infos() );	
 			}
 			
+			if (d.orderStartDate.getTime() <= now.getTime() ){
+				//order currently open
+				o.active = true;
+			}else if (d.orderStartDate.getTime() <= inOneMonth.getTime() ){
+				//open soon
+				o.active = false;
+			}else{
+				continue;
+				
+			}
 			
 			out.set(d.getKey(), o);
 			
 		}
-		return out;
+		return Lambda.array(out);
 	}
 	
 	
@@ -150,7 +158,7 @@ class Distribution extends Object
 	 * Return a string like $placeId-$date
 	 */
 	public function getKey():String{
-		return Std.string(place.id) + "-" + date.toString().substr(0, 10);
+		return date.toString().substr(0, 10) +"-"+Std.string(place.id);
 	}
 	
 	
