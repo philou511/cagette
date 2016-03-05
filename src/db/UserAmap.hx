@@ -116,4 +116,11 @@ class UserAmap extends Object
 		//return (lastMemberShip.getTime() > lastRenewal.getTime());
 	}
 	
+	override public function insert(){
+		
+		App.current.event(NewMember(this.user));
+		
+		super.insert();
+	}
+	
 }

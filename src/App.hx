@@ -113,7 +113,9 @@ class App extends sugoi.BaseApp {
 		out.set("vendor", "Producteur");
 		out.set("text", "Texte");
 		out.set("flags", "Options");
+		out.set("4h", "Recevoir des notifications par email 4h avant les distributions");
 		out.set("HasEmailNotif4h", "Recevoir des notifications par email 4h avant les distributions");
+		out.set("24h", "Recevoir des notifications par email 24h avant les distributions");
 		out.set("HasEmailNotif24h", "Recevoir des notifications par email 24h avant les distributions");
 		out.set("Tuto", "Activer tutoriels");
 		out.set("HasMembership", "Gestion des adhésions");
@@ -155,6 +157,12 @@ class App extends sugoi.BaseApp {
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");
+		
+		out.set("regOption", "Inscription de nouveaux adhérents");
+		out.set("Closed", "Fermé : Le coordinateur ajoute les nouveaux adhérents");
+		out.set("WaitingList", "Liste d'attente");
+		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
+		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
 		
 		return out;
 	}

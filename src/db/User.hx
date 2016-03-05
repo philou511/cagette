@@ -51,8 +51,7 @@ class User extends Object {
 		super();
 		rights = sys.db.Types.SFlags.ofInt(0);
 		flags = sys.db.Types.SFlags.ofInt(0);
-		pass = haxe.crypto.Md5.encode( App.App.config.get('key') + ""); //pass = ""
-		ldate = cdate = Date.now();
+		
 	}
 	
 	public override function toString() {

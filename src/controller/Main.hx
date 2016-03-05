@@ -5,6 +5,14 @@ import haxe.web.Dispatch;
 import sugoi.tools.ResultsBrowser;
 
 class Main extends Controller {
+	
+	
+	/**
+	 * public pages 
+	 */
+	function doGroup(d:haxe.web.Dispatch){
+		d.dispatch(new controller.Group());
+	}
 
 	@tpl("home.mtt")
 	function doDefault() {
@@ -90,11 +98,6 @@ class Main extends Controller {
 		
 	}
 	
-	@admin
-	function doDb(d:Dispatch) {
-		d.parts = []; //desactive haxe.web.Dispatch
-		sys.db.Admin.handler();
-	}
 	
 	
 	
@@ -328,6 +331,11 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.admin.Admin());
 	}
 	
+	@admin
+	function doDb(d:Dispatch) {
+		d.parts = []; //disable haxe.web.Dispatch
+		sys.db.Admin.handler();
+	}
 	
 	
 }

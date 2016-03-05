@@ -110,7 +110,7 @@ span.panel-title{
 
 /* block marron */
 .block{	
-	margin-bottom : 32px;
+	margin-bottom: 12px;
 	background : #F0D277;
 	border-radius : 8px;
 	position : relative;
