@@ -148,22 +148,12 @@ class User extends Controller
 			
 			if (user == null) throw Error(url, "Cet email n'est lié à aucun compte connu");
 			
-			
-			//var m = new sugoi.mail.MandrillApiMail();
-			//m.setSender(App.config.get("default_email"));
-			//m.addRecipient(user.email, user.name, user.id);
-			//m.title = App.config.NAME+" : Changement de mot de passe";
-			//m.setHtmlBody('mail/forgottenPassword.mtt',  );
-			//m.send();
-			
 			var m = new Email();
 			m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));					
 			m.to(new EmailAddress(user.email, user.name));					
 			m.setSubject( App.config.NAME+" : Changement de mot de passe" );
 			m.setHtml( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+getKey(user)+"/"+user.id }) );
 			App.getMailer().send(m);	
-			
-			
 		}
 		
 		if (key != null && u!=null) {

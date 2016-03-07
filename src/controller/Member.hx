@@ -100,6 +100,24 @@ class Member extends Controller
 		
 	}
 	
+	/**
+	 * Move to waiting list
+	 */
+	function doMovetowl(u:db.User){
+		
+		var ua = db.UserAmap.get(u, app.user.amap, true);
+		ua.delete();
+		
+		var wl = new db.WaitingList();
+		wl.user = u;
+		wl.amap = app.user.amap;
+		wl.insert();
+		
+		throw Ok("/member", u.getName() + " a été replacé en liste d'attente.");
+		
+		
+	}
+	
 	@tpl('member/waiting.mtt')
 	function doWaiting(?args:{?add:db.User,?remove:db.User}){
 		
