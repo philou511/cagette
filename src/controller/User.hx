@@ -71,14 +71,8 @@ class User extends Controller
 			
 			login(user,args.name);
 			
-			//sugoi.db.Session.clean();
-			
-			if (user.getAmap() == null) {
-				throw Redirect("/user/choose/");
-			}else {				
-				throw Ok("/", "Bonjour " + (args.name == user.email ? user.firstName : user.firstName2)+" !");
-			}
-			
+			throw Redirect("/user/choose/");
+						
 		}
 	}
 	
@@ -92,26 +86,33 @@ class User extends Controller
 		
 	}
 	
+	/**
+	 * Choose which group to connect to.
+	 */
 	@logged
 	@tpl("user/choose.mtt")
 	function doChoose(?args: { amap:db.Amap } ) {
+		
 		if (app.user == null) throw "Vous n'êtes pas connecté";
 		var amaps = db.UserAmap.manager.search($user == app.user, false);
 		
-		if (amaps.length == 0) throw "Vous ne faites partie d'aucun groupe";
-		if (amaps.length == 1) {
+		if (amaps.length == 1 && !app.params.exists("show")) {
 			//qu'une amap
 			app.session.data.amapId = amaps.first().amapId;
 			throw Redirect('/');
 		}
 		
 		if (args!=null && args.amap!=null) {
-			//selectionne une amap
+			//select a group
+			var which = app.session.data.whichUser;
+			app.session.data = {};
 			app.session.data.amapId = args.amap.id;
+			app.session.data.whichUser = which;
 			throw Redirect('/');
 		}
 		
 		view.amaps = amaps;
+		view.wl = db.WaitingList.manager.search($user == app.user, false);
 	}
 	
 	function doLogout() {

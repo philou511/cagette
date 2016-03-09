@@ -118,7 +118,7 @@ class UserAmap extends Object
 	
 	override public function insert(){
 		
-		App.current.event(NewMember(this.user));
+		App.current.event(NewMember(this.user,this.amap));
 		
 		super.insert();
 	}

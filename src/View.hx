@@ -170,7 +170,9 @@ class View extends sugoi.BaseView {
 	 * @return
 	 */
 	public function whichUser():Int {
+		if (App.current.session.data == null) return 0;
 		return App.current.session.data.whichUser == null?0:App.current.session.data.whichUser;
+		
 	}
 		
 	/**

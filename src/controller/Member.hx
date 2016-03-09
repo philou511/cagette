@@ -96,7 +96,7 @@ class Member extends Controller
 			view.newUsers = db.User.getUsers_NewUsers().length;	
 		}
 		
-		view.waitingList = db.WaitingList.manager.count($amap == app.user.amap);
+		view.waitingList = db.WaitingList.manager.count($group == app.user.amap);
 		
 	}
 	
@@ -110,7 +110,7 @@ class Member extends Controller
 		
 		var wl = new db.WaitingList();
 		wl.user = u;
-		wl.amap = app.user.amap;
+		wl.group = app.user.amap;
 		wl.insert();
 		
 		throw Ok("/member", u.getName() + " a été replacé en liste d'attente.");
@@ -125,7 +125,7 @@ class Member extends Controller
 			
 			if (args.add != null){
 				//this user becomes member and is removed from waiting list
-				var w = db.WaitingList.manager.select($user == args.add && $amap == app.user.amap , true);
+				var w = db.WaitingList.manager.select($user == args.add && $group == app.user.amap , true);
 				
 				var ua = new db.UserAmap();
 				ua.amap = app.user.amap;
@@ -140,7 +140,7 @@ class Member extends Controller
 				
 				//simply removed from waiting list
 				
-				var w = db.WaitingList.manager.select($user == args.remove && $amap == app.user.amap , true);
+				var w = db.WaitingList.manager.select($user == args.remove && $group == app.user.amap , true);
 				w.delete();
 				
 				throw Ok("/member/waiting", "Demande supprimée");
@@ -150,7 +150,7 @@ class Member extends Controller
 		}
 		
 		
-		view.waitingList = db.WaitingList.manager.search($amap == app.user.amap,{orderBy:-date});
+		view.waitingList = db.WaitingList.manager.search($group == app.user.amap,{orderBy:-date});
 	}
 	
 	/**

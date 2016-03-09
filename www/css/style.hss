@@ -6,7 +6,7 @@
 	This file works with the bootstrap theme.
 	To compile the bootstrap theme go to bower_components/bootstrap
 	and call "grunt dist".
-	The bootstrap theme is defined in less/variables.less
+	The bootstrap theme variables are defined in less/variables.less
 
 
 **/
@@ -21,6 +21,10 @@ h1,h2,h3,h4{
 
 h1{
 	color:CSS(" #583816 !important");
+	
+	a{
+		color:CSS(" #583816 !important");	
+	}
 }
 h2,h3,h4{
 	color:CSS(" #007700 !important");

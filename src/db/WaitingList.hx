@@ -7,7 +7,7 @@ import sys.db.Types;
 class WaitingList extends Object
 {
 	@:relation(amapId)
-	public var amap : Amap;
+	public var group : Amap;
 	#if neko
 	public var amapId : SInt;
 	#end

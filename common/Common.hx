@@ -100,7 +100,8 @@ enum Event {
 	
 	#if sys
 	SendEmail(message : ufront.mail.Email);		//an email is sent
-	NewMember(user:db.User);					//a new member is added to a group
+	NewMember(user:db.User,group:db.Amap);					//a new member is added to a group
+	NewGroup(group:db.Amap,author:db.User);		//a new group is created
 	#end
 	
 }
