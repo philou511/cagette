@@ -29,7 +29,7 @@ var formSubmitted = false;
 
 window.addEventListener("beforeunload", function (e) {
 	if(formSubmitted) return undefined;
-    var confirmationMessage = 'Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.';
+    var confirmationMessage = 'Si vous avez une commande en cours et que vous quittez cette page sans confirmer, votre commande sera perdue.';
 
     (e || window.event).returnValue = confirmationMessage; //Gecko + IE
     return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.

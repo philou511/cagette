@@ -180,15 +180,17 @@ class Shop extends sugoi.BaseController
 		for (cid in cids) {
 			//liste des produits dans un bloc HTML
 			var html = "<ul>";
+			var cname = "";
 			for ( p in products) {
 				if (p.contract.id == cid) {
+					cname = p.contract.name;
 					for (o in order.products) {
 						if(o.productId==p.id) html += "<li>" + o.quantity +" x " + p.name+ "</li>";
 					}
 				}
 			}
 			html += "</ul>";
-			form.addElement(new sugoi.form.elements.Html(html,"Produits "+products.first().contract.name));
+			form.addElement(new sugoi.form.elements.Html(html,"Produits "+cname));
 			
 			//liste des distributions possibles en radio group
 			var data = new Array<{key:String,value:String}>();

@@ -124,7 +124,7 @@ class Member extends Controller
 		if (args != null){
 			
 			if (args.add != null){
-				
+				//this user becomes member and is removed from waiting list
 				var w = db.WaitingList.manager.select($user == args.add && $amap == app.user.amap , true);
 				
 				var ua = new db.UserAmap();
@@ -132,12 +132,17 @@ class Member extends Controller
 				ua.user = w.user;
 				ua.insert();
 				
+				w.delete();
+				
 				throw Ok("/member/waiting", "Cette personne a bien été ajoutée aux adhérents");
 				
 			}else if (args.remove != null){
 				
+				//simply removed from waiting list
+				
 				var w = db.WaitingList.manager.select($user == args.remove && $amap == app.user.amap , true);
 				w.delete();
+				
 				throw Ok("/member/waiting", "Demande supprimée");
 				
 			}
