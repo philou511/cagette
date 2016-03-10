@@ -230,7 +230,7 @@ i{
 	margin-top:13px;
 	padding:8px;
 	font-size:13px;
-	background-color:#EEE;
+	//background-color:#F9ECC4;
 	border-top:1px solid #CCC ;
 }
 
@@ -264,6 +264,7 @@ i{
 	width: 90px;
 	margin:0;
 	padding:4px;
+	box-shadow: CSS("4px 4px 0px #8E662A");
 	
 	.box{
 		line-height:22px;
@@ -272,7 +273,7 @@ i{
 		font-size:14px;
 		font-weight:bold;
 		text-align:center;
-	    margin: 6px 0;
+	    margin: 0px;
 		border-radius:4px;
 	}
 
@@ -381,25 +382,37 @@ span.tag.active{
 /* Distrib */
 .distrib{
 	
-	margin-bottom:12px;
+	margin: 0px 0px 28px 0px;
+	position:relative;
 	
 	.header{
 		
 		display: block;
-		height: 90px;
+		height: 72px;
+		overflow:hidden;
 		border-top-left-radius:8px;
-		border-top-right-radius:8px;
-		background-color:#B2823F;
+		border-top-right-radius:8px;		
 		color:#FFF;
-		font-size:16px;
-		line-height: 22px;
-		font-weight:bold;
 		
+		
+		.info{
+			font-size:16px;
+			line-height: 22px;
+			font-weight:bold;
+			/* place link */
+			a{
+				color:CSS(" #FFFFFF !important");
+			}
+			a:hover{
+				color:CSS(" #FFFFFF !important");
+			}
+		}
 		
 		vertical-align:middle;	
 		
 		margin:0;
-		padding:6px;
+		padding: 6px 6px 6px 90px;
+
 		
 		.date{
 			line-height:23px;
@@ -412,13 +425,7 @@ span.tag.active{
 			border: 4px solid #C6C6C6;
 		}
 
-		/* place link */
-		a{
-			color:CSS(" #FFFFFF !important");
-		}
-		a:hover{
-			color:CSS(" #FFFFFF !important");
-		}
+		
 		
 		.address, .closing{
 			font-weight:normal;
@@ -430,25 +437,46 @@ span.tag.active{
 		
 	}
 	
-	.header.disabled{
-		background:#BBB;
+	.header{
+		background-color:#749E3C;
 	}
+	
+	.header.disabled{
+		background-color:#999;
+	}
+	
+	.header.orders{
+		background-color:#B2823F;
+	}
+	
+	
 	 
 	.content{
 		padding: 6px 6px 6px 6px;
-		background-color:#FFF;
-		
+		//background-color:#F0D277;
+		//background-color:#C49657;
+		background-color:#85B14D;
+		border-bottom-left-radius:8px;
+		border-bottom-right-radius:8px;
 	}
 	
-	.footer{
+	.content.disabled{
+		background:#AAA;
+	}
+	
+	.content.orders{
+		background:#FFF;
+	}
+	
+	/*.footer{
 		padding: 8px;
 		border-bottom-left-radius:8px;
 		border-bottom-right-radius:8px;
-		background-color:#FFF;
+		background-color:#F0D277;
 		height:50px;
 		border-top:1px solid #CCC;
 		
-	}
+	}*/
 	
 }
  

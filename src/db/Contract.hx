@@ -174,6 +174,12 @@ class Contract extends Object
 		return Lambda.array(out);
 	}
 	
+	/**
+	 * get all orders 
+	 * 
+	 * @param	d
+	 * @return
+	 */
 	public function getOrders(?d:db.Distribution):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "Il faut spécifier une livraison pour ce type de contrat";
 		
@@ -183,6 +189,25 @@ class Contract extends Object
 			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	
 		}else {
 			ucs = UserContract.manager.search($productId in pids,{orderBy:userId}, false);	
+		}		
+		return Lambda.array(ucs);
+	}
+	
+	/**
+	 * get orders for a user
+	 * 
+	 * @param	d
+	 * @return
+	 */
+	public function getUserOrders(u:db.User,?d:db.Distribution):Array<db.UserContract> {
+		if (type == TYPE_VARORDER && d == null) throw "Il faut spécifier une livraison pour ce type de contrat";
+		
+		var pids = getProducts().map(function(x) return x.id);
+		var ucs = new List<db.UserContract>();
+		if (d != null && d.contract.type==db.Contract.TYPE_VARORDER) {
+			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);	
+		}else {
+			ucs = UserContract.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);	
 		}		
 		return Lambda.array(ucs);
 	}
