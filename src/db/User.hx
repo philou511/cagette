@@ -203,6 +203,7 @@ class User extends Object {
 		
 		if (App.current.user != null && id != App.current.user.id) throw "cette fonction n'est valable que pour l'utilisateur en cours";
 		if (App.current.session == null) return null;
+		if (App.current.session.data == null ) return null;
 		var a = App.current.session.data.amapId;
 		if (a == null) {
 			//throw handler.Handler.HandlerAction.ActGoto("/user/choose");

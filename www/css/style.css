@@ -5,6 +5,9 @@ h1, h2, h3, h4 {
 h1 {
 	color :  #583816 !important;
 }
+h1 a {
+	color :  #583816 !important;
+}
 h2, h3, h4 {
 	color :  #007700 !important;
 }

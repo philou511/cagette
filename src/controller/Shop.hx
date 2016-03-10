@@ -155,7 +155,41 @@ class Shop extends sugoi.BaseController
 		if (place == null) throw "place cannot be null";
 		if (date == null) throw "date cannot be null";
 		
+
 		var products = getProducts(place, date);
+/*
+		//on créé un formulaire
+		var form = new sugoi.form.Form("validate");
+		form.autoGenSubmitButton = false;
+		for (cid in cids) {
+			//liste des produits dans un bloc HTML
+			var html = "<ul>";
+			var cname = "";
+			for ( p in products) {
+				if (p.contract.id == cid) {
+					cname = p.contract.name;
+					for (o in order.products) {
+						if(o.productId==p.id) html += "<li>" + o.quantity +" x " + p.name+ "</li>";
+					}
+				}
+			}
+			html += "</ul>";
+			form.addElement(new sugoi.form.elements.Html(html,"Produits "+cname));
+			
+			//liste des distributions possibles en radio group
+			var data = new Array<{key:String,value:String}>();
+			for (d in distribs) {
+				if (d.contract.id == cid) data.push( { key:Std.string(d.id), value:view.hDate(d.date)+" - "+d.place.name } );				
+			}
+			if (data.length > 0) {
+				form.addElement(new sugoi.form.elements.RadioGroup("distrib"+cid,"Livraisons",data,data[0].key));	
+			}else {
+				form.addElement(new sugoi.form.elements.Html("Aucune livraison n'est prévue pour l'instant.","Livraisons"));
+			}
+			
+			
+		}
+*/
 		
 		var errors = [];
 		

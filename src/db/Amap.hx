@@ -208,5 +208,12 @@ class Amap extends Object
 		}
 	}
 	
+	override public function insert(){
+		
+		App.current.event(NewGroup(this,App.current.user));
+		
+		super.insert();
+	}
+	
 	
 }
