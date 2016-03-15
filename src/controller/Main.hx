@@ -147,7 +147,7 @@ class Main extends Controller {
 			}else{
 				//if its a constant order contract, skip this delivery
 				if (d.contract.type == db.Contract.TYPE_CONSTORDERS) continue;
-				
+				trace(d.contract.name+" for " + d.getKey());
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
 					if (o.products.length >= 9) break;
