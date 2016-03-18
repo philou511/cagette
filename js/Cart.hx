@@ -8,7 +8,9 @@ import js.JQuery;
 class Cart
 {
 
-	public var products : Map<Int,ProductInfo>; //full product list
+	public var products : Map<Int,ProductInfo>; //product db
+	public var categories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
+	public var pinnedCategories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var order : Order;
 	
 	var loader : JQuery; //ajax loader gif
@@ -25,6 +27,8 @@ class Cart
 	{
 		products = new Map();
 		order = { products:[] };
+		categories = [];
+		pinnedCategories = [];
 	}
 	
 
@@ -85,10 +89,10 @@ class Cart
 		var c = App.j("#cart");
 		c.empty();
 		
+		//render items in shopping cart
 		c.append( Lambda.map(order.products, function( x ) {
 			var p = products.get(x.productId);
 			if (p == null) {
-				//js.Browser.alert("Cant find product " + x.productId + " in " + products);
 				//the product may have been disabled by an admin
 				return "";
 			}
@@ -101,7 +105,7 @@ class Cart
 		}).join("\n") );
 		
 		
-		//compute totale price
+		//compute total price
 		var total = 0.0;
 		for (p in order.products) {
 			var pinfo = products.get(p.productId);
@@ -112,6 +116,126 @@ class Cart
 		
 		var total = ffilter.filter(Std.string(App.roundTo(total,2)));
 		c.append("<div class='total'>TOTAL : "+total+"€</div>");
+	}
+	
+	function findCategoryName(cid:Int):String{
+		
+		for ( cg in this.categories ){
+			for (c in cg.categs){
+				if (cid == c.id) {
+					return c.name;
+				}	
+			}
+		}
+		for ( cg in this.pinnedCategories ){
+			for (c in cg.categs){
+				if (cid == c.id) {
+					return c.name;
+				}	
+			}
+		}
+		return null;
+	}
+	
+	
+	public function sortProductsBy(){
+		
+		//store products by groups
+		var groups = new Map<Int,{name:String,products:Array<ProductInfo>}>();
+		var pinned = new Map<Int,{name:String,products:Array<ProductInfo>}>();
+		
+		var firstCategGroup = this.categories[0].categs;
+		
+		trace(firstCategGroup);
+		trace(pinnedCategories);
+		
+		//sort by categs
+		for ( p in products){
+			
+			p.element.remove();
+			
+			for ( categ in p.categories){
+				
+				//is in this categ group
+				if (Lambda.find(firstCategGroup, function(c) return c.id == categ) != null){
+					
+					var c = groups.get(categ);
+					if ( c == null){
+						
+						var name = findCategoryName(categ);					
+						c = {name:name,products:[]};
+					}
+					c.products.push(p);
+					groups.set(categ, c);	
+					
+				}else{
+					// is in pinned group ?
+					var isInPinnedCateg = false;
+					for ( cg in pinnedCategories){
+							if (Lambda.find(cg.categs, function(c) return c.id == categ) != null){								
+								isInPinnedCateg = true;
+								break;
+							}
+					}
+					
+					if (isInPinnedCateg){
+						
+						var c = pinned.get(categ);
+						if ( c == null){
+							
+							var name = findCategoryName(categ);					
+							c = {name:name,products:[]};
+						}
+						c.products.push(p);
+						trace( "add " + p.name+" in PINNED");
+						pinned.set(categ, c);	
+						
+						
+					}else{
+						//not in teh selected categ nor in pinned groups
+						continue;
+					}
+				}
+				
+			}
+			
+			
+		}
+		
+		//render
+		var container = App.j(".shop");
+		//render firts "pinned" groups , then "groups"
+		for ( source in [pinned, groups]){	
+			
+			for (o in source){
+				trace("GROUP "+o.name);
+				if (o.products.length == 0) continue;
+				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
+				for ( p in o.products){
+					
+					//if the element has already been inserted, we need to clone it
+					if (p.element.parent().length == 0){
+						container.append( p.element );	
+					}else{
+						var clone = p.element.clone();
+						container.append( clone );
+					}
+					
+					
+				}
+			}	
+		}
+		
+		
+		
+	}
+	
+	/**
+	 * is shopping cart empty ?
+	 */
+	public function isEmpty(){
+		return order.products.length == 0;
+		
 	}
 	
 	public function submit() {
@@ -140,9 +264,9 @@ class Cart
 		//affiche/masque produits
 		for (p in products) {
 			if (cat==0 || Lambda.has(p.categories, cat)) {
-				App.j("#product" + p.id).fadeIn(300); 
+				App.j(".shop .product" + p.id).fadeIn(300); 
 			}else {
-				App.j("#product" + p.id).fadeOut(300); 
+				App.j(".shop .product" + p.id).fadeOut(300); 
 			}
 		}
 		
@@ -189,7 +313,7 @@ class Cart
 	}
 	
 	/**
-	 * loads products
+	 * loads products DB and existing cart in ajax
 	 */
 	public function init() {
 		
@@ -199,16 +323,33 @@ class Cart
 		req.onData = function(data) {
 			loader.hide();
 			
-			var data : { products:Array<ProductInfo>,order:Order } = haxe.Json.parse(data);
+			var data : { products:Array<ProductInfo>, categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>, order:Order } = haxe.Unserializer.run(data);
+			
+			//populate local categories lists
+			for ( cg in data.categories){
+				if (cg.pinned){
+					pinnedCategories.push(cg);
+				}else{
+					categories.push(cg);
+				}
+			}
+			
+			
+			//product DB
 			for (p in data.products) {
+				//catch dom element for further usage
+				p.element = App.j(".product"+p.id);
+				
 				var id : Int = p.id;
 				products.set(id, p);
 			}
-			
+			//existing order
 			for ( p in data.order.products) {
 				subAdd(p.productId,p.quantity );
 			}
 			render();
+			
+			sortProductsBy();
 			
 		}
 		req.request();

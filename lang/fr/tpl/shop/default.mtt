@@ -51,11 +51,11 @@
 	}
 	</style>
 	
-	<div class="row">
+	<div class="row shop">
 		
 		
 		::foreach p products::
-		<div class="col-xs-12 col-sm-6 col-lg-4" id="product::p.id::">
+		<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::">
 			
 			<table class="product">
 				<tr>
@@ -150,17 +150,16 @@
 
 	
 	
-	<script>
+<script>
+	var formSubmitted = false;
+	window.addEventListener("beforeunload", function (e) {
+		if(formSubmitted) return;
+		if(cart.isEmpty()) return;
+		var confirmationMessage = 'Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.';
 
-var formSubmitted = false;
-
-window.addEventListener("beforeunload", function (e) {
-	if(formSubmitted) return undefined;
-    var confirmationMessage = 'Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.';
-
-    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-    return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-});
+		(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+		return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+	});
 </script>
 
 ::end::

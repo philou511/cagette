@@ -26,7 +26,10 @@ typedef ProductInfo = {
 	categories : Array<Int>,	//tags
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
-	hasFloatQt : Bool
+	hasFloatQt : Bool,
+	#if js
+	element:js.JQuery,
+	#end
 }
 
 @:keep
@@ -46,6 +49,16 @@ enum ProductType {
 	CTYahourt;
 	
 }
+
+typedef CategoryInfo = {
+	id:Int,
+	name:String,
+	//pinned:Bool,
+	//parent:Int,
+	
+}
+
+
 
 /**
  * datas used with the "tagger" ajax class

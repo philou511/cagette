@@ -164,6 +164,7 @@ class App extends sugoi.BaseApp {
 		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
 		out.set("percent", "Pourcentage");
+		out.set("pinned", "Mets en avant les produits");
 		
 		return out;
 	}

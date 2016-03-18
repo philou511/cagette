@@ -149,25 +149,34 @@ table.product{
 }
 
 //in shop page
-.product{
-	width:49%;
-	display: inline-block;
-	img{
-		//width:64px;
-		//height:64px;
-	}
-	.name{
-		padding-left:8px;
+.shop{
+	.catHeader{
+		font-weight:bold;
+		font-size:1.2em;
+		color:#583816;
+		border-bottom:1px solid #CCC;
+		width:100%;
 	}
 	
-}
-.price{
-		font-weight:bold;
-		font-size:130%;
+	
+	.product{
+		
+		display: inline-block;
+		
+		.name{
+			padding-left:8px;
+		}
+		
 	}
-.vat{
-	color:#999999;
-	//font-size:80%;
+	.price{
+			font-weight:bold;
+			font-size:130%;
+		}
+	.vat{
+		color:#999999;
+		//font-size:80%;
+	}
+
 }
 
 

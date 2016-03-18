@@ -67,10 +67,17 @@ class Shop extends sugoi.BaseController
 		if ( order == null) {
 			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Float}>() };
 		}
-		
-		//
+
 		var products = getProducts();
-		Sys.print( haxe.Json.stringify( {products:products,order:order} ) );
+		
+		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();
+		var catGroups = db.CategoryGroup.get(app.user.amap);
+		for ( cg in catGroups){
+			
+			categs.push({name:cg.name,pinned:cg.pinned,categs: Lambda.array(Lambda.map( cg.getCategories(), function(c) return c.infos()))});
+		}
+		
+		Sys.print( haxe.Serializer.run( {products:products,categories:categs,order:order} ) );
 	}
 	
 	
