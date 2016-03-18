@@ -88,6 +88,10 @@ class Group extends controller.Controller
 			form.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
 			form.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
 			form.addElement(new sugoi.form.elements.Input("userEmail", "Votre email", "", true));		
+			form.addElement(new sugoi.form.elements.Input("address", "Adresse", "", true));					
+			form.addElement(new sugoi.form.elements.Input("zipCode", "Code postal", "", true));		
+			form.addElement(new sugoi.form.elements.Input("city", "Ville", "", true));		
+			form.addElement(new sugoi.form.elements.Input("phone", "Téléphone", "", true));		
 		}
 		
 		if (form.isValid()){
@@ -98,6 +102,10 @@ class Group extends controller.Controller
 				user.email = f.getValueOf("userEmail");
 				user.firstName = f.getValueOf("userFirstName");
 				user.lastName = f.getValueOf("userLastName");
+				user.address1 = f.getValueOf("address");
+				user.zipCode = f.getValueOf("zipCode");
+				user.city = f.getValueOf("city");
+				user.phone = f.getValueOf("phone");
 				
 				if ( db.User.getSimilar(user.firstName, user.lastName, user.email).length > 0 ) {
 					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à votre groupe à partir de cette page");

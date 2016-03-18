@@ -163,6 +163,7 @@ class App extends sugoi.BaseApp {
 		out.set("WaitingList", "Liste d'attente");
 		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
+		out.set("percent", "Pourcentage");
 		
 		return out;
 	}

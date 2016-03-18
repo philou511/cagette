@@ -257,7 +257,7 @@ class ContractAdmin extends Controller
 			nc.type = contract.type;
 			nc.vendor = contract.vendor;
 			nc.percentageName = contract.percentageName;
-			nc.percentageValue = nc.percentageValue;
+			nc.percentageValue = contract.percentageValue;
 			nc.insert();
 			
 			if (form.getValueOf("copyProducts") == "1") {
@@ -451,6 +451,13 @@ class ContractAdmin extends Controller
 				for (r in repartition) {
 					Reflect.setField(r, "percent", Math.round((r.quantity/total)*100)  );
 				}
+				
+				
+				if ( app.params.exists("csv") ){
+					
+					this.setCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+				}
+				
 				view.repartition = repartition;
 				view.totalQuantity = total;
 				view.totalPrice = totalPrice;

@@ -177,7 +177,8 @@ class Contract extends Object
 	public function getOrders(?d:db.Distribution):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "Il faut spécifier une livraison pour ce type de contrat";
 		
-		var pids = getProducts().map(function(x) return x.id);
+		//get product ids, some of the products may have been disabled but we keep the order
+		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserContract>();
 		if (d != null) {
 			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	

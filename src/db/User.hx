@@ -49,8 +49,11 @@ class User extends Object {
 	
 	public function new() {
 		super();
+		//default values
+		cdate = Date.now();
 		rights = sys.db.Types.SFlags.ofInt(0);
 		flags = sys.db.Types.SFlags.ofInt(0);
+		flags.set(HasEmailNotif24h);
 		
 	}
 	
@@ -62,10 +65,6 @@ class User extends Object {
 		return rights.has(Admin) || id==1;
 	}
 	
-	//public function hasTuto() {
-		//return flags.has(Tuto);
-	//}
-
 	/**
 	 * is this user the manager of the current group
 	 */

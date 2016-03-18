@@ -411,10 +411,6 @@ class Member extends Controller
 	@tpl('member/import.mtt')
 	function doImport(?args: { confirm:Bool } ) {
 		
-		//var e = new event.Event();
-		//e.id = "displayMemberImport";
-		//App.current.eventDispatcher.dispatch(e);
-			
 		var step = 1;
 		var request = Utils.getMultipart(1024 * 1024 * 4); //4mb
 		
@@ -429,8 +425,8 @@ class Member extends Controller
 			for ( user in unregistred.copy() ) {
 				
 				//check nom+prenom
-				if (user[0] == null || user[1] == null) throw "Vous devez remplir le nom et prénom de la personne. <br/>Cette ligne est incomplète : " + user;
-				if (user[2] == null) throw "Chaque personne doit avoir un email, sinon elle ne pourra pas se connecter. "+user[0]+" "+user[1]+" n'en a pas.";
+				if (user[0] == null || user[1] == null) throw Error("/member/import","Vous devez remplir le nom et prénom de la personne. Cette ligne est incomplète : " + user);
+				if (user[2] == null) throw Error("/member/import","Chaque personne doit avoir un email, sinon elle ne pourra pas se connecter. "+user[0]+" "+user[1]+" n'en a pas. "+user);
 				//uppercase du nom
 				if (user[1] != null) user[1] = user[1].toUpperCase();
 				if (user[5] != null) user[5] = user[5].toUpperCase();
