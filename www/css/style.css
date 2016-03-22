@@ -124,11 +124,11 @@ table.product .desc {
 .shop .product .name {
 	padding-left : 8px;
 }
-.shop .price {
+.price {
 	font-weight : bold;
-	font-size : 130%;
+	font-size : 1.3em;
 }
-.shop .vat {
+.vat {
 	color : #999999;
 }
 #cartContainer.scrolled {

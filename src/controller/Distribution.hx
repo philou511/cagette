@@ -27,14 +27,14 @@ class Distribution extends Controller
 	@tpl('distribution/listByDate.mtt')
 	function doListByDate(?date:Date,?type:String) {
 		
-		if (date == null) {
+		if (type == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			f.addElement(new sugoi.form.elements.DatePicker("date", "Date de livraison", true));
+			//f.addElement(new sugoi.form.elements.DatePicker("date", "Date de livraison",date));
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
 				{ key:"all", value:"Tout à la suite" },
-				{ key:"csv", value:"Export CSV" }
+				//{ key:"csv", value:"Export CSV" }
 			]));
 			
 			view.form = f;
@@ -42,7 +42,7 @@ class Distribution extends Controller
 			
 			if (f.checkToken()) {
 				
-				var url = '/distribution/listByDate/' + f.getValueOf("date").toString().substr(0, 10)+"/"+f.getValueOf("type");
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+f.getValueOf("type");
 				throw Redirect( url );
 			}
 			

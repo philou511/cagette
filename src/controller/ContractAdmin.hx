@@ -183,7 +183,77 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	 
+	/**
+	 * Global view on orders
+	 * 
+	 * @param	date
+	 */
+	@tpl('contractAdmin/ordersByDate.mtt')
+	function doOrdersByDate(?date:Date){
+		if (date == null) {
+		
+			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
+			var el = new sugoi.form.elements.DatePicker("date", "Date de livraison", true);
+			el.format = 'LL';
+			f.addElement(el);
+			/*f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
+				{ key:"one", value:"Une personne par page" },
+				{ key:"all", value:"Tout à la suite" },
+				{ key:"csv", value:"Export CSV" }
+			]));*/
+			
+			view.form = f;
+			view.title = "Vue globale des commandes";
+			view.text = "Cette page vous permet d'avoir une vision d'ensemble des commandes tout contrats confondus.";
+			view.text += "<br/>Sélectionnez la date de livraison qui vous interesse :";
+			app.setTemplate("form.mtt");
+			
+			if (f.checkToken()) {
+				
+				var url = '/contractAdmin/ordersByDate/' + f.getValueOf("date").toString().substr(0, 10);
+				throw Redirect( url );
+			}
+			
+			return;
+			
+		}else {
+			
+			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+			var contracts = app.user.amap.getActiveContracts(true);
+			var cids = Lambda.map(contracts, function(c) return c.id);
+			var cconst = [];
+			var cvar = [];
+			for ( c in contracts) {
+				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
+				if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
+				
+			}
+			
+			//varying orders
+			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
+			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
+			
+			//constant orders
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+			var products = [];
+			for ( d in distribs) {
+				for ( p in d.contract.getProducts()) {
+					products.push(p.id);
+				}
+			}
+			var constorders = db.UserContract.manager.search($productId in products, { orderBy:userId } );
+			
+			//merge 2 lists
+			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
+			var orders = db.UserContract.prepare(Lambda.list(orders));
+			
+			view.orders = orders;
+			view.date = date;
+			view.ctotal = app.params.exists("ctotal");
+		}
+	}
+
 	/**
 	 * Overview of orders for this contract
 	 */

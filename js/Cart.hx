@@ -208,7 +208,7 @@ class Cart
 		for ( source in [pinned, groups]){	
 			
 			for (o in source){
-				trace("GROUP "+o.name);
+				//trace("GROUP "+o.name);
 				if (o.products.length == 0) continue;
 				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
 				for ( p in o.products){
@@ -225,7 +225,7 @@ class Cart
 				}
 			}	
 		}
-		
+		App.j(".product").show();
 		
 		
 	}

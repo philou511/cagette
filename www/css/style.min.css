@@ -21,8 +21,8 @@ table.product .desc{font-size:90%;color:#666;}
 .shop .catHeader{font-weight:bold;font-size:1.2em;color:#583816;border-bottom:1px solid #CCC;width:100%;}
 .shop .product{display:inline-block;zoom:1;*display:inline;}
 .shop .product .name{padding-left:8px;}
-.shop .price{font-weight:bold;font-size:130%;}
-.shop .vat{color:#999999;}
+.price{font-weight:bold;font-size:1.3em;}
+.vat{color:#999999;}
 #cartContainer.scrolled{position:fixed;top:125px;}
 .cartDiv{margin-bottom:16px;background:#007700;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;position:relative;padding:8px;color:white;}
 .cartDiv h2{color:white!important;}

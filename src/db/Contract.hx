@@ -174,6 +174,11 @@ class Contract extends Object
 		return Lambda.array(out);
 	}
 	
+	/**
+	 * Get all orders of this contract
+	 * @param	d	A delivery is needed for varying orders contract
+	 * @return
+	 */
 	public function getOrders(?d:db.Distribution):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "Il faut spécifier une livraison pour ce type de contrat";
 		

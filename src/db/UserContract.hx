@@ -84,16 +84,7 @@ class UserContract extends Object
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
 		
-		//order by lastname
-		orders.sort(function(a, b) {
-			if (a.user.lastName+a.user.id > b.user.lastName+b.user.id ) {
-				return 1;
-			}
-			if (a.user.lastName+a.user.id < b.user.lastName+b.user.id ) {
-				return -1;
-			}
-			return 0;
-		});
+		
 		
 		for (o in orders) {
 		
@@ -130,6 +121,20 @@ class UserContract extends Object
 			
 		}
 		
+		
+		//order by lastname, then contract
+		out.sort(function(a, b) {
+			
+			if (a.userName + a.userId + a.contractId > b.userName + b.userId + b.contractId ) {
+				
+				return 1;
+			}
+			if (a.userName + a.userId + a.contractId < b.userName + b.userId + b.contractId ) {
+				 
+				return -1;
+			}
+			return 0;
+		});
 		
 		return out;
 	}

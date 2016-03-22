@@ -168,15 +168,16 @@ table.product{
 		}
 		
 	}
-	.price{
-			font-weight:bold;
-			font-size:130%;
-		}
-	.vat{
-		color:#999999;
-		//font-size:80%;
-	}
+	
 
+}
+.price{
+	font-weight:bold;
+	font-size:1.3em;
+	}
+.vat{
+	color:#999999;
+	//font-size:80%;
 }
 
 

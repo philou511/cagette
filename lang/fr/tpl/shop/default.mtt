@@ -32,7 +32,6 @@
 	</table>-->
 		
 		
-	<h2>Produits</h2>
 	
 	<script language="javascript">
 	var cart;
@@ -55,7 +54,7 @@
 		
 		
 		::foreach p products::
-		<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::">
+		<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::" style="display:none;">
 			
 			<table class="product">
 				<tr>

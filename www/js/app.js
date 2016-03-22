@@ -215,7 +215,6 @@ Cart.prototype = {
 			var $it1 = source.iterator();
 			while( $it1.hasNext() ) {
 				var o = $it1.next();
-				haxe_Log.trace("GROUP " + o.name,{ fileName : "Cart.hx", lineNumber : 211, className : "Cart", methodName : "sortProductsBy"});
 				if(o.products.length == 0) continue;
 				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
 				var _g21 = 0;
@@ -230,6 +229,7 @@ Cart.prototype = {
 				}
 			}
 		}
+		js.JQuery(".product").show();
 	}
 	,isEmpty: function() {
 		return this.order.products.length == 0;
