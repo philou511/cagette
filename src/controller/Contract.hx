@@ -37,8 +37,15 @@ class Contract extends Controller
 		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
 		
 		//commandes fixes
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == a && $endDate > oneMonthAgo, false);
-		constOrders = db.UserContract.prepare(app.user.getOrdersFromContracts(contracts));
+		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == a && $endDate > oneMonthAgo, false);		
+		constOrders = [];
+		for ( c in contracts){
+			var orders = app.user.getOrdersFromContracts([c]);
+			if (orders.length == 0) continue;
+			constOrders.push({contract:c, orders:db.UserContract.prepare(orders) });
+		}
+		
+		
 		
 		//commandes variables groupées par date de distrib
 		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == a && $endDate > oneMonthAgo, false);

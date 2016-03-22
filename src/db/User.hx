@@ -177,7 +177,7 @@ class User extends Object {
 	/**
 	 * renvoie les commandes à partir d'une liste de contrats
 	 */
-	public function getOrdersFromContracts(c:List<db.Contract>):List<db.UserContract> {
+	public function getOrdersFromContracts(c:Iterable<db.Contract>):List<db.UserContract> {
 		var cids = Lambda.map(c,function(m) return m.id);
 		var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
 		return UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, false);		
