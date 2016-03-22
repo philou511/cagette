@@ -270,48 +270,57 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * make an order by contract 
+	 * Make an order by contract.
+	 * The form is prepopulated if orders have already been made
 	 */
 	@tpl("contract/order.mtt")
-	function doOrder(c:db.Contract, args: { ?d:db.Distribution } ) {
+	function doOrder(c:db.Contract ) {
 		
 		//checks
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
 		if (!c.isUserOrderAvailable()) throw Error("/", "Ce contrat n'est pas ouvert aux commandes ");
-		if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
+		/*if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
 			throw Error("/", "Ce contrat est à commande variable, vous devez sélectionner une date de distribution pour faire votre commande.");
-		}
+		}*/
 		
-		view.c = view.contract = c;
+		var distributions = [];
+		/* If its a varying contract, we display a column by distribution*/
 		if (c.type == db.Contract.TYPE_VARORDER) {
-			view.distribution = args.d;
+			distributions = db.Distribution.getOpenToOrdersDeliveries(c);
 			
-			
-			if ( !args.d.canOrder() ) throw Error("/contract", "Les commandes sont fermées pour cette livraison, impossible de modifier la commande.");
+			//if ( !args.d.canOrder() ) throw Error("/contract", "Les commandes sont fermées pour cette livraison, impossible de modifier la commande.");
 			
 		}else {
-			view.distributions = c.getDistribs(false);
+			
+			distributions = [null]; 
+			//view.distributions = c.getDistribs(false);
 		}
 		
-		var userOrders = new Array<{order:db.UserContract,product:db.Product}>();
+		//list of distribs with a list of product and optionnaly an order
+		var userOrders = new Array< {distrib:db.Distribution,datas:Array<{order:db.UserContract,product:db.Product}>} >();
 		var products = c.getProducts();
-		
-		for ( p in products) {
-			var ua = { order:null, product:p };
-			
-			var order : db.UserContract = null;
-			if (c.type == db.Contract.TYPE_VARORDER) {
-				order = db.UserContract.manager.select($user == app.user && $productId == p.id && $distributionId==args.d.id, true);	
-			}else {
-				order = db.UserContract.manager.select($user == app.user && $productId == p.id, true);
+		for ( d in distributions){
+			var datas = [];
+			for ( p in products) {
+				var ua = { order:null, product:p };
+				
+				var order : db.UserContract = null;
+				if (c.type == db.Contract.TYPE_VARORDER) {
+					order = db.UserContract.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);	
+				}else {
+					order = db.UserContract.manager.select($user == app.user && $productId == p.id, true);
+				}
+				
+				if (order != null) ua.order = order;
+				datas.push(ua);
 			}
 			
-			if (order != null) ua.order = order;
-			userOrders.push(ua);
+			userOrders.push({distrib:d,datas:datas});
 		}
 		
+		
 		//form check
-		if (checkToken()) {
+		/*if (checkToken()) {
 			
 			//get dsitrib if needed
 			var distrib : db.Distribution = null;
@@ -354,8 +363,9 @@ class Contract extends Controller
 				throw Ok("/contract/", "Votre commande a été mise à jour");	
 			//}
 			
-		}
+		}*/
 		
+		view.c = view.contract = c;
 		view.userOrders = userOrders;
 		
 	}

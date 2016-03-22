@@ -23,13 +23,18 @@
 				<td></td>
 				<th>Produit</th>
 				<th>Prix</th>
-				<th>Quantité</th>
+				::foreach d userOrders::
+				<th>Livraison du <br/>::hDate(d.distrib.date)::</th>
+				::end::
 			</tr>
+				
 			::set total = 0::
-			::foreach uo userOrders::
+			
+			
+			
+			::foreach uo userOrders[0].datas::
 			<tr>
 				<td>
-					
 					<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
 				</td>
 				<td>
@@ -39,22 +44,36 @@
 					::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
 					::formatNum(price)::&nbsp;&euro;
 				</td>
+				
+				
+				::set i = repeat.uo.index::
+				
+				::foreach d userOrders::
 				<td>
-					::if uo.order==null::
+	
+					::set o = d.datas[i]::
+					
+					::if o.order==null::
 						::set q = 0::
 					::else::
-						::set q = uo.order.quantity::
+						::set q = o.order.quantity::
 					::end::
 					
 					::set total = total+(q*price)::
-					<input type="text" class="" name="product::uo.product.id::" id="product::uo.product.id::" value="::q::" />
+					<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
+					
+				</td>
+				::end::
+				
+				<td>
+					<!--
+					
+					-->
 				</td>
 			</tr>
-				
 			::end::
 			
 			
-				
 			<tr>
 				<th></th>
 				<th>Total</th>

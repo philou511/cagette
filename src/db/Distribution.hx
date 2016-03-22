@@ -107,7 +107,15 @@ class Distribution extends Object
 			return n < orderEndDate.getTime() && n > orderStartDate.getTime();
 			
 		}
+	}
+	
+	/**
+	 * Get open to orders deliveries
+	 * @param	contract
+	 */
+	public static function getOpenToOrdersDeliveries(contract:db.Contract){
 		
+		return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,false));
 		
 		
 	}
