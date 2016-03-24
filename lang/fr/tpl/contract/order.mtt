@@ -24,11 +24,14 @@
 				<th>Produit</th>
 				<th>Prix</th>
 				::foreach d userOrders::
-				<th>Livraison du <br/>::hDate(d.distrib.date)::</th>
+					::if d.distrib==null::
+						<th>Qté</th>
+					::else::
+						<th>Livraison du <br/>::hDate(d.distrib.date)::</th>
+					::end::
 				::end::
 			</tr>
 				
-			::set total = 0::
 			
 			
 			
@@ -57,12 +60,16 @@
 						::set q = ""::
 					::else::
 						::set q = o.order.quantity::
-						::set total = total+(q*price)::
 					::end::
 					
 					
+					::if d.distrib==null::
+						<!-- contrat amap-->
+						<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
+					::else::
+						<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
+					::end::
 					
-					<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
 					
 				</td>
 				::end::
@@ -76,29 +83,31 @@
 				<th colspan="3" class="text-right">Total</th>
 				
 				::foreach d userOrders::
-				
+					<th>
+						
 					::set total=0::
 					::foreach o d.datas::
 					
 						::if o.order!=null::
 							::set q = o.order.quantity::
+							::set price = o.product.price + o.product._contract.computeFees(o.product.price)::
+							
 							::set total = total+(q*price)::
+						
 						::end::
 					
 					::end::
-					<th>::formatNum(total)::&nbsp;€</th>
+					
+					::formatNum(total)::&nbsp;€
+					</th>
 					
 					
 				::end::
 			</tr>
 		</table>
 		
-		
-		
-		
-		
-		<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />
-		
+		<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />		
+			
 		</form>
 	
 	</div>
@@ -114,26 +123,7 @@
 	</div>
 </div>
 
-<!-- total x nbre de distributions-->
-::if distributions!=null::
-	<div class="col-md-4">
-		<div class="article">
-			<p>
-				<b>::distributions.length:: distributions</b>
-				<br/>
-				pour un prix total de ::distributions.length*(total)::€	(::distributions.length:: x ::(total)::€)
-			</p>
-			<p>
-				<ul>
-				::foreach d distributions::
-					<li>::hDate(d.date)::</li>
-				::end::
-				</ul>
-			</p>
-			
-		</div>
-	</div>
-::end::
+
 
 
 ::end::

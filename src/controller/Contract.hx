@@ -344,7 +344,7 @@ class Contract extends Controller
 				//find related element in userOrders
 				var uo = null;
 				for ( x in userOrders){
-					if (x.distrib.id != did) {
+					if (x.distrib!=null && x.distrib.id != did) {
 						continue;
 					}else{
 						for (a in x.datas){
