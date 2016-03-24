@@ -34,49 +34,55 @@
 				
 			
 			
+			::if userOrders.length>0::	
 			
-			::foreach uo userOrders[0].datas::
-			<tr>
-				<td>
-					<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
-				</td>
-				<td>
-					<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::')">::uo.product.name::	</a>
-				</td>
-				<td>
-					::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
-					::formatNum(price)::&nbsp;&euro;
-				</td>
-				
-				
-				::set i = repeat.uo.index::
-				
-				::foreach d userOrders::
-				<td>
-	
-					::set o = d.datas[i]::
+				::foreach uo userOrders[0].datas::
+				<tr>
+					<td>
+						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
+					</td>
+					<td>
+						<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::')">::uo.product.name::	</a>
+					</td>
+					<td>
+						::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
+						::formatNum(price)::&nbsp;&euro;
+					</td>
 					
-					::if o.order==null::
-						::set q = ""::
-					::else::
-						::set q = o.order.quantity::
+					
+					::set i = repeat.uo.index::
+					
+					::foreach d userOrders::
+					<td>
+		
+						::set o = d.datas[i]::
+						
+						::if o.order==null::
+							::set q = ""::
+						::else::
+							::set q = o.order.quantity::
+						::end::
+						
+						
+						::if d.distrib==null::
+							<!-- contrat amap-->
+							<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
+						::else::
+							<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
+						::end::
+						
+						
+					</td>
 					::end::
 					
-					
-					::if d.distrib==null::
-						<!-- contrat amap-->
-						<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-					::else::
-						<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-					::end::
-					
-					
-				</td>
+				</tr>
 				::end::
-				
-			</tr>
-			::end::
 			
+			::else::
+				<tr>
+					<td colspan="4">Aucune commande ouverte pour l'instant</td>
+				</tr>
+			::end::
 			
 			<tr>
 				
