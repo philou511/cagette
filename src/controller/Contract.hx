@@ -320,7 +320,7 @@ class Contract extends Controller
 		
 		
 		//form check
-		/*if (checkToken()) {
+		if (checkToken()) {
 			
 			//get dsitrib if needed
 			var distrib : db.Distribution = null;
@@ -329,41 +329,63 @@ class Contract extends Controller
 			}
 			
 			for (k in app.params.keys()) {
-				var param = app.params.get(k);
-				if (k.substr(0, "product".length) == "product") {
-					
-					//trouve le produit dans userOrders
-					var pid = Std.parseInt(k.substr("product".length));
-					var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
-					if (uo == null) throw "Impossible de retrouver le produit " + pid;
-					
-					
-					var q = 0.0;
-					if (uo.product.hasFloatQt ) {
-						param = StringTools.replace(param, ",", ".");
-						q = Std.parseFloat(param);
-					}else {
-						q = Std.parseInt(param);
-					}
-					
-					
-					if (uo.order != null) {
-					
-						db.UserContract.edit(uo.order, q);
-						
-					}else {
-					
-						db.UserContract.make(app.user, q, uo.product.id, distrib!=null ? distrib.id : null);
+				
+				if (k.substr(0, 1) != "d") continue;
+				var qt = app.params.get(k);
+				if (qt == "") continue;
+				
+				var pid = null;
+				var did = null;
+				try{
+				pid = Std.parseInt(k.split("-")[1].substr(1));
+				did = Std.parseInt(k.split("-")[0].substr(1));
+				}catch (e:Dynamic){trace("unable to parse key "+k); }
+				
+				//find related element in userOrders
+				var uo = null;
+				for ( x in userOrders){
+					if (x.distrib.id != did) {
+						continue;
+					}else{
+						for (a in x.datas){
+							if (a.product.id == pid){
+								uo = a;
+								break;
+							}
+						}
 					}
 				}
+				
+				if (uo == null) throw "Impossible de retrouver le produit " + pid +" et distribution "+did;
+					
+				var q = 0.0;
+				
+				if (uo.product.hasFloatQt ) {
+					var param = StringTools.replace(qt, ",", ".");
+					q = Std.parseFloat(param);
+				}else {
+					q = Std.parseInt(qt);
+				}
+				
+				
+				if (uo.order != null) {	
+					//trace("updating order q="+q);
+					db.UserContract.edit(uo.order, q);
+					
+				}else {
+					//trace("new order q="+q);
+					db.UserContract.make(app.user, q, uo.product.id, did);
+				}
+				
 			}
 			//if (distrib != null) {
 				//throw Ok("/contract/order/" + c.id+"?d="+distrib.id, "Votre commande a été mise à jour");	
 			//}else {
-				throw Ok("/contract/", "Votre commande a été mise à jour");	
+				throw Ok("/contract/order/"+c.id, "Votre commande a été mise à jour");
+				//trace("ok");
 			//}
 			
-		}*/
+		}
 		
 		view.c = view.contract = c;
 		view.userOrders = userOrders;

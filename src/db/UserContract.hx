@@ -237,7 +237,7 @@ class UserContract extends Object
 			}	
 		}
 		
-		
+		//return o;
 	}
 	
 	
@@ -245,9 +245,6 @@ class UserContract extends Object
 	 * Edit an order (quantity)
 	 */
 	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool) {
-		
-		
-		
 		
 		order.lock();
 		
@@ -257,7 +254,6 @@ class UserContract extends Object
 		}else {
 			if (order.quantity < newquantity) order.paid = false;	
 		}
-		
 		
 		//stocks
 		if (order.product.stock != null) {
@@ -296,9 +292,6 @@ class UserContract extends Object
 					
 				}
 				
-				
-				
-				
 			}	
 		}
 		
@@ -310,7 +303,7 @@ class UserContract extends Object
 			order.update();	
 		}
 		
-		
+		return order;
 		
 	}
 }
