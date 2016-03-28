@@ -101,7 +101,6 @@ class Shop extends sugoi.BaseController
 			
 		}
 		var products = db.Product.manager.search(($contractId in Lambda.map(contracts, function(c) return c.id)) && $active==true, { orderBy:name }, false);
-		
 		return Lambda.array(Lambda.map(products, function(p) return p.infos()));
 	}
 	

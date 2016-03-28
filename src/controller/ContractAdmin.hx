@@ -577,29 +577,7 @@ class ContractAdmin extends Controller
 		throw Ok('/contractAdmin/orders/'+uc.product.contract.id,'Le contrat a bien été annulé');
 	}
 	
-	/*@tpl("form.mtt")
-	function doEdit(uc:UserContract) {
-		
-		var form = sugoi.form.Form.fromSpod(uc);
-		
-		form.removeElement(form.getElement("amapId"));
-		form.removeElement(form.getElement("productId"));
-		var products = uc.product.contract.getProducts();
-		var prodArr = [];
-		for (p in products) {
-			prodArr.push({key:Std.string(p.id),value:p.name});
-		}
-		form.addElement( new Selectbox("productId", "Produit", prodArr,Std.string(uc.product.id),true) );
-		
-		if (form.isValid()) {
-			uc.lock();
-			form.toSpod(uc); //update model
-			uc.update();
-			throw Ok('/contractAdmin/orders/' + uc.product.contract.id, 'Ce contrat a été mis à jour');			
-		}
-		
-		view.form = form;
-	}*/
+
 	@tpl("contractadmin/selectDistrib.mtt")
 	function doSelectDistrib(c:db.Contract) {
 		view.c = c;
@@ -680,7 +658,15 @@ class ContractAdmin extends Controller
 						var pid = Std.parseInt(k.substr("product".length));
 						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
 						if (uo == null) throw "Impossible de retrouver le produit " + pid;
-						var q = Std.parseInt(param);
+						
+						
+						var q = 0.0;
+						if (uo.product.hasFloatQt ) {
+							param = StringTools.replace(param, ",", ".");
+							q = Std.parseFloat(param);
+						}else {
+							q = Std.parseInt(param);
+						}
 						
 						//var order = new db.UserContract();
 						if (uo.order != null) {

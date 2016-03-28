@@ -85,6 +85,9 @@ class Cart
 		order.products.push( { productId:pid, quantity:qt } );
 	}
 	
+	/**
+	 * Render the shopping cart and total
+	 */
 	function render() {
 		var c = App.j("#cart");
 		c.empty();
@@ -137,7 +140,9 @@ class Cart
 		return null;
 	}
 	
-	
+	/**
+	 * Dynamically sort products by categories
+	 */
 	public function sortProductsBy(){
 		
 		//store products by groups
@@ -146,29 +151,36 @@ class Cart
 		
 		var firstCategGroup = this.categories[0].categs;
 		
-		trace(firstCategGroup);
-		trace(pinnedCategories);
+		//trace(firstCategGroup);
+		//trace(pinnedCategories);
+		
+		var pList = Lambda.array(products).copy();
+		
+		//for ( p in pList) trace(p.name+" : " + p.categories);
+		//trace("----------------");
 		
 		//sort by categs
-		for ( p in products){
-			
+		for ( p in pList.copy() ){
+			//trace(p.name+" : " + p.categories);
 			p.element.remove();
 			
 			for ( categ in p.categories){
 				
-				//is in this categ group
 				if (Lambda.find(firstCategGroup, function(c) return c.id == categ) != null){
 					
-					var c = groups.get(categ);
-					if ( c == null){
-						
+					//is in this category group	
+					var g = groups.get(categ);
+					if ( g == null){						
 						var name = findCategoryName(categ);					
-						c = {name:name,products:[]};
+						g = {name:name,products:[]};
 					}
-					c.products.push(p);
-					groups.set(categ, c);	
+					g.products.push(p);
+					//trace("remove " + p.name);
+					pList.remove(p);
+					groups.set(categ, g);	
 					
-				}else{
+				}
+				else{
 					// is in pinned group ?
 					var isInPinnedCateg = false;
 					for ( cg in pinnedCategories){
@@ -187,32 +199,35 @@ class Cart
 							c = {name:name,products:[]};
 						}
 						c.products.push(p);
-						trace( "add " + p.name+" in PINNED");
+						//trace( "add " + p.name+" in PINNED");
+						pList.remove(p);
 						pinned.set(categ, c);	
 						
 						
 					}else{
-						//not in teh selected categ nor in pinned groups
+						//not in the selected categ nor in pinned groups
 						continue;
 					}
 				}
-				
 			}
-			
-			
 		}
 		
+		//if some untagged products remain
+		if (pList.length > 0){
+			groups.set(0,{name:"Autres",products:pList});
+		}
+		//trace("----------------");
 		//render
 		var container = App.j(".shop");
 		//render firts "pinned" groups , then "groups"
 		for ( source in [pinned, groups]){	
 			
 			for (o in source){
-				//trace("GROUP "+o.name);
+				
 				if (o.products.length == 0) continue;
 				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
 				for ( p in o.products){
-					
+					//trace("GROUP "+o.name+" : "+p.name);	
 					//if the element has already been inserted, we need to clone it
 					if (p.element.parent().length == 0){
 						container.append( p.element );	

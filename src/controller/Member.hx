@@ -322,13 +322,11 @@ class Member extends Controller
 	function doDelete(user:db.User,?args:{confirm:Bool,token:String}) {
 		
 		if (checkToken()) {
-			if (!app.user.isContractManager()) throw "Vous ne pouvez pas faire ça.";
+			if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
 			if (user.id == app.user.id) throw Error("/member/view/"+user.id,"Vous ne pouvez pas vous effacer vous même.");
 			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) {
-				
 				throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
 			}
-		
 		
 			var ua = db.UserAmap.get(user, app.user.amap, true);
 			if (ua != null) {
@@ -345,7 +343,7 @@ class Member extends Controller
 	@tpl('form.mtt')
 	function doMerge(user:db.User) {
 		
-		if (!app.user.isContractManager()) throw "Vous ne pouvez pas faire ça.";
+		if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
 		
 		view.title = "Fusionner un compte avec un autre";
 		view.text = "Cette action permet de fusionner deux comptes ( quand vous avez des doublons dans la base de données par exemple).<br/>Les contrats du compte 2 seront rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette action n'est pas annulable.";
