@@ -1,7 +1,6 @@
 package controller;
 import db.UserContract;
 import sugoi.form.elements.DateDropdowns;
-import sugoi.form.elements.Hidden;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;

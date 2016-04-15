@@ -4070,8 +4070,7 @@ sugoi_form_filters_FloatFilter.prototype = $extend(sugoi_form_filters_Filter.pro
 	filter: function(n) {
 		if(n == null || n == "") return 0;
 		n = StringTools.replace(n,",",".");
-		var num = parseFloat(n);
-		return num;
+		return parseFloat(n);
 	}
 	,__class__: sugoi_form_filters_FloatFilter
 });

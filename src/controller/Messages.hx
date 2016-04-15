@@ -1,6 +1,7 @@
 package controller;
 import db.Message;
 import db.UserContract;
+import sugoi.form.ListData;
 import sugoi.form.validators.EmailValidator;
 import sugoi.form.elements.*;
 import sugoi.form.Form;
@@ -36,7 +37,7 @@ class Messages extends Controller
 		form.addElement( new sugoi.form.elements.Html(senderName+" <i>" + senderMail + "</i>", "Expéditeur"));
 		
 		var lists = getLists();
-		form.addElement( new Selectbox("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
+		form.addElement( new Selectbox<String>("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
 		form.addElement( new Input("subject", "Sujet :","",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
 		
@@ -100,28 +101,28 @@ class Messages extends Controller
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", "accès non autorisé");
 		
 		var lists2 = new Map<String,String>();
-		for (l in getLists()) lists2.set(l.key, l.value);
-		view.lists = lists2;
+		for (l in getLists()) lists2.set(l.label, l.value);
 		
+		view.lists = lists2;		
 		view.list = lists2.get(msg.recipientListId);
 		view.msg = msg;
 		
 	}
 	
-	function getLists() :Array<{key:String,value:String}>{
+	function getLists() :FormData<String>{
 		var out = [
-			{key:'1', value:'Tout le monde' },
-			{key:'2', value:'Les responsables contrat et le responsable d\'AMAP' },			
+			{value:'1', label:'Tout le monde' },
+			{value:'2', label:'Les responsables contrat et le responsable d\'AMAP' },			
 		];
 		
-		/*if (App.config.DEBUG)*/ out.push( { key:'3', value:'TEST : moi + conjoint(e)' } );
-		out.push( { key:'4', value:'Amapiens sans contrat' } );
-		if(app.user.amap.hasMembership()) out.push( { key:'5', value:'Adhésions à renouveller' } );
+		/*if (App.config.DEBUG)*/ out.push( { value:'3', label:'TEST : moi + conjoint(e)' } );
+		out.push( { value:'4', label:'Amapiens sans contrat' } );
+		if(app.user.amap.hasMembership()) out.push( { value:'5', label:'Adhésions à renouveller' } );
 		
 		
 		var contracts = db.Contract.getActiveContracts(app.user.amap,true);
 		for ( c in contracts) {
-			out.push({key:'c'+c.id,value:'Souscripteurs '+c.toString()});
+			out.push({value:'c'+c.id,label:'Souscripteurs '+c.toString()});
 		}
 		return out ;
 		
@@ -135,7 +136,7 @@ class Messages extends Controller
 		var l = getLists();
 		
 		for (ll in l) {
-			if (ll.key == listId) return ll.value;
+			if (ll.value == listId) return ll.value;
 		}
 		
 		return null;

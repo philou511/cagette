@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
 
@@ -210,12 +211,15 @@ class Contract extends Object
 		return App.current.user.amap.getMembersFormElementData();
 	}
 	
-	public function populateVendor():Array<{key:String,value:String}> {
+	/**
+	 * get a vendor list as form data
+	 * @return
+	 */
+	public function populateVendor():FormData<Int>{
 		var vendors = Vendor.manager.search($amap == App.current.user.amap, false);
 		var out = [];
 		for (v in vendors) {
-			
-			out.push({key:Std.string(v.id),value:v.name });
+			out.push({label:v.name, value:v.id });
 		}
 		return out;
 	}

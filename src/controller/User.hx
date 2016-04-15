@@ -1,10 +1,10 @@
 package controller;
 import haxe.crypto.Md5;
-import sugoi.form.elements.Hidden;
 import sugoi.form.elements.Input;
 import sugoi.form.Form;
+import sugoi.form.elements.IntInput;
+import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
-import neko.Web;
 import ufront.mail.*;
 
 enum LoginError {
@@ -132,19 +132,21 @@ class User extends Controller
 		
 		//ask for mail
 		var askmailform = new Form("askemail");
-		askmailform.addElement(new Input("email","Saisissez votre email"));
+		askmailform.addElement(new StringInput("email","Saisissez votre email"));
 	
 		//change pass form
 		var chpassform = new Form("chpass");
-		chpassform.addElement(new Input("pass1","Votre nouveau mot de passe"));
-		chpassform.addElement(new Input("pass2", "Retapez votre mot de passe pour vérification"));
-		chpassform.addElement(new Hidden("uid", u == null?'':Std.string(u.id)));
+		chpassform.addElement(new StringInput("pass1","Votre nouveau mot de passe"));
+		chpassform.addElement(new StringInput("pass2", "Retapez votre mot de passe pour vérification"));
+		var uid = new IntInput("uid","uid", u == null?null:u.id);
+		uid.inputType = ITHidden;
+		chpassform.addElement(uid);
 		
 		if (askmailform.isValid()) {
 			//send password renewal email
 			step = 2;
 			
-			var email = askmailform.getValueOf("email");
+			var email :String = askmailform.getValueOf("email");
 			var user = db.User.manager.select(email == $email, false);
 			
 			if (user == null) throw Error(url, "Cet email n'est lié à aucun compte connu");

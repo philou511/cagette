@@ -1,6 +1,10 @@
 package controller;
 import sugoi.form.Form;
 import Common;
+import sugoi.form.ListData.FormData;
+import sugoi.form.elements.FloatInput;
+import sugoi.form.elements.FloatSelect;
+import sugoi.form.elements.IntSelect;
 using Std;
 class Product extends Controller
 {
@@ -28,14 +32,13 @@ class Product extends Controller
 		
 		//vat selector
 		f.removeElement( f.getElement('vat') );		
-		var data = [];
+		var data :FormData<Float> = [];
 		for (k in app.user.amap.vatRates.keys()) {
-			data.push( { key:app.user.amap.vatRates[k].string(), value:k } );
+			data.push( { label:k, value:app.user.amap.vatRates[k] } );
 		}
-		f.addElement( new sugoi.form.elements.Selectbox("vat", "TVA", data, Std.string(d.vat) ) );
+		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
 
 		f.removeElementByName("contractId");
-		f.getElement("price").addFilter(new sugoi.form.filters.FloatFilter());
 			
 		if (f.isValid()) {
 			f.toSpod(d); //update model

@@ -49,11 +49,13 @@ class User extends Object {
 	
 	public function new() {
 		super();
+		
 		//default values
 		cdate = Date.now();
 		rights = sys.db.Types.SFlags.ofInt(0);
 		flags = sys.db.Types.SFlags.ofInt(0);
 		flags.set(HasEmailNotif24h);
+		lang = "fr";
 		
 	}
 	

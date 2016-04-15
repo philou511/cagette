@@ -165,6 +165,8 @@ class App extends sugoi.BaseApp {
 		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
 		out.set("percent", "Pourcentage");
 		out.set("pinned", "Mets en avant les produits");
+		out.set("daysBeforeOrderStart", "Ouverture de commande (X jours avant livraison)");
+		out.set("daysBeforeOrderEnd", "Fermeture de commande (X jours avant livraison)");
 		
 		return out;
 	}

@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.ListData;
 import sys.db.Object;
 import sys.db.Types;
 /**
@@ -51,14 +52,21 @@ class Distribution extends Object
 		end = DateTools.delta(date, 1000 * 60 * 90);
 	}
 	
-	public function populate():Array<{key:String,value:String}> {
+	/**
+	 * get group members list as form data
+	 */
+	public function populate():FormData<Int> {
 		return App.current.user.getAmap().getMembersFormElementData();
 	}
 	
-	public function placePopulate():Array<{key:String,value:String}> {
+	/**
+	 * get groups places as form data
+	 * @return
+	 */
+	public function placePopulate():FormData<Int> {
 		var out = [];
 		var places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
-		for (p in places) out.push( { key:Std.string(p.id),value:p.name } );
+		for (p in places) out.push( { label:p.name,value:p.id} );
 		return out;
 	}
 	

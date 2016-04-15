@@ -38,6 +38,10 @@ class DistributionCycle extends Object
 	public var startHour : SDateTime; 
 	public var endHour : SDateTime;	
 	
+	public var daysBeforeOrderStart:SNull<STinyInt>;
+	public var daysBeforeOrderEnd:SNull<STinyInt>;
+	
+	
 	public function new() {
 		super();
 	}
@@ -59,6 +63,23 @@ class DistributionCycle extends Object
 		d.place = dc.place;
 		d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 		d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours()  , dc.endHour.getMinutes()  , 0);
+		if (dc.contract.type == Contract.TYPE_VARORDER){
+			
+			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw "daysBeforeOrderEnd or daysBeforeOrderStart is null";
+			
+			//untyped  dc.daysBeforeOrderStart = Std.parseInt(dc.daysBeforeOrderStart);
+			
+			trace( dc.daysBeforeOrderStart*1 );
+			var t :Int = dc.daysBeforeOrderStart *1;
+			trace(Type.getClassName(Type.getClass(t)));
+			trace(Type.getClassName(Type.getClass(dc.daysBeforeOrderStart)));
+			t *= 10;
+			trace( t );
+			d.orderStartDate = DateTools.delta(d.date, dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+			d.orderEndDate = DateTools.delta(d.date, dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+		}
+		
+		
 		d.insert();
 		
 		
@@ -118,6 +139,11 @@ class DistributionCycle extends Object
 			//applique heure de debut et fin
 			d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 			d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours(),   dc.endHour.getMinutes(),   0);
+			if (dc.contract.type == Contract.TYPE_VARORDER){
+				d.orderStartDate = DateTools.delta(d.date, dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+				d.orderEndDate = DateTools.delta(d.date, dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+			}
+			
 			d.insert();
 		}
 	}

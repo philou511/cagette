@@ -222,20 +222,43 @@ class Distribution extends Controller
 		
 		var d = new db.DistributionCycle();
 		var form = sugoi.form.Form.fromSpod(d);
-		form.removeElement(form.getElement("contractId"));
-		form.removeElement(form.getElement("startHour"));
-		var x = new sugoi.form.elements.HourDropDowns("startHour", "Heure de début",d.startHour,true);
-		form.addElement(x, 5);
-		form.removeElement(form.getElement("endHour"));
-		var x = new sugoi.form.elements.HourDropDowns("endHour", "Heure de fin",d.endHour,true);
-		form.addElement(x, 6);
+		//form.removeElement(form.getElement("contractId"));
+		//form.removeElement(form.getElement("startHour"));
+		//var x = new sugoi.form.elements.HourDropDowns("startHour", "Heure de début",d.startHour,true);
+		//form.addElement(x, 5);
+		//form.removeElement(form.getElement("endHour"));
+		//var x = new sugoi.form.elements.HourDropDowns("endHour", "Heure de fin",d.endHour,true);
+		//form.addElement(x, 6);
+		
+		if (contract.type == db.Contract.TYPE_VARORDER){
+			form.getElement("daysBeforeOrderStart").value = 10;
+			form.getElement("daysBeforeOrderEnd").value = 2;			
+		}else{
+			form.removeElementByName("daysBeforeOrderStart");
+			form.removeElementByName("daysBeforeOrderEnd");			
+		}
+		
 		
 		if (form.isValid()) {
 			
-			
 			form.toSpod(d); //update model
+			
+			var t :Int = d.daysBeforeOrderStart;
+			trace(t+1);
+			trace(Type.getClassName(Type.getClass(d.daysBeforeOrderStart)));
+			var t :Int = 4;
+			trace(Type.getClassName(Type.getClass(t)));
+			
+			//d.startDate = form.getValueOf("startDate");
+			//d.startHour = form.getValueOf("startHour");
+			//d.endDate = form.getValueOf("endDate");
+			//d.endHour = form.getValueOf("endHour");
+			//d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+			//d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+			//d.placeId = form.getValueOf("placeId"); 
 			d.contract = contract;
 			d.insert();
+			
 			db.DistributionCycle.updateChilds(d);
 			throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');
 		}
