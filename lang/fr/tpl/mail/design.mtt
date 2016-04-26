@@ -15,4 +15,11 @@ Cet e-mail a été envoyé depuis <a href="http://www.cagette.net">Cagette.net</
 	 ( ::list:: )
 ::end::
 
+	<!-- btn -->
+	<div ::cond group!=null:: style="width:50%;max-width:300px;margin: 12px auto;padding: 8px;text-decoration: none;background: #070;border-radius: 3px;text-align: center;">
+		<a href="http://::HOST::/group/::group.id::" style="color: white;font-weight: bold;text-decoration: none;">
+			&rarr; ::group.name::
+		</a>
+	</div>
+
 </div>

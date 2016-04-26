@@ -37,7 +37,7 @@ class Messages extends Controller
 		form.addElement( new sugoi.form.elements.Html(senderName+" <i>" + senderMail + "</i>", "Expéditeur"));
 		
 		var lists = getLists();
-		form.addElement( new Selectbox<String>("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
+		form.addElement( new StringSelect("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
 		form.addElement( new StringInput("subject", "Sujet :","",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
 		
@@ -64,11 +64,6 @@ class Messages extends Controller
 			var text :String = form.getValueOf("text");
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
 			e.setHtml(html);
-			
-			//var event = new event.MessageEvent();
-			//event.id = "sendMessage";
-			//event.message = e;
-			//App.current.eventDispatcher.dispatch(event);
 			
 			app.event(SendEmail(e));
 			
@@ -136,7 +131,7 @@ class Messages extends Controller
 		var l = getLists();
 		
 		for (ll in l) {
-			if (ll.value == listId) return ll.value;
+			if (ll.value == listId) return ll.label;
 		}
 		
 		return null;

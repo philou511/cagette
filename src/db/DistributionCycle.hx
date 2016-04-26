@@ -51,6 +51,8 @@ class DistributionCycle extends Object
 	
 	/**
 	 * on créé toutes les distribs en partant du jour de la semaine de la premiere date
+	 * 
+	 * @TODO refactor this with http://thx-lib.org/api/thx/Dates.html#jump
 	 */
 	public static function updateChilds(dc:DistributionCycle) {
 		
@@ -69,9 +71,8 @@ class DistributionCycle extends Object
 		if (dc.contract.type == Contract.TYPE_VARORDER){
 			
 			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw "daysBeforeOrderEnd or daysBeforeOrderStart is null";
-			
-			d.orderStartDate = DateTools.delta(d.date, -1 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
-			d.orderEndDate = DateTools.delta(d.date, -1 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+			d.orderStartDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+			d.orderEndDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
 		}
 		
 		d.insert();
@@ -99,27 +100,7 @@ class DistributionCycle extends Object
 					
 				case Monthly :
 					datePointer = DateTools.delta(datePointer, oneDay * 28.0);
-					//App.log("monthly datePointer +28j : "+datePointer);
-					//while (datePointer.getDay() != dayOfWeek ) {
-						//
-						//datePointer = DateTools.delta(datePointer, oneDay);
-						//App.log("monthly datePointer +24h : "+datePointer);
-					//}
 			}
-			/*
-			if (dc.cycleType == Weekly) {
-				datePointer = DateTools.delta(datePointer, 1000 * 60 * 60 * 24 * 7.0);
-				App.log("datePointer : "+datePointer);
-			}else {
-				
-				datePointer = DateTools.delta(datePointer, 1000 * 60 * 60 * 24 * 28.0);
-				App.log("monthly datePointer +28j : "+datePointer);
-				while (datePointer.getDay() != dayOfWeek ) {
-					
-					datePointer = DateTools.delta(datePointer, 1000 * 60 * 60 * 24.0);
-					App.log("monthly datePointer +24h : "+datePointer);
-				}
-			}*/
 			
 			if (datePointer.getTime() > dc.endDate.getTime()) {
 				App.log("finish");
@@ -131,9 +112,10 @@ class DistributionCycle extends Object
 			//applique heure de debut et fin
 			d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 			d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours(),   dc.endHour.getMinutes(),   0);
+			
 			if (dc.contract.type == Contract.TYPE_VARORDER){
-				d.orderStartDate = DateTools.delta(d.date, dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
-				d.orderEndDate = DateTools.delta(d.date, dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+				d.orderStartDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+				d.orderEndDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
 			}
 			
 			d.insert();

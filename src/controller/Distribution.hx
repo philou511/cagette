@@ -227,13 +227,16 @@ class Distribution extends Controller
 		
 		//start hour
 		form.removeElementByName("startHour");
-		var x = new HourDropDowns("startHour", "Heure de début", d.startHour, true);
-		x.value = new Date(0, 0, 0, 19, 0, 0);
+		var date = Date.now();
+		var y = date.getFullYear();
+		var m = date.getMonth();
+		var day = date.getDate();
+		
+		var x = new HourDropDowns("startHour", "Heure de début", new Date(y, m, day, 19, 0, 0) , true);
 		form.addElement(x, 5);
 		//end hour
 		form.removeElement(form.getElement("endHour"));
-		var x = new HourDropDowns("endHour", "Heure de fin",d.endHour,true);
-		x.value = new Date(0, 0, 0, 20, 0, 0);
+		var x = new HourDropDowns("endHour", "Heure de fin", new Date(y, m, day, 20, 0, 0), true);
 		form.addElement(x, 6);
 		
 		if (contract.type == db.Contract.TYPE_VARORDER){

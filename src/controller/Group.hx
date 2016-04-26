@@ -10,8 +10,13 @@ class Group extends controller.Controller
 
 	@tpl('group/view.mtt')
 	function doDefault(group:db.Amap){
+		
 		view.group = group;
 		view.contracts = group.getActiveContracts();
+		if (app.user != null){
+			
+			view.isMember = Lambda.has(app.user.getAmaps(), group);
+		}
 	}
 	
 	/**
