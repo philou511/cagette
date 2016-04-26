@@ -400,102 +400,55 @@ TutoPlacement.TPRight = ["TPRight",3];
 TutoPlacement.TPRight.toString = $estr;
 TutoPlacement.TPRight.__enum__ = TutoPlacement;
 TutoPlacement.__empty_constructs__ = [TutoPlacement.TPTop,TutoPlacement.TPBottom,TutoPlacement.TPLeft,TutoPlacement.TPRight];
-var haxe_IMap = function() { };
-$hxClasses["haxe.IMap"] = haxe_IMap;
-haxe_IMap.__name__ = ["haxe","IMap"];
-haxe_IMap.prototype = {
-	get: null
-	,set: null
-	,exists: null
-	,remove: null
-	,keys: null
-	,iterator: null
-	,toString: null
-	,__class__: haxe_IMap
+var _$Map_Map_$Impl_$ = {};
+$hxClasses["_Map.Map_Impl_"] = _$Map_Map_$Impl_$;
+_$Map_Map_$Impl_$.__name__ = ["_Map","Map_Impl_"];
+_$Map_Map_$Impl_$._new = null;
+_$Map_Map_$Impl_$.set = function(this1,key,value) {
+	this1.set(key,value);
 };
-var haxe_ds_StringMap = function() {
-	this.h = { };
+_$Map_Map_$Impl_$.get = function(this1,key) {
+	return this1.get(key);
 };
-$hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
-haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
-haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
-haxe_ds_StringMap.prototype = {
-	h: null
-	,rh: null
-	,isReserved: function(key) {
-		return __map_reserved[key] != null;
-	}
-	,set: function(key,value) {
-		if(__map_reserved[key] != null) this.setReserved(key,value); else this.h[key] = value;
-	}
-	,get: function(key) {
-		if(__map_reserved[key] != null) return this.getReserved(key);
-		return this.h[key];
-	}
-	,exists: function(key) {
-		if(__map_reserved[key] != null) return this.existsReserved(key);
-		return this.h.hasOwnProperty(key);
-	}
-	,setReserved: function(key,value) {
-		if(this.rh == null) this.rh = { };
-		this.rh["$" + key] = value;
-	}
-	,getReserved: function(key) {
-		if(this.rh == null) return null; else return this.rh["$" + key];
-	}
-	,existsReserved: function(key) {
-		if(this.rh == null) return false;
-		return this.rh.hasOwnProperty("$" + key);
-	}
-	,remove: function(key) {
-		if(__map_reserved[key] != null) {
-			key = "$" + key;
-			if(this.rh == null || !this.rh.hasOwnProperty(key)) return false;
-			delete(this.rh[key]);
-			return true;
-		} else {
-			if(!this.h.hasOwnProperty(key)) return false;
-			delete(this.h[key]);
-			return true;
-		}
-	}
-	,keys: function() {
-		var _this = this.arrayKeys();
-		return HxOverrides.iter(_this);
-	}
-	,arrayKeys: function() {
-		var out = [];
-		for( var key in this.h ) {
-		if(this.h.hasOwnProperty(key)) out.push(key);
-		}
-		if(this.rh != null) {
-			for( var key in this.rh ) {
-			if(key.charCodeAt(0) == 36) out.push(key.substr(1));
-			}
-		}
-		return out;
-	}
-	,iterator: function() {
-		return new haxe_ds__$StringMap_StringMapIterator(this,this.arrayKeys());
-	}
-	,toString: function() {
-		var s = new StringBuf();
-		s.b += "{";
-		var keys = this.arrayKeys();
-		var _g1 = 0;
-		var _g = keys.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var k = keys[i];
-			if(k == null) s.b += "null"; else s.b += "" + k;
-			s.b += " => ";
-			s.add(Std.string(__map_reserved[k] != null?this.getReserved(k):this.h[k]));
-			if(i < keys.length) s.b += ", ";
-		}
-		s.b += "}";
-		return s.b;
-	}
-	,__class__: haxe_ds_StringMap
+_$Map_Map_$Impl_$.exists = function(this1,key) {
+	return this1.exists(key);
+};
+_$Map_Map_$Impl_$.remove = function(this1,key) {
+	return this1.remove(key);
+};
+_$Map_Map_$Impl_$.keys = function(this1) {
+	return this1.keys();
+};
+_$Map_Map_$Impl_$.iterator = function(this1) {
+	return this1.iterator();
+};
+_$Map_Map_$Impl_$.toString = function(this1) {
+	return this1.toString();
+};
+_$Map_Map_$Impl_$.arrayWrite = function(this1,k,v) {
+	this1.set(k,v);
+	return v;
+};
+_$Map_Map_$Impl_$.toStringMap = function(t) {
+	return new haxe_ds_StringMap();
+};
+_$Map_Map_$Impl_$.toIntMap = function(t) {
+	return new haxe_ds_IntMap();
+};
+_$Map_Map_$Impl_$.toEnumValueMapMap = function(t) {
+	return new haxe_ds_EnumValueMap();
+};
+_$Map_Map_$Impl_$.toObjectMap = function(t) {
+	return new haxe_ds_ObjectMap();
+};
+_$Map_Map_$Impl_$.fromStringMap = function(map) {
+	return map;
+};
+_$Map_Map_$Impl_$.fromIntMap = function(map) {
+	return map;
+};
+_$Map_Map_$Impl_$.fromObjectMap = function(map) {
+	return map;
 };
 var Data = function() { };
 $hxClasses["Data"] = Data;
@@ -939,56 +892,6 @@ _$List_ListIterator.prototype = {
 		return this.val;
 	}
 	,__class__: _$List_ListIterator
-};
-var _$Map_Map_$Impl_$ = {};
-$hxClasses["_Map.Map_Impl_"] = _$Map_Map_$Impl_$;
-_$Map_Map_$Impl_$.__name__ = ["_Map","Map_Impl_"];
-_$Map_Map_$Impl_$._new = null;
-_$Map_Map_$Impl_$.set = function(this1,key,value) {
-	this1.set(key,value);
-};
-_$Map_Map_$Impl_$.get = function(this1,key) {
-	return this1.get(key);
-};
-_$Map_Map_$Impl_$.exists = function(this1,key) {
-	return this1.exists(key);
-};
-_$Map_Map_$Impl_$.remove = function(this1,key) {
-	return this1.remove(key);
-};
-_$Map_Map_$Impl_$.keys = function(this1) {
-	return this1.keys();
-};
-_$Map_Map_$Impl_$.iterator = function(this1) {
-	return this1.iterator();
-};
-_$Map_Map_$Impl_$.toString = function(this1) {
-	return this1.toString();
-};
-_$Map_Map_$Impl_$.arrayWrite = function(this1,k,v) {
-	this1.set(k,v);
-	return v;
-};
-_$Map_Map_$Impl_$.toStringMap = function(t) {
-	return new haxe_ds_StringMap();
-};
-_$Map_Map_$Impl_$.toIntMap = function(t) {
-	return new haxe_ds_IntMap();
-};
-_$Map_Map_$Impl_$.toEnumValueMapMap = function(t) {
-	return new haxe_ds_EnumValueMap();
-};
-_$Map_Map_$Impl_$.toObjectMap = function(t) {
-	return new haxe_ds_ObjectMap();
-};
-_$Map_Map_$Impl_$.fromStringMap = function(map) {
-	return map;
-};
-_$Map_Map_$Impl_$.fromIntMap = function(map) {
-	return map;
-};
-_$Map_Map_$Impl_$.fromObjectMap = function(map) {
-	return map;
 };
 Math.__name__ = ["Math"];
 var Reflect = function() { };
@@ -1623,6 +1526,19 @@ Type.enumIndex = function(e) {
 };
 Type.allEnums = function(e) {
 	return e.__empty_constructs__;
+};
+var haxe_IMap = function() { };
+$hxClasses["haxe.IMap"] = haxe_IMap;
+haxe_IMap.__name__ = ["haxe","IMap"];
+haxe_IMap.prototype = {
+	get: null
+	,set: null
+	,exists: null
+	,remove: null
+	,keys: null
+	,iterator: null
+	,toString: null
+	,__class__: haxe_IMap
 };
 var haxe_Http = function(url) {
 	this.url = url;
@@ -3328,6 +3244,90 @@ haxe_ds__$StringMap_StringMapIterator.prototype = {
 	}
 	,__class__: haxe_ds__$StringMap_StringMapIterator
 };
+var haxe_ds_StringMap = function() {
+	this.h = { };
+};
+$hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
+haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
+haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
+haxe_ds_StringMap.prototype = {
+	h: null
+	,rh: null
+	,isReserved: function(key) {
+		return __map_reserved[key] != null;
+	}
+	,set: function(key,value) {
+		if(__map_reserved[key] != null) this.setReserved(key,value); else this.h[key] = value;
+	}
+	,get: function(key) {
+		if(__map_reserved[key] != null) return this.getReserved(key);
+		return this.h[key];
+	}
+	,exists: function(key) {
+		if(__map_reserved[key] != null) return this.existsReserved(key);
+		return this.h.hasOwnProperty(key);
+	}
+	,setReserved: function(key,value) {
+		if(this.rh == null) this.rh = { };
+		this.rh["$" + key] = value;
+	}
+	,getReserved: function(key) {
+		if(this.rh == null) return null; else return this.rh["$" + key];
+	}
+	,existsReserved: function(key) {
+		if(this.rh == null) return false;
+		return this.rh.hasOwnProperty("$" + key);
+	}
+	,remove: function(key) {
+		if(__map_reserved[key] != null) {
+			key = "$" + key;
+			if(this.rh == null || !this.rh.hasOwnProperty(key)) return false;
+			delete(this.rh[key]);
+			return true;
+		} else {
+			if(!this.h.hasOwnProperty(key)) return false;
+			delete(this.h[key]);
+			return true;
+		}
+	}
+	,keys: function() {
+		var _this = this.arrayKeys();
+		return HxOverrides.iter(_this);
+	}
+	,arrayKeys: function() {
+		var out = [];
+		for( var key in this.h ) {
+		if(this.h.hasOwnProperty(key)) out.push(key);
+		}
+		if(this.rh != null) {
+			for( var key in this.rh ) {
+			if(key.charCodeAt(0) == 36) out.push(key.substr(1));
+			}
+		}
+		return out;
+	}
+	,iterator: function() {
+		return new haxe_ds__$StringMap_StringMapIterator(this,this.arrayKeys());
+	}
+	,toString: function() {
+		var s = new StringBuf();
+		s.b += "{";
+		var keys = this.arrayKeys();
+		var _g1 = 0;
+		var _g = keys.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var k = keys[i];
+			if(k == null) s.b += "null"; else s.b += "" + k;
+			s.b += " => ";
+			s.add(Std.string(__map_reserved[k] != null?this.getReserved(k):this.h[k]));
+			if(i < keys.length) s.b += ", ";
+		}
+		s.b += "}";
+		return s.b;
+	}
+	,__class__: haxe_ds_StringMap
+};
 var haxe_ds_WeakMap = function() {
 	throw new js__$Boot_HaxeError("Not implemented for this platform");
 };
@@ -4084,7 +4084,6 @@ function $iterator(o) { if( o instanceof Array ) return function() { return HxOv
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 function $arrayPushClosure(a) { return function(x) { a.push(x); }; }
-var __map_reserved = {}
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
@@ -4128,6 +4127,7 @@ if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
 	}
 	return a1;
 };
+var __map_reserved = {}
 var q = window.jQuery;
 var js = js || {}
 js.JQuery = q;

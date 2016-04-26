@@ -122,7 +122,7 @@ class Distribution extends Object
 	 * Get next multi-devliveries
 	 * ( deliveries including more than one vendors )
 	 */
-	public static function getNextMultiDeliveries(){
+	/*public static function getNextMultiDeliveries(){
 
 		var out = new Map<String,{place:Place,startDate:Date,endDate:Date,active:Bool,products:Array<ProductInfo>}>();
 		return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,false));
@@ -160,7 +160,7 @@ class Distribution extends Object
 
 		}
 		return Lambda.array(out);
-	}
+	}*/
 
 
 	/**

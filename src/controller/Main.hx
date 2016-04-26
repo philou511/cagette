@@ -108,7 +108,7 @@ class Main extends Controller {
 	}
 	
 	/**
-	 * Get next multi-devliveries 
+	 * Get next multi-deliveries 
 	 * ( deliveries including more than one vendors )
 	 */
 	public function getNextMultiDeliveries(){
@@ -157,6 +157,10 @@ class Main extends Controller {
 			}
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER){
+				if (d.orderStartDate == null) {
+					App.current.logError("orderStartDate of " + d + " is null");
+					continue;
+				}
 				if (d.orderStartDate.getTime() <= now.getTime() ){
 					//order currently open
 					o.active = true;

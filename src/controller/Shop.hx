@@ -44,10 +44,10 @@ class Shop extends sugoi.BaseController
 			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Float}>() };
 		}
 		
-		//var products = getProducts(place,date);
+		var products = getProducts(place,date);
 		//Sys.print( haxe.Json.stringify( {products:products,order:order} ) );
 
-		var products = getProducts();
+		//var products = getProducts();
 
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();
 		var catGroups = db.CategoryGroup.get(app.user.amap);
@@ -60,7 +60,6 @@ class Shop extends sugoi.BaseController
 	}
 	
 	
-	var contracts : List<db.Contract>;
 	
 	/**
 	 * Get the available products list
