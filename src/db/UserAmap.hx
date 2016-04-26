@@ -80,7 +80,7 @@ class UserAmap extends Object
 	
 	public function getRightName(r:Right):String {
 		return switch(r) {
-		case AmapAdmin : "Administrateur "+App.current.view.wAmap();
+		case AmapAdmin : "Administrateur";
 		case Messages : "Messagerie";
 		case Right.Membership : "Gestion adhérents";
 		case ContractAdmin(cid) : 

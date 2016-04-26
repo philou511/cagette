@@ -15,7 +15,7 @@ class App extends sugoi.BaseApp {
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
-	public static var VERSION = ([0,9,1]  : Version).withPre("RC2-"+#if neko "Neko" #else "PHP" #end);
+	public static var VERSION = ([0,9,1]  : Version).withPre("RC3-"+#if neko "Neko" #else "PHP" #end);
 	
 	public static function main() {
 		
@@ -163,6 +163,10 @@ class App extends sugoi.BaseApp {
 		out.set("WaitingList", "Liste d'attente");
 		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
+		out.set("percent", "Pourcentage");
+		out.set("pinned", "Mets en avant les produits");
+		out.set("daysBeforeOrderStart", "Ouverture de commande (nbre de jours avant livraison)");
+		out.set("daysBeforeOrderEnd", "Fermeture de commande (nbre de jours avant livraison)");
 		
 		return out;
 	}

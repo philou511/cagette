@@ -1,5 +1,6 @@
 package controller;
 import sugoi.form.Form;
+import sugoi.form.elements.HourDropDowns;
 
 class Distribution extends Controller
 {
@@ -27,14 +28,14 @@ class Distribution extends Controller
 	@tpl('distribution/listByDate.mtt')
 	function doListByDate(?date:Date,?type:String) {
 		
-		if (date == null) {
+		if (type == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			f.addElement(new sugoi.form.elements.DatePicker("date", "Date de livraison", true));
+			//f.addElement(new sugoi.form.elements.DatePicker("date", "Date de livraison",date));
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
 				{ key:"all", value:"Tout à la suite" },
-				{ key:"csv", value:"Export CSV" }
+				//{ key:"csv", value:"Export CSV" }
 			]));
 			
 			view.form = f;
@@ -42,7 +43,7 @@ class Distribution extends Controller
 			
 			if (f.checkToken()) {
 				
-				var url = '/distribution/listByDate/' + f.getValueOf("date").toString().substr(0, 10)+"/"+f.getValueOf("type");
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+f.getValueOf("type");
 				throw Redirect( url );
 			}
 			
@@ -222,20 +223,45 @@ class Distribution extends Controller
 		
 		var d = new db.DistributionCycle();
 		var form = sugoi.form.Form.fromSpod(d);
-		form.removeElement(form.getElement("contractId"));
-		form.removeElement(form.getElement("startHour"));
-		var x = new sugoi.form.elements.HourDropDowns("startHour", "Heure de début",d.startHour,true);
+		form.removeElementByName("contractId");
+		
+		//start hour
+		form.removeElementByName("startHour");
+		var date = Date.now();
+		var y = date.getFullYear();
+		var m = date.getMonth();
+		var day = date.getDate();
+		
+		var x = new HourDropDowns("startHour", "Heure de début", new Date(y, m, day, 19, 0, 0) , true);
 		form.addElement(x, 5);
+		//end hour
 		form.removeElement(form.getElement("endHour"));
-		var x = new sugoi.form.elements.HourDropDowns("endHour", "Heure de fin",d.endHour,true);
+		var x = new HourDropDowns("endHour", "Heure de fin", new Date(y, m, day, 20, 0, 0), true);
 		form.addElement(x, 6);
+		
+		if (contract.type == db.Contract.TYPE_VARORDER){
+			form.getElement("daysBeforeOrderStart").value = 10;
+			form.getElement("daysBeforeOrderEnd").value = 2;			
+		}else{
+			form.removeElementByName("daysBeforeOrderStart");
+			form.removeElementByName("daysBeforeOrderEnd");			
+		}
+		
 		
 		if (form.isValid()) {
 			
-			
 			form.toSpod(d); //update model
+			
+			d.startDate = form.getValueOf("startDate");
+			d.startHour = form.getValueOf("startHour");
+			d.endDate = form.getValueOf("endDate");
+			d.endHour = form.getValueOf("endHour");
+			d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+			d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+			d.placeId = form.getValueOf("placeId"); 
 			d.contract = contract;
 			d.insert();
+			
 			db.DistributionCycle.updateChilds(d);
 			throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');
 		}

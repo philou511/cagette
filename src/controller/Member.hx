@@ -322,13 +322,11 @@ class Member extends Controller
 	function doDelete(user:db.User,?args:{confirm:Bool,token:String}) {
 		
 		if (checkToken()) {
-			if (!app.user.isContractManager()) throw "Vous ne pouvez pas faire ça.";
+			if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
 			if (user.id == app.user.id) throw Error("/member/view/"+user.id,"Vous ne pouvez pas vous effacer vous même.");
 			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) {
-				
 				throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
 			}
-		
 		
 			var ua = db.UserAmap.get(user, app.user.amap, true);
 			if (ua != null) {
@@ -345,7 +343,7 @@ class Member extends Controller
 	@tpl('form.mtt')
 	function doMerge(user:db.User) {
 		
-		if (!app.user.isContractManager()) throw "Vous ne pouvez pas faire ça.";
+		if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
 		
 		view.title = "Fusionner un compte avec un autre";
 		view.text = "Cette action permet de fusionner deux comptes ( quand vous avez des doublons dans la base de données par exemple).<br/>Les contrats du compte 2 seront rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette action n'est pas annulable.";
@@ -411,10 +409,6 @@ class Member extends Controller
 	@tpl('member/import.mtt')
 	function doImport(?args: { confirm:Bool } ) {
 		
-		//var e = new event.Event();
-		//e.id = "displayMemberImport";
-		//App.current.eventDispatcher.dispatch(e);
-			
 		var step = 1;
 		var request = Utils.getMultipart(1024 * 1024 * 4); //4mb
 		
@@ -429,8 +423,8 @@ class Member extends Controller
 			for ( user in unregistred.copy() ) {
 				
 				//check nom+prenom
-				if (user[0] == null || user[1] == null) throw "Vous devez remplir le nom et prénom de la personne. <br/>Cette ligne est incomplète : " + user;
-				if (user[2] == null) throw "Chaque personne doit avoir un email, sinon elle ne pourra pas se connecter. "+user[0]+" "+user[1]+" n'en a pas.";
+				if (user[0] == null || user[1] == null) throw Error("/member/import","Vous devez remplir le nom et prénom de la personne. Cette ligne est incomplète : " + user);
+				if (user[2] == null) throw Error("/member/import","Chaque personne doit avoir un email, sinon elle ne pourra pas se connecter. "+user[0]+" "+user[1]+" n'en a pas. "+user);
 				//uppercase du nom
 				if (user[1] != null) user[1] = user[1].toUpperCase();
 				if (user[5] != null) user[5] = user[5].toUpperCase();

@@ -5,14 +5,10 @@
 		<h2>::c.name::</h2>
 			
 		<div class="row">	
-			<div class="col-md-6">
-				<b>Dates :</b> du ::hDate(c.startDate):: au ::hDate(c.endDate)::<br/>
-				
-				
-			</div>
-			<div class="col-md-6">
+			
+			<div class="col-md-12">
 				::if c.description!=null::
-				<b>Description :</b>	::raw nl2br(c.description)::
+					::raw nl2br(c.description)::
 				::end::
 			</div>
 
@@ -93,23 +89,22 @@
 	
 	
 	<div class="article">
-		<h2>Commander</h2>
+		<h2>Livraisons</h2>
 		::if c.isUserOrderAvailable()::
 			
-			::if c.type==1::				
-				<div style="overflow:auto;max-height:300px;">
+			
+				<ul>
 					::foreach d c.getDistribs(true,null)::
-					<div style="margin-bottom:8px;">
-						Livraison du ::dDate(d.date)::<br/>
-						
-						<a href="/contract/order/::c.id::?d=::d.id::" class="btn btn-primary btn-xs">Commander</a><br/>
-					</div>
-					::end::
-				</div>
-			::else::
-				<br/>
-				<a href="/contract/order/::c.id::" class="btn btn-primary">Commander</a>
-			::end::
+					<li>
+						<b>::dDate(d.date)::</b> à ::d._place.name::
+					</li>						
+					::end::	
+				</ul>
+			
+				<p>
+					<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commander</a>
+				</p>
+			
 
 		::else::
 			<p>
@@ -129,20 +124,7 @@
 		
 	</div>
 	
-	::if c.type==0::	
-	<div class="article">
-		<h2>Livraisons</h2>
-		
-		<ul style="overflow:auto;max-height:300px;">
-		::foreach d c.getDistribs(true,100)::
-			<li>::hDate(d.date)::</li>
-		::end::
-		</ul>
-		
-		Les livraisons passées ne sont pas affichées.
-		
-	</div>
-	::end::
+	
 	
 	
 </div>

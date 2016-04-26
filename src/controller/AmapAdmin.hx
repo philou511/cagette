@@ -2,6 +2,8 @@ package controller;
 import db.UserAmap;
 import sugoi.form.Form;
 import Common;
+import sugoi.form.elements.IntSelect;
+import sugoi.form.elements.StringInput;
 
 
 class AmapAdmin extends Controller
@@ -117,13 +119,13 @@ class AmapAdmin extends Controller
 		var form = new sugoi.form.Form("editRight");
 		
 		if (u == null) {
-			form.addElement( new sugoi.form.elements.Selectbox("user", "Adhérent", app.user.amap.getMembersFormElementData(), null, true) );	
+			form.addElement( new IntSelect("user", "Adhérent", app.user.amap.getMembersFormElementData(), null, true) );	
 		}
 		
 		var data = [];
 		for (r in db.UserAmap.Right.getConstructors()) {
 			if (r == "ContractAdmin") continue; //managed later
-			data.push({key:r,value:r});
+			data.push({label:r,value:r});
 		}
 		
 		var ua : db.UserAmap = null;
@@ -138,12 +140,13 @@ class AmapAdmin extends Controller
 		
 		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", "Droits", data, populate, true, true) );
 		form.addElement( new sugoi.form.elements.Html("<hr/>"));
-		//droits sur des contrats
+		
+		//Rights on contracts
 		var data = [];
 		var populate :Array<String> = [];
-		data.push({key:"contractAll",value:"Tous les contrats"});
+		data.push({value:"contractAll",label:"Tous les contrats"});
 		for (r in app.user.amap.getActiveContracts(true)) {
-			data.push({key:"contract"+Std.string(r.id),value:r.name});
+			data.push( { label:r.name , value:"contract"+Std.string(r.id) } );
 		}
 		
 		if(ua!=null && ua.rights!=null){
@@ -237,16 +240,16 @@ class AmapAdmin extends Controller
 		
 		var i = 1;
 		for (k in a.vatRates.keys()) {
-			f.addElement(new sugoi.form.elements.Input(i+"-k", "Nom "+i, k));
-			f.addElement(new sugoi.form.elements.Input(i + "-v", "Taux "+i, Std.string(a.vatRates.get(k)) ));
+			f.addElement(new StringInput(i+"-k", "Nom "+i, k));
+			f.addElement(new StringInput(i + "-v", "Taux "+i, Std.string(a.vatRates.get(k)) ));
 			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
 			i++;
 		}
 		var j = i;
 		
 		for (x in 0...5 - i) {
-			f.addElement(new sugoi.form.elements.Input(i+"-k", "Nom "+i, ""));
-			f.addElement(new sugoi.form.elements.Input(i + "-v", "Taux "+i, ""));
+			f.addElement(new StringInput(i+"-k", "Nom "+i, ""));
+			f.addElement(new StringInput(i + "-v", "Taux "+i, ""));
 			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
 			i++;
 		}

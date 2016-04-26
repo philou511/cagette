@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.ListData;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
@@ -52,14 +53,21 @@ class Distribution extends Object
 		end = DateTools.delta(date, 1000 * 60 * 90);
 	}
 	
-	public function populate():Array<{key:String,value:String}> {
+	/**
+	 * get group members list as form data
+	 */
+	public function populate():FormData<Int> {
 		return App.current.user.getAmap().getMembersFormElementData();
 	}
 	
-	public function placePopulate():Array<{key:String,value:String}> {
+	/**
+	 * get groups places as form data
+	 * @return
+	 */
+	public function placePopulate():FormData<Int> {
 		var out = [];
 		var places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
-		for (p in places) out.push( { key:Std.string(p.id),value:p.name } );
+		for (p in places) out.push( { label:p.name,value:p.id} );
 		return out;
 	}
 	
@@ -109,33 +117,34 @@ class Distribution extends Object
 			
 		}
 	}
-	
+
 	/**
-	 * Get next multi-devliveries 
+	 * Get next multi-devliveries
 	 * ( deliveries including more than one vendors )
 	 */
 	public static function getNextMultiDeliveries(){
-		
+
 		var out = new Map<String,{place:Place,startDate:Date,endDate:Date,active:Bool,products:Array<ProductInfo>}>();
-		
+		return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,false));
+
 		var now = Date.now();
-	
+
 		var contracts = Contract.getActiveContracts(App.current.user.amap);
 		var cids = Lambda.map(contracts, function(p) return p.id);
-		
+
 		//available deliveries + some of the next deliveries
-		
+
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderEndDate >= now, { orderBy:date }, false);
 		var inOneMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30);
-		for (d in distribs) {			
-			
+		for (d in distribs) {
+
 			var o = out.get(d.getKey());
 			if (o == null) o = {place:d.place, startDate:d.date,active:null, endDate:d.end, products:[]};
 			for ( p in d.contract.getProductsPreview(8)){
 				if (o.products.length >= 8) break;
-				o.products.push(	p.infos() );	
+				o.products.push(	p.infos() );
 			}
-			
+
 			if (d.orderStartDate.getTime() <= now.getTime() ){
 				//order currently open
 				o.active = true;
@@ -144,23 +153,36 @@ class Distribution extends Object
 				o.active = false;
 			}else{
 				continue;
-				
+
 			}
-			
+
 			out.set(d.getKey(), o);
-			
+
 		}
 		return Lambda.array(out);
 	}
-	
-	
+
+
+	/**
+     * Get open to orders deliveries
+     * @param	contract
+     */
+    public static function getOpenToOrdersDeliveries(contract:db.Contract){
+
+        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,false));
+
+
+    }
+
+
+
 	/**
 	 * Return a string like $placeId-$date
 	 */
 	public function getKey():String{
 		return date.toString().substr(0, 10) +"-"+Std.string(place.id);
 	}
-	
-	
-	
+
+
+
 }

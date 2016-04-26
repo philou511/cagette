@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
 
@@ -175,15 +176,21 @@ class Contract extends Object
 	}
 	
 	/**
-	 * get all orders 
-	 * 
+	 * get all orders
+	 *
 	 * @param	d
+	 * @return
+	 */
+	/**
+	 * Get all orders of this contract
+	 * @param	d	A delivery is needed for varying orders contract
 	 * @return
 	 */
 	public function getOrders(?d:db.Distribution):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "Il faut spécifier une livraison pour ce type de contrat";
 		
-		var pids = getProducts().map(function(x) return x.id);
+		//get product ids, some of the products may have been disabled but we keep the order
+		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserContract>();
 		if (d != null) {
 			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	
@@ -192,26 +199,26 @@ class Contract extends Object
 		}		
 		return Lambda.array(ucs);
 	}
-	
+
 	/**
 	 * get orders for a user
-	 * 
+	 *
 	 * @param	d
 	 * @return
 	 */
 	public function getUserOrders(u:db.User,?d:db.Distribution):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "Il faut spécifier une livraison pour ce type de contrat";
-		
+
 		var pids = getProducts().map(function(x) return x.id);
 		var ucs = new List<db.UserContract>();
 		if (d != null && d.contract.type==db.Contract.TYPE_VARORDER) {
-			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);	
+			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
 		}else {
-			ucs = UserContract.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);	
-		}		
+			ucs = UserContract.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);
+		}
 		return Lambda.array(ucs);
 	}
-	
+
 	public function getDistribs(excludeOld = true,?limit=999):List<Distribution> {
 		if (excludeOld) {
 			//still include deliveries which just expired in last 24h
@@ -229,12 +236,15 @@ class Contract extends Object
 		return App.current.user.amap.getMembersFormElementData();
 	}
 	
-	public function populateVendor():Array<{key:String,value:String}> {
+	/**
+	 * get a vendor list as form data
+	 * @return
+	 */
+	public function populateVendor():FormData<Int>{
 		var vendors = Vendor.manager.search($amap == App.current.user.amap, false);
 		var out = [];
 		for (v in vendors) {
-			
-			out.push({key:Std.string(v.id),value:v.name });
+			out.push({label:v.name, value:v.id });
 		}
 		return out;
 	}

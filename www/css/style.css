@@ -109,18 +109,24 @@ table.product .desc {
 	font-size : 90%;
 	color : #666;
 }
-.product {
-	width : 49%;
+.shop .catHeader {
+	font-weight : bold;
+	font-size : 1.2em;
+	color : #583816;
+	border-bottom : 1px solid #CCC;
+	width : 100%;
+}
+.shop .product {
 	display : inline-block;
 	zoom : 1;
 	*display : inline;
 }
-.product .name {
+.shop .product .name {
 	padding-left : 8px;
 }
 .price {
 	font-weight : bold;
-	font-size : 130%;
+	font-size : 1.3em;
 }
 .vat {
 	color : #999999;

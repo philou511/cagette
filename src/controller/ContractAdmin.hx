@@ -4,6 +4,7 @@ import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
+import sugoi.form.elements.StringInput;
 
 class ContractAdmin extends Controller
 {
@@ -183,7 +184,77 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	 
+	/**
+	 * Global view on orders
+	 * 
+	 * @param	date
+	 */
+	@tpl('contractAdmin/ordersByDate.mtt')
+	function doOrdersByDate(?date:Date){
+		if (date == null) {
+		
+			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
+			var el = new sugoi.form.elements.DatePicker("date", "Date de livraison", true);
+			el.format = 'LL';
+			f.addElement(el);
+			/*f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
+				{ key:"one", value:"Une personne par page" },
+				{ key:"all", value:"Tout à la suite" },
+				{ key:"csv", value:"Export CSV" }
+			]));*/
+			
+			view.form = f;
+			view.title = "Vue globale des commandes";
+			view.text = "Cette page vous permet d'avoir une vision d'ensemble des commandes tout contrats confondus.";
+			view.text += "<br/>Sélectionnez la date de livraison qui vous interesse :";
+			app.setTemplate("form.mtt");
+			
+			if (f.checkToken()) {
+				
+				var url = '/contractAdmin/ordersByDate/' + f.getValueOf("date").toString().substr(0, 10);
+				throw Redirect( url );
+			}
+			
+			return;
+			
+		}else {
+			
+			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+			var contracts = app.user.amap.getActiveContracts(true);
+			var cids = Lambda.map(contracts, function(c) return c.id);
+			var cconst = [];
+			var cvar = [];
+			for ( c in contracts) {
+				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
+				if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
+				
+			}
+			
+			//varying orders
+			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
+			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
+			
+			//constant orders
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+			var products = [];
+			for ( d in distribs) {
+				for ( p in d.contract.getProducts()) {
+					products.push(p.id);
+				}
+			}
+			var constorders = db.UserContract.manager.search($productId in products, { orderBy:userId } );
+			
+			//merge 2 lists
+			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
+			var orders = db.UserContract.prepare(Lambda.list(orders));
+			
+			view.orders = orders;
+			view.date = date;
+			view.ctotal = app.params.exists("ctotal");
+		}
+	}
+
 	/**
 	 * Overview of orders for this contract
 	 */
@@ -239,7 +310,7 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new Input("name","Nom du nouveau contrat : ",contract.name+" - copie "));
+		form.addElement(new StringInput("name","Nom du nouveau contrat : ",contract.name+" - copie "));
 		form.addElement(new Checkbox("copyProducts","Copier les produits",true));
 		form.addElement(new Checkbox("copyDeliveries","Copier les livraisons",true));
 		
@@ -257,7 +328,7 @@ class ContractAdmin extends Controller
 			nc.type = contract.type;
 			nc.vendor = contract.vendor;
 			nc.percentageName = contract.percentageName;
-			nc.percentageValue = nc.percentageValue;
+			nc.percentageValue = contract.percentageValue;
 			nc.insert();
 			
 			if (form.getValueOf("copyProducts") == "1") {
@@ -451,6 +522,13 @@ class ContractAdmin extends Controller
 				for (r in repartition) {
 					Reflect.setField(r, "percent", Math.round((r.quantity/total)*100)  );
 				}
+				
+				
+				if ( app.params.exists("csv") ){
+					
+					this.setCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+				}
+				
 				view.repartition = repartition;
 				view.totalQuantity = total;
 				view.totalPrice = totalPrice;
@@ -500,29 +578,7 @@ class ContractAdmin extends Controller
 		throw Ok('/contractAdmin/orders/'+uc.product.contract.id,'Le contrat a bien été annulé');
 	}
 	
-	/*@tpl("form.mtt")
-	function doEdit(uc:UserContract) {
-		
-		var form = sugoi.form.Form.fromSpod(uc);
-		
-		form.removeElement(form.getElement("amapId"));
-		form.removeElement(form.getElement("productId"));
-		var products = uc.product.contract.getProducts();
-		var prodArr = [];
-		for (p in products) {
-			prodArr.push({key:Std.string(p.id),value:p.name});
-		}
-		form.addElement( new Selectbox("productId", "Produit", prodArr,Std.string(uc.product.id),true) );
-		
-		if (form.isValid()) {
-			uc.lock();
-			form.toSpod(uc); //update model
-			uc.update();
-			throw Ok('/contractAdmin/orders/' + uc.product.contract.id, 'Ce contrat a été mis à jour');			
-		}
-		
-		view.form = form;
-	}*/
+
 	@tpl("contractadmin/selectDistrib.mtt")
 	function doSelectDistrib(c:db.Contract) {
 		view.c = c;
@@ -603,7 +659,15 @@ class ContractAdmin extends Controller
 						var pid = Std.parseInt(k.substr("product".length));
 						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
 						if (uo == null) throw "Impossible de retrouver le produit " + pid;
-						var q = Std.parseInt(param);
+						
+						
+						var q = 0.0;
+						if (uo.product.hasFloatQt ) {
+							param = StringTools.replace(param, ",", ".");
+							q = Std.parseFloat(param);
+						}else {
+							q = Std.parseInt(param);
+						}
 						
 						//var order = new db.UserContract();
 						if (uo.order != null) {

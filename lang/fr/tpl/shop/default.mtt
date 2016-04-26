@@ -2,42 +2,42 @@
 <div class="col-md-9">
 
 	<div class="distrib">
-					
+
 		<div class="header row" style="min-height: auto;">
 			<div class="col-md-8">
-				Distribution du ::hDate(date)::	
+				Distribution du ::hDate(date)::
 				<br/>
-				
+
 				<div class="closing">
-				<span class="glyphicon glyphicon-time"></span> Fermeture des commandes :					
+				<span class="glyphicon glyphicon-time"></span> Fermeture des commandes :
 				::if infos.length==1::
 					::hDate(infos[0].close)::<br/>
-				
+
 				::else::
 					<br/>
 					::foreach i infos::
 
 						::foreach c i.contracts::
 							::c.name::,
-						::end:: 
-						: ::hDate(i.close)::<br/>	
-					
+						::end::
+						: ::hDate(i.close)::<br/>
+
 					::end::
 				::end::
 				</div>
 			</div>
-			
-			
+
+
 			<div class="col-md-4" style="text-align:right;">
-				::if place!=null:: 
+				::if place!=null::
 				<span >
-					<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>			
+					<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>
 				</span>
 				::end::
-			
-					
-				
-				::if place!=null:: 
+
+
+
+				::if place!=null::
 					<div class="address">
 					$$nullSafe(::place.address1::)
 					$$nullSafe(::place.address2::)
@@ -48,12 +48,12 @@
 			</div>
 		</div>
 	</div>
-	
-	
+
+
 	<div class="article">
 		
-	
-		
+
+
 	<!--<table class="table table-bordered">
 		
 		::foreach i infos::
@@ -82,8 +82,10 @@
 		
 		::end::
 	</table>-->
-	
-	
+		
+
+
+
 	<script language="javascript">
 	var cart;
 	$(function(){
@@ -101,18 +103,18 @@
 	}
 	</style>
 	
-	<div class="row">
+	<div class="row shop">
 		
 		
 		::foreach p products::
-		<div class="col-xs-12 col-sm-6 col-lg-4" id="product::p.id::">
-			
+		<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::" style="display:none;">
+
 			<table class="product">
 				<tr>
 					<td style="vertical-align:top;">
 						<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus">
 							<img src="::p.image::" style="width:64px;height:64px;" />
-							
+
 						</a>
 					</td>
 					<td>
@@ -125,11 +127,8 @@
 							<form class="form-inline">
 							::if p.stock!=null && p.stock==0::
 								<span style="color:#AAA;">Stock épuisé</span>
-								
-							::elseif !p.orderable::	
-							
+							::elseif !p.orderable::
 								<span style="color:#AAA;">Commande fermée</span>
-								
 							::else::
 								::if p.stock!=null && p.stock>0 && p.stock<=10::
 								<div class="warning" >Plus que ::p.stock:: en stock</div>
@@ -142,10 +141,6 @@
 							
 							</form>
 						</div>
-						
-						
-						
-						
 					</td>
 				</tr>
 			</table>
@@ -203,17 +198,16 @@
 
 	
 	
-	<script>
+<script>
+	var formSubmitted = false;
+	window.addEventListener("beforeunload", function (e) {
+		if(formSubmitted) return;
+		if(cart.isEmpty()) return;
+		var confirmationMessage = 'Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.';
 
-var formSubmitted = false;
-
-window.addEventListener("beforeunload", function (e) {
-	if(formSubmitted) return undefined;
-    var confirmationMessage = 'Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.';
-
-    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-    return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-});
+		(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+		return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+	});
 </script>
 
 ::end::

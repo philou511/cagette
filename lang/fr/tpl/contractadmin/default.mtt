@@ -40,12 +40,14 @@
 		</table>
 	
 		
-	::if user.isAmapManager():: 
+		::if user.isAmapManager():: 
 		$$insert(Nouveau contrat,/contract/insert/)
-	::end::
-	<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Contrats anciens</a>
-	<a href="/distribution/listByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> Liste d'émargement globale</a>
+		::end::
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Contrats anciens</a>
 		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Calendrier</a>
+		
+		<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>
+		
 	</div>
 	
 </div>

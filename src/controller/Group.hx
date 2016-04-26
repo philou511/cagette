@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.StringInput;
 
 
 /**
@@ -9,8 +10,13 @@ class Group extends controller.Controller
 
 	@tpl('group/view.mtt')
 	function doDefault(group:db.Amap){
+		
 		view.group = group;
 		view.contracts = group.getActiveContracts();
+		if (app.user != null){
+			
+			view.isMember = Lambda.has(app.user.getAmaps(), group);
+		}
 	}
 	
 	/**
@@ -29,9 +35,9 @@ class Group extends controller.Controller
 		
 		var form = new sugoi.form.Form("reg");				
 		if (app.user == null){
-			form.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
-			form.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
-			form.addElement(new sugoi.form.elements.Input("userEmail", "Votre email", "", true));		
+			form.addElement(new StringInput("userFirstName", "Votre prénom","",true));
+			form.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
+			form.addElement(new StringInput("userEmail", "Votre email", "", true));		
 		}
 		form.addElement(new sugoi.form.elements.TextArea("msg", "Laissez un message"));
 		
@@ -85,9 +91,13 @@ class Group extends controller.Controller
 		form.submitButtonLabel = "Rejoindre le groupe";
 		form.addElement(new sugoi.form.elements.Html("Confirmez votre inscription à \""+group.name+"\""));
 		if (app.user == null){
-			form.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
-			form.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
-			form.addElement(new sugoi.form.elements.Input("userEmail", "Votre email", "", true));		
+			form.addElement(new StringInput("userFirstName", "Votre prénom","",true));
+			form.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
+			form.addElement(new StringInput("userEmail", "Votre email", "", true));		
+			form.addElement(new StringInput("address", "Adresse", "", true));					
+			form.addElement(new StringInput("zipCode", "Code postal", "", true));		
+			form.addElement(new StringInput("city", "Ville", "", true));		
+			form.addElement(new StringInput("phone", "Téléphone", "", true));		
 		}
 		
 		if (form.isValid()){
@@ -98,6 +108,10 @@ class Group extends controller.Controller
 				user.email = f.getValueOf("userEmail");
 				user.firstName = f.getValueOf("userFirstName");
 				user.lastName = f.getValueOf("userLastName");
+				user.address1 = f.getValueOf("address");
+				user.zipCode = f.getValueOf("zipCode");
+				user.city = f.getValueOf("city");
+				user.phone = f.getValueOf("phone");
 				
 				if ( db.User.getSimilar(user.firstName, user.lastName, user.email).length > 0 ) {
 					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à votre groupe à partir de cette page");
@@ -132,7 +146,7 @@ class Group extends controller.Controller
 		
 		
 		var f = new sugoi.form.Form("c");
-		f.addElement(new sugoi.form.elements.Input("amapName", "Nom de votre groupe", "", true));
+		f.addElement(new StringInput("amapName", "Nom de votre groupe", "", true));
 		//f.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
 		//f.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
 		//f.addElement(new sugoi.form.elements.Input("userEmail", "Votre email", "", true));

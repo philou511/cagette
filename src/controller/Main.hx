@@ -2,6 +2,7 @@ package controller;
 import db.Distribution;
 import db.UserContract;
 import haxe.web.Dispatch;
+import sugoi.form.elements.StringInput;
 import sugoi.tools.ResultsBrowser;
 import Common;
 
@@ -196,9 +197,9 @@ class Main extends Controller {
 			view.title = "Installation de Cagette.net";
 
 			var f = new sugoi.form.Form("c");
-			f.addElement(new sugoi.form.elements.Input("amapName", "Nom de votre groupement","",true));
-			f.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
-			f.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
+			f.addElement(new StringInput("amapName", "Nom de votre groupement","",true));
+			f.addElement(new StringInput("userFirstName", "Votre prénom","",true));
+			f.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
 
 			if (f.checkToken()) {
 	

@@ -28,7 +28,6 @@ class DistributionCycle extends Object
 	public var id : SId;	
 	
 	@:relation(contractId) public var contract : Contract;
-	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
 	
 	public var cycleType:SEnum<CycleType>;
 	
@@ -38,12 +37,22 @@ class DistributionCycle extends Object
 	public var startHour : SDateTime; 
 	public var endHour : SDateTime;	
 	
+	public var daysBeforeOrderStart:SNull<STinyInt>;
+	public var daysBeforeOrderEnd:SNull<STinyInt>;
+	
+	@formPopulate("placePopulate") 
+	@:relation(placeId) public var place : Place;
+	public var placeId:SInt;
+	
+	
 	public function new() {
 		super();
 	}
 	
 	/**
 	 * on créé toutes les distribs en partant du jour de la semaine de la premiere date
+	 * 
+	 * @TODO refactor this with http://thx-lib.org/api/thx/Dates.html#jump
 	 */
 	public static function updateChilds(dc:DistributionCycle) {
 		
@@ -59,10 +68,15 @@ class DistributionCycle extends Object
 		d.place = dc.place;
 		d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 		d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours()  , dc.endHour.getMinutes()  , 0);
+		if (dc.contract.type == Contract.TYPE_VARORDER){
+			
+			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw "daysBeforeOrderEnd or daysBeforeOrderStart is null";
+			d.orderStartDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+			d.orderEndDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+		}
+		
 		d.insert();
 		
-		
-			
 		//iterations
 		for(i in 0...100) {
 			
@@ -86,27 +100,7 @@ class DistributionCycle extends Object
 					
 				case Monthly :
 					datePointer = DateTools.delta(datePointer, oneDay * 28.0);
-					//App.log("monthly datePointer +28j : "+datePointer);
-					//while (datePointer.getDay() != dayOfWeek ) {
-						//
-						//datePointer = DateTools.delta(datePointer, oneDay);
-						//App.log("monthly datePointer +24h : "+datePointer);
-					//}
 			}
-			/*
-			if (dc.cycleType == Weekly) {
-				datePointer = DateTools.delta(datePointer, 1000 * 60 * 60 * 24 * 7.0);
-				App.log("datePointer : "+datePointer);
-			}else {
-				
-				datePointer = DateTools.delta(datePointer, 1000 * 60 * 60 * 24 * 28.0);
-				App.log("monthly datePointer +28j : "+datePointer);
-				while (datePointer.getDay() != dayOfWeek ) {
-					
-					datePointer = DateTools.delta(datePointer, 1000 * 60 * 60 * 24.0);
-					App.log("monthly datePointer +24h : "+datePointer);
-				}
-			}*/
 			
 			if (datePointer.getTime() > dc.endDate.getTime()) {
 				App.log("finish");
@@ -118,14 +112,20 @@ class DistributionCycle extends Object
 			//applique heure de debut et fin
 			d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 			d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours(),   dc.endHour.getMinutes(),   0);
+			
+			if (dc.contract.type == Contract.TYPE_VARORDER){
+				d.orderStartDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+				d.orderEndDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+			}
+			
 			d.insert();
 		}
 	}
 	
-	public function placePopulate():Array<{key:String,value:String}> {
+	public function placePopulate():Array<{label:String,value:Int}> {
 		var out = [];
 		var places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
-		for (p in places) out.push( { key:Std.string(p.id),value:p.name } );
+		for (p in places) out.push( { label:p.name,value :p.id } );
 		return out;
 	}
 }

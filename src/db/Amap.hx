@@ -1,4 +1,5 @@
 package db;
+import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
 
@@ -142,15 +143,13 @@ class Amap extends Object
 		return User.manager.unsafeObjects("Select u.* from User u,UserAmap ua where u.id=ua.userId and ua.amapId="+this.id+" order by u.lastName", false);
 	}
 	
-	public function getMembersFormElementData():Array<{key:String,value:String}> {
+	public function getMembersFormElementData():FormData<Int> {
 		var m = getMembers();
 		var out = [];
-		var name = "";
 		for (mm in m) {
-			name = mm.getName();
-			if (mm.lastName2 != null) name = name + " / " + mm.lastName2 +" " + mm.firstName2;
+		
+			out.push({label:mm.getCoupleName() , value:mm.id});
 			
-			out.push({key:Std.string(mm.id),value:name });
 		}
 		return out;
 	}
