@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.StringInput;
 
 /**
  * ...
@@ -14,9 +15,9 @@ class Install
 			view.title = "Installation de Cagette.net";
 
 			var f = new sugoi.form.Form("c");
-			f.addElement(new sugoi.form.elements.Input("amapName", "Nom de votre groupement","",true));
-			f.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
-			f.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
+			f.addElement(new StringInput("amapName", "Nom de votre groupement","",true));
+			f.addElement(new StringInput("userFirstName", "Votre prénom","",true));
+			f.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
 
 			if (f.checkToken()) {
 	

@@ -41,6 +41,7 @@ class Product extends Controller
 		f.removeElementByName("contractId");
 			
 		if (f.isValid()) {
+			
 			f.toSpod(d); //update model
 			d.update();
 			throw Ok('/contractAdmin/products/'+d.contract.id,'Le produit a été mis à jour');
@@ -62,7 +63,6 @@ class Product extends Controller
 		var pt = new form.ProductTypeRadioGroup("type", "type", "1");
 		f.addElement( pt );
 		f.removeElementByName("contractId");
-		f.getElement("price").addFilter(new sugoi.form.filters.FloatFilter());
 		
 		//stock mgmt ?
 		if (!contract.hasStockManagement()) f.removeElementByName('stock');
@@ -72,9 +72,9 @@ class Product extends Controller
 		
 		var data = [];
 		for (k in app.user.amap.vatRates.keys()) {
-			data.push( { key:app.user.amap.vatRates[k].string(), value:k } );
+			data.push( { value:app.user.amap.vatRates[k], label:k } );
 		}
-		f.addElement( new sugoi.form.elements.Selectbox("vat", "TVA", data, Std.string(d.vat) ) );
+		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
 		
 		
 		if (f.isValid()) {

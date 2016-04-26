@@ -28,7 +28,6 @@ class DistributionCycle extends Object
 	public var id : SId;	
 	
 	@:relation(contractId) public var contract : Contract;
-	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
 	
 	public var cycleType:SEnum<CycleType>;
 	
@@ -40,6 +39,10 @@ class DistributionCycle extends Object
 	
 	public var daysBeforeOrderStart:SNull<STinyInt>;
 	public var daysBeforeOrderEnd:SNull<STinyInt>;
+	
+	@formPopulate("placePopulate") 
+	@:relation(placeId) public var place : Place;
+	public var placeId:SInt;
 	
 	
 	public function new() {
@@ -67,23 +70,12 @@ class DistributionCycle extends Object
 			
 			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw "daysBeforeOrderEnd or daysBeforeOrderStart is null";
 			
-			//untyped  dc.daysBeforeOrderStart = Std.parseInt(dc.daysBeforeOrderStart);
-			
-			trace( dc.daysBeforeOrderStart*1 );
-			var t :Int = dc.daysBeforeOrderStart *1;
-			trace(Type.getClassName(Type.getClass(t)));
-			trace(Type.getClassName(Type.getClass(dc.daysBeforeOrderStart)));
-			t *= 10;
-			trace( t );
-			d.orderStartDate = DateTools.delta(d.date, dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
-			d.orderEndDate = DateTools.delta(d.date, dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+			d.orderStartDate = DateTools.delta(d.date, -1 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+			d.orderEndDate = DateTools.delta(d.date, -1 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
 		}
-		
 		
 		d.insert();
 		
-		
-			
 		//iterations
 		for(i in 0...100) {
 			
@@ -148,10 +140,10 @@ class DistributionCycle extends Object
 		}
 	}
 	
-	public function placePopulate():Array<{key:String,value:String}> {
+	public function placePopulate():Array<{label:String,value:Int}> {
 		var out = [];
 		var places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
-		for (p in places) out.push( { key:Std.string(p.id),value:p.name } );
+		for (p in places) out.push( { label:p.name,value :p.id } );
 		return out;
 	}
 }

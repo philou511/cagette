@@ -4,6 +4,7 @@ import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
+import sugoi.form.elements.StringInput;
 
 class ContractAdmin extends Controller
 {
@@ -309,7 +310,7 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new Input("name","Nom du nouveau contrat : ",contract.name+" - copie "));
+		form.addElement(new StringInput("name","Nom du nouveau contrat : ",contract.name+" - copie "));
 		form.addElement(new Checkbox("copyProducts","Copier les produits",true));
 		form.addElement(new Checkbox("copyDeliveries","Copier les livraisons",true));
 		

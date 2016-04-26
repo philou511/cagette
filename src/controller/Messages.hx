@@ -38,7 +38,7 @@ class Messages extends Controller
 		
 		var lists = getLists();
 		form.addElement( new Selectbox<String>("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
-		form.addElement( new Input("subject", "Sujet :","",false,null,"style='width:500px;'") );
+		form.addElement( new StringInput("subject", "Sujet :","",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
 		
 		if (form.checkToken()) {

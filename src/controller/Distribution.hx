@@ -1,5 +1,6 @@
 package controller;
 import sugoi.form.Form;
+import sugoi.form.elements.HourDropDowns;
 
 class Distribution extends Controller
 {
@@ -222,13 +223,18 @@ class Distribution extends Controller
 		
 		var d = new db.DistributionCycle();
 		var form = sugoi.form.Form.fromSpod(d);
-		//form.removeElement(form.getElement("contractId"));
-		//form.removeElement(form.getElement("startHour"));
-		//var x = new sugoi.form.elements.HourDropDowns("startHour", "Heure de début",d.startHour,true);
-		//form.addElement(x, 5);
-		//form.removeElement(form.getElement("endHour"));
-		//var x = new sugoi.form.elements.HourDropDowns("endHour", "Heure de fin",d.endHour,true);
-		//form.addElement(x, 6);
+		form.removeElementByName("contractId");
+		
+		//start hour
+		form.removeElementByName("startHour");
+		var x = new HourDropDowns("startHour", "Heure de début", d.startHour, true);
+		x.value = new Date(0, 0, 0, 19, 0, 0);
+		form.addElement(x, 5);
+		//end hour
+		form.removeElement(form.getElement("endHour"));
+		var x = new HourDropDowns("endHour", "Heure de fin",d.endHour,true);
+		x.value = new Date(0, 0, 0, 20, 0, 0);
+		form.addElement(x, 6);
 		
 		if (contract.type == db.Contract.TYPE_VARORDER){
 			form.getElement("daysBeforeOrderStart").value = 10;
@@ -243,19 +249,13 @@ class Distribution extends Controller
 			
 			form.toSpod(d); //update model
 			
-			var t :Int = d.daysBeforeOrderStart;
-			trace(t+1);
-			trace(Type.getClassName(Type.getClass(d.daysBeforeOrderStart)));
-			var t :Int = 4;
-			trace(Type.getClassName(Type.getClass(t)));
-			
-			//d.startDate = form.getValueOf("startDate");
-			//d.startHour = form.getValueOf("startHour");
-			//d.endDate = form.getValueOf("endDate");
-			//d.endHour = form.getValueOf("endHour");
-			//d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
-			//d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
-			//d.placeId = form.getValueOf("placeId"); 
+			d.startDate = form.getValueOf("startDate");
+			d.startHour = form.getValueOf("startHour");
+			d.endDate = form.getValueOf("endDate");
+			d.endHour = form.getValueOf("endHour");
+			d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+			d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+			d.placeId = form.getValueOf("placeId"); 
 			d.contract = contract;
 			d.insert();
 			
