@@ -331,7 +331,7 @@ class ContractAdmin extends Controller
 			nc.percentageValue = contract.percentageValue;
 			nc.insert();
 			
-			if (form.getValueOf("copyProducts") == "1") {
+			if (form.getValueOf("copyProducts") == true) {
 				var prods = contract.getProducts();
 				for ( source_p in prods) {
 					var p = new db.Product();
@@ -348,7 +348,7 @@ class ContractAdmin extends Controller
 				}
 			}
 			
-			if (form.getValueOf("copyDeliveries") == "1") {
+			if (form.getValueOf("copyDeliveries") == true) {
 				for ( ds in contract.getDistribs()) {
 					var d = new db.Distribution();
 					d.contract = nc;
@@ -357,6 +357,8 @@ class ContractAdmin extends Controller
 					d.distributor2Id = ds.distributor2Id;
 					d.distributor3Id = ds.distributor3Id;
 					d.distributor4Id = ds.distributor4Id;
+					d.orderStartDate = ds.orderStartDate;
+					d.orderEndDate = ds.orderEndDate;
 					d.end = ds.end;
 					d.place = ds.place;
 					d.text = ds.text;
