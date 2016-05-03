@@ -195,7 +195,7 @@
 									Commander
 								</a>
 								<br/>
-								Fermeture des commandes :	blabla
+								<!--Fermeture des commandes :-->
 							::else::
 								<span class="glyphicon glyphicon-close"></span>
 								Ouverture des commandes<br/>

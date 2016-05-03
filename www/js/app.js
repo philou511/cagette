@@ -4073,8 +4073,8 @@ sugoi_form_filters_FloatFilter.__interfaces__ = [sugoi_form_filters_IFilter];
 sugoi_form_filters_FloatFilter.__super__ = sugoi_form_filters_Filter;
 sugoi_form_filters_FloatFilter.prototype = $extend(sugoi_form_filters_Filter.prototype,{
 	filter: function(n) {
-		n = StringTools.trim(n);
 		if(n == null || n == "") return 0;
+		n = StringTools.trim(n);
 		n = StringTools.replace(n,",",".");
 		return parseFloat(n);
 	}
