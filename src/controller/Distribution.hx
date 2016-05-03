@@ -256,8 +256,10 @@ class Distribution extends Controller
 			d.startHour = form.getValueOf("startHour");
 			d.endDate = form.getValueOf("endDate");
 			d.endHour = form.getValueOf("endHour");
-			d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
-			d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+			if (contract.type == db.Contract.TYPE_VARORDER){
+				d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+				d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+			}
 			d.placeId = form.getValueOf("placeId"); 
 			d.contract = contract;
 			d.insert();
