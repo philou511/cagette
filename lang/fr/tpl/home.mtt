@@ -77,6 +77,10 @@
 			
 					</div>
 					
+					<div class="myorder">
+						Mes produits commandés :
+					</div>
+					
 					<div class="content orders">
 					::foreach o d.myOrders::
 					
@@ -118,7 +122,7 @@
 									
 											<br/>( partagé avec ::mate.getName():: 
 											
-											::if c.getWhosTurn(d.distrib)==false::
+											::if c.getWhosTurn(o.distrib)==false::
 									
 												::if c._user.getName() == you.getName()::
 													<span style="color:#080">, c'est votre tour</span>
@@ -199,7 +203,7 @@
 							::else::
 								<span class="glyphicon glyphicon-close"></span>
 								Ouverture des commandes<br/>
-								le ::hDate(d.startDate)::
+								le ::hDate(d.orderStartDate)::
 							::end::
 							
 						</div>
@@ -228,7 +232,8 @@
 						
 						
 					</div>
-						
+					
+					
 					
 					<div class="content ::class::">
 						

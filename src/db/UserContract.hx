@@ -66,6 +66,7 @@ class UserContract extends Object
 	 * @return	false -> user , true -> user2
 	 */
 	public function getWhosTurn(distrib:Distribution) {
+		if (distrib == null) throw "distribution is null";
 		if (user2 == null) throw "this contract is not shared";
 		
 		//compter le nbre de distrib pour ce contrat

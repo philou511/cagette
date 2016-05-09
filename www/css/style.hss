@@ -148,14 +148,49 @@ table.product{
 	
 }
 
-//in shop page
+/*
+	SHOP
+*/
+
 .shop{
-	.catHeader{
-		font-weight:bold;
-		font-size:1.2em;
-		color:#583816;
-		border-bottom:1px solid #CCC;
+	
+	
+	.header{
+		background-color:#749E3C;
+		display:inline-block;
 		width:100%;
+		
+		border-top-left-radius:8px;
+		border-top-right-radius:8px;
+		padding:12px;
+		
+		font-size: 16px;
+		line-height: 22px;
+		
+		color:white;
+		a{
+			color:white;
+		}
+		
+		.info{
+			font-weight: bold;	
+		}
+	}
+	
+	
+	.body{
+		background:white;
+		display:inline-block;
+		width:100%;
+		padding-top: 12px;
+		
+		.catHeader{
+			font-weight:bold;
+			font-size:1.2em;
+			color:#583816;
+			border-bottom:1px solid #CCC;
+			width:100%;
+		}
 	}
 	
 	
@@ -167,14 +202,22 @@ table.product{
 			padding-left:8px;
 		}
 		
+		.warning{
+			font-size:11px;
+			color:#900;
+			font-weight:bold;
+		}
+		
 	}
-	
 
 }
+
+
 .price{
 	font-weight:bold;
 	font-size:1.3em;
-	}
+}
+	
 .vat{
 	color:#999999;
 	//font-size:80%;
@@ -185,8 +228,8 @@ table.product{
 
 #cartContainer.scrolled{
 	
-		position:fixed;
-		top:125px;
+	position:fixed;
+	top:125px;
 }
 
 .cartDiv{
@@ -459,7 +502,12 @@ span.tag.active{
 		background-color:#B2823F;
 	}
 	
-	
+	.myorder{
+		background-color:#6F5026;
+		color:white;
+		font-weight:bold;
+		padding-left:50px;
+	}
 	 
 	.content{
 		padding: 6px 6px 6px 6px;
@@ -476,6 +524,7 @@ span.tag.active{
 	
 	.content.orders{
 		background:#FFF;
+		padding-left: 50px;
 	}
 	
 	/*.footer{

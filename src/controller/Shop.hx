@@ -1,5 +1,6 @@
 package controller;
 import Common;
+import tools.ArrayTool;
 class Shop extends sugoi.BaseController
 {
 	
@@ -14,7 +15,7 @@ class Shop extends sugoi.BaseController
 		view.date = date;
 		
 		//closing order dates
-		var infos = new Array<{close:Date,contracts:Array<db.Contract>}>();
+		/*var infos = new Array<{close:Date,contracts:Array<db.Contract>}>();
 		var n = Date.now();
 		for ( d in distribs) {
 			var inf = null;
@@ -29,8 +30,8 @@ class Shop extends sugoi.BaseController
 				inf = { close:d.orderEndDate, contracts:[d.contract] };
 				infos.push(inf);
 			}
-		}
-		view.infos = infos;
+		}*/
+		view.infos = ArrayTool.groupByDate(Lambda.array(distribs),"orderEndDate");
 	}
 	
 	/**

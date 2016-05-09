@@ -1,5 +1,6 @@
 using Std;
 import Common;
+import tools.ArrayTool;
 
 class View extends sugoi.BaseView {
 	public function new() {
@@ -7,12 +8,15 @@ class View extends sugoi.BaseView {
 		this.Std = Std;
 		this.Date = Date;
 		this.Web = neko.Web;
+		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
+		this.ArrayTool = ArrayTool;
 	}
 	
 	public function count(i) {
 		return Lambda.count(i);
 	}
+	
 	
 	/**
 	 * newline to <br/>

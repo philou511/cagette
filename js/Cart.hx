@@ -226,7 +226,7 @@ class Cart
 		}
 		//trace("----------------");
 		//render
-		var container = App.j(".shop");
+		var container = App.j(".shop .body");
 		//render firts "pinned" groups , then "groups"
 		for ( source in [pinned, groups]){
 

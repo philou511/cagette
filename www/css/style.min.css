@@ -18,9 +18,14 @@ span.panel-title{font-family:'Cantora One',sans-serif!important;color:#966125!im
 table.product{width:100%;height:135px;overflow:auto;}
 table.product td{padding:8px;}
 table.product .desc{font-size:90%;color:#666;}
-.shop .catHeader{font-weight:bold;font-size:1.2em;color:#583816;border-bottom:1px solid #CCC;width:100%;}
+.shop .header{background-color:#749E3C;display:inline-block;zoom:1;*display:inline;width:100%;border-top-left-radius:8px;-moz-border-radius-topleft:8px;-webkit-border-top-left-radius:8px;border-top-right-radius:8px;-moz-border-radius-topright:8px;-webkit-border-top-right-radius:8px;padding:12px;font-size:16px;line-height:22px;color:white;}
+.shop .header a{color:white;}
+.shop .header .info{font-weight:bold;}
+.shop .body{background:white;display:inline-block;zoom:1;*display:inline;width:100%;padding-top:12px;}
+.shop .body .catHeader{font-weight:bold;font-size:1.2em;color:#583816;border-bottom:1px solid #CCC;width:100%;}
 .shop .product{display:inline-block;zoom:1;*display:inline;}
 .shop .product .name{padding-left:8px;}
+.shop .product .warning{font-size:11px;color:#900;font-weight:bold;}
 .price{font-weight:bold;font-size:1.3em;}
 .vat{color:#999999;}
 #cartContainer.scrolled{position:fixed;top:125px;}
@@ -59,7 +64,8 @@ span.tag.active{padding:12px;font-size:16px;line-height:45px;}
 .distrib .header{background-color:#749E3C;}
 .distrib .header.disabled{background-color:#999;}
 .distrib .header.orders{background-color:#B2823F;}
+.distrib .myorder{background-color:#6F5026;color:white;font-weight:bold;padding-left:50px;}
 .distrib .content{padding:6px 6px 6px 6px;background-color:#85B14D;border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;-webkit-border-bottom-left-radius:8px;border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;-webkit-border-bottom-right-radius:8px;}
 .distrib .content.disabled{background:#AAA;}
-.distrib .content.orders{background:#FFF;}
+.distrib .content.orders{background:#FFF;padding-left:50px;}
 

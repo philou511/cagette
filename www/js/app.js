@@ -213,7 +213,7 @@ Cart.prototype = {
 			}
 		}
 		if(pList.length > 0) groups.h[0] = { name : "Autres", products : pList};
-		var container = js.JQuery(".shop");
+		var container = js.JQuery(".shop .body");
 		var _g6 = 0;
 		var _g11 = [pinned,groups];
 		while(_g6 < _g11.length) {

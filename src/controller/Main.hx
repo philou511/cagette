@@ -5,6 +5,7 @@ import haxe.web.Dispatch;
 import sugoi.form.elements.StringInput;
 import sugoi.tools.ResultsBrowser;
 import Common;
+import tools.ArrayTool;
 
 class Main extends Controller {
 	
@@ -117,6 +118,7 @@ class Main extends Controller {
 			place:db.Place, //common delivery place
 			startDate:Date, //global delivery start
 			endDate:Date,	//global delivery stop
+			orderStartDate:Date, //global orders opening date
 			active:Bool,
 			products:Array<ProductInfo>, //available products ( if no order )
 			myOrders:Array<{distrib:Distribution,orders:Array<db.UserContract>}>	//my orders
@@ -139,24 +141,30 @@ class Main extends Controller {
 		for (d in distribs) {			
 			
 			var o = out.get(d.getKey());
-			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[]};
+			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[], orderStartDate:null};
 			
 			//my orders
 			var orders = d.contract.getUserOrders(app.user,d);
 			if (orders.length > 0){
 				o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
 			}else{
+				
+				if (!app.user.amap.hasShopMode() ) {
+					//no "order block" if no shop mode
+					continue;
+				}
+				
 				//if its a constant order contract, skip this delivery
 				if (d.contract.type == db.Contract.TYPE_CONSTORDERS) continue;
-				trace(d.contract.name+" for " + d.getKey());
+				//trace(d.contract.name+" for " + d.getKey());
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
-					if (o.products.length >= 9) break;
 					o.products.push( p.infos() );	
 				}
 			}
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER){
+				
 				if (d.orderStartDate == null) {
 					App.current.logError("orderStartDate of " + d + " is null");
 					continue;
@@ -164,15 +172,26 @@ class Main extends Controller {
 				if (d.orderStartDate.getTime() <= now.getTime() ){
 					//order currently open
 					o.active = true;
+					
 				}else if (d.orderStartDate.getTime() <= inOneMonth.getTime() ){
 					//open soon
 					o.active = false;
+					
+					//display closest opening date
+					if (o.orderStartDate == null){
+						o.orderStartDate = d.orderStartDate;
+					}else if (o.orderStartDate.getTime() > d.orderStartDate.getTime()){
+						o.orderStartDate = d.orderStartDate;
+					}
 				}else{
 					continue;
 					
 				}	
 			}
 			
+			//shuffle and limit product lists			
+			o.products = ArrayTool.shuffle(o.products);
+			o.products = o.products.slice(0, 9);
 			
 			out.set(d.getKey(), o);
 			
