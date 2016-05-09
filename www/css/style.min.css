@@ -64,7 +64,7 @@ span.tag.active{padding:12px;font-size:16px;line-height:45px;}
 .distrib .header{background-color:#749E3C;}
 .distrib .header.disabled{background-color:#999;}
 .distrib .header.orders{background-color:#B2823F;}
-.distrib .myorder{background-color:#6F5026;color:white;font-weight:bold;padding-left:50px;}
+.distrib .myorder{font-weight:bold;color:#999;background:white;padding:11px 0 4px 16px;}
 .distrib .content{padding:6px 6px 6px 6px;background-color:#85B14D;border-bottom-left-radius:8px;-moz-border-radius-bottomleft:8px;-webkit-border-bottom-left-radius:8px;border-bottom-right-radius:8px;-moz-border-radius-bottomright:8px;-webkit-border-bottom-right-radius:8px;}
 .distrib .content.disabled{background:#AAA;}
 .distrib .content.orders{background:#FFF;padding-left:50px;}

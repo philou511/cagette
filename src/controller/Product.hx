@@ -30,7 +30,7 @@ class Product extends Controller
 		//stock mgmt ?
 		if (!d.contract.hasStockManagement()) f.removeElementByName('stock');		
 		
-		//vat selector
+		//VAT selector
 		f.removeElement( f.getElement('vat') );		
 		var data :FormData<Float> = [];
 		for (k in app.user.amap.vatRates.keys()) {

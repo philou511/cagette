@@ -106,14 +106,18 @@ class Distribution extends Object
 		
 	}
 	
-	
-	public function canOrder() {
+	/**
+	 * 
+	 */
+	public function canOrderNow() {
 		
 		if (orderEndDate == null) {
 			return this.contract.isUserOrderAvailable();
 		}else {
 			var n = Date.now().getTime();
-			return n < orderEndDate.getTime() && n > orderStartDate.getTime();
+			var f = this.contract.flags.has(UsersCanOrder);
+			
+			return f && n < orderEndDate.getTime() && n > orderStartDate.getTime();
 			
 		}
 	}

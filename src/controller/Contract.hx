@@ -438,7 +438,7 @@ class Contract extends Controller
 					
 					var quantity = Math.abs( q==null?0:q );
 
-					if ( order.distribution.canOrder() ) {
+					if ( order.distribution.canOrderNow() ) {
 						//met a jour la commande
 						db.UserContract.edit(order, quantity);
 					}

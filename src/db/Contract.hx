@@ -57,6 +57,8 @@ class Contract extends Object
 	
 	/**
 	 * The products can be ordered currently ?
+	 * 
+	 * @deprecated it depends on distributions
 	 */
 	public function isUserOrderAvailable():Bool {
 		

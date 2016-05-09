@@ -126,7 +126,7 @@ class Main extends Controller {
 		}>();
 		
 		var now = Date.now();
-		now = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+		var now9 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
 	
 		var contracts = db.Contract.getActiveContracts(App.current.user.amap);
 		var cids = Lambda.map(contracts, function(p) return p.id);
@@ -135,8 +135,8 @@ class Main extends Controller {
 		//var out =  UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);	
 		
 		//available deliveries + next deliveries in less than a month		
-		var distribs = db.Distribution.manager.search(($contractId in cids) && ($date >= now) , { orderBy:date }, false);
-		var inOneMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30);
+		var distribs = db.Distribution.manager.search(($contractId in cids) && ($date >= now9) , { orderBy:date }, false);
+		var inOneMonth = DateTools.delta(now9, 1000.0 * 60 * 60 * 24 * 30);
 		
 		for (d in distribs) {			
 			
@@ -169,12 +169,16 @@ class Main extends Controller {
 					App.current.logError("orderStartDate of " + d + " is null");
 					continue;
 				}
+				//trace(d.orderStartDate.toString()+" <= "+now.toString());
+				
 				if (d.orderStartDate.getTime() <= now.getTime() ){
 					//order currently open
 					o.active = true;
 					
 				}else if (d.orderStartDate.getTime() <= inOneMonth.getTime() ){
-					//open soon
+					//trace(Date.now());
+					//trace(d.orderStartDate.toString()+" <= "+inOneMonth.toString());
+					//will open in less than one month
 					o.active = false;
 					
 					//display closest opening date
