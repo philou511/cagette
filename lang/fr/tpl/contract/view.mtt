@@ -28,7 +28,7 @@
 						<h4>
 							<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" href="#">::p.name::</a>
 						</h4>
-						<span class="price">::p.price::&nbsp;€</span>
+						<span class="price">::formatNum(p.getPrice())::&nbsp;€</span>
 						<div>
 							<a class="btn btn-default btn-xs" onclick="_.overlay('/shop/productInfo/::p.id::')">Infos</a>	
 						</div>
@@ -90,33 +90,44 @@
 	
 	<div class="article">
 		<h2>Livraisons</h2>
-		::if c.isUserOrderAvailable()::
-			
-			
-				<ul>
-					::foreach d c.getDistribs(true,null)::
-					<li>
-						<b>::dDate(d.date)::</b> à ::d._place.name::
-					</li>						
-					::end::	
-				</ul>
-			
-				<p>
-					<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commander</a>
-				</p>
-			
-
-		::else::
-			<p>
-				Les commandes ne sont pas ouvertes ou le coordinateur préfère saisir lui-même les commandes.
+		
+		::set distribs = c.getDistribs(true,null)::
+		<ul>
+			::foreach d distribs::
+			<li>
+				
+				<b>::dDate(d.date)::</b>
 				<br/>
+				à ::d._place.name::
 				
-				
-				<a href="mailto: ::c._contact.email::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope"></span> Contactez le pour plus d'informations</a>
-				
-			</p>
+				<p ::cond d.canOrderNow()::>
+					
+					::if user._amap.hasShopMode()::
+						<a href="/shop/::d._place.id::/::d.date.toString().substr(0,10)::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commander</a>
+					
+					::end::
+					
+				</p>
+			</li>						
+			::end::	
+		</ul>
+		
+		
+		
+		
+		
+		::if distribs.length==0::
+		<p>
+			Aucune distribution de prévue pour l'instant.
+		</p>
+		::else::
+		<p ::cond !user._amap.hasShopMode()::>
+			<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commander</a>	
+		</p>		
 		::end::
 		
+		
+		<hr/>
 		<p>
 			<a style="font-size:12px;" href='/contract'>Vous pouvez consulter vos commandes en cours sur votre page "mon compte"</a>	
 		</p>

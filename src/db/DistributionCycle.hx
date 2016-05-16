@@ -90,7 +90,7 @@ class DistributionCycle extends Object
 			switch(dc.cycleType) {
 				case Weekly :
 					datePointer = DateTools.delta(datePointer, oneDay * 7.0);
-					App.log("datePointer : " + datePointer);
+					//App.log("datePointer : " + datePointer);
 					
 				case BiWeekly : 	
 					datePointer = DateTools.delta(datePointer, oneDay * 14.0);
@@ -103,7 +103,7 @@ class DistributionCycle extends Object
 			}
 			
 			if (datePointer.getTime() > dc.endDate.getTime()) {
-				App.log("finish");
+				//App.log("finish");
 				break;
 			}
 			

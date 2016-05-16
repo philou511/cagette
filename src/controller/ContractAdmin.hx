@@ -231,14 +231,20 @@ class ContractAdmin extends Controller
 				
 			}
 			
+			//distribs
+			var vdistribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
+			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+			
+			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune livraison à cette date");
+			
+			
 			//varying orders
-			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
-			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
+			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//constant orders
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+			
 			var products = [];
-			for ( d in distribs) {
+			for ( d in cdistribs) {
 				for ( p in d.contract.getProducts()) {
 					products.push(p.id);
 				}

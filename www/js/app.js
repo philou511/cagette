@@ -62,6 +62,8 @@ Cart.prototype = {
 	,cartWidth: null
 	,jWindow: null
 	,cartContainer: null
+	,date: null
+	,place: null
 	,add: function(pid) {
 		var _g = this;
 		this.loader.show();
@@ -211,7 +213,7 @@ Cart.prototype = {
 			}
 		}
 		if(pList.length > 0) groups.h[0] = { name : "Autres", products : pList};
-		var container = js.JQuery(".shop");
+		var container = js.JQuery(".shop .body");
 		var _g6 = 0;
 		var _g11 = [pinned,groups];
 		while(_g6 < _g11.length) {
@@ -240,9 +242,10 @@ Cart.prototype = {
 		return this.order.products.length == 0;
 	}
 	,submit: function() {
+		var _g = this;
 		var req = new haxe_Http("/shop/submit");
 		req.onData = function(d) {
-			window.location.href = "/shop/validate";
+			window.location.href = "/shop/validate/" + _g.place + "/" + _g.date;
 		};
 		req.addParameter("data",JSON.stringify(this.order));
 		req.request(true);
@@ -280,10 +283,12 @@ Cart.prototype = {
 		};
 		r.request();
 	}
-	,init: function() {
+	,init: function(place,date) {
 		var _g = this;
+		this.place = place;
+		this.date = date;
 		this.loader = js.JQuery("#cartContainer #loader");
-		var req = new haxe_Http("/shop/init");
+		var req = new haxe_Http("/shop/init/" + place + "/" + date);
 		req.onData = function(data) {
 			_g.loader.hide();
 			var data1 = haxe_Unserializer.run(data);
@@ -4068,7 +4073,7 @@ sugoi_form_filters_FloatFilter.__interfaces__ = [sugoi_form_filters_IFilter];
 sugoi_form_filters_FloatFilter.__super__ = sugoi_form_filters_Filter;
 sugoi_form_filters_FloatFilter.prototype = $extend(sugoi_form_filters_Filter.prototype,{
 	filter: function(n) {
-		if(n == null || n == "") return 0;
+		if(n == null || n == "") return null;
 		n = StringTools.trim(n);
 		n = StringTools.replace(n,",",".");
 		return parseFloat(n);

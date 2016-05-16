@@ -22,7 +22,10 @@ class Cart
 	var jWindow : JQuery;
 	var cartContainer : JQuery;
 	
-	
+	var date : String;
+	var place : Int;
+
+
 	public function new() 
 	{
 		products = new Map();
@@ -120,90 +123,95 @@ class Cart
 		var total = ffilter.filter(Std.string(App.roundTo(total,2)));
 		c.append("<div class='total'>TOTAL : "+total+"€</div>");
 	}
-	
+
+
+
+
+
+
 	function findCategoryName(cid:Int):String{
-		
+
 		for ( cg in this.categories ){
 			for (c in cg.categs){
 				if (cid == c.id) {
 					return c.name;
-				}	
+				}
 			}
 		}
 		for ( cg in this.pinnedCategories ){
 			for (c in cg.categs){
 				if (cid == c.id) {
 					return c.name;
-				}	
+				}
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Dynamically sort products by categories
 	 */
 	public function sortProductsBy(){
-		
+
 		//store products by groups
 		var groups = new Map<Int,{name:String,products:Array<ProductInfo>}>();
 		var pinned = new Map<Int,{name:String,products:Array<ProductInfo>}>();
-		
+
 		var firstCategGroup = this.categories[0].categs;
-		
+
 		//trace(firstCategGroup);
 		//trace(pinnedCategories);
-		
+
 		var pList = Lambda.array(products).copy();
-		
+
 		//for ( p in pList) trace(p.name+" : " + p.categories);
 		//trace("----------------");
-		
+
 		//sort by categs
 		for ( p in pList.copy() ){
 			//trace(p.name+" : " + p.categories);
 			p.element.remove();
-			
+
 			for ( categ in p.categories){
-				
+
 				if (Lambda.find(firstCategGroup, function(c) return c.id == categ) != null){
-					
-					//is in this category group	
+
+					//is in this category group
 					var g = groups.get(categ);
-					if ( g == null){						
-						var name = findCategoryName(categ);					
+					if ( g == null){
+						var name = findCategoryName(categ);
 						g = {name:name,products:[]};
 					}
 					g.products.push(p);
 					//trace("remove " + p.name);
 					pList.remove(p);
-					groups.set(categ, g);	
-					
+					groups.set(categ, g);
+
 				}
 				else{
 					// is in pinned group ?
 					var isInPinnedCateg = false;
 					for ( cg in pinnedCategories){
-							if (Lambda.find(cg.categs, function(c) return c.id == categ) != null){								
+							if (Lambda.find(cg.categs, function(c) return c.id == categ) != null){
 								isInPinnedCateg = true;
 								break;
 							}
 					}
-					
+
 					if (isInPinnedCateg){
-						
+
 						var c = pinned.get(categ);
 						if ( c == null){
-							
-							var name = findCategoryName(categ);					
+
+							var name = findCategoryName(categ);
 							c = {name:name,products:[]};
 						}
 						c.products.push(p);
 						//trace( "add " + p.name+" in PINNED");
 						pList.remove(p);
-						pinned.set(categ, c);	
-						
-						
+						pinned.set(categ, c);
+
+
 					}else{
 						//not in the selected categ nor in pinned groups
 						continue;
@@ -211,52 +219,55 @@ class Cart
 				}
 			}
 		}
-		
+
 		//if some untagged products remain
 		if (pList.length > 0){
 			groups.set(0,{name:"Autres",products:pList});
 		}
 		//trace("----------------");
 		//render
-		var container = App.j(".shop");
+		var container = App.j(".shop .body");
 		//render firts "pinned" groups , then "groups"
-		for ( source in [pinned, groups]){	
-			
+		for ( source in [pinned, groups]){
+
 			for (o in source){
-				
+
 				if (o.products.length == 0) continue;
 				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
 				for ( p in o.products){
-					//trace("GROUP "+o.name+" : "+p.name);	
+					//trace("GROUP "+o.name+" : "+p.name);
 					//if the element has already been inserted, we need to clone it
 					if (p.element.parent().length == 0){
-						container.append( p.element );	
+						container.append( p.element );
 					}else{
 						var clone = p.element.clone();
 						container.append( clone );
 					}
-					
-					
+
+
 				}
-			}	
+			}
 		}
 		App.j(".product").show();
-		
-		
+
+
 	}
-	
+
 	/**
 	 * is shopping cart empty ?
 	 */
 	public function isEmpty(){
 		return order.products.length == 0;
-		
+
 	}
-	
+
+	/**
+     * submit cart
+     */
 	public function submit() {
 		var req = new haxe.Http("/shop/submit");
 		req.onData = function(d) {
-			js.Browser.location.href = "/shop/validate";
+			js.Browser.location.href = "/shop/validate/"+place+"/"+date;
 			
 		}
 		req.addParameter("data", haxe.Json.stringify(order));
@@ -279,9 +290,9 @@ class Cart
 		//affiche/masque produits
 		for (p in products) {
 			if (cat==0 || Lambda.has(p.categories, cat)) {
-				App.j(".shop .product" + p.id).fadeIn(300); 
+				App.j(".shop .product" + p.id).fadeIn(300);
 			}else {
-				App.j(".shop .product" + p.id).fadeOut(300); 
+				App.j(".shop .product" + p.id).fadeOut(300);
 			}
 		}
 		
@@ -330,16 +341,19 @@ class Cart
 	/**
 	 * loads products DB and existing cart in ajax
 	 */
-	public function init() {
+	public function init(place:Int,date:String) {
+
+		this.place = place;
+		this.date = date;
 		
 		loader = App.j("#cartContainer #loader");
 		
-		var req = new haxe.Http("/shop/init");
+		var req = new haxe.Http("/shop/init/"+place+"/"+date);
 		req.onData = function(data) {
 			loader.hide();
 			
 			var data : { products:Array<ProductInfo>, categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>, order:Order } = haxe.Unserializer.run(data);
-			
+
 			//populate local categories lists
 			for ( cg in data.categories){
 				if (cg.pinned){
@@ -348,13 +362,13 @@ class Cart
 					categories.push(cg);
 				}
 			}
-			
-			
+
+
 			//product DB
 			for (p in data.products) {
 				//catch dom element for further usage
 				p.element = App.j(".product"+p.id);
-				
+
 				var id : Int = p.id;
 				products.set(id, p);
 			}
@@ -365,7 +379,7 @@ class Cart
 			render();
 			
 			sortProductsBy();
-			
+
 		}
 		req.request();
 		

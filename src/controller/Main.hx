@@ -4,6 +4,8 @@ import db.UserContract;
 import haxe.web.Dispatch;
 import sugoi.form.elements.StringInput;
 import sugoi.tools.ResultsBrowser;
+import Common;
+import tools.ArrayTool;
 
 class Main extends Controller {
 	
@@ -33,15 +35,15 @@ class Main extends Controller {
 			view.contractsWithDistributors = Lambda.filter(app.user.getContracts(), function(c) return c.distributorNum > 0);
 			
 			//DISTRIBUTIONS
- 			var orders = app.user.getOrders();
+ 			/*var orders = app.user.getOrders();
 			var contractIds = Lambda.map(orders, function(c) return c.product.contract.id);
 			//les distribs dans lesquelles j'ai des produits a prendre
 			var distribs = Distribution.manager.search( ($contractId in contractIds) && $end > Date.now(),{orderBy:date,limit:10}, false );
-			
+			*/
 			/**
 			 * HashMap de jours ( ie "2014-11-01" ), contenant les différentes distrib, pouvant impliquer plusieurs produits (userContracts)
 			 */
-			var mydistribs = new Map<String, Array<{distrib:Distribution,orders:Array<db.UserContract>}> >();
+			/*var mydistribs = new Map<String, Array<{distrib:Distribution,orders:Array<db.UserContract>}> >();
 			
 			for ( d in distribs) {
 				
@@ -67,31 +69,38 @@ class Main extends Controller {
 				
 				//do not push empty orders list
 				if (x.orders.length > 0) {
-					var key = d.end.toString().substr(0,10)+"-p"+d.place.id;				
+					var key = d.getKey();			
 					var t = mydistribs.get(key);
 					if (t == null) {
-						t = [];
-						mydistribs.set(key, t);
+						t = [];						
 					}
 					
-					t.push( x );	
+					t.push( x );
+					mydistribs.set(key, t);
 				}
 			}
 			
-			//fix bug du sorting (les distribs du jour se mettent en bas)
-			var out = [];
-			for (x in mydistribs) out.push(x);
-			out.sort(function(a, b) {
-				return Std.int(a[0].distrib.date.getTime()/1000) - Std.int(b[0].distrib.date.getTime()/1000);
-			});
 			
-			view.distribs = out;	
+			view.distribs = out;	*/
 			
 			
 			//need to define a password !
 			view.nopass = (app.user.pass == db.User.EMPTY_PASS);
 			//freshly created group
 			view.newGroup = app.session.data.newGroup == true;
+
+			
+			var distribs = getNextMultiDeliveries();
+			
+			//fix bug du sorting (les distribs du jour se mettent en bas)
+			var out = [];
+			for (x in distribs) out.push(x);
+			out.sort(function(a, b) {
+				return Std.int(a.startDate.getTime()/1000) - Std.int(b.endDate.getTime()/1000);
+			});
+			
+			view.distribs = out;
+			
 			
 		}else {
 			throw Redirect("/user/login");
@@ -99,6 +108,100 @@ class Main extends Controller {
 		
 	}
 	
+	/**
+	 * Get next multi-deliveries 
+	 * ( deliveries including more than one vendors )
+	 */
+	public function getNextMultiDeliveries(){
+		
+		var out = new Map < String, {
+			place:db.Place, //common delivery place
+			startDate:Date, //global delivery start
+			endDate:Date,	//global delivery stop
+			orderStartDate:Date, //global orders opening date
+			active:Bool,
+			products:Array<ProductInfo>, //available products ( if no order )
+			myOrders:Array<{distrib:Distribution,orders:Array<db.UserContract>}>	//my orders
+			
+		}>();
+		
+		var now = Date.now();
+		var now9 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+	
+		var contracts = db.Contract.getActiveContracts(App.current.user.amap);
+		var cids = Lambda.map(contracts, function(p) return p.id);
+		
+		//var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
+		//var out =  UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);	
+		
+		//available deliveries + next deliveries in less than a month		
+		var distribs = db.Distribution.manager.search(($contractId in cids) && ($date >= now9) , { orderBy:date }, false);
+		var inOneMonth = DateTools.delta(now9, 1000.0 * 60 * 60 * 24 * 30);
+		
+		for (d in distribs) {			
+			
+			var o = out.get(d.getKey());
+			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[], orderStartDate:null};
+			
+			//my orders
+			var orders = d.contract.getUserOrders(app.user,d);
+			if (orders.length > 0){
+				o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
+			}else{
+				
+				if (!app.user.amap.hasShopMode() ) {
+					//no "order block" if no shop mode
+					continue;
+				}
+				
+				//if its a constant order contract, skip this delivery
+				if (d.contract.type == db.Contract.TYPE_CONSTORDERS) continue;
+				//trace(d.contract.name+" for " + d.getKey());
+				//products preview if no orders
+				for ( p in d.contract.getProductsPreview(9)){
+					o.products.push( p.infos() );	
+				}
+			}
+			
+			if (d.contract.type == db.Contract.TYPE_VARORDER){
+				
+				if (d.orderStartDate == null) {
+					//App.current.logError("orderStartDate of " + d + " is null");
+					continue;
+				}
+				//trace(d.orderStartDate.toString()+" <= "+now.toString());
+				
+				if (d.orderStartDate.getTime() <= now.getTime() ){
+					//order currently open
+					o.active = true;
+					
+				}else if (d.orderStartDate.getTime() <= inOneMonth.getTime() ){
+					//trace(Date.now());
+					//trace(d.orderStartDate.toString()+" <= "+inOneMonth.toString());
+					//will open in less than one month
+					o.active = false;
+					
+					//display closest opening date
+					if (o.orderStartDate == null){
+						o.orderStartDate = d.orderStartDate;
+					}else if (o.orderStartDate.getTime() > d.orderStartDate.getTime()){
+						o.orderStartDate = d.orderStartDate;
+					}
+				}else{
+					continue;
+					
+				}	
+			}
+			
+			//shuffle and limit product lists			
+			o.products = ArrayTool.shuffle(o.products);
+			o.products = o.products.slice(0, 9);
+			
+			out.set(d.getKey(), o);
+			
+		}
+		return Lambda.array(out);
+	}
 	
 	
 	
