@@ -45,11 +45,13 @@
 									::c._vendor.city:: (::c._vendor.zipCode::)
 								</p>
 								
-								::foreach p c.getProductsPreview(9)::
-								<div style="display:inline-block;width:10%;" data-toggle="tooltip" data-placement="top" title="::p.name::" >
-									<img class="img-responsive img-thumbnail" src="::p.getImage()::" style="height:70px;width:70px;margin:4px;"/> 
-								</div>
+								<div style="font-size:0;">
+								::foreach p c.getProductsPreview(8)::
+								
+									<img data-toggle="tooltip" title="::p.name::" class="img-responsive img-thumbnail" src="::p.getImage()::" style="width:10%;margin:4px;"/> 
+								
 								::end::
+								</div>
 
 							</div>
 							

@@ -8,6 +8,7 @@ enum AmapFlags {
 	ShopMode; 		//mode boutique
 	IsAmap; 		//Amap / groupement d'achat
 	ComputeMargin;	//compute margin instead of percentage
+	//EnableCagetteNetwork; //ping cagette network server to register this install of cagette
 }
 
 //user registration options
