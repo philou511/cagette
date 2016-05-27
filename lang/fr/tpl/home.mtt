@@ -59,16 +59,14 @@
 							$$date(::x.dow::,::x.d::,::x.m::,::x.y::,null)
 						::end::	
 						
-						
 						<div class="pull-right text-right" ::cond d.myOrders[0].distrib._contract.type==1::>
 							::if user._amap.hasShopMode()::
 							<a href="/contract/editOrderByDate/::d.startDate.toString().substr(0,10)::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> Modifier ma commande</a>
 							<a href="/shop/::d.place.id::/::d.startDate.toString().substr(0,10)::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Ajouter des produits</a>
-							::end::
-							
+							::end::							
 						</div>
-						<div class="info">
-							
+						
+						<div class="info">					
 							<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::d.place.id::">::d.place::</a>
 							<div class="address">
 								$$nullSafe(::d.place.address1::)
@@ -80,9 +78,7 @@
 			
 					</div>
 					
-					<div class="myorder">
-						Mes produits commandés :
-					</div>
+					<div class="myorder">Mes produits commandés :</div>
 					
 					<div class="content orders">
 					::foreach o d.myOrders::
@@ -179,11 +175,6 @@
 							<div class="distribMessage" ::cond o.distrib.distributor1Id==user.id || o.distrib.distributor2Id==user.id || o.distrib.distributor3Id==user.id || o.distrib.distributor4Id==user.id::>
 								Attention, vous ou votre conjoint(e) participe à la distribution !
 							</div>
-							
-							
-							
-							
-							
 						</div>
 					
 					::end::
@@ -240,18 +231,12 @@
 						
 							</div>
 						</div>	
-						
-						
 					</div>
-					
-					
-					
+					<!-- products previews-->
 					<div class="content ::class::">
-
 						::foreach p d.products::
 							<img data-toggle="tooltip" data-placement="top" title="::p.name::" class="img-responsive img-thumbnail" src="::p.image::" style="max-width:70px;max-height:70px;margin:4px;"/> 
 						::end::
-
 					</div>
 				</div>
 	

@@ -8,7 +8,7 @@ enum AmapFlags {
 	ShopMode; 		//mode boutique
 	IsAmap; 		//Amap / groupement d'achat
 	ComputeMargin;	//compute margin instead of percentage
-	//EnableCagetteNetwork; //ping cagette network server to register this install of cagette
+	CagetteNetwork; //register in cagette.net groups directory
 }
 
 //user registration options
@@ -54,6 +54,7 @@ class Amap extends Object
 	{
 		super();
 		flags = cast 0;
+		flags.set(CagetteNetwork);
 		vatRates = ["TVA Alimentaire 5,5%" => 5.5, "TVA 20%" => 20];
 		cdate = Date.now();
 		regOption = WaitingList;

@@ -588,9 +588,15 @@ class ContractAdmin extends Controller
 	
 
 	@tpl("contractadmin/selectDistrib.mtt")
-	function doSelectDistrib(c:db.Contract) {
+	function doSelectDistrib(c:db.Contract, ?args:{old:Bool}) {
+		
 		view.c = c;
-		view.distributions = c.getDistribs(false);
+		if (args != null && args.old){
+			view.distributions = c.getDistribs(false);	
+		}else{
+			view.distributions = c.getDistribs(true);
+		}
+		
 	}
 	
 	/**

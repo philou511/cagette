@@ -194,8 +194,9 @@ class Main extends Controller {
 			}
 			
 			//shuffle and limit product lists			
-			o.products = ArrayTool.shuffle(o.products);
+			o.products = ArrayTool.shuffle(o.products);			
 			o.products = o.products.slice(0, 9);
+			
 			
 			out.set(d.getKey(), o);
 			
@@ -212,6 +213,10 @@ class Main extends Controller {
 	
 	function doCron(d:Dispatch) {
 		d.dispatch(new controller.Cron());
+	}
+	
+	function doApi(d:Dispatch) {
+		d.dispatch(new controller.Api());
 	}
 	
 	@tpl("cssDemo.mtt")

@@ -167,6 +167,7 @@ class App extends sugoi.BaseApp {
 		out.set("pinned", "Mets en avant les produits");
 		out.set("daysBeforeOrderStart", "Ouverture de commande (nbre de jours avant livraison)");
 		out.set("daysBeforeOrderEnd", "Fermeture de commande (nbre de jours avant livraison)");
+		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
 		
 		return out;
 	}
