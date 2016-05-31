@@ -1,4 +1,5 @@
 package controller;
+import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 
@@ -19,7 +20,7 @@ class Distribution extends Controller
 		view.distrib = d;
 		var contract = d.contract;
 		view.contract = d.contract;
-		view.contracts = d.getOrders();
+		view.orders = UserContract.prepare(d.getOrders());
 	}
 	
 	/**

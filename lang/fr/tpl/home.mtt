@@ -1,5 +1,7 @@
 ::use 'design.mtt'::
 
+
+
 <div id="content" class="col-md-8">
 	
 		<!-- Welcoming message + access to tutos-->
@@ -210,10 +212,10 @@
 							::else::
 								
 								::if Date.now().getTime() > d.orderEndDate.getTime()::
-									Commandes fermées depuis<br/>
+									Commande fermée depuis<br/>
 									le ::hDate(d.orderEndDate)::
 								::else::
-									Ouverture des commandes<br/>
+									Ouverture de la commande<br/>
 									le ::hDate(d.orderStartDate)::
 								::end::
 							

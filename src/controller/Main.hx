@@ -204,6 +204,8 @@ class Main extends Controller {
 		for( k in out.keys()){
 			var o = out.get(k);
 			
+			if (o.orderStartDate == null) continue; //constant orders
+			
 			if (now.getTime() >= o.orderStartDate.getTime()  && now.getTime() <= o.orderEndDate.getTime() ){
 				//order currently open
 				o.active = true;

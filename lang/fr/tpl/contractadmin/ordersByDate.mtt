@@ -1,4 +1,15 @@
 ::use 'design.mtt'::
+
+<style>
+
+	table tr td{
+		white-space: nowrap;
+	}
+
+</style>
+
+
+
 	<div class="col-md-12">
 		<div class="article">
 			
@@ -27,8 +38,6 @@
 			::foreach m orders::
 				
 				::set i = repeat.m.index::
-			
-				
 				
 				<!-- name change -->
 				::if orders[i-1]==null || m.userName != orders[i-1].userName::
