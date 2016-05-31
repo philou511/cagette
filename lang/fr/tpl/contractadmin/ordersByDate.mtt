@@ -19,48 +19,23 @@
 		<hr/>
 		
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
-			::set name = ""::
 			
 			::set total = 0:: <!-- big total -->
 			::set subtotal = 0:: <!-- total per user -->
-			
-			::set contractName = orders[0].contractName::	
 			::set contractTotal = 0:: <!-- total per contract -->
 			
 			::foreach m orders::
+				
+				::set i = repeat.m.index::
 			
-				<!-- contract change-->
-				::if ctotal && m.contractName != contractName && contractName!=""::
-					
-					<tr style="background:#DDD;">					
-						<th colspan="7" class="text-right">Total ::contractName::</th>
-						<th>::formatNum(contractTotal)::&nbsp;&euro;</th>					
-						<th></th>
-						::set contractTotal = 0::
-						::set contractName = m.contractName::
-					</tr>
-					
-					
-				::end::
+				
 				
 				<!-- name change -->
-				::if m.userName != name::
-				
-					::if !ctotal && subtotal!=0:: 
-					<tr style="background:#DDD;">					
-						<th colspan="7" class="text-right">Total adhérent</th>
-						<th>::formatNum(subtotal)::&nbsp;&euro;</th>					
-						<th></th>
-						::set subtotal = 0::
-
-					</tr>
-					::end::
-				
+				::if orders[i-1]==null || m.userName != orders[i-1].userName::
 				
 					<tr style="background-color:#666;">
 						<td colspan="9" style="font-size:120%;color:#e7e7e7;">
 							::m.userName:: 
-							::set name =  m.userName ::	
 							::set contractTotal = 0::
 						</td>
 					</tr>
@@ -78,6 +53,7 @@
 			
 				::end::
 				
+				<!-- 1 order line -->
 				<tr>
 					<td>
 						<a href="/contractAdmin/view/::m.contractId::">::m.contractName::</a>
@@ -121,20 +97,45 @@
 					</td>
 					
 				</tr>
+			
+				<!-- contract total -->
+				::if  ctotal && (orders[i+1]==null || m.contractName != orders[i+1].contractName)::
+					
+					<tr style="background:#DDD;">					
+						<th colspan="7" class="text-right">Total ::m.contractName::</th>
+						<th>::formatNum(contractTotal)::&nbsp;&euro;</th>					
+						<th></th>
+						::set contractTotal = 0::
+					</tr>
 				::end::
+			
+				<!-- member total -->
+				::if (orders[i+1]==null || m.userName != orders[i+1].userName) ::
 				
-				<tr style="background:#CCC;font-size:1.3em;">					
-					<th colspan="7" class="text-right">Total de toutes les commandes : </th>
-					<th>::formatNum(total)::&nbsp;&euro;</th>					
-					<th></th>
-				</tr>
+					::if subtotal!=0:: 
+					<tr style="border-top:2px solid #AAA;">					
+						<th colspan="7" class="text-right">Total adhérent</th>
+						<th>::formatNum(subtotal)::&nbsp;&euro;</th>					
+						<th></th>
+						::set subtotal = 0::
+					</tr>
+					::end::
+				::end::
+			
+			<!-- end orders loop -->	
+			::end::
+				
+			<!-- big total -->
+			<tr style="background:#CCC;font-size:1.3em;">					
+				<th colspan="7" class="text-right">Total de toutes les commandes : </th>
+				<th>::formatNum(total)::&nbsp;&euro;</th>					
+				<th></th>
+			</tr>
 				
 
-				</table>
-		</div>
-		
+		</table>
 	</div>
-		
-				
-		
+	
+</div>
+
 ::end::

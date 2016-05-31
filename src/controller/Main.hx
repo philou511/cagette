@@ -119,6 +119,7 @@ class Main extends Controller {
 			startDate:Date, //global delivery start
 			endDate:Date,	//global delivery stop
 			orderStartDate:Date, //global orders opening date
+			orderEndDate:Date,//global orders closing date
 			active:Bool,
 			products:Array<ProductInfo>, //available products ( if no order )
 			myOrders:Array<{distrib:Distribution,orders:Array<db.UserContract>}>	//my orders
@@ -141,7 +142,7 @@ class Main extends Controller {
 		for (d in distribs) {			
 			
 			var o = out.get(d.getKey());
-			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[], orderStartDate:null};
+			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[], orderStartDate:null,orderEndDate:null};
 			
 			//my orders
 			var orders = d.contract.getUserOrders(app.user,d);
@@ -156,7 +157,7 @@ class Main extends Controller {
 				
 				//if its a constant order contract, skip this delivery
 				if (d.contract.type == db.Contract.TYPE_CONSTORDERS) continue;
-				//trace(d.contract.name+" for " + d.getKey());
+				
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
 					o.products.push( p.infos() );	
@@ -165,42 +166,55 @@ class Main extends Controller {
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER){
 				
+				//old distribs may have an empty orderStartDate
 				if (d.orderStartDate == null) {
-					//App.current.logError("orderStartDate of " + d + " is null");
 					continue;
 				}
-				//trace(d.orderStartDate.toString()+" <= "+now.toString());
 				
-				if (d.orderStartDate.getTime() <= now.getTime() ){
-					//order currently open
-					o.active = true;
-					
-				}else if (d.orderStartDate.getTime() <= inOneMonth.getTime() ){
-					//trace(Date.now());
-					//trace(d.orderStartDate.toString()+" <= "+inOneMonth.toString());
-					//will open in less than one month
-					o.active = false;
-					
-					//display closest opening date
-					if (o.orderStartDate == null){
-						o.orderStartDate = d.orderStartDate;
-					}else if (o.orderStartDate.getTime() > d.orderStartDate.getTime()){
-						o.orderStartDate = d.orderStartDate;
-					}
-				}else{
+				//if order opening is more far than 1 month, skip it
+				if (d.orderStartDate.getTime() > inOneMonth.getTime() ){
 					continue;
-					
-				}	
+				}
+				
+				//display closest opening date
+				if (o.orderStartDate == null){
+					o.orderStartDate = d.orderStartDate;
+				}else if (o.orderStartDate.getTime() > d.orderStartDate.getTime()){
+					o.orderStartDate = d.orderStartDate;
+				}
+				
+				//display farest closing date
+				if (o.orderEndDate == null){
+					o.orderEndDate = d.orderEndDate;
+				}else if (o.orderEndDate.getTime() < d.orderEndDate.getTime()){
+					o.orderEndDate = d.orderEndDate;
+				}
+				
+				
 			}
 			
 			//shuffle and limit product lists			
 			o.products = ArrayTool.shuffle(o.products);			
 			o.products = o.products.slice(0, 9);
 			
-			
 			out.set(d.getKey(), o);
-			
 		}
+		
+		//decide if active or not
+		for( k in out.keys()){
+			var o = out.get(k);
+			
+			if (now.getTime() >= o.orderStartDate.getTime()  && now.getTime() <= o.orderEndDate.getTime() ){
+				//order currently open
+				o.active = true;
+				
+			}else {
+				o.active = false;
+				
+			}
+		}	
+		
+		
 		return Lambda.array(out);
 	}
 	
