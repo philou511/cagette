@@ -37,6 +37,7 @@
     <library name="cagette-hosted" />
     <library name="hscript" />
     <library name="ufront-mail" />
+    <library name="thx.semver" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

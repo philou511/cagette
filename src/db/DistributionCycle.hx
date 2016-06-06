@@ -42,9 +42,8 @@ class DistributionCycle extends Object
 	public var openingHour:SNull<SDate>;
 	public var closingHour:SNull<SDate>;
 	
-	@formPopulate("placePopulate") 
-	@:relation(placeId) public var place : Place;
-	public var placeId:SInt;
+	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
+	
 	
 	
 	public function new() {
