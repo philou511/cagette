@@ -39,6 +39,8 @@ class DistributionCycle extends Object
 	
 	public var daysBeforeOrderStart:SNull<STinyInt>;
 	public var daysBeforeOrderEnd:SNull<STinyInt>;
+	public var openingHour:SNull<SDate>;
+	public var closingHour:SNull<SDate>;
 	
 	@formPopulate("placePopulate") 
 	@:relation(placeId) public var place : Place;
@@ -107,15 +109,21 @@ class DistributionCycle extends Object
 				break;
 			}
 			
-			App.log(">>> date def : "+datePointer.toString());
+			//App.log(">>> date def : "+datePointer.toString());
 			
 			//applique heure de debut et fin
 			d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 			d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours(),   dc.endHour.getMinutes(),   0);
 			
 			if (dc.contract.type == Contract.TYPE_VARORDER){
-				d.orderStartDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
-				d.orderEndDate = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+				
+				var a = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+				var h : Date = dc.openingHour;
+				d.orderStartDate = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);
+				
+				var a = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+				var h : Date = dc.closingHour;
+				d.orderEndDate = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);
 			}
 			
 			d.insert();

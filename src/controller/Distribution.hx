@@ -241,11 +241,25 @@ class Distribution extends Controller
 		form.addElement(x, 6);
 		
 		if (contract.type == db.Contract.TYPE_VARORDER){
+			
 			form.getElement("daysBeforeOrderStart").value = 10;
-			form.getElement("daysBeforeOrderEnd").value = 2;			
+			form.getElement("daysBeforeOrderStart").required = true;
+			form.removeElementByName("openingHour");
+			var x = new HourDropDowns("openingHour", "Heure d'ouverture", new Date(y, m, day, 8, 0, 0) , true);
+			form.addElement(x, 8);
+			
+			form.getElement("daysBeforeOrderEnd").value = 2;
+			form.getElement("daysBeforeOrderEnd").required = true;
+			form.removeElementByName("closingHour");
+			var x = new HourDropDowns("closingHour", "Heure de fermeture", new Date(y, m, day, 23, 0, 0) , true);
+			form.addElement(x, 10);
+			
 		}else{
+			
 			form.removeElementByName("daysBeforeOrderStart");
-			form.removeElementByName("daysBeforeOrderEnd");			
+			form.removeElementByName("daysBeforeOrderEnd");	
+			form.removeElementByName("openingHour");
+			form.removeElementByName("closingHour");
 		}
 		
 		
@@ -253,15 +267,24 @@ class Distribution extends Controller
 			
 			form.toSpod(d); //update model
 			
-			d.startDate = form.getValueOf("startDate");
+			/*d.startDate = form.getValueOf("startDate");
 			d.startHour = form.getValueOf("startHour");
 			d.endDate = form.getValueOf("endDate");
 			d.endHour = form.getValueOf("endHour");
+			
 			if (contract.type == db.Contract.TYPE_VARORDER){
-				d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+				//var a : Date = form.getValueOf("daysBeforeOrderStart");
+				//var h : Date = form.getValueOf("openingHour");
+				//d.daysBeforeOrderStart = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);
+				
 				d.daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+				d.openingHour = form.getValueOf("closingHour");
+				
+				d.daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+				d.closingHour = form.getValueOf("closingHour");
+				
 			}
-			d.placeId = form.getValueOf("placeId"); 
+			d.placeId = form.getValueOf("placeId"); */
 			d.contract = contract;
 			d.insert();
 			

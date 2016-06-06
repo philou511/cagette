@@ -381,7 +381,6 @@ class User extends Object {
 		
 		if (pass!=null && pass != "" && pass != EMPTY_PASS) throw "cet utilisateur ne peut pas recevoir d'invitation";
 		
-		
 		var group : db.Amap = null;
 		
 		if (App.current.user == null) {			
@@ -391,24 +390,25 @@ class User extends Object {
 			group = App.current.user.amap;	
 		}
 		
-		if (group == null) throw "cet utilisateur n'est affilié à aucun groupe";
-		
 		//store token
 		var k = sugoi.db.Session.generateId();
 		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 7); //expire dans une semaine
 		
 		
-		var e = new ufront.mail.Email();		
-		e.setSubject("Invitation "+group.name);
+		var e = new ufront.mail.Email();
+		if (group == null){
+			e.setSubject("Invitation "+group.name);	
+		}else{
+			e.setSubject("Invitation Cagette.net");
+		}
+		
 		e.to(new ufront.mail.EmailAddress(this.email,this.getName()));
 		e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),"Cagette.net"));			
 		
-		var html = App.current.processTemplate("mail/invitation.mtt", { email:email, email2:email2, group:group.name,name:firstName,k:k } );		
+		var html = App.current.processTemplate("mail/invitation.mtt", { email:email, email2:email2, group:(group==null?null:group.name),name:firstName,k:k } );		
 		e.setHtml(html);
 		
 		App.getMailer().send(e);
-		
-		
 	}
 	
 	/**

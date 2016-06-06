@@ -28,7 +28,14 @@ class Api extends Controller
 			
 			//a strange way to exclude "test" accounts
 			if ( UserAmap.manager.count($amapId == g.id) > 20){
-				var d = {name:g.name, cagetteNetwork:g.flags.has(db.Amap.AmapFlags.CagetteNetwork), id:g.id, url:"http://"+Web.getHostName() + "/group/" + g.id};
+				var d = {
+					name:g.name,
+					cagetteNetwork:g.flags.has(db.Amap.AmapFlags.CagetteNetwork),
+					id:g.id,
+					url:"http://" + Web.getHostName() + "/group/" + g.id,
+					membersNum : g.getMembersNum(),
+					contracts: Lambda.array(Lambda.map(g.getActiveContracts(false), function(c) return c.name))
+				};
 				json.groups.push(d);	
 			}
 			

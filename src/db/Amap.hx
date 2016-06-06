@@ -145,6 +145,10 @@ class Amap extends Object
 		return User.manager.unsafeObjects("Select u.* from User u,UserAmap ua where u.id=ua.userId and ua.amapId="+this.id+" order by u.lastName", false);
 	}
 	
+	public function getMembersNum():Int{
+		return UserAmap.manager.count($amapId == this.id);
+	}
+	
 	public function getMembersFormElementData():FormData<Int> {
 		var m = getMembers();
 		var out = [];
