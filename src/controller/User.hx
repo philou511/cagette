@@ -72,7 +72,6 @@ class User extends Controller
 			login(user,args.name);
 			
 			throw Redirect("/user/choose/");
-						
 		}
 	}
 	
@@ -82,6 +81,7 @@ class User extends Controller
 		user.ldate = Date.now();
 		user.update();
 		App.current.session.setUser(user);
+		if (App.current.session.data == null) App.current.session.data = {};
 		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; //qui est connecté, user1 ou user2 ?	
 		
 	}
