@@ -33,7 +33,7 @@ class Distribution extends Controller
 		if (type == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			//f.addElement(new sugoi.form.elements.DatePicker("date", "Date de livraison",date));
+			//f.addElement(new sugoi.form.elements.DatePicker("date", "Date de distribution",date));
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
 				{ key:"all", value:"Tout à la suite" },
