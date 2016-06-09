@@ -94,6 +94,7 @@ class User extends Controller
 	function doChoose(?args: { amap:db.Amap } ) {
 		
 		if (app.user == null) throw "Vous n'êtes pas connecté";
+		
 		var amaps = db.UserAmap.manager.search($user == app.user, false);
 		
 		if (amaps.length == 1 && !app.params.exists("show")) {
@@ -104,7 +105,7 @@ class User extends Controller
 		
 		if (args!=null && args.amap!=null) {
 			//select a group
-			var which = app.session.data.whichUser;
+			var which = app.session.data==null ? 0 : app.session.data.whichUser ;
 			app.session.data = {};
 			app.session.data.amapId = args.amap.id;
 			app.session.data.whichUser = which;

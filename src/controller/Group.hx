@@ -161,7 +161,7 @@ class Group extends controller.Controller
 			
 			var amap = new db.Amap();
 			amap.name = f.getValueOf("amapName");
-			amap.txtHome = "Bienvenue sur la cagette de "+amap.name+" !\n Vous pouvez consulter votre planning de livraison ou faire une nouvelle commande.";
+			amap.txtHome = "Bienvenue sur la cagette de "+amap.name+" !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
 			amap.contact = user;
 
 			amap.flags.set(db.Amap.AmapFlags.HasMembership);
@@ -237,7 +237,7 @@ class Group extends controller.Controller
 			
 			var contract = new db.Contract();
 			contract.name = "Contrat Poulet Exemple";
-			contract.description = "Exemple de contrat à commande variable. Il permet de commander quelque chose de différent à chaque livraison.";
+			contract.description = "Exemple de contrat à commande variable. Il permet de commander quelque chose de différent à chaque distribution.";
 			contract.amap  = amap;
 			contract.type = 1;
 			contract.vendor = vendor;
