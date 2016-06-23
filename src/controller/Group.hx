@@ -1,5 +1,6 @@
 package controller;
 import sugoi.form.elements.StringInput;
+import sugoi.form.validators.EmailValidator;
 
 
 /**
@@ -92,8 +93,10 @@ class Group extends controller.Controller
 		form.addElement(new sugoi.form.elements.Html("Confirmez votre inscription à \""+group.name+"\""));
 		if (app.user == null){
 			form.addElement(new StringInput("userFirstName", "Votre prénom","",true));
-			form.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
-			form.addElement(new StringInput("userEmail", "Votre email", "", true));		
+			form.addElement(new StringInput("userLastName", "Votre nom de famille", "", true));
+			var em = new StringInput("userEmail", "Votre email", "", true);
+			em.addValidator(new EmailValidator());
+			form.addElement(em);		
 			form.addElement(new StringInput("address", "Adresse", "", true));					
 			form.addElement(new StringInput("zipCode", "Code postal", "", true));		
 			form.addElement(new StringInput("city", "Ville", "", true));		
