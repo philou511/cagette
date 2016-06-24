@@ -2,7 +2,7 @@ ROPTS=-zav --no-p --chmod=u=rwX,g=rX,o= --delete --exclude=www/.htaccess --exclu
 LANG=fr
 
 compile:
-	haxe project.hxml
+	haxe cagette.hxml
 
 css:
 	hss hss/*.hss -output www/css/
