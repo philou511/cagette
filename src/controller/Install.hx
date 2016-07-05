@@ -1,18 +1,42 @@
 package controller;
+import sugoi.db.Variable;
 import sugoi.form.elements.StringInput;
+import thx.semver.Version;
 
 /**
  * ...
  * @author fbarbut<francois.barbut@gmail.com>
  */
-class Install
+class Install extends controller.Controller
 {
-
-	@tpl("form.mtt")
-	function doDefault() {
+	/**
+	 * checks if its a first install or an update
+	 */
+	@tpl("install/default.mtt")
+	public function doDefault() {
 		if (db.User.manager.get(1) == null) {
 						
-			view.title = "Installation de Cagette.net";
+			throw Redirect("/install/firstInstall");
+			
+		}else {
+			//throw Error("/", "L'utilisateur admin a déjà été créé. Essayez de vous connecter avec admin@cagette.net, mot de passe : admin");
+			
+			var status = new Array<{parameter:String,valid:Bool,message:String}>(); 
+			
+			status.push(getVersionStatus());
+			
+			view.status = status;
+			
+			
+		}
+	}
+	
+	/**
+	 * First install 
+	 */
+	@tpl("form.mtt")
+	public function doFirstInstall(){
+		view.title = "Installation de Cagette.net";
 
 			var f = new sugoi.form.Form("c");
 			f.addElement(new StringInput("amapName", "Nom de votre groupement","",true));
@@ -94,15 +118,99 @@ class Install
 				App.current.session.setUser(user);
 				App.current.session.data.amapId  = amap.id;
 				
-				app.session.data.newGroup = true;
 				throw Ok("/", "Groupe et utilisateur 'admin' créé. Votre email est 'admin@cagette.net' et votre mot de passe est 'admin'");
 			}	
 			
 			view.form= f;
-			
-		}else {
-			throw Error("/", "L'utilisateur admin a déjà été créé. Essayez de vous connecter avec admin@cagette.net, mot de passe : admin");
+	}
+	
+	/**
+	 * get version status
+	 */
+	private function getVersionStatus(){
+		
+		
+		var out = {parameter:"version", valid:false, message:""};
+		
+		var v = Variable.get("version");
+		if (v == null || v=="") {
+			Variable.set("version", App.VERSION.toString());
+			v = App.VERSION.toString();
 		}
+		
+		var v :thx.semver.Version = thx.semver.Version.stringToVersion(v);
+		
+		if (v.lessThan(App.VERSION)){
+			
+			//need update !
+			out.valid = false;
+			out.message = "Vous devez mettre à jour votre base de données vers la version "+App.VERSION.toString()+"";
+			
+		}else{
+			out.valid = true;
+			out.message = "Version actuelle "+v.toString()+"";
+		}
+		
+		return out;
+		
+	}
+	
+	/**
+	 * perform migrations from a version to another
+	 */
+	public function doUpdateversion(){
+		
+		var currentVersion = thx.semver.Version.stringToVersion(Variable.get("version"));
+		
+		//Migrations to 0.9.2
+		if (currentVersion.lessThan( thx.semver.Version.arrayToVersion([0,9,2]) )){
+			
+			_installTaxonomy();
+			
+			sugoi.db.Variable.set("version", "0.9.2");
+		}
+		
+		//Migrations to 1.0.0
+		//...
+		
+		throw Redirect("/install");
+		
+	}
+	
+	function _installTaxonomy(){
+		
+		var taxo = sys.io.File.getContent(sugoi.Web.getCwd() + "../data/productTaxonomy.json");
+		var taxo = haxe.Json.parse(taxo);
+		
+		var categories :  Array<Dynamic> = taxo.categories;
+		var subcategories : Array<Dynamic> = taxo.subCategories;
+		var products : Array<Dynamic> = taxo.products;
+		
+		for ( c in categories){
+			var cat = new db.TxpCategory();
+			cat.id = c.id;
+			cat.name = c.name;
+			cat.insert();
+		}
+		
+		for ( sc in subcategories){
+			var scat = new db.TxpSubCategory();
+			scat.id = sc.id;
+			scat.name = sc.name;
+			scat.category = db.TxpCategory.manager.get(Std.parseInt(sc.category));
+			scat.insert();
+			
+		}
+		
+		for ( p in products){
+			var pro = new db.TxpProduct();
+			pro.name = p.name;
+			pro.id = p.id;
+			pro.category = db.TxpCategory.manager.get(Std.parseInt(p.category));
+			pro.subCategory = db.TxpSubCategory.manager.get(Std.parseInt(p.subCategory));
+			pro.insert();
+		}
+		
 	}
 	
 }

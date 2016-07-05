@@ -49,4 +49,31 @@ class Api extends Controller
 		
 	}
 	
+	/**
+	 * Get distribution planning for this group
+	 * 
+	 * @param	group
+	 */
+	public function doPlanning(group:db.Amap){
+		
+		var contracts = group.getActiveContracts(true);
+		var cids = Lambda.map(contracts, function(p) return p.id);
+		var now = Date.now();
+		var now = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+		var twoMonths = new Date(now.getFullYear(), now.getMonth()+2, now.getDate(), 0, 0, 0);
+		var distribs = db.Distribution.manager.search(($contractId in cids) && ($date >= now) && ($date<=twoMonths), { orderBy:date }, false);
+		
+		var out = new Array<{id:Int,start:Date,end:Date,contract:String,contractId:Int,place:Dynamic}>();
+		
+		for ( d in distribs){
+			
+			var place = d.place;
+			var p =  {name:place.name, address1:place.address1,address2:place.address2,zipCode:place.zipCode,city:place.city }			
+			out.push({id:d.id,start:d.date,end:d.end,contract:d.contract.name,contractId:d.contract.id,place:p});
+		}
+		
+		Sys.print(Json.stringify(out));
+		
+	}
+	
 }
