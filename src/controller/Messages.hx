@@ -67,7 +67,10 @@ class Messages extends Controller
 			
 			app.event(SendEmail(e));
 			
-			App.getMailer().send(e);
+			if (!App.config.DEBUG){
+				App.getMailer().send(e);	
+			}
+			
 			
 			var m = new db.Message();
 			m.sender = app.user;

@@ -1,11 +1,18 @@
 ::use 'design.mtt'::
 
 <style>
+	
+	/*table{
+		table-layout:fixed;
+	}*/
+
 
 	table tr td{
 		white-space: nowrap;
+		overflow-x:hidden;
 	}
-
+	
+	
 </style>
 
 
@@ -65,7 +72,9 @@
 				<!-- 1 order line -->
 				<tr>
 					<td>
-						<a href="/contractAdmin/view/::m.contractId::">::m.contractName::</a>
+						<a href="/contractAdmin/view/::m.contractId::">
+							::short(m.contractName,40)::
+						</a>
 					</td>
 					<td>
 						::m.quantity:
@@ -74,7 +83,7 @@
 						$$nullSafe(::m.productRef::)
 					</td>
 					<td>
-						::m.productName::
+						::short(m.productName,40)::
 					</td>
 					<td>
 						::formatNum(m.productPrice)::&nbsp;&euro;

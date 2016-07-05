@@ -1,5 +1,6 @@
 using Std;
 import Common;
+import haxe.Utf8;
 import tools.ArrayTool;
 
 class View extends sugoi.BaseView {
@@ -90,6 +91,18 @@ class View extends sugoi.BaseView {
 		
 		//virgule et pas point
 		return out.split(".").join(",");
+	}
+	
+	/**
+	 * max length for strings, usefull for tables
+	 */
+	public function short(text:String, length:Int){
+		if (Utf8.length(text) > length){
+			
+			return Utf8.sub(text,0, length)+"…";
+		}else{
+			return text;
+		}
 	}
 	
 	public function isToday(d:Date) {
