@@ -8,9 +8,37 @@
 			::user.firstName2::
 		::end::
 		 !
-		</h2>
+		</h2>		
 		<p>Choisissez le groupe auquel vous souhaitez vous connecter&nbsp;:</p>
 	</div>
+
+
+	<!-- pros -->
+	<div class="col-md-12" ::cond pros!=null::>
+		<div class="row">
+		::foreach p pros::
+			<!-- Cagette pro -->
+			<div class="col-md-4">
+				<div class="article" style="height:110px;overflow:hidden;vertical-align:top;">
+					
+					<b>Espace producteur</b>
+					
+					::if p._image!=null::
+					<img src="::file(p._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+					::end::						
+					
+					<h4>::p.name::</h4>
+					
+					<div style="position:absolute;bottom:8px;right:8px;">
+						<a class="btn btn-default btn-sm" href="/p/pro/?company=::p.id::"><span class="glyphicon glyphicon-chevron-right"></span> Choisir</a>	
+					</div>
+					
+				</div>
+			</div>
+		::end::
+		</div>
+	</div>
+
 
 	<!-- groups -->
 	<div class="col-md-12">

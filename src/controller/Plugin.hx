@@ -15,6 +15,11 @@ class Plugin extends sugoi.BaseController
 	//cagette-hosted
 	public function doHosted(d:haxe.web.Dispatch) {
 		d.dispatch(new hosted.controller.Main());
+	}
+	
+	//cagette-pro
+	public function doPro(d:haxe.web.Dispatch) {
+		d.dispatch(new pro.controller.Main());
 	}	
 	#end
 	

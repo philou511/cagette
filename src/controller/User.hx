@@ -114,6 +114,10 @@ class User extends Controller
 		
 		view.amaps = amaps;
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
+		
+		#if plugins
+		view.pros = pro.db.Company.manager.search($user == app.user);
+		#end
 	}
 	
 	function doLogout() {
