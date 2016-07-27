@@ -153,6 +153,16 @@ class Member extends Controller
 		view.waitingList = db.WaitingList.manager.search($group == app.user.amap,{orderBy:-date});
 	}
 	
+	function doInviteMember(u:db.User){
+		
+		if (checkToken() ) {
+			
+			u.sendInvitation();
+			throw Ok('/member/view/'+u.id, "Invitation envoyée.");
+		}
+		
+	}
+	
 	/**
 	 * Invite 'never logged' users
 	 */
