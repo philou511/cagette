@@ -151,7 +151,7 @@ class Data {
 				},
 				{
 					element:"ul.nav.navbar-left",
-					text:"Cette partie de la barre de navigation est visible par tout les adhérents.</br>
+					text:"Cette partie de la barre de navigation est visible par tous les adhérents.</br>
 					Elle permet d'accéder aux trois rubriques principales :
 					<ul>
 						<li> La <b>page d'accueil</b> qui permet d'accéder aux commandes et de voir son planning de distribution.</li>
@@ -165,7 +165,7 @@ class Data {
 				{
 					element:"ul.nav.navbar-right",
 					text:"Cette partie est exclusivement réservée <b>aux coordinateurs.</b>
-					C'est là que vous allez pouvoir administrer les fiches d'adhérents, les commandes, les produits ...etc<br/>
+					C'est là que vous allez pouvoir administrer les fiches d'adhérents, les commandes, les produits, etc.<br/>
 					<p>Cliquez maintenant sur <b>Gestion adhérents</b></p>
 					",
 					action: TAPage("/member"),
@@ -174,7 +174,7 @@ class Data {
 				},{
 					element:".article .table td:first",
 					text:"Cette rubrique permet d'administrer la liste des adhérents.<br/>
-					A chaque fois que vous saisissez un nouvel adhérent, un compte est créé à son nom. 
+					À chaque fois que vous saisissez un nouvel adhérent, un compte est créé à son nom. 
 					Il pourra donc se connecter à Cagette.net pour faire des commandes ou consulter son planning de distribution.
 					<p>Cliquez maintenant sur <b>un adhérent</b></p>",
 					action: TAPage("/member/view/*"),
@@ -197,7 +197,7 @@ class Data {
 				},{
 					element:"#contracts",
 					text:"Ici se trouve la liste des <b>contrats</b>. 
-					Ils comportent une date de début et date de fin et représentent votre relation avec un producteur. <br/>
+					Ils comportent une date de début, une date de fin, et représentent votre relation avec un producteur. <br/>
 					<p>
 					C'est ici que vous pourrez gérer :
 						<ul>
@@ -257,8 +257,8 @@ class Data {
 					placement:TPRight
 				},{
 					element:".article .table",
-					text:"Ici nous pouvons gérer la liste des distributions pour ce producteur<br/>
-					Dans le logiciel une distribution comporte une date avec une heure de début et heure de fin de distribution. 
+					text:"Ici nous pouvons gérer la liste des distributions pour ce producteur.<br/>
+					Dans le logiciel, une distribution comporte une date avec une heure de début et heure de fin de distribution. 
 					Il faut aussi préciser le lieu de distribution à partir de la liste que nous avons vue précédement.",
 					action: TANext,
 					placement : TPLeft
@@ -271,9 +271,9 @@ class Data {
 				},{
 					element:".article .table",
 					text:"Ici nous pouvons gérer la liste des commandes relatives à ce producteur.<br/>
-					Si vous choisissez \"d'ouvrir les commandes\" aux adhérents, ils pourront eux-même saisir leur commande en se connectant à Cagette.net.<br/>
+					Si vous choisissez d'\"ouvrir les commandes\" aux adhérents, ils pourront eux-mêmes saisir leurs commandes en se connectant à Cagette.net.<br/>
 					Cette page centralisera automatiquement les commandes pour ce producteur. 
-					Sinon vous pouvez en tant que coordinateur saisir les commandes pour les adhérents depuis cette page.",
+					Sinon, en tant que coordinateur, vous pouvez saisir les commandes pour les adhérents depuis cette page.",
 					action: TANext,
 					placement : TPLeft
 					
@@ -302,7 +302,7 @@ class Data {
 					element:"#subnav",
 					text:"<p>Dans cette dernière rubrique, vous pouvez configurer tout ce qui concerne votre groupe en général.</p>
 					<p>La rubrique <b>Droits et accès</b> est importante puisque c'est là que vous pourrez nommer d'autres coordinateurs parmi les adhérents. Ils pourront
-					ainsi gérer les contrats dont ils s'occupent, utiliser la messagerie ...etc
+					ainsi gérer les contrats dont ils s'occupent, utiliser la messagerie, etc.
 					</p>",
 					action:TANext,
 					placement : TPBottom
