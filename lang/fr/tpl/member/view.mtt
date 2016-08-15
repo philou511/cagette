@@ -54,6 +54,12 @@
 			::if user.isAmapManager()::
 			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-default btn-sm">Se connecter sur ce compte</a>
 			::end::
+			
+			::if member.ldate==null::
+			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+				Envoyer une invitation</a>
+			::end::
 		</p>
 	</div>
 	
