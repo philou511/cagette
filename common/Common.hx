@@ -32,6 +32,13 @@ typedef ProductInfo = {
 	#end
 }
 
+enum UnitType{
+	Unit;
+	Kilogram;
+	Gram;
+	Litre;
+}
+
 @:keep
 enum ProductType {
 	CTVegetable;
@@ -120,6 +127,9 @@ enum Event {
 }
 
 
+/* 
+ * Tutorials
+ */
 enum TutoAction {
 	TAPage(uri:String);
 	TANext;

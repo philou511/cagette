@@ -31,6 +31,7 @@ bundle:
 	
 cp_plugin:
 	cp -R lang/fr/tpl/plugin/hosted/* ~/projects/haxeLibs/cagette-hosted/git/src/hosted/lang/fr/tpl/hosted/
+	cp -R lang/fr/tpl/plugin/pro/* ~/projects/haxeLibs/cagette-pro/git/src/pro/lang/fr/tpl/
 	
 
 	

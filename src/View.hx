@@ -110,6 +110,15 @@ class View extends sugoi.BaseView {
 		return d.getDate() == n.getDate() && d.getMonth() == n.getMonth() && d.getFullYear() == n.getFullYear();
 	}
 	
+	public function unit(u:UnitType){
+		return switch(u){
+			case Kilogram: "Kg.";
+			case Gram: "g.";
+			case Unit: "unités";
+			case Litre: "l.";
+		}
+	}
+	
 	/**
 	 * human readable date 
 	 * @param	date

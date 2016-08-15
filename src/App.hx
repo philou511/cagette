@@ -181,13 +181,14 @@ class App extends sugoi.BaseApp {
 	public static function getMailer() {
 		if (config.get("smtp_host") == null) throw "missing SMTP config";
 		
-		return new ufront.mailer.SmtpMailer(
-		{
+		var conf = {
 			host:config.get("smtp_host"),
 			port:config.getInt("smtp_port"),
 			user:config.get("smtp_user"),
-			pass:config.get("smtp_pass"),
-		});	
+			pass:config.get("smtp_pass")
+		};
+		
+		return new ufront.mailer.SmtpMailer(conf);	
 	}
 	
 	/**

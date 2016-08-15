@@ -61,6 +61,16 @@ class Messages extends Controller
 			e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),senderName));		
 			e.replyTo(new ufront.mail.EmailAddress(senderMail, senderName));
 			
+			
+			//var e = new ufront.mail.Email();		
+			//e.setSubject(form.getValueOf("subject"));
+			//e.bcc(Lambda.map(mails, function(m) return new ufront.mail.EmailAddress(m)));
+			////from and reply-to : user email
+			//e.from(new ufront.mail.EmailAddress(senderMail, senderName));			
+			//e.replyTo(new ufront.mail.EmailAddress(senderMail, senderName));
+			////sender : default email ( explicitly tells that the server send an email on behalf of the user )
+			//e.setHeader("Sender", App.config.get("default_email"));
+			
 			var text :String = form.getValueOf("text");
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
 			e.setHtml(html);
