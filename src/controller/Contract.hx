@@ -129,7 +129,11 @@ class Contract extends Controller
 			
 		}
 		
+		checkToken();
+		
 	}
+	
+	
 	
 
 	/**

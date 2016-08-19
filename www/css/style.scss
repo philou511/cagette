@@ -14,20 +14,20 @@
 
 h1,h2,h3,h4{
 
-	margin-top: CSS("4px !important");
-	margin-bottom: CSS("8px !important");
+	margin-top: 4px !important;
+	margin-bottom: 8px !important;
 
 }
 
 h1{
-	color:CSS(" #583816 !important");
+	color: #583816 !important;
 	
 	a{
-		color:CSS(" #583816 !important");	
+		color: #583816 !important;	
 	}
 }
 h2,h3,h4{
-	color:CSS(" #007700 !important");
+	color: #007700 !important;
 }
 
 
@@ -87,8 +87,8 @@ body{
 
 //pour les hauts de nav
 span.panel-title{
-	font-family:CSS(" 'Cantora One', sans-serif !important");
-	color: CSS(" #966125 !important");
+	font-family: 'Cantora One', sans-serif !important;
+	color:  #966125 !important;
 	font-size: 20px !important;
 	font-weight:normal !important;
 	
@@ -240,12 +240,12 @@ table.product{
 	padding:8px;
 	color:white;
 	h2{
-		color:CSS("white !important");
+		color:white !important;
 	}
 	a.infos{
 		margin-top:8px;
 		font-size:12px;
-		color:CSS("white !important");
+		color:white !important;
 		display:block;
 	}
 	
@@ -317,7 +317,7 @@ i{
 	width: 90px;
 	margin:0;
 	padding:4px;
-	box-shadow: CSS("4px 4px 0px #8E662A");
+	box-shadow: 4px 4px 0px #8E662A;
 	
 	.box{
 		line-height:22px;
@@ -332,10 +332,10 @@ i{
 
 	/* place link */
 	a{
-		color:CSS(" #FFFFFF !important");
+		color: #FFFFFF !important;
 	}
 	a:hover{
-		color:CSS(" #FFFFFF !important");
+		color: #FFFFFF !important;
 	}
 }
  
@@ -368,11 +368,11 @@ span.tag.active{
 	
 	h3.popover-title{
 		padding: 4px;
-		color:CSS("#BB9931 !important");
-		border-bottom:CSS("1px solid #BB9931 !important");
-		font-weight:CSS("bold !important");
-		font-family:CSS("'Arial','sans-serif' !important");
-		//background-color:CSS("#583816 !important");	
+		color:#BB9931 !important;
+		border-bottom:1px solid #BB9931 !important;
+		font-weight:bold !important;
+		font-family:'Arial','sans-serif' !important;
+		//background-color:#583816 !important;	
 	}
 	
 	.footer{
@@ -406,21 +406,21 @@ span.tag.active{
 .modal.help{
 	.modal-header{
 		font-size: 1.3em;
-		color:CSS("#BB9931 !important");
-		border-bottom:CSS("1px solid #BB9931 !important");
-		font-weight:CSS("bold !important");
-		font-family:CSS("'Arial','sans-serif' !important");
-		background-color:CSS("#583816 !important");	
+		color:#BB9931 !important;
+		border-bottom:1px solid #BB9931 !important;
+		font-weight:bold !important;
+		font-family:'Arial','sans-serif' !important;
+		background-color:#583816 !important;	
 	}
 	
 	.modal-content{
-		background-color:CSS("#583816 !important");
+		background-color:#583816 !important;
 		color:white;
 		
 	}
 	
 	.modal-footer{
-		border-top:CSS("1px solid #BB9931 !important");
+		border-top:1px solid #BB9931 !important;
 	}
 	
 }
@@ -432,7 +432,7 @@ span.tag.active{
 
  
 
-/* Distrib */
+/* Distribution box for the homepage */
 .distrib{
 	
 	margin: 0px 0px 28px 0px;
@@ -454,10 +454,10 @@ span.tag.active{
 			font-weight:bold;
 			/* place link */
 			a{
-				color:CSS(" #FFFFFF !important");
+				color: #FFFFFF !important;
 			}
 			a:hover{
-				color:CSS(" #FFFFFF !important");
+				color: #FFFFFF !important;
 			}
 		}
 		
@@ -542,3 +542,30 @@ span.tag.active{
 	
 }
  
+
+ 
+
+div.productBox{
+	
+	div.productImg{
+		background-size: cover;
+		height: 220px;
+		background-position: center center;
+	}
+	
+	div.productName{
+		display:block;
+		font-weight:normal;
+		color:#967820;
+		text-align:center;
+		font-family :  'Cantora One', sans-serif;
+		font-size:1.7em;
+		margin-bottom:4px;
+	}
+	
+	.price{
+		font-weight:bold;
+		text-align:right;
+	}
+	
+}

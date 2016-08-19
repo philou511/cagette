@@ -48,6 +48,23 @@ class Account extends Controller
 		view.title = "Modifier mon compte";
 	}
 	
+	function doQuit(){
+		
+		if (checkToken()){
+			
+			var name = app.user.amap.name;
+			
+			
+			var ua = db.UserAmap.get(app.user, app.user.amap,true);
+			ua.delete();
+			
+			App.current.session.data.amapId = null;
+			throw Ok("/user/choose?show=1", "Vous avez quitté le groupe "+name);
+			
+		}
+		
+	}
+	
 	
 	
 }

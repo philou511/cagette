@@ -119,17 +119,18 @@ class View extends sugoi.BaseView {
 		}
 	}
 	
+	public var DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+	public var MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
+	public var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+	public var MINUTES = [0,5,10,15,20,25,30,35,40,45,50,55];
+	
 	/**
 	 * human readable date 
 	 * @param	date
 	 */
 	public function hDate(date:Date):String {
 		if (date == null) return "aucune date";
-		
-		var days = ["Dimanche","Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-		var months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-		
-		var out = days[date.getDay()] + " " + date.getDate() + " " + months[date.getMonth()];
+		var out = DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
 		/*if ( date.getFullYear() != Date.now().getFullYear())*/ out += " " + date.getFullYear();
 		if ( date.getHours() != 0 || date.getMinutes() != 0) out += " à " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
 		return out;
@@ -137,27 +138,25 @@ class View extends sugoi.BaseView {
 	
 	public function dDate(date:Date):String {
 		if (date == null) return "aucune date";
-		
-		var days = ["Dimanche","Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-		var months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-		
-		return days[date.getDay()] + " " + date.getDate() + " " + months[date.getMonth()];
+		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
 	}
 	
 	public function getDate(date:Date) {
 		if (date == null) throw "date is null";
 		
-		var days = ["Dimanche","Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-		var months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
 		
 		return {
-			dow: days[date.getDay()],
+			dow: DAYS[date.getDay()],
 			d : date.getDate(),
-			m: months[date.getMonth()],
+			m: MONTHS[date.getMonth()],
 			y: date.getFullYear(),			
 			h: StringTools.lpad(Std.string(date.getHours()),"0",2),
 			i: StringTools.lpad(Std.string(date.getMinutes()),"0",2)
 		};
+	}
+	
+	public function hHour(h:Int,m:Int){
+		return StringTools.lpad(h.string(), "0", 2) + ":" + StringTools.lpad(m.string(), "0", 2);
 	}
 	
 	public function getProductImage(e):String {
