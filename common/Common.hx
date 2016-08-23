@@ -62,10 +62,7 @@ typedef CategoryInfo = {
 	name:String,
 	//pinned:Bool,
 	//parent:Int,
-	
 }
-
-
 
 /**
  * datas used with the "tagger" ajax class
@@ -77,11 +74,12 @@ typedef TaggerInfos = {
 }
 
 /**
- * Links in navbars for plugin
+ * Links in navbars for plugins
  */
 typedef Link = {
-	var link:String;
-	var name:String;
+	link:String,
+	name:String,
+	?icon:String,
 }
 
 typedef UserOrder = {
@@ -114,14 +112,16 @@ typedef UserOrder = {
 	
 enum Event {
 
-	Page(uri:String);			//a page is displayed
-	Nav(nav:Array<Link>,name:String);		//a navigation is displayed
-	
+	Page(uri:String);							//a page is displayed
+	Nav(nav:Array<Link>,name:String,?id:Int);	//a navigation is displayed, optionnal object id if needed
 	
 	#if sys
 	SendEmail(message : ufront.mail.Email);		//an email is sent
-	NewMember(user:db.User,group:db.Amap);					//a new member is added to a group
-	NewGroup(group:db.Amap,author:db.User);		//a new group is created
+	NewMember(user:db.User,group:db.Amap);		//a new member is added to a group
+	NewGroup(group:db.Amap, author:db.User);	//a new group is created
+	
+	PreNewDistrib(contract:db.Contract);		//when displaying the insert distribution form
+	NewDistrib(distrib:db.Distribution);		//when a new distrinbution is created
 	#end
 	
 }

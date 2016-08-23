@@ -5,6 +5,7 @@ import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
+import Common;
 
 class ContractAdmin extends Controller
 {
@@ -13,10 +14,15 @@ class ContractAdmin extends Controller
 	{
 		super();
 		if (!app.user.isContractManager()) throw Error("/", "Vous n'avez pas accès à la gestion des contrats");
-		//var e = new event.Event();
-		//e.id = "displayContract";
-		//App.current.eventDispatcher.dispatch(e);
-			
+		
+		
+	}
+	
+	function sendNav(c){
+		var nav = new Array<Link>();
+		var e = Nav(nav,"contractAdmin",c.id);
+		app.event(e);
+		view.nav = e.getParameters()[0];
 	}
 	
 	/**
@@ -56,6 +62,9 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/products.mtt")
 	function doProducts(contract:db.Contract) {
+		
+		sendNav(contract);
+		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = contract;
 		
@@ -265,7 +274,10 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders(contract:db.Contract,args:{?d:db.Distribution}) {
+	function doOrders(contract:db.Contract, args:{?d:db.Distribution}) {
+		
+		sendNav(contract);
+		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
@@ -311,6 +323,7 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("form.mtt")
 	function doDuplicate(contract:db.Contract) {
+		sendNav(contract);
 		if (!app.user.isAmapManager()) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
@@ -389,7 +402,8 @@ class ContractAdmin extends Controller
 	 * Commandes groupées par produit.
 	 */
 	@tpl("contractadmin/ordersByProduct.mtt")
-	function doOrdersByProduct(contract:db.Contract,args:{?d:db.Distribution}) {
+	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
+		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
@@ -431,7 +445,7 @@ class ContractAdmin extends Controller
 	
 	@tpl("contractadmin/deliveries.mtt")
 	function doDistributions(contract:db.Contract, ?args: { old:Bool } ) {
-		
+		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = contract;
 		if (args != null && args.old) {
@@ -449,6 +463,7 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/distributionp.mtt")
 	function doDistributionp(contract:db.Contract) {
+		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		
 		var out = new Array<{user:db.User,count:Int}>();
@@ -496,6 +511,7 @@ class ContractAdmin extends Controller
 	
 	@tpl("contractadmin/view.mtt")
 	function doView(contract:db.Contract) {
+		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = view.contract = contract;
 	}
@@ -503,6 +519,7 @@ class ContractAdmin extends Controller
 	
 	@tpl("contractadmin/stats.mtt")
 	function doStats(contract:db.Contract, ?args: { stat:Int } ) {
+		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = contract;
 		
@@ -545,35 +562,7 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	/*@tpl("form.mtt")
-	function doInsert(contract:db.Contract) {
-		
-		var m = new UserContract();
-		view.title = "Saisir une commande de \""+contract.name+"\"";
-		
-		var form = sugoi.form.Form.fromSpod(m);
-		
-		form.removeElement(form.getElement("amapId"));
-		form.removeElement(form.getElement("productId"));
-		var products = contract.getProducts();
-		var prodArr = [];
-		for (p in products) {
-			prodArr.push({key:Std.string(p.id),value:p.name});
-		}
-		form.addElement( new Selectbox("productId", "Produit", prodArr,null,true) );
-		
-		if (form.isValid()) {
-			form.toSpod(m); //update model
-			if (!m.user.isMemberOf(app.user.amap)) throw Error('/ContractAdmin', 'Cette personne ne fait pas partie de cette AMAP');
-			if (m.user2!=null && !m.user2.isMemberOf(app.user.amap)) throw Error('/ContractAdmin', 'Cette personne ne fait pas partie de cette AMAP');
-			m.amap = app.user.amap;
-			m.insert();
-			
-			throw Ok('/contractAdmin/orders/'+m.product.contract.id,'La commande a bien été enregistrée');
-		}
-		
-		view.form = form;
-	}*/
+	
 	
 	/**
 	 * Efface une commande
@@ -589,7 +578,7 @@ class ContractAdmin extends Controller
 
 	@tpl("contractadmin/selectDistrib.mtt")
 	function doSelectDistrib(c:db.Contract, ?args:{old:Bool}) {
-		
+		sendNav(c);
 		view.c = c;
 		if (args != null && args.old){
 			view.distributions = c.getDistribs(false);	
@@ -604,7 +593,7 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/edit.mtt")
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
-	
+		sendNav(c);
 		if (!app.user.canManageContract(c)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		
 		view.c = view.contract = c;

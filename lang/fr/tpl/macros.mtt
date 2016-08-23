@@ -36,12 +36,7 @@
 		</script>
 	</macro>
 	
-	<macro name="nullSafe(text)">
-		::if text==null::
-		::else::
-			::text::
-		::end::
-	</macro>
+	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
 	
 	<macro name="edit(text,url)">
 		

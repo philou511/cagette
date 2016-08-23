@@ -33,6 +33,7 @@ class App extends sugoi.BaseApp {
 		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
 		plugins.push( new hosted.HostedPlugIn() );
 		plugins.push( new pro.ProPlugIn() );
+		plugins.push( new connector.ConnectorPlugIn() );
 		#end
 		
 	

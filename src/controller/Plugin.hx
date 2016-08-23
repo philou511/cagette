@@ -20,7 +20,13 @@ class Plugin extends sugoi.BaseController
 	//cagette-pro
 	public function doPro(d:haxe.web.Dispatch) {
 		d.dispatch(new pro.controller.Main());
-	}	
+	}
+	
+	//cagette-connector
+	public function doConnector(d:haxe.web.Dispatch) {
+		d.dispatch(new connector.controller.Main());
+	}
+	
 	#end
 	
 }

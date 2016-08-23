@@ -257,12 +257,14 @@ class Contract extends Controller
 				throw Error("/contractAdmin", "Vous ne pouvez pas effacer ce contrat car il y a des commandes rattachées à ce contrat.");
 			}
 			
-			//remove admin rights and delete contract		
-			var ua = db.UserAmap.get(c.contact, c.amap, true);
-			if (ua != null) {
-				ua.removeRight(ContractAdmin(c.id));
-				ua.update();	
-			}	
+			//remove admin rights and delete contract	
+			if(c.contact!=null){
+				var ua = db.UserAmap.get(c.contact, c.amap, true);
+				if (ua != null) {
+					ua.removeRight(ContractAdmin(c.id));
+					ua.update();	
+				}			
+			}
 			c.lock();
 			c.delete();
 			throw Ok("/contractAdmin", "Contrat supprimé");

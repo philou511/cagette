@@ -392,7 +392,7 @@ ProductType.CTYahourt.__enum__ = ProductType;
 ProductType.__empty_constructs__ = [ProductType.CTVegetable,ProductType.CTCheese,ProductType.CTChicken,ProductType.CTUnknown,ProductType.CTWine,ProductType.CTMeat,ProductType.CTEggs,ProductType.CTHoney,ProductType.CTFish,ProductType.CTJuice,ProductType.CTApple,ProductType.CTBread,ProductType.CTYahourt];
 var Event = $hxClasses["Event"] = { __ename__ : ["Event"], __constructs__ : ["Page","Nav"] };
 Event.Page = function(uri) { var $x = ["Page",0,uri]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
-Event.Nav = function(nav,name) { var $x = ["Nav",1,nav,name]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
+Event.Nav = function(nav,name,id) { var $x = ["Nav",1,nav,name,id]; $x.__enum__ = Event; $x.toString = $estr; return $x; };
 Event.__empty_constructs__ = [];
 var TutoAction = $hxClasses["TutoAction"] = { __ename__ : ["TutoAction"], __constructs__ : ["TAPage","TANext"] };
 TutoAction.TAPage = function(uri) { var $x = ["TAPage",0,uri]; $x.__enum__ = TutoAction; $x.toString = $estr; return $x; };

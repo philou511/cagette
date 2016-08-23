@@ -3,6 +3,7 @@ import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 using tools.DateTool;
+import Common;
 
 class Distribution extends Controller
 {
@@ -190,6 +191,7 @@ class Distribution extends Controller
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
 		
 		
+		
 		if (contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", App.t._("orderStartDate"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
 			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", App.t._("orderEndDate"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
@@ -204,8 +206,21 @@ class Distribution extends Controller
 			
 			checkDistrib(d);
 			
-			d.insert();
-			throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');
+			var e :Event = NewDistrib(d);
+			app.event(e);
+			
+			if (d.date == null){
+				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été proposée au producteur. Attendez maintenant sa validation');
+			}else{
+				d.insert();
+				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');	
+			}
+			
+			
+		}else{
+			//event
+			app.event(PreNewDistrib(contract));
+		
 		}
 	
 		view.form = form;

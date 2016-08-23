@@ -38,6 +38,7 @@
     <library name="ufront-mail" />
     <library name="cagette-hosted" />
     <library name="cagette-pro" />
+    <library name="cagette-connector" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

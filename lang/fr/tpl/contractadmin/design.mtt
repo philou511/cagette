@@ -13,6 +13,18 @@
 			<li id="deliveries"><a href="/contractAdmin/distributions/::c.id::">Distributions</a></li>
 			<li id="orders"><a href="/contractAdmin/orders/::c.id::">Commandes</a></li>
 			<li id="stats"><a href="/contractAdmin/stats/::c.id::">Statistiques</a></li>
+			::if nav!=null::
+				<hr/>
+				::foreach i nav::
+				<li>
+					
+					<a href="::i.link::">
+						<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::"></span>
+						 ::i.name::</a>					
+				</li>
+				::end::		
+				
+			::end::
 		</ul>
 	</div>
 </div>
