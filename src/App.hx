@@ -192,6 +192,24 @@ class App extends sugoi.BaseApp {
 		return new ufront.mailer.SmtpMailer(conf);	
 	}
 	
+	public static function quickMail(to:String, subject:String, html:String){
+		var e = new ufront.mail.Email();		
+		e.setSubject(subject);
+		e.to(new ufront.mail.EmailAddress(to));			
+		e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),"Cagette Pro"));		
+		
+		var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
+		e.setHtml(html);
+		
+		current.event(SendEmail(e));
+		
+		if (!App.config.DEBUG){
+			getMailer().send(e);	
+		}
+		
+		
+	}
+	
 	/**
 	 * process a template and returns the generated string
 	 * @param	tpl

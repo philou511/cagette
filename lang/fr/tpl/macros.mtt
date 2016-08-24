@@ -109,8 +109,12 @@
 		
 		<i class="icon-user"></i>
 		<b>::u.firstName:: ::u.lastName::</b><br/>
-		<span ::cond u.email!=null::><span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/></span>
-		<span ::cond u.phone!=null::><span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/></span>
+		<span ::cond u.email!=null::>
+			<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
+		</span>
+		<span ::cond u.phone!=null::>
+			<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
+		</span>
 		
 	</macro>
 

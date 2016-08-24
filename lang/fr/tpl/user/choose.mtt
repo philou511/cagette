@@ -19,9 +19,9 @@
 		::foreach p pros::
 			<!-- Cagette pro -->
 			<div class="col-md-4">
-				<div class="article" style="height:110px;overflow:hidden;vertical-align:top;">
+				<div class="article" style="height:110px;overflow:hidden;vertical-align:top;background:#bad096">
 					
-					<b>Espace producteur</b>
+					<b>Cagette Pro</b>
 					
 					::if p._image!=null::
 					<img src="::file(p._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
