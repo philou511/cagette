@@ -32,6 +32,7 @@
     <library name="dbadmin" />
     <library name="templo" />
     <library name="thx.semver" />
+    <library name="thx.csv" />
     <library name="sugoi" />
     <library name="hxevents" />
     <library name="hscript" />
