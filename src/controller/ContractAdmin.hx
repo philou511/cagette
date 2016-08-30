@@ -431,7 +431,7 @@ class ContractAdmin extends Controller
 			var data = new Array<Dynamic>();
 			
 			for (o in orders) {
-				data.push({"quantity":o.quantity,"pname":o.pname,"ref":o.ref,"price":view.formatNum(o.price),"total":o.quantity*o.price});				
+				data.push({"quantity":view.formatNum(o.quantity),"pname":o.pname,"ref":o.ref,"price":view.formatNum(o.price),"total":view.formatNum(o.quantity*o.price)});				
 			}
 
 			setCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");

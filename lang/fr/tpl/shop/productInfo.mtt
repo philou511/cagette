@@ -6,11 +6,9 @@
 			<img src="::p.image::" class="img-thumbnail img-responsive" />
 		</div>
 		
-		<div class="col-md-7">
+		<div class="col-md-4">
 			
-			<p ::cond p.desc!=null::>
-				::raw nl2br(p.desc)::
-			</p>
+			
 			
 			<span class="price">::formatNum(p.price):: € TTC</span>
 			
@@ -25,11 +23,43 @@
 					::p.contractTax:: % ::p.contractTaxName:: inclus<br/>
 				::end::
 				
+				
+				
 			</div>
 			::end::
 			
 			
 		</div>
+		<div class="col-md-3">
+			::if product._unitType!=null::
+				<span class="price">::product.qt::&nbsp;::unit(product._unitType):: </span>
+				
+				::set c = product.getCostPerUnit()::
+				
+				
+				<div class="vat" ::cond c!=null::>
+					::formatNum(c.cost)::&euro; / 
+					::if c.qt!=1::
+						::c.qt::
+					::end::
+					::unit(c.unit)::
+					
+				</div>
+				
+			::end::
+			
+			
+			
+		</div>
+		
+
+		
+		<div class="col-md-7" style="margin-top:24px;">
+			<p ::cond p.desc!=null::>
+				::raw nl2br(p.desc)::
+			</p>
+		</div>
+		
 		
 	</div>
 	

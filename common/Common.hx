@@ -107,7 +107,12 @@ typedef UserOrder = {
 }
 
 /**
-	Event enum used for plugins
+	Event enum used for plugins.
+	
+	As in most CMS event systems, 
+	the events (or "triggers") can be catched by plugins 
+	to perform an action or modifiy data carried by the event.
+	
 **/
 	
 enum Event {
@@ -120,8 +125,22 @@ enum Event {
 	NewMember(user:db.User,group:db.Amap);		//a new member is added to a group
 	NewGroup(group:db.Amap, author:db.User);	//a new group is created
 	
+	//Distributions
 	PreNewDistrib(contract:db.Contract);		//when displaying the insert distribution form
 	NewDistrib(distrib:db.Distribution);		//when a new distrinbution is created
+	PreEditDistrib(distrib:db.Distribution);
+	EditDistrib(distrib:db.Distribution);
+	DeleteDistrib(distrib:db.Distribution);
+	PreNewDistribCycle(cycle:db.DistributionCycle);	
+	NewDistribCycle(cycle:db.DistributionCycle);
+	
+	//Products
+	PreNewProduct(contract:db.Contract);	//when displaying the insert distribution form
+	NewProduct(product:db.Product);			//when a new distrinbution is created
+	PreEditProduct(product:db.Product);
+	EditProduct(product:db.Product);
+	DeleteProduct(product:db.Product);
+	
 	#end
 	
 }

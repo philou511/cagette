@@ -22,6 +22,9 @@ class Product extends Object
 	public var desc : SNull<SText>;
 	public var stock : SNull<SFloat>; //if qantity can be float, stock should be float
 	
+	public var unitType : SNull<SEnum<UnitType>>; // Kg / L / g / units
+	public var qt : SNull<SFloat>;
+	
 	public var type : SInt;	//icones
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
@@ -91,6 +94,26 @@ class Product extends Object
 		return Lambda.map(db.ProductCategory.manager.search($productId == id, false), function(x) return x.category);
 	}
 	
+	/**
+	 * get cost per unit , like 4.5EUR/Kg.
+	 */
+	public function getCostPerUnit():{cost:Float, qt:Float, unit:UnitType}{
+		
+		if (this.qt == null || this.qt == 1) return null;
+		
+		var _cost = getPrice() / qt;
+		var _qt = 1;
+		var _unit = unitType;
+		
+		//turn small prices in Kg
+		if (_cost < 1 && this.unitType == Gram){
+			_cost *= 1000;
+			_unit = Kilogram;
+		}
+		
+		return {cost:_cost,qt:_qt,unit:_unit};
+		
+	}
 	
 }
 

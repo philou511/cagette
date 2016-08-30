@@ -111,8 +111,6 @@ class Distribution extends Controller
 		
 	}
 	
-	
-	
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.canManageContract(d.contract)) throw "action non autorisée";		
@@ -120,6 +118,9 @@ class Distribution extends Controller
 		
 		d.lock();
 		var cid = d.contract.id;
+		
+		app.event(DeleteDistrib(d));
+		
 		d.delete();
 		throw Ok("/contractAdmin/distributions/" + cid, "la distribution a bien été effacée");
 	}
@@ -142,17 +143,22 @@ class Distribution extends Controller
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", App.t._("orderStartDate"), d.orderStartDate));	
 			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", App.t._("orderEndDate"), d.orderEndDate));
-		}
+		}		
 		
 		if (form.isValid()) {
-			form.toSpod(d); //update model
+			form.toSpod(d); 
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
 			
 			//var days = Math.floor( d.date.getTime() / 1000 / 60 / 60 / 24 );
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), d.end.getHours(), d.end.getMinutes(), 0);
+			
+			app.event(EditDistrib(d));
+			
 			d.update();
 			throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été mise à jour');
+		}else{
+			app.event(PreEditDistrib(d));
 		}
 		
 		view.form = form;
@@ -189,8 +195,6 @@ class Distribution extends Controller
 		//default values
 		form.getElement("date").value = DateTool.now().deltaDays(30).setHourMinute(19, 0);
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
-		
-		
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", App.t._("orderStartDate"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
@@ -293,15 +297,21 @@ class Distribution extends Controller
 			
 			form.toSpod(d); //update model			
 			d.contract = contract;
+			
+			app.event(NewDistribCycle(d));
+			
 			d.insert();
 			
 			var c = contract;
 			if (d.endDate.getTime() > c.endDate.getTime()) throw Error('/distribution/insertCycle/' + c.id, "La date de fin doit être antérieure à la date de fin du contrat ("+view.hDate(c.endDate)+")");
 			if (d.startDate.getTime() < c.startDate.getTime()) throw Error('/distribution/insertCycle/' + c.id, "La date de début doit être postérieure à la date de début du contrat ("+view.hDate(c.startDate)+")");
 		
-			
 			db.DistributionCycle.updateChilds(d);
+			
 			throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');
+		}else{
+			d.contract = contract;
+			app.event(PreNewDistribCycle(d));
 		}
 		
 		view.form = form;

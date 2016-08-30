@@ -170,7 +170,12 @@ class App extends sugoi.BaseApp {
 		out.set("daysBeforeOrderStart", "Ouverture de commande (nbre de jours avant distribution)");
 		out.set("daysBeforeOrderEnd", "Fermeture de commande (nbre de jours avant distribution)");
 		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
-		
+		out.set("unitType", "Unité");
+		out.set("qt", "Quantité");
+		out.set("Unit", "unités");
+		out.set("Kilogram", "Kilogrammes");
+		out.set("Gram", "Grammes");
+		out.set("Litre", "Litres");
 		return out;
 	}
 	

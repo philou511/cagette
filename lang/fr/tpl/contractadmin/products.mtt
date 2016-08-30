@@ -41,6 +41,10 @@
 			<td>
 				<b>::p.name::</b>
 				
+				::if p._unitType!=null::
+				::p.qt::&nbsp;::unit(p._unitType)::
+				::end::
+				
 				<div>
 					::foreach c p.getCategories()::
 					<span class='tag' style='background-color: ::c.getColor()::;'>::c.name::</span>
@@ -49,6 +53,8 @@
 				</div>
 				
 			</td>
+			
+			
 			<td>::formatNum(p.price)::&nbsp;&euro;</td>
 			<td>
 			::if c.hasStockManagement() ::
