@@ -565,3 +565,21 @@ div.productBox{
 	}
 	
 }
+
+
+//typeahead 
+.tt-suggestion{
+	background-color:#FFF;
+	padding:8px;
+	border-top:1px solid #CCC;
+	color:#666;
+	cursor:pointer;
+	&:hover{
+		background-color:#CCC;
+	}
+}
+.txpProduct{
+	color:#666;
+	font-size:0.8em;
+	margin:4px 0;
+}

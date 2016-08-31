@@ -1,0 +1,28 @@
+﻿::use 'admin/design.mtt'::
+		
+		<h2>Dictionnaire de produits</h2>
+
+		<p>
+			Cagette.net inclut maintenant un dictionnaire de produits qui permet d'identifier
+			facilement les produits que vous saisissez.
+		</p>
+			
+		<hr/>
+			
+		::foreach c categ::
+			<h4>::c.name::</h4>
+			::foreach sc c.getSubCategories()::
+				<p style="margin-left:12px;">
+					<b>::sc.name::</b>
+					<br/>
+					::foreach p sc.getProducts()::
+					::p.name::,
+					::end::
+					
+				</p>
+			::end::
+		::end::
+		
+		
+::end::
+

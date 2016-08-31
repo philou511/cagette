@@ -34,7 +34,17 @@ class Admin extends Controller {
 	}
 	
 	
-
+	@tpl("admin/taxo.mtt")
+	function doTaxo(){
+		
+		view.categ = db.TxpCategory.manager.all();
+		
+		
+		
+	}
+	
+	
+	
 	
 	@tpl("admin/errors.mtt")
 	function doErrors( args:{?user: Int, ?like: String, ?empty:Bool} ) {

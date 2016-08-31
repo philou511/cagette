@@ -12,4 +12,11 @@ class TxpSubCategory extends Object
 	public var name : SString<128>;	
 	@:relation(categoryId) public var category:db.TxpCategory;
 	
+	
+	public function getProducts(){
+		
+		return db.TxpProduct.manager.search($subCategory == this, false);
+	
+		
+	}
 }

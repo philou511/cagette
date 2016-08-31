@@ -7,6 +7,52 @@
 		</p>
 		
 		::raw form::
+		
+		
+		
+		
+		
+		<input class="typeahead form-control" type="text" placeholder="Nom de produit" />
+		<input type="hidden" name="txpProduct" value="" />
+		<div class="txpProduct">
+			Carotte
+		</div>
+		
+		<script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+		<script>
+		var substringMatcher = function(strs) {
+		  return function findMatches(q, cb) {
+			var matches = [];
+			var substrRegex = new RegExp(q, 'i');
+
+			$.each(strs, function(i, str) {
+			  if (substrRegex.test(str.name)) {
+				matches.push(str);
+			  }
+			});
+
+			cb(matches);
+		  };
+		};
+
+		var products = [::foreach t taxo::{"id": ::t.id::, "name" : "::t.name::"},::end::];
+
+		$('.typeahead').typeahead({
+		  hint: true,
+		  highlight: true,
+		  minLength: 3
+		},
+		{
+		  name: 'products',
+		  source: substringMatcher(products)
+		});
+		
+		$('.typeahead').bind('typeahead:select', function(ev, suggestion) {
+			console.log('Selection: ' + suggestion);
+		});
+		
+		</script>
+		
 	</div>
 </div>
 

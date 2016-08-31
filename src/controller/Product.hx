@@ -39,7 +39,9 @@ class Product extends Controller
 		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
 
 		f.removeElementByName("contractId");
-			
+		
+		view.taxo = db.TxpProduct.manager.all();
+
 		if (f.isValid()) {
 			
 			f.toSpod(d); //update model
