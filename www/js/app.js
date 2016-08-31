@@ -335,10 +335,10 @@ Cart.prototype = {
 	}
 	,__class__: Cart
 };
-var UnitType = $hxClasses["UnitType"] = { __ename__ : ["UnitType"], __constructs__ : ["Unit","Kilogram","Gram","Litre"] };
-UnitType.Unit = ["Unit",0];
-UnitType.Unit.toString = $estr;
-UnitType.Unit.__enum__ = UnitType;
+var UnitType = $hxClasses["UnitType"] = { __ename__ : ["UnitType"], __constructs__ : ["Piece","Kilogram","Gram","Litre"] };
+UnitType.Piece = ["Piece",0];
+UnitType.Piece.toString = $estr;
+UnitType.Piece.__enum__ = UnitType;
 UnitType.Kilogram = ["Kilogram",1];
 UnitType.Kilogram.toString = $estr;
 UnitType.Kilogram.__enum__ = UnitType;
@@ -348,7 +348,7 @@ UnitType.Gram.__enum__ = UnitType;
 UnitType.Litre = ["Litre",3];
 UnitType.Litre.toString = $estr;
 UnitType.Litre.__enum__ = UnitType;
-UnitType.__empty_constructs__ = [UnitType.Unit,UnitType.Kilogram,UnitType.Gram,UnitType.Litre];
+UnitType.__empty_constructs__ = [UnitType.Piece,UnitType.Kilogram,UnitType.Gram,UnitType.Litre];
 var ProductType = $hxClasses["ProductType"] = { __ename__ : ["ProductType"], __constructs__ : ["CTVegetable","CTCheese","CTChicken","CTUnknown","CTWine","CTMeat","CTEggs","CTHoney","CTFish","CTJuice","CTApple","CTBread","CTYahourt"] };
 ProductType.CTVegetable = ["CTVegetable",0];
 ProductType.CTVegetable.toString = $estr;

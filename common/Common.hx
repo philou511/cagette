@@ -33,7 +33,7 @@ typedef ProductInfo = {
 }
 
 enum UnitType{
-	Unit;
+	Piece;
 	Kilogram;
 	Gram;
 	Litre;

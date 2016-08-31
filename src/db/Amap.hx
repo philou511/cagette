@@ -19,6 +19,7 @@ enum RegOption{
 	Full;
 }
 
+
 /**
  * AMAP
  */
@@ -27,7 +28,8 @@ class Amap extends Object
 	public var id : SId;
 	public var name : SString<32>;
 	
-	@formPopulate("getMembersFormElementData") @:relation(userId)
+	@formPopulate("getMembersFormElementData")
+	@:relation(userId)
 	public var contact : SNull<User>;
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap

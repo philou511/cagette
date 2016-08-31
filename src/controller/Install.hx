@@ -70,6 +70,9 @@ class Install extends controller.Controller
 				var place = new db.Place();
 				place.name = "Place du marché";
 				place.amap = amap;
+				place.address1 = "Place Jules Verne";
+				place.zipCode = "00000";
+				place.city = "St Martin de la Cagette";
 				place.insert();
 				
 				var vendor = new db.Vendor();

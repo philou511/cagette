@@ -114,7 +114,7 @@ class View extends sugoi.BaseView {
 		return switch(u){
 			case Kilogram: "Kg.";
 			case Gram: "g.";
-			case Unit: "unités";
+			case Piece: "pièce(s)";
 			case Litre: "l.";
 		}
 	}

@@ -251,7 +251,9 @@ class Main extends Controller {
 	}
 	
 	@tpl("cssDemo.mtt")
-	function doCssdemo() {}
+	function doCssdemo() {
+		
+	}
 	
 	@tpl("form.mtt")
 	function doInstall(d:Dispatch) {
