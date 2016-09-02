@@ -8,6 +8,15 @@
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
 		<link href='//fonts.googleapis.com/css?family=Cantora+One&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
 		
+		<!-- React -->
+		::if DEBUG ::
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-with-addons.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.js"></script>		
+		::else::
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-with-addons.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.min.js"></script>		
+		::end::
+		
 		<!-- JQUERY -->
 		<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
 		
@@ -22,6 +31,9 @@
 		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
 		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+		
+		<!-- typeahead -->
+		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
 		
 		<!-- Haxe JS-->
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>

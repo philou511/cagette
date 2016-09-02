@@ -70,7 +70,10 @@ span.tag.active{padding:12px;font-size:16px;line-height:45px;}
 div.productBox div.productImg{background-size:cover;height:220px;background-position:center center;}
 div.productBox div.productName{display:block;font-weight:normal;color:#967820;text-align:center;font-family:'Cantora One',sans-serif;font-size:1.7em;margin-bottom:4px;}
 div.productBox .price{font-weight:bold;text-align:right;}
-.tt-suggestion{background-color:#FFF;padding:8px;border-top:1px solid #CCC;color:#666;cursor:pointer;}
-.tt-suggestion:hover{background-color:#CCC;}
-.txpProduct{color:#666;font-size:0.8em;margin:4px 0;}
+.tt-menu{background-color:#f5e3ac;}
+.tt-suggestion{background-color:#f5e3ac;padding:8px;border-top:1px solid #CCC;color:#634e0c;cursor:pointer;font-style:italic;}
+.tt-suggestion:hover{background-color:#f0d47e;}
+.txpProduct{color:#AAA;font-weight:bold;font-size:0.8em;margin:4px 0;}
+div.ProductComp{margin:8px 0;padding:8px 0;border-bottom:solid 1px #CCC;}
+.ComposerApp .add-button{vertical-align:top!important;}
 

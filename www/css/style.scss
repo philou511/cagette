@@ -568,18 +568,41 @@ div.productBox{
 
 
 //typeahead 
+.tt-menu{
+	background-color:#f5e3ac;
+}
+
+
+
 .tt-suggestion{
-	background-color:#FFF;
+	background-color:#f5e3ac;
 	padding:8px;
 	border-top:1px solid #CCC;
-	color:#666;
+	color:darken(#f5e3ac,60%);
 	cursor:pointer;
+	font-style:italic;
 	&:hover{
-		background-color:#CCC;
+		background-color:darken(#f5e3ac,10%);
 	}
 }
 .txpProduct{
-	color:#666;
+	color:#AAA;
+	font-weight:bold;
 	font-size:0.8em;
 	margin:4px 0;
+}
+
+
+//product composer
+
+div.ProductComp{
+	margin:8px 0;
+	padding:8px 0;
+	border-bottom:solid 1px #CCC;
+}
+
+.ComposerApp{
+	.add-button{
+		vertical-align:top !important;
+	}
 }

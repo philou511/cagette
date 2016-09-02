@@ -146,6 +146,17 @@ enum Event {
 }
 
 
+/*
+ * Product Taxonomy structure
+ */ 
+typedef TxpDictionnary = {
+	products:Map<Int,{id:Int,name:String,category:Int,subCategory:Int}>,
+	categories:Map<Int,{id:Int,name:String}>,
+	subCategories:Map<Int,{id:Int,name:String}>,
+	
+}
+
+
 /* 
  * Tutorials
  */

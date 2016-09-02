@@ -1,4 +1,6 @@
 import js.JQuery;
+import api.react.ReactMacro.jsx;
+import react.ComposerApp;
 
 class App {
 	
@@ -30,6 +32,12 @@ class App {
 		return new Tuto(name,step);		
 	}
 	
+	public function getProductComposer(){
+		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+			api.react.ReactDOM.render(jsx('<$ComposerApp/>'), js.Browser.document.getElementById("app"));	
+		});
+		
+	}
 	
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;

@@ -29,6 +29,11 @@ App.prototype = {
 	,getTuto: function(name,step) {
 		return new Tuto(name,step);
 	}
+	,getProductComposer: function() {
+		window.document.addEventListener("DOMContentLoaded",function(event) {
+			ReactDOM.render(React.createElement(react_ComposerApp,null),window.document.getElementById("app"));
+		});
+	}
 	,overlay: function(url,title,large) {
 		if(large == null) large = true;
 		var r = new haxe_Http(url);
@@ -1638,6 +1643,9 @@ Type.enumIndex = function(e) {
 Type.allEnums = function(e) {
 	return e.__empty_constructs__;
 };
+var api_react_ReactMacro = function() { };
+$hxClasses["api.react.ReactMacro"] = api_react_ReactMacro;
+api_react_ReactMacro.__name__ = ["api","react","ReactMacro"];
 var haxe_Http = function(url) {
 	this.url = url;
 	this.headers = new List();
@@ -3608,6 +3616,1712 @@ haxe_io_FPHelper.doubleToI64 = function(v) {
 	}
 	return i64;
 };
+var haxe_macro_Context = function() { };
+$hxClasses["haxe.macro.Context"] = haxe_macro_Context;
+haxe_macro_Context.__name__ = ["haxe","macro","Context"];
+var haxe_macro_Constant = $hxClasses["haxe.macro.Constant"] = { __ename__ : ["haxe","macro","Constant"], __constructs__ : ["CInt","CFloat","CString","CIdent","CRegexp"] };
+haxe_macro_Constant.CInt = function(v) { var $x = ["CInt",0,v]; $x.__enum__ = haxe_macro_Constant; $x.toString = $estr; return $x; };
+haxe_macro_Constant.CFloat = function(f) { var $x = ["CFloat",1,f]; $x.__enum__ = haxe_macro_Constant; $x.toString = $estr; return $x; };
+haxe_macro_Constant.CString = function(s) { var $x = ["CString",2,s]; $x.__enum__ = haxe_macro_Constant; $x.toString = $estr; return $x; };
+haxe_macro_Constant.CIdent = function(s) { var $x = ["CIdent",3,s]; $x.__enum__ = haxe_macro_Constant; $x.toString = $estr; return $x; };
+haxe_macro_Constant.CRegexp = function(r,opt) { var $x = ["CRegexp",4,r,opt]; $x.__enum__ = haxe_macro_Constant; $x.toString = $estr; return $x; };
+haxe_macro_Constant.__empty_constructs__ = [];
+var haxe_macro_Binop = $hxClasses["haxe.macro.Binop"] = { __ename__ : ["haxe","macro","Binop"], __constructs__ : ["OpAdd","OpMult","OpDiv","OpSub","OpAssign","OpEq","OpNotEq","OpGt","OpGte","OpLt","OpLte","OpAnd","OpOr","OpXor","OpBoolAnd","OpBoolOr","OpShl","OpShr","OpUShr","OpMod","OpAssignOp","OpInterval","OpArrow"] };
+haxe_macro_Binop.OpAdd = ["OpAdd",0];
+haxe_macro_Binop.OpAdd.toString = $estr;
+haxe_macro_Binop.OpAdd.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpMult = ["OpMult",1];
+haxe_macro_Binop.OpMult.toString = $estr;
+haxe_macro_Binop.OpMult.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpDiv = ["OpDiv",2];
+haxe_macro_Binop.OpDiv.toString = $estr;
+haxe_macro_Binop.OpDiv.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpSub = ["OpSub",3];
+haxe_macro_Binop.OpSub.toString = $estr;
+haxe_macro_Binop.OpSub.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpAssign = ["OpAssign",4];
+haxe_macro_Binop.OpAssign.toString = $estr;
+haxe_macro_Binop.OpAssign.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpEq = ["OpEq",5];
+haxe_macro_Binop.OpEq.toString = $estr;
+haxe_macro_Binop.OpEq.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpNotEq = ["OpNotEq",6];
+haxe_macro_Binop.OpNotEq.toString = $estr;
+haxe_macro_Binop.OpNotEq.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpGt = ["OpGt",7];
+haxe_macro_Binop.OpGt.toString = $estr;
+haxe_macro_Binop.OpGt.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpGte = ["OpGte",8];
+haxe_macro_Binop.OpGte.toString = $estr;
+haxe_macro_Binop.OpGte.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpLt = ["OpLt",9];
+haxe_macro_Binop.OpLt.toString = $estr;
+haxe_macro_Binop.OpLt.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpLte = ["OpLte",10];
+haxe_macro_Binop.OpLte.toString = $estr;
+haxe_macro_Binop.OpLte.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpAnd = ["OpAnd",11];
+haxe_macro_Binop.OpAnd.toString = $estr;
+haxe_macro_Binop.OpAnd.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpOr = ["OpOr",12];
+haxe_macro_Binop.OpOr.toString = $estr;
+haxe_macro_Binop.OpOr.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpXor = ["OpXor",13];
+haxe_macro_Binop.OpXor.toString = $estr;
+haxe_macro_Binop.OpXor.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpBoolAnd = ["OpBoolAnd",14];
+haxe_macro_Binop.OpBoolAnd.toString = $estr;
+haxe_macro_Binop.OpBoolAnd.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpBoolOr = ["OpBoolOr",15];
+haxe_macro_Binop.OpBoolOr.toString = $estr;
+haxe_macro_Binop.OpBoolOr.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpShl = ["OpShl",16];
+haxe_macro_Binop.OpShl.toString = $estr;
+haxe_macro_Binop.OpShl.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpShr = ["OpShr",17];
+haxe_macro_Binop.OpShr.toString = $estr;
+haxe_macro_Binop.OpShr.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpUShr = ["OpUShr",18];
+haxe_macro_Binop.OpUShr.toString = $estr;
+haxe_macro_Binop.OpUShr.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpMod = ["OpMod",19];
+haxe_macro_Binop.OpMod.toString = $estr;
+haxe_macro_Binop.OpMod.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpAssignOp = function(op) { var $x = ["OpAssignOp",20,op]; $x.__enum__ = haxe_macro_Binop; $x.toString = $estr; return $x; };
+haxe_macro_Binop.OpInterval = ["OpInterval",21];
+haxe_macro_Binop.OpInterval.toString = $estr;
+haxe_macro_Binop.OpInterval.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.OpArrow = ["OpArrow",22];
+haxe_macro_Binop.OpArrow.toString = $estr;
+haxe_macro_Binop.OpArrow.__enum__ = haxe_macro_Binop;
+haxe_macro_Binop.__empty_constructs__ = [haxe_macro_Binop.OpAdd,haxe_macro_Binop.OpMult,haxe_macro_Binop.OpDiv,haxe_macro_Binop.OpSub,haxe_macro_Binop.OpAssign,haxe_macro_Binop.OpEq,haxe_macro_Binop.OpNotEq,haxe_macro_Binop.OpGt,haxe_macro_Binop.OpGte,haxe_macro_Binop.OpLt,haxe_macro_Binop.OpLte,haxe_macro_Binop.OpAnd,haxe_macro_Binop.OpOr,haxe_macro_Binop.OpXor,haxe_macro_Binop.OpBoolAnd,haxe_macro_Binop.OpBoolOr,haxe_macro_Binop.OpShl,haxe_macro_Binop.OpShr,haxe_macro_Binop.OpUShr,haxe_macro_Binop.OpMod,haxe_macro_Binop.OpInterval,haxe_macro_Binop.OpArrow];
+var haxe_macro_Unop = $hxClasses["haxe.macro.Unop"] = { __ename__ : ["haxe","macro","Unop"], __constructs__ : ["OpIncrement","OpDecrement","OpNot","OpNeg","OpNegBits"] };
+haxe_macro_Unop.OpIncrement = ["OpIncrement",0];
+haxe_macro_Unop.OpIncrement.toString = $estr;
+haxe_macro_Unop.OpIncrement.__enum__ = haxe_macro_Unop;
+haxe_macro_Unop.OpDecrement = ["OpDecrement",1];
+haxe_macro_Unop.OpDecrement.toString = $estr;
+haxe_macro_Unop.OpDecrement.__enum__ = haxe_macro_Unop;
+haxe_macro_Unop.OpNot = ["OpNot",2];
+haxe_macro_Unop.OpNot.toString = $estr;
+haxe_macro_Unop.OpNot.__enum__ = haxe_macro_Unop;
+haxe_macro_Unop.OpNeg = ["OpNeg",3];
+haxe_macro_Unop.OpNeg.toString = $estr;
+haxe_macro_Unop.OpNeg.__enum__ = haxe_macro_Unop;
+haxe_macro_Unop.OpNegBits = ["OpNegBits",4];
+haxe_macro_Unop.OpNegBits.toString = $estr;
+haxe_macro_Unop.OpNegBits.__enum__ = haxe_macro_Unop;
+haxe_macro_Unop.__empty_constructs__ = [haxe_macro_Unop.OpIncrement,haxe_macro_Unop.OpDecrement,haxe_macro_Unop.OpNot,haxe_macro_Unop.OpNeg,haxe_macro_Unop.OpNegBits];
+var haxe_macro_ExprDef = $hxClasses["haxe.macro.ExprDef"] = { __ename__ : ["haxe","macro","ExprDef"], __constructs__ : ["EConst","EArray","EBinop","EField","EParenthesis","EObjectDecl","EArrayDecl","ECall","ENew","EUnop","EVars","EFunction","EBlock","EFor","EIn","EIf","EWhile","ESwitch","ETry","EReturn","EBreak","EContinue","EUntyped","EThrow","ECast","EDisplay","EDisplayNew","ETernary","ECheckType","EMeta"] };
+haxe_macro_ExprDef.EConst = function(c) { var $x = ["EConst",0,c]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EArray = function(e1,e2) { var $x = ["EArray",1,e1,e2]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EBinop = function(op,e1,e2) { var $x = ["EBinop",2,op,e1,e2]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EField = function(e,field) { var $x = ["EField",3,e,field]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EParenthesis = function(e) { var $x = ["EParenthesis",4,e]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EObjectDecl = function(fields) { var $x = ["EObjectDecl",5,fields]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EArrayDecl = function(values) { var $x = ["EArrayDecl",6,values]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ECall = function(e,params) { var $x = ["ECall",7,e,params]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ENew = function(t,params) { var $x = ["ENew",8,t,params]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EUnop = function(op,postFix,e) { var $x = ["EUnop",9,op,postFix,e]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EVars = function(vars) { var $x = ["EVars",10,vars]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EFunction = function(name,f) { var $x = ["EFunction",11,name,f]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EBlock = function(exprs) { var $x = ["EBlock",12,exprs]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EFor = function(it,expr) { var $x = ["EFor",13,it,expr]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EIn = function(e1,e2) { var $x = ["EIn",14,e1,e2]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EIf = function(econd,eif,eelse) { var $x = ["EIf",15,econd,eif,eelse]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EWhile = function(econd,e,normalWhile) { var $x = ["EWhile",16,econd,e,normalWhile]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ESwitch = function(e,cases,edef) { var $x = ["ESwitch",17,e,cases,edef]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ETry = function(e,catches) { var $x = ["ETry",18,e,catches]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EReturn = function(e) { var $x = ["EReturn",19,e]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EBreak = ["EBreak",20];
+haxe_macro_ExprDef.EBreak.toString = $estr;
+haxe_macro_ExprDef.EBreak.__enum__ = haxe_macro_ExprDef;
+haxe_macro_ExprDef.EContinue = ["EContinue",21];
+haxe_macro_ExprDef.EContinue.toString = $estr;
+haxe_macro_ExprDef.EContinue.__enum__ = haxe_macro_ExprDef;
+haxe_macro_ExprDef.EUntyped = function(e) { var $x = ["EUntyped",22,e]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EThrow = function(e) { var $x = ["EThrow",23,e]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ECast = function(e,t) { var $x = ["ECast",24,e,t]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EDisplay = function(e,isCall) { var $x = ["EDisplay",25,e,isCall]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EDisplayNew = function(t) { var $x = ["EDisplayNew",26,t]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ETernary = function(econd,eif,eelse) { var $x = ["ETernary",27,econd,eif,eelse]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.ECheckType = function(e,t) { var $x = ["ECheckType",28,e,t]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.EMeta = function(s,e) { var $x = ["EMeta",29,s,e]; $x.__enum__ = haxe_macro_ExprDef; $x.toString = $estr; return $x; };
+haxe_macro_ExprDef.__empty_constructs__ = [haxe_macro_ExprDef.EBreak,haxe_macro_ExprDef.EContinue];
+var haxe_macro_ComplexType = $hxClasses["haxe.macro.ComplexType"] = { __ename__ : ["haxe","macro","ComplexType"], __constructs__ : ["TPath","TFunction","TAnonymous","TParent","TExtend","TOptional"] };
+haxe_macro_ComplexType.TPath = function(p) { var $x = ["TPath",0,p]; $x.__enum__ = haxe_macro_ComplexType; $x.toString = $estr; return $x; };
+haxe_macro_ComplexType.TFunction = function(args,ret) { var $x = ["TFunction",1,args,ret]; $x.__enum__ = haxe_macro_ComplexType; $x.toString = $estr; return $x; };
+haxe_macro_ComplexType.TAnonymous = function(fields) { var $x = ["TAnonymous",2,fields]; $x.__enum__ = haxe_macro_ComplexType; $x.toString = $estr; return $x; };
+haxe_macro_ComplexType.TParent = function(t) { var $x = ["TParent",3,t]; $x.__enum__ = haxe_macro_ComplexType; $x.toString = $estr; return $x; };
+haxe_macro_ComplexType.TExtend = function(p,fields) { var $x = ["TExtend",4,p,fields]; $x.__enum__ = haxe_macro_ComplexType; $x.toString = $estr; return $x; };
+haxe_macro_ComplexType.TOptional = function(t) { var $x = ["TOptional",5,t]; $x.__enum__ = haxe_macro_ComplexType; $x.toString = $estr; return $x; };
+haxe_macro_ComplexType.__empty_constructs__ = [];
+var haxe_macro_TypeParam = $hxClasses["haxe.macro.TypeParam"] = { __ename__ : ["haxe","macro","TypeParam"], __constructs__ : ["TPType","TPExpr"] };
+haxe_macro_TypeParam.TPType = function(t) { var $x = ["TPType",0,t]; $x.__enum__ = haxe_macro_TypeParam; $x.toString = $estr; return $x; };
+haxe_macro_TypeParam.TPExpr = function(e) { var $x = ["TPExpr",1,e]; $x.__enum__ = haxe_macro_TypeParam; $x.toString = $estr; return $x; };
+haxe_macro_TypeParam.__empty_constructs__ = [];
+var haxe_macro_Access = $hxClasses["haxe.macro.Access"] = { __ename__ : ["haxe","macro","Access"], __constructs__ : ["APublic","APrivate","AStatic","AOverride","ADynamic","AInline","AMacro"] };
+haxe_macro_Access.APublic = ["APublic",0];
+haxe_macro_Access.APublic.toString = $estr;
+haxe_macro_Access.APublic.__enum__ = haxe_macro_Access;
+haxe_macro_Access.APrivate = ["APrivate",1];
+haxe_macro_Access.APrivate.toString = $estr;
+haxe_macro_Access.APrivate.__enum__ = haxe_macro_Access;
+haxe_macro_Access.AStatic = ["AStatic",2];
+haxe_macro_Access.AStatic.toString = $estr;
+haxe_macro_Access.AStatic.__enum__ = haxe_macro_Access;
+haxe_macro_Access.AOverride = ["AOverride",3];
+haxe_macro_Access.AOverride.toString = $estr;
+haxe_macro_Access.AOverride.__enum__ = haxe_macro_Access;
+haxe_macro_Access.ADynamic = ["ADynamic",4];
+haxe_macro_Access.ADynamic.toString = $estr;
+haxe_macro_Access.ADynamic.__enum__ = haxe_macro_Access;
+haxe_macro_Access.AInline = ["AInline",5];
+haxe_macro_Access.AInline.toString = $estr;
+haxe_macro_Access.AInline.__enum__ = haxe_macro_Access;
+haxe_macro_Access.AMacro = ["AMacro",6];
+haxe_macro_Access.AMacro.toString = $estr;
+haxe_macro_Access.AMacro.__enum__ = haxe_macro_Access;
+haxe_macro_Access.__empty_constructs__ = [haxe_macro_Access.APublic,haxe_macro_Access.APrivate,haxe_macro_Access.AStatic,haxe_macro_Access.AOverride,haxe_macro_Access.ADynamic,haxe_macro_Access.AInline,haxe_macro_Access.AMacro];
+var haxe_macro_FieldType = $hxClasses["haxe.macro.FieldType"] = { __ename__ : ["haxe","macro","FieldType"], __constructs__ : ["FVar","FFun","FProp"] };
+haxe_macro_FieldType.FVar = function(t,e) { var $x = ["FVar",0,t,e]; $x.__enum__ = haxe_macro_FieldType; $x.toString = $estr; return $x; };
+haxe_macro_FieldType.FFun = function(f) { var $x = ["FFun",1,f]; $x.__enum__ = haxe_macro_FieldType; $x.toString = $estr; return $x; };
+haxe_macro_FieldType.FProp = function(get,set,t,e) { var $x = ["FProp",2,get,set,t,e]; $x.__enum__ = haxe_macro_FieldType; $x.toString = $estr; return $x; };
+haxe_macro_FieldType.__empty_constructs__ = [];
+var haxe_macro_TypeDefKind = $hxClasses["haxe.macro.TypeDefKind"] = { __ename__ : ["haxe","macro","TypeDefKind"], __constructs__ : ["TDEnum","TDStructure","TDClass","TDAlias","TDAbstract"] };
+haxe_macro_TypeDefKind.TDEnum = ["TDEnum",0];
+haxe_macro_TypeDefKind.TDEnum.toString = $estr;
+haxe_macro_TypeDefKind.TDEnum.__enum__ = haxe_macro_TypeDefKind;
+haxe_macro_TypeDefKind.TDStructure = ["TDStructure",1];
+haxe_macro_TypeDefKind.TDStructure.toString = $estr;
+haxe_macro_TypeDefKind.TDStructure.__enum__ = haxe_macro_TypeDefKind;
+haxe_macro_TypeDefKind.TDClass = function(superClass,interfaces,isInterface) { var $x = ["TDClass",2,superClass,interfaces,isInterface]; $x.__enum__ = haxe_macro_TypeDefKind; $x.toString = $estr; return $x; };
+haxe_macro_TypeDefKind.TDAlias = function(t) { var $x = ["TDAlias",3,t]; $x.__enum__ = haxe_macro_TypeDefKind; $x.toString = $estr; return $x; };
+haxe_macro_TypeDefKind.TDAbstract = function(tthis,from,to) { var $x = ["TDAbstract",4,tthis,from,to]; $x.__enum__ = haxe_macro_TypeDefKind; $x.toString = $estr; return $x; };
+haxe_macro_TypeDefKind.__empty_constructs__ = [haxe_macro_TypeDefKind.TDEnum,haxe_macro_TypeDefKind.TDStructure];
+var haxe_macro_Error = function(m,p) {
+	this.message = m;
+	this.pos = p;
+};
+$hxClasses["haxe.macro.Error"] = haxe_macro_Error;
+haxe_macro_Error.__name__ = ["haxe","macro","Error"];
+haxe_macro_Error.prototype = {
+	message: null
+	,pos: null
+	,toString: function() {
+		return this.message;
+	}
+	,__class__: haxe_macro_Error
+};
+var haxe_macro_ImportMode = $hxClasses["haxe.macro.ImportMode"] = { __ename__ : ["haxe","macro","ImportMode"], __constructs__ : ["INormal","IAsName","IAll"] };
+haxe_macro_ImportMode.INormal = ["INormal",0];
+haxe_macro_ImportMode.INormal.toString = $estr;
+haxe_macro_ImportMode.INormal.__enum__ = haxe_macro_ImportMode;
+haxe_macro_ImportMode.IAsName = function(alias) { var $x = ["IAsName",1,alias]; $x.__enum__ = haxe_macro_ImportMode; $x.toString = $estr; return $x; };
+haxe_macro_ImportMode.IAll = ["IAll",2];
+haxe_macro_ImportMode.IAll.toString = $estr;
+haxe_macro_ImportMode.IAll.__enum__ = haxe_macro_ImportMode;
+haxe_macro_ImportMode.__empty_constructs__ = [haxe_macro_ImportMode.INormal,haxe_macro_ImportMode.IAll];
+var haxe_macro_ExprTools = function() { };
+$hxClasses["haxe.macro.ExprTools"] = haxe_macro_ExprTools;
+haxe_macro_ExprTools.__name__ = ["haxe","macro","ExprTools"];
+haxe_macro_ExprTools.toString = function(e) {
+	return new haxe_macro_Printer().printExpr(e);
+};
+haxe_macro_ExprTools.iter = function(e,f) {
+	{
+		var _g = e.expr;
+		switch(_g[1]) {
+		case 0:case 21:case 20:case 26:
+			break;
+		case 3:
+			var e1 = _g[2];
+			f(e1);
+			break;
+		case 4:
+			var e2 = _g[2];
+			f(e2);
+			break;
+		case 22:
+			var e3 = _g[2];
+			f(e3);
+			break;
+		case 23:
+			var e4 = _g[2];
+			f(e4);
+			break;
+		case 25:
+			var e5 = _g[2];
+			f(e5);
+			break;
+		case 28:
+			var e6 = _g[2];
+			f(e6);
+			break;
+		case 9:
+			var e7 = _g[4];
+			f(e7);
+			break;
+		case 24:
+			var e8 = _g[2];
+			f(e8);
+			break;
+		case 29:
+			var e9 = _g[3];
+			f(e9);
+			break;
+		case 1:
+			var e21 = _g[3];
+			var e11 = _g[2];
+			f(e11);
+			f(e21);
+			break;
+		case 16:
+			var e22 = _g[3];
+			var e12 = _g[2];
+			f(e12);
+			f(e22);
+			break;
+		case 2:
+			var e23 = _g[4];
+			var e13 = _g[3];
+			f(e13);
+			f(e23);
+			break;
+		case 13:
+			var e24 = _g[3];
+			var e14 = _g[2];
+			f(e14);
+			f(e24);
+			break;
+		case 14:
+			var e25 = _g[3];
+			var e15 = _g[2];
+			f(e15);
+			f(e25);
+			break;
+		case 10:
+			var vl = _g[2];
+			var _g1 = 0;
+			while(_g1 < vl.length) {
+				var v = vl[_g1];
+				++_g1;
+				haxe_macro_ExprTools.opt2(v.expr,f);
+			}
+			break;
+		case 18:
+			var cl = _g[3];
+			var e10 = _g[2];
+			f(e10);
+			var _g11 = 0;
+			while(_g11 < cl.length) {
+				var c = cl[_g11];
+				++_g11;
+				f(c.expr);
+			}
+			break;
+		case 27:
+			var e31 = _g[4];
+			var e26 = _g[3];
+			var e16 = _g[2];
+			f(e16);
+			f(e26);
+			if(e31 != null) f(e31);
+			break;
+		case 15:
+			var e32 = _g[4];
+			var e27 = _g[3];
+			var e17 = _g[2];
+			f(e17);
+			f(e27);
+			if(e32 != null) f(e32);
+			break;
+		case 6:
+			var el = _g[2];
+			haxe_macro_ExprArrayTools.iter(el,f);
+			break;
+		case 8:
+			var el1 = _g[3];
+			haxe_macro_ExprArrayTools.iter(el1,f);
+			break;
+		case 12:
+			var el2 = _g[2];
+			haxe_macro_ExprArrayTools.iter(el2,f);
+			break;
+		case 5:
+			var fl = _g[2];
+			var _g12 = 0;
+			while(_g12 < fl.length) {
+				var fd = fl[_g12];
+				++_g12;
+				f(fd.expr);
+			}
+			break;
+		case 7:
+			var el3 = _g[3];
+			var e18 = _g[2];
+			f(e18);
+			haxe_macro_ExprArrayTools.iter(el3,f);
+			break;
+		case 19:
+			var e19 = _g[2];
+			if(e19 != null) f(e19);
+			break;
+		case 11:
+			var func = _g[3];
+			var _g13 = 0;
+			var _g2 = func.args;
+			while(_g13 < _g2.length) {
+				var arg = _g2[_g13];
+				++_g13;
+				haxe_macro_ExprTools.opt2(arg.value,f);
+			}
+			haxe_macro_ExprTools.opt2(func.expr,f);
+			break;
+		case 17:
+			var edef = _g[4];
+			var cl1 = _g[3];
+			var e20 = _g[2];
+			f(e20);
+			var _g14 = 0;
+			while(_g14 < cl1.length) {
+				var c1 = cl1[_g14];
+				++_g14;
+				haxe_macro_ExprArrayTools.iter(c1.values,f);
+				haxe_macro_ExprTools.opt2(c1.guard,f);
+				haxe_macro_ExprTools.opt2(c1.expr,f);
+			}
+			if(edef != null && edef.expr != null) f(edef);
+			break;
+		}
+	}
+};
+haxe_macro_ExprTools.map = function(e,f) {
+	return { pos : e.pos, expr : (function($this) {
+		var $r;
+		var _g = e.expr;
+		$r = (function($this) {
+			var $r;
+			switch(_g[1]) {
+			case 0:
+				$r = e.expr;
+				break;
+			case 1:
+				$r = (function($this) {
+					var $r;
+					var e2 = _g[3];
+					var e1 = _g[2];
+					$r = haxe_macro_ExprDef.EArray(f(e1),f(e2));
+					return $r;
+				}($this));
+				break;
+			case 2:
+				$r = (function($this) {
+					var $r;
+					var e21 = _g[4];
+					var e11 = _g[3];
+					var op = _g[2];
+					$r = haxe_macro_ExprDef.EBinop(op,f(e11),f(e21));
+					return $r;
+				}($this));
+				break;
+			case 3:
+				$r = (function($this) {
+					var $r;
+					var field = _g[3];
+					var e3 = _g[2];
+					$r = haxe_macro_ExprDef.EField(f(e3),field);
+					return $r;
+				}($this));
+				break;
+			case 4:
+				$r = (function($this) {
+					var $r;
+					var e4 = _g[2];
+					$r = haxe_macro_ExprDef.EParenthesis(f(e4));
+					return $r;
+				}($this));
+				break;
+			case 5:
+				$r = (function($this) {
+					var $r;
+					var fields = _g[2];
+					$r = (function($this) {
+						var $r;
+						var ret = [];
+						{
+							var _g1 = 0;
+							while(_g1 < fields.length) {
+								var field1 = fields[_g1];
+								++_g1;
+								ret.push({ field : field1.field, expr : f(field1.expr)});
+							}
+						}
+						$r = haxe_macro_ExprDef.EObjectDecl(ret);
+						return $r;
+					}($this));
+					return $r;
+				}($this));
+				break;
+			case 6:
+				$r = (function($this) {
+					var $r;
+					var el = _g[2];
+					$r = haxe_macro_ExprDef.EArrayDecl(haxe_macro_ExprArrayTools.map(el,f));
+					return $r;
+				}($this));
+				break;
+			case 7:
+				$r = (function($this) {
+					var $r;
+					var params = _g[3];
+					var e5 = _g[2];
+					$r = haxe_macro_ExprDef.ECall(f(e5),haxe_macro_ExprArrayTools.map(params,f));
+					return $r;
+				}($this));
+				break;
+			case 8:
+				$r = (function($this) {
+					var $r;
+					var params1 = _g[3];
+					var tp = _g[2];
+					$r = haxe_macro_ExprDef.ENew(tp,haxe_macro_ExprArrayTools.map(params1,f));
+					return $r;
+				}($this));
+				break;
+			case 9:
+				$r = (function($this) {
+					var $r;
+					var e6 = _g[4];
+					var postFix = _g[3];
+					var op1 = _g[2];
+					$r = haxe_macro_ExprDef.EUnop(op1,postFix,f(e6));
+					return $r;
+				}($this));
+				break;
+			case 10:
+				$r = (function($this) {
+					var $r;
+					var vars = _g[2];
+					$r = (function($this) {
+						var $r;
+						var ret1 = [];
+						{
+							var _g11 = 0;
+							while(_g11 < vars.length) {
+								var v = vars[_g11];
+								++_g11;
+								ret1.push({ name : v.name, type : v.type, expr : haxe_macro_ExprTools.opt(v.expr,f)});
+							}
+						}
+						$r = haxe_macro_ExprDef.EVars(ret1);
+						return $r;
+					}($this));
+					return $r;
+				}($this));
+				break;
+			case 12:
+				$r = (function($this) {
+					var $r;
+					var el1 = _g[2];
+					$r = haxe_macro_ExprDef.EBlock(haxe_macro_ExprArrayTools.map(el1,f));
+					return $r;
+				}($this));
+				break;
+			case 13:
+				$r = (function($this) {
+					var $r;
+					var expr = _g[3];
+					var it = _g[2];
+					$r = haxe_macro_ExprDef.EFor(f(it),f(expr));
+					return $r;
+				}($this));
+				break;
+			case 14:
+				$r = (function($this) {
+					var $r;
+					var e22 = _g[3];
+					var e12 = _g[2];
+					$r = haxe_macro_ExprDef.EIn(f(e12),f(e22));
+					return $r;
+				}($this));
+				break;
+			case 15:
+				$r = (function($this) {
+					var $r;
+					var eelse = _g[4];
+					var eif = _g[3];
+					var econd = _g[2];
+					$r = haxe_macro_ExprDef.EIf(f(econd),f(eif),eelse == null?null:f(eelse));
+					return $r;
+				}($this));
+				break;
+			case 16:
+				$r = (function($this) {
+					var $r;
+					var normalWhile = _g[4];
+					var e7 = _g[3];
+					var econd1 = _g[2];
+					$r = haxe_macro_ExprDef.EWhile(f(econd1),f(e7),normalWhile);
+					return $r;
+				}($this));
+				break;
+			case 19:
+				$r = (function($this) {
+					var $r;
+					var e8 = _g[2];
+					$r = haxe_macro_ExprDef.EReturn(e8 == null?null:f(e8));
+					return $r;
+				}($this));
+				break;
+			case 22:
+				$r = (function($this) {
+					var $r;
+					var e9 = _g[2];
+					$r = haxe_macro_ExprDef.EUntyped(f(e9));
+					return $r;
+				}($this));
+				break;
+			case 23:
+				$r = (function($this) {
+					var $r;
+					var e10 = _g[2];
+					$r = haxe_macro_ExprDef.EThrow(f(e10));
+					return $r;
+				}($this));
+				break;
+			case 24:
+				$r = (function($this) {
+					var $r;
+					var t = _g[3];
+					var e13 = _g[2];
+					$r = haxe_macro_ExprDef.ECast(f(e13),t);
+					return $r;
+				}($this));
+				break;
+			case 25:
+				$r = (function($this) {
+					var $r;
+					var isCall = _g[3];
+					var e14 = _g[2];
+					$r = haxe_macro_ExprDef.EDisplay(f(e14),isCall);
+					return $r;
+				}($this));
+				break;
+			case 27:
+				$r = (function($this) {
+					var $r;
+					var eelse1 = _g[4];
+					var eif1 = _g[3];
+					var econd2 = _g[2];
+					$r = haxe_macro_ExprDef.ETernary(f(econd2),f(eif1),f(eelse1));
+					return $r;
+				}($this));
+				break;
+			case 28:
+				$r = (function($this) {
+					var $r;
+					var t1 = _g[3];
+					var e15 = _g[2];
+					$r = haxe_macro_ExprDef.ECheckType(f(e15),t1);
+					return $r;
+				}($this));
+				break;
+			case 26:case 21:case 20:
+				$r = e.expr;
+				break;
+			case 18:
+				$r = (function($this) {
+					var $r;
+					var catches = _g[3];
+					var e16 = _g[2];
+					$r = (function($this) {
+						var $r;
+						var ret2 = [];
+						{
+							var _g12 = 0;
+							while(_g12 < catches.length) {
+								var c = catches[_g12];
+								++_g12;
+								ret2.push({ name : c.name, type : c.type, expr : f(c.expr)});
+							}
+						}
+						$r = haxe_macro_ExprDef.ETry(f(e16),ret2);
+						return $r;
+					}($this));
+					return $r;
+				}($this));
+				break;
+			case 17:
+				$r = (function($this) {
+					var $r;
+					var edef = _g[4];
+					var cases = _g[3];
+					var e17 = _g[2];
+					$r = (function($this) {
+						var $r;
+						var ret3 = [];
+						{
+							var _g13 = 0;
+							while(_g13 < cases.length) {
+								var c1 = cases[_g13];
+								++_g13;
+								ret3.push({ expr : haxe_macro_ExprTools.opt(c1.expr,f), guard : haxe_macro_ExprTools.opt(c1.guard,f), values : haxe_macro_ExprArrayTools.map(c1.values,f)});
+							}
+						}
+						$r = haxe_macro_ExprDef.ESwitch(f(e17),ret3,edef == null || edef.expr == null?edef:f(edef));
+						return $r;
+					}($this));
+					return $r;
+				}($this));
+				break;
+			case 11:
+				$r = (function($this) {
+					var $r;
+					var func = _g[3];
+					var name = _g[2];
+					$r = (function($this) {
+						var $r;
+						var ret4 = [];
+						{
+							var _g14 = 0;
+							var _g2 = func.args;
+							while(_g14 < _g2.length) {
+								var arg = _g2[_g14];
+								++_g14;
+								ret4.push({ name : arg.name, opt : arg.opt, type : arg.type, value : haxe_macro_ExprTools.opt(arg.value,f)});
+							}
+						}
+						$r = haxe_macro_ExprDef.EFunction(name,{ args : ret4, ret : func.ret, params : func.params, expr : f(func.expr)});
+						return $r;
+					}($this));
+					return $r;
+				}($this));
+				break;
+			case 29:
+				$r = (function($this) {
+					var $r;
+					var e18 = _g[3];
+					var m = _g[2];
+					$r = haxe_macro_ExprDef.EMeta(m,f(e18));
+					return $r;
+				}($this));
+				break;
+			}
+			return $r;
+		}($this));
+		return $r;
+	}(this))};
+};
+haxe_macro_ExprTools.getValue = function(e) {
+	{
+		var _g = e.expr;
+		switch(_g[1]) {
+		case 0:
+			switch(_g[2][1]) {
+			case 0:
+				var v = _g[2][2];
+				return Std.parseInt(v);
+			case 1:
+				var v1 = _g[2][2];
+				return parseFloat(v1);
+			case 2:
+				var s = _g[2][2];
+				return s;
+			case 3:
+				switch(_g[2][2]) {
+				case "true":
+					return true;
+				case "false":
+					return false;
+				case "null":
+					return null;
+				default:
+					throw new js__$Boot_HaxeError("Unsupported expression: " + Std.string(e));
+				}
+				break;
+			default:
+				throw new js__$Boot_HaxeError("Unsupported expression: " + Std.string(e));
+			}
+			break;
+		case 4:
+			var e1 = _g[2];
+			return haxe_macro_ExprTools.getValue(e1);
+		case 22:
+			var e11 = _g[2];
+			return haxe_macro_ExprTools.getValue(e11);
+		case 29:
+			var e12 = _g[3];
+			return haxe_macro_ExprTools.getValue(e12);
+		case 5:
+			var fields = _g[2];
+			var obj = { };
+			var _g1 = 0;
+			while(_g1 < fields.length) {
+				var field = fields[_g1];
+				++_g1;
+				Reflect.setField(obj,field.field,haxe_macro_ExprTools.getValue(field.expr));
+			}
+			return obj;
+		case 6:
+			var el = _g[2];
+			return el.map(haxe_macro_ExprTools.getValue);
+		case 15:
+			var eelse = _g[4];
+			var eif = _g[3];
+			var econd = _g[2];
+			if(eelse == null) throw new js__$Boot_HaxeError("If statements only have a value if the else clause is defined"); else {
+				var econd1 = haxe_macro_ExprTools.getValue(econd);
+				if(econd1) return haxe_macro_ExprTools.getValue(eif); else return haxe_macro_ExprTools.getValue(eelse);
+			}
+			break;
+		case 27:
+			var eelse1 = _g[4];
+			var eif1 = _g[3];
+			var econd2 = _g[2];
+			if(eelse1 == null) throw new js__$Boot_HaxeError("If statements only have a value if the else clause is defined"); else {
+				var econd3 = haxe_macro_ExprTools.getValue(econd2);
+				if(econd3) return haxe_macro_ExprTools.getValue(eif1); else return haxe_macro_ExprTools.getValue(eelse1);
+			}
+			break;
+		case 9:
+			switch(_g[3]) {
+			case false:
+				var e13 = _g[4];
+				var op = _g[2];
+				var e14 = haxe_macro_ExprTools.getValue(e13);
+				switch(op[1]) {
+				case 2:
+					return !e14;
+				case 3:
+					return -e14;
+				case 4:
+					return ~e14;
+				default:
+					throw new js__$Boot_HaxeError("Unsupported expression: " + Std.string(e));
+				}
+				break;
+			default:
+				throw new js__$Boot_HaxeError("Unsupported expression: " + Std.string(e));
+			}
+			break;
+		case 2:
+			var e2 = _g[4];
+			var e15 = _g[3];
+			var op1 = _g[2];
+			var e16 = haxe_macro_ExprTools.getValue(e15);
+			var e21 = haxe_macro_ExprTools.getValue(e2);
+			switch(op1[1]) {
+			case 0:
+				return e16 + e21;
+			case 3:
+				return e16 - e21;
+			case 1:
+				return e16 * e21;
+			case 2:
+				return e16 / e21;
+			case 19:
+				return e16 % e21;
+			case 5:
+				return e16 == e21;
+			case 6:
+				return e16 != e21;
+			case 9:
+				return e16 < e21;
+			case 10:
+				return e16 <= e21;
+			case 7:
+				return e16 > e21;
+			case 8:
+				return e16 >= e21;
+			case 12:
+				return e16 | e21;
+			case 11:
+				return e16 & e21;
+			case 13:
+				return e16 ^ e21;
+			case 14:
+				return e16 && e21;
+			case 15:
+				return e16 || e21;
+			case 16:
+				return e16 << e21;
+			case 17:
+				return e16 >> e21;
+			case 18:
+				return e16 >>> e21;
+			default:
+				throw new js__$Boot_HaxeError("Unsupported expression: " + Std.string(e));
+			}
+			break;
+		default:
+			throw new js__$Boot_HaxeError("Unsupported expression: " + Std.string(e));
+		}
+	}
+};
+haxe_macro_ExprTools.opt = function(e,f) {
+	if(e == null) return null; else return f(e);
+};
+haxe_macro_ExprTools.opt2 = function(e,f) {
+	if(e != null) f(e);
+};
+var haxe_macro_ExprArrayTools = function() { };
+$hxClasses["haxe.macro.ExprArrayTools"] = haxe_macro_ExprArrayTools;
+haxe_macro_ExprArrayTools.__name__ = ["haxe","macro","ExprArrayTools"];
+haxe_macro_ExprArrayTools.map = function(el,f) {
+	var ret = [];
+	var _g = 0;
+	while(_g < el.length) {
+		var e = el[_g];
+		++_g;
+		ret.push(f(e));
+	}
+	return ret;
+};
+haxe_macro_ExprArrayTools.iter = function(el,f) {
+	var _g = 0;
+	while(_g < el.length) {
+		var e = el[_g];
+		++_g;
+		f(e);
+	}
+};
+var haxe_macro_Printer = function(tabString) {
+	if(tabString == null) tabString = "\t";
+	this.tabs = "";
+	this.tabString = tabString;
+};
+$hxClasses["haxe.macro.Printer"] = haxe_macro_Printer;
+haxe_macro_Printer.__name__ = ["haxe","macro","Printer"];
+haxe_macro_Printer.prototype = {
+	tabs: null
+	,tabString: null
+	,printUnop: function(op) {
+		switch(op[1]) {
+		case 0:
+			return "++";
+		case 1:
+			return "--";
+		case 2:
+			return "!";
+		case 3:
+			return "-";
+		case 4:
+			return "~";
+		}
+	}
+	,printBinop: function(op) {
+		switch(op[1]) {
+		case 0:
+			return "+";
+		case 1:
+			return "*";
+		case 2:
+			return "/";
+		case 3:
+			return "-";
+		case 4:
+			return "=";
+		case 5:
+			return "==";
+		case 6:
+			return "!=";
+		case 7:
+			return ">";
+		case 8:
+			return ">=";
+		case 9:
+			return "<";
+		case 10:
+			return "<=";
+		case 11:
+			return "&";
+		case 12:
+			return "|";
+		case 13:
+			return "^";
+		case 14:
+			return "&&";
+		case 15:
+			return "||";
+		case 16:
+			return "<<";
+		case 17:
+			return ">>";
+		case 18:
+			return ">>>";
+		case 19:
+			return "%";
+		case 21:
+			return "...";
+		case 22:
+			return "=>";
+		case 20:
+			var op1 = op[2];
+			return this.printBinop(op1) + "=";
+		}
+	}
+	,escapeString: function(s,delim) {
+		return delim + StringTools.replace(StringTools.replace(StringTools.replace(StringTools.replace(s,"\n","\\n"),"\t","\\t"),"'","\\'"),"\"","\\\"") + delim;
+	}
+	,printFormatString: function(s) {
+		return this.escapeString(s,"'");
+	}
+	,printString: function(s) {
+		return this.escapeString(s,"\"");
+	}
+	,printConstant: function(c) {
+		switch(c[1]) {
+		case 2:
+			var s = c[2];
+			return this.printString(s);
+		case 3:
+			var s1 = c[2];
+			return s1;
+		case 0:
+			var s2 = c[2];
+			return s2;
+		case 1:
+			var s3 = c[2];
+			return s3;
+		case 4:
+			var opt = c[3];
+			var s4 = c[2];
+			return "~/" + s4 + "/" + opt;
+		}
+	}
+	,printTypeParam: function(param) {
+		switch(param[1]) {
+		case 0:
+			var ct = param[2];
+			return this.printComplexType(ct);
+		case 1:
+			var e = param[2];
+			return this.printExpr(e);
+		}
+	}
+	,printTypePath: function(tp) {
+		return (tp.pack.length > 0?tp.pack.join(".") + ".":"") + tp.name + (tp.sub != null?"." + tp.sub:"") + (tp.params == null?"":tp.params.length > 0?"<" + tp.params.map($bind(this,this.printTypeParam)).join(", ") + ">":"");
+	}
+	,printComplexType: function(ct) {
+		switch(ct[1]) {
+		case 0:
+			var tp = ct[2];
+			return this.printTypePath(tp);
+		case 1:
+			var ret = ct[3];
+			var args = ct[2];
+			return (args.length > 0?args.map($bind(this,this.printComplexType)).join(" -> "):"Void") + " -> " + this.printComplexType(ret);
+		case 2:
+			var fields = ct[2];
+			return "{ " + ((function($this) {
+				var $r;
+				var _g = [];
+				{
+					var _g1 = 0;
+					while(_g1 < fields.length) {
+						var f = fields[_g1];
+						++_g1;
+						_g.push($this.printField(f) + "; ");
+					}
+				}
+				$r = _g;
+				return $r;
+			}(this))).join("") + "}";
+		case 3:
+			var ct1 = ct[2];
+			return "(" + this.printComplexType(ct1) + ")";
+		case 5:
+			var ct2 = ct[2];
+			return "?" + this.printComplexType(ct2);
+		case 4:
+			var fields1 = ct[3];
+			var tpl = ct[2];
+			return "{> " + tpl.map($bind(this,this.printTypePath)).join(" >, ") + ", " + fields1.map($bind(this,this.printField)).join(", ") + " }";
+		}
+	}
+	,printMetadata: function(meta) {
+		return "@" + meta.name + (meta.params != null && meta.params.length > 0?"(" + this.printExprs(meta.params,", ") + ")":"");
+	}
+	,printAccess: function(access) {
+		switch(access[1]) {
+		case 2:
+			return "static";
+		case 0:
+			return "public";
+		case 1:
+			return "private";
+		case 3:
+			return "override";
+		case 5:
+			return "inline";
+		case 4:
+			return "dynamic";
+		case 6:
+			return "macro";
+		}
+	}
+	,printField: function(field) {
+		return (field.doc != null && field.doc != ""?"/**\n" + this.tabs + this.tabString + StringTools.replace(field.doc,"\n","\n" + this.tabs + this.tabString) + "\n" + this.tabs + "**/\n" + this.tabs:"") + (field.meta != null && field.meta.length > 0?field.meta.map($bind(this,this.printMetadata)).join("\n" + this.tabs) + ("\n" + this.tabs):"") + (field.access != null && field.access.length > 0?field.access.map($bind(this,this.printAccess)).join(" ") + " ":"") + (function($this) {
+			var $r;
+			var _g = field.kind;
+			$r = (function($this) {
+				var $r;
+				switch(_g[1]) {
+				case 0:
+					$r = (function($this) {
+						var $r;
+						var eo = _g[3];
+						var t = _g[2];
+						$r = "var " + field.name + $this.opt(t,$bind($this,$this.printComplexType)," : ") + $this.opt(eo,$bind($this,$this.printExpr)," = ");
+						return $r;
+					}($this));
+					break;
+				case 2:
+					$r = (function($this) {
+						var $r;
+						var eo1 = _g[5];
+						var t1 = _g[4];
+						var set = _g[3];
+						var get = _g[2];
+						$r = "var " + field.name + "(" + get + ", " + set + ")" + $this.opt(t1,$bind($this,$this.printComplexType)," : ") + $this.opt(eo1,$bind($this,$this.printExpr)," = ");
+						return $r;
+					}($this));
+					break;
+				case 1:
+					$r = (function($this) {
+						var $r;
+						var func = _g[2];
+						$r = "function " + field.name + $this.printFunction(func);
+						return $r;
+					}($this));
+					break;
+				}
+				return $r;
+			}($this));
+			return $r;
+		}(this));
+	}
+	,printTypeParamDecl: function(tpd) {
+		return tpd.name + (tpd.params != null && tpd.params.length > 0?"<" + tpd.params.map($bind(this,this.printTypeParamDecl)).join(", ") + ">":"") + (tpd.constraints != null && tpd.constraints.length > 0?":(" + tpd.constraints.map($bind(this,this.printComplexType)).join(", ") + ")":"");
+	}
+	,printFunctionArg: function(arg) {
+		return (arg.opt?"?":"") + arg.name + this.opt(arg.type,$bind(this,this.printComplexType),":") + this.opt(arg.value,$bind(this,this.printExpr)," = ");
+	}
+	,printFunction: function(func) {
+		return (func.params == null?"":func.params.length > 0?"<" + func.params.map($bind(this,this.printTypeParamDecl)).join(", ") + ">":"") + "(" + func.args.map($bind(this,this.printFunctionArg)).join(", ") + ")" + this.opt(func.ret,$bind(this,this.printComplexType),":") + this.opt(func.expr,$bind(this,this.printExpr)," ");
+	}
+	,printVar: function(v) {
+		return v.name + this.opt(v.type,$bind(this,this.printComplexType),":") + this.opt(v.expr,$bind(this,this.printExpr)," = ");
+	}
+	,printExpr: function(e) {
+		var _g1 = this;
+		if(e == null) return "#NULL"; else {
+			var _g = e.expr;
+			switch(_g[1]) {
+			case 0:
+				var c = _g[2];
+				return this.printConstant(c);
+			case 1:
+				var e2 = _g[3];
+				var e1 = _g[2];
+				return "" + this.printExpr(e1) + "[" + this.printExpr(e2) + "]";
+			case 2:
+				var e21 = _g[4];
+				var e11 = _g[3];
+				var op = _g[2];
+				return "" + this.printExpr(e11) + " " + this.printBinop(op) + " " + this.printExpr(e21);
+			case 3:
+				var n = _g[3];
+				var e12 = _g[2];
+				return "" + this.printExpr(e12) + "." + n;
+			case 4:
+				var e13 = _g[2];
+				return "(" + this.printExpr(e13) + ")";
+			case 5:
+				var fl = _g[2];
+				return "{ " + fl.map(function(fld) {
+					return "" + fld.field + " : " + _g1.printExpr(fld.expr);
+				}).join(", ") + " }";
+			case 6:
+				var el = _g[2];
+				return "[" + this.printExprs(el,", ") + "]";
+			case 7:
+				var el1 = _g[3];
+				var e14 = _g[2];
+				return "" + this.printExpr(e14) + "(" + this.printExprs(el1,", ") + ")";
+			case 8:
+				var el2 = _g[3];
+				var tp = _g[2];
+				return "new " + this.printTypePath(tp) + "(" + this.printExprs(el2,", ") + ")";
+			case 9:
+				switch(_g[3]) {
+				case true:
+					var e15 = _g[4];
+					var op1 = _g[2];
+					return this.printExpr(e15) + this.printUnop(op1);
+				case false:
+					var e16 = _g[4];
+					var op2 = _g[2];
+					return this.printUnop(op2) + this.printExpr(e16);
+				}
+				break;
+			case 11:
+				var func = _g[3];
+				var no = _g[2];
+				if(no != null) return "function " + no + this.printFunction(func); else {
+					var func1 = _g[3];
+					return "function" + this.printFunction(func1);
+				}
+				break;
+			case 10:
+				var vl = _g[2];
+				return "var " + vl.map($bind(this,this.printVar)).join(", ");
+			case 12:
+				var el3 = _g[2];
+				switch(_g[2].length) {
+				case 0:
+					return "{ }";
+				default:
+					var old = this.tabs;
+					this.tabs += this.tabString;
+					var s = "{\n" + this.tabs + this.printExprs(el3,";\n" + this.tabs);
+					this.tabs = old;
+					return s + (";\n" + this.tabs + "}");
+				}
+				break;
+			case 13:
+				var e22 = _g[3];
+				var e17 = _g[2];
+				return "for (" + this.printExpr(e17) + ") " + this.printExpr(e22);
+			case 14:
+				var e23 = _g[3];
+				var e18 = _g[2];
+				return "" + this.printExpr(e18) + " in " + this.printExpr(e23);
+			case 15:
+				var eelse = _g[4];
+				if(_g[4] == null) {
+					var econd = _g[2];
+					var eif = _g[3];
+					return "if (" + this.printExpr(econd) + ") " + this.printExpr(eif);
+				} else switch(_g[4]) {
+				default:
+					var econd1 = _g[2];
+					var eif1 = _g[3];
+					return "if (" + this.printExpr(econd1) + ") " + this.printExpr(eif1) + " else " + this.printExpr(eelse);
+				}
+				break;
+			case 16:
+				switch(_g[4]) {
+				case true:
+					var econd2 = _g[2];
+					var e19 = _g[3];
+					return "while (" + this.printExpr(econd2) + ") " + this.printExpr(e19);
+				case false:
+					var econd3 = _g[2];
+					var e110 = _g[3];
+					return "do " + this.printExpr(e110) + " while (" + this.printExpr(econd3) + ")";
+				}
+				break;
+			case 17:
+				var edef = _g[4];
+				var cl = _g[3];
+				var e111 = _g[2];
+				var old1 = this.tabs;
+				this.tabs += this.tabString;
+				var s1 = "switch " + this.printExpr(e111) + " {\n" + this.tabs + cl.map(function(c1) {
+					return "case " + _g1.printExprs(c1.values,", ") + (c1.guard != null?" if (" + _g1.printExpr(c1.guard) + "):":":") + (c1.expr != null?_g1.opt(c1.expr,$bind(_g1,_g1.printExpr)) + ";":"");
+				}).join("\n" + this.tabs);
+				if(edef != null) s1 += "\n" + this.tabs + "default:" + (edef.expr == null?"":this.printExpr(edef) + ";");
+				this.tabs = old1;
+				return s1 + ("\n" + this.tabs + "}");
+			case 18:
+				var cl1 = _g[3];
+				var e112 = _g[2];
+				return "try " + this.printExpr(e112) + cl1.map(function(c2) {
+					return " catch(" + c2.name + ":" + _g1.printComplexType(c2.type) + ") " + _g1.printExpr(c2.expr);
+				}).join("");
+			case 19:
+				var eo = _g[2];
+				return "return" + this.opt(eo,$bind(this,this.printExpr)," ");
+			case 20:
+				return "break";
+			case 21:
+				return "continue";
+			case 22:
+				var e113 = _g[2];
+				return "untyped " + this.printExpr(e113);
+			case 23:
+				var e114 = _g[2];
+				return "throw " + this.printExpr(e114);
+			case 24:
+				var cto = _g[3];
+				var e115 = _g[2];
+				if(cto != null) return "cast(" + this.printExpr(e115) + ", " + this.printComplexType(cto) + ")"; else {
+					var e116 = _g[2];
+					return "cast " + this.printExpr(e116);
+				}
+				break;
+			case 25:
+				var e117 = _g[2];
+				return "#DISPLAY(" + this.printExpr(e117) + ")";
+			case 26:
+				var tp1 = _g[2];
+				return "#DISPLAY(" + this.printTypePath(tp1) + ")";
+			case 27:
+				var eelse1 = _g[4];
+				var eif2 = _g[3];
+				var econd4 = _g[2];
+				return "" + this.printExpr(econd4) + " ? " + this.printExpr(eif2) + " : " + this.printExpr(eelse1);
+			case 28:
+				var ct = _g[3];
+				var e118 = _g[2];
+				return "(" + this.printExpr(e118) + " : " + this.printComplexType(ct) + ")";
+			case 29:
+				var e119 = _g[3];
+				var meta = _g[2];
+				return this.printMetadata(meta) + " " + this.printExpr(e119);
+			}
+		}
+	}
+	,printExprs: function(el,sep) {
+		return el.map($bind(this,this.printExpr)).join(sep);
+	}
+	,printExtension: function(tpl,fields) {
+		return "{\n" + this.tabs + ">" + tpl.map($bind(this,this.printTypePath)).join(",\n" + this.tabs + ">") + "," + (fields.length > 0?"\n" + this.tabs + fields.map($bind(this,this.printField)).join(";\n" + this.tabs) + ";\n}":"\n}");
+	}
+	,printStructure: function(fields) {
+		if(fields.length == 0) return "{ }"; else return "{\n" + this.tabs + fields.map($bind(this,this.printField)).join(";\n" + this.tabs) + ";\n}";
+	}
+	,printTypeDefinition: function(t,printPackage) {
+		if(printPackage == null) printPackage = true;
+		var old = this.tabs;
+		this.tabs = this.tabString;
+		var str;
+		if(t == null) str = "#NULL"; else str = (printPackage && t.pack.length > 0 && t.pack[0] != ""?"package " + t.pack.join(".") + ";\n":"") + (t.meta != null && t.meta.length > 0?t.meta.map($bind(this,this.printMetadata)).join(" ") + " ":"") + (t.isExtern?"extern ":"") + (function($this) {
+			var $r;
+			var _g = t.kind;
+			$r = (function($this) {
+				var $r;
+				switch(_g[1]) {
+				case 0:
+					$r = "enum " + t.name + (t.params.length > 0?"<" + t.params.map($bind($this,$this.printTypeParamDecl)).join(", ") + ">":"") + " {\n" + ((function($this) {
+						var $r;
+						var _g1 = [];
+						{
+							var _g2 = 0;
+							var _g3 = t.fields;
+							while(_g2 < _g3.length) {
+								var field = _g3[_g2];
+								++_g2;
+								_g1.push($this.tabs + (field.doc != null && field.doc != ""?"/**\n" + $this.tabs + $this.tabString + StringTools.replace(field.doc,"\n","\n" + $this.tabs + $this.tabString) + "\n" + $this.tabs + "**/\n" + $this.tabs:"") + (field.meta != null && field.meta.length > 0?field.meta.map($bind($this,$this.printMetadata)).join(" ") + " ":"") + (function($this) {
+									var $r;
+									var _g4 = field.kind;
+									$r = (function($this) {
+										var $r;
+										switch(_g4[1]) {
+										case 0:
+											$r = (function($this) {
+												var $r;
+												var t1 = _g4[2];
+												$r = field.name + $this.opt(t1,$bind($this,$this.printComplexType),":");
+												return $r;
+											}($this));
+											break;
+										case 2:
+											$r = (function($this) {
+												var $r;
+												throw new js__$Boot_HaxeError("FProp is invalid for TDEnum.");
+												return $r;
+											}($this));
+											break;
+										case 1:
+											$r = (function($this) {
+												var $r;
+												var func = _g4[2];
+												$r = field.name + $this.printFunction(func);
+												return $r;
+											}($this));
+											break;
+										}
+										return $r;
+									}($this));
+									return $r;
+								}($this)) + ";");
+							}
+						}
+						$r = _g1;
+						return $r;
+					}($this))).join("\n") + "\n}";
+					break;
+				case 1:
+					$r = "typedef " + t.name + (t.params.length > 0?"<" + t.params.map($bind($this,$this.printTypeParamDecl)).join(", ") + ">":"") + " = {\n" + ((function($this) {
+						var $r;
+						var _g11 = [];
+						{
+							var _g21 = 0;
+							var _g31 = t.fields;
+							while(_g21 < _g31.length) {
+								var f = _g31[_g21];
+								++_g21;
+								_g11.push($this.tabs + $this.printField(f) + ";");
+							}
+						}
+						$r = _g11;
+						return $r;
+					}($this))).join("\n") + "\n}";
+					break;
+				case 2:
+					$r = (function($this) {
+						var $r;
+						var isInterface = _g[4];
+						var interfaces = _g[3];
+						var superClass = _g[2];
+						$r = (isInterface?"interface ":"class ") + t.name + (t.params != null && t.params.length > 0?"<" + t.params.map($bind($this,$this.printTypeParamDecl)).join(", ") + ">":"") + (superClass != null?" extends " + $this.printTypePath(superClass):"") + (interfaces != null?(isInterface?(function($this) {
+							var $r;
+							var _g12 = [];
+							{
+								var _g22 = 0;
+								while(_g22 < interfaces.length) {
+									var tp = interfaces[_g22];
+									++_g22;
+									_g12.push(" extends " + $this.printTypePath(tp));
+								}
+							}
+							$r = _g12;
+							return $r;
+						}($this)):(function($this) {
+							var $r;
+							var _g23 = [];
+							{
+								var _g32 = 0;
+								while(_g32 < interfaces.length) {
+									var tp1 = interfaces[_g32];
+									++_g32;
+									_g23.push(" implements " + $this.printTypePath(tp1));
+								}
+							}
+							$r = _g23;
+							return $r;
+						}($this))).join(""):"") + " {\n" + ((function($this) {
+							var $r;
+							var _g33 = [];
+							{
+								var _g41 = 0;
+								var _g5 = t.fields;
+								while(_g41 < _g5.length) {
+									var f1 = _g5[_g41];
+									++_g41;
+									_g33.push((function($this) {
+										var $r;
+										var fstr = $this.printField(f1);
+										$r = $this.tabs + fstr + (function($this) {
+											var $r;
+											var _g6 = f1.kind;
+											$r = (function($this) {
+												var $r;
+												switch(_g6[1]) {
+												case 0:case 2:
+													$r = ";";
+													break;
+												case 1:
+													$r = _g6[2].expr == null?";":(function($this) {
+														var $r;
+														switch(_g6[2].expr.expr[1]) {
+														case 12:
+															$r = "";
+															break;
+														default:
+															$r = ";";
+														}
+														return $r;
+													}($this));
+													break;
+												}
+												return $r;
+											}($this));
+											return $r;
+										}($this));
+										return $r;
+									}($this)));
+								}
+							}
+							$r = _g33;
+							return $r;
+						}($this))).join("\n") + "\n}";
+						return $r;
+					}($this));
+					break;
+				case 3:
+					$r = (function($this) {
+						var $r;
+						var ct = _g[2];
+						$r = "typedef " + t.name + (t.params.length > 0?"<" + t.params.map($bind($this,$this.printTypeParamDecl)).join(", ") + ">":"") + " = " + (function($this) {
+							var $r;
+							switch(ct[1]) {
+							case 4:
+								$r = (function($this) {
+									var $r;
+									var fields = ct[3];
+									var tpl = ct[2];
+									$r = $this.printExtension(tpl,fields);
+									return $r;
+								}($this));
+								break;
+							case 2:
+								$r = (function($this) {
+									var $r;
+									var fields1 = ct[2];
+									$r = $this.printStructure(fields1);
+									return $r;
+								}($this));
+								break;
+							default:
+								$r = $this.printComplexType(ct);
+							}
+							return $r;
+						}($this)) + ";";
+						return $r;
+					}($this));
+					break;
+				case 4:
+					$r = (function($this) {
+						var $r;
+						var to = _g[4];
+						var from = _g[3];
+						var tthis = _g[2];
+						$r = "abstract " + t.name + (t.params.length > 0?"<" + t.params.map($bind($this,$this.printTypeParamDecl)).join(", ") + ">":"") + (tthis == null?"":"(" + $this.printComplexType(tthis) + ")") + (from == null?"":((function($this) {
+							var $r;
+							var _g13 = [];
+							{
+								var _g24 = 0;
+								while(_g24 < from.length) {
+									var f2 = from[_g24];
+									++_g24;
+									_g13.push(" from " + $this.printComplexType(f2));
+								}
+							}
+							$r = _g13;
+							return $r;
+						}($this))).join("")) + (to == null?"":((function($this) {
+							var $r;
+							var _g25 = [];
+							{
+								var _g34 = 0;
+								while(_g34 < to.length) {
+									var t2 = to[_g34];
+									++_g34;
+									_g25.push(" to " + $this.printComplexType(t2));
+								}
+							}
+							$r = _g25;
+							return $r;
+						}($this))).join("")) + " {\n" + ((function($this) {
+							var $r;
+							var _g35 = [];
+							{
+								var _g42 = 0;
+								var _g51 = t.fields;
+								while(_g42 < _g51.length) {
+									var f3 = _g51[_g42];
+									++_g42;
+									_g35.push((function($this) {
+										var $r;
+										var fstr1 = $this.printField(f3);
+										$r = $this.tabs + fstr1 + (function($this) {
+											var $r;
+											var _g61 = f3.kind;
+											$r = (function($this) {
+												var $r;
+												switch(_g61[1]) {
+												case 0:case 2:
+													$r = ";";
+													break;
+												case 1:
+													$r = (function($this) {
+														var $r;
+														var func1 = _g61[2];
+														$r = func1.expr == null?";":"";
+														return $r;
+													}($this));
+													break;
+												default:
+													$r = "";
+												}
+												return $r;
+											}($this));
+											return $r;
+										}($this));
+										return $r;
+									}($this)));
+								}
+							}
+							$r = _g35;
+							return $r;
+						}($this))).join("\n") + "\n}";
+						return $r;
+					}($this));
+					break;
+				}
+				return $r;
+			}($this));
+			return $r;
+		}(this));
+		this.tabs = old;
+		return str;
+	}
+	,opt: function(v,f,prefix) {
+		if(prefix == null) prefix = "";
+		if(v == null) return ""; else return prefix + f(v);
+	}
+	,__class__: haxe_macro_Printer
+};
+var haxe_macro_Type = $hxClasses["haxe.macro.Type"] = { __ename__ : ["haxe","macro","Type"], __constructs__ : ["TMono","TEnum","TInst","TType","TFun","TAnonymous","TDynamic","TLazy","TAbstract"] };
+haxe_macro_Type.TMono = function(t) { var $x = ["TMono",0,t]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TEnum = function(t,params) { var $x = ["TEnum",1,t,params]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TInst = function(t,params) { var $x = ["TInst",2,t,params]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TType = function(t,params) { var $x = ["TType",3,t,params]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TFun = function(args,ret) { var $x = ["TFun",4,args,ret]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TAnonymous = function(a) { var $x = ["TAnonymous",5,a]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TDynamic = function(t) { var $x = ["TDynamic",6,t]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TLazy = function(f) { var $x = ["TLazy",7,f]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.TAbstract = function(t,params) { var $x = ["TAbstract",8,t,params]; $x.__enum__ = haxe_macro_Type; $x.toString = $estr; return $x; };
+haxe_macro_Type.__empty_constructs__ = [];
+var haxe_macro_AnonStatus = $hxClasses["haxe.macro.AnonStatus"] = { __ename__ : ["haxe","macro","AnonStatus"], __constructs__ : ["AClosed","AOpened","AConst","AExtend","AClassStatics","AEnumStatics","AAbstractStatics"] };
+haxe_macro_AnonStatus.AClosed = ["AClosed",0];
+haxe_macro_AnonStatus.AClosed.toString = $estr;
+haxe_macro_AnonStatus.AClosed.__enum__ = haxe_macro_AnonStatus;
+haxe_macro_AnonStatus.AOpened = ["AOpened",1];
+haxe_macro_AnonStatus.AOpened.toString = $estr;
+haxe_macro_AnonStatus.AOpened.__enum__ = haxe_macro_AnonStatus;
+haxe_macro_AnonStatus.AConst = ["AConst",2];
+haxe_macro_AnonStatus.AConst.toString = $estr;
+haxe_macro_AnonStatus.AConst.__enum__ = haxe_macro_AnonStatus;
+haxe_macro_AnonStatus.AExtend = function(tl) { var $x = ["AExtend",3,tl]; $x.__enum__ = haxe_macro_AnonStatus; $x.toString = $estr; return $x; };
+haxe_macro_AnonStatus.AClassStatics = function(t) { var $x = ["AClassStatics",4,t]; $x.__enum__ = haxe_macro_AnonStatus; $x.toString = $estr; return $x; };
+haxe_macro_AnonStatus.AEnumStatics = function(t) { var $x = ["AEnumStatics",5,t]; $x.__enum__ = haxe_macro_AnonStatus; $x.toString = $estr; return $x; };
+haxe_macro_AnonStatus.AAbstractStatics = function(t) { var $x = ["AAbstractStatics",6,t]; $x.__enum__ = haxe_macro_AnonStatus; $x.toString = $estr; return $x; };
+haxe_macro_AnonStatus.__empty_constructs__ = [haxe_macro_AnonStatus.AClosed,haxe_macro_AnonStatus.AOpened,haxe_macro_AnonStatus.AConst];
+var haxe_macro_ClassKind = $hxClasses["haxe.macro.ClassKind"] = { __ename__ : ["haxe","macro","ClassKind"], __constructs__ : ["KNormal","KTypeParameter","KExtension","KExpr","KGeneric","KGenericInstance","KMacroType","KAbstractImpl","KGenericBuild"] };
+haxe_macro_ClassKind.KNormal = ["KNormal",0];
+haxe_macro_ClassKind.KNormal.toString = $estr;
+haxe_macro_ClassKind.KNormal.__enum__ = haxe_macro_ClassKind;
+haxe_macro_ClassKind.KTypeParameter = function(constraints) { var $x = ["KTypeParameter",1,constraints]; $x.__enum__ = haxe_macro_ClassKind; $x.toString = $estr; return $x; };
+haxe_macro_ClassKind.KExtension = function(cl,params) { var $x = ["KExtension",2,cl,params]; $x.__enum__ = haxe_macro_ClassKind; $x.toString = $estr; return $x; };
+haxe_macro_ClassKind.KExpr = function(expr) { var $x = ["KExpr",3,expr]; $x.__enum__ = haxe_macro_ClassKind; $x.toString = $estr; return $x; };
+haxe_macro_ClassKind.KGeneric = ["KGeneric",4];
+haxe_macro_ClassKind.KGeneric.toString = $estr;
+haxe_macro_ClassKind.KGeneric.__enum__ = haxe_macro_ClassKind;
+haxe_macro_ClassKind.KGenericInstance = function(cl,params) { var $x = ["KGenericInstance",5,cl,params]; $x.__enum__ = haxe_macro_ClassKind; $x.toString = $estr; return $x; };
+haxe_macro_ClassKind.KMacroType = ["KMacroType",6];
+haxe_macro_ClassKind.KMacroType.toString = $estr;
+haxe_macro_ClassKind.KMacroType.__enum__ = haxe_macro_ClassKind;
+haxe_macro_ClassKind.KAbstractImpl = function(a) { var $x = ["KAbstractImpl",7,a]; $x.__enum__ = haxe_macro_ClassKind; $x.toString = $estr; return $x; };
+haxe_macro_ClassKind.KGenericBuild = ["KGenericBuild",8];
+haxe_macro_ClassKind.KGenericBuild.toString = $estr;
+haxe_macro_ClassKind.KGenericBuild.__enum__ = haxe_macro_ClassKind;
+haxe_macro_ClassKind.__empty_constructs__ = [haxe_macro_ClassKind.KNormal,haxe_macro_ClassKind.KGeneric,haxe_macro_ClassKind.KMacroType,haxe_macro_ClassKind.KGenericBuild];
+var haxe_macro_FieldKind = $hxClasses["haxe.macro.FieldKind"] = { __ename__ : ["haxe","macro","FieldKind"], __constructs__ : ["FVar","FMethod"] };
+haxe_macro_FieldKind.FVar = function(read,write) { var $x = ["FVar",0,read,write]; $x.__enum__ = haxe_macro_FieldKind; $x.toString = $estr; return $x; };
+haxe_macro_FieldKind.FMethod = function(k) { var $x = ["FMethod",1,k]; $x.__enum__ = haxe_macro_FieldKind; $x.toString = $estr; return $x; };
+haxe_macro_FieldKind.__empty_constructs__ = [];
+var haxe_macro_VarAccess = $hxClasses["haxe.macro.VarAccess"] = { __ename__ : ["haxe","macro","VarAccess"], __constructs__ : ["AccNormal","AccNo","AccNever","AccResolve","AccCall","AccInline","AccRequire"] };
+haxe_macro_VarAccess.AccNormal = ["AccNormal",0];
+haxe_macro_VarAccess.AccNormal.toString = $estr;
+haxe_macro_VarAccess.AccNormal.__enum__ = haxe_macro_VarAccess;
+haxe_macro_VarAccess.AccNo = ["AccNo",1];
+haxe_macro_VarAccess.AccNo.toString = $estr;
+haxe_macro_VarAccess.AccNo.__enum__ = haxe_macro_VarAccess;
+haxe_macro_VarAccess.AccNever = ["AccNever",2];
+haxe_macro_VarAccess.AccNever.toString = $estr;
+haxe_macro_VarAccess.AccNever.__enum__ = haxe_macro_VarAccess;
+haxe_macro_VarAccess.AccResolve = ["AccResolve",3];
+haxe_macro_VarAccess.AccResolve.toString = $estr;
+haxe_macro_VarAccess.AccResolve.__enum__ = haxe_macro_VarAccess;
+haxe_macro_VarAccess.AccCall = ["AccCall",4];
+haxe_macro_VarAccess.AccCall.toString = $estr;
+haxe_macro_VarAccess.AccCall.__enum__ = haxe_macro_VarAccess;
+haxe_macro_VarAccess.AccInline = ["AccInline",5];
+haxe_macro_VarAccess.AccInline.toString = $estr;
+haxe_macro_VarAccess.AccInline.__enum__ = haxe_macro_VarAccess;
+haxe_macro_VarAccess.AccRequire = function(r,msg) { var $x = ["AccRequire",6,r,msg]; $x.__enum__ = haxe_macro_VarAccess; $x.toString = $estr; return $x; };
+haxe_macro_VarAccess.__empty_constructs__ = [haxe_macro_VarAccess.AccNormal,haxe_macro_VarAccess.AccNo,haxe_macro_VarAccess.AccNever,haxe_macro_VarAccess.AccResolve,haxe_macro_VarAccess.AccCall,haxe_macro_VarAccess.AccInline];
+var haxe_macro_MethodKind = $hxClasses["haxe.macro.MethodKind"] = { __ename__ : ["haxe","macro","MethodKind"], __constructs__ : ["MethNormal","MethInline","MethDynamic","MethMacro"] };
+haxe_macro_MethodKind.MethNormal = ["MethNormal",0];
+haxe_macro_MethodKind.MethNormal.toString = $estr;
+haxe_macro_MethodKind.MethNormal.__enum__ = haxe_macro_MethodKind;
+haxe_macro_MethodKind.MethInline = ["MethInline",1];
+haxe_macro_MethodKind.MethInline.toString = $estr;
+haxe_macro_MethodKind.MethInline.__enum__ = haxe_macro_MethodKind;
+haxe_macro_MethodKind.MethDynamic = ["MethDynamic",2];
+haxe_macro_MethodKind.MethDynamic.toString = $estr;
+haxe_macro_MethodKind.MethDynamic.__enum__ = haxe_macro_MethodKind;
+haxe_macro_MethodKind.MethMacro = ["MethMacro",3];
+haxe_macro_MethodKind.MethMacro.toString = $estr;
+haxe_macro_MethodKind.MethMacro.__enum__ = haxe_macro_MethodKind;
+haxe_macro_MethodKind.__empty_constructs__ = [haxe_macro_MethodKind.MethNormal,haxe_macro_MethodKind.MethInline,haxe_macro_MethodKind.MethDynamic,haxe_macro_MethodKind.MethMacro];
+var haxe_macro_TConstant = $hxClasses["haxe.macro.TConstant"] = { __ename__ : ["haxe","macro","TConstant"], __constructs__ : ["TInt","TFloat","TString","TBool","TNull","TThis","TSuper"] };
+haxe_macro_TConstant.TInt = function(i) { var $x = ["TInt",0,i]; $x.__enum__ = haxe_macro_TConstant; $x.toString = $estr; return $x; };
+haxe_macro_TConstant.TFloat = function(s) { var $x = ["TFloat",1,s]; $x.__enum__ = haxe_macro_TConstant; $x.toString = $estr; return $x; };
+haxe_macro_TConstant.TString = function(s) { var $x = ["TString",2,s]; $x.__enum__ = haxe_macro_TConstant; $x.toString = $estr; return $x; };
+haxe_macro_TConstant.TBool = function(b) { var $x = ["TBool",3,b]; $x.__enum__ = haxe_macro_TConstant; $x.toString = $estr; return $x; };
+haxe_macro_TConstant.TNull = ["TNull",4];
+haxe_macro_TConstant.TNull.toString = $estr;
+haxe_macro_TConstant.TNull.__enum__ = haxe_macro_TConstant;
+haxe_macro_TConstant.TThis = ["TThis",5];
+haxe_macro_TConstant.TThis.toString = $estr;
+haxe_macro_TConstant.TThis.__enum__ = haxe_macro_TConstant;
+haxe_macro_TConstant.TSuper = ["TSuper",6];
+haxe_macro_TConstant.TSuper.toString = $estr;
+haxe_macro_TConstant.TSuper.__enum__ = haxe_macro_TConstant;
+haxe_macro_TConstant.__empty_constructs__ = [haxe_macro_TConstant.TNull,haxe_macro_TConstant.TThis,haxe_macro_TConstant.TSuper];
+var haxe_macro_ModuleType = $hxClasses["haxe.macro.ModuleType"] = { __ename__ : ["haxe","macro","ModuleType"], __constructs__ : ["TClassDecl","TEnumDecl","TTypeDecl","TAbstract"] };
+haxe_macro_ModuleType.TClassDecl = function(c) { var $x = ["TClassDecl",0,c]; $x.__enum__ = haxe_macro_ModuleType; $x.toString = $estr; return $x; };
+haxe_macro_ModuleType.TEnumDecl = function(e) { var $x = ["TEnumDecl",1,e]; $x.__enum__ = haxe_macro_ModuleType; $x.toString = $estr; return $x; };
+haxe_macro_ModuleType.TTypeDecl = function(t) { var $x = ["TTypeDecl",2,t]; $x.__enum__ = haxe_macro_ModuleType; $x.toString = $estr; return $x; };
+haxe_macro_ModuleType.TAbstract = function(a) { var $x = ["TAbstract",3,a]; $x.__enum__ = haxe_macro_ModuleType; $x.toString = $estr; return $x; };
+haxe_macro_ModuleType.__empty_constructs__ = [];
+var haxe_macro_FieldAccess = $hxClasses["haxe.macro.FieldAccess"] = { __ename__ : ["haxe","macro","FieldAccess"], __constructs__ : ["FInstance","FStatic","FAnon","FDynamic","FClosure","FEnum"] };
+haxe_macro_FieldAccess.FInstance = function(c,params,cf) { var $x = ["FInstance",0,c,params,cf]; $x.__enum__ = haxe_macro_FieldAccess; $x.toString = $estr; return $x; };
+haxe_macro_FieldAccess.FStatic = function(c,cf) { var $x = ["FStatic",1,c,cf]; $x.__enum__ = haxe_macro_FieldAccess; $x.toString = $estr; return $x; };
+haxe_macro_FieldAccess.FAnon = function(cf) { var $x = ["FAnon",2,cf]; $x.__enum__ = haxe_macro_FieldAccess; $x.toString = $estr; return $x; };
+haxe_macro_FieldAccess.FDynamic = function(s) { var $x = ["FDynamic",3,s]; $x.__enum__ = haxe_macro_FieldAccess; $x.toString = $estr; return $x; };
+haxe_macro_FieldAccess.FClosure = function(c,cf) { var $x = ["FClosure",4,c,cf]; $x.__enum__ = haxe_macro_FieldAccess; $x.toString = $estr; return $x; };
+haxe_macro_FieldAccess.FEnum = function(e,ef) { var $x = ["FEnum",5,e,ef]; $x.__enum__ = haxe_macro_FieldAccess; $x.toString = $estr; return $x; };
+haxe_macro_FieldAccess.__empty_constructs__ = [];
+var haxe_macro_TypedExprDef = $hxClasses["haxe.macro.TypedExprDef"] = { __ename__ : ["haxe","macro","TypedExprDef"], __constructs__ : ["TConst","TLocal","TArray","TBinop","TField","TTypeExpr","TParenthesis","TObjectDecl","TArrayDecl","TCall","TNew","TUnop","TFunction","TVar","TBlock","TFor","TIf","TWhile","TSwitch","TTry","TReturn","TBreak","TContinue","TThrow","TCast","TMeta","TEnumParameter"] };
+haxe_macro_TypedExprDef.TConst = function(c) { var $x = ["TConst",0,c]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TLocal = function(v) { var $x = ["TLocal",1,v]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TArray = function(e1,e2) { var $x = ["TArray",2,e1,e2]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TBinop = function(op,e1,e2) { var $x = ["TBinop",3,op,e1,e2]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TField = function(e,fa) { var $x = ["TField",4,e,fa]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TTypeExpr = function(m) { var $x = ["TTypeExpr",5,m]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TParenthesis = function(e) { var $x = ["TParenthesis",6,e]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TObjectDecl = function(fields) { var $x = ["TObjectDecl",7,fields]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TArrayDecl = function(el) { var $x = ["TArrayDecl",8,el]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TCall = function(e,el) { var $x = ["TCall",9,e,el]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TNew = function(c,params,el) { var $x = ["TNew",10,c,params,el]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TUnop = function(op,postFix,e) { var $x = ["TUnop",11,op,postFix,e]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TFunction = function(tfunc) { var $x = ["TFunction",12,tfunc]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TVar = function(v,expr) { var $x = ["TVar",13,v,expr]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TBlock = function(el) { var $x = ["TBlock",14,el]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TFor = function(v,e1,e2) { var $x = ["TFor",15,v,e1,e2]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TIf = function(econd,eif,eelse) { var $x = ["TIf",16,econd,eif,eelse]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TWhile = function(econd,e,normalWhile) { var $x = ["TWhile",17,econd,e,normalWhile]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TSwitch = function(e,cases,edef) { var $x = ["TSwitch",18,e,cases,edef]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TTry = function(e,catches) { var $x = ["TTry",19,e,catches]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TReturn = function(e) { var $x = ["TReturn",20,e]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TBreak = ["TBreak",21];
+haxe_macro_TypedExprDef.TBreak.toString = $estr;
+haxe_macro_TypedExprDef.TBreak.__enum__ = haxe_macro_TypedExprDef;
+haxe_macro_TypedExprDef.TContinue = ["TContinue",22];
+haxe_macro_TypedExprDef.TContinue.toString = $estr;
+haxe_macro_TypedExprDef.TContinue.__enum__ = haxe_macro_TypedExprDef;
+haxe_macro_TypedExprDef.TThrow = function(e) { var $x = ["TThrow",23,e]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TCast = function(e,m) { var $x = ["TCast",24,e,m]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TMeta = function(m,e1) { var $x = ["TMeta",25,m,e1]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.TEnumParameter = function(e1,ef,index) { var $x = ["TEnumParameter",26,e1,ef,index]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
+haxe_macro_TypedExprDef.__empty_constructs__ = [haxe_macro_TypedExprDef.TBreak,haxe_macro_TypedExprDef.TContinue];
 var js__$Boot_HaxeError = function(val) {
 	Error.call(this);
 	this.val = val;
@@ -4064,6 +5778,123 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	a.byteOffset = start;
 	return a;
 };
+var react_ComposerApp = function(props) {
+	React.Component.call(this,props);
+	this.products = [{ id : 1, name : "pipo"},{ id : 2, name : "Loclac"}];
+};
+$hxClasses["react.ComposerApp"] = react_ComposerApp;
+react_ComposerApp.__name__ = ["react","ComposerApp"];
+react_ComposerApp.__super__ = React.Component;
+react_ComposerApp.prototype = $extend(React.Component.prototype,{
+	products: null
+	,render: function() {
+		return React.createElement("div",{ style : { margin : "10px"}, className : "ComposerApp"},React.createElement("div",{ className : "form-inline"},React.createElement(react_ProductInput,{ ref : "pi"}),React.createElement("input",{ onChange : $bind(this,this.onChange), name : "qt", type : "text", ref : "qt", placeholder : "Quantité", className : "form-control"}),React.createElement("select",{ name : "unit", ref : "unit", className : "form-control"},this.getUnits()),React.createElement("a",{ onClick : $bind(this,this.addItem), className : "btn btn-primary"},React.createElement("span",{ className : "glyphicon glyphicon-plus"}),"Ajouter")),React.createElement("div",{ ref : "productContainer", className : "container"},this.createChildren()));
+	}
+	,onChange: function() {
+	}
+	,getUnits: function() {
+		var out = [];
+		var _g = 0;
+		var _g1 = Type.allEnums(UnitType);
+		while(_g < _g1.length) {
+			var c = _g1[_g];
+			++_g;
+			out.push(React.createElement("option",{ value : c[1]},Std.string(c)));
+		}
+		return out;
+	}
+	,createChildren: function() {
+		var _g = [];
+		var _g1 = 0;
+		var _g2 = this.products;
+		while(_g1 < _g2.length) {
+			var p = _g2[_g1];
+			++_g1;
+			_g.push(React.createElement(react_ProductComp,{ name : p.name, qt : p.qt, unit : p.unit, key : p.id}));
+		}
+		return _g;
+	}
+	,addItem: function() {
+		var text = this.refs.pi.refs.input.value;
+		if(text.length > 0) {
+			haxe_Log.trace("add " + text,{ fileName : "ComposerApp.hx", lineNumber : 91, className : "react.ComposerApp", methodName : "addItem"});
+			haxe_Log.trace("qt " + this.refs.qt.value,{ fileName : "ComposerApp.hx", lineNumber : 92, className : "react.ComposerApp", methodName : "addItem"});
+			haxe_Log.trace("unit " + this.refs.unit.selectedIndex,{ fileName : "ComposerApp.hx", lineNumber : 93, className : "react.ComposerApp", methodName : "addItem"});
+			var qt = parseFloat(this.refs.qt.value);
+			var unit = Type.createEnumIndex(UnitType,this.refs.unit.selectedIndex,null);
+			var id = Std.random(999);
+			this.products.push({ id : id, name : text, qt : qt, unit : unit});
+			this.setState({ products : [{ id : id, name : text, qt : qt, unit : unit}]});
+		}
+	}
+	,__class__: react_ComposerApp
+});
+var react_ProductComp = function(props) {
+	React.Component.call(this,props);
+};
+$hxClasses["react.ProductComp"] = react_ProductComp;
+react_ProductComp.__name__ = ["react","ProductComp"];
+react_ProductComp.__super__ = React.Component;
+react_ProductComp.prototype = $extend(React.Component.prototype,{
+	render: function() {
+		return React.createElement("div",{ className : "row ProductComp"},React.createElement("div",{ className : "col-md-4"},React.createElement("b",null,this.props.name)),React.createElement("div",{ className : "col-md-4"},this.props.qt," ",this.props.unit),React.createElement("div",{ className : "col-md-4"},React.createElement("a",{ onClick : $bind(this,this["delete"]), className : "btn btn-default btn-xs"},React.createElement("span",{ className : "glyphicon glyphicon-remove"}))));
+	}
+	,'delete': function() {
+	}
+	,__class__: react_ProductComp
+});
+var react_ProductInput = function(props) {
+	React.Component.call(this,props);
+};
+$hxClasses["react.ProductInput"] = react_ProductInput;
+react_ProductInput.__name__ = ["react","ProductInput"];
+react_ProductInput.__super__ = React.Component;
+react_ProductInput.prototype = $extend(React.Component.prototype,{
+	render: function() {
+		return React.createElement("div",null,React.createElement("input",{ style : { width : "350px"}, ref : "input", placeholder : "Saisir un nom de produit", className : "form-control typeahead"}),React.createElement("div",{ className : "txpProduct"},"blabla"),React.createElement("input",{ name : "txpProduct", value : "PROUT", type : "hidden", className : "txpProduct"}));
+	}
+	,componentDidMount: function() {
+		var substringMatcher = function(strs) {
+			var findMatches = function(q,cb) {
+				var matches = [];
+				var substrRegex = new RegExp(q,"i");
+				var _g = 0;
+				while(_g < strs.length) {
+					var str = strs[_g];
+					++_g;
+					if(substrRegex.test(str)) matches.push(str);
+				}
+				cb(matches);
+			};
+			return findMatches;
+		};
+		var products = [];
+		if(react_ProductInput.DICO == null) {
+			var r = new haxe_Http("/product/getTaxo");
+			r.onData = function(data) {
+				react_ProductInput.DICO = haxe_Unserializer.run(data);
+				var $it0 = react_ProductInput.DICO.products.iterator();
+				while( $it0.hasNext() ) {
+					var p = $it0.next();
+					products.push(p.name);
+				}
+			};
+			r.request();
+		}
+		js.JQuery(".typeahead").typeahead({ hint : true, highlight : true, minLength : 2},{ name : "products", source : substringMatcher(products)});
+		js.JQuery(".typeahead").bind("typeahead:select",function(ev,suggestion) {
+			var product = Lambda.find(react_ProductInput.DICO.products,function(x) {
+				return x.name == suggestion;
+			});
+			var str1 = react_ProductInput.DICO.categories.h[product.category].name;
+			if(product.subCategory != null) str1 += " / " + react_ProductInput.DICO.subCategories.h[product.subCategory].name;
+			str1 += " / " + product.name;
+			js.JQuery("div.txpProduct").html(str1);
+			js.JQuery("input.txpProduct").val(suggestion);
+		});
+	}
+	,__class__: react_ProductInput
+});
 var sugoi_form_filters_Filter = function() {
 };
 $hxClasses["sugoi.form.filters.Filter"] = sugoi_form_filters_Filter;
@@ -4180,5 +6011,9 @@ haxe_io_FPHelper.i64tmp = (function($this) {
 haxe_io_FPHelper.LN2 = 0.6931471805599453;
 js_Boot.__toStr = {}.toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
+react_ComposerApp.displayName = "ComposerApp";
+react_ProductComp.displayName = "ProductComp";
+react_ProductInput.DICO = null;
+react_ProductInput.displayName = "ProductInput";
 App.main();
 })(typeof console != "undefined" ? console : {log:function(){}}, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

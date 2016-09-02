@@ -40,7 +40,8 @@ class Product extends Controller
 
 		f.removeElementByName("contractId");
 		
-		view.taxo = db.TxpProduct.manager.all();
+		//view.taxo = db.TxpProduct.manager.all();
+		f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
 
 		if (f.isValid()) {
 			
@@ -281,4 +282,31 @@ class Product extends Controller
 			}
 		}
 	}	
+
+	
+	@tpl('product/compose.mtt')
+	function doCompose(){
+		
+	}
+	
+	
+	function doGetTaxo(){
+		
+		var out : TxpDictionnary = {products:new Map(), categories:new Map(), subCategories:new Map()};
+		
+		for ( p in db.TxpProduct.manager.all()){
+			out.products.set(p.id, {id:p.id, name:p.name, category:p.category.id, subCategory:p.subCategory.id});			
+		}
+		
+		for ( c in db.TxpCategory.manager.all()){
+			out.categories.set(c.id, {id:c.id,name:c.name });
+		}
+		
+		for ( c in db.TxpSubCategory.manager.all()){
+			out.subCategories.set(c.id, {id:c.id,name:c.name });
+		}
+		
+		Sys.print(haxe.Serializer.run(out));
+		
+	}
 }
