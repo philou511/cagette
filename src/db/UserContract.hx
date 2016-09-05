@@ -94,6 +94,12 @@ class UserContract extends Object
 			x.userId = o.user.id;
 			x.userName = o.user.getCoupleName();
 			
+			//shared order
+			if (o.user2 != null){
+				x.userId2 = o.user2.id;
+				x.userName2 = o.user2.getCoupleName();
+			}
+			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
 			x.productName = o.product.name;
@@ -173,15 +179,16 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, productId:Int, ?distribId:Int,?paid:Bool) {
+	public static function make(user:db.User, quantity:Float, productId:Int, ?distribId:Int,?paid:Bool,?user2:db.User) {
 		
 		//checks
 		if (quantity <= 0) return;
-		if (distribId != null) {
-			var d = db.Distribution.manager.get(distribId);
-			if (d.date.getTime() < Date.now().getTime()) throw "Impossible de modifier une commande pour une date de distribution échue. (d"+d.id+")";	
-		}
 		
+		// commented on 2016-09-05:  an admin should be able to create an order afterwards (i.e the client took a product at the last minute, and we to keep track of it )
+		//if (distribId != null) {
+			//var d = db.Distribution.manager.get(distribId);
+			//if (d.date.getTime() < Date.now().getTime()) throw "Impossible de modifier une commande pour une date de distribution échue. (d"+d.id+")";	
+		//}
 		
 		//vérifie si il n'y a pas de commandes existantes avec les memes paramètres
 		var prevOrders = new List<db.UserContract>();
@@ -196,6 +203,7 @@ class UserContract extends Object
 		o.productId = productId;
 		o.quantity = quantity;
 		o.user = user;
+		if (user2 != null) o.user2 = user2;
 		if (paid != null) o.paid = paid;
 		if (distribId != null) o.distributionId = distribId;
 		
@@ -245,15 +253,24 @@ class UserContract extends Object
 	/**
 	 * Edit an order (quantity)
 	 */
-	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool) {
+	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User) {
 		
 		order.lock();
+		
+		if (newquantity == null) newquantity = 0;
 		
 		//paid
 		if (paid != null) {
 			order.paid = paid;
 		}else {
 			if (order.quantity < newquantity) order.paid = false;	
+		}
+		
+		//shared order
+		if (user2 != null){
+			order.user2 = user2;			
+		}else{
+			order.user2 = null;
 		}
 		
 		//stocks

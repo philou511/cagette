@@ -271,7 +271,7 @@ class ContractAdmin extends Controller
 	}
 
 	/**
-	 * Overview of orders for this contract
+	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
 	function doOrders(contract:db.Contract, args:{?d:db.Distribution}) {
@@ -295,6 +295,7 @@ class ContractAdmin extends Controller
 		
 		var orders = db.UserContract.prepare(Lambda.list(orders));
 		
+		//CSV export
 		if (app.params.exists("csv")) {
 			var data = new Array<Dynamic>();
 			
@@ -600,7 +601,7 @@ class ContractAdmin extends Controller
 		view.u = user;
 		view.distribution = args.d;
 		
-		var user2 : db.User = null;
+		
 		
 		//need to select a distribution for varying orders contracts
 		if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
@@ -608,9 +609,10 @@ class ContractAdmin extends Controller
 			throw Redirect("/contractAdmin/orders/" + c.id);
 			
 		}else {
-			if (user == null) {
-				view.users = app.user.amap.getMembersFormElementData();
-			}
+			
+			//members of the group
+			view.users = app.user.amap.getMembersFormElementData();
+			
 			
 			var userOrders = new Array<{order:db.UserContract,product:db.Product}>();
 			var products = c.getProducts();
@@ -636,17 +638,9 @@ class ContractAdmin extends Controller
 				if (user == null) {
 					user = db.User.manager.get(Std.parseInt(app.params.get("user")));
 					if (user == null) throw "user #"+app.params.get("user")+" introuvable";
-					if (!user.isMemberOf(app.user.amap)) throw user + " ne fait pas partie de cette amap";
-					
-					//panier alterné
-					if (app.params.get("user2") != null && app.params.get("user2") != "0") {
-						user2 = db.User.manager.get(Std.parseInt(app.params.get("user2")));
-						if (user2 == null) throw "user #"+app.params.get("user2")+" introuvable";
-						if (!user2.isMemberOf(app.user.amap)) throw user2 + " ne fait pas partie de cette amap";
-						if (user.id == user2.id) throw "Les deux comptes sélectionnés doivent être différents";
-					}
-					
+					if (!user.isMemberOf(app.user.amap)) throw user + " ne fait pas partie de ce groupe";
 				}
+				
 				
 				//get distrib if needed
 				var distrib : db.Distribution = null;
@@ -663,6 +657,16 @@ class ContractAdmin extends Controller
 						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
 						if (uo == null) throw "Impossible de retrouver le produit " + pid;
 						
+						//user2 ?
+						var user2 : db.User = null;
+						if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
+							//trace("user2" + pid + " : " + app.params.get("user2" + pid));
+							user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
+							if (user2 == null) throw "user #"+app.params.get("user2")+" introuvable";
+							if (!user2.isMemberOf(app.user.amap)) throw user2 + " ne fait pas partie de ce groupe";
+							if (user.id == user2.id) throw "Les deux comptes sélectionnés doivent être différents";
+						}
+						
 						
 						var q = 0.0;
 						if (uo.product.hasFloatQt ) {
@@ -672,15 +676,12 @@ class ContractAdmin extends Controller
 							q = Std.parseInt(param);
 						}
 						
-						//var order = new db.UserContract();
 						if (uo.order != null) {
 							//existing record
-							
-							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"));
+							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"),user2);
 						}else {
 							//new record
-							
-							db.UserContract.make(user, q, pid, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"));
+							db.UserContract.make(user, q, pid, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2);
 						}
 					}
 				}
