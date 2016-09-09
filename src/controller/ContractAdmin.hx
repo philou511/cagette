@@ -251,7 +251,6 @@ class ContractAdmin extends Controller
 			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//constant orders
-			
 			var products = [];
 			for ( d in cdistribs) {
 				for ( p in d.contract.getProducts()) {
@@ -351,6 +350,11 @@ class ContractAdmin extends Controller
 			nc.percentageValue = contract.percentageValue;
 			nc.insert();
 			
+			//give right to this contract
+			var ua = db.UserAmap.get(app.user, app.user.amap);
+			ua.giveRight(ContractAdmin(nc.id));
+			
+			
 			if (form.getValueOf("copyProducts") == true) {
 				var prods = contract.getProducts();
 				for ( source_p in prods) {
@@ -384,15 +388,10 @@ class ContractAdmin extends Controller
 					d.text = ds.text;
 					d.insert();
 				}
-				
-				
 			}
 			
 			throw Ok("/contractAdmin/view/" + nc.id, "Contrat dupliqué");
-			
-			
 		}
-		
 		
 		view.form = form;
 	}
@@ -404,11 +403,10 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/ordersByProduct.mtt")
 	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
-		sendNav(contract);
+		
+		sendNav(contract);		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
-		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
-			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
-		}
+		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
@@ -417,22 +415,34 @@ class ContractAdmin extends Controller
 		var pids = Lambda.map(pids, function(x) return x.id);
 		
 		var orders : List<Dynamic>;
+		var where = "";
 		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			orders = sys.db.Manager.cnx.request("select SUM(quantity) as quantity, p.name as pname ,p.price as price,p.ref as ref from UserContract up, Product p where up.productId=p.id and p.contractId="+contract.id+" and up.distributionId="+args.d.id+" group by p.id order by pname asc;").results();	
-		}else {
-			orders = sys.db.Manager.cnx.request("select SUM(quantity) as quantity, p.name as pname ,p.price as price, p.ref as ref from UserContract up, Product p where up.productId=p.id and p.contractId="+contract.id+" group by p.id order by pname asc;").results();
-		}
-		
-		var totalPrice = 0;
-		for ( o in orders) {
-			totalPrice += o.quantity * o.price;
-		}
+			where = 'and up.distributionId = ${args.d.id}';
+		}	
+			
+		orders = sys.db.Manager.cnx.request('
+			select 
+				SUM(quantity) as quantity,
+				p.name as pname ,
+				p.price as price,
+				p.ref as ref,
+				SUM(quantity*up.productPrice) as total
+			from UserContract up, Product p 
+			where up.productId = p.id and p.contractId = ${contract.id}  $where
+			group by p.id order by pname asc;
+		').results();	
 		
 		if (app.params.exists("csv")) {
 			var data = new Array<Dynamic>();
 			
 			for (o in orders) {
-				data.push({"quantity":view.formatNum(o.quantity),"pname":o.pname,"ref":o.ref,"price":view.formatNum(o.price),"total":view.formatNum(o.quantity*o.price)});				
+				data.push({
+					"quantity":view.formatNum(o.quantity),
+					"pname":o.pname,
+					"ref":o.ref,
+					"price":view.formatNum(o.price),
+					"total":view.formatNum(o.total)					
+				});				
 			}
 
 			setCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
@@ -441,7 +451,6 @@ class ContractAdmin extends Controller
 		
 		
 		view.orders = orders;
-		view.totalPrice = totalPrice;
 	}
 	
 	@tpl("contractadmin/deliveries.mtt")
@@ -681,7 +690,7 @@ class ContractAdmin extends Controller
 							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"),user2);
 						}else {
 							//new record
-							db.UserContract.make(user, q, pid, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2);
+							db.UserContract.make(user, q, uo.product, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2);
 						}
 					}
 				}

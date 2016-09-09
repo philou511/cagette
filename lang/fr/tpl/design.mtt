@@ -3,7 +3,14 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>::NAME::</title>
+		<title>
+			::if pageTitle!=null::
+				::pageTitle::
+			::else::
+				::NAME::
+			::end::
+			
+		</title>
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
 		<link href='//fonts.googleapis.com/css?family=Cantora+One&subset=latin,latin-ext' rel='stylesheet' type='text/css' />

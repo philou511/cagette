@@ -1,6 +1,8 @@
 package controller;
 import sugoi.db.Cache;
+import sugoi.Web;
 import ufront.mail.*;
+import Common;
 
 class Cron extends Controller
 {
@@ -14,12 +16,13 @@ class Cron extends Controller
 	 * CLI only en prod
 	 */
 	function canRun() {
-		if (App.config.DEBUG) {
-			
+		if (App.current.user != null && App.current.user.isAdmin()){
+			return true;
+		}else if (App.config.DEBUG) {
 			return true;
 		}else {
 			
-			if (neko.Web.isModNeko) {
+			if (Web.isModNeko) {
 				Sys.print("only CLI.");
 				return false;
 			}else {
@@ -31,17 +34,21 @@ class Cron extends Controller
 	public function doMinute() {
 		if (!canRun()) return;
 		
+		app.event(MinutelyCron);
+		
 		alerts(4,db.User.UserFlags.HasEmailNotif4h); //4h avant
 		alerts(24,db.User.UserFlags.HasEmailNotif24h); //24h avant
 	}
 	
 	public function doHour() {
-		
+		app.event(HourlyCron);
 	}
 	
 	
 	public function doDaily() {
 		if (!canRun()) return;
+		
+		app.event(DailyCron);
 		
 		//ERRORS MONITORING
 		var n = Date.now();
@@ -194,8 +201,10 @@ class Cron extends Controller
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
 					
 					try {
+						if (!App.config.DEBUG){
+							App.getMailer().send(m);	
+						}
 						
-						App.getMailer().send(m);
 						
 					}catch (e:Dynamic) {
 						

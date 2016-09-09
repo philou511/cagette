@@ -115,7 +115,7 @@ class View extends sugoi.BaseView {
 			case Kilogram: "Kg.";
 			case Gram: "g.";
 			case Piece: "pièce(s)";
-			case Litre: "l.";
+			case Litre: "L.";
 		}
 	}
 	

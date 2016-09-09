@@ -18,6 +18,7 @@ deploy:
 
 deploy_site:
 	rsync $(ROPTS) www www-data@www.cagette.net:/data/cagette/
+	rsync $(ROPTS) data www-data@www.cagette.net:/data/cagette/
 
 deploy_tpl:
 	rsync $(ROPTS) lang/$(LANG) www-data@www.cagette.net:/data/cagette/lang/

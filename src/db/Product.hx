@@ -86,7 +86,9 @@ class Product extends Object
 			categories : Lambda.array(Lambda.map(getCategories(), function(c) return c.id)),
 			orderable : this.contract.isUserOrderAvailable(),
 			stock : contract.hasStockManagement() ? this.stock : null,
-			hasFloatQt : hasFloatQt
+			hasFloatQt : hasFloatQt,
+			qt:qt,
+			unitType:unitType
 		}
 	}
 	

@@ -27,6 +27,8 @@ typedef ProductInfo = {
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
+	?qt:Float,
+	?unitType:UnitType,
 	#if js
 	element:js.JQuery,
 	#end
@@ -143,6 +145,11 @@ enum Event {
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
 	DeleteProduct(product:db.Product);
+	
+	//crons
+	DailyCron;
+	HourlyCron;
+	MinutelyCron;
 	
 	#end
 	

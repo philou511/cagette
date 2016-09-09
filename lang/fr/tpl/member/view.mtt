@@ -94,17 +94,15 @@
 					<th>Produit</th>
 					<th>Prix total</th>
 					<th>Contrat</th>
-					<th>::wVendor()::</th>
 				</tr>
 				::foreach p o.constOrders::
 					<tr>
 						<td>::p.quantity::</td>
-						<td>::p._product.name::</td>
-						<td>::p._product.price*p.quantity:: €</td>
+						<td>::p.productName::</td>
+						<td>::p.subTotal:: €</td>
 						<td>
-							<a href="/contract/view/::p._product._contract.id::">::p._product._contract.name::</a>
+							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
 						</td>
-						<td>::p._product._contract._vendor.name::</td>
 					</tr>
 				::end::			
 			</table>
@@ -128,31 +126,27 @@
 						::set total = 0::
 						::foreach p o.varOrders.get(d)::
 							<tr>
-								::set price = p._product.price*p.quantity::
+								
 								<td>::p.quantity::</td>
-								<td>::p._product.name::</td>
-								<td>::p._product.price::  €</td>
-								<td>::price:: €</td>
+								<td>::p.productName::</td>
+								<td>::p.productPrice::  €</td>
+								<td>::p.subTotal:: €</td>
 								<td>
 									<!-- frais -->
-									::if p._product._contract.percentageValue!=null::
-									<a href="#" data-toggle="tooltip" data-placement="top" title="::p._product._contract.percentageName:: : ::p._product._contract.percentageValue:: %">
-										::formatNum(price/100*p._product._contract.percentageValue):: €
+									::if p.percentageValue!=null::
+									<a href="#" data-toggle="tooltip" data-placement="top" title="::p.percentageName:: : ::p.percentageValue:: %">
+										::formatNum(p.fees):: €
 									</a>
 									::end::
 								</td>
 								<td>
 									<!-- total -->
-									::if p._product._contract.percentageValue!=null::
-										::formatNum(price + (price/100*p._product._contract.percentageValue)):: €
-										::set total = total + price + (price/100*p._product._contract.percentageValue)::
-									::else::
-										::formatNum(price):: €
-										::set total = total + price::
-									::end::
+									::formatNum(p.total):: €
+									::set total = total + p.total::
+								
 								</td>
 								<td>
-									<a href="/contract/view/::p._product._contract.id::">::p._product._contract.name::</a>
+									<a href="/contract/view/::p.contractId::">::p.contractName::</a>
 								</td>
 							
 							</tr>

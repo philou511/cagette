@@ -379,7 +379,7 @@ class Contract extends Controller
 					
 				}else {
 					//trace("new order q="+q);
-					db.UserContract.make(app.user, q, uo.product.id, did);
+					db.UserContract.make(app.user, q, uo.product, did);
 				}
 				
 			}

@@ -1,18 +1,10 @@
 ::use 'design.mtt'::
 
 <style>
-	
-	/*table{
-		table-layout:fixed;
-	}*/
-
-
 	table tr td{
 		white-space: nowrap;
 		overflow-x:hidden;
 	}
-	
-	
 </style>
 
 

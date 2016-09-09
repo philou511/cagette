@@ -76,7 +76,8 @@ class Amap extends Object
 			var places = getPlaces();
 			if (places.length == 1) {				
 				this.mainPlace = places.first();
-				this.update();				
+				this.update();
+				return this.mainPlace;
 			}
 			
 			var pids = Lambda.map(places, function(x) return x.id);

@@ -42,9 +42,15 @@ class Product extends Controller
 			
 		if (f.isValid()) {
 			
+			
 			f.toSpod(d); //update model
+			
+			app.event(EditProduct(d));
+			
 			d.update();
 			throw Ok('/contractAdmin/products/'+d.contract.id,'Le produit a été mis à jour');
+		}else{
+			app.event(PreEditProduct(d));
 		}
 		
 		view.form = f;
@@ -80,8 +86,13 @@ class Product extends Controller
 		if (f.isValid()) {
 			f.toSpod(d); //update model
 			d.contract = contract;
+			
+			app.event(NewProduct(d));
+			
 			d.insert();
 			throw Ok('/contractAdmin/products/'+d.contract.id,'Le produit a été enregistrée');
+		}else{
+			app.event(PreNewProduct(contract));
 		}
 		
 		view.form = f;
@@ -93,6 +104,9 @@ class Product extends Controller
 		if (!app.user.canManageContract(p.contract)) throw "Accès interdit";
 		
 		if (checkToken()) {
+			
+			app.event(DeleteProduct(p));
+			
 			var orders = db.UserContract.manager.search($productId == p.id, false);
 			if (orders.length > 0) {
 				throw Error("/contractAdmin", "Impossible d'effacer ce produit car des commandes y sont rattachées");		

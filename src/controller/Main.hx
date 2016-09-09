@@ -107,7 +107,13 @@ class Main extends Controller {
 			
 			
 		}else {
-			throw Redirect("/user/login");
+			if (app.params.exists("redirect")){
+				throw Redirect("/user/login?redirect="+app.params.get("redirect"));	
+			}else{
+				throw Redirect("/user/login");
+			}
+			
+			
 		}
 		
 	}

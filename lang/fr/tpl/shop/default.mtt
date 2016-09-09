@@ -86,7 +86,12 @@
 							</td>
 							<td>
 								<h4>
-									<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')">::p.name::</a>
+									<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')">
+										::p.name::
+										::if p.qt!=null && p.unitType!=null::
+											::p.qt:: ::unit(p.unitType)::
+										::end::
+									</a>
 								</h4>
 								<span class="price">::formatNum(p.price):: €</span>
 								<div>

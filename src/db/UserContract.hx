@@ -17,7 +17,7 @@ class UserContract extends Object
 	public var userId: SInt;
 	#end
 	
-	//panier alterné
+	//shared order
 	@formPopulate("populate") @:relation(userId2)
 	public var user2 : SNull<User>;
 	
@@ -28,6 +28,10 @@ class UserContract extends Object
 	#if neko
 	public var productId : SInt;
 	#end
+	
+	//store price (1 unit price) and fees (percentage not amount ) rate when the order is done
+	public var productPrice : SFloat;
+	public var feesRate : SInt; //fees in percentage
 	
 	public var paid : SBool;
 	
@@ -103,18 +107,21 @@ class UserContract extends Object
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
 			x.productName = o.product.name;
-			x.productPrice = o.product.price;
+			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
 			
 			x.quantity = o.quantity;
-			x.subTotal = o.quantity * o.product.price;
+			x.subTotal = o.quantity * o.productPrice;
+
 			var c = o.product.contract;
 			
-			if (c.hasPercentageOnOrders()) {
-				x.fees = c.computeFees(x.subTotal);
+			if ( o.feesRate!=0 ) {
+				
+				x.fees = x.subTotal * (o.feesRate/100);
 				x.percentageName = c.percentageName;
-				x.percentageValue = c.percentageValue;
+				x.percentageValue = o.feesRate;
 				x.total = x.subTotal + x.fees;
+				
 			}else {
 				x.total = x.subTotal;
 			}
@@ -179,7 +186,7 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, productId:Int, ?distribId:Int,?paid:Bool,?user2:db.User) {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User) {
 		
 		//checks
 		if (quantity <= 0) return;
@@ -194,14 +201,18 @@ class UserContract extends Object
 		var prevOrders = new List<db.UserContract>();
 		
 		if (distribId == null) {
-			prevOrders = db.UserContract.manager.search($productId==productId && $user==user, true);
+			prevOrders = db.UserContract.manager.search($product==product && $user==user, true);
 		}else {
-			prevOrders = db.UserContract.manager.search($productId==productId && $user==user && $distributionId==distribId, true);
+			prevOrders = db.UserContract.manager.search($product==product && $user==user && $distributionId==distribId, true);
 		}
 		
 		var o = new db.UserContract();
-		o.productId = productId;
+		o.productId = product.id;
 		o.quantity = quantity;
+		o.productPrice = product.price;
+		if (product.contract.hasPercentageOnOrders()) {
+			o.feesRate = product.contract.percentageValue;
+		}
 		o.user = user;
 		if (user2 != null) o.user2 = user2;
 		if (paid != null) o.paid = paid;
