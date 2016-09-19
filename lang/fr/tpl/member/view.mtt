@@ -99,7 +99,7 @@
 					<tr>
 						<td>::p.quantity::</td>
 						<td>::p.productName::</td>
-						<td>::p.subTotal:: €</td>
+						<td>::p.subTotal:: ::currency()::</td>
 						<td>
 							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
 						</td>
@@ -129,19 +129,19 @@
 								
 								<td>::p.quantity::</td>
 								<td>::p.productName::</td>
-								<td>::p.productPrice::  €</td>
-								<td>::p.subTotal:: €</td>
+								<td>::p.productPrice::  ::currency()::</td>
+								<td>::p.subTotal:: ::currency()::</td>
 								<td>
 									<!-- frais -->
 									::if p.percentageValue!=null::
 									<a href="#" data-toggle="tooltip" data-placement="top" title="::p.percentageName:: : ::p.percentageValue:: %">
-										::formatNum(p.fees):: €
+										::formatNum(p.fees):: ::currency()::
 									</a>
 									::end::
 								</td>
 								<td>
 									<!-- total -->
-									::formatNum(p.total):: €
+									::formatNum(p.total):: ::currency()::
 									::set total = total + p.total::
 								
 								</td>
@@ -154,7 +154,7 @@
 						<tr>
 							<td colspan="4"></td>
 							<td>TOTAL</td>
-							<td><b>::formatNum(total):: €</b></td>
+							<td><b>::formatNum(total):: ::currency()::</b></td>
 						</tr>
 					</table>
 				::end::

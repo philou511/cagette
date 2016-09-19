@@ -10,7 +10,7 @@
 			
 			
 			
-			<span class="price">::formatNum(p.price):: € TTC</span>
+			<span class="price">::formatNum(p.price):: ::currency():: TTC</span>
 			
 			::if (p.vat!=null && p.vat!=0) ||  p.contractTax!=0::
 			<div class="vat">
@@ -38,7 +38,7 @@
 				
 				
 				<div class="vat" ::cond c!=null::>
-					::formatNum(c.cost)::&euro; / 
+					::formatNum(c.cost)::::currency():: / 
 					::if c.qt!=1::
 						::c.qt::
 					::end::

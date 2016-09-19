@@ -121,7 +121,7 @@ Cart.prototype = {
 		}
 		var ffilter = new sugoi_form_filters_FloatFilter();
 		var total1 = ffilter.filter(Std.string(App.roundTo(total,2)));
-		c.append("<div class='total'>TOTAL : " + total1 + "€</div>");
+		c.append("<div class='total'>TOTAL : " + total1 + "</div>");
 	}
 	,findCategoryName: function(cid) {
 		var _g = 0;
@@ -223,7 +223,7 @@ Cart.prototype = {
 			while( $it0.hasNext() ) {
 				var o = $it0.next();
 				if(o.products.length == 0) continue;
-				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
+				container.append("<div class='col-md-12 col-xs-12 col-sm-12 col-lg-12'><div class='catHeader'>" + o.name + "</div></div>");
 				var _g21 = 0;
 				var _g31 = o.products;
 				while(_g21 < _g31.length) {

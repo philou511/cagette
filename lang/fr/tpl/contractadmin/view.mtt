@@ -59,7 +59,7 @@
 				<tr>
 					<td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
 					<td>::p.name::</td>
-					<td>::formatNum(p.price)::&nbsp;&euro;</td>					
+					<td>::formatNum(p.price)::&nbsp;::currency()::</td>					
 				</tr>
 				::end::
 			</table>

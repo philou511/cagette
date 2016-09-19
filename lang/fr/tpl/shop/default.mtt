@@ -93,7 +93,7 @@
 										::end::
 									</a>
 								</h4>
-								<span class="price">::formatNum(p.price):: €</span>
+								<span class="price">::formatNum(p.price):: ::currency()::</span>
 								<div>
 									<form class="form-inline">
 									::if p.stock!=null && p.stock==0::

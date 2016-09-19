@@ -52,6 +52,9 @@ class Amap extends Object
 	
 	public var regOption : SEnum<RegOption>;
 	
+	@hideInForms public var currency:SString<12>; //name or symbol.
+	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
+	
 	public function new() 
 	{
 		super();
@@ -221,6 +224,18 @@ class Amap extends Object
 		App.current.event(NewGroup(this,App.current.user));
 		
 		super.insert();
+	}
+	
+	public function getCurrency():String{
+		
+		if (currency == ""){
+			lock();
+			currency = "€";
+			currencyCode = "EUR";
+			update();
+		}
+		
+		return currency;		
 	}
 	
 	

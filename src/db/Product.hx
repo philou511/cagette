@@ -54,6 +54,18 @@ class Product extends Object
 		
 	}
 	
+	
+	public function getName(){
+	
+		if (unitType != null && qt != null){
+			return name +" " + qt + " " + App.current.view.unit(unitType);
+		}else{
+			return name;
+		}
+		
+		
+	}
+	
 	override function toString() {
 		if (name != null) {
 			return name;

@@ -294,7 +294,31 @@ class AmapAdmin extends Controller
 	
 	function doCategories(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.Categories());
-	}	
+	}
+	
+	@tpl("form.mtt")
+	function doCurrency(){
+		
+		view.title = "Monnaie utilisée par votre groupe.";
+		
+		var f = new sugoi.form.Form("curr");
+		
+		f.addElement(new sugoi.form.elements.StringInput("currency", "Symbole de votre monnaie", app.user.amap.getCurrency()));
+		f.addElement(new sugoi.form.elements.StringInput("currencyCode", "Code ISO à 3 lettres", app.user.amap.currencyCode));
+		
+		if ( f.isValid()){
+			
+			app.user.amap.lock();
+			app.user.amap.currency = f.getValueOf("currency");
+			app.user.amap.currencyCode = f.getValueOf("currencyCode");
+			app.user.amap.update();
+			
+			throw Ok("/amapadmin/currency", "Monnaie mise à jour");
+		}
+		
+		view.form = f;
+		
+	}
 	
 	
 }

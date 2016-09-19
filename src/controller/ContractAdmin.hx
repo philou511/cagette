@@ -281,41 +281,13 @@ class ContractAdmin extends Controller
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
-		
-		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
+		var d = null;
+		if (contract.type == db.Contract.TYPE_VARORDER ){
+			view.distribution = args.d;
+			d = args.d;
+		}
 		view.c = contract;
-		
-		var orders = new Array<db.UserContract>();
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			orders = contract.getOrders(args.d);	
-		}else {
-			orders = contract.getOrders();
-		}
-		
-		var orders = db.UserContract.prepare(Lambda.list(orders));
-		
-		//CSV export
-		if (app.params.exists("csv")) {
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push( { 
-					"name":o.userName,
-					"productName":o.productName,
-					"price":view.formatNum(o.productPrice),
-					"quantity":o.quantity,
-					"fees":view.formatNum(o.fees),
-					"total":view.formatNum(o.total),
-					"paid":o.paid
-				});				
-			}
-
-			setCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-"+contract.name+"-Cagette");
-			return;
-		}
-		
-		
-		view.orders = orders;
+		view.orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
 	}
 	
 	/**
@@ -410,46 +382,8 @@ class ContractAdmin extends Controller
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
-		
-		var pids = db.Product.manager.search($contract == contract, false);
-		var pids = Lambda.map(pids, function(x) return x.id);
-		
-		var orders : List<Dynamic>;
-		var where = "";
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			where = 'and up.distributionId = ${args.d.id}';
-		}	
-			
-		orders = sys.db.Manager.cnx.request('
-			select 
-				SUM(quantity) as quantity,
-				p.name as pname ,
-				p.price as price,
-				p.ref as ref,
-				SUM(quantity*up.productPrice) as total
-			from UserContract up, Product p 
-			where up.productId = p.id and p.contractId = ${contract.id}  $where
-			group by p.id order by pname asc;
-		').results();	
-		
-		if (app.params.exists("csv")) {
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push({
-					"quantity":view.formatNum(o.quantity),
-					"pname":o.pname,
-					"ref":o.ref,
-					"price":view.formatNum(o.price),
-					"total":view.formatNum(o.total)					
-				});				
-			}
-
-			setCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
-			return;
-		}
-		
-		
+		var d = args != null ? args.d : null;
+		var orders = db.UserContract.getOrdersByProduct(contract,d,app.params.exists("csv"));
 		view.orders = orders;
 	}
 	
@@ -561,7 +495,7 @@ class ContractAdmin extends Controller
 				
 				if ( app.params.exists("csv") ){
 					
-					this.setCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+					sugoi.tools.Csv.printCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
 				}
 				
 				view.repartition = repartition;

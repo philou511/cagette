@@ -106,7 +106,7 @@ class UserContract extends Object
 			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
-			x.productName = o.product.name;
+			x.productName = o.product.getName();
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
 			
@@ -324,7 +324,6 @@ class UserContract extends Object
 			}	
 		}
 		
-		
 		if (newquantity == 0) {
 			order.delete();
 		}else {
@@ -333,6 +332,97 @@ class UserContract extends Object
 		}
 		
 		return order;
+	}
+	
+	/**
+	 * get the orders grouped by product 
+	 */
+	public static function getOrdersByProduct(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):List<Dynamic>{
+		var view = App.current.view;
+		var pids = db.Product.manager.search($contract == contract, false);
+		var pids = Lambda.map(pids, function(x) return x.id);
+		
+		var orders : List<Dynamic>;
+		var where = "";
+		if (contract.type == db.Contract.TYPE_VARORDER ) {
+			where = 'and up.distributionId = ${distribution.id}';
+		}	
+			
+		orders = sys.db.Manager.cnx.request('
+			select 
+				SUM(quantity) as quantity,
+				p.id as pid,
+				p.name as pname,
+				p.price as price,
+				p.ref as ref,
+				SUM(quantity*up.productPrice) as total
+			from UserContract up, Product p 
+			where up.productId = p.id and p.contractId = ${contract.id}  $where
+			group by p.id order by pname asc;
+		').results();	
+		
+		//populate with full product names
+		for ( o in orders){
+			var p = db.Product.manager.get(o.pid, false);
+			Reflect.setField(o, "pname", p.getName());
+		}
+		
+		
+		if (csv) {
+			var data = new Array<Dynamic>();
+			
+			for (o in orders) {
+				data.push({
+					"quantity":view.formatNum(o.quantity),
+					"pname":o.pname,
+					"ref":o.ref,
+					"price":view.formatNum(o.price),
+					"total":view.formatNum(o.total)					
+				});				
+			}
+
+			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
+			return null;
+		}else{
+			return orders;		
+		}
+	}
+	
+	/**
+	 * get users orders for a distribution
+	 */
+	public static function getOrders(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):Array<UserOrder>{
+		var view = App.current.view;
+		var orders = new Array<db.UserContract>();
+		if (contract.type == db.Contract.TYPE_VARORDER ) {
+			orders = contract.getOrders(distribution);	
+		}else {
+			orders = contract.getOrders();
+		}
+		
+		var orders = db.UserContract.prepare(Lambda.list(orders));
+		
+		//CSV export
+		if (csv) {
+			var data = new Array<Dynamic>();
+			
+			for (o in orders) {
+				data.push( { 
+					"name":o.userName,
+					"productName":o.productName,
+					"price":view.formatNum(o.productPrice),
+					"quantity":o.quantity,
+					"fees":view.formatNum(o.fees),
+					"total":view.formatNum(o.total),
+					"paid":o.paid
+				});				
+			}
+
+			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-"+contract.name+"-Cagette");
+			return null;
+		}else{
+			return orders;
+		}
 		
 	}
 }

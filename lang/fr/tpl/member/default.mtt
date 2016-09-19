@@ -4,14 +4,17 @@
 	::if select!=null::
 		<h2>Sélection : 
 		::if select=="nocontract"::
-			Amapiens sans contrat
+			Adhérents sans contrat
 		::elseif select=="nomembership"::
 			Adhésions à renouveller
 		::elseif select=="newusers"::
 			Adhérents qui ne se sont jamais connecté
-		
+		::elseif select=="contract"::
+			Adhérents avec commande ou contrat
 		::end::
 		</h2>
+	
+		<p><b>::members.current().length::</b> personnes.</p>
 		
 		<a href="/member/">Revenir à la page principale</a>
 	::elseif search!=null::
@@ -99,6 +102,7 @@
 		<ul>
 			<li><a href="/member/">Tout le monde</a></li>
 			<li><a href="/member/?select=nocontract">Sans contrats/commandes</a></li>
+			<li><a href="/member/?select=contract">Avec contrat/commandes</a></li>
 			<li><a href="/member/?select=newusers">Ne s'est jamais connecté</a></li>
 			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">Adhésion à renouveller</a></li>
 		</ul>

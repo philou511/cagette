@@ -50,7 +50,7 @@
 						::uo.product.name::	
 					</td>
 					<td>
-						::formatNum(uo.product.price)::&nbsp;&euro;
+						::formatNum(uo.product.price)::&nbsp;::currency()::
 					</td>
 					<td>
 						::if uo.order==null::
@@ -94,7 +94,7 @@
 					<tr>
 						<th></th>
 						<th>Total commande</th>
-						<th>::total::€</th>
+						<th>::total::::currency()::</th>
 						<th></th>
 						<th></th>
 					</tr>
@@ -102,7 +102,7 @@
 						<th></th>
 						<td>::c.percentageName:: (::c.percentageValue::%)</td>
 						::set extra = total*(c.percentageValue/100)::
-						<td>::extra::€</td>
+						<td>::extra::::currency()::</td>
 						<th></th>
 						<th></th>
 					</tr>
@@ -113,7 +113,7 @@
 					<tr>
 						<th></th>
 						<th>Total</th>
-						<th>::total+extra::€</th>
+						<th>::total+extra::::currency()::</th>
 						<th></th>
 						<th>
 							<a href="#"  id="checkButton">Tout cocher</a>

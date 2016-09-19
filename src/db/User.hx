@@ -337,6 +337,18 @@ class User extends Object {
 		return Lambda.map(ua, function(x) return x.user);	
 	}
 	
+	public static function getUsers_Contracts(?index:Int,?limit:Int):List<db.User> {
+		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
+		//var uc = UserContract.manager.search($productId in productsIds, {group:productId}, false);
+		
+		//var uc = db.UserAmap.manager.unsafeObjects("select * from UserContract where productId IN(" + productsIds.join(",") + ") group by productId", false);	
+		//return Lambda.map(uc, function(x) return x.user);	
+		var uc = db.User.manager.unsafeObjects("select u.* from User u, UserContract uc where uc.productId IN(" + productsIds.join(",") + ") AND uc.userId=u.id group by u.id  ORDER BY u.lastName", false);	
+		return uc;
+		
+	}
+	
+	
 	public static function getUsers_NoMembership(?index:Int,?limit:Int):List<db.User> {
 		var ua = new List();
 		if (index == null && limit == null) {
