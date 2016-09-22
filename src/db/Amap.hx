@@ -19,6 +19,7 @@ enum RegOption{
 	Full;
 }
 
+
 /**
  * AMAP
  */
@@ -27,7 +28,8 @@ class Amap extends Object
 	public var id : SId;
 	public var name : SString<32>;
 	
-	@formPopulate("getMembersFormElementData") @:relation(userId)
+	@formPopulate("getMembersFormElementData")
+	@:relation(userId)
 	public var contact : SNull<User>;
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap
@@ -49,6 +51,9 @@ class Amap extends Object
 	@hideInForms @:relation(placeId) public var mainPlace : SNull<db.Place>;
 	
 	public var regOption : SEnum<RegOption>;
+	
+	@hideInForms public var currency:SString<12>; //name or symbol.
+	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 	
 	public function new() 
 	{
@@ -74,7 +79,8 @@ class Amap extends Object
 			var places = getPlaces();
 			if (places.length == 1) {				
 				this.mainPlace = places.first();
-				this.update();				
+				this.update();
+				return this.mainPlace;
 			}
 			
 			var pids = Lambda.map(places, function(x) return x.id);
@@ -218,6 +224,18 @@ class Amap extends Object
 		App.current.event(NewGroup(this,App.current.user));
 		
 		super.insert();
+	}
+	
+	public function getCurrency():String{
+		
+		if (currency == ""){
+			lock();
+			currency = "€";
+			currencyCode = "EUR";
+			update();
+		}
+		
+		return currency;		
 	}
 	
 	

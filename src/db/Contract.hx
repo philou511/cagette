@@ -94,6 +94,21 @@ class Contract extends Object
 		return flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
 	}
 	
+	/**
+	 * is there an opened order , or closed order but not yet delivered
+	 */
+	public function hasRunningOrders(){
+		var now = Date.now();
+		var n = now.getTime();
+		
+		var o = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
+		var d = db.Distribution.manager.count( $orderStartDate <= now && $end > now && $contractId==this.id);
+		
+		return o && d > 1;
+		
+	}
+	
+	
 	public function hasPercentageOnOrders():Bool {
 		return flags.has(PercentageOnOrders) && percentageValue!=null && percentageValue!=0;
 	}

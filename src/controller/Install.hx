@@ -70,6 +70,9 @@ class Install extends controller.Controller
 				var place = new db.Place();
 				place.name = "Place du marché";
 				place.amap = amap;
+				place.address1 = "Place Jules Verne";
+				place.zipCode = "00000";
+				place.city = "St Martin de la Cagette";
 				place.insert();
 				
 				var vendor = new db.Vendor();
@@ -158,14 +161,21 @@ class Install extends controller.Controller
 	/**
 	 * perform migrations from a version to another
 	 */
+	@admin
 	public function doUpdateversion(){
+		
+		var log = [];
 		
 		var currentVersion = thx.semver.Version.stringToVersion(Variable.get("version"));
 		
 		//Migrations to 0.9.2
 		if (currentVersion.lessThan( thx.semver.Version.arrayToVersion([0,9,2]) )){
 			
-			_installTaxonomy();
+			log.push("Installation du dictionnaire de produits (taxonomie)");
+			_0_9_2_installTaxonomy();
+			
+			log.push("Amélioration du stockage des commandes");
+			_0_9_2_dbMigration();
 			
 			sugoi.db.Variable.set("version", "0.9.2");
 		}
@@ -173,11 +183,16 @@ class Install extends controller.Controller
 		//Migrations to 1.0.0
 		//...
 		
-		throw Redirect("/install");
+		throw Ok("/install","Les opérations de mise à jour suivantes on été faites : <ul>"+Lambda.map(log,function(x) return "<li>"+x+"</li>").join("")+"</ul>");
 		
 	}
 	
-	function _installTaxonomy(){
+	@admin
+	function _0_9_2_installTaxonomy(){
+		
+		db.TxpCategory.manager.delete(true);
+		db.TxpSubCategory.manager.delete(true);
+		db.TxpProduct.manager.delete(true);
 		
 		var taxo = sys.io.File.getContent(sugoi.Web.getCwd() + "../data/productTaxonomy.json");
 		var taxo = haxe.Json.parse(taxo);
@@ -209,6 +224,20 @@ class Install extends controller.Controller
 			pro.category = db.TxpCategory.manager.get(Std.parseInt(p.category));
 			pro.subCategory = db.TxpSubCategory.manager.get(Std.parseInt(p.subCategory));
 			pro.insert();
+		}
+		
+	}
+	
+	@admin
+	function _0_9_2_dbMigration(){
+		
+		for ( order in db.UserContract.manager.all(true)){
+			
+			order.productPrice = order.product.price;
+			order.feesRate = order.product.contract.percentageValue;
+			order.update();
+			
+			
 		}
 		
 	}

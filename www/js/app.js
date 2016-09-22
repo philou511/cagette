@@ -126,7 +126,7 @@ Cart.prototype = {
 		}
 		var ffilter = new sugoi_form_filters_FloatFilter();
 		var total1 = ffilter.filter(Std.string(App.roundTo(total,2)));
-		c.append("<div class='total'>TOTAL : " + total1 + "€</div>");
+		c.append("<div class='total'>TOTAL : " + total1 + "</div>");
 	}
 	,findCategoryName: function(cid) {
 		var _g = 0;
@@ -228,7 +228,7 @@ Cart.prototype = {
 			while( $it0.hasNext() ) {
 				var o = $it0.next();
 				if(o.products.length == 0) continue;
-				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
+				container.append("<div class='col-md-12 col-xs-12 col-sm-12 col-lg-12'><div class='catHeader'>" + o.name + "</div></div>");
 				var _g21 = 0;
 				var _g31 = o.products;
 				while(_g21 < _g31.length) {
@@ -340,10 +340,10 @@ Cart.prototype = {
 	}
 	,__class__: Cart
 };
-var UnitType = $hxClasses["UnitType"] = { __ename__ : ["UnitType"], __constructs__ : ["Unit","Kilogram","Gram","Litre"] };
-UnitType.Unit = ["Unit",0];
-UnitType.Unit.toString = $estr;
-UnitType.Unit.__enum__ = UnitType;
+var UnitType = $hxClasses["UnitType"] = { __ename__ : ["UnitType"], __constructs__ : ["Piece","Kilogram","Gram","Litre"] };
+UnitType.Piece = ["Piece",0];
+UnitType.Piece.toString = $estr;
+UnitType.Piece.__enum__ = UnitType;
 UnitType.Kilogram = ["Kilogram",1];
 UnitType.Kilogram.toString = $estr;
 UnitType.Kilogram.__enum__ = UnitType;
@@ -353,7 +353,7 @@ UnitType.Gram.__enum__ = UnitType;
 UnitType.Litre = ["Litre",3];
 UnitType.Litre.toString = $estr;
 UnitType.Litre.__enum__ = UnitType;
-UnitType.__empty_constructs__ = [UnitType.Unit,UnitType.Kilogram,UnitType.Gram,UnitType.Litre];
+UnitType.__empty_constructs__ = [UnitType.Piece,UnitType.Kilogram,UnitType.Gram,UnitType.Litre];
 var ProductType = $hxClasses["ProductType"] = { __ename__ : ["ProductType"], __constructs__ : ["CTVegetable","CTCheese","CTChicken","CTUnknown","CTWine","CTMeat","CTEggs","CTHoney","CTFish","CTJuice","CTApple","CTBread","CTYahourt"] };
 ProductType.CTVegetable = ["CTVegetable",0];
 ProductType.CTVegetable.toString = $estr;

@@ -8,7 +8,7 @@
 <body>
 	
 	::set date = getDate(distrib.date)::
-	<h2>Livraison du ::date.dow:: ::date.d:: ::date.m::</h2>
+	<h2>::contract._amap.name:: - Livraison du ::date.dow:: ::date.d:: ::date.m::</h2>
 	
 	
 	
@@ -81,20 +81,20 @@
 							::m.productName::
 						</td>
 						<td>
-							::formatNum(m.productPrice)::&nbsp;&euro;
+							::formatNum(m.productPrice)::&nbsp;::currency()::
 						</td>
 						<td>
-							::formatNum(m.subTotal)::&nbsp;&euro;
+							::formatNum(m.subTotal)::&nbsp;::currency()::
 						</td>
 						<td>
 							<!-- frais -->
 							::if m.percentageValue!=null::
-								::formatNum(m.fees)::&nbsp;&euro;
+								::formatNum(m.fees)::&nbsp;::currency()::
 							::end::
 						</td>
 						<td>
 							<!-- total -->
-							::formatNum(m.total)::&nbsp;&euro;
+							::formatNum(m.total)::&nbsp;::currency()::
 							::set total = total + m.total::
 							::set subtotal = subtotal + m.total::
 						</td>
@@ -113,7 +113,7 @@
 						<tr>	
 							<td colspan="5"></td>
 							<td class="total text-right">TOTAL</td>
-							<td class="total">::formatNum(subtotal)::&nbsp;&euro;</td>					
+							<td class="total">::formatNum(subtotal)::&nbsp;::currency()::</td>					
 							<td></td>
 							::set subtotal = 0::
 						</tr>
@@ -126,7 +126,7 @@
 				<!-- big total -->
 				<tr style="font-size:1.3em;">					
 					<td class="text-right">Total Commande : </td>
-					<td>::formatNum(total)::&nbsp;&euro;</td>					
+					<td>::formatNum(total)::&nbsp;::currency()::</td>					
 					<td colspan="6"></td>
 				</tr>
 				

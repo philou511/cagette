@@ -114,9 +114,13 @@ class View extends sugoi.BaseView {
 		return switch(u){
 			case Kilogram: "Kg.";
 			case Gram: "g.";
-			case Unit: "unités";
-			case Litre: "l.";
+			case Piece: "pièce(s)";
+			case Litre: "L.";
 		}
+	}
+	
+	public function currency(){
+		return App.current.user.amap.getCurrency();
 	}
 	
 	public var DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];

@@ -46,7 +46,7 @@
 					</td>
 					<td>
 						::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
-						::formatNum(price)::&nbsp;&euro;
+						::formatNum(price)::&nbsp;::currency()::
 					</td>
 					
 					
@@ -104,7 +104,7 @@
 					
 					::end::
 					
-					::formatNum(total)::&nbsp;€
+					::formatNum(total)::&nbsp;::currency()::
 					</th>
 					
 					

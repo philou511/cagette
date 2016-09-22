@@ -7,6 +7,7 @@ import sugoi.form.validators.EmailValidator;
 import neko.Web;
 import sugoi.tools.Utils;
 import ufront.mail.*;
+import Common;
 
 
 class Member extends Controller
@@ -47,22 +48,30 @@ class Member extends Controller
 			switch(args.select) {
 				case "nocontract":
 					if (app.params.exists("csv")) {
-						setCsvData(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], "Sans-contrats");
+						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], "Sans-contrats");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoContracts(index, limit); }	
 					}
+				case "contract":
+					
+					if (app.params.exists("csv")) {
+						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_Contracts()), ["firstName", "lastName", "email"], "Avec-commande");
+						return;
+					}else {
+						browse = function(index:Int, limit:Int) { return db.User.getUsers_Contracts(index, limit); }	
+					}
 					
 				case "nomembership" :
 					if (app.params.exists("csv")) {
-						setCsvData(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], "Adhesions-a-renouveller");
+						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], "Adhesions-a-renouveller");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoMembership(index, limit); }
 					}
 				case "newusers" :
 					if (app.params.exists("csv")) {
-						setCsvData(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], "jamais-connecté");
+						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], "jamais-connecté");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NewUsers(index, limit); }
@@ -75,7 +84,7 @@ class Member extends Controller
 		}else {
 			if (app.params.exists("csv")) {
 				var headers = ["firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
-				setCsvData(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, "Adherents");
+				sugoi.tools.Csv.printCsvData(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, "Adherents");
 				return;
 			}else {
 				//default display
@@ -192,16 +201,16 @@ class Member extends Controller
 		view.userAmap = userAmap; 
 		
 		//orders
-		var row = { constOrders:[], varOrders:new Map() };
+		var row = { constOrders:new Array<UserOrder>(), varOrders:new Map<String,Array<UserOrder>>() };
 			
 		//commandes fixes
 		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == app.user.amap && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
 		var orders = member.getOrdersFromContracts(contracts);
-		row.constOrders = Lambda.array(orders);
+		row.constOrders = db.UserContract.prepare(orders);
 		
 		//commandes variables groupées par date de distrib
 		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == app.user.amap && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
-		var distribs = new Map<String,Array<db.UserContract>>();
+		var distribs = new Map<String,List<db.UserContract>>();
 		for (c in contracts) {
 			var ds = c.getDistribs();
 			for (d in ds) {
@@ -209,17 +218,24 @@ class Member extends Controller
 				var orders = member.getOrdersFromDistrib(d);
 				if (orders.length > 0) {
 					if (!distribs.exists(k)) {
-						distribs.set(k, Lambda.array(orders));
+						distribs.set(k, orders);
 					}else {
-						var z = distribs.get(k).concat(Lambda.array(orders));
-						distribs.set(k, z);
+						
+						var v = distribs.get(k);
+						for ( o in orders  ) v.add(o);
+						distribs.set(k, v);
 					}	
 				}
 			}
 		}
-		row.varOrders = distribs;
-		view.userContracts = row;
+		for ( k in distribs.keys()){
+			var d = distribs.get(k);
+			var d2 = db.UserContract.prepare(d);
+			row.varOrders.set(k,d2);
+		}
 		
+		
+		view.userContracts = row;
 		checkToken(); //to insert a token in tpl
 		
 	}	

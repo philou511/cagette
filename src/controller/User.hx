@@ -33,7 +33,20 @@ class User extends Controller
 	@tpl("user/login.mtt")
 	function doLogin(?args: { name:String, pass:String } ) {
 		
-		if (App.current.user != null) throw Redirect('/');
+		if (App.current.user != null) {
+			
+			//if (App.current.params.exists("redirect")){
+				//throw Redirect(App.current.params.get("redirect"));	
+			//}else{
+				throw Redirect('/');
+			//}
+			
+		}
+		
+		//store a redirect if needed
+		//if (App.current.params.exists("redirect")){
+			//App.current.session.data.redirect = App.current.params.get("redirect");
+		//}
 		
 		if (args != null) {
 			
@@ -69,9 +82,17 @@ class User extends Controller
 				}
 			}
 			
-			login(user,args.name);
+			login(user, args.name);
 			
-			throw Redirect("/user/choose/");
+			//if (App.current.session.data.redirect != null){
+				//var r = App.current.session.data.redirect;
+				//App.current.session.data.redirect = null;
+				//throw Redirect(r);	
+			//}else{
+				throw Redirect("/user/choose/");
+			//}
+			
+			
 		}
 	}
 	

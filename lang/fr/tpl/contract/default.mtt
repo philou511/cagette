@@ -32,22 +32,22 @@
 					::m.productName::
 				</td>
 				<td>
-					::formatNum(m.productPrice)::&nbsp;&euro;
+					::formatNum(m.productPrice)::&nbsp;::currency()::
 				</td>
 				<td>
-					::formatNum(m.subTotal)::&nbsp;&euro;
+					::formatNum(m.subTotal)::&nbsp;::currency()::
 				</td>
 				<td>
 					<!-- frais -->
 					::if m.percentageValue!=null::
 					<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
-						::formatNum(m.fees)::&nbsp;&euro;
+						::formatNum(m.fees)::&nbsp;::currency()::
 					</a>
 					::end::
 				</td>
 				<td>
 					<!-- total -->
-					::formatNum(m.total)::&nbsp;&euro;	
+					::formatNum(m.total)::&nbsp;::currency()::	
 					::set total = total + m.total::
 				</td>
 				<td>
@@ -63,10 +63,10 @@
 		<tr>
 			<td colspan="7" class="text-right">
 				<b>Total :
-				::formatNum(total)::&nbsp;&euro;</b>
+				::formatNum(total)::&nbsp;::currency()::</b>
 			
 				::set d = c.contract.getDistribs(false,null).length::
-				( soit ::formatNum(d*total)::&nbsp;&euro; pour ::d:: livraisons )
+				( soit ::formatNum(d*total)::&nbsp;::currency():: pour ::d:: livraisons )
 			
 				
 			</td>
@@ -110,17 +110,17 @@
 							</a>
 						</td>
 						<td>
-							::formatNum(o.productPrice)::&nbsp;&euro;
+							::formatNum(o.productPrice)::&nbsp;::currency()::
 						</td>
 						<td>
-							::formatNum(o.subTotal)::&nbsp;&euro;
+							::formatNum(o.subTotal)::&nbsp;::currency()::
 						</td>
 						<td>
 							
 							$$nullSafe(::formatNum(o.fees)::)
 						</td>
 						<td>
-							::formatNum(o.total)::&nbsp;&euro;
+							::formatNum(o.total)::&nbsp;::currency()::
 							::set total = total + o.total::
 						</td>
 					
@@ -132,7 +132,7 @@
 						
 					</td>
 					<td>TOTAL</td>
-					<td><b>::formatNum(total)::&nbsp;€</b></td>
+					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
 				</tr>
 			</table>
 		::end::

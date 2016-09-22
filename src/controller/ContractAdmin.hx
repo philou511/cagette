@@ -251,7 +251,6 @@ class ContractAdmin extends Controller
 			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//constant orders
-			
 			var products = [];
 			for ( d in cdistribs) {
 				for ( p in d.contract.getProducts()) {
@@ -271,7 +270,7 @@ class ContractAdmin extends Controller
 	}
 
 	/**
-	 * Overview of orders for this contract
+	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
 	function doOrders(contract:db.Contract, args:{?d:db.Distribution}) {
@@ -282,40 +281,13 @@ class ContractAdmin extends Controller
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
-		
-		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
+		var d = null;
+		if (contract.type == db.Contract.TYPE_VARORDER ){
+			view.distribution = args.d;
+			d = args.d;
+		}
 		view.c = contract;
-		
-		var orders = new Array<db.UserContract>();
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			orders = contract.getOrders(args.d);	
-		}else {
-			orders = contract.getOrders();
-		}
-		
-		var orders = db.UserContract.prepare(Lambda.list(orders));
-		
-		if (app.params.exists("csv")) {
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push( { 
-					"name":o.userName,
-					"productName":o.productName,
-					"price":view.formatNum(o.productPrice),
-					"quantity":o.quantity,
-					"fees":view.formatNum(o.fees),
-					"total":view.formatNum(o.total),
-					"paid":o.paid
-				});				
-			}
-
-			setCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-"+contract.name+"-Cagette");
-			return;
-		}
-		
-		
-		view.orders = orders;
+		view.orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
 	}
 	
 	/**
@@ -350,6 +322,13 @@ class ContractAdmin extends Controller
 			nc.percentageValue = contract.percentageValue;
 			nc.insert();
 			
+			//give right to this contract
+			if(contract.contact!=null){
+				var ua = db.UserAmap.get(contract.contact, contract.amap);
+				ua.giveRight(ContractAdmin(nc.id));
+			}
+			
+			
 			if (form.getValueOf("copyProducts") == true) {
 				var prods = contract.getProducts();
 				for ( source_p in prods) {
@@ -383,15 +362,10 @@ class ContractAdmin extends Controller
 					d.text = ds.text;
 					d.insert();
 				}
-				
-				
 			}
 			
 			throw Ok("/contractAdmin/view/" + nc.id, "Contrat dupliqué");
-			
-			
 		}
-		
 		
 		view.form = form;
 	}
@@ -403,44 +377,16 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/ordersByProduct.mtt")
 	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
-		sendNav(contract);
+		
+		sendNav(contract);		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
-		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
-			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
-		}
+		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
-		
-		var pids = db.Product.manager.search($contract == contract, false);
-		var pids = Lambda.map(pids, function(x) return x.id);
-		
-		var orders : List<Dynamic>;
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			orders = sys.db.Manager.cnx.request("select SUM(quantity) as quantity, p.name as pname ,p.price as price,p.ref as ref from UserContract up, Product p where up.productId=p.id and p.contractId="+contract.id+" and up.distributionId="+args.d.id+" group by p.id order by pname asc;").results();	
-		}else {
-			orders = sys.db.Manager.cnx.request("select SUM(quantity) as quantity, p.name as pname ,p.price as price, p.ref as ref from UserContract up, Product p where up.productId=p.id and p.contractId="+contract.id+" group by p.id order by pname asc;").results();
-		}
-		
-		var totalPrice = 0;
-		for ( o in orders) {
-			totalPrice += o.quantity * o.price;
-		}
-		
-		if (app.params.exists("csv")) {
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push({"quantity":view.formatNum(o.quantity),"pname":o.pname,"ref":o.ref,"price":view.formatNum(o.price),"total":view.formatNum(o.quantity*o.price)});				
-			}
-
-			setCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
-			return;
-		}
-		
-		
+		var d = args != null ? args.d : null;
+		var orders = db.UserContract.getOrdersByProduct(contract,d,app.params.exists("csv"));
 		view.orders = orders;
-		view.totalPrice = totalPrice;
 	}
 	
 	@tpl("contractadmin/deliveries.mtt")
@@ -551,7 +497,7 @@ class ContractAdmin extends Controller
 				
 				if ( app.params.exists("csv") ){
 					
-					this.setCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+					sugoi.tools.Csv.printCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
 				}
 				
 				view.repartition = repartition;
@@ -600,7 +546,7 @@ class ContractAdmin extends Controller
 		view.u = user;
 		view.distribution = args.d;
 		
-		var user2 : db.User = null;
+		
 		
 		//need to select a distribution for varying orders contracts
 		if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
@@ -608,9 +554,10 @@ class ContractAdmin extends Controller
 			throw Redirect("/contractAdmin/orders/" + c.id);
 			
 		}else {
-			if (user == null) {
-				view.users = app.user.amap.getMembersFormElementData();
-			}
+			
+			//members of the group
+			view.users = app.user.amap.getMembersFormElementData();
+			
 			
 			var userOrders = new Array<{order:db.UserContract,product:db.Product}>();
 			var products = c.getProducts();
@@ -636,17 +583,9 @@ class ContractAdmin extends Controller
 				if (user == null) {
 					user = db.User.manager.get(Std.parseInt(app.params.get("user")));
 					if (user == null) throw "user #"+app.params.get("user")+" introuvable";
-					if (!user.isMemberOf(app.user.amap)) throw user + " ne fait pas partie de cette amap";
-					
-					//panier alterné
-					if (app.params.get("user2") != null && app.params.get("user2") != "0") {
-						user2 = db.User.manager.get(Std.parseInt(app.params.get("user2")));
-						if (user2 == null) throw "user #"+app.params.get("user2")+" introuvable";
-						if (!user2.isMemberOf(app.user.amap)) throw user2 + " ne fait pas partie de cette amap";
-						if (user.id == user2.id) throw "Les deux comptes sélectionnés doivent être différents";
-					}
-					
+					if (!user.isMemberOf(app.user.amap)) throw user + " ne fait pas partie de ce groupe";
 				}
+				
 				
 				//get distrib if needed
 				var distrib : db.Distribution = null;
@@ -663,6 +602,16 @@ class ContractAdmin extends Controller
 						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
 						if (uo == null) throw "Impossible de retrouver le produit " + pid;
 						
+						//user2 ?
+						var user2 : db.User = null;
+						if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
+							//trace("user2" + pid + " : " + app.params.get("user2" + pid));
+							user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
+							if (user2 == null) throw "user #"+app.params.get("user2")+" introuvable";
+							if (!user2.isMemberOf(app.user.amap)) throw user2 + " ne fait pas partie de ce groupe";
+							if (user.id == user2.id) throw "Les deux comptes sélectionnés doivent être différents";
+						}
+						
 						
 						var q = 0.0;
 						if (uo.product.hasFloatQt ) {
@@ -672,15 +621,12 @@ class ContractAdmin extends Controller
 							q = Std.parseInt(param);
 						}
 						
-						//var order = new db.UserContract();
 						if (uo.order != null) {
 							//existing record
-							
-							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"));
+							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"),user2);
 						}else {
 							//new record
-							
-							db.UserContract.make(user, q, pid, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"));
+							db.UserContract.make(user, q, uo.product, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2);
 						}
 					}
 				}

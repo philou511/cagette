@@ -82,15 +82,15 @@
 						::m.productName::
 					</td>
 					<td>
-						::formatNum(m.productPrice)::&nbsp;&euro;
+						::formatNum(m.productPrice)::&nbsp;::currency()::
 					</td>
 					<td>
 						::if m.fees!=null::
-							::formatNum(m.fees)::&nbsp;&euro;
+							::formatNum(m.fees)::&nbsp;::currency()::
 						::end::
 					</td>
 					<td>
-						::formatNum(m.total)::&nbsp;&euro;
+						::formatNum(m.total)::&nbsp;::currency()::
 						::set total = total + m.total::
 					</td>
 					
@@ -112,7 +112,7 @@
 						<td class="total">::productNum::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">TOTAL</td>
-						<td class="total">::formatNum(total)::&nbsp;&euro;</td>
+						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>		
 				::end::

@@ -107,7 +107,13 @@ class Main extends Controller {
 			
 			
 		}else {
-			throw Redirect("/user/login");
+			if (app.params.exists("redirect")){
+				throw Redirect("/user/login?redirect="+app.params.get("redirect"));	
+			}else{
+				throw Redirect("/user/login");
+			}
+			
+			
 		}
 		
 	}
@@ -251,7 +257,9 @@ class Main extends Controller {
 	}
 	
 	@tpl("cssDemo.mtt")
-	function doCssdemo() {}
+	function doCssdemo() {
+		
+	}
 	
 	@tpl("form.mtt")
 	function doInstall(d:Dispatch) {

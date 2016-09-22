@@ -17,7 +17,7 @@ class UserContract extends Object
 	public var userId: SInt;
 	#end
 	
-	//panier alterné
+	//shared order
 	@formPopulate("populate") @:relation(userId2)
 	public var user2 : SNull<User>;
 	
@@ -28,6 +28,10 @@ class UserContract extends Object
 	#if neko
 	public var productId : SInt;
 	#end
+	
+	//store price (1 unit price) and fees (percentage not amount ) rate when the order is done
+	public var productPrice : SFloat;
+	public var feesRate : SInt; //fees in percentage
 	
 	public var paid : SBool;
 	
@@ -94,21 +98,30 @@ class UserContract extends Object
 			x.userId = o.user.id;
 			x.userName = o.user.getCoupleName();
 			
+			//shared order
+			if (o.user2 != null){
+				x.userId2 = o.user2.id;
+				x.userName2 = o.user2.getCoupleName();
+			}
+			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
-			x.productName = o.product.name;
-			x.productPrice = o.product.price;
+			x.productName = o.product.getName();
+			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
 			
 			x.quantity = o.quantity;
-			x.subTotal = o.quantity * o.product.price;
+			x.subTotal = o.quantity * o.productPrice;
+
 			var c = o.product.contract;
 			
-			if (c.hasPercentageOnOrders()) {
-				x.fees = c.computeFees(x.subTotal);
+			if ( o.feesRate!=0 ) {
+				
+				x.fees = x.subTotal * (o.feesRate/100);
 				x.percentageName = c.percentageName;
-				x.percentageValue = c.percentageValue;
+				x.percentageValue = o.feesRate;
 				x.total = x.subTotal + x.fees;
+				
 			}else {
 				x.total = x.subTotal;
 			}
@@ -173,29 +186,35 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, productId:Int, ?distribId:Int,?paid:Bool) {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User) {
 		
 		//checks
 		if (quantity <= 0) return;
-		if (distribId != null) {
-			var d = db.Distribution.manager.get(distribId);
-			if (d.date.getTime() < Date.now().getTime()) throw "Impossible de modifier une commande pour une date de distribution échue. (d"+d.id+")";	
-		}
 		
+		// commented on 2016-09-05:  an admin should be able to create an order afterwards (i.e the client took a product at the last minute, and we to keep track of it )
+		//if (distribId != null) {
+			//var d = db.Distribution.manager.get(distribId);
+			//if (d.date.getTime() < Date.now().getTime()) throw "Impossible de modifier une commande pour une date de distribution échue. (d"+d.id+")";	
+		//}
 		
 		//vérifie si il n'y a pas de commandes existantes avec les memes paramètres
 		var prevOrders = new List<db.UserContract>();
 		
 		if (distribId == null) {
-			prevOrders = db.UserContract.manager.search($productId==productId && $user==user, true);
+			prevOrders = db.UserContract.manager.search($product==product && $user==user, true);
 		}else {
-			prevOrders = db.UserContract.manager.search($productId==productId && $user==user && $distributionId==distribId, true);
+			prevOrders = db.UserContract.manager.search($product==product && $user==user && $distributionId==distribId, true);
 		}
 		
 		var o = new db.UserContract();
-		o.productId = productId;
+		o.productId = product.id;
 		o.quantity = quantity;
+		o.productPrice = product.price;
+		if (product.contract.hasPercentageOnOrders()) {
+			o.feesRate = product.contract.percentageValue;
+		}
 		o.user = user;
+		if (user2 != null) o.user2 = user2;
 		if (paid != null) o.paid = paid;
 		if (distribId != null) o.distributionId = distribId;
 		
@@ -245,15 +264,24 @@ class UserContract extends Object
 	/**
 	 * Edit an order (quantity)
 	 */
-	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool) {
+	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User) {
 		
 		order.lock();
+		
+		if (newquantity == null) newquantity = 0;
 		
 		//paid
 		if (paid != null) {
 			order.paid = paid;
 		}else {
 			if (order.quantity < newquantity) order.paid = false;	
+		}
+		
+		//shared order
+		if (user2 != null){
+			order.user2 = user2;			
+		}else{
+			order.user2 = null;
 		}
 		
 		//stocks
@@ -296,7 +324,6 @@ class UserContract extends Object
 			}	
 		}
 		
-		
 		if (newquantity == 0) {
 			order.delete();
 		}else {
@@ -305,6 +332,97 @@ class UserContract extends Object
 		}
 		
 		return order;
+	}
+	
+	/**
+	 * get the orders grouped by product 
+	 */
+	public static function getOrdersByProduct(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):List<Dynamic>{
+		var view = App.current.view;
+		var pids = db.Product.manager.search($contract == contract, false);
+		var pids = Lambda.map(pids, function(x) return x.id);
+		
+		var orders : List<Dynamic>;
+		var where = "";
+		if (contract.type == db.Contract.TYPE_VARORDER ) {
+			where = 'and up.distributionId = ${distribution.id}';
+		}	
+			
+		orders = sys.db.Manager.cnx.request('
+			select 
+				SUM(quantity) as quantity,
+				p.id as pid,
+				p.name as pname,
+				p.price as price,
+				p.ref as ref,
+				SUM(quantity*up.productPrice) as total
+			from UserContract up, Product p 
+			where up.productId = p.id and p.contractId = ${contract.id}  $where
+			group by p.id order by pname asc;
+		').results();	
+		
+		//populate with full product names
+		for ( o in orders){
+			var p = db.Product.manager.get(o.pid, false);
+			Reflect.setField(o, "pname", p.getName());
+		}
+		
+		
+		if (csv) {
+			var data = new Array<Dynamic>();
+			
+			for (o in orders) {
+				data.push({
+					"quantity":view.formatNum(o.quantity),
+					"pname":o.pname,
+					"ref":o.ref,
+					"price":view.formatNum(o.price),
+					"total":view.formatNum(o.total)					
+				});				
+			}
+
+			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
+			return null;
+		}else{
+			return orders;		
+		}
+	}
+	
+	/**
+	 * get users orders for a distribution
+	 */
+	public static function getOrders(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):Array<UserOrder>{
+		var view = App.current.view;
+		var orders = new Array<db.UserContract>();
+		if (contract.type == db.Contract.TYPE_VARORDER ) {
+			orders = contract.getOrders(distribution);	
+		}else {
+			orders = contract.getOrders();
+		}
+		
+		var orders = db.UserContract.prepare(Lambda.list(orders));
+		
+		//CSV export
+		if (csv) {
+			var data = new Array<Dynamic>();
+			
+			for (o in orders) {
+				data.push( { 
+					"name":o.userName,
+					"productName":o.productName,
+					"price":view.formatNum(o.productPrice),
+					"quantity":o.quantity,
+					"fees":view.formatNum(o.fees),
+					"total":view.formatNum(o.total),
+					"paid":o.paid
+				});				
+			}
+
+			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-"+contract.name+"-Cagette");
+			return null;
+		}else{
+			return orders;
+		}
 		
 	}
 }

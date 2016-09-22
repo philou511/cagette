@@ -37,6 +37,7 @@
     <library name="hxevents" />
     <library name="hscript" />
     <library name="ufront-mail" />
+    <library name="datetime" />
     <library name="cagette-hosted" />
     <library name="cagette-pro" />
     <library name="cagette-connector" />

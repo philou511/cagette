@@ -26,9 +26,6 @@
 			::end::
 			
 			
-			
-			
-			
 		</div>
 		::set total = 0::
 		::set totalAdh = 0::
@@ -80,24 +77,29 @@
 					</td>
 					<td>
 						::m.productName::
+						
+						::if m.userName2!=null::
+						<br/>
+						<span class="glyphicon glyphicon-refresh"></span> Commande altérnée avec <a href="/member/view/::m.userId2::">::m.userName2::</a>
+						::end::
 					</td>
 					<td>
-						::formatNum(m.productPrice)::&nbsp;&euro;
+						::formatNum(m.productPrice)::&nbsp;::currency()::
 					</td>
 					<td>
-						::formatNum(m.subTotal)::&nbsp;&euro;
+						::formatNum(m.subTotal)::&nbsp;::currency()::
 					</td>
 					<td>
 						<!-- frais -->
 						::if m.percentageValue!=null::
 						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
-							::formatNum(m.fees)::&nbsp;&euro;
+							::formatNum(m.fees)::&nbsp;::currency()::
 						</a>
 						::end::
 					</td>
 					<td>
 						<!-- total -->
-						::formatNum(m.total)::&nbsp;&euro;
+						::formatNum(m.total)::&nbsp;::currency()::
 						::set total = total + m.total::
 					</td>
 					<td>
@@ -116,7 +118,7 @@
 				<tr style="background:#DDD;">
 					
 					<th colspan="6">Total</th>
-					<th>::formatNum(total)::&nbsp;&euro;</th>
+					<th>::formatNum(total)::&nbsp;::currency()::</th>
 					
 					<th></th>
 				</tr>

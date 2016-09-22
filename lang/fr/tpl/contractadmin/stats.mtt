@@ -36,7 +36,7 @@
 					<tr>
 						<td>::r.quantity::</td>
 						<td>::r.name::</td>
-						<td>::r.quantity*r.price:: €</td>
+						<td>::r.quantity*r.price:: ::currency()::</td>
 						<td>::r.percent:: %</td>
 						
 					</tr>
@@ -45,7 +45,7 @@
 				<tr>
 					<th colspan="2">Total: ::totalQuantity:: produits</th>
 					
-					<th>::totalPrice:: €</th>
+					<th>::totalPrice:: ::currency()::</th>
 					<th></th>
 				</tr>
 			</table>

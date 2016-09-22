@@ -3,6 +3,7 @@ import sugoi.form.ListData;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
+
 /**
  * Distrib
  */
@@ -19,15 +20,13 @@ class Distribution extends Object
 	
 	public var text : SNull<SString<1024>>;
 	
-	//start and end date for open orders
+	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;
 	
 	//start and end date for delivery
 	public var date : SDateTime; 
 	public var end : SDateTime;
-	//public var deliveryStartDate : SDateTime; 
-	//public var deliveryEndDate : SDateTime;
 	
 	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	#if neko 

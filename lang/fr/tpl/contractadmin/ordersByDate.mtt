@@ -1,18 +1,10 @@
 ::use 'design.mtt'::
 
 <style>
-	
-	/*table{
-		table-layout:fixed;
-	}*/
-
-
 	table tr td{
 		white-space: nowrap;
 		overflow-x:hidden;
 	}
-	
-	
 </style>
 
 
@@ -86,22 +78,22 @@
 						::short(m.productName,40)::
 					</td>
 					<td>
-						::formatNum(m.productPrice)::&nbsp;&euro;
+						::formatNum(m.productPrice)::&nbsp;::currency()::
 					</td>
 					<td>
-						::formatNum(m.subTotal)::&nbsp;&euro;
+						::formatNum(m.subTotal)::&nbsp;::currency()::
 					</td>
 					<td>
 						<!-- fees -->
 						::if m.percentageValue!=null::
 						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
-							::formatNum(m.fees)::&nbsp;&euro;
+							::formatNum(m.fees)::&nbsp;::currency()::
 						</a>
 						::end::
 					</td>
 					<td>
 						<!-- total -->
-						::formatNum(m.total)::&nbsp;&euro;
+						::formatNum(m.total)::&nbsp;::currency()::
 						::set total = total + m.total::
 						::set subtotal = subtotal + m.total::
 						::set contractTotal = contractTotal + m.total::
@@ -121,7 +113,7 @@
 					
 					<tr style="background:#DDD;">					
 						<th colspan="7" class="text-right">Total ::m.contractName::</th>
-						<th>::formatNum(contractTotal)::&nbsp;&euro;</th>					
+						<th>::formatNum(contractTotal)::&nbsp;::currency()::</th>					
 						<th></th>
 						::set contractTotal = 0::
 					</tr>
@@ -133,7 +125,7 @@
 					::if subtotal!=0:: 
 					<tr style="border-top:2px solid #AAA;">					
 						<th colspan="7" class="text-right">Total adhérent</th>
-						<th>::formatNum(subtotal)::&nbsp;&euro;</th>					
+						<th>::formatNum(subtotal)::&nbsp;::currency()::</th>					
 						<th></th>
 						::set subtotal = 0::
 					</tr>
@@ -146,7 +138,7 @@
 			<!-- big total -->
 			<tr style="background:#CCC;font-size:1.3em;">					
 				<th colspan="7" class="text-right">Total de toutes les commandes : </th>
-				<th>::formatNum(total)::&nbsp;&euro;</th>					
+				<th>::formatNum(total)::&nbsp;::currency()::</th>					
 				<th></th>
 			</tr>
 				

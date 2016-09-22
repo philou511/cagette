@@ -55,7 +55,7 @@
 			</td>
 			
 			
-			<td>::formatNum(p.price)::&nbsp;&euro;</td>
+			<td>::formatNum(p.price)::&nbsp;::currency()::</td>
 			<td>
 			::if c.hasStockManagement() ::
 				::if p.stock==null::

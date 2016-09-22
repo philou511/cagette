@@ -14,6 +14,7 @@ class Group extends controller.Controller
 		
 		view.group = group;
 		view.contracts = group.getActiveContracts();
+		view.pageTitle = group.name;
 		if (app.user != null){
 			
 			view.isMember = Lambda.has(app.user.getAmaps(), group);

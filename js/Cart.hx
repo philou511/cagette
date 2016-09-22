@@ -121,7 +121,7 @@ class Cart
 		var ffilter = new sugoi.form.filters.FloatFilter();
 		
 		var total = ffilter.filter(Std.string(App.roundTo(total,2)));
-		c.append("<div class='total'>TOTAL : "+total+"€</div>");
+		c.append("<div class='total'>TOTAL : "+total+"</div>");
 	}
 
 
@@ -233,7 +233,7 @@ class Cart
 			for (o in source){
 
 				if (o.products.length == 0) continue;
-				container.append("<div class='col-md-12'><div class='catHeader'>" + o.name + "</div></div>");
+				container.append("<div class='col-md-12 col-xs-12 col-sm-12 col-lg-12'><div class='catHeader'>" + o.name + "</div></div>");
 				for ( p in o.products){
 					//trace("GROUP "+o.name+" : "+p.name);
 					//if the element has already been inserted, we need to clone it

@@ -27,13 +27,15 @@ typedef ProductInfo = {
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
+	?qt:Float,
+	?unitType:UnitType,
 	#if js
 	element:js.JQuery,
 	#end
 }
 
 enum UnitType{
-	Unit;
+	Piece;
 	Kilogram;
 	Gram;
 	Litre;
@@ -86,6 +88,9 @@ typedef UserOrder = {
 	id:Int,
 	userId:Int,
 	userName:String,
+	
+	?userId2:Int,
+	?userName2:String,
 	
 	productId:Int,
 	productRef:String,
@@ -140,6 +145,11 @@ enum Event {
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
 	DeleteProduct(product:db.Product);
+	
+	//crons
+	DailyCron;
+	HourlyCron;
+	MinutelyCron;
 	
 	#end
 	
