@@ -46,9 +46,6 @@ class UserAmap extends Object
 	
 		if (hasRight(r)) return;
 		if (rights == null) rights = [];
-		//switch(r) {
-			//case AmapAdmin:
-		//}
 		lock();
 		rights.push(r);
 		update();

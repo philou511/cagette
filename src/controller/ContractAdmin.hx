@@ -323,8 +323,10 @@ class ContractAdmin extends Controller
 			nc.insert();
 			
 			//give right to this contract
-			var ua = db.UserAmap.get(app.user, app.user.amap);
-			ua.giveRight(ContractAdmin(nc.id));
+			if(contract.contact!=null){
+				var ua = db.UserAmap.get(contract.contact, contract.amap);
+				ua.giveRight(ContractAdmin(nc.id));
+			}
 			
 			
 			if (form.getValueOf("copyProducts") == true) {
