@@ -23,12 +23,12 @@ class Product extends Controller
 		var f = sugoi.form.Form.fromSpod(d);
 		
 		//type (->icon)
-		f.removeElement( f.getElement("type") );
-		var pt = new form.ProductTypeRadioGroup("type", "type",Std.string(d.type));
-		f.addElement( pt );
+		//f.removeElement( f.getElement("type") );
+		//var pt = new form.ProductTypeRadioGroup("type", "type",Std.string(d.type));
+		//f.addElement( pt );
 		
 		//stock mgmt ?
-		if (!d.contract.hasStockManagement()) f.removeElementByName('stock');		
+		if (!d.contract.hasStockManagement()) f.removeElementByName('stock');	
 		
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
@@ -41,7 +41,12 @@ class Product extends Controller
 		f.removeElementByName("contractId");
 		
 		//view.taxo = db.TxpProduct.manager.all();
-		f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
+		//f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
+		
+		var txId = d.txpProduct == null ? null : d.txpProduct.id;
+		var formName = f.name;
+		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}",$txId,"$formName");</script>';
+		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
 
 		if (f.isValid()) {
 			
@@ -68,9 +73,9 @@ class Product extends Controller
 		var d = new db.Product();
 		var f = sugoi.form.Form.fromSpod(d);
 		
-		f.removeElement( f.getElement("type") );		
-		var pt = new form.ProductTypeRadioGroup("type", "type", "1");
-		f.addElement( pt );
+		//f.removeElement( f.getElement("type") );		
+		//var pt = new form.ProductTypeRadioGroup("type", "type", "1");
+		//f.addElement( pt );
 		f.removeElementByName("contractId");
 		
 		//stock mgmt ?
@@ -84,6 +89,10 @@ class Product extends Controller
 			data.push( { value:app.user.amap.vatRates[k], label:k } );
 		}
 		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
+		
+		var formName = f.name;
+		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","",null,"$formName");</script>';
+		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
 		
 		
 		if (f.isValid()) {

@@ -10,7 +10,10 @@
 		<hr/>
 			
 		::foreach c categ::
-			<h4>::c.name::</h4>
+		
+			<img src="/img/taxo/cat::c.id::.png" style="float:right;width:100px;border:1px solid #666;" />
+
+			<h4>#::c.id:: ::c.name::</h4>
 			::foreach sc c.getSubCategories()::
 				<p style="margin-left:12px;">
 					<b>::sc.name::</b>

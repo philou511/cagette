@@ -25,9 +25,10 @@ class Product extends Object
 	public var unitType : SNull<SEnum<UnitType>>; // Kg / L / g / units
 	public var qt : SNull<SFloat>;
 	
-	public var type : SInt;	//icones
+	@hideInForms public var type : SInt;	//icones
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
+	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy
 	
 	public var hasFloatQt:SBool; //this product can be ordered in "float" quantity
 	public var active : SBool; 	//if false, product disabled, not visible on front office

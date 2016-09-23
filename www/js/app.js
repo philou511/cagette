@@ -34,6 +34,13 @@ App.prototype = {
 			ReactDOM.render(React.createElement(react_ComposerApp,null),window.document.getElementById("app"));
 		});
 	}
+	,getProductInput: function(divId,productName,txpProductId,formName) {
+		window.document.addEventListener("DOMContentLoaded",function(event) {
+			js.JQuery("form input[name='" + formName + "_name']").parent().parent().remove();
+			js.JQuery("form select[name='" + formName + "_txpProductId']").parent().parent().remove();
+			ReactDOM.render(React.createElement(react_ProductInput,{ txpProductId : txpProductId, productName : productName, formName : formName}),window.document.getElementById(divId));
+		});
+	}
 	,overlay: function(url,title,large) {
 		if(large == null) large = true;
 		var r = new haxe_Http(url);
@@ -5851,17 +5858,20 @@ react_ProductInput.__name__ = ["react","ProductInput"];
 react_ProductInput.__super__ = React.Component;
 react_ProductInput.prototype = $extend(React.Component.prototype,{
 	render: function() {
-		return React.createElement("div",null,React.createElement("input",{ style : { width : "350px"}, ref : "input", placeholder : "Saisir un nom de produit", className : "form-control typeahead"}),React.createElement("div",{ className : "txpProduct"},"blabla"),React.createElement("input",{ name : "txpProduct", value : "PROUT", type : "hidden", className : "txpProduct"}));
+		var inputName = this.props.formName + "_name";
+		var txpProductInputName = this.props.formName + "_txpProductId";
+		return React.createElement("div",null,React.createElement("img",{ style : { 'float' : "right"}, ref : "image"}),React.createElement("input",{ defaultValue : this.props.productName, name : inputName, style : { width : "350px"}, ref : "input", placeholder : "Saisir un nom de produit", className : "form-control typeahead"}),React.createElement("div",{ className : "txpProduct"}),React.createElement("input",{ name : txpProductInputName, value : this.props.txpProductId, type : "hidden", className : "txpProduct"}));
 	}
 	,componentDidMount: function() {
+		var _g = this;
 		var substringMatcher = function(strs) {
 			var findMatches = function(q,cb) {
 				var matches = [];
 				var substrRegex = new RegExp(q,"i");
-				var _g = 0;
-				while(_g < strs.length) {
-					var str = strs[_g];
-					++_g;
+				var _g1 = 0;
+				while(_g1 < strs.length) {
+					var str = strs[_g1];
+					++_g1;
 					if(substrRegex.test(str)) matches.push(str);
 				}
 				cb(matches);
@@ -5878,20 +5888,34 @@ react_ProductInput.prototype = $extend(React.Component.prototype,{
 					var p = $it0.next();
 					products.push(p.name);
 				}
+				if(_g.props.txpProductId != null) {
+					var product = Lambda.find(react_ProductInput.DICO.products,function(x) {
+						return x.id == _g.props.txpProductId;
+					});
+					_g.setTaxo(product);
+				}
 			};
 			r.request();
 		}
-		js.JQuery(".typeahead").typeahead({ hint : true, highlight : true, minLength : 2},{ name : "products", source : substringMatcher(products)});
+		js.JQuery(".typeahead").typeahead({ hint : true, highlight : true, minLength : 2},{ name : "products", source : substringMatcher(products), limit : 30});
 		js.JQuery(".typeahead").bind("typeahead:select",function(ev,suggestion) {
-			var product = Lambda.find(react_ProductInput.DICO.products,function(x) {
-				return x.name == suggestion;
+			var product1 = Lambda.find(react_ProductInput.DICO.products,function(x1) {
+				return x1.name == suggestion;
 			});
-			var str1 = react_ProductInput.DICO.categories.h[product.category].name;
-			if(product.subCategory != null) str1 += " / " + react_ProductInput.DICO.subCategories.h[product.subCategory].name;
-			str1 += " / " + product.name;
-			js.JQuery("div.txpProduct").html(str1);
-			js.JQuery("input.txpProduct").val(suggestion);
+			_g.setTaxo(product1);
 		});
+	}
+	,setTaxo: function(product) {
+		var str = this.getTaxoString(product);
+		js.JQuery("div.txpProduct").html(str);
+		js.JQuery("input.txpProduct").val(product.id == null?"null":"" + product.id);
+		this.refs.image.src = "/img/taxo/cat" + product.category + ".png";
+	}
+	,getTaxoString: function(product) {
+		var str = react_ProductInput.DICO.categories.h[product.category].name;
+		if(product.subCategory != null) str += " / " + react_ProductInput.DICO.subCategories.h[product.subCategory].name;
+		str += " / " + product.name;
+		return str;
 	}
 	,__class__: react_ProductInput
 });
