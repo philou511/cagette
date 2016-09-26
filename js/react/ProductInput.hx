@@ -35,7 +35,7 @@ class ProductInput extends api.react.ReactComponentOfPropsAndRefs<ProductInputPr
 		
 		return jsx('
 			<div>
-				<img ref="image" style={{float:"right"}}/>
+				<img ref="image" style={{float:"right"}} className="img-thumbnail"/>
 				<input name="$inputName" ref="input" className="form-control typeahead" placeholder="Saisir un nom de produit" style={{width:"350px"}} defaultValue="${props.productName}" />
 				<div className="txpProduct">
 					

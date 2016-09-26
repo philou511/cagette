@@ -5860,7 +5860,7 @@ react_ProductInput.prototype = $extend(React.Component.prototype,{
 	render: function() {
 		var inputName = this.props.formName + "_name";
 		var txpProductInputName = this.props.formName + "_txpProductId";
-		return React.createElement("div",null,React.createElement("img",{ style : { 'float' : "right"}, ref : "image"}),React.createElement("input",{ defaultValue : this.props.productName, name : inputName, style : { width : "350px"}, ref : "input", placeholder : "Saisir un nom de produit", className : "form-control typeahead"}),React.createElement("div",{ className : "txpProduct"}),React.createElement("input",{ name : txpProductInputName, value : this.props.txpProductId, type : "hidden", className : "txpProduct"}));
+		return React.createElement("div",null,React.createElement("img",{ style : { 'float' : "right"}, ref : "image", className : "img-thumbnail"}),React.createElement("input",{ defaultValue : this.props.productName, name : inputName, style : { width : "350px"}, ref : "input", placeholder : "Saisir un nom de produit", className : "form-control typeahead"}),React.createElement("div",{ className : "txpProduct"}),React.createElement("input",{ name : txpProductInputName, value : this.props.txpProductId, type : "hidden", className : "txpProduct"}));
 	}
 	,componentDidMount: function() {
 		var _g = this;
