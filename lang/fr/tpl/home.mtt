@@ -293,7 +293,7 @@
 		</ul>
 	</div>
 	
-	<div class="alert alert-danger" ::cond nopass::>
+	<div class="alert alert-danger" ::cond !user.isFullyRegistred()::>
 		<p>
 			Attention, vous n'avez défini aucun mot de passe pour votre compte !
 		</p>

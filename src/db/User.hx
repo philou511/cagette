@@ -15,8 +15,6 @@ enum RightSite {
 @:index(email,unique)
 class User extends Object {
 
-	public static var EMPTY_PASS = "";
-	
 	public var id : SId;
 	public var lang : SString<2>;
 	@:skip public var name(get, set) : String;
@@ -56,6 +54,7 @@ class User extends Object {
 		flags = sys.db.Types.SFlags.ofInt(0);
 		flags.set(HasEmailNotif24h);
 		lang = "fr";
+		pass = "";
 		
 	}
 	
@@ -80,6 +79,11 @@ class User extends Object {
 	
 	function getUserAmap(amap:db.Amap):db.UserAmap {
 		return db.UserAmap.get(this, amap);
+	}
+	
+	public function isFullyRegistred(){
+		
+		return pass != null && pass != "";
 	}
 	
 	/**
@@ -365,32 +369,20 @@ class User extends Object {
 	}
 	
 	public static function getUsers_NewUsers(?index:Int, ?limit:Int):List<db.User> {
-		//var uas = new List();
-		//if (index == null && limit == null) {
-			//uas = db.UserAmap.manager.search($amap == App.current.user.amap, false);	
-		//}else {
-			//uas = db.UserAmap.manager.search($amap == App.current.user.amap,{limit:[index,limit]}, false);
-		//}
-		//var out = new List();
-		//for ( ua in uas) {
-			//if (ua.user.pass == db.User.EMPTY_PASS) out.add(ua.user);
-		//}
-		//
-		//return out;
 		
 		var uas = db.UserAmap.manager.search($amap == App.current.user.amap, false);
 		var ids = Lambda.map(uas, function(x) return x.userId);
 		if (index == null && limit == null) {
-			return  db.User.manager.search($pass == db.User.EMPTY_PASS && ($id in ids), {orderBy:lastName} ,false);
+			return  db.User.manager.search($pass == "" && ($id in ids), {orderBy:lastName} ,false);
 		}else {
-			return  db.User.manager.search($pass == db.User.EMPTY_PASS && ($id in ids), {limit:[index, limit] ,orderBy:lastName} , false);			
+			return  db.User.manager.search($pass == "" && ($id in ids), {limit:[index, limit] ,orderBy:lastName} , false);			
 		}
 		
 	}
 	
 	public function sendInvitation() {
 		
-		if (pass!=null && pass != "" && pass != EMPTY_PASS) throw "cet utilisateur ne peut pas recevoir d'invitation";
+		if (isFullyRegistred()) throw "cet utilisateur ne peut pas recevoir d'invitation";
 		
 		var group : db.Amap = null;
 		
@@ -416,7 +408,13 @@ class User extends Object {
 		e.to(new ufront.mail.EmailAddress(this.email,this.getName()));
 		e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),"Cagette.net"));			
 		
-		var html = App.current.processTemplate("mail/invitation.mtt", { email:email, email2:email2, group:(group==null?null:group.name),name:firstName,k:k } );		
+		var html = App.current.processTemplate("mail/invitation.mtt", { 
+			email:email,
+			email2:email2,
+			group:(group == null?null:group.name),
+			name:firstName,
+			k:k 			
+		} );		
 		e.setHtml(html);
 		
 		App.getMailer().send(e);

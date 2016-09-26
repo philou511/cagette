@@ -38,58 +38,6 @@ class Main extends Controller {
 			//s'inscrire a une distribution
 			view.contractsWithDistributors = Lambda.filter(app.user.getContracts(), function(c) return c.distributorNum > 0);
 			
-			//DISTRIBUTIONS
- 			/*var orders = app.user.getOrders();
-			var contractIds = Lambda.map(orders, function(c) return c.product.contract.id);
-			//les distribs dans lesquelles j'ai des produits a prendre
-			var distribs = Distribution.manager.search( ($contractId in contractIds) && $end > Date.now(),{orderBy:date,limit:10}, false );
-			*/
-			/**
-			 * HashMap de jours ( ie "2014-11-01" ), contenant les différentes distrib, pouvant impliquer plusieurs produits (userContracts)
-			 */
-			/*var mydistribs = new Map<String, Array<{distrib:Distribution,orders:Array<db.UserContract>}> >();
-			
-			for ( d in distribs) {
-				
-				var x = { distrib:d,orders:[] };
-				for (order in orders) {
-					var contract = order.product.contract;
-					if (contract.id == d.contract.id) {
-						//trace("CONTRAT "+contract.name+"-"+contract.type+"-"+contract.id);
-						
-						if (contract.type == db.Contract.TYPE_VARORDER) {
-							if (order.distributionId == d.id) {
-								//trace("VARY : "+order);
-								x.orders.push(order);								
-							}
-							
-						}else {
-							//trace("CONSTANT : "+order);
-							x.orders.push(order);	
-						}
-						
-					}
-				}
-				
-				//do not push empty orders list
-				if (x.orders.length > 0) {
-					var key = d.getKey();			
-					var t = mydistribs.get(key);
-					if (t == null) {
-						t = [];						
-					}
-					
-					t.push( x );
-					mydistribs.set(key, t);
-				}
-			}
-			
-			
-			view.distribs = out;	*/
-			
-			
-			//need to define a password !
-			view.nopass = (app.user.pass == db.User.EMPTY_PASS);
 			//freshly created group
 			view.newGroup = app.session.data.newGroup == true;
 

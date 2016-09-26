@@ -101,10 +101,10 @@ class Contract extends Object
 		var now = Date.now();
 		var n = now.getTime();
 		
-		var o = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
+		var contractOpen = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
 		var d = db.Distribution.manager.count( $orderStartDate <= now && $end > now && $contractId==this.id);
 		
-		return o && d > 1;
+		return contractOpen && d > 0;
 		
 	}
 	

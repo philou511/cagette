@@ -63,7 +63,7 @@ class User extends Controller
 			}
 			
 			//new account
-			if (user.pass == "" || user.pass == null || user.pass == db.User.EMPTY_PASS) {
+			if (!user.isFullyRegistred()) {
 			
 				//send mail confirmation link
 				user.sendInvitation();
@@ -237,7 +237,7 @@ class User extends Controller
 	@tpl("form.mtt")
 	function doDefinePassword(?key:String, ?u:db.User){
 		
-		if (app.user.pass != db.User.EMPTY_PASS && app.user.pass != null && app.user.pass !="") throw Error("/","Vous avez déjà un mot de passe");
+		if (app.user.isFullyRegistred()) throw Error("/","Vous avez déjà un mot de passe");
 
 		var form = new Form("definepass");
 		form.addElement(new StringInput("pass1","Votre nouveau mot de passe"));
