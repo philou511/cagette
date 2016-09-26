@@ -146,6 +146,7 @@ class Distribution extends Controller
 		}		
 		
 		if (form.isValid()) {
+			
 			form.toSpod(d); 
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
@@ -155,8 +156,14 @@ class Distribution extends Controller
 			
 			app.event(EditDistrib(d));
 			
-			d.update();
-			throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été mise à jour');
+			if (d.date == null){
+				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été proposée au producteur. Attendez maintenant sa validation');
+			}else{
+				d.update();
+				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été mise à jour');
+			}
+			
+			
 		}else{
 			app.event(PreEditDistrib(d));
 		}
