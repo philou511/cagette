@@ -260,7 +260,10 @@ class User extends Controller
 		view.title = "Définissez un mot de passe pour votre compte";
 	}
 	
-	
+	/**
+	 * landing page when coming from an invitation
+	 * @param	k
+	 */
 	public function doValidate(k:String ) {
 		
 		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));		

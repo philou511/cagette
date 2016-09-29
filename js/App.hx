@@ -79,6 +79,20 @@ class App {
 		}
 		r.request();
 	}
+	
+	/**
+	 * Helper to get values of a bunch of checked checkboxes
+	 * @param	formSelector
+	 */
+	public function getCheckboxesId(formSelector:String):Array<String>{
+		var out = [];
+		var checkboxes = js.Browser.document.querySelectorAll(formSelector + " input[type=checkbox]");
+		for ( input in checkboxes ){
+			var input : js.html.InputElement = cast input;
+			if ( input.checked ) out.push(input.value);
+		}
+		return out;
+	}
 
 	
 	

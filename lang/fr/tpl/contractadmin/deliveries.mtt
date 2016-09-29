@@ -36,14 +36,43 @@
 						::d._place.name::
 					</td>
 					<td>
-						$$edit(modifier,/distribution/edit/::d.id::) 
-						$$delete(supprimer,/distribution/delete/::d.id::)
-						<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;Liste d'émargement</a>
+						<div class="btn-group">
+							$$edit(modifier,/distribution/edit/::d.id::) 
+							$$delete(supprimer,/distribution/delete/::d.id::)
+							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;Liste d'émargement</a>
+						</div>
 					</td>
 				</tr>
 				
 				::end::
-			</table>				
+			</table>	
+
+
+			<table ::cond cycles.length>0:: class="table">
+				<tr>
+					<th>Distributions récurrentes</th>		
+					<th></th>
+				</tr>
+				::foreach c cycles::
+				<tr>
+					<td><b>
+						::switch c.cycleType:: 						
+						::case::  Hebdomadaire
+						::case::  Toutes les 2 semaines
+						::case::  Toutes les 3 semaines
+						::case::  Mensuel						
+						::end::
+						</b>
+						: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+					</td>
+					<td>
+						$$delete(Suppr.,::"/distribution/deleteCycle/"+c.id::)
+					</td>
+				</tr>
+				::end::
+			</table>
+
+
 			$$insert(Nouvelle distribution,/distribution/insert/::c.id::)
 			$$insert(Distributions récurrentes,/distribution/insertCycle/::c.id::) 
 			<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">

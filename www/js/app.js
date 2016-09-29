@@ -53,6 +53,18 @@ App.prototype = {
 		};
 		r.request();
 	}
+	,getCheckboxesId: function(formSelector) {
+		var out = [];
+		var checkboxes = window.document.querySelectorAll(formSelector + " input[type=checkbox]");
+		var _g = 0;
+		while(_g < checkboxes.length) {
+			var input = checkboxes[_g];
+			++_g;
+			var input1 = input;
+			if(input1.checked) out.push(input1.value);
+		}
+		return out;
+	}
 	,__class__: App
 };
 var Cart = function() {

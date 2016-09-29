@@ -92,7 +92,7 @@
 		<h2>Livraisons</h2>
 		
 		::set distribs = c.getDistribs(true,null)::
-		<ul>
+		<ul style="max-height:600px;overflow-y:auto;">
 			::foreach d distribs::
 			<li>
 				
@@ -111,10 +111,6 @@
 			</li>						
 			::end::	
 		</ul>
-		
-		
-		
-		
 		
 		::if distribs.length==0::
 		<p>

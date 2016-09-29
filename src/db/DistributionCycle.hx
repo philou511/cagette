@@ -1,16 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
-
-enum DayOfWeek {
-	Monday;
-	Tuesday;
-	Wednesday;
-	Thursday;
-	Friday;
-	Saturday;
-	Sunday;
-}
+import datetime.DateTime;
 
 enum CycleType {
 	Weekly;	
@@ -59,7 +50,6 @@ class DistributionCycle extends Object
 		
 		var datePointer = dc.startDate;
 		
-		//var dayOfWeek = dc.startDate.getDay();
 		if (dc.id == null) throw "this distributionCycle has not been recorded";
 		
 		//first distrib
@@ -91,7 +81,8 @@ class DistributionCycle extends Object
 			switch(dc.cycleType) {
 				case Weekly :
 					datePointer = DateTools.delta(datePointer, oneDay * 7.0);
-					//App.log("datePointer : " + datePointer);
+					App.log("on ajoute "+(oneDay * 7.0)+"millisec pour ajouter 7 jours");
+					App.log('pointer : $datePointer');
 					
 				case BiWeekly : 	
 					datePointer = DateTools.delta(datePointer, oneDay * 14.0);
@@ -103,17 +94,16 @@ class DistributionCycle extends Object
 					datePointer = DateTools.delta(datePointer, oneDay * 28.0);
 			}
 			
-			if (datePointer.getTime() > dc.endDate.getTime()) {
-				//App.log("finish");
+			//stop if cycle end is reached
+			if (datePointer.getTime() > dc.endDate.getTime()) {				
 				break;
 			}
 			
-			//App.log(">>> date def : "+datePointer.toString());
-			
-			//applique heure de debut et fin
+			//set distribution date + end
 			d.date = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.startHour.getHours(), dc.startHour.getMinutes(), 0);
 			d.end  = new Date(datePointer.getFullYear(), datePointer.getMonth(), datePointer.getDate(), dc.endHour.getHours(),   dc.endHour.getMinutes(),   0);
 			
+			//set order opening and closing hours
 			if (dc.contract.type == Contract.TYPE_VARORDER){
 				
 				var a = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
@@ -127,6 +117,25 @@ class DistributionCycle extends Object
 			
 			d.insert();
 		}
+	}
+	
+	
+	public function deleteChilds(){
+		
+		var childs = db.Distribution.manager.search($distributionCycle == this, true);
+		var messages = [];
+		for ( c in childs ){
+			
+			if (c.getOrders().length > 0){
+				messages.push("La distribution du "+App.current.view.hDate(c.date)+" n'a pas pu être effacée car elle contient des commandes.");
+			}else{
+				c.lock();
+				c.delete();
+			}
+		}
+		
+		return messages;
+		
 	}
 	
 	public function placePopulate():Array<{label:String,value:Int}> {

@@ -145,6 +145,7 @@ enum Event {
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
 	DeleteProduct(product:db.Product);
+	BatchEnableProducts(productIds:Array<Int>, enable:Bool);
 	
 	//crons
 	DailyCron;

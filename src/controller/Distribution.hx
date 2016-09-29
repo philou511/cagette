@@ -257,6 +257,9 @@ class Distribution extends Controller
 		
 	}
 	
+	/**
+	 * create a distribution cycle for a contract
+	 */
 	@tpl("form.mtt")
 	public function doInsertCycle(contract:db.Contract) {
 		
@@ -323,6 +326,26 @@ class Distribution extends Controller
 		
 		view.form = form;
 		view.title = "Programmer une distribution récurrente";
+	}
+	
+	public function doDeleteCycle(c:db.DistributionCycle){
+		
+		c.lock();
+		var msgs = c.deleteChilds();
+		if (msgs.length > 0){
+			
+			throw Error("/contractAdmin/distributions/" + c.contract.id, msgs.join("<br/>"));	
+		}else{
+			
+			c.delete();
+			throw Ok("/contractAdmin/distributions/" + c.contract.id, "Distributions récurrentes effacées");	
+		}
+		
+		
+		
+		
+		
+		
 	}
 	
 	/**

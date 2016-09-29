@@ -6,14 +6,46 @@
 	<div>
 		<p>
 		$$insert(Nouveau produit,/product/insert/::c.id::)
-		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Import Excel/CSV</a>	
-		
+		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Import Excel/CSV</a>			
 		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Catégories</a>	
+		
+		
 		</p>
 	</div>
 
-	<table class="table table-striped">
+	<script>
+	var enableProducts = function(){
+		var ids = _.getCheckboxesId('form.products');
+		if(ids.length==0){
+			alert("Vous devez sélectionner au moins un produit pour faire cette action.");
+		}else{
+			var l = document.location;
+			l.href = l.protocol +"//"+ l.host + l.pathname + "?enable="+ ids.join("|");
+		}
+		
+	};
+	var disableProducts = function(){
+		var ids = _.getCheckboxesId('form.products');
+		if(ids.length==0){
+			alert("Vous devez sélectionner au moins un produit pour faire cette action.");
+		}else{
+			var l = document.location;
+			l.href = l.protocol +"//"+ l.host + l.pathname + "?disable="+ ids.join("|");
+		}
+		
+	};
+	
+	//check input when click row
+	var clickRow = function(x){
+		x.children[0].children[0].checked = true;
+	}
+	
+	</script>
+	
+	<form method="GET" class="products">
+	<table class="table table-striped table-hover">
 		<tr>
+			<th></th>
 			<th></th>
 			<th>Réf.</th>
 			<th>Nom</th>
@@ -31,7 +63,10 @@
 		::else::
 		::set opacity=1::
 		::end::
-		<tr style="opacity: ::opacity::">
+		<tr style="opacity: ::opacity::" onclick="clickRow(this)">
+			<td>
+				<input type="checkbox" name="checkbox" value="::p.id::" />
+			</td>
 			<td>
 				
 				<img src="::p.getImage()::" style="width:64px;height:64px;" />
@@ -49,9 +84,7 @@
 					::foreach c p.getCategories()::
 					<span class='tag' style='background-color: ::c.getColor()::;'>::c.name::</span>
 					::end::
-					
 				</div>
-				
 			</td>
 			
 			
@@ -68,24 +101,30 @@
 					::else::
 						::p.stock::
 					::end::
-				
-					
 				::end::
-				
-			
 			::end::
 			</td>
 			<td>
-				$$edit(modifier,/product/edit/::p.id::)
-				
-				<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>
-				
-				$$delete(Suppr.,/product/delete/::p.id::?token=::token::)
+				<div class="btn-group" role="group">
+					$$edit(modifier,/product/edit/::p.id::)				
+					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>				
+					$$delete(Suppr.,/product/delete/::p.id::?token=::token::)
+				</div>
 			</td>
 
 		</tr>
 		::end::
 	</table>
+
+	</form>
 	
+	
+	<p>
+		<div class="btn-group" role="group">
+		<a class="btn btn-default btn-sm" onclick="enableProducts()"><span class="glyphicon glyphicon-check"></span> Activer</a>	
+		<a class="btn btn-default btn-sm" onclick="disableProducts()"><span class="glyphicon glyphicon-unchecked"></span> Désactiver</a>	
+		</div>
+		
+	</p>
 
 ::end::

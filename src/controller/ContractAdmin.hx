@@ -61,7 +61,7 @@ class ContractAdmin extends Controller
 	 * Manage products
 	 */
 	@tpl("contractadmin/products.mtt")
-	function doProducts(contract:db.Contract) {
+	function doProducts(contract:db.Contract,?args:{?enable:String,?disable:String}) {
 		
 		sendNav(contract);
 		
@@ -80,6 +80,38 @@ class ContractAdmin extends Controller
 			
 		}
 		
+		//batch enable / disable products
+		if (args != null){
+			
+			var products = contract.getProducts(false);
+			
+			if (args.disable != null){
+				
+				var pids = Lambda.array(Lambda.map(args.disable.split("|"), function(x) return Std.parseInt(x)));
+				app.event(BatchEnableProducts(pids, false));
+				
+				for ( pid in pids){
+					if ( Lambda.find(products,function(p) return p.id==pid)==null ) throw 'product $pid is not in this contract !';
+					var p = db.Product.manager.get(pid, true);
+					p.active = false;
+					p.update();
+				}
+			}
+			
+			if (args.enable != null){
+				
+				var pids = Lambda.array(Lambda.map(args.enable.split("|"), function(x) return Std.parseInt(x)));
+				app.event(BatchEnableProducts(pids, true));
+				
+				for ( pid in pids){
+					if ( Lambda.find(products,function(p) return p.id==pid)==null ) throw 'product $pid is not in this contract !';
+					var p = db.Product.manager.get(pid, true);
+					p.active = true;
+					p.update();
+				}
+			}
+			
+		}
 		
 		//generate a token
 		checkToken();
@@ -389,18 +421,23 @@ class ContractAdmin extends Controller
 		view.orders = orders;
 	}
 	
+	/**
+	 * Lists deliveries for this contract
+	 */
 	@tpl("contractadmin/deliveries.mtt")
 	function doDistributions(contract:db.Contract, ?args: { old:Bool } ) {
 		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = contract;
+		
 		if (args != null && args.old) {
-			//display also old deliverues
-			view.deliveries = contract.getDistribs(false);
+			//display also old deliveries
+			view.deliveries = contract.getDistribs(false);			
 		}else {
-			view.deliveries = db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} );
-			
+			view.deliveries = db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} );			
 		}
+		
+		view.cycles = db.DistributionCycle.manager.search($contract==contract,false);
 		
 	}
 	
