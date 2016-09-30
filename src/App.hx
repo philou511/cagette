@@ -56,10 +56,10 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public static function log(t:Dynamic) {
-		if(App.config.DEBUG) {
+		//if(App.config.DEBUG) {
 			neko.Web.logMessage(Std.string(t)); //write in Apache error log
 			//Weblog.log(t);
-		}
+		//}
 	}
 	
 	public function event(e:Event) {

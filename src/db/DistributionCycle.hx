@@ -48,7 +48,9 @@ class DistributionCycle extends Object
 	 */
 	public static function updateChilds(dc:DistributionCycle) {
 		
-		var datePointer = dc.startDate;
+		var datePointer = new Date(dc.startDate.getFullYear(), dc.startDate.getMonth(), dc.startDate.getDate(), 12, 0, 0);
+		//why hour=12 ? because if we set hour to 0, it switch to 23 (-1) or 1 (+1) on daylight saving time switch dates, thus changing the day!!
+		
 		
 		if (dc.id == null) throw "this distributionCycle has not been recorded";
 		

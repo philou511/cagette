@@ -322,6 +322,36 @@ class ContractAdmin extends Controller
 		view.orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
 	}
 	
+	
+	/**
+	 * hidden feature : updates orders by setting current product price.
+	 */
+	function doUpdatePrices(contract:db.Contract, args:{?d:db.Distribution}) {
+		
+		sendNav(contract);
+		
+		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
+			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
+		}
+		var d = null;
+		if (contract.type == db.Contract.TYPE_VARORDER ){
+			view.distribution = args.d;
+			d = args.d;
+		}
+		
+		for ( o in contract.getOrders(d)){
+			o.lock();
+			o.productPrice = o.product.price;
+			if (contract.hasPercentageOnOrders()){
+				o.feesRate = contract.percentageValue;
+			}
+			o.update();
+			
+		}
+		throw Ok("/contractAdmin/orders/"+contract.id+"?d="+args.d.id, "Prix mis à jours à leur valeur actuelle.");
+	}
+	
 	/**
 	 *  Duplicate a contract
 	 */
