@@ -442,6 +442,7 @@ class Member extends Controller
 		if ( data != null) {
 			
 			var csv = new sugoi.tools.Csv();
+			csv.headers = ["prénom","nom","E-mail","téléphone portable","prénom conjoint","	nom conjoint","	E-mail conjoint",	"téléphone portable conjoint",	"adresse1",	"adresse2"	,"code postal","ville"];
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
