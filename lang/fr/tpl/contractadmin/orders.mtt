@@ -24,9 +24,13 @@
 				$$export(/contractAdmin/orders/::c.id::?csv=1)
 				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
 			::end::
-			
-			
 		</div>
+
+		::if disabledProducts > 0::
+		$$alert(::"Attention, il y a <b>"+disabledProducts+"</b> commande(s) contenant des <b>produits désactivés</b>."::)
+		::end::
+
+
 		::set total = 0::
 		::set totalAdh = 0::
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
@@ -38,7 +42,6 @@
 					<tr style="background-color:#666;">
 						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
 							::m.userName:: 
-							
 							
 							::set name =  m.userName ::	
 							::set totalAdh = totalAdh+1::
@@ -67,10 +70,16 @@
 					</tr>
 				::end::
 				
-				<tr>
+				
+				::if m.disabled==true::
+				::set class="danger"::
+				::else::
+				::set class=""::
+				::end::
+				<tr class="::class::">
 				
 					<td>
-						::m.quantity:
+						::m.quantity:  
 					</td>
 					<td>
 						$$nullSafe(::m.productRef::)

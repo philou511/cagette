@@ -21,11 +21,14 @@
 		<a href="/distribution/listByDate/::date.toString().substr(0,10)::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
 		
 		::if ctotal::
-		<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::" class="btn btn-default btn-sm">Afficher totaux par adhérent</a>
+		<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::" class="btn btn-default btn-sm">Totaux par adhérent</a>
 		::else::
-		<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::?ctotal=1" class="btn btn-default btn-sm">Afficher totaux par contrat</a>
+		<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::?ctotal=1" class="btn btn-default btn-sm">Sous-totaux par contrat</a>
 		::end::
-			
+		
+		<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::" class="btn btn-default btn-sm">Totaux par producteur</a>
+		
+		
 		<hr/>
 		
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">

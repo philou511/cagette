@@ -300,6 +300,46 @@ class ContractAdmin extends Controller
 			view.ctotal = app.params.exists("ctotal");
 		}
 	}
+	
+	
+	/**
+	 * Global view on orders, producer view
+	 */
+	@tpl('contractadmin/vendorsByDate.mtt')
+	function doVendorsByDate(date:Date){
+			
+		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+		var contracts = app.user.amap.getActiveContracts(true);
+		var cids = Lambda.map(contracts, function(c) return c.id);
+		var cconst = [];
+		var cvar = [];
+		for ( c in contracts) {
+			if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
+			if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
+			
+		}
+		
+		//distribs
+		var vdistribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
+		var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+		
+		if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+		
+		var out = [];
+		for (d in vdistribs){
+			out.push({contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});
+		}
+		
+		for (d in cdistribs){
+			out.push({contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});
+		}
+		
+		view.orders = out;
+		view.date = date;
+		
+		
+	}
 
 	/**
 	 * Overview of orders for this contract in backoffice
@@ -319,7 +359,18 @@ class ContractAdmin extends Controller
 			d = args.d;
 		}
 		view.c = contract;
-		view.orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
+		var orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
+		
+		var disabledProducts = 0;
+		for ( o in orders ){
+			if ( !db.Product.manager.get(o.productId, false).active ) {
+				disabledProducts++;
+				Reflect.setField(o, "disabled", true);
+			}
+		}
+		
+		view.disabledProducts = disabledProducts;
+		view.orders = orders;
 	}
 	
 	
@@ -612,9 +663,7 @@ class ContractAdmin extends Controller
 		view.c = view.contract = c;
 		view.u = user;
 		view.distribution = args.d;
-		
-		
-		
+			
 		//need to select a distribution for varying orders contracts
 		if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
 			
@@ -627,7 +676,7 @@ class ContractAdmin extends Controller
 			
 			
 			var userOrders = new Array<{order:db.UserContract,product:db.Product}>();
-			var products = c.getProducts();
+			var products = c.getProducts(false);
 			
 			for ( p in products) {
 				var ua = { order:null, product:p };
@@ -671,14 +720,17 @@ class ContractAdmin extends Controller
 						
 						//user2 ?
 						var user2 : db.User = null;
+						var invert = false;
 						if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
 							//trace("user2" + pid + " : " + app.params.get("user2" + pid));
 							user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
 							if (user2 == null) throw "user #"+app.params.get("user2")+" introuvable";
 							if (!user2.isMemberOf(app.user.amap)) throw user2 + " ne fait pas partie de ce groupe";
 							if (user.id == user2.id) throw "Les deux comptes sélectionnés doivent être différents";
+							
+							invert = app.params.get("invert" + pid) == "1";
+							
 						}
-						
 						
 						var q = 0.0;
 						if (uo.product.hasFloatQt ) {
@@ -690,10 +742,10 @@ class ContractAdmin extends Controller
 						
 						if (uo.order != null) {
 							//existing record
-							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"),user2);
+							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"),user2,invert);
 						}else {
 							//new record
-							db.UserContract.make(user, q, uo.product, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2);
+							db.UserContract.make(user, q, uo.product, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2,invert);
 						}
 					}
 				}

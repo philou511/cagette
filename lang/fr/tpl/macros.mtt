@@ -119,6 +119,14 @@
 	</macro>
 
 	
+	<macro name="alert(msg)">
+		<div class="alert alert-danger">
+			<span class="glyphicon glyphicon-exclamation-sign"></span>
+			
+			::raw msg::					
+		</div>
+	</macro>
+	
 	
 	
 </macros>

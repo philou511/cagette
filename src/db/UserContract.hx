@@ -42,7 +42,8 @@ class UserContract extends Object
 	public var distributionId : SNull<SInt>;
 	#end
 	
-	public var date : SDateTime;
+	public var date : SDateTime;	
+	public var flags : SFlags<OrderFlags>;
 	
 	public function new() 
 	{
@@ -50,6 +51,7 @@ class UserContract extends Object
 		quantity = 1;
 		paid = false;
 		date = Date.now();
+		flags = cast 0;
 	}
 	
 	public function populate() {
@@ -75,11 +77,20 @@ class UserContract extends Object
 		
 		//compter le nbre de distrib pour ce contrat
 		var c = Distribution.manager.count( $contract == product.contract && $date >= product.contract.startDate && $date <= distrib.date);		
-		return c%2 == 0;
+		var r = c % 2 == 0;
+		if (flags.has(InvertSharedOrder)){
+			return !r;
+		}else{
+			return r;
+		}
 	}
 	
 	override public function toString() {
 		return quantity + "x" + product.name;
+	}
+	
+	public function hasInvertSharedOrder():Bool{
+		return flags.has(InvertSharedOrder);
 	}
 	
 	/**
@@ -186,7 +197,7 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User) {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User,?invert:Bool) {
 		
 		//checks
 		if (quantity <= 0) return;
@@ -214,7 +225,10 @@ class UserContract extends Object
 			o.feesRate = product.contract.percentageValue;
 		}
 		o.user = user;
-		if (user2 != null) o.user2 = user2;
+		if (user2 != null) {
+			o.user2 = user2;
+			if (invert != null) o.flags.set(InvertSharedOrder);
+		}
 		if (paid != null) o.paid = paid;
 		if (distribId != null) o.distributionId = distribId;
 		
@@ -264,7 +278,7 @@ class UserContract extends Object
 	/**
 	 * Edit an order (quantity)
 	 */
-	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User) {
+	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool) {
 		
 		order.lock();
 		
@@ -279,9 +293,12 @@ class UserContract extends Object
 		
 		//shared order
 		if (user2 != null){
-			order.user2 = user2;			
+			order.user2 = user2;	
+			if (invert == true) order.flags.set(InvertSharedOrder);
+			if (invert == false) order.flags.unset(InvertSharedOrder);
 		}else{
 			order.user2 = null;
+			order.flags.unset(InvertSharedOrder);
 		}
 		
 		//stocks

@@ -111,6 +111,11 @@ typedef UserOrder = {
 	contractName:String,
 }
 
+enum OrderFlags {
+	InvertSharedOrder;
+	//Paid;
+}
+
 /**
 	Event enum used for plugins.
 	

@@ -42,12 +42,22 @@
 				</tr>
 				::set total = 0::
 				::foreach uo userOrders::
+				
 				<tr>
 					<td>
+						::if uo.product.active==false:: 
+						<img src="::uo.product.getImage()::" style="width:32px;height:32px;opacity:0.3;" />
+						::else::
 						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
+						::end::
 					</td>
 					<td>
+						::if uo.product.active==false:: 
+						<span style="color:#AAA;">::uo.product.name:: (inactif)</span>
+						::else::
 						::uo.product.name::	
+						::end::
+						
 					</td>
 					<td>
 						::formatNum(uo.product.price)::&nbsp;::currency()::
@@ -65,7 +75,7 @@
 						
 						
 					</td>
-					<td>
+					<td class="paid">
 						Payé : 
 						::if uo.order!=null::			
 						<input type="checkbox" name="paid::uo.product.id::" value="1" ::attr checked (uo.order.paid==true ):: />
@@ -76,13 +86,14 @@
 					</td>
 					<td ::cond distribution==null::>
 							
-						<select name="user2::uo.product.id::" class="form-control input-sm" style="width:150px;">
+						<select name="user2::uo.product.id::" class="form-control input-sm" style="width:150px;display:inline-block;">
 							<option value="0">-</option>
 							::foreach uu users::
 							<option value="::uu.value::" ::attr selected (uo.order!=null && uo.order._user2!=null && uo.order._user2.id==uu.value)::>::uu.label::</option>
 							::end::			
 						</select>
 						
+						<input data-toggle="tooltip" title="Inverser l'alternance" type="checkbox" name="invert::uo.product.id::" value="1" ::attr checked (uo.order!=null && uo.order.hasInvertSharedOrder()==true ):: />
 					</td>
 				</tr>
 					
@@ -115,12 +126,12 @@
 						<th>Total</th>
 						<th>::total+extra::::currency()::</th>
 						<th></th>
-						<th>
+						<th colspan="2">
 							<a href="#"  id="checkButton">Tout cocher</a>
 							<script language="javascript">
 							var globalCheck = true;
 							var checkEverything = function(e){
-								var boxes = $(":checkbox");
+								var boxes = $("td.paid :checkbox");
 								boxes.attr("checked",globalCheck);
 								globalCheck=!globalCheck;
 								e.preventDefault();
