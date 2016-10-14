@@ -19,6 +19,7 @@ h1,h2,h3,h4{
 
 }
 
+
 h1{
 	color: #583816 !important;
 	
@@ -294,18 +295,21 @@ table.product{
 	/*border-top:1px solid #333 ;*/
 }
 
-.dateBox{
-	display: block;
+
+.dateBoxOffset{
 	position: absolute;
 	top: -16px;
-	left: -18px;
-	
+	left: -18px;	
+	display: block;
+}
+.dateBox{
+
 	border-radius:8px;
 	background-color:#B2823F;
 	color:#FFF;
 	font-size:13px;
 	line-height: 13px;
-	font-weight:bold;
+	//font-weight:bold;
 	
 	text-align:center;
 	vertical-align:middle;	
@@ -590,7 +594,7 @@ div.productBox{
 }
 
 
-//product composer
+//Product composer
 
 div.ProductComp{
 	margin:8px 0;

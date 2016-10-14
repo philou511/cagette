@@ -120,7 +120,12 @@ class View extends sugoi.BaseView {
 	}
 	
 	public function currency(){
-		return App.current.user.amap.getCurrency();
+		if (App.current.user == null || App.current.user.amap == null){
+			return "€";
+		}else{
+			return App.current.user.amap.getCurrency();	
+		}
+		
 	}
 	
 	public var DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];

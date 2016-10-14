@@ -84,7 +84,9 @@
 				<div>::m::</div>				
 			</div>
 			::if place!=null:: 
-			<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>			
+			<div style="margin-top:6px;">
+				<span class="glyphicon glyphicon-map-marker"></span> <a href="#" onclick="_.overlay('/group/place/::place.id::','::place.name::')">::place::</a>			
+			</div>
 			::end::
 		</div>		
 	</macro>
@@ -101,7 +103,11 @@
 				::end::
 				
 			</div>
-			::if place!=null:: <span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a> ::end::
+			::if place!=null:: 
+			<div style="margin-top:6px;">
+				<span class="glyphicon glyphicon-map-marker"></span> <a href="#" onclick="_.overlay('/group/place/::place.id::','::place.name::')">::place::</a>
+			</div>
+			::end::
 		</div>		
 	</macro>
 	

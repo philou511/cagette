@@ -114,12 +114,17 @@ class Main extends Controller {
 				}
 				
 				//if its a constant order contract, skip this delivery
-				if (d.contract.type == db.Contract.TYPE_CONSTORDERS) continue;
+				if (d.contract.type == db.Contract.TYPE_CONSTORDERS){
+					continue;
+				}
 				
 				//products preview if no orders
-				for ( p in d.contract.getProductsPreview(9)){
-					o.products.push( p.infos() );	
-				}
+				//if (d.orderStartDate != null && d.orderStartDate.getTime() <= now.getTime() && d.orderEndDate.getTime() >= now.getTime()){
+					for ( p in d.contract.getProductsPreview(9)){
+						o.products.push( p.infos() );	
+					}	
+				//}
+				
 			}
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER){
@@ -150,17 +155,18 @@ class Main extends Controller {
 				
 				
 			}
-			
-			//shuffle and limit product lists			
-			o.products = ArrayTool.shuffle(o.products);			
-			o.products = o.products.slice(0, 9);
-			
+		
 			out.set(d.getKey(), o);
 		}
 		
+		//shuffle and limit product lists		
+		for ( o in out){
+			o.products = thx.Arrays.shuffle(o.products);			
+			o.products = o.products.slice(0, 9);
+		}
+		
 		//decide if active or not
-		for( k in out.keys()){
-			var o = out.get(k);
+		for( o in out){
 			
 			if (o.orderStartDate == null) continue; //constant orders
 			

@@ -27,7 +27,7 @@ bundle:
 	@make LANG=fr templates
 	haxe cagette.hxml
 	rm -rf www/file/*.*
-	tar -cvf cagette.tar www config.xml.dist lang --exclude www/bower_components/bootstrap/node_modules
+	tar -cvf cagette.tar www config.xml.dist lang data --exclude www/bower_components/bootstrap/node_modules
 	scp cagette.tar www-data@cagette.net:/data/cagetteSite/www/
 	
 cp_plugin:

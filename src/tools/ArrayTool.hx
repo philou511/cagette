@@ -8,19 +8,19 @@ class ArrayTool
 	/**
 	 * shuffle (randomize) an array
 	 */
-	public static function shuffle<T>(arr:Array<T>):Array<T>
-	{
-		if (arr!=null) {
-			for (i in 0...arr.length) {
-				var j = Std.random(arr.length);
-				var a = arr[i];
-				var b = arr[j];
-				arr[i] = b;
-				arr[j] = a;
-			}
-		}
-		return arr;
-	}
+	//public static function shuffle<T>(arr:Array<T>):Array<T>
+	//{
+		//if (arr!=null) {
+			//for (i in 0...arr.length) {
+				//var j = Std.random(arr.length);
+				//var a = arr[i];
+				//var b = arr[j];
+				//arr[i] = b;
+				//arr[j] = a;
+			//}
+		//}
+		//return arr;
+	//}
 	
 	/**
 	 * Group a list of objects by date

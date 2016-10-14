@@ -139,6 +139,24 @@ class Amap extends Object
 		return Product.manager.search( $contractId in Lambda.map(contracts, function(c) return c.id),{orderBy:name}, false);
 	}
 	
+	/**
+	 * get next multi-deliveries 
+	 */
+	public function getDeliveries(?limit=3){
+		var out = new Map<String,db.Distribution>();
+		for ( c in getActiveContracts()){
+			for ( d in c.getDistribs(true,3)){
+				out.set(d.getKey(), d);
+			}
+		}
+		
+		var out = Lambda.array(out);
+		out.sort(function(a, b){
+			return Math.round(a.date.getTime() / 1000) - Math.round(b.date.getTime() / 1000);
+		});
+		return out.slice(0,limit);
+	}
+	
 	public function getPlaces() {
 		return Place.manager.search($amap == this, false);
 	}

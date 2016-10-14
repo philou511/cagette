@@ -86,6 +86,17 @@ class User extends Object {
 		return pass != null && pass != "";
 	}
 	
+	public function makeMemberOf(group:db.Amap){
+		var ua = db.UserAmap.get(this, group);
+		if (ua == null) {
+			ua = new db.UserAmap();
+			ua.user = this;
+			ua.amap = group;
+			ua.insert();
+		}
+		return ua;
+	}
+	
 	/**
 	 * Est ce que ce membre a la gestion de ce contrat
 	 * si null, est ce qu'il a la gestion d'un des contrat, n'importe lequel (utilse pour afficher 'gestion contrat' dans la nav )
@@ -297,6 +308,18 @@ class User extends Object {
 		
 	}
 	
+	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
+		var u = db.User.manager.select($email == email || $email2 == email, false);
+		if (u == null){
+			u = new db.User();
+			u.firstName = firstName;
+			u.lastName = lastName;
+			u.email = email;
+			u.insert();
+		}
+		return u;
+	}
+	
 	/**
 	 * recherche des users similaires 
 	 * @param	amapId
@@ -395,8 +418,7 @@ class User extends Object {
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 7); //expire dans une semaine
-		
+		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un mois
 		
 		var e = new ufront.mail.Email();
 		if (group == null){
@@ -411,13 +433,16 @@ class User extends Object {
 		var html = App.current.processTemplate("mail/invitation.mtt", { 
 			email:email,
 			email2:email2,
-			group:(group == null?null:group.name),
+			groupName:(group == null?null:group.name),
 			name:firstName,
 			k:k 			
 		} );		
 		e.setHtml(html);
 		
-		App.getMailer().send(e);
+		if (!App.config.DEBUG){
+			App.getMailer().send(e);	
+		}
+		
 	}
 	
 	/**

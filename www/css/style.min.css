@@ -38,7 +38,8 @@ table.product .desc{font-size:90%;color:#666;}
 .cartDiv #cart div.total{font-size:120%;margin-bottom:12px;margin-top:12px;border-top:1px solid #FFF;}
 .place{color:#666;font-weight:bold;margin-top:13px;padding:8px;font-size:13px;border-top:1px solid #CCC;}
 .distribMessage{color:#FFF;font-weight:bold;padding:4px;margin-top:13px;font-size:13px;background-color:#080;}
-.dateBox{display:block;position:absolute;top:-16px;left:-18px;border-radius:8px;background-color:#B2823F;color:#FFF;font-size:13px;line-height:13px;font-weight:bold;text-align:center;vertical-align:middle;width:90px;margin:0;padding:4px;box-shadow:4px 4px 0px #8E662A;}
+.dateBoxOffset{position:absolute;top:-16px;left:-18px;display:block;}
+.dateBox{border-radius:8px;background-color:#B2823F;color:#FFF;font-size:13px;line-height:13px;text-align:center;vertical-align:middle;width:90px;margin:0;padding:4px;box-shadow:4px 4px 0px #8E662A;}
 .dateBox .box{line-height:22px;background-color:#FFFFFF;color:#666;font-size:14px;font-weight:bold;text-align:center;margin:0px;border-radius:4px;}
 .dateBox a{color:#FFFFFF!important;}
 .dateBox a:hover{color:#FFFFFF!important;}

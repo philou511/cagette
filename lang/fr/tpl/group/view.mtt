@@ -1,7 +1,7 @@
-::use 'design.mtt'::
+::use 'base.mtt'::
 
 	
-	<div class="col-md-8 col-md-offset-2">
+	<div class="col-md-8 col-md-offset-2" style="margin-top:12px;">
 		
 		<div class="article">
 			
@@ -99,13 +99,29 @@
 						::end::
 					</p>
 					
-					::set place = group.getMainPlace()::
-					<p ::cond place!=null::>
-						<span class="glyphicon glyphicon-map-marker"></span> Livraisons :
+					
+					<p>
+						<h3> Prochaines distributions</h3>
 						
-						<b>::place.name::</b><br/>
-						$$nullSafe(::place.address1::) $$nullSafe(::place.address2::)
-						$$nullSafe(::place.zipCode::) $$nullSafe(::place.city::)
+						::foreach d group.getDeliveries(4)::
+						
+						
+						<div style="display:inline-block;margin-right:8px;vertical-align:top;">
+						::set s = getDate( d.date )::
+						::if isToday(d.date)::
+							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::d._place::)
+						::else::
+							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,::d._place::)
+						::end::
+						</div>
+						<!--
+						<div style="display:inline-block;margin-left:80px;min-height:70px;">
+							<b><span class="glyphicon glyphicon-map-marker"></span>::d._place.name::</b><br/>
+							$$nullSafe(::d._place.address1::) $$nullSafe(::d._place.address2::)
+							$$nullSafe(::d._place.zipCode::) $$nullSafe(::d._place.city::)
+						</div>	-->
+						
+						::end::
 					</p>
 					
 					<hr/>
@@ -155,6 +171,11 @@
 
 	</div>
 	
-	
+	<div class="col-md-12">
+		<div id="footer">
+			<a href="http://www.cagette.net">Cagette.net, le logiciel libre du circuit court</a>.	
+		</div>
+		
+	</div>
 
 ::end::

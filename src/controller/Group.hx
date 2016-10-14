@@ -300,5 +300,29 @@ class Group extends controller.Controller
 		
 	}
 	
+	@tpl('group/place.mtt')
+	public function doPlace(place:db.Place){
+		view.place = place;
+		
+		//build adress for google maps
+		var addr = "";
+		if (place.address1 != null)
+			addr += place.address1;
+			
+		if (place.address2 != null) {
+			addr += ", " + place.address2;
+		}
+		
+		if (place.zipCode != null) {
+			addr += " " + place.zipCode;
+		}
+		
+		if (place.city != null) {
+			addr += " " + place.city;
+		}
+		
+		view.addr = view.escapeJS(addr);
+	}
+	
 	
 }

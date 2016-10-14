@@ -26,8 +26,6 @@ class Install extends controller.Controller
 			status.push(getVersionStatus());
 			
 			view.status = status;
-			
-			
 		}
 	}
 	

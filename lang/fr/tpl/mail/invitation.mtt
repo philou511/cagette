@@ -8,12 +8,11 @@
 		Bonjour $$nullSafe(::name::),
 	</p>
 	
-	
 	<p>
-		::if group!=null::
+		::if groupName!=null::
 		
 		En tant que membre du groupe<br/>
-		<b style="font-size:140%;">::group::</b><br/>
+		<b style="font-size:140%;">::groupName::</b><br/>
 		vous avez été pré-inscrit sur le logiciel Cagette.net
 		
 		::else::
@@ -36,9 +35,6 @@
 		<a href="http://::HOST::/user/validate/::k::" class="btn" style="display:block;padding:8px;background:#227700;border-radius:8px;width:auto;color: white;margin: 12px; text-decoration: none;margin-top:16px;font-size:120%;">&raquo; Finaliser votre inscription</a>
 		
 	</p>
-	
-	
-	
 	
 </div>
 

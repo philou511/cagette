@@ -3,6 +3,8 @@
 -lib sugoi
 -lib hxevents
 -lib thx.semver
+-lib thx.csv
+-lib datetime
 -lib hscript
 -lib ufront-mail
 -cp common
@@ -15,5 +17,6 @@
 -cp common
 -cp js
 -lib sugoi
+-lib react
 -main App
 -js www/js/app.js

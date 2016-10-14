@@ -267,7 +267,7 @@ class User extends Controller
 	public function doValidate(k:String ) {
 		
 		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));		
-		if (uid == null || uid==0) throw Error('/user/login', 'Votre invitation est invalide ou a expiré');
+		if (uid == null || uid==0) throw Error('/user/login', 'Votre invitation est invalide ou a expiré ($k)');
 		var user = db.User.manager.get(uid, true);
 		
 		login(user, user.email);

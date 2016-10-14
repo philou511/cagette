@@ -63,7 +63,7 @@ class Tuto
 		}else {
 			
 			//prepare Bootstrap "popover"
-			var x = App.j(s.element).attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
+			var x = App.j(s.element).first().attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
 			var text = "<p>" + s.text + "</p>";
 			var bt = null;
 			switch(s.action) {
@@ -100,7 +100,7 @@ class Tuto
 			App.j(".popover .popover-content").append(footer);
 			
 			//highlight
-			App.j(s.element).addClass("highlight");
+			App.j(s.element).first().addClass("highlight");
 			LAST_ELEMENT = s.element;
 		}
 	}

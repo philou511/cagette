@@ -1433,7 +1433,7 @@ var Tuto = function(name,step) {
 		m1.find(".modal-footer").html(bt1);
 		m1.find(".modal-dialog").removeClass("modal-lg");
 	} else {
-		var x = js.JQuery(s.element).attr("title",tuto.name + " <div class='pull-right'>" + (step + 1) + "/" + tuto.steps.length + "</div>");
+		var x = js.JQuery(s.element).first().attr("title",tuto.name + " <div class='pull-right'>" + (step + 1) + "/" + tuto.steps.length + "</div>");
 		var text = "<p>" + s.text + "</p>";
 		var bt2 = null;
 		var _g = s.action;
@@ -1469,7 +1469,7 @@ var Tuto = function(name,step) {
 		if(bt2 != null) footer.find(".pull-right").append(bt2);
 		footer.find(".pull-left").append(this.makeCloseButton("Stop"));
 		js.JQuery(".popover .popover-content").append(footer);
-		js.JQuery(s.element).addClass("highlight");
+		js.JQuery(s.element).first().addClass("highlight");
 		Tuto.LAST_ELEMENT = s.element;
 	}
 };

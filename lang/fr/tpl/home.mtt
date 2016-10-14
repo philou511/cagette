@@ -54,12 +54,15 @@
 				<!-- block with orders -->
 				<div class="distrib">
 					<div class="header orders">
+						
+						<div class="dateBoxOffset">
 						::set x = getDate( d.myOrders[0].distrib.end )::
 						::if isToday(d.myOrders[0].distrib.date)::
 							$$today(::x.dow::,::x.d::,::x.m::,::x.y::,null)
 						::else::
 							$$date(::x.dow::,::x.d::,::x.m::,::x.y::,null)
 						::end::	
+						</div>
 						
 						<div class="pull-right text-right" ::cond d.myOrders[0].distrib._contract.type==1::>
 							::if user._amap.hasShopMode()::
@@ -224,17 +227,18 @@
 							
 						</div>
 						
+						<div class="dateBoxOffset">
 						::set s = getDate( d.startDate )::
 						::if isToday(d.startDate)::
 							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,null)
 						::else::
 							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
 						::end::
+						</div>
 						
 						<div class="info">						
 							::set e = getDate(d.endDate)::
 							<span class="glyphicon glyphicon-time"></span> Livraison de ::s.h+":"+s.i:: à ::e.h+":"+e.i::
-							
 							<br/>
 							<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::d.place.id::">::d.place::</a>	
 							<div class="address">
@@ -242,7 +246,6 @@
 								$$nullSafe(::d.place.address2::)
 								$$nullSafe(::d.place.zipCode::)
 								$$nullSafe(::d.place.city::)
-						
 							</div>
 						</div>	
 					</div>
@@ -263,9 +266,6 @@
 	
 </div>
 <div class="col-md-4">
-	
-	
-	
 	
 	<div class="block" >
 		
