@@ -10,7 +10,9 @@ class Place extends Object
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SString<32>;
 	public var city:SString<25>;
-	
+	//latitude/longitude
+	public var lat:SNull<SFloat>;
+	public var lng:SNull<SFloat>;
 	@hideInForms @:relation(amapId) public var amap : Amap;
 	
 	
