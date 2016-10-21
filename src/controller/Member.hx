@@ -670,8 +670,9 @@ class Member extends Controller
 	 */
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
-		view.transactions = db.Transaction.getTransactions(m);
-		
+		view.transactions = db.Transaction.getTransactions(m,app.user.amap);
+		view.member = m;
+		view.balance = db.UserAmap.get(m,app.user.amap).balance;
 		
 	}
 	

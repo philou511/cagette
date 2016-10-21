@@ -190,7 +190,7 @@ class Distribution extends Object
 	 * Return a string like $placeId-$date
 	 */
 	public function getKey():String{
-		return date.toString().substr(0, 10) +"-"+Std.string(place.id);
+		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
 	}
 
 

@@ -24,8 +24,8 @@ class UserAmap extends Object
 	public var userId : SInt;
 	#end
 	
-	//public var lastMemberShip : SNull<SDate>;
 	public var rights : SNull<SData<Array<Right>>>;
+	public var balance : SNull<SFloat>; //account balance in group currency
 	
 
 	static var CACHE = new Map<String,db.UserAmap>();

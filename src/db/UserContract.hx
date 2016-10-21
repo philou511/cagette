@@ -67,7 +67,7 @@ class UserContract extends Object
 	
 	
 	/**
-	 * 
+	 * For shared alternated orders in AMAP contracts
 	 * @param	distrib
 	 * @return	false -> user , true -> user2
 	 */
@@ -197,10 +197,10 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User,?invert:Bool) {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User,?invert:Bool):db.UserContract {
 		
 		//checks
-		if (quantity <= 0) return;
+		if (quantity <= 0) return null;
 		
 		// commented on 2016-09-05:  an admin should be able to create an order afterwards (i.e the client took a product at the last minute, and we to keep track of it )
 		//if (distribId != null) {
@@ -250,7 +250,7 @@ class UserContract extends Object
 				if (o.product.stock == 0) {
 					App.current.session.addMessage("Il n'y a plus de '" + o.product.name + "' en stock, nous l'avons donc retiré de votre commande", true);
 					o.delete();
-					return;
+					return null;
 					
 				}else if (o.product.stock - quantity < 0) {
 					var canceled = quantity - o.product.stock;
@@ -271,7 +271,7 @@ class UserContract extends Object
 			}	
 		}
 		
-		//return o;
+		return o;
 	}
 	
 	
@@ -440,6 +440,32 @@ class UserContract extends Object
 		}else{
 			return orders;
 		}
+		
+	}
+	
+	/**
+	 * Get the orders (varying orders) of a user for a multidistrib ( distribs with same day + same place )
+	 * 
+	 * @param	distribKey "$date|$placeId"
+	 */
+	public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User):Array<db.UserContract>{	
+		var contracts = db.Contract.getActiveContracts(App.current.user.amap);
+		for ( c in Lambda.array(contracts)){
+			if (c.type == db.Contract.TYPE_CONSTORDERS){
+				contracts.remove(c); //only varying orders
+			}
+		}
+		
+		var cids = Lambda.map(contracts, function(x) return x.id);
+		var start = Date.fromString(distribKey.split("|")[0] + " 00:00:00");
+		var end = Date.fromString(distribKey.split("|")[0] + " 23:59:00");
+		var ds = db.Distribution.manager.search($date > start && $date < end && ($contractId in cids), false);
+		var out = [];
+		for (d in ds) {
+			out = out.concat(Lambda.array(user.getOrdersFromDistrib(d)));
+		}
+		
+		return out;
 		
 	}
 }

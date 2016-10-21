@@ -284,6 +284,12 @@ Called from controller/Main.hx line 117
 	}
 	
 	@logged
+	function doTransaction(d:Dispatch) {
+		view.category = 'members';
+		d.dispatch(new controller.Transaction());
+	}
+	
+	@logged
 	function doDistribution(d:Dispatch) {
 		view.category = 'contractadmin';
 		d.dispatch(new controller.Distribution());

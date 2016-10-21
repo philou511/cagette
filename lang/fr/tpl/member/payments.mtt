@@ -1,0 +1,84 @@
+::use 'design.mtt'::
+
+<div class="col-md-4">
+	<h2>Coordonnées</h2>
+	<div class="article">
+		
+		<div style="font-weight:bold;font-size:120%;">::member.firstName:: ::member.lastName::
+		::if member.firstName2!=null && member.lastName2!=null::
+			& ::member.firstName2:: ::member.lastName2::
+			
+		::end::</div>
+		
+		$$nullSafe(::member.address1::)<br/>
+		$$nullSafe(::member.address2::)<br/>
+		$$nullSafe(::member.zipCode::) 
+		$$nullSafe(::member.city::)<br/>
+		<br/>
+		
+		::if member.phone!=null::
+			Tel : ::member.phone::<br/>
+		::end::
+
+		::if member.email!=null::
+			E-mail : <a href="mailto: ::member.email::">::member.email::</a><br/>
+		::end::
+		
+		::if member.email2!=null::
+			E-mail : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+		::end::
+		
+		
+	</div>
+	
+</div>
+
+<div class="col-md-8">
+	<h2>Paiements</h2>
+	<div class="article">
+		<table class="table table-striped table-condensed">
+		::foreach t transactions::
+		<tr>
+			<td>
+				::set x = t.getTypeIndex()::
+				
+				::if x==0::
+				<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+				::elseif x==1::
+				<i class="fa fa-shopping-basket" aria-hidden="true"></i>
+				::else::				
+				<i class="fa fa-credit-card" aria-hidden="true"></i>
+				::end::
+			</td>
+			<td>
+				::if t.pending==true::
+				<i class="fa fa-circle-thin" aria-hidden="true"></i>
+				::else::
+				<i class="fa fa-check" aria-hidden="true"></i>
+				::end::
+			</td>
+			<td>::t.name::</td>
+			<td>::t.amount:: ::currency()::</td>
+			<td>::hDate(t.date)::</td>
+		</tr>
+		::end::
+		
+		<tr>
+			<td colspan="2"></td>
+			<td>Solde : </td>
+			<th>::balance:: ::currency()::</th>
+			<td></td>
+		</tr>
+		
+		</table>
+		
+		
+		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::)
+		
+	</div>
+</div>
+
+
+
+
+::end::

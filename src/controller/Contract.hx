@@ -43,9 +43,7 @@ class Contract extends Controller
 			if (orders.length == 0) continue;
 			constOrders.push({contract:c, orders:db.UserContract.prepare(orders) });
 		}
-		
-		
-		
+				
 		//commandes variables groupées par date de distrib
 		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == a && $endDate > oneMonthAgo, false);
 		
