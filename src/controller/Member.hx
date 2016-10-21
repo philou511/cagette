@@ -662,7 +662,16 @@ class Member extends Controller
 		}
 		
 		view.form = form;
+	}
 	
+	
+	/**
+	 * user payments history
+	 */
+	@tpl('member/payments.mtt')
+	function doPayments(m:db.User){
+		view.transactions = db.Transaction.getTransactions(m);
+		
 		
 	}
 	
