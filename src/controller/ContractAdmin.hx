@@ -312,30 +312,43 @@ class ContractAdmin extends Controller
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 		var contracts = app.user.amap.getActiveContracts(true);
 		var cids = Lambda.map(contracts, function(c) return c.id);
-		var cconst = [];
-		var cvar = [];
-		for ( c in contracts) {
-			if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
-			if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
+		
+		//distribs for both types in active contracts
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 , false);		
+
+		
+		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+		
+		var out = new Map<Int,Dynamic>();//key : vendor id
+		
+		for (d in distribs){
+			var vid = d.contract.vendor.id;
+			var o = out.get(vid);
 			
+			if (o == null){
+				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});	
+			}else{
+				
+				//add orders with existing ones
+				for ( x in db.UserContract.getOrdersByProduct( d.contract , d )){
+					
+					//find record in existing orders
+					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
+					if (f == null){
+						//new product order
+						o.orders.push(x);						
+					}else{
+						//increment existing
+						f.quantity += untyped x.quantity;
+						f.total += untyped x.total;
+					}
+				}
+				out.set(vid, o);
+			}
 		}
 		
-		//distribs
-		var vdistribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
-		var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
 		
-		if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
-		
-		var out = [];
-		for (d in vdistribs){
-			out.push({contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});
-		}
-		
-		for (d in cdistribs){
-			out.push({contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});
-		}
-		
-		view.orders = out;
+		view.orders = Lambda.array(out);
 		view.date = date;
 		
 		

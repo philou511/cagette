@@ -65,6 +65,9 @@ App.prototype = {
 		}
 		return out;
 	}
+	,getHostedPlugin: function() {
+		return new hosted_js_App();
+	}
 	,__class__: App
 };
 var Cart = function() {
@@ -5346,6 +5349,72 @@ haxe_macro_TypedExprDef.TCast = function(e,m) { var $x = ["TCast",24,e,m]; $x.__
 haxe_macro_TypedExprDef.TMeta = function(m,e1) { var $x = ["TMeta",25,m,e1]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
 haxe_macro_TypedExprDef.TEnumParameter = function(e1,ef,index) { var $x = ["TEnumParameter",26,e1,ef,index]; $x.__enum__ = haxe_macro_TypedExprDef; $x.toString = $estr; return $x; };
 haxe_macro_TypedExprDef.__empty_constructs__ = [haxe_macro_TypedExprDef.TBreak,haxe_macro_TypedExprDef.TContinue];
+var hosted_js_App = function() {
+};
+$hxClasses["hosted.js.App"] = hosted_js_App;
+hosted_js_App.__name__ = ["hosted","js","App"];
+hosted_js_App.prototype = {
+	initMap: function(adm) {
+		if(adm == null) adm = false;
+		return new hosted_js_CMap(adm);
+	}
+	,__class__: hosted_js_App
+};
+var hosted_js_CMap = function(adm) {
+	window.onload = $bind(this,this.onload);
+	this.points = [];
+	this.isAdmin = adm;
+};
+$hxClasses["hosted.js.CMap"] = hosted_js_CMap;
+hosted_js_CMap.__name__ = ["hosted","js","CMap"];
+hosted_js_CMap.prototype = {
+	map: null
+	,points: null
+	,isAdmin: null
+	,onload: function() {
+		this.map = L.map("map").setView([47.0836,2.3948],6);
+		L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ",{ attribution : "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>", maxZoom : 32, id : "bubar.cih3inmqd00tjuxm7oc2532l0", accessToken : "pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"}).addTo(this.map);
+		this.map.on("moveend",$bind(this,this.loadDatas));
+		this.loadDatas();
+	}
+	,loadDatas: function(e) {
+		var bounds = this.map.getBounds();
+		var min = bounds.getSouthWest();
+		var max = bounds.getNorthEast();
+		haxe_Log.trace("MIN : " + min.lat + "-" + min.lng,{ fileName : "CMap.hx", lineNumber : 45, className : "hosted.js.CMap", methodName : "loadDatas"});
+		haxe_Log.trace("MAX : " + max.lat + "-" + max.lng,{ fileName : "CMap.hx", lineNumber : 46, className : "hosted.js.CMap", methodName : "loadDatas"});
+		var r = new haxe_Http("/p/hosted/book/mapDatas/" + min.lat + "/" + max.lat + "/" + min.lng + "/" + max.lng);
+		r.onData = $bind(this,this.onDatas);
+		r.request();
+	}
+	,onDatas: function(d) {
+		var _g = 0;
+		var _g1 = this.points;
+		while(_g < _g1.length) {
+			var a = _g1[_g];
+			++_g;
+			this.map.removeLayer(a);
+		}
+		var groups = haxe_Unserializer.run(d);
+		var _g2 = 0;
+		while(_g2 < groups.length) {
+			var g = groups[_g2];
+			++_g2;
+			var marker = L.marker([g.lat,g.lng],{ icon : this.getIcon()});
+			var html = "<h3><a href=\"https://app.cagette.net/group/" + g.id + "\" target=\"_blank\">" + g.name + "</a></h3>" + g.address;
+			marker.bindPopup(html).addTo(this.map);
+			this.points.push(marker);
+		}
+	}
+	,getIcon: function() {
+		return L.icon({ iconUrl : "/pa/hosted/img/marker-icon.png", iconSize : [25,41]});
+	}
+	,nullSafe: function(s) {
+		if(s == null) return "";
+		return s;
+	}
+	,__class__: hosted_js_CMap
+};
 var js__$Boot_HaxeError = function(val) {
 	Error.call(this);
 	this.val = val;

@@ -58,7 +58,7 @@
 						<div class="dateBoxOffset">
 						::set x = getDate( d.myOrders[0].distrib.end )::
 						::if isToday(d.myOrders[0].distrib.date)::
-							$$today(::x.dow::,::x.d::,::x.m::,::x.y::,null)
+							$$today(::x.dow::,::x.d::,::x.m::,::x.y::,::x.h::,null)
 						::else::
 							$$date(::x.dow::,::x.d::,::x.m::,::x.y::,null)
 						::end::	
@@ -230,7 +230,7 @@
 						<div class="dateBoxOffset">
 						::set s = getDate( d.startDate )::
 						::if isToday(d.startDate)::
-							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,null)
+							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,null)
 						::else::
 							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
 						::end::

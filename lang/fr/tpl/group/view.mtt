@@ -109,7 +109,7 @@
 						<div style="display:inline-block;margin-right:8px;vertical-align:top;">
 						::set s = getDate( d.date )::
 						::if isToday(d.date)::
-							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::d._place::)
+							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,::d._place::)
 						::else::
 							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,::d._place::)
 						::end::

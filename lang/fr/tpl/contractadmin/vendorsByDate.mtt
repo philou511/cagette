@@ -23,7 +23,7 @@
 			<tr>
 				<th colspan="5">
 					
-					<div class="pull-right">$$export(::"/contractAdmin/ordersByProduct/"+o.contract.id+"?csv=1&d="+o.distrib.id::)</div>
+					<!--<div class="pull-right">$$export(::"/contractAdmin/ordersByProduct/"+o.contract.id+"?csv=1&d="+o.distrib.id::)</div>-->
 					<h4>::o.contract.name:: - ::o.contract._vendor.name::					</h4>
 					
 				</th>

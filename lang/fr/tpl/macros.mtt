@@ -90,11 +90,11 @@
 			::end::
 		</div>		
 	</macro>
-	<macro name="today(dow,d,m,y,place)">
+	<macro name="today(dow,d,m,y,h,place)">
 		<div class="dateBox" style="background-color:#080;" >
 			<img src="/img/go.png"/>
 			<div style="font-size:16px;margin-bottom:8px;">
-				::if Std.parseInt(h)<12::
+				::if Std.parseInt(h)<=12::
 					CE MATIN
 				::elseif Std.parseInt(h)<18::
 					<span style="font-size:14px;">CET<br/>APRES-MIDI</span>

@@ -25,7 +25,7 @@
     <option noInlineOnDebug="False" />
     <option mainClass="App" />
     <option enabledebug="False" />
-    <option additional="-D debugip=localhost:18080&#xA;-D weblogid=cagette&#xA;--next&#xA;-dce no&#xA;-cp common&#xA;-cp js&#xA;-lib sugoi&#xA;-lib react&#xA;-D react_global&#xA;-main App&#xA;-js www/js/app.js" />
+    <option additional="-D debugip=localhost:18080&#xA;-D weblogid=cagette&#xA;--next&#xA;-dce no&#xA;-cp common&#xA;-cp js&#xA;-lib sugoi&#xA;-lib react&#xA;-lib hxleaflet&#xA;-lib cagette-hosted&#xA;-D react_global&#xA;-D plugins&#xA;-main App&#xA;-js www/js/app.js" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
