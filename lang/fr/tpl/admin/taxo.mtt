@@ -13,13 +13,13 @@
 		
 			<img src="/img/taxo/cat::c.id::.png" style="float:right;width:100px;border:1px solid #666;" />
 
-			<h4>#::c.id:: ::c.name::</h4>
+			<h4>#::c.id:: <a href="/db/TxpCategory/edit/::c.id::" target="_blank">::c.name::</a></h4>
 			::foreach sc c.getSubCategories()::
 				<p style="margin-left:12px;">
-					<b>::sc.name::</b>
+					<b><a href="/db/TxpSubCategory/edit/::sc.id::" target="_blank">::sc.name::</a></b>
 					<br/>
 					::foreach p sc.getProducts()::
-					::p.name::,
+					<a href="/db/TxpProduct/edit/::p.id::" target="_blank">::p.name::</a>,
 					::end::
 					
 				</p>

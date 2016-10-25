@@ -19,4 +19,8 @@ class TxpSubCategory extends Object
 	
 		
 	}
+	
+	override public function toString(){
+		return '#$id-$name';
+	}
 }

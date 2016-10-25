@@ -14,6 +14,9 @@ class TxpProduct extends Object
 	@:relation(categoryId) public var category : db.TxpCategory;
 	@:relation(subCategoryId) public var subCategory : db.TxpSubCategory;
 	
+	override public function toString(){
+		return '#$id-$name';
+	}
 	
 }
 

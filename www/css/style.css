@@ -387,11 +387,14 @@ div.productBox .price {
   .tt-suggestion:hover {
     background-color: #f0d47e; }
 
-.txpProduct {
+#pInput .txpProduct {
   color: #AAA;
   font-weight: bold;
   font-size: 0.8em;
   margin: 4px 0; }
+#pInput img {
+  max-width: 100px;
+  max-height: 100px; }
 
 div.ProductComp {
   margin: 8px 0;
