@@ -175,7 +175,8 @@ class App extends sugoi.BaseApp {
 		out.set("Unit", "Pièce");
 		out.set("Kilogram", "Kilogrammes");
 		out.set("Gram", "Grammes");
-		out.set("Litre", "Litres");
+		out.set("Litre", "Litres");		
+		out.set("htPrice", "Prix H.T");
 		return out;
 	}
 	

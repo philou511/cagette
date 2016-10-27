@@ -45,8 +45,18 @@ class Product extends Object
 	 */
 	public function getImage() {
 		if (image == null) {
-			var e = Type.createEnumIndex(ProductType, type);		
-			return "/img/"+Std.string(e).substr(2).toLowerCase()+".png";	
+			
+			if (txpProduct != null){
+				
+				return "/img/taxo/cat" + txpProduct.category.id + ".png";
+				
+			}else{
+				//old "type" field
+				var e = Type.createEnumIndex(ProductType, type);		
+				return "/img/"+Std.string(e).substr(2).toLowerCase()+".png";		
+			}
+			
+			
 		}else {
 			return App.current.view.file(image);
 		}

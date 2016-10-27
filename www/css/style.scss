@@ -586,11 +586,21 @@ div.productBox{
 		background-color:darken(#f5e3ac,10%);
 	}
 }
-.txpProduct{
-	color:#AAA;
-	font-weight:bold;
-	font-size:0.8em;
-	margin:4px 0;
+
+//txp product input
+#pInput{
+	
+	.txpProduct{
+		color:#AAA;
+		font-weight:bold;
+		font-size:0.8em;
+		margin:4px 0;
+	}
+		
+	img{
+		max-width:100px;
+		max-height:100px;
+	}
 }
 
 

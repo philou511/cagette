@@ -40,12 +40,11 @@ class Product extends Controller
 
 		f.removeElementByName("contractId");
 		
+		//Product Taxonomy:
 		//view.taxo = db.TxpProduct.manager.all();
 		//f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
-		
 		var txId = d.txpProduct == null ? null : d.txpProduct.id;
-		var formName = f.name;
-		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}",$txId,"$formName");</script>';
+		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}",$txId,"${f.name}");</script>';
 		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
 
 		if (f.isValid()) {
