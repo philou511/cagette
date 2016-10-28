@@ -107,7 +107,7 @@ Cart.prototype = {
 			var p = _g.products.h[x.productId];
 			if(p == null) return "";
 			var btn = "<a onClick='cart.remove(" + p.id + ")' class='btn btn-default btn-xs' data-toggle='tooltip' data-placement='top' title='Retirer de la commande'><span class='glyphicon glyphicon-remove'></span></a>&nbsp;";
-			return "<div class='row'> \r\n\t\t\t\t<div class = 'order col-md-9' > <b> " + x.quantity + " </b> x " + p.name + " </div>\r\n\t\t\t\t<div class = 'col-md-3'> " + btn + "</div>\t\t\t\r\n\t\t\t</div>";
+			return "<div class='row'> \n\t\t\t\t<div class = 'order col-md-9' > <b> " + x.quantity + " </b> x " + p.name + " </div>\n\t\t\t\t<div class = 'col-md-3'> " + btn + "</div>\t\t\t\n\t\t\t</div>";
 		}).join("\n"));
 		var total = 0.0;
 		var _g1 = 0;
@@ -414,102 +414,55 @@ TutoPlacement.TPRight = ["TPRight",3];
 TutoPlacement.TPRight.toString = $estr;
 TutoPlacement.TPRight.__enum__ = TutoPlacement;
 TutoPlacement.__empty_constructs__ = [TutoPlacement.TPTop,TutoPlacement.TPBottom,TutoPlacement.TPLeft,TutoPlacement.TPRight];
-var haxe_IMap = function() { };
-$hxClasses["haxe.IMap"] = haxe_IMap;
-haxe_IMap.__name__ = ["haxe","IMap"];
-haxe_IMap.prototype = {
-	get: null
-	,set: null
-	,exists: null
-	,remove: null
-	,keys: null
-	,iterator: null
-	,toString: null
-	,__class__: haxe_IMap
+var _$Map_Map_$Impl_$ = {};
+$hxClasses["_Map.Map_Impl_"] = _$Map_Map_$Impl_$;
+_$Map_Map_$Impl_$.__name__ = ["_Map","Map_Impl_"];
+_$Map_Map_$Impl_$._new = null;
+_$Map_Map_$Impl_$.set = function(this1,key,value) {
+	this1.set(key,value);
 };
-var haxe_ds_StringMap = function() {
-	this.h = { };
+_$Map_Map_$Impl_$.get = function(this1,key) {
+	return this1.get(key);
 };
-$hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
-haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
-haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
-haxe_ds_StringMap.prototype = {
-	h: null
-	,rh: null
-	,isReserved: function(key) {
-		return __map_reserved[key] != null;
-	}
-	,set: function(key,value) {
-		if(__map_reserved[key] != null) this.setReserved(key,value); else this.h[key] = value;
-	}
-	,get: function(key) {
-		if(__map_reserved[key] != null) return this.getReserved(key);
-		return this.h[key];
-	}
-	,exists: function(key) {
-		if(__map_reserved[key] != null) return this.existsReserved(key);
-		return this.h.hasOwnProperty(key);
-	}
-	,setReserved: function(key,value) {
-		if(this.rh == null) this.rh = { };
-		this.rh["$" + key] = value;
-	}
-	,getReserved: function(key) {
-		if(this.rh == null) return null; else return this.rh["$" + key];
-	}
-	,existsReserved: function(key) {
-		if(this.rh == null) return false;
-		return this.rh.hasOwnProperty("$" + key);
-	}
-	,remove: function(key) {
-		if(__map_reserved[key] != null) {
-			key = "$" + key;
-			if(this.rh == null || !this.rh.hasOwnProperty(key)) return false;
-			delete(this.rh[key]);
-			return true;
-		} else {
-			if(!this.h.hasOwnProperty(key)) return false;
-			delete(this.h[key]);
-			return true;
-		}
-	}
-	,keys: function() {
-		var _this = this.arrayKeys();
-		return HxOverrides.iter(_this);
-	}
-	,arrayKeys: function() {
-		var out = [];
-		for( var key in this.h ) {
-		if(this.h.hasOwnProperty(key)) out.push(key);
-		}
-		if(this.rh != null) {
-			for( var key in this.rh ) {
-			if(key.charCodeAt(0) == 36) out.push(key.substr(1));
-			}
-		}
-		return out;
-	}
-	,iterator: function() {
-		return new haxe_ds__$StringMap_StringMapIterator(this,this.arrayKeys());
-	}
-	,toString: function() {
-		var s = new StringBuf();
-		s.b += "{";
-		var keys = this.arrayKeys();
-		var _g1 = 0;
-		var _g = keys.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var k = keys[i];
-			if(k == null) s.b += "null"; else s.b += "" + k;
-			s.b += " => ";
-			s.add(Std.string(__map_reserved[k] != null?this.getReserved(k):this.h[k]));
-			if(i < keys.length) s.b += ", ";
-		}
-		s.b += "}";
-		return s.b;
-	}
-	,__class__: haxe_ds_StringMap
+_$Map_Map_$Impl_$.exists = function(this1,key) {
+	return this1.exists(key);
+};
+_$Map_Map_$Impl_$.remove = function(this1,key) {
+	return this1.remove(key);
+};
+_$Map_Map_$Impl_$.keys = function(this1) {
+	return this1.keys();
+};
+_$Map_Map_$Impl_$.iterator = function(this1) {
+	return this1.iterator();
+};
+_$Map_Map_$Impl_$.toString = function(this1) {
+	return this1.toString();
+};
+_$Map_Map_$Impl_$.arrayWrite = function(this1,k,v) {
+	this1.set(k,v);
+	return v;
+};
+_$Map_Map_$Impl_$.toStringMap = function(t) {
+	return new haxe_ds_StringMap();
+};
+_$Map_Map_$Impl_$.toIntMap = function(t) {
+	return new haxe_ds_IntMap();
+};
+_$Map_Map_$Impl_$.toEnumValueMapMap = function(t) {
+	return new haxe_ds_EnumValueMap();
+};
+_$Map_Map_$Impl_$.toObjectMap = function(t) {
+	return new haxe_ds_ObjectMap();
+};
+_$Map_Map_$Impl_$.fromStringMap = function(map) {
+	return map;
+};
+_$Map_Map_$Impl_$.fromIntMap = function(map) {
+	return map;
+};
+_$Map_Map_$Impl_$.fromObjectMap = function(map) {
+	return map;
 };
 var Data = function() { };
 $hxClasses["Data"] = Data;
@@ -953,56 +906,6 @@ _$List_ListIterator.prototype = {
 		return this.val;
 	}
 	,__class__: _$List_ListIterator
-};
-var _$Map_Map_$Impl_$ = {};
-$hxClasses["_Map.Map_Impl_"] = _$Map_Map_$Impl_$;
-_$Map_Map_$Impl_$.__name__ = ["_Map","Map_Impl_"];
-_$Map_Map_$Impl_$._new = null;
-_$Map_Map_$Impl_$.set = function(this1,key,value) {
-	this1.set(key,value);
-};
-_$Map_Map_$Impl_$.get = function(this1,key) {
-	return this1.get(key);
-};
-_$Map_Map_$Impl_$.exists = function(this1,key) {
-	return this1.exists(key);
-};
-_$Map_Map_$Impl_$.remove = function(this1,key) {
-	return this1.remove(key);
-};
-_$Map_Map_$Impl_$.keys = function(this1) {
-	return this1.keys();
-};
-_$Map_Map_$Impl_$.iterator = function(this1) {
-	return this1.iterator();
-};
-_$Map_Map_$Impl_$.toString = function(this1) {
-	return this1.toString();
-};
-_$Map_Map_$Impl_$.arrayWrite = function(this1,k,v) {
-	this1.set(k,v);
-	return v;
-};
-_$Map_Map_$Impl_$.toStringMap = function(t) {
-	return new haxe_ds_StringMap();
-};
-_$Map_Map_$Impl_$.toIntMap = function(t) {
-	return new haxe_ds_IntMap();
-};
-_$Map_Map_$Impl_$.toEnumValueMapMap = function(t) {
-	return new haxe_ds_EnumValueMap();
-};
-_$Map_Map_$Impl_$.toObjectMap = function(t) {
-	return new haxe_ds_ObjectMap();
-};
-_$Map_Map_$Impl_$.fromStringMap = function(map) {
-	return map;
-};
-_$Map_Map_$Impl_$.fromIntMap = function(map) {
-	return map;
-};
-_$Map_Map_$Impl_$.fromObjectMap = function(map) {
-	return map;
 };
 Math.__name__ = ["Math"];
 var Reflect = function() { };
@@ -1637,6 +1540,19 @@ Type.enumIndex = function(e) {
 };
 Type.allEnums = function(e) {
 	return e.__empty_constructs__;
+};
+var haxe_IMap = function() { };
+$hxClasses["haxe.IMap"] = haxe_IMap;
+haxe_IMap.__name__ = ["haxe","IMap"];
+haxe_IMap.prototype = {
+	get: null
+	,set: null
+	,exists: null
+	,remove: null
+	,keys: null
+	,iterator: null
+	,toString: null
+	,__class__: haxe_IMap
 };
 var haxe_Http = function(url) {
 	this.url = url;
@@ -3342,6 +3258,90 @@ haxe_ds__$StringMap_StringMapIterator.prototype = {
 	}
 	,__class__: haxe_ds__$StringMap_StringMapIterator
 };
+var haxe_ds_StringMap = function() {
+	this.h = { };
+};
+$hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
+haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
+haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
+haxe_ds_StringMap.prototype = {
+	h: null
+	,rh: null
+	,isReserved: function(key) {
+		return __map_reserved[key] != null;
+	}
+	,set: function(key,value) {
+		if(__map_reserved[key] != null) this.setReserved(key,value); else this.h[key] = value;
+	}
+	,get: function(key) {
+		if(__map_reserved[key] != null) return this.getReserved(key);
+		return this.h[key];
+	}
+	,exists: function(key) {
+		if(__map_reserved[key] != null) return this.existsReserved(key);
+		return this.h.hasOwnProperty(key);
+	}
+	,setReserved: function(key,value) {
+		if(this.rh == null) this.rh = { };
+		this.rh["$" + key] = value;
+	}
+	,getReserved: function(key) {
+		if(this.rh == null) return null; else return this.rh["$" + key];
+	}
+	,existsReserved: function(key) {
+		if(this.rh == null) return false;
+		return this.rh.hasOwnProperty("$" + key);
+	}
+	,remove: function(key) {
+		if(__map_reserved[key] != null) {
+			key = "$" + key;
+			if(this.rh == null || !this.rh.hasOwnProperty(key)) return false;
+			delete(this.rh[key]);
+			return true;
+		} else {
+			if(!this.h.hasOwnProperty(key)) return false;
+			delete(this.h[key]);
+			return true;
+		}
+	}
+	,keys: function() {
+		var _this = this.arrayKeys();
+		return HxOverrides.iter(_this);
+	}
+	,arrayKeys: function() {
+		var out = [];
+		for( var key in this.h ) {
+		if(this.h.hasOwnProperty(key)) out.push(key);
+		}
+		if(this.rh != null) {
+			for( var key in this.rh ) {
+			if(key.charCodeAt(0) == 36) out.push(key.substr(1));
+			}
+		}
+		return out;
+	}
+	,iterator: function() {
+		return new haxe_ds__$StringMap_StringMapIterator(this,this.arrayKeys());
+	}
+	,toString: function() {
+		var s = new StringBuf();
+		s.b += "{";
+		var keys = this.arrayKeys();
+		var _g1 = 0;
+		var _g = keys.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var k = keys[i];
+			if(k == null) s.b += "null"; else s.b += "" + k;
+			s.b += " => ";
+			s.add(Std.string(__map_reserved[k] != null?this.getReserved(k):this.h[k]));
+			if(i < keys.length) s.b += ", ";
+		}
+		s.b += "}";
+		return s.b;
+	}
+	,__class__: haxe_ds_StringMap
+};
 var haxe_ds_WeakMap = function() {
 	throw new js__$Boot_HaxeError("Not implemented for this platform");
 };
@@ -4098,7 +4098,6 @@ function $iterator(o) { if( o instanceof Array ) return function() { return HxOv
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 function $arrayPushClosure(a) { return function(x) { a.push(x); }; }
-var __map_reserved = {}
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
@@ -4142,6 +4141,7 @@ if(Array.prototype.filter == null) Array.prototype.filter = function(f1) {
 	}
 	return a1;
 };
+var __map_reserved = {}
 var q = window.jQuery;
 var js = js || {}
 js.JQuery = q;
@@ -4160,7 +4160,7 @@ Data.TUTOS = (function($this) {
 	var $r;
 	var _g = new haxe_ds_StringMap();
 	{
-		var value = { name : "Visite guidée coordinateur", steps : [{ element : null, text : "<p>Afin de mieux découvrir Cagette.net, nous vous proposons de faire une visite guidée de l'interface du logiciel.\r\n\t\t\t\t\t<br/> Vous aurez ainsi une vue d'ensemble sur les différents outils qui sont à votre disposition.</p>\r\n\t\t\t\t\t<p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</p>", action : TutoAction.TANext, placement : null},{ element : "ul.nav.navbar-left", text : "Cette partie de la barre de navigation est visible par tous les adhérents.</br>\r\n\t\t\t\t\tElle permet d'accéder aux trois rubriques principales :\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li> La <b>page d'accueil</b> qui permet d'accéder aux commandes et de voir son planning de distribution.</li>\r\n\t\t\t\t\t\t<li> La page <b>Mon compte</b> pour mettre à jour mes coordonnées et consulter mon historique de commande</li>\r\n\t\t\t\t\t\t<li> La page <b>Mon groupe</b> pour connaître les différents producteurs et coordinateurs de mon groupe\r\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "ul.nav.navbar-right", text : "Cette partie est exclusivement réservée <b>aux coordinateurs.</b>\r\n\t\t\t\t\tC'est là que vous allez pouvoir administrer les fiches d'adhérents, les commandes, les produits, etc.<br/>\r\n\t\t\t\t\t<p>Cliquez maintenant sur <b>Gestion adhérents</b></p>\r\n\t\t\t\t\t", action : TutoAction.TAPage("/member"), placement : TutoPlacement.TPBottom},{ element : ".article .table td:first", text : "Cette rubrique permet d'administrer la liste des adhérents.<br/>\r\n\t\t\t\t\tÀ chaque fois que vous saisissez un nouvel adhérent, un compte est créé à son nom. \r\n\t\t\t\t\tIl pourra donc se connecter à Cagette.net pour faire des commandes ou consulter son planning de distribution.\r\n\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>", action : TutoAction.TAPage("/member/view/*"), placement : TutoPlacement.TPRight},{ element : ".article:first", text : "Nous sommes maintenant sur la fiche d'un adhérent. Ici vous pourrez :\r\n\t\t\t\t\t<ul>\r\n\t\t\t\t\t<li>voir ou modifier ses coordonnées</li>\r\n\t\t\t\t\t<li>gérer ses cotisations à votre association</li>\r\n\t\t\t\t\t<li>voir un récapitulatif de ses commandes</li>\r\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPRight},{ element : "ul.nav #contractadmin", text : "Allons voir maintenant la page de gestion des <b>contrats</b> qui est très importante pour les coordinateurs.", action : TutoAction.TAPage("/contractAdmin"), placement : TutoPlacement.TPBottom},{ element : "#contracts", text : "Ici se trouve la liste des <b>contrats</b>. \r\n\t\t\t\t\tIls comportent une date de début, une date de fin, et représentent votre relation avec un producteur. <br/>\r\n\t\t\t\t\t<p>\r\n\t\t\t\t\tC'est ici que vous pourrez gérer :\r\n\t\t\t\t\t\t<ul>\r\n\t\t\t\t\t\t<li>la liste de produits de ce producteur</li>\r\n\t\t\t\t\t\t<li>les commandes des adhérents pour ce producteur</li>\r\n\t\t\t\t\t\t<li>planifier les distributions</li>\r\n\t\t\t\t\t\t</ul>\r\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "#vendors", text : "Ici vous pouvez gérer la liste des <b>producteurs ou fournisseurs</b> avec lesquels vous collaborez.<br/>\r\n\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au mieux les adhérents", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#places", text : "Ici vous pouvez gérer la liste des <b>lieux de distribution</b>.<br/>\r\n\t\t\t\t\tN'oubliez pas de mettre l'adresse complète car une carte s'affiche à partir de l'adresse du lieu.", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#contracts table .btn:first", text : "Allons voir maintenant de plus près comment administrer un contrat. <b>Cliquez sur ce bouton</b>", action : TutoAction.TAPage("/contractAdmin/view/*"), placement : TutoPlacement.TPBottom},{ element : ".table.table-bordered:first", text : "Ici vous avez un récapitulatif du contrat.<br/>Il y a deux types de contrats : <ul>\r\n\t\t\t\t\t<li>Les contrats AMAP : l'adhérent s'engage sur toute la durée du contrat avec une commande fixe.</li>\r\n\t\t\t\t\t<li>Les contrats à commande variable : l'adhérent peut commander ce qu'il veut à chaque distribution.</li>\r\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPRight},{ element : "#subnav #products", text : "Allons voir maintenant la page de gestion des <b>Produits</b>", action : TutoAction.TAPage("/contractAdmin/products/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Sur cette page, vous pouvez gérer la liste des produits proposée par ce producteur.<br/>\r\n\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il est également possible d'ajouter un descriptif et une photo.", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#subnav #deliveries", text : "Allons voir maintenant la page de gestion des <b>distributions</b>", action : TutoAction.TAPage("/contractAdmin/distributions/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Ici nous pouvons gérer la liste des distributions pour ce producteur.<br/>\r\n\t\t\t\t\tDans le logiciel, une distribution comporte une date avec une heure de début et heure de fin de distribution. \r\n\t\t\t\t\tIl faut aussi préciser le lieu de distribution à partir de la liste que nous avons vue précédement.", action : TutoAction.TANext, placement : TutoPlacement.TPLeft},{ element : "#subnav #orders", text : "Allons voir maintenant la page de gestion des <b>commandes</b>", action : TutoAction.TAPage("/contractAdmin/orders/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Ici nous pouvons gérer la liste des commandes relatives à ce producteur.<br/>\r\n\t\t\t\t\tSi vous choisissez d'\"ouvrir les commandes\" aux adhérents, ils pourront eux-mêmes saisir leurs commandes en se connectant à Cagette.net.<br/>\r\n\t\t\t\t\tCette page centralisera automatiquement les commandes pour ce producteur. \r\n\t\t\t\t\tSinon, en tant que coordinateur, vous pouvez saisir les commandes pour les adhérents depuis cette page.", action : TutoAction.TANext, placement : TutoPlacement.TPLeft},{ element : "ul.nav #messages", text : "<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</p><p>Explorons maintenant la messagerie.</p>", action : TutoAction.TAPage("/messages"), placement : TutoPlacement.TPBottom},{ element : null, text : "<p>La messagerie vous permet d'envoyer des emails à différentes listes d'adhérents.\r\n\t\t\t\t\tIl n'est plus nécéssaire de maintenir de nombreuses listes d'emails en fonction des contrats, toutes ces listes\r\n\t\t\t\t\tsont gérées automatiquement.</p>\r\n\t\t\t\t\t<p>Les emails sont envoyés avec votre adresse email en tant qu'expéditeur, vous recevrez donc les réponses sur votre boite email habituelle.</p<\r\n\t\t\t\t\t", action : TutoAction.TANext, placement : null},{ element : "ul.nav #amapadmin", text : "Cliquez maintenant sur cette rubrique", action : TutoAction.TAPage("/amapadmin"), placement : TutoPlacement.TPBottom},{ element : "#subnav", text : "<p>Dans cette dernière rubrique, vous pouvez configurer tout ce qui concerne votre groupe en général.</p>\r\n\t\t\t\t\t<p>La rubrique <b>Droits et accès</b> est importante puisque c'est là que vous pourrez nommer d'autres coordinateurs parmi les adhérents. Ils pourront\r\n\t\t\t\t\tainsi gérer les contrats dont ils s'occupent, utiliser la messagerie, etc.\r\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "#footer", text : "<p>C'est la dernière étape de ce tutoriel, j'espère qu'il vous aura donné une bonne vue d'ensemble du logiciel.<br/>\r\n\t\t\t\t\tPour aller plus loin, n'hésitez pas à consulter la <b>documentation</b> dont le lien est toujours disponible en bas de l'écran.\r\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom}]};
+		var value = { name : "Visite guidée coordinateur", steps : [{ element : null, text : "<p>Afin de mieux découvrir Cagette.net, nous vous proposons de faire une visite guidée de l'interface du logiciel.\n\t\t\t\t\t<br/> Vous aurez ainsi une vue d'ensemble sur les différents outils qui sont à votre disposition.</p>\n\t\t\t\t\t<p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</p>", action : TutoAction.TANext, placement : null},{ element : "ul.nav.navbar-left", text : "Cette partie de la barre de navigation est visible par tous les adhérents.</br>\n\t\t\t\t\tElle permet d'accéder aux trois rubriques principales :\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li> La <b>page d'accueil</b> qui permet d'accéder aux commandes et de voir son planning de distribution.</li>\n\t\t\t\t\t\t<li> La page <b>Mon compte</b> pour mettre à jour mes coordonnées et consulter mon historique de commande</li>\n\t\t\t\t\t\t<li> La page <b>Mon groupe</b> pour connaître les différents producteurs et coordinateurs de mon groupe\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "ul.nav.navbar-right", text : "Cette partie est exclusivement réservée <b>aux coordinateurs.</b>\n\t\t\t\t\tC'est là que vous allez pouvoir administrer les fiches d'adhérents, les commandes, les produits, etc.<br/>\n\t\t\t\t\t<p>Cliquez maintenant sur <b>Gestion adhérents</b></p>\n\t\t\t\t\t", action : TutoAction.TAPage("/member"), placement : TutoPlacement.TPBottom},{ element : ".article .table td:first", text : "Cette rubrique permet d'administrer la liste des adhérents.<br/>\n\t\t\t\t\tÀ chaque fois que vous saisissez un nouvel adhérent, un compte est créé à son nom. \n\t\t\t\t\tIl pourra donc se connecter à Cagette.net pour faire des commandes ou consulter son planning de distribution.\n\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>", action : TutoAction.TAPage("/member/view/*"), placement : TutoPlacement.TPRight},{ element : ".article:first", text : "Nous sommes maintenant sur la fiche d'un adhérent. Ici vous pourrez :\n\t\t\t\t\t<ul>\n\t\t\t\t\t<li>voir ou modifier ses coordonnées</li>\n\t\t\t\t\t<li>gérer ses cotisations à votre association</li>\n\t\t\t\t\t<li>voir un récapitulatif de ses commandes</li>\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPRight},{ element : "ul.nav #contractadmin", text : "Allons voir maintenant la page de gestion des <b>contrats</b> qui est très importante pour les coordinateurs.", action : TutoAction.TAPage("/contractAdmin"), placement : TutoPlacement.TPBottom},{ element : "#contracts", text : "Ici se trouve la liste des <b>contrats</b>. \n\t\t\t\t\tIls comportent une date de début, une date de fin, et représentent votre relation avec un producteur. <br/>\n\t\t\t\t\t<p>\n\t\t\t\t\tC'est ici que vous pourrez gérer :\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>la liste de produits de ce producteur</li>\n\t\t\t\t\t\t<li>les commandes des adhérents pour ce producteur</li>\n\t\t\t\t\t\t<li>planifier les distributions</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "#vendors", text : "Ici vous pouvez gérer la liste des <b>producteurs ou fournisseurs</b> avec lesquels vous collaborez.<br/>\n\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au mieux les adhérents", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#places", text : "Ici vous pouvez gérer la liste des <b>lieux de distribution</b>.<br/>\n\t\t\t\t\tN'oubliez pas de mettre l'adresse complète car une carte s'affiche à partir de l'adresse du lieu.", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#contracts table .btn:first", text : "Allons voir maintenant de plus près comment administrer un contrat. <b>Cliquez sur ce bouton</b>", action : TutoAction.TAPage("/contractAdmin/view/*"), placement : TutoPlacement.TPBottom},{ element : ".table.table-bordered:first", text : "Ici vous avez un récapitulatif du contrat.<br/>Il y a deux types de contrats : <ul>\n\t\t\t\t\t<li>Les contrats AMAP : l'adhérent s'engage sur toute la durée du contrat avec une commande fixe.</li>\n\t\t\t\t\t<li>Les contrats à commande variable : l'adhérent peut commander ce qu'il veut à chaque distribution.</li>\n\t\t\t\t\t</ul>", action : TutoAction.TANext, placement : TutoPlacement.TPRight},{ element : "#subnav #products", text : "Allons voir maintenant la page de gestion des <b>Produits</b>", action : TutoAction.TAPage("/contractAdmin/products/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Sur cette page, vous pouvez gérer la liste des produits proposée par ce producteur.<br/>\n\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il est également possible d'ajouter un descriptif et une photo.", action : TutoAction.TANext, placement : TutoPlacement.TPTop},{ element : "#subnav #deliveries", text : "Allons voir maintenant la page de gestion des <b>distributions</b>", action : TutoAction.TAPage("/contractAdmin/distributions/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Ici nous pouvons gérer la liste des distributions pour ce producteur.<br/>\n\t\t\t\t\tDans le logiciel, une distribution comporte une date avec une heure de début et heure de fin de distribution. \n\t\t\t\t\tIl faut aussi préciser le lieu de distribution à partir de la liste que nous avons vue précédement.", action : TutoAction.TANext, placement : TutoPlacement.TPLeft},{ element : "#subnav #orders", text : "Allons voir maintenant la page de gestion des <b>commandes</b>", action : TutoAction.TAPage("/contractAdmin/orders/*"), placement : TutoPlacement.TPRight},{ element : ".article .table", text : "Ici nous pouvons gérer la liste des commandes relatives à ce producteur.<br/>\n\t\t\t\t\tSi vous choisissez d'\"ouvrir les commandes\" aux adhérents, ils pourront eux-mêmes saisir leurs commandes en se connectant à Cagette.net.<br/>\n\t\t\t\t\tCette page centralisera automatiquement les commandes pour ce producteur. \n\t\t\t\t\tSinon, en tant que coordinateur, vous pouvez saisir les commandes pour les adhérents depuis cette page.", action : TutoAction.TANext, placement : TutoPlacement.TPLeft},{ element : "ul.nav #messages", text : "<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</p><p>Explorons maintenant la messagerie.</p>", action : TutoAction.TAPage("/messages"), placement : TutoPlacement.TPBottom},{ element : null, text : "<p>La messagerie vous permet d'envoyer des emails à différentes listes d'adhérents.\n\t\t\t\t\tIl n'est plus nécéssaire de maintenir de nombreuses listes d'emails en fonction des contrats, toutes ces listes\n\t\t\t\t\tsont gérées automatiquement.</p>\n\t\t\t\t\t<p>Les emails sont envoyés avec votre adresse email en tant qu'expéditeur, vous recevrez donc les réponses sur votre boite email habituelle.</p<\n\t\t\t\t\t", action : TutoAction.TANext, placement : null},{ element : "ul.nav #amapadmin", text : "Cliquez maintenant sur cette rubrique", action : TutoAction.TAPage("/amapadmin"), placement : TutoPlacement.TPBottom},{ element : "#subnav", text : "<p>Dans cette dernière rubrique, vous pouvez configurer tout ce qui concerne votre groupe en général.</p>\n\t\t\t\t\t<p>La rubrique <b>Droits et accès</b> est importante puisque c'est là que vous pourrez nommer d'autres coordinateurs parmi les adhérents. Ils pourront\n\t\t\t\t\tainsi gérer les contrats dont ils s'occupent, utiliser la messagerie, etc.\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom},{ element : "#footer", text : "<p>C'est la dernière étape de ce tutoriel, j'espère qu'il vous aura donné une bonne vue d'ensemble du logiciel.<br/>\n\t\t\t\t\tPour aller plus loin, n'hésitez pas à consulter la <b>documentation</b> dont le lien est toujours disponible en bas de l'écran.\n\t\t\t\t\t</p>", action : TutoAction.TANext, placement : TutoPlacement.TPBottom}]};
 		if(__map_reserved.intro != null) _g.setReserved("intro",value); else _g.h["intro"] = value;
 	}
 	$r = _g;

@@ -26,7 +26,10 @@ enum RegOption{
 class Amap extends Object
 {
 	public var id : SId;
-	public var name : SString<32>;
+	/** J. Le Clerc - ENHANCEMENT#1
+	* Augmenter la taille max du nom. Le nom de notre AMAP dépasse 32 caractères
+	*/
+	public var name : SString<64>;
 	
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
@@ -36,6 +39,12 @@ class Amap extends Object
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
 	public var txtDistrib:SNull<SText>; //sur liste d'emargement
 	
+	/** J. Le Clerc - FEATURE#1
+	 * Ajouter une URL optionelle qui correspond à site externe du groupe.
+	 * Permet une meilleur transition/integration avec un site externe si il en existe un.
+	 */
+	public var extUrl : SNull<SString<64>>;   //lien sur logo du groupe
+
 	public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms  public var membershipPrice : SNull<STinyInt>;
 	

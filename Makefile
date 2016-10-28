@@ -8,7 +8,7 @@ css:
 	hss hss/*.hss -output www/css/
 
 templates:
-	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt)
+	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt)
 
 deploy: 
 	#compile
@@ -17,10 +17,10 @@ deploy:
 	@make LANG=fr deploy_site deploy_tpl
 
 deploy_site:
-	rsync $(ROPTS) www www-data@www.cagette.net:/data/cagette/
+	rsync $(ROPTS) www /var/www/data/cagette/
 
 deploy_tpl:
-	rsync $(ROPTS) lang/$(LANG) www-data@www.cagette.net:/data/cagette/lang/
+	rsync $(ROPTS) lang/$(LANG) /var/www/data/cagette/lang/
 	
 bundle:
 	@make LANG=fr templates
