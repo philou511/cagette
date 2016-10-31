@@ -28,7 +28,9 @@ class App extends sugoi.BaseApp {
 	 */
 	override public function mainLoop() {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
-		plugins = [ new plugin.Tutorial() ];
+		plugins = [];
+		plugins.push(new plugin.Tutorial());
+		plugins.push(new plugin.Payment());
 		#if plugins
 		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
 		plugins.push( new hosted.HostedPlugIn() );
@@ -177,6 +179,7 @@ class App extends sugoi.BaseApp {
 		out.set("Gram", "Grammes");
 		out.set("Litre", "Litres");		
 		out.set("htPrice", "Prix H.T");
+		out.set("amount", "Montant");
 		return out;
 	}
 	

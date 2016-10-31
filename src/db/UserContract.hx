@@ -343,12 +343,14 @@ class UserContract extends Object
 		
 		if (newquantity == 0) {
 			order.delete();
+			return null;
 		}else {
 			order.quantity = newquantity;
 			order.update();	
+			return order;
 		}
 		
-		return order;
+		
 	}
 	
 	/**
@@ -448,8 +450,8 @@ class UserContract extends Object
 	 * 
 	 * @param	distribKey "$date|$placeId"
 	 */
-	public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User):Array<db.UserContract>{	
-		var contracts = db.Contract.getActiveContracts(App.current.user.amap);
+	public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Amap):Array<db.UserContract>{	
+		var contracts = db.Contract.getActiveContracts(group);
 		for ( c in Lambda.array(contracts)){
 			if (c.type == db.Contract.TYPE_CONSTORDERS){
 				contracts.remove(c); //only varying orders

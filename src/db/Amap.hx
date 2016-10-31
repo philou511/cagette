@@ -9,6 +9,7 @@ enum AmapFlags {
 	IsAmap; 		//Amap / groupement d'achat
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
+	Payments; //manage payments
 }
 
 //user registration options

@@ -666,7 +666,7 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * Modifier la commande d'un utilisateur
+	 * Edit a user's orders
 	 */
 	@tpl("contractadmin/edit.mtt")
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
@@ -722,6 +722,8 @@ class ContractAdmin extends Controller
 					distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
 				}
 				
+				var orders = [];
+				
 				for (k in app.params.keys()) {
 					var param = app.params.get(k);
 					if (k.substr(0, "product".length) == "product") {
@@ -745,23 +747,30 @@ class ContractAdmin extends Controller
 							
 						}
 						
+						//quantity
 						var q = 0.0;
 						if (uo.product.hasFloatQt ) {
 							param = StringTools.replace(param, ",", ".");
 							q = Std.parseFloat(param);
 						}else {
 							q = Std.parseInt(param);
-						}
+						}						
 						
+						//record order
 						if (uo.order != null) {
 							//existing record
-							db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"),user2,invert);
+							var o = db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"), user2, invert);
+							if (o != null) orders.push(o);
 						}else {
 							//new record
-							db.UserContract.make(user, q, uo.product, distrib==null ? null : distrib.id,(app.params.get("paid" + pid) == "1"),user2,invert);
+							var o =  db.UserContract.make(user, q, uo.product, distrib == null ? null : distrib.id, (app.params.get("paid" + pid) == "1"), user2, invert);
+							if (o != null) orders.push(o);
 						}
 					}
 				}
+				
+				app.event(MakeOrder(orders));
+				
 				if (distrib != null) {
 					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, "La commande a été mise à jour");
 				}else {

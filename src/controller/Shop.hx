@@ -165,7 +165,7 @@ class Shop extends sugoi.BaseController
 		var products = getProducts(place, date);
 
 		var errors = [];
-
+		var orders = [];
 		
 		for (o in order.products) {
 
@@ -184,21 +184,12 @@ class Shop extends sugoi.BaseController
 			}
 
 			//make order
-			db.UserContract.make(app.user,o.quantity, p, d.id);
+			orders.push( db.UserContract.make(app.user,o.quantity, p, d.id) );
 
 		}
 		
 		//payment transaction
-		var dkey = date.toString().substr(0, 10) + "|" + place.id;
-		var allOrders = db.UserContract.getUserOrdersByMultiDistrib(dkey, app.user);		
-		//delete existing transaction
-		var existing = db.Transaction.findVOrderTransactionFor( dkey , app.user, app.user.amap);
-		if (existing != null){
-			existing.lock();
-			existing.delete();
-		}
-		db.Transaction.makeOrderTransaction(allOrders);	
-		
+		app.event(MakeOrder(orders));
 
 		if (errors.length > 0) {
 			app.session.addMessage(errors.join("<br/>"), true);

@@ -157,6 +157,9 @@ enum Event {
 	HourlyCron;
 	MinutelyCron;
 	
+	//orders
+	MakeOrder(orders:Array<db.UserContract>);
+	
 	#end
 	
 }

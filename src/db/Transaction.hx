@@ -24,7 +24,7 @@ class Transaction extends sys.db.Object
 	public var date : SDateTime;
 	public var type : SData<TransactionType>;
 	@:relation(userId) public var user : db.User;
-	@:relation(groupId) public var group : db.Amap;
+	@hideInForms @:relation(groupId) public var group : db.Amap;
 	
 	public var pending : SBool;
 	
@@ -53,14 +53,32 @@ class Transaction extends sys.db.Object
 			_amount += t + t * (o.feesRate / 100);
 		}
 		
+		var contract = orders[0].product.contract;
+		
 		var t = new db.Transaction();
-		t.name = "Commande pour le " + orders[0].distribution.date.toString().substr(0, 10);
-		t.amount = 0 - _amount;
-		t.date = Date.now();
-		t.type = TTOrder(Lambda.array(Lambda.map(orders, function(x) return x.id)));
-		t.user = orders[0].user;
-		t.group = App.current.user.amap;
-		t.pending = true;
+		
+		if (contract.type == db.Contract.TYPE_CONSTORDERS){
+			//Constant orders			
+			t.name = "Contrat " + contract.name + "(" + contract.vendor.name+")";
+			var dNum = contract.getDistribs(false).length;
+			t.amount = dNum * (0 - _amount);
+			t.date = Date.now();
+			t.type = TTOrder(Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.user = orders[0].user;
+			t.group = orders[0].product.contract.amap;
+			t.pending = false;					
+			
+		}else{
+			
+			//varying orders
+			t.name = "Commande pour le " + App.current.view.dDate(orders[0].distribution.date);
+			t.amount = 0 - _amount;
+			t.date = Date.now();
+			t.type = TTOrder(Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.user = orders[0].user;
+			t.group = orders[0].product.contract.amap;
+			t.pending = true;					
+		}
 		
 		t.insert();
 		
@@ -85,14 +103,23 @@ class Transaction extends sys.db.Object
 		
 		var date = dkey.split("|")[0];
 		var placeId = Std.parseInt(dkey.split("|")[1]);
-		var transactions = manager.search($user == user && $group == group && $pending == true , {orderBy:date}, false);
+		var transactions = manager.search($user == user && $group == group && $pending == true , {orderBy:date}, true);
 		
 		for ( t in transactions){
 			
 			switch(t.type){
 				
 				case TTOrder(orders) :
-					var o = db.UserContract.manager.get(orders[0], false);
+					var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);
+					
+					if (id == null) {						
+						//all orders in this transaction dont exists anymore
+						t.delete();
+						continue;
+					}
+					var o = db.UserContract.manager.get(id, false);
+					
+					if (o.distribution == null) throw 'order #${o.id} should be linked to a distribution';
 					if ( o.distribution.date.toString().substr(0, 10) == date){
 						if (o.distribution.place.id == placeId){
 							return t;	
@@ -106,4 +133,42 @@ class Transaction extends sys.db.Object
 		return null;
 	}
 	
+	/**
+	 * when updating a constant order, we need to update the existing transaction.
+	 * 
+	 */
+	public static function findCOrderTransactionFor(contract:db.Contract, user:db.User){
+		
+		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "contract type should be TYPE_CONSTORDERS";
+		
+		var transactions = manager.search($user == user && $group == contract.amap && $amount<0, {orderBy:date,limit:100}, true);
+		
+		for ( t in transactions){
+			
+			switch(t.type){
+				
+				case TTOrder(orders) :
+					
+					var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);					
+					if (id == null) {						
+						//all orders in this transaction dont exists anymore
+						t.delete();
+						continue;
+					}else{
+						for ( i in orders){
+							var order = db.UserContract.manager.get(i);
+							if (order == null) continue;
+							if (order.product.contract.id == contract.id) return t;
+						}	
+					}
+					
+					
+				default : 
+					continue;				
+			}
+		}
+		
+		return null;
+		
+	}
 }

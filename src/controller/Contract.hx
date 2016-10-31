@@ -265,15 +265,14 @@ class Contract extends Controller
 			}
 			c.lock();
 			c.delete();
-			throw Ok("/contractAdmin", "Contrat supprimé");
-			
+			throw Ok("/contractAdmin", "Contrat supprimé");			
 		}
 		
 		throw Error("/contractAdmin","Erreur de token");
 	}
 	
 	/**
-	 * Make an order by contract.
+	 * Make an order by contract ( non shop mode )
 	 * The form is prepopulated if orders have already been made
 	 */
 	@tpl("contract/order.mtt")
@@ -331,6 +330,8 @@ class Contract extends Controller
 				distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
 			}
 			
+			var orders_out = [];
+			
 			for (k in app.params.keys()) {
 				
 				if (k.substr(0, 1) != "d") continue;
@@ -361,8 +362,8 @@ class Contract extends Controller
 				
 				if (uo == null) throw "Impossible de retrouver le produit " + pid +" et distribution "+did;
 					
-				var q = 0.0;
-				
+				//quantity
+				var q = 0.0;				
 				if (uo.product.hasFloatQt ) {
 					var param = StringTools.replace(qt, ",", ".");
 					q = Std.parseFloat(param);
@@ -370,29 +371,26 @@ class Contract extends Controller
 					q = Std.parseInt(qt);
 				}
 				
-				
 				if (uo.order != null) {	
 					//trace("updating order q="+q);
-					db.UserContract.edit(uo.order, q);
+					var o = db.UserContract.edit(uo.order, q);
+					if (o != null) orders_out.push(o);
 					
 				}else {
 					//trace("new order q="+q);
-					db.UserContract.make(app.user, q, uo.product, did);
+					var o = db.UserContract.make(app.user, q, uo.product, did);
+					if (o != null) orders_out.push(o);
 				}
 				
 			}
-			//if (distrib != null) {
-				//throw Ok("/contract/order/" + c.id+"?d="+distrib.id, "Votre commande a été mise à jour");	
-			//}else {
-				throw Ok("/contract/order/"+c.id, "Votre commande a été mise à jour");
-				//trace("ok");
-			//}
 			
+			app.event(MakeOrder(orders_out));
+			
+			throw Ok("/contract/order/"+c.id, "Votre commande a été mise à jour");			
 		}
 		
 		view.c = view.contract = c;
-		view.userOrders = userOrders;
-		
+		view.userOrders = userOrders;		
 	}
 	
 	/**
@@ -423,6 +421,8 @@ class Contract extends Controller
 		//form check
 		if (checkToken()) {
 			
+			var orders_out = [];
+			
 			for (k in app.params.keys()) {
 				var param = app.params.get(k);
 				if (k.substr(0, "product".length) == "product") {
@@ -444,14 +444,14 @@ class Contract extends Controller
 
 					if ( order.distribution.canOrderNow() ) {
 						//met a jour la commande
-						db.UserContract.edit(order, quantity);
-					}
-					
+						orders_out.push( db.UserContract.edit(order, quantity) );
+					}					
 				}
 			}
 			
-			throw Ok("/contract", "Votre commande a été mise à jour");	
+			app.event(MakeOrder(orders_out));
 			
+			throw Ok("/contract", "Votre commande a été mise à jour");				
 		}
 	}
 }
