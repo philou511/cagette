@@ -17,10 +17,10 @@ deploy:
 	@make LANG=fr deploy_site deploy_tpl
 
 deploy_site:
-	rsync $(ROPTS) www /var/www/data/cagette/
+	rsync $(ROPTS) www /var/www/cagette/
 
 deploy_tpl:
-	rsync $(ROPTS) lang/$(LANG) /var/www/data/cagette/lang/
+	rsync $(ROPTS) lang/$(LANG) /var/www/cagette/lang/
 	
 bundle:
 	@make LANG=fr templates
