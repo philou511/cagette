@@ -26,7 +26,7 @@ enum RegOption{
 class Amap extends Object
 {
 	public var id : SId;
-	public var name : SString<32>;
+	public var name : SString<64>;
 	
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)

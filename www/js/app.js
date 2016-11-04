@@ -5372,7 +5372,7 @@ hosted_js_CMap.prototype = {
 	,points: null
 	,isAdmin: null
 	,onload: function() {
-		this.map = L.map("map").setView([47.0836,2.3948],6);
+		this.map = L.map("map",{ scrollWheelZoom : false}).setView([47.0836,2.3948],6);
 		L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ",{ attribution : "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>", maxZoom : 32, id : "bubar.cih3inmqd00tjuxm7oc2532l0", accessToken : "pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"}).addTo(this.map);
 		this.map.on("moveend",$bind(this,this.loadDatas));
 		this.loadDatas();
@@ -5381,8 +5381,6 @@ hosted_js_CMap.prototype = {
 		var bounds = this.map.getBounds();
 		var min = bounds.getSouthWest();
 		var max = bounds.getNorthEast();
-		haxe_Log.trace("MIN : " + min.lat + "-" + min.lng,{ fileName : "CMap.hx", lineNumber : 45, className : "hosted.js.CMap", methodName : "loadDatas"});
-		haxe_Log.trace("MAX : " + max.lat + "-" + max.lng,{ fileName : "CMap.hx", lineNumber : 46, className : "hosted.js.CMap", methodName : "loadDatas"});
 		var r = new haxe_Http("/p/hosted/book/mapDatas/" + min.lat + "/" + max.lat + "/" + min.lng + "/" + max.lng);
 		r.onData = $bind(this,this.onDatas);
 		r.request();
@@ -5401,6 +5399,7 @@ hosted_js_CMap.prototype = {
 			var g = groups[_g2];
 			++_g2;
 			var marker = L.marker([g.lat,g.lng],{ icon : this.getIcon()});
+			haxe_Log.trace("[" + g.lat + ", " + g.lng + "] " + g.name,{ fileName : "CMap.hx", lineNumber : 68, className : "hosted.js.CMap", methodName : "onDatas"});
 			var html = "<h3><a href=\"https://app.cagette.net/group/" + g.id + "\" target=\"_blank\">" + g.name + "</a></h3>" + g.address;
 			marker.bindPopup(html).addTo(this.map);
 			this.points.push(marker);
