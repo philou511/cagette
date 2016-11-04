@@ -96,13 +96,8 @@ class App extends sugoi.BaseApp {
 		out.set("txtIntro", "Texte de présentation du groupe");
 		out.set("txtHome", "Texte en page d'accueil pour les adhérents connectés");
 		out.set("txtDistrib", "Texte à faire figurer sur les listes d'émargement lors des distributions");
-
-		/** J. Le Clerc - FEATURE#1
-		 * Ajouter une URL optionelle qui correspond à site externe du groupe.
-		 * Permet une meilleur transition/integration avec un site externe si il en existe un.
-		 */
-		out.set("extUrl", "URL externe. Permet d'ajouter un lien de navigation avec le logo");
-
+		out.set("extUrl", "URL du site du groupe.");
+		
 		out.set("distributor1", "Distributeur 1");
 		out.set("distributor2", "Distributeur 2");
 		out.set("distributor3", "Distributeur 3");

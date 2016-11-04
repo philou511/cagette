@@ -271,11 +271,11 @@
 		
 		::if user._amap._image!=null::
 
-                       ::if user._amap.extUrl!=null && user._amap.extUrl!=""::
-                       <a href="::user._amap.extUrl::"><img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
-                       ::else::
-                       <img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
-                       ::end::
+		   ::if user._amap.extUrl!=null && user._amap.extUrl!=""::
+		   <a href="::user._amap.extUrl::"><img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
+		   ::else::
+		   <img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
+		   ::end::
 
 		::end::
 		
