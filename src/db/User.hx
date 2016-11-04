@@ -359,6 +359,14 @@ class User extends Object {
 		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
 		var uc = UserContract.manager.search($productId in productsIds, false);
 		var uc2 = uc.map(function(x) return x.userId); //liste des userId avec un contrat dans cette amap
+
+		// J. Le Clerc - BUGFIX#1 Ne pas oublier les contrats alternés
+		for (u in uc) {
+			if (u.user2 != null) {
+				uc2.add(u.user2.id);
+			}
+		}
+
 		//les gens qui sont dans cette amap et qui n'ont pas de contrat de cette amap
 		var ua = db.UserAmap.manager.unsafeObjects("select * from UserAmap where amapId=" + App.current.user.getAmap().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
 		return Lambda.map(ua, function(x) return x.user);	
