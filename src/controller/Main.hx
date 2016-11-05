@@ -155,8 +155,9 @@ class Main extends Controller {
 				
 				
 			}
-		
-			out.set(d.getKey(), o);
+			
+			//we had the distribution key ( place+date ) and the contract type in order to separate constant and varying contracts
+			out.set(d.getKey()+"|"+d.contract.type, o);
 		}
 		
 		//shuffle and limit product lists		
