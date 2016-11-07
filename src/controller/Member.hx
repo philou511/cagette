@@ -280,7 +280,7 @@ class Member extends Controller
 			form.toSpod(member); 
 			
 			//check that the given emails are not already used elsewhere
-			var sim = db.User.getSimilar(form.getValueOf("firstName"), form.getValueOf("lastName"), member.email, form.getValueOf("firstName2"), form.getValueOf("lastName2"), member.email2);
+			var sim = db.User.getSameEmail(member.email,member.email2);
 			for ( s in sim) {				
 				if (s.id == member.id) sim.remove(s);
 			}
@@ -354,7 +354,7 @@ class Member extends Controller
 	@tpl('form.mtt')
 	function doMerge(user:db.User) {
 		
-		if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
+		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
 		
 		view.title = "Fusionner un compte avec un autre";
 		view.text = "Cette action permet de fusionner deux comptes ( quand vous avez des doublons dans la base de données par exemple).<br/>Les contrats du compte 2 seront rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette action n'est pas annulable.";
@@ -471,7 +471,7 @@ class Member extends Controller
 				var lastName2 = r[5];
 				var email2 = r[6];
 				
-				var us = db.User.getSimilar(firstName, lastName, email, firstName2, lastName2, email2);
+				var us = db.User.getSameEmail(email, email2);
 				
 				if (us.length > 0) {
 					unregistred.remove(r);
@@ -537,7 +537,7 @@ class Member extends Controller
 				var lastName2 = u[5];
 				var email2 = u[6];
 				
-				var us = db.User.getSimilar(firstName, lastName, email, firstName2, lastName2, email2);
+				var us = db.User.getSameEmail(email, email2);
 				var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(us, function(u) return u.id), false);
 				
 				if (userAmaps.length == 0) {
@@ -570,9 +570,7 @@ class Member extends Controller
 	@tpl("user/insert.mtt")
 	public function doInsert() {
 		
-		//var e = new event.Event();
-		//e.id = "wantToAddMember";
-		//App.current.eventDispatcher.dispatch(e);
+		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
 		
 		var m = new db.User();
 		var form = sugoi.form.Form.fromSpod(m);
@@ -587,7 +585,7 @@ class Member extends Controller
 		if (form.isValid()) {
 			
 			//check doublon de User et de UserAmap
-			var userSims = db.User.getSimilar(form.getValueOf("firstName"), form.getValueOf("lastName"), form.getValueOf("email"),form.getValueOf("firstName2"), form.getValueOf("lastName2"), form.getValueOf("email2"));
+			var userSims = db.User.getSameEmail(form.getValueOf("email"),form.getValueOf("email2"));
 			view.userSims = userSims;
 			var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(userSims, function(u) return u.id), false);
 			view.userAmaps = userAmaps;
