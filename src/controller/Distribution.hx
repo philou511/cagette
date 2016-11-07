@@ -364,7 +364,6 @@ class Distribution extends Controller
 					doodle.set(u.id, udoodle);
 				}
 			}
-			
 		}
 		view.distribs = distribs;
 		view.doodle = doodle;
