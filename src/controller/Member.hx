@@ -245,10 +245,11 @@ class Member extends Controller
 	 * @param	user
 	 * @param	amap
 	 */	
+	@admin
 	function doLoginas(user:db.User, amap:db.Amap) {
 	
-		if (!app.user.isAmapManager()) return;
-		if (user.isAdmin()) return;
+		//if (!app.user.isAmapManager()) return;
+		//if (user.isAdmin()) return;
 		
 		App.current.session.setUser(user);
 		App.current.session.data.amapId = amap.id;
@@ -270,8 +271,8 @@ class Member extends Controller
 		form.removeElement( form.getElement("rights") );
 		form.removeElement( form.getElement("lang") );		
 		form.removeElement( form.getElement("ldate") );
-		form.getElement("email").addValidator(new EmailValidator());
-		form.getElement("email2").addValidator(new EmailValidator());
+		form.removeElementByName("email");
+		form.removeElementByName("email2");
 		
 		if (form.checkToken()) {
 			
@@ -279,7 +280,7 @@ class Member extends Controller
 			form.toSpod(member); 
 			
 			//check that the given emails are not already used elsewhere
-			var sim = db.User.getSimilar(form.getValueOf("firstName"), form.getValueOf("lastName"), form.getValueOf("email"), form.getValueOf("firstName2"), form.getValueOf("lastName2"), form.getValueOf("email2"));
+			var sim = db.User.getSimilar(form.getValueOf("firstName"), form.getValueOf("lastName"), member.email, form.getValueOf("firstName2"), form.getValueOf("lastName2"), member.email2);
 			for ( s in sim) {				
 				if (s.id == member.id) sim.remove(s);
 			}
@@ -299,16 +300,9 @@ class Member extends Controller
 			
 			member.update();
 			
-			if (!App.config.DEBUG) {
+			/*if (!App.config.DEBUG) {
 				//verif changement d'email
 				if (form.getValueOf("email") != member.email) {
-					//var mail = new sugoi.mail.MandrillApiMail();
-					//mail.setSender(App.config.get("default_email"));
-					//mail.setRecipient(member.email);
-					//mail.setSubject("Changement d'email sur votre compte Cagette.net");
-					//mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email") } );			
-					//mail.send();	
-					
 					var m = new Email();
 					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
 					m.to(new EmailAddress(member.email));
@@ -318,23 +312,14 @@ class Member extends Controller
 					
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
-					//var mail = new sugoi.mail.MandrillApiMail();
-					//mail.setSender(App.config.get("default_email"));
-					//mail.setRecipient(member.email2);
-					//mail.setSubject("Changement d'email sur votre compte Cagette.net");
-					//mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2") } );			
-					//mail.send();
-					
 					var m = new Email();
 					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
 					m.to(new EmailAddress(member.email2));
 					m.setSubject("Changement d'email sur votre compte Cagette.net");
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
 					App.getMailer().send(m);
-					
-					
 				}	
-			}
+			}*/
 			
 			throw Ok('/member/view/'+member.id,'Ce membre a été mis à jour');
 		}
