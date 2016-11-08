@@ -31,16 +31,21 @@
 		::set totalAdh = 0::
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
 				::set name = ""::
+				::set name2 = ""::
 
 				::foreach m orders::
 				
-				::if m.userName != name::
+				::if m.userName != name || m.userName2 != name2::
 					<tr style="background-color:#666;">
 						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
 							::m.userName:: 
+							::if m.userName2!=null::
+								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::
+							::end::
 							
 							
 							::set name =  m.userName ::	
+							::set name2 =  m.userName2 ::
 							::set totalAdh = totalAdh+1::
 						</td>
 						<td>
@@ -77,11 +82,6 @@
 					</td>
 					<td>
 						::m.productName::
-						
-						::if m.userName2!=null::
-						<br/>
-						<span class="glyphicon glyphicon-refresh"></span> Commande alternée avec <a href="/member/view/::m.userId2::">::m.userName2::</a>
-						::end::
 					</td>
 					<td>
 						::formatNum(m.productPrice)::&nbsp;&euro;
