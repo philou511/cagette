@@ -152,6 +152,9 @@ enum Event {
 	DeleteProduct(product:db.Product);
 	BatchEnableProducts(productIds:Array<Int>, enable:Bool);
 	
+	//Contracts
+	DeleteContract(contract:db.Contract);
+	
 	//crons
 	DailyCron;
 	HourlyCron;

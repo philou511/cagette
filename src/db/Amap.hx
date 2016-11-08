@@ -241,6 +241,10 @@ class Amap extends Object
 	
 	override public function insert(){
 		
+		if (txtHome == null){
+			txtHome = "Bienvenue sur la cagette de " + this.name+" !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
+		}
+		
 		App.current.event(NewGroup(this,App.current.user));
 		
 		super.insert();
@@ -257,6 +261,4 @@ class Amap extends Object
 		
 		return currency;		
 	}
-	
-	
 }
