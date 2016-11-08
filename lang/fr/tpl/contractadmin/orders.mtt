@@ -80,7 +80,7 @@
 						
 						::if m.userName2!=null::
 						<br/>
-						<span class="glyphicon glyphicon-refresh"></span> Commande altérnée avec <a href="/member/view/::m.userId2::">::m.userName2::</a>
+						<span class="glyphicon glyphicon-refresh"></span> Commande alternée avec <a href="/member/view/::m.userId2::">::m.userName2::</a>
 						::end::
 					</td>
 					<td>
