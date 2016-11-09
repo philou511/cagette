@@ -3,12 +3,14 @@ LANG=fr
 
 compile:
 	haxe cagette.hxml
+	sudo chgrp -R www-data *
 
 css:
 	hss hss/*.hss -output www/css/
 
 templates:
 	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt)
+	sudo chgrp -R www-data *
 
 deploy: 
 	#compile
@@ -18,9 +20,11 @@ deploy:
 
 deploy_site:
 	rsync $(ROPTS) www /var/www/cagette/
+	sudo chgrp -R www-data /var/www/cagette/
 
 deploy_tpl:
 	rsync $(ROPTS) lang/$(LANG) /var/www/cagette/lang/
+	sudo chgrp -R www-data /var/www/cagette/lang/
 	
 bundle:
 	@make LANG=fr templates

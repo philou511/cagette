@@ -251,14 +251,11 @@ class ContractAdmin extends Controller
 			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//constant orders
-			
-			var products = [];
+			var constorders = [];
 			for ( d in cdistribs) {
-				for ( p in d.contract.getProducts()) {
-					products.push(p.id);
-				}
+				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id), { orderBy:userId } );
+				constorders = constorders.concat(Lambda.array(orders2));
 			}
-			var constorders = db.UserContract.manager.search($productId in products, { orderBy:userId } );
 			
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));

@@ -75,16 +75,13 @@ class Distribution extends Controller
 			var orders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//commandes fixes
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
-			var products = [];
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);
+			var orders = Lambda.array(orders);
 			for ( d in distribs) {
-				for ( p in d.contract.getProducts()) {
-					products.push(p);
-				}
+				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id)  , { orderBy:userId } );
+				orders = orders.concat(Lambda.array(orders2));
 			}
-			var orders2 = db.UserContract.manager.search($productId in Lambda.map(products, function(d) return d.id)  , { orderBy:userId } );
-			
-			var orders = Lambda.array(orders).concat(Lambda.array(orders2));
+
 			var orders3 = db.UserContract.prepare(Lambda.list(orders));
 			view.orders = orders3;
 			
