@@ -17,14 +17,11 @@
 				::set name2 = ""::
 				::set total = 0::
 				::set productNum = 0::
-				<tr>
+				<tr style="font-size:120%">
 					<th>Nom</th>
 					<th>Coordonnées</th>
 					<th>Qté</th>
 					<th>Produit</th>
-					<th>P.U</th>
-					<th>Frais</th>
-					<th>Total</th>
 					
 					<th>Signature</th>
 					
@@ -40,7 +37,7 @@
 				::end::
 				<tr class="::class::">
 				
-					<td>
+					<td style="font-size:120%">
 						::if m.userName != name || m.userName2 != name2::
 								<b>::m.userName::</b>
 								::if m.userName2 != null::
@@ -76,35 +73,11 @@
 					<td>
 						::m.productName::
 					</td>
-					<td>
-						::formatNum(m.productPrice)::&nbsp;::currency()::
-					</td>
-					<td>
-						::if m.fees!=null::
-							::formatNum(m.fees)::&nbsp;::currency()::
-						::end::
-					</td>
-					<td>
-						::formatNum(m.total)::&nbsp;::currency()::
-						::set total = total + m.total::
-					</td>
 					
 					<td style="width:20%;"></td>
 				</tr>
 			
-				<!--TOTAL-->
 				::set next = orders[repeat.m.index+1]::
-					::if next==null || next.userName!=name || next.userName2!=name2::
-					<tr>
-						<td></td>
-						<td></td>
-						<td class="total">::productNum::</td>
-						<td class="total" colspan="2"></td>
-						<td class="total">TOTAL</td>
-						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
-						<td></td>
-					</tr>
-					::end::
 				::end::
 
 				</table>
