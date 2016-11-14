@@ -32,11 +32,9 @@ class Messages extends Controller
 			senderName = app.user.firstName + " " + app.user.lastName;
 		}
 		
-		view.senderName = senderName;
-		view.senderMail = senderMail;
-		form.addElement( new sugoi.form.elements.Html(senderName+" <i>" + senderMail + "</i>", "Expéditeur"));
-		
 		var lists = getLists();
+		form.addElement( new StringInput("senderName", "Nom expéditeur",senderName,true));
+		form.addElement( new StringInput("senderMail", "Email expéditeur",senderMail,true));
 		form.addElement( new StringSelect("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
 		form.addElement( new StringInput("subject", "Sujet :","",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
@@ -45,7 +43,6 @@ class Messages extends Controller
 			
 			var listId = form.getElement("list").value;
 			var dest = getSelection(listId);
-		
 			var mails = [];
 			for ( d in dest) {
 				if (d.email != null) mails.push(d.email);
@@ -58,16 +55,9 @@ class Messages extends Controller
 			e.setSubject(form.getValueOf("subject"));
 			e.bcc(Lambda.map(mails, function(m) return new ufront.mail.EmailAddress(m)));
 			
-			e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),senderName));		
-			e.replyTo(new ufront.mail.EmailAddress(senderMail, senderName));
+			e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),form.getValueOf("senderName")));		
+			e.replyTo(new ufront.mail.EmailAddress(form.getValueOf("senderMail"), form.getValueOf("senderName")));
 			
-			
-			//var e = new ufront.mail.Email();		
-			//e.setSubject(form.getValueOf("subject"));
-			//e.bcc(Lambda.map(mails, function(m) return new ufront.mail.EmailAddress(m)));
-			////from and reply-to : user email
-			//e.from(new ufront.mail.EmailAddress(senderMail, senderName));			
-			//e.replyTo(new ufront.mail.EmailAddress(senderMail, senderName));
 			////sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			

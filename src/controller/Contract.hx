@@ -249,6 +249,7 @@ class Contract extends Controller
 		if (!app.user.isAmapManager()) throw Error("/contractAdmin", "Vous n'avez pas le droit de supprimer un contrat");
 		
 		if (checkToken()) {
+			c.lock();
 			
 			//verif qu'il n'y a pas de commandes sur ce contrat
 			var products = c.getProducts();
@@ -265,7 +266,9 @@ class Contract extends Controller
 					ua.update();	
 				}			
 			}
-			c.lock();
+			
+			app.event(DeleteContract(c));
+			
 			c.delete();
 			throw Ok("/contractAdmin", "Contrat supprimé");
 			

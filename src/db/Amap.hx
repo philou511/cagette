@@ -88,8 +88,15 @@ class Amap extends Object
 			var pids = Lambda.map(places, function(x) return x.id);
 			
 			var res = sys.db.Manager.cnx.request("select placeId,count(placeId) as top from Distribution where placeId IN ("+pids.join(",")+") group by placeId order by top desc").results();
+			var res = res.first();
+			var pid :Int = null;
 			
-			var pid = Std.parseInt(res.first().placeId);
+			if (res == null){
+				pid = this.getPlaces().first().id;
+			}else{
+				pid = Std.parseInt(res.placeId);	
+			}
+			
 			
 			
 			if (pid != 0 && pid != null) {
@@ -241,6 +248,10 @@ class Amap extends Object
 	
 	override public function insert(){
 		
+		if (txtHome == null){
+			txtHome = "Bienvenue sur la cagette de " + this.name+" !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
+		}
+		
 		App.current.event(NewGroup(this,App.current.user));
 		
 		super.insert();
@@ -257,6 +268,4 @@ class Amap extends Object
 		
 		return currency;		
 	}
-	
-	
 }

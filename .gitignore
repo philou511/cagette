@@ -8,4 +8,4 @@ www/file/*
 www/js/app.js
 tmp/*
 *node_modules*
-Makefile
+MakeFile

@@ -8,14 +8,9 @@ import Common;
 class Distribution extends Controller
 {
 
-	public function new()
-	{
-		super();
-		
-	}
-	
+
 	/**
-	 * Liste d'émargement
+	 * List to print (single distrib)
 	 */
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {
@@ -26,10 +21,12 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * Liste d'émargement globale pour une date donnée (multi fournisseur)
+	 * List to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
-	function doListByDate(?date:Date,?type:String) {
+	function doListByDate(?date:Date, ?type:String) {
+		
+		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
 		if (type == null) {
 		
@@ -114,7 +111,7 @@ class Distribution extends Controller
 	
 	function doDelete(d:db.Distribution) {
 		
-		if (!app.user.canManageContract(d.contract)) throw "action non autorisée";		
+		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');		
 		if (db.UserContract.manager.search($distributionId == d.id, false).length > 0) throw Error("/contractAdmin/distributions/" + d.contract.id, "Effacement impossible : Des commandes sont enregistrées pour cette distribution.");
 		
 		d.lock();
@@ -127,12 +124,11 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * Edit a delivery
+	 * Edit a distribution
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
-		
-		if (!app.user.canManageContract(d.contract)) throw "action non autorisée";
+		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');		
 		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
@@ -176,6 +172,8 @@ class Distribution extends Controller
 	@tpl('form.mtt')
 	function doEditCycle(d:db.DistributionCycle) {
 		
+		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');
+		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		
@@ -191,6 +189,8 @@ class Distribution extends Controller
 	
 	@tpl("form.mtt")
 	public function doInsert(contract:db.Contract) {
+		
+		if (!app.user.isContractManager(contract)) throw Error('/', 'Action interdite');
 		
 		var d = new db.Distribution();
 		var form = sugoi.form.Form.fromSpod(d);
@@ -228,7 +228,6 @@ class Distribution extends Controller
 				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');	
 			}
 			
-			
 		}else{
 			//event
 			app.event(PreNewDistrib(contract));
@@ -243,7 +242,8 @@ class Distribution extends Controller
 	 * checks if dates are correct
 	 * @param	d
 	 */
-	function checkDistrib(d:db.Distribution) {
+	private function checkDistrib(d:db.Distribution) {
+		
 		var c = d.contract;
 		
 		if (d.date.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, "La date de distribution doit être antérieure à la date de fin du contrat ("+view.hDate(c.endDate)+")");
@@ -252,10 +252,7 @@ class Distribution extends Controller
 		if (c.type == db.Contract.TYPE_VARORDER ) {
 			if (d.date.getTime() < d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de distribution doit être postérieure à la date de fermeture des commandes");
 			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de fermeture des commandes doit être postérieure à la date d'ouverture des commandes !");
-		
 		}
-		
-		
 	}
 	
 	/**
@@ -263,6 +260,8 @@ class Distribution extends Controller
 	 */
 	@tpl("form.mtt")
 	public function doInsertCycle(contract:db.Contract) {
+		
+		if (!app.user.isContractManager(contract)) throw Error('/', 'Action interdite');
 		
 		var d = new db.DistributionCycle();
 		var form = sugoi.form.Form.fromSpod(d);
@@ -303,7 +302,6 @@ class Distribution extends Controller
 			form.removeElementByName("closingHour");
 		}
 		
-		
 		if (form.isValid()) {
 			
 			form.toSpod(d); //update model			
@@ -331,6 +329,8 @@ class Distribution extends Controller
 	
 	public function doDeleteCycle(c:db.DistributionCycle){
 		
+		if (!app.user.isContractManager(c.contract)) throw Error('/', 'Action interdite');
+		
 		c.lock();
 		var msgs = c.deleteChilds();
 		if (msgs.length > 0){
@@ -341,16 +341,10 @@ class Distribution extends Controller
 			c.delete();
 			throw Ok("/contractAdmin/distributions/" + c.contract.id, "Distributions récurrentes effacées");	
 		}
-		
-		
-		
-		
-		
-		
 	}
 	
 	/**
-	 * Doodle like
+	 * Doodle-like participation planning
 	 */
 	@tpl("distribution/planning.mtt")
 	public function doPlanning(contract:db.Contract) {
@@ -369,10 +363,8 @@ class Distribution extends Controller
 					if (udoodle == null) udoodle = { user:u, planning:new Map<Int,Bool>() };
 					udoodle.planning.set(d.id, true);
 					doodle.set(u.id, udoodle);
-					
 				}
 			}
-			
 		}
 		view.distribs = distribs;
 		view.doodle = doodle;
@@ -380,7 +372,7 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * ajax pour doodle/planning
+	 * Ajax service for doPlanning()
 	 */
 	public function doRegister(args: { register:Bool, distrib:db.Distribution } ) {
 		
@@ -401,7 +393,6 @@ class Distribution extends Controller
 				else if (d.distributor3 == app.user) d.distributor3 = null;
 				else if (d.distributor4 == app.user) d.distributor4 = null;
 			}
-			
 			
 			d.update();
 		}
