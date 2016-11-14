@@ -238,11 +238,6 @@ class ContractAdmin extends Controller
 			var el = new sugoi.form.elements.DatePicker("date", "Date de distribution", true);
 			el.format = 'LL';
 			f.addElement(el);
-			/*f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
-				{ key:"one", value:"Une personne par page" },
-				{ key:"all", value:"Tout à la suite" },
-				{ key:"csv", value:"Export CSV" }
-			]));*/
 			
 			view.form = f;
 			view.title = "Vue globale des commandes";
