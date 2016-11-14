@@ -88,8 +88,15 @@ class Amap extends Object
 			var pids = Lambda.map(places, function(x) return x.id);
 			
 			var res = sys.db.Manager.cnx.request("select placeId,count(placeId) as top from Distribution where placeId IN ("+pids.join(",")+") group by placeId order by top desc").results();
+			var res = res.first();
+			var pid :Int = null;
 			
-			var pid = Std.parseInt(res.first().placeId);
+			if (res == null){
+				pid = this.getPlaces().first().id;
+			}else{
+				pid = Std.parseInt(res.placeId);	
+			}
+			
 			
 			
 			if (pid != 0 && pid != null) {

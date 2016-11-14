@@ -147,27 +147,29 @@ class User extends Controller
 	}
 	
 	/**
-	 * ask for password renewal by mail
+	 * Ask for password renewal by mail
 	 * when password is forgotten
 	 */
 	@tpl("user/forgottenPassword.mtt")
-	function doForgottenPassword(?key:String,?u:db.User){
+	function doForgottenPassword(?key:String, ?u:db.User){
+		
+		//STEP 1
 		var step = 1;
 		var error : String = null;
 		var url = "/user/forgottenPassword";
 		
 		//ask for mail
 		var askmailform = new Form("askemail");
-		askmailform.addElement(new StringInput("email","Saisissez votre email"));
+		askmailform.addElement(new StringInput("email","Saisissez votre email",null,true));
 	
 		//change pass form
 		var chpassform = new Form("chpass");
 		
-		var pass1 = new StringInput("pass1", "Votre nouveau mot de passe");
+		var pass1 = new StringInput("pass1", "Votre nouveau mot de passe",null,true);
 		pass1.password = true;
 		chpassform.addElement(pass1);
 		
-		var pass2 = new StringInput("pass2", "Retapez votre mot de passe pour vérification");
+		var pass2 = new StringInput("pass2", "Retapez votre mot de passe pour vérification",null,true);
 		pass2.password = true;
 		chpassform.addElement(pass2);
 		
@@ -176,6 +178,7 @@ class User extends Controller
 		chpassform.addElement(uid);
 		
 		if (askmailform.isValid()) {
+			//STEP 2
 			//send password renewal email
 			step = 2;
 			
@@ -184,11 +187,15 @@ class User extends Controller
 			
 			if (user == null) throw Error(url, "Cet email n'est lié à aucun compte connu");
 			
+			//create token
+			var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
+			sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
+			
 			var m = new Email();
 			m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));					
 			m.to(new EmailAddress(user.email, user.name));					
 			m.setSubject( App.config.NAME+" : Changement de mot de passe" );
-			m.setHtml( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+getKey(user)+"/"+user.id }) );
+			m.setHtml( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.getMailer().send(m);	
 		}
 		
@@ -196,19 +203,17 @@ class User extends Controller
 			//check key and propose to change pass
 			step = 3;
 			
-			if (getKey(u) == key) {
+			if ( u.id == sugoi.db.Cache.get(key) ) {
 				view.form = chpassform;
 			}else {
-				error = "bad request";
+				error = "Requête invalide";
 			}
-			
-			
 		}
-		
 		
 		if (chpassform.isValid()) {
 			//change pass
 			step = 4;
+			
 			
 			if ( chpassform.getValueOf("pass1") == chpassform.getValueOf("pass2")) {
 				
@@ -228,16 +233,15 @@ class User extends Controller
 		
 		view.step = step;
 		view.error = error;
-
 	}
 	
 	
 	/**
 	 * generate a custom key for transactionnal emails, valid during the current day
 	 */
-	function getKey(m:db.User) {
-		return haxe.crypto.Md5.encode(App.config.get("key")+m.email+(Date.now().getDate())).substr(0,12);
-	}
+	//function getKey(m:db.User) {
+		//return haxe.crypto.Md5.encode(App.config.get("key")+m.email+(Date.now().getDate())).substr(0,12);
+	//}
 	
 	
 	@logged
