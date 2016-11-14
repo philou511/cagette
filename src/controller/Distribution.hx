@@ -35,6 +35,7 @@ class Distribution extends Controller
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
 				{ key:"all", value:"Tout à la suite" },
+				{ key:"allshort", value:"Tout à la suite sans les prix et totaux" },
 				//{ key:"csv", value:"Export CSV" }
 			]));
 			
@@ -55,6 +56,9 @@ class Distribution extends Controller
 			if (type=="one") {
 				app.setTemplate("distribution/listByDateOnePage.mtt");
 			}
+			if (type=="allshort") {
+				app.setTemplate("distribution/listByDateShort.mtt");
+			}
 			
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
@@ -72,16 +76,13 @@ class Distribution extends Controller
 			var orders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//commandes fixes
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
-			var products = [];
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);
+			var orders = Lambda.array(orders);
 			for ( d in distribs) {
-				for ( p in d.contract.getProducts()) {
-					products.push(p);
-				}
+				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id)  , { orderBy:userId } );
+				orders = orders.concat(Lambda.array(orders2));
 			}
-			var orders2 = db.UserContract.manager.search($productId in Lambda.map(products, function(d) return d.id)  , { orderBy:userId } );
-			
-			var orders = Lambda.array(orders).concat(Lambda.array(orders2));
+
 			var orders3 = db.UserContract.prepare(Lambda.list(orders));
 			view.orders = orders3;
 			

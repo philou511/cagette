@@ -129,20 +129,20 @@
 												::set you = c._user2::
 											::end::
 									
-											<br/>( partagé avec ::mate.getName():: 
+											<br/>( partagé avec ::mate.getName()::, 
 											
 											::if c.getWhosTurn(o.distrib)==false::
 									
 												::if c._user.getName() == you.getName()::
-													<span style="color:#080">, c'est votre tour</span>
+													<span style="color:#080">c'est votre tour</span>
 												::else::
-													, c'est son tour
+													c'est son tour
 												::end::
 											::else::
 												::if c._user2.getName() == you.getName()::
-													<span style="color:#080">, c'est votre tour</span>
+													<span style="color:#080">c'est votre tour</span>
 												::else::
-													, c'est son tour
+													c'est son tour
 												::end::
 											::end::
 											)

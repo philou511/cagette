@@ -29,7 +29,19 @@
 					::m.quantity:
 				</td>
 				<td>
+					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
+					<img src="::m.productImage::" style="width:32px;height:32px;" />
 					::m.productName::
+					</a>
+					::if m.userName2 != null::
+						<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+						::if user.id == m.userId::
+							::m.userName2::
+						::else::
+							::m.userName::
+						::end::
+					::end::
+
 				</td>
 				<td>
 					::formatNum(m.productPrice)::&nbsp;::currency()::

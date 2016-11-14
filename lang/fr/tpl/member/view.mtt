@@ -97,8 +97,20 @@
 				::foreach p o.constOrders::
 					<tr>
 						<td>::p.quantity::</td>
-						<td>::p.productName::</td>
+						<td>::p.productName::
+						
+						::if p.userId2 != null::
+							<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+							::if member.id == p.userId::
+								<a href="/member/view/::p.userId2::">::p.userName2::</a>
+							::else::
+								<a href="/member/view/::p.userId::">::p.userName::</a>
+							::end::
+						::end::
+						
+						</td>
 						<td>::p.subTotal:: ::currency()::</td>
+
 						<td>
 							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
 						</td>
