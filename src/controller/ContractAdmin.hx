@@ -367,16 +367,21 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		var orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
 		
-		var disabledProducts = 0;
-		for ( o in orders ){
-			if ( !db.Product.manager.get(o.productId, false).active ) {
-				disabledProducts++;
-				Reflect.setField(o, "disabled", true);
+		if ( !app.params.exists("csv") ){
+			
+			//show orders on disabled products
+			var disabledProducts = 0;
+			for ( o in orders ){
+				if ( !db.Product.manager.get(o.productId, false).active ) {
+					disabledProducts++;
+					Reflect.setField(o, "disabled", true);
+				}
 			}
+		
+			view.disabledProducts = disabledProducts;
+			view.orders = orders;	
 		}
 		
-		view.disabledProducts = disabledProducts;
-		view.orders = orders;
 	}
 	
 	
