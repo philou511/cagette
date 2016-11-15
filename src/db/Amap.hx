@@ -2,6 +2,7 @@ package db;
 import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
 enum AmapFlags {
 	HasMembership; 	//gestion des adhésions
@@ -9,6 +10,7 @@ enum AmapFlags {
 	IsAmap; 		//Amap / groupement d'achat
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
+	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
 }
 
 //user registration options
@@ -120,7 +122,45 @@ class Amap extends Object
 	}
 	
 	public function getCategoryGroups() {
-		return db.CategoryGroup.get(this);
+		
+		//if (flags.has(ShopCategoriesFromTaxonomy)){
+			//return Lambda.array( cast db.TxpCategory.manager.all(false) );	
+		//}else{
+			//return Lambda.array( db.CategoryGroup.get(this) );	
+		//}
+		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
+		
+		if (this.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+			
+			//TAXO CATEGORIES
+			var taxoCategs = db.TxpCategory.manager.all(false);
+			
+			categs.push({
+				id:0,
+				name:"Type de produits",
+				pinned:false,
+				color:"#583816",
+				categs: Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name}; }))				
+			});
+			
+		}else{
+			
+			//CUSTOM CATEGORIES
+			var catGroups = db.CategoryGroup.get(this);
+			for ( cg in catGroups){
+				var color = App.current.view.intToHex(db.CategoryGroup.COLORS[cg.color]);
+				categs.push({
+					id:cg.id,
+					name:cg.name,
+					pinned:cg.pinned,
+					color:color,
+					categs: Lambda.array(Lambda.map( cg.getCategories(), function(c) return c.infos()))					
+				});
+			}	
+		}
+		
+		return categs;
+		
 	}
 	
 	

@@ -158,6 +158,7 @@ class App extends sugoi.BaseApp {
 		out.set("ShopMode", "Mode boutique");
 		out.set("IsAmap", "Votre groupe est une AMAP");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
+		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");

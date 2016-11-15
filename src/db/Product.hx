@@ -86,8 +86,8 @@ class Product extends Object
 		return price + contract.computeFees(price);
 	}
 	
-	public function infos():ProductInfo {
-		return {
+	public function infos(?CategFromTaxo=false):ProductInfo {
+		var o :ProductInfo = {
 			id : id,
 			name : name,
 			type : Type.createEnumIndex(ProductType, type),
@@ -99,13 +99,22 @@ class Product extends Object
 			contractTax : contract.percentageValue,
 			contractTaxName : contract.percentageName,
 			desc : desc,
-			categories : Lambda.array(Lambda.map(getCategories(), function(c) return c.id)),
+			categories : null,
 			orderable : this.contract.isUserOrderAvailable(),
 			stock : contract.hasStockManagement() ? this.stock : null,
 			hasFloatQt : hasFloatQt,
 			qt:qt,
 			unitType:unitType
 		}
+		
+		if (CategFromTaxo){
+			o.categories = [txpProduct==null?null:txpProduct.category.id];
+		}else{
+			o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
+		}
+		
+		
+		return o;
 	}
 	
 	public function getCategories() {
