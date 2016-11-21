@@ -1,6 +1,6 @@
 package react;
-import api.react.ReactComponent;
-import api.react.ReactMacro.jsx;
+import react.ReactComponent;
+import react.ReactMacro.jsx;
 import Common;
 
 typedef ProductInputProps = {
@@ -19,7 +19,7 @@ typedef ProductInputRefs = {
  * 
  * @author fbarbut
  */
-class ProductInput extends api.react.ReactComponentOfPropsAndRefs<ProductInputProps,ProductInputRefs>
+class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,ProductInputRefs>
 {
 
 	public static var DICO : TxpDictionnary = null;
