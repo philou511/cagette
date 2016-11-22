@@ -33,11 +33,17 @@ class Member extends Controller
 		var uids = Lambda.map(uids, function(ua) return ua.userId);
 		if (args != null && args.search != null) {
 			
-			//SEARCH
-			
+			//SEARCH			
 			browse = function(index:Int, limit:Int) {
-				var search = StringTools.trim(args.search);
-				return db.User.manager.search( ($lastName.like(search)||$lastName2.like(search)) && $id in uids , { orderBy:-id }, false);
+				var search = "%"+StringTools.trim(args.search)+"%";
+				return db.User.manager.search( 
+					($lastName.like(search) ||
+					$lastName2.like(search) || 
+					$address1.like(search) ||
+					$address2.like(search) ||
+					$firstName.like(search) ||
+					$firstName2.like(search)					
+					) && $id in uids , { orderBy:-id }, false);
 			}
 			view.search = args.search;
 			
