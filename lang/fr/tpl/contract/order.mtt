@@ -111,8 +111,10 @@
 				::end::
 			</tr>
 		</table>
+			
+		<i>Note: Pour effacer une commande, saisissez une quantité égale à 0</i><br/><br/>
 		
-		<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />		
+			<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />		
 			
 		</form>
 	
@@ -123,9 +125,7 @@
 		Producteur : <b>::c._vendor.name::</b>
 		<br/>
 		<br/>
-		Responsable : <b>::c._contact.getName()::</b><br/>
-		::c._contact.phone::<br/>
-		::c._contact.email::<br/>
+		Responsable : $$contact(::c._contact::)
 	</div>
 </div>
 

@@ -20,6 +20,9 @@ class UserContract extends Object
 	//shared order
 	@formPopulate("populate") @:relation(userId2)
 	public var user2 : SNull<User>;
+	#if neko
+	public var userId2: SNull<SInt>;
+	#end
 	
 	public var quantity : SFloat;
 	

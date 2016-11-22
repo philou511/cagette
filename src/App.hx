@@ -24,13 +24,12 @@ class App extends sugoi.BaseApp {
 	}
 	
 	/**
-	 * Init les plugins et le dispatcher juste avant de faire tourner l'app
+	 * Init plugins and event dispatcher just before launching the app
 	 */
 	override public function mainLoop() {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
 		plugins = [ new plugin.Tutorial() ];
 		#if plugins
-		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
 		plugins.push( new hosted.HostedPlugIn() );
 		plugins.push( new pro.ProPlugIn() );
 		plugins.push( new connector.ConnectorPlugIn() );
@@ -102,7 +101,7 @@ class App extends sugoi.BaseApp {
 		out.set("distributor2", "Distributeur 2");
 		out.set("distributor3", "Distributeur 3");
 		out.set("distributor4", "Distributeur 4");
-		out.set("distributorNum", "Nbre de distributeurs nécéssaires (de 0 à 4)");
+		out.set("distributorNum", "Nbre de distributeurs nécessaires (de 0 à 4)");
 		
 		out.set("startDate", "Date de début");
 		out.set("endDate", "Date de fin");
@@ -159,6 +158,7 @@ class App extends sugoi.BaseApp {
 		out.set("IsAmap", "Votre groupe est une AMAP");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
 		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
+		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");

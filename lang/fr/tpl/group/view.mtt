@@ -11,11 +11,11 @@
 						
 					::if group._image!=null::
 
-                                               ::if group.extUrl!=null && group.extUrl!=""::
-                                               <a href="::group.extUrl::"><img src="::file(group._image)::" class="img-responsive img-thumbnail" /></a><br/>
-                                               ::else::
-                                               <img src="::file(group._image)::" class="img-responsive img-thumbnail" /><br/>
-                                               ::end::
+					   ::if group.extUrl!=null && group.extUrl!=""::
+					   <a href="::group.extUrl::"><img src="::file(group._image)::" class="img-responsive img-thumbnail" /></a><br/>
+					   ::else::
+					   <img src="::file(group._image)::" class="img-responsive img-thumbnail" /><br/>
+					   ::end::
 
 					::end::
 					</p>
@@ -134,7 +134,15 @@
 					
 					<p>
 						<h3>Contact</h3>
-						$$contact(::group._contact::)	
+						
+						<i class="icon-user"></i>
+ 						<b>::group._contact.firstName:: ::group._contact.lastName::</b><br/>
+ 						<span ::cond group._contact.email!=null::>
+ 							<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::group._contact.email::">::group._contact.email::</a><br/>
+ 						</span>
+ 						<span ::cond group._contact.phone!=null && (isMember || group.canExposePhone())::>
+ 							<span class="glyphicon glyphicon-phone-alt"></span>  ::group._contact.phone::<br/>
+ 						</span>
 					</p>
 					
 					<hr/>

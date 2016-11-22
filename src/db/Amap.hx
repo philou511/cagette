@@ -11,6 +11,7 @@ enum AmapFlags {
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
+	HidePhone; 	//Masquer le téléphone du responsable de l'amap sur la page publique
 }
 
 //user registration options
@@ -120,6 +121,10 @@ class Amap extends Object
 	public function hasShopMode() {
 		return flags.has(ShopMode);
 	}
+	
+	public function canExposePhone() {
+ 		return !flags.has(HidePhone);
+ 	}
 	
 	public function getCategoryGroups() {
 		

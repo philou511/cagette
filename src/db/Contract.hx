@@ -194,12 +194,6 @@ class Contract extends Object
 	}
 	
 	/**
-	 * get all orders
-	 *
-	 * @param	d
-	 * @return
-	 */
-	/**
 	 * Get all orders of this contract
 	 * @param	d	A delivery is needed for varying orders contract
 	 * @return
