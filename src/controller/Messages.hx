@@ -50,6 +50,7 @@ class Messages extends Controller
 			}
 			
 			
+			
 			//send mail confirmation link
 			var e = new ufront.mail.Email();		
 			e.setSubject(form.getValueOf("subject"));

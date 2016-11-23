@@ -355,7 +355,12 @@ class UserContract extends Object
 	}
 	
 	/**
-	 * get the orders grouped by product 
+	 * Get orders grouped by products. 
+	 * 
+	 * options  : 
+	 * {
+		distribution:db.Distribution, //check if its 
+	 }
 	 */
 	public static function getOrdersByProduct(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):List<Dynamic>{
 		var view = App.current.view;
