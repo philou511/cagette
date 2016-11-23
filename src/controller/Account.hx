@@ -38,6 +38,15 @@ class Account extends Controller
 			
 			form.toSpod(app.user); 
 			
+			//check email is valid
+			if (!sugoi.form.validators.EmailValidator.check(app.user.email)){
+				throw Error("/account/edit",'Email "${app.user.email}" invalide');
+			}
+			
+			if (app.user.email2!=null && !sugoi.form.validators.EmailValidator.check(app.user.email2)){
+				throw Error("/account/edit",'Email "${app.user.email2}" invalide');
+			}
+			
 			if (!admin) { app.user.rights.unset(Admin); }
 			
 			app.user.update();

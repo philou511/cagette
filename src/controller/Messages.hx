@@ -49,6 +49,7 @@ class Messages extends Controller
 				if (d.email2 != null) mails.push(d.email2);
 			}
 			
+			//throw mails;
 			
 			//send mail confirmation link
 			var e = new ufront.mail.Email();		
