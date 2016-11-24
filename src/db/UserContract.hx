@@ -356,25 +356,36 @@ class UserContract extends Object
 	
 	/**
 	 * Get orders grouped by products. 
-	 * 
-	 * options  : 
-	 * {
-		distribution:db.Distribution, //check if its 
-	 }
 	 */
-	public static function getOrdersByProduct(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):List<Dynamic>{
+	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<Dynamic>{
 		var view = App.current.view;
-		var pids = db.Product.manager.search($contract == contract, false);
-		var pids = Lambda.map(pids, function(x) return x.id);
+		//var pids = db.Product.manager.search($contract == d.contract, false);
+		//var pids = Lambda.map(pids, function(x) return x.id);
 		
 		var orders : List<Dynamic>;
 		var where = "";
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			where = 'and up.distributionId = ${distribution.id}';
-		}	
+		var exportName = "";
+		
+		//options
+		if (options.distribution != null){
 			
-		orders = sys.db.Manager.cnx.request('
-			select 
+			//by distrib
+			var d = options.distribution;
+			exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			where += ' and p.contractId = ${d.contract.id}';
+			if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+				where += ' and up.distributionId = ${d.id}';
+			}
+			
+		}else if(options.startDate!=null && options.endDate!=null){
+			
+			//by dates
+			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			
+			
+		}
+			
+		var sql = 'select 
 				SUM(quantity) as quantity,
 				p.id as pid,
 				p.name as pname,
@@ -382,9 +393,11 @@ class UserContract extends Object
 				p.ref as ref,
 				SUM(quantity*up.productPrice) as total
 			from UserContract up, Product p 
-			where up.productId = p.id and p.contractId = ${contract.id}  $where
-			group by p.id order by pname asc;
-		').results();	
+			where up.productId = p.id 
+			$where
+			group by p.id order by pname asc; ';
+			
+		orders = sys.db.Manager.cnx.request(sql).results();	
 		
 		//populate with full product names
 		for ( o in orders){
@@ -406,7 +419,7 @@ class UserContract extends Object
 				});				
 			}
 
-			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
+			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+exportName+"-par produits");
 			return null;
 		}else{
 			return orders;		

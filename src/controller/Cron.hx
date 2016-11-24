@@ -79,21 +79,22 @@ class Cron extends Controller
 	 * @param	hour
 	 * @param	flag
 	 */
-	function distribNotif(hour:Int,flag:db.User.UserFlags) {
+	function distribNotif(hour:Int, flag:db.User.UserFlags) {
 		
 		//trouve les distrib qui commencent dans le nombre d'heures demandé
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
- 		var d = DateTools.delta(Date.now(), 1000 * 60 * 60 * (hour-1));
- 		var h = DateTools.delta(Date.now(), 1000 * 60 * 60 * hour);
+ 		var d = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
+ 		var h = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour+1));
 		var distribs = db.Distribution.manager.search( $date >= d && $date <= h , false);
+		
+		//trace("distribNotif "+hour+" from "+d+" to "+h);
 		
 		//on s'arrete immédiatement si aucune distibution trouvée
  		if (distribs.length == 0) return;
 		
 		//cherche plus tard si on a pas une "grappe" de distrib
 		while (true) {
-			var extraDistribs = db.Distribution.manager.search( $date >= h && $date <DateTools.delta(h,1000.0*60*60) , false);
-			//App.log("extraDistribs : " + extraDistribs);
+			var extraDistribs = db.Distribution.manager.search( $date >= h && $date <DateTools.delta(h,1000.0*60*60) , false);			
 			for ( e in extraDistribs) distribs.add(e);
 			if (extraDistribs.length > 0) {
 				//on fait un tour de plus avec une heure plus tard
@@ -124,8 +125,8 @@ class Cron extends Controller
 		for (d in distribs) dist.push(d.id);
 		Cache.set(cacheId, dist, 24 * 60 * 60);
 		
-		//We have now the distribs we want.
-		
+		//We have now the distribs we want to notify about.
+		//trace(distribs);
 		var distribsByContractId = new Map<Int,db.Distribution>();
 		for (d in distribs) distribsByContractId.set(d.contract.id, d);
 
@@ -148,14 +149,6 @@ class Cron extends Controller
 		}>();
 		
 		for (o in orders) {
-			
-			//if (o.product.contract.type == db.Contract.TYPE_VARORDER) {
-				////commande variable
-				//if (o.distributionId != distribsByContractId.get(o.product.contract.id).id) {
-					////si cette commande ne correspond pas à cette distribution, on passe
-					//continue;	
-				//}
-			//}
 			
 			var x = users.get(o.userId+"-"+o.product.contract.amap.id);
 			if (x == null) x = {user:o.user,distrib:null,products:[]};
@@ -207,6 +200,9 @@ class Cron extends Controller
 					if(u.user.email2!=null) m.cc(new EmailAddress(u.user.email2));
 					m.setSubject( group+" : Distribution " + app.view.hDate(u.distrib.date) );
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
+					
+					//debug
+					//Sys.print("<hr/>"+m.toList+"<br/>"+m.subject+"<br/>"+m.html+"");
 					
 					try {
 						if (!App.config.DEBUG){

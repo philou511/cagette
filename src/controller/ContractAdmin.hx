@@ -319,11 +319,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in db.UserContract.getOrdersByProduct( d.contract , d )){
+				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
 					
 					//find record in existing orders
 					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
@@ -509,7 +509,10 @@ class ContractAdmin extends Controller
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
 		var d = args != null ? args.d : null;
-		var orders = db.UserContract.getOrdersByProduct(contract,d,app.params.exists("csv"));
+		if (d == null) d = contract.getDistribs(false).first();
+		if (d == null) throw "Aucune distribution dans ce contrat";
+		
+		var orders = db.UserContract.getOrdersByProduct({distribution:d},app.params.exists("csv"));
 		view.orders = orders;
 	}
 	

@@ -88,7 +88,7 @@ class Distribution extends Object
 	}
 	
 	override public function toString() {
-			return "Distribution du " + date.toString()+" de "+contract.name;
+			return "#"+id+" Distribution du " + date.toString()+" de "+contract.name;
 	}
 	
 	public function getOrders() {

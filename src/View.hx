@@ -8,7 +8,7 @@ class View extends sugoi.BaseView {
 		super();
 		this.Std = Std;
 		this.Date = Date;
-		this.Web = neko.Web;
+		this.Web = sugoi.Web;
 		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
 		this.ArrayTool = ArrayTool;
