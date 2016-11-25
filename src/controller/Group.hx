@@ -15,6 +15,7 @@ class Group extends controller.Controller
 		view.group = group;
 		view.contracts = group.getActiveContracts();
 		view.pageTitle = group.name;
+		group.getMainPlace(); //just to update cache
 		if (app.user != null){
 			
 			view.isMember = Lambda.has(app.user.getAmaps(), group);

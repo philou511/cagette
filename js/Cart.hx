@@ -374,7 +374,7 @@ class Cart
 				var id : Int = p.id;
 				products.set(id, p);
 				
-				trace(p.name+" : " + p.categories);
+				//trace(p.name+" : " + p.categories);
 			}
 			//existing order
 			for ( p in data.order.products) {

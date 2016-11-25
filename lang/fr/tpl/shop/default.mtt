@@ -83,6 +83,8 @@
 								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus">
 									<img src="::p.image::" style="width:64px;height:64px;" />
 								</a>
+								
+								<div ::cond p.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom"><img src="/img/AB.png"/></div>
 							</td>
 							<td>
 								<h4>

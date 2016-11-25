@@ -24,6 +24,7 @@ class Product extends Object
 	
 	public var unitType : SNull<SEnum<UnitType>>; // Kg / L / g / units
 	public var qt : SNull<SFloat>;
+	public var organic : SBool;
 	
 	@hideInForms public var type : SInt;	//icones
 	
@@ -32,6 +33,7 @@ class Product extends Object
 	
 	public var hasFloatQt:SBool; //this product can be ordered in "float" quantity
 	public var active : SBool; 	//if false, product disabled, not visible on front office
+	
 	
 	public function new() 
 	{
@@ -104,7 +106,8 @@ class Product extends Object
 			stock : contract.hasStockManagement() ? this.stock : null,
 			hasFloatQt : hasFloatQt,
 			qt:qt,
-			unitType:unitType
+			unitType:unitType,
+			organic:organic
 		}
 		
 		if (CategFromTaxo){
