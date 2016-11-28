@@ -32,8 +32,6 @@
 	::set total = 0::
 	::set productNum = 0::
 	
-	
-	
 	::foreach m orders::
 	
 		::if m.userName != name || m.userName2 != name2::
@@ -45,25 +43,25 @@
 			::raw "<table style='width:100%;'>" ::
 				<tr>
 					<td style='width:33%;'>
-						<b style="font-size:200%;">::m.userName::</b>
+						<b style="font-size:150%;">::m.userName::</b>
 						::set total = 0::
 						::set productNum = 0::
 					</td>
 					<td>
 						::set u = getUser(m.userId):
-						::if u !=null::
-							$$nullSafe(::u.phone::)
+						::if u!=null && u.phone!=null::
+							Tél: $$nullSafe(::u.phone::)
 						::end::
 					</td>
 					<td style='text-align:right;'>
-						<b style='font-size:200%;'>::user._amap.name::</b>
+						<b>::user._amap.name::</b>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						::if m.userName2 != null::
 							en alternance avec<br/>
-							<b style="font-size:200%;">::m.userName2::</b>
+							<b>::m.userName2::</b>
 						::set total = 0::
 						::set productNum = 0::
 						::end::
@@ -77,15 +75,16 @@
 						::end::
 					</td>
 					<td style='text-align:right;'>
-						<b style='font-size:150%;'>Livraison du ::hDate(date)::</b>
+						<b>Livraison du ::hDate(date)::</b>
 					</td>
 				</tr>
 			::raw "</table>" ::
 		
 			::raw "<table style='width:100%;'>"::
 			::raw tableHeader::
+			
+			
 		::end::
-				
 		
 				::if m.userName != name || m.userName2 != name2::
 					::set class="name"::
@@ -93,11 +92,11 @@
 					::set class=""::
 				::end::
 				<tr class="::class::">	
-					<td style="font-size:200%;border-bottom: 2px solid #AAA;">
+					<td style="border-bottom: 2px solid #AAA;">
 						::m.quantity::
 						::set productNum = productNum+m.quantity::
 					</td>
-					<td style="font-size:200%;border-bottom: 2px solid #AAA;">
+					<td style="border-bottom: 2px solid #AAA;">
 						::m.productName::
 					</td>
 					<td>
@@ -113,12 +112,8 @@
 						::set total = total + m.total::
 					</td>
 					
-					<td style="width:20%;">
-						
-						
-						
-						
-					</td>
+					<td style="width:20%;"></td>
+					
 				</tr>
 				::set name =  m.userName ::
 				::set name2 =  m.userName2 ::
@@ -130,7 +125,7 @@
 						<td class="total">::productNum::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">TOTAL</td>
-						<td class="total" style="font-size:200%;">::formatNum(total)::&nbsp;::currency()::</td>
+						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>		
 				::end::

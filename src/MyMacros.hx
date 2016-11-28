@@ -21,7 +21,6 @@ class MyMacros {
 	    commitDate = StringTools.replace(commitDate, ":", "-");
 	    commitDate = commitDate.substr(0,16);
 	    commitDate = "D"+commitDate;
-	    //trace (commitDate);
 	    
 	    // Generates a string expression
 	    return macro $v{commitDate};
