@@ -500,13 +500,13 @@ class Member extends Controller
 			//import unregistered members
 			var i : Iterable<Dynamic> = cast app.session.data.csvUnregistered;
 			for (u in i) {
-				if (u[0] == null || u[0] == "") continue;
+				if (u[0] == null || u[0] == "null" || u[0] == "") continue;
 								
 				var user = new db.User();
 				user.firstName = u[0];
 				user.lastName = u[1];
 				user.email = u[2];
-				if (user.email != null && !EmailValidator.check(user.email)) {
+				if (user.email != null && user.email != "null" &&!EmailValidator.check(user.email)) {
 					throw "Le mail '" + user.email + "' est invalide, merci de modifier votre fichier";
 				}
 				user.phone = u[3];
@@ -514,7 +514,7 @@ class Member extends Controller
 				user.firstName2 = u[4];
 				user.lastName2 = u[5];
 				user.email2 = u[6];
-				if (user.email2 != null && !EmailValidator.check(user.email2)) {
+				if (user.email2 != null && user.email2 != "null" && !EmailValidator.check(user.email2)) {
 					App.log(u);
 					throw "Le mail du conjoint de "+user.firstName+" "+user.lastName+" '" + user.email2 + "' est invalide, merci de modifier votre fichier";
 				}

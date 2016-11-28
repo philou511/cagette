@@ -8,15 +8,15 @@
 <body>
 	<!-- page head-->
 	::fill head::
-	<h1>::user._amap.name::</h1>
-	<h2>Livraison du ::hDate(date)::</h2>
+	<td >
+		<h1 style='text-align:right;'>::user._amap.name::</h1>
+		<h2 style='text-align:right;'>Livraison du ::hDate(date)::</h2>
+	</td>
 	::end::
 	
 	<!-- table header -->
 	::fill tableHeader::
 	<tr>
-		<th>Nom</th>
-		<th>Coordonnées</th>
 		<th>Qté</th>
 		<th>Produit</th>
 		<th>P.U</th>
@@ -41,8 +41,46 @@
 			::if name != ""::
 			::raw "</table> <hr />"::
 			::end::
-		
-			::raw head::
+
+			::raw "<table style='width:100%;'>" ::
+				<tr>
+					<td style='width:33%;'>
+						<b style="font-size:200%;">::m.userName::</b>
+						::set total = 0::
+						::set productNum = 0::
+					</td>
+					<td>
+						::set u = getUser(m.userId):
+						::if u !=null::
+							$$nullSafe(::u.phone::)
+						::end::
+					</td>
+					<td style='text-align:right;'>
+						<b style='font-size:200%;'>::user._amap.name::</b>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						::if m.userName2 != null::
+							en alternance avec<br/>
+							<b style="font-size:200%;">::m.userName2::</b>
+						::set total = 0::
+						::set productNum = 0::
+						::end::
+					</td>
+					<td>
+						::if m.userName2 != null::
+							::set u = getUser(m.userId2):
+							::if u !=null::
+								$$nullSafe(::u.phone::)
+							::end::
+						::end::
+					</td>
+					<td style='text-align:right;'>
+						<b style='font-size:150%;'>Livraison du ::hDate(date)::</b>
+					</td>
+				</tr>
+			::raw "</table>" ::
 		
 			::raw "<table style='width:100%;'>"::
 			::raw tableHeader::
@@ -54,39 +92,12 @@
 				::else::
 					::set class=""::
 				::end::
-				<tr class="::class::">
-					<td>
-						::if m.userName != name || m.userName2 != name2::
-								<b>::m.userName::</b>
-								::if m.userName2 != null::
-									<br />en alternance avec <b>::m.userName2::</b>
-								::end::
-								::set total = 0::
-								::set productNum = 0::
-						::end::
-						
-					</td>
-					<td>
-						::if m.userName != name || m.userName2 != name2::
-							::set u = getUser(m.userId):
-							::if u !=null::
-							$$nullSafe(::u.phone::)
-							::end::
-							::if m.userName2 != null::
-								::set u = getUser(m.userId2):
-								::if u !=null::
-								<br />$$nullSafe(::u.phone::)
-								::end::
-							::end::
-						::end::
-						
-					</td>
-					
-					<td>
+				<tr class="::class::">	
+					<td style="font-size:200%;border-bottom: 2px solid #AAA;">
 						::m.quantity::
 						::set productNum = productNum+m.quantity::
 					</td>
-					<td>
+					<td style="font-size:200%;border-bottom: 2px solid #AAA;">
 						::m.productName::
 					</td>
 					<td>
@@ -116,12 +127,10 @@
 				::set next = orders[repeat.m.index+1]::
 				::if next==null || next.userName!=name || next.userName2!=name2::
 				<tr>
-						<td></td>
-						<td></td>
 						<td class="total">::productNum::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">TOTAL</td>
-						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
+						<td class="total" style="font-size:200%;">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>		
 				::end::
