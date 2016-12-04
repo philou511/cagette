@@ -24,7 +24,7 @@ class Distribution extends Controller
 	 * List to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
-	function doListByDate(?date:Date, ?type:String) {
+	function doListByDate(?date:Date, ?type:String, ?fontSize:String) {
 		
 		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
@@ -37,14 +37,21 @@ class Distribution extends Controller
 				{ key:"all", value:"Tout à la suite" },
 				{ key:"allshort", value:"Tout à la suite sans les prix et totaux" },
 				//{ key:"csv", value:"Export CSV" }
-			]));
+			],"all"));
+			f.addElement(new sugoi.form.elements.RadioGroup("fontSize", "Font size", [
+				{ key:"S" , value:"S"  },
+				{ key:"M" , value:"M"  },
+				{ key:"L" , value:"L"  },
+				{ key:"XL", value:"XL" },
+			], "S", "S", false));
 			
 			view.form = f;
 			app.setTemplate("form.mtt");
 			
 			if (f.checkToken()) {
-				
-				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+f.getValueOf("type");
+				var suburl = f.getValueOf("type")+"/"+f.getValueOf("fontSize");
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+suburl;
+				//var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+f.getValueOf("type");
 				throw Redirect( url );
 			}
 			
@@ -52,6 +59,18 @@ class Distribution extends Controller
 			
 		}else {
 			view.date = date;
+			
+			view.fontratio = 100;	  // default value
+			if (fontSize=="M") {
+				view.fontratio = 125; // 100x1.25
+			}
+			if (fontSize=="L") {
+				view.fontratio = 156; // 125x1.25
+			}
+			if (fontSize=="XL") {
+				view.fontratio = 195; // 156x1.25
+			}
+
 			
 			if (type=="one") {
 				app.setTemplate("distribution/listByDateOnePage.mtt");
