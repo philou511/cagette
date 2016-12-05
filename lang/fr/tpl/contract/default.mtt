@@ -162,7 +162,7 @@
 		</p>
 		$$edit(Modifier,/account/edit)
 		
-		<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Dans tout les cas, vos commandes ne seront pas perdues."::)>
+		<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
 			<span class="glyphicon glyphicon-remove"></span>
 			Quitter ce groupe
 		</a>

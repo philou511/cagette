@@ -103,8 +103,6 @@ class UserContract extends Object
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
 		
-		
-		
 		for (o in orders) {
 		
 			var x : UserOrder = cast { };

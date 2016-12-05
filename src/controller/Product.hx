@@ -145,7 +145,7 @@ class Product extends Controller
 		if (request.get("file") != null) {
 			
 			var csv = new sugoi.tools.Csv();
-			csv.headers = ["Nom","Prix","Référence","Description","Taux de TVA","Stock","numéro d'icone"];
+			csv.setHeaders( ["Nom","Prix","Référence","Description","Taux de TVA","Stock","numéro d'icone"] );
 			var datas = csv.importDatas(request.get("file"));
 			
 			app.session.data.csvImportedData = datas;

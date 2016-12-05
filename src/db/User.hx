@@ -309,7 +309,7 @@ class User extends Object {
 	}
 	
 	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
-		var u = db.User.manager.select($email == email || $email2 == email, false);
+		var u = db.User.manager.select($email == email || $email2 == email, true);
 		if (u == null){
 			u = new db.User();
 			u.firstName = firstName;

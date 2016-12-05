@@ -277,8 +277,12 @@ class Member extends Controller
 		form.removeElement( form.getElement("rights") );
 		form.removeElement( form.getElement("lang") );		
 		form.removeElement( form.getElement("ldate") );
-		form.removeElementByName("email");
-		form.removeElementByName("email2");
+		
+		//an administrator can modify a user's email only if it's a new user.
+		if(member.isFullyRegistred()){
+			form.removeElementByName("email");
+			form.removeElementByName("email2");
+		}
 		
 		if (form.checkToken()) {
 			
@@ -434,7 +438,7 @@ class Member extends Controller
 		if ( data != null) {
 			
 			var csv = new sugoi.tools.Csv();
-			csv.headers = ["prénom","nom","E-mail","téléphone portable","prénom conjoint","	nom conjoint","	E-mail conjoint",	"téléphone portable conjoint",	"adresse1",	"adresse2"	,"code postal","ville"];
+			csv.setHeaders(["prénom","nom","E-mail","téléphone portable","prénom conjoint","	nom conjoint","	E-mail conjoint",	"téléphone portable conjoint",	"adresse1",	"adresse2"	,"code postal","ville"]);
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
