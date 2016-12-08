@@ -453,8 +453,15 @@ class UserContract extends Object
 					"paid":o.paid
 				});				
 			}
-
-			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-"+contract.name+"-Cagette");
+			
+			var exportName = "";
+			if (distribution != null){
+				exportName = contract.amap.name+" - Distribution "+contract.name+" du " + distribution.date.toString().substr(0, 10);	
+			}else{
+				exportName = contract.amap.name+" - "+contract.name;
+			}
+			
+			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+" - Par adherent");
 			return null;
 		}else{
 			return orders;
