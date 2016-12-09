@@ -92,11 +92,11 @@
 					::set class=""::
 				::end::
 				<tr class="::class::">	
-					<td style="border-bottom: 2px solid #AAA;">
+					<td style="font-size: ::fontRatio::%;border-bottom: 2px solid #AAA;">
 						::m.quantity::
 						::set productNum = productNum+m.quantity::
 					</td>
-					<td style="border-bottom: 2px solid #AAA;">
+					<td style="font-size: ::fontRatio::%;border-bottom: 2px solid #AAA;">
 						::m.productName::
 					</td>
 					<td>
@@ -125,7 +125,7 @@
 						<td class="total">::productNum::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">TOTAL</td>
-						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
+						<td class="total" style="font-size: ::fontRatio::%;">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>		
 				::end::

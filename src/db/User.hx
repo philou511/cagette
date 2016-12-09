@@ -387,7 +387,7 @@ class User extends Object {
 		
 		//var uc = db.UserAmap.manager.unsafeObjects("select * from UserContract where productId IN(" + productsIds.join(",") + ") group by productId", false);	
 		//return Lambda.map(uc, function(x) return x.user);	
-		var uc = db.User.manager.unsafeObjects("select u.* from User u, UserContract uc where uc.productId IN(" + productsIds.join(",") + ") AND uc.userId=u.id group by u.id  ORDER BY u.lastName", false);	
+		var uc = db.User.manager.unsafeObjects("select u.* from User u, UserContract uc where uc.productId IN(" + productsIds.join(",") + ") AND (uc.userId=u.id OR uc.userId2=u.id) group by u.id  ORDER BY u.lastName", false);	
 		return uc;
 		
 	}

@@ -24,39 +24,49 @@ class Distribution extends Controller
 	 * List to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
-	function doListByDate(?date:Date, ?type:String) {
+	function doListByDate(?date:Date, ?type:String, ?fontSize:String) {
 		
 		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
 		if (type == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			//f.addElement(new sugoi.form.elements.DatePicker("date", "Date de distribution",date));
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
 				{ key:"all", value:"Tout à la suite" },
 				{ key:"allshort", value:"Tout à la suite sans les prix et totaux" },
-				//{ key:"csv", value:"Export CSV" }
-			]));
+			],"all"));
+			f.addElement(new sugoi.form.elements.RadioGroup("fontSize", "Taille de police", [
+				{ key:"S" , value:"S"  },
+				{ key:"M" , value:"M"  },
+				{ key:"L" , value:"L"  },
+				{ key:"XL", value:"XL" },
+			], "S", "S", false));
 			
 			view.form = f;
 			app.setTemplate("form.mtt");
 			
 			if (f.checkToken()) {
-				
-				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+f.getValueOf("type");
+				var suburl = f.getValueOf("type")+"/"+f.getValueOf("fontSize");
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+suburl;
 				throw Redirect( url );
 			}
 			
 			return;
 			
 		}else {
+			
 			view.date = date;
+			view.fontRatio = switch(fontSize){
+				case "M" : 125; //100x1.25
+				case "L" : 156; //125x1.25
+				case "XL": 195; //156x1.25
+				default : 100;
+			};
 			
 			if (type=="one") {
 				app.setTemplate("distribution/listByDateOnePage.mtt");
-			}
-			if (type=="allshort") {
+			} else if (type=="allshort") {
 				app.setTemplate("distribution/listByDateShort.mtt");
 			}
 			

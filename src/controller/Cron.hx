@@ -83,9 +83,9 @@ class Cron extends Controller
 		
 		//trouve les distrib qui commencent dans le nombre d'heures demandé
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
- 		var d = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
- 		var h = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour+1));
-		var distribs = db.Distribution.manager.search( $date >= d && $date < h , false);
+ 		var d = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour-1));
+ 		var h = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
+		var distribs = db.Distribution.manager.search( $date >= d && $date <= h , false);
 		
 		//trace("distribNotif "+hour+" from "+d+" to "+h);
 		
