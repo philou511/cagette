@@ -85,7 +85,7 @@ class Cron extends Controller
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
  		var d = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
  		var h = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour+1));
-		var distribs = db.Distribution.manager.search( $date >= d && $date <= h , false);
+		var distribs = db.Distribution.manager.search( $date >= d && $date < h , false);
 		
 		//trace("distribNotif "+hour+" from "+d+" to "+h);
 		
@@ -134,8 +134,7 @@ class Cron extends Controller
  		var orders = [];
  		for (d in distribs) {
  			//get orders for both type of contracts
- 			var orders2 = d.contract.getOrders(d);
- 			orders = orders.concat(orders2.array());	
+			for ( x in d.contract.getOrders(d)) orders.push(x);
 		}
 		
 		/*
@@ -153,6 +152,7 @@ class Cron extends Controller
 			var x = users.get(o.userId+"-"+o.product.contract.amap.id);
 			if (x == null) x = {user:o.user,distrib:null,products:[]};
 			x.distrib = distribsByContractId.get(o.product.contract.id);
+			//x.distrib = o.distribution;
 			x.products.push(o);			
 			users.set(o.userId+"-"+o.product.contract.amap.id, x);
 			
@@ -202,10 +202,11 @@ class Cron extends Controller
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
 					
 					//debug
-					//Sys.print("<hr/>"+m.toList+"<br/>"+m.subject+"<br/>"+m.html+"");
+					Sys.print("<hr/>" + m.toList + "<br/>" + m.subject + "<br/>" + m.html + "");
 					
 					try {
 						if (!App.config.DEBUG){
+							Sys.sleep(0.25);
 							App.getMailer().send(m);	
 						}
 						
