@@ -516,6 +516,24 @@ class ContractAdmin extends Controller
 		view.orders = orders;
 	}
 	
+	@tpl("contractadmin/ordersByProductList.mtt")
+	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {
+		
+		sendNav(contract);		
+		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
+		
+		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
+		view.c = contract;
+		view.u = app.user;
+		var d = args != null ? args.d : null;
+		if (d == null) d = contract.getDistribs(false).first();
+		if (d == null) throw "Aucune distribution dans ce contrat";
+		
+		var orders = db.UserContract.getOrdersByProduct({distribution:d},false);
+		view.orders = orders;
+	}
+	
 	/**
 	 * Lists deliveries for this contract
 	 */
