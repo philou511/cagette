@@ -32,7 +32,7 @@
 					::else::
 					
 						<h4>Inscriptions :</h4>
-						::switch group.regOption::
+						::switch group._regOption::
 						
 						::case::
 						

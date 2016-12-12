@@ -148,8 +148,7 @@ class Group extends controller.Controller
 		
 		view.title = "Créer un nouveau groupe sur Cagette.net";
 		view.text = "Vous êtes sur le point de créer un compte pour votre AMAP ou groupement d'achat.";
-		
-		
+				
 		var f = new sugoi.form.Form("c");
 		f.addElement(new StringInput("amapName", "Nom de votre groupe", "", true));
 		
