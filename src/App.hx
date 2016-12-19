@@ -79,6 +79,7 @@ class App extends sugoi.BaseApp {
 		out.set("firstName2", "Prénom du conjoint");
 		out.set("lastName2", "Nom du conjoint");
 		out.set("email2", "e-mail du conjoint");
+		out.set("pass", "mot de passe");
 		out.set("address1", "adresse");
 		out.set("address2", "adresse");
 		out.set("zipCode", "code postal");
