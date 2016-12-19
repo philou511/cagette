@@ -57,7 +57,8 @@
 				Envoyer une invitation</a>
 			::end::
 		</p>
-		<p ::cond user.isAdmin()::>
+
+		<p ::cond canLoginAs::>
 			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-danger btn-xs">Se connecter sur ce compte</a>
 		</p>
 	</div>

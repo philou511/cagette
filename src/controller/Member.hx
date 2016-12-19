@@ -205,6 +205,7 @@ class Member extends Controller
 		if (userAmap == null) throw Error("/member", "Cette personne ne fait pas partie de votre groupe");
 		
 		view.userAmap = userAmap; 
+		view.canLoginAs = db.UserAmap.manager.count($userId == member.id) == 1 && app.user.isAmapManager(); 
 		
 		//orders
 		var row = { constOrders:new Array<UserOrder>(), varOrders:new Map<String,Array<UserOrder>>() };
@@ -251,15 +252,15 @@ class Member extends Controller
 	 * @param	user
 	 * @param	amap
 	 */	
-	@admin
-	function doLoginas(user:db.User, amap:db.Amap) {
+	function doLoginas(member:db.User, amap:db.Amap) {
 	
-		//if (!app.user.isAmapManager()) return;
-		//if (user.isAdmin()) return;
+		if (!app.user.isAmapManager()) return;
+		if (member.isAdmin()) return;
+		if ( db.UserAmap.manager.count($userId == member.id) > 1 ) return;
 		
-		App.current.session.setUser(user);
+		App.current.session.setUser(member);
 		App.current.session.data.amapId = amap.id;
-		throw Redirect("/member/view/" + user.id );
+		throw Redirect("/member/view/" + member.id );
 	}
 	
 	/**
@@ -272,16 +273,26 @@ class Member extends Controller
 		
 		var form = sugoi.form.Form.fromSpod(member);
 		
-		//cleaning
-		form.removeElement( form.getElement("pass") );
+		//cleaning		
 		form.removeElement( form.getElement("rights") );
 		form.removeElement( form.getElement("lang") );		
 		form.removeElement( form.getElement("ldate") );
 		
-		//an administrator can modify a user's email only if it's a new user.
-		if(member.isFullyRegistred()){
+		
+		var isReg = member.isFullyRegistred();
+		var groupNum = db.UserAmap.manager.count($userId == member.id);
+		
+		//an administrator can modify a user's email only if he's not member elsewhere
+		if (groupNum > 1){			
 			form.removeElementByName("email");
 			form.removeElementByName("email2");
+			app.session.addMessage("Par sécurité, vous ne pouvez pas modifier l'email de cette personne car elle est membre de plusieurs groupes.");
+		}
+		//an administrator can modify a user's pass only if he's a not registred user.
+		if (!isReg){
+			app.session.addMessage("Cette personne n'a pas encore défini de mot de passe. Vous êtes exceptionnellement autorisé à le définir à sa place. N'oubliez pas de la prévenir.");			
+		}else{
+			form.removeElement( form.getElement("pass") );
 		}
 		
 		if (form.checkToken()) {
@@ -306,12 +317,15 @@ class Member extends Controller
 				} else {
 					throw Error("/member/edit/" + member.id, "Attention, Cet email ou ce nom existe déjà dans une autre fiche : "+Lambda.map(sim,function(u) return "<a href='/member/view/"+u.id+"'>"+u.getCoupleName()+"</a>. Ces deux fiches ne peuvent pas être fusionnées car cette personne a des commandes enregistrées dans l'autre fiche").join(","));	
 				}
-			}			
+			}	
+			
+			if (!isReg) member.setPass(form.getValueOf("pass"));
 			
 			member.update();
 			
-			/*if (!App.config.DEBUG) {
-				//verif changement d'email
+			if (!App.config.DEBUG && groupNum == 1) {
+				
+				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
 					var m = new Email();
 					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
@@ -329,12 +343,13 @@ class Member extends Controller
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
 					App.getMailer().send(m);
 				}	
-			}*/
+			}
 			
 			throw Ok('/member/view/'+member.id,'Ce membre a été mis à jour');
 		}
 		
 		view.form = form;
+		
 	}
 	
 	/**
