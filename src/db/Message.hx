@@ -1,19 +1,27 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
- 
+
+/**
+ * log of sent emails
+ */
 class Message extends Object
 {
 
 	public var id : SId;
-
-	@:relation(senderId) public var sender : User;
 	@:relation(amapId) public var amap : Amap;
-	public var recipientListId : SString<12>;
-	public var title : SString<128>;
-	public var body : SText;
 	
+	
+	@:relation(senderId) public var sender : SNull<User>;
+	
+	public var recipientListId : SNull<SString<12>>;
+	public var recipients : SNull<SData<Array<String>>>;
+	
+	public var title : SString<128>;
+	public var body : SText;	
 	public var date : SDateTime;
+	
+	public var status : SNull<SText>;
 	
 	
 }

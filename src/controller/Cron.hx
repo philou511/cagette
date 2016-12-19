@@ -209,12 +209,32 @@ class Cron extends Controller
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
 					
 					//debug
-					Sys.print("<hr/>" + m.toList + "<br/>" + m.subject + "<br/>" + m.html + "");
+					Sys.println("<hr/>" + m.toList + "<br/>" + m.subject + "<br/>" + m.html + "");
 					
 					try {
 						if (!App.config.DEBUG){
 							Sys.sleep(0.25);
-							App.getMailer().send(m);	
+							//App.getMailer().send(m);	
+							
+							var mx = new sugoi.mail.MandrillApiMail();
+							//var senderMail = u.distrib.contract.amap.contact == null ? "noreply@cagette.net" : u.distrib.contract.amap.contact.email;
+							mx.setSender(App.config.get("default_email"));
+							mx.setSubject(m.subject);
+							mx.setRecipient(u.user.email);
+							mx.setHtmlBody(m.html);
+							var ret = mx.send();
+							
+							//store result
+							var lm = new db.Message();
+							lm.amap =  u.distrib.contract.amap;
+							lm.recipients = [u.user.email];
+							lm.title = m.subject;
+							lm.date = Date.now();
+							lm.body = m.html;
+							lm.status = ret;
+							lm.insert();
+							
+							
 						}
 						
 					}catch (e:Dynamic) {
