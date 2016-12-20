@@ -209,7 +209,7 @@ class Cron extends Controller
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
 					
 					//debug
-					Sys.println("<hr/>" + m.toList + "<br/>" + m.subject + "<br/>" + m.html + "");
+					Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.toList + "<br/>" + m.subject + "<br/>" + m.html + "");
 					
 					try {
 						if (!App.config.DEBUG){
@@ -233,8 +233,6 @@ class Cron extends Controller
 							lm.body = m.html;
 							lm.status = ret;
 							lm.insert();
-							
-							
 						}
 						
 					}catch (e:Dynamic) {
