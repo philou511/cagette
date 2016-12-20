@@ -62,8 +62,6 @@
 		</table>
 		
 		
-		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::)
-		
 	</div>
 </div>
 

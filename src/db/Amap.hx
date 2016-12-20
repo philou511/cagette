@@ -101,8 +101,6 @@ class Amap extends Object
 				pid = Std.parseInt(res.placeId);	
 			}
 			
-			
-			
 			if (pid != 0 && pid != null) {
 				var p = db.Place.manager.get(pid, false);
 				this.mainPlace = p;
@@ -126,6 +124,11 @@ class Amap extends Object
 	public function canExposePhone() {
  		return !flags.has(HidePhone);
  	}
+	
+	public function hasPayments(){
+		//nansouty + jeanot
+		return id == 1 || id == 176;
+	}
 	
 	public function getCategoryGroups() {
 		

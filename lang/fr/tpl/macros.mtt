@@ -134,5 +134,28 @@
 	</macro>
 	
 	
+	<macro name="transaction(t)">
+	<td>
+		::set x = t.getTypeIndex()::
+		
+		::if x==0::
+		<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+		::elseif x==1::
+		<i class="fa fa-shopping-basket" aria-hidden="true"></i>
+		::else::				
+		<i class="fa fa-credit-card" aria-hidden="true"></i>
+		::end::
+	</td>
+	<td>
+		::if t.pending==true::
+		<i class="fa fa-circle-thin" aria-hidden="true"></i>
+		::else::
+		<i class="fa fa-check" aria-hidden="true"></i>
+		::end::
+	</td>
+	<td>::t.name::</td>
+	<td>::t.amount:: ::currency()::</td>
+	<td>::hDate(t.date)::</td>
+	</macro>
 	
 </macros>

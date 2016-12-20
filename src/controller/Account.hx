@@ -63,17 +63,25 @@ class Account extends Controller
 			
 			var name = app.user.amap.name;
 			
-			
 			var ua = db.UserAmap.get(app.user, app.user.amap,true);
 			ua.delete();
 			
 			App.current.session.data.amapId = null;
 			throw Ok("/user/choose?show=1", "Vous avez quitté le groupe "+name);
-			
 		}
 		
 	}
 	
+	/**
+	 * user payments history
+	 */
+	@tpl('account/payments.mtt')
+	function doPayments(){
+		var m = app.user;
+		view.transactions = db.Transaction.getTransactions(m,app.user.amap);
+		view.member = m;
+		view.balance = db.UserAmap.get(m,app.user.amap).balance;
+	}
 	
 	
 }

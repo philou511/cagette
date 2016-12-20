@@ -24,7 +24,7 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * contrats de l'utilisateur en cours
+	 * "my account" page
 	 */
 	@tpl("contract/default.mtt")
 	function doDefault() {
@@ -90,23 +90,19 @@ class Contract extends Controller
 		if (app.user.isAmapManager()) {
 			
 			app.user.lock();
-						
 			//actions
 			if (app.params.exists('startTuto') ) {
 				
 				//start a tuto
 				var t = app.params.get('startTuto'); 
-				
 				app.user.tutoState = {name:t,step:0};
 				app.user.update();
-				
 				
 			}else if (app.params.exists('stopTuto')) {
 				
 				//stopped tuto from a tuto window
 				app.user.tutoState = null;
 				app.user.update();	
-				
 				view.stopTuto = true;
 			}
 			
@@ -128,6 +124,8 @@ class Contract extends Controller
 		}
 		
 		checkToken();
+		
+		view.userAmap = db.UserAmap.get(app.user, app.user.amap);
 		
 	}
 	

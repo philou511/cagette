@@ -160,13 +160,42 @@
 		<p>
 			$$contact(::user::)	
 		</p>
+		
+		
+		<div class="pull-right">
+			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
+				<span class="glyphicon glyphicon-remove"></span>
+				Quitter ce groupe
+			</a>
+		</div>
+		
 		$$edit(Modifier,/account/edit)
 		
-		<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
-			<span class="glyphicon glyphicon-remove"></span>
-			Quitter ce groupe
-		</a>
 	</div>
+	
+	::if user.getAmap().hasPayments()::
+	<h3>Paiements</h3>
+	<div  class="article">
+		<span style="font-size:1.3em;">
+			Solde : 
+			::if userAmap.balance<0:: 
+				::set color = "C00"::
+			::else::
+				::set color = "0C0"::
+			::end::
+			<span style="color:#::color::;">
+				::userAmap.balance:: ::currency()::
+			</span>
+		</span>
+		
+		<span style="margin-left:30px;">
+			<a href="/account/payments" class="btn btn-default btn-small">
+				<i class="fa fa-credit-card" aria-hidden="true"></i>
+				Détail des paiements
+			</a>
+		</span>
+	</div>
+	::end::
 	
 	
 	::if user.isAmapManager()::
