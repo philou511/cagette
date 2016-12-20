@@ -15,6 +15,7 @@ class Group extends controller.Controller
 		view.group = group;
 		view.contracts = group.getActiveContracts();
 		view.pageTitle = group.name;
+		group.getMainPlace(); //just to update cache
 		if (app.user != null){
 			
 			view.isMember = Lambda.has(app.user.getAmaps(), group);
@@ -52,8 +53,8 @@ class Group extends controller.Controller
 				user.firstName = f.getValueOf("userFirstName");
 				user.lastName = f.getValueOf("userLastName");
 				
-				if ( db.User.getSimilar(user.firstName, user.lastName, user.email).length > 0 ) {
-					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à votre groupe à partir de cette page");
+				if ( db.User.getSameEmail(user.email).length > 0 ) {
+					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à partir de cette page");
 				}
 				
 				user.insert();
@@ -117,8 +118,8 @@ class Group extends controller.Controller
 				user.city = f.getValueOf("city");
 				user.phone = f.getValueOf("phone");
 				
-				if ( db.User.getSimilar(user.firstName, user.lastName, user.email).length > 0 ) {
-					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à votre groupe à partir de cette page");
+				if ( db.User.getSameEmail(user.email).length > 0 ) {
+					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à partir de cette page");
 				}
 				
 				user.insert();				
@@ -147,17 +148,9 @@ class Group extends controller.Controller
 		
 		view.title = "Créer un nouveau groupe sur Cagette.net";
 		view.text = "Vous êtes sur le point de créer un compte pour votre AMAP ou groupement d'achat.";
-		
-		
+				
 		var f = new sugoi.form.Form("c");
 		f.addElement(new StringInput("amapName", "Nom de votre groupe", "", true));
-		//f.addElement(new sugoi.form.elements.Input("userFirstName", "Votre prénom","",true));
-		//f.addElement(new sugoi.form.elements.Input("userLastName", "Votre nom de famille","",true));
-		//f.addElement(new sugoi.form.elements.Input("userEmail", "Votre email", "", true));
-		//var p = new sugoi.form.elements.Input("userPass", "Votre mot de passe", "", true);
-		//p.password = true;
-		//f.addElement(p);
-		//f.addElement(new sugoi.form.elements.Input("userPhone", "Votre numéro de téléphone si vous souhaitez être rappellé","",false));
 		
 		if (f.checkToken()) {
 			
@@ -165,7 +158,6 @@ class Group extends controller.Controller
 			
 			var amap = new db.Amap();
 			amap.name = f.getValueOf("amapName");
-			amap.txtHome = "Bienvenue sur la cagette de "+amap.name+" !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
 			amap.contact = user;
 
 			amap.flags.set(db.Amap.AmapFlags.HasMembership);

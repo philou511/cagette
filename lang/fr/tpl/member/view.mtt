@@ -51,16 +51,15 @@
 			$$delete(Retirer du groupe,/member/delete/::member.id::?token=::token::)
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">Replacer en liste d'attente</a>
 			
-			::if user.isAmapManager()::
-			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-default btn-sm">Se connecter sur ce compte</a>
-			<a href="/member/payments/::member.id::" class="btn btn-default btn-sm">Paiements</a>
-			::end::
-			
 			::if !member.isFullyRegistred()::
 			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
 				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
 				Envoyer une invitation</a>
 			::end::
+		</p>
+
+		<p ::cond canLoginAs::>
+			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-danger btn-xs">Se connecter sur ce compte</a>
 		</p>
 	</div>
 	
@@ -99,8 +98,20 @@
 				::foreach p o.constOrders::
 					<tr>
 						<td>::p.quantity::</td>
-						<td>::p.productName::</td>
+						<td>::p.productName::
+						
+						::if p.userId2 != null::
+							<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+							::if member.id == p.userId::
+								<a href="/member/view/::p.userId2::">::p.userName2::</a>
+							::else::
+								<a href="/member/view/::p.userId::">::p.userName::</a>
+							::end::
+						::end::
+						
+						</td>
 						<td>::p.subTotal:: ::currency()::</td>
+
 						<td>
 							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
 						</td>

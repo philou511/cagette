@@ -238,11 +238,6 @@ class ContractAdmin extends Controller
 			var el = new sugoi.form.elements.DatePicker("date", "Date de distribution", true);
 			el.format = 'LL';
 			f.addElement(el);
-			/*f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
-				{ key:"one", value:"Une personne par page" },
-				{ key:"all", value:"Tout à la suite" },
-				{ key:"csv", value:"Export CSV" }
-			]));*/
 			
 			view.form = f;
 			view.title = "Vue globale des commandes";
@@ -283,13 +278,11 @@ class ContractAdmin extends Controller
 			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//constant orders
-			var products = [];
+			var constorders = [];
 			for ( d in cdistribs) {
-				for ( p in d.contract.getProducts()) {
-					products.push(p.id);
-				}
+				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id), { orderBy:userId } );
+				constorders = constorders.concat(Lambda.array(orders2));
 			}
-			var constorders = db.UserContract.manager.search($productId in products, { orderBy:userId } );
 			
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
@@ -326,11 +319,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( d.contract , d )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in db.UserContract.getOrdersByProduct( d.contract , d )){
+				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
 					
 					//find record in existing orders
 					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
@@ -374,16 +367,21 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		var orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
 		
-		var disabledProducts = 0;
-		for ( o in orders ){
-			if ( !db.Product.manager.get(o.productId, false).active ) {
-				disabledProducts++;
-				Reflect.setField(o, "disabled", true);
+		if ( !app.params.exists("csv") ){
+			
+			//show orders on disabled products
+			var disabledProducts = 0;
+			for ( o in orders ){
+				if ( !db.Product.manager.get(o.productId, false).active ) {
+					disabledProducts++;
+					Reflect.setField(o, "disabled", true);
+				}
 			}
+		
+			view.disabledProducts = disabledProducts;
+			view.orders = orders;	
 		}
 		
-		view.disabledProducts = disabledProducts;
-		view.orders = orders;
 	}
 	
 	
@@ -511,7 +509,10 @@ class ContractAdmin extends Controller
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
 		var d = args != null ? args.d : null;
-		var orders = db.UserContract.getOrdersByProduct(contract,d,app.params.exists("csv"));
+		if (d == null) d = contract.getDistribs(false).first();
+		if (d == null) throw "Aucune distribution dans ce contrat";
+		
+		var orders = db.UserContract.getOrdersByProduct({distribution:d},app.params.exists("csv"));
 		view.orders = orders;
 	}
 	
@@ -780,10 +781,6 @@ class ContractAdmin extends Controller
 			}
 			view.userOrders = userOrders;
 		}
-		
-		
 	}
-	
-	
 	
 }

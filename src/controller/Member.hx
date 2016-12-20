@@ -33,11 +33,17 @@ class Member extends Controller
 		var uids = Lambda.map(uids, function(ua) return ua.userId);
 		if (args != null && args.search != null) {
 			
-			//SEARCH
-			
+			//SEARCH			
 			browse = function(index:Int, limit:Int) {
-				var search = StringTools.trim(args.search);
-				return db.User.manager.search( ($lastName.like(search)||$lastName2.like(search)) && $id in uids , { orderBy:-id }, false);
+				var search = "%"+StringTools.trim(args.search)+"%";
+				return db.User.manager.search( 
+					($lastName.like(search) ||
+					$lastName2.like(search) || 
+					$address1.like(search) ||
+					$address2.like(search) ||
+					$firstName.like(search) ||
+					$firstName2.like(search)					
+					) && $id in uids , { orderBy:-id }, false);
 			}
 			view.search = args.search;
 			
@@ -199,6 +205,7 @@ class Member extends Controller
 		if (userAmap == null) throw Error("/member", "Cette personne ne fait pas partie de votre groupe");
 		
 		view.userAmap = userAmap; 
+		view.canLoginAs = db.UserAmap.manager.count($userId == member.id) == 1 && app.user.isAmapManager(); 
 		
 		//orders
 		var row = { constOrders:new Array<UserOrder>(), varOrders:new Map<String,Array<UserOrder>>() };
@@ -245,14 +252,15 @@ class Member extends Controller
 	 * @param	user
 	 * @param	amap
 	 */	
-	function doLoginas(user:db.User, amap:db.Amap) {
+	function doLoginas(member:db.User, amap:db.Amap) {
 	
 		if (!app.user.isAmapManager()) return;
-		if (user.isAdmin()) return;
+		if (member.isAdmin()) return;
+		if ( db.UserAmap.manager.count($userId == member.id) > 1 ) return;
 		
-		App.current.session.setUser(user);
+		App.current.session.setUser(member);
 		App.current.session.data.amapId = amap.id;
-		throw Redirect("/member/view/" + user.id );
+		throw Redirect("/member/view/" + member.id );
 	}
 	
 	/**
@@ -265,13 +273,27 @@ class Member extends Controller
 		
 		var form = sugoi.form.Form.fromSpod(member);
 		
-		//cleaning
-		form.removeElement( form.getElement("pass") );
+		//cleaning		
 		form.removeElement( form.getElement("rights") );
 		form.removeElement( form.getElement("lang") );		
 		form.removeElement( form.getElement("ldate") );
-		form.getElement("email").addValidator(new EmailValidator());
-		form.getElement("email2").addValidator(new EmailValidator());
+		
+		
+		var isReg = member.isFullyRegistred();
+		var groupNum = db.UserAmap.manager.count($userId == member.id);
+		
+		//an administrator can modify a user's email only if he's not member elsewhere
+		if (groupNum > 1){			
+			form.removeElementByName("email");
+			form.removeElementByName("email2");
+			app.session.addMessage("Par sécurité, vous ne pouvez pas modifier l'email de cette personne car elle est membre de plusieurs groupes.");
+		}
+		//an administrator can modify a user's pass only if he's a not registred user.
+		if (!isReg){
+			app.session.addMessage("Cette personne n'a pas encore défini de mot de passe. Vous êtes exceptionnellement autorisé à le définir à sa place. N'oubliez pas de la prévenir.");			
+		}else{
+			form.removeElement( form.getElement("pass") );
+		}
 		
 		if (form.checkToken()) {
 			
@@ -279,7 +301,7 @@ class Member extends Controller
 			form.toSpod(member); 
 			
 			//check that the given emails are not already used elsewhere
-			var sim = db.User.getSimilar(form.getValueOf("firstName"), form.getValueOf("lastName"), form.getValueOf("email"), form.getValueOf("firstName2"), form.getValueOf("lastName2"), form.getValueOf("email2"));
+			var sim = db.User.getSameEmail(member.email,member.email2);
 			for ( s in sim) {				
 				if (s.id == member.id) sim.remove(s);
 			}
@@ -295,20 +317,16 @@ class Member extends Controller
 				} else {
 					throw Error("/member/edit/" + member.id, "Attention, Cet email ou ce nom existe déjà dans une autre fiche : "+Lambda.map(sim,function(u) return "<a href='/member/view/"+u.id+"'>"+u.getCoupleName()+"</a>. Ces deux fiches ne peuvent pas être fusionnées car cette personne a des commandes enregistrées dans l'autre fiche").join(","));	
 				}
-			}			
+			}	
+			
+			if (!isReg) member.setPass(form.getValueOf("pass"));
 			
 			member.update();
 			
-			if (!App.config.DEBUG) {
-				//verif changement d'email
+			if (!App.config.DEBUG && groupNum == 1) {
+				
+				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
-					//var mail = new sugoi.mail.MandrillApiMail();
-					//mail.setSender(App.config.get("default_email"));
-					//mail.setRecipient(member.email);
-					//mail.setSubject("Changement d'email sur votre compte Cagette.net");
-					//mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email") } );			
-					//mail.send();	
-					
 					var m = new Email();
 					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
 					m.to(new EmailAddress(member.email));
@@ -318,21 +336,12 @@ class Member extends Controller
 					
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
-					//var mail = new sugoi.mail.MandrillApiMail();
-					//mail.setSender(App.config.get("default_email"));
-					//mail.setRecipient(member.email2);
-					//mail.setSubject("Changement d'email sur votre compte Cagette.net");
-					//mail.setHtmlBody("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2") } );			
-					//mail.send();
-					
 					var m = new Email();
 					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
 					m.to(new EmailAddress(member.email2));
 					m.setSubject("Changement d'email sur votre compte Cagette.net");
 					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
 					App.getMailer().send(m);
-					
-					
 				}	
 			}
 			
@@ -340,6 +349,7 @@ class Member extends Controller
 		}
 		
 		view.form = form;
+		
 	}
 	
 	/**
@@ -369,7 +379,7 @@ class Member extends Controller
 	@tpl('form.mtt')
 	function doMerge(user:db.User) {
 		
-		if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
+		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
 		
 		view.title = "Fusionner un compte avec un autre";
 		view.text = "Cette action permet de fusionner deux comptes ( quand vous avez des doublons dans la base de données par exemple).<br/>Les contrats du compte 2 seront rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette action n'est pas annulable.";
@@ -443,7 +453,7 @@ class Member extends Controller
 		if ( data != null) {
 			
 			var csv = new sugoi.tools.Csv();
-			csv.headers = ["prénom","nom","E-mail","téléphone portable","prénom conjoint","	nom conjoint","	E-mail conjoint",	"téléphone portable conjoint",	"adresse1",	"adresse2"	,"code postal","ville"];
+			csv.setHeaders(["prénom","nom","E-mail","téléphone portable","prénom conjoint","	nom conjoint","	E-mail conjoint",	"téléphone portable conjoint",	"adresse1",	"adresse2"	,"code postal","ville"]);
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
@@ -486,7 +496,7 @@ class Member extends Controller
 				var lastName2 = r[5];
 				var email2 = r[6];
 				
-				var us = db.User.getSimilar(firstName, lastName, email, firstName2, lastName2, email2);
+				var us = db.User.getSameEmail(email, email2);
 				
 				if (us.length > 0) {
 					unregistred.remove(r);
@@ -509,13 +519,13 @@ class Member extends Controller
 			//import unregistered members
 			var i : Iterable<Dynamic> = cast app.session.data.csvUnregistered;
 			for (u in i) {
-				if (u[0] == null || u[0] == "") continue;
+				if (u[0] == null || u[0] == "null" || u[0] == "") continue;
 								
 				var user = new db.User();
 				user.firstName = u[0];
 				user.lastName = u[1];
 				user.email = u[2];
-				if (user.email != null && !EmailValidator.check(user.email)) {
+				if (user.email != null && user.email != "null" &&!EmailValidator.check(user.email)) {
 					throw "Le mail '" + user.email + "' est invalide, merci de modifier votre fichier";
 				}
 				user.phone = u[3];
@@ -523,7 +533,7 @@ class Member extends Controller
 				user.firstName2 = u[4];
 				user.lastName2 = u[5];
 				user.email2 = u[6];
-				if (user.email2 != null && !EmailValidator.check(user.email2)) {
+				if (user.email2 != null && user.email2 != "null" && !EmailValidator.check(user.email2)) {
 					App.log(u);
 					throw "Le mail du conjoint de "+user.firstName+" "+user.lastName+" '" + user.email2 + "' est invalide, merci de modifier votre fichier";
 				}
@@ -552,7 +562,7 @@ class Member extends Controller
 				var lastName2 = u[5];
 				var email2 = u[6];
 				
-				var us = db.User.getSimilar(firstName, lastName, email, firstName2, lastName2, email2);
+				var us = db.User.getSameEmail(email, email2);
 				var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(us, function(u) return u.id), false);
 				
 				if (userAmaps.length == 0) {
@@ -585,9 +595,7 @@ class Member extends Controller
 	@tpl("user/insert.mtt")
 	public function doInsert() {
 		
-		//var e = new event.Event();
-		//e.id = "wantToAddMember";
-		//App.current.eventDispatcher.dispatch(e);
+		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
 		
 		var m = new db.User();
 		var form = sugoi.form.Form.fromSpod(m);
@@ -602,7 +610,7 @@ class Member extends Controller
 		if (form.isValid()) {
 			
 			//check doublon de User et de UserAmap
-			var userSims = db.User.getSimilar(form.getValueOf("firstName"), form.getValueOf("lastName"), form.getValueOf("email"),form.getValueOf("firstName2"), form.getValueOf("lastName2"), form.getValueOf("email2"));
+			var userSims = db.User.getSameEmail(form.getValueOf("email"),form.getValueOf("email2"));
 			view.userSims = userSims;
 			var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(userSims, function(u) return u.id), false);
 			view.userAmaps = userAmaps;

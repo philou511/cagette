@@ -22,7 +22,7 @@ typedef ComposerAppRefs = {
  */
 class ComposerApp extends ReactComponentOfStateAndRefs<ComposerAppState, ComposerAppRefs>
 {
-	var products:Array<{id:Int,name:String,?qt:Float,?unit:UnitType}>;
+	/*var products:Array<{id:Int,name:String,?qt:Float,?unit:UnitType}>;
 	
 	
 	public function new(props:Dynamic) 
@@ -100,6 +100,6 @@ class ComposerApp extends ReactComponentOfStateAndRefs<ComposerAppState, Compose
 			setState({products:[{id:id,name:text, qt:qt, unit:unit}]});
 			//this.forceUpdate();
 		}
-	}
+	}*/
 	
 }

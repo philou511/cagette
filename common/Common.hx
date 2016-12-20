@@ -29,6 +29,7 @@ typedef ProductInfo = {
 	hasFloatQt : Bool,
 	?qt:Float,
 	?unitType:UnitType,
+	organic:Bool,
 	#if js
 	element:js.JQuery,
 	#end
@@ -151,6 +152,9 @@ enum Event {
 	EditProduct(product:db.Product);
 	DeleteProduct(product:db.Product);
 	BatchEnableProducts(productIds:Array<Int>, enable:Bool);
+	
+	//Contracts
+	DeleteContract(contract:db.Contract);
 	
 	//crons
 	DailyCron;

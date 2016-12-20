@@ -32,11 +32,9 @@ class Messages extends Controller
 			senderName = app.user.firstName + " " + app.user.lastName;
 		}
 		
-		view.senderName = senderName;
-		view.senderMail = senderMail;
-		form.addElement( new sugoi.form.elements.Html(senderName+" <i>" + senderMail + "</i>", "Expéditeur"));
-		
 		var lists = getLists();
+		form.addElement( new StringInput("senderName", "Nom expéditeur",senderName,true));
+		form.addElement( new StringInput("senderMail", "Email expéditeur",senderMail,true));
 		form.addElement( new StringSelect("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
 		form.addElement( new StringInput("subject", "Sujet :","",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
@@ -45,12 +43,13 @@ class Messages extends Controller
 			
 			var listId = form.getElement("list").value;
 			var dest = getSelection(listId);
-		
 			var mails = [];
 			for ( d in dest) {
 				if (d.email != null) mails.push(d.email);
 				if (d.email2 != null) mails.push(d.email2);
 			}
+			
+			//throw mails;
 			
 			
 			//send mail confirmation link
@@ -58,16 +57,9 @@ class Messages extends Controller
 			e.setSubject(form.getValueOf("subject"));
 			e.bcc(Lambda.map(mails, function(m) return new ufront.mail.EmailAddress(m)));
 			
-			e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),senderName));		
-			e.replyTo(new ufront.mail.EmailAddress(senderMail, senderName));
+			e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),form.getValueOf("senderName")));		
+			e.replyTo(new ufront.mail.EmailAddress(form.getValueOf("senderMail"), form.getValueOf("senderName")));
 			
-			
-			//var e = new ufront.mail.Email();		
-			//e.setSubject(form.getValueOf("subject"));
-			//e.bcc(Lambda.map(mails, function(m) return new ufront.mail.EmailAddress(m)));
-			////from and reply-to : user email
-			//e.from(new ufront.mail.EmailAddress(senderMail, senderName));			
-			//e.replyTo(new ufront.mail.EmailAddress(senderMail, senderName));
 			////sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			
@@ -108,11 +100,7 @@ class Messages extends Controller
 	public function doMessage(msg:Message) {
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", "accès non autorisé");
 		
-		var lists2 = new Map<String,String>();
-		for (l in getLists()) lists2.set(l.label, l.value);
-		
-		view.lists = lists2;		
-		view.list = lists2.get(msg.recipientListId);
+		view.list = getListName(msg.recipientListId);
 		view.msg = msg;
 		
 	}
@@ -120,11 +108,11 @@ class Messages extends Controller
 	function getLists() :FormData<String>{
 		var out = [
 			{value:'1', label:'Tout le monde' },
-			{value:'2', label:'Les responsables contrat et le responsable d\'AMAP' },			
+			{value:'2', label:'Le bureau : les responsables + contrats + adhésions' },			
 		];
 		
-		/*if (App.config.DEBUG)*/ out.push( { value:'3', label:'TEST : moi + conjoint(e)' } );
-		out.push( { value:'4', label:'Amapiens sans contrat' } );
+		out.push( { value:'3', label:'TEST : moi + conjoint(e)' } );
+		out.push( { value:'4', label:'Adhérents sans contrat/commande' } );
 		if(app.user.amap.hasMembership()) out.push( { value:'5', label:'Adhésions à renouveller' } );
 		
 		
@@ -189,6 +177,14 @@ class Messages extends Controller
 						users.push(c.contact);
 					}
 				}
+				
+				//ajouter les autres personnes ayant les droits Admin ou Gestion Adhérents ou Gestion Contrats
+ 				for (ua in Lambda.array(db.UserAmap.manager.search($rights != null && $amap == app.user.amap, false))) {
+ 					if (ua.hasRight(AmapAdmin) || ua.hasRight(Membership) || ua.hasRight(ContractAdmin())) {
+ 						if (!Lambda.has(users, ua.user)) users.push(ua.user);
+ 					}
+ 				}
+				
 				out = users;
 			
 			case "3":

@@ -14,23 +14,6 @@ class Shop extends sugoi.BaseController
 		view.place = place;
 		view.date = date;
 		
-		//closing order dates
-		/*var infos = new Array<{close:Date,contracts:Array<db.Contract>}>();
-		var n = Date.now();
-		for ( d in distribs) {
-			var inf = null;
-			for ( i in infos) {
-				if ( i.close.getTime() == d.orderEndDate.getTime() ) {
-					inf = i;
-					inf.contracts.push(d.contract);
-					break;
-				}
-			}
-			if (inf == null) {
-				inf = { close:d.orderEndDate, contracts:[d.contract] };
-				infos.push(inf);
-			}
-		}*/
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs),"orderEndDate");
 	}
 	
@@ -45,17 +28,20 @@ class Shop extends sugoi.BaseController
 			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Float}>() };
 		}
 		
-		var products = getProducts(place,date);
-		//Sys.print( haxe.Json.stringify( {products:products,order:order} ) );
-
-		//var products = getProducts();
-
-		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();
-		var catGroups = db.CategoryGroup.get(app.user.amap);
-		for ( cg in catGroups){
-
-			categs.push({name:cg.name,pinned:cg.pinned,categs: Lambda.array(Lambda.map( cg.getCategories(), function(c) return c.infos()))});
+		var products = [];
+		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
+		
+		if (place.amap.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+			
+			//TAXO CATEGORIES
+			products = getProducts(place, date, true);
+		}else{
+			
+			//CUSTOM CATEGORIES
+			products = getProducts(place, date, false);
 		}
+		
+		categs = place.amap.getCategoryGroups();
 
 		Sys.print( haxe.Serializer.run( {products:products,categories:categs,order:order} ) );
 	}
@@ -65,7 +51,7 @@ class Shop extends sugoi.BaseController
 	/**
 	 * Get the available products list
 	 */
-	public function getProducts(place,date):Array<ProductInfo> {
+	private function getProducts(place,date,?categsFromTaxo=false):Array<ProductInfo> {
 
 		contracts = db.Contract.getActiveContracts(app.user.amap);
 	
@@ -90,7 +76,7 @@ class Shop extends sugoi.BaseController
 
 		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);
 		
-		return Lambda.array(Lambda.map(products, function(p) return p.infos()));
+		return Lambda.array(Lambda.map(products, function(p) return p.infos(categsFromTaxo)));
 	}
 	
 	/**

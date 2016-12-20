@@ -1,6 +1,7 @@
 import js.JQuery;
-import api.react.ReactMacro.jsx;
-import react.*;
+import react.ReactMacro.jsx;
+import react.ReactDOM;
+import react.ProductInput;
 
 class App {
 	
@@ -33,9 +34,9 @@ class App {
 	}
 	
 	public function getProductComposer(){
-		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-			api.react.ReactDOM.render(jsx('<$ComposerApp/>'), js.Browser.document.getElementById("app"));	
-		});
+		//js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+			//ReactDOM.render(jsx('<$ComposerApp/>'), js.Browser.document.getElementById("app"));	
+		//});
 	}
 	
 	public function getProductInput(divId:String, productName:String, txpProductId:Int, formName:String ){
@@ -46,7 +47,7 @@ class App {
 			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
 			App.j("form select[name='"+formName+"_txpProductId']").parent().parent().remove();
 			
-			api.react.ReactDOM.render(jsx('<$ProductInput productName="$productName" txpProductId="$txpProductId" formName="$formName"/>'),  js.Browser.document.getElementById(divId));	
+			ReactDOM.render(jsx('<$ProductInput productName="$productName" txpProductId="$txpProductId" formName="$formName"/>'),  js.Browser.document.getElementById(divId));	
 		});
 	}
 	

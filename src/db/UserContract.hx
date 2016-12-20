@@ -20,6 +20,9 @@ class UserContract extends Object
 	//shared order
 	@formPopulate("populate") @:relation(userId2)
 	public var user2 : SNull<User>;
+	#if neko
+	public var userId2: SNull<SInt>;
+	#end
 	
 	public var quantity : SFloat;
 	
@@ -100,8 +103,6 @@ class UserContract extends Object
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
 		
-		
-		
 		for (o in orders) {
 		
 			var x : UserOrder = cast { };
@@ -147,14 +148,14 @@ class UserContract extends Object
 		}
 		
 		
-		//order by lastname, then contract
+		//order by lastname (+lastname2 if exists), then contract
 		out.sort(function(a, b) {
 			
-			if (a.userName + a.userId + a.contractId > b.userName + b.userId + b.contractId ) {
+			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId > b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
 				
 				return 1;
 			}
-			if (a.userName + a.userId + a.contractId < b.userName + b.userId + b.contractId ) {
+			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId < b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
 				 
 				return -1;
 			}
@@ -354,21 +355,37 @@ class UserContract extends Object
 	}
 	
 	/**
-	 * get the orders grouped by product 
+	 * Get orders grouped by products. 
 	 */
-	public static function getOrdersByProduct(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):List<Dynamic>{
+	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<Dynamic>{
 		var view = App.current.view;
-		var pids = db.Product.manager.search($contract == contract, false);
-		var pids = Lambda.map(pids, function(x) return x.id);
+		//var pids = db.Product.manager.search($contract == d.contract, false);
+		//var pids = Lambda.map(pids, function(x) return x.id);
 		
 		var orders : List<Dynamic>;
 		var where = "";
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			where = 'and up.distributionId = ${distribution.id}';
-		}	
+		var exportName = "";
+		
+		//options
+		if (options.distribution != null){
 			
-		orders = sys.db.Manager.cnx.request('
-			select 
+			//by distrib
+			var d = options.distribution;
+			exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			where += ' and p.contractId = ${d.contract.id}';
+			if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+				where += ' and up.distributionId = ${d.id}';
+			}
+			
+		}else if(options.startDate!=null && options.endDate!=null){
+			
+			//by dates
+			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			
+			
+		}
+			
+		var sql = 'select 
 				SUM(quantity) as quantity,
 				p.id as pid,
 				p.name as pname,
@@ -376,9 +393,11 @@ class UserContract extends Object
 				p.ref as ref,
 				SUM(quantity*up.productPrice) as total
 			from UserContract up, Product p 
-			where up.productId = p.id and p.contractId = ${contract.id}  $where
-			group by p.id order by pname asc;
-		').results();	
+			where up.productId = p.id 
+			$where
+			group by p.id order by pname asc; ';
+			
+		orders = sys.db.Manager.cnx.request(sql).results();	
 		
 		//populate with full product names
 		for ( o in orders){
@@ -400,7 +419,7 @@ class UserContract extends Object
 				});				
 			}
 
-			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+contract.name+"-par produits");
+			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+exportName+"-par produits");
 			return null;
 		}else{
 			return orders;		
@@ -436,8 +455,15 @@ class UserContract extends Object
 					"paid":o.paid
 				});				
 			}
-
-			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-"+contract.name+"-Cagette");
+			
+			var exportName = "";
+			if (distribution != null){
+				exportName = contract.amap.name+" - Distribution "+contract.name+" du " + distribution.date.toString().substr(0, 10);	
+			}else{
+				exportName = contract.amap.name+" - "+contract.name;
+			}
+			
+			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+" - Par adherent");
 			return null;
 		}else{
 			return orders;

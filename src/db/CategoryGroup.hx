@@ -32,7 +32,7 @@ class CategoryGroup extends sys.db.Object
 		return db.Category.manager.search($categoryGroup == this, false);
 	}
 	
-	public static function get(amap:db.Amap) {
+	public static function get(amap:db.Amap):List<CategoryGroup> {
 		return manager.search($amap == amap, false);
 	}
 }

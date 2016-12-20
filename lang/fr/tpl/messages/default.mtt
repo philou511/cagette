@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
-<script src="/js/tinymce.min.js"></script>
-<script src="/js/jquery.tinymce.min.js"></script>
+<!--<script src="/js/tinymce.min.js"></script>
+<script src="/js/jquery.tinymce.min.js"></script>-->
 
 
 
@@ -34,13 +34,22 @@
 	</div>
 </div>
 
+<script src="/js/tinymce/tinymce.min.js"></script>
 <script>
-	$(function(){
-		tinymce.init({
-			selector: "textarea"
-		 });
-
-	});
+	tinymce.init({ 
+		selector:'textarea',
+		plugins: "autolink textcolor emoticons image ",
+		toolbar: "styleselect bold italic alignleft aligncenter emoticons image bullist outdent indent forecolor",
+		 language: 'fr_FR',
+		image_list: [
+			::foreach c user._amap.getActiveContracts(false)::
+				::if c._vendor._image!=null::
+					{title: '::escapeJS(c._vendor.name)::', value: '::file(c._vendor._image)::'},			
+				::end::
+			::end::
+		  ]
+	
+	});	
 </script>
 
 ::end::

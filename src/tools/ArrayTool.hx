@@ -40,9 +40,6 @@ class ArrayTool
 			
 		}
 		return out;
-		
-		
-		
 	}
 	
 	

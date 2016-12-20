@@ -6,7 +6,7 @@
 		::if select=="nocontract"::
 			Adhérents sans contrat
 		::elseif select=="nomembership"::
-			Adhésions à renouveller
+			Adhésions à renouveler
 		::elseif select=="newusers"::
 			Adhérents qui ne se sont jamais connecté
 		::elseif select=="contract"::

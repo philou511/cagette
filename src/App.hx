@@ -15,7 +15,8 @@ class App extends sugoi.BaseApp {
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
-	public static var VERSION = ([0,9,2]  : Version).withPre("july");
+	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
+	public static var VERSION = ([0,9,2]  : Version).withPre(MyMacros.getGitCommitDate());
 	
 	public static function main() {
 		
@@ -24,7 +25,7 @@ class App extends sugoi.BaseApp {
 	}
 	
 	/**
-	 * Init les plugins et le dispatcher juste avant de faire tourner l'app
+	 * Init plugins and event dispatcher just before launching the app
 	 */
 	override public function mainLoop() {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
@@ -32,7 +33,6 @@ class App extends sugoi.BaseApp {
 		plugins.push(new plugin.Tutorial());
 		plugins.push(new plugin.Payment());
 		#if plugins
-		//Gestion expérimentale de plugin. Si ça ne complile pas, commentez les lignes ci-dessous
 		plugins.push( new hosted.HostedPlugIn() );
 		plugins.push( new pro.ProPlugIn() );
 		plugins.push( new connector.ConnectorPlugIn() );
@@ -58,10 +58,12 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public static function log(t:Dynamic) {
-		//if(App.config.DEBUG) {
+		if(App.config.DEBUG) {
 			neko.Web.logMessage(Std.string(t)); //write in Apache error log
-			//Weblog.log(t);
-		//}
+			#if weblog
+			Weblog.log(t); //write en Weblog console (https://lib.haxe.org/p/weblog/)
+			#end
+		}
 	}
 	
 	public function event(e:Event) {
@@ -79,6 +81,7 @@ class App extends sugoi.BaseApp {
 		out.set("firstName2", "Prénom du conjoint");
 		out.set("lastName2", "Nom du conjoint");
 		out.set("email2", "e-mail du conjoint");
+		out.set("pass", "mot de passe");
 		out.set("address1", "adresse");
 		out.set("address2", "adresse");
 		out.set("zipCode", "code postal");
@@ -98,11 +101,13 @@ class App extends sugoi.BaseApp {
 		out.set("txtIntro", "Texte de présentation du groupe");
 		out.set("txtHome", "Texte en page d'accueil pour les adhérents connectés");
 		out.set("txtDistrib", "Texte à faire figurer sur les listes d'émargement lors des distributions");
+		out.set("extUrl", "URL du site du groupe.");
+		
 		out.set("distributor1", "Distributeur 1");
 		out.set("distributor2", "Distributeur 2");
 		out.set("distributor3", "Distributeur 3");
 		out.set("distributor4", "Distributeur 4");
-		out.set("distributorNum", "Nbre de distributeurs nécéssaires (de 0 à 4)");
+		out.set("distributorNum", "Nbre de distributeurs nécessaires (de 0 à 4)");
 		
 		out.set("startDate", "Date de début");
 		out.set("endDate", "Date de fin");
@@ -139,6 +144,7 @@ class App extends sugoi.BaseApp {
 		out.set("price", "prix TTC");
 		out.set("uname", "Nom");
 		out.set("pname", "Produit");
+		out.set("organic", "Agriculture biologique");
 		out.set("hasFloatQt", "Autoriser quantités \"à virgule\"");
 		
 		out.set("membershipRenewalDate", "Adhésions : Date de renouvellement");
@@ -158,6 +164,8 @@ class App extends sugoi.BaseApp {
 		out.set("ShopMode", "Mode boutique");
 		out.set("IsAmap", "Votre groupe est une AMAP");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
+		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
+		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");

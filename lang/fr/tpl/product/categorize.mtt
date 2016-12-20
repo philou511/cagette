@@ -31,7 +31,7 @@
     
 			::foreach cg user._amap.getCategoryGroups()::
 			<optgroup label="::cg.name::">
-				::foreach cat cg.getCategories()::
+				::foreach cat cg.categs::
 				<option value="::cat.id::">::cat.name::</option>	
 				::end::
 			</optgroup>

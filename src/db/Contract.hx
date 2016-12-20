@@ -194,12 +194,6 @@ class Contract extends Object
 	}
 	
 	/**
-	 * get all orders
-	 *
-	 * @param	d
-	 * @return
-	 */
-	/**
 	 * Get all orders of this contract
 	 * @param	d	A delivery is needed for varying orders contract
 	 * @return
@@ -210,10 +204,10 @@ class Contract extends Object
 		//get product ids, some of the products may have been disabled but we keep the order
 		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserContract>();
-		if (d != null) {
+		if (type == TYPE_VARORDER) {
 			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	
 		}else {
-			ucs = UserContract.manager.search($productId in pids,{orderBy:userId}, false);	
+			ucs = UserContract.manager.search( ($productId in pids) ,{orderBy:userId}, false);	
 		}		
 		return Lambda.array(ucs);
 	}

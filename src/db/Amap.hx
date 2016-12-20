@@ -2,6 +2,7 @@ package db;
 import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
 enum AmapFlags {
 	HasMembership; 	//gestion des adhésions
@@ -9,7 +10,9 @@ enum AmapFlags {
 	IsAmap; 		//Amap / groupement d'achat
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	Payments; //manage payments
+	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
+	HidePhone; 	//Masquer le téléphone du responsable de l'amap sur la page publique
+
 }
 
 //user registration options
@@ -27,7 +30,7 @@ enum RegOption{
 class Amap extends Object
 {
 	public var id : SId;
-	public var name : SString<32>;
+	public var name : SString<64>;
 	
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
@@ -37,6 +40,8 @@ class Amap extends Object
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
 	public var txtDistrib:SNull<SText>; //sur liste d'emargement
 	
+	public var extUrl : SNull<SString<64>>;   //lien sur logo du groupe
+
 	public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms  public var membershipPrice : SNull<STinyInt>;
 	
@@ -87,8 +92,15 @@ class Amap extends Object
 			var pids = Lambda.map(places, function(x) return x.id);
 			
 			var res = sys.db.Manager.cnx.request("select placeId,count(placeId) as top from Distribution where placeId IN ("+pids.join(",")+") group by placeId order by top desc").results();
+			var res = res.first();
+			var pid :Int = null;
 			
-			var pid = Std.parseInt(res.first().placeId);
+			if (res == null){
+				pid = this.getPlaces().first().id;
+			}else{
+				pid = Std.parseInt(res.placeId);	
+			}
+			
 			
 			
 			if (pid != 0 && pid != null) {
@@ -111,8 +123,50 @@ class Amap extends Object
 		return flags.has(ShopMode);
 	}
 	
+	public function canExposePhone() {
+ 		return !flags.has(HidePhone);
+ 	}
+	
 	public function getCategoryGroups() {
-		return db.CategoryGroup.get(this);
+		
+		//if (flags.has(ShopCategoriesFromTaxonomy)){
+			//return Lambda.array( cast db.TxpCategory.manager.all(false) );	
+		//}else{
+			//return Lambda.array( db.CategoryGroup.get(this) );	
+		//}
+		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
+		
+		if (this.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+			
+			//TAXO CATEGORIES
+			var taxoCategs = db.TxpCategory.manager.all(false);
+			
+			categs.push({
+				id:0,
+				name:"Type de produits",
+				pinned:false,
+				color:"#583816",
+				categs: Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name}; }))				
+			});
+			
+		}else{
+			
+			//CUSTOM CATEGORIES
+			var catGroups = db.CategoryGroup.get(this);
+			for ( cg in catGroups){
+				var color = App.current.view.intToHex(db.CategoryGroup.COLORS[cg.color]);
+				categs.push({
+					id:cg.id,
+					name:cg.name,
+					pinned:cg.pinned,
+					color:color,
+					categs: Lambda.array(Lambda.map( cg.getCategories(), function(c) return c.infos()))					
+				});
+			}	
+		}
+		
+		return categs;
+		
 	}
 	
 	
@@ -240,6 +294,10 @@ class Amap extends Object
 	
 	override public function insert(){
 		
+		if (txtHome == null){
+			txtHome = "Bienvenue sur la cagette de " + this.name+" !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
+		}
+		
 		App.current.event(NewGroup(this,App.current.user));
 		
 		super.insert();
@@ -256,6 +314,4 @@ class Amap extends Object
 		
 		return currency;		
 	}
-	
-	
 }

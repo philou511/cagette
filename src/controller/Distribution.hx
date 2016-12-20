@@ -8,14 +8,9 @@ import Common;
 class Distribution extends Controller
 {
 
-	public function new()
-	{
-		super();
-		
-	}
-	
+
 	/**
-	 * Liste d'émargement
+	 * List to print (single distrib)
 	 */
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {
@@ -26,37 +21,53 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * Liste d'émargement globale pour une date donnée (multi fournisseur)
+	 * List to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
-	function doListByDate(?date:Date,?type:String) {
+	function doListByDate(?date:Date, ?type:String, ?fontSize:String) {
+		
+		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
 		if (type == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			//f.addElement(new sugoi.form.elements.DatePicker("date", "Date de distribution",date));
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
 				{ key:"all", value:"Tout à la suite" },
-				//{ key:"csv", value:"Export CSV" }
-			]));
+				{ key:"allshort", value:"Tout à la suite sans les prix et totaux" },
+			],"all"));
+			f.addElement(new sugoi.form.elements.RadioGroup("fontSize", "Taille de police", [
+				{ key:"S" , value:"S"  },
+				{ key:"M" , value:"M"  },
+				{ key:"L" , value:"L"  },
+				{ key:"XL", value:"XL" },
+			], "S", "S", false));
 			
 			view.form = f;
 			app.setTemplate("form.mtt");
 			
 			if (f.checkToken()) {
-				
-				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+f.getValueOf("type");
+				var suburl = f.getValueOf("type")+"/"+f.getValueOf("fontSize");
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+suburl;
 				throw Redirect( url );
 			}
 			
 			return;
 			
 		}else {
+			
 			view.date = date;
+			view.fontRatio = switch(fontSize){
+				case "M" : 125; //100x1.25
+				case "L" : 156; //125x1.25
+				case "XL": 195; //156x1.25
+				default : 100;
+			};
 			
 			if (type=="one") {
 				app.setTemplate("distribution/listByDateOnePage.mtt");
+			} else if (type=="allshort") {
+				app.setTemplate("distribution/listByDateShort.mtt");
 			}
 			
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
@@ -75,16 +86,13 @@ class Distribution extends Controller
 			var orders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//commandes fixes
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
-			var products = [];
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);
+			var orders = Lambda.array(orders);
 			for ( d in distribs) {
-				for ( p in d.contract.getProducts()) {
-					products.push(p);
-				}
+				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id)  , { orderBy:userId } );
+				orders = orders.concat(Lambda.array(orders2));
 			}
-			var orders2 = db.UserContract.manager.search($productId in Lambda.map(products, function(d) return d.id)  , { orderBy:userId } );
-			
-			var orders = Lambda.array(orders).concat(Lambda.array(orders2));
+
 			var orders3 = db.UserContract.prepare(Lambda.list(orders));
 			view.orders = orders3;
 			
@@ -113,7 +121,7 @@ class Distribution extends Controller
 	
 	function doDelete(d:db.Distribution) {
 		
-		if (!app.user.canManageContract(d.contract)) throw "action non autorisée";		
+		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');		
 		if (db.UserContract.manager.search($distributionId == d.id, false).length > 0) throw Error("/contractAdmin/distributions/" + d.contract.id, "Effacement impossible : Des commandes sont enregistrées pour cette distribution.");
 		
 		d.lock();
@@ -126,12 +134,11 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * Edit a delivery
+	 * Edit a distribution
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
-		
-		if (!app.user.canManageContract(d.contract)) throw "action non autorisée";
+		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');		
 		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
@@ -175,6 +182,8 @@ class Distribution extends Controller
 	@tpl('form.mtt')
 	function doEditCycle(d:db.DistributionCycle) {
 		
+		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');
+		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		
@@ -190,6 +199,8 @@ class Distribution extends Controller
 	
 	@tpl("form.mtt")
 	public function doInsert(contract:db.Contract) {
+		
+		if (!app.user.isContractManager(contract)) throw Error('/', 'Action interdite');
 		
 		var d = new db.Distribution();
 		var form = sugoi.form.Form.fromSpod(d);
@@ -227,7 +238,6 @@ class Distribution extends Controller
 				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');	
 			}
 			
-			
 		}else{
 			//event
 			app.event(PreNewDistrib(contract));
@@ -242,7 +252,8 @@ class Distribution extends Controller
 	 * checks if dates are correct
 	 * @param	d
 	 */
-	function checkDistrib(d:db.Distribution) {
+	private function checkDistrib(d:db.Distribution) {
+		
 		var c = d.contract;
 		
 		if (d.date.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, "La date de distribution doit être antérieure à la date de fin du contrat ("+view.hDate(c.endDate)+")");
@@ -251,10 +262,7 @@ class Distribution extends Controller
 		if (c.type == db.Contract.TYPE_VARORDER ) {
 			if (d.date.getTime() < d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de distribution doit être postérieure à la date de fermeture des commandes");
 			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de fermeture des commandes doit être postérieure à la date d'ouverture des commandes !");
-		
 		}
-		
-		
 	}
 	
 	/**
@@ -262,6 +270,8 @@ class Distribution extends Controller
 	 */
 	@tpl("form.mtt")
 	public function doInsertCycle(contract:db.Contract) {
+		
+		if (!app.user.isContractManager(contract)) throw Error('/', 'Action interdite');
 		
 		var d = new db.DistributionCycle();
 		var form = sugoi.form.Form.fromSpod(d);
@@ -302,7 +312,6 @@ class Distribution extends Controller
 			form.removeElementByName("closingHour");
 		}
 		
-		
 		if (form.isValid()) {
 			
 			form.toSpod(d); //update model			
@@ -330,6 +339,8 @@ class Distribution extends Controller
 	
 	public function doDeleteCycle(c:db.DistributionCycle){
 		
+		if (!app.user.isContractManager(c.contract)) throw Error('/', 'Action interdite');
+		
 		c.lock();
 		var msgs = c.deleteChilds();
 		if (msgs.length > 0){
@@ -340,16 +351,10 @@ class Distribution extends Controller
 			c.delete();
 			throw Ok("/contractAdmin/distributions/" + c.contract.id, "Distributions récurrentes effacées");	
 		}
-		
-		
-		
-		
-		
-		
 	}
 	
 	/**
-	 * Doodle like
+	 * Doodle-like participation planning
 	 */
 	@tpl("distribution/planning.mtt")
 	public function doPlanning(contract:db.Contract) {
@@ -368,10 +373,8 @@ class Distribution extends Controller
 					if (udoodle == null) udoodle = { user:u, planning:new Map<Int,Bool>() };
 					udoodle.planning.set(d.id, true);
 					doodle.set(u.id, udoodle);
-					
 				}
 			}
-			
 		}
 		view.distribs = distribs;
 		view.doodle = doodle;
@@ -379,7 +382,7 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * ajax pour doodle/planning
+	 * Ajax service for doPlanning()
 	 */
 	public function doRegister(args: { register:Bool, distrib:db.Distribution } ) {
 		
@@ -400,7 +403,6 @@ class Distribution extends Controller
 				else if (d.distributor3 == app.user) d.distributor3 = null;
 				else if (d.distributor4 == app.user) d.distributor4 = null;
 			}
-			
 			
 			d.update();
 		}

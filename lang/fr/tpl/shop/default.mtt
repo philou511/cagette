@@ -83,6 +83,8 @@
 								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus">
 									<img src="::p.image::" style="width:64px;height:64px;" />
 								</a>
+								
+								<div ::cond p.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom"><img src="/img/AB.png"/></div>
 							</td>
 							<td>
 								<h4>
@@ -149,10 +151,9 @@
 		
 		::foreach g user._amap.getCategoryGroups()::
 			<div>
-				<h4>::g.name::</h4>
-				
-				::foreach c g.getCategories()::
-					<span class="tag" id="tag::c.id::" onclick="cart.filter(::c.id::);" style="background-color: ::c.getColor()::;cursor:pointer;">::c.name::</span><br/>
+				<h4>::g.name::</h4>				
+				::foreach c g.categs::
+					<span class="tag" id="tag::c.id::" onclick="cart.filter(::c.id::);" style="background-color: ::g.color::;cursor:pointer;">::c.name::</span><br/>
 				::end::
 			</div>
 		::end::

@@ -2,13 +2,12 @@
 <div class="article">
 
 	<div class="row">
+		
 		<div class="col-md-5">
 			<img src="::p.image::" class="img-thumbnail img-responsive" />
 		</div>
 		
 		<div class="col-md-4">
-			
-			
 			
 			<span class="price">::formatNum(p.price):: ::currency():: TTC</span>
 			
@@ -22,20 +21,16 @@
 				::if p.contractTax!=null::
 					::p.contractTax:: % ::p.contractTaxName:: inclus<br/>
 				::end::
-				
-				
-				
 			</div>
 			::end::
 			
-			
 		</div>
+		
 		<div class="col-md-3">
 			::if product._unitType!=null::
 				<span class="price">::product.qt::&nbsp;::unit(product._unitType):: </span>
 				
 				::set c = product.getCostPerUnit()::
-				
 				
 				<div class="vat" ::cond c!=null::>
 					::formatNum(c.cost)::::currency():: / 
@@ -43,18 +38,19 @@
 						::c.qt::
 					::end::
 					::unit(c.unit)::
-					
 				</div>
-				
 			::end::
-			
-			
-			
 		</div>
 		
 
 		
 		<div class="col-md-7" style="margin-top:24px;">
+			
+			<p ::cond p.organic:: class="vat">
+				<img src="/img/AB.png" /> Agriculture biologique
+				
+			</p>
+			
 			<p ::cond p.desc!=null::>
 				::raw nl2br(p.desc)::
 			</p>

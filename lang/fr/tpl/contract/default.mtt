@@ -29,7 +29,19 @@
 					::m.quantity:
 				</td>
 				<td>
+					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
+					<img src="::m.productImage::" style="width:32px;height:32px;" />
 					::m.productName::
+					</a>
+					::if m.userName2 != null::
+						<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+						::if user.id == m.userId::
+							::m.userName2::
+						::else::
+							::m.userName::
+						::end::
+					::end::
+
 				</td>
 				<td>
 					::formatNum(m.productPrice)::&nbsp;::currency()::
@@ -150,7 +162,7 @@
 		</p>
 		$$edit(Modifier,/account/edit)
 		
-		<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Dans tout les cas, vos commandes ne seront pas perdues."::)>
+		<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
 			<span class="glyphicon glyphicon-remove"></span>
 			Quitter ce groupe
 		</a>

@@ -8,7 +8,7 @@ class View extends sugoi.BaseView {
 		super();
 		this.Std = Std;
 		this.Date = Date;
-		this.Web = neko.Web;
+		this.Web = sugoi.Web;
 		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
 		this.ArrayTool = ArrayTool;
@@ -73,7 +73,7 @@ class View extends sugoi.BaseView {
 	 * @param	c
 	 * @param	leadingZeros=6
 	 */
-	public function intToHex(c:Int, ?leadingZeros=6) {
+	public function intToHex(c:Int, ?leadingZeros=6):String {
 		var h = StringTools.hex(c);
 		while (h.length<leadingZeros)
 			h="0"+h;

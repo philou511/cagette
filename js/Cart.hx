@@ -352,7 +352,10 @@ class Cart
 		req.onData = function(data) {
 			loader.hide();
 			
-			var data : { products:Array<ProductInfo>, categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>, order:Order } = haxe.Unserializer.run(data);
+			var data : { 
+				products:Array<ProductInfo>,
+				categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>,
+				order:Order } = haxe.Unserializer.run(data);
 
 			//populate local categories lists
 			for ( cg in data.categories){
@@ -363,7 +366,6 @@ class Cart
 				}
 			}
 
-
 			//product DB
 			for (p in data.products) {
 				//catch dom element for further usage
@@ -371,6 +373,8 @@ class Cart
 
 				var id : Int = p.id;
 				products.set(id, p);
+				
+				//trace(p.name+" : " + p.categories);
 			}
 			//existing order
 			for ( p in data.order.products) {
