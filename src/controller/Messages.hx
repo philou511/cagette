@@ -89,9 +89,9 @@ class Messages extends Controller
 		view.form = form;
 		
 		if (app.user.isAmapManager()) {
-			view.sentMessages = Message.manager.search($amap == app.user.amap, {orderBy:-date,limit:20}, false);
+			view.sentMessages = Message.manager.search($amap == app.user.amap && $recipientListId!=null, {orderBy:-date,limit:20}, false);
 		}else {
-			view.sentMessages = Message.manager.search($sender == app.user && $amap == app.user.amap, {orderBy:-date,limit:20}, false);	
+			view.sentMessages = Message.manager.search($sender == app.user && $recipientListId!=null && $amap == app.user.amap , {orderBy:-date,limit:20}, false);	
 		}
 		
 	}
