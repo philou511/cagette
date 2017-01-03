@@ -21,12 +21,39 @@ class Admin extends Controller {
 		
 	}
 	
-	function doMigrate() {
+	@tpl("form.mtt")
+	function doEmails() {
 		
-		//for ( c in db.Contract.manager.all(true)) {
-			//c.flags.unset(db.Contract.ContractFlags.StockManagement);
-			//c.update();
-		//}
+		var f = new sugoi.form.Form("emails");
+		var data = [
+			{label:"SMTP",value:"smtp"},
+			{label:"Mandrill API",value:"mandrill"},
+		];
+		
+		var mailer = sugoi.db.Variable.get("mailer")==null ? "smtp" : sugoi.db.Variable.get("mailer");
+		var host = sugoi.db.Variable.get("smtp_host")==null ? App.config.get("smtp_host") : sugoi.db.Variable.get("smtp_host");
+		var port = sugoi.db.Variable.get("smtp_port")==null ? App.config.get("smtp_port") : sugoi.db.Variable.get("smtp_port");
+		var user = sugoi.db.Variable.get("smtp_user")==null ? App.config.get("smtp_user") : sugoi.db.Variable.get("smtp_user");
+		var pass = sugoi.db.Variable.get("smtp_pass")==null ? App.config.get("smtp_pass") : sugoi.db.Variable.get("smtp_pass");
+		
+		
+		f.addElement(new sugoi.form.elements.StringSelect("mailer", "Mailer", data,  mailer ));
+		f.addElement(new sugoi.form.elements.StringInput("smtp_host", "host", host));
+		f.addElement(new sugoi.form.elements.StringInput("smtp_port", "port", port));
+		f.addElement(new sugoi.form.elements.StringInput("smtp_user", "user", user));
+		f.addElement(new sugoi.form.elements.StringInput("smtp_pass", "pass", pass));
+		
+		
+		if (f.isValid()){
+			for ( k in ["mailer","smtp_host","smtp_port","smtp_user","smtp_pass"]){
+				sugoi.db.Variable.set(k, f.getValueOf(k));
+			}
+			throw Ok("/admin/emails", "configuration enregistrée");
+			
+		}
+		
+		view.title = "Configuration emails";
+		view.form = f;
 	}
 	
 	function doPlugins(d:Dispatch) {

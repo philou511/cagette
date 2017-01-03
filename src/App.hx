@@ -193,35 +193,67 @@ class App extends sugoi.BaseApp {
 		return user.amap.getMembersFormElementData();
 	}
 	
-	public static function getMailer() {
-		if (config.get("smtp_host") == null) throw "missing SMTP config";
+	public static function getMailer():sugoi.mail.IMailer {
+		
+		if (sugoi.db.Variable.get("mailer") == null){
+			throw sugoi.BaseController.ControllerAction.ErrorAction("/","L'envoi des emails n'est pas configuré. Si vous êtes administrateur, <a href='/admin/emails'>vous pouvez le configurer ici</a>");
+		}
 		
 		var conf = {
-			host:config.get("smtp_host"),
-			port:config.getInt("smtp_port"),
-			user:config.get("smtp_user"),
-			pass:config.get("smtp_pass")
-		};
+			smtp_host:sugoi.db.Variable.get("smtp_host"),
+			smtp_port:sugoi.db.Variable.get("smtp_port"),
+			smtp_user:sugoi.db.Variable.get("smtp_user"),
+			smtp_pass:sugoi.db.Variable.get("smtp_pass")			
+		}
 		
-		return new ufront.mailer.SmtpMailer(conf);	
+		if (sugoi.db.Variable.get("mailer") == "mandrill"){
+			return new sugoi.mail.MandrillMailer().init(conf);
+		}else{
+			return new sugoi.mail.SmtpMailer().init(conf);
+		}
+
+	}
+	
+	/**
+	 * Send an email and store the result in a db.Message
+	 * @param	e
+	 */
+	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Amap, ?listId:String, ?sender:db.User){
+		
+		if (group == null) group = App.current.user == null ? null:App.current.user.getAmap();
+		
+		if (!App.config.DEBUG){	
+			
+			current.event(SendEmail(m));
+			
+			getMailer().send(m, function(o){
+		
+				//store result
+				var lm = new db.Message();
+				lm.amap =  group;
+				lm.recipients = Lambda.array(Lambda.map(m.getRecipients(), function(x) return x.email));
+				lm.title = m.getSubject();
+				lm.date = Date.now();
+				lm.body = m.getHtmlBody();
+				lm.rawStatus = Std.string(o);
+				lm.status = o;
+				if (listId != null) lm.recipientListId = listId;
+				if (sender != null) lm.sender = sender;
+				lm.insert();
+			});
+		}
 	}
 	
 	public static function quickMail(to:String, subject:String, html:String){
-		var e = new ufront.mail.Email();		
+		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
-		e.to(new ufront.mail.EmailAddress(to));			
-		e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),"Cagette Pro"));		
+		e.setRecipient(to);			
+		e.setSender(App.config.get("default_email"),"Cagette Pro");		
 		
 		var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
-		e.setHtml(html);
+		e.setHtmlBody(html);
 		
-		current.event(SendEmail(e));
-		
-		if (!App.config.DEBUG){
-			getMailer().send(e);	
-		}
-		
-		
+		App.sendMail(e);
 	}
 	
 	/**

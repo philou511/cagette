@@ -10,7 +10,8 @@
 			<li><a href="/db">Base de données</a> </li>
 			<li><a href="/admin/taxo">Dictionnaire de produits</a> </li>			
 			<li><a href="/admin/errors">Errors</a> </li>			
-			<li><a href="/admin/plugins">Plugins</a> </li>
+			<li><a href="/admin/emails">Emails</a> </li>			
+			<!--<li><a href="/admin/plugins">Plugins</a> </li>-->
 			::if nav!=null::
 		
 					::foreach i nav::

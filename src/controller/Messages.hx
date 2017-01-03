@@ -49,39 +49,20 @@ class Messages extends Controller
 				if (d.email2 != null) mails.push(d.email2);
 			}
 			
-			//throw mails;
-			
-			
 			//send mail confirmation link
-			var e = new ufront.mail.Email();		
+			var e = new sugoi.mail.Mail();		
 			e.setSubject(form.getValueOf("subject"));
-			e.bcc(Lambda.map(mails, function(m) return new ufront.mail.EmailAddress(m)));
+			for ( x in mails) e.addRecipient(x);
 			
-			e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),form.getValueOf("senderName")));		
-			e.replyTo(new ufront.mail.EmailAddress(form.getValueOf("senderMail"), form.getValueOf("senderName")));
-			
+			e.setSender(App.config.get("default_email"),form.getValueOf("senderName"));		
+			e.setReplyTo(form.getValueOf("senderMail"),form.getValueOf("senderName"));
 			////sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
-			
 			var text :String = form.getValueOf("text");
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
-			e.setHtml(html);
-			
-			app.event(SendEmail(e));
-			
-			if (!App.config.DEBUG){
-				App.getMailer().send(e);	
-			}
-			
-			
-			var m = new db.Message();
-			m.sender = app.user;
-			m.title = e.subject;
-			m.body = e.html;
-			m.date = Date.now();
-			m.amap = app.user.amap;
-			m.recipientListId = listId;
-			m.insert();
+			e.setHtmlBody(html);
+		
+			App.sendMail(e,app.user.getAmap(),listId,app.user);	
 			
 			throw Ok("/messages", "Le message a bien été envoyé");
 		}
@@ -98,10 +79,22 @@ class Messages extends Controller
 	
 	@tpl("messages/message.mtt")
 	public function doMessage(msg:Message) {
+		
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", "accès non autorisé");
 		
 		view.list = getListName(msg.recipientListId);
 		view.msg = msg;
+		
+		//make status easier to display
+		var s = new Array<{email:String,success:String,failure:String}>();
+		for ( k in msg.status.keys()) {
+			
+			var r = msg.getMailerResultMessage(k);
+			
+			s.push({email:k,success:r.success,failure:r.failure});
+		}
+		
+		view.status = s;
 		
 	}
 	
