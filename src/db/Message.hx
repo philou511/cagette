@@ -13,7 +13,7 @@ class Message extends Object
 {
 
 	public var id : SId;
-	@:relation(amapId) public var amap : Amap;
+	@:relation(amapId) public var amap : SNull<Amap>;
 	@:relation(senderId) public var sender : SNull<User>;
 	
 	public var recipientListId : SNull<SString<12>>;

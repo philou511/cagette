@@ -18,5 +18,6 @@
 -cp js
 -lib sugoi
 -lib react
+-D react_global
 -main App
 -js www/js/app.js

@@ -87,13 +87,13 @@ class Messages extends Controller
 		
 		//make status easier to display
 		var s = new Array<{email:String,success:String,failure:String}>();
-		for ( k in msg.status.keys()) {
-			
-			var r = msg.getMailerResultMessage(k);
-			
-			s.push({email:k,success:r.success,failure:r.failure});
+		if (msg.status != null){
+			for ( k in msg.status.keys()) {			
+				var r = msg.getMailerResultMessage(k);				
+				s.push({email:k,success:r.success,failure:r.failure});
+			}
 		}
-		
+	
 		view.status = s;
 		
 	}

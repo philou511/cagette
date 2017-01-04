@@ -90,6 +90,7 @@
 			::end::
 		</div>		
 	</macro>
+	
 	<macro name="today(dow,d,m,y,h,place)">
 		<div class="dateBox" style="background-color:#080;" >
 			<img src="/img/go.png"/>
