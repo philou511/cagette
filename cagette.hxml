@@ -6,7 +6,7 @@
 -lib thx.csv
 -lib datetime
 -lib hscript
--lib ufront-mail
+-lib smtpmailer
 -cp common
 -cp src
 -neko www/index.n
