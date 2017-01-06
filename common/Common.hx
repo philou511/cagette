@@ -132,7 +132,7 @@ enum Event {
 	Nav(nav:Array<Link>,name:String,?id:Int);	//a navigation is displayed, optionnal object id if needed
 	
 	#if sys
-	SendEmail(message : ufront.mail.Email);		//an email is sent
+	SendEmail(message : sugoi.mail.Mail);		//an email is sent
 	NewMember(user:db.User,group:db.Amap);		//a new member is added to a group
 	NewGroup(group:db.Amap, author:db.User);	//a new group is created
 	

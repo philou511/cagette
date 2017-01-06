@@ -6,7 +6,7 @@
 -lib thx.csv
 -lib datetime
 -lib hscript
--lib ufront-mail
+-lib smtpmailer
 -cp common
 -cp src
 -neko www/index.n
@@ -18,5 +18,6 @@
 -cp js
 -lib sugoi
 -lib react
+-D react_global
 -main App
 -js www/js/app.js

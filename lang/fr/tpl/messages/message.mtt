@@ -1,22 +1,72 @@
 ::use 'design.mtt'::
-<div class="col-md-9">
+<div class="col-md-12">
 	<div class="article">
 	
-	<div>
-		<b>::msg.title::</b>
-	</div>
-	<div>
-		Envoyé le ::hDate(msg.date)::
-		<br/>par ::msg._sender.firstName:: ::msg._sender.lastName::
-		<br/>à la liste : ::list::
-	</div>
-	<hr/>
-	<div>
+
+	<table class="table">
+		<tr>
+			<td>Sujet :</td>
+			<td>::msg.title::</td>
+		</tr>
+		<tr>
+			<td>Envoyé le</td>
+			<td>::hDate(msg.date)::</td>
+		</tr>
 		
-		::raw msg.body::
+		<tr>
+			<td>Expéditeur</td>
+			<td>
+				::if msg._sender==null::
+					inconnu
+				::else::
+					::msg._sender.firstName:: ::msg._sender.lastName::
+				::end::
+			</td>
+		</tr>
 		
-	</div>
-	
+		<tr>
+			<td>Destinataire(s)</td>
+			<td>
+				::if list!=null::
+					::list::
+				::else::
+					::msg._recipients::
+				::end::
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Statut</td>
+			<td>
+				<div style="max-height:200px;overflow-y:auto;">
+				<table class="table table-condensed" style="width:auto;">
+				::foreach m status::
+				
+				
+					::if m.failure!=null::
+						<tr class="danger">
+							<td>::m.email::</td>
+							<td>::m.failure::</td>
+						</tr>
+						
+					::else::
+						<tr class="success">
+							<td>::m.email::</td>
+							<td>::m.success::</td>
+						</tr>
+					::end::
+					
+				::end::
+				</table>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>::raw msg.body::</td>
+		</tr>
+	</table>	
+		
 	<a href="/messages" class="btn btn-default">Retour</a>	
 		
 	</div>

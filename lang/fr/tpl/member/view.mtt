@@ -51,6 +51,8 @@
 			$$delete(Retirer du groupe,/member/delete/::member.id::?token=::token::)
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">Replacer en liste d'attente</a>
 			
+			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Messages reçus</a>
+			
 			::if !member.isFullyRegistred()::
 			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
 				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>

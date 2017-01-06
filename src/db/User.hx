@@ -437,15 +437,15 @@ class User extends Object {
 		var k = sugoi.db.Session.generateId();
 		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un mois
 		
-		var e = new ufront.mail.Email();
+		var e = new sugoi.mail.Mail();
 		if (group == null){
 			e.setSubject("Invitation "+group.name);	
 		}else{
 			e.setSubject("Invitation Cagette.net");
 		}
 		
-		e.to(new ufront.mail.EmailAddress(this.email,this.getName()));
-		e.from(new ufront.mail.EmailAddress(App.config.get("default_email"),"Cagette.net"));			
+		e.addRecipient(this.email,this.getName());
+		e.setSender(App.config.get("default_email"),"Cagette.net");			
 		
 		var html = App.current.processTemplate("mail/invitation.mtt", { 
 			email:email,
@@ -454,11 +454,10 @@ class User extends Object {
 			name:firstName,
 			k:k 			
 		} );		
-		e.setHtml(html);
+		e.setHtmlBody(html);
 		
-		if (!App.config.DEBUG){
-			App.getMailer().send(e);	
-		}
+		App.sendMail(e);	
+		
 		
 	}
 	

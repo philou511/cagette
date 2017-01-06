@@ -1,13 +1,10 @@
 package controller;
-import db.UserContract;
-import haxe.Utf8;
-import sugoi.form.elements.Selectbox;
-import sugoi.form.Form;
-import sugoi.form.validators.EmailValidator;
-import neko.Web;
-import sugoi.tools.Utils;
-import ufront.mail.*;
 import Common;
+import haxe.Utf8;
+import sugoi.form.Form;
+import sugoi.form.elements.Selectbox;
+import sugoi.form.validators.EmailValidator;
+import sugoi.tools.Utils;
 
 
 class Member extends Controller
@@ -205,7 +202,7 @@ class Member extends Controller
 		if (userAmap == null) throw Error("/member", "Cette personne ne fait pas partie de votre groupe");
 		
 		view.userAmap = userAmap; 
-		view.canLoginAs = db.UserAmap.manager.count($userId == member.id) == 1 && app.user.isAmapManager(); 
+		view.canLoginAs = (db.UserAmap.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
 		
 		//orders
 		var row = { constOrders:new Array<UserOrder>(), varOrders:new Map<String,Array<UserOrder>>() };
@@ -263,6 +260,26 @@ class Member extends Controller
 		throw Redirect("/member/view/" + member.id );
 	}
 	
+	@tpl('member/lastMessages.mtt')
+	function doLastMessages(member:db.User){
+		
+		var out = new Array<{date:Date,subject:String,success:String,failure:String}>();
+		var threeMonth = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30.5 * 3);
+		
+		for ( m in db.Message.manager.search($amap == app.user.amap && $date > threeMonth, {limit:10, orderBy:-date})){
+			
+			var status : sugoi.mail.IMailer.MailerResult = m.status;
+			
+			if ( status!=null && status.get(member.email)!=null ){
+				
+				var r = m.getMailerResultMessage(member.email);
+				out.push( {date:m.date,subject:m.title,success:r.success,failure:r.failure} );	
+			}
+			
+		}
+		view.emails = out;
+	}
+	
 	/**
 	 * Edit a Member
 	 */
@@ -309,7 +326,7 @@ class Member extends Controller
 				
 				//Let's merge the 2 users if it has no orders.
 				var id = sim.first().id;
-				if (UserContract.manager.search( $userId == id || $userId2 == id , false).length == 0) {
+				if (db.UserContract.manager.search( $userId == id || $userId2 == id , false).length == 0) {
 					//merge
 					member.merge( sim.first() );
 					app.session.addMessage("Cet email était utilisé dans une autre fiche de membre, comme cette fiche etait inutilisée, elle a été fusionnée avec la fiche courante.");
@@ -327,21 +344,21 @@ class Member extends Controller
 				
 				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
-					var m = new Email();
-					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
-					m.to(new EmailAddress(member.email));
+					var m = new sugoi.mail.Mail();
+					m.setSender(App.config.get("default_email"),"Cagette.net");
+					m.addRecipient(member.email);
 					m.setSubject("Changement d'email sur votre compte Cagette.net");
-					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email")  } ) );
-					App.getMailer().send(m);
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email")  } ) );
+					App.sendMail(m);
 					
 				}
 				if (form.getValueOf("email2") != member.email2 && member.email2!=null) {
-					var m = new Email();
-					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
-					m.to(new EmailAddress(member.email2));
+					var m = new sugoi.mail.Mail();
+					m.setSender(App.config.get("default_email"),"Cagette.net");
+					m.addRecipient(member.email2);
 					m.setSubject("Changement d'email sur votre compte Cagette.net");
-					m.setHtml( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
-					App.getMailer().send(m);
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
+					App.sendMail(m);
 				}	
 			}
 			
@@ -652,16 +669,12 @@ class Member extends Controller
 				
 				if (form.getValueOf("warnAmapManager") == "1") {
 					
-					try{					
-						var m = new Email();
-						m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));					
-						m.to(new EmailAddress(app.user.getAmap().contact.email));					
-						m.setSubject( app.user.amap.name+" - Nouvel inscrit : " + u.getCoupleName() );
-						var text = app.user.getName() + " vient de saisir la fiche d'une nouvelle personne  : <br/><strong>" + u.getCoupleName() + "</strong><br/> <a href='http://app.cagette.net/member/view/" + u.id + "'>voir la fiche</a> ";
-						m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
-						App.getMailer().send(m);
-					
-					}catch(e:Dynamic){}
+					var text = app.user.getName() + " vient de saisir la fiche d'un nouvel adhérent  : <br/><strong>" + u.getCoupleName() + "</strong><br/> <a href='http://"+App.config.HOST+"/member/view/" + u.id + "'>voir la fiche</a> ";
+					App.quickMail(
+						app.user.getAmap().contact.email,
+						app.user.amap.name+" - Nouvel inscrit : " + u.getCoupleName(),
+						app.processTemplate("mail/message.mtt", { text:text } ) 
+					);
 				}
 				
 				throw Ok('/member/','Cette personne a bien été enregistrée');

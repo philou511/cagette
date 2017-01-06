@@ -191,12 +191,12 @@ class User extends Controller
 			var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
 			sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 			
-			var m = new Email();
-			m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));					
-			m.to(new EmailAddress(user.email, user.name));					
+			var m = new sugoi.mail.Mail();
+			m.setSender(App.config.get("default_email"),"Cagette.net");					
+			m.setRecipient(user.email, user.name);					
 			m.setSubject( App.config.NAME+" : Changement de mot de passe" );
-			m.setHtml( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
-			App.getMailer().send(m);	
+			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
+			App.sendMail(m);	
 		}
 		
 		if (key != null && u!=null) {

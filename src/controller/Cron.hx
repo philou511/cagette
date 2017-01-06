@@ -1,7 +1,7 @@
 package controller;
 import sugoi.db.Cache;
 import sugoi.Web;
-import ufront.mail.*;
+import sugoi.mail.Mail;
 import Common;
 using Lambda;
 
@@ -64,12 +64,12 @@ class Cron extends Controller
 				report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
 			}
 			
-			var m = new Email();
-			m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));
-			m.to(new EmailAddress(App.config.get("webmaster_email")));
+			var m = new Mail();
+			m.setSender(App.config.get("default_email"),"Cagette.net");
+			m.addRecipient(App.config.get("webmaster_email"));
 			m.setSubject(App.config.NAME+" Errors");
-			m.setHtml( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
-			App.getMailer().send(m);
+			m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
+			App.sendMail(m);
 		}
 		
 		
@@ -79,6 +79,12 @@ class Cron extends Controller
 		
 		toDelete = db.Contract.manager.search($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10), true);
 		for ( c in toDelete ) c.delete();
+		
+		
+		//Old Messages cleaning
+		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 365));
+		
+		
 	}
 	
 	/**
@@ -179,7 +185,7 @@ class Cron extends Controller
 			if (u.user.flags.has(flag) ) {
 				
 				if (u.user.email != null) {
-					var group = u.distrib.contract.amap.name;
+					var group = u.distrib.contract.amap;
 
 					var text = "N'oubliez pas la distribution : <b>" + view.hDate(u.distrib.date) + "</b><br>";
 					text += "Vos produits à récupérer :<br><ul>";
@@ -201,25 +207,26 @@ class Cron extends Controller
 						text += "<b>ATTENTION : Vous ou votre conjoint(e) êtes distributeur ! N'oubliez pas d'imprimer la liste d'émargement.</b>";
 					}
 
-					var m = new Email();
-					m.from(new EmailAddress(App.config.get("default_email"),"Cagette.net"));					
-					m.to(new EmailAddress(u.user.email, u.user.getName()));					
-					if(u.user.email2!=null) m.cc(new EmailAddress(u.user.email2));
-					m.setSubject( group+" : Distribution " + app.view.hDate(u.distrib.date) );
-					m.setHtml( app.processTemplate("mail/message.mtt", { text:text } ) );
+					var m = new Mail();
+					m.setSender(App.config.get("default_email"), "Cagette.net");
+					if(group.contact!=null){
+						m.setReplyTo(group.contact.email, group.name);
+					}
+					m.addRecipient(u.user.email, u.user.getName());
+					if(u.user.email2!=null) m.addRecipient(u.user.email2);
+					m.setSubject( group.name+" : Distribution " + app.view.hDate(u.distrib.date) );
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					
 					//debug
-					Sys.print("<hr/>" + m.toList + "<br/>" + m.subject + "<br/>" + m.html + "");
+					Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");
 					
+					Sys.sleep(0.25);
 					try {
-						if (!App.config.DEBUG){
-							Sys.sleep(0.25);
-							App.getMailer().send(m);	
-						}
-						
-					}catch (e:Dynamic) {
+						App.sendMail(m , u.distrib.contract.amap);	
+					}catch (e:Dynamic){
 						app.logError(e);
 					}
+					
 				}
 			}
 		}

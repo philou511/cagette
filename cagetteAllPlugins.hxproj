@@ -36,7 +36,8 @@
     <library name="sugoi" />
     <library name="hxevents" />
     <library name="hscript" />
-    <library name="ufront-mail" />
+    <library name="" />
+    <library name="smtpmailer" />
     <library name="datetime" />
     <library name="cagette-hosted" />
     <library name="cagette-pro" />
