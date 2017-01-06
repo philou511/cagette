@@ -108,6 +108,17 @@ class Distribution extends Object
 		}else{
 			return UserContract.manager.search($distribution == this, false); 
 		}
+	}
+	
+	public function getTurnOver(){
+		
+		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(contract.getProducts()).join(",") +") ";
+		if (contract.type == db.Contract.TYPE_VARORDER) {
+			sql += " and distributionId=" + this.id;	
+		}
+	
+		return sys.db.Manager.cnx.request(sql).getFloatResult(0);
+		
 		
 		
 	}

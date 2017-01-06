@@ -39,21 +39,25 @@
 			<td>Statut</td>
 			<td>
 				<div style="max-height:200px;overflow-y:auto;">
+				<table class="table table-condensed" style="width:auto;">
 				::foreach m status::
 				
 				
 					::if m.failure!=null::
-						<div class="alert alert-danger">
-							::m.email:: : ::m.failure::
-						</div>
+						<tr class="danger">
+							<td>::m.email::</td>
+							<td>::m.failure::</td>
+						</tr>
 						
 					::else::
-						<div class="alert alert-success">
-							::m.email:: : ::m.success::
-						</div>
+						<tr class="success">
+							<td>::m.email::</td>
+							<td>::m.success::</td>
+						</tr>
 					::end::
 					
 				::end::
+				</table>
 				</div>
 			</td>
 		</tr>

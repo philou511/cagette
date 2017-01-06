@@ -185,7 +185,7 @@ class Cron extends Controller
 			if (u.user.flags.has(flag) ) {
 				
 				if (u.user.email != null) {
-					var group = u.distrib.contract.amap.name;
+					var group = u.distrib.contract.amap;
 
 					var text = "N'oubliez pas la distribution : <b>" + view.hDate(u.distrib.date) + "</b><br>";
 					text += "Vos produits à récupérer :<br><ul>";
@@ -209,10 +209,13 @@ class Cron extends Controller
 
 					var m = new Mail();
 					m.setSender(App.config.get("default_email"), "Cagette.net");
+					if(group.contact!=null){
+						m.setReplyTo(group.contact.email, group.name);
+					}
 					m.addRecipient(u.user.email, u.user.getName());
 					if(u.user.email2!=null) m.addRecipient(u.user.email2);
-					m.setSubject( group+" : Distribution " + app.view.hDate(u.distrib.date) );
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text } ) );
+					m.setSubject( group.name+" : Distribution " + app.view.hDate(u.distrib.date) );
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					
 					//debug
 					Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");
