@@ -33,6 +33,7 @@ class Distribution extends Controller
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
+				{ key:"contrat", value:"Une personne par page triée par contrat" },
 				{ key:"all", value:"Tout à la suite" },
 				{ key:"allshort", value:"Tout à la suite sans les prix et totaux" },
 			],"all"));
@@ -68,6 +69,9 @@ class Distribution extends Controller
 				app.setTemplate("distribution/listByDateOnePage.mtt");
 			} else if (type=="allshort") {
 				app.setTemplate("distribution/listByDateShort.mtt");
+			}
+			if (type=="contrat") {
+				app.setTemplate("distribution/listByDateOnePageContract.mtt");
 			}
 			
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
