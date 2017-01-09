@@ -126,8 +126,8 @@ class Amap extends Object
  	}
 	
 	public function hasPayments(){
-		//nansouty + jeanot
-		return id == 1 || id == 176;
+		//nansouty + jeanot + chantereine
+		return id == 1 || id == 176 || id == 627;
 	}
 	
 	public function getCategoryGroups() {
