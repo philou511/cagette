@@ -19,14 +19,7 @@ class View extends sugoi.BaseView {
 	}
 	
 	
-	/**
-	 * newline to <br/>
-	 * @param	txt
-	 */
-	public function nl2br(txt:String):String {	
-		if (txt == null) return "";
-		return txt.split("\n").join("<br/>");		
-	}
+	
 	
 	/**
 	 * init view in main loop, just before rendering

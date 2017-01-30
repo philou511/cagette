@@ -36,13 +36,13 @@ class Cron extends Controller
 		if (!canRun()) return;
 		
 		app.event(MinutelyCron);
-		
-		distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
-		distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
 	}
 	
 	public function doHour() {
 		app.event(HourlyCron);
+		
+		distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
+		distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
 	}
 	
 	
@@ -78,11 +78,20 @@ class Cron extends Controller
 		for ( c in toDelete ) c.delete();
 		
 		toDelete = db.Contract.manager.search($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10), true);
-		for ( c in toDelete ) c.delete();
-		
+		for ( c in toDelete ) c.delete();		
 		
 		//Old Messages cleaning
 		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 365));
+		
+		//DB cleaning : I dont know how, but some people have empty string emails...
+		for ( u in db.User.manager.search($email == "", true)){
+			u.email = Std.random(9999) + "@cagette.net";
+			u.update();
+		}
+		for ( u in db.User.manager.search($email2 == "", true)){
+			u.email2 = null;
+			u.update();
+		}
 		
 		
 	}
@@ -179,7 +188,6 @@ class Cron extends Controller
  			}
 		}
 		
-		
 		for ( u in users) {
 			
 			if (u.user.flags.has(flag) ) {
@@ -190,7 +198,7 @@ class Cron extends Controller
 					var text = "N'oubliez pas la distribution : <b>" + view.hDate(u.distrib.date) + "</b><br>";
 					text += "Vos produits à récupérer :<br><ul>";
 					for ( p in u.products) {
-						text += "<li>"+p.quantity+" x "+p.product.name;
+						text += "<li>"+p.quantity+" x "+p.product.getName();
  						// Gerer le cas des contrats en alternance
  						if (p.user2 != null) {
  							text += " en alternance avec ";
@@ -218,9 +226,9 @@ class Cron extends Controller
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					
 					//debug
-					Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");
-					
+					Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");					
 					Sys.sleep(0.25);
+					
 					try {
 						App.sendMail(m , u.distrib.contract.amap);	
 					}catch (e:Dynamic){

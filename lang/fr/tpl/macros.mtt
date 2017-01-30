@@ -134,6 +134,10 @@
 		</div>
 	</macro>
 	
+	<macro name="back()">	
+	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+	</macro>
+	
 	
 	
 </macros>
