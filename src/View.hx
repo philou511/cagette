@@ -18,9 +18,7 @@ class View extends sugoi.BaseView {
 		return Lambda.count(i);
 	}
 	
-	
-	
-	
+
 	/**
 	 * init view in main loop, just before rendering
 	 */
