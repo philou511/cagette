@@ -58,9 +58,9 @@
 					<td><b>
 						::switch c.cycleType:: 						
 						::case::  Hebdomadaire
+						::case::  Mensuel
 						::case::  Toutes les 2 semaines
 						::case::  Toutes les 3 semaines
-						::case::  Mensuel						
 						::end::
 						</b>
 						: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::

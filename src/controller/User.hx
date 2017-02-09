@@ -137,7 +137,7 @@ class User extends Controller
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
 		
 		#if plugins
-		view.pros = pro.db.Company.manager.search($user == app.user);
+		view.pros = pro.db.PUserCompany.getCompanies(app.user);
 		#end
 	}
 	

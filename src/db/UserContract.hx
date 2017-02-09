@@ -109,11 +109,13 @@ class UserContract extends Object
 			x.id = o.id;
 			x.userId = o.user.id;
 			x.userName = o.user.getCoupleName();
+			x.userEmail = o.user.email;
 			
 			//shared order
 			if (o.user2 != null){
 				x.userId2 = o.user2.id;
 				x.userName2 = o.user2.getCoupleName();
+				x.userEmail2 = o.user2.email;
 			}
 			
 			x.productId = o.product.id;
