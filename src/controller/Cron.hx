@@ -74,11 +74,9 @@ class Cron extends Controller
 		
 		
 		//DEMO CONTRATS deletion after 10 days ( see controller.Group.doCreate() )
-		var toDelete = db.Contract.manager.search($name == "Contrat AMAP Maraîcher Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10), true);
-		for ( c in toDelete ) c.delete();
-		
-		toDelete = db.Contract.manager.search($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10), true);
-		for ( c in toDelete ) c.delete();		
+		db.Contract.manager.delete($name == "Contrat AMAP Maraîcher Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10));
+		db.Contract.manager.delete($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10));
+
 		
 		//Old Messages cleaning
 		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 365));

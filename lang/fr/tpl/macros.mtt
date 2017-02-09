@@ -115,13 +115,18 @@
 	<macro name="contact(u)">
 		
 		<i class="icon-user"></i>
-		<b>::u.firstName:: ::u.lastName::</b><br/>
-		<span ::cond u.email!=null::>
-			<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
-		</span>
-		<span ::cond u.phone!=null::>
-			<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
-		</span>
+		
+		::if u!=null::
+			<b>::u.firstName:: ::u.lastName::</b><br/>
+			<span ::cond u.email!=null::>
+				<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
+			</span>
+			<span ::cond u.phone!=null::>
+				<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
+			</span>
+		::else:: 
+			Aucun contact
+		::end::
 		
 	</macro>
 
@@ -134,10 +139,9 @@
 		</div>
 	</macro>
 	
+	
 	<macro name="back()">	
-	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
 	</macro>
-	
-	
 	
 </macros>

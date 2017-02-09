@@ -388,12 +388,12 @@ class Cart
 		req.request();
 		
 		//scroll mgmt
-		/*jWindow = App.j(js.Browser.window);
+		jWindow = App.j(js.Browser.window);
 		cartContainer = App.j("#cartContainer");
-		//cartTop = cartContainer.position().top;
+		cartTop = cartContainer.position().top;
 		cartLeft = cartContainer.position().left;
 		cartWidth = cartContainer.width();
-		jWindow.scroll(onScroll);*/
+		jWindow.scroll(onScroll);
 		
 	}
 	
@@ -409,7 +409,7 @@ class Cart
 			//trace("absolute !");
 			cartContainer.addClass("scrolled");
 			cartContainer.css('left', Std.string(cartLeft) + "px");			
-			cartContainer.css('top', Std.string(cartTop) + "px");
+			cartContainer.css('top', Std.string(/*cartTop*/10) + "px");
 			cartContainer.css('width', Std.string(cartWidth) + "px");
 			
 		}else {

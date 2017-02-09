@@ -251,9 +251,12 @@ class Member extends Controller
 	 */	
 	function doLoginas(member:db.User, amap:db.Amap) {
 	
-		if (!app.user.isAmapManager()) return;
-		if (member.isAdmin()) return;
-		if ( db.UserAmap.manager.count($userId == member.id) > 1 ) return;
+		if (!app.user.isAdmin()){
+			if (!app.user.isAmapManager()) return;
+			if (member.isAdmin()) return;
+			if ( db.UserAmap.manager.count($userId == member.id) > 1 ) return;
+			
+		}
 		
 		App.current.session.setUser(member);
 		App.current.session.data.amapId = amap.id;

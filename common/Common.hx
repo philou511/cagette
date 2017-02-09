@@ -89,9 +89,11 @@ typedef UserOrder = {
 	id:Int,
 	userId:Int,
 	userName:String,
+	?userEmail : String,
 	
 	?userId2:Int,
 	?userName2:String,
+	?userEmail2:String,
 	
 	productId:Int,
 	productRef:String,
