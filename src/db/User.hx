@@ -5,6 +5,7 @@ import db.UserAmap;
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
 	HasEmailNotif24h;	//send notifications by mail 24h before
+	HasEmailNotifOuverture; //send notifications by mail on command open
 	//Tuto;			//enable tutorials
 }
 
@@ -435,7 +436,7 @@ class User extends Object {
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un mois
+		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un moisnotifications
 		
 		var e = new sugoi.mail.Mail();
 		if (group == null){
