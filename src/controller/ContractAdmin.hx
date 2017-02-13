@@ -6,6 +6,7 @@ import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
 import Common;
+using tools.ObjectListTool;
 
 class ContractAdmin extends Controller
 {
@@ -38,23 +39,23 @@ class ContractAdmin extends Controller
 			contracts = db.Contract.getActiveContracts(app.user.amap, true, false);	
 		}
 				
-		//filtre si pas d'accès
+		//filter if current user is not manager
 		if (!app.user.isAmapManager()) {
 			for ( c in Lambda.array(contracts).copy()) {				
 				if(!app.user.canManageContract(c)) contracts.remove(c);				
 			}
 		}
 		
-		view.contracts = contracts;
+		//distributions to validate ( today is between orderEndDate and delvery+6 days )
+		var now = Date.now();
+		var cids = contracts.getIds();
+		view.distributions = db.Distribution.manager.unsafeObjects("SELECT * FROM Distribution WHERE NOW() > orderEndDate AND NOW() < DATE_ADD(date,INTERVAL 6 DAY) AND contractId IN ("+cids.join(",")+")", false);  
+		//view.distributions = db.Distribution.manager.search( now > $orderEndDate && now < ($date+$days(6)), false);  
 		
+		view.contracts = contracts;		
 		view.vendors = app.user.amap.getVendors();
 		view.places = app.user.amap.getPlaces();
-		
-		//set a token for delete buttons
 		checkToken();
-		
-		
-		
 	}
 
 	/**

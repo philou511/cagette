@@ -37,6 +37,9 @@
 	<h2>Paiements</h2>
 	<div class="article">
 		<table class="table table-striped table-condensed">
+		<tr>
+			<th>Type</th>
+		</tr>
 		::foreach t transactions::
 		<tr>
 			$$transaction(::t::)

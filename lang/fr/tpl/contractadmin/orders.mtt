@@ -31,6 +31,14 @@
 		::end::
 
 
+		<style>
+		td.userRow{
+			font-size:120%;
+			color:#e7e7e7;
+		}
+		td.userRow a{ color:white; }
+		</style>
+		
 		::set total = 0::
 		::set totalAdh = 0::
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
@@ -41,8 +49,8 @@
 				
 				::if m.userName != name || m.userName2 != name2::
 					<tr style="background-color:#666;">
-						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
-							::m.userName:: 
+						<td colspan="7" class="userRow">
+							<a href="/member/view/::m.userId::">::m.userName:: </a>
 							::if m.userName2!=null::
 								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::
 							::end::

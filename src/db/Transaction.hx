@@ -29,9 +29,16 @@ class Transaction extends sys.db.Object
 	public var pending : SBool;
 	
 	public function getTypeIndex(){
-		var e : TransactionType = type;
-		
+		var e : TransactionType = type;		
 		return e.getIndex();
+	}
+	
+	public function getPaymentType(){
+		switch(type){
+			case TTPayment(pt, opid): return pt;
+			default : return null;
+		}
+		
 	}
 	
 	

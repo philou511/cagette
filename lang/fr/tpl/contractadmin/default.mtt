@@ -1,6 +1,18 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
+	
+	::if(distributions.length>0)::	
+	<div class="article">
+		<h2>Distributions à valider</h2>
+		::foreach d distributions::
+		<a href="/contractAdmin/ordersByDate/::d.date.toString().substr(0,10)::">Distrib du ::hDate(d.date)::</a>
+		
+		
+		::end::
+	</div>
+	::end::
+	
 	<div class="article" id="contracts">
 		<h2>
 			Contrats

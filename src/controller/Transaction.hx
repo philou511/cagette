@@ -15,10 +15,10 @@ class Transaction extends controller.Controller
 		t.date = Date.now();
 		
 		
-		var f = sugoi.form.Form.fromSpod(t);
-		f.removeElementByName("userId");
-		f.removeElementByName("pending");
-		f.removeElementByName("type");
+		var f = new sugoi.form.Form("payement");
+		f.addElement(new sugoi.form.elements.StringInput("name", "Libellé", null, true));
+		f.addElement(new sugoi.form.elements.FloatInput("amount", "Montant", null, true));
+		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
 		var data = [
 		{label:"Espèces",value:"cash"},
 		{label:"Chèque",value:"check"},
@@ -26,10 +26,12 @@ class Transaction extends controller.Controller
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
 		
+		
 		if (f.isValid()){
 			f.toSpod(t);
 			t.type = db.Transaction.TransactionType.TTPayment(f.getValueOf("Mtype"));
 			t.group = app.user.amap;
+			t.user = user;
 			t.insert();
 			
 			db.Transaction.updateUserBalance(user, app.user.amap);

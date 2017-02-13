@@ -145,11 +145,22 @@
 		::set x = t.getTypeIndex()::
 		
 		::if x==0::
-		<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+		<i class="fa fa-shopping-cart" aria-hidden="true"></i> Commande
 		::elseif x==1::
-		<i class="fa fa-shopping-basket" aria-hidden="true"></i>
-		::else::				
-		<i class="fa fa-credit-card" aria-hidden="true"></i>
+		<i class="fa fa-shopping-basket" aria-hidden="true"></i> Cde AMAP
+		::elseif x==2::
+		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement 
+		::set ty = t.getPaymentType()::
+		(
+		::if(ty=="check"):: Chèque
+		::elseif(ty=="cash"):: Liquide
+		::elseif(ty=="transfer"):: Virement
+		::else::
+		::ty::
+		::end:: 
+		)
+		::else::						
+		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
 	</td>
 	<td>
