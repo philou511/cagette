@@ -1,0 +1,46 @@
+::use 'design.mtt'::
+<div class="col-md-9">
+	<div class="article">
+	
+	<h2>Paiement de votre commande</h2>
+	
+	<div>
+		Votre solde actuel est de <b>::ua.balance::</b> 
+	</div>	
+		
+	<div class="text-center" style="font-size:120%;">
+		A PAYER : ::debt.amount:: ::currency()::<br/>
+		DKEY : ::debt.getOrderInfos().distribKey::
+	</div>
+		
+		
+	<style>
+	div.paymentType{
+		border-radius:3px;
+		padding:8px;
+		margin:8px;
+		border:1px solid #CCC;
+	}
+	</style>	
+	<div class="row">	
+		::foreach p paymentTypes::
+		<div class="paymentType col-md-4">
+			<h3>::p.name::</h3> 
+			::raw p.icon:: 
+			<p>::p.desc::</p>
+			<a href="::p.link::" class="btn btn-primary">Choisir</a>  
+		</div>
+		::end::
+	</div>
+	
+	</div>
+</div>
+
+<div class="col-md-3">
+	
+	
+	<div class="block">
+	</div>
+</div>
+
+::end::

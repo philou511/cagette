@@ -150,19 +150,35 @@
 		<i class="fa fa-shopping-basket" aria-hidden="true"></i> Cde AMAP
 		::elseif x==2::
 		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement 
-		::set ty = t.getPaymentType()::
-		(
-		::if(ty=="check"):: Chèque
-		::elseif(ty=="cash"):: Liquide
-		::elseif(ty=="transfer"):: Virement
-		::else::
-		::ty::
-		::end:: 
-		)
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
 	</td>
+	<td>
+		::if x==0::
+		
+			::set i = t.getOrderInfos()::
+			
+			key=::i.distribKey::
+		
+		::elseif x==1::
+		
+		::elseif x==2::
+		
+			::set ty = t.getPaymentType()::			
+			::if(ty=="check"):: Chèque
+			::elseif(ty=="cash"):: Liquide
+			::elseif(ty=="transfer"):: Virement
+			::else::
+				::ty::
+			::end:: 
+			
+		::else::						
+		
+		::end::
+		
+		
+	</td>	
 	<td>
 		::if t.pending==true::
 		<i class="fa fa-circle-thin" aria-hidden="true"></i>

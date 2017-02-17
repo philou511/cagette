@@ -2,9 +2,9 @@ package db;
 import sys.db.Types;
 
 enum TransactionType{
-	TTOrder(orders:Array<Int>);
+	TTOrder(distribKey:String,orderId:Int,orders:Array<Int>);
 	TTAmapOrder(contract:Int);
-	TTPayment(paymentType:String,?OpId:Int);//payemnt type : check/paypal/currency + remote operation ID
+	TTPayment(paymentType:String,distribKey:String,?OpId:Int);//payemnt type : check/transfer/money + remote operation ID
 	TTMembership(year:Int);	
 }
 
@@ -23,6 +23,7 @@ class Transaction extends sys.db.Object
 	public var amount : SFloat;
 	public var date : SDateTime;
 	public var type : SData<TransactionType>;
+	
 	@:relation(userId) public var user : db.User;
 	@hideInForms @:relation(groupId) public var group : db.Amap;
 	
@@ -33,19 +34,26 @@ class Transaction extends sys.db.Object
 		return e.getIndex();
 	}
 	
-	public function getPaymentType(){
+	/**
+	 * if transaction is a payment, give the payment type
+	 */
+	public function getPaymentType():String{
 		switch(type){
-			case TTPayment(pt, opid): return pt;
+			case TTPayment(pt,distribKey,opId): return pt;
+			default : return null;
+		}		
+	}	
+	
+	
+	public function getOrderInfos(){
+		switch(type){
+			case TTOrder(dk, orders) : return {distribKey:dk, order:orders};
 			default : return null;
 		}
-		
 	}
 	
-	
-	public static function getTransactions(user:db.User,group:db.Amap){
-		
-		return manager.search($user == user && $group == group,{orderBy:date},false);
-		
+	public static function getTransactions(user:db.User,group:db.Amap){		
+		return manager.search($user == user && $group == group,{orderBy:date},false);		
 	}
 	
 	/**
@@ -70,7 +78,7 @@ class Transaction extends sys.db.Object
 			var dNum = contract.getDistribs(false).length;
 			t.amount = dNum * (0 - _amount);
 			t.date = Date.now();
-			t.type = TTOrder(Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.type = TTOrder("",Lambda.array(Lambda.map(orders, function(x) return x.id)));
 			t.user = orders[0].user;
 			t.group = orders[0].product.contract.amap;
 			t.pending = false;					
@@ -81,7 +89,7 @@ class Transaction extends sys.db.Object
 			t.name = "Commande pour le " + App.current.view.dDate(orders[0].distribution.date);
 			t.amount = 0 - _amount;
 			t.date = Date.now();
-			t.type = TTOrder(Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.type = TTOrder(orders[0].distribution.getKey(),Lambda.array(Lambda.map(orders, function(x) return x.id)));
 			t.user = orders[0].user;
 			t.group = orders[0].product.contract.amap;
 			t.pending = true;					
@@ -116,8 +124,8 @@ class Transaction extends sys.db.Object
 			
 			switch(t.type){
 				
-				case TTOrder(orders) :
-					var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);
+				case TTOrder(_dkey,_orders) :
+					/*var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);
 					
 					if (id == null) {						
 						//all orders in this transaction dont exists anymore
@@ -131,7 +139,10 @@ class Transaction extends sys.db.Object
 						if (o.distribution.place.id == placeId){
 							return t;	
 						}						
-					}					
+					}*/
+					if (dkey == _dkey) return t;
+					
+					
 				default : 
 					continue;				
 			}
@@ -154,7 +165,7 @@ class Transaction extends sys.db.Object
 			
 			switch(t.type){
 				
-				case TTOrder(orders) :
+				case TTOrder(dkey, orders) :
 					
 					var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);					
 					if (id == null) {						
@@ -177,5 +188,18 @@ class Transaction extends sys.db.Object
 		
 		return null;
 		
+	}
+	
+	public static function getPaymentTypes(group:db.Amap):Array<payment.Payment>{
+		var out :Array<payment.Payment> = [];
+		for ( t in group.allowedPaymentsType){
+			switch(t){
+				case "cash" : out.push(new payment.Cash());
+				case "transfer" : out.push(new payment.Transfer());
+				case "check" : out.push(new payment.Check());
+			}
+			
+		}
+		return out;
 	}
 }

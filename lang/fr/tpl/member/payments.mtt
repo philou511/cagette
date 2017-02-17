@@ -48,14 +48,14 @@
 		
 		<tr style="font-size:1.3em;">
 			<td colspan="2"></td>
-			<td>Solde : </td>
+			<td>Solde&nbsp;:</td>
 			::if balance<0:: 
 				::set color = "C00"::
 			::else::
 				::set color = "0C0"::
 			::end::
 			<td style="color:#::color::;">
-				::balance:: ::currency()::
+				::balance::&nbsp;::currency()::
 			</td>
 			<td>
 				

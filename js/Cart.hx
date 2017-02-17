@@ -120,13 +120,9 @@ class Cart
 		}
 		var ffilter = new sugoi.form.filters.FloatFilter();
 		
-		var total = ffilter.filter(Std.string(App.roundTo(total,2)));
+		var total = ffilter.filterString(Std.string(App.roundTo(total,2)));
 		c.append("<div class='total'>TOTAL : "+total+"</div>");
 	}
-
-
-
-
 
 
 	function findCategoryName(cid:Int):String{

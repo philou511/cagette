@@ -10,6 +10,8 @@ class Transaction extends controller.Controller
 	@tpl('form.mtt')
 	public function doInsertPayment(user:db.User){
 		
+		if (!app.user.isContractManager()) throw "accès interdit";
+		
 		var t = new db.Transaction();
 		t.user = user;
 		t.date = Date.now();
@@ -26,10 +28,9 @@ class Transaction extends controller.Controller
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
 		
-		
 		if (f.isValid()){
 			f.toSpod(t);
-			t.type = db.Transaction.TransactionType.TTPayment(f.getValueOf("Mtype"));
+			t.type = db.Transaction.TransactionType.TTPayment(f.getValueOf("Mtype"),null,null);
 			t.group = app.user.amap;
 			t.user = user;
 			t.insert();
@@ -41,7 +42,21 @@ class Transaction extends controller.Controller
 		}
 		
 		view.title = "Saisir un paiement pour " + user.getCoupleName();
-		view.form = f;
+		view.form = f;		
+	}
+	
+	/**
+	 * payement entry page
+	 * @param	distribKey
+	 */
+	@tpl("transaction/pay.mtt")
+	public function doPay(distribKey:String){
+		
+		var debt = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+		
+		view.debt = debt;
+		view.ua = db.UserAmap.get(app.user, app.user.amap);
+		view.paymentTypes = db.Transaction.getPaymentTypes(app.user.amap);
 		
 	}
 	

@@ -198,7 +198,9 @@ class Distribution extends Object
 
 
 	/**
-	 * Return a string like $placeId-$date
+	 * Return a string like $placeId-$date.
+	 * 
+	 * It's an ID representing all the distributions happening on that day at that place.
 	 */
 	public function getKey():String{
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);

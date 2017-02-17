@@ -164,10 +164,10 @@ class Product extends Controller
 				product.name = p[0];
 				
 				var fv = new sugoi.form.filters.FloatFilter();
-				product.price = fv.filter(p[1]);
+				product.price = fv.filterString(p[1]);
 				product.ref = p[2];
 				product.desc = p[3];
-				product.vat = fv.filter(p[4]);
+				product.vat = fv.filterString(p[4]);
 				if (p[5] != null) product.stock = Std.parseInt(p[5]);
 				if (p[6] != null)	product.type = Std.parseInt(p[6]);
 				

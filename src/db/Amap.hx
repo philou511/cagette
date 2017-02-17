@@ -61,6 +61,8 @@ class Amap extends Object
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 	
+	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	
 	public function new() 
 	{
 		super();
@@ -126,8 +128,9 @@ class Amap extends Object
  	}
 	
 	public function hasPayments(){
-		//nansouty + jeanot + chantereine
-		return id == 1 || id == 176 || id == 627;
+		if (App.config.DEBUG) return true;
+		//nansouty + jeanot + chantereine + georges martin
+		return id == 1 || id == 176 || id == 627 || id == 197;
 	}
 	
 	public function getCategoryGroups() {
