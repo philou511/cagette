@@ -128,8 +128,7 @@ class Shop extends sugoi.BaseController
 			
 		}
 		
-		Sys.print( haxe.Json.stringify( { success:true } ) );
-		
+		Sys.print( haxe.Json.stringify( { success:true } ) );		
 	}
 	
 	

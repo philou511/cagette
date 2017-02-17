@@ -24,7 +24,7 @@ class Distribution extends Controller
 	 * List to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
-	function doListByDate(?date:Date, ?type:String, ?fontSize:String) {
+	function doListByDate(date:Date,place:db.Place, ?type:String, ?fontSize:String) {
 		
 		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
@@ -49,7 +49,7 @@ class Distribution extends Controller
 			
 			if (f.checkToken()) {
 				var suburl = f.getValueOf("type")+"/"+f.getValueOf("fontSize");
-				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+suburl;
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+place.id+"/"+suburl;
 				throw Redirect( url );
 			}
 			
@@ -86,11 +86,11 @@ class Distribution extends Controller
 			}
 			
 			//commandes variables
-			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
+			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 && $place==place, false);		
 			var orders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//commandes fixes
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && $place==place, false);
 			var orders = Lambda.array(orders);
 			for ( d in distribs) {
 				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id)  , { orderBy:userId } );
