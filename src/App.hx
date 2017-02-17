@@ -112,6 +112,8 @@ class App extends sugoi.BaseApp {
 		
 		out.set("orderStartDate", "Date ouverture des commandes");
 		out.set("orderEndDate", "Date fermeture des commandes");	
+		out.set("openingHour", "Heure d'ouverture");	
+		out.set("closingHour", "Heure de fermeture");	
 		
 		out.set("date", "Date de distribution");	
 		out.set("active", "actif");	
