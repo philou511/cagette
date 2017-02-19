@@ -178,13 +178,14 @@ class Cron extends Controller
 		var users = new Map <String,{
 			user:db.User,
 			distrib:db.Distribution,
-			products:Array<db.UserContract>			
+			products:Array<db.UserContract>,
+			vendors:Array<db.Vendor>		
 		}>();
 		
 		for (o in orders) {
 			
 			var x = users.get(o.userId+"-"+o.product.contract.amap.id);
-			if (x == null) x = {user:o.user,distrib:null,products:[]};
+			if (x == null) x = {user:o.user,distrib:null,products:[],vendors:[]};
 			x.distrib = distribsByContractId.get(o.product.contract.id);
 			//x.distrib = o.distribution;
 			x.products.push(o);			
@@ -194,7 +195,7 @@ class Cron extends Controller
 			// Prévenir également le deuxième user en cas des commandes alternées
  			if (o.user2 != null) {
  				var x = users.get(o.user2.id+"-"+o.product.contract.amap.id);
- 				if (x == null) x = {user:o.user2,distrib:null,products:[]};
+ 				if (x == null) x = {user:o.user2,distrib:null,products:[],vendors:[]};
  				x.distrib = distribsByContractId.get(o.product.contract.id);
  				x.products.push(o);
  				users.set(o.user2.id+"-"+o.product.contract.amap.id, x);
@@ -209,8 +210,9 @@ class Cron extends Controller
 				var MemberList = d.contract.amap.getMembers();
 				for (u in MemberList) {
 					var x = users.get(u.id+"-"+d.contract.amap.id);
-					if (x == null) x = {user:u,distrib:null,products:[]};
-					x.distrib = distribsByContractId.get(d.contract.id);	
+					if (x == null) x = {user:u,distrib:null,products:[],vendors:[]};
+					x.distrib = distribsByContractId.get(d.contract.id);
+					x.vendors.push(d.contract.vendor);
 					users.set(u.id+"-"+d.contract.amap.id, x);
 					trace (u.id+"-"+d.contract.amap.id, x);Sys.print("<br/>\n");
 				}
@@ -228,6 +230,11 @@ class Cron extends Controller
 					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) //ouverture de commande
 					{
 						text  = "Ouverture des commandes pour la distribution du : <b>" + view.hDate(u.distrib.date) + "</b><br>";
+						text += "Cela concerne les fournisseurs suivants :<br><ul>";
+						for ( v in u.vendors) {
+							text += "<li>" + v + "</li>";
+						}
+						text += "</ul>";
 						var url = "http://" + App.config.HOST + "/group/"+ u.distrib.contract.amap.id;
 						text += "L'adresse de votre cagette est : <a href=\"" + url + "\">" + url + "</a><br>";
 					}
