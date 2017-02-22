@@ -15,7 +15,7 @@ class Distribution extends Controller
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {
 		view.distrib = d;
-		var contract = d.contract;
+		view.place = d.place;
 		view.contract = d.contract;
 		view.orders = UserContract.prepare(d.getOrders());
 	}
@@ -28,8 +28,12 @@ class Distribution extends Controller
 		
 		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
+		view.place = place;
+		
 		if (type == null) {
 		
+			//display form
+			
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ key:"one", value:"Une personne par page" },
