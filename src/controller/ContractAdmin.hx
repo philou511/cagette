@@ -466,7 +466,19 @@ class ContractAdmin extends Controller
 					p.ref = source_p.ref;
 					p.stock = source_p.stock;
 					p.vat = source_p.vat;
+					p.organic = source_p.organic;
+					p.txpProduct = source_p.txpProduct;
 					p.insert();
+					
+					for (source_cat in source_p.getCategories()){
+						
+						var cat = new db.ProductCategory();
+						cat.product = p;
+						cat.category = source_cat;
+						cat.insert();
+						
+					}
+					
 				}
 			}
 			

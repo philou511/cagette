@@ -42,7 +42,12 @@
 						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
 					</td>
 					<td>
-						<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">::uo.product.getName()::	</a>
+						<span ::cond uo.product.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom">
+							<img src="/img/AB.png"/>&nbsp;						
+						</span>
+						<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">							
+							::uo.product.getName()::
+						</a>
 					</td>
 					<td>
 						::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
