@@ -60,6 +60,17 @@ class ObjectListTool
 		}
 		
 		return Lambda.array(out);
+	}
+	
+	/**
+	 * Deduplicate distributions on key (date+placeId)
+	 * @param	distribs
+	 */
+	public static function deduplicateDistribsByKey(distribs:Iterable<db.Distribution>){
+		
+		var out = new Map<String,db.Distribution>();
+		for ( d in distribs) out.set(d.getKey(), d);
+		return Lambda.array(out);
 		
 	}
 	

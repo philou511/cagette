@@ -13,27 +13,34 @@
 		<div class="article">
 			
 		<div class="text-center">
-			<h3>Vue globale des commandes<br/>
+			<h3>
 			Distribution du ::hDate(date)::
 			</h3>	
-			<h4>::place::</h4>
+			<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
+			<br/>
+			
+			::if(confirmed)::
+			Validée
+			::else::
+			Non validée
+			::end::
 		</div>	
 			
 		
 			
 		
-
-		<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> Export CSV </a>
-		<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
-		
-		::if ctotal::
-		<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par adhérent</a>
-		::else::
-		<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">Sous-totaux par contrat</a>
-		::end::
-		
-		<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par producteur</a>
-		
+		<div class="text-center">
+			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> Export CSV </a>
+			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
+			
+			::if ctotal::
+			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par adhérent</a>
+			::else::
+			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">Sous-totaux par contrat</a>
+			::end::
+			
+			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par producteur</a>
+		</div>
 		
 		<hr/>
 		

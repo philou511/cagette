@@ -45,6 +45,8 @@ class Distribution extends Object
 	public var distributor4Id : SNull<SInt>;
 	#end
 	
+	public var confirmed :SBool;
+	
 	public function new() 
 	{
 		super();

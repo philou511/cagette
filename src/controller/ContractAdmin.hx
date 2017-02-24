@@ -26,7 +26,7 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * liste les contrats dont on a la responsabilité
+	 * Contract admin main page
 	 */
 	@tpl("contractadmin/default.mtt")
 	function doDefault(?args:{old:Bool}) {
@@ -37,8 +37,8 @@ class ContractAdmin extends Controller
 		}else {
 			contracts = db.Contract.getActiveContracts(app.user.amap, true, false);	
 		}
-				
-		//filtre si pas d'accès
+
+		//filter if no access
 		if (!app.user.isAmapManager()) {
 			for ( c in Lambda.array(contracts).copy()) {				
 				if(!app.user.canManageContract(c)) contracts.remove(c);				
@@ -54,7 +54,10 @@ class ContractAdmin extends Controller
 		checkToken();
 		
 		
-		
+		//multidistribs to validate
+		var cids = tools.ObjectListTool.getIds(contracts);
+		var twoDays = tools.DateTool.deltaDays(Date.now(), 2);
+		view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( db.Distribution.manager.search(($contractId in cids) && !$confirmed && $date < twoDays, {orderBy:date}, false) );
 	}
 
 	/**
@@ -116,8 +119,6 @@ class ContractAdmin extends Controller
 		//generate a token
 		checkToken();
 	}
-
-	
 	
 	
 	/**
@@ -292,6 +293,10 @@ class ContractAdmin extends Controller
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
 			var orders = db.UserContract.prepare(Lambda.list(orders));
+			
+			//is this multidistrib confirmed ?
+			var distribs = Lambda.array(vdistribs).concat(Lambda.array(cdistribs));
+			view.confirmed = Lambda.count( distribs, function(d) return d.confirmed) == distribs.length;
 			
 			view.orders = orders;
 			view.date = date;
