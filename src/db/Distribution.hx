@@ -110,6 +110,9 @@ class Distribution extends Object
 		}
 	}
 	
+	/**
+	 * Get TTC turnover for this distribution
+	 */
 	public function getTurnOver(){
 		
 		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(contract.getProducts()).join(",") +") ";
@@ -118,9 +121,24 @@ class Distribution extends Object
 		}
 	
 		return sys.db.Manager.cnx.request(sql).getFloatResult(0);
+	}
+	
+	/**
+	 * Get HT turnover for this distribution
+	 */
+	public function getHTTurnOver(){
 		
+		var pids = tools.ObjectListTool.getIds(contract.getProducts());
 		
+		var sql = "select SUM(uc.quantity *  (p.price/(1+p.vat/100)) ) from UserContract uc, Product p ";
+		sql += "where uc.productId IN (" + pids.join(",") +") ";
+		sql += "and p.id=uc.productId ";
 		
+		if (contract.type == db.Contract.TYPE_VARORDER) {
+			sql += " and uc.distributionId=" + this.id;	
+		}
+	
+		return sys.db.Manager.cnx.request(sql).getFloatResult(0);
 	}
 	
 	/**
