@@ -29,6 +29,7 @@ class Basket extends Object
 		date = Date.fromString(date.toString().substr(0, 10));
 		var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
 		var b = CACHE.get(k);
+		date = tools.DateTool.setHourMinute(date, 0, 0);
 		if (b == null){
 			b = db.Basket.manager.select($user == user && $place == place && $ddate == date, lock);
 			CACHE.set(k, b);
@@ -39,6 +40,8 @@ class Basket extends Object
 	
 	public static function getOrCreate(user, place, date){
 		var b = get(user, place, date, true);
+		
+		date = tools.DateTool.setHourMinute(date, 0, 0);
 		
 		if (b == null){
 			
