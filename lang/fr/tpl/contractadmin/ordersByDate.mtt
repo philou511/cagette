@@ -19,11 +19,11 @@
 			<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
 			<br/>
 			
-			::if(confirmed)::
+			<!--::if(confirmed)::
 			Validée
 			::else::
 			Non validée
-			::end::
+			::end::-->
 		</div>	
 			
 		
