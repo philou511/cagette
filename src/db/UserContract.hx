@@ -44,6 +44,8 @@ class UserContract extends Object
 	#if neko
 	public var distributionId : SNull<SInt>;
 	#end
+	@:relation(basketId)
+	public var basket:SNull<db.Basket>;
 	
 	public var date : SDateTime;	
 	public var flags : SFlags<OrderFlags>;
@@ -60,13 +62,6 @@ class UserContract extends Object
 	public function populate() {
 		return App.current.user.getAmap().getMembersFormElementData();
 	}
-	
-	public function populateProducts() {
-		var arr = new Array<{key:String,value:String}>();
-		return arr;
-		//for( p in produ
-	}
-	
 	
 	
 	/**
@@ -195,7 +190,7 @@ class UserContract extends Object
 	}
 	
 	/**
-	 * Créer une commande
+	 * Store a product Order
 	 * 
 	 * @param	quantity
 	 * @param	productId
@@ -204,12 +199,6 @@ class UserContract extends Object
 		
 		//checks
 		if (quantity <= 0) return null;
-		
-		// commented on 2016-09-05:  an admin should be able to create an order afterwards (i.e the client took a product at the last minute, and we to keep track of it )
-		//if (distribId != null) {
-			//var d = db.Distribution.manager.get(distribId);
-			//if (d.date.getTime() < Date.now().getTime()) throw "Impossible de modifier une commande pour une date de distribution échue. (d"+d.id+")";	
-		//}
 		
 		//vérifie si il n'y a pas de commandes existantes avec les memes paramètres
 		var prevOrders = new List<db.UserContract>();
@@ -242,6 +231,12 @@ class UserContract extends Object
 					prevOrder.delete();
 				}
 			}
+		}
+		
+		if (distribId != null){
+			var dist = db.Distribution.manager.get(o.distributionId, false);
+			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
+			o.basket = basket;
 		}
 		
 		o.insert();
@@ -279,7 +274,7 @@ class UserContract extends Object
 	
 	
 	/**
-	 * Edit an order (quantity)
+	 * Edit an existing order (quantity)
 	 */
 	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool) {
 		

@@ -78,4 +78,5 @@ div.productBox .price{font-weight:bold;text-align:right;}
 #pInput img{max-width:100px;max-height:100px;}
 div.ProductComp{margin:8px 0;padding:8px 0;border-bottom:solid 1px #CCC;}
 .ComposerApp .add-button{vertical-align:top!important;}
+div.basketNumber{display:inline-block;background-color:#333;border-radius:10px;padding:6px;font-weight:bold;color:#CCC;}
 

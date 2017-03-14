@@ -16,11 +16,11 @@
 		
 		<!-- React -->
 		::if DEBUG ::
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-with-addons.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.js"></script>		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>		
 		::else::
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-with-addons.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.min.js"></script>		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js"></script>		
 		::end::
 		
 		<!-- JQUERY -->

@@ -10,7 +10,7 @@ class ColorRadioGroup extends RadioGroup
 		var data = [];
 		var i = 0;
 		for (c in db.CategoryGroup.COLORS) {
-			data.push( { key:Std.string(i), value:Std.string(c) } );
+			data.push( { value:Std.string(c), label:Std.string(i) } );
 			i++;
 		}
 		
@@ -27,7 +27,8 @@ class ColorRadioGroup extends RadioGroup
 		{
 			for (row in data)
 			{
-				var radio = "<input type=\"radio\" name=\""+n+"\" id=\""+n+c+"\" value=\"" + row.key + "\" " + (row.key == Std.string(value) ? "checked":"") +" />\n";
+			
+				var radio = "<input type=\"radio\" name=\""+n+"\" id=\""+n+c+"\" value=\"" + row.label + "\" " + (row.label == Std.string(value) ? "checked":"") +" />\n";
 				
 				var img = "<div style='margin-right:16px;width:32px;height:32px;background:"+App.current.view.intToHex(Std.parseInt(row.value))+";'></div>";
 				

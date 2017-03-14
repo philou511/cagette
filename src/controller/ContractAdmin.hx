@@ -27,7 +27,7 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * liste les contrats dont on a la responsabilité
+	 * Contract admin main page
 	 */
 	@tpl("contractadmin/default.mtt")
 	function doDefault(?args:{old:Bool}) {
@@ -38,7 +38,7 @@ class ContractAdmin extends Controller
 		}else {
 			contracts = db.Contract.getActiveContracts(app.user.amap, true, false);	
 		}
-				
+
 		//filter if current user is not manager
 		if (!app.user.isAmapManager()) {
 			for ( c in Lambda.array(contracts).copy()) {				
@@ -56,6 +56,12 @@ class ContractAdmin extends Controller
 		view.vendors = app.user.amap.getVendors();
 		view.places = app.user.amap.getPlaces();
 		checkToken();
+		
+		//multidistribs to validate
+		var cids = tools.ObjectListTool.getIds(contracts);
+		var twoDays = tools.DateTool.deltaDays(Date.now(), 2);
+		view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( db.Distribution.manager.search(($contractId in cids) && !$confirmed && $date < twoDays, {orderBy:date}, false) );
+
 	}
 
 	/**
@@ -117,8 +123,6 @@ class ContractAdmin extends Controller
 		//generate a token
 		checkToken();
 	}
-
-	
 	
 	
 	/**
@@ -232,13 +236,17 @@ class ContractAdmin extends Controller
 	 * @param	date
 	 */
 	@tpl('contractadmin/ordersByDate.mtt')
-	function doOrdersByDate(?date:Date){
+	function doOrdersByDate(?date:Date,?place:db.Place){
 		if (date == null) {
 		
+			
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			var el = new sugoi.form.elements.DatePicker("date", "Date de distribution", true);
 			el.format = 'LL';
 			f.addElement(el);
+			
+			var places = Lambda.map(app.user.amap.getPlaces(), function(p) return {label:p.name,value:p.id} );
+			f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
 			
 			view.form = f;
 			view.title = "Vue globale des commandes";
@@ -249,6 +257,8 @@ class ContractAdmin extends Controller
 			if (f.checkToken()) {
 				
 				var url = '/contractAdmin/ordersByDate/' + f.getValueOf("date").toString().substr(0, 10);
+				var p = f.getValueOf("placeId");
+				if (p != null) url += "/"+p;
 				throw Redirect( url );
 			}
 			
@@ -264,13 +274,12 @@ class ContractAdmin extends Controller
 			var cvar = [];
 			for ( c in contracts) {
 				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
-				
+				if (c.type == db.Contract.TYPE_VARORDER) 	cvar.push(c.id);				
 			}
 			
 			//distribs
-			var vdistribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
-			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
+			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
 			
 			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
 			
@@ -289,8 +298,13 @@ class ContractAdmin extends Controller
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
 			var orders = db.UserContract.prepare(Lambda.list(orders));
 			
+			//is this multidistrib confirmed ?
+			var distribs = Lambda.array(vdistribs).concat(Lambda.array(cdistribs));
+			view.confirmed = Lambda.count( distribs, function(d) return d.confirmed) == distribs.length;
+			
 			view.orders = orders;
 			view.date = date;
+			view.place = place;
 			view.ctotal = app.params.exists("ctotal");
 		}
 	}
@@ -300,7 +314,7 @@ class ContractAdmin extends Controller
 	 * Global view on orders, producer view
 	 */
 	@tpl('contractadmin/vendorsByDate.mtt')
-	function doVendorsByDate(date:Date){
+	function doVendorsByDate(date:Date,place:db.Place){
 			
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
@@ -308,7 +322,7 @@ class ContractAdmin extends Controller
 		var cids = Lambda.map(contracts, function(c) return c.id);
 		
 		//distribs for both types in active contracts
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 , false);		
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 && $place==place , false);		
 
 		
 		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
@@ -341,11 +355,8 @@ class ContractAdmin extends Controller
 			}
 		}
 		
-		
 		view.orders = Lambda.array(out);
 		view.date = date;
-		
-		
 	}
 
 	/**
@@ -467,7 +478,19 @@ class ContractAdmin extends Controller
 					p.ref = source_p.ref;
 					p.stock = source_p.stock;
 					p.vat = source_p.vat;
+					p.organic = source_p.organic;
+					p.txpProduct = source_p.txpProduct;
 					p.insert();
+					
+					for (source_cat in source_p.getCategories()){
+						
+						var cat = new db.ProductCategory();
+						cat.product = p;
+						cat.category = source_cat;
+						cat.insert();
+						
+					}
+					
 				}
 			}
 			

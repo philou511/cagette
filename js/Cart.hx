@@ -383,13 +383,19 @@ class Cart
 		}
 		req.request();
 		
-		//scroll mgmt
-		jWindow = App.j(js.Browser.window);
-		cartContainer = App.j("#cartContainer");
-		cartTop = cartContainer.position().top;
-		cartLeft = cartContainer.position().left;
-		cartWidth = cartContainer.width();
-		jWindow.scroll(onScroll);
+		//DISABLED : pb quand le panier est plus haut que l'ecran
+		//scroll mgmt, only for large screens. Otherwise let the cart on page bottom.
+		/*if (js.Browser.window.matchMedia("(min-width: 1024px)").matches) {
+			
+			jWindow = App.j(js.Browser.window);
+			cartContainer = App.j("#cartContainer");
+			cartTop = cartContainer.position().top;
+			cartLeft = cartContainer.position().left;
+			cartWidth = cartContainer.width();
+			jWindow.scroll(onScroll);
+			
+		}*/ 	
+		
 		
 	}
 	
