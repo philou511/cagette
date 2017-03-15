@@ -145,11 +145,11 @@
 		::set x = t.getTypeIndex()::
 		
 		::if x==0::
-		<i class="fa fa-shopping-cart" aria-hidden="true"></i> Commande
+		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Commande
 		::elseif x==1::
-		<i class="fa fa-shopping-basket" aria-hidden="true"></i> Cde AMAP
+		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
-		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement 
+		<!-- paiement -->
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
@@ -157,18 +157,14 @@
 	<td>
 		::if x==0::
 		
-			::set i = t.getOrderInfos()::
-			
-			key=::i.distribKey::
-		
 		::elseif x==1::
 		
 		::elseif x==2::
-		
+			
 			::set ty = t.getPaymentType()::			
-			::if(ty=="check"):: Chèque
-			::elseif(ty=="cash"):: Liquide
-			::elseif(ty=="transfer"):: Virement
+			::if(ty=="check")::Chèque
+			::elseif(ty=="cash")::Liquide
+			::elseif(ty=="transfer")::Virement
 			::else::
 				::ty::
 			::end:: 
@@ -186,9 +182,12 @@
 		<i class="fa fa-check" aria-hidden="true"></i>
 		::end::
 	</td>
-	<td>::t.name::</td>
-	<td>::t.amount:: ::currency()::</td>
-	<td>::hDate(t.date)::</td>
+	<td style="font-size:1em;">
+		::t.name::<br/>
+		<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+	</td>
+	<td>::t.amount::&nbsp;::currency()::</td>
+	
 	</macro>
 
 	<macro name="back()">	

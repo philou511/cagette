@@ -2,12 +2,22 @@ package db;
 import sys.db.Types;
 
 enum TransactionType{
-	TTOrder(distribKey:String,basketId:Int,orders:Array<Int>);
-	TTAmapOrder(contract:Int);
-	TTPayment(paymentType:String,distribKey:String,?remoteOpId:Int);//payemnt type : check/transfer/money + remote operation ID
-	TTMembership(year:Int);	
+	TTVOrder; //order on a varying order contract
+	TTCOrder;//order on a constant order contract
+	TTPayment;
+	TTMembership;	
 }
 
+typedef TPaymentInfos = {type:String, ?remoteOpId:Int};
+typedef TVOrderInfos = {basketId:Int};
+typedef TCOrderInfos = {contractId:Int};
+
+//enum TransactionType{
+	//TTOrder(distribKey:String,basketId:Int,orders:Array<Int>);
+	//TTAmapOrder(contract:Int);
+	//TTPayment(paymentType:String,distribKey:String,?remoteOpId:Int);//payemnt type : check/transfer/money + remote operation ID
+	//TTMembership(year:Int);	
+//}
 
 
 /**
@@ -22,12 +32,14 @@ class Transaction extends sys.db.Object
 	public var name : SString<128>;
 	public var amount : SFloat;
 	public var date : SDateTime;
-	public var type : SData<TransactionType>;
+	public var type : SEnum<TransactionType>;
+	public var data : SData<Dynamic>;
+	@hideInForms @:relation(relationId) public var relation : SNull<db.Transaction>; //linked to another transaction : ie a payment pays an order
 	
 	@:relation(userId) public var user : db.User;
 	@hideInForms @:relation(groupId) public var group : db.Amap;
-	
-	public var pending : SBool;
+		
+	public var pending : SBool; //a pending payment means the payment has not been confirmed, a pending order means the ordre can still change before closing.
 	
 	public function getTypeIndex(){
 		var e : TransactionType = type;		
@@ -39,21 +51,37 @@ class Transaction extends sys.db.Object
 	 */
 	public function getPaymentType():String{
 		switch(type){
-			case TTPayment(pt,distribKey,opId): return pt;
+			case TTPayment: 
+				var x : TPaymentInfos = this.data;
+				if (data == null){
+					return null;
+				}else{
+					return x.type;
+				}				
 			default : return null;
 		}		
 	}	
 	
+	/**
+	 * get payments linked to this order transaction
+	 */
+	public function getRelatedPayments(){
+		return db.Transaction.manager.search($relation == this, false);
+	}
 	
 	public function getOrderInfos(){
 		switch(type){
-			case TTOrder(dk,basketId,orders) : return {distribKey:dk, order:orders};
+			case TTCOrder, TTVOrder : return this.data;				
 			default : return null;
 		}
 	}
 	
 	public static function getTransactions(user:db.User,group:db.Amap){		
 		return manager.search($user == user && $group == group,{orderBy:date},false);		
+	}
+	
+	public static function getOrderTransactions(user:db.User,group:db.Amap){		
+		return manager.search($user == user && $group == group && $type!=TTPayment,{orderBy:date},false);		
 	}
 	
 	/**
@@ -74,22 +102,28 @@ class Transaction extends sys.db.Object
 		
 		if (contract.type == db.Contract.TYPE_CONSTORDERS){
 			//Constant orders			
-			t.name = "Contrat " + contract.name + "(" + contract.vendor.name+")";
 			var dNum = contract.getDistribs(false).length;
+			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+" distributions";			
 			t.amount = dNum * (0 - _amount);
 			t.date = Date.now();
-			t.type = TTOrder("",null,Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.type = TTCOrder;
+			var data : db.Transaction.TCOrderInfos = {contractId:contract.id};
+			t.data = data;
 			t.user = orders[0].user;
 			t.group = orders[0].product.contract.amap;
-			t.pending = false;					
+			t.pending = true;					
 			
 		}else{
+			
+			if (basket == null) throw "varying contract orders should have a basket";
 			
 			//varying orders
 			t.name = "Commande pour le " + App.current.view.dDate(orders[0].distribution.date);
 			t.amount = 0 - _amount;
 			t.date = Date.now();
-			t.type = TTOrder(orders[0].distribution.getKey(),basket.id,Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.type = TTVOrder;
+			var data : db.Transaction.TVOrderInfos = {basketId:basket.id};
+			t.data = data;
 			t.user = orders[0].user;
 			t.group = orders[0].product.contract.amap;
 			t.pending = true;					
@@ -101,7 +135,47 @@ class Transaction extends sys.db.Object
 	
 	}
 	
-	public static function makeOrderPayment(type:String, amount:Float, name:String ){
+	
+	public static function updateOrderTransaction(t:db.Transaction, orders: Array<db.UserContract>, ?basket:db.Basket){
+		
+		t.lock();
+		
+		var _amount = 0.0;
+		for ( o in orders ){
+			var t = o.quantity * o.productPrice;
+			_amount += t + t * (o.feesRate / 100);
+		}
+		
+		var contract = orders[0].product.contract;
+		if (contract.type == db.Contract.TYPE_CONSTORDERS){
+			//Constant orders			
+			var dNum = contract.getDistribs(false).length;
+			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+" distributions";			
+			t.amount = dNum * (0 - _amount);
+			t.date = Date.now();			
+			
+		}else{
+			
+			if (basket == null) throw "varying contract orders should have a basket";
+			
+			t.amount = 0 - _amount;
+			t.date = Date.now();			
+		}
+		
+		
+		t.update();
+		
+		updateUserBalance(t.user, App.current.user.amap);
+	}
+	
+	/**
+	 * Store a payment transaction
+	 * @param	type
+	 * @param	amount
+	 * @param	name
+	 * @param	relation
+	 */
+	public static function makeOrderPayment(type:String, amount:Float, name:String, relation:db.Transaction ){
 		
 		var t = new db.Transaction();
 		t.amount = Math.abs(amount);
@@ -110,7 +184,10 @@ class Transaction extends sys.db.Object
 		t.group = App.current.user.amap;
 		t.pending = true;
 		t.user = App.current.user;
-		t.type = TTPayment(type,"");
+		t.type = TTPayment;
+		var data : TPaymentInfos = {type:type};
+		t.data = data;
+		t.relation = relation;
 		t.insert();
 		
 		updateUserBalance(App.current.user, App.current.user.amap);
@@ -136,29 +213,17 @@ class Transaction extends sys.db.Object
 		
 		var date = dkey.split("|")[0];
 		var placeId = Std.parseInt(dkey.split("|")[1]);
-		var transactions = manager.search($user == user && $group == group && $pending == true , {orderBy:date}, true);
+		var transactions = manager.search($user == user && $group == group && $pending == true && $type==TTVOrder , {orderBy:date}, true);
+		var basket = db.Basket.get(user, db.Place.manager.get(placeId,false), Date.fromString(date));
 		
 		for ( t in transactions){
 			
 			switch(t.type){
 				
-				case TTOrder(_dkey,_basketId, orders) :
-					/*var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);
-					
-					if (id == null) {						
-						//all orders in this transaction dont exists anymore
-						t.delete();
-						continue;
-					}
-					var o = db.UserContract.manager.get(id, false);
-					
-					if (o.distribution == null) throw 'order #${o.id} should be linked to a distribution';
-					if ( o.distribution.date.toString().substr(0, 10) == date){
-						if (o.distribution.place.id == placeId){
-							return t;	
-						}						
-					}*/
-					if (dkey == _dkey) return t;
+				case TTVOrder :
+					var data : TVOrderInfos = t.data;
+					if ( data == null) continue;
+					if (data.basketId == basket.id) return t;
 					
 					
 				default : 
@@ -177,26 +242,29 @@ class Transaction extends sys.db.Object
 		
 		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "contract type should be TYPE_CONSTORDERS";
 		
-		var transactions = manager.search($user == user && $group == contract.amap && $amount<0, {orderBy:date,limit:100}, true);
+		var transactions = manager.search($user == user && $group == contract.amap && $amount<0 && $type==TTCOrder, {orderBy:date,limit:100}, true);
 		
 		for ( t in transactions){
 			
 			switch(t.type){
 				
-				case TTOrder(dkey,basketId,orders) :
+				case TTCOrder :
 					
-					var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);					
-					if (id == null) {						
-						//all orders in this transaction dont exists anymore
-						t.delete();
-						continue;
-					}else{
-						for ( i in orders){
-							var order = db.UserContract.manager.get(i);
-							if (order == null) continue;
-							if (order.product.contract.id == contract.id) return t;
-						}	
-					}
+					//var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);					
+					//if (id == null) {						
+						////all orders in this transaction dont exists anymore
+						//t.delete();
+						//continue;
+					//}else{
+						//for ( i in orders){
+							//var order = db.UserContract.manager.get(i);
+							//if (order == null) continue;
+							//if (order.product.contract.id == contract.id) return t;
+						//}	
+					//}
+					var data : db.Transaction.TCOrderInfos = t.data;
+					if (data == null) continue;
+					if (data.contractId == contract.id) return t;
 					
 					
 				default : 
@@ -210,6 +278,7 @@ class Transaction extends sys.db.Object
 	
 	public static function getPaymentTypes(group:db.Amap):Array<payment.Payment>{
 		var out :Array<payment.Payment> = [];
+		if ( group.allowedPaymentsType == null ) return [];
 		for ( t in group.allowedPaymentsType){
 			switch(t){
 				case "cash" : out.push(new payment.Cash());

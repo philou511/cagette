@@ -22,7 +22,17 @@
 	}
 	</style>	
 	
-	<div class="row">	
+	<div class="row">
+		::if(paymentTypes.length==0)::
+		<div class="col-md-12">
+			<div class="alert alert-danger">
+			Pour l'instant, aucun moyen de paiement n'est activé pour votre groupe.<br/>
+			Contactez votre responsable de groupe afin qu'il configure ces moyens de paiement.			
+			</div>
+		</div>	
+		::end::
+		
+		
 		::foreach p paymentTypes::
 		<div class="col-md-4">
 			<div class="paymentType">

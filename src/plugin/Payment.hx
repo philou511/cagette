@@ -21,13 +21,14 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 			
 			//orders have been made
 			case MakeOrder(orders):
-				
+				if (orders.length == 0) return;
+
 				var user = orders[0].user;
 				var group = orders[0].product.contract.amap;
-					
 				
 				if (orders[0].product.contract.type == db.Contract.TYPE_VARORDER ){
 					
+					//find basket
 					var basket = null;
 					for ( o in orders) {
 						if (o.basket != null) {
@@ -42,13 +43,17 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 					var place = orders[0].distribution.place;
 					
 					var dkey = date.toString().substr(0, 10) + "|" + place.id;
-					var allOrders = db.UserContract.getUserOrdersByMultiDistrib(dkey, user, group);		
-					//delete existing transaction
+					var allOrders = db.UserContract.getUserOrdersByMultiDistrib(dkey, user, group);	
+					
+					//existing transaction
 					var existing = db.Transaction.findVOrderTransactionFor( dkey , user, group);
 					if (existing != null){
-						existing.delete();
+						db.Transaction.updateOrderTransaction(existing,allOrders,basket);	
+					}else{
+						db.Transaction.makeOrderTransaction(allOrders,basket);			
 					}
-					db.Transaction.makeOrderTransaction(allOrders,basket);		
+					
+					
 					
 				}else{
 					
@@ -58,13 +63,13 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 					
 					var existing = db.Transaction.findCOrderTransactionFor( contract , user);
 					if (existing != null){
-						existing.delete();
+						db.Transaction.updateOrderTransaction(existing, contract.getUserOrders(user) );
+					}else{
+						db.Transaction.makeOrderTransaction( contract.getUserOrders(user) );
 					}
-					db.Transaction.makeOrderTransaction( contract.getUserOrders(user) );
+					
 					
 				}
-				
-				
 
 			default : 
 		}

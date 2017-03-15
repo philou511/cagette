@@ -445,7 +445,8 @@ class Contract extends Controller
 
 					if ( order.distribution.canOrderNow() ) {
 						//met a jour la commande
-						orders_out.push( db.UserContract.edit(order, quantity) );
+						var o = db.UserContract.edit(order, quantity);
+						if(o!=null) orders_out.push( o );
 					}					
 				}
 			}

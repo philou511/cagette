@@ -41,6 +41,13 @@
 		<tr>
 			$$transaction(::t::)
 		</tr>
+		
+		::foreach tt t.getRelatedPayments()::	
+		<tr style="background:#EEE;color:#666;">
+			$$transaction(::tt::)
+		</tr>
+		::end::
+		
 		::end::
 		
 		<tr style="font-size:1.3em;">
@@ -54,7 +61,7 @@
 			<td style="color:#::color::;">
 				::balance::&nbsp;::currency()::
 			</td>
-			<td>
+			<td colspan="2">
 				
 			</td>
 		</tr>
