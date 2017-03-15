@@ -43,11 +43,12 @@
 					<tr style="background-color:#666;">
 						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
 							
+							::if distribution!=null::
 							::set basket = getBasket(m.userId,distribution._place.id,distribution.date)::							
 							<div class="basketNumber" ::cond basket!=null:: >
 								<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
 							</div>
-							
+							::end::
 							
 							::m.userName:: 
 							::if m.userName2!=null::
