@@ -223,6 +223,10 @@ class Distribution extends Object
 	 * It's an ID representing all the distributions happening on that day at that place.
 	 */
 	public function getKey():String{
+		return db.Distribution.makeKey(this.date, this.place);
+	}
+	
+	public static function makeKey(date, place){
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
 	}
 

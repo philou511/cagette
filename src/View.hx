@@ -18,6 +18,9 @@ class View extends sugoi.BaseView {
 		return Lambda.count(i);
 	}
 	
+	public function abs(n){
+		return Math.abs(n);
+	}
 
 	/**
 	 * init view in main loop, just before rendering

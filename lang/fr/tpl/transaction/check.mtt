@@ -1,0 +1,36 @@
+::use 'design.mtt'::
+<div class="col-md-12">
+	<div class="article text-center">
+	
+		<h2>Paiement de votre commande</h2>
+		
+		<div style="font-size:120%;">
+			A PAYER : <b>::abs(debt.amount):: ::currency()::</b>
+		</div>
+			
+		<hr/>
+			
+		<div class="panel panel-default" style="margin:8px 32px;">
+			<div class="panel-heading">
+				<h3>Paiement par chèque :</h3>
+			</div>
+			<div class="panel-body">
+			<p>
+				Préparez un chèque de : <b>::abs(debt.amount):: ::currency()::</b><br/>
+				à l'ordre de : <b>::name::</b><br/>
+				Indiquez cette référence au dos du chèque afin de faciliter son traitement : <b>::code::</b> 
+				
+			</p>	
+			</div>
+			
+			<a href="?token=::token::" class="btn btn-primary">J'ai préparé mon chèque</a>
+			
+		</div>
+		
+	</div>	
+	
+</div>
+
+
+
+::end::

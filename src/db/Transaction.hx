@@ -2,9 +2,9 @@ package db;
 import sys.db.Types;
 
 enum TransactionType{
-	TTOrder(distribKey:String,orderId:Int,orders:Array<Int>);
+	TTOrder(distribKey:String,basketId:Int,orders:Array<Int>);
 	TTAmapOrder(contract:Int);
-	TTPayment(paymentType:String,distribKey:String,?OpId:Int);//payemnt type : check/transfer/money + remote operation ID
+	TTPayment(paymentType:String,distribKey:String,?remoteOpId:Int);//payemnt type : check/transfer/money + remote operation ID
 	TTMembership(year:Int);	
 }
 
@@ -47,7 +47,7 @@ class Transaction extends sys.db.Object
 	
 	public function getOrderInfos(){
 		switch(type){
-			case TTOrder(dk, orders) : return {distribKey:dk, order:orders};
+			case TTOrder(dk,basketId,orders) : return {distribKey:dk, order:orders};
 			default : return null;
 		}
 	}
@@ -57,10 +57,10 @@ class Transaction extends sys.db.Object
 	}
 	
 	/**
-	 * 
+	 * Create a new transaction
 	 * @param	orders
 	 */
-	public static function makeOrderTransaction(orders: Array<db.UserContract>){
+	public static function makeOrderTransaction(orders: Array<db.UserContract>,?basket:db.Basket){
 		
 		var _amount = 0.0;
 		for ( o in orders ){
@@ -78,7 +78,7 @@ class Transaction extends sys.db.Object
 			var dNum = contract.getDistribs(false).length;
 			t.amount = dNum * (0 - _amount);
 			t.date = Date.now();
-			t.type = TTOrder("",Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.type = TTOrder("",null,Lambda.array(Lambda.map(orders, function(x) return x.id)));
 			t.user = orders[0].user;
 			t.group = orders[0].product.contract.amap;
 			t.pending = false;					
@@ -89,7 +89,7 @@ class Transaction extends sys.db.Object
 			t.name = "Commande pour le " + App.current.view.dDate(orders[0].distribution.date);
 			t.amount = 0 - _amount;
 			t.date = Date.now();
-			t.type = TTOrder(orders[0].distribution.getKey(),Lambda.array(Lambda.map(orders, function(x) return x.id)));
+			t.type = TTOrder(orders[0].distribution.getKey(),basket.id,Lambda.array(Lambda.map(orders, function(x) return x.id)));
 			t.user = orders[0].user;
 			t.group = orders[0].product.contract.amap;
 			t.pending = true;					
@@ -99,6 +99,24 @@ class Transaction extends sys.db.Object
 		
 		updateUserBalance(t.user, App.current.user.amap);
 	
+	}
+	
+	public static function makeOrderPayment(type:String, amount:Float, name:String ){
+		
+		var t = new db.Transaction();
+		t.amount = Math.abs(amount);
+		t.date = Date.now();
+		t.name = name;
+		t.group = App.current.user.amap;
+		t.pending = true;
+		t.user = App.current.user;
+		t.type = TTPayment(type,"");
+		t.insert();
+		
+		updateUserBalance(App.current.user, App.current.user.amap);
+		
+		return t;
+		
 	}
 	
 	/**
@@ -124,7 +142,7 @@ class Transaction extends sys.db.Object
 			
 			switch(t.type){
 				
-				case TTOrder(_dkey,_orders) :
+				case TTOrder(_dkey,_basketId, orders) :
 					/*var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);
 					
 					if (id == null) {						
@@ -165,7 +183,7 @@ class Transaction extends sys.db.Object
 			
 			switch(t.type){
 				
-				case TTOrder(dkey, orders) :
+				case TTOrder(dkey,basketId,orders) :
 					
 					var id = Lambda.find(orders, function(x) return db.UserContract.manager.get(x, false) != null);					
 					if (id == null) {						

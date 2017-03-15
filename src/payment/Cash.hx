@@ -15,7 +15,7 @@ class Cash extends payment.Payment
 		this.name = "Espèces";
 		this.icon = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
 		this.desc = "Paiement en espèces";
-		this.link = "/transaction/pay/cash";
+		this.link = "/transaction/cash";
 	}
 	
 }

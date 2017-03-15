@@ -1,16 +1,15 @@
 ::use 'design.mtt'::
-<div class="col-md-9">
-	<div class="article">
+<div class="col-md-12">
+	<div class="article text-center">
 	
 	<h2>Paiement de votre commande</h2>
 	
-	<div>
+	<!--<div>
 		Votre solde actuel est de <b>::ua.balance::</b> 
-	</div>	
+	</div>	-->
 		
-	<div class="text-center" style="font-size:120%;">
-		A PAYER : ::debt.amount:: ::currency()::<br/>
-		DKEY : ::debt.getOrderInfos().distribKey::
+	<div style="font-size:120%;">
+		A PAYER : <b>::abs(debt.amount):: ::currency()::</b>
 	</div>
 		
 		
@@ -22,13 +21,18 @@
 		border:1px solid #CCC;
 	}
 	</style>	
+	
 	<div class="row">	
 		::foreach p paymentTypes::
-		<div class="paymentType col-md-4">
-			<h3>::p.name::</h3> 
-			::raw p.icon:: 
-			<p>::p.desc::</p>
-			<a href="::p.link::" class="btn btn-primary">Choisir</a>  
+		<div class="col-md-4">
+			<div class="paymentType">
+			
+				<h3>::p.name::</h3> 
+				::raw p.icon:: 
+				<p>::p.desc::</p>
+				<a href="::p.link::/::place.id::/::date::" class="btn btn-primary">Choisir</a>  
+			</div>
+			
 		</div>
 		::end::
 	</div>
@@ -36,11 +40,6 @@
 	</div>
 </div>
 
-<div class="col-md-3">
-	
-	
-	<div class="block">
-	</div>
-</div>
+
 
 ::end::

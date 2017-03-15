@@ -50,13 +50,71 @@ class Transaction extends controller.Controller
 	 * @param	distribKey
 	 */
 	@tpl("transaction/pay.mtt")
-	public function doPay(distribKey:String){
+	public function doPay(place:db.Place,date:Date){
 		
-		var debt = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-		
-		view.debt = debt;
+		var distribKey = db.Distribution.makeKey(date, place);		
+		view.debt = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
 		view.ua = db.UserAmap.get(app.user, app.user.amap);
 		view.paymentTypes = db.Transaction.getPaymentTypes(app.user.amap);
+		view.basket = db.Basket.get(app.user, place, date);
+		view.place = place;
+		view.date = date;
+	}
+	
+	/**
+	 * pay by check
+	 */
+	@tpl("transaction/check.mtt")
+	public function doCheck(place:db.Place, date:Date){
+		
+		var distribKey = db.Distribution.makeKey(date, place);		
+		var t = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+		view.debt = t;
+		view.code = payment.Check.getCode(date, place, app.user);
+		view.name = app.user.amap.name;
+		
+		if (checkToken()){
+			db.Transaction.makeOrderPayment("check", t.amount, "Chèque pour commande du " + view.hDate(date));			
+			throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
+		}
+		
+	}
+	
+	/**
+	 * pay by transfer
+	 */
+	@tpl("transaction/transfer.mtt")
+	public function doTransfer(place:db.Place, date:Date){
+		
+		var distribKey = db.Distribution.makeKey(date, place);		
+		var t = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+		view.debt = t;
+		view.code = payment.Check.getCode(date, place, app.user);
+		view.name = app.user.amap.name;
+		
+		if (checkToken()){
+			db.Transaction.makeOrderPayment("transfer", t.amount, "Virement pour commande du " + view.hDate(date));			
+			throw Ok("/contract", "Votre paiement par virement a bien été enregistré. Il sera validé par un coordinateur.");
+		}
+		
+	}
+	
+	/**
+	 * pay by cassh
+	 */
+	@tpl("transaction/cash.mtt")
+	public function doCash(place:db.Place, date:Date){
+		
+		var distribKey = db.Distribution.makeKey(date, place);		
+		var t = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+		view.debt = t;
+		view.code = payment.Check.getCode(date, place, app.user);
+		view.name = app.user.amap.name;
+		
+		if (checkToken()){
+			db.Transaction.makeOrderPayment("cash", t.amount, "Paiement en liquide pour commande du " + view.hDate(date));			
+			throw Ok("/contract", "Votre souhait de payer en liquide lors de la distribution a bien été prise en compte.");
+		}
 		
 	}
 	

@@ -29,7 +29,7 @@ class UserAmap extends Object
 	
 	public var rights : SNull<SData<Array<Right>>>;
 
-	public var balance : SNull<SFloat>; //account balance in group currency
+	public var balance : SFloat; //account balance in group currency
 	
 	static var CACHE = new Map<String,db.UserAmap>();
 	

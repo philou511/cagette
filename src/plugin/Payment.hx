@@ -28,6 +28,14 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 				
 				if (orders[0].product.contract.type == db.Contract.TYPE_VARORDER ){
 					
+					var basket = null;
+					for ( o in orders) {
+						if (o.basket != null) {
+							basket = o.basket;
+							break;
+						}
+					}
+					
 					// varying contract :
 					//get all orders for the same place & date, in order to update related transaction.
 					var date = orders[0].distribution.date;
@@ -40,7 +48,7 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 					if (existing != null){
 						existing.delete();
 					}
-					db.Transaction.makeOrderTransaction(allOrders);		
+					db.Transaction.makeOrderTransaction(allOrders,basket);		
 					
 				}else{
 					

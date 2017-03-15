@@ -13,7 +13,7 @@ class Transfer extends payment.Payment
 		this.name = "Virement";
 		this.icon = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
 		this.desc = "Paiement par virement bancaire";
-		this.link = "/transaction/pay/transfer";
+		this.link = "/transaction/transfer";
 	}
 	
 }

@@ -135,7 +135,6 @@ class Shop extends sugoi.BaseController
 	/**
 	 * valider la commande et selectionner les distributions
 	 */
-	@tpl('shop/validate.mtt')
 	public function doValidate(place:db.Place,date:Date){
 
 		var order : Order = app.session.data.order;
@@ -183,11 +182,14 @@ class Shop extends sugoi.BaseController
 		}
 
 		app.session.data.order = null;
-		throw Ok("/contract", "Votre commande a bien été enregistrée");
-		
+		if (app.user.amap.hasPayments()){
+			
+			throw Ok("/transaction/pay/"+place.id+"/"+date, "Votre commande a bien été enregistrée. Vous pouvez maintenant procéder au paiement de votre commande.");
+		}else{
+			throw Ok("/contract", "Votre commande a bien été enregistrée");	
+		}
 
 	}
-	
-	
+
 	
 }
