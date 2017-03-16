@@ -95,17 +95,16 @@ class Contract extends Object
 	}
 	
 	/**
-	 * is there an opened order , or closed order but not yet delivered
+	 * is currently open to orders
 	 */
 	public function hasRunningOrders(){
 		var now = Date.now();
 		var n = now.getTime();
 		
 		var contractOpen = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
-		var d = db.Distribution.manager.count( $orderStartDate <= now && $end > now && $contractId==this.id);
+		var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $contractId==this.id);
 		
 		return contractOpen && d > 0;
-		
 	}
 	
 	
