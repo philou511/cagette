@@ -17,13 +17,14 @@
 			<div class="panel-body">
 			<p>
 				Préparez un chèque de : <b>::abs(debt.amount):: ::currency()::</b><br/>
-				à l'ordre de : <b>::name::</b><br/>
+				à l'ordre de : <b>::user._amap.checkOrder::</b><br/>
 				Indiquez cette référence au dos du chèque afin de faciliter son traitement : <b>::code::</b> 
 				
 			</p>	
 			</div>
-			
-			<a href="?token=::token::" class="btn btn-primary">J'ai préparé mon chèque</a>
+			<p>
+				<a href="?token=::token::" class="btn btn-primary">Je m'engage a payer par chèque au retrait des produits</a>				
+			</p>
 			
 		</div>
 		

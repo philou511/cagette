@@ -19,7 +19,7 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 		
 		switch(e) {
 			
-			//orders have been made
+			//create "order transactions" when orders have been made
 			case MakeOrder(orders):
 				if (orders.length == 0) return;
 

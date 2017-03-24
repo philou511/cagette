@@ -61,7 +61,9 @@ class Amap extends Object
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 	
+	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	@hideInForms public var checkOrder:SString<64>;
 	
 	public function new() 
 	{

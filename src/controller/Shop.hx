@@ -137,7 +137,7 @@ class Shop extends sugoi.BaseController
 	 */
 	public function doValidate(place:db.Place,date:Date){
 
-		var order : Order = app.session.data.order;
+		var order : OrderInSession = app.session.data.order;
 		if (order == null || order.products == null || order.products.length == 0) {
 			throw Error("/shop", "Vous devez réaliser votre commande avant de valider.");
 		}
@@ -177,7 +177,7 @@ class Shop extends sugoi.BaseController
 
 		if (errors.length > 0) {
 			app.session.addMessage(errors.join("<br/>"), true);
-			app.logError("params : "+App.current.params.toString()+"\n \n"+errors.join("\n"));
+			//app.logError("params : "+App.current.params.toString()+"\n \n"+errors.join("\n"));
 
 		}
 

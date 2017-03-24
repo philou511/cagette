@@ -3,9 +3,9 @@
  */
 
 
-//utilisé dans le shop
+//An order wich is placed in session, before being paid and recorded.
 @:keep
-typedef Order = {
+typedef OrderInSession = {
 	
 	products:Array<{productId:Int,quantity:Float}>
 }

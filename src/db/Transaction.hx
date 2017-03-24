@@ -20,7 +20,6 @@ typedef TCOrderInfos = {contractId:Int};
  */
 class Transaction extends sys.db.Object
 {
-
 	public var id : SId;
 	public var name : SString<128>;
 	public var amount : SFloat;

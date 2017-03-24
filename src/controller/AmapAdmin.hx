@@ -338,12 +338,21 @@ class AmapAdmin extends Controller
 		var selected = app.user.amap.allowedPaymentsType;
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes","Types de paiements autorisés",formdata, selected) );
 		
+		if (app.user.amap.checkOrder == ""){
+			app.user.amap.lock();
+			app.user.amap.checkOrder = app.user.amap.name;
+			app.user.amap.update();
+		}
+		f.addElement( new sugoi.form.elements.StringInput("checkOrder", "Ordre pour les chèques", app.user.amap.checkOrder, true)); 
+		
+		
 		if (f.isValid()){
 			
 			var p = f.getValueOf("paymentTypes");
 			var a = app.user.amap;
 			a.lock();
 			a.allowedPaymentsType = p;
+			a.checkOrder = f.getValueOf("checkOrder");
 			a.update();
 			
 			throw Ok("/amapadmin/payments", "Options de paiement mises à jour");
