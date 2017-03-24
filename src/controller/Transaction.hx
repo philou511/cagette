@@ -143,5 +143,27 @@ class Transaction extends controller.Controller
 		
 	}
 	
+	/**
+	 * view a transaction detail in a pop-in window 
+	 * @param	t
+	 */
+	@tpl("transaction/view.mtt")
+	public function doView(t:db.Transaction){
+		view.t = t ;
+		
+		var lw = pro.payment.LWCPayment.getConnector(app.user.amap);
+		
+		//update status if needed
+		var td = lw.getMoneyInTransDetails(t.data.remoteOpId);
+		if (td.HPAY[0].STATUS == "3" && t.pending){
+			t.lock();
+			t.pending = false;
+			t.update();
+		}
+		
+		view.infos = td;
+		
+	}
+	
 	
 }

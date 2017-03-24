@@ -37,7 +37,7 @@
 		<div class="col-md-4">
 			<div class="paymentType">
 			
-				<h3>::p.name::</h3> 
+				<h3>::_(p.type)::</h3> 
 				::raw p.icon:: 
 				<p>::p.desc::</p>
 				<a href="::p.link::/::place.id::/::date::" class="btn btn-primary">Choisir</a>  

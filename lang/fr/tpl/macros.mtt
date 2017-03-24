@@ -159,16 +159,8 @@
 		
 		::elseif x==1::
 		
-		::elseif x==2::
-			
-			::set ty = t.getPaymentType()::			
-			::if(ty=="check")::Chèque
-			::elseif(ty=="cash")::Liquide
-			::elseif(ty=="transfer")::Virement
-			::else::
-				::ty::
-			::end:: 
-			
+		::elseif x==2::			
+			::_(t.getPaymentType())::			
 		::else::						
 		
 		::end::

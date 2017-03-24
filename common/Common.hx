@@ -35,6 +35,8 @@ typedef ProductInfo = {
 	#end
 }
 
+
+
 enum UnitType{
 	Piece;
 	Kilogram;
@@ -165,6 +167,10 @@ enum Event {
 	
 	//orders
 	MakeOrder(orders:Array<db.UserContract>);
+	
+	//payments
+	GetPaymentTypes(data:{types:Array<payment.Payment>});
+	MakePayment;
 	
 	#end
 	

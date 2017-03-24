@@ -1,5 +1,6 @@
 package ;
 import Common;
+import js.JQuery;
 /**
  * Permet de tagger les produits à partir de la liste de categories
  * @author fbarbut<francois.barbut@gmail.com>
@@ -59,16 +60,17 @@ class Tagger
 		App.j("#tagger").html(html.toString());
 		App.j("#tagger .tag").click(function(e) {
 			
+			//var el : js.html.Element = cast e.currentTarget;
+			var el = e.currentTarget;
+			
 			//find tag Id
-			var tid = Std.parseInt(e.currentTarget.getAttribute('class').split(" ")[1].substr(1));
-			trace("tag " +tid );
-					
+			var tid = Std.parseInt(el.getAttribute('class').split(" ")[1].substr(1));
+
 			//find product Id					
-			var pid = Std.parseInt(e.currentTarget.parentElement.parentElement.getAttribute('class').substr(1));
-			trace("product " + pid);
+			var pid = Std.parseInt(el.parentElement.parentElement.getAttribute('class').substr(1));
 			
 			//remove element 
-			e.currentTarget.remove();
+			el.remove();
 			
 			//datas
 			remove(tid,pid);
@@ -81,7 +83,9 @@ class Tagger
 		if (tagId == 0) js.Browser.alert("Impossible de trouver la catégorie selectionnée");
 		
 		var pids = [];
-		for ( e in App.j("#tagger input:checked")) {
+		
+		for ( e in App.j("#tagger input:checked")/*.elements()*/ ) {
+			
 			pids.push(Std.parseInt(e.attr("name").substr(1)));
 		}
 		if (pids.length == 0) js.Browser.alert("Sélectionnez un produit afin de pouvoir lui attribuer une catégorie");

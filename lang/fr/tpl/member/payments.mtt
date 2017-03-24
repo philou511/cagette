@@ -39,21 +39,19 @@
 		<table class="table table-condensed">
 
 		::foreach t transactions::
-		<tr>
-			$$transaction(::t::)
-		</tr>
+			<tr>
+				$$transaction(::t::)
+			</tr>
+				
+			::foreach tt t.getRelatedPayments()::	
+				<tr style="background:#EEE;color:#666;" class="clickable" onclick="_.overlay('/transaction/view/::tt.id::','',false)">
+					$$transaction(::tt::)
+				</tr>
+			::end::
 			
-		::foreach tt t.getRelatedPayments()::	
-		<tr style="background:#EEE;color:#666;">
-			$$transaction(::tt::)
-		</tr>
-		::end::
-			
 		::end::
 		
-		
-		
-		
+		<!-- total -->
 		<tr style="font-size:1.3em;">
 			<td colspan="2"></td>
 			<td>Solde&nbsp;:</td>

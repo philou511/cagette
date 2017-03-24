@@ -210,7 +210,7 @@ class Contract extends Controller
 		if (!app.user.isAmapManager()) throw Error('/', 'Action interdite');
 		if (type == null) throw Redirect('/contract/insertChoose');
 		
-		view.title = if (type == db.Contract.TYPE_CONSTORDERS)"Créer un contrat à commande fixe"else"Créer un contrat à commande variable";
+		view.title = if (type == db.Contract.TYPE_CONSTORDERS)"Créer un contrat à commande fixe"else"Créer un contrat à commande variable";		
 		
 		var c = new db.Contract();
 		
@@ -222,6 +222,8 @@ class Contract extends Controller
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
+			trace(app.user.amap);
+			trace(c.amap);
 			c.type = type;
 			c.insert();
 			

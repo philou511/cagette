@@ -39,14 +39,11 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 					
 					// varying contract :
 					//get all orders for the same place & date, in order to update related transaction.
-					var date = orders[0].distribution.date;
-					var place = orders[0].distribution.place;
-					
-					var dkey = date.toString().substr(0, 10) + "|" + place.id;
-					var allOrders = db.UserContract.getUserOrdersByMultiDistrib(dkey, user, group);	
+					var k = orders[0].distribution.getKey();
+					var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
 					
 					//existing transaction
-					var existing = db.Transaction.findVOrderTransactionFor( dkey , user, group);
+					var existing = db.Transaction.findVOrderTransactionFor( k , user, group);
 					if (existing != null){
 						db.Transaction.updateOrderTransaction(existing,allOrders,basket);	
 					}else{

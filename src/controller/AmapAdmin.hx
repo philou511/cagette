@@ -333,9 +333,10 @@ class AmapAdmin extends Controller
 	function doPayments(){
 		
 		var f = new sugoi.form.Form("paymentTypes");
-		var data = [{label:"Chèques", value:"check"},{label:"Virement", value:"transfer"},{label:"Espèces", value:"cash"}];
+		var types = payment.Payment.getPaymentTypes();
+		var formdata = [for (t in types){label:App.t._(t.type), value:t.type}];		
 		var selected = app.user.amap.allowedPaymentsType;
-		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes","Types de paiements autorisés",data, selected) );
+		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes","Types de paiements autorisés",formdata, selected) );
 		
 		if (f.isValid()){
 			

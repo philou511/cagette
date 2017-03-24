@@ -1,4 +1,3 @@
-import js.JQuery;
 import react.ReactMacro.jsx;
 import react.ReactDOM;
 import react.ProductInput;
@@ -10,8 +9,8 @@ class App {
 	/**
 	 * Returns a jquery object like $() in javascript
 	 */
-	public static inline function j(r:Dynamic) {
-		return new JQuery(r);
+	public static inline function j(r:Dynamic):js.JQuery {
+		return new js.JQuery(r);
 	}
 
 	/**

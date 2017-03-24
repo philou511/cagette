@@ -30,12 +30,16 @@ class App extends sugoi.BaseApp {
 	override public function mainLoop() {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
 		plugins = [];
+		//internal plugins
 		plugins.push(new plugin.Tutorial());
 		plugins.push(new plugin.Payment());
+		
+		//optionnal plugins
 		#if plugins
 		plugins.push( new hosted.HostedPlugIn() );
 		plugins.push( new pro.ProPlugIn() );
-		plugins.push( new connector.ConnectorPlugIn() );
+		plugins.push( new pro.LemonwayEC() );
+		plugins.push( new connector.ConnectorPlugIn() );		
 		#end
 		
 	
@@ -67,7 +71,8 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public function event(e:Event) {
-		return this.eventDispatcher.dispatch(e);
+		this.eventDispatcher.dispatch(e);
+		return e;
 	}
 	
 	/**
@@ -190,6 +195,10 @@ class App extends sugoi.BaseApp {
 		out.set("Litre", "Litres");		
 		out.set("htPrice", "Prix H.T");
 		out.set("amount", "Montant");
+		
+		out.set("check", "Chèque");
+		out.set("transfer", "Virement");
+		out.set("cash", "Liquide");
 		return out;
 	}
 	

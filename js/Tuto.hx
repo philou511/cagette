@@ -40,7 +40,7 @@ class Tuto
 				untyped m.modal('hide');
 				js.Browser.location.href = "/contract?stopTuto=1";
 			});
-			m.find(".modal-footer").html(bt);
+			m.find(".modal-footer").append(bt);
 			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
 			
 		}else if (s.element == null) {
@@ -57,7 +57,7 @@ class Tuto
 				untyped m.modal('hide');
 				new Tuto(name, step + 1);
 			});
-			m.find(".modal-footer").html(bt);
+			m.find(".modal-footer").append(bt);
 			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
 			
 		}else {

@@ -228,5 +228,16 @@ class View extends sugoi.BaseView {
 		 return #if neko "Neko" #else "PHP" #end ;
 	}
 	
+	/**
+	 * Translation function
+	 */
+	public function _(text:String):String{
+		if (App.t != null){
+			return App.t._(text);	
+		}else{
+			return text;
+		}
+		
+	}
 	
 }

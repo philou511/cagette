@@ -12,13 +12,6 @@ typedef TPaymentInfos = {type:String, ?remoteOpId:Int};
 typedef TVOrderInfos = {basketId:Int};
 typedef TCOrderInfos = {contractId:Int};
 
-//enum TransactionType{
-	//TTOrder(distribKey:String,basketId:Int,orders:Array<Int>);
-	//TTAmapOrder(contract:Int);
-	//TTPayment(paymentType:String,distribKey:String,?remoteOpId:Int);//payemnt type : check/transfer/money + remote operation ID
-	//TTMembership(year:Int);	
-//}
-
 
 /**
  * Money Transaction 
@@ -88,7 +81,11 @@ class Transaction extends sys.db.Object
 	 * Create a new transaction
 	 * @param	orders
 	 */
-	public static function makeOrderTransaction(orders: Array<db.UserContract>,?basket:db.Basket){
+	public static function makeOrderTransaction(orders: Array<db.UserContract>, ?basket:db.Basket){
+		
+		if (orders == null) throw "orders are null";
+		if (orders.length == 0) throw "no orders";
+		if (orders[0].user == null ) throw "no user in order";
 		
 		var _amount = 0.0;
 		for ( o in orders ){
@@ -109,8 +106,10 @@ class Transaction extends sys.db.Object
 			t.type = TTCOrder;
 			var data : db.Transaction.TCOrderInfos = {contractId:contract.id};
 			t.data = data;
-			t.user = orders[0].user;
-			t.group = orders[0].product.contract.amap;
+			var u = orders[0].user;
+			t.user = u;
+			var g = orders[0].product.contract.amap;
+			t.group = g;
 			t.pending = true;					
 			
 		}else{
@@ -124,9 +123,11 @@ class Transaction extends sys.db.Object
 			t.type = TTVOrder;
 			var data : db.Transaction.TVOrderInfos = {basketId:basket.id};
 			t.data = data;
-			t.user = orders[0].user;
-			t.group = orders[0].product.contract.amap;
-			t.pending = true;					
+			var u = orders[0].user;
+			t.user = u;
+			var g = orders[0].product.contract.amap;
+			t.group = g;
+			t.pending = true;		
 		}
 		
 		t.insert();
@@ -181,9 +182,11 @@ class Transaction extends sys.db.Object
 		t.amount = Math.abs(amount);
 		t.date = Date.now();
 		t.name = name;
-		t.group = App.current.user.amap;
+		var g = App.current.user.amap;
+		t.group = g;
 		t.pending = true;
-		t.user = App.current.user;
+		var u = App.current.user;
+		t.user = u;
 		t.type = TTPayment;
 		var data : TPaymentInfos = {type:type};
 		t.data = data;
@@ -278,14 +281,14 @@ class Transaction extends sys.db.Object
 	
 	public static function getPaymentTypes(group:db.Amap):Array<payment.Payment>{
 		var out :Array<payment.Payment> = [];
+		
+		//populate with activated payment types.
+		var all = payment.Payment.getPaymentTypes();
 		if ( group.allowedPaymentsType == null ) return [];
 		for ( t in group.allowedPaymentsType){
-			switch(t){
-				case "cash" : out.push(new payment.Cash());
-				case "transfer" : out.push(new payment.Transfer());
-				case "check" : out.push(new payment.Check());
-			}
 			
+			var found = Lambda.find(all, function(a) return a.type == t);
+			if (found != null) out.push(found);
 		}
 		return out;
 	}
