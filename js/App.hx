@@ -4,7 +4,12 @@ import react.ProductInput;
 
 class App {
 	
-	function new() { }	
+	public static var instance : App;
+	
+	function new() {
+		//singleton
+		instance = this;
+	}	
 
 	/**
 	 * Returns a jquery object like $() in javascript
@@ -100,6 +105,31 @@ class App {
 		return new hosted.js.App();
 	}	
 	#end
+
+	/**
+	 * set up a warning message when leaving the page
+	 */
+	public function setWarningOnUnload(active:Bool, ?msg:String){
+		
+		
+		
+		if (active){
+			js.Browser.window.addEventListener("beforeunload", warn);	
+		}else{
+			js.Browser.window.removeEventListener("beforeunload", warn);
+		}
+
+	}
+	
+	function warn(e:js.html.Event) {
+		var msg = "Voulez vous vraiment quitter cette page ?";
+		//js.Browser.window.confirm(msg);
+		untyped e.returnValue = msg; //Gecko + IE
+		e.preventDefault();
+		return msg; //Gecko + Webkit, Safari, Chrome etc.
+	}
+	
+	
 	
 	
 }

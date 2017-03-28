@@ -141,45 +141,48 @@
 	
 	
 	<macro name="transaction(t)">
-	<td>
-		::set x = t.getTypeIndex()::
-		
+	::set x = t.getTypeIndex()::
+	::if x==2:: ::set class="text-right":: ::end:: 
+	<td class="::class::">
 		::if x==0::
 		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Commande
 		::elseif x==1::
 		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
-		<!-- paiement -->
+		<span style="margin-left:48px;">Paiment ::_(t.getPaymentType())::</span>
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
 	</td>
+	
 	<td>
-		::if x==0::
-		
-		::elseif x==1::
-		
-		::elseif x==2::			
-			::_(t.getPaymentType())::			
-		::else::						
-		
-		::end::
-		
-		
-	</td>	
-	<td>
-		::if t.pending==true::
-		<i class="fa fa-circle-thin" aria-hidden="true"></i>
-		::else::
-		<i class="fa fa-check" aria-hidden="true"></i>
+		::if t.pending==true::			
+			<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
+		::else::		
+			<i class="fa fa-check" aria-hidden="true"></i>
 		::end::
 	</td>
 	<td style="font-size:1em;">
-		::t.name::<br/>
-		<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+		::if x==2::		
+			::if(t.getPaymentType()=="check")::
+				<span style="color:red;">Pensez à régler par chèque au retrait des produits</span>
+			::elseif(t.getPaymentType()=="cash")::
+				<span style="color:red;">Pensez à régler en liquide au retrait des produits</span>
+			::elseif(t.getPaymentType()=="transfer")::
+				<span style="color:red;">Votre virement sera validé par un coordinateur</span>		
+			::else::
+				::t.name::<br/>
+				<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+			::end::
+		::else::
+		
+			::t.name::<br/>
+			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+		
+		::end::
 	</td>
-	<td>::t.amount::&nbsp;::currency()::</td>
-	
+	<td>::formatNum(t.amount)::&nbsp;::currency()::</td>
+	::set class=""::
 	</macro>
 
 	<macro name="back()">	

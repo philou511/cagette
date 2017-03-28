@@ -56,4 +56,11 @@ class Basket extends Object
 		return b;
 		
 	}
+	
+	
+	public function getOrders(){
+		
+		return db.UserContract.manager.search($basket == this, false);
+		
+	}
 }

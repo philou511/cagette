@@ -9,21 +9,19 @@
 	</div>	-->
 		
 	<div style="font-size:120%;">
-		A PAYER : <b>::abs(debt.amount):: ::currency()::</b>
+		<p>
+			A PAYER : <b>::formatNum(amount):: ::currency()::</b>
+		</p>
+		<p>
+			Choisissez un moyen de paiement :
+		</p>
 	</div>
 		
 		
-	<style>
-	div.paymentType{
-		border-radius:3px;
-		padding:8px;
-		margin:8px;
-		border:1px solid #CCC;
-	}
-	</style>	
+
 	
 	<div class="row">
-		::if(paymentTypes.length==0)::
+		::if(paymentTypes==null || paymentTypes.length==0)::
 		<div class="col-md-12">
 			<div class="alert alert-danger">
 			Pour l'instant, aucun moyen de paiement n'est activé pour votre groupe.<br/>
@@ -35,15 +33,14 @@
 		
 		::foreach p paymentTypes::
 		<div class="col-md-4">
-			<div class="paymentType">
-			
+			<a class="clickable" href="::p.link::/::place.id::/::date::" style="min-height:120px;vertical-align:middle;">
+				
 				<h3>::_(p.type)::</h3> 
 				::raw p.icon:: 
 				<p>::p.desc::</p>
-				<a href="::p.link::/::place.id::/::date::" class="btn btn-primary">Choisir</a>  
-			</div>
-			
+			</a>	
 		</div>
+		
 		::end::
 	</div>
 	

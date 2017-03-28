@@ -11,7 +11,7 @@ class Cart
 	public var products : Map<Int,ProductInfo>; //product db
 	public var categories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var pinnedCategories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
-	public var order : Order;
+	public var order : OrderInSession;
 	
 	var loader : JQuery; //ajax loader gif
 	
@@ -29,7 +29,7 @@ class Cart
 	public function new() 
 	{
 		products = new Map();
-		order = { products:[] };
+		order = cast { products:[] };
 		categories = [];
 		pinnedCategories = [];
 	}
@@ -121,7 +121,14 @@ class Cart
 		var ffilter = new sugoi.form.filters.FloatFilter();
 		
 		var total = ffilter.filterString(Std.string(App.roundTo(total,2)));
-		c.append("<div class='total'>TOTAL : "+total+"</div>");
+		c.append("<div class='total'>TOTAL : " + total + "</div>");
+		
+		
+		if (order.products.length > 0){
+			App.instance.setWarningOnUnload(true,"Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.");
+		}else{
+			App.instance.setWarningOnUnload(false);
+		}
 	}
 
 
@@ -261,8 +268,10 @@ class Cart
      * submit cart
      */
 	public function submit() {
+		
 		var req = new haxe.Http("/shop/submit");
 		req.onData = function(d) {
+			App.instance.setWarningOnUnload(false);
 			js.Browser.location.href = "/shop/validate/"+place+"/"+date;
 			
 		}
@@ -351,7 +360,7 @@ class Cart
 			var data : { 
 				products:Array<ProductInfo>,
 				categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>,
-				order:Order } = haxe.Unserializer.run(data);
+				order:OrderInSession } = haxe.Unserializer.run(data);
 
 			//populate local categories lists
 			for ( cg in data.categories){
@@ -372,10 +381,12 @@ class Cart
 				
 				//trace(p.name+" : " + p.categories);
 			}
+			
 			//existing order
 			for ( p in data.order.products) {
 				subAdd(p.productId,p.quantity );
 			}
+			
 			render();
 			
 			sortProductsBy();

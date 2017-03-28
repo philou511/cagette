@@ -23,9 +23,9 @@ class Shop extends sugoi.BaseController
 	public function doInit(place:db.Place,date:Date) {
 		
 		//init order serverside if needed		
-		var order :Order = app.session.data.order; 
+		var order :OrderInSession = app.session.data.order; 
 		if ( order == null) {
-			app.session.data.order = order = { products:new Array<{productId:Int,quantity:Float}>() };
+			app.session.data.order = order = cast {products:[]};
 		}
 		
 		var products = [];
@@ -43,6 +43,10 @@ class Shop extends sugoi.BaseController
 		
 		categs = place.amap.getCategoryGroups();
 
+		//clean 
+		for ( p in order.products){
+			p.product = null;
+		}
 		Sys.print( haxe.Serializer.run( {products:products,categories:categs,order:order} ) );
 	}
 	
@@ -94,7 +98,7 @@ class Shop extends sugoi.BaseController
 	 */
 	public function doSubmit() {
 		
-		var order : Order = haxe.Json.parse(app.params.get("data"));
+		var order : OrderInSession = haxe.Json.parse(app.params.get("data"));
 		app.session.data.order = order;
 		
 	}
@@ -104,8 +108,8 @@ class Shop extends sugoi.BaseController
 	 */
 	public function doAdd(productId:Int, quantity:Int) {
 	
-		var order :Order =  app.session.data.order;
-		if ( order == null) order = { products:new Array<{productId:Int,quantity:Float}>() };
+		var order : OrderInSession =  app.session.data.order;
+		if ( order == null) order = cast { products:[] };
 		
 		order.products.push( { productId:productId, quantity:quantity } );
 		
@@ -118,14 +122,13 @@ class Shop extends sugoi.BaseController
 	 */
 	public function doRemove(pid:Int) {
 	
-		var order :Order =  app.session.data.order;
+		var order:OrderInSession =  app.session.data.order;
 		if ( order == null) return;
 		
 		for ( p in order.products.copy()) {
 			if (p.productId == pid) {
 				order.products.remove(p);
 			}
-			
 		}
 		
 		Sys.print( haxe.Json.stringify( { success:true } ) );		
@@ -149,43 +152,48 @@ class Shop extends sugoi.BaseController
 		var products = getProducts(place, date);
 
 		var errors = [];
-		var orders = [];
+		order.total = 0.0;
 		
-		for (o in order.products) {
+		//cleaning
+		for (o in order.products.copy()) {
 
 			var p = db.Product.manager.get(o.productId, false);
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
 				errors.push("Le produit \"" + p.name+"\" n'est pas disponible pour cette distribution");
-				continue;
+				order.products.remove(o);
+			}else{
+				o.product = p;
 			}
 
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){
 				errors.push("Le produit \"" + p.name+"\" n'est pas disponible pour cette distribution");
-				continue;
+				order.products.remove(o);
+			}else{
+				o.distributionId = d.id;
 			}
-
-			//make order
-			orders.push( db.UserContract.make(app.user,o.quantity, p, d.id) );
-
+			
+			order.total += p.getPrice() * o.quantity;
 		}
+		order.userId = app.user.id;
 		
-		//payment transaction
-		app.event(MakeOrder(orders));
-
 		if (errors.length > 0) {
 			app.session.addMessage(errors.join("<br/>"), true);
 			//app.logError("params : "+App.current.params.toString()+"\n \n"+errors.join("\n"));
-
 		}
-
-		app.session.data.order = null;
+		
+		app.session.data.order = order;
+		
 		if (app.user.amap.hasPayments()){
 			
-			throw Ok("/transaction/pay/"+place.id+"/"+date, "Votre commande a bien été enregistrée. Vous pouvez maintenant procéder au paiement de votre commande.");
+			//Go to payments page
+			throw Ok("/transaction/pay/"+place.id+"/"+date.toString().substr(0, 10), "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");
 		}else{
+			//no payments, confirm direclty
+			db.UserContract.confirmSessionOrder(order);
+			
 			throw Ok("/contract", "Votre commande a bien été enregistrée");	
 		}
 

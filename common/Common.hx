@@ -6,8 +6,16 @@
 //An order wich is placed in session, before being paid and recorded.
 @:keep
 typedef OrderInSession = {
-	
-	products:Array<{productId:Int,quantity:Float}>
+	products:Array <{
+		productId:Int,
+		quantity:Float,
+		#if !js
+		?product:db.Product,
+		?distributionId:Int,
+		#end
+	} > ,
+	userId:Int,
+	total:Float, //price to pay
 }
 
 @:keep

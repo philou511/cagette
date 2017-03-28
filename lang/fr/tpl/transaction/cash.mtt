@@ -5,7 +5,7 @@
 		<h2>Paiement de votre commande</h2>
 		
 		<div style="font-size:120%;">
-			A PAYER : <b>::abs(debt.amount):: ::currency()::</b>
+			A PAYER : <b>::formatNum(amount):: ::currency()::</b>
 		</div>
 			
 		<hr/>
@@ -16,11 +16,17 @@
 			</div>
 			<div class="panel-body">
 			<p>
-				Merci de prévoir la somme suivante en liquide le jour de la distribution : <b>::abs(debt.amount):: ::currency()::</b><br/>				
+				Merci de prévoir la somme suivante en liquide le jour de la distribution
+				: <b>::formatNum(amount):: ::currency()::</b><br/>				
 			</p>	
 			</div>
+			<p>
+				<a href="?token=::token::" class="btn btn-primary">
+					<i class="fa fa-check" aria-hidden="true"></i>
+					Je m'engage à payer en liquide au retrait des produits
+				</a>
+			</p>
 			
-			<a href="?token=::token::" class="btn btn-primary">Valider</a>
 			
 		</div>
 		

@@ -55,6 +55,10 @@
 		<div style="position: absolute;background: #666;padding: 8px;left: 0;color: #FF0;">DEBUG</div>
 		::end::
 		
+		::if HOST.substr(0,3)=="pp."::
+		<div style="position: absolute;background: #F60;padding: 8px;left: 0;color: #FF0;">PREPROD</div>
+		::end::
+		
 		<!-- Modal window -->
 		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		  <div class="modal-dialog modal-lg" role="document">

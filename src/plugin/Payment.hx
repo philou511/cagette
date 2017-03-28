@@ -43,11 +43,11 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 					var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
 					
 					//existing transaction
-					var existing = db.Transaction.findVOrderTransactionFor( k , user, group);
+					var existing = db.Operation.findVOrderTransactionFor( k , user, group);
 					if (existing != null){
-						db.Transaction.updateOrderTransaction(existing,allOrders,basket);	
+						db.Operation.updateOrderOperation(existing,allOrders,basket);	
 					}else{
-						db.Transaction.makeOrderTransaction(allOrders,basket);			
+						db.Operation.makeOrderOperation(allOrders,basket);			
 					}
 					
 					
@@ -58,11 +58,11 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 					// create/update a transaction computed like $distribNumber * $price.
 					var contract = orders[0].product.contract;
 					
-					var existing = db.Transaction.findCOrderTransactionFor( contract , user);
+					var existing = db.Operation.findCOrderTransactionFor( contract , user);
 					if (existing != null){
-						db.Transaction.updateOrderTransaction(existing, contract.getUserOrders(user) );
+						db.Operation.updateOrderOperation(existing, contract.getUserOrders(user) );
 					}else{
-						db.Transaction.makeOrderTransaction( contract.getUserOrders(user) );
+						db.Operation.makeOrderOperation( contract.getUserOrders(user) );
 					}
 					
 					

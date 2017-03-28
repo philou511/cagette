@@ -1,5 +1,6 @@
 package controller;
-import db.Transaction.TransactionType;
+import db.Operation.OperationType;
+import Common;
 using Lambda;
 
 /**
@@ -17,10 +18,9 @@ class Transaction extends controller.Controller
 		
 		if (!app.user.isContractManager()) throw "accès interdit";
 		
-		var t = new db.Transaction();
+		var t = new db.Operation();
 		t.user = user;
 		t.date = Date.now();
-		
 		
 		var f = new sugoi.form.Form("payement");
 		f.addElement(new sugoi.form.elements.StringInput("name", "Libellé", null, true));
@@ -34,20 +34,20 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
 		
 		//unpaid orders
-		var unpaid = db.Transaction.manager.search($user == user && $group == app.user.amap && $type != TTPayment && $pending == true);
+		var unpaid = db.Operation.manager.search($user == user && $group == app.user.amap && $type != Payment && $pending == true);
 		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
 		f.addElement(new sugoi.form.elements.IntSelect("unpaid", "En paiement de :", data, null, false));
 		
 		if (f.isValid()){
 			f.toSpod(t);
-			t.type = db.Transaction.TransactionType.TTPayment;
-			var data : db.Transaction.TPaymentInfos = {type:f.getValueOf("Mtype")};
+			t.type = db.Operation.OperationType.Payment;
+			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
 			t.data = data;
 			t.group = app.user.amap;
 			t.user = user;
 			
 			if (f.getValueOf("unpaid") != null){
-				var t2 = db.Transaction.manager.get(f.getValueOf("unpaid"));
+				var t2 = db.Operation.manager.get(f.getValueOf("unpaid"));
 				t.relation = t2;
 				if (t2.amount + t.amount == 0) {
 					t.pending = false;
@@ -60,7 +60,7 @@ class Transaction extends controller.Controller
 			
 			t.insert();
 			
-			db.Transaction.updateUserBalance(user, app.user.amap);
+			db.Operation.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/member/payments/" + user.id, "Paiement enregistré");
 			
@@ -76,12 +76,17 @@ class Transaction extends controller.Controller
 	 */
 	@tpl("transaction/pay.mtt")
 	public function doPay(place:db.Place,date:Date){
+
+		var order : OrderInSession = app.session.data.order;
+		view.amount = order.total;
 		
-		var distribKey = db.Distribution.makeKey(date, place);		
-		view.debt = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-		view.ua = db.UserAmap.get(app.user, app.user.amap);
-		view.paymentTypes = db.Transaction.getPaymentTypes(app.user.amap);
-		view.basket = db.Basket.get(app.user, place, date);
+		
+		//var distribKey = db.Distribution.makeKey(date, place);		
+		//view.debt = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+		//view.ua = db.UserAmap.get(app.user, app.user.amap);
+		//view.basket = db.Basket.get(app.user, place, date);
+		
+		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);		
 		view.place = place;
 		view.date = date;
 	}
@@ -92,14 +97,26 @@ class Transaction extends controller.Controller
 	@tpl("transaction/check.mtt")
 	public function doCheck(place:db.Place, date:Date){
 		
-		var distribKey = db.Distribution.makeKey(date, place);		
-		var t = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-		view.debt = t;
+		//order in session
+		var order : OrderInSession = app.session.data.order;		
 		view.code = payment.Check.getCode(date, place, app.user);
-		view.name = app.user.amap.name;
+		
+		//previous orders
+		//var b = db.Basket.get(app.user, place, date);
+		//var prevOrders = db.UserContract.prepare(b.getOrders());
+		//var prevTotal = db.UserContract.getTotalPrice(prevOrders);
+		view.amount = order.total;
 		
 		if (checkToken()){
-			db.Transaction.makeOrderPayment("check", t.amount, "Chèque pour commande du " + view.hDate(date), t );			
+			
+			//record order
+			var orders = db.UserContract.confirmSessionOrder(order);
+			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
+		
+			//record payment
+			var distribKey = db.Distribution.makeKey(date, place);		
+			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+			db.Operation.makePaymentOperation(app.user,app.user.amap,"check", total, "Chèque pour commande du " + view.hDate(date), t );			
 			throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
 		}
 		
@@ -111,17 +128,23 @@ class Transaction extends controller.Controller
 	@tpl("transaction/transfer.mtt")
 	public function doTransfer(place:db.Place, date:Date){
 		
-		var distribKey = db.Distribution.makeKey(date, place);		
-		var t = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-		view.debt = t;
+		//order in session
+		var order : OrderInSession = app.session.data.order;		
 		view.code = payment.Check.getCode(date, place, app.user);
-		view.name = app.user.amap.name;
+		view.amount = order.total;
 		
 		if (checkToken()){
-			db.Transaction.makeOrderPayment("transfer", t.amount, "Virement pour commande du " + view.hDate(date), t);			
+			
+			//record order
+			var orders = db.UserContract.confirmSessionOrder(order);
+			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
+		
+			//record payment
+			var distribKey = db.Distribution.makeKey(date, place);		
+			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+			db.Operation.makePaymentOperation(app.user,app.user.amap,"transfer", total, "Virement pour commande du " + view.hDate(date), t );			
 			throw Ok("/contract", "Votre paiement par virement a bien été enregistré. Il sera validé par un coordinateur.");
 		}
-		
 	}
 	
 	/**
@@ -130,15 +153,21 @@ class Transaction extends controller.Controller
 	@tpl("transaction/cash.mtt")
 	public function doCash(place:db.Place, date:Date){
 		
-		var distribKey = db.Distribution.makeKey(date, place);		
-		var t = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-		view.debt = t;
-		view.code = payment.Check.getCode(date, place, app.user);
-		view.name = app.user.amap.name;
+		//order in session
+		var order : OrderInSession = app.session.data.order;		
+		view.amount = order.total;
 		
 		if (checkToken()){
-			db.Transaction.makeOrderPayment("cash", t.amount, "Paiement en liquide pour commande du " + view.hDate(date), t );			
-			throw Ok("/contract", "Votre souhait de payer en liquide lors de la distribution a bien été prise en compte.");
+			
+			//record order
+			var orders = db.UserContract.confirmSessionOrder(order);
+			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
+		
+			//record payment
+			var distribKey = db.Distribution.makeKey(date, place);		
+			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
+			db.Operation.makePaymentOperation(app.user,app.user.amap,"cash", total, "Liquide pour commande du " + view.hDate(date), t );			
+			throw Ok("/contract", "Votre commande est validée, vous vous êtes engagé à payer en liquide au retrait des produits.");
 		}
 		
 	}
@@ -148,10 +177,12 @@ class Transaction extends controller.Controller
 	 * @param	t
 	 */
 	@tpl("transaction/view.mtt")
-	public function doView(t:db.Transaction){
+	public function doView(t:db.Operation){
 		view.t = t ;
 		
 		var lw = pro.payment.LWCPayment.getConnector(app.user.amap);
+		
+		if (t.data.remoteOpId == null) throw "No remoteOpId in this operation";
 		
 		//update status if needed
 		var td = lw.getMoneyInTransDetails(t.data.remoteOpId);

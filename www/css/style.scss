@@ -148,8 +148,36 @@ table.product{
 	}
 }
 
-.clickable:hover{
-	cursor: pointer;
+/* make <a> like clickable divs  */
+.clickable{
+	
+	display:block;
+	border:1px solid #CCC;
+	border-radius:8px;
+	padding:8px;
+	color:inherit;
+	background-color:white;
+	margin-bottom:12px;	
+	
+	
+	&:hover{
+		cursor: pointer;
+		background-color:lighten(#F0D277,10%);
+		border-color:darken(#F0D277,10%);
+		text-decoration:none;
+		
+		transition: all 0.15s ease;
+		//transform:scale(0.95);
+	}
+	
+	&:active{
+		cursor: pointer;
+		background-color:#F0D277;
+		border-color:darken(#F0D277,10%);
+		text-decoration:none;
+		
+		transform:scale(0.95);
+	}
 	
 }
 

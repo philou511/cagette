@@ -18,7 +18,9 @@ span.panel-title{font-family:'Cantora One',sans-serif!important;color:#966125!im
 table.product{width:100%;height:135px;overflow:auto;}
 table.product td{padding:8px;}
 table.product .desc{font-size:90%;color:#666;}
-.clickable:hover{cursor:pointer;}
+.clickable{display:block;border:1px solid #CCC;border-radius:8px;padding:8px;color:inherit;background-color:white;margin-bottom:12px;}
+.clickable:hover{cursor:pointer;background-color:#f5e1a5;border-color:#ebc349;text-decoration:none;transition:all 0.15s ease;}
+.clickable:active{cursor:pointer;background-color:#F0D277;border-color:#ebc349;text-decoration:none;transform:scale(0.95);}
 .shop .header{background-color:#749E3C;display:inline-block;width:100%;border-top-left-radius:8px;border-top-right-radius:8px;padding:12px;font-size:16px;line-height:22px;color:white;}
 .shop .header a{color:white;}
 .shop .header .info{font-weight:bold;}

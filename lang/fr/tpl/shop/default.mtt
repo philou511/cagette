@@ -140,7 +140,7 @@
 		</h2>
 		<div id="cart"></div>
 		
-		<a onClick="formSubmitted=true;cart.submit();" class="btn btn-default">Valider</a>
+		<a onClick="cart.submit();" class="btn btn-default">Valider</a>
 		
 		<a class="infos" href='/contract'>Vous pouvez consulter vos commandes en cours sur votre page "mon compte"</a>
 		
@@ -164,16 +164,4 @@
 </div>
 
 	
-<script>
-	var formSubmitted = false;
-	window.addEventListener("beforeunload", function (e) {
-		if(formSubmitted) return;
-		if(cart.isEmpty()) return;
-		var confirmationMessage = 'Vous avez une commande en cours. Si vous quittez cette page sans confirmer, votre commande sera perdue.';
-
-		(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-		return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-	});
-</script>
-
 ::end::

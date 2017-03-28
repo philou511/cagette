@@ -344,6 +344,7 @@ class AmapAdmin extends Controller
 			app.user.amap.update();
 		}
 		f.addElement( new sugoi.form.elements.StringInput("checkOrder", "Ordre pour les chèques", app.user.amap.checkOrder, true)); 
+		f.addElement( new sugoi.form.elements.StringInput("IBAN", "IBAN de votre compte bancaire pour les virements", app.user.amap.IBAN, true)); 
 		
 		
 		if (f.isValid()){
@@ -353,6 +354,7 @@ class AmapAdmin extends Controller
 			a.lock();
 			a.allowedPaymentsType = p;
 			a.checkOrder = f.getValueOf("checkOrder");
+			a.IBAN = f.getValueOf("IBAN");
 			a.update();
 			
 			throw Ok("/amapadmin/payments", "Options de paiement mises à jour");

@@ -94,7 +94,7 @@ class UserContract extends Object
 	/**
 	 * Prepare un dataset simple pret pour affichage ou export csv.
 	 */
-	public static function prepare(orders:List<db.UserContract>):Array<UserOrder> {
+	public static function prepare(orders:Iterable<db.UserContract>):Array<UserOrder> {
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
 		
@@ -491,6 +491,36 @@ class UserContract extends Object
 		}
 		
 		return out;
+		
+	}
+	
+	/**
+	 * Confirms an order
+	 * @param	order
+	 */
+	public static function confirmSessionOrder(order:OrderInSession){
+		
+		
+		var orders = [];
+		var user = db.User.manager.get(order.userId);
+		for (o in order.products){
+			
+			o.product = db.Product.manager.get(o.productId);
+			orders.push( db.UserContract.make(user, o.quantity, o.product, o.distributionId) );
+			
+		}
+		
+		App.current.event(MakeOrder(orders));
+		App.current.session.data.order = null;	
+		
+		return orders;
+	}
+	
+	
+	public static function getTotalPrice(orders:Iterable<UserOrder>){
+		var t = 0.0;
+		for ( o in orders) t += o.total;
+		return t;
 		
 	}
 }

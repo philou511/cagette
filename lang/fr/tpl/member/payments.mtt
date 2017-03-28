@@ -44,7 +44,7 @@
 			</tr>
 				
 			::foreach tt t.getRelatedPayments()::	
-				<tr style="background:#EEE;color:#666;" class="clickable" onclick="_.overlay('/transaction/view/::tt.id::','',false)">
+				<tr style="background:#EEE;color:#666;" onclick="_.overlay('/transaction/view/::tt.id::','',false)">
 					$$transaction(::tt::)
 				</tr>
 			::end::
