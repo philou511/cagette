@@ -397,10 +397,15 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * Modifier une commande en fonction du jour de distribution (tout fournisseurs confondus)
+	 * Edit an order for a multidistrib.
 	 */
 	@tpl("contract/orderByDate.mtt")
 	function doEditOrderByDate(date:Date) {
+		
+		if (app.user.amap.hasPayments()) {
+			//when payments are active, the user cannot modify his order
+			throw Redirect("/");
+		}
 		
 		// cannot edit order if date is in the past
 		if (Date.now().getTime() > date.getTime()) {

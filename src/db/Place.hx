@@ -39,4 +39,16 @@ class Place extends Object
 		return str.toString();
 	}
 	
+	/**
+	 * get adress without 'name' field.
+	 */
+	public function getAddress(){
+		var str = new StringBuf();
+		if (address1 != null) str.add(address1 + ", \n");
+		if (address2 != null) str.add(address2 + ", \n");
+		if (zipCode != null) str.add(zipCode);
+		if (city != null) str.add(" - "+city);
+		return str.toString();
+	}
+	
 }
