@@ -59,8 +59,23 @@ class Basket extends Object
 	
 	
 	public function getOrders(){
-		
 		return db.UserContract.manager.search($basket == this, false);
-		
 	}
+	
+	/**
+	 * Returns the list of operations which paid this basket
+	 * @return
+	 */
+	public function getPayments():Iterable<db.Operation>{
+		
+		var key = db.Distribution.makeKey(this.ddate, this.place);		
+		var op = db.Operation.findVOrderTransactionFor(key, this.user, this.place.amap);
+		if (op == null){
+			return [];
+		}else{
+			
+			return op.getRelatedPayments();
+		}
+	}
+	
 }

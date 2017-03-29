@@ -133,7 +133,10 @@ class Amap extends Object
 	public function hasPayments(){
 		if (App.config.DEBUG) return true;
 		//nansouty + jeanot + chantereine + georges martin
-		return id == 1 || id == 176 || id == 627 || id == 197;
+		//return id == 1 || id == 176 || id == 627 || id == 197;
+		
+		//avallon + epicvous
+		return id == 1128 || id == 848;
 	}
 	
 	public function getCategoryGroups() {

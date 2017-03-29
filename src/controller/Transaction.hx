@@ -99,7 +99,8 @@ class Transaction extends controller.Controller
 		
 		//order in session
 		var order : OrderInSession = app.session.data.order;		
-		view.code = payment.Check.getCode(date, place, app.user);
+		var code = payment.Check.getCode(date, place, app.user);
+		view.code = code;
 		
 		//previous orders
 		//var b = db.Basket.get(app.user, place, date);
@@ -116,7 +117,7 @@ class Transaction extends controller.Controller
 			//record payment
 			var distribKey = db.Distribution.makeKey(date, place);		
 			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-			db.Operation.makePaymentOperation(app.user,app.user.amap,"check", total, "Chèque pour commande du " + view.hDate(date), t );			
+			db.Operation.makePaymentOperation(app.user,app.user.amap,"check", total, "Chèque pour commande du " + view.hDate(date)+" ("+code+")", t );			
 			throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
 		}
 		
@@ -130,7 +131,8 @@ class Transaction extends controller.Controller
 		
 		//order in session
 		var order : OrderInSession = app.session.data.order;		
-		view.code = payment.Check.getCode(date, place, app.user);
+		var code = payment.Check.getCode(date, place, app.user);
+		view.code = code;
 		view.amount = order.total;
 		
 		if (checkToken()){
@@ -142,7 +144,7 @@ class Transaction extends controller.Controller
 			//record payment
 			var distribKey = db.Distribution.makeKey(date, place);		
 			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-			db.Operation.makePaymentOperation(app.user,app.user.amap,"transfer", total, "Virement pour commande du " + view.hDate(date), t );			
+			db.Operation.makePaymentOperation(app.user,app.user.amap,"transfer", total, "Virement pour commande du " + view.hDate(date)+" ("+code+")", t );			
 			throw Ok("/contract", "Votre paiement par virement a bien été enregistré. Il sera validé par un coordinateur.");
 		}
 	}

@@ -6,14 +6,17 @@ body
 	table{
 		border-collapse: collapse;
 		
+		.table tr td,th{
+			
+			border:solid 1px #AAA;
+			
+		}
+		
 		tr td,th{
 			margin:1px;
 			padding:4px;		
 			vertical-align:top;
-			//border-top:solid 1px #DDD;
-			//border-bottom:solid 1px #DDD;
-			//border-left:solid 1px #DDD;
-			//border-right:solid 1px #DDD;
+			
 			text-align:left;
 		}
 		

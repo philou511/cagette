@@ -149,7 +149,7 @@
 		::elseif x==1::
 		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
-		<span style="margin-left:48px;">Paiment ::_(t.getPaymentType())::</span>
+		<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
