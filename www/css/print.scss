@@ -6,24 +6,18 @@ body
 	table{
 		border-collapse: collapse;
 		
-		.table tr td,th{
+		&.table td{
 			
-			border:solid 1px #AAA;
+			border:solid 1px #CCC;
 			
 		}
 		
 		tr td,th{
 			margin:1px;
 			padding:4px;		
-			vertical-align:top;
-			
+			vertical-align:top;			
 			text-align:left;
-		}
-		
-		th{
-			//titles
-			//border-bottom:1px solid black;
-		}
+		}		
 		
 		td.total{
 			font-weight:bold;

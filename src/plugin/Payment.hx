@@ -17,6 +17,8 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 	 */
 	public function onEvent(e:Event) {
 		
+		if (App.current.user==null || App.current.user.amap==null || !App.current.user.amap.hasPayments()) return;
+		
 		switch(e) {
 			
 			//create "order transactions" when orders have been made

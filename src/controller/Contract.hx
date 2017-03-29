@@ -222,8 +222,8 @@ class Contract extends Controller
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
-			trace(app.user.amap);
-			trace(c.amap);
+			//trace(app.user.amap);
+			//trace(c.amap);
 			c.type = type;
 			c.insert();
 			

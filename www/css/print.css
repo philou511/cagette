@@ -3,8 +3,8 @@ body {
   font-size: 12px; }
   body table {
     border-collapse: collapse; }
-    body table .table tr td, body table th {
-      border: solid 1px #AAA; }
+    body table.table td {
+      border: solid 1px #CCC; }
     body table tr td, body table th {
       margin: 1px;
       padding: 4px;

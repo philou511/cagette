@@ -64,7 +64,7 @@ class Amap extends Object
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
 	@hideInForms public var checkOrder:SString<64>;
-	@hideInForms public var IBAN:SString<40>;
+	@hideInForms public var IBAN:SNull<SString<40>>;
 	
 	public function new() 
 	{
@@ -93,6 +93,8 @@ class Amap extends Object
 				this.update();
 				return this.mainPlace;
 			}
+			
+			if (places.length == 0) return null;
 			
 			var pids = Lambda.map(places, function(x) return x.id);
 			

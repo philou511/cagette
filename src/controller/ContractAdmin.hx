@@ -49,8 +49,10 @@ class ContractAdmin extends Controller
 		//distributions to validate ( today is between orderEndDate and delvery+6 days )
 		var now = Date.now();
 		var cids = contracts.getIds();
-		view.distributions = db.Distribution.manager.unsafeObjects("SELECT * FROM Distribution WHERE NOW() > orderEndDate AND NOW() < DATE_ADD(date,INTERVAL 6 DAY) AND contractId IN ("+cids.join(",")+")", false);  
-		//view.distributions = db.Distribution.manager.search( now > $orderEndDate && now < ($date+$days(6)), false);  
+		if(cids.length>0){
+			view.distributions = db.Distribution.manager.unsafeObjects("SELECT * FROM Distribution WHERE NOW() > orderEndDate AND NOW() < DATE_ADD(date,INTERVAL 6 DAY) AND contractId IN ("+cids.join(",")+")", false);  
+			//view.distributions = db.Distribution.manager.search( now > $orderEndDate && now < ($date+$days(6)), false);  
+		}
 		
 		view.contracts = contracts;		
 		view.vendors = app.user.amap.getVendors();
