@@ -109,6 +109,18 @@ table.product {
     font-size: 90%;
     color: #666; }
 
+/* GLOBAL TABLE SKINNING */
+table.table tr.head > td {
+  border-top: 3px solid #DDD; }
+
+table.table tr.subrow {
+  background-color: #EEE; }
+
+/*table.table>tbody>tr>th{
+	background-color:white;
+	color:#BBB;
+	border-top:none;
+}*/
 /* make <a> like clickable divs  */
 .clickable {
   display: block;

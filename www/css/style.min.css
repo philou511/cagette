@@ -18,6 +18,8 @@ span.panel-title{font-family:'Cantora One',sans-serif!important;color:#966125!im
 table.product{width:100%;height:135px;overflow:auto;}
 table.product td{padding:8px;}
 table.product .desc{font-size:90%;color:#666;}
+table.table tr.head>td{border-top:3px solid #DDD;}
+table.table tr.subrow{background-color:#EEE;}
 .clickable{display:block;border:1px solid #CCC;border-radius:8px;padding:8px;color:inherit;background-color:white;margin-bottom:12px;}
 .clickable:hover{cursor:pointer;background-color:#f5e1a5;border-color:#ebc349;text-decoration:none;transition:all 0.15s ease;}
 .clickable:active{cursor:pointer;background-color:#F0D277;border-color:#ebc349;text-decoration:none;transform:scale(0.95);}

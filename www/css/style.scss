@@ -148,6 +148,26 @@ table.product{
 	}
 }
 
+/* GLOBAL TABLE SKINNING */
+
+//separator between rows
+table.table tr.head>td{
+	//border-top: 1px solid #BBB;
+	border-top: 3px solid #DDD;
+}
+
+//sub-row, darker bg
+table.table tr.subrow{
+	background-color:#EEE;
+}
+
+/*table.table>tbody>tr>th{
+	background-color:white;
+	color:#BBB;
+	border-top:none;
+}*/
+
+
 /* make <a> like clickable divs  */
 .clickable{
 	

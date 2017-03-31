@@ -17,16 +17,20 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 	 */
 	public function onEvent(e:Event) {
 		
-		if (App.current.user==null || App.current.user.amap==null || !App.current.user.amap.hasPayments()) return;
+		
 		
 		switch(e) {
 			
 			//create "order transactions" when orders have been made
 			case MakeOrder(orders):
+				
 				if (orders.length == 0) return;
 
 				var user = orders[0].user;
 				var group = orders[0].product.contract.amap;
+				
+				//should not go further if group has not activated payements
+				if (user==null || !group.hasPayments()) return;
 				
 				if (orders[0].product.contract.type == db.Contract.TYPE_VARORDER ){
 					
