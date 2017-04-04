@@ -48,7 +48,7 @@ class Main extends Controller {
 			var out = [];
 			for (x in distribs) out.push(x);
 			out.sort(function(a, b) {
-				return Std.int(a.startDate.getTime()/1000) - Std.int(b.endDate.getTime()/1000);
+				return Std.int(a.startDate.getTime()/1000) - Std.int(b.startDate.getTime()/1000);
 			});
 			
 			view.distribs = out;

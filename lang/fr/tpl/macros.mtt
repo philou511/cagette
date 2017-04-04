@@ -85,7 +85,8 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span> <a href="#" onclick="_.overlay('/group/place/::place.id::','::place.name::')">::place::</a>			
+				<span class="glyphicon glyphicon-map-marker"></span>
+				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
 			</div>
 			::end::
 		</div>		
@@ -106,7 +107,8 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span> <a href="#" onclick="_.overlay('/group/place/::place.id::','::place.name::')">::place::</a>
+				<span class="glyphicon glyphicon-map-marker"></span>
+				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
 			</div>
 			::end::
 		</div>		

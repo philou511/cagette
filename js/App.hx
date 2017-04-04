@@ -67,6 +67,7 @@ class App {
 	 */
 	public function overlay(url:String,?title,?large=true) {
 	
+		if (title != null) title = StringTools.urlDecode(title);
 		
 		var r = new haxe.Http(url);
 		r.onData = function(data) {

@@ -137,8 +137,9 @@ class Amap extends Object
 		//nansouty + jeanot + chantereine + georges martin
 		//return id == 1 || id == 176 || id == 627 || id == 197;
 		
-		//avallon + epicvous
-		return id == 1128 || id == 848;
+		//avallon + epicvous + amap maison violette + earl plaisirs du jardin
+		return Lambda.has([1128, 848, 1080, 662], id);
+		
 	}
 	
 	public function getCategoryGroups() {
