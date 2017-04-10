@@ -45,7 +45,7 @@ class Distribution extends Object
 	public var distributor4Id : SNull<SInt>;
 	#end
 	
-	@hideInForms public var confirmed :SBool;
+	@hideInForms public var validated :SBool;
 	
 	public function new() 
 	{

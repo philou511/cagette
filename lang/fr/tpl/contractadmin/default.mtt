@@ -3,16 +3,20 @@
 <div class="col-md-12">
 	
 
-	<!--
-	<div class="article" ::cond distribs.length>0:: >
+	
+	<div class="article text-center" ::cond distribs.length>0:: >
+		<h2>Distributions à valider</h2>
 		
-	::foreach d distribs::		
-	<a href="/contractAdmin/ordersByDate/::d.date.toString().substr(0,10)::/::d._place.id::"> 
-		Distribution du ::hDate(d.date)::, ::d._place.name::
-	</a> <br/>
-	::end::	
+		::foreach d distribs::	
+		<p>
+			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
+				Distribution du ::dDate(d.date)::, ::d._place.name::
+			</a>	
+		</p>	
+		::end::	
+		
 	</div>
-	-->
+	
 	
 	
 	<div class="article" id="contracts">

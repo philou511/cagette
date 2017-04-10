@@ -154,11 +154,19 @@ table.product{
 table.table tr.head>td{
 	//border-top: 1px solid #BBB;
 	border-top: 3px solid #DDD;
+	height: 30px;
+	font-size:120%;
+    vertical-align: bottom; 
 }
 
 //sub-row, darker bg
 table.table tr.subrow{
 	background-color:#EEE;
+}
+
+table.table tr td{
+	white-space: nowrap;
+	overflow-x:hidden;
 }
 
 /*table.table>tbody>tr>th{
@@ -683,3 +691,14 @@ div.basketNumber{
 	color:#CCC;
 	
 }
+
+tr.success td div.basketNumber{
+	background-color:#070;
+	color:white;
+}
+
+tr.danger td div.basketNumber{
+	background-color:#d9534f;
+	color:white;
+}
+

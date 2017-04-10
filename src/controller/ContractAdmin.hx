@@ -60,10 +60,12 @@ class ContractAdmin extends Controller
 		checkToken();
 		
 		//multidistribs to validate
-		var cids = tools.ObjectListTool.getIds(contracts);
-		var twoDays = tools.DateTool.deltaDays(Date.now(), 2);
-		view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( db.Distribution.manager.search(($contractId in cids) && !$confirmed && $date < twoDays, {orderBy:date}, false) );
-
+		if(app.user.amap.hasPayments()){
+			var cids = tools.ObjectListTool.getIds(contracts);
+			var twoDays = tools.DateTool.deltaDays(Date.now(), -3);
+			var ds = db.Distribution.manager.search(($contractId in cids) && !$validated && $date > twoDays && $date < Date.now(), {orderBy:date}, false);
+			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
+		}
 	}
 
 	/**
@@ -299,10 +301,6 @@ class ContractAdmin extends Controller
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
 			var orders = db.UserContract.prepare(Lambda.list(orders));
-			
-			//is this multidistrib confirmed ?
-			var distribs = Lambda.array(vdistribs).concat(Lambda.array(cdistribs));
-			view.confirmed = Lambda.count( distribs, function(d) return d.confirmed) == distribs.length;
 			
 			view.orders = orders;
 			view.date = date;
@@ -717,6 +715,7 @@ class ContractAdmin extends Controller
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
 		sendNav(c);
 		if (!app.user.canManageContract(c)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, "Cette distribution a déjà été validée");
 		
 		view.c = view.contract = c;
 		view.u = user;

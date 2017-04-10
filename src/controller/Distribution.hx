@@ -417,4 +417,57 @@ class Distribution extends Controller
 		
 	}
 	
+	/**
+	 * Validate a multi-distrib
+	 * @param	date
+	 * @param	place
+	 */
+	@tpl('distribution/validate.mtt')
+	public function doValidate(date:Date, place:db.Place){
+		
+		var md = MultiDistrib.get(date, place);
+		
+		/*var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+		var contracts = app.user.amap.getActiveContracts(true);
+		var cids = Lambda.map(contracts, function(c) return c.id);
+		var cconst = [];
+		var cvar = [];
+		for ( c in contracts) {
+			if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
+			if (c.type == db.Contract.TYPE_VARORDER) 	cvar.push(c.id);				
+		}
+		
+		//distribs
+		var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
+		var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
+		
+		if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+		
+		
+		//varying orders
+		var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
+		
+		//constant orders
+		var constorders = [];
+		for ( d in cdistribs) {
+			var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id), { orderBy:userId } );
+			constorders = constorders.concat(Lambda.array(orders2));
+		}
+		
+		//merge 2 lists
+		var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
+		var orders = db.UserContract.prepare(Lambda.list(orders));
+		
+		//is this multidistrib confirmed ?
+		var distribs = Lambda.array(vdistribs).concat(Lambda.array(cdistribs));*/
+		
+		view.confirmed = md.checkConfirmed();
+		view.users = md.getUsers();
+		view.date = date;
+		view.place = place;
+	}
+	
+	
+	
 }

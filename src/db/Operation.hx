@@ -207,11 +207,17 @@ class Operation extends sys.db.Object
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */
-	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap):db.Operation{
+	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true):db.Operation{
 		
 		var date = dkey.split("|")[0];
 		var placeId = Std.parseInt(dkey.split("|")[1]);
-		var transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:date}, true);
+		var transactions  = new List();
+		if (onlyPending){
+			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:date}, true);
+		}else{
+			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:date}, true);
+		}
+		
 		var basket = db.Basket.get(user, db.Place.manager.get(placeId,false), Date.fromString(date));
 		
 		for ( t in transactions){

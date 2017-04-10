@@ -78,4 +78,16 @@ class Basket extends Object
 		}
 	}
 	
+	public function getOrderOperation(?onlyPending=true):db.Operation{
+		var key = db.Distribution.makeKey(this.ddate, this.place);		
+		return db.Operation.findVOrderTransactionFor(key, this.user, this.place.amap,onlyPending);
+		
+	}
+	
+	public function isValidated(){
+		
+		return Lambda.count(getOrders(), function(o) return !o.paid) == 0;
+		
+	}
+	
 }

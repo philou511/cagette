@@ -111,10 +111,17 @@ table.product {
 
 /* GLOBAL TABLE SKINNING */
 table.table tr.head > td {
-  border-top: 3px solid #DDD; }
+  border-top: 3px solid #DDD;
+  height: 30px;
+  font-size: 120%;
+  vertical-align: bottom; }
 
 table.table tr.subrow {
   background-color: #EEE; }
+
+table.table tr td {
+  white-space: nowrap;
+  overflow-x: hidden; }
 
 /*table.table>tbody>tr>th{
 	background-color:white;
@@ -445,5 +452,13 @@ div.basketNumber {
   padding: 6px;
   font-weight: bold;
   color: #CCC; }
+
+tr.success td div.basketNumber {
+  background-color: #070;
+  color: white; }
+
+tr.danger td div.basketNumber {
+  background-color: #d9534f;
+  color: white; }
 
 /*# sourceMappingURL=style.css.map */

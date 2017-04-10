@@ -345,10 +345,24 @@ Called from controller/Main.hx line 117
 		d.dispatch(new AmapAdmin());
 	}
 	
+	@logged
+	function doValidate(date:Date, place:db.Place, user:db.User, d:haxe.web.Dispatch){
+		
+		var v = new controller.Validate();
+		v.date = date;
+		v.place = place;
+		v.user = user;
+		
+		d.dispatch(v);
+	}
+	
 	@admin
 	function doAdmin(d:Dispatch) {
 		d.dispatch(new controller.admin.Admin());
 	}
+	
+	
+	
 	
 	@admin
 	function doDb(d:Dispatch) {
