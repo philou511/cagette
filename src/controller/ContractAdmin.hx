@@ -59,10 +59,6 @@ class ContractAdmin extends Controller
 		view.places = app.user.amap.getPlaces();
 		checkToken();
 		
-		//multidistribs to validate
-		var cids = tools.ObjectListTool.getIds(contracts);
-		var twoDays = tools.DateTool.deltaDays(Date.now(), 2);
-		view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( db.Distribution.manager.search(($contractId in cids) && !$confirmed && $date < twoDays, {orderBy:date}, false) );
 
 	}
 
