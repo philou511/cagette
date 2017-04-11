@@ -70,11 +70,9 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", "Libellé", "Remboursement", true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", "Montant", null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
-		var data = [
-			{label:"Espèces",value:"cash"},
-			{label:"Chèque",value:"check"},
-			{label:"Virement",value:"transfer"}		
-		];
+		
+		var data = [];
+		for ( p in db.Operation.getPaymentTypes(app.user.amap)) data.push({label:App.t._(p.type),value:p.type});
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
 		
 		if (f.isValid()){
@@ -87,6 +85,8 @@ class Validate extends controller.Controller
 			t.relation = op;
 			t.amount = 0-Math.abs(t.amount);
 			t.insert();
+			
+			App.current.event(NewOperation(t));
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
@@ -158,17 +158,20 @@ class Validate extends controller.Controller
 			}
 			
 			var op = b.getOrderOperation(false);
-			op.lock();
-			op.pending = false;
-			op.update();
-			
-			for ( op in b.getPayments()){
-				if ( op.pending){
-					op.lock();
-					op.pending = false;
-					op.update();
-				}
+			if (op != null){
+				op.lock();
+				op.pending = false;
+				op.update();
+				
+				for ( op in b.getPayments()){
+					if ( op.pending){
+						op.lock();
+						op.pending = false;
+						op.update();
+					}
+				}	
 			}
+			
 			
 			throw Ok("/distribution/validate/"+date+"/"+place.id, "Commande validée");
 			

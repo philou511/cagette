@@ -59,11 +59,12 @@ class ContractAdmin extends Controller
 		view.places = app.user.amap.getPlaces();
 		checkToken();
 		
+
 		//multidistribs to validate
-		if(app.user.amap.hasPayments()){
+		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var cids = tools.ObjectListTool.getIds(contracts);
-			var twoDays = tools.DateTool.deltaDays(Date.now(), -3);
-			var ds = db.Distribution.manager.search(($contractId in cids) && !$validated && $date > twoDays && $date < Date.now(), {orderBy:date}, false);
+			var oneMonth = tools.DateTool.deltaDays(Date.now(), -30);
+			var ds = db.Distribution.manager.search(($contractId in cids) && !$validated && $date > oneMonth && $date < Date.now(), {orderBy:date}, false);
 			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
 		}
 	}

@@ -7,6 +7,8 @@
 	<div class="article text-center" ::cond distribs.length>0:: >
 		<h2>Distributions à valider</h2>
 		
+		<p>Vous devez valider ces distributions réalisées récemment.</p>
+		
 		::foreach d distribs::	
 		<p>
 			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 

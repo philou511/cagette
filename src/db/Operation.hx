@@ -62,9 +62,16 @@ class Operation extends sys.db.Object
 	}
 	
 	public function getOrderInfos(){
-		switch(type){
-			case COrder, VOrder : return this.data;				
-			default : return null;
+		return switch(type){
+			case COrder, VOrder : this.data;				
+			default : null;
+		}
+	}
+	
+	public function getPaymentInfos():PaymentInfos{
+		return switch(type){
+			case Payment : this.data;
+			default : null;
 		}
 	}
 	

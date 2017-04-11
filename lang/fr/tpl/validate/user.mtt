@@ -98,64 +98,69 @@
 				</tr>
 				
 				::set op = basket.getOrderOperation(false)::
-				<tr>
-					$$transaction(::op::)
-				</tr>
 				
-				::set tpaid = 0::
-				::foreach tt op.getRelatedPayments()::	
-				<tr>
-					$$transaction(::tt::)
-					::set tpaid = tpaid + tt.amount::
-					<td>
-						::if(tt.pending)::
-						<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-default btn-sm">
-							<span class="glyphicon glyphicon-ok"></span>
-							Ce paiement a été reçu
-						</a>
-						$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
-						::end::
-					</td>
-				</tr>
-				::end::
-				
-				<!-- total -->
-				::if(tpaid+op.amount != 0)::
-					::set class="danger"::
-				::else::
-					::set class="success"::
-				::end::
-				<tr class="::class::">
-					<td colspan="2"></td>
-					<th class="text-right">Total payé</th>
+				::if op!=null::
+					<tr>
+						$$transaction(::op::)
+					</tr>
 					
-					<th>
-						::tpaid::&nbsp;::currency()::
-					</th>
-					<td colspan="2">
+					::set tpaid = 0::
+					::foreach tt op.getRelatedPayments()::	
+					<tr>
+						$$transaction(::tt::)
+						::set tpaid = tpaid + tt.amount::
+						<td>
+							::if(tt.pending)::
+							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-default btn-sm">
+								<span class="glyphicon glyphicon-ok"></span>
+								Ce paiement a été reçu
+							</a>
+							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
+							::end::
+						</td>
+					</tr>
+					::end::
+					
+					<!-- total -->
+					::if(tpaid+op.amount != 0)::
+						::set class="danger"::
+					::else::
+						::set class="success"::
+					::end::
+					<tr class="::class::">
+						<td colspan="2"></td>
+						<th class="text-right">Total payé</th>
 						
-						
-						::if(tpaid+op.amount > 0):: 
-						
-							$$check(::false::)				
-							Trop payé
-						
-						::elseif(tpaid+op.amount < 0)::
-						
-							$$check(::false::)						
-							Manque ::Math.abs(tpaid+op.amount):: ::currency()::
+						<th>
+							::tpaid::&nbsp;::currency()::
+						</th>
+						<td colspan="2">
 							
-						::else::	
-						
-							$$check(::true::) 
 							
-						::end::
-					</td>
-				</tr>
+							::if(tpaid+op.amount > 0):: 
+							
+								$$check(::false::)				
+								Trop payé
+							
+							::elseif(tpaid+op.amount < 0)::
+							
+								$$check(::false::)						
+								Manque ::Math.abs(tpaid+op.amount):: ::currency()::
+								
+							::else::	
+							
+								$$check(::true::) 
+								
+							::end::
+						</td>
+					</tr>
+				::else::
+				<tr><td>Cette commande a été faite alors que les paiements étaient désactivés</td></tr>
+				::end::
 				
 			</table>
 			
-			<p class="text-center">
+			<p class="text-center" ::cond op!=null::>
 				
 				$$insert(Saisir un remboursement,/validate/::date::/::place.id::/::member.id::/addRefund/)
 				
@@ -164,7 +169,7 @@
 			
 			<p class="text-center">
 				
-				::if(tpaid+op.amount != 0)::
+				::if(op!=null && tpaid+op.amount != 0)::
 					
 					<div class="alert alert-danger text-center">
 					Vous ne pouvez pas valider cette commande car le montant payé<br/>
