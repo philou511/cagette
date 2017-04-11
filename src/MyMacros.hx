@@ -43,6 +43,7 @@ class MyMacros {
 	    
 	    // read the output of the process
 	    var commitShortSHA:String = process.stdout.readLine();
+	    commitShortSHA = "C"+commitShortSHA;
 	    
 	    // Generates a string expression
 	    return macro $v{commitShortSHA};
