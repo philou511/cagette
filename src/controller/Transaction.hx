@@ -182,6 +182,7 @@ class Transaction extends controller.Controller
 	public function doView(t:db.Operation){
 		view.t = t ;
 		
+		#if cagette-pro
 		var lw = pro.payment.LWCPayment.getConnector(app.user.amap);
 		
 		if (t.data.remoteOpId == null) throw "No remoteOpId in this operation";
@@ -195,6 +196,7 @@ class Transaction extends controller.Controller
 		}
 		
 		view.infos = td;
+		#end
 		
 	}
 	

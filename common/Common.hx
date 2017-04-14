@@ -179,6 +179,7 @@ enum Event {
 	//payments
 	GetPaymentTypes(data:{types:Array<payment.Payment>});
 	MakePayment;
+	NewOperation(op:db.Operation);
 	
 	#end
 	

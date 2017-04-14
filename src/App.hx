@@ -267,8 +267,11 @@ class App extends sugoi.BaseApp {
 		
 		var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
 		e.setHtmlBody(html);
-		
-		App.sendMail(e);
+		try{
+			App.sendMail(e);
+		}catch(e:Dynamic){
+			App.current.logError(e);
+		}
 	}
 	
 	/**

@@ -137,6 +137,9 @@
 								</tr>
 								::end::
 								
+								::set total = numClean(total)::
+								::set tpaid = numClean(tpaid)::
+								
 								::if(total!=tpaid)::
 								
 								<tr style="background-color:#EEE;">
@@ -149,6 +152,8 @@
 										::else::
 											Rembourser ::formatNum(tpaid-total):: ::currency()::
 										::end::
+										
+										::total:: - ::tpaid:: = ::(total-tpaid)::
 										
 									</td>
 								</tr>

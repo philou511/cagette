@@ -377,6 +377,8 @@ class Cart
 				p.element = App.j(".product"+p.id);
 
 				var id : Int = p.id;
+				//var id : Int = p.id;
+ 				//id = id + 1;
 				products.set(id, p);
 				
 				//trace(p.name+" : " + p.categories);

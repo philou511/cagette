@@ -200,7 +200,9 @@ class Operation extends sys.db.Object
 	public static function updateUserBalance(user:db.User,group:db.Amap){
 		
 		var ua = db.UserAmap.get(user, group, true);
-		ua.balance = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)').getFloatResult(0);
+		var b = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)').getFloatResult(0);
+		b = Math.round(b * 100) / 100;
+		ua.balance = b;
 		ua.update();
 	}
 	

@@ -145,8 +145,15 @@ class UserContract extends Object
 		}
 		
 		
+		
+		
+		return sort(out);
+	}
+	
+	public static function sort(orders:Array<UserOrder>){
+		
 		//order by lastname (+lastname2 if exists), then contract
-		out.sort(function(a, b) {
+		orders.sort(function(a, b) {
 			
 			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId > b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
 				
@@ -159,7 +166,7 @@ class UserContract extends Object
 			return 0;
 		});
 		
-		return out;
+		return orders;
 	}
 	
 	/**

@@ -88,6 +88,14 @@ class View extends sugoi.BaseView {
 	}
 	
 	/**
+	 * clean numbers in views
+	 * to avoid bugs like : 13.79 - 13.79 = 1.77635683940025e-15
+	 */
+	public function numClean(f:Float):Float{
+		return Math.round(f * 100) / 100;
+	}
+	
+	/**
 	 * max length for strings, usefull for tables
 	 */
 	public function short(text:String, length:Int){
