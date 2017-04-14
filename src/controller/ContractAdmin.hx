@@ -32,6 +32,8 @@ class ContractAdmin extends Controller
 	@tpl("contractadmin/default.mtt")
 	function doDefault(?args:{old:Bool}) {
 		
+		var now = Date.now();
+		
 		var contracts;
 		if (args != null && args.old) {
 			contracts = db.Contract.manager.search($amap == app.user.amap && $endDate < Date.now() ,{orderBy:-startDate},false);	
@@ -46,20 +48,21 @@ class ContractAdmin extends Controller
 			}
 		}
 		
-		//distributions to validate ( today is between orderEndDate and delvery+6 days )
-		var now = Date.now();
-		var cids = contracts.getIds();
-		if(cids.length>0){
-			view.distributions = db.Distribution.manager.unsafeObjects("SELECT * FROM Distribution WHERE NOW() > orderEndDate AND NOW() < DATE_ADD(date,INTERVAL 6 DAY) AND contractId IN ("+cids.join(",")+")", false);  
-			//view.distributions = db.Distribution.manager.search( now > $orderEndDate && now < ($date+$days(6)), false);  
-		}
-		
 		view.contracts = contracts;		
 		view.vendors = app.user.amap.getVendors();
 		view.places = app.user.amap.getPlaces();
 		checkToken();
 		
 
+		//multidistribs to validate
+		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
+			var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > Date.now() && $type == db.Contract.TYPE_VARORDER,false).getIds();
+			var oneMonth = tools.DateTool.deltaDays(now, -10);
+			var ds = db.Distribution.manager.search( !$validated && ($date > oneMonth) && ($date < now) && ($contractId in cids), {orderBy:date}, false);
+			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
+		}
+		
+		
 	}
 
 	/**
@@ -295,10 +298,6 @@ class ContractAdmin extends Controller
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
 			var orders = db.UserContract.prepare(Lambda.list(orders));
-			
-			//is this multidistrib confirmed ?
-			var distribs = Lambda.array(vdistribs).concat(Lambda.array(cdistribs));
-			view.confirmed = Lambda.count( distribs, function(d) return d.confirmed) == distribs.length;
 			
 			view.orders = orders;
 			view.date = date;
@@ -713,6 +712,7 @@ class ContractAdmin extends Controller
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
 		sendNav(c);
 		if (!app.user.canManageContract(c)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, "Cette distribution a déjà été validée");
 		
 		view.c = view.contract = c;
 		view.u = user;

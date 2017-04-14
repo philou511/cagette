@@ -1,0 +1,204 @@
+::use 'design.mtt'::
+
+	<div class="col-md-12">
+		<div class="article">
+			
+			<div class="text-center">
+				<h3>
+					Valider la distribution du ::hDate(date)::
+				</h3>	
+				<h4
+					><span class="glyphicon glyphicon-map-marker"></span>::place::
+				</h4>
+				
+			</div>	
+			
+			::set total = 0::
+			<table class="table table-condensed table-bordered">
+				<tr style="background-color:#DDD;">
+					<th colspan="9" class="text-center">Commande</th>
+				</tr>
+				<tr class="head">
+					<td colspan="9">
+						
+						<div class="basketNumber" ::cond basket!=null:: >
+							<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
+						</div>
+						
+						::member.getName()::
+					</td>
+				</tr>
+				<tr>
+					<th>Contrat</th>
+					<th>Qté</th>
+					<th>Réf.</th>
+					<th>Produit</th>
+					<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+					<th>Sous-total</th>
+					<th>Frais</th>
+					<th>Total</th>
+					<th>Payé</th>
+				</tr>
+				::foreach o orders::
+				<tr>
+					<td>
+						<a href="/contractAdmin/view/::o.contractId::">
+							::short(o.contractName,40)::
+						</a>
+					</td>
+					<td>
+						::o.quantity:
+					</td>
+					<td>
+						$$nullSafe(::o.productRef::)
+					</td>
+					<td>
+						::short(o.productName,40)::
+					</td>
+					<td>
+						::formatNum(o.productPrice)::&nbsp;::currency()::
+					</td>
+					<td>
+						::formatNum(o.subTotal)::&nbsp;::currency()::
+					</td>
+					<td>
+						<!-- fees -->
+						::if o.percentageValue!=null::
+						<a href="#" data-toggle="tooltip" data-placement="top" title="::o.percentageName:: : ::o.percentageValue:: %">
+							::formatNum(o.fees)::&nbsp;::currency()::
+						</a>
+						::end::
+					</td>
+					<td>
+						<!-- total -->
+						::formatNum(o.total)::&nbsp;::currency()::
+						::set total = total + o.total::
+						
+					</td>
+					<td>
+						$$check(::o.paid::)
+					</td>
+					
+				</tr>
+				::end::
+				
+				<tr class="subrow">					
+					<th colspan="7" class="text-right">Total commandé</th>
+					<th>::formatNum(total)::&nbsp;::currency()::</th>					
+					<th></th>
+					
+				</tr>
+				
+			</table>
+			
+		
+			<table class="table table-condensed table-bordered">
+				<tr style="background-color:#DDD;">
+					<th colspan="9" class="text-center">Paiement</th>
+				</tr>
+				
+				::set op = basket.getOrderOperation(false)::
+				
+				::if op!=null::
+					<tr>
+						$$transaction(::op::)
+					</tr>
+					
+					::set tpaid = 0::
+					::foreach tt op.getRelatedPayments()::	
+					<tr>
+						$$transaction(::tt::)
+						::set tpaid = tpaid + tt.amount::
+						<td>
+							::if(tt.pending)::
+							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-default btn-sm">
+								<span class="glyphicon glyphicon-ok"></span>
+								Ce paiement a été reçu
+							</a>
+							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
+							::end::
+						</td>
+					</tr>
+					::end::
+					
+					<!-- total -->
+					::if(tpaid+op.amount != 0)::
+						::set class="danger"::
+					::else::
+						::set class="success"::
+					::end::
+					<tr class="::class::">
+						<td colspan="2"></td>
+						<th class="text-right">Total payé</th>
+						
+						<th>
+							::tpaid::&nbsp;::currency()::
+						</th>
+						<td colspan="2">
+							
+							
+							::if(tpaid+op.amount > 0):: 
+							
+								$$check(::false::)				
+								Trop payé
+							
+							::elseif(tpaid+op.amount < 0)::
+							
+								$$check(::false::)						
+								Manque ::Math.abs(tpaid+op.amount):: ::currency()::
+								
+							::else::	
+							
+								$$check(::true::) 
+								
+							::end::
+						</td>
+					</tr>
+				::else::
+				<tr><td>Cette commande a été faite alors que les paiements étaient désactivés</td></tr>
+				::end::
+				
+			</table>
+			
+			<p class="text-center" ::cond op!=null::>
+				
+				$$insert(Saisir un remboursement,/validate/::date::/::place.id::/::member.id::/addRefund/)
+				
+				$$insert(Saisir un paiement,/validate/::date::/::place.id::/::member.id::/addPayment/)
+			</p>
+			
+			<p class="text-center">
+				
+				::if(op!=null && tpaid+op.amount != 0)::
+					
+					<div class="alert alert-danger text-center">
+					Vous ne pouvez pas valider cette commande car le montant payé<br/>
+					par l'adhérent ne correspond pas au total de sa commande !
+					</div>
+				
+				::else::
+				
+					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
+						<span class="glyphicon glyphicon-ok"></span>
+						Valider cette commande
+					</a>
+				::end::
+				
+				
+				
+			</p>
+			
+			<p class="text-center">
+				<a href="/distribution/validate/::date::/::place.id::" class="btn btn-default btn-sm">
+						<span class="glyphicon glyphicon-chevron-left"></span> Revenir à la distribution
+				</a>
+				
+			</p>
+			
+		
+		</div>
+	</div>
+	
+
+
+::end::

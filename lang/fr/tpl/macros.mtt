@@ -75,6 +75,14 @@
 		::end::
 	</macro>
 	
+	<macro name="check(v)">
+		::if(v==true || v==1)::
+		<span class="glyphicon glyphicon-ok" style="color:#060"></span>
+		::else::
+		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
+		::end::
+	</macro>
+	
 	
 	<macro name="date(dow,d,m,y,place)">
 		<div class="dateBox" >
@@ -165,7 +173,7 @@
 		::end::
 	</td>
 	<td style="font-size:1em;">
-		::if x==2::		
+		::if x==2 && t.pending==true::		
 			::if(t.getPaymentType()=="check")::
 				<span style="color:red;">Pensez à régler par chèque au retrait des produits</span>
 			::elseif(t.getPaymentType()=="cash")::

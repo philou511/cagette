@@ -20,10 +20,10 @@ class ObjectListTool
 	/**
 	 * deduplicate objects on IDs
 	 */
-	public static function deduplicate<T>(users:Iterable<T>):Array<T>{
+	public static function deduplicate<T>(objs:Iterable<T>):Array<T>{
 		var out = new Map<Int,T>();
 		
-		for ( u in users) out.set( untyped u.id, u );
+		for ( u in objs) out.set( untyped u.id, u );
 		
 		return Lambda.array(out);
 	}

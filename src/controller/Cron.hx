@@ -4,6 +4,7 @@ import sugoi.Web;
 import sugoi.mail.Mail;
 import Common;
 using Lambda;
+using tools.DateTool;
 
 class Cron extends Controller
 {
@@ -39,13 +40,18 @@ class Cron extends Controller
 	}
 	
 	public function doHour() {
+		
 		// this function could be locally tested by
 		// cd /data/cagette/www/ && (rm page.html; neko index.n cron/hour > page.html)
+		
 		app.event(HourlyCron);
 		
 		distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
 		distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
-		distribNotif(0,db.User.UserFlags.HasEmailNotifOuverture); //on command open
+		distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
+		
+		distribValidationNotif();
+		
 	}
 	
 	
@@ -285,6 +291,82 @@ class Cron extends Controller
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * check if there is a multi-distrib to validate
+	 */
+	function distribValidationNotif(){
+		var now = Date.now();
+
+		var from = now.setHourMinute( now.getHours(), 0 );
+		var to = now.setHourMinute( now.getHours()+1 , 0);
+		
+		var explain = "<p>Cette étape est importante afin de :</p>";
+		explain += "<ul><li>Mettre à jour les commandes si les quantités livrées sont différentes des quantitées commandées</li>";
+		explain += "<li>Confirmer la réception des paiements (chèques, liquide, virements) afin de classer les commandes comme 'payées'</li></ul>";
+		
+		//warn administrator if a distribution just ended
+		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
+		
+		for ( d in Lambda.array(ds)){
+			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
+				ds.remove(d);
+			}else if ( !d.contract.amap.hasPayments() ){
+				ds.remove(d);
+			}
+		}
+		
+		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		
+		for ( d in ds ){
+			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			
+			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
+			
+			var html = "<p>Votre distribution vient de se terminer, n'oubliez pas de la <b>valider</b></p>";
+			html += explain;
+			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
+			
+			
+			App.quickMail(d.contract.amap.contact.email, subj, html);
+		}
+		
+		//
+		//warn administrator if a distribution ended 3 days ago
+		//
+		
+		
+		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays(-3);
+		var to = now.setHourMinute( now.getHours()+1 , 0).deltaDays(-3);
+		
+		//warn administrator if a distribution just ended
+		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
+		
+		for ( d in Lambda.array(ds)){
+			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
+				ds.remove(d);
+			}else if ( !d.contract.amap.hasPayments() ){
+				ds.remove(d);
+			}
+		}
+		
+		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		
+		for ( d in ds ){
+			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			
+			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
+			
+			var html = "<p>Rappel : Vous avez une distribution à valider.</p>";
+			html += explain;
+			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
+			
+			
+			App.quickMail(d.contract.amap.contact.email, subj, html);
+		}
+		
 	}
 	
 }

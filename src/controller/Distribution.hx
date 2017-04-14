@@ -417,4 +417,24 @@ class Distribution extends Controller
 		
 	}
 	
+	/**
+	 * Validate a multi-distrib
+	 * @param	date
+	 * @param	place
+	 */
+	@tpl('distribution/validate.mtt')
+	public function doValidate(date:Date, place:db.Place){
+		
+		if (!app.user.isAmapManager()) throw "accès interdit";
+		
+		var md = MultiDistrib.get(date, place);
+		
+		view.confirmed = md.checkConfirmed();
+		view.users = md.getUsers();
+		view.date = date;
+		view.place = place;
+	}
+	
+	
+	
 }

@@ -80,12 +80,6 @@ class Transaction extends controller.Controller
 		var order : OrderInSession = app.session.data.order;
 		view.amount = order.total;
 		
-		
-		//var distribKey = db.Distribution.makeKey(date, place);		
-		//view.debt = db.Transaction.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-		//view.ua = db.UserAmap.get(app.user, app.user.amap);
-		//view.basket = db.Basket.get(app.user, place, date);
-		
 		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);		
 		view.place = place;
 		view.date = date;

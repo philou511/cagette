@@ -265,7 +265,8 @@ class App extends sugoi.BaseApp {
 		e.setRecipient(to);			
 		e.setSender(App.config.get("default_email"),"Cagette Pro");		
 		
-		var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
+		//var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
+		var html = App.current.processTemplate("mail/message.mtt", {text:html});		
 		e.setHtmlBody(html);
 		try{
 			App.sendMail(e);

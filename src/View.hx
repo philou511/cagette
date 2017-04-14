@@ -229,7 +229,7 @@ class View extends sugoi.BaseView {
 	public function getBasket(userId, placeId, date){
 		var user = getUser(userId);
 		var place = db.Place.manager.get(placeId, false);
-		return db.Basket.get(user, place, date);
+		return db.Basket.getOrCreate(user, place, date);
 	}
 	
 	public function getPlatform(){

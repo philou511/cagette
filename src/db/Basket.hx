@@ -51,6 +51,16 @@ class Basket extends Object
 			b.ddate = date;
 			b.num = db.Basket.manager.count($place == place && $ddate == date) + 1;
 			b.insert();
+			
+			//try to find orders
+			var md = MultiDistrib.get(date, place);
+			var dids = tools.ObjectListTool.getIds(md.distributions);
+			for ( o in db.UserContract.manager.search( ($distributionId in dids) && ($user == user), true)){
+				o.basket = b;
+				o.update();
+			}
+			
+			
 		}
 		
 		return b;
@@ -76,6 +86,18 @@ class Basket extends Object
 			
 			return op.getRelatedPayments();
 		}
+	}
+	
+	public function getOrderOperation(?onlyPending=true):db.Operation{
+		var key = db.Distribution.makeKey(this.ddate, this.place);		
+		return db.Operation.findVOrderTransactionFor(key, this.user, this.place.amap,onlyPending);
+		
+	}
+	
+	public function isValidated(){
+		
+		return Lambda.count(getOrders(), function(o) return !o.paid) == 0;
+		
 	}
 	
 }
