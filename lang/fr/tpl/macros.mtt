@@ -173,20 +173,24 @@
 		::end::
 	</td>
 	<td style="font-size:1em;">
+		
+		::t.name::<br/>
+		
 		::if x==2 && t.pending==true::		
 			::if(t.getPaymentType()=="check")::
-				<span style="color:red;">Pensez à régler par chèque au retrait des produits</span>
+				<span style="color:red;">Chèque à donner au retrait des produits</span>
 			::elseif(t.getPaymentType()=="cash")::
-				<span style="color:red;">Pensez à régler en liquide au retrait des produits</span>
+				<span style="color:red;">Liquide à donner au retrait des produits</span>
 			::elseif(t.getPaymentType()=="transfer")::
-				<span style="color:red;">Votre virement sera validé par un coordinateur</span>		
+				<span style="color:red;">Ce virement doit être par un coordinateur</span>		
 			::else::
 				::t.name::<br/>
 				<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
 			::end::
+			
 		::else::
 		
-			::t.name::<br/>
+			
 			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
 		
 		::end::

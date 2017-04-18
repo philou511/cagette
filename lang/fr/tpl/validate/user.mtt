@@ -108,10 +108,12 @@
 					::foreach tt op.getRelatedPayments()::	
 					<tr>
 						$$transaction(::tt::)
+						::if !tt.pending::
 						::set tpaid = tpaid + tt.amount::
+						::end::
 						<td>
 							::if(tt.pending)::
-							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-default btn-sm">
+							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
 								<span class="glyphicon glyphicon-ok"></span>
 								Ce paiement a été reçu
 							</a>

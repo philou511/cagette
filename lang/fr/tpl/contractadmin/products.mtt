@@ -49,6 +49,7 @@
 			<th></th>
 			<th>Réf.</th>
 			<th>Nom</th>
+			<th></th>
 			<th>Prix</th>
 			::if c.hasStockManagement()::
 			<th>Stock</th>
@@ -87,6 +88,7 @@
 				</div>
 			</td>
 			
+			<td>::if p.organic ::<img src="/img/AB.png"/> ::end::</td>
 			
 			<td>::formatNum(p.price)::&nbsp;::currency()::</td>
 			<td>

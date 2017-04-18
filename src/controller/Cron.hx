@@ -166,7 +166,7 @@ class Cron extends Controller
 		Cache.set(cacheId, dist, 24 * 60 * 60);
 		
 		//We have now the distribs we want to notify about.
-		trace(distribs);Sys.print("<br/>\n");
+		//Sys.print(distribs+"<br/>\n");
 		var distribsByContractId = new Map<Int,db.Distribution>();
 		for (d in distribs) distribsByContractId.set(d.contract.id, d);
 
@@ -196,7 +196,7 @@ class Cron extends Controller
 			//x.distrib = o.distribution;
 			x.products.push(o);			
 			users.set(o.userId+"-"+o.product.contract.amap.id, x);
-			trace (o.userId+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
+			//trace (o.userId+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
 			 
 			// Prévenir également le deuxième user en cas des commandes alternées
  			if (o.user2 != null) {
@@ -205,7 +205,7 @@ class Cron extends Controller
  				x.distrib = distribsByContractId.get(o.product.contract.id);
  				x.products.push(o);
  				users.set(o.user2.id+"-"+o.product.contract.amap.id, x);
- 				trace (o.user2.id+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
+ 				//trace (o.user2.id+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
  			}
 		}
 		
@@ -220,7 +220,7 @@ class Cron extends Controller
 					x.distrib = distribsByContractId.get(d.contract.id);
 					x.vendors.push(d.contract.vendor);
 					users.set(u.id+"-"+d.contract.amap.id, x);
-					trace (u.id+"-"+d.contract.amap.id, x);Sys.print("<br/>\n");
+					//print(u.id+"-"+d.contract.amap.id, x);
 				}
 			}
 		}
@@ -282,7 +282,6 @@ class Cron extends Controller
 					Sys.sleep(0.25);
 					
 					try {
-						// Comment this line in case of local test
 						App.sendMail(m , u.distrib.contract.amap);	
 					}catch (e:Dynamic){
 						app.logError(e);
@@ -295,9 +294,12 @@ class Cron extends Controller
 	
 	
 	/**
-	 * check if there is a multi-distrib to validate
+	 * Check if there is a multi-distrib to validate.
+	 * 
+	 * Autovalidate it after 10 days
 	 */
 	function distribValidationNotif(){
+		
 		var now = Date.now();
 
 		var from = now.setHourMinute( now.getHours(), 0 );
@@ -307,7 +309,9 @@ class Cron extends Controller
 		explain += "<ul><li>Mettre à jour les commandes si les quantités livrées sont différentes des quantitées commandées</li>";
 		explain += "<li>Confirmer la réception des paiements (chèques, liquide, virements) afin de classer les commandes comme 'payées'</li></ul>";
 		
-		//warn administrator if a distribution just ended
+		/*
+		 * warn administrator if a distribution just ended
+		 */ 
 		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
 		
 		for ( d in Lambda.array(ds)){
@@ -333,10 +337,9 @@ class Cron extends Controller
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
 		
-		//
-		//warn administrator if a distribution ended 3 days ago
-		//
-		
+		/*
+		 * warn administrator if a distribution ended 3 days ago
+		 */		
 		
 		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays(-3);
 		var to = now.setHourMinute( now.getHours()+1 , 0).deltaDays(-3);
@@ -363,10 +366,73 @@ class Cron extends Controller
 			html += explain;
 			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
 			
+			App.quickMail(d.contract.amap.contact.email, subj, html);
+		}
+		
+		
+		/*
+		 * Autovalidate unvalidated distributions after 10 days
+		 */ 
+		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+		print('AUTOVALIDATION');
+		print('Find distributions from $from to $to');
+		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , true);
+		for ( d in Lambda.array(ds)){
+			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
+				ds.remove(d);
+			}else if ( !d.contract.amap.hasPayments() ){
+				ds.remove(d);
+			}
+		}
+		for ( d in ds){
+			print(d.toString());
+			for ( u in d.getUsers()){
+				
+				var b = db.Basket.get(u, d.place, d.date);
+				if (b == null) continue;
+				
+				//mark orders as paid
+				for ( o in b.getOrders() ){				
+					o.lock();
+					o.paid = true;
+					o.update();				
+				}
+				//validate order operation and payment
+				var op = b.getOrderOperation(true);
+				if (op != null){
+					op.lock();
+					op.pending = false;
+					op.update();
+					
+					for ( op in b.getPayments()){
+						if ( op.pending){
+							op.lock();
+							op.pending = false;
+							op.update();
+						}
+					}	
+				}
+			}
 			
+			//finally validate distrib
+			d.validated = true;
+			d.update();
+			
+		}
+		//email
+		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		for ( d in ds ){
+			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			var html = "<p>A défaut d'une validation manuelle de votre part au bout de 10 jours,<br/> la distribution du "+ App.current.view.hDate(d.date)+" a été automatiquement validée.</p>";
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
 		
 	}
 	
+	
+	
+	function print(text){
+		Sys.println( text + "<br/>" );
+	}
 }

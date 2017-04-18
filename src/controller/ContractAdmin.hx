@@ -57,9 +57,11 @@ class ContractAdmin extends Controller
 		//multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > Date.now() && $type == db.Contract.TYPE_VARORDER,false).getIds();
-			var oneMonth = tools.DateTool.deltaDays(now, -10);
+			var oneMonth = tools.DateTool.deltaDays(now, 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 			var ds = db.Distribution.manager.search( !$validated && ($date > oneMonth) && ($date < now) && ($contractId in cids), {orderBy:date}, false);
 			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
+		}else{
+			view.distribs = [];
 		}
 		
 		

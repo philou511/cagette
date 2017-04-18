@@ -210,6 +210,10 @@ class App extends sugoi.BaseApp {
 	
 	public static function getMailer():sugoi.mail.IMailer {
 		
+		if (App.config.DEBUG){	
+			return new sugoi.mail.DebugMailer();
+		}
+		
 		if (sugoi.db.Variable.get("mailer") == null){
 			throw sugoi.BaseController.ControllerAction.ErrorAction("/","L'envoi des emails n'est pas configuré. Si vous êtes administrateur, <a href='/admin/emails'>vous pouvez le configurer ici</a>");
 		}
@@ -237,26 +241,24 @@ class App extends sugoi.BaseApp {
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getAmap();
 		
-		if (!App.config.DEBUG){	
-			
-			current.event(SendEmail(m));
-			
-			getMailer().send(m, function(o){
+		current.event(SendEmail(m));
 		
-				//store result
-				var lm = new db.Message();
-				lm.amap =  group;
-				lm.recipients = Lambda.array(Lambda.map(m.getRecipients(), function(x) return x.email));
-				lm.title = m.getSubject();
-				lm.date = Date.now();
-				lm.body = m.getHtmlBody();
-				lm.rawStatus = Std.string(o);
-				lm.status = o;
-				if (listId != null) lm.recipientListId = listId;
-				if (sender != null) lm.sender = sender;
-				lm.insert();
-			});
-		}
+		getMailer().send(m, function(o){
+	
+			//store result
+			var lm = new db.Message();
+			lm.amap =  group;
+			lm.recipients = Lambda.array(Lambda.map(m.getRecipients(), function(x) return x.email));
+			lm.title = m.getSubject();
+			lm.date = Date.now();
+			lm.body = m.getHtmlBody();
+			lm.rawStatus = Std.string(o);
+			lm.status = o;
+			if (listId != null) lm.recipientListId = listId;
+			if (sender != null) lm.sender = sender;
+			lm.insert();
+		});
+		
 	}
 	
 	public static function quickMail(to:String, subject:String, html:String){
