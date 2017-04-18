@@ -63,7 +63,7 @@ class ObjectListTool
 	}
 	
 	/**
-	 * Deduplicate distributions on key (date+placeId)
+	 * Deduplicate distributions by key (date+placeId)
 	 * @param	distribs
 	 */
 	public static function deduplicateDistribsByKey(distribs:Iterable<db.Distribution>){
@@ -72,6 +72,36 @@ class ObjectListTool
 		for ( d in distribs) out.set(d.getKey(), d);
 		return Lambda.array(out);
 		
+	}
+	
+	/**
+	 * Group distributions by key (date+placeId)
+	 * @param	distribs
+	 */
+	public static function groupDistribsByKey(distribs:Iterable<db.Distribution>){
+		
+		var out = new Map<String,Array<db.Distribution>>();
+		for ( d in distribs) {
+			
+			var v = out.get(d.getKey());
+			if (v == null) v = [];
+			v.push(d);			
+			out.set(d.getKey(), v);
+		}
+		return out;
+	}
+	
+	public static function groupOrdersByKey(ucs:Iterable<db.UserContract>){
+		
+		var out = new Map<String,Array<db.UserContract>>();
+		for ( uc in ucs) {
+			var k = uc.distribution.getKey();
+			var v = out.get(k);
+			if (v == null) v = [];
+			v.push(uc);			
+			out.set(k, v);
+		}
+		return out;
 	}
 	
 }

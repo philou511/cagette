@@ -275,7 +275,7 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * Make an order by contract ( non shop mode )
+	 * Make an order by contract ( standard mode )
 	 * The form is prepopulated if orders have already been made
 	 */
 	@tpl("contract/order.mtt")
@@ -284,21 +284,13 @@ class Contract extends Controller
 		//checks
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
 		if (!c.isUserOrderAvailable()) throw Error("/", "Ce contrat n'est pas ouvert aux commandes ");
-		/*if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
-			throw Error("/", "Ce contrat est à commande variable, vous devez sélectionner une date de distribution pour faire votre commande.");
-		}*/
 		
 		var distributions = [];
 		/* If its a varying contract, we display a column by distribution*/
 		if (c.type == db.Contract.TYPE_VARORDER) {
 			distributions = db.Distribution.getOpenToOrdersDeliveries(c);
-			
-			//if ( !args.d.canOrder() ) throw Error("/contract", "Les commandes sont fermées pour cette distribution, impossible de modifier la commande.");
-			
 		}else {
-			
-			distributions = [null]; 
-			//view.distributions = c.getDistribs(false);
+			distributions = []; 
 		}
 		
 		//list of distribs with a list of product and optionnaly an order
@@ -389,7 +381,15 @@ class Contract extends Controller
 			
 			app.event(MakeOrder(orders_out));
 			
-			throw Ok("/contract/order/"+c.id, "Votre commande a été mise à jour");			
+			if (app.user.amap.hasPayments()){
+			
+				//Go to payments page
+				throw Ok("/transaction/pay/"+place.id+"/"+date.toString().substr(0, 10), "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");
+			}else{
+				//no payments, confirm direclty
+				db.UserContract.confirmSessionOrder(order);
+				throw Ok("/contract/order/"+c.id, "Votre commande a été mise à jour");		
+			}
 		}
 		
 		view.c = view.contract = c;

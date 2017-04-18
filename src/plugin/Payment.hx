@@ -17,8 +17,6 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 	 */
 	public function onEvent(e:Event) {
 		
-		
-		
 		switch(e) {
 			
 			//create "order transactions" when orders have been made
@@ -32,31 +30,37 @@ class Payment extends plugin.PlugIn implements plugin.IPlugIn
 				//should not go further if group has not activated payements
 				if (user==null || !group.hasPayments()) return;
 				
+				//we consider that ALL orders are from the same contract type : varying or constant
 				if (orders[0].product.contract.type == db.Contract.TYPE_VARORDER ){
 					
-					//find basket
-					var basket = null;
-					for ( o in orders) {
-						if (o.basket != null) {
-							basket = o.basket;
-							break;
-						}
-					}
-					
 					// varying contract :
-					//get all orders for the same place & date, in order to update related transaction.
-					var k = orders[0].distribution.getKey();
-					var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
+					//manage separatly orders which occur at different dates
+					var ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
 					
-					//existing transaction
-					var existing = db.Operation.findVOrderTransactionFor( k , user, group);
-					if (existing != null){
-						db.Operation.updateOrderOperation(existing,allOrders,basket);	
-					}else{
-						db.Operation.makeOrderOperation(allOrders,basket);			
+					for ( orders in ordersGroup){
+						
+						//find basket
+						var basket = null;
+						for ( o in orders) {
+							if (o.basket != null) {
+								basket = o.basket;
+								break;
+							}
+						}
+						
+						//get all orders for the same place & date, in order to update related transaction.
+						var k = orders[0].distribution.getKey();
+						var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
+						
+						//existing transaction
+						var existing = db.Operation.findVOrderTransactionFor( k , user, group);
+						if (existing != null){
+							db.Operation.updateOrderOperation(existing,allOrders,basket);	
+						}else{
+							db.Operation.makeOrderOperation(allOrders,basket);			
+						}
+						
 					}
-					
-					
 					
 				}else{
 					

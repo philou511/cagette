@@ -8,7 +8,7 @@
 		::end::
 		<hr/>
 		<p>
-			Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.<br/>
+			Saisissez ici vos commandes à l'avance pour ce producteur.<br/>
 			Vous pouvez consulter à tout moment vos commandes en cours sur la page <a href="/contract">mon compte</a>.
 		</p>
 		
@@ -18,7 +18,8 @@
 			::if distribution!=null::
 			<input type="hidden" name="distribution" value="::distribution.id::"/>
 			::end::
-			<table class="table table-bordered">
+			
+			<table class="table table-bordered table-striped" style="background:white;" >
 			<tr>
 				<td></td>
 				<th>Produit</th>
