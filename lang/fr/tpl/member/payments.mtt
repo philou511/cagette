@@ -43,11 +43,11 @@
 				$$transaction(::t::)
 			</tr>
 				
-			::foreach tt t.getRelatedPayments()::	
+			<!--::foreach tt t.getRelatedPayments()::	
 				<tr style="background:#EEE;color:#666;" onclick="_.overlay('/transaction/view/::tt.id::','',false)">
 					$$transaction(::tt::)
 				</tr>
-			::end::
+			::end::-->
 			
 		::end::
 		

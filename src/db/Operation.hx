@@ -80,7 +80,9 @@ class Operation extends sys.db.Object
 	}
 	
 	public static function getOrderOperations(user:db.User,group:db.Amap){		
-		return manager.search($user == user && $group == group && $type!=Payment,{orderBy:date},false);		
+		//return manager.search($user == user && $group == group && $type!=Payment,{orderBy:date},false);		
+		//return manager.search($user == user && $group == group && $relation==null,{orderBy:date},false);		
+		return manager.search($user == user && $group == group,{orderBy:date},false);		
 	}
 	
 	/**
@@ -137,7 +139,8 @@ class Operation extends sys.db.Object
 		t.insert();
 		
 		updateUserBalance(t.user, t.group);
-	
+		
+		return t;	
 	}
 	
 	
@@ -170,7 +173,9 @@ class Operation extends sys.db.Object
 		
 		t.update();
 		
-		updateUserBalance(t.user,t.group);
+		updateUserBalance(t.user, t.group);
+		
+		return t;
 	}
 	
 	/**
@@ -180,7 +185,7 @@ class Operation extends sys.db.Object
 	 * @param	name
 	 * @param	relation
 	 */
-	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, relation:db.Operation ){
+	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation ){
 		
 		var t = new db.Operation();
 		t.amount = Math.abs(amount);
@@ -192,7 +197,7 @@ class Operation extends sys.db.Object
 		t.type = Payment;
 		var data : PaymentInfos = {type:type};
 		t.data = data;
-		t.relation = relation;
+		if(relation!=null) t.relation = relation;
 		t.insert();
 		
 		updateUserBalance(user, group);
@@ -301,6 +306,72 @@ class Operation extends sys.db.Object
 			if (found != null) out.push(found);
 		}
 		return out;
+	}
+	
+	/**
+	 * create the needed order operations
+	 * @param	orders
+	 */
+	public static function onOrderConfirm(orders:Array<db.UserContract>){
+		
+		if (orders.length == 0) return null;
+		var out = [];
+		var user = orders[0].user;
+		var group = orders[0].product.contract.amap;
+		
+		//should not go further if group has not activated payements
+		if (user==null || !group.hasPayments()) return null;
+		
+		//we consider that ALL orders are from the same contract type : varying or constant
+		if (orders[0].product.contract.type == db.Contract.TYPE_VARORDER ){
+			
+			// varying contract :
+			//manage separatly orders which occur at different dates
+			var ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
+			
+			for ( orders in ordersGroup){
+				
+				//find basket
+				var basket = null;
+				for ( o in orders) {
+					if (o.basket != null) {
+						basket = o.basket;
+						break;
+					}
+				}
+				
+				//get all orders for the same place & date, in order to update related transaction.
+				var k = orders[0].distribution.getKey();
+				var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
+				
+				//existing transaction
+				var existing = db.Operation.findVOrderTransactionFor( k , user, group);
+				if (existing != null){
+					out.push( db.Operation.updateOrderOperation(existing,allOrders,basket) );	
+				}else{
+					out.push( db.Operation.makeOrderOperation(allOrders,basket) );			
+				}
+				
+			}
+			
+		}else{
+			
+			// constant contract
+			// create/update a transaction computed like $distribNumber * $price.
+			var contract = orders[0].product.contract;
+			
+			var existing = db.Operation.findCOrderTransactionFor( contract , user);
+			if (existing != null){
+				out.push( db.Operation.updateOrderOperation(existing, contract.getUserOrders(user) ) );
+			}else{
+				out.push( db.Operation.makeOrderOperation( contract.getUserOrders(user) ) );
+			}
+			
+			
+		}
+		
+		return out;
+		
 	}
 	
 	

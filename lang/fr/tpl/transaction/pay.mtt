@@ -33,7 +33,7 @@
 		
 		::foreach p paymentTypes::
 		<div class="col-md-4">
-			<a class="clickable" href="::p.link::/::place.id::/::date::" style="min-height:120px;vertical-align:middle;">
+			<a class="clickable" href="::p.link::" style="min-height:120px;vertical-align:middle;">
 				
 				<h3>::_(p.type)::</h3> 
 				::raw p.icon:: 

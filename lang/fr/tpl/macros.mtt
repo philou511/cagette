@@ -152,14 +152,15 @@
 	
 	<macro name="transaction(t)">
 	::set x = t.getTypeIndex()::
-	::if x==2:: ::set class="text-right":: ::end:: 
+	<!--::if x==2:: ::set class="text-right":: ::end:: -->
 	<td class="::class::">
 		::if x==0::
 		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Commande
 		::elseif x==1::
 		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
-		<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>
+		<!--<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>-->
+		<i class="fa fa-dollar" aria-hidden="true"></i> Paiement ::_(t.getPaymentType())::
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::

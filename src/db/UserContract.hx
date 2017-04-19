@@ -502,7 +502,7 @@ class UserContract extends Object
 	}
 	
 	/**
-	 * Confirms an order
+	 * Confirms an order : create real orders from tmp orders in session
 	 * @param	order
 	 */
 	public static function confirmSessionOrder(order:OrderInSession){

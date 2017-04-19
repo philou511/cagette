@@ -60,24 +60,20 @@
 					::set i = repeat.uo.index::
 					
 					::foreach d userOrders::
-					<td>
+					<td class="text-center">
 		
 						::set o = d.datas[i]::
 						
 						::if o.order==null::
-							::set q = ""::
+							::if d.distrib==null::
+								<!-- contrat amap-->
+								<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="" />
+							::else::
+								<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="" />
+							::end::
 						::else::
-							::set q = o.order.quantity::
+							::o.order.quantity::
 						::end::
-						
-						
-						::if d.distrib==null::
-							<!-- contrat amap-->
-							<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-						::else::
-							<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-						::end::
-						
 						
 					</td>
 					::end::

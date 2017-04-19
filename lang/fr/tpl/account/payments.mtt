@@ -42,11 +42,11 @@
 			$$transaction(::t::)
 		</tr>
 		
-		::foreach tt t.getRelatedPayments()::	
+		<!--::foreach tt t.getRelatedPayments()::	
 		<tr style="background:#EEE;color:#666;">
 			$$transaction(::tt::)
 		</tr>
-		::end::
+		::end::-->
 		
 		::end::
 		
