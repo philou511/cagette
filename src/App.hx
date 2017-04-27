@@ -36,12 +36,12 @@ class App extends sugoi.BaseApp {
 		
 		//optionnal plugins
 		#if plugins
-		plugins.push( new hosted.HostedPlugIn() );
-		plugins.push( new pro.ProPlugIn() );
+		plugins.push( new hosted.HostedPlugIn() );				
+		plugins.push( new pro.ProPlugIn() );		
+		plugins.push( new connector.ConnectorPlugIn() );				
 		plugins.push( new pro.LemonwayEC() );
-		plugins.push( new connector.ConnectorPlugIn() );		
+		plugins.push( new who.WhoPlugIn() );
 		#end
-		
 	
 		super.mainLoop();
 	}

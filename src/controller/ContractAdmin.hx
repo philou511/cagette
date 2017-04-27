@@ -19,7 +19,7 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	function sendNav(c){
+	public function sendNav(c){
 		var nav = new Array<Link>();
 		var e = Nav(nav,"contractAdmin",c.id);
 		app.event(e);
