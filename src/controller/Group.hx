@@ -12,6 +12,11 @@ class Group extends controller.Controller
 	@tpl('group/view.mtt')
 	function doDefault(group:db.Amap){
 		
+		if (group.regOption == db.Amap.RegOption.Open) {
+			app.session.data.amapId = group.id;
+			throw Redirect("/");
+		}
+		
 		view.group = group;
 		view.contracts = group.getActiveContracts();
 		view.pageTitle = group.name;

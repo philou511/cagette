@@ -22,55 +22,42 @@ class Main extends Controller {
 	function doDefault() {
 		view.category = 'home';
 		
-		if (app.user != null) {
-			
-			if (app.user.getAmap() == null) {
-				
-				throw Redirect("/user/choose");
-			}
-
-			view.amap = app.user.getAmap();
-			
-			//contrats ouverts à la commande
-			var openContracts = Lambda.filter(app.user.amap.getActiveContracts(), function(c) return c.isUserOrderAvailable());
-			view.openContracts = openContracts;
-			
-			//s'inscrire a une distribution
-			view.contractsWithDistributors = Lambda.filter(app.user.getContracts(), function(c) return c.distributorNum > 0);
-			
-			//freshly created group
-			view.newGroup = app.session.data.newGroup == true;
-
-			
-			var distribs = getNextMultiDeliveries();
-			
-			//fix bug du sorting (les distribs du jour se mettent en bas)
-			var out = [];
-			for (x in distribs) out.push(x);
-			out.sort(function(a, b) {
-				return Std.int(a.startDate.getTime()/1000) - Std.int(b.startDate.getTime()/1000);
-			});
-			
-			view.distribs = out;
-			
-			
-		}else {
-			if (app.params.exists("redirect")){
-				throw Redirect("/user/login?redirect="+app.params.get("redirect"));	
-			}else{
-				throw Redirect("/user/login");
-			}
-			
-			
+		var group = app.getCurrentGroup();		
+		if ( app.user!=null && group == null) {			
+			throw Redirect("/user/choose");
+		}else if (app.user == null && (group==null || group.regOption!=db.Amap.RegOption.Open) ) {
+			throw Redirect("/user/login");
 		}
+
+		view.amap = group;
 		
+		//contrats ouverts à la commande
+		var openContracts = Lambda.filter(group.getActiveContracts(), function(c) return c.isUserOrderAvailable());
+		view.openContracts = openContracts;
+		
+		//s'inscrire a une distribution
+		view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.getContracts(), function(c) return c.distributorNum > 0);
+		
+		//freshly created group
+		view.newGroup = app.session.data.newGroup == true;
+	
+		var distribs = getNextMultiDeliveries(group);
+		
+		//fix bug du sorting (les distribs du jour se mettent en bas)
+		var out = [];
+		for (x in distribs) out.push(x);
+		out.sort(function(a, b) {
+			return Std.int(a.startDate.getTime()/1000) - Std.int(b.startDate.getTime()/1000);
+		});
+		
+		view.distribs = out;
 	}
 	
 	/**
 	 * Get next multi-deliveries 
 	 * ( deliveries including more than one vendors )
 	 */
-	public function getNextMultiDeliveries(){
+	function getNextMultiDeliveries(group:db.Amap){
 		
 		var out = new Map < String, {
 			place:db.Place, //common delivery place
@@ -87,7 +74,7 @@ class Main extends Controller {
 		var now = Date.now();
 		var now9 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
 	
-		var contracts = db.Contract.getActiveContracts(App.current.user.amap);
+		var contracts = db.Contract.getActiveContracts(group);
 		var cids = Lambda.map(contracts, function(p) return p.id);
 		
 		//var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
@@ -104,29 +91,17 @@ class Main extends Controller {
 			var o = out.get(key);
 			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[], orderStartDate:null,orderEndDate:null};
 			
-			//my orders
-			var orders = d.contract.getUserOrders(app.user,d);
-			if (orders.length > 0){
-				o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
+			//my orders : no orders block in standard mode, nor with const contracts
+			if(app.user!=null && app.user.amap.hasShopMode() && d.contract.type == db.Contract.TYPE_CONSTORDERS){
+				var orders = d.contract.getUserOrders(app.user,d);
+				if (orders.length > 0){
+					o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
+				}
 			}else{
-				
-				if (!app.user.amap.hasShopMode() ) {
-					//no "order block" if no shop mode
-					continue;
-				}
-				
-				//if its a constant order contract, skip this delivery
-				if (d.contract.type == db.Contract.TYPE_CONSTORDERS){
-					continue;
-				}
-				
 				//products preview if no orders
-				//if (d.orderStartDate != null && d.orderStartDate.getTime() <= now.getTime() && d.orderEndDate.getTime() >= now.getTime()){
-					for ( p in d.contract.getProductsPreview(9)){
-						o.products.push( p.infos() );	
-					}	
-				//}
-				
+				for ( p in d.contract.getProductsPreview(9)){
+					o.products.push( p.infos() );	
+				}	
 			}
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER){
@@ -200,14 +175,13 @@ class Main extends Controller {
 	function doApi(d:Dispatch) {
 		try {
 			d.dispatch(new controller.Api());
+		}catch (e:tink.core.Error){
+			
+			Sys.print(Json.stringify( {error:{code:e.code,message:e.message}} ));
+			
 		}catch (e:Dynamic){
 			
-			var err = {
-				error:true,
-				message : Std.string(e)
-			}
-			
-			Sys.print(Json.stringify(err));
+			Sys.print(Json.stringify( {error:{message : Std.string(e)}} ));
 		}
 		
 	}
@@ -303,7 +277,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Membership());
 	}
 	
-	@logged
 	function doShop(d:Dispatch) {
 		view.category = 'shop';
 		d.dispatch(new controller.Shop());

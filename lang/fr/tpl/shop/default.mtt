@@ -149,7 +149,7 @@
 	<div class="article">
 		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> Tout</span><br/>
 		
-		::foreach g user._amap.getCategoryGroups()::
+		::foreach g group.getCategoryGroups()::
 			<div>
 				<h4>::g.name::</h4>				
 				::foreach c g.categs::

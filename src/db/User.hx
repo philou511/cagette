@@ -67,6 +67,17 @@ class User extends Object {
 		return rights.has(Admin) || id==1;
 	}
 	
+	public static function login(user:db.User, email:String) {
+		
+		user.lock();
+		user.ldate = Date.now();
+		user.update();
+		App.current.session.setUser(user);
+		if (App.current.session.data == null) App.current.session.data = {};
+		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; //qui est connecté, user1 ou user2 ?	
+		
+	}
+	
 	/**
 	 * is this user the manager of the current group
 	 */

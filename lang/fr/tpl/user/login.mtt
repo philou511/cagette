@@ -64,21 +64,26 @@
 		
 		<h1>Connexion</h1>
 		<div class="block">
-			<form action="/user/login" method="post">
-				
-				<label>Email : </label>
-				<input type="text" name="name" value="" class="form-control" />
-			
-				<label>Mot de passe : </label>
-				<input type="password" name="pass" value="" class="form-control"/>		
-		
-				<input type="submit" value="OK" class="btn btn-primary" style="margin-top:12px;" />
+			<form action="/user/login" method="post" class="form-horizontal">
+				<div class="form-group">
+					<label for="email" class="col-sm-4 control-label">Email : </label>
+					<div class="col-sm-8">
+						<input id="email"  class="form-control"type="text" name="name" value=""  />			
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="pass" class="col-sm-4 control-label">Mot de passe : </label>
+					<div class="col-sm-8">
+						<input id="pass" type="password" name="pass" value="" class="form-control"/>					
+					</div>					
+				</div>
+				<p class="text-center">
+					<input type="submit" value="Se connecter" class="btn btn-primary btn-lg" />
+					<br/>
+					<br/>
+					<a href="/user/forgottenPassword">Mot de passe oublié ?</a>
+				</p>
 			</form>
-
-			<p>
-				<a href="/user/forgottenPassword">Mot de passe oublié</a>
-			</p>
-	
 		</div>
 		
 		
