@@ -1,38 +1,27 @@
 ::use 'design.mtt'::
 
-
-
-
 	<div class="col-md-12">
 		<div class="article">
 			
 			<div class="text-center">
 				<h3>
-				Distribution du ::hDate(date)::
+				Commandes du ::hDate(from):: au ::hDate(to)::
 				</h3>	
-				<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
+				<!--<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
 				<br/>
 				
-				<!--::if(confirmed)::
+				::if(confirmed)::
 				Validée
 				::else::
 				Non validée
 				::end::-->
 			</div>	
 			
-			
+		::set uri = from.toString().substr(0,10)+"/"+to.toString().substr(0,10)::	
 		
 		<div class="text-center">
-			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> Export CSV </a>
-			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
-			
-			::if ctotal::
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par adhérent</a>
-			::else::
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">Sous-totaux par contrat</a>
-			::end::
-			
-			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par producteur</a>
+			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> Export CSV </a>-->
+			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Totaux par producteur</a>
 		</div>
 
 		
@@ -53,13 +42,6 @@
 				
 					<tr style="background-color:#666;">
 						<td colspan="9" style="font-size:120%;color:#e7e7e7;">
-							
-							::set basket = getBasket(m.userId,place.id,date)::
-							
-							<div class="basketNumber" ::cond basket!=null:: >
-								<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
-							</div>
-							
 							::m.userName:: 
 							::if m.userName2!=null::
 								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::

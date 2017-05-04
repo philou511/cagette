@@ -27,6 +27,11 @@ class Plugin extends sugoi.BaseController
 		d.dispatch(new connector.controller.Main());
 	}
 	
+	//cagette-wholesale-order
+	public function doWho(d:haxe.web.Dispatch) {
+		d.dispatch(new who.controller.Main());
+	}
 	#end
+	
 	
 }

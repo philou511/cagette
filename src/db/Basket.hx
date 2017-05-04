@@ -78,12 +78,10 @@ class Basket extends Object
 	 */
 	public function getPayments():Iterable<db.Operation>{
 		
-		var key = db.Distribution.makeKey(this.ddate, this.place);		
-		var op = db.Operation.findVOrderTransactionFor(key, this.user, this.place.amap);
+		var op = getOrderOperation();
 		if (op == null){
 			return [];
-		}else{
-			
+		}else{			
 			return op.getRelatedPayments();
 		}
 	}

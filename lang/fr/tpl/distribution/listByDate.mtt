@@ -118,10 +118,13 @@
 							<table style="width:100%;border:1px solid #CCC;">
 							::if(basket!=null)::
 								::set tpaid=0::
-								::foreach p basket.getPayments()::
+								
+								::set op = basket.getOrderOperation(false)::
+								
+								::foreach p op.getRelatedPayments()::
 								<tr>
 									<td style="min-width:30px;">
-										::if(p.pending)::
+										::if(p.pending==true)::
 										<img src="/img/tick_no.png"/>
 										::else::
 										<img src="/img/tick_ok_me.png"/>
@@ -137,6 +140,7 @@
 								</tr>
 								::end::
 								
+								<!-- bug : 2 vars are the same but == doesnt work -->
 								::set total = numClean(total)::
 								::set tpaid = numClean(tpaid)::
 								
@@ -146,19 +150,14 @@
 									<td><img src="/img/tick_no.png"/></td>
 									<td>::formatNum(total-tpaid):: ::currency()::</td>
 									<td>
-										
 										::if(total>tpaid)::
 											Reste à payer ::formatNum(total-tpaid):: ::currency()::
 										::else::
 											Rembourser ::formatNum(tpaid-total):: ::currency()::
 										::end::
-										
-										::total:: - ::tpaid:: = ::(total-tpaid)::
-										
 									</td>
 								</tr>
 								::end::
-								
 							::end::
 							</table>
 						</td>

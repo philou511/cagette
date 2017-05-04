@@ -101,7 +101,7 @@
 				<tr class="::class::">
 				
 					<td>
-						::m.quantity:  
+						::formatNum(m.quantity)::
 					</td>
 					<td>
 						$$nullSafe(::m.productRef::)
