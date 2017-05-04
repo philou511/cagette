@@ -105,6 +105,8 @@
 			<li><a href="/member/?select=contract">Avec contrat/commandes</a></li>
 			<li><a href="/member/?select=newusers">Ne s'est jamais connecté</a></li>
 			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">Adhésion à renouveller</a></li>
+			<li ::cond user._amap.hasPayments()::><a href="/member/balance">Solde des adhérents</a></li>
+			
 		</ul>
 		
 		<form class="form-search" action="/member/" method="get">

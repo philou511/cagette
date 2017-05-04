@@ -703,4 +703,14 @@ class Member extends Controller
 		
 	}
 	
+	@tpl('member/balance.mtt')
+	function doBalance(){
+		
+		view.balanced = db.UserAmap.manager.search($amap == app.user.amap && $balance == 0.0, false);
+		view.credit = db.UserAmap.manager.search($amap == app.user.amap && $balance > 0, false);
+		view.debt = db.UserAmap.manager.search($amap == app.user.amap && $balance < 0, false);
+		
+		
+	}
+	
 }
