@@ -1,13 +1,17 @@
 ::use 'design.mtt'::
 
-
-
 	<div class="col-md-12">
 		<div class="article">
 			
-		<h2>Vue globale des commandes - livraison du ::hDate(date)::</h2>
+		<h2>Vue globale des commandes - du ::hDate(from):: au ::hDate(to)::</h2>
 		
+		<div class="text-center">
+			$$export(/contractAdmin/vendorsByTimeFrame/::from.toString().substr(0,10)::/::to.toString().substr(0,10)::?csv=1)
+		</div>
+			
 		<hr/>
+			
+			
 			
 		::foreach o orders::
 		

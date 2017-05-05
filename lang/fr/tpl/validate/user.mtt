@@ -123,8 +123,11 @@
 					</tr>
 					::end::
 					
+					::set amount = numClean(op.amount)::
+					::set tpaid = numClean(tpaid)::
+					
 					<!-- total -->
-					::if(tpaid+op.amount != 0)::
+					::if(tpaid+amount != 0)::
 						::set class="danger"::
 					::else::
 						::set class="success"::

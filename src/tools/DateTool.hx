@@ -18,4 +18,8 @@ class DateTool
 	public static function setHourMinute(d:Date, hour:Int, minute:Int):Date{
 		return new Date(d.getFullYear(), d.getMonth(), d.getDate(), hour, minute, 0);
 	}
+	
+	public static function setDateMonth(d:Date, date:Int, month:Int):Date{
+		return new Date(d.getFullYear(), month, date, d.getHours(), d.getMinutes(), 0);
+	}
 }
