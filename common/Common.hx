@@ -138,6 +138,8 @@ enum OrderFlags {
 	
 **/
 	
+typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,price:Float,total:Float};
+	
 enum Event {
 
 	Page(uri:String);							//a page is displayed

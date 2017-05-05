@@ -455,7 +455,7 @@ class ContractAdmin extends Controller
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
 		if ( distribs.length == 0 ) throw Error("/contractAdmin/", "Il n'y a aucune distribution sur cette période");
 		
-		var out = new Map<Int,Dynamic>();//key : vendor id
+		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:List<OrderByProduct>}>();//key : vendor id
 		
 		for (d in distribs){
 			var vid = d.contract.vendor.id;
@@ -469,14 +469,14 @@ class ContractAdmin extends Controller
 				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
 					
 					//find record in existing orders
-					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
+					var f : OrderByProduct = Lambda.find(o.orders, function(a:OrderByProduct) return a.pid == x.pid);
 					if (f == null){
 						//new product order
 						o.orders.push(x);						
 					}else{
 						//increment existing
-						f.quantity += untyped x.quantity;
-						f.total += untyped x.total;
+						f.quantity += x.quantity;
+						f.total += x.total;
 					}
 				}
 				out.set(vid, o);
@@ -484,6 +484,31 @@ class ContractAdmin extends Controller
 		}
 		
 		view.orders = Lambda.array(out);
+		
+		
+		if ( app.params.exists("csv") ){
+			
+			var orders = [];
+			for ( x in out){
+				//empty line
+				orders.push({"quantity":null,"pname":null,"ref":null,"price":null,"total":null});
+				orders.push({"quantity":null,"pname":x.contract.vendor.name,"ref":null,"price":null,"total":null});
+				
+				for (o in x.orders){
+					orders.push({
+						"quantity":view.formatNum(o.quantity),
+						"pname":o.pname,
+						"ref":o.ref,
+						"price":view.formatNum(o.price),
+						"total":view.formatNum(o.total)					
+					});
+				}
+			}			
+			
+			sugoi.tools.Csv.printCsvData(orders, ["quantity", "pname", "ref", "price", "total"], "Commandes du " + from.toString().substr(0,10)+" au "+to.toString().substr(0,10)+" par producteur.csv");
+			return;
+		}
+		
 		view.from = from;
 		view.to = to;
 	}
