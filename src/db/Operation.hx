@@ -79,10 +79,10 @@ class Operation extends sys.db.Object
 		return manager.search($user == user && $group == group,{orderBy:date},false);		
 	}
 	
-	public static function getOrderOperations(user:db.User,group:db.Amap){		
+	public static function getOrderOperations(user:db.User, group:db.Amap,?limit=50 ){		
 		//return manager.search($user == user && $group == group && $type!=Payment,{orderBy:date},false);		
 		//return manager.search($user == user && $group == group && $relation==null,{orderBy:date},false);		
-		return manager.search($user == user && $group == group,{orderBy:date},false);		
+		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
 	}
 	
 	/**

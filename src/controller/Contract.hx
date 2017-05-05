@@ -491,8 +491,7 @@ class Contract extends Controller
 			
 			App.current.session.data.order = orders;
 			
-			//Go to payments page
-			
+			//Go to payments page			
 			if (c.type == db.Contract.TYPE_CONSTORDERS) {
 				throw Ok("/contract/order/"+c.id, "Votre commande AMAP a été enregistrée");	
 			}else{

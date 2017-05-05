@@ -351,8 +351,7 @@ Called from controller/Main.hx line 117
 		var v = new controller.Validate();
 		v.date = date;
 		v.place = place;
-		v.user = user;
-		
+		v.user = user;		
 		d.dispatch(v);
 	}
 	

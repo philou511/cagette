@@ -16,14 +16,19 @@ class Validate extends controller.Controller
 	
 	@tpl('validate/user.mtt')
 	public function doDefault(){
-		
-		var b = db.Basket.get(user, place, date);
-		
 		view.member = user;
+		
+		if (!app.user.amap.hasShopMode()){
+			//get last operations and check balance
+			view.operations = db.Operation.getOrderOperations(this.user,place.amap,10);
+			view.balance = db.UserAmap.get(this.user, place.amap).balance;
+		}
+		
+		var b = db.Basket.get(user, place, date);			
+		view.orders = db.UserContract.prepare(b.getOrders());
 		view.place = place;
 		view.date = date;
 		view.basket = b;
-		view.orders = db.UserContract.prepare(b.getOrders());
 		
 		checkToken();
 	}

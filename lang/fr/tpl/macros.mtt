@@ -150,7 +150,7 @@
 	</macro>
 	
 	
-	<macro name="transaction(t)">
+	<macro name="operation(t)">
 	::set x = t.getTypeIndex()::
 	<!--::if x==2:: ::set class="text-right":: ::end:: -->
 	<td class="::class::">
@@ -160,7 +160,7 @@
 		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
 		<!--<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>-->
-		<i class="fa fa-dollar" aria-hidden="true"></i> Paiement ::_(t.getPaymentType())::
+		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement ::_(t.getPaymentType())::
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
@@ -191,7 +191,6 @@
 			
 		::else::
 		
-			
 			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
 		
 		::end::
