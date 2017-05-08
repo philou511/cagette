@@ -93,10 +93,12 @@ class Main extends Controller {
 			
 			//my orders : no orders block in standard mode, nor with const contracts
 			if(app.user!=null && app.user.amap.hasShopMode() && d.contract.type == db.Contract.TYPE_CONSTORDERS){
+				
 				var orders = d.contract.getUserOrders(app.user,d);
 				if (orders.length > 0){
 					o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
 				}
+				
 			}else{
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
@@ -130,10 +132,15 @@ class Main extends Controller {
 					o.orderEndDate = d.orderEndDate;
 				}
 				
+				out.set(key, o);	
+				
+			}else{
+				//in constant orders, add block only if there is an order
+				if(o.myOrders.length>0) out.set(key, o);
 				
 			}
 			
-			out.set(key, o);
+			
 		}
 		
 		//shuffle and limit product lists		

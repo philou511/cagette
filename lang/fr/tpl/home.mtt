@@ -220,7 +220,7 @@
 								<!--Fermeture des commandes :-->
 							::else::
 								
-								::if Date.now().getTime() > d.orderEndDate.getTime()::
+								::if d.orderEndDate!=null && Date.now().getTime() > d.orderEndDate.getTime()::
 									Commande fermée depuis<br/>
 									le ::hDate(d.orderEndDate)::
 								::else::
