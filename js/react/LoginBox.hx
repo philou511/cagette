@@ -35,11 +35,11 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		
 		return jsx('<div>
 			<$Error error="${state.error}" />
-			<form action="/user/login" method="post" className="form-horizontal">
+			<form action="" method="post" className="form-horizontal">
 				<div className="form-group">
 					<label htmlFor="email" className="col-sm-4 control-label">Email : </label>
 					<div className="col-sm-8">
-						<input id="email"  className="form-control"type="text" name="email" value="${state.email}" required="1" onChange={onChange}/>			
+						<input id="email"  className="form-control" type="text" name="email" value="${state.email}" required="1" onChange={onChange}/>			
 					</div>
 				</div>
 				<div className="form-group">
@@ -49,7 +49,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 					</div>					
 				</div>
 				<p className="text-center">						
-					<a onClick={submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-chevron-right"></span> Se connecter</a>
+					<a onClick={submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-user"></span> Connexion</a>
 					<br/>
 					<br/>
 					<a href="/user/forgottenPassword">Mot de passe oublié ?</a>
@@ -58,7 +58,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 			<hr/>
 			<p className="text-center">
 				<b>Pas encore inscrit ? </b>
-				<a onClick={registerBox} className="btn btn-default">Inscrivez-vous ici</a>
+				<a onClick={registerBox} className="btn btn-default"><span className="glyphicon glyphicon-chevron-right"></span> Inscrivez-vous ici</a>
 			</p>
 		</div>');
 	}
@@ -71,23 +71,24 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		
 		var name :String = untyped e.target.name;
 		var value :String = untyped /*(e.target.value == "") ? null :*/ e.target.value;
-		
-		switch(name){
-			case "email" : state.email = value;
-			case "password" : state.password = value;			
-		}
+		Reflect.setField(state, name, value);
+		//switch(name){
+			//case "email" : state.email = value;
+			//case "password" : state.password = value;			
+		//}
 		
 		this.setState(this.state);
 	}
 	
+	/**
+	 * displays a registerBox
+	 */
 	public function registerBox(){
 		
 		var body = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode( body );
-		
+	
 		js.Browser.document.querySelector("#myModal .modal-title").innerHTML = "Inscription";
-		
-		
 		ReactDOM.render(jsx('<$RegisterBox redirectUrl="${props.redirectUrl}" />'),  body );
 	}
 	
