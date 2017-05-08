@@ -224,7 +224,8 @@
 					::end::
 					<td style="color:#::color::;">
 						::balance::&nbsp;::currency()::
-					</td>					
+					</td>
+					<td></td>
 				</tr>
 			</table>
 			
