@@ -361,12 +361,12 @@ class UserContract extends Object
 	/**
 	 * Get orders grouped by products. 
 	 */
-	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<Dynamic>{
+	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<OrderByProduct>{
 		var view = App.current.view;
 		//var pids = db.Product.manager.search($contract == d.contract, false);
 		//var pids = Lambda.map(pids, function(x) return x.id);
 		
-		var orders : List<Dynamic>;
+		var orders = new List<OrderByProduct>();
 		var where = "";
 		var exportName = "";
 		
@@ -386,7 +386,6 @@ class UserContract extends Object
 			//by dates
 			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
 			
-			
 		}
 			
 		var sql = 'select 
@@ -401,7 +400,7 @@ class UserContract extends Object
 			$where
 			group by p.id order by pname asc; ';
 			
-		orders = sys.db.Manager.cnx.request(sql).results();	
+		orders = cast sys.db.Manager.cnx.request(sql).results();	
 		
 		//populate with full product names
 		for ( o in orders){
