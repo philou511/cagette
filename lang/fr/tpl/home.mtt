@@ -1,6 +1,8 @@
 ::use 'design.mtt'::
 
-
+::if user==null::
+<div style="margin-top:12px;"></div>
+::end::
 
 <div id="content" class="col-md-8">
 	
@@ -218,15 +220,13 @@
 								<!--Fermeture des commandes :-->
 							::else::
 								
-								::if Date.now().getTime() > d.orderEndDate.getTime()::
+								::if d.orderEndDate!=null && Date.now().getTime() > d.orderEndDate.getTime()::
 									Commande fermée depuis<br/>
 									le ::hDate(d.orderEndDate)::
 								::else::
 									Ouverture de la commande<br/>
 									le ::hDate(d.orderStartDate)::
 								::end::
-							
-								
 							::end::
 							
 						</div>
@@ -273,18 +273,18 @@
 	
 	<div class="block" >
 		
-		::if user._amap._image!=null::
+		::if amap._image!=null::
 
-		   ::if user._amap.extUrl!=null && user._amap.extUrl!=""::
-		   <a href="::user._amap.extUrl::"><img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
+		   ::if amap.extUrl!=null && amap.extUrl!=""::
+		   <a href="::amap.extUrl::"><img src="::file(amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
 		   ::else::
-		   <img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
+		   <img src="::file(amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
 		   ::end::
 
 		::end::
 		
-		::if user._amap.txtHome!=null && user._amap.txtHome!=""::
-			::raw nl2br(user._amap.txtHome)::
+		::if amap.txtHome!=null && amap.txtHome!=""::
+			::raw nl2br(amap.txtHome)::
 		::end::
 		
 	</div>
@@ -303,7 +303,7 @@
 		</ul>
 	</div>
 	
-	<div class="alert alert-danger" ::cond !user.isFullyRegistred()::>
+	<div class="alert alert-danger" ::cond user!=null && !user.isFullyRegistred()::>
 		<p>
 			Attention, vous n'avez défini aucun mot de passe pour votre compte !
 		</p>

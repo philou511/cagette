@@ -13,6 +13,7 @@ class Shop extends sugoi.BaseController
 		view.products = getProducts(place,date);
 		view.place = place;
 		view.date = date;
+		view.group = app.getCurrentGroup();
 		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs),"orderEndDate");
 	}
@@ -57,7 +58,7 @@ class Shop extends sugoi.BaseController
 	 */
 	private function getProducts(place,date,?categsFromTaxo=false):Array<ProductInfo> {
 
-		contracts = db.Contract.getActiveContracts(app.user.amap);
+		contracts = db.Contract.getActiveContracts(app.getCurrentGroup());
 	
 		for (c in Lambda.array(contracts)) {
 			//only varying orders
@@ -138,7 +139,13 @@ class Shop extends sugoi.BaseController
 	/**
 	 * valider la commande et selectionner les distributions
 	 */
-	public function doValidate(place:db.Place,date:Date){
+	@tpl('needLogin.mtt')
+	public function doValidate(place:db.Place, date:Date){
+		
+		if (app.user == null) {
+			view.redirect = "/shop/validate/"+place.id+"/"+date.toString().substr(0,10);
+			return;
+		}
 
 		var order : OrderInSession = app.session.data.order;
 		if (order == null || order.products == null || order.products.length == 0) {
@@ -177,6 +184,7 @@ class Shop extends sugoi.BaseController
 			
 			order.total += p.getPrice() * o.quantity;
 		}
+		
 		order.userId = app.user.id;
 		
 		if (errors.length > 0) {
@@ -185,6 +193,7 @@ class Shop extends sugoi.BaseController
 		}
 		
 		app.session.data.order = order;
+		
 		
 		if (app.user.amap.hasPayments()){
 			

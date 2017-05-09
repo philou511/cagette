@@ -1,10 +1,11 @@
 import react.ReactMacro.jsx;
-import react.ReactDOM;
-import react.ProductInput;
+import react.*;
 
 class App {
 	
 	public static var instance : App;
+	
+	//public var currentBox : ReactComponent.ReactElement; //current react element in the modal window
 	
 	function new() {
 		//singleton
@@ -84,6 +85,27 @@ class App {
 			
 		}
 		r.request();
+	}
+	
+	/**
+	 * Displays an ajax login box
+	 */
+	public function loginBox(redirectUrl:String) {
+		var m = App.j("#myModal");
+		m.find(".modal-title").html("Connexion");
+		m.find(".modal-dialog").removeClass("modal-lg");
+		untyped m.modal(); 
+		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		return false;
+	}
+	
+	public function registerBox(redirectUrl:String) {
+		var m = App.j("#myModal");
+		m.find(".modal-title").html("Inscription");
+		m.find(".modal-dialog").removeClass("modal-lg");
+		untyped m.modal(); 
+		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		return false;
 	}
 	
 	/**

@@ -30,6 +30,14 @@
 					</ul>
 				</div>
 			</div>
+			::else::
+			<div class="col-md-5">		
+				<div class="pull-right text-right">
+					<a href="/user/login" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> Me connecter</a>
+					<a class="btn btn-default btn-xs" href="/p/hosted/book"><span class="glyphicon glyphicon-search"></span> Rechercher un groupe</a>	
+				</div>
+				
+			</div>
 			::end::
 				
 		</div>

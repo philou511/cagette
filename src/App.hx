@@ -46,6 +46,17 @@ class App extends sugoi.BaseApp {
 		super.mainLoop();
 	}
 	
+	public function getCurrentGroup(){		
+		if (session == null) return null;
+		if (session.data == null ) return null;
+		var a = session.data.amapId;
+		if (a == null) {
+			return null;
+		}else {			
+			return db.Amap.manager.get(a,false);
+		}
+	}
+	
 	override function beforeDispatch() {
 		
 		//send "current page" event
