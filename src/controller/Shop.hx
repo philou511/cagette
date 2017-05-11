@@ -142,9 +142,18 @@ class Shop extends sugoi.BaseController
 	@tpl('needLogin.mtt')
 	public function doValidate(place:db.Place, date:Date){
 		
+		//loginbox if needed
 		if (app.user == null) {
 			view.redirect = "/shop/validate/"+place.id+"/"+date.toString().substr(0,10);
 			return;
+		}
+		
+		//add the user to this group if needed
+		if (place.amap.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, place.amap) == null){
+			var ua = new db.UserAmap();
+			ua.user  = app.user;
+			ua.amap = place.amap;
+			ua.insert();
 		}
 
 		var order : OrderInSession = app.session.data.order;

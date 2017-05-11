@@ -54,8 +54,7 @@ class Main extends Controller {
 	}
 	
 	/**
-	 * Get next multi-deliveries 
-	 * ( deliveries including more than one vendors )
+	 * Get next multi-deliveries ( deliveries including more than one vendors )
 	 */
 	function getNextMultiDeliveries(group:db.Amap){
 		
@@ -91,15 +90,22 @@ class Main extends Controller {
 			var o = out.get(key);
 			if (o == null) o = {place:d.place, startDate:d.date, active:null, endDate:d.end, products:[], myOrders:[], orderStartDate:null,orderEndDate:null};
 			
-			//my orders : no orders block in standard mode, nor with const contracts
-			if(app.user!=null && app.user.amap.hasShopMode() && d.contract.type == db.Contract.TYPE_CONSTORDERS){
-				
-				var orders = d.contract.getUserOrders(app.user,d);
-				if (orders.length > 0){
-					o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
+			//user orders
+			var orders = [];
+			if(app.user!=null) orders = d.contract.getUserOrders(app.user,d);
+			if (orders.length > 0){
+				o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
+			}else{
+				//no "order block" if no shop mode	
+				if (!group.hasShopMode() ) {		
+					continue;		
+				}		
+
+				//if its a constant order contract, skip this delivery		
+				if (d.contract.type == db.Contract.TYPE_CONSTORDERS){		
+					continue;		
 				}
 				
-			}else{
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
 					o.products.push( p.infos() );	
