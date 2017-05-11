@@ -179,7 +179,7 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * Store a payment transaction
+	 * Record a new payment operation
 	 * @param	type
 	 * @param	amount
 	 * @param	name

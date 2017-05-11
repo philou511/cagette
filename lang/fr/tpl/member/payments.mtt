@@ -40,7 +40,7 @@
 
 		::foreach t transactions::
 			<tr>
-				$$transaction(::t::)
+				$$operation(::t::)
 			</tr>
 				
 			<!--::foreach tt t.getRelatedPayments()::	

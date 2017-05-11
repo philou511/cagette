@@ -201,8 +201,7 @@ class Shop extends sugoi.BaseController
 			throw Ok("/transaction/pay/"+place.id+"/"+date.toString().substr(0, 10), "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");
 		}else{
 			//no payments, confirm direclty
-			db.UserContract.confirmSessionOrder(order);
-			
+			db.UserContract.confirmSessionOrder(order);			
 			throw Ok("/contract", "Votre commande a bien été enregistrée");	
 		}
 

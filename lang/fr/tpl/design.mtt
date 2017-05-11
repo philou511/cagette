@@ -1,5 +1,12 @@
 ﻿::use 'base.mtt'::
 		
+		::if getParam('__redirect')!=null::
+		<!-- need to login to go to this page-->
+		<script>$(function(){
+		_.loginBox('::raw getParam("__redirect")::');
+		});</script>
+		::end::
+
 		<div class="row" style="margin-top:10px;">
 			<div class="col-md-7">
 				

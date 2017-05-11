@@ -92,10 +92,10 @@ class Transaction extends controller.Controller
 	public function doCheck(){
 		
 		//order in session
-		var order : OrderInSession = app.session.data.order;
-		
-		var d = db.Distribution.manager.get(order.products[0].distributionId, false);
+		var order : OrderInSession = app.session.data.order;		
+		var d = db.Distribution.manager.get(order.products[0].distributionId, false);		
 		var code = payment.Check.getCode(d.date, d.place, app.user);
+		
 		view.code = code;
 		view.amount = order.total;
 		
@@ -106,34 +106,19 @@ class Transaction extends controller.Controller
 			var ops = db.Operation.onOrderConfirm(orders);
 			
 			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
-			var ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
+			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
-			if (Lambda.array(ordersGroup).length == 1){
+			if (Lambda.array(ordersGrouped).length == 1){
 				
 				//all orders are for the same multidistrib
-				
-				var distribKey = db.Distribution.makeKey(d.date, d.place);		
-				//var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
 				var t = ops[0];
-				db.Operation.makePaymentOperation(app.user,app.user.amap,"check", total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", t );			
+				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", t );			
 				throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
 				
 			}else{
 				
-				//orders are for multiple distribs
-				
-				//create one payment
-				var p = db.Operation.makePaymentOperation(app.user,app.user.amap,"check", total, "Chèque ("+code+")" );			
-				
-				//link multiple orders to this payment
-				for ( op in ops){
-					
-					op.lock();
-					op.relation = p;
-					op.update();
-					
-				}
-				
+				//orders are for multiple distribs : create one payment
+				var p = db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, total, "Chèque ("+code+")" );			
 				throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
 			}
 		}

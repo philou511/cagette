@@ -6,10 +6,11 @@ package payment;
  */
 class Check extends payment.Payment
 {
+	public static var TYPE = "check";
 
 	public function new() 
 	{
-		this.type = "check";
+		this.type = TYPE;
 		this.icon = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
 		this.desc = "Paiement par chèque";
 		this.link = "/transaction/check";

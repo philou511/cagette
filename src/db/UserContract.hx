@@ -506,7 +506,6 @@ class UserContract extends Object
 	 */
 	public static function confirmSessionOrder(order:OrderInSession){
 		
-		
 		var orders = [];
 		var user = db.User.manager.get(order.userId);
 		for (o in order.products){
