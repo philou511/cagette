@@ -198,7 +198,7 @@ class Shop extends sugoi.BaseController
 		if (app.user.amap.hasPayments()){
 			
 			//Go to payments page
-			throw Ok("/transaction/pay/"+place.id+"/"+date.toString().substr(0, 10), "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");
+			throw Ok("/transaction/pay/"/*+place.id+"/"+date.toString().substr(0, 10)*/, "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");
 		}else{
 			//no payments, confirm direclty
 			db.UserContract.confirmSessionOrder(order);			

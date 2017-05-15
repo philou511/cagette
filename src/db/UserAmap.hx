@@ -41,7 +41,18 @@ class UserAmap extends Object
 			CACHE.set(user.id + "-" + amap.id,c);
 		}
 		return c;	
-	}	
+	}
+	
+	public static function getOrCreate(user:db.User, group:db.Amap){
+		var ua = get(user, group);
+		if ( ua == null){
+			ua = new UserAmap();
+			ua.user = user;
+			ua.amap = group;
+			ua.insert();
+		}
+		return ua;
+	}
 	
 	/**
 	 * give right and update DB
