@@ -13,8 +13,7 @@ class Shop extends sugoi.BaseController
 		view.products = getProducts(place,date);
 		view.place = place;
 		view.date = date;
-		view.group = app.getCurrentGroup();
-		
+		view.group = place.amap;		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs),"orderEndDate");
 	}
 	

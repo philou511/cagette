@@ -36,7 +36,6 @@
     <library name="sugoi" />
     <library name="hxevents" />
     <library name="hscript" />
-    <library name="record-macros" />
     <library name="smtpmailer" />
     <library name="datetime" />
     <library name="cagette-hosted" />
