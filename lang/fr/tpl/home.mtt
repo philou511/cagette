@@ -83,7 +83,7 @@
 						</div>
 						
 						<div class="info">					
-							<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::d.place.id::">::d.place::</a>
+							<span class="glyphicon glyphicon-map-marker"></span> <a onclick="_.overlay('/group/place/::d.place.id::','::urlEncode(d.place.name)::')">::d.place::</a>
 							<div class="address">
 								$$nullSafe(::d.place.address1::)
 								$$nullSafe(::d.place.address2::)
@@ -244,7 +244,8 @@
 							::set e = getDate(d.endDate)::
 							<span class="glyphicon glyphicon-time"></span> Livraison de ::s.h+":"+s.i:: à ::e.h+":"+e.i::
 							<br/>
-							<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::d.place.id::">::d.place::</a>	
+							<span class="glyphicon glyphicon-map-marker"></span> 
+							<a onclick="_.overlay('/group/place/::d.place.id::','::urlEncode(d.place.name)::')">::d.place::</a>	
 							<div class="address">
 								$$nullSafe(::d.place.address1::)
 								$$nullSafe(::d.place.address2::)

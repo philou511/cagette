@@ -39,6 +39,10 @@ class View extends sugoi.BaseView {
 		
 	}
 	
+	function getCurrentGroup(){
+		return App.current.getCurrentGroup();
+	}
+	
 	
 	function getUser(uid:Int):db.User {
 		return db.User.manager.get(uid, false);
