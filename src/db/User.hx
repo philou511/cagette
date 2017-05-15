@@ -450,7 +450,7 @@ class User extends Object {
 		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un mois
 		
 		var e = new sugoi.mail.Mail();
-		if (group == null){
+		if (group != null){
 			e.setSubject("Invitation "+group.name);	
 		}else{
 			e.setSubject("Invitation Cagette.net");
@@ -462,7 +462,7 @@ class User extends Object {
 		var html = App.current.processTemplate("mail/invitation.mtt", { 
 			email:email,
 			email2:email2,
-			groupName:(group == null?null:group.name),
+			groupName:(group == null?null:group.name),			
 			name:firstName,
 			k:k 			
 		} );		
