@@ -92,35 +92,29 @@ class Transaction extends controller.Controller
 	public function doCheck(){
 		
 		//order in session
-		var order : OrderInSession = app.session.data.order;		
-		var d = db.Distribution.manager.get(order.products[0].distributionId, false);		
+		var tmpOrder : OrderInSession = app.session.data.order;		
+		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
 		var code = payment.Check.getCode(d.date, d.place, app.user);
 		
 		view.code = code;
-		view.amount = order.total;
+		view.amount = tmpOrder.total;
 		
 		if (checkToken()){
 			
 			//record order
-			var orders = db.UserContract.confirmSessionOrder(order);
+			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
 			var ops = db.Operation.onOrderConfirm(orders);
-			
-			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
 			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
-			if (Lambda.array(ordersGrouped).length == 1){
-				
+			if (Lambda.array(ordersGrouped).length == 1){				
 				//all orders are for the same multidistrib
-				var t = ops[0];
-				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", t );			
-				throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
-				
-			}else{
-				
+				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, tmpOrder.total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", ops[0] );							
+			}else{				
 				//orders are for multiple distribs : create one payment
-				var p = db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, total, "Chèque ("+code+")" );			
-				throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, "Chèque ("+code+")" );			
 			}
+			
+			throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
 		}
 		
 	}
@@ -132,22 +126,28 @@ class Transaction extends controller.Controller
 	public function doTransfer(place:db.Place, date:Date){
 		
 		//order in session
-		var order : OrderInSession = app.session.data.order;		
+		var tmpOrder : OrderInSession = app.session.data.order;		
+		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
 		var code = payment.Check.getCode(date, place, app.user);
 		view.code = code;
-		view.amount = order.total;
+		view.amount = tmpOrder.total;
 		
 		if (checkToken()){
 			
 			//record order
-			var orders = db.UserContract.confirmSessionOrder(order);
-			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
-		
-			//record payment
-			var distribKey = db.Distribution.makeKey(date, place);		
-			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-			db.Operation.makePaymentOperation(app.user,app.user.amap,"transfer", total, "Virement pour commande du " + view.hDate(date)+" ("+code+")", t );			
-			throw Ok("/contract", "Votre paiement par virement a bien été enregistré. Il sera validé par un coordinateur.");
+			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+			var ops = db.Operation.onOrderConfirm(orders);
+			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+			
+			if (Lambda.array(ordersGrouped).length == 1){
+				//one multidistrib
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, "Virement pour commande du " + view.hDate(d.date)+" ("+code+")", ops[0] );
+			}else{
+				//many distribs
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, "Paiement par virement ("+code+")");			
+			}
+			
+			throw Ok("/contract", "Votre paiement par virement a bien été enregistré. Il sera validé par un coordinateur.");		
 		}
 	}
 	
@@ -155,22 +155,28 @@ class Transaction extends controller.Controller
 	 * pay by cassh
 	 */
 	@tpl("transaction/cash.mtt")
-	public function doCash(place:db.Place, date:Date){
+	public function doCash(){
 		
 		//order in session
-		var order : OrderInSession = app.session.data.order;		
-		view.amount = order.total;
+		var tmpOrder : OrderInSession = app.session.data.order;		
+		view.amount = tmpOrder.total;
+		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
 		
 		if (checkToken()){
 			
 			//record order
-			var orders = db.UserContract.confirmSessionOrder(order);
-			var total = db.UserContract.getTotalPrice(db.UserContract.prepare(orders));
-		
-			//record payment
-			var distribKey = db.Distribution.makeKey(date, place);		
-			var t = db.Operation.findVOrderTransactionFor(distribKey, app.user, app.user.amap);
-			db.Operation.makePaymentOperation(app.user,app.user.amap,"cash", total, "Liquide pour commande du " + view.hDate(date), t );			
+			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+			var ops = db.Operation.onOrderConfirm(orders);
+			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+			
+			if (Lambda.array(ordersGrouped).length == 1){
+				//same multidistrib
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Cash.TYPE, tmpOrder.total, "Liquide pour commande du " + view.hDate(d.date), ops[0] );										
+			}else{				
+				//various distribs
+				db.Operation.makePaymentOperation(app.user, app.user.amap, payment.Cash.TYPE, tmpOrder.total, "Paiement en liquide" );			
+			}
+			
 			throw Ok("/contract", "Votre commande est validée, vous vous êtes engagé à payer en liquide au retrait des produits.");
 		}
 		

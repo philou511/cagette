@@ -521,11 +521,18 @@ class UserContract extends Object
 		return orders;
 	}
 	
-	
-	public static function getTotalPrice(orders:Iterable<UserOrder>){
+	/*public static function getTotalPrice(orders:Iterable<UserOrder>){
 		var t = 0.0;
 		for ( o in orders) t += o.total;
+		return t;		
+	}*/
+	
+	public static function getTotalPrice(tmpOrder:OrderInSession){
+		var t = 0.0;
+		for ( o in tmpOrder.products){				
+			var p = db.Product.manager.get(o.productId, false);
+			t += o.quantity * p.getPrice();				
+		}
 		return t;
-		
 	}
 }

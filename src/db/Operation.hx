@@ -85,6 +85,14 @@ class Operation extends sys.db.Object
 		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
 	}
 	
+	public static function getLastOperations(user:db.User, group:db.Amap, ?limit = 50){
+		
+		var c = manager.count($user == user && $group == group);
+		c -= limit;
+		if (c < 0) c = 0;
+		return manager.search($user == user && $group == group,{orderBy:date,limit:[c,limit]},false);	
+	}
+	
 	/**
 	 * Create a new transaction
 	 * @param	orders
@@ -312,7 +320,7 @@ class Operation extends sys.db.Object
 	 * create the needed order operations
 	 * @param	orders
 	 */
-	public static function onOrderConfirm(orders:Array<db.UserContract>){
+	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		
 		if (orders.length == 0) return null;
 		var out = [];

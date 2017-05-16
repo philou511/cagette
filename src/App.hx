@@ -32,7 +32,6 @@ class App extends sugoi.BaseApp {
 		plugins = [];
 		//internal plugins
 		plugins.push(new plugin.Tutorial());
-		plugins.push(new plugin.Payment());
 		
 		//optionnal plugins
 		#if plugins

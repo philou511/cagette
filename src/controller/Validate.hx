@@ -3,13 +3,11 @@ import db.Operation.OperationType;
 using Lambda;
 
 /**
- * ...
+ * Distribution validation
  * @author fbarbut
  */
 class Validate extends controller.Controller
 {
-
-	
 	public var date : Date;
 	public var user : db.User;
 	public var place : db.Place;
@@ -20,7 +18,7 @@ class Validate extends controller.Controller
 		
 		if (!app.user.amap.hasShopMode()){
 			//get last operations and check balance
-			view.operations = db.Operation.getOrderOperations(this.user,place.amap,10);
+			view.operations = db.Operation.getLastOperations(this.user,place.amap,10);
 			view.balance = db.UserAmap.get(this.user, place.amap).balance;
 		}
 		
@@ -38,7 +36,6 @@ class Validate extends controller.Controller
 			
 			op.lock();
 			op.delete();
-			
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
