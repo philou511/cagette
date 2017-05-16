@@ -278,7 +278,8 @@ class User extends Controller
 		
 		db.User.login(user, user.email);
 		
-		app.session.data.amapId = user.getAmaps().first().id;
+		var groups = user.getAmaps();
+		if(groups.length>0)	app.session.data.amapId = groups.first().id;
 		
 		sugoi.db.Cache.destroy("validation" + k);
 	

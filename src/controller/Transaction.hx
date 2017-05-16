@@ -78,11 +78,11 @@ class Transaction extends controller.Controller
 	public function doPay(){
 
 		var order : OrderInSession = app.session.data.order;
-		view.amount = order.total;
+		if (order == null) throw Redirect("/");
 		
+		view.amount = order.total;		
 		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);		
-		//view.place = place;
-		//view.date = date;
+
 	}
 	
 	/**
