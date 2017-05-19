@@ -212,7 +212,7 @@ class Distribution extends Object
      */
     public static function getOpenToOrdersDeliveries(contract:db.Contract){
 
-        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,false));
+        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,{orderBy:date},false));
 
 
     }

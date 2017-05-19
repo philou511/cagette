@@ -133,6 +133,7 @@ class Amap extends Object
  	}
 	
 	public function hasPayments(){
+		if ( id == 8) return false; //debug peche de vigne
 		if (App.config.DEBUG) return true;
 		//nansouty + jeanot + chantereine + georges martin
 		//return id == 1 || id == 176 || id == 627 || id == 197;
