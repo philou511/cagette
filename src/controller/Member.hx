@@ -689,7 +689,7 @@ class Member extends Controller
 		
 		db.Operation.updateUserBalance(m, app.user.amap);
 		
-		view.transactions = db.Operation.getOrderOperations(m,app.user.amap);
+		view.transactions = db.Operation.getOperations(m,app.user.amap);
 		view.member = m;
 		view.balance = db.UserAmap.get(m,app.user.amap).balance;
 		

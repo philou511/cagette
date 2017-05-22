@@ -137,13 +137,10 @@
 					<tr class="::class::">
 						<td colspan="2"></td>
 						<th class="text-right">Total payé</th>
-						
 						<th>
 							::tpaid::&nbsp;::currency()::
 						</th>
 						<td colspan="2">
-							
-							
 							::if(tpaid+op.amount > 0):: 
 							
 								$$check(::false::)				
@@ -162,7 +159,7 @@
 						</td>
 					</tr>
 				::else::
-				<tr><td>Cette commande a été faite alors que les paiements étaient désactivés</td></tr>
+					<tr><td>Cette commande a été faite alors que les paiements étaient désactivés</td></tr>
 				::end::				
 			</table>
 			
