@@ -253,24 +253,31 @@ class UserContract extends Object
 			var c = o.product.contract;
 			if (c.hasStockManagement()) {
 				if (o.product.stock == 0) {
-					App.current.session.addMessage("Il n'y a plus de '" + o.product.name + "' en stock, nous l'avons donc retiré de votre commande", true);
-					o.delete();
-					return null;
+					if(App.current.session!=null) App.current.session.addMessage("Il n'y a plus de '" + o.product.name + "' en stock, nous l'avons donc retiré de votre commande", true);					
+					o.quantity -= quantity;
+					if ( o.quantity <= 0 ) {
+						o.delete();
+						return null;	
+					}
 					
 				}else if (o.product.stock - quantity < 0) {
 					var canceled = quantity - o.product.stock;
 					o.quantity -= canceled;
 					o.update();
 					
-					App.current.session.addMessage("Nous avons réduit votre commande de '" + o.product.name + "' à "+o.quantity+" articles car il n'y a plus de stock disponible", true);
+					if(App.current.session!=null) App.current.session.addMessage("Nous avons réduit votre commande de '" + o.product.name + "' à "+o.quantity+" articles car il n'y a plus de stock disponible", true);
 					o.product.lock();
 					o.product.stock = 0;
 					o.product.update();
+					
+					App.current.event(StockMove({product:o.product, move:0 - (quantity - canceled) }));
 					
 				}else {
 					o.product.lock();
 					o.product.stock -= quantity;
 					o.product.update();	
+					
+					App.current.event(StockMove({product:o.product, move:0 - quantity}));
 				}
 				
 			}	
@@ -312,37 +319,40 @@ class UserContract extends Object
 			
 			if (c.hasStockManagement()) {
 				
-				
 				if (newquantity < order.quantity) {
 					
 					//on commande moins que prévu : incrément de stock						
 					order.product.lock();
 					order.product.stock +=  (order.quantity-newquantity);
-					order.product.update();
+					
+					App.current.event(StockMove({product:order.product, move:0 - (order.quantity-newquantity) }));
 					
 				}else {
 				
 					//on commande plus que prévu : décrément de stock
-					
 					var addedquantity = newquantity - order.quantity;
 					
 					if (order.product.stock - addedquantity < 0) {
-						//modification de commande
-						newquantity = order.quantity + order.product.stock;
 						
-						App.current.session.addMessage("Nous avons réduit votre commande de '" + order.product.name + "' à "+newquantity+" articles car il n'y a plus de stock disponible", true);
+						//stock is not enough, reduce order
+						newquantity = order.quantity + order.product.stock;
+						if( App.current.session!=null) App.current.session.addMessage("Nous avons réduit votre commande de '" + order.product.name + "' à "+newquantity+" articles car il n'y a plus de stock disponible", true);
+						
+						App.current.event(StockMove({product:order.product, move: 0 - order.product.stock }));
+						
 						order.product.lock();
 						order.product.stock = 0;
-						order.product.update();
 						
 					}else {
+						
+						//stock is big enough
 						order.product.lock();
 						order.product.stock -= addedquantity;
-						order.product.update();	
-					}
-					
+						
+						App.current.event(StockMove({product:order.product, move: 0 - addedquantity }));
+					}					
 				}
-				
+				order.product.update();	
 			}	
 		}
 		
@@ -353,9 +363,7 @@ class UserContract extends Object
 			order.quantity = newquantity;
 			order.update();	
 			return order;
-		}
-		
-		
+		}				
 	}
 	
 	/**

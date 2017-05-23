@@ -1,0 +1,14 @@
+-lib dbadmin
+-lib templo
+-lib sugoi
+-lib hxevents
+-lib thx.semver
+-lib thx.csv
+-lib datetime
+-lib hscript
+-lib smtpmailer
+-cp common
+-cp src
+-neko tests.n
+ -main test.TestSuite
+

@@ -177,6 +177,7 @@ enum Event {
 	
 	//orders
 	MakeOrder(orders:Array<db.UserContract>);
+	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
 	
 	//payments
 	GetPaymentTypes(data:{types:Array<payment.Payment>});
