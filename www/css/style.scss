@@ -164,7 +164,8 @@ table.table tr.subrow{
 	background-color:#EEE;
 }
 
-table.table tr td{
+//listing have no overflow
+table.listing tr td{
 	white-space: nowrap;
 	overflow-x:hidden;
 }

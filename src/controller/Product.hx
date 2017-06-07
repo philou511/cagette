@@ -169,12 +169,14 @@ class Product extends Controller
 					product.desc = p["desc"];
 					product.vat = fv.filterString(p["vat"]);
 					product.qt = fv.filterString(p["qt"]);
-					product.unitType = switch(p["unit"].toLowerCase()){
-						case "kg" : Kilogram;
-						case "g" : Gram;
-						case "l" : Litre;
-						case "litre" : Litre;
-						default : Piece;
+					if(p["unit"]!=null){
+						product.unitType = switch(p["unit"].toLowerCase()){
+							case "kg" : Kilogram;
+							case "g" : Gram;
+							case "l" : Litre;
+							case "litre" : Litre;
+							default : Piece;
+						}
 					}
 					if (p["stock"] != null) product.stock = fv.filterString(p["stock"]);
 					product.organic = p["organic"] != null;

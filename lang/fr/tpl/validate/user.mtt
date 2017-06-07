@@ -195,7 +195,7 @@
 			
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">Solde de l'adhérent</th>
+					<th colspan="9" class="text-center">Solde de l'adhérent <a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-xs">Détail</a> </th>
 				</tr>
 				::foreach op operations::
 					<tr>

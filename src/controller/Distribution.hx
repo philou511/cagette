@@ -166,7 +166,6 @@ class Distribution extends Controller
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
 			
-			//var days = Math.floor( d.date.getTime() / 1000 / 60 / 60 / 24 );
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), d.end.getHours(), d.end.getMinutes(), 0);
 			
 			app.event(EditDistrib(d));
