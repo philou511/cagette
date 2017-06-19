@@ -148,6 +148,8 @@ table.product{
 	}
 }
 
+
+
 /* GLOBAL TABLE SKINNING */
 
 //separator between rows
@@ -180,6 +182,31 @@ table.table tr.disabled td,table.table tr.inactive td{
 	color:#BBB;
 	border-top:none;
 }*/
+
+div.reportHeader{
+	background-color:#DDD;
+	
+	
+	div.input-group{
+		display:inline-block;
+		//margin-right:8px;
+	}	
+	
+	
+	table{
+		//display:inline-block;
+		//vertical-align: top;		
+	}
+	
+	input{
+		//display:inline-block;
+	}
+	
+	table,input{
+		//
+	}
+}
+ 
 
 
 /* make <a> like clickable divs  */

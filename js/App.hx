@@ -1,6 +1,7 @@
 import react.ReactMacro.jsx;
 import react.*;
 
+
 class App {
 	
 	public static var instance : App;
@@ -54,6 +55,10 @@ class App {
 			
 			ReactDOM.render(jsx('<$ProductInput productName="$productName" txpProductId="$txpProductId" formName="$formName"/>'),  js.Browser.document.getElementById(divId));	
 		});
+	}
+	
+	public function initReportHeader(){
+		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
 	public static function roundTo(n:Float, r:Int):Float {

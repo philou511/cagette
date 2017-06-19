@@ -22,7 +22,6 @@ class TestOrders extends haxe.unit.TestCase
 	 * get a contract + a user + a product + empty orders
 	 */
 	override function setup(){
-		
 		c = db.Contract.manager.get(2);
 		
 		p = c.getProducts().first();

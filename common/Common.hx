@@ -402,3 +402,33 @@ class Data {
 	
 	];
 }
+
+
+enum OrdersReportGroupOption{
+	ByMember;
+	ByProduct;
+}
+
+enum OrdersReportFormatOption{
+	Table;
+	Csv;
+	PrintableList; //list de distrib ?
+}
+
+/**
+ * Report Options : should be usable in an URL, an API call...
+ */
+typedef OrdersReportOptions = {
+	//time scope
+	startDate:Date,
+	endDate:Date,
+	
+	//formatting
+	?groupBy:OrdersReportGroupOption,			//group order by...	
+	?format:OrdersReportFormatOption,			//table , csv ?
+	
+	//filters :
+	?groups:Array<Int>,
+	?contracts:Array<Int>,			//which contracts
+	?distributions:Array<Int>,
+}

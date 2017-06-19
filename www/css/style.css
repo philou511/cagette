@@ -131,6 +131,11 @@ table.table tr.disabled td, table.table tr.inactive td {
 	color:#BBB;
 	border-top:none;
 }*/
+div.reportHeader {
+  background-color: #DDD; }
+  div.reportHeader div.input-group {
+    display: inline-block; }
+
 /* make <a> like clickable divs  */
 .clickable {
   display: block;

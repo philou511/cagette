@@ -14,6 +14,7 @@ class TestSuite
 		
 		var r = new haxe.unit.TestRunner();
 		r.add(new test.TestOrders());
+		r.add(new test.TestReports());
 		r.run();
 	}
 	
@@ -47,6 +48,8 @@ class TestSuite
 		createTable(db.Product.manager);
 		createTable(db.Vendor.manager);
 		createTable(db.Place.manager);
+		createTable(db.Distribution.manager);
+		createTable(db.Basket.manager);
 	}
 	
 	static function createTable( m  ){
@@ -79,9 +82,9 @@ class TestSuite
 		a.contact = f;
 		a.insert();
 		
-		var p = new db.Place();
-		p.name = "Place du village";
-		p.insert();
+		var place = new db.Place();
+		place.name = "Place du village";
+		place.insert();
 		
 		var v = new db.Vendor();
 		v.name = "La ferme de la Galinette";
@@ -90,6 +93,7 @@ class TestSuite
 		var c = new db.Contract();
 		c.name = "Contrat AMAP Légumes";
 		c.vendor = v;
+		c.amap = a;
 		c.type = db.Contract.TYPE_CONSTORDERS;
 		c.insert();
 		
@@ -101,14 +105,15 @@ class TestSuite
 		
 		//varying contract for strawberries with stock mgmt
 		var c = new db.Contract();
-		c.name = "Commande fraises";
+		c.name = "Commande fruits";
 		c.vendor = v;
 		c.flags.set(db.Contract.ContractFlags.StockManagement);
 		c.type = db.Contract.TYPE_VARORDER;
+		c.amap = a;
 		c.insert();
 		
 		var p = new db.Product();
-		p.name = "Fraise";
+		p.name = "Fraises";
 		p.qt = 1;
 		p.unitType = Common.UnitType.Kilogram;
 		p.price = 10;
@@ -116,6 +121,68 @@ class TestSuite
 		p.contract = c;
 		p.stock = 8;
 		p.insert();
+		
+		var p = new db.Product();
+		p.name = "Pommes";
+		p.qt = 1;
+		p.unitType = Common.UnitType.Kilogram;
+		p.price = 6;
+		p.organic = true;
+		p.contract = c;
+		p.stock = 12;
+		p.insert();
+		
+		var d = new db.Distribution();
+		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.contract = c;
+		d.place = place;
+		d.insert();
+		
+		//second group
+		var a = new db.Amap();
+		a.name = "Les Locavores affamés";
+		a.contact = f;
+		a.insert();
+		
+		var place = new db.Place();
+		place.name = "Rue Saucisse";
+		place.insert();
+		
+		var v = new db.Vendor();
+		v.name = "La ferme de la courgette enragée";
+		v.insert();
+		
+		var c = new db.Contract();
+		c.name = "Commande Legumes";
+		c.vendor = v;
+		c.amap = a;
+		c.type = db.Contract.TYPE_VARORDER;
+		c.insert();
+		
+		var p = new db.Product();
+		p.name = "Courgettes";
+		p.qt = 1;
+		p.unitType = Common.UnitType.Kilogram;
+		p.price = 3.5;
+		p.organic = true;
+		p.contract = c;
+		p.insert();
+		
+		var p = new db.Product();
+		p.name = "Carottes";
+		p.qt = 1;
+		p.unitType = Common.UnitType.Kilogram;
+		p.price = 2.8;
+		p.contract = c;
+		p.insert();
+		
+		var d = new db.Distribution();
+		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.contract = c;
+		d.place = place;
+		d.insert();
+		
+		
 	}
 	
 	static function initApp(u:db.User){

@@ -22,6 +22,8 @@ table.table tr.head>td{border-top:3px solid #DDD;height:30px;font-size:120%;vert
 table.table tr.subrow{background-color:#EEE;}
 table.listing tr td{white-space:nowrap;overflow-x:hidden;}
 table.table tr.disabled td,table.table tr.inactive td{opacity:0.4;}
+div.reportHeader{background-color:#DDD;}
+div.reportHeader div.input-group{display:inline-block;}
 .clickable{display:block;border:1px solid #CCC;border-radius:8px;padding:8px;color:inherit;background-color:white;margin-bottom:12px;}
 .clickable:hover{cursor:pointer;background-color:#f5e1a5;border-color:#ebc349;text-decoration:none;transition:all 0.15s ease;}
 .clickable:active{cursor:pointer;background-color:#F0D277;border-color:#ebc349;text-decoration:none;transform:scale(0.95);}

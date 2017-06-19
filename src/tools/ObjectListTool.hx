@@ -53,7 +53,6 @@ class ObjectListTool
 				x.fees += o.fees;
 				x.subTotal += o.subTotal;
 				x.total += o.total;
-				
 			}
 			
 			out.set(key, x);
@@ -71,7 +70,6 @@ class ObjectListTool
 		var out = new Map<String,db.Distribution>();
 		for ( d in distribs) out.set(d.getKey(), d);
 		return Lambda.array(out);
-		
 	}
 	
 	/**
@@ -91,6 +89,9 @@ class ObjectListTool
 		return out;
 	}
 	
+	/**
+	 * Groupe orders by key (date+placeId)
+	 */
 	public static function groupOrdersByKey(ucs:Iterable<db.UserContract>){
 		
 		var out = new Map<String,Array<db.UserContract>>();
@@ -102,6 +103,35 @@ class ObjectListTool
 			out.set(k, v);
 		}
 		return out;
+	}
+	
+	/**
+	 * Group distributions by group and day, order by day
+	 */
+	public static function groupDistributionsByGroupAndDay(dists:Iterable<db.Distribution>){
+		
+		var out = new Map<String,Array<db.Distribution>>();
+		for ( d in dists){
+			
+			var k = d.date.toString().substr(0, 10) + "-" + d.contract.amap.id;
+			
+			var x = out[k];
+			if (x == null) x = [];
+			x.push(d);
+			out[k] = x;
+			
+		}
+		
+		//sort keys
+		var keys = [];
+		for ( k in out.keys()) keys.push(k);
+		keys.sort(function(a, b){  if (a > b) return 1 else return -1; });
+
+		var out2 = [];
+		for ( k in keys) out2.push(out[k]);
+		
+		return out2;
+		
 	}
 	
 }
