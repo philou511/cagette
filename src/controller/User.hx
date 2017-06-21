@@ -111,7 +111,7 @@ class User extends Controller
 		
 		if (amaps.length == 1 && !app.params.exists("show")) {
 			//qu'une amap
-			app.session.data.amapId = amaps.first().amapId;
+			app.session.data.amapId = amaps.first().amap.id;
 			throw Redirect('/');
 		}
 		

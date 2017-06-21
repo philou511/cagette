@@ -17,15 +17,9 @@ class UserAmap extends Object
 {
 	@:relation(amapId)
 	public var amap : Amap;
-	#if neko
-	public var amapId : SInt;
-	#end
 	
 	@:relation(userId)
 	public var user : db.User;
-	#if neko
-	public var userId : SInt;
-	#end
 	
 	public var rights : SNull<SData<Array<Right>>>;
 

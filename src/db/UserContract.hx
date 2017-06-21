@@ -13,24 +13,15 @@ class UserContract extends Object
 	
 	@formPopulate("populate") @:relation(userId)
 	public var user : User;
-	#if neko
-	public var userId: SInt;
-	#end
 	
 	//shared order
 	@formPopulate("populate") @:relation(userId2)
 	public var user2 : SNull<User>;
-	#if neko
-	public var userId2: SNull<SInt>;
-	#end
 	
 	public var quantity : SFloat;
 	
 	@formPopulate("populateProducts") @:relation(productId)
 	public var product : Product;
-	#if neko
-	public var productId : SInt;
-	#end
 	
 	//store price (1 unit price) and fees (percentage not amount ) rate when the order is done
 	public var productPrice : SFloat;
@@ -41,9 +32,8 @@ class UserContract extends Object
 	//if not null : varying orders
 	@:relation(distributionId)
 	public var distribution:SNull<db.Distribution>;
-	#if neko
-	public var distributionId : SNull<SInt>;
-	#end
+
+	
 	@:relation(basketId)
 	public var basket:SNull<db.Basket>;
 	

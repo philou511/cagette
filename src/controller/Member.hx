@@ -27,7 +27,7 @@ class Member extends Controller
 		
 		var browse:Int->Int->List<Dynamic>;
 		var uids = db.UserAmap.manager.search($amap == app.user.getAmap(), false);
-		var uids = Lambda.map(uids, function(ua) return ua.userId);
+		var uids = Lambda.map(uids, function(ua) return ua.user.id);
 		if (args != null && args.search != null) {
 			
 			//SEARCH			
@@ -582,7 +582,7 @@ class Member extends Controller
 				//member exists but is not member of this group.
 				if (userAmaps.length == 0) {					
 					var ua = new db.UserAmap();
-					ua.userId = us.first().id;
+					ua.user = us.first();
 					ua.amap = app.user.amap;
 					ua.insert();
 				}
@@ -629,7 +629,7 @@ class Member extends Controller
 			
 			if (userAmaps.length > 0) {
 				//user deja enregistré dans cette amap
-				throw Error('/member/view/' + userAmaps.first().userId, 'Cette personne est déjà inscrite dans cette AMAP');
+				throw Error('/member/view/' + userAmaps.first().user.id, 'Cette personne est déjà inscrite dans cette AMAP');
 				
 			}else if (userSims.length > 0) {
 				//des users existent avec ce nom , 

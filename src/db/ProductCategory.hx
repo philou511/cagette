@@ -11,8 +11,4 @@ class ProductCategory extends sys.db.Object
 	@:relation(categoryId)
 	public var category : db.Category;
 	
-	#if neko
-	public var productId : SInt;
-	public var categoryId : SInt;
-	#end
 }

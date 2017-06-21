@@ -379,7 +379,7 @@ class User extends Object {
 	public static function getUsers_NoContracts(?index:Int,?limit:Int):List<db.User> {
 		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
 		var uc = UserContract.manager.search($productId in productsIds, false);
-		var uc2 = uc.map(function(x) return x.userId); //liste des userId avec un contrat dans cette amap
+		var uc2 = uc.map(function(x) return x.user.id); //liste des userId avec un contrat dans cette amap
 
 		// J. Le Clerc - BUGFIX#1 Ne pas oublier les contrats alternés
 		for (u in uc) {
@@ -423,7 +423,7 @@ class User extends Object {
 	public static function getUsers_NewUsers(?index:Int, ?limit:Int):List<db.User> {
 		
 		var uas = db.UserAmap.manager.search($amap == App.current.user.amap, false);
-		var ids = Lambda.map(uas, function(x) return x.userId);
+		var ids = Lambda.map(uas, function(x) return x.user.id);
 		if (index == null && limit == null) {
 			return  db.User.manager.search($pass == "" && ($id in ids), {orderBy:lastName} ,false);
 		}else {
