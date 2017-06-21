@@ -1,24 +1,30 @@
-import js.JQuery;
 import react.ReactMacro.jsx;
-import react.ReactDOM;
-import react.ProductInput;
+import react.*;
+
 
 class App {
 	
-	function new() { }	
+	public static var instance : App;
+	
+	//public var currentBox : ReactComponent.ReactElement; //current react element in the modal window
+	
+	function new() {
+		//singleton
+		instance = this;
+	}	
 
 	/**
 	 * Returns a jquery object like $() in javascript
 	 */
-	public static inline function j(r:Dynamic) {
-		return new JQuery(r);
+	public static inline function j(r:Dynamic):js.JQuery {
+		return new js.JQuery(r);
 	}
 
 	/**
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {		
-		untyped js.Browser.window._ = new App();
+		untyped js.Browser.window._ = new App();	
 	}
 	
 	public function getCart() {
@@ -51,6 +57,10 @@ class App {
 		});
 	}
 	
+	public function initReportHeader(){
+		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
+	}
+	
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;
 	}
@@ -63,6 +73,7 @@ class App {
 	 */
 	public function overlay(url:String,?title,?large=true) {
 	
+		if (title != null) title = StringTools.urlDecode(title);
 		
 		var r = new haxe.Http(url);
 		r.onData = function(data) {
@@ -79,6 +90,27 @@ class App {
 			
 		}
 		r.request();
+	}
+	
+	/**
+	 * Displays an ajax login box
+	 */
+	public function loginBox(redirectUrl:String) {
+		var m = App.j("#myModal");
+		m.find(".modal-title").html("Connexion");
+		m.find(".modal-dialog").removeClass("modal-lg");
+		untyped m.modal(); 
+		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		return false;
+	}
+	
+	public function registerBox(redirectUrl:String) {
+		var m = App.j("#myModal");
+		m.find(".modal-title").html("Inscription");
+		m.find(".modal-dialog").removeClass("modal-lg");
+		untyped m.modal(); 
+		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		return false;
 	}
 	
 	/**
@@ -101,6 +133,31 @@ class App {
 		return new hosted.js.App();
 	}	
 	#end
+
+	/**
+	 * set up a warning message when leaving the page
+	 */
+	public function setWarningOnUnload(active:Bool, ?msg:String){
+		
+		
+		
+		if (active){
+			js.Browser.window.addEventListener("beforeunload", warn);	
+		}else{
+			js.Browser.window.removeEventListener("beforeunload", warn);
+		}
+
+	}
+	
+	function warn(e:js.html.Event) {
+		var msg = "Voulez vous vraiment quitter cette page ?";
+		//js.Browser.window.confirm(msg);
+		untyped e.returnValue = msg; //Gecko + IE
+		e.preventDefault();
+		return msg; //Gecko + Webkit, Safari, Chrome etc.
+	}
+	
+	
 	
 	
 }

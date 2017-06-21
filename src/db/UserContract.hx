@@ -44,6 +44,8 @@ class UserContract extends Object
 	#if neko
 	public var distributionId : SNull<SInt>;
 	#end
+	@:relation(basketId)
+	public var basket:SNull<db.Basket>;
 	
 	public var date : SDateTime;	
 	public var flags : SFlags<OrderFlags>;
@@ -60,13 +62,6 @@ class UserContract extends Object
 	public function populate() {
 		return App.current.user.getAmap().getMembersFormElementData();
 	}
-	
-	public function populateProducts() {
-		var arr = new Array<{key:String,value:String}>();
-		return arr;
-		//for( p in produ
-	}
-	
 	
 	
 	/**
@@ -99,7 +94,7 @@ class UserContract extends Object
 	/**
 	 * Prepare un dataset simple pret pour affichage ou export csv.
 	 */
-	public static function prepare(orders:List<db.UserContract>):Array<UserOrder> {
+	public static function prepare(orders:Iterable<db.UserContract>):Array<UserOrder> {
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
 		
@@ -150,8 +145,15 @@ class UserContract extends Object
 		}
 		
 		
+		
+		
+		return sort(out);
+	}
+	
+	public static function sort(orders:Array<UserOrder>){
+		
 		//order by lastname (+lastname2 if exists), then contract
-		out.sort(function(a, b) {
+		orders.sort(function(a, b) {
 			
 			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId > b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
 				
@@ -164,7 +166,7 @@ class UserContract extends Object
 			return 0;
 		});
 		
-		return out;
+		return orders;
 	}
 	
 	/**
@@ -195,7 +197,7 @@ class UserContract extends Object
 	}
 	
 	/**
-	 * Créer une commande
+	 * Store a product Order
 	 * 
 	 * @param	quantity
 	 * @param	productId
@@ -204,12 +206,6 @@ class UserContract extends Object
 		
 		//checks
 		if (quantity <= 0) return null;
-		
-		// commented on 2016-09-05:  an admin should be able to create an order afterwards (i.e the client took a product at the last minute, and we to keep track of it )
-		//if (distribId != null) {
-			//var d = db.Distribution.manager.get(distribId);
-			//if (d.date.getTime() < Date.now().getTime()) throw "Impossible de modifier une commande pour une date de distribution échue. (d"+d.id+")";	
-		//}
 		
 		//vérifie si il n'y a pas de commandes existantes avec les memes paramètres
 		var prevOrders = new List<db.UserContract>();
@@ -244,6 +240,12 @@ class UserContract extends Object
 			}
 		}
 		
+		if (distribId != null){
+			var dist = db.Distribution.manager.get(o.distributionId, false);
+			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
+			o.basket = basket;
+		}
+		
 		o.insert();
 		
 		//stocks
@@ -251,24 +253,31 @@ class UserContract extends Object
 			var c = o.product.contract;
 			if (c.hasStockManagement()) {
 				if (o.product.stock == 0) {
-					App.current.session.addMessage("Il n'y a plus de '" + o.product.name + "' en stock, nous l'avons donc retiré de votre commande", true);
-					o.delete();
-					return null;
+					if(App.current.session!=null) App.current.session.addMessage("Il n'y a plus de '" + o.product.name + "' en stock, nous l'avons donc retiré de votre commande", true);					
+					o.quantity -= quantity;
+					if ( o.quantity <= 0 ) {
+						o.delete();
+						return null;	
+					}
 					
 				}else if (o.product.stock - quantity < 0) {
 					var canceled = quantity - o.product.stock;
 					o.quantity -= canceled;
 					o.update();
 					
-					App.current.session.addMessage("Nous avons réduit votre commande de '" + o.product.name + "' à "+o.quantity+" articles car il n'y a plus de stock disponible", true);
+					if(App.current.session!=null) App.current.session.addMessage("Nous avons réduit votre commande de '" + o.product.name + "' à "+o.quantity+" articles car il n'y a plus de stock disponible", true);
 					o.product.lock();
 					o.product.stock = 0;
 					o.product.update();
+					
+					App.current.event(StockMove({product:o.product, move:0 - (quantity - canceled) }));
 					
 				}else {
 					o.product.lock();
 					o.product.stock -= quantity;
 					o.product.update();	
+					
+					App.current.event(StockMove({product:o.product, move:0 - quantity}));
 				}
 				
 			}	
@@ -279,7 +288,7 @@ class UserContract extends Object
 	
 	
 	/**
-	 * Edit an order (quantity)
+	 * Edit an existing order (quantity)
 	 */
 	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool) {
 		
@@ -310,37 +319,40 @@ class UserContract extends Object
 			
 			if (c.hasStockManagement()) {
 				
-				
 				if (newquantity < order.quantity) {
 					
 					//on commande moins que prévu : incrément de stock						
 					order.product.lock();
 					order.product.stock +=  (order.quantity-newquantity);
-					order.product.update();
+					
+					App.current.event(StockMove({product:order.product, move:0 - (order.quantity-newquantity) }));
 					
 				}else {
 				
 					//on commande plus que prévu : décrément de stock
-					
 					var addedquantity = newquantity - order.quantity;
 					
 					if (order.product.stock - addedquantity < 0) {
-						//modification de commande
-						newquantity = order.quantity + order.product.stock;
 						
-						App.current.session.addMessage("Nous avons réduit votre commande de '" + order.product.name + "' à "+newquantity+" articles car il n'y a plus de stock disponible", true);
+						//stock is not enough, reduce order
+						newquantity = order.quantity + order.product.stock;
+						if( App.current.session!=null) App.current.session.addMessage("Nous avons réduit votre commande de '" + order.product.name + "' à "+newquantity+" articles car il n'y a plus de stock disponible", true);
+						
+						App.current.event(StockMove({product:order.product, move: 0 - order.product.stock }));
+						
 						order.product.lock();
 						order.product.stock = 0;
-						order.product.update();
 						
 					}else {
+						
+						//stock is big enough
 						order.product.lock();
 						order.product.stock -= addedquantity;
-						order.product.update();	
-					}
-					
+						
+						App.current.event(StockMove({product:order.product, move: 0 - addedquantity }));
+					}					
 				}
-				
+				order.product.update();	
 			}	
 		}
 		
@@ -351,20 +363,18 @@ class UserContract extends Object
 			order.quantity = newquantity;
 			order.update();	
 			return order;
-		}
-		
-		
+		}				
 	}
 	
 	/**
 	 * Get orders grouped by products. 
 	 */
-	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<Dynamic>{
+	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<OrderByProduct>{
 		var view = App.current.view;
 		//var pids = db.Product.manager.search($contract == d.contract, false);
 		//var pids = Lambda.map(pids, function(x) return x.id);
 		
-		var orders : List<Dynamic>;
+		var orders = new List<OrderByProduct>();
 		var where = "";
 		var exportName = "";
 		
@@ -384,7 +394,6 @@ class UserContract extends Object
 			//by dates
 			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
 			
-			
 		}
 			
 		var sql = 'select 
@@ -399,7 +408,7 @@ class UserContract extends Object
 			$where
 			group by p.id order by pname asc; ';
 			
-		orders = sys.db.Manager.cnx.request(sql).results();	
+		orders = cast sys.db.Manager.cnx.request(sql).results();	
 		
 		//populate with full product names
 		for ( o in orders){
@@ -497,5 +506,41 @@ class UserContract extends Object
 		
 		return out;
 		
+	}
+	
+	/**
+	 * Confirms an order : create real orders from tmp orders in session
+	 * @param	order
+	 */
+	public static function confirmSessionOrder(order:OrderInSession){
+		
+		var orders = [];
+		var user = db.User.manager.get(order.userId);
+		for (o in order.products){
+			
+			o.product = db.Product.manager.get(o.productId);
+			orders.push( db.UserContract.make(user, o.quantity, o.product, o.distributionId) );
+			
+		}
+		
+		App.current.event(MakeOrder(orders));
+		App.current.session.data.order = null;	
+		
+		return orders;
+	}
+	
+	/*public static function getTotalPrice(orders:Iterable<UserOrder>){
+		var t = 0.0;
+		for ( o in orders) t += o.total;
+		return t;		
+	}*/
+	
+	public static function getTotalPrice(tmpOrder:OrderInSession){
+		var t = 0.0;
+		for ( o in tmpOrder.products){				
+			var p = db.Product.manager.get(o.productId, false);
+			t += o.quantity * p.getPrice();				
+		}
+		return t;
 	}
 }

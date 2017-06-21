@@ -1,12 +1,5 @@
 ::use 'design.mtt'::
 
-<style>
-	table tr td{
-		white-space: nowrap;
-		overflow-x:hidden;
-	}
-</style>
-
 
 
 	<div class="col-md-12">

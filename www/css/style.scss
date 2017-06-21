@@ -146,13 +146,106 @@ table.product{
 		font-size:90%;
 		color:#666;
 	}
+}
+
+
+
+/* GLOBAL TABLE SKINNING */
+
+//separator between rows
+table.table tr.head>td{
+	//border-top: 1px solid #BBB;
+	border-top: 3px solid #DDD;
+	height: 30px;
+	font-size:120%;
+    vertical-align: bottom; 
+}
+
+//sub-row, darker bg
+table.table tr.subrow{
+	background-color:#EEE;
+}
+
+//listing have no overflow
+table.listing tr td{
+	white-space: nowrap;
+	overflow-x:hidden;
+}
+
+table.table tr.disabled td,table.table tr.inactive td{
+	opacity:0.4;
+}
+
+
+/*table.table>tbody>tr>th{
+	background-color:white;
+	color:#BBB;
+	border-top:none;
+}*/
+
+div.reportHeader{
+	background-color:#DDD;
+	
+	
+	div.input-group{
+		display:inline-block;
+		//margin-right:8px;
+	}	
+	
+	
+	table{
+		//display:inline-block;
+		//vertical-align: top;		
+	}
+	
+	input{
+		//display:inline-block;
+	}
+	
+	table,input{
+		//
+	}
+}
+ 
+
+
+/* make <a> like clickable divs  */
+.clickable{
+	
+	display:block;
+	border:1px solid #CCC;
+	border-radius:8px;
+	padding:8px;
+	color:inherit;
+	background-color:white;
+	margin-bottom:12px;	
+	
+	
+	&:hover{
+		cursor: pointer;
+		background-color:lighten(#F0D277,10%);
+		border-color:darken(#F0D277,10%);
+		text-decoration:none;
+		
+		transition: all 0.15s ease;
+		//transform:scale(0.95);
+	}
+	
+	&:active{
+		cursor: pointer;
+		background-color:#F0D277;
+		border-color:darken(#F0D277,10%);
+		text-decoration:none;
+		
+		transform:scale(0.95);
+	}
 	
 }
+
 
 /*
 	SHOP
 */
-
 .shop{
 	
 	
@@ -617,3 +710,28 @@ div.ProductComp{
 		vertical-align:top !important;
 	}
 }
+
+
+//basket
+div.basketNumber{
+	
+	display:inline-block;
+	background-color:#333;
+	border-radius: 10px;
+    padding: 6px;
+	
+	font-weight:bold;
+	color:#CCC;
+	
+}
+
+tr.success td div.basketNumber{
+	background-color:#070;
+	color:white;
+}
+
+tr.danger td div.basketNumber{
+	background-color:#d9534f;
+	color:white;
+}
+

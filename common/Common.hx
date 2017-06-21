@@ -3,11 +3,19 @@
  */
 
 
-//utilisé dans le shop
+//An order wich is placed in session, before being paid and recorded.
 @:keep
-typedef Order = {
-	
-	products:Array<{productId:Int,quantity:Float}>
+typedef OrderInSession = {
+	products:Array <{
+		productId:Int,
+		quantity:Float,
+		#if !js
+		?product:db.Product,
+		?distributionId:Int,
+		#end
+	} > ,
+	userId:Int,
+	total:Float, //price to pay
 }
 
 @:keep
@@ -34,6 +42,8 @@ typedef ProductInfo = {
 	element:js.JQuery,
 	#end
 }
+
+
 
 enum UnitType{
 	Piece;
@@ -128,6 +138,8 @@ enum OrderFlags {
 	
 **/
 	
+typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,price:Float,total:Float};
+	
 enum Event {
 
 	Page(uri:String);							//a page is displayed
@@ -164,7 +176,12 @@ enum Event {
 	MinutelyCron;
 	
 	//orders
-	MakeOrder(orders:Array<db.UserContract>);
+	MakeOrder(orders:Array<db.UserContract>); 
+	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
+	
+	//payments
+	GetPaymentTypes(data:{types:Array<payment.Payment>});
+	NewOperation(op:db.Operation);
 	
 	#end
 	
@@ -384,4 +401,35 @@ class Data {
 	
 	
 	];
+}
+
+/**
+ * Order Reports
+ */
+enum OrdersReportGroupOption{
+	ByMember;
+	ByProduct;
+}
+
+enum OrdersReportFormatOption{
+	Table;
+	Csv;
+	PrintableList; //list de distrib ?
+}
+
+
+//Report Options : should be usable in an URL, an API call...
+typedef OrdersReportOptions = {
+	//time scope
+	startDate:Date,
+	endDate:Date,
+	
+	//formatting
+	?groupBy:OrdersReportGroupOption,			//group order by...	
+	?format:OrdersReportFormatOption,			//table , csv ?
+	
+	//filters :
+	?groups:Array<Int>,
+	?contracts:Array<Int>,			//which contracts
+	?distributions:Array<Int>,
 }

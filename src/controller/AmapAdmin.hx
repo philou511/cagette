@@ -18,6 +18,11 @@ class AmapAdmin extends Controller
 		
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();
+		
+		if (app.user.amap.hasPayments()){
+			nav.push({link:"/amapadmin/payments",name:"Paiements"});
+		}		
+		
 		var e = Nav(nav,"groupAdmin");
 		app.event(e);
 		view.nav = e.getParameters()[0];
@@ -296,13 +301,15 @@ class AmapAdmin extends Controller
 		d.dispatch(new controller.Categories());
 	}
 	
+	/**
+	 * Set up group currency. Default is EURO
+	 */
 	@tpl("form.mtt")
 	function doCurrency(){
 		
 		view.title = "Monnaie utilisée par votre groupe.";
 		
 		var f = new sugoi.form.Form("curr");
-		
 		f.addElement(new sugoi.form.elements.StringInput("currency", "Symbole de votre monnaie", app.user.amap.getCurrency()));
 		f.addElement(new sugoi.form.elements.StringInput("currencyCode", "Code ISO à 3 lettres", app.user.amap.currencyCode));
 		
@@ -317,8 +324,45 @@ class AmapAdmin extends Controller
 		}
 		
 		view.form = f;
-		
 	}
 	
+	/**
+	 * payment configuration
+	 */
+	@tpl("form.mtt")
+	function doPayments(){
+		
+		var f = new sugoi.form.Form("paymentTypes");
+		var types = payment.Payment.getPaymentTypes();
+		var formdata = [for (t in types){label:App.t._(t.type), value:t.type}];		
+		var selected = app.user.amap.allowedPaymentsType;
+		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes","Types de paiements autorisés",formdata, selected) );
+		
+		if (app.user.amap.checkOrder == ""){
+			app.user.amap.lock();
+			app.user.amap.checkOrder = app.user.amap.name;
+			app.user.amap.update();
+		}
+		f.addElement( new sugoi.form.elements.StringInput("checkOrder", "Ordre pour les chèques", app.user.amap.checkOrder, false)); 
+		f.addElement( new sugoi.form.elements.StringInput("IBAN", "IBAN de votre compte bancaire pour les virements", app.user.amap.IBAN, false)); 
+		
+		
+		if (f.isValid()){
+			
+			var p = f.getValueOf("paymentTypes");
+			var a = app.user.amap;
+			a.lock();
+			a.allowedPaymentsType = p;
+			a.checkOrder = f.getValueOf("checkOrder");
+			a.IBAN = f.getValueOf("IBAN");
+			a.update();
+			
+			throw Ok("/amapadmin/payments", "Options de paiement mises à jour");
+			
+		}
+		
+		view.title = "Options de paiements";
+		view.form = f;
+	}
 	
 }

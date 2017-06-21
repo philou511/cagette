@@ -4,6 +4,7 @@ import sugoi.Web;
 import sugoi.mail.Mail;
 import Common;
 using Lambda;
+using tools.DateTool;
 
 class Cron extends Controller
 {
@@ -39,10 +40,18 @@ class Cron extends Controller
 	}
 	
 	public function doHour() {
+		
+		// this function could be locally tested by
+		// cd /data/cagette/www/ && (rm page.html; neko index.n cron/hour > page.html)
+		
 		app.event(HourlyCron);
 		
 		distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
 		distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
+		distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
+		
+		distribValidationNotif();
+		
 	}
 	
 	
@@ -105,16 +114,26 @@ class Cron extends Controller
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
  		var d = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour-1));
  		var h = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
-		var distribs = db.Distribution.manager.search( $date >= d && $date <= h , false);
+		var distribs ;
+		// dans le cas HasEmailNotifOuverture la date à prendre est le orderStartDate
+		// et non pas date qui est la date de la distribution
+		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
+			distribs = db.Distribution.manager.search( $orderStartDate >= d && $orderStartDate <= h , false);
+		else
+			distribs = db.Distribution.manager.search( $date >= d && $date <= h , false);
 		
-		//trace("distribNotif "+hour+" from "+d+" to "+h);
+		//trace("distribNotif "+hour+" from "+d+" to "+h);Sys.print("<br/>\n");
 		
 		//on s'arrete immédiatement si aucune distibution trouvée
  		if (distribs.length == 0) return;
 		
 		//cherche plus tard si on a pas une "grappe" de distrib
 		while (true) {
-			var extraDistribs = db.Distribution.manager.search( $date >= h && $date <DateTools.delta(h,1000.0*60*60) , false);			
+			var extraDistribs ;
+			if ( db.User.UserFlags.HasEmailNotifOuverture != flag )
+				extraDistribs = db.Distribution.manager.search( $date >= h && $date <DateTools.delta(h,1000.0*60*60) , false);	
+			else	
+				extraDistribs = db.Distribution.manager.search( $orderStartDate >= h && $orderStartDate <DateTools.delta(h,1000.0*60*60) , false);
 			for ( e in extraDistribs) distribs.add(e);
 			if (extraDistribs.length > 0) {
 				//on fait un tour de plus avec une heure plus tard
@@ -131,6 +150,7 @@ class Cron extends Controller
 		if (dist != null) {
 			for (d in Lambda.array(distribs)) {
 				if (Lambda.exists(dist, function(x) return x == d.id)) {
+					// Comment this line in case of local test
 					distribs.remove(d);
 				}
 			}
@@ -146,7 +166,7 @@ class Cron extends Controller
 		Cache.set(cacheId, dist, 24 * 60 * 60);
 		
 		//We have now the distribs we want to notify about.
-		//trace(distribs);
+		//Sys.print(distribs+"<br/>\n");
 		var distribsByContractId = new Map<Int,db.Distribution>();
 		for (d in distribs) distribsByContractId.set(d.contract.id, d);
 
@@ -164,28 +184,47 @@ class Cron extends Controller
 		var users = new Map <String,{
 			user:db.User,
 			distrib:db.Distribution,
-			products:Array<db.UserContract>			
+			products:Array<db.UserContract>,
+			vendors:Array<db.Vendor>		
 		}>();
 		
 		for (o in orders) {
 			
 			var x = users.get(o.userId+"-"+o.product.contract.amap.id);
-			if (x == null) x = {user:o.user,distrib:null,products:[]};
+			if (x == null) x = {user:o.user,distrib:null,products:[],vendors:[]};
 			x.distrib = distribsByContractId.get(o.product.contract.id);
 			//x.distrib = o.distribution;
 			x.products.push(o);			
 			users.set(o.userId+"-"+o.product.contract.amap.id, x);
-			
+			//trace (o.userId+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
+			 
 			// Prévenir également le deuxième user en cas des commandes alternées
  			if (o.user2 != null) {
  				var x = users.get(o.user2.id+"-"+o.product.contract.amap.id);
- 				if (x == null) x = {user:o.user2,distrib:null,products:[]};
+ 				if (x == null) x = {user:o.user2,distrib:null,products:[],vendors:[]};
  				x.distrib = distribsByContractId.get(o.product.contract.id);
  				x.products.push(o);
  				users.set(o.user2.id+"-"+o.product.contract.amap.id, x);
+ 				//trace (o.user2.id+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
  			}
 		}
 		
+		// Dans le cas de l'ouverture de commande, ce sont tous les users qu'il faut intégrer
+		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
+		{
+ 			for (d in distribs) {
+				var MemberList = d.contract.amap.getMembers();
+				for (u in MemberList) {
+					var x = users.get(u.id+"-"+d.contract.amap.id);
+					if (x == null) x = {user:u,distrib:null,products:[],vendors:[]};
+					x.distrib = distribsByContractId.get(d.contract.id);
+					x.vendors.push(d.contract.vendor);
+					users.set(u.id+"-"+d.contract.amap.id, x);
+					//print(u.id+"-"+d.contract.amap.id, x);
+				}
+			}
+		}
+
 		for ( u in users) {
 			
 			if (u.user.flags.has(flag) ) {
@@ -193,22 +232,37 @@ class Cron extends Controller
 				if (u.user.email != null) {
 					var group = u.distrib.contract.amap;
 
-					var text = "N'oubliez pas la distribution : <b>" + view.hDate(u.distrib.date) + "</b><br>";
-					text += "Vos produits à récupérer :<br><ul>";
-					for ( p in u.products) {
-						text += "<li>"+p.quantity+" x "+p.product.getName();
- 						// Gerer le cas des contrats en alternance
- 						if (p.user2 != null) {
- 							text += " en alternance avec ";
- 							if (u.user == p.user)
- 								text += p.user2.getCoupleName();
- 							else
- 								text += p.user.getCoupleName();
- 						}
- 						text += "</li>";
+					var text;
+					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) //ouverture de commande
+					{
+						text  = "Ouverture des commandes pour la distribution du : <b>" + view.hDate(u.distrib.date) + "</b><br>";
+						text += "Cela concerne les fournisseurs suivants :<br><ul>";
+						for ( v in u.vendors) {
+							text += "<li>" + v + "</li>";
+						}
+						text += "</ul>";
+						var url = "http://" + App.config.HOST + "/group/"+ u.distrib.contract.amap.id;
+						text += "L'adresse de votre cagette est : <a href=\"" + url + "\">" + url + "</a><br>";
 					}
-					text += "</ul>";
-					
+					else //rappel de la distribution
+					{
+						text = "N'oubliez pas la distribution : <b>" + view.hDate(u.distrib.date) + "</b><br>";
+						text += "Vos produits à récupérer :<br><ul>";
+						for ( p in u.products) {
+							text += "<li>"+p.quantity+" x "+p.product.getName();
+							// Gerer le cas des contrats en alternance
+							if (p.user2 != null) {
+								text += " en alternance avec ";
+								if (u.user == p.user)
+									text += p.user2.getCoupleName();
+								else
+									text += p.user.getCoupleName();
+							}
+							text += "</li>";
+						}
+						text += "</ul>";
+					}
+				
 					if (u.distrib.isDistributor(u.user)) {
 						text += "<b>ATTENTION : Vous ou votre conjoint(e) êtes distributeur ! N'oubliez pas d'imprimer la liste d'émargement.</b>";
 					}
@@ -238,4 +292,147 @@ class Cron extends Controller
 		}
 	}
 	
+	
+	/**
+	 * Check if there is a multi-distrib to validate.
+	 * 
+	 * Autovalidate it after 10 days
+	 */
+	function distribValidationNotif(){
+		
+		var now = Date.now();
+
+		var from = now.setHourMinute( now.getHours(), 0 );
+		var to = now.setHourMinute( now.getHours()+1 , 0);
+		
+		var explain = "<p>Cette étape est importante afin de :</p>";
+		explain += "<ul><li>Mettre à jour les commandes si les quantités livrées sont différentes des quantitées commandées</li>";
+		explain += "<li>Confirmer la réception des paiements (chèques, liquide, virements) afin de classer les commandes comme 'payées'</li></ul>";
+		
+		/*
+		 * warn administrator if a distribution just ended
+		 */ 
+		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
+		
+		for ( d in Lambda.array(ds)){
+			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
+				ds.remove(d);
+			}else if ( !d.contract.amap.hasPayments() ){
+				ds.remove(d);
+			}
+		}
+		
+		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		
+		for ( d in ds ){
+			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			
+			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
+			
+			var html = "<p>Votre distribution vient de se terminer, n'oubliez pas de la <b>valider</b></p>";
+			html += explain;
+			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
+			
+			
+			App.quickMail(d.contract.amap.contact.email, subj, html);
+		}
+		
+		/*
+		 * warn administrator if a distribution ended 3 days ago
+		 */		
+		
+		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays(-3);
+		var to = now.setHourMinute( now.getHours()+1 , 0).deltaDays(-3);
+		
+		//warn administrator if a distribution just ended
+		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
+		
+		for ( d in Lambda.array(ds)){
+			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
+				ds.remove(d);
+			}else if ( !d.contract.amap.hasPayments() ){
+				ds.remove(d);
+			}
+		}
+		
+		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		
+		for ( d in ds ){
+			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			
+			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
+			
+			var html = "<p>Rappel : Vous avez une distribution à valider.</p>";
+			html += explain;
+			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
+			
+			App.quickMail(d.contract.amap.contact.email, subj, html);
+		}
+		
+		
+		/*
+		 * Autovalidate unvalidated distributions after 10 days
+		 */ 
+		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+		print('AUTOVALIDATION');
+		print('Find distributions from $from to $to');
+		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , true);
+		for ( d in Lambda.array(ds)){
+			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
+				ds.remove(d);
+			}else if ( !d.contract.amap.hasPayments() ){
+				ds.remove(d);
+			}
+		}
+		for ( d in ds){
+			print(d.toString());
+			for ( u in d.getUsers()){
+				
+				var b = db.Basket.get(u, d.place, d.date);
+				if (b == null) continue;
+				
+				//mark orders as paid
+				for ( o in b.getOrders() ){				
+					o.lock();
+					o.paid = true;
+					o.update();				
+				}
+				//validate order operation and payment
+				var op = b.getOrderOperation(true);
+				if (op != null){
+					op.lock();
+					op.pending = false;
+					op.update();
+					
+					for ( op in b.getPayments()){
+						if ( op.pending){
+							op.lock();
+							op.pending = false;
+							op.update();
+						}
+					}	
+				}
+			}
+			
+			//finally validate distrib
+			d.validated = true;
+			d.update();
+			
+		}
+		//email
+		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		for ( d in ds ){
+			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			var html = "<p>A défaut d'une validation manuelle de votre part au bout de 10 jours,<br/> la distribution du "+ App.current.view.hDate(d.date)+" a été automatiquement validée.</p>";
+			App.quickMail(d.contract.amap.contact.email, subj, html);
+		}
+		
+	}
+	
+	
+	
+	function print(text){
+		Sys.println( text + "<br/>" );
+	}
 }

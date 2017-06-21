@@ -1,6 +1,6 @@
 ::use 'design.mtt'::
 
-<div class="col-md-4">
+<div class="col-md-3">
 	<h2>Coordonnées</h2>
 	<div class="article">
 		
@@ -33,28 +33,35 @@
 	
 </div>
 
-<div class="col-md-8">
+<div class="col-md-9">
 	<h2>Paiements</h2>
 	<div class="article">
 		<table class="table table-striped table-condensed">
 		::foreach t transactions::
 		<tr>
-			$$transaction(::t::)
+			$$operation(::t::)
 		</tr>
+		
+		<!--::foreach tt t.getRelatedPayments()::	
+		<tr style="background:#EEE;color:#666;">
+			$$transaction(::tt::)
+		</tr>
+		::end::-->
+		
 		::end::
 		
 		<tr style="font-size:1.3em;">
 			<td colspan="2"></td>
-			<td>Solde : </td>
+			<td>Solde&nbsp;:</td>
 			::if balance<0:: 
 				::set color = "C00"::
 			::else::
 				::set color = "0C0"::
 			::end::
 			<td style="color:#::color::;">
-				::balance:: ::currency()::
+				::balance::&nbsp;::currency()::
 			</td>
-			<td>
+			<td colspan="2">
 				
 			</td>
 		</tr>

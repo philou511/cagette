@@ -5,6 +5,7 @@ import db.UserAmap;
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
 	HasEmailNotif24h;	//send notifications by mail 24h before
+	HasEmailNotifOuverture; //send notifications by mail on command open
 	//Tuto;			//enable tutorials
 }
 
@@ -64,6 +65,17 @@ class User extends Object {
 
 	public function isAdmin() {
 		return rights.has(Admin) || id==1;
+	}
+	
+	public static function login(user:db.User, email:String) {
+		
+		user.lock();
+		user.ldate = Date.now();
+		user.update();
+		App.current.session.setUser(user);
+		if (App.current.session.data == null) App.current.session.data = {};
+		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; //qui est connecté, user1 ou user2 ?	
+		
 	}
 	
 	/**
@@ -438,7 +450,7 @@ class User extends Object {
 		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un mois
 		
 		var e = new sugoi.mail.Mail();
-		if (group == null){
+		if (group != null){
 			e.setSubject("Invitation "+group.name);	
 		}else{
 			e.setSubject("Invitation Cagette.net");
@@ -450,7 +462,7 @@ class User extends Object {
 		var html = App.current.processTemplate("mail/invitation.mtt", { 
 			email:email,
 			email2:email2,
-			groupName:(group == null?null:group.name),
+			groupName:(group == null?null:group.name),			
 			name:firstName,
 			k:k 			
 		} );		

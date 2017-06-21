@@ -78,7 +78,7 @@ class Account extends Controller
 	@tpl('account/payments.mtt')
 	function doPayments(){
 		var m = app.user;
-		view.transactions = db.Transaction.getTransactions(m,app.user.amap);
+		view.transactions = db.Operation.getOperations(m,app.user.amap);
 		view.member = m;
 		view.balance = db.UserAmap.get(m,app.user.amap).balance;
 	}

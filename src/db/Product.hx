@@ -74,11 +74,7 @@ class Product extends Object
 	}
 	
 	override function toString() {
-		if (name != null) {
-			return name;
-		}else {
-			return "produit";
-		}
+		return getName();
 	}
 	
 	/**
@@ -142,6 +138,13 @@ class Product extends Object
 		}
 		
 		return {cost:_cost,qt:_qt,unit:_unit};
+		
+	}
+	
+	public static function getByRef(c:db.Contract, ref:String){
+		
+		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
+		return db.Product.manager.select($ref == ref && $id in pids, false);
 		
 	}
 	

@@ -82,7 +82,7 @@ class User extends Controller
 				}
 			}
 			
-			login(user, args.name);
+			db.User.login(user, args.name);
 			
 			//if (App.current.session.data.redirect != null){
 				//var r = App.current.session.data.redirect;
@@ -96,16 +96,7 @@ class User extends Controller
 		}
 	}
 	
-	function login(user:db.User, email:String) {
-		
-		user.lock();
-		user.ldate = Date.now();
-		user.update();
-		App.current.session.setUser(user);
-		if (App.current.session.data == null) App.current.session.data = {};
-		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; //qui est connecté, user1 ou user2 ?	
-		
-	}
+	
 	
 	/**
 	 * Choose which group to connect to.
@@ -285,9 +276,10 @@ class User extends Controller
 		if (uid == null || uid==0) throw Error('/user/login', 'Votre invitation est invalide ou a expiré ($k)');
 		var user = db.User.manager.get(uid, true);
 		
-		login(user, user.email);
+		db.User.login(user, user.email);
 		
-		app.session.data.amapId = user.getAmaps().first().id;
+		var groups = user.getAmaps();
+		if(groups.length>0)	app.session.data.amapId = groups.first().id;
 		
 		sugoi.db.Cache.destroy("validation" + k);
 	

@@ -18,6 +18,9 @@ class View extends sugoi.BaseView {
 		return Lambda.count(i);
 	}
 	
+	public function abs(n){
+		return Math.abs(n);
+	}
 
 	/**
 	 * init view in main loop, just before rendering
@@ -34,6 +37,10 @@ class View extends sugoi.BaseView {
 		
 		
 		
+	}
+	
+	function getCurrentGroup(){
+		return App.current.getCurrentGroup();
 	}
 	
 	
@@ -82,6 +89,14 @@ class View extends sugoi.BaseView {
 		
 		//virgule et pas point
 		return out.split(".").join(",");
+	}
+	
+	/**
+	 * clean numbers in views
+	 * to avoid bugs like : 13.79 - 13.79 = 1.77635683940025e-15
+	 */
+	public function numClean(f:Float):Float{
+		return Math.round(f * 100) / 100;
 	}
 	
 	/**
@@ -215,9 +230,26 @@ class View extends sugoi.BaseView {
 		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap)?"Paysan":"Fournisseur";
 	}
 	
+	public function getBasket(userId, placeId, date){
+		var user = getUser(userId);
+		var place = db.Place.manager.get(placeId, false);
+		return db.Basket.getOrCreate(user, place, date);
+	}
+	
 	public function getPlatform(){
 		 return #if neko "Neko" #else "PHP" #end ;
 	}
 	
+	/**
+	 * Translation function
+	 */
+	public function _(text:String):String{
+		if (App.t != null){
+			return App.t._(text);	
+		}else{
+			return text;
+		}
+		
+	}
 	
 }

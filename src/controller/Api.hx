@@ -76,4 +76,12 @@ class Api extends Controller
 		
 	}
 	
+	public function doUser(d:haxe.web.Dispatch){
+		
+		d.dispatch(new controller.api.User());
+		
+	}
+	
+	
+	
 }

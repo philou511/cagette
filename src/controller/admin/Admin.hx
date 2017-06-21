@@ -82,7 +82,7 @@ class Admin extends Controller {
 
 		var sql = "";
 		if( args.user!=null ) sql += " AND uid="+args.user;
-		if( args.like!=null && args.like != "" ) sql += " AND error like "+sys.db.Manager.cnx.quote("%"+args.like+"%");
+		//if( args.like!=null && args.like != "" ) sql += " AND error like "+sys.db.Manager.cnx.quote("%"+args.like+"%");
 		if (args.empty) {
 			sys.db.Manager.cnx.request("truncate table Error");
 		}

@@ -109,6 +109,55 @@ table.product {
     font-size: 90%;
     color: #666; }
 
+/* GLOBAL TABLE SKINNING */
+table.table tr.head > td {
+  border-top: 3px solid #DDD;
+  height: 30px;
+  font-size: 120%;
+  vertical-align: bottom; }
+
+table.table tr.subrow {
+  background-color: #EEE; }
+
+table.listing tr td {
+  white-space: nowrap;
+  overflow-x: hidden; }
+
+table.table tr.disabled td, table.table tr.inactive td {
+  opacity: 0.4; }
+
+/*table.table>tbody>tr>th{
+	background-color:white;
+	color:#BBB;
+	border-top:none;
+}*/
+div.reportHeader {
+  background-color: #DDD; }
+  div.reportHeader div.input-group {
+    display: inline-block; }
+
+/* make <a> like clickable divs  */
+.clickable {
+  display: block;
+  border: 1px solid #CCC;
+  border-radius: 8px;
+  padding: 8px;
+  color: inherit;
+  background-color: white;
+  margin-bottom: 12px; }
+  .clickable:hover {
+    cursor: pointer;
+    background-color: #f5e1a5;
+    border-color: #ebc349;
+    text-decoration: none;
+    transition: all 0.15s ease; }
+  .clickable:active {
+    cursor: pointer;
+    background-color: #F0D277;
+    border-color: #ebc349;
+    text-decoration: none;
+    transform: scale(0.95); }
+
 /*
 	SHOP
 */
@@ -403,5 +452,21 @@ div.ProductComp {
 
 .ComposerApp .add-button {
   vertical-align: top !important; }
+
+div.basketNumber {
+  display: inline-block;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 6px;
+  font-weight: bold;
+  color: #CCC; }
+
+tr.success td div.basketNumber {
+  background-color: #070;
+  color: white; }
+
+tr.danger td div.basketNumber {
+  background-color: #d9534f;
+  color: white; }
 
 /*# sourceMappingURL=style.css.map */

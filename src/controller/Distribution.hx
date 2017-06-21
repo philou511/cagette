@@ -15,7 +15,7 @@ class Distribution extends Controller
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {
 		view.distrib = d;
-		var contract = d.contract;
+		view.place = d.place;
 		view.contract = d.contract;
 		view.orders = UserContract.prepare(d.getOrders());
 	}
@@ -24,24 +24,28 @@ class Distribution extends Controller
 	 * List to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
-	function doListByDate(?date:Date, ?type:String, ?fontSize:String) {
+	function doListByDate(date:Date,place:db.Place, ?type:String, ?fontSize:String) {
 		
 		if (!app.user.isContractManager()) throw Error('/', 'Action interdite');
 		
+		view.place = place;
+		
 		if (type == null) {
 		
+			//display form
+			
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
-				{ key:"one", value:"Une personne par page" },
-				{ key:"contract", value:"Une personne par page triée par contrat" },
-				{ key:"all", value:"Tout à la suite" },
-				{ key:"allshort", value:"Tout à la suite sans les prix et totaux" },
+				{ value:"one", label:"Une personne par page" },
+				{ value:"contract", label:"Une personne par page triée par contrat" },
+				{ value:"all", label:"Tout à la suite" },
+				{ value:"allshort", label:"Tout à la suite sans les prix et totaux" },
 			],"all"));
 			f.addElement(new sugoi.form.elements.RadioGroup("fontSize", "Taille de police", [
-				{ key:"S" , value:"S"  },
-				{ key:"M" , value:"M"  },
-				{ key:"L" , value:"L"  },
-				{ key:"XL", value:"XL" },
+				{ value:"S" , label:"S"  },
+				{ value:"M" , label:"M"  },
+				{ value:"L" , label:"L"  },
+				{ value:"XL", label:"XL" },
 			], "S", "S", false));
 			
 			view.form = f;
@@ -49,7 +53,7 @@ class Distribution extends Controller
 			
 			if (f.checkToken()) {
 				var suburl = f.getValueOf("type")+"/"+f.getValueOf("fontSize");
-				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+suburl;
+				var url = '/distribution/listByDate/' + date.toString().substr(0, 10)+"/"+place.id+"/"+suburl;
 				throw Redirect( url );
 			}
 			
@@ -86,11 +90,11 @@ class Distribution extends Controller
 			}
 			
 			//commandes variables
-			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
+			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 && $place==place, false);		
 			var orders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//commandes fixes
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);
+			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && $place==place, false);
 			var orders = Lambda.array(orders);
 			for ( d in distribs) {
 				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id)  , { orderBy:userId } );
@@ -162,7 +166,6 @@ class Distribution extends Controller
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
 			
-			//var days = Math.floor( d.date.getTime() / 1000 / 60 / 60 / 24 );
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), d.end.getHours(), d.end.getMinutes(), 0);
 			
 			app.event(EditDistrib(d));
@@ -412,5 +415,25 @@ class Distribution extends Controller
 		}
 		
 	}
+	
+	/**
+	 * Validate a multi-distrib
+	 * @param	date
+	 * @param	place
+	 */
+	@tpl('distribution/validate.mtt')
+	public function doValidate(date:Date, place:db.Place){
+		
+		if (!app.user.isAmapManager()) throw "accès interdit";
+		
+		var md = MultiDistrib.get(date, place);
+		
+		view.confirmed = md.checkConfirmed();
+		view.users = md.getUsers();
+		view.date = date;
+		view.place = place;
+	}
+	
+	
 	
 }

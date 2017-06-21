@@ -2,16 +2,24 @@
 
 <div class="col-md-12">
 	
-	::if(distributions.length>0)::	
-	<div class="article">
+
+	
+	<div class="article text-center" ::cond distribs.length>0:: >
 		<h2>Distributions à valider</h2>
-		::foreach d distributions::
-		<a href="/contractAdmin/ordersByDate/::d.date.toString().substr(0,10)::">Distrib du ::hDate(d.date)::</a>
 		
+		<p>Vous devez valider ces distributions réalisées récemment.</p>
 		
-		::end::
+		::foreach d distribs::	
+		<p>
+			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
+				Distribution du ::dDate(d.date)::, ::d._place.name::
+			</a>	
+		</p>	
+		::end::	
+		
 	</div>
-	::end::
+	
+	
 	
 	<div class="article" id="contracts">
 		<h2>
@@ -58,7 +66,18 @@
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Contrats anciens</a>
 		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Calendrier</a>
 		
-		<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>
+		<!--<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>-->
+		
+		<div class="dropdown" style="display:inline-block;">
+		  <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			Vue globale des commandes
+			<span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> Dans la même journée</a></li>
+			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> De date à date</a></li>			
+		  </ul>
+		</div>
 		
 	</div>
 	

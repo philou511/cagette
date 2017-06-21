@@ -6,7 +6,7 @@
 		::if distribution!=null::
 		Pour la livraison du <b>::hDate(distribution.date)::</b>
 		::end::
-		<hr/>
+
 		<p>
 			Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.<br/>
 			Vous pouvez consulter à tout moment vos commandes en cours sur la page <a href="/contract">mon compte</a>.
@@ -27,7 +27,7 @@
 					::if d.distrib==null::
 						<th>Qté</th>
 					::else::
-						<th>Livraison du <br/>::hDate(d.distrib.date)::</th>
+						<th>::dDate(d.distrib.date)::</th>
 					::end::
 				::end::
 			</tr>
@@ -42,7 +42,12 @@
 						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
 					</td>
 					<td>
-						<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">::uo.product.getName()::	</a>
+						<span ::cond uo.product.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom">
+							<img src="/img/AB.png"/>&nbsp;						
+						</span>
+						<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">							
+							::uo.product.getName()::
+						</a>
 					</td>
 					<td>
 						::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::

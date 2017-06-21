@@ -5,13 +5,14 @@ import sys.db.Types;
 import Common;
 
 enum AmapFlags {
-	HasMembership; 	//gestion des adhésions
-	ShopMode; 		//mode boutique
-	IsAmap; 		//Amap / groupement d'achat
+	HasMembership; 	//membership management
+	ShopMode; 		//shop mode / standard mode
+	IsAmap; 		//Just switch some words in templates
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
-	HidePhone; 	//Masquer le téléphone du responsable de l'amap sur la page publique
+	HidePhone; 		//Hide manager phone on group public page
+	HasPayments;		//manage payments and user balance
 
 }
 
@@ -61,6 +62,11 @@ class Amap extends Object
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 	
+	//payments
+	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	@hideInForms public var checkOrder:SString<64>;
+	@hideInForms public var IBAN:SNull<SString<40>>;
+	
 	public function new() 
 	{
 		super();
@@ -88,6 +94,8 @@ class Amap extends Object
 				this.update();
 				return this.mainPlace;
 			}
+			
+			if (places.length == 0) return null;
 			
 			var pids = Lambda.map(places, function(x) return x.id);
 			
@@ -126,8 +134,15 @@ class Amap extends Object
  	}
 	
 	public function hasPayments(){
-		//nansouty + jeanot + chantereine
-		return id == 1 || id == 176 || id == 627;
+		
+		return flags != null && flags.has(HasPayments);
+		/*
+		if ( id == 8) return false; //debug peche de vigne
+		if (App.config.DEBUG) return true;
+		//nansouty + jeanot + chantereine + georges martin //return id == 1 || id == 176 || id == 627 || id == 197;
+		
+		//avallon + epicvous + amap maison violette + earl plaisirs du jardin + emarche limoges
+		return Lambda.has([1128, 848, 1080, 662, 1076], id);*/
 	}
 	
 	public function getCategoryGroups() {

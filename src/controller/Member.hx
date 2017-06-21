@@ -557,13 +557,11 @@ class Member extends Controller
 					App.log(u);
 					throw "Le mail du conjoint de "+user.firstName+" "+user.lastName+" '" + user.email2 + "' est invalide, merci de modifier votre fichier";
 				}
-				user.phone2 = u[7];
-				
+				user.phone2 = u[7];				
 				user.address1 = u[8];
 				user.address2 = u[9];
 				user.zipCode = u[10];
-				user.city = u[11];
-				
+				user.city = u[11];				
 				user.insert();
 				
 				var ua = new db.UserAmap();
@@ -573,27 +571,21 @@ class Member extends Controller
 			}
 			
 			//import registered members
-			var i : Iterable<Dynamic> = cast app.session.data.csvRegistered;
+			var i : Iterable<Array<String>> = cast app.session.data.csvRegistered;
 			for (u in i) {
-				var firstName = u[0];
-				var lastName = u[1];
 				var email = u[2];
-				var firstName2 = u[4];
-				var lastName2 = u[5];
 				var email2 = u[6];
 				
 				var us = db.User.getSameEmail(email, email2);
 				var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(us, function(u) return u.id), false);
 				
-				if (userAmaps.length == 0) {
-					//il existe dans cagette, mais pas pour ce groupe
+				//member exists but is not member of this group.
+				if (userAmaps.length == 0) {					
 					var ua = new db.UserAmap();
 					ua.userId = us.first().id;
 					ua.amap = app.user.amap;
 					ua.insert();
 				}
-				
-				
 			}
 			
 			view.numImported = app.session.data.csvUnregistered.length + app.session.data.csvRegistered.length;
@@ -694,9 +686,22 @@ class Member extends Controller
 	 */
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
-		view.transactions = db.Transaction.getTransactions(m,app.user.amap);
+		
+		db.Operation.updateUserBalance(m, app.user.amap);
+		
+		view.transactions = db.Operation.getOperations(m,app.user.amap);
 		view.member = m;
 		view.balance = db.UserAmap.get(m,app.user.amap).balance;
+		
+	}
+	
+	@tpl('member/balance.mtt')
+	function doBalance(){
+		
+		view.balanced = db.UserAmap.manager.search($amap == app.user.amap && $balance == 0.0, false);
+		view.credit = db.UserAmap.manager.search($amap == app.user.amap && $balance > 0, false);
+		view.debt = db.UserAmap.manager.search($amap == app.user.amap && $balance < 0, false);
+		
 		
 	}
 	

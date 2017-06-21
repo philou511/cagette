@@ -30,16 +30,30 @@ class App extends sugoi.BaseApp {
 	override public function mainLoop() {
 		eventDispatcher = new hxevents.Dispatcher<Event>();
 		plugins = [];
+		//internal plugins
 		plugins.push(new plugin.Tutorial());
-		plugins.push(new plugin.Payment());
-		#if plugins
-		plugins.push( new hosted.HostedPlugIn() );
-		plugins.push( new pro.ProPlugIn() );
-		plugins.push( new connector.ConnectorPlugIn() );
-		#end
 		
+		//optionnal plugins
+		#if plugins
+		plugins.push( new hosted.HostedPlugIn() );				
+		plugins.push( new pro.ProPlugIn() );		
+		plugins.push( new connector.ConnectorPlugIn() );				
+		plugins.push( new pro.LemonwayEC() );
+		//plugins.push( new who.WhoPlugIn() );
+		#end
 	
 		super.mainLoop();
+	}
+	
+	public function getCurrentGroup(){		
+		if (session == null) return null;
+		if (session.data == null ) return null;
+		var a = session.data.amapId;
+		if (a == null) {
+			return null;
+		}else {			
+			return db.Amap.manager.get(a,false);
+		}
 	}
 	
 	override function beforeDispatch() {
@@ -67,7 +81,8 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public function event(e:Event) {
-		return this.eventDispatcher.dispatch(e);
+		this.eventDispatcher.dispatch(e);
+		return e;
 	}
 	
 	/**
@@ -114,6 +129,8 @@ class App extends sugoi.BaseApp {
 		
 		out.set("orderStartDate", "Date ouverture des commandes");
 		out.set("orderEndDate", "Date fermeture des commandes");	
+		out.set("openingHour", "Heure d'ouverture");	
+		out.set("closingHour", "Heure de fermeture");	
 		
 		out.set("date", "Date de distribution");	
 		out.set("active", "actif");	
@@ -126,6 +143,7 @@ class App extends sugoi.BaseApp {
 		out.set("HasEmailNotif4h", "Recevoir des notifications par email 4h avant les distributions");
 		out.set("24h", "Recevoir des notifications par email 24h avant les distributions");
 		out.set("HasEmailNotif24h", "Recevoir des notifications par email 24h avant les distributions");
+		out.set("Ouverture", "Recevoir des notifications par email pour l'ouverture des commandes");
 		out.set("Tuto", "Activer tutoriels");
 		out.set("HasMembership", "Gestion des adhésions");
 		out.set("DayOfWeek", "Jour de la semaine");
@@ -188,6 +206,14 @@ class App extends sugoi.BaseApp {
 		out.set("Litre", "Litres");		
 		out.set("htPrice", "Prix H.T");
 		out.set("amount", "Montant");
+		
+		out.set("check", "Chèque");
+		out.set("transfer", "Virement");
+		out.set("cash", "Liquide");
+		out.set("HasPayments", "Gestion des paiements");
+		
+		out.set("byMember", "Par adhérent");
+		out.set("byProduct", "Par produit");
 		return out;
 	}
 	
@@ -197,6 +223,10 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public static function getMailer():sugoi.mail.IMailer {
+		
+		if (App.config.DEBUG){	
+			return new sugoi.mail.DebugMailer();
+		}
 		
 		if (sugoi.db.Variable.get("mailer") == null){
 			throw sugoi.BaseController.ControllerAction.ErrorAction("/","L'envoi des emails n'est pas configuré. Si vous êtes administrateur, <a href='/admin/emails'>vous pouvez le configurer ici</a>");
@@ -225,26 +255,24 @@ class App extends sugoi.BaseApp {
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getAmap();
 		
-		if (!App.config.DEBUG){	
-			
-			current.event(SendEmail(m));
-			
-			getMailer().send(m, function(o){
+		current.event(SendEmail(m));
 		
-				//store result
-				var lm = new db.Message();
-				lm.amap =  group;
-				lm.recipients = Lambda.array(Lambda.map(m.getRecipients(), function(x) return x.email));
-				lm.title = m.getSubject();
-				lm.date = Date.now();
-				lm.body = m.getHtmlBody();
-				lm.rawStatus = Std.string(o);
-				lm.status = o;
-				if (listId != null) lm.recipientListId = listId;
-				if (sender != null) lm.sender = sender;
-				lm.insert();
-			});
-		}
+		getMailer().send(m, function(o){
+	
+			//store result
+			var lm = new db.Message();
+			lm.amap =  group;
+			lm.recipients = Lambda.array(Lambda.map(m.getRecipients(), function(x) return x.email));
+			lm.title = m.getSubject();
+			lm.date = Date.now();
+			lm.body = m.getHtmlBody();
+			lm.rawStatus = Std.string(o);
+			lm.status = o;
+			if (listId != null) lm.recipientListId = listId;
+			if (sender != null) lm.sender = sender;
+			lm.insert();
+		});
+		
 	}
 	
 	public static function quickMail(to:String, subject:String, html:String){
@@ -253,10 +281,14 @@ class App extends sugoi.BaseApp {
 		e.setRecipient(to);			
 		e.setSender(App.config.get("default_email"),"Cagette Pro");		
 		
-		var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
+		//var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
+		var html = App.current.processTemplate("mail/message.mtt", {text:html});		
 		e.setHtmlBody(html);
-		
-		App.sendMail(e);
+		try{
+			App.sendMail(e);
+		}catch(e:Dynamic){
+			App.current.logError(e);
+		}
 	}
 	
 	/**

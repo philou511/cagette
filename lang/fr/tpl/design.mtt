@@ -1,10 +1,17 @@
 ﻿::use 'base.mtt'::
 		
+		::if getParam('__redirect')!=null::
+		<!-- need to login to go to this page-->
+		<script>$(function(){
+		_.loginBox('::raw getParam("__redirect")::');
+		});</script>
+		::end::
+
 		<div class="row" style="margin-top:10px;">
 			<div class="col-md-7">
-				
-				::if user!=null && user.getAmap()!=null::
-					<h1>::user.getAmap().name::</h1>
+				::set groupName = getCurrentGroup()::
+				::if groupName!=null::
+					<h1>::groupName::</h1>
 				::else::
 					<h1 style="margin-bottom:22px;"><a href="/">::NAME::</a></h1>					
 				::end::
@@ -29,6 +36,14 @@
 						<li><a href="/user/logout"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
 					</ul>
 				</div>
+			</div>
+			::else::
+			<div class="col-md-5">		
+				<div class="pull-right text-right">
+					<a href="/user/login" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> Me connecter</a>
+					<a class="btn btn-default btn-xs" href="/p/hosted/book"><span class="glyphicon glyphicon-search"></span> Rechercher un groupe</a>	
+				</div>
+				
 			</div>
 			::end::
 				

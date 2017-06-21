@@ -229,13 +229,18 @@ class Install extends controller.Controller
 	@admin
 	function _0_9_2_dbMigration(){
 		
+		//recompute prices on orders
 		for ( order in db.UserContract.manager.all(true)){
-			
 			order.productPrice = order.product.price;
 			order.feesRate = order.product.contract.percentageValue;
 			order.update();
-			
-			
+		}
+		
+		
+		//activate payment orders
+		for ( a in db.Amap.manager.all(true)){
+			a.allowedPaymentsType = ["cash", "transfer", "check"];
+			a.update();
 		}
 		
 	}

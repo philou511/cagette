@@ -45,6 +45,10 @@ class Distribution extends Object
 	public var distributor4Id : SNull<SInt>;
 	#end
 	
+	@hideInForms public var validated :SBool;
+	
+	public static var DISTRIBUTION_VALIDATION_LIMIT = 10;
+	
 	public function new() 
 	{
 		super();
@@ -95,13 +99,6 @@ class Distribution extends Object
 	
 		var pids = db.Product.manager.search($contract == this.contract, false);
 		var pids = Lambda.map(pids, function(x) return x.id);
-		//var sql = "select u.firstName , u.lastName as uname, u.id as uid, p.name as pname ,u.firstName2 , u.lastName2, u.phone, u.email, up.* from User u, UserContract up, Product p where up.userId=u.id and up.productId=p.id and p.contractId=" + contract.id;
-		//if (contract.type == db.Contract.TYPE_VARORDER) {
-			//sql += " and up.distributionId=" + this.id;	
-		//}
-		//
-		//sql += " order by uname asc";
-		//return sys.db.Manager.cnx.request(sql).results();
 		
 		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
 			return UserContract.manager.search( ($productId in pids), false); 
@@ -110,6 +107,16 @@ class Distribution extends Object
 		}
 	}
 	
+	public function getUsers():Iterable<db.User>{
+		
+		return tools.ObjectListTool.deduplicate( Lambda.map(getOrders(), function(x) return x.user ) );
+		
+	}
+
+	
+	/**
+	 * Get TTC turnover for this distribution
+	 */
 	public function getTurnOver(){
 		
 		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(contract.getProducts()).join(",") +") ";
@@ -118,9 +125,24 @@ class Distribution extends Object
 		}
 	
 		return sys.db.Manager.cnx.request(sql).getFloatResult(0);
+	}
+	
+	/**
+	 * Get HT turnover for this distribution
+	 */
+	public function getHTTurnOver(){
 		
+		var pids = tools.ObjectListTool.getIds(contract.getProducts());
 		
+		var sql = "select SUM(uc.quantity *  (p.price/(1+p.vat/100)) ) from UserContract uc, Product p ";
+		sql += "where uc.productId IN (" + pids.join(",") +") ";
+		sql += "and p.id=uc.productId ";
 		
+		if (contract.type == db.Contract.TYPE_VARORDER) {
+			sql += " and uc.distributionId=" + this.id;	
+		}
+	
+		return sys.db.Manager.cnx.request(sql).getFloatResult(0);
 	}
 	
 	/**
@@ -190,7 +212,7 @@ class Distribution extends Object
      */
     public static function getOpenToOrdersDeliveries(contract:db.Contract){
 
-        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,false));
+        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,{orderBy:date},false));
 
 
     }
@@ -198,9 +220,15 @@ class Distribution extends Object
 
 
 	/**
-	 * Return a string like $placeId-$date
+	 * Return a string like $placeId-$date.
+	 * 
+	 * It's an ID representing all the distributions happening on that day at that place.
 	 */
 	public function getKey():String{
+		return db.Distribution.makeKey(this.date, this.place);
+	}
+	
+	public static function makeKey(date, place){
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
 	}
 

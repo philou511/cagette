@@ -20,12 +20,12 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="spod_macro&#xA;plugins" />
+    <option directives="plugins" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="App" />
     <option enabledebug="False" />
-    <option additional="-D debugip=localhost:18080&#xA;-D weblogid=cagette&#xA;--next&#xA;-dce no&#xA;-cp common&#xA;-cp js&#xA;-lib sugoi&#xA;-lib react&#xA;-lib hxleaflet&#xA;-lib cagette-hosted&#xA;-lib weblog&#xA;-D react_global&#xA;-D plugins&#xA;-main App&#xA;-js www/js/app.js" />
+    <option additional="--next&#xA;-dce no&#xA;-cp common&#xA;-cp js&#xA;-lib sugoi&#xA;-lib react&#xA;-lib hxleaflet&#xA;-lib cagette-hosted&#xA;-D react_global&#xA;-D plugins&#xA;-main App&#xA;-js www/js/app.js" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -36,12 +36,13 @@
     <library name="sugoi" />
     <library name="hxevents" />
     <library name="hscript" />
-    <library name="record-macros" />
+	<library name="record-macros" />
     <library name="smtpmailer" />
     <library name="datetime" />
     <library name="cagette-hosted" />
     <library name="cagette-pro" />
     <library name="cagette-connector" />
+    <library name="cagette-wholesale-order" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

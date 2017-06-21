@@ -15,10 +15,11 @@
 	<macro name="img(id,?def)"><img src="$$file(::id::,::def::)"/></macro>
 	
 
-	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/ ::b.pages::::end::)</macro>
+	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>
 
 	<macro name="browseCustom(b,url,custom)">
-		&lt; ::if b.prev::<a href="::url::/?page=::b.prev::">Précédent</a>::else::Précédent::end::
+		&lt; 
+		::if b.prev::<a href="::url::/?page=::b.prev::">Précédent</a>::else::Précédent::end::
 		| ::custom:: |
 		::if b.next::<a href="::url::/?page=::b.next::">Suivant</a>::else::Suivant::end:: &gt;
 	</macro>
@@ -75,6 +76,14 @@
 		::end::
 	</macro>
 	
+	<macro name="check(v)">
+		::if(v==true || v==1)::
+		<span class="glyphicon glyphicon-ok" style="color:#060"></span>
+		::else::
+		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
+		::end::
+	</macro>
+	
 	
 	<macro name="date(dow,d,m,y,place)">
 		<div class="dateBox" >
@@ -85,7 +94,8 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span> <a href="#" onclick="_.overlay('/group/place/::place.id::','::place.name::')">::place::</a>			
+				<span class="glyphicon glyphicon-map-marker"></span>
+				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
 			</div>
 			::end::
 		</div>		
@@ -106,7 +116,8 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span> <a href="#" onclick="_.overlay('/group/place/::place.id::','::place.name::')">::place::</a>
+				<span class="glyphicon glyphicon-map-marker"></span>
+				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
 			</div>
 			::end::
 		</div>		
@@ -140,39 +151,53 @@
 	</macro>
 	
 	
-	<macro name="transaction(t)">
-	<td>
-		::set x = t.getTypeIndex()::
-		
+	<macro name="operation(t)">
+	::set x = t.getTypeIndex()::
+	<!--::if x==2:: ::set class="text-right":: ::end:: -->
+	<td class="::class::">
 		::if x==0::
-		<i class="fa fa-shopping-cart" aria-hidden="true"></i> Commande
+		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Commande
 		::elseif x==1::
-		<i class="fa fa-shopping-basket" aria-hidden="true"></i> Cde AMAP
+		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
-		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement 
-		::set ty = t.getPaymentType()::
-		(
-		::if(ty=="check"):: Chèque
-		::elseif(ty=="cash"):: Liquide
-		::elseif(ty=="transfer"):: Virement
-		::else::
-		::ty::
-		::end:: 
-		)
+		<!--<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>-->
+		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement ::_(t.getPaymentType())::
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::
 	</td>
+	
 	<td>
-		::if t.pending==true::
-		<i class="fa fa-circle-thin" aria-hidden="true"></i>
-		::else::
-		<i class="fa fa-check" aria-hidden="true"></i>
+		::if t.pending==true::			
+			<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
+		::else::		
+			<i class="fa fa-check" aria-hidden="true"></i>
 		::end::
 	</td>
-	<td>::t.name::</td>
-	<td>::t.amount:: ::currency()::</td>
-	<td>::hDate(t.date)::</td>
+	<td style="font-size:1em;">
+		
+		::t.name::<br/>
+		
+		::if x==2 && t.pending==true::		
+			::if(t.getPaymentType()=="check")::
+				<span style="color:red;">Chèque à donner au retrait des produits</span>
+			::elseif(t.getPaymentType()=="cash")::
+				<span style="color:red;">Liquide à donner au retrait des produits</span>
+			::elseif(t.getPaymentType()=="transfer")::
+				<span style="color:red;">Ce virement doit être par un coordinateur</span>		
+			::else::
+				::t.name::<br/>
+				<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+			::end::
+			
+		::else::
+		
+			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+		
+		::end::
+	</td>
+	<td>::formatNum(t.amount)::&nbsp;::currency()::</td>
+	::set class=""::
 	</macro>
 
 	<macro name="back()">	

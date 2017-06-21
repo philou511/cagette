@@ -52,7 +52,8 @@
 		  }
 		</script>
 
-		::set url = "?like="+like+(if(u!=null)";user="+u.id else "")+";page="::
+		::set url = "/admin/errors"::
+		
 		$$browse(::browser::,::url::)
 		<table class="table table-bordered table-striped table-condensed table-hover">
 			<tr>

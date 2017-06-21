@@ -1,0 +1,52 @@
+::use 'design.mtt'::
+<div class="col-md-12">
+	<div class="article text-center">
+	
+	<h2>Paiement de votre commande</h2>
+	
+	<!--<div>
+		Votre solde actuel est de <b>::ua.balance::</b> 
+	</div>	-->
+		
+	<div style="font-size:120%;">
+		<p>
+			A PAYER : <b>::formatNum(amount):: ::currency()::</b>
+		</p>
+		<p>
+			Choisissez un moyen de paiement :
+		</p>
+	</div>
+		
+		
+
+	
+	<div class="row">
+		::if(paymentTypes==null || paymentTypes.length==0)::
+		<div class="col-md-12">
+			<div class="alert alert-danger">
+			Pour l'instant, aucun moyen de paiement n'est activé pour votre groupe.<br/>
+			Contactez votre responsable de groupe afin qu'il configure ces moyens de paiement.			
+			</div>
+		</div>	
+		::end::
+		
+		
+		::foreach p paymentTypes::
+		<div class="col-md-4">
+			<a class="clickable" href="::p.link::" style="min-height:120px;vertical-align:middle;">
+				
+				<h3>::_(p.type)::</h3> 
+				::raw p.icon:: 
+				<p>::p.desc::</p>
+			</a>	
+		</div>
+		
+		::end::
+	</div>
+	
+	</div>
+</div>
+
+
+
+::end::

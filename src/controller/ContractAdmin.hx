@@ -6,7 +6,9 @@ import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
 import Common;
+import datetime.DateTime;
 using tools.ObjectListTool;
+using tools.DateTool;
 
 class ContractAdmin extends Controller
 {
@@ -19,7 +21,7 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	function sendNav(c){
+	public function sendNav(c){
 		var nav = new Array<Link>();
 		var e = Nav(nav,"contractAdmin",c.id);
 		app.event(e);
@@ -27,10 +29,12 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * liste les contrats dont on a la responsabilité
+	 * Contract admin main page
 	 */
 	@tpl("contractadmin/default.mtt")
 	function doDefault(?args:{old:Bool}) {
+		
+		var now = Date.now();
 		
 		var contracts;
 		if (args != null && args.old) {
@@ -38,7 +42,7 @@ class ContractAdmin extends Controller
 		}else {
 			contracts = db.Contract.getActiveContracts(app.user.amap, true, false);	
 		}
-				
+
 		//filter if current user is not manager
 		if (!app.user.isAmapManager()) {
 			for ( c in Lambda.array(contracts).copy()) {				
@@ -46,16 +50,23 @@ class ContractAdmin extends Controller
 			}
 		}
 		
-		//distributions to validate ( today is between orderEndDate and delvery+6 days )
-		var now = Date.now();
-		var cids = contracts.getIds();
-		view.distributions = db.Distribution.manager.unsafeObjects("SELECT * FROM Distribution WHERE NOW() > orderEndDate AND NOW() < DATE_ADD(date,INTERVAL 6 DAY) AND contractId IN ("+cids.join(",")+")", false);  
-		//view.distributions = db.Distribution.manager.search( now > $orderEndDate && now < ($date+$days(6)), false);  
-		
 		view.contracts = contracts;		
 		view.vendors = app.user.amap.getVendors();
 		view.places = app.user.amap.getPlaces();
 		checkToken();
+		
+
+		//multidistribs to validate
+		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
+			var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > Date.now() && $type == db.Contract.TYPE_VARORDER,false).getIds();
+			var oneMonth = tools.DateTool.deltaDays(now, 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+			var ds = db.Distribution.manager.search( !$validated && ($date > oneMonth) && ($date < now) && ($contractId in cids), {orderBy:date}, false);
+			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
+		}else{
+			view.distribs = [];
+		}
+		
+		
 	}
 
 	/**
@@ -117,8 +128,6 @@ class ContractAdmin extends Controller
 		//generate a token
 		checkToken();
 	}
-
-	
 	
 	
 	/**
@@ -227,18 +236,103 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * Global view on orders
+	 * global view on orders within a timeframe
+	 */
+	@tpl('contractadmin/ordersByTimeFrame.mtt')
+	function doOrdersByTimeFrame(?from:Date, ?to:Date/*, ?place:db.Place*/){
+		
+		if (from == null) {
+		
+			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
+			
+			var now = DateTime.now();	
+			var from = now.snap(Month(Down)).getDate();			
+			var to = now.snap(Month(Up)).add(Day(-1)).getDate();
+			
+			
+			var el = new sugoi.form.elements.DatePicker("from", "Date de début", from,true);			
+			el.format = 'LL';
+			f.addElement(el);
+			
+			var el = new sugoi.form.elements.DatePicker("to", "Date de fin", to,true);
+			el.format = 'LL';
+			f.addElement(el);
+			
+			//var places = Lambda.map(app.user.amap.getPlaces(), function(p) return {label:p.name,value:p.id} );
+			//f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
+			
+			view.form = f;
+			view.title = "Vue globale des commandes";
+			app.setTemplate("form.mtt");
+			
+			if (f.checkToken()) {
+				
+				var url = '/contractAdmin/ordersByTimeFrame/' + f.getValueOf("from").toString().substr(0, 10) +"/"+f.getValueOf("to").toString().substr(0, 10);
+				//var p = f.getValueOf("placeId");
+				//if (p != null) url += "/"+p;
+				throw Redirect( url );
+			}
+			
+			return;
+			
+		}else {
+			
+			var d1 = from;
+			var d2 = to;
+			var contracts = app.user.amap.getActiveContracts(true);
+			var cconst = [];
+			var cvar = [];
+			for ( c in contracts) {
+				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
+				if (c.type == db.Contract.TYPE_VARORDER) 	cvar.push(c.id);				
+			}
+			
+			//distribs
+			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);		
+			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);	
+			
+			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+			
+			//varying orders
+			var varorders = db.UserContract.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
+			
+			//constant orders
+			var constorders = [];
+			for ( d in cdistribs) {
+				var orders2 = db.UserContract.manager.search($productId in d.contract.getProducts().getIds(), { orderBy:userId } );
+				constorders = constorders.concat(Lambda.array(orders2));
+			}
+			
+			//merge 2 lists
+			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
+			var orders = db.UserContract.prepare(Lambda.list(orders));
+			
+			view.orders = orders;
+			view.from = from;
+			view.to = to;
+			
+		}
+		
+		
+		
+	}
+	
+	/**
+	 * Global view on orders in one day
 	 * 
 	 * @param	date
 	 */
 	@tpl('contractadmin/ordersByDate.mtt')
-	function doOrdersByDate(?date:Date){
+	function doOrdersByDate(?date:Date,?place:db.Place){
 		if (date == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			var el = new sugoi.form.elements.DatePicker("date", "Date de distribution", true);
 			el.format = 'LL';
 			f.addElement(el);
+			
+			var places = Lambda.map(app.user.amap.getPlaces(), function(p) return {label:p.name,value:p.id} );
+			f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
 			
 			view.form = f;
 			view.title = "Vue globale des commandes";
@@ -249,6 +343,8 @@ class ContractAdmin extends Controller
 			if (f.checkToken()) {
 				
 				var url = '/contractAdmin/ordersByDate/' + f.getValueOf("date").toString().substr(0, 10);
+				var p = f.getValueOf("placeId");
+				if (p != null) url += "/"+p;
 				throw Redirect( url );
 			}
 			
@@ -256,32 +352,29 @@ class ContractAdmin extends Controller
 			
 		}else {
 			
-			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+			var d1 = date.setHourMinute(0, 0);
+			var d2 = date.setHourMinute(23,59);
 			var contracts = app.user.amap.getActiveContracts(true);
-			var cids = Lambda.map(contracts, function(c) return c.id);
 			var cconst = [];
 			var cvar = [];
 			for ( c in contracts) {
 				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
-				
+				if (c.type == db.Contract.TYPE_VARORDER) 	cvar.push(c.id);				
 			}
 			
 			//distribs
-			var vdistribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 , false);		
-			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 , false);	
+			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
+			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
 			
 			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
 			
-			
 			//varying orders
-			var varorders = db.UserContract.manager.search($distributionId in Lambda.map(vdistribs, function(d) return d.id)  , { orderBy:userId } );
+			var varorders = db.UserContract.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
 			
 			//constant orders
 			var constorders = [];
 			for ( d in cdistribs) {
-				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id), { orderBy:userId } );
+				var orders2 = db.UserContract.manager.search($productId in d.contract.getProducts().getIds(), { orderBy:userId } );
 				constorders = constorders.concat(Lambda.array(orders2));
 			}
 			
@@ -291,6 +384,7 @@ class ContractAdmin extends Controller
 			
 			view.orders = orders;
 			view.date = date;
+			view.place = place;
 			view.ctotal = app.params.exists("ctotal");
 		}
 	}
@@ -300,7 +394,7 @@ class ContractAdmin extends Controller
 	 * Global view on orders, producer view
 	 */
 	@tpl('contractadmin/vendorsByDate.mtt')
-	function doVendorsByDate(date:Date){
+	function doVendorsByDate(date:Date,place:db.Place){
 			
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
@@ -308,7 +402,7 @@ class ContractAdmin extends Controller
 		var cids = Lambda.map(contracts, function(c) return c.id);
 		
 		//distribs for both types in active contracts
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 , false);		
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 && $place==place , false);		
 
 		
 		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
@@ -341,13 +435,85 @@ class ContractAdmin extends Controller
 			}
 		}
 		
-		
 		view.orders = Lambda.array(out);
 		view.date = date;
-		
-		
 	}
 
+	
+	/**
+	 * Global view on orders, producer view
+	 */
+	@tpl('contractadmin/vendorsByTimeFrame.mtt')
+	function doVendorsByTimeFrame(from:Date,to:Date/*,place:db.Place*/){
+			
+		var d1 = from;
+		var d2 = to;
+		var contracts = app.user.amap.getActiveContracts(true);
+		var cids = contracts.getIds();
+		
+		//distribs for both types in active contracts
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
+		if ( distribs.length == 0 ) throw Error("/contractAdmin/", "Il n'y a aucune distribution sur cette période");
+		
+		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:List<OrderByProduct>}>();//key : vendor id
+		
+		for (d in distribs){
+			var vid = d.contract.vendor.id;
+			var o = out.get(vid);
+			
+			if (o == null){
+				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
+			}else{
+				
+				//add orders with existing ones
+				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
+					
+					//find record in existing orders
+					var f : OrderByProduct = Lambda.find(o.orders, function(a:OrderByProduct) return a.pid == x.pid);
+					if (f == null){
+						//new product order
+						o.orders.push(x);						
+					}else{
+						//increment existing
+						f.quantity += x.quantity;
+						f.total += x.total;
+					}
+				}
+				out.set(vid, o);
+			}
+		}
+		
+		view.orders = Lambda.array(out);
+		
+		
+		if ( app.params.exists("csv") ){
+			
+			var orders = [];
+			for ( x in out){
+				//empty line
+				orders.push({"quantity":null,"pname":null,"ref":null,"price":null,"total":null});
+				orders.push({"quantity":null,"pname":x.contract.vendor.name,"ref":null,"price":null,"total":null});
+				
+				for (o in x.orders){
+					orders.push({
+						"quantity":view.formatNum(o.quantity),
+						"pname":o.pname,
+						"ref":o.ref,
+						"price":view.formatNum(o.price),
+						"total":view.formatNum(o.total)					
+					});
+				}
+			}			
+			
+			sugoi.tools.Csv.printCsvData(orders, ["quantity", "pname", "ref", "price", "total"], "Commandes du " + from.toString().substr(0,10)+" au "+to.toString().substr(0,10)+" par producteur.csv");
+			return;
+		}
+		
+		view.from = from;
+		view.to = to;
+	}
+	
+	
 	/**
 	 * Overview of orders for this contract in backoffice
 	 */
@@ -467,7 +633,19 @@ class ContractAdmin extends Controller
 					p.ref = source_p.ref;
 					p.stock = source_p.stock;
 					p.vat = source_p.vat;
+					p.organic = source_p.organic;
+					p.txpProduct = source_p.txpProduct;
 					p.insert();
+					
+					for (source_cat in source_p.getCategories()){
+						
+						var cat = new db.ProductCategory();
+						cat.product = p;
+						cat.category = source_cat;
+						cat.insert();
+						
+					}
+					
 				}
 			}
 			
@@ -692,6 +870,7 @@ class ContractAdmin extends Controller
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
 		sendNav(c);
 		if (!app.user.canManageContract(c)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, "Cette distribution a déjà été validée");
 		
 		view.c = view.contract = c;
 		view.u = user;
@@ -790,6 +969,7 @@ class ContractAdmin extends Controller
 				}
 				
 				app.event(MakeOrder(orders));
+				var ops = db.Operation.onOrderConfirm(orders);
 				
 				if (distrib != null) {
 					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, "La commande a été mise à jour");

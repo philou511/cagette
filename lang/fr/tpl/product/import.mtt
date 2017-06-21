@@ -9,27 +9,30 @@
 		
 	
 		<form action="/product/import/::contract.id::" method="POST" enctype="multipart/form-data">
-			<input name="file" type="file"/>
-			<input type="submit" value="OK"/>
+			<p>
+				<input name="file" type="file"/>
+			</p>
+			<p>
+				<input type="submit" class="btn btn-primary" value="Importer"/>	
+			</p>
+			
 		</form>
 	
 	
 	::elseif step==2::
 		<h4>Produits à importer</h4>
 		<div style="margin-bottom:24px;">
-			::if datas!=null && datas.length>0::
+			::if !csv.isEmpty()::
 			
 			<table class="table table-bordered" style="/*font-size:11px;*/background-color:#FFF;">
+				
 				<tr>
-					<th>Nom</th>
-					<th>Prix (sans symbole euro)</th>
-					<th>Référence</th>
-					<th>Description</th>
-					<th>Taux de TVA</th>
-					<th>Stock</th>
-					<th>numéro d'icone</th>
+					::foreach h csv.getHeaders()::
+					<th>::_(h)::</th>
+					::end::
 				</tr>
-				::foreach d datas::
+				
+				::foreach d csv.getDatas()::
 				<tr>
 					::foreach r d::
 					<td>

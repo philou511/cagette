@@ -10,3 +10,4 @@ www/js/app.js
 tmp/*
 *node_modules*
 MakeFile
+*.map
