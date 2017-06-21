@@ -343,8 +343,8 @@ class AmapAdmin extends Controller
 			app.user.amap.checkOrder = app.user.amap.name;
 			app.user.amap.update();
 		}
-		f.addElement( new sugoi.form.elements.StringInput("checkOrder", "Ordre pour les chèques", app.user.amap.checkOrder, true)); 
-		f.addElement( new sugoi.form.elements.StringInput("IBAN", "IBAN de votre compte bancaire pour les virements", app.user.amap.IBAN, true)); 
+		f.addElement( new sugoi.form.elements.StringInput("checkOrder", "Ordre pour les chèques", app.user.amap.checkOrder, false)); 
+		f.addElement( new sugoi.form.elements.StringInput("IBAN", "IBAN de votre compte bancaire pour les virements", app.user.amap.IBAN, false)); 
 		
 		
 		if (f.isValid()){

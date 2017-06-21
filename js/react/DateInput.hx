@@ -16,8 +16,6 @@ class DateInput extends react.ReactComponentOfPropsAndState<{date:Date,divId:Str
 		props.divId = "datePicker"+Std.random(9999999);
 		super(props);
 		
-		
-		
 		App.j(function () {
 			var dt = untyped App.j("#"+props.divId).datetimepicker(
 				{

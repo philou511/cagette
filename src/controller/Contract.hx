@@ -519,7 +519,7 @@ class Contract extends Controller
 	
 	
 	/**
-	 * Edit an order for a multidistrib.
+	 * A user edit an order for a multidistrib.
 	 */
 	@tpl("contract/orderByDate.mtt")
 	function doEditOrderByDate(date:Date) {

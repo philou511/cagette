@@ -176,7 +176,7 @@ enum Event {
 	MinutelyCron;
 	
 	//orders
-	MakeOrder(orders:Array<db.UserContract>);
+	MakeOrder(orders:Array<db.UserContract>); 
 	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
 	
 	//payments
@@ -403,7 +403,9 @@ class Data {
 	];
 }
 
-
+/**
+ * Order Reports
+ */
 enum OrdersReportGroupOption{
 	ByMember;
 	ByProduct;
@@ -415,9 +417,8 @@ enum OrdersReportFormatOption{
 	PrintableList; //list de distrib ?
 }
 
-/**
- * Report Options : should be usable in an URL, an API call...
- */
+
+//Report Options : should be usable in an URL, an API call...
 typedef OrdersReportOptions = {
 	//time scope
 	startDate:Date,

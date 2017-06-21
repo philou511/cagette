@@ -210,6 +210,7 @@ class App extends sugoi.BaseApp {
 		out.set("check", "Chèque");
 		out.set("transfer", "Virement");
 		out.set("cash", "Liquide");
+		out.set("HasPayments", "Gestion des paiements");
 		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");

@@ -969,6 +969,7 @@ class ContractAdmin extends Controller
 				}
 				
 				app.event(MakeOrder(orders));
+				var ops = db.Operation.onOrderConfirm(orders);
 				
 				if (distrib != null) {
 					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, "La commande a été mise à jour");
