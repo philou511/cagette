@@ -79,6 +79,7 @@ class Cart
 	
 		for ( p in order.products) {
 			if (p.productId == pid) {
+				
 				p.quantity += qt;
 				render();
 				return;
