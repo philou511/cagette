@@ -654,10 +654,10 @@ class ContractAdmin extends Controller
 					var d = new db.Distribution();
 					d.contract = nc;
 					d.date = ds.date;
-					d.distributor1Id = ds.distributor1Id;
-					d.distributor2Id = ds.distributor2Id;
-					d.distributor3Id = ds.distributor3Id;
-					d.distributor4Id = ds.distributor4Id;
+					d.distributor1 = ds.distributor1;
+					d.distributor2 = ds.distributor2;
+					d.distributor3 = ds.distributor3;
+					d.distributor4 = ds.distributor4;
 					d.orderStartDate = ds.orderStartDate;
 					d.orderEndDate = ds.orderEndDate;
 					d.end = ds.end;
@@ -758,19 +758,19 @@ class ContractAdmin extends Controller
 			App.log(user);
 			var count = 0;
 			for ( d in distribs) {
-				if (d.distributor1Id == user.id) {
+				if (d.distributor1!=null && d.distributor1.id == user.id) {
 					count++;
 					continue;
 				}
-				if (d.distributor2Id == user.id) {
+				if (d.distributor2!=null && d.distributor2.id == user.id) {
 					count++;
 					continue;
 				}
-				if (d.distributor3Id == user.id) {
+				if (d.distributor3!=null && d.distributor3.id == user.id) {
 					count++;
 					continue;
 				}
-				if (d.distributor4Id == user.id) {
+				if (d.distributor4!=null && d.distributor4.id == user.id) {
 					count++;
 					continue;
 				}

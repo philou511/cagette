@@ -29,21 +29,12 @@ class Distribution extends Object
 	public var end : SDateTime;
 	
 	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
-	#if neko 
-	public var distributionCycleId: SNull<SInt>; 
-	#end
 	
 	@formPopulate("populate") @:relation(distributor1Id) public var distributor1 : SNull<db.User>; 
 	@formPopulate("populate") @:relation(distributor2Id) public var distributor2 : SNull<db.User>; 
 	@formPopulate("populate") @:relation(distributor3Id) public var distributor3 : SNull<db.User>; 
 	@formPopulate("populate") @:relation(distributor4Id) public var distributor4 : SNull<db.User>; 
 	
-	#if neko
-	public var distributor1Id : SNull<SInt>;
-	public var distributor2Id : SNull<SInt>;
-	public var distributor3Id : SNull<SInt>;
-	public var distributor4Id : SNull<SInt>;
-	#end
 	
 	@hideInForms public var validated :SBool;
 	

@@ -190,12 +190,12 @@ class Cron extends Controller
 		
 		for (o in orders) {
 			
-			var x = users.get(o.userId+"-"+o.product.contract.amap.id);
+			var x = users.get(o.user.id+"-"+o.product.contract.amap.id);
 			if (x == null) x = {user:o.user,distrib:null,products:[],vendors:[]};
 			x.distrib = distribsByContractId.get(o.product.contract.id);
 			//x.distrib = o.distribution;
 			x.products.push(o);			
-			users.set(o.userId+"-"+o.product.contract.amap.id, x);
+			users.set(o.user.id+"-"+o.product.contract.amap.id, x);
 			//trace (o.userId+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
 			 
 			// Prévenir également le deuxième user en cas des commandes alternées

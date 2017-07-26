@@ -213,12 +213,7 @@ class Group extends controller.Controller
 			p.contract = contract;
 			p.insert();
 		
-			var uc = new db.UserContract();
-			uc.user = user;
-			uc.product = p;
-			uc.paid = true;
-			uc.quantity = 1;
-			uc.insert();
+			db.UserContract.make(user, 1, p, null, true);
 			
 			var d = new db.Distribution();
 			d.contract = contract;
@@ -272,21 +267,8 @@ class Group extends controller.Controller
 			d.place = place;
 			d.insert();
 			
-			var uc = new db.UserContract();
-			uc.user = user;
-			uc.product = egg;
-			uc.paid = true;
-			uc.quantity = 2;
-			uc.distribution = d;
-			uc.insert();
-			
-			var uc = new db.UserContract();
-			uc.user = user;
-			uc.product = p;
-			uc.paid = true;
-			uc.quantity = 1;
-			uc.distribution = d;
-			uc.insert();
+			db.UserContract.make(user, 2, egg, d.id);
+			db.UserContract.make(user, 1, p, d.id);
 			
 			App.current.session.data.amapId  = amap.id;
 			app.session.data.newGroup = true;
