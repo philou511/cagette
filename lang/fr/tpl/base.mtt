@@ -39,7 +39,7 @@
 		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
 		
 		<!-- typeahead -->
-		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>		
+		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.js"></script>		
 		
 		<!-- font awesome -->
 		<script src="https://use.fontawesome.com/97d97e0dab.js"></script>

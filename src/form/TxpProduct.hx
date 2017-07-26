@@ -4,7 +4,7 @@ import Common;
  * ...
  * @author fbarbut
  */
-class TxpProduct extends sugoi.form.elements.StringInput
+class ___TxpProduct extends sugoi.form.elements.StringInput
 {
 
 	var taxo = db.TxpProduct.manager.all();
@@ -12,8 +12,6 @@ class TxpProduct extends sugoi.form.elements.StringInput
 	public function new(name, label, value, ?required=false){
 		super(name, label, value, required);
 		cssClass += " typeahead";
-		
-		
 	}
 	
 	override function render(){
@@ -31,7 +29,8 @@ class TxpProduct extends sugoi.form.elements.StringInput
 		  return function findMatches(q, cb) {
 			var matches = [];
 			var substrRegex = new RegExp(q, "i");
-
+			console.log("strs : ");
+			console.log(strs);
 			$.each(strs, function(i, str) {
 			  if (substrRegex.test(str)) {
 				matches.push(str);
@@ -44,10 +43,11 @@ class TxpProduct extends sugoi.form.elements.StringInput
 
 		var products = ['+taxoStr+'];
 
-		$(".typeahead").typeahead({hint: true, highlight: true, minLength: 2},
-		{name: "products",source: substringMatcher(products)});
+		$(".typeahead").typeahead( {hint: true, highlight: true, minLength: 2 }, {name: "products",source: substringMatcher(products)} );
 		
 		$(".typeahead").bind("typeahead:select", function(ev, suggestion) {
+			console.log("suggestion : ");
+			console.log(suggestion);
 			$("div.txpProduct").html(suggestion);
 			$("input.txpProduct").val(suggestion);
 		});

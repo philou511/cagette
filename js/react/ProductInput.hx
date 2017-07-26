@@ -37,16 +37,14 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 			<div>
 				<img ref="image" style={{float:"right"}} className="img-thumbnail"/>
 				<input name="$inputName" ref="input" className="form-control typeahead" placeholder="Saisir un nom de produit" style={{width:"350px"}} defaultValue="${props.productName}" />
-				<div className="txpProduct">
-					
-				</div>
+				<div className="txpProduct"></div>
 				<input type="hidden" name="$txpProductInputName" className="txpProduct" value="${props.txpProductId}" />	
 			</div>
 		');
 	}
 	
 	/**
-	 * init typeahead auto-completion features
+	 * init typeahead auto-completion features when component is mounted
 	 */
 	override function componentDidMount(){
 		
@@ -81,25 +79,34 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 					var product = Lambda.find(DICO.products, function(x) return x.id == props.txpProductId);
 					setTaxo(product);
 				}
+				
+				trace(products);
+				//trace(substringMatcher(products).);
+				
+				//init typeahead
+				untyped App.j(".typeahead").typeahead(
+					{hint: true, highlight: true, minLength: 2},
+					{name: "products", source: substringMatcher(products) , limit:30}
+				);
+				
+				//on suggestion select
+				untyped App.j(".typeahead").bind("typeahead:select", untyped function(ev, suggestion) {
+					
+					var product = Lambda.find(DICO.products, function(x) return x.name == suggestion);
+					setTaxo(product);
+				});
+				
+				
 			};
 			r.request();
 		}
 		
-		//init typeahead
-		untyped App.j(".typeahead").typeahead(
-			{hint: true, highlight: true, minLength: 2},
-			{name: "products", source: substringMatcher(products) , limit:30}
-		);
 		
-		//on suggestion select
-		untyped App.j(".typeahead").bind("typeahead:select", untyped function(ev, suggestion) {
-			
-			var product = Lambda.find(DICO.products, function(x) return x.name == suggestion);
-			setTaxo(product);
-		});
 	}
 	
-	function setTaxo(product:{id:Int,name:String,category:Int,subCategory:Int}){
+	function setTaxo(product:{id:Int, name:String, category:Int, subCategory:Int}){
+		
+		if (product == null) return;
 		
 		//print category and subcategory
 		var str = getTaxoString(product);

@@ -43,8 +43,8 @@ class Product extends Controller
 		//Product Taxonomy:
 		//view.taxo = db.TxpProduct.manager.all();
 		//f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
-		var txId = d.txpProduct == null ? null : d.txpProduct.id;
-		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}",$txId,"${f.name}");</script>';
+		var txId = d.txpProduct == null ? "" : Std.string(d.txpProduct.id);
+		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}","$txId","${f.name}");</script>';
 		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
 
 		if (f.isValid()) {

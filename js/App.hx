@@ -45,13 +45,22 @@ class App {
 		//});
 	}
 	
-	public function getProductInput(divId:String, productName:String, txpProductId:Int, formName:String ){
+	/**
+	 * Removes the form element and replace it by a react js component
+	 * @param	divId
+	 * @param	productName
+	 * @param	txpProductId
+	 * @param	formName
+	 */
+	public function getProductInput(divId:String, productName:String, txpProductId:String, formName:String ){
 		
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 			
 			//dirty stuff to remove "real" input, and replace it by the react one
 			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
-			App.j("form select[name='"+formName+"_txpProductId']").parent().parent().remove();
+			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
+			
+			if (txpProductId == null) txpProductId = "";
 			
 			ReactDOM.render(jsx('<$ProductInput productName="$productName" txpProductId="$txpProductId" formName="$formName"/>'),  js.Browser.document.getElementById(divId));	
 		});

@@ -267,8 +267,8 @@ class Group extends controller.Controller
 			d.place = place;
 			d.insert();
 			
-			db.UserContract.make(user, 2, egg, d);
-			db.UserContract.make(user, 1, p, d);
+			db.UserContract.make(user, 2, egg, d.id);
+			db.UserContract.make(user, 1, p, d.id);
 			
 			App.current.session.data.amapId  = amap.id;
 			app.session.data.newGroup = true;
