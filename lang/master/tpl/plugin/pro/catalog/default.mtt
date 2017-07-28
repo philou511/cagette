@@ -1,0 +1,166 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-8">
+	<div class=" article">
+		<h2>Références produit</h2>	
+		
+		<div>
+			<p>
+			$$insert(Nouveau produit,/p/pro/product/insert/)
+			<a href="/p/pro/product/import/" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Import Excel/CSV</a>	
+			<a href="/p/pro/offer/stock/" class="btn btn-default btn-sm"><i class="fa fa-th" aria-hidden="true"></i> Stocks</a>	
+			
+			<!--<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Catégories</a>	-->
+			</p>
+		</div>
+
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>Réf.</th>
+				<th>Nom</th>
+				<th></th>
+				<th>Stock</th>
+				<th></th>
+				
+			</tr>
+			::foreach p products::
+			
+				::if p.active==false:: 
+				::set opacity=0.4::
+				::else::
+				::set opacity=1::
+				::end::
+				<tr style="opacity: ::opacity::" id="product::p.id::">
+					<td>
+						
+						<img src="::p.getImage()::" style="width:32px;height:32px;" />
+						
+					</td>
+					<td>$$nullSafe(::p.ref::)</td>
+					<td>
+						<b>
+							::short(p.name,24)::							
+						</b>
+					</td>
+					<td>
+						::if p.organic ::<img src="/img/AB.png"/> ::end::
+					</td>
+					<td>
+					<!--
+						::if p.stock==null::
+							-
+						::else::
+							::if p.stock <= 10::
+								<span style="color:red;font-weight:bold;">							
+									::p.stock::
+								</span>
+							::else::
+								::p.stock::
+							::end::
+							
+							::unit(p._unitType)::
+							
+						::end::
+						-->
+					
+					</td>
+					<td>
+						
+						<div class="btn-group" role="group" aria-label="...">
+							<a class="btn btn-default btn-sm" onclick="$('#row_p::p.id::').toggle();"> <span class="glyphicon glyphicon-chevron-down"></span></a>
+							$$edit(Modifier,/p/pro/product/edit/::p.id::)
+							<a href="/p/pro/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>
+							$$delete( ,/p/pro/product/delete/::p.id::?token=::token::)
+						</div>
+					</td>
+
+				</tr>
+				
+				<tr id="row_p::p.id::" style="display:none;">
+					<td></td>
+					
+					<td colspan="5">
+						<table class="table table-condensed">							
+							::foreach off p.getOffers(false)::	
+								::if off.active==false:: 
+								::set opacity=0.4::
+								::else::
+								::set opacity=1::
+								::end::
+								<tr style="opacity: ::opacity::">
+									<td>::off.ref:: </td>
+									<td>
+										$$nullSafe(::off.name::)
+									</td>
+									<td>::off.quantity:: ::unit(p._unitType)::</td>
+									<td>::formatNum(off.htPrice)::&nbsp;::currency()::</td>
+									<td>
+										
+											$$edit(Modifier,/p/pro/offer/edit/::off.id::)
+											$$delete( ,/p/pro/offer/delete/::off.id::)
+									</td>
+								</tr>
+							::end::
+							<tr>
+								<td colspan="3">
+									<a href="/p/pro/offer/insert/::p.id::" class="btn btn-default btn-xs">Ajouter une offre</a>
+								</td>
+							</tr>
+							
+						</table>
+					</td>
+					
+					
+					
+				</tr>
+			
+			
+			::end::
+		</table>
+		
+		
+		<script>
+		//if a #product12 is given , open offers
+		var h = document.location.hash;
+		
+		if(h.substr(1,7)=="product"){
+			$("#row_p"+h.substr(8)).toggle();
+			
+		}
+		
+		
+		</script>
+		
+		
+		
+	</div>
+</div>
+
+<div class="col-md-4">
+	<div class=" article">
+		<h2>Catalogues</h2>	
+		
+		<p>
+			$$insert(Nouveau catalogue,/p/pro/catalog/insert/)
+		</p>
+		
+		<table class="table">
+		::foreach c catalogs::
+			<tr>
+				<td>
+					<a href="/p/pro/catalog/view/::c.id::">::c.name::</a>
+				</td>
+				<td>
+					$$edit(Gestion,/p/pro/catalog/products/::c.id::)
+					$$delete( ,/p/pro/catalog/delete/::c.id::?token=::token::)
+				</td>
+			</tr>
+		::end::
+		</table>
+		
+	</div>
+</div>
+
+
+::end::

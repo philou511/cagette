@@ -1,0 +1,136 @@
+::use 'design.mtt'::
+
+<div class="col-md-12">
+	
+
+	
+	<div class="article text-center" ::cond distribs.length>0:: >
+		<h2>Distributions à valider</h2>
+		
+		<p>Vous devez valider ces distributions réalisées récemment.</p>
+		
+		::foreach d distribs::	
+		<p>
+			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
+				Distribution du ::dDate(d.date)::, ::d._place.name::
+			</a>	
+		</p>	
+		::end::	
+		
+	</div>
+	
+	
+	
+	<div class="article" id="contracts">
+		<h2>
+			Contrats
+			::if getParam("old"):: anciens ::end::
+		</h2>
+		<table class="table">
+			::foreach c contracts::
+					::if c.endDate!=null && c.endDate.getTime() < Date.now().getTime()::
+						::set style = "opacity:0.5;"::
+					::elseif c.startDate!=null && c.startDate.getTime() > Date.now().getTime()::
+						::set style = "opacity:0.5;"::
+					::else::
+						::set style = ""::
+					::end::
+				<tr  style="::style::" >
+					<td>
+						<b>::c.name::</b>
+						
+					</td>
+					<td>
+						du ::hDate(c.startDate)::
+						au ::hDate(c.endDate)::
+					</td>
+					
+					<td>::c._vendor.name::</td>
+					<td>
+						
+						$$edit(Gestion,/contractAdmin/view/::c.id::)
+						
+						::if user.isAmapManager()::
+						$$delete(Suppr.,/contract/delete/::c.id::?token=::token::)
+						::end::
+
+						</td>
+				</tr>
+			::end::
+		</table>
+	
+		
+		::if user.isAmapManager():: 
+		$$insert(Nouveau contrat,/contract/insert/)
+		::end::
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Contrats anciens</a>
+		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Calendrier</a>
+		
+		<!--<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>-->
+		
+		<div class="dropdown" style="display:inline-block;">
+		  <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			Vue globale des commandes
+			<span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> Dans la même journée</a></li>
+			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> De date à date</a></li>			
+		  </ul>
+		</div>
+		
+	</div>
+	
+</div>
+
+
+
+<div class="col-md-6">
+	<div class="article" id="vendors">
+		<h2>::wVendors()::</h2>
+		<table class="table">
+			::foreach v vendors::		
+				<tr>
+					<td>
+						
+						::if v._image!=null::
+							<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
+						::end::
+					</td>
+					<td><b>::v.name::</b></td>
+					<td>
+						$$edit(Modifier,/vendor/edit/::v.id::)
+						<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>
+						::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
+					</td>
+				</tr>
+			::end::
+		</table>
+		$$insert(Nouveau producteur,/vendor/insert/) 
+		
+	</div>	
+</div>
+
+<div class="col-md-6">
+	<div class="article" id="places">
+		
+		<h2>Lieux de livraison</h2>
+		<table class="table">
+			::foreach p places::		
+				<tr>
+					<td><b>::p.name::</b></td>
+					<td>
+						$$edit(Modifier,/place/edit/::p.id::)
+						::if user.isAmapManager():: $$delete(Suppr.,/place/delete/::p.id::?token=::token::) ::end::
+					</td>
+				</tr>
+			::end::
+		</table>
+		$$insert(Nouveau lieu,/place/insert/)
+	</div>
+</div>
+	
+
+
+
+::end::

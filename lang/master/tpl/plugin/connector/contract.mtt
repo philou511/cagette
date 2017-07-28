@@ -1,0 +1,58 @@
+::use 'contractadmin/design.mtt'::
+
+<h3>Contrat Cagette Pro</h3>
+
+<div class="row">
+	
+	<div class="col-md-6">
+		
+		<p>
+			Ce contrat est géré par le producteur depuis son interface <b>Cagette Pro</b>, <br/>
+			il gère lui-même sa liste de produits et recoit ses commandes automatiquement.
+		</p>
+		<p>
+			Voilà pourquoi certaines actions sont bloquées de votre coté : 
+			<ul>
+				<li>Vous ne pouvez pas modifier les produits, c'est le producteur qui met à jour lui-même ses produits et tarifs</li>
+				<li>Vous ne pouvez pas créer de distribution directement. Si vous créez une nouvelle distribution, elle sera proposée au producteur. Si il valide votre proposition de distribution, la distribution sera créée dans votre contrat.</li>
+			</ul>
+		</p>
+
+		<p>
+			Pour avoir plus d'informations sur Cagette Pro, visitez notre site <a href="http://www.cagette.net" target="_blank">www.cagette.net</a>
+		</p>
+		
+	</div>
+	
+	
+	
+	<div class="col-md-6">
+		
+		<table class="table table-bordered">
+			<tr>
+				<td>Catalogue</td>
+				<td><a href="/p/pro/public/::catalog.id::" target="_blank">::catalog.name::</a></td>		
+			</tr>
+			<tr>
+				<td>Producteur</td>
+				<td>
+					::catalog._company.name::
+				</td>
+			</tr>
+			
+		</table>
+		
+	</div>
+	
+	
+	
+</div>
+
+
+
+
+
+
+
+
+::end::

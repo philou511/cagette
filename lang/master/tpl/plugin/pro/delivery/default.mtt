@@ -1,0 +1,160 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-6">
+	<div class="article">
+		<h2>Livraisons </h2>
+		
+		<p>
+		$$insert(Créer des livraisons,/p/pro/delivery/insert)	
+		$$insert(Créer des livraisons récurrentes,/p/pro/delivery/insertCycle)	
+		</p>
+		
+		
+		::foreach d distribs::
+		<a href="/p/pro/delivery/view/::d.id::" class="clickable">
+		
+			<div style="display:inline-block;vertical-align:top;">
+				::set now = Date.now()::				
+				::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+				<!-- commande en cours -->
+				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande en cours.">
+				  <i class="fa fa-circle fa-stack-2x" style="color:#F80;"></i>
+				  <i class="fa fa-shopping-basket fa-stack-1x fa-inverse"></i>
+				</span>
+				::elseif now.getTime() > d.orderEndDate.getTime()::
+				<!-- commande terminée -->
+				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande close. Préparez votre livraison">
+				  <i class="fa fa-circle fa-stack-2x" style="color:#0A0;"></i>
+				  <i class="fa fa-truck fa-stack-1x fa-inverse"></i>
+				</span>
+				::else::
+				<!-- commande pas ouverte -->
+				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande pas encore ouverte">
+				  <i class="fa fa-circle fa-stack-2x" style="color:#999;" ></i>
+				  <i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+				</span>					
+				::end::
+			</div>		
+			<div style="display:inline-block;">
+				<b>::d._contract._amap.name::</b>
+				<p>
+					::hDate(d.date)::		
+				</p>
+			</div>
+			</a>
+		::end::
+		
+		
+	</div>
+</div>
+
+<div class="col-md-6">
+	<div class="article">
+		
+		<h4>Récapitulatifs</h4>
+		
+		<form class="form-horizontal" action="/p/pro/delivery/export" method="GET">
+			
+			<script>
+			
+			var setDate = function(name){
+				var d = $('#datetimepicker-'+name).data('DateTimePicker').date();//moment.js obj
+				$('#datetimepickerdata-'+name).val( d.format('YYYY-MM-DD HH:mm:ss'))
+			
+			};
+			
+			
+			</script>
+			
+			<div class="form-group">
+				<label class="col-md-4 control-label">
+					Type 
+				</label>
+				
+				<div class="col-md-8">
+					<input type="radio" class="" name="type" value="products" checked="checked" /> Par produits<br/>
+					<input type="radio" class="" name="type" value="details" /> Détail par adhérents<br/>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				
+				<label for="startDate" class="col-md-4 control-label" id="startDate__Label">
+					Date de début
+				</label>
+				
+				<div class="col-md-8">
+					<div class="input-group date" id="datetimepicker-startDate">       
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type="text" class="form-control" />
+					</div>
+					
+					<input type="hidden" name="startDate" id="datetimepickerdata-startDate" value=""/>
+					<script type="text/javascript">
+						$(function () {
+							$('#datetimepicker-startDate').datetimepicker(
+								{
+									locale:'fr',
+									format:'LLLL',
+									defaultDate:moment().format("YYYY-MM-DD 00:00:00")
+								}
+							);
+							//stores the date in mysql format in a hidden input element	
+							$('#datetimepicker-startDate').on('dp.change',function(e){ setDate("startDate"); });
+							setDate("startDate");
+						});
+					</script>
+				</div>
+			</div>
+					
+					
+			<div class="form-group">
+				
+				<label for="endDate" class="col-md-4 control-label" id="endDate__Label">
+					Date de fin
+				</label>
+				
+				<div class="col-md-8">
+					<div class="input-group date" id="datetimepicker-endDate">       
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type="text" class="form-control" />
+					</div>
+			
+					<input type="hidden" name="endDate" id="datetimepickerdata-endDate" value=""/>
+					<script type="text/javascript">
+						$(function () {
+							$('#datetimepicker-endDate').datetimepicker(
+								{
+									locale:'fr',
+									format:'LLLL',
+									defaultDate:moment().add(7, 'days').format("YYYY-MM-DD 23:59:59")
+								}
+							);
+							//stores the date in mysql format in a hidden input element	
+							$('#datetimepicker-endDate').on('dp.change',function(e){ setDate("endDate"); });
+							setDate("endDate");
+						});
+					</script>
+				</div>
+			</div>		
+					
+					
+			<div class="form-group">
+				<div class="col-md-offset-4 col-md-8">
+					<input type="submit" class="btn btn-primary" value="Valider" />
+				</div>
+				
+				
+			</div>		
+			
+		</form>
+		
+	</div>	
+</div>
+
+
+::end::

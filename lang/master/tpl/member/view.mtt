@@ -1,0 +1,226 @@
+::use 'design.mtt'::
+
+<div class="col-md-4">
+	<h2>Coordonnées</h2>
+	<div class="article">
+		
+		<div style="font-weight:bold;font-size:120%;">::member.firstName:: ::member.lastName::
+		::if member.firstName2!=null && member.lastName2!=null::
+			& ::member.firstName2:: ::member.lastName2::
+			
+		::end::</div>
+		
+		$$nullSafe(::member.address1::)<br/>
+		$$nullSafe(::member.address2::)<br/>
+		$$nullSafe(::member.zipCode::) 
+		$$nullSafe(::member.city::)<br/>
+		<br/>
+		
+		::if member.phone!=null::
+			Tel : ::member.phone::<br/>
+		::end::
+
+		::if member.email!=null::
+			E-mail : <a href="mailto: ::member.email::">::member.email::</a><br/>
+		::end::
+		
+		::if member.email2!=null::
+			E-mail : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+		::end::
+		
+		<hr/>
+		<p style="font-size:11px;">
+			Dernière connexion : ::if member.ldate!=null::
+				::member.ldate.toString():: 
+			::else:: 
+				<b>ne s'est jamais connecté</b>
+			::end::
+			<br/>
+			Enregistré depuis : ::if member.cdate!=null:: 
+				::member.cdate.toString()::
+			::else:: 
+				??? 
+			::end::			
+			<br/>
+			::if member.pass==""::
+			<div class="alert alert-danger">Cette personne n'a pas définit de mot de passe</div>
+			::end::
+		</p>
+		<p>
+			$$edit(Modifier,/member/edit/::member.id::) 
+			$$delete(Retirer du groupe,/member/delete/::member.id::?token=::token::)
+			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">Replacer en liste d'attente</a>
+			
+			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Messages reçus</a>
+			
+			::if !member.isFullyRegistred()::
+			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+				Envoyer une invitation</a>
+			::end::
+		</p>
+
+		<p ::cond canLoginAs::>
+			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-danger btn-xs">Se connecter sur ce compte</a>
+		</p>
+	</div>
+	
+	
+	::if user._amap.hasMembership()::
+	<h2>Cotisation</h2>
+	<div class="article">
+		::if userAmap.hasValidMembership()::
+			$$bool(true) Cotisation à jour 
+		::else::
+			$$bool(false) N'a pas cotisé 
+		::end::
+		pour la periode <b>::user._amap.getPeriodName(null)::</b>
+		<br/>
+		<a href="/membership/::member.id::" class="btn btn-default btn-sm">Gérer les cotisations</a>
+		
+	</div>
+	::end::
+
+	
+</div>
+
+<div class="col-md-8">
+	<h2>Commandes en cours</h2>
+	<div class="article">
+		::set o = userContracts::
+		::if o.constOrders.length>0::
+			<h4>Contrats AMAP</h4>		
+			<table class="table table-bordered table-condensed" >
+				<tr>
+					<th>Qté</th>
+					<th>Produit</th>
+					<th>Prix total</th>
+					<th>Contrat</th>
+				</tr>
+				::foreach p o.constOrders::
+					<tr>
+						<td>::p.quantity::</td>
+						<td>::p.productName::
+						
+						::if p.userId2 != null::
+							<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+							::if member.id == p.userId::
+								<a href="/member/view/::p.userId2::">::p.userName2::</a>
+							::else::
+								<a href="/member/view/::p.userId::">::p.userName::</a>
+							::end::
+						::end::
+						
+						</td>
+						<td>::p.subTotal:: ::currency()::</td>
+
+						<td>
+							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
+						</td>
+					</tr>
+				::end::			
+			</table>
+			::end::
+			
+			::if count(o.varOrders)>0::
+				::foreach d o.varOrders.keys()::
+					<h4>Commande du ::d::</h4>
+					
+					<table class="table table-bordered table-condensed" >
+						<tr>
+							<th>Qté</th>
+							<th>Produit</th>
+							<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+							<th>Sous-total</th>
+							<th>Frais</th>
+							<th>Total</th>
+							<th>Contrat</th>
+							
+						</tr>
+						::set total = 0::
+						::foreach p o.varOrders.get(d)::
+							<tr>
+								
+								<td>::p.quantity::</td>
+								<td>::p.productName::</td>
+								<td>::p.productPrice::  ::currency()::</td>
+								<td>::p.subTotal:: ::currency()::</td>
+								<td>
+									<!-- frais -->
+									::if p.percentageValue!=null::
+									<a href="#" data-toggle="tooltip" data-placement="top" title="::p.percentageName:: : ::p.percentageValue:: %">
+										::formatNum(p.fees):: ::currency()::
+									</a>
+									::end::
+								</td>
+								<td>
+									<!-- total -->
+									::formatNum(p.total):: ::currency()::
+									::set total = total + p.total::
+								
+								</td>
+								<td>
+									<a href="/contract/view/::p.contractId::">::p.contractName::</a>
+								</td>
+							
+							</tr>
+						::end::			
+						<tr>
+							<td colspan="4"></td>
+							<td>TOTAL</td>
+							<td><b>::formatNum(total):: ::currency()::</b></td>
+						</tr>
+					</table>
+				::end::
+			::end::	
+		
+		
+	</div>
+</div>
+
+
+<div ::cond user.getAmap().hasPayments():: class="col-md-8">
+	<div class="article">
+		
+		<span style="font-size:1.3em;">
+			Solde : 
+			::if userAmap.balance<0:: 
+				::set color = "C00"::
+			::else::
+				::set color = "0C0"::
+			::end::
+			<span style="color:#::color::;">
+				::userAmap.balance:: ::currency()::
+			</span>
+		</span>
+		
+		<span style="margin-left:30px;">
+			<a href="/member/payments/::member.id::" class="btn btn-default btn-small">
+				<i class="fa fa-credit-card" aria-hidden="true"></i>
+				Détail des paiements
+			</a>
+		</span>
+		
+		
+		
+	</div>
+</div>
+
+
+
+
+
+<div class="col-md-4" ::cond userAmap.rights!=null && userAmap._rights!=null::>
+	<h3>Droits</h3>
+	<div class="article">
+		<ul>
+			
+		
+		::foreach r userAmap._rights::
+		<li>::userAmap.getRightName(r)::</li>
+		::end::
+		</ul>
+	</div>	
+</div>
+
+::end::

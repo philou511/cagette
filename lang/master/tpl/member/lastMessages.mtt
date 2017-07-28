@@ -1,0 +1,30 @@
+<table class="table table-striped">
+	<tr>
+		<th>Date</th>
+		<th>Sujet du message</th>
+		<th>Statut</th>
+	</tr>
+	
+	::foreach m emails::
+	
+	::if m.failure!=null::
+		::set class = "danger"::
+	::else::
+		::set class = "success"::
+	::end::
+	
+	<tr class="::class::">
+		<td>::hDate(m.date)::</td>
+		<td>::m.subject::</td>
+		<td>
+		::if m.failure!=null::
+			<span class="glyphicon glyphicon-exclamation-sign"></span> ::m.failure::			
+		::else::
+			<span class="glyphicon glyphicon-ok"></span> ::m.success::
+		::end::
+		</td>
+	</tr>
+	
+
+
+::end::</table>

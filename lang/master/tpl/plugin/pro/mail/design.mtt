@@ -1,0 +1,13 @@
+﻿
+<div>
+	::raw __content__::
+</div>
+
+<hr/>
+
+<div style="color:#666;font-size:12px;">
+	Cet e-mail a été envoyé depuis <a href="http://www.cagette.net">Cagette Pro</a>.
+	::if list!=null::
+	<br/>Message envoyé à la liste : ::list::
+	::end::
+</div>

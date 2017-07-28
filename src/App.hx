@@ -18,7 +18,21 @@ class App extends sugoi.BaseApp {
 	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
 	public static var VERSION = ([0,9,2]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
 	
+	public function new(){
+		super();
+		
+		#if i18n_generation
+		if( false ) TemplateTranslator.parse("lang/master");
+		#end
+		
+		sugoi.i18n.Locale.init(config.LANG);
+	}
+	
 	public static function main() {
+		
+		#if i18n_parsing
+		if( false ) sugoi.i18n.GetText.parse(["src", "lang/master"], "lang/allTexts.pot");
+		#end
 		
 		App.t = sugoi.form.Form.translator = new sugoi.i18n.translator.TMap(getTranslationArray(), "fr");
 		sugoi.BaseApp.main();

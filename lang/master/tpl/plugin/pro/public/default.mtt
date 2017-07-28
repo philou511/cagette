@@ -1,0 +1,138 @@
+::use 'plugin/pro/base.mtt'::
+
+
+
+<div class="col-md-4">
+	
+	::if catalog._vendor==null::
+		::set c = catalog._company::
+	::else::
+		::set c = catalog._vendor::
+	::end::
+	
+	::if c._image!=null::
+	<img src="::file(c._image)::" style="width: 100%;" class="thumbnail" />
+	::end::
+	
+	<h3>::c.name::</h3>
+	::if catalog._vendor!=null::<div>Distribué par <b>::catalog._company.name::</b></div>::end::
+	
+	<p>
+		::raw nl2br(c.desc)::
+	</p>
+	
+	<hr/>
+		
+	<p>
+		<span class="glyphicon glyphicon-map-marker"></span>
+		$$nullSafe(::c.address1::) $$nullSafe(::c.address2::)
+		$$nullSafe(::c.zipCode::) $$nullSafe(::c.city::)
+	</p>
+	
+	<hr/>
+	
+	<span ::cond c.email!=null::><span class="glyphicon glyphicon-envelope"></span> Email : <a href="mailto: ::c.email::">::c.email::</a><br/></span>
+	<span ::cond c.phone!=null::><span class="glyphicon glyphicon-phone-alt"></span> Tél. ::c.phone::<br/></span>
+	
+	<hr/>
+	
+	
+	<h4>Conditions de livraison</h4>
+	
+	<table class="table table-striped table-condensed">
+		::foreach day DAYS::
+		<tr>
+			<td>::day::</td>
+			::set d = catalog._deliveryAvailabilities[repeat.day.index]::
+			::if d!=null::
+				<td>De ::hHour(d.startHour,d.startMinutes):: à ::hHour(d.endHour,d.endMinutes)::</td>
+			::else::
+				<td>-</td>
+			::end::
+		</tr>
+		::end::
+	</table>
+	
+	<div ::cond catalog.maxDistance!=null::>
+		Distance maximale de livraison : <b>::catalog.maxDistance:: km.</b>
+	</div>
+	
+	<hr/>
+	
+	<p class="text-center">
+		Catalogue valable
+		du  ::hDate(catalog.startDate)::<br/>
+		au ::hDate(catalog.endDate)::
+	</p>
+	
+</div>
+
+<div class="col-md-8">
+	<h3>::catalog.name::</h3>	
+	
+	<hr/>
+	
+	<div class="row">
+		::set products = catalog.getProducts()::
+		::foreach p products::
+		
+		::if repeat.p.index%3 ==0::
+			::raw "<div style=\"clear: both;\">"::				
+		::end::
+		
+		<div class="col-md-4">			
+			<div class="productBox">
+			
+				<div class="productImg" style="background-image:url('::p.product.getImage()::')"></div>
+				
+				<div class="productName">::short(p.product.name,32)::</div>
+					
+				<table class="table table-striped table-condensed">
+					::foreach co p.offers::						
+						::if co._offer.active==false:: 
+						<tr style="opacity:0.4" data-toggle="tooltip" title="Produit indisponible">
+							<td>$$nullSafe(::co._offer.name::)</td>
+							<td>::co._offer.quantity::&nbsp;::unit(p.product._unitType)::</td>
+							<td class="price">::formatNum(co.getPublicPrice())::&nbsp;::currency()::</td>
+						</tr>	
+						::else::
+						<tr>
+							<td>$$nullSafe(::co._offer.name::)</td>
+							<td>::co._offer.quantity::&nbsp;::unit(p.product._unitType)::</td>
+							<td class="price">::formatNum(co.getPublicPrice())::&nbsp;::currency()::</td>
+						</tr>	
+						::end::
+					::end::
+				</table>	
+			</div>
+		</div>
+		::if (repeat.p.index+1)%3 ==0 ::
+			::raw "</div> <hr style=\"clear: both;\" />"::<!-- end block -->	
+		::end::	
+		
+		::end::
+	</div>
+	
+	<div style="height:120px;"></div>
+	
+	<div class="row" style="position:fixed;bottom:0;background:white;padding:12px;border-top:solid 4px #AAA;">
+		<div class="col-md-12 text-center">
+		<p>
+			Ce catalogue n'est pas destiné aux particuliers directement.
+			Il est destiné aux <b>commandes groupées</b> réalisées via le logiciel libre <a href="http://www.cagette.net" target="_blank">Cagette.net</a>.
+			<br/>
+			Si vous n'avez pas de compte Cagette pour votre AMAP ou groupement d'achat, vous pouvez ouvrir un compte gratuitement sur <a href="http://www.cagette.net" target="_blank">www.cagette.net</a>
+		</p>
+		
+		<a href="/p/pro/public/askImport/::catalog.id::" target="_top" class="btn btn-primary btn-lg"><i class="fa fa-compress" style="color:white;" aria-hidden="true"></i> 
+			Importer ce catalogue dans Cagette.net</a>
+		</div>
+	</div>
+	
+	
+</div>
+
+
+
+
+::end::

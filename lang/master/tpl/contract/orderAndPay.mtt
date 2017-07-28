@@ -1,0 +1,139 @@
+::use 'design.mtt'::
+<div id="content" class="col-md-8">
+	<div class="article">
+		<h2>Commande ::c.name::</h2>
+		
+		<!--::if distribution!=null::
+		Pour la livraison du <b>::hDate(distribution.date)::</b>
+		::end::
+		<hr/>-->
+		<p>
+			Saisissez ici vos commandes à l'avance pour ce producteur.<br/>
+			Vous pouvez consulter à tout moment vos commandes en cours sur la page <a href="/contract">mon compte</a>.<br/>
+			NB : Pour effacer une commande, saisissez une quantité égale à 0.
+		</p>
+		
+		<form name="order" id="order" method="POST" action="">
+			<input type="hidden" name="token" value="::token::"/>
+			
+			<!--::if distribution!=null::
+			<input type="hidden" name="distribution" value="::distribution.id::"/>
+			::end::-->
+			
+			<table class="table table-bordered table-striped" style="background:white;" >
+			<tr>
+				<td></td>
+				<th>Produit</th>
+				<th>Prix</th>
+				::foreach d userOrders::
+					::if d.distrib==null::
+						<th>Qté</th>
+					::else::
+						<th class="text-center">::dDate(d.distrib.date)::</th>
+					::end::
+				::end::
+			</tr>
+				
+			
+			
+			::if userOrders.length>0::	
+			
+				::foreach uo userOrders[0].datas::
+				<tr>
+					<td>
+						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
+					</td>
+					<td>
+						<span ::cond uo.product.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom">
+							<img src="/img/AB.png"/>&nbsp;						
+						</span>
+						<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">							
+							::uo.product.getName()::
+						</a>
+					</td>
+					<td>
+						::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
+						::formatNum(price)::&nbsp;::currency()::
+					</td>
+					
+					
+					::set i = repeat.uo.index::
+					
+					::foreach d userOrders::
+					<td class="text-center">
+		
+						::set o = d.datas[i]::
+						
+						::if o.order==null::
+							::if d.distrib==null::
+								<!-- contrat amap-->
+								<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="" />
+							::else::
+								<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="" />
+							::end::
+						::else::
+							::o.order.quantity::
+						::end::
+						
+					</td>
+					::end::
+					
+				</tr>
+				::end::
+			
+			::else::
+				<tr>
+					<td colspan="4">Aucune commande ouverte pour l'instant</td>
+				</tr>
+			::end::
+			
+			<tr>
+				
+				<th colspan="3" class="text-right">Total</th>
+				
+				::foreach d userOrders::
+					<th>
+						
+					::set total=0::
+					::foreach o d.datas::
+					
+						::if o.order!=null::
+							::set q = o.order.quantity::
+							::set price = o.product.price + o.product._contract.computeFees(o.product.price)::
+							
+							::set total = total+(q*price)::
+						
+						::end::
+					
+					::end::
+					
+					::formatNum(total)::&nbsp;::currency()::
+					</th>
+					
+					
+				::end::
+			</tr>
+		</table>
+			
+		<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />		
+			
+		</form>
+	
+	</div>
+</div>
+<div class="col-md-4">
+	<div class="article">
+		<p>
+			Producteur : <b>::c._vendor.name::</b>
+		</p>
+		<p>
+			Responsable : $$contact(::c._contact::)	
+		</p>
+		
+	</div>
+</div>
+
+
+
+
+::end::

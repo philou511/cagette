@@ -1,0 +1,250 @@
+::use 'design.mtt'::
+<div class="col-md-8">
+	<h2>Toutes mes commandes en cours</h2>
+	
+	::if constOrders.length>0::
+	<div class="article">
+		
+		<!-- COMMANDES AMAP -->
+		
+		<h3>Contrats AMAP</h3>
+		
+		::foreach c constOrders::
+		
+		<h4>::c.contract.name::</h4>
+		<table class="table table-bordered table-condensed" >
+			<tr>
+				<th>Qté</th>
+				<th>Produit</th>
+				<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+				<th>Sous-total</th>
+				<th>Frais</th>
+				<th>Total</th>
+				<th>Payé</th>
+			</tr>
+		::set total = 0::
+		::foreach m c.orders::
+			<tr>
+				<td>
+					::m.quantity:
+				</td>
+				<td>
+					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
+					<img src="::m.productImage::" style="width:32px;height:32px;" />
+					::m.productName::
+					</a>
+					::if m.userName2 != null::
+						<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+						::if user.id == m.userId::
+							::m.userName2::
+						::else::
+							::m.userName::
+						::end::
+					::end::
+
+				</td>
+				<td>
+					::formatNum(m.productPrice)::&nbsp;::currency()::
+				</td>
+				<td>
+					::formatNum(m.subTotal)::&nbsp;::currency()::
+				</td>
+				<td>
+					<!-- frais -->
+					::if m.percentageValue!=null::
+					<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
+						::formatNum(m.fees)::&nbsp;::currency()::
+					</a>
+					::end::
+				</td>
+				<td>
+					<!-- total -->
+					::formatNum(m.total)::&nbsp;::currency()::	
+					::set total = total + m.total::
+				</td>
+				<td>
+					::if m.paid==true::
+					<span style="color:#00AA00;">Payé</span>
+					::else::
+					<span style="color:#DD0000;">Non payé</span>
+					::end::
+				</td>
+				
+			</tr>
+		::end::	
+		<tr>
+			<td colspan="7" class="text-right">
+				<b>Total :
+				::formatNum(total)::&nbsp;::currency()::</b>
+			
+				::set d = c.contract.getDistribs(false,null).length::
+				( soit ::formatNum(d*total)::&nbsp;::currency():: pour ::d:: livraisons )
+			
+				
+			</td>
+		</tr>
+	
+		</table>
+		::end::
+		
+	</div>	
+	::end::
+
+
+	<!-- COMMANDES VARIABLES-->
+	::if count(varOrders)>0::
+	<div class="article">
+		
+		<h3>Commandes variables</h3>
+		
+		::foreach d varOrders::
+			<h4>Commande livrée le ::hDate(d.date)::</h4>
+			<table class="table table-bordered table-condensed" >
+				<tr>
+					<th>Qté</th>
+					<th>Produit</th>
+					<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+					<th>Sous-total</th>
+					<th>Frais</th>
+					<th>Total</th>
+					<!--<th>Contrat</th>-->
+				</tr>
+				::set total = 0::
+				::foreach o d.orders::
+					<tr>
+						<td>
+							::o.quantity::
+						</td>
+						<td>
+							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
+								<img src="::o.productImage::" style="width:32px;height:32px;" />
+								 ::o.productName::
+							</a>
+						</td>
+						<td>
+							::formatNum(o.productPrice)::&nbsp;::currency()::
+						</td>
+						<td>
+							::formatNum(o.subTotal)::&nbsp;::currency()::
+						</td>
+						<td>
+							
+							$$nullSafe(::formatNum(o.fees)::)
+						</td>
+						<td>
+							::formatNum(o.total)::&nbsp;::currency()::
+							::set total = total + o.total::
+						</td>
+					
+					</tr>
+				::end::	
+				<tr>
+					<td colspan="4">
+						::if !user._amap.hasPayments():: 
+							$$edit(Modifier cette commande,/contract/editOrderByDate/::d.date::)
+						::end::
+						
+					</td>
+					<td>TOTAL</td>
+					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
+				</tr>
+			</table>
+		::end::
+	</div>
+	::end::	
+
+	
+</div>
+<div class="col-md-4">
+	<h3>Mon profil</h3>
+	<div class="article">
+		
+		<p>
+			$$contact(::user::)	
+		</p>
+		
+		
+		<div class="pull-right">
+			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
+				<span class="glyphicon glyphicon-remove"></span>
+				Quitter ce groupe
+			</a>
+		</div>
+		
+		$$edit(Modifier,/account/edit)
+		
+	</div>
+	
+	::if user.getAmap().hasPayments()::
+	<h3>Paiements</h3>
+	<div  class="article">
+		<span style="font-size:1.3em;">
+			Solde : 
+			::if userAmap.balance<0:: 
+				::set color = "C00"::
+			::else::
+				::set color = "0C0"::
+			::end::
+			<span style="color:#::color::;">
+				::userAmap.balance:: ::currency()::
+			</span>
+		</span>
+		
+		<span style="margin-left:30px;">
+			<a href="/account/payments" class="btn btn-default btn-small">
+				<i class="fa fa-credit-card" aria-hidden="true"></i>
+				Détail des paiements
+			</a>
+		</span>
+	</div>
+	::end::
+	
+	
+	::if user.isAmapManager()::
+	<h3>Tutoriels</h3>
+	<div class="article">
+		
+		
+		
+		<table class="table">
+			
+			::foreach t tutos::
+				<tr>
+					<td>::t.name::</td>
+					<td>  
+						::if t.completion==null::
+							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-play"></span> Commencer
+							</a>
+						::else::
+							
+							<a href="/contract/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
+								<span class="glyphicon glyphicon-remove"></span> Stop
+							</a>								
+						::end::
+					</td>
+				</tr>
+			::end::
+			
+		</table>
+		
+			::if stopTuto:: 
+			<div id="stopTuto" data-toggle="popover" title="Tutoriel stoppé" data-placement="left" data-content="Vous pourrez le réactiver en revenant ici." ></div>
+			<script>
+				
+				$(function(){
+				
+					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);
+					
+				});
+				
+			</script>
+			::end::		
+	</div>	
+	::end::
+	
+	
+</div>
+
+
+::end::
