@@ -2,6 +2,7 @@ package react;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
+import react.Typeahead;
 
 typedef ProductInputProps = {
 	formName:String,
@@ -33,12 +34,16 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 		var inputName :String = props.formName+"_name";
 		var txpProductInputName :String = props.formName+"_txpProductId";
 		
+		var options = ["john", "paul", "chibre"];
+		
 		return jsx('
 			<div>
 				<img ref="image" style={{float:"right"}} className="img-thumbnail"/>
 				<input name="$inputName" ref="input" className="form-control typeahead" placeholder="Saisir un nom de produit" style={{width:"350px"}} defaultValue="${props.productName}" />
 				<div className="txpProduct"></div>
 				<input type="hidden" name="$txpProductInputName" className="txpProduct" value="${props.txpProductId}" />	
+				
+				qsdqsd <Typeahead options=$options maxVisible={2} />
 			</div>
 		');
 	}
@@ -49,7 +54,7 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 	override function componentDidMount(){
 		
 		//typeahead matching function
-		var substringMatcher = function(strs:Array<String>) {
+		/*var substringMatcher = function(strs:Array<String>) {
 			return function findMatches(q, cb) {
 			var matches = [];
 				var substrRegex = new js.RegExp(q, "i");
@@ -62,7 +67,7 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 
 				cb(matches);
 			};
-		};
+		};*/
 		
 		//get dictionnary
 		var products = [];
@@ -84,7 +89,7 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 				//trace(substringMatcher(products).);
 				
 				//init typeahead
-				untyped App.j(".typeahead").typeahead(
+				/*untyped App.j(".typeahead").typeahead(
 					{hint: true, highlight: true, minLength: 2},
 					{name: "products", source: substringMatcher(products) , limit:30}
 				);
@@ -94,7 +99,7 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 					
 					var product = Lambda.find(DICO.products, function(x) return x.name == suggestion);
 					setTaxo(product);
-				});
+				});*/
 				
 				
 			};

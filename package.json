@@ -1,0 +1,34 @@
+{
+  "name": "Cagette.net",
+  "description": "le logiciel libre des AMAP et groupements d'achat.",
+  "author": "François Barbut <francois@alilo.fr>",
+  "license": "GPL-2.0",
+  "homepage": "http://www.cagette.net",
+  "dependencies": {
+    "jquery": "2.1.3",
+    "react": "^15.6.1",
+    "react-date-picker": "^5.3.28",
+    "react-dom": "^15.6.1",
+    "react-typeahead": "^2.0.0-alpha.5",
+    "bootstrap-datetimepicker": "0.0.7"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "watchify": "^3.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify www/js/app.js -o www/js/bundle.js",
+    "build2": "babel src -d lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bablukid/cagette.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bablukid/cagette/issues"
+  }
+}
