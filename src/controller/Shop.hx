@@ -190,6 +190,16 @@ class Shop extends sugoi.BaseController
 				o.distributionId = d.id;
 			}
 			
+			//moderate order according available stocks
+			if (p.stock != null && p.contract.hasStockManagement() ) {
+				if (p.stock - o.quantity < 0) {
+					var canceled = o.quantity - p.stock;
+					o.quantity -= canceled;
+					errors.push("Nous avons réduit votre commande de '" + p.name + "' à "+o.quantity+" articles car il n'y a pas assez de stock disponible");
+				}
+			}
+		
+			
 			order.total += p.getPrice() * o.quantity;
 		}
 		
