@@ -30,9 +30,13 @@
 		
 		<!-- BOOTSTRAP	
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> -->	
-		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		-->	
+		
+		<!-- customised BS skin -->
+		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+		
 		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
@@ -49,7 +53,7 @@
 		<!-- Haxe JS
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>-->
 		
-		<!-- bundled js from browserify -->
+		<!-- bundled js with browserify -->
 		<script type="text/javascript" src="/js/::getVariable('js')::/bundle.js"></script>
 	</head>
 

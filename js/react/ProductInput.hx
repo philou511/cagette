@@ -13,8 +13,7 @@ typedef ProductInputState = {
 	txpProductId:Int,
 	productName:String,
 	categoryId:Int,
-	breadcrumb:String,
-	
+	breadcrumb:String,	
 }
 
 
