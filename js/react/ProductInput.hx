@@ -9,9 +9,12 @@ typedef ProductInputProps = {
 	txpProductId:Int,
 	productName:String,
 }
-typedef ProductInputRefs = {
-	image:js.html.ImageElement,
-	input:js.html.InputElement,
+typedef ProductInputState = {
+	txpProductId:Int,
+	productName:String,
+	categoryId:Int,
+	breadcrumb:String,
+	
 }
 
 
@@ -20,32 +23,63 @@ typedef ProductInputRefs = {
  * 
  * @author fbarbut
  */
-class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,ProductInputRefs>
+class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState>
 {
 
 	public static var DICO : TxpDictionnary = null;
+	var options : Array<{id:Int,label:String}>;
 	
-	public function new(props:Dynamic) 
+	public function new(props:ProductInputProps) 
 	{
 		super(props);
+		options = [];
+		
+		trace(props);
+		this.state = {
+			txpProductId : props.txpProductId,
+			productName : props.productName,
+			categoryId : 0,
+			breadcrumb : ""
+		};
+		
 	}
 	
 	override public function render(){
 		var inputName :String = props.formName+"_name";
 		var txpProductInputName :String = props.formName+"_txpProductId";
 		
-		var options = ["john", "paul", "chibre"];
-		
 		return jsx('
-			<div>
-				<img ref="image" style={{float:"right"}} className="img-thumbnail"/>
-				<input name="$inputName" ref="input" className="form-control typeahead" placeholder="Saisir un nom de produit" style={{width:"350px"}} defaultValue="${props.productName}" />
-				<div className="txpProduct"></div>
-				<input type="hidden" name="$txpProductInputName" className="txpProduct" value="${props.txpProductId}" />	
+			<div className="row">
+			
+				<div className="col-md-8">
+					<AsyncTypeahead placeholder="Saisissez un nom de produit" options=$options onSearch=$onSearch minLength={3} style={{width:"350px"}} onChange=$onChange selected={["${props.productName}"]} />				
+					<div className = "txpProduct" > ${state.breadcrumb}</div>				
+					
+					<input className="txpProduct" type="hidden" name="$txpProductInputName" value="${state.txpProductId}" />
+					<input className="txpProduct" type="hidden" name="$inputName" value="${state.productName}" />
+				</div>
 				
-				qsdqsd <Typeahead options=$options maxVisible={2} />
+				<div className="col-md-4">
+					<img ref="image" className="img-thumbnail" />
+				</div>
+
 			</div>
 		');
+	}
+	
+	
+	function onSearch(o){
+		//trace("on search : "+o);
+	}
+	
+	function onChange(selection:Array<{label:String,id:Int}>){
+		
+		if (selection == null || selection.length == 0) return;
+		
+		trace(selection[0]);
+		
+		var product = Lambda.find(DICO.products, function(x) return x.id == selection[0].id);
+		setTaxo(product);
 	}
 	
 	/**
@@ -53,31 +87,17 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 	 */
 	override function componentDidMount(){
 		
-		//typeahead matching function
-		/*var substringMatcher = function(strs:Array<String>) {
-			return function findMatches(q, cb) {
-			var matches = [];
-				var substrRegex = new js.RegExp(q, "i");
-				
-				for ( str in strs){
-					if (substrRegex.test(str)) {
-						matches.push(str);
-					}
-				}
-
-				cb(matches);
-			};
-		};*/
-		
 		//get dictionnary
-		var products = [];
 		if (DICO == null){
 			
 			var r = new haxe.Http("/product/getTaxo");
 			r.onData = function(data){
 				//load dico
 				DICO = haxe.Unserializer.run(data);
-				for ( p in DICO.products) products.push(p.name);
+				
+				for ( p in DICO.products){
+					options.push({label:p.name,id:p.id});
+				}
 				
 				//default values of input
 				if (props.txpProductId != null){
@@ -85,23 +105,7 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 					setTaxo(product);
 				}
 				
-				trace(products);
-				//trace(substringMatcher(products).);
-				
-				//init typeahead
-				/*untyped App.j(".typeahead").typeahead(
-					{hint: true, highlight: true, minLength: 2},
-					{name: "products", source: substringMatcher(products) , limit:30}
-				);
-				
-				//on suggestion select
-				untyped App.j(".typeahead").bind("typeahead:select", untyped function(ev, suggestion) {
-					
-					var product = Lambda.find(DICO.products, function(x) return x.name == suggestion);
-					setTaxo(product);
-				});*/
-				
-				
+			
 			};
 			r.request();
 		}
@@ -114,13 +118,19 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 		if (product == null) return;
 		
 		//print category and subcategory
-		var str = getTaxoString(product);
-		App.j("div.txpProduct").html(cast str);
+		//state.breadcrumb = getTaxoString(product);
+		//App.j("div.txpProduct").html(cast str);
+		
+		//this.refs.input.value = Std.string(product.id);
 		
 		//set txpProductId in the hidden input
-		App.j("input.txpProduct").val(Std.string(product.id));
+		//state.txpProductId = product.id;
 		
 		//image
+		//state.categoryId = product.category;
+		
+		this.setState({categoryId:product.category,txpProductId:product.id,breadcrumb:getTaxoString(product)});
+		
 		this.refs.image.src="/img/taxo/cat"+product.category+".png";
 	}
 	
@@ -129,8 +139,6 @@ class ProductInput extends react.ReactComponentOfPropsAndRefs<ProductInputProps,
 	 * @param	name
 	 */
 	function getTaxoString(product){
-		
-			
 		//cat			
 		var str = DICO.categories.get(product.category).name;
 		if (product.subCategory != null){

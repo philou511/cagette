@@ -1,16 +1,16 @@
 {
   "name": "Cagette.net",
-  "description": "le logiciel libre des AMAP et groupements d'achat.",
+  "description": "le logiciel libre du circuit court",
   "author": "François Barbut <francois@alilo.fr>",
   "license": "GPL-2.0",
   "homepage": "http://www.cagette.net",
   "dependencies": {
+    "bootstrap-datetimepicker": "0.0.7",
     "jquery": "2.1.3",
     "react": "^15.6.1",
+    "react-bootstrap-typeahead": "1.4.2",
     "react-date-picker": "^5.3.28",
-    "react-dom": "^15.6.1",
-    "react-typeahead": "^2.0.0-alpha.5",
-    "bootstrap-datetimepicker": "0.0.7"
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
