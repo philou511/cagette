@@ -33,7 +33,6 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		super(props);
 		options = [];
 		
-		trace(props);
 		this.state = {
 			txpProductId : props.txpProductId,
 			productName : props.productName,
@@ -51,7 +50,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			<div className="row">
 			
 				<div className="col-md-8">
-					<AsyncTypeahead placeholder="Saisissez un nom de produit" options=$options onSearch=$onSearch minLength={3} style={{width:"350px"}} onChange=$onChange selected={["${props.productName}"]} />				
+					<AsyncTypeahead placeholder="Saisissez un nom de produit" options=$options onSearch=$onSearch minLength={3} style={{width:"350px"}} onChange=$onChange onInputChange=$onInputChange selected={["${props.productName}"]} />				
 					<div className = "txpProduct" > ${state.breadcrumb}</div>				
 					
 					<input className="txpProduct" type="hidden" name="$txpProductInputName" value="${state.txpProductId}" />
@@ -71,11 +70,15 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		//trace("on search : "+o);
 	}
 	
+	function onInputChange(input:String){
+		this.setState({productName:input});
+	}
+	
 	function onChange(selection:Array<{label:String,id:Int}>){
 		
 		if (selection == null || selection.length == 0) return;
 		
-		trace(selection[0]);
+		//trace(selection[0]);
 		
 		var product = Lambda.find(DICO.products, function(x) return x.id == selection[0].id);
 		setTaxo(product);
@@ -128,7 +131,14 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		//image
 		//state.categoryId = product.category;
 		
-		this.setState({categoryId:product.category,txpProductId:product.id,breadcrumb:getTaxoString(product)});
+		trace(product);
+		
+		this.setState({
+			categoryId:product.category,
+			txpProductId:product.id,
+			breadcrumb:getBreadcrumb(product),
+			productName:product.name			
+		});
 		
 		this.refs.image.src="/img/taxo/cat"+product.category+".png";
 	}
@@ -137,7 +147,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	 * generate string like "fruits & vegetables / vegetables / carrots"
 	 * @param	name
 	 */
-	function getTaxoString(product){
+	function getBreadcrumb(product){
 		//cat			
 		var str = DICO.categories.get(product.category).name;
 		if (product.subCategory != null){
