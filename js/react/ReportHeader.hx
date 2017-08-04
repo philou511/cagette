@@ -2,6 +2,21 @@ package react;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
+
+//datepicker broken if called like this //import react.DateTimeField.*;
+//@:jsRequire('react-bootstrap-datetimepicker')
+//extern class DateTimeField extends react.ReactComponent {}
+
+
+/**
+ * @doc https://github.com/YouCanBookMe/react-datetime
+ */
+@:jsRequire('react-datetime')
+extern class DateTime extends react.ReactComponent {}
+
+
+
+
 /**
  * ...
  * @author fbarbut
@@ -13,20 +28,37 @@ class ReportHeader extends react.ReactComponentOfState<OrdersReportOptions>
 	{
 		super();
 		state = {startDate:null, endDate:null, groupBy:null, contracts:[]};
+		
+		//load fr locale of moment.js
+		var moment = js.Lib.require('moment');
+		js.Lib.require('moment/locale/fr');
+		
 	}
 	
 	override public function render(){
 		
-		return jsx('<div className="reportHeader">		
-			<DateInput name="startDate" onChange={onDateChange} />
-			<DateInput name="endDate" onChange={onDateChange} />			
-			<div className="input-group col-md-3">
-			<select className="form-control" onChange={onGroupByChange}>
-				<option value="ByMember">Par adhérent</option>
-				<option value="ByProduct">Par Produit</option>
-			</select>
+		return jsx('<div className="reportHeader">
+			<div className="col-md-3">
+				<div  className="input-group">
+					<span className="input-group-addon">
+						<span className="glyphicon glyphicon-calendar"></span>
+					</span>
+					<DateTime name="startDate_PROUT" onChange={onDateChange} locale="fr" dateFormat="LLLL" />
+				</div>
+				
+			</div>
+			
+			<div className="col-md-3">
+				<DateTime name="endDate" onChange={onDateChange} inputFormat="YYYY-MM-DD HH:mm:ss" />			
+			</div>
+			
+			<div className="col-md-3">
+				<select className="form-control" onChange={onGroupByChange}>
+					<option value="ByMember">Par adhérent</option>
+					<option value="ByProduct">Par Produit</option>
+				</select>
 			</div>			
-			<div className="input-group col-md-3">
+			<div className="col-md-3">
 				<a className="btn btn-primary">Afficher</a>
 			</div>					
 		</div>');
@@ -35,10 +67,11 @@ class ReportHeader extends react.ReactComponentOfState<OrdersReportOptions>
 	
 	function onDateChange(e:js.html.Event){
 		trace("onDateChange");
-		var name :String = untyped e.target.name;
-		var value :String = untyped e.target.value;
-		trace('$name $value');
-		e.preventDefault();
+		//var name :String = untyped e.target.name;
+		//var value :String = untyped e.target.value;
+		//trace('$name $value');
+		trace(e);
+		//e.preventDefault();
 	}
 	
 	/**
@@ -57,9 +90,5 @@ class ReportHeader extends react.ReactComponentOfState<OrdersReportOptions>
 		trace(state);
 		setState(state);
 	}
-	
-	//override function setState(s){
-		//trace(s);
-		//this.setState(s);
-	//}
+
 }
