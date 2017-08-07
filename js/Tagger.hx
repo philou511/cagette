@@ -18,8 +18,6 @@ class Tagger
 	}
 	
 	public function init() {
-		
-		
 		var req = new haxe.Http("/product/categorizeInit/"+contractId);
 		req.onData = function(_data) {			
 			data = haxe.Json.parse(_data);		
@@ -37,6 +35,9 @@ class Tagger
 			html.add("<td><input type='checkbox' name='p"+p.product.id+"' /></td>");
 			html.add("<td>" + p.product.name+"</td>");
 			var tags = [];
+			
+			//trace('product tags ${p.categories} from tags ${data.categories}');
+			
 			for (c in p.categories) {
 				//trouve le nom du tag
 				var name = "";
@@ -108,7 +109,10 @@ class Tagger
 		}
 	}
 	
-	function addTag(tagId:Int,productId:Int) {
+	function addTag(tagId:Int, productId:Int) {
+		
+		//trace('tagId $tagId productId $productId');
+		
 		//check for doubles
 		for ( p in data.products) {
 			if (p.product.id == productId) {
@@ -125,10 +129,12 @@ class Tagger
 				break;
 			}
 		}
+		
+		//trace('product $productId not found in data.products ');
+		//trace(data.products);
 	}
 	
 	public function submit() {
-		
 		
 		var req = new haxe.Http("/product/categorizeSubmit/" + contractId);
 		req.addParameter("data", haxe.Json.stringify(data));

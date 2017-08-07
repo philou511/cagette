@@ -82,7 +82,7 @@ typedef CategoryInfo = {
  */
 @:keep
 typedef TaggerInfos = {
-	products:Array<{product:ProductInfo,categories:Array<Int>}>,
+	products:Array<{product:ProductInfo,categories:Array<Int>}>,//tagged products
 	categories : Array<{id:Int,categoryGroupName:String,color:String,tags:Array<{id:Int,name:String}>}>, //groupe de categories + tags
 }
 
