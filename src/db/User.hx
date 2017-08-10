@@ -497,6 +497,30 @@ class User extends Object {
 		if (this.lastName2 != null) this.lastName2 = this.lastName2.toUpperCase();
 	}
 	
+	/**
+	 * get form labels
+	 */
+	public static function getLabels():Map<String,String>{
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"firstName"	=>	t._("First name"),
+			"lastName"	=>	t._("Last name"),
+			"email"		=>	t._("Email"),
+			"phone"		=>	t._("Phone"),
+			"firstName2"=>	t._("Partner first name"),
+			"lastName2"	=>	t._("Partner last name"),
+			"email2"	=>	t._("Partner email"),
+			"phone2"	=>	t._("Partner phone"),
+			"lang"		=>	t._("Language"),
+			"address1"	=>	t._("Address 1"),
+			"address2"	=>	t._("Address 2"),
+			"zipCode"	=>	t._("Zip code"),
+			"city"		=>	t._("City"),
+			"rights"	=>	t._("Rights"),
+			"cdate"		=>	t._("Registration date"),
+			"flags"		=>	t._("Options"),
+		];
+	}
 	
 	
 }

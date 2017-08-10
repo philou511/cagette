@@ -24,12 +24,12 @@
 			
 			
 			<div>
-				<div class="info" style="font-size:1.2em;">Livraison du ::hDate(date)::</div>
+				<div class="info" style="font-size:1.2em;">::_("Distribution on ::hDate(date)::")::</div>
 				
 				
 				<div class="">
 					<span class="info">
-						<span class="glyphicon glyphicon-time"></span> Fermeture des commandes :
+						<span class="glyphicon glyphicon-time"></span> ::_("Orders will close on ")::
 					</span>
 					::if ArrayTool.mapLength(infos) == 1::
 						::hDate( infos.iterator().next()[0].orderEndDate )::
@@ -46,7 +46,7 @@
 								::foreach d dists::
 									::set tt = tt  + d._contract.name + ". "::
 								::end::
-								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">Autres</span>
+								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">::_("Autres||uncategorized products in shop")::</span>
 							::end::
 							
 							: ::hDate(Date.fromString(k))::
@@ -80,11 +80,11 @@
 					<table class="product">
 						<tr>
 							<td style="vertical-align:top;">
-								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="En savoir plus">
+								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
 									<img src="::p.image::" style="width:64px;height:64px;" />
 								</a>
 								
-								<div ::cond p.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom"><img src="/img/AB.png"/></div>
+								<div ::cond p.organic:: title ="::_('Organic agriculture')::" data-toggle="tooltip" data-placement="bottom"><img src="/img/AB.png"/></div>
 							</td>
 							<td>
 								<h4>
@@ -99,16 +99,16 @@
 								<div>
 									<form class="form-inline">
 									::if p.stock!=null && p.stock==0::
-										<span style="color:#AAA;">Stock épuisé</span>
+										<span style="color:#AAA;">::_("Out of stock")::</span>
 									::elseif !p.orderable::
-										<span style="color:#AAA;">Commande fermée</span>
+										<span style="color:#AAA;">::_("Order closed")::</span>
 									::else::
 										::if p.stock!=null && p.stock>0 && p.stock<=10::
-										<div class="warning" >Plus que ::p.stock:: en stock</div>
+										<div class="warning" >::_("Only ::p.stock:: items in stock")::</div>
 										::end::
 									
 										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
-										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">Commander</a>
+										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Order||Order button")::</a>
 										
 									::end::
 									
@@ -135,19 +135,19 @@
 		
 		<h2>
 			<span class="glyphicon glyphicon-shopping-cart"></span>
-			Commande
+			::_("My order")::
 			<img id="loader" src="/img/loader.gif"/>
 		</h2>
 		<div id="cart"></div>
 		
-		<a onClick="cart.submit();" class="btn btn-default">Valider</a>
+		<a onClick="cart.submit();" class="btn btn-default">::_("Validate")::</a>
 		
-		<a class="infos" href='/contract'>Vous pouvez consulter vos commandes en cours sur votre page "mon compte"</a>
+		<a class="infos" href='/contract'>::_("You can check your previous orders in 'my account' section")::</a>
 		
 	</div>
 	
 	<div class="article">
-		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> Tout</span><br/>
+		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> ::_("All products")::</span><br/>
 		
 		::foreach g group.getCategoryGroups()::
 			<div>

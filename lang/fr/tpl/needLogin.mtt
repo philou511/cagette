@@ -1,38 +1,38 @@
-﻿::use 'design.mtt'::
-<div class="col-md-3"></div>		
-		
-		<div class="col-md-6">			
-			<div class="panel panel-success">
-				<div class="panel-heading">
-					<h3 class="panel-title">Connexion</h3>
-				</div>
-				<div class="panel-body text-center">
-					
-					<p>
-						Afin de pouvoir continuer, <br/>
-						merci de bien vouloir <a href="#" onclick="_.loginBox('::raw redirect::');" >vous connecter</a>
-						<br/> 
-						ou <a href="#" onclick="_.registerBox('::raw redirect::');">vous inscrire</a> si c'est la première fois<br/>
-						que vous venez sur Cagette.net.
-					</p>
-					
-					<hr/>
-					
-					<a href="#" onclick="_.loginBox('::raw redirect::');" class="btn btn-primary" style="margin-right:12px;">
-						<span class="glyphicon glyphicon-user"></span> Connexion</a>
-					
-					<a href="#" onclick="_.registerBox('::raw redirect::');" class="btn btn-success">
-						<span class="glyphicon glyphicon-chevron-right"></span> Inscription</a>
-					
-				</div>
-			</div>
-		</div>
-		
-<div class="col-md-3"></div>				
-		
-		
-		
-
-
-
-::end::
+﻿::use 'design.mtt'::
+<div class="col-md-3"></div>		
+		
+		<div class="col-md-6">			
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h3 class="panel-title">Connexion</h3>
+				</div>
+				<div class="panel-body text-center">
+					
+					<p>
+						Afin de pouvoir continuer, <br/>
+						merci de bien vouloir <a href="#" onclick="_.loginBox('::raw redirect::');" >vous connecter</a>
+						<br/> 
+						ou <a href="#" onclick="_.registerBox('::raw redirect::');">vous inscrire</a> si c'est la première fois<br/>
+						que vous venez sur Cagette.net.
+					</p>
+					
+					<hr/>
+					
+					<a href="#" onclick="_.loginBox('::raw redirect::');" class="btn btn-primary" style="margin-right:12px;">
+						<span class="glyphicon glyphicon-user"></span> Connexion</a>
+					
+					<a href="#" onclick="_.registerBox('::raw redirect::');" class="btn btn-success">
+						<span class="glyphicon glyphicon-chevron-right"></span> Inscription</a>
+					
+				</div>
+			</div>
+		</div>
+		
+<div class="col-md-3"></div>				
+		
+		
+		
+
+
+
+::end::

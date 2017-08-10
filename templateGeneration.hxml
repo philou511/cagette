@@ -1,17 +1,19 @@
-#TODO clean and optimize
 -lib dbadmin
 -lib templo
 -lib sugoi
+-lib hxevents
+-lib thx.semver
+-lib thx.csv
+-lib datetime
+-lib hscript
+-lib smtpmailer
+-lib record-macros
+-cp common
 -cp src
 -cp lang/master/tpl
-
--D spod_macro
-#POT GENERATION
-#-D i18n_parsing  
-#TEMPLATES GENERATION FROM MASTER AND MO FILES
--D i18n_generation  
-
--D no-deprecation-warnings
-
--main App
 -neko www/index.n
+-main App
+
+#POT GENERATION
+-D i18n_generation
+-D no-deprecation-warnings

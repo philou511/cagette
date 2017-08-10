@@ -1,7 +1,7 @@
 package controller;
 import Common;
 import tools.ArrayTool;
-class Shop extends sugoi.BaseController
+class Shop extends Controller
 {
 	
 	var distribs : List<db.Distribution>;
@@ -14,7 +14,7 @@ class Shop extends sugoi.BaseController
 		view.place = place;
 		view.date = date;
 		view.group = place.amap;		
-		view.infos = ArrayTool.groupByDate(Lambda.array(distribs),"orderEndDate");
+		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
 	}
 	
 	/**
@@ -157,7 +157,7 @@ class Shop extends sugoi.BaseController
 
 		var order : OrderInSession = app.session.data.order;
 		if (order == null || order.products == null || order.products.length == 0) {
-			throw Error("/shop", "Vous devez réaliser votre commande avant de valider.");
+			throw Error("/shop", t._("Your order is empty") );
 		}
 		
 		if (place == null) throw "place cannot be null";
@@ -175,7 +175,7 @@ class Shop extends sugoi.BaseController
 			var p = db.Product.manager.get(o.productId, false);
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
-				errors.push("Le produit \"" + p.name+"\" n'est pas disponible pour cette distribution");
+				errors.push( t._("The product \"::pname::\" is not available in this distribution",{pname:p.name}) );
 				order.products.remove(o);
 			}else{
 				o.product = p;
@@ -184,7 +184,7 @@ class Shop extends sugoi.BaseController
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){
-				errors.push("Le produit \"" + p.name+"\" n'est pas disponible pour cette distribution");
+				errors.push( t._("The product \"::pname::\" is not available in this distribution",{pname:p.name}) );
 				order.products.remove(o);
 			}else{
 				o.distributionId = d.id;
@@ -207,7 +207,6 @@ class Shop extends sugoi.BaseController
 		
 		if (errors.length > 0) {
 			app.session.addMessage(errors.join("<br/>"), true);
-			//app.logError("params : "+App.current.params.toString()+"\n \n"+errors.join("\n"));
 		}
 		
 		app.session.data.order = order;
@@ -216,11 +215,11 @@ class Shop extends sugoi.BaseController
 		if (app.user.amap.hasPayments()){
 			
 			//Go to payments page
-			throw Ok("/transaction/pay/"/*+place.id+"/"+date.toString().substr(0, 10)*/, "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");
+			throw Ok("/transaction/pay/"/*+place.id+"/"+date.toString().substr(0, 10)*/, t._("Your basket has been recorded, please select a payment method to confirm it.") );
 		}else{
 			//no payments, confirm direclty
 			db.UserContract.confirmSessionOrder(order);			
-			throw Ok("/contract", "Votre commande a bien été enregistrée");	
+			throw Ok("/contract", t._("Your order has been successfully recorded") );	
 		}
 
 	}

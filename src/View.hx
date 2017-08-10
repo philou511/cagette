@@ -4,6 +4,9 @@ import haxe.Utf8;
 import tools.ArrayTool;
 
 class View extends sugoi.BaseView {
+	
+	var t : sugoi.i18n.GetText;
+	
 	public function new() {
 		super();
 		this.Std = Std;
@@ -12,6 +15,8 @@ class View extends sugoi.BaseView {
 		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
 		this.ArrayTool = ArrayTool;
+		this.t = sugoi.i18n.Locale.texts;
+		
 	}
 	
 	public function count(i) {
@@ -117,11 +122,12 @@ class View extends sugoi.BaseView {
 	}
 	
 	public function unit(u:UnitType){
+		t = sugoi.i18n.Locale.texts;
 		return switch(u){
-			case Kilogram: "Kg.";
-			case Gram: "g.";
-			case Piece: "pièce(s)";
-			case Litre: "L.";
+			case Kilogram: 	t._("Kg.||kilogramms");
+			case Gram: 		t._("g.||gramms");
+			case Piece: 	t._("piece||unit of a product)");
+			case Litre: 	t._("L.||liter");
 		}
 	}
 	
@@ -134,31 +140,45 @@ class View extends sugoi.BaseView {
 		
 	}
 	
-	public var DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-	public var MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-	public var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-	public var MINUTES = [0,5,10,15,20,25,30,35,40,45,50,55];
+	public static var DAYS = null;
+	public static var MONTHS = null;
+	public static var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+	public static var MINUTES = [0,5,10,15,20,25,30,35,40,45,50,55];
+	
+	
+	function initDate(){
+		t = sugoi.i18n.Locale.texts;
+		DAYS = [t._("Sunday"), t._("Monday"), t._("Tuesday"), t._("Wednesday"), t._("Thursday"), t._("Friday"), t._("Saturday")];
+		MONTHS = [t._("January"), t._("February"), t._("March"), t._("April"), t._("May"), t._("June"), t._("July"), t._("August"), t._("September"), t._("October"), t._("November"), t._("December")];
+	}
 	
 	/**
 	 * human readable date 
 	 * @param	date
 	 */
 	public function hDate(date:Date):String {
-		if (date == null) return "aucune date";
+		if (date == null) return t._("no date set");
+		if (DAYS == null) initDate();
+		
 		var out = DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
-		/*if ( date.getFullYear() != Date.now().getFullYear())*/ out += " " + date.getFullYear();
-		if ( date.getHours() != 0 || date.getMinutes() != 0) out += " à " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
+		out += " " + date.getFullYear();
+		if ( date.getHours() != 0 || date.getMinutes() != 0){
+			
+			out += " " + sugoi.i18n.Locale.texts._("at") + " " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
+		}
 		return out;
 	}
 	
 	public function dDate(date:Date):String {
-		if (date == null) return "aucune date";
+		if (date == null) return t._("no date set");
+		if (DAYS == null) initDate();
+		
 		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
 	}
 	
 	public function getDate(date:Date) {
 		if (date == null) throw "date is null";
-		
+		if (DAYS == null) initDate();
 		
 		return {
 			dow: DAYS[date.getDay()],
@@ -215,20 +235,11 @@ class View extends sugoi.BaseView {
 		
 	}
 		
-	/**
-	 * wording : amap/groupe
-	 */
-	public function wAmap() {
-		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap)?"AMAP":"groupe";
-	}
 	
-	public function wVendors() {
-		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap)?"Paysans":"Fournisseurs";
+	public function isAmap(){
+		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap);
 	}
-	
-	public function wVendor() {
-		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap)?"Paysan":"Fournisseur";
-	}
+
 	
 	public function getBasket(userId, placeId, date){
 		var user = getUser(userId);

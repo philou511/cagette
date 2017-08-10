@@ -4,6 +4,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
+#: src/controller/Categories.hx:20
+msgid "The category list is not empty."
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Product types"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Vegetables"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Fruits"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Fish"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Red meat"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Breads"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Grocery"
+msgstr ""
+
+#: src/controller/Categories.hx:40
+msgid "Beverages"
+msgstr ""
+
+#: src/controller/Categories.hx:41
+msgid "Labels"
+msgstr ""
+
+#: src/controller/Categories.hx:41
+msgid "Certified organic food"
+msgstr ""
+
+#: src/controller/Categories.hx:41
+msgid "organic food"
+msgstr ""
+
+#: src/controller/Categories.hx:41
+msgid "non organic"
+msgstr ""
+
+#: src/controller/Categories.hx:43
+msgid "Default categories has been created"
+msgstr ""
+
 #: src/controller/Distribution.hx:159 src/controller/Distribution.hx:225
 msgid "orderStartDate"
 msgstr ""
@@ -12,13 +68,540 @@ msgstr ""
 msgid "orderEndDate"
 msgstr ""
 
-#: lang/master/tpl/home.mtt:35
+#: src/controller/Shop.hx:160
+msgid "Your order is empty"
+msgstr ""
+
+#: src/controller/Shop.hx:178 src/controller/Shop.hx:187
+msgid "The product \"::pname::\" is not available in this distribution"
+msgstr ""
+
+#: src/controller/Shop.hx:218
+msgid ""
+"Your basket has been recorded, please select a payment method to confirm "
+"it."
+msgstr ""
+
+#: src/controller/Shop.hx:222
+msgid "Your order has been successfully recorded"
+msgstr ""
+
+#: src/db/User.hx:506
+msgid "First name"
+msgstr ""
+
+#: src/db/User.hx:507
+msgid "Last name"
+msgstr ""
+
+#: src/db/User.hx:508 lang/master/tpl/user/login.mtt:69
+msgid "Email"
+msgstr ""
+
+#: src/db/User.hx:509
+msgid "Phone"
+msgstr ""
+
+#: src/db/User.hx:510
+msgid "Partner first name"
+msgstr ""
+
+#: src/db/User.hx:511
+msgid "Partner last name"
+msgstr ""
+
+#: src/db/User.hx:512
+msgid "Partner email"
+msgstr ""
+
+#: src/db/User.hx:513
+msgid "Partner phone"
+msgstr ""
+
+#: src/db/User.hx:514
+msgid "Language"
+msgstr ""
+
+#: src/db/User.hx:515
+msgid "Address 1"
+msgstr ""
+
+#: src/db/User.hx:516
+msgid "Address 2"
+msgstr ""
+
+#: src/db/User.hx:517
+msgid "Zip code"
+msgstr ""
+
+#: src/db/User.hx:518
+msgid "City"
+msgstr ""
+
+#: src/db/User.hx:519
+msgid "Rights"
+msgstr ""
+
+#: src/db/User.hx:520
+msgid "Registration date"
+msgstr ""
+
+#: src/db/User.hx:521
+msgid "Options"
+msgstr ""
+
+#: src/payment/Cash.hx:17
+msgid "Cash"
+msgstr ""
+
+#: src/payment/Check.hx:16
+msgid "Check"
+msgstr ""
+
+#: src/payment/Transfer.hx:17
+msgid "Bank transfer"
+msgstr ""
+
+#. kilogramms
+#: src/View.hx:127
+msgid "Kg."
+msgstr ""
+
+#. gramms
+#: src/View.hx:128
+msgid "g."
+msgstr ""
+
+#. unit of a product)
+#: src/View.hx:129
+msgid "piece"
+msgstr ""
+
+#. liter
+#: src/View.hx:130
+msgid "L."
+msgstr ""
+
+#: src/View.hx:151
+msgid "Sunday"
+msgstr ""
+
+#: src/View.hx:151
+msgid "Monday"
+msgstr ""
+
+#: src/View.hx:151
+msgid "Tuesday"
+msgstr ""
+
+#: src/View.hx:151
+msgid "Wednesday"
+msgstr ""
+
+#: src/View.hx:151
+msgid "Thursday"
+msgstr ""
+
+#: src/View.hx:151
+msgid "Friday"
+msgstr ""
+
+#: src/View.hx:151
+msgid "Saturday"
+msgstr ""
+
+#: src/View.hx:152
+msgid "January"
+msgstr ""
+
+#: src/View.hx:152
+msgid "February"
+msgstr ""
+
+#: src/View.hx:152
+msgid "March"
+msgstr ""
+
+#: src/View.hx:152
+msgid "April"
+msgstr ""
+
+#: src/View.hx:152
+msgid "May"
+msgstr ""
+
+#: src/View.hx:152
+msgid "June"
+msgstr ""
+
+#: src/View.hx:152
+msgid "July"
+msgstr ""
+
+#: src/View.hx:152
+msgid "August"
+msgstr ""
+
+#: src/View.hx:152
+msgid "September"
+msgstr ""
+
+#: src/View.hx:152
+msgid "October"
+msgstr ""
+
+#: src/View.hx:152
+msgid "November"
+msgstr ""
+
+#: src/View.hx:152
+msgid "December"
+msgstr ""
+
+#: src/View.hx:160 src/View.hx:173
+msgid "no date set"
+msgstr ""
+
+#: src/View.hx:167
+msgid "at"
+msgstr ""
+
+#: lang/master/tpl/amap/default.mtt:15 lang/master/tpl/contract/default.mtt:173
+msgid "Edit"
+msgstr ""
+
+#: lang/master/tpl/amap/default.mtt:21
+msgid "Main contact"
+msgstr ""
+
+#: lang/master/tpl/amap/default.mtt:55 lang/master/tpl/contract/view.mtt:74
+msgid "Coordinator"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/design.mtt:6 lang/master/tpl/design.mtt:70
+msgid "My group"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/design.mtt:11
+msgid "Access rights"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/design.mtt:12
+msgid "VAT rates"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/design.mtt:13 lang/master/tpl/shop/productInfo.mtt:97
+msgid "Categories"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/design.mtt:14
+msgid "Currency"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:3
+msgid "Last orders"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:10
+msgid "CSA Contracts"
+msgstr ""
+
+#. short version for quantity
+#: lang/master/tpl/contract/default.mtt:17 lang/master/tpl/contract/default.mtt:104
+msgid "Qty"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:18 lang/master/tpl/contract/default.mtt:105
+msgid "Product"
+msgstr ""
+
+#. short version of price per unit
+#: lang/master/tpl/contract/default.mtt:19 lang/master/tpl/contract/default.mtt:106
+msgid "U.P"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:20 lang/master/tpl/contract/default.mtt:107
+msgid "Sub-total"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:21 lang/master/tpl/contract/default.mtt:108
+msgid "Fees"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:22 lang/master/tpl/contract/default.mtt:109
+msgid "Total"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:23 lang/master/tpl/contract/default.mtt:67
+msgid "Paid"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:37
+msgid "Order alternated with"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:69
+msgid "Unpaid"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:98
+msgid "Varying orders"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:101
+msgid "Order delivered on"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:158
+msgid "Profile"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:169
+msgid "Leave this group"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:178
+msgid "Payments"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:181
+msgid "Balance"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:195
+msgid "Payments details"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:203
+msgid "Tutorials"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:216
+msgid "Start"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:221
+msgid "Stop"
+msgstr ""
+
+#: lang/master/tpl/contract/view.mtt:67 lang/master/tpl/shop/productInfo.mtt:86
+msgid "Read more"
+msgstr ""
+
+#: lang/master/tpl/contract/view.mtt:90
+msgid "Next distributions"
+msgstr ""
+
+#: lang/master/tpl/contract/view.mtt:102 lang/master/tpl/contract/view.mtt:115 lang/master/tpl/home.mtt:223 lang/master/tpl/shop/default.mtt:111
+msgid "Order"
+msgstr ""
+
+#: lang/master/tpl/contract/view.mtt:111
+msgid "No planned distributions."
+msgstr ""
+
+#: lang/master/tpl/contract/view.mtt:122 lang/master/tpl/shop/default.mtt:145
+msgid "You can check your previous orders in 'my account' section"
+msgstr ""
+
+#: lang/master/tpl/contractadmin/default.mtt:90
+msgid "Farmers"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:26
+msgid "et"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:34
+msgid "Log into another group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:36
+msgid "Log out"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:43
+msgid "Log in"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:44
+msgid "Look for another group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:68
+msgid "Home"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:69
+msgid "My account"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:76
+msgid "Members"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:78
+msgid "Contracts"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:80
+msgid "Messaging"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:82
+msgid "Group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:84
+msgid "Admin"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:12
+msgid "Welcome to Cagette.net !"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:25
+msgid ""
+"As a starter, we recommand you to follow the <b>guided tour</b> to discover "
+"step by step the main sections of the software."
+msgstr ""
+
+#: lang/master/tpl/home.mtt:28
+msgid "Start the guided tour"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:38
 msgid "Open orders"
 msgstr ""
 
 #. on homepage when there is no plannde deliveries
-#: lang/master/tpl/home.mtt:50
+#: lang/master/tpl/home.mtt:53
 msgid "You delivery planning is currently empty"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:79 lang/master/tpl/home.mtt:184
+msgid "Modify my order"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:82
+msgid "Add products"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:85 lang/master/tpl/shop/default.mtt:104
+msgid "Order closed"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:102
+msgid "My ordered products"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:112
+msgid "Delivery"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:148 lang/master/tpl/home.mtt:154
+msgid "It's your turn"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:150 lang/master/tpl/home.mtt:156
+msgid "It's his/her turn"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:173
+msgid "Distribution list"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:177
+msgid "Permanence"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:181
+msgid "Contract details"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:198
+msgid "Warning, you're engaged in this distribution !"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:230
+msgid "Order closed since"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:233
+msgid "Order will open on"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:253
+msgid "Livraison de ::s.h+':'+s.i:: à ::e.h+':'+e.i::"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:302
+msgid "Permanences"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:304
+msgid "Don't forget to register for permanences"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:317
+msgid "Warning, you don't have defined a password yet !"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:319
+msgid "Set my password"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:27
+msgid "Distribution on ::hDate(date)::"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:32
+msgid "Orders will close on "
+msgstr ""
+
+#. uncategorized products in shop
+#: lang/master/tpl/shop/default.mtt:49
+msgid "Autres"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:102
+msgid "Out of stock"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:107
+msgid "Only ::p.stock:: items in stock"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:138
+msgid "My order"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:143
+msgid "Validate"
+msgstr ""
+
+#: lang/master/tpl/shop/default.mtt:150
+msgid "All products"
+msgstr ""
+
+#: lang/master/tpl/shop/productInfo.mtt:50
+msgid "organic agriculture"
+msgstr ""
+
+#: lang/master/tpl/transaction/pay.mtt:5
+msgid "Order payment"
+msgstr ""
+
+#: lang/master/tpl/transaction/pay.mtt:13
+msgid "Amount to pay"
+msgstr ""
+
+#: lang/master/tpl/transaction/pay.mtt:16
+msgid "Please select a payment method"
+msgstr ""
+
+#: lang/master/tpl/transaction/pay.mtt:27
+msgid "Currently no payment method has been defined for this group."
 msgstr ""
 
 #: lang/master/tpl/user/choose.mtt:4
@@ -47,10 +630,6 @@ msgstr ""
 
 #: lang/master/tpl/user/login.mtt:65
 msgid "Connection"
-msgstr ""
-
-#: lang/master/tpl/user/login.mtt:69
-msgid "Email"
 msgstr ""
 
 #: lang/master/tpl/user/login.mtt:75

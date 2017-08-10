@@ -47,7 +47,7 @@
 		<div class="col-md-7" style="margin-top:24px;">
 			
 			<p ::cond p.organic:: class="vat">
-				<img src="/img/AB.png" /> Agriculture biologique
+				<img src="/img/AB.png" /> ::_("organic agriculture")::
 				
 			</p>
 			
@@ -83,7 +83,7 @@
 				::if vendor.linkText!=null::
 				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::vendor.linkText::</a>
 				::else::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> En savoir plus</a>
+				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Read more")::</a>
 				::end::
 			</p>
 			::end::
@@ -94,7 +94,7 @@
 		<div class="col-md-4" ::cond cats.length != 0:: >	
 
 				
-			<h3>Catégories</h3>
+			<h3>::_("Categories")::</h3>
 			<div>
 				::foreach c cats::
 					<span class="tag" style="background-color: ::c.getColor()::;">::c.name::</span><br />

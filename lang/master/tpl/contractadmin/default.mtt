@@ -87,7 +87,7 @@
 
 <div class="col-md-6">
 	<div class="article" id="vendors">
-		<h2>::wVendors()::</h2>
+		<h2>::_("Farmers")::</h2>
 		<table class="table">
 			::foreach v vendors::		
 				<tr>

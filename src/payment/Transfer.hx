@@ -11,9 +11,10 @@ class Transfer extends payment.Payment
 
 	public function new() 
 	{
+		var t = sugoi.i18n.Locale.texts;
 		this.type = TYPE;
 		this.icon = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
-		this.desc = "Paiement par virement bancaire";
+		this.name = t._("Bank transfer");
 		this.link = "/transaction/transfer";
 	}
 	

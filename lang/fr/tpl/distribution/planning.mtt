@@ -1,122 +1,122 @@
-::use 'design.mtt'::
-<div id="content" class="col-md-12">
-	<div class="article">
-		<h2>Planning des livraisons : ::contract.name::</h2>
-		
-		<p>
-			Inscrivez-vous en cochant les cases correspondant aux dates qui vous conviennent.<br/>
-			Les permanences consistent à aider à la distribution de produits lors d'une livraison.
-		</p>
-		
-		
-		
-		<div style="overflow-x:scroll;">
-		<table class="table table-bordered">
-			<tr>
-				<td></td>
-				::foreach d distribs::
-				::set date = getDate(d.date)::
-				<th style="font-size:12px;line-height:14px;text-align:center;background-color:#DED;">::date.dow::<br/>
-					::date.d::<br/>
-					::date.m::<br/>
-					::date.h+":"+date.i::</th>
-				::end::
-			</tr>
-			
-			<!-- current user -->
-			<tr>
-				<td style="white-space: nowrap;">
-					<b>::user.getCoupleName()::</b>
-				</td>
-				<script>
-				window.reg = function(a,b){alert('prout');};
-				window.unreg = function(a,b){alert('lala');};
-				
-				window.reg = function(distribId,img){
-					$(img).hide();
-					$.ajax("/distribution/register?register=1&distrib="+distribId,{success:function(data){
-						//alert("data : "+data);
-						$(img).show();
-						img.src="/img/tick_ok_me.png";
-						img.onclick = function(){
-							unreg(distribId,img);
-						};
-					}});
-				};
-				window.unreg = function(distribId,img){
-					$(img).hide();
-					$.ajax("/distribution/register?register=0&distrib="+distribId,{success:function(data){
-						//alert("data : "+data+", "+$(this));
-						$(img).show();
-						img.src="/img/tick_no.png";
-						img.onclick = function(){
-							reg(distribId,img);
-						};
-					}});
-				};
-				</script>
-				
-				::set me = doodle.get(user.id)::
-				::foreach d distribs::
-				<td style="text-align:center;">
-					
-						::if me !=null::
-							::set a = me.planning.get(d.id)::
-							::if a!=null:: 
-								<img src="/img/tick_ok_me.png" onclick="unreg('::d.id::',this)" />
-							::else::
-								::if !d.hasEnoughDistributors()::
-									<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
-								::else::
-									<span style="color: #AAA;font-size: 80%;">complet</span>
-								::end::
-							::end::
-						::else::
-							::if !d.hasEnoughDistributors()::
-								<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
-							::else::
-								complet
-							::end::
-						
-						::end::
-					
-				</td>
-				::end::
-				
-				
-			</tr>
-			<!-- other users-->
-			::foreach doo doodle::
-			<tr ::cond doo.user.id!=user.id::  style="background-color:#EEE;">
-				<td>::doo.user.getCoupleName()::</td>
-				
-				::foreach d distribs::
-				<td style="text-align:center;">
-					::set a = doo.planning.get(d.id)::
-					
-					::if a!=null:: 
-					<img src="/img/tick_ok.png"/>
-					::end::
-				</td>
-				::end::
-			</tr>
-			::end::
-			
-			
-		</table>
-		</div>
-				
-		<div style="text-align:right">
-			<a href="/" class="btn btn-default btn-lg">Valider</a>	
-		</div>		
-		
-	</div>
-				
-				
-				
-</div>
-
-
-
-
+::use 'design.mtt'::
+<div id="content" class="col-md-12">
+	<div class="article">
+		<h2>Planning des livraisons : ::contract.name::</h2>
+		
+		<p>
+			Inscrivez-vous en cochant les cases correspondant aux dates qui vous conviennent.<br/>
+			Les permanences consistent à aider à la distribution de produits lors d'une livraison.
+		</p>
+		
+		
+		
+		<div style="overflow-x:scroll;">
+		<table class="table table-bordered">
+			<tr>
+				<td></td>
+				::foreach d distribs::
+				::set date = getDate(d.date)::
+				<th style="font-size:12px;line-height:14px;text-align:center;background-color:#DED;">::date.dow::<br/>
+					::date.d::<br/>
+					::date.m::<br/>
+					::date.h+":"+date.i::</th>
+				::end::
+			</tr>
+			
+			<!-- current user -->
+			<tr>
+				<td style="white-space: nowrap;">
+					<b>::user.getCoupleName()::</b>
+				</td>
+				<script>
+				window.reg = function(a,b){alert('prout');};
+				window.unreg = function(a,b){alert('lala');};
+				
+				window.reg = function(distribId,img){
+					$(img).hide();
+					$.ajax("/distribution/register?register=1&distrib="+distribId,{success:function(data){
+						//alert("data : "+data);
+						$(img).show();
+						img.src="/img/tick_ok_me.png";
+						img.onclick = function(){
+							unreg(distribId,img);
+						};
+					}});
+				};
+				window.unreg = function(distribId,img){
+					$(img).hide();
+					$.ajax("/distribution/register?register=0&distrib="+distribId,{success:function(data){
+						//alert("data : "+data+", "+$(this));
+						$(img).show();
+						img.src="/img/tick_no.png";
+						img.onclick = function(){
+							reg(distribId,img);
+						};
+					}});
+				};
+				</script>
+				
+				::set me = doodle.get(user.id)::
+				::foreach d distribs::
+				<td style="text-align:center;">
+					
+						::if me !=null::
+							::set a = me.planning.get(d.id)::
+							::if a!=null:: 
+								<img src="/img/tick_ok_me.png" onclick="unreg('::d.id::',this)" />
+							::else::
+								::if !d.hasEnoughDistributors()::
+									<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
+								::else::
+									<span style="color: #AAA;font-size: 80%;">complet</span>
+								::end::
+							::end::
+						::else::
+							::if !d.hasEnoughDistributors()::
+								<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
+							::else::
+								complet
+							::end::
+						
+						::end::
+					
+				</td>
+				::end::
+				
+				
+			</tr>
+			<!-- other users-->
+			::foreach doo doodle::
+			<tr ::cond doo.user.id!=user.id::  style="background-color:#EEE;">
+				<td>::doo.user.getCoupleName()::</td>
+				
+				::foreach d distribs::
+				<td style="text-align:center;">
+					::set a = doo.planning.get(d.id)::
+					
+					::if a!=null:: 
+					<img src="/img/tick_ok.png"/>
+					::end::
+				</td>
+				::end::
+			</tr>
+			::end::
+			
+			
+		</table>
+		</div>
+				
+		<div style="text-align:right">
+			<a href="/" class="btn btn-default btn-lg">Valider</a>	
+		</div>		
+		
+	</div>
+				
+				
+				
+</div>
+
+
+
+
 ::end::

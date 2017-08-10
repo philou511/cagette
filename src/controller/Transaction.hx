@@ -187,20 +187,20 @@ class Transaction extends controller.Controller
 	 * @param	t
 	 */
 	@tpl("transaction/view.mtt")
-	public function doView(t:db.Operation){
-		view.t = t ;
+	public function doView(op:db.Operation){
+		view.op = op ;
 		
 		#if cagette-pro
 		var lw = pro.payment.LWCPayment.getConnector(app.user.amap);
 		
-		if (t.data.remoteOpId == null) throw "No remoteOpId in this operation";
+		if (op.data.remoteOpId == null) throw "No remoteOpId in this operation";
 		
 		//update status if needed
-		var td = lw.getMoneyInTransDetails(t.data.remoteOpId);
-		if (td.HPAY[0].STATUS == "3" && t.pending){
-			t.lock();
-			t.pending = false;
-			t.update();
+		var td = lw.getMoneyInTransDetails(op.data.remoteOpId);
+		if (td.HPAY[0].STATUS == "3" && op.pending){
+			op.lock();
+			op.pending = false;
+			op.update();
 		}
 		
 		view.infos = td;
