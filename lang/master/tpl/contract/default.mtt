@@ -202,9 +202,6 @@
 	::if user.isAmapManager()::
 	<h3>::_("Tutorials")::</h3>
 	<div class="article">
-		
-		
-		
 		<table class="table">
 			
 			::foreach t tutos::
@@ -237,6 +234,20 @@
 			::end::		
 	</div>	
 	::end::
+	
+	<h3>::_("Language")::</h3>
+	<div class="article">
+		::_("Display the interface in another langugage"):: (beta)
+		:
+		<ul>
+			<li><a href="?lang=fr">Français</a></li>
+			<li><a href="?lang=en">English</a></li>
+			<li><a href="?lang=de">Deutsch</a></li>			
+		</ul>
+		<p>
+			::_("Current language is"):: <b>::session.lang::</b>
+		</p>
+	</div>
 	
 </div>
 
