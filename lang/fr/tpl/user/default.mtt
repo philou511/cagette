@@ -1,11 +1,11 @@
-::use 'design.mtt'::
-
-<ul>
-<li><a href="/user/forgottenPassword">mot de passe oublié</a></li>
-<li><a href="/user/login">connexion</a></li>
-</ul>
-
-
-
-
+::use 'design.mtt'::
+
+<ul>
+<li><a href="/user/forgottenPassword">mot de passe oublié</a></li>
+<li><a href="/user/login">connexion</a></li>
+</ul>
+
+
+
+
 ::end::

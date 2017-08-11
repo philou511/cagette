@@ -18,6 +18,10 @@ class App extends sugoi.BaseApp {
 	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
 	public static var VERSION = ([0,9,2]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
 	
+	public function new(){
+		super();
+	}
+	
 	public static function main() {
 		
 		App.t = sugoi.form.Form.translator = new sugoi.i18n.translator.TMap(getTranslationArray(), "fr");
@@ -86,19 +90,19 @@ class App extends sugoi.BaseApp {
 	}
 	
 	/**
-	 * pour feeder l'object de traduction des formulaires
+	 * Translate DB objects fields in forms
 	 */
 	public static function getTranslationArray() {
-	
+		//var t = sugoi.i18n.Locale.texts;
 		var out = new Map<String,String>();
-		out.set("firstName", "Prénom");
-		out.set("lastName", "Nom");
+		//out.set("firstName", t._("First name") );
+		//out.set("lastName", t._("Last name"));
 		out.set("firstName2", "Prénom du conjoint");
 		out.set("lastName2", "Nom du conjoint");
 		out.set("email2", "e-mail du conjoint");
-		out.set("pass", "mot de passe");
-		out.set("address1", "adresse");
-		out.set("address2", "adresse");
+		//out.set("pass", t._("Password") );
+		//out.set("address1", t._("address") );
+		//out.set("address2", t._("address") );
 		out.set("zipCode", "code postal");
 		out.set("city", "commune");
 		out.set("phone", "téléphone");
@@ -207,9 +211,6 @@ class App extends sugoi.BaseApp {
 		out.set("htPrice", "Prix H.T");
 		out.set("amount", "Montant");
 		
-		out.set("check", "Chèque");
-		out.set("transfer", "Virement");
-		out.set("cash", "Liquide");
 		out.set("HasPayments", "Gestion des paiements");
 		
 		out.set("byMember", "Par adhérent");

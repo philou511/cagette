@@ -1,160 +1,160 @@
-::use 'contractadmin/design.mtt'::
-	
-		<h3>Commandes</h3>
-		
-		::if distribution!=null::
-		Distribution du <b>::hDate(distribution.date)::</b>
-		::end::
-		
-		<div style="margin:8px 0;">
-
-			
-			::if distribution!=null::
-			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
-			::else::
-			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
-			::end::
-			
-			::if distribution!=null::
-				$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
-				<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
-				<a href="/distribution/list/::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
-			
-			::else::
-				$$export(/contractAdmin/orders/::c.id::?csv=1)
-				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
-			::end::
-		</div>
-
-		::if disabledProducts > 0::
-		$$alert(::"Attention, il y a <b>"+disabledProducts+"</b> commande(s) contenant des <b>produits désactivés</b>."::)
-		::end::
-
-
-		<style>
-		td.userRow{
-			font-size:120%;
-			color:#e7e7e7;
-		}
-		td.userRow a{ color:white; }
-		</style>
-		
-		::set total = 0::
-		::set totalAdh = 0::
-		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
-				::set name = ""::
-				::set name2 = ""::
-
-				::foreach m orders::
-				
-				::if m.userName != name || m.userName2 != name2::
-					<tr style="background-color:#666;">
-
-						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
-							
-							::if distribution!=null::
-							::set basket = getBasket(m.userId,distribution._place.id,distribution.date)::							
-							<div class="basketNumber" ::cond basket!=null:: >
-								<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
-							</div>
-							::end::
-							
-							::m.userName:: 
-							::if m.userName2!=null::
-								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::
-							::end::
-							
-							::set name =  m.userName ::	
-							::set name2 =  m.userName2 ::
-							::set totalAdh = totalAdh+1::
-						</td>
-						<td>
-							<!--::if m.canModify==true::-->
-							::if distribution!=null::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
-							::else::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
-							::end::
-							<!--::end::-->
-							
-						</td>
-					
-					</tr>
-					<tr>
-						<th>Qté</th>
-						<th>Réf.</th>
-						<th>Produit</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
-						<th>Sous-total</th>
-						<th>Frais</th>
-						<th>Total</th>
-						<th>Payé</th>
-					</tr>
-				::end::
-				
-				
-				::if m.disabled==true::
-				::set class="danger"::
-				::else::
-				::set class=""::
-				::end::
-				<tr class="::class::">
-				
-					<td>
-						::formatNum(m.quantity)::
-					</td>
-					<td>
-						$$nullSafe(::m.productRef::)
-					</td>
-					<td>
-						::m.productName::
-					</td>
-					<td>
-						::formatNum(m.productPrice)::&nbsp;::currency()::
-					</td>
-					<td>
-						::formatNum(m.subTotal)::&nbsp;::currency()::
-					</td>
-					<td>
-						<!-- frais -->
-						::if m.percentageValue!=null::
-						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
-							::formatNum(m.fees)::&nbsp;::currency()::
-						</a>
-						::end::
-					</td>
-					<td>
-						<!-- total -->
-						::formatNum(m.total)::&nbsp;::currency()::
-						::set total = total + m.total::
-					</td>
-					<td>
-						::if m.paid==true::
-						<span style="color:#00AA00;">Payé</span>
-						::else::
-						<span style="color:#DD0000;">Non payé</span>
-						::end::
-					</td>
-					
-				</tr>
-				::end::
-				
-				
-				
-				<tr style="background:#DDD;">
-					
-					<th colspan="6">Total</th>
-					<th>::formatNum(total)::&nbsp;::currency()::</th>
-					
-					<th></th>
-				</tr>
-				
-
-				</table>
-
-
-				<div style="margin-top:18px;margin-bottom:18px;">
-					<b>::totalAdh::</b> adhérents dans cette commande.					
-				</div>
-
-::end::
+::use 'contractadmin/design.mtt'::
+	
+		<h3>Commandes</h3>
+		
+		::if distribution!=null::
+		Distribution du <b>::hDate(distribution.date)::</b>
+		::end::
+		
+		<div style="margin:8px 0;">
+
+			
+			::if distribution!=null::
+			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
+			::else::
+			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
+			::end::
+			
+			::if distribution!=null::
+				$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
+				<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
+				<a href="/distribution/list/::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
+			
+			::else::
+				$$export(/contractAdmin/orders/::c.id::?csv=1)
+				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
+			::end::
+		</div>
+
+		::if disabledProducts > 0::
+		$$alert(::"Attention, il y a <b>"+disabledProducts+"</b> commande(s) contenant des <b>produits désactivés</b>."::)
+		::end::
+
+
+		<style>
+		td.userRow{
+			font-size:120%;
+			color:#e7e7e7;
+		}
+		td.userRow a{ color:white; }
+		</style>
+		
+		::set total = 0::
+		::set totalAdh = 0::
+		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
+				::set name = ""::
+				::set name2 = ""::
+
+				::foreach m orders::
+				
+				::if m.userName != name || m.userName2 != name2::
+					<tr style="background-color:#666;">
+
+						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
+							
+							::if distribution!=null::
+							::set basket = getBasket(m.userId,distribution._place.id,distribution.date)::							
+							<div class="basketNumber" ::cond basket!=null:: >
+								<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
+							</div>
+							::end::
+							
+							::m.userName:: 
+							::if m.userName2!=null::
+								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::
+							::end::
+							
+							::set name =  m.userName ::	
+							::set name2 =  m.userName2 ::
+							::set totalAdh = totalAdh+1::
+						</td>
+						<td>
+							<!--::if m.canModify==true::-->
+							::if distribution!=null::
+							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+							::else::
+							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+							::end::
+							<!--::end::-->
+							
+						</td>
+					
+					</tr>
+					<tr>
+						<th>Qté</th>
+						<th>Réf.</th>
+						<th>Produit</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+						<th>Sous-total</th>
+						<th>Frais</th>
+						<th>Total</th>
+						<th>Payé</th>
+					</tr>
+				::end::
+				
+				
+				::if m.disabled==true::
+				::set class="danger"::
+				::else::
+				::set class=""::
+				::end::
+				<tr class="::class::">
+				
+					<td>
+						::formatNum(m.quantity)::
+					</td>
+					<td>
+						$$nullSafe(::m.productRef::)
+					</td>
+					<td>
+						::m.productName::
+					</td>
+					<td>
+						::formatNum(m.productPrice)::&nbsp;::currency()::
+					</td>
+					<td>
+						::formatNum(m.subTotal)::&nbsp;::currency()::
+					</td>
+					<td>
+						<!-- frais -->
+						::if m.percentageValue!=null::
+						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
+							::formatNum(m.fees)::&nbsp;::currency()::
+						</a>
+						::end::
+					</td>
+					<td>
+						<!-- total -->
+						::formatNum(m.total)::&nbsp;::currency()::
+						::set total = total + m.total::
+					</td>
+					<td>
+						::if m.paid==true::
+						<span style="color:#00AA00;">Payé</span>
+						::else::
+						<span style="color:#DD0000;">Non payé</span>
+						::end::
+					</td>
+					
+				</tr>
+				::end::
+				
+				
+				
+				<tr style="background:#DDD;">
+					
+					<th colspan="6">Total</th>
+					<th>::formatNum(total)::&nbsp;::currency()::</th>
+					
+					<th></th>
+				</tr>
+				
+
+				</table>
+
+
+				<div style="margin-top:18px;margin-bottom:18px;">
+					<b>::totalAdh::</b> adhérents dans cette commande.					
+				</div>
+
+::end::

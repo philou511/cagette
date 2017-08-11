@@ -17,7 +17,7 @@ class Categories extends controller.Controller
 	public function doGenerate() {
 		
 		if ( db.CategoryGroup.manager.search($amap == app.user.amap, false).length != 0) {
-			throw Error("/amapadmin/categories", "Il existe déjà des catégories");
+			throw Error("/amapadmin/categories", t._("The category list is not empty.") );
 		}
 		
 		function gen(catGroupName:String,color:Int,cats:Array<String>) {
@@ -36,11 +36,11 @@ class Categories extends controller.Controller
 			}
 			
 		}
+		var t = sugoi.i18n.Locale.texts;
+		gen(t._("Product types"),2, [t._("Vegetables"), t._("Fruits"), t._("Fish"), t._("Red meat"), t._("Breads"), t._("Grocery"), t._("Beverages") ]);
+		gen(t._("Labels"),0, [t._("Certified organic food"), t._("organic food"), t._("non organic") ]);
 		
-		gen("Types de produits",2, ["Légumes", "Fruits", "Poisson", "Viande rouge", "Boulangerie", "Epicerie", "Boissons"]);
-		gen("Labels",0, ["Bio certifié", "Bio non certifié", "Conventionnel", "Raisonné"]);
-		
-		throw Ok("/amapadmin/categories", "Catégories par défaut générées");
+		throw Ok("/amapadmin/categories", t._("Default categories has been created") );
 		
 	}
 	

@@ -1,0 +1,190 @@
+::use 'plugin/pro/design.mtt'::
+
+<style>
+	.notifs .fa{
+		font-size: 2em;
+		color: #AAA;
+	}
+</style>
+
+
+<div class="col-md-8">
+	::if notifs.length>0::
+	<div class="article">
+		<table class="table table-striped notifs">
+			
+			::foreach n notifs::
+			<tr onclick="_.overlay('/p/pro/notif/view/::n.id::','Notification')" >
+				<td>
+					::switch n._type::
+					<!-- default -->
+					<i class="fa fa-bell-o" aria-hidden="true"></i> 
+					::case::
+					<!-- catalog import -->
+					<i class="fa fa-cloud-upload" aria-hidden="true"></i> 
+					::case::
+					<!-- delivery request -->
+					<i class="fa fa-truck" aria-hidden="true"></i> 
+					
+					::end::
+				</td>
+				<td>
+					::hDate(n.date)::
+				</td>
+				<td>
+					<a href="#">::n.title::</a>
+				</td>
+				<td>
+					::if n._group!=null::
+					::n._group.name::
+					::end::
+				</td>
+				
+			</tr>
+			::end::
+		</table>
+	</div>
+	::end::
+	
+	
+	<style>
+	div.client{
+		height:60px;
+		border-radius:3px;
+		border:1px solid #DDD;
+		padding:8px;
+		margin-bottom: 8px;
+	}
+	div.client:hover{
+		cursor: pointer;
+		background-color:#DDD;
+	}
+	</style>
+	
+	<div class="article">
+		
+		<h2>Clients</h2>
+		
+		<div class="row">
+			::foreach client clients::
+			<div class="col-md-4" >
+				
+				
+				
+				::set group = client[0].getRelatedContract(false)._amap::
+				<a href="/p/pro/group/::group.id::" class="clickable" style="height:60px;">
+				
+				
+				
+				::set open = 0::
+				::set todeliver = 0::
+				
+				::foreach rc client::
+					::set open = open + rc.countRunningOrders()::
+					::set todeliver = todeliver + rc.countOrdersToDeliver()::
+				::end::
+				
+				
+				::if (todeliver > 0)::
+				<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title=" ::open:: commandes en cours dont ::todeliver:: prêtes à livrer" ></i>
+				::elseif ( open  > 0)::
+				<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title=" ::open:: commandes en cours dont ::todeliver:: prêtes à livrer"></i>
+				::else::
+				<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title=" Aucune commande en cours "></i>
+				::end::
+				
+				
+				::group.name::
+				</a>
+				
+			</div>
+			::end::	
+			
+		</div>
+		
+		
+		
+		
+		
+		
+		
+	</div>
+	
+	
+</div>
+
+<div class="col-md-4">
+	<div class=" article">
+		<h2>Prochaines livraisons</h2>	
+		<!--[CDATA[
+		::foreach k distribs::
+		
+			::set contracts = []::
+			::foreach d k::
+				::set x = contracts.push(d._contract.id)::
+			::end::
+			
+			::contracts::
+		
+		<a href="/p/pro/orderReport/?startDate=::k[0].date.toString().substr(0,10):: 00:00:00&endDate=::k[0].date.toString().substr(0,10):: 23:59:59&contracts=::contracts.join(',')::" class="clickable">
+			<b>::k[0]._contract._amap.name::</b>
+			<div>::hDate(k[0].date)::</div>
+			<ul>
+			::foreach d k::
+				<li>
+					::set c = getCatalog(d)::
+					::c.name::
+				</li>
+			::end::	
+			</ul>
+			<hr/>
+		</a>
+		::end::
+		]]>-->
+		
+		::foreach d distribs::
+		<a href="/p/pro/delivery/view/::d.id::" class="clickable">
+		<div style="display:inline-block;vertical-align:top;">
+				::set now = Date.now()::				
+				::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+				<!-- commande en cours -->
+				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande en cours.">
+				  <i class="fa fa-circle fa-stack-2x" style="color:#F80;"></i>
+				  <i class="fa fa-shopping-basket fa-stack-1x fa-inverse"></i>
+				</span>
+				::elseif now.getTime() > d.orderEndDate.getTime()::
+				<!-- commande terminée -->
+				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande close. Préparez votre livraison">
+				  <i class="fa fa-circle fa-stack-2x" style="color:#0A0;"></i>
+				  <i class="fa fa-truck fa-stack-1x fa-inverse"></i>
+				</span>
+				::else::
+				<!-- commande pas ouverte -->
+				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande pas encore ouverte">
+				  <i class="fa fa-circle fa-stack-2x" style="color:#999;" ></i>
+				  <i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+				</span>					
+				::end::
+			</div>		
+			<div style="display:inline-block;">
+				<b>::d._contract._amap.name::</b>
+				<p>
+					::hDate(d.date)::		
+				</p>
+			</div>
+		</a>
+		::end::
+		
+	</div>
+</div>
+
+
+::end::
+
+
+
+	
+	
+	
+	
+	

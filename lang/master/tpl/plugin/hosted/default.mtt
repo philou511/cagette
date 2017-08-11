@@ -1,0 +1,7 @@
+::use 'admin/design.mtt'::
+
+<h3>CAGETTE-HOSTED</h3>
+
+<a href="/p/hosted/crm" class="btn btn-default">CRM</a>
+
+::end::

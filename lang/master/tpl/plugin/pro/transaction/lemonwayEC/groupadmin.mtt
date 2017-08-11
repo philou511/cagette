@@ -1,0 +1,12 @@
+::use 'amapadmin/design.mtt'::
+
+	<h3>Configuration des paiements en ligne</h3>		
+
+	<p>
+		Saisissez ici vos identifiants Lemonway
+	</p>
+
+	::raw form::
+
+
+::end::

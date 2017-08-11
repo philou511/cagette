@@ -1,0 +1,101 @@
+::use 'admin/design.mtt'::
+
+	<div class="article">
+		
+		<h1>#::group.id:: ::group.name:: </h1>
+		créé le : ::group.cdate::<br/>
+		
+		::if group._contact!=null::
+		
+			Par <b>::group._contact::</b>
+			<p>
+				Tel. <b>::group._contact.phone::</b><br/>
+				Email <b>::group._contact.email::</b><br/>
+				Dernier login ::group._contact.ldate:: <br/>
+				
+			</p>
+			
+			<a href="/p/hosted/loginas/::group._contact.id::" class="btn btn-default btn-xs">connexion sur son compte</a>
+			
+			::set memberof = group._contact.getAmaps()::		
+			<div ::cond memberof.length>1::>
+				Egalement membre de : 
+				<ul>
+				::foreach x memberof::
+					::if x.id!=group.id::
+					<li><a href="/p/hosted/group/::x.id::">#::x.id::-::x.name::</a></li>
+					::end::
+				::end::
+				</ul>
+			</div>
+		
+		::end::
+		
+		<hr/>
+		
+		<h2>Abonnement</h2>
+		
+		<p>
+			Nbre adhérents max : <b>::hosting.getMaxMembers()::</b><br/>
+			Abonné depuis : ::hDate(hosting.cdate)::<br/>
+			Expiration abonnement : ::hDate(hosting.aboEnd)::<br/>
+			$$edit(gérer,/db/hosted.db.Hosting/edit/::hosting.id::)
+		</p>
+		
+		<h2>Geocoding</h2>
+		
+		<p>
+			
+			<ul>
+			::foreach d group.getDeliveries(4)::
+			
+			::set p = d._place::
+			<li>
+				[::p.lat::,::p.lng::]
+				
+				::if p.lat!=0 && p.lat!=null::
+					$$bool(true)
+				::else::
+					$$bool(false)
+				::end::
+				
+				::d._place.getFullAddress()::
+			</li>
+			
+			::end::
+			</ul>
+		</p>
+		
+		<hr/>
+		
+		<a href="/group/::group.id::" class="btn btn-default">Page publique</a>
+		<a href="/p/hosted/addMe/::group.id::" class="btn btn-default">Devenir Membre de ce groupe</a>
+		<a href="/p/hosted/geocode/::group.id::" class="btn btn-default">Géocoding</a>
+		<hr/>
+		
+		
+
+		
+		
+		<h2>Adhérents</h2>
+		
+		<ul>
+			::foreach u group.getMembers()::
+			<li>::u::</li>
+			::end::
+		</ul>
+		
+		
+		<h2>Contrats</h2>
+		
+		<ul>
+			::foreach u group.getContracts()::
+			<li>::u::</li>
+			::end::
+		</ul>
+		
+		$$delete(Supprimer,/p/hosted/deleteGroup/::group.id::?token=::token::)
+		
+		
+	</div>
+::end::

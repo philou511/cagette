@@ -1,0 +1,180 @@
+::use 'admin/design.mtt'::
+
+
+<style>
+
+.shortList{
+
+	max-height:200px;
+	overflow:auto;
+
+}
+
+
+</style>
+
+
+	<div class="article">
+		<p>
+			<a href="/p/hosted/people" class="btn btn-default">Contacts</a>
+		</p>
+		
+		
+		<table class="table table-bordered">
+			<tr>
+				<th style="text-align:center;">comptes clients</th>
+				<th style="text-align:center;">comptes de test</th>
+			</tr>
+			<tr>
+				<td>
+					<h1 style="text-align:center;">::clients.length::</h1>
+				</td>
+			
+				<td>
+				<h1 style="text-align:center;">::trials.length::</h1>	
+				</td>
+				
+			</tr>
+			
+			<tr>
+				<th>Comptes de test du mois -1</th>
+				<th>Comptes de test du mois en cours</th>
+				
+			</tr>
+			<tr>
+				<td>
+					<ul class="shortList">
+						::foreach a trialsLastMonth::
+						<li><a href="/p/hosted/group/::a.id::">::a.name::</a></li>
+						::end::
+					</ul></td>
+				
+				<td>
+					<ul class="shortList">
+						::foreach a trialsMonth::
+						<li><a href="/p/hosted/group/::a.id::">::a.name::</a></li>
+						::end::
+					</ul>
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<th>Nouveaux clients du mois -1</th>
+				<th>Nouveaux clients du mois en cours</th>
+				
+			</tr>
+			<tr>
+				<td><ul class="shortList">
+						::foreach a clientsLastMonth::
+						<li><a href="/p/hosted/group/::a.id::">::a.name::</a></li>
+						::end::
+					</ul></td>
+				
+				<td>
+					<ul class="shortList">
+						::foreach a clientsMonth::
+						<li><a href="/p/hosted/group/::a.id::">::a.name::</a></li>
+						::end::
+					</ul>
+					
+				</td>
+			</tr>
+			
+			
+		</table>
+		
+		
+		<h1>Expire bientôt</h1>
+		
+		<table class="table table-bordered">
+			
+			::foreach e expiring::
+			<tr>
+				<td>::e.id::</td>
+				<td>
+					::if e.getAmap()==null::
+					il n'y a plus de groupe ::e.id::
+					::else::
+					<a href="/p/hosted/group/::e.id::">::e.getAmap().name::</a> 
+					::end::
+					
+				</td>
+				<td>::hDate(e.aboEnd)::</td>
+			</tr>
+			::end::
+			
+		</table>
+		
+		<h1>Clients</h1>
+		
+		<div class="shortList">
+			
+			<table class="table table-bordered" >
+				<tr>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Abo</th>
+					<th>adhérents</th>
+					<th>AboEnd</th>
+					<th>Abo à jour</th>
+				</tr>
+				::foreach a clients::
+				<tr>
+					<td>::a.id::</td>
+					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>
+					<td>::a.aboType::</td>
+					<td>::a.membersNum::</td>
+					<td>::hDate(a.aboEnd)::</td>
+					<td>
+						$$bool(::a.aboOk::)
+					</td>
+				</tr>
+				::end::
+				
+			</table>
+			
+		</div>
+		
+		
+		
+		
+		<h1>Comptes de test / gratuits / expirés</h1>
+		
+		<div class="shortList">
+		
+			<table class="table table-bordered">
+				<tr>
+					<th>Id</th>
+					<th>Nom</th>				
+					<th>adhérents</th>
+					<th>Date de création</th>
+					<th>Date expiration abo.</th>
+				
+				</tr>
+				::foreach a trials::
+				<tr>
+					<td>::a.id::</td>
+					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>				
+					<td>::a.membersNum::</td>
+					<td>::hDate(a.cdate)::</td>
+					<td>
+						::if a.aboEnd!=null::
+						expiré le ::hDate(a.aboEnd)::
+						::end::
+					</td>
+					
+				</tr>
+				::end::
+				
+			</table>
+		</div>
+		
+		
+		
+	</div>
+	
+	
+	
+	
+::end::

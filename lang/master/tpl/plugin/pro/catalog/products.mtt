@@ -1,0 +1,64 @@
+::use 'plugin/pro/catalog/design.mtt'::
+		
+		<h3>Produits du catalogue</h3>
+		
+		<p>
+			Sélectionnez les produits que vous souhaitez intégrer au catalogue.
+		</p>
+	
+		<form id="products" method="POST" class="form-inline" style="width:80%">
+		
+			<script>
+			var check = function(){
+				var inputs = $('#products input');
+				if(inputs.first().prop('checked')==true){
+					inputs.prop('checked',false);
+				}else{
+					inputs.prop('checked',true);
+				}
+				
+			}
+			</script>
+			
+			<p>
+				<a onClick="check();" class='btn btn-default'>Tout cocher</a>					
+			</p>
+			
+			
+			<table class="table">			
+			::foreach p products::
+			
+			
+			::if p.offer.active==false:: 
+			::set opacity=0.4::
+			::else::
+			::set opacity=1::
+			::end::
+			<tr style="opacity: ::opacity::">
+				<td>
+					<input type="checkbox" name="p::p.offer.id::" value="1" ::attr checked (p.checked==true):: />
+					
+				</td>
+				<td>					
+					<img src="::p.offer._product.getImage()::" style="width:32px;height:32px;" />					
+				</td>
+				<td>::p.offer.ref::</td>
+				
+				<td>
+					<b>::p.offer._product.name::</b>
+				</td>
+				<td>
+					$$nullSafe(::p.offer.name::) - ::p.offer.quantity::&nbsp;::unit(p.offer._product._unitType)::
+				</td>
+				
+			</tr>
+				
+			
+			::end::
+			</table>
+			
+			<input type="submit" value="Valider" class="btn btn-primary"	/>
+			<input type="hidden" value="::token::" name="token" />
+		</form>
+
+::end::

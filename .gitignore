@@ -1,7 +1,5 @@
-index.n
-lang/fr/tmp/*.n
-lang/fr/tmp/*.php
-www/index.n
+*.n
+*.php
 config.xml
 www/plugin/*
 lang/fr/tpl/plugin/*

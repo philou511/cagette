@@ -1,0 +1,339 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: François <francois@chapatiz.com>\n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.1\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/controller/Distribution.hx:159 src/controller/Distribution.hx:225
+msgid "orderStartDate"
+msgstr ""
+
+#: src/controller/Distribution.hx:160 src/controller/Distribution.hx:226
+msgid "orderEndDate"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Sunday"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Monday"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Tuesday"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Wednesday"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Thursday"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Friday"
+msgstr ""
+
+#: src/View.hx:145
+msgid "Saturday"
+msgstr ""
+
+#: src/View.hx:146
+msgid "January"
+msgstr ""
+
+#: src/View.hx:146
+msgid "February"
+msgstr ""
+
+#: src/View.hx:146
+msgid "March"
+msgstr ""
+
+#: src/View.hx:146
+msgid "April"
+msgstr ""
+
+#: src/View.hx:146
+msgid "May"
+msgstr ""
+
+#: src/View.hx:146
+msgid "June"
+msgstr ""
+
+#: src/View.hx:146
+msgid "July"
+msgstr ""
+
+#: src/View.hx:146
+msgid "August"
+msgstr ""
+
+#: src/View.hx:146
+msgid "September"
+msgstr ""
+
+#: src/View.hx:146
+msgid "October"
+msgstr ""
+
+#: src/View.hx:146
+msgid "November"
+msgstr ""
+
+#: src/View.hx:146
+msgid "December"
+msgstr ""
+
+#: src/View.hx:154 src/View.hx:167
+msgid "no date set"
+msgstr ""
+
+#: src/View.hx:161
+msgid "at"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:26
+msgid "et"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:34
+msgid "Log into another group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:36
+msgid "Log out"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:43
+msgid "Log in"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:44
+msgid "Look for another group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:68
+msgid "Home"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:69
+msgid "My account"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:70
+msgid "My group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:76
+msgid "Members management"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:78
+msgid "Contracts management"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:80
+msgid "Messaging"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:82
+msgid "Group management"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:84
+msgid "Admin"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:12
+msgid "Welcome to Cagette.net !"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:25
+msgid ""
+"As a starter, we recommand you to follow the <b>guided tour</b> to discover "
+"step by step the main sections of the software."
+msgstr ""
+
+#: lang/master/tpl/home.mtt:28
+msgid "Start the guided tour"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:38
+msgid "Open orders"
+msgstr "Commandes ouvertes"
+
+#. on homepage when there is no plannde deliveries
+#: lang/master/tpl/home.mtt:53
+msgid "You delivery planning is currently empty"
+msgstr "Votre planning de distribution est vide"
+
+#: lang/master/tpl/home.mtt:79 lang/master/tpl/home.mtt:184
+msgid "Modify my order"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:82
+msgid "Add products"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:85
+msgid "Order closed"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:102
+msgid "My ordered products"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:112
+msgid "Delivery"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:148 lang/master/tpl/home.mtt:154
+msgid "It's your turn"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:150 lang/master/tpl/home.mtt:156
+msgid "It's his/her turn"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:173
+msgid "Distribution list"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:177
+msgid "Permanence"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:181
+msgid "Contract details"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:198
+msgid "Warning, you're engaged in this distribution !"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:223
+msgid "Order|Order button on homepage"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:230
+msgid "Order closed since"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:233
+msgid "Order will open at"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:253
+msgid "Livraison de ::s.h+':'+s.i:: à ::e.h+':'+e.i::"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:302
+msgid "Permanences"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:304
+msgid "Don't forget to register for permanences"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:317
+msgid "Warning, you don't have defined a password yet !"
+msgstr ""
+
+#: lang/master/tpl/home.mtt:319
+msgid "Set my password"
+msgstr ""
+
+#: lang/master/tpl/user/choose.mtt:4
+msgid "Hello"
+msgstr "Bonjour"
+
+#: lang/master/tpl/user/choose.mtt:12
+msgid "Please select the group you want to connect to"
+msgstr "Sélectionnez le groupe auquel vous voulez vous connecter"
+
+#: lang/master/tpl/user/choose.mtt:24
+msgid "Cagette Pro"
+msgstr "Cagette Pro"
+
+#: lang/master/tpl/user/choose.mtt:70
+msgid "You don't belong to any group yet"
+msgstr "Vous n'êtes membre d'aucun groupe pour l'instant"
+
+#: lang/master/tpl/user/choose.mtt:72 lang/master/tpl/user/choose.mtt:84
+msgid "Create my own group"
+msgstr "Créer mon propre groupe"
+
+#: lang/master/tpl/user/choose.mtt:83
+msgid "Find other groups near me"
+msgstr "Trouver des groupes près de chez moi"
+
+#: lang/master/tpl/user/login.mtt:65
+msgid "Connection"
+msgstr "Connexion"
+
+#: lang/master/tpl/user/login.mtt:69
+msgid "Email"
+msgstr "Email"
+
+#: lang/master/tpl/user/login.mtt:75
+msgid "Password"
+msgstr "Mot de passe"
+
+#: lang/master/tpl/user/login.mtt:84
+msgid "Forgotten your email ?"
+msgstr "Email oublié ?"
+
+#~ msgid "Sugoï demo site"
+#~ msgstr "Site démo Sugoï"
+
+#~ msgid "You're currently logged as <strong>::user::</strong>"
+#~ msgstr ""
+#~ "Vous êtes actuellement connecté en tant que <strong>::user::</strong>"
+
+#~ msgid "Login"
+#~ msgstr "Connexion"
+
+#~ msgid "or"
+#~ msgstr "ou"
+
+#~ msgid "Default user credentials are :"
+#~ msgstr "Les identifiants de l'utilisateur par défaut sont :"
+
+#~ msgid "Database administration and migration"
+#~ msgstr "Administration et migration de base de données"
+
+#~ msgid "Manage text translation with GetText"
+#~ msgstr "Gérez la traduction du texte avec Gettext"
+
+#~ msgid "Switch to English"
+#~ msgstr "Passer en anglais"
+
+#~ msgid "Switch to French"
+#~ msgstr "Passer en français"
+
+#~ msgid "Users"
+#~ msgstr "Utilisateurs"
+
+#~ msgid "Edit"
+#~ msgstr "Modifier"
+
+#~ msgid "Delete"
+#~ msgstr "Supprimer"
+
+#~ msgid "Insert"
+#~ msgstr "Insérer"
+
+#~ msgid "Here is an example of what you can do with form management."
+#~ msgstr "Voici un exemple de ce qu'on peut avec la gestion de formulaire."

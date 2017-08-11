@@ -17,7 +17,7 @@
   <classpaths>
     <class path="common" />
     <class path="src" />
-    <class path="lang\fr\tpl" />
+    <class path="lang\master\tpl" />
   </classpaths>
   <!-- Build options -->
   <build>

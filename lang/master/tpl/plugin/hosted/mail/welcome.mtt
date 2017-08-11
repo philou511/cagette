@@ -1,0 +1,39 @@
+ 
+<html>
+	<head>
+		<style>
+		h1,h2,h3,h4{
+			color:#008800;
+		}
+		body{
+			font-family:'Arial','sans-serif';
+		}
+		
+		</style>
+	</head>
+	<body>
+		<img src="http://www.cagette.net/img/logo.png" style="text-align:center;margin:auto;" />
+		<h1>Bienvenue !</h1>
+		<p>
+			Vous venez de créer un compte pour votre groupe <b>::group.name::</b> sur Cagette.net.
+		</p>			
+		<p>
+			J'espère que vous trouverez son utilisation simple et intuitive.<br/>	
+			Si ce n'est pas le cas, ou que vous avez des questions, n'hésitez pas à nous contacter.
+			<ul>
+				<li>Appelez moi au 07.81.65.16.46</li>
+				<li>Demandez de l'assistance via notre <a href="https://cagette.uservoice.com/">interface de support</a> </li>
+				<li><a href="http://www.cagette.net/wiki/">Consultez la documentation</a></li>
+			</ul>
+			
+		</p>	
+		
+		<p><em>
+		A très bientôt,<br/>
+		Cordialement,<br/>
+		- Sébastien</em>
+		</p>
+		
+	</body>
+</html>
+

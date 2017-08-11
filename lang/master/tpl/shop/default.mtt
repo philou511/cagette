@@ -1,0 +1,167 @@
+::use 'design.mtt'::
+<div class="col-md-9">
+
+	<div class="shop">
+		
+		<div class="header">
+			
+			<div style="float:right;text-align:right;">
+				::if place!=null::
+				<span class="info">
+					<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>
+				</span>
+				::end::
+
+				::if place!=null::
+					<div class="address">
+					$$nullSafe(::place.address1::)
+					$$nullSafe(::place.address2::)
+					$$nullSafe(::place.zipCode::)
+					$$nullSafe(::place.city::)
+					</div>
+				::end::
+			</div>
+			
+			
+			<div>
+				<div class="info" style="font-size:1.2em;">::_("Distribution on ::hDate(date)::")::</div>
+				
+				
+				<div class="">
+					<span class="info">
+						<span class="glyphicon glyphicon-time"></span> ::_("Orders will close on ")::
+					</span>
+					::if ArrayTool.mapLength(infos) == 1::
+						::hDate( infos.iterator().next()[0].orderEndDate )::
+					::else::
+						<ul>
+						::foreach k infos.keys()::
+							<li>
+							::set dists = infos.get(k)::
+							
+							::if dists.length==1::
+								::dists[0]._contract.name::
+							::else::
+								::set tt = ""::
+								::foreach d dists::
+									::set tt = tt  + d._contract.name + ". "::
+								::end::
+								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">::_("Autres||uncategorized products in shop")::</span>
+							::end::
+							
+							: ::hDate(Date.fromString(k))::
+							</li>
+						::end::
+						</ul>
+					::end::
+				</div>
+			</div>
+
+			
+			
+		</div>
+		
+		<div class="body">
+				
+			<script language="javascript">
+				var cart;
+				$(function(){
+					cart = _.getCart();
+					cart.init("::place.id::","::date.toString().substr(0,10)::");
+				});
+			</script>
+			
+			
+			<div class="row">
+				
+				::foreach p products::
+				<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::" style="display:none;">
+
+					<table class="product">
+						<tr>
+							<td style="vertical-align:top;">
+								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
+									<img src="::p.image::" style="width:64px;height:64px;" />
+								</a>
+								
+								<div ::cond p.organic:: title ="::_('Organic agriculture')::" data-toggle="tooltip" data-placement="bottom"><img src="/img/AB.png"/></div>
+							</td>
+							<td>
+								<h4>
+									<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')">
+										::p.name::
+										::if p.qt!=null && p.unitType!=null::
+											::p.qt:: ::unit(p.unitType)::
+										::end::
+									</a>
+								</h4>
+								<span class="price">::formatNum(p.price):: ::currency()::</span>
+								<div>
+									<form class="form-inline">
+									::if p.stock!=null && p.stock==0::
+										<span style="color:#AAA;">::_("Out of stock")::</span>
+									::elseif !p.orderable::
+										<span style="color:#AAA;">::_("Order closed")::</span>
+									::else::
+										::if p.stock!=null && p.stock>0 && p.stock<=10::
+										<div class="warning" >::_("Only ::p.stock:: items in stock")::</div>
+										::end::
+									
+										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
+										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Order||Order button")::</a>
+										
+									::end::
+									
+									</form>
+								</div>
+							</td>
+						</tr>
+					</table>
+					
+				</div>
+				::end::	
+			</div>
+			
+		</div>
+	</div>
+			
+</div>
+	
+
+<div class="col-md-3" id="cartContainer">
+
+
+	<div class="cartDiv">
+		
+		<h2>
+			<span class="glyphicon glyphicon-shopping-cart"></span>
+			::_("My order")::
+			<img id="loader" src="/img/loader.gif"/>
+		</h2>
+		<div id="cart"></div>
+		
+		<a onClick="cart.submit();" class="btn btn-default">::_("Validate")::</a>
+		
+		<a class="infos" href='/contract'>::_("You can check your previous orders in 'my account' section")::</a>
+		
+	</div>
+	
+	<div class="article">
+		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> ::_("All products")::</span><br/>
+		
+		::foreach g group.getCategoryGroups()::
+			<div>
+				<h4>::g.name::</h4>				
+				::foreach c g.categs::
+					<span class="tag" id="tag::c.id::" onclick="cart.filter(::c.id::);" style="background-color: ::g.color::;cursor:pointer;">::c.name::</span><br/>
+				::end::
+			</div>
+		::end::
+		
+	</div>
+
+	
+</div>
+
+	
+::end::

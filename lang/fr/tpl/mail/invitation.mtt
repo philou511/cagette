@@ -1,42 +1,42 @@
-:: use 'mail/design.mtt'::
-
-<div style="max-width:400px;margin:auto;border:solid 1px #AAA;border-radius:8px;padding:12px;text-align:center;font-family:Arial;">
-	
-	<img src="http://::HOST::/img/logo.png"/>
-	
-	<p>
-		Bonjour $$nullSafe(::name::),
-	</p>
-	
-	<p>
-		::if groupName!=null::
-		
-		En tant que membre du groupe<br/>
-		<b style="font-size:140%;">::groupName::</b><br/>
-		vous avez été pré-inscrit sur le logiciel Cagette.net
-		
-		::else::
-		
-		<b>Vous avez été pré-inscrit sur Cagette.net</b>
-		
-		::end::
-	</p>
-	
-	<p>
-		Ce logiciel en ligne facilite l'organisation du groupe en vous informant sur les prochaines dates de livraisons,
-		les commandes et les contrats en cours.
-	</p>
-	<p>
-		Afin de finaliser votre inscription, vous êtes invité(e) à définir votre mot de passe.
-	</p>
-	<p>
-		Vous pourrez ensuite vous connecter quand vous le souhaitez en utilisant votre email ( <i>::email::
-		::if email2!=null:: ou ::email2:: ::end::</i> ) et votre mot de passe en vous rendant sur le site web <a href="http://::HOST::">www.cagette.net</a>
-		<a href="http://::HOST::/user/validate/::k::" class="btn" style="display:block;padding:8px;background:#227700;border-radius:8px;width:auto;color: white;margin: 12px; text-decoration: none;margin-top:16px;font-size:120%;">&raquo; Finaliser votre inscription</a>
-		
-	</p>
-	
-</div>
-
-
+:: use 'mail/design.mtt'::
+
+<div style="max-width:400px;margin:auto;border:solid 1px #AAA;border-radius:8px;padding:12px;text-align:center;font-family:Arial;">
+	
+	<img src="http://::HOST::/img/logo.png"/>
+	
+	<p>
+		Bonjour $$nullSafe(::name::),
+	</p>
+	
+	<p>
+		::if groupName!=null::
+		
+		En tant que membre du groupe<br/>
+		<b style="font-size:140%;">::groupName::</b><br/>
+		vous avez été pré-inscrit sur le logiciel Cagette.net
+		
+		::else::
+		
+		<b>Vous avez été pré-inscrit sur Cagette.net</b>
+		
+		::end::
+	</p>
+	
+	<p>
+		Ce logiciel en ligne facilite l'organisation du groupe en vous informant sur les prochaines dates de livraisons,
+		les commandes et les contrats en cours.
+	</p>
+	<p>
+		Afin de finaliser votre inscription, vous êtes invité(e) à définir votre mot de passe.
+	</p>
+	<p>
+		Vous pourrez ensuite vous connecter quand vous le souhaitez en utilisant votre email ( <i>::email::
+		::if email2!=null:: ou ::email2:: ::end::</i> ) et votre mot de passe en vous rendant sur le site web <a href="http://::HOST::">www.cagette.net</a>
+		<a href="http://::HOST::/user/validate/::k::" class="btn" style="display:block;padding:8px;background:#227700;border-radius:8px;width:auto;color: white;margin: 12px; text-decoration: none;margin-top:16px;font-size:120%;">&raquo; Finaliser votre inscription</a>
+		
+	</p>
+	
+</div>
+
+
 ::end::

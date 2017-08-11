@@ -1,0 +1,34 @@
+ 
+<html>
+	<head>
+		<style>		
+		body{
+			font-family:'Arial','sans-serif';
+		}
+		
+		</style>
+	</head>
+	<body>
+		<p>Bonjour,</p>
+
+	<p>Je fais partie de Alilo, l'équipe qui a créé le logiciel libre Cagette.net.<br/>
+	J'ai constaté que vous aviez ouvert un compte récemment.<br/>
+	Mon rôle est d'accompagner les AMAP et les groupements d'achat qui utilisent Cagette.net.<br/>
+	J'accompagne également les producteurs qui souhaitent développer leur vente directe.<br/>
+	N'hésitez donc pas à me contacter directement si vous avez des questions.</p>
+
+	<p>En espérant que nous saurons répondre à vos attentes,<br/>
+	Cordialement,</p>
+
+	<p>Sébastien Zulke<br/>
+		<span style="font-size:90%;">
+			<strong>Alilo, créateur de Cagette.net<br/>
+			07 81 65 16 46</strong><br/>
+			<a href="http://www.alilo.fr">www.alilo.fr</a><br/>
+			<a href="http://www.cagette.net">www.cagette.net</a>
+		</span>
+	</p>
+		
+	</body>
+</html>
+
