@@ -16,41 +16,39 @@ class Transaction extends controller.Controller
 	@tpl('form.mtt')
 	public function doInsertPayment(user:db.User){
 		
-		if (!app.user.isContractManager()) throw "accès interdit";
+		if (!app.user.isContractManager()) throw "forbidden";
+		var t = sugoi.i18n.Locale.texts;
 		
-		var t = new db.Operation();
-		t.user = user;
-		t.date = Date.now();
+		var op = new db.Operation();
+		op.user = user;
+		op.date = Date.now();
 		
 		var f = new sugoi.form.Form("payement");
-		f.addElement(new sugoi.form.elements.StringInput("name", "Libellé", null, true));
-		f.addElement(new sugoi.form.elements.FloatInput("amount", "Montant", null, true));
-		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
-		var data = [
-			{label:"Espèces",value:"cash"},
-			{label:"Chèque",value:"check"},
-			{label:"Virement",value:"transfer"}		
-		];
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
+		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
+		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
+		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
+		var data = [];
+		for ( t in db.Operation.getPaymentTypes(app.user.amap) ) data.push({label:t.name,value:t.type});
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
 		
 		//unpaid orders
 		var unpaid = db.Operation.manager.search($user == user && $group == app.user.amap && $type != Payment && $pending == true);
 		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
-		f.addElement(new sugoi.form.elements.IntSelect("unpaid", "En paiement de :", data, null, false));
+		f.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
 		
 		if (f.isValid()){
-			f.toSpod(t);
-			t.type = db.Operation.OperationType.Payment;
+			f.toSpod(op);
+			op.type = db.Operation.OperationType.Payment;
 			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
-			t.data = data;
-			t.group = app.user.amap;
-			t.user = user;
+			op.data = data;
+			op.group = app.user.amap;
+			op.user = user;
 			
 			if (f.getValueOf("unpaid") != null){
 				var t2 = db.Operation.manager.get(f.getValueOf("unpaid"));
-				t.relation = t2;
-				if (t2.amount + t.amount == 0) {
-					t.pending = false;
+				op.relation = t2;
+				if (t2.amount + op.amount == 0) {
+					op.pending = false;
 					t2.lock();
 					t2.pending = false;
 					t2.update();
@@ -58,15 +56,15 @@ class Transaction extends controller.Controller
 				}
 			}
 			
-			t.insert();
+			op.insert();
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/member/payments/" + user.id, "Paiement enregistré");
+			throw Ok("/member/payments/" + user.id, t._("Payment recorded") );
 			
 		}
 		
-		view.title = "Saisir un paiement pour " + user.getCoupleName();
+		view.title = t._("Record a payment for ::user:: ",{user:user.getCoupleName()}) ;
 		view.form = f;		
 	}
 	

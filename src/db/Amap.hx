@@ -332,4 +332,19 @@ class Amap extends Object
 		
 		return currency;		
 	}
+	
+	public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name" 			=> t._("Group name"),
+			"txtIntro" 		=> t._("Short description"),
+			"txtHome" 		=> t._("Homepage text"),
+			"txtDistrib" 	=> t._("Text for distribution lists"),
+			"extUrl" 		=> t._("Group website URL"),
+			"membershipRenewalDate" => t._("Membership renewal date"),
+			"flags" 		=> t._("Options"),
+			"regOption" 	=> t._("Registration setting"),
+			"contact" 		=> t._("Main contact"),			
+		];
+	}
 }

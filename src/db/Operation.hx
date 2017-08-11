@@ -52,7 +52,19 @@ class Operation extends sys.db.Object
 				}				
 			default : return null;
 		}		
-	}	
+	}
+	
+	/**
+	 * get translated payment type name
+	 */
+	public function getPaymentTypeName(){
+		var t = getPaymentType();
+		if (t == null) return null;
+		for ( pt in getPaymentTypes(this.group)){
+			if (pt.type == t) return pt.name;
+		}
+		return null;
+	}
 	
 	/**
 	 * get payments linked to this order transaction

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.3\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: src/controller/Categories.hx:20
@@ -95,6 +95,71 @@ msgstr ""
 msgid "Your order has been successfully recorded"
 msgstr "Votre commande a bien été enregistrée"
 
+#. label or name for a payment
+#: src/controller/Transaction.hx:27
+msgid "Label"
+msgstr "Libellé"
+
+#: src/controller/Transaction.hx:28
+msgid "Amount"
+msgstr "Montant"
+
+#: src/controller/Transaction.hx:29
+msgid "Date"
+msgstr "Date"
+
+#: src/controller/Transaction.hx:32
+msgid "Payment type"
+msgstr "Type de paiement"
+
+#: src/controller/Transaction.hx:37
+msgid "As a payment for :"
+msgstr "En paiement de :"
+
+#: src/controller/Transaction.hx:63
+msgid "Payment recorded"
+msgstr "Paiement enregistré"
+
+#: src/controller/Transaction.hx:67
+msgid "Record a payment for ::user:: "
+msgstr "Saisir un paiement pour ::user:: "
+
+#: src/db/Amap.hx:339
+msgid "Group name"
+msgstr "Nom du groupe"
+
+#: src/db/Amap.hx:340
+msgid "Short description"
+msgstr "Courte description"
+
+#: src/db/Amap.hx:341
+msgid "Homepage text"
+msgstr "Texte sur la page d'accueil"
+
+#: src/db/Amap.hx:342
+msgid "Text for distribution lists"
+msgstr "Texte listes d'émargement"
+
+#: src/db/Amap.hx:343
+msgid "Group website URL"
+msgstr "URL du site"
+
+#: src/db/Amap.hx:344
+msgid "Membership renewal date"
+msgstr "Date de renouvellement d'adhésion"
+
+#: src/db/Amap.hx:345 src/db/User.hx:521
+msgid "Options"
+msgstr "Options"
+
+#: src/db/Amap.hx:346
+msgid "Registration setting"
+msgstr "Réglage des inscriptions"
+
+#: src/db/Amap.hx:347 lang/master/tpl/amap/default.mtt:21
+msgid "Main contact"
+msgstr "Contact principal"
+
 #: src/db/User.hx:506
 msgid "First name"
 msgstr "Prénom"
@@ -127,7 +192,7 @@ msgstr "Email conjoint"
 msgid "Partner phone"
 msgstr "Téléphone conjoint"
 
-#: src/db/User.hx:514
+#: src/db/User.hx:514 lang/master/tpl/contract/default.mtt:238
 msgid "Language"
 msgstr "Langue"
 
@@ -154,10 +219,6 @@ msgstr "Droits"
 #: src/db/User.hx:520
 msgid "Registration date"
 msgstr "Date d'inscription"
-
-#: src/db/User.hx:521
-msgid "Options"
-msgstr "Options"
 
 #: src/payment/Cash.hx:17
 msgid "Cash"
@@ -279,10 +340,6 @@ msgstr "le"
 msgid "Edit"
 msgstr "Modifier"
 
-#: lang/master/tpl/amap/default.mtt:21
-msgid "Main contact"
-msgstr "Contact principal"
-
 #: lang/master/tpl/amap/default.mtt:55 lang/master/tpl/contract/view.mtt:74
 msgid "Coordinator"
 msgstr "Coordinateur"
@@ -393,13 +450,21 @@ msgstr "Détails paiements"
 msgid "Tutorials"
 msgstr "Tutoriels"
 
-#: lang/master/tpl/contract/default.mtt:216
+#: lang/master/tpl/contract/default.mtt:213
 msgid "Start"
 msgstr "Commencer"
 
-#: lang/master/tpl/contract/default.mtt:221
+#: lang/master/tpl/contract/default.mtt:218
 msgid "Stop"
 msgstr "Arrêter"
+
+#: lang/master/tpl/contract/default.mtt:240
+msgid "Display the interface in another langugage"
+msgstr "Afficher l'interface dans une autre langue"
+
+#: lang/master/tpl/contract/default.mtt:248
+msgid "Current language is"
+msgstr "La langue actuelle est"
 
 #: lang/master/tpl/contract/view.mtt:67 lang/master/tpl/shop/productInfo.mtt:86
 msgid "Read more"

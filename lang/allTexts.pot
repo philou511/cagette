@@ -86,6 +86,71 @@ msgstr ""
 msgid "Your order has been successfully recorded"
 msgstr ""
 
+#. label or name for a payment
+#: src/controller/Transaction.hx:27
+msgid "Label"
+msgstr ""
+
+#: src/controller/Transaction.hx:28
+msgid "Amount"
+msgstr ""
+
+#: src/controller/Transaction.hx:29
+msgid "Date"
+msgstr ""
+
+#: src/controller/Transaction.hx:32
+msgid "Payment type"
+msgstr ""
+
+#: src/controller/Transaction.hx:37
+msgid "As a payment for :"
+msgstr ""
+
+#: src/controller/Transaction.hx:63
+msgid "Payment recorded"
+msgstr ""
+
+#: src/controller/Transaction.hx:67
+msgid "Record a payment for ::user:: "
+msgstr ""
+
+#: src/db/Amap.hx:339
+msgid "Group name"
+msgstr ""
+
+#: src/db/Amap.hx:340
+msgid "Short description"
+msgstr ""
+
+#: src/db/Amap.hx:341
+msgid "Homepage text"
+msgstr ""
+
+#: src/db/Amap.hx:342
+msgid "Text for distribution lists"
+msgstr ""
+
+#: src/db/Amap.hx:343
+msgid "Group website URL"
+msgstr ""
+
+#: src/db/Amap.hx:344
+msgid "Membership renewal date"
+msgstr ""
+
+#: src/db/Amap.hx:345 src/db/User.hx:521
+msgid "Options"
+msgstr ""
+
+#: src/db/Amap.hx:346
+msgid "Registration setting"
+msgstr ""
+
+#: src/db/Amap.hx:347 lang/master/tpl/amap/default.mtt:21
+msgid "Main contact"
+msgstr ""
+
 #: src/db/User.hx:506
 msgid "First name"
 msgstr ""
@@ -118,7 +183,7 @@ msgstr ""
 msgid "Partner phone"
 msgstr ""
 
-#: src/db/User.hx:514
+#: src/db/User.hx:514 lang/master/tpl/contract/default.mtt:238
 msgid "Language"
 msgstr ""
 
@@ -144,10 +209,6 @@ msgstr ""
 
 #: src/db/User.hx:520
 msgid "Registration date"
-msgstr ""
-
-#: src/db/User.hx:521
-msgid "Options"
 msgstr ""
 
 #: src/payment/Cash.hx:17
@@ -270,10 +331,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: lang/master/tpl/amap/default.mtt:21
-msgid "Main contact"
-msgstr ""
-
 #: lang/master/tpl/amap/default.mtt:55 lang/master/tpl/contract/view.mtt:74
 msgid "Coordinator"
 msgstr ""
@@ -376,12 +433,20 @@ msgstr ""
 msgid "Tutorials"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:216
+#: lang/master/tpl/contract/default.mtt:213
 msgid "Start"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:221
+#: lang/master/tpl/contract/default.mtt:218
 msgid "Stop"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:240
+msgid "Display the interface in another langugage"
+msgstr ""
+
+#: lang/master/tpl/contract/default.mtt:248
+msgid "Current language is"
 msgstr ""
 
 #: lang/master/tpl/contract/view.mtt:67 lang/master/tpl/shop/productInfo.mtt:86
