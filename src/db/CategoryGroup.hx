@@ -30,4 +30,13 @@ class CategoryGroup extends sys.db.Object
 	public static function get(amap:db.Amap):List<CategoryGroup> {
 		return manager.search($amap == amap, false);
 	}
+	
+	public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name" 				=> t._("Category group name"),
+			"pinned" 			=> t._("Pinned on top"),
+			"color" 			=> t._("Color"),			
+		];
+	}
 }

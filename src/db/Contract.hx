@@ -260,5 +260,21 @@ class Contract extends Object
 		return out;
 	}
 	
+	public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name" 				=> t._("Contract name"),
+			"startDate" 		=> t._("Start date"),
+			"endDate" 			=> t._("End date"),
+			"description" 		=> t._("Description"),
+			"distributorNum" 	=> t._("Number of required distributors (0 to 4)"),
+			"flags" 			=> t._("Options"),
+			"percentageValue" 	=> t._("Fees percentage"),
+			"percentageName" 	=> t._("Fees label"),			
+			"contact" 			=> t._("Contact"),			
+			"vendor" 			=> t._("Farmer"),			
+		];
+	}
+	
 	
 }

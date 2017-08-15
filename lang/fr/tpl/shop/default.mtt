@@ -24,7 +24,7 @@
 			
 			
 			<div>
-				<div class="info" style="font-size:1.2em;">Distribution on ::hDate(date)::</div>
+				<div class="info" style="font-size:1.2em;">Distribution du ::hDate(date)::</div>
 				
 				
 				<div class="">
@@ -99,16 +99,16 @@
 								<div>
 									<form class="form-inline">
 									::if p.stock!=null && p.stock==0::
-										<span style="color:#AAA;">Out of stock</span>
+										<span style="color:#AAA;">Rupture de stock</span>
 									::elseif !p.orderable::
-										<span style="color:#AAA;">Order closed</span>
+										<span style="color:#AAA;">Commande close</span>
 									::else::
 										::if p.stock!=null && p.stock>0 && p.stock<=10::
-										<div class="warning" >Only ::p.stock:: items in stock</div>
+										<div class="warning" >Seulement ::p.stock:: en stock</div>
 										::end::
 									
 										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
-										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">Order</a>
+										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">Commander</a>
 										
 									::end::
 									
@@ -135,19 +135,19 @@
 		
 		<h2>
 			<span class="glyphicon glyphicon-shopping-cart"></span>
-			My order
+			Ma commande
 			<img id="loader" src="/img/loader.gif"/>
 		</h2>
 		<div id="cart"></div>
 		
-		<a onClick="cart.submit();" class="btn btn-default">Validate</a>
+		<a onClick="cart.submit();" class="btn btn-default">Valider</a>
 		
-		<a class="infos" href='/contract'>You can check your previous orders in 'my account' section</a>
+		<a class="infos" href='/contract'>Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'</a>
 		
 	</div>
 	
 	<div class="article">
-		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> All products</span><br/>
+		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> Tout les produits</span><br/>
 		
 		::foreach g group.getCategoryGroups()::
 			<div>

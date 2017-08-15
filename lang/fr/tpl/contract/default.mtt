@@ -1,26 +1,26 @@
 ::use 'design.mtt'::
 <div class="col-md-8">
-	<h2>Last orders</h2>
+	<h2>Dernières commandes</h2>
 	
 	::if constOrders.length>0::
 	<div class="article">
 		
 		<!-- COMMANDES AMAP -->
 		
-		<h3>CSA Contracts</h3>
+		<h3>Contrats AMAP</h3>
 		
 		::foreach c constOrders::
 		
 		<h4>::c.contract.name::</h4>
 		<table class="table table-bordered table-condensed" >
 			<tr>
-				<th>Qty</th>
-				<th>Product</th>
-				<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">U.P</a></th>
-				<th>Sub-total</th>
-				<th>Fees</th>
+				<th>Qté</th>
+				<th>Produit</th>
+				<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">P.U</a></th>
+				<th>Sous-total</th>
+				<th>Frais</th>
 				<th>Total</th>
-				<th>Paid</th>
+				<th>Payé</th>
 			</tr>
 		::set total = 0::
 		::foreach m c.orders::
@@ -34,7 +34,7 @@
 					::m.productName::
 					</a>
 					::if m.userName2 != null::
-						<br /><span class="glyphicon glyphicon-refresh"></span> Order alternated with
+						<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
 						::if user.id == m.userId::
 							::m.userName2::
 						::else::
@@ -64,9 +64,9 @@
 				</td>
 				<td>
 					::if m.paid==true::
-					<span style="color:#00AA00;">Paid</span>
+					<span style="color:#00AA00;">Payé</span>
 					::else::
-					<span style="color:#DD0000;">Unpaid</span>
+					<span style="color:#DD0000;">Non payé</span>
 					::end::
 				</td>
 				
@@ -95,17 +95,17 @@
 	::if count(varOrders)>0::
 	<div class="article">
 		
-		<h3>Varying orders</h3>
+		<h3>Commandes variables</h3>
 		
 		::foreach d varOrders::
-			<h4>Order delivered on ::hDate(d.date)::</h4>
+			<h4>Commande livrée le ::hDate(d.date)::</h4>
 			<table class="table table-bordered table-condensed" >
 				<tr>
-					<th>Qty</th>
-					<th>Product</th>
-					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">U.P</a></th>
-					<th>Sub-total</th>
-					<th>Fees</th>
+					<th>Qté</th>
+					<th>Produit</th>
+					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">P.U</a></th>
+					<th>Sous-total</th>
+					<th>Frais</th>
 					<th>Total</th>				
 				</tr>
 				::set total = 0::
@@ -155,7 +155,7 @@
 	
 </div>
 <div class="col-md-4">
-	<h3>Profile</h3>
+	<h3>Compte</h3>
 	<div class="article">
 		
 		<p>
@@ -166,19 +166,19 @@
 		<div class="pull-right">
 			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
 				<span class="glyphicon glyphicon-remove"></span>
-				Leave this group
+				Quitter ce groupe
 			</a>
 		</div>
 		
-		$$edit(Edit,/account/edit)
+		$$edit(Modifier,/account/edit)
 		
 	</div>
 	
 	::if user.getAmap().hasPayments()::
-	<h3>Payments</h3>
+	<h3>Paiements</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">
-			Balance : 
+			Solde : 
 			::if userAmap.balance<0:: 
 				::set color = "C00"::
 			::else::
@@ -192,7 +192,7 @@
 		<span style="margin-left:30px;">
 			<a href="/account/payments" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
-				Payments details
+				Détails paiements
 			</a>
 		</span>
 	</div>
@@ -200,11 +200,8 @@
 	
 	
 	::if user.isAmapManager()::
-	<h3>Tutorials</h3>
+	<h3>Tutoriels</h3>
 	<div class="article">
-		
-		
-		
 		<table class="table">
 			
 			::foreach t tutos::
@@ -213,12 +210,12 @@
 					<td>  
 						::if t.completion==null::
 							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
-								<span class="glyphicon glyphicon-play"></span> Start
+								<span class="glyphicon glyphicon-play"></span> Commencer
 							</a>
 						::else::
 							
 							<a href="/contract/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
-								<span class="glyphicon glyphicon-remove"></span> Stop
+								<span class="glyphicon glyphicon-remove"></span> Arrêter
 							</a>								
 						::end::
 					</td>
@@ -237,6 +234,20 @@
 			::end::		
 	</div>	
 	::end::
+	
+	<h3>Langue</h3>
+	<div class="article">
+		Afficher l'interface dans une autre langue (beta)
+		:
+		<ul>
+			<li><a href="?lang=fr">Français</a></li>
+			<li><a href="?lang=en">English</a></li>
+			<li><a href="?lang=de">Deutsch</a></li>			
+		</ul>
+		<p>
+			La langue actuelle est <b>::session.lang::</b>
+		</p>
+	</div>
 	
 </div>
 

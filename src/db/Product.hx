@@ -148,5 +148,22 @@ class Product extends Object
 		
 	}
 	
+	public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name" 				=> t._("Product name"),
+			"ref" 				=> t._("Product ID"),
+			"price" 			=> t._("Price"),
+			"desc" 				=> t._("Description"),
+			"stock" 			=> t._("Stock"),
+			"unitType" 			=> t._("Base unit"),
+			"qt" 				=> t._("Quantity"),			
+			"hasFloatQt" 		=> t._("Allow fractional quantities"),			
+			"active" 			=> t._("Active"),			
+			"organic" 			=> t._("Organic agriculture"),			
+			"vat" 				=> t._("VAT Rate"),			
+		];
+	}
+	
 }
 

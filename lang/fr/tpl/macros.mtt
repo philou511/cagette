@@ -161,7 +161,7 @@
 		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
 		::elseif x==2::
 		<!--<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>-->
-		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement ::_(t.getPaymentType())::
+		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement ::t.getPaymentTypeName()::
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
 		::end::

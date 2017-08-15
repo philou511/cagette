@@ -29,7 +29,7 @@
 				
 				<div class="">
 					<span class="info">
-						<span class="glyphicon glyphicon-time"></span> ::_("Orders will close on ")::
+						<span class="glyphicon glyphicon-time"></span> ::_("Orders will close on")::
 					</span>
 					::if ArrayTool.mapLength(infos) == 1::
 						::hDate( infos.iterator().next()[0].orderEndDate )::
@@ -71,9 +71,7 @@
 				});
 			</script>
 			
-			
 			<div class="row">
-				
 				::foreach p products::
 				<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::" style="display:none;">
 
@@ -111,7 +109,6 @@
 										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Order||Order button")::</a>
 										
 									::end::
-									
 									</form>
 								</div>
 							</td>

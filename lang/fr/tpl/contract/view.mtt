@@ -64,14 +64,14 @@
 					::if vendor.linkText!=null::
 					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::vendor.linkText::</a>
 					::else::
-					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Read more</a>
+					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> En savoir plus</a>
 					::end::
 				</p>
 				::end::
 				
 			</div>
 			<div class="col-md-4">		
-				<h4>Coordinator</h4>
+				<h4>Coordinateur</h4>
 				::if c._contact!=null::
 				<b>::c._contact.firstName:: ::c._contact.lastName::</b><br/>
 				<span ::cond c._contact.email!=null::><span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::c._contact.email::">::c._contact.email::</a><br/></span>
@@ -87,7 +87,7 @@
 	
 	
 	<div class="article">
-		<h3>Next distributions</h3>
+		<h3>Prochaines distributions</h3>
 		
 		::set distribs = c.getDistribs(true,null)::
 		<ul style="max-height:600px;overflow-y:auto;">
@@ -99,7 +99,7 @@
 				
 				<p ::cond d.canOrderNow()::>					
 					::if user._amap.hasShopMode()::
-						<a href="/shop/::d._place.id::/::d.date.toString().substr(0,10)::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Order</a>					
+						<a href="/shop/::d._place.id::/::d.date.toString().substr(0,10)::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commander</a>					
 					::end::					
 				</p>
 			</li>						
@@ -108,18 +108,18 @@
 		
 		::if distribs.length==0::
 		<p>
-			No planned distributions.
+			Pas de distribution planifiée.
 		</p>
 		::else::
 		<p ::cond !user._amap.hasShopMode()::>
-			<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Order</a>	
+			<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commander</a>	
 		</p>		
 		::end::
 		
 		
 		<hr/>
 		<p>
-			<a style="font-size:12px;" href='/contract'>You can check your previous orders in 'my account' section</a>	
+			<a style="font-size:12px;" href='/contract'>Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'</a>	
 		</p>
 		
 		

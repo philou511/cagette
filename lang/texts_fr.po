@@ -68,13 +68,21 @@ msgstr "Conventionnel"
 msgid "Default categories has been created"
 msgstr "Les catégories par défaut on été créées"
 
+#: src/controller/Categories.hx:57 src/db/CategoryGroup.hx:39
+msgid "Color"
+msgstr "Couleur"
+
+#: src/controller/Distribution.hx:155 src/controller/Distribution.hx:217
+msgid "End time"
+msgstr "Date de fin"
+
 #: src/controller/Distribution.hx:159 src/controller/Distribution.hx:225
-msgid "orderStartDate"
-msgstr ""
+msgid "Orders opening date"
+msgstr "Date d'ouverture des commandes"
 
 #: src/controller/Distribution.hx:160 src/controller/Distribution.hx:226
-msgid "orderEndDate"
-msgstr ""
+msgid "Orders closing date"
+msgstr "Date de clôture des commandes"
 
 #: src/controller/Shop.hx:160
 msgid "Your order is empty"
@@ -104,7 +112,7 @@ msgstr "Libellé"
 msgid "Amount"
 msgstr "Montant"
 
-#: src/controller/Transaction.hx:29
+#: src/controller/Transaction.hx:29 src/db/Distribution.hx:231
 msgid "Date"
 msgstr "Date"
 
@@ -148,7 +156,7 @@ msgstr "URL du site"
 msgid "Membership renewal date"
 msgstr "Date de renouvellement d'adhésion"
 
-#: src/db/Amap.hx:345 src/db/User.hx:521
+#: src/db/Amap.hx:345 src/db/Contract.hx:271 src/db/User.hx:521
 msgid "Options"
 msgstr "Options"
 
@@ -159,6 +167,110 @@ msgstr "Réglage des inscriptions"
 #: src/db/Amap.hx:347 lang/master/tpl/amap/default.mtt:21
 msgid "Main contact"
 msgstr "Contact principal"
+
+#: src/db/CategoryGroup.hx:37
+msgid "Category group name"
+msgstr "Nom de groupe de catégories"
+
+#: src/db/CategoryGroup.hx:38
+msgid "Pinned on top"
+msgstr "Mise en avant"
+
+#: src/db/Contract.hx:266
+msgid "Contract name"
+msgstr "Nom du contrat"
+
+#: src/db/Contract.hx:267
+msgid "Start date"
+msgstr "Date de début"
+
+#: src/db/Contract.hx:268 src/db/Distribution.hx:232
+msgid "End date"
+msgstr "Date de fin"
+
+#: src/db/Contract.hx:269 src/db/Product.hx:157
+msgid "Description"
+msgstr "Description"
+
+#: src/db/Contract.hx:270
+msgid "Number of required distributors (0 to 4)"
+msgstr "Nbre de distributeurs nécessaires (de 0 à 4)"
+
+#: src/db/Contract.hx:272
+msgid "Fees percentage"
+msgstr "Pourcentage des frais"
+
+#: src/db/Contract.hx:273
+msgid "Fees label"
+msgstr "Libellé pour ces frais"
+
+#: src/db/Contract.hx:274
+msgid "Contact"
+msgstr "Contact"
+
+#: src/db/Contract.hx:275
+msgid "Farmer"
+msgstr "Producteur"
+
+#: src/db/Distribution.hx:230
+msgid "Text"
+msgstr "Texte"
+
+#: src/db/Distribution.hx:233
+msgid "Place"
+msgstr "Lieu"
+
+#: src/db/Distribution.hx:234
+msgid "Distributor #1"
+msgstr "Distributeur 1"
+
+#: src/db/Distribution.hx:235
+msgid "Distributor #2"
+msgstr "Distributeur 2"
+
+#: src/db/Distribution.hx:236 src/db/Distribution.hx:237
+msgid "Distributor #3"
+msgstr "Distributeur 3"
+
+#: src/db/Product.hx:154
+msgid "Product name"
+msgstr "Nom du produit"
+
+#: src/db/Product.hx:155
+msgid "Product ID"
+msgstr "Référence"
+
+#: src/db/Product.hx:156
+msgid "Price"
+msgstr "Prix"
+
+#: src/db/Product.hx:158
+msgid "Stock"
+msgstr "Stock"
+
+#: src/db/Product.hx:159
+msgid "Base unit"
+msgstr "Unité de base"
+
+#: src/db/Product.hx:160
+msgid "Quantity"
+msgstr "Quantité"
+
+#: src/db/Product.hx:161
+msgid "Allow fractional quantities"
+msgstr "Autoriser les quantités non-entières"
+
+#: src/db/Product.hx:162
+msgid "Active"
+msgstr "Actif"
+
+#: src/db/Product.hx:163
+msgid "Organic agriculture"
+msgstr "Agriculture biologique"
+
+#: src/db/Product.hx:164
+msgid "VAT Rate"
+msgstr "Taux de TVA"
 
 #: src/db/User.hx:506
 msgid "First name"
@@ -475,7 +587,7 @@ msgid "Next distributions"
 msgstr "Prochaines distributions"
 
 #: lang/master/tpl/contract/view.mtt:102 lang/master/tpl/contract/view.mtt:115
-#: lang/master/tpl/home.mtt:223 lang/master/tpl/shop/default.mtt:111
+#: lang/master/tpl/home.mtt:223 lang/master/tpl/shop/default.mtt:109
 msgid "Order"
 msgstr "Commander"
 
@@ -483,7 +595,7 @@ msgstr "Commander"
 msgid "No planned distributions."
 msgstr "Pas de distribution planifiée."
 
-#: lang/master/tpl/contract/view.mtt:122 lang/master/tpl/shop/default.mtt:145
+#: lang/master/tpl/contract/view.mtt:122 lang/master/tpl/shop/default.mtt:142
 msgid "You can check your previous orders in 'my account' section"
 msgstr ""
 "Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'"
@@ -573,7 +685,7 @@ msgstr "Modifier ma commande"
 msgid "Add products"
 msgstr "Ajouter des produits"
 
-#: lang/master/tpl/home.mtt:85 lang/master/tpl/shop/default.mtt:104
+#: lang/master/tpl/home.mtt:85 lang/master/tpl/shop/default.mtt:102
 msgid "Order closed"
 msgstr "Commande close"
 
@@ -642,7 +754,7 @@ msgid "Distribution on ::hDate(date)::"
 msgstr "Distribution du ::hDate(date)::"
 
 #: lang/master/tpl/shop/default.mtt:32
-msgid "Orders will close on "
+msgid "Orders will close on"
 msgstr "La commande fermera le"
 
 #. uncategorized products in shop
@@ -650,23 +762,23 @@ msgstr "La commande fermera le"
 msgid "Autres"
 msgstr "Autres"
 
-#: lang/master/tpl/shop/default.mtt:102
+#: lang/master/tpl/shop/default.mtt:100
 msgid "Out of stock"
 msgstr "Rupture de stock"
 
-#: lang/master/tpl/shop/default.mtt:107
+#: lang/master/tpl/shop/default.mtt:105
 msgid "Only ::p.stock:: items in stock"
 msgstr "Seulement ::p.stock:: en stock"
 
-#: lang/master/tpl/shop/default.mtt:138
+#: lang/master/tpl/shop/default.mtt:135
 msgid "My order"
 msgstr "Ma commande"
 
-#: lang/master/tpl/shop/default.mtt:143
+#: lang/master/tpl/shop/default.mtt:140
 msgid "Validate"
 msgstr "Valider"
 
-#: lang/master/tpl/shop/default.mtt:150
+#: lang/master/tpl/shop/default.mtt:147
 msgid "All products"
 msgstr "Tout les produits"
 
@@ -726,6 +838,9 @@ msgstr "Mot de passe"
 #: lang/master/tpl/user/login.mtt:84
 msgid "Forgotten your email ?"
 msgstr "Email oublié ?"
+
+#~ msgid "Orders will close on "
+#~ msgstr "La commande fermera le "
 
 #~ msgid "Sugoï demo site"
 #~ msgstr "Site démo Sugoï"

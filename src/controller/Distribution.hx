@@ -146,18 +146,18 @@ class Distribution extends Controller
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
-		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');		
+		if (!app.user.isContractManager(d.contract)) throw Error('/', t._('Forbidden action') );		
 		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		form.removeElement(form.getElement("end"));
 		form.removeElement(form.getElement("distributionCycleId"));
-		var x = new sugoi.form.elements.HourDropDowns("end", "heure de fin",d.end,true);
+		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") ,d.end,true);
 		form.addElement(x, 4);
 		
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
-			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", App.t._("orderStartDate"), d.orderStartDate));	
-			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", App.t._("orderEndDate"), d.orderEndDate));
+			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
+			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
 		}		
 		
 		if (form.isValid()) {
@@ -171,10 +171,10 @@ class Distribution extends Controller
 			app.event(EditDistrib(d));
 			
 			if (d.date == null){
-				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été proposée au producteur. Attendez maintenant sa validation');
+				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been proposed to the farmer, please wait for its validation') );
 			}else{
 				d.update();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été mise à jour');
+				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been recorded') );
 			}
 			
 			
@@ -183,7 +183,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = "Modifier une distribution";
+		view.title = t._('Edit a distribution');
 	}
 	
 	@tpl('form.mtt')
@@ -207,14 +207,14 @@ class Distribution extends Controller
 	@tpl("form.mtt")
 	public function doInsert(contract:db.Contract) {
 		
-		if (!app.user.isContractManager(contract)) throw Error('/', 'Action interdite');
+		if (!app.user.isContractManager(contract)) throw Error('/', t._('Forbidden action') );
 		
 		var d = new db.Distribution();
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		form.removeElement(form.getElement("distributionCycleId"));
 		form.removeElement(form.getElement("end"));
-		var x = new sugoi.form.elements.HourDropDowns("end", "heure de fin");
+		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") );
 		form.addElement(x, 4);
 		
 		//default values
@@ -222,8 +222,8 @@ class Distribution extends Controller
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", App.t._("orderStartDate"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
-			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", App.t._("orderEndDate"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
+			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
+			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
 		}
 		
 		if (form.isValid()) {
@@ -239,10 +239,10 @@ class Distribution extends Controller
 			app.event(e);
 			
 			if (d.date == null){
-				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été proposée au producteur. Attendez maintenant sa validation');
+				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been proposed to the farmer, please wait for its validation') );
 			}else{
 				d.insert();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id,'La distribution a été enregistrée');	
+				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been recorded') );	
 			}
 			
 		}else{
@@ -252,7 +252,7 @@ class Distribution extends Controller
 		}
 	
 		view.form = form;
-		view.title = "Programmer une nouvelle distribution";
+		view.title = t._('Create a distribution');
 	}
 	
 	/**

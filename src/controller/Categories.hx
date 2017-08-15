@@ -54,7 +54,7 @@ class Categories extends controller.Controller
 		
 		form.removeElementByName("color");
 		form.removeElementByName("amapId");
-		form.addElement(new form.ColorRadioGroup("color", "Couleur", Std.string(g.color) ));		
+		form.addElement(new form.ColorRadioGroup("color", t._("Color") , Std.string(g.color) ));		
 		
 		if (form.isValid()) {
 			

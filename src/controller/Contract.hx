@@ -134,7 +134,7 @@ class Contract extends Controller
 	 */
 	@tpl("form.mtt")
 	function doEdit(c:db.Contract) {
-		
+		view.category = 'contractadmin';
 		if (!app.user.isContractManager(c)) throw Error('/', 'Action interdite');
 		
 		var currentContact = c.contact;
