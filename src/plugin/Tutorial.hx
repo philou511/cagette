@@ -33,7 +33,7 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 				
 				var ts = App.current.user.tutoState;
 				if (ts == null) return;
-				var tuto = Common.Data.TUTOS.get(ts.name);
+				var tuto = TutoDatas.get(ts.name);
 				var step = tuto.steps[ts.step];
 				if (step == null ) return;
 				
@@ -99,7 +99,8 @@ class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
 	}
 	
 	public static function all() {
-		return Data.TUTOS;
+		TutoDatas.get("intro");//just to init translation
+		return TutoDatas.TUTOS;
 	}
 	
 	public function getName() {

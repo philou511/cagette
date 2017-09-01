@@ -1,149 +1,149 @@
-::use 'design.mtt'::
-<div class="col-md-9">
-<div class="article">
-	::if select!=null::
-		<h2>Sélection : 
-		::if select=="nocontract"::
-			Adhérents sans contrat
-		::elseif select=="nomembership"::
-			Adhésions à renouveler
-		::elseif select=="newusers"::
-			Adhérents qui ne se sont jamais connecté
-		::elseif select=="contract"::
-			Adhérents avec commande ou contrat
-		::end::
-		</h2>
-	
-		<p><b>::members.current().length::</b> personnes.</p>
-		
-		<a href="/member/">Revenir à la page principale</a>
-	::elseif search!=null::
-		<h2>Recherche : ::search::</h2>
-		<a href="/member/">Revenir à la page principale</a>
-		
-	::else::	
-		<h2>Adhérents</h2>
-	::end::
-	
-	
-	::if select=="newusers"::
-		<hr/>
-		<p style="text-align:center;">
-			Vous pouvez inviter par email tous les adhérents qui ne se sont jamais connecté à Cagette.net en un seul clic.
-			<br/>
-			Attention la page peut mettre un peu de temps à s'afficher si il y a beaucoup d'emails à envoyer.
-		</p>
-		<p style="text-align:center;">
-			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> Envoyer des invitations</a>
-		</p>
-	::end::
-	
-	
-
-	<table class="table table-bordered table-hover table-striped"  style="width:100%;">
-		
-	::foreach m members.current()::	
-	<tr>
-		
-		<td>
-			<a href="/member/view/::m.id::">
-			::m.lastName:: ::m.firstName:: 
-			::if m.lastName2!=null::
-			&amp; ::m.lastName2:: ::m.firstName2:: 
-			::end::
-			</a>		
-		</td>
-		<td>
-			::if m.address1!=null::
-				::m.address1:: 
-			::end::
-			::if m.address2!=null::
-				::m.address2:: 
-			::end::
-			::if m.zipCode!=null::
-				::m.zipCode:: 
-			::end::
-			::if m.city!=null::
-				::m.city:: 
-			::end::
-		</td>
-	</tr>
-	::end::
-
-	<tr ::cond select==null && search==null::>
-		<th colspan="2">
-			<a href="?page=::members.page-1::"> &lt;&lt; </a>
-			&nbsp;
-			page ::members.page::/::members.pages::
-			&nbsp;
-			<a href="?page=::members.page+1::"> &gt;&gt; </a>
-		</th>
-	</tr>
-
-	</table>
-
-	<div>
-		
-		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvel adhérent</a>	
-		$$export(::Web.getURI()+"?"+Web.getParamsString()::&csv=1)
-		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> Importer</a>
-
-	</div>
-
-	
-</div>
-</div>
-
-<div class="col-md-3">
-	
-	
-	<div class="block">
-		<h3>Sélections</h3>
-		<ul>
-			<li><a href="/member/">Tout le monde</a></li>
-			<li><a href="/member/?select=nocontract">Sans contrats/commandes</a></li>
-			<li><a href="/member/?select=contract">Avec contrat/commandes</a></li>
-			<li><a href="/member/?select=newusers">Ne s'est jamais connecté</a></li>
-			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">Adhésion à renouveller</a></li>
-			<li ::cond user._amap.hasPayments()::><a href="/member/balance">Solde des adhérents</a></li>
-			
-		</ul>
-		
-		<form class="form-search" action="/member/" method="get">
-			<div class="input-group">
-				::if search==null::
-					::set ssearch=""::
-				::else::
-					::set ssearch=search::
-				::end::
-				<input type="text" class="form-control" name="search" value="::ssearch::" />
-				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Rechercher</button>
-				</span>
-				
-			  </div>
-		 </form>
-	</div>
-	
-	
-	<div class="block">
-		<h3>Liste d'attente</h3>
-		<p>
-		Vous avez <b>::waitingList::</b> personnes en liste d'attente.
-		<br/>
-		<a href="/member/waiting" class="btn btn-default btn-sm">Afficher la liste</a>
-		</p>
-	</div>
-	
-	
-	::if select!="newusers"::
-	<div class="block">		
-		<h3>Nouveaux</h3>
-		Il y a <b>::newUsers::</b> adhérents qui ne se sont jamais connectés à Cagette.net<br/>
-		<a href="/member/?select=newusers" class="btn btn-default btn-sm">Afficher la liste</a>
-	</div>
-	::end::
-	
-</div>
-
+::use 'design.mtt'::
+<div class="col-md-9">
+<div class="article">
+	::if select!=null::
+		<h2>Sélection : 
+		::if select=="nocontract"::
+			Adhérents sans contrat
+		::elseif select=="nomembership"::
+			Adhésions à renouveler
+		::elseif select=="newusers"::
+			Adhérents qui ne se sont jamais connecté
+		::elseif select=="contract"::
+			Adhérents avec commande ou contrat
+		::end::
+		</h2>
+	
+		<p><b>::members.current().length::</b> personnes.</p>
+		
+		<a href="/member/">Revenir à la page principale</a>
+	::elseif search!=null::
+		<h2>Recherche : ::search::</h2>
+		<a href="/member/">Revenir à la page principale</a>
+		
+	::else::	
+		<h2>Adhérents</h2>
+	::end::
+	
+	
+	::if select=="newusers"::
+		<hr/>
+		<p style="text-align:center;">
+			Vous pouvez inviter par email tous les adhérents qui ne se sont jamais connecté à Cagette.net en un seul clic.
+			<br/>
+			Attention la page peut mettre un peu de temps à s'afficher si il y a beaucoup d'emails à envoyer.
+		</p>
+		<p style="text-align:center;">
+			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> Envoyer des invitations</a>
+		</p>
+	::end::
+	
+	
+
+	<table class="table table-bordered table-hover table-striped"  style="width:100%;">
+		
+	::foreach m members.current()::	
+	<tr>
+		
+		<td>
+			<a href="/member/view/::m.id::">
+			::m.lastName:: ::m.firstName:: 
+			::if m.lastName2!=null::
+			&amp; ::m.lastName2:: ::m.firstName2:: 
+			::end::
+			</a>		
+		</td>
+		<td>
+			::if m.address1!=null::
+				::m.address1:: 
+			::end::
+			::if m.address2!=null::
+				::m.address2:: 
+			::end::
+			::if m.zipCode!=null::
+				::m.zipCode:: 
+			::end::
+			::if m.city!=null::
+				::m.city:: 
+			::end::
+		</td>
+	</tr>
+	::end::
+
+	<tr ::cond select==null && search==null::>
+		<th colspan="2">
+			<a href="?page=::members.page-1::"> &lt;&lt; </a>
+			&nbsp;
+			page ::members.page::/::members.pages::
+			&nbsp;
+			<a href="?page=::members.page+1::"> &gt;&gt; </a>
+		</th>
+	</tr>
+
+	</table>
+
+	<div>
+		
+		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvel adhérent</a>	
+		$$export(::Web.getURI()+"?"+Web.getParamsString()::&csv=1)
+		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> Importer</a>
+
+	</div>
+
+	
+</div>
+</div>
+
+<div class="col-md-3">
+	
+	
+	<div class="block">
+		<h3>Sélections</h3>
+		<ul>
+			<li><a href="/member/">Tout le monde</a></li>
+			<li><a href="/member/?select=nocontract">Sans contrats/commandes</a></li>
+			<li><a href="/member/?select=contract">Avec contrat/commandes</a></li>
+			<li><a href="/member/?select=newusers">Ne s'est jamais connecté</a></li>
+			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">Adhésion à renouveller</a></li>
+			<li ::cond user._amap.hasPayments()::><a href="/member/balance">Solde des adhérents</a></li>
+			
+		</ul>
+		
+		<form class="form-search" action="/member/" method="get">
+			<div class="input-group">
+				::if search==null::
+					::set ssearch=""::
+				::else::
+					::set ssearch=search::
+				::end::
+				<input type="text" class="form-control" name="search" value="::ssearch::" />
+				<span class="input-group-btn">
+					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Rechercher</button>
+				</span>
+				
+			  </div>
+		 </form>
+	</div>
+	
+	
+	<div class="block">
+		<h3>Liste d'attente</h3>
+		<p>
+		Vous avez <b>::waitingList::</b> personnes en liste d'attente.
+		<br/>
+		<a href="/member/waiting" class="btn btn-default btn-sm">Afficher la liste</a>
+		</p>
+	</div>
+	
+	
+	::if select!="newusers"::
+	<div class="block">		
+		<h3>Nouveaux</h3>
+		Il y a <b>::newUsers::</b> adhérents qui ne se sont jamais connectés à Cagette.net<br/>
+		<a href="/member/?select=newusers" class="btn btn-default btn-sm">Afficher la liste</a>
+	</div>
+	::end::
+	
+</div>
+
 ::end::

@@ -1,149 +1,149 @@
-::use 'contractadmin/design.mtt'::
-
-		::if u==null::
-		<h3>Saisir une commande</h3>
-		::else::
-		<h3>Saisir une commande pour ::u.getCoupleName()::</h3>
-		::end::
-		
-		::if distribution!=null::
-		<p>Pour la livraison du <b>::hDate(distribution.date)::</b></p>
-		::end::
-		
-		<form name="order" id="order" method="POST" action="" class="form-horizontal">
-			<input type="hidden" name="token" value="::token::"/>
-			::if distribution!=null::
-			<input type="hidden" name="distribution" value="::distribution.id::" />
-			::end::
-			
-			::if u==null ::
-			<div class="form-group">
-				<label for="user" class="control-label col-md-2 text-left">Adhérent :</label>
-				<div class="col-md-10">
-					<select name="user" id="user" class="form-control">
-						::foreach uu users::
-						<option value="::uu.value::">::uu.label::</option>
-						::end::			
-					</select>	
-				</div>
-			</div>
-			::end::
-			
-			<br/>
-			
-			<table class="table table-bordered">
-				<tr>
-					<th></th>
-					<th>Produit</th>
-					<th>Prix</th>
-					<th>Quantité</th>
-					<th>Statut</th>
-					::if distribution==null::<th>Alterné avec :</th>::end::
-				</tr>
-				::set total = 0::
-				::foreach uo userOrders::
-				
-				<tr>
-					<td>
-						::if uo.product.active==false:: 
-						<img src="::uo.product.getImage()::" style="width:32px;height:32px;opacity:0.3;" />
-						::else::
-						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
-						::end::
-					</td>
-					<td>
-						::if uo.product.active==false:: 
-						<span style="color:#AAA;">::uo.product.name:: (inactif)</span>
-						::else::
-						::uo.product.name::	
-						::end::
-						
-					</td>
-					<td>
-						::formatNum(uo.product.price)::&nbsp;::currency()::
-					</td>
-					<td>
-						::if uo.order==null::
-							::set q = 0::
-						::else::
-							::set q = uo.order.quantity::
-						::end::
-						
-						::set total = total+(q*uo.product.price)::
-						<input type="text" class="form-control input-sm" name="product::uo.product.id::" id="product::uo.product.id::" value="::q::" />
-						
-						
-						
-					</td>
-					<td class="paid">
-						Payé : 
-						::if uo.order!=null::			
-						<input type="checkbox" name="paid::uo.product.id::" value="1" ::attr checked (uo.order.paid==true ):: />
-						::else::
-						<input type="checkbox" name="paid::uo.product.id::" value="1" />
-						::end::
-						
-					</td>
-					<td ::cond distribution==null::>
-							
-						<select name="user2::uo.product.id::" class="form-control input-sm" style="width:150px;display:inline-block;">
-							<option value="0">-</option>
-							::foreach uu users::
-							<option value="::uu.value::" ::attr selected (uo.order!=null && uo.order._user2!=null && uo.order._user2.id==uu.value)::>::uu.label::</option>
-							::end::			
-						</select>
-						
-						<input data-toggle="tooltip" title="Inverser l'alternance" type="checkbox" name="invert::uo.product.id::" value="1" ::attr checked (uo.order!=null && uo.order.hasInvertSharedOrder()==true ):: />
-					</td>
-				</tr>
-					
-				::end::
-				
-				::set extra = 0::
-				
-				::if c.hasPercentageOnOrders()::
-					<tr>
-						<th></th>
-						<th>Total commande</th>
-						<th>::total::::currency()::</th>
-						<th></th>
-						<th></th>
-					</tr>
-					<tr>
-						<th></th>
-						<td>::c.percentageName:: (::c.percentageValue::%)</td>
-						::set extra = total*(c.percentageValue/100)::
-						<td>::extra::::currency()::</td>
-						<th></th>
-						<th></th>
-					</tr>
-					
-					::end::
-					
-					
-					<tr>
-						<th></th>
-						<th>Total</th>
-						<th>::total+extra::::currency()::</th>
-						<th></th>
-						<th colspan="2">
-							<a href="#"  id="checkButton">Tout cocher</a>
-							<script language="javascript">
-							var globalCheck = true;
-							var checkEverything = function(e){
-								var boxes = $("td.paid :checkbox");
-								boxes.attr("checked",globalCheck);
-								globalCheck=!globalCheck;
-								e.preventDefault();
-							};
-							$("#checkButton").click(checkEverything);
-							</script>
-							
-						</th>
-					</tr>
-			</table>
-		
-			<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />
-		
-		</form>
+::use 'contractadmin/design.mtt'::
+
+		::if u==null::
+		<h3>Saisir une commande</h3>
+		::else::
+		<h3>Saisir une commande pour ::u.getCoupleName()::</h3>
+		::end::
+		
+		::if distribution!=null::
+		<p>Pour la livraison du <b>::hDate(distribution.date)::</b></p>
+		::end::
+		
+		<form name="order" id="order" method="POST" action="" class="form-horizontal">
+			<input type="hidden" name="token" value="::token::"/>
+			::if distribution!=null::
+			<input type="hidden" name="distribution" value="::distribution.id::" />
+			::end::
+			
+			::if u==null ::
+			<div class="form-group">
+				<label for="user" class="control-label col-md-2 text-left">Adhérent :</label>
+				<div class="col-md-10">
+					<select name="user" id="user" class="form-control">
+						::foreach uu users::
+						<option value="::uu.value::">::uu.label::</option>
+						::end::			
+					</select>	
+				</div>
+			</div>
+			::end::
+			
+			<br/>
+			
+			<table class="table table-bordered">
+				<tr>
+					<th></th>
+					<th>Produit</th>
+					<th>Prix</th>
+					<th>Quantité</th>
+					<th>Statut</th>
+					::if distribution==null::<th>Alterné avec :</th>::end::
+				</tr>
+				::set total = 0::
+				::foreach uo userOrders::
+				
+				<tr>
+					<td>
+						::if uo.product.active==false:: 
+						<img src="::uo.product.getImage()::" style="width:32px;height:32px;opacity:0.3;" />
+						::else::
+						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
+						::end::
+					</td>
+					<td>
+						::if uo.product.active==false:: 
+						<span style="color:#AAA;">::uo.product.name:: (inactif)</span>
+						::else::
+						::uo.product.name::	
+						::end::
+						
+					</td>
+					<td>
+						::formatNum(uo.product.price)::&nbsp;::currency()::
+					</td>
+					<td>
+						::if uo.order==null::
+							::set q = 0::
+						::else::
+							::set q = uo.order.quantity::
+						::end::
+						
+						::set total = total+(q*uo.product.price)::
+						<input type="text" class="form-control input-sm" name="product::uo.product.id::" id="product::uo.product.id::" value="::q::" />
+						
+						
+						
+					</td>
+					<td class="paid">
+						Payé : 
+						::if uo.order!=null::			
+						<input type="checkbox" name="paid::uo.product.id::" value="1" ::attr checked (uo.order.paid==true ):: />
+						::else::
+						<input type="checkbox" name="paid::uo.product.id::" value="1" />
+						::end::
+						
+					</td>
+					<td ::cond distribution==null::>
+							
+						<select name="user2::uo.product.id::" class="form-control input-sm" style="width:150px;display:inline-block;">
+							<option value="0">-</option>
+							::foreach uu users::
+							<option value="::uu.value::" ::attr selected (uo.order!=null && uo.order._user2!=null && uo.order._user2.id==uu.value)::>::uu.label::</option>
+							::end::			
+						</select>
+						
+						<input data-toggle="tooltip" title="Inverser l'alternance" type="checkbox" name="invert::uo.product.id::" value="1" ::attr checked (uo.order!=null && uo.order.hasInvertSharedOrder()==true ):: />
+					</td>
+				</tr>
+					
+				::end::
+				
+				::set extra = 0::
+				
+				::if c.hasPercentageOnOrders()::
+					<tr>
+						<th></th>
+						<th>Total commande</th>
+						<th>::total::::currency()::</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th></th>
+						<td>::c.percentageName:: (::c.percentageValue::%)</td>
+						::set extra = total*(c.percentageValue/100)::
+						<td>::extra::::currency()::</td>
+						<th></th>
+						<th></th>
+					</tr>
+					
+					::end::
+					
+					
+					<tr>
+						<th></th>
+						<th>Total</th>
+						<th>::total+extra::::currency()::</th>
+						<th></th>
+						<th colspan="2">
+							<a href="#"  id="checkButton">Tout cocher</a>
+							<script language="javascript">
+							var globalCheck = true;
+							var checkEverything = function(e){
+								var boxes = $("td.paid :checkbox");
+								boxes.attr("checked",globalCheck);
+								globalCheck=!globalCheck;
+								e.preventDefault();
+							};
+							$("#checkButton").click(checkEverything);
+							</script>
+							
+						</th>
+					</tr>
+			</table>
+		
+			<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />
+		
+		</form>
 ::end::

@@ -1,70 +1,70 @@
-::use 'contractadmin/design.mtt'::
-	
-		<h3>Récapitulatif par produit</h3>
-		
-		::if distribution!=null::
-		<p>Livraison du <b>::hDate(distribution.date)::</b></p>
-		::end::
-		
-		<p>
-			Attention, si le prix du produit a évolué au fil de la vente, chaque commande d'adhérent est prise en compte avec le prix au moment où la commande a été faite.
-		</p>
-		::set total = 0::
-		<table class="table table-bordered table-hover"  style="width:100%;">
-			<tr>
-				<th>Quantités</th>
-				<th>Produit</th>
-				<th>Référence</th>
-				<th>Prix unitaire TTC</th>
-				<th>Total</th>
-			</tr>
-
-				::foreach m orders::
-				
-			<tr>
-				
-					<td>
-						::m.quantity::
-					</td>
-					<td>
-						::m.pname::
-					</td>
-					<td>
-						$$nullSafe(::m.ref::)
-					</td>
-					<td>
-						::formatNum(m.price)::&nbsp;::currency()::
-					</td>
-					<td>
-						::formatNum(m.total)::&nbsp;::currency()::
-						::set total = total + m.total::
-					</td>
-					
-					
-				</tr>
-				::end::
-				
-				<tr style="background:#DDD;">
-					
-					<th colspan="4">Total</th>
-					<th>::formatNum(total)::&nbsp;::currency()::</th>
-	
-				</tr>
-				
-
-				</table>
-				
-				::if distribution!=null::
-				$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1&d=::distribution.id::)
-				<a href="/contractAdmin/ordersByProductList/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-list"></span> Bon de commande</a>
-				::else::
-				$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1)
-				<a href="/contractAdmin/ordersByProductList/::c.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-list"></span> Bon de commande</a>
-				::end::
-				
-				
-				
-		
-::end::
+::use 'contractadmin/design.mtt'::
+	
+		<h3>Récapitulatif par produit</h3>
+		
+		::if distribution!=null::
+		<p>Livraison du <b>::hDate(distribution.date)::</b></p>
+		::end::
+		
+		<p>
+			Attention, si le prix du produit a évolué au fil de la vente, chaque commande d'adhérent est prise en compte avec le prix au moment où la commande a été faite.
+		</p>
+		::set total = 0::
+		<table class="table table-bordered table-hover"  style="width:100%;">
+			<tr>
+				<th>Quantités</th>
+				<th>Produit</th>
+				<th>Référence</th>
+				<th>Prix unitaire TTC</th>
+				<th>Total</th>
+			</tr>
+
+				::foreach m orders::
+				
+			<tr>
+				
+					<td>
+						::m.quantity::
+					</td>
+					<td>
+						::m.pname::
+					</td>
+					<td>
+						$$nullSafe(::m.ref::)
+					</td>
+					<td>
+						::formatNum(m.price)::&nbsp;::currency()::
+					</td>
+					<td>
+						::formatNum(m.total)::&nbsp;::currency()::
+						::set total = total + m.total::
+					</td>
+					
+					
+				</tr>
+				::end::
+				
+				<tr style="background:#DDD;">
+					
+					<th colspan="4">Total</th>
+					<th>::formatNum(total)::&nbsp;::currency()::</th>
+	
+				</tr>
+				
+
+				</table>
+				
+				::if distribution!=null::
+				$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1&d=::distribution.id::)
+				<a href="/contractAdmin/ordersByProductList/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
+					<span class="glyphicon glyphicon-list"></span> Bon de commande</a>
+				::else::
+				$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1)
+				<a href="/contractAdmin/ordersByProductList/::c.id::" class="btn btn-default btn-sm">
+					<span class="glyphicon glyphicon-list"></span> Bon de commande</a>
+				::end::
+				
+				
+				
+		
+::end::

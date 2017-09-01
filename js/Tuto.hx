@@ -12,12 +12,18 @@ class Tuto
 	
 	static var LAST_ELEMENT :String = null; //last hightlit element
 	
-	public function new(name:String,step:Int) 
-	{
+	public function new(name:String, step:Int){
+		
 		this.name = name;
 		this.step = step;
 		
-		var tuto = Data.TUTOS.get(name);
+		TutoDatas.get(name, init);
+		
+	}
+	
+	function init(tuto) 
+	{
+
 		var s = tuto.steps[step];
 		
 		//close previous popovers

@@ -219,8 +219,12 @@ msgstr ""
 msgid "Distributor #2"
 msgstr ""
 
-#: src/db/Distribution.hx:236 src/db/Distribution.hx:237
+#: src/db/Distribution.hx:236
 msgid "Distributor #3"
+msgstr ""
+
+#: src/db/Distribution.hx:237
+msgid "Distributor #4"
 msgstr ""
 
 #: src/db/Product.hx:154
@@ -355,87 +359,92 @@ msgstr ""
 msgid "L."
 msgstr ""
 
-#: src/View.hx:151
+#. centiliter
+#: src/View.hx:131
+msgid "cl."
+msgstr ""
+
+#: src/View.hx:152
 msgid "Sunday"
 msgstr ""
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Monday"
 msgstr ""
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Tuesday"
 msgstr ""
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Wednesday"
 msgstr ""
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Thursday"
 msgstr ""
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Friday"
 msgstr ""
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Saturday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "January"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "February"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "March"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "April"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "May"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "June"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "July"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "August"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "September"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "October"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "November"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "December"
 msgstr ""
 
-#: src/View.hx:160 src/View.hx:173
+#: src/View.hx:163 src/View.hx:176
 msgid "no date set"
 msgstr ""
 
-#: src/View.hx:167
+#: src/View.hx:170
 msgid "at"
 msgstr ""
 
@@ -815,6 +824,148 @@ msgstr ""
 
 #: lang/master/tpl/user/login.mtt:84
 msgid "Forgotten your email ?"
+msgstr ""
+
+#: common/Common.hx:249
+msgid ""
+"<p>In order to better discover Cagette.net, we propose to do a guided tour "
+"of the user interface of the software. <br/> You will then have a global "
+"overview on the different tools that are available to you.</p><p>You will "
+"be able to stop and start again this tutorial whenever you want.</p>"
+msgstr ""
+
+#: common/Common.hx:255
+msgid ""
+"This part of the navigation bar is visible by all members.</br>It allows "
+"to access to the three main pages:	<ul><li> The <b>home page</b> which displays "
+"orders and the delivery planning.</li><li> On the <b>My account</b> page, "
+"you can update your personal information and check your orders history</li><li> "
+"On the <b>My group</b> page,  you can see all farmers and coordinators of "
+"the group</ul>"
+msgstr ""
+
+#: common/Common.hx:261
+msgid ""
+"This part is <b>for coordinators only.</b>Here you will be able to manage "
+"the register of members, orders,  products, etc.<br/><p>Now click on the "
+"<b>Members</b> section</p>"
+msgstr ""
+
+#: common/Common.hx:267
+msgid ""
+"The purpose of this section is to administrate the list of your members.<br/>Every "
+"time that you register a new membrer, an account will be created for him/her. "
+"Now the member can join you at Cagette.net and order or consult the planning "
+"of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
+msgstr ""
+
+#: common/Common.hx:272
+msgid ""
+"This is the page of a member. Here you can : <ul><li>see and change their "
+"contact details</li><li>manage the membership fee of your group</li><li>see "
+"a summary of their orders</li></ul>"
+msgstr ""
+
+#: common/Common.hx:277
+msgid ""
+"Now let's have a look at the <b>contracts</b> section which is very important "
+"for coordinators."
+msgstr ""
+
+#: common/Common.hx:282
+msgid ""
+"Here you find the list of <b>contracts</b>.They inculde a start date, a end "
+"date, and represent your relationship with a farmer. <br/><p>Here you can "
+"manage :<ul><li>the list of products of this farmer</li><li>the orders of "
+"members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
+msgstr ""
+
+#: common/Common.hx:288
+msgid ""
+"Here you can manage the list of <b>delivery places</b>.<br/>Don't forget "
+"to key-in the complete address as a map will be displayed based on this address"
+msgstr ""
+
+#: common/Common.hx:294
+msgid "Let's look closer at how to manage a contract. <b>Click on this button</b>"
+msgstr ""
+
+#: common/Common.hx:300
+msgid ""
+"Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant "
+"contracts: the member commits on buying the same products during the whole "
+"duration of the contract</li><li>Variable contracts: the member can choose "
+"what he buys for each delivery.</li></ul>"
+msgstr ""
+
+#: common/Common.hx:306
+msgid "Let's see now the page <b>Products</b>"
+msgstr ""
+
+#: common/Common.hx:311
+msgid ""
+"On this page, you can manage the list of products offered by this supplier.<br/>Define "
+"at least the name and the price of products. It is also possible to add a "
+"description and a picture."
+msgstr ""
+
+#: common/Common.hx:317
+msgid "Let's see the <b>deliveries</b> page"
+msgstr ""
+
+#: common/Common.hx:322
+msgid ""
+"Here we can manage the list of deliveries for this supplier.<br/>In the software, "
+"a delivery has a date, a start time, and an end time. The location of the "
+"delivery must also be defined, by using the list that we have already seen."
+msgstr ""
+
+#: common/Common.hx:328
+msgid "Let's see now the <b>Orders</b> page"
+msgstr ""
+
+#: common/Common.hx:333
+msgid ""
+"Here we can manage the list of orders for this supplier.<br/>If you choose "
+"to \"open orders\" to members, they will be able to make their orders online "
+"themselves.<br/>This page will centralize automatically the orders for this "
+"supplier.  Otherwise, as a coordinator, you will be able to enter orders "
+"on behalf of a member."
+msgstr ""
+
+#: common/Common.hx:339
+msgid ""
+"<p>We have seen the main features related to contracts.</p><p>Let's see the "
+"<b>messaging</b> section.</p>"
+msgstr ""
+
+#: common/Common.hx:345
+msgid ""
+"<p>The messaging section allows you to send e-mails to different lists of "
+"members. It is not necessary anymore to maintain a lot of lists of e-mails "
+"depending on contracts, as all these lists are automatically generated.</p> "
+" <p>E-mails are sent with your e-mail address as sender, so you will receive "
+"answers in your own mailbox.</p>"
+msgstr ""
+
+#: common/Common.hx:351
+msgid "Click here now on this page"
+msgstr ""
+
+#: common/Common.hx:356
+msgid ""
+"<p>In this last page, you can configure everything that is related to your "
+"group.</p><p>The page <b>Access rights</b> is important as it is where you "
+"can define other coordinators among members. They will then be able to manage "
+"one or many contracts, send emails, etc.</p>"
+msgstr ""
+
+#: common/Common.hx:361
+msgid ""
+"<p>This is the last step of this tutorial. I hope that it gave you a good "
+"overview of this software.<br/>To go further, do not hesitate to look at "
+"the <b>documentation</b>. The link is always available at the bottom of the "
+"screen.</p>"
 msgstr ""
 
 

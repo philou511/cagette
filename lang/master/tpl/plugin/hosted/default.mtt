@@ -1,7 +1,53 @@
 ::use 'admin/design.mtt'::
 
-<h3>CAGETTE-HOSTED</h3>
 
-<a href="/p/hosted/crm" class="btn btn-default">CRM</a>
 
+	<div class="article">
+		<p>
+			<a href="/p/hosted/people" class="btn btn-default">Contacts</a>
+		</p>
+		
+		
+		<table class="table table-bordered">
+			<tr>
+				<th style="text-align:center;">Groupes</th>
+				<th style="text-align:center;">Groupes actifs</th>
+			</tr>
+			<tr>
+				<td>
+					<h1 style="text-align:center;">::groups.length::</h1>
+				</td>
+			
+				<td>
+				<h1 style="text-align:center;">::active::</h1>	
+				</td>
+				
+			</tr>
+			
+			
+			
+			
+		</table>
+	
+		<div class="shortList">
+			
+			<table class="table table-bordered" >
+				<tr>
+					<th>Id</th>
+					<th>Nom</th>
+				</tr>
+				::foreach a groups::
+				<tr>
+					<td>::a.id::</td>
+					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>
+					
+				</tr>
+				::end::
+				
+			</table>
+			
+		</div>
+	</div>
+	
+	
 ::end::

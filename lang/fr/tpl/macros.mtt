@@ -1,207 +1,207 @@
-<macros>
-
-	<macro name="jsConfirm(?text)">confirm(::if text==null::'Confirmer cette action ?'::else::'::escapeJS(text)::'::end::)</macro>
-	
-	<macro name="confirm(?text)" onclick="return $$jsConfirm(::text::)"/>
-	
-	<macro name="file(id,?def)">
-		::if id == null && def != null::
-			::def::
-		::else::
-			/file/::makeFileSign(id)::.jpg
-		::end::
-	</macro>
-	
-	<macro name="img(id,?def)"><img src="$$file(::id::,::def::)"/></macro>
-	
-
-	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>
-
-	<macro name="browseCustom(b,url,custom)">
-		&lt; 
-		::if b.prev::<a href="::url::/?page=::b.prev::">Précédent</a>::else::Précédent::end::
-		| ::custom:: |
-		::if b.next::<a href="::url::/?page=::b.next::">Suivant</a>::else::Suivant::end:: &gt;
-	</macro>
-	
-	<macro name="swf(file,id,width,height,vars,?wmode)">
-		<div id="swf_::id::" class="swf::if wmode:: ::wmode::::end::" style="width : ::width::px; height : ::height::px"></div>
-		<script type="text/javascript">
-		var so = new js.SWFObject("http://data.::HOST::/swf/::file::?v=::variable(file)::","::id::",::width::,::height::,9,"#E4E2E0");
-		so.addParam("AllowScriptAccess","always");
-		so.addParam("FlashVars","::vars::");
-		so.addParam("menu","false");
-		so.addParam("scale","noScale");
-		::if wmode::so.addParam("wmode","::wmode::");::end::
-		so.write("swf_::id::");
-		</script>
-	</macro>
-	
-	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
-	
-	<macro name="edit(text,url)">
-		
-		<a href="::url::" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-			&nbsp;::text::
-		</a>	
-	</macro>
-	
-	<macro name="insert(text,url)">
-		<!--<img src="/img/icons/add.png" style="vertical-align:middle;" />&nbsp;<a href="::url::">::text::</a>-->
-		<a href="::url::" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			&nbsp;::text::
-		</a>	
-	</macro>
-	
-	<macro name="delete(text,url)">
-		<a href="::url::" $$confirm(Supprimer ?) class="btn btn-default btn-sm" >
-			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-		::if text!=null && text!=""::	
-			&nbsp;::text::
-		::end::
-		</a>
-	</macro>
-	
-	<macro name="export(url)">
-		<a href="::url::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Export Excel/CSV</a>	
-	</macro>
-	
-	<macro name="bool(v)">
-		::if v==true::
-		<img src="/img/icons/accept.png" />
-		::else::
-		<img src="/img/icons/stop.png" />
-		::end::
-	</macro>
-	
-	<macro name="check(v)">
-		::if(v==true || v==1)::
-		<span class="glyphicon glyphicon-ok" style="color:#060"></span>
-		::else::
-		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
-		::end::
-	</macro>
-	
-	
-	<macro name="date(dow,d,m,y,place)">
-		<div class="dateBox" >
-			<div class="box">
-				<div>::dow::</div>
-				<div style="font-size:28px;color:#990000;">::d::</div>
-				<div>::m::</div>				
-			</div>
-			::if place!=null:: 
-			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
-				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
-			</div>
-			::end::
-		</div>		
-	</macro>
-	
-	<macro name="today(dow,d,m,y,h,place)">
-		<div class="dateBox" style="background-color:#080;" >
-			<img src="/img/go.png"/>
-			<div style="font-size:16px;margin-bottom:8px;">
-				::if Std.parseInt(h)<=12::
-					CE MATIN
-				::elseif Std.parseInt(h)<18::
-					<span style="font-size:14px;">CET<br/>APRES-MIDI</span>
-				::else::
-					CE SOIR
-				::end::
-				
-			</div>
-			::if place!=null:: 
-			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
-				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
-			</div>
-			::end::
-		</div>		
-	</macro>
-	
-	<macro name="contact(u)">
-		
-		<i class="icon-user"></i>
-		
-		::if u!=null::
-			<b>::u.firstName:: ::u.lastName::</b><br/>
-			<span ::cond u.email!=null::>
-				<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
-			</span>
-			<span ::cond u.phone!=null::>
-				<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
-			</span>
-		::else:: 
-			Aucun contact
-		::end::
-		
-	</macro>
-
-	
-	<macro name="alert(msg)">
-		<div class="alert alert-danger">
-			<span class="glyphicon glyphicon-exclamation-sign"></span>
-			
-			::raw msg::					
-		</div>
-	</macro>
-	
-	
-	<macro name="operation(t)">
-	::set x = t.getTypeIndex()::
-	<!--::if x==2:: ::set class="text-right":: ::end:: -->
-	<td class="::class::">
-		::if x==0::
-		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Commande
-		::elseif x==1::
-		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
-		::elseif x==2::
-		<!--<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>-->
-		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement ::t.getPaymentTypeName()::
-		::else::						
-		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
-		::end::
-	</td>
-	
-	<td>
-		::if t.pending==true::			
-			<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
-		::else::		
-			<i class="fa fa-check" aria-hidden="true"></i>
-		::end::
-	</td>
-	<td style="font-size:1em;">
-		
-		::t.name::<br/>
-		
-		::if x==2 && t.pending==true::		
-			::if(t.getPaymentType()=="check")::
-				<span style="color:red;">Chèque à donner au retrait des produits</span>
-			::elseif(t.getPaymentType()=="cash")::
-				<span style="color:red;">Liquide à donner au retrait des produits</span>
-			::elseif(t.getPaymentType()=="transfer")::
-				<span style="color:red;">Ce virement doit être par un coordinateur</span>		
-			::else::
-				::t.name::<br/>
-				<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
-			::end::
-			
-		::else::
-		
-			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
-		
-		::end::
-	</td>
-	<td>::formatNum(t.amount)::&nbsp;::currency()::</td>
-	::set class=""::
-	</macro>
-
-	<macro name="back()">	
-	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
-	</macro>
-	
+<macros>
+
+	<macro name="jsConfirm(?text)">confirm(::if text==null::'Confirmer cette action ?'::else::'::escapeJS(text)::'::end::)</macro>
+	
+	<macro name="confirm(?text)" onclick="return $$jsConfirm(::text::)"/>
+	
+	<macro name="file(id,?def)">
+		::if id == null && def != null::
+			::def::
+		::else::
+			/file/::makeFileSign(id)::.jpg
+		::end::
+	</macro>
+	
+	<macro name="img(id,?def)"><img src="$$file(::id::,::def::)"/></macro>
+	
+
+	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>
+
+	<macro name="browseCustom(b,url,custom)">
+		&lt; 
+		::if b.prev::<a href="::url::/?page=::b.prev::">Précédent</a>::else::Précédent::end::
+		| ::custom:: |
+		::if b.next::<a href="::url::/?page=::b.next::">Suivant</a>::else::Suivant::end:: &gt;
+	</macro>
+	
+	<macro name="swf(file,id,width,height,vars,?wmode)">
+		<div id="swf_::id::" class="swf::if wmode:: ::wmode::::end::" style="width : ::width::px; height : ::height::px"></div>
+		<script type="text/javascript">
+		var so = new js.SWFObject("http://data.::HOST::/swf/::file::?v=::variable(file)::","::id::",::width::,::height::,9,"#E4E2E0");
+		so.addParam("AllowScriptAccess","always");
+		so.addParam("FlashVars","::vars::");
+		so.addParam("menu","false");
+		so.addParam("scale","noScale");
+		::if wmode::so.addParam("wmode","::wmode::");::end::
+		so.write("swf_::id::");
+		</script>
+	</macro>
+	
+	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
+	
+	<macro name="edit(text,url)">
+		
+		<a href="::url::" class="btn btn-default btn-sm">
+			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+			&nbsp;::text::
+		</a>	
+	</macro>
+	
+	<macro name="insert(text,url)">
+		<!--<img src="/img/icons/add.png" style="vertical-align:middle;" />&nbsp;<a href="::url::">::text::</a>-->
+		<a href="::url::" class="btn btn-default btn-sm">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			&nbsp;::text::
+		</a>	
+	</macro>
+	
+	<macro name="delete(text,url)">
+		<a href="::url::" $$confirm(Supprimer ?) class="btn btn-default btn-sm" >
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		::if text!=null && text!=""::	
+			&nbsp;::text::
+		::end::
+		</a>
+	</macro>
+	
+	<macro name="export(url)">
+		<a href="::url::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Export Excel/CSV</a>	
+	</macro>
+	
+	<macro name="bool(v)">
+		::if v==true::
+		<img src="/img/icons/accept.png" />
+		::else::
+		<img src="/img/icons/stop.png" />
+		::end::
+	</macro>
+	
+	<macro name="check(v)">
+		::if(v==true || v==1)::
+		<span class="glyphicon glyphicon-ok" style="color:#060"></span>
+		::else::
+		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
+		::end::
+	</macro>
+	
+	
+	<macro name="date(dow,d,m,y,place)">
+		<div class="dateBox" >
+			<div class="box">
+				<div>::dow::</div>
+				<div style="font-size:28px;color:#990000;">::d::</div>
+				<div>::m::</div>				
+			</div>
+			::if place!=null:: 
+			<div style="margin-top:6px;">
+				<span class="glyphicon glyphicon-map-marker"></span>
+				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
+			</div>
+			::end::
+		</div>		
+	</macro>
+	
+	<macro name="today(dow,d,m,y,h,place)">
+		<div class="dateBox" style="background-color:#080;" >
+			<img src="/img/go.png"/>
+			<div style="font-size:16px;margin-bottom:8px;">
+				::if Std.parseInt(h)<=12::
+					CE MATIN
+				::elseif Std.parseInt(h)<18::
+					<span style="font-size:14px;">CET<br/>APRES-MIDI</span>
+				::else::
+					CE SOIR
+				::end::
+				
+			</div>
+			::if place!=null:: 
+			<div style="margin-top:6px;">
+				<span class="glyphicon glyphicon-map-marker"></span>
+				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
+			</div>
+			::end::
+		</div>		
+	</macro>
+	
+	<macro name="contact(u)">
+		
+		<i class="icon-user"></i>
+		
+		::if u!=null::
+			<b>::u.firstName:: ::u.lastName::</b><br/>
+			<span ::cond u.email!=null::>
+				<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
+			</span>
+			<span ::cond u.phone!=null::>
+				<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
+			</span>
+		::else:: 
+			Aucun contact
+		::end::
+		
+	</macro>
+
+	
+	<macro name="alert(msg)">
+		<div class="alert alert-danger">
+			<span class="glyphicon glyphicon-exclamation-sign"></span>
+			
+			::raw msg::					
+		</div>
+	</macro>
+	
+	
+	<macro name="operation(t)">
+	::set x = t.getTypeIndex()::
+	<!--::if x==2:: ::set class="text-right":: ::end:: -->
+	<td class="::class::">
+		::if x==0::
+		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Commande
+		::elseif x==1::
+		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Contrat&nbsp;AMAP
+		::elseif x==2::
+		<!--<span style="margin-left:48px;">Paiement ::_(t.getPaymentType())::</span>-->
+		<i class="fa fa-credit-card" aria-hidden="true"></i> Paiement ::t.getPaymentTypeName()::
+		::else::						
+		<i class="fa fa-user" aria-hidden="true"></i> Adhésion
+		::end::
+	</td>
+	
+	<td>
+		::if t.pending==true::			
+			<i class="fa fa-circle-thin" style="color:#CCC;" aria-hidden="true"></i>			
+		::else::		
+			<i class="fa fa-check" aria-hidden="true"></i>
+		::end::
+	</td>
+	<td style="font-size:1em;">
+		
+		::t.name::<br/>
+		
+		::if x==2 && t.pending==true::		
+			::if(t.getPaymentType()=="check")::
+				<span style="color:red;">Chèque à donner au retrait des produits</span>
+			::elseif(t.getPaymentType()=="cash")::
+				<span style="color:red;">Liquide à donner au retrait des produits</span>
+			::elseif(t.getPaymentType()=="transfer")::
+				<span style="color:red;">Ce virement doit être par un coordinateur</span>		
+			::else::
+				::t.name::<br/>
+				<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+			::end::
+			
+		::else::
+		
+			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+		
+		::end::
+	</td>
+	<td>::formatNum(t.amount)::&nbsp;::currency()::</td>
+	::set class=""::
+	</macro>
+
+	<macro name="back()">	
+	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+	</macro>
+	
 </macros>

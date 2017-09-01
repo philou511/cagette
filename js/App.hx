@@ -5,12 +5,13 @@ import react.*;
 class App {
 	
 	public static var instance : App;
-	
+	public var LANG : String;
 	//public var currentBox : ReactComponent.ReactElement; //current react element in the modal window
 	
-	function new() {
+	function new(?lang="fr") {
 		//singleton
 		instance = this;
+		if(lang!=null) this.LANG = lang;
 	}	
 
 	/**
@@ -27,6 +28,8 @@ class App {
 		untyped js.Browser.window._ = new App();	
 	}
 	
+
+	
 	public function getCart() {
 		return new Cart();
 	}
@@ -36,14 +39,14 @@ class App {
 	}
 	
 	public function getTuto(name:String, step:Int) {	
-		return new Tuto(name,step);		
+		new Tuto(name,step);		
 	}
 	
-	public function getProductComposer(){
+	/*public function getProductComposer(){
 		//js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 			//ReactDOM.render(jsx('<$ComposerApp/>'), js.Browser.document.getElementById("app"));	
 		//});
-	}
+	}*/
 	
 	/**
 	 * Removes the form element and replace it by a react js component

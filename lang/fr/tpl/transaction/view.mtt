@@ -1,66 +1,66 @@
-<p>
-	::op.id::
-</p>
-	<p>
-		::op.name::
-	</p>
-	<p>
-		::op._data::
-	</p>
-	
-	
-	::foreach h infos.HPAY::
-	<table class="table table-bordered">
-		<tr>
-			<td>ID</td><td>::h.ID::</td>			
-		</tr>
-		<tr>
-			<td>DATE</td><td>::h.DATE::</td>			
-		</tr>
-		<tr>
-			<td>SEN</td><td>::h.SEN::</td>			
-		</tr>
-		<tr>
-			<td>REC</td><td>::h.REC::</td>			
-		</tr>
-		<tr>
-			<td>DEB</td><td>::h.DEB::</td>			
-		</tr>
-		<tr>
-			<td>CRED</td><td>::h.CRED::</td>			
-		</tr>
-		<tr>
-			<td>REFUND</td><td>::h.REFUND::</td>			
-		</tr>
-		<tr>
-			<td>COM</td><td>::h.COM::</td>			
-		</tr>
-		<tr>
-			<td>MSG</td><td>::h.MSG::</td>			
-		</tr>	
-		<tr>
-			<td>STATUS</td><td>::h.STATUS::</td>			
-		</tr>
-		<tr>
-			<td>EXTRA</td>
-			<td>
-				IS3DS : ::h.EXTRA.IS3DS::<br/>
-				CTRY : ::h.EXTRA.CTRY::<br/>
-				AUTH : ::h.EXTRA.AUTH::<br/>
-				NUM : ::h.EXTRA.NUM::<br/>
-				EXP : ::h.EXTRA.EXP::<br/>
-				TYP : ::h.EXTRA.TYP::<br/>
-			</td>
-		</tr>
-		<tr>
-			<td>INT_MSG</td><td>::h.INT_MSG::</td>			
-		</tr>
-		<tr>
-			<td>MLABEL</td><td>::h.MLABEL::</td>			
-		</tr>
-		<tr>
-			<td>INT_STATUS</td><td>::h.INT_STATUS::</td>			
-		</tr>
-	</table>
-	::end::
-	
+<p>
+	::op.id::
+</p>
+	<p>
+		::op.name::
+	</p>
+	<p>
+		::op._data::
+	</p>
+	
+	
+	::foreach h infos.HPAY::
+	<table class="table table-bordered">
+		<tr>
+			<td>ID</td><td>::h.ID::</td>			
+		</tr>
+		<tr>
+			<td>DATE</td><td>::h.DATE::</td>			
+		</tr>
+		<tr>
+			<td>SEN</td><td>::h.SEN::</td>			
+		</tr>
+		<tr>
+			<td>REC</td><td>::h.REC::</td>			
+		</tr>
+		<tr>
+			<td>DEB</td><td>::h.DEB::</td>			
+		</tr>
+		<tr>
+			<td>CRED</td><td>::h.CRED::</td>			
+		</tr>
+		<tr>
+			<td>REFUND</td><td>::h.REFUND::</td>			
+		</tr>
+		<tr>
+			<td>COM</td><td>::h.COM::</td>			
+		</tr>
+		<tr>
+			<td>MSG</td><td>::h.MSG::</td>			
+		</tr>	
+		<tr>
+			<td>STATUS</td><td>::h.STATUS::</td>			
+		</tr>
+		<tr>
+			<td>EXTRA</td>
+			<td>
+				IS3DS : ::h.EXTRA.IS3DS::<br/>
+				CTRY : ::h.EXTRA.CTRY::<br/>
+				AUTH : ::h.EXTRA.AUTH::<br/>
+				NUM : ::h.EXTRA.NUM::<br/>
+				EXP : ::h.EXTRA.EXP::<br/>
+				TYP : ::h.EXTRA.TYP::<br/>
+			</td>
+		</tr>
+		<tr>
+			<td>INT_MSG</td><td>::h.INT_MSG::</td>			
+		</tr>
+		<tr>
+			<td>MLABEL</td><td>::h.MLABEL::</td>			
+		</tr>
+		<tr>
+			<td>INT_STATUS</td><td>::h.INT_STATUS::</td>			
+		</tr>
+	</table>
+	::end::
+	

@@ -50,6 +50,7 @@ enum UnitType{
 	Kilogram;
 	Gram;
 	Litre;
+	Centilitre;
 }
 
 @:keep
@@ -214,193 +215,166 @@ enum TutoPlacement {
 	TPRight;
 }
 
-class Data {
 
-	/**
-	 * shared datas for tutorials
-	 */
-	public static var TUTOS = [
-		"intro" => { 
-			name:"Visite guidée coordinateur",
-			steps:[
-				{
-					element:null,
-					text:"<p>Afin de mieux découvrir Cagette.net, nous vous proposons de faire une visite guidée de l'interface du logiciel.
-					<br/> Vous aurez ainsi une vue d'ensemble sur les différents outils qui sont à votre disposition.</p>
-					<p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</p>",
-					action: TANext,
-					placement : null
-				},
-				{
-					element:"ul.nav.navbar-left",
-					text:"Cette partie de la barre de navigation est visible par tous les adhérents.</br>
-					Elle permet d'accéder aux trois rubriques principales :
-					<ul>
-						<li> La <b>page d'accueil</b> qui permet d'accéder aux commandes et de voir son planning de distribution.</li>
-						<li> La page <b>Mon compte</b> pour mettre à jour mes coordonnées et consulter mon historique de commande</li>
-						<li> La page <b>Mon groupe</b> pour connaître les différents producteurs et coordinateurs de mon groupe
-					</ul>",
-					action: TANext,
-					placement : TPBottom
-					
-				},
-				{
-					element:"ul.nav.navbar-right",
-					text:"Cette partie est exclusivement réservée <b>aux coordinateurs.</b>
-					C'est là que vous allez pouvoir administrer les fiches d'adhérents, les commandes, les produits, etc.<br/>
-					<p>Cliquez maintenant sur <b>Gestion adhérents</b></p>
-					",
-					action: TAPage("/member"),
-					placement : TPBottom
-					
-				},{
-					element:".article .table td:first",
-					text:"Cette rubrique permet d'administrer la liste des adhérents.<br/>
-					À chaque fois que vous saisissez un nouvel adhérent, un compte est créé à son nom. 
-					Il pourra donc se connecter à Cagette.net pour faire des commandes ou consulter son planning de distribution.
-					<p>Cliquez maintenant sur <b>un adhérent</b></p>",
-					action: TAPage("/member/view/*"),
-					placement : TPRight
-				},{
-					element:".article:first",
-					text:"Nous sommes maintenant sur la fiche d'un adhérent. Ici vous pourrez :
-					<ul>
-					<li>voir ou modifier ses coordonnées</li>
-					<li>gérer ses cotisations à votre association</li>
-					<li>voir un récapitulatif de ses commandes</li>
-					</ul>",
-					action: TANext,
-					placement : TPRight
-				},{
-					element:"ul.nav #contractadmin",
-					text:"Allons voir maintenant la page de gestion des <b>contrats</b> qui est très importante pour les coordinateurs.",
-					action: TAPage("/contractAdmin"),
-					placement : TPBottom
-				},{
-					element:"#contracts",
-					text:"Ici se trouve la liste des <b>contrats</b>. 
-					Ils comportent une date de début, une date de fin, et représentent votre relation avec un producteur. <br/>
-					<p>
-					C'est ici que vous pourrez gérer :
-						<ul>
-						<li>la liste de produits de ce producteur</li>
-						<li>les commandes des adhérents pour ce producteur</li>
-						<li>planifier les distributions</li>
-						</ul>
-					</p>",
-					action: TANext,
-					placement : TPBottom
-					
-				},{
-					element:"#vendors",
-					text:"Ici vous pouvez gérer la liste des <b>producteurs ou fournisseurs</b> avec lesquels vous collaborez.<br/>
-					Remplissez une fiche complète pour chacun d'eux afin d'informer au mieux les adhérents",
-					action: TANext,
-					placement : TPTop
-					
-				},{
+class TutoDatas {
+
+	public static var TUTOS;
+	
+	#if js
+	//async 
+	public static function get(tuto:String,callback:Dynamic->Void){
+		sugoi.i18n.Locale.init(App.instance.LANG, function(t:sugoi.i18n.GetText){
+			trace('init gettext $App.instance.LANG ');
+			init(t);
+			var tuto = TUTOS.get(tuto);
+			callback(tuto);
+			trace(t._("Order"));
+			trace(t._("<p>In order to better discover Cagette.net, we propose to do a guided tour of the user interface of the software. <br/> You will then have a global overview on the different tools that are available to you.</p><p>You will be able to stop and start again this tutorial whenever you want.</p>"));
+			trace(tuto);
+		});
+	}
+	#else
+	//sync 
+	public static function get(tuto:String):{name:String, steps:Array<{element:String,text:String,action:TutoAction,placement:TutoPlacement}>}
+	{
+		sugoi.i18n.Locale.init(App.current.getLang());
+		init(sugoi.i18n.Locale.texts);
+		return TUTOS.get(tuto);
+	}
+	#end
+	
+	static function init(t:sugoi.i18n.GetText){
+			
+		TUTOS = [
+			"intro" => {
+				name:t._("Guided tour for the coordinator"),
+				steps:[
+					{
+						element:null,
+						text:t._("<p>In order to better discover Cagette.net, we propose to do a guided tour of the user interface of the software. <br/> You will then have a global overview on the different tools that are available to you.</p><p>You will be able to stop and start again this tutorial whenever you want.</p>"),
+						action: TANext,
+						placement : null
+					},
+					{
+						element:"ul.nav.navbar-left",
+						text:t._( "This part of the navigation bar is visible by all members.</br>It allows to access to the three main pages:	<ul><li> The <b>home page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>My group</b> page,  you can see all farmers and coordinators of the group</ul>"),
+						action: TANext,
+						placement : TPBottom
+					},
+					{
+						element:"ul.nav.navbar-right",
+						text:t._("This part is <b>for coordinators only.</b>Here you will be able to manage the register of members, orders,  products, etc.<br/><p>Now click on the <b>Members</b> section</p>"),
+						action: TAPage("/member"),
+						placement : TPBottom
+
+					},{
+						element:".article .table td:first",
+						text:t._("The purpose of this section is to administrate the list of your members.<br/>Every time that you register a new membrer, an account will be created for him/her. Now the member can join you at Cagette.net and order or consult the planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"),
+						action: TAPage("/member/view/*"),
+						placement : TPRight
+					},{
+						element:".article:first",
+						text:t._("This is the page of a member. Here you can : <ul><li>see and change their contact details</li><li>manage the membership fee of your group</li><li>see a summary of their orders</li></ul>"),
+						action: TANext,
+						placement : TPRight
+					},{
+						element:"ul.nav #contractadmin",
+						text:t._("Now let's have a look at the <b>contracts</b> section which is very important for coordinators."),
+						action: TAPage("/contractAdmin"),
+						placement : TPBottom
+					},{
+						element:"#contracts",
+						text:t._("Here you find the list of <b>contracts</b>.They inculde a start date, a end date, and represent your relationship with a farmer. <br/><p>Here you can manage :<ul><li>the list of products of this farmer</li><li>the orders of members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"),
+						action: TANext,
+						placement : TPBottom
+
+					},{
 					element:"#places",
-					text:"Ici vous pouvez gérer la liste des <b>lieux de distribution</b>.<br/>
-					N'oubliez pas de mettre l'adresse complète car une carte s'affiche à partir de l'adresse du lieu.",
-					action: TANext,
-					placement : TPTop
-					
-				},{
-					element:"#contracts table .btn:first",
-					text:"Allons voir maintenant de plus près comment administrer un contrat. <b>Cliquez sur ce bouton</b>",
-					action: TAPage("/contractAdmin/view/*"),
-					placement : TPBottom
-					
-				},{
-					element:".table.table-bordered:first",
-					text:"Ici vous avez un récapitulatif du contrat.<br/>Il y a deux types de contrats : <ul>
-					<li>Les contrats AMAP : l'adhérent s'engage sur toute la durée du contrat avec une commande fixe.</li>
-					<li>Les contrats à commande variable : l'adhérent peut commander ce qu'il veut à chaque distribution.</li>
-					</ul>",
-					action: TANext,
-					placement : TPRight
-					
-				},{
-					element:"#subnav #products",
-					text:"Allons voir maintenant la page de gestion des <b>Produits</b>",
-					action : TAPage("/contractAdmin/products/*"),
-					placement:TPRight
-				},{
-					element:".article .table",
-					text:"Sur cette page, vous pouvez gérer la liste des produits proposée par ce producteur.<br/>
-					Définissez au minimum le nom et le prix de vente des produits. Il est également possible d'ajouter un descriptif et une photo.",
-					action: TANext,
-					placement : TPTop
-					
-				},{
-					element:"#subnav #deliveries",
-					text:"Allons voir maintenant la page de gestion des <b>distributions</b>",
-					action : TAPage("/contractAdmin/distributions/*"),
-					placement:TPRight
-				},{
-					element:".article .table",
-					text:"Ici nous pouvons gérer la liste des distributions pour ce producteur.<br/>
-					Dans le logiciel, une distribution comporte une date avec une heure de début et heure de fin de distribution. 
-					Il faut aussi préciser le lieu de distribution à partir de la liste que nous avons vue précédement.",
-					action: TANext,
-					placement : TPLeft
-					
-				},{
-					element:"#subnav #orders",
-					text:"Allons voir maintenant la page de gestion des <b>commandes</b>",
-					action : TAPage("/contractAdmin/orders/*"), //can fail if the contract is variable because the uri is different
-					placement:TPRight
-				},{
-					element:".article .table",
-					text:"Ici nous pouvons gérer la liste des commandes relatives à ce producteur.<br/>
-					Si vous choisissez d'\"ouvrir les commandes\" aux adhérents, ils pourront eux-mêmes saisir leurs commandes en se connectant à Cagette.net.<br/>
-					Cette page centralisera automatiquement les commandes pour ce producteur. 
-					Sinon, en tant que coordinateur, vous pouvez saisir les commandes pour les adhérents depuis cette page.",
-					action: TANext,
-					placement : TPLeft
-					
-				},{
-					element:"ul.nav #messages",
-					text:"<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</p><p>Explorons maintenant la messagerie.</p>",
-					action: TAPage("/messages"),
-					placement : TPBottom
-					
-				},{
-					element:null,
-					text:"<p>La messagerie vous permet d'envoyer des emails à différentes listes d'adhérents.
-					Il n'est plus nécéssaire de maintenir de nombreuses listes d'emails en fonction des contrats, toutes ces listes
-					sont gérées automatiquement.</p>
-					<p>Les emails sont envoyés avec votre adresse email en tant qu'expéditeur, vous recevrez donc les réponses sur votre boite email habituelle.</p<
-					",
-					action: TANext,
-					placement : null
-					
-				},{
-					element:"ul.nav #amapadmin",
-					text:"Cliquez maintenant sur cette rubrique",
-					action : TAPage("/amapadmin"),
-					placement : TPBottom,
-				},{
-					element:"#subnav",
-					text:"<p>Dans cette dernière rubrique, vous pouvez configurer tout ce qui concerne votre groupe en général.</p>
-					<p>La rubrique <b>Droits et accès</b> est importante puisque c'est là que vous pourrez nommer d'autres coordinateurs parmi les adhérents. Ils pourront
-					ainsi gérer les contrats dont ils s'occupent, utiliser la messagerie, etc.
-					</p>",
-					action:TANext,
-					placement : TPBottom
-				},{
-					element:"#footer",
-					text:"<p>C'est la dernière étape de ce tutoriel, j'espère qu'il vous aura donné une bonne vue d'ensemble du logiciel.<br/>
-					Pour aller plus loin, n'hésitez pas à consulter la <b>documentation</b> dont le lien est toujours disponible en bas de l'écran.
-					</p>",
-					action:TANext,
-					placement : TPBottom
-				}
-			]
-		},
+					   text:t._("Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to key-in the complete address as a map will be displayed based on this address"),
+					   action: TANext,
+					   placement : TPTop
+
+				   },{
+					   element:"#contracts table .btn:first",
+					   text:t._("Let's look closer at how to manage a contract. <b>Click on this button</b>"),
+					   action: TAPage("/contractAdmin/view/*"),
+					   placement : TPBottom
+
+				   },{
+					   element:".table.table-bordered:first",
+					   text:t._("Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant contracts: the member commits on buying the same products during the whole duration of the contract</li><li>Variable contracts: the member can choose what he buys for each delivery.</li></ul>"),
+					   action: TANext,
+					   placement : TPRight
+
+				   },{
+					   element:"#subnav #products",
+					   text:t._("Let's see now the page <b>Products</b>"),
+					   action : TAPage("/contractAdmin/products/*"),
+					   placement:TPRight
+				   },{
+					   element:".article .table",
+					   text:t._("On this page, you can manage the list of products offered by this supplier.<br/>Define at least the name and the price of products. It is also possible to add a description and a picture."),
+					   action: TANext,
+					   placement : TPTop
+
+				   },{
+					   element:"#subnav #deliveries",
+					   text:t._("Let's see the <b>deliveries</b> page"),
+					   action : TAPage("/contractAdmin/distributions/*"),
+					   placement:TPRight
+				   },{
+					   element:".article .table",
+					   text:t._("Here we can manage the list of deliveries for this supplier.<br/>In the software, a delivery has a date, a start time, and an end time. The location of the delivery must also be defined, by using the list that we have already seen."),
+					   action: TANext,
+					   placement : TPLeft
+
+				   },{
+					   element:"#subnav #orders",
+					   text:t._("Let's see now the <b>Orders</b> page"),
+					   action : TAPage("/contractAdmin/orders/*"), //can fail if the contract is variable because the uri is different
+					   placement:TPRight
+				   },{
+					   element:".article .table",
+					   text:t._("Here we can manage the list of orders for this supplier.<br/>If you choose to \"open orders\" to members, they will be able to make their orders online themselves.<br/>This page will centralize automatically the orders for this supplier.  Otherwise, as a coordinator, you will be able to enter orders on behalf of a member."),
+					   action: TANext,
+					   placement : TPLeft
+
+				   },{
+					   element:"ul.nav #messages",
+					   text:t._("<p>We have seen the main features related to contracts.</p><p>Let's see the <b>messaging</b> section.</p>"),
+					   action: TAPage("/messages"),
+					   placement : TPBottom
+
+				   },{
+					   element:null,
+					   text:t._("<p>The messaging section allows you to send e-mails to different lists of members. It is not necessary anymore to maintain a lot of lists of e-mails depending on contracts, as all these lists are automatically generated.</p>  <p>E-mails are sent with your e-mail address as sender, so you will receive answers in your own mailbox.</p>"),
+					   action: TANext,
+					   placement : null
+
+				   },{
+					   element:"ul.nav #amapadmin",
+					   text:t._("Click here now on this page"),
+					   action : TAPage("/amapadmin"),
+					   placement : TPBottom,
+				   },{
+					   element:"#subnav",
+					   text:t._("<p>In this last page, you can configure everything that is related to your group.</p><p>The page <b>Access rights</b> is important as it is where you can define other coordinators among members. They will then be able to manage one or many contracts, send emails, etc.</p>"),
+					   action:TANext,
+					   placement : TPBottom
+				   },{
+					   element:"#footer",
+					   text:t._("<p>This is the last step of this tutorial. I hope that it gave you a good overview of this software.<br/>To go further, do not hesitate to look at the <b>documentation</b>. The link is always available at the bottom of the screen.</p>"),
+					   action:TANext,
+					   placement : TPBottom
+				   }
+			   ]
+		   },
+		];
+		
+	}
 	
 	
-	];
+
 }
 
 /**

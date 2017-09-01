@@ -33,11 +33,11 @@
 					::end::
 				</tr>
 				
-				::foreach d csv.getDatas()::
+				::foreach d csv.datasAsMap::
 				<tr>
-					::foreach r d::
+					::foreach h csv.getHeaders()::
 					<td>
-						::if r!=null:: ::r:: ::end::
+						$$nullSafe(::d.get(h)::)						
 					</td>
 					::end::
 				</tr>

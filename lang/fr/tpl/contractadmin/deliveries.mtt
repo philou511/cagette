@@ -1,89 +1,89 @@
-::use 'contractadmin/design.mtt'::
-
-	
-		<h2>Distributions</h2>
-		
-			
-			<table class="table">
-				::foreach d deliveries::
-				
-					::if d.date!=null && d.date.getTime() < Date.now().getTime()::
-						::set style = "opacity:0.5;"::
-					::else::
-						::set style = ""::
-					::end::
-					<tr  style="::style::" >
-			
-					<td>
-						::if d.distributionCycleId!=null::
-						<img src="/img/icons/arrow_refresh.png" style="opacity:0.5;" />
-						::end::
-						
-						::set da = getDate(d.date)::
-						
-						::if d.end!=null::
-						
-							::set e = getDate(d.end)::
-						::end::
-						
-						::da.dow:: ::da.d:: ::da.m::   de ::da.h+":"+da.i:: 
-						
-						::if d.end!=null::
-							à ::e.h+":"+e.i::
-						::end::
-					</td>
-					<td>
-						::d._place.name::
-					</td>
-					<td>
-						<div class="btn-group">
-							$$edit(modifier,/distribution/edit/::d.id::) 
-							$$delete(supprimer,/distribution/delete/::d.id::)
-							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;Liste d'émargement</a>
-						</div>
-					</td>
-				</tr>
-				
-				::end::
-			</table>	
-
-
-			<table ::cond cycles.length>0:: class="table">
-				<tr>
-					<th>Distributions récurrentes</th>		
-					<th></th>
-				</tr>
-				::foreach c cycles::
-				<tr>
-					<td><b>
-						::switch c.cycleType:: 						
-						::case::  Hebdomadaire
-						::case::  Mensuel
-						::case::  Toutes les 2 semaines
-						::case::  Toutes les 3 semaines
-						::end::
-						</b>
-						: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
-					</td>
-					<td>
-						$$delete(Suppr.,::"/distribution/deleteCycle/"+c.id::)
-					</td>
-				</tr>
-				::end::
-			</table>
-
-
-			$$insert(Nouvelle distribution,/distribution/insert/::c.id::)
-			$$insert(Distributions récurrentes,/distribution/insertCycle/::c.id::) 
-			<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-user"></span> Participations aux distributions
-			</a>
-			<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-				Distributions anciennes
-			</a>
-
-	
-	
-
-
+::use 'contractadmin/design.mtt'::
+
+	
+		<h2>Distributions</h2>
+		
+			
+			<table class="table">
+				::foreach d deliveries::
+				
+					::if d.date!=null && d.date.getTime() < Date.now().getTime()::
+						::set style = "opacity:0.5;"::
+					::else::
+						::set style = ""::
+					::end::
+					<tr  style="::style::" >
+			
+					<td>
+						::if d.distributionCycleId!=null::
+						<img src="/img/icons/arrow_refresh.png" style="opacity:0.5;" />
+						::end::
+						
+						::set da = getDate(d.date)::
+						
+						::if d.end!=null::
+						
+							::set e = getDate(d.end)::
+						::end::
+						
+						::da.dow:: ::da.d:: ::da.m::   de ::da.h+":"+da.i:: 
+						
+						::if d.end!=null::
+							à ::e.h+":"+e.i::
+						::end::
+					</td>
+					<td>
+						::d._place.name::
+					</td>
+					<td>
+						<div class="btn-group">
+							$$edit(modifier,/distribution/edit/::d.id::) 
+							$$delete(supprimer,/distribution/delete/::d.id::)
+							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;Liste d'émargement</a>
+						</div>
+					</td>
+				</tr>
+				
+				::end::
+			</table>	
+
+
+			<table ::cond cycles.length>0:: class="table">
+				<tr>
+					<th>Distributions récurrentes</th>		
+					<th></th>
+				</tr>
+				::foreach c cycles::
+				<tr>
+					<td><b>
+						::switch c.cycleType:: 						
+						::case::  Hebdomadaire
+						::case::  Mensuel
+						::case::  Toutes les 2 semaines
+						::case::  Toutes les 3 semaines
+						::end::
+						</b>
+						: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+					</td>
+					<td>
+						$$delete(Suppr.,::"/distribution/deleteCycle/"+c.id::)
+					</td>
+				</tr>
+				::end::
+			</table>
+
+
+			$$insert(Nouvelle distribution,/distribution/insert/::c.id::)
+			$$insert(Distributions récurrentes,/distribution/insertCycle/::c.id::) 
+			<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-user"></span> Participations aux distributions
+			</a>
+			<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
+				Distributions anciennes
+			</a>
+
+	
+	
+
+
 ::end::

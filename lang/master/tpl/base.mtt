@@ -29,6 +29,9 @@
 		<!-- JQUERY -->
 		<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
 		
+		<!-- js translation file 
+		<script type="text/javascript" src="/js/::getVariable('js')::/texts_::session.lang::.js"></script>-->
+		
 		<!-- BOOTSTRAP	
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -62,7 +65,7 @@
 	<body class="::container::">
 		
 		::if DEBUG::
-		<div style="position: absolute;background: #666;padding: 8px;left: 0;color: #FF0;">DEBUG</div>
+		<div style="position: absolute;background: #666;padding: 8px;left: 0;color: #FF0;">DEBUG ::session.lang::</div>
 		::end::
 		
 		::if HOST.substr(0,3)=="pp."::
@@ -103,16 +106,18 @@
 			})();
 		  
 		  
-			//Tooltips & popovers
+			
 			$(function () {
+				//enable BS3 Tooltips & popovers
 				$('[data-toggle="tooltip"]').tooltip();
 				$('[data-toggle="popover"]').popover();
 			  
-				//tutorials
-				::if tuto!=null::
+				//init lang in js App
+				_.LANG = "::session.lang::";
 				
-				_.getTuto("::tuto.name::",::tuto.step::);
-			
+				//tutorials
+				::if tuto!=null::				
+				_.getTuto("::tuto.name::",::tuto.step::);			
 				::end::
 			  
 			})

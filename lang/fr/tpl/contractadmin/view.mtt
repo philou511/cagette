@@ -1,70 +1,70 @@
-::use 'contractadmin/design.mtt'::
-
-		<h3>Récapitulatif</h3>
-		
-		<table class="table table-bordered" style="width:400px;">
-			<tr>
-				<td>
-					Type de contrat
-				</td>
-				<td>
-					::if contract.type==0::
-					Contrat AMAP
-					::else::
-					à commande variable
-					::end::
-				</td>
-			</tr>
-			<tr>
-				<td>Début</td>
-				<td>::hDate(contract.startDate)::</td>
-			</tr>
-			<tr>
-				<td>Fin</td>
-				<td>::hDate(contract.endDate)::</td>
-			</tr>
-		</table>
-
-		<div>
-			$$edit(Modifier,/contract/edit/::c.id::)
-			
-			::if user.isAmapManager()::
-			$$edit(Dupliquer ce contrat,/contractAdmin/duplicate/::c.id::)
-			::end::
-		</div>
-
-		<hr/>
-		
-		<h4>Producteur</h4>
-		<table class="table table-bordered" style="width:400px;">
-			<tr>
-				<td>Nom</td>
-				<td><b>::contract._vendor.name::</b></td>
-			</tr>
-			<tr>
-				<td>Email</td>
-				<td>$$nullSafe(::contract._vendor.email::)</td>
-			</tr>
-			<tr>
-				<td>Téléphone </td>
-				<td>$$nullSafe(::contract._vendor.phone::)</td>
-			</tr>
-		</table>
-		
-		
-		<h4><a href="/contractAdmin/products/::c.id::">Produits</a></h4>
-		<div style="max-height:400px;overflow:auto;">
-			<table class="table table-bordered" style="width:400px;">
-				::foreach p contract.getProducts(true)::
-				<tr>
-					<td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
-					<td>::p.getName()::</td>
-					<td>::formatNum(p.price)::&nbsp;::currency()::</td>					
-				</tr>
-				::end::
-			</table>
-		</div>
-		
-		
-
+::use 'contractadmin/design.mtt'::
+
+		<h3>Récapitulatif</h3>
+		
+		<table class="table table-bordered" style="width:400px;">
+			<tr>
+				<td>
+					Type de contrat
+				</td>
+				<td>
+					::if contract.type==0::
+					Contrat AMAP
+					::else::
+					à commande variable
+					::end::
+				</td>
+			</tr>
+			<tr>
+				<td>Début</td>
+				<td>::hDate(contract.startDate)::</td>
+			</tr>
+			<tr>
+				<td>Fin</td>
+				<td>::hDate(contract.endDate)::</td>
+			</tr>
+		</table>
+
+		<div>
+			$$edit(Modifier,/contract/edit/::c.id::)
+			
+			::if user.isAmapManager()::
+			$$edit(Dupliquer ce contrat,/contractAdmin/duplicate/::c.id::)
+			::end::
+		</div>
+
+		<hr/>
+		
+		<h4>Producteur</h4>
+		<table class="table table-bordered" style="width:400px;">
+			<tr>
+				<td>Nom</td>
+				<td><b>::contract._vendor.name::</b></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>$$nullSafe(::contract._vendor.email::)</td>
+			</tr>
+			<tr>
+				<td>Téléphone </td>
+				<td>$$nullSafe(::contract._vendor.phone::)</td>
+			</tr>
+		</table>
+		
+		
+		<h4><a href="/contractAdmin/products/::c.id::">Produits</a></h4>
+		<div style="max-height:400px;overflow:auto;">
+			<table class="table table-bordered" style="width:400px;">
+				::foreach p contract.getProducts(true)::
+				<tr>
+					<td><img src="::p.getImage()::" style="width:32px;height:32px;" />	</td>
+					<td>::p.getName()::</td>
+					<td>::formatNum(p.price)::&nbsp;::currency()::</td>					
+				</tr>
+				::end::
+			</table>
+		</div>
+		
+		
+
 ::end::

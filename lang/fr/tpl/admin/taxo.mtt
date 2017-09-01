@@ -1,31 +1,31 @@
-﻿::use 'admin/design.mtt'::
-		
-		<h2>Dictionnaire de produits</h2>
-
-		<p>
-			Cagette.net inclut maintenant un dictionnaire de produits qui permet d'identifier
-			facilement les produits que vous saisissez.
-		</p>
-			
-		<hr/>
-			
-		::foreach c categ::
-		
-			<img src="/img/taxo/cat::c.id::.png" style="float:right;width:100px;border:1px solid #666;" />
-
-			<h4>#::c.id:: <a href="/db/TxpCategory/edit/::c.id::" target="_blank">::c.name::</a></h4>
-			::foreach sc c.getSubCategories()::
-				<p style="margin-left:12px;">
-					<b><a href="/db/TxpSubCategory/edit/::sc.id::" target="_blank">::sc.name::</a></b>
-					<br/>
-					::foreach p sc.getProducts()::
-					<a href="/db/TxpProduct/edit/::p.id::" target="_blank">::p.name::</a>,
-					::end::
-					
-				</p>
-			::end::
-		::end::
-		
-		
-::end::
-
+﻿::use 'admin/design.mtt'::
+		
+		<h2>Dictionnaire de produits</h2>
+
+		<p>
+			Cagette.net inclut maintenant un dictionnaire de produits qui permet d'identifier
+			facilement les produits que vous saisissez.
+		</p>
+			
+		<hr/>
+			
+		::foreach c categ::
+		
+			<img src="/img/taxo/cat::c.id::.png" style="float:right;width:100px;border:1px solid #666;" />
+
+			<h4>#::c.id:: <a href="/db/TxpCategory/edit/::c.id::" target="_blank">::c.name::</a></h4>
+			::foreach sc c.getSubCategories()::
+				<p style="margin-left:12px;">
+					<b><a href="/db/TxpSubCategory/edit/::sc.id::" target="_blank">::sc.name::</a></b>
+					<br/>
+					::foreach p sc.getProducts()::
+					<a href="/db/TxpProduct/edit/::p.id::" target="_blank">::p.name::</a>,
+					::end::
+					
+				</p>
+			::end::
+		::end::
+		
+		
+::end::
+

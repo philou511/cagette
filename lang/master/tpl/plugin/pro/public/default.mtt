@@ -40,6 +40,7 @@
 	<h4>Conditions de livraison</h4>
 	
 	<table class="table table-striped table-condensed">
+		::set x = initDate()::
 		::foreach day DAYS::
 		<tr>
 			<td>::day::</td>

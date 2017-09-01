@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: François <francois@chapatiz.com>\n"
+"Last-Translator: François <francois@alilo.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -228,9 +228,13 @@ msgstr "Distributeur 1"
 msgid "Distributor #2"
 msgstr "Distributeur 2"
 
-#: src/db/Distribution.hx:236 src/db/Distribution.hx:237
+#: src/db/Distribution.hx:236
 msgid "Distributor #3"
 msgstr "Distributeur 3"
+
+#: src/db/Distribution.hx:237
+msgid "Distributor #4"
+msgstr "Distributeur 4"
 
 #: src/db/Product.hx:154
 msgid "Product name"
@@ -364,87 +368,92 @@ msgstr "pièce"
 msgid "L."
 msgstr "L."
 
-#: src/View.hx:151
+#. centiliter
+#: src/View.hx:131
+msgid "cl."
+msgstr "cl."
+
+#: src/View.hx:152
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Monday"
 msgstr "Lundi"
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Tuesday"
 msgstr "Mardi"
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Thursday"
 msgstr "Jeudi"
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Friday"
 msgstr "Vendredi"
 
-#: src/View.hx:151
+#: src/View.hx:152
 msgid "Saturday"
 msgstr "Samedi"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "January"
 msgstr "Janvier"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "February"
 msgstr "Février"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "March"
 msgstr "Mars"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "April"
 msgstr "Avril"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "May"
 msgstr "Mai"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "June"
 msgstr "Juin"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "July"
 msgstr "Juillet"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "August"
 msgstr "Août"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "September"
 msgstr "Septembre"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "October"
 msgstr "Octobre"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "November"
 msgstr "Novembre"
 
-#: src/View.hx:152
+#: src/View.hx:153
 msgid "December"
 msgstr "Décembre"
 
-#: src/View.hx:160 src/View.hx:173
+#: src/View.hx:163 src/View.hx:176
 msgid "no date set"
 msgstr "aucune date"
 
-#: src/View.hx:167
+#: src/View.hx:170
 msgid "at"
 msgstr "le"
 
@@ -838,6 +847,246 @@ msgstr "Mot de passe"
 #: lang/master/tpl/user/login.mtt:84
 msgid "Forgotten your email ?"
 msgstr "Email oublié ?"
+
+#: common/Common.hx:249
+msgid ""
+"<p>In order to better discover Cagette.net, we propose to do a guided tour "
+"of the user interface of the software. <br/> You will then have a global "
+"overview on the different tools that are available to you.</p><p>You will be "
+"able to stop and start again this tutorial whenever you want.</p>"
+msgstr ""
+"<p>Afin de mieux découvrir Cagette.net, nous vous proposons de faire une "
+"visite guidée de l’interface du logiciel.<br/> Vous aurez ainsi une vue "
+"d'ensemble sur les différents outils qui sont à votre disposition.</"
+"p><p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</"
+"p>"
+
+#: common/Common.hx:255
+msgid ""
+"This part of the navigation bar is visible by all members.</br>It allows to "
+"access to the three main pages:\t<ul><li> The <b>home page</b> which "
+"displays orders and the delivery planning.</li><li> On the <b>My account</b> "
+"page, you can update your personal information and check your orders "
+"history</li><li> On the <b>My group</b> page,  you can see all farmers and "
+"coordinators of the group</ul>"
+msgstr ""
+"Cette partie de la barre de navigation est visible par tous les membres."
+"<br>Il permet d’accéder aux trois pages principales :<ul><li>La <b>page "
+"d’accueil</b> qui affiche les commandes et la livraison de planification.</"
+"li><li>Sur la page <b>mon compte</b> , vous pouvez mettre à jour vos "
+"renseignements personnels et vérifier l’historique de vos commandes</"
+"li><li>Sur la page <b>mon groupe</b> , vous pouvez voir tous les producteurs "
+"et les coordonnateurs du groupe</li></ul>"
+
+#: common/Common.hx:261
+msgid ""
+"This part is <b>for coordinators only.</b>Here you will be able to manage "
+"the register of members, orders,  products, etc.<br/><p>Now click on the "
+"<b>Members</b> section</p>"
+msgstr ""
+"Cette partie est exclusivement réservée <b>aux coordinateurs.</b>\n"
+"\t\t\t\t\tC'est là que vous allez pouvoir administrer les fiches "
+"d'adhérents, les commandes, les produits, etc.<br/>\n"
+"\t\t\t\t\t<p>Cliquez maintenant sur la rubrique <b>Adhérents</b></p>"
+
+#: common/Common.hx:267
+msgid ""
+"The purpose of this section is to administrate the list of your members.<br/"
+">Every time that you register a new membrer, an account will be created for "
+"him/her. Now the member can join you at Cagette.net and order or consult the "
+"planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
+msgstr ""
+"Cette rubrique permet d'administrer la liste des adhérents.<br/>\n"
+"\t\t\t\t\tÀ chaque fois que vous saisissez un nouvel adhérent, un compte est "
+"créé à son nom. \n"
+"\t\t\t\t\tIl pourra donc se connecter à Cagette.net pour faire des commandes "
+"ou consulter son planning de distribution.\n"
+"\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>"
+
+#: common/Common.hx:272
+msgid ""
+"This is the page of a member. Here you can : <ul><li>see and change their "
+"cantact details</li><li>manage the membership fee of your group</li><li>see "
+"a summary of their orders</li></ul>"
+msgstr ""
+"Nous sommes maintenant sur la fiche d'un adhérent. Ici vous pourrez :\n"
+"\t\t\t\t\t<ul>\n"
+"\t\t\t\t\t<li>voir ou modifier ses coordonnées</li>\n"
+"\t\t\t\t\t<li>gérer ses cotisations à votre association</li>\n"
+"\t\t\t\t\t<li>voir un récapitulatif de ses commandes</li>\n"
+"\t\t\t\t\t</ul>"
+
+#: common/Common.hx:277
+msgid ""
+"Now let's have a loook at the <b>contracts</b> section which is very "
+"important for coordinators."
+msgstr ""
+"Allons voir maintenant la page de gestion des <b>contrats</b> qui est très "
+"importante pour les coordinateurs."
+
+#: common/Common.hx:282
+msgid ""
+"Here you find the list of <b>contracts</b>.They inculde a start date, a end "
+"date, and represent your relationship with a farmer. <br/><p>Here you can "
+"manage :<ul><li>the list of products of this farmer</li><li>the orders of "
+"members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
+msgstr ""
+"Ici se trouve la liste des <b>contrats</b>. \n"
+"\t\t\t\t\tIls comportent une date de début, une date de fin, et représentent "
+"votre relation avec un producteur. <br/>\n"
+"\t\t\t\t\t<p>\n"
+"\t\t\t\t\tC'est ici que vous pourrez gérer :\n"
+"\t\t\t\t\t\t<ul>\n"
+"\t\t\t\t\t\t<li>la liste de produits de ce producteur</li>\n"
+"\t\t\t\t\t\t<li>les commandes des adhérents pour ce producteur</li>\n"
+"\t\t\t\t\t\t<li>planifier les distributions</li>\n"
+"\t\t\t\t\t\t</ul>\n"
+"\t\t\t\t\t</p>"
+
+#: common/Common.hx:288
+msgid ""
+"Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to "
+"key-in the complete address as a map will be displayed based on this address"
+msgstr ""
+"Ici vous pouvez gérer la liste des <b>producteurs ou fournisseurs</b> avec "
+"lesquels vous collaborez.<br/>\n"
+"\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au "
+"mieux les adhérents"
+
+#: common/Common.hx:294
+msgid ""
+"Let's look closer at how to manage a contract. <b>Click on this button</b>"
+msgstr ""
+"Allons voir maintenant de plus près comment administrer un contrat. "
+"<b>Cliquez sur ce bouton</b>"
+
+#: common/Common.hx:300
+msgid ""
+"Here is a summary of the contract.<br/>There are two types of contracts:"
+"<ul><li>Constant contracts: the member commits on buying the same products "
+"during the whole duration of the contract</li><li>Variable contracts: the "
+"member can choose what he buys for each delivery.</li></ul>"
+msgstr ""
+"Ici vous avez un récapitulatif du contrat.<br/>Il y a deux types de "
+"contrats : <ul>\n"
+"\t\t\t\t\t<li>Les contrats AMAP : l'adhérent s'engage sur toute la durée du "
+"contrat avec une commande fixe.</li>\n"
+"\t\t\t\t\t<li>Les contrats à commande variable : l'adhérent peut commander "
+"ce qu'il veut à chaque distribution.</li>\n"
+"\t\t\t\t\t</ul>"
+
+#: common/Common.hx:306
+msgid "Let's see now the page <b>Products</b>"
+msgstr "Allons voir maintenant la page de gestion des <b>Produits</b>"
+
+#: common/Common.hx:311
+msgid ""
+"On this page, you can manage the list of products offered by this supplier."
+"<br/>Define at least the name and the price of products. It is also possible "
+"to add a description and a picture."
+msgstr ""
+"Sur cette page, vous pouvez gérer la liste des produits proposée par ce "
+"producteur.<br/>\n"
+"\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il "
+"est également possible d'ajouter un descriptif et une photo."
+
+#: common/Common.hx:317
+msgid "Let's see the <b>deliveries</b> page"
+msgstr "Allons voir maintenant la page de gestion des <b>distributions</b>"
+
+#: common/Common.hx:322
+msgid ""
+"Here we can manage the list of deliveries for this supplier.<br/>In the "
+"software, a delivery has a date, a start time, and an end time. The location "
+"of the delivery must also be defined, by using the list that we have already "
+"seen."
+msgstr ""
+"Ici nous pouvons gérer la liste des distributions pour ce producteur.<br/>\n"
+"\t\t\t\t\tDans le logiciel, une distribution comporte une date avec une "
+"heure de début et heure de fin de distribution. \n"
+"\t\t\t\t\tIl faut aussi préciser le lieu de distribution à partir de la "
+"liste que nous avons vue précédement."
+
+#: common/Common.hx:328
+msgid "Let's see now the <b>Orders</b> page"
+msgstr "Allons voir maintenant la page de gestion des <b>commandes</b>"
+
+#: common/Common.hx:333
+msgid ""
+"Here we can manage the list of orders for this supplier.<br/>If you choose "
+"to \"open orders\" to members, they will be able to make their orders online "
+"themselves.<br/>This page will centralize automatically the orders for this "
+"supplier.  Otherwise, as a coordinator, you will be able to enter orders on "
+"behalf of a member."
+msgstr ""
+"Ici nous pouvons gérer la liste des commandes relatives à ce producteur.<br/"
+">\n"
+"\t\t\t\t\tSi vous choisissez d'\\\"ouvrir les commandes\\\" aux adhérents, "
+"ils pourront eux-mêmes saisir leurs commandes en se connectant à Cagette.net."
+"<br/>\n"
+"\t\t\t\t\tCette page centralisera automatiquement les commandes pour ce "
+"producteur. \n"
+"\t\t\t\t\tSinon, en tant que coordinateur, vous pouvez saisir les commandes "
+"pour les adhérents depuis cette page."
+
+#: common/Common.hx:339
+msgid ""
+"<p>We have seen the main features related to contracts.</p><p>Let's see the "
+"<b>messaging</b> section.</p>"
+msgstr ""
+"<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</"
+"p><p>Explorons maintenant la messagerie.</p>"
+
+#: common/Common.hx:345
+msgid ""
+"<p>The messaging section allows you to send e-mails to different lists of "
+"members. It is not necessary anymore to maintain a lot of lists of e-mails "
+"depending on contracts, as all these lists are automatically generated.</p>  "
+"<p>E-mails are sent with your e-mail address as sender, so you will receive "
+"answers in your own mailbox.</p>"
+msgstr ""
+"<p>La messagerie vous permet d'envoyer des emails à différentes listes "
+"d'adhérents.\n"
+"\t\t\t\t\tIl n'est plus nécéssaire de maintenir de nombreuses listes "
+"d'emails en fonction des contrats, toutes ces listes\n"
+"\t\t\t\t\tsont gérées automatiquement.</p>\n"
+"\t\t\t\t\t<p>Les emails sont envoyés avec votre adresse email en tant "
+"qu'expéditeur, vous recevrez donc les réponses sur votre boite email "
+"habituelle.</p>"
+
+#: common/Common.hx:351
+msgid "Click here now on this page"
+msgstr "Cliquez maintenant sur cette rubrique"
+
+#: common/Common.hx:356
+msgid ""
+"<p>In this last page, you can configure everything that is related to your "
+"group.</p><p>The page <b>Access rights</b> is important as it is where you "
+"can define other coordinators among members. They will then be able to "
+"manage one or many contracts, send emails, etc.</p>"
+msgstr ""
+"<p>Dans cette dernière rubrique, vous pouvez configurer tout ce qui concerne "
+"votre groupe en général.</p>\n"
+"\t\t\t\t\t<p>La rubrique <b>Droits et accès</b> est importante puisque c'est "
+"là que vous pourrez nommer d'autres coordinateurs parmi les adhérents. Ils "
+"pourront\n"
+"\t\t\t\t\tainsi gérer les contrats dont ils s'occupent, utiliser la "
+"messagerie, etc.\n"
+"\t\t\t\t\t</p>"
+
+#: common/Common.hx:361
+msgid ""
+"<p>This is the last step of this tutorial. I hope that it gave you a good "
+"overview of this software.<br/>To go further, do not hesitate to look at the "
+"<b>documentation</b>. The link is always available at the bottom of the "
+"screen.</p>"
+msgstr ""
+"<p>C'est la dernière étape de ce tutoriel, j'espère qu'il vous aura donné "
+"une bonne vue d'ensemble du logiciel.<br/>\n"
+"\t\t\t\t\tPour aller plus loin, n'hésitez pas à consulter la "
+"<b>documentation</b> dont le lien est toujours disponible en bas de "
+"l'écran.\n"
+"\t\t\t\t\t</p>"
 
 #~ msgid "Orders will close on "
 #~ msgstr "La commande fermera le "

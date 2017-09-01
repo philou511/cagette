@@ -1,194 +1,194 @@
-::use 'base.mtt'::
-
-	
-	<div class="col-md-8 col-md-offset-2" style="margin-top:12px;">
-		
-		<div class="article">
-			
-			<div class="row">
-				<div class="col-md-4">
-					<p>
-						
-					::if group._image!=null::
-
-					   ::if group.extUrl!=null && group.extUrl!=""::
-					   <a href="::group.extUrl::"><img src="::file(group._image)::" class="img-responsive img-thumbnail" /></a><br/>
-					   ::else::
-					   <img src="::file(group._image)::" class="img-responsive img-thumbnail" /><br/>
-					   ::end::
-
-					::end::
-					</p>
-					
-					<p>
-						
-					::if isMember::
-						<!-- connected and member of the group-->
-						<a href="/user/choose?amap=::group.id::" class="btn btn-primary">
-							<span class="glyphicon glyphicon-chevron-right"></span>
-							 Accéder à mon compte
-						</a>
-					
-					::else::
-					
-						<h4>Inscriptions :</h4>
-						::switch group._regOption::
-						
-						::case::
-						
-							<p>
-								Contactez le responsable pour vous inscrire à ce groupe et connaître les modalités d'adhésion.
-							</p>
-							<p>
-								<a href="::"mailto:"+group._contact.email+"?subject=Adhésion"::"  class="btn btn-primary">
-									<span class="glyphicon glyphicon-envelope"></span>
-									Demande d'adhésion
-								</a>
-							</p>
-						::case::
-							
-							<p>
-								Ce groupe accepte les inscriptions sur liste d'attente. 
-								Un coordinateur vous contactera pour vous informer.
-							</p>
-							<p>
-							<a href="/group/list/::group.id::"  class="btn btn-primary">
-								<span class="glyphicon glyphicon-chevron-right"></span>
-								Inscription liste d'attente
-							</a>
-							</p>
-							
-						::case::
-							<p>
-								<a href="/group/register/::group.id::"  class="btn btn-primary">
-									<span class="glyphicon glyphicon-chevron-right"></span>
-									Inscription libre
-								</a>
-							</p>
-							
-						::case::
-							<p>
-								Ce groupe est complet et n'accepte plus de nouvelles inscriptions.
-							</p>
-						::end::
-					
-					
-					::end::
-						
-					
-					</p>
-					
-					::if user==null::
-						<hr />
-						<h4>Déjà membre ? Connectez-vous :</h4>
-						<div class="text-center">
-							<form action="/user/login" method="post">
-								<input type="text" name="name" placeHolder="email" value="" class="form-control" />
-								<input type="password" name="pass" placeHolder="mot de passe" value="" class="form-control" style="margin-top:12px;" />						
-								<button type="submit" class="btn btn-default btn-sm" style="margin-top:12px;"><span class="glyphicon glyphicon-chevron-right"></span> Connexion</button>
-							</form>
-						</div>
-					::end::
-					
-				</div>
-				<div class="col-md-8">
-					
-					<h2>
-						::group.name::
-					</h2>
-					
-					<p>
-						::if group.txtIntro!=null && group.txtIntro!=""::
-							::raw nl2br(group.txtIntro)::
-						::end::
-					</p>
-					
-					
-					<p>
-						<h3> Prochaines distributions</h3>
-						
-						::foreach d group.getDeliveries(4)::
-						
-						
-						<div style="display:inline-block;margin-right:8px;vertical-align:top;">
-						::set s = getDate( d.date )::
-						::if isToday(d.date)::
-							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,::d._place::)
-						::else::
-							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,::d._place::)
-						::end::
-						</div>
-						<!--
-						<div style="display:inline-block;margin-left:80px;min-height:70px;">
-							<b><span class="glyphicon glyphicon-map-marker"></span>::d._place.name::</b><br/>
-							$$nullSafe(::d._place.address1::) $$nullSafe(::d._place.address2::)
-							$$nullSafe(::d._place.zipCode::) $$nullSafe(::d._place.city::)
-						</div>	-->
-						
-						::end::
-					</p>
-					
-					<hr/>
-					
-					<p>
-						<h3>Contact</h3>
-						
-						<i class="icon-user"></i>
- 						<b>::group._contact.firstName:: ::group._contact.lastName::</b><br/>
- 						<span ::cond group._contact.email!=null::>
- 							<span class="glyphicon glyphicon-envelope"></span>
-							<a href="::"mailto:"+group._contact.email::">::group._contact.email::</a><br/>
- 						</span>
- 						<span ::cond group._contact.phone!=null && (isMember || group.canExposePhone())::>
- 							<span class="glyphicon glyphicon-phone-alt"></span>  ::group._contact.phone::<br/>
- 						</span>
-					</p>
-					
-					<hr/>
-					
-					<p>
-						<h3>Producteurs et produits</h3>
-						<p>
-							Extrait non exhaustif des produits proposés :
-						</p>
-				
-						::foreach c contracts::
-						<p>
-							<b>::c.name::</b><br/>
-							::c._vendor.name::, $$nullSafe(::c._vendor.zipCode::) $$nullSafe(::c._vendor.city::)
-							<div class="row">
-								::foreach p c.getProductsPreview(6)::
-								<div class="col-md-2" data-toggle="tooltip" data-placement="top" title="::p.name::" >
-									<img class="img-responsive" src="::p.getImage()::"  /> 
-								</div>
-								::end::	
-							</div>
-						</p>	
-						::end::
-				
-					</p>
-					
-				</div>
-			</div>
-			
-			
-			
-			
-			
-			<div class="col-md-4">
-				
-			</div>
-			
-			
-		</div>
-
-	</div>
-	
-	<div class="col-md-12">
-		<div id="footer">
-			<a href="http://www.cagette.net">Cagette.net, le logiciel libre du circuit court</a>.	
-		</div>
-		
-	</div>
-
-::end::
+::use 'base.mtt'::
+
+	
+	<div class="col-md-8 col-md-offset-2" style="margin-top:12px;">
+		
+		<div class="article">
+			
+			<div class="row">
+				<div class="col-md-4">
+					<p>
+						
+					::if group._image!=null::
+
+					   ::if group.extUrl!=null && group.extUrl!=""::
+					   <a href="::group.extUrl::"><img src="::file(group._image)::" class="img-responsive img-thumbnail" /></a><br/>
+					   ::else::
+					   <img src="::file(group._image)::" class="img-responsive img-thumbnail" /><br/>
+					   ::end::
+
+					::end::
+					</p>
+					
+					<p>
+						
+					::if isMember::
+						<!-- connected and member of the group-->
+						<a href="/user/choose?amap=::group.id::" class="btn btn-primary">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+							 Accéder à mon compte
+						</a>
+					
+					::else::
+					
+						<h4>Inscriptions :</h4>
+						::switch group._regOption::
+						
+						::case::
+						
+							<p>
+								Contactez le responsable pour vous inscrire à ce groupe et connaître les modalités d'adhésion.
+							</p>
+							<p>
+								<a href="::"mailto:"+group._contact.email+"?subject=Adhésion"::"  class="btn btn-primary">
+									<span class="glyphicon glyphicon-envelope"></span>
+									Demande d'adhésion
+								</a>
+							</p>
+						::case::
+							
+							<p>
+								Ce groupe accepte les inscriptions sur liste d'attente. 
+								Un coordinateur vous contactera pour vous informer.
+							</p>
+							<p>
+							<a href="/group/list/::group.id::"  class="btn btn-primary">
+								<span class="glyphicon glyphicon-chevron-right"></span>
+								Inscription liste d'attente
+							</a>
+							</p>
+							
+						::case::
+							<p>
+								<a href="/group/register/::group.id::"  class="btn btn-primary">
+									<span class="glyphicon glyphicon-chevron-right"></span>
+									Inscription libre
+								</a>
+							</p>
+							
+						::case::
+							<p>
+								Ce groupe est complet et n'accepte plus de nouvelles inscriptions.
+							</p>
+						::end::
+					
+					
+					::end::
+						
+					
+					</p>
+					
+					::if user==null::
+						<hr />
+						<h4>Déjà membre ? Connectez-vous :</h4>
+						<div class="text-center">
+							<form action="/user/login" method="post">
+								<input type="text" name="name" placeHolder="email" value="" class="form-control" />
+								<input type="password" name="pass" placeHolder="mot de passe" value="" class="form-control" style="margin-top:12px;" />						
+								<button type="submit" class="btn btn-default btn-sm" style="margin-top:12px;"><span class="glyphicon glyphicon-chevron-right"></span> Connexion</button>
+							</form>
+						</div>
+					::end::
+					
+				</div>
+				<div class="col-md-8">
+					
+					<h2>
+						::group.name::
+					</h2>
+					
+					<p>
+						::if group.txtIntro!=null && group.txtIntro!=""::
+							::raw nl2br(group.txtIntro)::
+						::end::
+					</p>
+					
+					
+					<p>
+						<h3> Prochaines distributions</h3>
+						
+						::foreach d group.getDeliveries(4)::
+						
+						
+						<div style="display:inline-block;margin-right:8px;vertical-align:top;">
+						::set s = getDate( d.date )::
+						::if isToday(d.date)::
+							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,::d._place::)
+						::else::
+							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,::d._place::)
+						::end::
+						</div>
+						<!--
+						<div style="display:inline-block;margin-left:80px;min-height:70px;">
+							<b><span class="glyphicon glyphicon-map-marker"></span>::d._place.name::</b><br/>
+							$$nullSafe(::d._place.address1::) $$nullSafe(::d._place.address2::)
+							$$nullSafe(::d._place.zipCode::) $$nullSafe(::d._place.city::)
+						</div>	-->
+						
+						::end::
+					</p>
+					
+					<hr/>
+					
+					<p>
+						<h3>Contact</h3>
+						
+						<i class="icon-user"></i>
+ 						<b>::group._contact.firstName:: ::group._contact.lastName::</b><br/>
+ 						<span ::cond group._contact.email!=null::>
+ 							<span class="glyphicon glyphicon-envelope"></span>
+							<a href="::"mailto:"+group._contact.email::">::group._contact.email::</a><br/>
+ 						</span>
+ 						<span ::cond group._contact.phone!=null && (isMember || group.canExposePhone())::>
+ 							<span class="glyphicon glyphicon-phone-alt"></span>  ::group._contact.phone::<br/>
+ 						</span>
+					</p>
+					
+					<hr/>
+					
+					<p>
+						<h3>Producteurs et produits</h3>
+						<p>
+							Extrait non exhaustif des produits proposés :
+						</p>
+				
+						::foreach c contracts::
+						<p>
+							<b>::c.name::</b><br/>
+							::c._vendor.name::, $$nullSafe(::c._vendor.zipCode::) $$nullSafe(::c._vendor.city::)
+							<div class="row">
+								::foreach p c.getProductsPreview(6)::
+								<div class="col-md-2" data-toggle="tooltip" data-placement="top" title="::p.name::" >
+									<img class="img-responsive" src="::p.getImage()::"  /> 
+								</div>
+								::end::	
+							</div>
+						</p>	
+						::end::
+				
+					</p>
+					
+				</div>
+			</div>
+			
+			
+			
+			
+			
+			<div class="col-md-4">
+				
+			</div>
+			
+			
+		</div>
+
+	</div>
+	
+	<div class="col-md-12">
+		<div id="footer">
+			<a href="http://www.cagette.net">Cagette.net, le logiciel libre du circuit court</a>.	
+		</div>
+		
+	</div>
+
+::end::

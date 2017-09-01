@@ -128,6 +128,7 @@ class View extends sugoi.BaseView {
 			case Gram: 		t._("g.||gramms");
 			case Piece: 	t._("piece||unit of a product)");
 			case Litre: 	t._("L.||liter");
+			case Centilitre: 	t._("cl.||centiliter");
 		}
 	}
 	
@@ -146,10 +147,12 @@ class View extends sugoi.BaseView {
 	public static var MINUTES = [0,5,10,15,20,25,30,35,40,45,50,55];
 	
 	
-	function initDate(){
+	public function initDate(){
 		t = sugoi.i18n.Locale.texts;
 		DAYS = [t._("Sunday"), t._("Monday"), t._("Tuesday"), t._("Wednesday"), t._("Thursday"), t._("Friday"), t._("Saturday")];
 		MONTHS = [t._("January"), t._("February"), t._("March"), t._("April"), t._("May"), t._("June"), t._("July"), t._("August"), t._("September"), t._("October"), t._("November"), t._("December")];
+		this.DAYS = DAYS;
+		this.MONTHS = MONTHS;
 	}
 	
 	/**
@@ -210,9 +213,8 @@ class View extends sugoi.BaseView {
 		if (previous != null) {
 			switch(previous.action) {
 				case TAPage(uri):
-					var here = neko.Web.getURI();
+					var here = sugoi.Web.getURI();
 					if (!plugin.Tutorial.match(uri,here)) {
-						//trace(here+" is not " + uri);
 						return;
 					}
 				default:

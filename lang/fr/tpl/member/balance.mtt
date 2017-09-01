@@ -1,63 +1,63 @@
-::use 'design.mtt'::
-<div class="col-md-12">
-	<h2>Solde des adhérents</h2>	
-</div>
-
-<div class="col-md-4">	
-	<div class="article">
-		<h3>Solde équilibré</h3>
-		<table class="table">
-			::foreach ua balanced::
-			<tr>
-				<td>
-					<a href="/member/payments/::ua._user.id::">::ua._user.getName()::</a>
-				</td>
-				<td class="info">
-					::ua.balance:: ::currency()::
-				</td>
-			</tr>
-			::end::
-		</table>
-		
-	</div>
-</div>
-<div class="col-md-4">	
-	<div class="article">
-		<h3>Solde débiteur</h3>
-		<table class="table">
-			::foreach ua debt::
-			<tr>
-				<td>
-					<a href="/member/payments/::ua._user.id::">::ua._user.getName()::</a>
-				</td>
-				<td class="danger">
-					::ua.balance:: ::currency()::
-				</td>
-			</tr>
-			::end::
-		</table>
-		
-	</div>
-</div>
-<div class="col-md-4">	
-	<div class="article">
-		<h3>Solde créditeur</h3>
-		<table class="table">
-			::foreach ua credit::
-			<tr>
-				<td>
-					<a href="/member/payments/::ua._user.id::">::ua._user.getName()::</a>
-				</td>
-				<td class="success">
-					::ua.balance:: ::currency()::
-				</td>
-			</tr>
-			::end::
-		</table>
-		
-	</div>
-</div>
-
-
-
+::use 'design.mtt'::
+<div class="col-md-12">
+	<h2>Solde des adhérents</h2>	
+</div>
+
+<div class="col-md-4">	
+	<div class="article">
+		<h3>Solde équilibré</h3>
+		<table class="table">
+			::foreach ua balanced::
+			<tr>
+				<td>
+					<a href="/member/payments/::ua._user.id::">::ua._user.getName()::</a>
+				</td>
+				<td class="info">
+					::ua.balance:: ::currency()::
+				</td>
+			</tr>
+			::end::
+		</table>
+		
+	</div>
+</div>
+<div class="col-md-4">	
+	<div class="article">
+		<h3>Solde débiteur</h3>
+		<table class="table">
+			::foreach ua debt::
+			<tr>
+				<td>
+					<a href="/member/payments/::ua._user.id::">::ua._user.getName()::</a>
+				</td>
+				<td class="danger">
+					::ua.balance:: ::currency()::
+				</td>
+			</tr>
+			::end::
+		</table>
+		
+	</div>
+</div>
+<div class="col-md-4">	
+	<div class="article">
+		<h3>Solde créditeur</h3>
+		<table class="table">
+			::foreach ua credit::
+			<tr>
+				<td>
+					<a href="/member/payments/::ua._user.id::">::ua._user.getName()::</a>
+				</td>
+				<td class="success">
+					::ua.balance:: ::currency()::
+				</td>
+			</tr>
+			::end::
+		</table>
+		
+	</div>
+</div>
+
+
+
 ::end::

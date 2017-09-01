@@ -8,12 +8,18 @@
 -lib hscript
 -lib smtpmailer
 -lib record-macros
+-lib cagette-hosted
+-lib cagette-pro
+-lib cagette-connector
 -cp common
 -cp src
 -cp lang/master/tpl
+-D plugins
 -neko www/index.n
 -main App
 
 #POT GENERATION
 -D i18n_parsing
 -D no-deprecation-warnings
+
+

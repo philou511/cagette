@@ -33,7 +33,7 @@
 		
 		<hr/>
 		
-		<h2>Abonnement</h2>
+		<!--<h2>Abonnement</h2>
 		
 		<p>
 			Nbre adhérents max : <b>::hosting.getMaxMembers()::</b><br/>
@@ -41,6 +41,7 @@
 			Expiration abonnement : ::hDate(hosting.aboEnd)::<br/>
 			$$edit(gérer,/db/hosted.db.Hosting/edit/::hosting.id::)
 		</p>
+		-->
 		
 		<h2>Geocoding</h2>
 		

@@ -1,42 +1,42 @@
-::use 'design.mtt'::
-<div class="col-md-12">
-	<div class="article text-center">
-	
-		<h2>Paiement de votre commande</h2>
-		
-		<div style="font-size:120%;">
-			A PAYER : <b>::formatNum(amount):: ::currency()::</b>
-		</div>
-			
-		<hr/>
-			
-		<div class="panel panel-default" style="margin:8px 32px;">
-			<div class="panel-heading">
-				<h3>Paiement par chèque :</h3>
-			</div>
-			<div class="panel-body">
-			<p>
-				Préparez un chèque de : <b>::formatNum(amount):: ::currency()::</b> à l'ordre de : <b>::user._amap.checkOrder::</b>
-			</p>
-			<p>
-				Indiquez cette référence au dos du chèque afin de faciliter son traitement : <br/>
-				<span style="font-size:1.3em;margin:12px;">::code::</span> 
-			</p>
-				
-			</div>
-			<p>
-				<a href="?token=::token::" class="btn btn-primary">
-					<i class="fa fa-check" aria-hidden="true"></i>
-					Je m'engage à payer par chèque au retrait des produits
-				</a>				
-			</p>
-			
-		</div>
-		
-	</div>	
-	
-</div>
-
-
-
+::use 'design.mtt'::
+<div class="col-md-12">
+	<div class="article text-center">
+	
+		<h2>Paiement de votre commande</h2>
+		
+		<div style="font-size:120%;">
+			A PAYER : <b>::formatNum(amount):: ::currency()::</b>
+		</div>
+			
+		<hr/>
+			
+		<div class="panel panel-default" style="margin:8px 32px;">
+			<div class="panel-heading">
+				<h3>Paiement par chèque :</h3>
+			</div>
+			<div class="panel-body">
+			<p>
+				Préparez un chèque de : <b>::formatNum(amount):: ::currency()::</b> à l'ordre de : <b>::user._amap.checkOrder::</b>
+			</p>
+			<p>
+				Indiquez cette référence au dos du chèque afin de faciliter son traitement : <br/>
+				<span style="font-size:1.3em;margin:12px;">::code::</span> 
+			</p>
+				
+			</div>
+			<p>
+				<a href="?token=::token::" class="btn btn-primary">
+					<i class="fa fa-check" aria-hidden="true"></i>
+					Je m'engage à payer par chèque au retrait des produits
+				</a>				
+			</p>
+			
+		</div>
+		
+	</div>	
+	
+</div>
+
+
+
 ::end::
