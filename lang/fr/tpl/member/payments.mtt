@@ -17,15 +17,15 @@
 		<br/>
 		
 		::if member.phone!=null::
-			Tel : ::member.phone::<br/>
+			Téléphone : ::member.phone::<br/>
 		::end::
 
 		::if member.email!=null::
-			E-mail : <a href="mailto: ::member.email::">::member.email::</a><br/>
+			Email : <a href="mailto: ::member.email::">::member.email::</a><br/>
 		::end::
 		
 		::if member.email2!=null::
-			E-mail : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+			Email : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
 		::end::
 		
 		
@@ -71,7 +71,7 @@
 		</table>
 		
 		
-		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::)
+		$$insert(Créer un paiement,/transaction/insertPayment/::member.id::)
 		
 	</div>
 </div>

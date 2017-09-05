@@ -46,11 +46,11 @@ class Place extends Controller
 			f.toSpod(d); 
 			d.amap = app.user.amap;
 			d.update();
-			throw Ok('/contractAdmin','Le lieu a été mis à jour');
+			throw Ok('/contractAdmin',t._("this place has been updated"));
 		}
 		
 		view.form = f;
-		view.title = "Modifier un lieu";
+		view.title = t._("Edit a place");
 	}
 	
 	@tpl("form.mtt")
@@ -63,25 +63,27 @@ class Place extends Controller
 			f.toSpod(d); 
 			d.amap = app.user.amap;
 			d.insert();
-			throw Ok('/contractAdmin','Le lieu a été enregistrée');
+			throw Ok('/contractAdmin',t._("The place has been registred") );
 		}
 		
 		view.form = f;
-		view.title = "Enregistrer un nouveau lieu";
+		view.title = t._("Register a new delivery place");
 	}
 	
 	public function doDelete(p:db.Place) {
-		if (!app.user.isAmapManager()) throw "action interdite";
+		if (!app.user.isAmapManager()) throw "forbidden";
 		if (checkToken()) {
 			
-			
-			if (db.Distribution.manager.search($placeId == p.id).length > 0) throw Error('/contractAdmin', 'Vous ne pouvez pas supprimer ce lieu car des distributions (futures ou passées) ont lieu à cet endroit.');
+			if (db.Distribution.manager.search($placeId == p.id).length > 0) 
+				throw Error('/contractAdmin', "You can't delete this place because one or more distributions are linked to this place.");
 			
 			p.lock();
 			p.delete();
-			throw Ok("/contractAdmin", "Lieu supprimé");
+			throw Ok("/contractAdmin", t._("Place deleted") );
 		}
 		
 	}
+	
+	
 	
 }

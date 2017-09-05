@@ -7,17 +7,16 @@
 <div class="col-md-3">
 	<div class="article">
 		<ul id="subnav" class="nav nav-pills nav-stacked">
-			<li id="default"><a href="/contractAdmin/view/::c.id::">Récapitulatif</a></li>
-			<li id="edit"><a href="/contract/edit/::c.id::">Modifier contrat</a></li>
-			<li id="products"><a href="/contractAdmin/products/::c.id::">Produits</a></li>			
-			<li id="deliveries"><a href="/contractAdmin/distributions/::c.id::">Distributions</a></li>
-			<li id="orders"><a href="/contractAdmin/orders/::c.id::">Commandes</a></li>
-			<li id="stats"><a href="/contractAdmin/stats/::c.id::">Statistiques</a></li>
+			<li id="default"><a href="/contractAdmin/view/::c.id::">::_("Summary")::</a></li>
+			<li id="edit"><a href="/contract/edit/::c.id::">::_("Edit contract")::</a></li>
+			<li id="products"><a href="/contractAdmin/products/::c.id::">::_("Products")::</a></li>			
+			<li id="deliveries"><a href="/contractAdmin/distributions/::c.id::">::_("Distributions")::</a></li>
+			<li id="orders"><a href="/contractAdmin/orders/::c.id::">::_("Orders")::</a></li>
+			<li id="stats"><a href="/contractAdmin/stats/::c.id::">::_("Stats")::</a></li>
 			::if nav!=null::
 				<hr/>
 				::foreach i nav::
 				<li>
-					
 					<a href="::i.link::">
 						<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::"></span>
 						 ::i.name::</a>					

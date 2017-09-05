@@ -2,17 +2,15 @@
 
 <div class="col-md-12">
 	
-
-	
 	<div class="article text-center" ::cond distribs.length>0:: >
-		<h2>Distributions à valider</h2>
+		<h2>::_("Distributions to validate")::</h2>
 		
-		<p>Vous devez valider ces distributions réalisées récemment.</p>
+		<p>::_("You need to validate these distributions which took place recently")::</p>
 		
 		::foreach d distribs::	
 		<p>
 			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
-				Distribution du ::dDate(d.date)::, ::d._place.name::
+				::dDate(d.date)::, ::d._place.name::
 			</a>	
 		</p>	
 		::end::	
@@ -23,8 +21,11 @@
 	
 	<div class="article" id="contracts">
 		<h2>
-			Contrats
-			::if getParam("old"):: anciens ::end::
+			::if getParam("old"):: 
+			::_("Old contracts")::
+			::else::
+			::_("Contracts")::
+			::end::
 		</h2>
 		<table class="table">
 			::foreach c contracts::
@@ -48,10 +49,10 @@
 					<td>::c._vendor.name::</td>
 					<td>
 						
-						$$edit(Gestion,/contractAdmin/view/::c.id::)
+						$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
 						
 						::if user.isAmapManager()::
-						$$delete(Suppr.,/contract/delete/::c.id::?token=::token::)
+						$$delete(::_("Del.||short version of delete")::,/contract/delete/::c.id::?token=::token::)
 						::end::
 
 						</td>
@@ -61,21 +62,21 @@
 	
 		
 		::if user.isAmapManager():: 
-		$$insert(Nouveau contrat,/contract/insert/)
+		$$insert(::_("New contract")::,/contract/insert/)
 		::end::
-		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Contrats anciens</a>
-		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Calendrier</a>
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
+		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> ::_("Calendar")::</a>
 		
 		<!--<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>-->
 		
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			Vue globale des commandes
+			::_("Global orders view")::
 			<span class="caret"></span>
 		  </button>
 		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> Dans la même journée</a></li>
-			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> De date à date</a></li>			
+			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> ::_("Same day")::</a></li>
+			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> ::_("Timeframe")::</a></li>			
 		  </ul>
 		</div>
 		
@@ -92,21 +93,20 @@
 			::foreach v vendors::		
 				<tr>
 					<td>
-						
 						::if v._image!=null::
 							<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
 						::end::
 					</td>
 					<td><b>::v.name::</b></td>
 					<td>
-						$$edit(Modifier,/vendor/edit/::v.id::)
-						<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>
+						$$edit(::_("Edit")::,/vendor/edit/::v.id::)
+						<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>
 						::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
 					</td>
 				</tr>
 			::end::
 		</table>
-		$$insert(Nouveau producteur,/vendor/insert/) 
+		$$insert(::_("New farmer")::,/vendor/insert/) 
 		
 	</div>	
 </div>
@@ -114,19 +114,19 @@
 <div class="col-md-6">
 	<div class="article" id="places">
 		
-		<h2>Lieux de livraison</h2>
+		<h2>::_("Delivery places")::</h2>
 		<table class="table">
 			::foreach p places::		
 				<tr>
 					<td><b>::p.name::</b></td>
 					<td>
-						$$edit(Modifier,/place/edit/::p.id::)
-						::if user.isAmapManager():: $$delete(Suppr.,/place/delete/::p.id::?token=::token::) ::end::
+						$$edit(::_("Edit")::,/place/edit/::p.id::)
+						::if user.isAmapManager():: $$delete(::_("Del.||short version for delete")::,/place/delete/::p.id::?token=::token::) ::end::
 					</td>
 				</tr>
 			::end::
 		</table>
-		$$insert(Nouveau lieu,/place/insert/)
+		$$insert(::_("New delivery place")::,/place/insert/)
 	</div>
 </div>
 	

@@ -40,7 +40,7 @@
 			::else::
 			<div class="col-md-5">		
 				<div class="pull-right text-right">
-					<a href="/user/login" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span>Connexion</a>
+					<a href="/user/login" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> Connexion</a>
 					<a class="btn btn-default btn-xs" href="/p/hosted/book"><span class="glyphicon glyphicon-search"></span> Chercher un autre groupe</a>	
 				</div>
 				
@@ -109,17 +109,16 @@
 		<div class="row">
 			::raw __content__::
 		</div>		
-			
+		
 		<div class="row">
 			<div class="col-md-12" >
 				<div id="footer">
-					<a href="http://www.cagette.net" 	target="_blank">Cagette.net</a> • 
-					<a href="http://www.cagette.net/wiki" 	target="_blank">Documentation</a> •
-					<a href="https://groups.google.com/forum/?hl=fr#!forum/cagette" target="_blank">Forum</a> •
-					<a href="https://cagette.uservoice.com" target="_blank">Propose features</a> •
-					<a href="http://www.cagette.net/legal"> Mentions légales</a> •
-					<a href="https://www.facebook.com/cagette" target="_blank"> Facebook</a> •
-					<a href="https://twitter.com/Cagettenet" target="_blank"> Twitter</a> •
+					<a href="http://www.cagette.net" target="_blank">Cagette.net</a>  &#8226; 
+					<a href="http://www.cagette.net/wiki" target="_blank">Documentation</a> &#8226;
+					<a href="https://groups.google.com/forum/?hl=fr#!forum/cagette" target="_blank">Forum</a>  &#8226;
+					::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">Propose features</a>  &#8226; ::end::
+					<a href="https://www.facebook.com/cagette" target="_blank"> Facebook</a>  &#8226;
+					<a href="https://twitter.com/Cagettenet" target="_blank"> Twitter</a>  &#8226;
 					<span style="color:#666;">version ::VERSION::-::getPlatform()::</span>
 				</div>
 			</div>
@@ -142,7 +141,7 @@
 			</div>
 		</div>
 		
-		
+			::if (user!=null && user.isAmapManager())::
 			<script>
 			// Include the UserVoice JavaScript SDK (only needed once on a page)
 			UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/sayZ1eIZLfSZUa3IwslHCw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
@@ -186,4 +185,5 @@
 			// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
 			UserVoice.push(['autoprompt', {}]);
 			</script>
+			::end::
 ::end::

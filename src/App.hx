@@ -230,12 +230,13 @@ class App extends sugoi.BaseApp {
 		}
 		
 		if (sugoi.db.Variable.get("mailer") == null){
-			throw sugoi.BaseController.ControllerAction.ErrorAction("/","L'envoi des emails n'est pas configuré. Si vous êtes administrateur, <a href='/admin/emails'>vous pouvez le configurer ici</a>");
+			var msg = sugoi.i18n.Locale.texts._("Please configure the email settings in a <href='/admin/emails'>this section</a>");
+			throw sugoi.BaseController.ControllerAction.ErrorAction("/",msg);
 		}
 		
 		var conf = {
 			smtp_host:sugoi.db.Variable.get("smtp_host"),
-			smtp_port:sugoi.db.Variable.get("smtp_port"),
+			smtp_port:sugoi.db.Variable.getInt("smtp_port"),
 			smtp_user:sugoi.db.Variable.get("smtp_user"),
 			smtp_pass:sugoi.db.Variable.get("smtp_pass")			
 		}

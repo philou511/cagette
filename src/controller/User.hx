@@ -16,9 +16,6 @@ enum LoginError {
 
 class User extends Controller
 {
-	
-	
-
 	public function new() 
 	{
 		super();

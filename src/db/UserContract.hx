@@ -131,11 +131,7 @@ class UserContract extends Object
 			x.canModify = o.canModify(); 
 			
 			out.push(x);
-			
 		}
-		
-		
-		
 		
 		return sort(out);
 	}

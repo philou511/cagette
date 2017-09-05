@@ -2,46 +2,41 @@
 <div class="col-md-9">
 <div class="article">
 	::if select!=null::
-		<h2>Sélection : 
+		<h2>::_("Selection :||show a sublist of members which has been selected")::
 		::if select=="nocontract"::
-			Adhérents sans contrat
+			::_("Members without any contracts")::
 		::elseif select=="nomembership"::
-			Adhésions à renouveler
+			::_("Members whose membership should be renewed")::
 		::elseif select=="newusers"::
-			Adhérents qui ne se sont jamais connecté
+			::_("Members who has never logged in")::
 		::elseif select=="contract"::
-			Adhérents avec commande ou contrat
+			::_("Members with orders or contracts")::
 		::end::
 		</h2>
 	
-		<p><b>::members.current().length::</b> personnes.</p>
+		<p><b>::members.current().length::</b> ::_("members")::.</p>
 		
-		<a href="/member/">Revenir à la page principale</a>
+		<a href="/member/">::_("Back to main page")::</a>
 	::elseif search!=null::
-		<h2>Recherche : ::search::</h2>
-		<a href="/member/">Revenir à la page principale</a>
+		<h2>::_("Search"):: : ::search::</h2>
+		<a href="/member/">::_("Back to main page")::</a>
 		
 	::else::	
-		<h2>Adhérents</h2>
+		<h2>::_("Members")::</h2>
 	::end::
 	
 	
 	::if select=="newusers"::
 		<hr/>
 		<p style="text-align:center;">
-			Vous pouvez inviter par email tous les adhérents qui ne se sont jamais connecté à Cagette.net en un seul clic.
-			<br/>
-			Attention la page peut mettre un peu de temps à s'afficher si il y a beaucoup d'emails à envoyer.
+			::_("You can invite by email all the members who never logged in, in one single clic.")::			
 		</p>
 		<p style="text-align:center;">
-			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> Envoyer des invitations</a>
+			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> ::_("Send invitations")::</a>
 		</p>
 	::end::
-	
-	
 
 	<table class="table table-bordered table-hover table-striped"  style="width:100%;">
-		
 	::foreach m members.current()::	
 	<tr>
 		
@@ -74,7 +69,7 @@
 		<th colspan="2">
 			<a href="?page=::members.page-1::"> &lt;&lt; </a>
 			&nbsp;
-			page ::members.page::/::members.pages::
+			::_("Page"):: ::members.page::/::members.pages::
 			&nbsp;
 			<a href="?page=::members.page+1::"> &gt;&gt; </a>
 		</th>
@@ -84,9 +79,9 @@
 
 	<div>
 		
-		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvel adhérent</a>	
+		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("New member")::</a>	
 		$$export(::Web.getURI()+"?"+Web.getParamsString()::&csv=1)
-		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> Importer</a>
+		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> ::_("Import members")::</a>
 
 	</div>
 
@@ -98,14 +93,14 @@
 	
 	
 	<div class="block">
-		<h3>Sélections</h3>
+		<h3>::_("Selections")::</h3>
 		<ul>
-			<li><a href="/member/">Tout le monde</a></li>
-			<li><a href="/member/?select=nocontract">Sans contrats/commandes</a></li>
-			<li><a href="/member/?select=contract">Avec contrat/commandes</a></li>
-			<li><a href="/member/?select=newusers">Ne s'est jamais connecté</a></li>
-			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">Adhésion à renouveller</a></li>
-			<li ::cond user._amap.hasPayments()::><a href="/member/balance">Solde des adhérents</a></li>
+			<li><a href="/member/">::_("All members")::</a></li>
+			<li><a href="/member/?select=nocontract">::_("Without orders or contracts")::</a></li>
+			<li><a href="/member/?select=contract">::_("With orders or contracts")::</a></li>
+			<li><a href="/member/?select=newusers">::_("Never logged in")::</a></li>
+			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">::_("Memberships to renew")::</a></li>
+			<li ::cond user._amap.hasPayments()::><a href="/member/balance">::_("Members balance")::</a></li>
 			
 		</ul>
 		
@@ -118,7 +113,7 @@
 				::end::
 				<input type="text" class="form-control" name="search" value="::ssearch::" />
 				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Rechercher</button>
+					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> ::_("Search||search action button")::</button>
 				</span>
 				
 			  </div>
@@ -127,20 +122,21 @@
 	
 	
 	<div class="block">
-		<h3>Liste d'attente</h3>
+		<h3>::_("Waiting list")::</h3>
 		<p>
-		Vous avez <b>::waitingList::</b> personnes en liste d'attente.
+		::_("There is <b>::waitingList::</b> people on waiting list.")::
 		<br/>
-		<a href="/member/waiting" class="btn btn-default btn-sm">Afficher la liste</a>
+		<a href="/member/waiting" class="btn btn-default btn-sm">::_("Display the list")::</a>
 		</p>
 	</div>
 	
 	
 	::if select!="newusers"::
 	<div class="block">		
-		<h3>Nouveaux</h3>
-		Il y a <b>::newUsers::</b> adhérents qui ne se sont jamais connectés à Cagette.net<br/>
-		<a href="/member/?select=newusers" class="btn btn-default btn-sm">Afficher la liste</a>
+		<h3>::_("New members")::</h3>
+		::_("There is <b>::newUsers::</b> members who never logged in")::
+		<br/>
+		<a href="/member/?select=newusers" class="btn btn-default btn-sm">::_("Display the list")::</a>
 	</div>
 	::end::
 	

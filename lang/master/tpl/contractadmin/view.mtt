@@ -1,58 +1,58 @@
 ::use 'contractadmin/design.mtt'::
 
-		<h3>Récapitulatif</h3>
+		<h3>::_("Summary")::</h3>
 		
 		<table class="table table-bordered" style="width:400px;">
 			<tr>
 				<td>
-					Type de contrat
+					::_("Contract type")::
 				</td>
 				<td>
 					::if contract.type==0::
-					Contrat AMAP
+					::_("CSA Contract")::
 					::else::
-					à commande variable
+					::_("Variable order contract")::
 					::end::
 				</td>
 			</tr>
 			<tr>
-				<td>Début</td>
+				<td>::_("Start")::</td>
 				<td>::hDate(contract.startDate)::</td>
 			</tr>
 			<tr>
-				<td>Fin</td>
+				<td>::_("End")::</td>
 				<td>::hDate(contract.endDate)::</td>
 			</tr>
 		</table>
 
 		<div>
-			$$edit(Modifier,/contract/edit/::c.id::)
+			$$edit(::_("Edit")::,/contract/edit/::c.id::)
 			
 			::if user.isAmapManager()::
-			$$edit(Dupliquer ce contrat,/contractAdmin/duplicate/::c.id::)
+			$$edit(::_("Duplicate")::,/contractAdmin/duplicate/::c.id::)
 			::end::
 		</div>
 
 		<hr/>
 		
-		<h4>Producteur</h4>
+		<h4>::_("Farmer")::</h4>
 		<table class="table table-bordered" style="width:400px;">
 			<tr>
-				<td>Nom</td>
+				<td>::_("Name")::</td>
 				<td><b>::contract._vendor.name::</b></td>
 			</tr>
 			<tr>
-				<td>Email</td>
+				<td>::_("Email")::</td>
 				<td>$$nullSafe(::contract._vendor.email::)</td>
 			</tr>
 			<tr>
-				<td>Téléphone </td>
+				<td>::_("Phone")::</td>
 				<td>$$nullSafe(::contract._vendor.phone::)</td>
 			</tr>
 		</table>
 		
 		
-		<h4><a href="/contractAdmin/products/::c.id::">Produits</a></h4>
+		<h4><a href="/contractAdmin/products/::c.id::">::_("Products")::</a></h4>
 		<div style="max-height:400px;overflow:auto;">
 			<table class="table table-bordered" style="width:400px;">
 				::foreach p contract.getProducts(true)::

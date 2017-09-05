@@ -6,6 +6,7 @@ class App {
 	
 	public static var instance : App;
 	public var LANG : String;
+	public var t : sugoi.i18n.GetText;//gettext translator
 	//public var currentBox : ReactComponent.ReactElement; //current react element in the modal window
 	
 	function new(?lang="fr") {
@@ -16,9 +17,14 @@ class App {
 
 	/**
 	 * Returns a jquery object like $() in javascript
+	 * @deprecated
 	 */
 	public static inline function j(r:Dynamic):js.JQuery {
 		return new js.JQuery(r);
+	}
+	
+	public static inline function jq(r:Dynamic):js.jquery.JQuery{
+		return new js.jquery.JQuery(r);
 	}
 
 	/**

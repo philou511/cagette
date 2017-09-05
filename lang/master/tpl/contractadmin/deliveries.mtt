@@ -1,9 +1,7 @@
 ::use 'contractadmin/design.mtt'::
 
-	
-		<h2>Distributions</h2>
+		<h2>::_("Distributions")::</h2>
 		
-			
 			<table class="table">
 				::foreach d deliveries::
 				
@@ -37,9 +35,9 @@
 					</td>
 					<td>
 						<div class="btn-group">
-							$$edit(modifier,/distribution/edit/::d.id::) 
-							$$delete(supprimer,/distribution/delete/::d.id::)
-							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;Liste d'émargement</a>
+							$$edit(::_("Edit")::,/distribution/edit/::d.id::) 
+							$$delete(::_("Delete")::,/distribution/delete/::d.id::)
+							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;::_("Distribution list")::</a>
 						</div>
 					</td>
 				</tr>
@@ -50,40 +48,35 @@
 
 			<table ::cond cycles.length>0:: class="table">
 				<tr>
-					<th>Distributions récurrentes</th>		
+					<th>::_("Distribution cycle")::</th>		
 					<th></th>
 				</tr>
 				::foreach c cycles::
 				<tr>
 					<td><b>
 						::switch c.cycleType:: 						
-						::case::  Hebdomadaire
-						::case::  Mensuel
-						::case::  Toutes les 2 semaines
-						::case::  Toutes les 3 semaines
+						::case::  ::_("Weekly")::
+						::case::  ::_("Monthly")::
+						::case::  ::_("Every 2 weeks")::
+						::case::  ::_("Every 3 weeks")::
 						::end::
 						</b>
 						: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
 					</td>
 					<td>
-						$$delete(Suppr.,::"/distribution/deleteCycle/"+c.id::)
+						$$delete(::_("Del.")::,::"/distribution/deleteCycle/"+c.id::)
 					</td>
 				</tr>
 				::end::
 			</table>
 
-
-			$$insert(Nouvelle distribution,/distribution/insert/::c.id::)
-			$$insert(Distributions récurrentes,/distribution/insertCycle/::c.id::) 
+			$$insert(::_("New distribution")::,/distribution/insert/::c.id::)
+			$$insert(::_("Distribution cycles")::,/distribution/insertCycle/::c.id::) 
+			
 			<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-user"></span> Participations aux distributions
+				<span class="glyphicon glyphicon-user"></span> ::_("Distributions engagement")::
 			</a>
 			<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-				Distributions anciennes
+				::_("Old distributions")::
 			</a>
-
-	
-	
-
-
 ::end::

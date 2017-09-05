@@ -2,16 +2,16 @@
 <div class="col-md-12">
 	<div class="article">
 		
-		<h2>Liste d'attente</h2>
+		<h2>::_("Waiting list")::</h2>
 		
 		<table class="table table-bordered">
 			
 			<tr>
-				<th>Nom</th>
-				<th>Email</th>
-				<th>Telephone</th>
-				<th>Inscription en liste d'attente</th>
-				<th>Message</th>
+				<th>::_("Name")::</th>
+				<th>::_("Email")::</th>
+				<th>::_("Phone")::</th>
+				<th>::_("Registration date")::</th>
+				<th>::_("Message")::</th>
 			</tr>
 			
 			::foreach w waitingList::
@@ -26,12 +26,12 @@
 				<td class="col-md-4">
 					<a href="/member/waiting?add=::u.id::" class="btn btn-primary btn-sm">
 						<span class="glyphicon glyphicon-ok"></span>
-						Passer en adhérent
+						::_("Accept membership request")::
 					</a>
 					
 					<a href="/member/waiting?remove=::u.id::" class="btn btn-default btn-sm">
 						<span class="glyphicon glyphicon-remove"></span>
-						Supprimer</a>
+						::_("Deny request")::</a>
 					</td>
 			</tr>
 			::end::

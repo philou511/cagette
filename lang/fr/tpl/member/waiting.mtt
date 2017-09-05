@@ -9,8 +9,8 @@
 			<tr>
 				<th>Nom</th>
 				<th>Email</th>
-				<th>Telephone</th>
-				<th>Inscription en liste d'attente</th>
+				<th>Téléphone</th>
+				<th>Date d'inscription</th>
 				<th>Message</th>
 			</tr>
 			
@@ -26,12 +26,12 @@
 				<td class="col-md-4">
 					<a href="/member/waiting?add=::u.id::" class="btn btn-primary btn-sm">
 						<span class="glyphicon glyphicon-ok"></span>
-						Passer en adhérent
+						Accepter la demande
 					</a>
 					
 					<a href="/member/waiting?remove=::u.id::" class="btn btn-default btn-sm">
 						<span class="glyphicon glyphicon-remove"></span>
-						Supprimer</a>
+						Refuser</a>
 					</td>
 			</tr>
 			::end::

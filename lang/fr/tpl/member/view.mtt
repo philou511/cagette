@@ -4,11 +4,13 @@
 	<h2>Coordonnées</h2>
 	<div class="article">
 		
-		<div style="font-weight:bold;font-size:120%;">::member.firstName:: ::member.lastName::
+		<div style="font-weight:bold;font-size:120%;">
+		::member.firstName:: ::member.lastName::
+		
 		::if member.firstName2!=null && member.lastName2!=null::
 			& ::member.firstName2:: ::member.lastName2::
-			
-		::end::</div>
+		::end::
+		</div>
 		
 		$$nullSafe(::member.address1::)<br/>
 		$$nullSafe(::member.address2::)<br/>
@@ -17,7 +19,7 @@
 		<br/>
 		
 		::if member.phone!=null::
-			Tel : ::member.phone::<br/>
+			Téléphone : ::member.phone::<br/>
 		::end::
 
 		::if member.email!=null::
@@ -30,28 +32,32 @@
 		
 		<hr/>
 		<p style="font-size:11px;">
-			Dernière connexion : ::if member.ldate!=null::
+			Dernière connexion : 
+			::if member.ldate!=null::
 				::member.ldate.toString():: 
 			::else:: 
-				<b>ne s'est jamais connecté</b>
+				<b>Cet adhérent ne s'est jamais connecté</b>
 			::end::
 			<br/>
-			Enregistré depuis : ::if member.cdate!=null:: 
+			Inscrit depuis : 
+			::if member.cdate!=null:: 
 				::member.cdate.toString()::
 			::else:: 
 				??? 
 			::end::			
 			<br/>
 			::if member.pass==""::
-			<div class="alert alert-danger">Cette personne n'a pas définit de mot de passe</div>
+			<div class="alert alert-danger">Cet adhérent n'a pas défini de mot de passe  </div>
 			::end::
 		</p>
 		<p>
 			$$edit(Modifier,/member/edit/::member.id::) 
 			$$delete(Retirer du groupe,/member/delete/::member.id::?token=::token::)
-			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">Replacer en liste d'attente</a>
+			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">Mettre en liste d'attente</a>
 			
-			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Messages reçus</a>
+			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm">
+			<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> 
+				Messages reçus</a>
 			
 			::if !member.isFullyRegistred()::
 			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
@@ -67,14 +73,14 @@
 	
 	
 	::if user._amap.hasMembership()::
-	<h2>Cotisation</h2>
+	<h2>Cotisations</h2>
 	<div class="article">
 		::if userAmap.hasValidMembership()::
-			$$bool(true) Cotisation à jour 
+			$$bool(true) Cotisation à jour
 		::else::
-			$$bool(false) N'a pas cotisé 
+			$$bool(false) Cotisation à renouveller
 		::end::
-		pour la periode <b>::user._amap.getPeriodName(null)::</b>
+		pour la période <b>::user._amap.getPeriodName(null)::</b>
 		<br/>
 		<a href="/membership/::member.id::" class="btn btn-default btn-sm">Gérer les cotisations</a>
 		
@@ -85,7 +91,7 @@
 </div>
 
 <div class="col-md-8">
-	<h2>Commandes en cours</h2>
+	<h2>Commande en cours</h2>
 	<div class="article">
 		::set o = userContracts::
 		::if o.constOrders.length>0::
@@ -94,7 +100,7 @@
 				<tr>
 					<th>Qté</th>
 					<th>Produit</th>
-					<th>Prix total</th>
+					<th>Prix</th>
 					<th>Contrat</th>
 				</tr>
 				::foreach p o.constOrders::
@@ -130,7 +136,7 @@
 						<tr>
 							<th>Qté</th>
 							<th>Produit</th>
-							<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+							<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">P.U</a></th>
 							<th>Sous-total</th>
 							<th>Frais</th>
 							<th>Total</th>
@@ -197,25 +203,18 @@
 		<span style="margin-left:30px;">
 			<a href="/member/payments/::member.id::" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
-				Détail des paiements
+				Détails paiements
 			</a>
 		</span>
 		
-		
-		
 	</div>
 </div>
-
-
-
 
 
 <div class="col-md-4" ::cond userAmap.rights!=null && userAmap._rights!=null::>
 	<h3>Droits</h3>
 	<div class="article">
 		<ul>
-			
-		
 		::foreach r userAmap._rights::
 		<li>::userAmap.getRightName(r)::</li>
 		::end::

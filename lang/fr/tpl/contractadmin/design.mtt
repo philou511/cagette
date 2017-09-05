@@ -17,7 +17,6 @@
 				<hr/>
 				::foreach i nav::
 				<li>
-					
 					<a href="::i.link::">
 						<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::"></span>
 						 ::i.name::</a>					

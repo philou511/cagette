@@ -106,7 +106,7 @@ class Transaction extends controller.Controller
 			
 			if (Lambda.array(ordersGrouped).length == 1){				
 				//all orders are for the same multidistrib
-				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, tmpOrder.total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", ops[0] );							
+				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, tmpOrder.total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", ops[0] );		
 			}else{				
 				//orders are for multiple distribs : create one payment
 				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, "Chèque ("+code+")" );			

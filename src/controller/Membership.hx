@@ -2,7 +2,7 @@ package controller;
 import sugoi.form.elements.IntSelect;
 using Std;
 /**
- * Gestion des cotisations des adhérents
+ * Membership management
  * 
  * @author fbarbut<francois.barbut@gmail.com>
  */

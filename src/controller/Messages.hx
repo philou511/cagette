@@ -17,7 +17,7 @@ class Messages extends Controller
 	
 	@tpl("messages/default.mtt")
 	function doDefault() {
-		
+			
 		var form = new Form("msg");		
 		
 		var senderName = "";
@@ -56,7 +56,7 @@ class Messages extends Controller
 			
 			e.setSender(App.config.get("default_email"),form.getValueOf("senderName"));		
 			e.setReplyTo(form.getValueOf("senderMail"),form.getValueOf("senderName"));
-			////sender : default email ( explicitly tells that the server send an email on behalf of the user )
+			//sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			var text :String = form.getValueOf("text");
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		

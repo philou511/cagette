@@ -1,13 +1,12 @@
 ::use 'contractadmin/design.mtt'::
 	
-		
-	<h3>Produits</h3>
+	<h3>::_("Products")::</h3>
 	
 	<div>
 		<p>
-		$$insert(Nouveau produit,/product/insert/::c.id::)
-		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Import Excel/CSV</a>			
-		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Catégories</a>	
+		$$insert(::_("New product")::,/product/insert/::c.id::)
+		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> ::_("Import from Excel/CSV")::</a>			
+		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> ::_("Categories")::</a>	
 		
 		
 		</p>
@@ -17,7 +16,7 @@
 	var enableProducts = function(){
 		var ids = _.getCheckboxesId('form.products');
 		if(ids.length==0){
-			alert("Vous devez sélectionner au moins un produit pour faire cette action.");
+			alert("::_("You need to select at least one product to perform this action")::");
 		}else{
 			var l = document.location;
 			l.href = l.protocol +"//"+ l.host + l.pathname + "?enable="+ ids.join("|");
@@ -27,7 +26,7 @@
 	var disableProducts = function(){
 		var ids = _.getCheckboxesId('form.products');
 		if(ids.length==0){
-			alert("Vous devez sélectionner au moins un produit pour faire cette action.");
+			alert("::_("You need to select at least one product to perform this action")::");
 		}else{
 			var l = document.location;
 			l.href = l.protocol +"//"+ l.host + l.pathname + "?disable="+ ids.join("|");
@@ -47,12 +46,12 @@
 		<tr>
 			<th></th>
 			<th></th>
-			<th>Réf.</th>
-			<th>Nom</th>
+			<th>::_("Produkt ID||id or reference of a product")::</th>
+			<th>::_("Name")::</th>
 			<th></th>
-			<th>Prix</th>
+			<th>::_("Price")::</th>
 			::if c.hasStockManagement()::
-			<th>Stock</th>
+			<th>::_("Stock")::</th>
 			::end::
 			<th></th>
 			<th></th>
@@ -108,9 +107,9 @@
 			</td>
 			<td>
 				<div class="btn-group" role="group">
-					$$edit(modifier,/product/edit/::p.id::)				
-					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>				
-					$$delete(Suppr.,/product/delete/::p.id::?token=::token::)
+					$$edit(::_("Edit")::,/product/edit/::p.id::)				
+					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>				
+					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
 			</td>
 
@@ -123,8 +122,8 @@
 	
 	<p>
 		<div class="btn-group" role="group">
-		<a class="btn btn-default btn-sm" onclick="enableProducts()"><span class="glyphicon glyphicon-check"></span> Activer</a>	
-		<a class="btn btn-default btn-sm" onclick="disableProducts()"><span class="glyphicon glyphicon-unchecked"></span> Désactiver</a>	
+		<a class="btn btn-default btn-sm" onclick="enableProducts()"><span class="glyphicon glyphicon-check"></span> ::_("Enable")::</a>	
+		<a class="btn btn-default btn-sm" onclick="disableProducts()"><span class="glyphicon glyphicon-unchecked"></span> ::_("Disable")::</a>	
 		</div>
 		
 	</p>

@@ -2,17 +2,15 @@
 
 <div class="col-md-12">
 	
-
-	
 	<div class="article text-center" ::cond distribs.length>0:: >
 		<h2>Distributions à valider</h2>
 		
-		<p>Vous devez valider ces distributions réalisées récemment.</p>
+		<p>Vous devez valider ces distributions terminées récemment</p>
 		
 		::foreach d distribs::	
 		<p>
 			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
-				Distribution du ::dDate(d.date)::, ::d._place.name::
+				::dDate(d.date)::, ::d._place.name::
 			</a>	
 		</p>	
 		::end::	
@@ -23,8 +21,11 @@
 	
 	<div class="article" id="contracts">
 		<h2>
+			::if getParam("old"):: 
+			Anciens contrats
+			::else::
 			Contrats
-			::if getParam("old"):: anciens ::end::
+			::end::
 		</h2>
 		<table class="table">
 			::foreach c contracts::
@@ -48,7 +49,7 @@
 					<td>::c._vendor.name::</td>
 					<td>
 						
-						$$edit(Gestion,/contractAdmin/view/::c.id::)
+						$$edit(Gérer,/contractAdmin/view/::c.id::)
 						
 						::if user.isAmapManager()::
 						$$delete(Suppr.,/contract/delete/::c.id::?token=::token::)
@@ -63,7 +64,7 @@
 		::if user.isAmapManager():: 
 		$$insert(Nouveau contrat,/contract/insert/)
 		::end::
-		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Contrats anciens</a>
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens contrats</a>
 		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Calendrier</a>
 		
 		<!--<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>-->
@@ -92,7 +93,6 @@
 			::foreach v vendors::		
 				<tr>
 					<td>
-						
 						::if v._image!=null::
 							<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
 						::end::
@@ -126,7 +126,7 @@
 				</tr>
 			::end::
 		</table>
-		$$insert(Nouveau lieu,/place/insert/)
+		$$insert(Nouveau lieu de distribution,/place/insert/)
 	</div>
 </div>
 	

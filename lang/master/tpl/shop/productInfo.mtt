@@ -47,7 +47,7 @@
 		<div class="col-md-7" style="margin-top:24px;">
 			
 			<p ::cond p.organic:: class="vat">
-				<img src="/img/AB.png" /> ::_("organic agriculture")::
+				<img src="/img/AB.png" /> ::_("Organic agriculture")::
 				
 			</p>
 			

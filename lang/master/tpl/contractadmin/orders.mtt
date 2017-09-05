@@ -1,6 +1,6 @@
 ::use 'contractadmin/design.mtt'::
 	
-		<h3>Commandes</h3>
+		<h3>::_("Orders")::</h3>
 		
 		::if distribution!=null::
 		Distribution du <b>::hDate(distribution.date)::</b>
@@ -8,21 +8,23 @@
 		
 		<div style="margin:8px 0;">
 
-			
 			::if distribution!=null::
-			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
+			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("New order")::</a>	
 			::else::
-			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
+			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("New order")::</a>	
 			::end::
 			
 			::if distribution!=null::
 				$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
-				<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
-				<a href="/distribution/list/::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
+				<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>
+					::_("Summary by products")::</a>
+				<a href="/distribution/list/::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> 
+					::_("Distribution list")::</a>
 			
 			::else::
 				$$export(/contractAdmin/orders/::c.id::?csv=1)
-				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>  Récapitulatif par produits</a>
+				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>
+					::_("Summary by products")::</a>
 			::end::
 		</div>
 
@@ -61,7 +63,7 @@
 							
 							::m.userName:: 
 							::if m.userName2!=null::
-								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::
+								<span class="glyphicon glyphicon-refresh"></span> ::_("alternated with"):: ::m.userName2::
 							::end::
 							
 							::set name =  m.userName ::	
@@ -71,9 +73,11 @@
 						<td>
 							<!--::if m.canModify==true::-->
 							::if distribution!=null::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>
+								::_("Edit")::</a>
 							::else::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 
+								::_("Edit")::</a>
 							::end::
 							<!--::end::-->
 							
@@ -81,14 +85,14 @@
 					
 					</tr>
 					<tr>
-						<th>Qté</th>
-						<th>Réf.</th>
-						<th>Produit</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
-						<th>Sous-total</th>
-						<th>Frais</th>
-						<th>Total</th>
-						<th>Payé</th>
+						<th>::_("Qty")::</th>
+						<th>::_("Product ID")::</th>
+						<th>::_("Product")::</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price including taxes")::">::_("U.P")::</a></th>
+						<th>::_("Sub-total")::</th>
+						<th>::_("Fees")::</th>
+						<th>::_("Total")::</th>
+						<th>::_("Paid")::</th>
 					</tr>
 				::end::
 				
@@ -130,9 +134,9 @@
 					</td>
 					<td>
 						::if m.paid==true::
-						<span style="color:#00AA00;">Payé</span>
+						<span style="color:#00AA00;">::_("Paid")::</span>
 						::else::
-						<span style="color:#DD0000;">Non payé</span>
+						<span style="color:#DD0000;">::_("Not paid")::</span>
 						::end::
 					</td>
 					
@@ -143,7 +147,7 @@
 				
 				<tr style="background:#DDD;">
 					
-					<th colspan="6">Total</th>
+					<th colspan="6">::_("Total")::</th>
 					<th>::formatNum(total)::&nbsp;::currency()::</th>
 					
 					<th></th>
@@ -154,7 +158,7 @@
 
 
 				<div style="margin-top:18px;margin-bottom:18px;">
-					<b>::totalAdh::</b> adhérents dans cette commande.					
+					::_("<b>::totalAdh::</b> members in this distribution.")::					
 				</div>
 
 ::end::

@@ -51,4 +51,15 @@ class Place extends Object
 		return str.toString();
 	}
 	
+	public static function getLabels():Map<String,String>{
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name"		=>	t._("Name"),
+			"address1"	=>	t._("Address 1"),
+			"address2"	=>	t._("Address 2"),
+			"zipCode"	=>	t._("Zip code"),
+			"city"		=>	t._("City"),			
+		];
+	}
+	
 }

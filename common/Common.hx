@@ -222,15 +222,13 @@ class TutoDatas {
 	
 	#if js
 	//async 
-	public static function get(tuto:String,callback:Dynamic->Void){
-		sugoi.i18n.Locale.init(App.instance.LANG, function(t:sugoi.i18n.GetText){
-			trace('init gettext $App.instance.LANG ');
+	public static function get(tuto:String, callback:Dynamic->Void){
+		
+		sugoi.i18n.Locale.init(App.instance.LANG, function(t:sugoi.i18n.GetText){			
+			App.instance.t = t;
 			init(t);
 			var tuto = TUTOS.get(tuto);
-			callback(tuto);
-			trace(t._("Order"));
-			trace(t._("<p>In order to better discover Cagette.net, we propose to do a guided tour of the user interface of the software. <br/> You will then have a global overview on the different tools that are available to you.</p><p>You will be able to stop and start again this tutorial whenever you want.</p>"));
-			trace(tuto);
+			callback(tuto);			
 		});
 	}
 	#else

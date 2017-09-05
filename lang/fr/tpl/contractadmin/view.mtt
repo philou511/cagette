@@ -11,12 +11,12 @@
 					::if contract.type==0::
 					Contrat AMAP
 					::else::
-					à commande variable
+					Contrat à commande variable
 					::end::
 				</td>
 			</tr>
 			<tr>
-				<td>Début</td>
+				<td>Commencer</td>
 				<td>::hDate(contract.startDate)::</td>
 			</tr>
 			<tr>
@@ -29,7 +29,7 @@
 			$$edit(Modifier,/contract/edit/::c.id::)
 			
 			::if user.isAmapManager()::
-			$$edit(Dupliquer ce contrat,/contractAdmin/duplicate/::c.id::)
+			$$edit(Dupliquer,/contractAdmin/duplicate/::c.id::)
 			::end::
 		</div>
 
@@ -46,7 +46,7 @@
 				<td>$$nullSafe(::contract._vendor.email::)</td>
 			</tr>
 			<tr>
-				<td>Téléphone </td>
+				<td>Téléphone</td>
 				<td>$$nullSafe(::contract._vendor.phone::)</td>
 			</tr>
 		</table>

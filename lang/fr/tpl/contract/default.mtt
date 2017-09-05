@@ -164,7 +164,7 @@
 		
 		
 		<div class="pull-right">
-			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::"Voulez-vous vraiment quitter \""+user._amap.name+"\" ? Vous ne serez plus membre de ce groupe : vous ne recevrez donc plus les messages et n'aurez plus accès aux commandes."::)>
+			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(Voulez vraiment quitter ce groupe ? Vous ne serez plus membre : vous ne recevrez plus de messages et ne pourrez plus voir vos anciennes commandes.)>
 				<span class="glyphicon glyphicon-remove"></span>
 				Quitter ce groupe
 			</a>
@@ -225,7 +225,7 @@
 		</table>
 		
 			::if stopTuto:: 
-			<div id="stopTuto" data-toggle="popover" title="::_('Tutorial stopped')::" data-placement="left" data-content="::_('You\'ll be able to restart it here.')::" ></div>
+			<div id="stopTuto" data-toggle="popover" title='Tutoriel stoppé' data-placement="left" data-content="Vous pourrez le relancer ici." ></div>
 			<script>
 				$(function(){
 					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);

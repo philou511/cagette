@@ -14,10 +14,6 @@ class Member extends Controller
 	{
 		super();
 		if (!app.user.canAccessMembership()) throw Redirect("/");
-		
-		//var e = new event.Event();
-		//e.id = "displayMember";
-		//App.current.eventDispatcher.dispatch(e);
 	}
 	
 	@logged
@@ -125,11 +121,14 @@ class Member extends Controller
 		wl.group = app.user.amap;
 		wl.insert();
 		
-		throw Ok("/member", u.getName() + " a été replacé en liste d'attente.");
+		throw Ok("/member", u.getName() +" "+ t._("is now on waiting list.") );
 		
 		
 	}
 	
+	/**
+	 * Display waiting list
+	 */
 	@tpl('member/waiting.mtt')
 	function doWaiting(?args:{?add:db.User,?remove:db.User}){
 		
@@ -139,6 +138,10 @@ class Member extends Controller
 				//this user becomes member and is removed from waiting list
 				var w = db.WaitingList.manager.select($user == args.add && $group == app.user.amap , true);
 				
+				if (db.UserAmap.get(args.add, app.user.amap, false) != null){
+					throw Error("/member/waiting", t._("This user is already a member of your group.") );
+				}
+				
 				var ua = new db.UserAmap();
 				ua.amap = app.user.amap;
 				ua.user = w.user;
@@ -146,16 +149,15 @@ class Member extends Controller
 				
 				w.delete();
 				
-				throw Ok("/member/waiting", "Cette personne a bien été ajoutée aux adhérents");
+				throw Ok("/member/waiting", t._("Membership request accepted") );
 				
 			}else if (args.remove != null){
 				
 				//simply removed from waiting list
-				
 				var w = db.WaitingList.manager.select($user == args.remove && $group == app.user.amap , true);
 				w.delete();
 				
-				throw Ok("/member/waiting", "Demande supprimée");
+				throw Ok("/member/waiting", t._("membership request deleted") );
 				
 			}
 			
@@ -170,7 +172,7 @@ class Member extends Controller
 		if (checkToken() ) {
 			
 			u.sendInvitation();
-			throw Ok('/member/view/'+u.id, "Invitation envoyée.");
+			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
 		
 	}

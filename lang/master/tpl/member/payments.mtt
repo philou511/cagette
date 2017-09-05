@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
 <div class="col-md-3">
-	<h2>Coordonnées</h2>
+	<h2>::_("Contact informations")::</h2>
 	<div class="article">
 		
 		<div style="font-weight:bold;font-size:120%;">::member.firstName:: ::member.lastName::
@@ -17,15 +17,15 @@
 		<br/>
 		
 		::if member.phone!=null::
-			Tel : ::member.phone::<br/>
+			::_("Phone"):: : ::member.phone::<br/>
 		::end::
 
 		::if member.email!=null::
-			E-mail : <a href="mailto: ::member.email::">::member.email::</a><br/>
+			::_("Email"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
 		::end::
 		
 		::if member.email2!=null::
-			E-mail : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+			::_("Email"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
 		::end::
 		
 		
@@ -34,7 +34,7 @@
 </div>
 
 <div class="col-md-9">
-	<h2>Paiements</h2>
+	<h2>::_("Payments")::</h2>
 	<div class="article">
 		<table class="table table-condensed">
 
@@ -54,7 +54,7 @@
 		<!-- total -->
 		<tr style="font-size:1.3em;">
 			<td colspan="2"></td>
-			<td>Solde&nbsp;:</td>
+			<td>::_("Balance")::&nbsp;:</td>
 			::if balance<0:: 
 				::set color = "C00"::
 			::else::
@@ -71,7 +71,7 @@
 		</table>
 		
 		
-		$$insert(Saisir un paiement,/transaction/insertPayment/::member.id::)
+		$$insert(::_("Insert a payement")::,/transaction/insertPayment/::member.id::)
 		
 	</div>
 </div>

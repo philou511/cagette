@@ -333,12 +333,14 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * create the needed order operations
+	 * create the needed order operations and returns the related operations
 	 * @param	orders
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		
 		if (orders.length == 0) return null;
+		if (orders[0] == null) return null;
+		
 		var out = [];
 		var user = orders[0].user;
 		var group = orders[0].product.contract.amap;
