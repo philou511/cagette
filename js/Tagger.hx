@@ -2,7 +2,9 @@ package ;
 import Common;
 import js.JQuery;
 /**
- * Permet de tagger les produits à partir de la liste de categories
+ * 
+ * Tag products with categories
+ * 
  * @author fbarbut<francois.barbut@gmail.com>
  */
 @:keep
@@ -20,7 +22,8 @@ class Tagger
 	public function init() {
 		var req = new haxe.Http("/product/categorizeInit/"+contractId);
 		req.onData = function(_data) {			
-			data = haxe.Json.parse(_data);		
+			data = haxe.Json.parse(_data);	
+			//trace(data);
 			render();
 		}
 		req.request();
@@ -29,6 +32,7 @@ class Tagger
 	
 	function render() {
 		var html = new StringBuf();
+		
 		html.add("<table class='table'>");
 		for (p in data.products) {
 			html.add("<tr class='p"+p.product.id+"'>");
@@ -47,10 +51,11 @@ class Tagger
 						if (c == t.id) {
 							name = t.name;
 							color = gc.color;
+							break;
 						}
 					}
 				}
-				//var bt = App.j("<a>[X]</a>")
+				//var bt = App.jq("<a>[X]</a>")
 				tags.push("<span class='tag t"+c+"' style='background-color:"+color+";cursor:pointer;'>"+name+"</span>");
 			}
 			
@@ -58,11 +63,10 @@ class Tagger
 			html.add("</tr>");
 		}
 		html.add("</table>");
-		App.j("#tagger").html(html.toString());
-		App.j("#tagger .tag").click(function(e) {
+		App.jq("#tagger").html(html.toString());
+		App.jq("#tagger .tag").click(function(e) {
 			
-			//var el : js.html.Element = cast e.currentTarget;
-			var el = e.currentTarget;
+			var el : js.html.Element = cast e.currentTarget;
 			
 			//find tag Id
 			var tid = Std.parseInt(el.getAttribute('class').split(" ")[1].substr(1));
@@ -80,12 +84,13 @@ class Tagger
 	}
 	
 	public function add() {
-		var tagId = Std.parseInt(App.j("#tag").val());
+		var tagId = Std.parseInt(App.jq("#tag").val());
+		
 		if (tagId == 0) js.Browser.alert("Impossible de trouver la catégorie selectionnée");
 		
 		var pids = [];
 		
-		for ( e in App.j("#tagger input:checked")/*.elements()*/ ) {
+		for ( e in App.jq("#tagger input:checked").elements() ) {
 			
 			pids.push(Std.parseInt(e.attr("name").substr(1)));
 		}
@@ -131,7 +136,7 @@ class Tagger
 		}
 		
 		//trace('product $productId not found in data.products ');
-		//trace(data.products);
+		
 	}
 	
 	public function submit() {

@@ -17,15 +17,15 @@ class ContractAdmin extends Controller
 	{
 		super();
 		if (!app.user.isContractManager()) throw Error("/", "Vous n'avez pas accès à la gestion des contrats");
-		
+		view.nav = ["contractadmin"];
 		
 	}
 	
 	public function sendNav(c){
-		var nav = new Array<Link>();
-		var e = Nav(nav,"contractAdmin",c.id);
+		var navbar = new Array<Link>();
+		var e = Nav(navbar,"contractAdmin",c.id);
 		app.event(e);
-		view.nav = e.getParameters()[0];
+		view.navbar = e.getParameters()[0];
 	}
 	
 	/**
@@ -33,6 +33,8 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/default.mtt")
 	function doDefault(?args:{old:Bool}) {
+		
+		view.nav.push("default");
 		
 		var now = Date.now();
 		
@@ -74,7 +76,7 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/products.mtt")
 	function doProducts(contract:db.Contract,?args:{?enable:String,?disable:String}) {
-		
+		view.nav.push("products");
 		sendNav(contract);
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
@@ -519,7 +521,7 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/orders.mtt")
 	function doOrders(contract:db.Contract, args:{?d:db.Distribution}) {
-		
+		view.nav.push("orders");
 		sendNav(contract);
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
@@ -718,7 +720,9 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/deliveries.mtt")
 	function doDistributions(contract:db.Contract, ?args: { old:Bool } ) {
+		view.nav.push("distributions");
 		sendNav(contract);
+		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = contract;
 		
@@ -738,7 +742,9 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/distributionp.mtt")
 	function doDistributionp(contract:db.Contract) {
+		view.nav.push("distributions");
 		sendNav(contract);
+		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		
 		var out = new Array<{user:db.User,count:Int}>();
@@ -786,7 +792,9 @@ class ContractAdmin extends Controller
 	
 	@tpl("contractadmin/view.mtt")
 	function doView(contract:db.Contract) {
+		view.nav.push("view");
 		sendNav(contract);
+		
 		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		view.c = view.contract = contract;
 	}
@@ -853,7 +861,9 @@ class ContractAdmin extends Controller
 
 	@tpl("contractadmin/selectDistrib.mtt")
 	function doSelectDistrib(c:db.Contract, ?args:{old:Bool}) {
+		view.nav.push("orders");
 		sendNav(c);
+		
 		view.c = c;
 		if (args != null && args.old){
 			view.distributions = c.getDistribs(false);	
@@ -868,7 +878,9 @@ class ContractAdmin extends Controller
 	 */
 	@tpl("contractadmin/edit.mtt")
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
+		view.nav.push("orders");
 		sendNav(c);
+		
 		if (!app.user.canManageContract(c)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
 		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, "Cette distribution a déjà été validée");
 		

@@ -32,7 +32,6 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	{
 		super(props);
 		options = [];
-		
 		this.state = {
 			txpProductId : props.txpProductId,
 			productName : props.productName,
@@ -65,20 +64,31 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		');
 	}
 	
-	
+	/**
+	 * Called when typing is stopped 
+	 * @param	o
+	 */
 	function onSearch(o){
 		//trace("on search : "+o);
 	}
 	
+	/**
+	 * Each time a single letter change in the input
+	 * @param	input
+	 */
 	function onInputChange(input:String){
+		//trace('on input change $input');
 		this.setState({productName:input});
 	}
 	
+	/**
+	 * Called when an item is selected in suggestions
+	 */
 	function onChange(selection:Array<{label:String,id:Int}>){
 		
 		if (selection == null || selection.length == 0) return;
 		
-		//trace(selection[0]);
+		//trace("on change "+selection[0]);
 		
 		var product = Lambda.find(DICO.products, function(x) return x.id == selection[0].id);
 		setTaxo(product);
@@ -103,44 +113,28 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 				
 				//default values of input
 				if (props.txpProductId != null){
-					var product = Lambda.find(DICO.products, function(x) return x.id == props.txpProductId);
-					setTaxo(product);
+					var txp = Lambda.find(DICO.products, function(x) return x.id == props.txpProductId);
+					setTaxo(txp);
 				}
-				
-			
 			};
 			r.request();
 		}
-		
-		
 	}
 	
-	function setTaxo(product:{id:Int, name:String, category:Int, subCategory:Int}){
+	function setTaxo(txp:{id:Int, name:String, category:Int, subCategory:Int}){
 		
-		if (product == null) return;
+		if (txp == null) return;
 		
-		//print category and subcategory
-		//state.breadcrumb = getTaxoString(product);
-		//App.j("div.txpProduct").html(cast str);
-		
-		//this.refs.input.value = Std.string(product.id);
-		
-		//set txpProductId in the hidden input
-		//state.txpProductId = product.id;
-		
-		//image
-		//state.categoryId = product.category;
-		
-		trace(product);
+		//trace(txp);
 		
 		this.setState({
-			categoryId:product.category,
-			txpProductId:product.id,
-			breadcrumb:getBreadcrumb(product),
-			productName:product.name			
+			categoryId:txp.category,
+			txpProductId:txp.id,
+			breadcrumb:getBreadcrumb(txp)/*,
+			productName:product.name	//do not override product name !		*/
 		});
 		
-		this.refs.image.src="/img/taxo/cat"+product.category+".png";
+		this.refs.image.src="/img/taxo/cat"+txp.category+".png";
 	}
 	
 	/**

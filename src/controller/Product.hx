@@ -12,7 +12,7 @@ class Product extends Controller
 	public function new()
 	{
 		super();
-		
+		view.nav = ["contractadmin","products"];
 	}
 	
 	@tpl('form.mtt')
@@ -204,6 +204,7 @@ class Product extends Controller
 	
 	@tpl("product/categorize.mtt")
 	public function doCategorize(contract:db.Contract) {
+		
 		
 		if (!app.user.canManageContract(contract)) throw "Accès interdit";
 		

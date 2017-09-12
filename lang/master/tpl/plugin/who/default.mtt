@@ -26,7 +26,7 @@
 	::if active::
 	
 	<p>
-		<h4><i class="fa fa-balance-scale" aria-hidden="true"></i> Equilibrage de commande</h4>
+		<h4><i class="fa fa-balance-scale" aria-hidden="true"></i> Commandes à ajuster</h4>
 		
 		<table class="table">
 			::foreach d distributions::
@@ -34,25 +34,24 @@
 				<td>Distribution du ::dDate(d.date)::</td>
 				<td>::d._place.name::</td>
 				<td>
-					<a href="/p/who/balance/::d.id::" class="btn btn-primary"> Equilibrer </a>
+					<a href="/p/who/balance/::d.id::" class="btn btn-primary"> Ajuster </a>
 				</td>
 			</tr>
 			::end::
 			
 			::if distributions.length==0::
-			<tr><td>Aucune distribution en cours.</td></tr>
+			<tr>
+				<td>
+					Aucune distribution à équilibrer.
+					<br/>
+					Il faut être entre la date de fermeture de commande et la date de livraison pour pouvoir ajuster une commande.
+				</td>			
+			</tr>
 			::end::
 			
 			
 		</table>
 		
-	</p>
-	
-	<p>
-		<!--<a href="/p/who/link/::c.id::" class="btn btn-default">
-			<i class="fa fa-link" aria-hidden="true"></i>
-			Associations de produits détail-gros
-		</a>-->
 	</p>
 
 	<p>
@@ -72,7 +71,7 @@
 			::end::
 			
 			<tr class="::class::">
-				<td>::l.p1.getName()::</td>
+				<td><img src="::l.p1.getImage()::" style="width:32px;height:32px;" />&nbsp;::l.p1.getName()::</td>
 				<td><i class="fa fa-arrow-right" aria-hidden="true"></i></td>
 				<td>
 					::if(l.p2==null)::

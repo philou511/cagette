@@ -1,6 +1,6 @@
 ::use 'contractadmin/design.mtt'::
 	
-	<h3>Commande en gros : Equilibrage de commande</h3>
+	<h3>Commande en gros : Ajustage de commande</h3>
 
 
 <p>
@@ -18,7 +18,7 @@
 			<th>Gros</th>
 			<th>Commandé</th>
 			<th>Caisses entières</th>
-			<th>Reste dans la<br/>dernière caisse</th>
+			<th>Manque</th>
 			
 		</tr>
 		::foreach p products::
@@ -30,7 +30,9 @@
 		::end::
 		
 		<tr class="::class::">
-			<td>::p.p1.getName()::</td>
+			<td>
+				<img src="::p.p1.getImage()::" style="width:32px;height:32px;" />&nbsp;::p.p1.getName()::
+			</td>
 			<td>::p.p2.qt:: ::unit(p.p2._unitType)::</td>
 			<td>
 				
@@ -43,11 +45,11 @@
 				
 			</th>
 			
-			::set remain = qt%p.p2.qt::			
-			::if(remain==0)::
-				<td class="success">$$check(::true::)</td>
+			::set missing =  p.p2.qt - (qt % p.p2.qt)::			
+			::if( (qt % p.p2.qt)==0 )::
+				<td class="success">$$check(::true::) 0 ::unit(p.p2._unitType)::</td>
 			::else::
-				<td class="danger">$$check(::false::) ::remain:: ::unit(p.p2._unitType)::</td>
+				<td class="danger">$$check(::false::) ::missing:: ::unit(p.p2._unitType)::</td>
 				::set ok = false::
 			::end::
 				
@@ -66,7 +68,7 @@
 				En confirmant cette commande, vous allez tranformer cette commande au détail en commande en gros.
 			</p>
 			<p>
-				<a href="/p/who/confirm/::d.id::/" class="btn btn-primary btn-lg">
+				<a href="/p/who/confirm/::d.id::/?token=::token::" class="btn btn-primary btn-lg">
 					<span class="glyphicon glyphicon-ok"></span>
 					Confirmer cette commande
 				</a>

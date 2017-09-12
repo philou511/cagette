@@ -20,7 +20,7 @@ class AmapAdmin extends Controller
 		var nav = new Array<Link>();
 		
 		if (app.user.amap.hasPayments()){
-			nav.push({link:"/amapadmin/payments",name:"Paiements"});
+			nav.push({id:"payments",link:"/amapadmin/payments",name:"Paiements"});
 		}		
 		
 		var e = Nav(nav,"groupAdmin");

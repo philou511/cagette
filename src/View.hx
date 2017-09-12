@@ -54,6 +54,32 @@ class View extends sugoi.BaseView {
 	}
 	
 	/**
+	 * smart quantity filter : display easier-to-read quantity when it's strange
+	 * 
+	 * 0.33 x Lemon 12kg => 2kg
+	 * 
+	 */
+	function smartQt(qt:Float, p:db.Product):String{
+		
+		if (Math.round(qt) != qt){
+			
+			if ( qt < 1 ){
+				
+				return (qt * p.qt) + " " + unit(p.unitType);
+				
+				/*switch(p.unitType){
+					case Kilogram : return (p.qt * qt * 1000) + " " + unit(Gram);
+				}*/	
+			}else{
+				return null;
+			}
+			
+		}else{
+			return null;
+		}
+	}
+	
+	/**
 	 * Round a number to r digits after coma.
 	 * 
 	 * @param	n
@@ -167,7 +193,7 @@ class View extends sugoi.BaseView {
 		out += " " + date.getFullYear();
 		if ( date.getHours() != 0 || date.getMinutes() != 0){
 			
-			out += " " + sugoi.i18n.Locale.texts._("at") + " " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
+			out += " " + sugoi.i18n.Locale.texts._("at||time : at 12:30") + " " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
 		}
 		return out;
 	}

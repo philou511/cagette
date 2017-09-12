@@ -9,7 +9,7 @@ class App extends sugoi.BaseApp {
 	public static var config = sugoi.BaseApp.config;
 	
 	public var eventDispatcher :hxevents.Dispatcher<Event>;	
-	public var plugins : Array<plugin.IPlugIn>;
+	public var plugins : Array<sugoi.plugin.IPlugIn>;
 	
 	/**
 	 * Version management
@@ -43,7 +43,7 @@ class App extends sugoi.BaseApp {
 		plugins.push( new pro.ProPlugIn() );		
 		plugins.push( new connector.ConnectorPlugIn() );				
 		plugins.push( new pro.LemonwayEC() );
-		//plugins.push( new who.WhoPlugIn() );
+		plugins.push( new who.WhoPlugIn() );
 		#end
 	
 		super.mainLoop();
@@ -68,7 +68,7 @@ class App extends sugoi.BaseApp {
 		super.beforeDispatch();
 	}
 	
-	public function getPlugin(name:String):plugin.IPlugIn {
+	public function getPlugin(name:String):sugoi.plugin.IPlugIn {
 		for (p in plugins) {
 			if (p.getName() == name) return p;
 		}
@@ -283,7 +283,6 @@ class App extends sugoi.BaseApp {
 		e.setRecipient(to);			
 		e.setSender(App.config.get("default_email"),"Cagette Pro");		
 		
-		//var html = App.current.processTemplate("plugin/pro/mail/message.mtt", {text:html});		
 		var html = App.current.processTemplate("mail/message.mtt", {text:html});		
 		e.setHtmlBody(html);
 		try{
@@ -299,7 +298,9 @@ class App extends sugoi.BaseApp {
 	 * @param	ctx
 	 */
 	public function processTemplate(tpl:String, ctx:Dynamic):String {
+		
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
+		Reflect.setField(ctx, 'hDate', App.current.view.hDate);
 		
 		var tpl = loadTemplate(tpl);
 		var html = tpl.execute(ctx);	

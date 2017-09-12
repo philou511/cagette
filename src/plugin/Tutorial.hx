@@ -1,5 +1,6 @@
 package plugin;
 import Common;
+import sugoi.plugin.*;
 
 /**
  * Tutorials internal plugin
@@ -12,7 +13,7 @@ import Common;
  * 
  * 
  */
-class Tutorial extends plugin.PlugIn implements plugin.IPlugIn
+class Tutorial extends PlugIn implements IPlugIn
 {
 	public function new() {
 		super();	

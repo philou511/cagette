@@ -3,6 +3,7 @@ h1{color:#583816!important;}
 h1 a{color:#583816!important;}
 h2,h3,h4{color:#007700!important;}
 a{cursor:pointer;}
+.nav-pills>li.active>a{background-color:#e7e7e7!important;color:#555!important;}
 #footer{text-align:center;background:#F0D277;border-radius:8px;padding:6px;}
 #footer a{color:#333;}
 body{background:url("/img/bg.gif");}

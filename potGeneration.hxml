@@ -11,6 +11,7 @@
 -lib cagette-hosted
 -lib cagette-pro
 -lib cagette-connector
+-lib cagette-wholesale-order
 -cp common
 -cp src
 -cp lang/master/tpl

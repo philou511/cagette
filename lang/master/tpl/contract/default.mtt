@@ -26,7 +26,7 @@
 		::foreach m c.orders::
 			<tr>
 				<td>
-					::m.quantity:
+					::formatNum(m.quantity):
 				</td>
 				<td>
 					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
@@ -112,7 +112,7 @@
 				::foreach o d.orders::
 					<tr>
 						<td>
-							::o.quantity::
+							::formatNum(o.quantity)::
 						</td>
 						<td>
 							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">

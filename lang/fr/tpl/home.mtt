@@ -319,5 +319,16 @@
 		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Définir mon mot de passe</a>
 		
 	</div>
+
+	<!-- additionnal blocks from plugins -->
+	::foreach b blocks::
+	<div class="block">
+		<h3>::b.title::</h3>
+		<p>
+			::raw b.html::
+		</p>
+	</div>
+	::end::
+	
 </div>
 ::end::

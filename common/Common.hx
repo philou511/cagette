@@ -91,9 +91,17 @@ typedef TaggerInfos = {
  * Links in navbars for plugins
  */
 typedef Link = {
+	id:String,
 	link:String,
 	name:String,
 	?icon:String,
+}
+
+typedef Block = {
+	id:String,
+	title:String,
+	?icon:String,
+	html:String
 }
 
 typedef UserOrder = {
@@ -144,7 +152,8 @@ typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,price:F
 enum Event {
 
 	Page(uri:String);							//a page is displayed
-	Nav(nav:Array<Link>,name:String,?id:Int);	//a navigation is displayed, optionnal object id if needed
+	Nav(nav:Array<Link>, name:String, ?id:Int);	//a navigation is displayed, optionnal object id if needed
+	Blocks(blocks:Array<Block>, name:String);	//HTML blocks that can be displayed on a page
 	
 	#if sys
 	SendEmail(message : sugoi.mail.Mail);		//an email is sent

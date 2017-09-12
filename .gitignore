@@ -2,7 +2,7 @@
 *.php
 config.xml
 www/plugin/*
-lang/fr/tpl/plugin/*
+lang/master/tpl/plugin/*
 www/file/*
 www/js/app.js
 tmp/*

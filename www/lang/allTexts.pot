@@ -68,15 +68,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: src/controller/Distribution.hx:155 src/controller/Distribution.hx:217
+#: src/controller/Distribution.hx:156 src/controller/Distribution.hx:218
 msgid "End time"
 msgstr ""
 
-#: src/controller/Distribution.hx:159 src/controller/Distribution.hx:225
+#: src/controller/Distribution.hx:160 src/controller/Distribution.hx:226
 msgid "Orders opening date"
 msgstr ""
 
-#: src/controller/Distribution.hx:160 src/controller/Distribution.hx:226
+#: src/controller/Distribution.hx:161 src/controller/Distribution.hx:227
 msgid "Orders closing date"
 msgstr ""
 
@@ -388,111 +388,112 @@ msgid "Bank transfer"
 msgstr ""
 
 #. kilogramms
-#: src/View.hx:127
+#: src/View.hx:153
 msgid "Kg."
 msgstr ""
 
 #. gramms
-#: src/View.hx:128
+#: src/View.hx:154
 msgid "g."
 msgstr ""
 
 #. unit of a product)
-#: src/View.hx:129
+#: src/View.hx:155
 msgid "piece"
 msgstr ""
 
 #. liter
-#: src/View.hx:130
+#: src/View.hx:156
 msgid "L."
 msgstr ""
 
 #. centiliter
-#: src/View.hx:131
+#: src/View.hx:157
 msgid "cl."
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Sunday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Monday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Tuesday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Wednesday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Thursday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Friday"
 msgstr ""
 
-#: src/View.hx:152
+#: src/View.hx:178
 msgid "Saturday"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "January"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "February"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "March"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "April"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "May"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "June"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "July"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "August"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "September"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "October"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "November"
 msgstr ""
 
-#: src/View.hx:153
+#: src/View.hx:179
 msgid "December"
 msgstr ""
 
-#: src/View.hx:163 src/View.hx:176
+#: src/View.hx:189 src/View.hx:202
 msgid "no date set"
 msgstr ""
 
-#: src/View.hx:170
+#. time : at 12:30
+#: src/View.hx:196
 msgid "at"
 msgstr ""
 
@@ -702,7 +703,7 @@ msgstr ""
 msgid "Timeframe"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/default.mtt:91
+#: lang/master/tpl/contractadmin/default.mtt:91 lang/master/tpl/distribution/list.mtt:23
 msgid "Farmers"
 msgstr ""
 
@@ -722,7 +723,7 @@ msgstr ""
 msgid "New delivery place"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:3 lang/master/tpl/contractadmin/design.mtt:13
+#: lang/master/tpl/contractadmin/deliveries.mtt:3 lang/master/tpl/contractadmin/design.mtt:17
 msgid "Distributions"
 msgstr ""
 
@@ -770,23 +771,23 @@ msgstr ""
 msgid "Old distributions"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/design.mtt:10 lang/master/tpl/contractadmin/view.mtt:3
+#: lang/master/tpl/contractadmin/design.mtt:11 lang/master/tpl/contractadmin/view.mtt:3
 msgid "Summary"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/design.mtt:11
+#: lang/master/tpl/contractadmin/design.mtt:13
 msgid "Edit contract"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/design.mtt:12 lang/master/tpl/contractadmin/products.mtt:3 lang/master/tpl/contractadmin/view.mtt:55
+#: lang/master/tpl/contractadmin/design.mtt:15 lang/master/tpl/contractadmin/products.mtt:3 lang/master/tpl/contractadmin/view.mtt:55
 msgid "Products"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/design.mtt:14 lang/master/tpl/contractadmin/orders.mtt:3
+#: lang/master/tpl/contractadmin/design.mtt:19 lang/master/tpl/contractadmin/orders.mtt:3
 msgid "Orders"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/design.mtt:15
+#: lang/master/tpl/contractadmin/design.mtt:21
 msgid "Stats"
 msgstr ""
 
@@ -901,6 +902,10 @@ msgstr ""
 
 #: lang/master/tpl/design.mtt:84
 msgid "Admin"
+msgstr ""
+
+#: lang/master/tpl/distribution/list.mtt:28
+msgid "Members on dutty"
 msgstr ""
 
 #: lang/master/tpl/home.mtt:12
@@ -1384,11 +1389,11 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: common/Common.hx:248
+#: common/Common.hx:257
 msgid "Guided tour for the coordinator"
 msgstr ""
 
-#: common/Common.hx:252
+#: common/Common.hx:261
 msgid ""
 "<p>In order to better discover Cagette.net, we propose to do a guided tour "
 "of the user interface of the software. <br/> You will then have a global "
@@ -1396,7 +1401,7 @@ msgid ""
 "be able to stop and start again this tutorial whenever you want.</p>"
 msgstr ""
 
-#: common/Common.hx:258
+#: common/Common.hx:267
 msgid ""
 "This part of the navigation bar is visible by all members.</br>It allows "
 "to access to the three main pages:	<ul><li> The <b>home page</b> which displays "
@@ -1406,14 +1411,14 @@ msgid ""
 "the group</ul>"
 msgstr ""
 
-#: common/Common.hx:264
+#: common/Common.hx:273
 msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
 "<b>Members</b> section</p>"
 msgstr ""
 
-#: common/Common.hx:270
+#: common/Common.hx:279
 msgid ""
 "The purpose of this section is to administrate the list of your members.<br/>Every "
 "time that you register a new membrer, an account will be created for him/her. "
@@ -1421,20 +1426,20 @@ msgid ""
 "of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
 msgstr ""
 
-#: common/Common.hx:275
+#: common/Common.hx:284
 msgid ""
 "This is the page of a member. Here you can : <ul><li>see and change their "
 "contact details</li><li>manage the membership fee of your group</li><li>see "
 "a summary of their orders</li></ul>"
 msgstr ""
 
-#: common/Common.hx:280
+#: common/Common.hx:289
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very important "
 "for coordinators."
 msgstr ""
 
-#: common/Common.hx:285
+#: common/Common.hx:294
 msgid ""
 "Here you find the list of <b>contracts</b>.They inculde a start date, a end "
 "date, and represent your relationship with a farmer. <br/><p>Here you can "
@@ -1442,17 +1447,17 @@ msgid ""
 "members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
 msgstr ""
 
-#: common/Common.hx:291
+#: common/Common.hx:300
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget "
 "to key-in the complete address as a map will be displayed based on this address"
 msgstr ""
 
-#: common/Common.hx:297
+#: common/Common.hx:306
 msgid "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
 
-#: common/Common.hx:303
+#: common/Common.hx:312
 msgid ""
 "Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant "
 "contracts: the member commits on buying the same products during the whole "
@@ -1460,33 +1465,33 @@ msgid ""
 "what he buys for each delivery.</li></ul>"
 msgstr ""
 
-#: common/Common.hx:309
+#: common/Common.hx:318
 msgid "Let's see now the page <b>Products</b>"
 msgstr ""
 
-#: common/Common.hx:314
+#: common/Common.hx:323
 msgid ""
 "On this page, you can manage the list of products offered by this supplier.<br/>Define "
 "at least the name and the price of products. It is also possible to add a "
 "description and a picture."
 msgstr ""
 
-#: common/Common.hx:320
+#: common/Common.hx:329
 msgid "Let's see the <b>deliveries</b> page"
 msgstr ""
 
-#: common/Common.hx:325
+#: common/Common.hx:334
 msgid ""
 "Here we can manage the list of deliveries for this supplier.<br/>In the software, "
 "a delivery has a date, a start time, and an end time. The location of the "
 "delivery must also be defined, by using the list that we have already seen."
 msgstr ""
 
-#: common/Common.hx:331
+#: common/Common.hx:340
 msgid "Let's see now the <b>Orders</b> page"
 msgstr ""
 
-#: common/Common.hx:336
+#: common/Common.hx:345
 msgid ""
 "Here we can manage the list of orders for this supplier.<br/>If you choose "
 "to \"open orders\" to members, they will be able to make their orders online "
@@ -1495,13 +1500,13 @@ msgid ""
 "on behalf of a member."
 msgstr ""
 
-#: common/Common.hx:342
+#: common/Common.hx:351
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
 msgstr ""
 
-#: common/Common.hx:348
+#: common/Common.hx:357
 msgid ""
 "<p>The messaging section allows you to send e-mails to different lists of "
 "members. It is not necessary anymore to maintain a lot of lists of e-mails "
@@ -1510,11 +1515,11 @@ msgid ""
 "answers in your own mailbox.</p>"
 msgstr ""
 
-#: common/Common.hx:354
+#: common/Common.hx:363
 msgid "Click here now on this page"
 msgstr ""
 
-#: common/Common.hx:359
+#: common/Common.hx:368
 msgid ""
 "<p>In this last page, you can configure everything that is related to your "
 "group.</p><p>The page <b>Access rights</b> is important as it is where you "
@@ -1522,7 +1527,7 @@ msgid ""
 "one or many contracts, send emails, etc.</p>"
 msgstr ""
 
-#: common/Common.hx:364
+#: common/Common.hx:373
 msgid ""
 "<p>This is the last step of this tutorial. I hope that it gave you a good "
 "overview of this software.<br/>To go further, do not hesitate to look at "
