@@ -175,7 +175,7 @@ class Shop extends Controller
 			var p = db.Product.manager.get(o.productId, false);
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
-				errors.push( t._("The product \"::pname::\" is not available in this distribution",{pname:p.name}) );
+				errors.push( t._("The product <b>::pname::</b> is not available in this distribution",{pname:p.name}) );
 				order.products.remove(o);
 			}else{
 				o.product = p;
@@ -184,7 +184,7 @@ class Shop extends Controller
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){
-				errors.push( t._("The product \"::pname::\" is not available in this distribution",{pname:p.name}) );
+				errors.push( t._("The product <b>::pname::</b> is not available in this distribution",{pname:p.name}) );
 				order.products.remove(o);
 			}else{
 				o.distributionId = d.id;
@@ -215,7 +215,7 @@ class Shop extends Controller
 		if (app.user.amap.hasPayments()){
 			
 			//Go to payments page
-			throw Ok("/transaction/pay/"/*+place.id+"/"+date.toString().substr(0, 10)*/, t._("Your basket has been recorded, please select a payment method to confirm it.") );
+			throw Ok("/transaction/pay/", t._("Your basket has been recorded, please select a payment method to confirm it.") );
 		}else{
 			//no payments, confirm direclty
 			db.UserContract.confirmSessionOrder(order);			

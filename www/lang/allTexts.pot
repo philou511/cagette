@@ -68,6 +68,10 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
+#: src/controller/ContractAdmin.hx:82
+msgid "Access forbidden"
+msgstr ""
+
 #: src/controller/Distribution.hx:156 src/controller/Distribution.hx:218
 msgid "End time"
 msgstr ""

@@ -79,7 +79,7 @@ class ContractAdmin extends Controller
 		view.nav.push("products");
 		sendNav(contract);
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("Access forbidden") );
 		view.c = contract;
 		
 		//checks
