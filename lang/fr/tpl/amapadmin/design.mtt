@@ -3,15 +3,15 @@
 
 	<div class="panel panel-warning">
 		<div class="panel-heading">
-			<span class="panel-title"><a href="/amapadmin">Mon groupe</a></span>
+			<span class="panel-title"><a href="/amapadmin">::_("Mon groupe")::</a></span>
 		</div>
 		
 		<ul id="subnav" class="nav nav-tabs nav-stacked" >
 			
-			<li><a href="/amapadmin/rights/">Droits d'accès</a></li>
-			<li><a href="/amapadmin/vatRates/">Taux de TVA</a></li>
-			<li><a href="/amapadmin/categories/">Catégories</a></li>
-			<li><a href="/amapadmin/currency/">Monnaie</a></li>
+			<li><a href="/amapadmin/rights/">::_("Droits d'accès")::</a></li>
+			<li><a href="/amapadmin/vatRates/">::_("Taux de TVA")::</a></li>
+			<li><a href="/amapadmin/categories/">::_("Catégories")::</a></li>
+			<li><a href="/amapadmin/currency/">::_("Monnaie")::</a></li>
 			::if nav!=null::
 				
 				::foreach i nav::

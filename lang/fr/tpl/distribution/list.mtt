@@ -20,12 +20,12 @@
 		<b>Responsable contrat : </b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
 	</p>
 	<p>
-		<b>Producteurs : </b>::v.name:: , 
+		<b>::_("Producteurs"):: : </b>::v.name:: , 
 		::if v.email!=null :: ::v.email:: ::end::, 
 		::if v.phone!=null :: ::v.phone:: ::end::
 	</p>
 	<p>	
-		<b>Adhérents de permanence : </b>
+		<b>::_("Adhérents de permanence"):: : </b>
 		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::,::end::
 		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::,::end::
 		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::,::end::

@@ -12,13 +12,13 @@
 			::raw nl2br(user.getAmap().txtIntro)::
 			<br/>
 			::if user.isAmapManager()::
-			$$edit(Modifier,amap/edit)
+			$$edit(::_("Modifier")::,amap/edit)
 			::end::
 		
 		</div>
 		
 		<div class="block">
-			<b>Contact principal :</b><br/>
+			<b>::_("Contact principal"):: :</b><br/>
 			$$contact(::user.getAmap()._contact::)	
 		</div>
 
@@ -52,7 +52,7 @@
 							
 							<div class="col-md-4">
 								::if c._contact!=null::
-									<b>Coordinateur :</b>
+									<b>::_("Coordinateur"):: :</b>
 									<br/>
 									$$contact(::c._contact::)
 								::end::								

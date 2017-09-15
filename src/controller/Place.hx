@@ -75,7 +75,7 @@ class Place extends Controller
 		if (checkToken()) {
 			
 			if (db.Distribution.manager.search($placeId == p.id).length > 0) 
-				throw Error('/contractAdmin', "You can't delete this place because one or more distributions are linked to this place.");
+				throw Error('/contractAdmin', t._("You can't delete this place because one or more distributions are linked to this place.") );
 			
 			p.lock();
 			p.delete();

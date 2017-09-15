@@ -8,17 +8,17 @@
 	<div class="article">
 		<ul id="subnav" class="nav nav-pills nav-stacked">
 			<li id="default" ::attr class if(nav[1]=="view") 'active'::>
-				<a href="/contractAdmin/view/::c.id::">Récapitulatif</a></li>
+				<a href="/contractAdmin/view/::c.id::">::_("Récapitulatif")::</a></li>
 			<li id="edit">
-				<a href="/contract/edit/::c.id::">Modifier contrat</a></li>
+				<a href="/contract/edit/::c.id::">::_("Modifier contrat")::</a></li>
 			<li id="products" ::attr class if(nav[1]=="products") 'active'::>
-				<a href="/contractAdmin/products/::c.id::">Produits</a></li>			
+				<a href="/contractAdmin/products/::c.id::">::_("Produits")::</a></li>			
 			<li id="deliveries" ::attr class if(nav[1]=="distributions") 'active'::>
-				<a href="/contractAdmin/distributions/::c.id::">Distributions</a></li>
+				<a href="/contractAdmin/distributions/::c.id::">::_("Distributions")::</a></li>
 			<li id="orders" ::attr class if(nav[1]=="orders") 'active'::>
-				<a href="/contractAdmin/orders/::c.id::">Commandes</a></li>
+				<a href="/contractAdmin/orders/::c.id::">::_("Commandes")::</a></li>
 			<li id="stats">
-				<a href="/contractAdmin/stats/::c.id::">Statistiques</a></li>
+				<a href="/contractAdmin/stats/::c.id::">::_("Statistiques")::</a></li>
 			::if navbar!=null::
 				<hr/>
 				::foreach i navbar::

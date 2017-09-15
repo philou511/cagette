@@ -53,6 +53,10 @@ class View extends sugoi.BaseView {
 		return db.User.manager.get(uid, false);
 	}
 	
+	function getProduct (pid:Int){ 
+		return db.Product.manager.get(pid, false);		
+	}
+	
 	/**
 	 * smart quantity filter : display easier-to-read quantity when it's strange
 	 * 
@@ -224,7 +228,6 @@ class View extends sugoi.BaseView {
 	}
 	
 	public function getProductImage(e):String {
-		
 		return Std.string(e).substr(2).toLowerCase()+".png";
 	}
 	
@@ -265,7 +268,7 @@ class View extends sugoi.BaseView {
 		
 	
 	public function isAmap(){
-		return App.current.user.amap.flags.has(db.Amap.AmapFlags.IsAmap);
+		return App.current.user.amap.groupType == db.Amap.GroupType.Amap;
 	}
 
 	

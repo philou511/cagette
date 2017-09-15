@@ -9,12 +9,12 @@
 		<!-- Welcoming message + access to tutos-->
 		::if newGroup::
 		<div class="alert alert-success">
-			<h3>Bienvenue sur Cagette.net !</h3>
+			<h3>::_("Bienvenue sur Cagette.net !")::</h3>
 			<p>
-				Congratulations, you just created a new group !<br/>
+				::_("Congratulations, you just created a new group !<br/>
 				As an example, we created a fake farmer and fake products. <br/>
 				It will show you how things work together in Cagette.net.<br/>
-				Of course, you'll be able to delete them.
+				Of course, you'll be able to delete them.")::
 				<!-- Félicitations, vous venez de créer un compte pour votre groupe.<br/>
 				A titre d'exemple, nous avons ajouté un producteur et quelques produits à votre compte. <br/>
 				Cela vous permettra de voir comment tout cela fonctionne et évite l'angoisse de la page blanche !<br/>
@@ -22,10 +22,10 @@
 			</p>
 			<hr/>
 			<p>
-				Pour commencer, nous vous recommandons de suivre la <b>visite guidée</b> pour découvrir progressivement les principales rubriques du logiciel.
+				::_("Pour commencer, nous vous recommandons de suivre la <b>visite guidée</b> pour découvrir progressivement les principales rubriques du logiciel.")::
 			</p>
 			<p>
-				<a href="/contract/?startTuto=intro" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Commencer la visite guidée</a>
+				<a href="/contract/?startTuto=intro" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Commencer la visite guidée")::</a>
 			</p>
 			
 		</div>
@@ -35,7 +35,7 @@
 		::if !amap.hasShopMode()::
 		<div class="homeBlock" ::cond ( openContracts!=null && openContracts.length>0 )::>
 			<img src="/img/order.png" width="64" height="64" style="float:right;" />
-			<h2>Commandes ouvertes</h2>
+			<h2>::_("Commandes ouvertes")::</h2>
 			
 			<ul>
 				::foreach c openContracts::
@@ -50,7 +50,7 @@
 		::if distribs==null || count(distribs)==0::
 			<div class="homeBlock">
 				<!--Votre planning de livraison est vide pour l'instant.-->
-				Votre planning de distribution est vide
+				::_("Votre planning de distribution est vide")::
 				<br/>
 			</div>
 		::else::
@@ -76,13 +76,13 @@
 							::if user._amap.hasShopMode()::
 								::if d.active::
 									<a ::cond !user._amap.hasPayments():: href="/contract/editOrderByDate/::d.startDate.toString().substr(0,10)::" class="btn btn-default btn-sm">
-										<span class="glyphicon glyphicon-edit"></span> Modifier ma commande
+										<span class="glyphicon glyphicon-edit"></span> ::_("Modifier ma commande")::
 									</a>
 									<a href="/shop/::d.place.id::/::d.startDate.toString().substr(0,10)::" class="btn btn-default btn-sm">
-										<span class="glyphicon glyphicon-plus"></span> Ajouter des produits
+										<span class="glyphicon glyphicon-plus"></span> ::_("Ajouter des produits")::
 									</a>
 								::else::
-									Commande close
+									::_("Commande close")::
 								::end::
 							::end::							
 						</div>
@@ -99,7 +99,7 @@
 			
 					</div>
 					
-					<div class="myorder">Mes produits commandés :</div>
+					<div class="myorder">::_("Mes produits commandés"):: :</div>
 					
 					<div class="content orders">
 					::foreach o d.myOrders::
@@ -109,7 +109,7 @@
 							::set e = getDate(o.distrib.end)::
 							
 							<span style="color:#999;"><span class="glyphicon glyphicon-time"></span> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
-							&nbsp;Livraison <a href="/contract/view/::o.distrib._contract.id::">::o.distrib._contract.name::</a>
+							&nbsp;::_("Livraison"):: <a href="/contract/view/::o.distrib._contract.id::">::o.distrib._contract.name::</a>
 							
 						</h3>
 							
@@ -145,15 +145,15 @@
 											::if c.getWhosTurn(o.distrib)==false::
 									
 												::if c._user.getName() == you.getName()::
-													<span style="color:#080">C'est votre tour</span>
+													<span style="color:#080">::_("C'est votre tour")::</span>
 												::else::
-													C'est son tour
+													::_("C'est son tour")::
 												::end::
 											::else::
 												::if c._user2.getName() == you.getName()::
-													<span style="color:#080">C'est votre tour</span>
+													<span style="color:#080">::_("C'est votre tour")::</span>
 												::else::
-													C'est son tour
+													::_("C'est son tour")::
 												::end::
 											::end::
 											)
@@ -170,18 +170,18 @@
 						<div class="place">
 						
 							::if user.isContractManager(o.distrib._contract) || o.distrib.distributor1Id==user.id || o.distrib.distributor2Id==user.id || o.distrib.distributor3Id==user.id || o.distrib.distributor4Id==user.id:: 
-								<a href="/distribution/list/::o.distrib.id::"><span class="glyphicon glyphicon-print"></span>  Liste d'émargement</a>
+								<a href="/distribution/list/::o.distrib.id::"><span class="glyphicon glyphicon-print"></span>  ::_("Liste d'émargement")::</a>
 							::end::
 							
 							<span ::cond o.distrib.distributor1Id!=null || o.distrib.distributor2Id!=null || o.distrib.distributor3Id!=null || o.distrib.distributor4Id!=null::>
-								&nbsp; <a href="#" onclick="$('#distributors::o.distrib.id::').toggle();return false;"><span class="glyphicon glyphicon-user"></span> Permanence</a>
+								&nbsp; <a href="#" onclick="$('#distributors::o.distrib.id::').toggle();return false;"><span class="glyphicon glyphicon-user"></span> ::_("Permanence")::</a>
 							</span>
 							
 							
-							&nbsp; <a href="/contract/view/::o.distrib._contract.id::"><span class="glyphicon glyphicon-list-alt"></span> Détails du contrat</a>
+							&nbsp; <a href="/contract/view/::o.distrib._contract.id::"><span class="glyphicon glyphicon-list-alt"></span> ::_("Détails du contrat")::</a>
 							
 							::if !user._amap.hasShopMode() && o.distrib._contract.type==1::
-							&nbsp; <a href="/contract/order/::o.distrib._contract.id::"><span class="glyphicon glyphicon-edit"></span> Modifier ma commande</a>
+							&nbsp; <a href="/contract/order/::o.distrib._contract.id::"><span class="glyphicon glyphicon-edit"></span> ::_("Modifier ma commande")::</a>
 							::end::
 							
 							<div id="distributors::o.distrib.id::" style="display:none;margin:8px;">
@@ -195,7 +195,7 @@
 							
 							<div class="distribMessage" ::cond o.distrib.distributor1Id==user.id || o.distrib.distributor2Id==user.id || o.distrib.distributor3Id==user.id || o.distrib.distributor4Id==user.id::>
 								<!--Attention, vous ou votre conjoint(e) participe à la distribution !-->
-								Attention, vous ou votre conjoint êtes inscrit à cette distribution !
+								::_("Attention, vous ou votre conjoint êtes inscrit à cette distribution !")::
 							</div>
 						</div>
 					
@@ -220,17 +220,17 @@
 							::if d.active==true::
 								<a href="/shop/::d.place.id::/::d.startDate.toString().substr(0,10)::" class="btn btn-lg btn-primary">
 									<span class="glyphicon glyphicon-chevron-right"></span>
-									Commander
+									::_("Commander")::
 								</a>
 								<br/>
 								<!--Fermeture des commandes :-->
 							::else::
 								
 								::if d.orderEndDate!=null && Date.now().getTime() > d.orderEndDate.getTime()::
-									Commande close depuis le <br/>
+									::_("Commande close depuis le"):: <br/>
 									::hDate(d.orderEndDate)::
 								::else::
-									La commande ouvre le <br/>
+									::_("La commande ouvre le"):: <br/>
 									::hDate(d.orderStartDate)::
 								::end::
 							::end::
@@ -249,8 +249,10 @@
 						<div class="info">						
 							::set e = getDate(d.endDate)::
 							<span class="glyphicon glyphicon-time"></span> 
+							::set start = s.h+":"+s.i::
+							::set end = e.h+":"+e.i::
 							
-							Livraison de ::s.h+':'+s.i:: à ::e.h+':'+e.i::
+							::__("Distribution de ::start:: à ::end::",{start:start,end:end})::
 							<br/>
 							<span class="glyphicon glyphicon-map-marker"></span> 
 							<a onclick="_.overlay('/group/place/::d.place.id::','::urlEncode(d.place.name)::')">::d.place::</a>	
@@ -299,9 +301,9 @@
 	</div>
 	
 	<div class="block" ::cond contractsWithDistributors.length>0 ::>
-		<h3>Permanences</h3>
+		<h3>::_("Permanences")::</h3>
 		
-		<p>N'oubliez pas de vous inscrire aux premanences</p>
+		<p>::_("N'oubliez pas de vous inscrire aux premanences")::</p>
 		
 		<ul>
 		::foreach c contractsWithDistributors::
@@ -314,21 +316,22 @@
 	
 	<div class="alert alert-danger" ::cond user!=null && !user.isFullyRegistred()::>
 		<p>
-			Attention, vous n'avez pas encore défini de mot de passe !
+			::_("Attention, vous n'avez pas encore défini de mot de passe !")::
 		</p>
-		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Définir mon mot de passe</a>
+		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Définir mon mot de passe")::</a>
 		
 	</div>
 
 	<!-- additionnal blocks from plugins -->
-	::foreach b blocks::
-	<div class="block">
-		<h3>::b.title::</h3>
-		<p>
-			::raw b.html::
-		</p>
-	</div>
+	::if blocks!=null::
+		::foreach b blocks::
+		<div class="block">
+			<h3>::b.title::</h3>
+			<p>
+				::raw b.html::
+			</p>
+		</div>
+		::end::
 	::end::
-	
 </div>
 ::end::

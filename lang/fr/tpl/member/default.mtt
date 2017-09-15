@@ -2,37 +2,37 @@
 <div class="col-md-9">
 <div class="article">
 	::if select!=null::
-		<h2>Sélection :
+		<h2>::_("Sélection :")::
 		::if select=="nocontract"::
-			Adhérents sans contrat
+			::_("Adhérents sans contrat")::
 		::elseif select=="nomembership"::
-			Adhésion à renouveller
+			::_("Adhésion à renouveller")::
 		::elseif select=="newusers"::
-			Adhérents qui ne se sont jamais connecté
+			::_("Adhérents qui ne se sont jamais connecté")::
 		::elseif select=="contract"::
-			Adhérent avec commande ou contrat
+			::_("Adhérent avec commande ou contrat")::
 		::end::
 		</h2>
 	
-		<p><b>::members.current().length::</b> adhérents.</p>
+		<p><b>::members.current().length::</b> ::_("adhérents")::.</p>
 		
-		<a href="/member/">Revenir à la page principale</a>
+		<a href="/member/">::_("Revenir à la page principale")::</a>
 	::elseif search!=null::
-		<h2>Recherche : ::search::</h2>
-		<a href="/member/">Revenir à la page principale</a>
+		<h2>::_("Recherche"):: : ::search::</h2>
+		<a href="/member/">::_("Revenir à la page principale")::</a>
 		
 	::else::	
-		<h2>Adhérents</h2>
+		<h2>::_("Adhérents")::</h2>
 	::end::
 	
 	
 	::if select=="newusers"::
 		<hr/>
 		<p style="text-align:center;">
-			Vous pouvez inviter par email tout les adhérents qui ne se sont jamais connecté en un seul clic.			
+			::_("Vous pouvez inviter par email tout les adhérents qui ne se sont jamais connecté en un seul clic.")::			
 		</p>
 		<p style="text-align:center;">
-			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> Envoyer des invitations</a>
+			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> ::_("Envoyer des invitations")::</a>
 		</p>
 	::end::
 
@@ -69,7 +69,7 @@
 		<th colspan="2">
 			<a href="?page=::members.page-1::"> &lt;&lt; </a>
 			&nbsp;
-			Page ::members.page::/::members.pages::
+			::_("Page"):: ::members.page::/::members.pages::
 			&nbsp;
 			<a href="?page=::members.page+1::"> &gt;&gt; </a>
 		</th>
@@ -79,9 +79,9 @@
 
 	<div>
 		
-		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvel adhérent</a>	
+		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("Nouvel adhérent")::</a>	
 		$$export(::Web.getURI()+"?"+Web.getParamsString()::&csv=1)
-		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> Importer des adhérents</a>
+		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> ::_("Importer des adhérents")::</a>
 
 	</div>
 
@@ -93,14 +93,14 @@
 	
 	
 	<div class="block">
-		<h3>Sélections</h3>
+		<h3>::_("Sélections")::</h3>
 		<ul>
-			<li><a href="/member/">Tout le monde</a></li>
-			<li><a href="/member/?select=nocontract">Sans contrats ou commandes</a></li>
-			<li><a href="/member/?select=contract">Avec contrat ou commande</a></li>
-			<li><a href="/member/?select=newusers">Ne s'est jamais connecté</a></li>
-			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">Adhésion à renouveller</a></li>
-			<li ::cond user._amap.hasPayments()::><a href="/member/balance">Solde des adhérents</a></li>
+			<li><a href="/member/">::_("Tout le monde")::</a></li>
+			<li><a href="/member/?select=nocontract">::_("Sans contrats ou commandes")::</a></li>
+			<li><a href="/member/?select=contract">::_("Avec contrat ou commande")::</a></li>
+			<li><a href="/member/?select=newusers">::_("Ne s'est jamais connecté")::</a></li>
+			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">::_("Adhésion à renouveller")::</a></li>
+			<li ::cond user._amap.hasPayments()::><a href="/member/balance">::_("Solde des adhérents")::</a></li>
 			
 		</ul>
 		
@@ -113,7 +113,7 @@
 				::end::
 				<input type="text" class="form-control" name="search" value="::ssearch::" />
 				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Recherche</button>
+					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> ::_("Recherche")::</button>
 				</span>
 				
 			  </div>
@@ -122,21 +122,21 @@
 	
 	
 	<div class="block">
-		<h3>Liste d'attente</h3>
+		<h3>::_("Liste d'attente")::</h3>
 		<p>
-		Il y  a <b>::waitingList::</b> personnes dans la liste d'attente.
+		::raw __("Il y  a <b>::waitingList::</b> personnes dans la liste d'attente.",{waitingList:waitingList})::
 		<br/>
-		<a href="/member/waiting" class="btn btn-default btn-sm">Afficher la liste</a>
+		<a href="/member/waiting" class="btn btn-default btn-sm">::_("Afficher la liste")::</a>
 		</p>
 	</div>
 	
 	
 	::if select!="newusers"::
 	<div class="block">		
-		<h3>Nouveaux adhérents</h3>
-		Il y a <b>::newUsers::</b> membres qui ne se sont jamais connecté
+		<h3>::_("Nouveaux adhérents")::</h3>
+		::raw __("Il y a <b>::newUsers::</b> membres qui ne se sont jamais connecté",{newUsers:newUsers})::
 		<br/>
-		<a href="/member/?select=newusers" class="btn btn-default btn-sm">Afficher la liste</a>
+		<a href="/member/?select=newusers" class="btn btn-default btn-sm">::_("Afficher la liste")::</a>
 	</div>
 	::end::
 	

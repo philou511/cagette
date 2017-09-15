@@ -24,7 +24,8 @@
 			
 			
 			<div>
-				<div class="info" style="font-size:1.2em;">::_("Distribution on ::hDate(date)::")::</div>
+				::set hdate = hDate(date)::
+				<div class="info" style="font-size:1.2em;">::__("Distribution on ::date::",{date:hdate})::</div>
 				
 				
 				<div class="">
@@ -102,7 +103,7 @@
 										<span style="color:#AAA;">::_("Order closed")::</span>
 									::else::
 										::if p.stock!=null && p.stock>0 && p.stock<=10::
-										<div class="warning" >::_("Only ::p.stock:: items in stock")::</div>
+										<div class="warning" >::__("Only ::pstock:: items in stock",{pstock:p.stock})::</div>
 										::end::
 									
 										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>

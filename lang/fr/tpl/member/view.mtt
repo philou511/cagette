@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
 <div class="col-md-4">
-	<h2>Coordonnées</h2>
+	<h2>::_("Coordonnées")::</h2>
 	<div class="article">
 		
 		<div style="font-weight:bold;font-size:120%;">
@@ -19,27 +19,27 @@
 		<br/>
 		
 		::if member.phone!=null::
-			Téléphone : ::member.phone::<br/>
+			::_("Téléphone"):: : ::member.phone::<br/>
 		::end::
 
 		::if member.email!=null::
-			E-mail : <a href="mailto: ::member.email::">::member.email::</a><br/>
+			::_("E-mail"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
 		::end::
 		
 		::if member.email2!=null::
-			E-mail : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+			::_("E-mail"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
 		::end::
 		
 		<hr/>
 		<p style="font-size:11px;">
-			Dernière connexion : 
+			::_("Dernière connexion"):: : 
 			::if member.ldate!=null::
 				::member.ldate.toString():: 
 			::else:: 
-				<b>Cet adhérent ne s'est jamais connecté</b>
+				<b>::_("Cet adhérent ne s'est jamais connecté")::</b>
 			::end::
 			<br/>
-			Inscrit depuis : 
+			::_("Inscrit depuis"):: : 
 			::if member.cdate!=null:: 
 				::member.cdate.toString()::
 			::else:: 
@@ -47,42 +47,42 @@
 			::end::			
 			<br/>
 			::if member.pass==""::
-			<div class="alert alert-danger">Cet adhérent n'a pas défini de mot de passe  </div>
+			<div class="alert alert-danger">::_("Cet adhérent n'a pas défini de mot de passe "):: </div>
 			::end::
 		</p>
 		<p>
-			$$edit(Modifier,/member/edit/::member.id::) 
-			$$delete(Retirer du groupe,/member/delete/::member.id::?token=::token::)
-			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">Mettre en liste d'attente</a>
+			$$edit(::_("Modifier")::,/member/edit/::member.id::) 
+			$$delete(::_("Retirer du groupe")::,/member/delete/::member.id::?token=::token::)
+			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">::_("Mettre en liste d'attente")::</a>
 			
 			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm">
 			<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> 
-				Messages reçus</a>
+				::_("Messages reçus")::</a>
 			
 			::if !member.isFullyRegistred()::
 			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
 				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-				Envoyer une invitation</a>
+				::_("Envoyer une invitation")::</a>
 			::end::
 		</p>
 
 		<p ::cond canLoginAs::>
-			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-danger btn-xs">Se connecter sur ce compte</a>
+			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-danger btn-xs">::_("Se connecter sur ce compte")::</a>
 		</p>
 	</div>
 	
 	
 	::if user._amap.hasMembership()::
-	<h2>Cotisations</h2>
+	<h2>::_("Cotisations")::</h2>
 	<div class="article">
 		::if userAmap.hasValidMembership()::
-			$$bool(true) Cotisation à jour
+			$$bool(true) ::_("Cotisation à jour")::
 		::else::
-			$$bool(false) Cotisation à renouveller
+			$$bool(false) ::_("Cotisation à renouveller")::
 		::end::
-		pour la période <b>::user._amap.getPeriodName(null)::</b>
+		::_("pour la période"):: <b>::user._amap.getPeriodName(null)::</b>
 		<br/>
-		<a href="/membership/::member.id::" class="btn btn-default btn-sm">Gérer les cotisations</a>
+		<a href="/membership/::member.id::" class="btn btn-default btn-sm">::_("Gérer les cotisations")::</a>
 		
 	</div>
 	::end::
@@ -91,17 +91,17 @@
 </div>
 
 <div class="col-md-8">
-	<h2>Commande en cours</h2>
+	<h2>::_("Commande en cours")::</h2>
 	<div class="article">
 		::set o = userContracts::
 		::if o.constOrders.length>0::
-			<h4>Contrats AMAP</h4>		
+			<h4>::_("Contrats AMAP")::</h4>		
 			<table class="table table-bordered table-condensed" >
 				<tr>
-					<th>Qté</th>
-					<th>Produit</th>
-					<th>Prix</th>
-					<th>Contrat</th>
+					<th>::_("Qté")::</th>
+					<th>::_("Produit")::</th>
+					<th>::_("Prix")::</th>
+					<th>::_("Contrat")::</th>
 				</tr>
 				::foreach p o.constOrders::
 					<tr>
@@ -109,7 +109,7 @@
 						<td>::p.productName::
 						
 						::if p.userId2 != null::
-							<br /><span class="glyphicon glyphicon-refresh"></span> Commande alternée avec
+							<br /><span class="glyphicon glyphicon-refresh"></span> ::_("Commande alternée avec")::
 							::if member.id == p.userId::
 								<a href="/member/view/::p.userId2::">::p.userName2::</a>
 							::else::
@@ -134,13 +134,13 @@
 					
 					<table class="table table-bordered table-condensed" >
 						<tr>
-							<th>Qté</th>
-							<th>Produit</th>
-							<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">P.U</a></th>
-							<th>Sous-total</th>
-							<th>Frais</th>
-							<th>Total</th>
-							<th>Contrat</th>
+							<th>::_("Qté")::</th>
+							<th>::_("Produit")::</th>
+							<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("P.U")::</a></th>
+							<th>::_("Sous-total")::</th>
+							<th>::_("Frais")::</th>
+							<th>::_("Total")::</th>
+							<th>::_("Contrat")::</th>
 							
 						</tr>
 						::set total = 0::
@@ -173,7 +173,7 @@
 						::end::			
 						<tr>
 							<td colspan="4"></td>
-							<td>TOTAL</td>
+							<td>::_("TOTAL")::</td>
 							<td><b>::formatNum(total):: ::currency()::</b></td>
 						</tr>
 					</table>
@@ -189,7 +189,7 @@
 	<div class="article">
 		
 		<span style="font-size:1.3em;">
-			Solde : 
+			::_("Solde"):: : 
 			::if userAmap.balance<0:: 
 				::set color = "C00"::
 			::else::
@@ -203,7 +203,7 @@
 		<span style="margin-left:30px;">
 			<a href="/member/payments/::member.id::" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
-				Détails paiements
+				::_("Détails paiements")::
 			</a>
 		</span>
 		
@@ -212,7 +212,7 @@
 
 
 <div class="col-md-4" ::cond userAmap.rights!=null && userAmap._rights!=null::>
-	<h3>Droits</h3>
+	<h3>::_("Droits")::</h3>
 	<div class="article">
 		<ul>
 		::foreach r userAmap._rights::

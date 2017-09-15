@@ -1,7 +1,7 @@
 package controller;
 import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
-
+import db.Amap.GroupType;
 
 /**
  * Public pages controller
@@ -151,81 +151,118 @@ class Group extends controller.Controller
 	@tpl("form.mtt")
 	function doCreate() {
 		
-		view.title = "Créer un nouveau groupe sur Cagette.net";
-		view.text = "Vous êtes sur le point de créer un compte pour votre AMAP ou groupement d'achat.";
-				
+		view.title = t._("Create a new Cagette Group");
+
 		var f = new sugoi.form.Form("c");
-		f.addElement(new StringInput("amapName", "Nom de votre groupe", "", true));
+		f.addElement(new StringInput("name", t._("Name of your group"), "", true));
+		
+		//group type
+		var data = [
+			{label:t._("CSA"),value:"0"},
+			{label:t._("Grouped orders"),value:"1"},
+			{label:t._("Farmers collective"),value:"2"},
+			{label:t._("Farm shop"),value:"3"},
+		];	
+		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1","1",true,true,true);
+		f.addElement(gt);
 		
 		if (f.checkToken()) {
 			
 			var user = app.user;
 			
-			var amap = new db.Amap();
-			amap.name = f.getValueOf("amapName");
-			amap.contact = user;
-
-			amap.flags.set(db.Amap.AmapFlags.HasMembership);
-			amap.flags.set(db.Amap.AmapFlags.IsAmap);
-			amap.insert();
+			var g = new db.Amap();
+			g.name = f.getValueOf("name");
+			g.contact = user;
+			
+			var type:GroupType = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );
+			
+			switch(type){
+			case null : 
+				throw "unknown group type";
+			case Amap : 
+				g.flags.set(db.Amap.AmapFlags.HasMembership);
+				g.regOption = db.Amap.RegOption.WaitingList;
+				
+			case GroupType.GroupedOrders :
+				g.flags.set(db.Amap.AmapFlags.ShopMode);
+				g.flags.set(db.Amap.AmapFlags.HasMembership);
+				g.regOption = db.Amap.RegOption.WaitingList;
+				
+			case GroupType.ProducerDrive : 
+				g.flags.set(db.Amap.AmapFlags.ShopMode);
+				g.regOption = db.Amap.RegOption.Open;
+				
+			case GroupType.FarmShop : 
+				g.flags.set(db.Amap.AmapFlags.ShopMode);
+				g.regOption = db.Amap.RegOption.Open;
+			}
+			
+			g.groupType = type;
+			g.insert();
 			
 			var ua = new db.UserAmap();
 			ua.user = user;
-			ua.amap = amap;
+			ua.amap = g;
 			ua.rights = [db.UserAmap.Right.AmapAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
 			ua.insert();
 			
 			//example datas
 			var place = new db.Place();
 			place.name = "Place du marché";
-			place.amap = amap;
+			place.amap = g;
 			place.insert();
 			
 			//contrat AMAP
 			var vendor = new db.Vendor();
-			vendor.amap = amap;
+			vendor.amap = g;
 			vendor.name = "Jean Martin EURL";
 			vendor.zipCode = "33210";
 			vendor.city = "Langon";
 			vendor.insert();			
 			
-			var contract = new db.Contract();
-			contract.name = "Contrat AMAP Maraîcher Exemple";
-			contract.description = "Ce contrat est un exemple de contrat maraîcher avec engagement à l'année comme on le trouve dans les AMAP.";
-			contract.amap  = amap;
-			contract.type = 0;
-			contract.vendor = vendor;
-			contract.startDate = Date.now();
-			contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
-			contract.contact = user;
-			contract.distributorNum = 2;
-			contract.insert();
+			if (type == Amap){
+				var contract = new db.Contract();
+				contract.name = "Contrat AMAP Maraîcher Exemple";
+				contract.description = "Ce contrat est un exemple de contrat maraîcher avec engagement à l'année comme on le trouve dans les AMAP.";
+				contract.amap  = g;
+				contract.type = 0;
+				contract.vendor = vendor;
+				contract.startDate = Date.now();
+				contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
+				contract.contact = user;
+				contract.distributorNum = 2;
+				contract.insert();
+				
+				var p = new db.Product();
+				p.name = "Gros panier de légumes";
+				p.price = 15;
+				p.organic = true;
+				p.contract = contract;
+				p.insert();
+				
+				var p = new db.Product();
+				p.name = "Petit panier de légumes";
+				p.price = 10;
+				p.organic = true;
+				p.contract = contract;
+				p.insert();
 			
-			var p = new db.Product();
-			p.name = "Gros panier de légumes";
-			p.price = 15;
-			p.contract = contract;
-			p.insert();
+				db.UserContract.make(user, 1, p, null, true);
+				
+				var d = new db.Distribution();
+				d.contract = contract;
+				d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
+				d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
+				d.place = place;
+				d.insert();
+				
+			}
 			
-			var p = new db.Product();
-			p.name = "Petit panier de légumes";
-			p.price = 10;
-			p.contract = contract;
-			p.insert();
-		
-			db.UserContract.make(user, 1, p, null, true);
-			
-			var d = new db.Distribution();
-			d.contract = contract;
-			d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-			d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
-			d.place = place;
-			d.insert();
 			
 			
 			//contrat variable
 			var vendor = new db.Vendor();
-			vendor.amap = amap;
+			vendor.amap = g;
 			vendor.name = "Ferme de la Galinette";
 			vendor.zipCode = "33430";
 			vendor.city = "Bazas";
@@ -234,7 +271,7 @@ class Group extends controller.Controller
 			var contract = new db.Contract();
 			contract.name = "Contrat Poulet Exemple";
 			contract.description = "Exemple de contrat à commande variable. Il permet de commander quelque chose de différent à chaque distribution.";
-			contract.amap  = amap;
+			contract.amap  = g;
 			contract.type = 1;
 			contract.vendor = vendor;
 			contract.startDate = Date.now();
@@ -248,6 +285,7 @@ class Group extends controller.Controller
 			egg.name = "Douzaine d'oeufs bio";
 			egg.price = 5;
 			egg.type = 6;
+			egg.organic = true;
 			egg.contract = contract;
 			egg.insert();
 			
@@ -255,6 +293,7 @@ class Group extends controller.Controller
 			p.name = "Poulet bio";
 			p.type = 2;
 			p.price = 9.50;
+			p.organic = true;
 			p.contract = contract;
 			p.insert();
 			
@@ -270,7 +309,7 @@ class Group extends controller.Controller
 			db.UserContract.make(user, 2, egg, d.id);
 			db.UserContract.make(user, 1, p, d.id);
 			
-			App.current.session.data.amapId  = amap.id;
+			App.current.session.data.amapId  = g.id;
 			app.session.data.newGroup = true;
 			throw Redirect("/");
 		}

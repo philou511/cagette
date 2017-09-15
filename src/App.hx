@@ -184,13 +184,17 @@ class App extends sugoi.BaseApp {
 		out.set("vat", "TVA");
 		out.set("desc", "Description");
 		out.set("ShopMode", "Mode boutique");
-		out.set("IsAmap", "Votre groupe est une AMAP");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
 		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");
+		
+		out.set("Amap", "AMAP");
+		out.set("GroupedOrders", "Groupement d'achat");
+		out.set("ProducerDrive", "Collectif de producteurs");
+		out.set("FarmShop", "Vente à la ferme");
 		
 		out.set("regOption", "Inscription de nouveaux adhérents");
 		out.set("Closed", "Fermé : Le coordinateur ajoute les nouveaux adhérents");

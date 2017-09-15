@@ -24,12 +24,13 @@
 			
 			
 			<div>
-				<div class="info" style="font-size:1.2em;">Distribution du ::hDate(date)::</div>
+				::set hdate = hDate(date)::
+				<div class="info" style="font-size:1.2em;">::__("Distribution le ::date::",{date:hdate})::</div>
 				
 				
 				<div class="">
 					<span class="info">
-						<span class="glyphicon glyphicon-time"></span> La commande fermera le
+						<span class="glyphicon glyphicon-time"></span> ::_("La commande fermera le")::
 					</span>
 					::if ArrayTool.mapLength(infos) == 1::
 						::hDate( infos.iterator().next()[0].orderEndDate )::
@@ -46,7 +47,7 @@
 								::foreach d dists::
 									::set tt = tt  + d._contract.name + ". "::
 								::end::
-								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">Autres</span>
+								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">::_("Autres")::</span>
 							::end::
 							
 							: ::hDate(Date.fromString(k))::
@@ -97,16 +98,16 @@
 								<div>
 									<form class="form-inline">
 									::if p.stock!=null && p.stock==0::
-										<span style="color:#AAA;">Rupture de stock</span>
+										<span style="color:#AAA;">::_("Rupture de stock")::</span>
 									::elseif !p.orderable::
-										<span style="color:#AAA;">Commande close</span>
+										<span style="color:#AAA;">::_("Commande close")::</span>
 									::else::
 										::if p.stock!=null && p.stock>0 && p.stock<=10::
-										<div class="warning" >Seulement ::p.stock:: en stock</div>
+										<div class="warning" >::__("Seulement ::pstock:: en stock",{pstock:p.stock})::</div>
 										::end::
 									
 										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
-										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">Commander</a>
+										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Commander")::</a>
 										
 									::end::
 									</form>
@@ -132,19 +133,19 @@
 		
 		<h2>
 			<span class="glyphicon glyphicon-shopping-cart"></span>
-			Ma commande
+			::_("Ma commande")::
 			<img id="loader" src="/img/loader.gif"/>
 		</h2>
 		<div id="cart"></div>
 		
-		<a onClick="cart.submit();" class="btn btn-default">Valider</a>
+		<a onClick="cart.submit();" class="btn btn-default">::_("Valider")::</a>
 		
-		<a class="infos" href='/contract'>Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'</a>
+		<a class="infos" href='/contract'>::_("Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'")::</a>
 		
 	</div>
 	
 	<div class="article">
-		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> Tout les produits</span><br/>
+		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> ::_("Tous les produits")::</span><br/>
 		
 		::foreach g group.getCategoryGroups()::
 			<div>

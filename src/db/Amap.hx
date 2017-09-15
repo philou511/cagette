@@ -7,12 +7,12 @@ import Common;
 enum AmapFlags {
 	HasMembership; 	//membership management
 	ShopMode; 		//shop mode / standard mode
-	IsAmap; 		//Just switch some words in templates
+	HasPayments; 	//manage payments and user balance
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
-	HasPayments;		//manage payments and user balance
+	//HasPaymentsOld;		
 
 }
 
@@ -22,6 +22,13 @@ enum RegOption{
 	WaitingList; 
 	Open;
 	Full;
+}
+
+enum GroupType{
+	Amap; 			//CSA / GASAP / AMAP
+	GroupedOrders; 	//groupements d'achat
+	ProducerDrive;	//drive de producteurs
+	FarmShop;		//vente à la ferme
 }
 
 
@@ -50,6 +57,7 @@ class Amap extends Object
 	public var vatRates : SData<Map<String,Float>>;
 	
 	public var flags:SFlags<AmapFlags>;
+	public var groupType:SNull<SEnum<GroupType>>;
 	
 	@hideInForms @:relation(imageId)
 	public var image : SNull<sugoi.db.File>;
@@ -343,6 +351,7 @@ class Amap extends Object
 			"extUrl" 		=> t._("Group website URL"),
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
+			"groupType" 	=> t._("Type de groupe Cagette"),
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),			
 		];

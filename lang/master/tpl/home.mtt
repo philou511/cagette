@@ -11,18 +11,11 @@
 		<div class="alert alert-success">
 			<h3>::_("Welcome to Cagette.net !")::</h3>
 			<p>
-				::_("Congratulations, you just created a new group !<br/>
-				As an example, we created a fake farmer and fake products. <br/>
-				It will show you how things work together in Cagette.net.<br/>
-				Of course, you'll be able to delete them.")::
-				<!-- Félicitations, vous venez de créer un compte pour votre groupe.<br/>
-				A titre d'exemple, nous avons ajouté un producteur et quelques produits à votre compte. <br/>
-				Cela vous permettra de voir comment tout cela fonctionne et évite l'angoisse de la page blanche !<br/>
-				Bien sûr, vous serez libre de les effacer ou de les modifier par la suite."-->
+				::raw _("Congratulations, you just created a new group !<br/>As an example, we created a fake farmer and fake products.<br/>It will show you how things work together in Cagette.net.<br/>Of course, you'll be able to delete them.")::
 			</p>
 			<hr/>
 			<p>
-				::_("As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software.")::
+				::raw _("As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software.")::
 			</p>
 			<p>
 				<a href="/contract/?startTuto=intro" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Start the guided tour")::</a>
@@ -249,8 +242,10 @@
 						<div class="info">						
 							::set e = getDate(d.endDate)::
 							<span class="glyphicon glyphicon-time"></span> 
+							::set start = s.h+":"+s.i::
+							::set end = e.h+":"+e.i::
 							
-							::_("Livraison de ::s.h+':'+s.i:: à ::e.h+':'+e.i::")::
+							::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
 							<br/>
 							<span class="glyphicon glyphicon-map-marker"></span> 
 							<a onclick="_.overlay('/group/place/::d.place.id::','::urlEncode(d.place.name)::')">::d.place::</a>	
@@ -321,14 +316,15 @@
 	</div>
 
 	<!-- additionnal blocks from plugins -->
-	::foreach b blocks::
-	<div class="block">
-		<h3>::b.title::</h3>
-		<p>
-			::raw b.html::
-		</p>
-	</div>
+	::if blocks!=null::
+		::foreach b blocks::
+		<div class="block">
+			<h3>::b.title::</h3>
+			<p>
+				::raw b.html::
+			</p>
+		</div>
+		::end::
 	::end::
-	
 </div>
 ::end::

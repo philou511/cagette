@@ -64,7 +64,7 @@ class Transaction extends controller.Controller
 			
 		}
 		
-		view.title = t._("Record a payment for ::user:: ",{user:user.getCoupleName()}) ;
+		view.title = t._("Record a payment for ::user::",{user:user.getCoupleName()}) ;
 		view.form = f;		
 	}
 	

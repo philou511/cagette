@@ -94,7 +94,7 @@
 		::if numImported>0::
 		
 		<div class="alert alert-success">
-			<b>::_("Congratulations ! You just imported ::numImported:: users in your group.")::</b>
+			<b>::raw __("Congratulations ! You just imported <b>::numImported::</b> users in your group.",{numImported:numImported})::</b>
 		</div>		
 		<p>			
 			::_("You may now consider <a href='/member/?select=newusersinviting'>inviting them</a> to log into Cagette.net")::

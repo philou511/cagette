@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
 	<div class="col-md-12">
-		<h2>Bonjour
+		<h2>::_("Bonjour")::
 		::if whichUser()==0::
 			::user.firstName::
 		::else::
@@ -9,7 +9,7 @@
 		::end::
 		 !
 		</h2>		
-		<p>Sélectionnez le groupe auquel vous voulez vous connecter&nbsp;:</p>
+		<p>::_("Sélectionnez le groupe auquel vous voulez vous connecter")::&nbsp;:</p>
 	</div>
 
 
@@ -21,7 +21,7 @@
 			<div class="col-md-4">
 				<a class="clickable" href="/p/pro/?company=::p.id::" style="height:110px;overflow:hidden;vertical-align:top;background:#bad096">
 					
-					<b>Cagette Pro</b>
+					<b>::_("Cagette Pro")::</b>
 					
 					::if p._image!=null::
 					<img src="::file(p._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
@@ -67,9 +67,9 @@
 				<div class="article">
 					<p>
 						<!--Vous ne faites partie d'aucun groupe pour l'instant.-->
-						Vous n'êtes membre d'aucun groupe pour l'instant
+						::_("Vous n'êtes membre d'aucun groupe pour l'instant")::
 					</p>
-					<a class="btn btn-primary" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> Créer mon propre groupe</a>	
+					<a class="btn btn-primary" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Créer mon propre groupe")::</a>	
 					</div>
 			</div>
 			::end::
@@ -80,8 +80,8 @@
 	<!-- actions -->
 	<div class="col-md-12" style="margin-bottom:12px;" >
 
-		<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> Trouver des groupes près de chez moi</a>	
-		<a class="btn btn-default" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> Créer mon propre groupe</a>	
+		<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> ::_("Trouver des groupes près de chez moi")::</a>	
+		<a class="btn btn-default" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Créer mon propre groupe")::</a>	
 		
 	</div>
 

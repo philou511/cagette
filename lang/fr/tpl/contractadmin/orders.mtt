@@ -1,6 +1,6 @@
 ::use 'contractadmin/design.mtt'::
 	
-		<h3>Commandes</h3>
+		<h3>::_("Commandes")::</h3>
 		
 		::if distribution!=null::
 		Distribution du <b>::hDate(distribution.date)::</b>
@@ -9,22 +9,22 @@
 		<div style="margin:8px 0;">
 
 			::if distribution!=null::
-			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
+			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("Nouvelle commande")::</a>	
 			::else::
-			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</a>	
+			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("Nouvelle commande")::</a>	
 			::end::
 			
 			::if distribution!=null::
 				$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
 				<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>
-					Récapitulatif par produits</a>
+					::_("Récapitulatif par produits")::</a>
 				<a href="/distribution/list/::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> 
-					Liste d'émargement</a>
+					::_("Liste d'émargement")::</a>
 			
 			::else::
 				$$export(/contractAdmin/orders/::c.id::?csv=1)
 				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span>
-					Récapitulatif par produits</a>
+					::_("Récapitulatif par produits")::</a>
 			::end::
 		</div>
 
@@ -63,7 +63,7 @@
 							
 							::m.userName:: 
 							::if m.userName2!=null::
-								<span class="glyphicon glyphicon-refresh"></span> alterné avec ::m.userName2::
+								<span class="glyphicon glyphicon-refresh"></span> ::_("alterné avec"):: ::m.userName2::
 							::end::
 							
 							::set name =  m.userName ::	
@@ -74,10 +74,10 @@
 							<!--::if m.canModify==true::-->
 							::if distribution!=null::
 							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>
-								Modifier</a>
+								::_("Modifier")::</a>
 							::else::
 							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 
-								Modifier</a>
+								::_("Modifier")::</a>
 							::end::
 							<!--::end::-->
 							
@@ -85,14 +85,14 @@
 					
 					</tr>
 					<tr>
-						<th>Qté</th>
-						<th>Référence</th>
-						<th>Produit</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
-						<th>Sous-total</th>
-						<th>Frais</th>
-						<th>Total</th>
-						<th>Payé</th>
+						<th>::_("Qté")::</th>
+						<th>::_("Référence")::</th>
+						<th>::_("Produit")::</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Prix unitaire TTC")::">::_("P.U")::</a></th>
+						<th>::_("Sous-total")::</th>
+						<th>::_("Frais")::</th>
+						<th>::_("Total")::</th>
+						<th>::_("Payé")::</th>
 					</tr>
 				::end::
 				
@@ -134,9 +134,9 @@
 					</td>
 					<td>
 						::if m.paid==true::
-						<span style="color:#00AA00;">Payé</span>
+						<span style="color:#00AA00;">::_("Payé")::</span>
 						::else::
-						<span style="color:#DD0000;">Non payé</span>
+						<span style="color:#DD0000;">::_("Non payé")::</span>
 						::end::
 					</td>
 					
@@ -147,7 +147,7 @@
 				
 				<tr style="background:#DDD;">
 					
-					<th colspan="6">Total</th>
+					<th colspan="6">::_("Total")::</th>
 					<th>::formatNum(total)::&nbsp;::currency()::</th>
 					
 					<th></th>
@@ -158,7 +158,7 @@
 
 
 				<div style="margin-top:18px;margin-bottom:18px;">
-					<b>::totalAdh::</b> personnes dans cette distribution.					
+					::raw __("<b>::totalAdh::</b> adhérents dans cette distribution.",{totalAdh:totalAdh})::					
 				</div>
 
 ::end::

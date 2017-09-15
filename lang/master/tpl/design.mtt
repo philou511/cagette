@@ -110,6 +110,8 @@
 			::raw __content__::
 		</div>		
 		
+		
+		
 		<div class="row">
 			<div class="col-md-12" >
 				<div id="footer">
@@ -122,6 +124,17 @@
 					<span style="color:#666;">version ::VERSION::-::getPlatform()::</span>
 				</div>
 			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12" >
+				
+					<a class="clickable" style="background-color:#f5e3ac;text-align:center;margin-top:4px;font-size:12px;" href="http://prix-lablaboo.convergences.org/fr/projects/11-cagette-net" target="_blank">
+					Vous aimez Cagette.net ? <span class="glyphicon glyphicon-heart" style="color:#F33"></span>
+					Alors votez pour nous au concours d'innovation Lab Laboo !
+					<br/>Le bouton "voter" est en bas à droite, une fois inscrit, cliquez sur le coeur pour nous donnner 2 points.</a> 
+				
+			</div>			
 		</div>
 		
 		<div class="row">

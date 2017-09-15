@@ -2,7 +2,7 @@
 
 <div class="col-md-12">
 <div class="article">
-	<h2>Import</h2>
+	<h2>::_("Import")::</h2>
 	
 	
 	::if step==1::
@@ -13,23 +13,23 @@
 			<input type="submit" value="OK" class="btn btn-primary" />
 		</form>
 	::elseif step==2::
-		<h4>Personnes à importer</h4>
+		<h4>::_("Personnes à importer")::</h4>
 		<div style="margin-bottom:24px;">
 			::if (data!=null && data.length>0) || (data2!=null && data2.length>0)::			
 			<table class="table table-bordered" style="font-size:11px;background-color:#FFF;">
 				<tr>
-					<th>Prénom</th>
-					<th>Nom</th>
-					<th>Email</th>
-					<th>Téléphone</th>
-					<th>Prénom conjoint</th>
-					<th>Nom conjoint</th>
-					<th>Email conjoint</th>
-					<th>téléphone</th>
-					<th>Adresse 1</th>
-					<th>Adresse 2</th>
-					<th>code postal</th>
-					<th>Ville</th>
+					<th>::_("Prénom")::</th>
+					<th>::_("Nom")::</th>
+					<th>::_("Email")::</th>
+					<th>::_("Téléphone")::</th>
+					<th>::_("Prénom conjoint")::</th>
+					<th>::_("Nom conjoint")::</th>
+					<th>::_("Email conjoint")::</th>
+					<th>::_("téléphone")::</th>
+					<th>::_("Adresse 1")::</th>
+					<th>::_("Adresse 2")::</th>
+					<th>::_("code postal")::</th>
+					<th>::_("Ville")::</th>
 				</tr>
 				::foreach d data::
 				<tr>
@@ -45,21 +45,21 @@
 			
 			
 			
-			<h4>Comptes existants</h4>
+			<h4>::_("Comptes existants")::</h4>
 			<table class="table table-bordered" style="font-size:11px;color:#666666;background-color:#FFF;">
 			<tr>
-				<th>Prénom</th>
-				<th>Nom</th>
-				<th>Email</th>
-				<th>Téléphone</th>
-				<th>Prénom conjoint</th>
-				<th>Nom conjoint</th>
-				<th>Email conjoint</th>
-				<th>téléphone</th>
-				<th>Adresse 1</th>
-				<th>Adresse 2</th>
-				<th>code postal</th>
-				<th>Ville</th>
+				<th>::_("Prénom")::</th>
+				<th>::_("Nom")::</th>
+				<th>::_("Email")::</th>
+				<th>::_("Téléphone")::</th>
+				<th>::_("Prénom conjoint")::</th>
+				<th>::_("Nom conjoint")::</th>
+				<th>::_("Email conjoint")::</th>
+				<th>::_("téléphone")::</th>
+				<th>::_("Adresse 1")::</th>
+				<th>::_("Adresse 2")::</th>
+				<th>::_("code postal")::</th>
+				<th>::_("Ville")::</th>
 			</tr>
 			::foreach d data2::
 			<tr>
@@ -73,17 +73,17 @@
 			</table>
 			
 			<div class="alert alert-error">
-					<b>Attention</b>
-					<p>Avant de valider l'importation, vérifiez bien que le tableau ci dessus est correctement rempli.<br/>Si des données sont décalées ou ne correspondent pas à la bonne colonne, c'est que votre fichier CSV n'est pas correct.
+					<b>::_("Attention")::</b>
+					<p>::_("Avant de valider l'importation, vérifiez bien que le tableau ci dessus est correctement rempli.<br/>Si des données sont décalées ou ne correspondent pas à la bonne colonne, c'est que votre fichier CSV n'est pas correct.")::
 					</p>
-					<a href="/member/import">Essayer encore</a>
+					<a href="/member/import">::_("Essayer encore")::</a>
 				</div>
-				<a href="/member/import?confirm=1" class="btn btn-danger">Finaliser l'import</a>
+				<a href="/member/import?confirm=1" class="btn btn-danger">::_("Finaliser l'import")::</a>
 			::else::				
 				<div class="alert alert-error">
-					<b>Houlà !</b>
-					<p>On dirait qu'il n'y a aucune donnée à importer. Vérifiez que les données de votre fichier sont valides ou que les personnes ne sont pas déjà enregistrées dans la base de données de Cagette.net.</p>
-					<a href="/member/import">Essayer encore</a>
+					<b>::_("Houlà !")::</b>
+					<p>::_("On dirait qu'il n'y a aucune donnée à importer. Vérifiez que les données de votre fichier sont valides ou que les personnes ne sont pas déjà enregistrées dans la base de données de Cagette.net.")::</p>
+					<a href="/member/import">::_("Essayer encore")::</a>
 				</div>
 			
 			::end::
@@ -94,15 +94,15 @@
 		::if numImported>0::
 		
 		<div class="alert alert-success">
-			<b>Félicitations ! Vous venez d'importer ::numImported:: personnes dans votre groupe.</b>
+			<b>::raw __("Félicitations ! Vous venez d'importer <b>::numImported::</b> personnes dans votre groupe.",{numImported:numImported})::</b>
 		</div>		
 		<p>			
-			Maintenant, pourquoi ne pas <a href='/member/?select=newusersinviting'>les inviter</a> à se connecter à Cagette.net ?
+			::_("Maintenant, pourquoi ne pas <a href='/member/?select=newusersinviting'>les inviter</a> à se connecter à Cagette.net ?")::
 		</p>
 		::else::
-		<p>On dirait qu'il n'y a aucune donnée à importer. Vérifiez que les données de votre fichier sont valides ou que les personnes ne sont pas déjà enregistrées dans la base de données de Cagette.net</p>			
+		<p>::_("On dirait qu'il n'y a aucune donnée à importer. Vérifiez que les données de votre fichier sont valides ou que les personnes ne sont pas déjà enregistrées dans la base de données de Cagette.net")::</p>			
 		::end::
-		<a href="/member/">Revenir à la page principale</a>
+		<a href="/member/">::_("Revenir à la page principale")::</a>
 		
 		
 	::end::
@@ -110,7 +110,7 @@
 </div>
 
 	<div class="block">
-		<h3>Aide</h3>
+		<h3>::_("Aide")::</h3>
 		::_("Here you can import a large amount of members in your database from a simple Excel or Libre Office file.<br/><ul><li>The first step is to <a href=\"/adherents.xls\">download this demo file.</a></li><li>Fill out the table, of modify your existing file to striclty match the columns order.</li><li>Once your file is completed, click on \"save as\" in your spreadsheet software, and select \"CSV\" format</li><li>Select the following options : separator : <b>coma</b>, encoding : <b>Unicode UTF-8</b></li><li>Save the file</li><li>finally, click on  \"select a file\" on this page and upload it.</li></ul>")::
 	</div>
 

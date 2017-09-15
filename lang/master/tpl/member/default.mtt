@@ -124,7 +124,7 @@
 	<div class="block">
 		<h3>::_("Waiting list")::</h3>
 		<p>
-		::_("There is <b>::waitingList::</b> people on waiting list.")::
+		::raw __("There is <b>::waitingList::</b> people on waiting list.",{waitingList:waitingList})::
 		<br/>
 		<a href="/member/waiting" class="btn btn-default btn-sm">::_("Display the list")::</a>
 		</p>
@@ -134,7 +134,7 @@
 	::if select!="newusers"::
 	<div class="block">		
 		<h3>::_("New members")::</h3>
-		::_("There is <b>::newUsers::</b> members who never logged in")::
+		::raw __("There is <b>::newUsers::</b> members who never logged in",{newUsers:newUsers})::
 		<br/>
 		<a href="/member/?select=newusers" class="btn btn-default btn-sm">::_("Display the list")::</a>
 	</div>

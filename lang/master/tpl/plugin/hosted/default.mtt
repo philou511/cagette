@@ -31,16 +31,30 @@
 	
 		<div class="shortList">
 			
-			<table class="table table-bordered" >
+			<table class="table table-bordered table-condensed table-striped" >
 				<tr>
 					<th>Id</th>
 					<th>Nom</th>
+					<th>Type</th>
+					<th>Membres</th>
+					<th>visible</th>
 				</tr>
 				::foreach a groups::
 				<tr>
+					
 					<td>::a.id::</td>
 					<td><a href="/p/hosted/group/::a.id::">::a.name::</a></td>
-					
+					<td>
+						::if a.groupType==null::
+						::elseif a.groupType==0:: AMAP
+						::elseif a.groupType==1:: Groupement d'achat
+						::elseif a.groupType==2:: Drive de producteurs
+						::else:: Vente à la ferme
+						::end::
+						
+					</td>
+					<td>::a.membersNum::</td>
+					<td>$$bool(::a.visible::)</td>
 				</tr>
 				::end::
 				

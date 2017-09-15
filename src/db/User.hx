@@ -375,7 +375,9 @@ class User extends Object {
 		return Lambda.list(out);
 	}
 	
-	
+	/**
+	 *  Get users with no contracts
+	 **/ 
 	public static function getUsers_NoContracts(?index:Int,?limit:Int):List<db.User> {
 		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
 		var uc = UserContract.manager.search($productId in productsIds, false);
@@ -387,21 +389,24 @@ class User extends Object {
 				uc2.add(u.user2.id);
 			}
 		}
-
-		//les gens qui sont dans cette amap et qui n'ont pas de contrat de cette amap
-		var ua = db.UserAmap.manager.unsafeObjects("select * from UserAmap where amapId=" + App.current.user.getAmap().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
-		return Lambda.map(ua, function(x) return x.user);	
+		
+		if (uc2.length > 0){
+			//les gens qui sont dans cette amap et qui n'ont pas de contrat de cette amap
+			var ua = db.UserAmap.manager.unsafeObjects("select * from UserAmap where amapId=" + App.current.user.getAmap().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
+			return Lambda.map(ua, function(x) return x.user);	
+		}else{
+			return App.current.user.amap.getMembers();
+		}
+		
 	}
 	
+	/**
+	 * User with contracts
+	 */
 	public static function getUsers_Contracts(?index:Int,?limit:Int):List<db.User> {
 		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
-		//var uc = UserContract.manager.search($productId in productsIds, {group:productId}, false);
-		
-		//var uc = db.UserAmap.manager.unsafeObjects("select * from UserContract where productId IN(" + productsIds.join(",") + ") group by productId", false);	
-		//return Lambda.map(uc, function(x) return x.user);	
-		var uc = db.User.manager.unsafeObjects("select u.* from User u, UserContract uc where uc.productId IN(" + productsIds.join(",") + ") AND (uc.userId=u.id OR uc.userId2=u.id) group by u.id  ORDER BY u.lastName", false);	
-		return uc;
-		
+		if (productsIds.length == 0) return new List();
+		return db.User.manager.unsafeObjects("select u.* from User u, UserContract uc where uc.productId IN(" + productsIds.join(",") + ") AND (uc.userId=u.id OR uc.userId2=u.id) group by u.id  ORDER BY u.lastName", false);	
 	}
 	
 	

@@ -130,7 +130,7 @@
 					
 					<hr/>
 					
-					<p>
+					<p ::cond group._contact!=null::>
 						<h3>Contact</h3>
 						
 						<i class="icon-user"></i>

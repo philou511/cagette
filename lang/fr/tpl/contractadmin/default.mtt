@@ -3,9 +3,9 @@
 <div class="col-md-12">
 	
 	<div class="article text-center" ::cond distribs.length>0:: >
-		<h2>Distributions à valider</h2>
+		<h2>::_("Distributions à valider")::</h2>
 		
-		<p>Vous devez valider ces distributions terminées récemment</p>
+		<p>::_("Vous devez valider ces distributions terminées récemment")::</p>
 		
 		::foreach d distribs::	
 		<p>
@@ -22,9 +22,9 @@
 	<div class="article" id="contracts">
 		<h2>
 			::if getParam("old"):: 
-			Anciens contrats
+			::_("Anciens contrats")::
 			::else::
-			Contrats
+			::_("Contrats")::
 			::end::
 		</h2>
 		<table class="table">
@@ -49,10 +49,10 @@
 					<td>::c._vendor.name::</td>
 					<td>
 						
-						$$edit(Gérer,/contractAdmin/view/::c.id::)
+						$$edit(::_("Gérer")::,/contractAdmin/view/::c.id::)
 						
 						::if user.isAmapManager()::
-						$$delete(Suppr.,/contract/delete/::c.id::?token=::token::)
+						$$delete(::_("Suppr.")::,/contract/delete/::c.id::?token=::token::)
 						::end::
 
 						</td>
@@ -62,21 +62,21 @@
 	
 		
 		::if user.isAmapManager():: 
-		$$insert(Nouveau contrat,/contract/insert/)
+		$$insert(::_("Nouveau contrat")::,/contract/insert/)
 		::end::
-		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens contrats</a>
-		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Calendrier</a>
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Anciens contrats")::</a>
+		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> ::_("Calendrier")::</a>
 		
 		<!--<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>-->
 		
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			Vue globale des commandes
+			::_("Vue globale des commandes")::
 			<span class="caret"></span>
 		  </button>
 		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> Dans la même journée</a></li>
-			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> De date à date</a></li>			
+			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> ::_("Dans la même journée")::</a></li>
+			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> ::_("De date à date")::</a></li>			
 		  </ul>
 		</div>
 		
@@ -88,7 +88,7 @@
 
 <div class="col-md-6">
 	<div class="article" id="vendors">
-		<h2>Producteurs</h2>
+		<h2>::_("Producteurs")::</h2>
 		<table class="table">
 			::foreach v vendors::		
 				<tr>
@@ -99,14 +99,14 @@
 					</td>
 					<td><b>::v.name::</b></td>
 					<td>
-						$$edit(Modifier,/vendor/edit/::v.id::)
-						<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>
+						$$edit(::_("Modifier")::,/vendor/edit/::v.id::)
+						<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Photo")::</a>
 						::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
 					</td>
 				</tr>
 			::end::
 		</table>
-		$$insert(Nouveau producteur,/vendor/insert/) 
+		$$insert(::_("Nouveau producteur")::,/vendor/insert/) 
 		
 	</div>	
 </div>
@@ -114,19 +114,19 @@
 <div class="col-md-6">
 	<div class="article" id="places">
 		
-		<h2>Lieux de livraison</h2>
+		<h2>::_("Lieux de livraison")::</h2>
 		<table class="table">
 			::foreach p places::		
 				<tr>
 					<td><b>::p.name::</b></td>
 					<td>
-						$$edit(Modifier,/place/edit/::p.id::)
-						::if user.isAmapManager():: $$delete(Suppr.,/place/delete/::p.id::?token=::token::) ::end::
+						$$edit(::_("Modifier")::,/place/edit/::p.id::)
+						::if user.isAmapManager():: $$delete(::_("Suppr.")::,/place/delete/::p.id::?token=::token::) ::end::
 					</td>
 				</tr>
 			::end::
 		</table>
-		$$insert(Nouveau lieu de distribution,/place/insert/)
+		$$insert(::_("Nouveau lieu de distribution")::,/place/insert/)
 	</div>
 </div>
 	

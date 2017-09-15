@@ -18,7 +18,7 @@ class Distribution extends Controller
 		view.place = d.place;
 		view.contract = d.contract;
 		view.orders = UserContract.prepare(d.getOrders());
-		view.getProduct = function(pid:Int){ return db.Product.manager.get(pid, false); };
+		
 	}
 	
 	/**

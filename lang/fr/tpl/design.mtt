@@ -23,7 +23,7 @@
 				<div class="dropdown pull-right" style="margin-top:16px;">
 					::user.getName()::
 					::if user.firstName2!=null::
-						et ::user.lastName2:: ::user.firstName2::  						
+						::_("et"):: ::user.lastName2:: ::user.firstName2::  						
 					::end::
 					<button  class="btn btn-default btn-xs dropdown-toggle " type="button" id="dropdownMenu1" data-toggle="dropdown">
 					
@@ -31,17 +31,17 @@
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
 
-						<li><a href="/user/choose?show=1">Me connecter à un autre groupe</a></li>
+						<li><a href="/user/choose?show=1">::_("Me connecter à un autre groupe")::</a></li>
 						<li role="separator" class="divider"></li>
-						<li><a href="/user/logout"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
+						<li><a href="/user/logout"><span class="glyphicon glyphicon-log-out"></span> ::_("Déconnexion")::</a></li>
 					</ul>
 				</div>
 			</div>
 			::else::
 			<div class="col-md-5">		
 				<div class="pull-right text-right">
-					<a href="/user/login" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> Connexion</a>
-					<a class="btn btn-default btn-xs" href="/p/hosted/book"><span class="glyphicon glyphicon-search"></span> Chercher un autre groupe</a>	
+					<a href="/user/login" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> ::_("Connexion")::</a>
+					<a class="btn btn-default btn-xs" href="/p/hosted/book"><span class="glyphicon glyphicon-search"></span> ::_("Chercher un autre groupe")::</a>	
 				</div>
 				
 			</div>
@@ -65,23 +65,23 @@
 					<div class="collapse navbar-collapse" id="cagette-navbar">
 						
 						<ul class="nav navbar-nav navbar-left">
-							<li ::attr class if(category=="home") 		'active' ::>		<a href="/">Accueil</a></li>
-							<li ::attr class if(category=="contract" ) 	'active' ::>		<a href="/contract">Mon compte</a></li>
-							<li ::attr class if(category=="amap") 		'active' ::>		<a href="/amap">Mon groupe</a></li>
+							<li ::attr class if(category=="home") 		'active' ::>		<a href="/">::_("Accueil")::</a></li>
+							<li ::attr class if(category=="contract" ) 	'active' ::>		<a href="/contract">::_("Mon compte")::</a></li>
+							<li ::attr class if(category=="amap") 		'active' ::>		<a href="/amap">::_("Mon groupe")::</a></li>
 							
 						</ul>
 						
 						<ul class="nav navbar-nav navbar-right">
 							<li id="member" ::attr class if(category=="members") 	'active' ::>
-								<a href="/member" ::cond user.canAccessMembership()::>Adhérents</a></li>
+								<a href="/member" ::cond user.canAccessMembership()::>::_("Adhérents")::</a></li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
-								<a href="/contractAdmin" ::cond user.isContractManager(null)::>Contrats</a></li>
+								<a href="/contractAdmin" ::cond user.isContractManager(null)::>::_("Contrats")::</a></li>
 							<li id="messages" ::attr class if(category=="messages") 	'active' ::>
-								<a href="/messages" ::cond user.canAccessMessages()::>Messagerie</a></li>
+								<a href="/messages" ::cond user.canAccessMessages()::>::_("Messagerie")::</a></li>
 							<li id="amapadmin" ::attr class if(category=="amapadmin") 	'active' ::>
-								<a href="/amapadmin" ::cond user.isAmapManager()::>Groupe</a></li>
+								<a href="/amapadmin" ::cond user.isAmapManager()::>::_("Groupe")::</a></li>
 							<li ::cond user.isAdmin()::>
-								<a href="/admin" >Admin</a></li>
+								<a href="/admin" >::_("Admin")::</a></li>
 						</ul>
 						
 					</div>
@@ -110,18 +110,31 @@
 			::raw __content__::
 		</div>		
 		
+		
+		
 		<div class="row">
 			<div class="col-md-12" >
 				<div id="footer">
-					<a href="http://www.cagette.net" target="_blank">Cagette.net</a>  &#8226; 
-					<a href="http://www.cagette.net/wiki" target="_blank">Documentation</a> &#8226;
-					<a href="https://groups.google.com/forum/?hl=fr#!forum/cagette" target="_blank">Forum</a>  &#8226;
-					::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">Propose features</a>  &#8226; ::end::
+					<a href="http://www.cagette.net" target="_blank">::_("Cagette.net")::</a>  &#8226; 
+					<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> &#8226;
+					<a href="https://groups.google.com/forum/?hl=fr#!forum/cagette" target="_blank">::_("Forum")::</a>  &#8226;
+					::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Proposer une amélioration")::</a>  &#8226; ::end::
 					<a href="https://www.facebook.com/cagette" target="_blank"> Facebook</a>  &#8226;
 					<a href="https://twitter.com/Cagettenet" target="_blank"> Twitter</a>  &#8226;
 					<span style="color:#666;">version ::VERSION::-::getPlatform()::</span>
 				</div>
 			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12" >
+				
+					<a class="clickable" style="background-color:#f5e3ac;text-align:center;margin-top:4px;font-size:12px;" href="http://prix-lablaboo.convergences.org/fr/projects/11-cagette-net" target="_blank">
+					Vous aimez Cagette.net ? <span class="glyphicon glyphicon-heart" style="color:#F33"></span>
+					Alors votez pour nous au concours d'innovation Lab Laboo !
+					<br/>Le bouton "voter" est en bas à droite, une fois inscrit, cliquez sur le coeur pour nous donnner 2 points.</a> 
+				
+			</div>			
 		</div>
 		
 		<div class="row">
