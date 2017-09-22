@@ -37,6 +37,7 @@ div.reportHeader{background-color:#DDD;}
 .shop .product .warning{font-size:11px;color:#900;font-weight:bold;}
 .price{font-weight:bold;font-size:1.3em;}
 .vat{color:#999999;}
+.detail{color:#999999;font-size:90%;}
 #cartContainer.scrolled{position:fixed;top:125px;}
 .cartDiv{margin-bottom:16px;background:#007700;border-radius:8px;position:relative;padding:8px;color:white;}
 .cartDiv h2{color:white!important;}

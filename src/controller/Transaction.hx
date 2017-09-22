@@ -90,7 +90,8 @@ class Transaction extends controller.Controller
 	public function doCheck(){
 		
 		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
+		var tmpOrder : OrderInSession = app.session.data.order;	
+		if (tmpOrder == null) throw Redirect("/");
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
 		var code = payment.Check.getCode(d.date, d.place, app.user);
 		

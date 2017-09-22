@@ -1,9 +1,0 @@
-﻿::use 'design.mtt'::
-
-<h1>Maintenance</h1>
-
-<p>
-	Le site est actuellement en maintenance. 	
-</p>
-
-::end::

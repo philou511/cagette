@@ -64,13 +64,12 @@
 			
 			::if amaps.length==0::
 			<div class="col-md-12">
-				<div class="article">
+				<div class="article text-center">
 					<p>
-						<!--Vous ne faites partie d'aucun groupe pour l'instant.-->
 						::_("Vous n'êtes membre d'aucun groupe pour l'instant")::
 					</p>
 					<a class="btn btn-primary" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Créer mon propre groupe")::</a>	
-					</div>
+				</div>
 			</div>
 			::end::
 		</div>

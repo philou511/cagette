@@ -11,8 +11,8 @@ class Place extends Object
 	public var zipCode:SString<32>;
 	public var city:SString<25>;
 	//latitude/longitude
-	@hideInForms public var lat:SNull<SFloat>;
-	@hideInForms public var lng:SNull<SFloat>;
+	public var lat:SNull<SFloat>;
+	public var lng:SNull<SFloat>;
 	@hideInForms @:relation(amapId) public var amap : Amap;
 	
 	
@@ -59,6 +59,8 @@ class Place extends Object
 			"address2"	=>	t._("Address 2"),
 			"zipCode"	=>	t._("Zip code"),
 			"city"		=>	t._("City"),			
+			"lat"		=>	t._("Latitude"),			
+			"lng"		=>	t._("Longitude"),			
 		];
 	}
 	

@@ -3,6 +3,9 @@
 config.xml
 www/plugin/*
 lang/master/tpl/plugin/*
+lang/fr/*
+lang/en/*
+lang/de/*
 www/file/*
 www/js/app.js
 tmp/*

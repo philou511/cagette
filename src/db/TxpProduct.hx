@@ -18,5 +18,10 @@ class TxpProduct extends Object
 		return '#$id-$name';
 	}
 	
+	public function getFullCategorization():Array<String>{
+		return [category.name, subCategory.name, name];
+		
+	}
+	
 }
 

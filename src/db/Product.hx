@@ -116,8 +116,19 @@ class Product extends Object
 		return o;
 	}
 	
+	/**
+	 * customs categs
+	 */
 	public function getCategories() {
 		return Lambda.map(db.ProductCategory.manager.search($productId == id, false), function(x) return x.category);
+	}
+	
+	/**
+	 * general categs
+	 */
+	public function getFullCategorization(){
+		if (txpProduct == null) return [];
+		return txpProduct.getFullCategorization();
 	}
 	
 	/**

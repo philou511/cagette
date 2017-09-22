@@ -113,6 +113,18 @@ msgstr "Date d'ouverture des commandes"
 msgid "Orders closing date"
 msgstr "Date de clôture des commandes"
 
+#: src/controller/Distribution.hx:8891
+msgid "Distribution request sent"
+msgstr "Demande de distribution envoyée"
+
+#: src/controller/Distribution.hx:9032
+msgid "The distribution has been recorded"
+msgstr "La distribution a été enregistrée"
+
+#: src/controller/Distribution.hx:9200
+msgid "Create a distribution"
+msgstr "Créer une distribution"
+
 #: src/controller/Group.hx:4995
 msgid "Create a new Cagette Group"
 msgstr "Créer un nouveau groupe Cagette"
@@ -238,43 +250,43 @@ msgstr "Paiement enregistré"
 msgid "Record a payment for ::user::"
 msgstr "Saisir un paiement pour ::user::"
 
-#: src/db/Amap.hx:9238
+#: src/db/Amap.hx:9209
 msgid "Group name"
 msgstr "Nom du groupe"
 
-#: src/db/Amap.hx:9277
+#: src/db/Amap.hx:9248
 msgid "Short description"
 msgstr "Courte description"
 
-#: src/db/Amap.hx:9322
+#: src/db/Amap.hx:9293
 msgid "Homepage text"
 msgstr "Texte sur la page d'accueil"
 
-#: src/db/Amap.hx:9365
+#: src/db/Amap.hx:9336
 msgid "Text for distribution lists"
 msgstr "Texte listes d'émargement"
 
-#: src/db/Amap.hx:9419
+#: src/db/Amap.hx:9390
 msgid "Group website URL"
 msgstr "URL du site"
 
-#: src/db/Amap.hx:9476
+#: src/db/Amap.hx:9447
 msgid "Membership renewal date"
 msgstr "Date de renouvellement d'adhésion"
 
-#: src/db/Amap.hx:9525 src/db/Contract.hx:8389 src/db/User.hx:16057
+#: src/db/Amap.hx:9496 src/db/Contract.hx:8389 src/db/User.hx:16057
 msgid "Options"
 msgstr "Options"
 
-#: src/db/Amap.hx:9561
+#: src/db/Amap.hx:9532
 msgid "Type de groupe Cagette"
 msgstr ""
 
-#: src/db/Amap.hx:9612
+#: src/db/Amap.hx:9583
 msgid "Registration setting"
 msgstr "Réglage des inscriptions"
 
-#: src/db/Amap.hx:9660 lang/master/tpl/amap/default.mtt:315
+#: src/db/Amap.hx:9631 lang/master/tpl/amap/default.mtt:315
 msgid "Main contact"
 msgstr "Contact principal"
 
@@ -346,30 +358,38 @@ msgstr "Distributeur 3"
 msgid "Distributor #4"
 msgstr "Distributeur 4"
 
-#: src/db/Place.hx:1410 lang/master/tpl/contractadmin/products.mtt:1488
+#: src/db/Place.hx:1384 lang/master/tpl/contractadmin/products.mtt:1488
 #: lang/master/tpl/contractadmin/view.mtt:848
 #: lang/master/tpl/member/waiting.mtt:177
 msgid "Name"
 msgstr "Nom"
 
-#: src/db/Place.hx:1441 src/db/User.hx:15852
+#: src/db/Place.hx:1415 src/db/User.hx:15852
 #: lang/master/tpl/member/import.mtt:894 lang/master/tpl/member/import.mtt:1644
 msgid "Address 1"
 msgstr "Adresse 1"
 
-#: src/db/Place.hx:1477 src/db/User.hx:15888
+#: src/db/Place.hx:1451 src/db/User.hx:15888
 #: lang/master/tpl/member/import.mtt:928 lang/master/tpl/member/import.mtt:1677
 msgid "Address 2"
 msgstr "Adresse 2"
 
-#: src/db/Place.hx:1512 src/db/User.hx:15923
+#: src/db/Place.hx:1486 src/db/User.hx:15923
 msgid "Zip code"
 msgstr "Code postal"
 
-#: src/db/Place.hx:1544 src/db/User.hx:15955
+#: src/db/Place.hx:1518 src/db/User.hx:15955
 #: lang/master/tpl/member/import.mtt:995 lang/master/tpl/member/import.mtt:1742
 msgid "City"
 msgstr "Ville"
+
+#: src/db/Place.hx:1548
+msgid "Latitude"
+msgstr "Latitude"
+
+#: src/db/Place.hx:1582
+msgid "Longitude"
+msgstr "Longitude"
 
 #: src/db/Product.hx:3827
 msgid "Product name"
@@ -776,7 +796,7 @@ msgid "Next distributions"
 msgstr "Prochaines distributions"
 
 #: lang/master/tpl/contract/view.mtt:2942
-#: lang/master/tpl/contract/view.mtt:3293 lang/master/tpl/home.mtt:8619
+#: lang/master/tpl/contract/view.mtt:3293 lang/master/tpl/home.mtt:8243
 #: lang/master/tpl/shop/default.mtt:3579
 msgid "Order"
 msgstr "Commander"
@@ -872,7 +892,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: lang/master/tpl/contractadmin/deliveries.mtt:1112
-#: lang/master/tpl/contractadmin/orders.mtt:1024 lang/master/tpl/home.mtt:6228
+#: lang/master/tpl/contractadmin/orders.mtt:1024 lang/master/tpl/home.mtt:5852
 msgid "Distribution list"
 msgstr "Liste d'émargement"
 
@@ -1052,19 +1072,19 @@ msgstr "Groupe"
 msgid "Admin"
 msgstr "Admin"
 
-#: lang/master/tpl/design.mtt:4247
+#: lang/master/tpl/design.mtt:4371
 msgid "Cagette.net"
 msgstr "Cagette.net"
 
-#: lang/master/tpl/design.mtt:4342
+#: lang/master/tpl/design.mtt:4466
 msgid "Documentation"
 msgstr "Documentation"
 
-#: lang/master/tpl/design.mtt:4463
+#: lang/master/tpl/design.mtt:4587
 msgid "Forum"
 msgstr "Forum"
 
-#: lang/master/tpl/design.mtt:4597
+#: lang/master/tpl/design.mtt:4721
 msgid "Propose features"
 msgstr "Proposer une amélioration"
 
@@ -1089,7 +1109,7 @@ msgstr ""
 "de la page blanche !<br/>\n"
 "Bien sûr, vous serez libre de les effacer ou de les modifier par la suite."
 
-#: lang/master/tpl/home.mtt:940
+#: lang/master/tpl/home.mtt:564
 msgid ""
 "As a starter, we recommand you to follow the <b>guided tour</b> to discover "
 "step by step the main sections of the software."
@@ -1097,85 +1117,85 @@ msgstr ""
 "Pour commencer, nous vous recommandons de suivre la <b>visite guidée</b> "
 "pour découvrir progressivement les principales rubriques du logiciel."
 
-#: lang/master/tpl/home.mtt:1212
+#: lang/master/tpl/home.mtt:836
 msgid "Start the guided tour"
 msgstr "Commencer la visite guidée"
 
-#: lang/master/tpl/home.mtt:1522
+#: lang/master/tpl/home.mtt:1146
 msgid "Open orders"
 msgstr "Commandes ouvertes"
 
 #. on homepage when there is no plannde deliveries
-#: lang/master/tpl/home.mtt:1887
+#: lang/master/tpl/home.mtt:1511
 msgid "You delivery planning is currently empty"
 msgstr "Votre planning de distribution est vide"
 
-#: lang/master/tpl/home.mtt:2877 lang/master/tpl/home.mtt:6986
+#: lang/master/tpl/home.mtt:2501 lang/master/tpl/home.mtt:6610
 msgid "Modify my order"
 msgstr "Modifier ma commande"
 
-#: lang/master/tpl/home.mtt:3088
+#: lang/master/tpl/home.mtt:2712
 msgid "Add products"
 msgstr "Ajouter des produits"
 
-#: lang/master/tpl/home.mtt:3153 lang/master/tpl/shop/default.mtt:3066
+#: lang/master/tpl/home.mtt:2777 lang/master/tpl/shop/default.mtt:3066
 msgid "Order closed"
 msgstr "Commande close"
 
-#: lang/master/tpl/home.mtt:3709
+#: lang/master/tpl/home.mtt:3333
 msgid "My ordered products"
 msgstr "Mes produits commandés"
 
-#: lang/master/tpl/home.mtt:4071
+#: lang/master/tpl/home.mtt:3695
 msgid "Delivery"
 msgstr "Livraison"
 
-#: lang/master/tpl/home.mtt:5365 lang/master/tpl/home.mtt:5596
+#: lang/master/tpl/home.mtt:4989 lang/master/tpl/home.mtt:5220
 msgid "It's your turn"
 msgstr "C'est votre tour"
 
-#: lang/master/tpl/home.mtt:5432 lang/master/tpl/home.mtt:5663
+#: lang/master/tpl/home.mtt:5056 lang/master/tpl/home.mtt:5287
 msgid "It's his/her turn"
 msgstr "C'est son tour"
 
-#: lang/master/tpl/home.mtt:6584
+#: lang/master/tpl/home.mtt:6208
 msgid "Permanence"
 msgstr "Permanence"
 
-#: lang/master/tpl/home.mtt:6760
+#: lang/master/tpl/home.mtt:6384
 msgid "Contract details"
 msgstr "Détails du contrat"
 
-#: lang/master/tpl/home.mtt:7978
+#: lang/master/tpl/home.mtt:7602
 msgid "Warning, you're engaged in this distribution !"
 msgstr "Attention, vous ou votre conjoint êtes inscrit à cette distribution !"
 
-#: lang/master/tpl/home.mtt:8856
+#: lang/master/tpl/home.mtt:8480
 msgid "Order closed since"
 msgstr "Commande close depuis le"
 
-#: lang/master/tpl/home.mtt:8954
+#: lang/master/tpl/home.mtt:8578
 msgid "Order will open on"
 msgstr "La commande ouvre le"
 
 #. Delivery from 18:00 to 19:30
-#: lang/master/tpl/home.mtt:9589
+#: lang/master/tpl/home.mtt:9213
 msgid "Delivery from ::start:: to ::end::"
 msgstr "Distribution de ::start:: à ::end::"
 
-#: lang/master/tpl/home.mtt:11112
+#: lang/master/tpl/home.mtt:10736
 msgid "Permanences"
 msgstr "Permanences"
 
-#: lang/master/tpl/home.mtt:11148
+#: lang/master/tpl/home.mtt:10772
 msgid "Don't forget to register for permanences"
 msgstr "N'oubliez pas de vous inscrire aux premanences"
 
-#: lang/master/tpl/home.mtt:11461
+#: lang/master/tpl/home.mtt:11085
 msgid "Warning, you don't have defined a password yet !"
 msgstr "Attention, vous n'avez pas encore défini de mot de passe !"
 
-#: lang/master/tpl/home.mtt:11648
+#: lang/master/tpl/home.mtt:11272
 msgid "Set my password"
 msgstr "Définir mon mot de passe"
 
@@ -1377,7 +1397,7 @@ msgstr "Revenir à la page principale"
 msgid "Help"
 msgstr "Aide"
 
-#: lang/master/tpl/member/import.mtt:3374
+#: lang/master/tpl/member/import.mtt:3378
 msgid ""
 "Here you can import a large amount of members in your database from a simple "
 "Excel or Libre Office file.<br/><ul><li>The first step is to <a href=\"/"
@@ -1581,8 +1601,8 @@ msgid "Connection"
 msgstr "Connexion"
 
 #: lang/master/tpl/user/login.mtt:2655
-msgid "Forgotten your email ?"
-msgstr "Email oublié ?"
+msgid "Forgotten your password ?"
+msgstr "Mot de passe oublié ?"
 
 #: js/Tuto.hx:1016
 msgid "This tutorial is over."
@@ -1843,6 +1863,9 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid "Forgotten your email ?"
+#~ msgstr "Email oublié ?"
 
 #~ msgid ""
 #~ "Congratulations ! You just imported ::numImported:: users in your group."

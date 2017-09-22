@@ -183,6 +183,8 @@ class View extends sugoi.BaseView {
 		MONTHS = [t._("January"), t._("February"), t._("March"), t._("April"), t._("May"), t._("June"), t._("July"), t._("August"), t._("September"), t._("October"), t._("November"), t._("December")];
 		this.DAYS = DAYS;
 		this.MONTHS = MONTHS;
+		this.HOURS = HOURS;
+		this.MINUTES = MINUTES;
 	}
 	
 	/**

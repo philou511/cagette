@@ -240,10 +240,16 @@ class Distribution extends Controller
 			app.event(e);
 			
 			if (d.date == null){
-				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been proposed to the farmer, please wait for its validation') );
+				//throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been proposed to the farmer, please wait for its validation') );				
+				//
+				var html = "Votre demande de distribution a été envoyée à <b>"+contract.vendor.name+"</b>. <br/>Soyez patient, vous serez prévenus par email de sa validation ou de son refus.";
+				
+				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
+				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
+				
 			}else{
 				d.insert();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been recorded') );	
+				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._("The distribution has been recorded") );	
 			}
 			
 		}else{
@@ -253,7 +259,7 @@ class Distribution extends Controller
 		}
 	
 		view.form = form;
-		view.title = t._('Create a distribution');
+		view.title = t._("Create a distribution");
 	}
 	
 	/**

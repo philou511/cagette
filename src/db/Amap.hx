@@ -95,14 +95,17 @@ class Amap extends Object
 			return mainPlace;
 		}else {
 			this.lock();
-			//var cids = Lambda.map(getActiveContracts(), function(x) return x.id);
+			
 			var places = getPlaces();
+			
+			//just 1 place
 			if (places.length == 1) {				
 				this.mainPlace = places.first();
 				this.update();
 				return this.mainPlace;
 			}
 			
+			//no places !
 			if (places.length == 0) return null;
 			
 			var pids = Lambda.map(places, function(x) return x.id);
@@ -141,16 +144,12 @@ class Amap extends Object
  		return !flags.has(HidePhone);
  	}
 	
-	public function hasPayments(){
-		
+	public function hasPayments(){		
 		return flags != null && flags.has(HasPayments);
-		/*
-		if ( id == 8) return false; //debug peche de vigne
-		if (App.config.DEBUG) return true;
-		//nansouty + jeanot + chantereine + georges martin //return id == 1 || id == 176 || id == 627 || id == 197;
-		
-		//avallon + epicvous + amap maison violette + earl plaisirs du jardin + emarche limoges
-		return Lambda.has([1128, 848, 1080, 662, 1076], id);*/
+	}
+	
+	public function hasTaxonomy(){
+		return flags != null && flags.has(ShopCategoriesFromTaxonomy);
 	}
 	
 	public function getCategoryGroups() {

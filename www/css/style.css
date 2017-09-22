@@ -205,6 +205,10 @@ div.reportHeader {
 .vat {
   color: #999999; }
 
+.detail {
+  color: #999999;
+  font-size: 90%; }
+
 #cartContainer.scrolled {
   position: fixed;
   top: 125px; }
