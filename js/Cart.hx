@@ -9,6 +9,7 @@ class Cart
 {
 
 	public var products : Map<Int,ProductInfo>; //product db
+	public var productsArray : Array<ProductInfo>; //to keep order of products
 	public var categories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var pinnedCategories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var order : OrderInSession;
@@ -29,6 +30,8 @@ class Cart
 	public function new() 
 	{
 		products = new Map();
+		productsArray = [];
+		
 		order = cast { products:[] };
 		categories = [];
 		pinnedCategories = [];
@@ -41,7 +44,7 @@ class Cart
 		
 		var q = App.j('#productQt' + pid).val();
 		var qt = 0.0;
-		var p = products.get(pid);
+		var p = this.products.get(pid);
 		if (p.hasFloatQt) {
 			q = StringTools.replace(q, ",", ".");
 			qt = Std.parseFloat(q);
@@ -98,7 +101,7 @@ class Cart
 		
 		//render items in shopping cart
 		c.append( Lambda.map(order.products, function( x ) {
-			var p = products.get(x.productId);
+			var p = this.products.get(x.productId);
 			if (p == null) {
 				//the product may have been disabled by an admin
 				return "";
@@ -166,7 +169,7 @@ class Cart
 		//trace(firstCategGroup);
 		//trace(pinnedCategories);
 
-		var pList = Lambda.array(products).copy();
+		var pList = this.productsArray.copy();
 
 		//for ( p in pList) trace(p.name+" : " + p.categories);
 		//trace("----------------");
@@ -380,8 +383,8 @@ class Cart
 				var id : Int = p.id;
 				//var id : Int = p.id;
  				//id = id + 1;
-				products.set(id, p);
-				
+				this.products.set(id, p);
+				this.productsArray.push(p);
 				//trace(p.name+" : " + p.categories);
 			}
 			

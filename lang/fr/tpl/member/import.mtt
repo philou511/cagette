@@ -97,7 +97,7 @@
 			<b>::raw __("Félicitations ! Vous venez d'importer <b>::numImported::</b> personnes dans votre groupe.",{numImported:numImported})::</b>
 		</div>		
 		<p>			
-			::_("Maintenant, pourquoi ne pas <a href='/member/?select=newusersinviting'>les inviter</a> à se connecter à Cagette.net ?")::
+			::raw _("Maintenant, pourquoi ne pas <a href='/member/?select=newusersinviting'>les inviter</a> à se connecter à Cagette.net ?")::
 		</p>
 		::else::
 		<p>::_("On dirait qu'il n'y a aucune donnée à importer. Vérifiez que les données de votre fichier sont valides ou que les personnes ne sont pas déjà enregistrées dans la base de données de Cagette.net")::</p>			

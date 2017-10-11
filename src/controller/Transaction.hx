@@ -80,7 +80,6 @@ class Transaction extends controller.Controller
 		
 		view.amount = order.total;		
 		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);		
-
 	}
 	
 	/**
@@ -92,6 +91,8 @@ class Transaction extends controller.Controller
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;	
 		if (tmpOrder == null) throw Redirect("/");
+		
+		//get a code
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
 		var code = payment.Check.getCode(d.date, d.place, app.user);
 		

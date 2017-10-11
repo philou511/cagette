@@ -89,7 +89,7 @@
 								<h4>
 									<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')">
 										::p.name::
-										::if p.qt!=null && p.unitType!=null::
+										::if p.qt!=null && p.unitType!=null && p.qt>0::
 											::p.qt:: ::unit(p.unitType)::
 										::end::
 									</a>

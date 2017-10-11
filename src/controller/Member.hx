@@ -47,7 +47,7 @@ class Member extends Controller
 			switch(args.select) {
 				case "nocontract":
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], "Sans-contrats");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], "Sans-contrats");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoContracts(index, limit); }	
@@ -55,7 +55,7 @@ class Member extends Controller
 				case "contract":
 					
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_Contracts()), ["firstName", "lastName", "email"], "Avec-commande");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_Contracts()), ["firstName", "lastName", "email"], "Avec-commande");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_Contracts(index, limit); }	
@@ -63,14 +63,14 @@ class Member extends Controller
 					
 				case "nomembership" :
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], "Adhesions-a-renouveller");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], "Adhesions-a-renouveller");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoMembership(index, limit); }
 					}
 				case "newusers" :
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvData(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], "jamais-connecté");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], "jamais-connecté");
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NewUsers(index, limit); }
@@ -83,7 +83,7 @@ class Member extends Controller
 		}else {
 			if (app.params.exists("csv")) {
 				var headers = ["firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
-				sugoi.tools.Csv.printCsvData(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, "Adherents");
+				sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, "Adherents");
 				return;
 			}else {
 				//default display
@@ -310,9 +310,11 @@ class Member extends Controller
 			form.removeElementByName("email2");
 			app.session.addMessage("Par sécurité, vous ne pouvez pas modifier l'email de cette personne car elle est membre de plusieurs groupes.");
 		}
+		
 		//an administrator can modify a user's pass only if he's a not registred user.
 		if (!isReg){
 			app.session.addMessage("Cette personne n'a pas encore défini de mot de passe. Vous êtes exceptionnellement autorisé à le définir à sa place. N'oubliez pas de la prévenir.");			
+			form.getElement("pass").required = false;
 		}else{
 			form.removeElement( form.getElement("pass") );
 		}

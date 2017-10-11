@@ -15,19 +15,14 @@ enum Right{
 @:id(userId,amapId)
 class UserAmap extends Object
 {
-	@:relation(amapId)
-	public var amap : Amap;
-	
-	@:relation(userId)
-	public var user : db.User;
-	
+	@:relation(amapId) public var amap : Amap;
+	@:relation(userId) public var user : db.User;
 	public var rights : SNull<SData<Array<Right>>>;
-
 	public var balance : SFloat; //account balance in group currency
-	
 	static var CACHE = new Map<String,db.UserAmap>();
 	
 	public static function get(user:User, amap:Amap, ?lock = false) {
+		if (user == null || amap == null) return null;
 		//SPOD doesnt cache elements with double primary key, so lets do it manually
 		var c = CACHE.get(user.id + "-" + amap.id);
 		if (c == null) {

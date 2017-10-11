@@ -66,7 +66,7 @@ class Product extends Object
 	
 	public function getName(){
 	
-		if (unitType != null && qt != null){
+		if (unitType != null && qt != null && qt != 0){
 			return name +" " + qt + " " + App.current.view.unit(unitType);
 		}else{
 			return name;
@@ -87,6 +87,7 @@ class Product extends Object
 	public function infos(?CategFromTaxo=false):ProductInfo {
 		var o :ProductInfo = {
 			id : id,
+			ref : ref,
 			name : name,
 			type : Type.createEnumIndex(ProductType, type),
 			image : getImage(),

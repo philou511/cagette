@@ -29,6 +29,9 @@ class Contract extends Controller
 	@tpl("contract/default.mtt")
 	function doDefault() {
 		
+		var ua = db.UserAmap.get(app.user, app.user.amap);
+		if (ua == null) throw Error("/", t._("You're not member of this group"));
+		
 		var constOrders = null;
 		var varOrders = new Map<String,Array<db.UserContract>>();
 		
@@ -125,7 +128,7 @@ class Contract extends Controller
 		
 		checkToken();
 		
-		view.userAmap = db.UserAmap.get(app.user, app.user.amap);
+		view.userAmap = ua;
 		
 	}
 

@@ -416,7 +416,7 @@ class UserContract extends Object
 				});				
 			}
 
-			sugoi.tools.Csv.printCsvData(data, ["quantity", "pname","ref", "price", "total"],"Export-"+exportName+"-par produits");
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "price", "total"],"Export-"+exportName+"-par produits");
 			return null;
 		}else{
 			return orders;		
@@ -460,7 +460,7 @@ class UserContract extends Object
 				exportName = contract.amap.name+" - "+contract.name;
 			}
 			
-			sugoi.tools.Csv.printCsvData(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+" - Par adherent");
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+" - Par adherent");
 			return null;
 		}else{
 			return orders;

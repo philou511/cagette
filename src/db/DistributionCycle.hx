@@ -41,6 +41,18 @@ class DistributionCycle extends Object
 		super();
 	}
 	
+	public static function getLabels(){
+		//var t = sugoi.i18n.Locale.texts;
+		return [
+			"cycleType"		=> "Fréquence",
+			"startDate" 	=> "Date de début",
+			"endDate"		=> "Date de fin",
+			"daysBeforeOrderStart" 		=> "Ouverture de commande (nbre de jours avant distribution)" ,			
+			"daysBeforeOrderEnd"		=> "Fermeture de commande (nbre de jours avant distribution)",			
+			
+		];
+	}
+	
 	/**
 	 * on créé toutes les distribs en partant du jour de la semaine de la premiere date
 	 * 
@@ -149,6 +161,7 @@ class DistributionCycle extends Object
 	
 	public function placePopulate():Array<{label:String,value:Int}> {
 		var out = [];
+		if ( App.current.user == null || App.current.user.amap == null ) return out;
 		var places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
 		for (p in places) out.push( { label:p.name,value :p.id } );
 		return out;

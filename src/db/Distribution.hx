@@ -45,6 +45,7 @@ class Distribution extends Object
 		super();
 		date = Date.now();
 		end = DateTools.delta(date, 1000 * 60 * 90);
+		validated = false;
 	}
 	
 	/**

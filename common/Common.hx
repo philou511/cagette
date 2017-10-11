@@ -22,6 +22,7 @@ typedef OrderInSession = {
 typedef ProductInfo = {
 	id : Int,
 	name : String,
+	?ref : String,
 	type : ProductType,
 	image : Null<String>,
 	contractId : Int,

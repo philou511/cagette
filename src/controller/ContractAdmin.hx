@@ -83,15 +83,13 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		
 		//checks
-		if (app.user.amap.hasShopMode()) {
-		
+		if (app.user.amap.hasShopMode() && !app.user.amap.hasTaxonomy() ) {		
 			for ( p in contract.getProducts(false)) {
 				if (p.getCategories().length == 0) {
 					app.session.addMessage("Attention, un ou plusieurs produits n'ont pas de catégories, <a href='/product/categorize/"+contract.id+"'>cliquez ici pour en ajouter</a>", true);
 					break;
 				}
-			}
-			
+			}			
 		}
 		
 		//batch enable / disable products
@@ -507,7 +505,7 @@ class ContractAdmin extends Controller
 				}
 			}			
 			
-			sugoi.tools.Csv.printCsvData(orders, ["quantity", "pname", "ref", "price", "total"], "Commandes du " + from.toString().substr(0,10)+" au "+to.toString().substr(0,10)+" par producteur.csv");
+			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "price", "total"], "Commandes du " + from.toString().substr(0,10)+" au "+to.toString().substr(0,10)+" par producteur.csv");
 			return;
 		}
 		
@@ -834,7 +832,7 @@ class ContractAdmin extends Controller
 				
 				if ( app.params.exists("csv") ){
 					
-					sugoi.tools.Csv.printCsvData(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+					sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
 				}
 				
 				view.repartition = repartition;

@@ -184,6 +184,7 @@ class User extends Object {
 	}
 	
 	public function setPass(p:String) {
+		if (p == null) return null;
 		this.pass = haxe.crypto.Md5.encode( App.config.get('key') + StringTools.trim(p));
 		return this.pass;
 	}
@@ -524,6 +525,7 @@ class User extends Object {
 			"rights"	=>	t._("Rights"),
 			"cdate"		=>	t._("Registration date"),
 			"flags"		=>	t._("Options"),
+			"pass"		=>	t._("Password"),
 		];
 	}
 	
