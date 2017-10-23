@@ -334,7 +334,7 @@ class AmapAdmin extends Controller
 		
 		var f = new sugoi.form.Form("paymentTypes");
 		var types = payment.Payment.getPaymentTypes();
-		var formdata = [for (t in types){label:App.t._(t.type), value:t.type}];		
+		var formdata = [for (t in types){label:t.name, value:t.type}];		
 		var selected = app.user.amap.allowedPaymentsType;
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes","Types de paiements autorisés",formdata, selected) );
 		

@@ -47,6 +47,7 @@ class UserContract extends Object
 		paid = false;
 		date = Date.now();
 		flags = cast 0;
+		feesRate = 0;
 	}
 	
 	public function populate() {
@@ -498,15 +499,13 @@ class UserContract extends Object
 	 * Confirms an order : create real orders from tmp orders in session
 	 * @param	order
 	 */
-	public static function confirmSessionOrder(order:OrderInSession){
+	public static function confirmSessionOrder(tmpOrder:OrderInSession){
 		
 		var orders = [];
-		var user = db.User.manager.get(order.userId);
-		for (o in order.products){
-			
+		var user = db.User.manager.get(tmpOrder.userId);
+		for (o in tmpOrder.products){
 			o.product = db.Product.manager.get(o.productId);
 			orders.push( db.UserContract.make(user, o.quantity, o.product, o.distributionId) );
-			
 		}
 		
 		App.current.event(MakeOrder(orders));

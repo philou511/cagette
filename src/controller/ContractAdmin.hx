@@ -99,10 +99,11 @@ class ContractAdmin extends Controller
 			
 			if (args.disable != null){
 				
-				var pids = Lambda.array(Lambda.map(args.disable.split("|"), function(x) return Std.parseInt(x)));
-				app.event(BatchEnableProducts(pids, false));
+				var pids = Lambda.array(Lambda.map(args.disable.split("|"), function(x) return Std.parseInt(x)));				
+				var data = {pids:pids,enable:false};
+				app.event( BatchEnableProducts(data) );
 				
-				for ( pid in pids){
+				for ( pid in data.pids){
 					if ( Lambda.find(products,function(p) return p.id==pid)==null ) throw 'product $pid is not in this contract !';
 					var p = db.Product.manager.get(pid, true);
 					p.active = false;
@@ -113,9 +114,10 @@ class ContractAdmin extends Controller
 			if (args.enable != null){
 				
 				var pids = Lambda.array(Lambda.map(args.enable.split("|"), function(x) return Std.parseInt(x)));
-				app.event(BatchEnableProducts(pids, true));
+				var data = {pids:pids,enable:true};
+				app.event(BatchEnableProducts(data));
 				
-				for ( pid in pids){
+				for ( pid in data.pids){
 					if ( Lambda.find(products,function(p) return p.id==pid)==null ) throw 'product $pid is not in this contract !';
 					var p = db.Product.manager.get(pid, true);
 					p.active = true;

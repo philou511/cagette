@@ -39,6 +39,7 @@ class Product extends Object
 	{
 		super();
 		active = true;
+		type = 0;
 	}
 	
 	/**
@@ -48,8 +49,7 @@ class Product extends Object
 	public function getImage() {
 		if (image == null) {
 			
-			if (txpProduct != null){
-				
+			if (txpProduct != null){				
 				return "/img/taxo/cat" + txpProduct.category.id + ".png";
 				
 			}else{

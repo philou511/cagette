@@ -78,7 +78,7 @@
 			<td>
 				<b>::p.name::</b>
 				
-				::if p._unitType!=null::
+				::if p._unitType!=null && p.qt!=null::
 				::p.qt::&nbsp;::unit(p._unitType)::
 				::end::
 				

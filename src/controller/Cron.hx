@@ -41,8 +41,8 @@ class Cron extends Controller
 	
 	public function doHour() {
 		
-		// this function could be locally tested by
-		// cd /data/cagette/www/ && (rm page.html; neko index.n cron/hour > page.html)
+		// this function can be locally tested by
+		// cd /data/cagette/www/ && neko index.n cron/hour > cron.log
 		
 		app.event(HourlyCron);
 		
@@ -112,15 +112,16 @@ class Cron extends Controller
 		
 		//trouve les distrib qui commencent dans le nombre d'heures demandé
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
- 		var d = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour-1));
- 		var h = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
-		var distribs ;
+ 		var from = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour-1));
+ 		var to = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
+				
 		// dans le cas HasEmailNotifOuverture la date à prendre est le orderStartDate
 		// et non pas date qui est la date de la distribution
+		var distribs;
 		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
-			distribs = db.Distribution.manager.search( $orderStartDate >= d && $orderStartDate <= h , false);
+			distribs = db.Distribution.manager.search( $orderStartDate >= from && $orderStartDate <= to , false);
 		else
-			distribs = db.Distribution.manager.search( $date >= d && $date <= h , false);
+			distribs = db.Distribution.manager.search( $date >= from && $date <= to , false);
 		
 		//trace("distribNotif "+hour+" from "+d+" to "+h);Sys.print("<br/>\n");
 		
@@ -128,21 +129,21 @@ class Cron extends Controller
  		if (distribs.length == 0) return;
 		
 		//cherche plus tard si on a pas une "grappe" de distrib
-		while (true) {
+		/*while (true) {
 			var extraDistribs ;
 			if ( db.User.UserFlags.HasEmailNotifOuverture != flag )
-				extraDistribs = db.Distribution.manager.search( $date >= h && $date <DateTools.delta(h,1000.0*60*60) , false);	
+				extraDistribs = db.Distribution.manager.search( $date >= to && $date <DateTools.delta(to,1000.0*60*60) , false);	
 			else	
-				extraDistribs = db.Distribution.manager.search( $orderStartDate >= h && $orderStartDate <DateTools.delta(h,1000.0*60*60) , false);
+				extraDistribs = db.Distribution.manager.search( $orderStartDate >= to && $orderStartDate <DateTools.delta(to,1000.0*60*60) , false);
 			for ( e in extraDistribs) distribs.add(e);
 			if (extraDistribs.length > 0) {
 				//on fait un tour de plus avec une heure plus tard
-				h = DateTools.delta(h, 1000.0 * 60 * 60);
+				to = DateTools.delta(h, 1000.0 * 60 * 60);
 			}else {
 				//plus de distribs
 				break;
 			}
-		}
+		}*/
 		
 		//on vérifie dans le cache du jour que ces distrib n'ont pas deja été traitées lors d'un cron précédent
 		var cacheId = Date.now().toString().substr(0, 10)+Std.string(flag);
@@ -166,7 +167,6 @@ class Cron extends Controller
 		Cache.set(cacheId, dist, 24 * 60 * 60);
 		
 		//We have now the distribs we want to notify about.
-		//Sys.print(distribs+"<br/>\n");
 		var distribsByContractId = new Map<Int,db.Distribution>();
 		for (d in distribs) distribsByContractId.set(d.contract.id, d);
 
@@ -178,7 +178,7 @@ class Cron extends Controller
 		}
 		
 		/*
-		 * Group orders by users-amap to receive separate emails by groups for the same user.
+		 * Group orders by users-group to receive separate emails by groups for the same user.
 		 * Map key is $userId-$groupId
 		*/
 		var users = new Map <String,{
@@ -269,16 +269,18 @@ class Cron extends Controller
 
 					var m = new Mail();
 					m.setSender(App.config.get("default_email"), "Cagette.net");
-					if(group.contact!=null){
-						m.setReplyTo(group.contact.email, group.name);
+					if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
+					try{
+						m.addRecipient(u.user.email, u.user.getName());
+						if (u.user.email2 != null) m.addRecipient(u.user.email2);
+					}catch (e:Dynamic){						
+						app.logError(e); //email could be invalid
 					}
-					m.addRecipient(u.user.email, u.user.getName());
-					if(u.user.email2!=null) m.addRecipient(u.user.email2);
 					m.setSubject( group.name+" : Distribution " + app.view.hDate(u.distrib.date) );
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					
 					//debug
-					Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");					
+					//Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");					
 					Sys.sleep(0.25);
 					
 					try {
