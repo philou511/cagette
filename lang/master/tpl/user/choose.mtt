@@ -78,8 +78,9 @@
 
 	<!-- actions -->
 	<div class="col-md-12" style="margin-bottom:12px;" >
-
-		<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
+		::if session.lang!="de"::
+			<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
+		::end::
 		<a class="btn btn-default" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Create my own group")::</a>	
 		
 	</div>
