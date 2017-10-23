@@ -127,7 +127,7 @@
 			::_("Supplier:"):: <b>::c._vendor.name::</b>
 		</p>
 		<p>
-			Responsable : $$contact(::c._contact::)	
+			::_("Contact in charge:"):: $$contact(::c._contact::)	
 		</p>
 		
 	</div>
