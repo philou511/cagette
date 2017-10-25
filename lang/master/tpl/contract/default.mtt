@@ -237,7 +237,7 @@
 	
 	<h3>::_("Language")::</h3>
 	<div class="article">
-		::_("Display the interface in another langugage"):: (beta)
+		::_("Display the interface in another language"):: (beta)
 		:
 		<ul>
 			<li><a href="?lang=fr">Français</a></li>
@@ -245,7 +245,18 @@
 			<li><a href="?lang=de">Deutsch</a></li>			
 		</ul>
 		<p>
-			::_("Current language is"):: <b>::session.lang::</b>
+			::_("Current language is")::
+			<b>
+				::if session.lang=="fr"::
+					Français
+				::end::
+				::if session.lang=="de"::
+					Deutsch
+				::end::
+				::if session.lang=="en"::
+					English
+				::end::
+			</b>
 		</p>
 	</div>
 	
