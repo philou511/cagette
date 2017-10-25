@@ -5,7 +5,7 @@
 	<h2>::_("Order payment")::</h2>
 	
 	<!--<div>
-		Votre solde actuel est de <b>::ua.balance::</b> 
+		::_("Your current balance is"):: <b>::ua.balance::</b> 
 	</div>	-->
 		
 	<div style="font-size:120%;">
