@@ -1,16 +1,16 @@
 ﻿::use 'design.mtt'::
 
-<h1>Erreur</h1>
+<h1>::_("Error")::</h1>
 
 <p>
-	Une erreur s'est produite lors de l'accès à la page demandée.
+	::_("An error occurred during the request to the page.")::
 </p>
 
 <p>
-	Si le site est indisponible, merci de revenir dans quelques minutes. En cas d'erreur répétées, merci de nous contacter de façon à ce que nous corrigions votre problème.
+	::_("If the website is unavailable, please try again in few minutes. If this happen repeatedly please let us know so we can solve the issue.")::
 </p>
 
-<h2>Description technique de l'erreur</h2>
+<h2>::_("Technical description of the error")::</h2>
 
 <pre id="error_msg">
 ::message::

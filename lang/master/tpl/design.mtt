@@ -142,8 +142,7 @@
 				-->
 				<a class="clickable" style="background-color:#f5e3ac;text-align:center;margin-top:4px;" 
 					   href="http://alilo.fr/formations-producteurs" target="_blank">
-					Vous êtes <b>producteur</b> ? Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b>.</a>
-				
+					::raw_("Are you <b>supplier</b>? Find out about our free trainings to learn how to use Cagette Pro</b>."):: </a>
 			</div>			
 		</div>
 		
