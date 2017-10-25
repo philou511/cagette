@@ -5,7 +5,7 @@
 			
 			<div class="text-center">
 				<h3>
-					Valider la distribution du ::hDate(date)::
+					::_("Validate the delivery of the"):: ::hDate(date)::
 				</h3>	
 				<h4
 					><span class="glyphicon glyphicon-map-marker"></span>::place::
@@ -29,6 +29,16 @@
 					</td>
 				</tr>
 				<tr>
+					<th>::_("Contract")::</th>
+					<th>::_("Qty")::</th>
+					<th>::_("Ref")::</th>
+					<th>::_("Product")::</th>
+					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price incl. VAT")::">::_("U.P.")::</a></th>
+					<th>::_("Sub-total")::</th>
+					<th>::_("Fees")::</th>
+					<th>::_("Total")::</th>
+					<th>::_("Paid")::</th>
+
 					<th>Contrat</th>
 					<th>Qté</th>
 					<th>Réf.</th>
@@ -83,7 +93,7 @@
 				::end::
 				
 				<tr class="subrow">					
-					<th colspan="7" class="text-right">Total commandé</th>
+					<th colspan="7" class="text-right">::_("Total ordered")::</th>
 					<th>::formatNum(total)::&nbsp;::currency()::</th>					
 					<th></th>
 					
@@ -96,7 +106,7 @@
 			<!--  PAYMENT CHECK FOR SHOP MODE -->
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">Paiement</th>
+					<th colspan="9" class="text-center">::_("Payment")::</th>
 				</tr>
 				
 				::set op = basket.getOrderOperation(false)::
@@ -117,7 +127,7 @@
 							::if(tt.pending)::
 							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
 								<span class="glyphicon glyphicon-ok"></span>
-								Ce paiement a été reçu
+								::_("This payment was received")::
 							</a>
 							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
 							::end::
@@ -136,7 +146,7 @@
 					::end::
 					<tr class="::class::">
 						<td colspan="2"></td>
-						<th class="text-right">Total payé</th>
+						<th class="text-right">::_("Total paid")::</th>
 						<th>
 							::tpaid::&nbsp;::currency()::
 						</th>
@@ -144,12 +154,12 @@
 							::if(tpaid+op.amount > 0):: 
 							
 								$$check(::false::)				
-								Trop payé
+								::_("Too much paid")::
 							
 							::elseif(tpaid+op.amount < 0)::
 							
 								$$check(::false::)						
-								Manque ::Math.abs(tpaid+op.amount):: ::currency()::
+								::_("Missing"):: ::Math.abs(tpaid+op.amount):: ::currency()::
 								
 							::else::	
 							
@@ -159,13 +169,13 @@
 						</td>
 					</tr>
 				::else::
-					<tr><td>Cette commande a été faite alors que les paiements étaient désactivés</td></tr>
+					<tr><td>::_("This order was made when payments were deactivated")::</td></tr>
 				::end::				
 			</table>
 			
 			<p class="text-center" ::cond op!=null::>				
-				$$insert(Saisir un remboursement,/validate/::date::/::place.id::/::member.id::/addRefund/)				
-				$$insert(Saisir un paiement,/validate/::date::/::place.id::/::member.id::/addPayment/)
+				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund/)				
+				$$insert(::_("Key-in a payment")::,/validate/::date::/::place.id::/::member.id::/addPayment/)
 			</p>
 			
 			<p class="text-center">				
@@ -173,19 +183,18 @@
 					
 					<a href="" class="btn btn-default btn-lg disabled">
 						<span class="glyphicon glyphicon-ok"></span>
-						Valider cette commande
+						::_("Validate this order")::
 					</a>
 				
 					<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
-					Vous ne pouvez pas valider cette commande car le montant payé<br/>
-					par l'adhérent ne correspond pas au total de sa commande !
+					::_("You cannot validate this order because the amount paid<br/> by the member does not correspond to the total amount of his order!")::
 					</div>
 				
 				::else::
 				
 					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
 						<span class="glyphicon glyphicon-ok"></span>
-						Valider cette commande
+						::_("Validate this order")::
 					</a>
 				::end::
 			</p>
@@ -195,7 +204,7 @@
 			
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">Solde de l'adhérent <a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-xs">Détail</a> </th>
+					<th colspan="9" class="text-center">Solde de l'adhérent <a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-xs">::_("Details")::</a> </th>
 				</tr>
 				::foreach op operations::
 					<tr>
@@ -204,7 +213,7 @@
 							::if(op.pending && op.type==2)::
 							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
 								<span class="glyphicon glyphicon-ok"></span>
-								Ce paiement a été reçu
+								::_("This payment has been received")::
 							</a>
 							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::op.id::?token=::token::)
 							::end::
@@ -227,26 +236,26 @@
 			</table>
 			
 			<p class="text-center">				
-				$$insert(Saisir un remboursement,/validate/::date::/::place.id::/::member.id::/addRefund/)				
-				$$insert(Saisir un paiement,/validate/::date::/::place.id::/::member.id::/addPayment/)
+				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund/)				
+				$$insert(::_("Key-in a payment")::,/validate/::date::/::place.id::/::member.id::/addPayment/)
 			</p>
 			
 			<p class="text-center">				
 				::if(balance < 0)::
 					<a href="" class="btn btn-default btn-lg disabled">
 						<span class="glyphicon glyphicon-ok"></span>
-						Valider cette commande
+						::_("Validate this order")::
 					</a>
 				
 					<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
-						Vous ne pouvez pas valider cette commande<br/>car le solde de cet adhérent est négatif
+						::raw_("You cannot validate this order<br/>because the balance of the member is negative")::
 					</div>
 				
 				::else::
 				
 					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
 						<span class="glyphicon glyphicon-ok"></span>
-						Valider cette commande
+						::_("Validate this order")::
 					</a>
 				::end::
 			</p>
@@ -256,7 +265,7 @@
 			
 			<p class="text-center">
 				<a href="/distribution/validate/::date::/::place.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-chevron-left"></span> Revenir à la distribution
+					<span class="glyphicon glyphicon-chevron-left"></span> ::_("Back to the delivery")::
 				</a>
 				
 			</p>
