@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Liste d'émargement</title>
+	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
 	
 	::set date = getDate(distrib.date)::
-	<h2>::contract._amap.name:: - Livraison du ::date.dow:: ::date.d:: ::date.m::</h2>
-	
+	<h2>::contract._amap.name:: - ::_("Delivery of the"):: ::date.dow:: ::date.d:: ::date.m::</h2>
 	
 	
 	<h2>::distrib._contract.name:: - ::distrib._contract._vendor.name::</h2>	
@@ -17,7 +16,7 @@
 	<p>
 		::set c = contract._contact::
 		::set v = contract._vendor::
-		<b>Responsable contrat : </b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
+		<b>::_("Contact in charge of the contract:") </b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
 	</p>
 	<p>
 		<b>::_("Farmers"):: : </b>::v.name:: , 
@@ -25,7 +24,7 @@
 		::if v.phone!=null :: ::v.phone:: ::end::
 	</p>
 	<p>	
-		<b>::_("Members on dutty"):: : </b>
+		<b>::_("Members on duty"):: : </b>
 		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::,::end::
 		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::,::end::
 		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::,::end::
@@ -60,7 +59,7 @@
 								::end::
 
 								::if m.userName2 != null::
-									en alternance avec
+									::_("alternately with")::
 									<span  style="font-size:1.3em;">
 									::m.userName2::
 									</span>
@@ -73,14 +72,14 @@
 							</td>
 						</tr>
 						<tr>
-							<th>Qté</th>
-							<th>Réf.</th>
-							<th>Produit</th>
-							<th>P.U</th>
-							<th>Sous-total</th>
-							<th>Frais</th>
-							<th>Total</th>
-							<th>Signature</th>
+							<th>::_("Qty")::</th>
+							<th>::_("Ref")::</th>
+							<th>::_("Product")::</th>
+							<th>::_("U.P.")::</th>
+							<th>::_("Sub-total")::</th>
+							<th>::_("Fees")::</th>
+							<th>::_("Total")::</th>
+							<th>::_("Signature")::</th>
 						</tr>
 				
 					::end::
@@ -135,7 +134,7 @@
 						::if subtotal!=0:: 
 						<tr>	
 							<td colspan="5"></td>
-							<td class="total text-right">TOTAL</td>
+							<td class="total text-right">::_("TOTAL")::</td>
 							<td class="total">::formatNum(subtotal)::&nbsp;::currency()::</td>					
 							<td></td>
 							::set subtotal = 0::
@@ -148,7 +147,7 @@
 				
 				<!-- big total -->
 				<tr style="font-size:1.3em;">					
-					<td class="text-right">Total Commande : </td>
+					<td class="text-right">::_("Total order:"):: </td>
 					<td>::formatNum(total)::&nbsp;::currency()::</td>					
 					<td colspan="6"></td>
 				</tr>
@@ -158,6 +157,6 @@
 				
 				<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
 		
-				<p class="hidden"><i>Appuyez sur "Control + P" pour imprimer cette page.</i></p>
+				<p class="hidden"><i>::_("Push on \"Control + P\" to print this page.")::</i></p>
 </body>
 </html>
