@@ -3,7 +3,7 @@
 		<h3>::_("Orders")::</h3>
 		
 		::if distribution!=null::
-		Distribution du <b>::hDate(distribution.date)::</b>
+		::_("Delivery of the"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		
 		<div style="margin:8px 0;">
@@ -29,7 +29,7 @@
 		</div>
 
 		::if disabledProducts > 0::
-		$$alert(::"Attention, il y a <b>"+disabledProducts+"</b> commande(s) contenant des <b>produits désactivés</b>."::)
+		$$alert(::raw_("Be careful, there are <b>")+disabledProducts+raw_("</b> order(s) containing <b>deactivated products</b>.")::)
 		::end::
 
 
