@@ -148,7 +148,7 @@ class DistributionCycle extends Object
 		for ( c in childs ){
 			
 			if (c.getOrders().length > 0){
-				messages.push("La distribution du "+App.current.view.hDate(c.date)+" n'a pas pu être effacée car elle contient des commandes.");
+				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:App.current.view.hDate(c.date)}));
 			}else{
 				c.lock();
 				c.delete();

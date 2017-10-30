@@ -168,7 +168,7 @@ class Amap extends Object
 			
 			categs.push({
 				id:0,
-				name:"Type de produits",
+				name: t._("Product type");
 				pinned:false,
 				color:"#583816",
 				categs: Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name}; }))				
@@ -320,7 +320,7 @@ class Amap extends Object
 	override public function insert(){
 		
 		if (txtHome == null){
-			txtHome = "Bienvenue sur la cagette de " + this.name+" !\n Vous pouvez consulter votre planning de distribution ou faire une nouvelle commande.";
+			txtHome = t._("Welcome in the group of ::name::!\n You can look at the delivery planning or make a new order.");
 		}
 		
 		App.current.event(NewGroup(this,App.current.user));
@@ -350,7 +350,7 @@ class Amap extends Object
 			"extUrl" 		=> t._("Group website URL"),
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
-			"groupType" 	=> t._("Type de groupe Cagette"),
+			"groupType" 	=> t._("Group type"),
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),			
 		];

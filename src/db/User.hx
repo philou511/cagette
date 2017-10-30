@@ -230,7 +230,7 @@ class User extends Object {
 	 */
 	public function getAmap() {
 		
-		if (App.current.user != null && id != App.current.user.id) throw "cette fonction n'est valable que pour l'utilisateur en cours";
+		if (App.current.user != null && id != App.current.user.id) throw t._("This function is valid only for the current user");
 		if (App.current.session == null) return null;
 		if (App.current.session.data == null ) return null;
 		var a = App.current.session.data.amapId;
@@ -440,7 +440,7 @@ class User extends Object {
 	
 	public function sendInvitation() {
 		
-		if (isFullyRegistred()) throw "cet utilisateur ne peut pas recevoir d'invitation";
+		if (isFullyRegistred()) throw t._("This user cannot receive an invitation");
 		
 		var group : db.Amap = null;
 		
@@ -457,13 +457,13 @@ class User extends Object {
 		
 		var e = new sugoi.mail.Mail();
 		if (group != null){
-			e.setSubject("Invitation "+group.name);	
+			e.setSubject(t._("Invitation ")+group.name);	
 		}else{
-			e.setSubject("Invitation Cagette.net");
+			e.setSubject(t._("Invitation Cagette.net");
 		}
 		
 		e.addRecipient(this.email,this.getName());
-		e.setSender(App.config.get("default_email"),"Cagette.net");			
+		e.setSender(App.config.get("default_email"),t._("Cagette.net");			
 		
 		var html = App.current.processTemplate("mail/invitation.mtt", { 
 			email:email,

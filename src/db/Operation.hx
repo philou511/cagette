@@ -134,7 +134,7 @@ class Operation extends sys.db.Object
 		if (contract.type == db.Contract.TYPE_CONSTORDERS){
 			//Constant orders			
 			var dNum = contract.getDistribs(false).length;
-			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+" distributions";			
+			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+t._(" deliveries");
 			t.amount = dNum * (0 - _amount);
 			t.date = Date.now();
 			t.type = COrder;
@@ -149,7 +149,7 @@ class Operation extends sys.db.Object
 			if (basket == null) throw "varying contract orders should have a basket";
 			
 			//varying orders
-			t.name = "Commande pour le " + App.current.view.dDate(orders[0].distribution.date);
+			t.name = t._("Order for the ") + App.current.view.dDate(orders[0].distribution.date);
 			t.amount = 0 - _amount;
 			t.date = Date.now();
 			t.type = VOrder;
@@ -182,7 +182,7 @@ class Operation extends sys.db.Object
 		if (contract.type == db.Contract.TYPE_CONSTORDERS){
 			//Constant orders			
 			var dNum = contract.getDistribs(false).length;
-			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+" distributions";			
+			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+t._(" deliveries");
 			t.amount = dNum * (0 - _amount);
 			t.date = Date.now();			
 			

@@ -81,14 +81,14 @@ class UserAmap extends Object
 	
 	public function getRightName(r:Right):String {
 		return switch(r) {
-		case Right.AmapAdmin 	: "Administrateur";
-		case Right.Messages 	: "Messagerie";
-		case Right.Membership 	: "Gestion adhérents";
+		case Right.AmapAdmin 	: t._("Administrator");
+		case Right.Messages 	: t._("mailing");
+		case Right.Membership 	: t._("Management of members");
 		case Right.ContractAdmin(cid) : 
 			if (cid == null) {
-				"Gestion de tous les contrats";
+				t._("Management of all contracts");
 			}else {
-				"Gestion contrat : " + db.Contract.manager.get(cid).name;
+				t._("Management of the contract: ") + db.Contract.manager.get(cid).name;
 			}
 		}
 	}
