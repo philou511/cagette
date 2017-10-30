@@ -13,7 +13,7 @@ class Vendor extends Controller
 	{
 		super();
 		
-		if (!app.user.isContractManager()) throw "accès interdit";
+		if (!app.user.isContractManager()) throw t._("Forbidden access");
 		
 	}
 	
@@ -48,7 +48,7 @@ class Vendor extends Controller
 			form.toSpod(vendor); //update model
 			vendor.amap = app.user.amap;
 			vendor.update();
-			throw Ok('/contractAdmin','Ce fournisseur a été mis à jour');
+			throw Ok('/contractAdmin', t._("This supplier has been updated"));
 		}
 		
 		view.form = form;
@@ -67,21 +67,21 @@ class Vendor extends Controller
 			m.amap = app.user.amap;
 			m.insert();
 			
-			throw Ok('/contractAdmin/','Ce fournisseur a bien été enregistré');
+			throw Ok('/contractAdmin/', t._("This supplier has been saved"));
 		}
 		
 		view.form = form;
 	}
 	
 	public function doDelete(v:db.Vendor) {
-		if (!app.user.isAmapManager()) throw "action interdite";
+		if (!app.user.isAmapManager()) throw t._("Forbidden action");
 		if (checkToken()) {
 					
-			if (db.Contract.manager.search($vendorId == v.id).length > 0) throw Error('/contractAdmin', 'Vous ne pouvez pas supprimer ce producteur car des contrats (en cours ou anciens) sont liés à ce producteur.');
+			if (db.Contract.manager.search($vendorId == v.id).length > 0) throw Error('/contractAdmin', t._("You cannot delete this supplier because some contracts (current or old) are referencing this supplier."));
 			
 			v.lock();
 			v.delete();
-			throw Ok("/contractAdmin", "Producteur supprimé");
+			throw Ok("/contractAdmin", t._("Supplier deleted"));
 		}
 		
 	}
@@ -116,7 +116,7 @@ class Vendor extends Controller
 				
 				v.image = img;
 				v.update();
-				throw Ok('/contractAdmin/','Image mise à jour');
+				throw Ok('/contractAdmin/', t._("Image updated"));
 			}
 		}
 	}	

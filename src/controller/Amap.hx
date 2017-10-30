@@ -23,7 +23,7 @@ class Amap extends Controller
 	@tpl("form.mtt")
 	function doEdit() {
 		
-		if (!app.user.isAmapManager()) throw "Vous n'avez pas accès a cette section";
+		if (!app.user.isAmapManager()) throw t._("You don't have access to this section");
 		
 		var group = app.user.amap;
 		
@@ -39,7 +39,7 @@ class Amap extends Controller
 			}
 			
 			group.update();
-			throw Ok("/amapadmin", "Groupe mis à jour.");
+			throw Ok("/amapadmin", t._("The group has been updated.");
 		}
 		
 		view.form = form;

@@ -114,7 +114,7 @@ class Transaction extends controller.Controller
 				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, "Chèque ("+code+")" );			
 			}
 			
-			throw Ok("/contract", "Votre paiement par chèque a bien été enregistré. Il sera validé par un coordinateur lors de la distribution.");
+			throw Ok("/contract", t._("Your payment by check has been saved. It will be validated by a coordinator at the delivery."));
 		}
 		
 	}
@@ -147,7 +147,7 @@ class Transaction extends controller.Controller
 				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, "Paiement par virement ("+code+")");			
 			}
 			
-			throw Ok("/contract", "Votre paiement par virement a bien été enregistré. Il sera validé par un coordinateur.");		
+			throw Ok("/contract", t._("Your payment by transfer has been saved. It will be validated by a coordinator."));
 		}
 	}
 	
@@ -171,13 +171,13 @@ class Transaction extends controller.Controller
 			
 			if (Lambda.array(ordersGrouped).length == 1){
 				//same multidistrib
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Cash.TYPE, tmpOrder.total, "Liquide pour commande du " + view.hDate(d.date), ops[0] );										
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Cash.TYPE, tmpOrder.total, t._("Cash for the order of the ") + view.hDate(d.date), ops[0] );										
 			}else{				
 				//various distribs
-				db.Operation.makePaymentOperation(app.user, app.user.amap, payment.Cash.TYPE, tmpOrder.total, "Paiement en liquide" );			
+				db.Operation.makePaymentOperation(app.user, app.user.amap, payment.Cash.TYPE, tmpOrder.total, t._("Cash payment"));
 			}
 			
-			throw Ok("/contract", "Votre commande est validée, vous vous êtes engagé à payer en liquide au retrait des produits.");
+			throw Ok("/contract", t._("Your order is validated, you commited to pay in cash at the delivery."));
 		}
 		
 	}

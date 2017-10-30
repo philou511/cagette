@@ -40,7 +40,7 @@ class Categories extends controller.Controller
 		gen(t._("Product types"),2, [t._("Vegetables"), t._("Fruits"), t._("Fish"), t._("Red meat"), t._("Breads"), t._("Grocery"), t._("Beverages") ]);
 		gen(t._("Labels"),0, [t._("Certified organic agriculture"), t._("Uncertified organic agriculture"), t._("Non organic") ]);
 		
-		throw Ok("/amapadmin/categories", t._("Default categories has been created") );
+		throw Ok("/amapadmin/categories", t._("Default categories have been created") );
 		
 	}
 	
@@ -60,11 +60,11 @@ class Categories extends controller.Controller
 			
 			form.toSpod(g);
 			g.update();
-			throw Ok("/amapadmin/categories","Groupe modifié");
+			throw Ok("/amapadmin/categories", t._("Group modified"));
 			
 		}
 		
-		view.title = "Modifier le groupe " + g.name;
+		view.title = t._("Modify the group ") + g.name;
 		view.form = form;
 	}
 	
@@ -82,11 +82,11 @@ class Categories extends controller.Controller
 			form.toSpod(g);
 			g.amap = app.user.amap;
 			g.insert();
-			throw Ok("/amapadmin/categories","Groupe ajouté");
+			throw Ok("/amapadmin/categories", t._("Group added"));
 			
 		}
 		
-		view.title = "Créer un groupe de catégories";
+		view.title = t._("Create a group of categories");
 		view.form = form;
 	}
 	
@@ -102,11 +102,11 @@ class Categories extends controller.Controller
 			form.toSpod(c);
 			c.categoryGroup = g;
 			c.insert();
-			throw Ok("/amapadmin/categories","Catégorie ajoutée");
+			throw Ok("/amapadmin/categories", t._("Category added"));
 			
 		}
 		
-		view.title = "Créer une catégorie";
+		view.title = t._("Create a category");
 		view.form = form;
 	}
 	
@@ -125,7 +125,7 @@ class Categories extends controller.Controller
 			throw Ok("/amapadmin/categories","Catégorie modifiée");			
 		}
 		
-		view.title = "Modifier la catégorie " + c.name;
+		view.title = t._("Modify the category ") + c.name;
 		view.form = form;
 	}
 	
@@ -133,11 +133,11 @@ class Categories extends controller.Controller
 	function doDeleteGroup(g:db.CategoryGroup,args:{token:String}) {
 		
 		if ( checkToken()) {
-			if (g.getCategories().length > 0) throw Error("/amapadmin/categories", "Vous devez effacer d'abord les catégories de ce groupe avant de supprimer ce groupe.");	
+			if (g.getCategories().length > 0) throw Error("/amapadmin/categories", t._("You must first remove categories from this group before removing the group."));
 			
 			g.lock();
 			g.delete();
-			throw Ok("/amapadmin/categories", "Groupe effacé");
+			throw Ok("/amapadmin/categories", t._("Group deleted"));
 		}else {
 			throw Redirect("/amapadmin/categories");
 		}
@@ -148,7 +148,7 @@ class Categories extends controller.Controller
 		if ( checkToken()) {
 			c.lock();
 			c.delete();
-			throw Ok("/amapadmin/categories", "Catégorie effacée");
+			throw Ok("/amapadmin/categories", t._("Category deleted"));
 		}else {
 			throw Redirect("/amapadmin/categories");
 		}

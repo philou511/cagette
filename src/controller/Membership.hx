@@ -12,7 +12,7 @@ class Membership extends controller.Controller
 	@tpl("membership/default.mtt")
 	function doDefault(member:db.User) {
 		var userAmap = db.UserAmap.get(member, app.user.amap,true);
-		if (userAmap == null) throw Error("/member", "Cette personne ne fait pas partie de votre AMAP");
+		if (userAmap == null) throw Error("/member", t._("This person is not a member of your group"));
 		
 		//formulaire
 		var f = new sugoi.form.Form("membership");
@@ -25,12 +25,12 @@ class Membership extends controller.Controller
 			var yy = DateTools.delta(now, DateTools.days(365) * -x);
 			data.push({label:app.user.amap.getPeriodName(yy),value:app.user.amap.getMembershipYear(yy)});
 		}
-		f.addElement(new IntSelect("year", "Periode", data,app.user.amap.getMembershipYear(),true));
-		f.addElement(new sugoi.form.elements.DateDropdowns("date", "Date de cotisation", null, true));
+		f.addElement(new IntSelect("year", t._("Period"), data,app.user.amap.getMembershipYear(),true));
+		f.addElement(new sugoi.form.elements.DateDropdowns("date", t._("Date of payment of subscription"), null, true));
 		if (f.isValid()) {
 			var y : Int = f.getValueOf("year");
 			
-			if (db.Membership.get(member, app.user.amap, y) != null) throw Error("/membership/"+member.id, "Cette cotisation a déjà été saisie");
+			if (db.Membership.get(member, app.user.amap, y) != null) throw Error("/membership/"+member.id, t._("This subscription has been already keyed-in"));
 			
 			var cotis = new db.Membership();
 			cotis.amap = app.user.amap;
@@ -38,7 +38,7 @@ class Membership extends controller.Controller
 			cotis.year = y;
 			cotis.date = f.getElement("date").value;
 			cotis.insert();
-			throw Ok("/membership/"+member.id, "Cotisation enregistrée");
+			throw Ok("/membership/"+member.id, t._("Subscription saved"));
 		}
 		
 		//années de cotisation
@@ -59,10 +59,10 @@ class Membership extends controller.Controller
 		
 		if (checkToken()) {
 			var cotis = db.Membership.get(member, app.user.amap, year, true);
-			if (cotis == null) throw Error("/", "Cette cotisation n'existe pas");
+			if (cotis == null) throw Error("/", t._("This subscription does not exist"));
 			
 			cotis.delete();
-			throw Ok("/membership/" + member.id, "Cotisation effacée");
+			throw Ok("/membership/" + member.id, t._("Subscription deleted"));
 		}else {
 			throw Error("/", "Bad Token");
 		}

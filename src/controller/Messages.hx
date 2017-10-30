@@ -33,10 +33,10 @@ class Messages extends Controller
 		}
 		
 		var lists = getLists();
-		form.addElement( new StringInput("senderName", "Nom expéditeur",senderName,true));
-		form.addElement( new StringInput("senderMail", "Email expéditeur",senderMail,true));
-		form.addElement( new StringSelect("list", "Destinataires",lists,null,false,null,"style='width:500px;'"));
-		form.addElement( new StringInput("subject", "Sujet :","",false,null,"style='width:500px;'") );
+		form.addElement( new StringInput("senderName", t._("Sender name"),senderName,true));
+		form.addElement( new StringInput("senderMail", t._("Sender E-Mail"),senderMail,true));
+		form.addElement( new StringSelect("list", t._("Addressees"),lists,null,false,null,"style='width:500px;'"));
+		form.addElement( new StringInput("subject", t._("Subject:"),"",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
 		
 		if (form.checkToken()) {
@@ -64,7 +64,7 @@ class Messages extends Controller
 		
 			App.sendMail(e,app.user.getAmap(),listId,app.user);	
 			
-			throw Ok("/messages", "Le message a bien été envoyé");
+			throw Ok("/messages", t._("The message has been sent"));
 		}
 		
 		view.form = form;
@@ -80,7 +80,7 @@ class Messages extends Controller
 	@tpl("messages/message.mtt")
 	public function doMessage(msg:Message) {
 		
-		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", "accès non autorisé");
+		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", t._("Non authorized access"));
 		
 		view.list = getListName(msg.recipientListId);
 		view.msg = msg;
@@ -100,18 +100,18 @@ class Messages extends Controller
 	
 	function getLists() :FormData<String>{
 		var out = [
-			{value:'1', label:'Tout le monde' },
-			{value:'2', label:'Le bureau : les responsables + contrats + adhésions' },			
+			{value:'1', label: t._("Everyone")},
+			{value:'2', label: t._("The board: persons in charge + contracts + memberships")},
 		];
 		
-		out.push( { value:'3', label:'TEST : moi + conjoint(e)' } );
-		out.push( { value:'4', label:'Adhérents sans contrat/commande' } );
-		if(app.user.amap.hasMembership()) out.push( { value:'5', label:'Adhésions à renouveller' } );
+		out.push( { value:'3', label: t._("TEST: me + spouse") } );
+		out.push( { value:'4', label: t._("Members without contract/order") } );
+		if(app.user.amap.hasMembership()) out.push( { value:'5', label:t._("Memberships to be renewed")} );
 		
 		
 		var contracts = db.Contract.getActiveContracts(app.user.amap,true);
 		for ( c in contracts) {
-			out.push({value:'c'+c.id,label:'Souscripteurs '+c.toString()});
+			out.push({value:'c'+c.id,label: t._("Subscribers ")+c.toString()});
 		}
 		return out ;
 		

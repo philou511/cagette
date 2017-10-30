@@ -39,7 +39,7 @@ class Validate extends controller.Controller
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id,"Opération effacée");
+			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Operation deleted"));
 		}
 	}
 	
@@ -52,14 +52,14 @@ class Validate extends controller.Controller
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id,"Opération validée");
+			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Operation validated"));
 		}
 	}
 	
 	@tpl('form.mtt')
 	public function doAddRefund(){
 		
-		if (!app.user.isContractManager()) throw "accès interdit";
+		if (!app.user.isContractManager()) throw t._("Forbidden access");
 		
 		var t = new db.Operation();
 		t.user = user;
@@ -68,14 +68,14 @@ class Validate extends controller.Controller
 		var b = db.Basket.get(user, place, date);
 		var op = b.getOrderOperation();
 		
-		var f = new sugoi.form.Form("payement");
-		f.addElement(new sugoi.form.elements.StringInput("name", "Libellé", "Remboursement", true));
-		f.addElement(new sugoi.form.elements.FloatInput("amount", "Montant", null, true));
+		var f = new sugoi.form.Form(t._("payment"));
+		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));
+		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
 		
 		var data = [];
 		for ( p in db.Operation.getPaymentTypes(app.user.amap)) data.push({label:App.t._(p.type),value:p.type});
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
 		
 		if (f.isValid()){
 			f.toSpod(t);
@@ -92,11 +92,11 @@ class Validate extends controller.Controller
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, "Remboursement enregistré");
+			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Refund saved"));
 			
 		}
 		
-		view.title = "Saisir un remboursement pour " + user.getCoupleName();
+		view.title = t._("Key-in a refund for ") + user.getCoupleName();
 		view.form = f;		
 	
 	}
@@ -104,22 +104,22 @@ class Validate extends controller.Controller
 	@tpl('form.mtt')
 	public function doAddPayment(){
 			
-		if (!app.user.isContractManager()) throw "accès interdit";
+		if (!app.user.isContractManager()) throw t._("Forbidden access");
 		
 		var t = new db.Operation();
 		t.user = user;
 		t.date = Date.now();
 		
-		var f = new sugoi.form.Form("payement");
-		f.addElement(new sugoi.form.elements.StringInput("name", "Libellé", "Paiement complémentaire", true));
-		f.addElement(new sugoi.form.elements.FloatInput("amount", "Montant", null, true));
-		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
+		var f = new sugoi.form.Form(t._("payment");
+		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
+		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
+		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
 		var data = [
-			{label:"Espèces",value:"cash"},
-			{label:"Chèque",value:"check"},
-			{label:"Virement",value:"transfer"}		
+			{label:t._("Cash"),value:"cash"},
+			{label:t._("Check"),value:"check"},
+			{label:t._("Transfer"),value:"transfer"}		
 		];
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", "Moyen de paiement", data, null, true));
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
 		
 		
 		var b = db.Basket.get(user, place, date);
@@ -138,11 +138,11 @@ class Validate extends controller.Controller
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, "Paiement enregistré");
+			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Payment saved"));
 			
 		}
 		
-		view.title = "Saisir un paiement pour " + user.getCoupleName();
+		view.title = t._("Key-in a payment for ") + user.getCoupleName();
 		view.form = f;	
 	}
 	
@@ -175,7 +175,7 @@ class Validate extends controller.Controller
 			}
 			
 			
-			throw Ok("/distribution/validate/"+date+"/"+place.id, "Commande validée");
+			throw Ok("/distribution/validate/"+date+"/"+place.id, t._("Order validated"));
 			
 		}
 		

@@ -195,7 +195,7 @@ class Shop extends Controller
 				if (p.stock - o.quantity < 0) {
 					var canceled = o.quantity - p.stock;
 					o.quantity -= canceled;
-					errors.push("Nous avons réduit votre commande de '" + p.name + "' à "+o.quantity+" articles car il n'y a pas assez de stock disponible");
+					errors.push(t._("We reduced your order of ::pname:: to quantity ::oquantity:: as the stock is not sufficient", {pname:p.name, oquantity:o.quantity}));
 				}
 			}
 		

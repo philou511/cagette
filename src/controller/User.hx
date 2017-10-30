@@ -64,7 +64,7 @@ class User extends Controller
 			
 				//send mail confirmation link
 				user.sendInvitation();
-				throw Ok("/user/login", "Votre compte n'a pas encore été validé. Nous vous avons envoyé un email à <b>" + user.email + "</b> pour finaliser votre inscription !");
+				throw Ok("/user/login", t._("Your account have not been validated yet. We sent an e-mail to <b>::userEmail::</b> to finalize your subscription!"));
 				
 			}
 			
@@ -102,7 +102,7 @@ class User extends Controller
 	@tpl("user/choose.mtt")
 	function doChoose(?args: { amap:db.Amap } ) {
 		
-		if (app.user == null) throw "Vous n'êtes pas connecté";
+		if (app.user == null) throw t._("You are not connected");
 		
 		var amaps = db.UserAmap.manager.search($user == app.user, false);
 		
@@ -148,16 +148,16 @@ class User extends Controller
 		
 		//ask for mail
 		var askmailform = new Form("askemail");
-		askmailform.addElement(new StringInput("email","Saisissez votre email",null,true));
+		askmailform.addElement(new StringInput("email", t._("Please key-in your E-Mail address"),null,true));
 	
 		//change pass form
 		var chpassform = new Form("chpass");
 		
-		var pass1 = new StringInput("pass1", "Votre nouveau mot de passe",null,true);
+		var pass1 = new StringInput("pass1", t._("Your new password"),null,true);
 		pass1.password = true;
 		chpassform.addElement(pass1);
 		
-		var pass2 = new StringInput("pass2", "Retapez votre mot de passe pour vérification",null,true);
+		var pass2 = new StringInput("pass2", t._("Again your new password"),null,true);
 		pass2.password = true;
 		chpassform.addElement(pass2);
 		
@@ -173,16 +173,16 @@ class User extends Controller
 			var email :String = askmailform.getValueOf("email");
 			var user = db.User.manager.select(email == $email, false);
 			
-			if (user == null) throw Error(url, "Cet email n'est lié à aucun compte connu");
+			if (user == null) throw Error(url, t._("This E-mail is not linked to a known account"));
 			
 			//create token
 			var token = haxe.crypto.Md5.encode("chp"+Std.random(1000000000));
 			sugoi.db.Cache.set(token, user.id, 60 * 60 * 24 * 30);
 			
 			var m = new sugoi.mail.Mail();
-			m.setSender(App.config.get("default_email"),"Cagette.net");					
+			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
 			m.setRecipient(user.email, user.name);					
-			m.setSubject( App.config.NAME+" : Changement de mot de passe" );
+			m.setSubject( App.config.NAME+ t._(": password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -194,7 +194,7 @@ class User extends Controller
 			if ( u.id == sugoi.db.Cache.get(key) ) {
 				view.form = chpassform;
 			}else {
-				error = "Requête invalide";
+				error = t._("Invalid request");
 			}
 		}
 		
@@ -211,7 +211,7 @@ class User extends Controller
 				user.update();
 				
 			}else {
-				error = "Vous devez saisir deux fois le même mot-de-passe";
+				error = t._("You must key-in two times the same password");
 			}
 		}
 			
@@ -236,11 +236,11 @@ class User extends Controller
 	@tpl("form.mtt")
 	function doDefinePassword(?key:String, ?u:db.User){
 		
-		if (app.user.isFullyRegistred()) throw Error("/","Vous avez déjà un mot de passe");
+		if (app.user.isFullyRegistred()) throw Error("/", t._("You already have a password"));
 
 		var form = new Form("definepass");
-		var pass1 = new StringInput("pass1", "Votre nouveau mot de passe");
-		var pass2 = new StringInput("pass2", "Retapez votre mot de passe pour vérification");
+		var pass1 = new StringInput("pass1", t._("Your new password"));
+		var pass2 = new StringInput("pass2", t._("Again your new password"));
 		pass1.password = true;
 		pass2.password = true;
 		form.addElement(pass1);
@@ -253,14 +253,14 @@ class User extends Controller
 				app.user.lock();
 				app.user.setPass(form.getValueOf("pass1"));
 				app.user.update();
-				throw Ok('/', "Bravo, votre compte est maintenant protégé par un mot de passe.");
+				throw Ok('/', t._("Congratulations, your account is now protected by a password."));
 				
 			}else {
-				form.addError("Vous devez saisir deux fois le même mot-de-passe");
+				form.addError( t._("You must key-in two times the same password"));
 			}
 		}
 		view.form = form;
-		view.title = "Définissez un mot de passe pour votre compte";
+		view.title = t._("Create a password for your account");
 	}
 	
 	/**
@@ -270,7 +270,7 @@ class User extends Controller
 	public function doValidate(k:String ) {
 		
 		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));		
-		if (uid == null || uid==0) throw Error('/user/login', 'Votre invitation est invalide ou a expiré ($k)');
+		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
 		var user = db.User.manager.get(uid, true);
 		
 		db.User.login(user, user.email);
@@ -280,7 +280,7 @@ class User extends Controller
 		
 		sugoi.db.Cache.destroy("validation" + k);
 	
-		throw Ok("/user/definePassword", "Félicitations " + user.getName() +", votre compte est validé !");
+		throw Ok("/user/definePassword", t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}));
 		
 		
 		

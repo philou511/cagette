@@ -235,24 +235,24 @@ class Cron extends Controller
 					var text;
 					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) //ouverture de commande
 					{
-						text  = "Ouverture des commandes pour la distribution du : <b>" + view.hDate(u.distrib.date) + "</b><br>";
-						text += "Cela concerne les fournisseurs suivants :<br><ul>";
+						text  = t._("Opening of orders for the delivery of the ")+ "<b>" + view.hDate(u.distrib.date) + "</b><br>";
+						text += t._("Following suppliers are involved: ")+"<br><ul>";
 						for ( v in u.vendors) {
 							text += "<li>" + v + "</li>";
 						}
 						text += "</ul>";
 						var url = "http://" + App.config.HOST + "/group/"+ u.distrib.contract.amap.id;
-						text += "L'adresse de votre cagette est : <a href=\"" + url + "\">" + url + "</a><br>";
+						text += t._("The web address of your group is: <a href=\" + ::groupurl:: + \"> ::groupurl:: </a><br>", {groupurl:url});
 					}
 					else //rappel de la distribution
 					{
-						text = "N'oubliez pas la distribution : <b>" + view.hDate(u.distrib.date) + "</b><br>";
-						text += "Vos produits à récupérer :<br><ul>";
+						text = t._("Do not forget the delivery: <b>::delivery::</b><br/>", {delivery:view.hDate(u.distrib.date)});
+						text += t._("Your products to collect:<br/><ul>");
 						for ( p in u.products) {
 							text += "<li>"+p.quantity+" x "+p.product.getName();
 							// Gerer le cas des contrats en alternance
 							if (p.user2 != null) {
-								text += " en alternance avec ";
+								text += t._(" alternately with ");
 								if (u.user == p.user)
 									text += p.user2.getCoupleName();
 								else
@@ -264,7 +264,7 @@ class Cron extends Controller
 					}
 				
 					if (u.distrib.isDistributor(u.user)) {
-						text += "<b>ATTENTION : Vous ou votre conjoint(e) êtes distributeur ! N'oubliez pas d'imprimer la liste d'émargement.</b>";
+						text += t._("<b>Warning: you are in charge of the delivery! Do not forget to print the attendance sheet.</b>");
 					}
 
 					var m = new Mail();
@@ -274,7 +274,7 @@ class Cron extends Controller
 					}
 					m.addRecipient(u.user.email, u.user.getName());
 					if(u.user.email2!=null) m.addRecipient(u.user.email2);
-					m.setSubject( group.name+" : Distribution " + app.view.hDate(u.distrib.date) );
+					m.setSubject( group.name+t._(": Delivery ") + app.view.hDate(u.distrib.date) );
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					
 					//debug
@@ -305,9 +305,9 @@ class Cron extends Controller
 		var from = now.setHourMinute( now.getHours(), 0 );
 		var to = now.setHourMinute( now.getHours()+1 , 0);
 		
-		var explain = "<p>Cette étape est importante afin de :</p>";
-		explain += "<ul><li>Mettre à jour les commandes si les quantités livrées sont différentes des quantitées commandées</li>";
-		explain += "<li>Confirmer la réception des paiements (chèques, liquide, virements) afin de classer les commandes comme 'payées'</li></ul>";
+		var explain = t._("<p>This step is important in order to:</p>");
+		explain += t._("<ul><li>Update orders if delivered quantities are different from ordered quantities</li>");
+		explain += t._("<li>Confirm the reception of payments (checks, cash, transfers) in order to mark orders as 'paid'</li></ul>");
 		
 		/*
 		 * warn administrator if a distribution just ended
@@ -325,14 +325,13 @@ class Cron extends Controller
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		
 		for ( d in ds ){
-			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			var subj = d.contract.amap.name + t._("Validation of the distribution of the ") + App.current.view.hDate(d.date);
 			
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
 			
-			var html = "<p>Votre distribution vient de se terminer, n'oubliez pas de la <b>valider</b></p>";
+			var html = t._("<p>Your delivery just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
-			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
-			
+			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your group Cagette)", {distriburl:url});
 			
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
@@ -358,13 +357,13 @@ class Cron extends Controller
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		
 		for ( d in ds ){
-			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
+			var subj = d.contract.amap.name + t._(": Validation of the delivery of the ") + App.current.view.hDate(d.date);
 			
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
 			
-			var html = "<p>Rappel : Vous avez une distribution à valider.</p>";
+			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
-			html += "<p> <a href='" + url + "'>Cliquez ici pour valider la distribution</a> ( Vous devez être connecté à votre groupe Cagette.net)</p>";
+			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your group Cagette)", {distriburl:url});
 			
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
@@ -423,8 +422,8 @@ class Cron extends Controller
 		//email
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		for ( d in ds ){
-			var subj = d.contract.amap.name + ": Validation de la distribution du " + App.current.view.hDate(d.date);
-			var html = "<p>A défaut d'une validation manuelle de votre part au bout de 10 jours,<br/> la distribution du "+ App.current.view.hDate(d.date)+" a été automatiquement validée.</p>";
+			var subj = d.contract.amap.name + t._(": Validation of the distribution of the ") + App.current.view.hDate(d.date);
+			var html = t._("<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>", {deliveryDate:App.current.view.hDate(d.date)});
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
 		

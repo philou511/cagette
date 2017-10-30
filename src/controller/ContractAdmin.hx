@@ -16,7 +16,7 @@ class ContractAdmin extends Controller
 	public function new() 
 	{
 		super();
-		if (!app.user.isContractManager()) throw Error("/", "Vous n'avez pas accès à la gestion des contrats");
+		if (!app.user.isContractManager()) throw Error("/", t._("You don't have the authorization to manage contracts"));
 		view.nav = ["contractadmin"];
 		
 	}
@@ -86,7 +86,7 @@ class ContractAdmin extends Controller
 		if (app.user.amap.hasShopMode() && !app.user.amap.hasTaxonomy() ) {		
 			for ( p in contract.getProducts(false)) {
 				if (p.getCategories().length == 0) {
-					app.session.addMessage("Attention, un ou plusieurs produits n'ont pas de catégories, <a href='/product/categorize/"+contract.id+"'>cliquez ici pour en ajouter</a>", true);
+					app.session.addMessage(t._("Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>", {contractid:contract.id}), true);
 					break;
 				}
 			}			
@@ -136,12 +136,12 @@ class ContractAdmin extends Controller
 	 */
 	@admin @tpl("form.mtt")
 	function doCopyProducts(contract:db.Contract) {
-		view.title = "Copier des produits dans : "+contract.name;
+		view.title = t._("Copy products in: ")+contract.name;
 		var form = new Form("copy");
 		var contracts = app.user.amap.getActiveContracts();
 		var contracts  = Lambda.map(contracts, function(c) return {key:Std.string(c.id),value:Std.string(c.name) } );
-		form.addElement(new sugoi.form.elements.Selectbox("source","Copier les produits depuis : ",Lambda.array(contracts)));
-		form.addElement(new sugoi.form.elements.Checkbox("delete", "Effacer les produits existants (supprime toutes les commandes !)", false));
+		form.addElement(new sugoi.form.elements.Selectbox("source", t._("Copy products from: "),Lambda.array(contracts)));
+		form.addElement(new sugoi.form.elements.Checkbox("delete", t._("Delete existing products (all orders will be deleted!)", false));
 		if (form.checkToken()) {
 			
 			if (form.getValueOf("delete") == "1") {
@@ -162,7 +162,7 @@ class ContractAdmin extends Controller
 				p.insert();
 			}
 			
-			throw Ok("/contractAdmin/products/" + contract.id, "Produits copiés depuis " + source.name);
+			throw Ok("/contractAdmin/products/" + contract.id, t._("Products copied from ") + source.name);
 			
 			
 		}
@@ -188,12 +188,12 @@ class ContractAdmin extends Controller
 			var end = c.endDate.toString().substr(0,10);
 			if (cal.exists( start )) {
 				var v = cal.get(start);
-				v.push( { name: "Début contrat " + c.name,  color:Calendar.COLOR_CONTRACT } );
+				v.push( { name: t._("Contract start ") + c.name,  color:Calendar.COLOR_CONTRACT } );
 				cal.set( start, v );
 			}
 			if (cal.exists( end )) {
 				var v = cal.get(end);
-				v.push(		{ name: "Fin contrat "  +c.name,  color:Calendar.COLOR_CONTRACT } );
+				v.push(		{ name: t._("Contract end ")  +c.name,  color:Calendar.COLOR_CONTRACT } );
 				cal.set( end, v );
 			}
 			
@@ -203,7 +203,7 @@ class ContractAdmin extends Controller
 				
 				if (cal.exists( start )) {
 					var v = cal.get( start );
-					v.push(		{ name: "Distribution "  +d.contract.name,  color:Calendar.COLOR_DELIVERY } );
+					v.push(		{ name: t._("Delivery ") +d.contract.name,  color:Calendar.COLOR_DELIVERY } );
 					cal.set( start, v );
 				}
 				
@@ -211,14 +211,14 @@ class ContractAdmin extends Controller
 					var k = d.orderStartDate.toString().substr(0,10);
 					if (cal.exists( k )) {
 						var v = cal.get( k );
-						v.push(		{ name: "Ouverture commandes "  +d.contract.name,  color:Calendar.COLOR_ORDER } );
+						v.push(		{ name: t._("Opening of orders ") +d.contract.name,  color:Calendar.COLOR_ORDER } );
 						cal.set( k , v );
 					}
 					
 					var k = d.orderEndDate.toString().substr(0,10);
 					if (cal.exists( k )) {
 						var v = cal.get( k );
-						v.push(		{ name: "Fin commandes "  +d.contract.name,  color:Calendar.COLOR_ORDER } );
+						v.push(		{ name: t._("End of orders") +d.contract.name,  color:Calendar.COLOR_ORDER } );
 						cal.set( k , v );
 					}
 					
@@ -250,11 +250,11 @@ class ContractAdmin extends Controller
 			var to = now.snap(Month(Up)).add(Day(-1)).getDate();
 			
 			
-			var el = new sugoi.form.elements.DatePicker("from", "Date de début", from,true);			
+			var el = new sugoi.form.elements.DatePicker("from", t._("Start date"), from,true);			
 			el.format = 'LL';
 			f.addElement(el);
 			
-			var el = new sugoi.form.elements.DatePicker("to", "Date de fin", to,true);
+			var el = new sugoi.form.elements.DatePicker("to", t._("End date"), to,true);
 			el.format = 'LL';
 			f.addElement(el);
 			
@@ -262,7 +262,7 @@ class ContractAdmin extends Controller
 			//f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
 			
 			view.form = f;
-			view.title = "Vue globale des commandes";
+			view.title = t._("Global view of orders");
 			app.setTemplate("form.mtt");
 			
 			if (f.checkToken()) {
@@ -291,7 +291,7 @@ class ContractAdmin extends Controller
 			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);		
 			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);	
 			
-			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 			
 			//varying orders
 			var varorders = db.UserContract.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
@@ -327,7 +327,7 @@ class ContractAdmin extends Controller
 		if (date == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			var el = new sugoi.form.elements.DatePicker("date", "Date de distribution", true);
+			var el = new sugoi.form.elements.DatePicker("date", t._("Delivery date"), true);
 			el.format = 'LL';
 			f.addElement(el);
 			
@@ -335,9 +335,9 @@ class ContractAdmin extends Controller
 			f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
 			
 			view.form = f;
-			view.title = "Vue globale des commandes";
-			view.text = "Cette page vous permet d'avoir une vision d'ensemble des commandes tout contrats confondus.";
-			view.text += "<br/>Sélectionnez la date de distribution qui vous interesse :";
+			view.title = t._("Global view of orders");
+			view.text = t._("This page allows you to have a global view on orders of all contracts");
+			view.text += t._("<br/>Select a delivery date:");
 			app.setTemplate("form.mtt");
 			
 			if (f.checkToken()) {
@@ -366,7 +366,7 @@ class ContractAdmin extends Controller
 			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
 			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
 			
-			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 			
 			//varying orders
 			var varorders = db.UserContract.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
@@ -405,7 +405,7 @@ class ContractAdmin extends Controller
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 && $place==place , false);		
 
 		
-		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", "Il n'y a aucune distribution à cette date");
+		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 		
 		var out = new Map<Int,Dynamic>();//key : vendor id
 		
@@ -453,7 +453,7 @@ class ContractAdmin extends Controller
 		
 		//distribs for both types in active contracts
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
-		if ( distribs.length == 0 ) throw Error("/contractAdmin/", "Il n'y a aucune distribution sur cette période");
+		if ( distribs.length == 0 ) throw Error("/contractAdmin/", t._("There is no delivery during this period"));
 		
 		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:List<OrderByProduct>}>();//key : vendor id
 		
@@ -505,7 +505,7 @@ class ContractAdmin extends Controller
 				}
 			}			
 			
-			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "price", "total"], "Commandes du " + from.toString().substr(0,10)+" au "+to.toString().substr(0,10)+" par producteur.csv");
+			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "price", "total"], t._("Orders from the ::fromDate:: to the ::toDate:: per supplier.csv", {from:from.toString().substr(0,10), to:to.toString().substr(0,10)});
 			return;
 		}
 		
@@ -522,7 +522,7 @@ class ContractAdmin extends Controller
 		view.nav.push("orders");
 		sendNav(contract);
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
@@ -559,7 +559,7 @@ class ContractAdmin extends Controller
 		
 		sendNav(contract);
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
@@ -578,7 +578,7 @@ class ContractAdmin extends Controller
 			o.update();
 			
 		}
-		throw Ok("/contractAdmin/orders/"+contract.id+"?d="+args.d.id, "Prix mis à jours à leur valeur actuelle.");
+		throw Ok("/contractAdmin/orders/"+contract.id+"?d="+args.d.id, t._("Prices are now up to date."));
 	}
 	
 	/**
@@ -587,14 +587,14 @@ class ContractAdmin extends Controller
 	@tpl("form.mtt")
 	function doDuplicate(contract:db.Contract) {
 		sendNav(contract);
-		if (!app.user.isAmapManager()) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.isAmapManager()) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name","Nom du nouveau contrat : ",contract.name+" - copie "));
-		form.addElement(new Checkbox("copyProducts","Copier les produits",true));
-		form.addElement(new Checkbox("copyDeliveries","Copier les distributions",true));
+		form.addElement(new StringInput("name", t._("Name of the new contract:, ::contractName:: - copy ", {contractName:contract.name}));
+		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
+		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
 		if (form.checkToken()) {
 			
@@ -667,7 +667,7 @@ class ContractAdmin extends Controller
 				}
 			}
 			
-			throw Ok("/contractAdmin/view/" + nc.id, "Contrat dupliqué");
+			throw Ok("/contractAdmin/view/" + nc.id, t._("Duplicated contact"));
 		}
 		
 		view.form = form;
@@ -682,14 +682,14 @@ class ContractAdmin extends Controller
 	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw "Aucune distribution dans ce contrat";
+		if (d == null) throw t._("No delivery in this contract");
 		
 		var orders = db.UserContract.getOrdersByProduct({distribution:d},app.params.exists("csv"));
 		view.orders = orders;
@@ -699,7 +699,7 @@ class ContractAdmin extends Controller
 	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
@@ -707,7 +707,7 @@ class ContractAdmin extends Controller
 		view.u = app.user;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw "Aucune distribution dans ce contrat";
+		if (d == null) throw t._("No delivery in this contract");
 		
 		var orders = db.UserContract.getOrdersByProduct({distribution:d},false);
 		view.orders = orders;
@@ -721,7 +721,7 @@ class ContractAdmin extends Controller
 		view.nav.push("distributions");
 		sendNav(contract);
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		view.c = contract;
 		
 		if (args != null && args.old) {
@@ -743,7 +743,7 @@ class ContractAdmin extends Controller
 		view.nav.push("distributions");
 		sendNav(contract);
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		
 		var out = new Array<{user:db.User,count:Int}>();
 		
@@ -793,7 +793,7 @@ class ContractAdmin extends Controller
 		view.nav.push("view");
 		sendNav(contract);
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		view.c = view.contract = contract;
 	}
 	
@@ -801,7 +801,7 @@ class ContractAdmin extends Controller
 	@tpl("contractadmin/stats.mtt")
 	function doStats(contract:db.Contract, ?args: { stat:Int } ) {
 		sendNav(contract);
-		if (!app.user.canManageContract(contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		view.c = contract;
 		
 		if (args == null) args = { stat:0 };
@@ -850,10 +850,10 @@ class ContractAdmin extends Controller
 	 * @param	uc
 	 */
 	function doDelete(uc:UserContract) {
-		if (!app.user.canManageContract(uc.product.contract)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
+		if (!app.user.canManageContract(uc.product.contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		uc.lock();
 		uc.delete();
-		throw Ok('/contractAdmin/orders/'+uc.product.contract.id,'Le contrat a bien été annulé');
+		throw Ok('/contractAdmin/orders/'+uc.product.contract.id, t._("The contract has been canceled"));
 	}
 	
 
@@ -879,8 +879,8 @@ class ContractAdmin extends Controller
 		view.nav.push("orders");
 		sendNav(c);
 		
-		if (!app.user.canManageContract(c)) throw Error("/", "Vous n'avez pas le droit de gérer ce contrat");
-		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, "Cette distribution a déjà été validée");
+		if (!app.user.canManageContract(c)) throw Error("/", t._("You do not have the authorization to manage this contract"));
+		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
 		
 		view.c = view.contract = c;
 		view.u = user;
@@ -920,7 +920,7 @@ class ContractAdmin extends Controller
 				//c'est une nouvelle commande, le user a été défini dans le formulaire
 				if (user == null) {
 					user = db.User.manager.get(Std.parseInt(app.params.get("user")));
-					if (user == null) throw "user #"+app.params.get("user")+" introuvable";
+					if (user == null) throw "user #"+app.params.get("user")+t._(" impossible to find");
 					if (!user.isMemberOf(app.user.amap)) throw user + " ne fait pas partie de ce groupe";
 				}
 				
@@ -940,7 +940,7 @@ class ContractAdmin extends Controller
 						//trouve le produit dans userOrders
 						var pid = Std.parseInt(k.substr("product".length));
 						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
-						if (uo == null) throw "Impossible de retrouver le produit " + pid;
+						if (uo == null) throw t._("Not possible to find the product ") + pid;
 						
 						//user2 ?
 						var user2 : db.User = null;
@@ -948,9 +948,9 @@ class ContractAdmin extends Controller
 						if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
 							//trace("user2" + pid + " : " + app.params.get("user2" + pid));
 							user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
-							if (user2 == null) throw "user #"+app.params.get("user2")+" introuvable";
-							if (!user2.isMemberOf(app.user.amap)) throw user2 + " ne fait pas partie de ce groupe";
-							if (user.id == user2.id) throw "Les deux comptes sélectionnés doivent être différents";
+							if (user2 == null) throw "user #"+app.params.get("user2")+t._("  impossible to find");
+							if (!user2.isMemberOf(app.user.amap)) throw user2 + t._(" is not part of this group");
+							if (user.id == user2.id) throw t._("both selected accounts must be different ones");
 							
 							invert = app.params.get("invert" + pid) == "1";
 							
@@ -982,9 +982,9 @@ class ContractAdmin extends Controller
 				var ops = db.Operation.onOrderConfirm(orders);
 				
 				if (distrib != null) {
-					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, "La commande a été mise à jour");
+					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, t._("The order has been updated"));
 				}else {
-					throw Ok("/contractAdmin/orders/" + c.id, "La commande a été mise à jour");						
+					throw Ok("/contractAdmin/orders/" + c.id, t._("The order has been updated"));						
 				}
 				
 			}

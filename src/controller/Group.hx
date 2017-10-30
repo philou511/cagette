@@ -37,17 +37,17 @@ class Group extends controller.Controller
 		
 		if (group.regOption != db.Amap.RegOption.WaitingList) throw Redirect("/group/" + group.id);
 		if (app.user != null){
-			if ( db.WaitingList.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, "Vous êtes déjà sur la liste d'attente de ce groupe");
-			if ( db.UserAmap.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, "Vous faites déjà partie de ce groupe.");			
+			if ( db.WaitingList.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already in the waiting list of this group"));
+			if ( db.UserAmap.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));
 		}
 		
 		var form = new sugoi.form.Form("reg");				
 		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", "Votre prénom","",true));
-			form.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
-			form.addElement(new StringInput("userEmail", "Votre email", "", true));		
+			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
+			form.addElement(new StringInput("userLastName", t._("Your lastname") ,"",true));
+			form.addElement(new StringInput("userEmail", t._("Your e-mail"), "", true));		
 		}
-		form.addElement(new sugoi.form.elements.TextArea("msg", "Laissez un message"));
+		form.addElement(new sugoi.form.elements.TextArea("msg", t._("Leave a message")));
 		
 		if (form.isValid()){
 			
@@ -59,7 +59,7 @@ class Group extends controller.Controller
 				user.lastName = f.getValueOf("userLastName");
 				
 				if ( db.User.getSameEmail(user.email).length > 0 ) {
-					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à partir de cette page");
+					throw Ok("/user/login", t._("You already subscribed to Cagette, please log in on this page"));
 				}
 				
 				user.insert();
@@ -73,10 +73,10 @@ class Group extends controller.Controller
 			w.message = form.getValueOf("msg");
 			w.insert();
 			
-			throw Ok("/group/" + group.id,"Votre inscription en liste d'attente a été prise en compte. Vous serez prévenu par email lorsque votre demande sera traitée.");
+			throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been taken into account. You will receive an e-mail as soon as your request is processed.");
 		}
 		
-		view.title = "Inscription en liste d'attente à \"" + group.name+"\"";
+		view.title = t._("Subscription to the waiting list \"::groupeName::\"", {groupeName:group.name});
 		view.form = form;
 		
 	}
@@ -92,22 +92,22 @@ class Group extends controller.Controller
 		
 		if (group.regOption != db.Amap.RegOption.Open) throw Redirect("/group/" + group.id);
 		if (app.user != null){			
-			if ( db.UserAmap.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, "Vous faites déjà partie de ce groupe.");			
+			if ( db.UserAmap.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));			
 		}
 		
 		var form = new sugoi.form.Form("reg");	
-		form.submitButtonLabel = "Rejoindre le groupe";
-		form.addElement(new sugoi.form.elements.Html("Confirmez votre inscription à \""+group.name+"\""));
+		form.submitButtonLabel = t._("Join the group");
+		form.addElement(new sugoi.form.elements.Html(t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name}));
 		if (app.user == null){
-			form.addElement(new StringInput("userFirstName", "Votre prénom","",true));
-			form.addElement(new StringInput("userLastName", "Votre nom de famille", "", true));
-			var em = new StringInput("userEmail", "Votre email", "", true);
+			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
+			form.addElement(new StringInput("userLastName", t._("Your lastname"), "", true));
+			var em = new StringInput("userEmail", t._("Your e-mail"), "", true);
 			em.addValidator(new EmailValidator());
 			form.addElement(em);		
-			form.addElement(new StringInput("address", "Adresse", "", true));					
-			form.addElement(new StringInput("zipCode", "Code postal", "", true));		
-			form.addElement(new StringInput("city", "Ville", "", true));		
-			form.addElement(new StringInput("phone", "Téléphone", "", true));		
+			form.addElement(new StringInput("address", t._("Address"), "", true));					
+			form.addElement(new StringInput("zipCode", t._("Post code"), "", true));		
+			form.addElement(new StringInput("city", t._("City");, "", true));		
+			form.addElement(new StringInput("phone", t._("Telephone"), "", true));		
 		}
 		
 		if (form.isValid()){
@@ -124,7 +124,7 @@ class Group extends controller.Controller
 				user.phone = f.getValueOf("phone");
 				
 				if ( db.User.getSameEmail(user.email).length > 0 ) {
-					throw Ok("/user/login","Vous êtes déjà enregistré dans Cagette.net, Connectez-vous à partir de cette page");
+					throw Ok("/user/login",t._("You already subscribed to Cagette, please log in on this page";
 				}
 				
 				user.insert();				
@@ -137,10 +137,10 @@ class Group extends controller.Controller
 			w.amap = group;
 			w.insert();
 			
-			throw Ok("/user/choose","Votre inscription a été prise en compte.");
+			throw Ok("/user/choose", t._("Your subscription has been taken into account"));
 		}
 		
-		view.title = "Inscription à \"" + group.name+"\"";
+		view.title = t._("Subscription to \"::groupName::\"", {groupName:group.name});
 		view.form = form;
 		
 	}
@@ -208,22 +208,22 @@ class Group extends controller.Controller
 			
 			//example datas
 			var place = new db.Place();
-			place.name = "Place du marché";
+			place.name = t._("Marketplace");
 			place.amap = g;
 			place.insert();
 			
 			//contrat AMAP
 			var vendor = new db.Vendor();
 			vendor.amap = g;
-			vendor.name = "Jean Martin EURL";
-			vendor.zipCode = "33210";
-			vendor.city = "Langon";
+			vendor.name = t._("Jean Martin EURL");
+			vendor.zipCode = t._("33210");
+			vendor.city = t._("Langon");
 			vendor.insert();			
 			
 			if (type == Amap){
 				var contract = new db.Contract();
-				contract.name = "Contrat AMAP Maraîcher Exemple";
-				contract.description = "Ce contrat est un exemple de contrat maraîcher avec engagement à l'année comme on le trouve dans les AMAP.";
+				contract.name = t._("CSA contract Vegetables Example");
+				contract.description = t._("This contract is an example where the customer has to commit to buy the whole year as with AMAPs");
 				contract.amap  = g;
 				contract.type = 0;
 				contract.vendor = vendor;
@@ -234,14 +234,14 @@ class Group extends controller.Controller
 				contract.insert();
 				
 				var p = new db.Product();
-				p.name = "Gros panier de légumes";
+				p.name = t._("Big basket of vegetables");
 				p.price = 15;
 				p.organic = true;
 				p.contract = contract;
 				p.insert();
 				
 				var p = new db.Product();
-				p.name = "Petit panier de légumes";
+				p.name = t._("Small basket of vegetables");
 				p.price = 10;
 				p.organic = true;
 				p.contract = contract;
@@ -263,14 +263,14 @@ class Group extends controller.Controller
 			//contrat variable
 			var vendor = new db.Vendor();
 			vendor.amap = g;
-			vendor.name = "Ferme de la Galinette";
-			vendor.zipCode = "33430";
-			vendor.city = "Bazas";
+			vendor.name = t._("Farm Galinette");
+			vendor.zipCode = t._("33430");
+			vendor.city = t._("Bazas");
 			vendor.insert();			
 			
 			var contract = new db.Contract();
-			contract.name = "Contrat Poulet Exemple";
-			contract.description = "Exemple de contrat à commande variable. Il permet de commander quelque chose de différent à chaque distribution.";
+			contract.name = t._("Contract chicken Example");
+			contract.description = t._("Example of contract with variable orders. It is allowed to order something else at every delivery.");
 			contract.amap  = g;
 			contract.type = 1;
 			contract.vendor = vendor;
@@ -282,7 +282,7 @@ class Group extends controller.Controller
 			contract.insert();
 			
 			var egg = new db.Product();
-			egg.name = "Douzaine d'oeufs bio";
+			egg.name = t._("12 Bio eggs");
 			egg.price = 5;
 			egg.type = 6;
 			egg.organic = true;
@@ -290,7 +290,7 @@ class Group extends controller.Controller
 			egg.insert();
 			
 			var p = new db.Product();
-			p.name = "Poulet bio";
+			p.name = t._("Bio Chicken");
 			p.type = 2;
 			p.price = 9.50;
 			p.organic = true;

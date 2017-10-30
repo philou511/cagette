@@ -37,9 +37,9 @@ class Install extends controller.Controller
 		view.title = "Installation de Cagette.net";
 
 			var f = new sugoi.form.Form("c");
-			f.addElement(new StringInput("amapName", "Nom de votre groupement","",true));
-			f.addElement(new StringInput("userFirstName", "Votre prénom","",true));
-			f.addElement(new StringInput("userLastName", "Votre nom de famille","",true));
+			f.addElement(new StringInput("amapName", t._("Name of your group"),"",true));
+			f.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
+			f.addElement(new StringInput("userLastName", t._("Your lastname"),"",true));
 
 			if (f.checkToken()) {
 	
@@ -66,20 +66,20 @@ class Install extends controller.Controller
 				
 				//example datas
 				var place = new db.Place();
-				place.name = "Place du marché";
+				place.name = t._("Marketplace")
 				place.amap = amap;
-				place.address1 = "Place Jules Verne";
-				place.zipCode = "00000";
-				place.city = "St Martin de la Cagette";
+				place.address1 = t._("Place Jules Verne");
+				place.zipCode = t._("00000");
+				place.city = t._("St Martin de la Cagette");
 				place.insert();
 				
 				var vendor = new db.Vendor();
 				vendor.amap = amap;
-				vendor.name = "Jean Martin EURL";
+				vendor.name = t._("Jean Martin EURL");
 				vendor.insert();
 				
 				var contract = new db.Contract();
-				contract.name = "Contrat Maraîcher Exemple";
+				contract.name = t._("Contract Vegetables Example");
 				contract.amap  = amap;
 				contract.type = 0;
 				contract.vendor = vendor;
@@ -90,13 +90,13 @@ class Install extends controller.Controller
 				contract.insert();
 				
 				var p = new db.Product();
-				p.name = "Gros panier de légumes";
+				p.name = t._("Big basket of vegetables");
 				p.price = 15;
 				p.contract = contract;
 				p.insert();
 				
 				var p = new db.Product();
-				p.name = "Petit panier de légumes";
+				p.name = t._("Small basket of vegetables");
 				p.price = 10;
 				p.contract = contract;
 				p.insert();
@@ -119,7 +119,7 @@ class Install extends controller.Controller
 				App.current.session.setUser(user);
 				App.current.session.data.amapId  = amap.id;
 				
-				throw Ok("/", "Groupe et utilisateur 'admin' créé. Votre email est 'admin@cagette.net' et votre mot de passe est 'admin'");
+				throw Ok("/", t._("Group and user 'admin' created. Your email is 'admin@cagette.net' and your password is 'admin'"));
 			}	
 			
 			view.form= f;
@@ -145,11 +145,11 @@ class Install extends controller.Controller
 			
 			//need update !
 			out.valid = false;
-			out.message = "Vous devez mettre à jour votre base de données vers la version "+App.VERSION.toString()+"";
+			out.message = t._("You must update your database to version ") +App.VERSION.toString()+"";
 			
 		}else{
 			out.valid = true;
-			out.message = "Version actuelle "+v.toString()+"";
+			out.message = t._("Current version") +v.toString()+"";
 		}
 		
 		return out;
@@ -164,24 +164,24 @@ class Install extends controller.Controller
 		
 		var log = [];
 		
-		var currentVersion = thx.semver.Version.stringToVersion(Variable.get("version"));
+		var currentVersion = thx.semver.Version.stringToVersion(Variable.get(t._("version"));
 		
 		//Migrations to 0.9.2
 		if (currentVersion.lessThan( thx.semver.Version.arrayToVersion([0,9,2]) )){
 			
-			log.push("Installation du dictionnaire de produits (taxonomie)");
+			log.push(t._("Installation of the dictionnary of products (taxonomie)"));
 			_0_9_2_installTaxonomy();
 			
-			log.push("Amélioration du stockage des commandes");
+			log.push(t._("Improvement on saving orders");
 			_0_9_2_dbMigration();
 			
-			sugoi.db.Variable.set("version", "0.9.2");
+			sugoi.db.Variable.set(t._("version"), "0.9.2");
 		}
 		
 		//Migrations to 1.0.0
 		//...
 		
-		throw Ok("/install","Les opérations de mise à jour suivantes on été faites : <ul>"+Lambda.map(log,function(x) return "<li>"+x+"</li>").join("")+"</ul>");
+		throw Ok("/install", t._("Following update have been performed:<ul>")+Lambda.map(log,function(x) return "<li>"+x+"</li>").join("")+"</ul>");
 		
 	}
 	
