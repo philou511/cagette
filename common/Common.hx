@@ -16,6 +16,7 @@ typedef OrderInSession = {
 	} > ,
 	userId:Int,
 	total:Float, //price to pay
+	?paymentOp:Int, //payment operation ID
 }
 
 @:keep
@@ -176,7 +177,7 @@ enum Event {
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
 	DeleteProduct(product:db.Product);
-	BatchEnableProducts(productIds:Array<Int>, enable:Bool);
+	BatchEnableProducts(data:{pids:Array<Int>,enable:Bool});
 	
 	//Contracts
 	DeleteContract(contract:db.Contract);

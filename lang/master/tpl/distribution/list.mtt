@@ -155,7 +155,7 @@
 				
 				</table>
 				
-				<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
+				<p>::raw nl2br(distrib._contract._amap.txtDistrib)::</p>
 		
 				<p class="hidden"><i>::_("Push on \"Control + P\" to print this page.")::</i></p>
 </body>

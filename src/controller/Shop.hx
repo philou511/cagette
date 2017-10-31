@@ -109,10 +109,8 @@ class Shop extends Controller
 	public function doAdd(productId:Int, quantity:Int) {
 	
 		var order : OrderInSession =  app.session.data.order;
-		if ( order == null) order = cast { products:[] };
-		
-		order.products.push( { productId:productId, quantity:quantity } );
-		
+		if ( order == null) order = cast { products:[] };		
+		order.products.push( { productId:productId, quantity:quantity } );		
 		Sys.print( haxe.Json.stringify( {success:true} ) );
 		
 	}
@@ -136,7 +134,7 @@ class Shop extends Controller
 	
 	
 	/**
-	 * valider la commande et selectionner les distributions
+	 * validate the order
 	 */
 	@tpl('needLogin.mtt')
 	public function doValidate(place:db.Place, date:Date){
@@ -149,20 +147,16 @@ class Shop extends Controller
 		
 		//add the user to this group if needed
 		if (place.amap.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, place.amap) == null){
-			var ua = new db.UserAmap();
-			ua.user  = app.user;
-			ua.amap = place.amap;
-			ua.insert();
+			app.user.makeMemberOf(place.amap);			
 		}
 
 		var order : OrderInSession = app.session.data.order;
 		if (order == null || order.products == null || order.products.length == 0) {
-			throw Error("/shop", t._("Your order is empty") );
+			throw Error("/", t._("Your order is empty") );
 		}
 		
 		if (place == null) throw "place cannot be null";
-		if (date == null) throw "date cannot be null";
-		
+		if (date == null) throw "date cannot be null";		
 
 		var products = getProducts(place, date);
 
@@ -171,12 +165,20 @@ class Shop extends Controller
 		
 		//cleaning
 		for (o in order.products.copy()) {
-
+			
 			var p = db.Product.manager.get(o.productId, false);
+			
+			//check that the products are from this group (we never know...)
+			if (p.contract.amap.id != app.user.amap.id){
+				app.session.data.order = null;
+				throw Error("/", t._("Error, This cart is invalid") );
+			}
+			
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
 				errors.push( t._("The product <b>::pname::</b> is not available in this distribution",{pname:p.name}) );
 				order.products.remove(o);
+				continue;
 			}else{
 				o.product = p;
 			}
@@ -186,6 +188,7 @@ class Shop extends Controller
 			if ( d == null ){
 				errors.push( t._("The product <b>::pname::</b> is not available in this distribution",{pname:p.name}) );
 				order.products.remove(o);
+				continue;
 			}else{
 				o.distributionId = d.id;
 			}
@@ -199,7 +202,6 @@ class Shop extends Controller
 				}
 			}
 		
-			
 			order.total += p.getPrice() * o.quantity;
 		}
 		
@@ -209,11 +211,10 @@ class Shop extends Controller
 			app.session.addMessage(errors.join("<br/>"), true);
 		}
 		
-		app.session.data.order = order;
+		//store cart in session
+		app.session.data.order = order;		
 		
-		
-		if (app.user.amap.hasPayments()){
-			
+		if (app.user.amap.hasPayments()){			
 			//Go to payments page
 			throw Ok("/transaction/pay/", t._("Your basket has been recorded, please select a payment method to confirm it.") );
 		}else{

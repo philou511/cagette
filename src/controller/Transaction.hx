@@ -90,7 +90,7 @@ class Transaction extends controller.Controller
 		
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;	
-		if (tmpOrder == null) throw Redirect("/");
+		if (tmpOrder == null) throw Redirect("/contract");
 		
 		//get a code
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
@@ -99,7 +99,7 @@ class Transaction extends controller.Controller
 		view.code = code;
 		view.amount = tmpOrder.total;
 		
-		if (checkToken()){
+		//if (checkToken()){
 			
 			//record order
 			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
@@ -114,25 +114,30 @@ class Transaction extends controller.Controller
 				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, "Chèque ("+code+")" );			
 			}
 			
-			throw Ok("/contract", t._("Your payment by check has been saved. It will be validated by a coordinator at the delivery."));
-		}
-		
+
+			//throw Ok("/contract", t._("Your payment by check has been saved. It will be validated by a coordinator at the delivery."));
+		//}
+	
 	}
 	
 	/**
 	 * pay by transfer
 	 */
 	@tpl("transaction/transfer.mtt")
-	public function doTransfer(place:db.Place, date:Date){
+	public function doTransfer(){
 		
 		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
-		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
-		var code = payment.Check.getCode(date, place, app.user);
+		var tmpOrder : OrderInSession = app.session.data.order;	
+		if (tmpOrder == null) throw Redirect("/contract");
+		
+		//get a code
+		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
+		var code = payment.Check.getCode(d.date, d.place, app.user);
+		
 		view.code = code;
 		view.amount = tmpOrder.total;
 		
-		if (checkToken()){
+		//if (checkToken()){
 			
 			//record order
 			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
@@ -147,8 +152,10 @@ class Transaction extends controller.Controller
 				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, "Paiement par virement ("+code+")");			
 			}
 			
-			throw Ok("/contract", t._("Your payment by transfer has been saved. It will be validated by a coordinator."));
-		}
+
+			//throw Ok("/contract", t._("Your payment by transfer has been saved. It will be validated by a coordinator."));
+		//}
+
 	}
 	
 	/**
@@ -159,10 +166,11 @@ class Transaction extends controller.Controller
 		
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;		
+		if (tmpOrder == null) throw Redirect("/contract");
 		view.amount = tmpOrder.total;
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
 		
-		if (checkToken()){
+		//if (checkToken()){
 			
 			//record order
 			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
@@ -177,36 +185,9 @@ class Transaction extends controller.Controller
 				db.Operation.makePaymentOperation(app.user, app.user.amap, payment.Cash.TYPE, tmpOrder.total, t._("Cash payment"));
 			}
 			
-			throw Ok("/contract", t._("Your order is validated, you commited to pay in cash at the delivery."));
-		}
-		
+
+			//throw Ok("/contract", t._("Your order is validated, you commited to pay in cash at the delivery."));
+		//}
+	
 	}
-	
-	/**
-	 * view a transaction detail in a pop-in window 
-	 * @param	t
-	 */
-	@tpl("transaction/view.mtt")
-	public function doView(op:db.Operation){
-		view.op = op ;
-		
-		#if cagette-pro
-		var lw = pro.payment.LWCPayment.getConnector(app.user.amap);
-		
-		if (op.data.remoteOpId == null) throw "No remoteOpId in this operation";
-		
-		//update status if needed
-		var td = lw.getMoneyInTransDetails(op.data.remoteOpId);
-		if (td.HPAY[0].STATUS == "3" && op.pending){
-			op.lock();
-			op.pending = false;
-			op.update();
-		}
-		
-		view.infos = td;
-		#end
-		
-	}
-	
-	
 }

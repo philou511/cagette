@@ -53,6 +53,7 @@ class Contract extends Object
 	{
 		super();
 		flags = cast 0;
+		distributorNum = 0;
 		
 	}
 	
