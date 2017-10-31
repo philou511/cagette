@@ -1,13 +1,13 @@
 ::use 'contractadmin/design.mtt'::
 
 		::if u==null::
-		<h3>Saisir une commande</h3>
+		<h3>::_("Key-in an order")::</h3>
 		::else::
-		<h3>Saisir une commande pour ::u.getCoupleName()::</h3>
+		<h3>::_("Key-in an order for"):: ::u.getCoupleName()::</h3>
 		::end::
 		
 		::if distribution!=null::
-		<p>Pour la livraison du <b>::hDate(distribution.date)::</b></p>
+		<p>::_("For the delivery of the"):: <b>::hDate(distribution.date)::</b></p>
 		::end::
 		
 		<form name="order" id="order" method="POST" action="" class="form-horizontal">
@@ -18,7 +18,7 @@
 			
 			::if u==null ::
 			<div class="form-group">
-				<label for="user" class="control-label col-md-2 text-left">Adhérent :</label>
+				<label for="user" class="control-label col-md-2 text-left">::_("Member:")::</label>
 				<div class="col-md-10">
 					<select name="user" id="user" class="form-control">
 						::foreach uu users::
@@ -34,11 +34,11 @@
 			<table class="table table-bordered">
 				<tr>
 					<th></th>
-					<th>Produit</th>
-					<th>Prix</th>
-					<th>Quantité</th>
-					<th>Statut</th>
-					::if distribution==null::<th>Alterné avec :</th>::end::
+					<th>::_("Product")::</th>
+					<th>::_("Price")::</th>
+					<th>::_("Quantity")::</th>
+					<th>::_("Status")::</th>
+					::if distribution==null::<th>::_("Alternately with :")::</th>::end::
 				</tr>
 				::set total = 0::
 				::foreach uo userOrders::
@@ -53,7 +53,7 @@
 					</td>
 					<td>
 						::if uo.product.active==false:: 
-						<span style="color:#AAA;">::uo.product.name:: (inactif)</span>
+						<span style="color:#AAA;">::uo.product.name:: ::_("(inactive)")::</span>
 						::else::
 						::uo.product.name::	
 						::end::
@@ -76,7 +76,7 @@
 						
 					</td>
 					<td class="paid">
-						Payé : 
+						::_("Paid:"):: 
 						::if uo.order!=null::			
 						<input type="checkbox" name="paid::uo.product.id::" value="1" ::attr checked (uo.order.paid==true ):: />
 						::else::
@@ -93,7 +93,7 @@
 							::end::			
 						</select>
 						
-						<input data-toggle="tooltip" title="Inverser l'alternance" type="checkbox" name="invert::uo.product.id::" value="1" ::attr checked (uo.order!=null && uo.order.hasInvertSharedOrder()==true ):: />
+						<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::uo.product.id::" value="1" ::attr checked (uo.order!=null && uo.order.hasInvertSharedOrder()==true ):: />
 					</td>
 				</tr>
 					
@@ -104,7 +104,7 @@
 				::if c.hasPercentageOnOrders()::
 					<tr>
 						<th></th>
-						<th>Total commande</th>
+						<th>::_("Total order")::</th>
 						<th>::total::::currency()::</th>
 						<th></th>
 						<th></th>
@@ -123,11 +123,11 @@
 					
 					<tr>
 						<th></th>
-						<th>Total</th>
+						<th>::_("Total")::</th>
 						<th>::total+extra::::currency()::</th>
 						<th></th>
 						<th colspan="2">
-							<a href="#"  id="checkButton">Tout cocher</a>
+							<a href="#"  id="checkButton">::_("Check all")::</a>
 							<script language="javascript">
 							var globalCheck = true;
 							var checkEverything = function(e){
@@ -143,7 +143,7 @@
 					</tr>
 			</table>
 		
-			<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />
+			<input type="submit" class="btn btn-primary" value="::_("Validate the order")::" name="submit" id="submit" />
 		
 		</form>
 ::end::

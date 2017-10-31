@@ -14,25 +14,25 @@
 				<br/>
 				
 				<!--::if(confirmed)::
-				Validée
+				::_("Validated")::
 				::else::
-				Non validée
+				::_("Not validated")::
 				::end::-->
 			</div>	
 			
 			
 		
 		<div class="text-center">
-			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> Export CSV </a>
-			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
+			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("CSV Export"):: </a>
+			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-print"></span> ::_("Attendance sheet"):: </a>
 			
 			::if ctotal::
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par adhérent</a>
+			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per member")::</a>
 			::else::
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">Sous-totaux par contrat</a>
+			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per contract")::</a>
 			::end::
 			
-			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">Totaux par producteur</a>
+			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per supplier")::</a>
 		</div>
 
 		
@@ -57,26 +57,26 @@
 							::set basket = getBasket(m.userId,place.id,date)::
 							
 							<div class="basketNumber" ::cond basket!=null:: >
-								<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
+								<i class="fa fa-shopping-basket" aria-hidden="true"></i> ::_("Num"):: ::basket.num::
 							</div>
 							
 							::m.userName:: 
 							::if m.userName2!=null::
-								<span class="glyphicon glyphicon-refresh"></span> en alternance avec ::m.userName2::
+								<span class="glyphicon glyphicon-refresh"></span> ::_("alternately with"):: ::m.userName2::
 							::end::
 							::set contractTotal = 0::
 						</td>
 					</tr>
 					<tr>
-						<th>Contrat</th>
-						<th>Qté</th>
-						<th>Réf.</th>
-						<th>Produit</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
-						<th>Sous-total</th>
-						<th>Frais</th>
-						<th>Total</th>
-						<th>Payé</th>
+						<th>::_("Contract")::</th>
+						<th>::_("Qty")::</th>
+						<th>::_("Ref")::</th>
+						<th>::_("Product")::</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price incl. VAT")::">::_("U.P.")::</a></th>
+						<th>::_("Sub-total")::</th>
+						<th>::_("Fees")::</th>
+						<th>::_("Total")::</th>
+						<th>::_("Paid")::</th>
 					</tr>
 			
 				::end::
@@ -120,9 +120,9 @@
 					</td>
 					<td>
 						::if m.paid==true::
-						<span style="color:#00AA00;">Payé</span>
+						<span style="color:#00AA00;">::_("Paid")::</span>
 						::else::
-						<span style="color:#DD0000;">Non payé</span>
+						<span style="color:#DD0000;">::_("Not paid")::</span>
 						::end::
 					</td>
 					
@@ -144,7 +144,7 @@
 				
 					::if subtotal!=0:: 
 					<tr style="border-top:2px solid #AAA;">					
-						<th colspan="7" class="text-right">Total adhérent</th>
+						<th colspan="7" class="text-right">::_("Total member")::</th>
 						<th>::formatNum(subtotal)::&nbsp;::currency()::</th>					
 						<th></th>
 						::set subtotal = 0::
@@ -157,7 +157,7 @@
 				
 			<!-- big total -->
 			<tr style="background:#CCC;font-size:1.3em;">					
-				<th colspan="7" class="text-right">Total de toutes les commandes : </th>
+				<th colspan="7" class="text-right">::_("Total of all orders:"):: </th>
 				<th>::formatNum(total)::&nbsp;::currency()::</th>					
 				<th></th>
 			</tr>

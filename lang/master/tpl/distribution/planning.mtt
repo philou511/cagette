@@ -1,11 +1,11 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 	<div class="article">
-		<h2>Planning des livraisons : ::contract.name::</h2>
+		<h2>::_("Planning of deliveries:"):: ::contract.name::</h2>
 		
 		<p>
-			Inscrivez-vous en cochant les cases correspondant aux dates qui vous conviennent.<br/>
-			Les permanences consistent à aider à la distribution de produits lors d'une livraison.
+			::raw_("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you.
+			The goal of attendances consists in helping during the delivery of products.")::
 		</p>
 		
 		
@@ -68,14 +68,14 @@
 								::if !d.hasEnoughDistributors()::
 									<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
 								::else::
-									<span style="color: #AAA;font-size: 80%;">complet</span>
+									<span style="color: #AAA;font-size: 80%;">::_("full")::</span>
 								::end::
 							::end::
 						::else::
 							::if !d.hasEnoughDistributors()::
 								<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
 							::else::
-								complet
+								::_("full")::
 							::end::
 						
 						::end::
@@ -107,7 +107,7 @@
 		</div>
 				
 		<div style="text-align:right">
-			<a href="/" class="btn btn-default btn-lg">Valider</a>	
+			<a href="/" class="btn btn-default btn-lg">::_("Validate")::</a>	
 		</div>		
 		
 	</div>

@@ -2,7 +2,7 @@
 <div class="col-md-9">
 <div class="article">
 	
-	<h2>Fournisseurs</h2>
+	<h2>::_("Suppliers")::</h2>
 	
 	
 
@@ -35,7 +35,7 @@
 	</table>
 
 	<div>
-		<a href="/vendor/insert" class="btn btn-default">Nouveau fournisseur</a>	
+		<a href="/vendor/insert" class="btn btn-default">::_("New suppliers")::</a>	
 	</div>
 	
 	<hr/>
@@ -47,7 +47,7 @@
 	
 	
 	<div class="block">
-		Dans cette rubrique, vous pouvez gérer la liste des fournisseurs de votre Amap.
+		::_("On this page you can manage the list of suppliers of your group.")::
 	</div>
 </div>
 

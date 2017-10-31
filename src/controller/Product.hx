@@ -18,7 +18,7 @@ class Product extends Controller
 	@tpl('form.mtt')
 	function doEdit(d:db.Product) {
 		
-		if (!app.user.canManageContract(d.contract)) throw "Accès interdit";
+		if (!app.user.canManageContract(d.contract)) throw t._("Forbidden access");
 		
 		var f = sugoi.form.Form.fromSpod(d);
 		
@@ -55,19 +55,19 @@ class Product extends Controller
 			app.event(EditProduct(d));
 			
 			d.update();
-			throw Ok('/contractAdmin/products/'+d.contract.id,'Le produit a été mis à jour');
+			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been updated"));
 		}else{
 			app.event(PreEditProduct(d));
 		}
 		
 		view.form = f;
-		view.title = "Modifier un produit";
+		view.title = t._("Modify a product");
 	}
 	
 	@tpl("form.mtt")
 	public function doInsert(contract:db.Contract ) {
 		
-		if (!app.user.isContractManager(contract)) throw Error("/", "Action interdite"); 
+		if (!app.user.isContractManager(contract)) throw Error("/", t._("Forbidden action")); 
 		
 		var d = new db.Product();
 		var f = sugoi.form.Form.fromSpod(d);
@@ -101,18 +101,18 @@ class Product extends Controller
 			app.event(NewProduct(d));
 			
 			d.insert();
-			throw Ok('/contractAdmin/products/'+d.contract.id,'Le produit a été enregistrée');
+			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been saved"));
 		}else{
 			app.event(PreNewProduct(contract));
 		}
 		
 		view.form = f;
-		view.title = "Enregistrer un nouveau produit";
+		view.title = t._("Key-in a new product");
 	}
 	
 	public function doDelete(p:db.Product) {
 		
-		if (!app.user.canManageContract(p.contract)) throw "Accès interdit";
+		if (!app.user.canManageContract(p.contract)) throw t._("Forbidden access");
 		
 		if (checkToken()) {
 			
@@ -120,22 +120,22 @@ class Product extends Controller
 			
 			var orders = db.UserContract.manager.search($productId == p.id, false);
 			if (orders.length > 0) {
-				throw Error("/contractAdmin", "Impossible d'effacer ce produit car des commandes y sont rattachées");		
+				throw Error("/contractAdmin", t._("Not possible to delete this product because some orders are referencing it"));
 			}
 			var cid = p.contract.id;
 			p.lock();
 			p.delete();
 			
-			throw Ok("/contractAdmin/products/"+cid,"Produit supprimé");
+			throw Ok("/contractAdmin/products/"+cid, t._("Product deleted"));
 		}
-		throw Error("/contractAdmin", "Erreur de token");
+		throw Error("/contractAdmin", t._("Token error"));
 	}
 	
 	
 	@tpl('product/import.mtt')
 	function doImport(c:db.Contract, ?args: { confirm:Bool } ) {
 		
-		if (!app.user.canManageContract(c)) throw "Accès interdit";
+		if (!app.user.canManageContract(c)) throw t._("Forbidden access");
 			
 		var csv = new sugoi.tools.Csv();
 		csv.step = 1;
@@ -206,9 +206,9 @@ class Product extends Controller
 	public function doCategorize(contract:db.Contract) {
 		
 		
-		if (!app.user.canManageContract(contract)) throw "Accès interdit";
+		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
-		if (db.CategoryGroup.get(app.user.amap).length == 0) throw Error("/contractAdmin", "Vous devez d'abord définir des catégories avant de pouvoir catégoriser vos produits");
+		if (db.CategoryGroup.get(app.user.amap).length == 0) throw Error("/contractAdmin", t._("You must first define categories before you can assign a category to a product"));
 		
 		//var form = new sugoi.form.Form("cat");
 		//
@@ -231,7 +231,7 @@ class Product extends Controller
 	 */	
 	public function doCategorizeInit(contract:db.Contract) {
 		
-		if (!app.user.canManageContract(contract)) throw "Accès interdit";
+		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
 		var data : TaggerInfos = {
 			products:[],
@@ -259,7 +259,7 @@ class Product extends Controller
 	
 	public function doCategorizeSubmit(contract:db.Contract) {
 		
-		if (!app.user.canManageContract(contract)) throw "Accès interdit";
+		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
 		var data : TaggerInfos = haxe.Json.parse(app.params.get("data"));
 		
@@ -274,14 +274,14 @@ class Product extends Controller
 			}
 		}
 		
-		Sys.print("Modifications enregistrées");		
+		Sys.print(t._("Modifications saved"));
 	}
 	
 	
 	@tpl('product/addimage.mtt')
 	function doAddImage(product:db.Product) {
 		
-		if (!app.user.canManageContract(product.contract)) throw "Accès interdit";
+		if (!app.user.canManageContract(product.contract)) throw t._("Forbidden access");
 		
 		view.c = product.contract;
 		view.image = product.image;

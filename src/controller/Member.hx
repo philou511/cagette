@@ -47,7 +47,7 @@ class Member extends Controller
 			switch(args.select) {
 				case "nocontract":
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], "Sans-contrats");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], t._("Without contracts"));
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoContracts(index, limit); }	
@@ -55,7 +55,7 @@ class Member extends Controller
 				case "contract":
 					
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_Contracts()), ["firstName", "lastName", "email"], "Avec-commande");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_Contracts()), ["firstName", "lastName", "email"], t._("With orders"));
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_Contracts(index, limit); }	
@@ -63,27 +63,27 @@ class Member extends Controller
 					
 				case "nomembership" :
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], "Adhesions-a-renouveller");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], t._("Memberships to be renewed"));
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoMembership(index, limit); }
 					}
 				case "newusers" :
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], "jamais-connecté");
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], t._("Never connected"));
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NewUsers(index, limit); }
 					}
 				default:
-					throw "selection inconnue";
+					throw t._("Unknown selection");
 			}
 			view.select = args.select;
 			
 		}else {
 			if (app.params.exists("csv")) {
 				var headers = ["firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
-				sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, "Adherents");
+				sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, t._("Members"));
 				return;
 			}else {
 				//default display
@@ -190,7 +190,7 @@ class Member extends Controller
 				Sys.sleep(0.2);
 			}
 			
-			throw Ok('/member', "Bravo, vous avez envoyé <b>" + users.length + "</b> invitations.");
+			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length})
 		}
 		
 	}
@@ -201,7 +201,7 @@ class Member extends Controller
 		
 		view.member = member;
 		var userAmap = db.UserAmap.get(member, app.user.amap);
-		if (userAmap == null) throw Error("/member", "Cette personne ne fait pas partie de votre groupe");
+		if (userAmap == null) throw Error("/member", t._("This person does not belong to your group"));
 		
 		view.userAmap = userAmap; 
 		view.canLoginAs = (db.UserAmap.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
@@ -291,7 +291,7 @@ class Member extends Controller
 	@tpl('form.mtt')
 	function doEdit(member:db.User) {
 		
-		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/","Vous ne pouvez pas modifier le compte d'un administrateur");
+		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
 		
 		var form = sugoi.form.Form.fromSpod(member);
 		
@@ -308,12 +308,12 @@ class Member extends Controller
 		if (groupNum > 1){			
 			form.removeElementByName("email");
 			form.removeElementByName("email2");
-			app.session.addMessage("Par sécurité, vous ne pouvez pas modifier l'email de cette personne car elle est membre de plusieurs groupes.");
+			app.session.addMessage(t._("For security reasons, you cannot modify the e-mail of this person because this person is a member of more than 1 group.");
 		}
 		
 		//an administrator can modify a user's pass only if he's a not registred user.
 		if (!isReg){
-			app.session.addMessage("Cette personne n'a pas encore défini de mot de passe. Vous êtes exceptionnellement autorisé à le définir à sa place. N'oubliez pas de la prévenir.");			
+			app.session.addMessage(t._("This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person.");
 			form.getElement("pass").required = false;
 		}else{
 			form.removeElement( form.getElement("pass") );
@@ -336,10 +336,10 @@ class Member extends Controller
 				if (db.UserContract.manager.search( $userId == id || $userId2 == id , false).length == 0) {
 					//merge
 					member.merge( sim.first() );
-					app.session.addMessage("Cet email était utilisé dans une autre fiche de membre, comme cette fiche etait inutilisée, elle a été fusionnée avec la fiche courante.");
+					app.session.addMessage(t._("This e-mail was used by another user account. As this user account was not used, it has been merged into the current user account."));
 					
 				} else {
-					throw Error("/member/edit/" + member.id, "Attention, Cet email ou ce nom existe déjà dans une autre fiche : "+Lambda.map(sim,function(u) return "<a href='/member/view/"+u.id+"'>"+u.getCoupleName()+"</a>. Ces deux fiches ne peuvent pas être fusionnées car cette personne a des commandes enregistrées dans l'autre fiche").join(","));	
+					throw Error("/member/edit/" + member.id, t._("Warning, this e-mail or this name already exist for another user: ")+Lambda.map(sim,function(u) return "<a href='/member/view/"+u.id+"'>"+u.getCoupleName()+t._("</a>. These two users cannot be merged because this person has other orders that are saved for the other user").join(","));	
 				}
 			}	
 			
@@ -352,10 +352,10 @@ class Member extends Controller
 				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"),"Cagette.net");
+					m.setSender(App.config.get("default_email"), t._("Cagette.net");
 					m.addRecipient(member.email);
-					m.setSubject("Changement d'email sur votre compte Cagette.net");
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email")  } ) );
+					m.setSubject(t._("Change your e-mail in your account Cagette.net"));
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email")  } ) );
 					App.sendMail(m);
 					
 				}
@@ -363,13 +363,13 @@ class Member extends Controller
 					var m = new sugoi.mail.Mail();
 					m.setSender(App.config.get("default_email"),"Cagette.net");
 					m.addRecipient(member.email2);
-					m.setSubject("Changement d'email sur votre compte Cagette.net");
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + " vient de modifier votre email sur votre fiche Cagette.net.<br/>Votre email est maintenant : "+form.getValueOf("email2")  } ) );
+					m.setSubject(t._("Change the e-mail of your account Cagette.net"));
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() +t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email2")  } ) );
 					App.sendMail(m);
 				}	
 			}
 			
-			throw Ok('/member/view/'+member.id,'Ce membre a été mis à jour');
+			throw Ok('/member/view/'+member.id, t._("This member has beed updated"));
 		}
 		
 		view.form = form;
@@ -382,18 +382,18 @@ class Member extends Controller
 	function doDelete(user:db.User,?args:{confirm:Bool,token:String}) {
 		
 		if (checkToken()) {
-			if (!app.user.canAccessMembership()) throw "Vous ne pouvez pas faire ça.";
-			if (user.id == app.user.id) throw Error("/member/view/"+user.id,"Vous ne pouvez pas vous effacer vous même.");
+			if (!app.user.canAccessMembership()) throw t._("You cannot do that.");
+			if (user.id == app.user.id) throw Error("/member/view/"+user.id, t._("You cannot delete yourself."));
 			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) {
-				throw Error("/member/view/"+user.id,"Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-xs' href='/member/delete/"+user.id+"?token="+args.token+"&confirm=1'>Effacer quand-même</a>");
+				throw Error("/member/view/"+user.id, t._("Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Delete anyway</a>", {userid:user.id, argstoken:args.token}));
 			}
 		
 			var ua = db.UserAmap.get(user, app.user.amap, true);
 			if (ua != null) {
 				ua.delete();
-				throw Ok("/member", user.getName() + " a bien été supprimé(e) de votre groupe");
+				throw Ok("/member", user.getName() + t._(" has been deleted from your group"));
 			}else {
-				throw Error("/member", "Cette personne ne fait pas partie de \"" + app.user.amap.name+"\"");			
+				throw Error("/member", t._("This person does not belong to \"::amapname::\"", {amapname:app.user.amap.name}));
 			}	
 		}else {
 			throw Redirect("/member/view/"+user.id);
@@ -405,16 +405,16 @@ class Member extends Controller
 		
 		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
 		
-		view.title = "Fusionner un compte avec un autre";
-		view.text = "Cette action permet de fusionner deux comptes ( quand vous avez des doublons dans la base de données par exemple).<br/>Les contrats du compte 2 seront rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette action n'est pas annulable.";
+		view.title = t._("Merge an account with another one");
+		view.text = t._("This action allows you to merge two accounts (when you have duplicates in the database for example).<br/>Contracts of account 2 will be moved to account 1, and account 2 will be deleted. Warning, it is not possible to cancel this action.");
 		
 		var form = new Form("merge");
 		
 		var members = app.user.amap.getMembers();
 		var members = Lambda.array(Lambda.map(members, function(x) return { key:Std.string(x.id), value:x.getName() } ));
-		var mlist = new Selectbox("member1", "Compte 1", members, Std.string(user.id));
+		var mlist = new Selectbox("member1", t._("Account 1"), members, Std.string(user.id));
 		form.addElement( mlist );
-		var mlist = new Selectbox("member2", "Compte 2", members);
+		var mlist = new Selectbox("member2", t._("Account 2"), members);
 		form.addElement( mlist );
 		
 		if (form.checkToken()) {
@@ -456,7 +456,7 @@ class Member extends Controller
 			
 			m2.delete();
 			
-			throw Ok("/member/view/" + m1.id, "Les deux comptes ont été fusionnés");
+			throw Ok("/member/view/" + m1.id, t._("Both accounts have been merged");
 			
 			
 		}
@@ -477,15 +477,15 @@ class Member extends Controller
 		if ( data != null) {
 			
 			var csv = new sugoi.tools.Csv();
-			csv.setHeaders(["prénom","nom","E-mail","téléphone portable","prénom conjoint","	nom conjoint","	E-mail conjoint",	"téléphone portable conjoint",	"adresse1",	"adresse2"	,"code postal","ville"]);
+			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Firstname spouse"), t._("Lastname spouse"), t._("E-mail spouse"), t._("Mobile phone spouse"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City"));
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
 			for ( user in unregistred.copy() ) {
 				
 				//check nom+prenom
-				if (user[0] == null || user[1] == null) throw Error("/member/import","Vous devez remplir le nom et prénom de la personne. Cette ligne est incomplète : " + user);
-				if (user[2] == null) throw Error("/member/import","Chaque personne doit avoir un email, sinon elle ne pourra pas se connecter. "+user[0]+" "+user[1]+" n'en a pas. "+user);
+				if (user[0] == null || user[1] == null) throw Error("/member/import", t._("You must fill the name and the firstname of the person. This line is incomplete: ") + user);
+				if (user[2] == null) throw Error("/member/import", t._("Each person must have an E-mail to be able to log in. ::user0:: ::user1:: don't have one. ", {user0:user[0], user1:user[1]}) +user);
 				//uppercase du nom
 				if (user[1] != null) user[1] = user[1].toUpperCase();
 				if (user[5] != null) user[5] = user[5].toUpperCase();
@@ -550,7 +550,7 @@ class Member extends Controller
 				user.lastName = u[1];
 				user.email = u[2];
 				if (user.email != null && user.email != "null" &&!EmailValidator.check(user.email)) {
-					throw "Le mail '" + user.email + "' est invalide, merci de modifier votre fichier";
+					throw t._("The E-mail ::useremail:: is invalid, please modify your file", {useremail:user:email});
 				}
 				user.phone = u[3];
 				
@@ -559,7 +559,7 @@ class Member extends Controller
 				user.email2 = u[6];
 				if (user.email2 != null && user.email2 != "null" && !EmailValidator.check(user.email2)) {
 					App.log(u);
-					throw "Le mail du conjoint de "+user.firstName+" "+user.lastName+" '" + user.email2 + "' est invalide, merci de modifier votre fichier";
+					throw t._("The E-mail of the spouse of ::userFirstName:: ::userLastName '::userEmail::' is invalid, please check your file", {userFirstName:user.firstName, userLastName:user.lastName, userEmail:user.email2});
 				}
 				user.phone2 = u[7];				
 				user.address1 = u[8];
@@ -611,7 +611,7 @@ class Member extends Controller
 	@tpl("user/insert.mtt")
 	public function doInsert() {
 		
-		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
+		if (!app.user.canAccessMembership()) throw Error("/", t._("Forbidden action"));
 		
 		var m = new db.User();
 		var form = sugoi.form.Form.fromSpod(m);
@@ -619,7 +619,7 @@ class Member extends Controller
 		form.removeElement(form.getElement("rights"));
 		form.removeElement(form.getElement("pass"));	
 		form.removeElement(form.getElement("ldate") );
-		form.addElement(new sugoi.form.elements.Checkbox("warnAmapManager", "Envoyer un mail au responsable du groupe", true));
+		form.addElement(new sugoi.form.elements.Checkbox("warnAmapManager", t._("Send an E-mail to the person in charge of the group"), true));
 		form.getElement("email").addValidator(new EmailValidator());
 		form.getElement("email2").addValidator(new EmailValidator());
 		
@@ -633,7 +633,7 @@ class Member extends Controller
 			
 			if (userAmaps.length > 0) {
 				//user deja enregistré dans cette amap
-				throw Error('/member/view/' + userAmaps.first().user.id, 'Cette personne est déjà inscrite dans cette AMAP');
+				throw Error('/member/view/' + userAmaps.first().user.id, t._("This person is already member of this group"));
 				
 			}else if (userSims.length > 0) {
 				//des users existent avec ce nom , 
@@ -643,14 +643,13 @@ class Member extends Controller
 					ua.user = userSims.first();
 					ua.amap = app.user.amap;
 					ua.insert();	
-					throw Ok('/member/','Cette personne était déjà inscrite sur Cagette.net, nous l\'avons inscrite à votre groupe.');
+					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
 				}else {
 					//demander validation avant d'inserer le userAmap
 					
 					//TODO
 					
-					throw Error('/member',"Impossible d'ajouter cette personne car plusieurs personnes dans la base de données ont le même nom et prénom, contactez l'administrateur du site."+userSims);
-					
+					throw Error('/member', t._("Not possible to add this person because there are already some people in the database having the same firstname and name. Please contact the administrator.")+userSims);
 				}
 				return;
 			}else {
@@ -668,15 +667,15 @@ class Member extends Controller
 				
 				if (form.getValueOf("warnAmapManager") == "1") {
 					
-					var text = app.user.getName() + " vient de saisir la fiche d'un nouvel adhérent  : <br/><strong>" + u.getCoupleName() + "</strong><br/> <a href='http://"+App.config.HOST+"/member/view/" + u.id + "'>voir la fiche</a> ";
+					var text = app.user.getName() + t._(" just keyed-in contact details of a new member: <br/><strong>") + u.getCoupleName() + "</strong><br/> <a href='http://"+App.config.HOST+"/member/view/" + u.id + "'>" + t._("see contact details") + "</a> ";
 					App.quickMail(
 						app.user.getAmap().contact.email,
-						app.user.amap.name+" - Nouvel inscrit : " + u.getCoupleName(),
+						app.user.amap.name+ t._(" - New member: ") + u.getCoupleName(),
 						app.processTemplate("mail/message.mtt", { text:text } ) 
 					);
 				}
 				
-				throw Ok('/member/','Cette personne a bien été enregistrée');
+				throw Ok('/member/', t._("This person is now member of the group"));
 				
 			}
 		}

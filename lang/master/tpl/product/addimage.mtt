@@ -1,7 +1,7 @@
 ::use 'contractadmin/design.mtt'::
 	
 
-<h2>Importer une photo de produit</h2>
+<h2>::_("Import a photo of the product")::</h2>
 
 
 <div class="row">
@@ -11,14 +11,14 @@
 		<input name="image" type="file" class="btn btn-default"/>
 		
 		<br/>
-		Taille de la photo : 300 x 300px <br/>
-		Format : JPEG <br/>
+		::_("Size of the photo: 300 x 300px"):: <br/>
+		::_("Format : JPEG"):: <br/>
 		<br/>
 		
-		<input type="submit" value="Envoyer" class="btn btn-primary" />
+		<input type="submit" value="::_("Send")::" class="btn btn-primary" />
 	</form>
 	<br/>
-	<a href="/contractAdmin/products/::c.id::" class="btn btn-default btn-xs">Revenir à la gestion des produits</a>
+	<a href="/contractAdmin/products/::c.id::" class="btn btn-default btn-xs">::_("Back to the management of products")::</a>
 	
 </div>
 

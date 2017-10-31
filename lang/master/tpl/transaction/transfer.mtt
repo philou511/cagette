@@ -4,31 +4,32 @@
 	
 		<div class="alert alert-success" style="font-size: 1.6em;font-weight: bold;">
 			
-			<i class="fa fa-check" aria-hidden="true"></i> Votre commande est enregistrée !
+			<i class="fa fa-check" aria-hidden="true"></i> ::_("Your order has been recorded !")::
 			
 		</div>
 		
 		<hr/>
 			
-		<div style="margin:32px;">
+    <div style="margin:32px;">
 			
 			<p>
-				<b>Vous avez choisi le paiement par virement :</b>
+				<b>::_("You chose to pay by transfer"):: :</b>
 			</p>
 			<p>
-				Merci de faire un virement de <b>::formatNum(amount):: ::currency()::</b>
+				::_("Please make a transfer of")::
+				 <b>::formatNum(amount):: ::currency()::</b>
 				
-				vers le compte bancaire suivant :<br/>
-				IBAN :  <b>::user._amap.IBAN::</b>
+				::_("to the following bank account:")::<br/>
+				::_("IBAN:")::  <b>::user._amap.IBAN::</b>
 			</p>
 			<p>
-				Indiquez cette référence dans le libellé du virement afin de faciliter son traitement : <br/>
+				::_("Mention this reference in the label of the transfer in order to facilitate its process:")::<br/>
 				<span style="font-size:1.3em;margin:12px;">::code::</span> 
 			</p>
 		
 			<p>
 				<a href="/contract" class="btn btn-default">
-					<span class="glyphicon glyphicon-chevron-right"></span> Consulter ma commande</a>
+					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Check my orders")::</a>
 			</p>
 			
 		</div>

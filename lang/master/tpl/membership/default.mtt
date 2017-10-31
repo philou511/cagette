@@ -3,11 +3,11 @@
 <div class="col-md-6">
 	
 	<div class="article">
-		<h2>Cotisations de ::member.getCoupleName()::</h2>
+		<h2>::_("Subscription payment of"):: ::member.getCoupleName()::</h2>
 		<table class="table table-bordered">
 			<tr>
-				<th>Période</th>
-				<th>Date de cotisation</th>
+				<th>::_("Period")::</th>
+				<th>::_("Subscription payment date")::</th>
 				<th>Actions</th>
 			</tr>
 			::foreach m memberships::
@@ -27,7 +27,7 @@
 
 <div class="col-md-6">
 	<div class="article">
-		<h2>Saisir une cotisation</h2>
+		<h2>Key-in a subscription payment</h2>
 		::raw form::
 		
 		

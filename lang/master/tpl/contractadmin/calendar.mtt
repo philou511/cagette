@@ -14,7 +14,7 @@
 <div class="col-md-12">
 	<div class="article">
 		
-		<h2>Calendrier</h2>
+		<h2>::_("Calendar")::</h2>
 		
 		<div class="calDiv"></div><div class="calDiv"></div><div class="calDiv"></div><div class="calDiv"></div><div class="calDiv"></div><div class="calDiv"></div><div class="calDiv"></div>
 		

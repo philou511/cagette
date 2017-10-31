@@ -3,7 +3,7 @@
 	<div class="col-md-12">
 		<div class="article">
 			
-		<h2>Vue globale des commandes - du ::hDate(from):: au ::hDate(to)::</h2>
+		<h2>::_("Global view of orders - from"):: ::hDate(from):: ::_("to"):: ::hDate(to)::</h2>
 		
 		<div class="text-center">
 			$$export(/contractAdmin/vendorsByTimeFrame/::from.toString().substr(0,10)::/::to.toString().substr(0,10)::?csv=1)
@@ -26,11 +26,11 @@
 				</th>
 			</tr>
 			<tr>
-				<th>Quantités</th>
-				<th>Produit</th>
-				<th>Référence</th>
-				<th>Prix unitaire TTC</th>
-				<th>Total</th>
+				<th>::_("Quantities")::</th>
+				<th>::_("Product")::</th>
+				<th>::_("Reference")::</th>
+				<th>::_("Unit price incl. VAT")::</th>
+				<th>::_("Total")::</th>
 			</tr>
 
 			::foreach m o.orders::
@@ -55,7 +55,7 @@
 			::end::
 				
 			<tr style="background:#DDD;">
-				<th colspan="4">Total</th>
+				<th colspan="4">::_("Total")::</th>
 				<th>::formatNum(total)::&nbsp;::currency()::</th>
 			</tr>
 		</table>

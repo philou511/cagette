@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Liste d'émargement</title>
+	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
@@ -18,12 +18,12 @@
 				::set total = 0::
 				::set productNum = 0::
 				<tr style="font-size:120%">
-					<th>Nom</th>
-					<th>Coordonnées</th>
-					<th>Qté</th>
-					<th>Produit</th>
+					<th>::_("Name")::</th>
+					<th>::_("Contact details")::</th>
+					<th>::_("Qty")::</th>
+					<th>::_("Product")::</th>
 					
-					<th>Signature</th>
+					<th>::_("Signature")::</th>
 					
 				</tr>
 		
@@ -46,7 +46,7 @@
 									::m.userName::
 								</b>
 								::if m.userName2 != null::
-									<br />en alternance avec <b>::m.userName2::</b>
+									<br />::_("alternately with"):: <b>::m.userName2::</b>
 								::end::
 								::set total = 0::
 								::set productNum = 0::
@@ -90,7 +90,7 @@
 				<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
 		
 				<p class="hidden">
-					<i>Appuyez sur "Control + P" pour imprimer cette page.</i>					
+					<i>::_("Push on \"Control + P\" to print this page.")::</i>					
 				</p>
 	
 	

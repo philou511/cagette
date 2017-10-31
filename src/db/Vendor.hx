@@ -29,7 +29,7 @@ class Vendor extends Object
 	public function new() 
 	{
 		super();
-		name = "Producteur";
+		name = t._("Supplier");
 	}
 	
 	override function toString() {

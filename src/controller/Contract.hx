@@ -138,7 +138,7 @@ class Contract extends Controller
 	@tpl("form.mtt")
 	function doEdit(c:db.Contract) {
 		view.category = 'contractadmin';
-		if (!app.user.isContractManager(c)) throw Error('/', 'Action interdite');
+		if (!app.user.isContractManager(c)) throw Error('/', t._("Forbidden action"));
 		
 		var currentContact = c.contact;
 		var form = Form.fromSpod(c);
@@ -151,12 +151,12 @@ class Contract extends Controller
 			c.amap = app.user.amap;
 			
 			//checks & warnings
-			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, "Si vous souhaitez ajouter des frais au pourcentage de la commande, spécifiez le pourcentage et son libellé.");
+			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and label."));
 			
 			if (c.hasStockManagement()) {
 				for (p in c.getProducts()) {
 					if (p.stock == null) {
-						app.session.addMessage("Attention, vous avez activé la gestion des stocks. Pensez à renseigner le champs \"stock\" de tout vos produits", true);
+						app.session.addMessage(t._("Warning, the management of stock. Please fill the field \"stock\" for all your products"), true);
 						break;
 					}
 				}
@@ -165,7 +165,7 @@ class Contract extends Controller
 			//no stock mgmt for constant orders
 			if (c.hasStockManagement() && c.type==db.Contract.TYPE_CONSTORDERS) {
 				c.flags.unset(ContractFlags.StockManagement);
-				app.session.addMessage("La gestion des stocks n'est pas disponible pour les contrats de type AMAP", true);
+				app.session.addMessage(t._("The management of stock is not available for CSA contracts"), true);
 			}
 			
 			
@@ -190,7 +190,7 @@ class Contract extends Controller
 				
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, "Contrat mis à jour");
+			throw Ok("/contractAdmin/view/"+c.id, t._("Contract updated"));
 		}
 		
 		view.form = form;
@@ -207,10 +207,10 @@ class Contract extends Controller
 	 */
 	@tpl("form.mtt")
 	function doInsert(?type:Int) {
-		if (!app.user.isAmapManager()) throw Error('/', 'Action interdite');
+		if (!app.user.isAmapManager()) throw Error('/', t._("Forbidden action"));
 		if (type == null) throw Redirect('/contract/insertChoose');
 		
-		view.title = if (type == db.Contract.TYPE_CONSTORDERS)"Créer un contrat à commande fixe"else"Créer un contrat à commande variable";		
+		view.title = if (type == db.Contract.TYPE_CONSTORDERS)t._("Create a contract with fixed orders") else t._("Create a contract with variable orders");
 		
 		var c = new db.Contract();
 		
@@ -236,7 +236,7 @@ class Contract extends Controller
 				ua.update();
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, "Nouveau contrat créé");
+			throw Ok("/contractAdmin/view/"+c.id, t._("New contract created"));
 		}
 		
 		view.form = form;
@@ -244,7 +244,7 @@ class Contract extends Controller
 	
 	function doDelete(c:db.Contract/*,args:{chk:String}*/) {
 		
-		if (!app.user.isAmapManager()) throw Error("/contractAdmin", "Vous n'avez pas le droit de supprimer un contrat");
+		if (!app.user.isAmapManager()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
 		
 		if (checkToken()) {
 			c.lock();
@@ -253,7 +253,7 @@ class Contract extends Controller
 			var products = c.getProducts();
 			var orders = db.UserContract.manager.count($productId in Lambda.map(products, function(p) return p.id));
 			if (orders > 0) {
-				throw Error("/contractAdmin", "Vous ne pouvez pas effacer ce contrat car il y a des commandes rattachées à ce contrat.");
+				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to this contract."));
 			}
 			
 			//remove admin rights and delete contract	
@@ -268,10 +268,10 @@ class Contract extends Controller
 			app.event(DeleteContract(c));
 			
 			c.delete();
-			throw Ok("/contractAdmin", "Contrat supprimé");			
+			throw Ok("/contractAdmin", t._("Contract deleted"));
 		}
 		
-		throw Error("/contractAdmin","Erreur de token");
+		throw Error("/contractAdmin", t._("Token error"));
 	}
 	
 	/**
@@ -288,7 +288,7 @@ class Contract extends Controller
 		//checks
 		if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
-		if (!c.isUserOrderAvailable()) throw Error("/", "Ce contrat n'est pas ouvert aux commandes ");
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened to orders"));
 
 		
 		var distributions = [];
@@ -373,7 +373,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw "Impossible de retrouver le produit " + pid +" et distribution "+did;
+				if (uo == null) throw t._("Not possible to find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
 					
 				var q = 0.0;
 				
@@ -395,7 +395,7 @@ class Contract extends Controller
 				}
 				
 			}
-			throw Ok("/contract/order/"+c.id, "Votre commande a été mise à jour");
+			throw Ok("/contract/order/"+c.id, t._("Your order has been updated"));
 		}
 		
 		view.c = view.contract = c;
@@ -412,7 +412,7 @@ class Contract extends Controller
 		//checks
 		if (!app.user.amap.hasPayments()) throw Redirect("/contract/order/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/");
-		if (!c.isUserOrderAvailable()) throw Error("/", "Ce contrat n'est pas ouvert aux commandes ");
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened to orders"));
 		
 		var distributions = [];
 		/* If its a varying contract, we display a column by distribution*/
@@ -485,7 +485,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw "Impossible de retrouver le produit " + pid +" et distribution "+did;
+				if (uo == null) throw t._("Not possible to find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
 					
 				//quantity
 				var q = 0.0;				
@@ -507,9 +507,9 @@ class Contract extends Controller
 			
 			//Go to payments page			
 			if (c.type == db.Contract.TYPE_CONSTORDERS) {
-				throw Ok("/contract/order/"+c.id, "Votre commande AMAP a été enregistrée");	
+				throw Ok("/contract/order/"+c.id, t._("Your CSA order has been saved"));
 			}else{
-				throw Ok("/transaction/pay/", "Pour que votre commande soit enregistrée, choisissez une méthode de paiement.");	
+				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a payment mean."));
 			}
 			
 			
@@ -535,8 +535,8 @@ class Contract extends Controller
 		// cannot edit order if date is in the past
 		if (Date.now().getTime() > date.getTime()) {
 			
-			var msg = "Cette distribution a déjà eu lieu, vous ne pouvez plus modifier la commande.";
-			if (app.user.isContractManager()) msg += "<br/>En tant que gestionnaire de contrat vous pouvez modifier une commande depuis la page de gestion des commandes dans <a href='/contractAdmin'>Gestion contrats</a> ";
+			var msg = t._("This delivery already took place, you cannot modify the order any more.");
+			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page <a href='/contractAdmin'>Management of contracts</a>");
 			
 			throw Error("/contract", msg);
 		}
@@ -563,7 +563,7 @@ class Contract extends Controller
 					//trouve le produit dans userOrders
 					var pid = Std.parseInt(k.substr("product".length));
 					var order = Lambda.find(orders, function(uo) return uo.product.id == pid);
-					if (order == null) throw "Erreur, impossible de retrouver la commande";
+					if (order == null) throw t._("Error, not possible to find the order");
 					
 					var q = 0.0;
 					if (order.product.hasFloatQt ) {
@@ -585,7 +585,7 @@ class Contract extends Controller
 			
 			app.event(MakeOrder(orders_out));
 			
-			throw Ok("/contract", "Votre commande a été mise à jour");				
+			throw Ok("/contract", t._("Your order has been updated"));
 		}
 	}
 }

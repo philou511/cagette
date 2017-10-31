@@ -240,7 +240,7 @@ class UserContract extends Object
 			var c = o.product.contract;
 			if (c.hasStockManagement()) {
 				if (o.product.stock == 0) {
-					if(App.current.session!=null) App.current.session.addMessage("Il n'y a plus de '" + o.product.name + "' en stock, nous l'avons donc retiré de votre commande", true);					
+					if(App.current.session!=null) App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
 					o.quantity -= quantity;
 					if ( o.quantity <= 0 ) {
 						o.delete();
@@ -252,7 +252,7 @@ class UserContract extends Object
 					o.quantity -= canceled;
 					o.update();
 					
-					if(App.current.session!=null) App.current.session.addMessage("Nous avons réduit votre commande de '" + o.product.name + "' à "+o.quantity+" articles car il n'y a plus de stock disponible", true);
+					if(App.current.session!=null) App.current.session.addMessage(t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:o.product.name, oQuantity:o.quantity}), true);
 					o.product.lock();
 					o.product.stock = 0;
 					o.product.update();
@@ -323,7 +323,7 @@ class UserContract extends Object
 						
 						//stock is not enough, reduce order
 						newquantity = order.quantity + order.product.stock;
-						if( App.current.session!=null) App.current.session.addMessage("Nous avons réduit votre commande de '" + order.product.name + "' à "+newquantity+" articles car il n'y a plus de stock disponible", true);
+						if( App.current.session!=null) App.current.session.addMessage(t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:order.product.name, oQuantity:newquantity}), true);
 						
 						App.current.event(StockMove({product:order.product, move: 0 - order.product.stock }));
 						
@@ -370,7 +370,7 @@ class UserContract extends Object
 			
 			//by distrib
 			var d = options.distribution;
-			exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			exportName = t._("Delivery ::contractName:: of the ", {contractName:d.contract.name}) + d.date.toString().substr(0, 10);
 			where += ' and p.contractId = ${d.contract.id}';
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 				where += ' and up.distributionId = ${d.id}';
@@ -456,12 +456,12 @@ class UserContract extends Object
 			
 			var exportName = "";
 			if (distribution != null){
-				exportName = contract.amap.name+" - Distribution "+contract.name+" du " + distribution.date.toString().substr(0, 10);	
+				exportName = contract.amap.name+t._(" - Delivery ::contractName:: of the ", {contractName:contract.name}) + distribution.date.toString().substr(0, 10);	
 			}else{
 				exportName = contract.amap.name+" - "+contract.name;
 			}
 			
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+" - Par adherent");
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+t._(" - Per member"));
 			return null;
 		}else{
 			return orders;

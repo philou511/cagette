@@ -33,21 +33,21 @@ class Message extends Object
 			case tink.core.Outcome.Failure(f):
 				out.failure = switch(f){
 					case GenericError(e):
-						"Erreur générique : " + e.toString();
+						t._("Generic error: ") + e.toString();
 					case HardBounce : 
-						"Boîte email inexistante";
+						t._("Mailbox does not exist");
 					case SoftBounce : 
-						"Boîte email pleine ou bloquée";
+						t._("Mailbox full or blocked");
 					case Spam:
-						"Message considéré comme spam";
+						t._("Message considered as spam");
 					case Unsub:
-						"Cet utilisateur s'est désabonné (Unsub)";
+						t._("This user unsubscribed");
 					case Unsigned:
-						"Expéditeur incorrect (Unsigned)";
+						t._("Sender incorrect (Unsigned)");
 					
 				};
 			case tink.core.Outcome.Success(d):
-				out.success = "Envoyé";
+				out.success = t._("Sent");
 		}
 		return out;
 		

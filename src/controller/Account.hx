@@ -40,21 +40,21 @@ class Account extends Controller
 			
 			//check email is valid
 			if (!sugoi.form.validators.EmailValidator.check(app.user.email)){
-				throw Error("/account/edit",'Email "${app.user.email}" invalide');
+				throw Error("/account/edit", t._("Email ::em:: invalid", {em:${app.user.email}}");
 			}
 			
 			if (app.user.email2!=null && !sugoi.form.validators.EmailValidator.check(app.user.email2)){
-				throw Error("/account/edit",'Email "${app.user.email2}" invalide');
+				throw Error("/account/edit", t._("Email ::em:: invalid", {em:${app.user.email2}}");
 			}
 			
 			if (!admin) { app.user.rights.unset(Admin); }
 			
 			app.user.update();
-			throw Ok('/contract','Votre compte a été mis à jour');
+			throw Ok('/contract', t._("Your account has been updated"));
 		}
 		
 		view.form = form;
-		view.title = "Modifier mon compte";
+		view.title = t._("Modify my account");
 	}
 	
 	function doQuit(){
@@ -67,7 +67,7 @@ class Account extends Controller
 			ua.delete();
 			
 			App.current.session.data.amapId = null;
-			throw Ok("/user/choose?show=1", "Vous avez quitté le groupe "+name);
+			throw Ok("/user/choose?show=1", t._("You left the group "+name));
 		}
 		
 	}

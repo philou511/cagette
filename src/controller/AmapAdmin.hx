@@ -14,7 +14,7 @@ class AmapAdmin extends Controller
 	public function new() 
 	{
 		super();
-		if (!app.user.isAmapManager()) throw Error("/", "Accès non autorisé");
+		if (!app.user.isAmapManager()) throw Error("/", t._("Non authorized access");
 		
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();
@@ -63,7 +63,7 @@ class AmapAdmin extends Controller
 		try {
 			request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb	
 		}catch (e:Dynamic) {
-			throw Error("/amapadmin", "L'image envoyée est trop lourde. Le poids maximum autorisé est de 12 Mo");
+			throw Error("/amapadmin", t._("The image sent is too big. The maximum authorized size is 12Mb"));
 		}
 		
 		if (request.exists("image")) {
@@ -91,7 +91,7 @@ class AmapAdmin extends Controller
 				user.amap.image = img;
 				user.amap.update();
 				
-				throw Ok('/amapadmin/','Image mise à jour');
+				throw Ok('/amapadmin/', t._("Image updateed"));
 			}
 		}
 		
@@ -224,7 +224,7 @@ class AmapAdmin extends Controller
 					}
 				}
 				if (isManager == false) {
-					throw Error("/amapadmin/rights", "Par sécurité, vous ne pouvez pas vous enlevez vous même les droits de gestion du groupe.");
+					throw Error("/amapadmin/rights", t._("You cannot remove yourself your admin rights."));
 				}
 			}
 			
@@ -232,17 +232,17 @@ class AmapAdmin extends Controller
 			if (ua.rights.length == 0) ua.rights = null;
 			ua.update();
 			if (ua.rights == null) {
-				throw Ok("/amapadmin/rights", "Droits retirés");	
+				throw Ok("/amapadmin/rights", t._("Rights removed"));
 			}else {
-				throw Ok("/amapadmin/rights", "Droits créés ou modifiés");
+				throw Ok("/amapadmin/rights", t._("Rights created or modified"));
 			}
 			
 		}
 		
 		if (u == null) {
-			view.title = "Créer des droits à un utilisateur";
+			view.title = t._("Create rights to a user");
 		}else {
-			view.title = "Modifier les droits de "+u.getName();
+			view.title = t._("Modify rights of ")+u.getName();
 		}
 		
 		view.form = form;
@@ -264,16 +264,16 @@ class AmapAdmin extends Controller
 		
 		var i = 1;
 		for (k in a.vatRates.keys()) {
-			f.addElement(new StringInput(i+"-k", "Nom "+i, k));
-			f.addElement(new StringInput(i + "-v", "Taux "+i, Std.string(a.vatRates.get(k)) ));
+			f.addElement(new StringInput(i+"-k", t._("Name ")+i, k));
+			f.addElement(new StringInput(i + "-v", t._("Rate ")+i, Std.string(a.vatRates.get(k)) ));
 			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
 			i++;
 		}
 		var j = i;
 		
 		for (x in 0...5 - i) {
-			f.addElement(new StringInput(i+"-k", "Nom "+i, ""));
-			f.addElement(new StringInput(i + "-v", "Taux "+i, ""));
+			f.addElement(new StringInput(i+"-k", t._("Name ")+i, ""));
+			f.addElement(new StringInput(i + "-v", t._("Rate ")+i, ""));
 			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
 			i++;
 		}
@@ -289,10 +289,10 @@ class AmapAdmin extends Controller
 			a.lock();
 			a.vatRates = vats;
 			a.update();
-			throw Ok("/amapadmin", "Taux mis à jour");
+			throw Ok("/amapadmin", t._("Rate updated"));
 			
 		}
-		view.title = "Editer les taux de TVA";
+		view.title = t._("Edit VAT rates");
 		view.form = f;
 		
 	}
@@ -307,11 +307,11 @@ class AmapAdmin extends Controller
 	@tpl("form.mtt")
 	function doCurrency(){
 		
-		view.title = "Monnaie utilisée par votre groupe.";
+		view.title = t._("Currency used by your group.");
 		
 		var f = new sugoi.form.Form("curr");
-		f.addElement(new sugoi.form.elements.StringInput("currency", "Symbole de votre monnaie", app.user.amap.getCurrency()));
-		f.addElement(new sugoi.form.elements.StringInput("currencyCode", "Code ISO à 3 lettres", app.user.amap.currencyCode));
+		f.addElement(new sugoi.form.elements.StringInput("currency", t._("Currency symbol"), app.user.amap.getCurrency()));
+		f.addElement(new sugoi.form.elements.StringInput("currencyCode", t._("3 digits ISO code"), app.user.amap.currencyCode));
 		
 		if ( f.isValid()){
 			
@@ -320,7 +320,7 @@ class AmapAdmin extends Controller
 			app.user.amap.currencyCode = f.getValueOf("currencyCode");
 			app.user.amap.update();
 			
-			throw Ok("/amapadmin/currency", "Monnaie mise à jour");
+			throw Ok("/amapadmin/currency", t._("Currency updated"));
 		}
 		
 		view.form = f;
@@ -336,15 +336,15 @@ class AmapAdmin extends Controller
 		var types = payment.Payment.getPaymentTypes();
 		var formdata = [for (t in types){label:t.name, value:t.type}];		
 		var selected = app.user.amap.allowedPaymentsType;
-		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes","Types de paiements autorisés",formdata, selected) );
+		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes", t._("Authorized payment types"),formdata, selected) );
 		
 		if (app.user.amap.checkOrder == ""){
 			app.user.amap.lock();
 			app.user.amap.checkOrder = app.user.amap.name;
 			app.user.amap.update();
 		}
-		f.addElement( new sugoi.form.elements.StringInput("checkOrder", "Ordre pour les chèques", app.user.amap.checkOrder, false)); 
-		f.addElement( new sugoi.form.elements.StringInput("IBAN", "IBAN de votre compte bancaire pour les virements", app.user.amap.IBAN, false)); 
+		f.addElement( new sugoi.form.elements.StringInput("checkOrder", t._("Make the check payable to"), app.user.amap.checkOrder, false)); 
+		f.addElement( new sugoi.form.elements.StringInput("IBAN", t._("IBAN of your bank account for transfers"), app.user.amap.IBAN, false)); 
 		
 		
 		if (f.isValid()){
@@ -357,11 +357,11 @@ class AmapAdmin extends Controller
 			a.IBAN = f.getValueOf("IBAN");
 			a.update();
 			
-			throw Ok("/amapadmin/payments", "Options de paiement mises à jour");
+			throw Ok("/amapadmin/payments", t._("Options of payment updated"));
 			
 		}
 		
-		view.title = "Options de paiements";
+		view.title = t._("Options of payment");
 		view.form = f;
 	}
 	

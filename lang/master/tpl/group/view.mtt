@@ -26,7 +26,7 @@
 						<!-- connected and member of the group-->
 						<a href="/user/choose?amap=::group.id::" class="btn btn-primary">
 							<span class="glyphicon glyphicon-chevron-right"></span>
-							 Accéder à mon compte
+							 ::_("Go to my account")::
 						</a>
 					
 					::else::
@@ -37,24 +37,24 @@
 						::case::
 						
 							<p>
-								Contactez le responsable pour vous inscrire à ce groupe et connaître les modalités d'adhésion.
+								::_("Contact the person in charge in order to subscribe to this group and get to know membership conditions.")::
 							</p>
 							<p>
 								<a href="::"mailto:"+group._contact.email+"?subject=Adhésion"::"  class="btn btn-primary">
 									<span class="glyphicon glyphicon-envelope"></span>
-									Demande d'adhésion
+									::_("Membership request")::
 								</a>
 							</p>
 						::case::
 							
 							<p>
-								Ce groupe accepte les inscriptions sur liste d'attente. 
-								Un coordinateur vous contactera pour vous informer.
+								::_("This group accepts subscriptions on waiting list.
+								A coordinator will contact you.")::
 							</p>
 							<p>
 							<a href="/group/list/::group.id::"  class="btn btn-primary">
 								<span class="glyphicon glyphicon-chevron-right"></span>
-								Inscription liste d'attente
+								::_("Subscription on waiting list")::
 							</a>
 							</p>
 							
@@ -62,13 +62,13 @@
 							<p>
 								<a href="/group/register/::group.id::"  class="btn btn-primary">
 									<span class="glyphicon glyphicon-chevron-right"></span>
-									Inscription libre
+									::_("Free subscription")::
 								</a>
 							</p>
 							
 						::case::
 							<p>
-								Ce groupe est complet et n'accepte plus de nouvelles inscriptions.
+								::_("This group is full and do not accept any more subscription.")::
 							</p>
 						::end::
 					
@@ -80,12 +80,12 @@
 					
 					::if user==null::
 						<hr />
-						<h4>Déjà membre ? Connectez-vous :</h4>
+						<h4>::_("Already member? Log in:")::</h4>
 						<div class="text-center">
 							<form action="/user/login" method="post">
 								<input type="text" name="name" placeHolder="email" value="" class="form-control" />
 								<input type="password" name="pass" placeHolder="mot de passe" value="" class="form-control" style="margin-top:12px;" />						
-								<button type="submit" class="btn btn-default btn-sm" style="margin-top:12px;"><span class="glyphicon glyphicon-chevron-right"></span> Connexion</button>
+								<button type="submit" class="btn btn-default btn-sm" style="margin-top:12px;"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Connection")::</button>
 							</form>
 						</div>
 					::end::
@@ -105,7 +105,7 @@
 					
 					
 					<p>
-						<h3> Prochaines distributions</h3>
+						<h3> ::_("Next deliveries")::</h3>
 						
 						::foreach d group.getDeliveries(4)::
 						
@@ -131,7 +131,7 @@
 					<hr/>
 					
 					<p ::cond group._contact!=null::>
-						<h3>Contact</h3>
+						<h3>::_("Contact")::</h3>
 						
 						<i class="icon-user"></i>
  						<b>::group._contact.firstName:: ::group._contact.lastName::</b><br/>
@@ -147,9 +147,9 @@
 					<hr/>
 					
 					<p>
-						<h3>Producteurs et produits</h3>
+						<h3>::_("Suppliers and products")::</h3>
 						<p>
-							Extrait non exhaustif des produits proposés :
+							::_("Non-complete extract of available products:")::
 						</p>
 				
 						::foreach c contracts::
@@ -186,7 +186,7 @@
 	
 	<div class="col-md-12">
 		<div id="footer">
-			<a href="http://www.cagette.net">Cagette.net, le logiciel libre du circuit court</a>.	
+			<a href="::_("http://www.cagette.net")::">::_("Cagette.net, the free software of food direct-selling")::</a>.	
 		</div>
 		
 	</div>

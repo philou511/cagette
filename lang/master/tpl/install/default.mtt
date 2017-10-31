@@ -2,7 +2,7 @@
 <div class="col-md-9">
 	<div class="article">
 		
-		<h2>Mise à jour</h2>
+		<h2>::_("Update")::</h2>
 		
 		<table class="table table-bordered">
 			
@@ -19,7 +19,7 @@
 				</td>
 				<td>
 					::if !s.valid::
-						<a href="/install/update::s.parameter::" class="btn btn-primary">Mettre à jour</a>
+						<a href="/install/update::s.parameter::" class="btn btn-primary">::_("Update")::</a>
 					::end::
 				</td>
 				

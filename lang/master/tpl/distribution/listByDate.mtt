@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Liste d'émargement</title>
+	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
@@ -18,16 +18,14 @@
 				::set total = 0::
 				::set productNum = 0::
 				<tr>
-					<th>Nom</th>
-					<th>Coordonnées</th>
-					<th>Qté</th>
-					<th>Produit</th>
-					<th>P.U</th>
-					<th>Frais</th>
-					<th>Total</th>
-					
-					<th>Signature</th>
-					
+					<th>::_("Name")::</th>
+					<th>::_("Contact details")::</th>
+					<th>::_("Qty")::</th>
+					<th>::_("Product")::</th>
+					<th>::_("U.P.")::</th>
+					<th>::_("Fees")::</th>
+					<th>::_("Total")::</th>
+					<th>::_("Signature")::</th>
 				</tr>
 		
 				::foreach m orders::				
@@ -44,12 +42,12 @@
 						::if m.userName != name || m.userName2 != name2::
 						
 								::set basket = getBasket(m.userId,place.id,date)::							
-								<span ::cond basket!=null::>N°::basket.num:: - </span>
+								<span ::cond basket!=null::>::_("Num"):: ::basket.num:: - </span>
 							
 						
 								<b>::m.userName::</b>
 								::if m.userName2 != null::
-									<br />en alternance avec <b>::m.userName2::</b>
+									<br />::_("alternately with"):: <b>::m.userName2::</b>
 								::end::
 								::set total = 0::
 								::set productNum = 0::
@@ -105,7 +103,7 @@
 						<td></td>
 						<td class="total">::productNum::</td>
 						<td class="total" colspan="2"></td>
-						<td class="total">TOTAL</td>
+						<td class="total">::_("TOTAL")::</td>
 						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>
@@ -116,11 +114,11 @@
 						<!--  PAYMENT CHECK FOR SHOP MODE -->
 						::if (user._amap.hasShopMode())::
 						<td></td>
-						<th>Paiement : </th>
+						<th>::_("Payment:"):: </th>
 						<td colspan="6">
 							<table style="width:100%;border:1px solid #CCC;">
 							::if(basket!=null)::
-								::set tpaid=0::								
+								::set tpaid=0::
 								::set op = basket.getOrderOperation(false)::								
 								::foreach p op.getRelatedPayments()::
 								<tr>
@@ -152,9 +150,9 @@
 									<td>::formatNum(total-tpaid):: ::currency()::</td>
 									<td>
 										::if(total>tpaid)::
-											Reste à payer ::formatNum(total-tpaid):: ::currency()::
+											::_("To be paid") ::formatNum(total-tpaid):: ::currency()::
 										::else::
-											Rembourser ::formatNum(tpaid-total):: ::currency()::
+											::_("Pay back"):: ::formatNum(tpaid-total):: ::currency()::
 										::end::
 									</td>
 								</tr>
@@ -168,7 +166,7 @@
 						<td></td>
 						::set ua = u.getUserAmap(user._amap)::
 						::set balance = ua.balance::
-						<th>Solde de l'adhérent : ::ua.balance:: ::currency()::</th>
+						<th>::_("Balance of the member:"):: ::ua.balance:: ::currency()::</th>
 						<td colspan="6">							
 							::set pending = 0::
 							
@@ -202,9 +200,9 @@
 									<td style="width:30px;"><img src="/img/tick_no.png"/></td>
 									<td>
 										::if(balance+pending<0)::
-											Reste à payer ::formatNum(abs(balance+pending)):: ::currency():: pour équilibrer le solde
+											::_("To be paid"):: ::formatNum(abs(balance+pending)):: ::currency():: pour équilibrer le solde
 										::else::
-											Rembourser ::formatNum(balance+pending):: ::currency():: pour équilibrer le solde
+											::_("Pay back"):: ::formatNum(balance+pending):: ::currency():: pour équilibrer le solde
 										::end::
 									</td>
 								</tr>
@@ -227,7 +225,7 @@
 				<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
 		
 				<p class="hidden">
-					<i>Appuyez sur "Control + P" pour imprimer cette page.</i>					
+					<i>::_("Push on \"Control + P\" to print this page.")::</i>					
 				</p>
 	
 	

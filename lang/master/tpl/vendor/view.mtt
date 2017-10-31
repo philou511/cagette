@@ -3,7 +3,7 @@
 	<div class="article">
 	
 	<h2>::vendor.name::</h2>
-	Fournisseur<br/>
+	::_("Supplier")::<br/>
 	
 	
 	$$edit(Modifier,/vendor/edit/::vendor.id::)

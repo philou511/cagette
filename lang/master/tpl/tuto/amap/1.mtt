@@ -1,16 +1,14 @@
 <p>
 	<img src="/img/tomato.png" style="float:left;" />
-	
-	Tout d'abord, sachez que même si cette fenêtre a disparu, vous pouvez me retrouver à tout moment 
-	sur toutes les pages, juste en dessous de la barre de navigation !
+	::_("First of all, even if this windows disappears you can find me any time on all pages, just under the navigation bar!")::
 </p>
 <p>
-	Afin de configurer votre <b>premier contrat</b>, nous devons d'abord entrer la fiche d'un <b>producteur</b>.
+	::raw_("In order to configure your <b>first contract</b>, we must first fill the <b>supplier form</b>.")::
 	<br/>
 	<ul>
-		<li>Cliquez sur <b>Gestion contrats</b></li>
-		<li>Dans le bloc <b>::wVendor()::</b>, il y a déjà une fiche de producteur à titre d'exemple.</li>
-		<li>Modifiez la, et <b>saisissez le nom d'un véritable producteur</b> qui approvisionne votre groupe</li>
+		<li>::raw_("Click on <b>Management of contracts</b>")::</li>
+		<li>::raw_("In the block <b>::wVendor::</b>, there is already a sample supplier", {wVendor:wVendor()})::</li>
+		<li>::_("Modify it and <b>choose the name of a real supplier</b> that is providing your group with its products")::</li>
 	</ul>
 	
 	
@@ -21,7 +19,7 @@
 $('#myModal').on('hidden.bs.modal', function (e) {
 
 	//display a tooltip in the nav
-	$(".nav .contractadmin").attr("title","Cliquez ici !").tooltip('show');		
+	$(".nav .contractadmin").attr("title","::_("Click here!")::").tooltip('show');		
 
 	//reset event 
 	$('#myModal').off('hidden.bs.modal'); 
