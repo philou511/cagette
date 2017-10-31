@@ -29,7 +29,7 @@ msgstr "Passwort"
 
 #: src/App.hx:2794 src/App.hx:2837
 msgid "address"
-msgstr ""
+msgstr "Adresse"
 
 #: src/App.hx:8571
 msgid ""
@@ -101,7 +101,7 @@ msgstr "Farbe"
 
 #: src/controller/ContractAdmin.hx:2435
 msgid "Access forbidden"
-msgstr ""
+msgstr "Zutritt nicht erlaubt"
 
 #: src/controller/Distribution.hx:5204 src/controller/Distribution.hx:7304
 msgid "End time"
@@ -117,43 +117,44 @@ msgstr "Bestellzeitraum Ende"
 
 #: src/controller/Distribution.hx:8891
 msgid "Distribution request sent"
-msgstr ""
+msgstr "Lieferanfrage gesendet"
 
 #: src/controller/Distribution.hx:9032
 msgid "The distribution has been recorded"
-msgstr ""
+msgstr "Die Lieferung wurde gespeichert"
 
 #: src/controller/Distribution.hx:9200
 msgid "Create a distribution"
-msgstr ""
+msgstr "Eine Lieferung hinzufügen"
 
 #: src/controller/Group.hx:4995
 msgid "Create a new Cagette Group"
-msgstr ""
+msgstr "Eine neue Lemilo-Gruppe erstellen"
 
 #: src/controller/Group.hx:5109
 msgid "Name of your group"
-msgstr ""
+msgstr "Name der Gruppe"
 
 #: src/controller/Group.hx:5195
+#, fuzzy
 msgid "CSA"
-msgstr ""
+msgstr "Zwischensumme"
 
 #: src/controller/Group.hx:5229
 msgid "Grouped orders"
-msgstr ""
+msgstr "Zusammengefasste Bestellungen"
 
 #: src/controller/Group.hx:5274
 msgid "Farmers collective"
-msgstr ""
+msgstr "Bauern-Gemeinschaft"
 
 #: src/controller/Group.hx:5323
 msgid "Farm shop"
-msgstr ""
+msgstr "Hofladen"
 
 #: src/controller/Group.hx:5414
 msgid "Group type"
-msgstr ""
+msgstr "Gruppentyp"
 
 #: src/controller/Member.hx:3952
 msgid "is now on waiting list."
@@ -196,6 +197,8 @@ msgid ""
 "You can't delete this place because one or more distributions are linked to "
 "this place."
 msgstr ""
+"Sie können diesen Ort nicht löschen, da er mit einer oder mehren Lieferungen "
+"verlinkt ist."
 
 #: src/controller/Place.hx:1694
 msgid "Place deleted"
@@ -207,7 +210,7 @@ msgstr "Keine Bestellungen vorhanden"
 
 #: src/controller/Shop.hx:4850 src/controller/Shop.hx:5157
 msgid "The product <b>::pname::</b> is not available in this distribution"
-msgstr ""
+msgstr "Das Produkt <b>::pname::</b> ist bei dieser Lieferung nicht erhältlich"
 
 #: src/controller/Shop.hx:6049
 msgid ""
@@ -245,7 +248,7 @@ msgstr "Bezahlung aufgenommen"
 
 #: src/controller/Transaction.hx:2113
 msgid "Record a payment for ::user::"
-msgstr ""
+msgstr "Erfassung der Bezahlung für ::user::"
 
 #: src/db/Amap.hx:9209
 msgid "Group name"
@@ -277,7 +280,7 @@ msgstr "Optionen"
 
 #: src/db/Amap.hx:9532
 msgid "Type de groupe Cagette"
-msgstr ""
+msgstr "Type der Lemilo-Gruppe"
 
 #: src/db/Amap.hx:9583
 msgid "Registration setting"
@@ -382,11 +385,11 @@ msgstr "Stadt"
 
 #: src/db/Place.hx:1548
 msgid "Latitude"
-msgstr ""
+msgstr "Breitengrad"
 
 #: src/db/Place.hx:1582
 msgid "Longitude"
-msgstr ""
+msgstr "Längengrad"
 
 #: src/db/Product.hx:3827
 msgid "Product name"
@@ -481,7 +484,7 @@ msgstr "Bar"
 
 #: src/payment/Cash.hx:340
 msgid "Pay by cash at product distribution"
-msgstr ""
+msgstr "Bei Lieferung bar bezahlen"
 
 #: src/payment/Check.hx:309
 msgid "Check"
@@ -982,7 +985,7 @@ msgstr "Wurde nicht bezahlt"
 
 #: lang/master/tpl/contractadmin/orders.mtt:4932
 msgid "<b>::totalAdh::</b> member(s) in this distribution."
-msgstr ""
+msgstr "<b>::totalAdh::</b> Mitglied(er) dieser Lieferung."
 
 #: lang/master/tpl/contractadmin/products.mtt:99
 msgid "New product"
@@ -1077,23 +1080,23 @@ msgstr "Verwaltung"
 
 #: lang/master/tpl/design.mtt:4371
 msgid "Cagette.net"
-msgstr ""
+msgstr "Lemilo.de"
 
 #: lang/master/tpl/design.mtt:4466
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentation"
 
 #: lang/master/tpl/design.mtt:4587
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 #: lang/master/tpl/design.mtt:4721
 msgid "Propose features"
-msgstr ""
+msgstr "Features vorschlagen"
 
 #: lang/master/tpl/distribution/list.mtt:719
 msgid "Members on dutty"
-msgstr ""
+msgstr "Mitglieder im Diensteinsatz"
 
 #: lang/master/tpl/home.mtt:244
 msgid "Welcome to Cagette.net !"
@@ -1105,6 +1108,10 @@ msgid ""
 "created a fake farmer and fake products.<br/>It will show you how things "
 "work together in Cagette.net.<br/>Of course, you'll be able to delete them."
 msgstr ""
+"Herzlichen Glückwunsch, Sie haben soeben eine neue Gruppe erstellt!<br/>Als "
+"Beispiel haben wir uns einen erfunden Landwirt mit fiktive Produkte "
+"ausgedacht.<br/>Es soll Ihnen zeigen wie Lemilo.de funktioniert.<br/"
+">Natürlich können Sie das Beispiel wieder löschen."
 
 #: lang/master/tpl/home.mtt:564
 msgid ""
@@ -1180,7 +1187,7 @@ msgstr "Die Bestellung ist ab diesem Datum möglich"
 #. Delivery from 18:00 to 19:30
 #: lang/master/tpl/home.mtt:9213
 msgid "Delivery from ::start:: to ::end::"
-msgstr ""
+msgstr "Lieferung von ::start:: bis ::end::"
 
 #: lang/master/tpl/home.mtt:10736
 msgid "Permanences"
@@ -1365,10 +1372,13 @@ msgstr ""
 "Kunden nicht schon als Mitglieder angemeldet wurden."
 
 #: lang/master/tpl/member/import.mtt:2809
+#, fuzzy
 msgid ""
 "Congratulations ! You just imported <b>::numImported::</b> users in your "
 "group."
 msgstr ""
+"Herzlichen Glückwunsch ! Sie haben soeben <b>::numImported::</b> Mitglieder "
+"in diese Gruppe importiert."
 
 #: lang/master/tpl/member/import.mtt:2954
 msgid ""
@@ -1599,7 +1609,7 @@ msgstr "Login"
 
 #: lang/master/tpl/user/login.mtt:2655
 msgid "Forgotten your password ?"
-msgstr ""
+msgstr "Passwort vergessen ?"
 
 #: js/Tuto.hx:1016
 msgid "This tutorial is over."

@@ -2,38 +2,32 @@
 <div class="col-md-12">
 	<div class="article text-center">
 	
-		<h2>Paiement de votre commande</h2>
-		
-		<div style="font-size:120%;">
-			A PAYER : <b>::formatNum(amount):: ::currency()::</b>
-		</div>
+		<div class="alert alert-success" style="font-size: 1.6em;font-weight: bold;">
 			
+			<i class="fa fa-check" aria-hidden="true"></i> Votre commande est enregistrée !
+			
+		</div>
+		
 		<hr/>
 			
-		<div class="panel panel-default" style="margin:8px 32px;">
-			<div class="panel-heading">
-				<h3>Paiement en liquide :</h3>
-			</div>
-			<div class="panel-body">
+		<div style="margin:32px;">
+			
 			<p>
-				Merci de prévoir la somme suivante en liquide le jour de la distribution
-				: <b>::formatNum(amount):: ::currency()::</b><br/>				
-			</p>	
-			</div>
-			<p>
-				<a href="?token=::token::" class="btn btn-primary">
-					<i class="fa fa-check" aria-hidden="true"></i>
-					Je m'engage à payer en liquide au retrait des produits
-				</a>
+				<b>Vous avez choisi le paiement en liquide au retrait des produits :</b>
 			</p>
 			
+			<p>
+				Merci de prévoir la somme suivante en liquide le jour de la distribution : <b>::formatNum(amount):: ::currency()::</b>				
+			</p>	
+		
+			<p>
+				<a href="/contract" class="btn btn-default">
+					<span class="glyphicon glyphicon-chevron-right"></span> Consulter ma commande</a>
+			</p>
 			
 		</div>
 		
 	</div>	
 	
 </div>
-
-
-
 ::end::
