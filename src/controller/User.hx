@@ -64,7 +64,7 @@ class User extends Controller
 			
 				//send mail confirmation link
 				user.sendInvitation();
-				throw Ok("/user/login", t._("Your account have not been validated yet. We sent an e-mail to <b>::userEmail::</b> to finalize your subscription!"));
+				throw Ok("/user/login", t._("Your account have not been validated yet. We sent an e-mail to <b>::email::</b> to finalize your subscription!",{email:user.email}));
 				
 			}
 			

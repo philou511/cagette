@@ -271,7 +271,7 @@ class Distribution extends Controller
 		var c = d.contract;
 		
 		if (d.date.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-		if (d.date.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}))
+		if (d.date.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
 		
 		if (c.type == db.Contract.TYPE_VARORDER ) {
 			if (d.date.getTime() < d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de distribution doit être postérieure à la date de fermeture des commandes");
@@ -337,8 +337,8 @@ class Distribution extends Controller
 			
 			var c = contract;
 
-			if (d.date.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-			if (d.date.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}))
+			if (d.endDate.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
+			if (d.startDate.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
 
 			db.DistributionCycle.updateChilds(d);
 			

@@ -14,7 +14,7 @@ class AmapAdmin extends Controller
 	public function new() 
 	{
 		super();
-		if (!app.user.isAmapManager()) throw Error("/", t._("Non authorized access");
+		if (!app.user.isAmapManager()) throw Error("/", t._("Access forbidden"));
 		
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();

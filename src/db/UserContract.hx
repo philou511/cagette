@@ -191,6 +191,8 @@ class UserContract extends Object
 	 */
 	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User,?invert:Bool):db.UserContract {
 		
+		var t = sugoi.i18n.Locale.texts;
+		
 		//checks
 		if (quantity <= 0) return null;
 		
@@ -279,6 +281,8 @@ class UserContract extends Object
 	 */
 	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool) {
 		
+		var t = sugoi.i18n.Locale.texts;
+		
 		order.lock();
 		
 		if (newquantity == null) newquantity = 0;
@@ -358,6 +362,7 @@ class UserContract extends Object
 	 */
 	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<OrderByProduct>{
 		var view = App.current.view;
+		var t = sugoi.i18n.Locale.texts;
 		//var pids = db.Product.manager.search($contract == d.contract, false);
 		//var pids = Lambda.map(pids, function(x) return x.id);
 		
@@ -440,6 +445,7 @@ class UserContract extends Object
 		
 		//CSV export
 		if (csv) {
+			var t = sugoi.i18n.Locale.texts;			
 			var data = new Array<Dynamic>();
 			
 			for (o in orders) {
@@ -456,12 +462,12 @@ class UserContract extends Object
 			
 			var exportName = "";
 			if (distribution != null){
-				exportName = contract.amap.name+t._(" - Delivery ::contractName:: of the ", {contractName:contract.name}) + distribution.date.toString().substr(0, 10);	
+				exportName = contract.amap.name + " - " + t._("Delivery ::contractName:: ", {contractName:contract.name}) + distribution.date.toString().substr(0, 10);					
 			}else{
-				exportName = contract.amap.name+" - "+contract.name;
+				exportName = contract.amap.name + " - " + contract.name;
 			}
 			
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],exportName+t._(" - Per member"));
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity", "fees", "total", "paid"], exportName+" - " + t._("Per member"));			
 			return null;
 		}else{
 			return orders;

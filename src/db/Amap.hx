@@ -159,6 +159,7 @@ class Amap extends Object
 		//}else{
 			//return Lambda.array( db.CategoryGroup.get(this) );	
 		//}
+		var t = sugoi.i18n.Locale.texts;
 		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
 		
 		if (this.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
@@ -168,7 +169,7 @@ class Amap extends Object
 			
 			categs.push({
 				id:0,
-				name: t._("Product type");
+				name: t._("Product type"),
 				pinned:false,
 				color:"#583816",
 				categs: Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name}; }))				
@@ -320,7 +321,8 @@ class Amap extends Object
 	override public function insert(){
 		
 		if (txtHome == null){
-			txtHome = t._("Welcome in the group of ::name::!\n You can look at the delivery planning or make a new order.");
+			var t = sugoi.i18n.Locale.texts;
+			txtHome = t._("Welcome in the group of ::name::!\n You can look at the delivery planning or make a new order.",{name:this.name});
 		}
 		
 		App.current.event(NewGroup(this,App.current.user));

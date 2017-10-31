@@ -83,8 +83,11 @@ class Distribution extends Object
 		return (u.id == distributor1Id) || (u.id == distributor2Id) || (u.id == distributor3Id) || (u.id == distributor4Id);
 	}
 	
+	/**
+	 * String to identify this distribution (debug use only)
+	 */
 	override public function toString() {
-			return "#"+id+ t._(" Delivery of the ") + date.toString()+t._(" from ")+contract.name;
+		return "#" + id + " Delivery " + date.toString() + " of " + contract.name;		
 	}
 	
 	public function getOrders() {

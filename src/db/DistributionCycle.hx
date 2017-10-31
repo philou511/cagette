@@ -148,6 +148,7 @@ class DistributionCycle extends Object
 		for ( c in childs ){
 			
 			if (c.getOrders().length > 0){
+				var t = sugoi.i18n.Locale.texts;
 				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:App.current.view.hDate(c.date)}));
 			}else{
 				c.lock();

@@ -29,6 +29,7 @@ class Vendor extends Object
 	public function new() 
 	{
 		super();
+		var t = sugoi.i18n.Locale.texts;
 		name = t._("Supplier");
 	}
 	

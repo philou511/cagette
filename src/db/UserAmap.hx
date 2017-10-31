@@ -86,6 +86,7 @@ class UserAmap extends Object
 	}
 	
 	public function getRightName(r:Right):String {
+		var t = sugoi.i18n.Locale.texts;
 		return switch(r) {
 		case Right.AmapAdmin 	: t._("Administrator");
 		case Right.Messages 	: t._("mailing");

@@ -28,6 +28,7 @@ class Message extends Object
 	
 	
 	public function getMailerResultMessage(k:String):{failure:String, success:String}{
+		var t = sugoi.i18n.Locale.texts;
 		var out = {failure:null, success:null};
 		switch(status.get(k)){
 			case tink.core.Outcome.Failure(f):

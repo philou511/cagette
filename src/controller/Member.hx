@@ -190,7 +190,7 @@ class Member extends Controller
 				Sys.sleep(0.2);
 			}
 			
-			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length})
+			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length}));
 		}
 		
 	}
@@ -308,12 +308,12 @@ class Member extends Controller
 		if (groupNum > 1){			
 			form.removeElementByName("email");
 			form.removeElementByName("email2");
-			app.session.addMessage(t._("For security reasons, you cannot modify the e-mail of this person because this person is a member of more than 1 group.");
+			app.session.addMessage(t._("For security reasons, you cannot modify the e-mail of this person because this person is a member of more than 1 group."));
 		}
 		
 		//an administrator can modify a user's pass only if he's a not registred user.
 		if (!isReg){
-			app.session.addMessage(t._("This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person.");
+			app.session.addMessage(t._("This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person."));
 			form.getElement("pass").required = false;
 		}else{
 			form.removeElement( form.getElement("pass") );
@@ -339,7 +339,10 @@ class Member extends Controller
 					app.session.addMessage(t._("This e-mail was used by another user account. As this user account was not used, it has been merged into the current user account."));
 					
 				} else {
-					throw Error("/member/edit/" + member.id, t._("Warning, this e-mail or this name already exist for another user: ")+Lambda.map(sim,function(u) return "<a href='/member/view/"+u.id+"'>"+u.getCoupleName()+t._("</a>. These two users cannot be merged because this person has other orders that are saved for the other user").join(","));	
+					var str = t._("Warning, this e-mail or this name already exist for another account: ");
+					str += Lambda.map(sim, function(u) return "<a href='/member/view/" + u.id + "'>" + u.getCoupleName() + "</a>").join(",");
+					str += t._("These accounts cannot be merged because the second account has orders");
+					throw Error("/member/edit/" + member.id, str);	
 				}
 			}	
 			
@@ -352,7 +355,7 @@ class Member extends Controller
 				//warn the user that his email has been updated
 				if (form.getValueOf("email") != member.email) {
 					var m = new sugoi.mail.Mail();
-					m.setSender(App.config.get("default_email"), t._("Cagette.net");
+					m.setSender(App.config.get("default_email"), t._("Cagette.net"));
 					m.addRecipient(member.email);
 					m.setSubject(t._("Change your e-mail in your account Cagette.net"));
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email")  } ) );
@@ -456,7 +459,7 @@ class Member extends Controller
 			
 			m2.delete();
 			
-			throw Ok("/member/view/" + m1.id, t._("Both accounts have been merged");
+			throw Ok("/member/view/" + m1.id, t._("Both accounts have been merged"));
 			
 			
 		}
@@ -477,7 +480,7 @@ class Member extends Controller
 		if ( data != null) {
 			
 			var csv = new sugoi.tools.Csv();
-			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Firstname spouse"), t._("Lastname spouse"), t._("E-mail spouse"), t._("Mobile phone spouse"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City"));
+			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Firstname spouse"), t._("Lastname spouse"), t._("E-mail spouse"), t._("Mobile phone spouse"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City")]);
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
@@ -550,7 +553,7 @@ class Member extends Controller
 				user.lastName = u[1];
 				user.email = u[2];
 				if (user.email != null && user.email != "null" &&!EmailValidator.check(user.email)) {
-					throw t._("The E-mail ::useremail:: is invalid, please modify your file", {useremail:user:email});
+					throw t._("The E-mail ::useremail:: is invalid, please modify your file", {useremail:user.email});
 				}
 				user.phone = u[3];
 				
@@ -559,7 +562,7 @@ class Member extends Controller
 				user.email2 = u[6];
 				if (user.email2 != null && user.email2 != "null" && !EmailValidator.check(user.email2)) {
 					App.log(u);
-					throw t._("The E-mail of the spouse of ::userFirstName:: ::userLastName '::userEmail::' is invalid, please check your file", {userFirstName:user.firstName, userLastName:user.lastName, userEmail:user.email2});
+					throw t._("The E-mail of the spouse of ::userFirstName:: ::userLastName:: '::userEmail::' is invalid, please check your file", {userFirstName:user.firstName, userLastName:user.lastName, userEmail:user.email2});
 				}
 				user.phone2 = u[7];				
 				user.address1 = u[8];

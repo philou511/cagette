@@ -143,7 +143,7 @@ class ContractAdmin extends Controller
 		var contracts = app.user.amap.getActiveContracts();
 		var contracts  = Lambda.map(contracts, function(c) return {key:Std.string(c.id),value:Std.string(c.name) } );
 		form.addElement(new sugoi.form.elements.Selectbox("source", t._("Copy products from: "),Lambda.array(contracts)));
-		form.addElement(new sugoi.form.elements.Checkbox("delete", t._("Delete existing products (all orders will be deleted!)", false));
+		form.addElement(new sugoi.form.elements.Checkbox("delete", t._("Delete existing products (all orders will be deleted!)")));
 		if (form.checkToken()) {
 			
 			if (form.getValueOf("delete") == "1") {
@@ -507,7 +507,7 @@ class ContractAdmin extends Controller
 				}
 			}			
 			
-			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "price", "total"], t._("Orders from the ::fromDate:: to the ::toDate:: per supplier.csv", {from:from.toString().substr(0,10), to:to.toString().substr(0,10)});
+			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "price", "total"], t._("Orders from the ::fromDate:: to the ::toDate:: per supplier.csv", {fromDate:from.toString().substr(0,10), toDate:to.toString().substr(0,10)}));
 			return;
 		}
 		
@@ -594,7 +594,7 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name", t._("Name of the new contract:, ::contractName:: - copy ", {contractName:contract.name}));
+		form.addElement(new StringInput("name", t._("Name of the new contract"), contract.name + " - copy "));		
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		

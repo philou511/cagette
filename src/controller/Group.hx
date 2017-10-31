@@ -73,10 +73,10 @@ class Group extends controller.Controller
 			w.message = form.getValueOf("msg");
 			w.insert();
 			
-			throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been taken into account. You will receive an e-mail as soon as your request is processed.");
+			throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed.") );
 		}
 		
-		view.title = t._("Subscription to the waiting list \"::groupeName::\"", {groupeName:group.name});
+		view.title = t._("Subscription to \"::groupeName::\" waiting list", {groupeName:group.name});
 		view.form = form;
 		
 	}
@@ -97,7 +97,7 @@ class Group extends controller.Controller
 		
 		var form = new sugoi.form.Form("reg");	
 		form.submitButtonLabel = t._("Join the group");
-		form.addElement(new sugoi.form.elements.Html(t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name}));
+		form.addElement(new sugoi.form.elements.Html(t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name})));
 		if (app.user == null){
 			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
 			form.addElement(new StringInput("userLastName", t._("Your lastname"), "", true));
@@ -105,9 +105,9 @@ class Group extends controller.Controller
 			em.addValidator(new EmailValidator());
 			form.addElement(em);		
 			form.addElement(new StringInput("address", t._("Address"), "", true));					
-			form.addElement(new StringInput("zipCode", t._("Post code"), "", true));		
-			form.addElement(new StringInput("city", t._("City");, "", true));		
-			form.addElement(new StringInput("phone", t._("Telephone"), "", true));		
+			form.addElement(new StringInput("zipCode", t._("Zip code"), "", true));		
+			form.addElement(new StringInput("city", t._("City"), "", true));		
+			form.addElement(new StringInput("phone", t._("Phone"), "", true));		
 		}
 		
 		if (form.isValid()){
@@ -124,7 +124,7 @@ class Group extends controller.Controller
 				user.phone = f.getValueOf("phone");
 				
 				if ( db.User.getSameEmail(user.email).length > 0 ) {
-					throw Ok("/user/login",t._("You already subscribed to Cagette, please log in on this page";
+					throw Ok("/user/login",t._("You already subscribed to Cagette.net, please log in on this page"));
 				}
 				
 				user.insert();				

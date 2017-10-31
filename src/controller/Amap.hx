@@ -39,7 +39,7 @@ class Amap extends Controller
 			}
 			
 			group.update();
-			throw Ok("/amapadmin", t._("The group has been updated.");
+			throw Ok("/amapadmin", t._("The group has been updated."));
 		}
 		
 		view.form = form;

@@ -118,6 +118,7 @@ class Operation extends sys.db.Object
 		if (orders == null) throw "orders are null";
 		if (orders.length == 0) throw "no orders";
 		if (orders[0].user == null ) throw "no user in order";
+		var t = sugoi.i18n.Locale.texts;
 		
 		var _amount = 0.0;
 		for ( o in orders ){
@@ -127,79 +128,81 @@ class Operation extends sys.db.Object
 		
 		var contract = orders[0].product.contract;
 		
-		var t = new db.Operation();
+		var op = new db.Operation();
 		var user = orders[0].user;
 		var group = orders[0].product.contract.amap;
 		
 		if (contract.type == db.Contract.TYPE_CONSTORDERS){
 			//Constant orders			
 			var dNum = contract.getDistribs(false).length;
-			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+t._(" deliveries");
-			t.amount = dNum * (0 - _amount);
-			t.date = Date.now();
-			t.type = COrder;
+			op.name = "" + contract.name + " (" + contract.vendor.name+") " + dNum + " " + t._("deliveries");
+			
+			op.amount = dNum * (0 - _amount);
+			op.date = Date.now();
+			op.type = COrder;
 			var data : COrderInfos = {contractId:contract.id};
-			t.data = data;			
-			t.user = user;
-			t.group = group;
-			t.pending = true;					
+			op.data = data;			
+			op.user = user;
+			op.group = group;
+			op.pending = true;					
 			
 		}else{
 			
 			if (basket == null) throw "varying contract orders should have a basket";
 			
 			//varying orders
-			t.name = t._("Order for the ") + App.current.view.dDate(orders[0].distribution.date);
-			t.amount = 0 - _amount;
-			t.date = Date.now();
-			t.type = VOrder;
+			op.name = t._("Order for the ") + App.current.view.dDate(orders[0].distribution.date);
+			op.amount = 0 - _amount;
+			op.date = Date.now();
+			op.type = VOrder;
 			var data : VOrderInfos = {basketId:basket.id};
-			t.data = data;
-			t.user = user;			
-			t.group = group;
-			t.pending = true;		
+			op.data = data;
+			op.user = user;			
+			op.group = group;
+			op.pending = true;		
 		}
 		
-		t.insert();
+		op.insert();
 		
-		updateUserBalance(t.user, t.group);
+		updateUserBalance(op.user, op.group);
 		
-		return t;	
+		return op;	
 	}
 	
 	
-	public static function updateOrderOperation(t:db.Operation, orders: Array<db.UserContract>, ?basket:db.Basket){
+	public static function updateOrderOperation(op:db.Operation, orders: Array<db.UserContract>, ?basket:db.Basket){
 		
-		t.lock();
+		op.lock();
+		var t = sugoi.i18n.Locale.texts;
 		
 		var _amount = 0.0;
 		for ( o in orders ){
-			var t = o.quantity * o.productPrice;
-			_amount += t + t * (o.feesRate / 100);
+			var a = o.quantity * o.productPrice;
+			_amount += a + a * (o.feesRate / 100);
 		}
 		
 		var contract = orders[0].product.contract;
 		if (contract.type == db.Contract.TYPE_CONSTORDERS){
 			//Constant orders			
 			var dNum = contract.getDistribs(false).length;
-			t.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum+t._(" deliveries");
-			t.amount = dNum * (0 - _amount);
-			t.date = Date.now();			
+			op.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum + " " + t._("deliveries");
+			op.amount = dNum * (0 - _amount);
+			op.date = Date.now();			
 			
 		}else{
 			
 			if (basket == null) throw "varying contract orders should have a basket";
 			
-			t.amount = 0 - _amount;
-			t.date = Date.now();			
+			op.amount = 0 - _amount;
+			op.date = Date.now();			
 		}
 		
 		
-		t.update();
+		op.update();
 		
-		updateUserBalance(t.user, t.group);
+		updateUserBalance(op.user, op.group);
 		
-		return t;
+		return op;
 	}
 	
 	/**

@@ -66,10 +66,10 @@ class Install extends controller.Controller
 				
 				//example datas
 				var place = new db.Place();
-				place.name = t._("Marketplace")
+				place.name = t._("Marketplace");
 				place.amap = amap;
 				place.address1 = t._("Place Jules Verne");
-				place.zipCode = t._("00000");
+				place.zipCode = "00000";
 				place.city = t._("St Martin de la Cagette");
 				place.insert();
 				
@@ -164,18 +164,18 @@ class Install extends controller.Controller
 		
 		var log = [];
 		
-		var currentVersion = thx.semver.Version.stringToVersion(Variable.get(t._("version"));
+		var currentVersion = thx.semver.Version.stringToVersion(Variable.get("version"));
 		
 		//Migrations to 0.9.2
 		if (currentVersion.lessThan( thx.semver.Version.arrayToVersion([0,9,2]) )){
 			
-			log.push(t._("Installation of the dictionnary of products (taxonomie)"));
+			log.push(t._("Installation of the dictionnary of products (taxonomy)"));
 			_0_9_2_installTaxonomy();
 			
-			log.push(t._("Improvement on saving orders");
+			log.push(t._("Improvement on saving orders"));
 			_0_9_2_dbMigration();
 			
-			sugoi.db.Variable.set(t._("version"), "0.9.2");
+			sugoi.db.Variable.set("version", "0.9.2");
 		}
 		
 		//Migrations to 1.0.0

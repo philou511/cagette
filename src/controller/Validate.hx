@@ -61,9 +61,9 @@ class Validate extends controller.Controller
 		
 		if (!app.user.isContractManager()) throw t._("Forbidden access");
 		
-		var t = new db.Operation();
-		t.user = user;
-		t.date = Date.now();
+		var o = new db.Operation();
+		o.user = user;
+		o.date = Date.now();
 		
 		var b = db.Basket.get(user, place, date);
 		var op = b.getOrderOperation();
@@ -78,17 +78,17 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
 		
 		if (f.isValid()){
-			f.toSpod(t);
-			t.type = db.Operation.OperationType.Payment;
+			f.toSpod(o);
+			o.type = db.Operation.OperationType.Payment;
 			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
-			t.data = data;
-			t.group = app.user.amap;
-			t.user = user;
-			t.relation = op;
-			t.amount = 0-Math.abs(t.amount);
-			t.insert();
+			o.data = data;
+			o.group = app.user.amap;
+			o.user = user;
+			o.relation = op;
+			o.amount = 0-Math.abs(o.amount);
+			o.insert();
 			
-			App.current.event(NewOperation(t));
+			App.current.event(NewOperation(o));
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
@@ -104,13 +104,13 @@ class Validate extends controller.Controller
 	@tpl('form.mtt')
 	public function doAddPayment(){
 			
-		if (!app.user.isContractManager()) throw t._("Forbidden access");
+		if (!app.user.isContractManager()) throw Error("/",t._("Forbidden access"));
 		
-		var t = new db.Operation();
-		t.user = user;
-		t.date = Date.now();
+		var o = new db.Operation();
+		o.user = user;
+		o.date = Date.now();
 		
-		var f = new sugoi.form.Form(t._("payment");
+		var f = new sugoi.form.Form("payment");
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
@@ -126,15 +126,15 @@ class Validate extends controller.Controller
 		var op = b.getOrderOperation();
 		
 		if (f.isValid()){
-			f.toSpod(t);
-			t.type = db.Operation.OperationType.Payment;
+			f.toSpod(o);
+			o.type = db.Operation.OperationType.Payment;
 			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
-			t.data = data;
-			t.group = app.user.amap;
-			t.user = user;
-			t.relation = op;
+			o.data = data;
+			o.group = app.user.amap;
+			o.user = user;
+			o.relation = op;
 			
-			t.insert();
+			o.insert();
 			
 			db.Operation.updateUserBalance(user, app.user.amap);
 			

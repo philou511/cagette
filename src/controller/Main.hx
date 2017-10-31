@@ -345,9 +345,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.admin.Admin());
 	}
 	
-	
-	
-	
 	@admin
 	function doDb(d:Dispatch) {
 		d.parts = []; //disable haxe.web.Dispatch

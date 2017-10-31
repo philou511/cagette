@@ -40,11 +40,11 @@ class Account extends Controller
 			
 			//check email is valid
 			if (!sugoi.form.validators.EmailValidator.check(app.user.email)){
-				throw Error("/account/edit", t._("Email ::em:: invalid", {em:${app.user.email}}");
+				throw Error("/account/edit", t._("Email ::em:: is invalid", {em:app.user.email}));
 			}
 			
 			if (app.user.email2!=null && !sugoi.form.validators.EmailValidator.check(app.user.email2)){
-				throw Error("/account/edit", t._("Email ::em:: invalid", {em:${app.user.email2}}");
+				throw Error("/account/edit", t._("Email ::em:: is invalid", {em:app.user.email2}));
 			}
 			
 			if (!admin) { app.user.rights.unset(Admin); }
@@ -67,7 +67,8 @@ class Account extends Controller
 			ua.delete();
 			
 			App.current.session.data.amapId = null;
-			throw Ok("/user/choose?show=1", t._("You left the group "+name));
+			throw Ok("/user/choose?show=1", t._("You left the group ::groupName::", {groupName:name}));
+			
 		}
 		
 	}
