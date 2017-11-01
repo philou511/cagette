@@ -1,13 +1,13 @@
 ::use 'design.mtt'::
 <div class="col-md-12">
 		
-		<h2 style="margin:auto;">Choisissez une distribution :</h2>
+		<h2 style="margin:auto;">::_("Choose a delivery")::</h2>
 	
 		<div class="row">
 			
 			::if distribs.length==0::
 			<div class="alert alert-danger" class="col-md-12">
-				Il n'y a aucune distribution de planifiée pour l'instant.
+				::_("There is currently no delivery planned.")::
 			</div>
 			::end::
 			
@@ -81,12 +81,12 @@
 						::if d.active==true::
 						<a href="/shop/::d.place.id::/::d.startDate.toString().substr(0,10)::" class="btn btn-primary">
 							<span class="glyphicon glyphicon-chevron-right"></span>
-							Commander
+							::_("Commander")::
 						</a>
 						::else::
 							
 							<span class="glyphicon glyphicon-close"></span>
-							Ouverture des commandes<br/>
+							::_("Opening of orders")::<br/>
 							le ::hDate(d.startDate)::
 							
 						::end::

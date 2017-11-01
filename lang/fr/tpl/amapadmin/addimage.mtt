@@ -1,7 +1,7 @@
 ::use 'amapadmin/design.mtt'::
 	
 
-<h2>Définir un logo</h2>
+<h2>::_("Choose a logo")::</h2>
 
 
 <div class="row">
@@ -11,10 +11,10 @@
 		<input name="image" type="file" class="btn btn-default"/>
 		
 		<br/>		
-		Format : JPG, GIF ou PNG <br/>
+		::_("Format : JPG, GIF or PNG"):: <br/>
 		<br/>
 		
-		<input type="submit" value="Envoyer" class="btn btn-primary" />
+		<input type="submit" value="::_("Send")::" class="btn btn-primary" />
 	</form>
 	<br/>	
 	

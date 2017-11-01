@@ -4,7 +4,7 @@
 		<h3 ::cond title!=null::>::title::</h3>
 		
 		<p ::cond userSims!=null && userSims.length>0:: >
-			<strong>Ces personnes sont déjà dans la base de données, mais pas inscrites à cette Amap :	</strong>
+			<strong>::_("These persons are already in the database, but are not member of this group:")::</strong>
 			<p>::foreach u userSims::
 				::u::<br/>
 			::end::
@@ -13,7 +13,7 @@
 		
 		
 		<p ::cond userAmaps!=null && userAmaps.length>0:: >
-			<strong>Ces personnes sont déjà inscrites à cette AMAP :</strong>
+			<strong>::_("These persons are already member of this group:")::</strong>
 			<p>
 			::foreach u userAmaps::
 				::u::<br/>

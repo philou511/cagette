@@ -11,38 +11,35 @@
 			<span class="glyphicon glyphicon-exclamation-sign"></span>
 			::if error == 0::
 			
-			<b>Ce compte n'existe pas</b>
+			<b>::_("This account does not exist")::</b>
 			<p>
-				Vous n'êtes pas inscrit sur ::NAME:: !
+				::_("You are not yet registered on ::name::!", {name:NAME})::
 			</p>
 			<p>
-				<b>Faites vous partie d'un groupe qui utilise déjà ::NAME:: ?</b>
+				<b>::_("Are you member of a group that is using already ::name::?", {name:NAME})::</b>
 				
 				<ul>
 					<li>
 						<b>Oui</b>
 						<p>
-							Les coordinateurs de votre groupe n'ont pas dû encore inscrire votre compte dans la base de données.
-							Contactez-les pour en savoir plus et vérifiez qu'ils ont bien saisi votre email.
+							::_("Coordinators of your group may not have you registered in the database yet. 
+							Please contact them and check that they keyed-in your e-mail address.")::
 						</p>
 						
 					</li>
 					<li>
-						<b>Non</b>
+						<b>::_("No")::</b>
 						<p>
-							Si votre groupe n'utilise pas ::NAME::, vous pouvez créer un compte de test pour tester le logiciel.<br/>							
-							<a href="/p/hosted/register" class="btn btn-default btn-sm">Créer un compte et tester le logiciel</a>
+							::_("If your group does not use ::name::, your can create a test account in order to test the software.", {name:NAME})::<br/>							
+							<a href="/p/hosted/register" class="btn btn-default btn-sm">::_("Create an account and test the software")::</a>
 						</p>
 					</li>
 					<li>
-						<b>Je ne fais partie d'aucune AMAP ou groupement d'achat</b>
+						<b>::_("I am not part of any group")::</b>
 						<p>
-							::NAME:: est un logiciel en ligne de gestion d'achats groupés.<br/>
-							Il est conçu pour les groupes déjà existants. Si vous cherchez une AMAP dans votre région, 
-							faites une recherche dans l'annuaire national des AMAP : <br/>
-							<a href="http://www.reseau-amap.org/recherche-amap.php" class="btn btn-default btn-sm" target="_blank">Annuaire des AMAP</a> 
-							ou sur <a href="http://app.cagette.net/p/hosted/book?dept=33" class="btn btn-default btn-sm"  target="_blank">l'annuaire des comptes Cagette</a> 
-							
+							::NAME:: ::raw _("is an online-software for purchasing products in groups of customers.<br/>
+							It is designed for existing groups. If you are looking for a group in your region, please have a look at this link:<br/>
+							<a href=\"/p/hosted/book\" class=\"btn btn-default btn-sm\"  target=\"_blank\">Cagette groups</a>")::
 						</p>
 					</li>
 					
@@ -51,7 +48,7 @@
 			</p>
 			::elseif error == 1::
 			
-			Mot de passe incorrect.
+			::_("Incorrect password.")::
 			
 			
 			::end::

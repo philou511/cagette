@@ -3,15 +3,15 @@
 <p>
 	<img src="/img/tomato.png" style="float:left;" />
 	
-	Vous venez de créer votre compte administrateur pour <b>::user._amap.name::</b>.
+	::_("You just created your administrator account for"):: <b>::user._amap.name::</b>.
 	<br/>
-	Je vous propose de faire vos premiers pas avec moi ! <br/>
-	Souhaitez vous qu'on configure ensemble <b>un premier contrat</b> ?
+	::_("I suggest that you do your first steps with me!"):: <br/>
+	::raw _("Would you like that we configure a <b>first contract</b> together?")::
 </p>
 <p>
 	
-	<a class="btn btn-default" onclick="nextStep('/tuto/amap/1')"><span class="glyphicon glyphicon-ok"></span> C'est parti !</a> 
-	<a class="btn btn-default" onclick="nextStep('/tuto/cancel')"><span class="glyphicon glyphicon-remove"></span> Non merci</a> 
+	<a class="btn btn-default" onclick="nextStep('/tuto/amap/1')"><span class="glyphicon glyphicon-ok"></span> ::_("Let's go!")::</a> 
+	<a class="btn btn-default" onclick="nextStep('/tuto/cancel')"><span class="glyphicon glyphicon-remove"></span> ::_("No thank you")::</a> 
 </p>
 	
 	
@@ -20,7 +20,7 @@ var nextStep = function(url){
 
 	$('#myModal').on('hidden.bs.modal', function (e) {
 		//open next step
-		_.overlay(url,"Découverte de Cagette.net",false);
+		_.overlay(url,"::_("Discovery of Cagette.net")::",false);
 		//reset event 
 		$('#myModal').off('hidden.bs.modal'); 
 	})

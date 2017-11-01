@@ -1,12 +1,13 @@
 ::use 'contractadmin/design.mtt'::
 	
 		
-	<h3>Catégories</h3>
+	<h3>::_("Catégories")::</h3>
 	
 	<p>
-		Afin de mieux organiser vos produits dans le "mode boutique", vous pouvez les associer à des catégories.<br/>
-		<b>Pour ajouter des catégories</b> : selectionnez les produits en cochant les cases et choisissez une catégorie dans la liste en bas de la page. Cliquez ensuite sur "Ajouter".<br />
-		<b>Pour supprimer une catégorie :</b> cliquez simplement dessus.
+		::raw _("You can link your products to categories, in order to better organize them in the \"shop mode\".<br/>
+		<b>To add categories: </b>select checkboxes of products and then select a category in the list at the bottom of the page. Click then on \"add\".<br />
+		<b>To remove a category:<b/> click on it.")::
+		
 	</p>
 
 	
@@ -25,7 +26,7 @@
 	
 	<form class="form-inline">
 		
-		<a onClick="$('#tagger input').attr('checked',true)" class='btn btn-default'>Tout cocher</a>
+		<a onClick="$('#tagger input').attr('checked',true)" class='btn btn-default'>::_("Select all")::</a>
 		
 		<select name="tag" id="tag" class="form-control">
     
@@ -39,14 +40,14 @@
 			
 		</select>
 		
-		<a onClick="tagger.add()" class='btn btn-default'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ajouter la catégorie</a>	
-		<a onClick="tagger.submit()" class='btn btn-success'>Enregistrer les modifications</a>	
+		<a onClick="tagger.add()" class='btn btn-default'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ::_("Add the category")::</a>	
+		<a onClick="tagger.submit()" class='btn btn-success'>::_("Save modifications")::</a>	
 		
 	</form>
 	
 	<div ::cond user.isAmapManager()::>
 		<hr />
-		<a  href="/amapadmin/categories/" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Gérer les catégories</a>	
+		<a  href="/amapadmin/categories/" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ::_("Manage categories")::</a>	
 	</div>
 	
 	

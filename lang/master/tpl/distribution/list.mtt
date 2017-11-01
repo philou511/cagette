@@ -16,19 +16,20 @@
 	<p>
 		::set c = contract._contact::
 		::set v = contract._vendor::
-		<b>::_("Contact in charge of the contract:") </b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
+		<b>::_("Contact in charge of the contract") :</b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
 	</p>
 	<p>
-		<b>::_("Farmers"):: : </b>::v.name:: , 
+		<b>::_("Farmers"):: : </b>
+		::v.name:: , 
 		::if v.email!=null :: ::v.email:: ::end::, 
 		::if v.phone!=null :: ::v.phone:: ::end::
 	</p>
 	<p>	
 		<b>::_("Members on duty"):: : </b>
-		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::,::end::
-		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::,::end::
-		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::,::end::
-		::if distrib._distributor4!=null:: ::distrib._distributor4.getName():: ::end::
+		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::, ::end::
+		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::, ::end::
+		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::, ::end::
+		::if distrib._distributor4!=null:: ::distrib._distributor4.getName()::  ::end::
 		
 	</p>
 	

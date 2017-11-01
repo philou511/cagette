@@ -5,23 +5,23 @@
 			
 			<div class="text-center">
 				<h3>
-				Commandes du ::hDate(from):: au ::hDate(to)::
+				::_("Orders from the"):: ::hDate(from):: ::_("to"):: ::hDate(to)::
 				</h3>	
 				<!--<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
 				<br/>
 				
 				::if(confirmed)::
-				Validée
+				::_("Validated")::
 				::else::
-				Non validée
+				::_("Not validated")::
 				::end::-->
 			</div>	
 			
 		::set uri = from.toString().substr(0,10)+"/"+to.toString().substr(0,10)::	
 		
 		<div class="text-center">
-			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> Export CSV </a>-->
-			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Totaux par producteur</a>
+			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("CSV Export"):: </a>-->
+			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> ::_("Totals per supplier")::</a>
 		</div>
 
 		
@@ -50,15 +50,15 @@
 						</td>
 					</tr>
 					<tr>
-						<th>Contrat</th>
-						<th>Qté</th>
-						<th>Réf.</th>
-						<th>Produit</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
-						<th>Sous-total</th>
-						<th>Frais</th>
-						<th>Total</th>
-						<th>Payé</th>
+						<th>::_("Contrat")::</th>
+						<th>::_("Qté")::</th>
+						<th>::_("Ref")::</th>
+						<th>::_("Produit")::</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price incl. VAT")::">::_("U.P.")::</a></th>
+						<th>::_("Sous-total")::</th>
+						<th>::_("Frais")::</th>
+						<th>::_("Total")::</th>
+						<th>::_("Payé")::</th>
 					</tr>
 			
 				::end::
@@ -102,9 +102,9 @@
 					</td>
 					<td>
 						::if m.paid==true::
-						<span style="color:#00AA00;">Payé</span>
+						<span style="color:#00AA00;">::_("Payé")::</span>
 						::else::
-						<span style="color:#DD0000;">Non payé</span>
+						<span style="color:#DD0000;">::_("Non payé")::</span>
 						::end::
 					</td>
 					
@@ -126,7 +126,7 @@
 				
 					::if subtotal!=0:: 
 					<tr style="border-top:2px solid #AAA;">					
-						<th colspan="7" class="text-right">Total adhérent</th>
+						<th colspan="7" class="text-right">::_("Total member")::</th>
 						<th>::formatNum(subtotal)::&nbsp;::currency()::</th>					
 						<th></th>
 						::set subtotal = 0::
@@ -139,7 +139,7 @@
 				
 			<!-- big total -->
 			<tr style="background:#CCC;font-size:1.3em;">					
-				<th colspan="7" class="text-right">Total de toutes les commandes : </th>
+				<th colspan="7" class="text-right">::_("Total of all orders:"):: </th>
 				<th>::formatNum(total)::&nbsp;::currency()::</th>					
 				<th></th>
 			</tr>

@@ -1,16 +1,16 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-8">
 	<div class="article">
-		<h2>Commande ::c.name::</h2>
+		<h2>::_("Commander"):: ::c.name::</h2>
 		
 		<!--::if distribution!=null::
-		Pour la livraison du <b>::hDate(distribution.date)::</b>
+		::_("For the delivery of the"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		<hr/>-->
 		<p>
-			Saisissez ici vos commandes à l'avance pour ce producteur.<br/>
-			Vous pouvez consulter à tout moment vos commandes en cours sur la page <a href="/contract">mon compte</a>.<br/>
-			NB : Pour effacer une commande, saisissez une quantité égale à 0.
+			::raw _("Key-in here your orders in advance for this supplier.<br/>
+			You can check your current orders any time on the following page <a href=\"/contract\">my account</a>.<br/>
+			Tip: to remove an order please key-in the quantity 0")::
 		</p>
 		
 		<form name="order" id="order" method="POST" action="">
@@ -23,11 +23,11 @@
 			<table class="table table-bordered table-striped" style="background:white;" >
 			<tr>
 				<td></td>
-				<th>Produit</th>
-				<th>Prix</th>
+				<th>::_("Produit")::</th>
+				<th>::_("Prix")::</th>
 				::foreach d userOrders::
 					::if d.distrib==null::
-						<th>Qté</th>
+						<th>::_("Qté")::</th>
 					::else::
 						<th class="text-center">::dDate(d.distrib.date)::</th>
 					::end::
@@ -83,7 +83,7 @@
 			
 			::else::
 				<tr>
-					<td colspan="4">Aucune commande ouverte pour l'instant</td>
+					<td colspan="4">::_("There is currently no open order")::</td>
 				</tr>
 			::end::
 			
@@ -115,7 +115,7 @@
 			</tr>
 		</table>
 			
-		<input type="submit" class="btn btn-primary" value="Valider la commande" name="submit" id="submit" />		
+		<input type="submit" class="btn btn-primary" value="::_("Validate the order")::" name="submit" id="submit" />		
 			
 		</form>
 	
@@ -124,10 +124,10 @@
 <div class="col-md-4">
 	<div class="article">
 		<p>
-			Producteur : <b>::c._vendor.name::</b>
+			::_("Supplier:"):: <b>::c._vendor.name::</b>
 		</p>
 		<p>
-			Responsable : $$contact(::c._contact::)	
+			::_("Contact in charge:"):: $$contact(::c._contact::)	
 		</p>
 		
 	</div>

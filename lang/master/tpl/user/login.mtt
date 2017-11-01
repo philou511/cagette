@@ -22,7 +22,8 @@
 					<li>
 						<b>Oui</b>
 						<p>
-							::_("Coordinators of your group may not have you registered in the database yet. Please contact them and check that they keyed-in your e-mail address.")::
+							::_("Coordinators of your group may not have you registered in the database yet. 
+							Please contact them and check that they keyed-in your e-mail address.")::
 						</p>
 						
 					</li>
@@ -36,10 +37,9 @@
 					<li>
 						<b>::_("I am not part of any group")::</b>
 						<p>
-							::NAME:: ::raw_("is an online-software for purchasing products in groups of customers.<br/>
+							::NAME:: ::raw _("is an online-software for purchasing products in groups of customers.<br/>
 							It is designed for existing groups. If you are looking for a group in your region, please have a look at this link:<br/>
-							<a href="http://www.reseau-amap.org/recherche-amap.php" class="btn btn-default btn-sm" target="_blank">Annuaire des AMAP</a> 
-							or at this one: <a href="http://app.cagette.net/p/hosted/book?dept=33" class="btn btn-default btn-sm"  target="_blank">Cagette groups</a>")::
+							<a href=\"/p/hosted/book\" class=\"btn btn-default btn-sm\"  target=\"_blank\">Cagette groups</a>")::
 						</p>
 					</li>
 					

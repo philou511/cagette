@@ -1,15 +1,15 @@
 ::use 'amapadmin/design.mtt'::
 
-<h2>Categories</h2>
+<h2>::_("Catégories")::</h2>
 
 <p>
-	Les catégories permettent de classer vos produits par catégories, par exemple "légumes, viande, boulangerie...etc"<br/>
-	Il est possible de créer plusieurs groupes de catégories afin de pouvoir classer les produits comme on veut.
+	::raw _("Categories allow to sort your products per category, for example \"vegetables, meet, backery, etc.\"<br/>
+	It is possible to create many groups of categories in order to sort products as we wish.")::
 </p>
 <p ::cond groups.length==0 ::>
-	Vous n'avez actuellement aucune catégorie définie.
-	Souhaitez-vous créer la liste de catégories de produits par défaut ?
-	<a href="/amapadmin/categories/generate" class="btn btn-default">Créer la liste de catégories par défaut</a>
+	::_("You currently have no category.
+	Would you like to create the list of categories by default?")::
+	<a href="/amapadmin/categories/generate" class="btn btn-default">::_("Create the list of default categories")::</a>
 </p>
 
 ::foreach g groups::
@@ -19,8 +19,8 @@
 			Groupe "::g.name::"
 		</th>
 		<th>
-			<a href="/amapadmin/categories/editGroup/::g.id::" class="btn btn-default btn-xs">Modifier groupe</a>
-			<a href="/amapadmin/categories/deleteGroup/::g.id::?token=::token::" class="btn btn-default btn-xs" $$confirm()>Effacer groupe</a>
+			<a href="/amapadmin/categories/editGroup/::g.id::" class="btn btn-default btn-xs">::_("Modify group")::</a>
+			<a href="/amapadmin/categories/deleteGroup/::g.id::?token=::token::" class="btn btn-default btn-xs" $$confirm()>::_("Remove group")::</a>
 		</th>
 	</tr>
 			
@@ -32,15 +32,15 @@
 				<span class="tag" style="background: ::c.getColor()::;">::c.name::</span>
 			</td>
 			<td>
-				<a href="/amapadmin/categories/edit/::c.id::" class="btn btn-default btn-xs">Modifier</a>
-				<a href="/amapadmin/categories/delete/::c.id::?token=::token::" class="btn btn-default btn-xs" $$confirm() >Effacer</a>
+				<a href="/amapadmin/categories/edit/::c.id::" class="btn btn-default btn-xs">::_("Modify")::</a>
+				<a href="/amapadmin/categories/delete/::c.id::?token=::token::" class="btn btn-default btn-xs" $$confirm() >::_("Remove")::</a>
 			</td>
 		</tr>
 		
 		::end::
 		<tr>
 			<td>
-				<a href="/amapadmin/categories/insert/::g.id::" class="btn btn-default btn-xs">Ajouter une catégorie dans ce groupe</a>
+				<a href="/amapadmin/categories/insert/::g.id::" class="btn btn-default btn-xs">::_("Add a category in  this group")::</a>
 			</td>
 			<td>
 				
@@ -50,5 +50,5 @@
 </table>
 ::end::
 
-<a href="/amapadmin/categories/insertGroup" class="btn btn-default">Ajouter un groupe</a>
+<a href="/amapadmin/categories/insertGroup" class="btn btn-default">::_("Add a group")::</a>
 ::end::

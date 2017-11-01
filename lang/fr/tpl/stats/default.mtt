@@ -2,8 +2,8 @@
 
 <div class="col-md-3">
 		<ul class="nav nav-tabs nav-stacked" >
-			<li><a style="background-color:#FFF;" href="#">Produits</a></li>
-			<li><a style="background-color:#FFF;" href="#">Produits</a></li>
+			<li><a style="background-color:#FFF;" href="#">::_("Produits")::</a></li>
+			<li><a style="background-color:#FFF;" href="#">::_("Produits")::</a></li>
 		</ul>
 </div>
 

@@ -480,15 +480,19 @@ class Member extends Controller
 		if ( data != null) {
 			
 			var csv = new sugoi.tools.Csv();
-			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Firstname spouse"), t._("Lastname spouse"), t._("E-mail spouse"), t._("Mobile phone spouse"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City")]);
+			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Partner's firstname"), t._("Partner's lastname"), t._("Partner's e-mail"), t._("Partner's Mobile phone"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City")]);
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
 			for ( user in unregistred.copy() ) {
 				
 				//check nom+prenom
-				if (user[0] == null || user[1] == null) throw Error("/member/import", t._("You must fill the name and the firstname of the person. This line is incomplete: ") + user);
-				if (user[2] == null) throw Error("/member/import", t._("Each person must have an E-mail to be able to log in. ::user0:: ::user1:: don't have one. ", {user0:user[0], user1:user[1]}) +user);
+				if (user[0] == null || user[1] == null) {
+					throw Error("/member/import", t._("You must fill the name and the firstname of the person. This line is incomplete: ") + user);
+				}
+				if (user[2] == null) {
+					throw Error("/member/import", t._("Each person must have an e-mail to be able to log in. ::user0:: ::user1:: don't have one. ", {user0:user[0], user1:user[1]}) +user);
+				}
 				//uppercase du nom
 				if (user[1] != null) user[1] = user[1].toUpperCase();
 				if (user[5] != null) user[5] = user[5].toUpperCase();
@@ -562,7 +566,7 @@ class Member extends Controller
 				user.email2 = u[6];
 				if (user.email2 != null && user.email2 != "null" && !EmailValidator.check(user.email2)) {
 					App.log(u);
-					throw t._("The E-mail of the spouse of ::userFirstName:: ::userLastName:: '::userEmail::' is invalid, please check your file", {userFirstName:user.firstName, userLastName:user.lastName, userEmail:user.email2});
+					throw t._("The E-mail of the partner of ::userFirstName:: ::userLastName:: '::userEmail::' is invalid, please check your file", {userFirstName:user.firstName, userLastName:user.lastName, userEmail:user.email2});
 				}
 				user.phone2 = u[7];				
 				user.address1 = u[8];

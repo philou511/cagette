@@ -55,7 +55,7 @@
 						<h4>::group.name::</h4>
 						
 						<!--<div style="position:absolute;bottom:8px;right:8px;">
-							<a class="btn btn-primary btn-sm" href="/user/choose?amap=::group.id::"><span class="glyphicon glyphicon-chevron-right"></span> Choisir</a>	
+							<a class="btn btn-primary btn-sm" href="/user/choose?amap=::group.id::"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Choose")::</a>	
 						</div>-->
 						
 					</a>
@@ -78,8 +78,9 @@
 
 	<!-- actions -->
 	<div class="col-md-12" style="margin-bottom:12px;" >
-
-		<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> ::_("Trouver des groupes près de chez moi")::</a>	
+		::if session.lang!="de"::
+			<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> ::_("Trouver des groupes près de chez moi")::</a>	
+		::end::
 		<a class="btn btn-default" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Créer mon propre groupe")::</a>	
 		
 	</div>
@@ -88,7 +89,7 @@
 	<!-- waiting list -->
 	<div class="col-md-12" ::cond wl.length>0::>
 		<div class="article">
-			<h4>Inscriptions en liste d'attente</h4>
+			<h4>::_("Subscriptions on waiting list")::</h4>
 			<ul>
 			::foreach w wl::
 				<li> <a href="/group/::w._group.id::">::w._group.name::</a> ( inscrit depuis le ::hDate(w.date):: )</li>

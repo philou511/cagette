@@ -1,27 +1,27 @@
 ::use 'contractadmin/design.mtt'::
 
 	
-			<h2>Participations aux livraisons</h2>
+			<h2>::_("Participate to deliveries")::</h2>
 			
 			<div>
-				Cette page permet de voir si les adhérents ont suffisamment effectué de permanences.
+				::_("This page allows to see if members have participated to deliveries enough.")::
 			</div>
 			
 			<div style="margin:16px 0 16px 0;text-align:center;">
 				
-				<strong>::distribs:: livraisons nécéssitant ::distributorNum:: personne(s),<br/>
-				::users:: souscripteurs à ce contrat<br/>
-				= ::num:: permanences à faire par foyer.</strong>	
+				<strong>::distribs:: ::_("deliveries requiring"):: ::distributorNum:: ::_("person(s)")::,<br/>
+				::users:: ::_("person(s) using this contract"):: <br/>
+				= ::num:: ::_("participations to deliveries to do per family.")::</strong>	
 				
 				
 			</div>
 			
 			<table class="table table-bordered">
 				<tr>
-					<th>Adhérent</th>
+					<th>::_("Member")::</th>
 					<th>
-						Nbre de permanences<br />
-						effectuées ou prévues
+						::_("Number of participations to deliveries<br />
+						done or planned")::
 					</th>
 				</tr>
 				::foreach p participations::
@@ -37,7 +37,7 @@
 						::if p.count>=numRounded::
 						<img src="/img/icons/accept.png" /> OK
 						::else::
-						<img src="/img/icons/stop.png" /> Insuffisant
+						<img src="/img/icons/stop.png" /> ::_("Insufficient")::
 						::end::
 					</td>
 				</tr>

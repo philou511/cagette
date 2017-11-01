@@ -248,7 +248,7 @@
 					</a>
 				
 					<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
-						::raw_("You cannot validate this order<br/>because the balance of the member is negative")::
+						::raw _("You cannot validate this order<br/>because the balance of the member is negative")::
 					</div>
 				
 				::else::

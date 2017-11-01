@@ -61,9 +61,6 @@
 					::end::
 					<tr class="::class::">
 						<td>
-							
-							
-							
 							<div class="basketNumber" ::cond basket!=null:: >
 								<i class="fa fa-shopping-basket" aria-hidden="true"></i> ::_("Num"):: ::basket.num::
 							</div>
@@ -77,17 +74,14 @@
 								::if(class=="danger")::
 								<a href="/validate/::date::/::place.id::/::u.id::" class="btn btn-danger">
 									<i class="fa fa-chevron-right" aria-hidden="true"></i>
-									::_("To be validated")
+									::_("To be validated")::
 								</a> 
 								::else::
 								<a href="/validate/::date::/::place.id::/::u.id::" class="btn">
 									<span class="glyphicon glyphicon-ok"></span>
 									::_("Validated")::
 								</a> 
-								
-									
 								::end::
-							
 						</td>
 					</tr>
 					

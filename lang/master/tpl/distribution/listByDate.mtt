@@ -10,8 +10,6 @@
 	<h1>::user._amap.name::</h1>
 	<h2>Livraison du ::hDate(date)::</h2>
 	
-	
-	
 		<table style="width:100%;">
 				::set name = ""::
 				::set name2 = ""::
@@ -43,7 +41,6 @@
 						
 								::set basket = getBasket(m.userId,place.id,date)::							
 								<span ::cond basket!=null::>::_("Num"):: ::basket.num:: - </span>
-							
 						
 								<b>::m.userName::</b>
 								::if m.userName2 != null::
@@ -150,7 +147,7 @@
 									<td>::formatNum(total-tpaid):: ::currency()::</td>
 									<td>
 										::if(total>tpaid)::
-											::_("To be paid") ::formatNum(total-tpaid):: ::currency()::
+											::_("To be paid"):: ::formatNum(total-tpaid):: ::currency()::
 										::else::
 											::_("Pay back"):: ::formatNum(tpaid-total):: ::currency()::
 										::end::

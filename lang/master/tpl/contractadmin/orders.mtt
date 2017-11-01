@@ -29,7 +29,7 @@
 		</div>
 
 		::if disabledProducts > 0::
-		$$alert(::raw_("Be careful, there are <b>")+disabledProducts+raw_("</b> order(s) containing <b>deactivated products</b>.")::)
+		$$alert( ::raw _("Be careful, there are <b>::disabledProducts::</b> order(s) containing <b>disabled products</b>.",{disabledProducts:disabledProducts}):: )
 		::end::
 
 

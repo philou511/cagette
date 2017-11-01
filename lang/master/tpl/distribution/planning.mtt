@@ -4,7 +4,7 @@
 		<h2>::_("Planning of deliveries:"):: ::contract.name::</h2>
 		
 		<p>
-			::raw_("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you.
+			::raw _("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you.
 			The goal of attendances consists in helping during the delivery of products.")::
 		</p>
 		

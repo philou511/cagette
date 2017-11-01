@@ -9,17 +9,17 @@
 		
 		<div class="col-md-4">
 			
-			<span class="price">::formatNum(p.price):: ::currency():: TTC</span>
+			<span class="price">::formatNum(p.price):: ::currency():: ::_("incl. VAT")::</span>
 			
 			::if (p.vat!=null && p.vat!=0) ||  p.contractTax!=0::
 			<div class="vat">
 				
 				::if p.vat!=null && p.vat!=0::
-					::p.vat:: % de TVA inclus<br/>
+					::p.vat:: ::_("VAT included")::<br/>
 				::end::
 				
 				::if p.contractTax!=null::
-					::p.contractTax:: % ::p.contractTaxName:: inclus<br/>
+					::p.contractTax:: % ::p.contractTaxName:: ::_("included")::<br/>
 				::end::
 			</div>
 			::end::

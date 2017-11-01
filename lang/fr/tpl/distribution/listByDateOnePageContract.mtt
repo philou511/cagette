@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Liste d'émargement</title>
+	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
@@ -10,21 +10,21 @@
 	::fill head::
 	<td >
 		<h1 style='text-align:right;'>::user._amap.name::</h1>
-		<h2 style='text-align:right;'>Livraison du ::hDate(date)::</h2>
+		<h2 style='text-align:right;'>::_("Delivery of the"):: ::hDate(date)::</h2>
 	</td>
 	::end::
 	
 	<!-- table header -->
 	::fill tableHeader::
 	<tr>
-		<th>Contrat</th>
-		<th>Qté</th>
-		<th>Produit</th>
-		<th>P.U</th>
-		<th>Frais</th>
-		<th>Total</th>
+		<th>::_("Contrat")::</th>
+		<th>::_("Qté")::</th>
+		<th>::_("Produit")::</th>
+		<th>::_("U.P.")::</th>
+		<th>::_("Frais")::</th>
+		<th>::_("Total")::</th>
 		
-		<th>Signature</th>		
+		<th>::_("Signature")::</th>		
 	</tr>
 	::end::
 	
@@ -66,7 +66,7 @@
 				<tr>
 					<td>
 						::if m.userName2 != null::
-							en alternance avec<br/>
+							::_("alternately with")::<br/>
 							<b>::m.userName2::</b>
 						::set total = 0::
 						::set productNum = 0::
@@ -81,7 +81,7 @@
 						::end::
 					</td>
 					<td style='text-align:right;'>
-						<b>Livraison du ::hDate(date)::</b>
+						<b>::_("Delivery of the"):: ::hDate(date)::</b>
 					</td>
 				</tr>
 			::raw "</table>" ::
@@ -144,7 +144,7 @@
 						<td style="border-top: 2px solid #AAA;"></td>
 						<td class="total">::productNum::</td>
 						<td class="total" colspan="2"></td>
-						<td class="total">TOTAL</td>
+						<td class="total">::_("TOTAL")::</td>
 						<td class="total" style="font-size: ::fontRatio::%;">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>		
@@ -153,7 +153,7 @@
 	
 	<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
 
-	<p class="hidden"><i>Appuyez sur "Control + P" pour imprimer cette page.</i></p>
+	<p class="hidden"><i>::_("Push on \"Control + P\" to print this page.")::</i></p>
 	
 	
 	

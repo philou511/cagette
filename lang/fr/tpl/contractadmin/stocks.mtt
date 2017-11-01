@@ -1,7 +1,7 @@
 ::use 'contractadmin/design.mtt'::
 	
 		
-	<h3>Produits</h3>
+	<h3>::_("Produits")::</h3>
 	
 	<table class="table">
 		::foreach p c.getProducts()::

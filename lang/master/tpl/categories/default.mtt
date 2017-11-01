@@ -3,7 +3,7 @@
 <h2>::_("Categories")::</h2>
 
 <p>
-	::raw_("Categories allow to sort your products per category, for example \"vegetables, meet, backery, etc.\"<br/>
+	::raw _("Categories allow to sort your products per category, for example \"vegetables, meet, backery, etc.\"<br/>
 	It is possible to create many groups of categories in order to sort products as we wish.")::
 </p>
 <p ::cond groups.length==0 ::>

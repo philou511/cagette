@@ -1,11 +1,11 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-8">
 	<div class="article">
-		<h2>Modifier la commande livrée le ::hDate(date)::</h2>
+		<h2>::_("Modify the order delivered on the"):: ::hDate(date)::</h2>
 		
 		<p>
-			Vous pouvez modifier ici une commande déjà réalisée. Si vous souhaitez enlever un article, mettez simplement la quantité à zéro.<br/>
-			Vous ne pourrez pas forcément modifier tous les articles car la commande peut être close pour certains fournisseurs.
+			::raw _("You can modify here an existing order. If you would like to remove an element, just key-in the quantity 0
+			You may not be able to modify all elements as the order could be closed for some suppliers")::
 		</p>
 		
 		<form name="order" id="order" method="POST" action="">
@@ -14,12 +14,12 @@
 			<table class="table table-bordered">
 			<tr>
 				
-				<th>Produit</th>
-				<th>P.U</th>
-				<th>Sous-total</th>
-				<th>Frais</th>
-				<th>Total</th>
-				<th>Quantité</th>
+				<th>::_("Produit")::</th>
+				<th>::_("U.P.")::</th>
+				<th>::_("Sous-total")::</th>
+				<th>::_("Frais")::</th>
+				<th>::_("Total")::</th>
+				<th>::_("Quantité")::</th>
 			</tr>
 			::set total = 0::
 			::foreach o orders::
@@ -46,7 +46,7 @@
 					::if o.canModify::
 					<input type="text" class="form-control" name="product::o.productId::" id="product::o.productId::" value="::o.quantity::" />
 					::else::
-					<span style="color:#AAA">Commande close ou déjà payée</span>
+					<span style="color:#AAA">::_("Order closed or already paid")::</span>
 					::end::
 				</td>
 				
@@ -58,7 +58,7 @@
 
 			<tr>
 				<th colspan="3"></th>
-				<th>TOTAL</th>
+				<th>::_("TOTAL")::</th>
 				<th>::roundTo(total,2)::::currency()::</th>
 				<th></th>
 			</tr>
@@ -68,7 +68,7 @@
 		
 		
 		
-		<input type="submit" class="btn btn-primary" value="Mettre à jour la commande" name="submit" id="submit" />
+		<input type="submit" class="btn btn-primary" value="::_("Update the order")::" name="submit" id="submit" />
 		
 		</form>
 	

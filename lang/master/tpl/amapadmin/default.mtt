@@ -19,7 +19,7 @@
 			<hr/>
 			
 			<p>
-				::raw_("Your group has a public page, that you can use to communicate as a mini-website.<br/>
+				::raw _("Your group has a public page, that you can use to communicate as a mini-website.<br/>
 				Copy-past the URL address of the page and do no hesitate to share it.")::<br/>				
 			</p>
 			<p>

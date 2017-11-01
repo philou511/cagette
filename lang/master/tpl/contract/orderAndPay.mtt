@@ -8,7 +8,7 @@
 		::end::
 		<hr/>-->
 		<p>
-			::raw_("Key-in here your orders in advance for this supplier.<br/>
+			::raw _("Key-in here your orders in advance for this supplier.<br/>
 			You can check your current orders any time on the following page <a href=\"/contract\">my account</a>.<br/>
 			Tip: to remove an order please key-in the quantity 0")::
 		</p>

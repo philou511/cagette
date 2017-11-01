@@ -1,14 +1,14 @@
 ::use 'amapadmin/design.mtt'::
 
-		<h3>Gestion des droits et accès</h3>		
+		<h3>::_("Management of rights and access")::</h3>		
 		
 		$$insert(Ajouter un droit,/amapadmin/editRight)
 		
 		<table class="table table-bordered">
 			<tr>
-				<th>Nom</th>
-				<th>Droits</th>
-				<th>Actions</th>
+				<th>::_("Nom")::</th>
+				<th>::_("Droits")::</th>
+				<th>::_("Actions")::</th>
 				
 			</tr>
 			::foreach u users::

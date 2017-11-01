@@ -4,9 +4,9 @@
 <div class="col-md-3">
 	<div class="block">
 		<ul>
-			<li><a href="/contractAdmin/products/::c.id::">Produits</a></li>
-			<li><a href="/contractAdmin/distributions/::c.id::">Livraisons</a></li>
-			<li><a href="/contractAdmin/orders/::c.id::">Commandes</a></li>
+			<li><a href="/contractAdmin/products/::c.id::">::_("Produits")::</a></li>
+			<li><a href="/contractAdmin/distributions/::c.id::">::_("Deliveries")::</a></li>
+			<li><a href="/contractAdmin/orders/::c.id::">::_("Commandes")::</a></li>
 		</ul>
 	</div>
 </div>
@@ -33,7 +33,7 @@
 		</div>
 		
 		<div class="span4">
-			<b>Livraisons</b>
+			<b>::_("Deliveries")::</b>
 			<table class="table">
 				::foreach d c.getDistribs()::
 				<tr>

@@ -4,7 +4,7 @@
 	<h3>::_("Categories")::</h3>
 	
 	<p>
-		::raw_("You can link your products to categories, in order to better organize them in the \"shop mode\".<br/>
+		::raw _("You can link your products to categories, in order to better organize them in the \"shop mode\".<br/>
 		<b>To add categories: </b>select checkboxes of products and then select a category in the list at the bottom of the page. Click then on \"add\".<br />
 		<b>To remove a category:<b/> click on it.")::
 		

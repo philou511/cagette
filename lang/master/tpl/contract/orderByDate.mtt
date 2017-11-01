@@ -4,7 +4,7 @@
 		<h2>::_("Modify the order delivered on the "):: ::hDate(date)::</h2>
 		
 		<p>
-			::raw_("You can modify here an existing order. If you would like to remove an element, just key-in the quantity 0
+			::raw _("You can modify here an existing order. If you would like to remove an element, just key-in the quantity 0
 			You may not be able to modify all elements as the order could be closed for some suppliers")::
 		</p>
 		
