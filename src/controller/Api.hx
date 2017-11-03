@@ -49,6 +49,18 @@ class Api extends Controller
 		
 	}
 	
+	/*public function doError(){
+		sugoi.Web.setReturnCode(403);
+	}*/
+	
+	
+	#if plugins
+	//cagette-pro
+	public function doPro(d:haxe.web.Dispatch) {
+		d.dispatch(new pro.controller.api.Main());
+	}	
+	#end
+	
 	/**
 	 * Get distribution planning for this group
 	 * 

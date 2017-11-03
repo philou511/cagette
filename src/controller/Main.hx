@@ -194,7 +194,7 @@ class Main extends Controller {
 		try {
 			d.dispatch(new controller.Api());
 		}catch (e:tink.core.Error){
-			
+			sugoi.Web.setReturnCode(e.code);
 			Sys.print(Json.stringify( {error:{code:e.code,message:e.message}} ));
 			
 		}catch (e:Dynamic){
