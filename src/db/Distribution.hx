@@ -196,6 +196,16 @@ class Distribution extends Object
 		return Lambda.array(out);
 	}*/
 
+	override public function update(){
+		this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
+		super.update();
+	}
+	
+	override public function insert(){
+		this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
+		super.insert();
+	}
+	
 
 	/**
      * Get open to orders deliveries

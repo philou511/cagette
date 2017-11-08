@@ -9,12 +9,15 @@ class Shop extends Controller
 
 	@tpl('shop/default.mtt')
 	public function doDefault(place:db.Place,date:Date) {
-		
-		view.products = getProducts(place,date);
+		var products = getProducts(place,date);
+		view.products = products;
 		view.place = place;
 		view.date = date;
 		view.group = place.amap;		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		
+		//trace(distribs);
+		//trace(products);
 	}
 	
 	/**
@@ -75,11 +78,10 @@ class Shop extends Controller
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
-		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place ==place, false);
-		var cids = Lambda.map(distribs, function(d) return d.contract.id);
-
-		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);
+		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
 		
+		var cids = Lambda.map(distribs, function(d) return d.contract.id);
+		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);
 		return Lambda.array(Lambda.map(products, function(p) return p.infos(categsFromTaxo)));
 	}
 	
