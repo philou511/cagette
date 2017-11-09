@@ -167,8 +167,6 @@ class Distribution extends Controller
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
 			
-			
-			
 			app.event(EditDistrib(d));
 			
 			if (d.date == null){

@@ -41,6 +41,15 @@
 		::foreach t transactions::
 			<tr>
 				$$operation(::t::)
+				<td>
+					::if t.type==2::
+					<div class="btn-group" role="group">
+						$$edit(Modifier,/transaction/edit/::t.id::)
+						$$delete(Suppr.,/transaction/delete/::t.id::?token=::token::)						
+					</div>
+					::end::
+					
+				</td>
 			</tr>
 				
 			<!--::foreach tt t.getRelatedPayments()::	
