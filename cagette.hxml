@@ -1,13 +1,14 @@
--lib dbadmin
+-lib sugoi:git:https://github.com/bablukid/sugoi#i18n
 -lib templo
--lib sugoi
+-lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
+-lib dbadmin:git:https://github.com/ncannasse/dbadmin.git#master
 -lib hxevents
 -lib thx.semver
 -lib thx.csv
 -lib datetime
 -lib hscript
 -lib smtpmailer
--lib record-macros
+
 -cp common
 -cp src
 -cp lang/master/tpl
@@ -17,7 +18,7 @@
 -dce no
 -cp common
 -cp js
--lib sugoi
+-lib sugoi:git:https://github.com/bablukid/sugoi#i18n
 -lib react
 -D react_global
 -main App
