@@ -8,7 +8,6 @@
 -lib datetime
 -lib hscript
 -lib smtpmailer
-
 -cp common
 -cp src
 -cp lang/master/tpl

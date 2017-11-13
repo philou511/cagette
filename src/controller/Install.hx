@@ -75,7 +75,10 @@ class Install extends controller.Controller
 				
 				var vendor = new db.Vendor();
 				vendor.amap = amap;
-				vendor.name = "Jean Martin EURL";
+				vendor.name = "EARL Jean Martin";
+				vendor.email = "jean.martin@cagette.net";
+				vendor.zipCode = "00000";
+				vendor.city = "Martignac";
 				vendor.insert();
 				
 				var contract = new db.Contract();
@@ -92,12 +95,14 @@ class Install extends controller.Controller
 				var p = new db.Product();
 				p.name = "Gros panier de légumes";
 				p.price = 15;
+				p.vat = 5;
 				p.contract = contract;
 				p.insert();
 				
 				var p = new db.Product();
 				p.name = "Petit panier de légumes";
 				p.price = 10;
+				p.vat = 5;
 				p.contract = contract;
 				p.insert();
 			
@@ -106,6 +111,7 @@ class Install extends controller.Controller
 				uc.product = p;
 				uc.paid = true;
 				uc.quantity = 1;
+				uc.productPrice = 10;
 				uc.insert();
 				
 				var d = new db.Distribution();
