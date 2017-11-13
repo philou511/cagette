@@ -299,6 +299,7 @@ class Member extends Controller
 		form.removeElement( form.getElement("rights") );
 		form.removeElement( form.getElement("lang") );		
 		form.removeElement( form.getElement("ldate") );
+		form.removeElement( form.getElement("apiKey") );
 		
 		
 		var isReg = member.isFullyRegistred();
@@ -619,6 +620,7 @@ class Member extends Controller
 		form.removeElement(form.getElement("rights"));
 		form.removeElement(form.getElement("pass"));	
 		form.removeElement(form.getElement("ldate") );
+		form.removeElement( form.getElement("apiKey") );
 		form.addElement(new sugoi.form.elements.Checkbox("warnAmapManager", "Envoyer un mail au responsable du groupe", true));
 		form.getElement("email").addValidator(new EmailValidator());
 		form.getElement("email2").addValidator(new EmailValidator());
