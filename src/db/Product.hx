@@ -38,8 +38,12 @@ class Product extends Object
 	public function new() 
 	{
 		super();
-		active = true;
 		type = 0;
+		organic = false;
+		hasFloatQt = false;
+		active = true;
+		
+		
 	}
 	
 	/**

@@ -72,7 +72,7 @@ class Amap extends Object
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
-	@hideInForms public var checkOrder:SString<64>;
+	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	
 	public function new() 
@@ -83,6 +83,9 @@ class Amap extends Object
 		vatRates = ["TVA Alimentaire 5,5%" => 5.5, "TVA 20%" => 20];
 		cdate = Date.now();
 		regOption = WaitingList;
+		currency = "€";
+		currencyCode = "EUR";
+		checkOrder = "";
 		
 	}
 	
