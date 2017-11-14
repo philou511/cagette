@@ -168,13 +168,14 @@ class Amap extends Object
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
+			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name, subcategories:null}; }));
 			
 			categs.push({
 				id:0,
 				name:"Type de produits",
 				pinned:false,
 				color:"#583816",
-				categs: Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name}; }))				
+				categs: c				
 			});
 			
 		}else{

@@ -61,6 +61,10 @@ class Api extends Controller
 	}	
 	#end
 	
+	public function doShop(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.Shop());
+	}	
+	
 	/**
 	 * Get distribution planning for this group
 	 * 
