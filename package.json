@@ -25,7 +25,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "livereloadx -s html/js",
     "build": "haxe cagetteJs.hxml",
     "build2": "babel src -d lib",
     "libs:dev": "browserify js/libs/libs.js -o www/js/libs.js -d",
