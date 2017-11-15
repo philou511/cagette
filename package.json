@@ -7,7 +7,8 @@
   "dependencies": {
     "bootstrap": "^3.3.4",
     "eonasdan-bootstrap-datetimepicker": "^4.7.14",
-    "jquery": "2.2.4",
+    "haxe-modular": "^0.7.0",
+    "jquery": "^2.2.4",
     "react": "^15.6.1",
     "react-bootstrap-typeahead": "1.4.2",
     "react-datetime": "^2.9.0",
@@ -18,12 +19,17 @@
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
+    "cross-env": "^5.1.1",
+    "uglify-js": "^3.1.9",
     "watchify": "^3.9.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify --debug www/js/app.js -o www/js/bundle.js",
-    "build2": "babel src -d lib"
+    "serve": "livereloadx -s html/js",
+    "build": "haxe cagetteJs.hxml",
+    "build2": "babel src -d lib",
+    "libs:dev": "browserify js/libs/libs.js -o www/js/libs.js -d",
+    "libs:prod": "cross-env NODE_ENV=production browserify js/libs/libs.js | uglifyjs -c -m > www/js/libs.js"
   },
   "repository": {
     "type": "git",

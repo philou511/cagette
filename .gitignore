@@ -24,4 +24,8 @@ MakeFile
 *.map
 .haxelib
 html
+<<<<<<< 5af55c997caba8264cef1c2a43f7ea2639932ec9
 www/css/.sass-cache
+=======
+.temp
+>>>>>>> using haxe-modular to bundle only npm dependencies
