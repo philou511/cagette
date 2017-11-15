@@ -1,0 +1,8 @@
+-dce no
+-cp common
+-cp js
+-lib sugoi:git:https://github.com/bablukid/sugoi#i18n
+-lib react
+-main App
+-debug
+-js www/js/app.js

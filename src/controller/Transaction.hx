@@ -16,7 +16,7 @@ class Transaction extends controller.Controller
 	@tpl('form.mtt')
 	public function doInsertPayment(user:db.User){
 		
-		if (!app.user.isContractManager()) throw "forbidden";
+		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
 		var t = sugoi.i18n.Locale.texts;
 		
 		var op = new db.Operation();
@@ -67,6 +67,40 @@ class Transaction extends controller.Controller
 		view.title = t._("Record a payment for ::user::",{user:user.getCoupleName()}) ;
 		view.form = f;		
 	}
+	
+	
+	@tpl('form.mtt')
+	public function doEdit(op:db.Operation){
+		
+		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
+		
+		op.lock();
+		
+		var f = new sugoi.form.Form("payement");
+		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), op.name, true));
+		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), op.amount, true));
+		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), op.date, true));
+		//f.addElement(new sugoi.form.elements.DatePicker("pending", t._("Confirmed"), !op.pending, true));
+		
+		if (f.isValid()){
+			f.toSpod(op);
+			op.pending = false;
+			op.update();
+			throw Ok("/member/payments/" + op.user.id, t._("Operation updated"));
+		}
+		
+		view.form = f;
+	}	
+	
+	public function doDelete(op:db.Operation){	
+		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
+		
+		if (checkToken()){
+			op.delete();
+			throw Ok("/member/payments/" + op.user.id, t._("Operation deleted"));
+		}
+	}
+	
 	
 	/**
 	 * payement entry page

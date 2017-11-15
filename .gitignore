@@ -2,6 +2,7 @@
 *.php
 config.xml
 www/plugin/*
+www/js/bundle.js
 lang/master/tpl/plugin/*
 lang/fr/*
 lang/en/*
@@ -12,3 +13,5 @@ tmp/*
 *node_modules*
 MakeFile
 *.map
+.haxelib
+html

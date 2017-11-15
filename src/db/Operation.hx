@@ -28,7 +28,7 @@ class Operation extends sys.db.Object
 	public var data : SData<Dynamic>;
 	@hideInForms @:relation(relationId) public var relation : SNull<db.Operation>; //linked to another operation : ie a payment pays an order
 	
-	@:relation(userId) public var user : db.User;
+	@formPopulate("populate") @:relation(userId) public var user : db.User;
 	@hideInForms @:relation(groupId) public var group : db.Amap;
 		
 	public var pending : SBool; //a pending payment means the payment has not been confirmed, a pending order means the ordre can still change before closing.
@@ -36,6 +36,11 @@ class Operation extends sys.db.Object
 	public function getTypeIndex(){
 		var e : OperationType = type;		
 		return e.getIndex();
+	}
+	
+	public function new(){
+		super();
+		pending = false;
 	}
 	
 	/**
@@ -403,5 +408,22 @@ class Operation extends sys.db.Object
 		
 	}
 	
+	public function populate(){
+		return App.current.user.getAmap().getMembersFormElementData();
+	}
+	
+	/*public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name" 				=> t._("Text"),
+			"date" 				=> t._("Date"),
+			"endDate" 			=> t._("End date"),
+			"place" 			=> t._("Place"),
+			"distributor1" 		=> t._("Distributor #1"),
+			"distributor2" 		=> t._("Distributor #2"),
+			"distributor3" 		=> t._("Distributor #3"),
+			"distributor4" 		=> t._("Distributor #4"),						
+		];
+	}*/
 	
 }

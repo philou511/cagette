@@ -11,16 +11,18 @@ class Plugin extends sugoi.BaseController
 	{
 		super();
 	}
+	
 	#if plugins
+	
 	//cagette-hosted
 	public function doHosted(d:haxe.web.Dispatch) {
 		d.dispatch(new hosted.controller.Main());
-	}
+	}	
 	
 	//cagette-pro
 	public function doPro(d:haxe.web.Dispatch) {
 		d.dispatch(new pro.controller.Main());
-	}
+	}	
 	
 	//cagette-connector
 	public function doConnector(d:haxe.web.Dispatch) {
@@ -31,7 +33,7 @@ class Plugin extends sugoi.BaseController
 	public function doWho(d:haxe.web.Dispatch) {
 		d.dispatch(new who.controller.Main());
 	}
-	#end
 	
+	#end
 	
 }

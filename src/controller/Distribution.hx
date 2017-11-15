@@ -167,8 +167,6 @@ class Distribution extends Controller
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
 			
-			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), d.end.getHours(), d.end.getMinutes(), 0);
-			
 			app.event(EditDistrib(d));
 			
 			if (d.date == null){
@@ -232,7 +230,7 @@ class Distribution extends Controller
 			form.toSpod(d); //update model
 			d.contract = contract;			
 			if (d.end == null) d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
-			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), d.end.getHours(), d.end.getMinutes(), 0);
+			
 			
 			checkDistrib(d);
 			

@@ -38,8 +38,12 @@ class Product extends Object
 	public function new() 
 	{
 		super();
-		active = true;
 		type = 0;
+		organic = false;
+		hasFloatQt = false;
+		active = true;
+		
+		
 	}
 	
 	/**
@@ -84,7 +88,7 @@ class Product extends Object
 		return price + contract.computeFees(price);
 	}
 	
-	public function infos(?CategFromTaxo=false):ProductInfo {
+	public function infos(?CategFromTaxo=false,?populateCategories=true):ProductInfo {
 		var o :ProductInfo = {
 			id : id,
 			ref : ref,
@@ -107,12 +111,13 @@ class Product extends Object
 			organic:organic
 		}
 		
-		if (CategFromTaxo){
-			o.categories = [txpProduct==null?null:txpProduct.category.id];
-		}else{
-			o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
+		if(populateCategories){
+			if (CategFromTaxo){
+				o.categories = [txpProduct==null?null:txpProduct.category.id];
+			}else{
+				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
+			}
 		}
-		
 		
 		return o;
 	}

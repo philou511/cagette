@@ -113,7 +113,7 @@ class Main extends Controller {
 				
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
-					o.products.push( p.infos() );	
+					o.products.push( p.infos(null,false) );	
 				}	
 			}
 			
@@ -194,12 +194,14 @@ class Main extends Controller {
 		try {
 			d.dispatch(new controller.Api());
 		}catch (e:tink.core.Error){
-			
+			sugoi.Web.setReturnCode(e.code);
 			Sys.print(Json.stringify( {error:{code:e.code,message:e.message}} ));
 			
 		}catch (e:Dynamic){
-			
-			Sys.print(Json.stringify( {error:{message : Std.string(e)}} ));
+			sugoi.Web.setReturnCode(500);
+			var stack = "";
+			if ( App.config.DEBUG ) stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
+			Sys.print(Json.stringify( {error:{message : Std.string(e), stack:stack}} ));
 		}
 		
 	}

@@ -72,7 +72,7 @@ class Amap extends Object
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
-	@hideInForms public var checkOrder:SString<64>;
+	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	
 	public function new() 
@@ -83,6 +83,9 @@ class Amap extends Object
 		vatRates = ["TVA Alimentaire 5,5%" => 5.5, "TVA 20%" => 20];
 		cdate = Date.now();
 		regOption = WaitingList;
+		currency = "€";
+		currencyCode = "EUR";
+		checkOrder = "";
 		
 	}
 	
@@ -166,13 +169,14 @@ class Amap extends Object
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
+			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name, subcategories:null}; }));
 			
 			categs.push({
 				id:0,
 				name: t._("Product type"),
 				pinned:false,
 				color:"#583816",
-				categs: Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name}; }))				
+				categs: c				
 			});
 			
 		}else{

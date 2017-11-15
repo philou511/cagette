@@ -26,24 +26,25 @@
     <option noInlineOnDebug="False" />
     <option mainClass="App" />
     <option enabledebug="False" />
-    <option additional="--next&#xA;-dce no&#xA;-cp common&#xA;-cp js&#xA;-lib sugoi&#xA;-lib react&#xA;-lib hxleaflet&#xA;-lib cagette-hosted&#xA;&#xA;-D plugins&#xA;-main App&#xA;-js www/js/app.js" />
+    <option additional="--next&#xA;-dce no&#xA;-cp common&#xA;-cp js&#xA;-lib sugoi&#xA;-lib react&#xA;-lib hxleaflet&#xA;-lib cagette-hosted&#xA;-D plugins&#xA;-main App&#xA;-js www/js/app.js" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
-    <library name="dbadmin" />
     <library name="templo" />
     <library name="thx.semver" />
     <library name="thx.csv" />
-    <library name="sugoi" />
     <library name="hxevents" />
     <library name="hscript" />
     <library name="record-macros" />
     <library name="smtpmailer" />
     <library name="datetime" />
-    <library name="cagette-hosted" />
-    <library name="cagette-pro" />
-    <library name="cagette-connector" />
-    <library name="cagette-wholesale-order" />
+    <library name="sugoi:git:https://github.com/bablukid/sugoi#i18n" />
+    <library name="record-macros:git:https://github.com/HaxeFoundation/record-macros#maste" />
+    <library name="dbadmin:git:https://github.com/ncannasse/dbadmin.git#master" />
+    <library name="cagette-pro:git:https://bubar@bitbucket.org/bubar/cagette-pro.git#master" />
+    <library name="cagette-connector:git:https://bubar@bitbucket.org/bubar/cagette-connector.git#master" />
+    <library name="cagette-wholesale-order:git:https://bubar@bitbucket.org/bubar/cagette-wholesale-order.git#master" />
+    <library name="cagette-hosted:git:https://bubar@bitbucket.org/bubar/cagette-hosted.git#master" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

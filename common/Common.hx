@@ -3,7 +3,7 @@
  */
 
 
-//An order wich is placed in session, before being paid and recorded.
+//A temporary order, before being paid and recorded in DB.
 @:keep
 typedef OrderInSession = {
 	products:Array <{
@@ -15,7 +15,7 @@ typedef OrderInSession = {
 		#end
 	} > ,
 	userId:Int,
-	total:Float, //price to pay
+	total:Float, 	//price to pay
 	?paymentOp:Int, //payment operation ID
 }
 
@@ -76,8 +76,7 @@ enum ProductType {
 typedef CategoryInfo = {
 	id:Int,
 	name:String,
-	//pinned:Bool,
-	//parent:Int,
+	?subcategories:Array<CategoryInfo>
 }
 
 /**

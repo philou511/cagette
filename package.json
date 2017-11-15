@@ -22,7 +22,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify www/js/app.js -o www/js/bundle.js",
+    "build": "browserify --debug www/js/app.js -o www/js/bundle.js",
     "build2": "babel src -d lib"
   },
   "repository": {

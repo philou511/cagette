@@ -299,6 +299,7 @@ class Member extends Controller
 		form.removeElement( form.getElement("rights") );
 		form.removeElement( form.getElement("lang") );		
 		form.removeElement( form.getElement("ldate") );
+		form.removeElement( form.getElement("apiKey") );
 		
 		
 		var isReg = member.isFullyRegistred();
@@ -626,6 +627,7 @@ class Member extends Controller
 		form.removeElement(form.getElement("rights"));
 		form.removeElement(form.getElement("pass"));	
 		form.removeElement(form.getElement("ldate") );
+		form.removeElement( form.getElement("apiKey") );
 		form.addElement(new sugoi.form.elements.Checkbox("warnAmapManager", t._("Send an E-mail to the person in charge of the group"), true));
 		form.getElement("email").addValidator(new EmailValidator());
 		form.getElement("email2").addValidator(new EmailValidator());
@@ -697,11 +699,12 @@ class Member extends Controller
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
 		
-		db.Operation.updateUserBalance(m, app.user.amap);
-		
+		db.Operation.updateUserBalance(m, app.user.amap);		
 		view.transactions = db.Operation.getOperations(m,app.user.amap);
 		view.member = m;
-		view.balance = db.UserAmap.get(m,app.user.amap).balance;
+		view.balance = db.UserAmap.get(m, app.user.amap).balance;
+		
+		checkToken();
 		
 	}
 	

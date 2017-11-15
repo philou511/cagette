@@ -153,6 +153,7 @@ class View extends sugoi.BaseView {
 	
 	public function unit(u:UnitType){
 		t = sugoi.i18n.Locale.texts;
+		if(u==null) return t._("piece||unit of a product)");
 		return switch(u){
 			case Kilogram: 	t._("Kg.||kilogramms");
 			case Gram: 		t._("g.||gramms");
