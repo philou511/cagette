@@ -135,7 +135,7 @@ class Shop extends Controller
 		}
 		
 		//to productInfos
-		var products : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo) ).array();
+		var products : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo,false) ).array();
 		
 		if (args.category != null){
 			Sys.print(Json.stringify( {success:true, products:products, category:catName} ));					

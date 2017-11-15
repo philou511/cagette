@@ -113,7 +113,7 @@ class Main extends Controller {
 				
 				//products preview if no orders
 				for ( p in d.contract.getProductsPreview(9)){
-					o.products.push( p.infos() );	
+					o.products.push( p.infos(null,false) );	
 				}	
 			}
 			
