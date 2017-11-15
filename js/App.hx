@@ -5,6 +5,7 @@ import react.*;
 @:jsRequire('bootstrap') extern class Bootstrap{}
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
+import react.store.*;
 
 class App {
 
@@ -167,6 +168,10 @@ class App {
 		untyped m.modal();
 		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
+	}
+
+	public function shop() {
+		ReactDOM.render(jsx('<$Store />'),  js.Browser.document.querySelector('#shop'));
 	}
 
 	/**
