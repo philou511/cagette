@@ -31,10 +31,7 @@ class App {
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {		
-		trace("main");
 		untyped js.Browser.window._ = new App();
-		trace("_ is "+ untyped js.Browser.window._);
-		
 	}
 	
 	public function getCart() {

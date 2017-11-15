@@ -2,6 +2,9 @@ package controller.api;
 import haxe.Json;
 import tink.core.Error;
 import Common;
+import db.Amap;
+using tools.ObjectListTool;
+using Lambda;
 
 class Shop extends Controller
 {
@@ -13,7 +16,7 @@ class Shop extends Controller
 		var out = new Array<CategoryInfo>();
 		var group = args.place.amap;
 		
-		if (group.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+		if (group.flags.has(ShopCategoriesFromTaxonomy)){
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
@@ -48,31 +51,117 @@ class Shop extends Controller
 	 */
 	public function doProducts(args:{date:String, place:db.Place, ?category:Int, ?subcategory:Int}){
 		
-		var products = getProducts(args.place, Date.fromString(args.date), args.place.amap.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy));
+		if ( args == null || (args.category == null && args.subcategory == null)) throw "You should provide a category Id or a subcategory Id";
+		//need some optimization : populating all thses objects eats memory, and we need only the ids !		
+		var products = getProducts(args.place, Date.fromString(args.date), args.place.amap.flags.has(ShopCategoriesFromTaxonomy));
+		var pids  = products.getIds();
+		var categsFromTaxo = args.place.amap.flags.has(ShopCategoriesFromTaxonomy);		
+		var catName = "undefined category";
 		
-		Sys.print(Json.stringify({success:true,products:products}));	
+		if( categsFromTaxo ){
+			
+			/**
+			 * Use Taxonomy : 
+			 * 	- Category is TxpCatgory
+			 * 	- Subcategory us TxpSubCategory
+			 * 	- Products are linked to TxpProduct which belongs to a TxpCatgory and a TxpSubCategory
+			 */
+			var sql = "";
+			
+			if (args.subcategory != null){
+				
+				sql = 'SELECT p.* FROM Product p, TxpProduct tp, TxpSubCategory sc 
+				WHERE p.txpProductId = tp.id 
+				AND tp.subCategoryId = sc.id 
+				AND sc.id = ${args.subcategory}
+				AND p.id IN ( ${pids.join(",")} )';
+				
+				var cat = db.TxpSubCategory.manager.get(args.subcategory, false);
+				if (cat == null) throw 'unknown subcategory #' + args.subcategory;
+				catName = cat.name;
+				
+			}else if (args.category != null){
+				
+				sql = 'SELECT p.* FROM Product p, TxpProduct tp, TxpCategory c 
+				WHERE p.txpProductId = tp.id 
+				AND tp.categoryId = c.id 
+				AND c.id = ${args.category}
+				AND p.id IN ( ${pids.join(",")} )';
+				
+				var cat = db.TxpCategory.manager.get(args.subcategory, false);
+				if (cat == null) throw 'unknown category #' + args.category;
+				catName = cat.name;
+			}
+			
+			products = db.Product.manager.unsafeObjects(sql,false).array();
+			
+		}else{
+			
+			/**
+			 * Use custom categories : 
+			 * 	- Category is CategoryGroup
+			 * 	- Subcategory is Category
+			 *  - Products are tagged with ProductCategory
+			 */		
+			var sql = "";
+			
+			if (args.subcategory != null){
+				
+				sql = 'SELECT p.* FROM Product p, ProductCategory pc, Category c 
+				WHERE pc.productId = p.id 
+				AND pc.categoryId = c.id 
+				AND c.id = ${args.subcategory}
+				AND p.id IN ( ${pids.join(",")} )';
+				
+				var cat = db.Category.manager.get(args.subcategory, false);
+				if (cat == null) throw 'unknown subcategory #' + args.subcategory;
+				catName = cat.name;
+				
+			}else if (args.category != null){
+				
+				sql = 'SELECT p.* FROM Product p, ProductCategory pc, Category c, CategoryGroup cg 
+				WHERE pc.productId = p.id 
+				AND pc.categoryId = c.id 
+				AND c.categoryGroupId = cg.id
+				AND cg.id = ${args.category}
+				AND p.id IN ( ${pids.join(",")} )';
+				
+				var cat = db.CategoryGroup.manager.get(args.category, false);
+				if (cat == null) throw 'unknown category #' + args.category;
+				catName = cat.name;
+			}
+			
+			products = db.Product.manager.unsafeObjects(sql,false).array();
+		}
+		
+		//to productInfos
+		var products : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo) ).array();
+		
+		if (args.category != null){
+			Sys.print(Json.stringify( {success:true, products:products, category:catName} ));					
+		}else{
+			Sys.print(Json.stringify( {success:true, products:products, subcategory:catName} ));				
+		}
 		
 	}
 	
+	private function getProductInfos(place:db.Place, date, ?categsFromTaxo = false):Array<ProductInfo>{
+		var products = getProducts(place, date, categsFromTaxo);
+		return Lambda.array(Lambda.map(products, function(p) return p.infos(categsFromTaxo)));		
+	}
 	
 	/**
 	 * Get the available products list
 	 */
-	private function getProducts(place:db.Place,date,?categsFromTaxo=false):Array<ProductInfo> {
+	private function getProducts(place:db.Place,date,?categsFromTaxo=false):Array<db.Product> {
 
 		var contracts = db.Contract.getActiveContracts(place.amap);
 	
-		for (c in Lambda.array(contracts)) {
-			//only varying orders
-			if (c.type != db.Contract.TYPE_VARORDER) {
-				contracts.remove(c);
-			}
-			
-			if (!c.isVisibleInShop()) {
-				contracts.remove(c);
-			}
-			
+		for (c in Lambda.array(contracts)) {			
+			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);//only varying orders
+			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
+		
 		var now = Date.now();
 		var cids = Lambda.map(contracts, function(c) return c.id);
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
@@ -81,8 +170,10 @@ class Shop extends Controller
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
 		
 		var cids = Lambda.map(distribs, function(d) return d.contract.id);
-		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);
-		return Lambda.array(Lambda.map(products, function(p) return p.infos(categsFromTaxo)));
+		return Lambda.array(db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false));
+		
 	}
+	
+	
 	
 }

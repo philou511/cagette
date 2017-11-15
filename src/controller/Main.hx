@@ -198,8 +198,10 @@ class Main extends Controller {
 			Sys.print(Json.stringify( {error:{code:e.code,message:e.message}} ));
 			
 		}catch (e:Dynamic){
-			
-			Sys.print(Json.stringify( {error:{message : Std.string(e)}} ));
+			sugoi.Web.setReturnCode(500);
+			var stack = "";
+			if ( App.config.DEBUG ) stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
+			Sys.print(Json.stringify( {error:{message : Std.string(e), stack:stack}} ));
 		}
 		
 	}
