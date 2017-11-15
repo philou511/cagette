@@ -31,10 +31,11 @@ class App {
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {		
-		untyped js.Browser.window._ = new App();	
+		trace("main");
+		untyped js.Browser.window._ = new App();
+		trace("_ is "+ untyped js.Browser.window._);
+		
 	}
-	
-
 	
 	public function getCart() {
 		return new Cart();
@@ -174,8 +175,6 @@ class App {
 		e.preventDefault();
 		return msg; //Gecko + Webkit, Safari, Chrome etc.
 	}
-	
-	
 	
 	
 }
