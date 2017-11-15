@@ -170,8 +170,8 @@ class App {
 		return false;
 	}
 
-	public function shop() {
-		ReactDOM.render(jsx('<$Store />'),  js.Browser.document.querySelector('#shop'));
+	public function shop(place:Int, date:String) {
+		ReactDOM.render(jsx('<$Store date=$date place=$place/>'),  js.Browser.document.querySelector('#shop'));
 	}
 
 	/**

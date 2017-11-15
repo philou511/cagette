@@ -3,45 +3,52 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import js.html.XMLHttpRequest;
 import haxe.Json;
+import utils.HttpUtil;
+import Common;
 
-// typedef RegisterBoxState = {
+typedef StoreProps = {
+  var place:Int;
+  var date:String;
+};
 
-// };
+typedef StoreState = {
+  var categories:Array<CategoryInfo>;
+};
 
-/**
- * ...
- * @author fbarbut
- */
-class Store extends react.ReactComponent
+class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 {
-  public function new() {
-    super();
-    var url = '/api/shop/categories?date=2017-11-17&place=872';
+  static inline var CATEGORY_URL = '/api/shop/categories';
+  static inline var PRODUCT_URL = '/api/shop/products';
 
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
+  override function componentDidMount() {
+    var categoriesRequest = HttpUtil.fetch(CATEGORY_URL, GET, {date: props.date, place: props.place}, JSON);
 
-    // if (contentType != null && contentType.length > 0)
-    //   http.setRequestHeader("Content-type", contentType);
+    categoriesRequest.then(function(categories:Dynamic) { 
+      var categories:Array<CategoryInfo> = categories.categories;
+      var subCategories = [];
 
-    // if (accept != null)
-    //   http.setRequestHeader("Accept", accept);
-
-    request.onreadystatechange = function() {
-      if (request.readyState == XMLHttpRequest.DONE)
-      {
-        try {
-          var json = Json.parse(request.responseText);
-          trace('SUCCESS', json);
-          // resolve(json);
-        }
-        catch (err: Dynamic)
-          trace('ERROR', err);
-          // reject(err);
+      for (c in categories) {
+        subCategories = subCategories.concat(c.subcategories);
       }
-    };
 
-    request.send();
+      setState({
+        categories: categories
+      });
+
+      var productsRequests = subCategories.map(function(category:CategoryInfo) {
+        return HttpUtil.fetch(PRODUCT_URL, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON).then(function(result) {
+
+          setState({
+            categories: categories
+          });
+
+        });
+      });
+
+
+
+
+    });
 
 
   }
