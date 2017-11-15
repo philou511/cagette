@@ -22,3 +22,4 @@
 -D react_global
 -main App
 -js www/js/app.js
+-debug
