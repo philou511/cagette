@@ -2,7 +2,9 @@
 -cp common
 -cp js
 -lib sugoi:git:https://github.com/bablukid/sugoi#i18n
+-lib hxleaflet
+-lib cagette-hosted
+-D plugins
 -lib react
--D react_global
 -main App
 -js www/js/app.js
