@@ -3,8 +3,9 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import js.html.XMLHttpRequest;
 import haxe.Json;
-import utils.HttpUtil;
+
 import Common;
+import utils.HttpUtil;
 
 typedef StoreProps = {
   var place:Int;
@@ -94,9 +95,9 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
         return jsx('<div key=${category.name}>Loading...</div>');
 
       return jsx('
-        <div className="subCategory" key=${category.name}>
+        <div className="sub-category" key=${category.name}>
           <h3>${category.name}</h3>
-          <div>
+          <div className="products">
             ${renderProducts(state.productsMap.get(category.id))}
           </div>
         </div>
@@ -104,19 +105,16 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     });
 
     return jsx('
-      <div className="categories">
+      <div className="sub-categories">
         $subCategories
       </div>
     ');
   }
 
   function renderProducts(products) {
-    trace('Products', products);
     return products.map(function(product) {
       return jsx('
-        <div className="product" key=${product.name}>
-          ${product.name}
-        </div>
+        <Product product=${product} key=${product.id} />
       ');
     });
   }
