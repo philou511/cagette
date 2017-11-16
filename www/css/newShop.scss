@@ -1,0 +1,37 @@
+/*
+  SHOP
+*/
+.shop{
+  
+  .products {
+    display: flex;
+
+    .product {
+      display: flex;
+      width: 250px;
+      margin-right: 10px;
+      cursor: default;
+      user-select: none;
+
+      img {
+        width: 120px;
+        height: 120px;
+      }
+
+      .body {
+        width: 100%;
+        background: white;
+        padding: 10px;
+      }
+
+      input {
+        width: 50%;
+      }
+
+      .button {
+        cursor: pointer;
+      }
+    }
+  }
+
+}

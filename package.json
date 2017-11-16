@@ -20,12 +20,16 @@
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
     "cross-env": "^5.1.1",
+    "node-sass": "^4.5.3",
+    "npm-run-all": "^4.1.2",
     "uglify-js": "^3.1.9",
     "watchify": "^3.9.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "haxe cagetteJs.hxml",
+    "build:sass": "node-sass html/css/newShop.scss html/css/newShop.css --watch",
+    "watch:sass": "npm run build:sass -- --watch",
     "build2": "babel src -d lib",
     "libs:dev": "browserify js/libs/libs.js -o www/js/libs.js -d",
     "libs:prod": "cross-env NODE_ENV=production browserify js/libs/libs.js | uglifyjs -c -m > www/js/libs.js"
