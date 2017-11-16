@@ -14,7 +14,7 @@ typedef OrderInSession = {
 		?distributionId:Int,
 		#end
 	} > ,
-	userId:Int,
+	?userId:Int,
 	total:Float, 	//price to pay
 	?paymentOp:Int, //payment operation ID
 }
