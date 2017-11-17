@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>::_("Attendance sheet")::</title>
+	<title>::_("Liste d'émargement")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
@@ -10,7 +10,7 @@
 	::fill head::
 	<td >
 		<h1 style='text-align:right;'>::user._amap.name::</h1>
-		<h2 style='text-align:right;'>::_("Delivery of the"):: ::hDate(date)::</h2>
+		<h2 style='text-align:right;'>::_("Distribution du"):: ::hDate(date)::</h2>
 	</td>
 	::end::
 	
@@ -20,7 +20,7 @@
 		<th>::_("Contrat")::</th>
 		<th>::_("Qté")::</th>
 		<th>::_("Produit")::</th>
-		<th>::_("U.P.")::</th>
+		<th>::_("P.U")::</th>
 		<th>::_("Frais")::</th>
 		<th>::_("Total")::</th>
 		
@@ -66,7 +66,7 @@
 				<tr>
 					<td>
 						::if m.userName2 != null::
-							::_("alternately with")::<br/>
+							::_("en alternance avec")::<br/>
 							<b>::m.userName2::</b>
 						::set total = 0::
 						::set productNum = 0::
@@ -81,7 +81,7 @@
 						::end::
 					</td>
 					<td style='text-align:right;'>
-						<b>::_("Delivery of the"):: ::hDate(date)::</b>
+						<b>::_("Distribution du"):: ::hDate(date)::</b>
 					</td>
 				</tr>
 			::raw "</table>" ::

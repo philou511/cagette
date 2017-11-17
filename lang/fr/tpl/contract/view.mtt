@@ -99,7 +99,7 @@
 				
 				<p ::cond d.canOrderNow()::>					
 					::if user._amap.hasShopMode()::
-						<a href="/shop/::d._place.id::/::d.date.toString().substr(0,10)::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Commander")::</a>					
+						<a href="/shop/::d._place.id::/::d.date.toString().substr(0,10)::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Commande")::</a>					
 					::end::					
 				</p>
 			</li>						
@@ -112,7 +112,7 @@
 		</p>
 		::else::
 		<p ::cond !user._amap.hasShopMode()::>
-			<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Commander")::</a>	
+			<a href="/contract/order/::c.id::" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Commande")::</a>	
 		</p>		
 		::end::
 		

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>::_("Attendance sheet")::</title>
+	<title>::_("Liste d'émargement")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
@@ -17,10 +17,10 @@
 				::set productNum = 0::
 				<tr>
 					<th>::_("Nom")::</th>
-					<th>::_("Contact details")::</th>
+					<th>::_("Coordonnées")::</th>
 					<th>::_("Qté")::</th>
 					<th>::_("Produit")::</th>
-					<th>::_("U.P.")::</th>
+					<th>::_("P.U")::</th>
 					<th>::_("Frais")::</th>
 					<th>::_("Total")::</th>
 					<th>::_("Signature")::</th>
@@ -40,11 +40,11 @@
 						::if m.userName != name || m.userName2 != name2::
 						
 								::set basket = getBasket(m.userId,place.id,date)::							
-								<span ::cond basket!=null::>::_("Num"):: ::basket.num:: - </span>
+								<span ::cond basket!=null::>::_("N°"):: ::basket.num:: - </span>
 						
 								<b>::m.userName::</b>
 								::if m.userName2 != null::
-									<br />::_("alternately with"):: <b>::m.userName2::</b>
+									<br />::_("en alternance avec"):: <b>::m.userName2::</b>
 								::end::
 								::set total = 0::
 								::set productNum = 0::
@@ -147,9 +147,9 @@
 									<td>::formatNum(total-tpaid):: ::currency()::</td>
 									<td>
 										::if(total>tpaid)::
-											::_("To be paid"):: ::formatNum(total-tpaid):: ::currency()::
+											::_("Reste à payer"):: ::formatNum(total-tpaid):: ::currency()::
 										::else::
-											::_("Pay back"):: ::formatNum(tpaid-total):: ::currency()::
+											::_("Rembourser"):: ::formatNum(tpaid-total):: ::currency()::
 										::end::
 									</td>
 								</tr>
@@ -163,7 +163,7 @@
 						<td></td>
 						::set ua = u.getUserAmap(user._amap)::
 						::set balance = ua.balance::
-						<th>::_("Balance of the member:"):: ::ua.balance:: ::currency()::</th>
+						<th>::_("Solde de l'adhérent :"):: ::ua.balance:: ::currency()::</th>
 						<td colspan="6">							
 							::set pending = 0::
 							
@@ -197,9 +197,9 @@
 									<td style="width:30px;"><img src="/img/tick_no.png"/></td>
 									<td>
 										::if(balance+pending<0)::
-											::_("To be paid"):: ::formatNum(abs(balance+pending)):: ::currency():: pour équilibrer le solde
+											::_("Reste à payer"):: ::formatNum(abs(balance+pending)):: ::currency():: pour équilibrer le solde
 										::else::
-											::_("Pay back"):: ::formatNum(balance+pending):: ::currency():: pour équilibrer le solde
+											::_("Rembourser"):: ::formatNum(balance+pending):: ::currency():: pour équilibrer le solde
 										::end::
 									</td>
 								</tr>

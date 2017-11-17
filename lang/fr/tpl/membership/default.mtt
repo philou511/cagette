@@ -3,11 +3,11 @@
 <div class="col-md-6">
 	
 	<div class="article">
-		<h2>::_("Subscription payment of"):: ::member.getCoupleName()::</h2>
+		<h2>::_("Cotisations de"):: ::member.getCoupleName()::</h2>
 		<table class="table table-bordered">
 			<tr>
-				<th>::_("Period")::</th>
-				<th>::_("Subscription payment date")::</th>
+				<th>::_("Période")::</th>
+				<th>::_("Date de cotisation")::</th>
 				<th>Actions</th>
 			</tr>
 			::foreach m memberships::

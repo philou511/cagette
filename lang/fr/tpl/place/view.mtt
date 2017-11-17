@@ -14,7 +14,7 @@
 		$$nullSafe(::place.address2::)<br/>
 		$$nullSafe(::place.zipCode::) $$nullSafe(::place.city::)
 		<div>
-			<a href="/" class="btn btn-default btn-sm">::_("Back")::</a>
+			<a href="/" class="btn btn-default btn-sm">::_("Retour")::</a>
 		</div>
 	</div>
 	

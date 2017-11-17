@@ -5,16 +5,16 @@
 
 	<table class="table">
 		<tr>
-			<td>::_("Subject:")::</td>
+			<td>::_("Sujet :")::</td>
 			<td>::msg.title::</td>
 		</tr>
 		<tr>
-			<td>::_("Sent on the")::</td>
+			<td>::_("Envoyé le")::</td>
 			<td>::hDate(msg.date)::</td>
 		</tr>
 		
 		<tr>
-			<td>::_("Sender")::</td>
+			<td>::_("Expéditeur")::</td>
 			<td>
 				::if msg._sender==null::
 					inconnu
@@ -25,7 +25,7 @@
 		</tr>
 		
 		<tr>
-			<td>::_("Receiver(s)")::</td>
+			<td>::_("Destinataire(s)")::</td>
 			<td>
 				::if list!=null::
 					::list::
@@ -36,7 +36,7 @@
 		</tr>
 		
 		<tr>
-			<td>::_("Status")::</td>
+			<td>::_("Statut")::</td>
 			<td>
 				<div style="max-height:200px;overflow-y:auto;">
 				<table class="table table-condensed" style="width:auto;">
@@ -67,7 +67,7 @@
 		</tr>
 	</table>	
 		
-	<a href="/messages" class="btn btn-default">::_("Back")::</a>	
+	<a href="/messages" class="btn btn-default">::_("Retour")::</a>	
 		
 	</div>
 </div>

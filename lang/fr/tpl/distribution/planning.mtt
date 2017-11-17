@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 	<div class="article">
-		<h2>::_("Planning of deliveries:"):: ::contract.name::</h2>
+		<h2>::_("Planning des livraisons :"):: ::contract.name::</h2>
 		
 		<p>
 			::raw _("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you.
@@ -68,14 +68,14 @@
 								::if !d.hasEnoughDistributors()::
 									<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
 								::else::
-									<span style="color: #AAA;font-size: 80%;">::_("full")::</span>
+									<span style="color: #AAA;font-size: 80%;">::_("complet")::</span>
 								::end::
 							::end::
 						::else::
 							::if !d.hasEnoughDistributors()::
 								<img src="/img/tick_no.png" onclick="reg('::d.id::',this)" />
 							::else::
-								::_("full")::
+								::_("complet")::
 							::end::
 						
 						::end::

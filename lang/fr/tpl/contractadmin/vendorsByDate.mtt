@@ -5,7 +5,7 @@
 	<div class="col-md-12">
 		<div class="article">
 			
-		<h2>::_("Global view of orders - delivery of"):: ::hDate(date)::</h2>
+		<h2>::_("Vue globale des commandes - livraison du"):: ::hDate(date)::</h2>
 		
 		<hr/>
 			
@@ -22,10 +22,10 @@
 				</th>
 			</tr>
 			<tr>
-				<th>::_("Quantities")::</th>
+				<th>::_("Quantités")::</th>
 				<th>::_("Produit")::</th>
-				<th>::_("Reference")::</th>
-				<th>::_("Unit price incl. VAT")::</th>
+				<th>::_("Référence")::</th>
+				<th>::_("Prix unitaire TTC")::</th>
 				<th>::_("Total")::</th>
 			</tr>
 

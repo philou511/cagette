@@ -26,7 +26,7 @@
 	
 	<form class="form-inline">
 		
-		<a onClick="$('#tagger input').attr('checked',true)" class='btn btn-default'>::_("Select all")::</a>
+		<a onClick="$('#tagger input').attr('checked',true)" class='btn btn-default'>::_("Tout cocher")::</a>
 		
 		<select name="tag" id="tag" class="form-control">
     
@@ -40,14 +40,14 @@
 			
 		</select>
 		
-		<a onClick="tagger.add()" class='btn btn-default'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ::_("Add the category")::</a>	
-		<a onClick="tagger.submit()" class='btn btn-success'>::_("Save modifications")::</a>	
+		<a onClick="tagger.add()" class='btn btn-default'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ::_("Ajouter la catégorie")::</a>	
+		<a onClick="tagger.submit()" class='btn btn-success'>::_("Enregistrer les modifications")::</a>	
 		
 	</form>
 	
 	<div ::cond user.isAmapManager()::>
 		<hr />
-		<a  href="/amapadmin/categories/" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ::_("Manage categories")::</a>	
+		<a  href="/amapadmin/categories/" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ::_("Gérer les catégories")::</a>	
 	</div>
 	
 	

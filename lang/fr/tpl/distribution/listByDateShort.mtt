@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>::_("Attendance sheet")::</title>
+	<title>::_("Liste d'émargement")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
@@ -19,7 +19,7 @@
 				::set productNum = 0::
 				<tr style="font-size:120%">
 					<th>::_("Nom")::</th>
-					<th>::_("Contact details")::</th>
+					<th>::_("Coordonnées")::</th>
 					<th>::_("Qté")::</th>
 					<th>::_("Produit")::</th>
 					
@@ -46,7 +46,7 @@
 									::m.userName::
 								</b>
 								::if m.userName2 != null::
-									<br />::_("alternately with"):: <b>::m.userName2::</b>
+									<br />::_("en alternance avec"):: <b>::m.userName2::</b>
 								::end::
 								::set total = 0::
 								::set productNum = 0::

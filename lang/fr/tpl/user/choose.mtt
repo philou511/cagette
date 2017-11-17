@@ -55,7 +55,7 @@
 						<h4>::group.name::</h4>
 						
 						<!--<div style="position:absolute;bottom:8px;right:8px;">
-							<a class="btn btn-primary btn-sm" href="/user/choose?amap=::group.id::"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Choose")::</a>	
+							<a class="btn btn-primary btn-sm" href="/user/choose?amap=::group.id::"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Choisir")::</a>	
 						</div>-->
 						
 					</a>
@@ -89,7 +89,7 @@
 	<!-- waiting list -->
 	<div class="col-md-12" ::cond wl.length>0::>
 		<div class="article">
-			<h4>::_("Subscriptions on waiting list")::</h4>
+			<h4>::_("Inscriptions en liste d'attente")::</h4>
 			<ul>
 			::foreach w wl::
 				<li> <a href="/group/::w._group.id::">::w._group.name::</a> ( inscrit depuis le ::hDate(w.date):: )</li>

@@ -3,7 +3,7 @@
 		<h3>::_("Commandes")::</h3>
 		
 		::if distribution!=null::
-		::_("Delivery of the"):: <b>::hDate(distribution.date)::</b>
+		::_("Distribution du"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		
 		<div style="margin:8px 0;">

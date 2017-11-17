@@ -7,13 +7,13 @@
 		<div class="col-md-6">
 			<p>
 				<strong>::membersNum::</strong> ::_("adhérents")::.<br/>
-				<strong>::contractsNum::</strong> ::_("contracts in progress")::.<br/>	
+				<strong>::contractsNum::</strong> ::_("contrats en cours")::.<br/>	
 				
 				<hr/>
 				
 				$$edit(Modifier les propriétés,/amap/edit)
 				
-				<a href="/amapadmin/addimage/" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span>&nbsp;::_("Choose a logo")::</a>
+				<a href="/amapadmin/addimage/" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span>&nbsp;::_("Définir un logo")::</a>
 			</p>
 			
 			<hr/>
@@ -26,7 +26,7 @@
 				<pre>http://::HOST::/group/::user._amap.id::</pre>
 			</p>
 			<p>
-				<a href="/group/::user._amap.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-chevron-right"></span>&nbsp;::_("Public page")::</a>
+				<a href="/group/::user._amap.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-chevron-right"></span>&nbsp;::_("Page publique")::</a>
 			</p>
 			
 		</div>

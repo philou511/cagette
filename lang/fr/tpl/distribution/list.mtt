@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>::_("Attendance sheet")::</title>
+	<title>::_("Liste d'émargement")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
 <body>
 	
 	::set date = getDate(distrib.date)::
-	<h2>::contract._amap.name:: - ::_("Delivery of the"):: ::date.dow:: ::date.d:: ::date.m::</h2>
+	<h2>::contract._amap.name:: - ::_("Distribution du"):: ::date.dow:: ::date.d:: ::date.m::</h2>
 	
 	
 	<h2>::distrib._contract.name:: - ::distrib._contract._vendor.name::</h2>	
@@ -60,7 +60,7 @@
 								::end::
 
 								::if m.userName2 != null::
-									::_("alternately with")::
+									::_("en alternance avec")::
 									<span  style="font-size:1.3em;">
 									::m.userName2::
 									</span>
@@ -74,9 +74,9 @@
 						</tr>
 						<tr>
 							<th>::_("Qté")::</th>
-							<th>::_("Ref")::</th>
+							<th>::_("Réf.")::</th>
 							<th>::_("Produit")::</th>
-							<th>::_("U.P.")::</th>
+							<th>::_("P.U")::</th>
 							<th>::_("Sous-total")::</th>
 							<th>::_("Frais")::</th>
 							<th>::_("Total")::</th>
@@ -148,7 +148,7 @@
 				
 				<!-- big total -->
 				<tr style="font-size:1.3em;">					
-					<td class="text-right">::_("Total order:"):: </td>
+					<td class="text-right">::_("Total Commande :"):: </td>
 					<td>::formatNum(total)::&nbsp;::currency()::</td>					
 					<td colspan="6"></td>
 				</tr>

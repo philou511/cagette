@@ -11,12 +11,12 @@
 			<span class="glyphicon glyphicon-exclamation-sign"></span>
 			::if error == 0::
 			
-			<b>::_("This account does not exist")::</b>
+			<b>::_("Ce compte n'existe pas")::</b>
 			<p>
-				::_("You are not yet registered on ::name::!", {name:NAME})::
+				::_("Vous n'êtes pas inscrit sur ::name:: !", {name:NAME})::
 			</p>
 			<p>
-				<b>::_("Are you member of a group that is using already ::name::?", {name:NAME})::</b>
+				<b>::_("Faites vous partie d'un groupe qui utilise déjà ::NAME:: ?", {name:NAME})::</b>
 				
 				<ul>
 					<li>
@@ -28,14 +28,14 @@
 						
 					</li>
 					<li>
-						<b>::_("No")::</b>
+						<b>::_("Non")::</b>
 						<p>
-							::_("If your group does not use ::name::, your can create a test account in order to test the software.", {name:NAME})::<br/>							
-							<a href="/p/hosted/register" class="btn btn-default btn-sm">::_("Create an account and test the software")::</a>
+							::_("Si votre groupe n'utilise pas ::NAME::, vous pouvez créer un compte de test pour tester le logiciel.", {name:NAME})::<br/>							
+							<a href="/p/hosted/register" class="btn btn-default btn-sm">::_("Créer un compte et tester le logiciel")::</a>
 						</p>
 					</li>
 					<li>
-						<b>::_("I am not part of any group")::</b>
+						<b>::_("Je ne fais partie d'aucune AMAP ou groupement d'achat")::</b>
 						<p>
 							::NAME:: ::raw _("is an online-software for purchasing products in groups of customers.<br/>
 							It is designed for existing groups. If you are looking for a group in your region, please have a look at this link:<br/>
@@ -48,7 +48,7 @@
 			</p>
 			::elseif error == 1::
 			
-			::_("Incorrect password.")::
+			::_("Mot de passe incorrect.")::
 			
 			
 			::end::

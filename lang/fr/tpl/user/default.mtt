@@ -1,7 +1,7 @@
 ::use 'design.mtt'::
 
 <ul>
-<li><a href="/user/forgottenPassword">::_("Password forgotten")::</a></li>
+<li><a href="/user/forgottenPassword">::_("mot de passe oublié")::</a></li>
 <li><a href="/user/login">::_("Connexion")::</a></li>
 </ul>
 

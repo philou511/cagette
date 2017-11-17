@@ -5,23 +5,23 @@
 			
 			<div class="text-center">
 				<h3>
-				::_("Orders from the"):: ::hDate(from):: ::_("to"):: ::hDate(to)::
+				::_("Commandes du"):: ::hDate(from):: ::_("au"):: ::hDate(to)::
 				</h3>	
 				<!--<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
 				<br/>
 				
 				::if(confirmed)::
-				::_("Validated")::
+				::_("Validée")::
 				::else::
-				::_("Not validated")::
+				::_("Non validée")::
 				::end::-->
 			</div>	
 			
 		::set uri = from.toString().substr(0,10)+"/"+to.toString().substr(0,10)::	
 		
 		<div class="text-center">
-			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("CSV Export"):: </a>-->
-			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> ::_("Totals per supplier")::</a>
+			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("Export CSV"):: </a>-->
+			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> ::_("Totaux par producteur")::</a>
 		</div>
 
 		
@@ -52,9 +52,9 @@
 					<tr>
 						<th>::_("Contrat")::</th>
 						<th>::_("Qté")::</th>
-						<th>::_("Ref")::</th>
+						<th>::_("Réf.")::</th>
 						<th>::_("Produit")::</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price incl. VAT")::">::_("U.P.")::</a></th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Prix unitaire TTC")::">::_("P.U")::</a></th>
 						<th>::_("Sous-total")::</th>
 						<th>::_("Frais")::</th>
 						<th>::_("Total")::</th>
@@ -126,7 +126,7 @@
 				
 					::if subtotal!=0:: 
 					<tr style="border-top:2px solid #AAA;">					
-						<th colspan="7" class="text-right">::_("Total member")::</th>
+						<th colspan="7" class="text-right">::_("Total adhérent")::</th>
 						<th>::formatNum(subtotal)::&nbsp;::currency()::</th>					
 						<th></th>
 						::set subtotal = 0::
@@ -139,7 +139,7 @@
 				
 			<!-- big total -->
 			<tr style="background:#CCC;font-size:1.3em;">					
-				<th colspan="7" class="text-right">::_("Total of all orders:"):: </th>
+				<th colspan="7" class="text-right">::_("Total de toutes les commandes :"):: </th>
 				<th>::formatNum(total)::&nbsp;::currency()::</th>					
 				<th></th>
 			</tr>

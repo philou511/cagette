@@ -1,10 +1,10 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-8">
 	<div class="article">
-		<h2>::_("Commander"):: ::c.name::</h2>
+		<h2>::_("Commande"):: ::c.name::</h2>
 		
 		<!--::if distribution!=null::
-		::_("For the delivery of the"):: <b>::hDate(distribution.date)::</b>
+		::_("Pour la livraison du"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		<hr/>-->
 		<p>
@@ -83,7 +83,7 @@
 			
 			::else::
 				<tr>
-					<td colspan="4">::_("There is currently no open order")::</td>
+					<td colspan="4">::_("Aucune commande ouverte pour l'instant")::</td>
 				</tr>
 			::end::
 			
@@ -115,7 +115,7 @@
 			</tr>
 		</table>
 			
-		<input type="submit" class="btn btn-primary" value="::_("Validate the order")::" name="submit" id="submit" />		
+		<input type="submit" class="btn btn-primary" value="::_("Valider la commande")::" name="submit" id="submit" />		
 			
 		</form>
 	
@@ -124,10 +124,10 @@
 <div class="col-md-4">
 	<div class="article">
 		<p>
-			::_("Supplier:"):: <b>::c._vendor.name::</b>
+			::_("Producteur :"):: <b>::c._vendor.name::</b>
 		</p>
 		<p>
-			::_("Contact in charge:"):: $$contact(::c._contact::)	
+			::_("Responsable :"):: $$contact(::c._contact::)	
 		</p>
 		
 	</div>

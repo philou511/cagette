@@ -1,14 +1,14 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-8">
 	<div class="article">
-		<h2>::_("Commander"):: ::c.name::</h2>
+		<h2>::_("Commande"):: ::c.name::</h2>
 		
 		::if distribution!=null::
-		::_("For the delivery of the"):: <b>::hDate(distribution.date)::</b>
+		::_("Pour la livraison du"):: <b>::hDate(distribution.date)::</b>
 		::end::
 
 		<p>
-			::raw_("As long as orders are open, you can come back on this page and modify your order.<br/>
+			::raw _("As long as orders are open, you can come back on this page and modify your order.<br/>
 			You can check any time your current orders on the following page <a href='/contract'>my account</a>.")::
 		</p>
 		
@@ -85,7 +85,7 @@
 			
 			::else::
 				<tr>
-					<td colspan="4">::_("There is currently no open order")::</td>
+					<td colspan="4">::_("Aucune commande ouverte pour l'instant")::</td>
 				</tr>
 			::end::
 			
@@ -117,9 +117,9 @@
 			</tr>
 		</table>
 			
-		<i>::_("Tip: to remove an order please key-in the quantity 0")::</i><br/><br/>
+		<i>::_("Note: Pour effacer une commande, saisissez une quantité égale à 0")::</i><br/><br/>
 		
-			<input type="submit" class="btn btn-primary" value="::_("Validate the order")::" name="submit" id="submit" />		
+			<input type="submit" class="btn btn-primary" value="::_("Valider la commande")::" name="submit" id="submit" />		
 			
 		</form>
 	
@@ -127,10 +127,10 @@
 </div>
 <div class="col-md-4">
 	<div class="article">
-		::_("Supplier:"):: <b>::c._vendor.name::</b>
+		::_("Producteur :"):: <b>::c._vendor.name::</b>
 		<br/>
 		<br/>
-		::_("Contact in charge:"):: $$contact(::c._contact::)
+		::_("Responsable :"):: $$contact(::c._contact::)
 	</div>
 </div>
 

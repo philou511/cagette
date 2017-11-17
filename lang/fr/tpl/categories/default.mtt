@@ -9,7 +9,7 @@
 <p ::cond groups.length==0 ::>
 	::_("You currently have no category.
 	Would you like to create the list of categories by default?")::
-	<a href="/amapadmin/categories/generate" class="btn btn-default">::_("Create the list of default categories")::</a>
+	<a href="/amapadmin/categories/generate" class="btn btn-default">::_("Créer la liste de catégories par défaut")::</a>
 </p>
 
 ::foreach g groups::
@@ -19,8 +19,8 @@
 			Groupe "::g.name::"
 		</th>
 		<th>
-			<a href="/amapadmin/categories/editGroup/::g.id::" class="btn btn-default btn-xs">::_("Modify group")::</a>
-			<a href="/amapadmin/categories/deleteGroup/::g.id::?token=::token::" class="btn btn-default btn-xs" $$confirm()>::_("Remove group")::</a>
+			<a href="/amapadmin/categories/editGroup/::g.id::" class="btn btn-default btn-xs">::_("Modifier groupe")::</a>
+			<a href="/amapadmin/categories/deleteGroup/::g.id::?token=::token::" class="btn btn-default btn-xs" $$confirm()>::_("Effacer groupe")::</a>
 		</th>
 	</tr>
 			
@@ -32,8 +32,8 @@
 				<span class="tag" style="background: ::c.getColor()::;">::c.name::</span>
 			</td>
 			<td>
-				<a href="/amapadmin/categories/edit/::c.id::" class="btn btn-default btn-xs">::_("Modify")::</a>
-				<a href="/amapadmin/categories/delete/::c.id::?token=::token::" class="btn btn-default btn-xs" $$confirm() >::_("Remove")::</a>
+				<a href="/amapadmin/categories/edit/::c.id::" class="btn btn-default btn-xs">::_("Modifier")::</a>
+				<a href="/amapadmin/categories/delete/::c.id::?token=::token::" class="btn btn-default btn-xs" $$confirm() >::_("Effacer")::</a>
 			</td>
 		</tr>
 		
@@ -50,5 +50,5 @@
 </table>
 ::end::
 
-<a href="/amapadmin/categories/insertGroup" class="btn btn-default">::_("Add a group")::</a>
+<a href="/amapadmin/categories/insertGroup" class="btn btn-default">::_("Ajouter un groupe")::</a>
 ::end::

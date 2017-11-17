@@ -17,11 +17,11 @@ table.table td{
 <hr/>
 
 <div style="color:#666;font-size:12px;">
-	::_("This e-mail was sent from"):: <a href="http://::HOST::">::_("Cagette.net")::</a>.
+	::_("Cet e-mail a été envoyé depuis"):: <a href="http://::HOST::">::_("Cagette.net")::</a>.
 
 	::if group!=null::
 		<br/>
-		::_("You receive this message because you are part of"):: <b>::group.name::</b>
+		::_("Vous recevez ce message car vous faites partie de"):: <b>::group.name::</b>
 	::end::
 
 	::if list!=null::

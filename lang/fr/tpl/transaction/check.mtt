@@ -23,7 +23,7 @@
 				::_("Prepare a check of <b>::formatNum(amount):: ::currency()::</b> payable to:"):: <b>::user._amap.checkOrder::</b>
 			</p>
 			<p>
-				::_("Mention this reference at the back of the check in order to facilitate its process:"):: <br/>
+				::_("Indiquez cette référence au dos du chèque afin de faciliter son traitement :"):: <br/>
 				<span style="font-size:1.3em;margin:12px;">::code::</span> 
 			</p>
 		

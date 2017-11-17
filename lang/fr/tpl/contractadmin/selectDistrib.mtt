@@ -7,7 +7,7 @@
 			<table class="table table-bordered table-hover table-striped">
 				<tr>
 					<th>::_("Date")::</th>
-					<th>::_("Location")::</th>
+					<th>::_("Lieu")::</th>
 					<th></th>
 				</tr>
 			::foreach d distributions::
@@ -36,7 +36,7 @@
 			<div class="alert alert-danger">
 				
 				<b>Aucune distribution prochainement.</b><br/>
-				<a href="/contractAdmin/distributions/::c.id::">::_("Click here to manage deliveries")::</a>
+				<a href="/contractAdmin/distributions/::c.id::">::_("Cliquez ici pour gérer les distributions")::</a>
 			</div>
 		::end::
 	
@@ -44,7 +44,7 @@
 	<div>
 		
 		<a href="?old=1" class="btn btn-default btn-sm">
-			::_("Old orders")::
+			::_("Commandes anciennes")::
 		</a>
 		
 		

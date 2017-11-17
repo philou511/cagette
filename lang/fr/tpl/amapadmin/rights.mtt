@@ -1,6 +1,6 @@
 ::use 'amapadmin/design.mtt'::
 
-		<h3>::_("Management of rights and access")::</h3>		
+		<h3>::_("Gestion des droits et accès")::</h3>		
 		
 		$$insert(Ajouter un droit,/amapadmin/editRight)
 		

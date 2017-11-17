@@ -26,7 +26,7 @@
 						<!-- connected and member of the group-->
 						<a href="/user/choose?amap=::group.id::" class="btn btn-primary">
 							<span class="glyphicon glyphicon-chevron-right"></span>
-							 ::_("Go to my account")::
+							 ::_("Accéder à mon compte")::
 						</a>
 					
 					::else::
@@ -37,12 +37,12 @@
 						::case::
 						
 							<p>
-								::_("Contact the person in charge in order to subscribe to this group and get to know membership conditions.")::
+								::_("Contactez le responsable pour vous inscrire à ce groupe et connaître les modalités d'adhésion.")::
 							</p>
 							<p>
 								<a href="::"mailto:"+group._contact.email+"?subject=Adhésion"::"  class="btn btn-primary">
 									<span class="glyphicon glyphicon-envelope"></span>
-									::_("Membership request")::
+									::_("Demande d'adhésion")::
 								</a>
 							</p>
 						::case::
@@ -54,7 +54,7 @@
 							<p>
 							<a href="/group/list/::group.id::"  class="btn btn-primary">
 								<span class="glyphicon glyphicon-chevron-right"></span>
-								::_("Subscription on waiting list")::
+								::_("Inscription liste d'attente")::
 							</a>
 							</p>
 							
@@ -62,13 +62,13 @@
 							<p>
 								<a href="/group/register/::group.id::"  class="btn btn-primary">
 									<span class="glyphicon glyphicon-chevron-right"></span>
-									::_("Free subscription")::
+									::_("Inscription libre")::
 								</a>
 							</p>
 							
 						::case::
 							<p>
-								::_("This group is full and do not accept any more subscription.")::
+								::_("Ce groupe est complet et n'accepte plus de nouvelles inscriptions.")::
 							</p>
 						::end::
 					
@@ -80,7 +80,7 @@
 					
 					::if user==null::
 						<hr />
-						<h4>::_("Already member? Log in:")::</h4>
+						<h4>::_("Déjà membre ? Connectez-vous :")::</h4>
 						<div class="text-center">
 							<form action="/user/login" method="post">
 								<input type="text" name="name" placeHolder="email" value="" class="form-control" />
@@ -105,7 +105,7 @@
 					
 					
 					<p>
-						<h3> ::_("Next deliveries")::</h3>
+						<h3> ::_("Prochaines distributions")::</h3>
 						
 						::foreach d group.getDeliveries(4)::
 						
@@ -147,9 +147,9 @@
 					<hr/>
 					
 					<p>
-						<h3>::_("Suppliers and products")::</h3>
+						<h3>::_("Producteurs et produits")::</h3>
 						<p>
-							::_("Non-complete extract of available products:")::
+							::_("Extrait non exhaustif des produits proposés :")::
 						</p>
 				
 						::foreach c contracts::
@@ -186,7 +186,7 @@
 	
 	<div class="col-md-12">
 		<div id="footer">
-			<a href="::_("http://www.cagette.net")::">::_("Cagette.net, the free software of food direct-selling")::</a>.	
+			<a href="::_("http://www.cagette.net")::">::_("Cagette.net, le logiciel libre du circuit court")::</a>.	
 		</div>
 		
 	</div>

@@ -1,8 +1,8 @@
 <table class="table table-striped">
 	<tr>
 		<th>::_("Date")::</th>
-		<th>::_("Subject")::</th>
-		<th>::_("Status")::</th>
+		<th>::_("Sujet du message")::</th>
+		<th>::_("Statut")::</th>
 	</tr>
 	
 	::foreach m emails::

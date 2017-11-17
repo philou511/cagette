@@ -15,7 +15,7 @@
 			<tr>
 				
 				<th>::_("Produit")::</th>
-				<th>::_("U.P.")::</th>
+				<th>::_("P.U")::</th>
 				<th>::_("Sous-total")::</th>
 				<th>::_("Frais")::</th>
 				<th>::_("Total")::</th>
@@ -46,7 +46,7 @@
 					::if o.canModify::
 					<input type="text" class="form-control" name="product::o.productId::" id="product::o.productId::" value="::o.quantity::" />
 					::else::
-					<span style="color:#AAA">::_("Order closed or already paid")::</span>
+					<span style="color:#AAA">::_("Commande close ou déjà payée")::</span>
 					::end::
 				</td>
 				
@@ -68,7 +68,7 @@
 		
 		
 		
-		<input type="submit" class="btn btn-primary" value="::_("Update the order")::" name="submit" id="submit" />
+		<input type="submit" class="btn btn-primary" value="::_("Mettre à jour la commande")::" name="submit" id="submit" />
 		
 		</form>
 	

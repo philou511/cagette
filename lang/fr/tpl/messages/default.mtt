@@ -9,10 +9,10 @@
 
 	<div class="article">
 		::if user.isAmapManager()::
-			<b>::_("All sent messages")::</b>
+			<b>::_("Tous les messages envoyés")::</b>
 			
 		::else::
-			<b>::_("Last sent messages")::</b>
+			<b>::_("Derniers messages envoyés")::</b>
 		::end::
 		<div style="overflow-y:scroll;height:600px;">
 		::foreach m sentMessages::
@@ -28,7 +28,7 @@
 
 <div class="col-md-9">
 	<div class="article">
-		<h3>::_("Send an e-mail")::	</h3>		
+		<h3>::_("Envoyer un e-mail")::	</h3>		
 		
 		::raw form::
 	</div>
