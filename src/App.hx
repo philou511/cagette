@@ -304,6 +304,9 @@ class App extends sugoi.BaseApp {
 		
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
 		Reflect.setField(ctx, 'hDate', App.current.view.hDate);
+		//i18n functions
+		ctx._ = App.current.view._;
+		ctx.__ = App.current.view.__;
 		
 		var tpl = loadTemplate(tpl);
 		var html = tpl.execute(ctx);	

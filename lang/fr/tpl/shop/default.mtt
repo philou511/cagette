@@ -79,6 +79,7 @@
 					<table class="product">
 						<tr>
 							<td style="vertical-align:top;">
+								
 								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
 									<img src="::p.image::" style="width:64px;height:64px;" />
 								</a>
@@ -86,14 +87,14 @@
 								<div ::cond p.organic:: title ="::_('Organic agriculture')::" data-toggle="tooltip" data-placement="bottom"><img src="/img/AB.png"/></div>
 							</td>
 							<td>
-								<h4>
-									<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')">
-										::p.name::
-										::if p.qt!=null && p.unitType!=null && p.qt>0::
-											::p.qt:: ::unit(p.unitType)::
-										::end::
-									</a>
-								</h4>
+								
+								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" class="productName">
+									::p.name::
+									::if p.qt!=null && p.unitType!=null && p.qt>0::
+										::p.qt:: ::unit(p.unitType)::
+									::end::
+								</a><br/>
+								
 								<span class="price">::formatNum(p.price):: ::currency()::</span>
 								<div>
 									<form class="form-inline">

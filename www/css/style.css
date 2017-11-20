@@ -283,14 +283,26 @@ div.reportHeader {
     color: #583816;
     border-bottom: 1px solid #CCC;
     width: 100%; }
+	
 .shop .product {
-  display: inline-block; }
-  .shop .product .name {
-    padding-left: 8px; }
-  .shop .product .warning {
-    font-size: 11px;
+  display: inline-block;
+}
+.shop .product .name {
+   padding-left: 8px;
+}
+.shop .product .warning {
+	font-size: 11px;
     color: #900;
-    font-weight: bold; }
+    font-weight: bold;
+}
+.shop .product .productName{
+	font-weight:bold;
+}
+.shop .product .btn-xs{
+	padding:1px 5px !important;
+	font-size:12px !important;
+}
+
 
 .price {
   font-weight: bold;
