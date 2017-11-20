@@ -106,7 +106,7 @@
 										<div class="warning" >::__("Seulement ::pstock:: en stock",{pstock:p.stock})::</div>
 										::end::
 									
-										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="Quantité"/>
+										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="::_('Quantity')::"/>
 										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Commander")::</a>
 										
 									::end::

@@ -134,6 +134,16 @@ typedef UserOrder = {
 	contractName:String,
 }
 
+typedef PlaceInfos = {
+	name:String,
+	address1:String,
+	address2:String,
+	zipCode:String,
+	city:String,
+	latitude:Float,
+	longitude:Float
+}
+
 enum OrderFlags {
 	InvertSharedOrder;
 	//Paid;

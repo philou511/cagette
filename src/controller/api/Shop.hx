@@ -3,6 +3,7 @@ import haxe.Json;
 import tink.core.Error;
 import Common;
 import db.Amap;
+import tools.ArrayTool;
 using tools.ObjectListTool;
 using Lambda;
 
@@ -141,8 +142,37 @@ class Shop extends Controller
 			Sys.print(Json.stringify( {success:true, products:products, category:catName} ));					
 		}else{
 			Sys.print(Json.stringify( {success:true, products:products, subcategory:catName} ));				
+		}		
+	}
+	
+	
+	public function doInit(args:{place:db.Place, date:String}){
+		
+		var out = {place:args.place.getInfos(), date:args.date, orderEndDates: new Map<String,Array<String>>() };
+		
+		//order end dates
+		var contracts = db.Contract.getActiveContracts(args.place.amap);
+	
+		for (c in Lambda.array(contracts)) {			
+			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);//only varying orders
+			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
 		
+		var date = Date.fromString(args.date);
+		var now = Date.now();
+		var cids = Lambda.map(contracts, function(c) return c.id);
+		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == args.place, false);
+		/*var distribs = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		out.orderEndDates  = new Map();
+		for ( d in distribs ) {
+			out.orderEndDates.set(d.orderEndDate.toString() , distribs.map(function(x) return x.orderEndDate);	
+		}*/
+		
+		
+		Sys.print(Json.stringify( out ));	
 	}
 	
 	private function getProductInfos(place:db.Place, date, ?categsFromTaxo = false):Array<ProductInfo>{

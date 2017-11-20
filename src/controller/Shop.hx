@@ -15,9 +15,6 @@ class Shop extends Controller
 		view.date = date;
 		view.group = place.amap;		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
-		
-		//trace(distribs);
-		//trace(products);
 	}
 	
 	/**

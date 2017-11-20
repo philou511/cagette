@@ -1,6 +1,8 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
+
 class Place extends Object
 {
 
@@ -62,6 +64,18 @@ class Place extends Object
 			"lat"		=>	t._("Latitude"),			
 			"lng"		=>	t._("Longitude"),			
 		];
+	}
+	
+	public function getInfos():PlaceInfos{
+		return {
+			name:name,
+			address1:address1,
+			address2:address2,
+			zipCode:zipCode,
+			city:city,
+			latitude : lat,
+			longitude: lng			
+		}
 	}
 	
 }

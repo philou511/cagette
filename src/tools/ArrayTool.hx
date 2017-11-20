@@ -28,16 +28,15 @@ class ArrayTool
 	 * @param	dateParamName	Name of the object field which is a date
 	 * @return
 	 */
-	public static function groupByDate(objs:Array<Dynamic>,dateParamName:String):Map<String,Dynamic>{
+	public static function groupByDate<T>(objs:Array<T>,dateFieldName:String):Map<String,Array<T>>{
 	
-		var out = new Map<String,Dynamic>();
+		var out = new Map<String, Array<T> >();
 		for ( o in objs){
-			var d : Date = Reflect.field(o, dateParamName);
+			var d : Date = Reflect.field(o, dateFieldName);
 			var group = out.get(d.toString());
-			if (group == null) group = [];
+			if (group == null) group = new Array<T>();
 			group.push(o);
-			out.set(d.toString(), group);
-			
+			out.set(d.toString(), group);			
 		}
 		return out;
 	}
