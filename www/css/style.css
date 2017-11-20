@@ -18,6 +18,10 @@ h1, h2, h3, h4 {
   font-style: italic;
 }
 
+body{
+	background-color:#F8F4E5 !important;    
+}
+
 /*h1 {
   color: #583816 !important; }
   h1 a {
