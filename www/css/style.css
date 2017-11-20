@@ -9,41 +9,128 @@
 
 
 **/
+
+@import url('https://fonts.googleapis.com/css?family=Cabin:400,400i|Sanchez');
+
 h1, h2, h3, h4 {
   margin-top: 4px !important;
-  margin-bottom: 8px !important; }
+  margin-bottom: 8px !important; 
+  font-style: italic;
+}
 
-h1 {
+/*h1 {
   color: #583816 !important; }
   h1 a {
-    color: #583816 !important; }
+    color: #583816 !important; }*/
 
-h2, h3, h4 {
-  color: #007700 !important; }
+/*h2, h3, h4 {
+  color: #007700 !important; }*/
 
 a {
   cursor: pointer; }
+
+/* navigation */
+
+ul.nav li {
+  text-transform: uppercase;
+  font-size: 14px;
+}
 
 /* subnav in contractadmin */
 .nav-pills > li.active > a {
   background-color: #e7e7e7 !important;
   color: #555 !important; }
 
+/* button */
+
+.btn {
+  text-transform: uppercase;
+  font-size: 14px !important;
+  padding : 7px 25px !important;
+}
+
+.btn-link {
+  text-transform: none;
+}
+
 /*-------------------*/
 #footer {
-  text-align: center;
-  background: #F0D277;
+  background: #84BD55;
   border-radius: 8px;
-  padding: 6px; }
-  #footer a {
-    color: #333; }
+  padding: 20px; }
+
+#footer a {
+  color: #333; 
+}
+
+#footer ul {
+  margin: 3px 0 0;
+  padding: 0;
+  text-align: left;
+  list-style: none;
+  font-size: 14px;
+}
+
+.cagsocialmedia {
+  vertical-align: top;
+}
+
+.cagsocialmedia li {
+  display: inline-block;
+  text-align: center; 
+ 
+}
+
+#footer .cagsocialmedia li a {
+  color : #fff;
+  font-size:  20px;
+  
+  min-width: 32px;
+  /*height: 32px;*/
+  padding: 2px 0 0;
+  display : inline-block;
+}
+
+.cagfb {
+  background-color : #4267B2;
+}
+
+.cagtwitter {
+  background-color  : #1DA1F2;
+}
+
+.cagyoutube {
+  background-color  :  #FF0000;
+}
+
+
+
 
 /*pre{
 	padding:8px;
 	background:white;
 }*/
-body {
-  background: url("/img/bg.gif"); }
+/*body {
+  background: url("/img/bg.gif"); }*/
+
+  
+.gocagettepro {
+  text-align : center;
+  margin: 40px 0; 
+}
+
+#subfooter {
+  /*background-color : #313131;
+  color : #fff;*/
+  text-align: center;
+  font-size : 14px;
+  padding : 15px 0 25px 0; 
+}
+
+#subfooter span {
+  color :#979797;
+  font-size : 11px;
+}
 
 .sqlLog {
   margin-top: 24px;
@@ -68,8 +155,8 @@ body {
     margin: 8px 8px 8px 90px; }
 
 span.panel-title {
-  font-family: 'Cantora One', sans-serif !important;
-  color: #966125 !important;
+  /*font-family: 'Cantora One', sans-serif !important;*/
+ /* color: #966125 !important;*/
   font-size: 20px !important;
   font-weight: normal !important; }
 
@@ -89,19 +176,21 @@ span.panel-title {
 /* block marron */
 .block {
   margin-bottom: 12px;
-  background: #F0D277;
+  background: #fff;
   border-radius: 8px;
   position: relative;
-  padding: 8px; }
+  padding: 8px; 
+  font-size : 15px;
+}
 
 /* block marron + contours */
 .block2 {
   margin-bottom: 32px;
-  background: #F0D277;
+  background: #fafafa;
   border-radius: 8px;
   position: relative;
   padding: 8px;
-  border: 2px solid #C3A04C; }
+  border: 2px solid #e1dfd4; }
 
 /* Petit tableau contenant descriptif d'un produit */
 table.product {
@@ -142,7 +231,7 @@ div.reportHeader {
 /* make <a> like clickable divs  */
 .clickable {
   display: block;
-  border: 1px solid #CCC;
+  border: 1px solid #e1dfd4;
   border-radius: 8px;
   padding: 8px;
   color: inherit;
@@ -150,22 +239,23 @@ div.reportHeader {
   margin-bottom: 12px; }
   .clickable:hover {
     cursor: pointer;
-    background-color: #f5e1a5;
-    border-color: #ebc349;
+    background-color: #fafafa;
+    /*border-color: #ebc349;*/
     text-decoration: none;
     transition: all 0.15s ease; }
   .clickable:active {
     cursor: pointer;
-    background-color: #F0D277;
-    border-color: #ebc349;
+    background-color: #fafafa;
+ /*   border-color: #ebc349;*/
     text-decoration: none;
     transform: scale(0.95); }
+
 
 /*
 	SHOP
 */
 .shop .header {
-  background-color: #749E3C;
+  background-color: #649939;
   display: inline-block;
   width: 100%;
   border-top-left-radius: 8px;
@@ -215,7 +305,7 @@ div.reportHeader {
 
 .cartDiv {
   margin-bottom: 16px;
-  background: #007700;
+  background: #f19818;
   border-radius: 8px;
   position: relative;
   padding: 8px;
@@ -264,7 +354,7 @@ div.reportHeader {
 
 .dateBox {
   border-radius: 8px;
-  background-color: #B2823F;
+  background-color: #e1dfd4;
   color: #FFF;
   font-size: 13px;
   line-height: 13px;
@@ -273,7 +363,7 @@ div.reportHeader {
   width: 90px;
   margin: 0;
   padding: 4px;
-  box-shadow: 4px 4px 0px #8E662A;
+  box-shadow: 4px 4px 0px #292929;
   /* place link */ }
   .dateBox .box {
     line-height: 22px;
