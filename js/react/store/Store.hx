@@ -123,7 +123,12 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
   override public function render(){
     return jsx('
       <div className="shop">
-        ${renderCategories()}
+        <ProductList
+          categories=${state.categories}
+          productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
+          filters=${state.filters}
+          addToCart=$addToCart
+        />
         <Filters
           categories=${state.categories}
           filters=${state.filters}
@@ -137,60 +142,6 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
         />
       </div>
     ');
-  }
-
-  function renderCategories() {
-    var categories = state.categories.map(function(category) {
-      if (!state.filters.has(category.name))
-        return null;
-
-      return jsx('
-        <div className="category" key=${category.name}>
-          <h2>${category.name}</h2>
-          <div className="subCategories">
-            ${renderSubCategories(category)}
-          </div>
-        </div>
-      ');
-    });
-
-    return jsx('
-      <div className="categories">
-        $categories
-      </div>
-    ');
-  }
-
-  function renderSubCategories(category) {
-    var subCategories = category.subcategories.map(function(category) {
-      if (!state.productsBySubcategoryIdMap.exists(category.id))
-        return jsx('<div key=${category.name}>Loading...</div>');
-
-      var products = state.productsBySubcategoryIdMap.get(category.id);
-
-      return jsx('
-        <div className="sub-category" key=${category.name}>
-          <h3>${category.name}</h3>
-          <div className="products">
-            ${renderProducts(products)}
-          </div>
-        </div>
-      ');
-    });
-
-    return jsx('
-      <div className="sub-categories">
-        $subCategories
-      </div>
-    ');
-  }
-
-  function renderProducts(products) {
-    return products.map(function(product) {
-      return jsx('
-        <Product product=${product} key=${product.id} addToCart=$addToCart/>
-      ');
-    });
   }
 }
 
