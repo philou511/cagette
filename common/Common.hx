@@ -1,18 +1,18 @@
 /**
- * Shared entities between server and client
+ * Common.hx : Shared entities between server and client
  */
 
 
-//A temporary order, waiting for being paid and definitely recorded.
 @:keep
 typedef OrderSimple = {
-	products:Array <{
+	products: Array<{
 		product:ProductInfo,
-		quantity:Float
-	} > ,
-	total:Float, 	//price to pay
+		quantity:Int
+	}>,
+	total:Float
 }
 
+//A temporary order, waiting for being paid and definitely recorded.
 @:keep
 typedef OrderInSession = {
 	products:Array <{
@@ -54,6 +54,12 @@ typedef ProductInfo = {
 	#if js
 	element:js.JQuery,
 	#end
+}
+
+@:keep
+typedef ProductWithQuantity = {
+	product: ProductInfo,
+	quantity: Int
 }
 
 enum UnitType{

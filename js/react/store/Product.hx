@@ -31,7 +31,7 @@ class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductS
           <div>${product.name}</div>
           <div>${product.price} €</div>
           <input type="number" value=${state.quantity} onChange=$updateQuantity />
-          <div className="button" onClick=$addToCart>Commander</div>
+          <div className="button" onClick=$addToCart>Ajouter</div>
         </div>
       </div>
     ');

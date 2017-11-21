@@ -1,22 +1,68 @@
 /*
   SHOP
 */
-.shop .products {
-  display: flex; }
-  .shop .products .product {
+.shop .categories {
+  width: 70%; }
+  .shop .categories .products {
     display: flex;
-    width: 250px;
-    margin-right: 10px;
-    cursor: default;
-    user-select: none; }
-    .shop .products .product img {
-      width: 120px;
-      height: 120px; }
-    .shop .products .product .body {
-      width: 100%;
-      background: white;
-      padding: 10px; }
-    .shop .products .product input {
-      width: 50%; }
-    .shop .products .product .button {
-      cursor: pointer; }
+    flex-wrap: wrap; }
+    .shop .categories .products .product {
+      display: flex;
+      width: 250px;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+      cursor: default;
+      user-select: none; }
+      .shop .categories .products .product img {
+        width: 120px;
+        height: 120px; }
+      .shop .categories .products .product .body {
+        width: 100%;
+        background: white;
+        padding: 10px; }
+      .shop .categories .products .product input {
+        width: 50%; }
+      .shop .categories .products .product .button {
+        cursor: pointer; }
+
+.shop .cart {
+  position: fixed;
+  top: 140px;
+  right: 47px;
+  width: 25%;
+  padding: 1rem;
+  background-color: white;
+  cursor: default; }
+  .shop .cart .products-to-order {
+    margin-bottom: 2rem; }
+    .shop .cart .products-to-order .product-to-order {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: .5rem; }
+      .shop .cart .products-to-order .product-to-order div {
+        display: flex; }
+      .shop .cart .products-to-order .product-to-order .cart-action-buttons > * {
+        display: block;
+        margin-left: .5rem;
+        width: 2rem;
+        width: 2rem;
+        color: white;
+        text-align: center;
+        background-color: #070;
+        cursor: pointer;
+        line-height: 1.8rem;
+        border-radius: 50%; }
+  .shop .cart .cart-footer {
+    bottom: 1rem; }
+  .shop .cart .total {
+    display: flex;
+    justify-content: space-between; }
+  .shop .cart .order-button {
+    margin-top: 1rem;
+    padding: .5rem;
+    background-color: #070;
+    color: white;
+    cursor: pointer; }
+    .shop .cart .order-button--disabled {
+      background-color: #555;
+      cursor: not-allowed; }

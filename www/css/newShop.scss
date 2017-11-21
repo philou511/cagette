@@ -2,34 +2,99 @@
   SHOP
 */
 .shop{
+
+  .categories {
+    width: 70%;
   
-  .products {
-    display: flex;
-
-    .product {
+    .products {
       display: flex;
-      width: 250px;
-      margin-right: 10px;
-      cursor: default;
-      user-select: none;
+      flex-wrap: wrap;
 
-      img {
-        width: 120px;
-        height: 120px;
+      .product {
+        display: flex;
+        width: 250px;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        cursor: default;
+        user-select: none;
+
+        img {
+          width: 120px;
+          height: 120px;
+        }
+
+        .body {
+          width: 100%;
+          background: white;
+          padding: 10px;
+        }
+
+        input {
+          width: 50%;
+        }
+
+        .button {
+          cursor: pointer;
+        }
       }
+    }
+  }
 
-      .body {
-        width: 100%;
-        background: white;
-        padding: 10px;
+  .cart {
+    position: fixed;
+    top: 140px;
+    right: 47px;
+    width: 25%;
+    padding: 1rem;
+    background-color: white;
+    cursor: default;
+
+    .products-to-order {
+      margin-bottom: 2rem;
+
+      .product-to-order {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: .5rem;
+
+        div {
+          display: flex;
+        }
+
+        .cart-action-buttons > * {
+          display: block;
+          margin-left: .5rem;
+          width: 2rem;
+          width: 2rem;
+          color: white;
+          text-align: center;
+          background-color: #070;
+          cursor: pointer;
+          line-height: 1.8rem;
+          border-radius: 50%;
+        }
       }
+    }
 
-      input {
-        width: 50%;
-      }
+    .cart-footer {
+      bottom: 1rem;
+    }
 
-      .button {
-        cursor: pointer;
+    .total {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .order-button {
+      margin-top: 1rem;
+      padding: .5rem;
+      background-color: #070;
+      color: white;
+      cursor: pointer;
+
+      &--disabled {
+        background-color: #555;
+        cursor: not-allowed;
       }
     }
   }

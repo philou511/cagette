@@ -71,16 +71,41 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     });
   }
 
-  function addToCart(productToAdd:ProductInfo, quantity:Int) {
+  function addToCart(productToAdd:ProductInfo, quantity:Int):Void {
     setState({
       order: CartUtils.addToCart(state.order, productToAdd, quantity)
     });
+  }
+
+  function removeFromCart(productToRemove:ProductInfo, ?quantity:Int):Void {
+    setState({
+      order: CartUtils.removeFromCart(state.order, productToRemove, quantity)
+    });
+  }
+
+  function submitOrder(order:OrderSimple) {
+    var orderInSession = {
+      total: order.total,
+      products: order.products.map(function(p:ProductWithQuantity){
+        return {
+          productId: p.product.id,
+          quantity: p.quantity
+        };
+      })
+    }
+    trace('Order', orderInSession);
   }
 
   override public function render(){
     return jsx('
       <div className="shop">
         ${renderCategories()}
+        <Cart
+          order=${state.order}
+          addToCart=$addToCart
+          removeFromCart=$removeFromCart
+          submitOrder=$submitOrder
+        />
       </div>
     ');
   }
