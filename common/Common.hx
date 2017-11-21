@@ -7,7 +7,7 @@
 @:keep
 typedef OrderSimple = {
 	products:Array <{
-		productId:ProductInfoSummary,
+		product:ProductInfo,
 		quantity:Float
 	} > ,
 	total:Float, 	//price to pay
@@ -26,13 +26,6 @@ typedef OrderInSession = {
 	?userId:Int,
 	total:Float, 	//price to pay
 	?paymentOp:Int, //payment operation ID
-}
-
-
-@:keep
-typedef ProductInfoSummary = {
-	id : Int,
-	name : String
 }
 
 @:keep

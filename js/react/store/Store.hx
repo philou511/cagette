@@ -8,6 +8,7 @@ import haxe.Json;
 using Lambda;
 
 import Common;
+import utils.CartUtils;
 import utils.HttpUtil;
 
 typedef StoreProps = {
@@ -41,12 +42,12 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
   override function componentDidMount() {
     var categoriesRequest = HttpUtil.fetch(CATEGORY_URL, GET, {date: props.date, place: props.place}, JSON);
 
-    categoriesRequest.then(function(categories:Dynamic) { 
+    categoriesRequest.then(function(categories:Dynamic) {
       var categories:Array<CategoryInfo> = categories.categories;
       var subCategories = [];
 
       for (category in categories) {
-        subCategories = subCategories.concat(category.subcategories);        
+        subCategories = subCategories.concat(category.subcategories);
       }
 
       setState({
@@ -71,28 +72,8 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
   }
 
   function addToCart(productToAdd:ProductInfo, quantity:Int) {
-    var products = state.order.products.copy();
-    var total = state.order.total;
-
-    var existingProduct = products.find(function(product) {
-      return product.productId == productToAdd.id;
-    });
-
-    if (existingProduct == null)
-      products.push({
-        productId: productToAdd.id,
-        quantity: quantity
-      });
-    else
-      existingProduct.quantity += quantity;
-
-    total += quantity * productToAdd.price;
-
     setState({
-      order: {
-        products: products,
-        total: total
-      }
+      order: CartUtils.addToCart(state.order, productToAdd, quantity)
     });
   }
 

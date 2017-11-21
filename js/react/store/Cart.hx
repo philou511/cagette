@@ -4,7 +4,7 @@ import react.ReactMacro.jsx;
 import Common;
 
 typedef CartProps = {
-  var order:OrderSimple
+  var order:OrderSimple;
 };
 
 class Cart extends react.ReactComponentOfProps<CartProps>
