@@ -5,6 +5,7 @@ import Common;
 
 typedef ProductProps = {
   var product:ProductInfo;
+  var addToCart:ProductInfo -> Int -> Void;
 };
 
 typedef ProductState = {
@@ -46,7 +47,7 @@ class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductS
   }
 
   function addToCart() {
-    trace('Adding to Cart', props.product.name, state.quantity);
+    props.addToCart(props.product, state.quantity);
   }
 
   function openPopin() {
