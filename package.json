@@ -27,7 +27,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "haxe cagetteJs.hxml",
+    "build": "npm-run-all --parallel build:*",
+    "build:js": "haxe cagetteJs.hxml",
     "build:sass": "node-sass html/css/newShop.scss html/css/newShop.css --watch",
     "watch:sass": "npm run build:sass -- --watch",
     "build2": "babel src -d lib",
