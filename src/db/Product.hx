@@ -103,6 +103,7 @@ class Product extends Object
 			contractTaxName : contract.percentageName,
 			desc : desc,
 			categories : null,
+			subcategories:null,
 			orderable : this.contract.isUserOrderAvailable(),
 			stock : contract.hasStockManagement() ? this.stock : null,
 			hasFloatQt : hasFloatQt,
@@ -113,9 +114,11 @@ class Product extends Object
 		
 		if(populateCategories){
 			if (CategFromTaxo){
-				o.categories = [txpProduct==null?null:txpProduct.category.id];
+				o.categories = [txpProduct == null?null:txpProduct.category.id];
+				o.subcategories = [txpProduct == null?null:txpProduct.subCategory.id];
 			}else{
 				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
+				o.subcategories = o.categories;
 			}
 		}
 		

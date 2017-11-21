@@ -33,7 +33,8 @@ typedef ProductInfo = {
 	contractTax : Float, 		//pourcentage de commission défini dans le contrat
 	contractTaxName : String,	//label pour la commission : ex: "frais divers"
 	desc : String,
-	categories : Array<Int>,	//tags
+	categories : Array<Int>,	//used in old shop
+	subcategories : Array<Int>,  //used in new shop
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
