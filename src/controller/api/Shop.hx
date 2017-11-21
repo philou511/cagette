@@ -148,7 +148,7 @@ class Shop extends Controller
 	
 	public function doInit(args:{place:db.Place, date:String}){
 		
-		var out = {place:args.place.getInfos(), date:args.date, orderEndDates: new Map<String,Array<String>>() };
+		var out = {place:args.place.getInfos(), orderEndDates: new Array<{date:String,contracts:Array<String>}>() };
 		
 		//order end dates
 		var contracts = db.Contract.getActiveContracts(args.place.amap);
@@ -165,11 +165,11 @@ class Shop extends Controller
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == args.place, false);
-		/*var distribs = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
-		out.orderEndDates  = new Map();
-		for ( d in distribs ) {
-			out.orderEndDates.set(d.orderEndDate.toString() , distribs.map(function(x) return x.orderEndDate);	
-		}*/
+		var distribByDate = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		out.orderEndDates  = [];
+		for ( k in distribByDate.keys() ) {
+			out.orderEndDates.push( {date:k , contracts: distribByDate.get(k).map( function(x) return x.contract.name)} );	
+		}
 		
 		
 		Sys.print(Json.stringify( out ));	
