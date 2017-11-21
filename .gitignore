@@ -24,12 +24,9 @@ MakeFile
 *.map
 .haxelib
 html
-<<<<<<< 5af55c997caba8264cef1c2a43f7ea2639932ec9
+
 www/css/.sass-cache
-=======
-.temp
-<<<<<<< 3698429062c43a81093c543a5f1c1b212f2f7b7b
->>>>>>> using haxe-modular to bundle only npm dependencies
-=======
 www/css/*.css
->>>>>>> removed css files from versioning
+.temp
+js/test/tests.js
+
