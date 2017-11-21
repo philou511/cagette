@@ -19,7 +19,8 @@ h1, h2, h3, h4 {
 }
 
 body{
-	background-color:#F8F4E5 !important;    
+  background-color:#F8F4E5 !important;    
+  
 }
 
 /*h1 {
@@ -52,6 +53,18 @@ ul.nav li {
   font-size: 14px !important;
   padding : 7px 25px !important;
 }
+
+.btn-sm {
+  font-size: 12px !important;
+  padding : 5px 10px !important;
+}
+
+.btn-xs {
+  font-size: 11px !important;
+  padding : 2px 5px !important;
+}
+
+
 
 .btn-link {
   text-transform: none;
