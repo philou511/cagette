@@ -8,7 +8,7 @@
     "@gray-lighter": "lighten(@gray-base, 93.5%)",
     "@brand-primary": "#84bd55",
     "@brand-success": "#ffe400",
-    "@brand-info": "#5bc0de",
+    "@brand-info": "#a53fa1",
     "@brand-warning": "#f0ad4e",
     "@brand-danger": "#d9534f",
     "@body-bg": "#fbf8ec",
@@ -48,9 +48,9 @@
     "@padding-xs-horizontal": "5px",
     "@line-height-large": "1.3333333",
     "@line-height-small": "1.5",
-    "@border-radius-base": "2px",
+    "@border-radius-base": "3px",
     "@border-radius-large": "6px",
-    "@border-radius-small": "3px",
+    "@border-radius-small": "2px",
     "@component-active-color": "#fff",
     "@component-active-bg": "@brand-primary",
     "@caret-width-base": "4px",
@@ -431,5 +431,5 @@
     "scrollspy.js",
     "transition.js"
   ],
-  "customizerUrl": "https://getbootstrap.com/docs/3.3/customize/?id=616eabec34e7b10ee31d8adaa8d3ebc7"
+  "customizerUrl": "https://getbootstrap.com/docs/3.3/customize/?id=64df87a297b652b8b49dfb52ee9e727c"
 }
