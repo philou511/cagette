@@ -1,7 +1,6 @@
 package react.store;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import react.ReactUtil.copy;
 import js.html.XMLHttpRequest;
 import haxe.Json;
 
@@ -20,6 +19,7 @@ typedef StoreState = {
   var categories:Array<CategoryInfo>;
   var productsBySubcategoryIdMap:Map<Int, Array<ProductInfo>>;
   var order:OrderSimple;
+  var filters:Array<String>;
 };
 
 class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
@@ -31,6 +31,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     super();
     state = {
       categories: [],
+      filters: [],
       productsBySubcategoryIdMap: new Map(),
       order: {
         products: [],
@@ -51,7 +52,10 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
       }
 
       setState({
-        categories: categories
+        categories: categories,
+        filters: categories.map(function(category) {
+          return category.name;
+        })
       });
 
       var productsRequests = subCategories.map(function(category:CategoryInfo) {
@@ -68,6 +72,26 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
           });
         });
       });
+    });
+  }
+
+  function toggleFilter(category:String) {
+    var filters = state.filters.copy();
+
+    if (state.filters.find(function(categoryInFilter) {
+      return category == categoryInFilter;
+    }) != null)
+      filters.remove(category);
+    else
+      filters.push(category);
+
+    if (filters.length == 0)
+      filters = state.categories.map(function(category) {
+        return category.name;
+      });
+
+    setState({
+      filters: filters
     });
   }
 
@@ -100,6 +124,11 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     return jsx('
       <div className="shop">
         ${renderCategories()}
+        <Filters
+          categories=${state.categories}
+          filters=${state.filters}
+          toggleFilter=$toggleFilter
+        />
         <Cart
           order=${state.order}
           addToCart=$addToCart
@@ -112,6 +141,9 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 
   function renderCategories() {
     var categories = state.categories.map(function(category) {
+      if (!state.filters.has(category.name))
+        return null;
+
       return jsx('
         <div className="category" key=${category.name}>
           <h2>${category.name}</h2>

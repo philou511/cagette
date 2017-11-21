@@ -25,6 +25,20 @@
       .shop .categories .products .product .button {
         cursor: pointer; }
 
+.shop .filters {
+  position: fixed;
+  bottom: 140px;
+  right: 47px;
+  width: 25%;
+  padding: 1rem;
+  background-color: white;
+  cursor: default; }
+  .shop .filters .filter {
+    color: #BBB;
+    cursor: pointer; }
+    .shop .filters .filter.active {
+      color: #070; }
+
 .shop .cart {
   position: fixed;
   top: 140px;
