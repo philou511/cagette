@@ -11,18 +11,13 @@
 	sqllog="0"
 	
 	debug="0"
-	cache="1"
+	cache="0"
 	maintain="0"
 	cachetpl="0"
-	key="carotteMagique"
+	key="localdevkey"
 	
 	smtp_host="smtp.mandrillapp.com"
 	smtp_port="587"
 	smtp_user="mon_email@mon_domaine.fr"
 	smtp_pass="blabla"
-
-	mt.net.form.Form.HTML5 = "1"
-	mt.net.form.Form.USE_TWITTER_BOOTSTRAP = "1"
-	
-	google_geocoding_key="blabla"
 />

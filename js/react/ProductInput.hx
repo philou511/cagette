@@ -1,4 +1,5 @@
 package react;
+import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;

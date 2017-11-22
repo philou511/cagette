@@ -120,12 +120,12 @@ class App {
 		return false;
 	}
 
-	public function registerBox(redirectUrl:String) {
+	public function registerBox(redirectUrl:String,?phoneRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("Inscription");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 
