@@ -28,4 +28,8 @@ html
 www/css/.sass-cache
 =======
 .temp
+<<<<<<< 3698429062c43a81093c543a5f1c1b212f2f7b7b
 >>>>>>> using haxe-modular to bundle only npm dependencies
+=======
+www/css/*.css
+>>>>>>> removed css files from versioning
