@@ -170,6 +170,12 @@ enum OrderFlags {
 }
 
 
+typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,price:Float,total:Float};
+typedef OrderByEndDate = {
+	date: String,
+	contracts: Array<String>
+};
+
 /**
 	Event enum used for plugins.
 	

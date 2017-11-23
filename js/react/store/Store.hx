@@ -16,6 +16,8 @@ typedef StoreProps = {
 };
 
 typedef StoreState = {
+  var place:PlaceInfos;
+  var orderByEndDates:Array<OrderByEndDate>;
   var categories:Array<CategoryInfo>;
   var productsBySubcategoryIdMap:Map<Int, Array<ProductInfo>>;
   var order:OrderSimple;
@@ -26,10 +28,14 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 {
   static inline var CATEGORY_URL = '/api/shop/categories';
   static inline var PRODUCT_URL = '/api/shop/products';
+  static inline var INIT_URL = '/api/shop/init';
+  static inline var VIEW_URL = '/place/view';
 
   public function new() {
     super();
     state = {
+      place: null,
+      orderByEndDates: [],
       categories: [],
       filters: [],
       productsBySubcategoryIdMap: new Map(),
@@ -42,6 +48,15 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 
   override function componentDidMount() {
     var categoriesRequest = HttpUtil.fetch(CATEGORY_URL, GET, {date: props.date, place: props.place}, JSON);
+    var initRequest = HttpUtil.fetch(INIT_URL, GET, {date: props.date, place: props.place}, JSON);
+
+    initRequest.then(function(infos:Dynamic) {
+      trace('infos', infos);
+      setState({
+        place: infos.place,
+        orderByEndDates: infos.orderEndDates
+      });
+    });
 
     categoriesRequest.then(function(categories:Dynamic) {
       var categories:Array<CategoryInfo> = categories.categories;
@@ -123,6 +138,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
   override public function render(){
     return jsx('
       <div className="shop">
+        ${renderHeader()}
         <ProductList
           categories=${state.categories}
           productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
@@ -140,6 +156,68 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
           removeFromCart=$removeFromCart
           submitOrder=$submitOrder
         />
+      </div>
+    ');
+  }
+
+  function renderHeader() {
+    if (state.orderByEndDates == null || state.orderByEndDates.length == 0)
+      return null;
+
+    var endDates;
+
+    if (state.orderByEndDates.length == 1) {
+      var orderEndDate = state.orderByEndDates[0].date;
+      endDates = [jsx('<div key=$orderEndDate>La commande fermera le $orderEndDate</div>')];
+    }
+    else {
+      endDates = state.orderByEndDates.map(function(order) {
+        if (order.contracts.length == 1)
+          return jsx('
+            <div key=${order.date}>
+              La commande ${order.contracts[0]} fermera le: ${order.date} 
+            </div>
+          ');
+
+        return jsx('
+          <div key=${order.date}>
+            Les autres commandes fermeront: ${order.date} 
+          </div>
+        ');
+      });
+    }
+
+    var viewUrl = '$VIEW_URL/${props.place}';
+    var addressBlock = Lambda.array([
+      state.place.address1,
+      state.place.address2,
+      [state.place.zipCode, state.place.city].join(" "),
+    ].mapi(function(index, element) {
+      if (element == null)
+        return null;
+      return jsx('<div className="address" key=$index>$element</div>');
+    }));
+
+    return jsx('
+      <div className="shop-header">
+        <div>
+          <div className="shop-distribution">
+            Distribution le ${props.date}
+          </div>
+          
+          <div className="shop-order-ends">
+            $endDates
+          </div>
+        </div>  
+        <div className="shop-place">
+          <span className="info">
+            <span className="glyphicon glyphicon-map-marker"></span>
+            <a href=$viewUrl>${state.place.name}</a>
+          </span>
+          <div>
+            $addressBlock
+          </div>
+        </div>
       </div>
     ');
   }

@@ -1,6 +1,14 @@
 /*
   SHOP
 */
+.shop .shop-header {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background-color: white; }
+
 .shop .categories {
   width: 70%; }
   .shop .categories .products {
@@ -41,7 +49,7 @@
 
 .shop .cart {
   position: fixed;
-  top: 140px;
+  top: 130px;
   right: 47px;
   width: 25%;
   padding: 1rem;
