@@ -1,4 +1,6 @@
 package react.store;
+
+import js.Browser.window;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
@@ -14,11 +16,17 @@ typedef ProductState = {
 
 class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductState>
 {
+  static inline var OVERLAY_URL = '/shop/productInfo';
+  
   public function new() {
     super();
     state = {
       quantity: 1
     };
+  }
+
+  function openOverlay() {
+    untyped window._.overlay('$OVERLAY_URL/${props.product.id}', props.product.name);
   }
 
   override public function render(){
@@ -28,7 +36,9 @@ class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductS
       <div className="product">
         <img src=${product.image} alt={product.name} />
         <div className="body">
-          <div>${product.name}</div>
+          <a onClick=$openOverlay>
+            ${product.name}						
+					</a>
           <div>${product.price} €</div>
           <input type="number" value=${state.quantity} onChange=$updateQuantity />
           <div className="button" onClick=$addToCart>Ajouter</div>
