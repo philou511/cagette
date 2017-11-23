@@ -17,6 +17,8 @@ typedef ProductState = {
 class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductState>
 {
   static inline var OVERLAY_URL = '/shop/productInfo';
+  static inline var IMAGE_WIDTH = 120;
+  static inline var IMAGE_HEIGHT = 120;
   
   public function new() {
     super();
@@ -34,7 +36,7 @@ class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductS
 
     return jsx('
       <div className="product">
-        <img src=${product.image} alt={product.name} />
+        <img src=${product.image} width=${IMAGE_WIDTH+'px'} height=${IMAGE_HEIGHT+'px'} alt={product.name} />
         <div className="body">
           <a onClick=$openOverlay>
             ${product.name}						
