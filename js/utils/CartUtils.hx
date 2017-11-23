@@ -39,18 +39,22 @@ class CartUtils {
       return p.product.id == productToRemove.id;
     });
 
+    if (quantity == null)
+      quantity = existingProduct.quantity;
+
     if (existingProduct == null)
       throw "Can't remove a non existing product";
-    else if (quantity == null || quantity >= existingProduct.quantity)
+    else if (quantity >= existingProduct.quantity)
       products.remove(existingProduct)
     else
       existingProduct.quantity -= quantity;
 
     if (products.length == 0)
       total = 0;
-    else
+    else {
       total -= Math.min(quantity, existingProduct.quantity) * productToRemove.price;
       total = Math.round(total * 100) / 100; // to avoid calculation errors
+    }
 
     return {
       products: products,
