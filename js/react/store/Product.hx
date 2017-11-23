@@ -31,6 +31,19 @@ class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductS
     untyped window._.overlay('$OVERLAY_URL/${props.product.id}', props.product.name);
   }
 
+  function updateQuantity(event:Dynamic) {
+    var quantity = Std.parseInt(event.target.value);
+
+    if (Std.is(quantity, Int) && quantity > 0)
+      setState({
+        quantity: Std.int(quantity)
+      });
+  }
+
+  function addToCart() {
+    props.addToCart(props.product, state.quantity);
+  }
+
   override public function render(){
     var product = props.product;
 
@@ -47,23 +60,6 @@ class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductS
         </div>
       </div>
     ');
-  }
-
-  function updateQuantity(event:Dynamic) {
-    var quantity = Std.parseInt(event.target.value);
-
-    if (Std.is(quantity, Int) && quantity > 0)
-      setState({
-        quantity: Std.int(quantity)
-      });
-  }
-
-  function addToCart() {
-    props.addToCart(props.product, state.quantity);
-  }
-
-  function openPopin() {
-    trace('Opening Popin');
   }
 }
 
