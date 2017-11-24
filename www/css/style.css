@@ -1,153 +1,106 @@
 /**
 
-	Cagette.net stylesheet.
-	
-	This file works with the bootstrap theme.
-	To compile the bootstrap theme go to bower_components/bootstrap
-	and call "grunt dist".
-	The bootstrap theme variables are defined in less/variables.less
-
+	Cagette.net SASS stylesheet
+	Use it with with bootstrap 3
 
 **/
-
-@import url('https://fonts.googleapis.com/css?family=Cabin:400,400i|Sanchez');
+@import url("https://fonts.googleapis.com/css?family=Cabin:400,400i");
+body {
+  background-color: #F8F4E5 !important; }
 
 h1, h2, h3, h4 {
   margin-top: 4px !important;
-  margin-bottom: 8px !important; 
-  font-style: italic;
-}
+  margin-bottom: 8px !important;
+  font-style: italic; }
 
-body{
-  background-color:#F8F4E5 !important;    
-  
-}
+/* buttons */
+.btn {
+  text-transform: uppercase;
+  font-size: 14px !important;
+  padding: 7px 25px !important;
+  font-weight: normal !important; }
 
-/*h1 {
-  color: #583816 !important; }
-  h1 a {
-    color: #583816 !important; }*/
+.btn-lg {
+  font-size: 16px !important; }
 
-/*h2, h3, h4 {
-  color: #007700 !important; }*/
+.btn-sm {
+  font-size: 12px !important;
+  padding: 5px 10px !important; }
+
+.btn-xs {
+  font-size: 11px !important;
+  padding: 2px 5px !important; }
+
+.btn-link {
+  text-transform: none; }
 
 a {
   cursor: pointer; }
 
 /* navigation */
-
 ul.nav li {
   text-transform: uppercase;
-  font-size: 14px;
-}
+  font-size: 14px; }
 
 /* subnav in contractadmin */
 .nav-pills > li.active > a {
   background-color: #e7e7e7 !important;
   color: #555 !important; }
 
-/* button */
-
-.btn {
-  text-transform: uppercase;
-  font-size: 14px !important;
-  padding : 7px 25px !important;
-}
-
-.btn-sm {
-  font-size: 12px !important;
-  padding : 5px 10px !important;
-}
-
-.btn-xs {
-  font-size: 11px !important;
-  padding : 2px 5px !important;
-}
-
-
-
-.btn-link {
-  text-transform: none;
-}
-
-/*-------------------*/
+/* Footer */
 #footer {
   background: #84BD55;
   border-radius: 8px;
   padding: 20px; }
 
 #footer a {
-  color: #333; 
-}
+  color: #333; }
 
 #footer ul {
   margin: 3px 0 0;
   padding: 0;
   text-align: left;
   list-style: none;
-  font-size: 14px;
-}
+  font-size: 14px; }
 
 .cagsocialmedia {
-  vertical-align: top;
-}
+  vertical-align: top; }
 
 .cagsocialmedia li {
   display: inline-block;
-  text-align: center; 
- 
-}
+  text-align: center; }
 
 #footer .cagsocialmedia li a {
-  color : #fff;
-  font-size:  20px;
-  
+  color: #fff;
+  font-size: 20px;
   min-width: 32px;
   /*height: 32px;*/
   padding: 2px 0 0;
-  display : inline-block;
-}
+  display: inline-block; }
 
 .cagfb {
-  background-color : #4267B2;
-}
+  background-color: #4267B2; }
 
 .cagtwitter {
-  background-color  : #1DA1F2;
-}
+  background-color: #1DA1F2; }
 
 .cagyoutube {
-  background-color  :  #FF0000;
-}
+  background-color: #FF0000; }
 
-
-
-
-/*pre{
-	padding:8px;
-	background:white;
-}*/
-/*body {
-  background: url("/img/bg.gif"); }*/
-
-  
 .gocagettepro {
-  text-align : center;
-  margin: 40px 0; 
-}
+  text-align: center;
+  margin: 40px 0; }
 
 #subfooter {
   /*background-color : #313131;
   color : #fff;*/
   text-align: center;
-  font-size : 14px;
-  padding : 15px 0 25px 0; 
-}
+  font-size: 14px;
+  padding: 15px 0 25px 0; }
 
 #subfooter span {
-  color :#979797;
-  font-size : 11px;
-}
+  color: #979797;
+  font-size: 11px; }
 
 .sqlLog {
   margin-top: 24px;
@@ -172,8 +125,8 @@ ul.nav li {
     margin: 8px 8px 8px 90px; }
 
 span.panel-title {
-  /*font-family: 'Cantora One', sans-serif !important;*/
- /* color: #966125 !important;*/
+  font-family: 'Cantora One', sans-serif !important;
+  color: #966125 !important;
   font-size: 20px !important;
   font-weight: normal !important; }
 
@@ -193,21 +146,19 @@ span.panel-title {
 /* block marron */
 .block {
   margin-bottom: 12px;
-  background: #fff;
+  background: #FFF;
   border-radius: 8px;
   position: relative;
-  padding: 8px; 
-  font-size : 15px;
-}
+  padding: 8px; }
 
 /* block marron + contours */
 .block2 {
   margin-bottom: 32px;
-  background: #fafafa;
+  background: #F0D277;
   border-radius: 8px;
   position: relative;
   padding: 8px;
-  border: 2px solid #e1dfd4; }
+  border: 2px solid #C3A04C; }
 
 /* Petit tableau contenant descriptif d'un produit */
 table.product {
@@ -248,7 +199,7 @@ div.reportHeader {
 /* make <a> like clickable divs  */
 .clickable {
   display: block;
-  border: 1px solid #e1dfd4;
+  border: 1px solid #CCC;
   border-radius: 8px;
   padding: 8px;
   color: inherit;
@@ -256,23 +207,22 @@ div.reportHeader {
   margin-bottom: 12px; }
   .clickable:hover {
     cursor: pointer;
-    background-color: #fafafa;
-    /*border-color: #ebc349;*/
+    background-color: #f5e1a5;
+    border-color: #ebc349;
     text-decoration: none;
     transition: all 0.15s ease; }
   .clickable:active {
     cursor: pointer;
-    background-color: #fafafa;
- /*   border-color: #ebc349;*/
+    background-color: #F0D277;
+    border-color: #ebc349;
     text-decoration: none;
     transform: scale(0.95); }
-
 
 /*
 	SHOP
 */
 .shop .header {
-  background-color: #649939;
+  background-color: #749E3C;
   display: inline-block;
   width: 100%;
   border-top-left-radius: 8px;
@@ -296,26 +246,14 @@ div.reportHeader {
     color: #583816;
     border-bottom: 1px solid #CCC;
     width: 100%; }
-	
 .shop .product {
-  display: inline-block;
-}
-.shop .product .name {
-   padding-left: 8px;
-}
-.shop .product .warning {
-	font-size: 11px;
+  display: inline-block; }
+  .shop .product .name {
+    padding-left: 8px; }
+  .shop .product .warning {
+    font-size: 11px;
     color: #900;
-    font-weight: bold;
-}
-.shop .product .productName{
-	font-weight:bold;
-}
-.shop .product .btn-xs{
-	padding:1px 5px !important;
-	font-size:12px !important;
-}
-
+    font-weight: bold; }
 
 .price {
   font-weight: bold;
@@ -334,7 +272,7 @@ div.reportHeader {
 
 .cartDiv {
   margin-bottom: 16px;
-  background: #f19818;
+  background: #007700;
   border-radius: 8px;
   position: relative;
   padding: 8px;
@@ -383,7 +321,7 @@ div.reportHeader {
 
 .dateBox {
   border-radius: 8px;
-  background-color: #e1dfd4;
+  background-color: #c59654;
   color: #FFF;
   font-size: 13px;
   line-height: 13px;
@@ -412,7 +350,6 @@ div.reportHeader {
 span.tag {
   color: white;
   font-size: 80%;
-  font-weight: bold;
   padding: 4px;
   background-color: #666666;
   border-radius: 4px;
@@ -427,13 +364,18 @@ span.tag.active {
 	Popovers for help and tutorials
 **/
 .popover {
-  color: white; }
+  color: white;
+  font-size: 14px; }
   .popover h3.popover-title {
     padding: 4px;
     color: #BB9931 !important;
     border-bottom: 1px solid #BB9931 !important;
-    font-weight: bold !important;
-    font-family: 'Arial','sans-serif' !important; }
+    background-color: none; }
+  .popover .popover-content {
+    font-size: 16px; }
+    .popover .popover-content b {
+      color: #FC0;
+      font-weight: normal; }
   .popover .footer {
     border-top: 1px solid #BB9931;
     height: 45px;
@@ -453,7 +395,6 @@ span.tag.active {
   color: #BB9931 !important;
   border-bottom: 1px solid #BB9931 !important;
   font-weight: bold !important;
-  font-family: 'Arial','sans-serif' !important;
   background-color: #583816 !important; }
 .modal.help .modal-content {
   background-color: #583816 !important;
@@ -492,12 +433,11 @@ span.tag.active {
     .distrib .header .info {
       font-size: 16px;
       line-height: 22px;
-      font-weight: bold;
       /* place link */ }
       .distrib .header .info a {
         color: #FFFFFF !important; }
-      .distrib .header .info a:hover {
-        color: #FFFFFF !important; }
+        .distrib .header .info a:hover {
+          color: #FFFFFF !important; }
     .distrib .header .date {
       line-height: 23px;
       background-color: #FFFFFF;
@@ -527,6 +467,14 @@ span.tag.active {
     background-color: #85B14D;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px; }
+    .distrib .content div.productImg {
+      display: inline-block;
+      border-radius: 3px;
+      width: 70px;
+      height: 70px;
+      margin: 4px;
+      background: no-repeat center;
+      background-size: cover; }
   .distrib .content.disabled {
     background: #AAA; }
   .distrib .content.orders {

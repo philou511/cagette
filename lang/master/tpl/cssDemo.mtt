@@ -25,6 +25,17 @@
 	
 	<div class="article">
 		<div class="row">
+			
+			<div class="col-md-6">
+				<h3>Boutons large</h3>
+				<button type="button" class="btn btn-lg btn-default">Default</button>
+				<button type="button" class="btn btn-lg btn-primary">Primary</button>
+				<button type="button" class="btn btn-lg btn-success">Success</button>
+				<button type="button" class="btn btn-lg btn-info">Info</button>
+				<button type="button" class="btn btn-lg btn-warning">Warning</button>
+				<button type="button" class="btn btn-lg btn-danger">Danger</button>
+				<button type="button" class="btn btn-lg btn-link">Link</button>
+			</div>
 		
 			<div class="col-md-6">
 				<h3>Boutons default</h3>
@@ -103,6 +114,35 @@
 			
 		</div>
 		
+		
+		
+		<div class="popover fade bottom in" role="tooltip" id="popover63647" style="top: 531px;left: 50%;display: block;">
+			<div class="arrow" style="left: 50%;"></div>
+			<h3 class="popover-title">Visite guidée du coordinateur <div class="pull-right">7/21</div></h3>
+			<div class="popover-content">
+				<p>Ici se trouve la liste des <b>contrats</b>. 
+					Ils comportent une date de début, une date de fin, et représentent votre relation avec un producteur. <br />
+				</p>
+				<p>
+					C'est ici que vous pourrez gérer :
+				</p>
+				<p>
+					<ul>
+						<li>la liste de produits de ce producteur</li>
+						<li>les commandes des adhérents pour ce producteur</li>
+						<li>planifier les distributions</li>
+					</ul>
+				</p>
+				<div class="footer">
+				
+					<div class="pull-right">
+						<p><a class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Suivant</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
 	</div>
 	
 
@@ -143,5 +183,11 @@
 		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Définir un mot de passe</a>
 		
 	</div>
+	
+	$$today(Mercredi,15,Décembre,19,90,::user._amap._mainPlace::)
+	
+	$$date(Mercredi,15,Décembre,19,::user._amap._mainPlace::)
+	
+	
 </div>
 ::end::

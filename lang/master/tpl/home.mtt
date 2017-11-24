@@ -260,8 +260,12 @@
 					<!-- products previews-->
 					<div class="content ::class::">
 						::foreach p d.products::
-							<img data-toggle="tooltip" data-placement="top" title="::p.name::" class="img-responsive img-thumbnail" src="::p.image::" style="max-width:70px;max-height:70px;margin:4px;"/> 
+							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
 						::end::
+						<!--
+						::foreach p d.products::
+							<img data-toggle="tooltip" data-placement="top" title="::p.name::" class="img-responsive img-thumbnail" src="::p.image::" style="max-width:70px;max-height:70px;margin:4px;"/> 
+						::end::-->
 					</div>
 				</div>
 	
