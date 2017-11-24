@@ -84,10 +84,11 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 	 * @doc https://facebook.github.io/react/docs/forms.html
 	 */
 	function onChange(e:js.html.Event){
+		
 		e.preventDefault();
 		var name :String = untyped e.target.name;
 		var value :String = untyped e.target.value;
-		trace('onChange : $name = $value');
+		//trace('onChange : $name = $value');
 		Reflect.setField(state, name, value);
 		this.setState(this.state);
 	}

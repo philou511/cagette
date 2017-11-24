@@ -191,9 +191,15 @@ class Main extends Controller {
 	}
 	
 	function doApi(d:Dispatch) {
+		
+		/*Sys.print(Json.stringify(app.params));
+		return;*/
+		
+		
 		try {
 			d.dispatch(new controller.Api());
 		}catch (e:tink.core.Error){
+			
 			sugoi.Web.setReturnCode(e.code);
 			Sys.print(Json.stringify( {error:{code:e.code,message:e.message}} ));
 			
