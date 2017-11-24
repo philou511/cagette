@@ -1,7 +1,6 @@
 package react.store;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import js.html.XMLHttpRequest;
 import haxe.Json;
 
 using Lambda;
@@ -51,11 +50,13 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     var initRequest = HttpUtil.fetch(INIT_URL, GET, {date: props.date, place: props.place}, JSON);
 
     initRequest.then(function(infos:Dynamic) {
-      trace('infos', infos);
       setState({
         place: infos.place,
         orderByEndDates: infos.orderEndDates
       });
+    })
+    .catchError(function(error) {
+      trace("ERROR", error);
     });
 
     categoriesRequest.then(function(categories:Dynamic) {
@@ -73,7 +74,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
         })
       });
 
-      var productsRequests = subCategories.map(function(category:CategoryInfo) {
+      subCategories.map(function(category:CategoryInfo) {
         return HttpUtil.fetch(PRODUCT_URL, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
         .then(function(result) {
           var productsBySubcategoryIdMapCopy = [
@@ -87,6 +88,9 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
           });
         });
       });
+    })
+    .catchError(function(error) {
+      trace("ERROR", error);
     });
   }
 
