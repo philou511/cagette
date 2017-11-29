@@ -208,7 +208,7 @@ class Main extends Controller {
 	
 	@tpl("cssDemo.mtt")
 	function doCssdemo() {
-		
+		view.category = 'home';
 	}
 	
 	@tpl("form.mtt")

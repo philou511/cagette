@@ -6,29 +6,29 @@
 
 **/
 
-@import url('https://fonts.googleapis.com/css?family=Cabin:400,400i');
+@import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
 
-body{
+/*body{
   background-color:#F8F4E5 !important;    
-}
+}*/
 
 
 h1,h2,h3,h4{
   margin-top: 4px !important;
-  margin-bottom: 8px !important; 
+  margin-bottom: 8px !important;
   font-style: italic;
 }
 
 /* buttons */
 
-.btn {
+/*.btn {
   text-transform: uppercase;
   font-size: 14px !important;
   padding : 7px 25px !important;
   font-weight:normal !important;
 }
 
-.btn-lg{
+/*.btn-lg{
 	font-size: 16px !important;
 }
 
@@ -44,7 +44,7 @@ h1,h2,h3,h4{
 
 .btn-link {
   text-transform: none;
-}
+}*/
 
 a{
 	cursor:pointer;
@@ -56,66 +56,66 @@ ul.nav li {
   font-size: 14px;
 }
 
-/* subnav in contractadmin */
+/* subnav in contractadmin*/
 .nav-pills > li.active > a {
-  background-color: #e7e7e7 !important;
-  color: #555 !important; }
+  background-color: #efe9d5 !important;
+  color: #e95216 !important;
+} 
 
 /* Footer */
 
 #footer {
-  background: #84BD55;
-  border-radius: 8px;
-  padding: 20px; }
+	background: #84BD55;
+	border-radius: 8px;
+	padding: 20px;
+	ul>li>a {
+		color: #333; 
+	}
+	
+	ul {
+	  margin: 3px 0 0;
+	  padding: 0;
+	  text-align: left;
+	  list-style: none;
+	  font-size: 14px;
+	}
+	
+	.cagsocialmedia li a {
+	  color : #fff;
+	  font-size:  20px;
+	  
+	  min-width: 32px;
+	  /*height: 32px;*/
+	  padding: 2px 0 0;
+	  display : inline-block;
+	}
+	
+	.cagsocialmedia {
+	  vertical-align: top;
+	}
 
-#footer a {
-  color: #333; 
+	.cagsocialmedia li {
+	  display: inline-block;
+	  text-align: center; 
+	 
+	}
+
+	.cagfb {
+	  background-color : #4267B2;
+	}
+
+	.cagtwitter {
+	  background-color  : #1DA1F2;
+	}
+
+	.cagyoutube {
+	  background-color  :  #FF0000;
+	}
+
 }
 
-#footer ul {
-  margin: 3px 0 0;
-  padding: 0;
-  text-align: left;
-  list-style: none;
-  font-size: 14px;
-}
 
-.cagsocialmedia {
-  vertical-align: top;
-}
 
-.cagsocialmedia li {
-  display: inline-block;
-  text-align: center; 
- 
-}
-
-#footer .cagsocialmedia li a {
-  color : #fff;
-  font-size:  20px;
-  
-  min-width: 32px;
-  /*height: 32px;*/
-  padding: 2px 0 0;
-  display : inline-block;
-}
-
-.cagfb {
-  background-color : #4267B2;
-}
-
-.cagtwitter {
-  background-color  : #1DA1F2;
-}
-
-.cagyoutube {
-  background-color  :  #FF0000;
-}
-
-.gocagettepro {
-  text-align : center;
-  margin: 40px 0; 
-}
 
 #subfooter {
   /*background-color : #313131;
@@ -136,6 +136,7 @@ ul.nav li {
 	margin-top:24px;
 	font-size:10px;
 	background:#AAA;
+	a{ color:#666; }
 }
 
 .contact{
@@ -203,19 +204,24 @@ span.panel-title{
 	border: 2px solid #C3A04C;
 }
 
-/* Petit tableau contenant descriptif d'un produit */
+/* product in shop */
 table.product{
 	td{
-		padding:8px;	
+		padding:8px;
+		vertical-align:top;
 	}
-	width:100%;
 	
+	width:100%;	
 	height:135px;
 	overflow:auto;
 	
 	.desc{
 		font-size:90%;
 		color:#666;
+	}
+	
+	a.productName{
+		font-weight:bold;
 	}
 }
 
@@ -296,10 +302,9 @@ div.reportHeader{
 
 
 /*
-	SHOP
+	SHOP v1
 */
 .shop{
-	
 	
 	.header{
 		background-color:#749E3C;
@@ -314,13 +319,8 @@ div.reportHeader{
 		line-height: 22px;
 		
 		color:white;
-		a{
-			color:white;
-		}
-		
-		.info{
-			font-weight: bold;	
-		}
+		a{ color:white; }		
+		.info{ font-weight: bold; }
 	}
 	
 	
@@ -430,7 +430,6 @@ div.reportHeader{
 	margin-top:13px;
 	padding:8px;
 	font-size:13px;
-	//background-color:#F9ECC4;
 	border-top:1px solid #CCC ;
 }
 
@@ -596,7 +595,17 @@ span.tag.active{
 		border-top-left-radius:8px;
 		border-top-right-radius:8px;		
 		color:#FFF;
+		background-color:#749E3C;
+		vertical-align:middle;			
+		margin:0;
+		padding: 6px 6px 6px 90px;
 		
+		&.disabled{
+			background-color:#999;
+		}
+		&.orders{
+			background-color:#B2823F;
+		}
 		
 		.info{
 			font-size:16px;
@@ -608,12 +617,6 @@ span.tag.active{
 			}
 			
 		}
-		
-		vertical-align:middle;	
-		
-		margin:0;
-		padding: 6px 6px 6px 90px;
-
 		
 		.date{
 			line-height:23px;
@@ -633,81 +636,68 @@ span.tag.active{
 		}
 	}
 	
-	.header{
-		background-color:#749E3C;
-	}
-	
-	.header.disabled{
-		background-color:#999;
-	}
-	
-	.header.orders{
-		background-color:#B2823F;
-	}
-	
 	.myorder{
-		//background-color:#6F5026;
-		//color:white;
 		font-weight:bold;
-		//padding-left:50px;
 		color:#999;
 		background:white;
 		padding: 11px 0 4px 16px;
 	}
-	 
+	
 	.content{
 		padding: 6px 6px 6px 6px;
 		background-color:#85B14D;
 		border-bottom-left-radius:8px;
 		border-bottom-right-radius:8px;
 		
-		div.productImg{
-			display:inline-block;
-			border-radius: 3px;
-			width:70px;
-			height:70px;
-			margin:4px;
-			background:no-repeat center;
-			background-size: cover;
+		&.disabled{
+			background:#AAA;
+		}
+		
+		&.orders{
+			background:#FFF;
+			padding-left: 50px;
+		}
+		
+		.footer{
+			color:#999;
+			a{color:#999;}
+			font-size:0.9em;
+			
 		}
 	}
 	
-	.content.disabled{
-		background:#AAA;
-	}
 	
-	.content.orders{
-		background:#FFF;
-		padding-left: 50px;
-	}
-	
-	/*.footer{
-		padding: 8px;
-		border-bottom-left-radius:8px;
-		border-bottom-right-radius:8px;
-		background-color:#F0D277;
-		height:50px;
-		border-top:1px solid #CCC;
-		
-	}*/
-	
+
 }
 
+// product thumbnail for shop and home page
+div.productImg{
+	display:inline-block;
+	border-radius: 3px;
+	width:70px;
+	height:70px;
+	margin:4px;
+	background:no-repeat center;
+	background-size: cover;
+}
+
+// Cagette Pro Catalogs
 div.productBox{
 	
 	div.productImg{
 		background-size: cover;
 		height: 220px;
+		width:220px;
 		background-position: center center;
+		border-radius:6px;
 	}
 	
 	div.productName{
 		display:block;
-		font-weight:normal;
+		font-weight:bold;
 		color:#967820;
-		text-align:center;
-		font-family :  'Cantora One', sans-serif;
-		font-size:1.7em;
+		text-align:center;		
+		font-size:1.2em;
 		margin-bottom:4px;
 	}
 	

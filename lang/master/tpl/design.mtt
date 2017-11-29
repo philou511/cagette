@@ -114,91 +114,64 @@
 		<div class="row">
 			::raw __content__::
 		</div>		
-		
-		<!--<div class="row">
-			<div class="col-md-12" >
-				<div class="gocagettepro">
-					<h3>::_("Vous êtes producteur ?")::</h3>
-					<p>::_("Découvrez nos formations gratuites pour utiliser Cagette Pro :"):: 
-					<a href="http://alilo.fr/formations-producteurs" target="_blank" class="btn btn-info">C'est parti</a></p>
-				</div>
-			</div>
-		</div>-->
 
 		<div class="row" id="footer">
-			<div class="col-md-3" >
-				<a href="http://www.cagette.net" target="_blank">
-					<img src="/img/cagette-logo.png" alt="::_("Cagette.net")::"/>
-				</a>  
-			</div>
-			<div class="col-md-3" >
-				::_("HELP")::
-				<ul>
-					<li> 
-						<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> 
-					</li>
-					<li>
-						<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
-					</li>
-				</ul>
-			</div>
-			<div class="col-md-3" >
-				::_("CONTACT US")::
-				<ul>
-					<li>
-						::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
-					</li>
-				</ul>
-			</div>
-			<div class="col-md-3" >
-				::_("FOLLOW US")::
-				<ul class="cagsocialmedia">
-					<li class="cagfb">
-						<a href="https://www.facebook.com/cagette" target="_blank"> <i class="fa fa-facebook"></i></a>	
-					</li>
-					<li class="cagtwitter">
-						<a href="https://twitter.com/Cagettenet" target="_blank"> <i class="fa fa-twitter"></i></a> 
-					</li>
-					<li class="cagyoutube">
-						<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="fa fa-youtube"></i></a> 						
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="row" id="subfooter">
-				Cagette a été réalisé par <a href="https://www.alilo.fr" target="_blank"><img src="/img/alilo-trans-black.png" /></a><br/>
-				<span>version ::VERSION::-::getPlatform()::</span>
-		</div>
-		
-		<div class="row" style="display:none">
-			<div class="col-md-12" >
-				<div id="footer">
-					<a href="http://www.cagette.net" target="_blank">::_("Cagette.net")::</a>  &#8226; 
-					<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> &#8226;
-					<a href="https://groups.google.com/forum/?hl=fr#!forum/cagette" target="_blank">::_("Forum")::</a>  &#8226;
-					::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  &#8226; ::end::
-					<a href="https://www.facebook.com/cagette" target="_blank"> Facebook</a>  &#8226;
-					<a href="https://twitter.com/Cagettenet" target="_blank"> Twitter</a>  &#8226;
-					<span style="color:#666;">version ::VERSION::-::getPlatform()::</span>
+			
+				<div class="col-md-3" >
+					<a href="http://www.cagette.net" target="_blank">
+						<img src="/img/cagette-logo.png" alt="::_("Cagette.net")::"/>
+					</a>  
 				</div>
-			</div>
+				<div class="col-md-3" >
+					::_("HELP")::
+					<ul>
+						<li> 
+							<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> 
+						</li>
+						<li>
+							<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
+						</li>
+						<li>
+							<a href="http://alilo.fr/formations-producteurs" target="_blank">Formations pour producteurs</a> 
+						</li>
+					</ul>
+					
+					<!--<p style="position: absolute;display: block;top: 96px;width: 700px;">
+						<b>::raw _("Vous êtes producteur ?")::</b>
+						::raw _("Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b> "):: 
+						&nbsp;&nbsp;<a href="http://alilo.fr/formations-producteurs" target="_blank" class="btn btn-xs btn-info">C'est parti !</a>
+					</p>-->
+					
+				</div>
+				<div class="col-md-3" >
+					::_("CONTACT US")::
+					<ul>
+						<li>
+							::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-3" >
+					::_("FOLLOW US")::
+					<ul class="cagsocialmedia">
+						<li class="cagfb">
+							<a href="https://www.facebook.com/cagette" target="_blank"> <i class="fa fa-facebook"></i></a>	
+						</li>
+						<li class="cagtwitter">
+							<a href="https://twitter.com/Cagettenet" target="_blank"> <i class="fa fa-twitter"></i></a> 
+						</li>
+						<li class="cagyoutube">
+							<a href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="fa fa-youtube"></i></a> 						
+						</li>
+					</ul>
+				</div>
+			
 		</div>
 		
-		<!--
-		<div class="row">
-			<div class="col-md-12" >
-				
-					<a class="clickable" style="background-color:#f5e3ac;text-align:center;margin-top:4px;font-size:12px;" 
-					   href="http://prix-lablaboo.convergences.org/fr/projects/11-cagette-net" target="_blank">
-					Vous aimez Cagette.net ? <span class="glyphicon glyphicon-heart" style="color:#F33"></span>
-					Alors votez pour nous au concours d'innovation Lab Laboo !
-					<br/>Le bouton "voter" est en bas à droite, une fois inscrit, cliquez sur le coeur pour nous donnner 2 points.</a> 
-				
-				<a class="clickable" style="background-color:#f5e3ac;text-align:center;margin-top:4px;" 
-					   href="http://alilo.fr/formations-producteurs" target="_blank">
-					::raw _("Are you <b>supplier</b>? Find out about our free trainings to learn how to use Cagette Pro</b>."):: </a>
-			</div>			
-		</div>-->
+		<div class="row" id="subfooter">
+			::raw _("Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img src='/img/alilo-trans-black.png' /></a>")::<br/>
+			<span>version ::VERSION::-::getPlatform()::</span>
+		</div>
 		
 		<div class="row">
 			<div class="col-md-12">			
