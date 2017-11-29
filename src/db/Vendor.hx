@@ -37,4 +37,20 @@ class Vendor extends Object
 		return name;
 	}
 	
+	public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"name" 				=> t._("Supplier name"),
+			"desc" 				=> t._("Description"),
+			"email" 			=> t._("Email"),
+			"phone" 			=> t._("Phone"),
+			"address1" 			=> t._("Address 1"),
+			"address2" 			=> t._("Address 2"),
+			"zipCode" 	=> t._("Zip code"),
+			"city" 	=> t._("City"),			
+			"linkText" 			=> t._("Link text"),			
+			"linkUrl" 			=> t._("Link URL"),			
+		];
+	}
+	
 }

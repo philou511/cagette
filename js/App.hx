@@ -1,6 +1,10 @@
 import react.ReactMacro.jsx;
 import react.*;
 
+//require bootstrap JS since it's bundled with browserify
+@:jsRequire('bootstrap') extern class Bootstrap{}
+//@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
+
 
 class App {
 
@@ -30,7 +34,9 @@ class App {
 	/**
 	 * The JS App will be available as "_" in the document.
 	 */
-	public static function main() {		
+	public static function main() {
+		
+		//untyped js.Browser.window.$ = js.Lib.require("jQuery");
 		untyped js.Browser.window._ = new App();
 	}
 
@@ -175,6 +181,3 @@ class App {
 }
 
 
-//require bootstrap JS since it's bundled with browserify
-@:jsRequire('bootstrap') extern class Bootstrap{}
-//@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}

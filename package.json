@@ -7,7 +7,7 @@
   "dependencies": {
     "bootstrap": "^3.3.4",
     "eonasdan-bootstrap-datetimepicker": "^4.7.14",
-    "jquery": "^2.2.4",
+    "jquery": "2.2.4",
     "react": "^15.6.1",
     "react-bootstrap-typeahead": "1.4.2",
     "react-datetime": "^2.9.0",

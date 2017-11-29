@@ -26,14 +26,16 @@
 		
 		
 		<!-- JQUERY -->
-		<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
-		
-		<!-- js translation file 
-		<script type="text/javascript" src="/js/::getVariable('js')::/texts_::session.lang::.js"></script>-->
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 		
 		<!-- BOOTSTRAP -->	
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
 		
+		<!-- Haxe JS
+		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>-->
+		
+		<!-- bundled js with browserify -->
+		<script type="text/javascript" src="/js/::getVariable('js')::/bundle.js"></script>
 		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
@@ -47,11 +49,7 @@
 		<!-- font awesome -->
 		<script src="https://use.fontawesome.com/97d97e0dab.js"></script>
 		
-		<!-- Haxe JS
-		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>-->
 		
-		<!-- bundled js with browserify -->
-		<script type="text/javascript" src="/js/::getVariable('js')::/bundle.js"></script>
 	</head>
 
 	::if container==null:: ::set container="container":: ::end::
