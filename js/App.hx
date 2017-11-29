@@ -45,6 +45,18 @@ class App {
 	public function getTuto(name:String, step:Int) {
 		new Tuto(name,step);
 	}
+	
+	public function getVATBox(htPrice:Float,currency:String,rates:String,vat:Float,formName:String){
+		
+		var input = js.Browser.document.querySelector('form input[name="${formName}_htPrice"]');
+		
+		js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement.remove();
+		
+		ReactDOM.render(jsx('<$VATBox ht="$htPrice" currency="$currency" vatRates="$rates" vat="$vat" formName="$formName"/>'),  input.parentElement);
+		
+		input.remove();
+		
+	}
 
 	/*public function getProductComposer(){
 		//js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
