@@ -12,7 +12,7 @@ enum AmapFlags {
 	CagetteNetwork; //register in cagette.net groups directory
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
-	//HasPaymentsOld;		
+	PhoneRequired;	//phone number of members is required for this group
 
 }
 
@@ -134,6 +134,9 @@ class Amap extends Object
 		}
 	}
 	
+	/**
+	 * Methods to get flags in templates
+	 */
 	
 	public function hasMembership():Bool {
 		return flags != null && flags.has(HasMembership);
@@ -153,6 +156,10 @@ class Amap extends Object
 	
 	public function hasTaxonomy(){
 		return flags != null && flags.has(ShopCategoriesFromTaxonomy);
+	}
+	
+	public function hasPhoneRequired(){
+		return flags != null && flags.has(PhoneRequired);
 	}
 	
 	public function getCategoryGroups() {

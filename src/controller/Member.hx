@@ -322,6 +322,11 @@ class Member extends Controller
 		
 		if (form.checkToken()) {
 			
+			if (app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && form.getValueOf("phone") == null ){
+				throw Error("/member/edit/"+member.id, t._("Phone number is required in this group."));
+			}
+			
+			
 			//update model
 			form.toSpod(member); 
 			
@@ -662,10 +667,16 @@ class Member extends Controller
 				}
 				return;
 			}else {
+				
+				if (app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && form.getValueOf("phone") == null ){
+					throw Error("/member/insert", t._("Phone number is required in this group."));
+				}
+				
+				
 				//insert user
 				var u = new db.User();
 				form.toSpod(u); 
-				u.lang = "fr";
+				u.lang = app.user.lang;
 				u.insert();
 				
 				//insert userAmap

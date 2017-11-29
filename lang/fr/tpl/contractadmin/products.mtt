@@ -15,6 +15,8 @@
 	</div>
 
 	<script>
+	
+	//enable checked products
 	var enableProducts = function(){
 		var ids = _.getCheckboxesId('form.products');
 		if(ids.length==0){
@@ -25,6 +27,8 @@
 		}
 		
 	};
+	
+	//disable checked products
 	var disableProducts = function(){
 		var ids = _.getCheckboxesId('form.products');
 		if(ids.length==0){
@@ -37,8 +41,18 @@
 	};
 	
 	//check input when click row
-	var clickRow = function(x){
-		x.children[0].children[0].checked = true;
+	/*var clickRow = function(x){
+		x.children[0].children[0].checked = !x.children[0].children[0].checked;
+	}*/
+	
+	//check all
+	var check = function(){
+		var inputs = $('form.products input');
+		if(inputs.first().prop('checked')==true){
+			inputs.prop('checked',false);
+		}else{
+			inputs.prop('checked',true);
+		}
 	}
 	
 	</script>
@@ -48,7 +62,7 @@
 		<tr>
 			<th></th>
 			<th></th>
-			<th>::_("Ref.")::</th>
+			<th>::_("Référence")::</th>
 			<th>::_("Nom")::</th>
 			<th></th>
 			<th>::_("Prix")::</th>
@@ -65,7 +79,7 @@
 		::else::
 		::set opacity=1::
 		::end::
-		<tr style="opacity: ::opacity::" onclick="clickRow(this)">
+		<tr style="opacity: ::opacity::" onclick="/*clickRow(this)*/">
 			<td>
 				<input type="checkbox" name="checkbox" value="::p.id::" />
 			</td>
@@ -131,8 +145,12 @@
 	
 	<p>
 		<div class="btn-group" role="group">
-		<a class="btn btn-default btn-sm" onclick="enableProducts()"><span class="glyphicon glyphicon-check"></span> ::_("Activer")::</a>	
-		<a class="btn btn-default btn-sm" onclick="disableProducts()"><span class="glyphicon glyphicon-unchecked"></span> ::_("Désactiver")::</a>	
+			<a onclick="check();" class="btn btn-default btn-sm"> ::_("Check all")::</a>
+		</div>
+		
+		<div class="btn-group" role="group">
+			<a class="btn btn-default btn-sm" onclick="enableProducts()"><span class="glyphicon glyphicon-check"></span> ::_("Activer")::</a>	
+			<a class="btn btn-default btn-sm" onclick="disableProducts()"><span class="glyphicon glyphicon-unchecked"></span> ::_("Désactiver")::</a>	
 		</div>
 		
 	</p>

@@ -28,6 +28,7 @@ class Account extends Controller
 		form.removeElement(form.getElement("rights"));
 		form.removeElement(form.getElement("cdate"));
 		form.removeElement(form.getElement("ldate"));
+		form.removeElement( form.getElement("apiKey") );
 		
 		if (form.isValid()) {
 			

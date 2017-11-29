@@ -15,9 +15,6 @@ class Shop extends Controller
 		view.date = date;
 		view.group = place.amap;		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
-		
-		//trace(distribs);
-		//trace(products);
 	}
 	
 	/**
@@ -143,7 +140,8 @@ class Shop extends Controller
 		
 		//loginbox if needed
 		if (app.user == null) {
-			view.redirect = "/shop/validate/"+place.id+"/"+date.toString().substr(0,10);
+			view.redirect = "/shop/validate/" + place.id + "/" + date.toString().substr(0, 10);
+			view.group = place.amap;
 			return;
 		}
 		

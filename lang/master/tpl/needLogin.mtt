@@ -5,14 +5,22 @@
 	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h3 class="panel-title">::_("Connection")::</h3>
+
 		</div>
+			
+		::if(group!=null && group.hasPhoneRequired())::
+			::set phoneRequired=true::
+		::else::
+			::set phoneRequired=false::
+		::end::			
+			
 		<div class="panel-body text-center">
 			
 			<p>
 				::raw __("In order to continue, <br/>
 				please <a href=\"#\" onclick=\"_.loginBox('::redirect::');\" >connect</a>
 				<br/>
-				or <a href=\"#\" onclick=\"_.registerBox('::redirect::');\">subscribe</a> if it is the first time<br/>
+				or <a href=\"#\" onclick=\"_.registerBox('::redirect::',::phoneRequired::);\">subscribe</a> if it is the first time<br/>
 				you use Cagette.net",{redirect:redirect})::
 			</p>
 			
@@ -21,7 +29,7 @@
 			<a href="#" onclick="_.loginBox('::raw redirect::');" class="btn btn-primary" style="margin-right:12px;">
 				<span class="glyphicon glyphicon-user"></span> ::_("Connection")::</a>
 			
-			<a href="#" onclick="_.registerBox('::raw redirect::');" class="btn btn-success">
+			<a href="#" onclick="_.registerBox('::raw redirect::',::phoneRequired::);" class="btn btn-success">
 				<span class="glyphicon glyphicon-chevron-right"></span> ::_("Subscription")::</a>
 			
 		</div>

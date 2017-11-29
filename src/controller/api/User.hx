@@ -63,11 +63,12 @@ class User extends Controller
 		if ( db.User.getSameEmail(email).length > 0 ) {
 			throw new Error(409,"Il existe déjà un compte avec cet email.");
 		}
-		
+
 		var user = new db.User();
 		user.email = email;
 		user.firstName = firstName;
 		user.lastName = lastName;
+		if(p.get("phone")!=null) user.phone = StringTools.trim(p.get("phone"));
 		user.setPass(pass);
 		user.insert();				
 		

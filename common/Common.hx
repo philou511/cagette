@@ -33,7 +33,8 @@ typedef ProductInfo = {
 	contractTax : Float, 		//pourcentage de commission défini dans le contrat
 	contractTaxName : String,	//label pour la commission : ex: "frais divers"
 	desc : String,
-	categories : Array<Int>,	//tags
+	categories : Array<Int>,	//used in old shop
+	subcategories : Array<Int>,  //used in new shop
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
@@ -132,6 +133,16 @@ typedef UserOrder = {
 	
 	contractId:Int,
 	contractName:String,
+}
+
+typedef PlaceInfos = {
+	name:String,
+	address1:String,
+	address2:String,
+	zipCode:String,
+	city:String,
+	latitude:Float,
+	longitude:Float
 }
 
 enum OrderFlags {
