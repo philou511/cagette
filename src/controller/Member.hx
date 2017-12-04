@@ -660,9 +660,7 @@ class Member extends Controller
 					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
 				}else {
 					//demander validation avant d'inserer le userAmap
-					
 					//TODO
-					
 					throw Error('/member', t._("Not possible to add this person because there are already some people in the database having the same firstname and name. Please contact the administrator.")+userSims);
 				}
 				return;
@@ -671,7 +669,6 @@ class Member extends Controller
 				if (app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && form.getValueOf("phone") == null ){
 					throw Error("/member/insert", t._("Phone number is required in this group."));
 				}
-				
 				
 				//insert user
 				var u = new db.User();
@@ -686,11 +683,11 @@ class Member extends Controller
 				ua.insert();	
 				
 				if (form.getValueOf("warnAmapManager") == "1") {
-					
-					var text = app.user.getName() + t._(" just keyed-in contact details of a new member: <br/><strong>") + u.getCoupleName() + "</strong><br/> <a href='http://"+App.config.HOST+"/member/view/" + u.id + "'>" + t._("see contact details") + "</a> ";
+					var url = "http://" + App.config.HOST + "/member/view/" + u.id;
+					var text = t._("::admin:: just keyed-in contact details of a new member: <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{admin:app.user.getName(),newMember:u.getCoupleName(),url:url});
 					App.quickMail(
 						app.user.getAmap().contact.email,
-						app.user.amap.name+ t._(" - New member: ") + u.getCoupleName(),
+						app.user.amap.name +" - "+ t._("New member") + " : " + u.getCoupleName(),
 						app.processTemplate("mail/message.mtt", { text:text } ) 
 					);
 				}

@@ -1,6 +1,4 @@
 ::use 'contractadmin/design.mtt'::
-
-	
 			<h2>::_("Participate to deliveries")::</h2>
 			
 			<div>
@@ -8,20 +6,16 @@
 			</div>
 			
 			<div style="margin:16px 0 16px 0;text-align:center;">
-				
-				<strong>::distribs:: ::_("deliveries requiring"):: ::distributorNum:: ::_("person(s)")::,<br/>
+				<strong>::raw __("::distribs:: deliveries requiring ::distributorNum:: person(s)",{distribs:distribs,distributorNum:distributorNum})::,<br/>
 				::users:: ::_("person(s) using this contract"):: <br/>
 				= ::num:: ::_("participations to deliveries to do per family.")::</strong>	
-				
-				
 			</div>
 			
 			<table class="table table-bordered">
 				<tr>
 					<th>::_("Member")::</th>
 					<th>
-						::_("Number of participations to deliveries<br />
-						done or planned")::
+						::raw _("Number of participations to deliveries<br />( done or planned )")::
 					</th>
 				</tr>
 				::foreach p participations::
@@ -44,7 +38,4 @@
 				
 				::end::
 			</table>				
-			
-
-
 ::end::

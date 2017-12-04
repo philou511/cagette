@@ -669,7 +669,7 @@ class ContractAdmin extends Controller
 				}
 			}
 			
-			throw Ok("/contractAdmin/view/" + nc.id, t._("Duplicated contact"));
+			throw Ok("/contractAdmin/view/" + nc.id, t._("The contract has been duplicated"));
 		}
 		
 		view.form = form;
@@ -898,7 +898,6 @@ class ContractAdmin extends Controller
 			//members of the group
 			view.users = app.user.amap.getMembersFormElementData();
 			
-			
 			var userOrders = new Array<{order:db.UserContract,product:db.Product}>();
 			var products = c.getProducts(false);
 			
@@ -919,13 +918,15 @@ class ContractAdmin extends Controller
 			//form check
 			if (checkToken()) {
 				
-				//c'est une nouvelle commande, le user a été défini dans le formulaire
+				//it's a new order, the user has been defined in the form.
 				if (user == null) {
 					user = db.User.manager.get(Std.parseInt(app.params.get("user")));
-					if (user == null) throw "user #"+app.params.get("user")+t._(" impossible to find");
-					if (!user.isMemberOf(app.user.amap)) throw user + " ne fait pas partie de ce groupe";
+					if (user == null){
+						var user = app.params.get("user");
+						throw t._("Unable to find user #::num::",{num:user});
+					}
+					if (!user.isMemberOf(app.user.amap)) throw user + " is not member of this group";
 				}
-				
 				
 				//get distrib if needed
 				var distrib : db.Distribution = null;
@@ -942,17 +943,19 @@ class ContractAdmin extends Controller
 						//trouve le produit dans userOrders
 						var pid = Std.parseInt(k.substr("product".length));
 						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
-						if (uo == null) throw t._("Not possible to find the product ") + pid;
+						if (uo == null) throw t._("Unable to find product ::pid::", {pid:pid});
 						
 						//user2 ?
 						var user2 : db.User = null;
 						var invert = false;
 						if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
-							//trace("user2" + pid + " : " + app.params.get("user2" + pid));
 							user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
-							if (user2 == null) throw "user #"+app.params.get("user2")+t._("  impossible to find");
-							if (!user2.isMemberOf(app.user.amap)) throw user2 + t._(" is not part of this group");
-							if (user.id == user2.id) throw t._("both selected accounts must be different ones");
+							if (user2 == null) {
+								var user = app.params.get("user2");
+								throw t._("Unable to find user #::num::",{num:user});
+							}
+							if (!user2.isMemberOf(app.user.amap)) throw t._("::user:: is not part of this group",{user:user2});
+							if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
 							
 							invert = app.params.get("invert" + pid) == "1";
 							
@@ -981,7 +984,7 @@ class ContractAdmin extends Controller
 				}
 				
 				app.event(MakeOrder(orders));
-				var ops = db.Operation.onOrderConfirm(orders);
+				db.Operation.onOrderConfirm(orders);
 				
 				if (distrib != null) {
 					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, t._("The order has been updated"));

@@ -13,10 +13,10 @@
 				<p>
 					<input type="submit" class="btn btn-primary" value="::_("Import")::"/>	
 				</p>
-				
 			</form>
 		
 		::elseif step==2::
+		
 			<h4>Produits à importer</h4>
 			<div style="margin-bottom:24px;">
 				::if !csv.isEmpty()::
@@ -42,8 +42,7 @@
 				<div class="alert alert-error">
 						<b>::_("Warning")::</b>
 						<p>
-							::raw _("before validating the import, please check if the table above is correctly filled.<br/>
-							If data are not in line or not corresponding to the right column, it means that your CSV file is not correct.")::
+							::raw _("Before validating the import, please check if the table above is correctly filled.<br/>If data are not in line or not corresponding to the right column, it means that your CSV file is not correct.")::
 						</p>
 						<a href="/product/import/::contract.id::">Recommencer</a>
 					</div>
@@ -52,8 +51,7 @@
 					
 					<div class="alert alert-error">
 						<b>::_("Ouch!")::</b>
-						<p>::_("It seems that there is no data to import
-						Check if data of your file are valid and if products are not already saved in the database of Cagette.net")::</p>
+						<p>::_("It seems that there is no data to import.")::</p>
 						<a href="/product/import/::contract.id::">Recommencer</a>
 					</div>
 				
@@ -100,12 +98,12 @@
 		::_("This page will allow you to import a large number of products in your database from an Excel file.")::
 		<br/>
 		<ul>
-			<li>::_("To start, <a href=\"/produits.xls\">Download this demo file</a>")::</li>
-			<li>::_("Fill correctly this file, or modify your existing file to respect strictly the order of columns")::</li>
-			<li>::_("When your file is ready, click on\"Save as\" in your Excel sheet and choose the format CSV")::</li>
-			<li>::_raw("Choose the following options: separation characters: <b>comma</b>, encoding: <b>Unicode UTF8<b/>"):: </li>
-			<li>::_("Save your file")::</li>
-			<li>::_("Then click on the button above \"Choose a file\" and send your file"):: </li>
+			<li>::raw _("To start, <a href=\"/produits.xls\">Download this demo file</a>")::</li>
+			<li>::raw _("Fill correctly this file, or modify your existing file to respect strictly the order of columns")::</li>
+			<li>::raw _("When your file is ready, click on\"Save as\" in your Excel sheet and choose the format CSV")::</li>
+			<li>::raw _("Choose the following options: separation characters: <b>comma</b>, encoding: <b>Unicode UTF8<b/>"):: </li>
+			<li>::raw _("Save your file")::</li>
+			<li>::raw _("Then click on the button above \"Choose a file\" and send your file"):: </li>
 		</ul>
 	</div>
 			
