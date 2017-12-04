@@ -42,7 +42,7 @@ class Product extends Object
 		organic = false;
 		hasFloatQt = false;
 		active = true;
-		
+		vat = 0;
 		
 	}
 	

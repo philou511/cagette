@@ -208,21 +208,24 @@ class Group extends controller.Controller
 			
 			//example datas
 			var place = new db.Place();
-			place.name = t._("Marketplace");
+			place.name = t._("Market square");
+			place.zipCode  = "000";
+			place.city = "St Martin de la Cagette";
 			place.amap = g;
 			place.insert();
 			
 			//contrat AMAP
 			var vendor = new db.Vendor();
 			vendor.amap = g;
-			vendor.name = t._("Jean Martin EURL");
-			vendor.zipCode = t._("33210");
-			vendor.city = t._("Langon");
+			vendor.name = "Jean Martin EARL";
+			vendor.zipCode = "000";
+			vendor.city = "Langon";
+			vendor.email = "jean@cagette.net";
 			vendor.insert();			
 			
 			if (type == Amap){
 				var contract = new db.Contract();
-				contract.name = t._("CSA contract Vegetables Example");
+				contract.name = t._("CSA contract Vegetables - Example");
 				contract.description = t._("This contract is an example where the customer has to commit to buy the whole year as with AMAPs");
 				contract.amap  = g;
 				contract.type = 0;
@@ -264,12 +267,13 @@ class Group extends controller.Controller
 			var vendor = new db.Vendor();
 			vendor.amap = g;
 			vendor.name = t._("Farm Galinette");
-			vendor.zipCode = t._("33430");
+			vendor.zipCode = "000";
 			vendor.city = t._("Bazas");
+			vendor.email = "galinette@cagette.net";
 			vendor.insert();			
 			
 			var contract = new db.Contract();
-			contract.name = t._("Contract chicken Example");
+			contract.name = t._("Chicken Contract - Example");
 			contract.description = t._("Example of contract with variable orders. It is allowed to order something else at every delivery.");
 			contract.amap  = g;
 			contract.type = 1;
@@ -282,7 +286,7 @@ class Group extends controller.Controller
 			contract.insert();
 			
 			var egg = new db.Product();
-			egg.name = t._("12 Bio eggs");
+			egg.name = t._("12 eggs");
 			egg.price = 5;
 			egg.type = 6;
 			egg.organic = true;
@@ -290,7 +294,7 @@ class Group extends controller.Controller
 			egg.insert();
 			
 			var p = new db.Product();
-			p.name = t._("Bio Chicken");
+			p.name = t._("Chicken");
 			p.type = 2;
 			p.price = 9.50;
 			p.organic = true;
