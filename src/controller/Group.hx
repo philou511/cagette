@@ -209,6 +209,8 @@ class Group extends controller.Controller
 			//example datas
 			var place = new db.Place();
 			place.name = "Place du marché";
+			place.zipCode  = "000";
+			place.city = "St Martin de la Cagette";
 			place.amap = g;
 			place.insert();
 			
@@ -216,8 +218,9 @@ class Group extends controller.Controller
 			var vendor = new db.Vendor();
 			vendor.amap = g;
 			vendor.name = "Jean Martin EURL";
-			vendor.zipCode = "33210";
+			vendor.zipCode = "000";
 			vendor.city = "Langon";
+			vendor.email = "jean@cagette.net";
 			vendor.insert();			
 			
 			if (type == Amap){
@@ -264,8 +267,9 @@ class Group extends controller.Controller
 			var vendor = new db.Vendor();
 			vendor.amap = g;
 			vendor.name = "Ferme de la Galinette";
-			vendor.zipCode = "33430";
+			vendor.zipCode = "000";
 			vendor.city = "Bazas";
+			vendor.email = "galinette@cagette.net";
 			vendor.insert();			
 			
 			var contract = new db.Contract();
