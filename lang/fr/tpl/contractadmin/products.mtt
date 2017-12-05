@@ -145,7 +145,7 @@
 	
 	<p>
 		<div class="btn-group" role="group">
-			<a onclick="check();" class="btn btn-default btn-sm"> ::_("Check all")::</a>
+			<a onclick="check();" class="btn btn-default btn-sm"> ::_("Tout cocher")::</a>
 		</div>
 		
 		<div class="btn-group" role="group">

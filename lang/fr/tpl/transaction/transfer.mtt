@@ -4,7 +4,7 @@
 	
 		<div class="alert alert-success" style="font-size: 1.6em;font-weight: bold;">
 			
-			<i class="fa fa-check" aria-hidden="true"></i> ::_("Your order has been recorded !")::
+			<i class="fa fa-check" aria-hidden="true"></i> ::_("Votre commande a été enregistrée !")::
 			
 		</div>
 		
@@ -13,7 +13,7 @@
     <div style="margin:32px;">
 			
 			<p>
-				<b>::_("You chose to pay by transfer"):: :</b>
+				<b>::_("Vous avez choisi de payer par virement"):: :</b>
 			</p>
 			<p>
 				::_("Merci de faire un virement de")::
@@ -29,7 +29,7 @@
 		
 			<p>
 				<a href="/contract" class="btn btn-default">
-					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Check my orders")::</a>
+					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Vérifier mes commandes")::</a>
 			</p>
 			
 		</div>

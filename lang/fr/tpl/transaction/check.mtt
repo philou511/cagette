@@ -5,7 +5,7 @@
 
 		<div class="alert alert-success" style="font-size: 1.6em;font-weight: bold;">
 			
-			<i class="fa fa-check" aria-hidden="true"></i> ::_("Your order has been recorded !")::
+			<i class="fa fa-check" aria-hidden="true"></i> ::_("Votre commande a été enregistrée !")::
 			
 		</div>
 		
@@ -15,12 +15,12 @@
 		<div style="margin:32px;">
 			
 			<p>
-				 <b>::_("You chose to pay by check at the product distribution"):: :</b>
+				 <b>::_("Vous avez choisi de payer par chèque lors de la distribution"):: :</b>
 			</p>
 			
 
 			<p>
-				::_("Prepare a check of <b>::formatNum(amount):: ::currency()::</b> payable to:"):: <b>::user._amap.checkOrder::</b>
+				::_("Préparez un chèque de <b>::formatNum(amount):: ::currency()::</b> à l'ordre de:"):: <b>::user._amap.checkOrder::</b>
 			</p>
 			<p>
 				::_("Indiquez cette référence au dos du chèque afin de faciliter son traitement :"):: <br/>
@@ -30,7 +30,7 @@
 			<p>
   
 				<a href="/contract" class="btn btn-default">
-					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Check my orders")::</a>
+					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Vérifier mes commandes")::</a>
 	
 			</p>
 			

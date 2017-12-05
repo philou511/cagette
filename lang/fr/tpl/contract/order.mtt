@@ -8,8 +8,7 @@
 		::end::
 
 		<p>
-			::raw _("As long as orders are open, you can come back on this page and modify your order.<br/>
-			You can check any time your current orders on the following page <a href='/contract'>my account</a>.")::
+			::raw _("Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.<br/>Vous pouvez consulter à tout moment vos commandes en cours sur la page <a href='/contract'>mon compte</a>.")::
 		</p>
 		
 		<form name="order" id="order" method="POST" action="">

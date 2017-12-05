@@ -72,11 +72,6 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		var name :String = untyped e.target.name;
 		var value :String = untyped /*(e.target.value == "") ? null :*/ e.target.value;
 		Reflect.setField(state, name, value);
-		//switch(name){
-			//case "email" : state.email = value;
-			//case "password" : state.password = value;			
-		//}
-		
 		this.setState(this.state);
 	}
 	
@@ -112,7 +107,10 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		req.addParameter("password", state.password);
 		req.addParameter("redirecturl", props.redirectUrl);
 		
-		req.onData = function(d){
+		req.onData = req.onError = function(d){
+			
+			//trace("d : " + d);
+			var d = req.responseData;
 			
 			el.classList.remove("disabled");
 			
@@ -120,8 +118,9 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 			if (Reflect.hasField(d, "error"))	setError(d.error.message);
 			if (Reflect.hasField(d, "success")) js.Browser.window.location.href = props.redirectUrl;
 		}
-		
 		req.request(true);
 	}
+	
+	
 	
 }

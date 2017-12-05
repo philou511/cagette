@@ -38,7 +38,7 @@
 					<th>::_("Prix")::</th>
 					<th>::_("Quantité")::</th>
 					<th>::_("Statut")::</th>
-					::if distribution==null::<th>::_("Alternately with :")::</th>::end::
+					::if distribution==null::<th>::_("En alternance avec :")::</th>::end::
 				</tr>
 				::set total = 0::
 				::foreach uo userOrders::

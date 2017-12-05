@@ -12,17 +12,13 @@ class Account extends Controller
 	
 	
 	function doDefault() {
-		
 	}
-	
-		
 	
 	
 	@tpl('form.mtt')
 	function doEdit() {
 		
 		var form = sugoi.form.Form.fromSpod(app.user);
-		//form.removeElement(form.getElement("amapId"));
 		form.removeElement(form.getElement("lang"));
 		form.removeElement(form.getElement("pass"));
 		form.removeElement(form.getElement("rights"));

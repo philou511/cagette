@@ -40,13 +40,13 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 				<$Error error="${state.error}" />
 				<form action="" method="post" className="form-horizontal">
 					<div className="form-group">
-						<label htmlFor="firstName" className="col-sm-4 control-label">Nom : </label>
+						<label htmlFor="firstName" className="col-sm-4 control-label">Prénom : </label>
 						<div className="col-sm-8">
 							<input id="firstName" type="text" name="firstName" value="${state.firstName}" className="form-control" onChange={onChange}/>					
 						</div>					
 					</div>
 					<div className="form-group">
-						<label htmlFor="lastName" className="col-sm-4 control-label">Prénom : </label>
+						<label htmlFor="lastName" className="col-sm-4 control-label">Nom : </label>
 						<div className="col-sm-8">
 							<input id="lastName" type="text" name="lastName" value="${state.lastName}" className="form-control" onChange={onChange}/>					
 						</div>					
@@ -145,10 +145,9 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 		req.addParameter("redirecturl", props.redirectUrl);
 		if(props.phoneRequired) req.addParameter("phone", state.phone);
 		
-		req.onData = function(d){
-			
-			el.classList.remove("disabled");
-			
+		req.onData = req.onError = function(d){
+			var d =  req.responseData;
+			el.classList.remove("disabled");			
 			var d = haxe.Json.parse(d);
 			if (Reflect.hasField(d, "error"))	setError(d.error.message);
 			if (Reflect.hasField(d, "success")) js.Browser.window.location.href = props.redirectUrl;

@@ -111,7 +111,7 @@
 						<!--  PAYMENT CHECK FOR SHOP MODE -->
 						::if (user._amap.hasShopMode())::
 						<td></td>
-						<th>::_("Payment:"):: </th>
+						<th>::_("Paiement:"):: </th>
 						<td colspan="6">
 							<table style="width:100%;border:1px solid #CCC;">
 							::if(basket!=null)::

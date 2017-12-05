@@ -5,7 +5,7 @@
 
 		<div class="alert alert-success" style="font-size: 1.6em;font-weight: bold;">
 			
-			<i class="fa fa-check" aria-hidden="true"></i> ::_("Your order has been recorded !")::
+			<i class="fa fa-check" aria-hidden="true"></i> ::_("Votre commande a été enregistrée !")::
 			
 		</div>
 		
@@ -15,16 +15,16 @@
 		<div style="margin:32px;">
 			
 			<p>
-        <b>::_("You chose to pay by cash at the product distribution"):: :</b>
+        <b>::_("Vous avez choisi de payer en espèce lors de la distribution"):: :</b>
 			</p>
 			
 			<p>
-				::_("Please prepare the following amount for the distribution :"):: : <b>::formatNum(amount):: ::currency()::</b>				
+				::_("Préparez le montant suivant pour la distribution :"):: : <b>::formatNum(amount):: ::currency()::</b>				
 			</p>	
 		
 			<p>
 				<a href="/contract" class="btn btn-default">
-					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Check my orders")::</a>
+					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Vérifier mes commandes")::</a>
 			</p>
 			
 		</div>

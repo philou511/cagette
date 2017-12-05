@@ -237,7 +237,7 @@
 	
 	<h3>::_("Langue")::</h3>
 	<div class="article">
-		::_("Display the interface in another language"):: (beta)
+		::_("Afficher l'interface dans une autre langue"):: (beta)
 		:
 		<ul>
 			<li><a href="?lang=fr">Français</a></li>

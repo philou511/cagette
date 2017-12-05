@@ -29,6 +29,13 @@ class Contract extends Controller
 	@tpl("contract/default.mtt")
 	function doDefault() {
 		
+		//change account lang
+		if (app.params.exists("lang") && app.user!=null){
+			app.user.lock();
+			app.user.lang = app.params.get("lang");
+			app.user.update();
+		}
+		
 		var ua = db.UserAmap.get(app.user, app.user.amap);
 		if (ua == null) throw Error("/", t._("You're not member of this group"));
 		

@@ -7,13 +7,6 @@ import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
 import ufront.mail.*;
 
-enum LoginError {
-	UserDoesntExists;
-	BadPassword;
-	NoPass;
-}
-
-
 class User extends Controller
 {
 	public function new() 
@@ -28,71 +21,19 @@ class User extends Controller
 	
 	
 	@tpl("user/login.mtt")
-	function doLogin(?args: { name:String, pass:String } ) {
+	function doLogin() {
 		
 		if (App.current.user != null) {
-			
-			//if (App.current.params.exists("redirect")){
-				//throw Redirect(App.current.params.get("redirect"));	
-			//}else{
-				throw Redirect('/');
-			//}
-			
+			throw Redirect('/');
 		}
 		
-		//store a redirect if needed
-		//if (App.current.params.exists("redirect")){
-			//App.current.session.data.redirect = App.current.params.get("redirect");
-		//}
-		
-		if (args != null) {
-			
-			//cleaning
-			args.name = StringTools.trim(args.name).toLowerCase();
-			args.pass = StringTools.trim(args.pass);
-		
-			
-			//user exists ?
-			var user = db.User.manager.select( $email == StringTools.trim(args.name) || $email2 == StringTools.trim(args.name) , true);
-			if (user == null) {
-				view.error = LoginError.UserDoesntExists.getIndex();
-				return;
-			}
-			
-			//new account
-			if (!user.isFullyRegistred()) {
-			
-				//send mail confirmation link
-				user.sendInvitation();
-				throw Ok("/user/login", t._("Your account have not been validated yet. We sent an e-mail to <b>::email::</b> to finalize your subscription!",{email:user.email}));
-				
-			}
-			
-			var pass = Md5.encode( App.config.get('key') + StringTools.trim(args.pass));
-			
-			if (user.pass != pass) {
-				//empty pass
-				user = db.User.manager.select( ($email == StringTools.trim(args.name) || $email2 ==StringTools.trim(args.name) ) && $pass == "", true);
-				if (user == null) {
-					view.error = LoginError.BadPassword.getIndex();
-					return;
-				}
-			}
-			
-			db.User.login(user, args.name);
-			
-			//if (App.current.session.data.redirect != null){
-				//var r = App.current.session.data.redirect;
-				//App.current.session.data.redirect = null;
-				//throw Redirect(r);	
-			//}else{
-				throw Redirect("/user/choose/");
-			//}
-			
-			
+		//if its needed to redirect after login
+		if (app.params.exists("redirect")){
+			view.redirect = app.params.exists("redirect");
+		}else{
+			view.redirect = "/";
 		}
 	}
-	
 	
 	
 	/**

@@ -4,11 +4,8 @@
 		<h2>::_("Planning des livraisons :"):: ::contract.name::</h2>
 		
 		<p>
-			::raw _("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you.
-			The goal of attendances consists in helping during the delivery of products.")::
+			::raw _("Inscrivez-vous en cochant les cases correspondant aux dates qui vous conviennent. Les permanences consistent à aider à la distribution de produits lors d'une livraison.")::
 		</p>
-		
-		
 		
 		<div style="overflow-x:scroll;">
 		<table class="table table-bordered">
@@ -29,9 +26,6 @@
 					<b>::user.getCoupleName()::</b>
 				</td>
 				<script>
-				window.reg = function(a,b){alert('prout');};
-				window.unreg = function(a,b){alert('lala');};
-				
 				window.reg = function(distribId,img){
 					$(img).hide();
 					$.ajax("/distribution/register?register=1&distrib="+distribId,{success:function(data){
@@ -111,12 +105,6 @@
 		</div>		
 		
 	</div>
-				
-				
-				
 </div>
-
-
-
 
 ::end::

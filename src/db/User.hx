@@ -76,7 +76,8 @@ class User extends Object {
 		user.update();
 		App.current.session.setUser(user);
 		if (App.current.session.data == null) App.current.session.data = {};
-		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; //qui est connecté, user1 ou user2 ?	
+		//Who's connected, user1 or user2 ?
+		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
 		
 	}
 	

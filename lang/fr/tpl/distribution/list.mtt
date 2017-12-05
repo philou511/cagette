@@ -16,7 +16,7 @@
 	<p>
 		::set c = contract._contact::
 		::set v = contract._vendor::
-		<b>::_("Contact in charge of the contract") :</b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
+		<b>::_("Coordinateur du contrat") :</b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
 	</p>
 	<p>
 		<b>::_("Producteurs"):: : </b>
@@ -25,7 +25,7 @@
 		::if v.phone!=null :: ::v.phone:: ::end::
 	</p>
 	<p>	
-		<b>::_("Members on duty"):: : </b>
+		<b>::_("Adhérents de permanence"):: : </b>
 		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::, ::end::
 		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::, ::end::
 		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::, ::end::

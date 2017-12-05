@@ -5,7 +5,7 @@
 		::if distribution!=null::
 		<p>
 			::set date = hDate(distribution.date)::
-			::raw __("Delivery of the <b>::date::</b>",{date:date})::
+			::raw __("Livraison du <b>::date::</b>",{date:date})::
 		</p>
 		::end::
 		

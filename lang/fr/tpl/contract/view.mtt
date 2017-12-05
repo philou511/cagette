@@ -23,7 +23,8 @@
 				<tr>
 					<td style="vertical-align:top;">
 						<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.getName())::')" >
-							<img src="::p.getImage()::" style="width:64px;height:64px;" />							
+							<!--<img src="::p.getImage()::" style="width:64px;height:64px;" />	-->
+							<div style="background-image:url('::p.getImage()::')" class="productImg"/> 
 						</a>	
 					</td>
 					<td>
