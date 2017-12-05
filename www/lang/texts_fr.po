@@ -1776,7 +1776,7 @@ msgstr "Commande pour le "
 #: lang/master/tpl/distribution/listByDate.mtt:406
 #: lang/master/tpl/distribution/listByDateShort.mtt:435
 #: lang/master/tpl/member/waiting.mtt:177
-#: lang/master/tpl/product/import.mtt:2037
+#: lang/master/tpl/product/import.mtt:1931
 msgid "Name"
 msgstr "Nom"
 
@@ -1801,7 +1801,7 @@ msgstr "Référence"
 #: lang/master/tpl/contract/orderAndPay.mtt:914
 #: lang/master/tpl/contractadmin/edit.mtt:1080
 #: lang/master/tpl/contractadmin/products.mtt:1885
-#: lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:2067
+#: lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:1961
 msgid "Price"
 msgstr "Prix"
 
@@ -1813,7 +1813,7 @@ msgstr "Stock"
 msgid "Base unit"
 msgstr "Unité de base"
 
-#: src/db/Product.hx:4532 lang/master/tpl/contract/orderByDate.mtt:732
+#: src/db/Product.hx:4532 lang/master/tpl/contract/orderByDate.mtt:740
 #: lang/master/tpl/contractadmin/edit.mtt:1110
 #: lang/master/tpl/contractadmin/stats.mtt:742
 msgid "Quantity"
@@ -2227,7 +2227,7 @@ msgstr "Qté"
 #: lang/master/tpl/contract/default.mtt:2759
 #: lang/master/tpl/contract/order.mtt:780
 #: lang/master/tpl/contract/orderAndPay.mtt:883
-#: lang/master/tpl/contract/orderByDate.mtt:583
+#: lang/master/tpl/contract/orderByDate.mtt:586
 #: lang/master/tpl/contractadmin/edit.mtt:1048
 #: lang/master/tpl/contractadmin/orders.mtt:3278
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2536
@@ -2257,7 +2257,7 @@ msgstr "P.U"
 
 #: lang/master/tpl/contract/default.mtt:599
 #: lang/master/tpl/contract/default.mtt:2955
-#: lang/master/tpl/contract/orderByDate.mtt:642
+#: lang/master/tpl/contract/orderByDate.mtt:647
 #: lang/master/tpl/contractadmin/orders.mtt:3443
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2696
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1950
@@ -2268,7 +2268,7 @@ msgstr "Sous-total"
 
 #: lang/master/tpl/contract/default.mtt:632
 #: lang/master/tpl/contract/default.mtt:2989
-#: lang/master/tpl/contract/orderByDate.mtt:675
+#: lang/master/tpl/contract/orderByDate.mtt:681
 #: lang/master/tpl/contractadmin/orders.mtt:3478
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2731
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1985
@@ -2282,7 +2282,7 @@ msgstr "Frais"
 
 #: lang/master/tpl/contract/default.mtt:660
 #: lang/master/tpl/contract/default.mtt:3018
-#: lang/master/tpl/contract/orderByDate.mtt:703
+#: lang/master/tpl/contract/orderByDate.mtt:710
 #: lang/master/tpl/contractadmin/edit.mtt:3760
 #: lang/master/tpl/contractadmin/orders.mtt:3508
 #: lang/master/tpl/contractadmin/orders.mtt:4778
@@ -2490,11 +2490,16 @@ msgstr "Modifier la commande livrée le"
 
 #: lang/master/tpl/contract/orderByDate.mtt:175
 msgid ""
-"You can modify here an existing order. If you would like to remove an "
-"element, "
+"You can modify here an existing order. If you would like to remove a "
+"product, just key-in the quantity 0.<br/>You may not be able to modify all "
+"elements as the order could be closed for some suppliers"
 msgstr ""
+"Vous pouvez modifier ici une commande déjà réalisée. Si vous souhaitez "
+"enlever un article, mettez simplement la quantité à zéro.<br/>\n"
+"Vous ne pourrez pas forcément modifier tous les articles car la commande "
+"peut être close pour certains fournisseurs."
 
-#: lang/master/tpl/contract/orderByDate.mtt:614
+#: lang/master/tpl/contract/orderByDate.mtt:618
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2662
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1916
 #: lang/master/tpl/distribution/list.mtt:2422
@@ -2505,11 +2510,11 @@ msgstr ""
 msgid "U.P."
 msgstr "P.U"
 
-#: lang/master/tpl/contract/orderByDate.mtt:1535
+#: lang/master/tpl/contract/orderByDate.mtt:1570
 msgid "Order closed or already paid"
 msgstr "Commande close ou déjà payée"
 
-#: lang/master/tpl/contract/orderByDate.mtt:1728
+#: lang/master/tpl/contract/orderByDate.mtt:1761
 #: lang/master/tpl/distribution/list.mtt:3943
 #: lang/master/tpl/distribution/listByDate.mtt:2595
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:3246
@@ -2518,7 +2523,7 @@ msgstr "Commande close ou déjà payée"
 msgid "TOTAL"
 msgstr "TOTAL"
 
-#: lang/master/tpl/contract/orderByDate.mtt:1909
+#: lang/master/tpl/contract/orderByDate.mtt:1937
 msgid "Update the order"
 msgstr "Mettre à jour la commande"
 
@@ -3204,6 +3209,9 @@ msgid ""
 "convenient for you. The goal of attendances consists in helping during the "
 "delivery of products."
 msgstr ""
+"Inscrivez-vous en cochant les cases correspondant aux dates qui vous "
+"conviennent. Les permanences consistent à aider à la distribution de "
+"produits lors d'une livraison."
 
 #: lang/master/tpl/distribution/planning.mtt:2061
 #: lang/master/tpl/distribution/planning.mtt:2270
@@ -3758,7 +3766,7 @@ msgid "Go back to the main page"
 msgstr "Revenir à la page principale"
 
 #: lang/master/tpl/member/import.mtt:3356
-#: lang/master/tpl/product/import.mtt:2832
+#: lang/master/tpl/product/import.mtt:2726
 msgid "Help"
 msgstr "Aide"
 
@@ -3925,7 +3933,7 @@ msgid "Format : JPEG"
 msgstr "Format : JPEG"
 
 #: lang/master/tpl/product/addimage.mtt:539
-#: lang/master/tpl/product/import.mtt:2723
+#: lang/master/tpl/product/import.mtt:2617
 msgid "Back to the management of products"
 msgstr "Revenir à la gestion des produits"
 
@@ -3974,22 +3982,19 @@ msgid "Ouch!"
 msgstr "Oups !"
 
 #: lang/master/tpl/product/import.mtt:1541
-msgid ""
-"It seems that there is no data to import. Check if data of your file are "
-"valid and if products are not already saved in the database of Cagette.net"
-msgstr ""
-"On dirait qu'il n'y a rien à importer. Vérifier que votre fichier est bien "
+msgid "It seems that there is no data to import."
+msgstr "On dirait qu'il n'y a rien à importer."
 
-#: lang/master/tpl/product/import.mtt:1871
+#: lang/master/tpl/product/import.mtt:1765
 msgid "Products already available in the database"
 msgstr "Produits déjà présentes dans la base de données"
 
-#: lang/master/tpl/product/import.mtt:2379
+#: lang/master/tpl/product/import.mtt:2273
 msgid "Congratulations! You have imported ::num:: products in your database"
 msgstr ""
 "Bravo ! Vous avez importé ::numImported:: produits dans votre base de données"
 
-#: lang/master/tpl/product/import.mtt:2516
+#: lang/master/tpl/product/import.mtt:2410
 msgid ""
 "You did not import anything in your database because your file was empty or "
 "contained products already present in the database."
@@ -3997,7 +4002,7 @@ msgstr ""
 "Vous n'avez rien importé dans votre base de données car votre fichier était "
 "vide ou contenait des produits déjà enregistrées dans votre base de données."
 
-#: lang/master/tpl/product/import.mtt:2854
+#: lang/master/tpl/product/import.mtt:2748
 msgid ""
 "This page will allow you to import a large number of products in your "
 "database from an Excel file."
@@ -4005,19 +4010,19 @@ msgstr ""
 "Cette page va vous permettre d'importer un grand nombre de produits dans "
 "votre base de données à partir d'un fichier Excel   ou Libre Office."
 
-#: lang/master/tpl/product/import.mtt:2991
+#: lang/master/tpl/product/import.mtt:2885
 msgid "To start, <a href=\"/produits.xls\">Download this demo file</a>"
 msgstr ""
 "Pour commencer, <a href=\"/produits.xls\">téléchargez ce fichier de "
 "démonstration.</a>"
 
-#: lang/master/tpl/product/import.mtt:3081
+#: lang/master/tpl/product/import.mtt:2975
 msgid ""
 "Fill correctly this file, or modify your existing file to respect strictly "
 "the order of columns"
 msgstr "Remplissez correctement votre fichier, ou "
 
-#: lang/master/tpl/product/import.mtt:3203
+#: lang/master/tpl/product/import.mtt:3097
 msgid ""
 "When your file is ready, click on\"Save as\" in your Excel sheet and choose "
 "the format CSV"
@@ -4025,7 +4030,7 @@ msgstr ""
 "Une fois votre fichier rempli, cliquez sur \"enregistrer sous\" dans votre "
 "tableur, et choisissez le format \"CSV\""
 
-#: lang/master/tpl/product/import.mtt:3320
+#: lang/master/tpl/product/import.mtt:3214
 msgid ""
 "Choose the following options: separation characters: <b>comma</b>, encoding: "
 "<b>Unicode UTF8<b/>"
@@ -4033,11 +4038,11 @@ msgstr ""
 "Choisissez les options suivantes : caractère de séparation : <b>virgule</b>, "
 "encodage : <b>Unicode UTF8</b>"
 
-#: lang/master/tpl/product/import.mtt:3444
+#: lang/master/tpl/product/import.mtt:3338
 msgid "Save your file"
 msgstr "Enregistrez votre fichier"
 
-#: lang/master/tpl/product/import.mtt:3485
+#: lang/master/tpl/product/import.mtt:3379
 msgid "Then click on the button above \"Choose a file\" and send your file"
 msgstr ""
 "Ensuite, cliquez sur le bouton \"choisissez un fichier\" ci dessus et "
@@ -4650,6 +4655,13 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid ""
+#~ "It seems that there is no data to import. Check if data of your file are "
+#~ "valid and if products are not already saved in the database of Cagette.net"
+#~ msgstr ""
+#~ "On dirait qu'il n'y a rien à importer. Vérifier que votre fichier est "
+#~ "bien "
 
 #~ msgid "deliveries requiring"
 #~ msgstr "livraisons nécessitant"
