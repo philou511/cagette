@@ -37,7 +37,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 				<div className="row">
 					<div className="col-md-4">
 						<div className="input-group">
-							<input type="number" name="ht" value="${state.ht}" className="form-control" onChange={onChange}/>
+							<input type="text" name="ht" value="${state.ht}" className="form-control" onChange={onChange}/>
 							<div className="input-group-addon">${props.currency}</div>
 						</div>
 					</div>
@@ -50,7 +50,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 					
 					<div className="col-md-4">
 						<div className="input-group">
-							<input type="number" name="ttc" value="${state.ttc}" className="form-control" onChange={onChange}/>
+							<input type="text" name="ttc" value="${state.ttc}" className="form-control" onChange={onChange}/>
 							<div className="input-group-addon">${props.currency}</div>
 						</div>
 					</div>
@@ -71,7 +71,8 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 		
 		e.preventDefault();
 		var name :String = untyped e.target.name;
-		var value : Float = Std.parseFloat(untyped e.target.value);
+		var v = StringTools.replace(untyped e.target.value, ",", ".");
+		var value : Float = Std.parseFloat(v);
 		//trace('onChange : $name = $value');
 		
 		var rate = 1 + (state.vat / 100);

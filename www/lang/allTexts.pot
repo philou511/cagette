@@ -48,87 +48,95 @@ msgstr ""
 msgid "The group has been updated."
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:338 src/controller/ContractAdmin.hx:2443
+#: src/controller/AmapAdmin.hx:338 src/controller/AmapAdmin.hx:1433 src/controller/ContractAdmin.hx:2443
 msgid "Access forbidden"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:1709
-msgid "The image sent is too big. The maximum authorized size is 12Mb"
+#: src/controller/AmapAdmin.hx:591 lang/master/tpl/contract/default.mtt:4762 lang/master/tpl/member/payments.mtt:903
+msgid "Payments"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:2504
-msgid "Image updateed"
+#: src/controller/AmapAdmin.hx:1687
+msgid "The image sent is too heavy. The maximum authorized weight is 12Mb"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6030
+#: src/controller/AmapAdmin.hx:2486 src/controller/Vendor.hx:2957
+msgid "Image updated"
+msgstr ""
+
+#: src/controller/AmapAdmin.hx:3584 lang/master/tpl/contractadmin/distributionp.mtt:627
+msgid "Member"
+msgstr ""
+
+#: src/controller/AmapAdmin.hx:6011
 msgid "You cannot remove yourself your admin rights."
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6238
+#: src/controller/AmapAdmin.hx:6219
 msgid "Rights removed"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6309
+#: src/controller/AmapAdmin.hx:6290
 msgid "Rights created or modified"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6402
+#: src/controller/AmapAdmin.hx:6383
 msgid "Create rights to a user"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6462
+#: src/controller/AmapAdmin.hx:6443
 msgid "Modify rights of "
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6879 src/controller/AmapAdmin.hx:7151
+#: src/controller/AmapAdmin.hx:6860 src/controller/AmapAdmin.hx:7132
 msgid "Name "
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6943 src/controller/AmapAdmin.hx:7216
+#: src/controller/AmapAdmin.hx:6924 src/controller/AmapAdmin.hx:7197
 msgid "Rate "
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:7676
+#: src/controller/AmapAdmin.hx:7657
 msgid "Rate updated"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:7724
+#: src/controller/AmapAdmin.hx:7705
 msgid "Edit VAT rates"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:7994
+#: src/controller/AmapAdmin.hx:7975
 msgid "Currency used by your group."
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8139
+#: src/controller/AmapAdmin.hx:8120
 msgid "Currency symbol"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8262
+#: src/controller/AmapAdmin.hx:8243
 msgid "3 digits ISO code"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8562
+#: src/controller/AmapAdmin.hx:8543
 msgid "Currency updated"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8998
+#: src/controller/AmapAdmin.hx:8979
 msgid "Authorized payment types"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9274
+#: src/controller/AmapAdmin.hx:9255
 msgid "Make the check payable to"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9405
+#: src/controller/AmapAdmin.hx:9386
 msgid "IBAN of your bank account for transfers"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9770
+#: src/controller/AmapAdmin.hx:9751
 msgid "Options of payment updated"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9836
+#: src/controller/AmapAdmin.hx:9817
 msgid "Options of payment"
 msgstr ""
 
@@ -1093,7 +1101,7 @@ msgstr ""
 msgid "This person is not a member of your group"
 msgstr ""
 
-#: src/controller/Membership.hx:862 lang/master/tpl/membership/default.mtt:206
+#: src/controller/Membership.hx:862 lang/master/tpl/membership/default.mtt:203
 msgid "Period"
 msgstr ""
 
@@ -1440,10 +1448,6 @@ msgstr ""
 msgid "Supplier deleted"
 msgstr ""
 
-#: src/controller/Vendor.hx:2957
-msgid "Image updated"
-msgstr ""
-
 #: src/db/Amap.hx:4919
 msgid "Product type"
 msgstr ""
@@ -1690,19 +1694,19 @@ msgstr ""
 msgid "Administrator"
 msgstr ""
 
-#: src/db/UserAmap.hx:2222
-msgid "mailing"
+#: src/db/UserAmap.hx:2222 lang/master/tpl/design.mtt:3204
+msgid "Messaging"
 msgstr ""
 
-#: src/db/UserAmap.hx:2266
+#: src/db/UserAmap.hx:2268
 msgid "Management of members"
 msgstr ""
 
-#: src/db/UserAmap.hx:2360
+#: src/db/UserAmap.hx:2362
 msgid "Management of all contracts"
 msgstr ""
 
-#: src/db/UserAmap.hx:2413
+#: src/db/UserAmap.hx:2415
 msgid "Management of the contract: "
 msgstr ""
 
@@ -1892,7 +1896,7 @@ msgstr ""
 msgid "Coordinator"
 msgstr ""
 
-#: lang/master/tpl/amapadmin/addimage.mtt:43 lang/master/tpl/amapadmin/default.mtt:468
+#: lang/master/tpl/amapadmin/addimage.mtt:43 lang/master/tpl/amapadmin/default.mtt:467
 msgid "Choose a logo"
 msgstr ""
 
@@ -1912,15 +1916,22 @@ msgstr ""
 msgid "contracts in progress"
 msgstr ""
 
-#: lang/master/tpl/amapadmin/default.mtt:541
-msgid ""
-"Your group has a public page, that you can use to communicate as a mini-website.<br/>
-				Copy-past "
-"the URL address of the page and do no hesitate to share it."
+#: lang/master/tpl/amapadmin/default.mtt:301
+msgid "Edit properties"
 msgstr ""
 
-#: lang/master/tpl/amapadmin/default.mtt:943
-msgid "Public page"
+#: lang/master/tpl/amapadmin/default.mtt:540
+msgid ""
+"Your group has a public page, You can use it as a micro-website.<br/>Copy-paste "
+"the address of this page and share it !"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/default.mtt:994
+msgid "Copy"
+msgstr ""
+
+#: lang/master/tpl/amapadmin/default.mtt:1147
+msgid "Display"
 msgstr ""
 
 #: lang/master/tpl/amapadmin/design.mtt:167 lang/master/tpl/design.mtt:2607
@@ -2063,10 +2074,6 @@ msgstr ""
 
 #: lang/master/tpl/contract/default.mtt:4614
 msgid "Leave this group"
-msgstr ""
-
-#: lang/master/tpl/contract/default.mtt:4762 lang/master/tpl/member/payments.mtt:903
-msgid "Payments"
 msgstr ""
 
 #: lang/master/tpl/contract/default.mtt:4849 lang/master/tpl/member/payments.mtt:1631 lang/master/tpl/member/view.mtt:5721
@@ -2311,7 +2318,7 @@ msgstr ""
 msgid "Distributions"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:935
+#: lang/master/tpl/contractadmin/deliveries.mtt:935 lang/master/tpl/membership/default.mtt:464
 msgid "Delete"
 msgstr ""
 
@@ -2385,10 +2392,6 @@ msgstr ""
 
 #: lang/master/tpl/contractadmin/distributionp.mtt:484
 msgid "participations to deliveries to do per family."
-msgstr ""
-
-#: lang/master/tpl/contractadmin/distributionp.mtt:627
-msgid "Member"
 msgstr ""
 
 #: lang/master/tpl/contractadmin/distributionp.mtt:670
@@ -2698,10 +2701,6 @@ msgstr ""
 
 #: lang/master/tpl/design.mtt:2500
 msgid "My account"
-msgstr ""
-
-#: lang/master/tpl/design.mtt:3204
-msgid "Messaging"
 msgstr ""
 
 #: lang/master/tpl/design.mtt:3372
@@ -3412,12 +3411,16 @@ msgstr ""
 msgid "Deny request"
 msgstr ""
 
-#: lang/master/tpl/membership/default.mtt:83
+#: lang/master/tpl/membership/default.mtt:80
 msgid "Subscription payment of"
 msgstr ""
 
-#: lang/master/tpl/membership/default.mtt:236
+#: lang/master/tpl/membership/default.mtt:233
 msgid "Subscription payment date"
+msgstr ""
+
+#: lang/master/tpl/membership/default.mtt:662
+msgid "Key-in a subscription payment"
 msgstr ""
 
 #: lang/master/tpl/messages/default.mtt:221

@@ -11,7 +11,7 @@
 				
 				<hr/>
 				
-				$$edit(Modifier les propriétés,/amap/edit)
+				$$edit(::_("Edit properties")::,/amap/edit)
 				
 				<a href="/amapadmin/addimage/" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span>&nbsp;::_("Choose a logo")::</a>
 			</p>
@@ -19,15 +19,39 @@
 			<hr/>
 			
 			<p>
-				::raw _("Your group has a public page, that you can use to communicate as a mini-website.<br/>
-				Copy-past the URL address of the page and do no hesitate to share it.")::<br/>				
+				::raw _("Your group has a public page, You can use it as a micro-website.<br/>Copy-paste the address of this page and share it !")::
+				<br/>				
 			</p>
-			<p>
-				<pre>http://::HOST::/group/::user._amap.id::</pre>
-			</p>
-			<p>
-				<a href="/group/::user._amap.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-chevron-right"></span>&nbsp;::_("Public page")::</a>
-			</p>
+			
+			
+			
+			<a href="http://::HOST::/group/::user._amap.id::"><pre>http://::HOST::/group/::user._amap.id::</pre></a>
+			
+			<div class="input-group">				
+				<span class="input-group-btn">
+					<!--<button id="copybtn" class="btn btn-default"><span class="glyphicon glyphicon-copy"></span> ::_("Copy")::</button>-->
+					<a href="/group/::user._amap.id::" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span>&nbsp; ::_("Display")::</a>
+				</span>
+			</div>
+			
+			<!--
+			<input type="hidden" name="urlfield" value="http://::HOST::/group/::user._amap.id::" id="urlfield" />
+			<script>		
+				var copyTextareaBtn = document.querySelector('#copybtn');
+
+				copyTextareaBtn.addEventListener('click', function(event) {
+				  var copyTextarea = document.querySelector('#urlfield');
+				  copyTextarea.select();
+
+				  try {
+					var successful = document.execCommand('copy');
+					var msg = successful ? 'successful' : 'unsuccessful';
+					console.log('Copying text command was ' + msg);
+				  } catch (err) {
+					console.log('Oops, unable to copy');
+				  }
+				});
+			</script>-->
 			
 		</div>
 		
