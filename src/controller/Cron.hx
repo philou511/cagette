@@ -114,7 +114,9 @@ class Cron extends Controller
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
  		var from = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour-1));
  		var to = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
-				
+		
+		//if (App.config.DEBUG) from = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * -30);
+		
 		// dans le cas HasEmailNotifOuverture la date à prendre est le orderStartDate
 		// et non pas date qui est la date de la distribution
 		var distribs;
@@ -123,7 +125,7 @@ class Cron extends Controller
 		else
 			distribs = db.Distribution.manager.search( $date >= from && $date <= to , false);
 		
-		//trace("distribNotif "+hour+" from "+d+" to "+h);Sys.print("<br/>\n");
+		//Sys.print("distribNotif "+hour+" from "+from+" to "+to+"<br/>\n");
 		
 		//on s'arrete immédiatement si aucune distibution trouvée
  		if (distribs.length == 0) return;
@@ -168,11 +170,15 @@ class Cron extends Controller
 		
 		//We have now the distribs we want to notify about.
 		var distribsByContractId = new Map<Int,db.Distribution>();
-		for (d in distribs) distribsByContractId.set(d.contract.id, d);
+		for (d in distribs) {			
+			if (d == null || d.contract==null) continue;
+			distribsByContractId.set(d.contract.id, d);
+		}
 
 		//Boucle sur les distributions pour gerer le cas de plusieurs distributions le même jour sur le même contrat
  		var orders = [];
  		for (d in distribs) {
+			if (d == null || d.contract==null) continue;
  			//get orders for both type of contracts
 			for ( x in d.contract.getOrders(d)) orders.push(x);
 		}
@@ -213,8 +219,8 @@ class Cron extends Controller
 		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
 		{
  			for (d in distribs) {
-				var MemberList = d.contract.amap.getMembers();
-				for (u in MemberList) {
+				var memberList = d.contract.amap.getMembers();
+				for (u in memberList) {
 					var x = users.get(u.id+"-"+d.contract.amap.id);
 					if (x == null) x = {user:u,distrib:null,products:[],vendors:[]};
 					x.distrib = distribsByContractId.get(d.contract.id);
@@ -231,12 +237,15 @@ class Cron extends Controller
 				
 				if (u.user.email != null) {
 					var group = u.distrib.contract.amap;
+					this.t = sugoi.i18n.Locale.init(u.user.lang); //switch to the user language
 
 					var text;
 					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) //ouverture de commande
 					{
-						text  = t._("Opening of orders for the delivery of the ")+ "<b>" + view.hDate(u.distrib.date) + "</b><br>";
-						text += t._("Following suppliers are involved: ")+"<br><ul>";
+						text = t._("Opening of orders for the delivery of <b>::date::</b>", {date:view.hDate(u.distrib.date)});
+						text += "<br/>";
+						text += t._("The following suppliers are involved :");
+						text += "<br/><ul>";
 						for ( v in u.vendors) {
 							text += "<li>" + v + "</li>";
 						}
@@ -252,7 +261,7 @@ class Cron extends Controller
 							text += "<li>"+p.quantity+" x "+p.product.getName();
 							// Gerer le cas des contrats en alternance
 							if (p.user2 != null) {
-								text += t._(" alternately with ");
+								text += " " + t._("alternated with") + " ";
 								if (u.user == p.user)
 									text += p.user2.getCoupleName();
 								else
@@ -264,7 +273,7 @@ class Cron extends Controller
 					}
 				
 					if (u.distrib.isDistributor(u.user)) {
-						text += t._("<b>Warning: you are in charge of the delivery! Do not forget to print the attendance sheet.</b>");
+						text += t._("<b>Warning: you are in charge of the delivery ! Do not forget to print the attendance sheet.</b>");
 					}
 
 					var m = new Mail();
@@ -276,7 +285,7 @@ class Cron extends Controller
 					}catch (e:Dynamic){						
 						app.logError(e); //email could be invalid
 					}
-					m.setSubject( group.name+" : "+t._("Distribution") + app.view.hDate(u.distrib.date) );
+					m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					
 					//debug

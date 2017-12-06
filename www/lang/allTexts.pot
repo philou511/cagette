@@ -458,85 +458,85 @@ msgstr ""
 msgid "The order has been updated"
 msgstr ""
 
-#: src/controller/Cron.hx:7940
-msgid "Opening of orders for the delivery of the "
+#: src/controller/Cron.hx:8218
+msgid "Opening of orders for the delivery of <b>::date::</b>"
 msgstr ""
 
-#: src/controller/Cron.hx:8055
-msgid "Following suppliers are involved: "
+#: src/controller/Cron.hx:8354
+msgid "The following suppliers are involved :"
 msgstr ""
 
-#: src/controller/Cron.hx:8312
+#: src/controller/Cron.hx:8632
 msgid ""
 "The web address of your group is: <a href=\" + ::groupurl:: + \"> ::groupurl:: "
 "</a><br>"
 msgstr ""
 
-#: src/controller/Cron.hx:8493
+#: src/controller/Cron.hx:8813
 msgid "Do not forget the delivery: <b>::delivery::</b><br/>"
 msgstr ""
 
-#: src/controller/Cron.hx:8608
+#: src/controller/Cron.hx:8928
 msgid "Your products to collect:<br/><ul>"
 msgstr ""
 
-#: src/controller/Cron.hx:8843
-msgid " alternately with "
+#: src/controller/Cron.hx:9169 lang/master/tpl/contractadmin/orders.mtt:2464
+msgid "alternated with"
 msgstr ""
 
-#: src/controller/Cron.hx:9142
+#: src/controller/Cron.hx:9471
 msgid ""
-"<b>Warning: you are in charge of the delivery! Do not forget to print the "
+"<b>Warning: you are in charge of the delivery ! Do not forget to print the "
 "attendance sheet.</b>"
 msgstr ""
 
-#: src/controller/Cron.hx:9683
-msgid "Distribution"
+#: src/controller/Cron.hx:10013 lang/master/tpl/shop/default.mtt:670
+msgid "Distribution on ::date::"
 msgstr ""
 
-#: src/controller/Cron.hx:10507
+#: src/controller/Cron.hx:10855
 msgid "<p>This step is important in order to:</p>"
 msgstr ""
 
-#: src/controller/Cron.hx:10572
+#: src/controller/Cron.hx:10920
 msgid ""
 "<ul><li>Update orders if delivered quantities are different from ordered "
 "quantities</li>"
 msgstr ""
 
-#: src/controller/Cron.hx:10683
+#: src/controller/Cron.hx:11031
 msgid ""
 "<li>Confirm the reception of payments (checks, cash, transfers) in order "
 "to mark orders as 'paid'</li></ul>"
 msgstr ""
 
-#: src/controller/Cron.hx:11291
+#: src/controller/Cron.hx:11639
 msgid "Validation of the distribution of the "
 msgstr ""
 
-#: src/controller/Cron.hx:11513
+#: src/controller/Cron.hx:11861
 msgid "<p>Your delivery just finished, don't forget to <b>validate</b> it</p>"
 msgstr ""
 
-#: src/controller/Cron.hx:11625 src/controller/Cron.hx:12845
+#: src/controller/Cron.hx:11973 src/controller/Cron.hx:13193
 msgid ""
 "<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
 "must be connected to your group Cagette)"
 msgstr ""
 
-#: src/controller/Cron.hx:12534
+#: src/controller/Cron.hx:12882
 msgid ": Validation of the delivery of the "
 msgstr ""
 
-#: src/controller/Cron.hx:12754
+#: src/controller/Cron.hx:13102
 msgid "<p>Reminder: you have a delivery to validate.</p>"
 msgstr ""
 
-#: src/controller/Cron.hx:14587
+#: src/controller/Cron.hx:14935
 msgid ": Validation of the distribution of the "
 msgstr ""
 
-#: src/controller/Cron.hx:14684
+#: src/controller/Cron.hx:15032
 msgid ""
 "<p>As you did not validate it manually after 10 days, <br/>the delivery of "
 "the ::deliveryDate:: has been validated automatically</p>"
@@ -1237,13 +1237,13 @@ msgid ""
 "is not sufficient"
 msgstr ""
 
-#: src/controller/Shop.hx:6297
+#: src/controller/Shop.hx:6499
 msgid ""
 "Your basket has been recorded, please select a payment method to confirm "
 "it."
 msgstr ""
 
-#: src/controller/Shop.hx:6507
+#: src/controller/Shop.hx:6709
 msgid "Your order has been successfully recorded"
 msgstr ""
 
@@ -1292,25 +1292,29 @@ msgstr ""
 msgid "Operation deleted"
 msgstr ""
 
-#: src/controller/Transaction.hx:4997
+#: src/controller/Transaction.hx:3715
+msgid "Your cart is empty"
+msgstr ""
+
+#: src/controller/Transaction.hx:5077
 msgid ""
 "Your payment by check has been saved. It will be validated by a coordinator "
 "at the delivery."
 msgstr ""
 
-#: src/controller/Transaction.hx:6291
+#: src/controller/Transaction.hx:6371
 msgid "Your payment by transfer has been saved. It will be validated by a coordinator."
 msgstr ""
 
-#: src/controller/Transaction.hx:7159
+#: src/controller/Transaction.hx:7239
 msgid "Cash for the order of the "
 msgstr ""
 
-#: src/controller/Transaction.hx:7373
+#: src/controller/Transaction.hx:7453
 msgid "Cash payment"
 msgstr ""
 
-#: src/controller/Transaction.hx:7436
+#: src/controller/Transaction.hx:7516
 msgid "Your order is validated, you commited to pay in cash at the delivery."
 msgstr ""
 
@@ -1514,7 +1518,7 @@ msgstr ""
 msgid "Fees label"
 msgstr ""
 
-#: src/db/Contract.hx:8511 lang/master/tpl/group/view.mtt:3933
+#: src/db/Contract.hx:8511 lang/master/tpl/group/view.mtt:3285
 msgid "Contact"
 msgstr ""
 
@@ -1618,7 +1622,7 @@ msgstr ""
 msgid "Base unit"
 msgstr ""
 
-#: src/db/Product.hx:4532 lang/master/tpl/contract/orderByDate.mtt:748 lang/master/tpl/contractadmin/edit.mtt:1110 lang/master/tpl/contractadmin/stats.mtt:742
+#: src/db/Product.hx:4532 lang/master/tpl/contract/orderByDate.mtt:757 lang/master/tpl/contractadmin/edit.mtt:1110 lang/master/tpl/contractadmin/stats.mtt:742
 msgid "Quantity"
 msgstr ""
 
@@ -2005,7 +2009,7 @@ msgstr ""
 msgid "Qty"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:405 lang/master/tpl/contract/default.mtt:2759 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:883 lang/master/tpl/contract/orderByDate.mtt:594 lang/master/tpl/contractadmin/edit.mtt:1048 lang/master/tpl/contractadmin/orders.mtt:3279 lang/master/tpl/contractadmin/ordersByDate.mtt:2536 lang/master/tpl/contractadmin/ordersByProduct.mtt:617 lang/master/tpl/contractadmin/ordersByProductList.mtt:1598 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1790 lang/master/tpl/contractadmin/stats.mtt:775 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:817 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4181 lang/master/tpl/validate/user.mtt:868
+#: lang/master/tpl/contract/default.mtt:405 lang/master/tpl/contract/default.mtt:2759 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:883 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1048 lang/master/tpl/contractadmin/orders.mtt:3279 lang/master/tpl/contractadmin/ordersByDate.mtt:2536 lang/master/tpl/contractadmin/ordersByProduct.mtt:617 lang/master/tpl/contractadmin/ordersByProductList.mtt:1598 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1790 lang/master/tpl/contractadmin/stats.mtt:775 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:817 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4181 lang/master/tpl/validate/user.mtt:868
 msgid "Product"
 msgstr ""
 
@@ -2014,15 +2018,15 @@ msgstr ""
 msgid "U.P"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:599 lang/master/tpl/contract/default.mtt:2955 lang/master/tpl/contract/orderByDate.mtt:655 lang/master/tpl/contractadmin/orders.mtt:3444 lang/master/tpl/contractadmin/ordersByDate.mtt:2696 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1950 lang/master/tpl/distribution/list.mtt:2453 lang/master/tpl/member/view.mtt:4377 lang/master/tpl/validate/user.mtt:1026
+#: lang/master/tpl/contract/default.mtt:599 lang/master/tpl/contract/default.mtt:2955 lang/master/tpl/contract/orderByDate.mtt:664 lang/master/tpl/contractadmin/orders.mtt:3444 lang/master/tpl/contractadmin/ordersByDate.mtt:2696 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1950 lang/master/tpl/distribution/list.mtt:2453 lang/master/tpl/member/view.mtt:4377 lang/master/tpl/validate/user.mtt:1026
 msgid "Sub-total"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:632 lang/master/tpl/contract/default.mtt:2989 lang/master/tpl/contract/orderByDate.mtt:689 lang/master/tpl/contractadmin/orders.mtt:3479 lang/master/tpl/contractadmin/ordersByDate.mtt:2731 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1985 lang/master/tpl/distribution/list.mtt:2489 lang/master/tpl/distribution/listByDate.mtt:564 lang/master/tpl/distribution/listByDateOnePage.mtt:523 lang/master/tpl/distribution/listByDateOnePageContract.mtt:553 lang/master/tpl/member/view.mtt:4413 lang/master/tpl/validate/user.mtt:1060
+#: lang/master/tpl/contract/default.mtt:632 lang/master/tpl/contract/default.mtt:2989 lang/master/tpl/contract/orderByDate.mtt:698 lang/master/tpl/contractadmin/orders.mtt:3479 lang/master/tpl/contractadmin/ordersByDate.mtt:2731 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1985 lang/master/tpl/distribution/list.mtt:2489 lang/master/tpl/distribution/listByDate.mtt:564 lang/master/tpl/distribution/listByDateOnePage.mtt:523 lang/master/tpl/distribution/listByDateOnePageContract.mtt:553 lang/master/tpl/member/view.mtt:4413 lang/master/tpl/validate/user.mtt:1060
 msgid "Fees"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:660 lang/master/tpl/contract/default.mtt:3018 lang/master/tpl/contract/orderByDate.mtt:718 lang/master/tpl/contractadmin/edit.mtt:3760 lang/master/tpl/contractadmin/orders.mtt:3509 lang/master/tpl/contractadmin/orders.mtt:4779 lang/master/tpl/contractadmin/ordersByDate.mtt:2761 lang/master/tpl/contractadmin/ordersByProduct.mtt:725 lang/master/tpl/contractadmin/ordersByProductList.mtt:1703 lang/master/tpl/contractadmin/ordersByProductList.mtt:2186 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2015 lang/master/tpl/contractadmin/vendorsByDate.mtt:738 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:925 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:1473 lang/master/tpl/distribution/list.mtt:2520 lang/master/tpl/distribution/listByDate.mtt:593 lang/master/tpl/distribution/listByDateOnePage.mtt:549 lang/master/tpl/distribution/listByDateOnePageContract.mtt:579 lang/master/tpl/member/view.mtt:4444 lang/master/tpl/validate/user.mtt:1089
+#: lang/master/tpl/contract/default.mtt:660 lang/master/tpl/contract/default.mtt:3018 lang/master/tpl/contract/orderByDate.mtt:727 lang/master/tpl/contractadmin/edit.mtt:3760 lang/master/tpl/contractadmin/orders.mtt:3509 lang/master/tpl/contractadmin/orders.mtt:4779 lang/master/tpl/contractadmin/ordersByDate.mtt:2761 lang/master/tpl/contractadmin/ordersByProduct.mtt:725 lang/master/tpl/contractadmin/ordersByProductList.mtt:1703 lang/master/tpl/contractadmin/ordersByProductList.mtt:2186 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2015 lang/master/tpl/contractadmin/vendorsByDate.mtt:738 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:925 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:1473 lang/master/tpl/distribution/list.mtt:2520 lang/master/tpl/distribution/listByDate.mtt:593 lang/master/tpl/distribution/listByDateOnePage.mtt:549 lang/master/tpl/distribution/listByDateOnePageContract.mtt:579 lang/master/tpl/member/view.mtt:4444 lang/master/tpl/validate/user.mtt:1089
 msgid "Total"
 msgstr ""
 
@@ -2183,30 +2187,30 @@ msgid ""
 "0"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:92
+#: lang/master/tpl/contract/orderByDate.mtt:97
 msgid "Modify the order delivered on ::date::"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:183
+#: lang/master/tpl/contract/orderByDate.mtt:192
 msgid ""
 "You can modify here an existing order. If you would like to remove a product, "
 "just key-in the quantity 0.<br/>You may not be able to modify all elements "
 "as the order could be closed for some suppliers"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:626 lang/master/tpl/contractadmin/ordersByDate.mtt:2662 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1916 lang/master/tpl/distribution/list.mtt:2422 lang/master/tpl/distribution/listByDate.mtt:535 lang/master/tpl/distribution/listByDateOnePage.mtt:497 lang/master/tpl/distribution/listByDateOnePageContract.mtt:527 lang/master/tpl/validate/user.mtt:993
+#: lang/master/tpl/contract/orderByDate.mtt:635 lang/master/tpl/contractadmin/ordersByDate.mtt:2662 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1916 lang/master/tpl/distribution/list.mtt:2422 lang/master/tpl/distribution/listByDate.mtt:535 lang/master/tpl/distribution/listByDateOnePage.mtt:497 lang/master/tpl/distribution/listByDateOnePageContract.mtt:527 lang/master/tpl/validate/user.mtt:993
 msgid "U.P."
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:1578
+#: lang/master/tpl/contract/orderByDate.mtt:1587
 msgid "Order closed or already paid"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:1769 lang/master/tpl/distribution/list.mtt:3943 lang/master/tpl/distribution/listByDate.mtt:2595 lang/master/tpl/distribution/listByDateOnePage.mtt:3246 lang/master/tpl/distribution/listByDateOnePageContract.mtt:3821 lang/master/tpl/member/view.mtt:5429
+#: lang/master/tpl/contract/orderByDate.mtt:1778 lang/master/tpl/distribution/list.mtt:3943 lang/master/tpl/distribution/listByDate.mtt:2595 lang/master/tpl/distribution/listByDateOnePage.mtt:3246 lang/master/tpl/distribution/listByDateOnePageContract.mtt:3821 lang/master/tpl/member/view.mtt:5429
 msgid "TOTAL"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:1945
+#: lang/master/tpl/contract/orderByDate.mtt:1954
 msgid "Update the order"
 msgstr ""
 
@@ -2453,10 +2457,6 @@ msgid ""
 "products</b>."
 msgstr ""
 
-#: lang/master/tpl/contractadmin/orders.mtt:2464
-msgid "alternated with"
-msgstr ""
-
 #: lang/master/tpl/contractadmin/orders.mtt:3374
 msgid "Unit price including taxes"
 msgstr ""
@@ -2684,7 +2684,7 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:1500
+#: lang/master/tpl/design.mtt:1500 lang/master/tpl/group/view.mtt:2430
 msgid "Log in"
 msgstr ""
 
@@ -2876,27 +2876,23 @@ msgstr ""
 msgid "Already member? Log in:"
 msgstr ""
 
-#: lang/master/tpl/group/view.mtt:2709 lang/master/tpl/needLogin.mtt:184 lang/master/tpl/needLogin.mtt:923 lang/master/tpl/user/default.mtt:134
-msgid "Connection"
-msgstr ""
-
-#: lang/master/tpl/group/view.mtt:3055
+#: lang/master/tpl/group/view.mtt:2751
 msgid "Next deliveries"
 msgstr ""
 
-#: lang/master/tpl/group/view.mtt:4544
+#: lang/master/tpl/group/view.mtt:3896
 msgid "Suppliers and products"
 msgstr ""
 
-#: lang/master/tpl/group/view.mtt:4600
+#: lang/master/tpl/group/view.mtt:3952
 msgid "Non-complete extract of available products:"
 msgstr ""
 
-#: lang/master/tpl/group/view.mtt:5358
+#: lang/master/tpl/group/view.mtt:4739
 msgid "http://www.cagette.net"
 msgstr ""
 
-#: lang/master/tpl/group/view.mtt:5391
+#: lang/master/tpl/group/view.mtt:4772
 msgid "Cagette.net, the free software of food direct-selling"
 msgstr ""
 
@@ -3448,6 +3444,10 @@ msgstr ""
 msgid "Receiver(s)"
 msgstr ""
 
+#: lang/master/tpl/needLogin.mtt:184 lang/master/tpl/needLogin.mtt:923 lang/master/tpl/user/default.mtt:134
+msgid "Connection"
+msgstr ""
+
 #: lang/master/tpl/needLogin.mtt:434
 msgid ""
 "In order to continue, <br/>
@@ -3586,10 +3586,6 @@ msgstr ""
 msgid "Opening of orders"
 msgstr ""
 
-#: lang/master/tpl/shop/default.mtt:670
-msgid "Distribution on ::date::"
-msgstr ""
-
 #: lang/master/tpl/shop/default.mtt:835
 msgid "Orders will close on"
 msgstr ""
@@ -3638,7 +3634,7 @@ msgstr ""
 msgid "Please prepare the following amount for the distribution :"
 msgstr ""
 
-#: lang/master/tpl/transaction/cash.mtt:703 lang/master/tpl/transaction/check.mtt:891 lang/master/tpl/transaction/transfer.mtt:927
+#: lang/master/tpl/transaction/cash.mtt:703 lang/master/tpl/transaction/check.mtt:954 lang/master/tpl/transaction/transfer.mtt:927
 msgid "Check my orders"
 msgstr ""
 
@@ -3646,11 +3642,11 @@ msgstr ""
 msgid "You chose to pay by check at the product distribution"
 msgstr ""
 
-#: lang/master/tpl/transaction/check.mtt:451
-msgid "Prepare a check of <b>::formatNum(amount):: ::currency()::</b> payable to:"
+#: lang/master/tpl/transaction/check.mtt:456
+msgid "Prepare a check of <b>::amount:: ::currency::</b> payable to : <b>::checkOrder::</b>"
 msgstr ""
 
-#: lang/master/tpl/transaction/check.mtt:590
+#: lang/master/tpl/transaction/check.mtt:653
 msgid ""
 "Mention this reference at the back of the check in order to facilitate its "
 "process:"
