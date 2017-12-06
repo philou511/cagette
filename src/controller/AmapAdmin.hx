@@ -20,7 +20,7 @@ class AmapAdmin extends Controller
 		var nav = new Array<Link>();
 		
 		if (app.user.amap.hasPayments()){
-			nav.push({id:"payments",link:"/amapadmin/payments",name:"Paiements"});
+			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Payments") });
 		}		
 		
 		var e = Nav(nav,"groupAdmin");
@@ -34,14 +34,9 @@ class AmapAdmin extends Controller
 		view.membersNum = UserAmap.manager.count($amap == app.user.amap);
 		view.contractsNum = app.user.amap.getActiveContracts().length;
 		
-		
-		
 		//ping cagette groups directory
 		if (Std.random(10) == 0 && app.user.amap.flags.has(db.Amap.AmapFlags.CagetteNetwork)){
-			
 			var req = new Http("http://annuaire.cagette.net/api/ping?url="+StringTools.urlEncode( "http://" + App.config.HOST  ) );
-			
-			
 			try{
 				req.request();
 			}catch (e:Dynamic){
@@ -54,7 +49,7 @@ class AmapAdmin extends Controller
 	
 	@tpl("amapadmin/addimage.mtt")
 	function doAddimage() {
-		if (!app.user.isAmapManager()) throw "Vous n'avez pas accès a cette section";
+		if (!app.user.isAmapManager()) throw Error("/", t._("Access forbidden"));
 		
 		var user = app.user;
 		view.image = user.amap.image;
@@ -63,7 +58,7 @@ class AmapAdmin extends Controller
 		try {
 			request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb	
 		}catch (e:Dynamic) {
-			throw Error("/amapadmin", t._("The image sent is too big. The maximum authorized size is 12Mb"));
+			throw Error("/amapadmin", t._("The image sent is too heavy. The maximum authorized weight is 12Mb"));
 		}
 		
 		if (request.exists("image")) {
@@ -91,7 +86,7 @@ class AmapAdmin extends Controller
 				user.amap.image = img;
 				user.amap.update();
 				
-				throw Ok('/amapadmin/', t._("Image updateed"));
+				throw Ok('/amapadmin/', t._("Image updated"));
 			}
 		}
 		
@@ -116,7 +111,7 @@ class AmapAdmin extends Controller
 				continue;
 			}
 			
-			//droits sur un contrat effacé
+			//rights on a deleted contract
 			for ( r in u.rights) {
 				switch(r) {
 					case ContractAdmin(cid):
@@ -133,7 +128,6 @@ class AmapAdmin extends Controller
 		}
 		
 		view.users = users;
-
 	}
 	
 	
@@ -143,7 +137,7 @@ class AmapAdmin extends Controller
 		var form = new sugoi.form.Form("editRight");
 		
 		if (u == null) {
-			form.addElement( new IntSelect("user", "Adhérent", app.user.amap.getMembersFormElementData(), null, true) );	
+			form.addElement( new IntSelect("user", t._("Member") , app.user.amap.getMembersFormElementData(), null, true) );	
 		}
 		
 		var data = [];

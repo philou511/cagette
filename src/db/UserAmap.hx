@@ -89,7 +89,7 @@ class UserAmap extends Object
 		var t = sugoi.i18n.Locale.texts;
 		return switch(r) {
 		case Right.AmapAdmin 	: t._("Administrator");
-		case Right.Messages 	: t._("mailing");
+		case Right.Messages 	: t._("Messaging");
 		case Right.Membership 	: t._("Management of members");
 		case Right.ContractAdmin(cid) : 
 			if (cid == null) {

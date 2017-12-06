@@ -20,7 +20,7 @@
 			
 
 			<p>
-				::raw __("Prepare a check of <b>::amount:: ::currency::</b> payable to : <b>::checkOrder::</b>",{checkOrder:user._amap.checkOrder,amount:formatNum(amount),currency:currency()}):: 
+				::raw __("Préparez un chèque de <b>::amount:: ::currency::</b> à l'ordre de : <b>::checkOrder::</b>",{checkOrder:user._amap.checkOrder,amount:formatNum(amount),currency:currency()}):: 
 			</p>
 			<p>
 				::_("Indiquez cette référence au dos du chèque afin de faciliter son traitement :"):: <br/>

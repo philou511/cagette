@@ -1,7 +1,6 @@
 ::use 'design.mtt'::
 
 <div class="col-md-6">
-	
 	<div class="article">
 		<h2>::_("Subscription payment of"):: ::member.getCoupleName()::</h2>
 		<table class="table table-bordered">
@@ -15,27 +14,19 @@
 				<td>::user._amap.getPeriodNameFromYear(m.year)::</td>
 				<td>::hDate(m.date)::</td>
 				<td>
-					$$delete(Effacer,/membership/delete/::member.id::/::m.year::?token=::token::)
+					$$delete(::_("Delete")::,/membership/delete/::member.id::/::m.year::?token=::token::)
 				</td>
 			</tr>
 			::end::		
-			
 		</table>
-		
 	</div>
 </div>
 
 <div class="col-md-6">
 	<div class="article">
-		<h2>Key-in a subscription payment</h2>
+		<h2>::_("Key-in a subscription payment")::</h2>
 		::raw form::
-		
-		
-		
 	</div>	
-	
 </div>
-
-
 
 ::end::
