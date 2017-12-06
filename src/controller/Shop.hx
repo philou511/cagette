@@ -214,6 +214,14 @@ class Shop extends Controller
 		//store cart in session
 		app.session.data.order = order;		
 		
+		//debug
+		for ( p in order.products){
+			if (p.distributionId == null){
+				App.current.logError(place.amap.name + " : panier sans distrib Id : " + Std.string(order) );
+				break;
+			}
+		}
+		
 		if (app.user.amap.hasPayments()){			
 			//Go to payments page
 			throw Ok("/transaction/pay/", t._("Your basket has been recorded, please select a payment method to confirm it.") );

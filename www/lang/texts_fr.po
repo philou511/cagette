@@ -3432,7 +3432,7 @@ msgstr "Permanences"
 
 #: lang/master/tpl/home.mtt:11081
 msgid "Don't forget to register for permanences"
-msgstr "N'oubliez pas de vous inscrire aux premanences"
+msgstr "N'oubliez pas de vous inscrire aux permanences"
 
 #: lang/master/tpl/home.mtt:11394
 msgid "Warning, you don't have defined a password yet !"

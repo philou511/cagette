@@ -111,6 +111,7 @@ class Transaction extends controller.Controller
 
 		var order : OrderInSession = app.session.data.order;
 		if (order == null) throw Redirect("/");
+		if (order.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		view.amount = order.total;		
 		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);		

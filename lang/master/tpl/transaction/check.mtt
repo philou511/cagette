@@ -20,7 +20,7 @@
 			
 
 			<p>
-				::_("Prepare a check of <b>::formatNum(amount):: ::currency()::</b> payable to:"):: <b>::user._amap.checkOrder::</b>
+				::raw __("Prepare a check of <b>::amount:: ::currency::</b> payable to : <b>::checkOrder::</b>",{checkOrder:user._amap.checkOrder,amount:formatNum(amount),currency:currency()}):: 
 			</p>
 			<p>
 				::_("Mention this reference at the back of the check in order to facilitate its process:"):: <br/>
