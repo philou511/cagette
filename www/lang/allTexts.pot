@@ -1614,7 +1614,7 @@ msgstr ""
 msgid "Product ID"
 msgstr ""
 
-#: src/db/Product.hx:4393 lang/master/tpl/contract/order.mtt:806 lang/master/tpl/contract/orderAndPay.mtt:914 lang/master/tpl/contractadmin/edit.mtt:1080 lang/master/tpl/contractadmin/products.mtt:1885 lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:1961
+#: src/db/Product.hx:4393 lang/master/tpl/contract/order.mtt:806 lang/master/tpl/contract/orderAndPay.mtt:904 lang/master/tpl/contractadmin/edit.mtt:1080 lang/master/tpl/contractadmin/products.mtt:1885 lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:1961
 msgid "Price"
 msgstr ""
 
@@ -2016,11 +2016,11 @@ msgid "CSA Contracts"
 msgstr ""
 
 #. short version for quantity
-#: lang/master/tpl/contract/default.mtt:350 lang/master/tpl/contract/default.mtt:2703 lang/master/tpl/contract/order.mtt:896 lang/master/tpl/contract/orderAndPay.mtt:1004 lang/master/tpl/contractadmin/orders.mtt:3214 lang/master/tpl/contractadmin/ordersByDate.mtt:2478 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1732 lang/master/tpl/distribution/list.mtt:2328 lang/master/tpl/distribution/listByDate.mtt:475 lang/master/tpl/distribution/listByDateOnePage.mtt:443 lang/master/tpl/distribution/listByDateOnePageContract.mtt:473 lang/master/tpl/distribution/listByDateShort.mtt:504 lang/master/tpl/member/view.mtt:3098 lang/master/tpl/member/view.mtt:4123 lang/master/tpl/validate/user.mtt:812
+#: lang/master/tpl/contract/default.mtt:350 lang/master/tpl/contract/default.mtt:2703 lang/master/tpl/contract/order.mtt:896 lang/master/tpl/contract/orderAndPay.mtt:994 lang/master/tpl/contractadmin/orders.mtt:3214 lang/master/tpl/contractadmin/ordersByDate.mtt:2478 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1732 lang/master/tpl/distribution/list.mtt:2328 lang/master/tpl/distribution/listByDate.mtt:475 lang/master/tpl/distribution/listByDateOnePage.mtt:443 lang/master/tpl/distribution/listByDateOnePageContract.mtt:473 lang/master/tpl/distribution/listByDateShort.mtt:504 lang/master/tpl/member/view.mtt:3098 lang/master/tpl/member/view.mtt:4123 lang/master/tpl/validate/user.mtt:812
 msgid "Qty"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:405 lang/master/tpl/contract/default.mtt:2759 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:883 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1048 lang/master/tpl/contractadmin/orders.mtt:3279 lang/master/tpl/contractadmin/ordersByDate.mtt:2536 lang/master/tpl/contractadmin/ordersByProduct.mtt:617 lang/master/tpl/contractadmin/ordersByProductList.mtt:1598 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1790 lang/master/tpl/contractadmin/stats.mtt:775 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:817 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4181 lang/master/tpl/validate/user.mtt:868
+#: lang/master/tpl/contract/default.mtt:405 lang/master/tpl/contract/default.mtt:2759 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:873 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1048 lang/master/tpl/contractadmin/orders.mtt:3279 lang/master/tpl/contractadmin/ordersByDate.mtt:2536 lang/master/tpl/contractadmin/ordersByProduct.mtt:612 lang/master/tpl/contractadmin/ordersByProductList.mtt:1598 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1790 lang/master/tpl/contractadmin/stats.mtt:775 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:817 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4181 lang/master/tpl/validate/user.mtt:868
 msgid "Product"
 msgstr ""
 
@@ -2037,7 +2037,7 @@ msgstr ""
 msgid "Fees"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:660 lang/master/tpl/contract/default.mtt:3018 lang/master/tpl/contract/orderByDate.mtt:727 lang/master/tpl/contractadmin/edit.mtt:3760 lang/master/tpl/contractadmin/orders.mtt:3509 lang/master/tpl/contractadmin/orders.mtt:4779 lang/master/tpl/contractadmin/ordersByDate.mtt:2761 lang/master/tpl/contractadmin/ordersByProduct.mtt:725 lang/master/tpl/contractadmin/ordersByProductList.mtt:1703 lang/master/tpl/contractadmin/ordersByProductList.mtt:2186 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2015 lang/master/tpl/contractadmin/vendorsByDate.mtt:738 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:925 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:1473 lang/master/tpl/distribution/list.mtt:2520 lang/master/tpl/distribution/listByDate.mtt:593 lang/master/tpl/distribution/listByDateOnePage.mtt:549 lang/master/tpl/distribution/listByDateOnePageContract.mtt:579 lang/master/tpl/member/view.mtt:4444 lang/master/tpl/validate/user.mtt:1089
+#: lang/master/tpl/contract/default.mtt:660 lang/master/tpl/contract/default.mtt:3018 lang/master/tpl/contract/orderByDate.mtt:727 lang/master/tpl/contractadmin/edit.mtt:3760 lang/master/tpl/contractadmin/orders.mtt:3509 lang/master/tpl/contractadmin/orders.mtt:4779 lang/master/tpl/contractadmin/ordersByDate.mtt:2761 lang/master/tpl/contractadmin/ordersByProduct.mtt:720 lang/master/tpl/contractadmin/ordersByProductList.mtt:1703 lang/master/tpl/contractadmin/ordersByProductList.mtt:2186 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2015 lang/master/tpl/contractadmin/vendorsByDate.mtt:738 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:925 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:1473 lang/master/tpl/distribution/list.mtt:2520 lang/master/tpl/distribution/listByDate.mtt:593 lang/master/tpl/distribution/listByDateOnePage.mtt:549 lang/master/tpl/distribution/listByDateOnePageContract.mtt:579 lang/master/tpl/member/view.mtt:4444 lang/master/tpl/validate/user.mtt:1089
 msgid "Total"
 msgstr ""
 
@@ -2164,7 +2164,7 @@ msgid ""
 "<a href='/contract'>my account</a>."
 msgstr ""
 
-#: lang/master/tpl/contract/order.mtt:2499 lang/master/tpl/contract/orderAndPay.mtt:2588
+#: lang/master/tpl/contract/order.mtt:2499 lang/master/tpl/contract/orderAndPay.mtt:2578
 msgid "There is currently no open order"
 msgstr ""
 
@@ -2172,26 +2172,23 @@ msgstr ""
 msgid "Tip: to remove an order please key-in the quantity 0"
 msgstr ""
 
-#: lang/master/tpl/contract/order.mtt:3263 lang/master/tpl/contract/orderAndPay.mtt:3265 lang/master/tpl/contractadmin/edit.mtt:4381
+#: lang/master/tpl/contract/order.mtt:3263 lang/master/tpl/contract/orderAndPay.mtt:3255 lang/master/tpl/contractadmin/edit.mtt:4381
 msgid "Validate the order"
 msgstr ""
 
-#: lang/master/tpl/contract/order.mtt:3410 lang/master/tpl/contract/orderAndPay.mtt:3420
+#: lang/master/tpl/contract/order.mtt:3410 lang/master/tpl/contract/orderAndPay.mtt:3410
 msgid "Supplier:"
 msgstr ""
 
-#: lang/master/tpl/contract/order.mtt:3476 lang/master/tpl/contract/orderAndPay.mtt:3484
+#: lang/master/tpl/contract/order.mtt:3476 lang/master/tpl/contract/orderAndPay.mtt:3474
 msgid "Contact in charge:"
 msgstr ""
 
 #: lang/master/tpl/contract/orderAndPay.mtt:269
 msgid ""
-"Key-in here your orders in advance for this supplier.<br/>
-			You can check "
-"your current orders any time on the following page <a href=\"/contract\">my "
-"account</a>.<br/>
-			Tip: to remove an order please key-in the quantity "
-"0"
+"Key-in here your orders in advance for this supplier.<br/>You can check your "
+"current orders any time on the following page <a href=\"/contract\">my account</a>.<br/>Tip: "
+"to remove an order please key-in the quantity 0"
 msgstr ""
 
 #: lang/master/tpl/contract/orderByDate.mtt:97
@@ -2536,35 +2533,27 @@ msgstr ""
 msgid "Delivery of the <b>::date::</b>"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/ordersByProduct.mtt:267
-msgid ""
-"Be careful, if the price of the product was modified during the sale, 
-			every "
-"order of a member is taken into account with the price as it was at the time "
-"of the creation of the order"
-msgstr ""
-
-#: lang/master/tpl/contractadmin/ordersByProduct.mtt:583 lang/master/tpl/contractadmin/ordersByProductList.mtt:1565 lang/master/tpl/contractadmin/vendorsByDate.mtt:596 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:783
-msgid "Quantities"
-msgstr ""
-
-#: lang/master/tpl/contractadmin/ordersByProduct.mtt:648 lang/master/tpl/contractadmin/ordersByProductList.mtt:1628 lang/master/tpl/contractadmin/vendorsByDate.mtt:661 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:848
-msgid "Reference"
-msgstr ""
-
-#: lang/master/tpl/contractadmin/ordersByProduct.mtt:681
-msgid "Unit Price incl. VAT"
-msgstr ""
-
-#: lang/master/tpl/contractadmin/ordersByProduct.mtt:1625 lang/master/tpl/contractadmin/ordersByProduct.mtt:1868
-msgid "Order form"
-msgstr ""
-
-#: lang/master/tpl/contractadmin/ordersByProductList.mtt:1223
+#: lang/master/tpl/contractadmin/ordersByProduct.mtt:267 lang/master/tpl/contractadmin/ordersByProductList.mtt:1223
 msgid ""
 "Be careful, if the price of the product was modified during the sale, every "
 "order of a member is taken into account with the price as it was at the time "
 "of the creation of the order"
+msgstr ""
+
+#: lang/master/tpl/contractadmin/ordersByProduct.mtt:578 lang/master/tpl/contractadmin/ordersByProductList.mtt:1565 lang/master/tpl/contractadmin/vendorsByDate.mtt:596 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:783
+msgid "Quantities"
+msgstr ""
+
+#: lang/master/tpl/contractadmin/ordersByProduct.mtt:643 lang/master/tpl/contractadmin/ordersByProductList.mtt:1628 lang/master/tpl/contractadmin/vendorsByDate.mtt:661 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:848
+msgid "Reference"
+msgstr ""
+
+#: lang/master/tpl/contractadmin/ordersByProduct.mtt:676
+msgid "Unit Price incl. VAT"
+msgstr ""
+
+#: lang/master/tpl/contractadmin/ordersByProduct.mtt:1620 lang/master/tpl/contractadmin/ordersByProduct.mtt:1863
+msgid "Order form"
 msgstr ""
 
 #: lang/master/tpl/contractadmin/ordersByProductList.mtt:2303

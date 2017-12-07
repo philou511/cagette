@@ -458,7 +458,7 @@ class User extends Object {
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire dans un mois
+		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire in 1 month
 		
 		var e = new sugoi.mail.Mail();
 		if (group != null){
@@ -480,8 +480,6 @@ class User extends Object {
 		e.setHtmlBody(html);
 		
 		App.sendMail(e);	
-		
-		
 	}
 	
 	/**

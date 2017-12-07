@@ -48,11 +48,11 @@ class Admin extends Controller {
 			for ( k in ["mailer","smtp_host","smtp_port","smtp_user","smtp_pass"]){
 				sugoi.db.Variable.set(k, f.getValueOf(k));
 			}
-			throw Ok("/admin/emails", "configuration enregistrée");
+			throw Ok("/admin/emails", t._("Configuration updated") );
 			
 		}
 		
-		view.title = "Configuration emails";
+		view.title = t._("Email service configuration");
 		view.form = f;
 	}
 	
@@ -87,7 +87,7 @@ class Admin extends Controller {
 			sys.db.Manager.cnx.request("truncate table Error");
 		}
 
-		var errorsStats = sys.db.Manager.cnx.request("select count(id) as c,date as d,DATE_FORMAT(date,'%d-%b') as day from Error where date > NOW()- INTERVAL 1 MONTH "+sql+" group by day order by d").results();
+		var errorsStats = sys.db.Manager.cnx.request("select count(id) as c, DATE_FORMAT(date,'%c-%d') as day from Error where date > NOW()- INTERVAL 1 MONTH "+sql+" group by day order by day").results();
 		view.errorsStats = errorsStats;
 
 		view.browser = new sugoi.tools.ResultsBrowser(

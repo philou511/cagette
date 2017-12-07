@@ -167,10 +167,12 @@ class Member extends Controller
 		view.waitingList = db.WaitingList.manager.search($group == app.user.amap,{orderBy:-date});
 	}
 	
+	/**
+	 * Send an invitation to a new member
+	 */
 	function doInviteMember(u:db.User){
 		
 		if (checkToken() ) {
-			
 			u.sendInvitation();
 			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
@@ -713,17 +715,13 @@ class Member extends Controller
 		view.balance = db.UserAmap.get(m, app.user.amap).balance;
 		
 		checkToken();
-		
 	}
 	
 	@tpl('member/balance.mtt')
 	function doBalance(){
-		
 		view.balanced = db.UserAmap.manager.search($amap == app.user.amap && $balance == 0.0, false);
 		view.credit = db.UserAmap.manager.search($amap == app.user.amap && $balance > 0, false);
 		view.debt = db.UserAmap.manager.search($amap == app.user.amap && $balance < 0, false);
-		
-		
 	}
 	
 }

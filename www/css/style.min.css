@@ -18,7 +18,7 @@ ul.nav li{text-transform:uppercase;font-size:14px;}
 .contact{border:2px solid #CCC;border-radius:8px;margin:8px;padding:8px;width:250px;min-height:100px;}
 .homeBlock{margin-bottom:32px;background:#FFF;border-radius:8px;position:relative;padding:8px;}
 .homeBlock .content{margin:8px 8px 8px 90px;}
-span.panel-title{font-family:'Cantora One',sans-serif!important;color:#966125!important;font-size:20px!important;font-weight:normal!important;}
+span.panel-title{color:#966125!important;font-size:20px!important;font-weight:normal!important;}
 .article{margin-bottom:16px;background:#FFF;border-radius:8px;position:relative;padding:8px;}
 .white{margin-bottom:16px;background:#FFF;border-radius:4px;position:relative;}
 .block{margin-bottom:12px;background:#FFF;border-radius:8px;position:relative;padding:8px;}

@@ -33,7 +33,7 @@ class UserService
 		//new account
 		if (!user.isFullyRegistred()) {
 			user.sendInvitation();
-			throw t._("Your account have not been validated yet. We sent an e-mail to <b>::email::</b> to finalize your subscription!",{email:user.email});			
+			throw t._("Your account have not been validated yet. We sent an e-mail to ::email:: to finalize your subscription!",{email:user.email});			
 		}
 		
 		var pass = haxe.crypto.Md5.encode( App.config.get('key') + password );

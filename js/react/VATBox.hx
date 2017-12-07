@@ -3,19 +3,32 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 
+// I need to store also the "input" because of https://stackoverflow.com/questions/29140354/how-to-handle-decimal-values-in-reacts-onchange-event-for-input
+typedef VATBoxState = {ht:Float, ttc:Float, vat:Float, htInput:String, ttcInput:String,lastEdited:String};
+
+
 /**
  * A box to manage prices with and without VAT
  * @author fbarbut
  */
-class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:String,vatRates:String,vat:Float,formName:String},{ht:Float,ttc:Float,vat:Float}>
+class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:String,vatRates:String,vat:Float,formName:String},VATBoxState>
 {
 
 	public function new(props) 
 	{
 		super(props);
-		trace(props);
+		//trace(props);
 		
-		this.state = {ht:round(props.ht), ttc:round(props.ht+(props.ht*(props.vat/100))), vat:props.vat};
+		this.state = {
+			ht : round(props.ht),
+			htInput : Std.string(round(props.ht)),
+			ttc : round(props.ht + (props.ht * (props.vat / 100))),
+			ttcInput : Std.string(round(props.ht + (props.ht * (props.vat / 100)))),
+			vat:props.vat,
+			lastEdited:null
+		};
+		
+
 	}
 	
 	override public function render(){
@@ -37,7 +50,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 				<div className="row">
 					<div className="col-md-4">
 						<div className="input-group">
-							<input type="text" name="ht" value="${state.ht}" className="form-control" onChange={onChange}/>
+							<input type="text" name="htInput" value="${state.htInput}" className="form-control" onChange={onChange}/>
 							<div className="input-group-addon">${props.currency}</div>
 						</div>
 					</div>
@@ -50,7 +63,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 					
 					<div className="col-md-4">
 						<div className="input-group">
-							<input type="text" name="ttc" value="${state.ttc}" className="form-control" onChange={onChange}/>
+							<input type="text" name="ttcInput" value="${state.ttcInput}" className="form-control" onChange={onChange}/>
 							<div className="input-group-addon">${props.currency}</div>
 						</div>
 					</div>
@@ -71,20 +84,35 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 		
 		e.preventDefault();
 		var name :String = untyped e.target.name;
-		var v = StringTools.replace(untyped e.target.value, ",", ".");
-		var value : Float = Std.parseFloat(v);
-		//trace('onChange : $name = $value');
+		var input : String = Std.string(untyped e.target.value);
+		if (input == null || input == "") input = "0";
+		input = StringTools.replace(input, ",", ".");
+		var value : Float = Std.parseFloat(input);
+		if (value == null) value = 0;
 		
 		var rate = 1 + (state.vat / 100);
+		//trace('name:$name - raw:' + untyped e.target.value+' - input:$input - value:$value ');
 		
 		switch(name){
-		case "ht":
-			this.setState(cast {ht:value,ttc: round(value*rate) });	
-		case "ttc":
-			this.setState(cast {ht: round(value/rate)  ,ttc:value });	
+		case "htInput":
+			
+			this.setState(cast {ht:value , htInput:input , ttc: round(value * rate), ttcInput:round(value * rate) , lastEdited:"htInput"});	
+			
+		case "ttcInput":
+			this.setState(cast {ht: round(value / rate), htInput : round(value/rate), ttcInput:input  , ttc:value , lastEdited:"ttcInput"});	
+			
 		case "vat":
 			rate = 1 + (value / 100);
-			this.setState( { vat:value, ht:state.ht, ttc:round(state.ht*rate) } );
+			if (state.lastEdited == "htInput"){
+				//compute ttc from ht
+				
+				this.setState(cast { vat:value, ht:state.ht, htInput:state.ht, ttc:round(state.ht * rate) , ttcInput:round(state.ht * rate)} );	
+			}else{
+				//compute ht from ttc
+				this.setState(cast { vat:value, ht: round( state.ttc/rate ), htInput: round( state.ttc/rate ), ttc:state.ttc , ttcInput:state.ttc} );	
+			}
+
+			
 		default:
 			
 		}
@@ -92,7 +120,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 		
 	}
 	
-	function round(f:Float):Float{
+	inline function round(f:Float):Float{
 		
 		return Math.round(f * 100) / 100;
 		
