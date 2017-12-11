@@ -170,7 +170,8 @@ class Distribution extends Controller
 			app.event(EditDistrib(d));
 			
 			if (d.date == null){
-				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been proposed to the farmer, please wait for its validation') );
+				var msg = t._('The distribution has been proposed to the supplier, please wait for its validation');
+				throw Ok('/contractAdmin/distributions/'+d.contract.id, msg );
 			}else{
 				d.update();
 				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been recorded') );

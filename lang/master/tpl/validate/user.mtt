@@ -38,16 +38,6 @@
 					<th>::_("Fees")::</th>
 					<th>::_("Total")::</th>
 					<th>::_("Paid")::</th>
-
-					<th>Contrat</th>
-					<th>Qté</th>
-					<th>Réf.</th>
-					<th>Produit</th>
-					<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
-					<th>Sous-total</th>
-					<th>Frais</th>
-					<th>Total</th>
-					<th>Payé</th>
 				</tr>
 				::foreach o orders::
 				<tr>
@@ -178,8 +168,9 @@
 				$$insert(::_("Key-in a payment")::,/validate/::date::/::place.id::/::member.id::/addPayment/)
 			</p>
 			
-			<p class="text-center">				
-				::if(op!=null && tpaid+op.amount != 0)::
+			<p class="text-center">	
+				<!--
+				::if(op!=null && tpaid+op.amount < 0)::
 					
 					<a href="" class="btn btn-default btn-lg disabled">
 						<span class="glyphicon glyphicon-ok"></span>
@@ -187,24 +178,27 @@
 					</a>
 				
 					<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
-					::_("You cannot validate this order because the amount paid<br/> by the member does not correspond to the total amount of his order!")::
+					::raw _("You cannot validate this order because the amount paid<br/> by the member does not correspond to the total amount of his order!")::
 					</div>
 				
 				::else::
-				
+				-->
 					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
 						<span class="glyphicon glyphicon-ok"></span>
 						::_("Validate this order")::
 					</a>
-				::end::
+				<!--::end::-->
 			</p>
 			
-			::else::			
+			::else::
+			
 			<!--  PAYMENT CHECK FOR STANDARD MODE -->
 			
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">Solde de l'adhérent <a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-xs">::_("Details")::</a> </th>
+					<th colspan="9" class="text-center">
+						Solde de l'adhérent <a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-xs">::_("Details")::</a>						
+					</th>
 				</tr>
 				::foreach op operations::
 					<tr>
@@ -262,18 +256,14 @@
 			
 			::end::
 			
+			<!-- END -->
 			
 			<p class="text-center">
 				<a href="/distribution/validate/::date::/::place.id::" class="btn btn-default btn-sm">
 					<span class="glyphicon glyphicon-chevron-left"></span> ::_("Back to the delivery")::
 				</a>
-				
 			</p>
-			
 		
 		</div>
 	</div>
-	
-
-
 ::end::

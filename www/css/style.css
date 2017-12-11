@@ -471,7 +471,8 @@ div.productImg {
   height: 70px;
   margin: 4px;
   background: no-repeat center;
-  background-size: cover; }
+  background-size: cover;
+  margin: 0; }
 
 div.productBox div.productImg {
   background-size: cover;

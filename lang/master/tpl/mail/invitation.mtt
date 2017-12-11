@@ -11,7 +11,7 @@
 	<p>
 		::if groupName!=null::
 		
-			::raw __("As a member of <b style="font-size:140%;">::groupName::</b>",{groupName:groupName})::
+			::raw __("As a member of <b>::groupName::</b>",{groupName:groupName})::
 			<br/>		
 			::_("you have been pre-registered on Cagette.net")::
 		

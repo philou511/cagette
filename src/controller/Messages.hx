@@ -35,7 +35,7 @@ class Messages extends Controller
 		var lists = getLists();
 		form.addElement( new StringInput("senderName", t._("Sender name"),senderName,true));
 		form.addElement( new StringInput("senderMail", t._("Sender E-Mail"),senderMail,true));
-		form.addElement( new StringSelect("list", t._("Addressees"),lists,null,false,null,"style='width:500px;'"));
+		form.addElement( new StringSelect("list", t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
 		form.addElement( new StringInput("subject", t._("Subject:"),"",false,null,"style='width:500px;'") );
 		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
 		
@@ -62,7 +62,14 @@ class Messages extends Controller
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
 			e.setHtmlBody(html);
 		
-			App.sendMail(e,app.user.getAmap(),listId,app.user);	
+			try {
+				App.sendMail(e,app.user.getAmap(),listId,app.user);		
+			}catch (e:String){
+				if (e.indexOf("curl") >-1) {
+					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
+					throw Error("/member", t._("An error occurred while sending emails, please retry"));
+				}
+			}
 			
 			throw Ok("/messages", t._("The message has been sent"));
 		}

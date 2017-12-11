@@ -52,15 +52,23 @@ class App {
 		new Tuto(name,step);
 	}
 	
-	public function getVATBox(htPrice:Float,currency:String,rates:String,vat:Float,formName:String){
+	/**
+	 * remove method for IE compat
+	 */
+	public function remove(el:js.html.Element){
+		if (el == null) return;
+		el.parentElement.removeChild(el);
+	}
+	
+	public function getVATBox(ttcprice:Float,currency:String,rates:String,vat:Float,formName:String){
 		
-		var input = js.Browser.document.querySelector('form input[name="${formName}_htPrice"]');
+		var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
 		
-		js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement.remove();
+		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
 		
-		ReactDOM.render(jsx('<$VATBox ht="$htPrice" currency="$currency" vatRates="$rates" vat="$vat" formName="$formName"/>'),  input.parentElement);
+		ReactDOM.render(jsx('<$VATBox ttc="$ttcprice" currency="$currency" vatRates="$rates" vat="$vat" formName="$formName"/>'),  input.parentElement);
 		
-		input.remove();
+		//remove(input);
 		
 	}
 

@@ -1,15 +1,10 @@
 ::use 'contractadmin/design.mtt'::
-	
-		
+
 	<h3>::_("Categories")::</h3>
 	
 	<p>
-		::raw _("You can link your products to categories, in order to better organize them in the \"shop mode\".<br/>
-		<b>To add categories: </b>select checkboxes of products and then select a category in the list at the bottom of the page. Click then on \"add\".<br />
-		<b>To remove a category:<b/> click on it.")::
-		
+		::raw _("You can link your products to categories, in order to better organize them in the \"shop mode\".<br/><b>To add categories: </b>select checkboxes of products and then select a category in the list at the bottom of the page. Click then on \"add\".<br /><b>To remove a category:<b/> click on it.")::
 	</p>
-
 	
 	<script language="javascript">
 	var tagger;

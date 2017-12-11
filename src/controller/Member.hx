@@ -173,7 +173,14 @@ class Member extends Controller
 	function doInviteMember(u:db.User){
 		
 		if (checkToken() ) {
-			u.sendInvitation();
+			try {
+				u.sendInvitation();
+			}catch (e:String){
+				if (e.indexOf("curl") >-1) {
+					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
+					throw Error("/member", t._("An error occurred while sending emails, please retry"));
+				}
+			}
 			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
 		
@@ -187,9 +194,16 @@ class Member extends Controller
 		if (checkToken()) {
 			
 			var users = db.User.getUsers_NewUsers();
-			for ( u in users) {
-				u.sendInvitation();
-				Sys.sleep(0.2);
+			try{
+				for ( u in users) {
+					u.sendInvitation();
+					Sys.sleep(0.2);
+				}
+			}catch (e:String){
+				if (e.indexOf("curl") >-1) {
+					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
+					throw Error("/member", t._("An error occurred while sending emails, please retry"));
+				}
 			}
 			
 			throw Ok('/member', t._("Congratulations, you just sent <b>::userLength::</b> invitations", {userLength:users.length}));

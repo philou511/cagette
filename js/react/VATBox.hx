@@ -11,7 +11,7 @@ typedef VATBoxState = {ht:Float, ttc:Float, vat:Float, htInput:String, ttcInput:
  * A box to manage prices with and without VAT
  * @author fbarbut
  */
-class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:String,vatRates:String,vat:Float,formName:String},VATBoxState>
+class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:String,vatRates:String,vat:Float,formName:String},VATBoxState>
 {
 
 	public function new(props) 
@@ -20,10 +20,10 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 		//trace(props);
 		
 		this.state = {
-			ht : round(props.ht),
-			htInput : Std.string(round(props.ht)),
-			ttc : round(props.ht + (props.ht * (props.vat / 100))),
-			ttcInput : Std.string(round(props.ht + (props.ht * (props.vat / 100)))),
+			ht : round(props.ttc/(1+props.vat/100)),
+			htInput : Std.string(round(props.ttc/(1+props.vat/100))),
+			ttc : round(props.ttc),
+			ttcInput : Std.string(round(props.ttc)),
 			vat:props.vat,
 			lastEdited:null
 		};
@@ -36,7 +36,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 		var rates :Array<Float>= props.vatRates.split("|").map(Std.parseFloat);
 		
 		var options = [for (r in rates) jsx('<option key="$r" value="$r">$r %</option>')  ];
-		var priceInputName = props.formName+"_htPrice";
+		var priceInputName = props.formName+"_price";
 		var vatInputName = props.formName+"_vat";
 		
 		return jsx('<div>
@@ -69,7 +69,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ht:Float,currency:Stri
 					</div>
 				</div>
 				
-				<input type="hidden" name="$priceInputName" value="${state.ht}" />
+				<input type="hidden" name="$priceInputName" value="${state.ttc}" />
 				<input type="hidden" name="$vatInputName" value="${state.vat}" />
 		
 			</div>

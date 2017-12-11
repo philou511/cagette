@@ -17,11 +17,7 @@
 		<div class="panel-body text-center">
 			
 			<p>
-				::raw __("In order to continue, <br/>
-				please <a href=\"#\" onclick=\"_.loginBox('::redirect::');\" >connect</a>
-				<br/>
-				or <a href=\"#\" onclick=\"_.registerBox('::redirect::',::phoneRequired::);\">subscribe</a> if it is the first time<br/>
-				you use Cagette.net",{redirect:redirect})::
+				::raw __("In order to continue, <br/>please <a href=\"#\" onclick=\"_.loginBox('::redirect::');\" >connect</a><br/>	or <a href=\"#\" onclick=\"_.registerBox('::redirect::',::phoneRequired::);\">subscribe</a> if it is the first time<br/>you use Cagette.net",{redirect:redirect,phoneRequired:phoneRequired})::
 			</p>
 			
 			<hr/>
@@ -30,7 +26,7 @@
 				<span class="glyphicon glyphicon-user"></span> ::_("Connection")::</a>
 			
 			<a href="#" onclick="_.registerBox('::raw redirect::',::phoneRequired::);" class="btn btn-success">
-				<span class="glyphicon glyphicon-chevron-right"></span> ::_("Subscription")::</a>
+				<span class="glyphicon glyphicon-chevron-right"></span> ::_("Sign up")::</a>
 			
 		</div>
 	</div>

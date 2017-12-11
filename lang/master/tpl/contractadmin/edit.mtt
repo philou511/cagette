@@ -37,7 +37,7 @@
 					<th>::_("Product")::</th>
 					<th>::_("Price")::</th>
 					<th>::_("Quantity")::</th>
-					<th>::_("Status")::</th>
+					<th ::cond !user._amap.hasPayments()::>::_("Status")::</th>
 					::if distribution==null::<th>::_("Alternately with :")::</th>::end::
 				</tr>
 				::set total = 0::
@@ -71,11 +71,10 @@
 						
 						::set total = total+(q*uo.product.price)::
 						<input type="text" class="form-control input-sm" name="product::uo.product.id::" id="product::uo.product.id::" value="::q::" />
-						
-						
-						
 					</td>
-					<td class="paid">
+					
+					<!-- "paid" checkbox only if payments are not enabled -->
+					<td class="paid" ::cond !user._amap.hasPayments()::>
 						::_("Paid:"):: 
 						::if uo.order!=null::			
 						<input type="checkbox" name="paid::uo.product.id::" value="1" ::attr checked (uo.order.paid==true ):: />
@@ -126,7 +125,7 @@
 						<th>::_("Total")::</th>
 						<th>::total+extra::::currency()::</th>
 						<th></th>
-						<th colspan="2">
+						<th ::cond !user._amap.hasPayments()::>
 							<a href="#"  id="checkButton">::_("Check all")::</a>
 							<script language="javascript">
 							var globalCheck = true;
@@ -137,8 +136,7 @@
 								e.preventDefault();
 							};
 							$("#checkButton").click(checkEverything);
-							</script>
-							
+							</script>							
 						</th>
 					</tr>
 			</table>

@@ -75,7 +75,7 @@ class Validate extends controller.Controller
 		
 		var data = [];
 		for ( p in db.Operation.getPaymentTypes(app.user.amap)) data.push({label:App.t._(p.type),value:p.type});
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Means of payment"), data, null, true));
 		
 		if (f.isValid()){
 			f.toSpod(o);
@@ -93,12 +93,10 @@ class Validate extends controller.Controller
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Refund saved"));
-			
 		}
 		
-		view.title = t._("Key-in a refund for ") + user.getCoupleName();
+		view.title = t._("Key-in a refund for ::user::",{user:user.getCoupleName()});
 		view.form = f;		
-	
 	}
 	
 	@tpl('form.mtt')
@@ -121,7 +119,6 @@ class Validate extends controller.Controller
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
 		
-		
 		var b = db.Basket.get(user, place, date);
 		var op = b.getOrderOperation();
 		
@@ -139,10 +136,9 @@ class Validate extends controller.Controller
 			db.Operation.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Payment saved"));
-			
 		}
 		
-		view.title = t._("Key-in a payment for ") + user.getCoupleName();
+		view.title = t._("Key-in a payment for ::user::",{user:user.getCoupleName()});
 		view.form = f;	
 	}
 	
