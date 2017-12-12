@@ -214,7 +214,7 @@ class Contract extends Controller
 	 */
 	@tpl("form.mtt")
 	function doInsert(?type:Int) {
-		if (!app.user.isAmapManager()) throw Error('/', t._("Forbidden action"));
+		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		if (type == null) throw Redirect('/contract/insertChoose');
 		
 		view.title = if (type == db.Contract.TYPE_CONSTORDERS)t._("Create a contract with fixed orders") else t._("Create a contract with variable orders");
@@ -251,7 +251,7 @@ class Contract extends Controller
 	
 	function doDelete(c:db.Contract/*,args:{chk:String}*/) {
 		
-		if (!app.user.isAmapManager()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
+		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
 		
 		if (checkToken()) {
 			c.lock();

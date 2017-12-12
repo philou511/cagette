@@ -17,8 +17,6 @@
 		
 	</div>
 	
-	
-	
 	<div class="article" id="contracts">
 		<h2>
 			::if getParam("old"):: 
@@ -29,46 +27,48 @@
 		</h2>
 		<table class="table">
 			::foreach c contracts::
-					::if c.endDate!=null && c.endDate.getTime() < Date.now().getTime()::
-						::set style = "opacity:0.5;"::
-					::elseif c.startDate!=null && c.startDate.getTime() > Date.now().getTime()::
-						::set style = "opacity:0.5;"::
-					::else::
-						::set style = ""::
-					::end::
+				::if c.endDate!=null && c.endDate.getTime() < Date.now().getTime()::
+					::set style = "opacity:0.5;"::
+				::elseif c.startDate!=null && c.startDate.getTime() > Date.now().getTime()::
+					::set style = "opacity:0.5;"::
+				::else::
+					::set style = ""::
+				::end::
 				<tr  style="::style::" >
 					<td>
-						<b>::c.name::</b>
-						
+						::if c._vendor._image!=null::
+						<div class="productImg" style="background-image:url('::file(c._vendor._image)::');width:48px;height:48px;" ></div>
+						::end::
 					</td>
-					<td>
-						du ::hDate(c.startDate)::
-						au ::hDate(c.endDate)::
-					</td>
-					
 					<td>::c._vendor.name::</td>
 					<td>
+						<b>::c.name::</b>
+					</td>
+					<td style="font-size:0.9em;">
+						du ::hDate(c.startDate)::<br/>
+						au ::hDate(c.endDate)::
+					</td>
+					<td>
 						
+						<div class="btn-group" role="group">
 						$$edit(::_("Manage")::,/contractAdmin/view/::c.id::)
 						
-						::if user.isAmapManager()::
+						::if user.canManageAllContracts()::
 						$$delete(::_("Del.||short version of delete")::,/contract/delete/::c.id::?token=::token::)
 						::end::
-
-						</td>
+						</div>
+						
+					</td>
 				</tr>
 			::end::
 		</table>
 	
 		
-		::if user.isAmapManager():: 
+		::if user.canManageAllContracts():: 
 		$$insert(::_("New contract")::,/contract/insert/)
 		::end::
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
 		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> ::_("Calendar")::</a>
-		
-		<!--<a href="/contractAdmin/ordersByDate" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Vue globale des commandes</a>-->
-		
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 			::_("Global orders view")::
@@ -94,14 +94,16 @@
 				<tr>
 					<td>
 						::if v._image!=null::
-							<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
+						<div class="productImg" style="background-image:url('::file(v._image)::');width:48px;height:48px;"></div>
 						::end::
 					</td>
 					<td><b>::v.name::</b></td>
 					<td>
-						$$edit(::_("Edit")::,/vendor/edit/::v.id::)
-						<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>
-						::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
+						<div class="btn-group" role="group">
+							$$edit(::_("Edit")::,/vendor/edit/::v.id::)
+							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>
+							::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
+						</div>
 					</td>
 				</tr>
 			::end::
