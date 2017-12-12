@@ -137,6 +137,21 @@ class User extends Object {
 		
 	}
 	
+	public function canManageAllContracts(){
+		if (isAdmin()) return true;
+		var ua = getUserAmap(getAmap());
+		if (ua == null) return false;
+		if (ua.rights == null) return false;
+		for (r in ua.rights) {
+			switch(r) {
+				case Right.ContractAdmin(cid):
+					if(cid==null) return true;
+				default:
+			}
+		}
+		return false;			
+	}
+	
 	public function canAccessMessages():Bool {
 		var ua = getUserAmap(getAmap());
 		if (ua == null) return false;

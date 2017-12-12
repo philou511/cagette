@@ -506,7 +506,6 @@ class UserContract extends Object
 	 * @param	order
 	 */
 	public static function confirmSessionOrder(tmpOrder:OrderInSession){
-		
 		var orders = [];
 		var user = db.User.manager.get(tmpOrder.userId);
 		for (o in tmpOrder.products){

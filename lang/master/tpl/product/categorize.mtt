@@ -9,7 +9,6 @@
 	<script language="javascript">
 	var tagger;
 	$(function(){
-
 		tagger = _.getTagger(::c.id::);
 		tagger.init();
 	});

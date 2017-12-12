@@ -118,7 +118,7 @@
 									<tr>
 										<td>
 											<!--<img src="::c._product.getImage()::" style="margin-right:8px;max-height:64px;max-width:64px;" />	-->
-											<div style="background-image:url('::c._product.getImage()::')" class="productImg"/> 
+											<div style="background-image:url('::c._product.getImage()::')" class="productImg" /> 
 										</td>
 										
 										<td class="name">
