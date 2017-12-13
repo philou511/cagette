@@ -37,7 +37,7 @@ class Messages extends Controller
 		form.addElement( new StringInput("senderMail", t._("Sender E-Mail"),senderMail,true));
 		form.addElement( new StringSelect("list", t._("Addressees"),lists,null,false,null,"style='width:500px;'"));
 		form.addElement( new StringInput("subject", t._("Subject:"),"",false,null,"style='width:500px;'") );
-		form.addElement( new TextArea("text", "Message :", "", false, null, "style='width:500px;height:350px;'") );
+		form.addElement( new TextArea("text", t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
 		
 		if (form.checkToken()) {
 			

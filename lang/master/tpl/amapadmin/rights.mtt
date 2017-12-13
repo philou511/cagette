@@ -2,7 +2,7 @@
 
 		<h3>::_("Management of rights and access")::</h3>		
 		
-		$$insert(Ajouter un droit,/amapadmin/editRight)
+		$$insert(::_("Add a right")::,/amapadmin/editRight)
 		
 		<table class="table table-bordered">
 			<tr>
@@ -24,7 +24,7 @@
 					</ul>
 				</td>
 				<td>
-					$$insert(Modifier,/amapadmin/editRight/::u.userId::)
+					$$insert(::_("Modify")::,/amapadmin/editRight/::u.userId::)
 				</td>
 				
 				
