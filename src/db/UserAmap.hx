@@ -90,12 +90,12 @@ class UserAmap extends Object
 		return switch(r) {
 		case Right.AmapAdmin 	: t._("Administrator");
 		case Right.Messages 	: t._("Messaging");
-		case Right.Membership 	: t._("Management of members");
+		case Right.Membership 	: t._("Members management");
 		case Right.ContractAdmin(cid) : 
 			if (cid == null) {
 				t._("Management of all contracts");
 			}else {
-				t._("Management of the contract: ") + db.Contract.manager.get(cid).name;
+				t._("Management of contract : ") + db.Contract.manager.get(cid).name;
 			}
 		}
 	}
