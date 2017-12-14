@@ -1925,9 +1925,9 @@ msgstr "Gestion des adhérents"
 msgid "Management of all contracts"
 msgstr "Gestion de tous les contrats"
 
-#: src/db/UserAmap.hx:2412
-msgid "Management of contract : "
-msgstr "Gestion du contrat :"
+#: src/db/UserAmap.hx:2464
+msgid "Contract management"
+msgstr "Gestion du contrat"
 
 #: src/db/UserContract.hx:6208
 msgid ""
@@ -4694,6 +4694,12 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid "Contract management : "
+#~ msgstr "Gestion du contrat :"
+
+#~ msgid "Management of contract : "
+#~ msgstr "Gestion du contrat :"
 
 #~ msgid "Management of members"
 #~ msgstr "Gestion adhérents"

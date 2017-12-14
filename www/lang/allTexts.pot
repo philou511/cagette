@@ -1722,8 +1722,8 @@ msgstr ""
 msgid "Management of all contracts"
 msgstr ""
 
-#: src/db/UserAmap.hx:2412
-msgid "Management of contract : "
+#: src/db/UserAmap.hx:2464
+msgid "Contract management"
 msgstr ""
 
 #: src/db/UserContract.hx:6208
