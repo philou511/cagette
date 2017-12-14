@@ -4,9 +4,8 @@ import sys.db.Types;
 
 class CategoryGroup extends sys.db.Object
 {
-	
 	public var id : SId;
-	public var name : SString<32>;
+	public var name : SString<128>;
 	public var color : STinyInt; //color id
 	public var pinned : SBool; //if true, the products tagged with these categories will be pinned on top of the shop.
 	
@@ -22,6 +21,11 @@ class CategoryGroup extends sys.db.Object
 		0x6F0D2E, //vin
 		0x616161, //gris
 	];
+	
+	public function new(){
+		super();
+		pinned = false;
+	}
 	
 	public function getCategories() {
 		return db.Category.manager.search($categoryGroup == this, false);
