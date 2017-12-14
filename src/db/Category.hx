@@ -6,7 +6,7 @@ class Category extends sys.db.Object
 {
 
 	public var id : SId;
-	public var name :SString<32>;
+	public var name :SString<128>;
 
 	@:relation(categoryGroupId) public var categoryGroup:db.CategoryGroup;
 	

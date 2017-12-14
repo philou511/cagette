@@ -14,6 +14,7 @@ typedef RegisterBoxProps = {redirectUrl:String, phoneRequired:Bool};
 class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,RegisterBoxState>
 {
 
+	
 	public function new(props:RegisterBoxProps) 
 	{
 		if (props.redirectUrl == null) props.redirectUrl = "/";	
