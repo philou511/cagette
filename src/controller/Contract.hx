@@ -29,6 +29,19 @@ class Contract extends Controller
 	@tpl("contract/default.mtt")
 	function doDefault() {
 		
+		//Create the list of links to change the language
+		var langs = App.config.get("langs").split(";");
+		var langNames = App.config.get("langnames").split(";");
+		var i=0;
+		var langLinks = "";
+		for (lang in langs)
+		{
+			langLinks += "<li><a href=\"?lang=" + langs[i] + "\">" + langNames[i] + "</a></li>";
+			i++;
+		}
+		view.langLinks = langLinks;
+		view.langText = langNames[langs.indexOf(app.session.lang)];
+
 		//change account lang
 		if (app.params.exists("lang") && app.user!=null){
 			app.user.lock();

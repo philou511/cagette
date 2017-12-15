@@ -240,22 +240,14 @@
 		::_("Display the interface in another language"):: (beta)
 		:
 		<ul>
-			<li><a href="?lang=fr">Français</a></li>
-			<li><a href="?lang=en">English</a></li>
-			<li><a href="?lang=de">Deutsch</a></li>			
+
+			::raw langLinks::
+			
 		</ul>
 		<p>
 			::_("Current language is")::
 			<b>
-				::if session.lang=="fr"::
-					Français
-				::end::
-				::if session.lang=="de"::
-					Deutsch
-				::end::
-				::if session.lang=="en"::
-					English
-				::end::
+				::langText::
 			</b>
 		</p>
 	</div>

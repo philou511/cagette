@@ -93,7 +93,7 @@ msgid "Member"
 msgstr "Adhérent"
 
 #: src/controller/AmapAdmin.hx:4217 src/db/User.hx:16457
-#: lang/master/tpl/amapadmin/rights.mtt:235
+#: lang/master/tpl/amapadmin/rights.mtt:239
 #: lang/master/tpl/member/view.mtt:6293
 msgid "Rights"
 msgstr "Droits"
@@ -283,11 +283,11 @@ msgstr "Groupe effacé"
 msgid "Category deleted"
 msgstr "Catégorie effacée"
 
-#: src/controller/Contract.hx:832
+#: src/controller/Contract.hx:1257
 msgid "You're not member of this group"
 msgstr "Vous n'êtes pas membre de ce groupe"
 
-#: src/controller/Contract.hx:3941 src/controller/Contract.hx:5961
+#: src/controller/Contract.hx:4366 src/controller/Contract.hx:6386
 #: src/controller/Distribution.hx:691 src/controller/Distribution.hx:4308
 #: src/controller/Distribution.hx:10379 src/controller/Distribution.hx:13058
 #: src/controller/Member.hx:21232 src/controller/Product.hx:2029
@@ -295,14 +295,14 @@ msgstr "Vous n'êtes pas membre de ce groupe"
 msgid "Forbidden action"
 msgstr "Action interdite"
 
-#: src/controller/Contract.hx:4391
+#: src/controller/Contract.hx:4816
 msgid ""
 "If you would like to add fees to the order, define a rate (%) and label."
 msgstr ""
 "Si vous souhaitez ajouter des frais au pourcentage de la commande, spécifiez "
 "le pourcentage et son libellé."
 
-#: src/controller/Contract.hx:4605
+#: src/controller/Contract.hx:5030
 msgid ""
 "Warning, the management of stock. Please fill the field \"stock\" for all "
 "your products"
@@ -310,32 +310,32 @@ msgstr ""
 "Attention, vous avez activé la gestion des stocks. Pensez à renseigner le "
 "champs \"stock\" de tout vos produits"
 
-#: src/controller/Contract.hx:4941
+#: src/controller/Contract.hx:5366
 msgid "The management of stock is not available for CSA contracts"
 msgstr ""
 "La gestion des stocks n'est pas disponible pour les contrats de type AMAP"
 
-#: src/controller/Contract.hx:5648
+#: src/controller/Contract.hx:6073
 msgid "Contract updated"
 msgstr "Contrat mis à jour"
 
-#: src/controller/Contract.hx:6111
+#: src/controller/Contract.hx:6536
 msgid "Create a contract with fixed orders"
 msgstr "Créer un contrat à commande fixe"
 
-#: src/controller/Contract.hx:6159
+#: src/controller/Contract.hx:6584
 msgid "Create a contract with variable orders"
 msgstr "Créer un contrat à commande variable"
 
-#: src/controller/Contract.hx:6867
+#: src/controller/Contract.hx:7292
 msgid "New contract created"
 msgstr "Nouveau contrat créé"
 
-#: src/controller/Contract.hx:7069
+#: src/controller/Contract.hx:7494
 msgid "You don't have the authorization to remove a contract"
 msgstr "Vous n'avez pas le droit de supprimer un contrat"
 
-#: src/controller/Contract.hx:7436
+#: src/controller/Contract.hx:7861
 msgid ""
 "You cannot delete this contract because some orders are linked to this "
 "contract."
@@ -343,41 +343,41 @@ msgstr ""
 "Vous ne pouvez pas effacer ce contrat car il y a des commandes rattachées à "
 "ce contrat."
 
-#: src/controller/Contract.hx:7858
+#: src/controller/Contract.hx:8283
 msgid "Contract deleted"
 msgstr "Contrat supprimé"
 
-#: src/controller/Contract.hx:7926 src/controller/Product.hx:3854
+#: src/controller/Contract.hx:8351 src/controller/Product.hx:3854
 msgid "Token error"
 msgstr "Erreur de token"
 
-#: src/controller/Contract.hx:8509 src/controller/Contract.hx:11895
+#: src/controller/Contract.hx:8934 src/controller/Contract.hx:12320
 msgid "This contract is not opened to orders"
 msgstr "Ce contrat n'est pas ouvert aux commandes"
 
-#: src/controller/Contract.hx:10823 src/controller/Contract.hx:14032
+#: src/controller/Contract.hx:11248 src/controller/Contract.hx:14457
 msgid "Not possible to find the product ::produ:: and the delivery ::deliv::"
 msgstr "Impossible de retrouver le produit ::produ:: et distribution ::deliv::"
 
-#: src/controller/Contract.hx:11414 src/controller/Contract.hx:17373
+#: src/controller/Contract.hx:11839 src/controller/Contract.hx:17798
 msgid "Your order has been updated"
 msgstr "Votre commande a été mise à jour"
 
-#: src/controller/Contract.hx:14709
+#: src/controller/Contract.hx:15134
 msgid "Your CSA order has been saved"
 msgstr "Votre commande AMAP a été enregistrée"
 
-#: src/controller/Contract.hx:14794
+#: src/controller/Contract.hx:15219
 msgid "In order to save your order, please choose a payment mean."
 msgstr ""
 "Pour que votre commande soit enregistrée, choisissez une méthode de paiement."
 
-#: src/controller/Contract.hx:15358
+#: src/controller/Contract.hx:15783
 msgid "This delivery already took place, you cannot modify the order any more."
 msgstr ""
 "Cette distribution a déjà eu lieu, vous ne pouvez plus modifier la commande."
 
-#: src/controller/Contract.hx:15483
+#: src/controller/Contract.hx:15908
 msgid ""
 "<br/>As the manager of the contract you can modify the order from this page "
 "<a href='/contractAdmin'>Management of contracts</a>"
@@ -386,7 +386,7 @@ msgstr ""
 "depuis la page de gestion des commandes dans <a href='/"
 "contractAdmin'>Gestion contrats</a>"
 
-#: src/controller/Contract.hx:16791
+#: src/controller/Contract.hx:17216
 msgid "Error, not possible to find the order"
 msgstr "Erreur, impossible de retrouver la commande"
 
@@ -432,7 +432,7 @@ msgstr "Livraison "
 
 #: src/controller/ContractAdmin.hx:6752
 msgid "Opening of orders "
-msgstr "Ouverture des commandes "
+msgstr "Ouverture des commandes"
 
 #: src/controller/ContractAdmin.hx:7005
 msgid "End of orders"
@@ -866,7 +866,7 @@ msgstr "Collectif de producteurs"
 msgid "Farm shop"
 msgstr "Vente à la ferme"
 
-#: src/controller/Group.hx:5498 src/db/Amap.hx:9660
+#: src/controller/Group.hx:5498 src/db/Amap.hx:9640
 msgid "Group type"
 msgstr "Type de groupe"
 
@@ -978,7 +978,7 @@ msgstr "Sans-contrats"
 msgid "With orders"
 msgstr "Avec-commande"
 
-#: src/controller/Member.hx:2162 src/controller/Messages.hx:4043
+#: src/controller/Member.hx:2162 src/controller/Messages.hx:4047
 msgid "Memberships to be renewed"
 msgstr "Adhesions-a-renouveller"
 
@@ -1012,7 +1012,7 @@ msgid "membership request deleted"
 msgstr "Demande d'inscription rejetée"
 
 #: src/controller/Member.hx:5555 src/controller/Member.hx:6118
-#: src/controller/Messages.hx:2527
+#: src/controller/Messages.hx:2531
 msgid "An error occurred while sending emails, please retry"
 msgstr ""
 "Une erreur temporaire est survenue pendant l'envoi des emails, merci de "
@@ -1314,31 +1314,35 @@ msgstr "Destinataires"
 msgid "Subject:"
 msgstr "Sujet :"
 
-#: src/controller/Messages.hx:2633
+#: src/controller/Messages.hx:1258
+msgid "Message:"
+msgstr "Message :"
+
+#: src/controller/Messages.hx:2637
 msgid "The message has been sent"
 msgstr "Le message a bien été envoyé"
 
-#: src/controller/Messages.hx:3212
+#: src/controller/Messages.hx:3216
 msgid "Non authorized access"
 msgstr "Accès non autorisé"
 
-#: src/controller/Messages.hx:3723
+#: src/controller/Messages.hx:3727
 msgid "Everyone"
 msgstr "Tout le monde"
 
-#: src/controller/Messages.hx:3764
+#: src/controller/Messages.hx:3768
 msgid "The board: persons in charge + contracts + memberships"
 msgstr "Le bureau : les responsables + contrats + adhésions"
 
-#: src/controller/Messages.hx:3871
+#: src/controller/Messages.hx:3875
 msgid "TEST: me + spouse"
 msgstr "TEST : moi + conjoint(e)"
 
-#: src/controller/Messages.hx:3934
+#: src/controller/Messages.hx:3938
 msgid "Members without contract/order"
 msgstr "Adhérents sans contrat/commande"
 
-#: src/controller/Messages.hx:4222
+#: src/controller/Messages.hx:4226
 msgid "Subscribers "
 msgstr "Adhérents"
 
@@ -1660,11 +1664,11 @@ msgstr ""
 msgid "Supplier deleted"
 msgstr "Producteur supprimé"
 
-#: src/db/Amap.hx:4919
+#: src/db/Amap.hx:4899
 msgid "Product type"
 msgstr "Type de produits"
 
-#: src/db/Amap.hx:8840
+#: src/db/Amap.hx:8820
 msgid ""
 "Welcome in the group of ::name::!\n"
 " You can look at the delivery planning or make a new order."
@@ -1673,39 +1677,39 @@ msgstr ""
 " Vous pouvez consulter votre planning de distribution ou faire une nouvelle "
 "commande."
 
-#: src/db/Amap.hx:9337
+#: src/db/Amap.hx:9317
 msgid "Group name"
 msgstr "Nom du groupe"
 
-#: src/db/Amap.hx:9376
+#: src/db/Amap.hx:9356
 msgid "Short description"
 msgstr "Courte description"
 
-#: src/db/Amap.hx:9421
+#: src/db/Amap.hx:9401
 msgid "Homepage text"
 msgstr "Texte sur la page d'accueil"
 
-#: src/db/Amap.hx:9464
+#: src/db/Amap.hx:9444
 msgid "Text for distribution lists"
 msgstr "Texte listes d'émargement"
 
-#: src/db/Amap.hx:9518
+#: src/db/Amap.hx:9498
 msgid "Group website URL"
 msgstr "URL du site"
 
-#: src/db/Amap.hx:9575
+#: src/db/Amap.hx:9555
 msgid "Membership renewal date"
 msgstr "Date de renouvellement d'adhésion"
 
-#: src/db/Amap.hx:9624 src/db/Contract.hx:8378 src/db/User.hx:16530
+#: src/db/Amap.hx:9604 src/db/Contract.hx:8378 src/db/User.hx:16530
 msgid "Options"
 msgstr "Options"
 
-#: src/db/Amap.hx:9699
+#: src/db/Amap.hx:9679
 msgid "Registration setting"
 msgstr "Réglage des inscriptions"
 
-#: src/db/Amap.hx:9747 lang/master/tpl/amap/default.mtt:315
+#: src/db/Amap.hx:9727 lang/master/tpl/amap/default.mtt:315
 msgid "Main contact"
 msgstr "Contact principal"
 
@@ -1812,7 +1816,7 @@ msgstr "distributions"
 msgid "Order for ::date::"
 msgstr "Commande du ::date::"
 
-#: src/db/Place.hx:1402 lang/master/tpl/amapadmin/rights.mtt:207
+#: src/db/Place.hx:1402 lang/master/tpl/amapadmin/rights.mtt:211
 #: lang/master/tpl/contractadmin/products.mtt:1844
 #: lang/master/tpl/contractadmin/view.mtt:848
 #: lang/master/tpl/distribution/listByDate.mtt:406
@@ -2215,9 +2219,18 @@ msgstr "Monnaie"
 msgid "Management of rights and access"
 msgstr "Gestion des droits et accès"
 
-#: lang/master/tpl/amapadmin/rights.mtt:265
+#: lang/master/tpl/amapadmin/rights.mtt:106
+msgid "Add a right"
+msgstr "Ajouter un droit"
+
+#: lang/master/tpl/amapadmin/rights.mtt:269
 msgid "Actions"
 msgstr "Actions"
+
+#: lang/master/tpl/amapadmin/rights.mtt:566
+#: lang/master/tpl/categories/default.mtt:1165
+msgid "Modify"
+msgstr "Modifier"
 
 #: lang/master/tpl/base.mtt:3338
 msgid "Close"
@@ -2253,10 +2266,6 @@ msgstr "Modifier groupe"
 #: lang/master/tpl/categories/default.mtt:894
 msgid "Remove group"
 msgstr "Effacer groupe"
-
-#: lang/master/tpl/categories/default.mtt:1165
-msgid "Modify"
-msgstr "Modifier"
 
 #: lang/master/tpl/categories/default.mtt:1297
 msgid "Remove"
@@ -2457,7 +2466,7 @@ msgstr "Vous pourrez le relancer ici."
 msgid "Display the interface in another language"
 msgstr "Afficher l'interface dans une autre langue"
 
-#: lang/master/tpl/contract/default.mtt:6612
+#: lang/master/tpl/contract/default.mtt:6504
 msgid "Current language is"
 msgstr "La langue actuelle est"
 
@@ -4710,23 +4719,23 @@ msgstr ""
 "l'écran.\n"
 "\t\t\t\t\t</p>"
 
+#~ msgid "Cash for the order of the "
+#~ msgstr "Espèces pour la commande du "
+
 #~ msgid "Create rights to a user"
 #~ msgstr "Créer des droits à un utilisateur"
 
 #~ msgid "Modify rights of "
 #~ msgstr "Modifier les droits de "
 
-#~ msgid "Order for ::date:: "
-#~ msgstr "Commande du ::date:: "
-
-#~ msgid "Cash for the order of the "
-#~ msgstr "Espèces pour la commande du "
+#~ msgid "Order for the "
+#~ msgstr "Commande pour le "
 
 #~ msgid "Please select a payment method"
 #~ msgstr "Sélectionnez un moyen de paiement"
 
-#~ msgid "Order for the "
-#~ msgstr "Commande pour le "
+#~ msgid "Order for ::date:: "
+#~ msgstr "Commande du ::date:: "
 
 #~ msgid "Contract management : "
 #~ msgstr "Gestion du contrat :"
