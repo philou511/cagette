@@ -487,27 +487,38 @@ class ContractAdmin extends Controller
 		
 		view.orders = Lambda.array(out);
 		
-		
 		if ( app.params.exists("csv") ){
+			var totalHT = 0.0;
+			var totalTTC = 0.0;
 			
 			var orders = [];
 			for ( x in out){
 				//empty line
-				orders.push({"quantity":null,"pname":null,"ref":null,"price":null,"total":null});
-				orders.push({"quantity":null,"pname":x.contract.vendor.name,"ref":null,"price":null,"total":null});
+				orders.push({"quantity":null, 					"pname":null, "ref":null, "priceHT":null, "priceTTC":null, "totalHT":null, "totalTTC":null});				
+				orders.push({"quantity":null, "pname":x.contract.vendor.name, "ref":null, "priceHT":null, "priceTTC":null, "totalHT":null, "totalTTC":null});				
 				
 				for (o in x.orders){
 					orders.push({
 						"quantity":view.formatNum(o.quantity),
 						"pname":o.pname,
 						"ref":o.ref,
-						"price":view.formatNum(o.price),
-						"total":view.formatNum(o.total)					
+						"priceHT":view.formatNum(o.priceTTC / (1 + o.vat / 100) ),
+						"priceTTC":view.formatNum(o.priceTTC),
+						"totalHT":view.formatNum(o.total / (1 + o.vat / 100)),					
+						"totalTTC":view.formatNum(o.total)					
 					});
+					totalTTC += o.total;
+					totalHT += o.total / (1 + o.vat / 100);
 				}
+				
+				//total line
+				orders.push({"quantity":null, "pname":null, "ref":null, "priceHT":null, "priceTTC":null, "totalHT":view.formatNum(totalHT)+"", "totalTTC":view.formatNum(totalTTC)+""});								
+				totalTTC = 0;
+				totalHT = 0;
+				
 			}			
-			
-			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "price", "total"], t._("Orders from the ::fromDate:: to the ::toDate:: per supplier.csv", {fromDate:from.toString().substr(0,10), toDate:to.toString().substr(0,10)}));
+			var fileName = t._("Orders from the ::fromDate:: to the ::toDate:: per supplier.csv", {fromDate:from.toString().substr(0, 10), toDate:to.toString().substr(0, 10)});
+			sugoi.tools.Csv.printCsvDataFromObjects(orders, ["quantity", "pname", "ref", "priceHT", "priceTTC", "totalHT","totalTTC"], fileName);
 			return;
 		}
 		
@@ -697,6 +708,9 @@ class ContractAdmin extends Controller
 		view.orders = orders;
 	}
 	
+	/**
+	 * "bon de commande"
+	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
 	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {
 		

@@ -41,7 +41,7 @@
 					$$nullSafe(::m.ref::)
 				</td>
 				<td class="col-md-2">
-					::formatNum(m.price)::&nbsp;::currency()::
+					::formatNum(m.priceTTC)::&nbsp;::currency()::
 				</td>
 				<td class="col-md-2">
 					::formatNum(m.total)::&nbsp;::currency()::

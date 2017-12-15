@@ -10,19 +10,14 @@
 		</div>
 			
 		<hr/>
-			
-			
-			
 		::foreach o orders::
 		
 		::set total = 0::
 		<table class="table table-bordered table-hover table-striped"  style="width:100%;">
 			<tr>
 				<th colspan="5">
-					
 					<!--<div class="pull-right">$$export(::"/contractAdmin/ordersByProduct/"+o.contract.id+"?csv=1&d="+o.distrib.id::)</div>-->
 					<h4>::o.contract.name:: - ::o.contract._vendor.name::					</h4>
-					
 				</th>
 			</tr>
 			<tr>
@@ -45,7 +40,7 @@
 					$$nullSafe(::m.ref::)
 				</td>
 				<td class="col-md-2">
-					::formatNum(m.price)::&nbsp;::currency()::
+					::formatNum(m.priceTTC)::&nbsp;::currency()::
 				</td>
 				<td class="col-md-2">
 					::formatNum(m.total)::&nbsp;::currency()::

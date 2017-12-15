@@ -392,7 +392,8 @@ class UserContract extends Object
 				SUM(quantity) as quantity,
 				p.id as pid,
 				p.name as pname,
-				p.price as price,
+				p.price as priceTTC,
+				p.vat as vat,
 				p.ref as ref,
 				SUM(quantity*up.productPrice) as total
 			from UserContract up, Product p 
@@ -417,12 +418,12 @@ class UserContract extends Object
 					"quantity":view.formatNum(o.quantity),
 					"pname":o.pname,
 					"ref":o.ref,
-					"price":view.formatNum(o.price),
+					"priceTTC":view.formatNum(o.priceTTC),
 					"total":view.formatNum(o.total)					
 				});				
 			}
 
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "price", "total"],"Export-"+exportName+"-par produits");
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "priceTTC", "total"],"Export-"+exportName+"-par produits");
 			return null;
 		}else{
 			return orders;		
