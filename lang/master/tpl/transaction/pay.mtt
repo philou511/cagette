@@ -13,7 +13,7 @@
 			::_("Amount to pay"):: : <b>::formatNum(amount):: ::currency()::</b>
 		</p>
 		<p>
-			::_("Please select a payment method"):: :
+			::_("Your basket has been recorded, please select a payment method to confirm it.")::			
 		</p>
 	</div>
 		

@@ -156,13 +156,13 @@ class AmapAdmin extends Controller
 			populate = ua.rights.map(function(x) return x.getName());
 		}
 		
-		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", "Droits", data, populate, true, true) );
+		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", t._("Rights"), data, populate, true, true) );
 		form.addElement( new sugoi.form.elements.Html("<hr/>"));
 		
 		//Rights on contracts
 		var data = [];
 		var populate :Array<String> = [];
-		data.push({value:"contractAll",label:"Tous les contrats"});
+		data.push({value:"contractAll",label:t._("All contracts")});
 		for (r in app.user.amap.getActiveContracts(true)) {
 			data.push( { label:r.name , value:"contract"+Std.string(r.id) } );
 		}
@@ -183,7 +183,7 @@ class AmapAdmin extends Controller
 		}
 		
 
-		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", "Gestion contrats", data, populate, true, true) );
+		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", t._("Contracts management") , data, populate, true, true) );
 		
 		if (form.checkToken()) {
 			
@@ -234,9 +234,9 @@ class AmapAdmin extends Controller
 		}
 		
 		if (u == null) {
-			view.title = t._("Create rights to a user");
+			view.title = t._("Create rights for a user");
 		}else {
-			view.title = t._("Modify rights of ")+u.getName();
+			view.title = t._("Modify rights of ::user::",{user:u.getName()});
 		}
 		
 		view.form = form;

@@ -126,6 +126,7 @@ class Transaction extends controller.Controller
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;	
 		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		//get a code
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
@@ -143,10 +144,11 @@ class Transaction extends controller.Controller
 			
 			if (Lambda.array(ordersGrouped).length == 1){				
 				//all orders are for the same multidistrib
-				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, tmpOrder.total, "Chèque pour commande du " + view.hDate(d.date)+" ("+code+")", ops[0] );		
+				var name = t._("Check for the order of ::date::", {date:view.hDate(d.date)}) + " ("+code+")";
+				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, tmpOrder.total, name, ops[0] );		
 			}else{				
 				//orders are for multiple distribs : create one payment
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, "Chèque ("+code+")" );			
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, t._("Check") + " ("+code+")" );			
 			}
 			
 
@@ -164,6 +166,7 @@ class Transaction extends controller.Controller
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;	
 		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		//get a code
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
@@ -181,10 +184,11 @@ class Transaction extends controller.Controller
 			
 			if (Lambda.array(ordersGrouped).length == 1){
 				//one multidistrib
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, "Virement pour commande du " + view.hDate(d.date)+" ("+code+")", ops[0] );
+				var name = t._("Transfer for the order of ::date::", {date:view.hDate(d.date)}) + " ("+code+")";
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, name, ops[0] );
 			}else{
 				//many distribs
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, "Paiement par virement ("+code+")");			
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, t._("Bank transfer")+" ("+code+")" );			
 			}
 			
 
@@ -202,6 +206,8 @@ class Transaction extends controller.Controller
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;		
 		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		
 		view.amount = tmpOrder.total;
 		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
 		
@@ -214,7 +220,8 @@ class Transaction extends controller.Controller
 			
 			if (Lambda.array(ordersGrouped).length == 1){
 				//same multidistrib
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Cash.TYPE, tmpOrder.total, t._("Cash for the order of the ") + view.hDate(d.date), ops[0] );										
+				var name = t._("Cash for the order of ::date::", {date:view.hDate(d.date)});				
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Cash.TYPE, tmpOrder.total, name , ops[0] );										
 			}else{				
 				//various distribs
 				db.Operation.makePaymentOperation(app.user, app.user.amap, payment.Cash.TYPE, tmpOrder.total, t._("Cash payment"));

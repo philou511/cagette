@@ -141,7 +141,6 @@ class Operation extends sys.db.Object
 			//Constant orders			
 			var dNum = contract.getDistribs(false).length;
 			op.name = "" + contract.name + " (" + contract.vendor.name+") " + dNum + " " + t._("deliveries");
-			
 			op.amount = dNum * (0 - _amount);
 			op.date = Date.now();
 			op.type = COrder;
@@ -156,7 +155,8 @@ class Operation extends sys.db.Object
 			if (basket == null) throw "varying contract orders should have a basket";
 			
 			//varying orders
-			op.name = t._("Order for the ") + App.current.view.dDate(orders[0].distribution.date);
+			var date = App.current.view.dDate(orders[0].distribution.date);
+			op.name = t._("Order for ::date::",{date:date});
 			op.amount = 0 - _amount;
 			op.date = Date.now();
 			op.type = VOrder;

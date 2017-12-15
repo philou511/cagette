@@ -224,7 +224,7 @@ class Shop extends Controller
 		
 		if (app.user.amap.hasPayments()){			
 			//Go to payments page
-			throw Ok("/transaction/pay/", t._("Your basket has been recorded, please select a payment method to confirm it.") );
+			throw Redirect("/transaction/pay/");
 		}else{
 			//no payments, confirm direclty
 			db.UserContract.confirmSessionOrder(order);			
