@@ -1,0 +1,11 @@
+<!-- used by the connector plugin -->
+<!-- the modal window html is already in the default design -->
+	<script>
+	$("#myModal").find(".modal-body").html("::raw html::").removeClass("modal-lg");
+	$("#myModal").find(".modal-title").html("::raw title::");
+	::if btn!=null::
+	$("#myModal").find(".modal-footer").html("::raw btn::");
+	::end::
+	$("#myModal").modal();
+	
+	</script>
