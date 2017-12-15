@@ -1411,20 +1411,20 @@ msgstr ""
 msgid "Modifications saved"
 msgstr "Modifications enregistrées"
 
-#: src/controller/Shop.hx:4320
+#: src/controller/Shop.hx:4325
 msgid "Your order is empty"
 msgstr "Votre commande est vide"
 
-#: src/controller/Shop.hx:4851
+#: src/controller/Shop.hx:4856
 msgid "Error, This cart is invalid"
 msgstr "Erreur, ce panier est invalide"
 
-#: src/controller/Shop.hx:5039 src/controller/Shop.hx:5361
+#: src/controller/Shop.hx:5044 src/controller/Shop.hx:5366
 msgid "The product <b>::pname::</b> is not available in this distribution"
 msgstr ""
 "Le produit <b>::pname::</b> n'est pas disponible pour cette distribution"
 
-#: src/controller/Shop.hx:5790
+#: src/controller/Shop.hx:5795
 msgid ""
 "We reduced your order of ::pname:: to quantity ::oquantity:: as the stock is "
 "not sufficient"
@@ -1432,27 +1432,27 @@ msgstr ""
 "Nous avons réduit votre commande de '\" + p.name + \"' à \"+o.quantity+\" "
 "articles car il n'y a pas assez de stock disponible"
 
-#: src/controller/Shop.hx:6629
+#: src/controller/Shop.hx:6634
 msgid "Your order has been successfully recorded"
 msgstr "Votre commande a bien été enregistrée"
 
-#: src/controller/Transaction.hx:382 src/controller/Transaction.hx:2423
-#: src/controller/Transaction.hx:3285
+#: src/controller/Transaction.hx:382 src/controller/Transaction.hx:2432
+#: src/controller/Transaction.hx:4048
 msgid "Action forbidden"
 msgstr "Action interdite"
 
 #. label or name for a payment
-#: src/controller/Transaction.hx:633 src/controller/Transaction.hx:2577
+#: src/controller/Transaction.hx:633 src/controller/Transaction.hx:2591
 #: src/controller/Validate.hx:1755 src/controller/Validate.hx:3141
 msgid "Label"
 msgstr "Libellé"
 
-#: src/controller/Transaction.hx:751 src/controller/Transaction.hx:2698
+#: src/controller/Transaction.hx:751 src/controller/Transaction.hx:2712
 #: src/controller/Validate.hx:1853 src/controller/Validate.hx:3251
 msgid "Amount"
 msgstr "Montant"
 
-#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2791
+#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2805
 #: src/controller/Validate.hx:3339 src/db/Distribution.hx:7025
 #: src/db/Operation.hx:12001
 #: lang/master/tpl/contractadmin/selectDistrib.mtt:199
@@ -1464,45 +1464,45 @@ msgstr "Date"
 msgid "Payment type"
 msgstr "Type de paiement"
 
-#: src/controller/Transaction.hx:1384
+#: src/controller/Transaction.hx:1394 src/controller/Transaction.hx:3320
 msgid "As a payment for :"
 msgstr "En paiement de :"
 
-#: src/controller/Transaction.hx:2081
+#: src/controller/Transaction.hx:2084
 msgid "Payment recorded"
 msgstr "Paiement enregistré"
 
-#: src/controller/Transaction.hx:2138
+#: src/controller/Transaction.hx:2141
 msgid "Record a payment for ::user::"
 msgstr "Saisir un paiement pour ::user::"
 
-#: src/controller/Transaction.hx:2885
+#: src/controller/Transaction.hx:2899
 msgid "Confirmed"
 msgstr "Confirmé"
 
-#: src/controller/Transaction.hx:3055
+#: src/controller/Transaction.hx:3818
 msgid "Operation updated"
 msgstr "Opération mise à jour"
 
-#: src/controller/Transaction.hx:3403 src/controller/Validate.hx:1021
+#: src/controller/Transaction.hx:4166 src/controller/Validate.hx:1021
 msgid "Operation deleted"
 msgstr "Opération supprimée"
 
-#: src/controller/Transaction.hx:3715 src/controller/Transaction.hx:4142
-#: src/controller/Transaction.hx:5623 src/controller/Transaction.hx:7020
+#: src/controller/Transaction.hx:4478 src/controller/Transaction.hx:4905
+#: src/controller/Transaction.hx:6386 src/controller/Transaction.hx:7783
 msgid "Your cart is empty"
 msgstr "Votre panier est vide"
 
-#: src/controller/Transaction.hx:4759
+#: src/controller/Transaction.hx:5522
 msgid "Check for the order of ::date::"
 msgstr "Chèque pour la commande du ::date::"
 
-#: src/controller/Transaction.hx:5133 src/controller/Validate.hx:3437
+#: src/controller/Transaction.hx:5896 src/controller/Validate.hx:3437
 #: src/payment/Check.hx:309
 msgid "Check"
 msgstr "Chèque"
 
-#: src/controller/Transaction.hx:5209
+#: src/controller/Transaction.hx:5972
 msgid ""
 "Your payment by check has been saved. It will be validated by a coordinator "
 "at the delivery."
@@ -1510,15 +1510,15 @@ msgstr ""
 "Votre paiement par chèque a bien été enregistré. Il sera validé par un "
 "coordinateur lors de la distribution."
 
-#: src/controller/Transaction.hx:6212
+#: src/controller/Transaction.hx:6975
 msgid "Transfer for the order of ::date::"
 msgstr "Virement pour la commande du ::date::"
 
-#: src/controller/Transaction.hx:6548 src/payment/Transfer.hx:318
+#: src/controller/Transaction.hx:7311 src/payment/Transfer.hx:318
 msgid "Bank transfer"
 msgstr "Virement"
 
-#: src/controller/Transaction.hx:6630
+#: src/controller/Transaction.hx:7393
 msgid ""
 "Your payment by transfer has been saved. It will be validated by a "
 "coordinator."
@@ -1526,15 +1526,15 @@ msgstr ""
 "Votre paiement par virement a bien été enregistré. Il sera validé par un "
 "coordinateur."
 
-#: src/controller/Transaction.hx:7504
+#: src/controller/Transaction.hx:8267
 msgid "Cash for the order of ::date::"
 msgstr "Espèces pour la commande du ::date::"
 
-#: src/controller/Transaction.hx:7836
+#: src/controller/Transaction.hx:8599
 msgid "Cash payment"
 msgstr "Paiement en liquide :"
 
-#: src/controller/Transaction.hx:7899
+#: src/controller/Transaction.hx:8662
 msgid "Your order is validated, you commited to pay in cash at the delivery."
 msgstr ""
 "Votre commande est validée, vous vous êtes engagé à payer en liquide au "
@@ -2139,6 +2139,7 @@ msgstr "à"
 #: lang/master/tpl/contractadmin/orders.mtt:3094
 #: lang/master/tpl/contractadmin/products.mtt:3390
 #: lang/master/tpl/contractadmin/view.mtt:563
+#: lang/master/tpl/member/payments.mtt:1146
 #: lang/master/tpl/member/view.mtt:1375
 msgid "Edit"
 msgstr "Modifier"
@@ -2431,7 +2432,7 @@ msgid "Leave this group"
 msgstr "Quitter ce groupe"
 
 #: lang/master/tpl/contract/default.mtt:4849
-#: lang/master/tpl/member/payments.mtt:1631
+#: lang/master/tpl/member/payments.mtt:1643
 #: lang/master/tpl/member/view.mtt:5721
 msgid "Balance"
 msgstr "Solde"
@@ -2692,6 +2693,7 @@ msgstr "Gérer"
 #: lang/master/tpl/contractadmin/default.mtt:3979
 #: lang/master/tpl/contractadmin/deliveries.mtt:1709
 #: lang/master/tpl/contractadmin/products.mtt:3597
+#: lang/master/tpl/member/payments.mtt:1204
 msgid "Del."
 msgstr "Suppr."
 
@@ -3879,7 +3881,7 @@ msgstr "Sujet du message"
 msgid "Contact informations"
 msgstr "Coordonnées"
 
-#: lang/master/tpl/member/payments.mtt:1925
+#: lang/master/tpl/member/payments.mtt:1937
 msgid "Insert a payement"
 msgstr "Créer un paiement"
 
@@ -3999,27 +4001,6 @@ msgstr "Expéditeur"
 #: lang/master/tpl/messages/message.mtt:477
 msgid "Receiver(s)"
 msgstr "Destinataire(s)"
-
-#: lang/master/tpl/needLogin.mtt:184 lang/master/tpl/needLogin.mtt:928
-#: lang/master/tpl/user/default.mtt:134
-msgid "Connection"
-msgstr "Connexion"
-
-#: lang/master/tpl/needLogin.mtt:434
-msgid ""
-"In order to continue, <br/>please <a href=\"#\" onclick=\"_.loginBox('::"
-"redirect::');\" >connect</a><br/>\tor <a href=\"#\" onclick=\"_."
-"registerBox('::redirect::',::phoneRequired::);\">subscribe</a> if it is the "
-"first time<br/>you use Cagette.net"
-msgstr ""
-"Avant de continuer, <br/><a href=\"#\" onclick=\"_.loginBox('::redirect::');"
-"\" >Connectez-vous</a><br/>ou <a href=\"#\" onclick=\"_.registerBox('::"
-"redirect::',::phoneRequired::);\">inscrivez-vous</a> si c'est la première "
-"fois<br/>que vous utilisez Cagette.net"
-
-#: lang/master/tpl/needLogin.mtt:1122
-msgid "Sign up"
-msgstr "Inscription"
 
 #: lang/master/tpl/product/addimage.mtt:47
 msgid "Import a photo of the product"
@@ -4192,6 +4173,19 @@ msgstr "Ma commande"
 #: lang/master/tpl/shop/default.mtt:4437
 msgid "All products"
 msgstr "Tous les produits"
+
+#: lang/master/tpl/shop/needLogin.mtt:184
+#: lang/master/tpl/shop/needLogin.mtt:697 lang/master/tpl/user/default.mtt:134
+msgid "Connection"
+msgstr "Connexion"
+
+#: lang/master/tpl/shop/needLogin.mtt:433
+msgid "In order to confirm your basket, <br/>You need to authenticate."
+msgstr "Afin de confirmer votre panier, <br/>Vous devez vous authentifier."
+
+#: lang/master/tpl/shop/needLogin.mtt:891
+msgid "Sign up"
+msgstr "S'inscrire"
 
 #: lang/master/tpl/shop/productInfo.mtt:252
 msgid "incl. VAT"
@@ -4718,6 +4712,17 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid ""
+#~ "In order to continue, <br/>please <a href=\"#\" onclick=\"_.loginBox('::"
+#~ "redirect::');\" >connect</a><br/>\tor <a href=\"#\" onclick=\"_."
+#~ "registerBox('::redirect::',::phoneRequired::);\">subscribe</a> if it is "
+#~ "the first time<br/>you use Cagette.net"
+#~ msgstr ""
+#~ "Avant de continuer, <br/><a href=\"#\" onclick=\"_.loginBox('::"
+#~ "redirect::');\" >Connectez-vous</a><br/>ou <a href=\"#\" onclick=\"_."
+#~ "registerBox('::redirect::',::phoneRequired::);\">inscrivez-vous</a> si "
+#~ "c'est la première fois<br/>que vous utilisez Cagette.net"
 
 #~ msgid "Cash for the order of the "
 #~ msgstr "Espèces pour la commande du "

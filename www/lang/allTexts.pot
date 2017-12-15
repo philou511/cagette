@@ -1255,42 +1255,42 @@ msgstr ""
 msgid "Modifications saved"
 msgstr ""
 
-#: src/controller/Shop.hx:4320
+#: src/controller/Shop.hx:4325
 msgid "Your order is empty"
 msgstr ""
 
-#: src/controller/Shop.hx:4851
+#: src/controller/Shop.hx:4856
 msgid "Error, This cart is invalid"
 msgstr ""
 
-#: src/controller/Shop.hx:5039 src/controller/Shop.hx:5361
+#: src/controller/Shop.hx:5044 src/controller/Shop.hx:5366
 msgid "The product <b>::pname::</b> is not available in this distribution"
 msgstr ""
 
-#: src/controller/Shop.hx:5790
+#: src/controller/Shop.hx:5795
 msgid ""
 "We reduced your order of ::pname:: to quantity ::oquantity:: as the stock "
 "is not sufficient"
 msgstr ""
 
-#: src/controller/Shop.hx:6629
+#: src/controller/Shop.hx:6634
 msgid "Your order has been successfully recorded"
 msgstr ""
 
-#: src/controller/Transaction.hx:382 src/controller/Transaction.hx:2423 src/controller/Transaction.hx:3285
+#: src/controller/Transaction.hx:382 src/controller/Transaction.hx:2432 src/controller/Transaction.hx:4048
 msgid "Action forbidden"
 msgstr ""
 
 #. label or name for a payment
-#: src/controller/Transaction.hx:633 src/controller/Transaction.hx:2577 src/controller/Validate.hx:1755 src/controller/Validate.hx:3141
+#: src/controller/Transaction.hx:633 src/controller/Transaction.hx:2591 src/controller/Validate.hx:1755 src/controller/Validate.hx:3141
 msgid "Label"
 msgstr ""
 
-#: src/controller/Transaction.hx:751 src/controller/Transaction.hx:2698 src/controller/Validate.hx:1853 src/controller/Validate.hx:3251
+#: src/controller/Transaction.hx:751 src/controller/Transaction.hx:2712 src/controller/Validate.hx:1853 src/controller/Validate.hx:3251
 msgid "Amount"
 msgstr ""
 
-#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2791 src/controller/Validate.hx:3339 src/db/Distribution.hx:7025 src/db/Operation.hx:12001 lang/master/tpl/contractadmin/selectDistrib.mtt:199 lang/master/tpl/member/lastMessages.mtt:52
+#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2805 src/controller/Validate.hx:3339 src/db/Distribution.hx:7025 src/db/Operation.hx:12001 lang/master/tpl/contractadmin/selectDistrib.mtt:199 lang/master/tpl/member/lastMessages.mtt:52
 msgid "Date"
 msgstr ""
 
@@ -1298,69 +1298,69 @@ msgstr ""
 msgid "Payment type"
 msgstr ""
 
-#: src/controller/Transaction.hx:1384
+#: src/controller/Transaction.hx:1394 src/controller/Transaction.hx:3320
 msgid "As a payment for :"
 msgstr ""
 
-#: src/controller/Transaction.hx:2081
+#: src/controller/Transaction.hx:2084
 msgid "Payment recorded"
 msgstr ""
 
-#: src/controller/Transaction.hx:2138
+#: src/controller/Transaction.hx:2141
 msgid "Record a payment for ::user::"
 msgstr ""
 
-#: src/controller/Transaction.hx:2885
+#: src/controller/Transaction.hx:2899
 msgid "Confirmed"
 msgstr ""
 
-#: src/controller/Transaction.hx:3055
+#: src/controller/Transaction.hx:3818
 msgid "Operation updated"
 msgstr ""
 
-#: src/controller/Transaction.hx:3403 src/controller/Validate.hx:1021
+#: src/controller/Transaction.hx:4166 src/controller/Validate.hx:1021
 msgid "Operation deleted"
 msgstr ""
 
-#: src/controller/Transaction.hx:3715 src/controller/Transaction.hx:4142 src/controller/Transaction.hx:5623 src/controller/Transaction.hx:7020
+#: src/controller/Transaction.hx:4478 src/controller/Transaction.hx:4905 src/controller/Transaction.hx:6386 src/controller/Transaction.hx:7783
 msgid "Your cart is empty"
 msgstr ""
 
-#: src/controller/Transaction.hx:4759
+#: src/controller/Transaction.hx:5522
 msgid "Check for the order of ::date::"
 msgstr ""
 
-#: src/controller/Transaction.hx:5133 src/controller/Validate.hx:3437 src/payment/Check.hx:309
+#: src/controller/Transaction.hx:5896 src/controller/Validate.hx:3437 src/payment/Check.hx:309
 msgid "Check"
 msgstr ""
 
-#: src/controller/Transaction.hx:5209
+#: src/controller/Transaction.hx:5972
 msgid ""
 "Your payment by check has been saved. It will be validated by a coordinator "
 "at the delivery."
 msgstr ""
 
-#: src/controller/Transaction.hx:6212
+#: src/controller/Transaction.hx:6975
 msgid "Transfer for the order of ::date::"
 msgstr ""
 
-#: src/controller/Transaction.hx:6548 src/payment/Transfer.hx:318
+#: src/controller/Transaction.hx:7311 src/payment/Transfer.hx:318
 msgid "Bank transfer"
 msgstr ""
 
-#: src/controller/Transaction.hx:6630
+#: src/controller/Transaction.hx:7393
 msgid "Your payment by transfer has been saved. It will be validated by a coordinator."
 msgstr ""
 
-#: src/controller/Transaction.hx:7504
+#: src/controller/Transaction.hx:8267
 msgid "Cash for the order of ::date::"
 msgstr ""
 
-#: src/controller/Transaction.hx:7836
+#: src/controller/Transaction.hx:8599
 msgid "Cash payment"
 msgstr ""
 
-#: src/controller/Transaction.hx:7899
+#: src/controller/Transaction.hx:8662
 msgid "Your order is validated, you commited to pay in cash at the delivery."
 msgstr ""
 
@@ -1918,7 +1918,7 @@ msgstr ""
 msgid "at"
 msgstr ""
 
-#: lang/master/tpl/amap/default.mtt:230 lang/master/tpl/contract/default.mtt:4673 lang/master/tpl/contractadmin/default.mtt:3264 lang/master/tpl/contractadmin/default.mtt:3899 lang/master/tpl/contractadmin/deliveries.mtt:874 lang/master/tpl/contractadmin/orders.mtt:2911 lang/master/tpl/contractadmin/orders.mtt:3094 lang/master/tpl/contractadmin/products.mtt:3390 lang/master/tpl/contractadmin/view.mtt:563 lang/master/tpl/member/view.mtt:1375
+#: lang/master/tpl/amap/default.mtt:230 lang/master/tpl/contract/default.mtt:4673 lang/master/tpl/contractadmin/default.mtt:3264 lang/master/tpl/contractadmin/default.mtt:3899 lang/master/tpl/contractadmin/deliveries.mtt:874 lang/master/tpl/contractadmin/orders.mtt:2911 lang/master/tpl/contractadmin/orders.mtt:3094 lang/master/tpl/contractadmin/products.mtt:3390 lang/master/tpl/contractadmin/view.mtt:563 lang/master/tpl/member/payments.mtt:1146 lang/master/tpl/member/view.mtt:1375
 msgid "Edit"
 msgstr ""
 
@@ -2110,7 +2110,7 @@ msgstr ""
 msgid "Leave this group"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:4849 lang/master/tpl/member/payments.mtt:1631 lang/master/tpl/member/view.mtt:5721
+#: lang/master/tpl/contract/default.mtt:4849 lang/master/tpl/member/payments.mtt:1643 lang/master/tpl/member/view.mtt:5721
 msgid "Balance"
 msgstr ""
 
@@ -2305,7 +2305,7 @@ msgid "Manage"
 msgstr ""
 
 #. short version of delete
-#: lang/master/tpl/contractadmin/default.mtt:1605 lang/master/tpl/contractadmin/default.mtt:3979 lang/master/tpl/contractadmin/deliveries.mtt:1709 lang/master/tpl/contractadmin/products.mtt:3597
+#: lang/master/tpl/contractadmin/default.mtt:1605 lang/master/tpl/contractadmin/default.mtt:3979 lang/master/tpl/contractadmin/deliveries.mtt:1709 lang/master/tpl/contractadmin/products.mtt:3597 lang/master/tpl/member/payments.mtt:1204
 msgid "Del."
 msgstr ""
 
@@ -3349,7 +3349,7 @@ msgstr ""
 msgid "Contact informations"
 msgstr ""
 
-#: lang/master/tpl/member/payments.mtt:1925
+#: lang/master/tpl/member/payments.mtt:1937
 msgid "Insert a payement"
 msgstr ""
 
@@ -3468,21 +3468,6 @@ msgstr ""
 
 #: lang/master/tpl/messages/message.mtt:477
 msgid "Receiver(s)"
-msgstr ""
-
-#: lang/master/tpl/needLogin.mtt:184 lang/master/tpl/needLogin.mtt:928 lang/master/tpl/user/default.mtt:134
-msgid "Connection"
-msgstr ""
-
-#: lang/master/tpl/needLogin.mtt:434
-msgid ""
-"In order to continue, <br/>please <a href=\"#\" onclick=\"_.loginBox('::redirect::');\" "
-">connect</a><br/>	or <a href=\"#\" onclick=\"_.registerBox('::redirect::',::phoneRequired::);\">subscribe</a> "
-"if it is the first time<br/>you use Cagette.net"
-msgstr ""
-
-#: lang/master/tpl/needLogin.mtt:1122
-msgid "Sign up"
 msgstr ""
 
 #: lang/master/tpl/product/addimage.mtt:47
@@ -3632,6 +3617,18 @@ msgstr ""
 
 #: lang/master/tpl/shop/default.mtt:4437
 msgid "All products"
+msgstr ""
+
+#: lang/master/tpl/shop/needLogin.mtt:184 lang/master/tpl/shop/needLogin.mtt:697 lang/master/tpl/user/default.mtt:134
+msgid "Connection"
+msgstr ""
+
+#: lang/master/tpl/shop/needLogin.mtt:433
+msgid "In order to confirm your basket, <br/>You need to authenticate."
+msgstr ""
+
+#: lang/master/tpl/shop/needLogin.mtt:891
+msgid "Sign up"
 msgstr ""
 
 #: lang/master/tpl/shop/productInfo.mtt:252

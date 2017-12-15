@@ -135,7 +135,7 @@ class Shop extends Controller
 	/**
 	 * validate the order
 	 */
-	@tpl('needLogin.mtt')
+	@tpl('shop/needLogin.mtt')
 	public function doValidate(place:db.Place, date:Date){
 		
 		//loginbox if needed
