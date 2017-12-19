@@ -137,18 +137,18 @@ class App {
 	/**
 	 * Displays an ajax login box
 	 */
-	public function loginBox(redirectUrl:String) {
+	public function loginBox(redirectUrl:String,?message:String) {
 		var m = App.j("#myModal");
-		m.find(".modal-title").html("Connexion");
+		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 
 	public function registerBox(redirectUrl:String,?phoneRequired=false) {
 		var m = App.j("#myModal");
-		m.find(".modal-title").html("Inscription");
+		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
 		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));

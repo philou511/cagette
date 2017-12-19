@@ -1411,20 +1411,24 @@ msgstr ""
 msgid "Modifications saved"
 msgstr "Modifications enregistrées"
 
-#: src/controller/Shop.hx:4325
+#: src/controller/Shop.hx:3989
+msgid "In order to confirm your order, You need to authenticate."
+msgstr "Afin de finaliser votre commande, vous devez vous identifier."
+
+#: src/controller/Shop.hx:4429
 msgid "Your order is empty"
 msgstr "Votre commande est vide"
 
-#: src/controller/Shop.hx:4856
+#: src/controller/Shop.hx:4960
 msgid "Error, This cart is invalid"
 msgstr "Erreur, ce panier est invalide"
 
-#: src/controller/Shop.hx:5044 src/controller/Shop.hx:5366
+#: src/controller/Shop.hx:5148 src/controller/Shop.hx:5470
 msgid "The product <b>::pname::</b> is not available in this distribution"
 msgstr ""
 "Le produit <b>::pname::</b> n'est pas disponible pour cette distribution"
 
-#: src/controller/Shop.hx:5795
+#: src/controller/Shop.hx:5899
 msgid ""
 "We reduced your order of ::pname:: to quantity ::oquantity:: as the stock is "
 "not sufficient"
@@ -1432,7 +1436,7 @@ msgstr ""
 "Nous avons réduit votre commande de '\" + p.name + \"' à \"+o.quantity+\" "
 "articles car il n'y a pas assez de stock disponible"
 
-#: src/controller/Shop.hx:6634
+#: src/controller/Shop.hx:6738
 msgid "Your order has been successfully recorded"
 msgstr "Votre commande a bien été enregistrée"
 
@@ -3672,7 +3676,7 @@ msgstr "Adhésion à renouveller"
 
 #: lang/master/tpl/member/default.mtt:375
 msgid "Members who has never logged in"
-msgstr "Adhérents qui ne se sont jamais connecté"
+msgstr "Adhérents qui ne se sont jamais connectés"
 
 #: lang/master/tpl/member/default.mtt:453
 msgid "Members with orders or contracts"
@@ -3694,7 +3698,7 @@ msgid ""
 "clic."
 msgstr ""
 "Vous pouvez inviter par email tout les adhérents qui ne se sont jamais "
-"connecté en un seul clic."
+"connectés en un seul clic."
 
 #: lang/master/tpl/member/default.mtt:1158
 msgid "Send invitations"
@@ -4174,16 +4178,16 @@ msgstr "Ma commande"
 msgid "All products"
 msgstr "Tous les produits"
 
-#: lang/master/tpl/shop/needLogin.mtt:184
-#: lang/master/tpl/shop/needLogin.mtt:697 lang/master/tpl/user/default.mtt:134
+#: lang/master/tpl/shop/needLogin.mtt:208
+#: lang/master/tpl/shop/needLogin.mtt:721 lang/master/tpl/user/default.mtt:134
 msgid "Connection"
 msgstr "Connexion"
 
-#: lang/master/tpl/shop/needLogin.mtt:433
+#: lang/master/tpl/shop/needLogin.mtt:457
 msgid "In order to confirm your basket, <br/>You need to authenticate."
-msgstr "Afin de confirmer votre panier, <br/>Vous devez vous authentifier."
+msgstr "Afin de confirmer votre panier, <br/>Vous devez vous identifier."
 
-#: lang/master/tpl/shop/needLogin.mtt:891
+#: lang/master/tpl/shop/needLogin.mtt:915
 msgid "Sign up"
 msgstr "S'inscrire"
 

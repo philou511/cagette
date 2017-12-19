@@ -5,6 +5,7 @@ import Common;
 
 typedef LoginBoxProps = {
 	redirectUrl:String,
+	message:String,
 }
 
 typedef LoginBoxState = {
@@ -22,7 +23,8 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 
 	public function new(props:LoginBoxProps) 
 	{
-		if (props.redirectUrl == null) props.redirectUrl = "/";	
+		if (props.redirectUrl == null) props.redirectUrl = "/";
+		if (props.message == "") props.message = null;
 		super(props);		
 		this.state = {email:"", password:"", error:null};
 	}
@@ -35,6 +37,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		
 		return jsx('<div>
 			<$Error error="${state.error}" />
+			<$Message message="${props.message}" />
 			<form action="" method="post" className="form-horizontal">
 				<div className="form-group">
 					<label htmlFor="email" className="col-sm-4 control-label">Email : </label>
@@ -49,7 +52,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 					</div>					
 				</div>
 				<p className="text-center">						
-					<a onClick={submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-user"></span> Connexion</a>
+					<a onClick={submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-user"></span> S\'identifier</a>
 					<br/>
 					<br/>
 					<a href="/user/forgottenPassword">Mot de passe oublié ?</a>
@@ -57,8 +60,8 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 			</form>
 			<hr/>
 			<p className="text-center">
-				<b>Pas encore inscrit ? </b>
-				<a onClick={registerBox} className="btn btn-default"><span className="glyphicon glyphicon-chevron-right"></span> Inscrivez-vous ici</a>
+				<b>C\'est votre première visite sur Cagette.net ?</b>&nbsp;&nbsp;
+				<a onClick={registerBox} className="btn btn-default"><span className="glyphicon glyphicon-chevron-right"></span> S\'inscrire</a>
 			</p>
 		</div>');
 	}

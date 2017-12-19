@@ -1255,25 +1255,29 @@ msgstr ""
 msgid "Modifications saved"
 msgstr ""
 
-#: src/controller/Shop.hx:4325
+#: src/controller/Shop.hx:3989
+msgid "In order to confirm your order, You need to authenticate."
+msgstr ""
+
+#: src/controller/Shop.hx:4429
 msgid "Your order is empty"
 msgstr ""
 
-#: src/controller/Shop.hx:4856
+#: src/controller/Shop.hx:4960
 msgid "Error, This cart is invalid"
 msgstr ""
 
-#: src/controller/Shop.hx:5044 src/controller/Shop.hx:5366
+#: src/controller/Shop.hx:5148 src/controller/Shop.hx:5470
 msgid "The product <b>::pname::</b> is not available in this distribution"
 msgstr ""
 
-#: src/controller/Shop.hx:5795
+#: src/controller/Shop.hx:5899
 msgid ""
 "We reduced your order of ::pname:: to quantity ::oquantity:: as the stock "
 "is not sufficient"
 msgstr ""
 
-#: src/controller/Shop.hx:6634
+#: src/controller/Shop.hx:6738
 msgid "Your order has been successfully recorded"
 msgstr ""
 
@@ -3619,15 +3623,15 @@ msgstr ""
 msgid "All products"
 msgstr ""
 
-#: lang/master/tpl/shop/needLogin.mtt:184 lang/master/tpl/shop/needLogin.mtt:697 lang/master/tpl/user/default.mtt:134
+#: lang/master/tpl/shop/needLogin.mtt:208 lang/master/tpl/shop/needLogin.mtt:721 lang/master/tpl/user/default.mtt:134
 msgid "Connection"
 msgstr ""
 
-#: lang/master/tpl/shop/needLogin.mtt:433
+#: lang/master/tpl/shop/needLogin.mtt:457
 msgid "In order to confirm your basket, <br/>You need to authenticate."
 msgstr ""
 
-#: lang/master/tpl/shop/needLogin.mtt:891
+#: lang/master/tpl/shop/needLogin.mtt:915
 msgid "Sign up"
 msgstr ""
 
