@@ -80,7 +80,7 @@
 								<a href="/messages" ::cond user.canAccessMessages()::>::_("Messaging")::</a></li>
 							<li id="amapadmin" ::attr class if(category=="amapadmin") 	'active' ::>
 								<a href="/amapadmin" ::cond user.isAmapManager()::>::_("Group")::</a></li>
-							<li ::cond user.isAdmin()::>
+							<li ::cond user.isAdmin():: ::attr class if(category=="admin") 	'active' ::>
 								<a href="/admin" >::_("Admin")::</a></li>
 						</ul>
 						

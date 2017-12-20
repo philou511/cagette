@@ -38,9 +38,9 @@
 <script>
 	tinymce.init({ 
 		selector:'textarea',
-		plugins: "autolink textcolor emoticons image ",
+		plugins: "autolink textcolor emoticons image",
 		toolbar: "styleselect bold italic alignleft aligncenter emoticons image bullist outdent indent forecolor",
-		 language: '::session.lang::',
+		language: '::session.lang::',
 		image_list: [
 			::foreach c user._amap.getActiveContracts(false)::
 				::if c._vendor._image!=null::

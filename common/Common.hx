@@ -70,8 +70,7 @@ enum ProductType {
 	CTJuice;
 	CTApple;
 	CTBread;
-	CTYahourt;
-	
+	CTYahourt;	
 }
 
 typedef CategoryInfo = {

@@ -1,4 +1,5 @@
-
+<!-- this tpl is also used for offer previews -->
+	
 <div class="article">
 
 	<div class="row">
@@ -27,18 +28,19 @@
 		</div>
 		
 		<div class="col-md-3">
-			::if product._unitType!=null && product.qt!=null::
-				<span class="price">::product.qt::&nbsp;::unit(product._unitType):: </span>
+			::if p.unitType!=null && p.qt!=null::
+				<span class="price">::p.qt::&nbsp;::unit(p.unitType):: </span>
 				
-				::set c = product.getCostPerUnit()::
-				
-				<div class="vat" ::cond c!=null::>
-					::formatNum(c.cost)::::currency():: / 
-					::if c.qt!=1::
-						::c.qt::
-					::end::
-					::unit(c.unit)::
-				</div>
+				::if (product!=null)::
+					::set c = product.getCostPerUnit()::
+					<div class="vat" ::cond c!=null:: >
+						::formatNum(c.cost)::::currency():: / 
+						::if c.qt!=1::
+							::c.qt::
+						::end::
+						::unit(c.unit)::
+					</div>
+				::end::
 			::end::
 		</div>
 		
@@ -90,17 +92,16 @@
 			
 		</div>
 	
+		::if(product!=null)::
 		::set cats = product.getCategories()::
 		<div class="col-md-4" ::cond cats.length != 0:: >	
-
-				
 			<h3>::_("Categories")::</h3>
 			<div>
 				::foreach c cats::
 					<span class="tag" style="background-color: ::c.getColor()::;">::c.name::</span><br />
 				::end::
 			</div>
-		
 		</div>
+		::end::
 	</div>
 </div>
