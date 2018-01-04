@@ -126,7 +126,7 @@ class Distribution extends Object
 	 */
 	public function getHTTurnOver(){
 		
-		var pids = tools.ObjectListTool.getIds(contract.getProducts());
+		var pids = tools.ObjectListTool.getIds(contract.getProducts(false));
 		
 		var sql = "select SUM(uc.quantity *  (p.price/(1+p.vat/100)) ) from UserContract uc, Product p ";
 		sql += "where uc.productId IN (" + pids.join(",") +") ";

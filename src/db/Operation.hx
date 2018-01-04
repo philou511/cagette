@@ -192,14 +192,14 @@ class Operation extends sys.db.Object
 			var dNum = contract.getDistribs(false).length;
 			op.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum + " " + t._("deliveries");
 			op.amount = dNum * (0 - _amount);
-			op.date = Date.now();			
+			//op.date = Date.now();			
 			
 		}else{
 			
 			if (basket == null) throw "varying contract orders should have a basket";
 			
 			op.amount = 0 - _amount;
-			op.date = Date.now();			
+			//op.date = Date.now();			
 		}
 		
 		
