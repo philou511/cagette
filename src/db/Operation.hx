@@ -174,7 +174,9 @@ class Operation extends sys.db.Object
 		return op;	
 	}
 	
-	
+	/**
+	 * update an order operation
+	 */
 	public static function updateOrderOperation(op:db.Operation, orders: Array<db.UserContract>, ?basket:db.Basket){
 		
 		op.lock();
@@ -192,21 +194,15 @@ class Operation extends sys.db.Object
 			var dNum = contract.getDistribs(false).length;
 			op.name = "" + contract.name + " (" + contract.vendor.name+") "+ dNum + " " + t._("deliveries");
 			op.amount = dNum * (0 - _amount);
-			//op.date = Date.now();			
-			
 		}else{
 			
 			if (basket == null) throw "varying contract orders should have a basket";
-			
 			op.amount = 0 - _amount;
-			//op.date = Date.now();			
 		}
 		
-		
+		//op.date = Date.now();	//leave original date	
 		op.update();
-		
 		updateUserBalance(op.user, op.group);
-		
 		return op;
 	}
 	
@@ -267,15 +263,11 @@ class Operation extends sys.db.Object
 		var basket = db.Basket.get(user, db.Place.manager.get(placeId,false), Date.fromString(date));
 		
 		for ( t in transactions){
-			
 			switch(t.type){
-				
 				case VOrder :
 					var data : VOrderInfos = t.data;
 					if ( data == null) continue;
 					if (data.basketId == basket.id) return t;
-					
-					
 				default : 
 					continue;				
 			}
@@ -341,7 +333,7 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * create the needed order operations and returns the related operations
+	 * Create/update the needed order operations and returns the related operations
 	 * @param	orders
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
@@ -379,13 +371,12 @@ class Operation extends sys.db.Object
 				var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
 				
 				//existing transaction
-				var existing = db.Operation.findVOrderTransactionFor( k , user, group);
+				var existing = db.Operation.findVOrderTransactionFor( k , user, group, false);
 				if (existing != null){
 					out.push( db.Operation.updateOrderOperation(existing,allOrders,basket) );	
 				}else{
 					out.push( db.Operation.makeOrderOperation(allOrders,basket) );			
 				}
-				
 			}
 			
 		}else{
