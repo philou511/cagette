@@ -187,13 +187,11 @@
 				<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
 			::else::
 				::t.name::<br/>
-				<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
+				<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
 			::end::
 			
 		::else::
-		
-			<span style="font-size:0.95em;color:#AAA;">::hDate(t.date)::</span>
-		
+			<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
 		::end::
 	</td>
 	<td>::formatNum(t.amount)::&nbsp;::currency()::</td>

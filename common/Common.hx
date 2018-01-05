@@ -145,15 +145,15 @@ typedef PlaceInfos = {
 }
 
 enum OrderFlags {
-	InvertSharedOrder;
-	//Paid;
+	InvertSharedOrder;	//invert order when there is a shared/alternated order
+	Canceled;			//flag for cancelled orders, qt should always be 0
 }
 
 /**
 	Event enum used for plugins.
 	
 	As in most CMS event systems, 
-	the events (or "triggers") can be catched by plugins 
+	the events (or "triggers") can be caught by plugins 
 	to perform an action or modifiy data carried by the event.
 	
 **/

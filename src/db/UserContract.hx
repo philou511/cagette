@@ -348,8 +348,13 @@ class UserContract extends Object
 		}
 		
 		if (newquantity == 0) {
-			order.delete();
-			return null;
+			order.quantity = 0;			
+			order.paid = true;
+			order.flags.set(OrderFlags.Canceled);
+			order.update();
+			//order.delete();			
+			//return null; //need to get an order object with zero qt to manage payment operations properly			
+			return order;
 		}else {
 			order.quantity = newquantity;
 			order.update();	

@@ -972,7 +972,6 @@ class ContractAdmin extends Controller
 							if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
 							
 							invert = app.params.get("invert" + pid) == "1";
-							
 						}
 						
 						//quantity
@@ -1005,7 +1004,6 @@ class ContractAdmin extends Controller
 				}else {
 					throw Ok("/contractAdmin/orders/" + c.id, t._("The order has been updated"));						
 				}
-				
 			}
 			view.userOrders = userOrders;
 		}

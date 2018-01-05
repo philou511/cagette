@@ -366,16 +366,26 @@ class Operation extends sys.db.Object
 					}
 				}
 				
-				//get all orders for the same place & date, in order to update related transaction.
-				var k = orders[0].distribution.getKey();
+				//get all orders for the same multidistrib, in order to update related operation.
+				var k = orders[0].distribution.getKey();				
 				var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
 				
 				//existing transaction
 				var existing = db.Operation.findVOrderTransactionFor( k , user, group, false);
+				var op;
 				if (existing != null){
-					out.push( db.Operation.updateOrderOperation(existing,allOrders,basket) );	
+					op = db.Operation.updateOrderOperation(existing,allOrders,basket);	
 				}else{
-					out.push( db.Operation.makeOrderOperation(allOrders,basket) );			
+					op = db.Operation.makeOrderOperation(allOrders,basket);			
+				}
+				out.push(op);
+				
+				//delete order and payment operations if sum of orders qt is 0
+				var sum = 0.0;
+				for ( o in allOrders) sum += o.quantity;
+				if ( sum == 0 ) {
+					existing.delete();
+					op.delete();
 				}
 			}
 			
@@ -391,9 +401,9 @@ class Operation extends sys.db.Object
 			}else{
 				out.push( db.Operation.makeOrderOperation( contract.getUserOrders(user) ) );
 			}
-			
-			
 		}
+		
+		
 		
 		return out;
 		
