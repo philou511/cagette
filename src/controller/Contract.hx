@@ -262,17 +262,22 @@ class Contract extends Controller
 		view.form = form;
 	}
 	
-	function doDelete(c:db.Contract/*,args:{chk:String}*/) {
+	/**
+	 * Delete a contract (... and its products, orders & distributions)
+	 */
+	function doDelete(c:db.Contract) {
 		
 		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
 		
 		if (checkToken()) {
 			c.lock();
 			
-			//verif qu'il n'y a pas de commandes sur ce contrat
+			//check if there is orders in this contract
 			var products = c.getProducts();
-			var orders = db.UserContract.manager.count($productId in Lambda.map(products, function(p) return p.id));
-			if (orders > 0) {
+			var orders = db.UserContract.manager.search($productId in Lambda.map(products, function(p) return p.id));
+			var qt = 0.0;
+			for ( o in orders) qt += o.quantity; //there could be "zero c qt" orders
+			if (qt > 0) {
 				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to this contract."));
 			}
 			

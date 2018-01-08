@@ -35,7 +35,6 @@
 						::switch group._regOption::
 						
 						::case::
-						
 							<p>
 								::_("Contact the person in charge in order to subscribe to this group and get to know membership conditions.")::
 							</p>
@@ -46,10 +45,8 @@
 								</a>
 							</p>
 						::case::
-							
 							<p>
-								::_("This group accepts subscriptions on waiting list.
-								A coordinator will contact you.")::
+								::_("This group accepts subscriptions on waiting list. A coordinator will contact you.")::
 							</p>
 							<p>
 							<a href="/group/list/::group.id::"  class="btn btn-primary">
@@ -65,13 +62,11 @@
 									::_("Free subscription")::
 								</a>
 							</p>
-							
 						::case::
 							<p>
 								::_("This group is full and do not accept any more subscription.")::
 							</p>
 						::end::
-					
 					
 					::end::
 						

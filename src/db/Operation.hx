@@ -381,12 +381,12 @@ class Operation extends sys.db.Object
 				out.push(op);
 				
 				//delete order and payment operations if sum of orders qt is 0
-				var sum = 0.0;
+				/*var sum = 0.0;
 				for ( o in allOrders) sum += o.quantity;
 				if ( sum == 0 ) {
 					existing.delete();
 					op.delete();
-				}
+				}*/
 			}
 			
 		}else{

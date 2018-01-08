@@ -667,18 +667,18 @@ class Member extends Controller
 				
 			}else if (userSims.length > 0) {
 				//des users existent avec ce nom , 
-				if (userSims.length == 1) {
+				//if (userSims.length == 1) {
 					// si yen a qu'un on l'inserte
 					var ua = new db.UserAmap();
 					ua.user = userSims.first();
 					ua.amap = app.user.amap;
 					ua.insert();	
 					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
-				}else {
+				/*}else {
 					//demander validation avant d'inserer le userAmap
 					//TODO
 					throw Error('/member', t._("Not possible to add this person because there are already some people in the database having the same firstname and name. Please contact the administrator.")+userSims);
-				}
+				}*/
 				return;
 			}else {
 				
