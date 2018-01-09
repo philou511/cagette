@@ -39,9 +39,6 @@ class View extends sugoi.BaseView {
 			//trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
 			this.displayTuto(u.tutoState.name, u.tutoState.step);	
 		}
-		
-		
-		
 	}
 	
 	function getCurrentGroup(){
@@ -57,32 +54,7 @@ class View extends sugoi.BaseView {
 		return db.Product.manager.get(pid, false);		
 	}
 	
-	/**
-	 * smart quantity filter : display easier-to-read quantity when it's strange
-	 * 
-	 * 0.33 x Lemon 12kg => 2kg
-	 * 
-	 */
-	function smartQt(qt:Float, p:db.Product):String{
 		
-		if (Math.round(qt) != qt){
-			
-			if ( qt < 1 ){
-				
-				return (qt * p.qt) + " " + unit(p.unitType);
-				
-				/*switch(p.unitType){
-					case Kilogram : return (p.qt * qt * 1000) + " " + unit(Gram);
-				}*/	
-			}else{
-				return null;
-			}
-			
-		}else{
-			return null;
-		}
-	}
-	
 	/**
 	 * Round a number to r digits after coma.
 	 * 
@@ -251,11 +223,8 @@ class View extends sugoi.BaseView {
 					}
 				default:
 			}
-			
 		}
-	
 		this.tuto = { name:tuto, step:step };
-		
 	}
 	
 	/**
@@ -282,19 +251,15 @@ class View extends sugoi.BaseView {
 	}
 	
 	public function getPlatform(){
-		 return #if neko "Neko" #else "PHP" #end ;
+		return #if neko "Neko" #else "PHP" #end ;
 	}
 	
-	/**
-	 * Translation function
-	 */
-/*	public function _(text:String):String{
-		if (App.t != null){
-			return App.t._(text);	
-		}else{
-			return text;
-		}
-		
-	}*/
+	/** smart quantity filter : display easier-to-read quantity when it's floats
+	 * 
+	 * 0.33 x Lemon 12kg => 2kg Lemon
+	 */ 
+	public function smartQt(orderQt:Float,productQt:Float,unit:UnitType):String{
+		return this.formatNum(orderQt * productQt) + "&nbsp;" + this.unit(unit);
+	}
 	
 }

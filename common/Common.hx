@@ -117,9 +117,11 @@ typedef UserOrder = {
 	
 	productId:Int,
 	productRef:String,
-	productName:String,
+	productName:String,	
 	productPrice:Float,
 	productImage:String,
+	productQt:Float,
+	productUnit:UnitType,
 	
 	quantity:Float,
 	subTotal:Float,

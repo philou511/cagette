@@ -114,23 +114,17 @@ ul.nav li {
 
 }
 
-
-
-
 #subfooter {
   /*background-color : #313131;
   color : #fff;*/
   text-align: center;
   font-size : 14px;
   padding : 15px 0 25px 0; 
+  span {
+	  color :#979797;
+	  font-size : 11px;
+	}
 }
-
-#subfooter span {
-  color :#979797;
-  font-size : 11px;
-}
-
-//----------------
 
 .sqlLog{
 	margin-top:24px;
@@ -224,7 +218,6 @@ table.product{
 }
 
 
-
 /* GLOBAL TABLE SKINNING */
 
 //separator between rows
@@ -263,6 +256,26 @@ div.reportHeader{
    
 }
  
+/* a product order in a table style */
+.productOrder{
+	
+	border-bottom:1px solid #DDD;
+	margin-bottom:6px;
+	
+	.ref{
+		color:#AAA;
+		font-family:monospace;
+		font-size:0.9em;
+	}
+	
+	.infos{
+		color:#AAA;
+		font-size:0.8em;
+	}
+	
+	
+	
+}
 
 
 /* make <a> like clickable divs  */

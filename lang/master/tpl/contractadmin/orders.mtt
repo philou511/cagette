@@ -85,8 +85,8 @@
 					
 					</tr>
 					<tr>
-						<th>::_("Qty")::</th>
 						<th>::_("Product ID")::</th>
+						<th>::_("Qty")::</th>						
 						<th>::_("Product")::</th>
 						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price including taxes")::">::_("U.P")::</a></th>
 						<th>::_("Sub-total")::</th>
@@ -103,13 +103,15 @@
 				::set class=""::
 				::end::
 				<tr class="::class::">
-				
-					<td>
-						::formatNum(m.quantity)::
-					</td>
 					<td>
 						$$nullSafe(::m.productRef::)
 					</td>
+					<td>
+						
+						::raw smartQt(m.quantity,m.productQt,m.productUnit)::
+						(::formatNum(m.quantity)::)
+					</td>
+					
 					<td>
 						::m.productName::
 					</td>

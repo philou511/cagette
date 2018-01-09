@@ -102,6 +102,15 @@ class App {
 	public function initReportHeader(){
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
+	
+	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String){
+		var onSubmit = function(){
+			//js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
+			trace("onsubmit !");
+		};
+		
+		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit/>'),  js.Browser.document.querySelector('#orderBox'));
+	}
 
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;

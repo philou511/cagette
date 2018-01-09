@@ -8,7 +8,6 @@ import Common;
  */
 class UserContract extends Object
 {
-
 	public var id : SId;
 	
 	@formPopulate("populate") @:relation(userId)
@@ -106,7 +105,9 @@ class UserContract extends Object
 			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
-			x.productName = o.product.getName();
+			x.productName = o.product.name;
+			x.productQt = o.product.qt;
+			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
 			
