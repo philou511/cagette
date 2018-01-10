@@ -1,29 +1,5 @@
 ::use 'contractadmin/design.mtt'::
-
-
-
-	<div id="orderBox">		
-	</div>
-	<script ::cond u!=null::>
-	$(function(){
-		::if distribution!=null::
-		_.initOrderBox(::u.id::, ::distribution.id::, ::distribution._contract.id::, "::hDate(distribution.date)::","::distribution._place.toString()::","::u.getName()::");
-		::else::
-		_.initOrderBox(::u.id::, null, ::contract.id::, null,null,"::u.getName()::");
-		::end::
-	});
-	</script>
-
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
+	
 	
 		::if u==null::
 		<h3>::_("Key-in an order")::</h3>

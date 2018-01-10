@@ -887,6 +887,19 @@ class ContractAdmin extends Controller
 		
 	}
 	
+	@tpl("contractadmin/edit2.mtt")
+	function doEdit2(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
+		view.nav.push("orders");
+		sendNav(c);
+		
+		if (!app.user.canManageContract(c)) throw Error("/", t._("You do not have the authorization to manage this contract"));
+		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
+		
+		view.c = view.contract = c;
+		view.u = user;
+		view.distribution = args.d;
+	}
+	
 	/**
 	 * Edit a user's orders
 	 */

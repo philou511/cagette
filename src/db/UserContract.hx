@@ -110,6 +110,7 @@ class UserContract extends Object
 			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
+			x.productHasFloatQt = o.product.hasFloatQt;
 			
 			x.quantity = o.quantity;
 			x.subTotal = o.quantity * o.productPrice;
@@ -126,7 +127,11 @@ class UserContract extends Object
 			}else {
 				x.total = x.subTotal;
 			}
+			
+			//flags
 			x.paid = o.paid;
+			x.invertSharedOrder = o.flags.has(InvertSharedOrder);
+			x.canceled = o.flags.has(Canceled);
 			
 			x.contractId = c.id;
 			x.contractName = c.name;

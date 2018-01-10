@@ -1,0 +1,21 @@
+::use 'contractadmin/design.mtt'::
+
+<div class="alert alert-warning">
+	<span class="glyphicon glyphicon glyphicon-info-sign"></span> <b>Attention, peinture fraîche !</b> Cette nouvelle page de gestion des commandes est en test. Tenez nous au courant si vous rencontrez des bugs car elle remplacera bientôt l'ancienne.
+</div>
+
+
+	<div id="orderBox">		
+	</div>
+	<script ::cond u!=null::>
+	$(function(){
+		::if distribution!=null::
+		_.initOrderBox(::u.id::, ::distribution.id::, ::distribution._contract.id::, "::hDate(distribution.date)::","::distribution._place.toString()::","::u.getName()::");
+		::else::
+		_.initOrderBox(::u.id::, null, ::contract.id::, null,null,"::u.getName()::");
+		::end::
+	});
+	</script>
+
+	
+::end::

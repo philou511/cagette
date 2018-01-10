@@ -33,8 +33,8 @@ table.listing tr td{white-space:nowrap;overflow-x:hidden;}
 table.table tr.disabled td,table.table tr.inactive td{opacity:0.4;}
 div.reportHeader{background-color:#DDD;}
 .productOrder{border-bottom:1px solid #DDD;margin-bottom:6px;}
-.productOrder .ref{color:#AAA;font-family:monospace;font-size:0.9em;}
 .productOrder .infos{color:#AAA;font-size:0.8em;}
+.ref{color:#AAA;font-family:monospace;font-size:0.9em;}
 .clickable{display:block;border:1px solid #CCC;border-radius:8px;padding:8px;color:inherit;background-color:white;margin-bottom:12px;}
 .clickable:hover{cursor:pointer;background-color:#f5e1a5;border-color:#ebc349;text-decoration:none;transition:all 0.15s ease;}
 .clickable:active{cursor:pointer;background-color:#F0D277;border-color:#ebc349;text-decoration:none;transform:scale(0.95);}

@@ -255,6 +255,8 @@ div.reportHeader{
 	background-color:#DDD;
    
 }
+
+
  
 /* a product order in a table style */
 .productOrder{
@@ -262,11 +264,7 @@ div.reportHeader{
 	border-bottom:1px solid #DDD;
 	margin-bottom:6px;
 	
-	.ref{
-		color:#AAA;
-		font-family:monospace;
-		font-size:0.9em;
-	}
+	
 	
 	.infos{
 		color:#AAA;
@@ -275,6 +273,12 @@ div.reportHeader{
 	
 	
 	
+}
+/* A product reference */
+.ref{
+	color:#AAA;
+	font-family:monospace;
+	font-size:0.9em;
 }
 
 

@@ -122,14 +122,20 @@ typedef UserOrder = {
 	productImage:String,
 	productQt:Float,
 	productUnit:UnitType,
+	productHasFloatQt:Bool,
 	
 	quantity:Float,
 	subTotal:Float,
+	
 	fees:Float,
 	percentageName:String,
 	percentageValue:Float,
 	total:Float,
+	
+	//flags
 	paid:Bool,
+	invertSharedOrder:Bool,
+	canceled:Bool,	
 	canModify:Bool,
 	
 	contractId:Int,
