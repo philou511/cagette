@@ -7,7 +7,7 @@ import sys.db.Types;
 class Vendor extends Object
 {
 	public var id : SId;
-	public var name : SString<32>;
+	public var name : SString<128>;
 	
 	public var email : STinyText;
 	public var phone:SNull<SString<19>>;

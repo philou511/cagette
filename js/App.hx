@@ -105,8 +105,13 @@ class App {
 	
 	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String){
 		var onSubmit = function(){
-			//js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
-			trace("onsubmit !");
+			if (distributionId == null){
+				js.Browser.location.href = "/contractAdmin/orders/" + contractId;	
+			}else{
+				js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
+			}
+			
+
 		};
 		
 		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit/>'),  js.Browser.document.querySelector('#orderBox'));

@@ -31,10 +31,15 @@ class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distribut
 				setState(cast {error:data.error.message});
 			}else{
 				//WOOT
-				setState({orders:data.orders,error:null});
+				setState({orders:data.orders, error:null});
+				
+				
+				//
 			}
+			
+			
 		}).catchError(function(error) {
-			trace("PROMISE ERROR", error);
+			trace("PROMISE ERROR :" + Std.string(error));
 			setState(cast {error:error.message});
 		});
 	}
@@ -52,7 +57,9 @@ class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distribut
 				<$Error error="${state.error}" />
 				${renderOrders}	
 				<div>
-					<a onClick=${onClick} className="btn btn-primary">Valider</a>
+					<a onClick=${onClick} className="btn btn-primary">
+						<span className="glyphicon glyphicon-chevron-right"></span> Valider
+					</a>
 				</div>
 			</div>			
 		');

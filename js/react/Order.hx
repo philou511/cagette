@@ -3,29 +3,32 @@ import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
-//typedef OrderState = {>UserOrder,};
-//typedef RegisterBoxProps = {redirectUrl:String, phoneRequired:Bool};
-
 
 /**
  * A User order
  * @author fbarbut
  */
-class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void},{order:UserOrder}>
+class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void},{order:UserOrder,inputValue:String}>
 {
 
 	public function new(props) 
 	{
 		super(props);
+		state = {order:props.order,inputValue:null};
 		
-		state = {order:props.order};
-		//convert ints to enums
-		state.order.productUnit = Type.createEnumIndex(UnitType, Std.parseInt(cast state.order.productUnit));
+		if (state.order.productUnit == null){
+			state.order.productUnit = Piece;
+		}else{
+			//convert ints to enums, enums have been lost in json serialization
+			state.order.productUnit = Type.createEnumIndex(UnitType, cast state.order.productUnit );	
+		}		
 		if (state.order.productQt == null) state.order.productQt = 1;
-		if (state.order.productUnit == null) state.order.productUnit = Piece;		
-		//state.infos = makeInfos();
 		
-		trace(state);
+		state.inputValue = if (state.order.productHasFloatQt){
+			Std.string(state.order.quantity * state.order.productQt);
+		}else{
+			Std.string(state.order.quantity);
+		}
 	}
 	
 	override public function render(){
@@ -43,15 +46,10 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 			jsx('<div className="col-md-3">${o.productName} ${o.productQt} ${Formatting.unit(o.productUnit)}</div>');
 		}
 		
-		var input =  if (o.productHasFloatQt){
-			jsx('<div className="col-md-2">
-				<input type="text" className="form-control input-sm text-right" value="${round(o.quantity*o.productQt)}" onChange=${onChange}/>
-			</div>');
-		}else{
-			jsx('<div className="col-md-2">
-				<input type="text" className="form-control input-sm text-right" value="${o.quantity}" onChange=${onChange}/>
+		var input =  jsx('<div className="col-md-2">
+				<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
 			</div>');	
-		}
+		
 		
 		var s = {backgroundImage:"url(\""+o.productImage+"\")", width:"32px", height:"32px"};
 		return jsx('<div className="productOrder row">
@@ -91,8 +89,9 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	function makeInfos(){
 		var o = state.order;
 		return if (o.productHasFloatQt){
-			jsx( '<div className="col-md-12 infos">
-				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b> ${o.productName}
+			jsx('<div className="col-md-12 infos">
+				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}
+				/ Prix <b>${round(o.quantity * o.productPrice)} &euro;</b>
 			</div>');
 		}else{
 			null;
@@ -101,18 +100,25 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	
 	function onChange(e:js.html.Event){
 		e.preventDefault();		
-		var value = Std.parseFloat(untyped (e.target.value == "") ? 0 : e.target.value);
+		var value :String = untyped (e.target.value == "") ? "0" : e.target.value;
+		state.inputValue = value;
 		var o = state.order;
 		if ( o.productHasFloatQt){
 			//if has float qt, the value is a smart qt, so we need re-compute the quantity
-			o.quantity = value / o.productQt;
+			o.quantity = Std.parseFloat(value) / o.productQt;
 		}else{
-			o.quantity = value;	
+			o.quantity = Std.parseFloat(value);	
 		}
 		
 		this.setState(state);
 		if (props.onUpdate != null) props.onUpdate(state.order);
 		trace(state);
-		
+	}
+	
+	function onKeyPress(event:js.html.KeyboardEvent){
+		/*if(event.key == 'Enter'){
+			trace('enter !');
+		}*/
 	}
 }
+

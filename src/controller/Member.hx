@@ -361,9 +361,9 @@ class Member extends Controller
 					app.session.addMessage(t._("This e-mail was used by another user account. As this user account was not used, it has been merged into the current user account."));
 					
 				} else {
-					var str = t._("Warning, this e-mail or this name already exist for another account: ");
+					var str = t._("Warning, this e-mail or this name already exists for another account : ");
 					str += Lambda.map(sim, function(u) return "<a href='/member/view/" + u.id + "'>" + u.getCoupleName() + "</a>").join(",");
-					str += t._("These accounts cannot be merged because the second account has orders");
+					str += " "+t._("These accounts can't be merged because the second account has orders");
 					throw Error("/member/edit/" + member.id, str);	
 				}
 			}	

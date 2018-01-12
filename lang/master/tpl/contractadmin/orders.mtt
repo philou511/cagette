@@ -124,8 +124,8 @@
 						::end::
 					</td>
 					
-					<td>
-						::if(m.productHasFloatQt)::
+					<td>						
+						::if(m.productHasFloatQt || m.productQt==null || m.productUnit==null)::
 							::m.productName::
 						::else::
 							::m.productName:: ::m.productQt:: ::unit(m.productUnit)::
