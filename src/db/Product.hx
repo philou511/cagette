@@ -25,6 +25,8 @@ class Product extends Object
 	public var unitType : SNull<SEnum<UnitType>>; // Kg / L / g / units
 	public var qt : SNull<SFloat>;
 	public var organic : SBool;
+	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
+	//public var multiWeight : Bool;		//product cannot be cumulated in one order record
 	
 	@hideInForms public var type : SInt;	//icones
 	
@@ -42,6 +44,7 @@ class Product extends Object
 		organic = false;
 		hasFloatQt = false;
 		active = true;
+		variablePrice = false;
 		vat = 0;
 		
 	}
@@ -109,7 +112,8 @@ class Product extends Object
 			hasFloatQt : hasFloatQt,
 			qt:qt,
 			unitType:unitType,
-			organic:organic
+			organic:organic,
+			variablePrice:variablePrice
 		}
 		
 		if(populateCategories){
@@ -182,6 +186,7 @@ class Product extends Object
 			"active" 			=> t._("Active"),			
 			"organic" 			=> t._("Organic agriculture"),			
 			"vat" 				=> t._("VAT Rate"),			
+			"variablePrice"		=> t._("Variable price based on weight"),			
 		];
 	}
 	

@@ -41,6 +41,7 @@ typedef ProductInfo = {
 	?qt:Float,
 	?unitType:UnitType,
 	organic:Bool,
+	variablePrice:Bool,
 	#if js
 	element:js.JQuery,
 	#end

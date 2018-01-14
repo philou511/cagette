@@ -30,7 +30,7 @@ msgstr "Mot de passe"
 msgid "address"
 msgstr "adresse"
 
-#: src/App.hx:8462
+#: src/App.hx:8531
 msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
@@ -180,6 +180,48 @@ msgstr "Options de paiement mises à jour"
 msgid "Options of payment"
 msgstr "Options de paiements"
 
+#: src/controller/api/Order.hx:982 src/controller/api/Order.hx:2999
+#: src/controller/ContractAdmin.hx:17768 src/controller/ContractAdmin.hx:18846
+#: src/controller/ContractAdmin.hx:19682 src/controller/ContractAdmin.hx:22534
+#: src/controller/ContractAdmin.hx:23391 src/controller/ContractAdmin.hx:24281
+#: src/controller/ContractAdmin.hx:25040 src/controller/ContractAdmin.hx:26351
+#: src/controller/ContractAdmin.hx:26650 src/controller/ContractAdmin.hx:28710
+#: src/controller/ContractAdmin.hx:29452 src/controller/ContractAdmin.hx:30019
+msgid "You do not have the authorization to manage this contract"
+msgstr "Vous n'avez pas le droit de gérer ce contrat"
+
+#: src/controller/api/Order.hx:1087 src/controller/api/Order.hx:3104
+#: src/controller/ContractAdmin.hx:29627 src/controller/ContractAdmin.hx:30194
+msgid "This delivery has been already validated"
+msgstr "Cette distribution a déjà été validée"
+
+#: src/controller/api/Order.hx:2891
+msgid "::user:: is not member of this group"
+msgstr "::user:: n'est pas membre de ce groupe"
+
+#: src/controller/api/Order.hx:4042 src/controller/ContractAdmin.hx:32289
+msgid "Unable to find product ::pid::"
+msgstr "Impossible de trouver le produit #::pid::"
+
+#: src/controller/api/Order.hx:4424 src/controller/ContractAdmin.hx:31522
+#: src/controller/ContractAdmin.hx:32687
+msgid "Unable to find user #::num::"
+msgstr "Impossible de trouver le membre #::num::"
+
+#: src/controller/api/Order.hx:4528 src/controller/ContractAdmin.hx:32797
+msgid "::user:: is not part of this group"
+msgstr "::user:: n'est pas membre de ce groupe"
+
+#: src/controller/api/Order.hx:4620 src/controller/ContractAdmin.hx:32892
+msgid "Both selected accounts must be different ones"
+msgstr "Les deux comptes sélectionnés doivent être différents"
+
+#: src/controller/api/Order.hx:4880
+msgid "Error : product \"::product::\" quantities should be integers"
+msgstr ""
+"Erreur : Les quantités du produit \"::product::\" doivent être des nombres "
+"entiers"
+
 #: src/controller/Categories.hx:480
 msgid "The category list is not empty."
 msgstr "La liste des catégories n'est pas vide."
@@ -290,7 +332,7 @@ msgstr "Vous n'êtes pas membre de ce groupe"
 #: src/controller/Contract.hx:4366 src/controller/Contract.hx:6386
 #: src/controller/Distribution.hx:691 src/controller/Distribution.hx:4308
 #: src/controller/Distribution.hx:10379 src/controller/Distribution.hx:13058
-#: src/controller/Member.hx:21232 src/controller/Product.hx:2029
+#: src/controller/Member.hx:21237 src/controller/Product.hx:2029
 #: src/controller/Vendor.hx:1741
 msgid "Forbidden action"
 msgstr "Action interdite"
@@ -331,11 +373,11 @@ msgstr "Créer un contrat à commande variable"
 msgid "New contract created"
 msgstr "Nouveau contrat créé"
 
-#: src/controller/Contract.hx:7494
+#: src/controller/Contract.hx:7554
 msgid "You don't have the authorization to remove a contract"
 msgstr "Vous n'avez pas le droit de supprimer un contrat"
 
-#: src/controller/Contract.hx:7861
+#: src/controller/Contract.hx:8005
 msgid ""
 "You cannot delete this contract because some orders are linked to this "
 "contract."
@@ -343,41 +385,41 @@ msgstr ""
 "Vous ne pouvez pas effacer ce contrat car il y a des commandes rattachées à "
 "ce contrat."
 
-#: src/controller/Contract.hx:8283
+#: src/controller/Contract.hx:8427
 msgid "Contract deleted"
 msgstr "Contrat supprimé"
 
-#: src/controller/Contract.hx:8351 src/controller/Product.hx:3854
+#: src/controller/Contract.hx:8495 src/controller/Product.hx:3854
 msgid "Token error"
 msgstr "Erreur de token"
 
-#: src/controller/Contract.hx:8934 src/controller/Contract.hx:12320
+#: src/controller/Contract.hx:9078 src/controller/Contract.hx:12464
 msgid "This contract is not opened to orders"
 msgstr "Ce contrat n'est pas ouvert aux commandes"
 
-#: src/controller/Contract.hx:11248 src/controller/Contract.hx:14457
+#: src/controller/Contract.hx:11392 src/controller/Contract.hx:14601
 msgid "Not possible to find the product ::produ:: and the delivery ::deliv::"
 msgstr "Impossible de retrouver le produit ::produ:: et distribution ::deliv::"
 
-#: src/controller/Contract.hx:11839 src/controller/Contract.hx:17798
+#: src/controller/Contract.hx:11983 src/controller/Contract.hx:17942
 msgid "Your order has been updated"
 msgstr "Votre commande a été mise à jour"
 
-#: src/controller/Contract.hx:15134
+#: src/controller/Contract.hx:15278
 msgid "Your CSA order has been saved"
 msgstr "Votre commande AMAP a été enregistrée"
 
-#: src/controller/Contract.hx:15219
+#: src/controller/Contract.hx:15363
 msgid "In order to save your order, please choose a payment mean."
 msgstr ""
 "Pour que votre commande soit enregistrée, choisissez une méthode de paiement."
 
-#: src/controller/Contract.hx:15783
+#: src/controller/Contract.hx:15927
 msgid "This delivery already took place, you cannot modify the order any more."
 msgstr ""
 "Cette distribution a déjà eu lieu, vous ne pouvez plus modifier la commande."
 
-#: src/controller/Contract.hx:15908
+#: src/controller/Contract.hx:16052
 msgid ""
 "<br/>As the manager of the contract you can modify the order from this page "
 "<a href='/contractAdmin'>Management of contracts</a>"
@@ -386,7 +428,7 @@ msgstr ""
 "depuis la page de gestion des commandes dans <a href='/"
 "contractAdmin'>Gestion contrats</a>"
 
-#: src/controller/Contract.hx:17216
+#: src/controller/Contract.hx:17360
 msgid "Error, not possible to find the order"
 msgstr "Erreur, impossible de retrouver la commande"
 
@@ -443,7 +485,7 @@ msgid "Start date"
 msgstr "Date de début"
 
 #: src/controller/ContractAdmin.hx:7965 src/db/Contract.hx:8226
-#: src/db/Distribution.hx:7063 src/db/Operation.hx:12027
+#: src/db/Distribution.hx:7063 src/db/Operation.hx:12263
 msgid "End date"
 msgstr "Date de fin"
 
@@ -478,15 +520,6 @@ msgstr "Il n'y a aucune distribution sur cette période"
 msgid "Orders from the ::fromDate:: to the ::toDate:: per supplier.csv"
 msgstr "Commandes du ::fromDate:: au ::toDate:: par producteur.csv\")"
 
-#: src/controller/ContractAdmin.hx:17768 src/controller/ContractAdmin.hx:18846
-#: src/controller/ContractAdmin.hx:19682 src/controller/ContractAdmin.hx:22534
-#: src/controller/ContractAdmin.hx:23391 src/controller/ContractAdmin.hx:24281
-#: src/controller/ContractAdmin.hx:25040 src/controller/ContractAdmin.hx:26351
-#: src/controller/ContractAdmin.hx:26650 src/controller/ContractAdmin.hx:28710
-#: src/controller/ContractAdmin.hx:29488
-msgid "You do not have the authorization to manage this contract"
-msgstr "Vous n'avez pas le droit de gérer ce contrat"
-
 #: src/controller/ContractAdmin.hx:19461
 msgid "Prices are now up to date."
 msgstr "Prix mis à jours à leur valeur actuelle."
@@ -515,27 +548,7 @@ msgstr "Aucune distribution dans ce contrat"
 msgid "The contract has been canceled"
 msgstr "Le contrat a bien été annulé"
 
-#: src/controller/ContractAdmin.hx:29663
-msgid "This delivery has been already validated"
-msgstr "Cette distribution a déjà été validée"
-
-#: src/controller/ContractAdmin.hx:30991 src/controller/ContractAdmin.hx:32156
-msgid "Unable to find user #::num::"
-msgstr "Impossible de trouver le membre #::num::"
-
-#: src/controller/ContractAdmin.hx:31758
-msgid "Unable to find product ::pid::"
-msgstr "Impossible de trouver le produit #::pid::"
-
-#: src/controller/ContractAdmin.hx:32266
-msgid "::user:: is not part of this group"
-msgstr "::user:: n'est pas membre de ce groupe"
-
-#: src/controller/ContractAdmin.hx:32361
-msgid "Both selected accounts must be different ones"
-msgstr "Les deux comptes sélectionnés doivent être différents"
-
-#: src/controller/ContractAdmin.hx:33397 src/controller/ContractAdmin.hx:33494
+#: src/controller/ContractAdmin.hx:33919 src/controller/ContractAdmin.hx:34016
 msgid "The order has been updated"
 msgstr "La commande a été mise à jour"
 
@@ -812,17 +825,17 @@ msgid "Address"
 msgstr "Adresse"
 
 #: src/controller/Group.hx:3811 src/db/Place.hx:1504 src/db/User.hx:16366
-#: src/db/Vendor.hx:1161
+#: src/db/Vendor.hx:1162
 msgid "Zip code"
 msgstr "Code postal"
 
-#: src/controller/Group.hx:3886 src/controller/Member.hx:17053
-#: src/db/Place.hx:1536 src/db/User.hx:16398 src/db/Vendor.hx:1193
+#: src/controller/Group.hx:3886 src/controller/Member.hx:17058
+#: src/db/Place.hx:1536 src/db/User.hx:16398 src/db/Vendor.hx:1194
 #: lang/master/tpl/member/import.mtt:995 lang/master/tpl/member/import.mtt:1742
 msgid "City"
 msgstr "Ville"
 
-#: src/controller/Group.hx:3958 src/db/User.hx:16064 src/db/Vendor.hx:1051
+#: src/controller/Group.hx:3958 src/db/User.hx:16064 src/db/Vendor.hx:1052
 #: lang/master/tpl/contractadmin/view.mtt:1043
 #: lang/master/tpl/member/import.mtt:711 lang/master/tpl/member/import.mtt:1466
 #: lang/master/tpl/member/payments.mtt:540
@@ -1051,7 +1064,7 @@ msgstr ""
 "exceptionnellement autorisé à le définir à sa place. N'oubliez pas de la "
 "prévenir."
 
-#: src/controller/Member.hx:10824 src/controller/Member.hx:23273
+#: src/controller/Member.hx:10824 src/controller/Member.hx:23284
 msgid "Phone number is required in this group."
 msgstr "Le numéro de téléphone est obligatoire pour ce groupe"
 
@@ -1064,26 +1077,26 @@ msgstr ""
 "etait inutilisée, elle a été fusionnée avec la fiche courante."
 
 #: src/controller/Member.hx:11609
-msgid "Warning, this e-mail or this name already exist for another account: "
-msgstr "Attention, cet email ou ce nom existe déjà dans un autre compte : "
+msgid "Warning, this e-mail or this name already exists for another account : "
+msgstr "Attention, cet e-mail ou ce nom existe déjà pour un autre compte : "
 
-#: src/controller/Member.hx:11828
-msgid "These accounts cannot be merged because the second account has orders"
+#: src/controller/Member.hx:11834
+msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 "Ces comptes ne peuvent pas être fusionnés car le second compte a des "
 "commandes "
 
-#: src/controller/Member.hx:12313 src/controller/User.hx:3190
+#: src/controller/Member.hx:12318 src/controller/User.hx:3190
 #: src/db/User.hx:15035 lang/master/tpl/design.mtt:4441
 #: lang/master/tpl/mail/design.mtt:298
 msgid "Cagette.net"
 msgstr "Cagette.net"
 
-#: src/controller/Member.hx:12389
+#: src/controller/Member.hx:12394
 msgid "Change your e-mail in your account Cagette.net"
 msgstr "Changement d'email sur votre compte Cagette.net"
 
-#: src/controller/Member.hx:12534 src/controller/Member.hx:13071
+#: src/controller/Member.hx:12539 src/controller/Member.hx:13076
 msgid ""
 " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
 "now:"
@@ -1091,23 +1104,23 @@ msgstr ""
 " vient de modifier votre email dans votre compte Cagette.net.<br/>Votre "
 "email est maintenant:"
 
-#: src/controller/Member.hx:12928
+#: src/controller/Member.hx:12933
 msgid "Change the e-mail of your account Cagette.net"
 msgstr "Changement d'email sur votre compte Cagette.net"
 
-#: src/controller/Member.hx:13274
+#: src/controller/Member.hx:13279
 msgid "This member has beed updated"
 msgstr "Ce membre a été mis à jour"
 
-#: src/controller/Member.hx:13544
+#: src/controller/Member.hx:13549
 msgid "You cannot do that."
 msgstr "Vous ne pouvez pas faire ça."
 
-#: src/controller/Member.hx:13641
+#: src/controller/Member.hx:13646
 msgid "You cannot delete yourself."
 msgstr "Vous ne pouvez pas vous effacer vous même."
 
-#: src/controller/Member.hx:13790
+#: src/controller/Member.hx:13795
 msgid ""
 "Warning, this account has orders. <a class='btn btn-default btn-xs' href='/"
 "member/delete/::userid::?token=::argstoken::&confirm=1'>Delete anyway</a>"
@@ -1116,19 +1129,19 @@ msgstr ""
 "xs' href='/member/delete/\"+user.id+\"?token=\"+args.token+"
 "\"&confirm=1'>Effacer quand-même</a>"
 
-#: src/controller/Member.hx:14137
+#: src/controller/Member.hx:14142
 msgid " has been deleted from your group"
 msgstr "a été retiré de votre groupe"
 
-#: src/controller/Member.hx:14220
+#: src/controller/Member.hx:14225
 msgid "This person does not belong to \"::amapname::\""
 msgstr "Cette personne ne fait pas partie de \"::amapname::\""
 
-#: src/controller/Member.hx:14538
+#: src/controller/Member.hx:14543
 msgid "Merge an account with another one"
 msgstr "Fusionner un compte avec un autre"
 
-#: src/controller/Member.hx:14595
+#: src/controller/Member.hx:14600
 msgid ""
 "This action allows you to merge two accounts (when you have duplicates in "
 "the database for example).<br/>Contracts of account 2 will be moved to "
@@ -1140,68 +1153,68 @@ msgstr ""
 "rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette "
 "action n'est pas annulable."
 
-#: src/controller/Member.hx:15084
+#: src/controller/Member.hx:15089
 msgid "Account 1"
 msgstr "Compte 1"
 
-#: src/controller/Member.hx:15202
+#: src/controller/Member.hx:15207
 msgid "Account 2"
 msgstr "Compte 2"
 
-#: src/controller/Member.hx:16401
+#: src/controller/Member.hx:16406
 msgid "Both accounts have been merged"
 msgstr "Les deux comptes ont été fusionnés"
 
-#: src/controller/Member.hx:16817
+#: src/controller/Member.hx:16822
 msgid "Firstname"
 msgstr "Prénom"
 
-#: src/controller/Member.hx:16835
+#: src/controller/Member.hx:16840
 msgid "Lastname"
 msgstr "Nom"
 
-#: src/controller/Member.hx:16852 lang/master/tpl/member/view.mtt:638
+#: src/controller/Member.hx:16857 lang/master/tpl/member/view.mtt:638
 #: lang/master/tpl/member/view.mtt:766
 msgid "E-mail"
 msgstr "E-mail"
 
-#: src/controller/Member.hx:16867
+#: src/controller/Member.hx:16872
 msgid "Mobile phone"
 msgstr "Téléphone portable"
 
-#: src/controller/Member.hx:16888
+#: src/controller/Member.hx:16893
 msgid "Partner's firstname"
 msgstr "Prénom conjoint(e) "
 
-#: src/controller/Member.hx:16916
+#: src/controller/Member.hx:16921
 msgid "Partner's lastname"
 msgstr "Nom conjoint(e) "
 
-#: src/controller/Member.hx:16943
+#: src/controller/Member.hx:16948
 msgid "Partner's e-mail"
 msgstr "Email conjoint(e) "
 
-#: src/controller/Member.hx:16968
+#: src/controller/Member.hx:16973
 msgid "Partner's Mobile phone"
 msgstr "Téléphone conjoint(e) "
 
-#: src/controller/Member.hx:16999 src/db/Place.hx:1433 src/db/User.hx:16295
-#: src/db/Vendor.hx:1086 lang/master/tpl/member/import.mtt:894
+#: src/controller/Member.hx:17004 src/db/Place.hx:1433 src/db/User.hx:16295
+#: src/db/Vendor.hx:1087 lang/master/tpl/member/import.mtt:894
 #: lang/master/tpl/member/import.mtt:1644
 msgid "Address 1"
 msgstr "Adresse 1"
 
-#: src/controller/Member.hx:17017 src/db/Place.hx:1469 src/db/User.hx:16331
-#: src/db/Vendor.hx:1125 lang/master/tpl/member/import.mtt:928
+#: src/controller/Member.hx:17022 src/db/Place.hx:1469 src/db/User.hx:16331
+#: src/db/Vendor.hx:1126 lang/master/tpl/member/import.mtt:928
 #: lang/master/tpl/member/import.mtt:1677
 msgid "Address 2"
 msgstr "Adresse 2"
 
-#: src/controller/Member.hx:17035
+#: src/controller/Member.hx:17040
 msgid "Post code"
 msgstr "Code postal"
 
-#: src/controller/Member.hx:17287
+#: src/controller/Member.hx:17292
 msgid ""
 "You must fill the name and the firstname of the person. This line is "
 "incomplete: "
@@ -1209,7 +1222,7 @@ msgstr ""
 "Vous devez saisir le nom et le prénom de cette personne, La ligne est "
 "incomplète : "
 
-#: src/controller/Member.hx:17456
+#: src/controller/Member.hx:17461
 msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
@@ -1217,11 +1230,11 @@ msgstr ""
 "Chaque personne doit avoir un email pour pouvoir se connecter, . ::user0:: ::"
 "user1:: n'en a pas. "
 
-#: src/controller/Member.hx:19285
+#: src/controller/Member.hx:19290
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
 msgstr "Le mail ::useremail:: est invalide, merci de modifier votre fichier"
 
-#: src/controller/Member.hx:19622
+#: src/controller/Member.hx:19627
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::"
 "userEmail::' is invalid, please check your file"
@@ -1229,15 +1242,15 @@ msgstr ""
 "L'email du conjoint(e) de ::userFirstName:: ::userLastName:: '::userEmail::' "
 "est invalide, vérifiez votre fichier"
 
-#: src/controller/Member.hx:21651
+#: src/controller/Member.hx:21656
 msgid "Send an E-mail to the person in charge of the group"
 msgstr "Envoyer un mail au responsable du groupe"
 
-#: src/controller/Member.hx:22363
+#: src/controller/Member.hx:22368
 msgid "This person is already member of this group"
 msgstr "Cette personne est déjà inscrite dans cette AMAP"
 
-#: src/controller/Member.hx:22716
+#: src/controller/Member.hx:22723
 msgid ""
 "This person already had an account on Cagette.net, and is now member of your "
 "group."
@@ -1245,7 +1258,7 @@ msgstr ""
 "Cette personne était déjà inscrite sur Cagette.net, nous l'avons inscrite à "
 "votre groupe."
 
-#: src/controller/Member.hx:22920
+#: src/controller/Member.hx:22929
 msgid ""
 "Not possible to add this person because there are already some people in the "
 "database having the same firstname and name. Please contact the "
@@ -1254,7 +1267,7 @@ msgstr ""
 "Impossible d'ajouter cette personne car plusieurs personnes dans la base de "
 "données ont le même nom et prénom, contactez l'administrateur du site."
 
-#: src/controller/Member.hx:23731
+#: src/controller/Member.hx:23742
 msgid ""
 "::admin:: just keyed-in contact details of a new member: <br/><strong>::"
 "newMember::</strong><br/> <a href='::url::'>See contact details</a>"
@@ -1262,11 +1275,11 @@ msgstr ""
 "::admin:: vient de saisir un nouvel adhérent : <br/><strong>::newMember::</"
 "strong><br/> <a href='::url::'>Voir le détail</a>"
 
-#: src/controller/Member.hx:24038 lang/master/tpl/member/default.mtt:2200
+#: src/controller/Member.hx:24049 lang/master/tpl/member/default.mtt:2200
 msgid "New member"
 msgstr "Nouvel adhérent"
 
-#: src/controller/Member.hx:24197
+#: src/controller/Member.hx:24208
 msgid "This person is now member of the group"
 msgstr "Cette personne a bien été enregistrée"
 
@@ -1441,24 +1454,24 @@ msgid "Your order has been successfully recorded"
 msgstr "Votre commande a bien été enregistrée"
 
 #: src/controller/Transaction.hx:382 src/controller/Transaction.hx:2432
-#: src/controller/Transaction.hx:4048
+#: src/controller/Transaction.hx:4195
 msgid "Action forbidden"
 msgstr "Action interdite"
 
 #. label or name for a payment
-#: src/controller/Transaction.hx:633 src/controller/Transaction.hx:2591
+#: src/controller/Transaction.hx:633 src/controller/Transaction.hx:2738
 #: src/controller/Validate.hx:1755 src/controller/Validate.hx:3141
 msgid "Label"
 msgstr "Libellé"
 
-#: src/controller/Transaction.hx:751 src/controller/Transaction.hx:2712
+#: src/controller/Transaction.hx:751 src/controller/Transaction.hx:2859
 #: src/controller/Validate.hx:1853 src/controller/Validate.hx:3251
 msgid "Amount"
 msgstr "Montant"
 
-#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2805
+#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2952
 #: src/controller/Validate.hx:3339 src/db/Distribution.hx:7030
-#: src/db/Operation.hx:11994
+#: src/db/Operation.hx:12230
 #: lang/master/tpl/contractadmin/selectDistrib.mtt:199
 #: lang/master/tpl/member/lastMessages.mtt:52
 msgid "Date"
@@ -1468,7 +1481,7 @@ msgstr "Date"
 msgid "Payment type"
 msgstr "Type de paiement"
 
-#: src/controller/Transaction.hx:1394 src/controller/Transaction.hx:3320
+#: src/controller/Transaction.hx:1394 src/controller/Transaction.hx:3467
 msgid "As a payment for :"
 msgstr "En paiement de :"
 
@@ -1480,33 +1493,41 @@ msgstr "Paiement enregistré"
 msgid "Record a payment for ::user::"
 msgstr "Saisir un paiement pour ::user::"
 
-#: src/controller/Transaction.hx:2899
+#: src/controller/Transaction.hx:2558
+msgid "Editing a credit card payment is not allowed"
+msgstr "Modifier un paiement par carte bancaire n'est pas autorisé"
+
+#: src/controller/Transaction.hx:3046
 msgid "Confirmed"
 msgstr "Confirmé"
 
-#: src/controller/Transaction.hx:3818
+#: src/controller/Transaction.hx:3965
 msgid "Operation updated"
 msgstr "Opération mise à jour"
 
-#: src/controller/Transaction.hx:4166 src/controller/Validate.hx:1021
+#: src/controller/Transaction.hx:4314
+msgid "Deleting a credit card payment is not allowed"
+msgstr "Effacer un paiement par carte bancaire n'est pas autorisé"
+
+#: src/controller/Transaction.hx:4459 src/controller/Validate.hx:1021
 msgid "Operation deleted"
 msgstr "Opération supprimée"
 
-#: src/controller/Transaction.hx:4478 src/controller/Transaction.hx:4905
-#: src/controller/Transaction.hx:6386 src/controller/Transaction.hx:7783
+#: src/controller/Transaction.hx:4771 src/controller/Transaction.hx:5198
+#: src/controller/Transaction.hx:6679 src/controller/Transaction.hx:8076
 msgid "Your cart is empty"
 msgstr "Votre panier est vide"
 
-#: src/controller/Transaction.hx:5522
+#: src/controller/Transaction.hx:5815
 msgid "Check for the order of ::date::"
 msgstr "Chèque pour la commande du ::date::"
 
-#: src/controller/Transaction.hx:5896 src/controller/Validate.hx:3437
+#: src/controller/Transaction.hx:6189 src/controller/Validate.hx:3437
 #: src/payment/Check.hx:309
 msgid "Check"
 msgstr "Chèque"
 
-#: src/controller/Transaction.hx:5972
+#: src/controller/Transaction.hx:6265
 msgid ""
 "Your payment by check has been saved. It will be validated by a coordinator "
 "at the delivery."
@@ -1514,15 +1535,15 @@ msgstr ""
 "Votre paiement par chèque a bien été enregistré. Il sera validé par un "
 "coordinateur lors de la distribution."
 
-#: src/controller/Transaction.hx:6975
+#: src/controller/Transaction.hx:7268
 msgid "Transfer for the order of ::date::"
 msgstr "Virement pour la commande du ::date::"
 
-#: src/controller/Transaction.hx:7311 src/payment/Transfer.hx:318
+#: src/controller/Transaction.hx:7604 src/payment/Transfer.hx:318
 msgid "Bank transfer"
 msgstr "Virement"
 
-#: src/controller/Transaction.hx:7393
+#: src/controller/Transaction.hx:7686
 msgid ""
 "Your payment by transfer has been saved. It will be validated by a "
 "coordinator."
@@ -1530,15 +1551,15 @@ msgstr ""
 "Votre paiement par virement a bien été enregistré. Il sera validé par un "
 "coordinateur."
 
-#: src/controller/Transaction.hx:8267
+#: src/controller/Transaction.hx:8560
 msgid "Cash for the order of ::date::"
 msgstr "Espèces pour la commande du ::date::"
 
-#: src/controller/Transaction.hx:8599
+#: src/controller/Transaction.hx:8892
 msgid "Cash payment"
 msgstr "Paiement en liquide :"
 
-#: src/controller/Transaction.hx:8662
+#: src/controller/Transaction.hx:8955
 msgid "Your order is validated, you commited to pay in cash at the delivery."
 msgstr ""
 "Votre commande est validée, vous vous êtes engagé à payer en liquide au "
@@ -1729,7 +1750,7 @@ msgstr "Mise en avant"
 msgid "Contract name"
 msgstr "Nom du contrat"
 
-#: src/db/Contract.hx:8266 src/db/Product.hx:4425 src/db/Vendor.hx:981
+#: src/db/Contract.hx:8266 src/db/Product.hx:4661 src/db/Vendor.hx:982
 msgid "Description"
 msgstr "Description"
 
@@ -1745,7 +1766,7 @@ msgstr "Pourcentage des frais"
 msgid "Fees label"
 msgstr "Libellé pour ces frais"
 
-#: src/db/Contract.hx:8511 lang/master/tpl/group/view.mtt:3285
+#: src/db/Contract.hx:8511 lang/master/tpl/group/view.mtt:3243
 msgid "Contact"
 msgstr "Contact"
 
@@ -1753,27 +1774,27 @@ msgstr "Contact"
 msgid "Farmer"
 msgstr "Producteur"
 
-#: src/db/Distribution.hx:6999 src/db/Operation.hx:11963
+#: src/db/Distribution.hx:6999 src/db/Operation.hx:12199
 msgid "Text"
 msgstr "Texte"
 
-#: src/db/Distribution.hx:7098 src/db/Operation.hx:12062
+#: src/db/Distribution.hx:7098 src/db/Operation.hx:12298
 msgid "Place"
 msgstr "Lieu"
 
-#: src/db/Distribution.hx:7136 src/db/Operation.hx:12100
+#: src/db/Distribution.hx:7136 src/db/Operation.hx:12336
 msgid "Distributor #1"
 msgstr "Distributeur 1"
 
-#: src/db/Distribution.hx:7183 src/db/Operation.hx:12147
+#: src/db/Distribution.hx:7183 src/db/Operation.hx:12383
 msgid "Distributor #2"
 msgstr "Distributeur 2"
 
-#: src/db/Distribution.hx:7230 src/db/Operation.hx:12194
+#: src/db/Distribution.hx:7230 src/db/Operation.hx:12430
 msgid "Distributor #3"
 msgstr "Distributeur 3"
 
-#: src/db/Distribution.hx:7277 src/db/Operation.hx:12241
+#: src/db/Distribution.hx:7277 src/db/Operation.hx:12477
 msgid "Distributor #4"
 msgstr "Distributeur 4"
 
@@ -1838,52 +1859,55 @@ msgstr "Latitude"
 msgid "Longitude"
 msgstr "Longitude"
 
-#: src/db/Product.hx:4318
+#: src/db/Product.hx:4554
 msgid "Product name"
 msgstr "Nom du produit"
 
-#: src/db/Product.hx:4356 lang/master/tpl/contractadmin/orders.mtt:3243
-#: lang/master/tpl/contractadmin/products.mtt:1781
+#: src/db/Product.hx:4592 lang/master/tpl/contractadmin/products.mtt:1781
 msgid "Product ID"
 msgstr "Référence"
 
-#: src/db/Product.hx:4393 lang/master/tpl/contract/order.mtt:806
+#: src/db/Product.hx:4629 lang/master/tpl/contract/order.mtt:806
 #: lang/master/tpl/contract/orderAndPay.mtt:904
-#: lang/master/tpl/contractadmin/edit.mtt:1080
+#: lang/master/tpl/contractadmin/edit.mtt:1084
 #: lang/master/tpl/contractadmin/products.mtt:1885
 #: lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:1961
 msgid "Price"
 msgstr "Prix"
 
-#: src/db/Product.hx:4463 lang/master/tpl/contractadmin/products.mtt:1947
+#: src/db/Product.hx:4699 lang/master/tpl/contractadmin/products.mtt:1947
 msgid "Stock"
 msgstr "Stock"
 
-#: src/db/Product.hx:4498
+#: src/db/Product.hx:4734
 msgid "Base unit"
 msgstr "Unité de base"
 
-#: src/db/Product.hx:4532 lang/master/tpl/contract/orderByDate.mtt:757
-#: lang/master/tpl/contractadmin/edit.mtt:1110
+#: src/db/Product.hx:4768 lang/master/tpl/contract/orderByDate.mtt:757
+#: lang/master/tpl/contractadmin/edit.mtt:1114
 #: lang/master/tpl/contractadmin/stats.mtt:742
 msgid "Quantity"
 msgstr "Quantité"
 
-#: src/db/Product.hx:4574
+#: src/db/Product.hx:4810
 msgid "Allow fractional quantities"
 msgstr "Autoriser les quantités non-entières"
 
-#: src/db/Product.hx:4632
+#: src/db/Product.hx:4868
 msgid "Active"
 msgstr "Actif"
 
-#: src/db/Product.hx:4670 lang/master/tpl/shop/productInfo.mtt:1240
+#: src/db/Product.hx:4906 lang/master/tpl/shop/productInfo.mtt:1491
 msgid "Organic agriculture"
 msgstr "Agriculture biologique"
 
-#: src/db/Product.hx:4718
+#: src/db/Product.hx:4954
 msgid "VAT Rate"
 msgstr "Taux de TVA"
+
+#: src/db/Product.hx:4998
+msgid "Variable price based on weight"
+msgstr "Prix variable selon pesée"
 
 #: src/db/User.hx:14334
 msgid "This user cannot receive an invitation"
@@ -1897,7 +1921,7 @@ msgstr "Invitation"
 msgid "Invitation Cagette.net"
 msgstr "Invitation Cagette.net"
 
-#: src/db/User.hx:16034 src/db/Vendor.hx:1019
+#: src/db/User.hx:16034 src/db/Vendor.hx:1020
 #: lang/master/tpl/contractadmin/view.mtt:942
 #: lang/master/tpl/member/import.mtt:681 lang/master/tpl/member/import.mtt:1437
 #: lang/master/tpl/member/payments.mtt:625
@@ -1953,14 +1977,14 @@ msgstr "Gestion de tous les contrats"
 msgid "Contract management"
 msgstr "Gestion du contrat"
 
-#: src/db/UserContract.hx:6208
+#: src/db/UserContract.hx:6436
 msgid ""
 "There is no more '::productName::' in stock, we removed it from your order"
 msgstr ""
 "Il n'y a plus de '::productName::' en stock, nous l'avons donc retiré de "
 "votre commande"
 
-#: src/db/UserContract.hx:6664 src/db/UserContract.hx:8773
+#: src/db/UserContract.hx:6892 src/db/UserContract.hx:9001
 msgid ""
 "We reduced your order of '::productName::' to quantity ::oQuantity:: because "
 "there is no available products anymore"
@@ -1968,31 +1992,31 @@ msgstr ""
 "Nous avons réduit votre commande de '::productName::' à ::oQuantity:: "
 "articles car il n'y a plus de stock disponible"
 
-#: src/db/UserContract.hx:10214
+#: src/db/UserContract.hx:10663
 msgid "Delivery ::contractName:: of the "
 msgstr "Distribution ::contractName:: du "
 
-#: src/db/UserContract.hx:12725
+#: src/db/UserContract.hx:13174
 msgid "Delivery ::contractName:: "
 msgstr "Distribution ::contractName::"
 
-#: src/db/UserContract.hx:13065
+#: src/db/UserContract.hx:13514
 msgid "Per member"
 msgstr "Par adhérent"
 
-#: src/db/Vendor.hx:757 lang/master/tpl/vendor/view.mtt:103
+#: src/db/Vendor.hx:758 lang/master/tpl/vendor/view.mtt:103
 msgid "Supplier"
 msgstr "Fournisseur"
 
-#: src/db/Vendor.hx:941
+#: src/db/Vendor.hx:942
 msgid "Supplier name"
 msgstr "Nom du producteur"
 
-#: src/db/Vendor.hx:1230
+#: src/db/Vendor.hx:1231
 msgid "Link text"
 msgstr "Intitulé du lien"
 
-#: src/db/Vendor.hx:1271
+#: src/db/Vendor.hx:1272
 msgid "Link URL"
 msgstr "URL du lien"
 
@@ -2025,112 +2049,113 @@ msgid "We already have an account with this email address"
 msgstr "Nous avons déjà un compte avec cette adresse email"
 
 #. unit of a product)
-#: src/View.hx:3302 src/View.hx:3454
+#: src/View.hx:2806 src/View.hx:2958 common/Formatting.hx:1072
+#: common/Formatting.hx:1224
 msgid "piece"
 msgstr "pièce"
 
 #. kilogramms
-#: src/View.hx:3377
+#: src/View.hx:2881 common/Formatting.hx:1147
 msgid "Kg."
 msgstr "Kg."
 
 #. gramms
-#: src/View.hx:3418
+#: src/View.hx:2922 common/Formatting.hx:1188
 msgid "g."
 msgstr "g."
 
 #. liter
-#: src/View.hx:3505
+#: src/View.hx:3009 common/Formatting.hx:1275
 msgid "L."
 msgstr "L."
 
 #. centiliter
-#: src/View.hx:3545
+#: src/View.hx:3049 common/Formatting.hx:1315
 msgid "cl."
 msgstr "cl."
 
-#: src/View.hx:4101
+#: src/View.hx:3605
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: src/View.hx:4116
+#: src/View.hx:3620
 msgid "Monday"
 msgstr "Lundi"
 
-#: src/View.hx:4131
+#: src/View.hx:3635
 msgid "Tuesday"
 msgstr "Mardi"
 
-#: src/View.hx:4147
+#: src/View.hx:3651
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: src/View.hx:4165
+#: src/View.hx:3669
 msgid "Thursday"
 msgstr "Jeudi"
 
-#: src/View.hx:4182
+#: src/View.hx:3686
 msgid "Friday"
 msgstr "Vendredi"
 
-#: src/View.hx:4197
+#: src/View.hx:3701
 msgid "Saturday"
 msgstr "Samedi"
 
-#: src/View.hx:4228
+#: src/View.hx:3732
 msgid "January"
 msgstr "Janvier"
 
-#: src/View.hx:4244
+#: src/View.hx:3748
 msgid "February"
 msgstr "Février"
 
-#: src/View.hx:4261
+#: src/View.hx:3765
 msgid "March"
 msgstr "Mars"
 
-#: src/View.hx:4275
+#: src/View.hx:3779
 msgid "April"
 msgstr "Avril"
 
-#: src/View.hx:4289
+#: src/View.hx:3793
 msgid "May"
 msgstr "Mai"
 
-#: src/View.hx:4301
+#: src/View.hx:3805
 msgid "June"
 msgstr "Juin"
 
-#: src/View.hx:4314
+#: src/View.hx:3818
 msgid "July"
 msgstr "Juillet"
 
-#: src/View.hx:4327
+#: src/View.hx:3831
 msgid "August"
 msgstr "Août"
 
-#: src/View.hx:4342
+#: src/View.hx:3846
 msgid "September"
 msgstr "Septembre"
 
-#: src/View.hx:4360
+#: src/View.hx:3864
 msgid "October"
 msgstr "Octobre"
 
-#: src/View.hx:4376
+#: src/View.hx:3880
 msgid "November"
 msgstr "Novembre"
 
-#: src/View.hx:4393
+#: src/View.hx:3897
 msgid "December"
 msgstr "Décembre"
 
-#: src/View.hx:4641 src/View.hx:5177
+#: src/View.hx:4145 src/View.hx:4681
 msgid "no date set"
 msgstr "aucune date"
 
 #. time : at 12:30
-#: src/View.hx:4924
+#: src/View.hx:4428
 msgid "at"
 msgstr "à"
 
@@ -2212,7 +2237,7 @@ msgstr "Taux de TVA"
 #: lang/master/tpl/categories/default.mtt:40
 #: lang/master/tpl/contractadmin/products.mtt:478
 #: lang/master/tpl/product/categorize.mtt:45
-#: lang/master/tpl/shop/productInfo.mtt:2401
+#: lang/master/tpl/shop/productInfo.mtt:2793
 msgid "Categories"
 msgstr "Catégories"
 
@@ -2297,7 +2322,7 @@ msgstr "Contrats AMAP"
 #: lang/master/tpl/contract/default.mtt:2703
 #: lang/master/tpl/contract/order.mtt:896
 #: lang/master/tpl/contract/orderAndPay.mtt:994
-#: lang/master/tpl/contractadmin/orders.mtt:3214
+#: lang/master/tpl/contractadmin/orders.mtt:3685
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2478
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1732
 #: lang/master/tpl/distribution/list.mtt:2328
@@ -2315,8 +2340,8 @@ msgstr "Qté"
 #: lang/master/tpl/contract/order.mtt:775
 #: lang/master/tpl/contract/orderAndPay.mtt:873
 #: lang/master/tpl/contract/orderByDate.mtt:603
-#: lang/master/tpl/contractadmin/edit.mtt:1048
-#: lang/master/tpl/contractadmin/orders.mtt:3279
+#: lang/master/tpl/contractadmin/edit.mtt:1052
+#: lang/master/tpl/contractadmin/orders.mtt:3720
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2536
 #: lang/master/tpl/contractadmin/ordersByProduct.mtt:612
 #: lang/master/tpl/contractadmin/ordersByProductList.mtt:1598
@@ -2337,7 +2362,7 @@ msgstr "Produit"
 #. short version of price per unit
 #: lang/master/tpl/contract/default.mtt:535
 #: lang/master/tpl/contract/default.mtt:2890
-#: lang/master/tpl/contractadmin/orders.mtt:3411
+#: lang/master/tpl/contractadmin/orders.mtt:3852
 #: lang/master/tpl/member/view.mtt:4314
 msgid "U.P"
 msgstr "P.U"
@@ -2345,7 +2370,7 @@ msgstr "P.U"
 #: lang/master/tpl/contract/default.mtt:599
 #: lang/master/tpl/contract/default.mtt:2955
 #: lang/master/tpl/contract/orderByDate.mtt:664
-#: lang/master/tpl/contractadmin/orders.mtt:3444
+#: lang/master/tpl/contractadmin/orders.mtt:3901
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2696
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1950
 #: lang/master/tpl/distribution/list.mtt:2453
@@ -2356,7 +2381,7 @@ msgstr "Sous-total"
 #: lang/master/tpl/contract/default.mtt:632
 #: lang/master/tpl/contract/default.mtt:2989
 #: lang/master/tpl/contract/orderByDate.mtt:698
-#: lang/master/tpl/contractadmin/orders.mtt:3479
+#: lang/master/tpl/contractadmin/orders.mtt:3936
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2731
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1985
 #: lang/master/tpl/distribution/list.mtt:2489
@@ -2370,9 +2395,9 @@ msgstr "Frais"
 #: lang/master/tpl/contract/default.mtt:660
 #: lang/master/tpl/contract/default.mtt:3018
 #: lang/master/tpl/contract/orderByDate.mtt:727
-#: lang/master/tpl/contractadmin/edit.mtt:3877
-#: lang/master/tpl/contractadmin/orders.mtt:3509
-#: lang/master/tpl/contractadmin/orders.mtt:4779
+#: lang/master/tpl/contractadmin/edit.mtt:3881
+#: lang/master/tpl/contractadmin/orders.mtt:3966
+#: lang/master/tpl/contractadmin/orders.mtt:5712
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2761
 #: lang/master/tpl/contractadmin/ordersByProduct.mtt:720
 #: lang/master/tpl/contractadmin/ordersByProductList.mtt:1703
@@ -2391,8 +2416,8 @@ msgstr "Total"
 
 #: lang/master/tpl/contract/default.mtt:689
 #: lang/master/tpl/contract/default.mtt:1925
-#: lang/master/tpl/contractadmin/orders.mtt:3540
-#: lang/master/tpl/contractadmin/orders.mtt:4541
+#: lang/master/tpl/contractadmin/orders.mtt:3997
+#: lang/master/tpl/contractadmin/orders.mtt:5456
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2792
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:3913
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2046
@@ -2526,13 +2551,13 @@ msgstr ""
 #: lang/master/tpl/contract/view.mtt:3027
 #: lang/master/tpl/contract/view.mtt:3378 lang/master/tpl/home.mtt:8349
 #: lang/master/tpl/macros.mtt:4964 lang/master/tpl/shop/choose.mtt:2169
-#: lang/master/tpl/shop/default.mtt:3601
+#: lang/master/tpl/shop/default.mtt:3870
 msgid "Order"
 msgstr "Commande"
 
 #: lang/master/tpl/contract/order.mtt:158
 #: lang/master/tpl/contract/orderAndPay.mtt:162
-#: lang/master/tpl/contractadmin/edit.mtt:219
+#: lang/master/tpl/contractadmin/edit.mtt:223
 msgid "For the delivery of the"
 msgstr "Pour la livraison du"
 
@@ -2557,7 +2582,7 @@ msgstr "Note: Pour effacer une commande, saisissez une quantité égale à 0"
 
 #: lang/master/tpl/contract/order.mtt:3263
 #: lang/master/tpl/contract/orderAndPay.mtt:3255
-#: lang/master/tpl/contractadmin/edit.mtt:4519
+#: lang/master/tpl/contractadmin/edit.mtt:4523
 msgid "Validate the order"
 msgstr "Valider la commande"
 
@@ -2626,7 +2651,7 @@ msgid "Update the order"
 msgstr "Mettre à jour la commande"
 
 #: lang/master/tpl/contract/view.mtt:1902
-#: lang/master/tpl/shop/productInfo.mtt:2197
+#: lang/master/tpl/shop/productInfo.mtt:2589
 msgid "Read more"
 msgstr "En savoir plus"
 
@@ -2638,7 +2663,7 @@ msgstr "Prochaines distributions"
 msgid "No planned distributions."
 msgstr "Pas de distribution planifiée."
 
-#: lang/master/tpl/contract/view.mtt:3491 lang/master/tpl/shop/default.mtt:4192
+#: lang/master/tpl/contract/view.mtt:3491 lang/master/tpl/shop/default.mtt:4461
 msgid "You can check your previous orders in 'my account' section"
 msgstr ""
 "Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'"
@@ -2834,45 +2859,45 @@ msgstr "Nbre de participations aux distributions<br />( passées ou futures )"
 msgid "Insufficient"
 msgstr "Insuffisant"
 
-#: lang/master/tpl/contractadmin/edit.mtt:64
+#: lang/master/tpl/contractadmin/edit.mtt:68
 msgid "Key-in an order"
 msgstr "Saisir une commande"
 
-#: lang/master/tpl/contractadmin/edit.mtt:113
+#: lang/master/tpl/contractadmin/edit.mtt:117
 msgid "Key-in an order for"
 msgstr "Saisir une commande pour"
 
-#: lang/master/tpl/contractadmin/edit.mtt:683
+#: lang/master/tpl/contractadmin/edit.mtt:687
 msgid "Member:"
 msgstr "Adhérent :"
 
-#: lang/master/tpl/contractadmin/edit.mtt:1178
+#: lang/master/tpl/contractadmin/edit.mtt:1182
 #: lang/master/tpl/member/lastMessages.mtt:107
 #: lang/master/tpl/messages/message.mtt:642
 msgid "Status"
 msgstr "Statut"
 
-#: lang/master/tpl/contractadmin/edit.mtt:1234
+#: lang/master/tpl/contractadmin/edit.mtt:1238
 msgid "Alternately with :"
 msgstr "En alternance avec :"
 
-#: lang/master/tpl/contractadmin/edit.mtt:1723
+#: lang/master/tpl/contractadmin/edit.mtt:1727
 msgid "(inactive)"
 msgstr "(inactif)"
 
-#: lang/master/tpl/contractadmin/edit.mtt:2384
+#: lang/master/tpl/contractadmin/edit.mtt:2388
 msgid "Paid:"
 msgstr "Payé :"
 
-#: lang/master/tpl/contractadmin/edit.mtt:3137
+#: lang/master/tpl/contractadmin/edit.mtt:3141
 msgid "Reverse the alternation"
 msgstr "Inverser l'alternance"
 
-#: lang/master/tpl/contractadmin/edit.mtt:3462
+#: lang/master/tpl/contractadmin/edit.mtt:3466
 msgid "Total order"
 msgstr "Total commande"
 
-#: lang/master/tpl/contractadmin/edit.mtt:4045
+#: lang/master/tpl/contractadmin/edit.mtt:4049
 #: lang/master/tpl/contractadmin/products.mtt:3830
 msgid "Check all"
 msgstr "Tout cocher"
@@ -2904,17 +2929,25 @@ msgstr ""
 "Attention, il y a <b>::disabledProducts::</b> commande(s) qui contiennent "
 "<b>des produits désactivés</b>."
 
-#: lang/master/tpl/contractadmin/orders.mtt:3374
+#: lang/master/tpl/contractadmin/orders.mtt:3651
+msgid "Prod. ID"
+msgstr "Ref."
+
+#: lang/master/tpl/contractadmin/orders.mtt:3815
 msgid "Unit price including taxes"
 msgstr "Prix unitaire TTC"
 
-#: lang/master/tpl/contractadmin/orders.mtt:4614
+#: lang/master/tpl/contractadmin/orders.mtt:4345
+msgid "Canceled"
+msgstr "Abandonné"
+
+#: lang/master/tpl/contractadmin/orders.mtt:5531
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:3986
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:3240
 msgid "Not paid"
 msgstr "Non payé"
 
-#: lang/master/tpl/contractadmin/orders.mtt:4981
+#: lang/master/tpl/contractadmin/orders.mtt:5914
 msgid "<b>::totalAdh::</b> member(s) in this distribution."
 msgstr "<b>::totalAdh::</b> adhérents dans cette distribution."
 
@@ -3173,7 +3206,7 @@ msgstr "Me connecter à un autre groupe"
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: lang/master/tpl/design.mtt:1500 lang/master/tpl/group/view.mtt:2430
+#: lang/master/tpl/design.mtt:1500 lang/master/tpl/group/view.mtt:2388
 msgid "Log in"
 msgstr "Connexion"
 
@@ -3308,7 +3341,7 @@ msgid "full"
 msgstr "complet"
 
 #: lang/master/tpl/distribution/planning.mtt:2897
-#: lang/master/tpl/shop/default.mtt:4129
+#: lang/master/tpl/shop/default.mtt:4398
 msgid "Validate"
 msgstr "Valider"
 
@@ -3350,7 +3383,7 @@ msgstr "Description technique de l'erreur"
 msgid "Go to my account"
 msgstr "Accéder à mon compte"
 
-#: lang/master/tpl/group/view.mtt:980
+#: lang/master/tpl/group/view.mtt:972
 msgid ""
 "Contact the person in charge in order to subscribe to this group and get to "
 "know membership conditions."
@@ -3358,43 +3391,51 @@ msgstr ""
 "Contactez le responsable pour vous inscrire à ce groupe et connaître les "
 "modalités d'adhésion."
 
-#: lang/master/tpl/group/view.mtt:1290
+#: lang/master/tpl/group/view.mtt:1282
 msgid "Membership request"
 msgstr "Demande d'adhésion"
 
-#: lang/master/tpl/group/view.mtt:1659
+#: lang/master/tpl/group/view.mtt:1374
+msgid ""
+"This group accepts subscriptions on waiting list. A coordinator will contact "
+"you."
+msgstr ""
+"Ce groupe prend les inscriptions sur liste d'attente. Un coordinateur vous "
+"contactera."
+
+#: lang/master/tpl/group/view.mtt:1633
 msgid "Subscription on waiting list"
 msgstr "Inscription liste d'attente"
 
-#: lang/master/tpl/group/view.mtt:1910
+#: lang/master/tpl/group/view.mtt:1884
 msgid "Free subscription"
 msgstr "Inscription libre"
 
-#: lang/master/tpl/group/view.mtt:2010
+#: lang/master/tpl/group/view.mtt:1975
 msgid "This group is full and do not accept any more subscription."
 msgstr "Ce groupe est complet et n'accepte plus de nouvelles inscriptions."
 
-#: lang/master/tpl/group/view.mtt:2217
+#: lang/master/tpl/group/view.mtt:2175
 msgid "Already member? Log in:"
 msgstr "Déjà membre ? Connectez-vous :"
 
-#: lang/master/tpl/group/view.mtt:2751
+#: lang/master/tpl/group/view.mtt:2709
 msgid "Next deliveries"
 msgstr "Prochaines distributions"
 
-#: lang/master/tpl/group/view.mtt:3896
+#: lang/master/tpl/group/view.mtt:3854
 msgid "Suppliers and products"
 msgstr "Producteurs et produits"
 
-#: lang/master/tpl/group/view.mtt:3952
+#: lang/master/tpl/group/view.mtt:3910
 msgid "Non-complete extract of available products:"
 msgstr "Extrait non exhaustif des produits proposés :"
 
-#: lang/master/tpl/group/view.mtt:4739
+#: lang/master/tpl/group/view.mtt:4697
 msgid "http://www.cagette.net"
 msgstr "http://www.cagette.net"
 
-#: lang/master/tpl/group/view.mtt:4772
+#: lang/master/tpl/group/view.mtt:4730
 msgid "Cagette.net, the free software of food direct-selling"
 msgstr "Cagette.net, le logiciel libre du circuit court"
 
@@ -3444,7 +3485,7 @@ msgstr "Modifier ma commande"
 msgid "Add products"
 msgstr "Ajouter des produits"
 
-#: lang/master/tpl/home.mtt:2777 lang/master/tpl/shop/default.mtt:3080
+#: lang/master/tpl/home.mtt:2777 lang/master/tpl/shop/default.mtt:3349
 msgid "Order closed"
 msgstr "Commande close"
 
@@ -3564,7 +3605,7 @@ msgstr "Liquide à donner au retrait des produits"
 msgid "This transfer must be validated by a coordinator"
 msgstr "Ce virement doit être validé par un coordinateur"
 
-#: lang/master/tpl/macros.mtt:6610 lang/master/tpl/messages/message.mtt:1281
+#: lang/master/tpl/macros.mtt:6602 lang/master/tpl/messages/message.mtt:1281
 #: lang/master/tpl/place/view.mtt:610 lang/master/tpl/vendor/addimage.mtt:566
 msgid "Back"
 msgstr "Retour"
@@ -4162,19 +4203,19 @@ msgstr "La commande fermera le"
 msgid "Autres"
 msgstr "Autres"
 
-#: lang/master/tpl/shop/default.mtt:2980
+#: lang/master/tpl/shop/default.mtt:3249
 msgid "Out of stock"
 msgstr "Rupture de stock"
 
-#: lang/master/tpl/shop/default.mtt:3222
+#: lang/master/tpl/shop/default.mtt:3491
 msgid "Only ::pstock:: items in stock"
 msgstr "Seulement ::pstock:: en stock"
 
-#: lang/master/tpl/shop/default.mtt:3973
+#: lang/master/tpl/shop/default.mtt:4242
 msgid "My order"
 msgstr "Ma commande"
 
-#: lang/master/tpl/shop/default.mtt:4437
+#: lang/master/tpl/shop/default.mtt:4706
 msgid "All products"
 msgstr "Tous les produits"
 
@@ -4202,6 +4243,15 @@ msgstr "% de TVA inclus"
 #: lang/master/tpl/shop/productInfo.mtt:599
 msgid "included"
 msgstr "inclus"
+
+#. product has a variable weight
+#: lang/master/tpl/shop/productInfo.mtt:892
+msgid "about ::qt:: ::unit::"
+msgstr "environ ::qt:: ::unit::"
+
+#: lang/master/tpl/shop/productInfo.mtt:1618
+msgid "Variable price depending on weight"
+msgstr "Prix variable selon pesée "
 
 #: lang/master/tpl/transaction/cash.mtt:226
 #: lang/master/tpl/transaction/check.mtt:226
@@ -4481,11 +4531,11 @@ msgstr "Revenir à la page des tutoriels"
 msgid "OK"
 msgstr "OK"
 
-#: common/Common.hx:5655
+#: common/Common.hx:5916
 msgid "Guided tour for the coordinator"
 msgstr "Visite guidée du coordinateur"
 
-#: common/Common.hx:5749
+#: common/Common.hx:6010
 msgid ""
 "<p>In order to better discover Cagette.net, we propose to do a guided tour "
 "of the user interface of the software. <br/> You will then have a global "
@@ -4498,7 +4548,7 @@ msgstr ""
 "p><p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</"
 "p>"
 
-#: common/Common.hx:6161
+#: common/Common.hx:6422
 msgid ""
 "This part of the navigation bar is visible by all members.</br>It allows to "
 "access to the three main pages:\t<ul><li> The <b>home page</b> which "
@@ -4515,7 +4565,7 @@ msgstr ""
 "li><li>Sur la page <b>mon groupe</b> , vous pouvez voir tous les producteurs "
 "et les coordonnateurs du groupe</li></ul>"
 
-#: common/Common.hx:6684
+#: common/Common.hx:6945
 msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
@@ -4526,7 +4576,7 @@ msgstr ""
 "d'adhérents, les commandes, les produits, etc.<br/>\n"
 "\t\t\t\t\t<p>Cliquez maintenant sur la rubrique <b>Adhérents</b></p>"
 
-#: common/Common.hx:6995
+#: common/Common.hx:7256
 msgid ""
 "The purpose of this section is to administrate the list of your members.<br/"
 ">Every time that you register a new membrer, an account will be created for "
@@ -4540,7 +4590,7 @@ msgstr ""
 "ou consulter son planning de distribution.\n"
 "\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>"
 
-#: common/Common.hx:7430
+#: common/Common.hx:7691
 msgid ""
 "This is the page of a member. Here you can : <ul><li>see and change their "
 "contact details</li><li>manage the membership fee of your group</li><li>see "
@@ -4553,7 +4603,7 @@ msgstr ""
 "<li>voir un récapitulatif de ses commandes</li>\n"
 "</ul>"
 
-#: common/Common.hx:7736
+#: common/Common.hx:7997
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very "
 "important for coordinators."
@@ -4561,7 +4611,7 @@ msgstr ""
 "Voyons maintenant la section des <b>contrats</b> qui est très importante "
 "pour les coordonnateurs."
 
-#: common/Common.hx:7960
+#: common/Common.hx:8221
 msgid ""
 "Here you find the list of <b>contracts</b>.They inculde a start date, a end "
 "date, and represent your relationship with a farmer. <br/><p>Here you can "
@@ -4580,7 +4630,7 @@ msgstr ""
 "\t\t\t\t\t\t</ul>\n"
 "\t\t\t\t\t</p>"
 
-#: common/Common.hx:8371
+#: common/Common.hx:8632
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to "
 "key-in the complete address as a map will be displayed based on this address"
@@ -4590,14 +4640,14 @@ msgstr ""
 "\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au "
 "mieux les adhérents"
 
-#: common/Common.hx:8660
+#: common/Common.hx:8921
 msgid ""
 "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
 "Allons voir maintenant de plus près comment administrer un contrat. "
 "<b>Cliquez sur ce bouton</b>"
 
-#: common/Common.hx:8899
+#: common/Common.hx:9160
 msgid ""
 "Here is a summary of the contract.<br/>There are two types of contracts:"
 "<ul><li>Constant contracts: the member commits on buying the same products "
@@ -4612,11 +4662,11 @@ msgstr ""
 "ce qu'il veut à chaque distribution.</li>\n"
 "\t\t\t\t\t</ul>"
 
-#: common/Common.hx:9308
+#: common/Common.hx:9569
 msgid "Let's see now the page <b>Products</b>"
 msgstr "Allons voir maintenant la page de gestion des <b>Produits</b>"
 
-#: common/Common.hx:9499
+#: common/Common.hx:9760
 msgid ""
 "On this page, you can manage the list of products offered by this supplier."
 "<br/>Define at least the name and the price of products. It is also possible "
@@ -4627,11 +4677,11 @@ msgstr ""
 "\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il "
 "est également possible d'ajouter un descriptif et une photo."
 
-#: common/Common.hx:9815
+#: common/Common.hx:10076
 msgid "Let's see the <b>deliveries</b> page"
 msgstr "Allons voir maintenant la page de gestion des <b>distributions</b>"
 
-#: common/Common.hx:10009
+#: common/Common.hx:10270
 msgid ""
 "Here we can manage the list of deliveries for this supplier.<br/>In the "
 "software, a delivery has a date, a start time, and an end time. The location "
@@ -4644,11 +4694,11 @@ msgstr ""
 "\t\t\t\t\tIl faut aussi préciser le lieu de distribution à partir de la "
 "liste que nous avons vue précédement."
 
-#: common/Common.hx:10366
+#: common/Common.hx:10627
 msgid "Let's see now the <b>Orders</b> page"
 msgstr "Allons voir maintenant la page de gestion des <b>commandes</b>"
 
-#: common/Common.hx:10621
+#: common/Common.hx:10882
 msgid ""
 "Here we can manage the list of orders for this supplier.<br/>If you choose "
 "to \"open orders\" to members, they will be able to make their orders online "
@@ -4666,7 +4716,7 @@ msgstr ""
 "\t\t\t\t\tSinon, en tant que coordinateur, vous pouvez saisir les commandes "
 "pour les adhérents depuis cette page."
 
-#: common/Common.hx:11071
+#: common/Common.hx:11332
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
@@ -4674,7 +4724,7 @@ msgstr ""
 "<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</"
 "p><p>Explorons maintenant la messagerie.</p>"
 
-#: common/Common.hx:11304
+#: common/Common.hx:11565
 msgid ""
 "<p>The messaging section allows you to send e-mails to different lists of "
 "members. It is not necessary anymore to maintain a lot of lists of e-mails "
@@ -4691,11 +4741,11 @@ msgstr ""
 "qu'expéditeur, vous recevrez donc les réponses sur votre boite email "
 "habituelle.</p>"
 
-#: common/Common.hx:11764
+#: common/Common.hx:12025
 msgid "Click here now on this page"
 msgstr "Cliquez maintenant sur cette rubrique"
 
-#: common/Common.hx:11925
+#: common/Common.hx:12186
 msgid ""
 "<p>In this last page, you can configure everything that is related to your "
 "group.</p><p>The page <b>Access rights</b> is important as it is where you "
@@ -4711,7 +4761,7 @@ msgstr ""
 "messagerie, etc.\n"
 "\t\t\t\t\t</p>"
 
-#: common/Common.hx:12314
+#: common/Common.hx:12575
 msgid ""
 "<p>This is the last step of this tutorial. I hope that it gave you a good "
 "overview of this software.<br/>To go further, do not hesitate to look at the "
@@ -4724,6 +4774,16 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid ""
+#~ "Warning, this e-mail or this name already exist for another account: "
+#~ msgstr "Attention, cet email ou ce nom existe déjà dans un autre compte : "
+
+#~ msgid ""
+#~ "These accounts cannot be merged because the second account has orders"
+#~ msgstr ""
+#~ "Ces comptes ne peuvent pas être fusionnés car le second compte a des "
+#~ "commandes "
 
 #~ msgid "Paid too much : ::amount::"
 #~ msgstr "Trop payé de ::amount::"

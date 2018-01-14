@@ -29,9 +29,21 @@
 		
 		<div class="col-md-3">
 			::if p.unitType!=null && p.qt!=null::
-				<span class="price">::p.qt::&nbsp;::unit(p.unitType):: </span>
+			
+				<span class="price">
+					::set qt = formatNum(p.qt)::
+					::set u = unit(p.unitType)::
+					
+					::if(p.variablePrice):: 
+						::__("about ::qt:: ::unit::||product has a variable weight",{qt:qt,unit:u})::
+					::else::
+						::qt:: ::u::
+					::end::
+				</span>
+					
 				
 				::if (product!=null)::
+					
 					::set c = product.getCostPerUnit()::
 					<div class="vat" ::cond c!=null:: >
 						::formatNum(c.cost)::::currency():: / 
@@ -40,22 +52,27 @@
 						::end::
 						::unit(c.unit)::
 					</div>
+			
+				::else::
+				
 				::end::
 			::end::
 		</div>
 		
-
-		
 		<div class="col-md-7" style="margin-top:24px;">
 			
 			<p ::cond p.organic:: class="vat">
-				<img src="/img/AB.png" /> ::_("Organic agriculture")::
-				
+				<img src="/img/AB.png" /> ::_("Organic agriculture")::				
+			</p>
+			
+			<p ::cond p.variablePrice:: class="vat">
+				<img src="/img/weight.png"/>  ::_("Variable price depending on weight")::
 			</p>
 			
 			<p ::cond p.desc!=null::>
 				::raw nl2br(p.desc)::
 			</p>
+			
 		</div>
 		
 		
