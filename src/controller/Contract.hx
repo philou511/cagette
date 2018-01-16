@@ -30,7 +30,7 @@ class Contract extends Controller
 	function doDefault() {
 		
 		var ua = db.UserAmap.get(app.user, app.user.amap);
-		if (ua == null) throw Error("/", t._("You're not member of this group"));
+		if (ua == null) throw Error("/", t._("You're not a member of this group"));
 		
 		var constOrders = null;
 		var varOrders = new Map<String,Array<db.UserContract>>();
@@ -156,7 +156,7 @@ class Contract extends Controller
 			if (c.hasStockManagement()) {
 				for (p in c.getProducts()) {
 					if (p.stock == null) {
-						app.session.addMessage(t._("Warning, the management of stock. Please fill the field \"stock\" for all your products"), true);
+						app.session.addMessage(t._("Warning about management of stock. Please fill the field \"stock\" for all your products"), true);
 						break;
 					}
 				}
@@ -165,7 +165,7 @@ class Contract extends Controller
 			//no stock mgmt for constant orders
 			if (c.hasStockManagement() && c.type==db.Contract.TYPE_CONSTORDERS) {
 				c.flags.unset(ContractFlags.StockManagement);
-				app.session.addMessage(t._("The management of stock is not available for CSA contracts"), true);
+				app.session.addMessage(t._("Managing stock is not available for CSA contracts"), true);
 			}
 			
 			
@@ -244,7 +244,7 @@ class Contract extends Controller
 	
 	function doDelete(c:db.Contract/*,args:{chk:String}*/) {
 		
-		if (!app.user.isAmapManager()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
+		if (!app.user.isAmapManager()) throw Error("/contractAdmin", t._("You don't have authorization to remove a contract"));
 		
 		if (checkToken()) {
 			c.lock();
@@ -253,7 +253,7 @@ class Contract extends Controller
 			var products = c.getProducts();
 			var orders = db.UserContract.manager.count($productId in Lambda.map(products, function(p) return p.id));
 			if (orders > 0) {
-				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to this contract."));
+				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to it."));
 			}
 			
 			//remove admin rights and delete contract	
@@ -288,7 +288,7 @@ class Contract extends Controller
 		//checks
 		if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened to orders"));
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened for orders"));
 
 		
 		var distributions = [];
@@ -373,7 +373,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw t._("Not possible to find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
+				if (uo == null) throw t._("Could not find the product ::produ:: and delivery ::deliv::", {produ:pid, deliv:did});
 					
 				var q = 0.0;
 				
@@ -412,7 +412,7 @@ class Contract extends Controller
 		//checks
 		if (!app.user.amap.hasPayments()) throw Redirect("/contract/order/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened to orders"));
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened for orders"));
 		
 		var distributions = [];
 		/* If its a varying contract, we display a column by distribution*/
@@ -485,7 +485,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw t._("Not possible to find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
+				if (uo == null) throw t._("Could not find the product ::produ:: and delivery ::deliv::", {produ:pid, deliv:did});
 					
 				//quantity
 				var q = 0.0;				
@@ -509,7 +509,7 @@ class Contract extends Controller
 			if (c.type == db.Contract.TYPE_CONSTORDERS) {
 				throw Ok("/contract/order/"+c.id, t._("Your CSA order has been saved"));
 			}else{
-				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a payment mean."));
+				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a means of payment."));
 			}
 			
 			
@@ -535,8 +535,8 @@ class Contract extends Controller
 		// cannot edit order if date is in the past
 		if (Date.now().getTime() > date.getTime()) {
 			
-			var msg = t._("This delivery already took place, you cannot modify the order any more.");
-			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page <a href='/contractAdmin'>Management of contracts</a>");
+			var msg = t._("This delivery has already taken place, you can no longer modify the order.");
+			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page: <a href='/contractAdmin'>Management of contracts</a>");
 			
 			throw Error("/contract", msg);
 		}
