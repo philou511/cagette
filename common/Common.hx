@@ -126,6 +126,7 @@ typedef UserOrder = {
 	productHasFloatQt:Bool,
 	
 	quantity:Float,
+	smartQt:String,
 	subTotal:Float,
 	
 	fees:Float,

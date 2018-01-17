@@ -45,7 +45,9 @@ class Product extends Object
 		hasFloatQt = false;
 		active = true;
 		variablePrice = false;
-		vat = 0;
+		vat = 5.5;
+		unitType = UnitType.Piece;
+		qt = 1;
 		
 	}
 	

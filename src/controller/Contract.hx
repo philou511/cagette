@@ -87,7 +87,7 @@ class Contract extends Controller
 			}
 		}
 		
-		//struct finale
+		//final structure
 		var varOrders2 = new Array<{date:Date,orders:Array<UserOrder>}>();
 		for ( k in varOrders.keys()) {
 
@@ -96,11 +96,9 @@ class Contract extends Controller
 			var orders = db.UserContract.prepare( Lambda.list(varOrders[k]) );
 			
 			varOrders2.push({date:d,orders:orders});
-			
-
 		}
 		
-		//trier la map par ordre chrono desc
+		//sort by date desc
 		varOrders2.sort(function(b, a) {
 			return Math.round(a.date.getTime()/1000)-Math.round(b.date.getTime()/1000);
 		});
@@ -147,9 +145,7 @@ class Contract extends Controller
 		}
 		
 		checkToken();
-		
 		view.userAmap = ua;
-		
 	}
 
 	/**

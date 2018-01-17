@@ -32,7 +32,7 @@
 			
 				<span class="price">
 					::set qt = formatNum(p.qt)::
-					::set u = unit(p.unitType)::
+					::set u = unit(p.unitType,qt>1)::
 					
 					::if(p.variablePrice):: 
 						::__("about ::qt:: ::unit::||product has a variable weight",{qt:qt,unit:u})::

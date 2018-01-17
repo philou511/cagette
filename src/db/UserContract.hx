@@ -87,7 +87,7 @@ class UserContract extends Object
 	public static function prepare(orders:Iterable<db.UserContract>):Array<UserOrder> {
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
-		
+		var view = App.current.view;
 		for (o in orders) {
 		
 			var x : UserOrder = cast { };
@@ -105,7 +105,6 @@ class UserContract extends Object
 			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
-			x.productName = o.product.name;
 			x.productQt = o.product.qt;
 			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
@@ -113,6 +112,16 @@ class UserContract extends Object
 			x.productHasFloatQt = o.product.hasFloatQt;
 			
 			x.quantity = o.quantity;
+			if(x.productHasFloatQt){
+				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
+			}else{
+				x.smartQt = Std.string(x.quantity);
+			}
+			if (x.productHasFloatQt || x.productQt==null || x.productUnit==null){
+				x.productName = o.product.name;	
+			}else{
+				x.productName = o.product.name + " " + view.formatNum(x.productQt) + view.unit(x.productUnit);	
+			}
 			x.subTotal = o.quantity * o.productPrice;
 
 			var c = o.product.contract;

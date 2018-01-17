@@ -5,7 +5,7 @@
 	::if constOrders.length>0::
 	<div class="article">
 		
-		<!-- COMMANDES AMAP -->
+		<!-- CONSTANT ORDERS -->
 		
 		<h3>::_("CSA Contracts")::</h3>
 		
@@ -26,7 +26,7 @@
 		::foreach m c.orders::
 			<tr>
 				<td>
-					::formatNum(m.quantity):
+					::raw m.smartQt::
 				</td>
 				<td>
 					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
@@ -79,8 +79,6 @@
 			
 				::set d = c.contract.getDistribs(false,null).length::
 				( soit ::formatNum(d*total)::&nbsp;::currency():: pour ::d:: livraisons )
-			
-				
 			</td>
 		</tr>
 	
@@ -90,13 +88,10 @@
 	</div>	
 	::end::
 
-
-	<!-- COMMANDES VARIABLES-->
+	<!-- VARYING ORDERS -->
 	::if count(varOrders)>0::
 	<div class="article">
-		
-		<h3>::_("Varying orders")::</h3>
-		
+	
 		::foreach d varOrders::
 			<h4>::_("Order delivered on"):: ::hDate(d.date)::</h4>
 			<table class="table table-bordered table-condensed" >
@@ -111,8 +106,8 @@
 				::set total = 0::
 				::foreach o d.orders::
 					<tr>
-						<td>
-							::formatNum(o.quantity)::
+						<td>							
+							::raw o.smartQt::
 						</td>
 						<td>
 							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">

@@ -22,52 +22,46 @@
 				<th>::_("Total")::</th>
 			</tr>
 
-				::foreach m orders::
+			::foreach m orders::
 				
 			<tr>
+				<td>
+					::m.quantity::
+				</td>
+				<td>
+					::m.pname::
+				</td>
+				<td class="ref">
+					$$nullSafe(::m.ref::)
+				</td>
+				<td>
+					::formatNum(m.priceTTC)::&nbsp;::currency()::
+				</td>
+				<td>
+					::formatNum(m.total)::&nbsp;::currency()::
+					::set total = total + m.total::
+				</td>
 				
-					<td>
-						::m.quantity::
-					</td>
-					<td>
-						::m.pname::
-					</td>
-					<td>
-						$$nullSafe(::m.ref::)
-					</td>
-					<td>
-						::formatNum(m.priceTTC)::&nbsp;::currency()::
-					</td>
-					<td>
-						::formatNum(m.total)::&nbsp;::currency()::
-						::set total = total + m.total::
-					</td>
-					
-					
-				</tr>
-				::end::
 				
-				<tr style="background:#DDD;">
-					
-					<th colspan="4">Total</th>
-					<th>::formatNum(total)::&nbsp;::currency()::</th>
-	
-				</tr>
+			</tr>
+			::end::
 				
+			<tr style="background:#DDD;">
+				<th colspan="4">Total</th>
+				<th>::formatNum(total)::&nbsp;::currency()::</th>
+			</tr>
 
-				</table>
-				
-				::if distribution!=null::
-				$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1&d=::distribution.id::)
-				<a href="/contractAdmin/ordersByProductList/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
-				::else::
-				$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1)
-				<a href="/contractAdmin/ordersByProductList/::c.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
-				::end::
-				
-				
+			</table>
+			
+			::if distribution!=null::
+			$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1&d=::distribution.id::)
+			<a href="/contractAdmin/ordersByProductList/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
+			::else::
+			$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1)
+			<a href="/contractAdmin/ordersByProductList/::c.id::" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
+			::end::
 				
 		
 ::end::

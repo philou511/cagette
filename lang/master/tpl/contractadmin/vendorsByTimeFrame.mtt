@@ -31,7 +31,7 @@
 			::foreach m o.orders::
 			<tr>				
 				<td class="col-md-1">
-					::m.quantity::
+					::formatNum(m.quantity)::
 				</td>
 				<td class="col-md-5">
 					::m.pname::

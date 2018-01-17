@@ -12,15 +12,12 @@
 				</h3>	
 				<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
 				<br/>
-				
 				<!--::if(confirmed)::
 				::_("Validated")::
 				::else::
 				::_("Not validated")::
 				::end::-->
 			</div>	
-			
-			
 		
 		<div class="text-center">
 			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("CSV Export"):: </a>
@@ -89,9 +86,13 @@
 						</a>
 					</td>
 					<td>
-						::m.quantity:
+						::if(m.quantity==0 && m.canceled)::
+							<span style="color:#AAA">::_("Canceled")::</span>
+						::else::
+							::raw m.smartQt::
+						::end::
 					</td>
-					<td>
+					<td class="ref">
 						$$nullSafe(::m.productRef::)
 					</td>
 					<td>
