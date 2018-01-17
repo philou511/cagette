@@ -105,7 +105,7 @@
 				</tr>
 				::foreach p o.constOrders::
 					<tr>
-						<td>::p.quantity::</td>
+						<td>::raw p.smartQt::</td>
 						<td>::p.productName::
 						
 						::if p.userId2 != null::
@@ -119,7 +119,6 @@
 						
 						</td>
 						<td>::p.subTotal:: ::currency()::</td>
-
 						<td>
 							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
 						</td>
@@ -130,7 +129,7 @@
 			
 			::if count(o.varOrders)>0::
 				::foreach d o.varOrders.keys()::
-					<h4>Commande du ::d::</h4>
+					<h4>::__("Order for ::date::",{date:d})::</h4>
 					
 					<table class="table table-bordered table-condensed" >
 						<tr>
@@ -146,22 +145,21 @@
 						::set total = 0::
 						::foreach p o.varOrders.get(d)::
 							<tr>
-								
-								<td>::p.quantity::</td>
+								<td>::raw p.smartQt::</td>
 								<td>::p.productName::</td>
-								<td>::p.productPrice::  ::currency()::</td>
-								<td>::p.subTotal:: ::currency()::</td>
+								<td>::p.productPrice::&nbsp;::currency()::</td>
+								<td>::p.subTotal::&nbsp;::currency()::</td>
 								<td>
 									<!-- frais -->
 									::if p.percentageValue!=null::
 									<a href="#" data-toggle="tooltip" data-placement="top" title="::p.percentageName:: : ::p.percentageValue:: %">
-										::formatNum(p.fees):: ::currency()::
+										::formatNum(p.fees)::&nbsp;::currency()::
 									</a>
 									::end::
 								</td>
 								<td>
 									<!-- total -->
-									::formatNum(p.total):: ::currency()::
+									::formatNum(p.total)::&nbsp;::currency()::
 									::set total = total + p.total::
 								
 								</td>
@@ -174,7 +172,7 @@
 						<tr>
 							<td colspan="4"></td>
 							<td>::_("TOTAL")::</td>
-							<td><b>::formatNum(total):: ::currency()::</b></td>
+							<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
 						</tr>
 					</table>
 				::end::

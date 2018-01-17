@@ -147,14 +147,16 @@ class View extends sugoi.BaseView {
 		return d.getDate() == n.getDate() && d.getMonth() == n.getMonth() && d.getFullYear() == n.getFullYear();
 	}
 	
-	public function unit(u:UnitType){
+	/**
+	 * Prints a measuring unit 
+	 */
+	public function unit(u:UnitType,?plural=false){
 		t = sugoi.i18n.Locale.texts;
-		if(u==null) return t._("piece||unit of a product)");
 		return switch(u){
-			case Kilogram: 	t._("Kg.||kilogramms");
-			case Gram: 		t._("g.||gramms");
-			case Piece: 	t._("piece||unit of a product)");
-			case Litre: 	t._("L.||liter");
+			case Kilogram: 		t._("Kg.||kilogramms");
+			case Gram: 			t._("g.||gramms");
+			case null,Piece: 	if(plural) t._("pieces||unit of a product)") else t._("piece||unit of a product)");
+			case Litre: 		t._("L.||liter");
 			case Centilitre: 	t._("cl.||centiliter");
 		}
 	}
@@ -278,13 +280,20 @@ class View extends sugoi.BaseView {
 		return #if neko "Neko" #else "PHP" #end ;
 	}
 	
-	/** smart quantity filter : display easier-to-read quantity when it's floats
-	 * 
+	/** 
+	 * Smart quantity (tm) : displays human readable quantity
 	 * 0.33 x Lemon 12kg => 2kg Lemon
 	 */ 
 	public function smartQt(orderQt:Float, productQt:Float, unit:UnitType):String{
-		if (orderQt == null || productQt == null) return "";
-		return this.formatNum(orderQt * productQt) + "&nbsp;" + this.unit(unit);
+		if (orderQt == null) orderQt = 1;
+		if (productQt == null) productQt = 1;
+		if (unit == null) unit = UnitType.Piece;
+		if (unit == UnitType.Piece && productQt == 1 ){
+			return this.formatNum(orderQt);
+		}else{
+			return this.formatNum(orderQt * productQt) + "&nbsp;" + this.unit(unit,orderQt*productQt>1);	
+		}
+		
 	}
 	
 }

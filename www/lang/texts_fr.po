@@ -1138,8 +1138,8 @@ msgid ""
 "member/delete/::userid::?token=::argstoken::&confirm=1'>Delete anyway</a>"
 msgstr ""
 "Attention, ce compte a des commandes en cours. <a class='btn btn-default btn-"
-"xs' href='/member/delete/\"+user.id+\"?token=\"+args.token+"
-"\"&confirm=1'>Effacer quand-même</a>"
+"xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Effacer "
+"quand-même</a>"
 
 #: src/controller/Member.hx:14142
 msgid " has been deleted from your group"
@@ -2951,7 +2951,7 @@ msgstr "Prix unitaire TTC"
 
 #: lang/master/tpl/contractadmin/orders.mtt:4345
 msgid "Canceled"
-msgstr "Abandonné"
+msgstr "Annulé"
 
 #: lang/master/tpl/contractadmin/orders.mtt:5531
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:3986

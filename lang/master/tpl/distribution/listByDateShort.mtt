@@ -22,7 +22,6 @@
 					<th>::_("Contact details")::</th>
 					<th>::_("Qty")::</th>
 					<th>::_("Product")::</th>
-					
 					<th>::_("Signature")::</th>
 					
 				</tr>
@@ -72,7 +71,11 @@
 					::set name =  m.userName ::
 					::set name2 =  m.userName2 ::
 					<td>
-						::m.quantity::
+						::if(m.quantity==0 && m.canceled)::
+							::_("Canceled")::
+						::else::
+							::raw m.smartQt::
+						::end::
 						::set productNum = productNum+m.quantity::
 					</td>
 					<td>

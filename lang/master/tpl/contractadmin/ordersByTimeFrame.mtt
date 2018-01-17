@@ -7,14 +7,6 @@
 				<h3>
 				::_("Orders from the"):: ::hDate(from):: ::_("to"):: ::hDate(to)::
 				</h3>	
-				<!--<h4><span class="glyphicon glyphicon-map-marker"></span>::place::</h4>
-				<br/>
-				
-				::if(confirmed)::
-				::_("Validated")::
-				::else::
-				::_("Not validated")::
-				::end::-->
 			</div>	
 			
 		::set uri = from.toString().substr(0,10)+"/"+to.toString().substr(0,10)::	
@@ -23,7 +15,6 @@
 			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("CSV Export"):: </a>-->
 			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> ::_("Totals per supplier")::</a>
 		</div>
-
 		
 		<hr/>
 		
@@ -71,7 +62,11 @@
 						</a>
 					</td>
 					<td>
-						::m.quantity:
+						::if(m.quantity==0 && m.canceled)::
+							::_("Canceled")::
+						::else::
+							::raw m.smartQt::
+						::end::
 					</td>
 					<td>
 						$$nullSafe(::m.productRef::)

@@ -84,16 +84,14 @@
 				<input type="checkbox" name="checkbox" value="::p.id::" />
 			</td>
 			<td>
-				
 				<img src="::p.getImage()::" style="width:64px;height:64px;" />
-				
 			</td>
-			<td>$$nullSafe(::p.ref::)</td>
+			<td class="ref">$$nullSafe(::p.ref::)</td>
 			<td>
 				<b>::p.name::</b>
 				
 				::if p._unitType!=null && p.qt!=null::
-				::p.qt::&nbsp;::unit(p._unitType)::
+				::p.qt::&nbsp;::unit(p._unitType,false)::
 				::end::
 				
 				::if !c._amap.hasTaxonomy()::	

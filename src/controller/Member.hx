@@ -408,15 +408,15 @@ class Member extends Controller
 		
 		if (checkToken()) {
 			if (!app.user.canAccessMembership()) throw t._("You cannot do that.");
-			if (user.id == app.user.id) throw Error("/member/view/"+user.id, t._("You cannot delete yourself."));
-			if ( user.getOrders(app.user.amap).length > 0 && !args.confirm) {
-				throw Error("/member/view/"+user.id, t._("Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Delete anyway</a>", {userid:user.id, argstoken:args.token}));
+			if (user.id == app.user.id) throw Error("/member/view/" + user.id, t._("You cannot delete yourself."));
+			if ( Lambda.count(user.getOrders(app.user.amap),function(x) return x.quantity>0) > 0 && !args.confirm) {
+				throw Error("/member/view/"+user.id, t._("Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Remove anyway</a>", {userid:user.id, argstoken:args.token}));
 			}
 		
 			var ua = db.UserAmap.get(user, app.user.amap, true);
 			if (ua != null) {
 				ua.delete();
-				throw Ok("/member", user.getName() + t._(" has been deleted from your group"));
+				throw Ok("/member", t._("::user:: has been removed from your group",{user:user.getName()}));
 			}else {
 				throw Error("/member", t._("This person does not belong to \"::amapname::\"", {amapname:app.user.amap.name}));
 			}	

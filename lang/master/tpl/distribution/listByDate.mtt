@@ -70,7 +70,12 @@
 					::set name =  m.userName ::
 					::set name2 =  m.userName2 ::
 					<td>
-						::m.quantity::
+						::if(m.quantity==0 && m.canceled)::
+							::_("Canceled")::
+						::else::
+							::raw m.smartQt::
+						::end::
+						
 						::set productNum = productNum+m.quantity::
 					</td>
 					<td>
@@ -98,7 +103,7 @@
 					<tr>
 						<td></td>
 						<td></td>
-						<td class="total">::productNum::</td>
+						<td class="total">::formatNum(productNum)::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">::_("TOTAL")::</td>
 						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
