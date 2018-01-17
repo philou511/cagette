@@ -1,5 +1,6 @@
 ::use 'contractadmin/design.mtt'::
-
+	
+	
 		::if u==null::
 		<h3>::_("Key-in an order")::</h3>
 		::else::

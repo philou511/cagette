@@ -260,7 +260,7 @@ class User extends Object {
 	}
 	
 	/**
-	 * renvoie toutes les amaps aupres desquelles le user appartient
+	 * get groups this user belongs to
 	 */
 	public function getAmaps():List<db.Amap> {
 		return Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap);

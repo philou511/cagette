@@ -8,7 +8,6 @@ import Common;
  */
 class UserContract extends Object
 {
-
 	public var id : SId;
 	
 	@formPopulate("populate") @:relation(userId)
@@ -106,9 +105,12 @@ class UserContract extends Object
 			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
-			x.productName = o.product.getName();
+			x.productName = o.product.name;
+			x.productQt = o.product.qt;
+			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
+			x.productHasFloatQt = o.product.hasFloatQt;
 			
 			x.quantity = o.quantity;
 			x.subTotal = o.quantity * o.productPrice;
@@ -125,7 +127,11 @@ class UserContract extends Object
 			}else {
 				x.total = x.subTotal;
 			}
+			
+			//flags
 			x.paid = o.paid;
+			x.invertSharedOrder = o.flags.has(InvertSharedOrder);
+			x.canceled = o.flags.has(Canceled);
 			
 			x.contractId = c.id;
 			x.contractName = c.name;
@@ -348,8 +354,13 @@ class UserContract extends Object
 		}
 		
 		if (newquantity == 0) {
-			order.delete();
-			return null;
+			order.quantity = 0;			
+			order.paid = true;
+			order.flags.set(OrderFlags.Canceled);
+			order.update();
+			//order.delete();			
+			//return null; //need to get an order object with zero qt to manage payment operations properly			
+			return order;
 		}else {
 			order.quantity = newquantity;
 			order.update();	
@@ -387,7 +398,7 @@ class UserContract extends Object
 			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
 			
 		}
-			
+	
 		var sql = 'select 
 				SUM(quantity) as quantity,
 				p.id as pid,
@@ -399,7 +410,8 @@ class UserContract extends Object
 			from UserContract up, Product p 
 			where up.productId = p.id 
 			$where
-			group by p.id order by pname asc; ';
+			group by p.id
+			order by pname asc; ';
 			
 		orders = cast sys.db.Manager.cnx.request(sql).results();	
 		
@@ -482,7 +494,8 @@ class UserContract extends Object
 	 * @param	distribKey "$date|$placeId"
 	 */
 	public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Amap):Array<db.UserContract>{	
-		var contracts = db.Contract.getActiveContracts(group);
+		//var contracts = db.Contract.getActiveContracts(group);
+		var contracts = db.Contract.manager.search($amap == group, false); //should be able to edit a contract which is closed
 		for ( c in Lambda.array(contracts)){
 			if (c.type == db.Contract.TYPE_CONSTORDERS){
 				contracts.remove(c); //only varying orders
@@ -499,7 +512,6 @@ class UserContract extends Object
 		}
 		
 		return out;
-		
 	}
 	
 	/**

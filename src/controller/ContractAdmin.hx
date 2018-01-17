@@ -58,11 +58,11 @@ class ContractAdmin extends Controller
 		checkToken();
 		
 
-		//multidistribs to validate
+		//Multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > Date.now() && $type == db.Contract.TYPE_VARORDER,false).getIds();
-			var oneMonth = tools.DateTool.deltaDays(now, 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
-			var ds = db.Distribution.manager.search( !$validated && ($date > oneMonth) && ($date < now) && ($contractId in cids), {orderBy:date}, false);
+			//var oneMonth = tools.DateTool.deltaDays(now, 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+			var ds = db.Distribution.manager.search( !$validated /*&& ($date > oneMonth)*/ && ($date < now) && ($contractId in cids), {orderBy:date}, false);
 			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
 		}else{
 			view.distribs = [];
@@ -720,7 +720,7 @@ class ContractAdmin extends Controller
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
-		view.u = app.user;
+		view.group = contract.amap;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw t._("No delivery in this contract");
@@ -887,6 +887,19 @@ class ContractAdmin extends Controller
 		
 	}
 	
+	@tpl("contractadmin/edit2.mtt")
+	function doEdit2(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
+		view.nav.push("orders");
+		sendNav(c);
+		
+		if (!app.user.canManageContract(c)) throw Error("/", t._("You do not have the authorization to manage this contract"));
+		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
+		
+		view.c = view.contract = c;
+		view.u = user;
+		view.distribution = args.d;
+	}
+	
 	/**
 	 * Edit a user's orders
 	 */
@@ -972,7 +985,6 @@ class ContractAdmin extends Controller
 							if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
 							
 							invert = app.params.get("invert" + pid) == "1";
-							
 						}
 						
 						//quantity
@@ -1005,7 +1017,6 @@ class ContractAdmin extends Controller
 				}else {
 					throw Ok("/contractAdmin/orders/" + c.id, t._("The order has been updated"));						
 				}
-				
 			}
 			view.userOrders = userOrders;
 		}

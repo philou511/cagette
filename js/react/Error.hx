@@ -4,7 +4,7 @@ import react.ReactMacro.jsx;
 import Common;
 
 /**
- * Error Div
+ * A Error Div
  */
 class Error extends react.ReactComponentOfProps<{error:String}>
 {

@@ -126,7 +126,7 @@ class Distribution extends Object
 	 */
 	public function getHTTurnOver(){
 		
-		var pids = tools.ObjectListTool.getIds(contract.getProducts());
+		var pids = tools.ObjectListTool.getIds(contract.getProducts(false));
 		
 		var sql = "select SUM(uc.quantity *  (p.price/(1+p.vat/100)) ) from UserContract uc, Product p ";
 		sql += "where uc.productId IN (" + pids.join(",") +") ";
@@ -234,6 +234,16 @@ class Distribution extends Object
 	
 	public static function makeKey(date, place){
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
+	}
+	
+	
+	public function canDelete():Bool{
+		var qt = 0.0;
+		for ( o in getOrders()){
+			qt += o.quantity;
+		}
+		return qt == 0.0;
+		
 	}
 
 	

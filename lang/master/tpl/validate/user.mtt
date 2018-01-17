@@ -104,6 +104,7 @@
 				::if op!=null::
 					<tr>
 						$$operation(::op::)
+						<td></td>
 					</tr>
 					
 					::set tpaid = 0::
@@ -129,39 +130,45 @@
 					::set tpaid = numClean(tpaid)::
 					
 					<!-- total -->
-					::if(tpaid+amount != 0)::
-						::set class="danger"::
-					::else::
-						::set class="success"::
-					::end::
-					<tr class="::class::">
+					<tr style="background-color:#DDD;">
 						<td colspan="2"></td>
 						<th class="text-right">::_("Total paid")::</th>
 						<th>
 							::tpaid::&nbsp;::currency()::
 						</th>
 						<td colspan="2">
-							::if(tpaid+op.amount > 0):: 
 							
-								$$check(::false::)				
-								::_("Too much paid")::
-							
-							::elseif(tpaid+op.amount < 0)::
-							
-								$$check(::false::)						
-								::_("Missing"):: ::Math.abs(tpaid+op.amount):: ::currency()::
-								
-							::else::	
-							
-								$$check(::true::) 
-								
-							::end::
 						</td>
 					</tr>
 				::else::
-					<tr><td>::_("This order was made when payments were deactivated")::</td></tr>
+					<tr><td>::_("This order has been made when payments were disabled")::</td></tr>
 				::end::				
 			</table>
+			
+			<!-- credit / debit / ok message -->
+			::if(tpaid+amount != 0)::
+				::set class="danger"::
+			::else::
+				::set class="success"::
+			::end::
+			<div class="alert alert-::class:: text-center" style="width:50%;margin:12px auto">
+				::if(tpaid+amount > 0):: 
+
+					$$check(::false::)		
+					::set str = Math.abs(tpaid+amount)+"&nbsp;"+currency()::
+					::raw __("Paid too much, credit of ::amount::",{amount:str})::
+					
+				::elseif(tpaid+amount < 0)::
+				
+					$$check(::false::)						
+					::_("Missing"):: ::Math.abs(tpaid+amount):: ::currency()::
+					
+				::else::	
+				
+					$$check(::true::) ::_("Everything is allright !"):: 
+					
+				::end::
+			</div>
 			
 			<p class="text-center" ::cond op!=null::>				
 				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund/)				
@@ -260,8 +267,9 @@
 			
 			<p class="text-center">
 				<a href="/distribution/validate/::date::/::place.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-chevron-left"></span> ::_("Back to the delivery")::
+					<span class="glyphicon glyphicon-chevron-left"></span> ::_("Back to the delivery validation")::
 				</a>
+				<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Payment history of this member")::</a>
 			</p>
 		
 		</div>

@@ -361,9 +361,9 @@ class Member extends Controller
 					app.session.addMessage(t._("This e-mail was used by another user account. As this user account was not used, it has been merged into the current user account."));
 					
 				} else {
-					var str = t._("Warning, this e-mail or this name already exist for another account: ");
+					var str = t._("Warning, this e-mail or this name already exists for another account : ");
 					str += Lambda.map(sim, function(u) return "<a href='/member/view/" + u.id + "'>" + u.getCoupleName() + "</a>").join(",");
-					str += t._("These accounts cannot be merged because the second account has orders");
+					str += " "+t._("These accounts can't be merged because the second account has orders");
 					throw Error("/member/edit/" + member.id, str);	
 				}
 			}	
@@ -667,18 +667,18 @@ class Member extends Controller
 				
 			}else if (userSims.length > 0) {
 				//des users existent avec ce nom , 
-				if (userSims.length == 1) {
+				//if (userSims.length == 1) {
 					// si yen a qu'un on l'inserte
 					var ua = new db.UserAmap();
 					ua.user = userSims.first();
 					ua.amap = app.user.amap;
 					ua.insert();	
 					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
-				}else {
+				/*}else {
 					//demander validation avant d'inserer le userAmap
 					//TODO
 					throw Error('/member', t._("Not possible to add this person because there are already some people in the database having the same firstname and name. Please contact the administrator.")+userSims);
-				}
+				}*/
 				return;
 			}else {
 				

@@ -1,4 +1,5 @@
-
+<!-- this tpl is also used for offer previews -->
+	
 <div class="article">
 
 	<div class="row">
@@ -27,33 +28,38 @@
 		</div>
 		
 		<div class="col-md-3">
-			::if product._unitType!=null && product.qt!=null::
-				<span class="price">::product.qt::&nbsp;::unit(product._unitType):: </span>
-				
-				::set c = product.getCostPerUnit()::
-				
-				<div class="vat" ::cond c!=null::>
-					::formatNum(c.cost)::::currency():: / 
-					::if c.qt!=1::
-						::c.qt::
+			::if p.unitType!=null && p.qt!=null::
+			
+				<span class="price">
+					::set qt = formatNum(p.qt)::
+					::set u = unit(p.unitType)::
+					
+					::if(p.variablePrice):: 
+						::__("about ::qt:: ::unit::||product has a variable weight",{qt:qt,unit:u})::
+					::else::
+						::qt:: ::u::
 					::end::
-					::unit(c.unit)::
-				</div>
+				</span>
+					
+				<div class="vat">::raw pricePerUnit(p.price,p.qt,p.unitType)::</div>
+
 			::end::
 		</div>
-		
-
 		
 		<div class="col-md-7" style="margin-top:24px;">
 			
 			<p ::cond p.organic:: class="vat">
-				<img src="/img/AB.png" /> ::_("Organic agriculture")::
-				
+				<img src="/img/AB.png" /> ::_("Organic agriculture")::				
+			</p>
+			
+			<p ::cond p.variablePrice:: class="vat">
+				<img src="/img/weight.png"/>  ::_("Variable price depending on weight")::
 			</p>
 			
 			<p ::cond p.desc!=null::>
 				::raw nl2br(p.desc)::
 			</p>
+			
 		</div>
 		
 		
@@ -90,17 +96,16 @@
 			
 		</div>
 	
+		::if(product!=null)::
 		::set cats = product.getCategories()::
 		<div class="col-md-4" ::cond cats.length != 0:: >	
-
-				
 			<h3>::_("Categories")::</h3>
 			<div>
 				::foreach c cats::
 					<span class="tag" style="background-color: ::c.getColor()::;">::c.name::</span><br />
 				::end::
 			</div>
-		
 		</div>
+		::end::
 	</div>
 </div>

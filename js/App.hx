@@ -102,6 +102,20 @@ class App {
 	public function initReportHeader(){
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
+	
+	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String){
+		var onSubmit = function(){
+			if (distributionId == null){
+				js.Browser.location.href = "/contractAdmin/orders/" + contractId;	
+			}else{
+				js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
+			}
+			
+
+		};
+		
+		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit/>'),  js.Browser.document.querySelector('#orderBox'));
+	}
 
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;
@@ -137,18 +151,18 @@ class App {
 	/**
 	 * Displays an ajax login box
 	 */
-	public function loginBox(redirectUrl:String) {
+	public function loginBox(redirectUrl:String,?message:String) {
 		var m = App.j("#myModal");
-		m.find(".modal-title").html("Connexion");
+		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" />'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 
 	public function registerBox(redirectUrl:String,?phoneRequired=false) {
 		var m = App.j("#myModal");
-		m.find(".modal-title").html("Inscription");
+		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
 		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));

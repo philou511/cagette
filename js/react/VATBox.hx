@@ -105,14 +105,11 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:Str
 			rate = 1 + (value / 100);
 			if (state.lastEdited == "htInput"){
 				//compute ttc from ht
-				
 				this.setState(cast { vat:value, ht:state.ht, htInput:state.ht, ttc:round(state.ht * rate) , ttcInput:round(state.ht * rate)} );	
 			}else{
 				//compute ht from ttc
 				this.setState(cast { vat:value, ht: round( state.ttc/rate ), htInput: round( state.ttc/rate ), ttc:state.ttc , ttcInput:state.ttc} );	
 			}
-
-			
 		default:
 			
 		}
@@ -121,9 +118,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:Str
 	}
 	
 	inline function round(f:Float):Float{
-		
 		return Math.round(f * 100) / 100;
-		
 	}
 
 	

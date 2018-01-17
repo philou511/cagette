@@ -31,8 +31,8 @@ class Transaction extends controller.Controller
 		for ( t in db.Operation.getPaymentTypes(app.user.amap) ) data.push({label:t.name,value:t.type});
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
 		
-		//unpaid orders
-		var unpaid = db.Operation.manager.search($user == user && $group == app.user.amap && $type != Payment && $pending == true);
+		//related operation
+		var unpaid = db.Operation.manager.search($user == user && $group == app.user.amap && $type != Payment ,{limit:20,orderBy:-date});
 		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
 		f.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
 		
@@ -52,7 +52,6 @@ class Transaction extends controller.Controller
 					t2.lock();
 					t2.pending = false;
 					t2.update();
-					
 				}
 			}
 			
@@ -72,7 +71,11 @@ class Transaction extends controller.Controller
 	@tpl('form.mtt')
 	public function doEdit(op:db.Operation){
 		
-		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
+		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) {
+			throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
+		}
+		
+		if (op.getPaymentType() == "lemonway-ec") throw Error("/member/payments/"+op.user.id, t._("Editing a credit card payment is not allowed"));
 		
 		op.lock();
 		
@@ -81,10 +84,28 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), op.amount, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), op.date, true));
 		//f.addElement(new sugoi.form.elements.DatePicker("pending", t._("Confirmed"), !op.pending, true));
+		//related operation
+		var unpaid = db.Operation.manager.search( $user == op.user && $group == op.group && $type != Payment ,{limit:20,orderBy:-date});
+		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
+		if (op.relation != null) data.push({label:op.relation.name,value:op.relation.id});
+		f.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, op.relation!=null ? op.relation.id : null, false));
+		
 		
 		if (f.isValid()){
 			f.toSpod(op);
 			op.pending = false;
+			
+			if (f.getValueOf("unpaid") != null){
+				var t2 = db.Operation.manager.get(f.getValueOf("unpaid"));
+				op.relation = t2;
+				if (t2.amount + op.amount == 0) {
+					op.pending = false;
+					t2.lock();
+					t2.pending = false;
+					t2.update();
+				}
+			}
+			
 			op.update();
 			throw Ok("/member/payments/" + op.user.id, t._("Operation updated"));
 		}
@@ -94,6 +115,7 @@ class Transaction extends controller.Controller
 	
 	public function doDelete(op:db.Operation){	
 		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
+		if (op.getPaymentType() == "lemonway-ec") throw Error("/member/payments/" + op.user.id, t._("Deleting a credit card payment is not allowed"));
 		
 		if (checkToken()){
 			op.delete();

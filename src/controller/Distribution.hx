@@ -131,7 +131,7 @@ class Distribution extends Controller
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
-		if (db.UserContract.manager.search($distributionId == d.id, false).length > 0) throw Error("/contractAdmin/distributions/" + d.contract.id, t._("Deletion non possible: some orders are saved for this delivery."));
+		if ( !d.canDelete() ) throw Error("/contractAdmin/distributions/" + d.contract.id, t._("Deletion non possible: some orders are saved for this delivery."));
 		
 		d.lock();
 		var cid = d.contract.id;

@@ -41,6 +41,7 @@ typedef ProductInfo = {
 	?qt:Float,
 	?unitType:UnitType,
 	organic:Bool,
+	variablePrice:Bool,
 	#if js
 	element:js.JQuery,
 	#end
@@ -70,8 +71,7 @@ enum ProductType {
 	CTJuice;
 	CTApple;
 	CTBread;
-	CTYahourt;
-	
+	CTYahourt;	
 }
 
 typedef CategoryInfo = {
@@ -118,17 +118,25 @@ typedef UserOrder = {
 	
 	productId:Int,
 	productRef:String,
-	productName:String,
+	productName:String,	
 	productPrice:Float,
 	productImage:String,
+	productQt:Float,
+	productUnit:UnitType,
+	productHasFloatQt:Bool,
 	
 	quantity:Float,
 	subTotal:Float,
+	
 	fees:Float,
 	percentageName:String,
 	percentageValue:Float,
 	total:Float,
+	
+	//flags
 	paid:Bool,
+	invertSharedOrder:Bool,
+	canceled:Bool,	
 	canModify:Bool,
 	
 	contractId:Int,
@@ -146,15 +154,15 @@ typedef PlaceInfos = {
 }
 
 enum OrderFlags {
-	InvertSharedOrder;
-	//Paid;
+	InvertSharedOrder;	//invert order when there is a shared/alternated order
+	Canceled;			//flag for cancelled orders, qt should always be 0
 }
 
 /**
 	Event enum used for plugins.
 	
 	As in most CMS event systems, 
-	the events (or "triggers") can be catched by plugins 
+	the events (or "triggers") can be caught by plugins 
 	to perform an action or modifiy data carried by the event.
 	
 **/

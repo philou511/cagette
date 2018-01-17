@@ -96,12 +96,12 @@
 						<td>
 							::m.productName::
 							
-							::set p = getProduct(m.productId)::
-							::set sq = smartQt(m.quantity,p)::
+							<!--::set p = getProduct(m.productId)::
+							::set sq = smartQt(m.quantity,p,p._unitType)::
 							<em ::cond sq!=null::>
-							<!--  ( 0.25 x 12 Kg = 3 Kg ) -->
-							( ::formatNum(m.quantity):: x ::p.qt:: ::unit(p._unitType):: = ::sq:: )
-							</em>
+							  ( 0.25 x 12 Kg = 3 Kg )
+							( ::formatNum(m.quantity):: x ::p.qt:: ::unit(p._unitType):: = ::sq:: ) 
+							</em>-->
 						</td>
 						<td>
 							::formatNum(m.productPrice)::&nbsp;::currency()::

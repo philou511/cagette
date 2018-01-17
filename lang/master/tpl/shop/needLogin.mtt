@@ -1,7 +1,7 @@
 ﻿::use 'design.mtt'::
+
 <div class="col-md-3"></div>		
-		
-<div class="col-md-6">			
+<div class="col-md-6" style="height:400px;">		<!--	
 	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h3 class="panel-title">::_("Connection")::</h3>
@@ -17,7 +17,7 @@
 		<div class="panel-body text-center">
 			
 			<p>
-				::raw __("In order to continue, <br/>please <a href=\"#\" onclick=\"_.loginBox('::redirect::');\" >connect</a><br/>	or <a href=\"#\" onclick=\"_.registerBox('::redirect::',::phoneRequired::);\">subscribe</a> if it is the first time<br/>you use Cagette.net",{redirect:redirect,phoneRequired:phoneRequired})::
+				::raw _("In order to confirm your basket, <br/>You need to authenticate.")::
 			</p>
 			
 			<hr/>
@@ -29,8 +29,14 @@
 				<span class="glyphicon glyphicon-chevron-right"></span> ::_("Sign up")::</a>
 			
 		</div>
-	</div>
+	</div>-->
 </div>
-		
 <div class="col-md-3"></div>				
+
+<script language="javascript">
+	$(function(){
+		_.loginBox('::raw redirect::','::raw message::');	
+	});
+	
+</script>
 ::end::

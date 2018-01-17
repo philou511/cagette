@@ -81,14 +81,22 @@
 							::end::
 							<!--::end::-->
 							
+							::if distribution!=null::
+							<a href="/contractAdmin/edit2/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>
+								N.elle interface</a>
+							::else::
+							<a href="/contractAdmin/edit2/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 
+								N.elle interface</a>
+							::end::
+							
 						</td>
 					
 					</tr>
 					<tr>
-						<th>::_("Qty")::</th>
-						<th>::_("Product ID")::</th>
+						<th>::_("Prod. ID")::</th>
+						<th>::_("Qty")::</th>						
 						<th>::_("Product")::</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price including taxes")::">::_("U.P")::</a></th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_("Unit price including taxes")::">::_("U.P||price per unit")::</a></th>
 						<th>::_("Sub-total")::</th>
 						<th>::_("Fees")::</th>
 						<th>::_("Total")::</th>
@@ -103,15 +111,25 @@
 				::set class=""::
 				::end::
 				<tr class="::class::">
-				
-					<td>
-						::formatNum(m.quantity)::
-					</td>
-					<td>
+					<td class="ref">
 						$$nullSafe(::m.productRef::)
 					</td>
 					<td>
-						::m.productName::
+						::if(m.quantity==0 && m.canceled)::
+							<span style="color:#AAA">::_("Canceled")::</span>
+						::elseif(m.productHasFloatQt)::
+							::raw smartQt(m.quantity,m.productQt,m.productUnit)::
+						::else::
+							::formatNum(m.quantity)::
+						::end::
+					</td>
+					
+					<td>						
+						::if(m.productHasFloatQt || m.productQt==null || m.productUnit==null)::
+							::m.productName::
+						::else::
+							::m.productName:: ::m.productQt:: ::unit(m.productUnit)::
+						::end::
 					</td>
 					<td>
 						::formatNum(m.productPrice)::&nbsp;::currency()::
@@ -133,10 +151,12 @@
 						::set total = total + m.total::
 					</td>
 					<td>
-						::if m.paid==true::
-						<span style="color:#00AA00;">::_("Paid")::</span>
-						::else::
-						<span style="color:#DD0000;">::_("Not paid")::</span>
+						::if !m.canceled::
+							::if m.paid==true::
+							<span style="color:#00AA00;">::_("Paid")::</span>
+							::else::
+							<span style="color:#DD0000;">::_("Not paid")::</span>
+							::end::
 						::end::
 					</td>
 					

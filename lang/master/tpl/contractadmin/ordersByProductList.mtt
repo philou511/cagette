@@ -9,12 +9,12 @@
 	<table class="table table-bordered table-hover"  style="width:100%;">
 		<tr>
 			<td>
-				::if u._amap._image!=null::
-					<img src="::file(u._amap._image)::" style="margin:auto;height:150px;" class="thumbnail" />
+				::if group._image!=null::
+					<img src="::file(group._image)::" style="margin:auto;height:150px;" class="thumbnail" />
 				::end::
 			</td>
 			<td>
-				<h1>::c._amap.name::</h1>
+				<h1>::group.name::</h1>
 				::if distribution!=null::
 					<h2>Livraison du <b>::hDate(distribution.date)::</b></h2>
 				::end::

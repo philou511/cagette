@@ -135,13 +135,14 @@ class Shop extends Controller
 	/**
 	 * validate the order
 	 */
-	@tpl('needLogin.mtt')
+	@tpl('shop/needLogin.mtt')
 	public function doValidate(place:db.Place, date:Date){
 		
-		//loginbox if needed
+		//login is needed : display a loginbox
 		if (app.user == null) {
 			view.redirect = "/shop/validate/" + place.id + "/" + date.toString().substr(0, 10);
 			view.group = place.amap;
+			view.message =  t._("In order to confirm your order, You need to authenticate.");
 			return;
 		}
 		
