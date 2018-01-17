@@ -30,7 +30,7 @@ class Contract extends Controller
 	function doDefault() {
 		
 		var ua = db.UserAmap.get(app.user, app.user.amap);
-		if (ua == null) throw Error("/", t._("You're not member of this group"));
+		if (ua == null) throw Error("/", t._("You are not a member of this group"));
 		
 		var constOrders = null;
 		var varOrders = new Map<String,Array<db.UserContract>>();
@@ -151,12 +151,12 @@ class Contract extends Controller
 			c.amap = app.user.amap;
 			
 			//checks & warnings
-			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and label."));
+			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and a label."));
 			
 			if (c.hasStockManagement()) {
 				for (p in c.getProducts()) {
 					if (p.stock == null) {
-						app.session.addMessage(t._("Warning, the management of stock. Please fill the field \"stock\" for all your products"), true);
+						app.session.addMessage(t._("Warning for management of stock. Please fill the field \"stock\" for all your products"), true);
 						break;
 					}
 				}
@@ -373,7 +373,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw t._("Not possible to find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
+				if (uo == null) throw t._("Could not find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
 					
 				var q = 0.0;
 				
@@ -485,7 +485,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw t._("Not possible to find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
+				if (uo == null) throw t._("Could not find the product ::produ:: and the delivery ::deliv::", {produ:pid, deliv:did});
 					
 				//quantity
 				var q = 0.0;				
@@ -509,7 +509,7 @@ class Contract extends Controller
 			if (c.type == db.Contract.TYPE_CONSTORDERS) {
 				throw Ok("/contract/order/"+c.id, t._("Your CSA order has been saved"));
 			}else{
-				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a payment mean."));
+				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a means of payment."));
 			}
 			
 			
@@ -535,8 +535,8 @@ class Contract extends Controller
 		// cannot edit order if date is in the past
 		if (Date.now().getTime() > date.getTime()) {
 			
-			var msg = t._("This delivery already took place, you cannot modify the order any more.");
-			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page <a href='/contractAdmin'>Management of contracts</a>");
+			var msg = t._("This delivery has already taken place, further modifications of the order is not possible.");
+			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract, you can modify the order from <a href='/contractAdmin'>Management of contracts</a>");
 			
 			throw Error("/contract", msg);
 		}
@@ -563,7 +563,7 @@ class Contract extends Controller
 					//trouve le produit dans userOrders
 					var pid = Std.parseInt(k.substr("product".length));
 					var order = Lambda.find(orders, function(uo) return uo.product.id == pid);
-					if (order == null) throw t._("Error, not possible to find the order");
+					if (order == null) throw t._("Error, could not find the order");
 					
 					var q = 0.0;
 					if (order.product.hasFloatQt ) {
