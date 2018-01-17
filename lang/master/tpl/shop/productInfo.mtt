@@ -41,21 +41,8 @@
 					::end::
 				</span>
 					
-				
-				::if (product!=null)::
-					
-					::set c = product.getCostPerUnit()::
-					<div class="vat" ::cond c!=null:: >
-						::formatNum(c.cost)::::currency():: / 
-						::if c.qt!=1::
-							::c.qt::
-						::end::
-						::unit(c.unit)::
-					</div>
-			
-				::else::
-				
-				::end::
+				<div class="vat">::raw pricePerUnit(p.price,p.qt,p.unitType)::</div>
+
 			::end::
 		</div>
 		

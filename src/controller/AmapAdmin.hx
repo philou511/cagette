@@ -141,10 +141,13 @@ class AmapAdmin extends Controller
 		}
 		
 		var data = [];
-		for (r in db.UserAmap.Right.getConstructors()) {
-			if (r == "ContractAdmin") continue; //managed later
-			data.push({label:r,value:r});
-		}
+		//for (r in db.UserAmap.Right.getConstructors()) {
+			//if (r == "ContractAdmin") continue; //managed later
+			//data.push({label:r,value:r});
+		//}
+		data.push({label:t._("Group administrator"), value:"AmapAdmin"});
+		data.push({label:t._("Membership management"),value:"Membership"});
+		data.push({label:t._("Messages"),value:"Messages"});
 		
 		var ua : db.UserAmap = null;
 		var populate :Array<String> = null;

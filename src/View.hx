@@ -85,6 +85,9 @@ class View extends sugoi.BaseView {
 		return "#"+h;
 	}
 	
+	/**
+	 * Format prices
+	 */
 	public function formatNum(n:Float):String {
 		if (n == null) return "";
 		
@@ -97,6 +100,27 @@ class View extends sugoi.BaseView {
 		//virgule et pas point
 		return out.split(".").join(",");
 	}
+	
+	/**
+	 * Price per Kg/Liter...
+	 * @param	qt
+	 * @param	unit
+	 */
+	public function pricePerUnit(price:Float,qt:Float, unit:UnitType){
+		if (qt <= 1 || qt == null || price==0) return "";
+		var _price = price / qt;
+		var _unit = unit;
+		
+		//turn small prices in Kg
+		if (_price < 1 && unit == Gram){
+			_price *= 1000;
+			_unit = Kilogram;
+		}
+		return formatNum(_price) + "&nbsp;" + currency() + "/" + this.unit(_unit);
+		
+	}
+	
+	
 	
 	/**
 	 * clean numbers in views
@@ -258,7 +282,8 @@ class View extends sugoi.BaseView {
 	 * 
 	 * 0.33 x Lemon 12kg => 2kg Lemon
 	 */ 
-	public function smartQt(orderQt:Float,productQt:Float,unit:UnitType):String{
+	public function smartQt(orderQt:Float, productQt:Float, unit:UnitType):String{
+		if (orderQt == null || productQt == null) return "";
 		return this.formatNum(orderQt * productQt) + "&nbsp;" + this.unit(unit);
 	}
 	

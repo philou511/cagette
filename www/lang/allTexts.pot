@@ -76,87 +76,99 @@ msgstr ""
 msgid "Member"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:4217 src/db/User.hx:16427 lang/master/tpl/amapadmin/rights.mtt:239 lang/master/tpl/member/view.mtt:6293
+#: src/controller/AmapAdmin.hx:3861
+msgid "Group administrator"
+msgstr ""
+
+#: src/controller/AmapAdmin.hx:3930
+msgid "Membership management"
+msgstr ""
+
+#: src/controller/AmapAdmin.hx:4001
+msgid "Messages"
+msgstr ""
+
+#: src/controller/AmapAdmin.hx:4421 src/db/User.hx:16427 lang/master/tpl/amapadmin/rights.mtt:239 lang/master/tpl/member/view.mtt:6293
 msgid "Rights"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:4447
+#: src/controller/AmapAdmin.hx:4651
 msgid "All contracts"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:4969
+#: src/controller/AmapAdmin.hx:5173
 msgid "Contracts management"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6027
+#: src/controller/AmapAdmin.hx:6231
 msgid "You cannot remove yourself your admin rights."
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6235
+#: src/controller/AmapAdmin.hx:6439
 msgid "Rights removed"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6306
+#: src/controller/AmapAdmin.hx:6510
 msgid "Rights created or modified"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6399
+#: src/controller/AmapAdmin.hx:6603
 msgid "Create rights for a user"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6460
+#: src/controller/AmapAdmin.hx:6664
 msgid "Modify rights of ::user::"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6892 src/controller/AmapAdmin.hx:7164
+#: src/controller/AmapAdmin.hx:7096 src/controller/AmapAdmin.hx:7368
 msgid "Name "
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:6956 src/controller/AmapAdmin.hx:7229
+#: src/controller/AmapAdmin.hx:7160 src/controller/AmapAdmin.hx:7433
 msgid "Rate "
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:7689
+#: src/controller/AmapAdmin.hx:7893
 msgid "Rate updated"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:7737
+#: src/controller/AmapAdmin.hx:7941
 msgid "Edit VAT rates"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8007
+#: src/controller/AmapAdmin.hx:8211
 msgid "Currency used by your group."
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8152
+#: src/controller/AmapAdmin.hx:8356
 msgid "Currency symbol"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8275
+#: src/controller/AmapAdmin.hx:8479
 msgid "3 digits ISO code"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:8575
+#: src/controller/AmapAdmin.hx:8779
 msgid "Currency updated"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9011
+#: src/controller/AmapAdmin.hx:9215
 msgid "Authorized payment types"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9287
+#: src/controller/AmapAdmin.hx:9491
 msgid "Make the check payable to"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9418
+#: src/controller/AmapAdmin.hx:9622
 msgid "IBAN of your bank account for transfers"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9783
+#: src/controller/AmapAdmin.hx:9987
 msgid "Options of payment updated"
 msgstr ""
 
-#: src/controller/AmapAdmin.hx:9849
+#: src/controller/AmapAdmin.hx:10053
 msgid "Options of payment"
 msgstr ""
 
@@ -2268,7 +2280,7 @@ msgstr ""
 msgid "Order closed or already paid"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:1778 lang/master/tpl/distribution/list.mtt:3943 lang/master/tpl/distribution/listByDate.mtt:2595 lang/master/tpl/distribution/listByDateOnePage.mtt:3246 lang/master/tpl/distribution/listByDateOnePageContract.mtt:3821 lang/master/tpl/member/view.mtt:5429
+#: lang/master/tpl/contract/orderByDate.mtt:1778 lang/master/tpl/distribution/list.mtt:3955 lang/master/tpl/distribution/listByDate.mtt:2595 lang/master/tpl/distribution/listByDateOnePage.mtt:3246 lang/master/tpl/distribution/listByDateOnePageContract.mtt:3821 lang/master/tpl/member/view.mtt:5429
 msgid "TOTAL"
 msgstr ""
 
@@ -2816,11 +2828,11 @@ msgstr ""
 msgid "Signature"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:4251
+#: lang/master/tpl/distribution/list.mtt:4263
 msgid "Total order:"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:4503 lang/master/tpl/distribution/listByDate.mtt:6114 lang/master/tpl/distribution/listByDateOnePage.mtt:3504 lang/master/tpl/distribution/listByDateOnePageContract.mtt:4079 lang/master/tpl/distribution/listByDateShort.mtt:2151
+#: lang/master/tpl/distribution/list.mtt:4515 lang/master/tpl/distribution/listByDate.mtt:6114 lang/master/tpl/distribution/listByDateOnePage.mtt:3504 lang/master/tpl/distribution/listByDateOnePageContract.mtt:4079 lang/master/tpl/distribution/listByDateShort.mtt:2151
 msgid "Push on \"Control + P\" to print this page."
 msgstr ""
 

@@ -92,91 +92,103 @@ msgstr "Image mise à jour"
 msgid "Member"
 msgstr "Adhérent"
 
-#: src/controller/AmapAdmin.hx:4217 src/db/User.hx:16427
+#: src/controller/AmapAdmin.hx:3861
+msgid "Group administrator"
+msgstr "Administrateur de groupe"
+
+#: src/controller/AmapAdmin.hx:3930
+msgid "Membership management"
+msgstr "Gestion des adhérents"
+
+#: src/controller/AmapAdmin.hx:4001
+msgid "Messages"
+msgstr "Messages"
+
+#: src/controller/AmapAdmin.hx:4421 src/db/User.hx:16427
 #: lang/master/tpl/amapadmin/rights.mtt:239
 #: lang/master/tpl/member/view.mtt:6293
 msgid "Rights"
 msgstr "Droits"
 
-#: src/controller/AmapAdmin.hx:4447
+#: src/controller/AmapAdmin.hx:4651
 msgid "All contracts"
 msgstr "Tous les contrats"
 
-#: src/controller/AmapAdmin.hx:4969
+#: src/controller/AmapAdmin.hx:5173
 msgid "Contracts management"
 msgstr "Gestion des contrats"
 
-#: src/controller/AmapAdmin.hx:6027
+#: src/controller/AmapAdmin.hx:6231
 msgid "You cannot remove yourself your admin rights."
 msgstr ""
 "Par sécurité, vous ne pouvez pas vous enlevez vous même les droits de "
 "gestion du groupe."
 
-#: src/controller/AmapAdmin.hx:6235
+#: src/controller/AmapAdmin.hx:6439
 msgid "Rights removed"
 msgstr "Droits retirés"
 
-#: src/controller/AmapAdmin.hx:6306
+#: src/controller/AmapAdmin.hx:6510
 msgid "Rights created or modified"
 msgstr "Droits créés ou modifiés"
 
-#: src/controller/AmapAdmin.hx:6399
+#: src/controller/AmapAdmin.hx:6603
 msgid "Create rights for a user"
 msgstr "Ajouter des droits à un adhérent"
 
-#: src/controller/AmapAdmin.hx:6460
+#: src/controller/AmapAdmin.hx:6664
 msgid "Modify rights of ::user::"
 msgstr "Modifier les droits de ::user::"
 
-#: src/controller/AmapAdmin.hx:6892 src/controller/AmapAdmin.hx:7164
+#: src/controller/AmapAdmin.hx:7096 src/controller/AmapAdmin.hx:7368
 msgid "Name "
 msgstr "Nom "
 
-#: src/controller/AmapAdmin.hx:6956 src/controller/AmapAdmin.hx:7229
+#: src/controller/AmapAdmin.hx:7160 src/controller/AmapAdmin.hx:7433
 msgid "Rate "
 msgstr "Taux "
 
-#: src/controller/AmapAdmin.hx:7689
+#: src/controller/AmapAdmin.hx:7893
 msgid "Rate updated"
 msgstr "Taux mis à jour"
 
-#: src/controller/AmapAdmin.hx:7737
+#: src/controller/AmapAdmin.hx:7941
 msgid "Edit VAT rates"
 msgstr "Editer les taux de TVA"
 
-#: src/controller/AmapAdmin.hx:8007
+#: src/controller/AmapAdmin.hx:8211
 msgid "Currency used by your group."
 msgstr "Monnaie utilisée par votre groupe."
 
-#: src/controller/AmapAdmin.hx:8152
+#: src/controller/AmapAdmin.hx:8356
 msgid "Currency symbol"
 msgstr "Symbole de votre monnaie"
 
-#: src/controller/AmapAdmin.hx:8275
+#: src/controller/AmapAdmin.hx:8479
 msgid "3 digits ISO code"
 msgstr "Code ISO à 3 lettres"
 
-#: src/controller/AmapAdmin.hx:8575
+#: src/controller/AmapAdmin.hx:8779
 msgid "Currency updated"
 msgstr "Monnaie mise à jour"
 
-#: src/controller/AmapAdmin.hx:9011
+#: src/controller/AmapAdmin.hx:9215
 msgid "Authorized payment types"
 msgstr "Types de paiements autorisés"
 
-#: src/controller/AmapAdmin.hx:9287
+#: src/controller/AmapAdmin.hx:9491
 msgid "Make the check payable to"
 msgstr "Ordre pour les chèques"
 
-#: src/controller/AmapAdmin.hx:9418
+#: src/controller/AmapAdmin.hx:9622
 msgid "IBAN of your bank account for transfers"
 msgstr "IBAN de votre compte bancaire pour les virements"
 
-#: src/controller/AmapAdmin.hx:9783
+#: src/controller/AmapAdmin.hx:9987
 msgid "Options of payment updated"
 msgstr "Options de paiement mises à jour"
 
-#: src/controller/AmapAdmin.hx:9849
+#: src/controller/AmapAdmin.hx:10053
 msgid "Options of payment"
 msgstr "Options de paiements"
 
@@ -2638,7 +2650,7 @@ msgid "Order closed or already paid"
 msgstr "Commande close ou déjà payée"
 
 #: lang/master/tpl/contract/orderByDate.mtt:1778
-#: lang/master/tpl/distribution/list.mtt:3943
+#: lang/master/tpl/distribution/list.mtt:3955
 #: lang/master/tpl/distribution/listByDate.mtt:2595
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:3246
 #: lang/master/tpl/distribution/listByDateOnePageContract.mtt:3821
@@ -3286,11 +3298,11 @@ msgstr "Adhérents de permanence"
 msgid "Signature"
 msgstr "Signature"
 
-#: lang/master/tpl/distribution/list.mtt:4251
+#: lang/master/tpl/distribution/list.mtt:4263
 msgid "Total order:"
 msgstr "Total Commande :"
 
-#: lang/master/tpl/distribution/list.mtt:4503
+#: lang/master/tpl/distribution/list.mtt:4515
 #: lang/master/tpl/distribution/listByDate.mtt:6114
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:3504
 #: lang/master/tpl/distribution/listByDateOnePageContract.mtt:4079

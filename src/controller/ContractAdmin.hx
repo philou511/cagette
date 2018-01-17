@@ -720,7 +720,7 @@ class ContractAdmin extends Controller
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
-		view.u = app.user;
+		view.group = contract.amap;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw t._("No delivery in this contract");

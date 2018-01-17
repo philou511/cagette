@@ -398,7 +398,7 @@ class UserContract extends Object
 			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
 			
 		}
-			
+	
 		var sql = 'select 
 				SUM(quantity) as quantity,
 				p.id as pid,
@@ -410,7 +410,8 @@ class UserContract extends Object
 			from UserContract up, Product p 
 			where up.productId = p.id 
 			$where
-			group by p.id order by pname asc; ';
+			group by p.id
+			order by pname asc; ';
 			
 		orders = cast sys.db.Manager.cnx.request(sql).results();	
 		

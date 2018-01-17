@@ -31,7 +31,7 @@
 	<p>
 		::_("You will then be able to connect anytime by using your e-mail"):: 
 		( <i>::email:: ::if email2!=null:: ou ::email2:: ::end::</i> ) 
-		::_("and your password on the website"):: <a href="http://::HOST::">::_("www.cagette.net")::</a>
+		::_("and your password on the website"):: <a href="http://::HOST::">::HOST::</a>
 		
 		<a href="http://::HOST::/user/validate/::k::" class="btn" style="display:block;padding:8px;background:#227700;border-radius:8px;width:auto;color: white;margin: 12px; text-decoration: none;margin-top:16px;font-size:120%;">
 			&raquo; ::_("Finalize your subscription")::
