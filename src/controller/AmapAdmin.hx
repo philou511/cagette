@@ -54,7 +54,7 @@ class AmapAdmin extends Controller
 	
 	@tpl("amapadmin/addimage.mtt")
 	function doAddimage() {
-		if (!app.user.isAmapManager()) throw "Vous n'avez pas accès a cette section";
+		if (!app.user.isAmapManager()) throw "You do not have access to this section";
 		
 		var user = app.user;
 		view.image = user.amap.image;
@@ -63,7 +63,7 @@ class AmapAdmin extends Controller
 		try {
 			request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb	
 		}catch (e:Dynamic) {
-			throw Error("/amapadmin", t._("The image sent is too big. The maximum authorized size is 12Mb"));
+			throw Error("/amapadmin", t._("The sent image was too big. The maximum allowed size is 12MB"));
 		}
 		
 		if (request.exists("image")) {
@@ -224,7 +224,7 @@ class AmapAdmin extends Controller
 					}
 				}
 				if (isManager == false) {
-					throw Error("/amapadmin/rights", t._("You cannot remove yourself your admin rights."));
+					throw Error("/amapadmin/rights", t._("You cannot strip yourself of admin rights."));
 				}
 			}
 			
@@ -240,9 +240,9 @@ class AmapAdmin extends Controller
 		}
 		
 		if (u == null) {
-			view.title = t._("Create rights to a user");
+			view.title = t._("Give rights to a user");
 		}else {
-			view.title = t._("Modify rights of ")+u.getName();
+			view.title = t._("Modify the rights of ")+u.getName();
 		}
 		
 		view.form = form;
@@ -311,7 +311,7 @@ class AmapAdmin extends Controller
 		
 		var f = new sugoi.form.Form("curr");
 		f.addElement(new sugoi.form.elements.StringInput("currency", t._("Currency symbol"), app.user.amap.getCurrency()));
-		f.addElement(new sugoi.form.elements.StringInput("currencyCode", t._("3 digits ISO code"), app.user.amap.currencyCode));
+		f.addElement(new sugoi.form.elements.StringInput("currencyCode", t._("3 digit ISO code"), app.user.amap.currencyCode));
 		
 		if ( f.isValid()){
 			
@@ -357,7 +357,7 @@ class AmapAdmin extends Controller
 			a.IBAN = f.getValueOf("IBAN");
 			a.update();
 			
-			throw Ok("/amapadmin/payments", t._("Options of payment updated"));
+			throw Ok("/amapadmin/payments", t._("Payment options updated"));
 			
 		}
 		

@@ -30,7 +30,7 @@ class Contract extends Controller
 	function doDefault() {
 		
 		var ua = db.UserAmap.get(app.user, app.user.amap);
-		if (ua == null) throw Error("/", t._("You're not a member of this group"));
+		if (ua == null) throw Error("/", t._("You are not a member of this group"));
 		
 		var constOrders = null;
 		var varOrders = new Map<String,Array<db.UserContract>>();
@@ -151,7 +151,7 @@ class Contract extends Controller
 			c.amap = app.user.amap;
 			
 			//checks & warnings
-			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and label."));
+			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and a label."));
 			
 			if (c.hasStockManagement()) {
 				for (p in c.getProducts()) {
@@ -374,7 +374,7 @@ class Contract extends Controller
 				}
 				
 				if (uo == null) throw t._("Could not find the product ::produ:: and delivery ::deliv::", {produ:pid, deliv:did});
-					
+				
 				var q = 0.0;
 				
 				if (uo.product.hasFloatQt ) {
@@ -563,7 +563,7 @@ class Contract extends Controller
 					//trouve le produit dans userOrders
 					var pid = Std.parseInt(k.substr("product".length));
 					var order = Lambda.find(orders, function(uo) return uo.product.id == pid);
-					if (order == null) throw t._("Error, not possible to find the order");
+					if (order == null) throw t._("Error, could not find the order");
 					
 					var q = 0.0;
 					if (order.product.hasFloatQt ) {
