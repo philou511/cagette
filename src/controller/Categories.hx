@@ -122,7 +122,7 @@ class Categories extends controller.Controller
 			
 			form.toSpod(c);
 			c.update();
-			throw Ok("/amapadmin/categories","Catégorie modifiée");			
+			throw Ok("/amapadmin/categories","Category modified");			
 		}
 		
 		view.title = t._("Modify the category ") + c.name;
@@ -133,7 +133,7 @@ class Categories extends controller.Controller
 	function doDeleteGroup(g:db.CategoryGroup,args:{token:String}) {
 		
 		if ( checkToken()) {
-			if (g.getCategories().length > 0) throw Error("/amapadmin/categories", t._("You must first remove categories from this group before removing the group."));
+			if (g.getCategories().length > 0) throw Error("/amapadmin/categories", t._("All categories must be removed from this group before it can be deleted."));
 			
 			g.lock();
 			g.delete();
