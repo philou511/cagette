@@ -183,7 +183,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._('Edit a distribution');
+		view.title = t._("Edit a distribution");
 	}
 	
 	@tpl('form.mtt')

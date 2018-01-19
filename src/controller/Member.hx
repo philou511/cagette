@@ -503,6 +503,13 @@ class Member extends Controller
 			
 			var csv = new sugoi.tools.Csv();
 			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Partner's firstname"), t._("Partner's lastname"), t._("Partner's e-mail"), t._("Partner's Mobile phone"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City")]);
+			
+			//utf8 encode if needed
+			try{
+				if (!haxe.Utf8.validate(data)){
+					data = haxe.Utf8.encode(data);
+				}
+			}catch (e:Dynamic){ }
 			var unregistred = csv.importDatas(data);
 			
 			//cleaning
@@ -724,7 +731,7 @@ class Member extends Controller
 	function doPayments(m:db.User){
 		
 		db.Operation.updateUserBalance(m, app.user.amap);		
-		view.transactions = db.Operation.getOperations(m,app.user.amap);
+		view.transactions = db.Operation.getOperations(m,app.user.amap,1000);
 		view.member = m;
 		view.balance = db.UserAmap.get(m, app.user.amap).balance;
 		

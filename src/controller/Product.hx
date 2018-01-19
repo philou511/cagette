@@ -6,9 +6,9 @@ import sugoi.form.elements.FloatInput;
 import sugoi.form.elements.FloatSelect;
 import sugoi.form.elements.IntSelect;
 using Std;
+
 class Product extends Controller
 {
-
 	public function new()
 	{
 		super();
@@ -138,8 +138,14 @@ class Product extends Controller
 		
 		// get the uploaded file content
 		if (request.get("file") != null) {
-			
-			var datas = csv.importDatasAsMap(request.get("file"));
+			//convert to utf-8 if needed
+			var csvData = request.get("file");
+			try{
+				if (!haxe.Utf8.validate(csvData)){
+					csvData = haxe.Utf8.encode(csvData);
+				}
+			}catch (e:Dynamic){ }
+			var datas = csv.importDatasAsMap(csvData);
 			
 			app.session.data.csvImportedData = datas;
 			

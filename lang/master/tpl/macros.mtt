@@ -158,7 +158,7 @@
 		::if x==0::
 		<i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;::_("Order")::
 		::elseif x==1::
-		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;::_("CSA&nbsp;contract")::
+		<i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
 		::elseif x==2::
 		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
 		<i class="fa fa-credit-card" aria-hidden="true"></i> ::_("Payment"):: ::t.getPaymentTypeName()::

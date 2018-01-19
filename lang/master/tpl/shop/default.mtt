@@ -98,7 +98,7 @@
 									
 									::if p.qt!=null && p.unitType!=null && p.qt>0::
 										
-										::p.qt:: ::unit(p.unitType)::
+										::p.qt:: ::unit(p.unitType,p.qt>1)::
 									::end::
 								</a>
 								
