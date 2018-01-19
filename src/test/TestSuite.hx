@@ -14,17 +14,18 @@ class TestSuite
 		
 		var r = new haxe.unit.TestRunner();
 		r.add(new test.TestOrders());
-		r.add(new test.TestReports());
+		//r.add(new test.TestReports());
 		r.run();
 	}
+	
 	
 	static function initDB(){
 		
 		var cnx = sys.db.Mysql.connect({
-		   host : "localhost",
+		   host : "mysql",
 		   port : null,
-		   user : "cagette",
-		   pass : "cagette",
+		   user : "root",
+		   pass : "root",
 		   database : "test",
 		   socket : null,
 		});
@@ -61,6 +62,10 @@ class TestSuite
 		
 	}
 	
+	//shortcut to datas
+	public static var CHICKEN:db.Product = null; 
+	
+	
 	static function initDatas(){
 		
 		var f = new db.User();
@@ -84,14 +89,22 @@ class TestSuite
 		
 		var place = new db.Place();
 		place.name = "Place du village";
+		place.zipCode = "00000";
+		place.city = "St Martin";
+		place.amap = a;
 		place.insert();
 		
 		var v = new db.Vendor();
 		v.name = "La ferme de la Galinette";
+		v.email = "galinette@gmail.com";
+		v.zipCode = "00000";
+		v.city = "Bourligheim";
 		v.insert();
 		
 		var c = new db.Contract();
 		c.name = "Contrat AMAP Légumes";
+		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
 		c.type = db.Contract.TYPE_CONSTORDERS;
@@ -107,6 +120,8 @@ class TestSuite
 		var c = new db.Contract();
 		c.name = "Commande fruits";
 		c.vendor = v;
+		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		c.flags.set(db.Contract.ContractFlags.StockManagement);
 		c.type = db.Contract.TYPE_VARORDER;
 		c.amap = a;
@@ -146,14 +161,22 @@ class TestSuite
 		
 		var place = new db.Place();
 		place.name = "Rue Saucisse";
+		place.zipCode = "00000";
+		place.city = "St Martin";
+		place.amap = a;
 		place.insert();
 		
 		var v = new db.Vendor();
 		v.name = "La ferme de la courgette enragée";
+		v.email = "courgette@gmail.com";
+		v.zipCode = "00000";
+		v.city = "Bourligeac";
 		v.insert();
 		
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
+		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
 		c.type = db.Contract.TYPE_VARORDER;
@@ -176,6 +199,17 @@ class TestSuite
 		p.contract = c;
 		p.insert();
 		
+		var p = new db.Product();
+		p.name = "Poulet";
+		p.qt = 1.5;
+		p.unitType = Common.UnitType.Kilogram;
+		p.price = 15;
+		p.multiWeight = true;
+		p.hasFloatQt = true;
+		p.contract = c;
+		p.insert();
+		CHICKEN = p;
+		
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
 		d.contract = c;
@@ -186,6 +220,9 @@ class TestSuite
 	}
 	
 	static function initApp(u:db.User){
+		
+		Sys.println("InitApp()");
+		
 		//setup App
 		var app = App.current = new App();
 		app.eventDispatcher = new hxevents.Dispatcher<Event>();
@@ -201,6 +238,10 @@ class TestSuite
 		//app.plugins.push( new pro.LemonwayEC() );
 		//plugins.push( new who.WhoPlugIn() );
 		#end
+		
+		//i18n
+		var texts = sugoi.i18n.Locale.init("en");
+		trace(texts);
 		
 		App.current.user = u;
 		App.current.view = new View();

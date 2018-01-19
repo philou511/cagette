@@ -26,7 +26,7 @@ class Product extends Object
 	public var qt : SNull<SFloat>;
 	public var organic : SBool;
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
-	//public var multiWeight : Bool;		//product cannot be cumulated in one order record
+	public var multiWeight : Bool;		//product cannot be cumulated in one order record
 	
 	@hideInForms public var type : SInt;	//icones
 	
@@ -45,6 +45,7 @@ class Product extends Object
 		hasFloatQt = false;
 		active = true;
 		variablePrice = false;
+		multiWeight = false;
 		vat = 5.5;
 		unitType = UnitType.Piece;
 		qt = 1;

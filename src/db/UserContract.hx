@@ -204,24 +204,36 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User,?invert:Bool):db.UserContract {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool):db.UserContract {
+		
+		//multiweight : make one row per product
+		if (product.multiWeight && quantity > 1.0){
+			if (product.multiWeight && quantity != Math.abs(quantity)) throw "multiweight products should be first recorded with integer quantities";
+			
+			var o = null;
+			for ( i in 0...Math.round(quantity)){
+				o = make(user, 1, product, distribId, paid, user2, invert);
+			}			
+			return o;
+		}
 		
 		var t = sugoi.i18n.Locale.texts;
+		//var out = [];
 		
 		//checks
 		if (quantity <= 0) return null;
 		
-		//vérifie si il n'y a pas de commandes existantes avec les memes paramètres
+		//check for previous orders on the same distrib
 		var prevOrders = new List<db.UserContract>();
-		
 		if (distribId == null) {
 			prevOrders = db.UserContract.manager.search($product==product && $user==user, true);
 		}else {
 			prevOrders = db.UserContract.manager.search($product==product && $user==user && $distributionId==distribId, true);
 		}
 		
+		//Create order object
 		var o = new db.UserContract();
-		o.productId = product.id;
+		o.product = product;
 		o.quantity = quantity;
 		o.productPrice = product.price;
 		if (product.contract.hasPercentageOnOrders()) {
@@ -233,9 +245,10 @@ class UserContract extends Object
 			if (invert != null) o.flags.set(InvertSharedOrder);
 		}
 		if (paid != null) o.paid = paid;
-		if (distribId != null) o.distributionId = distribId;
+		if (distribId != null) o.distribution = db.Distribution.manager.get(distribId);
 		
-		if (prevOrders.length > 0) {
+		//cumulate quantities if there is a similar previous order
+		if (prevOrders.length > 0 && !product.multiWeight) {
 			for (prevOrder in prevOrders) {
 				if (!prevOrder.paid) {
 					o.quantity += prevOrder.quantity;
@@ -244,20 +257,24 @@ class UserContract extends Object
 			}
 		}
 		
+		//create a basket object
 		if (distribId != null){
-			var dist = db.Distribution.manager.get(o.distributionId, false);
+			var dist = o.distribution;
 			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
 			o.basket = basket;
 		}
 		
 		o.insert();
+		//out.push(o);
 		
-		//stocks
+		//Stocks
 		if (o.product.stock != null) {
 			var c = o.product.contract;
 			if (c.hasStockManagement()) {
 				if (o.product.stock == 0) {
-					if(App.current.session!=null) App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
+					if (App.current.session != null) {
+						App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
+					}
 					o.quantity -= quantity;
 					if ( o.quantity <= 0 ) {
 						o.delete();
@@ -269,7 +286,10 @@ class UserContract extends Object
 					o.quantity -= canceled;
 					o.update();
 					
-					if(App.current.session!=null) App.current.session.addMessage(t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:o.product.name, oQuantity:o.quantity}), true);
+					if (App.current.session != null) {
+						var msg = t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:o.product.name, oQuantity:o.quantity});
+						App.current.session.addMessage(msg, true);
+					}
 					o.product.lock();
 					o.product.stock = 0;
 					o.product.update();
@@ -283,7 +303,6 @@ class UserContract extends Object
 					
 					App.current.event(StockMove({product:o.product, move:0 - quantity}));
 				}
-				
 			}	
 		}
 		

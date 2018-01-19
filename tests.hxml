@@ -7,8 +7,10 @@
 -lib datetime
 -lib hscript
 -lib smtpmailer
+-lib record-macros
 -cp common
 -cp src
--neko tests.n
+-cp lang/en/tpl
+-neko www/tests.n
  -main test.TestSuite
 

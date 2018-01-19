@@ -17,6 +17,7 @@
   <classpaths>
     <class path="common" />
     <class path="src" />
+    <class path="lang\master\tpl" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -42,6 +43,7 @@
     <library name="cagette-pro" />
     <library name="cagette-connector" />
     <library name="cagette-wholesale-order" />
+    <library name="record-macros" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
