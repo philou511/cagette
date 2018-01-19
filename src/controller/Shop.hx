@@ -157,8 +157,8 @@ class Shop extends Controller
 			throw Error("/", t._("Your order is empty") );
 		}
 		
-		if (place == null) throw "place cannot be null";
-		if (date == null) throw "date cannot be null";		
+		if (place == null) throw "place cannot be empty";
+		if (date == null) throw "date cannot be empty";		
 
 		var products = getProducts(place, date);
 
@@ -173,12 +173,12 @@ class Shop extends Controller
 			//check that the products are from this group (we never know...)
 			if (p.contract.amap.id != app.user.amap.id){
 				app.session.data.order = null;
-				throw Error("/", t._("Error, This cart is invalid") );
+				throw Error("/", t._("This cart is invalid") );
 			}
 			
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
-				errors.push( t._("The product <b>::pname::</b> is not available in this distribution",{pname:p.name}) );
+				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
 				order.products.remove(o);
 				continue;
 			}else{
@@ -188,7 +188,7 @@ class Shop extends Controller
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){
-				errors.push( t._("The product <b>::pname::</b> is not available in this distribution",{pname:p.name}) );
+				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
 				order.products.remove(o);
 				continue;
 			}else{
@@ -200,7 +200,7 @@ class Shop extends Controller
 				if (p.stock - o.quantity < 0) {
 					var canceled = o.quantity - p.stock;
 					o.quantity -= canceled;
-					errors.push(t._("We reduced your order of ::pname:: to quantity ::oquantity:: as the stock is not sufficient", {pname:p.name, oquantity:o.quantity}));
+					errors.push(t._("Order of ::pname:: reduced to ::oquantity:: to match remaining stock", {pname:p.name, oquantity:o.quantity}));
 				}
 			}
 		
@@ -218,11 +218,11 @@ class Shop extends Controller
 		
 		if (app.user.amap.hasPayments()){			
 			//Go to payments page
-			throw Ok("/transaction/pay/", t._("Your basket has been recorded, please select a payment method to confirm it.") );
+			throw Ok("/transaction/pay/", t._("Your basket has been picked, please select a payment method to confirm it.") );
 		}else{
 			//no payments, confirm direclty
 			db.UserContract.confirmSessionOrder(order);			
-			throw Ok("/contract", t._("Your order has been successfully recorded") );	
+			throw Ok("/contract", t._("Your order has been confirmed") );	
 		}
 
 	}
