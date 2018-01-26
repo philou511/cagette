@@ -24,18 +24,16 @@
 		</div>
 		::end::
 	
-		<!-- normal mode order forms -->
+		<!-- standard mode order forms -->
 		::if !amap.hasShopMode()::
 		<div class="homeBlock" ::cond ( openContracts!=null && openContracts.length>0 )::>
 			<img src="/img/order.png" width="64" height="64" style="float:right;" />
 			<h2>::_("Open orders")::</h2>
-			
 			<ul>
 				::foreach c openContracts::
 					<li><a href="/contract/view/::c.id::">::c.name::</a></li>
 				::end::	
 			</ul>			
-			
 		</div>
 		::end::
 	
@@ -110,59 +108,53 @@
 							::o.distrib.text::
 						</p>
 							
-						<!--de ::d.distrib._contract._vendor.name::-->
 						<div class="row">
 							::foreach c o.orders::
 							<div class="col-xs-12 col-sm-6 col-lg-4">
 								<table>
 									<tr>
 										<td>
-											<!--<img src="::c._product.getImage()::" style="margin-right:8px;max-height:64px;max-width:64px;" />	-->
 											<div style="background-image:url('::c._product.getImage()::')" class="productImg" /> 
 										</td>
-										
 										<td class="name">
-										<span style="color:#999;" ::cond c.quantity >1:: > ::c.quantity:: x </span>
-										::c._product.name::
-										
-										::if c._user2!=null::
-											::if user.id==c._user.id::
-												::set you = c._user::
-												::set mate = c._user2::
-											::else::
-												::set mate = c._user::
-												::set you = c._user2::
-											::end::
-									
-											<br/>( partagé avec ::mate.getName()::, 
+											<span style="color:#999;" ::cond c.quantity >1:: > ::c.quantity:: x </span>
+											::c._product.name::
 											
-											::if c.getWhosTurn(o.distrib)==false::
-									
-												::if c._user.getName() == you.getName()::
-													<span style="color:#080">::_("It's your turn")::</span>
+											::if c._user2!=null::
+												::if user.id==c._user.id::
+													::set you = c._user::
+													::set mate = c._user2::
 												::else::
-													::_("It's his/her turn")::
+													::set mate = c._user::
+													::set you = c._user2::
 												::end::
-											::else::
-												::if c._user2.getName() == you.getName()::
-													<span style="color:#080">::_("It's your turn")::</span>
+										
+												<br/>( partagé avec ::mate.getName()::, 
+												
+												::if c.getWhosTurn(o.distrib)==false::
+										
+													::if c._user.getName() == you.getName()::
+														<span style="color:#080">::_("It's your turn")::</span>
+													::else::
+														::_("It's his/her turn")::
+													::end::
 												::else::
-													::_("It's his/her turn")::
+													::if c._user2.getName() == you.getName()::
+														<span style="color:#080">::_("It's your turn")::</span>
+													::else::
+														::_("It's his/her turn")::
+													::end::
 												::end::
+												)
 											::end::
-											)
-										::end::
-									</td>
+										</td>
 									</tr>
 								</table>
 							</div>
 							::end::
 						</div>
-						
-					
 					
 						<div class="footer">
-						
 							::if user.isContractManager(o.distrib._contract) || o.distrib.distributor1Id==user.id || o.distrib.distributor2Id==user.id || o.distrib.distributor3Id==user.id || o.distrib.distributor4Id==user.id:: 
 								<a href="/distribution/list/::o.distrib.id::"><span class="glyphicon glyphicon-print"></span>  ::_("Distribution list")::</a>
 							::end::
@@ -170,7 +162,6 @@
 							<span ::cond o.distrib.distributor1Id!=null || o.distrib.distributor2Id!=null || o.distrib.distributor3Id!=null || o.distrib.distributor4Id!=null::>
 								&nbsp; <a href="#" onclick="$('#distributors::o.distrib.id::').toggle();return false;"><span class="glyphicon glyphicon-user"></span> ::_("Permanence")::</a>
 							</span>
-							
 							
 							&nbsp; <a href="/contract/view/::o.distrib._contract.id::"><span class="glyphicon glyphicon-list-alt"></span> ::_("Contract details")::</a>
 							
@@ -188,7 +179,6 @@
 							</div>
 							
 							<div class="distribMessage" ::cond o.distrib.distributor1Id==user.id || o.distrib.distributor2Id==user.id || o.distrib.distributor3Id==user.id || o.distrib.distributor4Id==user.id::>
-								<!--Attention, vous ou votre conjoint(e) participe à la distribution !-->
 								::_("Warning, you're engaged in this distribution !")::
 							</div>
 						</div>
@@ -263,10 +253,6 @@
 						::foreach p d.products::
 							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
 						::end::
-						<!--
-						::foreach p d.products::
-							<img data-toggle="tooltip" data-placement="top" title="::p.name::" class="img-responsive img-thumbnail" src="::p.image::" style="max-width:70px;max-height:70px;margin:4px;"/> 
-						::end::-->
 					</div>
 				</div>
 	
@@ -278,6 +264,9 @@
 
 	
 </div>
+	
+
+<!-- RIGHT COLUMN -->
 <div class="col-md-4">
 	
 	<div class="block" >
