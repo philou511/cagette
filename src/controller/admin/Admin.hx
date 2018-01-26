@@ -87,7 +87,7 @@ class Admin extends Controller {
 			sys.db.Manager.cnx.request("truncate table Error");
 		}
 
-		var errorsStats = sys.db.Manager.cnx.request("select count(id) as c, DATE_FORMAT(date,'%c-%d') as day from Error where date > NOW()- INTERVAL 1 MONTH "+sql+" group by day order by day").results();
+		var errorsStats = sys.db.Manager.cnx.request("select count(id) as c, DATE_FORMAT(date,'%y-%c-%d') as day from Error where date > NOW()- INTERVAL 1 MONTH "+sql+" group by day order by day").results();
 		view.errorsStats = errorsStats;
 
 		view.browser = new sugoi.tools.ResultsBrowser(
