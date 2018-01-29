@@ -57,7 +57,7 @@ class Order extends Controller
 		
 		//params
 		var p = app.params;
-		var data = new Array<{productId:Int,qt:Float,paid:Bool}>();
+		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool}>();
 		data = haxe.Json.parse(p.get("orders"));
 		
 		var distributionId = Std.parseInt(p.get("distributionId"));
@@ -103,7 +103,7 @@ class Order extends Controller
 			if (product.contract.id != c.id) throw "product " + o.productId + " is not in contract " + c.id;
 			
 			//find existing order				
-			var uo = Lambda.find(exOrders, function(uo) return uo.product.id == o.productId);
+			var uo = Lambda.find(exOrders, function(uo) return uo.id == o.id);
 			//if (uo == null) throw t._("Unable to find product ::pid::", {pid:o.productId});
 				
 			//user2 ?
@@ -129,7 +129,6 @@ class Order extends Controller
 				throw t._("Error : product \"::product::\" quantities should be integers",{product:product.name});
 			}
 			
-			
 			//record order
 			if (uo != null) {
 				//existing record
@@ -144,7 +143,6 @@ class Order extends Controller
 		
 		app.event(MakeOrder(orders));
 		db.Operation.onOrderConfirm(orders);
-		
 		
 		Sys.print(Json.stringify({success:true, orders:data}));
 	}

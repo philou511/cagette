@@ -25,7 +25,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		if (state.order.productQt == null) state.order.productQt = 1;
 		
 		state.inputValue = if (state.order.productHasFloatQt){
-			Std.string(state.order.quantity * state.order.productQt);
+			Std.string(round(state.order.quantity * state.order.productQt));
 		}else{
 			Std.string(state.order.quantity);
 		}

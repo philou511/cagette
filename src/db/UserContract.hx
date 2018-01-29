@@ -120,7 +120,7 @@ class UserContract extends Object
 			if (x.productHasFloatQt || x.productQt==null || x.productUnit==null){
 				x.productName = o.product.name;	
 			}else{
-				x.productName = o.product.name + " " + view.formatNum(x.productQt) + view.unit(x.productUnit);	
+				x.productName = o.product.name + " " + view.formatNum(x.productQt) +" "+ view.unit(x.productUnit,x.productQt>1);	
 			}
 			x.subTotal = o.quantity * o.productPrice;
 
@@ -218,7 +218,6 @@ class UserContract extends Object
 		}
 		
 		var t = sugoi.i18n.Locale.texts;
-		//var out = [];
 		
 		//checks
 		if (quantity <= 0) return null;
@@ -250,10 +249,10 @@ class UserContract extends Object
 		//cumulate quantities if there is a similar previous order
 		if (prevOrders.length > 0 && !product.multiWeight) {
 			for (prevOrder in prevOrders) {
-				if (!prevOrder.paid) {
+				//if (!prevOrder.paid) {
 					o.quantity += prevOrder.quantity;
 					prevOrder.delete();
-				}
+				//}
 			}
 		}
 		
@@ -265,7 +264,6 @@ class UserContract extends Object
 		}
 		
 		o.insert();
-		//out.push(o);
 		
 		//Stocks
 		if (o.product.stock != null) {
@@ -293,19 +291,16 @@ class UserContract extends Object
 					o.product.lock();
 					o.product.stock = 0;
 					o.product.update();
-					
 					App.current.event(StockMove({product:o.product, move:0 - (quantity - canceled) }));
 					
 				}else {
 					o.product.lock();
 					o.product.stock -= quantity;
 					o.product.update();	
-					
 					App.current.event(StockMove({product:o.product, move:0 - quantity}));
 				}
 			}	
 		}
-		
 		return o;
 	}
 	

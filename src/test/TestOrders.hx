@@ -153,7 +153,7 @@ class TestOrders extends haxe.unit.TestCase
 		//we should get 3 different orders
 		var orders = distrib.getOrders();
 		
-		trace(db.UserContract.prepare(orders));
+		//trace(db.UserContract.prepare(orders));
 		
 		assertEquals(3, orders.length);
 		for ( o in orders){
@@ -161,6 +161,36 @@ class TestOrders extends haxe.unit.TestCase
 			assertEquals(o.product.id, chicken.id);
 			assertEquals(1.0, o.quantity);
 		}
+		
+	}
+	
+	/**
+	 * @author fbarbut
+	 * @date 2018-01-26
+	 * order a product, edit and set qt to zero, order again.
+	 * the same record should be re-used ( if not multiweight )
+	 */
+	function testMakeOrderAndZeroQuantity(){
+		var fraises = TestSuite.STRAWBERRIES;
+		var distrib = db.Distribution.manager.select($contract == fraises.contract, false);
+		
+		var order = db.UserContract.make(bob, 1, fraises, distrib.id);
+		
+		order = db.UserContract.edit(order, 0);
+		
+		assertEquals(0.0, order.quantity);
+		
+		var order2 = db.UserContract.make(bob, 1, fraises, distrib.id);
+		
+		var bobOrders = [];
+		for ( o in distrib.getOrders()) if (o.user.id == bob.id) bobOrders.push(o);
+		
+		//trace(db.UserContract.prepare(bobOrders));
+		
+		assertFalse(fraises.multiWeight);
+		assertEquals(1, bobOrders.length);
+		assertEquals(1.0, bobOrders[0].quantity);
+		
 		
 	}
 }

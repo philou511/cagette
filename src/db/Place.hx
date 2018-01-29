@@ -17,7 +17,6 @@ class Place extends Object
 	public var lng:SNull<SFloat>;
 	@hideInForms @:relation(amapId) public var amap : Amap;
 	
-	
 	public function new() 
 	{
 		super();

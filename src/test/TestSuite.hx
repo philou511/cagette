@@ -64,6 +64,7 @@ class TestSuite
 	
 	//shortcut to datas
 	public static var CHICKEN:db.Product = null; 
+	public static var STRAWBERRIES:db.Product = null; 
 	
 	
 	static function initDatas(){
@@ -136,6 +137,8 @@ class TestSuite
 		p.contract = c;
 		p.stock = 8;
 		p.insert();
+		
+		STRAWBERRIES = p;
 		
 		var p = new db.Product();
 		p.name = "Pommes";
@@ -241,7 +244,6 @@ class TestSuite
 		
 		//i18n
 		var texts = sugoi.i18n.Locale.init("en");
-		trace(texts);
 		
 		App.current.user = u;
 		App.current.view = new View();
