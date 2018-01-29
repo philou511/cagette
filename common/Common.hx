@@ -169,12 +169,17 @@ enum OrderFlags {
 	//Canceled;			//flag for cancelled orders, qt should always be 0
 }
 
+<<<<<<< f2f97023b913fb06d2bdc58c3980dd04ccc7b357
 
 typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,price:Float,total:Float};
 typedef OrderByEndDate = {
 	date: String,
 	contracts: Array<String>
 };
+=======
+typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,priceTTC:Float,priceHT:Float,vat:Float,total:Float};
+typedef OrderByEndDate = {date: String,contracts: Array<String>};
+>>>>>>> merge fix
 
 /**
 	Event enum used for plugins.

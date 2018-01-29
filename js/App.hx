@@ -2,7 +2,8 @@ import react.ReactMacro.jsx;
 import react.*;
 
 //require bootstrap JS since it's bundled with browserify
-@:jsRequire('bootstrap') extern class Bootstrap{}
+//@:jsRequire('bootstrap') extern class Bootstrap{}
+
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
 import react.store.*;
