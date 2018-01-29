@@ -4,11 +4,14 @@ import sugoi.form.validators.EmailValidator;
 import db.Amap.GroupType;
 
 /**
- * Public pages controller
+ * Groups
  */
 class Group extends controller.Controller
 {
 
+	/**
+	 * Public page of a group
+	 */
 	@tpl('group/view.mtt')
 	function doDefault(group:db.Amap){
 		
@@ -28,8 +31,7 @@ class Group extends controller.Controller
 	}
 	
 	/**
-	 * register to a waiting list.
-	 * 
+	 * Register to a waiting list.
 	 * the user can be logged or not !
 	 */
 	@tpl('form.mtt')
@@ -83,7 +85,7 @@ class Group extends controller.Controller
 	
 	
 	/**
-	 * register direclty in an open group
+	 * Register direclty in an open group
 	 * 
 	 * the user can be logged or not !
 	 */
@@ -263,8 +265,6 @@ class Group extends controller.Controller
 				
 			}
 			
-			
-			
 			//contrat variable
 			var vendor = new db.Vendor();
 			vendor.amap = g;
@@ -346,6 +346,18 @@ class Group extends controller.Controller
 		}
 		
 		view.addr = view.escapeJS(addr);
+	}
+	
+	/**
+	 * Groups map
+	 */
+	@tpl("group/map.mtt")
+	public function doMap(){
+		
+		view.lat = app.params.get("lat");
+		view.lng = app.params.get("lng");
+		view.address = app.params.get("address");
+		
 	}
 	
 	

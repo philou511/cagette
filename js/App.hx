@@ -1,5 +1,10 @@
 import react.ReactMacro.jsx;
 import react.*;
+<<<<<<< e144a0f94f1497d3a6c9703c9e056cf4f1cfea5a
+=======
+import react.store.*;
+import react.map.*;
+>>>>>>> wip new map
 
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
@@ -173,6 +178,10 @@ class App {
 
 	public function shop(place:Int, date:String) {
 		ReactDOM.render(jsx('<$Store date=$date place=$place/>'),  js.Browser.document.querySelector('#shop'));
+	}
+	
+	public function groupMap(lat:String,lng:String,address:String) {
+		ReactDOM.render(jsx('<$GroupMap lat="$lat" lng="$lng" address="$address"/>'),  js.Browser.document.querySelector('#map'));
 	}
 
 	/**

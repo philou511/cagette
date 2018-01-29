@@ -164,6 +164,14 @@ typedef PlaceInfos = {
 	longitude:Float
 }
 
+
+typedef GroupOnMap = {
+	id:Int,
+	name:String,
+	image:String,
+	place:PlaceInfos,	
+}
+
 enum OrderFlags {
 	InvertSharedOrder;	//invert order when there is a shared/alternated order
 	//Canceled;			//flag for cancelled orders, qt should always be 0
