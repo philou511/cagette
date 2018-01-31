@@ -3,6 +3,9 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 
+@:jsRequire('react-google-autocomplete', 'default')  
+extern class Autocomplete extends ReactComponent {}
+
 /**
  * Groups Map
  * @author fbarbut
@@ -15,7 +18,17 @@ class GroupMap extends react.ReactComponentOfPropsAndState<{lat:Float,lng:Float,
 	}
 	
 	override public function render(){
-		return jsx("<div><h1>new Map in React JS</h1></div>");
+		return jsx('
+			<div>
+				<h1>new Map in React JS</h1>
+				<Autocomplete
+					onPlaceSelected=${function(place) {
+						trace('Test');
+					}}
+					types=${['address']}
+				/>
+			</div>
+		');
 	}
 	
 }
