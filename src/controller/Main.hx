@@ -52,6 +52,11 @@ class Main extends Controller {
 		
 		view.distribs = out;
 		
+		//view functions
+		view.getWhosTurn = function(orderId:Int, distrib:Distribution) {
+			return db.UserContract.manager.get(orderId, false).getWhosTurn(distrib);
+		}
+		
 		//event for additionnal blocks on home page
 		var e = Blocks([], "home");
 		app.event(e);
@@ -64,14 +69,14 @@ class Main extends Controller {
 	function getNextMultiDeliveries(group:db.Amap){
 		
 		var out = new Map < String, {
-			place:db.Place, //common delivery place
-			startDate:Date, //global delivery start
-			endDate:Date,	//global delivery stop
-			orderStartDate:Date, //global orders opening date
-			orderEndDate:Date,//global orders closing date
+			place:db.Place, 		//common delivery place
+			startDate:Date, 		//global delivery start
+			endDate:Date,			//global delivery stop
+			orderStartDate:Date, 	//global orders opening date
+			orderEndDate:Date,		//global orders closing date
 			active:Bool,
 			products:Array<ProductInfo>, //available products ( if no order )
-			myOrders:Array<{distrib:Distribution,orders:Array<db.UserContract>}>	//my orders
+			myOrders:Array<{distrib:Distribution,orders:Array<UserOrder>}>	//my orders
 			
 		}>();
 		
@@ -99,7 +104,7 @@ class Main extends Controller {
 			var orders = [];
 			if(app.user!=null) orders = d.contract.getUserOrders(app.user,d);
 			if (orders.length > 0){
-				o.myOrders.push({distrib:d,orders:Lambda.array(orders)});
+				o.myOrders.push({distrib:d,orders:db.UserContract.prepare(orders)});
 			}else{
 				//no "order block" if no shop mode	
 				if (!group.hasShopMode() ) {		

@@ -112,33 +112,35 @@
 									<table>
 										<tr>
 											<td>
-												<div style="background-image:url('::c._product.getImage()::')" class="productImg" /> 
+												<div style="background-image:url('::c.productImage::')" class="productImg" /> 
 											</td>
 											<td class="name">
-												<span style="color:#999;" ::cond c.quantity >1:: > ::c.quantity:: x </span>
+												<span style="color:#999;" ::cond c.quantity >1:: > ::raw c.smartQt:: </span>
 												<span style="color:#999;" ::cond c.quantity ==0:: > ::_("Order canceled"):: - </span>
-												::c._product.name::
+												::c.productName::
 												
-												::if c._user2!=null::
-													::if user.id==c._user.id::
-														::set you = c._user::
-														::set mate = c._user2::
+												::if c.userId2!=null::
+													::if user.id==c.userId::
+														::set you = c.userName::
+														::set mate = c.userName2::
 													::else::
-														::set mate = c._user::
-														::set you = c._user2::
+														::set mate = c.userName::
+														::set you = c.userName2::
 													::end::
 											
-													<br/>( partagé avec ::mate.getName()::, 
+													<br/>( 
 													
-													::if c.getWhosTurn(o.distrib)==false::
+													::raw __("alternated with ::mate::",{mate:mate})::, 
+													
+													::if getWhosTurn(c.id,o.distrib)==false::
 											
-														::if c._user.getName() == you.getName()::
+														::if c.userName == you::
 															<span style="color:#080">::_("It's your turn")::</span>
 														::else::
 															::_("It's his/her turn")::
 														::end::
 													::else::
-														::if c._user2.getName() == you.getName()::
+														::if c.userName2 == you::
 															<span style="color:#080">::_("It's your turn")::</span>
 														::else::
 															::_("It's his/her turn")::
