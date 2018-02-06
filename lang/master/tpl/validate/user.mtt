@@ -47,7 +47,7 @@
 						</a>
 					</td>
 					<td>
-						::o.quantity:
+						::raw o.smartQt:
 					</td>
 					<td>
 						$$nullSafe(::o.productRef::)
@@ -120,7 +120,7 @@
 								<span class="glyphicon glyphicon-ok"></span>
 								::_("This payment was received")::
 							</a>
-							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
+							$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
 							::end::
 						</td>
 					</tr>
@@ -141,34 +141,41 @@
 						</td>
 					</tr>
 				::else::
-					<tr><td>::_("This order has been made when payments were disabled")::</td></tr>
+					<tr><td>
+						<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
+							::_("This order has been made when payments were disabled")::
+						</div>
+					</td></tr>
 				::end::				
 			</table>
 			
 			<!-- credit / debit / ok message -->
-			::if(tpaid+amount != 0)::
-				::set class="danger"::
-			::else::
-				::set class="success"::
-			::end::
-			<div class="alert alert-::class:: text-center" style="width:50%;margin:12px auto">
-				::if(tpaid+amount > 0):: 
-
-					$$check(::false::)		
-					::set str = Math.abs(tpaid+amount)+"&nbsp;"+currency()::
-					::raw __("Paid too much, credit of ::amount::",{amount:str})::
-					
-				::elseif(tpaid+amount < 0)::
-				
-					$$check(::false::)						
-					::_("Missing"):: ::Math.abs(tpaid+amount):: ::currency()::
-					
-				::else::	
-				
-					$$check(::true::) ::_("Everything is allright !"):: 
-					
+			::if(tpaid!=null && amount!=null)::
+			
+				::if(tpaid+amount != 0)::
+					::set class="danger"::
+				::else::
+					::set class="success"::
 				::end::
-			</div>
+				<div class="alert alert-::class:: text-center" style="width:50%;margin:12px auto">
+					::if(tpaid+amount > 0):: 
+
+						$$check(::false::)		
+						::set str = Math.abs(tpaid+amount)+"&nbsp;"+currency()::
+						::raw __("Paid too much, credit of ::amount::",{amount:str})::
+						
+					::elseif(tpaid+amount < 0)::
+					
+						$$check(::false::)						
+						::_("Missing"):: ::Math.abs(tpaid+amount):: ::currency()::
+						
+					::else::	
+					
+						$$check(::true::) ::_("Everything is allright !"):: 
+						
+					::end::
+				</div>
+			::end::
 			
 			<p class="text-center" ::cond op!=null::>				
 				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund/)				

@@ -28,8 +28,6 @@ class Product extends Object
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
 	public var multiWeight : Bool;		//product cannot be cumulated in one order record
 	
-	@hideInForms public var type : SInt;	//icones
-	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
 	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy
 	
@@ -40,7 +38,7 @@ class Product extends Object
 	public function new() 
 	{
 		super();
-		type = 0;
+		//type = 0;
 		organic = false;
 		hasFloatQt = false;
 		active = true;
@@ -58,17 +56,14 @@ class Product extends Object
 	 */
 	public function getImage() {
 		if (image == null) {
-			
 			if (txpProduct != null){				
 				return "/img/taxo/cat" + txpProduct.category.id + ".png";
-				
-			}else{
+			}/*else{
 				//old "type" field
 				var e = Type.createEnumIndex(ProductType, type);		
 				return "/img/"+Std.string(e).substr(2).toLowerCase()+".png";		
-			}
-			
-			
+			}*/
+			return "/img/unknown.png";
 		}else {
 			return App.current.view.file(image);
 		}
@@ -99,7 +94,7 @@ class Product extends Object
 			id : id,
 			ref : ref,
 			name : name,
-			type : Type.createEnumIndex(ProductType, type),
+			//type : Type.createEnumIndex(ProductType, type),
 			image : getImage(),
 			contractId : contract.id,
 			price : getPrice(),
@@ -171,6 +166,7 @@ class Product extends Object
 			"organic" 			=> t._("Organic agriculture"),			
 			"vat" 				=> t._("VAT Rate"),			
 			"variablePrice"		=> t._("Variable price based on weight"),			
+			"multiWeight" 		=> t._("Multi-weighing"),	
 		];
 	}
 	

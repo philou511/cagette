@@ -191,10 +191,12 @@ class Group extends controller.Controller
 			case GroupType.ProducerDrive : 
 				g.flags.set(db.Amap.AmapFlags.ShopMode);
 				g.regOption = db.Amap.RegOption.Open;
+				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
 				
 			case GroupType.FarmShop : 
 				g.flags.set(db.Amap.AmapFlags.ShopMode);
 				g.regOption = db.Amap.RegOption.Open;
+				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
 			}
 			
 			g.groupType = type;
@@ -288,14 +290,14 @@ class Group extends controller.Controller
 			var egg = new db.Product();
 			egg.name = t._("12 eggs");
 			egg.price = 5;
-			egg.type = 6;
+			//egg.type = 6;
 			egg.organic = true;
 			egg.contract = contract;
 			egg.insert();
 			
 			var p = new db.Product();
 			p.name = t._("Chicken");
-			p.type = 2;
+			//p.type = 2;
 			p.price = 9.50;
 			p.organic = true;
 			p.contract = contract;

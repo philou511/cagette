@@ -159,7 +159,7 @@ class ContractAdmin extends Controller
 				var p = new db.Product();
 				p.name = source_p.name;
 				p.price = source_p.price;
-				p.type = source_p.type;
+				//p.type = source_p.type;
 				p.contract = contract;
 				p.insert();
 			}
@@ -639,7 +639,7 @@ class ContractAdmin extends Controller
 					var p = new db.Product();
 					p.name = source_p.name;
 					p.price = source_p.price;
-					p.type = source_p.type;
+					//p.type = source_p.type;
 					p.contract = nc;
 					p.image = source_p.image;
 					p.desc = source_p.desc;

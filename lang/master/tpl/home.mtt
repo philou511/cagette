@@ -107,49 +107,50 @@
 							
 						<div class="row">
 							::foreach c o.orders::
-								::if(c.quantity>0)::
-									<div class="col-xs-12 col-sm-6 col-lg-4">
-										<table>
-											<tr>
-												<td>
-													<div style="background-image:url('::c._product.getImage()::')" class="productImg" /> 
-												</td>
-												<td class="name">
-													<span style="color:#999;" ::cond c.quantity >1:: > ::c.quantity:: x </span>
-													::c._product.name::
-													
-													::if c._user2!=null::
-														::if user.id==c._user.id::
-															::set you = c._user::
-															::set mate = c._user2::
-														::else::
-															::set mate = c._user::
-															::set you = c._user2::
-														::end::
+								
+								<div class="col-xs-12 col-sm-6 col-lg-4">
+									<table>
+										<tr>
+											<td>
+												<div style="background-image:url('::c._product.getImage()::')" class="productImg" /> 
+											</td>
+											<td class="name">
+												<span style="color:#999;" ::cond c.quantity >1:: > ::c.quantity:: x </span>
+												<span style="color:#999;" ::cond c.quantity ==0:: > ::_("Order canceled"):: - </span>
+												::c._product.name::
 												
-														<br/>( partagé avec ::mate.getName()::, 
-														
-														::if c.getWhosTurn(o.distrib)==false::
-												
-															::if c._user.getName() == you.getName()::
-																<span style="color:#080">::_("It's your turn")::</span>
-															::else::
-																::_("It's his/her turn")::
-															::end::
-														::else::
-															::if c._user2.getName() == you.getName()::
-																<span style="color:#080">::_("It's your turn")::</span>
-															::else::
-																::_("It's his/her turn")::
-															::end::
-														::end::
-														)
+												::if c._user2!=null::
+													::if user.id==c._user.id::
+														::set you = c._user::
+														::set mate = c._user2::
+													::else::
+														::set mate = c._user::
+														::set you = c._user2::
 													::end::
-												</td>
-											</tr>
-										</table>
-									</div>
-								::end::
+											
+													<br/>( partagé avec ::mate.getName()::, 
+													
+													::if c.getWhosTurn(o.distrib)==false::
+											
+														::if c._user.getName() == you.getName()::
+															<span style="color:#080">::_("It's your turn")::</span>
+														::else::
+															::_("It's his/her turn")::
+														::end::
+													::else::
+														::if c._user2.getName() == you.getName()::
+															<span style="color:#080">::_("It's your turn")::</span>
+														::else::
+															::_("It's his/her turn")::
+														::end::
+													::end::
+													)
+												::end::
+											</td>
+										</tr>
+									</table>
+								</div>
+								
 							::end::
 						</div>
 					

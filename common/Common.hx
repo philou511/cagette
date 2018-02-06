@@ -24,7 +24,7 @@ typedef ProductInfo = {
 	id : Int,
 	name : String,
 	?ref : String,
-	type : ProductType,
+	//type : ProductType,
 	image : Null<String>,
 	contractId : Int,
 	price : Float,
@@ -57,6 +57,7 @@ enum UnitType{
 	Centilitre;
 }
 
+/*
 @:keep
 enum ProductType {
 	CTVegetable;
@@ -72,7 +73,7 @@ enum ProductType {
 	CTApple;
 	CTBread;
 	CTYahourt;	
-}
+}*/
 
 typedef CategoryInfo = {
 	id:Int,
@@ -144,6 +145,19 @@ typedef UserOrder = {
 	contractName:String,
 }
 
+typedef OrderByProduct = {
+	quantity:Float,
+	smartQt:String,
+	pid:Int,
+	pname:String,
+	ref:String,
+	priceHT:Float,
+	priceTTC:Float,
+	vat:Float,
+	total:Float,
+	weightOrVolume:String,
+};
+
 typedef PlaceInfos = {
 	name:String,
 	address1:String,
@@ -156,8 +170,9 @@ typedef PlaceInfos = {
 
 enum OrderFlags {
 	InvertSharedOrder;	//invert order when there is a shared/alternated order
-	Canceled;			//flag for cancelled orders, qt should always be 0
+	//Canceled;			//flag for cancelled orders, qt should always be 0
 }
+
 
 /**
 	Event enum used for plugins.
@@ -167,9 +182,6 @@ enum OrderFlags {
 	to perform an action or modifiy data carried by the event.
 	
 **/
-	
-typedef OrderByProduct = {quantity:Float,pid:Int,pname:String,ref:String,priceHT:Float,priceTTC:Float,vat:Float,total:Float};
-	
 enum Event {
 
 	Page(uri:String);							//a page is displayed

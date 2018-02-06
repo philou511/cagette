@@ -88,6 +88,7 @@ class UserContract extends Object
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
 		var view = App.current.view;
+		var t = sugoi.i18n.Locale.texts;
 		for (o in orders) {
 		
 			var x : UserOrder = cast { };
@@ -112,7 +113,11 @@ class UserContract extends Object
 			x.productHasFloatQt = o.product.hasFloatQt;
 			
 			x.quantity = o.quantity;
-			if(x.productHasFloatQt){
+			
+			//smartQt
+			if (x.quantity == 0.0){
+				x.smartQt = t._("Canceled");
+			}else if(x.productHasFloatQt){
 				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
 			}else{
 				x.smartQt = Std.string(x.quantity);
@@ -122,6 +127,7 @@ class UserContract extends Object
 			}else{
 				x.productName = o.product.name + " " + view.formatNum(x.productQt) +" "+ view.unit(x.productUnit,x.productQt>1);	
 			}
+			
 			x.subTotal = o.quantity * o.productPrice;
 
 			var c = o.product.contract;
@@ -140,7 +146,7 @@ class UserContract extends Object
 			//flags
 			x.paid = o.paid;
 			x.invertSharedOrder = o.flags.has(InvertSharedOrder);
-			x.canceled = o.flags.has(Canceled);
+			//x.canceled = o.flags.has(Canceled);
 			
 			x.contractId = c.id;
 			x.contractName = c.name;
@@ -206,9 +212,11 @@ class UserContract extends Object
 	 */
 	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool):db.UserContract {
 		
+		var t = sugoi.i18n.Locale.texts;
+		
 		//multiweight : make one row per product
 		if (product.multiWeight && quantity > 1.0){
-			if (product.multiWeight && quantity != Math.abs(quantity)) throw "multiweight products should be first recorded with integer quantities";
+			if (product.multiWeight && quantity != Math.abs(quantity)) throw t._("multi-weighing products should be ordered only with integer quantities");
 			
 			var o = null;
 			for ( i in 0...Math.round(quantity)){
@@ -379,7 +387,7 @@ class UserContract extends Object
 		if (newquantity == 0) {
 			order.quantity = 0;			
 			order.paid = true;
-			order.flags.set(OrderFlags.Canceled);
+			//order.flags.set(OrderFlags.Canceled);
 			order.update();
 			//order.delete();			
 			//return null; //need to get an order object with zero qt to manage payment operations properly			
