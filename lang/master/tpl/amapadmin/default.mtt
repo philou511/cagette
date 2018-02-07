@@ -24,34 +24,16 @@
 			</p>
 			
 			
+			<p class="linkToShare">
+				<a href="http://::HOST::/group/::user._amap.id::">
+					http://::HOST::/group/::user._amap.id::				
+				</a>
+			</p>
 			
-			<a href="http://::HOST::/group/::user._amap.id::"><pre>http://::HOST::/group/::user._amap.id::</pre></a>
+			<p>
+				<a href="/group/::user._amap.id::" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span>&nbsp; ::_("Display")::</a>
+			</p>
 			
-			<div class="input-group">				
-				<span class="input-group-btn">
-					<!--<button id="copybtn" class="btn btn-default"><span class="glyphicon glyphicon-copy"></span> ::_("Copy")::</button>-->
-					<a href="/group/::user._amap.id::" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span>&nbsp; ::_("Display")::</a>
-				</span>
-			</div>
-			
-			<!--
-			<input type="hidden" name="urlfield" value="http://::HOST::/group/::user._amap.id::" id="urlfield" />
-			<script>		
-				var copyTextareaBtn = document.querySelector('#copybtn');
-
-				copyTextareaBtn.addEventListener('click', function(event) {
-				  var copyTextarea = document.querySelector('#urlfield');
-				  copyTextarea.select();
-
-				  try {
-					var successful = document.execCommand('copy');
-					var msg = successful ? 'successful' : 'unsuccessful';
-					console.log('Copying text command was ' + msg);
-				  } catch (err) {
-					console.log('Oops, unable to copy');
-				  }
-				});
-			</script>-->
 			
 		</div>
 		
