@@ -17,6 +17,7 @@ lang/es/tmp/*.n
 
 www/file/*
 www/js/app.js
+www/js/libs.js
 tmp/*
 *node_modules*
 MakeFile
