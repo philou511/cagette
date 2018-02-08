@@ -1,7 +1,6 @@
 package controller;
 import db.UserContract;
 import sugoi.form.elements.Checkbox;
-import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
@@ -457,7 +456,7 @@ class ContractAdmin extends Controller
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
 		if ( distribs.length == 0 ) throw Error("/contractAdmin/", t._("There is no delivery during this period"));
 		
-		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:List<OrderByProduct>}>();//key : vendor id
+		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:Array<OrderByProduct>}>();//key : vendor id
 		
 		for (d in distribs){
 			var vid = d.contract.vendor.id;
@@ -689,7 +688,7 @@ class ContractAdmin extends Controller
 	
 	
 	/**
-	 * Commandes groupées par produit.
+	 * Orders grouped by product
 	 */
 	@tpl("contractadmin/ordersByProduct.mtt")
 	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
@@ -709,7 +708,7 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * "bon de commande"
+	 * Purchase order to print
 	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
 	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {

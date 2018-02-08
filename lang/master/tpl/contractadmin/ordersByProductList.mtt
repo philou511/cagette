@@ -48,6 +48,7 @@
 	::set total = 0::
 	<table class="table table-bordered table-hover"  style="width:100%;">
 		<tr style="border-top: 2px solid #AAA;">
+			<th>::_("Weight/Vol.")::</th>
 			<th>::_("Quantities")::</th>
 			<th>::_("Product")::</th>
 			<th>::_("Reference")::</th>
@@ -57,7 +58,10 @@
 		::foreach m orders::			
 		<tr style="border-top: 2px solid #AAA;">		
 			<td>
-				::m.quantity::
+				::raw m.weightOrVolume::
+			</td>
+			<td>
+				::raw m.smartQt::
 			</td>
 			<td>
 				::m.pname::
@@ -72,13 +76,11 @@
 				::formatNum(m.total)::&nbsp;::currency()::
 				::set total = total + m.total::
 			</td>
-			
-			
 		</tr>
 		::end::
 			
 		<tr style="background:#DDD;">	
-			<th colspan="4">::_("Total")::</th>
+			<th colspan="5">::_("Total")::</th>
 			<th>::formatNum(total)::&nbsp;::currency()::</th>
 		</tr>
 	</table>

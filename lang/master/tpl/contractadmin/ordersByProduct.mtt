@@ -15,6 +15,7 @@
 		::set total = 0::
 		<table class="table table-bordered table-hover"  style="width:100%;">
 			<tr>
+				<th>::_("Weight/Vol.")::</th>
 				<th>::_("Quantities")::</th>
 				<th>::_("Product")::</th>
 				<th>::_("Reference")::</th>
@@ -23,10 +24,12 @@
 			</tr>
 
 			::foreach m orders::
-				
 			<tr>
 				<td>
-					::m.quantity::
+					::raw m.weightOrVolume::
+				</td>
+				<td>
+					::raw m.smartQt::
 				</td>
 				<td>
 					::m.pname::
@@ -47,7 +50,7 @@
 			::end::
 				
 			<tr style="background:#DDD;">
-				<th colspan="4">Total</th>
+				<th colspan="5">Total</th>
 				<th>::formatNum(total)::&nbsp;::currency()::</th>
 			</tr>
 

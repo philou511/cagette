@@ -111,18 +111,19 @@ class UserContract extends Object
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
 			x.productHasFloatQt = o.product.hasFloatQt;
+			x.productHasVariablePrice = o.product.variablePrice;
 			
 			x.quantity = o.quantity;
 			
 			//smartQt
 			if (x.quantity == 0.0){
 				x.smartQt = t._("Canceled");
-			}else if(x.productHasFloatQt){
+			}else if(x.productHasFloatQt || x.productHasVariablePrice){
 				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
 			}else{
 				x.smartQt = Std.string(x.quantity);
 			}
-			if (x.productHasFloatQt || x.productQt==null || x.productUnit==null){
+			if (x.productHasFloatQt || x.productHasVariablePrice || x.productQt==null || x.productUnit==null){
 				x.productName = o.product.name;	
 			}else{
 				x.productName = o.product.name + " " + view.formatNum(x.productQt) +" "+ view.unit(x.productUnit,x.productQt>1);	
@@ -146,8 +147,6 @@ class UserContract extends Object
 			//flags
 			x.paid = o.paid;
 			x.invertSharedOrder = o.flags.has(InvertSharedOrder);
-			//x.canceled = o.flags.has(Canceled);
-			
 			x.contractId = c.id;
 			x.contractName = c.name;
 			x.canModify = o.canModify(); 
@@ -402,13 +401,9 @@ class UserContract extends Object
 	/**
 	 * Get orders grouped by products. 
 	 */
-	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<OrderByProduct>{
+	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
 		var view = App.current.view;
 		var t = sugoi.i18n.Locale.texts;
-		//var pids = db.Product.manager.search($contract == d.contract, false);
-		//var pids = Lambda.map(pids, function(x) return x.id);
-		
-		var orders = new List<OrderByProduct>();
 		var where = "";
 		var exportName = "";
 		
@@ -430,26 +425,67 @@ class UserContract extends Object
 			
 		}
 	
-		var sql = 'select 
-				SUM(quantity) as quantity,
-				p.id as pid,
-				p.name as pname,
-				p.price as priceTTC,
-				p.vat as vat,
-				p.ref as ref,
-				SUM(quantity*up.productPrice) as total
+		var sql = '
+			select 
+			SUM(quantity) as quantity,
+			p.id as pid,
+			p.name as pname,
+			p.price as price,
+			p.vat as vat,
+			p.ref as ref,
+			SUM(quantity*up.productPrice) as total
 			from UserContract up, Product p 
 			where up.productId = p.id 
 			$where
 			group by p.id
 			order by pname asc; ';
 			
-		orders = cast sys.db.Manager.cnx.request(sql).results();	
-		
+		var res = sys.db.Manager.cnx.request(sql).results();	
+		var orders = [];
+
 		//populate with full product names
-		for ( o in orders){
-			var p = db.Product.manager.get(o.pid, false);
-			Reflect.setField(o, "pname", p.getName());
+		for ( r in res){
+			var p = db.Product.manager.get(r.pid, false);
+			var o : OrderByProduct = {
+				quantity:1.0 * r.quantity,
+				smartQt:"",
+				pid:p.id,
+				pname:p.name,
+				ref:r.ref,
+				priceHT:null,
+				priceTTC:r.price,
+				vat:null,
+				total:1.0 * r.quantity * r.price,
+				weightOrVolume:"",
+			};
+
+			//smartQt
+			if( p.hasFloatQt || p.variablePrice ){
+				o.smartQt = view.smartQt(o.quantity, p.qt, p.unitType);
+			}else{
+				o.smartQt = Std.string(o.quantity);
+			}
+			o.weightOrVolume = view.smartQt(o.quantity, p.qt, p.unitType);
+			
+			if ( p.hasFloatQt || p.variablePrice || p.qt==null || p.unitType==null){
+				o.pname = p.name;	
+			}else{
+				o.pname = p.name + " " + view.formatNum(p.qt) +" " + view.unit(p.unitType, o.quantity > 1);					
+			}
+
+			//special case : if product is multiweight, we should count the records number ( and not SUM quantities )
+			if (p.multiWeight){
+				sql = 'select 
+				COUNT(up.id) as quantity 
+				from UserContract up, Product p 
+				where up.productId = p.id and up.quantity > 0 and p.id=${p.id}
+				$where';
+				var count = sys.db.Manager.cnx.request(sql).getIntResult(0);					
+				o.smartQt = ""+count;
+			}			
+			
+			orders.push(o);
+			
 		}
 		
 		
@@ -485,7 +521,7 @@ class UserContract extends Object
 			orders = contract.getOrders();
 		}
 		
-		var orders = db.UserContract.prepare(Lambda.list(orders));
+		var orders = db.UserContract.prepare(orders);
 		
 		//CSV export
 		if (csv) {

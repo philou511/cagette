@@ -37,7 +37,19 @@ class Formatting
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;
 	}
+
+	public static function parseFloat(s:String):Float{
+		if(s.indexOf(",")>0){
+			return Std.parseFloat(StringTools.replace(s,",","."));
+		}else{
+			return Std.parseFloat(s);
+		}
+	}
 	
+	/**
+	 *  Display a unit
+	 *  @param u - 
+	 */
 	public static function unit(u:UnitType){
 		/*t = sugoi.i18n.Locale.texts;
 		if(u==null) return t._("piece||unit of a product)");

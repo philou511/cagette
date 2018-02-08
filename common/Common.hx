@@ -3,7 +3,7 @@
  */
 
 
-//A temporary order, before being paid and recorded in DB.
+//A temporary order, waiting for being paid and definitely recorded.
 @:keep
 typedef OrderInSession = {
 	products:Array <{
@@ -47,8 +47,6 @@ typedef ProductInfo = {
 	#end
 }
 
-
-
 enum UnitType{
 	Piece;
 	Kilogram;
@@ -56,24 +54,6 @@ enum UnitType{
 	Litre;
 	Centilitre;
 }
-
-/*
-@:keep
-enum ProductType {
-	CTVegetable;
-	CTCheese;
-	CTChicken;
-	CTUnknown;
-	CTWine;
-	CTMeat;
-	CTEggs;
-	CTHoney;
-	CTFish;
-	CTJuice;
-	CTApple;
-	CTBread;
-	CTYahourt;	
-}*/
 
 typedef CategoryInfo = {
 	id:Int,
@@ -125,6 +105,7 @@ typedef UserOrder = {
 	productQt:Float,
 	productUnit:UnitType,
 	productHasFloatQt:Bool,
+	productHasVariablePrice:Bool,
 	
 	quantity:Float,
 	smartQt:String,
