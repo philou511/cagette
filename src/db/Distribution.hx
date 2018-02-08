@@ -79,7 +79,10 @@ class Distribution extends Object
 	
 	public function isDistributor(u:User) {
 		if (u == null) return false;
-		return (u.id == distributor1.id) || (u.id == distributor2.id) || (u.id == distributor3.id) || (u.id == distributor4.id);
+		return (distributor1!=null && u.id == distributor1.id) || 
+			(distributor2!=null && u.id == distributor2.id) || 
+			(distributor3!=null && u.id == distributor3.id) || 
+			(distributor4!=null && u.id == distributor4.id);
 	}
 	
 	/**

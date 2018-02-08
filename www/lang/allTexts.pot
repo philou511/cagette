@@ -172,11 +172,11 @@ msgstr ""
 msgid "Options of payment"
 msgstr ""
 
-#: src/controller/api/Order.hx:982 src/controller/api/Order.hx:3006 src/controller/ContractAdmin.hx:17736 src/controller/ContractAdmin.hx:18814 src/controller/ContractAdmin.hx:19650 src/controller/ContractAdmin.hx:22497 src/controller/ContractAdmin.hx:23360 src/controller/ContractAdmin.hx:24259 src/controller/ContractAdmin.hx:25018 src/controller/ContractAdmin.hx:26329 src/controller/ContractAdmin.hx:26628 src/controller/ContractAdmin.hx:28688 src/controller/ContractAdmin.hx:29430 src/controller/ContractAdmin.hx:29997
+#: src/controller/api/Order.hx:982 src/controller/api/Order.hx:3006 src/controller/ContractAdmin.hx:17736 src/controller/ContractAdmin.hx:18814 src/controller/ContractAdmin.hx:19650 src/controller/ContractAdmin.hx:22497 src/controller/ContractAdmin.hx:23360 src/controller/ContractAdmin.hx:24259 src/controller/ContractAdmin.hx:25018 src/controller/ContractAdmin.hx:26329 src/controller/ContractAdmin.hx:26628 src/controller/ContractAdmin.hx:28452 src/controller/ContractAdmin.hx:29194 src/controller/ContractAdmin.hx:29761
 msgid "You do not have the authorization to manage this contract"
 msgstr ""
 
-#: src/controller/api/Order.hx:1087 src/controller/api/Order.hx:3111 src/controller/ContractAdmin.hx:29605 src/controller/ContractAdmin.hx:30172
+#: src/controller/api/Order.hx:1087 src/controller/api/Order.hx:3111 src/controller/ContractAdmin.hx:29369 src/controller/ContractAdmin.hx:29936
 msgid "This delivery has been already validated"
 msgstr ""
 
@@ -184,19 +184,19 @@ msgstr ""
 msgid "::user:: is not member of this group"
 msgstr ""
 
-#: src/controller/api/Order.hx:4034 src/controller/ContractAdmin.hx:32267
+#: src/controller/api/Order.hx:4034 src/controller/ContractAdmin.hx:32031
 msgid "Unable to find product ::pid::"
 msgstr ""
 
-#: src/controller/api/Order.hx:4416 src/controller/ContractAdmin.hx:31500 src/controller/ContractAdmin.hx:32665
+#: src/controller/api/Order.hx:4416 src/controller/ContractAdmin.hx:31264 src/controller/ContractAdmin.hx:32429
 msgid "Unable to find user #::num::"
 msgstr ""
 
-#: src/controller/api/Order.hx:4520 src/controller/ContractAdmin.hx:32775
+#: src/controller/api/Order.hx:4520 src/controller/ContractAdmin.hx:32539
 msgid "::user:: is not part of this group"
 msgstr ""
 
-#: src/controller/api/Order.hx:4612 src/controller/ContractAdmin.hx:32870
+#: src/controller/api/Order.hx:4612 src/controller/ContractAdmin.hx:32634
 msgid "Both selected accounts must be different ones"
 msgstr ""
 
@@ -498,11 +498,11 @@ msgstr ""
 msgid "No delivery in this contract"
 msgstr ""
 
-#: src/controller/ContractAdmin.hx:28846
+#: src/controller/ContractAdmin.hx:28610
 msgid "The contract has been canceled"
 msgstr ""
 
-#: src/controller/ContractAdmin.hx:33897 src/controller/ContractAdmin.hx:33994
+#: src/controller/ContractAdmin.hx:33661 src/controller/ContractAdmin.hx:33758
 msgid "The order has been updated"
 msgstr ""
 
@@ -897,7 +897,7 @@ msgstr ""
 msgid "With orders"
 msgstr ""
 
-#: src/controller/Member.hx:2162 src/controller/Messages.hx:4047
+#: src/controller/Member.hx:2162 src/controller/Messages.hx:4001
 msgid "Memberships to be renewed"
 msgstr ""
 
@@ -929,7 +929,7 @@ msgstr ""
 msgid "membership request deleted"
 msgstr ""
 
-#: src/controller/Member.hx:5555 src/controller/Member.hx:6118 src/controller/Messages.hx:2531
+#: src/controller/Member.hx:5555 src/controller/Member.hx:6118 src/controller/Messages.hx:2485
 msgid "An error occurred while sending emails, please retry"
 msgstr ""
 
@@ -1173,52 +1173,52 @@ msgstr ""
 msgid "Subscription deleted"
 msgstr ""
 
-#: src/controller/Messages.hx:875
+#: src/controller/Messages.hx:829
 msgid "Sender name"
 msgstr ""
 
-#: src/controller/Messages.hx:963
+#: src/controller/Messages.hx:917
 msgid "Sender E-Mail"
 msgstr ""
 
-#: src/controller/Messages.hx:1048
+#: src/controller/Messages.hx:1002
 msgid "Recipients"
 msgstr ""
 
-#: src/controller/Messages.hx:1160 lang/master/tpl/messages/message.mtt:117
+#: src/controller/Messages.hx:1114 lang/master/tpl/messages/message.mtt:117
 msgid "Subject:"
 msgstr ""
 
-#: src/controller/Messages.hx:1258
+#: src/controller/Messages.hx:1212
 msgid "Message:"
 msgstr ""
 
-#: src/controller/Messages.hx:2637
+#: src/controller/Messages.hx:2591
 msgid "The message has been sent"
 msgstr ""
 
-#: src/controller/Messages.hx:3216
+#: src/controller/Messages.hx:3170
 msgid "Non authorized access"
 msgstr ""
 
-#: src/controller/Messages.hx:3727
+#: src/controller/Messages.hx:3681
 msgid "Everyone"
 msgstr ""
 
-#: src/controller/Messages.hx:3768
+#: src/controller/Messages.hx:3722
 msgid "The board: persons in charge + contracts + memberships"
 msgstr ""
 
-#: src/controller/Messages.hx:3875
+#: src/controller/Messages.hx:3829
 msgid "TEST: me + spouse"
 msgstr ""
 
-#: src/controller/Messages.hx:3938
+#: src/controller/Messages.hx:3892
 msgid "Members without contract/order"
 msgstr ""
 
-#: src/controller/Messages.hx:4226
-msgid "Subscribers "
+#: src/controller/Messages.hx:4161
+msgid "Subscribers"
 msgstr ""
 
 #: src/controller/Place.hx:829
@@ -1580,7 +1580,7 @@ msgstr ""
 msgid "Contract name"
 msgstr ""
 
-#: src/db/Contract.hx:8266 src/db/Product.hx:4258 src/db/Vendor.hx:982
+#: src/db/Contract.hx:8266 src/db/Product.hx:4037 src/db/Vendor.hx:982
 msgid "Description"
 msgstr ""
 
@@ -1680,51 +1680,51 @@ msgstr ""
 msgid "Longitude"
 msgstr ""
 
-#: src/db/Product.hx:4151
+#: src/db/Product.hx:3930
 msgid "Product name"
 msgstr ""
 
-#: src/db/Product.hx:4189 lang/master/tpl/contractadmin/products.mtt:1781
+#: src/db/Product.hx:3968 lang/master/tpl/contractadmin/products.mtt:1781
 msgid "Product ID"
 msgstr ""
 
-#: src/db/Product.hx:4226 lang/master/tpl/contract/order.mtt:806 lang/master/tpl/contract/orderAndPay.mtt:904 lang/master/tpl/contractadmin/edit.mtt:1084 lang/master/tpl/contractadmin/products.mtt:1874 lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:1961
+#: src/db/Product.hx:4005 lang/master/tpl/contract/order.mtt:806 lang/master/tpl/contract/orderAndPay.mtt:904 lang/master/tpl/contractadmin/edit.mtt:1084 lang/master/tpl/contractadmin/products.mtt:1874 lang/master/tpl/member/view.mtt:3186 lang/master/tpl/product/import.mtt:1961
 msgid "Price"
 msgstr ""
 
-#: src/db/Product.hx:4296 lang/master/tpl/contractadmin/products.mtt:1950
+#: src/db/Product.hx:4075 lang/master/tpl/contractadmin/products.mtt:1950
 msgid "Stock"
 msgstr ""
 
-#: src/db/Product.hx:4331
+#: src/db/Product.hx:4110
 msgid "Base unit"
 msgstr ""
 
-#: src/db/Product.hx:4365 lang/master/tpl/contract/orderByDate.mtt:757 lang/master/tpl/contractadmin/edit.mtt:1114 lang/master/tpl/contractadmin/stats.mtt:742
+#: src/db/Product.hx:4144 lang/master/tpl/contract/orderByDate.mtt:757 lang/master/tpl/contractadmin/edit.mtt:1114 lang/master/tpl/contractadmin/stats.mtt:800
 msgid "Quantity"
 msgstr ""
 
-#: src/db/Product.hx:4407
+#: src/db/Product.hx:4186
 msgid "Allow fractional quantities"
 msgstr ""
 
-#: src/db/Product.hx:4465
+#: src/db/Product.hx:4244
 msgid "Active"
 msgstr ""
 
-#: src/db/Product.hx:4503 lang/master/tpl/shop/productInfo.mtt:1271
+#: src/db/Product.hx:4282 lang/master/tpl/shop/productInfo.mtt:1271
 msgid "Organic agriculture"
 msgstr ""
 
-#: src/db/Product.hx:4551
+#: src/db/Product.hx:4330
 msgid "VAT Rate"
 msgstr ""
 
-#: src/db/Product.hx:4595
+#: src/db/Product.hx:4374
 msgid "Variable price based on weight"
 msgstr ""
 
-#: src/db/Product.hx:4660
+#: src/db/Product.hx:4439
 msgid "Multi-weighing"
 msgstr ""
 
@@ -2107,7 +2107,7 @@ msgstr ""
 msgid "Qty"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:406 lang/master/tpl/contract/default.mtt:2695 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:873 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1052 lang/master/tpl/contractadmin/orders.mtt:3720 lang/master/tpl/contractadmin/ordersByDate.mtt:2520 lang/master/tpl/contractadmin/ordersByProduct.mtt:647 lang/master/tpl/contractadmin/ordersByProductList.mtt:1626 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1586 lang/master/tpl/contractadmin/stats.mtt:775 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:788 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4202 lang/master/tpl/validate/user.mtt:868
+#: lang/master/tpl/contract/default.mtt:406 lang/master/tpl/contract/default.mtt:2695 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:873 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1052 lang/master/tpl/contractadmin/orders.mtt:3720 lang/master/tpl/contractadmin/ordersByDate.mtt:2520 lang/master/tpl/contractadmin/ordersByProduct.mtt:647 lang/master/tpl/contractadmin/ordersByProductList.mtt:1626 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1586 lang/master/tpl/contractadmin/stats.mtt:833 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:788 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4202 lang/master/tpl/validate/user.mtt:868
 msgid "Product"
 msgstr ""
 
@@ -2691,39 +2691,39 @@ msgstr ""
 msgid "Old orders"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:100
+#: lang/master/tpl/contractadmin/stats.mtt:106
 msgid "Seniority of subscribers"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:193
+#: lang/master/tpl/contractadmin/stats.mtt:210
 msgid "Sharing between orders"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:279
-msgid "Seniority of subscribers of "
+#: lang/master/tpl/contractadmin/stats.mtt:308
+msgid "Seniority of subscribers of ::contract::"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:400
+#: lang/master/tpl/contractadmin/stats.mtt:458
 msgid "Number"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:431
+#: lang/master/tpl/contractadmin/stats.mtt:489
 msgid "Year"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:638
+#: lang/master/tpl/contractadmin/stats.mtt:696
 msgid "Sharing between orders of"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:807
+#: lang/master/tpl/contractadmin/stats.mtt:865
 msgid "Total price"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:843
+#: lang/master/tpl/contractadmin/stats.mtt:901
 msgid "% of orders"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/stats.mtt:1163
+#: lang/master/tpl/contractadmin/stats.mtt:1221
 msgid "products"
 msgstr ""
 

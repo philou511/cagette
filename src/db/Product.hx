@@ -51,19 +51,15 @@ class Product extends Object
 	}
 	
 	/**
-	 * Renvoie l'URL complète d'une image en fonction du type
-	 * ou une photo uploadée si elle existe
+	 * Returns product image URL
 	 */
 	public function getImage() {
 		if (image == null) {
 			if (txpProduct != null){				
 				return "/img/taxo/cat" + txpProduct.category.id + ".png";
-			}/*else{
-				//old "type" field
-				var e = Type.createEnumIndex(ProductType, type);		
-				return "/img/"+Std.string(e).substr(2).toLowerCase()+".png";		
-			}*/
-			return "/img/unknown.png";
+			}else{
+				return "/img/unknown.png";
+			}			
 		}else {
 			return App.current.view.file(image);
 		}

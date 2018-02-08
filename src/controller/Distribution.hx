@@ -82,7 +82,7 @@ class Distribution extends Controller
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 			var contracts = app.user.amap.getActiveContracts(true);
-			var cids = Lambda.map(contracts, function(c) return c.id);
+			//var cids = Lambda.map(contracts, function(c) return c.id);
 			var cconst = [];
 			var cvar = [];
 			for ( c in contracts) {

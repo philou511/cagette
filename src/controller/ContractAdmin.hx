@@ -821,34 +821,36 @@ class ContractAdmin extends Controller
 		
 		if (args == null) args = { stat:0 };
 		view.stat = args.stat;
-		
+		var pids = contract.getProducts().map(function(x) return x.id);
 		switch(args.stat) {
 			case 0 : 
 				//ancienneté des amapiens
-				view.anciennete = sys.db.Manager.cnx.request("select YEAR(u.cdate) as uyear ,count(DISTINCT u.id) as cnt from User u, UserContract up where up.userId=u.id and up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") group by uyear;").results();
+				
+				if(pids.length==0){
+					view.anciennete = new List();
+				}else{
+					view.anciennete = sys.db.Manager.cnx.request("select YEAR(u.cdate) as uyear ,count(DISTINCT u.id) as cnt from User u, UserContract up where up.userId=u.id and up.productId IN (" + pids.join(",") + ") group by uyear;").results();
+				}
+				
 			case 1 : 
 				//repartition des commandes
-				var pids = db.Product.manager.search($contract == contract, false);
-				var pids = Lambda.map(pids, function(x) return x.id);
-		
-				//view.contracts = sys.db.Manager.cnx.request("select u.firstName , u.lastName as uname, u.id as uid, p.name as pname , up.* from User u, UserContract up, Product p where up.userId=u.id and up.productId=p.id and p.contractId="+contract.id+" order by uname asc;").results();
-				
-				var repartition = sys.db.Manager.cnx.request("select sum(quantity) as quantity,productId,p.name,p.price from UserContract up, Product p where up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") and up.productId=p.id group by productId").results();
+				var repartition = new List();
 				var total = 0;
 				var totalPrice = 0;
-				for ( r in repartition) {
-					total += r.quantity;
-					totalPrice += r.price*r.quantity; 
-				}
-				for (r in repartition) {
-					Reflect.setField(r, "percent", Math.round((r.quantity/total)*100)  );
-				}
-				
-				
-				if ( app.params.exists("csv") ){
+				if(pids.length!=0){	
+					var repartition = sys.db.Manager.cnx.request("select sum(quantity) as quantity,productId,p.name,p.price from UserContract up, Product p where up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") and up.productId=p.id group by productId").results();
+					for ( r in repartition) {
+						total += r.quantity;
+						totalPrice += r.price*r.quantity; 
+					}
+					for (r in repartition) {
+						Reflect.setField(r, "percent", Math.round((r.quantity/total)*100)  );
+					}
 					
-					sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
-				}
+					if ( app.params.exists("csv") ){					
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+					}
+				}				
 				
 				view.repartition = repartition;
 				view.totalQuantity = total;
