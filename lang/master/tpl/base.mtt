@@ -51,7 +51,10 @@
 		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
 		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-		
+			
+		<!-- Leaflet CSS -->
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+
 		<!-- typeahead 
 		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.js"></script>	-->	
 		

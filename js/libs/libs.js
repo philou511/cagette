@@ -12,7 +12,10 @@
     'react-dom': require('react-dom'),
     'react-bootstrap-typeahead': require('react-bootstrap-typeahead'),
     'react-datetime': require('react-datetime'),
-    'react-google-autocomplete': require('react-google-autocomplete')
+    'leaflet': require('leaflet'),
+    'react-leaflet': require('react-leaflet'),
+    'react-places-autocomplete': require('react-places-autocomplete'),
+    'geolib': require('geolib')
   });
 
   if (process.env.NODE_ENV !== 'production') {
