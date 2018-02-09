@@ -33,8 +33,7 @@ class Distribution extends Controller
 		
 		if (type == null) {
 		
-			//display form
-			
+			//display form			
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ value:"one", label:t._("One person per page") },

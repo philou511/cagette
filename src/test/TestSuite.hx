@@ -13,8 +13,15 @@ class TestSuite
 		initDatas();
 		
 		var r = new haxe.unit.TestRunner();
-		r.add(new test.TestOrders());
+		//r.add(new test.TestOrders());
 		//r.add(new test.TestReports());
+
+		#if plugins
+		//cagette-pro
+		pro.test.ProTestSuite.init();
+		r.add(new pro.test.TestProductService());
+		#end
+
 		r.run();
 	}
 	
@@ -51,15 +58,21 @@ class TestSuite
 		createTable(db.Place.manager);
 		createTable(db.Distribution.manager);
 		createTable(db.Basket.manager);
+		createTable(db.TxpProduct.manager);
+		createTable(db.TxpCategory.manager);
+		createTable(db.TxpSubCategory.manager);
 	}
 	
-	static function createTable( m  ){
+	public static function createTable( m  ){
 		if ( sys.db.TableCreate.exists(m) ){
 			sys.db.Manager.cnx.request("DROP TABLE "+m.dbInfos().name+";");
 		}
 		Sys.println("Creating table "+ m.dbInfos().name);
-		sys.db.TableCreate.create(m);
-		
+		sys.db.TableCreate.create(m);		
+	}
+
+	public static function truncate(m){
+		sys.db.Manager.cnx.request("TRUNCATE TABLE "+m.dbInfos().name+";");
 	}
 	
 	//shortcut to datas

@@ -2,7 +2,6 @@ package db;
 import sugoi.form.ListData;
 import sys.db.Object;
 import sys.db.Types;
-import Common;
 
 /**
  * Distrib
