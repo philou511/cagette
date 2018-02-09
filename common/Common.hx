@@ -155,6 +155,7 @@ typedef OrderByProduct = {
 };
 
 typedef PlaceInfos = {
+	id:Int,
 	name:String,
 	address1:String,
 	address2:String,
