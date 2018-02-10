@@ -20,16 +20,22 @@
     overflow-y: scroll;
   }
   .group {
-      padding: 0.75rem 1.5rem;
-      cursor: pointer;
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: black;
+    cursor: pointer;
 
-      h2 {
-        font-size: 2rem;
-      }
+    h2 {
+      font-size: 2rem;
+    }
 
-      &:hover {
-        background-color: #AAA;
-      }
+    &:hover {
+      text-decoration: none;
+    }
+
+    &.focused {
+      background-color: #AAA;
+    }
   }
 
   .autocomplete-input,
@@ -57,12 +63,12 @@
     z-index: 1001;
   }
 
-  .Demo__suggestion-item {
+  .autocomplete-item {
     padding: 4px;
     text-align: left;
   }
 
-  .Demo__suggestion-icon {
+  .autocomplete-icon {
     margin-right: 8px;
   }
 
@@ -81,6 +87,10 @@
   }
 
   .icon {
+    cursor: pointer;
+  }
+
+  .popup {
     cursor: pointer;
   }
 }

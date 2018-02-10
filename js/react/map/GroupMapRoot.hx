@@ -5,6 +5,7 @@ import react.ReactMacro.jsx;
 import utils.HttpUtil;
 import Common;
 
+
 using Lambda;
 
 @:jsRequire('react-places-autocomplete', 'default')  
@@ -38,7 +39,14 @@ typedef GroupMapRootState = {
 	var point:Dynamic;
 	var address:String;
 	var groups:Array<GroupOnMap>;
-	var groupFocusedId:String;
+	var groupFocusedId:Int;
+	var isInit:Bool;
+};
+
+typedef GroupMapRootProps = {
+	var lat:Float;
+	var lng:Float;
+	var address:String;
 };
 
 class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
@@ -52,11 +60,11 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 		super(props);
 
 		state = { 
-			point: null,
-			address: '',
-			// address: '165 rue du Tondu, Bordeaux, France',
+			point: L.latLng(props.lat, props.lng),
+			address: props.address,
 			groups: [],
-			groupFocusedId: null
+			groupFocusedId: null,
+			isInit: false
 		};
 	}
 
@@ -68,7 +76,7 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 
 	function openPopup(group:Dynamic) {
 		setState({
-			groupFocusedId: [group.place.latitude, group.place.longitude].join('')
+			groupFocusedId: group.place.id
 		});
 	}
 
@@ -79,7 +87,7 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 	}
 
 	function geocodeByAddress(address:String):Promise<Dynamic> {
-		return GeoUtil.geocodeByAddress(state.address)
+		return GeoUtil.geocodeByAddress(address)
 		.then(function(results) {
 			var lat = results[0].geometry.location.lat();
 			var lng = results[0].geometry.location.lng();
@@ -88,8 +96,18 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 		});
 	}
 
-	function fetchGroups(lat:Float, lng:Float):Promise<Dynamic> {
-		return HttpUtil.fetch(GROUP_MAP_URL, GET, {lat: lat, lng: lng}, JSON);
+	function fetchGroups(lat:Float, lng:Float) {
+		HttpUtil.fetch(GROUP_MAP_URL, GET, {lat: lat, lng: lng}, JSON)
+		.then(function(results) {
+			setState({
+				point: L.latLng(lat, lng),
+				groups: results.groups,
+				isInit: true
+			}, fillDistanceMap);
+		})
+		.catchError(function(error) {
+			trace('Error', error);
+		});
 	}
 
 	function fetchGroupsInsideBox(newBox) {
@@ -127,8 +145,8 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 		forceUpdate();
 	}
 
-	function orderGroupsByDistance() {
-		state.groups.sort(function(a, b) {
+	function orderGroupsByDistance(groups:Array<GroupOnMap>) {
+		groups.sort(function(a, b) {
 			return distanceMap.get(a.place.id) - distanceMap.get(b.place.id);
 		});
 	}
@@ -148,15 +166,7 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 
 		geocodeByAddress(address)
 		.then(function(coord) {
-			return fetchGroups(coord.lat, coord.lng)
-			.then(function(results) {
-				var groups:Array<Dynamic> = results.groups;
-
-				setState({
-					point: L.latLng(coord.lat, coord.lng),
-					groups: results.groups
-				}, fillDistanceMap);
-			});
+			fetchGroups(coord.lat, coord.lng);
 		})
 		.catchError(function(error) {
 			trace('Error', error);
@@ -164,9 +174,20 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
   }
 
 	override public function componentDidMount() {
-		if (state.address != '') {
+		if (state.point != null)
+			fetchGroups(state.point.lat, state.point.lng);
+		else if (state.address != '')
 			handleSelect(state.address);
-		}
+	}
+
+	function renderSuggestion(obj:Dynamic) {
+		return jsx('
+      <div className="autocomplete-item">
+        <i className="fa fa-map-marker autocomplete-icon" />
+        <strong>${obj.formattedSuggestion.mainText}</strong>&nbsp;
+        <small className="text-muted">${obj.formattedSuggestion.secondaryText}</small>
+      </div>
+    ');
 	}
 
 	override public function render() {
@@ -181,12 +202,15 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
       autocompleteContainer: 'autocomplete-results',
     };
 
+		orderGroupsByDistance(state.groups);
+
 		return jsx('
 			<div className="group-map">
       	<Autocomplete
 					inputProps=${inputProps}
 					onSelect=${handleSelect}
 					classNames=${cssClasses}
+					renderSuggestion=${renderSuggestion}
 				/>
 				${renderGroupList()}
 				${renderGroupMap()}
@@ -195,6 +219,9 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 	}
 
 	function renderGroupMap() {
+		if (!state.isInit)
+			return null;
+		
 		return jsx('
 			<GroupMap
 				addressCoord=${state.point}
@@ -230,17 +257,26 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 			return null;
     }));
 
+		var distance = null;
+		if (distanceMap.get(group.place.id) != null)
+			distance = jsx('<div>${convertDistance(distanceMap.get(group.place.id))}</div>');
+
+		var classNames = ['group'];
+		if (group.place.id == state.groupFocusedId)
+			classNames.push('focused');
+
 		return jsx('
-			<div
+			<a
+				target=""
 				onMouseEnter=${function() { openPopup(group); }}
 				onMouseLeave=${closePopup}
-				className="group"
+				className=${classNames.join(' ')}
 				key=${group.place.id}
 			>
 				<h2>${group.name}</h2>
 				${addressBlock}
-				<div>${convertDistance(distanceMap.get(group.place.id))}</div>
-			</div>
+				${distance}
+			</a>
 		');
 	}
 }
