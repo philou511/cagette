@@ -13,7 +13,10 @@
 		
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.min.css"/>
-
+		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/shop.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/map.css"/>
+		<link href='//fonts.googleapis.com/css?family=Cantora+One&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+	
 		<!-- React 
 		::if DEBUG ::
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
@@ -33,15 +36,15 @@
 		<!-- Haxe JS
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>-->
 		
-		<!-- bundled js with browserify
-		<script type="text/javascript" src="/js/::getVariable('js')::/bundle.js"></script> -->
-		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
 		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
 		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-		
+			
+		<!-- Leaflet CSS -->
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+
 		<!-- typeahead 
 		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.js"></script>	-->	
 		

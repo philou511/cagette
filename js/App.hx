@@ -177,7 +177,7 @@ class App {
 	}
 	
 	public function groupMap(lat:String,lng:String,address:String) {
-		ReactDOM.render(jsx('<$GroupMap lat="$lat" lng="$lng" address="$address"/>'),  js.Browser.document.querySelector('#map'));
+		ReactDOM.render(jsx('<$GroupMapRoot lat="$lat" lng="$lng" address="$address"/>'),  js.Browser.document.querySelector('#map'));
 	}
 
 	/**
