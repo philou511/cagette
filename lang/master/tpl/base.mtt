@@ -12,14 +12,8 @@
 		</title>
 		
 		<!-- Cagette CSS -->
-<<<<<<< 55b13606f7f74e9d706c36185d2898203e2220e7
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.min.css"/>
-=======
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/newShop.css"/>
-		<link href='//fonts.googleapis.com/css?family=Cantora+One&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
->>>>>>> added dev support for sass compilation
-		
+
 		<!-- React 
 		::if DEBUG ::
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
@@ -29,8 +23,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js"></script>		
 		::end::
 		-->
-		
-		
+			
 		<!-- JQUERY -->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 		

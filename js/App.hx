@@ -1,14 +1,10 @@
 import react.ReactMacro.jsx;
 import react.*;
-<<<<<<< e144a0f94f1497d3a6c9703c9e056cf4f1cfea5a
-=======
 import react.store.*;
 import react.map.*;
->>>>>>> wip new map
 
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
-
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
 import react.store.*;
