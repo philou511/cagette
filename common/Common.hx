@@ -2,7 +2,6 @@
  * Common.hx : Shared entities between server and client
  */
 
-
 @:keep
 typedef OrderSimple = {
 	products: Array<{

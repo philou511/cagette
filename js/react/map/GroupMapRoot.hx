@@ -197,16 +197,16 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 		};
 
 		var cssClasses = {
-      root: 'form-group',
-      input: 'autocomplete-input',
-      autocompleteContainer: 'autocomplete-results',
-    };
+			root: 'form-group',
+			input: 'autocomplete-input',
+			autocompleteContainer: 'autocomplete-results',
+		};
 
 		orderGroupsByDistance(state.groups);
 
 		return jsx('
 			<div className="group-map">
-      	<Autocomplete
+      			<Autocomplete
 					inputProps=${inputProps}
 					onSelect=${handleSelect}
 					classNames=${cssClasses}
@@ -214,8 +214,7 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 				/>
 				${renderGroupList()}
 				${renderGroupMap()}
-      </div>
-		');
+      		</div>');
 	}
 
 	function renderGroupMap() {

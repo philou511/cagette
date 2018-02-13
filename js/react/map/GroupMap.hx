@@ -4,6 +4,11 @@ import react.ReactMacro.jsx;
 import Common;
 
 using Lambda;
+
+/**
+ *  Externs for react-leaflet 
+ *  @doc https://react-leaflet.js.org/docs/en/intro.html
+ */
 @:jsRequire('react-leaflet', 'Map')  
 extern class LeafMap extends ReactComponent {}
 @:jsRequire('react-leaflet', 'TileLayer')  
