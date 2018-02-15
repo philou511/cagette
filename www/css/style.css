@@ -164,6 +164,8 @@ table.product {
     font-size: 90%;
     color: #666; }
   table.product a.productName {
+    line-height: 20px;
+    display: block;
     font-weight: bold; }
 
 /* GLOBAL TABLE SKINNING */

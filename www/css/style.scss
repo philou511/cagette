@@ -11,7 +11,7 @@
 /*body{
   background-color:#F8F4E5 !important;    
 }*/
-
+ 
 
 h1,h2,h3,h4{
   margin-top: 4px !important;
@@ -202,17 +202,19 @@ table.product{
 		padding:8px;
 		vertical-align:top;
 	}
-	
+
 	width:100%;	
 	height:135px;
 	overflow:auto;
-	
+
 	.desc{
 		font-size:90%;
 		color:#666;
 	}
-	
+
 	a.productName{
+		line-height: 20px;
+		display: block;
 		font-weight:bold;
 	}
 }
