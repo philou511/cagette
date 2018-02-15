@@ -95,7 +95,7 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
   }
 
   function getMarker(element:Dynamic, id:Int):Void {
-    if (element != null && !markerMap.exists(id))
+    if (element != null)
       markerMap.set(id, element.leafletElement);
   }
 
@@ -135,10 +135,6 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
       getGroups();
   }
 
-  function handleFocusedMarker() {
-    
-  }
-
   override public function componentDidMount() {
     if (props.addressCoord == null)
       getGroups();
@@ -152,14 +148,22 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
 
   override public function componentDidUpdate(prevProps:GroupMapProps, prevState:GroupMapState) {
     if (props.groupFocusedId != null) {
-      var focusedMarker = markerMap.get(props.groupFocusedId);
-      focusedMarker.openPopup();
+      if (
+        prevProps.groupFocusedId != props.groupFocusedId
+      || state.focusedMarker == null
+      ) {
+        if (state.focusedMarker != null)
+          state.focusedMarker.closePopup();
 
-      setState({
-        focusedMarker: focusedMarker
-      });
+        var focusedMarker = markerMap.get(props.groupFocusedId);
+        focusedMarker.openPopup();
+
+        setState({
+          focusedMarker: focusedMarker
+        });
+      }
     }
-    else if (state.focusedMarker != null) {
+    else if (prevProps.groupFocusedId != null && state.focusedMarker != null) {
       state.focusedMarker.closePopup();
 
       setState({
