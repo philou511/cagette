@@ -8,7 +8,7 @@ class Admin extends Controller {
 		super();
 		view.category = 'admin';
 		
-		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
+		//trigger a "Nav" event
 		var nav = new Array<Link>();
 		var e = Nav(nav,"admin");
 		app.event(e);

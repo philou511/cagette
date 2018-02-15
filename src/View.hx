@@ -107,7 +107,7 @@ class View extends sugoi.BaseView {
 	 * @param	unit
 	 */
 	public function pricePerUnit(price:Float,qt:Float, unit:UnitType){
-		if (qt <= 1 || qt == null || price==0) return "";
+		if (qt == 1 || qt == null || price==0) return "";
 		var _price = price / qt;
 		var _unit = unit;
 		
@@ -117,10 +117,7 @@ class View extends sugoi.BaseView {
 			_unit = Kilogram;
 		}
 		return formatNum(_price) + "&nbsp;" + currency() + "/" + this.unit(_unit);
-		
 	}
-	
-	
 	
 	/**
 	 * clean numbers in views

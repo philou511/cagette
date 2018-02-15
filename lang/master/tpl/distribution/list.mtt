@@ -7,9 +7,14 @@
 </head>
 <body>	
 	::set date = getDate(distrib.date)::
-	<h2>::contract._amap.name:: - 
-	::__("Delivery on ::dow:: ::dom:: ::month::, at ::hour::",{dow:date.dow,dom:date.d,month:date.m,hour:date.h+":"+date.i})::</h2>
-	<h2>::distrib._contract.name:: - ::distrib._contract._vendor.name::</h2>	
+	<h2>
+		::contract._amap.name:: - 
+		::set hour = date.h+":"+date.i::
+		::__("Delivery on ::dow:: ::dom:: ::month::, at ::hour::",{dow:date.dow,dom:date.d,month:date.m,hour:hour})::
+	</h2>
+	<h2>
+		::distrib._contract.name:: - ::distrib._contract._vendor.name::
+	</h2>	
 	
 	<p>
 		<span class="glyphicon glyphicon-map-marker"></span><b>::_("Place"):: : </b>

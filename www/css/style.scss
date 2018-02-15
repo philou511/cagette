@@ -203,17 +203,19 @@ table.product{
 		padding:8px;
 		vertical-align:top;
 	}
-	
+
 	width:100%;	
 	height:135px;
 	overflow:auto;
-	
+
 	.desc{
 		font-size:90%;
 		color:#666;
 	}
-	
+
 	a.productName{
+		line-height: 20px;
+		display: block;
 		font-weight:bold;
 	}
 }
@@ -293,15 +295,13 @@ div.reportHeader{
 
 /* make <a> like clickable divs  */
 .clickable{
-	
 	display:block;
 	border:1px solid #CCC;
 	border-radius:8px;
-	padding:8px;
 	color:inherit;
 	background-color:white;
 	margin-bottom:12px;	
-	
+	padding:8px;
 	
 	&:hover{
 		cursor: pointer;
@@ -322,6 +322,25 @@ div.reportHeader{
 		transform:scale(0.95);
 	}
 	
+}
+
+/* a group block (use it with .clickable ) */
+.groupBlock{
+	height:110px;
+	overflow:hidden;
+	vertical-align:top;
+	position: relative;
+	.address{
+		font-size: 0.9em;
+	}
+	.distance {
+		font-weight: bold;
+		color: #84bd55;
+		font-size: 1.2em;
+		position: absolute;
+		right: 8px;
+		bottom: 6px;
+	}
 }
 
 
@@ -692,6 +711,13 @@ span.tag.active{
 	
 	
 
+}
+
+div.groupImg{
+	background:no-repeat center;
+	background-size: cover;	
+	width: 110px;
+	height: 110px;
 }
 
 // product thumbnail for shop and home page

@@ -27,204 +27,215 @@ extern class LayerGroup extends ReactComponent {}
 @:jsRequire('leaflet')  
 extern class L2 {
 	static function icon(a:Dynamic):Dynamic;
-  static function latLng(lat:Float, lng:Float):Dynamic;
+	static function latLng(lat:Float, lng:Float):Dynamic;
 }
 
 /**
  * GroupItem
  * @author rcrestey
  */
-
 typedef GroupMapProps = {
-  var addressCoord:Dynamic;
+	var addressCoord:Dynamic;
 	var groups:Array<GroupOnMap>;
 	var fetchGroupsInsideBox:Box->Void;
 	var groupFocusedId:Int;
 };
 
 typedef GroupMapState = {
-  var isFitting:Bool;
-  var focusedMarker:Dynamic;
+	var isFitting:Bool;
+	var focusedMarker:Dynamic;
 };
 
 typedef Box = {
-  var minLat:Float;
-  var maxLat:Float;
-  var minLng:Float;
-  var maxLng:Float;
+	var minLat:Float;
+	var maxLat:Float;
+	var minLng:Float;
+	var maxLng:Float;
 };
 
 class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapState> {
-  static inline var DEFAULT_LAT = 46.52863469527167; // center of France
+	static inline var DEFAULT_LAT = 46.52863469527167; // center of France
 	static inline var DEFAULT_LNG = 2.43896484375; // center of France
 	static inline var INIT_ZOOM = 6;
 	static inline var DEFAULT_ZOOM = 13;
 
-  var map:Dynamic;
-  var featureGroup:Dynamic;
-  var markerMap = new Map<Int,Dynamic>();
+  	var map:Dynamic;
+  	var featureGroup:FeatureGroup;
+  	var markerMap = new Map<Int,Dynamic>();
 
-  var groupIcon = L2.icon({
-    iconUrl: 'https://image.flaticon.com/icons/svg/33/33622.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -30],
-    className: 'icon'
-  });
+  	var groupIcon = L2.icon({
+		iconUrl: '/img/marker.svg',
+		iconSize: [40, 40],
+		iconAnchor: [20, 40],
+		popupAnchor: [0, -30],
+		className: 'icon'
+	});
 
-  var homeIcon = L2.icon({
-    iconUrl: 'https://image.flaticon.com/icons/svg/9/9282.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-    popupAnchor: [0, -30],
-    className: 'icon'
-  });
+  	var homeIcon = L2.icon({
+		iconUrl: '/img/home.svg',
+		iconSize: [40, 40],
+		iconAnchor: [20, 20],
+		popupAnchor: [0, -30],
+		className: 'icon'
+	});
 
-  function new() {
-    super();
-    state = {
-      isFitting: false,
-      focusedMarker: null
-    };
-  }
+	function new() {
+    	super();
+    	state = {
+    		isFitting: false,
+    		focusedMarker: null
+    	};
+  	}
 
-  function getMap(element:Dynamic):Void {
-    map = element.leafletElement;
-  }
+  	function getMap(element:Dynamic):Void {
+    	map = element.leafletElement;
+  	}
 
-  function getFeatureGroup(element:Dynamic):Void {
-    featureGroup = element.leafletElement;
-    setState({
-      isFitting: true
-    }, fitBounds);
-  }
+  	function getFeatureGroup(element:Dynamic):Void {
+		featureGroup = element.leafletElement;
+		setState({isFitting: true}, fitBounds);
+	}
 
-  function getMarker(element:Dynamic, id:Int):Void {
-    if (element != null && !markerMap.exists(id))
-      markerMap.set(id, element.leafletElement);
-  }
+  	function getMarker(element:Dynamic, id:Int):Void {
+    	if (element != null && !markerMap.exists(id))
+      		markerMap.set(id, element.leafletElement);
+  	}
 
-  function getGroups() {
-    var bounds = map.getBounds();
-    var southWest = bounds.getSouthWest();
+  	/**
+  	 *  Call API to get groups in the current bounding box
+  	 */
+  	function getGroups() {
+    	var bounds = map.getBounds();
+    	var southWest = bounds.getSouthWest();
 		var northEast = bounds.getNorthEast();
 
-    props.fetchGroupsInsideBox({
-      minLat: southWest.lat,
-      maxLat: northEast.lat,
-      minLng: southWest.lng,
-      maxLng: northEast.lng
-    });
-  }
+    	props.fetchGroupsInsideBox({
+      		minLat: southWest.lat,
+      		maxLat: northEast.lat,
+      		minLng: southWest.lng,
+      		maxLng: northEast.lng
+    	});
+  	}
 
-  function fitBounds() {  
-    map.fitBounds(featureGroup.getBounds(), {
-      padding: [10, 10]
-    });
-  }
+  	/**
+  	 *  Fit the map to the group bouds
+  	 */
+  	function fitBounds() {  
+	    map.fitBounds(untyped featureGroup.getBounds(), {
+    	  padding: [40, 40]
+    	});
+  	}
 
-  function handleMoveEnd() {
-    if (
-      props.addressCoord != null &&
-      !Lambda.empty(props.groups) &&
-      map.distance(map.getCenter(), props.addressCoord) == 0
-    )
-      setState({
-        isFitting: true
-      }, fitBounds);
-    else if (state.isFitting)
-      setState({
-        isFitting: false
-      });
-    else
-      getGroups();
-  }
+	var lastApiCall = Date.now();
+  	function handleMoveEnd() {
 
-  function handleFocusedMarker() {
-    
-  }
+		//anti-spam : do not call this too often please
+		if(lastApiCall==null) lastApiCall = Date.now();
+		if(Date.now().getTime() < lastApiCall.getTime()+2000){
+			trace("STOP handleMoveEnd");
+			return;
+		}else{
+			trace("DO handleMoveEnd");
+		} 
+		
 
-  override public function componentDidMount() {
-    if (props.addressCoord == null)
-      getGroups();
-  }
+		if (
+		props.addressCoord != null &&
+		!Lambda.empty(props.groups) &&
+		map.distance(map.getCenter(), props.addressCoord) == 0
+		)
+			setState({isFitting: true}, fitBounds);
+		else if (state.isFitting)
+			setState({isFitting: false});
+		else
+		getGroups();
+  	}
 
-  override public function shouldComponentUpdate(nextProps:GroupMapProps, nextState:GroupMapState) {
-    if (nextState.focusedMarker != state.focusedMarker)
-      return false;
-    return true;
-  }
+  	function handleFocusedMarker() { }
 
-  override public function componentDidUpdate(prevProps:GroupMapProps, prevState:GroupMapState) {
-    if (props.groupFocusedId != null) {
-      var focusedMarker = markerMap.get(props.groupFocusedId);
-      focusedMarker.openPopup();
+  	override public function componentDidMount() {
+    	if (props.addressCoord == null)
+      		getGroups();
+  	}
 
-      setState({
-        focusedMarker: focusedMarker
-      });
-    }
-    else if (state.focusedMarker != null) {
-      state.focusedMarker.closePopup();
+  	override public function shouldComponentUpdate(nextProps:GroupMapProps, nextState:GroupMapState) {
+    	if (nextState.focusedMarker != state.focusedMarker)	return false;
+    	return true;
+  	}
 
-      setState({
-        focusedMarker: null
-      });
-    }
-  }
+	override public function componentDidUpdate(prevProps:GroupMapProps, prevState:GroupMapState) {
+		if (props.groupFocusedId != null) {
+			var focusedMarker = markerMap.get(props.groupFocusedId);
+			focusedMarker.openPopup();
+
+			setState({
+				focusedMarker: focusedMarker
+			});
+		}
+		else if (state.focusedMarker != null) {
+			state.focusedMarker.closePopup();
+
+			setState({
+				focusedMarker: null
+			});
+		}
+  	}
 
 	override public function render() {
-    var center = props.addressCoord == null
-      ? L2.latLng(DEFAULT_LAT, DEFAULT_LNG)
-      : props.addressCoord;
+    	var center = props.addressCoord == null
+      		? L2.latLng(DEFAULT_LAT, DEFAULT_LNG)
+      		: props.addressCoord;
 
-    var zoom = props.addressCoord == null
-      ? INIT_ZOOM
-      : DEFAULT_ZOOM;
+    	var zoom = props.addressCoord == null
+      		? INIT_ZOOM
+      		: DEFAULT_ZOOM;
 
 		return jsx('
-      <LeafMap
-        center=${center}
-        zoom=${zoom}
-        ref=${getMap}
-        onMoveEnd=${handleMoveEnd}
-      >
-        <TileLayer
-          attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <FeatureGroup
-          ref=${getFeatureGroup}
-        >
-          ${renderGroupMarkers()}
-          ${renderHomeMarker()}
-        </FeatureGroup>
-      </LeafMap>
+      		<LeafMap
+        	center=${center}
+        	zoom=${zoom}
+        	ref=${getMap}
+        	onMoveEnd=${handleMoveEnd}
+      		>	
+				<TileLayer
+				attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+				url="https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"
+				id="bubar.cih3inmqd00tjuxm7oc2532l0"
+				/>
+        		<FeatureGroup ref=${getFeatureGroup}>
+          			${renderGroupMarkers()}
+          			${renderHomeMarker()}
+        		</FeatureGroup>
+      		</LeafMap>
 		');
 	}
  
 	function renderGroupMarkers() {
 		var markers = props.groups.map(function(group) {
-      var coord = [group.place.latitude, group.place.longitude];
+    	var coord = [group.place.latitude, group.place.longitude];
 
-      function markerGetter(e:Dynamic) {
-        getMarker(e, group.place.id);
-      }
+      	function markerGetter(e:Dynamic) {
+        	getMarker(e, group.place.id);
+      	}
 
-			return jsx('
-				<Marker
-          position=${coord}
-          ref=${markerGetter}
-          key=${group.place.id}
-          icon=${groupIcon}
-        >
-					<Popup className="popup">
-            <div>
-              <span>${group.name}</span>
-              <img src=${group.image} width=${50} height=${50}/>
-            </div>
-					</Popup>
-				</Marker>
+		var image = group.image==null ? null : jsx('<img className="groupImage img-responsive" src=${group.image}/>');
+
+		return jsx('
+			<Marker
+          	position=${coord}
+          	ref=${markerGetter}
+          	key=${group.place.id}
+          	icon=${groupIcon}
+        	>
+			<Popup className="popup">
+				<div>
+					<a href=${"/group/"+group.id} target="_blank">
+					$image
+           			<div className="groupName">${group.name}</div>
+					</a>
+				</div>
+			</Popup>
+			</Marker>
 			');
 		});
 

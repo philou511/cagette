@@ -1,6 +1,5 @@
 package controller.api;
 import haxe.Json;
-import tink.core.Error;
 import Common;
 
 /**
@@ -24,13 +23,13 @@ class Group extends Controller
 		if (args.minLat != null && args.maxLat != null && args.minLng != null && args.maxLng != null){
 			
 			//Request by zone
-			/*var sql = "select p.* from Place p, Hosting h where h.id=p.amapId and h.visible=1 and ";
-			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';
-			places = db.Place.manager.unsafeObjects(sql, false);*/
-			
-			var sql = "select p.* from Place p where ";
+			var sql = "select p.* from Place p, Hosting h where h.id=p.amapId and h.visible=1 and ";
 			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';
 			places = db.Place.manager.unsafeObjects(sql, false);
+			
+			/*var sql = "select p.* from Place p where ";
+			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';
+			places = db.Place.manager.unsafeObjects(sql, false);*/
 			
 		}else if (args.lat!=null && args.lng!=null){
 			
@@ -71,13 +70,13 @@ class Group extends Controller
 	
 	function findGroupByDist(lat:Float, lng:Float,?limit=5){
 		
-		/*var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p, Hosting h ';
+		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p, Hosting h ';
 		sql += "where h.id=p.amapId and h.visible=1 and p.lat is not null ";		
-		sql += 'order by dist asc LIMIT $limit';*/
-		
-		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p ';
-		sql += "where p.lat is not null ";
 		sql += 'order by dist asc LIMIT $limit';
+		
+		/*var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p ';
+		sql += "where p.lat is not null ";
+		sql += 'order by dist asc LIMIT $limit';*/
 		return db.Place.manager.unsafeObjects(sql, false);
 		
 	}

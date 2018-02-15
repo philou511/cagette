@@ -11,13 +11,15 @@ class ProductCategory extends sys.db.Object
 	@:relation(categoryId)
 	public var category : db.Category;
 	
-	
-	public static function create(product, category){
+	public static function getOrCreate(product, category){
 		
-		var x = new db.ProductCategory();
-		x.product = product;
-		x.category = category;
-		x.insert();
+		var x = db.ProductCategory.manager.select($product==product && $category==category,true);
+		if(x==null){
+			x = new db.ProductCategory();
+			x.product = product;
+			x.category = category;
+			x.insert();
+		}		
 		return x;
 		
 	}
