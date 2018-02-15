@@ -142,7 +142,12 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
 		for (group in state.groups) {
 			distanceMap.set(group.place.id, getGroupDistance(group));
 		}
-		forceUpdate();
+
+		orderGroupsByDistance(state.groups);
+
+		setState({
+			groups: state.groups
+		});
 	}
 
 	function orderGroupsByDistance(groups:Array<GroupOnMap>) {
@@ -201,8 +206,6 @@ class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
       input: 'autocomplete-input',
       autocompleteContainer: 'autocomplete-results',
     };
-
-		orderGroupsByDistance(state.groups);
 
 		return jsx('
 			<div className="group-map">
