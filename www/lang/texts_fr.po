@@ -53,11 +53,11 @@ msgstr "Modifier mon compte"
 msgid "You left the group ::groupName::"
 msgstr "Vous venez de quitter le groupe ::groupName::"
 
-#: src/controller/admin/Admin.hx:1852
+#: src/controller/admin/Admin.hx:1790
 msgid "Configuration updated"
 msgstr "Configuration mise à jour"
 
-#: src/controller/admin/Admin.hx:1914
+#: src/controller/admin/Admin.hx:1852
 msgid "Email service configuration"
 msgstr "Configuration du service d'email"
 
@@ -290,7 +290,7 @@ msgstr "Conventionnel"
 msgid "Default categories have been created"
 msgstr "Les catégories par défaut ont été créées"
 
-#: src/controller/Categories.hx:1576 src/db/CategoryGroup.hx:1073
+#: src/controller/Categories.hx:1576 src/db/CategoryGroup.hx:1087
 msgid "Color"
 msgstr "Couleur"
 
@@ -498,7 +498,7 @@ msgid "Start date"
 msgstr "Date de début"
 
 #: src/controller/ContractAdmin.hx:7932 src/db/Contract.hx:8226
-#: src/db/Distribution.hx:7210 src/db/Operation.hx:12263
+#: src/db/Distribution.hx:7297 src/db/Operation.hx:12263
 msgid "End date"
 msgstr "Date de fin"
 
@@ -571,7 +571,7 @@ msgstr "Ouverture des commandes pour la distribution du <b>::date::</b>"
 
 #: src/controller/Cron.hx:8354
 msgid "The following suppliers are involved :"
-msgstr "Producteurs participants : "
+msgstr "Producteurs participants :"
 
 #: src/controller/Cron.hx:8632
 msgid ""
@@ -663,19 +663,19 @@ msgstr ""
 "<p>A défaut d'une validation manuelle de votre part au bout de 10 jours,<br/"
 "> la distribution du ::deliveryDate:: a été automatiquement validée.</p>"
 
-#: src/controller/Distribution.hx:985
+#: src/controller/Distribution.hx:983
 msgid "One person per page"
 msgstr "Une personne par page"
 
-#: src/controller/Distribution.hx:1046
+#: src/controller/Distribution.hx:1044
 msgid "One person per page sorted by contract"
 msgstr "Une personne par page triée par contrat"
 
-#: src/controller/Distribution.hx:1121
+#: src/controller/Distribution.hx:1119
 msgid "All"
 msgstr "Tout à la suite"
 
-#: src/controller/Distribution.hx:1166
+#: src/controller/Distribution.hx:1164
 msgid "All but without prices and totals"
 msgstr "Tout à la suite sans les prix et totaux"
 
@@ -1201,7 +1201,7 @@ msgstr "Téléphone portable"
 
 #: src/controller/Member.hx:16947
 msgid "Partner's firstname"
-msgstr "Prénom conjoint(e) "
+msgstr "Prénom conjoint(e)"
 
 #: src/controller/Member.hx:16975
 msgid "Partner's lastname"
@@ -1449,26 +1449,24 @@ msgstr "Afin de finaliser votre commande, vous devez vous identifier."
 msgid "Your order is empty"
 msgstr "Votre commande est vide"
 
-#: src/controller/Shop.hx:4960
-msgid "Error, This cart is invalid"
-msgstr "Erreur, ce panier est invalide"
+#: src/controller/Shop.hx:4962
+msgid "This cart is invalid"
+msgstr "Ce panier est invalide"
 
-#: src/controller/Shop.hx:5148 src/controller/Shop.hx:5470
-msgid "The product <b>::pname::</b> is not available in this distribution"
+#: src/controller/Shop.hx:5143 src/controller/Shop.hx:5461
+msgid "This distribution does not supply the product <b>::pname::</b>"
 msgstr ""
 "Le produit <b>::pname::</b> n'est pas disponible pour cette distribution"
 
-#: src/controller/Shop.hx:5899
-msgid ""
-"We reduced your order of ::pname:: to quantity ::oquantity:: as the stock is "
-"not sufficient"
+#: src/controller/Shop.hx:5886
+msgid "Order of ::pname:: reduced to ::oquantity:: to match remaining stock"
 msgstr ""
-"Nous avons réduit votre commande de '\" + p.name + \"' à \"+o.quantity+\" "
-"articles car il n'y a pas assez de stock disponible"
+"Votre commande de  ::p.name:: a été réduite à ::oquantity:: articles car il "
+"n'y a pas assez de stock disponible"
 
-#: src/controller/Shop.hx:6738
-msgid "Your order has been successfully recorded"
-msgstr "Votre commande a bien été enregistrée"
+#: src/controller/Shop.hx:6702
+msgid "Your order has been confirmed"
+msgstr "Votre commande a été enregistrée !"
 
 #: src/controller/Transaction.hx:382 src/controller/Transaction.hx:2432
 #: src/controller/Transaction.hx:4195
@@ -1487,7 +1485,7 @@ msgid "Amount"
 msgstr "Montant"
 
 #: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2952
-#: src/controller/Validate.hx:3339 src/db/Distribution.hx:7177
+#: src/controller/Validate.hx:3339 src/db/Distribution.hx:7264
 #: src/db/Operation.hx:12230
 #: lang/master/tpl/contractadmin/selectDistrib.mtt:199
 #: lang/master/tpl/member/lastMessages.mtt:52
@@ -1755,11 +1753,11 @@ msgstr "Réglage des inscriptions"
 msgid "Main contact"
 msgstr "Contact principal"
 
-#: src/db/CategoryGroup.hx:986
+#: src/db/CategoryGroup.hx:1000
 msgid "Category group name"
 msgstr "Nom de groupe de catégories"
 
-#: src/db/CategoryGroup.hx:1033
+#: src/db/CategoryGroup.hx:1047
 msgid "Pinned on top"
 msgstr "Mise en avant"
 
@@ -1791,27 +1789,27 @@ msgstr "Contact"
 msgid "Farmer"
 msgstr "Producteur"
 
-#: src/db/Distribution.hx:7146 src/db/Operation.hx:12199
+#: src/db/Distribution.hx:7233 src/db/Operation.hx:12199
 msgid "Text"
 msgstr "Texte"
 
-#: src/db/Distribution.hx:7245 src/db/Operation.hx:12298
+#: src/db/Distribution.hx:7332 src/db/Operation.hx:12298
 msgid "Place"
 msgstr "Lieu"
 
-#: src/db/Distribution.hx:7283 src/db/Operation.hx:12336
+#: src/db/Distribution.hx:7370 src/db/Operation.hx:12336
 msgid "Distributor #1"
 msgstr "Distributeur 1"
 
-#: src/db/Distribution.hx:7330 src/db/Operation.hx:12383
+#: src/db/Distribution.hx:7417 src/db/Operation.hx:12383
 msgid "Distributor #2"
 msgstr "Distributeur 2"
 
-#: src/db/Distribution.hx:7377 src/db/Operation.hx:12430
+#: src/db/Distribution.hx:7464 src/db/Operation.hx:12430
 msgid "Distributor #3"
 msgstr "Distributeur 3"
 
-#: src/db/Distribution.hx:7424 src/db/Operation.hx:12477
+#: src/db/Distribution.hx:7511 src/db/Operation.hx:12477
 msgid "Distributor #4"
 msgstr "Distributeur 4"
 
@@ -2087,117 +2085,117 @@ msgid "We already have an account with this email address"
 msgstr "Nous avons déjà un compte avec cette adresse email"
 
 #. kilogramms
-#: src/View.hx:3366 common/Formatting.hx:1386
+#: src/View.hx:3356 common/Formatting.hx:1386
 msgid "Kg."
 msgstr "Kg."
 
 #. gramms
-#: src/View.hx:3408 common/Formatting.hx:1427
+#: src/View.hx:3398 common/Formatting.hx:1427
 msgid "g."
 msgstr "g."
 
 #. unit of a product)
-#: src/View.hx:3460
+#: src/View.hx:3450
 msgid "pieces"
 msgstr "pièces"
 
 #. unit of a product)
-#: src/View.hx:3499 common/Formatting.hx:1311 common/Formatting.hx:1463
+#: src/View.hx:3489 common/Formatting.hx:1311 common/Formatting.hx:1463
 msgid "piece"
 msgstr "pièce"
 
 #. liter
-#: src/View.hx:3551 common/Formatting.hx:1514
+#: src/View.hx:3541 common/Formatting.hx:1514
 msgid "L."
 msgstr "L."
 
 #. centiliter
-#: src/View.hx:3591 common/Formatting.hx:1554
+#: src/View.hx:3581 common/Formatting.hx:1554
 msgid "cl."
 msgstr "cl."
 
-#: src/View.hx:4147
+#: src/View.hx:4137
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: src/View.hx:4162
+#: src/View.hx:4152
 msgid "Monday"
 msgstr "Lundi"
 
-#: src/View.hx:4177
+#: src/View.hx:4167
 msgid "Tuesday"
 msgstr "Mardi"
 
-#: src/View.hx:4193
+#: src/View.hx:4183
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: src/View.hx:4211
+#: src/View.hx:4201
 msgid "Thursday"
 msgstr "Jeudi"
 
-#: src/View.hx:4228
+#: src/View.hx:4218
 msgid "Friday"
 msgstr "Vendredi"
 
-#: src/View.hx:4243
+#: src/View.hx:4233
 msgid "Saturday"
 msgstr "Samedi"
 
-#: src/View.hx:4274
+#: src/View.hx:4264
 msgid "January"
 msgstr "Janvier"
 
-#: src/View.hx:4290
+#: src/View.hx:4280
 msgid "February"
 msgstr "Février"
 
-#: src/View.hx:4307
+#: src/View.hx:4297
 msgid "March"
 msgstr "Mars"
 
-#: src/View.hx:4321
+#: src/View.hx:4311
 msgid "April"
 msgstr "Avril"
 
-#: src/View.hx:4335
+#: src/View.hx:4325
 msgid "May"
 msgstr "Mai"
 
-#: src/View.hx:4347
+#: src/View.hx:4337
 msgid "June"
 msgstr "Juin"
 
-#: src/View.hx:4360
+#: src/View.hx:4350
 msgid "July"
 msgstr "Juillet"
 
-#: src/View.hx:4373
+#: src/View.hx:4363
 msgid "August"
 msgstr "Août"
 
-#: src/View.hx:4388
+#: src/View.hx:4378
 msgid "September"
 msgstr "Septembre"
 
-#: src/View.hx:4406
+#: src/View.hx:4396
 msgid "October"
 msgstr "Octobre"
 
-#: src/View.hx:4422
+#: src/View.hx:4412
 msgid "November"
 msgstr "Novembre"
 
-#: src/View.hx:4439
+#: src/View.hx:4429
 msgid "December"
 msgstr "Décembre"
 
-#: src/View.hx:4687 src/View.hx:5223
+#: src/View.hx:4677 src/View.hx:5213
 msgid "no date set"
 msgstr "aucune date"
 
 #. time : at 12:30
-#: src/View.hx:4970
+#: src/View.hx:4960
 msgid "at"
 msgstr "à"
 
@@ -2585,7 +2583,7 @@ msgstr ""
 #: lang/master/tpl/contract/view.mtt:3027
 #: lang/master/tpl/contract/view.mtt:3378 lang/master/tpl/home.mtt:8232
 #: lang/master/tpl/macros.mtt:4970 lang/master/tpl/shop/choose.mtt:2169
-#: lang/master/tpl/shop/default.mtt:3889
+#: lang/master/tpl/shop/default.mtt:3931
 msgid "Order"
 msgstr "Commande"
 
@@ -2639,7 +2637,7 @@ msgstr ""
 "Saisissez ici vos commandes à l'avance pour ce producteur.<br/>Vous pouvez "
 "consulter à tout moment vos commandes en cours sur la page <a href=\"/"
 "contract\">mon compte</a>.<br/>NB : Pour effacer une commande, saisissez une "
-"quantité égale à 0."
+"quantité égale à 0"
 
 #: lang/master/tpl/contract/orderByDate.mtt:97
 msgid "Modify the order delivered on ::date::"
@@ -2697,7 +2695,7 @@ msgstr "Prochaines distributions"
 msgid "No planned distributions."
 msgstr "Pas de distribution planifiée."
 
-#: lang/master/tpl/contract/view.mtt:3491 lang/master/tpl/shop/default.mtt:4480
+#: lang/master/tpl/contract/view.mtt:3491 lang/master/tpl/shop/default.mtt:4550
 msgid "You can check your previous orders in 'my account' section"
 msgstr ""
 "Vous pouvez voir vos précédentes commandes dans la rubrique 'mon compte'"
@@ -3116,7 +3114,6 @@ msgstr "Prix unitaire TTC"
 #: lang/master/tpl/contractadmin/ordersByProduct.mtt:1666
 #: lang/master/tpl/contractadmin/ordersByProduct.mtt:1905
 #: lang/master/tpl/plugin/pro/delivery/view.mtt:1665
-#: lang/master/tpl/plugin_old/old/pro/delivery/view.mtt:1665
 msgid "Order form"
 msgstr "Bon de commande"
 
@@ -3377,7 +3374,7 @@ msgid "full"
 msgstr "complet"
 
 #: lang/master/tpl/distribution/planning.mtt:2897
-#: lang/master/tpl/shop/default.mtt:4417
+#: lang/master/tpl/shop/default.mtt:4487
 msgid "Validate"
 msgstr "Valider"
 
@@ -3521,7 +3518,7 @@ msgstr "Modifier ma commande"
 msgid "Add products"
 msgstr "Ajouter des produits"
 
-#: lang/master/tpl/home.mtt:2769 lang/master/tpl/shop/default.mtt:3368
+#: lang/master/tpl/home.mtt:2769 lang/master/tpl/shop/default.mtt:3326
 msgid "Order closed"
 msgstr "Commande close"
 
@@ -4198,7 +4195,9 @@ msgstr ""
 msgid ""
 "Fill correctly this file, or modify your existing file to respect strictly "
 "the order of columns"
-msgstr "Remplissez correctement votre fichier, ou "
+msgstr ""
+"Remplissez ce fichier, ou modifiez un fichier existant en respectant l'ordre "
+"des colonnes du fichier de démonstration."
 
 #: lang/master/tpl/product/import.mtt:3097
 msgid ""
@@ -4246,19 +4245,19 @@ msgstr "La commande fermera le"
 msgid "Autres"
 msgstr "Autres"
 
-#: lang/master/tpl/shop/default.mtt:3268
+#: lang/master/tpl/shop/default.mtt:3226
 msgid "Out of stock"
 msgstr "Rupture de stock"
 
-#: lang/master/tpl/shop/default.mtt:3510
+#: lang/master/tpl/shop/default.mtt:3468
 msgid "Only ::pstock:: items in stock"
 msgstr "Seulement ::pstock:: en stock"
 
-#: lang/master/tpl/shop/default.mtt:4261
+#: lang/master/tpl/shop/default.mtt:4331
 msgid "My order"
 msgstr "Ma commande"
 
-#: lang/master/tpl/shop/default.mtt:4725
+#: lang/master/tpl/shop/default.mtt:4795
 msgid "All products"
 msgstr "Tous les produits"
 
@@ -4294,7 +4293,7 @@ msgstr "environ ::qt:: ::unit::"
 
 #: lang/master/tpl/shop/productInfo.mtt:1398
 msgid "Variable price depending on weight"
-msgstr "Prix variable selon pesée "
+msgstr "Prix variable selon pesée"
 
 #: lang/master/tpl/transaction/cash.mtt:226
 #: lang/master/tpl/transaction/check.mtt:226
@@ -4817,6 +4816,23 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid "Error, This cart is invalid"
+#~ msgstr "Erreur, ce panier est invalide"
+
+#~ msgid "The product <b>::pname::</b> is not available in this distribution"
+#~ msgstr ""
+#~ "Le produit <b>::pname::</b> n'est pas disponible pour cette distribution"
+
+#~ msgid ""
+#~ "We reduced your order of ::pname:: to quantity ::oquantity:: as the stock "
+#~ "is not sufficient"
+#~ msgstr ""
+#~ "Nous avons réduit votre commande de '\" + p.name + \"' à \"+o.quantity+\" "
+#~ "articles car il n'y a pas assez de stock disponible"
+
+#~ msgid "Your order has been successfully recorded"
+#~ msgstr "Votre commande a bien été enregistrée"
 
 #~ msgid "Seniority of subscribers of "
 #~ msgstr "Ancienneté des adhérents de "
