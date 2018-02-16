@@ -2,6 +2,7 @@ package react.map;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
+import leaflet.L;
 
 using Lambda;
 
@@ -24,11 +25,12 @@ extern class FeatureGroup extends ReactComponent {}
 @:jsRequire('react-leaflet', 'LayerGroup')  
 extern class LayerGroup extends ReactComponent {}
 
-@:jsRequire('leaflet')  
+
+/*
 extern class L2 {
 	static function icon(a:Dynamic):Dynamic;
 	static function latLng(lat:Float, lng:Float):Dynamic;
-}
+}*/
 
 /**
  * GroupItem
@@ -63,7 +65,7 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
   var featureGroup:Dynamic;
   var markerMap = new Map<Int,Dynamic>();
 
-  var groupIcon = L2.icon({
+  var groupIcon = L.icon({
     iconUrl: '/img/marker.svg',
     iconSize: [40, 40],
     iconAnchor: [20, 40],
@@ -71,7 +73,7 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
     className: 'icon'
   });
 
-  var homeIcon = L2.icon({
+  var homeIcon = L.icon({
     iconUrl: '/img/home.svg',
     iconSize: [40, 40],
     iconAnchor: [20, 20],
@@ -182,7 +184,7 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
 
 	override public function render() {
     	var center = props.addressCoord == null
-      		? L2.latLng(DEFAULT_LAT, DEFAULT_LNG)
+      		? L.latLng(DEFAULT_LAT, DEFAULT_LNG)
       		: props.addressCoord;
 
     	var zoom = props.addressCoord == null
