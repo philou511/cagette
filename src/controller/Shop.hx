@@ -1,6 +1,7 @@
 package controller;
 import Common;
 import tools.ArrayTool;
+
 class Shop extends Controller
 {
 	

@@ -1,13 +1,15 @@
 package controller;
 import sugoi.form.Form;
 
+/**
+ *  Place controller
+ */
 class Place extends Controller
 {
 
 	public function new()
 	{
 		super();
-		
 	}
 	
 	@tpl('place/view.mtt')
@@ -16,36 +18,35 @@ class Place extends Controller
 		
 		//build adress for google maps
 		var addr = "";
-		if (place.address1 != null)
-			addr += place.address1;
-			
-		if (place.address2 != null) {
-			addr += ", " + place.address2;
-		}
-		
-		if (place.zipCode != null) {
-			addr += " " + place.zipCode;
-		}
-		
-		if (place.city != null) {
-			addr += " " + place.city;
-		}
-		
+		if (place.address1 != null) addr += place.address1;
+		if (place.address2 != null) addr += ", " + place.address2;
+		if (place.zipCode != null) addr += " " + place.zipCode;
+		if (place.city != null) addr += " " + place.city;
+	
 		view.addr = view.escapeJS(addr);
-		
 	}
 	
 	@tpl('form.mtt')
-	function doEdit(d:db.Place) {
+	function doEdit(p:db.Place) {
 		
-		var f = sugoi.form.Form.fromSpod(d);
-		
+		var currentAddress = p.getAddress();
+
+		var f = sugoi.form.Form.fromSpod(p);
 			
 		if (f.isValid()) {
 		
-			f.toSpod(d); 
-			d.amap = app.user.amap;
-			d.update();
+			f.toSpod(p); 
+
+			if(currentAddress!=p.getAddress()){
+				try{
+					service.PlaceService.geocode(p);
+				}catch(e:Dynamic){
+					App.current.session.addMessage(t._("Oops, we're unable to find where is located this address. This place will not be shown on the map.")+'<br/>$e',true);
+				}
+			}
+
+			p.amap = app.user.amap;
+			p.update();
 			throw Ok('/contractAdmin',t._("this place has been updated"));
 		}
 		
@@ -83,7 +84,4 @@ class Place extends Controller
 		}
 		
 	}
-	
-	
-	
 }

@@ -158,7 +158,7 @@ class Product extends Object
 			"unitType" 			=> t._("Base unit"),
 			"qt" 				=> t._("Quantity"),			
 			"hasFloatQt" 		=> t._("Allow fractional quantities"),			
-			"active" 			=> t._("Active"),			
+			"active" 			=> t._("Available"),			
 			"organic" 			=> t._("Organic agriculture"),			
 			"vat" 				=> t._("VAT Rate"),			
 			"variablePrice"		=> t._("Variable price based on weight"),			
