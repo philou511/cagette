@@ -80,7 +80,7 @@
 						<tr>
 							<td>
 								
-								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
+								<a onclick="_.overlay('/shop/productInfo/::p.id::','::urlEncode(p.name)::')" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
 									<div style="background-image:url('::p.image::')" class="productImg" style="width:64px;height:64px;"/>
 								</a>
 								
@@ -91,14 +91,10 @@
 								
 							</td>
 							<td>
-								
-								<a onclick="_.overlay('/shop/productInfo/::p.id::','::escapeJS(p.name)::')" class="productName">
-									
+								<a onclick="_.overlay('/shop/productInfo/::p.id::','::urlEncode(p.name)::')" class="productName">
 									::p.name::
-									
 									::if p.qt!=null && p.unitType!=null && p.qt>0::
-										
-										::p.qt:: ::unit(p.unitType)::
+										::p.qt:: ::unit(p.unitType,p.qt>1)::
 									::end::
 								</a>
 								
@@ -120,10 +116,14 @@
 										::if p.stock!=null && p.stock>0 && p.stock<=10::
 										<div class="warning" >::__("Only ::pstock:: items in stock",{pstock:p.stock})::</div>
 										::end::
-									
-										<input id="productQt::p.id::" type="text" value="1" style="height: 22px;width:40px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="::_('Quantity')::"/>
-										<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Order||Order button")::</a>
 										
+										<div class="input-group">
+											<input id="productQt::p.id::" type="text" value="1" style="height: 25px;width:35px;" class="form-control input-sm" maxlength="4"  data-toggle="tooltip" data-placement="top" title="::_('Quantity')::"/>
+											<span class="input-group-btn">
+												<a class="btn btn-default btn-xs" onclick="cart.add(::p.id::)">::_("Order||Order button")::</a>
+											</span>
+										</div>
+
 									::end::
 									</form>
 								</div>

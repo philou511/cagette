@@ -26,9 +26,7 @@ class Product extends Object
 	public var qt : SNull<SFloat>;
 	public var organic : SBool;
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
-	//public var multiWeight : Bool;		//product cannot be cumulated in one order record
-	
-	@hideInForms public var type : SInt;	//icones
+	public var multiWeight : Bool;		//product cannot be cumulated in one order record
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
 	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy
@@ -40,32 +38,28 @@ class Product extends Object
 	public function new() 
 	{
 		super();
-		type = 0;
+		//type = 0;
 		organic = false;
 		hasFloatQt = false;
 		active = true;
 		variablePrice = false;
-		vat = 0;
+		multiWeight = false;
+		vat = 5.5;
+		unitType = UnitType.Piece;
+		qt = 1;
 		
 	}
 	
 	/**
-	 * Renvoie l'URL complète d'une image en fonction du type
-	 * ou une photo uploadée si elle existe
+	 * Returns product image URL
 	 */
 	public function getImage() {
 		if (image == null) {
-			
 			if (txpProduct != null){				
 				return "/img/taxo/cat" + txpProduct.category.id + ".png";
-				
 			}else{
-				//old "type" field
-				var e = Type.createEnumIndex(ProductType, type);		
-				return "/img/"+Std.string(e).substr(2).toLowerCase()+".png";		
-			}
-			
-			
+				return "/img/unknown.png";
+			}			
 		}else {
 			return App.current.view.file(image);
 		}
@@ -96,7 +90,7 @@ class Product extends Object
 			id : id,
 			ref : ref,
 			name : name,
-			type : Type.createEnumIndex(ProductType, type),
+			//type : Type.createEnumIndex(ProductType, type),
 			image : getImage(),
 			contractId : contract.id,
 			price : getPrice(),
@@ -168,6 +162,7 @@ class Product extends Object
 			"organic" 			=> t._("Organic agriculture"),			
 			"vat" 				=> t._("VAT Rate"),			
 			"variablePrice"		=> t._("Variable price based on weight"),			
+			"multiWeight" 		=> t._("Multi-weighing"),	
 		];
 	}
 	

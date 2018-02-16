@@ -116,20 +116,14 @@
 					</td>
 					<td>
 						::if(m.quantity==0 && m.canceled)::
-							<span style="color:#AAA">::_("Canceled")::</span>
-						::elseif(m.productHasFloatQt)::
-							::raw smartQt(m.quantity,m.productQt,m.productUnit)::
+							<span style="color:#AAA">::_("Canceled")::</span>						
 						::else::
-							::formatNum(m.quantity)::
+							::raw m.smartQt::
 						::end::
 					</td>
 					
-					<td>						
-						::if(m.productHasFloatQt || m.productQt==null || m.productUnit==null)::
-							::m.productName::
-						::else::
-							::m.productName:: ::m.productQt:: ::unit(m.productUnit)::
-						::end::
+					<td>												
+						::m.productName::						
 					</td>
 					<td>
 						::formatNum(m.productPrice)::&nbsp;::currency()::

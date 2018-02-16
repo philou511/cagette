@@ -8,9 +8,15 @@
 -lib hscript
 -lib smtpmailer
 -lib record-macros
+-lib cagette-pro
+-lib cagette-hosted
+-lib cagette-wholesale-order
+-lib cagette-connector
 -cp common
 -cp src
 -cp lang/en/tpl
 -neko www/tests.n
+-D plugins
+
  -main test.TestSuite
 

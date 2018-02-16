@@ -112,7 +112,11 @@
 						<td> </td>
 					::end::
 					<td style="font-size: ::fontRatio::%;border-bottom: 2px solid #AAA;">
-						::m.quantity::
+						::if(m.quantity==0 && m.canceled)::
+							::_("Canceled")::
+						::else::
+							::raw m.smartQt::
+						::end::
 						::set productNum = productNum+m.quantity::
 					</td>
 					<td style="font-size: ::fontRatio::%;border-bottom: 2px solid #AAA;">
@@ -142,7 +146,7 @@
 				::if next==null || next.userName!=name || next.userName2!=name2::
 				<tr>
 						<td style="border-top: 2px solid #AAA;"></td>
-						<td class="total">::productNum::</td>
+						<td class="total">::formatNum(productNum)::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">::_("TOTAL")::</td>
 						<td class="total" style="font-size: ::fontRatio::%;">::formatNum(total)::&nbsp;::currency()::</td>

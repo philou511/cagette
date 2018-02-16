@@ -25,6 +25,7 @@ class CategoryGroup extends sys.db.Object
 	public function new(){
 		super();
 		pinned = false;
+		color = 7;
 	}
 	
 	public function getCategories() {

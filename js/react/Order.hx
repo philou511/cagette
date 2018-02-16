@@ -24,8 +24,8 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		}		
 		if (state.order.productQt == null) state.order.productQt = 1;
 		
-		state.inputValue = if (state.order.productHasFloatQt){
-			Std.string(state.order.quantity * state.order.productQt);
+		state.inputValue = if (state.order.productHasFloatQt || state.order.productHasVariablePrice){
+			Std.string(round(state.order.quantity * state.order.productQt));
 		}else{
 			Std.string(state.order.quantity);
 		}
@@ -33,14 +33,14 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	
 	override public function render(){
 		var o = state.order;
-		var unit = if (o.productHasFloatQt){
+		var unit = if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-1">${Formatting.unit(o.productUnit)}</div>');
 		}else{
 			jsx('<div className="col-md-1"></div>');
 		}
 		
 		//use smart qt only if hasFloatQt
-		var productName = if (o.productHasFloatQt){
+		var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-3">${o.productName}</div>');
 		}else{			
 			jsx('<div className="col-md-3">${o.productName} ${o.productQt} ${Formatting.unit(o.productUnit)}</div>');
@@ -88,7 +88,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	
 	function makeInfos(){
 		var o = state.order;
-		return if (o.productHasFloatQt){
+		return if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-12 infos">
 				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}
 				/ Prix <b>${round(o.quantity * o.productPrice)} &euro;</b>
@@ -102,12 +102,13 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		e.preventDefault();		
 		var value :String = untyped (e.target.value == "") ? "0" : e.target.value;
 		state.inputValue = value;
+		var v = Formatting.parseFloat(value);
 		var o = state.order;
-		if ( o.productHasFloatQt){
-			//if has float qt, the value is a smart qt, so we need re-compute the quantity
-			o.quantity = Std.parseFloat(value) / o.productQt;
+		if ( o.productHasFloatQt || o.productHasVariablePrice){
+			//if has float qt or variablePrice, the value is a smart qt, so we need re-compute the quantity
+			o.quantity = v / o.productQt;
 		}else{
-			o.quantity = Std.parseFloat(value);	
+			o.quantity = v;	
 		}
 		
 		this.setState(state);

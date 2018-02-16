@@ -2,7 +2,6 @@ package controller;
 import db.Message;
 import db.UserContract;
 import sugoi.form.ListData;
-import sugoi.form.validators.EmailValidator;
 import sugoi.form.elements.*;
 import sugoi.form.Form;
 
@@ -118,7 +117,8 @@ class Messages extends Controller
 		
 		var contracts = db.Contract.getActiveContracts(app.user.amap,true);
 		for ( c in contracts) {
-			out.push({value:'c'+c.id,label: t._("Subscribers ")+c.toString()});
+			var label =  t._("Subscribers") + " " + c.toString();
+			out.push({value:'c'+c.id,label:label});
 		}
 		return out ;
 		

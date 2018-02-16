@@ -5,14 +5,14 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 
-//typedef RegisterBoxState = {firstName:String, lastName:String, email:String, password:String, error:String, phone:String};
-//typedef RegisterBoxProps = {redirectUrl:String, phoneRequired:Bool};
+//typedef OrderBoxState = {firstName:String, lastName:String, email:String, password:String, error:String, phone:String};
+typedef OrderBoxProps = {userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, onSubmit:Void->Void};
 
 /**
  * A box to edit the orders of a member
  * @author fbarbut
  */
-class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distributionId:Int,contractId:Int,date:String,place:String,userName:String,onSubmit:Void->Void},{orders:Array<UserOrder>,error:String}>
+class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,{orders:Array<UserOrder>,error:String}>
 {
 
 	public function new(props) 
@@ -32,9 +32,6 @@ class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distribut
 			}else{
 				//WOOT
 				setState({orders:data.orders, error:null});
-				
-				
-				//
 			}
 			
 			
@@ -71,7 +68,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distribut
 	function onUpdate(data:UserOrder){
 		trace("ON UPDATE : " + data);
 		for ( o in state.orders){
-			if (o.productId == data.productId) {
+			if (o.id == data.id) {
 				o.quantity = data.quantity;
 				o.paid = data.paid;
 			}
@@ -83,8 +80,8 @@ class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distribut
 	 */
 	function onClick(_){
 		
-		var data = new Array<{productId:Int,qt:Float,paid:Bool}>();
-		for ( o in state.orders) data.push({productId : o.productId, qt: o.quantity, paid : o.paid});
+		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool}>();
+		for ( o in state.orders) data.push({id:o.id, productId : o.productId, qt: o.quantity, paid : o.paid});
 		trace("CLICK : " + data);
 		
 		var req = {
@@ -97,16 +94,18 @@ class OrderBox extends react.ReactComponentOfPropsAndState<{userId:Int,distribut
 		p.then(function(data:Dynamic) {
 			
 			if (Reflect.hasField(data, "error")) {
-				setState(cast {error:data.error.message});
+				this.state.error = data.error.message;
+				setState(this.state);
 			}else{
 				//WOOT
 				//setState({orders:data.orders,error:null});
 				trace("OK");
 				if (props.onSubmit != null) props.onSubmit();
 			}
-		}).catchError(function(error) {
-			trace("PROMISE ERROR", error);
-			setState(cast {error:error.message});
+		}).catchError(function(data) {
+			trace("PROMISE ERROR", data);
+			this.state.error = data.error.message;
+			setState(this.state);
 		});
 		
 	}

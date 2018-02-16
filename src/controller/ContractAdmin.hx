@@ -1,7 +1,6 @@
 package controller;
 import db.UserContract;
 import sugoi.form.elements.Checkbox;
-import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
@@ -159,7 +158,7 @@ class ContractAdmin extends Controller
 				var p = new db.Product();
 				p.name = source_p.name;
 				p.price = source_p.price;
-				p.type = source_p.type;
+				//p.type = source_p.type;
 				p.contract = contract;
 				p.insert();
 			}
@@ -457,7 +456,7 @@ class ContractAdmin extends Controller
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
 		if ( distribs.length == 0 ) throw Error("/contractAdmin/", t._("There is no delivery during this period"));
 		
-		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:List<OrderByProduct>}>();//key : vendor id
+		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:Array<OrderByProduct>}>();//key : vendor id
 		
 		for (d in distribs){
 			var vid = d.contract.vendor.id;
@@ -639,7 +638,7 @@ class ContractAdmin extends Controller
 					var p = new db.Product();
 					p.name = source_p.name;
 					p.price = source_p.price;
-					p.type = source_p.type;
+					//p.type = source_p.type;
 					p.contract = nc;
 					p.image = source_p.image;
 					p.desc = source_p.desc;
@@ -689,7 +688,7 @@ class ContractAdmin extends Controller
 	
 	
 	/**
-	 * Commandes groupées par produit.
+	 * Orders grouped by product
 	 */
 	@tpl("contractadmin/ordersByProduct.mtt")
 	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
@@ -709,7 +708,7 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 * "bon de commande"
+	 * Purchase order to print
 	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
 	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {
@@ -822,34 +821,36 @@ class ContractAdmin extends Controller
 		
 		if (args == null) args = { stat:0 };
 		view.stat = args.stat;
-		
+		var pids = contract.getProducts().map(function(x) return x.id);
 		switch(args.stat) {
 			case 0 : 
 				//ancienneté des amapiens
-				view.anciennete = sys.db.Manager.cnx.request("select YEAR(u.cdate) as uyear ,count(DISTINCT u.id) as cnt from User u, UserContract up where up.userId=u.id and up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") group by uyear;").results();
+				
+				if(pids.length==0){
+					view.anciennete = new List();
+				}else{
+					view.anciennete = sys.db.Manager.cnx.request("select YEAR(u.cdate) as uyear ,count(DISTINCT u.id) as cnt from User u, UserContract up where up.userId=u.id and up.productId IN (" + pids.join(",") + ") group by uyear;").results();
+				}
+				
 			case 1 : 
 				//repartition des commandes
-				var pids = db.Product.manager.search($contract == contract, false);
-				var pids = Lambda.map(pids, function(x) return x.id);
-		
-				//view.contracts = sys.db.Manager.cnx.request("select u.firstName , u.lastName as uname, u.id as uid, p.name as pname , up.* from User u, UserContract up, Product p where up.userId=u.id and up.productId=p.id and p.contractId="+contract.id+" order by uname asc;").results();
-				
-				var repartition = sys.db.Manager.cnx.request("select sum(quantity) as quantity,productId,p.name,p.price from UserContract up, Product p where up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") and up.productId=p.id group by productId").results();
+				var repartition = new List();
 				var total = 0;
 				var totalPrice = 0;
-				for ( r in repartition) {
-					total += r.quantity;
-					totalPrice += r.price*r.quantity; 
-				}
-				for (r in repartition) {
-					Reflect.setField(r, "percent", Math.round((r.quantity/total)*100)  );
-				}
-				
-				
-				if ( app.params.exists("csv") ){
+				if(pids.length!=0){	
+					var repartition = sys.db.Manager.cnx.request("select sum(quantity) as quantity,productId,p.name,p.price from UserContract up, Product p where up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") and up.productId=p.id group by productId").results();
+					for ( r in repartition) {
+						total += r.quantity;
+						totalPrice += r.price*r.quantity; 
+					}
+					for (r in repartition) {
+						Reflect.setField(r, "percent", Math.round((r.quantity/total)*100)  );
+					}
 					
-					sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
-				}
+					if ( app.params.exists("csv") ){					
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(repartition), ["quantity","productId","name","price","percent"], "stats-" + contract.name+".csv");
+					}
+				}				
 				
 				view.repartition = repartition;
 				view.totalQuantity = total;

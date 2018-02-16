@@ -6,9 +6,9 @@ import sugoi.form.elements.FloatInput;
 import sugoi.form.elements.FloatSelect;
 import sugoi.form.elements.IntSelect;
 using Std;
+
 class Product extends Controller
 {
-
 	public function new()
 	{
 		super();
@@ -72,9 +72,6 @@ class Product extends Controller
 		var d = new db.Product();
 		var f = sugoi.form.Form.fromSpod(d);
 		
-		//f.removeElement( f.getElement("type") );		
-		//var pt = new form.ProductTypeRadioGroup("type", "type", "1");
-		//f.addElement( pt );
 		f.removeElementByName("contractId");
 		
 		//stock mgmt ?
@@ -82,7 +79,6 @@ class Product extends Controller
 		
 		//vat selector
 		f.removeElement( f.getElement('vat') );
-		
 		var data = [];
 		for (k in app.user.amap.vatRates.keys()) {
 			data.push( { value:app.user.amap.vatRates[k], label:k } );
@@ -93,13 +89,10 @@ class Product extends Controller
 		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","",null,"$formName");</script>';
 		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
 		
-		
 		if (f.isValid()) {
-			f.toSpod(d); //update model
+			f.toSpod(d);
 			d.contract = contract;
-			
 			app.event(NewProduct(d));
-			
 			d.insert();
 			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been saved"));
 		}else{
@@ -145,8 +138,14 @@ class Product extends Controller
 		
 		// get the uploaded file content
 		if (request.get("file") != null) {
-			
-			var datas = csv.importDatasAsMap(request.get("file"));
+			//convert to utf-8 if needed
+			var csvData = request.get("file");
+			try{
+				if (!haxe.Utf8.validate(csvData)){
+					csvData = haxe.Utf8.encode(csvData);
+				}
+			}catch (e:Dynamic){ }
+			var datas = csv.importDatasAsMap(csvData);
 			
 			app.session.data.csvImportedData = datas;
 			

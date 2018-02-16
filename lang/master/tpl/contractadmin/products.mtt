@@ -63,13 +63,13 @@
 			<th></th>
 			<th></th>
 			<th>::_("Product ID||id or reference of a product")::</th>
-			<th>::_("Name")::</th>
-			<th></th>
+			<th>::_("Name")::</th>			
 			<th>::_("Price")::</th>
+			<th></th>
 			::if c.hasStockManagement()::
 			<th>::_("Stock")::</th>
 			::end::
-			<th></th>
+			
 			<th></th>
 		</tr>
 		::foreach p c.getProducts(false)::
@@ -84,16 +84,14 @@
 				<input type="checkbox" name="checkbox" value="::p.id::" />
 			</td>
 			<td>
-				
 				<img src="::p.getImage()::" style="width:64px;height:64px;" />
-				
 			</td>
-			<td>$$nullSafe(::p.ref::)</td>
+			<td class="ref">$$nullSafe(::p.ref::)</td>
 			<td>
 				<b>::p.name::</b>
 				
 				::if p._unitType!=null && p.qt!=null::
-				::p.qt::&nbsp;::unit(p._unitType)::
+				::p.qt::&nbsp;::unit(p._unitType,false)::
 				::end::
 				
 				::if !c._amap.hasTaxonomy()::	
@@ -107,11 +105,11 @@
 					::p.getFullCategorization().join(" / ")::
 				</div>
 				::end::
-				
-			</td>
-			
-			<td>::if p.organic ::<img src="/img/AB.png"/> ::end::</td>
-			
+				<div>
+				::if p.organic ::<img src="/img/AB.png" style="display:inline-block"/>::end::
+				::if p.variablePrice ::<img src="/img/weight.png" style="display:inline-block"/>::end::
+				</div>
+			</td>			
 			<td>::formatNum(p.price)::&nbsp;::currency()::</td>
 			<td>
 			::if c.hasStockManagement() ::

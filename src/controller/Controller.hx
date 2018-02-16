@@ -3,7 +3,7 @@ import Common;
 import sugoi.Web;
 
 /**
- * 
+ * Base Cagette.net Controller
  * @author fbarbut
  */
 class Controller extends sugoi.BaseController

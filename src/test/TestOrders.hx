@@ -9,10 +9,8 @@ class TestOrders extends haxe.unit.TestCase
 {
 	
 	public function new(){
-			
 		super();
 	}
-	
 	
 	var c : db.Contract;
 	var p : db.Product;
@@ -34,7 +32,6 @@ class TestOrders extends haxe.unit.TestCase
 		sys.db.Manager.cnx.request("TRUNCATE TABLE UserContract;");
 	}
 	
-
 	/**
 	 * make orders & stock management
 	 */
@@ -135,4 +132,65 @@ class TestOrders extends haxe.unit.TestCase
 		assertEquals(6.0 , o.quantity);
 	}
 	
+	/**
+	 * test orders with multiweight product
+	 */
+	function testOrderWithMultiWeightProduct(){
+		
+		var chicken = TestSuite.CHICKEN;
+		var distrib = db.Distribution.manager.select($contract == chicken.contract, false);
+		
+		var order = db.UserContract.make(bob, 1, chicken, distrib.id);
+		assertEquals(1.0, order.quantity);
+		assertEquals(chicken.id, order.product.id);
+		assertEquals(chicken.price, order.productPrice);
+		
+		//order 2 more, should not aggregate because multiWeight is true
+		var order2 = db.UserContract.make(bob, 2, chicken, distrib.id);
+		
+		assertTrue(order2.id != order.id); 
+		
+		//we should get 3 different orders
+		var orders = distrib.getOrders();
+		
+		//trace(db.UserContract.prepare(orders));
+		
+		assertEquals(3, orders.length);
+		for ( o in orders){
+			assertEquals(o.user.id, bob.id);
+			assertEquals(o.product.id, chicken.id);
+			assertEquals(1.0, o.quantity);
+		}
+		
+	}
+	
+	/**
+	 * @author fbarbut
+	 * @date 2018-01-26
+	 * order a product, edit and set qt to zero, order again.
+	 * the same record should be re-used ( if not multiweight )
+	 */
+	function testMakeOrderAndZeroQuantity(){
+		var fraises = TestSuite.STRAWBERRIES;
+		var distrib = db.Distribution.manager.select($contract == fraises.contract, false);
+		
+		var order = db.UserContract.make(bob, 1, fraises, distrib.id);
+		
+		order = db.UserContract.edit(order, 0);
+		
+		assertEquals(0.0, order.quantity);
+		
+		var order2 = db.UserContract.make(bob, 1, fraises, distrib.id);
+		
+		var bobOrders = [];
+		for ( o in distrib.getOrders()) if (o.user.id == bob.id) bobOrders.push(o);
+		
+		//trace(db.UserContract.prepare(bobOrders));
+		
+		assertFalse(fraises.multiWeight);
+		assertEquals(1, bobOrders.length);
+		assertEquals(1.0, bobOrders[0].quantity);
+		
+		
+	}
 }

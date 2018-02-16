@@ -8,7 +8,7 @@ class Admin extends Controller {
 		super();
 		view.category = 'admin';
 		
-		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
+		//trigger a "Nav" event
 		var nav = new Array<Link>();
 		var e = Nav(nav,"admin");
 		app.event(e);
@@ -87,7 +87,7 @@ class Admin extends Controller {
 			sys.db.Manager.cnx.request("truncate table Error");
 		}
 
-		var errorsStats = sys.db.Manager.cnx.request("select count(id) as c, DATE_FORMAT(date,'%c-%d') as day from Error where date > NOW()- INTERVAL 1 MONTH "+sql+" group by day order by day").results();
+		var errorsStats = sys.db.Manager.cnx.request("select count(id) as c, DATE_FORMAT(date,'%y-%c-%d') as day from Error where date > NOW()- INTERVAL 1 MONTH "+sql+" group by day order by day").results();
 		view.errorsStats = errorsStats;
 
 		view.browser = new sugoi.tools.ResultsBrowser(

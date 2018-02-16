@@ -33,8 +33,7 @@ class Distribution extends Controller
 		
 		if (type == null) {
 		
-			//display form
-			
+			//display form			
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ value:"one", label:t._("One person per page") },
@@ -82,7 +81,7 @@ class Distribution extends Controller
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 			var contracts = app.user.amap.getActiveContracts(true);
-			var cids = Lambda.map(contracts, function(c) return c.id);
+			//var cids = Lambda.map(contracts, function(c) return c.id);
 			var cconst = [];
 			var cvar = [];
 			for ( c in contracts) {
@@ -183,7 +182,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._('Edit a distribution');
+		view.title = t._("Edit a distribution");
 	}
 	
 	@tpl('form.mtt')

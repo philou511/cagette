@@ -87,7 +87,8 @@ class UserContract extends Object
 	public static function prepare(orders:Iterable<db.UserContract>):Array<UserOrder> {
 		var out = new Array<UserOrder>();
 		var orders = Lambda.array(orders);
-		
+		var view = App.current.view;
+		var t = sugoi.i18n.Locale.texts;
 		for (o in orders) {
 		
 			var x : UserOrder = cast { };
@@ -105,14 +106,29 @@ class UserContract extends Object
 			
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
-			x.productName = o.product.name;
 			x.productQt = o.product.qt;
 			x.productUnit = o.product.unitType;
 			x.productPrice = o.productPrice;
 			x.productImage = o.product.getImage();
 			x.productHasFloatQt = o.product.hasFloatQt;
+			x.productHasVariablePrice = o.product.variablePrice;
 			
 			x.quantity = o.quantity;
+			
+			//smartQt
+			if (x.quantity == 0.0){
+				x.smartQt = t._("Canceled");
+			}else if(x.productHasFloatQt || x.productHasVariablePrice){
+				x.smartQt = view.smartQt(x.quantity, x.productQt, x.productUnit);
+			}else{
+				x.smartQt = Std.string(x.quantity);
+			}
+			if (x.productHasFloatQt || x.productHasVariablePrice || x.productQt==null || x.productUnit==null){
+				x.productName = o.product.name;	
+			}else{
+				x.productName = o.product.name + " " + view.formatNum(x.productQt) +" "+ view.unit(x.productUnit,x.productQt>1);	
+			}
+			
 			x.subTotal = o.quantity * o.productPrice;
 
 			var c = o.product.contract;
@@ -131,8 +147,6 @@ class UserContract extends Object
 			//flags
 			x.paid = o.paid;
 			x.invertSharedOrder = o.flags.has(InvertSharedOrder);
-			x.canceled = o.flags.has(Canceled);
-			
 			x.contractId = c.id;
 			x.contractName = c.name;
 			x.canModify = o.canModify(); 
@@ -195,24 +209,37 @@ class UserContract extends Object
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int,?paid:Bool,?user2:db.User,?invert:Bool):db.UserContract {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool):db.UserContract {
+		
+		var t = sugoi.i18n.Locale.texts;
+		
+		//multiweight : make one row per product
+		if (product.multiWeight && quantity > 1.0){
+			if (product.multiWeight && quantity != Math.abs(quantity)) throw t._("multi-weighing products should be ordered only with integer quantities");
+			
+			var o = null;
+			for ( i in 0...Math.round(quantity)){
+				o = make(user, 1, product, distribId, paid, user2, invert);
+			}			
+			return o;
+		}
 		
 		var t = sugoi.i18n.Locale.texts;
 		
 		//checks
 		if (quantity <= 0) return null;
 		
-		//vérifie si il n'y a pas de commandes existantes avec les memes paramètres
+		//check for previous orders on the same distrib
 		var prevOrders = new List<db.UserContract>();
-		
 		if (distribId == null) {
 			prevOrders = db.UserContract.manager.search($product==product && $user==user, true);
 		}else {
 			prevOrders = db.UserContract.manager.search($product==product && $user==user && $distributionId==distribId, true);
 		}
 		
+		//Create order object
 		var o = new db.UserContract();
-		o.productId = product.id;
+		o.product = product;
 		o.quantity = quantity;
 		o.productPrice = product.price;
 		if (product.contract.hasPercentageOnOrders()) {
@@ -224,31 +251,35 @@ class UserContract extends Object
 			if (invert != null) o.flags.set(InvertSharedOrder);
 		}
 		if (paid != null) o.paid = paid;
-		if (distribId != null) o.distributionId = distribId;
+		if (distribId != null) o.distribution = db.Distribution.manager.get(distribId);
 		
-		if (prevOrders.length > 0) {
+		//cumulate quantities if there is a similar previous order
+		if (prevOrders.length > 0 && !product.multiWeight) {
 			for (prevOrder in prevOrders) {
-				if (!prevOrder.paid) {
+				//if (!prevOrder.paid) {
 					o.quantity += prevOrder.quantity;
 					prevOrder.delete();
-				}
+				//}
 			}
 		}
 		
+		//create a basket object
 		if (distribId != null){
-			var dist = db.Distribution.manager.get(o.distributionId, false);
+			var dist = o.distribution;
 			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
 			o.basket = basket;
 		}
 		
 		o.insert();
 		
-		//stocks
+		//Stocks
 		if (o.product.stock != null) {
 			var c = o.product.contract;
 			if (c.hasStockManagement()) {
 				if (o.product.stock == 0) {
-					if(App.current.session!=null) App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
+					if (App.current.session != null) {
+						App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
+					}
 					o.quantity -= quantity;
 					if ( o.quantity <= 0 ) {
 						o.delete();
@@ -260,24 +291,23 @@ class UserContract extends Object
 					o.quantity -= canceled;
 					o.update();
 					
-					if(App.current.session!=null) App.current.session.addMessage(t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:o.product.name, oQuantity:o.quantity}), true);
+					if (App.current.session != null) {
+						var msg = t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:o.product.name, oQuantity:o.quantity});
+						App.current.session.addMessage(msg, true);
+					}
 					o.product.lock();
 					o.product.stock = 0;
 					o.product.update();
-					
 					App.current.event(StockMove({product:o.product, move:0 - (quantity - canceled) }));
 					
 				}else {
 					o.product.lock();
 					o.product.stock -= quantity;
 					o.product.update();	
-					
 					App.current.event(StockMove({product:o.product, move:0 - quantity}));
 				}
-				
 			}	
 		}
-		
 		return o;
 	}
 	
@@ -356,7 +386,7 @@ class UserContract extends Object
 		if (newquantity == 0) {
 			order.quantity = 0;			
 			order.paid = true;
-			order.flags.set(OrderFlags.Canceled);
+			//order.flags.set(OrderFlags.Canceled);
 			order.update();
 			//order.delete();			
 			//return null; //need to get an order object with zero qt to manage payment operations properly			
@@ -371,13 +401,9 @@ class UserContract extends Object
 	/**
 	 * Get orders grouped by products. 
 	 */
-	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):List<OrderByProduct>{
+	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
 		var view = App.current.view;
 		var t = sugoi.i18n.Locale.texts;
-		//var pids = db.Product.manager.search($contract == d.contract, false);
-		//var pids = Lambda.map(pids, function(x) return x.id);
-		
-		var orders = new List<OrderByProduct>();
 		var where = "";
 		var exportName = "";
 		
@@ -399,26 +425,67 @@ class UserContract extends Object
 			
 		}
 	
-		var sql = 'select 
-				SUM(quantity) as quantity,
-				p.id as pid,
-				p.name as pname,
-				p.price as priceTTC,
-				p.vat as vat,
-				p.ref as ref,
-				SUM(quantity*up.productPrice) as total
+		var sql = '
+			select 
+			SUM(quantity) as quantity,
+			p.id as pid,
+			p.name as pname,
+			p.price as price,
+			p.vat as vat,
+			p.ref as ref,
+			SUM(quantity*up.productPrice) as total
 			from UserContract up, Product p 
 			where up.productId = p.id 
 			$where
 			group by p.id
 			order by pname asc; ';
 			
-		orders = cast sys.db.Manager.cnx.request(sql).results();	
-		
+		var res = sys.db.Manager.cnx.request(sql).results();	
+		var orders = [];
+
 		//populate with full product names
-		for ( o in orders){
-			var p = db.Product.manager.get(o.pid, false);
-			Reflect.setField(o, "pname", p.getName());
+		for ( r in res){
+			var p = db.Product.manager.get(r.pid, false);
+			var o : OrderByProduct = {
+				quantity:1.0 * r.quantity,
+				smartQt:"",
+				pid:p.id,
+				pname:p.name,
+				ref:r.ref,
+				priceHT:null,
+				priceTTC:r.price,
+				vat:null,
+				total:1.0 * r.quantity * r.price,
+				weightOrVolume:"",
+			};
+
+			//smartQt
+			if( p.hasFloatQt || p.variablePrice ){
+				o.smartQt = view.smartQt(o.quantity, p.qt, p.unitType);
+			}else{
+				o.smartQt = Std.string(o.quantity);
+			}
+			o.weightOrVolume = view.smartQt(o.quantity, p.qt, p.unitType);
+			
+			if ( p.hasFloatQt || p.variablePrice || p.qt==null || p.unitType==null){
+				o.pname = p.name;	
+			}else{
+				o.pname = p.name + " " + view.formatNum(p.qt) +" " + view.unit(p.unitType, o.quantity > 1);					
+			}
+
+			//special case : if product is multiweight, we should count the records number ( and not SUM quantities )
+			if (p.multiWeight){
+				sql = 'select 
+				COUNT(up.id) as quantity 
+				from UserContract up, Product p 
+				where up.productId = p.id and up.quantity > 0 and p.id=${p.id}
+				$where';
+				var count = sys.db.Manager.cnx.request(sql).getIntResult(0);					
+				o.smartQt = ""+count;
+			}			
+			
+			orders.push(o);
+			
 		}
 		
 		
@@ -454,7 +521,7 @@ class UserContract extends Object
 			orders = contract.getOrders();
 		}
 		
-		var orders = db.UserContract.prepare(Lambda.list(orders));
+		var orders = db.UserContract.prepare(orders);
 		
 		//CSV export
 		if (csv) {
