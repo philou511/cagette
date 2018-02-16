@@ -15,7 +15,7 @@ enum Right{
 @:id(userId,amapId)
 class UserAmap extends Object
 {
-	@:relation(amapId) public var amap : Amap;
+	@:relation(amapId) public var amap : db.Amap;
 	@:relation(userId) public var user : db.User;
 	public var rights : SNull<SData<Array<Right>>>;
 	public var balance : SFloat; //account balance in group currency

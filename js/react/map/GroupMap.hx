@@ -59,48 +59,51 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
 	static inline var INIT_ZOOM = 6;
 	static inline var DEFAULT_ZOOM = 13;
 
-  	var map:Dynamic;
-  	var featureGroup:FeatureGroup;
-  	var markerMap = new Map<Int,Dynamic>();
+  var map:Dynamic;
+  var featureGroup:Dynamic;
+  var markerMap = new Map<Int,Dynamic>();
 
-  	var groupIcon = L2.icon({
-		iconUrl: '/img/marker.svg',
-		iconSize: [40, 40],
-		iconAnchor: [20, 40],
-		popupAnchor: [0, -30],
-		className: 'icon'
-	});
+  var groupIcon = L2.icon({
+    iconUrl: '/img/marker.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -30],
+    className: 'icon'
+  });
 
-  	var homeIcon = L2.icon({
-		iconUrl: '/img/home.svg',
-		iconSize: [40, 40],
-		iconAnchor: [20, 20],
-		popupAnchor: [0, -30],
-		className: 'icon'
-	});
+  var homeIcon = L2.icon({
+    iconUrl: '/img/home.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -30],
+    className: 'icon'
+  });
 
-	function new() {
-    	super();
-    	state = {
-    		isFitting: false,
-    		focusedMarker: null
-    	};
-  	}
+  function new() {
+    super();
+    state = {
+      isFitting: false,
+      focusedMarker: null
+    };
+  }
 
-  	function getMap(element:Dynamic):Void {
-    	map = element.leafletElement;
-  	}
+  function getMap(element:Dynamic):Void {
+    map = element.leafletElement;
+  }
 
-  	function getFeatureGroup(element:Dynamic):Void {
-		featureGroup = element.leafletElement;
-		setState({isFitting: true}, fitBounds);
-	}
+  function getFeatureGroup(element:Dynamic):Void {
+    featureGroup = element.leafletElement;
+    setState({
+      isFitting: true
+    }, fitBounds);
+  }
 
   	function getMarker(element:Dynamic, id:Int):Void {
-    	if (element != null && !markerMap.exists(id))
+    	if (element != null)
       		markerMap.set(id, element.leafletElement);
   	}
 
+  
   	/**
   	 *  Call API to get groups in the current bounding box
   	 */
@@ -109,77 +112,73 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
     	var southWest = bounds.getSouthWest();
 		var northEast = bounds.getNorthEast();
 
-    	props.fetchGroupsInsideBox({
-      		minLat: southWest.lat,
-      		maxLat: northEast.lat,
-      		minLng: southWest.lng,
-      		maxLng: northEast.lng
-    	});
+		props.fetchGroupsInsideBox({
+			minLat: southWest.lat,
+			maxLat: northEast.lat,
+			minLng: southWest.lng,
+			maxLng: northEast.lng
+		});
   	}
 
-  	/**
-  	 *  Fit the map to the group bouds
-  	 */
-  	function fitBounds() {  
-	    map.fitBounds(untyped featureGroup.getBounds(), {
-    	  padding: [40, 40]
-    	});
-  	}
+	function fitBounds() {  
+		map.fitBounds(featureGroup.getBounds(), {
+			padding: [30, 30]
+		});
+	}
 
-	var lastApiCall = Date.now();
-  	function handleMoveEnd() {
+  function handleMoveEnd() {
+    if (
+      props.addressCoord != null &&
+      !Lambda.empty(props.groups) &&
+      map.distance(map.getCenter(), props.addressCoord) == 0
+    )
+      setState({
+        isFitting: true
+      }, fitBounds);
+    else if (state.isFitting)
+      setState({
+        isFitting: false
+      });
+    else
+      getGroups();
+  }
 
-		//anti-spam : do not call this too often please
-		if(lastApiCall==null) lastApiCall = Date.now();
-		if(Date.now().getTime() < lastApiCall.getTime()+2000){
-			trace("STOP handleMoveEnd");
-			return;
-		}else{
-			trace("DO handleMoveEnd");
-		} 
-		
+  override public function componentDidMount() {
+    if (props.addressCoord == null)
+      getGroups();
+  }
 
-		if (
-		props.addressCoord != null &&
-		!Lambda.empty(props.groups) &&
-		map.distance(map.getCenter(), props.addressCoord) == 0
-		)
-			setState({isFitting: true}, fitBounds);
-		else if (state.isFitting)
-			setState({isFitting: false});
-		else
-		getGroups();
-  	}
+  override public function shouldComponentUpdate(nextProps:GroupMapProps, nextState:GroupMapState) {
+    if (nextState.focusedMarker != state.focusedMarker)
+      return false;
+    return true;
+  }
 
-  	function handleFocusedMarker() { }
+  override public function componentDidUpdate(prevProps:GroupMapProps, prevState:GroupMapState) {
+    if (props.groupFocusedId != null) {
+      if (
+        prevProps.groupFocusedId != props.groupFocusedId
+      || state.focusedMarker == null
+      ) {
+        if (state.focusedMarker != null)
+          state.focusedMarker.closePopup();
 
-  	override public function componentDidMount() {
-    	if (props.addressCoord == null)
-      		getGroups();
-  	}
+        var focusedMarker = markerMap.get(props.groupFocusedId);
+        focusedMarker.openPopup();
 
-  	override public function shouldComponentUpdate(nextProps:GroupMapProps, nextState:GroupMapState) {
-    	if (nextState.focusedMarker != state.focusedMarker)	return false;
-    	return true;
-  	}
+        setState({
+          focusedMarker: focusedMarker
+        });
+      }
+    }
+    else if (prevProps.groupFocusedId != null && state.focusedMarker != null) {
+      state.focusedMarker.closePopup();
 
-	override public function componentDidUpdate(prevProps:GroupMapProps, prevState:GroupMapState) {
-		if (props.groupFocusedId != null) {
-			var focusedMarker = markerMap.get(props.groupFocusedId);
-			focusedMarker.openPopup();
-
-			setState({
-				focusedMarker: focusedMarker
-			});
-		}
-		else if (state.focusedMarker != null) {
-			state.focusedMarker.closePopup();
-
-			setState({
-				focusedMarker: null
-			});
-		}
-  	}
+      setState({
+        focusedMarker: null
+      });
+    }
+  }
 
 	override public function render() {
     	var center = props.addressCoord == null
