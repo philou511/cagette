@@ -34,8 +34,6 @@ script:
   - make -f Makefile_template templates LANG=de
   - make -f Makefile_template templates LANG=en
   - npm run build
-  - RES=$(wget http://cagette -O- | grep error | wc -l)
-  - [ "$RES" != "0" ] && echo "First page access shows an error, as expected" || echo "First page access does not show an error, but it should" && false
-  - RES2=$(wget http://cagette -O- | grep error | wc -l)
-  - [ "$RES2" == "0" ] && echo "Second page access shows no error, as expected" || echo "Second page access shows an error, but it should not" && false
+  - if [ "$(wget http://cagette -O- | grep error | wc -l)" = "0" ]; then echo "First page access does not show an error, but it should" && exit 1; else echo "First page access shows an error, as expected"; fi
+  - if [ "$(wget http://cagette -O- | grep error | wc -l)" != "0" ]; then echo "Second page access shows an error, but it should not" && exit 1; else echo "Second page access shows no error, as expected"; fi
   - haxe tests.hxml
