@@ -19,8 +19,8 @@ before_install:
   - sed -e 's?database=.*?database="mysql://root:@localhost/cagette"?g' --in-place config.xml
   - sed -e 's?debug=.*?debug="1"?g' --in-place config.xml
 install:
-  - yes | haxelib cagette.hxml
-  - yes | haxelib cagetteJs.hxml
+  - yes | haxelib install cagette.hxml
+  - yes | haxelib install cagetteJs.hxml
 before_script:
   - haxelib run templo
   - npm install
