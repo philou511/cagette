@@ -18,8 +18,8 @@ before_install:
   - cp config.xml.dist config.xml
   - sed -e 's?database=.*?database="mysql://root:@localhost/cagette"?g' --in-place config.xml
   - sed -e 's?debug=.*?debug="1"?g' --in-place config.xml
-  - sed -e 's?langs=.*?langs="fr;en"?g' --in-place config.xml
-  - sed -e 's?langnames=.*?langnames="Français;English"?g' --in-place config.xml
+  - sed -e 's?langs=.*?langs="fr;de;en"?g' --in-place config.xml
+  - sed -e 's?langnames=.*?langnames="Français;Deutsch;English"?g' --in-place config.xml
 install:
   - yes | haxelib install cagette.hxml
   - yes | haxelib install cagetteJs.hxml
@@ -31,6 +31,11 @@ script:
   - haxe cagetteJs.hxml
   - haxe templateGeneration.hxml
   - make -f Makefile_template templates LANG=fr
+  - make -f Makefile_template templates LANG=de
   - make -f Makefile_template templates LANG=en
   - npm run build
+  - RES=$(wget http://cagette -O- | grep error | wc -l)
+  - [ "$RES" != "0" ] && echo "First page access shows an error, as expected" || echo "First page access does not show an error, but it should" && false
+  - RES2=$(wget http://cagette -O- | grep error | wc -l)
+  - [ "$RES2" == "0" ] && echo "Second page access shows no error, as expected" || echo "Second page access shows an error, but it should not" && false
   - haxe tests.hxml
