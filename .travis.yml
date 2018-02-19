@@ -2,3 +2,22 @@ language: haxe
 haxe:
   - "3.4.4"
   - stable      # the latest stable release defined in https://haxe.org/download/list/
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y curl imagemagick apache2 libapache2-mod-neko mysql-server libmysqlclient-dev
+  - sudo a2enmod neko
+  - sudo a2enmod rewrite
+  # For the following apache2 related operations, see https://docs.travis-ci.com/user/languages/php#Apache-%2B-PHP
+  - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
+  - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/000-default.conf
+  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
+  - sudo service apache2 restart
+  - mysql -e 'CREATE DATABASE cagette;'
+  - cp config.xml.dist config.xml
+  - sed -e 's?database=.*?database="mysql://root:@localhost/cagette"?g' --in-place config.xml
+hxml:
+  - cagette.hxml
+  - cagetteJs.hxml
+before_script:
+  - haxelib run templo
+  - npm run build
