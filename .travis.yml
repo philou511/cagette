@@ -22,4 +22,5 @@ hxml:
   - cagetteJs.hxml
 before_script:
   - haxelib run templo
+  - npm install
   - npm run build
