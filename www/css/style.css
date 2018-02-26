@@ -5,6 +5,89 @@
 
 **/
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,400i,700");
+/*
+  Group map on /group/map
+*/
+.group-map {
+  height: 100vh;
+  width: 100%;
+  /*
+ 		AUTOCOMPLETE 
+  */ }
+  .group-map .groups {
+    width: 100%;
+    height: calc(100vh - 130px);
+    overflow-y: scroll; }
+    .group-map .groups .groupBlock {
+      cursor: pointer; }
+      .group-map .groups .groupBlock img {
+        width: 92px;
+        float: left;
+        margin-right: 12px; }
+  .group-map #mapContainer {
+    padding: 0; }
+  .group-map .form-group-container {
+    padding-top: 35px; }
+    .group-map .form-group-container .form-group {
+      display: inline-block;
+      width: 50%;
+      /*margin-left: auto;
+      margin-right: auto;
+      margin-top: 5rem;
+      */ }
+  .group-map #logo {
+    background-image: url(/img/logo3.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 130px; }
+  .group-map .leaflet-container {
+    height: calc(100vh - 130px); }
+  .group-map .leaflet-popup-content .groupName {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    font-family: Cabin,Helvetica,Arial,sans-serif;
+    margin-top: 8px; }
+  .group-map .leaflet-popup-content .groupImage {
+    max-width: 120px;
+    max-height: 120px;
+    display: block;
+    margin: auto; }
+  .group-map .leaflet-popup-content a {
+    color: #3c763d; }
+  .group-map .autocomplete-input,
+  .group-map .autocomplete-input:focus,
+  .group-map .autocomplete-input:active {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+    border: honeydew;
+    display: block;
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 2px;
+    outline: none; }
+  .group-map .autocomplete-results {
+    position: fixed;
+    width: 50%;
+    border-bottom: honeydew;
+    border-left: honeydew;
+    border-right: honeydew;
+    border-top: 1px solid #e6e6e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 2px 2px;
+    z-index: 1001; }
+  .group-map .autocomplete-item {
+    padding: 4px;
+    text-align: left; }
+  .group-map .autocomplete-icon {
+    margin-right: 8px; }
+  .group-map .fa.fa-map-marker.header {
+    color: #e53935; }
+  .group-map .icon {
+    cursor: pointer; }
+  .group-map .popup {
+    cursor: pointer; }
+
 /*body{
   background-color:#F8F4E5 !important;    
 }*/
@@ -220,10 +303,10 @@ div.reportHeader {
   display: block;
   border: 1px solid #CCC;
   border-radius: 8px;
-  padding: 8px;
   color: inherit;
   background-color: white;
-  margin-bottom: 12px; }
+  margin-bottom: 12px;
+  padding: 8px; }
   .clickable:hover {
     cursor: pointer;
     background-color: #f5e1a5;
@@ -236,6 +319,22 @@ div.reportHeader {
     border-color: #ebc349;
     text-decoration: none;
     transform: scale(0.95); }
+
+/* a group block (use it with .clickable ) */
+.groupBlock {
+  height: 110px;
+  overflow: hidden;
+  vertical-align: top;
+  position: relative; }
+  .groupBlock .address {
+    font-size: 0.9em; }
+  .groupBlock .distance {
+    font-weight: bold;
+    color: #84bd55;
+    font-size: 1.2em;
+    position: absolute;
+    right: 8px;
+    bottom: 6px; }
 
 /*
 	SHOP v1
@@ -254,6 +353,7 @@ div.reportHeader {
     color: white; }
   .shop .header .info {
     font-weight: bold; }
+
 .shop .body {
   background: white;
   display: inline-block;
@@ -265,6 +365,7 @@ div.reportHeader {
     color: #583816;
     border-bottom: 1px solid #CCC;
     width: 100%; }
+
 .shop .product {
   display: inline-block; }
   .shop .product .name {
@@ -415,9 +516,11 @@ span.tag.active {
   border-bottom: 1px solid #BB9931 !important;
   font-weight: bold !important;
   background-color: #583816 !important; }
+
 .modal.help .modal-content {
   background-color: #583816 !important;
   color: white; }
+
 .modal.help .modal-footer {
   border-top: 1px solid #BB9931 !important; }
 
@@ -487,6 +590,12 @@ span.tag.active {
       .distrib .content .footer a {
         color: #999; }
 
+div.groupImg {
+  background: no-repeat center;
+  background-size: cover;
+  width: 110px;
+  height: 110px; }
+
 div.productImg {
   display: inline-block;
   border-radius: 3px;
@@ -502,6 +611,7 @@ div.productBox div.productImg {
   width: 220px;
   background-position: center center;
   border-radius: 6px; }
+
 div.productBox div.productName {
   display: block;
   font-weight: bold;
@@ -509,6 +619,7 @@ div.productBox div.productName {
   text-align: center;
   font-size: 1.2em;
   margin-bottom: 4px; }
+
 div.productBox .price {
   font-weight: bold;
   text-align: right; }
@@ -531,6 +642,7 @@ div.productBox .price {
   font-weight: bold;
   font-size: 0.8em;
   margin: 4px 0; }
+
 #pInput img {
   max-width: 100px;
   max-height: 100px; }
@@ -762,5 +874,3 @@ td.rdtYear:hover {
   width: 100%;
   font-size: 1.2em;
   margin-top: 37px; }
-
-/*# sourceMappingURL=style.css.map */

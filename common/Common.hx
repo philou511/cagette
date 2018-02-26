@@ -1,7 +1,15 @@
 /**
- * Shared entities between server and client
+ * Common.hx : Shared entities between server and client
  */
 
+@:keep
+typedef OrderSimple = {
+	products: Array<{
+		product:ProductInfo,
+		quantity:Int
+	}>,
+	total:Float
+}
 
 //A temporary order, waiting for being paid and definitely recorded.
 @:keep
@@ -14,7 +22,7 @@ typedef OrderInSession = {
 		?distributionId:Int,
 		#end
 	} > ,
-	userId:Int,
+	?userId:Int,
 	total:Float, 	//price to pay
 	?paymentOp:Int, //payment operation ID
 }
@@ -42,9 +50,15 @@ typedef ProductInfo = {
 	?unitType:UnitType,
 	organic:Bool,
 	variablePrice:Bool,
-	#if js
+	#if (js && !test)
 	element:js.JQuery,
 	#end
+}
+
+@:keep
+typedef ProductWithQuantity = {
+	product: ProductInfo,
+	quantity: Int
 }
 
 enum UnitType{
@@ -126,6 +140,33 @@ typedef UserOrder = {
 	contractName:String,
 }
 
+
+
+typedef PlaceInfos = {
+	id:Int,
+	name:String,
+	address1:String,
+	address2:String,
+	zipCode:String,
+	city:String,
+	latitude:Float,
+	longitude:Float
+}
+
+
+typedef GroupOnMap = {
+	id:Int,
+	name:String,
+	image:String,
+	place:PlaceInfos,	
+}
+
+enum OrderFlags {
+	InvertSharedOrder;	//invert order when there is a shared/alternated order
+	//Canceled;			//flag for cancelled orders, qt should always be 0
+}
+
+
 typedef OrderByProduct = {
 	quantity:Float,
 	smartQt:String,
@@ -138,22 +179,7 @@ typedef OrderByProduct = {
 	total:Float,
 	weightOrVolume:String,
 };
-
-typedef PlaceInfos = {
-	name:String,
-	address1:String,
-	address2:String,
-	zipCode:String,
-	city:String,
-	latitude:Float,
-	longitude:Float
-}
-
-enum OrderFlags {
-	InvertSharedOrder;	//invert order when there is a shared/alternated order
-	//Canceled;			//flag for cancelled orders, qt should always be 0
-}
-
+typedef OrderByEndDate = {date: String,contracts: Array<String>};
 
 /**
 	Event enum used for plugins.
@@ -238,7 +264,6 @@ enum TutoPlacement {
 	TPRight;
 }
 
-
 class TutoDatas {
 
 	public static var TUTOS;
@@ -246,13 +271,14 @@ class TutoDatas {
 	#if js
 	//async 
 	public static function get(tuto:String, callback:Dynamic->Void){
-		
+		#if !test
 		sugoi.i18n.Locale.init(App.instance.LANG, function(t:sugoi.i18n.GetText){			
 			App.instance.t = t;
 			init(t);
 			var tuto = TUTOS.get(tuto);
 			callback(tuto);			
 		});
+		#end
 	}
 	#else
 	//sync 

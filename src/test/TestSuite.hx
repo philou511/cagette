@@ -231,8 +231,6 @@ class TestSuite
 		d.contract = c;
 		d.place = place;
 		d.insert();
-		
-		
 	}
 	
 	static function initApp(u:db.User){

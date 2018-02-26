@@ -1,10 +1,13 @@
 import react.ReactMacro.jsx;
 import react.*;
+import react.store.*;
+import react.map.*;
 
 //require bootstrap JS since it's bundled with browserify
-@:jsRequire('bootstrap') extern class Bootstrap{}
+//@:jsRequire('bootstrap') extern class Bootstrap{}
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
+import react.store.*;
 
 class App {
 
@@ -167,6 +170,14 @@ class App {
 		untyped m.modal();
 		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
+	}
+
+	public function shop(place:Int, date:String) {
+		ReactDOM.render(jsx('<$Store date=$date place=$place/>'),  js.Browser.document.querySelector('#shop'));
+	}
+	
+	public function groupMap(lat:String,lng:String,address:String) {
+		ReactDOM.render(jsx('<$GroupMapRoot lat="$lat" lng="$lng" address="$address"/>'),  js.Browser.document.querySelector('#map'));
 	}
 
 	/**

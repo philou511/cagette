@@ -442,7 +442,7 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-#: src/controller/ContractAdmin.hx:7932 src/db/Contract.hx:8226 src/db/Distribution.hx:7297 src/db/Operation.hx:12263
+#: src/controller/ContractAdmin.hx:7932 src/db/Contract.hx:8226 src/db/Operation.hx:12263
 msgid "End date"
 msgstr ""
 
@@ -693,153 +693,153 @@ msgstr ""
 msgid "Forbidden access"
 msgstr ""
 
-#: src/controller/Group.hx:1060
+#: src/controller/Group.hx:1050
 msgid "You are already in the waiting list of this group"
 msgstr ""
 
-#: src/controller/Group.hx:1240 src/controller/Group.hx:3061
+#: src/controller/Group.hx:1230 src/controller/Group.hx:3051
 msgid "You are already member of this group."
 msgstr ""
 
-#: src/controller/Group.hx:1421 src/controller/Group.hx:3422 src/controller/Install.hx:1079
+#: src/controller/Group.hx:1411 src/controller/Group.hx:3412 src/controller/Install.hx:1079
 msgid "Your firstname"
 msgstr ""
 
-#: src/controller/Group.hx:1506 src/controller/Group.hx:3507 src/controller/Install.hx:1161
+#: src/controller/Group.hx:1496 src/controller/Group.hx:3497 src/controller/Install.hx:1161
 msgid "Your lastname"
 msgstr ""
 
-#: src/controller/Group.hx:1588 src/controller/Group.hx:3583
+#: src/controller/Group.hx:1578 src/controller/Group.hx:3573
 msgid "Your e-mail"
 msgstr ""
 
-#: src/controller/Group.hx:1686
+#: src/controller/Group.hx:1676
 msgid "Leave a message"
 msgstr ""
 
-#: src/controller/Group.hx:2065
+#: src/controller/Group.hx:2055
 msgid "You already subscribed to Cagette, please log in on this page"
 msgstr ""
 
-#: src/controller/Group.hx:2394
+#: src/controller/Group.hx:2384
 msgid ""
 "Your subscription to the waiting list has been recorded. You will receive "
 "an e-mail as soon as your request is processed."
 msgstr ""
 
-#: src/controller/Group.hx:2551
+#: src/controller/Group.hx:2541
 msgid "Subscription to \"::groupeName::\" waiting list"
 msgstr ""
 
-#: src/controller/Group.hx:3191
+#: src/controller/Group.hx:3181
 msgid "Join the group"
 msgstr ""
 
-#: src/controller/Group.hx:3262
+#: src/controller/Group.hx:3252
 msgid "Confirm your subscription to \"::groupName::\""
 msgstr ""
 
-#: src/controller/Group.hx:3731
+#: src/controller/Group.hx:3721
 msgid "Address"
 msgstr ""
 
-#: src/controller/Group.hx:3811 src/db/Place.hx:1501 src/db/User.hx:16366 src/db/Vendor.hx:1162
+#: src/controller/Group.hx:3801 src/db/Place.hx:1501 src/db/User.hx:16366 src/db/Vendor.hx:1162
 msgid "Zip code"
 msgstr ""
 
-#: src/controller/Group.hx:3886 src/controller/Member.hx:17112 src/db/Place.hx:1533 src/db/User.hx:16398 src/db/Vendor.hx:1194 lang/master/tpl/member/import.mtt:995 lang/master/tpl/member/import.mtt:1727
+#: src/controller/Group.hx:3876 src/controller/Member.hx:17112 src/db/Place.hx:1533 src/db/User.hx:16398 src/db/Vendor.hx:1194 lang/master/tpl/member/import.mtt:995 lang/master/tpl/member/import.mtt:1727
 msgid "City"
 msgstr ""
 
-#: src/controller/Group.hx:3958 src/db/User.hx:16064 src/db/Vendor.hx:1052 lang/master/tpl/contractadmin/view.mtt:1043 lang/master/tpl/member/import.mtt:711 lang/master/tpl/member/import.mtt:1451 lang/master/tpl/member/payments.mtt:540 lang/master/tpl/member/waiting.mtt:234
+#: src/controller/Group.hx:3948 src/db/User.hx:16064 src/db/Vendor.hx:1052 lang/master/tpl/contractadmin/view.mtt:1043 lang/master/tpl/member/import.mtt:711 lang/master/tpl/member/import.mtt:1451 lang/master/tpl/member/payments.mtt:540 lang/master/tpl/member/waiting.mtt:234
 msgid "Phone"
 msgstr ""
 
-#: src/controller/Group.hx:4514
+#: src/controller/Group.hx:4504
 msgid "You already subscribed to Cagette.net, please log in on this page"
 msgstr ""
 
-#: src/controller/Group.hx:4802
+#: src/controller/Group.hx:4792
 msgid "Your subscription has been taken into account"
 msgstr ""
 
-#: src/controller/Group.hx:4882
+#: src/controller/Group.hx:4872
 msgid "Subscription to \"::groupName::\""
 msgstr ""
 
-#: src/controller/Group.hx:5079
+#: src/controller/Group.hx:5069
 msgid "Create a new Cagette Group"
 msgstr ""
 
-#: src/controller/Group.hx:5193 src/controller/Install.hx:992
+#: src/controller/Group.hx:5183 src/controller/Install.hx:992
 msgid "Name of your group"
 msgstr ""
 
-#: src/controller/Group.hx:5279
+#: src/controller/Group.hx:5269
 msgid "CSA"
 msgstr ""
 
-#: src/controller/Group.hx:5313
+#: src/controller/Group.hx:5303
 msgid "Grouped orders"
 msgstr ""
 
-#: src/controller/Group.hx:5358
+#: src/controller/Group.hx:5348
 msgid "Farmers collective"
 msgstr ""
 
-#: src/controller/Group.hx:5407
+#: src/controller/Group.hx:5397
 msgid "Farm shop"
 msgstr ""
 
-#: src/controller/Group.hx:5498 src/db/Amap.hx:9640
+#: src/controller/Group.hx:5488 src/db/Amap.hx:9640
 msgid "Group type"
 msgstr ""
 
-#: src/controller/Group.hx:6912
+#: src/controller/Group.hx:6960
 msgid "Market square"
 msgstr ""
 
-#: src/controller/Group.hx:7370
+#: src/controller/Group.hx:7418
 msgid "CSA contract Vegetables - Example"
 msgstr ""
 
-#: src/controller/Group.hx:7440
+#: src/controller/Group.hx:7488
 msgid ""
 "This contract is an example where the customer has to commit to buy the whole "
 "year as with AMAPs"
 msgstr ""
 
-#: src/controller/Group.hx:7884 src/controller/Install.hx:2876
+#: src/controller/Group.hx:7932 src/controller/Install.hx:2876
 msgid "Big basket of vegetables"
 msgstr ""
 
-#: src/controller/Group.hx:8055 src/controller/Install.hx:3040
+#: src/controller/Group.hx:8103 src/controller/Install.hx:3040
 msgid "Small basket of vegetables"
 msgstr ""
 
-#: src/controller/Group.hx:8592
+#: src/controller/Group.hx:8630
 msgid "Farm Galinette"
 msgstr ""
 
-#: src/controller/Group.hx:8661
+#: src/controller/Group.hx:8699
 msgid "Bazas"
 msgstr ""
 
-#: src/controller/Group.hx:8806
+#: src/controller/Group.hx:8844
 msgid "Chicken Contract - Example"
 msgstr ""
 
-#: src/controller/Group.hx:8868
+#: src/controller/Group.hx:8906
 msgid ""
 "Example of contract with variable orders. It is allowed to order something "
 "else at every delivery."
 msgstr ""
 
-#: src/controller/Group.hx:9372
+#: src/controller/Group.hx:9410
 msgid "12 eggs"
 msgstr ""
 
-#: src/controller/Group.hx:9546
+#: src/controller/Group.hx:9584
 msgid "Chicken"
 msgstr ""
 
@@ -1221,29 +1221,35 @@ msgstr ""
 msgid "Subscribers"
 msgstr ""
 
-#: src/controller/Place.hx:829
+#: src/controller/Place.hx:918
+msgid ""
+"Oops, we're unable to find where is located this address. This place will "
+"not be shown on the map."
+msgstr ""
+
+#: src/controller/Place.hx:1130
 msgid "this place has been updated"
 msgstr ""
 
-#: src/controller/Place.hx:909
+#: src/controller/Place.hx:1210
 msgid "Edit a place"
 msgstr ""
 
-#: src/controller/Place.hx:1176
+#: src/controller/Place.hx:1477
 msgid "The place has been registred"
 msgstr ""
 
-#: src/controller/Place.hx:1258
+#: src/controller/Place.hx:1559
 msgid "Register a new delivery place"
 msgstr ""
 
-#: src/controller/Place.hx:1530
+#: src/controller/Place.hx:1831
 msgid ""
 "You can't delete this place because one or more distributions are linked "
 "to this place."
 msgstr ""
 
-#: src/controller/Place.hx:1694
+#: src/controller/Place.hx:1995
 msgid "Place deleted"
 msgstr ""
 
@@ -1279,27 +1285,27 @@ msgstr ""
 msgid "Modifications saved"
 msgstr ""
 
-#: src/controller/Shop.hx:3989
+#: src/controller/Shop.hx:3991
 msgid "In order to confirm your order, You need to authenticate."
 msgstr ""
 
-#: src/controller/Shop.hx:4429
+#: src/controller/Shop.hx:4431
 msgid "Your order is empty"
 msgstr ""
 
-#: src/controller/Shop.hx:4962
+#: src/controller/Shop.hx:4964
 msgid "This cart is invalid"
 msgstr ""
 
-#: src/controller/Shop.hx:5143 src/controller/Shop.hx:5461
+#: src/controller/Shop.hx:5145 src/controller/Shop.hx:5463
 msgid "This distribution does not supply the product <b>::pname::</b>"
 msgstr ""
 
-#: src/controller/Shop.hx:5886
+#: src/controller/Shop.hx:5888
 msgid "Order of ::pname:: reduced to ::oquantity:: to match remaining stock"
 msgstr ""
 
-#: src/controller/Shop.hx:6702
+#: src/controller/Shop.hx:6704
 msgid "Your order has been confirmed"
 msgstr ""
 
@@ -1316,7 +1322,7 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2952 src/controller/Validate.hx:3339 src/db/Distribution.hx:7264 src/db/Operation.hx:12230 lang/master/tpl/contractadmin/selectDistrib.mtt:199 lang/master/tpl/member/lastMessages.mtt:52
+#: src/controller/Transaction.hx:839 src/controller/Transaction.hx:2952 src/controller/Validate.hx:3339 src/db/Distribution.hx:7262 src/db/Operation.hx:12230 lang/master/tpl/contractadmin/selectDistrib.mtt:199 lang/master/tpl/member/lastMessages.mtt:52
 msgid "Date"
 msgstr ""
 
@@ -1602,27 +1608,31 @@ msgstr ""
 msgid "Farmer"
 msgstr ""
 
-#: src/db/Distribution.hx:7233 src/db/Operation.hx:12199
+#: src/db/Distribution.hx:7231 src/db/Operation.hx:12199
 msgid "Text"
 msgstr ""
 
-#: src/db/Distribution.hx:7332 src/db/Operation.hx:12298
+#: src/db/Distribution.hx:7295
+msgid "End hour"
+msgstr ""
+
+#: src/db/Distribution.hx:7330 src/db/Operation.hx:12298 lang/master/tpl/distribution/list.mtt:564
 msgid "Place"
 msgstr ""
 
-#: src/db/Distribution.hx:7370 src/db/Operation.hx:12336
+#: src/db/Distribution.hx:7368 src/db/Operation.hx:12336
 msgid "Distributor #1"
 msgstr ""
 
-#: src/db/Distribution.hx:7417 src/db/Operation.hx:12383
+#: src/db/Distribution.hx:7415 src/db/Operation.hx:12383
 msgid "Distributor #2"
 msgstr ""
 
-#: src/db/Distribution.hx:7464 src/db/Operation.hx:12430
+#: src/db/Distribution.hx:7462 src/db/Operation.hx:12430
 msgid "Distributor #3"
 msgstr ""
 
-#: src/db/Distribution.hx:7511 src/db/Operation.hx:12477
+#: src/db/Distribution.hx:7509 src/db/Operation.hx:12477
 msgid "Distributor #4"
 msgstr ""
 
@@ -1707,22 +1717,22 @@ msgid "Allow fractional quantities"
 msgstr ""
 
 #: src/db/Product.hx:4244
-msgid "Active"
+msgid "Available"
 msgstr ""
 
-#: src/db/Product.hx:4282 lang/master/tpl/shop/productInfo.mtt:1271
+#: src/db/Product.hx:4285 lang/master/tpl/shop/productInfo.mtt:1271
 msgid "Organic agriculture"
 msgstr ""
 
-#: src/db/Product.hx:4330
+#: src/db/Product.hx:4333
 msgid "VAT Rate"
 msgstr ""
 
-#: src/db/Product.hx:4374
+#: src/db/Product.hx:4377
 msgid "Variable price based on weight"
 msgstr ""
 
-#: src/db/Product.hx:4439
+#: src/db/Product.hx:4442
 msgid "Multi-weighing"
 msgstr ""
 
@@ -1766,27 +1776,27 @@ msgstr ""
 msgid "Registration date"
 msgstr ""
 
-#: src/db/UserAmap.hx:2174
+#: src/db/UserAmap.hx:2177
 msgid "Administrator"
 msgstr ""
 
-#: src/db/UserAmap.hx:2222 lang/master/tpl/design.mtt:3204
+#: src/db/UserAmap.hx:2225 lang/master/tpl/design.mtt:3204
 msgid "Messaging"
 msgstr ""
 
-#: src/db/UserAmap.hx:2268
+#: src/db/UserAmap.hx:2271
 msgid "Members management"
 msgstr ""
 
-#: src/db/UserAmap.hx:2359
+#: src/db/UserAmap.hx:2362
 msgid "Management of all contracts"
 msgstr ""
 
-#: src/db/UserAmap.hx:2464
+#: src/db/UserAmap.hx:2467
 msgid "Contract management"
 msgstr ""
 
-#: src/db/UserContract.hx:3046 lang/master/tpl/contractadmin/orders.mtt:4345 lang/master/tpl/contractadmin/ordersByDate.mtt:3082 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2123 lang/master/tpl/distribution/list.mtt:2732 lang/master/tpl/distribution/listByDate.mtt:1856 lang/master/tpl/distribution/listByDateOnePage.mtt:2390 lang/master/tpl/distribution/listByDateOnePageContract.mtt:2928 lang/master/tpl/distribution/listByDateShort.mtt:1835
+#: src/db/UserContract.hx:3046 lang/master/tpl/contractadmin/orders.mtt:4345 lang/master/tpl/contractadmin/ordersByDate.mtt:3082 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2123 lang/master/tpl/distribution/list.mtt:2926 lang/master/tpl/distribution/listByDate.mtt:1856 lang/master/tpl/distribution/listByDateOnePage.mtt:2390 lang/master/tpl/distribution/listByDateOnePageContract.mtt:2928 lang/master/tpl/distribution/listByDateShort.mtt:1835
 msgid "Canceled"
 msgstr ""
 
@@ -2051,7 +2061,7 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-#: lang/master/tpl/base.mtt:3338
+#: lang/master/tpl/base.mtt:3275
 msgid "Close"
 msgstr ""
 
@@ -2101,11 +2111,11 @@ msgid "CSA Contracts"
 msgstr ""
 
 #. short version for quantity
-#: lang/master/tpl/contract/default.mtt:351 lang/master/tpl/contract/default.mtt:2639 lang/master/tpl/contract/order.mtt:896 lang/master/tpl/contract/orderAndPay.mtt:994 lang/master/tpl/contractadmin/orders.mtt:3685 lang/master/tpl/contractadmin/ordersByDate.mtt:2462 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1528 lang/master/tpl/distribution/list.mtt:2328 lang/master/tpl/distribution/listByDate.mtt:475 lang/master/tpl/distribution/listByDateOnePage.mtt:443 lang/master/tpl/distribution/listByDateOnePageContract.mtt:473 lang/master/tpl/distribution/listByDateShort.mtt:504 lang/master/tpl/member/view.mtt:3098 lang/master/tpl/member/view.mtt:4144 lang/master/tpl/validate/user.mtt:812
+#: lang/master/tpl/contract/default.mtt:351 lang/master/tpl/contract/default.mtt:2639 lang/master/tpl/contract/order.mtt:896 lang/master/tpl/contract/orderAndPay.mtt:994 lang/master/tpl/contractadmin/orders.mtt:3685 lang/master/tpl/contractadmin/ordersByDate.mtt:2462 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1528 lang/master/tpl/distribution/list.mtt:2543 lang/master/tpl/distribution/listByDate.mtt:475 lang/master/tpl/distribution/listByDateOnePage.mtt:443 lang/master/tpl/distribution/listByDateOnePageContract.mtt:473 lang/master/tpl/distribution/listByDateShort.mtt:504 lang/master/tpl/member/view.mtt:3098 lang/master/tpl/member/view.mtt:4144 lang/master/tpl/validate/user.mtt:812
 msgid "Qty"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:406 lang/master/tpl/contract/default.mtt:2695 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:873 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1052 lang/master/tpl/contractadmin/orders.mtt:3720 lang/master/tpl/contractadmin/ordersByDate.mtt:2520 lang/master/tpl/contractadmin/ordersByProduct.mtt:647 lang/master/tpl/contractadmin/ordersByProductList.mtt:1626 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1586 lang/master/tpl/contractadmin/stats.mtt:833 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:788 lang/master/tpl/distribution/list.mtt:2388 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4202 lang/master/tpl/validate/user.mtt:868
+#: lang/master/tpl/contract/default.mtt:406 lang/master/tpl/contract/default.mtt:2695 lang/master/tpl/contract/order.mtt:775 lang/master/tpl/contract/orderAndPay.mtt:873 lang/master/tpl/contract/orderByDate.mtt:603 lang/master/tpl/contractadmin/edit.mtt:1052 lang/master/tpl/contractadmin/orders.mtt:3720 lang/master/tpl/contractadmin/ordersByDate.mtt:2520 lang/master/tpl/contractadmin/ordersByProduct.mtt:647 lang/master/tpl/contractadmin/ordersByProductList.mtt:1626 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1586 lang/master/tpl/contractadmin/stats.mtt:833 lang/master/tpl/contractadmin/vendorsByDate.mtt:630 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:788 lang/master/tpl/distribution/list.mtt:2601 lang/master/tpl/distribution/listByDate.mtt:503 lang/master/tpl/distribution/listByDateOnePage.mtt:468 lang/master/tpl/distribution/listByDateOnePageContract.mtt:498 lang/master/tpl/distribution/listByDateShort.mtt:532 lang/master/tpl/member/view.mtt:3154 lang/master/tpl/member/view.mtt:4202 lang/master/tpl/validate/user.mtt:868
 msgid "Product"
 msgstr ""
 
@@ -2114,15 +2124,15 @@ msgstr ""
 msgid "U.P"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:600 lang/master/tpl/contract/default.mtt:2891 lang/master/tpl/contract/orderByDate.mtt:664 lang/master/tpl/contractadmin/orders.mtt:3901 lang/master/tpl/contractadmin/ordersByDate.mtt:2680 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1746 lang/master/tpl/distribution/list.mtt:2453 lang/master/tpl/member/view.mtt:4398 lang/master/tpl/validate/user.mtt:1026
+#: lang/master/tpl/contract/default.mtt:600 lang/master/tpl/contract/default.mtt:2891 lang/master/tpl/contract/orderByDate.mtt:664 lang/master/tpl/contractadmin/orders.mtt:3901 lang/master/tpl/contractadmin/ordersByDate.mtt:2680 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1746 lang/master/tpl/distribution/list.mtt:2664 lang/master/tpl/member/view.mtt:4398 lang/master/tpl/validate/user.mtt:1026
 msgid "Sub-total"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:633 lang/master/tpl/contract/default.mtt:2925 lang/master/tpl/contract/orderByDate.mtt:698 lang/master/tpl/contractadmin/orders.mtt:3936 lang/master/tpl/contractadmin/ordersByDate.mtt:2715 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1781 lang/master/tpl/distribution/list.mtt:2489 lang/master/tpl/distribution/listByDate.mtt:564 lang/master/tpl/distribution/listByDateOnePage.mtt:523 lang/master/tpl/distribution/listByDateOnePageContract.mtt:553 lang/master/tpl/member/view.mtt:4434 lang/master/tpl/validate/user.mtt:1060
+#: lang/master/tpl/contract/default.mtt:633 lang/master/tpl/contract/default.mtt:2925 lang/master/tpl/contract/orderByDate.mtt:698 lang/master/tpl/contractadmin/orders.mtt:3936 lang/master/tpl/contractadmin/ordersByDate.mtt:2715 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1781 lang/master/tpl/distribution/list.mtt:2699 lang/master/tpl/distribution/listByDate.mtt:564 lang/master/tpl/distribution/listByDateOnePage.mtt:523 lang/master/tpl/distribution/listByDateOnePageContract.mtt:553 lang/master/tpl/member/view.mtt:4434 lang/master/tpl/validate/user.mtt:1060
 msgid "Fees"
 msgstr ""
 
-#: lang/master/tpl/contract/default.mtt:661 lang/master/tpl/contract/default.mtt:2954 lang/master/tpl/contract/orderByDate.mtt:727 lang/master/tpl/contractadmin/edit.mtt:3881 lang/master/tpl/contractadmin/orders.mtt:3966 lang/master/tpl/contractadmin/orders.mtt:5444 lang/master/tpl/contractadmin/ordersByDate.mtt:2745 lang/master/tpl/contractadmin/ordersByProduct.mtt:755 lang/master/tpl/contractadmin/ordersByProductList.mtt:1731 lang/master/tpl/contractadmin/ordersByProductList.mtt:2259 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1811 lang/master/tpl/contractadmin/vendorsByDate.mtt:738 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:896 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:1458 lang/master/tpl/distribution/list.mtt:2520 lang/master/tpl/distribution/listByDate.mtt:593 lang/master/tpl/distribution/listByDateOnePage.mtt:549 lang/master/tpl/distribution/listByDateOnePageContract.mtt:579 lang/master/tpl/member/view.mtt:4465 lang/master/tpl/validate/user.mtt:1089
+#: lang/master/tpl/contract/default.mtt:661 lang/master/tpl/contract/default.mtt:2954 lang/master/tpl/contract/orderByDate.mtt:727 lang/master/tpl/contractadmin/edit.mtt:3881 lang/master/tpl/contractadmin/orders.mtt:3966 lang/master/tpl/contractadmin/orders.mtt:5444 lang/master/tpl/contractadmin/ordersByDate.mtt:2745 lang/master/tpl/contractadmin/ordersByProduct.mtt:755 lang/master/tpl/contractadmin/ordersByProductList.mtt:1731 lang/master/tpl/contractadmin/ordersByProductList.mtt:2259 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1811 lang/master/tpl/contractadmin/vendorsByDate.mtt:738 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:896 lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:1458 lang/master/tpl/distribution/list.mtt:2729 lang/master/tpl/distribution/listByDate.mtt:593 lang/master/tpl/distribution/listByDateOnePage.mtt:549 lang/master/tpl/distribution/listByDateOnePageContract.mtt:579 lang/master/tpl/member/view.mtt:4465 lang/master/tpl/validate/user.mtt:1089
 msgid "Total"
 msgstr ""
 
@@ -2283,7 +2293,7 @@ msgid ""
 "as the order could be closed for some suppliers"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:635 lang/master/tpl/contractadmin/ordersByDate.mtt:2646 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1712 lang/master/tpl/distribution/list.mtt:2422 lang/master/tpl/distribution/listByDate.mtt:535 lang/master/tpl/distribution/listByDateOnePage.mtt:497 lang/master/tpl/distribution/listByDateOnePageContract.mtt:527 lang/master/tpl/validate/user.mtt:993
+#: lang/master/tpl/contract/orderByDate.mtt:635 lang/master/tpl/contractadmin/ordersByDate.mtt:2646 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1712 lang/master/tpl/distribution/list.mtt:2634 lang/master/tpl/distribution/listByDate.mtt:535 lang/master/tpl/distribution/listByDateOnePage.mtt:497 lang/master/tpl/distribution/listByDateOnePageContract.mtt:527 lang/master/tpl/validate/user.mtt:993
 msgid "U.P."
 msgstr ""
 
@@ -2291,7 +2301,7 @@ msgstr ""
 msgid "Order closed or already paid"
 msgstr ""
 
-#: lang/master/tpl/contract/orderByDate.mtt:1778 lang/master/tpl/distribution/list.mtt:3785 lang/master/tpl/distribution/listByDate.mtt:2718 lang/master/tpl/distribution/listByDateOnePage.mtt:3345 lang/master/tpl/distribution/listByDateOnePageContract.mtt:3936 lang/master/tpl/member/view.mtt:5462
+#: lang/master/tpl/contract/orderByDate.mtt:1778 lang/master/tpl/distribution/list.mtt:3920 lang/master/tpl/distribution/listByDate.mtt:2718 lang/master/tpl/distribution/listByDateOnePage.mtt:3345 lang/master/tpl/distribution/listByDateOnePageContract.mtt:3936 lang/master/tpl/member/view.mtt:5462
 msgid "TOTAL"
 msgstr ""
 
@@ -2372,7 +2382,7 @@ msgstr ""
 msgid "Timeframe"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/default.mtt:2896 lang/master/tpl/distribution/list.mtt:605
+#: lang/master/tpl/contractadmin/default.mtt:2896 lang/master/tpl/distribution/list.mtt:860
 msgid "Farmers"
 msgstr ""
 
@@ -2520,7 +2530,7 @@ msgstr ""
 msgid "Check all"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/orders.mtt:104 lang/master/tpl/distribution/list.mtt:254 lang/master/tpl/distribution/listByDateOnePage.mtt:315 lang/master/tpl/distribution/listByDateOnePage.mtt:1915 lang/master/tpl/distribution/listByDateOnePageContract.mtt:315 lang/master/tpl/distribution/listByDateOnePageContract.mtt:1958
+#: lang/master/tpl/contractadmin/orders.mtt:104 lang/master/tpl/distribution/listByDateOnePage.mtt:315 lang/master/tpl/distribution/listByDateOnePage.mtt:1915 lang/master/tpl/distribution/listByDateOnePageContract.mtt:315 lang/master/tpl/distribution/listByDateOnePageContract.mtt:1958
 msgid "Delivery of the"
 msgstr ""
 
@@ -2586,7 +2596,7 @@ msgstr ""
 msgid "Num"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/ordersByDate.mtt:2289 lang/master/tpl/distribution/list.mtt:2019 lang/master/tpl/distribution/listByDate.mtt:1179 lang/master/tpl/distribution/listByDateOnePage.mtt:1541 lang/master/tpl/distribution/listByDateOnePageContract.mtt:1584 lang/master/tpl/distribution/listByDateShort.mtt:1158
+#: lang/master/tpl/contractadmin/ordersByDate.mtt:2289 lang/master/tpl/distribution/list.mtt:2246 lang/master/tpl/distribution/listByDate.mtt:1179 lang/master/tpl/distribution/listByDateOnePage.mtt:1541 lang/master/tpl/distribution/listByDateOnePageContract.mtt:1584 lang/master/tpl/distribution/listByDateShort.mtt:1158
 msgid "alternately with"
 msgstr ""
 
@@ -2594,7 +2604,7 @@ msgstr ""
 msgid "Contract"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/ordersByDate.mtt:2491 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1557 lang/master/tpl/distribution/list.mtt:2358 lang/master/tpl/validate/user.mtt:840
+#: lang/master/tpl/contractadmin/ordersByDate.mtt:2491 lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1557 lang/master/tpl/distribution/list.mtt:2572 lang/master/tpl/validate/user.mtt:840
 msgid "Ref"
 msgstr ""
 
@@ -2827,23 +2837,27 @@ msgid ""
 "src='/img/alilo-trans-black.png' /></a>"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:481
+#: lang/master/tpl/distribution/list.mtt:297
+msgid "Delivery on ::dow:: ::dom:: ::month::, at ::hour::"
+msgstr ""
+
+#: lang/master/tpl/distribution/list.mtt:736
 msgid "Contact in charge of the contract"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:758
+#: lang/master/tpl/distribution/list.mtt:1013
 msgid "Members on duty"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:2552 lang/master/tpl/distribution/listByDate.mtt:623 lang/master/tpl/distribution/listByDateOnePage.mtt:580 lang/master/tpl/distribution/listByDateOnePageContract.mtt:610 lang/master/tpl/distribution/listByDateShort.mtt:564
+#: lang/master/tpl/distribution/list.mtt:2760 lang/master/tpl/distribution/listByDate.mtt:623 lang/master/tpl/distribution/listByDateOnePage.mtt:580 lang/master/tpl/distribution/listByDateOnePageContract.mtt:610 lang/master/tpl/distribution/listByDateShort.mtt:564
 msgid "Signature"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:4093
+#: lang/master/tpl/distribution/list.mtt:4210
 msgid "Total order:"
 msgstr ""
 
-#: lang/master/tpl/distribution/list.mtt:4345 lang/master/tpl/distribution/listByDate.mtt:6237 lang/master/tpl/distribution/listByDateOnePage.mtt:3603 lang/master/tpl/distribution/listByDateOnePageContract.mtt:4194 lang/master/tpl/distribution/listByDateShort.mtt:2248
+#: lang/master/tpl/distribution/list.mtt:4437 lang/master/tpl/distribution/listByDate.mtt:6237 lang/master/tpl/distribution/listByDateOnePage.mtt:3603 lang/master/tpl/distribution/listByDateOnePageContract.mtt:4194 lang/master/tpl/distribution/listByDateShort.mtt:2248
 msgid "Push on \"Control + P\" to print this page."
 msgstr ""
 
@@ -3796,23 +3810,19 @@ msgstr ""
 msgid "Cagette Pro"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:1797
-msgid "Choose"
-msgstr ""
-
-#: lang/master/tpl/user/choose.mtt:1994
+#: lang/master/tpl/user/choose.mtt:1693
 msgid "You don't belong to any group yet"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:2159 lang/master/tpl/user/choose.mtt:2618
+#: lang/master/tpl/user/choose.mtt:1858 lang/master/tpl/user/choose.mtt:2317
 msgid "Create my own group"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:2459
+#: lang/master/tpl/user/choose.mtt:2158
 msgid "Find other groups near me"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:2775
+#: lang/master/tpl/user/choose.mtt:2474
 msgid "Subscriptions on waiting list"
 msgstr ""
 
@@ -3956,11 +3966,11 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: common/Common.hx:5860
+#: common/Common.hx:6275
 msgid "Guided tour for the coordinator"
 msgstr ""
 
-#: common/Common.hx:5954
+#: common/Common.hx:6369
 msgid ""
 "<p>In order to better discover Cagette.net, we propose to do a guided tour "
 "of the user interface of the software. <br/> You will then have a global "
@@ -3968,7 +3978,7 @@ msgid ""
 "be able to stop and start again this tutorial whenever you want.</p>"
 msgstr ""
 
-#: common/Common.hx:6366
+#: common/Common.hx:6781
 msgid ""
 "This part of the navigation bar is visible by all members.</br>It allows "
 "to access to the three main pages:	<ul><li> The <b>home page</b> which displays "
@@ -3978,14 +3988,14 @@ msgid ""
 "the group</ul>"
 msgstr ""
 
-#: common/Common.hx:6889
+#: common/Common.hx:7304
 msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
 "<b>Members</b> section</p>"
 msgstr ""
 
-#: common/Common.hx:7200
+#: common/Common.hx:7615
 msgid ""
 "The purpose of this section is to administrate the list of your members.<br/>Every "
 "time that you register a new membrer, an account will be created for him/her. "
@@ -3993,20 +4003,20 @@ msgid ""
 "of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
 msgstr ""
 
-#: common/Common.hx:7635
+#: common/Common.hx:8050
 msgid ""
 "This is the page of a member. Here you can : <ul><li>see and change their "
 "contact details</li><li>manage the membership fee of your group</li><li>see "
 "a summary of their orders</li></ul>"
 msgstr ""
 
-#: common/Common.hx:7941
+#: common/Common.hx:8356
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very important "
 "for coordinators."
 msgstr ""
 
-#: common/Common.hx:8165
+#: common/Common.hx:8580
 msgid ""
 "Here you find the list of <b>contracts</b>.They inculde a start date, a end "
 "date, and represent your relationship with a farmer. <br/><p>Here you can "
@@ -4014,17 +4024,17 @@ msgid ""
 "members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
 msgstr ""
 
-#: common/Common.hx:8576
+#: common/Common.hx:8991
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget "
 "to key-in the complete address as a map will be displayed based on this address"
 msgstr ""
 
-#: common/Common.hx:8865
+#: common/Common.hx:9280
 msgid "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
 
-#: common/Common.hx:9104
+#: common/Common.hx:9519
 msgid ""
 "Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant "
 "contracts: the member commits on buying the same products during the whole "
@@ -4032,33 +4042,33 @@ msgid ""
 "what he buys for each delivery.</li></ul>"
 msgstr ""
 
-#: common/Common.hx:9513
+#: common/Common.hx:9928
 msgid "Let's see now the page <b>Products</b>"
 msgstr ""
 
-#: common/Common.hx:9704
+#: common/Common.hx:10119
 msgid ""
 "On this page, you can manage the list of products offered by this supplier.<br/>Define "
 "at least the name and the price of products. It is also possible to add a "
 "description and a picture."
 msgstr ""
 
-#: common/Common.hx:10020
+#: common/Common.hx:10435
 msgid "Let's see the <b>deliveries</b> page"
 msgstr ""
 
-#: common/Common.hx:10214
+#: common/Common.hx:10629
 msgid ""
 "Here we can manage the list of deliveries for this supplier.<br/>In the software, "
 "a delivery has a date, a start time, and an end time. The location of the "
 "delivery must also be defined, by using the list that we have already seen."
 msgstr ""
 
-#: common/Common.hx:10571
+#: common/Common.hx:10986
 msgid "Let's see now the <b>Orders</b> page"
 msgstr ""
 
-#: common/Common.hx:10826
+#: common/Common.hx:11241
 msgid ""
 "Here we can manage the list of orders for this supplier.<br/>If you choose "
 "to \"open orders\" to members, they will be able to make their orders online "
@@ -4067,13 +4077,13 @@ msgid ""
 "on behalf of a member."
 msgstr ""
 
-#: common/Common.hx:11276
+#: common/Common.hx:11691
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
 msgstr ""
 
-#: common/Common.hx:11509
+#: common/Common.hx:11924
 msgid ""
 "<p>The messaging section allows you to send e-mails to different lists of "
 "members. It is not necessary anymore to maintain a lot of lists of e-mails "
@@ -4082,11 +4092,11 @@ msgid ""
 "answers in your own mailbox.</p>"
 msgstr ""
 
-#: common/Common.hx:11969
+#: common/Common.hx:12384
 msgid "Click here now on this page"
 msgstr ""
 
-#: common/Common.hx:12130
+#: common/Common.hx:12545
 msgid ""
 "<p>In this last page, you can configure everything that is related to your "
 "group.</p><p>The page <b>Access rights</b> is important as it is where you "
@@ -4094,7 +4104,7 @@ msgid ""
 "one or many contracts, send emails, etc.</p>"
 msgstr ""
 
-#: common/Common.hx:12519
+#: common/Common.hx:12934
 msgid ""
 "<p>This is the last step of this tutorial. I hope that it gave you a good "
 "overview of this software.<br/>To go further, do not hesitate to look at "

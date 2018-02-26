@@ -1,0 +1,13 @@
+::use 'base.mtt'::
+	<!-- Load Google adress autocomplete -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaBTanH_Z4hyWjJ62aDqM678ZeQ6PuA0E&libraries=places" defer="1"></script>
+	
+	<div  id="map"></div>
+	
+	<script>
+	$(function(){
+		var map = _.groupMap(::lat::,::lng::,"::escapeJS(address)::");
+	});
+	</script>
+	
+::end::

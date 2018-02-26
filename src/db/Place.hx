@@ -67,6 +67,7 @@ class Place extends Object
 	
 	public function getInfos():PlaceInfos{
 		return {
+			id:id,
 			name:name,
 			address1:address1,
 			address2:address2,

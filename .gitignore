@@ -24,4 +24,9 @@ MakeFile
 *.map
 .haxelib
 html
+
 www/css/.sass-cache
+www/css/*.css
+.temp
+js/test/tests.js
+

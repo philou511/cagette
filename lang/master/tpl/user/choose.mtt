@@ -46,18 +46,14 @@
 			::foreach ua amaps::
 				::set group = ua._amap::
 				<div class="col-md-4">
-					<a class="clickable article" style="height:110px;overflow:hidden;vertical-align:top;" href="/user/choose?amap=::group.id::">
+					<a class="clickable groupBlock"  href="/user/choose?amap=::group.id::">
 					
 						::if group._image!=null::
 						<img src="::file(group._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 						::end::						
 						
 						<h4>::group.name::</h4>
-						
-						<!--<div style="position:absolute;bottom:8px;right:8px;">
-							<a class="btn btn-primary btn-sm" href="/user/choose?amap=::group.id::"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Choose")::</a>	
-						</div>-->
-						
+					
 					</a>
 				</div>
 			::end::

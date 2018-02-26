@@ -196,7 +196,6 @@ class Distribution extends Object
 			}
 
 			out.set(d.getKey(), o);
-
 		}
 		return Lambda.array(out);
 	}*/
@@ -254,7 +253,7 @@ class Distribution extends Object
 		return [
 			"text" 				=> t._("Text"),
 			"date" 				=> t._("Date"),
-			"endDate" 			=> t._("End date"),
+			"endDate" 			=> t._("End hour"),
 			"place" 			=> t._("Place"),
 			"distributor1" 		=> t._("Distributor #1"),
 			"distributor2" 		=> t._("Distributor #2"),

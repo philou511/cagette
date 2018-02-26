@@ -1,14 +1,16 @@
 package controller;
 import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
-import db.Amap.GroupType;
 
 /**
- * Public pages controller
+ * Groups
  */
 class Group extends controller.Controller
 {
 
+	/**
+	 * Public page of a group
+	 */
 	@tpl('group/view.mtt')
 	function doDefault(group:db.Amap){
 		
@@ -28,8 +30,7 @@ class Group extends controller.Controller
 	}
 	
 	/**
-	 * register to a waiting list.
-	 * 
+	 * Register to a waiting list.
 	 * the user can be logged or not !
 	 */
 	@tpl('form.mtt')
@@ -83,7 +84,7 @@ class Group extends controller.Controller
 	
 	
 	/**
-	 * register direclty in an open group
+	 * Register direclty in an open group
 	 * 
 	 * the user can be logged or not !
 	 */
@@ -174,26 +175,26 @@ class Group extends controller.Controller
 			g.name = f.getValueOf("name");
 			g.contact = user;
 			
-			var type:GroupType = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );
+			var type:db.Amap.GroupType = Type.createEnumIndex(db.Amap.GroupType, Std.parseInt(f.getValueOf("type")) );
 			
 			switch(type){
 			case null : 
 				throw "unknown group type";
-			case Amap : 
+			case db.Amap.GroupType.Amap : 
 				g.flags.set(db.Amap.AmapFlags.HasMembership);
 				g.regOption = db.Amap.RegOption.WaitingList;
 				
-			case GroupType.GroupedOrders :
+			case db.Amap.GroupType.GroupedOrders :
 				g.flags.set(db.Amap.AmapFlags.ShopMode);
 				g.flags.set(db.Amap.AmapFlags.HasMembership);
 				g.regOption = db.Amap.RegOption.WaitingList;
 				
-			case GroupType.ProducerDrive : 
+			case db.Amap.GroupType.ProducerDrive : 
 				g.flags.set(db.Amap.AmapFlags.ShopMode);
 				g.regOption = db.Amap.RegOption.Open;
 				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
 				
-			case GroupType.FarmShop : 
+			case db.Amap.GroupType.FarmShop : 
 				g.flags.set(db.Amap.AmapFlags.ShopMode);
 				g.regOption = db.Amap.RegOption.Open;
 				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
@@ -262,8 +263,6 @@ class Group extends controller.Controller
 				d.insert();
 				
 			}
-			
-			
 			
 			//contrat variable
 			var vendor = new db.Vendor();
@@ -346,6 +345,24 @@ class Group extends controller.Controller
 		}
 		
 		view.addr = view.escapeJS(addr);
+	}
+	
+	/**
+	 * Groups map
+	 */
+	@tpl("group/map.mtt")
+	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
+		view.container = "container-fluid";
+		
+		//if no param is sent, focus on Paris
+		if (args == null || (args.address == null && args.lat == null && args.lng == null)){
+			args = {lat:48.855675, lng:2.3472365};
+		}
+		
+		view.lat = args.lat;
+		view.lng = args.lng;
+		view.address = args.address;
+		
 	}
 	
 	

@@ -7,11 +7,12 @@
 **/
 
 @import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
+//@import '_shop';
+@import '_map';
 
 /*body{
   background-color:#F8F4E5 !important;    
 }*/
- 
 
 h1,h2,h3,h4{
   margin-top: 4px !important;
@@ -294,15 +295,13 @@ div.reportHeader{
 
 /* make <a> like clickable divs  */
 .clickable{
-	
 	display:block;
 	border:1px solid #CCC;
 	border-radius:8px;
-	padding:8px;
 	color:inherit;
 	background-color:white;
 	margin-bottom:12px;	
-	
+	padding:8px;
 	
 	&:hover{
 		cursor: pointer;
@@ -323,6 +322,25 @@ div.reportHeader{
 		transform:scale(0.95);
 	}
 	
+}
+
+/* a group block (use it with .clickable ) */
+.groupBlock{
+	height:110px;
+	overflow:hidden;
+	vertical-align:top;
+	position: relative;
+	.address{
+		font-size: 0.9em;
+	}
+	.distance {
+		font-weight: bold;
+		color: #84bd55;
+		font-size: 1.2em;
+		position: absolute;
+		right: 8px;
+		bottom: 6px;
+	}
 }
 
 
@@ -693,6 +711,13 @@ span.tag.active{
 	
 	
 
+}
+
+div.groupImg{
+	background:no-repeat center;
+	background-size: cover;	
+	width: 110px;
+	height: 110px;
 }
 
 // product thumbnail for shop and home page
