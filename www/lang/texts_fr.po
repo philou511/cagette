@@ -1000,6 +1000,14 @@ msgstr "Amélioration du stockage des commandes"
 msgid "Following update have been performed:<ul>"
 msgstr "Les opérations de mise à jour suivantes on été faites : <ul>"
 
+#: src/controller/Main.hx:2009 src/controller/Shop.hx:659
+msgid ""
+"Members of this group should provide a phone number. <a href='/account/"
+"edit'>Please click here to update your account</a>."
+msgstr ""
+"Les membres de ce groupe doivent fournir un numéro de téléphone. <a href='/"
+"account/edit'>Cliquez ici pour mettre à jour votre compte</a>."
+
 #: src/controller/Member.hx:1440
 msgid "Without contracts"
 msgstr "Sans-contrats"
@@ -1449,30 +1457,30 @@ msgstr ""
 msgid "Modifications saved"
 msgstr "Modifications enregistrées"
 
-#: src/controller/Shop.hx:3991
+#: src/controller/Shop.hx:4303
 msgid "In order to confirm your order, You need to authenticate."
 msgstr "Afin de finaliser votre commande, vous devez vous identifier."
 
-#: src/controller/Shop.hx:4431
+#: src/controller/Shop.hx:4743
 msgid "Your order is empty"
 msgstr "Votre commande est vide"
 
-#: src/controller/Shop.hx:4964
+#: src/controller/Shop.hx:5276
 msgid "This cart is invalid"
 msgstr "Ce panier est invalide"
 
-#: src/controller/Shop.hx:5145 src/controller/Shop.hx:5463
+#: src/controller/Shop.hx:5457 src/controller/Shop.hx:5775
 msgid "This distribution does not supply the product <b>::pname::</b>"
 msgstr ""
 "Le produit <b>::pname::</b> n'est pas disponible pour cette distribution"
 
-#: src/controller/Shop.hx:5888
+#: src/controller/Shop.hx:6200
 msgid "Order of ::pname:: reduced to ::oquantity:: to match remaining stock"
 msgstr ""
 "Votre commande de  ::p.name:: a été réduite à ::oquantity:: articles car il "
 "n'y a pas assez de stock disponible"
 
-#: src/controller/Shop.hx:6704
+#: src/controller/Shop.hx:7016
 msgid "Your order has been confirmed"
 msgstr "Votre commande a été enregistrée !"
 

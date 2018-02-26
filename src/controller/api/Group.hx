@@ -72,7 +72,7 @@ class Group extends Controller
 		#else
 		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p ';
 		sql += "where p.lat is not null ";
-		sql += 'order by dist asc LIMIT $limit';*/		
+		sql += 'order by dist asc LIMIT $limit';
 		#end
 		return db.Place.manager.unsafeObjects(sql, false);
 	}

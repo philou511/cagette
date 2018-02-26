@@ -889,6 +889,12 @@ msgstr ""
 msgid "Following update have been performed:<ul>"
 msgstr ""
 
+#: src/controller/Main.hx:2009 src/controller/Shop.hx:659
+msgid ""
+"Members of this group should provide a phone number. <a href='/account/edit'>Please "
+"click here to update your account</a>."
+msgstr ""
+
 #: src/controller/Member.hx:1440
 msgid "Without contracts"
 msgstr ""
@@ -1285,27 +1291,27 @@ msgstr ""
 msgid "Modifications saved"
 msgstr ""
 
-#: src/controller/Shop.hx:3991
+#: src/controller/Shop.hx:4303
 msgid "In order to confirm your order, You need to authenticate."
 msgstr ""
 
-#: src/controller/Shop.hx:4431
+#: src/controller/Shop.hx:4743
 msgid "Your order is empty"
 msgstr ""
 
-#: src/controller/Shop.hx:4964
+#: src/controller/Shop.hx:5276
 msgid "This cart is invalid"
 msgstr ""
 
-#: src/controller/Shop.hx:5145 src/controller/Shop.hx:5463
+#: src/controller/Shop.hx:5457 src/controller/Shop.hx:5775
 msgid "This distribution does not supply the product <b>::pname::</b>"
 msgstr ""
 
-#: src/controller/Shop.hx:5888
+#: src/controller/Shop.hx:6200
 msgid "Order of ::pname:: reduced to ::oquantity:: to match remaining stock"
 msgstr ""
 
-#: src/controller/Shop.hx:6704
+#: src/controller/Shop.hx:7016
 msgid "Your order has been confirmed"
 msgstr ""
 

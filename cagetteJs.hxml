@@ -2,6 +2,7 @@
 -cp common
 -cp js
 -lib sugoi:git:https://github.com/bablukid/sugoi#i18n
+-lib hxleaflet:git:https://github.com/bablukid/hxleaflet
 -lib react
 -lib modular
 -main App

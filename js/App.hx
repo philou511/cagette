@@ -44,7 +44,7 @@ class App {
 	}
 
 	public function getCart() {
-		return new Cart();
+		return new ShopCart();
 	}
 
 	public function getTagger(cid:Int ) {

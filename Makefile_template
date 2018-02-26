@@ -14,11 +14,11 @@ deploy:
 	@make LANG=fr deploy_site deploy_tpl
 
 deploy_site:
-	rsync $(ROPTS) www www-data@www.cagette.net:/data/cagette/
-	rsync $(ROPTS) data www-data@www.cagette.net:/data/cagette/
+	rsync $(ROPTS) www www-data@app.cagette.net:/data/cagette/
+	rsync $(ROPTS) data www-data@app.cagette.net:/data/cagette/
 
 deploy_tpl:
-	rsync $(ROPTS) lang/$(LANG) www-data@www.cagette.net:/data/cagette/lang/
+	rsync $(ROPTS) lang/$(LANG) www-data@app.cagette.net:/data/cagette/lang/
 	
 
 	

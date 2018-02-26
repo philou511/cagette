@@ -61,6 +61,12 @@ class Main extends Controller {
 		var e = Blocks([], "home");
 		app.event(e);
 		view.blocks = e.getParameters()[0];
+
+		//message if phone is required
+		if(app.user!=null && app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && app.user.phone==null){
+			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
+		}
+
 	}
 	
 	/**
