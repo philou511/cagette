@@ -5,37 +5,32 @@
 	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h3 class="panel-title">::_("Connection")::</h3>
-
 		</div>
 			
-		::if(group!=null && group.hasPhoneRequired())::
-			::set phoneRequired=true::
-		::else::
-			::set phoneRequired=false::
-		::end::			
-			
 		<div class="panel-body text-center">
-			
 			<p>
 				::raw _("In order to confirm your basket, <br/>You need to authenticate.")::
 			</p>
-			
 			<hr/>
-			
 			<a href="#" onclick="_.loginBox('::raw redirect::');" class="btn btn-primary" style="margin-right:12px;">
 				<span class="glyphicon glyphicon-user"></span> ::_("Connection")::</a>
 			
 			<a href="#" onclick="_.registerBox('::raw redirect::',::phoneRequired::);" class="btn btn-success">
 				<span class="glyphicon glyphicon-chevron-right"></span> ::_("Sign up")::</a>
-			
 		</div>
 	</div>-->
 </div>
 <div class="col-md-3"></div>				
 
+::if(group!=null && group.hasPhoneRequired())::
+	::set phoneRequired=true::
+::else::
+	::set phoneRequired=false::
+::end::	
+
 <script language="javascript">
 	$(function(){
-		_.loginBox('::raw redirect::','::raw message::');	
+		_.loginBox('::raw redirect::','::raw message::',::phoneRequired::);	
 	});
 	
 </script>

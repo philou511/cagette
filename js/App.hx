@@ -154,12 +154,12 @@ class App {
 	/**
 	 * Displays an ajax login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String) {
+	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 

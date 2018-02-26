@@ -6,6 +6,7 @@ import Common;
 typedef LoginBoxProps = {
 	redirectUrl:String,
 	message:String,
+	?phoneRequired:Bool
 }
 
 typedef LoginBoxState = {
@@ -87,7 +88,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		ReactDOM.unmountComponentAtNode( body );
 	
 		js.Browser.document.querySelector("#myModal .modal-title").innerHTML = "Inscription";
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="${props.redirectUrl}" />'),  body );
+		ReactDOM.render(jsx('<$RegisterBox redirectUrl="${props.redirectUrl}" phoneRequired="${props.phoneRequired}"/>'),  body );
 	}
 	
 	public function submit(e:js.html.Event ){
