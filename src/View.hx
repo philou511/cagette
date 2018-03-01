@@ -292,5 +292,13 @@ class View extends sugoi.BaseView {
 		}
 		
 	}
-	
+
+	public function loopList(start:Int,end:Int):List<Int> {
+		var list = new List<Int>();
+		for (i in start...end) {
+			list.add(i);
+		}
+		return list;
+	}
+
 }
