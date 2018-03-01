@@ -92,7 +92,10 @@ class Operation extends sys.db.Object
 		}
 	}
 	
-	public static function getOperations(user:db.User, group:db.Amap,?limit=50 ){		
+	public static function getOperations(user:db.User, group:db.Amap,?limit=50,?reverse=false ){
+		if(reverse) {
+			return manager.search($user == user && $group == group,{orderBy:-date,limit:limit},false);	
+		}		
 		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
 	}
 	

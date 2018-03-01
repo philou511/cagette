@@ -194,7 +194,12 @@
 			<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
 		::end::
 	</td>
-	<td>::formatNum(t.amount)::&nbsp;::currency()::</td>
+	<td class="text-right">
+		::if(t.amount<0)::
+			-
+		::end::
+	</td>
+	<td>::formatNum(Math.abs(t.amount))::&nbsp;::currency()::</td>
 	::set class=""::
 	</macro>
 

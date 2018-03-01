@@ -731,7 +731,7 @@ class Member extends Controller
 	function doPayments(m:db.User){
 		
 		db.Operation.updateUserBalance(m, app.user.amap);		
-		view.transactions = db.Operation.getOperations(m,app.user.amap,1000);
+		view.transactions = db.Operation.getOperations(m,app.user.amap,1000,true);
 		view.member = m;
 		view.balance = db.UserAmap.get(m, app.user.amap).balance;
 		
