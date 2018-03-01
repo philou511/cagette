@@ -38,6 +38,28 @@
 	<div class="article">
 		<table class="table table-condensed">
 
+			<!-- total -->
+			<tr style="font-size:1.3em;">
+				<td colspan="2"></td>
+				<td class="text-right">::_("Balance")::&nbsp;:</td>
+				::if balance<0:: 
+					::set color = "C00"::
+				::else::
+					::set color = "0C0"::
+				::end::
+				<td style="color:#::color::;">
+					::if balance<0:: 
+						-
+					::end::
+				</td>
+				<td style="color:#::color::;">
+					::Math.abs(balance)::&nbsp;::currency()::
+				</td>
+				<td colspan="2">
+					
+				</td>
+			</tr>
+
 		::foreach t transactions::
 			<tr>
 				$$operation(::t::)
@@ -59,23 +81,6 @@
 			::end::-->
 			
 		::end::
-		
-		<!-- total -->
-		<tr style="font-size:1.3em;">
-			<td colspan="2"></td>
-			<td>::_("Balance")::&nbsp;:</td>
-			::if balance<0:: 
-				::set color = "C00"::
-			::else::
-				::set color = "0C0"::
-			::end::
-			<td style="color:#::color::;">
-				::balance::&nbsp;::currency()::
-			</td>
-			<td colspan="2">
-				
-			</td>
-		</tr>
 		
 		</table>
 		
