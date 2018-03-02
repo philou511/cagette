@@ -98,7 +98,7 @@ class Group extends controller.Controller
 		
 		var form = new sugoi.form.Form("reg");	
 		form.submitButtonLabel = t._("Join the group");
-		form.addElement(new sugoi.form.elements.Html(t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name})));
+		form.addElement(new sugoi.form.elements.Html("html",t._("Confirm your subscription to \"::groupName::\"", {groupName:group.name})));
 		if (app.user == null){
 			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
 			form.addElement(new StringInput("userLastName", t._("Your lastname"), "", true));
@@ -206,7 +206,7 @@ class Group extends controller.Controller
 			var ua = new db.UserAmap();
 			ua.user = user;
 			ua.amap = g;
-			ua.rights = [db.UserAmap.Right.AmapAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
+			ua.rights = [db.UserAmap.Right.GroupAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
 			ua.insert();
 			
 			//example datas

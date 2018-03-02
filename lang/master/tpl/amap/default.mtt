@@ -5,9 +5,17 @@
 		
 		<div class="block">
 			
-			<h2>
+			<h4>
 				::user._amap.name::
-			</h2>
+			</h4>
+
+			::if user._amap._image!=null::
+			::if user._amap.extUrl!=null && user._amap.extUrl!=""::
+			<a href="::user._amap.extUrl::"><img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
+			::else::
+			<img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
+			::end::
+			::end::
 			
 			::raw nl2br(user.getAmap().txtIntro)::
 			<br/>
@@ -26,31 +34,31 @@
 	
 	<div class="col-md-9">
 		<div class="row">
-
 		
 			::foreach c contracts::
-				<div class="col-md-12" style="margin-bottom:12px;">
+				<div class="col-md-12">
 					<div class="article">
 						<div class="row">
-							
-							<div class="col-md-8">
-								
-								<h2><a href="/contract/view/::c.id::">::c.name::</a></h2>
+							<div class="col-md-3 text-center">
+								<div ::cond c._vendor._image!=null:: style="background-image:url('::file(c._vendor._image)::');width:100px;height:100px;" class="productImg"/> 									
 								<p>
-									<b>::c._vendor.name::</b>, 
-						
+									<b>::c._vendor.name::</b><br/>
 									::c._vendor.city:: (::c._vendor.zipCode::)
 								</p>
-								
+							</div>
+
+							<div class="col-md-6">
+								<h4><a href="/contract/view/::c.id::">::c.name::</a></h4>
+																
 								<div style="font-size:0;">
-								::foreach p c.getProductsPreview(8)::
-									<img data-toggle="tooltip" title="::p.name::" class="img-responsive img-thumbnail" src="::p.getImage()::" style="width:10%;margin:4px;"/> 
+								::foreach p c.getProductsPreview(5)::
+									<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.getImage()::')" class="productImg"/> 
 								::end::
 								</div>
 
 							</div>
 							
-							<div class="col-md-4">
+							<div class="col-md-3">
 								::if c._contact!=null::
 									<b>::_("Coordinator"):: :</b>
 									<br/>

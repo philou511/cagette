@@ -180,7 +180,7 @@ class Messages extends Controller
 				
 				//ajouter les autres personnes ayant les droits Admin ou Gestion Adhérents ou Gestion Contrats
  				for (ua in Lambda.array(db.UserAmap.manager.search($rights != null && $amap == app.user.amap, false))) {
- 					if (ua.hasRight(AmapAdmin) || ua.hasRight(Membership) || ua.hasRight(ContractAdmin())) {
+ 					if (ua.hasRight(GroupAdmin) || ua.hasRight(Membership) || ua.hasRight(ContractAdmin())) {
  						if (!Lambda.has(users, ua.user)) users.push(ua.user);
  					}
  				}

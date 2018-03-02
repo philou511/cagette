@@ -70,8 +70,8 @@
 				::end::
 			</table>
 
-			$$insert(::_("New distribution")::,/distribution/insert/::c.id::)
-			$$insert(::_("Distribution cycles")::,/distribution/insertCycle/::c.id::) 
+			$$insert(::_("One time distribution")::,/distribution/insert/::c.id::)
+			$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
 			
 			<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
 				<span class="glyphicon glyphicon-user"></span> ::_("Distributions engagement")::

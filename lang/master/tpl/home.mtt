@@ -274,13 +274,11 @@
 	<div class="block" >
 		
 		::if amap._image!=null::
-
 		   ::if amap.extUrl!=null && amap.extUrl!=""::
 		   <a href="::amap.extUrl::"><img src="::file(amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
 		   ::else::
 		   <img src="::file(amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
 		   ::end::
-
 		::end::
 		
 		::if amap.txtHome!=null && amap.txtHome!=""::

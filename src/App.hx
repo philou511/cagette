@@ -287,7 +287,7 @@ class App extends sugoi.BaseApp {
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
-		e.setSender(App.config.get("default_email"),"Cagette Pro");				
+		e.setSender(App.config.get("default_email"),"Cagette.net");				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html});		
 		e.setHtmlBody(html);
 		try{

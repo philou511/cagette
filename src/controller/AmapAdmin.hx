@@ -146,7 +146,7 @@ class AmapAdmin extends Controller
 			//if (r == "ContractAdmin") continue; //managed later
 			//data.push({label:r,value:r});
 		//}
-		data.push({label:t._("Group administrator"), value:"AmapAdmin"});
+		data.push({label:t._("Group administrator"), value:"GroupAdmin"});
 		data.push({label:t._("Membership management"),value:"Membership"});
 		data.push({label:t._("Messages"),value:"Messages"});
 		
@@ -161,7 +161,7 @@ class AmapAdmin extends Controller
 		}
 		
 		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", t._("Rights"), data, populate, true, true) );
-		form.addElement( new sugoi.form.elements.Html("<hr/>"));
+		form.addElement( new sugoi.form.elements.Html("html","<hr/>"));
 		
 		//Rights on contracts
 		var data = [];
@@ -216,7 +216,7 @@ class AmapAdmin extends Controller
 			if (ua.user.id == app.user.id && wasManager ) {
 				var isManager = false;
 				for ( r in ua.rights) {
-					if (r.equals(db.UserAmap.Right.AmapAdmin)) {
+					if (r.equals(db.UserAmap.Right.GroupAdmin)) {
 						isManager = true; 
 						break;
 					}

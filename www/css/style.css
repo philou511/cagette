@@ -320,7 +320,7 @@ div.reportHeader {
     text-decoration: none;
     transform: scale(0.95); }
 
-/* a group block (use it with .clickable ) */
+/* a cagette group block (use it with .clickable ) */
 .groupBlock {
   height: 110px;
   overflow: hidden;
@@ -335,6 +335,29 @@ div.reportHeader {
     position: absolute;
     right: 8px;
     bottom: 6px; }
+
+/* a cagette pro block (use it with .clickable ) */
+.proBlock {
+  height: 110px;
+  overflow: hidden;
+  vertical-align: top;
+  position: relative;
+  background: #bad096;
+  /*span.cpro{
+		position: absolute;
+		right:0px;
+		top:0px;
+		background:darken(#bad096,30%);
+		color:yellow;
+		height: 12px;
+		padding:4px;
+		font-weight: bold;
+	}*/ }
+  .proBlock:hover {
+    background: #a3c073; }
+
+.header .accountBlock a {
+  color: #777; }
 
 /*
 	SHOP v1

@@ -8,37 +8,36 @@
 			::user.firstName2::
 		::end::
 		 !
-		</h2>		
-		<p>::_("Please select the group you want to connect to")::&nbsp;:</p>
+		</h2>				
+	</div>
+
+	<div class="col-md-12" ::cond pros!=null && pros.length>0::>
+		<p> ::raw _("Connect to your <b>Cagette Pro</b> account to manage your products, catalogs and deliveries.")::</p>
 	</div>
 
 
-	<!-- pros -->
+	<!-- cagette pro -->
 	<div class="col-md-12" ::cond pros!=null::>
 		<div class="row">
 		::foreach p pros::
 			<!-- Cagette pro -->
 			<div class="col-md-4">
-				<a class="clickable" href="/p/pro/?company=::p.id::" style="height:110px;overflow:hidden;vertical-align:top;background:#bad096">
-					
-					<b>::_("Cagette Pro")::</b>
+				<a class="clickable proBlock" href="/p/pro/?company=::p.id::">
 					
 					::if p._image!=null::
 					<img src="::file(p._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 					::end::						
 					
 					<h4>::p.name::</h4>
-					
-					<!--<div style="position:absolute;bottom:8px;right:8px;">
-						<a class="btn btn-default btn-sm" href="/p/pro/?company=::p.id::"><span class="glyphicon glyphicon-chevron-right"></span> Choisir</a>	
-					</div>-->
-					
 				</a>
 			</div>
 		::end::
 		</div>
 	</div>
-
+	
+	<div class="col-md-12" >
+		<p>::raw _("Please click on the <b>Cagette group</b> you want to connect to.")::</p>
+	</div>
 
 	<!-- groups -->
 	<div class="col-md-12">
@@ -53,7 +52,6 @@
 						::end::						
 						
 						<h4>::group.name::</h4>
-					
 					</a>
 				</div>
 			::end::
@@ -75,7 +73,7 @@
 	<!-- actions -->
 	<div class="col-md-12" style="margin-bottom:12px;" >
 		::if session.lang!="de"::
-			<a class="btn btn-default" href="/p/hosted/book/"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
+			<a class="btn btn-default" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
 		::end::
 		<a class="btn btn-default" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Create my own group")::</a>	
 		

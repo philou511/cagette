@@ -3,7 +3,7 @@ import sys.db.Object;
 import sys.db.Types;
 
 enum Right{
-	AmapAdmin;					//can manage whole group
+	GroupAdmin;					//can manage whole group
 	ContractAdmin(?cid:Int);	//can manage one or all contracts
 	Membership;					//can manage group members
 	Messages;					//can send messages
@@ -88,7 +88,7 @@ class UserAmap extends Object
 	public function getRightName(r:Right):String {
 		var t = sugoi.i18n.Locale.texts;
 		return switch(r) {
-		case Right.AmapAdmin 	: t._("Administrator");
+		case Right.GroupAdmin 	: t._("Administrator");
 		case Right.Messages 	: t._("Messaging");
 		case Right.Membership 	: t._("Members management");
 		case Right.ContractAdmin(cid) : 

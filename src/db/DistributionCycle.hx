@@ -10,46 +10,35 @@ enum CycleType {
 	TriWeekly;
 }
 
-
 /**
- * Distrib récurrente
+ * Distribution cycle
  */
 class DistributionCycle extends Object
 {
 	public var id : SId;	
-	
 	@:relation(contractId) public var contract : Contract;
-	
 	public var cycleType:SEnum<CycleType>;
-	
 	public var startDate : SDate; //debut
 	public var endDate : SDate;	//fin de la recurrence
-
 	public var startHour : SDateTime; 
 	public var endHour : SDateTime;	
-	
 	public var daysBeforeOrderStart:SNull<STinyInt>;
 	public var daysBeforeOrderEnd:SNull<STinyInt>;
 	public var openingHour:SNull<SDate>;
 	public var closingHour:SNull<SDate>;
-	
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
-	
-	
 	
 	public function new() {
 		super();
 	}
 	
 	public static function getLabels(){
-		//var t = sugoi.i18n.Locale.texts;
 		return [
 			"cycleType"		=> "Fréquence",
 			"startDate" 	=> "Date de début",
 			"endDate"		=> "Date de fin",
 			"daysBeforeOrderStart" 		=> "Ouverture de commande (nbre de jours avant distribution)" ,			
 			"daysBeforeOrderEnd"		=> "Fermeture de commande (nbre de jours avant distribution)",			
-			
 		];
 	}
 	
@@ -59,10 +48,11 @@ class DistributionCycle extends Object
 	 * @TODO refactor this with http://thx-lib.org/api/thx/Dates.html#jump
 	 */
 	public static function updateChilds(dc:DistributionCycle) {
-		
+		//switch end date to 23:59 to avoid the last distribution to be skipped
+		dc.endDate = tools.DateTool.setHourMinute(dc.endDate,23,59);
+
 		var datePointer = new Date(dc.startDate.getFullYear(), dc.startDate.getMonth(), dc.startDate.getDate(), 12, 0, 0);
 		//why hour=12 ? because if we set hour to 0, it switch to 23 (-1) or 1 (+1) on daylight saving time switch dates, thus changing the day!!
-		
 		
 		if (dc.id == null) throw "this distributionCycle has not been recorded";
 		
@@ -80,7 +70,6 @@ class DistributionCycle extends Object
 			var a = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
 			var h : Date = dc.openingHour;
 			d.orderStartDate = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);
-			
 			
 			var a = DateTools.delta(d.date, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
 			var h : Date = dc.closingHour;

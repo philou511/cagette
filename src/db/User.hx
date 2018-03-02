@@ -89,7 +89,7 @@ class User extends Object {
 		if (a == null) return false;
 		var ua = getUserAmap(a);
 		if (ua == null) return false;
-		return ua.hasRight(Right.AmapAdmin);
+		return ua.hasRight(Right.GroupAdmin);
 	}
 	
 	function getUserAmap(amap:db.Amap):db.UserAmap {
@@ -97,7 +97,6 @@ class User extends Object {
 	}
 	
 	public function isFullyRegistred(){
-		
 		return pass != null && pass != "";
 	}
 	
@@ -111,6 +110,8 @@ class User extends Object {
 		}
 		return ua;
 	}
+
+	
 	
 	/**
 	 * Est ce que ce membre a la gestion de ce contrat
@@ -134,7 +135,6 @@ class User extends Object {
 			}
 			return false;			
 		}
-		
 	}
 	
 	public function canManageAllContracts(){
@@ -345,7 +345,7 @@ class User extends Object {
 			u = new db.User();
 			u.firstName = firstName;
 			u.lastName = lastName;
-			u.email = email;
+			u.email = email;			
 			u.insert();
 		}
 		return u;
@@ -517,7 +517,7 @@ class User extends Object {
 		if (this.email2 != null) this.email2 = this.email2.toLowerCase();
 		
 		//lastname
-		this.lastName = this.lastName.toUpperCase();
+		if (this.lastName != null) this.lastName = this.lastName.toUpperCase();
 		if (this.lastName2 != null) this.lastName2 = this.lastName2.toUpperCase();
 	}
 	

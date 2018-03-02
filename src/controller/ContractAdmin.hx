@@ -497,6 +497,7 @@ class ContractAdmin extends Controller
 				orders.push({"quantity":null, "pname":x.contract.vendor.name, "ref":null, "priceHT":null, "priceTTC":null, "totalHT":null, "totalTTC":null});				
 				
 				for (o in x.orders){
+					if(o.vat==null) o.vat = 0;
 					orders.push({
 						"quantity":view.formatNum(o.quantity),
 						"pname":o.pname,

@@ -304,7 +304,7 @@ class TutoDatas {
 					},
 					{
 						element:"ul.nav.navbar-left",
-						text:t._( "This part of the navigation bar is visible by all members.</br>It allows to access to the three main pages:	<ul><li> The <b>home page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>My group</b> page,  you can see all farmers and coordinators of the group</ul>"),
+						text:t._( "This part of the navigation bar is visible by all members.</br>It allows to access to the three main pages:	<ul><li> The <b>home page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>Farmers</b> page,  you can see all farmers and coordinators of the group</ul>"),
 						action: TANext,
 						placement : TPBottom
 					},

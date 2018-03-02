@@ -1,6 +1,4 @@
 package controller;
-import Common;
-import sugoi.Web;
 
 /**
  * Base Cagette.net Controller

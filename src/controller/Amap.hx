@@ -19,7 +19,6 @@ class Amap extends Controller
 		view.contracts = contracts;
 	}
 	
-	
 	@tpl("form.mtt")
 	function doEdit() {
 		

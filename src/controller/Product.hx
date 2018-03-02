@@ -45,7 +45,7 @@ class Product extends Controller
 		//f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
 		var txId = d.txpProduct == null ? "" : Std.string(d.txpProduct.id);
 		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}","$txId","${f.name}");</script>';
-		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
+		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 
 		if (f.isValid()) {
 			
@@ -87,7 +87,7 @@ class Product extends Controller
 		
 		var formName = f.name;
 		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","",null,"$formName");</script>';
-		f.addElement(new sugoi.form.elements.Html(html, 'Nom'),1);
+		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 		
 		if (f.isValid()) {
 			f.toSpod(d);

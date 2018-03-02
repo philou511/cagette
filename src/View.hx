@@ -15,8 +15,7 @@ class View extends sugoi.BaseView {
 		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
 		this.ArrayTool = ArrayTool;
-		this.t = sugoi.i18n.Locale.texts;
-		
+		this.t = sugoi.i18n.Locale.texts;		
 	}
 	
 	public function count(i) {

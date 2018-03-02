@@ -915,7 +915,7 @@ msgstr ""
 msgid "Unknown selection"
 msgstr ""
 
-#: src/controller/Member.hx:3107 lang/master/tpl/design.mtt:2850 lang/master/tpl/member/default.mtt:782
+#: src/controller/Member.hx:3107 lang/master/tpl/design.mtt:2865 lang/master/tpl/member/default.mtt:782
 msgid "Members"
 msgstr ""
 
@@ -985,7 +985,7 @@ msgstr ""
 msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 
-#: src/controller/Member.hx:12318 src/controller/User.hx:3190 src/db/User.hx:15035 lang/master/tpl/design.mtt:4441 lang/master/tpl/mail/design.mtt:298
+#: src/controller/Member.hx:12318 src/controller/User.hx:3190 src/db/User.hx:15035 lang/master/tpl/design.mtt:4456 lang/master/tpl/mail/design.mtt:298
 msgid "Cagette.net"
 msgstr ""
 
@@ -1574,7 +1574,7 @@ msgstr ""
 msgid "Registration setting"
 msgstr ""
 
-#: src/db/Amap.hx:9727 lang/master/tpl/amap/default.mtt:315
+#: src/db/Amap.hx:9727 lang/master/tpl/amap/default.mtt:719
 msgid "Main contact"
 msgstr ""
 
@@ -1786,7 +1786,7 @@ msgstr ""
 msgid "Administrator"
 msgstr ""
 
-#: src/db/UserAmap.hx:2225 lang/master/tpl/design.mtt:3204
+#: src/db/UserAmap.hx:2225 lang/master/tpl/design.mtt:3219
 msgid "Messaging"
 msgstr ""
 
@@ -1989,11 +1989,11 @@ msgstr ""
 msgid "at"
 msgstr ""
 
-#: lang/master/tpl/amap/default.mtt:230 lang/master/tpl/contract/default.mtt:4608 lang/master/tpl/contractadmin/default.mtt:3264 lang/master/tpl/contractadmin/default.mtt:3899 lang/master/tpl/contractadmin/deliveries.mtt:874 lang/master/tpl/contractadmin/orders.mtt:2911 lang/master/tpl/contractadmin/orders.mtt:3094 lang/master/tpl/contractadmin/products.mtt:3513 lang/master/tpl/contractadmin/view.mtt:563 lang/master/tpl/member/payments.mtt:1146 lang/master/tpl/member/view.mtt:1375
+#: lang/master/tpl/amap/default.mtt:634 lang/master/tpl/contract/default.mtt:4608 lang/master/tpl/contractadmin/default.mtt:3264 lang/master/tpl/contractadmin/default.mtt:3899 lang/master/tpl/contractadmin/deliveries.mtt:874 lang/master/tpl/contractadmin/orders.mtt:2911 lang/master/tpl/contractadmin/orders.mtt:3094 lang/master/tpl/contractadmin/products.mtt:3513 lang/master/tpl/contractadmin/view.mtt:563 lang/master/tpl/member/payments.mtt:1146 lang/master/tpl/member/view.mtt:1375
 msgid "Edit"
 msgstr ""
 
-#: lang/master/tpl/amap/default.mtt:1227 lang/master/tpl/contract/view.mtt:2017
+#: lang/master/tpl/amap/default.mtt:1807 lang/master/tpl/contract/view.mtt:2017
 msgid "Coordinator"
 msgstr ""
 
@@ -2031,7 +2031,7 @@ msgstr ""
 msgid "Display"
 msgstr ""
 
-#: lang/master/tpl/amapadmin/design.mtt:167 lang/master/tpl/design.mtt:2607
+#: lang/master/tpl/amapadmin/design.mtt:167
 msgid "My group"
 msgstr ""
 
@@ -2359,7 +2359,7 @@ msgstr ""
 msgid "Old contracts"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/default.mtt:614 lang/master/tpl/design.mtt:3035
+#: lang/master/tpl/contractadmin/default.mtt:614 lang/master/tpl/design.mtt:3050
 msgid "Contracts"
 msgstr ""
 
@@ -2388,7 +2388,7 @@ msgstr ""
 msgid "Timeframe"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/default.mtt:2896 lang/master/tpl/distribution/list.mtt:860
+#: lang/master/tpl/contractadmin/default.mtt:2896 lang/master/tpl/design.mtt:2623 lang/master/tpl/distribution/list.mtt:860
 msgid "Farmers"
 msgstr ""
 
@@ -2420,7 +2420,7 @@ msgstr ""
 msgid "Distribution list"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:1288
+#: lang/master/tpl/contractadmin/deliveries.mtt:1288 lang/master/tpl/contractadmin/deliveries.mtt:1901
 msgid "Distribution cycle"
 msgstr ""
 
@@ -2441,18 +2441,14 @@ msgid "Every 3 weeks"
 msgstr ""
 
 #: lang/master/tpl/contractadmin/deliveries.mtt:1826
-msgid "New distribution"
+msgid "One time distribution"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:1896
-msgid "Distribution cycles"
-msgstr ""
-
-#: lang/master/tpl/contractadmin/deliveries.mtt:2103
+#: lang/master/tpl/contractadmin/deliveries.mtt:2107
 msgid "Distributions engagement"
 msgstr ""
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:2241
+#: lang/master/tpl/contractadmin/deliveries.mtt:2245
 msgid "Old distributions"
 msgstr ""
 
@@ -2769,75 +2765,75 @@ msgstr ""
 msgid "Duplicate"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:696
+#: lang/master/tpl/design.mtt:807
+msgid "Change group"
+msgstr ""
+
+#: lang/master/tpl/design.mtt:1058 lang/master/tpl/plugin/pro/design.mtt:669
 msgid "et"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:1075
-msgid "Log into another group"
-msgstr ""
-
-#: lang/master/tpl/design.mtt:1250
+#: lang/master/tpl/design.mtt:1314 lang/master/tpl/plugin/pro/design.mtt:921
 msgid "Log out"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:1500 lang/master/tpl/group/view.mtt:2388
+#: lang/master/tpl/design.mtt:1534 lang/master/tpl/group/view.mtt:2388
 msgid "Log in"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:1631
+#: lang/master/tpl/design.mtt:1661
 msgid "Look for another group"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:2391
+#: lang/master/tpl/design.mtt:2411
 msgid "Home"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:2500
+#: lang/master/tpl/design.mtt:2518
 msgid "My account"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:3372
+#: lang/master/tpl/design.mtt:3387
 msgid "Group"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:3508
+#: lang/master/tpl/design.mtt:3523
 msgid "Admin"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:4525
+#: lang/master/tpl/design.mtt:4540
 msgid "HELP"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:4625
+#: lang/master/tpl/design.mtt:4640
 msgid "Documentation"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:4761
+#: lang/master/tpl/design.mtt:4776
 msgid "Facebook group"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:5047
+#: lang/master/tpl/design.mtt:5062
 msgid "Vous êtes producteur ?"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:5095
+#: lang/master/tpl/design.mtt:5110
 msgid "Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b> "
 msgstr ""
 
-#: lang/master/tpl/design.mtt:5373
+#: lang/master/tpl/design.mtt:5388
 msgid "CONTACT US"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:5524
+#: lang/master/tpl/design.mtt:5539
 msgid "Propose features"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:5635
+#: lang/master/tpl/design.mtt:5650
 msgid "FOLLOW US"
 msgstr ""
 
-#: lang/master/tpl/design.mtt:7062
+#: lang/master/tpl/design.mtt:7077
 msgid ""
 "Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img "
 "src='/img/alilo-trans-black.png' /></a>"
@@ -3083,19 +3079,19 @@ msgstr ""
 msgid "Delivery from ::start:: to ::end::"
 msgstr ""
 
-#: lang/master/tpl/home.mtt:10711
+#: lang/master/tpl/home.mtt:10707
 msgid "Permanences"
 msgstr ""
 
-#: lang/master/tpl/home.mtt:10747
+#: lang/master/tpl/home.mtt:10743
 msgid "Don't forget to register for permanences"
 msgstr ""
 
-#: lang/master/tpl/home.mtt:11060
+#: lang/master/tpl/home.mtt:11056
 msgid "Warning, you don't have defined a password yet !"
 msgstr ""
 
-#: lang/master/tpl/home.mtt:11247
+#: lang/master/tpl/home.mtt:11243
 msgid "Set my password"
 msgstr ""
 
@@ -3701,15 +3697,15 @@ msgstr ""
 msgid "All products"
 msgstr ""
 
-#: lang/master/tpl/shop/needLogin.mtt:208 lang/master/tpl/shop/needLogin.mtt:721 lang/master/tpl/user/default.mtt:134
+#: lang/master/tpl/shop/needLogin.mtt:208 lang/master/tpl/shop/needLogin.mtt:559 lang/master/tpl/user/default.mtt:134
 msgid "Connection"
 msgstr ""
 
-#: lang/master/tpl/shop/needLogin.mtt:457
+#: lang/master/tpl/shop/needLogin.mtt:305
 msgid "In order to confirm your basket, <br/>You need to authenticate."
 msgstr ""
 
-#: lang/master/tpl/shop/needLogin.mtt:915
+#: lang/master/tpl/shop/needLogin.mtt:753
 msgid "Sign up"
 msgstr ""
 
@@ -3808,27 +3804,29 @@ msgid ""
 "its process:"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:191
-msgid "Please select the group you want to connect to"
+#: lang/master/tpl/user/choose.mtt:272
+msgid ""
+"Connect to your <b>Cagette Pro</b> account to manage your products, catalogs "
+"and deliveries."
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:578
-msgid "Cagette Pro"
+#: lang/master/tpl/user/choose.mtt:913
+msgid "Please click on the <b>Cagette group</b> you want to connect to."
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:1693
+#: lang/master/tpl/user/choose.mtt:1595
 msgid "You don't belong to any group yet"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:1858 lang/master/tpl/user/choose.mtt:2317
+#: lang/master/tpl/user/choose.mtt:1760 lang/master/tpl/user/choose.mtt:2214
 msgid "Create my own group"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:2158
+#: lang/master/tpl/user/choose.mtt:2055
 msgid "Find other groups near me"
 msgstr ""
 
-#: lang/master/tpl/user/choose.mtt:2474
+#: lang/master/tpl/user/choose.mtt:2371
 msgid "Subscriptions on waiting list"
 msgstr ""
 
@@ -3990,18 +3988,18 @@ msgid ""
 "to access to the three main pages:	<ul><li> The <b>home page</b> which displays "
 "orders and the delivery planning.</li><li> On the <b>My account</b> page, "
 "you can update your personal information and check your orders history</li><li> "
-"On the <b>My group</b> page,  you can see all farmers and coordinators of "
+"On the <b>Farmers</b> page,  you can see all farmers and coordinators of "
 "the group</ul>"
 msgstr ""
 
-#: common/Common.hx:7304
+#: common/Common.hx:7303
 msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
 "<b>Members</b> section</p>"
 msgstr ""
 
-#: common/Common.hx:7615
+#: common/Common.hx:7614
 msgid ""
 "The purpose of this section is to administrate the list of your members.<br/>Every "
 "time that you register a new membrer, an account will be created for him/her. "
@@ -4009,20 +4007,20 @@ msgid ""
 "of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
 msgstr ""
 
-#: common/Common.hx:8050
+#: common/Common.hx:8049
 msgid ""
 "This is the page of a member. Here you can : <ul><li>see and change their "
 "contact details</li><li>manage the membership fee of your group</li><li>see "
 "a summary of their orders</li></ul>"
 msgstr ""
 
-#: common/Common.hx:8356
+#: common/Common.hx:8355
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very important "
 "for coordinators."
 msgstr ""
 
-#: common/Common.hx:8580
+#: common/Common.hx:8579
 msgid ""
 "Here you find the list of <b>contracts</b>.They inculde a start date, a end "
 "date, and represent your relationship with a farmer. <br/><p>Here you can "
@@ -4030,17 +4028,17 @@ msgid ""
 "members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
 msgstr ""
 
-#: common/Common.hx:8991
+#: common/Common.hx:8990
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget "
 "to key-in the complete address as a map will be displayed based on this address"
 msgstr ""
 
-#: common/Common.hx:9280
+#: common/Common.hx:9279
 msgid "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
 
-#: common/Common.hx:9519
+#: common/Common.hx:9518
 msgid ""
 "Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant "
 "contracts: the member commits on buying the same products during the whole "
@@ -4048,33 +4046,33 @@ msgid ""
 "what he buys for each delivery.</li></ul>"
 msgstr ""
 
-#: common/Common.hx:9928
+#: common/Common.hx:9927
 msgid "Let's see now the page <b>Products</b>"
 msgstr ""
 
-#: common/Common.hx:10119
+#: common/Common.hx:10118
 msgid ""
 "On this page, you can manage the list of products offered by this supplier.<br/>Define "
 "at least the name and the price of products. It is also possible to add a "
 "description and a picture."
 msgstr ""
 
-#: common/Common.hx:10435
+#: common/Common.hx:10434
 msgid "Let's see the <b>deliveries</b> page"
 msgstr ""
 
-#: common/Common.hx:10629
+#: common/Common.hx:10628
 msgid ""
 "Here we can manage the list of deliveries for this supplier.<br/>In the software, "
 "a delivery has a date, a start time, and an end time. The location of the "
 "delivery must also be defined, by using the list that we have already seen."
 msgstr ""
 
-#: common/Common.hx:10986
+#: common/Common.hx:10985
 msgid "Let's see now the <b>Orders</b> page"
 msgstr ""
 
-#: common/Common.hx:11241
+#: common/Common.hx:11240
 msgid ""
 "Here we can manage the list of orders for this supplier.<br/>If you choose "
 "to \"open orders\" to members, they will be able to make their orders online "
@@ -4083,13 +4081,13 @@ msgid ""
 "on behalf of a member."
 msgstr ""
 
-#: common/Common.hx:11691
+#: common/Common.hx:11690
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
 msgstr ""
 
-#: common/Common.hx:11924
+#: common/Common.hx:11923
 msgid ""
 "<p>The messaging section allows you to send e-mails to different lists of "
 "members. It is not necessary anymore to maintain a lot of lists of e-mails "
@@ -4098,11 +4096,11 @@ msgid ""
 "answers in your own mailbox.</p>"
 msgstr ""
 
-#: common/Common.hx:12384
+#: common/Common.hx:12383
 msgid "Click here now on this page"
 msgstr ""
 
-#: common/Common.hx:12545
+#: common/Common.hx:12544
 msgid ""
 "<p>In this last page, you can configure everything that is related to your "
 "group.</p><p>The page <b>Access rights</b> is important as it is where you "
@@ -4110,7 +4108,7 @@ msgid ""
 "one or many contracts, send emails, etc.</p>"
 msgstr ""
 
-#: common/Common.hx:12934
+#: common/Common.hx:12933
 msgid ""
 "<p>This is the last step of this tutorial. I hope that it gave you a good "
 "overview of this software.<br/>To go further, do not hesitate to look at "

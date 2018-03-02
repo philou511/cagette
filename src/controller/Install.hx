@@ -61,7 +61,7 @@ class Install extends controller.Controller
 				var ua = new db.UserAmap();
 				ua.user = user;
 				ua.amap = amap;
-				ua.rights = [db.UserAmap.Right.AmapAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
+				ua.rights = [db.UserAmap.Right.GroupAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
 				ua.insert();
 				
 				//example datas

@@ -36,6 +36,11 @@ class Vendor extends Object
 	override function toString() {
 		return name;
 	}
+
+	public function getActiveContracts(){
+		var now = Date.now();
+		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
+	}
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
@@ -46,8 +51,8 @@ class Vendor extends Object
 			"phone" 			=> t._("Phone"),
 			"address1" 			=> t._("Address 1"),
 			"address2" 			=> t._("Address 2"),
-			"zipCode" 	=> t._("Zip code"),
-			"city" 	=> t._("City"),			
+			"zipCode" 			=> t._("Zip code"),
+			"city" 				=> t._("City"),			
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 		];

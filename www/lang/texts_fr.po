@@ -1028,7 +1028,7 @@ msgstr "jamais-connecté"
 msgid "Unknown selection"
 msgstr "Sélection inconnue"
 
-#: src/controller/Member.hx:3107 lang/master/tpl/design.mtt:2850
+#: src/controller/Member.hx:3107 lang/master/tpl/design.mtt:2865
 #: lang/master/tpl/member/default.mtt:782
 msgid "Members"
 msgstr "Adhérents"
@@ -1112,7 +1112,7 @@ msgstr ""
 "commandes "
 
 #: src/controller/Member.hx:12318 src/controller/User.hx:3190
-#: src/db/User.hx:15035 lang/master/tpl/design.mtt:4441
+#: src/db/User.hx:15035 lang/master/tpl/design.mtt:4456
 #: lang/master/tpl/mail/design.mtt:298
 msgid "Cagette.net"
 msgstr "Cagette.net"
@@ -1765,7 +1765,7 @@ msgstr "Options"
 msgid "Registration setting"
 msgstr "Réglage des inscriptions"
 
-#: src/db/Amap.hx:9727 lang/master/tpl/amap/default.mtt:315
+#: src/db/Amap.hx:9727 lang/master/tpl/amap/default.mtt:719
 msgid "Main contact"
 msgstr "Contact principal"
 
@@ -2001,7 +2001,7 @@ msgstr "Date d'inscription"
 msgid "Administrator"
 msgstr "Administrateur"
 
-#: src/db/UserAmap.hx:2225 lang/master/tpl/design.mtt:3204
+#: src/db/UserAmap.hx:2225 lang/master/tpl/design.mtt:3219
 msgid "Messaging"
 msgstr "Messagerie"
 
@@ -2220,7 +2220,7 @@ msgstr "aucune date"
 msgid "at"
 msgstr "à"
 
-#: lang/master/tpl/amap/default.mtt:230
+#: lang/master/tpl/amap/default.mtt:634
 #: lang/master/tpl/contract/default.mtt:4608
 #: lang/master/tpl/contractadmin/default.mtt:3264
 #: lang/master/tpl/contractadmin/default.mtt:3899
@@ -2234,7 +2234,7 @@ msgstr "à"
 msgid "Edit"
 msgstr "Modifier"
 
-#: lang/master/tpl/amap/default.mtt:1227 lang/master/tpl/contract/view.mtt:2017
+#: lang/master/tpl/amap/default.mtt:1807 lang/master/tpl/contract/view.mtt:2017
 msgid "Coordinator"
 msgstr "Coordinateur"
 
@@ -2278,7 +2278,7 @@ msgstr ""
 msgid "Display"
 msgstr "Afficher"
 
-#: lang/master/tpl/amapadmin/design.mtt:167 lang/master/tpl/design.mtt:2607
+#: lang/master/tpl/amapadmin/design.mtt:167
 msgid "My group"
 msgstr "Mon groupe"
 
@@ -2762,7 +2762,7 @@ msgid "Old contracts"
 msgstr "Anciens contrats"
 
 #: lang/master/tpl/contractadmin/default.mtt:614
-#: lang/master/tpl/design.mtt:3035
+#: lang/master/tpl/design.mtt:3050
 msgid "Contracts"
 msgstr "Contrats"
 
@@ -2797,7 +2797,7 @@ msgid "Timeframe"
 msgstr "De date à date"
 
 #: lang/master/tpl/contractadmin/default.mtt:2896
-#: lang/master/tpl/distribution/list.mtt:860
+#: lang/master/tpl/design.mtt:2623 lang/master/tpl/distribution/list.mtt:860
 msgid "Farmers"
 msgstr "Producteurs"
 
@@ -2834,6 +2834,7 @@ msgid "Distribution list"
 msgstr "Liste d'émargement"
 
 #: lang/master/tpl/contractadmin/deliveries.mtt:1288
+#: lang/master/tpl/contractadmin/deliveries.mtt:1901
 msgid "Distribution cycle"
 msgstr "Cycle de distribution"
 
@@ -2854,18 +2855,14 @@ msgid "Every 3 weeks"
 msgstr "Toute les 3 semaines"
 
 #: lang/master/tpl/contractadmin/deliveries.mtt:1826
-msgid "New distribution"
-msgstr "Nouvelle distribution"
+msgid "One time distribution"
+msgstr "Distribution ponctuelle"
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:1896
-msgid "Distribution cycles"
-msgstr "Cycles de distributions"
-
-#: lang/master/tpl/contractadmin/deliveries.mtt:2103
+#: lang/master/tpl/contractadmin/deliveries.mtt:2107
 msgid "Distributions engagement"
 msgstr "Participation aux distributions"
 
-#: lang/master/tpl/contractadmin/deliveries.mtt:2241
+#: lang/master/tpl/contractadmin/deliveries.mtt:2245
 msgid "Old distributions"
 msgstr "Anciennes distributions"
 
@@ -3247,75 +3244,75 @@ msgstr "Fin"
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#: lang/master/tpl/design.mtt:696
+#: lang/master/tpl/design.mtt:807
+msgid "Change group"
+msgstr "Changer de groupe"
+
+#: lang/master/tpl/design.mtt:1058 lang/master/tpl/plugin/pro/design.mtt:669
 msgid "et"
 msgstr "et"
 
-#: lang/master/tpl/design.mtt:1075
-msgid "Log into another group"
-msgstr "Me connecter à un autre groupe"
-
-#: lang/master/tpl/design.mtt:1250
+#: lang/master/tpl/design.mtt:1314 lang/master/tpl/plugin/pro/design.mtt:921
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: lang/master/tpl/design.mtt:1500 lang/master/tpl/group/view.mtt:2388
+#: lang/master/tpl/design.mtt:1534 lang/master/tpl/group/view.mtt:2388
 msgid "Log in"
 msgstr "Connexion"
 
-#: lang/master/tpl/design.mtt:1631
+#: lang/master/tpl/design.mtt:1661
 msgid "Look for another group"
 msgstr "Chercher un autre groupe"
 
-#: lang/master/tpl/design.mtt:2391
+#: lang/master/tpl/design.mtt:2411
 msgid "Home"
 msgstr "Accueil"
 
-#: lang/master/tpl/design.mtt:2500
+#: lang/master/tpl/design.mtt:2518
 msgid "My account"
 msgstr "Mon compte"
 
-#: lang/master/tpl/design.mtt:3372
+#: lang/master/tpl/design.mtt:3387
 msgid "Group"
 msgstr "Groupe"
 
-#: lang/master/tpl/design.mtt:3508
+#: lang/master/tpl/design.mtt:3523
 msgid "Admin"
 msgstr "Admin"
 
-#: lang/master/tpl/design.mtt:4525
+#: lang/master/tpl/design.mtt:4540
 msgid "HELP"
 msgstr "AIDE"
 
-#: lang/master/tpl/design.mtt:4625
+#: lang/master/tpl/design.mtt:4640
 msgid "Documentation"
 msgstr "Documentation"
 
-#: lang/master/tpl/design.mtt:4761
+#: lang/master/tpl/design.mtt:4776
 msgid "Facebook group"
 msgstr "Groupe Facebook"
 
-#: lang/master/tpl/design.mtt:5047
+#: lang/master/tpl/design.mtt:5062
 msgid "Vous êtes producteur ?"
 msgstr "Vous êtes producteur ?"
 
-#: lang/master/tpl/design.mtt:5095
+#: lang/master/tpl/design.mtt:5110
 msgid "Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b> "
 msgstr "Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b> "
 
-#: lang/master/tpl/design.mtt:5373
+#: lang/master/tpl/design.mtt:5388
 msgid "CONTACT US"
 msgstr "CONTACTEZ-NOUS"
 
-#: lang/master/tpl/design.mtt:5524
+#: lang/master/tpl/design.mtt:5539
 msgid "Propose features"
 msgstr "Proposer une amélioration"
 
-#: lang/master/tpl/design.mtt:5635
+#: lang/master/tpl/design.mtt:5650
 msgid "FOLLOW US"
 msgstr "SUIVEZ-NOUS"
 
-#: lang/master/tpl/design.mtt:7062
+#: lang/master/tpl/design.mtt:7077
 msgid ""
 "Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img "
 "src='/img/alilo-trans-black.png' /></a>"
@@ -3595,19 +3592,19 @@ msgstr "La commande ouvre le"
 msgid "Delivery from ::start:: to ::end::"
 msgstr "Distribution de ::start:: à ::end::"
 
-#: lang/master/tpl/home.mtt:10711
+#: lang/master/tpl/home.mtt:10707
 msgid "Permanences"
 msgstr "Permanences"
 
-#: lang/master/tpl/home.mtt:10747
+#: lang/master/tpl/home.mtt:10743
 msgid "Don't forget to register for permanences"
 msgstr "N'oubliez pas de vous inscrire aux permanences"
 
-#: lang/master/tpl/home.mtt:11060
+#: lang/master/tpl/home.mtt:11056
 msgid "Warning, you don't have defined a password yet !"
 msgstr "Attention, vous n'avez pas encore défini de mot de passe !"
 
-#: lang/master/tpl/home.mtt:11247
+#: lang/master/tpl/home.mtt:11243
 msgid "Set my password"
 msgstr "Définir mon mot de passe"
 
@@ -4286,15 +4283,15 @@ msgid "All products"
 msgstr "Tous les produits"
 
 #: lang/master/tpl/shop/needLogin.mtt:208
-#: lang/master/tpl/shop/needLogin.mtt:721 lang/master/tpl/user/default.mtt:134
+#: lang/master/tpl/shop/needLogin.mtt:559 lang/master/tpl/user/default.mtt:134
 msgid "Connection"
 msgstr "Connexion"
 
-#: lang/master/tpl/shop/needLogin.mtt:457
+#: lang/master/tpl/shop/needLogin.mtt:305
 msgid "In order to confirm your basket, <br/>You need to authenticate."
 msgstr "Afin de confirmer votre panier, <br/>Vous devez vous identifier."
 
-#: lang/master/tpl/shop/needLogin.mtt:915
+#: lang/master/tpl/shop/needLogin.mtt:753
 msgid "Sign up"
 msgstr "S'inscrire"
 
@@ -4406,27 +4403,32 @@ msgstr ""
 "Indiquez cette référence dans le libellé du virement afin de faciliter son "
 "traitement :"
 
-#: lang/master/tpl/user/choose.mtt:191
-msgid "Please select the group you want to connect to"
-msgstr "Sélectionnez le groupe auquel vous voulez vous connecter"
+#: lang/master/tpl/user/choose.mtt:272
+msgid ""
+"Connect to your <b>Cagette Pro</b> account to manage your products, catalogs "
+"and deliveries."
+msgstr ""
+"Connectez-vous sur votre compte <b>Cagette Pro</b> pour gérer vos produits, "
+"catalogues et livraisons."
 
-#: lang/master/tpl/user/choose.mtt:578
-msgid "Cagette Pro"
-msgstr "Cagette Pro"
+#: lang/master/tpl/user/choose.mtt:913
+msgid "Please click on the <b>Cagette group</b> you want to connect to."
+msgstr ""
+"Cliquez sur le <b>groupe Cagette</b> auquel vous souhaitez vous connecter."
 
-#: lang/master/tpl/user/choose.mtt:1693
+#: lang/master/tpl/user/choose.mtt:1595
 msgid "You don't belong to any group yet"
 msgstr "Vous n'êtes membre d'aucun groupe pour l'instant"
 
-#: lang/master/tpl/user/choose.mtt:1858 lang/master/tpl/user/choose.mtt:2317
+#: lang/master/tpl/user/choose.mtt:1760 lang/master/tpl/user/choose.mtt:2214
 msgid "Create my own group"
 msgstr "Créer mon propre groupe"
 
-#: lang/master/tpl/user/choose.mtt:2158
+#: lang/master/tpl/user/choose.mtt:2055
 msgid "Find other groups near me"
 msgstr "Trouver des groupes près de chez moi"
 
-#: lang/master/tpl/user/choose.mtt:2474
+#: lang/master/tpl/user/choose.mtt:2371
 msgid "Subscriptions on waiting list"
 msgstr "Inscriptions en liste d'attente"
 
@@ -4616,7 +4618,7 @@ msgid ""
 "access to the three main pages:\t<ul><li> The <b>home page</b> which "
 "displays orders and the delivery planning.</li><li> On the <b>My account</b> "
 "page, you can update your personal information and check your orders "
-"history</li><li> On the <b>My group</b> page,  you can see all farmers and "
+"history</li><li> On the <b>Farmers</b> page,  you can see all farmers and "
 "coordinators of the group</ul>"
 msgstr ""
 "Cette partie de la barre de navigation est visible par tous les membres."
@@ -4624,10 +4626,10 @@ msgstr ""
 "d’accueil</b> qui affiche les commandes et la livraison de planification.</"
 "li><li>Sur la page <b>mon compte</b> , vous pouvez mettre à jour vos "
 "renseignements personnels et vérifier l’historique de vos commandes</"
-"li><li>Sur la page <b>mon groupe</b> , vous pouvez voir tous les producteurs "
+"li><li>Sur la page <b>producteurs</b>, vous pouvez voir tous les producteurs "
 "et les coordonnateurs du groupe</li></ul>"
 
-#: common/Common.hx:7304
+#: common/Common.hx:7303
 msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
@@ -4638,7 +4640,7 @@ msgstr ""
 "d'adhérents, les commandes, les produits, etc.<br/>\n"
 "\t\t\t\t\t<p>Cliquez maintenant sur la rubrique <b>Adhérents</b></p>"
 
-#: common/Common.hx:7615
+#: common/Common.hx:7614
 msgid ""
 "The purpose of this section is to administrate the list of your members.<br/"
 ">Every time that you register a new membrer, an account will be created for "
@@ -4652,7 +4654,7 @@ msgstr ""
 "ou consulter son planning de distribution.\n"
 "\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>"
 
-#: common/Common.hx:8050
+#: common/Common.hx:8049
 msgid ""
 "This is the page of a member. Here you can : <ul><li>see and change their "
 "contact details</li><li>manage the membership fee of your group</li><li>see "
@@ -4665,7 +4667,7 @@ msgstr ""
 "<li>voir un récapitulatif de ses commandes</li>\n"
 "</ul>"
 
-#: common/Common.hx:8356
+#: common/Common.hx:8355
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very "
 "important for coordinators."
@@ -4673,7 +4675,7 @@ msgstr ""
 "Voyons maintenant la section des <b>contrats</b> qui est très importante "
 "pour les coordonnateurs."
 
-#: common/Common.hx:8580
+#: common/Common.hx:8579
 msgid ""
 "Here you find the list of <b>contracts</b>.They inculde a start date, a end "
 "date, and represent your relationship with a farmer. <br/><p>Here you can "
@@ -4692,7 +4694,7 @@ msgstr ""
 "\t\t\t\t\t\t</ul>\n"
 "\t\t\t\t\t</p>"
 
-#: common/Common.hx:8991
+#: common/Common.hx:8990
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to "
 "key-in the complete address as a map will be displayed based on this address"
@@ -4702,14 +4704,14 @@ msgstr ""
 "\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au "
 "mieux les adhérents"
 
-#: common/Common.hx:9280
+#: common/Common.hx:9279
 msgid ""
 "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
 "Allons voir maintenant de plus près comment administrer un contrat. "
 "<b>Cliquez sur ce bouton</b>"
 
-#: common/Common.hx:9519
+#: common/Common.hx:9518
 msgid ""
 "Here is a summary of the contract.<br/>There are two types of contracts:"
 "<ul><li>Constant contracts: the member commits on buying the same products "
@@ -4724,11 +4726,11 @@ msgstr ""
 "ce qu'il veut à chaque distribution.</li>\n"
 "\t\t\t\t\t</ul>"
 
-#: common/Common.hx:9928
+#: common/Common.hx:9927
 msgid "Let's see now the page <b>Products</b>"
 msgstr "Allons voir maintenant la page de gestion des <b>Produits</b>"
 
-#: common/Common.hx:10119
+#: common/Common.hx:10118
 msgid ""
 "On this page, you can manage the list of products offered by this supplier."
 "<br/>Define at least the name and the price of products. It is also possible "
@@ -4739,11 +4741,11 @@ msgstr ""
 "\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il "
 "est également possible d'ajouter un descriptif et une photo."
 
-#: common/Common.hx:10435
+#: common/Common.hx:10434
 msgid "Let's see the <b>deliveries</b> page"
 msgstr "Allons voir maintenant la page de gestion des <b>distributions</b>"
 
-#: common/Common.hx:10629
+#: common/Common.hx:10628
 msgid ""
 "Here we can manage the list of deliveries for this supplier.<br/>In the "
 "software, a delivery has a date, a start time, and an end time. The location "
@@ -4756,11 +4758,11 @@ msgstr ""
 "\t\t\t\t\tIl faut aussi préciser le lieu de distribution à partir de la "
 "liste que nous avons vue précédement."
 
-#: common/Common.hx:10986
+#: common/Common.hx:10985
 msgid "Let's see now the <b>Orders</b> page"
 msgstr "Allons voir maintenant la page de gestion des <b>commandes</b>"
 
-#: common/Common.hx:11241
+#: common/Common.hx:11240
 msgid ""
 "Here we can manage the list of orders for this supplier.<br/>If you choose "
 "to \"open orders\" to members, they will be able to make their orders online "
@@ -4778,7 +4780,7 @@ msgstr ""
 "\t\t\t\t\tSinon, en tant que coordinateur, vous pouvez saisir les commandes "
 "pour les adhérents depuis cette page."
 
-#: common/Common.hx:11691
+#: common/Common.hx:11690
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
@@ -4786,7 +4788,7 @@ msgstr ""
 "<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</"
 "p><p>Explorons maintenant la messagerie.</p>"
 
-#: common/Common.hx:11924
+#: common/Common.hx:11923
 msgid ""
 "<p>The messaging section allows you to send e-mails to different lists of "
 "members. It is not necessary anymore to maintain a lot of lists of e-mails "
@@ -4803,11 +4805,11 @@ msgstr ""
 "qu'expéditeur, vous recevrez donc les réponses sur votre boite email "
 "habituelle.</p>"
 
-#: common/Common.hx:12384
+#: common/Common.hx:12383
 msgid "Click here now on this page"
 msgstr "Cliquez maintenant sur cette rubrique"
 
-#: common/Common.hx:12545
+#: common/Common.hx:12544
 msgid ""
 "<p>In this last page, you can configure everything that is related to your "
 "group.</p><p>The page <b>Access rights</b> is important as it is where you "
@@ -4823,7 +4825,7 @@ msgstr ""
 "messagerie, etc.\n"
 "\t\t\t\t\t</p>"
 
-#: common/Common.hx:12934
+#: common/Common.hx:12933
 msgid ""
 "<p>This is the last step of this tutorial. I hope that it gave you a good "
 "overview of this software.<br/>To go further, do not hesitate to look at the "
@@ -4836,6 +4838,37 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#~ msgid "New distribution"
+#~ msgstr "Nouvelle distribution"
+
+#~ msgid "Distribution cycles"
+#~ msgstr "Cycles de distributions"
+
+#~ msgid ""
+#~ "This part of the navigation bar is visible by all members.</br>It allows "
+#~ "to access to the three main pages:\t<ul><li> The <b>home page</b> which "
+#~ "displays orders and the delivery planning.</li><li> On the <b>My account</"
+#~ "b> page, you can update your personal information and check your orders "
+#~ "history</li><li> On the <b>My group</b> page,  you can see all farmers "
+#~ "and coordinators of the group</ul>"
+#~ msgstr ""
+#~ "Cette partie de la barre de navigation est visible par tous les membres."
+#~ "<br>Il permet d’accéder aux trois pages principales :<ul><li>La <b>page "
+#~ "d’accueil</b> qui affiche les commandes et la livraison de planification."
+#~ "</li><li>Sur la page <b>mon compte</b> , vous pouvez mettre à jour vos "
+#~ "renseignements personnels et vérifier l’historique de vos commandes</"
+#~ "li><li>Sur la page <b>mon groupe</b> , vous pouvez voir tous les "
+#~ "producteurs et les coordonnateurs du groupe</li></ul>"
+
+#~ msgid "Log into another group"
+#~ msgstr "Me connecter à un autre groupe"
+
+#~ msgid "Please select the group you want to connect to"
+#~ msgstr "Sélectionnez le groupe auquel vous voulez vous connecter"
+
+#~ msgid "Cagette Pro"
+#~ msgstr "Cagette Pro"
 
 #~ msgid "Error, This cart is invalid"
 #~ msgstr "Erreur, ce panier est invalide"
