@@ -13,6 +13,7 @@ class TestSuite
 		initDatas();
 		
 		var r = new haxe.unit.TestRunner();
+		r.add(new test.TestUser());
 		//r.add(new test.TestOrders());
 		//r.add(new test.TestReports());
 
@@ -51,6 +52,7 @@ class TestSuite
 		//cagette
 		createTable(db.User.manager);
 		createTable(db.Amap.manager);
+		createTable(db.UserAmap.manager);
 		createTable(db.UserContract.manager);
 		createTable(db.Contract.manager);
 		createTable(db.Product.manager);

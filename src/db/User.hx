@@ -167,7 +167,7 @@ class User extends Object {
 	}
 	
 	public function canManageContract(c:db.Contract):Bool {
-		var ua = getUserAmap(getAmap());
+		var ua = getUserAmap(c.amap);
 		if (ua == null) return false;
 		if (ua.hasRight(Right.ContractAdmin())) return true;
 		if (ua.hasRight(Right.ContractAdmin(c.id))) return true;		
