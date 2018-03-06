@@ -350,19 +350,20 @@ class Distribution extends Controller
 		view.title = t._("Schedule a recurrent delivery");
 	}
 	
-	public function doDeleteCycle(c:db.DistributionCycle){
+	/**
+	 *  Delete a distribution cycle
+	 */
+	public function doDeleteCycle(cycle:db.DistributionCycle){
 		
-		if (!app.user.isContractManager(c.contract)) throw Error('/', t._("Forbidden action"));
+		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
 		
-		c.lock();
-		var msgs = c.deleteChilds();
-		if (msgs.length > 0){
-			
-			throw Error("/contractAdmin/distributions/" + c.contract.id, msgs.join("<br/>"));	
-		}else{
-			
-			c.delete();
-			throw Ok("/contractAdmin/distributions/" + c.contract.id, t._("Recurrent deliveries deleted"));
+		cycle.lock();
+		var msgs = cycle.deleteChilds();
+		if (msgs.length > 0){			
+			throw Error("/contractAdmin/distributions/" + cycle.contract.id, msgs.join("<br/>"));	
+		}else{			
+			cycle.delete();
+			throw Ok("/contractAdmin/distributions/" + cycle.contract.id, t._("Recurrent deliveries deleted"));
 		}
 	}
 	

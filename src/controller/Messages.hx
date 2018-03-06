@@ -168,8 +168,7 @@ class Messages extends Controller
 				//tout le monde
 				out =  Lambda.array(app.user.amap.getMembers());
 					
-			case "2":
-				
+			case "2":				
 				var users = [];
 				users.push(app.user.amap.contact);
 				for ( c in db.Contract.manager.search($amap == app.user.amap)) {

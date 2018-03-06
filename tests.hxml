@@ -10,7 +10,7 @@
 -lib record-macros
 -cp common
 -cp src
--cp lang/en/tpl
+-cp lang/master/tpl
 -neko www/tests.n
  -main test.TestSuite
 

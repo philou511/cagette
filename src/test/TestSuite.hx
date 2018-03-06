@@ -13,7 +13,7 @@ class TestSuite
 		initDatas();
 		
 		var r = new haxe.unit.TestRunner();
-		//r.add(new test.TestOrders());
+		r.add(new test.TestOrders());
 		//r.add(new test.TestReports());
 
 		#if plugins

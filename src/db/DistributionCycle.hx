@@ -129,19 +129,21 @@ class DistributionCycle extends Object
 		}
 	}
 	
-	
+	/**
+	 *  Delete distributions which are part of this cycle
+	 */
 	public function deleteChilds(){
 		
 		var childs = db.Distribution.manager.search($distributionCycle == this, true);
 		var messages = [];
-		for ( c in childs ){
+		for ( d in childs ){
 			
-			if (c.getOrders().length > 0){
+			if (d.contract.type == db.Contract.TYPE_VARORDER && !d.canDelete() ){
 				var t = sugoi.i18n.Locale.texts;
-				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:App.current.view.hDate(c.date)}));
+				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:App.current.view.hDate(d.date)}));
 			}else{
-				c.lock();
-				c.delete();
+				d.lock();
+				d.delete();
 			}
 		}
 		
