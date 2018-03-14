@@ -12,8 +12,10 @@ before_install:
   - sudo a2enmod rewrite
   # For the following apache2 related operations, see https://docs.travis-ci.com/user/languages/php#Apache-%2B-PHP
   - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
+  - sudo cat /etc/apache2/sites-available/000-default.conf
   - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/000-default.conf
   - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
+  - sudo cat /etc/apache2/sites-available/000-default.conf
   - sudo a2ensite 000-default.conf
   - sudo service apache2 restart
   - mysql -e 'CREATE DATABASE cagette;'
