@@ -278,8 +278,8 @@ class ContractAdmin extends Controller
 			
 		}else {
 			
-			var d1 = from;
-			var d2 = to;
+			var d1 = tools.DateTool.setHourMinute(from,0,0);
+			var d2 = tools.DateTool.setHourMinute(to,23,59);
 			var contracts = app.user.amap.getActiveContracts(true);
 			var cconst = [];
 			var cvar = [];
@@ -445,10 +445,10 @@ class ContractAdmin extends Controller
 	 * Global view on orders, producer view
 	 */
 	@tpl('contractadmin/vendorsByTimeFrame.mtt')
-	function doVendorsByTimeFrame(from:Date,to:Date/*,place:db.Place*/){
+	function doVendorsByTimeFrame(from:Date,to:Date){
 			
-		var d1 = from;
-		var d2 = to;
+		var d1 = tools.DateTool.setHourMinute(from,0,0);
+		var d2 = tools.DateTool.setHourMinute(to,23,59);
 		var contracts = app.user.amap.getActiveContracts(true);
 		var cids = contracts.getIds();
 		
@@ -512,7 +512,15 @@ class ContractAdmin extends Controller
 				}
 				
 				//total line
-				orders.push({"quantity":null, "pname":null, "ref":null, "priceHT":null, "priceTTC":null, "totalHT":view.formatNum(totalHT)+"", "totalTTC":view.formatNum(totalTTC)+""});								
+				orders.push({
+					"quantity":null,
+					"pname":null,
+					"ref":null,
+					"priceHT":null,
+					"priceTTC":null,
+					"totalHT":view.formatNum(totalHT) + "",
+					"totalTTC":view.formatNum(totalTTC)+""					
+				});								
 				totalTTC = 0;
 				totalHT = 0;
 				

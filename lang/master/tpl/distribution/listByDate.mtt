@@ -121,24 +121,26 @@
 							<table style="width:100%;border:1px solid #CCC;">
 							::if(basket!=null)::
 								::set tpaid=0::
-								::set op = basket.getOrderOperation(false)::								
-								::foreach p op.getRelatedPayments()::
-								<tr>
-									<td style="min-width:30px;">
-										::if(p.pending==true)::
-										<img src="/img/tick_no.png"/>
-										::else::
-										<img src="/img/tick_ok_me.png"/>
-										::end::
-									</td>
-									<td>
-										::formatNum(p.amount):: ::currency()::
-										::set tpaid = p.amount+tpaid::
-									</td>
-									<td>
-										::p.name::
-									</td>
-								</tr>
+								::set op = basket.getOrderOperation(false)::
+								::if op!=null::
+									::foreach p op.getRelatedPayments()::
+									<tr>
+										<td style="min-width:30px;">
+											::if(p.pending==true)::
+											<img src="/img/tick_no.png"/>
+											::else::
+											<img src="/img/tick_ok_me.png"/>
+											::end::
+										</td>
+										<td>
+											::formatNum(p.amount):: ::currency()::
+											::set tpaid = p.amount+tpaid::
+										</td>
+										<td>
+											::p.name::
+										</td>
+									</tr>
+									::end::
 								::end::
 								
 								<!-- bug : 2 vars are the same but == doesnt work -->

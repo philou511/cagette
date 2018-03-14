@@ -237,7 +237,7 @@ class App extends sugoi.BaseApp {
 		
 		if (sugoi.db.Variable.get("mailer") == null){
 			var msg = sugoi.i18n.Locale.texts._("Please configure the email settings in a <href='/admin/emails'>this section</a>");
-			throw sugoi.BaseController.ControllerAction.ErrorAction("/",msg);
+			throw sugoi.ControllerAction.ErrorAction("/",msg);
 		}
 		
 		var conf = {

@@ -91,8 +91,6 @@ class Member extends Controller
 					return db.User.manager.search( $id in uids, { limit:[index,limit], orderBy:lastName }, false);
 				}
 			}
-			
-			
 		}
 		
 		var count = uids.length;

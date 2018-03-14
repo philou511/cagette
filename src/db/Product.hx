@@ -85,6 +85,12 @@ class Product extends Object
 		return price + contract.computeFees(price);
 	}
 	
+	/**
+	   get product infos as an anonymous object 
+	   @param	CategFromTaxo=false
+	   @param	populateCategories=tru
+	   @return
+	**/
 	public function infos(?CategFromTaxo=false,?populateCategories=true):ProductInfo {
 		var o :ProductInfo = {
 			id : id,
@@ -126,8 +132,10 @@ class Product extends Object
 	/**
 	 * customs categs
 	 */
-	public function getCategories() {
-		return Lambda.map(db.ProductCategory.manager.search($productId == id, false), function(x) return x.category);
+	public function getCategories() {		
+		//"Types de produits" categGroup first
+		//var pc = db.ProductCategory.manager.search($productId == id, {orderBy:categoryId}, false);		
+		return Lambda.map(db.ProductCategory.manager.search($productId == id,{orderBy:categoryId},false), function(x) return x.category);
 	}
 	
 	/**
@@ -138,13 +146,9 @@ class Product extends Object
 		return txpProduct.getFullCategorization();
 	}
 	
-	
-	
 	public static function getByRef(c:db.Contract, ref:String){
-		
 		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
 		return db.Product.manager.select($ref == ref && $id in pids, false);
-		
 	}
 	
 	public static function getLabels(){

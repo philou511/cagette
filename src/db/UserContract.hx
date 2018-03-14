@@ -454,7 +454,7 @@ class UserContract extends Object
 				ref:r.ref,
 				priceHT:null,
 				priceTTC:r.price,
-				vat:null,
+				vat:p.vat,
 				total:1.0 * r.quantity * r.price,
 				weightOrVolume:"",
 			};
