@@ -219,7 +219,6 @@ class Distribution extends Object
 
         return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,{orderBy:date},false));
 
-
     }
 
 

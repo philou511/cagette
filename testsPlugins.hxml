@@ -14,7 +14,7 @@
 -lib cagette-connector
 -cp common
 -cp src
--cp lang/en/tpl
+-cp lang/master/tpl
 -neko www/tests.n
 -D plugins
 
