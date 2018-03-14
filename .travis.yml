@@ -14,6 +14,7 @@ before_install:
   - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
   - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/000-default.conf
   - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
+  - sudo a2ensite 000-default.conf
   - sudo service apache2 restart
   - mysql -e 'CREATE DATABASE cagette;'
   - cp config.xml.dist config.xml
@@ -35,6 +36,12 @@ script:
   - make -f Makefile_template templates LANG=de
   - make -f Makefile_template templates LANG=en
   - npm run build
-  - if [ "$(wget http://cagette -O- | grep error | wc -l)" = "0" ]; then echo "First page access does not show an error, but it should" && exit 1; else echo "First page access shows an error, as expected"; fi
-  - if [ "$(wget http://cagette -O- | grep error | wc -l)" != "0" ]; then echo "Second page access shows an error, but it should not" && exit 1; else echo "Second page access shows no error, as expected"; fi
+  - index_page_output=$(wget http://cagette -O-)
+  - wget_command_result=$?
+  - if [ $wget_command_result != 0 ]; then echo "Error: Could not access the web application." && exit 1; else echo "Successfully accessed the web application"; fi
+  - if [ "$(echo \"$index_page_output\" | grep error | wc -l)" = "0" ]; then echo "First page access does not show an error, but it should" && exit 1; else echo "First page access shows an error, as expected"; fi
+  - index_page_output=$(wget http://cagette -O-)
+  - wget_command_result=$?
+  - if [ $wget_command_result != 0 ]; then echo "Error: Could not access the web application." && exit 1; else echo "Successfully accessed the web application"; fi
+  - if [ "$(echo \"$index_page_output\" | grep error | wc -l)" != "0" ]; then echo "Second page access shows an error, but it should not" && exit 1; else echo "Second page access shows no error, as expected"; fi
   - haxe tests.hxml
