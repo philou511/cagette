@@ -56,11 +56,10 @@
 					::Math.abs(balance)::&nbsp;::currency()::
 				</td>
 				<td colspan="2">
-					
 				</td>
 			</tr>
 
-		::foreach t transactions.current()::	
+		::foreach t rb.current()::	
 			<tr>
 				$$operation(::t::)
 				<td>
@@ -73,41 +72,29 @@
 					
 				</td>
 			</tr>
-				
-			<!--::foreach tt t.getRelatedPayments()::	
-				<tr style="background:#EEE;color:#666;" onclick="_.overlay('/transaction/view/::tt.id::','',false)">
-					$$transaction(::tt::)
-				</tr>
-			::end::-->
 			
 		::end::
 
 		<tr >
 			<th colspan="6" class="text-center">
 				<ul class="pagination">
-					::set range = 10::
-					::set start = (Math.ceil(transactions.page/range) - 1) * range + 1::
-					::set endindex = start + range::
-					::if endindex > transactions.pages + 1::
-						::set endindex = transactions.pages + 1::
-					::end::
-					::if start != 1::
+					::if rb.paginationStartPage != 1::
 						<li>
-							<a href="?page=::start-1::">
+							<a href="?page=::rb.paginationStartPage-1::">
 								<span class="glyphicon glyphicon-backward"></span>
 							</a>
 						</li>
 					::end::
-					::foreach i loopList(start,endindex)::
-						::if transactions.page==i::
+					::foreach i loopList(rb.paginationStartPage,rb.paginationEndPage)::
+						::if rb.page==i::
 							<li class="active" ><a href="?page=::i::">::i::</a></li>
 						::else::
 							<li><a href="?page=::i::">::i::</a></li>
 						::end::
 					::end::
-					::if endindex < transactions.pages + 1::
+					::if rb.paginationEndPage < rb.pages + 1::
 						<li>
-							<a href="?page=::endindex::">
+							<a href="?page=::rb.paginationEndPage::">
 								<span class="glyphicon glyphicon-forward"></span>
 							</a>
 						</li>

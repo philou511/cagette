@@ -740,7 +740,7 @@ class Member extends Controller
 		
 		var count = db.Operation.countOperations(m,app.user.amap);
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
-		view.transactions = rb;
+		view.rb = rb;
 		view.member = m;
 		view.balance = db.UserAmap.get(m, app.user.amap).balance;
 		

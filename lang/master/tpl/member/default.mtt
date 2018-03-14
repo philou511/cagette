@@ -66,13 +66,32 @@
 	::end::
 
 	<tr ::cond select==null && search==null::>
-		<th colspan="2">
-			<a href="?page=::members.page-1::"> &lt;&lt; </a>
-			&nbsp;
-			::_("Page"):: ::members.page::/::members.pages::
-			&nbsp;
-			<a href="?page=::members.page+1::"> &gt;&gt; </a>
-		</th>
+		<td colspan="2" class="text-center">
+
+			<ul class="pagination">
+				::if members.paginationStartPage != 1::
+					<li>
+						<a href="?page=::members.paginationStartPage-1::">
+							<span class="glyphicon glyphicon-backward"></span>
+						</a>
+					</li>
+				::end::
+				::foreach i loopList(members.paginationStartPage,members.paginationEndPage)::
+					::if members.page==i::
+						<li class="active" ><a href="?page=::i::">::i::</a></li>
+					::else::
+						<li><a href="?page=::i::">::i::</a></li>
+					::end::
+				::end::
+				::if members.paginationEndPage < members.pages + 1::
+					<li>
+						<a href="?page=::members.paginationEndPage::">
+							<span class="glyphicon glyphicon-forward"></span>
+						</a>
+					</li>
+				::end::
+			</ul> 
+		</td>
 	</tr>
 
 	</table>
