@@ -76,7 +76,16 @@ class Account extends Controller
 	@tpl('account/payments.mtt')
 	function doPayments(){
 		var m = app.user;
-		view.transactions = db.Operation.getOperations(m,app.user.amap);
+		var browse:Int->Int->List<Dynamic>;
+		
+		//default display
+		browse = function(index:Int, limit:Int) {
+			return db.Operation.getOperationsWithIndex(m,app.user.amap,index,limit,true);
+		}
+		
+		var count = db.Operation.countOperations(m,app.user.amap);
+		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
+		view.rb = rb;
 		view.member = m;
 		view.balance = db.UserAmap.get(m,app.user.amap).balance;
 	}

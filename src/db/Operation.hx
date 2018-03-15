@@ -91,9 +91,23 @@ class Operation extends sys.db.Object
 			default : null;
 		}
 	}
+
+	public static function countOperations(user:db.User, group:db.Amap):Int{	
+		return manager.count($user == user && $group == group);		
+	}
 	
-	public static function getOperations(user:db.User, group:db.Amap,?limit=50 ){		
-		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
+	public static function getOperations(user:db.User, group:db.Amap,?reverse=false ){
+		if(reverse) {
+			return manager.search($user == user && $group == group,{orderBy:-date},false);	
+		}		
+		return manager.search($user == user && $group == group,{orderBy:date},false);		
+	}
+
+	public static function getOperationsWithIndex(user:db.User, group:db.Amap,index:Int,limit:Int,?reverse=false ){
+		if(reverse) {
+			return manager.search($user == user && $group == group, { limit:[index,limit], orderBy:-date }, false);	
+		}		
+		return manager.search($user == user && $group == group, { limit:[index,limit], orderBy:date },false);		
 	}
 	
 	/*public static function getOrder_Operations(user:db.User, group:db.Amap,?limit=50 ){		
