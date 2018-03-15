@@ -173,6 +173,7 @@ class Product extends Controller
 							case "kg" : Kilogram;
 							case "g" : Gram;
 							case "l" : Litre;
+							case "cl" : Centilitre;
 							case "litre" : Litre;
 							default : Piece;
 						}
