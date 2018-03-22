@@ -5,6 +5,9 @@ haxe:
   - stable      # the latest stable release defined in https://haxe.org/download/list/
 services:
   - mysql
+addons:
+  hosts:
+    - cagette
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y curl imagemagick apache2 libapache2-mod-neko libmysqlclient-dev
@@ -18,8 +21,6 @@ before_install:
   - sudo cat /etc/apache2/sites-available/000-default.conf
   - sudo a2ensite 000-default.conf
   - sudo service apache2 restart
-  - sudo echo "127.0.0.1 cagette" >> /etc/hosts
-  - sudo service networking restart
   - mysql -e 'CREATE DATABASE cagette;'
   - cp config.xml.dist config.xml
   - sed -e 's?database=.*?database="mysql://root:@localhost/cagette"?g' --in-place config.xml
