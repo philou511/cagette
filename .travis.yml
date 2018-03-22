@@ -15,11 +15,8 @@ before_install:
   - sudo a2enmod rewrite
   # For the following apache2 related operations, see https://docs.travis-ci.com/user/languages/php#Apache-%2B-PHP
   - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
-  - sudo cat /etc/apache2/sites-available/000-default.conf
   - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/000-default.conf
   - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
-  - sudo cat /etc/apache2/sites-available/000-default.conf
-  - sudo a2ensite 000-default.conf
   - sudo service apache2 restart
   - mysql -e 'CREATE DATABASE cagette;'
   - cp config.xml.dist config.xml
@@ -34,19 +31,25 @@ before_script:
   - sudo sh -c "cd /usr/bin;haxelib run templo"
   - npm install
 script:
+  - if [ ! -e www/index.n ]; then echo "File www/index.n does not exist yet, as expected"; else echo "Unexpected file www/index.n exists, but it should not exist yet" && echo exit 1; fi
   - haxe cagette.hxml
+  - if [ -e www/index.n ]; then echo "File www/index.n now exists, as expected"; else echo "Unexpected error, file www/index.n does not exist yet, but it should" && echo exit 1; fi
   - haxe cagetteJs.hxml
   - haxe templateGeneration.hxml
   - make -f Makefile_template templates LANG=fr
   - make -f Makefile_template templates LANG=de
   - make -f Makefile_template templates LANG=en
   - npm run build
-  - index_page_output=$(wget http://cagette -O-)
-  - wget_command_result=$?
-  - if [ "$wget_command_result" != "0" ]; then echo "Error, could not access the web application." && exit 1; else echo "Successfully accessed the web application"; fi
-  - if [ "$(echo \"$index_page_output\" | grep error | wc -l)" = "0" ]; then echo "First page access does not show an error, but it should" && exit 1; else echo "First page access shows an error, as expected"; fi
-  - index_page_output=$(wget http://cagette -O-)
-  - wget_command_result=$?
-  - if [ "$wget_command_result" != "0" ]; then echo "Error, could not access the web application." && exit 1; else echo "Successfully accessed the web application"; fi
-  - if [ "$(echo \"$index_page_output\" | grep error | wc -l)" != "0" ]; then echo "Second page access shows an error, but it should not" && exit 1; else echo "Second page access shows no error, as expected"; fi
+  - first_access_index_page_output=$(wget http://cagette -O-)
+  - first_access_wget_command_result=$?
+  - echo $first_access_index_page_output
+  - echo $first_access_wget_command_result
+  - if [ "$first_access_wget_command_result" != "0" ]; then echo "[First page access] Unexpected error, could not access the web application." && exit 1; else echo "[First page access] Successfully accessed the web application, as expected"; fi
+  - if [ "$(echo \"$first_access_index_page_output\" | grep 'INSERT INTO Error' | wc -l)" = "0" ]; then echo "[First page access] First page access does not show an error, but we expect it to show an error the first time it is accessed" && echo exit 1; else echo "[First page access] First page access shows an error, as expected"; fi
+  - second_access_index_page_output=$(wget http://cagette -O-)
+  - second_access_wget_command_result=$?
+  - echo $second_access_index_page_output
+  - echo $second_access_wget_command_result
+  - if [ "$second_access_wget_command_result" != "0" ]; then echo "[Second page access] Unexpected error, could not access the web application." && exit 1; else echo "[Second page access] Successfully accessed the web application, as expected"; fi
+  - if [ "$(echo \"$second_access_index_page_output\" | grep 'CONTACTEZ-NOUS' | wc -l)" != "1" ]; then echo "[Second page access] Second page access does not show a single 'CONTACTEZ-NOUS' text, but it should" && echo exit 1; else echo "[Second page access] Second page access shows a single 'CONTACTEZ-NOUS' text, as expected"; fi
   - haxe tests.hxml
