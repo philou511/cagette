@@ -3,7 +3,7 @@ import js.Promise;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import utils.HttpUtil;
-import leaflet.L;
+//import leaflet.L;
 import Common;
 using Lambda;
 
@@ -15,11 +15,11 @@ extern class GeoUtil {
 	static function geocodeByAddress(address:Dynamic):Promise<Dynamic>;
 }
 
-/*@:jsRequire('leaflet')  
+@:jsRequire('leaflet')  
 extern class L {
   static function latLng(lat:Float, lng:Float):Dynamic;
 	static function icon(a:Dynamic):Dynamic;
-}*/
+}
 
 @:jsRequire('geolib')  
 extern class Geolib {
