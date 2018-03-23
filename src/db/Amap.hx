@@ -80,9 +80,10 @@ class Amap extends Object
 		super();
 		flags = cast 0;
 		flags.set(CagetteNetwork);
+		flags.set(ShopMode);
 		vatRates = ["5,5%" => 5.5, "20%" => 20];
 		cdate = Date.now();
-		regOption = WaitingList;
+		regOption = Open;
 		currency = "€";
 		currencyCode = "EUR";
 		checkOrder = "";

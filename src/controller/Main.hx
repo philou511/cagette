@@ -86,8 +86,8 @@ class Main extends Controller {
 			
 		}>();
 		
-		var now = Date.now();
-		var now9 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+		var n = Date.now();
+		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 	
 		var contracts = db.Contract.getActiveContracts(group);
 		var cids = Lambda.map(contracts, function(p) return p.id);
@@ -95,9 +95,9 @@ class Main extends Controller {
 		//var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
 		//var out =  UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);	
 		
-		//available deliveries + next deliveries in less than a month		
-		var distribs = db.Distribution.manager.search(($contractId in cids) && ($date >= now9) , { orderBy:date }, false);
-		var inOneMonth = DateTools.delta(now9, 1000.0 * 60 * 60 * 24 * 30);
+		//available deliveries
+		var inSixMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 6);
+		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= now && $date <= inSixMonth , { orderBy:date }, false);
 		
 		for (d in distribs) {			
 			
@@ -136,9 +136,9 @@ class Main extends Controller {
 				}
 				
 				//if order opening is more far than 1 month, skip it
-				if (d.orderStartDate.getTime() > inOneMonth.getTime() ){
+				/*if (d.orderStartDate.getTime() > inOneMonth.getTime() ){
 					continue;
-				}
+				}*/
 				
 				//display closest opening date
 				if (o.orderStartDate == null){
@@ -147,7 +147,7 @@ class Main extends Controller {
 					o.orderStartDate = d.orderStartDate;
 				}
 				
-				//display farest closing date
+				//display most far closing date
 				if (o.orderEndDate == null){
 					o.orderEndDate = d.orderEndDate;
 				}else if (o.orderEndDate.getTime() < d.orderEndDate.getTime()){
@@ -161,8 +161,6 @@ class Main extends Controller {
 				if(o.myOrders.length>0) out.set(key, o);
 				
 			}
-			
-			
 		}
 		
 		//shuffle and limit product lists		
@@ -185,7 +183,6 @@ class Main extends Controller {
 				
 			}
 		}	
-		
 		
 		return Lambda.array(out);
 	}

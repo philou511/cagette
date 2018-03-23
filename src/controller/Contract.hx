@@ -92,7 +92,6 @@ class Contract extends Controller
 		for ( k in varOrders.keys()) {
 
 			var d = new Date(k.split("-")[0].parseInt(), k.split("-")[1].parseInt() - 1, k.split("-")[2].parseInt(), 0, 0, 0);
-			
 			var orders = db.UserContract.prepare( Lambda.list(varOrders[k]) );
 			
 			varOrders2.push({date:d,orders:orders});

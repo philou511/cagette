@@ -1062,7 +1062,7 @@ msgstr "Invitation envoyée."
 
 #: src/controller/Member.hx:6222
 msgid "Congratulations, you just sent <b>::userLength::</b> invitations"
-msgstr "Bravo, vous avez envoyé <b>\" + users.length + \"</b> invitations."
+msgstr "Bravo, vous avez envoyé <b>::userLength::</b> invitations."
 
 #: src/controller/Member.hx:6539
 msgid "This person does not belong to your group"

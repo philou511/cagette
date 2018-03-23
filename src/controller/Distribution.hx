@@ -134,10 +134,9 @@ class Distribution extends Controller
 		
 		d.lock();
 		var cid = d.contract.id;
-		
 		app.event(DeleteDistrib(d));
-		
 		d.delete();
+		
 		throw Ok("/contractAdmin/distributions/" + cid, t._("the delivery has been deleted"));
 	}
 	

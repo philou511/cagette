@@ -213,7 +213,7 @@ class Contract extends Object
 	}
 
 	/**
-	 * get orders for a user
+	 * Get orders for a user.
 	 *
 	 * @param	d
 	 * @return
@@ -221,7 +221,7 @@ class Contract extends Object
 	public function getUserOrders(u:db.User,?d:db.Distribution):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
 
-		var pids = getProducts().map(function(x) return x.id);
+		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserContract>();
 		if (d != null && d.contract.type==db.Contract.TYPE_VARORDER) {
 			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
