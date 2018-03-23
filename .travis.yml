@@ -19,6 +19,7 @@ before_install:
   - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
   - sudo service apache2 restart
   - mysql -e 'CREATE DATABASE cagette;'
+  - mysql -e 'CREATE DATABASE tests;'
   - cp config.xml.dist config.xml
   - sed -e 's?database=.*?database="mysql://root:@localhost/cagette"?g' --in-place config.xml
   - sed -e 's?debug=.*?debug="1"?g' --in-place config.xml
@@ -48,3 +49,4 @@ script:
   - echo $second_access_index_page_output
   - if [ "$(echo \"$second_access_index_page_output\" | grep 'CONTACTEZ-NOUS' | wc -l)" != "1" ]; then echo "[Second page access] Second page access does not show a single 'CONTACTEZ-NOUS' text, but it should" && exit 1; else echo "[Second page access] Second page access shows a single 'CONTACTEZ-NOUS' text, as expected"; fi
   - haxe tests.hxml
+  - cd www && neko tests.n mysql://root:@localhost/tests
