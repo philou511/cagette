@@ -1,7 +1,7 @@
 language: haxe
 sudo: required
 haxe:
-  - "3.4.4"
+  - "3.4.5"
   - stable # the latest stable release defined in https://haxe.org/download/list/
 services:
   - mysql
