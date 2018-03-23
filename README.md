@@ -1,23 +1,15 @@
 # Cagette.net
-le logiciel libre des AMAP et groupements d'achat.
+Le logiciel libre des circuits courts.
 
-Plus d'informations sur http://www.cagette.net
+http://www.cagette.net
 
 Documentation : http://www.cagette.net/wiki
 
-English : Cagette.net is an open source web app for CSA/Foodcoops made in Haxe language.  This software is currently only in french.
+English : 
 
+Cagette.net is an open source web app to help people build a better and sustainable food system.
+Some people call it a "foodhub" : A mix between a groupware and a marketplace, helping consumers to order food from local farmers and producers.
 
+## Build & install 
 
-## Bundle project
-
-Bundle NPM dependencies with `browserify`:
-```
-npm run libs:dev
-npm run libs:prod
-```
-
-Compile Haxe into JS:
-```
-npm run build // for dev
-```
+Read the Developer page on the wiki to know more about this : http://wiki.cagette.net/dev:index
