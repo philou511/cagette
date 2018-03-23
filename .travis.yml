@@ -35,11 +35,12 @@ script:
   - haxe cagette.hxml
   - if [ -e www/index.n ]; then echo "File www/index.n now exists, as expected"; else echo "Unexpected error, file www/index.n does not exist yet, but it should" && exit 1; fi
   - haxe cagetteJs.hxml
+  - npm run libs:dev
+  - npm run build:js
   - haxe templateGeneration.hxml
   - make -f Makefile_template templates LANG=fr
   - make -f Makefile_template templates LANG=de
-  - make -f Makefile_template templates LANG=en
-  - npm run build
+  - make -f Makefile_template templates LANG=en  
   - first_access_index_page_output=$(wget http://cagette -O-)
   - echo $first_access_index_page_output
   - if [ "$(echo \"$first_access_index_page_output\" | grep 'INSERT INTO Error' | wc -l)" = "0" ]; then echo "[First page access] First page access does not show an error, but we expect it to show an error the first time it is accessed" && exit 1; else echo "[First page access] First page access shows an error, as expected"; fi
