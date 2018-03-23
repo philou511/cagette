@@ -1,6 +1,8 @@
 # Cagette.net
 Le logiciel libre des circuits courts.
 
+[![Build Status](https://travis-ci.org/bablukid/cagette.svg?branch=master)](https://travis-ci.org/bablukid/cagette)
+
 http://www.cagette.net
 
 Documentation : http://www.cagette.net/wiki
