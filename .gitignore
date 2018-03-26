@@ -15,6 +15,8 @@ lang/en/tmp/*.n
 lang/de/tmp/*.n
 lang/es/tmp/*.n
 
+www/lang/*.mo
+
 www/file/*
 www/js/app.js
 www/js/libs.js
@@ -29,4 +31,4 @@ www/css/.sass-cache
 www/css/*.css
 .temp
 js/test/tests.js
-
+*.tar
