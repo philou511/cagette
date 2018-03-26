@@ -18,7 +18,7 @@ class Admin extends Controller {
 
 	@tpl("admin/default.mtt")
 	function doDefault() {
-		
+		view.now = Date.now();
 	}
 	
 	@tpl("form.mtt")

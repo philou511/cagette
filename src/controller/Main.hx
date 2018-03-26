@@ -170,6 +170,7 @@ class Main extends Controller {
 		}
 		
 		//decide if active or not
+		var now = Date.now();
 		for( o in out){
 			
 			if (o.orderStartDate == null) continue; //constant orders
