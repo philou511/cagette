@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-03-26 12:38+0000\n"
-"Last-Translator: François Barbut <francois.barbut@gmail.com>\n"
+"PO-Revision-Date: 2018-03-26 15:15+0000\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -489,7 +489,7 @@ msgstr "Livraison "
 
 #: src/controller/ContractAdmin.hx:6725
 msgid "Opening of orders "
-msgstr "Ouverture des commandes"
+msgstr "Ouverture des commandes "
 
 #: src/controller/ContractAdmin.hx:6978
 msgid "End of orders"
