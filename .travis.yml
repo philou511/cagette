@@ -10,7 +10,7 @@ addons:
     - cagette
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y curl imagemagick apache2 libapache2-mod-neko libmysqlclient-dev
+  - sudo apt-get install -y curl imagemagick gettext apache2 libapache2-mod-neko libmysqlclient-dev
   - sudo a2enmod neko
   - sudo a2enmod rewrite
   # For the following apache2 related operations, see https://docs.travis-ci.com/user/languages/php#Apache-%2B-PHP
