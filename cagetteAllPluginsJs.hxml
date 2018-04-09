@@ -9,3 +9,4 @@
 -D plugins
 -main App
 -js www/js/app.js
+-D no-deprecation-warnings

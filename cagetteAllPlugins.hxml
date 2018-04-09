@@ -5,13 +5,15 @@
 -lib datetime
 -lib hscript
 -lib smtpmailer
+
 -lib sugoi:git:https://github.com/bablukid/sugoi#i18n
 -lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
 -lib dbadmin:git:https://github.com/ncannasse/dbadmin.git#master
+
 -lib cagette-pro:git:https://bubar@bitbucket.org/bubar/cagette-pro.git#master
--lib cagette-connector:git:https://bubar@bitbucket.org/bubar/cagette-connector.git#master
 -lib cagette-hosted:git:https://bubar@bitbucket.org/bubar/cagette-hosted.git#master
 -lib cagette-wholesale-order:git:https://github.com/bablukid/cagette-wholesale-order.git#master
+
 -cp common
 -cp src
 -cp lang/master/tpl

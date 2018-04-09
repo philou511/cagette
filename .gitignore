@@ -22,7 +22,6 @@ www/js/app.js
 www/js/libs.js
 tmp/*
 *node_modules*
-MakeFile
 *.map
 .haxelib
 html
