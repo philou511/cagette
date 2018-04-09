@@ -1,16 +1,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: François <francois@alilo.fr>\n"
-"Language-Team: \n"
-"Language: fr_FR\n"
+"PO-Revision-Date: 2018-03-26 15:15+0000\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/cagette/"
+"translations/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.3\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: src/App.hx:2527 src/db/User.hx:15991 lang/master/tpl/member/import.mtt:612
 #: lang/master/tpl/member/import.mtt:1355
@@ -487,7 +489,7 @@ msgstr "Livraison "
 
 #: src/controller/ContractAdmin.hx:6725
 msgid "Opening of orders "
-msgstr "Ouverture des commandes"
+msgstr "Ouverture des commandes "
 
 #: src/controller/ContractAdmin.hx:6978
 msgid "End of orders"
@@ -583,7 +585,7 @@ msgstr ""
 
 #: src/controller/Cron.hx:8813
 msgid "Do not forget the delivery: <b>::delivery::</b><br/>"
-msgstr "N'oubliez pas la distribution : <b>::delivery::</b><br>"
+msgstr "N'oubliez pas la distribution : <b>::delivery::</b><br/>"
 
 #: src/controller/Cron.hx:8928
 msgid "Your products to collect:<br/><ul>"
@@ -3974,11 +3976,11 @@ msgstr ""
 "de démonstration.</a></li><li>Remplissez correctement ce fichier, ou "
 "modifiez votre fichier existant pour respecter scrupuleusement l'ordre des "
 "colonnes.</li><li>Une fois votre fichier rempli, cliquez sur \"enregistrer "
-"sous\" dans votre tableur, et choisissez le format \"CSV\"</"
-"li><li>Choisissez les options suivantes : caractère de séparation : "
-"<b>virgule</b> ou <b>point virgule</b>, encodage : <b>Unicode UTF-8</b></"
-"li><li>Enregistrez votre fichier</li><li>Ensuite, cliquez sur le bouton "
-"\"choisissez un fichier\" ci dessus et envoyez votre fichier</li>"
+"sous\" dans votre tableur, et choisissez le format \"CSV\"</li><li>"
+"Choisissez les options suivantes : caractère de séparation : <b>virgule</b> "
+"ou <b>point virgule</b>, encodage : <b>Unicode UTF-8</b></li><li>Enregistrez "
+"votre fichier</li><li>Ensuite, cliquez sur le bouton \"choisissez un "
+"fichier\" ci dessus et envoyez votre fichier</li></ul>"
 
 #: lang/master/tpl/member/lastMessages.mtt:78
 msgid "Subject"
