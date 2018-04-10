@@ -1,0 +1,16 @@
+{
+    "symbolOutline.doSort": true,
+    "symbolOutline.sortOrder": [
+        "Class",
+        "Module",
+        "Constant",
+        "Interface",        
+        "Constructor",
+        "Function",
+        "Method",
+        "*"
+    ],
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": false,
+
+}
