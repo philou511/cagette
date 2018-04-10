@@ -1,6 +1,9 @@
 ROPTS=-zav --no-p --chmod=u=rwX,g=rX,o= --delete --exclude=www/.htaccess --exclude=.svn --exclude=.git --exclude=*.mtt --exclude=tpl/css --exclude=www/file --exclude=*node_modules* --exclude=*.php
 LANG=fr
 PLUGINS?=0
+ENV?="dev"
+
+#To compile project with plugins, add PLUGINS=1 or type `export PLUGINS=1`
 
 install:
 	#copy config file from template
@@ -38,10 +41,10 @@ install_dev:
 #compile backend to Neko
 compile:
 	@if [ $(PLUGINS) = 1 ]; then \
-	echo "compile with plugins"; \
+	echo "compile Cagette.net with plugins"; \
 	haxe cagetteAllPlugins.hxml; \
 	else \
-	echo "compile Cagette core"; \
+	echo "compile Cagette.net core"; \
 	haxe cagette.hxml; \
 	fi
 	
@@ -58,6 +61,7 @@ frontend:
 	haxe cagetteJs.hxml; \
 	fi
 
+#update POT file from source
 i18n:	
 	haxe potGeneration.hxml
 
@@ -104,14 +108,13 @@ bundle:
 	tar -cvf cagette.tar www config.xml.dist lang data --exclude www/bower_components/bootstrap/node_modules
 	scp cagette.tar root@www.cagette.net:/var/www/vhosts/cagette.net/httpdocs/
 	
-cp_plugin:
-	cp -R lang/master/tpl/plugin/hosted/* .haxelib/cagette-hosted/git/src/hosted/lang/master/tpl/hosted/
-	cp -R lang/master/tpl/plugin/pro/* .haxelib/cagette-pro/git/src/pro/lang/master/tpl/
-	cp -R lang/master/tpl/plugin/connector/* .haxelib/cagette-connector/git/src/connector/lang/master/tpl/
-	cp -R lang/master/tpl/plugin/who/* .haxelib/cagette-wholesale-order/git/src/who/lang/master/tpl/
-
 #unit tests	
 tests: 
 	haxe tests.hxml
 	neko tests.n
+
+cp_plugin:
+	cp -R .haxelib/cagette-hosted/git/tpl/* lang/master/tpl/plugin/hosted/
+	cp -R .haxelib/cagette-pro/git/tpl/* lang/master/tpl/plugin/pro/
+	cp -R .haxelib/cagette-wholesale-order/git/tpl/* lang/master/tpl/plugin/who/
 		
