@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2018-04-12 08:37+0000\n"
-"Last-Translator: anonymous <>\n"
+"Last-Translator: Julien Mascolo <joloxam@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/cagette/"
 "translations/it/>\n"
 "Language: it\n"
@@ -31,14 +31,15 @@ msgstr "Indirizzo"
 #: src/App.hx:8531
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
 msgstr ""
+"Configurare le impostazioni email in <href='/admin/emails'>questa sezione</a>"
 
 #: src/controller/Account.hx:892 src/controller/Account.hx:1087
 msgid "Email ::em:: is invalid"
-msgstr ""
+msgstr "Email ::em:: non valida"
 
 #: src/controller/Account.hx:1257
 msgid "Your account has been updated"
-msgstr ""
+msgstr "La sua utenza è stata aggiornata"
 
 #: src/controller/Account.hx:1342
 msgid "Modify my account"
