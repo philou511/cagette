@@ -152,6 +152,15 @@
 							<span style="color:#DD0000;">::_("Not paid")::</span>
 							::end::
 						::end::
+
+						::if(m.quantity==0)::
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="/contractAdmin/orders/::c.id::?d=::distribution.id::&delete=::m.id::&token=::token::" $$confirm(::_("Do you really want to delete this order permanently ?")::) class="btn btn-danger btn-xs" >
+								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+								::_("Delete")::
+							</a>
+						::end::
+
 					</td>
 					
 				</tr>

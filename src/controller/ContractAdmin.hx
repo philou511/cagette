@@ -539,14 +539,25 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders(contract:db.Contract, args:{?d:db.Distribution}) {
+	function doOrders(contract:db.Contract, args:{?d:db.Distribution,?delete:db.UserContract}) {
 		view.nav.push("orders");
 		sendNav(contract);
 		
+		//Checking permissions
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
+		if (contract.type == db.Contract.TYPE_VARORDER && args != null && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
+
+		//Delete specified order with quantity of zero
+		if (checkToken() && args != null && args.delete != null ) { 
+			if (args.delete.quantity == 0) {
+				args.delete.lock();
+				args.delete.delete();
+				App.current.session.addMessage(t._("The order has been successfully deleted."));
+			}
+		}
+
 		var d = null;
 		if (contract.type == db.Contract.TYPE_VARORDER ){
 			view.distribution = args.d;
