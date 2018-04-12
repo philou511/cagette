@@ -23,10 +23,12 @@ install_dev:
 	#template tools
 	haxelib run templo
 	sudo mv temploc2 /usr/bin
-	#extra libs
-	#@if [ $(PLUGINS) = 1 ]; then \
-	#echo "haxelib git tamere"; \
-	#fi
+	#extra plugins
+	@if [ $(PLUGINS) = 1 ]; then \
+	haxelib git cagette-pro git@bitbucket.org:bubar/cagette-pro.git; \
+	haxelib git cagette-hosted git@bitbucket.org:bubar/cagette-hosted.git; \
+	haxelib git cagette-wholesale-order git@github.com:bablukid/cagette-wholesale-order.git; \
+	fi
 	#install npm dependencies
 	npm install
 	npm run libs:dev
