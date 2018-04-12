@@ -10,7 +10,7 @@ class Distribution extends Object
 {
 	public var id : SId;	
 	
-	@:relation(contractId)
+	@:relation(contractId) 
 	public var contract : Contract;
 	
 	@formPopulate("placePopulate")
