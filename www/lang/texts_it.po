@@ -1,37 +1,45 @@
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: francois@alilo.fr\n"
+"PO-Revision-Date: 2018-04-12 08:37+0000\n"
+"Last-Translator: Julien Mascolo <joloxam@gmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/cagette/"
+"translations/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.20\n"
 
 #: src/App.hx:2527 src/db/User.hx:15991 lang/master/tpl/member/import.mtt:612 lang/master/tpl/member/import.mtt:1355
 msgid "First name"
-msgstr ""
+msgstr "Nome"
 
 #: src/App.hx:2573 src/db/User.hx:16028 lang/master/tpl/member/import.mtt:647 lang/master/tpl/member/import.mtt:1389
 msgid "Last name"
-msgstr ""
+msgstr "Cognome"
 
 #: src/App.hx:2750 src/db/User.hx:16559
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: src/App.hx:2794 src/App.hx:2837
 msgid "address"
-msgstr ""
+msgstr "Indirizzo"
 
 #: src/App.hx:8531
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
 msgstr ""
+"Configurare le impostazioni email in <href='/admin/emails'>questa sezione</a>"
 
 #: src/controller/Account.hx:892 src/controller/Account.hx:1087
 msgid "Email ::em:: is invalid"
-msgstr ""
+msgstr "Email ::em:: non valida"
 
 #: src/controller/Account.hx:1257
 msgid "Your account has been updated"
-msgstr ""
+msgstr "La sua utenza è stata aggiornata"
 
 #: src/controller/Account.hx:1342
 msgid "Modify my account"
