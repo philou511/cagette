@@ -6,20 +6,15 @@ import sys.db.Types;
 @:id(userId,amapId)
 class WaitingList extends Object
 {
-	@:relation(amapId)
-	public var group : Amap;
-	
-	@:relation(userId)
-	public var user : db.User;
-	
+	@:relation(amapId) public var group : Amap;	
+	@:relation(userId) public var user : db.User;
 	public var date : SDateTime;
 	public var message : SText;
 	
 	public function new(){
 		super();
-		
-		date = Date.now();
-		
+		message = "";
+		date = Date.now();		
 	}
 	
 }
