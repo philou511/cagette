@@ -199,7 +199,6 @@ class Cron extends Controller
 			var x = users.get(o.user.id+"-"+o.product.contract.amap.id);
 			if (x == null) x = {user:o.user,distrib:null,products:[],vendors:[]};
 			x.distrib = distribsByContractId.get(o.product.contract.id);
-			//x.distrib = o.distribution;
 			x.products.push(o);			
 			users.set(o.user.id+"-"+o.product.contract.amap.id, x);
 			//trace (o.userId+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
@@ -213,6 +212,14 @@ class Cron extends Controller
  				users.set(o.user2.id+"-"+o.product.contract.amap.id, x);
  				//trace (o.user2.id+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
  			}
+		}
+
+		//remove zero qt orders
+		for( k in users.keys()){
+			var x = users.get(k);
+			var total = 0.0;
+			for( o in x.products) total += o.quantity;
+			if(total==0.0) users.remove(k);
 		}
 		
 		// Dans le cas de l'ouverture de commande, ce sont tous les users qu'il faut intégrer
@@ -287,9 +294,6 @@ class Cron extends Controller
 					}
 					m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-					
-					//debug
-					//Sys.println("<hr/>---------------\n now is "+Date.now().toString()+" : " + m.getRecipients() + "<br/>" + m.getSubject() + "<br/>" + m.getHtmlBody()+ "");					
 					Sys.sleep(0.25);
 					
 					try {
@@ -336,13 +340,13 @@ class Cron extends Controller
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		
 		for ( d in ds ){
-			var subj = d.contract.amap.name + t._("Validation of the distribution of the ") + App.current.view.hDate(d.date);
+			var subj = "["+d.contract.amap.name+"] " + t._("Validation of the ::date:: distribution",{date:App.current.view.hDate(d.date)});
 			
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
 			
-			var html = t._("<p>Your delivery just finished, don't forget to <b>validate</b> it</p>");
+			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your group Cagette)", {distriburl:url});
+			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
 			
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}

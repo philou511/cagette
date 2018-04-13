@@ -113,7 +113,7 @@ bundle:
 #unit tests	
 tests: 
 	haxe tests.hxml
-	neko tests.n
+	neko tests.n mysql://root:root@mysql/tests
 
 cp_plugin:
 	cp -R .haxelib/cagette-hosted/git/tpl/* lang/master/tpl/plugin/hosted/

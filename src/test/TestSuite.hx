@@ -15,6 +15,7 @@ class TestSuite
 		var r = new haxe.unit.TestRunner();
 		r.add(new test.TestUser());
 		r.add(new test.TestOrders());
+		r.add(new test.TestTools());
 		//r.add(new test.TestReports());
 
 		#if plugins
@@ -45,40 +46,62 @@ class TestSuite
 		
 		sys.db.Manager.cnx = sys.db.Mysql.connect(dbparams);
 		sys.db.Manager.initialize();
+
+		//NUKE EVERYTHING BWAAAAH !!
+		sql("DROP DATABASE tests;");
+		sql("CREATE DATABASE tests;");
+		sql("USE tests;");
+
+		var tables : Array<Dynamic> = [
+			
+			//cagette
+			db.TxpProduct.manager,
+			db.TxpCategory.manager,
+			db.TxpSubCategory.manager,
+
+			db.Basket.manager,
+			db.UserContract.manager,
+			db.UserAmap.manager,
+
+
+			db.User.manager,
+			db.Amap.manager,
+			db.Contract.manager,
+			db.Product.manager,
+			db.Vendor.manager,
+			db.Place.manager,
+			db.Distribution.manager,
+						
+			
+			//sugoi tables
+			sugoi.db.Cache.manager,
+			sugoi.db.Error.manager,
+			sugoi.db.File.manager,
+			sugoi.db.Session.manager,
+			sugoi.db.Variable.manager,
+		];
 	
-		//sugoi tables
-		createTable(sugoi.db.Cache.manager);
-		createTable(sugoi.db.Error.manager);
-		createTable(sugoi.db.File.manager);
-		createTable(sugoi.db.Session.manager);
-		createTable(sugoi.db.Variable.manager);
-		
-		//cagette
-		createTable(db.User.manager);
-		createTable(db.Amap.manager);
-		createTable(db.UserAmap.manager);
-		createTable(db.UserContract.manager);
-		createTable(db.Contract.manager);
-		createTable(db.Product.manager);
-		createTable(db.Vendor.manager);
-		createTable(db.Place.manager);
-		createTable(db.Distribution.manager);
-		createTable(db.Basket.manager);
-		createTable(db.TxpProduct.manager);
-		createTable(db.TxpCategory.manager);
-		createTable(db.TxpSubCategory.manager);
+		for(t in tables) createTable(t);
 	}
 	
 	public static function createTable( m  ){
 		if ( sys.db.TableCreate.exists(m) ){
-			sys.db.Manager.cnx.request("DROP TABLE "+m.dbInfos().name+";");
+			drop(m);
 		}
 		Sys.println("Creating table "+ m.dbInfos().name);
 		sys.db.TableCreate.create(m);		
 	}
 
 	public static function truncate(m){
-		sys.db.Manager.cnx.request("TRUNCATE TABLE "+m.dbInfos().name+";");
+		sql("TRUNCATE TABLE "+m.dbInfos().name+";");
+	}
+
+	public static function drop(m){
+		sql("DROP TABLE "+m.dbInfos().name+";");			
+	}
+
+	public static function sql(sql){
+		return sys.db.Manager.cnx.request(sql);
 	}
 	
 	//shortcut to datas
