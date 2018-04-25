@@ -163,16 +163,23 @@ class Distribution extends Controller
 			
 			form.toSpod(d); 
 			
-			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
-			
+			if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+				try{
+					service.DistributionService.checkDistrib(d);
+				}
+				catch(e:String){
+					throw Error('/contractAdmin/distributions/' + d.contract.id,e);
+				}
+			}
+
 			app.event(EditDistrib(d));
 			
 			if (d.date == null){
-				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
+				var msg = t._('The distribution has been proposed to the supplier, please wait for its validation');
 				throw Ok('/contractAdmin/distributions/'+d.contract.id, msg );
 			}else{
 				d.update();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._("The distribution has been recorded") );
+				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been recorded') );
 			}
 			
 			
@@ -229,9 +236,13 @@ class Distribution extends Controller
 			form.toSpod(d); //update model
 			d.contract = contract;			
 			if (d.end == null) d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
-			
-			
-			checkDistrib(d);
+
+			try{
+				service.DistributionService.checkDistrib(d);
+			}
+			catch(e:String){
+				throw Error('/contractAdmin/distributions/' + contract.id,e);
+			}
 			
 			var e :Event = NewDistrib(d);
 			app.event(e);
@@ -257,23 +268,6 @@ class Distribution extends Controller
 	
 		view.form = form;
 		view.title = t._("Create a distribution");
-	}
-	
-	/**
-	 * checks if dates are correct
-	 * @param	d
-	 */
-	private function checkDistrib(d:db.Distribution) {
-		
-		var c = d.contract;
-		
-		if (d.date.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-		if (d.date.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
-		
-		if (c.type == db.Contract.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de distribution doit être postérieure à la date de fermeture des commandes");
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de fermeture des commandes doit être postérieure à la date d'ouverture des commandes !");
-		}
 	}
 	
 	/**
