@@ -104,12 +104,6 @@ class Tutorial extends PlugIn implements IPlugIn
 		return TutoDatas.TUTOS;
 	}
 	
-	public function getName() {
-		return "Tutorial Plugin";
-	}
 	
-	public function getController() { return null; }
-	public function isInstalled() { return true; }
-	public function install(){}
 	
 }

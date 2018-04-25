@@ -11,12 +11,10 @@
 -lib cagette-pro
 -lib cagette-hosted
 -lib cagette-wholesale-order
--lib cagette-connector
 -cp common
 -cp src
 -cp lang/master/tpl
 -neko www/tests.n
 -D plugins
-
- -main test.TestSuite
+-main test.TestSuite
 

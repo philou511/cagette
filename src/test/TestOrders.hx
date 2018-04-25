@@ -30,6 +30,7 @@ class TestOrders extends haxe.unit.TestCase
 		bob = db.User.manager.get(1);
 		
 		sys.db.Manager.cnx.request("TRUNCATE TABLE UserContract;");
+		//print("setup");
 	}
 	
 	/**
@@ -72,7 +73,7 @@ class TestOrders extends haxe.unit.TestCase
 		assertTrue(o.quantity == 8);
 		
 		//bob orders again but cant order anything
-		var o = db.UserContract.make(bob, 3, p);//return null		
+		var o = db.UserContract.make(bob, 3, p);
 		assertTrue(p.stock == 0);
 		assertTrue(o.quantity == 8);
 		
@@ -190,7 +191,5 @@ class TestOrders extends haxe.unit.TestCase
 		assertFalse(fraises.multiWeight);
 		assertEquals(1, bobOrders.length);
 		assertEquals(1.0, bobOrders[0].quantity);
-		
-		
 	}
 }

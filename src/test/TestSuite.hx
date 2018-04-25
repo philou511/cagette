@@ -21,7 +21,11 @@ class TestSuite
 		#if plugins
 		//cagette-pro
 		pro.test.ProTestSuite.init();
+		pro.test.ProTestSuite.initDatas();
+		//keep in this order
 		r.add(new pro.test.TestProductService());
+		r.add(new pro.test.TestRemoteCatalog());
+		r.add(new pro.test.TestDistribService());
 		#end
 
 		r.run();
@@ -147,7 +151,7 @@ class TestSuite
 		var c = new db.Contract();
 		c.name = "Contrat AMAP Légumes";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
-		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
 		c.type = db.Contract.TYPE_CONSTORDERS;
@@ -164,7 +168,7 @@ class TestSuite
 		c.name = "Commande fruits";
 		c.vendor = v;
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
-		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.flags.set(db.Contract.ContractFlags.StockManagement);
 		c.type = db.Contract.TYPE_VARORDER;
 		c.amap = a;
@@ -276,7 +280,7 @@ class TestSuite
 		//optionnal plugins
 		#if plugins
 		//app.plugins.push( new hosted.HostedPlugIn() );				
-		//app.plugins.push( new pro.ProPlugIn() );		
+		app.plugins.push( new pro.ProPlugIn() );		
 		//app.plugins.push( new connector.ConnectorPlugIn() );				
 		//app.plugins.push( new pro.LemonwayEC() );
 		//plugins.push( new who.WhoPlugIn() );

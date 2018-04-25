@@ -56,6 +56,7 @@ class User extends Object {
 		rights = sys.db.Types.SFlags.ofInt(0);
 		flags = sys.db.Types.SFlags.ofInt(0);
 		flags.set(HasEmailNotif24h);
+		flags.set(HasEmailNotifOuverture);
 		lang = "fr";
 		pass = "";
 		

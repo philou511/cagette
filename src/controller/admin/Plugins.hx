@@ -20,12 +20,12 @@ class Plugins extends controller.Controller
 	
 	public function doInstall(plugin:String) {
 		
-		var p = App.current.getPlugin(plugin);
+		/*var p = App.current.getPlugin(plugin);
 		if (p == null) throw Error("/admin/plugins","Le plugin '"+plugin+"' introuvable");
 		
 		if(p.isInstalled()) throw Ok("/admin/plugins","Le plugin '"+plugin+"' est déjà installé");
 		p.install();
-		throw Ok("/admin/plugins","Le plugin '"+plugin+"' est correctement installé");
+		throw Ok("/admin/plugins","Le plugin '"+plugin+"' est correctement installé");*/
 		
 	}
 	

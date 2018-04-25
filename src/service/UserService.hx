@@ -10,11 +10,9 @@ class UserService
 	
 	var user : db.User;
 	
-
 	public function new(u:db.User) 
 	{
-		this.user = u;
-		
+		this.user = u;		
 	}
 	
 	/**

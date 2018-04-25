@@ -43,6 +43,11 @@ class Account extends Controller
 			if (app.user.email2!=null && !sugoi.form.validators.EmailValidator.check(app.user.email2)){
 				throw Error("/account/edit", t._("Email ::em:: is invalid", {em:app.user.email2}));
 			}
+
+			//check email is available
+			if( db.User.getSameEmail(app.user.email,app.user.email2).length > 0 ){
+				throw Error("/account/edit", t._("This email is already used by another account."));
+			}
 			
 			if (!admin) { app.user.rights.unset(Admin); }
 			

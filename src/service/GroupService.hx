@@ -41,8 +41,6 @@ class GroupService
 		
 		//put me in the group
 		
-		
-		
 		return d;
 	}
 	

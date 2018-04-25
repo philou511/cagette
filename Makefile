@@ -37,7 +37,7 @@ install_dev:
 	@make css
 	@make compile
 	@make frontend
-	@echo "Well, it looks like everything is fine : librairies are installed, backend and frontend has been compiled !dock"
+	@echo "Well, it looks like everything is fine : librairies are installed, backend and frontend has been compiled !"
 
 
 #compile backend to Neko
@@ -87,10 +87,6 @@ deploypp:
 	@make compile
 	@make deploy_site_pp
 	
-
-test:
-	rsync $(ROPTS) lang/* www-data@app.cagette.net:/data/cagettepp/lang/
-
 deploy_site:
 	rsync $(ROPTS) www www-data@app.cagette.net:/data/cagette/
 	rsync $(ROPTS) data www-data@app.cagette.net:/data/cagette/
@@ -110,10 +106,15 @@ bundle:
 	tar -cvf cagette.tar www config.xml.dist lang data --exclude www/bower_components/bootstrap/node_modules
 	scp cagette.tar root@www.cagette.net:/var/www/vhosts/cagette.net/httpdocs/
 	
-#unit tests	
+#Compile and run unit tests	
 tests: 
-	haxe tests.hxml
-	neko tests.n mysql://root:root@mysql/tests
+	@if [ $(PLUGINS) = 1 ]; then \
+	haxe testsPlugins.hxml; \
+	else \
+	haxe tests.hxml; \
+	fi
+	@sudo docker-compose run --workdir="/var/www/www" neko neko tests.n mysql://root:root@mysql/tests
+
 
 cp_plugin:
 	cp -R .haxelib/cagette-hosted/git/tpl/* lang/master/tpl/plugin/hosted/

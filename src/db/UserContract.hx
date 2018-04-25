@@ -276,6 +276,7 @@ class UserContract extends Object
 		if (o.product.stock != null) {
 			var c = o.product.contract;
 			if (c.hasStockManagement()) {
+				//trace("stock for "+quantity+" x "+product.name);
 				if (o.product.stock == 0) {
 					if (App.current.session != null) {
 						App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
@@ -285,7 +286,6 @@ class UserContract extends Object
 						o.delete();
 						return null;	
 					}
-					
 				}else if (o.product.stock - quantity < 0) {
 					var canceled = quantity - o.product.stock;
 					o.quantity -= canceled;
