@@ -16,6 +16,7 @@ class TestSuite
 		r.add(new test.TestUser());
 		r.add(new test.TestOrders());
 		r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
 		//r.add(new test.TestReports());
 
 		#if plugins
@@ -110,8 +111,9 @@ class TestSuite
 	
 	//shortcut to datas
 	public static var CHICKEN:db.Product = null; 
-	public static var STRAWBERRIES:db.Product = null; 
-	
+	public static var STRAWBERRIES:db.Product = null;
+	public static var DISTRIB_FRUITS_PLACE_DU_VILLAGE:db.Distribution = null;
+	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
 	
 	static function initDatas(){
 		
@@ -198,9 +200,14 @@ class TestSuite
 		
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.end = new Date(2017, 5, 1, 20, 0, 0);
+		// d.orderStartDate = new Date(2017, 5, 1, 20, 0, 0);
+		// d.orderEndDate = 
 		d.contract = c;
 		d.place = place;
 		d.insert();
+
+		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
 		//second group
 		var a = new db.Amap();
@@ -264,6 +271,8 @@ class TestSuite
 		d.contract = c;
 		d.place = place;
 		d.insert();
+
+		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
 	}
 	
 	static function initApp(u:db.User){
