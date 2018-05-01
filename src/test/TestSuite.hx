@@ -201,8 +201,8 @@ class TestSuite
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
 		d.end = new Date(2017, 5, 1, 20, 0, 0);
-		// d.orderStartDate = new Date(2017, 5, 1, 20, 0, 0);
-		// d.orderEndDate = 
+		d.orderStartDate = new Date(2017, 4, 1, 20, 0, 0);
+		d.orderEndDate = new Date(2017, 4, 30, 20, 0, 0);
 		d.contract = c;
 		d.place = place;
 		d.insert();
