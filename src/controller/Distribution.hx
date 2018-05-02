@@ -160,30 +160,34 @@ class Distribution extends Controller
 		}		
 		
 		if (form.isValid()) {
-			
-			form.toSpod(d); 
-			
-			if (d.contract.type == db.Contract.TYPE_VARORDER ) {
-				try{
-					service.DistributionService.checkDistrib(d);
-				}
-				catch(e:String){
-					throw Error('/contractAdmin/distributions/' + d.contract.id,e);
-				}
-			}
 
-			app.event(EditDistrib(d));
+			try{
+				d = service.DistributionService.edit(d,
+				form.getValueOf("text"),
+				form.getValueOf("date"),
+				form.getValueOf("end"),
+				form.getValueOf("placeId"),
+				form.getValueOf("distributor1Id"),
+				form.getValueOf("distributor2Id"),
+				form.getValueOf("distributor3Id"),
+				form.getValueOf("distributor4Id"),
+				form.getValueOf("orderStartDate"),
+				form.getValueOf("orderEndDate"));
+			}
+			catch(e:String){
+				throw Error('/contractAdmin/distributions/' + d.contract.id,e);
+			}
 			
-			if (d.date == null){
+			if (d == null) {
 				var msg = t._('The distribution has been proposed to the supplier, please wait for its validation');
 				throw Ok('/contractAdmin/distributions/'+d.contract.id, msg );
-			}else{
-				d.update();
+			}
+			else {
 				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been recorded') );
 			}
 			
-			
-		}else{
+		}
+		else {
 			app.event(PreEditDistrib(d));
 		}
 		
@@ -232,32 +236,34 @@ class Distribution extends Controller
 		}
 		
 		if (form.isValid()) {
-			
-			form.toSpod(d); //update model
-			d.contract = contract;			
-			if (d.end == null) d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
+
+			var createdDistrib = null;
 
 			try{
-				service.DistributionService.checkDistrib(d);
+				createdDistrib = service.DistributionService.create(
+				contract,
+				form.getValueOf("text"),
+				form.getValueOf("date"),
+				form.getValueOf("end"),
+				form.getValueOf("placeId"),
+				form.getValueOf("distributor1Id"),
+				form.getValueOf("distributor2Id"),
+				form.getValueOf("distributor3Id"),
+				form.getValueOf("distributor4Id"),
+				form.getValueOf("orderStartDate"),
+				form.getValueOf("orderEndDate"));
 			}
 			catch(e:String){
 				throw Error('/contractAdmin/distributions/' + contract.id,e);
 			}
 			
-			var e :Event = NewDistrib(d);
-			app.event(e);
-			
-			if (d.date == null){
-				//throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been proposed to the farmer, please wait for its validation') );				
-				//
+			if (createdDistrib == null) {
 				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.", {supplierName:contract.vendor.name});
-				
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
-				
-			}else{
-				d.insert();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._("The distribution has been recorded") );	
+			}
+			else {
+				//throw Ok('/contractAdmin/distributions/'+ createdDistrib.contract.id , t._("The distribution has been recorded") );	
 			}
 			
 		}else{

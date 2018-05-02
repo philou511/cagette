@@ -205,10 +205,6 @@ class Distribution extends Object
 		super.update();
 	}
 	
-	override public function insert(){
-		this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
-		super.insert();
-	}
 	
 
 	/**
