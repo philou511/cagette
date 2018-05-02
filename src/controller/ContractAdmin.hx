@@ -311,6 +311,7 @@ class ContractAdmin extends Controller
 			view.orders = orders;
 			view.from = from;
 			view.to = to;
+			view.ctotal = app.params.exists("ctotal");
 			
 		}
 		
