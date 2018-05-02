@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-04-25 14:59+0200\n"
+"PO-Revision-Date: 2018-05-02 16:33+0200\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
@@ -1410,9 +1410,6 @@ msgid "Validation of the ::date:: distribution"
 msgstr "Validation de la distribution du ::date::"
 
 #: src/controller/Cron.hx:11500
-#, fuzzy
-#| msgid ""
-#| "<p>Your delivery just finished, don't forget to <b>validate</b> it</p>"
 msgid ""
 "<p>Your distribution just finished, don't forget to <b>validate</b> it</p>"
 msgstr ""
@@ -1420,10 +1417,6 @@ msgstr ""
 "b></p>"
 
 #: src/controller/Cron.hx:11614
-#, fuzzy
-#| msgid ""
-#| "<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
-#| "must be connected to your group Cagette)"
 msgid ""
 "<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
 "must be connected to your group Cagette)"
@@ -1733,25 +1726,25 @@ msgstr "Programmer une distribution récurrente"
 msgid "Recurrent deliveries deleted"
 msgstr "Distributions récurrentes effacées"
 
-#: src/App.hx:2430 src/db/User.hx:15496 lang/master/tpl/member/import.mtt:592
+#: src/App.hx:2457 src/db/User.hx:15496 lang/master/tpl/member/import.mtt:592
 #: lang/master/tpl/member/import.mtt:1308
 msgid "First name"
 msgstr "Prénom"
 
-#: src/App.hx:2475 src/db/User.hx:15532 lang/master/tpl/member/import.mtt:626
+#: src/App.hx:2502 src/db/User.hx:15532 lang/master/tpl/member/import.mtt:626
 #: lang/master/tpl/member/import.mtt:1341
 msgid "Last name"
 msgstr "Nom"
 
-#: src/App.hx:2648 src/db/User.hx:16048
+#: src/App.hx:2675 src/db/User.hx:16048
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/App.hx:2691 src/App.hx:2733
+#: src/App.hx:2718 src/App.hx:2760
 msgid "address"
 msgstr "adresse"
 
-#: src/App.hx:8293
+#: src/App.hx:8320
 msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
@@ -2134,7 +2127,7 @@ msgstr ""
 "Il n'y a plus de '::productName::' en stock, nous l'avons donc retiré de "
 "votre commande"
 
-#: src/db/UserContract.hx:7791 src/db/UserContract.hx:9856
+#: src/db/UserContract.hx:7791 src/db/UserContract.hx:9852
 msgid ""
 "We reduced your order of '::productName::' to quantity ::oQuantity:: because "
 "there is no available products anymore"
@@ -2142,15 +2135,15 @@ msgstr ""
 "Nous avons réduit votre commande de '::productName::' à ::oQuantity:: "
 "articles car il n'y a plus de stock disponible"
 
-#: src/db/UserContract.hx:11290
+#: src/db/UserContract.hx:11121
 msgid "Delivery ::contractName:: of the "
 msgstr "Distribution ::contractName:: du "
 
-#: src/db/UserContract.hx:14791
+#: src/db/UserContract.hx:14622
 msgid "Delivery ::contractName:: "
 msgstr "Distribution ::contractName::"
 
-#: src/db/UserContract.hx:15126
+#: src/db/UserContract.hx:14957
 msgid "Per member"
 msgstr "Par adhérent"
 

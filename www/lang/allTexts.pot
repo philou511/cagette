@@ -1534,23 +1534,23 @@ msgstr ""
 msgid "Recurrent deliveries deleted"
 msgstr ""
 
-#: src/App.hx:2430 src/db/User.hx:15496 lang/master/tpl/member/import.mtt:592 lang/master/tpl/member/import.mtt:1308
+#: src/App.hx:2457 src/db/User.hx:15496 lang/master/tpl/member/import.mtt:592 lang/master/tpl/member/import.mtt:1308
 msgid "First name"
 msgstr ""
 
-#: src/App.hx:2475 src/db/User.hx:15532 lang/master/tpl/member/import.mtt:626 lang/master/tpl/member/import.mtt:1341
+#: src/App.hx:2502 src/db/User.hx:15532 lang/master/tpl/member/import.mtt:626 lang/master/tpl/member/import.mtt:1341
 msgid "Last name"
 msgstr ""
 
-#: src/App.hx:2648 src/db/User.hx:16048
+#: src/App.hx:2675 src/db/User.hx:16048
 msgid "Password"
 msgstr ""
 
-#: src/App.hx:2691 src/App.hx:2733
+#: src/App.hx:2718 src/App.hx:2760
 msgid "address"
 msgstr ""
 
-#: src/App.hx:8293
+#: src/App.hx:8320
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
 msgstr ""
 
@@ -1897,21 +1897,21 @@ msgstr ""
 msgid "There is no more '::productName::' in stock, we removed it from your order"
 msgstr ""
 
-#: src/db/UserContract.hx:7791 src/db/UserContract.hx:9856
+#: src/db/UserContract.hx:7791 src/db/UserContract.hx:9852
 msgid ""
 "We reduced your order of '::productName::' to quantity ::oQuantity:: because "
 "there is no available products anymore"
 msgstr ""
 
-#: src/db/UserContract.hx:11290
+#: src/db/UserContract.hx:11121
 msgid "Delivery ::contractName:: of the "
 msgstr ""
 
-#: src/db/UserContract.hx:14791
+#: src/db/UserContract.hx:14622
 msgid "Delivery ::contractName:: "
 msgstr ""
 
-#: src/db/UserContract.hx:15126
+#: src/db/UserContract.hx:14957
 msgid "Per member"
 msgstr ""
 

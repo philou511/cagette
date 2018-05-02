@@ -339,20 +339,20 @@ class UserContract extends Object
 			order.user2 = null;
 			order.flags.unset(InvertSharedOrder);
 		}
-		
+
 		//stocks
+		var e : Event = null;
 		if (order.product.stock != null) {
 			var c = order.product.contract;
 			
 			if (c.hasStockManagement()) {
 				
 				if (newquantity < order.quantity) {
-					
+
 					//on commande moins que prévu : incrément de stock						
 					order.product.lock();
 					order.product.stock +=  (order.quantity-newquantity);
-					
-					App.current.event(StockMove({product:order.product, move:0 - (order.quantity-newquantity) }));
+					e = StockMove({product:order.product, move:0 - (order.quantity-newquantity) });
 					
 				}else {
 				
@@ -365,37 +365,37 @@ class UserContract extends Object
 						newquantity = order.quantity + order.product.stock;
 						if( App.current.session!=null) App.current.session.addMessage(t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:order.product.name, oQuantity:newquantity}), true);
 						
-						App.current.event(StockMove({product:order.product, move: 0 - order.product.stock }));
+						e = StockMove({product:order.product, move: 0 - order.product.stock });
 						
 						order.product.lock();
 						order.product.stock = 0;
 						
-					}else {
+					}else{
 						
 						//stock is big enough
 						order.product.lock();
 						order.product.stock -= addedquantity;
 						
-						App.current.event(StockMove({product:order.product, move: 0 - addedquantity }));
+						e = StockMove({ product:order.product, move: 0 - addedquantity });
 					}					
-				}
-				order.product.update();	
+				}				
+				order.product.update();					
 			}	
 		}
 		
+		//update order
 		if (newquantity == 0) {
 			order.quantity = 0;			
 			order.paid = true;
-			//order.flags.set(OrderFlags.Canceled);
 			order.update();
-			//order.delete();			
-			//return null; //need to get an order object with zero qt to manage payment operations properly			
-			return order;
 		}else {
 			order.quantity = newquantity;
-			order.update();	
-			return order;
-		}				
+			order.update();				
+		}	
+
+		App.current.event(e);	
+
+		return order;
 	}
 	
 	/**

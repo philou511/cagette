@@ -85,6 +85,7 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public function event(e:Event) {
+		if(e==null) return null;
 		this.eventDispatcher.dispatch(e);
 		return e;
 	}
