@@ -1,16 +1,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Cagette.net\n"
+"Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: François <francois@alilo.fr>\n"
-"Language-Team: alenka@lemilo.de\n"
+"PO-Revision-Date: 2018-05-13 19:37+0000\n"
+"Last-Translator: Andreas Kleinert <Andy.Kleinert@gmail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/cagette/"
+"translations/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.3\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.0-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/App.hx:2527 src/db/User.hx:15991 lang/master/tpl/member/import.mtt:612
@@ -173,9 +175,8 @@ msgid "Currency updated"
 msgstr "Währung aktualisiert"
 
 #: src/controller/AmapAdmin.hx:9217
-#, fuzzy
 msgid "Authorized payment types"
-msgstr "Bezahlungsart wählen"
+msgstr "Zulässige Zahlungsarten"
 
 #: src/controller/AmapAdmin.hx:9493
 msgid "Make the check payable to"
@@ -439,8 +440,9 @@ msgid ""
 "Warning, at least one product does not have any category. <a href='/product/"
 "categorize/::contractid::'>Click here to add categories</a>"
 msgstr ""
-"Vorsicht ! Mindestens ein Produkt hat keine Kategorie. <a href=‘/product/"
-"categorize/::contractid::’>Klicke hier um Kategorien hinzuzufügen</a>"
+"Achtung, mindestens ein Produkt verfügt über keine Kategorie. <a href='/"
+"product/categorize/::contractid::'>Klicken Sie hier, um Kategorien "
+"hinzuzufügen</a>"
 
 #: src/controller/ContractAdmin.hx:4210
 msgid "Copy products in: "
@@ -959,13 +961,12 @@ msgid "Vegetables Contract Example"
 msgstr ""
 
 #: src/controller/Install.hx:3714
-#, fuzzy
 msgid ""
 "Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
 "password is 'admin'"
 msgstr ""
-"Gruppe und User ‘admin’ erstellt. Ihre Email ist ‘admin@lemilo.de’ und ihr "
-"Passwort ist ‘admin’"
+"Gruppe und Benutzer „admin” angelegt. Ihre E-Mail ist „admin@cagette.net” "
+"und Ihr Passwort ist „admin”."
 
 #: src/controller/Install.hx:4335
 msgid "You must update your database to version "
@@ -1353,9 +1354,8 @@ msgid "TEST: me + spouse"
 msgstr "TEST: ich + Partner"
 
 #: src/controller/Messages.hx:3892
-#, fuzzy
 msgid "Members without contract/order"
-msgstr "Mitglieder ohne Angebot/Bestellung"
+msgstr "Mitglieder ohne Vertrag/Bestellung"
 
 #: src/controller/Messages.hx:4161
 msgid "Subscribers"
@@ -1563,11 +1563,10 @@ msgid "Cash payment"
 msgstr "Bar bezahlen"
 
 #: src/controller/Transaction.hx:8955
-#, fuzzy
 msgid "Your order is validated, you commited to pay in cash at the delivery."
 msgstr ""
-"Ihre Bestellung wurde bestätigt. Sie verpflichten sich zu einer Barzahlung "
-"bei Lieferung."
+"Ihre Bestellung ist bestätigt, Sie haben sich verpflichtet, bei der "
+"Lieferung bar zu bezahlen."
 
 #: src/controller/User.hx:879
 msgid "You are not connected"
@@ -1614,9 +1613,8 @@ msgid "Create a password for your account"
 msgstr "Passwort für mein Konto erstellen"
 
 #: src/controller/User.hx:5735
-#, fuzzy
 msgid "Your invitation is invalid or expired ($k)"
-msgstr "Ihre Einladung ist ungültig oder abgelaufen ($k)"
+msgstr "Ihre Einladung ist ungültig oder abgelaufen. ($k)"
 
 #: src/controller/User.hx:6066
 msgid "Congratulations ::userName::, your account is validated!"
@@ -1683,13 +1681,12 @@ msgid "This supplier has been saved"
 msgstr "Der Landwirt wurde gespeichert"
 
 #: src/controller/Vendor.hx:1892
-#, fuzzy
 msgid ""
 "You cannot delete this supplier because some contracts (current or old) are "
 "referencing this supplier."
 msgstr ""
-"Der Landwirt kann nicht gelöscht werden, da noch einige Angebote (neu oder "
-"alt) mit diesem in Verbindung stehen."
+"Sie können diesen Lieferanten nicht löschen, da einige Kontrakte (aktuelle "
+"oder alte) auf diesen Lieferanten verweisen."
 
 #: src/controller/Vendor.hx:2070
 msgid "Supplier deleted"
@@ -2522,7 +2519,7 @@ msgstr "Eine Angebotsart wählen:"
 
 #: lang/master/tpl/contract/insertChoose.mtt:286
 msgid "Create a <b>CSA</b> contract"
-msgstr "Ein “festes Angebot” erstellen"
+msgstr "Ein <b>CSA</b> erstellen"
 
 #: lang/master/tpl/contract/insertChoose.mtt:357
 msgid ""
@@ -2547,14 +2544,12 @@ msgid "Create a contract with <b>variable orders</b>"
 msgstr "Erstelle ein Angebot mit <b>variablen Bestellungen</b>"
 
 #: lang/master/tpl/contract/insertChoose.mtt:1000
-#, fuzzy
 msgid ""
 "It is a contract in which members can change their orders at each delivery. "
 "There is a different order for each delivery."
 msgstr ""
-"Das ist ein Angebot, bei dem ein Mitglied bei jeder Lieferung frei "
-"entscheiden kann, welche Produkte bestellt werden. Es gibt also bei jeder "
-"Lieferung ganz unterschiedliche Bestellungen."
+"Es ist ein Vertrag, in dem die Mitglieder ihre Bestellungen bei jeder "
+"Lieferung ändern können. Für jede Lieferung gibt es eine andere Bestellung."
 
 #: lang/master/tpl/contract/insertChoose.mtt:1160
 msgid ""
@@ -3298,7 +3293,7 @@ msgstr "Mitglieder im Diensteinsatz"
 #: lang/master/tpl/distribution/listByDateOnePageContract.mtt:610
 #: lang/master/tpl/distribution/listByDateShort.mtt:564
 msgid "Signature"
-msgstr "Signature"
+msgstr "Signatur"
 
 #: lang/master/tpl/distribution/list.mtt:4210
 msgid "Total order:"
@@ -3869,7 +3864,7 @@ msgstr "Import abschließen"
 
 #: lang/master/tpl/member/import.mtt:2414
 msgid "Oups !"
-msgstr "Oups !"
+msgstr "Hoppla!"
 
 #: lang/master/tpl/member/import.mtt:2443
 msgid ""
@@ -4049,7 +4044,7 @@ msgstr "Gesendet am"
 
 #: lang/master/tpl/messages/message.mtt:280
 msgid "Sender"
-msgstr "Sender"
+msgstr "Absender"
 
 #: lang/master/tpl/messages/message.mtt:477
 msgid "Receiver(s)"
@@ -4148,7 +4143,9 @@ msgstr ""
 
 #: lang/master/tpl/product/import.mtt:2885
 msgid "To start, <a href=\"/produits.xls\">Download this demo file</a>"
-msgstr "Zu Beginn, <a href=“/produits.xls”>downloade dir diese Demoversion</a>"
+msgstr ""
+"Um zu beginnen, <a href=\"/produits.xls\">laden Sie diese Demodatei "
+"herunter</a>"
 
 #: lang/master/tpl/product/import.mtt:2975
 msgid ""
