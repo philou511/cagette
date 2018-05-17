@@ -1,18 +1,18 @@
 package react;
-import utils.HttpUtil;
 import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
+import utils.HttpUtil;
 
-//typedef OrderBoxState = {firstName:String, lastName:String, email:String, password:String, error:String, phone:String};
-typedef OrderBoxProps = {userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, onSubmit:Void->Void};
+typedef OrderBoxState = {orders:Array<UserOrder>,error:String};
+typedef OrderBoxProps = {userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, onSubmit:Void->Void, currency:String, hasPayments:Bool};
 
 /**
  * A box to edit the orders of a member
  * @author fbarbut
  */
-class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,{orders:Array<UserOrder>,error:String}>
+class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBoxState>
 {
 
 	public function new(props) 
@@ -43,7 +43,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,{orders
 	
 	override public function render(){
 		
-		var renderOrders = this.state.orders.map(function(o) return jsx('<$Order order="$o" onUpdate=$onUpdate  />') );
+		var renderOrders = this.state.orders.map(function(o) return jsx('<$Order key=${o.id} order="$o" onUpdate=$onUpdate parentBox=${this} />') );
 		
 		return jsx('
 			<div>
@@ -100,7 +100,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,{orders
 				//WOOT
 				//setState({orders:data.orders,error:null});
 				trace("OK");
-				if (props.onSubmit != null) props.onSubmit();
+				//if (props.onSubmit != null) props.onSubmit();
 			}
 		}).catchError(function(data) {
 			trace("PROMISE ERROR", data);

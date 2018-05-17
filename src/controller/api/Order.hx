@@ -7,7 +7,6 @@ import tink.core.Error;
  */
 class Order extends Controller
 {
-	
 	/**
 	 * get orders of a user from a contractId (constant contract) or a distributionId (varying contract)
 	 */
@@ -41,23 +40,21 @@ class Order extends Controller
 			orders = db.UserContract.manager.search($user == user && $distributionId==d.id && ($productId in pids), true);	
 		}else {
 			orders = db.UserContract.manager.search($user == user && ($productId in pids), true);
-			//orders = db.UserContract.manager.search( $productId in pids, true);
 		}
 		var orders = db.UserContract.prepare(orders);
-		//service.UserService.register(firstName, lastName, email, phone, pass);
 		
 		Sys.print(Json.stringify({success:true,orders:orders}));
 	}
 	
 	/**
-	 * update orders
+	 * Update orders of a user ( from react OrderBox component )
 	 * @param	userId
 	 */
 	public function doUpdate(userId:Int){
 		
 		//params
 		var p = app.params;
-		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool}>();
+		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invert:Bool,user2:Int}>();
 		data = haxe.Json.parse(p.get("orders"));
 		
 		var distributionId = Std.parseInt(p.get("distributionId"));
@@ -104,29 +101,22 @@ class Order extends Controller
 			
 			//find existing order				
 			var uo = Lambda.find(exOrders, function(uo) return uo.id == o.id);
-			//if (uo == null) throw t._("Unable to find product ::pid::", {pid:o.productId});
 				
-			//user2 ?
+			//user2 + invert
 			var user2 : db.User = null;
-			/*var invert = false;
-			if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
-				user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
-				if (user2 == null) {
-					var user = app.params.get("user2");
-					throw t._("Unable to find user #::num::",{num:user});
-				}
-				if (!user2.isMemberOf(app.user.amap)) throw t._("::user:: is not part of this group",{user:user2});
+			var invert = false;
+			if ( o.user2 != null ) {
+				user2 = db.User.manager.get(o.user2);
+				if (user2 == null) throw t._("Unable to find user #::num::",{num:o.user2});
+				if (!user2.isMemberOf(product.contract.amap)) throw t._("::user:: is not part of this group",{user:user2});
 				if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
 				
-				invert = app.params.get("invert" + pid) == "1";
-			}*/
-			
-			//invert order
-			var invert = false;
+				invert = o.invert;
+			}
 			
 			//quantity				
 			if (!product.hasFloatQt && o.qt!=Math.abs(o.qt) ) {
-				throw t._("Error : product \"::product::\" quantities should be integers",{product:product.name});
+				throw new Error(t._("Error : product \"::product::\" quantities should be integers",{product:product.name}));
 			}
 			
 			//record order

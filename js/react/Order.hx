@@ -8,13 +8,17 @@ import Common;
  * A User order
  * @author fbarbut
  */
-class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void},{order:UserOrder,inputValue:String}>
+class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void,parentBox:react.OrderBox},{order:UserOrder,inputValue:String}>
 {
+	var hasPayments :Bool;
+	var currency : String;
 
 	public function new(props) 
 	{
 		super(props);
 		state = {order:props.order,inputValue:null};
+		hasPayments = props.parentBox.props.hasPayments;
+		currency = props.parentBox.props.currency;
 		
 		if (state.order.productUnit == null){
 			state.order.productUnit = Piece;
@@ -63,27 +67,31 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 			${productName}
 
 			<div className="col-md-1">
-				${o.productPrice} &euro;
+				${o.productPrice} ${currency}
 			</div>
 			
 			$input
-			
 			$unit
-	
-			<div className="col-md-1">
-				<!--Payé : <input type="checkbox" name="paid" value="${o.paid}" />-->
-			</div>
+			${paidInput()}
+			
 			<div className="col-md-2">
 				<!--alterné avec X <br/>inverser alternance X-->
 			</div>				
 			${makeInfos()}
 		</div>');
-		
-		
 	}
 	
 	function round(f){
 		return Formatting.formatNum(f);
+	}
+
+	function paidInput(){
+		if(hasPayments) return null;
+		if(state.order.paid){
+			return jsx('<div className="col-md-1">Payé <input type="checkbox" name="paid" value="1" checked="1" onChange=${onChangePaid} /></div>');
+		}else{
+			return jsx('<div className="col-md-1">Payé <input type="checkbox" name="paid" value="1" onChange=${onChangePaid} /></div>');
+		}
 	}
 	
 	function makeInfos(){
@@ -91,7 +99,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		return if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-12 infos">
 				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}
-				/ Prix <b>${round(o.quantity * o.productPrice)} &euro;</b>
+				/ Prix <b>${round(o.quantity * o.productPrice)} ${currency}</b>
 			</div>');
 		}else{
 			null;
@@ -113,7 +121,15 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		
 		this.setState(state);
 		if (props.onUpdate != null) props.onUpdate(state.order);
-		trace(state);
+	}
+
+	function onChangePaid(e:js.html.Event){
+		//var value:Bool = untyped (e.target.value == "") ? "0" : e.target.value;
+		trace( untyped e.target.value , untyped e.target.checked);
+		state.order.paid = untyped e.target.checked;
+		trace("state after PAID",state);
+		this.setState(state);
+		if (props.onUpdate != null) props.onUpdate(state.order);
 	}
 	
 	function onKeyPress(event:js.html.KeyboardEvent){

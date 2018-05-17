@@ -13,13 +13,14 @@ class App {
 
 	public static var instance : App;
 	public var LANG : String;
+	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
-	//public var currentBox : ReactComponent.ReactElement; //current react element in the modal window
 
-	function new(?lang="fr") {
+	function new(?lang="fr",?currency="&euro;") {
 		//singleton
 		instance = this;
 		if(lang!=null) this.LANG = lang;
+		this.currency = currency;
 	}
 
 	/**
@@ -106,18 +107,16 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String){
+	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool){
 		var onSubmit = function(){
 			if (distributionId == null){
 				js.Browser.location.href = "/contractAdmin/orders/" + contractId;	
 			}else{
 				js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
 			}
-			
-
 		};
 		
-		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit/>'),  js.Browser.document.querySelector('#orderBox'));
+		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit currency=$currency hasPayments=$hasPayments />'),  js.Browser.document.querySelector('#orderBox'));
 	}
 
 	public static function roundTo(n:Float, r:Int):Float {
