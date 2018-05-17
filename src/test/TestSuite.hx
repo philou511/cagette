@@ -76,7 +76,7 @@ class TestSuite
 			db.Vendor.manager,
 			db.Place.manager,
 			db.Distribution.manager,
-						
+			db.DistributionCycle.manager,						
 			
 			//sugoi tables
 			sugoi.db.Cache.manager,
@@ -114,6 +114,8 @@ class TestSuite
 	public static var STRAWBERRIES:db.Product = null;
 	public static var DISTRIB_FRUITS_PLACE_DU_VILLAGE:db.Distribution = null;
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
+	public static var CONTRAT_LEGUMES:db.Contract = null;
+	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	
 	static function initDatas(){
 		
@@ -142,6 +144,8 @@ class TestSuite
 		place.city = "St Martin";
 		place.amap = a;
 		place.insert();
+
+		PLACE_DU_VILLAGE = place;
 		
 		var v = new db.Vendor();
 		v.name = "La ferme de la Galinette";
@@ -238,6 +242,8 @@ class TestSuite
 		c.type = db.Contract.TYPE_VARORDER;
 		c.insert();
 		
+		CONTRAT_LEGUMES = c;
+
 		var p = new db.Product();
 		p.name = "Courgettes";
 		p.qt = 1;

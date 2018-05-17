@@ -263,7 +263,7 @@ class Distribution extends Controller
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
 			}
 			else {
-				//throw Ok('/contractAdmin/distributions/'+ createdDistrib.contract.id , t._("The distribution has been recorded") );	
+				throw Ok('/contractAdmin/distributions/'+ createdDistrib.contract.id , t._("The distribution has been recorded") );	
 			}
 			
 		}else{
@@ -284,8 +284,8 @@ class Distribution extends Controller
 		
 		if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
 		
-		var d = new db.DistributionCycle();
-		var form = sugoi.form.Form.fromSpod(d);
+		var dc = new db.DistributionCycle();
+		var form = sugoi.form.Form.fromSpod(dc);
 		form.removeElementByName("contractId");
 		
 		form.getElement("startDate").value = DateTool.now();
@@ -324,25 +324,35 @@ class Distribution extends Controller
 		}
 		
 		if (form.isValid()) {
-			
-			form.toSpod(d); //update model			
-			d.contract = contract;
-			
-			app.event(NewDistribCycle(d));
-			
-			d.insert();
-			
-			var c = contract;
 
-			if (d.endDate.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-			if (d.startDate.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
+			var createdDistribCycle = null;
 
-			db.DistributionCycle.updateChilds(d);
-			
-			throw Ok('/contractAdmin/distributions/'+d.contract.id, t._("The delivery has been saved"));
-		}else{
-			d.contract = contract;
-			app.event(PreNewDistribCycle(d));
+			try{
+				createdDistribCycle = service.DistributionService.createCycle(
+				contract,
+				form.getElement("cycleType").getValue(),
+				form.getValueOf("startDate"),	
+				form.getValueOf("endDate"),	
+				form.getValueOf("startHour"),
+				form.getValueOf("endHour"),											
+				form.getValueOf("daysBeforeOrderStart"),											
+				form.getValueOf("daysBeforeOrderEnd"),											
+				form.getValueOf("openingHour"),	
+				form.getValueOf("closingHour"),																	
+				form.getValueOf("placeId"));
+			}
+			catch(e:String){
+				throw Error('/contractAdmin/distributions/' + contract.id,e);
+			}
+
+			if (createdDistribCycle != null) {
+				throw Ok('/contractAdmin/distributions/'+ contract.id, t._("The delivery has been saved"));
+			}
+			 
+		}
+		else{
+			dc.contract = contract;
+			app.event(PreNewDistribCycle(dc));
 		}
 		
 		view.form = form;

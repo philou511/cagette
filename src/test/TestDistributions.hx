@@ -98,5 +98,25 @@ class TestDistributions extends haxe.unit.TestCase
 	function testEdit() { 
 
 		//TO DO
-    
+		assertEquals(true, true);
+	}
+
+	function testCreateCycle() {
+		TestSuite.CONTRAT_LEGUMES.startDate = new Date(2018, 11, 1, 0, 0, 0);
+		TestSuite.CONTRAT_LEGUMES.endDate = new Date(2019, 1, 30, 23, 59, 0);
+		TestSuite.CONTRAT_LEGUMES.update();
+
+		var distribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,Weekly,new Date(2018, 11, 24, 0, 0, 0),
+		new Date(2019, 0, 2, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
+		new Date(2018, 5, 4, 8, 0, 0),new Date(2018, 5, 4, 23, 0, 0),TestSuite.PLACE_DU_VILLAGE.id);
+
+		var distribs = Lambda.array(db.Distribution.manager.search($distributionCycle == distribCycle, false));
+		assertEquals(distribs.length, 2);
+		assertEquals(distribs[0].date.toString(), new Date(2018, 11, 24, 13, 0, 0).toString());
+		assertEquals(distribs[1].date.toString(), new Date(2018, 11, 31, 13, 0, 0).toString());
+		assertEquals(distribs[0].end.toString(), new Date(2018, 11, 24, 14, 0, 0).toString());
+		assertEquals(distribs[1].end.toString(), new Date(2018, 11, 31, 14, 0, 0).toString());
+		
+	}
+
 }
