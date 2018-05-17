@@ -47,7 +47,7 @@ class DistributionCycle extends Object
 	 * 
 	 * @TODO refactor this with http://thx-lib.org/api/thx/Dates.html#jump
 	 */
-	public static function updateChilds(dc:DistributionCycle) {
+	public static function updateAllDistribs(dc:DistributionCycle) {
 		//switch end date to 23:59 to avoid the last distribution to be skipped
 		dc.endDate = tools.DateTool.setHourMinute(dc.endDate,23,59);
 

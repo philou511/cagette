@@ -1,5 +1,6 @@
 package service;
 import Common;
+import sys.db.Types;
 
 /**
  * Distribution Service
@@ -59,6 +60,16 @@ class DistributionService
 			if (d.date.getTime() < d.orderEndDate.getTime() ) throw t._("The distribution start date must be set after the orders end date.");
 			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw t._("The orders end date must be set after the orders start date !");
 		}
+
+	}
+
+	/**
+	 * checks if dates are correct and if that there is no other distribution in the same time range
+	 *  and for the same contract and place
+	 * @param dc
+	 */
+	public static function checkDistribCycle(dc:db.DistributionCycle) {
+
 
 	}
 
@@ -166,5 +177,58 @@ class DistributionService
 			d.update();
 			return d;
 		}
+	}
+
+	/**
+	* Creates a new distribution cycle and prevents distribution overlapping and other checks
+	*  @param contract
+	*  @param text
+	*  @param date
+	*  @param end
+	*  @param placeId
+	*  @param distributor1Id
+	*  @param distributor2Id
+	*  @param distributor3Id
+	*  @param distributor4Id
+	*  @param orderStartDate
+	*  @param orderEndDate
+	*/
+	 public static function createCycle(contract:db.Contract,cycleType:db.DistributionCycle.CycleType,startDate:Date,endDate:Date,
+	 startHour:Date,endHour:Date,daysBeforeOrderStart:Null<Int>,daysBeforeOrderEnd:Null<Int>,openingHour:Null<Date>,closingHour:Null<Date>,
+	 placeId:Int):db.DistributionCycle {	
+
+		var t = sugoi.i18n.Locale.texts;
+		var view = App.current.view;
+		
+		var dc = new db.DistributionCycle();
+		dc.contract = contract;
+		dc.cycleType = cycleType;
+		dc.startDate = startDate;
+		dc.endDate = endDate;
+		dc.startHour = startHour;
+		dc.endHour = endHour;
+		dc.place = db.Place.manager.get(placeId);
+
+		if (contract.type == db.Contract.TYPE_VARORDER) {
+			dc.daysBeforeOrderStart = daysBeforeOrderStart;
+			dc.daysBeforeOrderEnd = daysBeforeOrderEnd;
+			dc.openingHour = openingHour;
+			dc.closingHour = closingHour;			
+		}
+				
+		if (dc.endDate.getTime() > contract.endDate.getTime()) {
+			throw t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(contract.endDate)});
+		}
+		if (dc.startDate.getTime() < contract.startDate.getTime()) {
+			throw t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)});
+		}
+
+		App.current.event(NewDistribCycle(dc));
+
+		dc.insert();
+		db.DistributionCycle.updateAllDistribs(dc);
+
+		return dc;
+
 	}
 }
