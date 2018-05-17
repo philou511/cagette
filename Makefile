@@ -79,7 +79,7 @@ ctemplates:
 
 deploy: 
 	@make templates
-	@make compile
+	@make compile PLUGINS=1
 	@make deploy_site
 	
 deploypp:
@@ -113,7 +113,7 @@ tests:
 	else \
 	haxe tests.hxml; \
 	fi
-	@sudo docker-compose run --workdir="/var/www/www" neko neko tests.n mysql://root:root@mysql/tests
+	@docker-compose run --workdir="/var/www/www" neko neko tests.n mysql://root:root@mysql/tests
 
 
 cp_plugin:

@@ -45,7 +45,8 @@ class Account extends Controller
 			}
 
 			//check email is available
-			if( db.User.getSameEmail(app.user.email,app.user.email2).length > 0 ){
+			var sameEmail = db.User.getSameEmail(app.user.email,app.user.email2);
+			if( sameEmail.length > 0 && sameEmail.first().id!=app.user.id){
 				throw Error("/account/edit", t._("This email is already used by another account."));
 			}
 			

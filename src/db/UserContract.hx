@@ -74,6 +74,7 @@ class UserContract extends Object
 	}
 	
 	override public function toString() {
+		if(product==null) return quantity +"x produit inconnu";
 		return quantity + "x" + product.name;
 	}
 	
