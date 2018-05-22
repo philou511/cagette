@@ -257,8 +257,8 @@ class Cron extends Controller
 							text += "<li>" + v + "</li>";
 						}
 						text += "</ul>";
-						var url = "http://" + App.config.HOST + "/group/"+ u.distrib.contract.amap.id;
-						text += t._("The web address of your group is: <a href=\" + ::groupurl:: + \"> ::groupurl:: </a><br>", {groupurl:url});
+						//var url = "http://" + App.config.HOST + "/group/"+ u.distrib.contract.amap.id;
+						//text += t._("The web address of your group is: <a href=\" + ::groupurl:: + \"> ::groupurl:: </a><br>", {groupurl:url});
 					}
 					else //rappel de la distribution
 					{
