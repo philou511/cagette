@@ -2,6 +2,7 @@ package db;
 import sys.db.Object;
 import sys.db.Types;
 import datetime.DateTime;
+using tools.DateTool;
 
 enum CycleType {
 	Weekly;	
@@ -77,6 +78,8 @@ class DistributionCycle extends Object
 		}
 		
 		d.insert();
+
+		var firstDistribDate = d.date;
 		
 		//iterations
 		for(i in 0...100) {
@@ -101,7 +104,13 @@ class DistributionCycle extends Object
 					datePointer = DateTools.delta(datePointer, oneDay * 21.0);
 					
 				case Monthly :
-					datePointer = DateTools.delta(datePointer, oneDay * 28.0);
+				    var n = tools.DateTool.getWhichNthDayOfMonth(firstDistribDate);
+					var dayOfWeek = firstDistribDate.getDay();
+					var nextMonth = new Date(datePointer.getFullYear(), datePointer.getMonth() + 1, 1, 0, 0, 0);
+					datePointer = tools.DateTool.getNthDayOfMonth(nextMonth.getFullYear(), nextMonth.getMonth(), dayOfWeek, n);
+					if (datePointer.getMonth() != nextMonth.getMonth()) {
+						datePointer = tools.DateTool.getNthDayOfMonth(nextMonth.getFullYear(), nextMonth.getMonth(), dayOfWeek, n - 1);
+					}
 			}
 			
 			//stop if cycle end is reached
