@@ -122,6 +122,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(weeklyDistribs[3].end.toString(), new Date(2019, 0, 14, 14, 0, 0).toString());
 		assertEquals(weeklyDistribs[4].date.toString(), new Date(2019, 0, 21, 13, 0, 0).toString());
 		assertEquals(weeklyDistribs[4].end.toString(), new Date(2019, 0, 21, 14, 0, 0).toString());
+		weeklyDistribCycle.deleteCycleDistribs();
 
 		var monthlyDistribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,Monthly,new Date(2018, 9, 30, 0, 0, 0),
 		new Date(2019, 2, 31, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
@@ -141,6 +142,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(monthlyDistribs[4].end.toString(), new Date(2019, 1, 26, 14, 0, 0).toString());
 		assertEquals(monthlyDistribs[5].date.toString(), new Date(2019, 2, 26, 13, 0, 0).toString());
 		assertEquals(monthlyDistribs[5].end.toString(), new Date(2019, 2, 26, 14, 0, 0).toString());
+		monthlyDistribCycle.deleteCycleDistribs();
 
 		var biweeklyDistribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,BiWeekly,new Date(2018, 9, 30, 0, 0, 0),
 		new Date(2019, 0, 31, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
@@ -162,6 +164,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(biweeklyDistribs[5].end.toString(), new Date(2019, 0, 8, 14, 0, 0).toString());
 		assertEquals(biweeklyDistribs[6].date.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
 		assertEquals(biweeklyDistribs[6].end.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
+		biweeklyDistribCycle.deleteCycleDistribs();		
 		
 		var triweeklyDistribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,TriWeekly,new Date(2018, 9, 30, 0, 0, 0),
 		new Date(2019, 0, 31, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
@@ -179,6 +182,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(triweeklyDistribs[3].end.toString(), new Date(2019, 0, 1, 14, 0, 0).toString());
 		assertEquals(triweeklyDistribs[4].date.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
 		assertEquals(triweeklyDistribs[4].end.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
+		triweeklyDistribCycle.deleteCycleDistribs();				
 
 		// assertEquals(getNthDayOfMonth(2018,4,3,4).toString(),new Date(2018,4,23,0,0,0).toString());
 		// assertEquals(getNthDayOfMonth(2018,4,2,2).toString(),new Date(2018,4,8,0,0,0).toString());
