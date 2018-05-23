@@ -1,13 +1,18 @@
+//React lib
 import react.ReactMacro.jsx;
+import react.ReactDOM;
 import react.*;
+import react.router.*;
+//custom components
+import react.order.*;
+import react.product.*;
 import react.store.*;
 import react.map.*;
+import react.user.*;
 
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
-
-import react.store.*;
 
 class App {
 
@@ -107,16 +112,32 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool){
+	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool,callbackUrl:String){
+
+		untyped App.j("#myModal").modal();
+
 		var onSubmit = function(){
-			if (distributionId == null){
-				js.Browser.location.href = "/contractAdmin/orders/" + contractId;	
-			}else{
-				js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
-			}
+			trace("refresh page to "+callbackUrl);
+			js.Browser.location.href = /*"/contractAdmin/orders/" + contractId + (distributionId == null?"":"?d=" + distributionId);*/callbackUrl;
 		};
+
+		var node = js.Browser.document.querySelector('#myModal .modal-body');
+		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
 		
-		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit currency=$currency hasPayments=$hasPayments />'),  js.Browser.document.querySelector('#orderBox'));
+		var renderOrderBox = function(){
+			return jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
+						contractId="$contractId" date="$date" place="$place" userName="$userName" 
+						onSubmit=$onSubmit currency=$currency hasPayments=$hasPayments />');
+		}
+
+		var renderInsertBox = function() return jsx('<$InsertOrderBox contractId="$contractId" userId="$userId" distributionId="$distributionId"/>');
+
+		ReactDOM.render(jsx('<$HashRouter>
+			<$Switch>
+				<$Route path="/" exact=$true render=$renderOrderBox	 />
+				<$Route path="/insert" exact=$true render=$renderInsertBox />
+			</$Switch>
+		</$HashRouter>'), node );
 	}
 
 	public static function roundTo(n:Float, r:Int):Float {
@@ -204,9 +225,6 @@ class App {
 	 * set up a warning message when leaving the page
 	 */
 	public function setWarningOnUnload(active:Bool, ?msg:String){
-
-
-
 		if (active){
 			js.Browser.window.addEventListener("beforeunload", warn);
 		}else{

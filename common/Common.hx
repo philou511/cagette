@@ -111,6 +111,7 @@ typedef UserOrder = {
 	?userName2:String,
 	?userEmail2:String,
 	
+	//deprecated
 	productId:Int,
 	productRef:String,
 	productName:String,	
@@ -120,6 +121,9 @@ typedef UserOrder = {
 	productUnit:UnitType,
 	productHasFloatQt:Bool,
 	productHasVariablePrice:Bool,
+	//new way
+	?product:ProductInfo,
+
 	
 	quantity:Float,
 	smartQt:String,

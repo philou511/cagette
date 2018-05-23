@@ -308,9 +308,7 @@ div.reportHeader{
 		background-color:lighten(#F0D277,10%);
 		border-color:darken(#F0D277,10%);
 		text-decoration:none;
-		
 		transition: all 0.15s ease;
-		//transform:scale(0.95);
 	}
 	
 	&:active{
@@ -318,10 +316,9 @@ div.reportHeader{
 		background-color:#F0D277;
 		border-color:darken(#F0D277,10%);
 		text-decoration:none;
-		
 		transform:scale(0.95);
 	}
-	
+
 }
 
 /* a cagette group block (use it with .clickable ) */
@@ -763,6 +760,40 @@ div.productImg{
 	//margin:0;
 }
 
+//Product React component
+div.product{
+	div.productImg{
+		margin-right: 12px;
+		vertical-align: middle;
+	}
+
+}
+
+//Product in ProductSelect React component
+div.productSelect{
+	/*div.selector{
+		width:64px;
+		height: 64px;
+		display: inline-block;
+		cursor: pointer;
+
+		&.active{
+			background-color: #007700;
+		}
+
+		&:hover{
+			background-color: #00AA00;
+		}
+	}*/
+
+	div.product{
+		display: inline-block;
+	}
+
+	
+
+}
+
 // Cagette Pro Catalogs
 div.productBox{
 	
@@ -825,7 +856,7 @@ div.productBox{
 
 
 //Product composer
-
+/*
 div.ProductComp{
 	margin:8px 0;
 	padding:8px 0;
@@ -837,7 +868,7 @@ div.ProductComp{
 		vertical-align:top !important;
 	}
 }
-
+*/
 
 //basket
 div.basketNumber{

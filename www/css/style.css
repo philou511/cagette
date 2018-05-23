@@ -313,7 +313,7 @@ div.reportHeader {
     border-color: #ebc349;
     text-decoration: none;
     transition: all 0.15s ease; }
-  .clickable:active {
+  .clickable:active, .clickable:focus {
     cursor: pointer;
     background-color: #F0D277;
     border-color: #ebc349;
@@ -628,6 +628,28 @@ div.productImg {
   background: no-repeat center;
   background-size: cover; }
 
+div.product div.productImg {
+  margin-right: 12px;
+  vertical-align: middle; }
+
+div.productSelect {
+  /*div.selector{
+		width:64px;
+		height: 64px;
+		display: inline-block;
+		cursor: pointer;
+
+		&.active{
+			background-color: #007700;
+		}
+
+		&:hover{
+			background-color: #00AA00;
+		}
+	}*/ }
+  div.productSelect div.product {
+    display: inline-block; }
+
 div.productBox div.productImg {
   background-size: cover;
   height: 220px;
@@ -670,14 +692,19 @@ div.productBox .price {
   max-width: 100px;
   max-height: 100px; }
 
-div.ProductComp {
-  margin: 8px 0;
-  padding: 8px 0;
-  border-bottom: solid 1px #CCC; }
+/*
+div.ProductComp{
+	margin:8px 0;
+	padding:8px 0;
+	border-bottom:solid 1px #CCC;
+}
 
-.ComposerApp .add-button {
-  vertical-align: top !important; }
-
+.ComposerApp{
+	.add-button{
+		vertical-align:top !important;
+	}
+}
+*/
 div.basketNumber {
   display: inline-block;
   background-color: #333;

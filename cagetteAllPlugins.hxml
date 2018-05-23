@@ -17,6 +17,9 @@
 -cp common
 -cp src
 -cp lang/master/tpl
+
 -D plugins
+
+
 -neko www/index.n
 -main App

@@ -1,4 +1,4 @@
-package react;
+package react.order;
 import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
@@ -8,7 +8,7 @@ import Common;
  * A User order
  * @author fbarbut
  */
-class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void,parentBox:react.OrderBox},{order:UserOrder,inputValue:String}>
+class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void,parentBox:react.order.OrderBox},{order:UserOrder,inputValue:String}>
 {
 	var hasPayments :Bool;
 	var currency : String;
@@ -37,11 +37,12 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	
 	override public function render(){
 		var o = state.order;
-		var unit = if (o.productHasFloatQt || o.productHasVariablePrice){
+		/*var unit = if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-1">${Formatting.unit(o.productUnit)}</div>');
 		}else{
 			jsx('<div className="col-md-1"></div>');
-		}
+		}*/
+		var unit = Formatting.unit(o.productUnit);
 		
 		//use smart qt only if hasFloatQt
 		var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
@@ -51,9 +52,11 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		}
 		
 		var input =  jsx('<div className="col-md-2">
+			<div className="input-group">
 				<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
-			</div>');	
-		
+				<div className="input-group-addon">$unit</div>
+			</div>
+		</div>');	
 		
 		var s = {backgroundImage:"url(\""+o.productImage+"\")", width:"32px", height:"32px"};
 		return jsx('<div className="productOrder row">
@@ -69,13 +72,12 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 			<div className="col-md-1">
 				${o.productPrice} ${currency}
 			</div>
-			
-			$input
-			$unit
+			$input			
 			${paidInput()}
 			
 			<div className="col-md-2">
-				<!--alterné avec X <br/>inverser alternance X-->
+				Alterné avec X <br/>
+				Inverser alternance <input type="checkbox" name="paid" value="1" onChange="" />
 			</div>				
 			${makeInfos()}
 		</div>');

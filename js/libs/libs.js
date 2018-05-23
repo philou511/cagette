@@ -15,7 +15,9 @@
     'leaflet': require('leaflet'),
     'react-leaflet': require('react-leaflet'),
     'react-places-autocomplete': require('react-places-autocomplete'),
-    'geolib': require('geolib')
+    'geolib': require('geolib'),
+    'react-router':require('react-router'),
+    'react-router-dom':require('react-router-dom'),
   });
 
   if (process.env.NODE_ENV !== 'production') {

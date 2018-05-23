@@ -1,4 +1,4 @@
-package react;
+package react.user;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;

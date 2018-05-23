@@ -1,9 +1,10 @@
-package react;
+package react.order;
 import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 import utils.HttpUtil;
+import react.router.Link;
 
 typedef OrderBoxState = {orders:Array<UserOrder>,error:String};
 typedef OrderBoxProps = {userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, onSubmit:Void->Void, currency:String, hasPayments:Bool};
@@ -57,6 +58,8 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 					<a onClick=${onClick} className="btn btn-primary">
 						<span className="glyphicon glyphicon-chevron-right"></span> Valider
 					</a>
+					&nbsp;
+					<$Link className="btn btn-default" to="/insert"><span className="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</$Link>
 				</div>
 			</div>			
 		');
@@ -100,7 +103,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				//WOOT
 				//setState({orders:data.orders,error:null});
 				trace("OK");
-				//if (props.onSubmit != null) props.onSubmit();
+				if (props.onSubmit != null) props.onSubmit();
 			}
 		}).catchError(function(data) {
 			trace("PROMISE ERROR", data);

@@ -126,7 +126,7 @@ class Order extends Controller
 				if (o != null) orders.push(o);
 			}else {
 				//new record
-				var o =  db.UserContract.make(user, o.qt , uo.product, d == null ? null : d.id, o.paid , user2, invert);
+				var o =  db.UserContract.make(user, o.qt , product, d == null ? null : d.id, o.paid , user2, invert);
 				if (o != null) orders.push(o);
 			}
 		}

@@ -103,5 +103,9 @@ class Api extends Controller
 	public function doGroup(d:haxe.web.Dispatch){
 		d.dispatch(new controller.api.Group());
 	}
+
+	public function doProduct(d:haxe.web.Dispatch){
+		d.dispatch(new controller.api.Product());
+	}
 	
 }
