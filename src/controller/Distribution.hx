@@ -3,7 +3,6 @@ import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 using tools.DateTool;
-import Common;
 
 class Distribution extends Controller
 {
@@ -367,7 +366,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
 		
 		cycle.lock();
-		var msgs = cycle.deleteChilds();
+		var msgs = cycle.deleteCycleDistribs();
 		if (msgs.length > 0){			
 			throw Error("/contractAdmin/distributions/" + cycle.contract.id, msgs.join("<br/>"));	
 		}else{			

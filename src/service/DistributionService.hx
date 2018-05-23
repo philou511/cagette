@@ -1,6 +1,5 @@
 package service;
 import Common;
-import sys.db.Types;
 
 /**
  * Distribution Service
@@ -88,18 +87,19 @@ class DistributionService
 	*  @param orderEndDate
 	*/
 	 public static function create(contract:db.Contract,text:String,date:Date,end:Date,placeId:Int,
-	 	distributor1Id:Int,distributor2Id:Int,distributor3Id:Int,distributor4Id:Int,
-		orderStartDate:Date,orderEndDate:Date):db.Distribution {
-		
+	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
+		orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle):db.Distribution {
+
 		var d = new db.Distribution();
 		d.contract = contract;
 		d.text = text;
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
-		d.distributor1 = db.User.manager.get(distributor1Id);
-		d.distributor2 = db.User.manager.get(distributor2Id);
-		d.distributor3 = db.User.manager.get(distributor3Id);
-		d.distributor4 = db.User.manager.get(distributor4Id);
+		d.distributionCycle = distributionCycle;
+		if(distributor1Id != null) d.distributor1 = db.User.manager.get(distributor1Id);
+		if(distributor2Id != null) d.distributor2 = db.User.manager.get(distributor2Id);
+		if(distributor3Id != null) d.distributor3 = db.User.manager.get(distributor3Id);
+		if(distributor4Id != null) d.distributor4 = db.User.manager.get(distributor4Id);
 		if(contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
@@ -114,8 +114,10 @@ class DistributionService
 		
 		DistributionService.checkDistrib(d);
 		
-		var e :Event = NewDistrib(d);
-		App.current.event(e);
+		if(distributionCycle == null) {
+			var e :Event = NewDistrib(d);
+			App.current.event(e);
+		}
 		
 		if (d.date == null){
 			return null;
@@ -226,7 +228,7 @@ class DistributionService
 		App.current.event(NewDistribCycle(dc));
 
 		dc.insert();
-		db.DistributionCycle.updateAllDistribs(dc);
+		db.DistributionCycle.createCycleDistribs(dc);
 
 		return dc;
 
