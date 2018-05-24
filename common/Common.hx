@@ -32,27 +32,26 @@ typedef ProductInfo = {
 	id : Int,
 	name : String,
 	?ref : String,
-	//type : ProductType,
 	image : Null<String>,
 	contractId : Int,
 	price : Float,
-	vat : Float,
-	vatValue : Float,			//montant de la TVA inclue dans le prix
-	contractTax : Float, 		//pourcentage de commission défini dans le contrat
-	contractTaxName : String,	//label pour la commission : ex: "frais divers"
-	desc : String,
+	vat : Float,					//VAT rate
+	vatValue : Float,				//amount of VAT included in the price
+	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
+	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
+	desc : Null<String>,
 	categories : Array<Int>,	//used in old shop
 	subcategories : Array<Int>,  //used in new shop
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
-	?qt:Float,
-	?unitType:UnitType,
+	qt:Null<Float>,
+	unitType:Null<UnitType>,
 	organic:Bool,
 	variablePrice:Bool,
-	#if (js && !test)
-	element:js.JQuery,
-	#end
+	/*#if (js && !test)
+	?element:js.JQuery,
+	#end*/
 }
 
 @:keep
@@ -112,26 +111,25 @@ typedef UserOrder = {
 	?userEmail2:String,
 	
 	//deprecated
-	productId:Int,
-	productRef:String,
-	productName:String,	
-	productPrice:Float,
-	productImage:String,
-	productQt:Float,
-	productUnit:UnitType,
-	productHasFloatQt:Bool,
-	productHasVariablePrice:Bool,
+	?productId:Int,
+	?productRef:String,
+	?productName:String,	
+	?productPrice:Float,
+	?productImage:String,
+	?productQt:Float,
+	?productUnit:UnitType,
+	?productHasFloatQt:Bool,
+	?productHasVariablePrice:Bool,
 	//new way
 	?product:ProductInfo,
 
-	
 	quantity:Float,
 	smartQt:String,
 	subTotal:Float,
 	
-	fees:Float,
-	percentageName:String,
-	percentageValue:Float,
+	fees:Null<Float>,
+	percentageName:Null<String>,
+	percentageValue:Null<Float>,
 	total:Float,
 	
 	//flags

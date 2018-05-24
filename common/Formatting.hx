@@ -50,7 +50,7 @@ class Formatting
 	 *  Display a unit
 	 *  @param u - 
 	 */
-	public static function unit(u:UnitType){
+	public static function unit(u:UnitType):String{
 		/*t = sugoi.i18n.Locale.texts;
 		if(u==null) return t._("piece||unit of a product)");
 		return switch(u){

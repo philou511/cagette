@@ -1,6 +1,5 @@
 package react;
 
-import api.react.ReactComponent;
 import api.react.ReactMacro.jsx;
 import js.html.InputElement;
 import Common;

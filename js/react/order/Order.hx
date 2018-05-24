@@ -3,6 +3,7 @@ import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
+import react.product.Product;
 
 /**
  * A User order
@@ -20,12 +21,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		hasPayments = props.parentBox.props.hasPayments;
 		currency = props.parentBox.props.currency;
 		
-		if (state.order.productUnit == null){
-			state.order.productUnit = Piece;
-		}else{
-			//convert ints to enums, enums have been lost in json serialization
-			state.order.productUnit = Type.createEnumIndex(UnitType, cast state.order.productUnit );	
-		}		
+		if (state.order.productUnit == null) state.order.productUnit = Piece;
 		if (state.order.productQt == null) state.order.productQt = 1;
 		
 		state.inputValue = if (state.order.productHasFloatQt || state.order.productHasVariablePrice){
@@ -42,44 +38,51 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		}else{
 			jsx('<div className="col-md-1"></div>');
 		}*/
-		var unit = Formatting.unit(o.productUnit);
 		
+		/*
 		//use smart qt only if hasFloatQt
 		var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-3">${o.productName}</div>');
 		}else{			
 			jsx('<div className="col-md-3">${o.productName} ${o.productQt} ${Formatting.unit(o.productUnit)}</div>');
 		}
+		*/
+		/*var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
+			jsx('<div className="col-md-3">${o.productName}</div>');*/
 		
 		var input =  jsx('<div className="col-md-2">
 			<div className="input-group">
 				<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
-				<div className="input-group-addon">$unit</div>
+				<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
 			</div>
 		</div>');	
 		
-		var s = {backgroundImage:"url(\""+o.productImage+"\")", width:"32px", height:"32px"};
+//		var s = {backgroundImage:"url(\""+o.productImage+"\")", width:"32px", height:"32px"};
+
 		return jsx('<div className="productOrder row">
-			<div className="col-md-1">
-				<div style="$s" className="productImg"></div>
+			<div className="col-md-4">
+				<$Product productInfo=${o.product} />
 			</div>
+
 			<div className="col-md-1 ref">
 				${o.productRef}
 			</div>
-			
-			${productName}
 
 			<div className="col-md-1">
-				${o.productPrice} ${currency}
+				${round(o.quantity * o.productPrice)} ${currency}
 			</div>
+			
 			$input			
+			
 			${paidInput()}
 			
 			<div className="col-md-2">
 				Alterné avec X <br/>
 				Inverser alternance <input type="checkbox" name="paid" value="1" onChange="" />
-			</div>				
+			</div>
+
 			${makeInfos()}
+
 		</div>');
 	}
 	
@@ -100,8 +103,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		var o = state.order;
 		return if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-12 infos">
-				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}
-				/ Prix <b>${round(o.quantity * o.productPrice)} ${currency}</b>
+				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}				
 			</div>');
 		}else{
 			null;
@@ -140,4 +142,3 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		}*/
 	}
 }
-

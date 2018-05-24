@@ -105,6 +105,7 @@ class UserContract extends Object
 				x.userEmail2 = o.user2.email;
 			}
 			
+			//deprecated
 			x.productId = o.product.id;
 			x.productRef = o.product.ref;
 			x.productQt = o.product.qt;
@@ -113,6 +114,9 @@ class UserContract extends Object
 			x.productImage = o.product.getImage();
 			x.productHasFloatQt = o.product.hasFloatQt;
 			x.productHasVariablePrice = o.product.variablePrice;
+			//new way
+			x.product = o.product.infos();
+
 			
 			x.quantity = o.quantity;
 			

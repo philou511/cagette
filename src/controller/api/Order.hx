@@ -43,7 +43,7 @@ class Order extends Controller
 		}
 		var orders = db.UserContract.prepare(orders);
 		
-		Sys.print(Json.stringify({success:true,orders:orders}));
+		Sys.print(tink.Json.stringify({success:true,orders:orders}));
 	}
 	
 	/**

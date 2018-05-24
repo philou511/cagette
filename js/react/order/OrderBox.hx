@@ -25,17 +25,16 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	override function componentDidMount()
 	{
 		//request api avec user + distrib
-		var p = HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId},JSON);
-		p.then(function(data:Dynamic) {
-
-			if (Reflect.hasField(data, "error")) {
-				setState(cast {error:data.error.message});
-			}else{
-				//WOOT
-				setState({orders:data.orders, error:null});
-			}
-			
-			
+		var p = HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT);
+		p.then(function(data:String) {
+			//WOOT
+			var data : {orders:Array<UserOrder>} = tink.Json.parse(data);
+			var orders = data.orders;
+			/*for( o in orders){
+				//convert ints to enums, enums have been lost in json serialization
+				o.productUnit = Type.createEnumIndex(UnitType, cast o.productUnit );	
+			}*/
+			setState({orders:orders, error:null});
 		}).catchError(function(error) {
 			trace("PROMISE ERROR :" + Std.string(error));
 			setState(cast {error:error.message});
@@ -53,6 +52,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 					Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b>			
 				</p>
 				<$Error error="${state.error}" />
+				<hr/>
 				${renderOrders}	
 				<div>
 					<a onClick=${onClick} className="btn btn-primary">
@@ -95,16 +95,11 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		
 		var p = HttpUtil.fetch("/api/order/update/"+props.userId, POST, req,JSON);
 		p.then(function(data:Dynamic) {
-			
-			if (Reflect.hasField(data, "error")) {
-				this.state.error = data.error.message;
-				setState(this.state);
-			}else{
-				//WOOT
-				//setState({orders:data.orders,error:null});
-				trace("OK");
-				if (props.onSubmit != null) props.onSubmit();
-			}
+
+			//WOOT
+			trace("OK");
+			if (props.onSubmit != null) props.onSubmit();
+
 		}).catchError(function(data) {
 			trace("PROMISE ERROR", data);
 			this.state.error = data.error.message;

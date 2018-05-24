@@ -7,6 +7,7 @@
 -lib react
 -lib react-router-4
 -lib modular
+-lib tink_json
 
 -D plugins
 -D no-deprecation-warnings
