@@ -13,7 +13,7 @@ import react.router.Link;
  * A box to add an order to a member
  * @author fbarbut
  */
-class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int,userId:Int,distributionId:Int},{products:Array<ProductInfo>,error:String,selected:Int}>
+class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int,userId:Int,distributionId:Int,onInsert:UserOrder->Void},{products:Array<ProductInfo>,error:String,selected:Int}>
 {
 
 	public function new(props) 
@@ -67,9 +67,21 @@ class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int
 	}
 
 	function onSelectProduct(p:ProductInfo){
-
-		//trace("on select",p);
-
+		var uo : UserOrder = cast {
+			id:null,
+			product:p,
+			quantity:1,
+			productId:p.id,
+			productPrice:p.price,
+			paid:false,
+			invert:false,
+			user2:null
+		};
+		props.onInsert(uo);
+		setState(cast {selected:p.id});
+		
+		//do not insert order now, just warn the OrderBox		
+/*
 		//insert order
 		var data = [{id:null,productId:p.id,qt:1,paid:false,invert:false,user2:null} ];
 		var req = {
@@ -92,10 +104,7 @@ class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int
 			trace("PROMISE ERROR", d);
 			setState(cast {error:d.error.message});
 		});
-		
-
-
-		
+*/		
 	}
 	
 

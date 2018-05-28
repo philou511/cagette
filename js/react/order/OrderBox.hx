@@ -4,6 +4,9 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 import utils.HttpUtil;
+import react.router.HashRouter;
+import react.router.Route;
+import react.router.Switch;
 import react.router.Link;
 
 typedef OrderBoxState = {orders:Array<UserOrder>,error:String};
@@ -15,7 +18,7 @@ typedef OrderBoxProps = {
 	date:String,
 	place:String,
 	userName:String,
-	onSubmit:Void->Void,
+	onValidate:Void->Void,
 	currency:String,
 	hasPayments:Bool
 };
@@ -35,12 +38,12 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	
 	override function componentDidMount()
 	{
-		if(App.SAVED_ORDER_STATE!=null) {
+		/*if(App.SAVED_ORDER_STATE!=null) {
 			//get state from saved state
 			trace("restore previous state");
 			setState(App.SAVED_ORDER_STATE);
 			return;
-		}
+		}*/
 
 		//request api avec user + distrib
 		HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT)
@@ -52,17 +55,34 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				o.productUnit = Type.createEnumIndex(UnitType, cast o.productUnit );	
 			}*/
 			setState({orders:data.orders, error:null});
-		}).catchError(function(error) {
-			trace("PROMISE ERROR :" + Std.string(error));
-			setState(cast {error:error.message});
+		}).catchError(function(data) {
+			var data = Std.string(data);
+			trace("Error",data);
+			if(data.substr(0,1)=="{"){
+				//json error from server
+				var data : ErrorInfos = haxe.Json.parse(data);
+				setState(cast {error:data.error.message} );
+			}else{
+				//js error
+				setState(cast {error:data} );
+			}
 		});
 	}
 	
 	override public function render(){
 		
-		var renderOrders = this.state.orders.map(function(o) return jsx('<$Order key=${o.id} order="$o" onUpdate=$onUpdate parentBox=${this} />') );
-		
-		return jsx('
+		//edit orders 
+
+
+		var renderOrders = this.state.orders.map(function(o){
+			var k :String = if(o.id!=null) {
+				Std.string(o.id);
+			} else {
+				o.productId+"-"+Std.random(99999);
+			};
+			return jsx('<$Order key="$k" order="$o" onUpdate=$onUpdate parentBox=${this} />')	;
+		}  );
+		var renderOrderBox = function() return jsx('
 			<div>
 				<h3>Commandes de ${props.userName}</h3>
 				<p>
@@ -80,6 +100,37 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				</div>
 			</div>			
 		');
+
+
+		var onProductSelected = function(uo:UserOrder){
+
+			var existingOrder = Lambda.find(state.orders,function(x) return x.productId==uo.productId );
+			if(existingOrder!=null){
+				existingOrder.quantity += uo.quantity;
+				this.setState(this.state);
+			}else{
+				this.state.orders.push(uo);
+				this.setState(this.state);
+			}
+		
+		};
+
+
+		//insert product box
+		var renderInsertBox = function(){
+			return jsx('<$InsertOrderBox contractId="${props.contractId}" userId="${props.userId}" distributionId="${props.distributionId}" onInsert=$onProductSelected/>');
+		} 
+
+		return jsx('<$HashRouter>
+			<$Switch>
+				<$Route path="/" exact=$true render=$renderOrderBox	 />
+				<$Route path="/insert" exact=$true render=$renderInsertBox />
+			</$Switch>
+		</$HashRouter>');
+
+
+
+		
 	}
 	
 	/**
@@ -91,8 +142,10 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			if (o.id == data.id) {
 				o.quantity = data.quantity;
 				o.paid = data.paid;
+				break;
 			}
 		}
+		setState(this.state);
 		/*
 		//save state outside component
 		trace("save state");
@@ -119,7 +172,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 
 			//WOOT
 			trace("OK");
-			if (props.onSubmit != null) props.onSubmit();
+			if (props.onValidate != null) props.onValidate();
 
 		}).catchError(function(data) {
 			trace("PROMISE ERROR", data);

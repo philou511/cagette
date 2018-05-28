@@ -119,28 +119,18 @@ class App {
 
 		untyped App.j("#myModal").modal();
 
-		var onSubmit = function(){
+		var onValidate = function(){
 			trace("refresh page to "+callbackUrl);
 			js.Browser.location.href = /*"/contractAdmin/orders/" + contractId + (distributionId == null?"":"?d=" + distributionId);*/callbackUrl;
 		};
 
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-		
-		var renderOrderBox = function(){
-			return jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
+
+		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
 						contractId="$contractId" date="$date" place="$place" userName="$userName" 
-						onSubmit=$onSubmit currency=$currency hasPayments=$hasPayments />');
-		}
+						onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node);
 
-		var renderInsertBox = function() return jsx('<$InsertOrderBox contractId="$contractId" userId="$userId" distributionId="$distributionId"/>');
-
-		ReactDOM.render(jsx('<$HashRouter>
-			<$Switch>
-				<$Route path="/" exact=$true render=$renderOrderBox	 />
-				<$Route path="/insert" exact=$true render=$renderInsertBox />
-			</$Switch>
-		</$HashRouter>'), node );
 	}
 
 	public static function roundTo(n:Float, r:Int):Float {
