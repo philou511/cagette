@@ -1,6 +1,7 @@
 package controller.api;
 import haxe.Json;
 import tink.core.Error;
+import Common;
 
 /**
  * Public user API
@@ -38,6 +39,19 @@ class User extends Controller
 		service.UserService.register(firstName, lastName, email, phone, pass);
 		
 		Sys.print(Json.stringify({success:true}));
+	}
+
+
+	/**
+	 *  get users of current group
+	 */
+	@logged
+	function doGetFromGroup(){
+
+		if(!app.user.canAccessMembership()) throw new tink.core.Error(403,"Access forbidden");
+
+		var members:Array<UserInfo> = service.UserService.getFromGroup(app.user.amap).map(function(m) return m.infos() );
+		Sys.print(tink.Json.stringify({users:members}));
 	}
 	
 }

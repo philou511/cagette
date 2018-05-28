@@ -60,9 +60,34 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
 				</div>');
 		}
-		
-//		var s = {backgroundImage:"url(\""+o.productImage+"\")", width:"32px", height:"32px"};
 
+		var alternated = if(props.parentBox.props.contractType==0 && props.parentBox.state.users!=null){
+			//constant orders
+			var options = props.parentBox.state.users.map(function(x){				
+				return  if(x.id==o.userId2){
+					jsx('<option value=${x.id} selected="selected" >${x.name}</option>');
+				}else{
+					jsx('<option value=${x.id} >${x.name}</option>');
+				}
+			} );
+
+			var checkbox = if(o.invertSharedOrder){
+				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=$onChangeInvert />');
+			}else{
+				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="1"  onChange=$onChangeInvert />');
+			}	
+
+			jsx('<div>
+				<select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${onChangeUser2}>
+					<option value="0">-</option>
+					$options					
+				</select>				
+				$checkbox
+			</div>');
+		}else{
+			null;
+		}
+		
 		return jsx('<div className="productOrder row">
 			<div className="col-md-4">
 				<$Product productInfo=${o.product} />
@@ -83,12 +108,8 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 			
 			${paidInput()}
 						
-			<div className="col-md-2">
-				Alterné avec X <br/>
-				Inverser alternance <input type="checkbox" name="paid" value="1" onChange=$onChangeInvert />
-			</div>
+			<div className="col-md-3">$alternated</div>
 	
-
 		</div>');
 	}
 	
@@ -99,9 +120,9 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	function paidInput(){
 		if(hasPayments) return null;
 		if(state.order.paid){
-			return jsx('<div className="col-md-1">Payé <input type="checkbox" name="paid" value="1" checked="1" onChange=${onChangePaid} /></div>');
+			return jsx('<div className="col-md-1"><input type="checkbox" name="paid" value="1" checked="checked" onChange=${onChangePaid} /></div>');
 		}else{
-			return jsx('<div className="col-md-1">Payé <input type="checkbox" name="paid" value="1" onChange=${onChangePaid} /></div>');
+			return jsx('<div className="col-md-1"><input type="checkbox" name="paid" value="1" onChange=${onChangePaid} /></div>');
 		}
 	}
 	
@@ -133,17 +154,23 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		if (props.onUpdate != null) props.onUpdate(state.order);
 	}
 
-	function onChangePaid(e:js.html.Event){
-		//var value:Bool = untyped (e.target.value == "") ? "0" : e.target.value;
-		trace( untyped e.target.value , untyped e.target.checked);
+	function onChangePaid(e:js.html.Event){		
 		state.order.paid = untyped e.target.checked;
-		trace("state after PAID",state);
 		this.setState(state);
 		if (props.onUpdate != null) props.onUpdate(state.order);
 	}
 
 	function onChangeInvert(e:js.html.Event){
+		state.order.invertSharedOrder = untyped e.target.checked;
+		this.setState(state);
+		if (props.onUpdate != null) props.onUpdate(state.order);
+	}
 
+	function onChangeUser2(e:js.html.Event){
+		var v = Std.parseInt(untyped e.target.value);
+		state.order.userId2 = v==0 ? null : v;
+		this.setState(state);
+		if (props.onUpdate != null) props.onUpdate(state.order);
 	}
 	
 	function onKeyPress(event:js.html.KeyboardEvent){

@@ -115,22 +115,25 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool,callbackUrl:String){
+	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, contractType:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool,callbackUrl:String){
 
 		untyped App.j("#myModal").modal();
-
-		var onValidate = function(){
-			trace("refresh page to "+callbackUrl);
-			js.Browser.location.href = /*"/contractAdmin/orders/" + contractId + (distributionId == null?"":"?d=" + distributionId);*/callbackUrl;
-		};
-
+		var onValidate = function() js.Browser.location.href = callbackUrl;
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-
 		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
-						contractId="$contractId" date="$date" place="$place" userName="$userName" 
-						onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node);
+			contractId="$contractId" contractType="$contractType" date="$date" place="$place" userName="$userName" 
+			onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
 
+	}
+
+	function postReact(){
+		trace("post react");
+		haxe.Timer.delay(function(){
+			untyped jq('[data-toggle="tooltip"]').tooltip();
+			untyped jq('[data-toggle="popover"]').popover();
+		},500);
+		
 	}
 
 	public static function roundTo(n:Float, r:Int):Float {

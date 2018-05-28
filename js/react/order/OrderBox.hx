@@ -9,7 +9,11 @@ import react.router.Route;
 import react.router.Switch;
 import react.router.Link;
 
-typedef OrderBoxState = {orders:Array<UserOrder>,error:String};
+typedef OrderBoxState = {
+	orders:Array<UserOrder>,
+	error:String,
+	users:Null<Array<UserInfo>>,
+};
 typedef OrderBoxProps = {
 	userId:Int,
 	distributionId:Int,
@@ -33,17 +37,11 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	public function new(props) 
 	{
 		super(props);	
-		state = { orders : [], error : null };
+		state = { orders : [], error : null, users:null };
 	}
 	
 	override function componentDidMount()
 	{
-		/*if(App.SAVED_ORDER_STATE!=null) {
-			//get state from saved state
-			trace("restore previous state");
-			setState(App.SAVED_ORDER_STATE);
-			return;
-		}*/
 
 		//request api avec user + distrib
 		HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT)
@@ -55,16 +53,42 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				o.productUnit = Type.createEnumIndex(UnitType, cast o.productUnit );	
 			}*/
 			setState({orders:data.orders, error:null});
+
+			if(props.contractType==0) loadUsers();
+
 		}).catchError(function(data) {
 			var data = Std.string(data);
 			trace("Error",data);
 			if(data.substr(0,1)=="{"){
 				//json error from server
 				var data : ErrorInfos = haxe.Json.parse(data);
-				setState(cast {error:data.error.message} );
+				setState( cast {error:data.error.message} );
 			}else{
 				//js error
-				setState(cast {error:data} );
+				setState( cast {error:data} );
+			}
+		});
+	}
+
+	/**
+	 *  load user list when contract is constant orders
+	 */
+	function loadUsers(){
+		HttpUtil.fetch("/api/user/getFromGroup/", GET, PLAIN_TEXT)
+		.then(function(data:String) {
+
+			var data : {users:Array<UserInfo>} = tink.Json.parse(data);
+			setState({users:data.users, error:null});
+		}).catchError(function(data) {
+
+			var data = Std.string(data);
+			if(data.substr(0,1)=="{"){
+				//json error from server
+				var data : ErrorInfos = haxe.Json.parse(data);
+				setState( cast {error:data.error.message} );
+			}else{
+				//js error
+				setState( cast {error:data} );
 			}
 		});
 	}
@@ -90,6 +114,14 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				</p>
 				<$Error error="${state.error}" />
 				<hr/>
+				<div className="row header">
+					<div className="col-md-4">Produit</div>
+					<div className="col-md-1">Ref.</div>
+					<div className="col-md-1">Prix</div>
+					<div className="col-md-2">Qté</div>
+					<div className="col-md-1">Payé</div>
+					<div className="col-md-3">Alterné avec :</div>
+				</div>
 				${renderOrders}	
 				<div>
 					<a onClick=${onClick} className="btn btn-primary">
@@ -157,9 +189,8 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	 */
 	function onClick(_){
 		
-		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool}>();
-		for ( o in state.orders) data.push({id:o.id, productId : o.productId, qt: o.quantity, paid : o.paid});
-		trace("CLICK : " + data);
+		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
+		for ( o in state.orders) data.push({id:o.id, productId : o.productId, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
 		
 		var req = {
 			orders:haxe.Json.stringify(data),
@@ -171,13 +202,19 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		p.then(function(data:Dynamic) {
 
 			//WOOT
-			trace("OK");
 			if (props.onValidate != null) props.onValidate();
 
 		}).catchError(function(data) {
-			trace("PROMISE ERROR", data);
-			this.state.error = data.error.message;
-			setState(this.state);
+			var data = Std.string(data);
+			trace("Error",data);
+			if(data.substr(0,1)=="{"){
+				//json error from server
+				var data : ErrorInfos = haxe.Json.parse(data);
+				setState( cast {error:data.error.message} );
+			}else{
+				//js error
+				setState( cast {error:data} );
+			}
 		});
 		
 	}

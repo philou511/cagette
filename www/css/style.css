@@ -268,6 +268,13 @@ table.listing tr td {
 table.table tr.disabled td, table.table tr.inactive td {
   opacity: 0.4; }
 
+/* DIV TABLE */
+div.header {
+  font-weight: bold;
+  color: #AAA;
+  border-bottom: 1px solid #DDD;
+  margin-bottom: 12px; }
+
 /*table.table>tbody>tr>th{
 	background-color:white;
 	color:#BBB;
@@ -313,7 +320,7 @@ div.reportHeader {
     border-color: #ebc349;
     text-decoration: none;
     transition: all 0.15s ease; }
-  .clickable:active, .clickable:focus {
+  .clickable:active {
     cursor: pointer;
     background-color: #F0D277;
     border-color: #ebc349;

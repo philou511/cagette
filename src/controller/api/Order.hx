@@ -54,7 +54,7 @@ class Order extends Controller
 		
 		//params
 		var p = app.params;
-		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invert:Bool,user2:Int}>();
+		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
 		data = haxe.Json.parse(p.get("orders"));
 		
 		var distributionId = Std.parseInt(p.get("distributionId"));
@@ -105,13 +105,13 @@ class Order extends Controller
 			//user2 + invert
 			var user2 : db.User = null;
 			var invert = false;
-			if ( o.user2 != null ) {
-				user2 = db.User.manager.get(o.user2);
-				if (user2 == null) throw t._("Unable to find user #::num::",{num:o.user2});
+			if ( o.userId2 != null ) {
+				user2 = db.User.manager.get(o.userId2,false);
+				if (user2 == null) throw t._("Unable to find user #::num::",{num:o.userId2});
 				if (!user2.isMemberOf(product.contract.amap)) throw t._("::user:: is not part of this group",{user:user2});
 				if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
 				
-				invert = o.invert;
+				invert = o.invertSharedOrder;
 			}
 			
 			//quantity				

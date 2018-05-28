@@ -86,13 +86,13 @@
 							
 							::if distribution!=null::
 							<a class="btn btn-default btn-xs"
-								onclick="_.initOrderBox(::m.userId::,::distribution.id::,::distribution._contract.id::,'::hDate(distribution.date)::','::distribution._place.toString()::','::m.userName::','::user.getAmap().currency::',::user.getAmap().hasPayments()::,'/contractAdmin/orders/::c.id::?d=::distribution.id::')">
+								onclick="_.initOrderBox(::m.userId::,::distribution.id::,::distribution._contract.id::,::distribution._contract.type::,'::hDate(distribution.date)::','::distribution._place.toString()::','::m.userName::','::user.getAmap().currency::',::user.getAmap().hasPayments()::,'/contractAdmin/orders/::c.id::?d=::distribution.id::')">
 								<span class="glyphicon glyphicon-edit"></span>
 								N.elle interface
 							</a>
 							::else::
 							<a class="btn btn-default btn-xs"
-								onclick="_.initOrderBox(::m.userId::, null, ::c.id::, null, null, '::m.userName::','::user.getAmap().currency::',::user.getAmap().hasPayments()::,'/contractAdmin/orders/::c.id::')">
+								onclick="_.initOrderBox(::m.userId::, null, ::c.id::,::c.type::, null, null, '::m.userName::','::user.getAmap().currency::',::user.getAmap().hasPayments()::,'/contractAdmin/orders/::c.id::')">
 								<span class="glyphicon glyphicon-edit"></span>
 								N.elle interface
 							</a>

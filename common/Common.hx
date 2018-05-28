@@ -156,6 +156,12 @@ typedef PlaceInfos = {
 	longitude:Float
 }
 
+typedef UserInfo = {
+	id:Int,
+	name:String,
+	email:String
+}
+
 
 typedef GroupOnMap = {
 	id:Int,
