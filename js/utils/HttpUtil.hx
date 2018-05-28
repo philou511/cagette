@@ -21,6 +21,9 @@ import js.html.XMLHttpRequest;
   var JSON = "application/json";
 }
 
+//json version of a tink.core.Error
+typedef ErrorInfos = {error:{code:Int,message:String,stack:String}}
+
 class HttpUtil
 {
   	static public function fetch(
@@ -53,6 +56,7 @@ class HttpUtil
         		http.setRequestHeader("Accept", accept);
 
       		http.onreadystatechange = function() {
+				//trace("readystate",http.readyState, http.status);
 				if (http.readyState == 4){
 					switch (http.status){
 						case 200:
@@ -61,12 +65,11 @@ class HttpUtil
 								try {
 									var json = Json.parse(http.responseText);
 									resolve(json);
-								}
-								catch (err: Dynamic)
+								} catch (err: Dynamic){
 									reject(err);
-
+								}
 								default:
-								resolve(http.responseText);
+									resolve(http.responseText);
 							}
 
 						case 204:

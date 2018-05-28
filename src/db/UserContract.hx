@@ -116,6 +116,7 @@ class UserContract extends Object
 			x.productHasVariablePrice = o.product.variablePrice;
 			//new way
 			x.product = o.product.infos();
+			x.product.price = o.productPrice;//do not use current price, but price of the order
 
 			
 			x.quantity = o.quantity;

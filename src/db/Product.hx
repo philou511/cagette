@@ -96,7 +96,6 @@ class Product extends Object
 			id : id,
 			ref : ref,
 			name : name,
-			//type : Type.createEnumIndex(ProductType, type),
 			image : getImage(),
 			contractId : contract.id,
 			price : getPrice(),
@@ -113,7 +112,8 @@ class Product extends Object
 			qt:qt,
 			unitType:unitType,
 			organic:organic,
-			variablePrice:variablePrice
+			variablePrice:variablePrice,
+			active: active
 		}
 		
 		if(populateCategories){

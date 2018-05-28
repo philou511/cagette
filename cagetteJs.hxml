@@ -6,6 +6,7 @@
 -lib react
 -lib react-router-4
 -lib modular
+-lib tink_json
 -main App
 -debug
 -js www/js/app.js

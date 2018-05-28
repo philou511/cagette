@@ -21,6 +21,9 @@ class App {
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
 
+	//i dont want to use redux now... saved state from react.OrderBox
+	public static var SAVED_ORDER_STATE : Dynamic;
+
 	function new(?lang="fr",?currency="&euro;") {
 		//singleton
 		instance = this;

@@ -50,12 +50,16 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		/*var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-3">${o.productName}</div>');*/
 		
-		var input =  jsx('<div className="col-md-2">
-			<div className="input-group">
-				<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
-				<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
-			</div>
-		</div>');	
+		var input =  if (o.productHasFloatQt || o.productHasVariablePrice){
+			jsx('<div className="input-group">
+					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
+					<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
+				</div>');	
+		}else{
+			jsx('<div className="input-group">
+					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
+				</div>');
+		}
 		
 //		var s = {backgroundImage:"url(\""+o.productImage+"\")", width:"32px", height:"32px"};
 
@@ -69,19 +73,21 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 			</div>
 
 			<div className="col-md-1">
-				${round(o.quantity * o.productPrice)} ${currency}
+				${round(o.quantity * o.productPrice)}&nbsp;${currency}
 			</div>
-			
-			$input			
-			
-			${paidInput()}
 			
 			<div className="col-md-2">
-				Alterné avec X <br/>
-				Inverser alternance <input type="checkbox" name="paid" value="1" onChange="" />
+				$input			
+				${makeInfos()}
 			</div>
-
-			${makeInfos()}
+			
+			${paidInput()}
+						
+			<div className="col-md-2">
+				Alterné avec X <br/>
+				Inverser alternance <input type="checkbox" name="paid" value="1" onChange=$onChangeInvert />
+			</div>
+	
 
 		</div>');
 	}
@@ -102,7 +108,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	function makeInfos(){
 		var o = state.order;
 		return if (o.productHasFloatQt || o.productHasVariablePrice){
-			jsx('<div className="col-md-12 infos">
+			jsx('<div className="infos">
 				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}				
 			</div>');
 		}else{
@@ -134,6 +140,10 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		trace("state after PAID",state);
 		this.setState(state);
 		if (props.onUpdate != null) props.onUpdate(state.order);
+	}
+
+	function onChangeInvert(e:js.html.Event){
+
 	}
 	
 	function onKeyPress(event:js.html.KeyboardEvent){

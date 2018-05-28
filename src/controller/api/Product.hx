@@ -1,5 +1,4 @@
 package controller.api;
-import haxe.Json;
 import Common;
 
 /**
@@ -13,11 +12,9 @@ class Product extends Controller
 	
 		if(args==null || args.contractId==null) throw "invalid params";
 
-		var out = Lambda.map(args.contractId.getProducts(false),function(x) return x.infos() );
-
-		Sys.print(haxe.Json.stringify({ success:true, products:Lambda.array(out) }));
+		var out = {products:new Array<ProductInfo>()};
+		for( p in args.contractId.getProducts(false)) out.products.push(p.infos(false,false)); 
+		Sys.print(tink.Json.stringify(out));
 	}
-	
-
 	
 }

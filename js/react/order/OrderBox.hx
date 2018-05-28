@@ -7,10 +7,21 @@ import utils.HttpUtil;
 import react.router.Link;
 
 typedef OrderBoxState = {orders:Array<UserOrder>,error:String};
-typedef OrderBoxProps = {userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String, onSubmit:Void->Void, currency:String, hasPayments:Bool};
+typedef OrderBoxProps = {
+	userId:Int,
+	distributionId:Int,
+	contractId:Int,
+	contractType:Int,
+	date:String,
+	place:String,
+	userName:String,
+	onSubmit:Void->Void,
+	currency:String,
+	hasPayments:Bool
+};
 
 /**
- * A box to edit the orders of a member
+ * A box to edit/add orders of a member
  * @author fbarbut
  */
 class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBoxState>
@@ -24,17 +35,23 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	
 	override function componentDidMount()
 	{
+		if(App.SAVED_ORDER_STATE!=null) {
+			//get state from saved state
+			trace("restore previous state");
+			setState(App.SAVED_ORDER_STATE);
+			return;
+		}
+
 		//request api avec user + distrib
-		var p = HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT);
-		p.then(function(data:String) {
-			//WOOT
+		HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT)
+		.then(function(data:String) {
+
 			var data : {orders:Array<UserOrder>} = tink.Json.parse(data);
-			var orders = data.orders;
 			/*for( o in orders){
 				//convert ints to enums, enums have been lost in json serialization
 				o.productUnit = Type.createEnumIndex(UnitType, cast o.productUnit );	
 			}*/
-			setState({orders:orders, error:null});
+			setState({orders:data.orders, error:null});
 		}).catchError(function(error) {
 			trace("PROMISE ERROR :" + Std.string(error));
 			setState(cast {error:error.message});
@@ -76,6 +93,10 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				o.paid = data.paid;
 			}
 		}
+		/*
+		//save state outside component
+		trace("save state");
+		App.SAVED_ORDER_STATE = this.state;*/
 	}
 	
 	/**
@@ -107,6 +128,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		});
 		
 	}
+
 	
 	
 }

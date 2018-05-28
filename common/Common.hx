@@ -31,17 +31,17 @@ typedef OrderInSession = {
 typedef ProductInfo = {
 	id : Int,
 	name : String,
-	?ref : String,
+	ref : Null<String>,
 	image : Null<String>,
 	contractId : Int,
 	price : Float,
-	vat : Float,					//VAT rate
-	vatValue : Float,				//amount of VAT included in the price
+	vat : Null<Float>,					//VAT rate
+	vatValue : Null<Float>,				//amount of VAT included in the price
 	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
 	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
 	desc : Null<String>,
-	categories : Array<Int>,	//used in old shop
-	subcategories : Array<Int>,  //used in new shop
+	categories : Null<Array<Int>>,	//used in old shop
+	subcategories : Null<Array<Int>>,  //used in new shop
 	orderable : Bool,			//can be currently ordered
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
@@ -49,6 +49,7 @@ typedef ProductInfo = {
 	unitType:Null<UnitType>,
 	organic:Bool,
 	variablePrice:Bool,
+	active:Bool
 	/*#if (js && !test)
 	?element:js.JQuery,
 	#end*/

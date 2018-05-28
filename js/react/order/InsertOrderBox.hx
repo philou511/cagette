@@ -6,6 +6,7 @@ import Common;
 import utils.HttpUtil;
 import react.product.ProductSelect;
 import react.router.Redirect;
+import react.router.Link;
 
 
 /**
@@ -23,11 +24,29 @@ class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int
 	
 	override function componentDidMount()
 	{
-		HttpUtil.fetch("/api/product/get/", GET, {contractId:props.contractId},JSON)
-		.then(function(data:Dynamic) {
-			setState({products:cast data.products, error:null,selected:null});
-		}).catchError(function(error) {
-			setState(cast {error:error.message});
+		//load product list
+		HttpUtil.fetch("/api/product/get/", GET, {contractId:props.contractId},PLAIN_TEXT)
+		.then(function(data:String) {
+
+			/*var data : {products:Array<ProductInfo>} = haxe.Json.parse(data);
+			for( p in data.products) {
+				p.unitType = Type.createEnumIndex(UnitType,untyped  p.unitType);
+			}*/
+
+			var data : {products:Array<ProductInfo>} = tink.Json.parse(data);
+			setState({products:data.products, error:null,selected:null});
+
+		}).catchError(function(data) {
+			var data = Std.string(data);
+			trace("Error",data);
+			if(data.substr(0,1)=="{"){
+				//json error from server
+				var data : ErrorInfos = haxe.Json.parse(data);
+				setState(cast {error:data.error.message} );
+			}else{
+				//js error
+				setState(cast {error:data} );
+			}
 		});
 	}
 	
@@ -39,16 +58,17 @@ class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int
 			<div>
 				$redirect
 				<h3>Choisissez le produit à ajouter</h3>
+				<$Link className="btn btn-default" to="/"><span className="glyphicon glyphicon-chevron-left"></span> Retour</$Link>
 				<$Error error="${state.error}" />
+				<hr />
 				<$ProductSelect onSelect=$onSelectProduct products=${state.products} />
 			</div>			
 		');
 	}
 
-
 	function onSelectProduct(p:ProductInfo){
 
-		trace("on select",p);
+		//trace("on select",p);
 
 		//insert order
 		var data = [{id:null,productId:p.id,qt:1,paid:false,invert:false,user2:null} ];
@@ -64,7 +84,7 @@ class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int
 				setState(cast {error:d.error.message});
 			}else{
 				//WOOT
-				trace("OK");
+				//trace("OK");
 				//go to OrderBox with a redirect
 				setState(cast {selected:p.id});
 			}
