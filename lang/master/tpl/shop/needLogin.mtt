@@ -29,9 +29,15 @@
 ::end::	
 
 <script language="javascript">
+	::if(register==true)::
+	$(function(){
+		_.registerBox('::raw redirect::','::raw message::',::phoneRequired::);	
+	});
+	::else::
 	$(function(){
 		_.loginBox('::raw redirect::','::raw message::',::phoneRequired::);	
 	});
+	::end::
 	
 </script>
 ::end::

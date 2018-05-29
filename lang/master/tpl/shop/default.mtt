@@ -153,7 +153,13 @@
 		</h3>
 		<div id="cart"></div>
 		
-		<a onClick="cart.submit();" class="btn btn-default">::_("Validate")::</a>
+		<a onClick="cart.submit();" class="btn btn-default">
+			::if(user==null)::
+				::_("Sign up and validate the order")::
+			::else::
+				::_("Validate")::
+			::end::
+		</a>
 		
 		<a class="infos" href='/contract'>::_("You can check your previous orders in 'my account' section")::</a>
 		

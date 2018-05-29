@@ -168,7 +168,7 @@ class App {
 	}
 
 	/**
-	 * Displays an ajax login box
+	 * Displays a login box
 	 */
 	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false) {
 		var m = App.j("#myModal");
@@ -179,12 +179,15 @@ class App {
 		return false;
 	}
 
-	public function registerBox(redirectUrl:String,?phoneRequired=false) {
+	/**
+	 *  Displays a sign up box
+	 */
+	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 

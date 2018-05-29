@@ -36,7 +36,7 @@ class Main extends Controller {
 		view.openContracts = openContracts;
 		
 		//s'inscrire a une distribution
-		view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.getContracts(), function(c) return c.distributorNum > 0);
+		view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.amap.getActiveContracts(), function(c) return c.distributorNum > 0);
 		
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;

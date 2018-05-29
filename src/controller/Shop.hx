@@ -148,6 +148,7 @@ class Shop extends Controller
 		if (app.user == null) {
 			view.redirect = "/shop/validate/" + place.id + "/" + date.toString().substr(0, 10);
 			view.group = place.amap;
+			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
 			return;
 		}

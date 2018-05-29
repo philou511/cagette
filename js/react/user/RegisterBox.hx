@@ -4,7 +4,7 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 
 typedef RegisterBoxState = {firstName:String, lastName:String, email:String, password:String, error:String, phone:String};
-typedef RegisterBoxProps = {redirectUrl:String, phoneRequired:Bool};
+typedef RegisterBoxProps = {redirectUrl:String,message:String,phoneRequired:Bool};
 
 
 /**
@@ -39,6 +39,7 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 		return jsx('
 			<div>
 				<$Error error="${state.error}" />
+				<$Message message="${props.message}" />
 				<form action="" method="post" className="form-horizontal">
 					<div className="form-group">
 						<label htmlFor="firstName" className="col-sm-4 control-label">Prénom : </label>

@@ -182,11 +182,15 @@ class Contract extends Object
 	public function getUsers():Array<db.User> {
 		var pids = getProducts().map(function(x) return x.id);
 		var ucs = UserContract.manager.search($productId in pids, false);
-		var ucs = Lambda.map(ucs, function(a) return a.user);
+		var ucs2 = [];
+		for( uc in ucs) {
+			ucs2.push(uc.user);
+			if(uc.user2!=null) ucs2.push(uc.user2);
+		}
 		
 		//comme un user peut avoir plusieurs produits au sein d'un contrat, il faut dédupliquer cette liste
 		var out = new Map<Int,db.User>();
-		for (u in ucs) {
+		for (u in ucs2) {
 			out.set(u.id, u);
 		}
 		

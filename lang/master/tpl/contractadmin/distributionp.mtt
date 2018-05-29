@@ -5,7 +5,7 @@
 				::_("This page allows to see if members have participated to deliveries enough.")::
 			</div>
 			
-			<div style="margin:16px 0 16px 0;text-align:center;">
+			<div style="margin:16px 0 16px 0;text-align:center;" class="alert-warning">
 				<strong>::raw __("::distribs:: deliveries requiring ::distributorNum:: person(s)",{distribs:distribs,distributorNum:distributorNum})::,<br/>
 				::users:: ::_("person(s) using this contract"):: <br/>
 				= ::num:: ::_("participations to deliveries to do per family.")::</strong>	
@@ -13,13 +13,12 @@
 			
 			<table class="table table-bordered">
 				<tr>
-					<th>::_("Member")::</th>
-					<th>
-						::raw _("Number of participations to deliveries<br />( done or planned )")::
-					</th>
+					<th class="col-md-5">::_("Suscriber")::</th>
+					<th class="col-md-5">::raw _("Number of attendances to deliveries")::</th>
+					<th class="col-md-2"></th>
 				</tr>
-				::foreach p participations::
-					
+
+				::foreach p participations::					
 				<tr>
 					<td>
 						::p.user.getCoupleName()::
@@ -37,5 +36,25 @@
 				</tr>
 				
 				::end::
-			</table>				
+			</table>	
+			
+			::if(extParticipations.length>0)::
+			<hr/>
+			
+			<table class="table table-bordered">
+				<tr>
+					<th class="col-md-5">::_("Member without order in this contract")::</th>
+					<th class="col-md-5">::raw _("Number of attendances to deliveries")::</th>
+					<th class="col-md-2"></th>
+				</tr>				
+				::foreach p extParticipations::					
+				<tr>
+					<td>::p.user.getCoupleName()::</td>
+					<td>::p.count::</td>					
+					<td></td>
+				</tr>				
+				::end::
+			</table>
+			::end::	
+
 ::end::
