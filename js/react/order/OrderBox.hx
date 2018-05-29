@@ -74,11 +74,12 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	 *  load user list when contract is constant orders
 	 */
 	function loadUsers(){
-		HttpUtil.fetch("/api/user/getFromGroup/", GET, PLAIN_TEXT)
+		HttpUtil.fetch("/api/user/getFromGroup/", GET, {}, PLAIN_TEXT)
 		.then(function(data:String) {
 
 			var data : {users:Array<UserInfo>} = tink.Json.parse(data);
 			setState({users:data.users, error:null});
+
 		}).catchError(function(data) {
 
 			var data = Std.string(data);
@@ -106,21 +107,27 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			};
 			return jsx('<$Order key="$k" order="$o" onUpdate=$onUpdate parentBox=${this} />')	;
 		}  );
+
+
+		var delivery = if(props.date==null){
+			null;
+		}else{
+			jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
+		}
+
 		var renderOrderBox = function() return jsx('
-			<div>
+			<div onKeyPress=${onKeyPress}>
 				<h3>Commandes de ${props.userName}</h3>
-				<p>
-					Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b>			
-				</p>
+				$delivery			
 				<$Error error="${state.error}" />
 				<hr/>
-				<div className="row header">
+				<div className="row tableHeader">
 					<div className="col-md-4">Produit</div>
 					<div className="col-md-1">Ref.</div>
 					<div className="col-md-1">Prix</div>
 					<div className="col-md-2">Qté</div>
 					<div className="col-md-1">Payé</div>
-					<div className="col-md-3">Alterné avec :</div>
+					<div className="col-md-3">Alterné avec</div>
 				</div>
 				${renderOrders}	
 				<div>
@@ -159,9 +166,6 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				<$Route path="/insert" exact=$true render=$renderInsertBox />
 			</$Switch>
 		</$HashRouter>');
-
-
-
 		
 	}
 	
@@ -169,7 +173,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	 * called when an order is updated
 	 */
 	function onUpdate(data:UserOrder){
-		trace("ON UPDATE : " + data);
+		/*trace("ON UPDATE : " + data);
 		for ( o in state.orders){
 			if (o.id == data.id) {
 				o.quantity = data.quantity;
@@ -177,17 +181,13 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				break;
 			}
 		}
-		setState(this.state);
-		/*
-		//save state outside component
-		trace("save state");
-		App.SAVED_ORDER_STATE = this.state;*/
+		setState(this.state);*/
 	}
 	
 	/**
 	 * submit updated orders to the API
 	 */
-	function onClick(_){
+	function onClick(?_){
 		
 		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
 		for ( o in state.orders) data.push({id:o.id, productId : o.productId, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
@@ -217,6 +217,10 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			}
 		});
 		
+	}
+
+	function onKeyPress(e:js.html.KeyboardEvent){
+		if(e.key=="Enter") onClick();
 	}
 
 	

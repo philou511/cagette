@@ -75,7 +75,7 @@ class Order extends Controller
 		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
 		
 		//rights & checks
-		if (!user.isMemberOf(app.user.amap)) throw t._("::user:: is not member of this group", {user:user.name});
+		if (!user.isMemberOf(c.amap)) throw t._("::user:: is not member of this group", {user:user.name});
 		if (!app.user.canManageContract(c)) throw t._("You do not have the authorization to manage this contract");
 		if (d != null && d.validated) throw t._("This delivery has been already validated");
 		if (c.type == db.Contract.TYPE_VARORDER && d == null ) throw "this contract is a 'varying order contract', please provide a distributionId";

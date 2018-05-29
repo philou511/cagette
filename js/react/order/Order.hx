@@ -63,13 +63,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 
 		var alternated = if(props.parentBox.props.contractType==0 && props.parentBox.state.users!=null){
 			//constant orders
-			var options = props.parentBox.state.users.map(function(x){				
-				return  if(x.id==o.userId2){
-					jsx('<option value=${x.id} selected="selected" >${x.name}</option>');
-				}else{
-					jsx('<option value=${x.id} >${x.name}</option>');
-				}
-			} );
+			var options = props.parentBox.state.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
 
 			var checkbox = if(o.invertSharedOrder){
 				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=$onChangeInvert />');
@@ -78,7 +72,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 			}	
 
 			jsx('<div>
-				<select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${onChangeUser2}>
+				<select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${onChangeUser2} value=${o.userId2}>
 					<option value="0">-</option>
 					$options					
 				</select>				
