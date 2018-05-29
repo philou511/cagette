@@ -909,7 +909,7 @@ class ContractAdmin extends Controller
 		
 	}
 	
-	@tpl("contractadmin/edit2.mtt")
+	/*@tpl("contractadmin/edit2.mtt")
 	function doEdit2(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
 		view.nav.push("orders");
 		sendNav(c);
@@ -920,7 +920,7 @@ class ContractAdmin extends Controller
 		view.c = view.contract = c;
 		view.u = user;
 		view.distribution = args.d;
-	}
+	}*/
 	
 	/**
 	 * Edit a user's orders

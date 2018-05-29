@@ -21,69 +21,69 @@ import js.html.XMLHttpRequest;
   var JSON = "application/json";
 }
 
+//json version of a tink.core.Error
+typedef ErrorInfos = {error:{code:Int,message:String,stack:String}}
+
 class HttpUtil
 {
-  static public function fetch(
-    url: String,
-    ?method: HttpMethod = GET,
-    ?params: Dynamic = null,
-    ?accept: FetchFormat = PLAIN_TEXT,
-    ?contentType: String = "application/json"
-  ): Promise<Dynamic> {
-    return new Promise(function(resolve: Dynamic->Void, reject) {
-      var data: String = null;
-      if (params != null)
-      {
-        if (params.body != null)
-          data = Json.stringify(params.body);
-        else
-        {
-          url += (url.indexOf('?') > -1) ? '&' : '?';
-          url += objToString(params);
-        }
-      }
+  	static public function fetch(
+    	url: String,
+    	?method: HttpMethod = GET,
+    	?params: Dynamic = null,
+    	?accept: FetchFormat = PLAIN_TEXT,
+    	?contentType: String = JSON
+  	): Promise<Dynamic> {
 
-      var http = new XMLHttpRequest();
-      http.open(method, url, true);
+    	return new Promise(function(resolve: Dynamic->Void, reject) {
+      		var data: String = null;
+      		if (params != null)
+      		{
+        		if (params.body != null){
+          			data = Json.stringify(params.body);
+        		} else {
+					url += (url.indexOf('?') > -1) ? '&' : '?';
+					url += objToString(params);
+				}
+      		}
 
-      if (contentType != null && contentType.length > 0)
-        http.setRequestHeader("Content-type", contentType);
+      		var http = new XMLHttpRequest();
+      		http.open(method, url, true);
 
-      if (accept != null)
-        http.setRequestHeader("Accept", accept);
+    		if (contentType != null && contentType.length > 0)
+        		http.setRequestHeader("Content-type", contentType);
 
-      http.onreadystatechange = function() {
-        if (http.readyState == 4)
-        {
-          switch (http.status)
-          {
-            case 200:
-              switch (accept)
-              {
-                case JSON:
-                  try {
-                    var json = Json.parse(http.responseText);
-                    resolve(json);
-                  }
-                  catch (err: Dynamic)
-                    reject(err);
+      		if (accept != null)
+        		http.setRequestHeader("Accept", accept);
 
-                default:
-                  resolve(http.responseText);
-              }
+      		http.onreadystatechange = function() {
+				//trace("readystate",http.readyState, http.status);
+				if (http.readyState == 4){
+					switch (http.status){
+						case 200:
+							switch (accept){
+								case JSON:
+								try {
+									var json = Json.parse(http.responseText);
+									resolve(json);
+								} catch (err: Dynamic){
+									reject(err);
+								}
+								default:
+									resolve(http.responseText);
+							}
 
-            case 204:
-              resolve(true);
+						case 204:
+							resolve(true);
 
-            default:
-              reject(http.responseText);
-          }
-        }
-      };
+						default:
+							reject(http.responseText);
+					}
+				}
+      		};
 
-      http.send(data);
-    });
-  }
+      		http.send(data);
+    	});
+  	}
 
   static public function objToString(obj: Dynamic): String
   {

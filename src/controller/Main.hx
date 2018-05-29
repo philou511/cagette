@@ -199,24 +199,27 @@ class Main extends Controller {
 		d.dispatch(new controller.Cron());
 	}
 	
+	/**
+	 *  JSON REST API Entry point
+	 */
 	function doApi(d:Dispatch) {
-		
-		/*Sys.print(Json.stringify(app.params));
-		return;*/
-		
-		
+				
 		try {
+
 			d.dispatch(new controller.Api());
+
 		}catch (e:tink.core.Error){
-			
+
+			//manage tink Errors
 			sugoi.Web.setReturnCode(e.code);
-			Sys.print(Json.stringify( {error:{code:e.code,message:e.message}} ));
+			Sys.print(Json.stringify( {error:{code:e.code,message:e.message,stack:e.exceptionStack}} ));
 			
 		}catch (e:Dynamic){
+
+			//manage other errors			
 			sugoi.Web.setReturnCode(500);
-			var stack = "";
-			if ( App.config.DEBUG ) stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
-			Sys.print(Json.stringify( {error:{message : Std.string(e), stack:stack}} ));
+			var stack = if ( App.config.DEBUG ) haxe.CallStack.toString(haxe.CallStack.exceptionStack()) else "";
+			Sys.print(Json.stringify( {error:{code:500,message : Std.string(e), stack:stack }} ));
 		}
 		
 	}

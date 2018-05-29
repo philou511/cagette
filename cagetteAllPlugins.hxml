@@ -5,6 +5,7 @@
 -lib datetime
 -lib hscript
 -lib smtpmailer
+-lib tink_json
 
 -lib sugoi:git:https://github.com/bablukid/sugoi#i18n
 -lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
@@ -17,6 +18,9 @@
 -cp common
 -cp src
 -cp lang/master/tpl
+
 -D plugins
+
+
 -neko www/index.n
 -main App

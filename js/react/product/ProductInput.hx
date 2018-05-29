@@ -1,4 +1,4 @@
-package react;
+package react.product;
 import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
@@ -19,7 +19,7 @@ typedef ProductInputState = {
 
 
 /**
- * Product Input with autocompletion
+ * Product Text Input with autocompletion
  * 
  * @author fbarbut
  */

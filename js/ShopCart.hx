@@ -177,7 +177,7 @@ class ShopCart
 		//sort by categs
 		for ( p in pList.copy() ){
 			//trace(p.name+" : " + p.categories);
-			p.element.remove();
+			untyped p.element.remove();
 
 			for ( categ in p.categories){
 
@@ -244,10 +244,10 @@ class ShopCart
 				for ( p in o.products){
 					//trace("GROUP "+o.name+" : "+p.name);
 					//if the element has already been inserted, we need to clone it
-					if (p.element.parent().length == 0){
-						container.append( p.element );
+					if (untyped p.element.parent().length == 0){
+						container.append( untyped p.element );
 					}else{
-						var clone = p.element.clone();
+						var clone = untyped p.element.clone();
 						container.append( clone );
 					}
 
@@ -378,7 +378,7 @@ class ShopCart
 			//product DB
 			for (p in data.products) {
 				//catch dom element for further usage
-				p.element = App.j(".product"+p.id);
+				untyped p.element = App.j(".product"+p.id);
 
 				var id : Int = p.id;
 				//var id : Int = p.id;

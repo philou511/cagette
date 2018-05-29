@@ -152,12 +152,11 @@ class Messages extends Controller
 			var users = [];
 			for ( order in up) {
 				if (!Lambda.has(users, order.user)) {
-					users.push(order.user);	
-					
-					if (order.user2 != null) {
-						users.push(order.user2);
-					}
+					users.push(order.user);					
 				}
+				if (order.user2 != null && !Lambda.has(users, order.user2)) {
+					users.push(order.user2);
+				}	
 			}
 			return users;
 			

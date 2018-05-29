@@ -79,4 +79,13 @@ class UserService
 		
 		db.User.login(user, email);		
 	}
+
+	/**
+	 *  get users belonging to a group
+	 *  @param group - 
+	 *  @return Array<db.User>
+	 */
+	public static function getFromGroup(group:db.Amap):Array<db.User>{
+		return Lambda.array( group.getMembers() );
+	}
 }

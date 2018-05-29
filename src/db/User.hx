@@ -2,6 +2,7 @@ package db;
 import sys.db.Object;
 import sys.db.Types;
 import db.UserAmap;
+import Common;
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
 	HasEmailNotif24h;	//send notifications by mail 24h before
@@ -522,6 +523,14 @@ class User extends Object {
 		if (this.lastName2 != null) this.lastName2 = this.lastName2.toUpperCase();
 	}
 	
+	public function infos():UserInfo{
+		return {
+			id:id,
+			name : getName(),
+			email : email
+		};
+	}
+
 	/**
 	 * get form labels
 	 */

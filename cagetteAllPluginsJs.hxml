@@ -2,11 +2,16 @@
 -cp common
 -cp js
 -lib sugoi:git:https://github.com/bablukid/sugoi#i18n
--lib hxleaflet
+-lib hxleaflet:git:https://github.com/bablukid/hxleaflet
 -lib cagette-hosted
 -lib react
+-lib react-router-4
 -lib modular
+-lib tink_json
+
 -D plugins
+-D no-deprecation-warnings
+
 -main App
 -js www/js/app.js
--D no-deprecation-warnings
+

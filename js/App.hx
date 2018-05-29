@@ -1,25 +1,34 @@
+//React lib
 import react.ReactMacro.jsx;
+import react.ReactDOM;
 import react.*;
+import react.router.*;
+//custom components
+import react.order.*;
+import react.product.*;
 import react.store.*;
 import react.map.*;
+import react.user.*;
 
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
-import react.store.*;
-
 class App {
 
 	public static var instance : App;
 	public var LANG : String;
+	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
-	//public var currentBox : ReactComponent.ReactElement; //current react element in the modal window
 
-	function new(?lang="fr") {
+	//i dont want to use redux now... saved state from react.OrderBox
+	public static var SAVED_ORDER_STATE : Dynamic;
+
+	function new(?lang="fr",?currency="&euro;") {
 		//singleton
 		instance = this;
 		if(lang!=null) this.LANG = lang;
+		this.currency = currency;
 	}
 
 	/**
@@ -106,18 +115,25 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, date:String, place:String, userName:String){
-		var onSubmit = function(){
-			if (distributionId == null){
-				js.Browser.location.href = "/contractAdmin/orders/" + contractId;	
-			}else{
-				js.Browser.location.href = "/contractAdmin/orders/" + contractId + "?d=" + distributionId;
-			}
-			
+	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, contractType:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool,callbackUrl:String){
 
-		};
+		untyped App.j("#myModal").modal();
+		var onValidate = function() js.Browser.location.href = callbackUrl;
+		var node = js.Browser.document.querySelector('#myModal .modal-body');
+		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
+			contractId="$contractId" contractType="$contractType" date="$date" place="$place" userName="$userName" 
+			onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
+
+	}
+
+	function postReact(){
+		trace("post react");
+		haxe.Timer.delay(function(){
+			untyped jq('[data-toggle="tooltip"]').tooltip();
+			untyped jq('[data-toggle="popover"]').popover();
+		},500);
 		
-		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" contractId="$contractId" date="$date" place="$place" userName="$userName" onSubmit=$onSubmit/>'),  js.Browser.document.querySelector('#orderBox'));
 	}
 
 	public static function roundTo(n:Float, r:Int):Float {
@@ -205,9 +221,6 @@ class App {
 	 * set up a warning message when leaving the page
 	 */
 	public function setWarningOnUnload(active:Bool, ?msg:String){
-
-
-
 		if (active){
 			js.Browser.window.addEventListener("beforeunload", warn);
 		}else{
