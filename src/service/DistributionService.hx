@@ -78,7 +78,7 @@ class DistributionService
 	*/
 	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,
 	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
-		orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle):db.Distribution {
+		orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true):db.Distribution {
 
 		var d = new db.Distribution();
 		d.contract = contract;
@@ -103,7 +103,7 @@ class DistributionService
 		
 		DistributionService.checkDistrib(d);
 		
-		if(distributionCycle == null) {
+		if(distributionCycle == null && dispatchEvent) {
 			var e :Event = NewDistrib(d);
 			App.current.event(e);
 		}
@@ -290,7 +290,7 @@ class DistributionService
 	*/
 	 public static function createCycle(contract:db.Contract,cycleType:db.DistributionCycle.CycleType,startDate:Date,endDate:Date,
 	 startHour:Date,endHour:Date,daysBeforeOrderStart:Null<Int>,daysBeforeOrderEnd:Null<Int>,openingHour:Null<Date>,closingHour:Null<Date>,
-	 placeId:Int):db.DistributionCycle {
+	 placeId:Int,?dispatchEvent=true):db.DistributionCycle {
 
 		 //Generic variables 
 		var t = sugoi.i18n.Locale.texts;
@@ -319,8 +319,10 @@ class DistributionService
 			throw new tink.core.Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)}));
 		}
 
-		App.current.event(NewDistribCycle(dc));
-
+		if(dispatchEvent){
+			App.current.event(NewDistribCycle(dc));
+		}
+		
 		dc.insert();
 		createCycleDistribs(dc);
 
