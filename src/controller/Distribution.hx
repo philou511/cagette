@@ -172,8 +172,8 @@ class Distribution extends Controller
 				form.getValueOf("orderStartDate"),
 				form.getValueOf("orderEndDate"));
 			}
-			catch(e:String){
-				throw Error('/contractAdmin/distributions/' + d.contract.id,e);
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + d.contract.id,e.message);
 			}
 			
 			if (d == null) {
@@ -250,8 +250,8 @@ class Distribution extends Controller
 				form.getValueOf("orderStartDate"),
 				form.getValueOf("orderEndDate"));
 			}
-			catch(e:String){
-				throw Error('/contractAdmin/distributions/' + contract.id,e);
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 			
 			if (createdDistrib == null) {
@@ -338,8 +338,8 @@ class Distribution extends Controller
 				form.getValueOf("closingHour"),																	
 				form.getValueOf("placeId"));
 			}
-			catch(e:String){
-				throw Error('/contractAdmin/distributions/' + contract.id,e);
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 
 			if (createdDistribCycle != null) {

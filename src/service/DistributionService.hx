@@ -13,7 +13,6 @@ class DistributionService
 	public function new(d:db.Distribution) 
 	{
 		this.distribution = d;
-		
 	}
 	
 	/**
@@ -22,9 +21,11 @@ class DistributionService
 	 * @param d
 	 */
 	public static function checkDistrib(d:db.Distribution) {
-		
+
+		//Generic variables 
 		var t = sugoi.i18n.Locale.texts;
 		var view = App.current.view;
+		
 		var c = d.contract;
 
 		var distribs1;
@@ -49,15 +50,15 @@ class DistributionService
 		}
 			
 		if (distribs1.length != 0 || distribs2.length != 0 || distribs3.length != 0) {
-			throw t._("There is already a distribution at this place overlapping with the time range you've selected.");
+			throw new tink.core.Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
 		}
  
-		if (d.date.getTime() > c.endDate.getTime()) throw t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)});
-		if (d.date.getTime() < c.startDate.getTime()) throw t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)});
+		if (d.date.getTime() > c.endDate.getTime()) throw new tink.core.Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
+		if (d.date.getTime() < c.startDate.getTime()) throw new tink.core.Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
 		
 		if (c.type == db.Contract.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw t._("The distribution start date must be set after the orders end date.");
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw t._("The orders end date must be set after the orders start date !");
+			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new tink.core.Error(t._("The distribution start date must be set after the orders end date."));
+			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new tink.core.Error(t._("The orders end date must be set after the orders start date !"));
 		}
 
 	}
@@ -168,12 +169,16 @@ class DistributionService
 	}
 
 	public static function getDates(dc:db.DistributionCycle, datePointer:Date) {
+
+		//Generic variables 
+		var t = sugoi.i18n.Locale.texts;
+
 		var startDate = new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.startHour.getHours(),dc.startHour.getMinutes(),0);
 		var orderStartDate = null;
 		var orderEndDate = null;
 		if (dc.contract.type == db.Contract.TYPE_VARORDER){
 			
-			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw "daysBeforeOrderEnd or daysBeforeOrderStart is null";
+			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw new tink.core.Error(t._("daysBeforeOrderEnd or daysBeforeOrderStart is null"));
 			
 			var a = DateTools.delta(startDate, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
 			var h : Date = dc.openingHour;
@@ -190,10 +195,14 @@ class DistributionService
 	 * on créé toutes les distribs en partant du jour de la semaine de la premiere date
 	 */
 	public static function createCycleDistribs(dc:db.DistributionCycle) {
+
+		//Generic variables 
+		var t = sugoi.i18n.Locale.texts;
+
 		//switch end date to 23:59 to avoid the last distribution to be skipped
 		dc.endDate = tools.DateTool.setHourMinute(dc.endDate,23,59);
 		
-		if (dc.id == null) throw "this distributionCycle has not been recorded";
+		if (dc.id == null) throw new tink.core.Error(t._("this distributionCycle has not been recorded"));
 		
 		//iterations
 		//For first distrib
@@ -245,14 +254,17 @@ class DistributionService
 	 *  Delete distributions which are part of this cycle
 	 */
 	public static function deleteCycleDistribs(cycle:db.DistributionCycle){
+
+		//Generic variables 
+		var t = sugoi.i18n.Locale.texts;
+		var view = App.current.view;
 		
 		var children = db.Distribution.manager.search($distributionCycle == cycle, true);
 		var messages = [];
 		for ( d in children ){
 			
 			if (d.contract.type == db.Contract.TYPE_VARORDER && !d.canDelete() ){
-				var t = sugoi.i18n.Locale.texts;
-				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:App.current.view.hDate(d.date)}));
+				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
 			}else{
 				d.lock();
 				d.delete();
@@ -278,8 +290,9 @@ class DistributionService
 	*/
 	 public static function createCycle(contract:db.Contract,cycleType:db.DistributionCycle.CycleType,startDate:Date,endDate:Date,
 	 startHour:Date,endHour:Date,daysBeforeOrderStart:Null<Int>,daysBeforeOrderEnd:Null<Int>,openingHour:Null<Date>,closingHour:Null<Date>,
-	 placeId:Int):db.DistributionCycle {	
+	 placeId:Int):db.DistributionCycle {
 
+		 //Generic variables 
 		var t = sugoi.i18n.Locale.texts;
 		var view = App.current.view;
 		
@@ -300,10 +313,10 @@ class DistributionService
 		}
 				
 		if (dc.endDate.getTime() > contract.endDate.getTime()) {
-			throw t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(contract.endDate)});
+			throw new tink.core.Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(contract.endDate)}));
 		}
 		if (dc.startDate.getTime() < contract.startDate.getTime()) {
-			throw t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)});
+			throw new tink.core.Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)}));
 		}
 
 		App.current.event(NewDistribCycle(dc));
