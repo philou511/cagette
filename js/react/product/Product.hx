@@ -25,9 +25,11 @@ class Product extends react.ReactComponentOfProps<{productInfo:ProductInfo}>
 		var imgStyle = {width:'64px',height:'64px','backgroundImage':'url("${p.image}")'};
 		var divStyle = p.active ? {} : {opacity: 0.4};
 
-		return jsx('<div className="product" style=$divStyle>
-			<div src="${p.image}" className="productImg" style=$imgStyle/>
-			<div style={{display:"inline-block"}}>
+		return jsx('<div className="product row" style=$divStyle>
+			<div className="col-md-4">
+				<div src="${p.image}" className="productImg" style=$imgStyle/>
+			</div>
+			<div className="col-md-8">
 		 		<strong>${p.name}</strong> ${p.qt} ${Formatting.unit(p.unitType)}<br/>
 				 ${p.price} &euro;
 			 </div>

@@ -8,6 +8,7 @@
 -lib hscript
 -lib smtpmailer
 -lib record-macros
+-lib tink_json
 -cp common
 -cp src
 -cp lang/master/tpl

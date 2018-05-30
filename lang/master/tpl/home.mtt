@@ -41,7 +41,7 @@
 		::if distribs==null || count(distribs)==0::
 			<div class="homeBlock">
 				<!--Votre planning de livraison est vide pour l'instant.-->
-				::_("You delivery planning is currently empty||on homepage when there is no plannde deliveries")::
+				::_("You delivery planning is currently empty||on homepage when there is no planned deliveries")::
 				<br/>
 			</div>
 		::else::
@@ -289,14 +289,10 @@
 	
 	<div class="block" ::cond contractsWithDistributors.length>0 ::>
 		<h3>::_("Permanences")::</h3>
-		
 		<p>::_("Don't forget to register for permanences")::</p>
-		
 		<ul>
 		::foreach c contractsWithDistributors::
-		<li>
-			<a href="/distribution/planning/::c.id::">::c.name::</a>
-		</li>
+			<li><a href="/distribution/planning/::c.id::">::c.name::</a></li>
 		::end::
 		</ul>
 	</div>
@@ -314,9 +310,7 @@
 		::foreach b blocks::
 		<div class="block">
 			<h3>::b.title::</h3>
-			<p>
-				::raw b.html::
-			</p>
+			<p>::raw b.html::</p>
 		</div>
 		::end::
 	::end::

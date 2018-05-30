@@ -36,7 +36,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 	
 	override public function render(){
 		
-		return jsx('<div>
+		return jsx('<div onKeyPress=$onKeyPress>
 			<$Error error="${state.error}" />
 			<$Message message="${props.message}" />
 			<form action="" method="post" className="form-horizontal">
@@ -91,7 +91,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		ReactDOM.render(jsx('<$RegisterBox redirectUrl="${props.redirectUrl}" phoneRequired="${props.phoneRequired}"/>'),  body );
 	}
 	
-	public function submit(e:js.html.Event ){
+	public function submit(?e:js.html.Event){
 		
 		if (state.email == ""){
 			setError("Veuillez saisir votre email");
@@ -103,8 +103,12 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		}
 		
 		//lock button
-		var el : js.html.Element = cast e.target;
-		el.classList.add("disabled");
+		var el: js.html.Element = null;
+		if(e!=null){
+			el = cast e.target;
+			el.classList.add("disabled");
+		}
+	
 		
 		var req = new haxe.Http("/api/user/login");
 		req.addParameter("email", state.email);
@@ -113,16 +117,19 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		
 		req.onData = req.onError = function(d){
 			
-			//trace("d : " + d);
 			var d = req.responseData;
 			
-			el.classList.remove("disabled");
+			if(e!=null) el.classList.remove("disabled");
 			
 			var d = haxe.Json.parse(d);
 			if (Reflect.hasField(d, "error"))	setError(d.error.message);
 			if (Reflect.hasField(d, "success")) js.Browser.window.location.href = props.redirectUrl;
 		}
 		req.request(true);
+	}
+
+	function onKeyPress(e:js.html.KeyboardEvent){
+		if(e.key=="Enter") submit();
 	}
 	
 	

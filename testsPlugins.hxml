@@ -11,6 +11,7 @@
 -lib cagette-pro
 -lib cagette-hosted
 -lib cagette-wholesale-order
+-lib tink_json
 -cp common
 -cp src
 -cp lang/master/tpl

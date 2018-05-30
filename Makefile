@@ -69,7 +69,7 @@ i18n:
 
 #compile templates in each language, required for production env.
 templates:	
-	haxe templateGeneration.hxml
+	haxe cagette.hxml -D i18n_generation
 	@make LANG=fr ctemplates
 	@make LANG=en ctemplates
 	@make LANG=de ctemplates
@@ -78,13 +78,17 @@ ctemplates:
 	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt */*/*/*/*.mtt)
 
 deploy: 
+	@make css
+	@make frontend PLUGINS=1
 	@make templates
 	@make compile PLUGINS=1
 	@make deploy_site
 	
 deploypp:
+	@make css
+	@make frontend PLUGINS=1
 	@make templates
-	@make compile
+	@make compile PLUGINS=1
 	@make deploy_site_pp
 	
 deploy_site:
