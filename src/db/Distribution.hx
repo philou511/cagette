@@ -17,8 +17,6 @@ class Distribution extends Object
 	@:relation(placeId)
 	public var place : Place;
 	
-	public var text : SNull<SString<1024>>;
-	
 	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;

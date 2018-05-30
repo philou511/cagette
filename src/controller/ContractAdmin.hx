@@ -695,7 +695,6 @@ class ContractAdmin extends Controller
 					d.orderEndDate = ds.orderEndDate;
 					d.end = ds.end;
 					d.place = ds.place;
-					d.text = ds.text;
 					d.insert();
 				}
 			}

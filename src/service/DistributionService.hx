@@ -63,19 +63,8 @@ class DistributionService
 	}
 
 	/**
-	 * checks if dates are correct and if that there is no other distribution in the same time range
-	 *  and for the same contract and place
-	 * @param dc
-	 */
-	public static function checkDistribCycle(dc:db.DistributionCycle) {
-
-
-	}
-
-	/**
 	* Creates a new distribution and prevents distribution overlapping and other checks
 	*  @param contract
-	*  @param text
 	*  @param date
 	*  @param end
 	*  @param placeId
@@ -86,13 +75,12 @@ class DistributionService
 	*  @param orderStartDate
 	*  @param orderEndDate
 	*/
-	 public static function create(contract:db.Contract,text:String,date:Date,end:Date,placeId:Int,
+	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,
 	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
 		orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle):db.Distribution {
 
 		var d = new db.Distribution();
 		d.contract = contract;
-		d.text = text;
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
 		d.distributionCycle = distributionCycle;
@@ -131,7 +119,6 @@ class DistributionService
 	/**
 	* Modifies an existing distribution and prevents distribution overlapping and other checks
 	*  @param d
-	*  @param text
 	*  @param date
 	*  @param end
 	*  @param placeId
@@ -142,14 +129,13 @@ class DistributionService
 	*  @param orderStartDate
 	*  @param orderEndDate
 	*/
-	 public static function edit(d:db.Distribution,text:String,date:Date,end:Date,placeId:Int,
+	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,
 	 	distributor1Id:Int,distributor2Id:Int,distributor3Id:Int,distributor4Id:Int,
 		orderStartDate:Date,orderEndDate:Date):db.Distribution {
 
 		//We prevent others from modifying it
 		d.lock();
 
-		d.text = text;
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
 		d.distributor1 = db.User.manager.get(distributor1Id);
@@ -181,10 +167,105 @@ class DistributionService
 		}
 	}
 
+	public static function getDates(dc:db.DistributionCycle, datePointer:Date) {
+		var startDate = new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.startHour.getHours(),dc.startHour.getMinutes(),0);
+		var orderStartDate = null;
+		var orderEndDate = null;
+		if (dc.contract.type == db.Contract.TYPE_VARORDER){
+			
+			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw "daysBeforeOrderEnd or daysBeforeOrderStart is null";
+			
+			var a = DateTools.delta(startDate, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
+			var h : Date = dc.openingHour;
+			orderStartDate = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);
+			
+			var a = DateTools.delta(startDate, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
+			var h : Date = dc.closingHour;
+			orderEndDate = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);			
+		}
+		return { date: startDate, orderStartDate: orderStartDate, orderEndDate: orderEndDate };
+	}
+
+	/**
+	 * on créé toutes les distribs en partant du jour de la semaine de la premiere date
+	 */
+	public static function createCycleDistribs(dc:db.DistributionCycle) {
+		//switch end date to 23:59 to avoid the last distribution to be skipped
+		dc.endDate = tools.DateTool.setHourMinute(dc.endDate,23,59);
+		
+		if (dc.id == null) throw "this distributionCycle has not been recorded";
+		
+		//iterations
+		//For first distrib
+		var datePointer = new Date(dc.startDate.getFullYear(), dc.startDate.getMonth(), dc.startDate.getDate(), 12, 0, 0);
+		//why hour=12 ? because if we set hour to 0, it switch to 23 (-1) or 1 (+1) on daylight saving time switch dates, thus changing the day!!
+		var firstDistribDate = new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.startHour.getHours(),dc.startHour.getMinutes(),0);
+		for(i in 0...100) {
+
+			if(i != 0){ //All distribs except the first one
+				var oneDay = 1000 * 60 * 60 * 24.0;
+				switch(dc.cycleType) {
+					case Weekly :
+						datePointer = DateTools.delta(datePointer, oneDay * 7.0);
+						App.log("on ajoute "+(oneDay * 7.0)+"millisec pour ajouter 7 jours");
+						App.log('pointer : $datePointer');
+						
+					case BiWeekly : 	
+						datePointer = DateTools.delta(datePointer, oneDay * 14.0);
+						
+					case TriWeekly : 	
+						datePointer = DateTools.delta(datePointer, oneDay * 21.0);
+						
+					case Monthly :
+						var n = tools.DateTool.getWhichNthDayOfMonth(firstDistribDate);
+						var dayOfWeek = firstDistribDate.getDay();
+						var nextMonth = new Date(datePointer.getFullYear(), datePointer.getMonth() + 1, 1, 0, 0, 0);
+						datePointer = tools.DateTool.getNthDayOfMonth(nextMonth.getFullYear(), nextMonth.getMonth(), dayOfWeek, n);
+						if (datePointer.getMonth() != nextMonth.getMonth()) {
+							datePointer = tools.DateTool.getNthDayOfMonth(nextMonth.getFullYear(), nextMonth.getMonth(), dayOfWeek, n - 1);
+						}
+				}
+			}
+					
+			//stop if cycle end is reached
+			if (datePointer.getTime() > dc.endDate.getTime()) {				
+				break;
+			}
+			
+			var dates = getDates(dc, datePointer);
+			
+			service.DistributionService.create(dc.contract,dates.date,
+			new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.endHour.getHours(),dc.endHour.getMinutes(),0),
+			dc.place.id,null,null,null,null,dates.orderStartDate,dates.orderEndDate,dc);
+
+		}
+	}
+	
+	/**
+	 *  Delete distributions which are part of this cycle
+	 */
+	public static function deleteCycleDistribs(cycle:db.DistributionCycle){
+		
+		var children = db.Distribution.manager.search($distributionCycle == cycle, true);
+		var messages = [];
+		for ( d in children ){
+			
+			if (d.contract.type == db.Contract.TYPE_VARORDER && !d.canDelete() ){
+				var t = sugoi.i18n.Locale.texts;
+				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:App.current.view.hDate(d.date)}));
+			}else{
+				d.lock();
+				d.delete();
+			}
+		}
+		
+		return messages;
+		
+	}
+
 	/**
 	* Creates a new distribution cycle and prevents distribution overlapping and other checks
 	*  @param contract
-	*  @param text
 	*  @param date
 	*  @param end
 	*  @param placeId
@@ -228,7 +309,7 @@ class DistributionService
 		App.current.event(NewDistribCycle(dc));
 
 		dc.insert();
-		db.DistributionCycle.createCycleDistribs(dc);
+		createCycleDistribs(dc);
 
 		return dc;
 

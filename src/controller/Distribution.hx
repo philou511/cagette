@@ -162,7 +162,6 @@ class Distribution extends Controller
 
 			try{
 				d = service.DistributionService.edit(d,
-				form.getValueOf("text"),
 				form.getValueOf("date"),
 				form.getValueOf("end"),
 				form.getValueOf("placeId"),
@@ -241,7 +240,6 @@ class Distribution extends Controller
 			try{
 				createdDistrib = service.DistributionService.create(
 				contract,
-				form.getValueOf("text"),
 				form.getValueOf("date"),
 				form.getValueOf("end"),
 				form.getValueOf("placeId"),
@@ -366,7 +364,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
 		
 		cycle.lock();
-		var msgs = cycle.deleteCycleDistribs();
+		var msgs = service.DistributionService.deleteCycleDistribs(cycle);
 		if (msgs.length > 0){			
 			throw Error("/contractAdmin/distributions/" + cycle.contract.id, msgs.join("<br/>"));	
 		}else{			
