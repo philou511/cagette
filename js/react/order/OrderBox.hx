@@ -135,7 +135,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 						<span className="glyphicon glyphicon-chevron-right"></span> Valider
 					</a>
 					&nbsp;
-					<$Link className="btn btn-default" to="/insert"><span className="glyphicon glyphicon-plus-sign"></span> Nouvelle commande</$Link>
+					<$Link className="btn btn-default" to="/insert"><span className="glyphicon glyphicon-plus-sign"></span> Ajouter un produit</$Link>
 				</div>
 			</div>			
 		');
@@ -157,7 +157,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 
 		//insert product box
 		var renderInsertBox = function(){
-			return jsx('<$InsertOrderBox contractId="${props.contractId}" userId="${props.userId}" distributionId="${props.distributionId}" onInsert=$onProductSelected/>');
+			return jsx('<$InsertOrder contractId="${props.contractId}" userId="${props.userId}" distributionId="${props.distributionId}" onInsert=$onProductSelected/>');
 		} 
 
 		return jsx('<$HashRouter>

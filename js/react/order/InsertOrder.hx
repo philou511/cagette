@@ -13,7 +13,7 @@ import react.router.Link;
  * A box to add an order to a member
  * @author fbarbut
  */
-class InsertOrderBox extends react.ReactComponentOfPropsAndState<{contractId:Int,userId:Int,distributionId:Int,onInsert:UserOrder->Void},{products:Array<ProductInfo>,error:String,selected:Int}>
+class InsertOrder extends react.ReactComponentOfPropsAndState<{contractId:Int,userId:Int,distributionId:Int,onInsert:UserOrder->Void},{products:Array<ProductInfo>,error:String,selected:Int}>
 {
 
 	public function new(props) 
