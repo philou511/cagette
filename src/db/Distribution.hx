@@ -247,14 +247,13 @@ class Distribution extends Object
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
 		return [
-			"text" 				=> t._("Text"),
 			"date" 				=> t._("Date"),
 			"endDate" 			=> t._("End hour"),
 			"place" 			=> t._("Place"),
 			"distributor1" 		=> t._("Distributor #1"),
 			"distributor2" 		=> t._("Distributor #2"),
 			"distributor3" 		=> t._("Distributor #3"),
-			"distributor4" 		=> t._("Distributor #4"),						
+			"distributor4" 		=> t._("Distributor #4"),
 		];
 	}
 

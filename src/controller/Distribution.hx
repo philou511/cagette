@@ -160,7 +160,16 @@ class Distribution extends Controller
 		
 		if (form.isValid()) {
 
+			var orderStartDate = null;
+			var orderEndDate = null;
+
 			try{
+
+				if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+					orderStartDate = form.getValueOf("orderStartDate");
+					orderEndDate = form.getValueOf("orderEndDate");
+				}
+
 				d = service.DistributionService.edit(d,
 				form.getValueOf("date"),
 				form.getValueOf("end"),
@@ -169,8 +178,9 @@ class Distribution extends Controller
 				form.getValueOf("distributor2Id"),
 				form.getValueOf("distributor3Id"),
 				form.getValueOf("distributor4Id"),
-				form.getValueOf("orderStartDate"),
-				form.getValueOf("orderEndDate"));
+				orderStartDate,
+				orderEndDate);
+
 			}
 			catch(e:tink.core.Error){
 				throw Error('/contractAdmin/distributions/' + d.contract.id,e.message);
@@ -227,7 +237,7 @@ class Distribution extends Controller
 		//default values
 		form.getElement("date").value = DateTool.now().deltaDays(30).setHourMinute(19, 0);
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
-		
+			
 		if (contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
 			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
@@ -236,8 +246,16 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			var createdDistrib = null;
+			var orderStartDate = null;
+			var orderEndDate = null;
 
-			try{
+			try {
+				
+				if (contract.type == db.Contract.TYPE_VARORDER ) {
+					orderStartDate = form.getValueOf("orderStartDate");
+					orderEndDate = form.getValueOf("orderEndDate");
+				}
+
 				createdDistrib = service.DistributionService.create(
 				contract,
 				form.getValueOf("date"),
@@ -247,8 +265,8 @@ class Distribution extends Controller
 				form.getValueOf("distributor2Id"),
 				form.getValueOf("distributor3Id"),
 				form.getValueOf("distributor4Id"),
-				form.getValueOf("orderStartDate"),
-				form.getValueOf("orderEndDate"));
+				orderStartDate,
+				orderEndDate);
 			}
 			catch(e:tink.core.Error){
 				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
@@ -323,8 +341,20 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			var createdDistribCycle = null;
+			var daysBeforeOrderStart = null;
+			var daysBeforeOrderEnd = null;
+			var openingHour = null;
+			var closingHour = null;
 
 			try{
+				
+				if (contract.type == db.Contract.TYPE_VARORDER) {
+					daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+					daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+					openingHour = form.getValueOf("openingHour");
+					closingHour = form.getValueOf("closingHour");
+				}
+
 				createdDistribCycle = service.DistributionService.createCycle(
 				contract,
 				form.getElement("cycleType").getValue(),
@@ -332,10 +362,10 @@ class Distribution extends Controller
 				form.getValueOf("endDate"),	
 				form.getValueOf("startHour"),
 				form.getValueOf("endHour"),											
-				form.getValueOf("daysBeforeOrderStart"),											
-				form.getValueOf("daysBeforeOrderEnd"),											
-				form.getValueOf("openingHour"),	
-				form.getValueOf("closingHour"),																	
+				daysBeforeOrderStart,											
+				daysBeforeOrderEnd,											
+				openingHour,	
+				closingHour,																	
 				form.getValueOf("placeId"));
 			}
 			catch(e:tink.core.Error){
