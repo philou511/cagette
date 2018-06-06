@@ -343,7 +343,7 @@ class AmapAdmin extends Controller
 		}
 		f.addElement( new sugoi.form.elements.StringInput("checkOrder", t._("Make the check payable to"), app.user.amap.checkOrder, false)); 
 		f.addElement( new sugoi.form.elements.StringInput("IBAN", t._("IBAN of your bank account for transfers"), app.user.amap.IBAN, false)); 
-		
+		f.addElement(new sugoi.form.elements.Checkbox("allowMoneyPotWithNegativeBalance", t._("Allow money pots with negative balance"), app.user.amap.allowMoneyPotWithNegativeBalance));
 		
 		if (f.isValid()){
 			
@@ -353,6 +353,7 @@ class AmapAdmin extends Controller
 			a.allowedPaymentsType = p;
 			a.checkOrder = f.getValueOf("checkOrder");
 			a.IBAN = f.getValueOf("IBAN");
+			a.allowMoneyPotWithNegativeBalance = f.getValueOf("allowMoneyPotWithNegativeBalance");
 			a.update();
 			
 			throw Ok("/amapadmin/payments", t._("Payment options updated"));

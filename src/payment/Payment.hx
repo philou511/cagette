@@ -14,7 +14,8 @@ class Payment
 		var types = [
 			new payment.Cash(),
 			new payment.Check(),
-			new payment.Transfer(),		
+			new payment.Transfer(),	
+			new payment.MoneyPot(),						
 		];
 		
 		var e = App.current.event(GetPaymentTypes({types:types}));

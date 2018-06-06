@@ -326,6 +326,9 @@ div.reportHeader {
     border-color: #ebc349;
     text-decoration: none;
     transform: scale(0.95); }
+  .clickable.disabled {
+    background-color: lightgray;
+    cursor: not-allowed; }
 
 /* a cagette group block (use it with .clickable ) */
 .groupBlock {

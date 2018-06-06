@@ -74,6 +74,7 @@ class Amap extends Object
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
+	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
 	
 	public function new() 
 	{

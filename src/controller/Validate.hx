@@ -115,7 +115,8 @@ class Validate extends controller.Controller
 		var data = [
 			{label:t._("Cash"),value:"cash"},
 			{label:t._("Check"),value:"check"},
-			{label:t._("Transfer"),value:"transfer"}		
+			{label:t._("Transfer"),value:"transfer"},
+			{label:t._("Money pot"),value:"moneypot"}	
 		];
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
 		

@@ -32,11 +32,21 @@
 		
 		::foreach p paymentTypes::
 		<div class="col-md-4">
-			<a class="clickable" href="::p.link::" style="min-height:120px;vertical-align:middle;">				
-				<h3>::p.name::</h3> 
-				::raw p.icon:: 
-				
-			</a>	
+			::if(p.type != "moneypot" || allowMoneyPotWithNegativeBalance || futurebalance >= 0)::
+				::set class = "clickable"::
+				::set href = p.link::					
+			::else::
+				::set class = "clickable disabled"::
+				::set href = "#"::
+				::set warning = _("You do not have sufficient funds to pay this order with your money pot.")::
+			::end::
+			<a class="::class::" href="::href::" style="min-height:120px;vertical-align:middle;">
+				<h3>::p.name::</h3>
+				::raw p.icon::
+				::if( warning )::
+					<br/>::warning::
+				::end::
+			</a>
 		</div>
 		
 		::end::
