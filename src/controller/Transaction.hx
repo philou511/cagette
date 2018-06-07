@@ -269,7 +269,7 @@ class Transaction extends controller.Controller
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
 		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
-			throw Error("/", t._("You do not have sufficient funds to pay this order with your money pot."));
+			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
 		}
 		
 		//record order
