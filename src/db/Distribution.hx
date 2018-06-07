@@ -229,19 +229,6 @@ class Distribution extends Object
 	public static function makeKey(date, place){
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
 	}
-	
-	
-	public function canDelete():Bool{
-
-		if (contract.type == db.Contract.TYPE_CONSTORDERS) return true;
-		
-		var qt = 0.0;
-		for ( o in getOrders()){
-			qt += o.quantity;
-		}
-		return qt == 0.0;
-		
-	}
 
 	
 	public static function getLabels(){

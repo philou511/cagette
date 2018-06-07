@@ -96,6 +96,12 @@ class Operation extends sys.db.Object
 		return manager.count($user == user && $group == group);		
 	}
 	
+	/**
+	 *  get all  user operations
+	 *  @param user - 
+	 *  @param group - 
+	 *  @param reverse=false - 
+	 */
 	public static function getOperations(user:db.User, group:db.Amap,?reverse=false ){
 		if(reverse) {
 			return manager.search($user == user && $group == group,{orderBy:-date},false);	
@@ -291,10 +297,9 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * when updating a constant order, we need to update the existing transaction.
-	 * 
+	 * when updating a constant order, we need to update the existing operation.
 	 */
-	public static function findCOrderTransactionFor(contract:db.Contract, user:db.User){
+	public static function findCOrderTransactionFor(contract:db.Contract, user:db.User):db.Operation{
 		
 		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "contract type should be TYPE_CONSTORDERS";
 		

@@ -129,14 +129,12 @@ class Distribution extends Controller
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
-		if ( !d.canDelete() ) throw Error("/contractAdmin/distributions/" + d.contract.id, t._("Deletion non possible: some orders are saved for this delivery."));
+		if ( !service.DistributionService.canDelete(d) ) throw Error("/contractAdmin/distributions/" + d.contract.id, t._("Deletion non possible: some orders are saved for this delivery."));
 		
-		d.lock();
-		var cid = d.contract.id;
-		app.event(DeleteDistrib(d));
-		d.delete();
-		
-		throw Ok("/contractAdmin/distributions/" + cid, t._("the delivery has been deleted"));
+		var contractId = d.contract.id;
+		service.DistributionService.delete(d);
+		throw Ok("/contractAdmin/distributions/" + contractId, t._("the delivery has been deleted"));
+
 	}
 	
 	/**
@@ -392,15 +390,14 @@ class Distribution extends Controller
 	public function doDeleteCycle(cycle:db.DistributionCycle){
 		
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
-		
-		cycle.lock();
-		var msgs = service.DistributionService.deleteCycleDistribs(cycle);
-		if (msgs.length > 0){			
-			throw Error("/contractAdmin/distributions/" + cycle.contract.id, msgs.join("<br/>"));	
-		}else{			
-			cycle.delete();
-			throw Ok("/contractAdmin/distributions/" + cycle.contract.id, t._("Recurrent deliveries deleted"));
+
+		var contractId = cycle.contract.id;
+		var messages = service.DistributionService.deleteCycleDistribs(cycle);
+		if (messages.length > 0){			
+			throw Error("/contractAdmin/distributions/" + contractId, messages.join("<br/>"));	
 		}
+		
+		throw Ok("/contractAdmin/distributions/" + contractId, t._("Recurrent deliveries deleted"));
 	}
 	
 	/**

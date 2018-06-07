@@ -178,7 +178,10 @@ class Contract extends Object
 	}
 	
 		
-	
+	/**
+	 *  get users who have orders in this contract ( including user2 )
+	 *  @return Array<db.User>
+	 */
 	public function getUsers():Array<db.User> {
 		var pids = getProducts().map(function(x) return x.id);
 		var ucs = UserContract.manager.search($productId in pids, false);

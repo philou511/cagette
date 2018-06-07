@@ -14,6 +14,32 @@ class DistributionService
 	{
 		this.distribution = d;
 	}
+
+	
+	public static function updateAmapContractOperations(contract:db.Contract) {
+
+		//Update all operations for this amap contract when payments are enabled
+		if (contract.type == db.Contract.TYPE_CONSTORDERS && contract.amap.hasPayments()) {
+			//Get all the users who have orders for this contract
+			var users = contract.getUsers();
+			for ( user in users ){
+
+				//Get the one operation for this amap contract and user
+				var operation = db.Operation.findCOrderTransactionFor(contract, user);
+
+				if (operation != null)
+				{
+					//Get all the orders for this contract and user
+					var orders = contract.getUserOrders(user);
+					//Update this operation with the new number of distributions, this will affect the name of the operation
+					//as well as the total amount to pay
+					db.Operation.updateOrderOperation(operation, orders);
+				}
+
+			}
+		}
+	}
+
 	
 	/**
 	 * checks if dates are correct and if that there is no other distribution in the same time range
@@ -113,6 +139,11 @@ class DistributionService
 		} 
 		else {
 			d.insert();
+
+			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
+			//names and amounts with the new number of distribs
+			updateAmapContractOperations(d.contract);
+
 			return d;
 		}
 	}
@@ -166,6 +197,41 @@ class DistributionService
 			d.update();
 			return d;
 		}
+	}
+
+
+	/**
+	 *  Checks whether there are orders with non zero quantity for non amap contract
+	 *  @param d - 
+	 *  @return Bool
+	 */
+	public static function canDelete(d:db.Distribution):Bool{
+
+		if (d.contract.type == db.Contract.TYPE_CONSTORDERS) return true;
+		
+		var quantity = 0.0;
+		for ( order in d.getOrders() ){
+			quantity += order.quantity;
+		}
+		return quantity == 0.0;
+		
+	}
+
+
+	/**
+	 *  Deletes a distribution
+	 *  @param d - 
+	 */
+	public static function delete(d:db.Distribution) {
+
+		var contract = d.contract;
+		d.lock();
+		App.current.event(DeleteDistrib(d));
+		d.delete();
+		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
+		//names and amounts with the new number of distribs
+		updateAmapContractOperations(contract);
+
 	}
 
 	public static function getDates(dc:db.DistributionCycle, datePointer:Date) {
@@ -255,24 +321,41 @@ class DistributionService
 	 */
 	public static function deleteCycleDistribs(cycle:db.DistributionCycle){
 
+		cycle.lock();
+
 		//Generic variables 
 		var t = sugoi.i18n.Locale.texts;
 		var view = App.current.view;
 		
 		var children = db.Distribution.manager.search($distributionCycle == cycle, true);
 		var messages = [];
-		for ( d in children ){
+		if(children.length != 0) {
+
+			var contract = Lambda.array(children)[0].contract;
+			for ( d in children ){
 			
-			if (d.contract.type == db.Contract.TYPE_VARORDER && !d.canDelete() ){
-				messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
-			}else{
-				d.lock();
-				d.delete();
+				if (d.contract.type == db.Contract.TYPE_VARORDER && !canDelete(d) ){
+					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
+				}else{
+					d.lock();
+					d.delete();
+				}
+
 			}
+
+			//In case this is a distrib cycle for an amap contract with payments enabled, it will update all the operations
+			//names and amounts with the new number of distribs
+			updateAmapContractOperations(contract);
+
 		}
-		
+
+		 //All cycle distribs have been deleted so we can delete the cycle itself
+		if (messages.length == 0)
+		{	
+			cycle.delete();
+		}
+
 		return messages;
-		
 	}
 
 	/**
