@@ -13,8 +13,6 @@ class TestReports extends haxe.unit.TestCase
 		super();
 	}
 	
-
-	
 	/**
 	 * run once at the beginning
 	 */

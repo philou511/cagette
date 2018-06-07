@@ -225,35 +225,29 @@ class App extends sugoi.BaseApp {
 		return out;
 	}
 	
-	
 	public function populateAmapMembers() {		
 		return user.amap.getMembersFormElementData();
 	}
 	
 	public static function getMailer():sugoi.mail.IMailer {
 		
-		if (App.config.DEBUG){	
-			return new sugoi.mail.DebugMailer();
-		}
-		
 		if (sugoi.db.Variable.get("mailer") == null){
 			var msg = sugoi.i18n.Locale.texts._("Please configure the email settings in a <href='/admin/emails'>this section</a>");
 			throw sugoi.ControllerAction.ErrorAction("/",msg);
 		}
 		
-		var conf = {
-			smtp_host:sugoi.db.Variable.get("smtp_host"),
-			smtp_port:sugoi.db.Variable.getInt("smtp_port"),
-			smtp_user:sugoi.db.Variable.get("smtp_user"),
-			smtp_pass:sugoi.db.Variable.get("smtp_pass")			
-		}
+		var mailer = new sugoi.mail.BufferedMailer();
 		
-		if (sugoi.db.Variable.get("mailer") == "mandrill"){
-			return new sugoi.mail.MandrillMailer().init(conf);
-		}else{
-			return new sugoi.mail.SmtpMailer().init(conf);
-		}
-
+		/*if(App.config.DEBUG){ 
+			mailer.defineFinalMailer("debug");
+		}else{*/
+			if (sugoi.db.Variable.get("mailer") == "mandrill"){		
+				mailer.defineFinalMailer("mandrill");		
+			}else{
+				mailer.defineFinalMailer("smtp");
+			}
+		//}
+		return mailer;
 	}
 	
 	/**
@@ -266,21 +260,9 @@ class App extends sugoi.BaseApp {
 		
 		current.event(SendEmail(m));
 		
-		getMailer().send(m, function(o){
-	
-			//store result
-			var lm = new db.Message();
-			lm.amap =  group;
-			lm.recipients = Lambda.array(Lambda.map(m.getRecipients(), function(x) return x.email));
-			lm.title = m.getSubject();
-			lm.date = Date.now();
-			lm.body = m.getHtmlBody();
-			lm.rawStatus = Std.string(o);
-			lm.status = o;
-			if (listId != null) lm.recipientListId = listId;
-			if (sender != null) lm.sender = sender;
-			lm.insert();
-		});
+		var params = group==null ? null : {remoteId:group.id};
+
+		getMailer().send(m,params,function(o){});
 		
 	}
 	

@@ -95,8 +95,12 @@ class UserAmap extends Object
 			if (cid == null) {
 				t._("Management of all contracts");
 			}else {
-				var cname = db.Contract.manager.get(cid).name;
-				t._("Contract management") + " : " + cname;
+				var c = db.Contract.manager.get(cid);
+				if(c==null) {
+					t._("Deleted contract");	
+				}else{
+					t._("::name:: contract management",{name:c.name});
+				}
 			}
 		}
 	}

@@ -285,14 +285,14 @@ class Member extends Controller
 		var out = new Array<{date:Date,subject:String,success:String,failure:String}>();
 		var threeMonth = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30.5 * 3);
 		
-		for ( m in db.Message.manager.search($amap == app.user.amap && $date > threeMonth, {limit:10, orderBy:-date})){
+		for ( m in sugoi.db.BufferedMail.manager.search($remoteId == app.user.amap.id && $cdate > threeMonth, {limit:10, orderBy:-cdate})){
 			
 			var status : sugoi.mail.IMailer.MailerResult = m.status;
 			
 			if ( status!=null && status.get(member.email)!=null ){
 				
 				var r = m.getMailerResultMessage(member.email);
-				out.push( {date:m.date,subject:m.title,success:r.success,failure:r.failure} );	
+				out.push( {date:m.cdate,subject:m.title,success:r.success,failure:r.failure} );	
 			}
 			
 		}
@@ -510,6 +510,12 @@ class Member extends Controller
 			}catch (e:Dynamic){ }
 			var unregistred = csv.importDatas(data);
 			
+			/*var checkEmail = function(email){
+				if ( !sugoi.form.validators.EmailValidator.check(email) ) {
+					throw Error("/member", t._("The email <b>::email::</b> is invalid, please update your CSV file",{email:email}) );
+				}
+			}*/
+
 			//cleaning
 			for ( user in unregistred.copy() ) {
 				
@@ -524,8 +530,14 @@ class Member extends Controller
 				if (user[1] != null) user[1] = user[1].toUpperCase();
 				if (user[5] != null) user[5] = user[5].toUpperCase();
 				//lowercase email
-				if (user[2] != null) user[2] = user[2].toLowerCase();
-				if (user[6] != null) user[6] = user[6].toLowerCase();
+				if (user[2] != null){
+					user[2] = user[2].toLowerCase();
+					//checkEmail(user[2]);
+				} 
+				if (user[6] != null){
+					user[6] = user[6].toLowerCase();
+					//checkEmail(user[6]);
+				} 
 			}
 			
 			//utf-8 check
@@ -547,11 +559,12 @@ class Member extends Controller
 			//put already registered people in another list
 			var registred = [];
 			for (r in unregistred.copy()) {
-				var firstName = r[0];
-				var lastName = r[1];
+				//var firstName = r[0];
+				//var lastName = r[1];
 				var email = r[2];
-				var firstName2 = r[4];
-				var lastName2 = r[5];
+
+				//var firstName2 = r[4];
+				//var lastName2 = r[5];
 				var email2 = r[6];
 				
 				var us = db.User.getSameEmail(email, email2);

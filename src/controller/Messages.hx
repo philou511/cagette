@@ -61,14 +61,19 @@ class Messages extends Controller
 			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
 			e.setHtmlBody(html);
 		
-			try {
-				App.sendMail(e,app.user.getAmap(),listId,app.user);		
-			}catch (e:String){
-				if (e.indexOf("curl") >-1) {
-					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
-					throw Error("/member", t._("An error occurred while sending emails, please retry"));
-				}
-			}
+			App.sendMail(e,app.user.getAmap(),listId,app.user);		
+			
+			//store message
+			var lm = new db.Message();
+			lm.amap =  app.user.amap;
+			lm.recipients = Lambda.array(Lambda.map(e.getRecipients(), function(x) return x.email));
+			lm.title = e.getSubject();
+			lm.date = Date.now();
+			lm.body = e.getHtmlBody();
+			if (listId != null) lm.recipientListId = listId;
+			lm.sender = app.user;
+			lm.insert();
+
 			
 			throw Ok("/messages", t._("The message has been sent"));
 		}
@@ -93,12 +98,12 @@ class Messages extends Controller
 		
 		//make status easier to display
 		var s = new Array<{email:String,success:String,failure:String}>();
-		if (msg.status != null){
+		/*if (msg.status != null){
 			for ( k in msg.status.keys()) {			
 				var r = msg.getMailerResultMessage(k);				
 				s.push({email:k,success:r.success,failure:r.failure});
 			}
-		}
+		}*/
 	
 		view.status = s;
 		

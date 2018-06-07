@@ -21,8 +21,20 @@ class Admin extends Controller {
 		view.now = Date.now();
 	}
 	
-	@tpl("form.mtt")
+	@tpl("admin/emails.mtt")
 	function doEmails() {
+		var browse = function(index:Int, limit:Int) {
+			return sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},true);
+		}
+
+		var count = sugoi.db.BufferedMail.manager.count($sdate==null);
+		view.browser = new sugoi.tools.ResultsBrowser(count,10,browse);
+		view.num = count;
+
+	}
+
+	@tpl("form.mtt")
+	function doSmtp() {
 		
 		var f = new sugoi.form.Form("emails");
 		var data = [

@@ -154,8 +154,10 @@ class Contract extends Controller
 	function doEdit(c:db.Contract) {
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager(c)) throw Error('/', t._("Forbidden action"));
-		
+
+		var group = c.amap;
 		var currentContact = c.contact;
+		
 		var form = Form.fromSpod(c);
 		form.removeElement( form.getElement("amapId") );
 		form.removeElement(form.getElement("type"));
@@ -163,7 +165,7 @@ class Contract extends Controller
 		
 		if (form.checkToken()) {
 			form.toSpod(c);
-			c.amap = app.user.amap;
+			c.amap = group;
 			
 			//checks & warnings
 			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and a label."));

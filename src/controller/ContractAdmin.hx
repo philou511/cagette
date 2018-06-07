@@ -659,7 +659,6 @@ class ContractAdmin extends Controller
 					var p = new db.Product();
 					p.name = source_p.name;
 					p.price = source_p.price;
-					//p.type = source_p.type;
 					p.contract = nc;
 					p.image = source_p.image;
 					p.desc = source_p.desc;
@@ -668,17 +667,17 @@ class ContractAdmin extends Controller
 					p.vat = source_p.vat;
 					p.organic = source_p.organic;
 					p.txpProduct = source_p.txpProduct;
+					p.unitType = source_p.unitType;
+					p.multiWeight = source_p.multiWeight;
+					p.variablePrice = source_p.variablePrice;
 					p.insert();
 					
 					for (source_cat in source_p.getCategories()){
-						
 						var cat = new db.ProductCategory();
 						cat.product = p;
 						cat.category = source_cat;
 						cat.insert();
-						
 					}
-					
 				}
 			}
 			

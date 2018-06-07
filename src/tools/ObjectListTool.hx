@@ -11,8 +11,8 @@ class ObjectListTool
 	/**
 	 * Get a list of IDs from an object list
 	 */
-	public static function getIds( objs:Iterable<sys.db.Object> ){
-		var out = [];
+	public static function getIds( objs:Iterable<sys.db.Object> ):Array<Int>{
+		var out = new Array<Int>();
 		for ( o in objs ) out.push(untyped o.id);
 		return out;
 	}

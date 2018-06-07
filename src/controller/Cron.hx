@@ -37,6 +37,9 @@ class Cron extends Controller
 		if (!canRun()) return;
 		
 		app.event(MinutelyCron);
+
+		sendEmailsfromBuffer();
+
 	}
 	
 	public function doHour() {
@@ -294,7 +297,6 @@ class Cron extends Controller
 					}
 					m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-					Sys.sleep(0.25);
 					
 					try {
 						App.sendMail(m , u.distrib.contract.amap);	
@@ -444,6 +446,17 @@ class Cron extends Controller
 		
 	}
 	
+	
+	function sendEmailsfromBuffer(){
+		print("<h3>Send Emails from Buffer</h3>");
+
+		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:100,orderBy:-cdate},true)  ){
+			print('#${e.id} - ${e.title}');
+			e.finallySend();
+			Sys.sleep(0.25);
+		}
+
+	}
 	
 	
 	function print(text){

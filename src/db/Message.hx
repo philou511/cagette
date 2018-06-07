@@ -7,7 +7,7 @@ import sugoi.mail.IMailer;
 
 
 /**
- * log of sent emails
+ * Message sent from the message Section
  */
 class Message extends Object
 {
@@ -23,35 +23,6 @@ class Message extends Object
 	public var body : SText;	
 	public var date : SDateTime;
 	
-	public var rawStatus : SNull<SText>;
-	public var status : SNull<SData<MailerResult>>; //map of emails with api/smtp results
 	
-	
-	public function getMailerResultMessage(k:String):{failure:String, success:String}{
-		var t = sugoi.i18n.Locale.texts;
-		var out = {failure:null, success:null};
-		switch(status.get(k)){
-			case tink.core.Outcome.Failure(f):
-				out.failure = switch(f){
-					case GenericError(e):
-						t._("Generic error: ") + e.toString();
-					case HardBounce : 
-						t._("Mailbox does not exist");
-					case SoftBounce : 
-						t._("Mailbox full or blocked");
-					case Spam:
-						t._("Message considered as spam");
-					case Unsub:
-						t._("This user unsubscribed");
-					case Unsigned:
-						t._("Sender incorrect (Unsigned)");
-					
-				};
-			case tink.core.Outcome.Success(d):
-				out.success = t._("Sent");
-		}
-		return out;
-		
-	}
 	
 }
