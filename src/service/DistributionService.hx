@@ -7,15 +7,6 @@ import Common;
  */
 class DistributionService
 {
-	
-	var distribution : db.Distribution;
-
-	public function new(d:db.Distribution) 
-	{
-		this.distribution = d;
-	}
-
-	
 	/**
 	 *  It will update the name of the operation with the new number of distributions
 	 *  as well as the total amount
