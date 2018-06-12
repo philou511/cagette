@@ -69,7 +69,7 @@ class TestSuite
 			db.Basket.manager,
 			db.UserContract.manager,
 			db.UserAmap.manager,
-
+			db.Operation.manager,
 
 			db.User.manager,
 			db.Amap.manager,
@@ -113,6 +113,7 @@ class TestSuite
 	
 	//shortcut to datas
 	public static var FRANCOIS:db.User = null; 
+	public static var SEB:db.User = null; 
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
@@ -137,12 +138,15 @@ class TestSuite
 		u.lastName = "Zulke";
 		u.email = "sebastien@alilo.fr";
 		u.insert();		
+
+		SEB = u;
 		
 		initApp(u);
 		
 		var a = new db.Amap();
 		a.name = "AMAP du Jardin public";
 		a.contact = f;
+		a.flags.set(db.Amap.AmapFlags.HasPayments);
 		a.insert();
 		
 		var place = new db.Place();

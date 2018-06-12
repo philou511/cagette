@@ -231,4 +231,64 @@ class TestDistributions extends haxe.unit.TestCase
 		
 	}
 
+	function testUpdateAmapContractOperations(){
+
+		var t = sugoi.i18n.Locale.texts;
+
+		//Take an amap contract with payments enabled
+		//Take 2 users and make orders for each
+		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
+		var contract = amapDistrib.contract;
+		var panier = TestSuite.PANIER_AMAP_LEGUMES;
+		var francoisOrder = db.UserContract.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
+		db.Operation.onOrderConfirm([francoisOrder]);
+		var sebOrder = db.UserContract.make(TestSuite.SEB, 3, panier, amapDistrib.id);
+		db.Operation.onOrderConfirm([sebOrder]);
+
+		//Check initial operation names and amounts
+		var francoisOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.FRANCOIS);
+		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
+		assertEquals(francoisOperation.amount, -13);
+		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
+		assertEquals(sebOperation.amount, -39);
+
+		//Add a distrib
+		var distrib = null;
+		var e = null;
+		try{
+			distrib = service.DistributionService.create(contract,new Date(2018, 5, 1, 18, 0, 0),new Date(2018, 5, 1, 18, 30, 0),
+			amapDistrib.place.id,null,null,null,null,new Date(2018, 4, 1, 18, 0, 0),new Date(2018, 4, 30, 18, 30, 0));
+		}
+		catch(x:tink.core.Error){
+			e = x;
+		}
+		//Check names and amounts are modified accordingly
+		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		assertEquals(francoisOperation.amount, -26);
+		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		assertEquals(sebOperation.amount, -78);
+
+		//Add a distrib cycle
+		var weeklyDistribCycle = service.DistributionService.createCycle(contract,Weekly,new Date(2018, 11, 24, 0, 0, 0),
+		new Date(2019, 0, 24, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
+		new Date(2018, 5, 4, 8, 0, 0),new Date(2018, 5, 4, 23, 0, 0),TestSuite.PLACE_DU_VILLAGE.id);
+		//Check names and amounts are modified accordingly
+		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
+		assertEquals(francoisOperation.amount, -91);
+		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
+		assertEquals(sebOperation.amount, -273);
+
+		//Delete the distrib cycle
+		service.DistributionService.deleteCycleDistribs(weeklyDistribCycle);
+		//Check names and amounts are modified accordingly
+		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		assertEquals(francoisOperation.amount, -26);
+		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		assertEquals(sebOperation.amount, -78);
+	}
+
 }
