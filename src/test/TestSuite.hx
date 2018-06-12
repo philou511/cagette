@@ -9,6 +9,7 @@ class TestSuite
 
 	static function main() {
 		
+		connectDb();
 		initDB();
 		initDatas();
 		
@@ -31,10 +32,8 @@ class TestSuite
 
 		r.run();
 	}
-	
-	
-	static function initDB(){
-		
+
+	static function connectDb() {
 		var dbstr = Sys.args()[0];
 		var dbreg = ~/([^:]+):\/\/([^:]+):([^@]*?)@([^:]+)(:[0-9]+)?\/(.*?)$/;
 		if( !dbreg.match(dbstr) )
@@ -51,7 +50,10 @@ class TestSuite
 		
 		sys.db.Manager.cnx = sys.db.Mysql.connect(dbparams);
 		sys.db.Manager.initialize();
-
+	}
+	
+	
+	public static function initDB(){
 		//NUKE EVERYTHING BWAAAAH !!
 		sql("DROP DATABASE tests;");
 		sql("CREATE DATABASE tests;");
@@ -93,7 +95,7 @@ class TestSuite
 		if ( sys.db.TableCreate.exists(m) ){
 			drop(m);
 		}
-		Sys.println("Creating table "+ m.dbInfos().name);
+		// Sys.println("Creating table "+ m.dbInfos().name);
 		sys.db.TableCreate.create(m);		
 	}
 
@@ -110,20 +112,25 @@ class TestSuite
 	}
 	
 	//shortcut to datas
+	public static var FRANCOIS:db.User = null; 
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null;
+	public static var PANIER_AMAP_LEGUMES:db.Product = null;
+	public static var DISTRIB_CONTRAT_AMAP:db.Distribution = null;
 	public static var DISTRIB_FRUITS_PLACE_DU_VILLAGE:db.Distribution = null;
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	
-	static function initDatas(){
+	public static function initDatas(){
 		
 		var f = new db.User();
 		f.firstName = "François";
 		f.lastName = "Barbut";
 		f.email = "francois@alilo.fr";
 		f.insert();
+
+		FRANCOIS = f;
 		
 		var u = new db.User();
 		u.firstName = "Seb";
@@ -168,6 +175,19 @@ class TestSuite
 		p.price = 13;
 		p.contract = c;
 		p.insert();
+
+		PANIER_AMAP_LEGUMES = p;
+
+		var d = new db.Distribution();
+		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.end = new Date(2017, 5, 1, 20, 0, 0);
+		d.orderStartDate = new Date(2017, 4, 1, 20, 0, 0);
+		d.orderEndDate = new Date(2017, 4, 30, 20, 0, 0);
+		d.contract = c;
+		d.place = place;
+		d.insert();
+
+		DISTRIB_CONTRAT_AMAP = d;
 		
 		//varying contract for strawberries with stock mgmt
 		var c = new db.Contract();
@@ -283,7 +303,7 @@ class TestSuite
 	
 	static function initApp(u:db.User){
 		
-		Sys.println("InitApp()");
+		// Sys.println("InitApp()");
 		
 		//setup App
 		var app = App.current = new App();

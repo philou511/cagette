@@ -129,10 +129,15 @@ class Distribution extends Controller
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
-		if ( !service.DistributionService.canDelete(d) ) throw Error("/contractAdmin/distributions/" + d.contract.id, t._("Deletion non possible: some orders are saved for this delivery."));
 		
 		var contractId = d.contract.id;
-		service.DistributionService.delete(d);
+		try {
+			service.DistributionService.delete(d);
+		}
+		catch(e:tink.core.Error){
+			throw Error("/contractAdmin/distributions/" + contractId, e.message);
+		}
+		
 		throw Ok("/contractAdmin/distributions/" + contractId, t._("the delivery has been deleted"));
 
 	}

@@ -16,6 +16,11 @@ class DistributionService
 	}
 
 	
+	/**
+	 *  It will update the name of the operation with the new number of distributions
+	 *  as well as the total amount
+	 *  @param contract - 
+	 */
 	public static function updateAmapContractOperations(contract:db.Contract) {
 
 		//Update all operations for this amap contract when payments are enabled
@@ -89,19 +94,22 @@ class DistributionService
 
 	}
 
-	/**
-	* Creates a new distribution and prevents distribution overlapping and other checks
-	*  @param contract
-	*  @param date
-	*  @param end
-	*  @param placeId
-	*  @param distributor1Id
-	*  @param distributor2Id
-	*  @param distributor3Id
-	*  @param distributor4Id
-	*  @param orderStartDate
-	*  @param orderEndDate
-	*/
+	 /**
+	  *  Creates a new distribution and prevents distribution overlapping and other checks
+	  *  @param contract - 
+	  *  @param date - 
+	  *  @param end - 
+	  *  @param placeId - 
+	  *  @param distributor1Id - 
+	  *  @param distributor2Id - 
+	  *  @param distributor3Id - 
+	  *  @param distributor4Id - 
+	  *  @param orderStartDate - 
+	  *  @param orderEndDate - 
+	  *  @param distributionCycle - 
+	  *  @param dispatchEvent=true - 
+	  *  @return db.Distribution
+	  */
 	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,
 	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
 		orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true):db.Distribution {
@@ -148,19 +156,20 @@ class DistributionService
 		}
 	}
 
-	/**
-	* Modifies an existing distribution and prevents distribution overlapping and other checks
-	*  @param d
-	*  @param date
-	*  @param end
-	*  @param placeId
-	*  @param distributor1Id
-	*  @param distributor2Id
-	*  @param distributor3Id
-	*  @param distributor4Id
-	*  @param orderStartDate
-	*  @param orderEndDate
-	*/
+	 /**
+	  *  Modifies an existing distribution and prevents distribution overlapping and other checks
+	  *  @param d - 
+	  *  @param date - 
+	  *  @param end - 
+	  *  @param placeId - 
+	  *  @param distributor1Id - 
+	  *  @param distributor2Id - 
+	  *  @param distributor3Id - 
+	  *  @param distributor4Id - 
+	  *  @param orderStartDate - 
+	  *  @param orderEndDate - 
+	  *  @return db.Distribution
+	  */
 	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,
 	 	distributor1Id:Int,distributor2Id:Int,distributor3Id:Int,distributor4Id:Int,
 		orderStartDate:Date,orderEndDate:Date):db.Distribution {
@@ -221,12 +230,20 @@ class DistributionService
 	/**
 	 *  Deletes a distribution
 	 *  @param d - 
+	 *  @param dispatchEvent=true - 
 	 */
-	public static function delete(d:db.Distribution) {
+	public static function delete(d:db.Distribution,?dispatchEvent=true) {
+
+		var t = sugoi.i18n.Locale.texts;
+		if ( !canDelete(d) ) {
+			throw new tink.core.Error(t._("Deletion non possible: some orders are saved for this delivery."));
+		}
 
 		var contract = d.contract;
 		d.lock();
-		App.current.event(DeleteDistrib(d));
+		if (dispatchEvent) {
+			App.current.event(DeleteDistrib(d));
+		}
 		d.delete();
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 		//names and amounts with the new number of distribs
@@ -234,6 +251,11 @@ class DistributionService
 
 	}
 
+	/**
+	 *  Computes the correct start and end dates
+	 *  @param dc - 
+	 *  @param datePointer - 
+	 */
 	public static function getDates(dc:db.DistributionCycle, datePointer:Date) {
 
 		//Generic variables 
@@ -258,7 +280,8 @@ class DistributionService
 	}
 
 	/**
-	 * on créé toutes les distribs en partant du jour de la semaine de la premiere date
+	 *  Creates all the distributions from the first date
+	 *  @param dc - 
 	 */
 	public static function createCycleDistribs(dc:db.DistributionCycle) {
 
@@ -317,7 +340,8 @@ class DistributionService
 	}
 	
 	/**
-	 *  Delete distributions which are part of this cycle
+	 *   Deletes all distributions which are part of this cycle
+	 *  @param cycle - 
 	 */
 	public static function deleteCycleDistribs(cycle:db.DistributionCycle){
 
@@ -358,19 +382,22 @@ class DistributionService
 		return messages;
 	}
 
-	/**
-	* Creates a new distribution cycle and prevents distribution overlapping and other checks
-	*  @param contract
-	*  @param date
-	*  @param end
-	*  @param placeId
-	*  @param distributor1Id
-	*  @param distributor2Id
-	*  @param distributor3Id
-	*  @param distributor4Id
-	*  @param orderStartDate
-	*  @param orderEndDate
-	*/
+	 /**
+	  *  Creates a new distribution cycle and prevents distribution overlapping and other checks
+	  *  @param contract - 
+	  *  @param cycleType - 
+	  *  @param startDate - 
+	  *  @param endDate - 
+	  *  @param startHour - 
+	  *  @param endHour - 
+	  *  @param daysBeforeOrderStart - 
+	  *  @param daysBeforeOrderEnd - 
+	  *  @param openingHour - 
+	  *  @param closingHour - 
+	  *  @param placeId - 
+	  *  @param dispatchEvent=true - 
+	  *  @return db.DistributionCycle
+	  */
 	 public static function createCycle(contract:db.Contract,cycleType:db.DistributionCycle.CycleType,startDate:Date,endDate:Date,
 	 startHour:Date,endHour:Date,daysBeforeOrderStart:Null<Int>,daysBeforeOrderEnd:Null<Int>,openingHour:Null<Date>,closingHour:Null<Date>,
 	 placeId:Int,?dispatchEvent=true):db.DistributionCycle {

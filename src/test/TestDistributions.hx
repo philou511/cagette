@@ -16,6 +16,8 @@ class TestDistributions extends haxe.unit.TestCase
 	 * 
 	 */
 	override function setup(){		
+		TestSuite.initDB();
+		TestSuite.initDatas();
 	}
 	
 	/**
@@ -183,6 +185,50 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(triweeklyDistribs[4].date.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
 		assertEquals(triweeklyDistribs[4].end.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
 		service.DistributionService.deleteCycleDistribs(triweeklyDistribCycle);
+	}
+
+	function testDelete() { 
+		//A variable contract with a distribution that has orders
+		var ordersDistrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
+		var chicken = TestSuite.CHICKEN;
+		var order = db.UserContract.make(TestSuite.FRANCOIS, 1, chicken, ordersDistrib.id);
+
+		var e = null;
+		try{
+			service.DistributionService.delete(ordersDistrib);
+		}
+		catch(x:tink.core.Error){
+			e = x;
+		}
+		assertEquals(e.message, "Deletion non possible: some orders are saved for this delivery.");
+
+		//A variable contract with a distribution that has no orders
+		var noOrdersDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
+		
+		var e = null;
+		try{
+			service.DistributionService.delete(noOrdersDistrib);
+		}
+		catch(x:tink.core.Error){
+			e = x;
+		}
+		assertEquals(e, null);
+
+		//An Amap contract with a distribution that has orders
+		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
+		var panier = TestSuite.PANIER_AMAP_LEGUMES;
+		var amapOrder = db.UserContract.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
+
+		var e = null;
+		try{
+			service.DistributionService.delete(amapDistrib);
+		}
+		catch(x:tink.core.Error){
+			e = x;
+		}
+		assertEquals(e, null);
+
+		
 	}
 
 }
