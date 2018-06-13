@@ -13,7 +13,6 @@
 	</macro>
 	
 	<macro name="img(id,?def)"><img src="$$file(::id::,::def::)"/></macro>
-	
 
 	<macro name="browse(b,url)">$$browseCustom(::b::,::url::,Page ::b.page:: ::if b.pages::/::b.pages:: ::end::)</macro>
 
@@ -22,19 +21,6 @@
 		::if b.prev::<a href="::url::/?page=::b.prev::">::_("Previous")::</a>::else:: ::_("Previous"):: ::end::
 		| ::custom:: |
 		::if b.next::<a href="::url::/?page=::b.next::">::_("Next")::</a>::else:: ::_("Next"):: ::end:: &gt;
-	</macro>
-	
-	<macro name="swf(file,id,width,height,vars,?wmode)">
-		<div id="swf_::id::" class="swf::if wmode:: ::wmode::::end::" style="width : ::width::px; height : ::height::px"></div>
-		<script type="text/javascript">
-		var so = new js.SWFObject("http://data.::HOST::/swf/::file::?v=::variable(file)::","::id::",::width::,::height::,9,"#E4E2E0");
-		so.addParam("AllowScriptAccess","always");
-		so.addParam("FlashVars","::vars::");
-		so.addParam("menu","false");
-		so.addParam("scale","noScale");
-		::if wmode::so.addParam("wmode","::wmode::");::end::
-		so.write("swf_::id::");
-		</script>
 	</macro>
 	
 	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>

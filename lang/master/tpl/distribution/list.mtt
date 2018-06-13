@@ -5,12 +5,10 @@
 	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
-<body>	
-	::set date = getDate(distrib.date)::
+<body>		
 	<h2>
 		::contract._amap.name:: - 
-		::set hour = date.h+":"+date.i::
-		::__("Delivery on ::dow:: ::dom:: ::month::, at ::hour::",{dow:date.dow,dom:date.d,month:date.m,hour:hour})::
+		::__("Distribution of the ::date::, from ::from:: to ::to::",{date:dDate(distrib.date),from:hHour(distrib.date),to:hHour(distrib.end)})::
 	</h2>
 	<h2>
 		::distrib._contract.name:: - ::distrib._contract._vendor.name::
@@ -26,7 +24,7 @@
 		<b>::_("Contact in charge of the contract") :</b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
 	</p>
 	<p>
-		<b>::_("Farmers"):: : </b>
+		<b>::_("Farmer"):: : </b>
 		::v.name:: , 
 		::if v.email!=null :: ::v.email:: ::end::, 
 		::if v.phone!=null :: ::v.phone:: ::end::

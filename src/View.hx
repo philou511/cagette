@@ -111,10 +111,17 @@ class View extends sugoi.BaseView {
 		var _unit = unit;
 		
 		//turn small prices in Kg
-		if (_price < 1 && unit == Gram){
-			_price *= 1000;
-			_unit = Kilogram;
-		}
+		if (_price < 1 ){
+			switch(unit){
+				case Gram: 
+					_price *= 1000;
+					_unit = Kilogram;
+				case Centilitre:
+					_price *= 100;
+					_unit = Litre;
+				default :
+			}
+		}			
 		return formatNum(_price) + "&nbsp;" + currency() + "/" + this.unit(_unit);
 	}
 	
@@ -183,8 +190,7 @@ class View extends sugoi.BaseView {
 	}
 	
 	/**
-	 * human readable date 
-	 * @param	date
+	 * human readable date + time
 	 */
 	public function hDate(date:Date):String {
 		if (date == null) return t._("no date set");
@@ -198,7 +204,21 @@ class View extends sugoi.BaseView {
 		}
 		return out;
 	}
+
+	/**
+	 *  Human readable hour
+	 */
+	public function hHour(date:Date){
+		return StringTools.lpad(date.getHours().string(), "0", 2) + ":" + StringTools.lpad(date.getMinutes().string(), "0", 2);
+	}
+
+	public function oHour(hour:Int,min:Int){
+		return StringTools.lpad(hour.string(), "0", 2) + ":" + StringTools.lpad(min.string(), "0", 2);
+	}
 	
+	/**
+	 *  human readable date
+	 */
 	public function dDate(date:Date):String {
 		if (date == null) return t._("no date set");
 		if (DAYS == null) initDate();
@@ -206,6 +226,7 @@ class View extends sugoi.BaseView {
 		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
 	}
 	
+
 	public function getDate(date:Date) {
 		if (date == null) throw "date is null";
 		if (DAYS == null) initDate();
@@ -220,9 +241,7 @@ class View extends sugoi.BaseView {
 		};
 	}
 	
-	public function hHour(h:Int,m:Int){
-		return StringTools.lpad(h.string(), "0", 2) + ":" + StringTools.lpad(m.string(), "0", 2);
-	}
+	
 	
 	public function getProductImage(e):String {
 		return Std.string(e).substr(2).toLowerCase()+".png";

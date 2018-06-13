@@ -28,13 +28,13 @@
 		<table class="table">
 			::foreach c contracts::
 				::if c.endDate!=null && c.endDate.getTime() < Date.now().getTime()::
-					::set style = "opacity:0.5;"::
+					::set class = "disabled"::
 				::elseif c.startDate!=null && c.startDate.getTime() > Date.now().getTime()::
-					::set style = "opacity:0.5;"::
+					::set class = "disabled"::
 				::else::
-					::set style = ""::
+					::set class = ""::
 				::end::
-				<tr  style="::style::" >
+				<tr  class="::class::" >
 					<td>
 						::if c._vendor._image!=null::
 						<div class="productImg" style="background-image:url('::file(c._vendor._image)::');width:48px;height:48px;" ></div>

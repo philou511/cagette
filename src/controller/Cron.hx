@@ -85,23 +85,23 @@ class Cron extends Controller
 		}
 		
 		
-		//DEMO CONTRATS deletion after 10 days ( see controller.Group.doCreate() )
-		db.Contract.manager.delete($name == "Contrat AMAP Maraîcher Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10));
-		db.Contract.manager.delete($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 10));
+		//DEMO CONTRATS deletion after 7 days ( see controller.Group.doCreate() )
+		db.Contract.manager.delete($name == "Contrat AMAP Maraîcher Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7));
+		db.Contract.manager.delete($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7));
 
 		
 		//Old Messages cleaning
-		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 365));
+		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 6));
 		
 		//DB cleaning : I dont know how, but some people have empty string emails...
-		for ( u in db.User.manager.search($email == "", true)){
+		/*for ( u in db.User.manager.search($email == "", true)){
 			u.email = Std.random(9999) + "@cagette.net";
 			u.update();
 		}
 		for ( u in db.User.manager.search($email2 == "", true)){
 			u.email2 = null;
 			u.update();
-		}
+		}*/
 		
 		
 	}
@@ -250,8 +250,9 @@ class Cron extends Controller
 					this.t = sugoi.i18n.Locale.init(u.user.lang); //switch to the user language
 
 					var text;
-					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) //ouverture de commande
+					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) 
 					{
+						//order opening notif
 						text = t._("Opening of orders for the delivery of <b>::date::</b>", {date:view.hDate(u.distrib.date)});
 						text += "<br/>";
 						text += t._("The following suppliers are involved :");
@@ -260,13 +261,12 @@ class Cron extends Controller
 							text += "<li>" + v + "</li>";
 						}
 						text += "</ul>";
-						//var url = "http://" + App.config.HOST + "/group/"+ u.distrib.contract.amap.id;
-						//text += t._("The web address of your group is: <a href=\" + ::groupurl:: + \"> ::groupurl:: </a><br>", {groupurl:url});
-					}
-					else //rappel de la distribution
-					{
-						text = t._("Do not forget the delivery: <b>::delivery::</b><br/>", {delivery:view.hDate(u.distrib.date)});
-						text += t._("Your products to collect:<br/><ul>");
+						
+					}else{
+						//Distribution notif to the users
+						var d = u.distrib;
+						text = t._("Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>", {day:view.dDate(d.date),from:view.hHour(d.date),to:view.hHour(d.end)});
+						text += t._("Your products to collect :") + "<br/><ul>";
 						for ( p in u.products) {
 							text += "<li>"+p.quantity+" x "+p.product.getName();
 							// Gerer le cas des contrats en alternance
@@ -340,9 +340,11 @@ class Cron extends Controller
 		}
 		
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		var view = App.current.view;
 		
 		for ( d in ds ){
-			var subj = "["+d.contract.amap.name+"] " + t._("Validation of the ::date:: distribution",{date:App.current.view.hDate(d.date)});
+			// var subj = "["+d.contract.amap.name+"] " + t._("Validation of the ::date:: distribution",{date:view.hDate(d.date)});
+			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
 			
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
 			
@@ -374,13 +376,14 @@ class Cron extends Controller
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		
 		for ( d in ds ){
-			var subj = d.contract.amap.name + t._(": Validation of the delivery of the ") + App.current.view.hDate(d.date);
+			// var subj = d.contract.amap.name + t._(": Validation of the delivery of the ") + App.current.view.hDate(d.date);
+			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
 			
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
 			
 			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
-			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your group Cagette)", {distriburl:url});
+			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
 			
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
@@ -439,7 +442,8 @@ class Cron extends Controller
 		//email
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		for ( d in ds ){
-			var subj = d.contract.amap.name + t._(": Validation of the distribution of the ") + App.current.view.hDate(d.date);
+			// var subj = d.contract.amap.name + t._(": Validation of the distribution of the ") + App.current.view.hDate(d.date);
+			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
 			var html = t._("<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>", {deliveryDate:App.current.view.hDate(d.date)});
 			App.quickMail(d.contract.amap.contact.email, subj, html);
 		}
@@ -455,6 +459,10 @@ class Cron extends Controller
 			e.finallySend();
 			Sys.sleep(0.25);
 		}
+
+		//delete old emails
+		var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
+		sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
 
 	}
 	

@@ -178,6 +178,10 @@ span.panel-title{
 	position: relative;
 }
 
+.disabled{
+	opacity: 0.5;
+}
+
 /* block marron */
 .block{	
 	margin-bottom: 12px;
@@ -684,6 +688,7 @@ span.tag.active{
 		
 		&.disabled{
 			background-color:#999;
+			opacity: 1;
 		}
 		&.orders{
 			background-color:#B2823F;
@@ -733,6 +738,7 @@ span.tag.active{
 		
 		&.disabled{
 			background:#AAA;
+			opacity: 1;
 		}
 		
 		&.orders{

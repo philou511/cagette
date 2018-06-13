@@ -19,20 +19,21 @@ class TestSuite
 		//r.add(new test.TestReports());
 
 		#if plugins
-		//cagette-pro
-		pro.test.ProTestSuite.init();
+		//cagette-pro tests, keep in this order
+		pro.test.ProTestSuite.initDB();
 		pro.test.ProTestSuite.initDatas();
-		//keep in this order
 		r.add(new pro.test.TestProductService());
 		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
+		//wholesale-order tests
+		r.add(new who.test.TestWho());
 		#end
 
 		r.run();
 	}
 	
 	
-	static function initDB(){
+	public static function initDB(){
 		
 		var dbstr = Sys.args()[0];
 		var dbreg = ~/([^:]+):\/\/([^:]+):([^@]*?)@([^:]+)(:[0-9]+)?\/(.*?)$/;
@@ -92,7 +93,7 @@ class TestSuite
 		if ( sys.db.TableCreate.exists(m) ){
 			drop(m);
 		}
-		Sys.println("Creating table "+ m.dbInfos().name);
+		// Sys.println("Creating table "+ m.dbInfos().name);
 		sys.db.TableCreate.create(m);		
 	}
 
@@ -111,21 +112,27 @@ class TestSuite
 	//shortcut to datas
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null; 
+	public static var AMAP_DU_JARDIN:db.Amap = null;
+	public static var LOCAVORES:db.Amap = null;
+	public static var SEB:db.User = null;
+	public static var FRANCOIS:db.User = null;
 	
 	
-	static function initDatas(){
+	public static function initDatas(){
 		
 		var f = new db.User();
 		f.firstName = "François";
 		f.lastName = "Barbut";
 		f.email = "francois@alilo.fr";
 		f.insert();
+		FRANCOIS = f;
 		
 		var u = new db.User();
 		u.firstName = "Seb";
 		u.lastName = "Zulke";
 		u.email = "sebastien@alilo.fr";
 		u.insert();		
+		SEB = u;
 		
 		initApp(u);
 		
@@ -133,6 +140,7 @@ class TestSuite
 		a.name = "AMAP du Jardin public";
 		a.contact = f;
 		a.insert();
+		AMAP_DU_JARDIN = a;
 		
 		var place = new db.Place();
 		place.name = "Place du village";
@@ -207,6 +215,7 @@ class TestSuite
 		a.name = "Les Locavores affamés";
 		a.contact = f;
 		a.insert();
+		LOCAVORES = a;
 		
 		var place = new db.Place();
 		place.name = "Rue Saucisse";
@@ -281,13 +290,13 @@ class TestSuite
 		#if plugins
 		//app.plugins.push( new hosted.HostedPlugIn() );				
 		app.plugins.push( new pro.ProPlugIn() );		
-		//app.plugins.push( new connector.ConnectorPlugIn() );				
+		app.plugins.push( new connector.ConnectorPlugIn() );				
 		//app.plugins.push( new pro.LemonwayEC() );
-		//plugins.push( new who.WhoPlugIn() );
+		app.plugins.push( new who.WhoPlugIn() );
 		#end
 		
 		//i18n
-		var texts = sugoi.i18n.Locale.init("en");
+		sugoi.i18n.Locale.init("en");
 		
 		App.current.user = u;
 		App.current.view = new View();

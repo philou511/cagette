@@ -236,23 +236,25 @@ class App extends sugoi.BaseApp {
 			throw sugoi.ControllerAction.ErrorAction("/",msg);
 		}
 		
-		var mailer = new sugoi.mail.BufferedMailer();
+		var mailer : sugoi.mail.IMailer = new sugoi.mail.BufferedMailer();
 		
-		/*if(App.config.DEBUG){ 
-			mailer.defineFinalMailer("debug");
-		}else{*/
+		if(App.config.DEBUG){ 
+			//Dev env : emails are written to tmp folder
+			mailer = new sugoi.mail.DebugMailer();
+		}else{
 			if (sugoi.db.Variable.get("mailer") == "mandrill"){		
-				mailer.defineFinalMailer("mandrill");		
+				//Buffered emails with Mandrill
+				untyped mailer.defineFinalMailer("mandrill");		
 			}else{
-				mailer.defineFinalMailer("smtp");
+				//Buffered emails with SMTP
+				untyped mailer.defineFinalMailer("smtp");
 			}
-		//}
+		}
 		return mailer;
 	}
 	
 	/**
-	 * Send an email and store the result in a db.Message
-	 * @param	e
+	 * Send an email
 	 */
 	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Amap, ?listId:String, ?sender:db.User){
 		
@@ -273,11 +275,7 @@ class App extends sugoi.BaseApp {
 		e.setSender(App.config.get("default_email"),"Cagette.net");				
 		var html = App.current.processTemplate("mail/message.mtt", {text:html});		
 		e.setHtmlBody(html);
-		try{
-			App.sendMail(e);
-		}catch(e:Dynamic){
-			App.current.logError(e);
-		}
+		App.sendMail(e);
 	}
 	
 	/**

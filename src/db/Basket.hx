@@ -59,15 +59,13 @@ class Basket extends Object
 				o.basket = b;
 				o.update();
 			}
-			
-			
-		}
-		
-		return b;
-		
+		}		
+		return b;		
 	}
 	
-	
+	/**
+	 *  Get basket's orders
+	 */
 	public function getOrders(){
 		return db.UserContract.manager.search($basket == this, false);
 	}

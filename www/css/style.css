@@ -218,6 +218,9 @@ span.panel-title {
   border-radius: 4px;
   position: relative; }
 
+.disabled {
+  opacity: 0.5; }
+
 /* block marron */
 .block {
   margin-bottom: 12px;
@@ -575,7 +578,8 @@ span.tag.active {
     margin: 0;
     padding: 6px 6px 6px 90px; }
     .distrib .header.disabled {
-      background-color: #999; }
+      background-color: #999;
+      opacity: 1; }
     .distrib .header.orders {
       background-color: #B2823F; }
     .distrib .header .info {
@@ -610,7 +614,8 @@ span.tag.active {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px; }
     .distrib .content.disabled {
-      background: #AAA; }
+      background: #AAA;
+      opacity: 1; }
     .distrib .content.orders {
       background: #FFF;
       padding-left: 50px; }

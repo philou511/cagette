@@ -54,9 +54,9 @@
 					</td>
 					<td>
 						::if uo.product.active==false:: 
-						<span style="color:#AAA;">::uo.product.name:: ::_("(inactive)")::</span>
+						<span style="color:#AAA;">::uo.product.getName():: ::_("(inactive)")::</span>
 						::else::
-						::uo.product.name::	
+						::uo.product.getName()::	
 						::end::
 						
 					</td>

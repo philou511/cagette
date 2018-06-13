@@ -8,7 +8,7 @@
 				<h3>::num:: unsent emails</h3>
 			</p>
 
-			::set url = "/admin/errors"::
+			::set url = "/admin/emails"::
 			
 			$$browse(::browser::,::url::)
 

@@ -227,6 +227,8 @@ enum Event {
 	BatchEnableProducts(data:{pids:Array<Int>,enable:Bool});
 	
 	//Contracts
+	EditContract(contract:db.Contract);
+	DuplicateContract(contract:db.Contract);
 	DeleteContract(contract:db.Contract);
 	
 	//crons
