@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-11 14:44+0200\n"
-"Last-Translator: Andreas Kleinert <Andy.Kleinert@gmail.com>\n"
+"PO-Revision-Date: 2018-06-19 20:39+0000\n"
+"Last-Translator: nimradium <nimra242001@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
 "Language: de\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
@@ -77,7 +77,7 @@ msgstr ""
 
 #: src/controller/Transaction.hx:2961
 msgid "Confirmed"
-msgstr ""
+msgstr "Bestätigt"
 
 #: src/controller/Transaction.hx:3856
 msgid "Operation updated"
@@ -94,7 +94,7 @@ msgstr "Operation gelöscht"
 #: src/controller/Transaction.hx:4636 src/controller/Transaction.hx:5048
 #: src/controller/Transaction.hx:6489 src/controller/Transaction.hx:7846
 msgid "Your cart is empty"
-msgstr ""
+msgstr "Ihr Einkaufswagen ist leer"
 
 #: src/controller/Transaction.hx:5647
 msgid "Check for the order of ::date::"
@@ -276,7 +276,7 @@ msgstr "Kategorie gelöscht"
 
 #: src/controller/Contract.hx:1205
 msgid "You are not a member of this group"
-msgstr ""
+msgstr "Sie sind kein Mitglied dieser Gruppe"
 
 #: src/controller/Contract.hx:4631
 msgid ""
@@ -345,22 +345,26 @@ msgstr "Ihre Solawi Bestellung wurde gespeichert"
 
 #: src/controller/Contract.hx:14780
 msgid "In order to save your order, please choose a means of payment."
-msgstr ""
+msgstr "Um Ihre Bestellung zu speichern, wählen Sie bitte ein Zahlungsmittel."
 
 #: src/controller/Contract.hx:15322
 msgid ""
 "This delivery has already taken place, you can no longer modify the order."
 msgstr ""
+"Diese Lieferung ist bereits erfolgt, Sie können die Bestellung nicht mehr "
+"ändern."
 
 #: src/controller/Contract.hx:15449
 msgid ""
 "<br/>As the manager of the contract you can modify the order from this page: "
 "<a href='/contractAdmin'>Management of contracts</a>"
 msgstr ""
+"<br/>Als Manager des Vertrages können Sie die Bestellung von dieser Seite "
+"aus ändern: <a href='/contractAdmin'>Vertragsverwaltung</a>"
 
 #: src/controller/Contract.hx:16731
 msgid "Error, could not find the order"
-msgstr ""
+msgstr "Fehler, die Bestellung konnte nicht gefunden werden"
 
 #: src/controller/AmapAdmin.hx:322 src/controller/AmapAdmin.hx:1383
 #: src/controller/ContractAdmin.hx:2334
@@ -383,15 +387,15 @@ msgstr "Mitglied"
 
 #: src/controller/AmapAdmin.hx:3709
 msgid "Group administrator"
-msgstr ""
+msgstr "Gruppenadministrator"
 
 #: src/controller/AmapAdmin.hx:3778
 msgid "Membership management"
-msgstr ""
+msgstr "Mitgliederverwaltung"
 
 #: src/controller/AmapAdmin.hx:3848
 msgid "Messages"
-msgstr ""
+msgstr "Nachrichten"
 
 #: src/controller/AmapAdmin.hx:4256 src/db/User.hx:16065
 #: lang/master/tpl/member/view.mtt:6119
@@ -401,15 +405,15 @@ msgstr "Rechte"
 
 #: src/controller/AmapAdmin.hx:4487
 msgid "All contracts"
-msgstr ""
+msgstr "Alle Verträge"
 
 #: src/controller/AmapAdmin.hx:4988
 msgid "Contracts management"
-msgstr ""
+msgstr "Vertragsverwaltung"
 
 #: src/controller/AmapAdmin.hx:6012
 msgid "You cannot strip yourself of admin rights."
-msgstr ""
+msgstr "Sie können sich nicht selber die Admin-Rechte entfernen."
 
 #: src/controller/AmapAdmin.hx:6209
 msgid "Rights removed"
@@ -421,11 +425,11 @@ msgstr "Rechte hinzugefügt oder geändert"
 
 #: src/controller/AmapAdmin.hx:6365
 msgid "Give rights to a user"
-msgstr ""
+msgstr "Rechte an einen Benutzer vergeben"
 
 #: src/controller/AmapAdmin.hx:6421
 msgid "Modify the rights of ::user::"
-msgstr ""
+msgstr "Rechte von ::user:: ändern"
 
 #: src/controller/AmapAdmin.hx:6835 src/controller/AmapAdmin.hx:7099
 msgid "Name "
@@ -453,7 +457,7 @@ msgstr "Symbol der Währung"
 
 #: src/controller/AmapAdmin.hx:8171
 msgid "3 digit ISO code"
-msgstr ""
+msgstr "3-stelliger ISO-Code"
 
 #: src/controller/AmapAdmin.hx:8461
 msgid "Currency updated"
@@ -473,7 +477,7 @@ msgstr "IBAN Ihres Bankkontos"
 
 #: src/controller/AmapAdmin.hx:9632
 msgid "Payment options updated"
-msgstr ""
+msgstr "Zahlungsoptionen aktualisiert"
 
 #: src/controller/AmapAdmin.hx:9691
 msgid "Options of payment"
@@ -481,11 +485,11 @@ msgstr "Bezahlungsart"
 
 #: src/controller/admin/Admin.hx:2122
 msgid "Configuration updated"
-msgstr ""
+msgstr "Konfiguration aktualisiert"
 
 #: src/controller/admin/Admin.hx:2180
 msgid "Email service configuration"
-msgstr ""
+msgstr "E-Mail-Service-Konfiguration"
 
 #: src/controller/Messages.hx:795
 msgid "Sender name"
@@ -497,7 +501,7 @@ msgstr "Email des Senders"
 
 #: src/controller/Messages.hx:966
 msgid "Recipients"
-msgstr ""
+msgstr "Empfänger"
 
 #: src/controller/Messages.hx:1077 lang/master/tpl/messages/message.mtt:110
 msgid "Subject:"
@@ -505,7 +509,7 @@ msgstr "Betreff:"
 
 #: src/controller/Messages.hx:1174
 msgid "Message:"
-msgstr ""
+msgstr "Nachricht:"
 
 #: src/controller/Messages.hx:2618
 msgid "The message has been sent"
@@ -537,7 +541,7 @@ msgstr "Mitgliedschaft erneuern"
 
 #: src/controller/Messages.hx:4145
 msgid "Subscribers"
-msgstr ""
+msgstr "Abonnenten"
 
 #: src/controller/User.hx:834
 msgid "You are not connected"
@@ -645,6 +649,8 @@ msgstr "Mitgliedschaftsanfrage gelöscht"
 #: src/controller/Member.hx:5367 src/controller/Member.hx:5906
 msgid "An error occurred while sending emails, please retry"
 msgstr ""
+"Beim Versenden von E-Mails ist ein Fehler aufgetreten, bitte versuchen Sie "
+"es erneut"
 
 #: src/controller/Member.hx:5474
 msgid "Invitation sent."
@@ -683,7 +689,7 @@ msgstr ""
 
 #: src/controller/Member.hx:10496 src/controller/Member.hx:23135
 msgid "Phone number is required in this group."
-msgstr ""
+msgstr "In dieser Gruppe ist eine Telefonnummer erforderlich."
 
 #: src/controller/Member.hx:11085
 msgid ""
@@ -696,6 +702,8 @@ msgstr ""
 #: src/controller/Member.hx:11259
 msgid "Warning, this e-mail or this name already exists for another account : "
 msgstr ""
+"Warnung, diese E-Mail oder dieser Name wird bereits für ein anderes Konto "
+"verwendet : "
 
 #: src/controller/Member.hx:11482
 msgid "These accounts can't be merged because the second account has orders"
@@ -734,10 +742,13 @@ msgid ""
 "Warning, this account has orders. <a class='btn btn-default btn-xs' href='/"
 "member/delete/::userid::?token=::argstoken::&confirm=1'>Remove anyway</a>"
 msgstr ""
+"Achtung, hat dieses Konto Bestellungen. <a class='btn btn-default btn-xs' "
+"href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Trotzdem "
+"entfernen</a>"
 
 #: src/controller/Member.hx:13761
 msgid "::user:: has been removed from your group"
-msgstr ""
+msgstr "::user::: wurde aus Ihrer Gruppe entfernt"
 
 #: src/controller/Member.hx:13872
 msgid "This person does not belong to \"::amapname::\""
@@ -976,24 +987,24 @@ msgstr "Diese Lieferung wurde schon bestätigt"
 
 #: src/controller/api/Order.hx:2745
 msgid "::user:: is not member of this group"
-msgstr ""
+msgstr "::user::: ist nicht Mitglied dieser Gruppe"
 
 #: src/controller/api/Order.hx:4016 src/controller/ContractAdmin.hx:31276
 #: src/controller/ContractAdmin.hx:32412
 msgid "Unable to find user #::num::"
-msgstr ""
+msgstr "Der Benutzer #::num:: konnte nicht gefunden werden"
 
 #: src/controller/api/Order.hx:4125 src/controller/ContractAdmin.hx:32520
 msgid "::user:: is not part of this group"
-msgstr ""
+msgstr "::user::: ist nicht Teil dieser Gruppe"
 
 #: src/controller/api/Order.hx:4216 src/controller/ContractAdmin.hx:32614
 msgid "Both selected accounts must be different ones"
-msgstr ""
+msgstr "Beide ausgewählten Konten müssen verschiedene sein"
 
 #: src/controller/api/Order.hx:4411
 msgid "Error : product \"::product::\" quantities should be integers"
-msgstr ""
+msgstr "Fehler: Produkt \"::product::\" Mengen müssen Ganzzahlen sein"
 
 #: src/controller/Group.hx:1010
 msgid "You are already in the waiting list of this group"
@@ -1108,7 +1119,7 @@ msgstr "Gruppentyp"
 
 #: src/controller/Group.hx:6755
 msgid "Market square"
-msgstr ""
+msgstr "Marktplatz"
 
 #: src/controller/Group.hx:7196
 msgid "CSA contract Vegetables - Example"
@@ -1153,21 +1164,23 @@ msgstr ""
 
 #: src/controller/Group.hx:9129
 msgid "12 eggs"
-msgstr ""
+msgstr "12 Eier"
 
 #: src/controller/Group.hx:9295
 msgid "Chicken"
-msgstr ""
+msgstr "Huhn"
 
 #: src/controller/Shop.hx:638 src/controller/Main.hx:1954
 msgid ""
 "Members of this group should provide a phone number. <a href='/account/"
 "edit'>Please click here to update your account</a>."
 msgstr ""
+"Mitglieder dieser Gruppe sollten eine Telefonnummer angeben. <a href='/"
+"account/edit'>Bitte klicken Sie hier, um Ihr Konto zu aktualisieren </a>."
 
 #: src/controller/Shop.hx:4178
 msgid "In order to confirm your order, You need to authenticate."
-msgstr ""
+msgstr "Um Ihre Bestellung zu bestätigen, müssen Sie sich authentifizieren."
 
 #: src/controller/Shop.hx:4607
 msgid "Your order is empty"
@@ -1175,7 +1188,7 @@ msgstr "Keine Bestellungen vorhanden"
 
 #: src/controller/Shop.hx:5121
 msgid "This cart is invalid"
-msgstr ""
+msgstr "Dieser Warenkorb ist ungültig"
 
 #: src/controller/Shop.hx:5297 src/controller/Shop.hx:5605
 msgid "This distribution does not supply the product <b>::pname::</b>"
@@ -1187,7 +1200,7 @@ msgstr ""
 
 #: src/controller/Shop.hx:6804
 msgid "Your order has been confirmed"
-msgstr ""
+msgstr "Ihre Bestellung wurde bestätigt"
 
 #: src/controller/ContractAdmin.hx:411
 msgid "You don't have the authorization to manage contracts"
@@ -1282,7 +1295,7 @@ msgstr "Bestellungen von ::fromDate:: bis ::toDate:: pro Landwirt.csv"
 #, fuzzy
 #| msgid "Your order has been successfully recorded"
 msgid "The order has been successfully deleted."
-msgstr "Ihre Bestellung wurde erfolgreich abgeschloßen"
+msgstr "Der Auftrag wurde erfolgreich gelöscht."
 
 #: src/controller/ContractAdmin.hx:19443
 msgid "Prices are now up to date."
@@ -1302,7 +1315,7 @@ msgstr "Lieferungen kopieren"
 
 #: src/controller/ContractAdmin.hx:22155
 msgid "The contract has been duplicated"
-msgstr ""
+msgstr "Der Vertrag wurde dupliziert"
 
 #: src/controller/ContractAdmin.hx:22907 src/controller/ContractAdmin.hx:23780
 msgid "No delivery in this contract"
@@ -1314,7 +1327,7 @@ msgstr "Das Angebot wurde gelöscht"
 
 #: src/controller/ContractAdmin.hx:32023
 msgid "Unable to find product ::pid::"
-msgstr ""
+msgstr "Produkt ::pid:: konnte nicht gefunden werden"
 
 #: src/controller/ContractAdmin.hx:33610 src/controller/ContractAdmin.hx:33705
 msgid "The order has been updated"
@@ -1326,14 +1339,14 @@ msgstr ""
 
 #: src/controller/Cron.hx:8296
 msgid "The following suppliers are involved :"
-msgstr ""
+msgstr "Folgende Lieferanten sind beteiligt:"
 
 #: src/controller/Cron.hx:8565
-#, fuzzy
-#| msgid "Do not forget the delivery: <b>::delivery::</b><br/>"
 msgid ""
 "Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>"
-msgstr "Vergessen Sie ihre Lieferung nicht: <b>::delivery::</b><br/>"
+msgstr ""
+"Vergessen Sie nicht die Lieferung am <b>::day::</b> von ::from::: bis ::to::<"
+"br/>>"
 
 #: src/controller/Cron.hx:8732
 #, fuzzy
@@ -1498,7 +1511,7 @@ msgstr "Jean Martin EURL"
 
 #: src/controller/Install.hx:2414
 msgid "Vegetables Contract Example"
-msgstr ""
+msgstr "Gemüse-Vertrag Beispiel"
 
 #: src/controller/Install.hx:3586
 msgid ""
@@ -1537,8 +1550,7 @@ msgstr "Email ::em:: ist bestätigt"
 #| msgid ""
 #| "Warning, this e-mail or this name already exist for another account: "
 msgid "This email is already used by another account."
-msgstr ""
-"Achtung ! Diese Email oder der Name existiert schon für ein anderes Konto: "
+msgstr "Diese E-Mail wird bereits von einem anderen Konto verwendet."
 
 #: src/controller/Account.hx:1473
 msgid "Your account has been updated"
@@ -1737,25 +1749,27 @@ msgstr ""
 
 #: src/service/UserService.hx:501
 msgid "There is no account with this email"
-msgstr ""
+msgstr "Es gibt kein Konto mit dieser E-Mail"
 
 #: src/service/UserService.hx:634
 msgid ""
 "Your account have not been validated yet. We sent an e-mail to ::email:: to "
 "finalize your subscription!"
 msgstr ""
+"Ihr Konto wurde noch nicht validiert. Wir haben eine E-Mail an ::email::: "
+"geschickt, um Ihr Abonnement abzuschließen!"
 
 #: src/service/UserService.hx:901
 msgid "Invalid password"
-msgstr ""
+msgstr "Ungültiges Kennwort"
 
 #: src/service/UserService.hx:1453
 msgid "Invalid email address"
-msgstr ""
+msgstr "Ungültige E-Mail-Adresse"
 
 #: src/service/UserService.hx:1564
 msgid "We already have an account with this email address"
-msgstr ""
+msgstr "Wir haben bereits ein Konto mit dieser E-Mail-Adresse"
 
 #. kilogramms
 #: src/View.hx:3308 common/Formatting.hx:1337
@@ -1770,7 +1784,7 @@ msgstr "g."
 #. unit of a product)
 #: src/View.hx:3400
 msgid "pieces"
-msgstr ""
+msgstr "Stück"
 
 #. unit of a product)
 #: src/View.hx:3439 common/Formatting.hx:1264 common/Formatting.hx:1412
@@ -1882,7 +1896,7 @@ msgstr "Nachrichten"
 
 #: src/db/UserAmap.hx:2181
 msgid "Members management"
-msgstr ""
+msgstr "Mitgliederverwaltung"
 
 #: src/db/UserAmap.hx:2269
 msgid "Management of all contracts"
@@ -1892,7 +1906,7 @@ msgstr "Management aller Angebote"
 #, fuzzy
 #| msgid "Duplicated contact"
 msgid "Deleted contract"
-msgstr "Angebot kopieren"
+msgstr "Gelöschter Vertrag"
 
 #: src/db/UserAmap.hx:2423
 msgid "::name:: contract management"
