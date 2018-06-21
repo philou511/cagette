@@ -20,6 +20,10 @@ class TestOrders extends haxe.unit.TestCase
 	 * get a contract + a user + a product + empty orders
 	 */
 	override function setup(){
+
+		TestSuite.initDB();
+		TestSuite.initDatas();
+
 		c = db.Contract.manager.get(2);
 		
 		p = c.getProducts().first();
@@ -31,8 +35,10 @@ class TestOrders extends haxe.unit.TestCase
 		
 		sys.db.Manager.cnx.request("TRUNCATE TABLE UserContract;");
 		//print("setup");
+		
 	}
-	
+
+
 	/**
 	 * make orders & stock management
 	 */
@@ -191,5 +197,189 @@ class TestOrders extends haxe.unit.TestCase
 		assertFalse(fraises.multiWeight);
 		assertEquals(1, bobOrders.length);
 		assertEquals(1.0, bobOrders[0].quantity);
+	}
+
+	/**
+	 *  
+	 */
+	function testDelete(){
+
+		var t = sugoi.i18n.Locale.texts;
+
+		//[Test case] Order quantity non zero
+		//Check that it throws error when trying to delete order and that the order is not deleted
+		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
+		var amapContract = amapDistrib.contract;
+		var order = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
+		var orderId = order.id;
+		db.Operation.onOrderConfirm([order]);
+		var e1 = null;
+		try {
+			service.OrderService.delete(order);
+		}
+	    catch(x:tink.core.Error){
+			e1 = x;
+		}
+		assertEquals(e1.message, "Deletion non possible: quantity is not zero.");
+		assertTrue(db.UserContract.manager.get(orderId) != null);
+		
+		//[Test case] Amap contract and quantity zero with payments disabled
+		//Check that order is deleted
+		order = db.UserContract.edit(order, 0);
+		var e2 = null;
+		try {
+			service.OrderService.delete(order);
+		}
+	    catch(x:tink.core.Error){
+			e2 = x;
+		}
+		assertEquals(e2, null);
+		assertEquals(db.UserContract.manager.get(orderId), null);
+
+		//[Test case] Amap contract and quantity zero with payments enabled and 2 orders
+		//Check that first order is deleted but operation amount is at 0 
+		//Check that operation is deleted only at the second order deletion
+		var order1 = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
+		db.Operation.onOrderConfirm([order1]);
+		var order1Id = order1.id;
+		order1 = db.UserContract.edit(order1, 0);
+		db.Operation.onOrderConfirm([order1]);
+		var order2 = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
+		db.Operation.onOrderConfirm([order2]);
+		var order2Id = order2.id;
+		order2 = db.UserContract.edit(order2, 0);
+		db.Operation.onOrderConfirm([order2]);
+		var operation = db.Operation.findCOrderTransactionFor(amapContract, TestSuite.FRANCOIS);
+		var operationId = operation.id;
+		var e3 = null;
+		try {
+			service.OrderService.delete(order1);
+		}
+	    catch(x:tink.core.Error){
+			e3 = x;
+		}
+		assertEquals(e3, null);
+		assertEquals(db.UserContract.manager.get(order1Id), null);
+		assertTrue(db.Operation.manager.get(operationId) != null);
+		assertEquals(operation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
+		assertEquals(operation.amount, 0);
+		var e4 = null;
+		try {
+			service.OrderService.delete(order2);
+		}
+	    catch(x:tink.core.Error){
+			e4 = x;
+		}
+		assertEquals(e4, null);
+		assertEquals(db.UserContract.manager.get(order2Id), null);
+		assertEquals(db.Operation.manager.get(operationId), null);
+
+		//[Test case] Var Order contract and quantity zero with payments disabled
+		//Check that order is deleted
+		var variableDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
+		var variableContract = variableDistrib.contract;
+		var order = db.UserContract.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
+		var orderId = order.id;
+		db.Operation.onOrderConfirm([order]);
+		order = db.UserContract.edit(order, 0);
+		db.Operation.onOrderConfirm([order]);
+		var e1 = null;
+		try {
+			service.OrderService.delete(order);
+		}
+	    catch(x:tink.core.Error){
+			e1 = x;
+		}
+		assertEquals(e1, null);
+		assertEquals(db.UserContract.manager.get(orderId), null);
+
+		//[Test case] Var Order contract and quantity zero with payments enabled and 2 orders
+		//Check that first order is deleted
+		//Check that operation is deleted only at the second order deletion
+		var order1 = db.UserContract.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
+		assertTrue(variableContract.amap.hasPayments());
+		db.Operation.onOrderConfirm([order1]);
+		var order1Id = order1.id;
+		order1 = db.UserContract.edit(order1, 0);
+		db.Operation.onOrderConfirm([order1]);
+		var order2 = db.UserContract.make(TestSuite.FRANCOIS, 3, TestSuite.STRAWBERRIES, variableDistrib.id);
+		db.Operation.onOrderConfirm([order2]);
+		var order2Id = order2.id;
+		order2 = db.UserContract.edit(order2, 0);
+		db.Operation.onOrderConfirm([order2]);
+		var operation1 = db.Operation.findVOrderTransactionFor(order1.distribution.getKey(), TestSuite.FRANCOIS, variableContract.amap);
+		var operation1Id = operation1.id;
+		var operation2 = db.Operation.findVOrderTransactionFor(order2.distribution.getKey(), TestSuite.FRANCOIS, variableContract.amap);
+		var operation2Id = operation2.id;
+		var e2 = null;
+		try {
+			service.OrderService.delete(order1);
+		}
+	    catch(x:tink.core.Error){
+			e2 = x;
+		}
+		assertEquals(e2, null);
+		assertEquals(db.UserContract.manager.get(order1Id), null);
+		assertTrue(db.Operation.manager.get(operation1Id) != null);
+		assertTrue(db.Operation.manager.get(operation2Id) != null);
+		assertEquals(operation1.amount, 0);
+		assertEquals(operation2.amount, 0);
+		var e3 = null;
+		try {
+			service.OrderService.delete(order2);
+		}
+	    catch(x:tink.core.Error){
+			e3 = x;
+		}
+		assertEquals(e3, null);
+		assertEquals(db.UserContract.manager.get(order2Id), null);
+		assertEquals(db.Operation.manager.get(operation1Id), null);
+		assertEquals(db.Operation.manager.get(operation2Id), null);
+
+		//[Test case] 2 Var Order contracts and quantity zero with payments enabled and 1 order each
+		//Check that first order is deleted but operation amount is at 0
+		//Check that operation is deleted only at the second order deletion
+		var variableDistrib1 = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
+		var order1 = db.UserContract.make(TestSuite.FRANCOIS, 2, TestSuite.COURGETTES, variableDistrib1.id);
+		db.Operation.onOrderConfirm([order1]);
+		var order1Id = order1.id;
+		order1 = db.UserContract.edit(order1, 0);
+		db.Operation.onOrderConfirm([order1]);
+		var variableDistrib2 = TestSuite.DISTRIB_PATISSERIES;
+		var order2 = db.UserContract.make(TestSuite.FRANCOIS, 3, TestSuite.FLAN, variableDistrib2.id);
+		db.Operation.onOrderConfirm([order2]);
+		var order2Id = order2.id;
+		order2 = db.UserContract.edit(order2, 0);
+		db.Operation.onOrderConfirm([order2]);
+		var operation1 = db.Operation.findVOrderTransactionFor(order1.distribution.getKey(), TestSuite.FRANCOIS, variableDistrib1.contract.amap);
+		var operation1Id = operation1.id;
+		var operation2 = db.Operation.findVOrderTransactionFor(order2.distribution.getKey(), TestSuite.FRANCOIS, variableDistrib2.contract.amap);
+		var operation2Id = operation2.id;
+		var e4 = null;
+		try {
+			service.OrderService.delete(order1);
+		}
+	    catch(x:tink.core.Error){
+			e4 = x;
+		}
+		assertEquals(e4, null);
+		assertEquals(db.UserContract.manager.get(order1Id), null);
+		assertTrue(db.Operation.manager.get(operation1Id) != null);
+		assertTrue(db.Operation.manager.get(operation2Id) != null);
+		assertEquals(operation1.amount, 0);
+		assertEquals(operation2.amount, 0);
+		var e5 = null;
+		try {
+			service.OrderService.delete(order2);
+		}
+	    catch(x:tink.core.Error){
+			e5 = x;
+		}
+		assertEquals(e5, null);
+		assertEquals(db.UserContract.manager.get(order2Id), null);
+		assertEquals(db.Operation.manager.get(operation1Id), null);
+		assertEquals(db.Operation.manager.get(operation2Id), null);
+
+
 	}
 }

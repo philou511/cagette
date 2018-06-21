@@ -190,6 +190,7 @@ class TestDistributions extends haxe.unit.TestCase
 	function testDelete() { 
 		//A variable contract with a distribution that has orders
 		var ordersDistrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
+		var ordersDistribId = ordersDistrib.id;
 		var chicken = TestSuite.CHICKEN;
 		var order = db.UserContract.make(TestSuite.FRANCOIS, 1, chicken, ordersDistrib.id);
 
@@ -201,9 +202,11 @@ class TestDistributions extends haxe.unit.TestCase
 			e = x;
 		}
 		assertEquals(e.message, "Deletion non possible: some orders are saved for this delivery.");
+		assertTrue(db.Distribution.manager.get(ordersDistribId) != null);
 
 		//A variable contract with a distribution that has no orders
 		var noOrdersDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
+		var noOrdersDistribId = noOrdersDistrib.id;
 		
 		var e = null;
 		try{
@@ -213,9 +216,11 @@ class TestDistributions extends haxe.unit.TestCase
 			e = x;
 		}
 		assertEquals(e, null);
+		assertEquals(db.Distribution.manager.get(noOrdersDistribId), null);
 
 		//An Amap contract with a distribution that has orders
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
+		var amapDistribId = amapDistrib.id;
 		var panier = TestSuite.PANIER_AMAP_LEGUMES;
 		var amapOrder = db.UserContract.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
 
@@ -227,7 +232,7 @@ class TestDistributions extends haxe.unit.TestCase
 			e = x;
 		}
 		assertEquals(e, null);
-
+		assertEquals(db.Distribution.manager.get(amapDistribId), null);
 		
 	}
 
