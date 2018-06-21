@@ -122,6 +122,10 @@ class TestSuite
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
+	public static var COURGETTES:db.Product = null;
+	public static var FLAN:db.Product = null;
+	public static var CROISSANT:db.Product = null;
+	public static var DISTRIB_PATISSERIES:db.Distribution = null;
 	
 	public static function initDatas(){
 		
@@ -241,6 +245,7 @@ class TestSuite
 		var a = new db.Amap();
 		a.name = "Les Locavores affamés";
 		a.contact = f;
+		a.flags.set(db.Amap.AmapFlags.HasPayments);
 		a.insert();
 		
 		var place = new db.Place();
@@ -276,6 +281,8 @@ class TestSuite
 		p.organic = true;
 		p.contract = c;
 		p.insert();
+
+		COURGETTES = p;
 		
 		var p = new db.Product();
 		p.name = "Carottes";
@@ -303,6 +310,44 @@ class TestSuite
 		d.insert();
 
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
+
+		var c = new db.Contract();
+		c.name = "Commande Pâtisseries";
+		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		c.vendor = v;
+		c.amap = a;
+		c.type = db.Contract.TYPE_VARORDER;
+		c.insert();
+
+		var p = new db.Product();
+		p.name = "Flan";
+		p.qt = 1;
+		p.unitType = Common.UnitType.Kilogram;
+		p.price = 3.5;
+		p.organic = true;
+		p.contract = c;
+		p.insert();
+
+		FLAN = p;
+		
+		var p = new db.Product();
+		p.name = "Croissant";
+		p.qt = 1;
+		p.unitType = Common.UnitType.Kilogram;
+		p.price = 2.8;
+		p.contract = c;
+		p.insert();
+
+		CROISSANT = p;
+
+		var d = new db.Distribution();
+		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.contract = c;
+		d.place = place;
+		d.insert();
+
+		DISTRIB_PATISSERIES = d;
 	}
 	
 	static function initApp(u:db.User){
