@@ -39,4 +39,14 @@ class DateTool
 		var from = DateTools.delta(to, -MIN );
 		return {from:from,to:to};
 	}
+
+	public static function getWhichNthDayOfMonth(date:Date):Int {
+  		return Math.floor((date.getDate() - 1) / 7) + 1;
+	}
+
+	public static function getNthDayOfMonth(year:Int,month:Int,dayOfWeek:Int,n:Int):Date {
+		//dayOfWeek and getDay() follow the same value system: from 0 (Sunday) to 6 (Saturday)
+		return deltaDays(new Date(year,month,1+7*n, 0, 0, 0), -new Date(year,month,8-(dayOfWeek+1), 0, 0, 0).getDay()-1);
+	}
+
 }

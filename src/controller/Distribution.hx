@@ -3,7 +3,6 @@ import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 using tools.DateTool;
-import Common;
 
 class Distribution extends Controller
 {
@@ -128,14 +127,17 @@ class Distribution extends Controller
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
-		if ( !d.canDelete() ) throw Error("/contractAdmin/distributions/" + d.contract.id, t._("Deletion non possible: some orders are saved for this delivery."));
 		
-		d.lock();
-		var cid = d.contract.id;
-		app.event(DeleteDistrib(d));
-		d.delete();
+		var contractId = d.contract.id;
+		try {
+			service.DistributionService.delete(d);
+		}
+		catch(e:tink.core.Error){
+			throw Error("/contractAdmin/distributions/" + contractId, e.message);
+		}
 		
-		throw Ok("/contractAdmin/distributions/" + cid, t._("the delivery has been deleted"));
+		throw Ok("/contractAdmin/distributions/" + contractId, t._("the delivery has been deleted"));
+
 	}
 	
 	/**
@@ -158,23 +160,43 @@ class Distribution extends Controller
 		}		
 		
 		if (form.isValid()) {
-			
-			form.toSpod(d); 
-			
-			if (d.contract.type == db.Contract.TYPE_VARORDER ) checkDistrib(d);
-			
-			app.event(EditDistrib(d));
-			
-			if (d.date == null){
-				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
-				throw Ok('/contractAdmin/distributions/'+d.contract.id, msg );
-			}else{
-				d.update();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._("The distribution has been recorded") );
+
+			var orderStartDate = null;
+			var orderEndDate = null;
+
+			try{
+
+				if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+					orderStartDate = form.getValueOf("orderStartDate");
+					orderEndDate = form.getValueOf("orderEndDate");
+				}
+
+				d = service.DistributionService.edit(d,
+				form.getValueOf("date"),
+				form.getValueOf("end"),
+				form.getValueOf("placeId"),
+				form.getValueOf("distributor1Id"),
+				form.getValueOf("distributor2Id"),
+				form.getValueOf("distributor3Id"),
+				form.getValueOf("distributor4Id"),
+				orderStartDate,
+				orderEndDate);
+
+			}
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + d.contract.id,e.message);
 			}
 			
+			if (d == null) {
+				var msg = t._('The distribution has been proposed to the supplier, please wait for its validation');
+				throw Ok('/contractAdmin/distributions/'+d.contract.id, msg );
+			}
+			else {
+				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been recorded') );
+			}
 			
-		}else{
+		}
+		else {
 			app.event(PreEditDistrib(d));
 		}
 		
@@ -216,35 +238,48 @@ class Distribution extends Controller
 		//default values
 		form.getElement("date").value = DateTool.now().deltaDays(30).setHourMinute(19, 0);
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
-		
+			
 		if (contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
 			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
 		}
 		
 		if (form.isValid()) {
-			
-			form.toSpod(d); //update model
-			d.contract = contract;			
-			if (d.end == null) d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
-			
-			
-			checkDistrib(d);
-			
-			var e :Event = NewDistrib(d);
-			app.event(e);
-			
-			if (d.date == null){
-				//throw Ok('/contractAdmin/distributions/'+d.contract.id , t._('The distribution has been proposed to the farmer, please wait for its validation') );				
-				//
-				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.", {supplierName:contract.vendor.name});
+
+			var createdDistrib = null;
+			var orderStartDate = null;
+			var orderEndDate = null;
+
+			try {
 				
+				if (contract.type == db.Contract.TYPE_VARORDER ) {
+					orderStartDate = form.getValueOf("orderStartDate");
+					orderEndDate = form.getValueOf("orderEndDate");
+				}
+
+				createdDistrib = service.DistributionService.create(
+				contract,
+				form.getValueOf("date"),
+				form.getValueOf("end"),
+				form.getValueOf("placeId"),
+				form.getValueOf("distributor1Id"),
+				form.getValueOf("distributor2Id"),
+				form.getValueOf("distributor3Id"),
+				form.getValueOf("distributor4Id"),
+				orderStartDate,
+				orderEndDate);
+			}
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
+			}
+			
+			if (createdDistrib == null) {
+				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.", {supplierName:contract.vendor.name});
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
-				
-			}else{
-				d.insert();
-				throw Ok('/contractAdmin/distributions/'+d.contract.id , t._("The distribution has been recorded") );	
+			}
+			else {
+				throw Ok('/contractAdmin/distributions/'+ createdDistrib.contract.id , t._("The distribution has been recorded") );	
 			}
 			
 		}else{
@@ -258,23 +293,6 @@ class Distribution extends Controller
 	}
 	
 	/**
-	 * checks if dates are correct
-	 * @param	d
-	 */
-	private function checkDistrib(d:db.Distribution) {
-		
-		var c = d.contract;
-		
-		if (d.date.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-		if (d.date.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
-		
-		if (c.type == db.Contract.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de distribution doit être postérieure à la date de fermeture des commandes");
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw Error('/contractAdmin/distributions/' + d.contract.id, "La date de fermeture des commandes doit être postérieure à la date d'ouverture des commandes !");
-		}
-	}
-	
-	/**
 	 * create a distribution cycle for a contract
 	 */
 	@tpl("form.mtt")
@@ -282,8 +300,8 @@ class Distribution extends Controller
 		
 		if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
 		
-		var d = new db.DistributionCycle();
-		var form = sugoi.form.Form.fromSpod(d);
+		var dc = new db.DistributionCycle();
+		var form = sugoi.form.Form.fromSpod(dc);
 		form.removeElementByName("contractId");
 		
 		form.getElement("startDate").value = DateTool.now();
@@ -322,25 +340,47 @@ class Distribution extends Controller
 		}
 		
 		if (form.isValid()) {
-			
-			form.toSpod(d); //update model			
-			d.contract = contract;
-			
-			app.event(NewDistribCycle(d));
-			
-			d.insert();
-			
-			var c = contract;
 
-			if (d.endDate.getTime() > c.endDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-			if (d.startDate.getTime() < c.startDate.getTime()) throw Error('/contractAdmin/distributions/' + c.id, t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
+			var createdDistribCycle = null;
+			var daysBeforeOrderStart = null;
+			var daysBeforeOrderEnd = null;
+			var openingHour = null;
+			var closingHour = null;
 
-			db.DistributionCycle.updateChilds(d);
-			
-			throw Ok('/contractAdmin/distributions/'+d.contract.id, t._("The delivery has been saved"));
-		}else{
-			d.contract = contract;
-			app.event(PreNewDistribCycle(d));
+			try{
+				
+				if (contract.type == db.Contract.TYPE_VARORDER) {
+					daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+					daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+					openingHour = form.getValueOf("openingHour");
+					closingHour = form.getValueOf("closingHour");
+				}
+
+				createdDistribCycle = service.DistributionService.createCycle(
+				contract,
+				form.getElement("cycleType").getValue(),
+				form.getValueOf("startDate"),	
+				form.getValueOf("endDate"),	
+				form.getValueOf("startHour"),
+				form.getValueOf("endHour"),											
+				daysBeforeOrderStart,											
+				daysBeforeOrderEnd,											
+				openingHour,	
+				closingHour,																	
+				form.getValueOf("placeId"));
+			}
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
+			}
+
+			if (createdDistribCycle != null) {
+				throw Ok('/contractAdmin/distributions/'+ contract.id, t._("The delivery has been saved"));
+			}
+			 
+		}
+		else{
+			dc.contract = contract;
+			app.event(PreNewDistribCycle(dc));
 		}
 		
 		view.form = form;
@@ -353,15 +393,14 @@ class Distribution extends Controller
 	public function doDeleteCycle(cycle:db.DistributionCycle){
 		
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
-		
-		cycle.lock();
-		var msgs = cycle.deleteChilds();
-		if (msgs.length > 0){			
-			throw Error("/contractAdmin/distributions/" + cycle.contract.id, msgs.join("<br/>"));	
-		}else{			
-			cycle.delete();
-			throw Ok("/contractAdmin/distributions/" + cycle.contract.id, t._("Recurrent deliveries deleted"));
+
+		var contractId = cycle.contract.id;
+		var messages = service.DistributionService.deleteCycleDistribs(cycle);
+		if (messages.length > 0){			
+			throw Error("/contractAdmin/distributions/" + contractId, messages.join("<br/>"));	
 		}
+		
+		throw Ok("/contractAdmin/distributions/" + contractId, t._("Recurrent deliveries deleted"));
 	}
 	
 	/**

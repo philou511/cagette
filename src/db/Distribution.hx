@@ -17,8 +17,6 @@ class Distribution extends Object
 	@:relation(placeId)
 	public var place : Place;
 	
-	public var text : SNull<SString<1024>>;
-	
 	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;
@@ -205,10 +203,6 @@ class Distribution extends Object
 		super.update();
 	}
 	
-	override public function insert(){
-		this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
-		super.insert();
-	}
 	
 
 	/**
@@ -235,32 +229,18 @@ class Distribution extends Object
 	public static function makeKey(date, place){
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
 	}
-	
-	
-	public function canDelete():Bool{
-
-		if (contract.type == db.Contract.TYPE_CONSTORDERS) return true;
-		
-		var qt = 0.0;
-		for ( o in getOrders()){
-			qt += o.quantity;
-		}
-		return qt == 0.0;
-		
-	}
 
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
 		return [
-			"text" 				=> t._("Text"),
 			"date" 				=> t._("Date"),
 			"endDate" 			=> t._("End hour"),
 			"place" 			=> t._("Place"),
 			"distributor1" 		=> t._("Distributor #1"),
 			"distributor2" 		=> t._("Distributor #2"),
 			"distributor3" 		=> t._("Distributor #3"),
-			"distributor4" 		=> t._("Distributor #4"),						
+			"distributor4" 		=> t._("Distributor #4"),
 		];
 	}
 

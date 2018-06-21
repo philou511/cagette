@@ -552,11 +552,13 @@ class ContractAdmin extends Controller
 
 		//Delete specified order with quantity of zero
 		if (checkToken() && args != null && args.delete != null ) { 
-			if (args.delete.quantity == 0) {
-				args.delete.lock();
-				args.delete.delete();
-				App.current.session.addMessage(t._("The order has been successfully deleted."));
+			try {
+				service.OrderService.delete(args.delete);
 			}
+			catch(e:tink.core.Error){
+				throw Error("/contractAdmin/orders/" + contract.id, e.message);
+			}
+			throw Ok("/contractAdmin/orders/" + contract.id, t._("The order has been deleted."));
 		}
 
 		var d = null;
@@ -695,7 +697,6 @@ class ContractAdmin extends Controller
 					d.orderEndDate = ds.orderEndDate;
 					d.end = ds.end;
 					d.place = ds.place;
-					d.text = ds.text;
 					d.insert();
 				}
 			}

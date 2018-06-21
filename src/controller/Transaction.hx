@@ -129,14 +129,16 @@ class Transaction extends controller.Controller
 	 * @param	distribKey
 	 */
 	@tpl("transaction/pay.mtt")
-	public function doPay(){
+	public function doPay() {
 
 		var order : OrderInSession = app.session.data.order;
 		if (order == null) throw Redirect("/");
 		if (order.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		view.amount = order.total;		
-		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);		
+		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);
+		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
+		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - order.total;
 	}
 	
 	/**
@@ -220,7 +222,7 @@ class Transaction extends controller.Controller
 	}
 	
 	/**
-	 * pay by cassh
+	 * pay by cash
 	 */
 	@tpl("transaction/cash.mtt")
 	public function doCash(){
@@ -252,6 +254,30 @@ class Transaction extends controller.Controller
 
 			//throw Ok("/contract", t._("Your order is validated, you commited to pay in cash at the delivery."));
 		//}
+	
+	}
+
+	/**
+	 * Use the money pot
+	 */
+	@tpl("transaction/moneypot.mtt")
+	public function doMoneypot(){
+		
+		//order in session
+		var tmpOrder : OrderInSession = app.session.data.order;		
+		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
+		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
+			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
+		}
+		
+		//record order
+		var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+		var ops = db.Operation.onOrderConfirm(orders);
+
+		view.amount = tmpOrder.total;
+		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 	
 	}
 }

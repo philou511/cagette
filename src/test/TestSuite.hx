@@ -9,19 +9,20 @@ class TestSuite
 
 	static function main() {
 		
+		connectDb();
+		var r = new haxe.unit.TestRunner();
+
+		//Cagette core tests
 		initDB();
 		initDatas();
-		
-		var r = new haxe.unit.TestRunner();
 		r.add(new test.TestUser());
 		r.add(new test.TestOrders());
 		r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
 		//r.add(new test.TestReports());
 
 		#if plugins
-		//cagette-pro tests, keep in this order
-		pro.test.ProTestSuite.initDB();
-		pro.test.ProTestSuite.initDatas();
+		//Cagette-pro tests, keep in this order
 		r.add(new pro.test.TestProductService());
 		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
@@ -31,10 +32,8 @@ class TestSuite
 
 		r.run();
 	}
-	
-	
-	public static function initDB(){
-		
+
+	static function connectDb() {
 		var dbstr = Sys.args()[0];
 		var dbreg = ~/([^:]+):\/\/([^:]+):([^@]*?)@([^:]+)(:[0-9]+)?\/(.*?)$/;
 		if( !dbreg.match(dbstr) )
@@ -51,7 +50,10 @@ class TestSuite
 		
 		sys.db.Manager.cnx = sys.db.Mysql.connect(dbparams);
 		sys.db.Manager.initialize();
-
+	}
+	
+	
+	public static function initDB(){
 		//NUKE EVERYTHING BWAAAAH !!
 		sql("DROP DATABASE tests;");
 		sql("CREATE DATABASE tests;");
@@ -67,7 +69,7 @@ class TestSuite
 			db.Basket.manager,
 			db.UserContract.manager,
 			db.UserAmap.manager,
-
+			db.Operation.manager,
 
 			db.User.manager,
 			db.Amap.manager,
@@ -76,7 +78,7 @@ class TestSuite
 			db.Vendor.manager,
 			db.Place.manager,
 			db.Distribution.manager,
-						
+			db.DistributionCycle.manager,						
 			
 			//sugoi tables
 			sugoi.db.Cache.manager,
@@ -87,6 +89,11 @@ class TestSuite
 		];
 	
 		for(t in tables) createTable(t);
+
+		#if plugins
+		pro.test.ProTestSuite.initDB();
+		#end
+		
 	}
 	
 	public static function createTable( m  ){
@@ -110,13 +117,18 @@ class TestSuite
 	}
 	
 	//shortcut to datas
+	public static var FRANCOIS:db.User = null; 
+	public static var SEB:db.User = null; 
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null; 
 	public static var AMAP_DU_JARDIN:db.Amap = null;
 	public static var LOCAVORES:db.Amap = null;
-	public static var SEB:db.User = null;
-	public static var FRANCOIS:db.User = null;
-	
+	public static var PANIER_AMAP_LEGUMES:db.Product = null;
+	public static var DISTRIB_CONTRAT_AMAP:db.Distribution = null;
+	public static var DISTRIB_FRUITS_PLACE_DU_VILLAGE:db.Distribution = null;
+	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
+	public static var CONTRAT_LEGUMES:db.Contract = null;
+	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	
 	public static function initDatas(){
 		
@@ -125,6 +137,7 @@ class TestSuite
 		f.lastName = "Barbut";
 		f.email = "francois@alilo.fr";
 		f.insert();
+
 		FRANCOIS = f;
 		
 		var u = new db.User();
@@ -132,6 +145,7 @@ class TestSuite
 		u.lastName = "Zulke";
 		u.email = "sebastien@alilo.fr";
 		u.insert();		
+
 		SEB = u;
 		
 		initApp(u);
@@ -139,6 +153,7 @@ class TestSuite
 		var a = new db.Amap();
 		a.name = "AMAP du Jardin public";
 		a.contact = f;
+		a.flags.set(db.Amap.AmapFlags.HasPayments);
 		a.insert();
 		AMAP_DU_JARDIN = a;
 		
@@ -148,6 +163,8 @@ class TestSuite
 		place.city = "St Martin";
 		place.amap = a;
 		place.insert();
+
+		PLACE_DU_VILLAGE = place;
 		
 		var v = new db.Vendor();
 		v.name = "La ferme de la Galinette";
@@ -170,6 +187,19 @@ class TestSuite
 		p.price = 13;
 		p.contract = c;
 		p.insert();
+
+		PANIER_AMAP_LEGUMES = p;
+
+		var d = new db.Distribution();
+		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.end = new Date(2017, 5, 1, 20, 0, 0);
+		d.orderStartDate = new Date(2017, 4, 1, 20, 0, 0);
+		d.orderEndDate = new Date(2017, 4, 30, 20, 0, 0);
+		d.contract = c;
+		d.place = place;
+		d.insert();
+
+		DISTRIB_CONTRAT_AMAP = d;
 		
 		//varying contract for strawberries with stock mgmt
 		var c = new db.Contract();
@@ -206,9 +236,14 @@ class TestSuite
 		
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
+		d.end = new Date(2017, 5, 1, 20, 0, 0);
+		d.orderStartDate = new Date(2017, 4, 1, 20, 0, 0);
+		d.orderEndDate = new Date(2017, 4, 30, 20, 0, 0);
 		d.contract = c;
 		d.place = place;
 		d.insert();
+
+		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
 		//second group
 		var a = new db.Amap();
@@ -240,6 +275,8 @@ class TestSuite
 		c.type = db.Contract.TYPE_VARORDER;
 		c.insert();
 		
+		CONTRAT_LEGUMES = c;
+
 		var p = new db.Product();
 		p.name = "Courgettes";
 		p.qt = 1;
@@ -273,11 +310,17 @@ class TestSuite
 		d.contract = c;
 		d.place = place;
 		d.insert();
+
+		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
+
+		#if plugins
+		pro.test.ProTestSuite.initDatas();
+		#end
 	}
 	
 	static function initApp(u:db.User){
 		
-		Sys.println("InitApp()");
+		// Sys.println("InitApp()");
 		
 		//setup App
 		var app = App.current = new App();
