@@ -28,7 +28,9 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
 		var data = [];
-		for ( t in db.Operation.getPaymentTypes(app.user.amap) ) data.push({label:t.name,value:t.type});
+		for ( t in db.Operation.getPaymentTypes(app.user.amap) ){
+			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
+		} 
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
 		
 		//related operation
@@ -130,6 +132,8 @@ class Transaction extends controller.Controller
 	 */
 	@tpl("transaction/pay.mtt")
 	public function doPay() {
+
+		view.category = 'home';
 
 		var order : OrderInSession = app.session.data.order;
 		if (order == null) throw Redirect("/");

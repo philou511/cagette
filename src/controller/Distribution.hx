@@ -152,7 +152,7 @@ class Distribution extends Controller
 		form.removeElement(form.getElement("end"));
 		form.removeElement(form.getElement("distributionCycleId"));
 		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") ,d.end,true);
-		form.addElement(x, 4);
+		form.addElement(x, 3);
 		
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
@@ -228,12 +228,13 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(contract)) throw Error('/', t._('Forbidden action') );
 		
 		var d = new db.Distribution();
+		d.place = contract.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		form.removeElement(form.getElement("distributionCycleId"));
 		form.removeElement(form.getElement("end"));
 		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") );
-		form.addElement(x, 4);
+		form.addElement(x, 3);
 		
 		//default values
 		form.getElement("date").value = DateTool.now().deltaDays(30).setHourMinute(19, 0);
@@ -301,6 +302,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
 		
 		var dc = new db.DistributionCycle();
+		dc.place = contract.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(dc);
 		form.removeElementByName("contractId");
 		
