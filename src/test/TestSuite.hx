@@ -26,7 +26,7 @@ class TestSuite
 		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
 		//wholesale-order tests
-		r.add(new who.test.TestWho());
+		//r.add(new who.test.TestWho());
 		#end
 
 		r.run();

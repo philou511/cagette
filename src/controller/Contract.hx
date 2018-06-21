@@ -117,13 +117,6 @@ class Contract extends Controller
 				var t = app.params.get('startTuto'); 
 				app.user.tutoState = {name:t,step:0};
 				app.user.update();
-				
-			}else if (app.params.exists('stopTuto')) {
-				
-				//stopped tuto from a tuto window
-				app.user.tutoState = null;
-				app.user.update();	
-				view.stopTuto = true;
 			}
 			
 		
@@ -140,7 +133,14 @@ class Contract extends Controller
 			}
 			
 			view.tutos = tutos;
-			
+		}
+		
+		//should be able to stop tuto in any case
+		if (app.params.exists('stopTuto')) {
+			//stopped tuto from a tuto window
+			app.user.tutoState = null;
+			app.user.update();	
+			view.stopTuto = true;
 		}
 		
 		checkToken();
