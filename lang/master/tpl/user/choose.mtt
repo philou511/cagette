@@ -71,11 +71,11 @@
 	</div>
 
 	<!-- actions -->
-	<div class="col-md-12" style="margin-bottom:12px;" >
+	<div class="col-md-12 text-center" style="margin-bottom:12px;" >
 		::if session.lang!="de"::
-			<a class="btn btn-default" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
+			<a class="btn btn-default btn-lg" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
 		::end::
-		<a class="btn btn-default" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Create my own group")::</a>	
+		<a class="btn btn-default btn-lg" href="/group/create/"><span class="glyphicon glyphicon-plus"></span> ::_("Create my own group")::</a>	
 		
 	</div>
 

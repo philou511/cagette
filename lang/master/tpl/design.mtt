@@ -10,10 +10,14 @@
 		<div class="row header" style="margin-top:10px;">
 			<div class="col-md-8">
 				::set groupName = getCurrentGroup()::
-				::if groupName!=null::
+				::if groupName!=null && noGroup!=true::
 					<h1>::groupName::</h1>
 				::else::
-					<h1 style="margin-bottom:22px;"><a href="/">::NAME::</a></h1>					
+					<div style="margin-bottom:22px;" >
+							<a href="http://www.cagette.net" target="_blank">
+								<img src="/img/logo3.png" alt="::NAME::" />
+							</a>
+					</div>		
 				::end::
 			</div>
 			
@@ -48,7 +52,7 @@
 		</div>
 		
 		
-			::if user != null::
+			::if user != null && noGroup!=true::
 
 			<nav class="navbar navbar-default" ::cond user.getAmap()!=null::>
 					<div class="navbar-header">
