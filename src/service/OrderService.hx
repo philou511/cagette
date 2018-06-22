@@ -1,5 +1,6 @@
 package service;
 import Common;
+import tink.core.Error;
 
 /**
  * Order Service
@@ -7,10 +8,16 @@ import Common;
  */
 class OrderService
 {
-	
+	/**
+	 *  Delete an order
+	 */
 	public static function delete(order:db.UserContract) {
-
 		var t = sugoi.i18n.Locale.texts;
+
+		if(order==null) throw new Error(t._("This order has already been deleted."));
+		
+		order.lock();
+		
 		if (order.quantity == 0) {
 
 			var contract = order.product.contract;
@@ -19,25 +26,20 @@ class OrderService
 			//Amap Contract
 			if ( contract.type == db.Contract.TYPE_CONSTORDERS ) {
 
-				order.lock();
 				order.delete();
 
 				if( contract.amap.hasPayments() )
 				{
 					var orders = contract.getUserOrders(user);
-
-					if( orders.length == 0 )
-					{
+					if( orders.length == 0 ){
 						var operation = db.Operation.findCOrderTransactionFor(contract, user);
-						operation.delete();
+						if(operation!=null) operation.delete();
 					}
-
 				}
 
 			}
 			else { //Variable orders contract
 
-				order.lock();
 				order.delete();
 
 				if( contract.amap.hasPayments() )
@@ -54,14 +56,14 @@ class OrderService
 					if( orders.length == 0 )
 					{
 						var operation = db.Operation.findVOrderTransactionFor(order.distribution.getKey(), user, place.amap);
-						operation.delete();
+						if(operation!=null) operation.delete();
 					}
 
 				}
 			}
 		}
 		else {
-			throw new tink.core.Error(t._("Deletion non possible: quantity is not zero."));
+			throw new Error(t._("Deletion not possible: quantity is not zero."));
 		}
 
 	}

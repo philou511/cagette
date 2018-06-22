@@ -554,8 +554,7 @@ class ContractAdmin extends Controller
 		if (checkToken() && args != null && args.delete != null ) { 
 			try {
 				service.OrderService.delete(args.delete);
-			}
-			catch(e:tink.core.Error){
+			} catch(e:tink.core.Error){
 				throw Error("/contractAdmin/orders/" + contract.id, e.message);
 			}
 			throw Ok("/contractAdmin/orders/" + contract.id, t._("The order has been deleted."));
@@ -719,14 +718,15 @@ class ContractAdmin extends Controller
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
-		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
-		view.c = contract;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw t._("No delivery in this contract");
-		
+		if (d == null) throw Error("/contractAdmin/orders/"+contract.id,t._("There is no delivery in this contract, please create at least one distribution."));
+
 		var orders = db.UserContract.getOrdersByProduct({distribution:d},app.params.exists("csv"));
 		view.orders = orders;
+		view.distribution = d; 
+		view.c = contract;
+		
 	}
 	
 	/**

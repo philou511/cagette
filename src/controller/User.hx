@@ -51,12 +51,15 @@ class User extends Controller
 			//qu'une amap
 			app.session.data.amapId = amaps.first().amap.id;
 			throw Redirect('/');
+		}else{
+			view.noGroup = true; //force template to not display current group
 		}
 		
 		if (args!=null && args.amap!=null) {
 			//select a group
 			var which = app.session.data==null ? 0 : app.session.data.whichUser ;
-			app.session.data = {};
+			app.session.data.order = null;
+			app.session.data.newGroup = null;
 			app.session.data.amapId = args.amap.id;
 			app.session.data.whichUser = which;
 			throw Redirect('/');
@@ -64,6 +67,7 @@ class User extends Controller
 		
 		view.amaps = amaps;
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
+
 		
 		#if plugins
 		view.pros = pro.db.PUserCompany.getCompanies(app.user);

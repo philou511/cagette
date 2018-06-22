@@ -66,7 +66,8 @@ class Validate extends controller.Controller
 		o.date = Date.now();
 		
 		var b = db.Basket.get(user, place, date);
-		var op = b.getOrderOperation();
+		var op = b.getOrderOperation(false);
+		if(op==null) throw "unable to find related order operation";
 		
 		var f = new sugoi.form.Form(t._("payment"));
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));
@@ -74,8 +75,11 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
 		
 		var data = [];
-		for ( p in db.Operation.getPaymentTypes(app.user.amap)) data.push({label:App.t._(p.type),value:p.type});
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Means of payment"), data, null, true));
+		for ( t in db.Operation.getPaymentTypes(app.user.amap) ){
+			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
+		} 
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
+
 		
 		if (f.isValid()){
 			f.toSpod(o);
@@ -112,16 +116,16 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
-		var data = [
-			{label:t._("Cash"),value:"cash"},
-			{label:t._("Check"),value:"check"},
-			{label:t._("Transfer"),value:"transfer"},
-			{label:t._("Money pot"),value:"moneypot"}	
-		];
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment mean"), data, null, true));
+
+		var data = [];
+		for ( t in db.Operation.getPaymentTypes(app.user.amap) ){
+			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
+		} 
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
 		
 		var b = db.Basket.get(user, place, date);
-		var op = b.getOrderOperation();
+		var op = b.getOrderOperation(false);
+		if(op==null) throw "unable to find related order operation";
 		
 		if (f.isValid()){
 			f.toSpod(o);
@@ -130,8 +134,7 @@ class Validate extends controller.Controller
 			o.data = data;
 			o.group = app.user.amap;
 			o.user = user;
-			o.relation = op;
-			
+			o.relation = op;			
 			o.insert();
 			
 			db.Operation.updateUserBalance(user, app.user.amap);

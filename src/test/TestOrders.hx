@@ -220,7 +220,11 @@ class TestOrders extends haxe.unit.TestCase
 	    catch(x:tink.core.Error){
 			e1 = x;
 		}
+<<<<<<< HEAD
 		assertEquals(e1.message, "Deletion non possible: quantity is not zero.");
+=======
+		assertEquals(e1.message, "Deletion not possible: quantity is not zero.");
+>>>>>>> master
 		assertTrue(db.UserContract.manager.get(orderId) != null);
 		
 		//[Test case] Amap contract and quantity zero with payments disabled
