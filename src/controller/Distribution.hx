@@ -146,6 +146,7 @@ class Distribution extends Controller
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._('Forbidden action') );		
+		var contract = d.contract;
 		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
@@ -184,15 +185,15 @@ class Distribution extends Controller
 
 			}
 			catch(e:tink.core.Error){
-				throw Error('/contractAdmin/distributions/' + d.contract.id,e.message);
+				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 			
-			if (d == null) {
-				var msg = t._('The distribution has been proposed to the supplier, please wait for its validation');
-				throw Ok('/contractAdmin/distributions/'+d.contract.id, msg );
+			if (d.date == null) {
+				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
+				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
 			}
 			else {
-				throw Ok('/contractAdmin/distributions/'+d.contract.id, t._('The distribution has been recorded') );
+				throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
 			}
 			
 		}
@@ -274,7 +275,7 @@ class Distribution extends Controller
 				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 			
-			if (createdDistrib == null) {
+			if (createdDistrib.date == null) {
 				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.", {supplierName:contract.vendor.name});
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );

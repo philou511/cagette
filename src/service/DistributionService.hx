@@ -134,9 +134,8 @@ class DistributionService
 		}
 		
 		if (d.date == null){
-			return null;
-		} 
-		else {
+			return d;
+		} else {
 			d.insert();
 
 			//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
@@ -191,9 +190,8 @@ class DistributionService
 		App.current.event(EditDistrib(d));
 		
 		if (d.date == null){
-			return null;
-		} 
-		else {
+			return d;
+		} else {
 			d.update();
 			return d;
 		}
