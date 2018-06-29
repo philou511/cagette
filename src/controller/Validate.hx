@@ -150,30 +150,8 @@ class Validate extends controller.Controller
 		
 		if (checkToken()){
 			
-			var b = db.Basket.get(user, place, date);
-			for ( o in b.getOrders() ){
-				
-				o.lock();
-				o.paid = true;
-				o.update();
-				
-			}
-			
-			var op = b.getOrderOperation(false);
-			if (op != null){
-				op.lock();
-				op.pending = false;
-				op.update();
-				
-				for ( op in b.getPayments()){
-					if ( op.pending){
-						op.lock();
-						op.pending = false;
-						op.update();
-					}
-				}	
-			}
-			
+			var basket = db.Basket.get(user, place, date);
+			service.PaymentService.validateBasket(basket);
 			
 			throw Ok("/distribution/validate/"+date+"/"+place.id, t._("Order validated"));
 			

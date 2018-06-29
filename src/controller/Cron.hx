@@ -406,37 +406,8 @@ class Cron extends Controller
 		}
 		for ( d in ds){
 			print(d.toString());
-			for ( u in d.getUsers()){
-				
-				var b = db.Basket.get(u, d.place, d.date);
-				if (b == null) continue;
-				
-				//mark orders as paid
-				for ( o in b.getOrders() ){				
-					o.lock();
-					o.paid = true;
-					o.update();				
-				}
-				//validate order operation and payment
-				var op = b.getOrderOperation(true);
-				if (op != null){
-					op.lock();
-					op.pending = false;
-					op.update();
-					
-					for ( op in b.getPayments()){
-						if ( op.pending){
-							op.lock();
-							op.pending = false;
-							op.update();
-						}
-					}	
-				}
-			}
 			
-			//finally validate distrib
-			d.validated = true;
-			d.update();
+			service.PaymentService.validateDistribution(d);
 			
 		}
 		//email

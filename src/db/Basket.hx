@@ -76,7 +76,7 @@ class Basket extends Object
 	 */
 	public function getPayments():Iterable<db.Operation>{
 		
-		var op = getOrderOperation();
+		var op = getOrderOperation(false);
 		if (op == null){
 			return [];
 		}else{			
@@ -85,15 +85,17 @@ class Basket extends Object
 	}
 	
 	public function getOrderOperation(?onlyPending=true):db.Operation{
-		var key = db.Distribution.makeKey(this.ddate, this.place);		
+		var key = db.Distribution.makeKey(this.ddate, this.place);
 		return db.Operation.findVOrderTransactionFor(key, this.user, this.place.amap,onlyPending);
 		
 	}
 	
 	public function isValidated(){
-		
-		return Lambda.count(getOrders(), function(o) return !o.paid) == 0;
-		
+
+		return Lambda.count(getOrders(), function(o) return !o.paid) == 0
+		    && getOrderOperation(false).pending == false
+			&& Lambda.count(getPayments(), function(p) return p.pending) == 0;
+			
 	}
 	
 }
