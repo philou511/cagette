@@ -75,7 +75,15 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
 		
 		var data = [];
-		for ( t in db.Operation.getPaymentTypes(app.user.amap) ){
+		var paymentTypes = [];
+		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
+		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
+			paymentTypes = allowedPaymentTypes;
+		}
+		else {
+			paymentTypes = service.PaymentService.getAllPaymentTypes();
+		}
+		for ( t in paymentTypes ){
 			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
 		} 
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
@@ -118,7 +126,15 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
 
 		var data = [];
-		for ( t in db.Operation.getPaymentTypes(app.user.amap) ){
+		var paymentTypes = [];
+		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
+		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
+			paymentTypes = allowedPaymentTypes;
+		}
+		else {
+			paymentTypes = service.PaymentService.getAllPaymentTypes();
+		}
+		for ( t in paymentTypes ){
 			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
 		} 
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));

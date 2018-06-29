@@ -65,7 +65,7 @@ class Operation extends sys.db.Object
 	public function getPaymentTypeName(){
 		var t = getPaymentType();
 		if (t == null) return null;
-		for ( pt in getPaymentTypes(this.group)){
+		for ( pt in service.PaymentService.getAllPaymentTypes()){
 			if (pt.type == t) return pt.name;
 		}
 		return null;
@@ -335,20 +335,6 @@ class Operation extends sys.db.Object
 		
 		return null;
 		
-	}
-	
-	public static function getPaymentTypes(group:db.Amap):Array<payment.Payment>{
-		var out :Array<payment.Payment> = [];
-		
-		//populate with activated payment types.
-		var all = payment.Payment.getPaymentTypes();
-		if ( group.allowedPaymentsType == null ) return [];
-		for ( t in group.allowedPaymentsType){
-			
-			var found = Lambda.find(all, function(a) return a.type == t);
-			if (found != null) out.push(found);
-		}
-		return out;
 	}
 	
 	/**

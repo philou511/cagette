@@ -28,7 +28,15 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
 		var data = [];
-		for ( t in db.Operation.getPaymentTypes(app.user.amap) ){
+		var paymentTypes = [];
+		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
+		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
+			paymentTypes = allowedPaymentTypes;
+		}
+		else {
+			paymentTypes = service.PaymentService.getAllPaymentTypes();
+		}
+		for ( t in paymentTypes ){
 			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
 		} 
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
@@ -140,7 +148,7 @@ class Transaction extends controller.Controller
 		if (order.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		view.amount = order.total;		
-		view.paymentTypes = db.Operation.getPaymentTypes(app.user.amap);
+		view.paymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
 		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
 		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - order.total;
 	}

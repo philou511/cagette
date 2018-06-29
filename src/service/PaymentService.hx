@@ -8,6 +8,39 @@ import Common;
 class PaymentService
 {
 	/**
+	 * Get all available payment types, including one from plugins
+	 */
+	public static function getAllPaymentTypes(){
+		var types = [
+			new payment.Cash(),
+			new payment.Check(),
+			new payment.Transfer(),	
+			new payment.MoneyPot(),						
+		];
+		
+		var e = App.current.event(GetPaymentTypes({types:types}));
+		return switch(e){
+			case GetPaymentTypes(d): d.types;
+			default : null;
+		}
+		
+	}
+
+	public static function getAllowedPaymentTypes(group:db.Amap):Array<payment.Payment>{
+		var out :Array<payment.Payment> = [];
+		
+		//populate with activated payment types.
+		var all = getAllPaymentTypes();
+		if ( group.allowedPaymentsType == null ) return [];
+		for ( t in group.allowedPaymentsType){
+			
+			var found = Lambda.find(all, function(a) return a.type == t);
+			if (found != null) out.push(found);
+		}
+		return out;
+	}
+
+	/**
 	 * Auto validate a distribution this is called by the hourly cron
 	 *  
 	 * @param distrib
