@@ -632,7 +632,7 @@ class ContractAdmin extends Controller
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
 		if (form.checkToken()) {
-			
+
 			var nc = new db.Contract();
 			nc.name = form.getValueOf("name");
 			nc.startDate = contract.startDate;
@@ -699,6 +699,8 @@ class ContractAdmin extends Controller
 					d.insert();
 				}
 			}
+			
+			app.event(DuplicateContract(contract));
 			
 			throw Ok("/contractAdmin/view/" + nc.id, t._("The contract has been duplicated"));
 		}

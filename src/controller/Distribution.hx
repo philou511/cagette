@@ -279,8 +279,7 @@ class Distribution extends Controller
 				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.", {supplierName:contract.vendor.name});
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
-			}
-			else {
+			} else {
 				throw Ok('/contractAdmin/distributions/'+ createdDistrib.contract.id , t._("The distribution has been recorded") );	
 			}
 			

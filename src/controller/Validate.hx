@@ -152,7 +152,7 @@ class Validate extends controller.Controller
 			
 			var b = db.Basket.get(user, place, date);
 			for ( o in b.getOrders() ){
-				
+
 				o.lock();
 				o.paid = true;
 				o.update();
