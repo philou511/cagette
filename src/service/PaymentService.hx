@@ -40,6 +40,24 @@ class PaymentService
 		return out;
 	}
 
+	public static function getPaymentTypesForManualEntry(group:db.Amap){
+
+		var out = [];
+		var paymentTypes = [];
+		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(group);
+		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
+			paymentTypes = allowedPaymentTypes;
+		}
+		else {
+			paymentTypes = service.PaymentService.getAllPaymentTypes();
+		}
+		for ( t in paymentTypes ){
+			if(t.type != "moneypot") out.push({label:t.name,value:t.type});
+		} 
+		
+		return out;
+	}
+
 	/**
 	 * Auto validate a distribution this is called by the hourly cron
 	 *  

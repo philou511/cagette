@@ -73,20 +73,8 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
-		
-		var data = [];
-		var paymentTypes = [];
-		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
-		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
-			paymentTypes = allowedPaymentTypes;
-		}
-		else {
-			paymentTypes = service.PaymentService.getAllPaymentTypes();
-		}
-		for ( t in paymentTypes ){
-			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
-		} 
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
 
 		
 		if (f.isValid()){
@@ -124,20 +112,8 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
-
-		var data = [];
-		var paymentTypes = [];
-		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
-		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
-			paymentTypes = allowedPaymentTypes;
-		}
-		else {
-			paymentTypes = service.PaymentService.getAllPaymentTypes();
-		}
-		for ( t in paymentTypes ){
-			if(t.type!="moneypot") data.push({label:t.name,value:t.type});
-		} 
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), data, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
 		
 		var b = db.Basket.get(user, place, date);
 		var op = b.getOrderOperation(false);
