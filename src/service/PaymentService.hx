@@ -55,6 +55,7 @@ class PaymentService
 		}
 			
 		//finally validate distrib
+		distrib.lock();
 		distrib.validated = true;
 		distrib.update();
 
