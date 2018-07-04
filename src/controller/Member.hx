@@ -741,7 +741,7 @@ class Member extends Controller
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
 		
-		db.Operation.updateUserBalance(m, app.user.amap);		
+		service.PaymentService.updateUserBalance(m, app.user.amap);		
        var browse:Int->Int->List<Dynamic>;
 		
 		//default display

@@ -37,7 +37,7 @@ class Validate extends controller.Controller
 			op.lock();
 			op.delete();
 			
-			db.Operation.updateUserBalance(user, app.user.amap);
+			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Operation deleted"));
 		}
@@ -50,7 +50,7 @@ class Validate extends controller.Controller
 			op.pending = false;
 			op.update();
 			
-			db.Operation.updateUserBalance(user, app.user.amap);
+			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Operation validated"));
 		}
@@ -102,7 +102,7 @@ class Validate extends controller.Controller
 			
 			App.current.event(NewOperation(o));
 			
-			db.Operation.updateUserBalance(user, app.user.amap);
+			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Refund saved"));
 		}
@@ -153,7 +153,7 @@ class Validate extends controller.Controller
 			o.relation = op;			
 			o.insert();
 			
-			db.Operation.updateUserBalance(user, app.user.amap);
+			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Payment saved"));
 		}

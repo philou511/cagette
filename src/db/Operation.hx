@@ -189,7 +189,7 @@ class Operation extends sys.db.Object
 		
 		op.insert();
 		
-		updateUserBalance(op.user, op.group);
+		service.PaymentService.updateUserBalance(op.user, op.group);
 		
 		return op;	
 	}
@@ -222,7 +222,7 @@ class Operation extends sys.db.Object
 		
 		//op.date = Date.now();	//leave original date	
 		op.update();
-		updateUserBalance(op.user, op.group);
+		service.PaymentService.updateUserBalance(op.user, op.group);
 		return op;
 	}
 	
@@ -248,22 +248,10 @@ class Operation extends sys.db.Object
 		if(relation!=null) t.relation = relation;
 		t.insert();
 		
-		updateUserBalance(user, group);
+		service.PaymentService.updateUserBalance(user, group);
 		
 		return t;
 		
-	}
-	
-	/**
-	 * update user balance
-	 */
-	public static function updateUserBalance(user:db.User,group:db.Amap){
-		
-		var ua = db.UserAmap.getOrCreate(user, group);
-		var b = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)').getFloatResult(0);
-		b = Math.round(b * 100) / 100;
-		ua.balance = b;
-		ua.update();
 	}
 	
 	/**
