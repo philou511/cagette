@@ -78,13 +78,11 @@ class Admin extends Controller {
 		
 		view.categ = db.TxpCategory.manager.all();
 		
-		
-		
 	}
 	
-	
-	
-	
+	/**
+	 *  Display errors logged in DB
+	 */
 	@tpl("admin/errors.mtt")
 	function doErrors( args:{?user: Int, ?like: String, ?empty:Bool} ) {
 		view.now = Date.now();
@@ -109,6 +107,48 @@ class Admin extends Controller {
 		);
 	}
 
+	@tpl("admin/graph.mtt")
+	function doGraph(?key:String,?year:Int,?month:Int){
+
+
+		var from = new Date(year,month,1,0,0,0);
+		var to = new Date(year,month+1,0,23,59,59);
+
+		if(app.params.exists("recompute")){
+
+			switch(key){
+				case "basket":
+					for( d in 1...to.getDate()){
+						var _from = new Date(year,month,d,0,0,0);
+						var _to = new Date(year,month,d,23,59,59);
+						var value = db.Basket.manager.count($cdate>=_from && $cdate<=_to);
+						var g = db.Graph.record(key,value, _from );
+						// trace(value,_from,g);
+						
+					}
+
+
+			}
+
+		}
+
+		var data = db.Graph.getRange(key,from,to);
+		view.data = data;
+		view.from = from;
+		view.to = to;
+		view.key = key;
+
+		var averageValue = 0.0;
+		var total = 0.0;
+		for( d in data) total += d.value;
+		averageValue = total/data.length;
+		view.total = total;
+		view.averageValue = averageValue;
+
+
+
+
+	}
 	
 	function doFixDistribValidation() {
 

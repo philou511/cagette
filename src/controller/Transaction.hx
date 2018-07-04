@@ -56,7 +56,7 @@ class Transaction extends controller.Controller
 			
 			op.insert();
 			
-			db.Operation.updateUserBalance(user, app.user.amap);
+			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
 			throw Ok("/member/payments/" + user.id, t._("Payment recorded") );
 			
