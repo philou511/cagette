@@ -162,7 +162,7 @@ class DistributionService
 	  */
 	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,
 	 	distributor1Id:Int,distributor2Id:Int,distributor3Id:Int,distributor4Id:Int,
-		orderStartDate:Date,orderEndDate:Date):db.Distribution {
+		orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
 		//We prevent others from modifying it
 		d.lock();
@@ -187,7 +187,7 @@ class DistributionService
 		
 		DistributionService.checkDistrib(d);
 
-		App.current.event(EditDistrib(d));
+		if(dispatchEvent) App.current.event(EditDistrib(d));
 		
 		if (d.date == null){
 			return d;
