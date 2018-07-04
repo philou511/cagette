@@ -15,20 +15,20 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		r.add(new test.TestUser());
+		/*r.add(new test.TestUser());
 		r.add(new test.TestOrders());
 		r.add(new test.TestTools());
 		r.add(new test.TestDistributions());
 		r.add(new test.TestPayments());
 		//r.add(new test.TestReports());
-
+*/
 		#if plugins
 		//Cagette-pro tests, keep in this order
-		r.add(new pro.test.TestProductService());
+/*		r.add(new pro.test.TestProductService());
 		r.add(new pro.test.TestRemoteCatalog());
-		r.add(new pro.test.TestDistribService());
+		r.add(new pro.test.TestDistribService());*/
 		//wholesale-order tests
-		//r.add(new who.test.TestWho());
+		r.add(new who.test.TestWho());
 		#end
 
 		r.run();
@@ -120,6 +120,8 @@ class TestSuite
 	//shortcut to datas
 	public static var FRANCOIS:db.User = null; 
 	public static var SEB:db.User = null; 
+	public static var JULIE:db.User = null; 
+
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null; 
 	public static var AMAP_DU_JARDIN:db.Amap = null;
@@ -139,7 +141,7 @@ class TestSuite
 		
 		var f = new db.User();
 		f.firstName = "François";
-		f.lastName = "Barbut";
+		f.lastName = "B";
 		f.email = "francois@alilo.fr";
 		f.insert();
 
@@ -147,11 +149,19 @@ class TestSuite
 		
 		var u = new db.User();
 		u.firstName = "Seb";
-		u.lastName = "Zulke";
+		u.lastName = "Z";
 		u.email = "sebastien@alilo.fr";
 		u.insert();		
 
 		SEB = u;
+
+		var u = new db.User();
+		u.firstName = "Julie";
+		u.lastName = "B";
+		u.email = "julie@alilo.fr";
+		u.insert();		
+
+		JULIE = u;
 		
 		initApp(u);
 		
@@ -252,7 +262,7 @@ class TestSuite
 		
 		//second group
 		var a = new db.Amap();
-		a.name = "Les Locavores affamés";
+		a.name = "Les Locavores de la Rue Saucisse";
 		a.contact = f;
 		a.flags.set(db.Amap.AmapFlags.HasPayments);
 		a.insert();
