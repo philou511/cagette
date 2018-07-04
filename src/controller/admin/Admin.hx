@@ -108,8 +108,76 @@ class Admin extends Controller {
 			function(start, limit) {  return sugoi.db.Error.manager.unsafeObjects("SELECT * FROM Error WHERE 1 "+sql+" ORDER BY date DESC LIMIT "+start+","+limit,false); }
 		);
 	}
+
 	
-	
-	
+	function doFixDistribValidation() {
+
+		Sys.println("===== Liste des distributions ayant été re-validées ====<br>");
+
+		//Get the current group
+		var group = app.user.amap;
+		//Get all the contracts for this given group
+		var contractIds = Lambda.map(group.getContracts(),function(x) return x.id);
+		//Get all the validated distributions for this given group
+		var validatedDistribs = db.Distribution.manager.search( ($contractId in contractIds) && $validated == true, {orderBy:date}, false);
+		for (distrib in validatedDistribs){
+
+			service.PaymentService.validateDistribution(distrib);
+			Sys.println(distrib.toString() + "<br>");
+
+		}
+
+		Sys.println("===== Fin de la liste ====");
+
+	}
+
+	function doCheckDistribValidation() {
+
+		Sys.println("===== Liste des distributions validées ayant des opérations/paiements non validés ====<br>");
+
+		//Get the current group
+		var group = app.user.amap;
+		//Get all the contracts for this given group
+		var contractIds = Lambda.map(group.getContracts(),function(x) return x.id);
+		//Get all the validated distributions for this given group
+		var validatedDistribs = db.Distribution.manager.search( ($contractId in contractIds) && $validated == true, {orderBy:date}, false);
+		for (distrib in validatedDistribs){
+
+			for (user in distrib.getUsers()){
+		
+				var basket = db.Basket.get(user, distrib.place, distrib.date);
+				if (basket == null || basket.isValidated()) continue;
+		
+				for (order in basket.getOrders()){
+					if (!order.paid) {
+						Sys.println(order.distribution.toString() + "<br>");
+						Sys.println(order.toString() + "<br>");
+					}		
+				}
+
+				var operation = basket.getOrderOperation(false);
+				if (operation != null){
+					
+					if (operation.pending) {
+						Sys.println(distrib.toString() + "<br>");
+						Sys.println(operation.toString() + "<br>");
+					}
+				
+					for ( payment in basket.getPayments()){
+
+						if (payment.pending){
+							Sys.println(distrib.toString() + "<br>");
+							Sys.println(payment.toString() + "<br>");
+						}
+					}	
+				}
+
+			}
+		}
+
+		Sys.println("===== Fin de la liste ====");
+
+	}
+
 }
 
