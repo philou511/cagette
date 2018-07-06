@@ -42,10 +42,12 @@ class Cron extends Controller
 
 	}
 	
+	/**
+	 *  Hourly Cron
+	 *  
+	 *  this function can be locally tested with `neko index.n cron/hour > cron.log`				
+	 */
 	public function doHour() {
-		
-		// this function can be locally tested by
-		// cd /data/cagette/www/ && neko index.n cron/hour > cron.log
 		
 		app.event(HourlyCron);
 		
@@ -54,7 +56,7 @@ class Cron extends Controller
 		distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
 		
 		distribValidationNotif();
-		
+		//sendOrdersByProductWhenOrdersClose();
 	}
 	
 	
@@ -445,6 +447,21 @@ class Cron extends Controller
 			e.delete();
 		}	
 
+
+	}
+
+	/**
+	 *  Email product report when orders close				
+	 **/  
+	function sendOrdersByProductWhenOrdersClose(){
+	
+		var range = tools.DateTool.getLastHourRange();
+		// Sys.println("Time is "+Date.now()+"<br/>");
+		// Sys.println('Find all distributions that have closed in the last hour from ${range.from} to ${range.to} \n<br/>');
+				
+		for ( d in db.Distribution.manager.search($orderEndDate >= range.from && $orderEndDate < range.to, false)){
+			service.OrderService.sendOrdersByProductReport(d);
+		}
 
 	}
 	

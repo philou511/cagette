@@ -28,6 +28,24 @@ class Install extends controller.Controller
 			view.status = status;
 		}
 	}
+
+	public function doDiagnostics(){
+
+		var webroot = sugoi.Web.getCwd();
+
+		if(!sys.FileSystem.exists(webroot+"file")){
+			Sys.println("no File directory : created");
+			sys.FileSystem.createDirectory(webroot+"file");
+		} 
+		if(!sys.FileSystem.exists(webroot+"file/.htaccess")){
+			Sys.println("no .htaccess file in 'File' directory");
+		} 
+		if(!sys.FileSystem.exists(webroot+"../tmp")) {
+			Sys.println("no tmp directory : created");
+			sys.FileSystem.createDirectory(webroot+"../tmp");
+		}
+
+	}
 	
 	/**
 	 * First install 

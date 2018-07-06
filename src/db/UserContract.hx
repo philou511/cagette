@@ -473,7 +473,7 @@ class UserContract extends Object
 			}
 			o.weightOrVolume = view.smartQt(o.quantity, p.qt, p.unitType);
 			
-			if ( p.hasFloatQt || p.variablePrice || p.qt==null || p.unitType==null){
+			if ( /*p.hasFloatQt || p.variablePrice ||*/ p.qt==null || p.unitType==null){
 				o.pname = p.name;	
 			}else{
 				o.pname = p.name + " " + view.formatNum(p.qt) +" " + view.unit(p.unitType, o.quantity > 1);					
