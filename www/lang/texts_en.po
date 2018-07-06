@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-03-26 15:15+0000\n"
-"Last-Translator: François Barbut <francois.barbut@gmail.com>\n"
+"PO-Revision-Date: 2018-07-06 15:07+0000\n"
+"Last-Translator: David Di Santi <ddisanti1@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/cagette/"
 "translations/en/>\n"
 "Language: en\n"
@@ -12,60 +12,57 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.1-dev\n"
 
 #: src/App.hx:2527 src/db/User.hx:15991 lang/master/tpl/member/import.mtt:612
 #: lang/master/tpl/member/import.mtt:1355
 msgid "First name"
-msgstr ""
+msgstr "Nombre"
 
 #: src/App.hx:2573 src/db/User.hx:16028 lang/master/tpl/member/import.mtt:647
 #: lang/master/tpl/member/import.mtt:1389
 msgid "Last name"
-msgstr ""
+msgstr "Apellido"
 
 #: src/App.hx:2750 src/db/User.hx:16559
 msgid "Password"
-msgstr ""
+msgstr "Contraseña"
 
 #: src/App.hx:2794 src/App.hx:2837
 msgid "address"
-msgstr ""
+msgstr "dirección"
 
 #: lang/master/tpl/home.mtt:14
-#, fuzzy
 msgid "Default user credentials are :"
-msgstr "Default user credentials are :"
+msgstr "Las credenciales de usuario son :"
 
 #: lang/master/tpl/home.mtt:25
-#, fuzzy
 msgid "Database administration and migration"
-msgstr "Database administration and migration"
+msgstr "Administración y migración de la base de datos"
 
 #: lang/master/tpl/translation.mtt:6
-#, fuzzy
 msgid "Manage text translation with GetText"
-msgstr "Manage text translation with GetText"
+msgstr "Administrar traducción de texto con GetText"
 
 #: lang/master/tpl/translation.mtt:9
-#, fuzzy
 msgid "Switch to English"
-msgstr "Switch to English"
+msgstr "Cambiar a Inglés"
 
 #: lang/master/tpl/translation.mtt:10
-#, fuzzy
 msgid "Switch to French"
-msgstr "Switch to French"
+msgstr "Cambiar a Francés"
 
 #: src/App.hx:8531
 msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
 msgstr ""
+"Por favor, configure las opciones de correo en a <href='/admin/emails'>esta "
+"sección</a>"
 
 #: src/controller/Account.hx:892 src/controller/Account.hx:1087
 msgid "Email ::em:: is invalid"
-msgstr ""
+msgstr "El correo electrónico ::en:: no es válido"
 
 #: src/controller/Account.hx:1257
 msgid "Your account has been updated"
