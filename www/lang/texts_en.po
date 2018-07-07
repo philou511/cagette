@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-06 15:07+0000\n"
+"PO-Revision-Date: 2018-07-08 02:36+0000\n"
 "Last-Translator: David Di Santi <ddisanti1@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/cagette/"
 "translations/en/>\n"
@@ -41,6 +41,7 @@ msgid "Database administration and migration"
 msgstr "Administración y migración de la base de datos"
 
 #: lang/master/tpl/translation.mtt:6
+#, fuzzy
 msgid "Manage text translation with GetText"
 msgstr "Administrar traducción de texto con GetText"
 
@@ -66,62 +67,63 @@ msgstr "El correo electrónico ::en:: no es válido"
 
 #: src/controller/Account.hx:1257
 msgid "Your account has been updated"
-msgstr ""
+msgstr "Su cuenta ha sido actualizada"
 
 #: src/controller/Account.hx:1342
 msgid "Modify my account"
-msgstr ""
+msgstr "Modificar mi cuenta"
 
 #: src/controller/Account.hx:1629
 msgid "You left the group ::groupName::"
-msgstr ""
+msgstr "Usted ha abandonado el grupo ::groupName::"
 
 #: src/controller/admin/Admin.hx:1790
 msgid "Configuration updated"
-msgstr ""
+msgstr "Configuración actualizada"
 
 #: src/controller/admin/Admin.hx:1852
 msgid "Email service configuration"
-msgstr ""
+msgstr "Configuración del servicio de correo"
 
 #: src/controller/Amap.hx:539
 msgid "You don't have access to this section"
-msgstr ""
+msgstr "Usted no tiene acceso a esta sección"
 
 #: src/controller/Amap.hx:954
 msgid "The group has been updated."
-msgstr ""
+msgstr "El grupo ha sido actualizado"
 
 #: src/controller/AmapAdmin.hx:338 src/controller/AmapAdmin.hx:1435
 #: src/controller/ContractAdmin.hx:2414
 msgid "Access forbidden"
-msgstr ""
+msgstr "Acceso denegado"
 
 #: src/controller/AmapAdmin.hx:591 lang/master/tpl/contract/default.mtt:4697
 #: lang/master/tpl/member/payments.mtt:903
 msgid "Payments"
-msgstr ""
+msgstr "Pagos"
 
 #: src/controller/AmapAdmin.hx:1689
 msgid "The sent image was too big. The maximum allowed size is 12MB"
 msgstr ""
+"La imagen enviada era demasiado grande. El tamaño máximo permitido es de 12MB"
 
 #: src/controller/AmapAdmin.hx:2482 src/controller/Vendor.hx:2957
 msgid "Image updated"
-msgstr ""
+msgstr "Imagen actualizada"
 
 #: src/controller/AmapAdmin.hx:3580
 #: lang/master/tpl/contractadmin/distributionp.mtt:627
 msgid "Member"
-msgstr ""
+msgstr "Miembro"
 
 #: src/controller/AmapAdmin.hx:3857
 msgid "Group administrator"
-msgstr ""
+msgstr "Administrador de grupo"
 
 #: src/controller/AmapAdmin.hx:3927
 msgid "Membership management"
-msgstr ""
+msgstr "Gestión de membresía"
 
 #: src/controller/AmapAdmin.hx:3998
 msgid "Messages"
@@ -131,23 +133,23 @@ msgstr ""
 #: lang/master/tpl/amapadmin/rights.mtt:239
 #: lang/master/tpl/member/view.mtt:6331
 msgid "Rights"
-msgstr ""
+msgstr "Mensajes"
 
 #: src/controller/AmapAdmin.hx:4655
 msgid "All contracts"
-msgstr ""
+msgstr "Todos los contactos"
 
 #: src/controller/AmapAdmin.hx:5177
 msgid "Contracts management"
-msgstr ""
+msgstr "Gestión de contratos"
 
 #: src/controller/AmapAdmin.hx:6236
 msgid "You cannot strip yourself of admin rights."
-msgstr ""
+msgstr "Ugarte no puede despojarse de los derechos de administrador."
 
 #: src/controller/AmapAdmin.hx:6441
 msgid "Rights removed"
-msgstr ""
+msgstr "Derechos removidos"
 
 #: src/controller/AmapAdmin.hx:6512
 msgid "Rights created or modified"
