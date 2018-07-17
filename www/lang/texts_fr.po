@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-16 10:14+0200\n"
+"PO-Revision-Date: 2018-07-17 11:33+0200\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
@@ -149,7 +149,7 @@ msgstr ""
 #: src/controller/Product.hx:3091 src/controller/Product.hx:3737
 #: src/controller/Product.hx:5849 src/controller/Product.hx:6579
 #: src/controller/Product.hx:7314 src/controller/Product.hx:8010
-#: src/controller/Distribution.hx:14954
+#: src/controller/Distribution.hx:16550
 msgid "Forbidden access"
 msgstr "Accès interdit"
 
@@ -163,9 +163,9 @@ msgstr "Ce fournisseur a bien été enregistré"
 
 #: src/controller/Vendor.hx:1665 src/controller/Contract.hx:4235
 #: src/controller/Contract.hx:6195 src/controller/Member.hx:21131
-#: src/controller/Product.hx:1967 src/controller/Distribution.hx:647
-#: src/controller/Distribution.hx:4155 src/controller/Distribution.hx:9837
-#: src/controller/Distribution.hx:12921
+#: src/controller/Product.hx:1967 src/controller/Distribution.hx:2243
+#: src/controller/Distribution.hx:5751 src/controller/Distribution.hx:11433
+#: src/controller/Distribution.hx:14517
 msgid "Forbidden action"
 msgstr "Action interdite"
 
@@ -831,7 +831,7 @@ msgstr "Prénom conjoint(e)"
 
 #: src/controller/Member.hx:16484
 msgid "Partner's lastname"
-msgstr "Nom conjoint(e) "
+msgstr "Nom conjoint(e)"
 
 #: src/controller/Member.hx:16511
 msgid "Partner's e-mail"
@@ -1001,17 +1001,17 @@ msgid "Place deleted"
 msgstr "Lieu effacé"
 
 #: src/controller/api/Order.hx:948 src/controller/api/Order.hx:2852
-#: src/controller/ContractAdmin.hx:17496 src/controller/ContractAdmin.hx:18919
-#: src/controller/ContractAdmin.hx:19728 src/controller/ContractAdmin.hx:22577
-#: src/controller/ContractAdmin.hx:23463 src/controller/ContractAdmin.hx:24340
-#: src/controller/ContractAdmin.hx:25072 src/controller/ContractAdmin.hx:26617
-#: src/controller/ContractAdmin.hx:26908 src/controller/ContractAdmin.hx:28681
-#: src/controller/ContractAdmin.hx:29430
+#: src/controller/ContractAdmin.hx:16888 src/controller/ContractAdmin.hx:18311
+#: src/controller/ContractAdmin.hx:19120 src/controller/ContractAdmin.hx:21969
+#: src/controller/ContractAdmin.hx:22855 src/controller/ContractAdmin.hx:23732
+#: src/controller/ContractAdmin.hx:24464 src/controller/ContractAdmin.hx:26009
+#: src/controller/ContractAdmin.hx:26300 src/controller/ContractAdmin.hx:28073
+#: src/controller/ContractAdmin.hx:28822
 msgid "You do not have the authorization to manage this contract"
 msgstr "Vous n'avez pas le droit de gérer ce contrat"
 
 #: src/controller/api/Order.hx:1052 src/controller/api/Order.hx:2956
-#: src/controller/ContractAdmin.hx:29604
+#: src/controller/ContractAdmin.hx:28996
 msgid "This delivery has been already validated"
 msgstr "Cette distribution a déjà été validée"
 
@@ -1019,16 +1019,16 @@ msgstr "Cette distribution a déjà été validée"
 msgid "::user:: is not member of this group"
 msgstr "::user:: n'est pas membre de ce groupe"
 
-#: src/controller/api/Order.hx:4016 src/controller/ContractAdmin.hx:30891
-#: src/controller/ContractAdmin.hx:32027
+#: src/controller/api/Order.hx:4016 src/controller/ContractAdmin.hx:30283
+#: src/controller/ContractAdmin.hx:31419
 msgid "Unable to find user #::num::"
 msgstr "Impossible de trouver le membre #::num::"
 
-#: src/controller/api/Order.hx:4125 src/controller/ContractAdmin.hx:32135
+#: src/controller/api/Order.hx:4125 src/controller/ContractAdmin.hx:31527
 msgid "::user:: is not part of this group"
 msgstr "::user:: n'est pas membre de ce groupe"
 
-#: src/controller/api/Order.hx:4216 src/controller/ContractAdmin.hx:32229
+#: src/controller/api/Order.hx:4216 src/controller/ContractAdmin.hx:31621
 msgid "Both selected accounts must be different ones"
 msgstr "Les deux comptes sélectionnés doivent être différents"
 
@@ -1246,125 +1246,127 @@ msgstr ""
 "Attention, un ou plusieurs produits n'ont pas de catégories, <a href='/"
 "product/categorize/::contractid::'>cliquez ici pour en ajouter</a>"
 
-#: src/controller/ContractAdmin.hx:4071
+#: src/controller/ContractAdmin.hx:3463
 msgid "Copy products in: "
 msgstr "Copier les produits dans : "
 
-#: src/controller/ContractAdmin.hx:4371
+#: src/controller/ContractAdmin.hx:3763
 msgid "Copy products from: "
 msgstr "Copier les produits depuis: "
 
-#: src/controller/ContractAdmin.hx:4487
+#: src/controller/ContractAdmin.hx:3879
 msgid "Delete existing products (all orders will be deleted!)"
 msgstr "Effacer les produits existants (supprime toutes les commandes !)"
 
-#: src/controller/ContractAdmin.hx:5094
+#: src/controller/ContractAdmin.hx:4486
 msgid "Products copied from "
 msgstr "Produits copiés de "
 
-#: src/controller/ContractAdmin.hx:5739
+#: src/controller/ContractAdmin.hx:5131
 msgid "Contract start "
 msgstr "Début du contrat "
 
-#: src/controller/ContractAdmin.hx:5913
+#: src/controller/ContractAdmin.hx:5305
 msgid "Contract end "
 msgstr "Fin du contrat "
 
-#: src/controller/ContractAdmin.hx:6203
+#: src/controller/ContractAdmin.hx:5595
 msgid "Delivery "
 msgstr "Livraison "
 
-#: src/controller/ContractAdmin.hx:6511
+#: src/controller/ContractAdmin.hx:5903
 msgid "Opening of orders "
 msgstr "Ouverture des commandes "
 
-#: src/controller/ContractAdmin.hx:6757
+#: src/controller/ContractAdmin.hx:6149
 msgid "End of orders"
 msgstr "Fin commandes"
 
-#: src/controller/ContractAdmin.hx:7542 src/db/Contract.hx:8025
+#: src/controller/ContractAdmin.hx:6934 src/db/Contract.hx:8025
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/controller/ContractAdmin.hx:7675 src/db/Operation.hx:11798
+#: src/controller/ContractAdmin.hx:7067 src/db/Operation.hx:11798
 #: src/db/Contract.hx:8063
 msgid "End date"
 msgstr "Date de fin"
 
-#: src/controller/ContractAdmin.hx:8022 src/controller/ContractAdmin.hx:10582
+#: src/controller/ContractAdmin.hx:7414 src/controller/ContractAdmin.hx:9974
 msgid "Global view of orders"
 msgstr "Vue globale des commandes"
 
-#: src/controller/ContractAdmin.hx:9173 src/controller/ContractAdmin.hx:11786
-#: src/controller/ContractAdmin.hx:13213
+#: src/controller/ContractAdmin.hx:8565 src/controller/ContractAdmin.hx:11178
+#: src/controller/ContractAdmin.hx:12605
 msgid "There is no delivery at this date"
 msgstr "Il n'y a aucune distribution à cette date"
 
-#: src/controller/ContractAdmin.hx:10237
+#: src/controller/ContractAdmin.hx:9629
 msgid "Delivery date"
 msgstr "Date de distribution"
 
-#: src/controller/ContractAdmin.hx:10627
+#: src/controller/ContractAdmin.hx:10019
 msgid "This page allows you to have a global view on orders of all contracts"
 msgstr ""
 "Cette page vous permet d'avoir une vision d'ensemble des commandes tout "
 "contrats confondus."
 
-#: src/controller/ContractAdmin.hx:10721
+#: src/controller/ContractAdmin.hx:10113
 msgid "<br/>Select a delivery date:"
 msgstr "<br/>Sélectionnez la date de distribution qui vous interesse :"
 
-#: src/controller/ContractAdmin.hx:14671
+#: src/controller/ContractAdmin.hx:14063
 msgid "There is no delivery during this period"
 msgstr "Il n'y a aucune distribution sur cette période"
 
-#: src/controller/ContractAdmin.hx:16817
+#: src/controller/ContractAdmin.hx:16209
 msgid "Orders from the ::fromDate:: to the ::toDate:: per supplier.csv"
 msgstr "Commandes du ::fromDate:: au ::toDate:: par producteur.csv\")"
 
-#: src/controller/ContractAdmin.hx:18046
+#: src/controller/ContractAdmin.hx:17438
 msgid "The order has been deleted."
 msgstr "La commande a été effacée."
 
-#: src/controller/ContractAdmin.hx:19515
+#: src/controller/ContractAdmin.hx:18907
 msgid "Prices are now up to date."
 msgstr "Prix mis à jours à leur valeur actuelle."
 
-#: src/controller/ContractAdmin.hx:19938
+#: src/controller/ContractAdmin.hx:19330
 msgid "Name of the new contract"
 msgstr "Nom du nouveau contrat"
 
-#: src/controller/ContractAdmin.hx:20050
+#: src/controller/ContractAdmin.hx:19442
 msgid "Copy products"
 msgstr "Copier les produits"
 
-#: src/controller/ContractAdmin.hx:20128
+#: src/controller/ContractAdmin.hx:19520
 msgid "Copy deliveries"
 msgstr "Copier les distributions"
 
-#: src/controller/ContractAdmin.hx:22249
+#: src/controller/ContractAdmin.hx:21641
 msgid "The contract has been duplicated"
 msgstr "Le contrat a été dupliqué"
 
-#: src/controller/ContractAdmin.hx:22944
+#: src/controller/ContractAdmin.hx:22336
 msgid ""
 "There is no delivery in this contract, please create at least one "
 "distribution."
 msgstr ""
+"Il n'y a pas de distribution dans ce contrat, créez au moins une "
+"distribution."
 
-#: src/controller/ContractAdmin.hx:23917
+#: src/controller/ContractAdmin.hx:23309
 msgid "No delivery in this contract"
 msgstr "Aucune distribution dans ce contrat"
 
-#: src/controller/ContractAdmin.hx:28836
+#: src/controller/ContractAdmin.hx:28228
 msgid "The contract has been canceled"
 msgstr "Le contrat a bien été annulé"
 
-#: src/controller/ContractAdmin.hx:31638
+#: src/controller/ContractAdmin.hx:31030
 msgid "Unable to find product ::pid::"
 msgstr "Impossible de trouver le produit #::pid::"
 
-#: src/controller/ContractAdmin.hx:33225 src/controller/ContractAdmin.hx:33320
+#: src/controller/ContractAdmin.hx:32617 src/controller/ContractAdmin.hx:32712
 msgid "The order has been updated"
 msgstr "La commande a été mise à jour"
 
@@ -1386,7 +1388,7 @@ msgstr ""
 msgid "Your products to collect :"
 msgstr "Vos produits à récupérer :"
 
-#: src/controller/Cron.hx:9021 lang/master/tpl/contractadmin/orders.mtt:2446
+#: src/controller/Cron.hx:9021 lang/master/tpl/contractadmin/orders.mtt:2880
 msgid "alternated with"
 msgstr "alterné avec"
 
@@ -1476,13 +1478,11 @@ msgstr ""
 
 #: src/controller/Cron.hx:15281
 msgid "Sorry, the email entitled <b>::title::</b> could not be sent."
-msgstr ""
+msgstr "Désolé, l'email intitulé <b>::title::</b> n'a pas pu être envoyé."
 
 #: src/controller/Cron.hx:15399
-#, fuzzy
-#| msgid "E-mail spouse"
 msgid "Email not sent"
-msgstr "E-mail conjoint"
+msgstr "E-mail non envoyé"
 
 #: src/controller/Validate.hx:1282
 msgid "Operation validated"
@@ -1625,40 +1625,40 @@ msgstr ""
 msgid "Modifications saved"
 msgstr "Modifications enregistrées"
 
-#: src/controller/Distribution.hx:930
+#: src/controller/Distribution.hx:2526
 msgid "One person per page"
 msgstr "Une personne par page"
 
-#: src/controller/Distribution.hx:990
+#: src/controller/Distribution.hx:2586
 msgid "One person per page sorted by contract"
 msgstr "Une personne par page triée par contrat"
 
-#: src/controller/Distribution.hx:1064
+#: src/controller/Distribution.hx:2660
 msgid "All"
 msgstr "Tout à la suite"
 
-#: src/controller/Distribution.hx:1108
+#: src/controller/Distribution.hx:2704
 msgid "All but without prices and totals"
 msgstr "Tout à la suite sans les prix et totaux"
 
-#: src/controller/Distribution.hx:4437
+#: src/controller/Distribution.hx:6033
 msgid "the delivery has been deleted"
 msgstr "la distribution a bien été effacée"
 
-#: src/controller/Distribution.hx:4955 src/controller/Distribution.hx:7466
-#: src/controller/Distribution.hx:10454
+#: src/controller/Distribution.hx:6551 src/controller/Distribution.hx:9062
+#: src/controller/Distribution.hx:12050
 msgid "End time"
 msgstr "Heure de fin"
 
-#: src/controller/Distribution.hx:5140 src/controller/Distribution.hx:7830
+#: src/controller/Distribution.hx:6736 src/controller/Distribution.hx:9426
 msgid "Orders opening date"
 msgstr "Date d'ouverture des commandes"
 
-#: src/controller/Distribution.hx:5259 src/controller/Distribution.hx:7980
+#: src/controller/Distribution.hx:6855 src/controller/Distribution.hx:9576
 msgid "Orders closing date"
 msgstr "Date de clôture des commandes"
 
-#: src/controller/Distribution.hx:6066
+#: src/controller/Distribution.hx:7662
 msgid ""
 "The distribution has been proposed to the supplier, please wait for its "
 "validation"
@@ -1666,23 +1666,23 @@ msgstr ""
 "La distribution a été proposée au producteur, attendez maintenant sa "
 "validation"
 
-#: src/controller/Distribution.hx:6295 src/controller/Distribution.hx:9449
+#: src/controller/Distribution.hx:7891 src/controller/Distribution.hx:11045
 msgid "The distribution has been recorded"
 msgstr "La distribution a été enregistrée"
 
-#: src/controller/Distribution.hx:6437
+#: src/controller/Distribution.hx:8033
 msgid "Edit a distribution"
 msgstr "Modifier une distribution"
 
-#: src/controller/Distribution.hx:6857
+#: src/controller/Distribution.hx:8453
 msgid "The delivery is now up to date"
 msgstr "La distribution a été mise à jour"
 
-#: src/controller/Distribution.hx:6939
+#: src/controller/Distribution.hx:8535
 msgid "Modify a delivery"
 msgstr "Modifier une distribution"
 
-#: src/controller/Distribution.hx:8893
+#: src/controller/Distribution.hx:10489
 msgid ""
 "Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be "
 "patient, you will receive an e-mail indicating if the request has been "
@@ -1692,35 +1692,35 @@ msgstr ""
 ">Soyez patient(e), Vous recevrez un email qui vous indiquera si votre "
 "demande a été acceptée ou refusée."
 
-#: src/controller/Distribution.hx:9317
+#: src/controller/Distribution.hx:10913
 msgid "Distribution request sent"
 msgstr "Demande de distribution envoyée"
 
-#: src/controller/Distribution.hx:9607
+#: src/controller/Distribution.hx:11203
 msgid "Create a distribution"
 msgstr "Créer une distribution"
 
-#: src/controller/Distribution.hx:10259
+#: src/controller/Distribution.hx:11855
 msgid "Start time"
 msgstr "Heure de début"
 
-#: src/controller/Distribution.hx:10801
+#: src/controller/Distribution.hx:12397
 msgid "Opening time"
 msgstr "Heure d'ouverture"
 
-#: src/controller/Distribution.hx:11094
+#: src/controller/Distribution.hx:12690
 msgid "Closing time"
 msgstr "Heure de fermeture"
 
-#: src/controller/Distribution.hx:12538
+#: src/controller/Distribution.hx:14134
 msgid "The delivery has been saved"
 msgstr "La distribution a été enregistrée"
 
-#: src/controller/Distribution.hx:12704
+#: src/controller/Distribution.hx:14300
 msgid "Schedule a recurrent delivery"
 msgstr "Programmer une distribution récurrente"
 
-#: src/controller/Distribution.hx:13241
+#: src/controller/Distribution.hx:14837
 msgid "Recurrent deliveries deleted"
 msgstr "Distributions récurrentes effacées"
 
@@ -1742,7 +1742,7 @@ msgstr "Mot de passe"
 msgid "address"
 msgstr "adresse"
 
-#: src/App.hx:8245
+#: src/App.hx:8448
 msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
@@ -1809,16 +1809,12 @@ msgstr ""
 "des commandes."
 
 #: src/service/OrderService.hx:284
-#, fuzzy
-#| msgid "The order has been deleted."
 msgid "This order has already been deleted."
-msgstr "La commande a été effacée."
+msgstr "La commande a déjà été effacée."
 
 #: src/service/OrderService.hx:1462
-#, fuzzy
-#| msgid "Deletion non possible: quantity is not zero."
 msgid "Deletion not possible: quantity is not zero."
-msgstr "Effacement impossible : La quantité n'est pas égale à zéro"
+msgstr "Effacement impossible : La quantité n'est pas égale à zéro."
 
 #: src/service/UserService.hx:501
 msgid "There is no account with this email"
@@ -2026,6 +2022,7 @@ msgstr "Texte"
 
 #: src/db/Operation.hx:11832 src/db/DistributionCycle.hx:1197
 #: src/db/Distribution.hx:6673 lang/master/tpl/distribution/list.mtt:501
+#: lang/master/tpl/distribution/listByProductUser.mtt:501
 msgid "Place"
 msgstr "Lieu"
 
@@ -2070,6 +2067,7 @@ msgid "Contact"
 msgstr "Contact"
 
 #: src/db/Contract.hx:8379 lang/master/tpl/distribution/list.mtt:788
+#: lang/master/tpl/distribution/listByProductUser.mtt:788
 #: lang/master/tpl/contractadmin/view.mtt:711
 msgid "Farmer"
 msgstr "Producteur"
@@ -2182,7 +2180,7 @@ msgstr "Longitude"
 #: lang/master/tpl/distribution/listByDate.mtt:1783
 #: lang/master/tpl/distribution/list.mtt:2785
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:2289
-#: lang/master/tpl/contractadmin/orders.mtt:4735
+#: lang/master/tpl/contractadmin/orders.mtt:5169
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2176
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2993
 msgid "Canceled"
@@ -2213,11 +2211,11 @@ msgstr ""
 msgid "Delivery ::contractName:: of the "
 msgstr "Distribution ::contractName:: du "
 
-#: src/db/UserContract.hx:14835
+#: src/db/UserContract.hx:14851
 msgid "Delivery ::contractName:: "
 msgstr "Distribution ::contractName::"
 
-#: src/db/UserContract.hx:15170
+#: src/db/UserContract.hx:15186
 msgid "Per member"
 msgstr "Par adhérent"
 
@@ -2474,8 +2472,8 @@ msgid "Subscription payment date"
 msgstr "Date de cotisation"
 
 #: lang/master/tpl/membership/default.mtt:448
-#: lang/master/tpl/contractadmin/orders.mtt:6112
-#: lang/master/tpl/contractadmin/orders.mtt:6505
+#: lang/master/tpl/contractadmin/orders.mtt:6546
+#: lang/master/tpl/contractadmin/orders.mtt:6939
 #: lang/master/tpl/contractadmin/deliveries.mtt:897
 msgid "Delete"
 msgstr "Supprimer"
@@ -2594,7 +2592,7 @@ msgstr "C'est votre tour"
 msgid "It's his/her turn"
 msgstr "C'est son tour"
 
-#: lang/master/tpl/home.mtt:5774 lang/master/tpl/contractadmin/orders.mtt:1059
+#: lang/master/tpl/home.mtt:5774
 #: lang/master/tpl/contractadmin/deliveries.mtt:1073
 msgid "Distribution list"
 msgstr "Liste d'émargement"
@@ -2873,6 +2871,8 @@ msgstr "Gérer les catégories"
 #: lang/master/tpl/distribution/listByDate.mtt:76
 #: lang/master/tpl/distribution/list.mtt:76
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:76
+#: lang/master/tpl/distribution/listByProductUser.mtt:76
+#: lang/master/tpl/contractadmin/orders.mtt:1199
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:756
 msgid "Attendance sheet"
 msgstr "Liste d'émargement"
@@ -2888,7 +2888,7 @@ msgstr "Coordonnées"
 #: lang/master/tpl/distribution/list.mtt:2417
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:424
 #: lang/master/tpl/member/view.mtt:2998 lang/master/tpl/member/view.mtt:4009
-#: lang/master/tpl/contractadmin/orders.mtt:4097
+#: lang/master/tpl/contractadmin/orders.mtt:4531
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1602
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2394
 #: lang/master/tpl/contract/order.mtt:870
@@ -2905,7 +2905,7 @@ msgstr "Qté"
 #: lang/master/tpl/distribution/list.mtt:2473
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:448
 #: lang/master/tpl/member/view.mtt:3053 lang/master/tpl/member/view.mtt:4066
-#: lang/master/tpl/contractadmin/orders.mtt:4131
+#: lang/master/tpl/contractadmin/orders.mtt:4565
 #: lang/master/tpl/contractadmin/ordersByProductList.mtt:1574
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1658
 #: lang/master/tpl/contractadmin/ordersByProduct.mtt:628
@@ -2945,6 +2945,7 @@ msgstr "en alternance avec"
 #: lang/master/tpl/distribution/listByDate.mtt:6058
 #: lang/master/tpl/distribution/list.mtt:4239
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:3459
+#: lang/master/tpl/distribution/listByProductUser.mtt:2364
 msgid "Push on \"Control + P\" to print this page."
 msgstr "Appuyez sur \"Control + P\" pour imprimer cette page."
 
@@ -2980,7 +2981,7 @@ msgstr "P.U"
 #: lang/master/tpl/distribution/list.mtt:2568
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:501
 #: lang/master/tpl/member/view.mtt:4295
-#: lang/master/tpl/contractadmin/orders.mtt:4344
+#: lang/master/tpl/contractadmin/orders.mtt:4778
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1850
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2642
 #: lang/master/tpl/contract/orderByDate.mtt:678
@@ -2995,8 +2996,8 @@ msgstr "Frais"
 #: lang/master/tpl/distribution/list.mtt:2597
 #: lang/master/tpl/distribution/listByDateOnePage.mtt:526
 #: lang/master/tpl/member/view.mtt:4325
-#: lang/master/tpl/contractadmin/orders.mtt:4373
-#: lang/master/tpl/contractadmin/orders.mtt:6686
+#: lang/master/tpl/contractadmin/orders.mtt:4807
+#: lang/master/tpl/contractadmin/orders.mtt:7120
 #: lang/master/tpl/contractadmin/ordersByProductList.mtt:1676
 #: lang/master/tpl/contractadmin/ordersByProductList.mtt:2177
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1879
@@ -3072,14 +3073,17 @@ msgid "Balance of the member:"
 msgstr "Solde de l'adhérent :"
 
 #: lang/master/tpl/distribution/list.mtt:213
+#: lang/master/tpl/distribution/listByProductUser.mtt:213
 msgid "Distribution of the ::date::, from ::from:: to ::to::"
 msgstr "Distribution du ::date::, de ::from:: à ::to::"
 
 #: lang/master/tpl/distribution/list.mtt:667
+#: lang/master/tpl/distribution/listByProductUser.mtt:667
 msgid "Contact in charge of the contract"
 msgstr "Coordinateur du contrat"
 
 #: lang/master/tpl/distribution/list.mtt:934
+#: lang/master/tpl/distribution/listByProductUser.mtt:934
 msgid "Members on duty"
 msgstr "Adhérents de permanence"
 
@@ -3092,7 +3096,7 @@ msgstr "Réf."
 
 #: lang/master/tpl/distribution/list.mtt:2534
 #: lang/master/tpl/member/view.mtt:4260
-#: lang/master/tpl/contractadmin/orders.mtt:4310
+#: lang/master/tpl/contractadmin/orders.mtt:4744
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1816
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2608
 #: lang/master/tpl/contract/orderByDate.mtt:645
@@ -3157,10 +3161,10 @@ msgstr "Cet adhérent n'a pas défini de mot de passe "
 #: lang/master/tpl/member/view.mtt:1322
 #: lang/master/tpl/member/payments.mtt:1557
 #: lang/master/tpl/plugin/pro/delivery/orders.mtt:1170
-#: lang/master/tpl/contractadmin/orders.mtt:2855
-#: lang/master/tpl/contractadmin/orders.mtt:3035
-#: lang/master/tpl/contractadmin/orders.mtt:3595
-#: lang/master/tpl/contractadmin/orders.mtt:3952
+#: lang/master/tpl/contractadmin/orders.mtt:3289
+#: lang/master/tpl/contractadmin/orders.mtt:3469
+#: lang/master/tpl/contractadmin/orders.mtt:4029
+#: lang/master/tpl/contractadmin/orders.mtt:4386
 #: lang/master/tpl/contractadmin/view.mtt:535
 #: lang/master/tpl/contractadmin/products.mtt:3383
 #: lang/master/tpl/contractadmin/default.mtt:3154
@@ -3227,7 +3231,7 @@ msgstr "Commande alternée avec"
 
 #. short version of unit price
 #: lang/master/tpl/member/view.mtt:4198
-#: lang/master/tpl/contractadmin/orders.mtt:4262
+#: lang/master/tpl/contractadmin/orders.mtt:4696
 #: lang/master/tpl/contract/default.mtt:518
 #: lang/master/tpl/contract/default.mtt:2726
 msgid "U.P"
@@ -3581,11 +3585,20 @@ msgid "New order"
 msgstr "Nouvelle commande"
 
 #: lang/master/tpl/contractadmin/orders.mtt:888
-#: lang/master/tpl/contractadmin/orders.mtt:1294
+#: lang/master/tpl/contractadmin/orders.mtt:1728
 msgid "Summary by products"
 msgstr "Récapitulatif par produits"
 
-#: lang/master/tpl/contractadmin/orders.mtt:1394
+#: lang/master/tpl/contractadmin/orders.mtt:1364
+#| msgid "Calendar"
+msgid "Standard"
+msgstr "Standard"
+
+#: lang/master/tpl/contractadmin/orders.mtt:1464
+msgid "By Product-User"
+msgstr "Par Produit-adhérent"
+
+#: lang/master/tpl/contractadmin/orders.mtt:1828
 msgid ""
 "Be careful, there are <b>::disabledProducts::</b> order(s) containing "
 "<b>disabled products</b>."
@@ -3593,16 +3606,16 @@ msgstr ""
 "Attention, il y a <b>::disabledProducts::</b> commande(s) qui contiennent "
 "<b>des produits désactivés</b>."
 
-#: lang/master/tpl/contractadmin/orders.mtt:4064
+#: lang/master/tpl/contractadmin/orders.mtt:4498
 msgid "Prod. ID"
 msgstr "Ref."
 
-#: lang/master/tpl/contractadmin/orders.mtt:4225
+#: lang/master/tpl/contractadmin/orders.mtt:4659
 msgid "Unit price including taxes"
 msgstr "Prix unitaire TTC"
 
-#: lang/master/tpl/contractadmin/orders.mtt:4403
-#: lang/master/tpl/contractadmin/orders.mtt:5564
+#: lang/master/tpl/contractadmin/orders.mtt:4837
+#: lang/master/tpl/contractadmin/orders.mtt:5998
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1909
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:3087
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:2701
@@ -3613,21 +3626,21 @@ msgstr "Prix unitaire TTC"
 msgid "Paid"
 msgstr "Payé"
 
-#: lang/master/tpl/contractadmin/orders.mtt:5637
+#: lang/master/tpl/contractadmin/orders.mtt:6071
 #: lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:3158
 #: lang/master/tpl/contractadmin/ordersByDate.mtt:3994
 msgid "Not paid"
 msgstr "Non payé"
 
-#: lang/master/tpl/contractadmin/orders.mtt:5876
-#: lang/master/tpl/contractadmin/orders.mtt:6269
+#: lang/master/tpl/contractadmin/orders.mtt:6310
+#: lang/master/tpl/contractadmin/orders.mtt:6703
 msgid ""
 "Do you really want to delete this order row for the product \"::productName::"
 "\" ?"
 msgstr ""
 "Voulez vous vraiment effacer cette commande du produit \"::productName::\" ?"
 
-#: lang/master/tpl/contractadmin/orders.mtt:6877
+#: lang/master/tpl/contractadmin/orders.mtt:7311
 msgid "<b>::totalAdh::</b> member(s) in this distribution."
 msgstr "<b>::totalAdh::</b> adhérents dans cette distribution."
 
