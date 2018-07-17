@@ -231,17 +231,19 @@ class App extends sugoi.BaseApp {
 	
 	public static function getMailer():sugoi.mail.IMailer {
 		
-		if (sugoi.db.Variable.get("mailer") == null){
-			var msg = sugoi.i18n.Locale.texts._("Please configure the email settings in a <href='/admin/emails'>this section</a>");
-			throw sugoi.ControllerAction.ErrorAction("/",msg);
-		}
-		
 		var mailer : sugoi.mail.IMailer = new sugoi.mail.BufferedMailer();
 		
 		if(App.config.DEBUG){ 
+
 			//Dev env : emails are written to tmp folder
 			mailer = new sugoi.mail.DebugMailer();
 		}else{
+			
+			if (sugoi.db.Variable.get("mailer") == null){
+				var msg = sugoi.i18n.Locale.texts._("Please configure the email settings in a <href='/admin/emails'>this section</a>");
+				throw sugoi.ControllerAction.ErrorAction("/",msg);
+			}
+
 			if (sugoi.db.Variable.get("mailer") == "mandrill"){		
 				//Buffered emails with Mandrill
 				untyped mailer.defineFinalMailer("mandrill");		

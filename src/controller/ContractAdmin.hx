@@ -94,34 +94,14 @@ class ContractAdmin extends Controller
 		//batch enable / disable products
 		if (args != null){
 			
-			var products = contract.getProducts(false);
-			
 			if (args.disable != null){
-				
 				var pids = Lambda.array(Lambda.map(args.disable.split("|"), function(x) return Std.parseInt(x)));				
-				var data = {pids:pids,enable:false};
-				app.event( BatchEnableProducts(data) );
-				
-				for ( pid in data.pids){
-					if ( Lambda.find(products,function(p) return p.id==pid)==null ) throw 'product $pid is not in this contract !';
-					var p = db.Product.manager.get(pid, true);
-					p.active = false;
-					p.update();
-				}
+				service.ProductService.batchDisableProducts(pids);
 			}
 			
 			if (args.enable != null){
-				
 				var pids = Lambda.array(Lambda.map(args.enable.split("|"), function(x) return Std.parseInt(x)));
-				var data = {pids:pids,enable:true};
-				app.event(BatchEnableProducts(data));
-				
-				for ( pid in data.pids){
-					if ( Lambda.find(products,function(p) return p.id==pid)==null ) throw 'product $pid is not in this contract !';
-					var p = db.Product.manager.get(pid, true);
-					p.active = true;
-					p.update();
-				}
+				service.ProductService.batchEnableProducts(pids);
 			}
 			
 		}

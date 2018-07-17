@@ -65,6 +65,9 @@ class TestSuite
 			db.TxpProduct.manager,
 			db.TxpCategory.manager,
 			db.TxpSubCategory.manager,
+			db.Category.manager,
+			db.CategoryGroup.manager,
+			db.ProductCategory.manager,
 
 			db.Basket.manager,
 			db.UserContract.manager,
@@ -375,10 +378,11 @@ class TestSuite
 	
 	static function initApp(u:db.User){
 		
-		// Sys.println("InitApp()");
-		
 		//setup App
 		var app = App.current = new App();
+		App.config.DEBUG = true;
+		app.initLang("en");
+
 		app.eventDispatcher = new hxevents.Dispatcher<Event>();
 		app.plugins = [];
 		//internal plugins
@@ -392,9 +396,6 @@ class TestSuite
 		//app.plugins.push( new pro.LemonwayEC() );
 		app.plugins.push( new who.WhoPlugIn() );
 		#end
-		
-		//i18n
-		sugoi.i18n.Locale.init("en");
 		
 		App.current.user = u;
 		App.current.view = new View();

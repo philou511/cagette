@@ -3,13 +3,14 @@ import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 using tools.DateTool;
+import Common;
 
 class Distribution extends Controller
 {
 
 
 	/**
-	 * List to print (single distrib)
+	 * Attendance sheet by user-product (single distrib)
 	 */
 	@tpl('distribution/list.mtt')
 	function doList(d:db.Distribution) {
@@ -19,9 +20,75 @@ class Distribution extends Controller
 		view.orders = UserContract.prepare(d.getOrders());
 		
 	}
+
+	/**
+	 * Attendance sheet by product-user (single distrib)
+	 */
+	@tpl('distribution/listByProductUser.mtt')
+	function doListByProductUser(d:db.Distribution) {
+		view.distrib = d;
+		view.place = d.place;
+		view.contract = d.contract;
+		// view.orders = UserContract.prepare(d.getOrders());
+		
+		//make a 2 dimensons table :  data[userId][productId]
+		//WARNING : BUGS WILL APPEAR if there is many Order line for the same product
+		var data = new Map<Int,Map<Int,UserOrder>>();
+		var products = [];
+		var uo = d.getOrders();
+
+		for(o in uo){
+			products.push(o.product);
+		}
+
+		for ( o in db.UserContract.prepare(uo)) {
+
+			var user = data[o.userId];
+			if (user == null) user = new Map();
+			user[o.productId] = o;
+			data[o.userId] = user;
+
+		}
+		
+		//products
+		var products = tools.ObjectListTool.deduplicate(products);
+		products.sort(function(b, a) {
+			return (a.name < b.name)?1:-1;
+		});
+		view.products = products;
+
+		//users
+		var users = Lambda.array(d.getUsers());
+		// var usersMap = tools.ObjectListTool.toIdMap(users);
+		users.sort(function(b, a) {
+			return (a.lastName < b.lastName)?1:-1;
+		});
+		view.users = users;
+		// view.usersMap = usersMap;
+
+		view.orders = data;
+
+		//total to pay by user
+		view.totalByUser = function(uid:Int){
+			var total = 0.0;
+			for( o in data[uid]) total+= o.total;
+			return total;
+		}
+
+		//total qty of product
+		view.totalByProduct = function(pid:Int){
+			var total = 0.0;
+			for( uid in data.keys()){
+				var x = data[uid][pid];
+				if(x!=null) total+= x.quantity;	
+			} 
+			return total;
+		}
+
+	}
 	
 	/**
-	 * List to print ( mutidistrib )
+	 * Attendance sheet to print ( mutidistrib )
 	 */
 	@tpl('distribution/listByDate.mtt')
 	function doListByDate(date:Date,place:db.Place, ?type:String, ?fontSize:String) {

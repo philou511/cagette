@@ -22,10 +22,15 @@ class ObjectListTool
 	 */
 	public static function deduplicate<T>(objs:Iterable<T>):Array<T>{
 		var out = new Map<Int,T>();
-		
 		for ( u in objs) out.set( untyped u.id, u );
-		
 		return Lambda.array(out);
+	}
+
+
+	public static function toIdMap<T>(objs:Iterable<T>):Map<Int,T>{
+		var out = new Map<Int,T>();
+		for ( u in objs) out.set( untyped u.id, u );
+		return out;
 	}
 	
 	/**

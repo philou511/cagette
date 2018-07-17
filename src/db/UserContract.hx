@@ -539,7 +539,7 @@ class UserContract extends Object
 					"name":o.userName,
 					"productName":o.productName,
 					"price":view.formatNum(o.productPrice),
-					"quantity":o.quantity,
+					"quantity":view.formatNum(o.quantity),
 					"fees":view.formatNum(o.fees),
 					"total":view.formatNum(o.total),
 					"paid":o.paid
