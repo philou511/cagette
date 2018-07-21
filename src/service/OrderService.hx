@@ -28,38 +28,31 @@ class OrderService
 
 				order.delete();
 
-				if( contract.amap.hasPayments() )
-				{
+				if( contract.amap.hasPayments() ){
 					var orders = contract.getUserOrders(user);
 					if( orders.length == 0 ){
 						var operation = db.Operation.findCOrderTransactionFor(contract, user);
 						if(operation!=null) operation.delete();
 					}
 				}
-
 			}
 			else { //Variable orders contract
-
-				order.delete();
-
-				if( contract.amap.hasPayments() )
-				{
-
-					//Get the basket for this user
-					var place = order.distribution.place;
-					var basket = db.Basket.get(user, place, order.distribution.date);
-
-					//Get all the orders for this basket
+				
+				//Get the basket for this user
+				var place = order.distribution.place;
+				var basket = db.Basket.get(user, place, order.distribution.date);
+				
+				if( contract.amap.hasPayments() ){
 					var orders = basket.getOrders();
-
-					//Check there is no orders left to delete the related operation
-					if( orders.length == 0 )
-					{
+					//Check if it is the last order, if yes then delete the related operation
+					if( orders.length == 1 && orders.first().id==order.id ){
 						var operation = db.Operation.findVOrderTransactionFor(order.distribution.getKey(), user, place.amap);
 						if(operation!=null) operation.delete();
 					}
 
 				}
+
+				order.delete();
 			}
 		}
 		else {

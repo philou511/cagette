@@ -15,10 +15,10 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		r.add(new test.TestUser());
+		// r.add(new test.TestUser());
 		r.add(new test.TestOrders());
-		r.add(new test.TestTools());
-		r.add(new test.TestDistributions());
+		// r.add(new test.TestTools());
+		// r.add(new test.TestDistributions());
 		r.add(new test.TestPayments());
 
 		#if plugins
@@ -126,6 +126,7 @@ class TestSuite
 
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null; 
+	public static var APPLES:db.Product = null; 
 	public static var AMAP_DU_JARDIN:db.Amap = null;
 	public static var LOCAVORES:db.Amap = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
@@ -251,6 +252,8 @@ class TestSuite
 		p.stock = 12;
 		p.insert();
 		
+		APPLES = p;
+
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
 		d.end = new Date(2017, 5, 1, 20, 0, 0);
@@ -287,7 +290,7 @@ class TestSuite
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
-		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
 		c.type = db.Contract.TYPE_VARORDER;
@@ -332,6 +335,8 @@ class TestSuite
 		d.insert();
 
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
+
+		//PASTRY
 
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";

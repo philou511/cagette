@@ -440,14 +440,13 @@ class Cron extends Controller
 
 		//emails that cannot be sent
 		for( e in sugoi.db.BufferedMail.manager.search($tries>100,{limit:100,orderBy:-cdate},true)  ){
-			if(e.sender.email==App.config.get("default_email")) continue;
-
-			var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
-			App.quickMail(e.sender.email,t._("Email not sent"),str);
+			
+			if(e.sender.email!=App.config.get("default_email")) {
+				var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
+				App.quickMail(e.sender.email,t._("Email not sent"),str);
+			}
 			e.delete();
 		}	
-
-
 	}
 
 	/**

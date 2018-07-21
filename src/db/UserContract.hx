@@ -218,6 +218,8 @@ class UserContract extends Object
 	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool):db.UserContract {
 		
 		var t = sugoi.i18n.Locale.texts;
+
+		if(product.contract.type==db.Contract.TYPE_VARORDER && distribId==null) throw "You have to provide a distribId";
 		
 		//multiweight : make one row per product
 		if (product.multiWeight && quantity > 1.0){
@@ -273,7 +275,7 @@ class UserContract extends Object
 		if (distribId != null){
 			var dist = o.distribution;
 			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
-			o.basket = basket;
+			o.basket = basket;			
 		}
 		
 		o.insert();
@@ -604,12 +606,6 @@ class UserContract extends Object
 		
 		return orders;
 	}
-	
-	/*public static function getTotalPrice(orders:Iterable<UserOrder>){
-		var t = 0.0;
-		for ( o in orders) t += o.total;
-		return t;		
-	}*/
 	
 	public static function getTotalPrice(tmpOrder:OrderInSession){
 		var t = 0.0;
