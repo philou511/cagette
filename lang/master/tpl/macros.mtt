@@ -194,10 +194,10 @@
 	</macro>
 	
 	
-	<macro name="deliveryPro(k)">
+	<macro name="deliveryPro(k,showBtns)">
 		::set now = Date.now()::
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-4 text-center">
 				<!-- find color/icon to display -->
 				::set open = 0::
 				::set notyetopened = 0::
@@ -216,7 +216,7 @@
 					::end::
 				::end::
 				
-				<div>
+				<div style="display:inline-block;">
 					::set x = getDate(k[0].date)::
 					$$date(::x.dow::,::x.d::,::x.m::,::x.y::,::k[0]._place::)
 				</div>
@@ -250,23 +250,39 @@
 				
 				<b>::k[0]._contract._amap.name::</b><br/>
 				
+				<table>
 				::foreach d k::
-				
-					::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
-					<!-- commande en cours -->
-					<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
-					::elseif now.getTime() > d.orderEndDate.getTime()::
-					<!-- commande terminée -->
-					<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
-					::else::
-					<!-- commande pas ouverte -->
-					<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
-					::end::
-					
-					::set c = getCatalog(d)::
-					<a href="/p/pro/delivery/view/::d.id::">::c.name::</a>
-					<br/>
+					<tr>
+						<td>
+							::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+							<!-- commande en cours -->
+							<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
+							::elseif now.getTime() > d.orderEndDate.getTime()::
+							<!-- commande terminée -->
+							<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+							::else::
+							<!-- commande pas ouverte -->
+							<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
+							::end::
+							
+							::set c = getCatalog(d)::
+							<a href="/p/pro/delivery/view/::d.id::">::c.name::</a>&nbsp;&nbsp;
+						</td>
+						<td>
+							::if showBtns::
+							<div class="btn-group">
+								<a href="/p/pro/delivery/edit/::d.id::" title="::_("Edit")::" data-toggle="tooltip" class="btn btn-default btn-sm">
+									<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+								</a>
+								<a href="/p/pro/delivery/delete/::d.id::?token=::token::"  title="::_("Delete")::" data-toggle="tooltip" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm" >
+									<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+								</a>
+							</div>
+							::end::
+						</td>
+					</tr>
 				::end::	
+				</table>
 				
 			</div>
 		</div>
