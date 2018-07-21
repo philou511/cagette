@@ -3,12 +3,11 @@ import sys.db.Object;
 import sys.db.Types;
 
 /**
- * 
+ * Basket : represents the orders of a user for specific date + place
  */
 @:index(userId,placeId,ddate,unique)
 class Basket extends Object
 {
-
 	public var id : SId;
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
@@ -38,6 +37,13 @@ class Basket extends Object
 		return b;
 	}
 	
+	/**
+	 * Get a Basket or create it if it doesn't exists.
+	 * Also re-link existing orders to this basket
+	 * @param user 
+	 * @param place 
+	 * @param date 
+	 */
 	public static function getOrCreate(user, place, date){
 		var b = get(user, place, date, true);
 		
@@ -52,7 +58,7 @@ class Basket extends Object
 			b.num = db.Basket.manager.count($place == place && $ddate == date) + 1;
 			b.insert();
 			
-			//try to find orders
+			//try to find orders and link them to the basket
 			var md = MultiDistrib.get(date, place);
 			var dids = tools.ObjectListTool.getIds(md.distributions);
 			for ( o in db.UserContract.manager.search( ($distributionId in dids) && ($user == user), true)){
@@ -92,10 +98,12 @@ class Basket extends Object
 	
 	public function isValidated(){
 
-		return Lambda.count(getOrders(), function(o) return !o.paid) == 0
-		    && getOrderOperation(false).pending == false
-			&& Lambda.count(getPayments(), function(p) return p.pending) == 0;
-			
+		var ordersPaid = Lambda.count(getOrders(), function(o) return !o.paid) == 0;
+		var op = getOrderOperation(false);
+		var orderOperationNotPending = op!=null ? op.pending == false : true;
+		var paymentOperationsNotPending = Lambda.count(getPayments(), function(p) return p.pending) == 0;
+
+		return ordersPaid && orderOperationNotPending && paymentOperationsNotPending;			
 	}
 	
 }
