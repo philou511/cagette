@@ -12,14 +12,18 @@ class Place extends Object
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SString<32>;
 	public var city:SString<25>;
+	public var country:SNull<SString<64>>;
+
 	//latitude/longitude
 	public var lat:SNull<SFloat>;
 	public var lng:SNull<SFloat>;
+	
 	@hideInForms @:relation(amapId) public var amap : Amap;
 	
 	public function new() 
 	{
 		super();
+		country = "France";
 	}
 	
 	override function toString() {
@@ -49,6 +53,7 @@ class Place extends Object
 		if (address2 != null) str.add(address2 + ", \n");
 		if (zipCode != null) str.add(zipCode);
 		if (city != null) str.add(" - "+city);
+		if(country != null) str.add(", "+country);
 		return str.toString();
 	}
 	
@@ -60,6 +65,7 @@ class Place extends Object
 			"address2"	=>	t._("Address 2"),
 			"zipCode"	=>	t._("Zip code"),
 			"city"		=>	t._("City"),			
+			"country"	=>	t._("Country"),
 			"lat"		=>	t._("Latitude"),			
 			"lng"		=>	t._("Longitude"),			
 		];

@@ -750,7 +750,7 @@ class ContractAdmin extends Controller
 			view.deliveries = db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} );			
 		}
 		
-		view.cycles = db.DistributionCycle.manager.search($contract==contract,false);
+		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);
 		
 	}
 	
