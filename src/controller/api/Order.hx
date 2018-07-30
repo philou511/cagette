@@ -52,17 +52,18 @@ class Order extends Controller
 	 */
 	public function doUpdate(userId:Int){
 		
-		//params
+		//GET params
 		var p = app.params;
-		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
-		data = haxe.Json.parse(p.get("orders"));
-		
 		var distributionId = Std.parseInt(p.get("distributionId"));
 		var contractId = Std.parseInt(p.get("contractId"));
+
+		//POST payload
+		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
+		data = haxe.Json.parse( StringTools.urlDecode(sugoi.Web.getPostData()) ).orders;
+		
 		if (distributionId == null && contractId == null) throw "You should provide a contractId or a distributionId";
 		var user = db.User.manager.get(userId, false);
 		if (user == null) throw 'user #$userId doesn\'t exists';
-		
 		
 		var c : db.Contract = null;
 		var d : db.Distribution = null;

@@ -57,7 +57,15 @@ class Distribution extends Object
 	 */
 	public function placePopulate():FormData<Int> {
 		var out = [];
-		var places = db.Place.manager.search($amapId == this.contract.amap.id, false);
+		var places = new List();
+		if(this.contract!=null){
+			//edit form
+			places = db.Place.manager.search($amapId == this.contract.amap.id, false);
+		}else{
+			//insert form
+			places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
+		}
+		
 		for (p in places) out.push( { label:p.name,value:p.id} );
 		return out;
 	}

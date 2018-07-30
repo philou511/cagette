@@ -179,6 +179,16 @@
 		
 	</div>
 
+	<!-- additionnal blocks from plugins -->
+	::if blocks!=null::
+		::foreach b blocks::
+		<div class="block">
+			<h3>::b.title::</h3>
+			<p>::raw b.html::</p>
+		</div>
+		::end::
+	::end::
+
 	
 </div>
 
