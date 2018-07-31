@@ -377,50 +377,18 @@ class ContractAdmin extends Controller
 	 */
 	@tpl('contractadmin/vendorsByDate.mtt')
 	function doVendorsByDate(date:Date,place:db.Place){
-			
-		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-		var contracts = app.user.amap.getActiveContracts(true);
-		var cids = Lambda.map(contracts, function(c) return c.id);
-		
-		//distribs for both types in active contracts
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 && $place==place , false);		
 
-		
-		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
-		
-		var out = new Map<Int,Dynamic>();//key : vendor id
-		
-		for (d in distribs){
-			var vid = d.contract.vendor.id;
-			var o = out.get(vid);
-			
-			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
-			}else{
-				
-				//add orders with existing ones
-				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
-					
-					//find record in existing orders
-					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
-					if (f == null){
-						//new product order
-						o.orders.push(x);						
-					}else{
-						//increment existing
-						f.quantity += untyped x.quantity;
-						f.total += untyped x.total;
-					}
-				}
-				out.set(vid, o);
-			}
+	    var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
+		try {
+			vendorDataByVendorId = service.OrderService.getMultiDistribVendorOrdersByProduct(date, place);
+		} 
+		catch(e:tink.core.Error) {
+			throw Error("/contractAdmin/ordersByDate", e.message);
 		}
 		
-		view.orders = Lambda.array(out);
+		view.orders = Lambda.array(vendorDataByVendorId);
 		view.date = date;
 	}
-
 	
 	/**
 	 * Global view on orders, producer view

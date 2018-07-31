@@ -24,7 +24,7 @@ class MultiDistrib
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 		
-		var cids = db.Contract.getActiveContracts(place.amap).getIds();
+		var cids = place.amap.getContracts().getIds();
 		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();
 		
 		return m;

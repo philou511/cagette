@@ -1,6 +1,5 @@
 package service;
 import Common;
-import tink.core.Error;
 
 /**
  * Order Service
@@ -14,7 +13,7 @@ class OrderService
 	public static function delete(order:db.UserContract) {
 		var t = sugoi.i18n.Locale.texts;
 
-		if(order==null) throw new Error(t._("This order has already been deleted."));
+		if(order==null) throw new tink.core.Error(t._("This order has already been deleted."));
 		
 		order.lock();
 		
@@ -63,7 +62,7 @@ class OrderService
 			}
 		}
 		else {
-			throw new Error(t._("Deletion not possible: quantity is not zero."));
+			throw new tink.core.Error(t._("Deletion not possible: quantity is not zero."));
 		}
 
 	}
@@ -132,4 +131,51 @@ class OrderService
 		}
 		
 	}
+
+	/**
+	 * Returns a map of vendorId and an object made of contract, distrib, productOrders
+	 * @param date 
+	 * @param place 
+	 */
+	public static function getMultiDistribVendorOrdersByProduct(date:Date, place:db.Place) {
+
+		var t = sugoi.i18n.Locale.texts;
+		
+		var multiDistrib = MultiDistrib.get(date, place);
+		if ( multiDistrib.distributions.length == 0 ) throw new tink.core.Error(t._("There is no delivery at this date"));
+		
+		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
+		
+		for (d in multiDistrib.distributions) {
+
+			var vendorId = d.contract.vendor.id;
+			var vendorData = vendorDataByVendorId.get(vendorId);
+			
+			if (vendorData == null) {
+				vendorDataByVendorId.set( vendorId, {contract:d.contract, distrib:d, orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
+			}
+			else {
+				
+				//add orders with existing ones
+				for ( productOrder in db.UserContract.getOrdersByProduct( {distribution:d} )){
+					
+					//find record in existing orders
+					var vendorProductOrders  : Dynamic = Lambda.find(vendorData.orders, function(a) return a.pid == productOrder.pid);
+					if (vendorProductOrders == null){
+						//new product order
+						vendorData.orders.push(productOrder);						
+					}else{
+						//increment existing
+						vendorProductOrders.quantity += untyped productOrder.quantity;
+						vendorProductOrders.total += untyped productOrder.total;
+					}
+				}
+				vendorDataByVendorId.set(vendorId, vendorData);
+			}
+		}
+
+		return vendorDataByVendorId;
+
+	}
+
 }
