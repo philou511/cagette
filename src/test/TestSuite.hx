@@ -15,18 +15,18 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		// r.add(new test.TestUser());
-		// r.add(new test.TestOrders());
-		// r.add(new test.TestTools());
-		// r.add(new test.TestDistributions());
-		// r.add(new test.TestPayments());
+		r.add(new test.TestUser());
+		r.add(new test.TestOrders());
+		r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
+		r.add(new test.TestPayments());
 
 		#if plugins
-		// //Cagette-pro tests, keep in this order
-		// r.add(new pro.test.TestProductService());
-		// r.add(new pro.test.TestRemoteCatalog());
-		// r.add(new pro.test.TestDistribService());
-		// //wholesale-order tests
+		//Cagette-pro tests, keep in this order
+		r.add(new pro.test.TestProductService());
+		r.add(new pro.test.TestRemoteCatalog());
+		r.add(new pro.test.TestDistribService());
+		//wholesale-order tests
 		// r.add(new who.test.TestWho());
 		r.add(new pro.test.TestMarketplacePayment());
 		#end
@@ -130,12 +130,19 @@ class TestSuite
 	public static var AMAP_DU_JARDIN:db.Amap = null;
 	public static var LOCAVORES:db.Amap = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
+	public static var VENDOR1:db.Vendor = null;
+	public static var VENDOR2:db.Vendor = null;
+	public static var VENDOR3:db.Vendor = null;
 	public static var DISTRIB_CONTRAT_AMAP:db.Distribution = null;
 	public static var DISTRIB_FRUITS_PLACE_DU_VILLAGE:db.Distribution = null;
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
+	public static var DISTRIB_LAITUE:db.Distribution = null;
+	public static var DISTRIB_CAROTTES:db.Distribution = null;
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	public static var COURGETTES:db.Product = null;
+	public static var LAITUE:db.Product = null;
+	public static var CAROTTES:db.Product = null;
 	public static var FLAN:db.Product = null;
 	public static var CROISSANT:db.Product = null;
 	public static var DISTRIB_PATISSERIES:db.Distribution = null;
@@ -284,6 +291,23 @@ class TestSuite
 		v.zipCode = "00000";
 		v.city = "Bourligeac";
 		v.insert();
+		VENDOR1 = v;
+
+		var vendor2 = new db.Vendor();
+		vendor2.name = "La ferme de la laitue hystérique";
+		vendor2.email = "laitue@gmail.com";
+		vendor2.zipCode = "33000";
+		vendor2.city = "Auliwoud";
+		vendor2.insert();
+		VENDOR2 = vendor2;
+
+		var vendor3 = new db.Vendor();
+		vendor3.name = "La ferme des carottes rebelles";
+		vendor3.email = "carottes@gmail.com";
+		vendor3.zipCode = "47100";
+		vendor3.city = "Parmentier";
+		vendor3.insert();
+		VENDOR3 = vendor3;
 		
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
@@ -295,6 +319,24 @@ class TestSuite
 		c.insert();
 		
 		CONTRAT_LEGUMES = c;
+
+		var contract2 = new db.Contract();
+		contract2.name = "Commande Laitue";
+		contract2.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		contract2.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		contract2.vendor = vendor2;
+		contract2.amap = a;
+		contract2.type = db.Contract.TYPE_VARORDER;
+		contract2.insert();
+		
+		var contract3 = new db.Contract();
+		contract3.name = "Commande Carottes";
+		contract3.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		contract3.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		contract3.vendor = vendor3;
+		contract3.amap = a;
+		contract3.type = db.Contract.TYPE_VARORDER;
+		contract3.insert();
 
 		var p = new db.Product();
 		p.name = "Courgettes";
@@ -325,6 +367,26 @@ class TestSuite
 		p.contract = c;
 		p.insert();
 		CHICKEN = p;
+
+		var product2 = new db.Product();
+		product2.name = "Laitue";
+		product2.qt = 1;
+		product2.unitType = Common.UnitType.Kilogram;
+		product2.price = 2.5;
+		product2.organic = true;
+		product2.contract = contract2;
+		product2.insert();
+		LAITUE = product2;
+
+		var product3 = new db.Product();
+		product3.name = "Carottes";
+		product3.qt = 1;
+		product3.unitType = Common.UnitType.Kilogram;
+		product3.price = 4.5;
+		product3.organic = true;
+		product3.contract = contract3;
+		product3.insert();
+		CAROTTES = product3;
 		
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
@@ -333,6 +395,22 @@ class TestSuite
 		d.insert();
 
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
+
+		var distribution2 = new db.Distribution();
+		distribution2.date = new Date(2017, 5, 1, 19, 0, 0);
+		distribution2.contract = contract2;
+		distribution2.place = place;
+		distribution2.insert();
+
+		DISTRIB_LAITUE = distribution2;
+
+		var distribution3 = new db.Distribution();
+		distribution3.date = new Date(2017, 5, 1, 19, 0, 0);
+		distribution3.contract = contract3;
+		distribution3.place = place;
+		distribution3.insert();
+
+		DISTRIB_CAROTTES = distribution3;
 
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";
