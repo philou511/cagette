@@ -1,4 +1,4 @@
-ROPTS=-zav --no-p --chmod=u=rwX,g=rX,o= --delete --exclude=www/.htaccess --exclude=.svn --exclude=.git --exclude=*.mtt --exclude=tpl/css --exclude=www/file --exclude=*node_modules* --exclude=*.php --exclude=tests.n
+ROPTS=-zav --no-p --chmod=u=rw,g=rw,o=r --delete --exclude=www/.htaccess --exclude=.svn --exclude=.git --exclude=*.mtt --exclude=tpl/css --exclude=www/file --exclude=*node_modules* --exclude=*.php --exclude=tests.n
 LANG=fr
 PLUGINS?=0
 ENV?="dev"
@@ -76,30 +76,6 @@ templates:
 
 ctemplates:
 	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt */*/*/*/*.mtt)
-
-deploy: 
-	@make css
-	@make frontend PLUGINS=1
-	@make templates
-	@make compile PLUGINS=1
-	@make deploy_site
-	
-deploypp:
-	@make css
-	@make frontend PLUGINS=1
-	@make templates
-	@make compile PLUGINS=1
-	@make deploy_site_pp
-	
-deploy_site:
-	rsync $(ROPTS) www www-data@app.cagette.net:/data/cagette/
-	rsync $(ROPTS) data www-data@app.cagette.net:/data/cagette/
-	rsync $(ROPTS) lang www-data@app.cagette.net:/data/cagette/
-	
-deploy_site_pp:
-	rsync $(ROPTS) www www-data@app.cagette.net:/data/cagettepp/
-	rsync $(ROPTS) data www-data@app.cagette.net:/data/cagettepp/
-	rsync $(ROPTS) lang www-data@app.cagette.net:/data/cagettepp/
 
 # Bundle binaries (neko version) and send them online at www.cagette.net/cagette.tar
 bundle:

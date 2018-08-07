@@ -29,7 +29,7 @@
 						<span class="glyphicon glyphicon-chevron-left"></span>::_("Change group")::
 					</a>
 
-					<a  class="dropdown-toggle " type="button" id="dropdownMenu1" data-toggle="dropdown">
+					<a  class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
 						<span class="glyphicon glyphicon-user"></span>
 						::user.getName()::
 						::if user.firstName2!=null::
@@ -117,14 +117,14 @@
 			::raw __content__::
 		</div>	
 		
-		<div class="row">
+		<!--<div class="row">
 			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
 				<span class="glyphicon glyphicon-cog"></span>
 				Attention : Cagette.net sera indisponible le <b>mardi 7 août de 9:00 à 11:00</b>.
 				<br/>
 				Nous déménageons sur un nouveau serveur pour plus de rapidité et de fiabilité.
 			</div>
-		</div>	
+		</div>-->
 
 		<div class="row" id="footer">
 			
