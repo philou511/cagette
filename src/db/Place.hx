@@ -11,7 +11,7 @@ class Place extends Object
 	public var address1:SNull<SString<64>>;
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SString<32>;
-	public var city:SString<25>;
+	public var city:SString<64>;
 	public var country:SNull<SString<64>>;
 
 	//latitude/longitude

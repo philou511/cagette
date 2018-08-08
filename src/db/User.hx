@@ -203,9 +203,16 @@ class User extends Object {
 		return firstName+" "+lastName;
 	}
 	
+	/**
+	 * Encode a user password
+	 * @param p 
+	 */
 	public function setPass(p:String) {
-		if (p == null) return null;
-		this.pass = haxe.crypto.Md5.encode( App.config.get('key') + StringTools.trim(p));
+		if (p == null){
+			this.pass = "";			
+		}else{
+			this.pass = haxe.crypto.Md5.encode( App.config.get('key') + StringTools.trim(p));
+		} 
 		return this.pass;
 	}
 	
