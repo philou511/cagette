@@ -423,15 +423,21 @@ class Cron extends Controller
 		
 	}
 	
-	
+	/**
+	 * Send emails from buffer.
+	 * 
+	 * Warning, if the cron is executed each minute, 
+	 * you should consider the right amount of emails to send each minute in order to avoid overlaping and getting in concurrency problems.
+	 * (like "SELECT * FROM BufferedMail WHERE sdate IS NULL ORDER BY cdate DESC LIMIT 100 FOR UPDATE Lock wait timeout exceeded; try restarting transaction") 
+	 */
 	function sendEmailsfromBuffer(){
 		print("<h3>Send Emails from Buffer</h3>");
 		
 		//send
-		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:100,orderBy:-cdate},true)  ){
+		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:50,orderBy:-cdate},true)  ){
 			print('#${e.id} - ${e.title}');
 			e.finallySend();
-			Sys.sleep(0.25);
+			Sys.sleep(0.1);
 		}
 
 		//delete old emails
@@ -439,15 +445,13 @@ class Cron extends Controller
 		sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
 
 		//emails that cannot be sent
-		for( e in sugoi.db.BufferedMail.manager.search($tries>100,{limit:100,orderBy:-cdate},true)  ){
-			if(e.sender.email==App.config.get("default_email")) continue;
-
-			var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
-			App.quickMail(e.sender.email,t._("Email not sent"),str);
+		for( e in sugoi.db.BufferedMail.manager.search($tries>100,{limit:50,orderBy:-cdate},true)  ){
+			if(e.sender.email != App.config.get("default_email")){
+				var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
+				App.quickMail(e.sender.email,t._("Email not sent"),str);
+			} 
 			e.delete();
 		}	
-
-
 	}
 
 	/**

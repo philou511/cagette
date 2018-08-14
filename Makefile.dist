@@ -77,15 +77,6 @@ templates:
 ctemplates:
 	(cd lang/$(LANG)/tpl; temploc2 -macros macros.mtt -output ../tmp/ *.mtt */*.mtt */*/*.mtt */*/*/*.mtt */*/*/*/*.mtt)
 
-# Bundle binaries (neko version) and send them online at www.cagette.net/cagette.tar
-bundle:
-	@make LANG=fr ctemplates
-	@make LANG=en ctemplates
-	haxe cagette.hxml
-	rm -rf www/file/*.*
-	tar -cvf cagette.tar www config.xml.dist lang data --exclude www/bower_components/bootstrap/node_modules
-	scp cagette.tar root@www.cagette.net:/var/www/vhosts/cagette.net/httpdocs/
-	
 #Compile and run unit tests	
 tests: 
 	@if [ $(PLUGINS) = 1 ]; then \

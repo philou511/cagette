@@ -607,7 +607,7 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name", t._("Name of the new contract"), contract.name + " - copy "));		
+		form.addElement(new StringInput("name", t._("Name of the new contract"), contract.name.substr(0,50)  + " - copy"));		
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		

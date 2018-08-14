@@ -45,7 +45,6 @@ class Product extends Controller
 		if (f.isValid()) {
 			
 			f.toSpod(d);
-			if(d.vat==null) d.vat = 0;
 			app.event(EditProduct(d));
 			d.update();
 			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been updated"));
@@ -85,7 +84,6 @@ class Product extends Controller
 		if (f.isValid()) {
 			f.toSpod(d);
 			d.contract = contract;
-			if(d.vat==null) d.vat = 0;
 			app.event(NewProduct(d));
 			d.insert();
 			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been saved"));

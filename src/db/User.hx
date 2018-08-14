@@ -3,6 +3,7 @@ import sys.db.Object;
 import sys.db.Types;
 import db.UserAmap;
 import Common;
+
 enum UserFlags {
 	HasEmailNotif4h;	//send notifications by mail 4h before
 	HasEmailNotif24h;	//send notifications by mail 24h before
@@ -10,6 +11,9 @@ enum UserFlags {
 	//Tuto;			//enable tutorials
 }
 
+/**
+ * Site-wide right
+ */
 enum RightSite {
 	Admin;
 }
@@ -21,7 +25,7 @@ class User extends Object {
 	public var lang : SString<2>;
 	@:skip public var name(get, set) : String;
 	public var pass : STinyText;
-	public var rights : SFlags<RightSite>; //droits niveau site : moderateur, admin...
+	public var rights : SFlags<RightSite>;
 	
 	public var firstName:SString<32>;
 	public var lastName:SString<32>;
@@ -528,6 +532,8 @@ class User extends Object {
 		//lastname
 		if (this.lastName != null) this.lastName = this.lastName.toUpperCase();
 		if (this.lastName2 != null) this.lastName2 = this.lastName2.toUpperCase();
+
+		if(pass==null) pass="";
 	}
 	
 	public function infos():UserInfo{
