@@ -2,6 +2,7 @@
 
 <div class="col-md-12">
 	
+	<!-- Distributions to validate -->
 	<div class="article text-center" ::cond distribs.length>0:: >
 		<h2>::_("Distributions to validate")::</h2>
 		
@@ -11,7 +12,10 @@
 		<p>
 			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
 				::dDate(d.date)::, ::d._place.name::
-			</a>	
+			</a>
+			::if (isAdmin)::
+			<a href="/distribution/autovalidate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-danger">Admin : Autovalidate</a>
+			::end::
 		</p>	
 		::end::	
 		

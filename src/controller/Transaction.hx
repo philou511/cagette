@@ -112,6 +112,9 @@ class Transaction extends controller.Controller
 		view.form = f;
 	}	
 	
+	/**
+	 * Delete an operation
+	 */
 	public function doDelete(op:db.Operation){	
 		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
 		if (op.getPaymentType() == "lemonway-ec") throw Error("/member/payments/" + op.user.id, t._("Deleting a credit card payment is not allowed"));
