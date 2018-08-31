@@ -15,10 +15,10 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		// r.add(new test.TestUser());
+		r.add(new test.TestUser());
 		r.add(new test.TestOrders());
-		// r.add(new test.TestTools());
-		// r.add(new test.TestDistributions());
+		r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
 		r.add(new test.TestPayments());
 
 		#if plugins
@@ -141,6 +141,8 @@ class TestSuite
 	public static var DISTRIB_PATISSERIES:db.Distribution = null;
 	
 	public static function initDatas(){
+
+		//USERS
 		
 		var f = new db.User();
 		f.firstName = "François";
@@ -168,6 +170,8 @@ class TestSuite
 		
 		initApp(u);
 		
+		//GROUPS
+
 		var a = new db.Amap();
 		a.name = "AMAP du Jardin public";
 		a.contact = f;

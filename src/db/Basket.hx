@@ -37,16 +37,8 @@ class Basket extends Object
 		// var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
-			
-			//NOPE
-			//b = db.Basket.manager.select($user == user && $place == place && $ddate == date, lock);
-
 			var md = MultiDistrib.get(date, place);
 			var orders = md.getUserOrders(user);
-			
-			/*trace('get Basket user ${user.id} , place ${place.id} , date $date');
-			for ( o in orders ) trace("-- order "+o);
-			if( orders.length==0 ) trace("-- no orders !");*/
 			
 			for( o in orders){
 				if(o.basket!=null) {
@@ -54,7 +46,6 @@ class Basket extends Object
 					break;
 				}
 			}
-
 			// CACHE.set(k, b);
 		// }
 		
@@ -79,7 +70,6 @@ class Basket extends Object
 			var md = MultiDistrib.get(date, place);
 			
 			b = new Basket();
-			//b.num = db.Basket.manager.count($place == place && $ddate == date) + 1;
 			b.num = md.getUsers().length + 1;
 			b.insert();
 			
