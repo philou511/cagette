@@ -222,7 +222,6 @@ class DistributionService
 	 *  @param dispatchEvent=true - 
 	 */
 	public static function delete(d:db.Distribution,?dispatchEvent=true) {
-
 		var t = sugoi.i18n.Locale.texts;
 		if ( !canDelete(d) ) {
 			throw new tink.core.Error(t._("Deletion non possible: some orders are saved for this delivery."));

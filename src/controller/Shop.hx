@@ -21,6 +21,11 @@ class Shop extends Controller
 		if(app.user!=null && app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && app.user.phone==null){
 			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
+
+		//event for additionnal blocks on home page
+		var e = Blocks([], "shop");
+		app.event(e);
+		view.blocks = e.getParameters()[0];
 	}
 	
 	/**

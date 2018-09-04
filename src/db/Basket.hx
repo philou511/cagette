@@ -11,6 +11,8 @@ class Basket extends Object
 	public var id : SId;
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
+
+	//TODO : link baskets to a multidistrib ID.
 	
 	//2018-07-21 fbarbut : we cannot use keys like this, because some distribution's place or date may change after orders are made.
 	//@:relation(userId) public var user : db.User;
@@ -71,6 +73,7 @@ class Basket extends Object
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;
+			//TODO : should be more safe to do something like "b.num = MAX(num)+1 FROM Basket"
 			b.insert();
 			
 			//try to find orders and link them to the basket			

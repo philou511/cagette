@@ -103,11 +103,12 @@
 				//init lang in js App
 				_.LANG = "::session.lang::";
 				
-				
 				//tutorials
 				::if tuto!=null::				
 				_.getTuto("::tuto.name::",::tuto.step::);			
 				::end::
+
+				_.antiDoubleClick();
 			  
 			})
 		</script>

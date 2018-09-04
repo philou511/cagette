@@ -24,6 +24,11 @@ import js.html.XMLHttpRequest;
 //json version of a tink.core.Error
 typedef ErrorInfos = {error:{code:Int,message:String,stack:String}}
 
+/**
+ * Manage HTTP request to a REST API.
+ * 
+ * POST requests can only have a single JSON object (payload)
+ */
 class HttpUtil
 {
   	static public function fetch(
@@ -40,7 +45,9 @@ class HttpUtil
       		{
         		if (params.body != null){
           			data = Json.stringify(params.body);
-        		} else {
+        		} else if(method==POST) {
+					data = Json.stringify(params);
+				} else {
 					url += (url.indexOf('?') > -1) ? '&' : '?';
 					url += objToString(params);
 				}
@@ -48,7 +55,7 @@ class HttpUtil
 
       		var http = new XMLHttpRequest();
       		http.open(method, url, true);
-
+			
     		if (contentType != null && contentType.length > 0)
         		http.setRequestHeader("Content-type", contentType);
 

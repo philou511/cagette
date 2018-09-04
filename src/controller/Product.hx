@@ -22,11 +22,6 @@ class Product extends Controller
 		
 		var f = sugoi.form.Form.fromSpod(d);
 		
-		//type (->icon)
-		//f.removeElement( f.getElement("type") );
-		//var pt = new form.ProductTypeRadioGroup("type", "type",Std.string(d.type));
-		//f.addElement( pt );
-		
 		//stock mgmt ?
 		if (!d.contract.hasStockManagement()) f.removeElementByName('stock');	
 		
@@ -49,11 +44,8 @@ class Product extends Controller
 
 		if (f.isValid()) {
 			
-			
-			f.toSpod(d); //update model
-			
+			f.toSpod(d);
 			app.event(EditProduct(d));
-			
 			d.update();
 			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been updated"));
 		}else{

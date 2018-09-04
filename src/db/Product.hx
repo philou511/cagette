@@ -150,7 +150,25 @@ class Product extends Object
 		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
 		return db.Product.manager.select($ref == ref && $id in pids, false);
 	}
-	
+
+	/**
+	 * Fix values that will make mysql 5.7 scream
+	 */
+	function check(){		
+		if(this.vat==null) this.vat=0;
+		if(this.name.length>128) this.name = this.name.substr(0,128);
+	}
+
+	override public function update(){
+		check();
+		super.update();
+	}
+
+	override public function insert(){
+		check();
+		super.insert();
+	}
+
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
 		return [

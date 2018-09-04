@@ -615,4 +615,18 @@ class UserContract extends Object
 		}
 		return t;
 	}
+
+	function check(){
+		if(quantity==null) quantity == 1;
+	}
+
+	override function update(){
+		check();
+		super.update();
+	}
+
+	override function insert(){
+		check();
+		super.insert();
+	}
 }
