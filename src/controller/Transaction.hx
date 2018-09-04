@@ -116,9 +116,15 @@ class Transaction extends controller.Controller
 	 * Delete an operation
 	 */
 	public function doDelete(op:db.Operation){	
-		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
-		if (op.getPaymentType() == "lemonway-ec") throw Error("/member/payments/" + op.user.id, t._("Deleting a credit card payment is not allowed"));
-		
+		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));	
+		//cannot delete a bank card payment op	
+		if (op.getPaymentType() == "lemonway-ec"){
+			throw Error("/member/payments/" + op.user.id, t._("Deleting a credit card payment is not allowed"));
+		} 
+		//only an admin can delete an order op
+		if((op.type == db.Operation.OperationType.VOrder || op.type == db.Operation.OperationType.COrder) && !app.user.isAdmin()){
+			throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));
+		} 
 		if (checkToken()){
 			op.delete();
 			throw Ok("/member/payments/" + op.user.id, t._("Operation deleted"));
