@@ -172,23 +172,26 @@ class OrderService
 	}
 
 	/**
-	*	Get Vendor payment repartition for a basket (needed for marketplace payments)
+	*	Get the vendors dispatch for a distributed payment for a given basket (needed for marketplace payments)
 	**/
-	public static function getVendorPaymentRepartition(basket:db.Basket):Map<Int,Float>{
-		// vendorId -> amount To pay
-		var out = new Map<Int,Float>();
+	public static function getVendorsPaymentDispatch(basket:db.Basket):Map<Int,Float> {
+		// vendorId -> amount to transfer
+		var amountDispatchByVendorId = new Map<Int,Float>();
 
-		for( o in basket.getOrders()){
-
-			var vendorId = o.product.contract.vendor.id;
-			if(out[vendorId]==null){
-				out[vendorId]= o.quantity*o.productPrice;
-			}else{
-				out[vendorId]+= o.quantity*o.productPrice;
-			} 
+		for( order in basket.getOrders())
+		{
+			var vendorId = order.product.contract.vendor.id;
+			if(amountDispatchByVendorId[vendorId] == null)
+			{
+				amountDispatchByVendorId[vendorId] = order.quantity * order.productPrice;
+			}
+			else
+			{
+				amountDispatchByVendorId[vendorId] += order.quantity * order.productPrice;
+			}
 		}
 
-		return out;
+		return amountDispatchByVendorId;
 	}
 
 }

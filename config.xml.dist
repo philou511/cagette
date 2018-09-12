@@ -3,7 +3,7 @@
 	langs="fr;de;en"
 	langnames="Français;Deutsch;English"
 
-	host="app.cagette"
+	host="localhost"
 	name = "Cagette.net"
 	default_email = "noreply@cagette.net"
 	webmaster_email = "mon_email@mon_domaine.fr"
