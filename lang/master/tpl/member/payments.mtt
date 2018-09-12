@@ -68,6 +68,10 @@
 						$$edit(::_("Edit")::,/transaction/edit/::t.id::)
 						$$delete(::_("Del.")::,/transaction/delete/::t.id::?token=::token::)						
 					</div>
+					::elseif isAdmin::
+						<a href="/transaction/delete/::t.id::?token=::token::" $$confirm(::_("Delete ?")::) class="btn btn-danger btn-sm" >
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</a>
 					::end::
 					
 				</td>
@@ -75,7 +79,7 @@
 			
 		::end::
 
-		<tr >
+		<tr>
 			<th colspan="6" class="text-center">
 				<ul class="pagination">
 					::if rb.paginationStartPage != 1::

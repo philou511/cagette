@@ -37,7 +37,7 @@ class Place extends Controller
 		
 			f.toSpod(p); 
 
-			if(currentAddress!=p.getAddress()){
+			if(currentAddress!=p.getAddress() || p.lat==null){
 				try{
 					service.PlaceService.geocode(p);
 				}catch(e:Dynamic){

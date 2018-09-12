@@ -1,5 +1,6 @@
 package db;
 import sys.db.Types;
+import tink.core.Error;
 
 enum OperationType{
 	VOrder; //order on a varying order contract
@@ -268,7 +269,10 @@ class Operation extends sys.db.Object
 			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:date}, true);
 		}
 		
-		var basket = db.Basket.get(user, db.Place.manager.get(placeId,false), Date.fromString(date));
+		var place = db.Place.manager.get(placeId,false);
+		var date = Date.fromString(date);
+		var basket = db.Basket.get(user, place, date);
+		if(basket==null) throw new Error('No basket found for user #'+user.id+', place #'+place.id+', date '+date);
 		
 		for ( t in transactions){
 			switch(t.type){

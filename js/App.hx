@@ -239,6 +239,24 @@ class App {
 		e.preventDefault();
 		return msg; //Gecko + Webkit, Safari, Chrome etc.
 	}
+
+	/**
+	 * Anti Doubleclick with btn elements.
+	 * Can be bypassed by adding a .btn-noAntiDoubleClick class
+	 */
+	public function antiDoubleClick(){
+
+		for( n in js.Browser.document.querySelectorAll(".btn:not(.btn-noAntiDoubleClick)") ){
+			n.addEventListener("click",function(e:js.html.MouseEvent){
+				var x = untyped e.target;
+				x.classList.add("disabled");
+				haxe.Timer.delay(function(){
+					x.classList.remove("disabled");
+				},1000);
+			});
+		}
+		
+	}
 }
 
 

@@ -109,11 +109,12 @@ class Contract extends Controller
 		// tutorials
 		if (app.user.isAmapManager()) {
 			
-			app.user.lock();
+			
 			//actions
 			if (app.params.exists('startTuto') ) {
 				
 				//start a tuto
+				app.user.lock();
 				var t = app.params.get('startTuto'); 
 				app.user.tutoState = {name:t,step:0};
 				app.user.update();
@@ -138,6 +139,7 @@ class Contract extends Controller
 		//should be able to stop tuto in any case
 		if (app.params.exists('stopTuto')) {
 			//stopped tuto from a tuto window
+			app.user.lock();
 			app.user.tutoState = null;
 			app.user.update();	
 			view.stopTuto = true;

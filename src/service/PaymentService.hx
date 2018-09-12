@@ -59,7 +59,8 @@ class PaymentService
 	}
 
 	/**
-	 * Auto validate a distribution this is called by the hourly cron
+	 * Auto validate a distribution.
+	 * This is called by the hourly cron
 	 *  
 	 * @param distrib
 	 */
@@ -76,7 +77,6 @@ class PaymentService
 		distrib.lock();
 		distrib.validated = true;
 		distrib.update();
-
 	}
 
 	/**
@@ -89,7 +89,8 @@ class PaymentService
 		if (basket == null || basket.isValidated()) return false;
 		
 		//mark orders as paid
-		for ( order in basket.getOrders() ){
+		var orders = basket.getOrders();
+		for ( order in orders ){
 
 			order.lock();
 			order.paid = true;
@@ -111,10 +112,11 @@ class PaymentService
 					payment.pending = false;
 					payment.update();
 				}
-			}	
-		}
+			}
 
-		updateUserBalance(basket.user,basket.place.amap);
+			var o = orders.first();
+			updateUserBalance(o.user, o.distribution.place.amap);	
+		}
 
 		App.current.event(ValidateBasket(basket));
 

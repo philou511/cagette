@@ -202,7 +202,7 @@ enum Event {
 
 	Page(uri:String);							//a page is displayed
 	Nav(nav:Array<Link>, name:String, ?id:Int);	//a navigation is displayed, optionnal object id if needed
-	Blocks(blocks:Array<Block>, name:String);	//HTML blocks that can be displayed on a page
+	Blocks(blocks:Array<Block>, name:String, ?context:Dynamic);	//HTML blocks that can be displayed on a page
 	
 	#if sys
 	SendEmail(message : sugoi.mail.Mail);		//an email is sent

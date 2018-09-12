@@ -24,7 +24,7 @@ class Admin extends Controller {
 	@tpl("admin/emails.mtt")
 	function doEmails() {
 		var browse = function(index:Int, limit:Int) {
-			return sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},true);
+			return sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
 		}
 
 		var count = sugoi.db.BufferedMail.manager.count($sdate==null);

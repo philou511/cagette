@@ -152,8 +152,6 @@ class Contract extends Object
 		}else {
 			return db.Contract.manager.search($amap == amap && $endDate > now && $startDate < now,{orderBy:-startDate}, lock);	
 		}
-		
-		
 	}
 	
 	/**

@@ -340,10 +340,8 @@ class Member extends Controller
 				throw Error("/member/edit/"+member.id, t._("Phone number is required in this group."));
 			}
 			
-			
-			//update model
 			form.toSpod(member); 
-			
+
 			//check that the given emails are not already used elsewhere
 			var sim = db.User.getSameEmail(member.email,member.email2);
 			for ( s in sim) {				

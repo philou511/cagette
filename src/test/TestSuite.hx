@@ -27,7 +27,7 @@ class TestSuite
 		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
 		//wholesale-order tests
-		// r.add(new who.test.TestWho());
+		r.add(new who.test.TestWho());
 		r.add(new pro.test.TestMarketplacePayment());
 		#end
 
@@ -127,6 +127,7 @@ class TestSuite
 
 	public static var CHICKEN:db.Product = null; 
 	public static var STRAWBERRIES:db.Product = null; 
+	public static var APPLES:db.Product = null; 
 	public static var AMAP_DU_JARDIN:db.Amap = null;
 	public static var LOCAVORES:db.Amap = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
@@ -148,6 +149,8 @@ class TestSuite
 	public static var DISTRIB_PATISSERIES:db.Distribution = null;
 	
 	public static function initDatas(){
+
+		//USERS
 		
 		var f = new db.User();
 		f.firstName = "François";
@@ -175,6 +178,8 @@ class TestSuite
 		
 		initApp(u);
 		
+		//GROUPS
+
 		var a = new db.Amap();
 		a.name = "AMAP du Jardin public";
 		a.contact = f;
@@ -259,6 +264,8 @@ class TestSuite
 		p.stock = 12;
 		p.insert();
 		
+		APPLES = p;
+
 		var d = new db.Distribution();
 		d.date = new Date(2017, 5, 1, 19, 0, 0);
 		d.end = new Date(2017, 5, 1, 20, 0, 0);
@@ -312,7 +319,7 @@ class TestSuite
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
-		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
 		c.type = db.Contract.TYPE_VARORDER;
@@ -411,6 +418,7 @@ class TestSuite
 		distribution3.insert();
 
 		DISTRIB_CAROTTES = distribution3;
+		//PASTRY
 
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";

@@ -2,7 +2,15 @@
 *.php
 config.xml
 www/plugin/*
-www/js/bundle.js
+Makefile
+tmp/*
+*node_modules*
+*.map
+.haxelib
+html
+.temp
+*.tar
+
 lang/master/tpl/plugin/*
 
 lang/fr/tpl/*
@@ -18,16 +26,12 @@ lang/es/tmp/*.n
 www/lang/*.mo
 
 www/file/*
+
 www/js/app.js
 www/js/libs.js
-tmp/*
-*node_modules*
-*.map
-.haxelib
-html
+
 
 www/css/.sass-cache
 www/css/*.css
-.temp
-js/test/tests.js
-*.tar
+
+

@@ -545,6 +545,23 @@ class Distribution extends Controller
 		view.date = date;
 		view.place = place;
 	}
+
+
+	/**
+	 * Admin can autovalidate a multidistrib
+	 */
+	@admin
+	public function doAutovalidate(date:Date,place:db.Place){
+
+		var md = MultiDistrib.get(date,place);
+		for ( d in md.distributions){
+			if(d.validated) continue;
+			service.PaymentService.validateDistribution(d);
+		}	
+		throw Ok("/contractAdmin",t._("This distribution have been validated"));
+
+
+	}
 	
 	
 	

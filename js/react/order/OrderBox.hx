@@ -192,13 +192,9 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
 		for ( o in state.orders) data.push({id:o.id, productId : o.productId, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
 		
-		var req = {
-			orders:haxe.Json.stringify(data),
-			distributionId : props.distributionId,
-			contractId : props.contractId
-		};
+		var req = { orders:data };
 		
-		var p = HttpUtil.fetch("/api/order/update/"+props.userId, POST, req,JSON);
+		var p = HttpUtil.fetch("/api/order/update/"+props.userId+"?distributionId="+props.distributionId+"&contractId="+props.contractId, POST, req, JSON);
 		p.then(function(data:Dynamic) {
 
 			//WOOT

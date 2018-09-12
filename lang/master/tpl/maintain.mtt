@@ -1,9 +1,17 @@
 ﻿::use 'design.mtt'::
+<div class="text-center" style="height:400px;width:100%;">
+	<h1>
+		<span class="glyphicon glyphicon-cog"></span>
+		::_("Maintenance")::</h1>
+	<p>
+		Le site est actuellement en maintenance.<br/>
+		Revenez dans quelques instants.
+	</p>
+	<p>
+		The website is currently under maintenance.<br/>
+		Please come back later.
+	</p>
 
-<h1>::_("Maintenance")::</h1>
-
-<p>
-	::_("The website is currently under maintenance."):: 	
-</p>
+</div>
 
 ::end::

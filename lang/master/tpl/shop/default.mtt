@@ -101,7 +101,7 @@
 								<div class="price">::formatNum(p.price):: ::currency()::</div>
 								
 								::if p.variablePrice::
-								<div style="font-size:0.8em;font-weight:bold;">									
+								<div style="font-size:0.8em;font-weight:bold;">
 									<div class="vat">::raw pricePerUnit(p.price,p.qt,p.unitType)::</div>
 								</div>
 								::end::
@@ -178,6 +178,16 @@
 		::end::
 		
 	</div>
+
+	<!-- additionnal blocks from plugins -->
+	::if blocks!=null::
+		::foreach b blocks::
+		<div class="block">
+			<h3>::b.title::</h3>
+			<p>::raw b.html::</p>
+		</div>
+		::end::
+	::end::
 
 	
 </div>
