@@ -41,6 +41,10 @@ class Vendor extends Object
 		var now = Date.now();
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
+
+	public function getContracts(){
+		return db.Contract.manager.search($vendor == this ,{orderBy:-startDate}, false);
+	}
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;

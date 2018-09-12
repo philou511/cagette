@@ -116,6 +116,8 @@ class PaymentService
 
 		updateUserBalance(basket.user,basket.place.amap);
 
+		App.current.event(ValidateBasket(basket));
+
 		return true;
 	}
 

@@ -99,7 +99,7 @@ class OrderService
 
 
 	/**
-	 *  Order summary for a member
+	 *  Send Order summary for a member
 	 *  WARNING : its for one distrib, not for a whole basket !
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
@@ -176,6 +176,26 @@ class OrderService
 
 		return vendorDataByVendorId;
 
+	}
+
+	/**
+	*	Get Vendor payment repartition for a basket (needed for marketplace payments)
+	**/
+	public static function getVendorPaymentRepartition(basket:db.Basket):Map<Int,Float>{
+		// vendorId -> amount To pay
+		var out = new Map<Int,Float>();
+
+		for( o in basket.getOrders()){
+
+			var vendorId = o.product.contract.vendor.id;
+			if(out[vendorId]==null){
+				out[vendorId]= o.quantity*o.productPrice;
+			}else{
+				out[vendorId]+= o.quantity*o.productPrice;
+			} 
+		}
+
+		return out;
 	}
 
 }
