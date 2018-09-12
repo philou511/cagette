@@ -85,6 +85,10 @@ class Basket extends Object
 		}		
 		return b;		
 	}
+
+	public function getUser():db.User{
+		return getOrders().first().user;
+	}
 	
 	/**
 	 *  Get basket's orders

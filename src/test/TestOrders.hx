@@ -457,10 +457,8 @@ class TestOrders extends haxe.unit.TestCase
 		}
 		assertEquals(e5, null);
 		assertEquals(db.UserContract.manager.get(order2Id), null);
-<<<<<<< HEAD
 		assertEquals(db.Operation.manager.get(operation1Id), null);
 		assertEquals(db.Operation.manager.get(operation2Id), null);
-
 	}
 
 	function testVendorOrdersByProduct(){
@@ -498,9 +496,7 @@ class TestOrders extends haxe.unit.TestCase
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR2.id).orders[0].total, 5 * test.TestSuite.LAITUE.price);
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR3.id).orders[0].total, 12 * test.TestSuite.CAROTTES.price);
 		
-=======
 		assertEquals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
->>>>>>> master
 	}
 
 }
