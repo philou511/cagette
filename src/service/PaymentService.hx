@@ -77,7 +77,6 @@ class PaymentService
 		distrib.lock();
 		distrib.validated = true;
 		distrib.update();
-
 	}
 
 	/**

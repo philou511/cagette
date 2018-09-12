@@ -106,7 +106,7 @@ class View extends sugoi.BaseView {
 	 * @param	unit
 	 */
 	public function pricePerUnit(price:Float,qt:Float, unit:UnitType){
-		if (qt == null || price==0) return "";
+		if (unit==null || qt == null || qt == 0 || price==null || price==0) return "";
 		var _price = price / qt;
 		var _unit = unit;
 		

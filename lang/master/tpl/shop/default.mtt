@@ -101,7 +101,7 @@
 								<div class="price">::formatNum(p.price):: ::currency()::</div>
 								
 								::if p.variablePrice::
-								<div style="font-size:0.8em;font-weight:bold;">									
+								<div style="font-size:0.8em;font-weight:bold;">
 									<div class="vat">::raw pricePerUnit(p.price,p.qt,p.unitType)::</div>
 								</div>
 								::end::
