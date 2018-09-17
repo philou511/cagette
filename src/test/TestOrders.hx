@@ -1,5 +1,6 @@
 package test;
 import Common;
+import service.OrderService;
 /**
  * Test order making, updating and deleting
  * 
@@ -43,14 +44,14 @@ class TestOrders extends haxe.unit.TestCase
 
 		var d = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
 
-		var o = db.UserContract.make(TestSuite.FRANCOIS, 3, TestSuite.STRAWBERRIES, d.id);
+		var o = OrderService.make(TestSuite.FRANCOIS, 3, TestSuite.STRAWBERRIES, d.id);
 		assertEquals(1, o.basket.num);
 
-		var o = db.UserContract.make(TestSuite.SEB, 1, TestSuite.STRAWBERRIES, d.id);
+		var o = OrderService.make(TestSuite.SEB, 1, TestSuite.STRAWBERRIES, d.id);
 		assertEquals(2, o.basket.num);
 
 		//order again, should keep existing basket number
-		var o = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.APPLES, d.id);
+		var o = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.APPLES, d.id);
 		assertEquals(1, o.basket.num);
 
 		//check bug of 2018-07 : changing the date and place of the distribution leads to lost basket (because basket were indexed on user-date-place)
@@ -64,22 +65,21 @@ class TestOrders extends haxe.unit.TestCase
 		place.insert();
 
 		d.place = place;
-
 		d.update();
 
 		//Seb's basket is still 2
 		var basket = db.Basket.get(TestSuite.SEB,place,d.date);
 		assertEquals(2, basket.num);
 
-		var o = db.UserContract.make(TestSuite.SEB, 1, TestSuite.APPLES, d.id);
+		var o = OrderService.make(TestSuite.SEB, 1, TestSuite.APPLES, d.id);
 		assertEquals(2, o.basket.num);
 
-		var o2 = db.UserContract.edit(o,5,true,null,false);
+		var o2 = OrderService.edit(o,5,true,null,false);
   		assertEquals(2, o2.basket.num);
 
 		//order to a different distrib in same contract should start a new numbering
 		var d2 = service.DistributionService.create(d.contract,new Date(2026,6,6,0,0,0),new Date(2026,6,6,1,0,0),place.id,null,null,null,null,new Date(2026,6,4,0,0,0),new Date(2026,6,5,0,0,0));
-		var o = db.UserContract.make(TestSuite.SEB, 12, TestSuite.APPLES, d2.id);
+		var o = OrderService.make(TestSuite.SEB, 12, TestSuite.APPLES, d2.id);
 		assertEquals(1, o.basket.num);
 
 
@@ -106,7 +106,7 @@ class TestOrders extends haxe.unit.TestCase
 				default:	
 			}
 		});
-		var o = db.UserContract.make(bob, 3, p, TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);
+		var o = OrderService.make(bob, 3, p, TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);
 		assertTrue(p.stock == 5);
 		assertTrue(o.quantity == 3);
 		
@@ -120,12 +120,12 @@ class TestOrders extends haxe.unit.TestCase
 				default:	
 			}
 		});
-		var o = db.UserContract.make(bob, 6, p, TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);
+		var o = OrderService.make(bob, 6, p, TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);
 		assertTrue(p.stock == 0);
 		assertTrue(o.quantity == 8);
 		
 		//bob orders again but cant order anything
-		var o = db.UserContract.make(bob, 3, p, TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);
+		var o = OrderService.make(bob, 3, p, TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);
 		assertTrue(p.stock == 0);
 		assertTrue(o.quantity == 8);
 		
@@ -143,7 +143,7 @@ class TestOrders extends haxe.unit.TestCase
 		assertEquals(o , null);
 		
 		//bob orders 3 strawberries
-		var o = db.UserContract.make(bob, 3, p , TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);		
+		var o = OrderService.make(bob, 3, p , TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.id);		
 		assertEquals(o.product.name, p.name);
 		assertEquals(o.quantity, 3);
 		assertEquals(p.stock , 5);
@@ -157,7 +157,7 @@ class TestOrders extends haxe.unit.TestCase
 				default:	
 			}
 		});
-		var o = db.UserContract.edit(o, 6);
+		var o = OrderService.edit(o, 6);
 		assertTrue(p.stock == 2);
 		assertTrue(o.quantity == 6);
 		
@@ -170,19 +170,29 @@ class TestOrders extends haxe.unit.TestCase
 				default:	
 			}
 		});
-		var o = db.UserContract.edit(o, 9);
+		var o = OrderService.edit(o, 9);
 		assertEquals(0.0 , p.stock);
 		assertEquals(8.0 , o.quantity);
 		
 		//order more, but stock at 0
-		var o = db.UserContract.edit(o, 12);
+		var o = OrderService.edit(o, 12);
 		assertEquals(0.0 , p.stock);
 		assertEquals(8.0 , o.quantity);
 		
 		//order less
-		var o = db.UserContract.edit(o, 6);
+		var o = OrderService.edit(o, 6);
 		assertEquals(2.0 , p.stock);
 		assertEquals(6.0 , o.quantity);
+
+
+		//floatQt : ordering float quantities should throw an exception
+		var err = null;
+		try{
+			var o = OrderService.edit(o, 6.4);
+		}catch(e:tink.core.Error){
+			err = e.message;
+		}
+		assertTrue( err!=null );
 	}
 	
 	/**
@@ -193,20 +203,20 @@ class TestOrders extends haxe.unit.TestCase
 		var chicken = TestSuite.CHICKEN;
 		var distrib = db.Distribution.manager.select($contract == chicken.contract, false);
 		
-		var order = db.UserContract.make(bob, 1, chicken, distrib.id);
+		var order = OrderService.make(bob, 1, chicken, distrib.id);
 		assertEquals(1.0, order.quantity);
 		assertEquals(chicken.id, order.product.id);
 		assertEquals(chicken.price, order.productPrice);
 		
 		//order 2 more, should not aggregate because multiWeight is true
-		var order2 = db.UserContract.make(bob, 2, chicken, distrib.id);
+		var order2 = OrderService.make(bob, 2, chicken, distrib.id);
 		
 		assertTrue(order2.id != order.id); 
 		
 		//we should get 3 different orders
 		var orders = distrib.getOrders();
 		
-		//trace(db.UserContract.prepare(orders));
+		//trace(OrderService.prepare(orders));
 		
 		assertEquals(3, orders.length);
 		for ( o in orders){
@@ -227,13 +237,13 @@ class TestOrders extends haxe.unit.TestCase
 		var fraises = TestSuite.STRAWBERRIES;
 		var distrib = db.Distribution.manager.select($contract == fraises.contract, false);
 		
-		var order = db.UserContract.make(bob, 1, fraises, distrib.id);
+		var order = OrderService.make(bob, 1, fraises, distrib.id);
 		
-		order = db.UserContract.edit(order, 0);
+		order = OrderService.edit(order, 0);
 		
 		assertEquals(0.0, order.quantity);
 		
-		var order2 = db.UserContract.make(bob, 1, fraises, distrib.id);
+		var order2 = OrderService.make(bob, 1, fraises, distrib.id);
 		
 		var bobOrders = [];
 		for ( o in distrib.getOrders()) if (o.user.id == bob.id) bobOrders.push(o);
@@ -254,7 +264,7 @@ class TestOrders extends haxe.unit.TestCase
 		//[Test case] Should throw an error when trying to delete order and that the quantity is not zero
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
 		var amapContract = amapDistrib.contract;
-		var order = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
+		var order = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
 		var orderId = order.id;
 		db.Operation.onOrderConfirm([order]);
 		var e1 = null;
@@ -269,10 +279,10 @@ class TestOrders extends haxe.unit.TestCase
 		
 		//[Test case] Amap contract and quantity zero with payments disabled
 		//Check that order is deleted
-		order = db.UserContract.edit(order, 0);
+		order = OrderService.edit(order, 0);
 		var e2 = null;
 		try {
-			service.OrderService.delete(order);
+			OrderService.delete(order);
 		}
 	    catch(x:tink.core.Error){
 			e2 = x;
@@ -283,15 +293,15 @@ class TestOrders extends haxe.unit.TestCase
 		//[Test case] Amap contract and quantity zero with payments enabled and 2 orders
 		//Check that first order is deleted but operation amount is at 0 
 		//Check that operation is deleted only at the second order deletion
-		var order1 = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
+		var order1 = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
 		db.Operation.onOrderConfirm([order1]);
 		var order1Id = order1.id;
-		order1 = db.UserContract.edit(order1, 0);
+		order1 = OrderService.edit(order1, 0);
 		db.Operation.onOrderConfirm([order1]);
-		var order2 = db.UserContract.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
+		var order2 = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
 		db.Operation.onOrderConfirm([order2]);
 		var order2Id = order2.id;
-		order2 = db.UserContract.edit(order2, 0);
+		order2 = OrderService.edit(order2, 0);
 		db.Operation.onOrderConfirm([order2]);
 		var operation = db.Operation.findCOrderTransactionFor(amapContract, TestSuite.FRANCOIS);
 		var operationId = operation.id;
@@ -327,10 +337,10 @@ class TestOrders extends haxe.unit.TestCase
 		g.flags.unset(HasPayments);
 		g.update();
 		
-		var order = db.UserContract.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
+		var order = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
 		var orderId = order.id;
 		db.Operation.onOrderConfirm([order]);
-		order = db.UserContract.edit(order, 0);
+		order = OrderService.edit(order, 0);
 		db.Operation.onOrderConfirm([order]);
 		var e1 = null;
 		try {
@@ -354,18 +364,18 @@ class TestOrders extends haxe.unit.TestCase
 		g.update();
 		assertTrue(variableContract.amap.hasPayments());
 
-		var order1 = db.UserContract.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
+		var order1 = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
 		db.Operation.onOrderConfirm([order1]);
 		var order1Id = order1.id;
 		
-		var order2 = db.UserContract.make(TestSuite.FRANCOIS, 3, TestSuite.APPLES, variableDistrib.id);
+		var order2 = OrderService.make(TestSuite.FRANCOIS, 3, TestSuite.APPLES, variableDistrib.id);
 		db.Operation.onOrderConfirm([order2]);
 		var order2Id = order2.id;
 		
-		order1 = db.UserContract.edit(order1, 0);
+		order1 = OrderService.edit(order1, 0);
 		db.Operation.onOrderConfirm([order1]);
 		
-		order2 = db.UserContract.edit(order2, 0);
+		order2 = OrderService.edit(order2, 0);
 		db.Operation.onOrderConfirm([order2]);
 
 		assertEquals(2, variableContract.getUserOrders(TestSuite.FRANCOIS,variableDistrib).length); //François has 2 orders
@@ -407,7 +417,7 @@ class TestOrders extends haxe.unit.TestCase
 		//Check that first order is deleted but operation amount is at 0
 		//Check that operation is deleted only at the second order deletion
 		var variableDistrib1 = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
-		var order1 = db.UserContract.make(TestSuite.FRANCOIS, 2, TestSuite.COURGETTES, variableDistrib1.id);
+		var order1 = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.COURGETTES, variableDistrib1.id);
 		assertTrue(order1.basket!=null);
 		// trace("WE GOT A BASKET "+order1.basket.id);
 		// trace("... THEN RE-GET BASKET  user "+TestSuite.FRANCOIS.id+" place "+variableDistrib1.place.id+" date "+variableDistrib1.date);
@@ -418,14 +428,14 @@ class TestOrders extends haxe.unit.TestCase
 		var order1Id = order1.id;
 		
 		var variableDistrib2 = TestSuite.DISTRIB_PATISSERIES;
-		var order2 = db.UserContract.make(TestSuite.FRANCOIS, 3, TestSuite.FLAN, variableDistrib2.id);
+		var order2 = OrderService.make(TestSuite.FRANCOIS, 3, TestSuite.FLAN, variableDistrib2.id);
 		db.Operation.onOrderConfirm([order2]);
 		var order2Id = order2.id;
 		
-		order1 = db.UserContract.edit(order1, 0);
+		order1 = OrderService.edit(order1, 0);
 		db.Operation.onOrderConfirm([order1]);
 
-		order2 = db.UserContract.edit(order2, 0);
+		order2 = OrderService.edit(order2, 0);
 		db.Operation.onOrderConfirm([order2]);
 
 		//check basket

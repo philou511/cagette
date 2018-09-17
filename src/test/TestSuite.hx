@@ -16,15 +16,15 @@ class TestSuite
 		initDB();
 		initDatas();
 		// r.add(new test.TestUser());
-		// r.add(new test.TestOrders());
-		// r.add(new test.TestTools());
-		// r.add(new test.TestDistributions());
-		// r.add(new test.TestPayments());
+		 r.add(new test.TestOrders());
+		 r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
+		r.add(new test.TestPayments());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
-		// r.add(new pro.test.TestProductService());
-		// r.add(new pro.test.TestRemoteCatalog());
+		r.add(new pro.test.TestProductService());
+		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
 		//wholesale-order tests
 		r.add(new who.test.TestWho());
@@ -237,7 +237,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Fraises";
 		p.qt = 1;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 10;
 		p.organic = true;
 		p.contract = c;
@@ -249,7 +249,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Pommes";
 		p.qt = 1;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 6;
 		p.organic = true;
 		p.contract = c;
@@ -305,7 +305,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Courgettes";
 		p.qt = 1;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 3.5;
 		p.organic = true;
 		p.contract = c;
@@ -316,7 +316,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Carottes";
 		p.qt = 1;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 2.8;
 		p.contract = c;
 		p.insert();
@@ -324,7 +324,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Poulet";
 		p.qt = 1.5;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 15;
 		p.multiWeight = true;
 		p.hasFloatQt = true;
@@ -354,7 +354,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Flan";
 		p.qt = 1;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 3.5;
 		p.organic = true;
 		p.contract = c;
@@ -365,7 +365,7 @@ class TestSuite
 		var p = new db.Product();
 		p.name = "Croissant";
 		p.qt = 1;
-		p.unitType = Common.UnitType.Kilogram;
+		p.unitType = Common.Unit.Kilogram;
 		p.price = 2.8;
 		p.contract = c;
 		p.insert();

@@ -50,7 +50,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			var data : {orders:Array<UserOrder>} = tink.Json.parse(data);
 			/*for( o in orders){
 				//convert ints to enums, enums have been lost in json serialization
-				o.productUnit = Type.createEnumIndex(UnitType, cast o.productUnit );	
+				o.productUnit = Type.createEnumIndex(Unit, cast o.productUnit );	
 			}*/
 			setState({orders:data.orders, error:null});
 

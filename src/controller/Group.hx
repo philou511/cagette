@@ -1,6 +1,7 @@
 package controller;
 import sugoi.form.elements.StringInput;
 import sugoi.form.validators.EmailValidator;
+import service.OrderService;
 
 /**
  * Groups
@@ -253,7 +254,7 @@ class Group extends controller.Controller
 				p.contract = contract;
 				p.insert();
 			
-				db.UserContract.make(user, 1, p, null, true);
+				OrderService.make(user, 1, p, null, true);
 				
 				var d = new db.Distribution();
 				d.contract = contract;
@@ -311,8 +312,8 @@ class Group extends controller.Controller
 			d.place = place;
 			d.insert();
 			
-			db.UserContract.make(user, 2, egg, d.id);
-			db.UserContract.make(user, 1, p, d.id);
+			OrderService.make(user, 2, egg, d.id);
+			OrderService.make(user, 1, p, d.id);
 			
 			App.current.session.data.amapId  = g.id;
 			app.session.data.newGroup = true;

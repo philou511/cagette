@@ -12,4 +12,8 @@ class FloatTool{
 		return a==b;
 	}
 
+	public static function isInt(f:Float){
+		return isEqual(f , Math.round(f) );
+	}
+
 }

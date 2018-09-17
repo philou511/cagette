@@ -1,6 +1,7 @@
 package controller;
 import db.Operation.OperationType;
 import Common;
+import service.OrderService;
 using Lambda;
 
 /**
@@ -172,7 +173,7 @@ class Transaction extends controller.Controller
 		//if (checkToken()){
 			
 			//record order
-			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+			var orders = OrderService.confirmSessionOrder(tmpOrder);
 			var ops = db.Operation.onOrderConfirm(orders);
 			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
@@ -212,7 +213,7 @@ class Transaction extends controller.Controller
 		//if (checkToken()){
 			
 			//record order
-			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+			var orders = OrderService.confirmSessionOrder(tmpOrder);
 			var ops = db.Operation.onOrderConfirm(orders);
 			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
@@ -248,7 +249,7 @@ class Transaction extends controller.Controller
 		//if (checkToken()){
 			
 			//record order
-			var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+			var orders = OrderService.confirmSessionOrder(tmpOrder);
 			var ops = db.Operation.onOrderConfirm(orders);
 			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
@@ -283,7 +284,7 @@ class Transaction extends controller.Controller
 		}
 		
 		//record order
-		var orders = db.UserContract.confirmSessionOrder(tmpOrder);
+		var orders = OrderService.confirmSessionOrder(tmpOrder);
 		var ops = db.Operation.onOrderConfirm(orders);
 
 		view.amount = tmpOrder.total;

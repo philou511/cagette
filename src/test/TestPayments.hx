@@ -25,9 +25,9 @@ class TestPayments extends haxe.unit.TestCase
 		var distrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
 		var contract = distrib.contract;
 		var product = TestSuite.COURGETTES;
-		var francoisOrder = db.UserContract.make(TestSuite.FRANCOIS, 1, product, distrib.id);
+		var francoisOrder = service.OrderService.make(TestSuite.FRANCOIS, 1, product, distrib.id);
 		var francoisOrderOperation = db.Operation.onOrderConfirm([francoisOrder]);
-		var sebOrder = db.UserContract.make(TestSuite.SEB, 3, product, distrib.id);
+		var sebOrder = service.OrderService.make(TestSuite.SEB, 3, product, distrib.id);
 		var sebOrderOperation = db.Operation.onOrderConfirm([sebOrder]);
 		//They both pay by check
 		var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,contract.amap, payment.Check.TYPE, product.price, "Payment by check", francoisOrderOperation[0]);

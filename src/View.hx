@@ -105,7 +105,7 @@ class View extends sugoi.BaseView {
 	 * @param	qt
 	 * @param	unit
 	 */
-	public function pricePerUnit(price:Float,qt:Float, unit:UnitType){
+	public function pricePerUnit(price:Float,qt:Float, unit:Unit){
 		if (unit==null || qt == null || qt == 0 || price==null || price==0) return "";
 		var _price = price / qt;
 		var _unit = unit;
@@ -153,7 +153,7 @@ class View extends sugoi.BaseView {
 	/**
 	 * Prints a measuring unit 
 	 */
-	public function unit(u:UnitType,?plural=false){
+	public function unit(u:Unit,?plural=false){
 		t = sugoi.i18n.Locale.texts;
 		return switch(u){
 			case Kilogram: 		t._("Kg.||kilogramms");
@@ -299,11 +299,11 @@ class View extends sugoi.BaseView {
 	 * Smart quantity (tm) : displays human readable quantity
 	 * 0.33 x Lemon 12kg => 2kg Lemon
 	 */ 
-	public function smartQt(orderQt:Float, productQt:Float, unit:UnitType):String{
+	public function smartQt(orderQt:Float, productQt:Float, unit:Unit):String{
 		if (orderQt == null) orderQt = 1;
 		if (productQt == null) productQt = 1;
-		if (unit == null) unit = UnitType.Piece;
-		if (unit == UnitType.Piece && productQt == 1 ){
+		if (unit == null) unit = Unit.Piece;
+		if (unit == Unit.Piece && productQt == 1 ){
 			return this.formatNum(orderQt);
 		}else{
 			return this.formatNum(orderQt * productQt) + "&nbsp;" + this.unit(unit,orderQt*productQt>1);	

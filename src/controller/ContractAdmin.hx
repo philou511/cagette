@@ -8,6 +8,7 @@ import Common;
 import datetime.DateTime;
 using tools.ObjectListTool;
 using tools.DateTool;
+import service.OrderService;
 
 class ContractAdmin extends Controller
 {
@@ -286,7 +287,7 @@ class ContractAdmin extends Controller
 			
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
-			var orders = db.UserContract.prepare(Lambda.list(orders));
+			var orders = service.OrderService.prepare(Lambda.list(orders));
 			
 			view.orders = orders;
 			view.from = from;
@@ -362,7 +363,7 @@ class ContractAdmin extends Controller
 			
 			//merge 2 lists
 			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
-			var orders = db.UserContract.prepare(Lambda.list(orders));
+			var orders = service.OrderService.prepare(Lambda.list(orders));
 			
 			view.orders = orders;
 			view.date = date;
@@ -396,11 +397,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:OrderService.getOrdersByProduct( {distribution:d} )});	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
+				for ( x in OrderService.getOrdersByProduct( {distribution:d} )){
 					
 					//find record in existing orders
 					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
@@ -444,11 +445,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:db.UserContract.getOrdersByProduct( {distribution:d} )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:OrderService.getOrdersByProduct( {distribution:d} )});	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in db.UserContract.getOrdersByProduct( {distribution:d} )){
+				for ( x in OrderService.getOrdersByProduct( {distribution:d} )){
 					
 					//find record in existing orders
 					var f : OrderByProduct = Lambda.find(o.orders, function(a:OrderByProduct) return a.pid == x.pid);
@@ -537,7 +538,12 @@ class ContractAdmin extends Controller
 			} catch(e:tink.core.Error){
 				throw Error("/contractAdmin/orders/" + contract.id, e.message);
 			}
-			throw Ok("/contractAdmin/orders/" + contract.id, t._("The order has been deleted."));
+			if(args.d!=null){
+				throw Ok("/contractAdmin/orders/" + contract.id + "?d="+args.d.id, t._("The order has been deleted."));
+			}else{
+				throw Ok("/contractAdmin/orders/" + contract.id, t._("The order has been deleted."));
+			}
+			
 		}
 
 		var d = null;
@@ -704,7 +710,7 @@ class ContractAdmin extends Controller
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw Error("/contractAdmin/orders/"+contract.id,t._("There is no delivery in this contract, please create at least one distribution."));
 
-		var orders = db.UserContract.getOrdersByProduct({distribution:d},app.params.exists("csv"));
+		var orders = OrderService.getOrdersByProduct({distribution:d},app.params.exists("csv"));
 		view.orders = orders;
 		view.distribution = d; 
 		view.c = contract;
@@ -728,7 +734,7 @@ class ContractAdmin extends Controller
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw t._("No delivery in this contract");
 		
-		var orders = db.UserContract.getOrdersByProduct({distribution:d},false);
+		var orders = OrderService.getOrdersByProduct({distribution:d},false);
 		view.orders = orders;
 	}
 	
@@ -993,11 +999,11 @@ class ContractAdmin extends Controller
 						//record order
 						if (uo.order != null) {
 							//existing record
-							var o = db.UserContract.edit(uo.order, q, (app.params.get("paid" + pid) == "1"), user2, invert);
+							var o = OrderService.edit(uo.order, q, (app.params.get("paid" + pid) == "1"), user2, invert);
 							if (o != null) orders.push(o);
 						}else {
 							//new record
-							var o =  db.UserContract.make(user, q, uo.product, distrib == null ? null : distrib.id, (app.params.get("paid" + pid) == "1"), user2, invert);
+							var o =  OrderService.make(user, q, uo.product, distrib == null ? null : distrib.id, (app.params.get("paid" + pid) == "1"), user2, invert);
 							if (o != null) orders.push(o);
 						}
 					}

@@ -22,16 +22,23 @@ class Product extends Object
 	public var desc : SNull<SText>;
 	public var stock : SNull<SFloat>; //if qantity can be float, stock should be float
 	
-	public var unitType : SNull<SEnum<UnitType>>; // Kg / L / g / units
+	public var unitType : SNull<SEnum<Unit>>; // Kg / L / g / units
 	public var qt : SNull<SFloat>;
+	
 	public var organic : SBool;
 	public var variablePrice : Bool; 	//price can vary depending on weighting of the product
 	public var multiWeight : Bool;		//product cannot be cumulated in one order record
+
+	//https://docs.google.com/document/d/1IqHN8THT6zbKrLdHDClKZLWgKWeL0xw6cYOiFofw04I/edit
+	@hideInForms public var wholesale : Bool;	//this product is a wholesale product (crate,bag,pallet)
+	@hideInForms public var retail : Bool;		//this products is a fraction of a wholesale product
+	@hideInForms public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
+	public var hasFloatQt:SBool; //this product can be ordered in "float" quantity
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
 	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy
 	
-	public var hasFloatQt:SBool; //this product can be ordered in "float" quantity
+	
 	public var active : SBool; 	//if false, product disabled, not visible on front office
 	
 	
@@ -44,8 +51,11 @@ class Product extends Object
 		active = true;
 		variablePrice = false;
 		multiWeight = false;
+		wholesale = false;
+		retail = false;
+		bulk = false;
 		vat = 5.5;
-		unitType = UnitType.Piece;
+		unitType = Unit.Piece;
 		qt = 1;
 		
 	}
@@ -113,6 +123,7 @@ class Product extends Object
 			unitType:unitType,
 			organic:organic,
 			variablePrice:variablePrice,
+			wholesale:wholesale,
 			active: active
 		}
 		

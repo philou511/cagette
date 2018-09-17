@@ -46,9 +46,10 @@ typedef ProductInfo = {
 	stock: Null<Float>,			//available stock
 	hasFloatQt : Bool,
 	qt:Null<Float>,
-	unitType:Null<UnitType>,
+	unitType:Null<Unit>,
 	organic:Bool,
 	variablePrice:Bool,
+	wholesale:Bool,
 	active:Bool
 	/*#if (js && !test)
 	?element:js.JQuery,
@@ -61,7 +62,7 @@ typedef ProductWithQuantity = {
 	quantity: Int
 }
 
-enum UnitType{
+enum Unit{
 	Piece;
 	Kilogram;
 	Gram;
@@ -118,9 +119,11 @@ typedef UserOrder = {
 	?productPrice:Float,
 	?productImage:String,
 	?productQt:Float,
-	?productUnit:UnitType,
+	?productUnit:Unit,
+
 	?productHasFloatQt:Bool,
 	?productHasVariablePrice:Bool,
+
 	//new way
 	?product:ProductInfo,
 
