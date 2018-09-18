@@ -9,6 +9,10 @@ import tink.core.Error;
 class OrderService
 {
 
+	static function canHaveFloatQt(product:db.Product):Bool{
+		return product.hasFloatQt || product.wholesale || product.variablePrice;
+	}
+
 	/**
 	 * Make a product Order
 	 * 
@@ -20,9 +24,10 @@ class OrderService
 		var t = sugoi.i18n.Locale.texts;
 
 		if(product.contract.type==db.Contract.TYPE_VARORDER && distribId==null) throw "You have to provide a distribId";
+		if(quantity==null) throw "Quantity is null";
 
 		//quantity
-		if (!product.hasFloatQt && !product.wholesale){
+		if ( !canHaveFloatQt(product) ){
 			if( !tools.FloatTool.isInt(quantity)  ) {
 				throw new tink.core.Error(t._("Error : product \"::product::\" quantity should be integer",{product:product.name}));
 			}
@@ -136,7 +141,7 @@ class OrderService
 		
 		//quantity
 		if (newquantity == null) newquantity = 0;
-		if (!order.product.hasFloatQt && !order.product.wholesale){
+		if ( !canHaveFloatQt(order.product) ){
 			if( !tools.FloatTool.isInt(newquantity)  ) {
 				throw new tink.core.Error(t._("Error : product \"::product::\" quantity should be integer",{product:order.product.name}));
 			}

@@ -987,14 +987,15 @@ class ContractAdmin extends Controller
 							invert = app.params.get("invert" + pid) == "1";
 						}
 						
-						//quantity
+						//filter quantity
 						var q = 0.0;
 						if (uo.product.hasFloatQt ) {
 							param = StringTools.replace(param, ",", ".");
 							q = Std.parseFloat(param);
 						}else {
 							q = Std.parseInt(param);
-						}						
+						}
+						if(q==null)	continue; //ignore bad qt input
 						
 						//record order
 						if (uo.order != null) {
