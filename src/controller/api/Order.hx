@@ -1,6 +1,7 @@
 package controller.api;
 import haxe.Json;
 import tink.core.Error;
+import service.OrderService;
 
 /**
  * Public order API
@@ -41,7 +42,7 @@ class Order extends Controller
 		}else {
 			orders = db.UserContract.manager.search($user == user && ($productId in pids), true);
 		}
-		var orders = db.UserContract.prepare(orders);
+		var orders = OrderService.prepare(orders);
 		
 		Sys.print(tink.Json.stringify({success:true,orders:orders}));
 	}
@@ -115,19 +116,14 @@ class Order extends Controller
 				invert = o.invertSharedOrder;
 			}
 			
-			//quantity				
-			if (!product.hasFloatQt && o.qt!=Math.abs(o.qt) ) {
-				throw new Error(t._("Error : product \"::product::\" quantities should be integers",{product:product.name}));
-			}
-			
 			//record order
 			if (uo != null) {
 				//existing record
-				var o = db.UserContract.edit(uo, o.qt, o.paid , user2, invert);
+				var o = OrderService.edit(uo, o.qt, o.paid , user2, invert);
 				if (o != null) orders.push(o);
 			}else {
 				//new record
-				var o =  db.UserContract.make(user, o.qt , product, d == null ? null : d.id, o.paid , user2, invert);
+				var o =  OrderService.make(user, o.qt , product, d == null ? null : d.id, o.paid , user2, invert);
 				if (o != null) orders.push(o);
 			}
 		}

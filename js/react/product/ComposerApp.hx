@@ -67,7 +67,7 @@ class ComposerApp extends ReactComponentOfStateAndRefs<ComposerAppState, Compose
 	
 	function getUnits(){
 		var out = [];
-		for ( c in UnitType.createAll()){
+		for ( c in Unit.createAll()){
 			
 			out.push(jsx( '<option value="{c.getIndex()}"> {Std.string(c)} </option>'));
 			

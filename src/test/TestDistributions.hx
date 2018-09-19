@@ -192,7 +192,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var ordersDistrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
 		var ordersDistribId = ordersDistrib.id;
 		var chicken = TestSuite.CHICKEN;
-		var order = db.UserContract.make(TestSuite.FRANCOIS, 1, chicken, ordersDistrib.id);
+		var order = service.OrderService.make(TestSuite.FRANCOIS, 1, chicken, ordersDistrib.id);
 
 		var e = null;
 		try{
@@ -222,7 +222,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
 		var amapDistribId = amapDistrib.id;
 		var panier = TestSuite.PANIER_AMAP_LEGUMES;
-		var amapOrder = db.UserContract.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
+		var amapOrder = service.OrderService.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
 
 		var e = null;
 		try{
@@ -245,9 +245,9 @@ class TestDistributions extends haxe.unit.TestCase
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
 		var contract = amapDistrib.contract;
 		var panier = TestSuite.PANIER_AMAP_LEGUMES;
-		var francoisOrder = db.UserContract.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
+		var francoisOrder = service.OrderService.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
 		db.Operation.onOrderConfirm([francoisOrder]);
-		var sebOrder = db.UserContract.make(TestSuite.SEB, 3, panier, amapDistrib.id);
+		var sebOrder = service.OrderService.make(TestSuite.SEB, 3, panier, amapDistrib.id);
 		db.Operation.onOrderConfirm([sebOrder]);
 
 		//Check initial operation names and amounts

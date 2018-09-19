@@ -19,7 +19,7 @@ class Product extends react.ReactComponentOfProps<{productInfo:ProductInfo}>
 		var p :ProductInfo = props.productInfo;
 
 		//convert int to enum
-		//p.unitType = Type.createEnumIndex(Common.UnitType,cast p.unitType);
+		//p.unitType = Type.createEnumIndex(Common.Unit,cast p.unit);
 
 		//var unit = ;
 		var imgStyle = {width:'64px',height:'64px','backgroundImage':'url("${p.image}")'};

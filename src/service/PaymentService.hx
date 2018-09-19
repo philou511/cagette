@@ -67,15 +67,24 @@ class PaymentService
 	public static function validateDistribution(distrib:db.Distribution) {
 
 		for ( user in distrib.getUsers()){
-				
 			var basket = db.Basket.get(user, distrib.place, distrib.date);
 			validateBasket(basket);
-
 		}
-			
 		//finally validate distrib
 		distrib.lock();
 		distrib.validated = true;
+		distrib.update();
+	}
+
+	public static function unvalidateDistribution(distrib:db.Distribution) {
+
+		for ( user in distrib.getUsers()){
+			var basket = db.Basket.get(user, distrib.place, distrib.date);
+			unvalidateBasket(basket);
+		}
+		//finally validate distrib
+		distrib.lock();
+		distrib.validated = false;
 		distrib.update();
 	}
 
@@ -119,6 +128,43 @@ class PaymentService
 		}
 
 		App.current.event(ValidateBasket(basket));
+
+		return true;
+	}
+
+	public static function unvalidateBasket(basket:db.Basket) {
+
+		if (basket == null || !basket.isValidated()) return false;
+		
+		//mark orders as paid
+		var orders = basket.getOrders();
+		for ( order in orders ){
+
+			order.lock();
+			order.paid = false;
+			order.update();				
+		}
+
+		//validate order operation and payments
+		var operation = basket.getOrderOperation(false);
+		if (operation != null){
+
+			operation.lock();
+			operation.pending = true;
+			operation.update();
+			
+			for ( payment in basket.getPayments()){
+
+				if (!payment.pending){
+					payment.lock();
+					payment.pending = true;
+					payment.update();
+				}
+			}
+
+			var o = orders.first();
+			updateUserBalance(o.user, o.distribution.place.amap);	
+		}
 
 		return true;
 	}

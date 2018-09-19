@@ -61,7 +61,7 @@
 				::raw m.weightOrVolume::
 			</td>
 			<td>
-				::raw m.smartQt::
+				::formatNum(m.quantity)::
 			</td>
 			<td>
 				::m.pname::

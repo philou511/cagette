@@ -13,7 +13,7 @@ class Formatting
 	 * 
 	 * 0.33 x Lemon 12kg => 2kg Lemon
 	 */ 
-	public static function smartQt(orderQt:Float,productQt:Float,unit:UnitType):String{
+	public static function smartQt(orderQt:Float,productQt:Float,unit:Unit):String{
 		return formatNum(orderQt * productQt) + "&nbsp;" + Formatting.unit(unit);
 	}
 	
@@ -50,7 +50,7 @@ class Formatting
 	 *  Display a unit
 	 *  @param u - 
 	 */
-	public static function unit(u:UnitType):String{
+	public static function unit(u:Unit):String{
 		/*t = sugoi.i18n.Locale.texts;
 		if(u==null) return t._("piece||unit of a product)");
 		return switch(u){

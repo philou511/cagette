@@ -50,7 +50,17 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			<div className="row">
 			
 				<div className="col-md-8">
-					<AsyncTypeahead placeholder="Saisissez un nom de produit" options=$options onSearch=$onSearch minLength={3} style={{width:"350px"}} onChange=$onChange onInputChange=$onInputChange selected={["${props.productName}"]} />				
+					<AsyncTypeahead 
+						placeholder="Saisissez un nom de produit" 
+						options=$options 
+						onSearch=$onSearch 
+						minLength={3} 
+						style={{width:"350px"}} 
+						onChange=$onChange 
+						onInputChange=$onInputChange 
+						selected={["${state.productName}"]} 
+						isLoading=$true
+					/>				
 					<div className = "txpProduct" > ${state.breadcrumb}</div>				
 					
 					<input className="txpProduct" type="hidden" name="$txpProductInputName" value="${state.txpProductId}" />
@@ -78,7 +88,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	 * @param	input
 	 */
 	function onInputChange(input:String){
-		//trace('on input change $input');
+		trace('on input change $input');
 		this.setState({productName:input});
 	}
 	
@@ -89,10 +99,11 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		
 		if (selection == null || selection.length == 0) return;
 		
-		//trace("on change "+selection[0]);
+		trace("on change "+selection[0]);
 		
 		var product = Lambda.find(DICO.products, function(x) return x.id == selection[0].id);
 		setTaxo(product);
+		this.setState({productName:selection[0].label});
 	}
 	
 	/**

@@ -29,7 +29,7 @@
 					::raw m.weightOrVolume::
 				</td>
 				<td>
-					::raw m.quantity::
+					::formatNum(m.quantity)::
 				</td>
 				<td>
 					::m.pname::

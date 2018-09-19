@@ -226,7 +226,7 @@ class Member extends Controller
 		//commandes fixes
 		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == app.user.amap && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
 		var orders = member.getOrdersFromContracts(contracts);
-		row.constOrders = db.UserContract.prepare(orders);
+		row.constOrders = service.OrderService.prepare(orders);
 		
 		//commandes variables groupées par date de distrib
 		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == app.user.amap && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
@@ -250,7 +250,7 @@ class Member extends Controller
 		}
 		for ( k in distribs.keys()){
 			var d = distribs.get(k);
-			var d2 = db.UserContract.prepare(d);
+			var d2 = service.OrderService.prepare(d);
 			row.varOrders.set(k,d2);
 		}
 		

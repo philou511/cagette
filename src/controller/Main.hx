@@ -110,7 +110,7 @@ class Main extends Controller {
 			var orders = [];
 			if(app.user!=null) orders = d.contract.getUserOrders(app.user,d);
 			if (orders.length > 0){
-				o.myOrders.push({distrib:d,orders:db.UserContract.prepare(orders)});
+				o.myOrders.push({distrib:d,orders:service.OrderService.prepare(orders)});
 			}else{
 				//no "order block" if no shop mode	
 				if (!group.hasShopMode() ) {		

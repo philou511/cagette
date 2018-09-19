@@ -8,6 +8,7 @@ import db.Contract;
 import Common;
 import plugin.Tutorial;
 using Std;
+import service.OrderService;
 
 class Contract extends Controller
 {
@@ -64,7 +65,7 @@ class Contract extends Controller
 		for ( c in contracts){
 			var orders = app.user.getOrdersFromContracts([c]);
 			if (orders.length == 0) continue;
-			constOrders.push({contract:c, orders:db.UserContract.prepare(orders) });
+			constOrders.push({contract:c, orders:service.OrderService.prepare(orders) });
 		}
 				
 		//commandes variables groupées par date de distrib
@@ -92,7 +93,7 @@ class Contract extends Controller
 		for ( k in varOrders.keys()) {
 
 			var d = new Date(k.split("-")[0].parseInt(), k.split("-")[1].parseInt() - 1, k.split("-")[2].parseInt(), 0, 0, 0);
-			var orders = db.UserContract.prepare( Lambda.list(varOrders[k]) );
+			var orders = service.OrderService.prepare( Lambda.list(varOrders[k]) );
 			
 			varOrders2.push({date:d,orders:orders});
 		}
@@ -412,12 +413,9 @@ class Contract extends Controller
 				
 				
 				if (uo.order != null) {	
-					//trace("updating order q="+q);
-					db.UserContract.edit(uo.order, q);
-					
+					OrderService.edit(uo.order, q);
 				}else {
-					//trace("new order q="+q);
-					db.UserContract.make(app.user, q, uo.product, did);
+					OrderService.make(app.user, q, uo.product, did);
 				}
 				
 			}
@@ -574,7 +572,7 @@ class Contract extends Controller
 		var cids = Lambda.map(app.user.amap.getActiveContracts(true), function(c) return c.id);
 		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <=d2 , false);
 		var orders = db.UserContract.manager.search($userId==app.user.id && $distributionId in Lambda.map(distribs,function(d)return d.id)  );
-		view.orders = db.UserContract.prepare(orders);
+		view.orders = service.OrderService.prepare(orders);
 		view.date = date;
 		
 		//form check
@@ -603,7 +601,7 @@ class Contract extends Controller
 
 					if ( order.distribution.canOrderNow() ) {
 						//met a jour la commande
-						var o = db.UserContract.edit(order, quantity);
+						var o = OrderService.edit(order, quantity);
 						if(o!=null) orders_out.push( o );
 					}					
 				}

@@ -17,7 +17,7 @@ class Distribution extends Controller
 		view.distrib = d;
 		view.place = d.place;
 		view.contract = d.contract;
-		view.orders = UserContract.prepare(d.getOrders());
+		view.orders = service.OrderService.prepare(d.getOrders());
 		
 	}
 
@@ -41,7 +41,7 @@ class Distribution extends Controller
 			products.push(o.product);
 		}
 
-		for ( o in db.UserContract.prepare(uo)) {
+		for ( o in service.OrderService.prepare(uo)) {
 
 			var user = data[o.userId];
 			if (user == null) user = new Map();
@@ -167,7 +167,7 @@ class Distribution extends Controller
 				orders = orders.concat(Lambda.array(orders2));
 			}
 
-			var orders3 = db.UserContract.prepare(Lambda.list(orders));
+			var orders3 = service.OrderService.prepare(Lambda.list(orders));
 			view.orders = orders3;
 			
 			if (type == "csv") {
@@ -559,8 +559,17 @@ class Distribution extends Controller
 			service.PaymentService.validateDistribution(d);
 		}	
 		throw Ok("/contractAdmin",t._("This distribution have been validated"));
+	}
 
+	@admin
+	public function doUnvalidate(date:Date,place:db.Place){
 
+		var md = MultiDistrib.get(date,place);
+		for ( d in md.distributions){
+			if(!d.validated) continue;
+			service.PaymentService.unvalidateDistribution(d);
+		}	
+		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
 	}
 	
 	

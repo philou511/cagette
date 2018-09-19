@@ -1,6 +1,7 @@
 package controller;
 import Common;
 import tools.ArrayTool;
+import service.OrderService;
 
 class Shop extends Controller
 {
@@ -240,7 +241,7 @@ class Shop extends Controller
 			throw Redirect("/transaction/pay/");
 		}else{
 			//no payments, confirm direclty
-			db.UserContract.confirmSessionOrder(order);			
+			OrderService.confirmSessionOrder(order);			
 			throw Ok("/contract", t._("Your order has been confirmed") );	
 		}
 

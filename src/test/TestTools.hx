@@ -28,6 +28,21 @@ class TestTools extends haxe.unit.TestCase
 		assertEquals("2018-01-01 00:30:00",r.to.toString());
 	}
 
+
+	function testFloatTool(){
+
+		assertEquals( true , tools.FloatTool.isEqual(10.0,10.000) );
+		assertEquals( true , tools.FloatTool.isEqual(10.0,10) );
+		assertEquals( true , tools.FloatTool.isEqual(10,10) );
+		assertEquals( true , tools.FloatTool.isEqual(10.00000001,10) );
+		assertEquals( false , tools.FloatTool.isEqual(10.02,10) );
+
+		assertEquals( false , tools.FloatTool.isInt(10.08) );
+		assertEquals( true , tools.FloatTool.isInt(10.00) );
+
+
+	}
+
 /*
 	@admin
 	public function doTests() {

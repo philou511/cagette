@@ -23,7 +23,7 @@ class Validate extends controller.Controller
 		}
 		
 		var b = db.Basket.get(user, place, date);			
-		view.orders = db.UserContract.prepare(b.getOrders());
+		view.orders = service.OrderService.prepare(b.getOrders());
 		view.place = place;
 		view.date = date;
 		view.basket = b;

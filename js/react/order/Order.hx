@@ -24,7 +24,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		if (state.order.productUnit == null) state.order.productUnit = Piece;
 		if (state.order.productQt == null) state.order.productQt = 1;
 		
-		state.inputValue = if (state.order.productHasFloatQt || state.order.productHasVariablePrice){
+		state.inputValue = if ( isSmartQtInput(state.order) ){
 			Std.string(round(state.order.quantity * state.order.productQt));
 		}else{
 			Std.string(state.order.quantity);
@@ -50,7 +50,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		/*var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
 			jsx('<div className="col-md-3">${o.productName}</div>');*/
 		
-		var input =  if (o.productHasFloatQt || o.productHasVariablePrice){
+		var input =  if (isSmartQtInput(o)){
 			jsx('<div className="input-group">
 					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
 					<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
@@ -122,13 +122,17 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	
 	function makeInfos(){
 		var o = state.order;
-		return if (o.productHasFloatQt || o.productHasVariablePrice){
+		return if ( isSmartQtInput(o) ){
 			jsx('<div className="infos">
 				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}				
 			</div>');
 		}else{
 			null;
 		}
+	}
+
+	function isSmartQtInput(o:UserOrder):Bool{
+		return o.product.hasFloatQt || o.product.variablePrice || o.product.wholesale;
 	}
 	
 	function onChange(e:js.html.Event){
@@ -137,8 +141,8 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		state.inputValue = value;
 		var v = Formatting.parseFloat(value);
 		var o = state.order;
-		if ( o.productHasFloatQt || o.productHasVariablePrice){
-			//if has float qt or variablePrice, the value is a smart qt, so we need re-compute the quantity
+		if ( isSmartQtInput(o) ){
+			//the value is a smart qt, so we need re-compute the quantity
 			o.quantity = v / o.productQt;
 		}else{
 			o.quantity = v;	
