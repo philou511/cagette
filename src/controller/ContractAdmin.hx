@@ -60,12 +60,19 @@ class ContractAdmin extends Controller
 
 		//Multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
-			var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > Date.now() && $type == db.Contract.TYPE_VARORDER,false).getIds();
-			//var oneMonth = tools.DateTool.deltaDays(now, 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
-			var ds = db.Distribution.manager.search( !$validated /*&& ($date > oneMonth)*/ && ($date < now) && ($contractId in cids), {orderBy:date}, false);
-			view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );
+			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
+			//var inTwoMonth = tools.DateTool.deltaDays(now,60);
+			var multidistribs = [];
+			for( p in app.user.amap.getPlaces()){
+				multidistribs = multidistribs.concat(MultiDistrib.getFromTimeRange(twoMonthAgo,now,p));
+			}
+			view.multidistribs = multidistribs; 
+
+			/*var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > oneMonthAgo && $type == db.Contract.TYPE_VARORDER,false).getIds();			
+			//var ds = db.Distribution.manager.search( !$validated && ($date < now) && ($contractId in cids), {orderBy:date}, false);
+			// view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );*/
 		}else{
-			view.distribs = [];
+			view.multidistribs = [];
 		}
 		
 		

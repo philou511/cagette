@@ -3,18 +3,25 @@
 <div class="col-md-12">
 	
 	<!-- Distributions to validate -->
-	<div class="article text-center" ::cond distribs.length>0:: >
+	<div class="article text-center" ::cond multidistribs.length>0:: >
 		<h2>::_("Distributions to validate")::</h2>
 		
 		<p>::_("You need to validate these distributions which took place recently")::</p>
 		
-		::foreach d distribs::	
+		::foreach m multidistribs::	
 		<p>
-			<a href="/distribution/validate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-primary"> 
-				::dDate(d.date)::, ::d._place.name::
-			</a>
-			::if (isAdmin)::
-			<a href="/distribution/autovalidate/::d.date.toString().substr(0,10)::/::d._place.id::" class="btn btn-danger">Admin : Autovalidate</a>
+			::if(!m.isConfirmed())::
+				<a href="/distribution/validate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-primary"> 
+					::dDate(m.getDate())::, ::m.getPlace().name::
+				</a>
+				::if (isAdmin)::
+				<a href="/distribution/autovalidate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-danger">Admin : Autovalidate</a>
+				::end::
+			::elseif(isAdmin)::
+				<a class="btn btn-default disabled"> 
+					<span class="glyphicon glyphicon-ok"></span> ::dDate(m.getDate())::, ::m.getPlace().name::
+				</a>	
+				<a href="/distribution/unvalidate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-danger">Admin : Unvalidate</a>
 			::end::
 		</p>	
 		::end::	

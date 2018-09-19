@@ -223,7 +223,7 @@ class View extends sugoi.BaseView {
 		if (date == null) return t._("no date set");
 		if (DAYS == null) initDate();
 		
-		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
+		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
 	}
 	
 

@@ -15,7 +15,7 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		// r.add(new test.TestUser());
+		r.add(new test.TestUser());
 		r.add(new test.TestOrders());
 		r.add(new test.TestTools());
 		r.add(new test.TestDistributions());

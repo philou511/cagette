@@ -559,8 +559,17 @@ class Distribution extends Controller
 			service.PaymentService.validateDistribution(d);
 		}	
 		throw Ok("/contractAdmin",t._("This distribution have been validated"));
+	}
 
+	@admin
+	public function doUnvalidate(date:Date,place:db.Place){
 
+		var md = MultiDistrib.get(date,place);
+		for ( d in md.distributions){
+			if(!d.validated) continue;
+			service.PaymentService.unvalidateDistribution(d);
+		}	
+		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
 	}
 	
 	
