@@ -1,5 +1,6 @@
 package controller;
 import sugoi.form.Form;
+import sugoi.form.elements.StringSelect;
 
 class Account extends Controller
 {
@@ -25,6 +26,18 @@ class Account extends Controller
 		form.removeElement(form.getElement("cdate"));
 		form.removeElement(form.getElement("ldate"));
 		form.removeElement( form.getElement("apiKey") );
+		form.removeElement(form.getElement("nationality"));
+		var nationalityOptions = [
+			{label: t._("France"), value: "FR" },
+			{label: t._("Belgique"), value: "BE"}
+		];
+		form.addElement(new StringSelect("nationality", t._("Nationality"), nationalityOptions, app.user.nationality), 15);
+		form.removeElement(form.getElement("countryOfResidence"));
+		var countryOptions = [
+			{label: t._("France"), value: "FR" },
+			{label: t._("Belgique"), value: "BE"}
+		];
+		form.addElement(new StringSelect("countryOfResidence", t._("Country of residence"), countryOptions, app.user.countryOfResidence), 16);
 		
 		if (form.isValid()) {
 			
@@ -51,6 +64,11 @@ class Account extends Controller
 			}
 			
 			if (!admin) { app.user.rights.unset(Admin); }
+
+			//Check that the user is at least 18 years old
+			if (app.user.birthday.getTime() > DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()) {
+				app.user.birthday = null;
+			 }
 			
 			app.user.update();
 			throw Ok('/contract', t._("Your account has been updated"));
