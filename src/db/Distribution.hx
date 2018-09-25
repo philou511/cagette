@@ -112,7 +112,7 @@ class Distribution extends Object
 		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
 			var pids = db.Product.manager.search($contract == this.contract, false);
 			var pids = Lambda.map(pids, function(x) return x.id);		
-			return UserContract.manager.search( (($productId in pids) && $user==user), false); 
+			return UserContract.manager.search( (($productId in pids) && ($user==user || $user2==user) ), false); 
 		}else{
 			return UserContract.manager.search($distribution == this  && $user==user, false); 
 		}

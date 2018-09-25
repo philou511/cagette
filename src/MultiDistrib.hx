@@ -208,10 +208,7 @@ class MultiDistrib
 
 	public function userHasOrders(user:db.User):Bool{
 		for ( d in distributions){
-			var pids = Lambda.map( d.contract.getProducts(false), function(x) return x.id);		
-			if( db.UserContract.manager.count( $userId == user.id && $distributionId==d.id && $productId in pids) > 0 ){
-				return true;
-			}			
+			if(d.getUserOrders(user).length>0) return true;						
 		}
 		return false;
 	}
@@ -244,7 +241,15 @@ class MultiDistrib
 			}
 		}
 		return date;
-		
+	}
+
+	public function hasOnlyConstantOrders(){		
+		for(d in distributions){
+			if( d.contract.type==db.Contract.TYPE_VARORDER ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public function getOrdersEndDate(){

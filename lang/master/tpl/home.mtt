@@ -48,11 +48,9 @@
 			
 			
 			::foreach d distribs::
-			
+				
 				::if d.userHasOrders(user)::
-
-				<!--|| user.amap.hasShopMode()-->
-
+				
 				<!-- block with orders -->
 				<div class="distrib">
 
@@ -74,7 +72,7 @@
 						</div>
 						
 						<div class="pull-right text-right" ::cond d.distributions[0]._contract.type==1::>
-							::if user._amap.hasShopMode()::
+							::if amap.hasShopMode()::
 								::if active::
 									<a ::cond !user._amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
 										<span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::
@@ -89,13 +87,7 @@
 						</div>
 						
 						<div class="info">					
-							<span class="glyphicon glyphicon-map-marker"></span> <a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
-							<div class="address">
-								$$nullSafe(::place.address1::)
-								$$nullSafe(::place.address2::)
-								$$nullSafe(::place.zipCode::)
-								$$nullSafe(::place.city::)						
-							</div>
+							$$place(::place::)
 						</div>
 					</div>
 					
@@ -103,96 +95,98 @@
 					
 					<div class="content orders">
 					::foreach dist d.distributions::
-						<h4>
-							::set s = getDate(dist.date) ::
-							::set e = getDate(dist.end)::
-							
-							<span style="color:#999;"><span class="glyphicon glyphicon-time"></span> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
-							&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
-						</h4>
-							
-						<div class="row">
-							::foreach c prepare(dist.getUserOrders(user))::
+						::set orders = prepare(dist.getUserOrders(user))::
+						::if orders.length>0::
+							<h4>
+								::set s = getDate(dist.date) ::
+								::set e = getDate(dist.end)::
 								
-								<div class="col-xs-12 col-sm-6 col-lg-4">
-									<table>
-										<tr>
-											<td>
-												<div style="background-image:url('::c.productImage::')" class="productImg" /> 
-											</td>
-											<td class="name">
-												<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
-												<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;" ::cond c.quantity ==0:: >
-													::_("Canceled")::
-												</span>
-												&nbsp;
-												::c.productName::
+								<span style="color:#999;"><span class="glyphicon glyphicon-time"></span> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+								&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
+							</h4>
+							
+							<div class="row">
+								::foreach c orders::
+									
+									<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
+										<table>
+											<tr>
+												<td>
+													<div style="background-image:url('::c.productImage::')" class="productImg" /> 
+												</td>
+												<td class="name">
+													<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
+													<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity ==0:: >
+														::_("Canceled")::
+													</span>
+													::c.productName::
+													
+													::if c.userId2!=null::
+														::if user.id==c.userId::
+															::set you = c.userName::
+															::set mate = c.userName2::
+														::else::
+															::set mate = c.userName::
+															::set you = c.userName2::
+														::end::
 												
-												::if c.userId2!=null::
-													::if user.id==c.userId::
-														::set you = c.userName::
-														::set mate = c.userName2::
-													::else::
-														::set mate = c.userName::
-														::set you = c.userName2::
-													::end::
-											
-													<br/>( 
-													
-													::raw __("alternated with ::mate::",{mate:mate})::, 
-													
-													::if getWhosTurn(c.id,o.distrib)==false::
-											
-														::if c.userName == you::
-															<span style="color:#080">::_("It's your turn")::</span>
+														<br/>( 
+														
+														::raw __("alternated with ::mate::",{mate:mate})::, 
+														
+														::if getWhosTurn(c.id,dist)==false::
+												
+															::if c.userName == you::
+																<span style="color:#080">::_("It's your turn")::</span>
+															::else::
+																::_("It's his/her turn")::
+															::end::
 														::else::
-															::_("It's his/her turn")::
+															::if c.userName2 == you::
+																<span style="color:#080">::_("It's your turn")::</span>
+															::else::
+																::_("It's his/her turn")::
+															::end::
 														::end::
-													::else::
-														::if c.userName2 == you::
-															<span style="color:#080">::_("It's your turn")::</span>
-														::else::
-															::_("It's his/her turn")::
-														::end::
+														)
 													::end::
-													)
-												::end::
-											</td>
-										</tr>
-									</table>
+												</td>
+											</tr>
+										</table>
+									</div>
+									
+								::end::
+							</div>
+					
+							<div class="footer">
+								::if user.isContractManager(dist._contract) || dist.distributor1Id==user.id || dist.distributor2Id==user.id || dist.distributor3Id==user.id || dist.distributor4Id==user.id:: 
+									<a href="/distribution/list/::dist.id::"><span class="glyphicon glyphicon-print"></span>  ::_("Distribution list")::</a>
+								::end::
+								
+								<span ::cond dist.distributor1Id!=null || dist.distributor2Id!=null || dist.distributor3Id!=null || dist.distributor4Id!=null::>
+									&nbsp; <a href="#" onclick="$('#distributors::dist.id::').toggle();return false;"><span class="glyphicon glyphicon-user"></span> ::_("Permanence")::</a>
+								</span>
+								
+								&nbsp; <a href="/contract/view/::dist._contract.id::"><span class="glyphicon glyphicon-list-alt"></span> ::_("Contract details")::</a>
+								
+								::if !amap.hasShopMode() && dist._contract.type==1::
+								&nbsp; <a href="/contract/order/::dist._contract.id::"><span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::</a>
+								::end::
+								
+								<div id="distributors::dist.id::" style="display:none;margin:8px;">
+									<ul>
+										<li ::cond dist.distributor1Id!=null::><i class="icon-user"></i> ::dist._distributor1.getCoupleName():: </li>
+										<li ::cond dist.distributor2Id!=null::><i class="icon-user"></i> ::dist._distributor2.getCoupleName():: </li>
+										<li ::cond dist.distributor3Id!=null::><i class="icon-user"></i> ::dist._distributor3.getCoupleName():: </li>
+										<li ::cond dist.distributor4Id!=null::><i class="icon-user"></i> ::dist._distributor4.getCoupleName():: </li>
+									</ul>
 								</div>
 								
-							::end::
-						</div>
-					
-						<div class="footer">
-							::if user.isContractManager(dist._contract) || dist.distributor1Id==user.id || dist.distributor2Id==user.id || dist.distributor3Id==user.id || dist.distributor4Id==user.id:: 
-								<a href="/distribution/list/::dist.id::"><span class="glyphicon glyphicon-print"></span>  ::_("Distribution list")::</a>
-							::end::
-							
-							<span ::cond dist.distributor1Id!=null || dist.distributor2Id!=null || dist.distributor3Id!=null || dist.distributor4Id!=null::>
-								&nbsp; <a href="#" onclick="$('#distributors::dist.id::').toggle();return false;"><span class="glyphicon glyphicon-user"></span> ::_("Permanence")::</a>
-							</span>
-							
-							&nbsp; <a href="/contract/view/::dist._contract.id::"><span class="glyphicon glyphicon-list-alt"></span> ::_("Contract details")::</a>
-							
-							::if !user._amap.hasShopMode() && dist._contract.type==1::
-							&nbsp; <a href="/contract/order/::dist._contract.id::"><span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::</a>
-							::end::
-							
-							<div id="distributors::dist.id::" style="display:none;margin:8px;">
-								<ul>
-									<li ::cond dist.distributor1Id!=null::><i class="icon-user"></i> ::dist._distributor1.getCoupleName():: </li>
-									<li ::cond dist.distributor2Id!=null::><i class="icon-user"></i> ::dist._distributor2.getCoupleName():: </li>
-									<li ::cond dist.distributor3Id!=null::><i class="icon-user"></i> ::dist._distributor3.getCoupleName():: </li>
-									<li ::cond dist.distributor4Id!=null::><i class="icon-user"></i> ::dist._distributor4.getCoupleName():: </li>
-								</ul>
+								<div class="distribMessage" ::cond dist.distributor1Id==user.id || dist.distributor2Id==user.id ||dist.distributor3Id==user.id || dist.distributor4Id==user.id::>
+									::_("Warning, you're engaged in this distribution !")::
+								</div>
 							</div>
-							
-							<div class="distribMessage" ::cond dist.distributor1Id==user.id || dist.distributor2Id==user.id ||dist.distributor3Id==user.id || dist.distributor4Id==user.id::>
-								::_("Warning, you're engaged in this distribution !")::
-							</div>
-						</div>
+						::end::
 					
 					::end::
 					</div>
@@ -200,12 +194,12 @@
 				
 				
 				
-				::else::
+				::elseif(amap.hasShopMode())::
 			
 
 				
 				
-				<!-- delivery open to orders -->
+				<!-- delivery open to orders (only for shopmode) -->
 				<div class="distrib">
 					::set place = d.getPlace():: 
 					::set active = d.isActive()::
@@ -229,9 +223,9 @@
 								</a>
 								<br/>
 								
-							::else::		
+							::elseif(ordersEndDate!=null)::		
 								<!--Fermeture des commandes :-->													
-								::if ordersEndDate!=null && Date.now().getTime() > ordersEndDate.getTime()::
+								::if Date.now().getTime() > ordersEndDate.getTime()::
 									::_("Order closed since"):: <br/>
 									::hDate(ordersEndDate)::
 								::else::
@@ -259,14 +253,7 @@
 							
 							::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
 							<br/>
-							<span class="glyphicon glyphicon-map-marker"></span>							
-							<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
-							<div class="address">
-								$$nullSafe(::place.address1::)
-								$$nullSafe(::place.address2::)
-								$$nullSafe(::place.zipCode::)
-								$$nullSafe(::place.city::)
-							</div>
+							$$place(::place::)
 						</div>	
 					</div>
 					<!-- products previews-->

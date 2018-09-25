@@ -63,6 +63,9 @@ class ContractAdmin extends Controller
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
 			//var inTwoMonth = tools.DateTool.deltaDays(now,60);
 			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
+			for( md in multidistribs.copy()){
+				if(md.hasOnlyConstantOrders()) multidistribs.remove(md);
+			}
 			view.multidistribs = multidistribs; 
 
 			/*var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > oneMonthAgo && $type == db.Contract.TYPE_VARORDER,false).getIds();			
