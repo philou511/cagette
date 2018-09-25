@@ -98,15 +98,25 @@ class Distribution extends Object
 	}
 	
 	public function getOrders() {
-	
-		var pids = db.Product.manager.search($contract == this.contract, false);
-		var pids = Lambda.map(pids, function(x) return x.id);
-		
+			
 		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
+			var pids = db.Product.manager.search($contract == this.contract, false);
+			var pids = Lambda.map(pids, function(x) return x.id);		
 			return UserContract.manager.search( ($productId in pids), false); 
 		}else{
 			return UserContract.manager.search($distribution == this, false); 
 		}
+	}
+
+	public function getUserOrders(user:db.User){
+		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
+			var pids = db.Product.manager.search($contract == this.contract, false);
+			var pids = Lambda.map(pids, function(x) return x.id);		
+			return UserContract.manager.search( (($productId in pids) && $user==user), false); 
+		}else{
+			return UserContract.manager.search($distribution == this  && $user==user, false); 
+		}
+
 	}
 	
 	public function getUsers():Iterable<db.User>{

@@ -62,10 +62,7 @@ class ContractAdmin extends Controller
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
 			//var inTwoMonth = tools.DateTool.deltaDays(now,60);
-			var multidistribs = [];
-			for( p in app.user.amap.getPlaces()){
-				multidistribs = multidistribs.concat(MultiDistrib.getFromTimeRange(twoMonthAgo,now,p));
-			}
+			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
 			view.multidistribs = multidistribs; 
 
 			/*var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > oneMonthAgo && $type == db.Contract.TYPE_VARORDER,false).getIds();			

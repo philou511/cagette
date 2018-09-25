@@ -12,6 +12,8 @@ class Order extends Controller
 	 * get orders of a user from a contractId (constant contract) or a distributionId (varying contract)
 	 */
 	public function doGet(userId:Int){
+
+		checkIsLogged();
 		
 		//params
 		var p = app.params;
@@ -52,6 +54,8 @@ class Order extends Controller
 	 * @param	userId
 	 */
 	public function doUpdate(userId:Int){
+
+		checkIsLogged();
 		
 		//GET params
 		var p = app.params;

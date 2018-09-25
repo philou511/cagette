@@ -17,6 +17,12 @@ class Controller extends sugoi.BaseController
 		this.t = sugoi.i18n.Locale.texts;
 		
 	}
+
+	public function checkIsLogged(){
+		if(app.user==null) {
+			throw new tink.core.Error(t._("You should be logged in to perform this action."));
+		}
+	}
 	
 
 }
