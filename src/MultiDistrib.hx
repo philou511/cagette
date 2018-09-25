@@ -13,10 +13,12 @@ class MultiDistrib
 {
 	public var distributions : Array<db.Distribution>;
 	public var contracts : Array<db.Contract>;
+	public var actions : Array<Link>;
 
 	public function new(){
 		distributions  = [];
 		contracts = [];
+		actions = [];
 	}
 	
 	public static function get(date:Date, place:db.Place){
@@ -34,7 +36,7 @@ class MultiDistrib
 	/**
 	Get multidistribs from a time range + place
 	**/
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date){
+	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date):Array<MultiDistrib>{
 		var multidistribs = [];
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
@@ -53,6 +55,12 @@ class MultiDistrib
 			}
 		}
 		var multidistribs = Lambda.array(multidistribs);
+
+		for(md in multidistribs){
+			App.current.event(MultiDistribEvent(md));
+		}
+
+
 		multidistribs.sort(function(x,y){
 			return Math.round( x.getDate().getTime()/1000) - Math.round(y.getDate().getTime()/1000 );
 		});

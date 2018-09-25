@@ -101,7 +101,7 @@ class Product extends Object
 	   @param	populateCategories=tru
 	   @return
 	**/
-	public function infos(?CategFromTaxo=false,?populateCategories=true):ProductInfo {
+	public function infos(?CategFromTaxo=false,?populateCategories=true,?distribution:db.Distribution):ProductInfo {
 		var o :ProductInfo = {
 			id : id,
 			ref : ref,
@@ -113,7 +113,7 @@ class Product extends Object
 			vatValue: (vat != 0 && vat != null) ? (  this.price - (this.price / (vat/100+1))  )  : null,
 			contractTax : contract.percentageValue,
 			contractTaxName : contract.percentageName,
-			desc : desc,
+			desc : App.current.view.nl2br(desc),
 			categories : null,
 			subcategories:null,
 			orderable : this.contract.isUserOrderAvailable(),
@@ -124,7 +124,8 @@ class Product extends Object
 			organic:organic,
 			variablePrice:variablePrice,
 			wholesale:wholesale,
-			active: active
+			active: active,
+			distributionId : distribution==null ? null : distribution.id,
 		}
 		
 		if(populateCategories){
@@ -136,6 +137,8 @@ class Product extends Object
 				o.subcategories = o.categories;
 			}
 		}
+
+		App.current.event(ProductInfosEvent(o,distribution));
 		
 		return o;
 	}

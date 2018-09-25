@@ -76,11 +76,13 @@
 				::foreach p products::
 				<div class="col-xs-12 col-sm-6 col-lg-4 product product::p.id::" style="display:none;">
 
+					::set popup = "_.overlay('/shop/productInfo/" + p.id + "?distribution=" + p.distributionId + "','" + urlEncode(p.name) +"')"::
+
 					<table class="product">
 						<tr>
 							<td>
 								
-								<a onclick="_.overlay('/shop/productInfo/::p.id::','::urlEncode(p.name)::')" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
+								<a onclick="::popup::" data-toggle="tooltip" data-placement="top" title="::_('Read more')::">
 									<div style="background-image:url('::p.image::')" class="productImg" style="width:64px;height:64px;"/>
 								</a>
 								
@@ -91,7 +93,7 @@
 								
 							</td>
 							<td>
-								<a onclick="_.overlay('/shop/productInfo/::p.id::','::urlEncode(p.name)::')" class="productName">
+								<a onclick="::popup::" class="productName">
 									::p.name::
 									::if p.qt!=null && p.unitType!=null && p.qt>0::
 										::p.qt:: ::unit(p.unitType,p.qt>1)::

@@ -50,10 +50,8 @@ typedef ProductInfo = {
 	organic:Bool,
 	variablePrice:Bool,
 	wholesale:Bool,
-	active:Bool
-	/*#if (js && !test)
-	?element:js.JQuery,
-	#end*/
+	active:Bool,
+	?distributionId:Null<Int>, //in the context of a distrib
 }
 
 @:keep
@@ -220,14 +218,16 @@ enum Event {
 	DeleteDistrib(distrib:db.Distribution);
 	PreNewDistribCycle(cycle:db.DistributionCycle);	
 	NewDistribCycle(cycle:db.DistributionCycle);
+	MultiDistribEvent(md:MultiDistrib);
 	
 	//Products
 	PreNewProduct(contract:db.Contract);	//when displaying the insert distribution form
-	NewProduct(product:db.Product);			//when a new distrinbution is created
+	NewProduct(product:db.Product);			//when a new product is created
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
 	DeleteProduct(product:db.Product);
 	BatchEnableProducts(data:{pids:Array<Int>,enable:Bool});
+	ProductInfosEvent(p:ProductInfo,?d:db.Distribution);	//when infos about a product are displayed
 	
 	//Contracts
 	EditContract(contract:db.Contract);
