@@ -109,4 +109,14 @@ class UserService
 		if(badTries==null) badTries = 0;
 		sugoi.db.Cache.set("ip-ban-"+ip,badTries+1, 60 * 10);
 	}
+	/**
+	 *  Checks that the user is at least 18 years old
+	 *  @param birthday - 
+	 *  @return Bool
+	 */
+	public static function isBirthdayValid(birthday:Date): Bool {
+		//Check that the user is at least 18 years old
+		return birthday.getTime() < DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()	? true : false;	
+	}
+
 }

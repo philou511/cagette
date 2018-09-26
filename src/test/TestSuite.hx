@@ -15,19 +15,19 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		r.add(new test.TestUser());
-		r.add(new test.TestOrders());
-		r.add(new test.TestTools());
-		r.add(new test.TestDistributions());
-		r.add(new test.TestPayments());
+		// r.add(new test.TestUser());
+		// r.add(new test.TestOrders());
+		// r.add(new test.TestTools());
+		// r.add(new test.TestDistributions());
+		// r.add(new test.TestPayments());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
-		r.add(new pro.test.TestProductService());
-		r.add(new pro.test.TestRemoteCatalog());
-		r.add(new pro.test.TestDistribService());
-		//wholesale-order tests
-		r.add(new who.test.TestWho());
+		// r.add(new pro.test.TestProductService());
+		// r.add(new pro.test.TestRemoteCatalog());
+		// r.add(new pro.test.TestDistribService());
+		// //wholesale-order tests
+		// r.add(new who.test.TestWho());
 		r.add(new pro.test.TestMarketplacePayment());
 		#end
 
@@ -375,10 +375,17 @@ class TestSuite
 		p.insert();
 		CHICKEN = p;
 
+		/*
+		La ferme de la courgette enragée (VENDOR1)
+			- courgettes
+			- carottes
+			- poulet
+		*/
+
 		var product2 = new db.Product();
 		product2.name = "Laitue";
 		product2.qt = 1;
-		product2.unitType = Common.UnitType.Kilogram;
+		product2.unitType = Common.Unit.Kilogram;
 		product2.price = 2.5;
 		product2.organic = true;
 		product2.contract = contract2;
@@ -388,7 +395,7 @@ class TestSuite
 		var product3 = new db.Product();
 		product3.name = "Carottes";
 		product3.qt = 1;
-		product3.unitType = Common.UnitType.Kilogram;
+		product3.unitType = Common.Unit.Kilogram;
 		product3.price = 4.5;
 		product3.organic = true;
 		product3.contract = contract3;
@@ -418,8 +425,8 @@ class TestSuite
 		distribution3.insert();
 
 		DISTRIB_CAROTTES = distribution3;
+		
 		//PASTRY
-
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
@@ -481,7 +488,7 @@ class TestSuite
 		app.plugins.push( new pro.ProPlugIn() );		
 		app.plugins.push( new connector.ConnectorPlugIn() );				
 		//app.plugins.push( new pro.LemonwayEC() );
-		app.plugins.push( new who.WhoPlugIn() );
+		//app.plugins.push( new who.WhoPlugIn() );
 		#end
 		
 		App.current.user = u;
