@@ -41,6 +41,10 @@ class User extends Object {
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SNull<SString<32>>;
 	public var city:SNull<SString<25>>;
+
+	public var birthday : SNull<SDate>;
+	public var nationality : SNull<SString<2>>;
+	public var countryOfResidence : SNull<SString<2>>;
 	
 	@:skip public var amap(get_amap, null) : Amap;
 	
@@ -563,6 +567,9 @@ class User extends Object {
 			"address2"	=>	t._("Address 2"),
 			"zipCode"	=>	t._("Zip code"),
 			"city"		=>	t._("City"),
+			"birthday"  =>	t._("Birthday"),
+			"nationality" =>  t._("Nationality"),
+			"countryOfResidence" =>  t._("Country of residence"),
 			"rights"	=>	t._("Rights"),
 			"cdate"		=>	t._("Registration date"),
 			"flags"		=>	t._("Options"),
