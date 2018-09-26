@@ -66,7 +66,7 @@ class Account extends Controller
 			if (!admin) { app.user.rights.unset(Admin); }
 
 			//Check that the user is at least 18 years old
-			if (app.user.birthday.getTime() > DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()) {
+			if (!service.UserService.isBirthdayValid(app.user.birthday)) {
 				app.user.birthday = null;
 			 }
 			
