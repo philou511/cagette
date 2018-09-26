@@ -129,5 +129,9 @@ class Basket extends Object
 
 		return ordersPaid && orderOperationNotPending && paymentOperationsNotPending;			
 	}
+
+	public function getGroup() : db.Amap {
+		return getOrders().first().distribution.contract.amap;
+	}
 	
 }
