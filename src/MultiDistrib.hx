@@ -21,14 +21,26 @@ class MultiDistrib
 		actions = [];
 	}
 	
-	public static function get(date:Date, place:db.Place){
+	public static function get(date:Date, place:db.Place, ?contractType:Int){
 		var m = new MultiDistrib();
 		
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 		
-		var cids = place.amap.getContracts().getIds();
-		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();
+		var contracts = place.amap.getContracts().array();
+
+		//filter by type
+		if(contractType==db.Contract.TYPE_VARORDER){
+			for(c in contracts.copy() ){
+				if(c.type!=db.Contract.TYPE_VARORDER) contracts.remove(c);
+			}
+		}else if(contractType==db.Contract.TYPE_CONSTORDERS){
+			for(c in contracts.copy() ){
+				if(c.type!=db.Contract.TYPE_CONSTORDERS) contracts.remove(c);
+			}
+		}
+		var cids = contracts.getIds();
+		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();		
 		
 		return m;
 	}

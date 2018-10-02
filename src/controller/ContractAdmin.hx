@@ -192,7 +192,7 @@ class ContractAdmin extends Controller
 				
 				if (cal.exists( start )) {
 					var v = cal.get( start );
-					v.push(		{ name: t._("Delivery ") +d.contract.name,  color:Calendar.COLOR_DELIVERY } );
+					v.push(		{ name: t._("Distribution") +" "+d.contract.name,  color:Calendar.COLOR_DELIVERY } );
 					cal.set( start, v );
 				}
 				

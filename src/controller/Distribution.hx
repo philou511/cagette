@@ -538,7 +538,7 @@ class Distribution extends Controller
 		
 		if (!app.user.isAmapManager()) throw t._("Forbidden access");
 		
-		var md = MultiDistrib.get(date, place);
+		var md = MultiDistrib.get(date, place, db.Contract.TYPE_VARORDER);
 		
 		view.confirmed = md.checkConfirmed();
 		view.users = md.getUsers();
