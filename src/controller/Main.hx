@@ -47,9 +47,9 @@ class Main extends Controller {
 
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var inSixMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 6);
+		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
 
-		var distribs = MultiDistrib.getFromTimeRange(group,now,inSixMonth);
+		var distribs = MultiDistrib.getFromTimeRange(group,now,in3Month);
 		
 		//fix bug du sorting (les distribs du jour se mettent en bas)
 		/*var out = [];

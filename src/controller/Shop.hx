@@ -82,15 +82,18 @@ class Shop extends Controller
 			}
 			
 		}
+
+		view.contracts = contracts;
+		
 		var now = Date.now();
 		var cids = Lambda.map(contracts, function(c) return c.id);
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
+		//distribs open to orders, and where distribDate is in the date given as parameter
 		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
 		var products = [];
 		for ( d in distribs){
-
 			for (p in d.contract.getProducts(true)){
 				products.push( p.infos(categsFromTaxo,null,d) );
 			}

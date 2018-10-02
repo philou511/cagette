@@ -70,20 +70,24 @@
 							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
 						::end::
 						</div>
-						
-						<div class="pull-right text-right" ::cond d.distributions[0]._contract.type==1::>
-							::if amap.hasShopMode()::
-								::if active::
-									<a ::cond !user._amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-										<span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::
-									</a>
-									<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-										<span class="glyphicon glyphicon-plus"></span> ::_("Add products")::
-									</a>
+						<div class="pull-right text-right" ::cond amap.hasShopMode() && !d.hasOnlyConstantOrders() ::>
+							::if active::
+								<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
+									<span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::
+								</a>
+								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
+									<span class="glyphicon glyphicon-plus"></span> ::_("Add products")::
+								</a>
+							::elseif(ordersEndDate!=null)::		
+								<!--Fermeture des commandes :-->													
+								::if Date.now().getTime() > ordersEndDate.getTime()::
+									::_("Order closed since"):: <br/>
+									::hDate(ordersEndDate)::
 								::else::
-									::_("Order closed")::
+									::_("Order will open on"):: <br/>
+									::hDate(ordersStartDate)::
 								::end::
-							::end::							
+							::end::
 						</div>
 						
 						<div class="info">					
