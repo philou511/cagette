@@ -6,7 +6,6 @@ import Common;
  */
 class Controller extends sugoi.BaseController
 {
-
 	var t: sugoi.i18n.GetText;
 	
 	public function new() 
@@ -14,8 +13,7 @@ class Controller extends sugoi.BaseController
 		super();
 		
 		//gettext translator
-		this.t = sugoi.i18n.Locale.texts;
-		
+		this.t = sugoi.i18n.Locale.texts;		
 	}
 
 	function nav(id:String):Array<Link>{
