@@ -227,6 +227,7 @@ class MultiDistrib
 	}
 
 	public function userHasOrders(user:db.User):Bool{
+		if(user==null) return false;
 		for ( d in distributions){
 			if(d.getUserOrders(user).length>0) return true;						
 		}
