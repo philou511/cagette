@@ -466,7 +466,7 @@ class Distribution extends Controller
 		var contractId = cycle.contract.id;
 		var messages = service.DistributionService.deleteCycleDistribs(cycle);
 		if (messages.length > 0){			
-			throw Error("/contractAdmin/distributions/" + contractId, messages.join("<br/>"));	
+			App.current.session.addMessage( messages.join("<br/>"),true);	
 		}
 		
 		throw Ok("/contractAdmin/distributions/" + contractId, t._("Recurrent deliveries deleted"));
@@ -538,7 +538,7 @@ class Distribution extends Controller
 		
 		if (!app.user.isAmapManager()) throw t._("Forbidden access");
 		
-		var md = MultiDistrib.get(date, place);
+		var md = MultiDistrib.get(date, place, db.Contract.TYPE_VARORDER);
 		
 		view.confirmed = md.checkConfirmed();
 		view.users = md.getUsers();

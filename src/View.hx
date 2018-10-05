@@ -246,6 +246,10 @@ class View extends sugoi.BaseView {
 	public function getProductImage(e):String {
 		return Std.string(e).substr(2).toLowerCase()+".png";
 	}
+
+	public function prepare(orders:Iterable<db.UserContract>){
+		return service.OrderService.prepare(orders);
+	}
 	
 	
 	public function displayTuto(tuto:String, step:Int) {

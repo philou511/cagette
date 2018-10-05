@@ -86,6 +86,17 @@
 			::end::
 		</div>		
 	</macro>
+
+	<macro name="place(place)">
+		<span class="glyphicon glyphicon-map-marker"></span>							
+		<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
+		<div class="address">
+			$$nullSafe(::place.address1::)
+			$$nullSafe(::place.address2::)
+			$$nullSafe(::place.zipCode::)
+			$$nullSafe(::place.city::)
+		</div>
+	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">
 		<div class="dateBox" style="background-color:#080;" >

@@ -3,7 +3,7 @@
 <div class="col-md-12">
 	
 	<!-- Distributions to validate -->
-	<div class="article text-center" ::cond multidistribs.length>0:: >
+	<div class="article text-center" ::cond multidistribs.length>0:: style="max-height:400px;overflow-y: auto;">
 		<h2>::_("Distributions to validate")::</h2>
 		
 		<p>::_("You need to validate these distributions which took place recently")::</p>

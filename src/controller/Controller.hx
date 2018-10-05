@@ -25,6 +25,13 @@ class Controller extends sugoi.BaseController
 		app.event(e);
 		return e.getParameters()[0];
 	}
+
+
+	public function checkIsLogged(){
+		if(app.user==null) {
+			throw new tink.core.Error(t._("You should be logged in to perform this action."));
+		}
+	}
 	
 
 }

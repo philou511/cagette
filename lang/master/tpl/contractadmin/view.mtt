@@ -16,11 +16,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td>::_("Start")::</td>
+				<td>::_("Start date")::</td>
 				<td>::hDate(contract.startDate)::</td>
 			</tr>
 			<tr>
-				<td>::_("End")::</td>
+				<td>::_("End date")::</td>
 				<td>::hDate(contract.endDate)::</td>
 			</tr>
 		</table>

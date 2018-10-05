@@ -65,22 +65,21 @@ class Contract extends Object
 	public function isUserOrderAvailable():Bool {
 		
 		if (type == TYPE_CONSTORDERS ) {
-			
-			// constant orders
 			return isVisibleInShop();
 		}else {
 		
-			if ( cache_hasActiveDistribs != null ) return cache_hasActiveDistribs;
+			//if ( cache_hasActiveDistribs != null ) return cache_hasActiveDistribs;
 			
 			//for varying orders, we need to know if there are some available deliveries
-			var n = Date.now();
-			
+			var n = Date.now();			
 			var d = db.Distribution.manager.count( $orderStartDate <= n && $orderEndDate >= n && $contractId==this.id);
-			//tmp : add the "old" deliveries which have a null orderStartDate
-			d += db.Distribution.manager.count( $orderStartDate == null && $date > n  && $contractId == this.id );
 			
-			cache_hasActiveDistribs = d > 0;
-			return cache_hasActiveDistribs && isVisibleInShop();
+			//tmp : add the "old" deliveries which have a null orderStartDate
+			//d += db.Distribution.manager.count( $orderStartDate == null && $date > n  && $contractId == this.id );
+			
+			//cache_hasActiveDistribs = d > 0;
+			//return cache_hasActiveDistribs && isVisibleInShop();
+			return d>0 && isVisibleInShop();
 		}
 		
 	}
@@ -148,9 +147,9 @@ class Contract extends Object
 	
 		if (large) {
 			end = DateTools.delta(end , -1000.0 * 60 * 60 * 24 * 30);
-			return db.Contract.manager.search($amap == amap && $endDate > end,{orderBy:-startDate}, lock);	
+			return db.Contract.manager.search($amap == amap && $endDate > end,{orderBy:-vendorId}, lock);	
 		}else {
-			return db.Contract.manager.search($amap == amap && $endDate > now && $startDate < now,{orderBy:-startDate}, lock);	
+			return db.Contract.manager.search($amap == amap && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
 		}
 	}
 	

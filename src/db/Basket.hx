@@ -114,6 +114,7 @@ class Basket extends Object
 	public function getOrderOperation(?onlyPending=true):db.Operation{
 
 		var order = getOrders().first();
+        if(order==null) return null;
 
 		var key = db.Distribution.makeKey(order.distribution.date, order.distribution.place);
 		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending);

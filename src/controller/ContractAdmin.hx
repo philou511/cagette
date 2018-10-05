@@ -62,9 +62,9 @@ class ContractAdmin extends Controller
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
 			//var inTwoMonth = tools.DateTool.deltaDays(now,60);
-			var multidistribs = [];
-			for( p in app.user.amap.getPlaces()){
-				multidistribs = multidistribs.concat(MultiDistrib.getFromTimeRange(twoMonthAgo,now,p));
+			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
+			for( md in multidistribs.copy()){
+				if(md.hasOnlyConstantOrders()) multidistribs.remove(md);
 			}
 			view.multidistribs = multidistribs; 
 
@@ -192,7 +192,7 @@ class ContractAdmin extends Controller
 				
 				if (cal.exists( start )) {
 					var v = cal.get( start );
-					v.push(		{ name: t._("Delivery ") +d.contract.name,  color:Calendar.COLOR_DELIVERY } );
+					v.push(		{ name: t._("Distribution") +" "+d.contract.name,  color:Calendar.COLOR_DELIVERY } );
 					cal.set( start, v );
 				}
 				
