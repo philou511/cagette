@@ -482,23 +482,25 @@ class TestOrders extends haxe.unit.TestCase
 		var distrib1 = test.TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
 		var distrib2 = test.TestSuite.DISTRIB_LAITUE;
 		var distrib3 = test.TestSuite.DISTRIB_CAROTTES;
-		var francoisOrder1 = db.UserContract.make(test.TestSuite.FRANCOIS, 1, test.TestSuite.CHICKEN, distrib1.id);
-		var francoisOrder2 = db.UserContract.make(test.TestSuite.FRANCOIS, 2, test.TestSuite.LAITUE, distrib2.id);
+		var francoisOrder1 = OrderService.make(test.TestSuite.FRANCOIS, 1, test.TestSuite.CHICKEN, distrib1.id);
+		var francoisOrder2 = OrderService.make(test.TestSuite.FRANCOIS, 2, test.TestSuite.LAITUE, distrib2.id);
 		var francoisOrderOperation = db.Operation.onOrderConfirm([francoisOrder1, francoisOrder2]);
 		//User 2 buys products for a multidistrib
-		var sebOrder1 = db.UserContract.make(test.TestSuite.SEB, 3, test.TestSuite.COURGETTES, distrib1.id);
-		var sebOrder2 = db.UserContract.make(test.TestSuite.SEB, 7, test.TestSuite.CAROTTES, distrib3.id);
+		var sebOrder1 = OrderService.make(test.TestSuite.SEB, 3, test.TestSuite.COURGETTES, distrib1.id);
+		var sebOrder2 = OrderService.make(test.TestSuite.SEB, 7, test.TestSuite.CAROTTES, distrib3.id);
 		var sebOrderOperation = db.Operation.onOrderConfirm([sebOrder1, sebOrder2]);
 		//User 3 buys products for the same multidistrib
-		var julieOrder1 = db.UserContract.make(test.TestSuite.JULIE, 3, test.TestSuite.LAITUE, distrib2.id);
-		var julieOrder2 = db.UserContract.make(test.TestSuite.JULIE, 5, test.TestSuite.CAROTTES, distrib3.id);
+		var julieOrder1 = OrderService.make(test.TestSuite.JULIE, 3, test.TestSuite.LAITUE, distrib2.id);
+		var julieOrder2 = OrderService.make(test.TestSuite.JULIE, 5, test.TestSuite.CAROTTES, distrib3.id);
 		var julieOrderOperation = db.Operation.onOrderConfirm([julieOrder1, julieOrder2]);
+		
 		//They all pay by credit card
-		var francoisPayment = db.Operation.makePaymentOperation(test.TestSuite.FRANCOIS,distrib1.contract.amap, payment.Transfer.TYPE, test.TestSuite.CHICKEN.price + 2 * test.TestSuite.LAITUE.price, "Payment by transfer", francoisOrderOperation[0]);
-		var sebPayment = db.Operation.makePaymentOperation(test.TestSuite.SEB,distrib1.contract.amap, payment.Transfer.TYPE, 3 * test.TestSuite.COURGETTES.price + 7 * test.TestSuite.CAROTTES.price, "Payment by transfer", sebOrderOperation[0]);
-		var juliePayment = db.Operation.makePaymentOperation(test.TestSuite.JULIE,distrib1.contract.amap, payment.Transfer.TYPE, 3 * test.TestSuite.LAITUE.price + 5 * test.TestSuite.CAROTTES.price, "Payment by transfer", julieOrderOperation[0]);
+		// var francoisPayment = db.Operation.makePaymentOperation(test.TestSuite.FRANCOIS,distrib1.contract.amap, payment.Transfer.TYPE, test.TestSuite.CHICKEN.price + 2 * test.TestSuite.LAITUE.price, "Payment by transfer", francoisOrderOperation[0]);
+		// var sebPayment = db.Operation.makePaymentOperation(test.TestSuite.SEB,distrib1.contract.amap, payment.Transfer.TYPE, 3 * test.TestSuite.COURGETTES.price + 7 * test.TestSuite.CAROTTES.price, "Payment by transfer", sebOrderOperation[0]);
+		// var juliePayment = db.Operation.makePaymentOperation(test.TestSuite.JULIE,distrib1.contract.amap, payment.Transfer.TYPE, 3 * test.TestSuite.LAITUE.price + 5 * test.TestSuite.CAROTTES.price, "Payment by transfer", julieOrderOperation[0]);
+		
 		//Get all the repartition
-		var vendorDataByVendorId = service.OrderService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
+		var vendorDataByVendorId = OrderService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
     
 		//Check this is what we expect for each vendor
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR1.id).orders[0].total, 3 * test.TestSuite.COURGETTES.price);
@@ -506,7 +508,7 @@ class TestOrders extends haxe.unit.TestCase
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR2.id).orders[0].total, 5 * test.TestSuite.LAITUE.price);
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR3.id).orders[0].total, 12 * test.TestSuite.CAROTTES.price);
 		
-		assertEquals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
+		//assertEquals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
 	}
 
 }

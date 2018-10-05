@@ -15,19 +15,19 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		// r.add(new test.TestUser());
-		// r.add(new test.TestOrders());
-		// r.add(new test.TestTools());
-		// r.add(new test.TestDistributions());
-		// r.add(new test.TestPayments());
+		r.add(new test.TestUser());
+		r.add(new test.TestOrders());
+		r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
+		r.add(new test.TestPayments());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
-		// r.add(new pro.test.TestProductService());
-		// r.add(new pro.test.TestRemoteCatalog());
-		// r.add(new pro.test.TestDistribService());
-		// //wholesale-order tests
-		// r.add(new who.test.TestWho());
+		r.add(new pro.test.TestProductService());
+		r.add(new pro.test.TestRemoteCatalog());
+		r.add(new pro.test.TestDistribService());
+		//wholesale-order tests
+		r.add(new who.test.TestWho());
 		r.add(new pro.test.TestMarketplacePayment());
 		#end
 
@@ -277,7 +277,7 @@ class TestSuite
 
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
-		//second group
+		//second group : LOCAVORES
 		var a = new db.Amap();
 		a.name = "Les Locavores de la Rue Saucisse";
 		a.contact = f;
@@ -297,6 +297,7 @@ class TestSuite
 		v.email = "courgette@gmail.com";
 		v.zipCode = "00000";
 		v.city = "Bourligeac";
+		v.amap = LOCAVORES;
 		v.insert();
 		VENDOR1 = v;
 
@@ -305,6 +306,7 @@ class TestSuite
 		vendor2.email = "laitue@gmail.com";
 		vendor2.zipCode = "33000";
 		vendor2.city = "Auliwoud";
+		vendor2.amap = LOCAVORES;
 		vendor2.insert();
 		VENDOR2 = vendor2;
 
@@ -313,8 +315,17 @@ class TestSuite
 		vendor3.email = "carottes@gmail.com";
 		vendor3.zipCode = "47100";
 		vendor3.city = "Parmentier";
+		vendor3.amap = LOCAVORES;
 		vendor3.insert();
 		VENDOR3 = vendor3;
+
+		var boulanger = new db.Vendor();
+		boulanger.name = "Boulangerie Turlupain";
+		boulanger.email = "turlupain@gmail.com";
+		boulanger.zipCode = "24000";
+		boulanger.city = "Parmentier";
+		boulanger.amap = LOCAVORES;
+		boulanger.insert();
 		
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
@@ -426,12 +437,17 @@ class TestSuite
 
 		DISTRIB_CAROTTES = distribution3;
 		
-		//PASTRY
+		//boulanger
+		/*
+		 Boulangerie Turlupain
+		 	- Flan
+			- Croissant			
+		*/
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
-		c.vendor = v;
+		c.vendor = boulanger;
 		c.amap = a;
 		c.type = db.Contract.TYPE_VARORDER;
 		c.insert();
