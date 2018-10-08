@@ -482,10 +482,7 @@ class OrderService
 		}
 
 		return vendorDataByVendorId;
-
 	}
-
-	
 
 	/*
 	 * Get orders grouped by products. 
