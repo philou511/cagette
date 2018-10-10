@@ -119,10 +119,16 @@ class Distribution extends Object
 
 	}
 	
-	public function getUsers():Iterable<db.User>{
-		
-		return tools.ObjectListTool.deduplicate( Lambda.map(getOrders(), function(x) return x.user ) );
-		
+	public function getUsers():Iterable<db.User>{		
+		return tools.ObjectListTool.deduplicate( Lambda.map(getOrders(), function(x) return x.user ) );		
+	}
+
+	public function getBaskets(){
+		var baskets = new Map<Int,db.Basket>();
+		for( o in getOrders()){
+			if(o.basket!=null) baskets.set(o.basket.id,o.basket);
+		}
+		return Lambda.array(baskets);
 	}
 
 	

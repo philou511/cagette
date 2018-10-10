@@ -12,9 +12,9 @@ enum OperationType{
 typedef PaymentInfos = {
 	type:String, 			//payment type (PSP)
 	?remoteOpId:Int,		//PSP operation ID 
-	?netAmount:Float,		//amount paid less fees
+	/*?netAmount:Float,		//amount paid less fees
 	?fixedFees:Float,		//PSP fixed fees
-	?variableFees:Float,	//PSP variable fees
+	?variableFees:Float,	//PSP variable fees*/
 }; 
 
 typedef VOrderInfos = {basketId:Int};

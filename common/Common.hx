@@ -191,6 +191,9 @@ typedef OrderByProduct = {
 };
 typedef OrderByEndDate = {date: String,contracts: Array<String>};
 
+
+typedef RevenueAndFees = {amount:Float,netAmount:Float,fixedFees:Float,variableFees:Float};
+
 /**
 	Event enum used for plugins.
 	

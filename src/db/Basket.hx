@@ -1,6 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
 /**
  * Basket : represents the orders of a user for specific date + place
@@ -18,6 +19,8 @@ class Basket extends Object
 	//@:relation(userId) public var user : db.User;
 	//@:relation(placeId) public var place : db.Place;
 	//public var ddate : SDate;	//date of the delivery
+
+	public var data : SNull<SData<Map<Int,RevenueAndFees>>>; //store shared revenue
 	
 	public static var CACHE = new Map<String,db.Basket>();
 	

@@ -15,19 +15,19 @@ class TestSuite
 		//Cagette core tests
 		initDB();
 		initDatas();
-		r.add(new test.TestUser());
-		r.add(new test.TestOrders());
-		r.add(new test.TestTools());
-		r.add(new test.TestDistributions());
-		r.add(new test.TestPayments());
+		// r.add(new test.TestUser());
+		// r.add(new test.TestOrders());
+		// r.add(new test.TestTools());
+		// r.add(new test.TestDistributions());
+		// r.add(new test.TestPayments());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
-		r.add(new pro.test.TestProductService());
-		r.add(new pro.test.TestRemoteCatalog());
-		r.add(new pro.test.TestDistribService());
-		//wholesale-order tests
-		r.add(new who.test.TestWho());
+		// r.add(new pro.test.TestProductService());
+		// r.add(new pro.test.TestRemoteCatalog());
+		// r.add(new pro.test.TestDistribService());
+		// //wholesale-order tests
+		// r.add(new who.test.TestWho());
 		r.add(new pro.test.TestMarketplacePayment());
 		#end
 
