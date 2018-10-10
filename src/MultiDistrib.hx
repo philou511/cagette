@@ -13,12 +13,14 @@ class MultiDistrib
 {
 	public var distributions : Array<db.Distribution>;
 	public var contracts : Array<db.Contract>;
-	public var actions : Array<Link>;
+	//public var actions : Array<Link>;
+	public var extraHtml : String;
 
 	public function new(){
 		distributions  = [];
 		contracts = [];
-		actions = [];
+		extraHtml = "";
+		//actions = [];
 	}
 	
 	public static function get(date:Date, place:db.Place, ?contractType:Int){
@@ -83,7 +85,7 @@ class MultiDistrib
 	/**
 	 * TODO : refacto this to use getFromTimeRange();
 	 */
-	public static function getNextMultiDeliveries(group:db.Amap){
+	/*public static function getNextMultiDeliveries(group:db.Amap){
 		
 		var out = new Map < String, {
 			place:db.Place, 		//common delivery place
@@ -146,9 +148,9 @@ class MultiDistrib
 				}
 				
 				//if order opening is more far than 1 month, skip it
-				/*if (d.orderStartDate.getTime() > inOneMonth.getTime() ){
-					continue;
-				}*/
+				// if (d.orderStartDate.getTime() > inOneMonth.getTime() ){
+				// 	continue;
+				// }
 				
 				//display closest opening date
 				if (o.orderStartDate == null){
@@ -196,7 +198,7 @@ class MultiDistrib
 		}	
 		
 		return Lambda.array(out);
-	}
+	}*/
 
 	public function getPlace(){
 		if(distributions.length==0) throw "This multidistrib is empty";

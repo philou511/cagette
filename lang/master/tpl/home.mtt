@@ -194,14 +194,15 @@
 					
 					::end::
 
-					<!-- extra infos -->
+					<!-- extra html -->
 					<div class="text-center">
-						::foreach i d.actions::
+						<!--::foreach i d.actions::
 							<a href="::i.link::" class="btn btn-default btn-sm">
 								<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::" ></span>
 									::i.name::
 							</a>					
-						::end::
+						::end::-->
+						::raw d.extraHtml::
 					</div>
 
 
@@ -282,15 +283,16 @@
 							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
 						::end::
 
-						<!-- extra infos -->
-						<div class="text-center">
-							::foreach i d.actions::
-								<a href="::i.link::" class="btn btn-default btn-sm">
-									<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::" ></span>
-									 ::i.name::
-								</a>					
-							::end::
-						</div>
+						<!-- extra html -->
+					<div class="text-center">
+						<!--::foreach i d.actions::
+							<a href="::i.link::" class="btn btn-default btn-sm">
+								<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::" ></span>
+									::i.name::
+							</a>					
+						::end::-->
+						::raw d.extraHtml::
+					</div>
 					</div>
 
 					
