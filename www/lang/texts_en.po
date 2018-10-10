@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-17 11:30+0200\n"
-"Last-Translator: David Di Santi <ddisanti1@gmail.com>\n"
+"PO-Revision-Date: 2018-10-11 16:25+0000\n"
+"Last-Translator: William Jayberlinos <jayberlinos68@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/cagette/"
 "translations/en/>\n"
 "Language: en\n"
@@ -12,25 +12,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Weblate 3.2.1\n"
 
 #: src/App.hx:2527 src/db/User.hx:15991 lang/master/tpl/member/import.mtt:612
 #: lang/master/tpl/member/import.mtt:1355
 msgid "First name"
-msgstr ""
+msgstr "Prénom"
 
 #: src/App.hx:2573 src/db/User.hx:16028 lang/master/tpl/member/import.mtt:647
 #: lang/master/tpl/member/import.mtt:1389
 msgid "Last name"
-msgstr ""
+msgstr "Nom de Famille"
 
 #: src/App.hx:2750 src/db/User.hx:16559
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: src/App.hx:2794 src/App.hx:2837
 msgid "address"
-msgstr ""
+msgstr "Adresse"
 
 #: lang/master/tpl/home.mtt:14
 msgid "Default user credentials are :"
@@ -41,38 +41,40 @@ msgid "Database administration and migration"
 msgstr ""
 
 #: lang/master/tpl/translation.mtt:6
+#, fuzzy
 msgid "Manage text translation with GetText"
-msgstr ""
+msgstr "Gérais la traduction de vos textes avec GetText"
 
 #: lang/master/tpl/translation.mtt:9
 msgid "Switch to English"
-msgstr ""
+msgstr "Passer en Anglais"
 
 #: lang/master/tpl/translation.mtt:10
 msgid "Switch to French"
-msgstr ""
+msgstr "Passer en Français"
 
 #: src/App.hx:8531
 msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
 msgstr ""
+"Veuillez configurer l'email dans <href='/admin/emails'>cette section</a>"
 
 #: src/controller/Account.hx:892 src/controller/Account.hx:1087
 msgid "Email ::em:: is invalid"
-msgstr ""
+msgstr "L'email ::em:: n'est pas valide"
 
 #: src/controller/Account.hx:1257
 msgid "Your account has been updated"
-msgstr ""
+msgstr "Votre compte à été mis à jour"
 
 #: src/controller/Account.hx:1342
 msgid "Modify my account"
-msgstr ""
+msgstr "Modifier mon compte"
 
 #: src/controller/Account.hx:1629
 msgid "You left the group ::groupName::"
-msgstr ""
+msgstr "Vous avez quitté le groupe ::grouName::"
 
 #: src/controller/admin/Admin.hx:1790
 msgid "Configuration updated"
