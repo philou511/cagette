@@ -44,7 +44,7 @@ class App extends sugoi.BaseApp {
 		plugins.push( new connector.ConnectorPlugIn() );				
 		plugins.push( new pro.LemonwayEC() );
 		plugins.push( new pro.MangopayPlugin() );
-		//plugins.push( new who.WhoPlugIn() );
+		plugins.push( new who.WhoPlugIn() );
 		#end
 	
 		super.mainLoop();
