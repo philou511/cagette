@@ -287,23 +287,18 @@ class Cron extends Controller
 					if (u.distrib.isDistributor(u.user)) {
 						text += t._("<b>Warning: you are in charge of the delivery ! Do not forget to print the attendance sheet.</b>");
 					}
-
-					var m = new Mail();
-					m.setSender(App.config.get("default_email"), "Cagette.net");
-					if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
+					
 					try{
+						var m = new Mail();
+						m.setSender(App.config.get("default_email"), "Cagette.net");
+						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
+						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
+						m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
+						App.sendMail(m , u.distrib.contract.amap);	
 					}catch (e:Dynamic){						
 						app.logError(e); //email could be invalid
-					}
-					m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-					
-					try {
-						App.sendMail(m , u.distrib.contract.amap);	
-					}catch (e:Dynamic){
-						app.logError(e);
 					}
 					
 				}
