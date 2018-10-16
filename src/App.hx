@@ -270,12 +270,12 @@ class App extends sugoi.BaseApp {
 		
 	}
 	
-	public static function quickMail(to:String, subject:String, html:String){
+	public static function quickMail(to:String, subject:String, html:String,?group:db.Amap){
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			
 		e.setSender(App.config.get("default_email"),"Cagette.net");				
-		var html = App.current.processTemplate("mail/message.mtt", {text:html});		
+		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
 		e.setHtmlBody(html);
 		App.sendMail(e);
 	}
