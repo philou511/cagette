@@ -150,11 +150,11 @@ class Member extends Controller
 	/**
 	 * Send an invitation to a new member
 	 */
-	function doInviteMember(u:db.User){
+	function doInviteMember(u:db.User,group:db.Amap){
 		
 		if (checkToken() ) {
 			try {
-				u.sendInvitation();
+				u.sendInvitation(group);
 			}catch (e:String){
 				if (e.indexOf("curl") >-1) {
 					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
@@ -176,7 +176,7 @@ class Member extends Controller
 			var users = db.User.getUsers_NewUsers();
 			try{
 				for ( u in users) {
-					u.sendInvitation();
+					u.sendInvitation(app.user.amap);
 					Sys.sleep(0.2);
 				}
 			}catch (e:String){

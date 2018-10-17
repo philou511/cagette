@@ -30,7 +30,8 @@ class UserService
 		
 		//new account
 		if (!user.isFullyRegistred()) {
-			user.sendInvitation();
+			var group = user.getAmaps().first();
+			user.sendInvitation(group);
 			var text = t._("Your account have not been validated yet. We sent an e-mail to ::email:: to finalize your subscription!",{email:user.email});
 			throw new Error(403,text);			
 		}
