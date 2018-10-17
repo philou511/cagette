@@ -239,8 +239,6 @@ class Distribution extends Object
 
     }
 
-
-
 	/**
 	 * Return a string like $placeId-$date.
 	 * 
