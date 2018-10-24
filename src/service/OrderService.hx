@@ -59,7 +59,7 @@ class OrderService
 		o.product = product;
 		o.quantity = quantity;
 		o.productPrice = product.price;
-		if (product.contract.hasPercentageOnOrders()) {
+		if ( product.contract.hasPercentageOnOrders() ){
 			o.feesRate = product.contract.percentageValue;
 		}
 		o.user = user;

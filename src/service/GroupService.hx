@@ -1,5 +1,6 @@
 package service;
-
+using Lambda;
+using tools.ObjectListTool;
 /**
  * Service for managing groups
  * @author fbarbut
@@ -33,7 +34,7 @@ class GroupService
 		d.image = g.image;
 		d.regOption = g.regOption;
 		d.currency = g.currency;
-		d.currencyCode g.currencyCode;
+		d.currencyCode = g.currencyCode;
 		d.allowedPaymentsType = g.allowedPaymentsType;
 		d.checkOrder = g.checkOrder;
 		d.IBAN = g.IBAN;		
@@ -49,6 +50,31 @@ class GroupService
 	}
 	
 	static function duplicateContract(){
+		
+	}
+
+	/**
+		Get users with rights in this group
+	**/
+	public static function getGroupMembersWithRights(group:db.Amap,?rights:Array<db.UserAmap.Right>):Array<db.User>{
+
+		var membersWithAnyRights = db.UserAmap.manager.search($rights!=null && $amap==group,false).array();
+		if(rights==null){
+			return Lambda.map(membersWithAnyRights,function(ua) return ua.user).array();
+		}else{
+			var members = [];
+			for( m in membersWithAnyRights){
+				for(r in rights){
+					if(m.hasRight(r)){
+						members.push(m.user);
+						break;
+					}
+				}
+			}
+			
+			return members.deduplicate();
+		}
+
 		
 	}
 	

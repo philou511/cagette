@@ -24,6 +24,7 @@ class TestOrders extends haxe.unit.TestCase
 
 		TestSuite.initDB();
 		TestSuite.initDatas();
+		
 		db.Basket.emptyCache();
 
 		c = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.contract;

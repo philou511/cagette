@@ -29,6 +29,12 @@ class Amap extends Controller
 		var form = Form.fromSpod(group);
 	
 		if (form.checkToken()) {
+			
+			if(form.getValueOf("id") != app.user.amap.id) {
+				var editedGroup = db.Amap.manager.get(form.getValueOf("id"),false);
+				throw Error("/amap/edit",'Erreur, vous êtes en train de modifier "${editedGroup.name}" alors que vous êtes connecté à "${app.user.amap.name}"');
+			}
+			
 			form.toSpod(group);
 			
 			if (group.extUrl != null){

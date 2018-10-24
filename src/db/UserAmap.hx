@@ -112,8 +112,7 @@ class UserAmap extends Object
 		return cotis != null;
 	}
 	
-	override public function insert(){
-		
+	override public function insert(){		
 		App.current.event(NewMember(this.user,this.amap));
 		super.insert();
 	}

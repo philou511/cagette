@@ -2,6 +2,7 @@ package;
 import Common;
 using tools.ObjectListTool;
 using Lambda;
+using tools.ObjectListTool;
 
 /**
  *  MultiDistrib represents many db.Distribution
@@ -215,7 +216,23 @@ class MultiDistrib
 		return distributions[0].end;
 	}
 
-	public function getProductsExcerpt(){
+	public function getProductsExcerpt():Array<ProductInfo>{
+		var key = "productsExcerpt-"+getKey();
+		var cache:Array<Int> = sugoi.db.Cache.get(key);
+		if(cache!=null){
+			var out = [];
+			//try{
+				for( pid in cache.array()){
+					var p = db.Product.manager.get(pid,false);
+					if(p!=null) out.push(p.infos());
+				}
+			//}catch(e:Dynamic){
+			// 	sugoi.db.Cache.destroy(key);
+			// }
+			
+			return out;
+		}
+
 		var products = [];
 		for( d in distributions){
 			for ( p in d.contract.getProductsPreview(9)){
@@ -224,6 +241,7 @@ class MultiDistrib
 		}
 		products = thx.Arrays.shuffle(products);			
 		products = products.slice(0, 9);
+		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
 		return products;	
 
 	}
@@ -348,5 +366,10 @@ class MultiDistrib
 		
 		return c;
 	}
+
+	public function getKey(){
+		return distributions[0].getKey();
+	}
+
 	
 }

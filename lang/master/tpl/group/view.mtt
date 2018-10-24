@@ -2,6 +2,23 @@
 
 	
 	<div class="col-md-8 col-md-offset-2" style="margin-top:12px;">
+
+		<!-- Notifications -->
+		<div class="row">
+			<div id="content" class="col-md-12">
+				::foreach notification getMessages()::
+				<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
+					::if notification.error::
+					<span class="glyphicon glyphicon-exclamation-sign"></span>
+					::else::
+					<span class="glyphicon glyphicon-ok"></span>
+					::end::
+					
+					::raw notification.text::					
+				</div>
+				::end::
+			</div>	
+		</div>
 		
 		<div class="article">
 			

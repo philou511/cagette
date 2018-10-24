@@ -13,13 +13,11 @@ class TestSuite
 		var r = new haxe.unit.TestRunner();
 
 		//Cagette core tests
-		initDB();
-		initDatas();
-		// r.add(new test.TestUser());
-		// r.add(new test.TestOrders());
-		// r.add(new test.TestTools());
-		// r.add(new test.TestDistributions());
-		// r.add(new test.TestPayments());
+		r.add(new test.TestUser());
+		r.add(new test.TestOrders());
+		r.add(new test.TestTools());
+		r.add(new test.TestDistributions());
+		r.add(new test.TestPayments());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
@@ -56,6 +54,7 @@ class TestSuite
 	
 	public static function initDB(){
 		//NUKE EVERYTHING BWAAAAH !!
+		sys.db.Manager.cleanup(); //cleanup cache objects
 		sql("DROP DATABASE tests;");
 		sql("CREATE DATABASE tests;");
 		sql("USE tests;");
@@ -93,10 +92,6 @@ class TestSuite
 		];
 	
 		for(t in tables) createTable(t);
-
-		#if plugins
-		pro.test.ProTestSuite.initDB();
-		#end
 		
 	}
 	
@@ -480,10 +475,6 @@ class TestSuite
 		d.insert();
 
 		DISTRIB_PATISSERIES = d;
-
-		#if plugins
-		pro.test.ProTestSuite.initDatas();
-		#end
 	}
 	
 	static function initApp(u:db.User){

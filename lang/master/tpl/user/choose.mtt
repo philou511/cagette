@@ -84,11 +84,21 @@
 	<div class="col-md-12" ::cond wl.length>0::>
 		<div class="article">
 			<h4>::_("Subscriptions on waiting list")::</h4>
-			<ul>
+			<table class="table">
 			::foreach w wl::
-				<li> <a href="/group/::w._group.id::">::w._group.name::</a> ( inscrit depuis le ::hDate(w.date):: )</li>
+			<tr>
+				<td>
+					<a href="/group/::w._group.id::">::w._group.name::</a>
+				</td>
+				<td>
+					::__("Request sent on ::date::",{ date:hDate(w.date) })::
+				</td>
+				<td>
+					<a href="/group/listCancel/::w._group.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span> ::_("Cancel")::</a>
+				</td>
+			</tr>
 			::end::
-			</ul>
+			</table>
 		</div>
 	</div>
 
