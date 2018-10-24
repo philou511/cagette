@@ -220,7 +220,17 @@ class MultiDistrib
 		var key = "productsExcerpt-"+getKey();
 		var cache:Array<Int> = sugoi.db.Cache.get(key);
 		if(cache!=null){
-			return Lambda.map(cache,function(pid) return db.Product.manager.get(pid,false).infos()).array();
+			var out = [];
+			//try{
+				for( pid in cache.array()){
+					var p = db.Product.manager.get(pid,false);
+					if(p!=null) out.push(p.infos());
+				}
+			//}catch(e:Dynamic){
+			// 	sugoi.db.Cache.destroy(key);
+			// }
+			
+			return out;
 		}
 
 		var products = [];
@@ -231,7 +241,7 @@ class MultiDistrib
 		}
 		products = thx.Arrays.shuffle(products);			
 		products = products.slice(0, 9);
-		sugoi.db.Cache.set(key, Lambda.map(products,function(p)return p.id), 3600 );
+		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
 		return products;	
 
 	}

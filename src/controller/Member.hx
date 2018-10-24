@@ -150,17 +150,10 @@ class Member extends Controller
 	/**
 	 * Send an invitation to a new member
 	 */
-	function doInviteMember(u:db.User,group:db.Amap){
+	function doInviteMember(u:db.User){
 		
 		if (checkToken() ) {
-			try {
-				u.sendInvitation(group);
-			}catch (e:String){
-				if (e.indexOf("curl") >-1) {
-					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
-					throw Error("/member", t._("An error occurred while sending emails, please retry"));
-				}
-			}
+			u.sendInvitation(app.user.amap);
 			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
 		

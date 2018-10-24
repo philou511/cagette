@@ -160,7 +160,8 @@ typedef PlaceInfos = {
 typedef UserInfo = {
 	id:Int,
 	name:String,
-	email:String
+	email:String,
+	
 }
 
 
