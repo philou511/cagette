@@ -2,6 +2,7 @@ package db;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
+using tools.FloatTool;
 
 /**
  * Product
@@ -33,11 +34,10 @@ class Product extends Object
 	@hideInForms public var wholesale : Bool;	//this product is a wholesale product (crate,bag,pallet)
 	@hideInForms public var retail : Bool;		//this products is a fraction of a wholesale product
 	@hideInForms public var bulk : Bool;		//(vrac) warn the customer this product is not packaged
-	public var hasFloatQt:SBool; //this product can be ordered in "float" quantity
+	public var hasFloatQt:SBool; //deprecated : this product can be ordered in "float" quantity
 	
 	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
-	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy
-	
+	@:relation(txpProductId) public var txpProduct : SNull<db.TxpProduct>; //taxonomy	
 	
 	public var active : SBool; 	//if false, product disabled, not visible on front office
 	
@@ -92,7 +92,7 @@ class Product extends Object
 	 * get price including margins
 	 */
 	public function getPrice():Float{
-		return price + contract.computeFees(price);
+		return (price + contract.computeFees(price)).clean();
 	}
 	
 	/**

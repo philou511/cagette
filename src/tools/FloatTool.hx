@@ -17,7 +17,7 @@ class FloatTool{
 	}
 
 	//prevent float comparison bug in Neko
-	public static function clean(f:Float){
+	public static function clean(f:Float):Float{
 		return Math.round(f*100)/100;
 	}
 
