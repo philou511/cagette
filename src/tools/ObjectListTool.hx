@@ -135,8 +135,7 @@ class ObjectListTool
 		var out2 = [];
 		for ( k in keys) out2.push(out[k]);
 		
-		return out2;
-		
+		return out2;		
 	}
 	
 }

@@ -4,7 +4,7 @@
 		
 		<h2>::_("Waiting list")::</h2>
 		
-		<table class="table table-bordered">
+		<table class="table">
 			
 			<tr>
 				<th>::_("Name")::</th>
@@ -12,6 +12,7 @@
 				<th>::_("Phone")::</th>
 				<th>::_("Registration date")::</th>
 				<th>::_("Message")::</th>
+				<th></th>
 			</tr>
 			
 			::foreach w waitingList::
@@ -20,9 +21,9 @@
 				
 				<td>::u.getName()::</td>
 				<td>::u.email::</td>
-				<td>::u.phone::</td>
+				<td>$$nullSafe(::u.phone::)</td>
 				<td>::hDate(w.date)::</td>
-				<td>::w.message::</td>
+				<td>"::w.message::"</td>
 				<td class="col-md-4">
 					<a href="/member/waiting?add=::u.id::" class="btn btn-primary btn-sm">
 						<span class="glyphicon glyphicon-ok"></span>

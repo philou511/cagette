@@ -131,36 +131,18 @@ class Member extends Controller
 	function doWaiting(?args:{?add:db.User,?remove:db.User}){
 		
 		if (args != null){
-			
 			if (args.add != null){
-				//this user becomes member and is removed from waiting list
-				var w = db.WaitingList.manager.select($user == args.add && $group == app.user.amap , true);
 				
-				if (db.UserAmap.get(args.add, app.user.amap, false) != null){
-					throw Error("/member/waiting", t._("This user is already a member of your group.") );
-				}
-				
-				var ua = new db.UserAmap();
-				ua.amap = app.user.amap;
-				ua.user = w.user;
-				ua.insert();
-				
-				w.delete();
-				
+				service.WaitingListService.approveRequest(args.add,app.user.amap);
 				throw Ok("/member/waiting", t._("Membership request accepted") );
 				
 			}else if (args.remove != null){
 				
-				//simply removed from waiting list
-				var w = db.WaitingList.manager.select($user == args.remove && $group == app.user.amap , true);
-				w.delete();
-				
-				throw Ok("/member/waiting", t._("membership request deleted") );
+				service.WaitingListService.cancelRequest(args.remove,app.user.amap);
+				throw Ok("/member/waiting", t._("Membership request refused") );
 				
 			}
-			
 		}
-		
 		
 		view.waitingList = db.WaitingList.manager.search($group == app.user.amap,{orderBy:-date});
 	}
@@ -171,14 +153,7 @@ class Member extends Controller
 	function doInviteMember(u:db.User){
 		
 		if (checkToken() ) {
-			try {
-				u.sendInvitation();
-			}catch (e:String){
-				if (e.indexOf("curl") >-1) {
-					App.current.logError(e, haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
-					throw Error("/member", t._("An error occurred while sending emails, please retry"));
-				}
-			}
+			u.sendInvitation(app.user.amap);
 			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
 		
@@ -194,7 +169,7 @@ class Member extends Controller
 			var users = db.User.getUsers_NewUsers();
 			try{
 				for ( u in users) {
-					u.sendInvitation();
+					u.sendInvitation(app.user.amap);
 					Sys.sleep(0.2);
 				}
 			}catch (e:String){

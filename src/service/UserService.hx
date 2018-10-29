@@ -16,7 +16,7 @@ class UserService
 	}
 	
 	/**
-	 * Login service
+	 * User login service
 	 * @param	email
 	 * @param	password
 	 */
@@ -35,7 +35,8 @@ class UserService
 		
 		//new account
 		if (!user.isFullyRegistred()) {
-			user.sendInvitation();
+			var group = user.getAmaps().first();
+			user.sendInvitation(group);
 			var text = t._("Your account have not been validated yet. We sent an e-mail to ::email:: to finalize your subscription!",{email:user.email});
 			throw new Error(403,text);			
 		}
@@ -57,7 +58,9 @@ class UserService
 		
 	}
 	
-	
+	/**
+		Full registration by a user himself
+	**/
 	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String){
 		
 		var t  = sugoi.i18n.Locale.texts;
@@ -77,14 +80,39 @@ class UserService
 		user.phone = phone;
 		user.setPass(pass);
 		user.insert();				
-		
-		
+				
 		var group = App.current.getCurrentGroup();	
 		if (group != null && group.regOption == db.Amap.RegOption.Open){
 			user.makeMemberOf(group);	
 		}
 		
 		db.User.login(user, email);		
+	}
+
+	/**
+		Soft registration : 
+		- Somebody creates/import a new user , 
+		- or pre-registration in a waiting list
+	**/
+	public static function softRegistration(firstName:String, lastName:String, email:String){
+		
+		var t  = sugoi.i18n.Locale.texts;
+		
+		if (!sugoi.form.validators.EmailValidator.check(email)){
+			throw new Error(500,t._("Invalid email address"));
+		}
+		
+		if ( db.User.getSameEmail(email).length > 0 ) {
+			throw new Error(409,t._("We already have an account with this email address"));
+		}
+
+		var user = new db.User();
+		user.email = email;
+		user.firstName = firstName;
+		user.lastName = lastName;
+		user.insert();				
+
+		return user;
 	}
 
 	/**

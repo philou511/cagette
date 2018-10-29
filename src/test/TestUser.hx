@@ -26,6 +26,9 @@ class TestUser extends haxe.unit.TestCase
 	 * get a contract + a user
 	 */
 	override function setup(){
+		TestSuite.initDB();
+		TestSuite.initDatas();
+		
 		contract = db.Contract.manager.get(3);
 		user = db.User.manager.get(1);
         group1 = db.Amap.manager.get(1);

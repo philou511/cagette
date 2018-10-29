@@ -1,7 +1,7 @@
 package controller;
 import sugoi.form.elements.StringInput;
-import sugoi.form.validators.EmailValidator;
 import service.OrderService;
+import service.WaitingListService;
 
 /**
  * Groups
@@ -37,12 +37,17 @@ class Group extends controller.Controller
 	@tpl('form.mtt')
 	function doList(group:db.Amap){
 		
+		//checks
 		if (group.regOption != db.Amap.RegOption.WaitingList) throw Redirect("/group/" + group.id);
-		if (app.user != null){
-			if ( db.WaitingList.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already in the waiting list of this group"));
-			if ( db.UserAmap.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));
+		if (app.user != null) {
+			try{
+				WaitingListService.canRegister(app.user,group);
+			}catch(e:tink.core.Error){				
+				throw Error("/group/" + group.id,e.message);
+			}
 		}
 		
+		//build form
 		var form = new sugoi.form.Form("reg");				
 		if (app.user == null){
 			form.addElement(new StringInput("userFirstName", t._("Your firstname"),"",true));
@@ -52,43 +57,43 @@ class Group extends controller.Controller
 		form.addElement(new sugoi.form.elements.TextArea("msg", t._("Leave a message")));
 		
 		if (form.isValid()){
-			
-			if (app.user == null){
-				var f = form;
-				var user = new db.User();
-				user.email = f.getValueOf("userEmail");
-				user.firstName = f.getValueOf("userFirstName");
-				user.lastName = f.getValueOf("userLastName");
+			try{
+				if (app.user == null){
+					var f = form;
+					var user = service.UserService.softRegistration(f.getValueOf("userFirstName"),f.getValueOf("userLastName"), f.getValueOf("userEmail") );
+					db.User.login(user, user.email);				
+				}			
 				
-				if ( db.User.getSameEmail(user.email).length > 0 ) {
-					throw Ok("/user/login", t._("You already subscribed to Cagette, please log in on this page"));
-				}
-				
-				user.insert();
-				app.session.setUser(user);
-				
-			}			
+				WaitingListService.registerToWl(app.user,group,form.getValueOf("msg"));
+				throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed.") );
+			}catch(e:tink.core.Error){
+				throw Error("/group/list/" + group.id,e.message);
+			}
 			
-			var w = new db.WaitingList();
-			w.user = app.user;
-			w.group = group;
-			w.message = form.getValueOf("msg");
-			w.insert();
-			
-			throw Ok("/group/" + group.id,t._("Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed.") );
 		}
 		
 		view.title = t._("Subscription to \"::groupeName::\" waiting list", {groupeName:group.name});
-		view.form = form;
-		
+		view.form = form;		
+	}
+
+	/**
+		Cancel suscription request
+	**/
+	function doListCancel(group:db.Amap){
+		try{
+			WaitingListService.removeFromWl(app.user,group);
+		}catch(e:tink.core.Error){				
+			throw Error("/group/" + group.id,e.message);
+		}
+		throw Ok("/group/" + group.id,t._("You've been removed from the waiting list"));
 	}
 	
 	
 	/**
-	 * Register direclty in an open group
+	 * 	Register direclty in an open group
 	 * 
-	 * the user can be logged or not !
-	 */
+	 * 	the user can be logged or not !
+	
 	@tpl('form.mtt')
 	function doRegister(group:db.Amap){
 		
@@ -145,7 +150,7 @@ class Group extends controller.Controller
 		view.title = t._("Subscription to \"::groupName::\"", {groupName:group.name});
 		view.form = form;
 		
-	}
+	}*/
 	
 	/**
 	 * create a new group
@@ -324,26 +329,19 @@ class Group extends controller.Controller
 		
 	}
 	
+	/**
+		Displays a google map in a popup
+	**/
 	@tpl('group/place.mtt')
 	public function doPlace(place:db.Place){
 		view.place = place;
 		
 		//build adress for google maps
 		var addr = "";
-		if (place.address1 != null)
-			addr += place.address1;
-			
-		if (place.address2 != null) {
-			addr += ", " + place.address2;
-		}
-		
-		if (place.zipCode != null) {
-			addr += " " + place.zipCode;
-		}
-		
-		if (place.city != null) {
-			addr += " " + place.city;
-		}
+		if (place.address1 != null) addr += place.address1;
+		if (place.address2 != null) addr += ", " + place.address2;
+		if (place.zipCode != null) addr += " " + place.zipCode;
+		if (place.city != null) addr += " " + place.city;
 		
 		view.addr = view.escapeJS(addr);
 	}
@@ -353,6 +351,7 @@ class Group extends controller.Controller
 	 */
 	@tpl("group/map.mtt")
 	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
+
 		view.container = "container-fluid";
 		
 		//if no param is sent, focus on Paris
@@ -362,8 +361,7 @@ class Group extends controller.Controller
 		
 		view.lat = args.lat;
 		view.lng = args.lng;
-		view.address = args.address;
-		
+		view.address = args.address;		
 	}
 	
 	
