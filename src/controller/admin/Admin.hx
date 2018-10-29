@@ -203,7 +203,7 @@ class Admin extends Controller {
 						Sys.println(operation.toString() + "<br>");
 					}
 				
-					for ( payment in basket.getPayments()){
+					for ( payment in basket.getPaymentsOperations()){
 
 						if (payment.pending){
 							Sys.println(distrib.toString() + "<br>");

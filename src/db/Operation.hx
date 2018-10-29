@@ -10,8 +10,8 @@ enum OperationType{
 }
 
 typedef PaymentInfos = {
-	type:String, 			//payment type (PSP)
-	?remoteOpId:Int,		//PSP operation ID 
+	type : String, 			//payment type (PSP)
+	?remoteOpId : String,		//PSP operation ID 
 	/*?netAmount:Float,		//amount paid less fees
 	?fixedFees:Float,		//PSP fixed fees
 	?variableFees:Float,	//PSP variable fees*/
@@ -240,7 +240,7 @@ class Operation extends sys.db.Object
 	 * @param	name
 	 * @param	relation
 	 */
-	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation ){
+	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation, ?remoteOpId : String ){
 		
 		var t = new db.Operation();
 		t.amount = Math.abs(amount);
@@ -250,7 +250,10 @@ class Operation extends sys.db.Object
 		t.pending = true;
 		t.user = user;
 		t.type = Payment;
-		var data : PaymentInfos = {type:type};
+		var data : PaymentInfos = { type: type };
+		if ( remoteOpId != null ) {
+			data.remoteOpId = remoteOpId;
+		}
 		t.data = data;
 		if(relation!=null) t.relation = relation;
 		t.insert();
