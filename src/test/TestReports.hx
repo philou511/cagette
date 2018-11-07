@@ -1,5 +1,8 @@
 package test;
 import Common;
+import test.TestSuite;
+import service.OrderService;
+
 /**
  * Test order reports
  * 
@@ -12,11 +15,64 @@ class TestReports extends haxe.unit.TestCase
 			
 		super();
 	}
+
+	override function setup(){
+
+		TestSuite.initDB();
+		TestSuite.initDatas();
+
+	}
+
+
+	function testOrdersByProduct(){
+
+		//record orders
+		var seb = TestSuite.SEB;
+		var francois = TestSuite.FRANCOIS;
+		var julie = TestSuite.JULIE;
+
+		//distrib de légumes
+		var d = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
+		var carrots = TestSuite.CARROTS;
+		var courgettes = TestSuite.COURGETTES;
+		var poulet = TestSuite.CHICKEN;
+
+		OrderService.make(seb,4,courgettes,d.id);
+		OrderService.make(seb,1,poulet,d.id);
+
+		OrderService.make(francois,6,courgettes,d.id);
+		OrderService.make(francois,2,poulet,d.id);
+		OrderService.make(francois,3,carrots,d.id);
+
+		OrderService.make(julie,8,carrots,d.id);
+		OrderService.make(julie,3,poulet,d.id);
+
+		//record orders on ANOTHER distrib
+		var d2 = service.DistributionService.create(
+			d.contract,
+			new Date(2018,2,12,0,0,0),
+			new Date(2018,2,12,0,3,0),
+			d.contract.amap.getPlaces().first().id,
+			null,null,null,null,
+			new Date(2018,2,8,0,0,0),
+			new Date(2018,2,11,0,0,0)
+		);
+		OrderService.make(julie,6,carrots,d2.id);
+		OrderService.make(julie,1,poulet,d2.id);
+
+		var orders = OrderService.getOrdersByProduct( {distribution:d} );
+
+		//courgettes x 10
+		var courgettesOrder = Lambda.find(orders, function(o) return o.pid==courgettes.id);
+		assertEquals( 10.0 , courgettesOrder.quantity );
+		assertEquals( 35.0 , courgettesOrder.totalTTC );
+		assertEquals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
+	}
 	
 	/**
 	 * run once at the beginning
 	 */
-	override function setup(){
+	/*override function setup(){
 		
 		sys.db.Manager.cnx.request("TRUNCATE TABLE UserContract;");
 		
@@ -39,15 +95,13 @@ class TestReports extends haxe.unit.TestCase
 		
 		db.UserContract.make(bubar, 1, carottes ,distrib.id);
 		db.UserContract.make(seb, 5, courgettes ,distrib.id);
-		
-		
-	}
+	}*/
 	
 
 	/**
 	 * test a simple report with just a time frame
 	 */
-	public function testTimeFrameReport(){
+	/*public function testTimeFrameReport(){
 		
 		var fraises = db.Product.manager.get(2);
 		var pommes = db.Product.manager.get(3);
@@ -77,20 +131,18 @@ class TestReports extends haxe.unit.TestCase
 			}
 		}
 		
-	}
+	}*/
 	
 	
 	/**
 	 * test a report with time frame + group
 	 */
-	public function testGroupReport(){
+	/*public function testGroupReport(){
 		
 		var options = { startDate:new Date(2017, 5, 1, 0, 0, 0), endDate:new Date(2017, 5, 31, 0, 0, 0), groups:[1], contracts:[] };
 		
 		var rep = new pro.OrderReport(options);
-		
 		var data = rep.byProduct();
-		
 		assertEquals(2,data.length); //should be the 2 products
 		
 		for ( d in data){
@@ -99,9 +151,7 @@ class TestReports extends haxe.unit.TestCase
 				case "Pommes": assertEquals(d.qt, 2);				
 			}
 		}
-		
-		
-	}
+	}*/
 	
 	
 	

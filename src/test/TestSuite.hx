@@ -14,10 +14,11 @@ class TestSuite
 
 		//Cagette core tests
 		r.add(new test.TestUser());
-		r.add(new test.TestOrders());
+		r.add(new test.TestOrders());		
 		r.add(new test.TestTools());
 		r.add(new test.TestDistributions());
 		r.add(new test.TestPayments());
+		r.add(new test.TestReports());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
@@ -131,6 +132,7 @@ class TestSuite
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	public static var COURGETTES:db.Product = null;
+	public static var CARROTS:db.Product = null;
 	public static var FLAN:db.Product = null;
 	public static var CROISSANT:db.Product = null;
 	public static var DISTRIB_PATISSERIES:db.Distribution = null;
@@ -165,8 +167,7 @@ class TestSuite
 		
 		initApp(u);
 		
-		//GROUPS
-
+		//GROUP "AMAP du Jardin public"
 		var a = new db.Amap();
 		a.name = "AMAP du Jardin public";
 		a.contact = f;
@@ -183,6 +184,7 @@ class TestSuite
 
 		PLACE_DU_VILLAGE = place;
 		
+		//VENDOR "Ferme de la galinette"
 		var v = new db.Vendor();
 		v.name = "La ferme de la Galinette";
 		v.email = "galinette@gmail.com";
@@ -264,7 +266,7 @@ class TestSuite
 
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
-		//second group
+		//second group 
 		var a = new db.Amap();
 		a.name = "Les Locavores de la Rue Saucisse";
 		a.contact = f;
@@ -302,6 +304,7 @@ class TestSuite
 		p.qt = 1;
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 3.5;
+		p.vat = 5.5;
 		p.organic = true;
 		p.contract = c;
 		p.insert();
@@ -310,29 +313,29 @@ class TestSuite
 		
 		var p = new db.Product();
 		p.name = "Carottes";
-		p.qt = 1;
+		p.qt = 1;		
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 2.8;
+		p.vat = 5.5;
 		p.contract = c;
 		p.insert();
 		
+		CARROTS = p;
+
 		var p = new db.Product();
 		p.name = "Poulet";
 		p.qt = 1.5;
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 15;
+		p.vat = 5.5;
 		p.multiWeight = true;
 		p.hasFloatQt = true;
 		p.contract = c;
 		p.insert();
+
 		CHICKEN = p;
 		
-		var d = new db.Distribution();
-		d.date = new Date(2017, 5, 1, 19, 0, 0);
-		d.contract = c;
-		d.place = place;
-		d.insert();
-
+		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,null,null,null,null,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
 
 		//PASTRY

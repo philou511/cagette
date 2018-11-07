@@ -466,7 +466,8 @@ class ContractAdmin extends Controller
 					}else{
 						//increment existing
 						f.quantity += x.quantity;
-						f.total += x.total;
+						f.totalHT += x.totalHT;
+						f.totalTTC += x.totalTTC;
 					}
 				}
 				out.set(vid, o);
@@ -493,11 +494,11 @@ class ContractAdmin extends Controller
 						"ref":o.ref,
 						"priceHT":view.formatNum(o.priceTTC / (1 + o.vat / 100) ),
 						"priceTTC":view.formatNum(o.priceTTC),
-						"totalHT":view.formatNum(o.total / (1 + o.vat / 100)),					
-						"totalTTC":view.formatNum(o.total)					
+						"totalHT":view.formatNum(o.totalHT),					
+						"totalTTC":view.formatNum(o.totalTTC)					
 					});
-					totalTTC += o.total;
-					totalHT += o.total / (1 + o.vat / 100);
+					totalTTC += o.totalTTC;
+					totalHT += o.totalHT;
 				}
 				
 				//total line

@@ -441,7 +441,8 @@ class OrderService
 	}
 
 	/**
-	 * Get orders grouped by products. 
+	Get orders grouped by products.
+	Overlap with ProReportService ???
 	 */
 	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
 		var view = App.current.view;
@@ -462,8 +463,7 @@ class OrderService
 			
 		}else if(options.startDate!=null && options.endDate!=null){
 			
-			//by dates
-			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			throw "not available";
 			
 		}
 	
@@ -474,13 +474,12 @@ class OrderService
 			p.name as pname,
 			p.price as price,
 			p.vat as vat,
-			p.ref as ref,
-			SUM(quantity*up.productPrice) as total
+			p.ref as ref			
 			from UserContract up, Product p 
 			where up.productId = p.id 
 			$where
 			group by p.id
-			order by pname asc; ';
+			order by pname asc;';
 			
 		var res = sys.db.Manager.cnx.request(sql).results();	
 		var orders = [];
@@ -494,10 +493,11 @@ class OrderService
 				pid:p.id,
 				pname:p.name,
 				ref:r.ref,
-				priceHT:null,
-				priceTTC:r.price,
+				priceHT: service.ProductService.getHTPrice(r.price,p.vat),
+				priceTTC: r.price,
 				vat:p.vat,
-				total:1.0 * r.quantity * r.price,
+				totalTTC : 1.0 * r.quantity * r.price,
+				totalHT  : service.ProductService.getHTPrice( 1.0 * r.quantity * r.price ,p.vat),
 				weightOrVolume:"",
 			};
 
@@ -539,16 +539,27 @@ class OrderService
 					"quantity":view.formatNum(o.quantity),
 					"pname":o.pname,
 					"ref":o.ref,
+					"priceHT":view.formatNum(o.priceHT),
 					"priceTTC":view.formatNum(o.priceTTC),
-					"total":view.formatNum(o.total)					
+					"totalHT":view.formatNum(o.totalHT),					
+					"totalTTC":view.formatNum(o.totalTTC),
 				});				
 			}
 
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "priceTTC", "total"],"Export-"+exportName+"-par produits");
+			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "priceHT","priceTTC","totalHT","totalTTC"],"Export-"+exportName+"-par produits");
 			return null;
 		}else{
 			return orders;		
 		}
+	}
+
+	public static function getTurnoverFromOrdersByProducts(ordersByProduct:Array<OrderByProduct>):{turnoverHT:Float,turnoverTTC:Float}{
+		var out = {turnoverHT:0.0,turnoverTTC:0.0};
+		for( o in ordersByProduct){
+			out.turnoverHT += o.totalHT;
+			out.turnoverTTC += o.totalTTC;
+		}
+		return out;
 	}
 
 	public static function sort(orders:Array<UserOrder>){

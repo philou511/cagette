@@ -48,6 +48,10 @@ class ProductService{
 		}
 	}
 
+	inline public static function getHTPrice(ttcPrice:Float,vatRate:Float):Float{
+		return ttcPrice / (1 + vatRate / 100);
+	}
+
 
 
 }

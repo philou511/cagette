@@ -187,7 +187,8 @@ typedef OrderByProduct = {
 	priceHT:Float,
 	priceTTC:Float,
 	vat:Float,
-	total:Float,
+	totalHT:Float,
+	totalTTC:Float,
 	weightOrVolume:String,
 };
 typedef OrderByEndDate = {date: String,contracts: Array<String>};
