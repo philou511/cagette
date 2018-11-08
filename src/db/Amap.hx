@@ -39,10 +39,14 @@ class Amap extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
+	public var legalStatus : SNull<SEnum<LegalStatus>>;
 	
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
 	public var contact : SNull<User>;
+	@formPopulate("getMembersFormElementData")
+	@:relation(legalReprId)
+	public var legalRepresentative : SNull<User>;
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
@@ -359,6 +363,7 @@ class Amap extends Object
 		var t = sugoi.i18n.Locale.texts;
 		return [
 			"name" 			=> t._("Group name"),
+			"legalStatus" 	=> t._("Legal status"),
 			"txtIntro" 		=> t._("Short description"),
 			"txtHome" 		=> t._("Homepage text"),
 			"txtDistrib" 	=> t._("Text for distribution lists"),
@@ -367,7 +372,8 @@ class Amap extends Object
 			"flags" 		=> t._("Options"),
 			"groupType" 	=> t._("Group type"),
 			"regOption" 	=> t._("Registration setting"),
-			"contact" 		=> t._("Main contact"),			
+			"contact" 		=> t._("Main contact"),
+			"legalRepresentative" => t._("Legal representative")			
 		];
 	}
 }

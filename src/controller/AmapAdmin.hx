@@ -19,10 +19,10 @@ class AmapAdmin extends Controller
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();
 		
-		if (app.user.amap.hasPayments()){
-			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Payments") });
-		}		
-		
+		if (app.user.amap.hasPayments()) {
+			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment") });
+		}	
+
 		var e = Nav(nav,"groupAdmin");
 		app.event(e);
 		view.nav = e.getParameters()[0];
@@ -360,7 +360,7 @@ class AmapAdmin extends Controller
 			
 		}
 		
-		view.title = t._("Options of payment");
+		view.title = t._("Means of payment");
 		view.form = f;
 	}
 	
