@@ -1,7 +1,4 @@
--lib sugoi:git:https://github.com/bablukid/sugoi#master
 -lib templo
--lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
--lib dbadmin:git:https://github.com/ncannasse/dbadmin.git#master
 -lib hxevents
 -lib thx.semver
 -lib thx.csv
@@ -9,6 +6,11 @@
 -lib hscript
 -lib smtpmailer
 -lib tink_json
+
+-lib sugoi:git:https://github.com/bablukid/sugoi#master
+-lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
+-lib dbadmin:git:https://github.com/ncannasse/dbadmin.git#master
+
 -cp common
 -cp src
 -cp lang/master/tpl
