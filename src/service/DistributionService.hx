@@ -349,10 +349,8 @@ class DistributionService
 				if (d.contract.type == db.Contract.TYPE_VARORDER && !canDelete(d) ){
 					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
 				}else{
-					d.lock();
 					d.delete();
 				}
-
 			}
 
 			//In case this is a distrib cycle for an amap contract with payments enabled, it will update all the operations
@@ -360,13 +358,8 @@ class DistributionService
 			updateAmapContractOperations(contract);
 
 		}
-
-		 //All cycle distribs have been deleted so we can delete the cycle itself
-		if (messages.length == 0)
-		{	
-			cycle.delete();
-		}
-
+		cycle.delete();
+		
 		return messages;
 	}
 

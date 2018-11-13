@@ -117,7 +117,10 @@ class User extends Controller
 			
 			var email :String = askmailform.getValueOf("email");
 			var user = db.User.manager.select(email == $email, false);
+			//could be user 2
+			if(user==null) user = db.User.manager.select(email == $email2, false);
 			
+			//user not found
 			if (user == null) throw Error(url, t._("This E-mail is not linked to a known account"));
 			
 			//create token
@@ -126,8 +129,8 @@ class User extends Controller
 			
 			var m = new sugoi.mail.Mail();
 			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
-			m.setRecipient(user.email, user.name);					
-			m.setSubject( App.config.NAME+ t._(": password change"));
+			m.setRecipient(email, user.name);					
+			m.setSubject( "["+App.config.NAME+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -146,14 +149,30 @@ class User extends Controller
 		if (chpassform.isValid()) {
 			//change pass
 			step = 4;
-			
-			
+						
 			if ( chpassform.getValueOf("pass1") == chpassform.getValueOf("pass2")) {
 				
 				var uid = Std.parseInt( chpassform.getValueOf("uid") );
 				var user = db.User.manager.get(uid, true);
-				user.setPass(chpassform.getValueOf("pass1"));
+				var pass = chpassform.getValueOf("pass1");
+				user.setPass(pass);
 				user.update();
+
+				var m = new sugoi.mail.Mail();
+				m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
+				m.setRecipient(user.email, user.name);					
+				if(user.email2!=null) m.setRecipient(user.email2, user.name);					
+				m.setSubject( "["+App.config.NAME+"] : "+t._("New password confirmed"));
+				var emails = [user.email];
+				if(user.email2!=null) emails.push(user.email2);
+				var params = {
+					user:user,
+					emails:emails.join(", "),
+					password:pass,
+					NAME:App.config.NAME
+				}
+				m.setHtmlBody( app.processTemplate('mail/newPasswordConfirmed.mtt', params) );
+				App.sendMail(m);	
 				
 			}else {
 				error = t._("You must key-in two times the same password");

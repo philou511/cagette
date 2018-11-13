@@ -67,6 +67,18 @@ class TestReports extends haxe.unit.TestCase
 		assertEquals( 10.0 , courgettesOrder.quantity );
 		assertEquals( 35.0 , courgettesOrder.totalTTC );
 		assertEquals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
+
+		//the report stays the same, even if the product has a new price.
+		courgettes.lock();
+		courgettes.price+=4;
+		courgettes.update();
+		var orders = OrderService.getOrdersByProduct( {distribution:d} );
+		var courgettesOrder = Lambda.find(orders, function(o) return o.pid==courgettes.id);
+		assertEquals( 10.0 , courgettesOrder.quantity );
+		assertEquals( 35.0 , courgettesOrder.totalTTC );
+		assertEquals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
+
+
 	}
 	
 	/**

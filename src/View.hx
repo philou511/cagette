@@ -90,13 +90,13 @@ class View extends sugoi.BaseView {
 	public function formatNum(n:Float):String {
 		if (n == null) return "";
 		
-		//arrondi a 2 apres virgule
+		//round with 2 digits after comma
 		var out  = Std.string(roundTo(n, 2));		
 		
-		//ajout un zéro, 1,8-->1,80
+		//add a zero, 1,8-->1,80
 		if (out.indexOf(".")!=-1 && out.split(".")[1].length == 1) out = out +"0";
 		
-		//virgule et pas point
+		//french : replace point by comma
 		return out.split(".").join(",");
 	}
 	

@@ -736,6 +736,18 @@ tr.danger td div.basketNumber {
   background-color: #d9534f;
   color: white; }
 
+/* fixed bar on bottom for buttons */
+.fixedBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: white;
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+  border-top: 3px solid #CCC;
+  z-index: 99; }
+
 /*!
  * https://github.com/YouCanBookMe/react-datetime
  */

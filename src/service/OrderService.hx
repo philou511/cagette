@@ -466,15 +466,17 @@ class OrderService
 			throw "not available";
 			
 		}
-	
+
+		//Product price will be an average if price changed
 		var sql = '
 			select 
 			SUM(quantity) as quantity,
 			p.id as pid,
 			p.name as pname,
-			p.price as price,
+			AVG(up.productPrice) as price,
 			p.vat as vat,
-			p.ref as ref			
+			p.ref as ref,			
+			SUM(quantity*up.productPrice) as totalTTC
 			from UserContract up, Product p 
 			where up.productId = p.id 
 			$where
@@ -486,22 +488,23 @@ class OrderService
 
 		//populate with full product names
 		for ( r in res){
-			var p = db.Product.manager.get(r.pid, false);
+
 			var o : OrderByProduct = {
 				quantity:1.0 * r.quantity,
 				smartQt:"",
-				pid:p.id,
-				pname:p.name,
+				pid:r.pid,
+				pname:r.pname,
 				ref:r.ref,
-				priceHT: service.ProductService.getHTPrice(r.price,p.vat),
+				priceHT: service.ProductService.getHTPrice(r.price,r.vat),
 				priceTTC: r.price,
-				vat:p.vat,
-				totalTTC : 1.0 * r.quantity * r.price,
-				totalHT  : service.ProductService.getHTPrice( 1.0 * r.quantity * r.price ,p.vat),
+				vat:r.vat,
+				totalTTC : r.totalTTC,
+				totalHT  : service.ProductService.getHTPrice( r.totalTTC ,r.vat),
 				weightOrVolume:"",
 			};
 
 			//smartQt
+			var p = db.Product.manager.get(r.pid, false);
 			if( p.hasFloatQt || p.variablePrice ){
 				o.smartQt = view.smartQt(o.quantity, p.qt, p.unitType);
 			}else{

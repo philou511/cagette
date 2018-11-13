@@ -101,7 +101,8 @@
 					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
 					<th>::_("Sub-total")::</th>
 					<th>::_("Fees")::</th>
-					<th>::_("Total")::</th>				
+					<th>::_("Total")::</th>
+					<th>::_("Paid")::</th>			
 				</tr>
 				::set total = 0::
 				::foreach o d.orders::
@@ -121,13 +122,19 @@
 						<td>
 							::formatNum(o.subTotal)::&nbsp;::currency()::
 						</td>
-						<td>
-							
+						<td>							
 							$$nullSafe(::formatNum(o.fees)::)
 						</td>
 						<td>
 							::formatNum(o.total)::&nbsp;::currency()::
 							::set total = total + o.total::
+						</td>
+						<td>
+							::if o.paid==true::
+							<span style="color:#00AA00;">::_("Paid")::</span>
+							::else::
+							<span style="color:#DD0000;">::_("Unpaid")::</span>
+							::end::
 						</td>
 					
 					</tr>
