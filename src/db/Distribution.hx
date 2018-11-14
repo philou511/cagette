@@ -48,7 +48,12 @@ class Distribution extends Object
 	 * get group members list as form data
 	 */
 	public function populate():FormData<Int> {
-		return this.contract.amap.getMembersFormElementData();				
+		if(App.current.user!=null && App.current.user.getAmap()!=null){
+			return App.current.user.getAmap().getMembersFormElementData();				
+		}else{
+			return [];
+		}
+		
 	}
 	
 	/**

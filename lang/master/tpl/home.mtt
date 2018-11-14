@@ -70,7 +70,8 @@
 							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
 						::end::
 						</div>
-						<div class="pull-right text-right" ::cond amap.hasShopMode() && !d.hasOnlyConstantOrders() ::>
+
+						<div class="pull-right text-right" ::cond amap.hasShopMode() && d.type==1 ::>
 							::if active::
 								<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
 									<span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::
@@ -283,14 +284,8 @@
 							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
 						::end::
 
-						<!-- extra html -->
+					<!-- extra html -->
 					<div class="text-center">
-						<!--::foreach i d.actions::
-							<a href="::i.link::" class="btn btn-default btn-sm">
-								<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::" ></span>
-									::i.name::
-							</a>					
-						::end::-->
 						::raw d.extraHtml::
 					</div>
 					</div>

@@ -32,8 +32,8 @@ class Order extends Controller
 		}
 		
 		//rights	
-		if (!app.user.canManageContract(c)) throw t._("You do not have the authorization to manage this contract");
-		if (d != null && d.validated) throw t._("This delivery has been already validated");
+		if (!app.user.canManageContract(c)) throw new Error(t._("You do not have the authorization to manage this contract"));
+		if (d != null && d.validated) throw new Error(t._("This delivery has been already validated"));
 		if (c.type == db.Contract.TYPE_VARORDER && d == null ) throw "this contract is a 'varying order contract', please provide a distributionId";
 		
 		//get datas

@@ -553,7 +553,7 @@ class Distribution extends Controller
 	@admin
 	public function doAutovalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place);
+		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
 		for ( d in md.distributions){
 			if(d.validated) continue;
 			service.PaymentService.validateDistribution(d);
@@ -564,7 +564,7 @@ class Distribution extends Controller
 	@admin
 	public function doUnvalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place);
+		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
 		for ( d in md.distributions){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);

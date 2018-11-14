@@ -44,20 +44,11 @@ class Main extends Controller {
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;
 
-
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
 
 		var distribs = MultiDistrib.getFromTimeRange(group,now,in3Month);
-		
-		//fix bug du sorting (les distribs du jour se mettent en bas)
-		/*var out = [];
-		for (x in distribs) out.push(x);
-		out.sort(function(a, b) {
-			return Std.int(a.startDate.getTime()/1000) - Std.int(b.startDate.getTime()/1000);
-		});*/
-		
 		view.distribs = distribs;
 		
 		//view functions

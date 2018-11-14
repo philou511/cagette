@@ -39,7 +39,7 @@ class Basket extends Object
 		// var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
-			var md = MultiDistrib.get(date, place);
+			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
 			var orders = md.getUserOrders(user);
 			
 			for( o in orders){
@@ -69,7 +69,7 @@ class Basket extends Object
 		if (b == null){
 			
 			//compute basket number
-			var md = MultiDistrib.get(date, place);
+			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;

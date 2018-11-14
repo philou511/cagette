@@ -56,26 +56,19 @@ class ContractAdmin extends Controller
 		view.vendors = app.user.amap.getVendors();
 		view.places = app.user.amap.getPlaces();
 		checkToken();
-		
 
 		//Multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			//var inTwoMonth = tools.DateTool.deltaDays(now,60);
-			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
-			for( md in multidistribs.copy()){
+			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now,db.Contract.TYPE_VARORDER);
+			/*for( md in multidistribs.copy()){
 				if(md.hasOnlyConstantOrders()) multidistribs.remove(md);
-			}
+			}*/
 			view.multidistribs = multidistribs; 
 
-			/*var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > oneMonthAgo && $type == db.Contract.TYPE_VARORDER,false).getIds();			
-			//var ds = db.Distribution.manager.search( !$validated && ($date < now) && ($contractId in cids), {orderBy:date}, false);
-			// view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );*/
 		}else{
 			view.multidistribs = [];
 		}
-		
-		
 	}
 
 	/**

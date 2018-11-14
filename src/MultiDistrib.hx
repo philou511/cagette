@@ -16,6 +16,7 @@ class MultiDistrib
 	public var contracts : Array<db.Contract>;
 	//public var actions : Array<Link>;
 	public var extraHtml : String;
+	public var type : Null<Int>; //contract type, both contract types cannot be mixed in a same multidistrib.
 
 	public function new(){
 		distributions  = [];
@@ -24,7 +25,7 @@ class MultiDistrib
 		//actions = [];
 	}
 	
-	public static function get(date:Date, place:db.Place, ?contractType:Int){
+	public static function get(date:Date, place:db.Place,contractType:Int){
 		var m = new MultiDistrib();
 		
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
@@ -44,26 +45,35 @@ class MultiDistrib
 		}
 		var cids = contracts.getIds();
 		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();		
-		
+		m.type = contractType;
 		return m;
 	}
 
 	/**
-	Get multidistribs from a time range + place
+		Get multidistribs from a time range + place + type
 	**/
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date):Array<MultiDistrib>{
+	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
 		var multidistribs = [];
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
 		var cids = group.getContracts().getIds();
 		var distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) , { orderBy:date }, false).array();
-		//sort by day-place
+
+		//sort by day-place-type
 		var multidistribs = new Map<String,MultiDistrib>();
 		for ( d in distributions){
-			var key = d.getKey();
+
+			//filter by contractType
+			if(contractType!=null){
+				if(d.contract.type!=contractType) continue;
+			}
+
+			var key = d.getKey() + "-" + d.contract.type;
+			
 			if(multidistribs[key]==null){
 				var m = new MultiDistrib();
 				m.distributions.push(d);
+				m.type = d.contract.type;
 				multidistribs[key] = m;
 			}else{
 				multidistribs[key].distributions.push(d);
@@ -71,13 +81,12 @@ class MultiDistrib
 		}
 		var multidistribs = Lambda.array(multidistribs);
 
-		for(md in multidistribs){
-			App.current.event(MultiDistribEvent(md));
-		}
-
-
+		//trigger event
+		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
+		
+		//sort by date desc
 		multidistribs.sort(function(x,y){
-			return Math.round( x.getDate().getTime()/1000) - Math.round(y.getDate().getTime()/1000 );
+			return Math.round( x.getDate().getTime()/1000 ) - Math.round(y.getDate().getTime()/1000 );
 		});
 
 		return multidistribs;
@@ -284,14 +293,14 @@ class MultiDistrib
 		return date;
 	}
 
-	public function hasOnlyConstantOrders(){		
+	/*public function hasOnlyConstantOrders(){		
 		for(d in distributions){
 			if( d.contract.type==db.Contract.TYPE_VARORDER ) {
 				return false;
 			}
 		}
 		return true;
-	}
+	}*/
 
 	public function getOrdersEndDate(){
 		var date = null;
@@ -367,8 +376,9 @@ class MultiDistrib
 		return c;
 	}
 
+	//get key by date-place-type
 	public function getKey(){
-		return distributions[0].getKey();
+		return distributions[0].getKey() + "-" + distributions[0].contract.type;
 	}
 
 	
