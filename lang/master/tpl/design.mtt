@@ -75,7 +75,9 @@
 						
 						<ul class="nav navbar-nav navbar-right">
 							<li id="member" ::attr class if(category=="members") 	'active' ::>
-								<a href="/member" ::cond user.canAccessMembership()::>::_("Members")::</a></li>
+								
+								<a href="/member" ::cond user.canAccessMembership()::>
+									<i class="icon icon-truck-solid"></i> ::_("Members")::</a></li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
 								<a href="/contractAdmin" ::cond user.isContractManager(null)::>::_("Contracts")::</a></li>
 							<li id="messages" ::attr class if(category=="messages") 	'active' ::>

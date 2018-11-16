@@ -29,7 +29,9 @@
 			<div class="col-md-6">
 				<h3>Boutons large</h3>
 				<button type="button" class="btn btn-lg btn-noAntiDoubleClick btn-default">noAntiDoubleClick</button>
-				<button type="button" class="btn btn-lg btn-default">Default</button>
+				<button type="button" class="btn btn-lg btn-default">
+						<i class="icon icon-truck-solid"></i> Default
+				</button>
 				<button type="button" class="btn btn-lg btn-primary">Primary</button>
 				<button type="button" class="btn btn-lg btn-success">Success</button>
 				<button type="button" class="btn btn-lg btn-info">Info</button>
@@ -40,7 +42,8 @@
 		
 			<div class="col-md-6">
 				<h3>Boutons default</h3>
-				<button type="button" class="btn btn-default">Default</button>
+				<button type="button" class="btn btn-default">
+					<i class="icon icon-truck-solid"></i> Default</button>
 
 				<!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
 				<button type="button" class="btn btn-primary">Primary</button>
@@ -75,7 +78,9 @@
 			
 			<div class="col-md-6">
 				<h3>Boutons XS</h3>
-				<button type="button" class="btn btn-xs btn-default">Default</button>
+				<button type="button" class="btn btn-xs btn-default">
+						<i class="icon icon-truck-solid"></i> Default
+				</button>
 				<button type="button" class="btn btn-xs btn-primary">Primary</button>
 				<button type="button" class="btn btn-xs btn-success">Success</button>
 				<button type="button" class="btn btn-xs btn-info">Info</button>

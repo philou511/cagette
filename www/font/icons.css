@@ -1,0 +1,30 @@
+@font-face {
+    font-family: "icons";
+    src: url("./icons.eot?e8806e2ecc70762d585552eb0b537a9a?#iefix") format("embedded-opentype"),
+url("./icons.woff2?e8806e2ecc70762d585552eb0b537a9a") format("woff2"),
+url("./icons.woff?e8806e2ecc70762d585552eb0b537a9a") format("woff"),
+url("./icons.ttf?e8806e2ecc70762d585552eb0b537a9a") format("truetype"),
+url("./icons.svg?e8806e2ecc70762d585552eb0b537a9a#icons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    font-family: icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-calendar-check-solid:before {
+    content: "\f101";
+}
+.icon-truck-solid:before {
+    content: "\f102";
+}
