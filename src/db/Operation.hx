@@ -252,7 +252,6 @@ class Operation extends sys.db.Object
 		service.PaymentService.updateUserBalance(user, group);
 		
 		return t;
-		
 	}
 	
 	/**
@@ -260,15 +259,19 @@ class Operation extends sys.db.Object
 	 */
 	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true):db.Operation{
 		
+		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
+
 		var date = dkey.split("|")[0];
 		var placeId = Std.parseInt(dkey.split("|")[1]);
 		var transactions  = new List();
 		if (onlyPending){
-			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:date}, true);
+			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:-date}, true);
 		}else{
-			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:date}, true);
+			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
 		}
 		
+		//throw transactions;
+
 		var place = db.Place.manager.get(placeId,false);
 		var date = Date.fromString(date);
 		var basket = db.Basket.get(user, place, date);
@@ -369,6 +372,7 @@ class Operation extends sys.db.Object
 				
 				//existing transaction
 				var existing = db.Operation.findVOrderTransactionFor( k , user, group, false);
+				
 				var op;
 				if (existing != null){
 					op = db.Operation.updateOrderOperation(existing,allOrders,basket);	
