@@ -8,53 +8,82 @@ import Common;
 class PaymentService
 {
 	/**
-	 * Get all available payment types, including one from plugins
+	 * Retuns an array of payment types depending on the use case
+	 * @param context 
+	 * @param group 
+	 * @return Array<payment.PaymentType>
 	 */
-	public static function getAllPaymentTypes(){
-		var types = [
-			new payment.Cash(),
-			new payment.Check(),
-			new payment.Transfer(),	
-			new payment.MoneyPot(),						
-		];
-		
-		var e = App.current.event(GetPaymentTypes({types:types}));
-		return switch(e){
-			case GetPaymentTypes(d): d.types;
-			default : null;
-		}
-		
-	}
+	public static function getPaymentTypes(context: String, ?group: db.Amap) : Array<payment.PaymentType>
+	{
+		var out : Array<payment.PaymentType> = [];
 
-	public static function getAllowedPaymentTypes(group:db.Amap):Array<payment.Payment>{
-		var out :Array<payment.Payment> = [];
-		
-		//populate with activated payment types.
-		var all = getAllPaymentTypes();
-		if ( group.allowedPaymentsType == null ) return [];
-		for ( t in group.allowedPaymentsType){
+		switch(context)
+		{
+			case "All":
+				var types = [
+					new payment.Cash(),
+					new payment.Check(),
+					new payment.Transfer(),	
+					new payment.MoneyPot(),
+					new payment.OnTheSpotPayment(),						
+				];
+				var e = App.current.event(GetPaymentTypes({types:types}));
+				out = switch(e) {
+						case GetPaymentTypes(d): d.types;
+						default : null;
+					}
+
+
+			case "GroupAdmin":
+				var allPaymentTypes = getPaymentTypes("All");
+				//Exclude On the spot payment
+				var onTheSpot = Lambda.find(allPaymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
+				allPaymentTypes.remove(onTheSpot);
+				out = allPaymentTypes;
+
+
+			//For the payment page
+			case "Payment":
+				var all = getPaymentTypes("All");
+				if ( group.allowedPaymentsType == null ) return [];
+				var onTheSpotPaymentTypes = ["cash", "check", "transfer"];
+				var hasOnTheSpotPaymentTypes = false;
+				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
+				for ( paymentType in group.allowedPaymentsType )
+				{
+					var found = Lambda.find(all, function(a) return a.type == paymentType);
+					if (found != null)  {
+						if (Lambda.has(onTheSpotPaymentTypes, found.type))
+						{
+							hasOnTheSpotPaymentTypes = true;
+							onTheSpotPaymentType.allowedPaymentTypes.push(found);
+							continue; //On the spot payment types are excluded
+						}
+						out.push(found);
+					}
+				}
+				if(hasOnTheSpotPaymentTypes)
+				{
+					out.push(onTheSpotPaymentType);
+				}
+
 			
-			var found = Lambda.find(all, function(a) return a.type == t);
-			if (found != null) out.push(found);
+			//For when a coordinator does a manual refund or adds manually a payment
+			case "ManualEntry":
+				var paymentTypes = [];
+				var allowedPaymentTypes = getPaymentTypes("Payment", group);
+				if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
+					paymentTypes = allowedPaymentTypes;
+				}
+				else {
+					paymentTypes = getPaymentTypes("All");
+				}
+				for ( paymentType in paymentTypes )
+				{
+					if(paymentType.type != "moneypot") out.push(paymentType);
+				} 
 		}
-		return out;
-	}
 
-	public static function getPaymentTypesForManualEntry(group:db.Amap){
-
-		var out = [];
-		var paymentTypes = [];
-		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(group);
-		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
-			paymentTypes = allowedPaymentTypes;
-		}
-		else {
-			paymentTypes = service.PaymentService.getAllPaymentTypes();
-		}
-		for ( t in paymentTypes ){
-			if(t.type != "moneypot") out.push({label:t.name,value:t.type});
-		} 
-		
 		return out;
 	}
 

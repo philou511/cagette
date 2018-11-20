@@ -73,8 +73,13 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
-		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes("ManualEntry", app.user.amap);
+		var out = [];
+		for (paymentType in paymentTypes)
+		{
+			out.push({label: paymentType.name, value: paymentType.type});
+		}
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 
 		
 		if (f.isValid()){
@@ -112,8 +117,13 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
-		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes("ManualEntry", app.user.amap);
+		var out = [];
+		for (paymentType in paymentTypes)
+		{
+			out.push({label: paymentType.name, value: paymentType.type});
+		}
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		var b = db.Basket.get(user, place, date);
 		var op = b.getOrderOperation(false);

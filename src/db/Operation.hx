@@ -66,7 +66,7 @@ class Operation extends sys.db.Object
 	public function getPaymentTypeName(){
 		var t = getPaymentType();
 		if (t == null) return null;
-		for ( pt in service.PaymentService.getAllPaymentTypes()){
+		for ( pt in service.PaymentService.getPaymentTypes("All")){
 			if (pt.type == t) return pt.name;
 		}
 		return null;
@@ -234,24 +234,66 @@ class Operation extends sys.db.Object
 	 * @param	name
 	 * @param	relation
 	 */
-	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation ){
+	public static function makePaymentOperation(user: db.User, group: db.Amap, type: String, amount: Float, name: String, ?relation: db.Operation) : db.Operation
+	{
+
+		if(type == payment.OnTheSpotPayment.TYPE) 
+		{
+			var paymentTypes : Array<payment.PaymentType> = service.PaymentService.getPaymentTypes("Payment", group);
+			var onTheSpot : Dynamic = Lambda.find(paymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
+			if(onTheSpot.allowedPaymentTypes.length == 1)
+			{
+				type = onTheSpot.allowedPaymentTypes[0].type;				
+			}
+			
+			if(relation != null)
+			{
+				var paymentOperations = getPaymentOperations(user, group);
+				var onTheSpotPayments : List<db.Operation> = Lambda.filter(paymentOperations, function(x) return x.relation == relation);
+				for (operation in onTheSpotPayments)
+				{
+					if(operation.data.type == payment.OnTheSpotPayment.TYPE || operation.data.type == payment.Cash.TYPE || 
+					   operation.data.type == payment.Check.TYPE || operation.data.type == payment.Transfer.TYPE)
+					{
+						return updatePaymentOperation(user, group, operation, amount);						
+					}
+				}
+			}
+		}
 		
-		var t = new db.Operation();
-		t.amount = Math.abs(amount);
-		t.date = Date.now();
-		t.name = name;
-		t.group = group;
-		t.pending = true;
-		t.user = user;
-		t.type = Payment;
-		var data : PaymentInfos = {type:type};
-		t.data = data;
-		if(relation!=null) t.relation = relation;
-		t.insert();
+		var operation = new db.Operation();
+		operation.amount = Math.abs(amount);
+		operation.date = Date.now();
+		operation.name = name;
+		operation.group = group;
+		operation.pending = true;
+		operation.user = user;
+		operation.type = Payment;		
+		var data : PaymentInfos = { type: type };
+		operation.data = data;
+		if(relation != null) operation.relation = relation;
+		operation.insert();
 		
 		service.PaymentService.updateUserBalance(user, group);
 		
-		return t;
+		return operation;
+	}
+
+
+	/**
+	 * Update a payment operation
+	 * @param	amount
+	 */
+	public static function updatePaymentOperation(user: db.User, group: db.Amap, operation: db.Operation, amount: Float)
+	{
+
+		operation.lock();
+		operation.amount += Math.abs(amount);		
+		operation.update();
+		
+		service.PaymentService.updateUserBalance(user, group);
+		
+		return operation;
 	}
 	
 	/**

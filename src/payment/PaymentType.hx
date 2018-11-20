@@ -4,7 +4,7 @@ package payment;
  * ...
  * @author fbarbut
  */
-class Payment
+class PaymentType
 {
 
 	public var type:String;

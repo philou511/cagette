@@ -4,7 +4,7 @@ package payment;
  * ...
  * @author fbarbut
  */
-class Transfer extends payment.Payment
+class Transfer extends payment.PaymentType
 {
 	
 	public static var TYPE = "transfer";

@@ -4,7 +4,7 @@ package payment;
  * ...
  * @author fbarbut
  */
-class Check extends payment.Payment
+class Check extends payment.PaymentType
 {
 	public static var TYPE = "check";
 

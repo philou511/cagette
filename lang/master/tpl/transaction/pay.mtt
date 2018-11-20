@@ -32,9 +32,16 @@
 		
 		::foreach p paymentTypes::
 		<div class="col-md-4">
+			::set warning = ""::
 			::if(p.type != "moneypot" || allowMoneyPotWithNegativeBalance || futurebalance >= 0)::
 				::set class = "clickable"::
-				::set href = p.link::					
+				::set href = p.link::
+				::if(p.type == "onthespot")::
+					::set warning = _("Payment types allowed : ")::
+					::foreach allowedType p.allowedPaymentTypes::
+						::set warning = warning + " " + allowedType.name::
+					::end::
+				::end::					
 			::else::
 				::set class = "clickable disabled"::
 				::set href = "#"::
