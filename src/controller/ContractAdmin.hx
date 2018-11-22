@@ -397,11 +397,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:OrderService.getOrdersByProduct( {distribution:d} )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:service.ReportService.getOrdersByProduct( d )});	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in OrderService.getOrdersByProduct( {distribution:d} )){
+				for ( x in  service.ReportService.getOrdersByProduct( d ) ){
 					
 					//find record in existing orders
 					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
@@ -445,11 +445,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:OrderService.getOrdersByProduct( {distribution:d} )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:service.ReportService.getOrdersByProduct(d) });	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in OrderService.getOrdersByProduct( {distribution:d} )){
+				for ( x in service.ReportService.getOrdersByProduct(d) ){
 					
 					//find record in existing orders
 					var f : OrderByProduct = Lambda.find(o.orders, function(a:OrderByProduct) return a.pid == x.pid);
@@ -711,7 +711,7 @@ class ContractAdmin extends Controller
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw Error("/contractAdmin/orders/"+contract.id,t._("There is no delivery in this contract, please create at least one distribution."));
 
-		var orders = OrderService.getOrdersByProduct({distribution:d},app.params.exists("csv"));
+		var orders = service.ReportService.getOrdersByProduct(d,app.params.exists("csv"));
 		view.orders = orders;
 		view.distribution = d; 
 		view.c = contract;
@@ -735,7 +735,7 @@ class ContractAdmin extends Controller
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw t._("No delivery in this contract");
 		
-		var orders = OrderService.getOrdersByProduct({distribution:d},false);
+		var orders = service.ReportService.getOrdersByProduct(d,false);
 		view.orders = orders;
 	}
 	

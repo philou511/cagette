@@ -25,6 +25,7 @@ class TestSuite
 		r.add(new pro.test.TestProductService());
 		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
+		r.add(new pro.test.TestReports());
 		//wholesale-order tests
 		r.add(new who.test.TestWho());
 		#end
@@ -92,7 +93,12 @@ class TestSuite
 		];
 	
 		for(t in tables) createTable(t);
-		
+
+		#if plugins
+		//add Cpro datas : we need those tables even in cagette core tests
+		pro.test.ProTestSuite.initDB();
+		pro.test.ProTestSuite.initDatas();
+		#end
 	}
 	
 	public static function createTable( m  ){
