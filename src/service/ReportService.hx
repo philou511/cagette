@@ -18,13 +18,12 @@ class ReportService{
 		}
 
 		//Product price will be an average if price changed
-		var sql = '
-			select 
+		var sql = 'select 
 			SUM(quantity) as quantity,
-			p.id as pid,
+			MAX(p.id) as pid,
 			p.name as pname,
 			AVG(up.productPrice) as price,
-			p.vat as vat,
+			AVG(p.vat) as vat,
 			p.ref as ref,			
 			SUM(quantity*up.productPrice) as totalTTC
 			from UserContract up, Product p 
