@@ -46,7 +46,7 @@ class PaymentService
 			case "Payment":
 				var all = getPaymentTypes("All");
 				if ( group.allowedPaymentsType == null ) return [];
-				var onTheSpotPaymentTypes = ["cash", "check", "transfer"];
+				var onTheSpotPaymentTypes = [payment.Cash.TYPE, payment.Check.TYPE, payment.Transfer.TYPE];
 				var hasOnTheSpotPaymentTypes = false;
 				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
 				for ( paymentType in group.allowedPaymentsType )
@@ -70,18 +70,11 @@ class PaymentService
 			
 			//For when a coordinator does a manual refund or adds manually a payment
 			case "ManualEntry":
-				var paymentTypes = [];
-				var allowedPaymentTypes = getPaymentTypes("Payment", group);
-				if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
-					paymentTypes = allowedPaymentTypes;
-				}
-				else {
-					paymentTypes = getPaymentTypes("All");
-				}
-				for ( paymentType in paymentTypes )
-				{
-					if(paymentType.type != "moneypot") out.push(paymentType);
-				} 
+				//Exclude the MoneyPot payment
+				var paymentTypesInAdmin = getPaymentTypes("GroupAdmin");
+				var moneyPot = Lambda.find(paymentTypesInAdmin, function(x) return x.type == payment.MoneyPot.TYPE);
+				paymentTypesInAdmin.remove(moneyPot);
+				out = paymentTypesInAdmin;
 		}
 
 		return out;

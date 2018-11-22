@@ -117,10 +117,6 @@ class UserAmap extends Object
 		super.insert();
 	}
 	
-	public function getPaymentOperations(){
-		return db.Operation.getPaymentOperations(user, amap);
-	}
-	
 	public function getLastOperations(limit){
 		return db.Operation.getLastOperations(user, amap, limit);
 	}

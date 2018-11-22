@@ -73,10 +73,10 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * get payments linked to this order transaction
+	 * get payments linked to this order operation
 	 */
 	public function getRelatedPayments(){
-		return db.Operation.manager.search($relation == this, false);
+		return db.Operation.manager.search($relation == this && $type == Payment, false);
 	}
 	
 	public function getOrderInfos(){
@@ -122,10 +122,6 @@ class Operation extends sys.db.Object
 		//return manager.search($user == user && $group == group && $relation==null,{orderBy:date},false);		
 		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
 	}*/
-	
-	public static function getPaymentOperations(user:db.User, group:db.Amap,?limit=50){
-		return manager.search($user == user && $group == group && $type == Payment, {orderBy:date,limit:limit},false);
-	}
 	
 	public static function getLastOperations(user:db.User, group:db.Amap, ?limit = 50){
 		
@@ -248,9 +244,8 @@ class Operation extends sys.db.Object
 			
 			if(relation != null)
 			{
-				var paymentOperations = getPaymentOperations(user, group);
-				var onTheSpotPayments : List<db.Operation> = Lambda.filter(paymentOperations, function(x) return x.relation == relation);
-				for (operation in onTheSpotPayments)
+				var relatedPaymentOperations = relation.getRelatedPayments();
+				for (operation in relatedPaymentOperations)
 				{
 					if(operation.data.type == payment.OnTheSpotPayment.TYPE || operation.data.type == payment.Cash.TYPE || 
 					   operation.data.type == payment.Check.TYPE || operation.data.type == payment.Transfer.TYPE)
@@ -284,7 +279,7 @@ class Operation extends sys.db.Object
 	 * Update a payment operation
 	 * @param	amount
 	 */
-	public static function updatePaymentOperation(user: db.User, group: db.Amap, operation: db.Operation, amount: Float)
+	public static function updatePaymentOperation(user: db.User, group: db.Amap, operation: db.Operation, amount: Float) : db.Operation
 	{
 
 		operation.lock();
