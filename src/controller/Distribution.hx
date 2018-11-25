@@ -96,6 +96,9 @@ class Distribution extends Controller
 		if (!app.user.isContractManager()) throw Error('/', t._("Forbidden action"));
 		
 		view.place = place;
+		var paymentTypes : Array<payment.PaymentType> = service.PaymentService.getPaymentTypes("Payment", app.user.amap);
+		var onTheSpot : Dynamic = Lambda.find(paymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
+		view.onTheSpotAllowedPaymentTypes = onTheSpot.allowedPaymentTypes;
 		
 		if (type == null) {
 		
