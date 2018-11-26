@@ -215,15 +215,20 @@
 				::set closed = 0::
 			
 				::foreach d k::
-					::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
-						<!-- commande en cours -->
-						::set open = open+1::
-					::elseif now.getTime() > d.orderEndDate.getTime()::
-						<!-- commande terminée -->
-						::set closed = closed+1::
+					::if d.orderStartDate!=null::
+						::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+							<!-- commande en cours -->
+							::set open = open+1::
+						::elseif now.getTime() > d.orderEndDate.getTime()::
+							<!-- commande terminée -->
+							::set closed = closed+1::
+						::else::
+							<!-- commande pas ouverte -->
+							::set notyetopened = notyetopened+1::
+						::end::
 					::else::
-						<!-- commande pas ouverte -->
-						::set notyetopened = notyetopened+1::
+						<!-- AMAP : commande terminée -->
+						::set closed = closed+1::
 					::end::
 				::end::
 				
@@ -265,15 +270,20 @@
 				::foreach d k::
 					<tr>
 						<td>
-							::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
-							<!-- commande en cours -->
-							<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
-							::elseif now.getTime() > d.orderEndDate.getTime()::
-							<!-- commande terminée -->
-							<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+							::if d.orderStartDate!=null::
+								::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+								<!-- commande en cours -->
+								<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
+								::elseif now.getTime() > d.orderEndDate.getTime()::
+								<!-- commande terminée -->
+								<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+								::else::
+								<!-- commande pas ouverte -->
+								<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
+								::end::
 							::else::
-							<!-- commande pas ouverte -->
-							<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
+								<!-- AMAP -->
+								<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
 							::end::
 							
 							::set c = getCatalog(d)::
