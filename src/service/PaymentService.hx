@@ -44,11 +44,11 @@ class PaymentService
 
 			//For the payment page
 			case "Payment":
-				var all = getPaymentTypes("All");
 				if ( group.allowedPaymentsType == null ) return [];
-				var onTheSpotPaymentTypes = [payment.Cash.TYPE, payment.Check.TYPE, payment.Transfer.TYPE];
+				var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
 				var hasOnTheSpotPaymentTypes = false;
 				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
+				var all = getPaymentTypes("All");
 				for ( paymentType in group.allowedPaymentsType )
 				{
 					var found = Lambda.find(all, function(a) return a.type == paymentType);
@@ -78,6 +78,33 @@ class PaymentService
 		}
 
 		return out;
+	}
+
+
+	/**
+	 * Returns all the payment types that are on the spot and that are allowed for this group
+	 * @param group 
+	 * @return Array<payment.PaymentType>
+	 */
+	public static function getOnTheSpotAllowedPaymentTypes(group: db.Amap) : Array<payment.PaymentType>
+	{
+		if ( group.allowedPaymentsType == null ) return [];
+		var onTheSpotAllowedPaymentTypes : Array<payment.PaymentType> = [];
+		var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
+		var all = getPaymentTypes("All");
+		for (paymentType in onTheSpotPaymentTypes)
+		{
+			if (Lambda.has(group.allowedPaymentsType, paymentType))
+			{
+				var found = Lambda.find(all, function(a) return a.type == paymentType);
+				if (found != null) 
+				{
+					onTheSpotAllowedPaymentTypes.push(found);
+				}			
+			}
+		}
+	
+		return onTheSpotAllowedPaymentTypes;
 	}
 
 	/**

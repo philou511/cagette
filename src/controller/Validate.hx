@@ -27,6 +27,7 @@ class Validate extends controller.Controller
 		view.place = place;
 		view.date = date;
 		view.basket = b;
+		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
 		
 		checkToken();
 	}
@@ -43,12 +44,18 @@ class Validate extends controller.Controller
 		}
 	}
 	
-	public function doValidateOp(op:db.Operation){
-		if (checkToken()){
+	public function doValidateOp(operation: db.Operation) 
+	{
+		if (checkToken()) 
+		{
 			
-			op.lock();
-			op.pending = false;
-			op.update();
+			operation.lock();
+			operation.pending = false;
+			if (app.params.exists("type"))
+			{
+				operation.data.type = app.params.get("type"); 				
+			}			
+			operation.update();
 			
 			service.PaymentService.updateUserBalance(user, app.user.amap);
 			

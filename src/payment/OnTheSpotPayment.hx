@@ -19,5 +19,10 @@ class OnTheSpotPayment extends payment.PaymentType
 		this.link = "/transaction/onthespot";
 		this.allowedPaymentTypes = [];
 	}
+
+	public static function getPaymentTypes() : Array<String>
+	{
+		return [payment.Cash.TYPE, payment.Check.TYPE, payment.Transfer.TYPE];
+	}
 	
 }

@@ -93,7 +93,7 @@
 			
 		
 			::if (user._amap.hasShopMode())::
-			<!--  PAYMENT CHECK FOR SHOP MODE -->
+			<!--  PAYMENT CHECK FOR SHOP MODE-->
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
 					<th colspan="9" class="text-center">::_("Payment")::</th>
@@ -116,11 +116,20 @@
 						::end::
 						<td>
 							::if(tt.pending)::
-							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
-								<span class="glyphicon glyphicon-ok"></span>
-								::_("This payment was received")::
-							</a>
-							$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
+								::if(tt._data.type != "onthespot")::
+									<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
+										<span class="glyphicon glyphicon-ok"></span>
+										::_("This payment was received")::
+									</a>
+								::else::
+									::foreach type onTheSpotAllowedPaymentTypes::
+										<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::&type=::type.type::" class="btn btn-primary btn-sm">
+											<span class="glyphicon glyphicon-ok"></span>
+											::_(type.name):: ::_(" was received")::
+										</a>
+									::end::
+								::end::
+								$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
 							::end::
 						</td>
 					</tr>
