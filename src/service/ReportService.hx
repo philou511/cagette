@@ -10,6 +10,8 @@ class ReportService{
 		var view = App.current.view;
 		var t = sugoi.i18n.Locale.texts;
 		var where = "";
+
+		if(distribution==null) throw "distribution should not be null";
 		
 		var exportName = t._("Delivery ::contractName:: of the ", {contractName:distribution.contract.name}) + distribution.date.toString().substr(0, 10);
 		where += ' and p.contractId = ${distribution.contract.id}';
@@ -31,7 +33,7 @@ class ReportService{
 			$where
 			group by ref,pname,price 
 			order by pname asc;';
-			
+
 		var res = sys.db.Manager.cnx.request(sql).results();	
 		var orders = [];
 

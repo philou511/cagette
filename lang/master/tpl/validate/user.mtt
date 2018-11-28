@@ -49,7 +49,7 @@
 					<td>
 						::raw o.smartQt:
 					</td>
-					<td>
+					<td class="ref">
 						$$nullSafe(::o.productRef::)
 					</td>
 					<td>

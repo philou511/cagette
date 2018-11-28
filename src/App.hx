@@ -261,11 +261,8 @@ class App extends sugoi.BaseApp {
 	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Amap, ?listId:String, ?sender:db.User){
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getAmap();
-		
 		current.event(SendEmail(m));
-		
 		var params = group==null ? null : {remoteId:group.id};
-
 		getMailer().send(m,params,function(o){});
 		
 	}

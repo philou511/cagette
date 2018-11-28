@@ -25,8 +25,7 @@
 	
 	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
 	
-	<macro name="edit(text,url)">
-		
+	<macro name="edit(text,url)">		
 		<a href="::url::" class="btn btn-default btn-sm">
 			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
 			&nbsp;::text::
@@ -42,7 +41,7 @@
 	</macro>
 	
 	<macro name="delete(text,url)">
-		<a href="::url::" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm" >
+		<a href="::url::" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm">
 			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 		::if text!=null && text!=""::	
 			&nbsp;::text::

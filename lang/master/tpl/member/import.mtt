@@ -71,7 +71,7 @@
 			
 			<div class="alert alert-error">
 					<b>::_("Warning")::</b>
-					<p>::_("Before validating this import, please check that this table est correctly filled.<br/>If some datas are shifted or are not linked to the right column, please check your CSV file.")::
+					<p>::raw _("Before validating this import, please check that this table est correctly filled.<br/>If some datas are shifted or are not linked to the right column, please check your CSV file.")::
 					</p>
 					<a href="/member/import">::_("Try again")::</a>
 				</div>
