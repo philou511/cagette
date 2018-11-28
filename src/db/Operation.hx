@@ -235,11 +235,11 @@ class Operation extends sys.db.Object
 
 		if(type == payment.OnTheSpotPayment.TYPE) 
 		{
-			var paymentTypes : Array<payment.PaymentType> = service.PaymentService.getPaymentTypes("Payment", group);
-			var onTheSpot : Dynamic = Lambda.find(paymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
-			if(onTheSpot.allowedPaymentTypes.length == 1)
+			var onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(group);
+			if(onTheSpotAllowedPaymentTypes.length == 1)
 			{
-				type = onTheSpot.allowedPaymentTypes[0].type;				
+				//There is only one on the spot payment type so we can directly set it here
+				type = onTheSpotAllowedPaymentTypes[0].type;				
 			}
 			
 			if(relation != null)
@@ -247,8 +247,7 @@ class Operation extends sys.db.Object
 				var relatedPaymentOperations = relation.getRelatedPayments();
 				for (operation in relatedPaymentOperations)
 				{
-					if(operation.data.type == payment.OnTheSpotPayment.TYPE || operation.data.type == payment.Cash.TYPE || 
-					   operation.data.type == payment.Check.TYPE || operation.data.type == payment.Transfer.TYPE)
+					if(operation.data.type == payment.OnTheSpotPayment.TYPE || Lambda.has(payment.OnTheSpotPayment.getPaymentTypes(), operation.data.type))
 					{
 						return updatePaymentOperation(user, group, operation, amount);						
 					}
