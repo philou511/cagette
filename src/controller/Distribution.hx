@@ -131,10 +131,10 @@ class Distribution extends Controller
 			
 			view.date = date;
 			view.fontRatio = switch(fontSize){
-				case "M" : 125; //100x1.25
-				case "L" : 156; //125x1.25
-				case "XL": 195; //156x1.25
-				default : 100;
+				case "M" : 1; //1em = 16px
+				case "L" : 1.25;
+				case "XL": 1.50;
+				default : 0.75;
 			};
 			
 			switch(type) {

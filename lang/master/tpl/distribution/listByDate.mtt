@@ -5,7 +5,7 @@
 	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
-<body>
+<body style="font-size: ::fontRatio::em;">
 	
 	<h1>::user._amap.name::</h1>
 	<h2>Livraison du ::hDate(date)::</h2>
@@ -118,7 +118,7 @@
 						<td></td>
 						<th>::_("Payment:"):: </th>
 						<td colspan="6">
-							<table style="width:100%;">
+							<table style="width:100%;border:1px solid #CCC;">
 							::if(basket!=null)::
 								::set tpaid=0::
 								::set op = basket.getOrderOperation(false)::
