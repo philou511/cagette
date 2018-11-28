@@ -48,7 +48,6 @@ class Validate extends controller.Controller
 	{
 		if (checkToken()) 
 		{
-			
 			operation.lock();
 			operation.pending = false;
 			if (app.params.exists("type"))
@@ -157,12 +156,20 @@ class Validate extends controller.Controller
 	
 	public function doValidate(){
 		
-		if (checkToken()){
-			
+		if (checkToken()) 
+		{
 			var basket = db.Basket.get(user, place, date);
-			service.PaymentService.validateBasket(basket);
-			
-			throw Ok("/distribution/validate/"+date+"/"+place.id, t._("Order validated"));
+
+			try
+			{
+				service.PaymentService.validateBasket(basket);
+			}
+			catch(e:tink.core.Error)
+			{
+				throw Error("/distribution/validate/" + date + "/" + place.id, e.message);
+			}
+		
+			throw Ok("/distribution/validate/" + date + "/" + place.id, t._("Order validated"));
 			
 		}
 		

@@ -401,11 +401,19 @@ class Cron extends Controller
 				ds.remove(d);
 			}
 		}
-		for ( d in ds){
+
+		for (d in ds)
+		{
 			print(d.toString());
-			
-			service.PaymentService.validateDistribution(d);
-			
+
+			try
+			{
+				service.PaymentService.validateDistribution(d);
+			}
+			catch(e:tink.core.Error)
+			{
+				continue;
+			}
 		}
 		//email
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);

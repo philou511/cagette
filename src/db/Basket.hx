@@ -117,7 +117,7 @@ class Basket extends Object
 		
 	}
 	
-	public function isValidated(){
+	public function isValidated() {
 
 		var ordersPaid = Lambda.count(getOrders(), function(o) return !o.paid) == 0;
 		var op = getOrderOperation(false);
@@ -125,6 +125,19 @@ class Basket extends Object
 		var paymentOperationsNotPending = Lambda.count(getPayments(), function(p) return p.pending) == 0;
 
 		return ordersPaid && orderOperationNotPending && paymentOperationsNotPending;			
+	}
+
+	public function canBeValidated()
+	{
+		var t = sugoi.i18n.Locale.texts;
+		var hasPendingOnTheSpotPayments = Lambda.count(getPayments(), function(x) return x.pending && x.data.type == payment.OnTheSpotPayment.TYPE) != 0;
+
+		if (hasPendingOnTheSpotPayments)
+		{
+			throw new tink.core.Error(t._("You need to select manually the type of pending payments on the spot to be able to validate this distribution."));
+		}
+		
+		return !hasPendingOnTheSpotPayments;			
 	}
 	
 }

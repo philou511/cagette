@@ -119,13 +119,21 @@
 								::if(tt._data.type != "onthespot")::
 									<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
 										<span class="glyphicon glyphicon-ok"></span>
-										::_("This payment was received")::
+										::_("I have received this payment")::
 									</a>
 								::else::
 									::foreach type onTheSpotAllowedPaymentTypes::
 										<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::&type=::type.type::" class="btn btn-primary btn-sm">
 											<span class="glyphicon glyphicon-ok"></span>
-											::_(type.name):: ::_(" was received")::
+											::if(type.type == "cash")::
+												::_(" I have received this payment in cash")::
+											::elseif(type.type == "check")::
+												::_(" I have received this payment by check")::			
+											::elseif(type.type == "transfer")::
+												::_(" I have received this payment by transfer")::											
+											::else::
+												::__(" I have received this payment by ::paymentType::", {paymentType: type.name.toLowerCase()})::
+											::end::										
 										</a>
 									::end::
 								::end::
@@ -230,7 +238,7 @@
 							::if(op.pending && op.type==2)::
 							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
 								<span class="glyphicon glyphicon-ok"></span>
-								::_("This payment has been received")::
+								::_("I have received this payment")::
 							</a>
 							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::op.id::?token=::token::)
 							::end::

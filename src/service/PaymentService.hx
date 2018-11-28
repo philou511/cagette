@@ -145,6 +145,9 @@ class PaymentService
 	public static function validateBasket(basket:db.Basket) {
 
 		if (basket == null || basket.isValidated()) return false;
+
+		//This will throw an error if for example there are pending payments of type on the spot
+		basket.canBeValidated();
 		
 		//mark orders as paid
 		var orders = basket.getOrders();
@@ -182,7 +185,7 @@ class PaymentService
 	public static function unvalidateBasket(basket:db.Basket) {
 
 		if (basket == null || !basket.isValidated()) return false;
-		
+
 		//mark orders as paid
 		var orders = basket.getOrders();
 		for ( order in orders ){
