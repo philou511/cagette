@@ -1,10 +1,10 @@
 @font-face {
     font-family: "icons";
-    src: url("./icons.eot?e8806e2ecc70762d585552eb0b537a9a?#iefix") format("embedded-opentype"),
-url("./icons.woff2?e8806e2ecc70762d585552eb0b537a9a") format("woff2"),
-url("./icons.woff?e8806e2ecc70762d585552eb0b537a9a") format("woff"),
-url("./icons.ttf?e8806e2ecc70762d585552eb0b537a9a") format("truetype"),
-url("./icons.svg?e8806e2ecc70762d585552eb0b537a9a#icons") format("svg");
+    src: url("./icons.eot?7638de6ac4f667a56525a171a759c099?#iefix") format("embedded-opentype"),
+url("./icons.woff2?7638de6ac4f667a56525a171a759c099") format("woff2"),
+url("./icons.woff?7638de6ac4f667a56525a171a759c099") format("woff"),
+url("./icons.ttf?7638de6ac4f667a56525a171a759c099") format("truetype"),
+url("./icons.svg?7638de6ac4f667a56525a171a759c099#icons") format("svg");
 }
 
 i {
@@ -22,9 +22,84 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-calendar-check-solid:before {
+.icon-apple:before {
     content: "\f101";
 }
-.icon-truck-solid:before {
+.icon-book:before {
     content: "\f102";
+}
+.icon-calendar-check:before {
+    content: "\f103";
+}
+.icon-calendar:before {
+    content: "\f104";
+}
+.icon-cheque:before {
+    content: "\f105";
+}
+.icon-chevron-left:before {
+    content: "\f106";
+}
+.icon-chevron-right:before {
+    content: "\f107";
+}
+.icon-clock:before {
+    content: "\f108";
+}
+.icon-cog:before {
+    content: "\f109";
+}
+.icon-delete:before {
+    content: "\f10a";
+}
+.icon-edit:before {
+    content: "\f10b";
+}
+.icon-envelope:before {
+    content: "\f10c";
+}
+.icon-euro_icon:before {
+    content: "\f10d";
+}
+.icon-eye:before {
+    content: "\f10e";
+}
+.icon-fork:before {
+    content: "\f10f";
+}
+.icon-home:before {
+    content: "\f110";
+}
+.icon-image:before {
+    content: "\f111";
+}
+.icon-list:before {
+    content: "\f112";
+}
+.icon-map-marker:before {
+    content: "\f113";
+}
+.icon-plus:before {
+    content: "\f114";
+}
+.icon-print:before {
+    content: "\f115";
+}
+.icon-search:before {
+    content: "\f116";
+}
+.icon-shopping-basket:before {
+    content: "\f117";
+}
+.icon-shopping-cart:before {
+    content: "\f118";
+}
+.icon-truck:before {
+    content: "\f119";
+}
+.icon-user:before {
+    content: "\f11a";
+}
+.icon-users:before {
+    content: "\f11b";
 }
