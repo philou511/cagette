@@ -45,7 +45,6 @@ class Place extends Controller
 				}
 			}
 
-			p.amap = app.user.amap;
 			p.update();
 			throw Ok('/contractAdmin',t._("this place has been updated"));
 		}
