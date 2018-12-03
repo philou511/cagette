@@ -468,7 +468,7 @@ class Cron extends Controller
 	}
 	
 	
-	function print(text){
+	public static function print(text){
 		Sys.println( text + "<br/>" );
 	}
 }

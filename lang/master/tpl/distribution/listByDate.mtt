@@ -34,8 +34,7 @@
 				::else::
 					::set class=""::
 				::end::
-				<tr class="::class::">
-				
+				<tr class="::class::">				
 					<td>
 						::if m.userName != name || m.userName2 != name2::
 						
@@ -48,8 +47,7 @@
 								::end::
 								::set total = 0::
 								::set productNum = 0::
-						::end::
-						
+						::end::						
 					</td>
 					<td>
 						::if m.userName != name || m.userName2 != name2::
@@ -114,7 +112,10 @@
 					<tr ::cond user._amap.hasPayments()::>
 						
 						<!--  PAYMENT CHECK FOR SHOP MODE -->
+						
 						::if (user._amap.hasShopMode())::
+
+					
 						<td></td>
 						<th>::_("Payment:"):: </th>
 						<td colspan="6">

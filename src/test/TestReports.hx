@@ -1,6 +1,7 @@
 package test;
 import Common;
 import test.TestSuite;
+import service.ReportService;
 import service.OrderService;
 
 /**
@@ -60,7 +61,7 @@ class TestReports extends haxe.unit.TestCase
 		OrderService.make(julie,6,carrots,d2.id);
 		OrderService.make(julie,1,poulet,d2.id);
 
-		var orders = OrderService.getOrdersByProduct( {distribution:d} );
+		var orders = ReportService.getOrdersByProduct(d);
 
 		//courgettes x 10
 		var courgettesOrder = Lambda.find(orders, function(o) return o.pid==courgettes.id);
@@ -72,7 +73,7 @@ class TestReports extends haxe.unit.TestCase
 		courgettes.lock();
 		courgettes.price+=4;
 		courgettes.update();
-		var orders = OrderService.getOrdersByProduct( {distribution:d} );
+		var orders = ReportService.getOrdersByProduct(d);
 		var courgettesOrder = Lambda.find(orders, function(o) return o.pid==courgettes.id);
 		assertEquals( 10.0 , courgettesOrder.quantity );
 		assertEquals( 35.0 , courgettesOrder.totalTTC );
