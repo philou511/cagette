@@ -55,7 +55,7 @@
 							<p>
 								::_("Contact the person in charge in order to subscribe to this group and get to know membership conditions.")::
 							</p>
-							<p>
+							<p ::cond group._contact!=null::>
 								<a href="::"mailto:"+group._contact.email+"?subject=Adhésion"::"  class="btn btn-primary">
 									<span class="glyphicon glyphicon-envelope"></span>
 									::_("Membership request")::
