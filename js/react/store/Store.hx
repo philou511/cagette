@@ -1,6 +1,7 @@
 package react.store;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
+import js.Promise;
 import haxe.Json;
 
 using Lambda;
@@ -60,7 +61,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
   }
 
   static function fetch(url:ServerUrl, ?method: HttpMethod = GET, ?params: Dynamic = null, ?accept: FetchFormat = PLAIN_TEXT, ?contentType: String = JSON ): Promise<Dynamic> { 
-	return HttpUtil.fetch(url, method, params, accept, contentType);
+	  return HttpUtil.fetch(url, method, params, accept, contentType);
   }
 
   override function componentDidMount() {
@@ -92,7 +93,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
       });
 
       subCategories.map(function(category:CategoryInfo) {
-        return HttpUtil	.fetch(PRODUCT_URL, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
+        return HttpUtil	.fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
 						.then(function(result) {
 							//WHY IS THAT, to refresh local storage data?
 							var productsBySubcategoryIdMapCopy = [
@@ -211,7 +212,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 
 	//TODO Think about the way the place adress is built, why an array for zipCode and city ?
 	//TODO LOCALIZATION
-    var viewUrl = '$VIEW_URL/${props.place}';
+    var viewUrl = '$ViewUrl/${props.place}';
     var addressBlock = Lambda.array([
       state.place.address1,
       state.place.address2,

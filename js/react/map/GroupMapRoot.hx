@@ -39,7 +39,7 @@ typedef GroupMapRootProps = {
 	var address:String;
 };
 
-class GroupMapRoot extends ReactComponentOfState<GroupMapRootState>{
+class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState>{
 
 	static inline var GROUP_MAP_URL = '/api/group/map';
 

@@ -175,7 +175,7 @@ class App {
 		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$LoginBox redirectUrl=${redirectUrl} message=$message phoneRequired=${phoneRequired}/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 
@@ -187,7 +187,7 @@ class App {
 		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired />'),  js.Browser.document.querySelector('#myModal .modal-body'));
 		return false;
 	}
 
@@ -195,8 +195,8 @@ class App {
 		ReactDOM.render(jsx('<$Store date=$date place=$place/>'),  js.Browser.document.querySelector('#shop'));
 	}
 	
-	public function groupMap(lat:String,lng:String,address:String) {
-		ReactDOM.render(jsx('<$GroupMapRoot lat="$lat" lng="$lng" address="$address"/>'),  js.Browser.document.querySelector('#map'));
+	public function groupMap(lat:Float,lng:Float,address:String) {
+		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
 	}
 
 	/**

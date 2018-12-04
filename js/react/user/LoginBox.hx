@@ -35,36 +35,37 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 	}
 	
 	override public function render(){
-		
-		return jsx('<div onKeyPress=$onKeyPress>
-			<$Error error="${state.error}" />
-			<$Message message="${props.message}" />
-			<form action="" method="post" className="form-horizontal">
-				<div className="form-group">
-					<label htmlFor="email" className="col-sm-4 control-label">Email : </label>
-					<div className="col-sm-8">
-						<input id="email"  className="form-control" type="text" name="email" value="${state.email}" required="1" onChange={onChange}/>			
+		return jsx('
+			<div onKeyPress=$onKeyPress>
+				<$Error error=${state.error} />
+				<$Message message=${props.message} />
+				<form action="" method="post" className="form-horizontal">
+					<div className="form-group">
+						<label htmlFor="email" className="col-sm-4 control-label">Email : </label>
+						<div className="col-sm-8">
+							<input id="email" className="form-control" type="text" name="email" value=${state.email} required="1" onChange=${onChange}/>			
+						</div>
 					</div>
-				</div>
-				<div className="form-group">
-					<label htmlFor="password" className="col-sm-4 control-label">Mot de passe : </label>
-					<div className="col-sm-8">
-						<input id="password" type="password" name="password" value="${state.password}" className="form-control" required="1" onChange={onChange}/>					
-					</div>					
-				</div>
-				<p className="text-center">						
-					<a onClick={submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-user"></span> S\'identifier</a>
-					<br/>
-					<br/>
-					<a href="/user/forgottenPassword">Mot de passe oublié ?</a>
+					<div className="form-group">
+						<label htmlFor="password" className="col-sm-4 control-label">Mot de passe : </label>
+						<div className="col-sm-8">
+							<input id="password" type="password" name="password" value=${state.password} className="form-control" required="1" onChange=${onChange}/>					
+						</div>					
+					</div>
+					<p className="text-center">						
+						<a onClick=${submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-user"></span> S\'identifier</a>
+						<br/>
+						<br/>
+						<a href="/user/forgottenPassword">Mot de passe oublié ?</a>
+					</p>
+				</form>
+				<hr/>
+				<p className="text-center">
+					<b>C\'est votre première visite sur Cagette.net ?</b>{"\u00A0"}{"\u00A0"}
+					<a onClick={registerBox} className="btn btn-default"><span className="glyphicon glyphicon-chevron-right"></span> S\'inscrire</a>
 				</p>
-			</form>
-			<hr/>
-			<p className="text-center">
-				<b>C\'est votre première visite sur Cagette.net ?</b>&nbsp;&nbsp;
-				<a onClick={registerBox} className="btn btn-default"><span className="glyphicon glyphicon-chevron-right"></span> S\'inscrire</a>
-			</p>
-		</div>');
+			</div>
+		');
 	}
 	
 	/**
@@ -88,7 +89,8 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		ReactDOM.unmountComponentAtNode( body );
 	
 		js.Browser.document.querySelector("#myModal .modal-title").innerHTML = "Inscription";
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="${props.redirectUrl}" phoneRequired="${props.phoneRequired}"/>'),  body );
+		//TODO check message props content
+		ReactDOM.render(jsx('<$RegisterBox message="" redirectUrl=${props.redirectUrl} phoneRequired=${props.phoneRequired} />'),  body );
 	}
 	
 	public function submit(?e:js.html.Event){

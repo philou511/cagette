@@ -123,8 +123,9 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	function makeInfos(){
 		var o = state.order;
 		return if ( isSmartQtInput(o) ){
-			jsx('<div className="infos">
-				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}				
+			jsx('
+			<div className="infos">
+				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)} </b> ${o.productName}
 			</div>');
 		}else{
 			null;

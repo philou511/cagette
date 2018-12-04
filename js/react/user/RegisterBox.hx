@@ -3,18 +3,27 @@ import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 
-typedef RegisterBoxState = {firstName:String, lastName:String, email:String, password:String, error:String, phone:String};
-typedef RegisterBoxProps = {redirectUrl:String,message:String,phoneRequired:Bool};
+typedef RegisterBoxState = {
+	firstName:String, 
+	lastName:String, 
+	email:String, 
+	password:String, 
+	error:String, 
+	phone:String
+};
 
+typedef RegisterBoxProps = {
+	redirectUrl:String,
+	message:String,
+	phoneRequired:Bool
+};
 
 /**
  * Registration box ( sign up )
  * @author fbarbut
  */
-class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,RegisterBoxState>
+class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxState>
 {
-
-	
 	public function new(props:RegisterBoxProps) 
 	{
 		if (props.redirectUrl == null) props.redirectUrl = "/";	
@@ -104,7 +113,8 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 		ReactDOM.unmountComponentAtNode( body );
 	
 		js.Browser.document.querySelector("#myModal .modal-title").innerHTML = "Connexion";
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="${props.redirectUrl}" />'),  body );
+		//TODO check message props
+		ReactDOM.render(jsx('<$LoginBox message="" redirectUrl="${props.redirectUrl}" />'),  body );
 	}
 
 	
