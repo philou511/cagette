@@ -38,7 +38,7 @@
 						
 						::if d.place!=null:: 
 						<div class="info">
-						<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::d.place.id::">::d.place::</a>			
+						<i class="icon icon-map-marker"></i> <a href="/place/view/::d.place.id::">::d.place::</a>			
 						</div>
 						<div class="address">
 								$$nullSafe(::d.place.address1::)
@@ -80,7 +80,7 @@
 						
 						::if d.active==true::
 						<a href="/shop/::d.place.id::/::d.startDate.toString().substr(0,10)::" class="btn btn-primary">
-							<span class="glyphicon glyphicon-chevron-right"></span>
+							<i class="icon icon-chevron-right"></i>
 							::_("Order")::
 						</a>
 						::else::

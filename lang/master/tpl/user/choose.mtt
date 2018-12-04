@@ -62,7 +62,7 @@
 					<p>
 						::_("You don't belong to any group yet")::
 					</p>
-					<a class="btn btn-primary" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Create my own group")::</a>	
+					<a class="btn btn-primary" href="/group/create/"><i class="icon icon-chevron-right"></i> ::_("Create my own group")::</a>	
 				</div>
 			</div>
 			::end::

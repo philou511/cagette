@@ -16,7 +16,7 @@
 				<span class="glyphicon glyphicon-user"></span> ::_("Connection")::</a>
 			
 			<a href="#" onclick="_.registerBox('::raw redirect::',::phoneRequired::);" class="btn btn-success">
-				<span class="glyphicon glyphicon-chevron-right"></span> ::_("Sign up")::</a>
+				<i class="icon icon-chevron-right"></i> ::_("Sign up")::</a>
 		</div>
 	</div>-->
 </div>

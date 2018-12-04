@@ -19,7 +19,7 @@
 				::end::
 			::elseif(isAdmin)::
 				<a class="btn btn-default disabled"> 
-					<span class="glyphicon glyphicon-ok"></span> ::dDate(m.getDate())::, ::m.getPlace().name::
+					<i class="icon icon-check"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
 				</a>	
 				<a href="/distribution/unvalidate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-danger">Admin : Unvalidate</a>
 			::end::
@@ -79,7 +79,7 @@
 		$$insert(::_("New contract")::,/contract/insert/)
 		::end::
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
-		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> ::_("Calendar")::</a>
+		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><i class="icon icon-calendar"></i> ::_("Calendar")::</a>
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 			::_("Global orders view")::
@@ -112,7 +112,7 @@
 					<td>
 						<div class="btn-group" role="group">
 							$$edit(::_("Edit")::,/vendor/edit/::v.id::)
-							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>
+							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
 							::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
 						</div>
 					</td>

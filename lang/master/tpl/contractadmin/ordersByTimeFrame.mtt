@@ -9,7 +9,7 @@
 			
 		::set uri = from.toString().substr(0,10)+"/"+to.toString().substr(0,10)::	
 		<div class="text-center">
-			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-list-alt"></span> ::_("CSV Export"):: </a>-->
+			<!--<a href="/distribution/listByDate//csv" class="btn btn-default btn-sm"> <i class="icon icon-list"></i> ::_("CSV Export"):: </a>-->
 			<a href="/contractAdmin/vendorsByTimeFrame/::uri::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> ::_("Totals per supplier")::</a>
 			<a href="/contractAdmin/ordersByTimeFrame/::uri::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per contract")::</a>
 		</div>

@@ -50,7 +50,7 @@
 	</macro>
 	
 	<macro name="export(url)">
-		<a href="::url::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> ::_("Excel/CSV Export")::</a>	
+		<a href="::url::" class="btn btn-default btn-sm"><i class="icon icon-list"></i> ::_("Excel/CSV Export")::</a>	
 	</macro>
 	
 	<macro name="bool(v)">
@@ -112,7 +112,7 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
+				<i class="icon icon-map-marker"></i>
 				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
 			</div>
 			::end::

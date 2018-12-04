@@ -16,7 +16,7 @@
 		<div id="content" class="col-md-12">
 			
 			<div class="alert alert-success">
-				<span class="glyphicon glyphicon-ok"></span>
+				<i class="icon icon-check"></i>
 				Todo bem
 			</div>
 			
@@ -110,7 +110,7 @@
 							Type : <b>Gratuit jusqu'à 20 foyers</b> ( actuellement 1 foyers dans votre groupe)  
 						</p>
 						<p>
-							<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Primary</button>
+							<button type="button" class="btn btn-primary"><i class="icon icon-chevron-right"></i> Primary</button>
 						</p>
 						
 					</div>
@@ -142,7 +142,7 @@
 				<div class="footer">
 				
 					<div class="pull-right">
-						<p><a class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Suivant</a></p>
+						<p><a class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> Suivant</a></p>
 					</div>
 				</div>
 			</div>
@@ -186,7 +186,7 @@
 		<p>
 			Attention, vous n'avez défini aucun mot de passe pour votre compte !
 		</p>
-		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Définir un mot de passe</a>
+		<a href="/user/definePassword" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> Définir un mot de passe</a>
 		
 	</div>
 	

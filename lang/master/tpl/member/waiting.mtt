@@ -26,12 +26,12 @@
 				<td>"::w.message::"</td>
 				<td class="col-md-4">
 					<a href="/member/waiting?add=::u.id::" class="btn btn-primary btn-sm">
-						<span class="glyphicon glyphicon-ok"></span>
+						<i class="icon icon-check"></i>
 						::_("Accept membership request")::
 					</a>
 					
 					<a href="/member/waiting?remove=::u.id::" class="btn btn-default btn-sm">
-						<span class="glyphicon glyphicon-remove"></span>
+						<i class="icon icon-delete"></i>
 						::_("Deny request")::</a>
 					</td>
 			</tr>
