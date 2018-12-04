@@ -10,6 +10,7 @@ typedef ProductInputProps = {
 	txpProductId:Int,
 	productName:String,
 }
+
 typedef ProductInputState = {
 	txpProductId:Int,
 	productName:String,
@@ -17,20 +18,17 @@ typedef ProductInputState = {
 	breadcrumb:String,	
 }
 
-
 /**
  * Product Text Input with autocompletion
  * 
  * @author fbarbut
  */
-class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState>
-{
-
+class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState> {
 	public static var DICO : TxpDictionnary = null;
 	var options : Array<{id:Int,label:String}>;
-	
-	public function new(props:ProductInputProps) 
-	{
+	var imgRef: react.ReactRef<{src:String}>;
+
+	public function new(props:ProductInputProps) {
 		super(props);
 		options = [];
 		this.state = {
@@ -39,7 +37,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			categoryId : 0,
 			breadcrumb : ""
 		};
-		
+		this.imgRef  = React.createRef();
 	}
 	
 	override public function render(){
@@ -68,7 +66,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 				</div>
 				
 				<div className="col-md-4">
-					<img ref="image" className="img-thumbnail" />
+					<img ref={this.imgRef} className="img-thumbnail" />
 				</div>
 
 			</div>
@@ -146,7 +144,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			productName:product.name	//do not override product name !		*/
 		});
 		
-		this.refs.image.src="/img/taxo/cat"+txp.category+".png";
+		this.imgRef.current.src="/img/taxo/cat"+txp.category+".png";
 	}
 	
 	/**
@@ -162,7 +160,4 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		str += " / " + product.name;
 		return str;
 	}
-	
-	
-
 }

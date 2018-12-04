@@ -54,7 +54,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps>
         </div>
       ');
     });
-
+	
     return jsx('
       <div className="sub-categories">
         $subCategories

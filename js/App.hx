@@ -78,7 +78,7 @@ class App {
 		
 		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
 		
-		ReactDOM.render(jsx('<$VATBox ttc="$ttcprice" currency="$currency" vatRates="$rates" vat="$vat" formName="$formName"/>'),  input.parentElement);
+		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
 		
 		//remove(input);
 		
@@ -97,7 +97,7 @@ class App {
 	 * @param	txpProductId
 	 * @param	formName
 	 */
-	public function getProductInput(divId:String, productName:String, txpProductId:String, formName:String ){
+	public function getProductInput(divId:String, productName:String, txpProductId:Null<Int>, formName:String ){
 
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -105,9 +105,9 @@ class App {
 			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
 			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
 
-			if (txpProductId == null) txpProductId = "";
+			//if (txpProductId == null) txpProductId = null;
 
-			ReactDOM.render(jsx('<$ProductInput productName="$productName" txpProductId="$txpProductId" formName="$formName"/>'),  js.Browser.document.getElementById(divId));
+			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});
 	}
 
@@ -121,8 +121,8 @@ class App {
 		var onValidate = function() js.Browser.location.href = callbackUrl;
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
-			contractId="$contractId" contractType="$contractType" date="$date" place="$place" userName="$userName" 
+		ReactDOM.render(jsx('<$OrderBox userId=${userId} distributionId=${distributionId} 
+			contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
 			onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
 
 	}

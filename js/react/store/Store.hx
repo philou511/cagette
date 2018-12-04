@@ -23,12 +23,26 @@ typedef StoreState = {
   var filters:Array<String>;
 };
 
+
+/*
+Composants material-ui 
+- <SubCateg label="Sélection de la semaine" icon="icon icon-truck-solid" colorClass="cagSelect" onclick={handleClick}/>
+- Product
+- RecipeReviewCard
+- QuantityInput
+
+*/
+
+@:enum 
+abstract ServerUrl(String) to String {
+	var CategoryUrl = '/api/shop/categories';
+	var ProductUrl = '/api/shop/products';
+	var InitUrl = '/api/shop/init';
+	var ViewUrl = '/place/view';
+}
+
 class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 {
-  static inline var CATEGORY_URL = '/api/shop/categories';
-  static inline var PRODUCT_URL = '/api/shop/products';
-  static inline var INIT_URL = '/api/shop/init';
-  static inline var VIEW_URL = '/place/view';
 
   public function new() {
     super();
@@ -45,17 +59,20 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     };
   }
 
+  static function fetch(url:ServerUrl, ?method: HttpMethod = GET, ?params: Dynamic = null, ?accept: FetchFormat = PLAIN_TEXT, ?contentType: String = JSON ): Promise<Dynamic> { 
+	return HttpUtil.fetch(url, method, params, accept, contentType);
+  }
+
   override function componentDidMount() {
-    var categoriesRequest = HttpUtil.fetch(CATEGORY_URL, GET, {date: props.date, place: props.place}, JSON);
-    var initRequest = HttpUtil.fetch(INIT_URL, GET, {date: props.date, place: props.place}, JSON);
+    var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
+    var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
 
     initRequest.then(function(infos:Dynamic) {
       setState({
         place: infos.place,
         orderByEndDates: infos.orderEndDates
       });
-    })
-    .catchError(function(error) {
+    }).catchError(function(error) {
       trace("ERROR", error);
     });
 
@@ -75,21 +92,21 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
       });
 
       subCategories.map(function(category:CategoryInfo) {
-        return HttpUtil.fetch(PRODUCT_URL, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
-        .then(function(result) {
-          var productsBySubcategoryIdMapCopy = [
-            for (key in state.productsBySubcategoryIdMap.keys())
-              key => state.productsBySubcategoryIdMap.get(key)
-          ];
-          productsBySubcategoryIdMapCopy.set(category.id, result.products);
-
-          setState({
-            productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
-          });
-        });
+        return HttpUtil	.fetch(PRODUCT_URL, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
+						.then(function(result) {
+							//WHY IS THAT, to refresh local storage data?
+							var productsBySubcategoryIdMapCopy = [
+								for (key in state.productsBySubcategoryIdMap.keys())
+									key => state.productsBySubcategoryIdMap.get(key)
+							];
+							productsBySubcategoryIdMapCopy.set(category.id, result.products);
+							
+							setState({
+								productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
+							});
+						});
       });
-    })
-    .catchError(function(error) {
+    }).catchError(function(error) {
       trace("ERROR", error);
     });
   }
@@ -97,17 +114,17 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
   function toggleFilter(category:String) {
     var filters = state.filters.copy();
 
-    if (state.filters.find(function(categoryInFilter) {
-      return category == categoryInFilter;
-    }) != null)
+	var filterExists = state.filters.find(function(categoryInFilter) { return category == categoryInFilter; }) != null;
+    if (filterExists )
       filters.remove(category);
     else
       filters.push(category);
 
-    if (filters.length == 0)
+    if (filters.length == 0) {
       filters = state.categories.map(function(category) {
         return category.name;
       });
+	}
 
     setState({
       filters: filters
@@ -143,13 +160,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     return jsx('
       <div className="shop">
         ${renderHeader()}
-        <ProductList
-          categories=${state.categories}
-          productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
-          filters=${state.filters}
-          addToCart=$addToCart
-        />
-        <Filters
+		<Filters
           categories=${state.categories}
           filters=${state.filters}
           toggleFilter=$toggleFilter
@@ -160,6 +171,13 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
           removeFromCart=$removeFromCart
           submitOrder=$submitOrder
         />
+
+        <ProductList
+          categories=${state.categories}
+          productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
+          filters=${state.filters}
+          addToCart=$addToCart
+        />
       </div>
     ');
   }
@@ -169,19 +187,19 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
       return null;
 
     var endDates;
-
+	// TODO Localization here
     if (state.orderByEndDates.length == 1) {
       var orderEndDate = state.orderByEndDates[0].date;
       endDates = [jsx('<div key=$orderEndDate>La commande fermera le $orderEndDate</div>')];
-    }
-    else {
+    } else {
       endDates = state.orderByEndDates.map(function(order) {
-        if (order.contracts.length == 1)
+        if (order.contracts.length == 1) {
           return jsx('
             <div key=${order.date}>
               La commande ${order.contracts[0]} fermera le: ${order.date} 
             </div>
           ');
+		}
 
         return jsx('
           <div key=${order.date}>
@@ -191,6 +209,8 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
       });
     }
 
+	//TODO Think about the way the place adress is built, why an array for zipCode and city ?
+	//TODO LOCALIZATION
     var viewUrl = '$VIEW_URL/${props.place}';
     var addressBlock = Lambda.array([
       state.place.address1,

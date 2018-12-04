@@ -1,0 +1,31 @@
+
+ haxelib newrepo
+ haxelib git sugoi https://github.com/bablukid/sugoi
+ haxelib git hxleaflet https://github.com/bablukid/hxleaflet
+ haxelib install react-next
+ haxelib install material-ui
+ haxelib git material-ui https://gitlab.com/k-labz/haxe-oss/haxe-material-ui.git
+ haxelib install modular
+ haxelib install react-router-4
+ haxelib install classnames
+ haxelib install react-types
+ haxelib git react-types https://gitlab.com/k-labz/haxe-oss/haxe-react-types.git
+
+
+OUTPUT EXPECTED 
+classnames: [0.1.5]
+history: [0.0.1]
+hxleaflet: [git]
+js-object: [0.0.5]
+material-ui: [git]
+modular: [0.10.15]
+react-next: [1.103.1]
+react-router-4: [0.2.3]
+react-types: [git]
+sugoi: [git]
+tink_anon: [0.3.2]
+tink_core: [1.18.0]
+tink_hxx: [0.18.0]
+tink_macro: [0.17.2]
+tink_parse: [0.2.0]
+

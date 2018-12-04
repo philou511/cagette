@@ -1,0 +1,53 @@
+
+
+haxelib newrepo
+
+haxelib git record-macros https://github.com/HaxeFoundation/record-macros
+haxelib git dbadmin https://github.com/ncannasse/dbadmin
+haxelib git sugoi https://github.com/bablukid/sugoi
+
+haxelib install templo
+haxelib install hxevents
+haxelib install thx.semver
+haxelib install thx.csv
+haxelib install datetime
+haxelib install hscript
+
+haxelib install tink_await 0.3.0
+haxelib install tink_core 1.17.0
+haxelib install tink_io 0.5.0
+haxelib install tink_json 0.9.0
+haxelib install tink_macro 0.16.4
+haxelib install tink_priority 0.1.3
+haxelib install tink_streams 0.2.1
+haxelib install tink_syntaxhub 0.3.6
+haxelib install tink_typecrawler 0.6.2
+
+haxelib install smtpmailer
+
+
+OUTPUT EXPECTED 
+asys: [0.3.0]
+datetime: [3.1.1]
+dbadmin: [git]
+hscript: [2.3.0]
+hxevents: [0.4.0]
+mime: [0.0.1]
+record-macros: [git]
+smtpmailer: [0.4.0]
+sugoi: [git]
+templo: [3.0.0]
+thx.core: [0.43.0]
+thx.csv: [0.2.0]
+thx.semver: [0.2.2]
+tink_await: [0.3.0] 0.4.0
+tink_chunk: [0.2.0]
+tink_core: [1.17.0] 1.18.0
+tink_io: [0.5.0] 0.6.2
+tink_json: [0.9.0]
+tink_macro: [0.16.4] 0.17.2
+tink_priority: [0.1.3]
+tink_streams: [0.2.1] 0.3.2
+tink_syntaxhub: [0.3.6] 0.4.3
+tink_typecrawler: [0.6.2]
+

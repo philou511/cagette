@@ -46,7 +46,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		//request api avec user + distrib
 		HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT)
 		.then(function(data:String) {
-
+			
 			var data : {orders:Array<UserOrder>} = tink.Json.parse(data);
 			/*for( o in orders){
 				//convert ints to enums, enums have been lost in json serialization

@@ -34,11 +34,11 @@
   "scripts": {
     "build": "npm-run-all --parallel build:*",
     "build:js": "haxe cagetteJs.hxml",
-    "build:sass": "node-sass www/css -o www/css",
+    "build:sass": "node-sass ../www/css -o ../www/css",
     "watch:sass": "npm run build:sass -- --watch",
     "build2": "babel src -d lib",
-    "libs:dev": "browserify js/libs/libs.js -o www/js/libs.js -d",
-    "libs:prod": "cross-env NODE_ENV=production browserify js/libs/libs.js | uglifyjs -c -m > www/js/libs.js",
+    "libs:dev": "browserify js/libs/libs.js -o ../www/js/libs.js -d",
+    "libs:prod": "cross-env NODE_ENV=production browserify js/libs/libs.js | uglifyjs -c -m > ../www/js/libs.js",
     "test": "haxe testsJS.hxml && node js/test/tests.js",
     "prepush": "npm test"
   },
