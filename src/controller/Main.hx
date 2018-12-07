@@ -81,7 +81,10 @@ class Main extends Controller {
 	 *  JSON REST API Entry point
 	 */
 	function doApi(d:Dispatch) {
-				
+		
+		//App.current.headers.set("Content-Type","application/json; Charset=UTF-8");
+		sugoi.Web.setHeader("Content-Type","application/json; Charset=UTF-8");
+
 		try {
 
 			d.dispatch(new controller.Api());

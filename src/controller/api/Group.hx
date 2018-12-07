@@ -53,29 +53,27 @@ class Group extends Controller
 	**/
 	public function doGogoCartoMap() {
 
-		var bounds = app.params.get("bounds");
-		var bounds = bounds.substr(0,bounds.length-1).split(",");
+		// var bounds = app.params.get("bounds");
+		// var bounds = bounds.substr(0,bounds.length-1).split(",");
 
-		/*"_southWest":
-        {
-            "lat": 46.07323,
-            "lng": -766.40625
-        },
-        "_northEast":
-        {
-            "lat": 46.07323,
-            "lng": 772.03125
-        }
-    },*/
-		var boundsJson : Array<Dynamic> = haxe.Json.parse(app.params.get("boundsJson"));
-		var b :Dynamic = boundsJson[0];
+		//send 4 bounds boxes
+		var boundsJson : Array<Dynamic> = haxe.Json.parse(app.params.get("boundsJson"));		
+		var places = new Array<db.Place>();
 		
+		for( b in boundsJson){
 
-		var args = cast {minLat:b._southWest.lat,maxLat:b._northEast.lat,minLng:b._southWest.lat,maxLng:b._northEast.lng};
-
+			var args = cast {
+				minLat:b._southWest.lat,
+				maxLat:b._northEast.lat,
+				minLng:b._southWest.lng,
+				maxLng:b._northEast.lng
+			};
+			for( p in searchPlaces(args) ) places.push(p);
+		}
+		
+	
+		//var places = db.Place.manager.search($lat!=null,false);
 		var out  = new Array<GoGoCartoPlace>();
-		var places  =  searchPlaces(args);
-		
 		for ( p in places){
 			out.push({
 				id : p.amap.id,
@@ -92,13 +90,16 @@ class Group extends Controller
 			});
 		}
 
-		Sys.print(haxe.Json.stringify({ontology:"gogofull", data:out}));
+		//allow remote debug
+		sugoi.Web.setHeader("Access-Control-Allow-Origin","*");
+
+		Sys.print(haxe.Json.stringify({data:out}));
 	}
 
 
-	private function searchPlaces(args:{?minLat:Float, ?maxLat:Float, ?minLng:Float, ?maxLng:Float, ?lat:Float, ?lng:Float, ?address:String}) {
+	private function searchPlaces(args:{?minLat:Float, ?maxLat:Float, ?minLng:Float, ?maxLng:Float, ?lat:Float, ?lng:Float, ?address:String}):Array<db.Place> {
 	
-		var places  =  new List<db.Place>();
+		var places  =  new Array<db.Place>();
 		if (args.minLat != null && args.maxLat != null && args.minLng != null && args.maxLng != null){
 			
 			//Request by zone
@@ -112,7 +113,7 @@ class Group extends Controller
 
 			if(App.config.DEBUG) App.current.logError(sql);
 
-			places = db.Place.manager.unsafeObjects(sql, false);
+			places = Lambda.array(db.Place.manager.unsafeObjects(sql, false));
 			
 		}else if (args.lat!=null && args.lng!=null){
 			
@@ -140,7 +141,7 @@ class Group extends Controller
 	/**
 	 * ~~ Pythagore rulez ~~
 	 */
-	function findGroupByDist(lat:Float, lng:Float,?limit=5){
+	function findGroupByDist(lat:Float, lng:Float,?limit=5):Array<db.Place>{
 		#if plugins
 		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p, Hosting h ';
 		sql += "where h.id=p.amapId and h.visible=1 and p.lat is not null ";		
@@ -150,7 +151,7 @@ class Group extends Controller
 		sql += "where p.lat is not null ";
 		sql += 'order by dist asc LIMIT $limit';
 		#end
-		return db.Place.manager.unsafeObjects(sql, false);
+		return Lambda.array(db.Place.manager.unsafeObjects(sql, false));
 	}
 	
 }

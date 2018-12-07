@@ -1,7 +1,10 @@
-::use 'base.mtt'::
+<html>
 <link rel="stylesheet" href="/gogocarto/gogocarto.min.css" /> 
 <script src="/gogocarto/gogocarto.min.js"></script>
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"/>
+<!--
+possible d'utiliser notre icontfont en mettant icon:icon-delete
+-->
 <div  id="map"></div>
 	
 <script>
@@ -10,67 +13,31 @@
 			"name":"Catégories Principales",
 			"unexpandable":true,
 			"options":[
+			  
 			  {
-				"id":10427,
-				"name":"Agriculture & Alimentation",
-				"nameShort":"Agricuture",
-				"color":"#98A100",
-				"softColor":"#808700",
-				"icon":"icon-leaf-1",
-				"url": "http://gogocarto.fr"
-			  },    
-			  {
-				"id":10517,
-				"name":"Voyages",
+				"name":"Amap",
 				"color":"#1E8065",
-				"icon":"icon-case"
+				"icon":"fa fa-shopping-basket"
 			  },
 			  {
-				"id":10473,
-				"name":"Education & Formation",
-				"nameShort":"Education",
+				"name":"FarmShop",
 				"color":"#00537E",
 				"softColor":"#22698E",
-				"icon":"icon-education-1"
+				"icon":"fa fa-leaf"
 			  },
 			  {
-				"id":10452,
-				"name":"Habitat",
+				"name":"GroupedOrders",
 				"color":"#7E3200",
 				"softColor":"#864C26",
-				"icon":"icon-home"
+				"icon":"fa fa-warehouse"
 			  },
 			  {
-				"id":10485,
-				"name":"Mobilité",
+				"name":"ProducerDrive",
 				"color":"#009A9C",
 				"softColor":"#138C8E",
-				"icon":"icon-mobilite-2"
+				"icon":"fa fa-apple-alt"
 			  },
-			  {
-				"id":10495,
-				"name":"Sortie & Culture",
-				"nameShort":"Sorties",
-				"color":"#AB0061",
-				"softColor":"#A4307C",
-				"icon":"icon-coffee"
-			  },
-			  {
-				"id":10507,
-				"name":"Mode & Beauté",
-				"nameShort":"Mode/Beauté",
-				"color":"#8E36A5",
-				"softColor":"#7D398D",
-				"icon":"icon-vetement-4"
-			  },
-			  {
-				"id":10525,
-				"name":"Economie & Finance",
-				"nameShort":"Economie/Finance",
-				"color":"#AB7100",
-				"softColor":"#9D7424",
-				"icon":"icon-euro"
-			  }
+			  
 			]  
 		  };
 
@@ -80,18 +47,11 @@
 				taxonomy: taxonomy,
 				elements: "/api/group/gogoCartoMap",
 				requestByBounds: true,
-			},
-			map: {
-				defaultBounds: [
-					[48,1],
-					[44,-1]
-					
-				],
-			}	
+			}
 		});
 	});
 
 
 </script>
 	
-::end::
+</html>
