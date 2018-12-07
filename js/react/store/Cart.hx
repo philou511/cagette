@@ -39,26 +39,26 @@ class Cart extends react.ReactComponentOfProps<CartProps>
     ');
   }
 
+
+  function updateQuantity(cartProduct:ProductWithQuantity, newValue:Int) {
+    if( newValue > cartProduct.quantity ) {
+      this.addToCart(cartProduct.product, 1);
+    } else if( newValue < cartProduct.quantity ) {
+      this.removeFromCart(cartProduct.product, 1);
+    }
+  }
+
   function renderProducts() {
-    var productsToOrder = props.order.products.map(function(product:ProductWithQuantity) {
-      var quantity = product.quantity;
-      var product = product.product;
+    var productsToOrder = props.order.products.map(function(cartProduct:ProductWithQuantity) {
+      var quantity = cartProduct.quantity;
+      var product = cartProduct.product;
       
       return jsx('
         <div className="product-to-order" key=${product.name}>
           <div>${product.name}</div>
-          <div>$quantity</div>
           <div className="cart-action-buttons">
-            <div onClick=${function(){
-              this.addToCart(product, 1);
-            }}>
-              +
-            </div>
-            <div onClick=${function(){
-              this.removeFromCart(product, 1);
-            }}>
-              -
-            </div>
+
+            <QuantityInput onChange=${updateQuantity.bind(cartProduct)} defaultValue=${quantity}/>
             <div onClick=${function(){
               this.removeAllFromCart(product);
             }}>

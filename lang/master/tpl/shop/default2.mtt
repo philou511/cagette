@@ -1,3 +1,6 @@
+
+::set noBootstrap = true::
+
 ::use 'design.mtt'::
 
 <div id='shop'></div>

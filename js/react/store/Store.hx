@@ -94,14 +94,21 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
       });
 
       subCategories.map(function(category:CategoryInfo) {
-        return HttpUtil	.fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
+        return HttpUtil.fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON)
 						.then(function(result) {
+
+              //transform results
+              var products : Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
+                return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
+              }));
+
 							//WHY IS THAT, to refresh local storage data?
 							var productsBySubcategoryIdMapCopy = [
 								for (key in state.productsBySubcategoryIdMap.keys())
 									key => state.productsBySubcategoryIdMap.get(key)
 							];
-							productsBySubcategoryIdMapCopy.set(category.id, result.products);
+
+							productsBySubcategoryIdMapCopy.set(category.id, products);
 							
 							setState({
 								productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy

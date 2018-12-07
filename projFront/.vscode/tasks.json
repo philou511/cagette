@@ -27,5 +27,6 @@
                 "isDefault": true
             }
         }
-    ]
+    ],
+    "files.autoSave": "afterDelay",
 }

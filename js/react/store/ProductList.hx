@@ -1,7 +1,8 @@
 package react.store;
+import Common;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import Common;
+import mui.core.Grid;
 
 using Lambda;
 
@@ -49,7 +50,9 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps>
         <div className="sub-category" key=${category.name}>
           <h3>${category.name}</h3>
           <div className="products">
-            ${renderProducts(products)}
+            <$Grid container style={{ marginBottom: 20}}  spacing={Spacing_24}>
+              ${renderProducts(products)}
+            </$Grid>
           </div>
         </div>
       ');
@@ -62,10 +65,17 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps>
     ');
   }
 
-  function renderProducts(products) {
+  function renderProducts(products:Array<ProductInfo>) {
+    if( products == null || products.length == 0 ) return null;
+    
+    //for debug purpose only
+    //var products = [products[0]];
+
     return products.map(function(product) {
       return jsx('
-        <$Product product=${product} key=${product.id} addToCart=${props.addToCart}/>
+        <$Grid item xs={12} sm={4} md={3} key=${product.id}>
+          <$Product product=${product}  addToCart=${props.addToCart}/>
+        </$Grid>
       ');
     });
   }

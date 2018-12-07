@@ -14,22 +14,19 @@
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
 		<!--
-			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/shop.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/shop.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/map.css"/>-->		
 	
 		<!-- JQUERY -->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 		
 		<!-- BOOTSTRAP -->	
+		::if noBootstrap::
+		::else::
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
-
-
-
+		::end::
 
 		<link rel="stylesheet" href="/font/icons.css" />
-
-
-
 		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>

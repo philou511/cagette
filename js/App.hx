@@ -200,15 +200,22 @@ class App {
 				fontFamily:['Cabin','"Helvetica Neue"','Arial','sans-serif',],
 				fontSize:16,          
 			},
+			overrides: {
+				MuiButton: { // Name of the component ⚛️ / style sheet
+					root: { // Name of the rule
+						minHeight: 'initial',
+						minWidth: 'initial',
+					},
+				},
+			},
 		});
 
 		ReactDOM.render(jsx('
 			<$MuiThemeProvider theme=${theme}>
 				<>
-				<$CssBaseline />
-
-				<$Store date=$date place=$place/>
-			</>
+					<$CssBaseline />
+					<$Store date=$date place=$place/>
+				</>
 			</$MuiThemeProvider>
 		'), js.Browser.document.querySelector('#shop'));
 	}

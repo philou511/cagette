@@ -14,8 +14,7 @@ typedef ProductState = {
   var quantity:Int;
 };
 
-class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductState>
-{
+class Product extends react.ReactComponentOfPropsAndState<ProductProps, ProductState> {
   static inline var OVERLAY_URL = '/shop/productInfo';
   static inline var IMAGE_WIDTH = 120;
   static inline var IMAGE_HEIGHT = 120;

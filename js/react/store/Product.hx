@@ -12,6 +12,7 @@ import react.types.*;
 import react.types.css.JustifyContent;
 import react.types.css.AlignContent;
 
+import Formatting.unit;
 import mui.core.Card;
 import mui.core.Button;
 import mui.core.CardMedia;
@@ -37,6 +38,7 @@ private typedef TClasses = Classes<[
 	button,
     card,
     media,
+    area,
     cardContent,
     productBuy,
     starProduct,
@@ -69,6 +71,9 @@ class Product extends ReactComponentOf<Props, ProductState> {
             },
             card: {     
                 backgroundColor: '#F8F4E5',
+            },
+            area: {     
+                width: '100%',
             },
             media: {       
                 height: 170,
@@ -104,16 +109,15 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 display: "flex",
             },
             cagProductTitle: {
-                lineHeight: "normal",
                 fontSize: '1.08rem',
+                lineHeight: "normal",
                 fontStyle: "normal",
-                fontWeight: 400,
                 textTransform: UpperCase,
                 marginBottom: 3,
+                fontWeight: 400,
                 maxHeight: 40,
                 overflow: Hidden,
             },
-
             cagProductLabel : {
                 marginLeft : -3,
                 "& .labelChip:hover" : {        
@@ -138,9 +142,11 @@ class Product extends ReactComponentOf<Props, ProductState> {
             },
             cagProductInfo : {
                 fontSize : "1.3rem",
+
                 "& .cagProductUnit" : {
                     marginRight: "2rem",
                 },
+
                 "& .cagProductPrice" : {
                     color : CGColors.Third,        
                 },
@@ -158,19 +164,50 @@ class Product extends ReactComponentOf<Props, ProductState> {
         super(props);
         this.state = { quantity : 0 };
     }
-    override public function render() {
 
+    static inline var OVERLAY_URL = '/shop/productInfo';
+    function openOverlay(_) {
+        untyped window._.overlay('$OVERLAY_URL/${props.product.id}', props.product.name);
+    }
+
+    function updateQuantity(quantity) {
+        setState({
+            quantity: Std.int(quantity)
+        });
+    }
+
+    function addToCart() {
+        setState({quantity:1}, function() {
+            props.addToCart(props.product, state.quantity);
+        });
+    }
+
+    function renderQuantityAction() {
+        return if(state.quantity == 0 ) {
+            jsx(' <Button
+                        onClick=${addToCart}
+                        variant=${Contained}
+                        color=${Primary} 
+                        className=${props.classes.productBuy} 
+                        disableRipple>                        
+                        <i className="icon icon-truck-solid"></i>
+                    </Button>
+            ');
+        } else {
+            jsx('<QuantityInput onChange=${updateQuantity} defaultValue={1}/>');
+        }
+    }
+    override public function render() {
         var classes = props.classes;
-        var CardMediaClasses = classNames({
-			'${classes.media}': true,
-		});
+        var product = props.product;
+        var productType = unit(product.unitType);
 
         return jsx('
             <Card elevation={0} className=${classes.card}> 
-                <CardActionArea>
+                <CardActionArea className=${classes.area} onClick=${openOverlay}>
                     <CardMedia
-                        className=${CardMediaClasses}                                    
-                        image="/img/produit-oranges2.jpg"               
+                        className=${classes.media}
+                        image=${product.image}
                         >
                         <div className=${classes.cagAvatarContainer}>
                             <Avatar className=${classes.starProduct}>
@@ -178,14 +215,15 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             </Avatar>  
                         </div>
                         <div className=${classes.cagAvatarContainer}>
-                                <Avatar src="/img/la-ferme-des-2-rivieres.jpg" 
+                                <Avatar src="/img/store/la-ferme-des-2-rivieres.jpg" 
                                     className=${classes.farmerAvatar} 
                                 />  
                         </div>                      
                     </CardMedia>
+
                     <CardContent className=${classes.cardContent}>                        
                         <Typography component="h3" className=${classes.cagProductTitle}>
-                            Orange  Naveline de Catatania 
+                            ${product.name}
                         </Typography>
                         <Typography component="p" className=${classes.cagProductDesc}>
                             La Ferme 
@@ -198,23 +236,16 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 </CardActionArea>
                 <CardActions className=${classes.cagProductInfoWrap} >                                    
                     <Typography component="p" className=${classes.cagProductInfo} >                                 
-                        <span className="cagProductUnit">1 kg </span>
-                        <span className="cagProductPrice">2,50 €</span>                         
+                        <span className="cagProductUnit">1 ${(productType)} </span>
+                        <span className="cagProductPrice">${product.price} €</span>                         
                     </Typography>
                     
-                    <QuantityInput/>
+                   {renderQuantityAction()}
 
-                    <Button
-                        variant=${Contained}
-                        color=${Primary} 
-                        className=${classes.productBuy} 
-                        disableRipple>                        
-                        <i className="icon icon-truck-solid"></i>
-                    </Button>
                 </CardActions>   
                 <CardActions className=${classes.cagProductInfoWrap} style={{ marginBottom: 10}} >                                                      
                     <Typography component="p" className=${classes.cagProductPriceRate} >                                 
-                        2,50 €/kg
+                        ${product.price} €/${(productType)}
                     </Typography>                               
                 </CardActions>
             </Card>

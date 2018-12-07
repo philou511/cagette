@@ -1,7 +1,6 @@
 
 package react.store;
 
-
 // it's just easier with this lib
 import classnames.ClassNames.fastNull as classNames;
 import mui.CagetteTheme.CGColors;
@@ -10,6 +9,7 @@ import mui.core.styles.Styles;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.types.*;
+import mui.core.Button;
 import react.types.css.JustifyContent;
 import react.types.css.AlignContent;
 
@@ -19,16 +19,23 @@ private typedef Props = {
 }
 
 private typedef PublicProps = {
+    var onChange:Int->Void;
+    var defaultValue:Int;
 }
 
 private typedef TClasses = Classes<[
     quantityInput,
 ]>
 
+typedef State = {
+    var quantity:Int;
+};
+
+
 @:acceptsMoreProps
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class QuantityInput extends ReactComponentOfProps<Props> {
+class QuantityInput extends ReactComponentOf<Props, State> {
     
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
@@ -66,13 +73,26 @@ class QuantityInput extends ReactComponentOfProps<Props> {
 		}
 	}
 
+    public function new(props) {
+        super(props);
+        state = {quantity : props.defaultValue};
+    }
+
+    function updateValue(delta:Int) {
+        var v = state.quantity + delta;
+        if( v + delta < 0 ) v = 0;
+        setState({quantity:v}, function() {
+            props.onChange(state.quantity);
+        });
+    }
+
     override function render() {
         var classes = props.classes;
         return jsx('
             <div className=${classes.quantityInput}>
-                <div className="quantityMoreLess"> - </div>
-                <div className="quantity"> 1 </div>
-                <div className="quantityMoreLess"> + </div>
+                <div className="quantityMoreLess" onClick=${updateValue.bind(-1)}>-</div>
+                <div className="quantity"> ${state.quantity} </div>
+                <div className="quantityMoreLess"  onClick=${updateValue.bind(1)}> + </div>
             </div>
         ');
     }
