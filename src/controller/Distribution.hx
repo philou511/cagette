@@ -31,7 +31,7 @@ class Distribution extends Controller
 		view.contract = d.contract;
 		// view.orders = UserContract.prepare(d.getOrders());
 		
-		//make a 2 dimensons table :  data[userId][productId]
+		//make a 2 dimensions table :  data[userId][productId]
 		//WARNING : BUGS WILL APPEAR if there is many Order line for the same product
 		var data = new Map<Int,Map<Int,UserOrder>>();
 		var products = [];
@@ -45,7 +45,12 @@ class Distribution extends Controller
 
 			var user = data[o.userId];
 			if (user == null) user = new Map();
-			user[o.productId] = o;
+			if(user[o.productId]==null){
+				user[o.productId] = o;
+			}else{
+				user[o.productId] = o;
+			}
+			
 			data[o.userId] = user;
 
 		}
@@ -59,12 +64,10 @@ class Distribution extends Controller
 
 		//users
 		var users = Lambda.array(d.getUsers());
-		// var usersMap = tools.ObjectListTool.toIdMap(users);
 		users.sort(function(b, a) {
 			return (a.lastName < b.lastName)?1:-1;
 		});
 		view.users = users;
-		// view.usersMap = usersMap;
 
 		view.orders = data;
 

@@ -2,6 +2,22 @@ package controller.api;
 import haxe.Json;
 import Common;
 
+typedef GoGoCartoPlace = {
+	id: Int,
+	name: String,
+	image:String,
+	geo: {latitude:Float,longitude:Float},
+	address: {
+		streetAddress:String,
+		addressLocality:String,
+	    postalCode:String,
+		addressCountry:String,
+  	},
+  	categories: Array<String>
+};
+
+
+
 /**
  * Groups API
  * @author fbarbut
@@ -18,6 +34,70 @@ class Group extends Controller
 	public function doMap(args:{?minLat:Float, ?maxLat:Float, ?minLng:Float, ?maxLng:Float, ?lat:Float, ?lng:Float, ?address:String}) {
 	
 		var out  = new Array<GroupOnMap>();
+		var places  =  searchPlaces(args);		
+		
+		for ( p in places){
+			out.push({
+				id : p.amap.id,
+				name : p.amap.name,
+				image : p.amap.image==null ? null : view.file(p.amap.image),
+				place : p.getInfos()
+			});
+		}
+
+		Sys.print(haxe.Json.stringify({success:true,groups:out}));
+	}
+
+	/**
+	API for GoGoCartoJS
+	**/
+	public function doGogoCartoMap() {
+
+		var bounds = app.params.get("bounds");
+		var bounds = bounds.substr(0,bounds.length-1).split(",");
+
+		/*"_southWest":
+        {
+            "lat": 46.07323,
+            "lng": -766.40625
+        },
+        "_northEast":
+        {
+            "lat": 46.07323,
+            "lng": 772.03125
+        }
+    },*/
+		var boundsJson : Array<Dynamic> = haxe.Json.parse(app.params.get("boundsJson"));
+		var b :Dynamic = boundsJson[0];
+		
+
+		var args = cast {minLat:b._southWest.lat,maxLat:b._northEast.lat,minLng:b._southWest.lat,maxLng:b._northEast.lng};
+
+		var out  = new Array<GoGoCartoPlace>();
+		var places  =  searchPlaces(args);
+		
+		for ( p in places){
+			out.push({
+				id : p.amap.id,
+				name : p.amap.name,
+				image : p.amap.image==null ? null : view.file(p.amap.image),
+				geo : {latitude:p.lat,longitude:p.lng},
+				address: {
+					streetAddress:p.address1,
+					addressLocality:p.city,
+					postalCode:p.zipCode,
+					addressCountry:p.country,
+				},
+				categories: [Std.string(p.amap.groupType)]
+			});
+		}
+
+		Sys.print(haxe.Json.stringify({ontology:"gogofull", data:out}));
+	}
+
+
+	private function searchPlaces(args:{?minLat:Float, ?maxLat:Float, ?minLng:Float, ?maxLng:Float, ?lat:Float, ?lng:Float, ?address:String}) {
+	
 		var places  =  new List<db.Place>();
 		if (args.minLat != null && args.maxLat != null && args.minLng != null && args.maxLng != null){
 			
@@ -29,6 +109,9 @@ class Group extends Controller
 			var sql = "select p.* from Place p where ";
 			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';
 			#end
+
+			if(App.config.DEBUG) App.current.logError(sql);
+
 			places = db.Place.manager.unsafeObjects(sql, false);
 			
 		}else if (args.lat!=null && args.lng!=null){
@@ -49,17 +132,10 @@ class Group extends Controller
 			places = findGroupByDist(args.lat, args.lng);
 		}
 		
-		for ( p in places){
-			out.push({
-				id : p.amap.id,
-				name : p.amap.name,
-				image : p.amap.image==null ? null : view.file(p.amap.image),
-				place : p.getInfos()
-			});
-		}
-
-		Sys.print(haxe.Json.stringify({success:true,groups:out}));
+		return places;
 	}
+
+
 	
 	/**
 	 * ~~ Pythagore rulez ~~
