@@ -18,6 +18,9 @@
     'geolib': require('geolib'),
     'react-router':require('react-router'),
     'react-router-dom':require('react-router-dom'),
+    '@material-ui/core': require('@material-ui/core'),
+    '@material-ui/core/styles': require('@material-ui/core/styles'),
+    '@material-ui/icons': require('@material-ui/icons')
   });
 
   if (process.env.NODE_ENV !== 'production') {

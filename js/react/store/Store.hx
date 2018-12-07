@@ -4,6 +4,8 @@ import react.ReactMacro.jsx;
 import js.Promise;
 import haxe.Json;
 
+import mui.CagetteTheme;
+
 using Lambda;
 
 import Common;
@@ -44,7 +46,6 @@ abstract ServerUrl(String) to String {
 
 class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 {
-
   public function new() {
     super();
     state = {
@@ -159,27 +160,27 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
 
   override public function render(){
     return jsx('
-      <div className="shop">
-        ${renderHeader()}
-		    <Filters
-          categories=${state.categories}
-          filters=${state.filters}
-          toggleFilter=$toggleFilter
-        />
-        <Cart
-          order=${state.order}
-          addToCart=$addToCart
-          removeFromCart=$removeFromCart
-          submitOrder=$submitOrder
-        />
+        <div className="shop">
+          ${renderHeader()}
+          <Filters
+            categories=${state.categories}
+            filters=${state.filters}
+            toggleFilter=$toggleFilter
+          />
+          <Cart
+            order=${state.order}
+            addToCart=$addToCart
+            removeFromCart=$removeFromCart
+            submitOrder=$submitOrder
+          />
 
-        <ProductList
-          categories=${state.categories}
-          productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
-          filters=${state.filters}
-          addToCart=$addToCart
-        />
-      </div>
+          <ProductList
+            categories=${state.categories}
+            productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
+            filters=${state.filters}
+            addToCart=$addToCart
+          />
+        </div>
     ');
   }
 

@@ -10,6 +10,10 @@ import react.store.*;
 import react.map.*;
 import react.user.*;
 
+import mui.core.CssBaseline;
+import mui.core.styles.MuiThemeProvider;
+
+
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
@@ -147,22 +151,15 @@ class App {
 	 * @param	title
 	 */
 	public function overlay(url:String,?title,?large=true) {
-
-		if (title != null) title = StringTools.urlDecode(title);
-
+		if(title != null) title = StringTools.urlDecode(title);
 		var r = new haxe.Http(url);
 		r.onData = function(data) {
-
 			//setup body and title
 			var m = App.j("#myModal");
 			m.find(".modal-body").html(data);
 			if (title != null) m.find(".modal-title").html(title);
-
 			if (!large) m.find(".modal-dialog").removeClass("modal-lg");
-
-
 			untyped App.j('#myModal').modal(); //bootstrap 3 modal window
-
 		}
 		r.request();
 	}
@@ -192,7 +189,28 @@ class App {
 	}
 
 	public function shop(place:Int, date:String) {
-		ReactDOM.render(jsx('<$Store date=$date place=$place/>'),  js.Browser.document.querySelector('#shop'));
+		// Will be merged with default values from mui
+		var theme = mui.core.styles.MuiTheme.createMuiTheme({
+			palette: {
+				primary: {main: "#a53fa1"},
+				secondary: {main:"#84BD55"},
+				error: {main:"#FF0000"},       
+			},
+			typography:{
+				fontFamily:['Cabin','"Helvetica Neue"','Arial','sans-serif',],
+				fontSize:16,          
+			},
+		});
+
+		ReactDOM.render(jsx('
+			<$MuiThemeProvider theme=${theme}>
+				<>
+				<$CssBaseline />
+
+				<$Store date=$date place=$place/>
+			</>
+			</$MuiThemeProvider>
+		'), js.Browser.document.querySelector('#shop'));
 	}
 	
 	public function groupMap(lat:Float,lng:Float,address:String) {

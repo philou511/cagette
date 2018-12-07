@@ -65,7 +65,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps>
   function renderProducts(products) {
     return products.map(function(product) {
       return jsx('
-        <Product product=${product} key=${product.id} addToCart=${props.addToCart}/>
+        <$Product product=${product} key=${product.id} addToCart=${props.addToCart}/>
       ');
     });
   }
