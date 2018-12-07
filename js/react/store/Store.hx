@@ -161,7 +161,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState>
     return jsx('
       <div className="shop">
         ${renderHeader()}
-		<Filters
+		    <Filters
           categories=${state.categories}
           filters=${state.filters}
           toggleFilter=$toggleFilter

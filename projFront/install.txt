@@ -10,7 +10,7 @@
  haxelib install classnames
  haxelib install react-types
  haxelib git react-types https://gitlab.com/k-labz/haxe-oss/haxe-react-types.git
-
+ haxelib install tink_json
 
 OUTPUT EXPECTED 
 classnames: [0.1.5]
@@ -28,4 +28,5 @@ tink_core: [1.18.0]
 tink_hxx: [0.18.0]
 tink_macro: [0.17.2]
 tink_parse: [0.2.0]
+tink_json: [0.9.0]
 
