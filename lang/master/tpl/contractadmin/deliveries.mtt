@@ -45,7 +45,7 @@
 						::end::
 
 						<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm">
-							<span class="glyphicon glyphicon-print"></span>&nbsp;::_("Distribution list")::
+							<i class="icon icon-print"></i>&nbsp;::_("Distribution list")::
 						</a>
 					</div>
 				</td>

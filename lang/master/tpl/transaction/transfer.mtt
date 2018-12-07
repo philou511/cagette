@@ -29,7 +29,7 @@
 		
 			<p>
 				<a href="/contract" class="btn btn-default">
-					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Check my orders")::</a>
+					<i class="icon icon-chevron-right"></i> ::_("Check my orders")::</a>
 			</p>
 			
 		</div>

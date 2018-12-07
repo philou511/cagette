@@ -17,13 +17,13 @@
 					::_("Validate the delivery of the"):: ::hDate(date)::
 				</h3>	
 				<h4
-					><span class="glyphicon glyphicon-map-marker"></span>::place::
+					><i class="icon icon-map-marker"></i>::place::
 				</h4>
 				
 				<p>
 					::if(confirmed)::
 					<div class="alert alert-success block-center" style="width:150px;margin:auto;">
-						<span class="glyphicon glyphicon-ok"></span>
+						<i class="icon icon-check"></i>
 						::_("Validated")::
 					</div>
 					::else::
@@ -38,7 +38,7 @@
 		
 		<p class="text-center">
 			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-list-alt"></span> ::_("Back to the summary sheet of orders"):: </a>	
+				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>	
 		</p>
 		
 		
@@ -72,7 +72,7 @@
 							</a> 
 							::else::
 							<a href="/validate/::date::/::place.id::/::u.id::" class="btn">
-								<span class="glyphicon glyphicon-ok"></span>
+								<i class="icon icon-check"></i>
 								::_("Validated")::
 							</a> 
 							::end::

@@ -22,6 +22,14 @@
 		
 		<!-- BOOTSTRAP -->	
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+
+
+
+
+		<link rel="stylesheet" href="/font/icons.css" />
+
+
+
 		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
@@ -37,8 +45,8 @@
 		<!-- typeahead 
 		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.js"></script>	-->	
 		
-		<!-- font awesome -->
-		<script src="https://use.fontawesome.com/97d97e0dab.js"></script>
+		<!-- font awesome
+		<script src="https://use.fontawesome.com/97d97e0dab.js"></script> -->
 		
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>

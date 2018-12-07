@@ -26,11 +26,11 @@
 				<div class="dropdown pull-right text-right userName" style="margin-top:16px;">
 					
 					<a class="" style="margin-right:16px;" href="/user/choose?show=1">
-						<span class="glyphicon glyphicon-chevron-left"></span>::_("Change group")::
+						<i class="icon icon-chevron-left"></i> ::_("Change group")::
 					</a>
 
 					<a  class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span>
+						<i class="icon icon-user"></i>
 						::user.getName()::
 						::if user.firstName2!=null::
 							::_("et"):: ::user.lastName2:: ::user.firstName2::  						
@@ -38,14 +38,14 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-						<li><a href="/user/logout"><span class="glyphicon glyphicon-log-out"></span> ::_("Log out")::</a></li>
+						<li><a href="/user/logout"><i class="icon icon-delete"></i> ::_("Log out")::</a></li>
 					</ul>
 					
 				</div>			
 			::else::
 				<div class="pull-right text-right">
-					<a href="/user/login" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-user"></span> ::_("Log in")::</a>
-					<a class="btn btn-default btn-sm" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Look for another group")::</a>	
+					<a href="/user/login" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Log in")::</a>
+					<a class="btn btn-default btn-sm" href="/group/map"><i class="icon icon-search"></i> ::_("Look for another group")::</a>	
 				</div>
 			::end::
 			</div>				
@@ -75,7 +75,9 @@
 						
 						<ul class="nav navbar-nav navbar-right">
 							<li id="member" ::attr class if(category=="members") 	'active' ::>
-								<a href="/member" ::cond user.canAccessMembership()::>::_("Members")::</a></li>
+								
+								<a href="/member" ::cond user.canAccessMembership()::>
+									::_("Members")::</a></li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
 								<a href="/contractAdmin" ::cond user.isContractManager(null)::>::_("Contracts")::</a></li>
 							<li id="messages" ::attr class if(category=="messages") 	'active' ::>
@@ -100,7 +102,7 @@
 					::if notification.error::
 					<span class="glyphicon glyphicon-exclamation-sign"></span>
 					::else::
-					<span class="glyphicon glyphicon-ok"></span>
+					<i class="icon icon-check"></i>
 					::end::
 					
 					::raw notification.text::					
@@ -167,16 +169,16 @@
 					::_("FOLLOW US")::
 					<ul class="cagsocialmedia">
 						<li class="cagfb">
-							<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="fa fa-facebook"></i></a>	
+							<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="icon icon-facebook"></i></a>	
 						</li>
 						<li class="cagtwitter">
-							<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="fa fa-twitter"></i></a> 
+							<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="icon icon-twitter"></i></a> 
 						</li>
 						<li class="cagyoutube">
-							<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="fa fa-youtube"></i></a> 						
+							<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="icon icon-youtube"></i></a> 						
 						</li>
 						<li style="background-color:#333;">
-							<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="fa fa-github"></i></a> 						
+							<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="icon icon-github"></i></a> 						
 						</li>
 					</ul>
 				</div>

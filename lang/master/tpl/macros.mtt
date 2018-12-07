@@ -27,7 +27,7 @@
 	
 	<macro name="edit(text,url)">		
 		<a href="::url::" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+			<i class="icon icon-edit"></i>
 			&nbsp;::text::
 		</a>	
 	</macro>
@@ -35,14 +35,14 @@
 	<macro name="insert(text,url)">
 		<!--<img src="/img/icons/add.png" style="vertical-align:middle;" />&nbsp;<a href="::url::">::text::</a>-->
 		<a href="::url::" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				<i class="icon icon-plus"></i>
 			&nbsp;::text::
 		</a>	
 	</macro>
 	
 	<macro name="delete(text,url)">
-		<a href="::url::" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		<a href="::url::" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm" >
+				<i class="icon icon-delete"></i>
 		::if text!=null && text!=""::	
 			&nbsp;::text::
 		::end::
@@ -50,7 +50,7 @@
 	</macro>
 	
 	<macro name="export(url)">
-		<a href="::url::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> ::_("Excel/CSV Export")::</a>	
+		<a href="::url::" class="btn btn-default btn-sm"><i class="icon icon-list"></i> ::_("Excel/CSV Export")::</a>	
 	</macro>
 	
 	<macro name="bool(v)">
@@ -63,7 +63,7 @@
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
-		<span class="glyphicon glyphicon-ok" style="color:#060"></span>
+		<i class="icon icon-check" style="color:#060"></i>
 		::else::
 		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
 		::end::
@@ -79,7 +79,7 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
+				<i class="icon icon-map-marker"></i>
 				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
 			</div>
 			::end::
@@ -87,7 +87,7 @@
 	</macro>
 
 	<macro name="place(place)">
-		<span class="glyphicon glyphicon-map-marker"></span>							
+		<i class="icon icon-map-marker"></i>						
 		<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
 		<div class="address">
 			$$nullSafe(::place.address1::)
@@ -112,7 +112,7 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
+				<i class="icon icon-map-marker"></i>
 				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
 			</div>
 			::end::

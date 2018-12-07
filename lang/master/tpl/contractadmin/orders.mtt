@@ -24,7 +24,7 @@
 
 				<div class="dropdown" style="display:inline-block;">
 					<button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span class="glyphicon glyphicon-print"></span> ::_("Attendance sheet")::
+							<i class="icon icon-print"></i> ::_("Attendance sheet")::
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						<li><a href="/distribution/list/::distribution.id::"> ::_("Standard")::</a></li>

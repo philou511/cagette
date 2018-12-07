@@ -5,7 +5,7 @@
 	<div>
 		<p>
 		$$insert(::_("New product")::,/product/insert/::c.id::)
-		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> ::_("Import from Excel/CSV")::</a>
+		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-list"></i> ::_("Import from Excel/CSV")::</a>
 			
 		::if !c._amap.hasTaxonomy()::	
 		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> ::_("Categories")::</a>	
@@ -129,7 +129,7 @@
 			<td>
 				<div class="btn-group" role="group">
 					$$edit(::_("Edit")::,/product/edit/::p.id::)				
-					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>				
+					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>				
 					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
 			</td>

@@ -18,7 +18,7 @@
 				::raw _("As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software.")::
 			</p>
 			<p>
-				<a href="/contract/?startTuto=intro" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Start the guided tour")::</a>
+				<a href="/contract/?startTuto=intro" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Start the guided tour")::</a>
 			</p>
 			
 		</div>
@@ -74,10 +74,10 @@
 						<div class="pull-right text-right" ::cond amap.hasShopMode() && d.type==1 ::>
 							::if active::
 								<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-									<span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::
+									<i class="icon icon-edit"></i> ::_("Modify my order")::
 								</a>
 								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-									<span class="glyphicon glyphicon-plus"></span> ::_("Add products")::
+									<i class="icon icon-plus"></i> ::_("Add products")::
 								</a>
 							::elseif(ordersEndDate!=null)::		
 								<!--Fermeture des commandes :-->													
@@ -106,7 +106,7 @@
 								::set s = getDate(dist.date) ::
 								::set e = getDate(dist.end)::
 								
-								<span style="color:#999;"><span class="glyphicon glyphicon-time"></span> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+								<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
 								&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
 							</h4>
 							
@@ -165,25 +165,25 @@
 					
 							<div class="footer">
 								::if user.isContractManager(dist._contract) || dist.distributor1Id==user.id || dist.distributor2Id==user.id || dist.distributor3Id==user.id || dist.distributor4Id==user.id:: 
-									<a href="/distribution/list/::dist.id::"><span class="glyphicon glyphicon-print"></span>  ::_("Distribution list")::</a>
+									<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
 								::end::
 								
 								<span ::cond dist.distributor1Id!=null || dist.distributor2Id!=null || dist.distributor3Id!=null || dist.distributor4Id!=null::>
-									&nbsp; <a href="#" onclick="$('#distributors::dist.id::').toggle();return false;"><span class="glyphicon glyphicon-user"></span> ::_("Permanence")::</a>
+									&nbsp; <a href="#" onclick="$('#distributors::dist.id::').toggle();return false;"><i class="icon icon-chevron-user"></i> ::_("Permanence")::</a>
 								</span>
 								
-								&nbsp; <a href="/contract/view/::dist._contract.id::"><span class="glyphicon glyphicon-list-alt"></span> ::_("Contract details")::</a>
+								&nbsp; <a href="/contract/view/::dist._contract.id::"><i class="icon icon-list"></i> ::_("Contract details")::</a>
 								
 								::if !amap.hasShopMode() && dist._contract.type==1::
-								&nbsp; <a href="/contract/order/::dist._contract.id::"><span class="glyphicon glyphicon-edit"></span> ::_("Modify my order")::</a>
+								&nbsp; <a href="/contract/order/::dist._contract.id::"><i class="icon icon-edit"></i> ::_("Modify my order")::</a>
 								::end::
 								
 								<div id="distributors::dist.id::" style="display:none;margin:8px;">
 									<ul>
-										<li ::cond dist.distributor1Id!=null::><i class="icon-user"></i> ::dist._distributor1.getCoupleName():: </li>
-										<li ::cond dist.distributor2Id!=null::><i class="icon-user"></i> ::dist._distributor2.getCoupleName():: </li>
-										<li ::cond dist.distributor3Id!=null::><i class="icon-user"></i> ::dist._distributor3.getCoupleName():: </li>
-										<li ::cond dist.distributor4Id!=null::><i class="icon-user"></i> ::dist._distributor4.getCoupleName():: </li>
+										<li ::cond dist.distributor1Id!=null::><i class="icon icon-user"></i> ::dist._distributor1.getCoupleName():: </li>
+										<li ::cond dist.distributor2Id!=null::><i class="icon icon-user"></i> ::dist._distributor2.getCoupleName():: </li>
+										<li ::cond dist.distributor3Id!=null::><i class="icon icon-user"></i> ::dist._distributor3.getCoupleName():: </li>
+										<li ::cond dist.distributor4Id!=null::><i class="icon icon-user"></i> ::dist._distributor4.getCoupleName():: </li>
 									</ul>
 								</div>
 								
@@ -238,7 +238,7 @@
 						<div class="text-right pull-right">
 							::if active==true::
 								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-lg btn-primary">
-									<span class="glyphicon glyphicon-chevron-right"></span>
+									<i class="icon icon-chevron-right"></i>
 									::_("Order||Order button on homepage")::
 								</a>
 								<br/>
@@ -267,7 +267,7 @@
 						
 						<div class="info">						
 							::set e = getDate(end)::
-							<span class="glyphicon glyphicon-time"></span> 
+							<i class="icon icon-clock"></i>
 							::set start = s.h+":"+s.i::
 							::set end = e.h+":"+e.i::
 							
@@ -336,7 +336,7 @@
 		<p>
 			::_("Warning, you don't have defined a password yet !")::
 		</p>
-		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Set my password")::</a>
+		<a href="/user/definePassword" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Set my password")::</a>
 		
 	</div>
 

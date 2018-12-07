@@ -9,6 +9,7 @@
 @import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
 //@import '_shop';
 @import '_map';
+@import '_iconfont';
 
 /*body{
   background-color:#F8F4E5 !important;    
@@ -83,10 +84,9 @@ ul.nav li {
 	
 	.cagsocialmedia li a {
 	  color : #fff;
-	  font-size:  20px;
-	  
+	  font-size:  20px;	  
 	  min-width: 32px;
-	  /*height: 32px;*/
+	  height: 32px;
 	  padding: 2px 0 0;
 	  display : inline-block;
 	}

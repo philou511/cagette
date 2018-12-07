@@ -87,9 +87,9 @@
 			::if vendor.linkUrl!=null::
 			<p>
 				::if vendor.linkText!=null::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::vendor.linkText::</a>
+				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
 				::else::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Read more")::</a>
+				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
 				::end::
 			</p>
 			::end::

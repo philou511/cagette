@@ -11,7 +11,7 @@
 					::if notification.error::
 					<span class="glyphicon glyphicon-exclamation-sign"></span>
 					::else::
-					<span class="glyphicon glyphicon-ok"></span>
+					<i class="icon icon-check"></i>
 					::end::
 					
 					::raw notification.text::					
@@ -42,7 +42,7 @@
 					::if isMember::
 						<!-- connected and member of the group-->
 						<a href="/user/choose?amap=::group.id::" class="btn btn-primary">
-							<span class="glyphicon glyphicon-chevron-right"></span>
+							<i class="icon icon-chevron-right"></i>
 							 ::_("Go to my account")::
 						</a>
 					
@@ -55,7 +55,7 @@
 							<p>
 								::_("Contact the person in charge in order to subscribe to this group and get to know membership conditions.")::
 							</p>
-							<p>
+							<p ::cond group._contact!=null::>
 								<a href="::"mailto:"+group._contact.email+"?subject=Adhésion"::"  class="btn btn-primary">
 									<span class="glyphicon glyphicon-envelope"></span>
 									::_("Membership request")::
@@ -67,7 +67,7 @@
 							</p>
 							<p>
 							<a href="/group/list/::group.id::"  class="btn btn-primary">
-								<span class="glyphicon glyphicon-chevron-right"></span>
+								<i class="icon icon-chevron-right"></i>
 								::_("Subscription on waiting list")::
 							</a>
 							</p>
@@ -75,7 +75,7 @@
 						::case::
 							<p>
 								<a href="/group/register/::group.id::"  class="btn btn-primary">
-									<span class="glyphicon glyphicon-chevron-right"></span>
+									<i class="icon icon-chevron-right"></i>
 									::_("Free subscription")::
 								</a>
 							</p>

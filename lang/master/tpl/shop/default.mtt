@@ -17,7 +17,7 @@
 			<div style="float:right;text-align:right;">
 				::if place!=null::
 				<span class="info">
-					<span class="glyphicon glyphicon-map-marker"></span> <a href="/place/view/::place.id::">::place::</a>
+					<i class="icon icon-map-marker"></i> <a href="/place/view/::place.id::">::place::</a>
 				</span>
 				::end::
 
@@ -39,7 +39,7 @@
 				
 				<div class="">
 					<span class="info">
-						<span class="glyphicon glyphicon-time"></span> ::_("Orders will close on")::
+						<i class="icon icon-clock"></i> ::_("Orders will close on")::
 					</span>
 					::if ArrayTool.mapLength(infos) == 1::
 						::hDate( infos.iterator().next()[0].orderEndDate )::
@@ -156,7 +156,7 @@
 	<div class="cartDiv">
 		
 		<h3>
-			<span class="glyphicon glyphicon-shopping-cart"></span>
+			<i class="icon icon-shopping-cart"></i>
 			::_("My order")::
 			<img id="loader" src="/img/loader.gif"/>
 		</h3>
@@ -175,7 +175,10 @@
 	</div>
 	
 	<div class="article">
-		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;"><span class="glyphicon glyphicon-ok"></span> ::_("All products")::</span><br/>
+		<span class="tag active" id="tag0" onclick="cart.filter(0);" style="cursor:pointer;">
+			<i class="icon icon-check"></i> ::_("All products")::
+		</span>
+		<br/>
 		
 		::foreach g group.getCategoryGroups()::
 			<div>
@@ -185,7 +188,6 @@
 				::end::
 			</div>
 		::end::
-		
 	</div>
 
 	<!-- additionnal blocks from plugins -->
@@ -198,8 +200,5 @@
 		::end::
 	::end::
 
-	
 </div>
-
-	
 ::end::

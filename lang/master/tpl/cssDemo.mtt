@@ -16,7 +16,7 @@
 		<div id="content" class="col-md-12">
 			
 			<div class="alert alert-success">
-				<span class="glyphicon glyphicon-ok"></span>
+				<i class="icon icon-check"></i>
 				Todo bem
 			</div>
 			
@@ -29,7 +29,9 @@
 			<div class="col-md-6">
 				<h3>Boutons large</h3>
 				<button type="button" class="btn btn-lg btn-noAntiDoubleClick btn-default">noAntiDoubleClick</button>
-				<button type="button" class="btn btn-lg btn-default">Default</button>
+				<button type="button" class="btn btn-lg btn-default">
+						<i class="icon icon-truck-solid"></i> Default
+				</button>
 				<button type="button" class="btn btn-lg btn-primary">Primary</button>
 				<button type="button" class="btn btn-lg btn-success">Success</button>
 				<button type="button" class="btn btn-lg btn-info">Info</button>
@@ -40,7 +42,8 @@
 		
 			<div class="col-md-6">
 				<h3>Boutons default</h3>
-				<button type="button" class="btn btn-default">Default</button>
+				<button type="button" class="btn btn-default">
+					<i class="icon icon-truck-solid"></i> Default</button>
 
 				<!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
 				<button type="button" class="btn btn-primary">Primary</button>
@@ -75,7 +78,9 @@
 			
 			<div class="col-md-6">
 				<h3>Boutons XS</h3>
-				<button type="button" class="btn btn-xs btn-default">Default</button>
+				<button type="button" class="btn btn-xs btn-default">
+						<i class="icon icon-truck-solid"></i> Default
+				</button>
 				<button type="button" class="btn btn-xs btn-primary">Primary</button>
 				<button type="button" class="btn btn-xs btn-success">Success</button>
 				<button type="button" class="btn btn-xs btn-info">Info</button>
@@ -105,7 +110,7 @@
 							Type : <b>Gratuit jusqu'à 20 foyers</b> ( actuellement 1 foyers dans votre groupe)  
 						</p>
 						<p>
-							<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-right"></span> Primary</button>
+							<button type="button" class="btn btn-primary"><i class="icon icon-chevron-right"></i> Primary</button>
 						</p>
 						
 					</div>
@@ -137,7 +142,7 @@
 				<div class="footer">
 				
 					<div class="pull-right">
-						<p><a class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Suivant</a></p>
+						<p><a class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> Suivant</a></p>
 					</div>
 				</div>
 			</div>
@@ -181,7 +186,7 @@
 		<p>
 			Attention, vous n'avez défini aucun mot de passe pour votre compte !
 		</p>
-		<a href="/user/definePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-right"></span> Définir un mot de passe</a>
+		<a href="/user/definePassword" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> Définir un mot de passe</a>
 		
 	</div>
 	

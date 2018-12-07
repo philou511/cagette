@@ -62,7 +62,7 @@
 					<p>
 						::_("You don't belong to any group yet")::
 					</p>
-					<a class="btn btn-primary" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Create my own group")::</a>	
+					<a class="btn btn-primary" href="/group/create/"><i class="icon icon-chevron-right"></i> ::_("Create my own group")::</a>	
 				</div>
 			</div>
 			::end::
@@ -73,9 +73,13 @@
 	<!-- actions -->
 	<div class="col-md-12 text-center" style="margin-bottom:12px;" >
 		::if session.lang!="de"::
-			<a class="btn btn-default btn-lg" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
+			<a class="btn btn-default btn-lg" href="/group/map">
+				<i class="icon icon-search"></i> ::_("Find other groups near me")::
+			</a>	
 		::end::
-		<a class="btn btn-default btn-lg" href="/group/create/"><span class="glyphicon glyphicon-plus"></span> ::_("Create my own group")::</a>	
+		<a class="btn btn-default btn-lg" href="/group/create/">
+			<i class="icon icon-plus"></i> ::_("Create my own group")::
+		</a>	
 		
 	</div>
 
@@ -94,7 +98,7 @@
 					::__("Request sent on ::date::",{ date:hDate(w.date) })::
 				</td>
 				<td>
-					<a href="/group/listCancel/::w._group.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span> ::_("Cancel")::</a>
+					<a href="/group/listCancel/::w._group.id::" class="btn btn-default btn-xs"><i class="icon icon-delete"></i> ::_("Cancel")::</a>
 				</td>
 			</tr>
 			::end::
