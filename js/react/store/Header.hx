@@ -23,14 +23,17 @@ typedef HeaderProps = {
 };
 
 private typedef PublicProps = {
-
+    var order:OrderSimple;
+	var addToCart:ProductInfo->Int->Void;
+	var removeFromCart:ProductInfo->?Int->Void;
+	var submitOrder:OrderSimple->Void;
 }
 
 private typedef TClasses = Classes<[
     cagWrap,
     cagNavInfo,
-    cagMiniBasketContainer,
     searchField,
+    cagFormContainer,
 ]>
 
 @:publicProps(PublicProps)
@@ -70,27 +73,12 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                 padding: '0.5em',
             },
 
-            cagMiniBasketContainer : {
+            cagFormContainer : {
                 fontSize: "1.2rem",
                 fontWeight: "bold",//TODO use enum from externs when available
                 display: "flex",
                 alignItems: Center,
                 justifyContent: Center,
-                 
-                "& .cagMiniBasket" : {
-                    borderRadius : 5,
-                    border : '1px solid ${CGColors.Bg1}',
-                    width: "100%",
-                    textAlign: Center,
-                    padding: "0.5em",
-                },
-
-                "& i": { 
-                    verticalAlign: "middle",
-                },
-                "& span" : {
-                    color : CGColors.Third,  
-                }
             },
 		}
 	}
@@ -119,24 +107,23 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                     </div>
                 </Grid>
                 <Grid item xs={3}>  
-                    <div className=${classes.cagMiniBasketContainer}>
+                    <div className=${classes.cagFormContainer}>
                         <FormControl>
                             <TextField                            
-                                    label="Search field"
-                                    variant=${Outlined}
-                                    type=${Search}  
-                                    className=${classes.searchField}
-                                />                        
-                            </FormControl>
-                        </div>                                                        
+                                label="Search field"
+                                variant=${Outlined}
+                                type=${Search}  
+                                className=${classes.searchField}
+                            />                        
+                        </FormControl>
+                    </div>                                                        
                 </Grid>
-                <Grid item xs={3}>
-                    <div className=${classes.cagMiniBasketContainer}>
-                        <div className="cagMiniBasket">
-                            <i className="icon icon-truck-solid"></i> (0) <span>0,00 €</span> <i className="icon icon-truck-solid"></i>
-                        </div>
-                    </div>
-                </Grid>
+                <Cart   
+                    order=${props.order}
+                    addToCart=${props.addToCart}
+                    removeFromCart=${props.removeFromCart}
+                    submitOrder=${props.submitOrder}
+                />
             </Grid>
             </div>
         ');

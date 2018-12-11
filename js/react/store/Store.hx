@@ -12,29 +12,27 @@ import utils.HttpUtil;
 import Common;
 using Lambda;
 
-
 typedef StoreProps = {
 	var place:Int;
 	var date:String;
+};
+
+typedef ProductFilters = {
+	@:optional var category:Int;
+	@:optional var subcategory:Int;
+	@:optional var tags:Array<String>;
+	@:optional var producteur:Bool;
 };
 
 typedef StoreState = {
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
 	var categories:Array<CategoryInfo>;
-	var productsBySubcategoryIdMap:Map<Int, Array<ProductInfo>>;
+	var products:Array<ProductInfo>;
 	var order:OrderSimple;
-	var filters:Array<String>;
+	var filter:ProductFilters;
 };
 
-/*
-	Composants material-ui
-	- <SubCateg label="Sélection de la semaine" icon="icon icon-truck-solid" colorClass="cagSelect" onclick={handleClick}/>
-	- Product
-	- RecipeReviewCard
-	- QuantityInput
-
- */
 @:enum
 abstract ServerUrl(String) to String {
 	var CategoryUrl = '/api/shop/categories';
@@ -77,8 +75,9 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			place: null,
 			orderByEndDates: [],
 			categories: [],
-			filters: [],
-			productsBySubcategoryIdMap: new Map(),
+			filter: {},
+			products:[],
+			//productsBySubcategoryIdMap: new Map(),
 			order: {
 				products: [],
 				total: 0
@@ -90,6 +89,10 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			?contentType:String = JSON):Promise<Dynamic> {
 		return HttpUtil.fetch(url, method, params, accept, contentType);
 	}
+
+
+//TODO CLEAN
+	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres", subcategories:[{id:-2, name:"Autres", subcategories:null}]};
 
 	override function componentDidMount() {
 		var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
@@ -103,48 +106,54 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		});
 
 		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
-		categoriesRequest.then(function(categories:Dynamic) {
-			var categories:Array<CategoryInfo> = categories.categories;
-			var subCategories = [];
+		categoriesRequest.then(function(results:Dynamic) {
+			var categories:Array<CategoryInfo> = results.categories;
 
+			var subCategories = [];
 			for (category in categories) {
 				subCategories = subCategories.concat(category.subcategories);
 			}
 
 			setState({
 				categories: categories,
-				filters: categories.map(function(category) {
-					return category.name;
-				})
 			});
 
 			var promises = [];
-			subCategories.map(function(category:CategoryInfo) {
-				promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON));
+			subCategories.map(function(subcategory:CategoryInfo) {
+				promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: subcategory.id}, JSON));
 			});
 
 			// WHY IS THAT, to refresh local storage data?
+			/*
 			var productsBySubcategoryIdMapCopy = [
 				for (key in state.productsBySubcategoryIdMap.keys())
-					key => state.productsBySubcategoryIdMap.get(key)];
+					key => state.productsBySubcategoryIdMap.get(key)
+			];
+			*/
+
+			categories.unshift(DEFAULT_CATEGORY);
 
 			js.Promise.all(promises).then(function(results:Array<Dynamic>) {
+				var products = [];
 				trace("results ", results.length);
 				// primises.all respect the order
 				for (i in 0...results.length) {
 					var result = results[i];
 					var category = subCategories[i];
 					// transform results
-					var products:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
-							return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
-						}));
-					productsBySubcategoryIdMapCopy.set(category.id, products);
+					var catProducts:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
+						if( p.categories == null || p.categories.length == 0 ) p.categories = [DEFAULT_CATEGORY];
+						return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
+					}));
+					//productsBySubcategoryIdMapCopy.set(category.id, products);
+					products = products.concat(catProducts);
 				}
 				//
 				setState({
-					productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
+					products:products,
+					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
 				}, function() {
-					trace("state updated");
+					trace("products catalog updated");
 				});
 			});
 		}).catchError(function(error) {
@@ -152,26 +161,28 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		});
 	}
 
-	function toggleFilter(category:String) {
-		var filters = state.filters.copy();
 
-		var filterExists = state.filters.find(function(categoryInFilter) {
-			return category == categoryInFilter;
-		}) != null;
-		if (filterExists)
-			filters.remove(category);
-		else
-			filters.push(category);
+	function resetFilter() {
+		setState({filter:{}});
+	}
 
-		if (filters.length == 0) {
-			filters = state.categories.map(function(category) {
-				return category.name;
-			});
-		}
+	function filterByCategory(categoryId:Int) {
+		setState({ filter: {category:categoryId}});
+	}
 
-		setState({
-			filters: filters
-		});
+	function filterBySubCategory(categoryId:Int, subCategoryId:Int) {
+		setState({ filter: {category:categoryId, subcategory:subCategoryId}});
+	}
+
+	function toggleFilterTag(tag:String) {
+		var tags = state.filter.tags;
+		if( tags == null ) tags = [];
+		// toggle
+		var hadTag = state.filter.tags.remove(tag);
+		if( !hadTag ) state.filter.tags.push(tag);
+		// assign
+		var filter = js.Object.assign({}, state.filter, {tags:tags});
+		setState({ filter: filter});
 	}
 
 	function addToCart(productToAdd:ProductInfo, quantity:Int):Void {
@@ -199,29 +210,55 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		trace('Order', orderInSession);
 	}
 
-	override public function render() {
-		return jsx('
-				<div className="shop">
-					${renderHeader()}
-					<Filters
-						categories=${state.categories}
-						filters=${state.filters}
-						toggleFilter=$toggleFilter
-					/>
-					<Cart
-						order=${state.order}
-						addToCart=$addToCart
-						removeFromCart=$removeFromCart
-						submitOrder=$submitOrder
-					/>
+	/**
+	TODO : bloc de mise en avant.
+	Par défaut ce sera les produits de la semaine. 
+	Les conditions d'affichage sont encore à définir
+	**/
+	function renderPromo() {
+		return null;
+	}
 
-					<ProductList
-						categories=${state.categories}
-						productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
-						filters=${state.filters}
-						addToCart=$addToCart
-					/>
-				</div>
+	override public function render() {
+		/*
+		var filters = jsx('
+			<Filters
+				categories=${state.categories}
+				filters=${state.filters}
+				toggleFilter=$toggleFilter
+			/>
+		');
+		
+		<ProductList
+					categories=${state.categories}
+					productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
+					filters=${state.filters}
+					addToCart=$addToCart
+				/>
+		*/
+
+		function filter(p, f:ProductFilters) {
+			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
+		}
+
+		return jsx('
+			<div className="shop">
+				${renderHeader()}
+				<Categories 
+					categories=${state.categories}
+					resetFilter=${resetFilter}
+					filterByCategory=${filterByCategory}
+					filterBySubCategory=${filterBySubCategory}
+					toggleFilterTag=${toggleFilterTag}
+				/>
+
+				{renderPromo()}
+				<ProductList
+					categories=${state.categories}
+					products=${filter(state.products, state.filter)}
+					addToCart=$addToCart
+				/>
+			</div>
 		');
 
 	}
@@ -259,16 +296,19 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		var addressBlock = Lambda.array([
 			state.place.address1,
 			state.place.address2,
-			[state.place.zipCode, state.place.city]
-			.join(" "),
+			[state.place.zipCode, state.place.city].join(" "),
 		].mapi(function(index, element) {
-				if (element == null)
-					return null;
-				return jsx('<div className="address" key=$index>$element</div>');
-			}));
+			if (element == null)
+				return null;
+			return jsx('<div className="address" key=$index>$element</div>');
+		}));
 
 		return jsx('
-			<Header />
+			<Header order=${state.order}
+					addToCart=$addToCart
+					removeFromCart=$removeFromCart
+					submitOrder=$submitOrder
+			/>
 		');
 		//TODO
 		/*
