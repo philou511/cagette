@@ -10,8 +10,8 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.types.*;
 import mui.core.Button;
-import react.types.css.JustifyContent;
-import react.types.css.AlignContent;
+import css.JustifyContent;
+import css.AlignContent;
 
 private typedef Props = {
 	> PublicProps,

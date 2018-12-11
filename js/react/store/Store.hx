@@ -1,16 +1,17 @@
 package react.store;
 
-import react.ReactComponent;
-import react.ReactMacro.jsx;
 import js.Promise;
 import haxe.Json;
+import react.ReactComponent;
+import react.ReactMacro.jsx;
 import mui.CagetteTheme;
 
-using Lambda;
-
-import Common;
 import utils.CartUtils;
 import utils.HttpUtil;
+
+import Common;
+using Lambda;
+
 
 typedef StoreProps = {
 	var place:Int;
@@ -42,6 +43,33 @@ abstract ServerUrl(String) to String {
 	var ViewUrl = '/place/view';
 }
 
+/*
+	const styles = {
+	searchField: {
+		width: 200,
+		padding: '0.5em',
+	},
+	cagNavCategories: {
+		padding: 0,
+		height: 100,
+	},
+	button:{
+			size: 'small',
+			textTransform: 'none',
+			color: '#84BD55',
+		},
+	cagSearchInput: {
+		borderRadius: 5,
+
+		border:'1px solid #E5D3BF',
+		padding: '10px 12px',
+		width: 'calc(100%)',
+		'&:focus': {
+			borderColor: '#80bdff',
+		},
+	},
+	}
+ */
 class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> {
 	public function new() {
 		super();
@@ -60,14 +88,11 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 
 	static function fetch(url:ServerUrl, ?method:HttpMethod = GET, ?params:Dynamic = null, ?accept:FetchFormat = PLAIN_TEXT,
 			?contentType:String = JSON):Promise<Dynamic> {
-		trace("fetching");
 		return HttpUtil.fetch(url, method, params, accept, contentType);
 	}
 
 	override function componentDidMount() {
-		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
 		var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
-
 		initRequest.then(function(infos:Dynamic) {
 			setState({
 				place: infos.place,
@@ -77,6 +102,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			trace("ERROR", error);
 		});
 
+		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
 		categoriesRequest.then(function(categories:Dynamic) {
 			var categories:Array<CategoryInfo> = categories.categories;
 			var subCategories = [];
@@ -92,36 +118,34 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 				})
 			});
 
-      var promises = [];
+			var promises = [];
 			subCategories.map(function(category:CategoryInfo) {
-         promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON));
-         trace("pysh fetch request");
-      });
+				promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: category.id}, JSON));
+			});
 
-      // WHY IS THAT, to refresh local storage data?
-      var productsBySubcategoryIdMapCopy = [
-        for (key in state.productsBySubcategoryIdMap.keys())
-          key => state.productsBySubcategoryIdMap.get(key)
-      ];
+			// WHY IS THAT, to refresh local storage data?
+			var productsBySubcategoryIdMapCopy = [
+				for (key in state.productsBySubcategoryIdMap.keys())
+					key => state.productsBySubcategoryIdMap.get(key)];
 
-      js.Promise.all(promises).then(function(results:Array<Dynamic>) {
-        trace("results ", results.length);
-        //primises.all respect the order
-        for( i in 0...results.length) {
-          var result = results[i];
-          var category = subCategories[i];
-          // transform results
-          var products:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
-              return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
-          }));
-          productsBySubcategoryIdMapCopy.set(category.id, products);
-        }
-        //
-        setState({
-          productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
-        }, function() {
-          trace("state updated");
-        });
+			js.Promise.all(promises).then(function(results:Array<Dynamic>) {
+				trace("results ", results.length);
+				// primises.all respect the order
+				for (i in 0...results.length) {
+					var result = results[i];
+					var category = subCategories[i];
+					// transform results
+					var products:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
+							return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
+						}));
+					productsBySubcategoryIdMapCopy.set(category.id, products);
+				}
+				//
+				setState({
+					productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
+				}, function() {
+					trace("state updated");
+				});
 			});
 		}).catchError(function(error) {
 			trace("ERROR", error);
@@ -177,28 +201,28 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 
 	override public function render() {
 		return jsx('
-        <div className="shop">
-          ${renderHeader()}
-          <Filters
-            categories=${state.categories}
-            filters=${state.filters}
-            toggleFilter=$toggleFilter
-          />
-          <Cart
-            order=${state.order}
-            addToCart=$addToCart
-            removeFromCart=$removeFromCart
-            submitOrder=$submitOrder
-          />
+				<div className="shop">
+					${renderHeader()}
+					<Filters
+						categories=${state.categories}
+						filters=${state.filters}
+						toggleFilter=$toggleFilter
+					/>
+					<Cart
+						order=${state.order}
+						addToCart=$addToCart
+						removeFromCart=$removeFromCart
+						submitOrder=$submitOrder
+					/>
 
-          <ProductList
-            categories=${state.categories}
-            productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
-            filters=${state.filters}
-            addToCart=$addToCart
-          />
-        </div>
-    ');
+					<ProductList
+						categories=${state.categories}
+						productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
+						filters=${state.filters}
+						addToCart=$addToCart
+					/>
+				</div>
+		');
 
 	}
 
@@ -215,17 +239,17 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			endDates = state.orderByEndDates.map(function(order) {
 				if (order.contracts.length == 1) {
 					return jsx('
-            <div key=${order.date}>
-              La commande ${order.contracts[0]} fermera le: ${order.date} 
-            </div>
-          ');
+						<div key=${order.date}>
+							La commande ${order.contracts[0]} fermera le: ${order.date} 
+						</div>
+					');
 				}
 
 				return jsx('
-          <div key=${order.date}>
-            Les autres commandes fermeront: ${order.date} 
-          </div>
-        ');
+					<div key=${order.date}>
+						Les autres commandes fermeront: ${order.date} 
+					</div>
+				');
 			});
 		}
 
@@ -244,27 +268,32 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			}));
 
 		return jsx('
-      <div className="shop-header">
-        <div>
-          <div className="shop-distribution">
-            Distribution le ${props.date}
-          </div>
-          
-          <div className="shop-order-ends">
-            $endDates
-          </div>
-        </div>  
-        <div className="shop-place">
-          <span className="info">
-            <span className="glyphicon glyphicon-map-marker"></span>
-            <a href=$viewUrl>${state.place.name}</a>
-          </span>
-          <div>
-            $addressBlock
-          </div>
-        </div>
-      </div>
-    ');
-
+			<Header />
+		');
+		//TODO
+		/*
+		return jsx('
+			<div className="shop-header">
+				<div>
+					<div className="shop-distribution">
+						Distribution le ${props.date}
+					</div>
+					
+					<div className="shop-order-ends">
+						$endDates
+					</div>
+				</div>  
+				<div className="shop-place">
+					<span className="info">
+						<span className="glyphicon glyphicon-map-marker"></span>
+						<a href=$viewUrl>${state.place.name}</a>
+					</span>
+					<div>
+						$addressBlock
+					</div>
+				</div>
+			</div>
+		');
+		*/
 	}
 }

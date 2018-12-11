@@ -2,26 +2,25 @@ package react.store;
 
 // it's just easier with this lib
 import classnames.ClassNames.fastNull as classNames;
-import mui.CagetteTheme.CGColors;
-import mui.core.Button;
-import mui.core.styles.Classes;
-import mui.core.styles.Styles;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.types.*;
-import react.types.css.JustifyContent;
-import react.types.css.AlignContent;
+import css.JustifyContent;
+import css.AlignContent;
 
-import Formatting.unit;
-import mui.core.Card;
 import mui.core.Button;
+import mui.core.Card;
 import mui.core.CardMedia;
 import mui.core.CardContent;
 import mui.core.CardActionArea;
 import mui.core.CardActions;
 import mui.core.Typography;
 import mui.core.Avatar;
+import mui.core.styles.Classes;
+import mui.core.styles.Styles;
 
+import mui.CagetteTheme;
+import Formatting.unit;
 import Common;
 
 private typedef Props = {

@@ -10,9 +10,9 @@ import mui.core.styles.Styles;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.types.*;
-import react.types.css.JustifyContent;
-import react.types.css.AlignContent;
-import react.types.css.Properties;
+import css.JustifyContent;
+import css.AlignContent;
+import css.Properties;
 
 private typedef Props = {
 	> PublicProps,

@@ -1,34 +1,61 @@
 package react.store;
+// it's just easier with this lib
+import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
+import mui.CagetteTheme.CGColors;
+import mui.core.styles.Classes;
+import mui.core.styles.Styles;
 import Common;
 
 using Lambda;
 
 typedef FiltersProps = {
-  var categories:Array<CategoryInfo>;
-  var filters:Array<String>;
-  var toggleFilter:String -> Void;
+	> PublicProps,
+	var classes:TClasses;
 };
 
-class Filters extends react.ReactComponentOfProps<FiltersProps>
-{
-  override public function render(){
-    return jsx('
+private typedef PublicProps = {
+	var categories:Array<CategoryInfo>;
+	var filters:Array<String>;
+	var toggleFilter:String->Void;
+}
+
+private typedef TClasses = Classes<[]>
+
+@:publicProps(PublicProps)
+@:wrap(Styles.withStyles(styles))
+class Filters extends react.ReactComponentOfProps<FiltersProps> {
+	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+		return {
+			button: {
+				size: "small",
+				textTransform: "none",//TODO use extern enum when available
+				color: '#84BD55',
+			},
+		}
+	}
+
+	public function new(props) {
+		super(props);
+	}
+
+	override public function render() {
+		return jsx('
       <div className="filters">
         <h3>Filtres</h3>
         ${renderFilters()}
       </div>
-    ');  
-  }
+    ');
+	}
 
-  function renderFilters() {
-    return props.categories.map(function(category) {
-      var classNames = ["filter"];
-      if (props.filters.has(category.name))
-        classNames.push("active");
+	function renderFilters() {
+		return props.categories.map(function(category) {
+			var classNames = ["filter"];
+			if (props.filters.has(category.name))
+				classNames.push("active");
 
-      return jsx('
+			return jsx('
         <div
           className=${classNames.join(" ")}
           key=${category.id}
@@ -39,7 +66,6 @@ class Filters extends react.ReactComponentOfProps<FiltersProps>
           ${category.name}
         </div>
       ');
-    });
-  }
+		});
+	}
 }
-
