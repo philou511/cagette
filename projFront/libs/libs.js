@@ -11,6 +11,7 @@
     'react': require('react'),
     'redux': require('redux'),
     'react-redux': require('react-redux'),
+    'prop-types': require('prop-types'),
     'react-dom': require('react-dom'),
     'react-bootstrap-typeahead': require('react-bootstrap-typeahead'),
     'react-datetime': require('react-datetime'),
