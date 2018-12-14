@@ -12,7 +12,7 @@ import utils.HttpUtil;
 import Common;
 using Lambda;
 
-typedef StoreProps = {
+typedef CagetteStoreProps = {
 	var place:Int;
 	var date:String;
 };
@@ -24,12 +24,12 @@ typedef ProductFilters = {
 	@:optional var producteur:Bool;
 };
 
-typedef StoreState = {
+typedef  CagetteStoreState = {
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
 	var categories:Array<CategoryInfo>;
 	var products:Array<ProductInfo>;
-	var order:OrderSimple;
+	//var order:OrderSimple;
 	var filter:ProductFilters;
 };
 
@@ -68,7 +68,7 @@ abstract ServerUrl(String) to String {
 	},
 	}
  */
-class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> {
+class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps, CagetteStoreState> {
 
 	public function new() {
 		super();
@@ -78,10 +78,6 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			categories: [],
 			filter: {},
 			products:[],
-			order: {
-				products: [],
-				total: 0
-			}
 		};
 	}
 
@@ -182,19 +178,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		var filter = js.Object.assign({}, state.filter, {tags:tags});
 		setState({ filter: filter});
 	}
-
-	function addToCart(productToAdd:ProductInfo, quantity:Int):Void {
-		setState({
-			order: CartUtils.addToCart(state.order, productToAdd, quantity)
-		});
-	}
-
-	function removeFromCart(productToRemove:ProductInfo, ?quantity:Int):Void {
-		setState({
-			order: CartUtils.removeFromCart(state.order, productToRemove, quantity)
-		});
-	}
-
+	
 	function submitOrder(order:OrderSimple) {
 		var orderInSession = {
 			total: order.total,
@@ -238,7 +222,6 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 				<ProductList
 					categories=${state.categories}
 					products=${filter(state.products, state.filter)}
-					addToCart=$addToCart
 				/>
 			</div>
 		');
@@ -285,11 +268,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		}));
 
 		return jsx('
-			<Header order=${state.order}
-					addToCart=$addToCart
-					removeFromCart=$removeFromCart
-					submitOrder=$submitOrder
-			/>
+			<Header submitOrder=$submitOrder />
 		');
 	}
 }

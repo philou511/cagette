@@ -4,11 +4,9 @@
 
 @:keep
 typedef OrderSimple = {
-	products: Array<{
-		product:ProductInfo,
-		quantity:Int
-	}>,
-	total:Float
+	products: Array<ProductWithQuantity>,
+	total:Float,//prix total
+	count:Int,//Nombre de produits avec quantité
 }
 
 //A temporary order, waiting for being paid and definitely recorded.

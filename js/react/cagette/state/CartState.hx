@@ -1,25 +1,28 @@
 
 package react.cagette.state;
 
+import react.Partial;
 import redux.IReducer;
 import react.cagette.action.CartAction;
 import Common.ProductInfo;
+import Common.OrderSimple;
 
-typedef CartState = {
-	var products:Array<{product:ProductInfo, quantity:Int}>;
-	var totalPrice:Float;
-}
+typedef CartState = OrderSimple;
 
 class CartRdcr implements IReducer<CartAction, CartState> {
 	public function new() {}
 
 	public var initState:CartState = {
         products:[], 
-        totalPrice:0,
+        total:0,
+        count:0,
     };
 
 	public function reduce(state:CartState, action:CartAction):CartState {
-		var partial = switch (action) {
+		var partial:Partial<CartState> = switch (action) {
+
+            case ResetCart : initState;
+            
 			case UpdateQuantity(product, quantity):
                 var cp = state.products.copy();
                 for( p in cp ) {
@@ -30,12 +33,12 @@ class CartRdcr implements IReducer<CartAction, CartState> {
                 }
                 {products:cp};
 
-            case AddProduct(product): //TODO
+            case AddProduct(product): 
                 var cp = state.products.copy();
-                cp.push({product:product, quantity:0});
+                cp.push({product:product, quantity:1});
                 {products:cp};
 
-            case RemoveProduct(product): //TODO
+            case RemoveProduct(product): 
                 var cp = state.products.copy();
                 for( p in cp ) {
                     if( p.product == product ) {
@@ -44,9 +47,18 @@ class CartRdcr implements IReducer<CartAction, CartState> {
                     }
                 }
                 {products:cp};
-
 		}
-        //TODO call an update price routine here if maintained
+
+        if( state != partial ) {
+            var count = 0, total = 0.0;
+            for( p in partial.products ) {
+                count += p.quantity;
+                total += p.quantity * p.product.price;
+            }
+            partial.count = count;
+            partial.total = Math.round(total * 100) / 100;
+        }
+        
 		return (state == partial ? state : js.Object.assign({}, state, partial));
 	}
 }

@@ -12,7 +12,6 @@ using Lambda;
 typedef ProductListProps = {
 	var categories:Array<CategoryInfo>;
 	var products:FilteredProductList;
-	var addToCart:ProductInfo->Int->Void;
 };
 
 class ProductList extends react.ReactComponentOfProps<ProductListProps> {
@@ -102,7 +101,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 		return products.map(function(product) {
 			return jsx('
 				<$Grid item xs={12} sm={4} md={3} key=${product.id}>
-				<$Product product=${product}  addToCart=${props.addToCart}/>
+					<$Product product=${product} />
 				</$Grid>
 			');
 		});

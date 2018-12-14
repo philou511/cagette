@@ -10,14 +10,17 @@ import redux.Store;
 import redux.StoreBuilder.*;
 import redux.thunk.Thunk;
 import redux.thunk.ThunkMiddleware;
-import redux.react.Provider;
+import redux.react.Provider as ReduxProvider;
 
 //custom components
 import react.order.*;
 import react.product.*;
-import react.store.Store as CagetteStore;
+import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
+
+//TODO
+import react.store.Cart;
 
 import mui.core.CssBaseline;
 import mui.core.styles.MuiThemeProvider;
@@ -205,8 +208,7 @@ class App {
 		// create middleware normally, excepted you must use
 		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
 		var middleWare = Redux.applyMiddleware(mapMiddleware(Thunk, new ThunkMiddleware()));
-		var store = createStore(rootReducer, null, middleWare);
-		return store;
+		return createStore(rootReducer, null, middleWare);
 	}
 
 	public function shop(place:Int, date:String) {
@@ -232,18 +234,18 @@ class App {
 		});
 
 		var store = createReactStore();
-
 		ReactDOM.render(jsx('
-			<Provider store=${store}>
+			<$ReduxProvider store=${store}>
 				<$MuiThemeProvider theme=${theme}>
 					<>
 						<$CssBaseline />
 						<$CagetteStore date=$date place=$place />
 					</>
 				</$MuiThemeProvider>
-			</Provider>
+			</$ReduxProvider>
 		'), js.Browser.document.querySelector('#shop'));
 	}
+
 	
 	public function groupMap(lat:Float,lng:Float,address:String) {
 		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));

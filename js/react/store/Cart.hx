@@ -13,26 +13,35 @@ import mui.core.input.InputType;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import Common;
+import react.cagette.action.CartAction;
 
 using Lambda;
 
 typedef CartProps = {
 	> PublicProps,
+	> ReduxProps,
 	var classes:TClasses;
 }
 
-private typedef PublicProps = {
+private typedef ReduxProps = {
+	var updateCart:ProductInfo->Int->Void;
+	var removeProduct:ProductInfo->Void;
+	var resetCart:Void->Void;
 	var order:OrderSimple;
-	var addToCart:ProductInfo->Int->Void;
-	var removeFromCart:ProductInfo->?Int->Void;
+}
+
+private typedef PublicProps = {
 	var submitOrder:OrderSimple->Void;
 }
 
 private typedef TClasses = Classes<[cagMiniBasketContainer,]>
 
+
 @:publicProps(PublicProps)
-@:wrap(Styles.withStyles(styles))
+@:connect
+@:wrap(untyped Styles.withStyles(styles))
 class Cart extends react.ReactComponentOfProps<CartProps> {
+	
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			cagMiniBasketContainer : {
@@ -60,16 +69,24 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
 		}
 	}
 
-	function addToCart(product:ProductInfo, quantity:Int):Void {
-		props.addToCart(product, quantity);
+	static function mapStateToProps(st:react.cagette.state.State):react.Partial<CartProps> {
+		return {
+			order: cast st.cart,
+		}
 	}
 
-	function removeFromCart(product:ProductInfo, quantity:Int):Void {
-		props.removeFromCart(product, quantity);
-	}
-
-	function removeAllFromCart(product:ProductInfo):Void {
-		props.removeFromCart(product);
+	static function mapDispatchToProps(dispatch:redux.Redux.Dispatch):react.Partial<CartProps> {
+		return {
+			updateCart: function(product, quantity) {
+				dispatch(CartAction.UpdateQuantity(product, quantity));
+			},
+			resetCart: function() {
+				dispatch(CartAction.ResetCart);
+			},
+			removeProduct: function(p:ProductInfo) {
+				dispatch(CartAction.RemoveProduct(p));
+			}
+		}
 	}
 
 	function submitOrder():Void {
@@ -78,30 +95,25 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
 
 	override public function render() {
 		var classes = props.classes;
+		
 		return jsx('
 			<Grid item xs={3}>
 				<div className=${classes.cagMiniBasketContainer}>
 					<div className="cagMiniBasket">
-						<i className="icon icon-truck-solid"></i> (0) <span>0,00 €</span> <i className="icon icon-truck-solid"></i>
+						<i className="icon icon-truck-solid"></i> (${props.order.count}) <span>${props.order.total} €</span>
+					</div>
+					<div className="cart">
+						<h3>Ma Commande</h3>
+						${renderProducts()}
+						${renderFooter()}
 					</div>
 				</div>
 			</Grid>
 		');
-		/*
-		<div className="cart">
-			<h3>Ma Commande</h3>
-			${renderProducts()}
-			${renderFooter()}
-		</div>
-		 */
 	}
 
 	function updateQuantity(cartProduct:ProductWithQuantity, newValue:Int) {
-		if (newValue > cartProduct.quantity) {
-			this.addToCart(cartProduct.product, 1);
-		} else if (newValue < cartProduct.quantity) {
-			this.removeFromCart(cartProduct.product, 1);
-		}
+		props.updateCart(cartProduct.product, newValue);
 	}
 
 	function renderProducts() {
@@ -114,13 +126,11 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
 					<div>${product.name}</div>
 					<div className="cart-action-buttons">
 
-						<QuantityInput onChange=${updateQuantity.bind(cartProduct)} defaultValue=${quantity}/>
-						<div onClick=${function(){
-							this.removeAllFromCart(product);
-						}}>
+						<QuantityInput onChange=${updateQuantity.bind(cartProduct)} value=${quantity}/>
+						<div onClick=${props.removeProduct.bind(product)}>
 							x
 						</div>
-					</div>
+					</div> 
 				</div>
 			');
 

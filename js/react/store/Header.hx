@@ -22,9 +22,6 @@ typedef HeaderProps = {
 };
 
 private typedef PublicProps = {
-    var order:OrderSimple;
-	var addToCart:ProductInfo->Int->Void;
-	var removeFromCart:ProductInfo->?Int->Void;
 	var submitOrder:OrderSimple->Void;
 }
 
@@ -117,12 +114,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                         </FormControl>
                     </div>                                                        
                 </Grid>
-                <Cart   
-                    order=${props.order}
-                    addToCart=${props.addToCart}
-                    removeFromCart=${props.removeFromCart}
-                    submitOrder=${props.submitOrder}
-                />
+                <Cart submitOrder=${props.submitOrder} />
             </Grid>
             </div>
         ');
