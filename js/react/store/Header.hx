@@ -4,7 +4,6 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
-import mui.Align;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;

@@ -69,6 +69,7 @@ abstract ServerUrl(String) to String {
 	}
  */
 class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> {
+
 	public function new() {
 		super();
 		state = {
@@ -77,7 +78,6 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			categories: [],
 			filter: {},
 			products:[],
-			//productsBySubcategoryIdMap: new Map(),
 			order: {
 				products: [],
 				total: 0
@@ -90,9 +90,9 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 		return HttpUtil.fetch(url, method, params, accept, contentType);
 	}
 
-
 //TODO CLEAN
-	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres", subcategories:[{id:-2, name:"Autres", subcategories:null}]};
+	public static var ALL_CATEGORY = {id:0, name:"Tous les produits"};
+	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
 
 	override function componentDidMount() {
 		var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
@@ -123,32 +123,30 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 				promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: subcategory.id}, JSON));
 			});
 
-			// WHY IS THAT, to refresh local storage data?
-			/*
-			var productsBySubcategoryIdMapCopy = [
-				for (key in state.productsBySubcategoryIdMap.keys())
-					key => state.productsBySubcategoryIdMap.get(key)
-			];
-			*/
-
 			categories.unshift(DEFAULT_CATEGORY);
+			categories.unshift(ALL_CATEGORY);
 
 			js.Promise.all(promises).then(function(results:Array<Dynamic>) {
 				var products = [];
-				trace("results ", results.length);
+				//trace("results ", results.length);
 				// primises.all respect the order
 				for (i in 0...results.length) {
 					var result = results[i];
 					var category = subCategories[i];
+					//trace('Category $category contains ${result.products.length} produits');
 					// transform results
 					var catProducts:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
-						if( p.categories == null || p.categories.length == 0 ) p.categories = [DEFAULT_CATEGORY];
+						if( p.categories == null || p.categories.length == 0 ) {
+							p.categories = [DEFAULT_CATEGORY];
+							//trace("We assign a default category");
+						} 
 						return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
 					}));
 					//productsBySubcategoryIdMapCopy.set(category.id, products);
 					products = products.concat(catProducts);
 				}
-				//
+				
+				//trace('${products.length} produits trouvés ');
 				setState({
 					products:products,
 					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
@@ -220,23 +218,7 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 	}
 
 	override public function render() {
-		/*
-		var filters = jsx('
-			<Filters
-				categories=${state.categories}
-				filters=${state.filters}
-				toggleFilter=$toggleFilter
-			/>
-		');
 		
-		<ProductList
-					categories=${state.categories}
-					productsBySubcategoryIdMap=${state.productsBySubcategoryIdMap}
-					filters=${state.filters}
-					addToCart=$addToCart
-				/>
-		*/
-
 		function filter(p, f:ProductFilters) {
 			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
 		}
@@ -260,7 +242,6 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 				/>
 			</div>
 		');
-
 	}
 
 	function renderHeader() {
@@ -310,30 +291,5 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 					submitOrder=$submitOrder
 			/>
 		');
-		//TODO
-		/*
-		return jsx('
-			<div className="shop-header">
-				<div>
-					<div className="shop-distribution">
-						Distribution le ${props.date}
-					</div>
-					
-					<div className="shop-order-ends">
-						$endDates
-					</div>
-				</div>  
-				<div className="shop-place">
-					<span className="info">
-						<span className="glyphicon glyphicon-map-marker"></span>
-						<a href=$viewUrl>${state.place.name}</a>
-					</span>
-					<div>
-						$addressBlock
-					</div>
-				</div>
-			</div>
-		');
-		*/
 	}
 }

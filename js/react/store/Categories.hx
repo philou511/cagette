@@ -4,7 +4,6 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
-import mui.Align;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
@@ -77,24 +76,31 @@ class Categories extends react.ReactComponentOfProps<CategoriesProps> {
 		super(props);
 	}
 
+    function onCategoryClicked(category:CategoryInfo) {
+        if( category.id > 0 )
+            props.filterByCategory(category.id);
+        else if( category.id == 0 )
+            props.resetFilter();
+
+        //resetFilter=${props.resetFilter}
+        //filterByCategory=${props.filterByCategory}
+        //filterBySubCategory=${props.filterBySubCategory}
+        //toggleFilterTag=${props.toggleFilterTag}
+    }
+
 	override public function render() {
         var classes = props.classes;
-
         var CategoryContainerClasses = classNames({
 			'cagCategoryContainer': true,
             '${classes.cagCategoryActive}': true,//make this dynamic
 		});
-
         //TODO active
         var categories = [
             for(category in props.categories)
                 jsx('<Category  key=${category.id} 
                                 active=${false}
                                 category=${category} 
-                                resetFilter=${props.resetFilter}
-                                filterByCategory=${props.filterByCategory}
-                                filterBySubCategory=${props.filterBySubCategory}
-                                toggleFilterTag=${props.toggleFilterTag}
+                                onClick=${onCategoryClicked.bind(category)}
                 />')
         ];
         return jsx('

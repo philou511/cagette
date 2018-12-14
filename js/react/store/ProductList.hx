@@ -28,8 +28,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 		return props.categories.map(function(category) {
 			//if (!props.filters.has(category.name))
 			//	return null;
-			trace(props.products.category, props.products.subCategory, props.products.producteur);
-
+			
 			var shouldDisplayCategory = props.products.category != null && props.products.subCategory == null
 										|| props.products.category == null && props.products.subCategory == null;
 
@@ -40,7 +39,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 					return Lambda.has(p.categories, category.id);
 				});
 
-				if( !hasProducts ) {
+				if( !hasProducts && category.subcategories != null ) {
 					for( subcategory in category.subcategories ) {
 						hasProducts = Lambda.exists(props.products.products, function(p) {
 							return Lambda.has(p.subcategories, subcategory.id);
@@ -67,20 +66,16 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 	}
 
 	function renderSubCategories(category:CategoryInfo) {
+		if( category.subcategories == null || category.subcategories.length == 0 ) 
+			return null;
+		//
 		var list = category.subcategories.map(function(subcategory) {
 			var subProducts = props.products.products.filter(function(p) {
 				return Lambda.has(p.subcategories, subcategory.id);
 			});
 			
 			if( subProducts.length == 0 ) return null;
-			//var subcategory = props.categories.get(subcategoryId);
-
-//TODO HANDLE LOADING WITH THAT APPROACH !!
-			//if (!props.productsBySubcategoryIdMap.exists(category.id))
-			//	return jsx('<div key=${category.name}>Loading...</div>');
-			//var products = props.productsBySubcategoryIdMap.get(category.id);
-			//if( products.length == 0 ) return null;
-
+			
 			return jsx('
 				<div className="subCategory" key=${subcategory.id}>
 					<h3>${subcategory.name}</h3>
@@ -103,16 +98,13 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 	function renderProducts(products:Array<ProductInfo>) {
 		if (products == null || products.length == 0)
 			return null;
-
-		// for debug purpose only
-		// var products = [products[0]];
-
+		
 		return products.map(function(product) {
 			return jsx('
-        <$Grid item xs={12} sm={4} md={3} key=${product.id}>
-          <$Product product=${product}  addToCart=${props.addToCart}/>
-        </$Grid>
-      ');
+				<$Grid item xs={12} sm={4} md={3} key=${product.id}>
+				<$Product product=${product}  addToCart=${props.addToCart}/>
+				</$Grid>
+			');
 		});
 	}
 }

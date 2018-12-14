@@ -3,10 +3,19 @@ import react.ReactMacro.jsx;
 import react.ReactDOM;
 import react.*;
 import react.router.*;
+//redux
+
+import redux.Redux;
+import redux.Store;
+import redux.StoreBuilder.*;
+import redux.thunk.Thunk;
+import redux.thunk.ThunkMiddleware;
+import redux.react.Provider;
+
 //custom components
 import react.order.*;
 import react.product.*;
-import react.store.*;
+import react.store.Store as CagetteStore;
 import react.map.*;
 import react.user.*;
 
@@ -188,6 +197,18 @@ class App {
 		return false;
 	}
 
+	private function createReactStore() {
+		// Store creation
+		var rootReducer = Redux.combineReducers({
+			cart: mapReducer(react.cagette.action.CartAction, new react.cagette.state.CartState.CartRdcr()),
+		});
+		// create middleware normally, excepted you must use
+		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
+		var middleWare = Redux.applyMiddleware(mapMiddleware(Thunk, new ThunkMiddleware()));
+		var store = createStore(rootReducer, null, middleWare);
+		return store;
+	}
+
 	public function shop(place:Int, date:String) {
 		// Will be merged with default values from mui
 		var theme = mui.core.styles.MuiTheme.createMuiTheme({
@@ -196,7 +217,7 @@ class App {
 				secondary: {main:"#84BD55"},
 				error: {main:"#FF0000"},       
 			},
-			typography:{
+			typography: {
 				fontFamily:['Cabin','"Helvetica Neue"','Arial','sans-serif',],
 				fontSize:16,          
 			},
@@ -210,13 +231,17 @@ class App {
 			},
 		});
 
+		var store = createReactStore();
+
 		ReactDOM.render(jsx('
-			<$MuiThemeProvider theme=${theme}>
-				<>
-					<$CssBaseline />
-					<$Store date=$date place=$place/>
-				</>
-			</$MuiThemeProvider>
+			<Provider store=${store}>
+				<$MuiThemeProvider theme=${theme}>
+					<>
+						<$CssBaseline />
+						<$CagetteStore date=$date place=$place />
+					</>
+				</$MuiThemeProvider>
+			</Provider>
 		'), js.Browser.document.querySelector('#shop'));
 	}
 	

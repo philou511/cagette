@@ -12,6 +12,9 @@
  haxelib git react-types https://gitlab.com/k-labz/haxe-oss/haxe-react-types.git
  haxelib install tink_json
  haxelib install css-types
+ haxelib install redux 0.5.1 
+ haxelib install redux-connect 0.0.1
+ haxelib install redux-thunk 0.0.2
 
 OUTPUT EXPECTED 
 classnames: [0.1.5]
@@ -23,6 +26,9 @@ modular: [0.10.15]
 react-next: [1.103.1]
 react-router-4: [0.2.3]
 react-types: [git]
+redux: [0.5.1]
+redux-connect: [0.0.1]
+redux-thunk: [0.0.2]
 sugoi: [git]
 tink_anon: [0.3.2]
 tink_core: [1.18.0]

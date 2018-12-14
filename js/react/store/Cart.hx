@@ -5,7 +5,6 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
-import mui.Align;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
@@ -47,7 +46,7 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
                     borderRadius : 5,
                     border : '1px solid ${CGColors.Bg1}',
                     width: "100%",
-                    textAlign: Center,
+                    textAlign: css.TextAlign.Center,
                     padding: "0.5em",
                 },
 
