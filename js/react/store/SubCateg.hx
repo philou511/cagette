@@ -27,7 +27,7 @@ private typedef PublicProps = {
 }
 
 private typedef TClasses = Classes<[
-	labelShip,
+	labelChip,
 ]>
 
 @:acceptsMoreProps
@@ -37,11 +37,16 @@ class SubCateg extends ReactComponentOfProps<Props> {
     
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
-            labelShip : {
+            labelChip : {
+
+                fontSize: "0.7rem",
+                margin: "5px 2px",
+                padding: "0px 5px",
+
                 backgroundColor: CGColors.White,    
-                fontSize: "0.95rem",
-                margin: "10 8",
-                padding: "5 10",
+                //fontSize: "0.95rem",
+                //margin: "10 8",
+                //padding: "5 10",
                 borderRadius: 16,
                 textDecoration: "none",
                 display: "inline-block",
@@ -49,7 +54,7 @@ class SubCateg extends ReactComponentOfProps<Props> {
                 transition: "all 0.5s ease",
 
                 "&::hover" : {
-                    backgroundColor: "#FFFFFF",//untyped color('#FFFFF').darken(10).hex(),
+                    backgroundColor: "#d4d6d8",//untyped color('#FFFFF').darken(10).hex(),
                 },       
 
                 "&.cagSelect" : {
@@ -69,7 +74,7 @@ class SubCateg extends ReactComponentOfProps<Props> {
 
     override function render() {
         var linkClasses = classNames({
-			'${props.classes.labelShip}': true,
+			'${props.classes.labelChip}': true,
 			'${props.colorClass}': true,
 		});
         
@@ -78,6 +83,8 @@ class SubCateg extends ReactComponentOfProps<Props> {
         });
 
         var others = react.ReactMacro.getExtraProps(props);
+        //TODO replace by Chip composant instead?
+       // <Chip color="primary" icon={<FaceIcon />} />
         return jsx('
             <a onClick=${props.onclick} className=${linkClasses} {...others}>
                 <i className=${iconClasses}></i> ${props.label}

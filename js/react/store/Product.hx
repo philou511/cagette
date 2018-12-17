@@ -127,14 +127,6 @@ class Product extends ReactComponentOf<Props, ProductState> {
             },
             cagProductLabel : {
                 marginLeft : -3,
-                "& .labelChip:hover" : {        
-                    backgroundColor: CGColors.White,
-                },
-                "& .labelChip" : {
-                    fontSize: "0.7rem",
-                    margin: "5px 2px",
-                    padding: "0 5px",
-                },
             },
             cagProductDesc: {
                 fontSize: '0.9rem',

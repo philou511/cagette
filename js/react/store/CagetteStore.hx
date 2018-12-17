@@ -6,7 +6,6 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme;
 
-import utils.CartUtils;
 import utils.HttpUtil;
 
 import Common;
