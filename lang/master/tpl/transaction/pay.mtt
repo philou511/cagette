@@ -40,7 +40,7 @@
 				::set href = "#"::
 				::set warning = _("You do not have sufficient funds to pay this order with your money pot.")::
 			::end::
-			<a class="::class::" href="::href::" style="min-height:120px;vertical-align:middle;">
+			<a class="::class:: payment" href="::href::" style="min-height:120px;vertical-align:middle;">
 				<h3>::p.name::</h3>
 				::raw p.icon::
 				::if( warning )::

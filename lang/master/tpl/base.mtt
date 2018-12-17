@@ -26,6 +26,7 @@
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
 		::end::
 
+		<!-- Cagette very own icon font -->
 		<link rel="stylesheet" href="/font/icons.css" />
 		
 		<!-- bootstrap datepicker -->

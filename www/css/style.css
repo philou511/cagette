@@ -755,6 +755,10 @@ tr.danger td div.basketNumber {
   border-top: 3px solid #CCC;
   z-index: 99; }
 
+/* payment type */
+.payment .icon {
+  font-size: 200%; }
+
 /*!
  * https://github.com/YouCanBookMe/react-datetime
  */

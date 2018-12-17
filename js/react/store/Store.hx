@@ -5,6 +5,7 @@ import haxe.Json;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme;
+import react.Header;
 
 import utils.CartUtils;
 import utils.HttpUtil;
@@ -241,8 +242,9 @@ class Store extends react.ReactComponentOfPropsAndState<StoreProps, StoreState> 
 			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
 		}
 
-		return jsx('
+		return jsx('			
 			<div className="shop">
+				<$Header />
 				${renderHeader()}
 				<Categories 
 					categories=${state.categories}

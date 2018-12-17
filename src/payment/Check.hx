@@ -12,7 +12,7 @@ class Check extends payment.Payment
 	{
 		var t = sugoi.i18n.Locale.texts;
 		this.type = TYPE;
-		this.icon = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
+		this.icon = '<i class="icon icon-cheque"></i>';
 		this.name = t._("Check");
 		this.link = "/transaction/check";
 	}
