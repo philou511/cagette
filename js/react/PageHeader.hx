@@ -13,17 +13,20 @@ import mui.core.Tabs;
 import Common;
 using Lambda;
 
+typedef PageHeaderProps = {userRights:Rights,groupName:String};
 
-class PageHeader extends react.ReactComponentOfProps<{}> {
+class PageHeader extends react.ReactComponentOfProps<PageHeaderProps> {
 	
     public function new() {
 		super();
-		state = {};
 	}
 
     override public function render(){
         return jsx('
             <div>
+                <div>
+                    <h1>Mon super Groupe</h1>
+                </div>
                 <$AppBar position=${CSSPosition.Static} color=${mui.Color.Default}>
                     <$Tabs onChange=${ cast handleChange}>
                         <$Tab label="ACCUEIL" value="home"/>
@@ -49,7 +52,7 @@ class PageHeader extends react.ReactComponentOfProps<{}> {
         js.Browser.window.location.href = switch(value){
             case "account":"/contract";
             case "farmers":"/amap";
-            case "members":"/members";
+            case "members":"/member";
             case "contracts":"/contractAdmin";
             case "messages":"/messages";
             case "group":"/amapadmin";

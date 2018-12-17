@@ -11,9 +11,10 @@
 @import '_map';
 @import '_iconfont';
 
-/*body{
-  background-color:#F8F4E5 !important;    
-}*/
+body{
+	//usefull when BS is not here
+  	font-family: Cabin, Arial, Helvetica, sans-serif;    
+}
 
 h1,h2,h3,h4{
   margin-top: 4px !important;
