@@ -44,9 +44,6 @@ class SubCateg extends ReactComponentOfProps<Props> {
                 padding: "0px 5px",
 
                 backgroundColor: CGColors.White,    
-                //fontSize: "0.95rem",
-                //margin: "10 8",
-                //padding: "5 10",
                 borderRadius: 16,
                 textDecoration: "none",
                 display: "inline-block",

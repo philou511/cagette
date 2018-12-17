@@ -6,8 +6,11 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
 import mui.core.Grid;
+import mui.core.common.Position;
 import mui.core.TextField;
 import mui.core.FormControl;
+import mui.core.Popover;
+import mui.core.popover.AnchorPosition;
 import mui.core.form.FormControlVariant;
 import mui.core.input.InputType;
 import mui.core.styles.Classes;
@@ -36,11 +39,14 @@ private typedef PublicProps = {
 
 private typedef TClasses = Classes<[cagMiniBasketContainer,]>
 
+private typedef CartState = {
+	var cartOpen:Bool;
+}
 
 @:publicProps(PublicProps)
 @:connect
 @:wrap(untyped Styles.withStyles(styles))
-class Cart extends react.ReactComponentOfProps<CartProps> {
+class Cart extends react.ReactComponentOf<CartProps, CartState> {
 	
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
@@ -89,8 +95,9 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
 		}
 	}
 
-	function submitOrder():Void {
-		props.submitOrder(props.order);
+	public function new(props) {
+		super(props);
+		this.state = {cartOpen : false};
 	}
 
 	override public function render() {
@@ -102,12 +109,13 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
 					<div className="cagMiniBasket">
 						<i className="icon icon-truck-solid"></i> (${props.order.count}) <span>${props.order.total} €</span>
 					</div>
-					<div className="cart">
-						<h3>Ma Commande</h3>
-						${renderProducts()}
-						${renderFooter()}
-					</div>
 				</div>
+				<Popover open={state.cartOpen}
+						anchorOrigin={{vertical: Bottom, horizontal: Right,}}
+						transformOrigin={{vertical: Top,horizontal: Right,}}
+					>
+					The content of the Popover.
+				</Popover>
 			</Grid>
 		');
 	}
@@ -125,40 +133,14 @@ class Cart extends react.ReactComponentOfProps<CartProps> {
 				<div className="product-to-order" key=${product.name}>
 					<div>${product.name}</div>
 					<div className="cart-action-buttons">
-
-						<QuantityInput onChange=${updateQuantity.bind(cartProduct)} value=${quantity}/>
-						<div onClick=${props.removeProduct.bind(product)}>
-							x
-						</div>
 					</div> 
 				</div>
 			');
-
 		});
 
 		return jsx('
 			<div className="products-to-order">
 				${productsToOrder}
-			</div>
-		');
-	}
-
-	function renderFooter() {
-		var buttonClasses = ["order-button"];
-		var submit = submitOrder;
-
-		if (props.order.products.length == 0) {
-			buttonClasses.push("order-button--disabled");
-			submit = null;
-		}
-
-		return jsx('
-			<div className="cart-footer">
-				<div className="total">
-					Total
-					<div>${props.order.total} €</div>
-				</div>
-				<div className=${buttonClasses.join(" ")} onClick=$submit>Commander</div>
 			</div>
 		');
 	}
