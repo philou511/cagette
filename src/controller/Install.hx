@@ -2,6 +2,7 @@ package controller;
 import sugoi.db.Variable;
 import sugoi.form.elements.StringInput;
 import thx.semver.Version;
+import Common;
 
 /**
  * ...
@@ -79,7 +80,7 @@ class Install extends controller.Controller
 				var ua = new db.UserAmap();
 				ua.user = user;
 				ua.amap = amap;
-				ua.rights = [db.UserAmap.Right.GroupAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
+				ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
 				ua.insert();
 				
 				//example datas

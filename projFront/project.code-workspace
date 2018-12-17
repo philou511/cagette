@@ -13,7 +13,10 @@
 			"path": "../js"
 		},
 		{
-			"path": "../lang"
+			"path": "../lang/master/tpl"
+		},
+		{
+			"path": "../www"
 		}
 	]
 }

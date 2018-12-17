@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="::LANG::">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xml:lang="::LANG::" lang="::LANG::" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>
+			::if pageTitle!=null::
+				::pageTitle::
+			::else::
+				::NAME::
+			::end::
+		</title>
+		
+		<!-- Cagette CSS -->
+		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+
+
+		<!-- Cagette very own icon font -->
+		<link rel="stylesheet" href="/font/icons.css" />
+		
+        
+        <!-- JQUERY -->
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		
+		
+		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.js -->
+		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+
+		<!-- Haxe JS + libs bundled with browserify -->
+		<script type="text/javascript" src="/js/::getVariable('js')::/libs.js"></script>
+		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>
+	</head>
+
+	::if container==null:: ::set container="container":: ::end::
+	<body class="::container::">
+		
+		::if DEBUG::
+		<div style="position: absolute;background: #666;padding: 8px;left: 0;color: #FF0;">DEBUG ::session.lang::</div>
+		::end::
+		
+		::if HOST.substr(0,3)=="pp."::
+		<div style="position: absolute;background: #F60;padding: 8px;left: 0;color: #FF0;">PREPROD</div>
+		::end::
+		
+		
+		
+		::raw __content__::
+		
+		<script type="text/javascript">
+		
+			//Google Analytics
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-17932663-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		  
+		  
+			
+			$(function () {
+				//enable BS3 Tooltips & popovers
+				//$('[data-toggle="tooltip"]').tooltip();
+				//$('[data-toggle="popover"]').popover();
+			  
+				//init lang in js App
+				_.LANG = "::session.lang::";
+				
+				//tutorials
+				//::if tuto!=null::				
+				//_.getTuto("::tuto.name::",::tuto.step::);			
+				//::end::
+
+				//_.antiDoubleClick();
+			  
+			})
+
+			//tracking 24x7
+			var rumMOKey='1d36c37d438ba069db210c73cb74308d';
+			(function(){
+				if(window.performance && window.performance.timing && window.performance.navigation) {
+					var site24x7_rum_beacon=document.createElement('script');
+					site24x7_rum_beacon.async=true;
+					site24x7_rum_beacon.setAttribute('src','//static.site24x7rum.com/beacon/site24x7rum-min.js?appKey='+rumMOKey);
+					document.getElementsByTagName('head')[0].appendChild(site24x7_rum_beacon);
+				}
+			})(window)
+
+		</script>
+		
+	</body>
+</html>

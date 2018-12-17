@@ -1,7 +1,5 @@
 
-::set noBootstrap = true::
-
-::use 'design.mtt'::
+::use 'reactBase.mtt'::
 
 <div id='shop'></div>
 <script>

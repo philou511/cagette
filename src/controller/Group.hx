@@ -2,6 +2,7 @@ package controller;
 import sugoi.form.elements.StringInput;
 import service.OrderService;
 import service.WaitingListService;
+import Common;
 
 /**
  * Groups
@@ -212,7 +213,7 @@ class Group extends controller.Controller
 			var ua = new db.UserAmap();
 			ua.user = user;
 			ua.amap = g;
-			ua.rights = [db.UserAmap.Right.GroupAdmin,db.UserAmap.Right.Membership,db.UserAmap.Right.Messages,db.UserAmap.Right.ContractAdmin(null)];
+			ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
 			ua.insert();
 			
 			//example datas
