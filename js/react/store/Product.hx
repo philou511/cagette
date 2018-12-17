@@ -18,7 +18,7 @@ import mui.core.Typography;
 import mui.core.Avatar;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
-
+import mui.icon.Icon;
 import react.cagette.action.CartAction;
 import mui.CagetteTheme;
 import Formatting.unit;
@@ -159,7 +159,6 @@ class Product extends ReactComponentOf<Props, ProductState> {
 		}
 	}
 
-
     static function mapStateToProps(st:react.cagette.state.State, ownProps:PublicProps):react.Partial<Props> {
         var storeProduct = 0;
         for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
@@ -206,17 +205,47 @@ class Product extends ReactComponentOf<Props, ProductState> {
                         color=${Primary} 
                         className=${props.classes.productBuy} 
                         disableRipple>                        
-                        <i className="icon icon-truck-solid"></i>
+                        <i className="icon icon-truck"></i>
                     </Button>
             ');
         } else {
             jsx('<QuantityInput onChange=${updateQuantity} value=${props.quantity}/>');
         }
     }
+
+    function renderProductPrices(product, productType) {
+        var classes = props.classes;
+        return jsx('
+            <CardActions className=${classes.cagProductInfoWrap} style={{ marginBottom: 10}} >                                                      
+                <Typography component="p" className=${classes.cagProductPriceRate} >                                 
+                    ${product.price} €/${(productType)}
+                </Typography>                               
+            </CardActions>
+        ');
+    }
+
+    function renderProductOrderActions(product, productType) {
+        var classes = props.classes;
+        return jsx('
+            <CardActions className=${classes.cagProductInfoWrap} >                                    
+                <Typography component="p" className=${classes.cagProductInfo} >                                 
+                    <span className="cagProductUnit">1 ${(productType)} </span>
+                    <span className="cagProductPrice">${product.price} €</span>                         
+                </Typography>
+                {renderQuantityAction()}
+            </CardActions>
+        ');
+    }
+
     override public function render() {
         var classes = props.classes;
         var product = props.product;
         var productType = unit(product.unitType);
+
+        var iconTruck = classNames({
+			'icons':true,
+			'icon-truck':true,
+		});
 
         return jsx('
             <Card elevation={0} className=${classes.card}> 
@@ -227,14 +256,14 @@ class Product extends ReactComponentOf<Props, ProductState> {
                         >
                         <div className=${classes.cagAvatarContainer}>
                             <Avatar className=${classes.starProduct}>
-                                <i className="icon icon-truck-solid"></i>
+                                <Icon component="i" className=${iconTruck}></Icon>
                             </Avatar>  
                         </div>
                         <div className=${classes.cagAvatarContainer}>
                                 <Avatar src="/img/store/la-ferme-des-2-rivieres.jpg" 
-                                    className=${classes.farmerAvatar} 
-                                />  
-                        </div>                      
+                                        className=${classes.farmerAvatar} 
+                                        />  
+                        </div>
                     </CardMedia>
 
                     <CardContent className=${classes.cardContent}>                        
@@ -245,25 +274,15 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             La Ferme 
                         </Typography>
                         <Typography component="p" className=${classes.cagProductLabel}>
-                            <$SubCateg label="Label rouge" icon="icon icon-truck-solid" colorClass="cagLabelRouge" />
-                            <$SubCateg label="Bio" icon="icon icon-truck-solid" colorClass="cagBio"  />
+                            <$SubCateg label="Label rouge" icon="icon icon-truck" colorClass="cagLabelRouge" />
+                            <$SubCateg label="Bio" icon="icon icon-truck" colorClass="cagBio"  />
                         </Typography>
                     </CardContent>           
                 </CardActionArea>
-                <CardActions className=${classes.cagProductInfoWrap} >                                    
-                    <Typography component="p" className=${classes.cagProductInfo} >                                 
-                        <span className="cagProductUnit">1 ${(productType)} </span>
-                        <span className="cagProductPrice">${product.price} €</span>                         
-                    </Typography>
-                    
-                   {renderQuantityAction()}
 
-                </CardActions>   
-                <CardActions className=${classes.cagProductInfoWrap} style={{ marginBottom: 10}} >                                                      
-                    <Typography component="p" className=${classes.cagProductPriceRate} >                                 
-                        ${product.price} €/${(productType)}
-                    </Typography>                               
-                </CardActions>
+                ${renderProductOrderActions(product, productType)}
+
+                ${renderProductPrices(product, productType)}
             </Card>
         ');
     }

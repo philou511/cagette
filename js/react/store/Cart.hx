@@ -105,7 +105,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 			<Grid item xs={3}>
 				<div className=${classes.cagMiniBasketContainer} onClick=${onCartClicked}>
 					<div className="cagMiniBasket" ref={this.cartRef}>
-						<i className="icon icon-truck-solid"></i> (${props.order.count}) <span>${props.order.total} €</span>
+						<i className="icon icon-truck"></i> (${props.order.count}) <span>${props.order.total} €</span>
 					</div>
 				</div>
 				<Popover open={state.cartOpen}

@@ -10,6 +10,7 @@ import mui.core.styles.Styles;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.types.*;
+import mui.icon.Icon;
 import css.JustifyContent;
 import css.AlignContent;
 import css.Properties;
@@ -84,7 +85,7 @@ class SubCateg extends ReactComponentOfProps<Props> {
        // <Chip color="primary" icon={<FaceIcon />} />
         return jsx('
             <a onClick=${props.onclick} className=${linkClasses} {...others}>
-                <i className=${iconClasses}></i> ${props.label}
+                <Icon component="i" className=${iconClasses}></Icon> ${props.label}
             </a>
         ');
     }

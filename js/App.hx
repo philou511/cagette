@@ -220,7 +220,7 @@ class App {
 				error: {main:"#FF0000"},       
 			},
 			typography: {
-				fontFamily:['Cabin','"Helvetica Neue"','Arial','sans-serif',],
+				fontFamily:['Cabin', 'icons', '"Helvetica Neue"','Arial','sans-serif',],
 				fontSize:16,          
 			},
 			overrides: {
