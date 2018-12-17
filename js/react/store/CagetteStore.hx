@@ -5,9 +5,8 @@ import haxe.Json;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme;
-import react.Header;
+import react.PageHeader;
 
-import utils.CartUtils;
 import utils.HttpUtil;
 
 import Common;
@@ -210,7 +209,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 		return jsx('			
 			<div className="shop">
-				<$Header />
+				<$PageHeader />
 				${renderHeader()}
 				<Categories 
 					categories=${state.categories}
