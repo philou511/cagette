@@ -11,6 +11,12 @@
 -lib react-types
 -lib tink_json
 
+#-lib js-object
+#-D object-as-dynamic
+-lib redux
+-lib redux-connect
+-lib redux-thunk
+
 -main App
 -debug
 -js ../www/js/app.js

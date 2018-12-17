@@ -4,7 +4,6 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
-import mui.Align;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
@@ -23,9 +22,6 @@ typedef HeaderProps = {
 };
 
 private typedef PublicProps = {
-    var order:OrderSimple;
-	var addToCart:ProductInfo->Int->Void;
-	var removeFromCart:ProductInfo->?Int->Void;
 	var submitOrder:OrderSimple->Void;
 }
 
@@ -118,12 +114,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                         </FormControl>
                     </div>                                                        
                 </Grid>
-                <Cart   
-                    order=${props.order}
-                    addToCart=${props.addToCart}
-                    removeFromCart=${props.removeFromCart}
-                    submitOrder=${props.submitOrder}
-                />
+                <Cart submitOrder=${props.submitOrder} />
             </Grid>
             </div>
         ');

@@ -20,15 +20,16 @@ private typedef Props = {
 
 private typedef PublicProps = {
     var onChange:Int->Void;
-    var defaultValue:Int;
+    var value:Int;
 }
 
 private typedef TClasses = Classes<[
     quantityInput,
 ]>
 
+
 typedef State = {
-    var quantity:Int;
+    //var quantity:Int;
 };
 
 
@@ -75,15 +76,15 @@ class QuantityInput extends ReactComponentOf<Props, State> {
 
     public function new(props) {
         super(props);
-        state = {quantity : props.defaultValue};
+       // state = {quantity : props.defaultValue};
     }
 
     function updateValue(delta:Int) {
-        var v = state.quantity + delta;
+        var v = props.value + delta;
         if( v + delta < 0 ) v = 0;
-        setState({quantity:v}, function() {
-            props.onChange(state.quantity);
-        });
+        //setState({quantity:v}, function() {
+            props.onChange(v);
+        //});
     }
 
     override function render() {
@@ -91,7 +92,7 @@ class QuantityInput extends ReactComponentOf<Props, State> {
         return jsx('
             <div className=${classes.quantityInput}>
                 <div className="quantityMoreLess" onClick=${updateValue.bind(-1)}>-</div>
-                <div className="quantity"> ${state.quantity} </div>
+                <div className="quantity"> ${props.value} </div>
                 <div className="quantityMoreLess"  onClick=${updateValue.bind(1)}> + </div>
             </div>
         ');

@@ -5,7 +5,6 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
-import mui.Align;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
@@ -25,10 +24,7 @@ typedef CategoryProps = {
 private typedef PublicProps = {
 	var category:CategoryInfo;
 	var active:Bool;
-	var resetFilter:Void->Void;
-	var filterByCategory:Int->Void;
-	var filterBySubCategory:Int->Int->Void;
-	var toggleFilterTag:String->Void;
+	var onClick:Void->Void;
 }
 
 private typedef TClasses = Classes<[cagCategoryActive,]>
@@ -48,11 +44,6 @@ class Category extends react.ReactComponentOfProps<CategoryProps> {
 		super(props);
 	}
 
-	function onCategoryClick() {
-		if( props.category.id == Store.DEFAULT_CATEGORY.id) props.resetFilter();
-		else props.filterByCategory(props.category.id);
-	}
-
 	override public function render() {
 		var classes = props.classes;
 
@@ -63,7 +54,7 @@ class Category extends react.ReactComponentOfProps<CategoryProps> {
 		
 		return jsx('
             <Grid item xs >
-                <div className=${CategoryContainerClasses} onClick=${onCategoryClick}>
+                <div className=${CategoryContainerClasses} onClick=${props.onClick}>
                     <div>
                         <img src="/img/store/fruits-legumes.png" alt=${props.category.name} />
                         ${props.category.name}

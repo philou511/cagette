@@ -19,18 +19,25 @@ import mui.core.Avatar;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 
+import react.cagette.action.CartAction;
 import mui.CagetteTheme;
 import Formatting.unit;
 import Common;
 
 private typedef Props = {
 	> PublicProps,
+    > ReduxProps,
 	var classes:TClasses;
 }
 
 private typedef PublicProps = {
     var product:ProductInfo;
-    var addToCart:ProductInfo -> Int -> Void;
+}
+
+private typedef ReduxProps = {
+	var updateCart:ProductInfo->Int->Void;
+	var addToCart:ProductInfo->Void;
+    var quantity:Int;
 }
 
 private typedef TClasses = Classes<[
@@ -52,11 +59,12 @@ private typedef TClasses = Classes<[
 ]>
 
 typedef ProductState = {
-  var quantity:Int;
+//var quantity:Int;
 };
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
+@:connect
 class Product extends ReactComponentOf<Props, ProductState> {
 
     //https://cssinjs.org/jss-expand-full?v=v5.3.0
@@ -159,9 +167,30 @@ class Product extends ReactComponentOf<Props, ProductState> {
 		}
 	}
 
+
+    static function mapStateToProps(st:react.cagette.state.State, ownProps:PublicProps):react.Partial<Props> {
+        var storeProduct = 0;
+        for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
+		return {
+			quantity: storeProduct,
+		}
+	}
+
+
+	static function mapDispatchToProps(dispatch:redux.Redux.Dispatch):react.Partial<Props> {
+		return {
+			updateCart: function(product, quantity) {
+				dispatch(CartAction.UpdateQuantity(product, quantity));
+			},
+			addToCart: function(product) {
+				dispatch(CartAction.AddProduct(product));
+			},
+		}
+	}
+    
     public function new(props) {
         super(props);
-        this.state = { quantity : 0 };
+        //this.state = { quantity : 0 };
     }
 
     static inline var OVERLAY_URL = '/shop/productInfo';
@@ -169,20 +198,16 @@ class Product extends ReactComponentOf<Props, ProductState> {
         untyped window._.overlay('$OVERLAY_URL/${props.product.id}', props.product.name);
     }
 
-    function updateQuantity(quantity) {
-        setState({
-            quantity: Std.int(quantity)
-        });
+    function updateQuantity(quantity:Int) {
+        props.updateCart(props.product, quantity);
     }
 
     function addToCart() {
-        setState({quantity:1}, function() {
-            props.addToCart(props.product, state.quantity);
-        });
+        props.addToCart(props.product);
     }
 
     function renderQuantityAction() {
-        return if(state.quantity == 0 ) {
+        return if(props.quantity == 0 ) {
             jsx(' <Button
                         onClick=${addToCart}
                         variant=${Contained}
@@ -193,7 +218,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                     </Button>
             ');
         } else {
-            jsx('<QuantityInput onChange=${updateQuantity} defaultValue={1}/>');
+            jsx('<QuantityInput onChange=${updateQuantity} value=${props.quantity}/>');
         }
     }
     override public function render() {
