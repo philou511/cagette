@@ -72,6 +72,9 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 			cartFooter: {
 				display: "flex",
 				flexDirection: Column,
+				fontSize: "1.8rem",
+				alignItems:Center,
+				justifyContent:SpaceEvenly,
 			},
 			cartDetails : {
                 fontSize: "1.2rem",
@@ -254,8 +257,9 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 		return jsx('
 			<Grid className=${classes.cartFooter} container={true} direction=${Column} key="footer">
 				<Grid item={true} xs={12}>
-					<Typography component="h2">Total</Typography>
-					<Typography component="p">${props.order.total} €</Typography>
+					<Typography component="h2">
+						Total: <span>${props.order.total} €<span>
+					</Typography>
 				</Grid>
 				<Grid item={true} xs={12}>
 					<Button

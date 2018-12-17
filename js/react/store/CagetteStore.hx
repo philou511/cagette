@@ -209,7 +209,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 		return jsx('			
 			<div className="shop">
-				<$PageHeader userRights=${[]}/>
+				<$PageHeader userRights=${[]} groupName={"TODO"} />
 				${renderHeader()}
 				<Categories 
 					categories=${state.categories}
