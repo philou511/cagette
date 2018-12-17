@@ -25,25 +25,37 @@ class PageHeader extends react.ReactComponentOfProps<{}> {
         return jsx('
             <div>
                 <$AppBar position=${CSSPosition.Static} color=${mui.Color.Default}>
-                    <$Tabs onChange=$handleChange>
+                    <$Tabs onChange=${ cast handleChange}>
                         <$Tab label="ACCUEIL" value="home"/>
                         <$Tab label="MON COMPTE" value="account"/>
-                        <$Tab label="PRODUCTEURS" />
+                        <$Tab label="PRODUCTEURS" value="farmers"/>
 
-                        <$Tab label="ADHÉRENTS" />
-                        <$Tab label="CONTRATS" />
-                        <$Tab label="MESSAGERIE" />
-                        <$Tab label="PRODUCTEURS" />
-                        <$Tab label="ADMIN" />
+                        <$Tab label="ADHÉRENTS" value="members"/>
+                        <$Tab label="CONTRATS" value="contracts"/>
+                        <$Tab label="MESSAGERIE" value="messages"/>
+                        <$Tab label="GROUPE" value="group"/>
+                        <$Tab label="ADMIN" value="admin"/>
                     </$Tabs>
                 </$AppBar>
             </div>
         ');
     }
 
-    public function handleChange(event:js.html.Event){
+    /**
+    TODO : this kind of signature is not implemented in the extern
+    **/
+    public function handleChange(_,value:Dynamic){
         
-        trace(event);
-        
+        js.Browser.window.location.href = switch(value){
+            case "account":"/contract";
+            case "farmers":"/amap";
+            case "members":"/members";
+            case "contracts":"/contractAdmin";
+            case "messages":"/messages";
+            case "group":"/amapadmin";
+            case "admin":"/admin";
+            default : "/";
+
+        } ; 
     }
 }

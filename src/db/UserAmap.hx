@@ -1,13 +1,8 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
-enum Right{
-	GroupAdmin;					//can manage whole group
-	ContractAdmin(?cid:Int);	//can manage one or all contracts
-	Membership;					//can manage group members
-	Messages;					//can send messages
-}
 
 /**
  * A user which is member of a group

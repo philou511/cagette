@@ -142,7 +142,7 @@ class AmapAdmin extends Controller
 		}
 		
 		var data = [];
-		//for (r in db.UserAmap.Right.getConstructors()) {
+		//for (r in Right.getConstructors()) {
 			//if (r == "ContractAdmin") continue; //managed later
 			//data.push({label:r,value:r});
 		//}
@@ -208,7 +208,7 @@ class AmapAdmin extends Controller
 					}
 					
 				}else {
-					ua.rights.push( db.UserAmap.Right.createByName(r) );	
+					ua.rights.push( Right.createByName(r) );	
 				}
 			}
 			
@@ -216,7 +216,7 @@ class AmapAdmin extends Controller
 			if (ua.user.id == app.user.id && wasManager ) {
 				var isManager = false;
 				for ( r in ua.rights) {
-					if (r.equals(db.UserAmap.Right.GroupAdmin)) {
+					if (r.equals(Right.GroupAdmin)) {
 						isManager = true; 
 						break;
 					}
