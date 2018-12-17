@@ -27,9 +27,6 @@ typedef CartProps = {
 }
 
 private typedef ReduxProps = {
-	var updateCart:ProductInfo->Int->Void;
-	var removeProduct:ProductInfo->Void;
-	var resetCart:Void->Void;
 	var order:OrderSimple;
 }
 
@@ -70,7 +67,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
                 },
                 "& span" : {
                     color : CGColors.Third,  
-                }
+                },
             },
 		}
 	}
@@ -83,65 +80,43 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 
 	static function mapDispatchToProps(dispatch:redux.Redux.Dispatch):react.Partial<CartProps> {
 		return {
-			updateCart: function(product, quantity) {
-				dispatch(CartAction.UpdateQuantity(product, quantity));
-			},
-			resetCart: function() {
-				dispatch(CartAction.ResetCart);
-			},
-			removeProduct: function(p:ProductInfo) {
-				dispatch(CartAction.RemoveProduct(p));
-			}
 		}
 	}
 
+	var cartRef:Dynamic;//TODO
 	public function new(props) {
 		super(props);
 		this.state = {cartOpen : false};
+		this.cartRef = React.createRef();
+	}
+
+	function onCartClicked() {
+		trace(state.cartOpen ? "closing" : "opening");
+		setState({cartOpen : !state.cartOpen});
+	}
+
+	function handleClose(e : Null<js.html.Event>, reason: mui.core.modal.ModalCloseReason) {
+		setState({cartOpen: false});
 	}
 
 	override public function render() {
 		var classes = props.classes;
-		
 		return jsx('
 			<Grid item xs={3}>
-				<div className=${classes.cagMiniBasketContainer}>
-					<div className="cagMiniBasket">
+				<div className=${classes.cagMiniBasketContainer} onClick=${onCartClicked}>
+					<div className="cagMiniBasket" ref={this.cartRef}>
 						<i className="icon icon-truck-solid"></i> (${props.order.count}) <span>${props.order.total} €</span>
 					</div>
 				</div>
 				<Popover open={state.cartOpen}
+						anchorEl={this.cartRef.current}
+						onClose={this.handleClose}
 						anchorOrigin={{vertical: Bottom, horizontal: Right,}}
 						transformOrigin={{vertical: Top,horizontal: Right,}}
 					>
-					The content of the Popover.
+					<CartDetails submitOrder=${props.submitOrder}/>
 				</Popover>
 			</Grid>
-		');
-	}
-
-	function updateQuantity(cartProduct:ProductWithQuantity, newValue:Int) {
-		props.updateCart(cartProduct.product, newValue);
-	}
-
-	function renderProducts() {
-		var productsToOrder = props.order.products.map(function(cartProduct:ProductWithQuantity) {
-			var quantity = cartProduct.quantity;
-			var product = cartProduct.product;
-
-			return jsx('
-				<div className="product-to-order" key=${product.name}>
-					<div>${product.name}</div>
-					<div className="cart-action-buttons">
-					</div> 
-				</div>
-			');
-		});
-
-		return jsx('
-			<div className="products-to-order">
-				${productsToOrder}
-			</div>
 		');
 	}
 }
