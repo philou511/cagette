@@ -928,8 +928,12 @@ tr.danger td div.basketNumber{
 	z-index: 99;
 }
 
-
-
+/* payment type */
+.payment{
+	.icon{
+		font-size: 200%;
+	}
+}
 
 /*!
  * https://github.com/YouCanBookMe/react-datetime

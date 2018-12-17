@@ -4,16 +4,16 @@
 			"path": "."
 		},
 		{
-			"path": "/Users/admin/Dev/workspace/cagette/app/common"
+			"path": "../common"
 		},
 		{
-			"path": "/Users/admin/Dev/workspace/cagette/app/data"
+			"path": "../data"
 		},
 		{
-			"path": "/Users/admin/Dev/workspace/cagette/app/js"
+			"path": "../js"
 		},
 		{
-			"path": "/Users/admin/Dev/workspace/cagette/app/lang"
+			"path": "../lang"
 		}
 	]
 }
