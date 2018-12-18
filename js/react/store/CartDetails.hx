@@ -258,7 +258,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 			<Grid className=${classes.cartFooter} container={true} direction=${Column} key="footer">
 				<Grid item={true} xs={12}>
 					<Typography component="h2">
-						Total: <span>${props.order.total} €<span>
+						Total: <span>${props.order.total} €</span>
 					</Typography>
 				</Grid>
 				<Grid item={true} xs={12}>
