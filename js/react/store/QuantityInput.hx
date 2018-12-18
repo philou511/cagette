@@ -45,7 +45,7 @@ class QuantityInput extends ReactComponentOf<Props, State> {
                 border: '1px solid ${CGColors.Second}',
                 borderRadius: 3,
                 display: "flex",
-               // maxWidth: 104,
+                maxWidth: 104,
                 "& div" : {
                     flexGrow: 1,
                 },

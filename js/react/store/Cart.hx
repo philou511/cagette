@@ -58,7 +58,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 				height:'100%',
 				
 				borderRadius : 5,
-				border : '1px solid ${CGColors.Bg3}',
+				border : '1px solid rgba(0,0,0,0.23)',
 				textAlign: css.TextAlign.Center,
 				padding: "0.5em",
 			},

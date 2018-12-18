@@ -5,7 +5,9 @@ import haxe.Json;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme;
+import mui.core.Grid;
 import react.PageHeader;
+import mui.core.CircularProgress;
 
 import utils.HttpUtil;
 
@@ -31,6 +33,8 @@ typedef  CagetteStoreState = {
 	var products:Array<ProductInfo>;
 	//var order:OrderSimple;
 	var filter:ProductFilters;
+
+	var loading:Bool;
 };
 
 @:enum
@@ -78,6 +82,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			categories: [],
 			filter: {},
 			products:[],
+			loading:true,
 		};
 	}
 
@@ -145,6 +150,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				//trace('${products.length} produits trouvés ');
 				setState({
 					products:products,
+					loading:false,
 					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
 				}, function() {
 					trace("products catalog updated");
@@ -207,6 +213,19 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
 		}
 
+		function renderLoader() {
+			return jsx('
+				<Grid  container spacing={0} direction=${Column} alignItems=${Center} justify=${Center} style={{ minHeight: "50vh" }}>
+					<Grid item xs={3}>
+						<CircularProgress />
+					</Grid>   
+				</Grid> 
+			');
+		}
+		function renderProducts() {
+			return 	if( state.loading ) renderLoader();
+					else jsx('<ProductList categories=${state.categories} products=${filter(state.products, state.filter)} />');
+		}
 		return jsx('			
 			<div className="shop">
 				<$PageHeader userRights=${[]} groupName={"TODO"} />
@@ -220,10 +239,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				/>
 
 				{renderPromo()}
-				<ProductList
-					categories=${state.categories}
-					products=${filter(state.products, state.filter)}
-				/>
+				{renderProducts()}
+				
 			</div>
 		');
 	}

@@ -14,6 +14,7 @@ import mui.icon.Icon;
 import css.JustifyContent;
 import css.AlignContent;
 import css.Properties;
+import css.Overflow;
 
 private typedef Props = {
 	> PublicProps,
@@ -29,6 +30,7 @@ private typedef PublicProps = {
 
 private typedef TClasses = Classes<[
 	labelChip,
+    icon,
 ]>
 
 @:acceptsMoreProps
@@ -38,6 +40,11 @@ class SubCateg extends ReactComponentOfProps<Props> {
     
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
+            icon : {
+                fontSize: "inherit",
+                overflow: Visible,
+                margin: 4,
+            },
             labelChip : {
 
                 fontSize: "0.7rem",
@@ -71,6 +78,8 @@ class SubCateg extends ReactComponentOfProps<Props> {
 	}
 
     override function render() {
+        var classes = props.classes;
+        
         var linkClasses = classNames({
 			'${props.classes.labelChip}': true,
 			'${props.colorClass}': true,
@@ -78,6 +87,7 @@ class SubCateg extends ReactComponentOfProps<Props> {
         
         var iconClasses = classNames({
             '${props.icon}' : true,
+            '${classes.icon}': true,
         });
 
         var others = react.ReactMacro.getExtraProps(props);
