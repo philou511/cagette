@@ -34,6 +34,8 @@ private typedef ReduxProps = {
 
 private typedef PublicProps = {
 	var submitOrder:OrderSimple->Void;
+	var place:PlaceInfos;
+	var orderByEndDates:Array<OrderByEndDate>;
 }
 
 private typedef TClasses = Classes<[icon, cart, cagMiniBasketContainer,]>
@@ -128,7 +130,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 						anchorOrigin={{vertical: Bottom, horizontal: Right,}}
 						transformOrigin={{vertical: Top,horizontal: Right,}}
 					>
-					<CartDetails submitOrder=${props.submitOrder}/>
+					<CartDetails submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place}/>
 				</Popover>
 			</div>
 		');

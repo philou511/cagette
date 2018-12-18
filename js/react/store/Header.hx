@@ -91,7 +91,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                 </Grid>
                 <Grid item xs={3} className=${classes.cartContainer}>
               
-                    <Cart submitOrder=${props.submitOrder} />
+                    <Cart submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place} />
                
                 </Grid>
             </Grid>

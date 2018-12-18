@@ -40,6 +40,9 @@ private typedef ReduxProps = {
 
 private typedef PublicProps = {
 	var submitOrder:OrderSimple->Void;
+
+	var place:PlaceInfos;
+	var orderByEndDates:Array<OrderByEndDate>;
 }
 
 private typedef TClasses = Classes<[
@@ -179,7 +182,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				${renderProducts()}
 
 				<Divider variant={Middle} />
-				<DistributionDetails displayLinks={false} />
+				<DistributionDetails displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} />
 				${renderFooter()}
 
 			</Card>
