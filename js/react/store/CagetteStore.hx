@@ -228,7 +228,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		}
 		return jsx('			
 			<div className="shop">
+
 				${renderHeader()}
+			
 				<Categories 
 					categories=${state.categories}
 					resetFilter=${resetFilter}
@@ -245,47 +247,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	function renderHeader() {
-		if (state.orderByEndDates == null || state.orderByEndDates.length == 0)
-			return null;
-
-		var endDates;
-		// TODO Localization here
-		if (state.orderByEndDates.length == 1) {
-			var orderEndDate = state.orderByEndDates[0].date;
-			endDates = [jsx('<div key=$orderEndDate>La commande fermera le $orderEndDate</div>')];
-		} else {
-			endDates = state.orderByEndDates.map(function(order) {
-				if (order.contracts.length == 1) {
-					return jsx('
-						<div key=${order.date}>
-							La commande ${order.contracts[0]} fermera le: ${order.date} 
-						</div>
-					');
-				}
-
-				return jsx('
-					<div key=${order.date}>
-						Les autres commandes fermeront: ${order.date} 
-					</div>
-				');
-			});
-		}
-
-		// TODO Think about the way the place adress is built, why an array for zipCode and city ?
-		// TODO LOCALIZATION
-		var viewUrl = '$ViewUrl/${props.place}';
-		var addressBlock = Lambda.array([
-			state.place.address1,
-			state.place.address2,
-			[state.place.zipCode, state.place.city].join(" "),
-		].mapi(function(index, element) {
-			if (element == null)
-				return null;
-			return jsx('<div className="address" key=$index>$element</div>');
-		}));
 
 		return jsx('
-			<Header submitOrder=$submitOrder />
+			<Header submitOrder=$submitOrder orderByEndDates=${state.orderByEndDates} place=${state.place}/>
 		');
 	}
 }

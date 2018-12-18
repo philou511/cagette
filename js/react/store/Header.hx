@@ -23,6 +23,8 @@ typedef HeaderProps = {
 
 private typedef PublicProps = {
 	var submitOrder:OrderSimple->Void;
+    var place:PlaceInfos;
+	var orderByEndDates:Array<OrderByEndDate>;
 }
 
 private typedef TClasses = Classes<[
@@ -75,7 +77,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		return jsx('
             <Grid container spacing={8} className=${classes.cagWrap}>
                 <Grid item xs={6}> 
-                    <DistributionDetails displayLinks={true} />
+                    <DistributionDetails displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} />
                 </Grid>
                 <Grid item  xs={3} className=${classes.cagFormContainer}>
                   
@@ -90,7 +92,6 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                 <Grid item xs={3} className=${classes.cartContainer}>
               
                     <Cart submitOrder=${props.submitOrder} />
-               
                
                 </Grid>
             </Grid>

@@ -79,6 +79,7 @@ enum Unit{
 typedef CategoryInfo = {
 	id:Int,
 	name:String,
+	?image : String,
 	?subcategories:Array<CategoryInfo>
 }
 

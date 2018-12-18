@@ -37,16 +37,19 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
                 </$Grid>
                 <$Grid item xs={6} style=${{textAlign:"right"}}>
                     <div>
+                        <$Button onClick=$changeGroup >
+                            <i className="icon icon-chevron-left"></i>&nbsp;Changer de groupe
+                        </$Button>
                         <$Button onClick=$onUserMenuOpen aria-owns=${anchorEl!=null ? "simple-menu" : null} aria-haspopup="true" >
-                            <i className="icon icon-user"></i> ${props.userName}
+                            <i className="icon icon-user"></i>&nbsp;${props.userName}
                         </$Button>
                         <$Menu id="simple-menu"
                         anchorEl=${anchorEl}
                         open=${anchorEl!=null}
                         onClose=$onUserMenuClose>
-                            <$MenuItem onClick=$onUserMenuClick>Profile</MenuItem>
-                            <$MenuItem onClick=$onUserMenuClick>My account</MenuItem>
-                            <$MenuItem onClick=$onUserMenuClick>Logout</MenuItem>
+                            <$MenuItem onClick=${ cast onUserMenuClick} key="logout" value="logoute">
+                                <i className="icon icon-delete"></i>&nbsp;Déconnexion
+                            </$MenuItem>
                         </$Menu>
                     </div>
 
@@ -54,7 +57,7 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
 
                 <$Grid item xs={12}>
                     <$AppBar position=${CSSPosition.Static} color=${mui.Color.Default}>
-                        <$Tabs onChange=${ cast handleChange}>
+                        <$Tabs onChange=${ cast handleChange} value="home">
                             <$Tab label="ACCUEIL" value="home"/>
                             <$Tab label="MON COMPTE" value="account"/>
                             <$Tab label="PRODUCTEURS" value="farmers"/>
@@ -95,15 +98,27 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
 
     }
 
-    function onUserMenuClick(event:js.html.Event){
+    function onUserMenuClick(event:js.html.Event,value:String){
+//<a href="/user/choose?show=1">
+//<a href="/user/logout">
+        
+        trace(untyped event.currentTarget.value);
+        trace(untyped event.currentTarget.key);
+        trace(untyped event.target.value);
+        trace(untyped event.target.key);
+        trace(untyped event.value);
+        trace(untyped event.key);
+        trace(untyped value);
 
         this.setState({ anchorMenu:null});
 
     }
 
     function onUserMenuOpen(event:js.html.Event){
-        trace(event.currentTarget);
-       this.setState({ anchorMenu:cast event.currentTarget});
+        return false;
+        
+        // trace(event.currentTarget);
+        this.setState({ anchorMenu:cast event.currentTarget});
     }
 
     public function hasRight(r:Common.Right):Bool {
@@ -113,4 +128,8 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
 		}
 		return false;
 	}
+
+    function changeGroup(_){
+        js.Browser.window.location.href = "/user/choose?show=1";
+    }
 }
