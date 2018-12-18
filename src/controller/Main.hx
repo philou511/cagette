@@ -198,6 +198,7 @@ Called from controller/Main.hx line 117
 		view.category = 'shop';
 		view.place = place;
 		view.date = date;
+		view.rights = haxe.Serializer.run(app.user.getRights());
 	}
 	
 	@logged

@@ -1,10 +1,12 @@
+import Common;
+
 //React lib
 import react.ReactMacro.jsx;
 import react.ReactDOM;
 import react.*;
 import react.router.*;
-//redux
 
+//redux
 import redux.Redux;
 import redux.Store;
 import redux.StoreBuilder.*;
@@ -211,6 +213,9 @@ class App {
 		return createStore(rootReducer, null, middleWare);
 	}
 
+	/**
+		instanciates mui shop
+	**/
 	public function shop(place:Int, date:String) {
 		// Will be merged with default values from mui
 		var theme = mui.core.styles.MuiTheme.createMuiTheme({
@@ -244,6 +249,15 @@ class App {
 				</$MuiThemeProvider>
 			</$ReduxProvider>
 		'), js.Browser.document.querySelector('#shop'));
+	}
+
+	/**
+		init react page header
+	**/
+	public function pageHeader(groupName:String,rights:String,userName:String,userId:Int)
+	{
+		var rights : Rights = haxe.Unserializer.run(rights);
+		ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
 	}
 
 	

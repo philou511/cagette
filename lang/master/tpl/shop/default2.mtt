@@ -2,9 +2,17 @@
 ::use 'reactBase.mtt'::
 
 <div id='shop'></div>
+
+::set groupName = getCurrentGroup()::
+::if groupName==null || noGroup==true::
+  ::set groupName = NAME ::
+::end::
+
 <script>
   $(function(){
-    _.shop(::place.id::, "::date::");
+    _.pageHeader("::groupName::","::rights::","::user.getName()::",::user.id::);
+    //_.shop(::place.id::, "::date::");
+    
   });
 </script>
 ::end::
