@@ -4,20 +4,45 @@ import Common;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.core.Grid;
-
+import classnames.ClassNames.fastNull as classNames;
+import mui.core.styles.Classes;
 import react.store.types.FilteredProductList;
+import mui.core.styles.Styles;
 
 using Lambda;
 
 typedef ProductListProps = {
-	var categories:Array<CategoryInfo>;
-	var products:FilteredProductList;
+	> PublicProps,
+	var classes:TClasses;
 };
 
+private typedef PublicProps = {
+	var categories:Array<CategoryInfo>;
+	var products:FilteredProductList;
+}
+private typedef TClasses = Classes<[categories,]>
+
+@:publicProps(PublicProps)
+@:wrap(Styles.withStyles(styles))
 class ProductList extends react.ReactComponentOfProps<ProductListProps> {
+
+	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+		return {
+			categories : {
+                maxWidth: 1240,
+                margin : "auto",
+                padding: "0 10px",
+                //display: "flex",
+                //alignItems: Center,
+                //justifyContent: Center,
+            },
+		}
+	}
+
 	override public function render() {
+		var classes = props.classes;
 		return jsx('
-			<div className="categories">
+			<div className=${classes.categories}>
 			  ${renderCategories()}
 			</div>
     	');
@@ -25,12 +50,9 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 
 	function renderCategories() {
 		return props.categories.map(function(category) {
-			//if (!props.filters.has(category.name))
-			//	return null;
-			
+
 			var shouldDisplayCategory = props.products.category != null && props.products.subCategory == null
 										|| props.products.category == null && props.products.subCategory == null;
-
 			//TODO Should be done by server ideally
 			if( shouldDisplayCategory ) {
 				var hasProducts = false;
@@ -67,7 +89,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 	function renderSubCategories(category:CategoryInfo) {
 		if( category.subcategories == null || category.subcategories.length == 0 ) 
 			return null;
-		//
+
 		var list = category.subcategories.map(function(subcategory) {
 			var subProducts = props.products.products.filter(function(p) {
 				return Lambda.has(p.subcategories, subcategory.id);

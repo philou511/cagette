@@ -12,6 +12,7 @@ import react.types.*;
 import mui.core.Button;
 import css.JustifyContent;
 import css.AlignContent;
+import mui.core.Grid;
 
 private typedef Props = {
 	> PublicProps,
@@ -64,7 +65,6 @@ class QuantityInput extends ReactComponentOf<Props, State> {
                 "& .quantity" : {
                     fontSize: "1.2rem",
                     lineHeight: "2rem",
-                    minWidth: 35,
                     textAlign: Center,
                     verticalAlign: "middle",
                     color: CGColors.Second,
@@ -90,11 +90,17 @@ class QuantityInput extends ReactComponentOf<Props, State> {
     override function render() {
         var classes = props.classes;
         return jsx('
-            <div className=${classes.quantityInput}>
-                <div className="quantityMoreLess" onClick=${updateValue.bind(-1)}>-</div>
-                <div className="quantity"> ${props.value} </div>
-                <div className="quantityMoreLess"  onClick=${updateValue.bind(1)}> + </div>
-            </div>
+        <Grid className=${classes.quantityInput} container={true} direction=${Row}>
+            <Grid item={true} xs={4} className="quantityMoreLess">
+                <div onClick=${updateValue.bind(-1)}>-</div>
+            </Grid>
+            <Grid item={true} xs={4} className="quantity">
+                <div> ${props.value} </div>
+             </Grid>
+            <Grid item={true} xs={4} className="quantityMoreLess">
+                <div onClick=${updateValue.bind(1)}>+</div>
+            </Grid>
+         </Grid>
         ');
     }
 }
