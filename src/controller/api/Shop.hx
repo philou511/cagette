@@ -10,7 +10,8 @@ using Lambda;
 class Shop extends Controller
 {
 	/**
-	 * @doc https://app.swaggerhub.com/apis/Cagette.net/Cagette.net/0.9.2#/shop/get_shop_categories
+		List available categories
+		@doc https://app.swaggerhub.com/apis/Cagette.net/Cagette.net/0.9.2#/shop/get_shop_categories
 	 */
 	public function doCategories(args:{date:String, place:db.Place}){
 		
@@ -20,10 +21,10 @@ class Shop extends Controller
 		if (group.flags.has(ShopCategoriesFromTaxonomy)){
 			
 			//TAXO CATEGORIES
-			var taxoCategs = db.TxpCategory.manager.all(false);
+			var taxoCategs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
 			for (txp  in taxoCategs){
 				
-				var c : CategoryInfo = {id:txp.id, name:txp.name, subcategories:[]};
+				var c : CategoryInfo = {id:txp.id, name:txp.name,image:'/img/taxo/${txp.image}.png',subcategories:[]};
 				for (sc in txp.getSubCategories()){
 					c.subcategories.push({id:sc.id,name:sc.name});
 				}

@@ -56,7 +56,7 @@ class Category extends react.ReactComponentOfProps<CategoryProps> {
             <Grid item xs >
                 <div className=${CategoryContainerClasses} onClick=${props.onClick}>
                     <div>
-                        <img src="/img/store/fruits-legumes.png" alt=${props.category.name} />
+                        <img src=${props.category.image} alt=${props.category.name} />
                         ${props.category.name}
                     </div>
                 </div>

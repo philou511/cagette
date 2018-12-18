@@ -11,7 +11,7 @@
 <script>
   $(function(){
     _.pageHeader("::groupName::","::rights::","::user.getName()::",::user.id::);
-    //_.shop(::place.id::, "::date::");
+    _.shop(::place.id::, "::date::");
     
   });
 </script>

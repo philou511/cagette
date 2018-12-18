@@ -261,7 +261,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             </Avatar>  
                         </div>
                         <div className=${classes.cagAvatarContainer}>
-                                <Avatar src="/img/store/la-ferme-des-2-rivieres.jpg" 
+                                <Avatar src="/img/store/vendor.jpg" 
                                         className=${classes.farmerAvatar} 
                                         />  
                         </div>
