@@ -232,6 +232,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                     <span className="cagProductUnit">1 ${(productType)} </span>
                     <span className="cagProductPrice">${product.price} €</span>                         
                 </Typography>
+                
                 {renderQuantityAction()}
             </CardActions>
         ');

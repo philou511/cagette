@@ -8,7 +8,7 @@ import mui.core.Card;
 import mui.core.CardMedia;
 import mui.core.CardContent;
 import mui.core.Grid;
-
+import mui.core.Divider;
 import mui.core.Typography;
 import mui.icon.Icon;
 import mui.core.Button;
@@ -49,7 +49,7 @@ private typedef TClasses = Classes<[
 	products, 
 	product, 
 	iconStyle, 
-	card, 
+	subcard, 
 	cover,
 
 	cagProductTitle,
@@ -66,6 +66,18 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 	
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
+			cartDetails : {
+                fontSize: "1.2rem",
+                fontWeight: "bold",//TODO use enum from externs when available
+                display: "flex",
+				flexDirection: css.FlexDirection.Column,
+                width: 400,
+				padding:10,
+            },
+			subcard: {
+				flexDirection: css.FlexDirection.Row,
+				display: 'flex',
+			},
 			gridItem: {
 				overflow: Hidden,
 			},
@@ -76,13 +88,6 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				alignItems:Center,
 				justifyContent:SpaceEvenly,
 			},
-			cartDetails : {
-                fontSize: "1.2rem",
-                fontWeight: "bold",//TODO use enum from externs when available
-                display: "flex",
-				flexDirection: Column,
-                width: 400,
-            },
 			products : {
 				display: "flex",
 				justifyContent: SpaceAround,
@@ -99,11 +104,6 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 			iconStyle:{
 				fontSize:12,
 			},
-			card: {
-				display: 'flex',
-				flexDirection: Row,
-			},
-			
 			cover: {
 				width: '70px',
 				height: '70px',
@@ -172,11 +172,14 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 	override public function render() {
 		var classes = props.classes;
 		return jsx('
-			<div className=${classes.cartDetails}>
-				<h3>Ma Commande</h3>
+			<Card className=${classes.cartDetails}>
 				${renderProducts()}
+
+				<Divider variant={Middle} />
+				<DistributionDetails displayLinks={false} />
 				${renderFooter()}
-			</div>
+
+			</Card>
         ');
     }
 
@@ -198,12 +201,12 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
         var productsToOrder = props.order.products.map(function(cartProduct:ProductWithQuantity) {
 			var quantity = cartProduct.quantity;
 			var product = cartProduct.product;
-			 var productType = unit(product.unitType);
+			var productType = unit(product.unitType);
 
 			return jsx('
-				<Grid className=${classes.product} container={true} direction=${Row} spacing={4} key=${product.id}>
+				<Grid className=${classes.product} container={true} direction=${Row} spacing={8} key=${product.id}>
 					<Grid item xs={2} className=${classes.gridItem}>
-						<Card className=${classes.card} elevation={0}>
+						<Card className=${classes.subcard} elevation={0}>
 							<CardMedia
 								className=${classes.cover}
 								image=${product.image}
@@ -256,11 +259,6 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 
 		return jsx('
 			<Grid className=${classes.cartFooter} container={true} direction=${Column} key="footer">
-				<Grid item={true} xs={12}>
-					<Typography component="h2">
-						Total: <span>${props.order.total} €</span>
-					</Typography>
-				</Grid>
 				<Grid item={true} xs={12}>
 					<Button
                         onClick=${submit}
