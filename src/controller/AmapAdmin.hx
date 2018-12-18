@@ -103,11 +103,12 @@ class AmapAdmin extends Controller
 		//cleaning 
 		for ( u in Lambda.array(users)) {
 			
-			//rights peut etre null (null seralisé) et pas null en DB
-			if (u.rights == null || u.rights.length == 0) {
-				u.lock();
+			//rights can be null (serialized null) and not null in DB
+			var rights : Null<Rights> = cast u.rights;
+			if (rights == null || rights.length == 0) {
+				/*u.lock();
 				Reflect.setField(u, "rights", null);
-				u.update();
+				u.update();*/
 				users.remove(u);
 				continue;
 			}

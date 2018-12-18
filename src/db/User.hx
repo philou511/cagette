@@ -158,6 +158,12 @@ class User extends Object {
 		return false;			
 	}
 	
+	public function getRights():Rights{
+		var ua = getUserAmap(getAmap());
+		if (ua == null) return [];
+		return ua.rights;
+	}
+
 	public function canAccessMessages():Bool {
 		var ua = getUserAmap(getAmap());
 		if (ua == null) return false;

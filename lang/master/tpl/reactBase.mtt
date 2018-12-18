@@ -43,7 +43,7 @@
 		::end::
 		
 		
-		
+		<div id="header"></div>
 		::raw __content__::
 		
 		<script type="text/javascript">
