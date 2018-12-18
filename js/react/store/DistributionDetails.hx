@@ -25,6 +25,8 @@ typedef DistributionDetailsProps = {
 
 private typedef PublicProps = {
 	var displayLinks:Bool;
+	var place:PlaceInfos;
+	var orderByEndDates:Array<OrderByEndDate>;
 }
 
 private typedef TClasses = Classes<[cagNavInfo,]>
@@ -50,7 +52,7 @@ class DistributionDetails extends react.ReactComponentOfProps<DistributionDetail
 
                 "& i" : {
                     color : CGColors.Firstfont,
-                    fontSize: "0.6em",
+                    fontSize: "1em",
                     verticalAlign: "middle",//TODO replace later with proper externs enum
                     marginRight: "0.2rem",
                 },
@@ -63,6 +65,7 @@ class DistributionDetails extends react.ReactComponentOfProps<DistributionDetail
 	}
 
 	override public function render() {
+		//icons
 		var classes = props.classes;
 		var clIconMap = classNames({
 			'icons':true,
@@ -77,11 +80,49 @@ class DistributionDetails extends react.ReactComponentOfProps<DistributionDetail
 			'icon-calendar':true,
 		});
 
+		if (props.orderByEndDates == null || props.orderByEndDates.length == 0)
+			return null;
+
+		var endDates;
+		// TODO Localization here
+		if (props.orderByEndDates.length == 1) {
+			var orderEndDate = props.orderByEndDates[0].date;
+			endDates = [jsx('<div key=$orderEndDate>La commande fermera le $orderEndDate</div>')];
+		} else {
+			endDates = props.orderByEndDates.map(function(order) {
+				if (order.contracts.length == 1) {
+					return jsx('
+						<div key=${order.date}>
+							La commande ${order.contracts[0]} fermera le: ${order.date} 
+						</div>
+					');
+				}
+
+				return jsx('
+					<div key=${order.date}>
+						Les autres commandes fermeront: ${order.date} 
+					</div>
+				');
+			});
+		}
+
+		// TODO Think about the way the place adress is built, why an array for zipCode and city ?
+		// TODO LOCALIZATION
+		var viewUrl = '${CagetteStore.ServerUrl.ViewUrl}/${props.place}';
+		
+		var addressBlock = props.place.name;
+		var p = props.place;
+		if(p.address1!=null) addressBlock+=", "+p.address1;
+		if(p.address2!=null) addressBlock+=", "+p.address2;
+		if(p.zipCode!=null) addressBlock+=", "+p.zipCode;
+		if(p.city!=null) addressBlock+=" "+p.city;
+
+
 		//TODO localization
         var textInfos1Link = props.displayLinks ? jsx('<a href="#">Changer</a>') : null;
         var textInfos3Link = props.displayLinks ? jsx('<a href="#">Plus d\'infos></a>') : null;
 
-        var textInfos1 = jsx('120 rue Fondaudège, Bordeaux.');
+        var textInfos1 = jsx('$addressBlock');
         var textInfos2 = jsx('Distribution le vendredi 29 juin entre 18h et 20h. Commandez jusqu\'au 27 juin.');
         var textInfos3 = jsx('Paiement: CB, chèque ou espèces.');
 		
