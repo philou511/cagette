@@ -8,20 +8,26 @@ import react.types.*;
 import css.JustifyContent;
 import css.AlignContent;
 
+import mui.core.Backdrop;
 import mui.core.Button;
 import mui.core.Card;
+import mui.core.Grid;
+import mui.core.GridList;
 import mui.core.CardMedia;
 import mui.core.CardContent;
-import mui.core.Modal;
 import mui.core.CardActionArea;
 import mui.core.CardActions;
+import mui.core.Modal;
+import mui.core.modal.ModalCloseReason;
 import mui.core.Typography;
 import mui.core.Avatar;
+import mui.core.Paper;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.icon.Icon;
 import react.cagette.action.CartAction;
 import mui.CagetteTheme;
+
 import Formatting.unit;
 import Common;
 
@@ -33,7 +39,7 @@ private typedef Props = {
 
 private typedef PublicProps = {
     var product:ProductInfo;
-    var openModal:ProductInfo->Void;
+    var onClose:js.html.Event->ModalCloseReason->Void;
 }
 
 private typedef ReduxProps = {
@@ -42,120 +48,113 @@ private typedef ReduxProps = {
     var quantity:Int;
 }
 
+/*
+private typedef ProductModalState = {
+    var opened : Bool;
+}
+*/
+
 private typedef TClasses = Classes<[
-	button,
-    card,
-    media,
-    area,
-    cardContent,
+	gridItem,
+
+	paper, 
+	cartFooter,
+	products, 
+	product, 
+	iconStyle, 
+	subcard, 
+	cover,
     productBuy,
-    starProduct,
-    farmerAvatar,
-    cagAvatarContainer,
-    cagProductTitle,
-    cagProductDesc,
+	cagProductTitle,
     cagProductInfoWrap,
     cagProductInfo,
     cagProductPriceRate,
-    cagProductLabel,
 ]>
 
-typedef ProductState = {
-};
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 @:connect
-class Product extends ReactComponentOf<Props, ProductState> {
-
-    //https://cssinjs.org/jss-expand-full?v=v5.3.0
-    //https://cssinjs.org/jss-expand-full/?v=v5.3.0#supported-properties
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+class ProductModal extends ReactComponentOfProps<Props> {
+    public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
-			button:{
-                size: "small",
-                textTransform: None,
-                color: '#84BD55',
+			paper : {
+                display: "flex",
+				justifyContent: Center,
+				alignItems: Center,
+
+                position: Absolute,
+                backgroundColor: CGColors.White,
             },
-            card: {     
-                backgroundColor: '#F8F4E5',
-            },
-            area: {     
-                width: '100%',
-            },
-            media: {       
-                height: 170,
-                padding: 1,
-            },
-            cardContent: {
-                padding: 10,
-                paddingBottom: 5,
-            },
-            productBuy: {
+			subcard: {
+				flexDirection: css.FlexDirection.Row,
+				display: 'flex',
+			},
+			gridItem: {
+				overflow: Hidden,
+			},
+			cartFooter: {
+				display: "flex",
+				flexDirection: Column,
+				fontSize: "1.8rem",
+				alignItems:Center,
+				justifyContent:SpaceEvenly,
+			},
+			products : {
+				display: "flex",
+				justifyContent: SpaceAround,
+				alignItems: Center,
+				maxHeight: (4*80),
+				overflow: Auto,
+			},
+			product : {
+				height: 80,
+				padding: 8,
+				marginBottom: 6,
+				overflow: Hidden,
+				alignItems:Center,
+				justifyContent:SpaceEvenly,
+			},
+			iconStyle:{
+				fontSize:12,
+			},
+			cover: {
+				width: '70px',
+				height: '70px',
+				objectFit: "cover",
+			},
+			productBuy: {
                 boxShadow: "none",
             },
-            starProduct: {
-                width: 30,
-                height: 30,
-                color: '#F9D800',        
-                backgroundColor: '#ffffff',
-                marginLeft: "auto",
-                fontSize: 16,
-            },
-            farmerAvatar: {       
-                color: '#404040',   
-                backgroundColor: '#ededed',
-                border: "3 solid #ffffff",
-                width: 70,
-                height: 70,
-                marginLeft: "auto",
-                fontSize: 10,
-            },
-            cagAvatarContainer: {
-                margin: "3%",
-                height: "43%",
-                display: "flex",
-            },
-            cagProductTitle: {
-                fontSize: '1.08rem',
-                lineHeight: "normal",
+			cagProductTitle: {
+                fontSize: '0.8rem',
                 fontStyle: "normal",
                 textTransform: UpperCase,
                 marginBottom: 3,
-                fontWeight: 400,
-                maxHeight: 40,
-                overflow: Hidden,
-            },
-            cagProductLabel : {
-                marginLeft : -3,
-            },
-            cagProductDesc: {
-                fontSize: '0.9rem',
-                color : CGColors.Secondfont,
-                marginBottom : 0,
-                maxHeight: 65,
-                overflow: Hidden,
+				overflow: Hidden,
+				textOverflow: Ellipsis,
+				lineHeight: "1.0em",
+  				maxHeight: "1.8em",
+				alignSelf: "flex-start",
             },
             cagProductInfoWrap : {       
                 justifyContent: SpaceBetween,
-                padding: "0 10px",
+                padding: "0 5px",
             },
             cagProductInfo : {
-                fontSize : "1.3rem",
-
+                fontSize : "1.0rem",
                 "& .cagProductUnit" : {
                     marginRight: "2rem",
                 },
-
                 "& .cagProductPrice" : {
                     color : CGColors.Third,        
                 },
             },
             cagProductPriceRate : {        
-                fontSize: "0.75rem",
+                fontSize: "0.5rem",
                 color : CGColors.Secondfont,
-                marginTop : -5,
-                marginLeft: 5,
+                marginTop : -3,
+                marginLeft: 3,
             },
 		}
 	}
@@ -181,7 +180,6 @@ class Product extends ReactComponentOf<Props, ProductState> {
     
     public function new(props) {
         super(props);
-        this.state = {};
     }
 
     function updateQuantity(quantity:Int) {
@@ -233,8 +231,14 @@ class Product extends ReactComponentOf<Props, ProductState> {
         ');
     }
 
-    function displayProductInfos(_) {
-        props.openModal(props.product);
+    function getModalStyle() {
+        var top = 50;
+        var left = 50;
+        return {
+            top: '${top}%',
+            left: '${left}%',
+            transform: 'translate(-${top}%, -${left}%)',
+        }
     }
 
     override public function render() {
@@ -248,42 +252,42 @@ class Product extends ReactComponentOf<Props, ProductState> {
 		});
 
         return jsx('
-            <Card elevation={0} className=${classes.card}> 
-                <CardActionArea className=${classes.area} onClick=${displayProductInfos}>
-                    <CardMedia
-                        className=${classes.media}
-                        image=${product.image}
-                        >
-                        <div className=${classes.cagAvatarContainer}>
-                            <Avatar className=${classes.starProduct}>
-                                <Icon component="i" className=${iconTruck}></Icon>
-                            </Avatar>  
-                        </div>
-                        <div className=${classes.cagAvatarContainer}>
-                                <Avatar src="/img/store/la-ferme-des-2-rivieres.jpg" 
-                                        className=${classes.farmerAvatar} 
-                                        />  
-                        </div>
-                    </CardMedia>
+            <Modal open={true} onClose=${props.onClose}>
+                <div style={getModalStyle()} className={classes.paper}>
+                    <Grid direction=${Column} container={true} spacing={8}>
+                        <Grid direction=${Row} container={true} spacing={0}>
+                            <Grid item={true} xs={4} direction=${Column} container={true} spacing={0}>
+                                <Grid item className=${classes.gridItem}>
+                                    <Card className=${classes.subcard} elevation={0}>
+                                        <CardMedia className=${classes.cover} image=${product.image}
+                                        />
+                                    </Card>
+                                </Grid>
 
-                    <CardContent className=${classes.cardContent}>                        
-                        <Typography component="h3" className=${classes.cagProductTitle}>
-                            ${product.name}
-                        </Typography>
-                        <Typography component="p" className=${classes.cagProductDesc}>
-                            La Ferme 
-                        </Typography>
-                        <Typography component="p" className=${classes.cagProductLabel}>
-                            <$SubCateg label="Label rouge" icon="icon icon-truck" colorClass="cagLabelRouge" />
-                            <$SubCateg label="Bio" icon="icon icon-truck" colorClass="cagBio"  />
-                        </Typography>
-                    </CardContent>           
-                </CardActionArea>
+                                <Grid item={true} className=${classes.gridItem}>
+                                    <Typography component="p" className=${classes.cagProductInfo} >
+                                        <span className="cagProductUnit">1${(productType)}</span>	
+                                    </Typography>
+                                    <Typography component="p" className=${classes.cagProductInfo} >
+                                        <span className="cagProductPrice">${product.price} €</span>
+                                    </Typography>
+                                </Grid>
+                            </Grid>
 
-                ${renderProductOrderActions(product, productType)}
+                            <Grid item={true} xs={8} className=${classes.gridItem}>
+                                <Typography component="h3" className=${classes.cagProductTitle}>
+                                    ${product.name}
+                                </Typography>
+                                    <Typography component="p" className=${classes.cagProductPriceRate} >
+                                    ${product.price} €/${(productType)}
+                                </Typography>
 
-                ${renderProductPrices(product, productType)}
-            </Card>
+                                <QuantityInput onChange=${updateQuantity} value={1} />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </div>
+            </Modal>
         ');
     }
 }

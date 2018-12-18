@@ -8,6 +8,9 @@ import classnames.ClassNames.fastNull as classNames;
 import mui.core.styles.Classes;
 import react.store.types.FilteredProductList;
 import mui.core.styles.Styles;
+import mui.core.Modal;
+import js.html.Event;
+import mui.core.modal.ModalCloseReason;
 
 using Lambda;
 
@@ -20,11 +23,17 @@ private typedef PublicProps = {
 	var categories:Array<CategoryInfo>;
 	var products:FilteredProductList;
 }
+
+private typedef ProductListState = {
+	var modalOpened:Bool;
+	var modalProduct:Null<ProductInfo>;
+}
+
 private typedef TClasses = Classes<[categories,]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class ProductList extends react.ReactComponentOfProps<ProductListProps> {
+class ProductList extends react.ReactComponentOf<ProductListProps, ProductListState> {
 
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
@@ -32,11 +41,13 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
                 maxWidth: 1240,
                 margin : "auto",
                 padding: "0 10px",
-                //display: "flex",
-                //alignItems: Center,
-                //justifyContent: Center,
             },
 		}
+	}
+
+	function new(p) {
+		super(p);
+		this.state = {modalOpened:false, modalProduct:null};
 	}
 
 	override public function render() {
@@ -44,9 +55,27 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 		return jsx('
 			<div className=${classes.categories}>
 			  ${renderCategories()}
+			  ${renderModal()}
 			</div>
     	');
 	}
+
+	function openModal(product:ProductInfo) {
+        setState({modalOpened:true, modalProduct:product}, function() {trace("modal opened");});
+    }
+
+    function onModalCloseRequest(event:js.html.Event, reason:ModalCloseReason) {
+		trace("ask for closing "+reason);
+        setState({modalOpened:false}, function() {trace("modal closed");});
+    }
+
+    function renderModal() {
+		if( state.modalOpened == false ) return null;
+		//
+        return jsx('
+            <ProductModal product=${state.modalProduct} onClose=${onModalCloseRequest} />
+        ');
+    }
 
 	function renderCategories() {
 		return props.categories.map(function(category) {
@@ -123,7 +152,7 @@ class ProductList extends react.ReactComponentOfProps<ProductListProps> {
 		return products.map(function(product) {
 			return jsx('
 				<$Grid item xs={12} sm={4} md={3} key=${product.id}>
-					<$Product product=${product} />
+					<$Product product=${product} openModal=${openModal} />
 				</$Grid>
 			');
 		});

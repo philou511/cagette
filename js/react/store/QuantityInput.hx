@@ -29,15 +29,12 @@ private typedef TClasses = Classes<[
 ]>
 
 
-typedef State = {
-    //var quantity:Int;
-};
 
 
 @:acceptsMoreProps
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class QuantityInput extends ReactComponentOf<Props, State> {
+class QuantityInput extends ReactComponentOfProps<Props> {
     
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
@@ -76,15 +73,12 @@ class QuantityInput extends ReactComponentOf<Props, State> {
 
     public function new(props) {
         super(props);
-       // state = {quantity : props.defaultValue};
     }
 
     function updateValue(delta:Int) {
         var v = props.value + delta;
         if( v + delta < 0 ) v = 0;
-        //setState({quantity:v}, function() {
-            props.onChange(v);
-        //});
+        props.onChange(v);
     }
 
     override function render() {

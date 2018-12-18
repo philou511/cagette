@@ -8,6 +8,7 @@ import mui.core.Card;
 import mui.core.CardMedia;
 import mui.core.CardContent;
 import mui.core.Grid;
+import mui.core.GridList;
 import mui.core.Divider;
 import mui.core.Typography;
 import mui.icon.Icon;
@@ -92,6 +93,8 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				display: "flex",
 				justifyContent: SpaceAround,
 				alignItems: Center,
+				maxHeight: (4*80),
+				overflow: Auto,
 			},
 			product : {
 				height: 80,
@@ -241,10 +244,13 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 			');
 		});
 
+		//<GridList cellHeight={80} cols={1} className=${classes.products} direction=${Column} spacing={8}>
+		//<Grid className=${classes.products} direction=${Column} spacing={8}>
 		return jsx('
-			<Grid className=${classes.products} container={true} direction=${Column} spacing={8}>
+			
+			<GridList cellHeight={80} cols={1} className=${classes.products} direction=${css.FlexDirection.Column} spacing={8}>
 				${productsToOrder}
-			</Grid>
+			</GridList>
 		');
 	}
 
@@ -258,7 +264,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 		}
 
 		return jsx('
-			<Grid className=${classes.cartFooter} container={true} direction=${Column} key="footer">
+			<Grid className=${classes.cartFooter} container={true} direction=${css.FlexDirection.Column} key="footer">
 				<Grid item={true} xs={12}>
 					<Button
                         onClick=${submit}
