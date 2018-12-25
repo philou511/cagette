@@ -251,7 +251,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 		//<Grid className=${classes.products} direction=${Column} spacing={8}>
 		return jsx('
 			
-			<GridList cellHeight={80} cols={1} className=${classes.products} direction=${css.FlexDirection.Column} spacing={8}>
+			<GridList cellHeight={80} cols={1} className=${classes.products} spacing={8}>
 				${productsToOrder}
 			</GridList>
 		');

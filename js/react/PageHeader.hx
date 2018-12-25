@@ -31,7 +31,7 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
         var anchorEl = state.anchorMenu;
 
         return jsx('
-            <$Grid container justify=${css.JustifyContent.Center} style=${{marginBottom:"12px",maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
+            <$Grid container justify=${Center} style=${{marginBottom:"12px",maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
                 <$Grid item xs={6}>
                     <h1>${props.groupName}</h1>
                 </$Grid>
@@ -40,7 +40,7 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
                         <$Button onClick=$changeGroup >
                             <i className="icon icon-chevron-left"></i>&nbsp;Changer de groupe
                         </$Button>
-                        <$Button onClick=$onUserMenuOpen aria-owns=${anchorEl!=null ? "simple-menu" : null} aria-haspopup="true" >
+                        <$Button onClick=$onUserMenuOpen aria-owns=${anchorEl!=null ? "simple-menu" : null} aria-haspopup>
                             <i className="icon icon-user"></i>&nbsp;${props.userName}
                         </$Button>
                         <$Menu id="simple-menu"
