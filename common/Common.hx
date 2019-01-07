@@ -36,6 +36,16 @@ typedef OrderInSession = {
 }
 
 @:keep
+typedef VendorInfo = {
+	id : Int,
+	name : String,
+	faceImageUrl : Null<String>,
+	logoImageUrl : Null<String>,
+	zipCode : String,
+	city : String
+}
+
+@:keep
 typedef ProductInfo = {
 	id : Int,
 	name : String,

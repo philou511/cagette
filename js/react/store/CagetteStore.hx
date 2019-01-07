@@ -91,7 +91,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		return HttpUtil.fetch(url, method, params, accept, contentType);
 	}
 
-//TODO CLEAN
+	//TODO CLEAN
 	public static var ALL_CATEGORY = {id:0, name:"Tous les produits"};
 	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
 
@@ -124,7 +124,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: subcategory.id}, JSON));
 			});
 
-			categories.unshift(DEFAULT_CATEGORY);
+			//categories.unshift(DEFAULT_CATEGORY);
 			categories.unshift(ALL_CATEGORY);
 
 			js.Promise.all(promises).then(function(results:Array<Dynamic>) {

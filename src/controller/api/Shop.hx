@@ -47,6 +47,21 @@ class Shop extends Controller
 		
 		Sys.print(Json.stringify({success:true,categories:out}));	
 	}
+
+	/**
+		Get All available products
+	**/
+	public function doAllProducts(args:{date:String, place:db.Place}){
+		
+		if ( args == null ) throw "You should provide a date and a place";
+		var categsFromTaxo = args.place.amap.flags.has(ShopCategoriesFromTaxonomy);		
+		var products = getProducts(args.place, Date.fromString(args.date), categsFromTaxo );
+		
+		//to productInfos
+		var productsInfos : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo,true) ).array();
+				
+		Sys.print(Json.stringify( {products:productsInfos} ));									
+	}
 	
 	/**
 	 * @doc https://app.swaggerhub.com/apis/Cagette.net/Cagette.net/0.9.2#/shop/get_shop_products
@@ -149,7 +164,11 @@ class Shop extends Controller
 	
 	public function doInit(args:{place:db.Place, date:String}){
 		
-		var out = {place:args.place.getInfos(), orderEndDates: new Array<{date:String,contracts:Array<String>}>() };
+		var out = { 
+			place : args.place.getInfos(),
+			orderEndDates : new Array<{date:String,contracts:Array<String>}>(),
+			vendors : new Array<VendorInfo>()
+		};
 		
 		//order end dates
 		var contracts = db.Contract.getActiveContracts(args.place.amap);
@@ -171,6 +190,13 @@ class Shop extends Controller
 		for ( k in distribByDate.keys() ) {
 			out.orderEndDates.push( {date:k , contracts: distribByDate.get(k).map( function(x) return x.contract.name)} );	
 		}
+
+		//vendors
+		var vendors = [];
+		for( d in distribs){
+			vendors.push(d.contract.vendor.infos());
+		}
+		out.vendors = vendors.deduplicate();
 		
 		
 		Sys.print(Json.stringify( out ));	

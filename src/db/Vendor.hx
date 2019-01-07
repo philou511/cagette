@@ -1,6 +1,8 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
+
 /**
  * Vendor (producteur)
  */
@@ -40,6 +42,17 @@ class Vendor extends Object
 	public function getActiveContracts(){
 		var now = Date.now();
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
+	}
+
+	public function infos():VendorInfo{
+		return {
+			id : id,
+			name : name,
+			faceImageUrl : (image!=null ? App.current.view.file(image) : null ),
+			logoImageUrl : (image!=null ? App.current.view.file(image) : null ),
+			zipCode : zipCode,
+			city : city
+		};
 	}
 	
 	public static function getLabels(){

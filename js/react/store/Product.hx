@@ -200,7 +200,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                         color=${Primary} 
                         className=${props.classes.productBuy} 
                         disableRipple>                        
-                        <i className="icon icon-truck"></i>
+                        <i className="icon icon-basket-add"></i>
                     </Button>
             ');
         } else {
