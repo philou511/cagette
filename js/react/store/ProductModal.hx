@@ -28,12 +28,10 @@ import mui.icon.Icon;
 import react.cagette.action.CartAction;
 import mui.CagetteTheme;
 
-import Formatting.unit;
 import Common;
 
 private typedef Props = {
 	> PublicProps,
-    > ReduxProps,
 	var classes:TClasses;
 }
 
@@ -42,49 +40,37 @@ private typedef PublicProps = {
     var onClose:js.html.Event->ModalCloseReason->Void;
 }
 
-private typedef ReduxProps = {
-	var updateCart:ProductInfo->Int->Void;
-	var addToCart:ProductInfo->Void;
-    var quantity:Int;
-}
-
-/*
-private typedef ProductModalState = {
-    var opened : Bool;
-}
-*/
 
 private typedef TClasses = Classes<[
 	gridItem,
-
-	paper, 
+	modal, 
 	cartFooter,
 	products, 
 	product, 
 	iconStyle, 
 	subcard, 
 	cover,
-    productBuy,
 	cagProductTitle,
     cagProductInfoWrap,
     cagProductInfo,
-    cagProductPriceRate,
 ]>
 
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-@:connect
+
 class ProductModal extends ReactComponentOfProps<Props> {
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
-			paper : {
-                display: "flex",
-				justifyContent: Center,
-				alignItems: Center,
-
-                position: Absolute,
+			modal : {
+                //display: "flex",
+				//justifyContent: Center,
+				//alignItems: Center,
+                position:css.Position.Absolute,
+                width:"80%",
                 backgroundColor: CGColors.White,
+                padding:"24px",
+                outline:"none"
             },
 			subcard: {
 				flexDirection: css.FlexDirection.Row,
@@ -118,16 +104,14 @@ class ProductModal extends ReactComponentOfProps<Props> {
 			iconStyle:{
 				fontSize:12,
 			},
-			cover: {
-				width: '70px',
-				height: '70px',
-				objectFit: "cover",
+			cover: {                
+				maxWidth: '300px',
+				//maxHeight: '300px',
+				//objectFit: "cover",
 			},
-			productBuy: {
-                boxShadow: "none",
-            },
+		
 			cagProductTitle: {
-                fontSize: '0.8rem',
+                fontSize: '1.4rem',
                 fontStyle: "normal",
                 textTransform: UpperCase,
                 marginBottom: 3,
@@ -150,85 +134,12 @@ class ProductModal extends ReactComponentOfProps<Props> {
                     color : CGColors.Third,        
                 },
             },
-            cagProductPriceRate : {        
-                fontSize: "0.5rem",
-                color : CGColors.Secondfont,
-                marginTop : -3,
-                marginLeft: 3,
-            },
-		}
-	}
-
-    static function mapStateToProps(st:react.cagette.state.State, ownProps:PublicProps):react.Partial<Props> {
-        var storeProduct = 0;
-        for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
-		return {
-			quantity: storeProduct,
-		}
-	}
-
-	static function mapDispatchToProps(dispatch:redux.Redux.Dispatch):react.Partial<Props> {
-		return {
-			updateCart: function(product, quantity) {
-				dispatch(CartAction.UpdateQuantity(product, quantity));
-			},
-			addToCart: function(product) {
-				dispatch(CartAction.AddProduct(product));
-			},
+ 
 		}
 	}
     
     public function new(props) {
         super(props);
-    }
-
-    function updateQuantity(quantity:Int) {
-        props.updateCart(props.product, quantity);
-    }
-
-    function addToCart() {
-        props.addToCart(props.product);
-    }
-
-    function renderQuantityAction() {
-        return if(props.quantity == 0 ) {
-            jsx(' <Button
-                        onClick=${addToCart}
-                        variant=${Contained}
-                        color=${Primary} 
-                        className=${props.classes.productBuy} 
-                        disableRipple>                        
-                        <i className="icon icon-truck"></i>
-                    </Button>
-            ');
-        } else {
-            jsx('<QuantityInput onChange=${updateQuantity} value=${props.quantity}/>');
-        }
-    }
-
-    function renderProductPrices(product, productType) {
-        var classes = props.classes;
-        return jsx('
-            <CardActions className=${classes.cagProductInfoWrap} style={{ marginBottom: 10}} >                                                      
-                <Typography component="p" className=${classes.cagProductPriceRate} >                                 
-                    ${product.price} €/${(productType)}
-                </Typography>                               
-            </CardActions>
-        ');
-    }
-
-    function renderProductOrderActions(product, productType) {
-        var classes = props.classes;
-        return jsx('
-            <CardActions className=${classes.cagProductInfoWrap} >                                    
-                <Typography component="p" className=${classes.cagProductInfo} >                                 
-                    <span className="cagProductUnit">1 ${(productType)} </span>
-                    <span className="cagProductPrice">${product.price} €</span>                         
-                </Typography>
-                
-                {renderQuantityAction()}
-            </CardActions>
-        ');
     }
 
     function getModalStyle() {
@@ -244,48 +155,35 @@ class ProductModal extends ReactComponentOfProps<Props> {
     override public function render() {
         var classes = props.classes;
         var product = props.product;
-        var productType = unit(product.unitType);
-
-        var iconTruck = classNames({
-			'icons':true,
-			'icon-truck':true,
-		});
 
         return jsx('
             <Modal open={true} onClose=${props.onClose}>
-                <div style={getModalStyle()} className={classes.paper}>
-                    <Grid direction=${Column} container={true} spacing={8}>
-                        <Grid direction=${Row} container={true} spacing={0}>
-                            <Grid item={true} xs={4} direction=${Column} container={true} spacing={0}>
-                                <Grid item className=${classes.gridItem}>
-                                    <Card className=${classes.subcard} elevation={0}>
-                                        <CardMedia className=${classes.cover} image=${product.image}
-                                        />
-                                    </Card>
-                                </Grid>
+                <div style=${getModalStyle()} className=${classes.modal}>
+                    
+                    <Grid container spacing={24}>
 
-                                <Grid item={true} className=${classes.gridItem}>
-                                    <Typography component="p" className=${classes.cagProductInfo} >
-                                        <span className="cagProductUnit">1${(productType)}</span>	
-                                    </Typography>
-                                    <Typography component="p" className=${classes.cagProductInfo} >
-                                        <span className="cagProductPrice">${product.price} €</span>
-                                    </Typography>
-                                </Grid>
-                            </Grid>
+                        <Grid item xs={4} className=${classes.gridItem}>
+                            <div className=${classes.subcard}>
+                                <img className=${classes.cover} src=${product.image}/>
+                            </div>
+                        </Grid>
 
-                            <Grid item={true} xs={8} className=${classes.gridItem}>
-                                <Typography component="h3" className=${classes.cagProductTitle}>
-                                    ${product.name}
-                                </Typography>
-                                    <Typography component="p" className=${classes.cagProductPriceRate} >
-                                    ${product.price} €/${(productType)}
-                                </Typography>
+                        <Grid item xs={8}  className=${classes.gridItem}>
 
-                                <QuantityInput onChange=${updateQuantity} value={1} />
-                            </Grid>
+                            <Typography component="h3" className=${classes.cagProductTitle}>
+                                ${product.name}
+                            </Typography>
+
+                            <Typography component="p" dangerouslySetInnerHTML={{ __html: ${product.desc} }}></Typography>
+
+                            <$ProductActions product=$product />                            
                         </Grid>
                     </Grid>
+
+                    <Grid container>
+                        Vendor Infos
+                    </Grid>
+                   
                 </div>
             </Modal>
         ');

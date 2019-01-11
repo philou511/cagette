@@ -16,18 +16,18 @@ typedef CagetteTheme = {
 
 @:enum 
 abstract CGColors(String) to String {
-	var First = "#84BD55";
-	var Second = "#a53fa1";
-	var Third = "#E95219";
+	var Primary = "#a53fa1"; //purple
+	var Secondary = "#84BD55"; //Cagette green	
+	var Third = "#E95219";	//orange
 
 	var White = "#FFFFFF";
 
-	var Bg1 = "#E5D3BF";
-	var Bg2 = "#F8F4E5";
-	var Bg3 = "#F2EBD9";
+	var Bg1 = "#E5D3BF"; //light greyed-pink-purple
+	var Bg2 = "#F8F4E5"; //same but lighter
+	var Bg3 = "#F2EBD9"; //used for active category BG
 
-	var Firstfont = "#404040";
-	var Secondfont = "#7F7F7F";
+	var Firstfont = "#404040";//dark grey
+	var Secondfont = "#7F7F7F";//middle grey
 }
 
 typedef Spacings = {

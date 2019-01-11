@@ -43,6 +43,8 @@ private typedef PublicProps = {
 
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
+	var paymentInfos:String;
+	var date:Date;
 }
 
 private typedef TClasses = Classes<[
@@ -182,7 +184,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				${renderProducts()}
 
 				<Divider variant={Middle} />
-				<DistributionDetails displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} />
+				<DistributionDetails displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
 				${renderFooter()}
 
 			</Card>

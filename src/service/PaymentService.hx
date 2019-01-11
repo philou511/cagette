@@ -179,4 +179,12 @@ class PaymentService
 		ua.balance = b;
 		ua.update();
 	}
+
+
+	public static function getPaymentInfosString(group:db.Amap):String {
+		var out = "";
+		var allowedPaymentTypes = getAllowedPaymentTypes(group);
+		out = Lambda.map(allowedPaymentTypes,function(m) return m.name).join(", ");
+		return out;
+	}
 }

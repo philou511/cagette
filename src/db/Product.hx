@@ -130,8 +130,18 @@ class Product extends Object
 		
 		if(populateCategories){
 			if (CategFromTaxo){
-				o.categories = [txpProduct == null?null:txpProduct.category.id];
-				o.subcategories = [txpProduct == null?null:txpProduct.subCategory.id];
+				if(txpProduct!=null){
+					o.categories = [txpProduct.category.id];
+					o.subcategories = [txpProduct.subCategory.id];
+				}else{
+					//get the "others" catgory
+					var txpOther = db.TxpProduct.manager.get(679,false);
+					if(txpOther!=null){
+						o.categories = [txpOther.category.id];
+						o.subcategories = [txpOther.subCategory.id];
+					}
+				}
+				
 			}else{
 				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
 				o.subcategories = o.categories;

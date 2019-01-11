@@ -76,7 +76,7 @@ class Admin extends Controller {
 	@tpl("admin/taxo.mtt")
 	function doTaxo(){
 		
-		view.categ = db.TxpCategory.manager.all();
+		view.categ = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
 		
 	}
 	

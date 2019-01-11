@@ -27,7 +27,7 @@ private typedef PublicProps = {
 	var onClick:Void->Void;
 }
 
-private typedef TClasses = Classes<[cagCategoryActive,]>
+private typedef TClasses = Classes<[cagCategoryActive,cagCategory]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
@@ -37,6 +37,9 @@ class Category extends react.ReactComponentOfProps<CategoryProps> {
 			cagCategoryActive: {
 				backgroundColor: CGColors.Bg3,
 			},
+			cagCategory: {
+				cursor:"pointer"
+			}
 		}
 	}
 
@@ -50,6 +53,7 @@ class Category extends react.ReactComponentOfProps<CategoryProps> {
 		var CategoryContainerClasses = classNames({
 			'cagCategoryContainer': true,
 			'${classes.cagCategoryActive}': props.active,
+			'${classes.cagCategory}':true,
 		});
 		
 		return jsx('

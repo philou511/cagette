@@ -35,6 +35,9 @@ typedef  CagetteStoreState = {
 	var filter:ProductFilters;
 
 	var loading:Bool;
+
+	var vendors:Array<VendorInfo>;
+	var paymentInfos:String;
 };
 
 @:enum
@@ -83,6 +86,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			filter: {},
 			products:[],
 			loading:true,
+			vendors:[],
+			paymentInfos:""
 		};
 	}
 
@@ -92,7 +97,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	//TODO CLEAN
-	public static var ALL_CATEGORY = {id:0, name:"Tous les produits"};
+	public static var ALL_CATEGORY = {id:0, name:"Tous les produits",image:"/img/taxo/allProducts.png"};
 	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
 
 	override function componentDidMount() {
@@ -100,7 +105,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		initRequest.then(function(infos:Dynamic) {
 			setState({
 				place: infos.place,
-				orderByEndDates: infos.orderEndDates
+				orderByEndDates: infos.orderEndDates,
+				vendors:infos.vendors,
+				paymentInfos:infos.paymentInfos
 			});
 		}).catchError(function(error) {
 			trace("ERROR", error);
@@ -247,9 +254,10 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	function renderHeader() {
+		var date = Date.fromString(props.date);
 
 		return jsx('
-			<Header submitOrder=$submitOrder orderByEndDates=${state.orderByEndDates} place=${state.place}/>
+			<Header submitOrder=$submitOrder orderByEndDates=${state.orderByEndDates} place=${state.place} paymentInfos=${state.paymentInfos} date=$date/>
 		');
 	}
 }

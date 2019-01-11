@@ -161,13 +161,16 @@ class Shop extends Controller
 		}		
 	}
 	
-	
+	/**
+		Infos to init the shop : place + order end dates + vendor infos + payment infos
+	**/
 	public function doInit(args:{place:db.Place, date:String}){
 		
 		var out = { 
 			place : args.place.getInfos(),
 			orderEndDates : new Array<{date:String,contracts:Array<String>}>(),
-			vendors : new Array<VendorInfo>()
+			vendors : new Array<VendorInfo>(),
+			paymentInfos : service.PaymentService.getPaymentInfosString(args.place.amap)
 		};
 		
 		//order end dates

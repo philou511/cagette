@@ -36,6 +36,8 @@ private typedef PublicProps = {
 	var submitOrder:OrderSimple->Void;
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
+	var paymentInfos:String;
+	var date:Date;
 }
 
 private typedef TClasses = Classes<[icon, cart, cagMiniBasketContainer,]>
@@ -63,6 +65,9 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 				border : '1px solid rgba(0,0,0,0.23)',
 				textAlign: css.TextAlign.Center,
 				padding: "0.5em",
+				"&:hover" : {
+					backgroundColor : CGColors.Bg2, 
+				}
 			},
 			cagMiniBasketContainer : {
 				height: '100%',
@@ -71,14 +76,14 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
                 display: "flex",
                 alignItems: Center,
                 justifyContent: Center,
-
-
+				cursor:"pointer",
                 "& i": { 
                     verticalAlign: "middle",
                 },
                 "& span" : {
                     color : CGColors.Third,  
                 },
+				
             },
 		}
 	}
@@ -112,16 +117,16 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 
 	override public function render() {
 		var classes = props.classes;
-		var iconTruck = classNames({
+		var iconBasket = classNames({
 			'icons':true,
-			'icon-truck':true,
+			'icon-basket':true,
 			'${classes.icon}':true,
 		});
 
 		return jsx('
 			<div className=${classes.cart}>
 				<div ref={this.cartRef} className=${classes.cagMiniBasketContainer} onClick=${onCartClicked}>
-					<Icon component="i" className=${iconTruck}></Icon>
+					<Icon component="i" className=${iconBasket}></Icon>
 					<Typography component="span">(${props.order.count}) ${props.order.total} €</Typography>
 				</div>
 				<Popover open={state.cartOpen}
@@ -130,7 +135,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 						anchorOrigin={{vertical: Bottom, horizontal: Right,}}
 						transformOrigin={{vertical: Top,horizontal: Right,}}
 					>
-					<CartDetails submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place}/>
+					<CartDetails submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
 				</Popover>
 			</div>
 		');

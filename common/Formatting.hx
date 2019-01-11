@@ -48,9 +48,8 @@ class Formatting
 	
 	/**
 	 *  Display a unit
-	 *  @param u - 
 	 */
-	public static function unit(u:Unit):String{
+	public static function unit(u:Unit,?quantity=1.0):String{
 		/*t = sugoi.i18n.Locale.texts;
 		if(u==null) return t._("piece||unit of a product)");
 		return switch(u){
@@ -60,14 +59,56 @@ class Formatting
 			case Litre: 	t._("L.||liter");
 			case Centilitre: 	t._("cl.||centiliter");
 		}*/
-		if(u==null) return "pièce(s)";
+
 		return switch(u){
-			case Kilogram: 	"Kg.";
-			case Gram: 		"g.";
-			case Piece: 	"pièce(s)";
-			case Litre: 	"L.";
-			case Centilitre:"cl.";
+			case Kilogram: 	 "Kg.";
+			case Gram: 		 "g.";			
+			case Litre: 	 "L.";
+			case Centilitre: "cl.";
+			case null,Piece: if(quantity==1.0) "pièce" else "pièces";
 		}
 		
+	}
+
+	/**
+	 * Price per Kg/Liter...
+	 * @param	qt
+	 * @param	unit
+	 */
+	public static function pricePerUnit(price:Float, qt:Float, u:Unit, ?currency="€"):String{
+		if (unit==null || qt == null || qt == 0 || price==null || price==0) return "";
+		var pricePerUnit = price / qt;
+				
+		//turn small prices in Kg
+		if (pricePerUnit < 1 ){
+			switch(u){
+				case Gram: 
+					pricePerUnit *= 1000;
+					u = Kilogram;
+				case Centilitre:
+					pricePerUnit *= 100;
+					u = Litre;
+				default :
+			}
+		}			
+		return formatNum(pricePerUnit) + " " + currency + "/" + unit(u,qt);
+	}
+
+	public static var DAYS = ["Dimanche","Lundi", "Mardi", "Mercredi","Jeudi", "Vendredi", "Samedi"];
+	public static var MONTHS = ["Janvier","Février","Mars","Avril", "Mai","Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre","Décembre"];
+	public static var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+	public static var MINUTES = [0,5,10,15,20,25,30,35,40,45,50,55];
+	
+	/**
+	 * human readable date + time
+	 */
+	public static function hDate(date:Date):String {
+		if (date == null) return "No date set";
+		var out = DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
+		out += " " + date.getFullYear();
+		if ( date.getHours() != 0 || date.getMinutes() != 0){
+			out += " à " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
+		}
+		return out;
 	}
 }

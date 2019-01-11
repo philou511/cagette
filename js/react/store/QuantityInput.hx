@@ -29,8 +29,6 @@ private typedef TClasses = Classes<[
 ]>
 
 
-
-
 @:acceptsMoreProps
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
@@ -39,7 +37,7 @@ class QuantityInput extends ReactComponentOfProps<Props> {
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             quantityInput : {
-                border: '1px solid ${CGColors.Second}',
+                border: '1px solid ${CGColors.Primary}',
                 borderRadius: 3,
                 display: "flex",
                 maxWidth: 104,
@@ -47,7 +45,7 @@ class QuantityInput extends ReactComponentOfProps<Props> {
                     flexGrow: 1,
                 },
                 "& .quantityMoreLess" : {
-                    backgroundColor : CGColors.Second,
+                    backgroundColor : CGColors.Primary,
                     padding: 8,
                     color : "#ffffff",
                     fontSize: "2rem",
@@ -55,8 +53,8 @@ class QuantityInput extends ReactComponentOfProps<Props> {
                     cursor: "pointer",
                     textAlign: Center,
                     transition: "all 0.5s ease",
-                    "&::hover" : {
-                        backgroundColor: "#a53fa1",//untyped color("#a53fa1").darken(10),            
+                    "&:hover" : {
+                        backgroundColor:CGColors.Primary //untyped color(CGColors.Second).darken(10).hexString(),            
                     },
                 },
                 "& .quantity" : {
@@ -64,7 +62,7 @@ class QuantityInput extends ReactComponentOfProps<Props> {
                     lineHeight: "2rem",
                     textAlign: Center,
                     verticalAlign: "middle",
-                    color: CGColors.Second,
+                    color: CGColors.Primary,
                     backgroundColor: "#fff",
                 },
             },
@@ -85,13 +83,13 @@ class QuantityInput extends ReactComponentOfProps<Props> {
         var classes = props.classes;
         return jsx('
         <Grid className=${classes.quantityInput} container={true} direction=${Row}>
-            <Grid item={true} xs={4} className="quantityMoreLess">
+            <Grid item={true} xs={4} className="quantityMoreLess noSelect">
                 <div onClick=${updateValue.bind(-1)}>-</div>
             </Grid>
             <Grid item={true} xs={4} className="quantity">
                 <div> ${props.value} </div>
              </Grid>
-            <Grid item={true} xs={4} className="quantityMoreLess">
+            <Grid item={true} xs={4} className="quantityMoreLess noSelect">
                 <div onClick=${updateValue.bind(1)}>+</div>
             </Grid>
          </Grid>

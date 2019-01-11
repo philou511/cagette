@@ -6,6 +6,9 @@ import react.ReactDOM;
 import react.*;
 import react.router.*;
 
+//mui
+import mui.CagetteTheme;
+
 //redux
 import redux.Redux;
 import redux.Store;
@@ -220,13 +223,14 @@ class App {
 		// Will be merged with default values from mui
 		var theme = mui.core.styles.MuiTheme.createMuiTheme({
 			palette: {
-				primary: {main: "#a53fa1"},
-				secondary: {main:"#84BD55"},
+				primary: {main: CGColors.Primary},
+				secondary: {main:CGColors.Secondary},
 				error: {main:"#FF0000"},       
 			},
 			typography: {
 				fontFamily:['Cabin', 'icons', '"Helvetica Neue"','Arial','sans-serif',],
-				fontSize:16,          
+				fontSize:16, 
+    			useNextVariants: true,//https://material-ui.com/style/typography/#migration-to-typography-v2
 			},
 			overrides: {
 				MuiButton: { // Name of the component ⚛️ / style sheet

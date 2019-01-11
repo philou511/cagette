@@ -20,26 +20,18 @@ import mui.core.Avatar;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.icon.Icon;
-import react.cagette.action.CartAction;
+
 import mui.CagetteTheme;
-import Formatting.unit;
 import Common;
 
 private typedef Props = {
 	> PublicProps,
-    > ReduxProps,
 	var classes:TClasses;
 }
 
 private typedef PublicProps = {
     var product:ProductInfo;
     var openModal:ProductInfo->Void;
-}
-
-private typedef ReduxProps = {
-	var updateCart:ProductInfo->Int->Void;
-	var addToCart:ProductInfo->Void;
-    var quantity:Int;
 }
 
 private typedef TClasses = Classes<[
@@ -56,7 +48,6 @@ private typedef TClasses = Classes<[
     cagProductDesc,
     cagProductInfoWrap,
     cagProductInfo,
-    cagProductPriceRate,
     cagProductLabel,
 ]>
 
@@ -65,7 +56,6 @@ typedef ProductState = {
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-@:connect
 class Product extends ReactComponentOf<Props, ProductState> {
 
     //https://cssinjs.org/jss-expand-full?v=v5.3.0
@@ -84,7 +74,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 width: '100%',
             },
             media: {       
-                height: 170,
+                height: 270, //makes an almost square pic by default
                 padding: 1,
             },
             cardContent: {
@@ -151,86 +141,12 @@ class Product extends ReactComponentOf<Props, ProductState> {
                     color : CGColors.Third,        
                 },
             },
-            cagProductPriceRate : {        
-                fontSize: "0.75rem",
-                color : CGColors.Secondfont,
-                marginTop : -5,
-                marginLeft: 5,
-            },
 		}
 	}
 
-    static function mapStateToProps(st:react.cagette.state.State, ownProps:PublicProps):react.Partial<Props> {
-        var storeProduct = 0;
-        for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
-		return {
-			quantity: storeProduct,
-		}
-	}
-
-	static function mapDispatchToProps(dispatch:redux.Redux.Dispatch):react.Partial<Props> {
-		return {
-			updateCart: function(product, quantity) {
-				dispatch(CartAction.UpdateQuantity(product, quantity));
-			},
-			addToCart: function(product) {
-				dispatch(CartAction.AddProduct(product));
-			},
-		}
-	}
-    
     public function new(props) {
         super(props);
         this.state = {};
-    }
-
-    function updateQuantity(quantity:Int) {
-        props.updateCart(props.product, quantity);
-    }
-
-    function addToCart() {
-        props.addToCart(props.product);
-    }
-
-    function renderQuantityAction() {
-        return if(props.quantity == 0 ) {
-            jsx(' <Button
-                        onClick=${addToCart}
-                        variant=${Contained}
-                        color=${Primary} 
-                        className=${props.classes.productBuy} 
-                        disableRipple>                        
-                        <i className="icon icon-basket-add"></i>
-                    </Button>
-            ');
-        } else {
-            jsx('<QuantityInput onChange=${updateQuantity} value=${props.quantity}/>');
-        }
-    }
-
-    function renderProductPrices(product, productType) {
-        var classes = props.classes;
-        return jsx('
-            <CardActions className=${classes.cagProductInfoWrap} style={{ marginBottom: 10}} >                                                      
-                <Typography component="p" className=${classes.cagProductPriceRate} >                                 
-                    ${product.price} €/${(productType)}
-                </Typography>                               
-            </CardActions>
-        ');
-    }
-
-    function renderProductOrderActions(product, productType) {
-        var classes = props.classes;
-        return jsx('
-            <CardActions className=${classes.cagProductInfoWrap} >                                    
-                <Typography component="p" className=${classes.cagProductInfo} >                                 
-                    <span className="cagProductUnit">1 ${(productType)} </span>
-                    <span className="cagProductPrice">${product.price} €</span>                         
-                </Typography>
-                
-                {renderQuantityAction()}
-            </CardActions>
-        ');
     }
 
     function displayProductInfos(_) {
@@ -240,12 +156,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
     override public function render() {
         var classes = props.classes;
         var product = props.product;
-        var productType = unit(product.unitType);
-
-        var iconTruck = classNames({
-			'icons':true,
-			'icon-truck':true,
-		});
+        
 
         return jsx('
             <Card elevation={0} className=${classes.card}> 
@@ -256,13 +167,11 @@ class Product extends ReactComponentOf<Props, ProductState> {
                         >
                         <div className=${classes.cagAvatarContainer}>
                             <Avatar className=${classes.starProduct}>
-                                <Icon component="i" className=${iconTruck}></Icon>
+                                ${mui.CagetteIcon.get("star")}
                             </Avatar>  
                         </div>
                         <div className=${classes.cagAvatarContainer}>
-                                <Avatar src="/img/store/vendor.jpg" 
-                                        className=${classes.farmerAvatar} 
-                                        />  
+                            <Avatar src="/img/store/vendor.jpg" className=${classes.farmerAvatar}/>  
                         </div>
                     </CardMedia>
 
@@ -271,19 +180,32 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             ${product.name}
                         </Typography>
                         <Typography component="p" className=${classes.cagProductDesc}>
-                            La Ferme 
+                            ${renderVendor(product)} 
                         </Typography>
                         <Typography component="p" className=${classes.cagProductLabel}>
-                            <$SubCateg label="Label rouge" icon="icon icon-truck" colorClass="cagLabelRouge" />
-                            <$SubCateg label="Bio" icon="icon icon-truck" colorClass="cagBio"  />
+                            ${renderLabels(product)}
                         </Typography>
                     </CardContent>           
                 </CardActionArea>
 
-                ${renderProductOrderActions(product, productType)}
-
-                ${renderProductPrices(product, productType)}
+                <$ProductActions product=$product />
             </Card>
         ');
+
+        // avec icones : 
+        /*<$SubCateg label="Label rouge" icon="icon icon-truck" colorClass="cagLabelRouge" />
+        <$SubCateg label="Bio" icon="icon icon-bio" colorClass="cagBio"  />*/
+    }
+
+    function renderLabels(product:ProductInfo){
+        if(product.organic){
+            return jsx('<$SubCateg label="Bio" colorClass="cagBio"  />');
+        }else{
+            return null;
+        }
+    }
+
+    function renderVendor(product:ProductInfo){
+        return jsx('Ferme XXX');
     }
 }
