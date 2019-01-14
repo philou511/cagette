@@ -66,7 +66,7 @@ class Operation extends sys.db.Object
 	public function getPaymentTypeName(){
 		var t = getPaymentType();
 		if (t == null) return null;
-		for ( pt in service.PaymentService.getPaymentTypes("All")){
+		for ( pt in service.PaymentService.getPaymentTypes(PCAll)){
 			if (pt.type == t) return pt.name;
 		}
 		return null;

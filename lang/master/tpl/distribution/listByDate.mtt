@@ -141,12 +141,15 @@
 											<td colspan="10" style="vertical-align: middle;">
 												::p.getPaymentTypeName()::
 											</td>
-										::else::
+										::else::	
+											<td style="vertical-align: middle;">
+												::p.getPaymentTypeName()::
+											</td>										
 											::set counter=1::
 											::set style=""::
 											::foreach type onTheSpotAllowedPaymentTypes::
 												<td style="width:20px;vertical-align: middle;">
-													<img src="/img/tick_no.png"/>
+													<img src="/img/tick_no.png"/> 
 												</td>
 												::if(counter != onTheSpotAllowedPaymentTypes.length)::
 													::set style="width:100px;vertical-align: middle;"::

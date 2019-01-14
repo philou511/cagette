@@ -1,6 +1,13 @@
 package service;
 import Common;
 
+enum PaymentContext{
+	PCAll;
+	PCGroupAdmin;
+	PCPayment;
+	PCManualEntry;
+}
+
 /**
  * Payment Service
  * @author web-wizard
@@ -13,13 +20,13 @@ class PaymentService
 	 * @param group 
 	 * @return Array<payment.PaymentType>
 	 */
-	public static function getPaymentTypes(context: String, ?group: db.Amap) : Array<payment.PaymentType>
+	public static function getPaymentTypes(context: PaymentContext, ?group: db.Amap) : Array<payment.PaymentType>
 	{
 		var out : Array<payment.PaymentType> = [];
 
 		switch(context)
 		{
-			case "All":
+			case PCAll:
 				var types = [
 					new payment.Cash(),
 					new payment.Check(),
@@ -34,8 +41,8 @@ class PaymentService
 					}
 
 
-			case "GroupAdmin":
-				var allPaymentTypes = getPaymentTypes("All");
+			case PCGroupAdmin:
+				var allPaymentTypes = getPaymentTypes(PCAll);
 				//Exclude On the spot payment
 				var onTheSpot = Lambda.find(allPaymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
 				allPaymentTypes.remove(onTheSpot);
@@ -43,12 +50,12 @@ class PaymentService
 
 
 			//For the payment page
-			case "Payment":
+			case PCPayment:
 				if ( group.allowedPaymentsType == null ) return [];
 				var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
 				var hasOnTheSpotPaymentTypes = false;
 				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
-				var all = getPaymentTypes("All");
+				var all = getPaymentTypes(PCAll);
 				for ( paymentType in group.allowedPaymentsType )
 				{
 					var found = Lambda.find(all, function(a) return a.type == paymentType);
@@ -69,9 +76,9 @@ class PaymentService
 
 			
 			//For when a coordinator does a manual refund or adds manually a payment
-			case "ManualEntry":
+			case PCManualEntry:
 				//Exclude the MoneyPot payment
-				var paymentTypesInAdmin = getPaymentTypes("GroupAdmin");
+				var paymentTypesInAdmin = getPaymentTypes(PCGroupAdmin);
 				var moneyPot = Lambda.find(paymentTypesInAdmin, function(x) return x.type == payment.MoneyPot.TYPE);
 				paymentTypesInAdmin.remove(moneyPot);
 				out = paymentTypesInAdmin;
@@ -91,7 +98,7 @@ class PaymentService
 		if ( group.allowedPaymentsType == null ) return [];
 		var onTheSpotAllowedPaymentTypes : Array<payment.PaymentType> = [];
 		var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
-		var all = getPaymentTypes("All");
+		var all = getPaymentTypes(PCAll);
 		for (paymentType in onTheSpotPaymentTypes)
 		{
 			if (Lambda.has(group.allowedPaymentsType, paymentType))

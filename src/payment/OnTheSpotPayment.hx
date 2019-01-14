@@ -22,7 +22,7 @@ class OnTheSpotPayment extends payment.PaymentType
 
 	public static function getPaymentTypes() : Array<String>
 	{
-		return [payment.Cash.TYPE, payment.Check.TYPE, payment.Transfer.TYPE];
+		return [payment.Cash.TYPE, payment.Check.TYPE/*, payment.Transfer.TYPE*/];
 	}
 	
 }
