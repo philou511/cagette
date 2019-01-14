@@ -167,6 +167,11 @@ class DistributionService
 		//We prevent others from modifying it
 		d.lock();
 
+		if(d.validated) {
+			var t = sugoi.i18n.Locale.texts;
+			throw new tink.core.Error(t._("You cannot edit a distribution which has been already validated."));
+		}
+
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
 		d.distributor1 = db.User.manager.get(distributor1Id);

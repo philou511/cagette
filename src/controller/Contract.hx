@@ -155,9 +155,11 @@ class Contract extends Controller
 	 */
 	@tpl("form.mtt")
 	function doEdit(c:db.Contract) {
-		app.event(EditContract(c));
+		
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager(c)) throw Error('/', t._("Forbidden action"));
+
+		view.title = t._("Edit contract ::contractName::",{contractName:c.name});
 
 		var group = c.amap;
 		var currentContact = c.contact;
@@ -166,6 +168,8 @@ class Contract extends Controller
 		form.removeElement( form.getElement("amapId") );
 		form.removeElement(form.getElement("type"));
 		form.getElement("userId").required = true;
+
+		app.event(EditContract(c,form));
 		
 		if (form.checkToken()) {
 			form.toSpod(c);

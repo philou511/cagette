@@ -232,7 +232,7 @@ enum Event {
 	ProductInfosEvent(p:ProductInfo,?d:db.Distribution);	//when infos about a product are displayed
 	
 	//Contracts
-	EditContract(contract:db.Contract);
+	EditContract(contract:db.Contract,form:sugoi.form.Form);
 	DuplicateContract(contract:db.Contract);
 	DeleteContract(contract:db.Contract);
 	

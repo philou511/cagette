@@ -1,82 +1,89 @@
 ::use 'contractadmin/design.mtt'::
 
-		<h2>::_("Distributions")::</h2>
+<h2>::_("Distributions")::</h2>
+
+	<table class="table">
+		::foreach d deliveries::
 		
-			<table class="table">
-				::foreach d deliveries::
-				
-					::if d.date!=null && d.date.getTime() < Date.now().getTime()::
-						::set style = "opacity:0.5;"::
-					::else::
-						::set style = ""::
+			::if d.date!=null && d.date.getTime() < Date.now().getTime()::
+				::set style = "opacity:0.5;"::
+			::else::
+				::set style = ""::
+			::end::
+			<tr  style="::style::" >
+	
+				<td>
+					::if d.distributionCycleId!=null::
+					<img src="/img/icons/arrow_refresh.png" style="opacity:0.5;" />
 					::end::
-					<tr  style="::style::" >
-			
-					<td>
-						::if d.distributionCycleId!=null::
-						<img src="/img/icons/arrow_refresh.png" style="opacity:0.5;" />
+					
+					::set da = getDate(d.date)::
+					
+					::if d.end!=null::
+					
+						::set e = getDate(d.end)::
+					::end::
+					
+					::da.dow:: ::da.d:: ::da.m::   de ::da.h+":"+da.i:: 
+					
+					::if d.end!=null::
+						à ::e.h+":"+e.i::
+					::end::
+				</td>
+				<td>
+					::d._place.name::
+				</td>
+				<td>
+					<div class="btn-group">
+						$$edit(::_("Edit")::,/distribution/edit/::d.id::) 
+						$$delete(::_("Del.")::,/distribution/delete/::d.id::)
+						
+						::if(d._contract.type==1)::
+						<a href="/contractAdmin/orders/::d._contract.id::?d=::d.id::" class="btn btn-default btn-sm">
+							<span class="glyphicon glyphicon-list"></span>&nbsp;::_("Orders")::
+						</a>
 						::end::
-						
-						::set da = getDate(d.date)::
-						
-						::if d.end!=null::
-						
-							::set e = getDate(d.end)::
-						::end::
-						
-						::da.dow:: ::da.d:: ::da.m::   de ::da.h+":"+da.i:: 
-						
-						::if d.end!=null::
-							à ::e.h+":"+e.i::
-						::end::
-					</td>
-					<td>
-						::d._place.name::
-					</td>
-					<td>
-						<div class="btn-group">
-							$$edit(::_("Edit")::,/distribution/edit/::d.id::) 
-							$$delete(::_("Delete")::,/distribution/delete/::d.id::)
-							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;::_("Distribution list")::</a>
-						</div>
-					</td>
-				</tr>
-				
+
+						<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm">
+							<span class="glyphicon glyphicon-print"></span>&nbsp;::_("Distribution list")::
+						</a>
+					</div>
+				</td>
+			</tr>
+		::end::
+	</table>	
+
+	<table ::cond cycles.length>0:: class="table">
+		<tr>
+			<th>::_("Distribution cycle")::</th>		
+			<th></th>
+		</tr>
+		::foreach c cycles::
+		<tr>
+			<td><b>
+				::switch c.cycleType:: 						
+				::case::  ::_("Weekly")::
+				::case::  ::_("Monthly")::
+				::case::  ::_("Every 2 weeks")::
+				::case::  ::_("Every 3 weeks")::
 				::end::
-			</table>	
+				</b>
+				: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+			</td>
+			<td>
+				$$delete(::_("Del.")::,::"/distribution/deleteCycle/"+c.id::)
+			</td>
+		</tr>
+		::end::
+	</table>
 
-
-			<table ::cond cycles.length>0:: class="table">
-				<tr>
-					<th>::_("Distribution cycle")::</th>		
-					<th></th>
-				</tr>
-				::foreach c cycles::
-				<tr>
-					<td><b>
-						::switch c.cycleType:: 						
-						::case::  ::_("Weekly")::
-						::case::  ::_("Monthly")::
-						::case::  ::_("Every 2 weeks")::
-						::case::  ::_("Every 3 weeks")::
-						::end::
-						</b>
-						: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
-					</td>
-					<td>
-						$$delete(::_("Del.")::,::"/distribution/deleteCycle/"+c.id::)
-					</td>
-				</tr>
-				::end::
-			</table>
-
-			$$insert(::_("One time distribution")::,/distribution/insert/::c.id::)
-			$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
-			
-			<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-user"></span> ::_("Distributions engagement")::
-			</a>
-			<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-				::_("Old distributions")::
-			</a>
+	$$insert(::_("One time distribution")::,/distribution/insert/::c.id::)
+	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
+	
+	<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
+		<span class="glyphicon glyphicon-user"></span> ::_("Distributions engagement")::
+	</a>
+	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
+		::_("Old distributions")::
+	</a>
 ::end::
