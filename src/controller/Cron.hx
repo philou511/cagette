@@ -38,8 +38,30 @@ class Cron extends Controller
 		
 		app.event(MinutelyCron);
 
-		sendEmailsfromBuffer();
+		//managing buffered emails
+		for( i in 0...5){
+			var task = new sugoi.tools.TransactionWrappedTask(sendEmailsfromBuffer);
+			task.execute(true);
+		}
+		
+		//warns admin about emails that cannot be sent
+		var task = new sugoi.tools.TransactionWrappedTask(function(){
+			for( e in sugoi.db.BufferedMail.manager.search($tries>20,{limit:50,orderBy:-cdate},true)  ){
+				if(e.sender.email != App.config.get("default_email")){
+					var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
+					App.quickMail(e.sender.email,t._("Email not sent"),str);
+				} 
+				e.delete();
+			}
+		});
+		task.execute(true);
 
+		//Delete old emails
+		var task = new sugoi.tools.TransactionWrappedTask(function(){
+			var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
+			sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
+		});
+		task.execute(true);
 	}
 	
 	/**
@@ -426,10 +448,9 @@ class Cron extends Controller
 	 * (like "SELECT * FROM BufferedMail WHERE sdate IS NULL ORDER BY cdate DESC LIMIT 100 FOR UPDATE Lock wait timeout exceeded; try restarting transaction") 
 	 */
 	function sendEmailsfromBuffer(){
-		print("<h3>Send Emails from Buffer</h3>");
-		
+		print("<h3>Send 10 Emails from Buffer</h3>");		
 		//send
-		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:50,orderBy:-cdate},false)  ){
+		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:10,orderBy:-cdate},false)  ){
 			e.lock();
 			if(e.isSent()) continue;
 			
@@ -437,19 +458,6 @@ class Cron extends Controller
 			e.finallySend();
 			Sys.sleep(0.1);
 		}
-
-		//delete old emails
-		var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
-		sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
-
-		//emails that cannot be sent
-		for( e in sugoi.db.BufferedMail.manager.search($tries>100,{limit:50,orderBy:-cdate},true)  ){
-			if(e.sender.email != App.config.get("default_email")){
-				var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
-				App.quickMail(e.sender.email,t._("Email not sent"),str);
-			} 
-			e.delete();
-		}	
 	}
 
 	/**
