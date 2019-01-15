@@ -5,7 +5,7 @@
 	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
-<body>
+<body style="font-size: ::fontRatio::em;">
 	<!-- page head-->
 	::fill head::
 	<td >
@@ -97,7 +97,7 @@
 					::set class=""::
 				::end::
 				<tr class="::class::">	
-					<td style="font-size: ::fontRatio::%;border-bottom: 2px solid #AAA;">
+					<td style="border-bottom: 2px solid #AAA;">
 						::if(m.quantity==0 && m.canceled)::
 							::_("Canceled")::
 						::else::
@@ -105,7 +105,7 @@
 						::end::
 						::set productNum = productNum+m.quantity::
 					</td>
-					<td style="font-size: ::fontRatio::%;border-bottom: 2px solid #AAA;">
+					<td style="border-bottom: 2px solid #AAA;">
 						::m.productName::
 					</td>
 					<td>
@@ -134,7 +134,7 @@
 						<td class="total">::formatNum(productNum)::</td>
 						<td class="total" colspan="2"></td>
 						<td class="total">::_("TOTAL")::</td>
-						<td class="total" style="font-size: ::fontRatio::%;">::formatNum(total)::&nbsp;::currency()::</td>
+						<td class="total">::formatNum(total)::&nbsp;::currency()::</td>
 						<td></td>
 					</tr>		
 				::end::

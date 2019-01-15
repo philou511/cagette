@@ -40,7 +40,7 @@ class Cron extends Controller
 
 		//managing buffered emails
 		for( i in 0...5){
-			var task = new sugoi.tools.TransactionWrappedTask(sendEmailsfromBuffer);
+			var task = new sugoi.tools.TransactionWrappedTask(sendEmailsfromBuffer.bind(i*10));
 			task.execute(true);
 		}
 		
@@ -455,10 +455,10 @@ class Cron extends Controller
 	 * you should consider the right amount of emails to send each minute in order to avoid overlaping and getting in concurrency problems.
 	 * (like "SELECT * FROM BufferedMail WHERE sdate IS NULL ORDER BY cdate DESC LIMIT 100 FOR UPDATE Lock wait timeout exceeded; try restarting transaction") 
 	 */
-	function sendEmailsfromBuffer(){
+	function sendEmailsfromBuffer(index:Int){
 		print("<h3>Send 10 Emails from Buffer</h3>");		
 		//send
-		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:10,orderBy:-cdate},false)  ){
+		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,10],orderBy:-cdate},false)  ){
 			e.lock();
 			if(e.isSent()) continue;
 			
