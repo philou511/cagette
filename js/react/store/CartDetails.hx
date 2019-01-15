@@ -19,7 +19,7 @@ import mui.IconColor;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 
-import react.cagette.action.CartAction;
+import react.store.redux.action.CartAction;
 import Formatting.unit;
 import Common;
 using Lambda;
@@ -157,7 +157,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 		}
 	}
 
-	static function mapStateToProps(st:react.cagette.state.State):react.Partial<CartDetailsProps> {
+	static function mapStateToProps(st:react.store.redux.state.State):react.Partial<CartDetailsProps> {
 		return {
 			order: cast st.cart,
 		}

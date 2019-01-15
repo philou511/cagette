@@ -1,5 +1,3 @@
-
-
 package react.store.types;
 
 import Common;

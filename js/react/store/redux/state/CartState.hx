@@ -1,9 +1,9 @@
 
-package react.cagette.state;
+package react.store.redux.state;
 
 import react.Partial;
 import redux.IReducer;
-import react.cagette.action.CartAction;
+import react.store.redux.action.CartAction;
 import Common.ProductInfo;
 import Common.OrderSimple;
 

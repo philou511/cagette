@@ -184,15 +184,20 @@ class App extends sugoi.BaseApp {
 		out.set("Messages", "Accès à la messagerie");
 		out.set("vat", "TVA");
 		out.set("desc", "Description");
+		
+		//group options
 		out.set("ShopMode", "Mode boutique");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
 		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
+		out.set("ShopV2", "[BETA] Utiliser la nouvelle boutique");
+
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");
 		
+		//group type
 		out.set("Amap", "AMAP");
 		out.set("GroupedOrders", "Groupement d'achat");
 		out.set("ProducerDrive", "Collectif de producteurs");

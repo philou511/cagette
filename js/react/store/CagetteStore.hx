@@ -231,7 +231,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		}
 		function renderProducts() {
 			return 	if( state.loading ) renderLoader();
-					else jsx('<ProductList categories=${state.categories} products=${filter(state.products, state.filter)} />');
+					else jsx('<ProductList categories=${state.categories} products=${filter(state.products, state.filter)} vendors=${state.vendors} />');
 		}
 		return jsx('			
 			<div className="shop">

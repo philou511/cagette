@@ -30,8 +30,9 @@ private typedef Props = {
 }
 
 private typedef PublicProps = {
-    var product:ProductInfo;
-    var openModal:ProductInfo->Void;
+    var product : ProductInfo;
+    var openModal : ProductInfo->VendorInfo->Void;
+    var vendor : VendorInfo;
 }
 
 private typedef TClasses = Classes<[
@@ -150,13 +151,12 @@ class Product extends ReactComponentOf<Props, ProductState> {
     }
 
     function displayProductInfos(_) {
-        props.openModal(props.product);
+        props.openModal(props.product,props.vendor);
     }
 
     override public function render() {
         var classes = props.classes;
         var product = props.product;
-        
 
         return jsx('
             <Card elevation={0} className=${classes.card}> 
@@ -171,7 +171,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             </Avatar>  
                         </div>
                         <div className=${classes.cagAvatarContainer}>
-                            <Avatar src="/img/store/vendor.jpg" className=${classes.farmerAvatar}/>  
+                            <Avatar src=${props.vendor.faceImageUrl} className=${classes.farmerAvatar}/>  
                         </div>
                     </CardMedia>
 
@@ -180,10 +180,10 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             ${product.name}
                         </Typography>
                         <Typography component="p" className=${classes.cagProductDesc}>
-                            ${renderVendor(product)} 
+                            ${renderVendor(props.vendor)} 
                         </Typography>
                         <Typography component="p" className=${classes.cagProductLabel}>
-                            ${renderLabels(product)}
+                            <Labels product=$product />
                         </Typography>
                     </CardContent>           
                 </CardActionArea>
@@ -197,15 +197,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
         <$SubCateg label="Bio" icon="icon icon-bio" colorClass="cagBio"  />*/
     }
 
-    function renderLabels(product:ProductInfo){
-        if(product.organic){
-            return jsx('<$SubCateg label="Bio" colorClass="cagBio"  />');
-        }else{
-            return null;
-        }
-    }
-
-    function renderVendor(product:ProductInfo){
-        return jsx('Ferme XXX');
+    function renderVendor(vendor:VendorInfo){
+        return jsx('<span>${vendor.name}</span>');
     }
 }

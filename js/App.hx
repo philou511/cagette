@@ -208,7 +208,7 @@ class App {
 	private function createReactStore() {
 		// Store creation
 		var rootReducer = Redux.combineReducers({
-			cart: mapReducer(react.cagette.action.CartAction, new react.cagette.state.CartState.CartRdcr()),
+			cart: mapReducer(react.store.redux.action.CartAction, new react.store.redux.state.CartState.CartRdcr()),
 		});
 		// create middleware normally, excepted you must use
 		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware

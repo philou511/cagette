@@ -51,7 +51,10 @@ class Vendor extends Object
 			faceImageUrl : (image!=null ? App.current.view.file(image) : null ),
 			logoImageUrl : (image!=null ? App.current.view.file(image) : null ),
 			zipCode : zipCode,
-			city : city
+			city : city,
+			linkText:linkText,
+			linkUrl:linkUrl,
+			desc:desc
 		};
 	}
 	

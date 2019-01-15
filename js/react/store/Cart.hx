@@ -18,7 +18,7 @@ import mui.core.styles.Styles;
 import mui.icon.Icon;
 import mui.core.Typography;
 import Common;
-import react.cagette.action.CartAction;
+import react.store.redux.action.CartAction;
 
 using Lambda;
 
@@ -88,7 +88,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 		}
 	}
 
-	static function mapStateToProps(st:react.cagette.state.State):react.Partial<CartProps> {
+	static function mapStateToProps(st:react.store.redux.state.State):react.Partial<CartProps> {
 		return {
 			order: cast st.cart,
 		}
@@ -135,7 +135,11 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 						anchorOrigin={{vertical: Bottom, horizontal: Right,}}
 						transformOrigin={{vertical: Top,horizontal: Right,}}
 					>
-					<CartDetails submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
+					<CartDetails submitOrder=${props.submitOrder} 
+						orderByEndDates=${props.orderByEndDates} 
+						place=${props.place} 
+						paymentInfos=${props.paymentInfos} 
+						date=${props.date}/>
 				</Popover>
 			</div>
 		');

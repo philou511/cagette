@@ -13,6 +13,7 @@ enum AmapFlags {
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group
+	ShopV2; //BETA shop V2
 
 }
 

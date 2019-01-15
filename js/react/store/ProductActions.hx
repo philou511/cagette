@@ -7,7 +7,7 @@ import react.ReactMacro.jsx;
 import react.types.*;
 import css.JustifyContent;
 import css.AlignContent;
-import react.cagette.action.CartAction;
+import react.store.redux.action.CartAction;
 import mui.core.Button;
 import mui.core.CardActionArea;
 import mui.core.CardActions;
@@ -96,7 +96,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
 		}
 	}
 
-    static function mapStateToProps(st:react.cagette.state.State, ownProps:PublicProps):react.Partial<Props> {
+    static function mapStateToProps(st:react.store.redux.state.State, ownProps:PublicProps):react.Partial<Props> {
         var storeProduct = 0;
         for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
 		return {
@@ -150,8 +150,9 @@ class ProductActions extends ReactComponentOfProps<Props> {
         return jsx('
             <CardActions className=${classes.cagProductInfoWrap} >
                 <Grid container>
-                    <Grid item xs={4}>
-                        <Typography component="p" className=${classes.cagProductInfo} >                                 
+                    
+                    <Grid item xs={5} style={{textAlign:css.TextAlign.Left}}>
+                        <Typography component="div" className=${classes.cagProductInfo} >                                 
                             <span className="cagProductUnit">
                                 ${Formatting.formatNum(product.qt)}&nbsp;${Formatting.unit(product.unitType,product.qt)} 
                                 <div className=${classes.cagProductPriceRate}>
@@ -160,16 +161,19 @@ class ProductActions extends ReactComponentOfProps<Props> {
                             </span>
                         </Typography>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Typography component="p" className=${classes.cagProductInfo} >
+                    
+                    <Grid item xs={3} style={{textAlign:css.TextAlign.Center}}>
+                        <Typography component="div" className=${classes.cagProductInfo} >
                             <span className="cagProductPrice">
                                 ${Formatting.formatNum(product.price)} €
                             </span> 
                         </Typography>  
                     </Grid>
-                    <Grid item xs={4}>
+                    
+                    <Grid item xs={4} style={{textAlign:css.TextAlign.Right}}>
                         ${renderQuantityAction()}
                     </Grid>
+
                 </Grid>
            </CardActions>
         ');

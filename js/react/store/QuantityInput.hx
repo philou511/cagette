@@ -82,17 +82,18 @@ class QuantityInput extends ReactComponentOfProps<Props> {
     override function render() {
         var classes = props.classes;
         return jsx('
-        <Grid className=${classes.quantityInput} container={true} direction=${Row}>
-            <Grid item={true} xs={4} className="quantityMoreLess noSelect">
-                <div onClick=${updateValue.bind(-1)}>-</div>
+            <Grid className=${classes.quantityInput} container={true} direction=${Row}>
+                <Grid item={true} xs={4} className="quantityMoreLess noSelect">
+                    <div onClick=${updateValue.bind(-1)}>-</div>
+                </Grid>
+                <Grid item={true} xs={4} className="quantity">
+                    <div> ${props.value} </div>
+                </Grid>
+                <Grid item={true} xs={4} className="quantityMoreLess noSelect">
+                    <div onClick=${updateValue.bind(1)}>+</div>
+                </Grid>
             </Grid>
-            <Grid item={true} xs={4} className="quantity">
-                <div> ${props.value} </div>
-             </Grid>
-            <Grid item={true} xs={4} className="quantityMoreLess noSelect">
-                <div onClick=${updateValue.bind(1)}>+</div>
-            </Grid>
-         </Grid>
+
         ');
     }
 }

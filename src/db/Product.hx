@@ -107,7 +107,6 @@ class Product extends Object
 			ref : ref,
 			name : name,
 			image : getImage(),
-			contractId : contract.id,
 			price : getPrice(),
 			vat : vat,
 			vatValue: (vat != 0 && vat != null) ? (  this.price - (this.price / (vat/100+1))  )  : null,
@@ -126,6 +125,8 @@ class Product extends Object
 			wholesale:wholesale,
 			active: active,
 			distributionId : distribution==null ? null : distribution.id,
+			contractId : contract.id,
+			vendorId : contract.vendor.id,
 		}
 		
 		if(populateCategories){

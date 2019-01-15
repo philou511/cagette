@@ -22,6 +22,7 @@ typedef ProductListProps = {
 private typedef PublicProps = {
 	var categories:Array<CategoryInfo>;
 	var products:FilteredProductList;
+	var vendors : Array<VendorInfo>;
 }
 
 private typedef ProductListState = {
@@ -60,7 +61,7 @@ class ProductList extends react.ReactComponentOf<ProductListProps, ProductListSt
     	');
 	}
 
-	function openModal(product:ProductInfo) {
+	function openModal(product:ProductInfo,vendor:VendorInfo) {
         setState({modalOpened:true, modalProduct:product}, function() {trace("modal opened");});
     }
 
@@ -71,9 +72,17 @@ class ProductList extends react.ReactComponentOf<ProductListProps, ProductListSt
 
     function renderModal() {
 		if( state.modalOpened == false ) return null;
-		//
+		
+		var vendor = Lambda.find(this.props.vendors,function(v){
+				return v.id==state.modalProduct.vendorId;
+			});
+
         return jsx('
-            <ProductModal product=${state.modalProduct} onClose=${onModalCloseRequest} />
+            <ProductModal 
+				product=${state.modalProduct}
+				vendor=${vendor}
+				onClose=${onModalCloseRequest} 
+				/>
         ');
     }
 
@@ -146,13 +155,18 @@ class ProductList extends react.ReactComponentOf<ProductListProps, ProductListSt
 	}
 
 	function renderProducts(products:Array<ProductInfo>) {
+
 		if (products == null || products.length == 0)
 			return null;
 		
 		return products.map(function(product) {
+			var vendor = Lambda.find(this.props.vendors,function(v){
+				return v.id==product.vendorId;
+			});
+
 			return jsx('
 				<$Grid item xs={12} sm={4} md={3} key=${product.id}>
-					<$Product product=${product} openModal=${openModal} />
+					<$Product product=${product} openModal=${openModal} vendor=${vendor} />
 				</$Grid>
 			');
 		});

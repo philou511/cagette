@@ -39,10 +39,15 @@ typedef OrderInSession = {
 typedef VendorInfo = {
 	id : Int,
 	name : String,
+	desc:String,
+
 	faceImageUrl : Null<String>,
 	logoImageUrl : Null<String>,
 	zipCode : String,
-	city : String
+	city : String,
+
+	linkText:String,
+	linkUrl:String,
 }
 
 @:keep
@@ -50,13 +55,10 @@ typedef ProductInfo = {
 	id : Int,
 	name : String,
 	ref : Null<String>,
-	image : Null<String>,
-	contractId : Int,
+	image : Null<String>,	
 	price : Float,
 	vat : Null<Float>,					//VAT rate
 	vatValue : Null<Float>,				//amount of VAT included in the price
-	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
-	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
 	desc : Null<String>,
 	categories : Null<Array<Int>>,	//used in old shop
 	subcategories : Null<Array<Int>>,  //used in new shop
@@ -69,6 +71,11 @@ typedef ProductInfo = {
 	variablePrice:Bool,
 	wholesale:Bool,
 	active:Bool,
+
+	contractId : Int,
+	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
+	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
+	?vendorId : Int,
 	?distributionId:Null<Int>, //in the context of a distrib
 }
 

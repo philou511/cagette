@@ -17,7 +17,7 @@ import mui.core.CardMedia;
 import mui.core.CardContent;
 import mui.core.CardActionArea;
 import mui.core.CardActions;
-import mui.core.Modal;
+import mui.core.Dialog;
 import mui.core.modal.ModalCloseReason;
 import mui.core.Typography;
 import mui.core.Avatar;
@@ -25,7 +25,8 @@ import mui.core.Paper;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.icon.Icon;
-import react.cagette.action.CartAction;
+import mui.core.common.ShirtSize;
+import react.store.redux.action.CartAction;
 import mui.CagetteTheme;
 
 import Common;
@@ -37,9 +38,9 @@ private typedef Props = {
 
 private typedef PublicProps = {
     var product:ProductInfo;
+    var vendor:VendorInfo;
     var onClose:js.html.Event->ModalCloseReason->Void;
 }
-
 
 private typedef TClasses = Classes<[
 	gridItem,
@@ -48,34 +49,20 @@ private typedef TClasses = Classes<[
 	products, 
 	product, 
 	iconStyle, 
-	subcard, 
 	cover,
 	cagProductTitle,
     cagProductInfoWrap,
-    cagProductInfo,
 ]>
 
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-
 class ProductModal extends ReactComponentOfProps<Props> {
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			modal : {
-                //display: "flex",
-				//justifyContent: Center,
-				//alignItems: Center,
-                position:css.Position.Absolute,
-                width:"80%",
-                backgroundColor: CGColors.White,
                 padding:"24px",
-                outline:"none"
             },
-			subcard: {
-				flexDirection: css.FlexDirection.Row,
-				display: 'flex',
-			},
 			gridItem: {
 				overflow: Hidden,
 			},
@@ -105,7 +92,8 @@ class ProductModal extends ReactComponentOfProps<Props> {
 				fontSize:12,
 			},
 			cover: {                
-				maxWidth: '300px',
+                width:"100%"
+				//maxWidth: '300px',
 				//maxHeight: '300px',
 				//objectFit: "cover",
 			},
@@ -115,26 +103,16 @@ class ProductModal extends ReactComponentOfProps<Props> {
                 fontStyle: "normal",
                 textTransform: UpperCase,
                 marginBottom: 3,
-				overflow: Hidden,
-				textOverflow: Ellipsis,
-				lineHeight: "1.0em",
-  				maxHeight: "1.8em",
-				alignSelf: "flex-start",
+				//overflow: Hidden,
+				//textOverflow: Ellipsis,
+				//lineHeight: "1.0em",
+  				//maxHeight: "1.8em",
+				//alignSelf: "flex-start",
             },
             cagProductInfoWrap : {       
                 justifyContent: SpaceBetween,
                 padding: "0 5px",
             },
-            cagProductInfo : {
-                fontSize : "1.0rem",
-                "& .cagProductUnit" : {
-                    marginRight: "2rem",
-                },
-                "& .cagProductPrice" : {
-                    color : CGColors.Third,        
-                },
-            },
- 
 		}
 	}
     
@@ -142,29 +120,34 @@ class ProductModal extends ReactComponentOfProps<Props> {
         super(props);
     }
 
-    function getModalStyle() {
-        var top = 50;
-        var left = 50;
-        return {
-            top: '${top}%',
-            left: '${left}%',
-            transform: 'translate(-${top}%, -${left}%)',
-        }
-    }
-
     override public function render() {
         var classes = props.classes;
         var product = props.product;
+        var vendor = props.vendor;
 
         return jsx('
-            <Modal open={true} onClose=${props.onClose}>
-                <div style=${getModalStyle()} className=${classes.modal}>
+            <Dialog 
+                open={true} 
+                onClose=${props.onClose} 
+                fullWidth={true}
+				maxWidth=${ShirtSizeOrFalse.MD} 
+                scroll=${mui.core.dialog.DialogScrollContainer.Body}>
+                <div className=${classes.modal}>
                     
                     <Grid container spacing={24}>
 
+                        <Grid item xs={12} style={{textAlign:css.TextAlign.Right}}>
+                            <Button onClick=${close}>
+                                <i className="icon icon-delete"/>&nbsp;Fermer
+                            </Button>
+                        </Grid>
+
                         <Grid item xs={4} className=${classes.gridItem}>
-                            <div className=${classes.subcard}>
+                            <div>
                                 <img className=${classes.cover} src=${product.image}/>
+                            </div>
+                            <div>
+                                <Labels product=$product />
                             </div>
                         </Grid>
 
@@ -176,16 +159,54 @@ class ProductModal extends ReactComponentOfProps<Props> {
 
                             <Typography component="p" dangerouslySetInnerHTML={{ __html: ${product.desc} }}></Typography>
 
-                            <$ProductActions product=$product />                            
+                            <div style=${{background:mui.CagetteTheme.CGColors.Bg2,padding:"12px"}}>
+                                <$ProductActions product=$product />                            
+                            </div>
                         </Grid>
                     </Grid>
 
-                    <Grid container>
-                        Vendor Infos
+                    <div style={{marginTop:18,marginBottom:18}}>
+                        <h2>
+                        ${vendor.name}
+                        </h2>
+                    </div>
+
+                    <Grid container spacing={24}>
+                        
+                        <Grid item xs={4}>
+                            <img className=${classes.cover} src=${vendor.logoImageUrl} />
+                        </Grid>
+
+                        <Grid item xs={8} style={{color:mui.CagetteTheme.CGColors.Secondfont}}>                        
+                            <div>
+                                <i className="icon icon-map-marker"/>&nbsp;
+                                ${vendor.city} (${vendor.zipCode})
+                            </div>
+                            <div>
+                                <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
+                            </div>
+                            ${vendorAvatar(vendor)}
+                            <div dangerouslySetInnerHTML={{__html: ${vendor.desc}}}></div>
+                        </Grid>
+
                     </Grid>
+
+                    
                    
                 </div>
-            </Modal>
+            </Dialog>
         ');
+    }
+
+    function close(e){
+        props.onClose(e,mui.core.modal.ModalCloseReason.BackdropClick);
+    }
+
+    function vendorAvatar(vendor){
+        if(vendor.faceImageUrl==vendor.logoImageUrl){
+            return null;
+        }else{
+            return jsx('<Avatar src=${vendor.faceImageUrl} style={{width:120,height:120,float:"left"}}/>');
+        }
     }
 }

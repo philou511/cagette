@@ -1,4 +1,4 @@
-package react.cagette.action;
+package react.store.redux.action;
 
 import Common.ProductInfo;
 
