@@ -29,9 +29,9 @@ typedef OrderInSession = {
 		?product:db.Product,
 		?distributionId:Int,
 		#end
-	} > ,
-	?userId:Int,
+	} > ,	
 	total:Float, 	//price to pay
+	?userId:Int,
 	?paymentOp:Int, //payment operation ID
 }
 

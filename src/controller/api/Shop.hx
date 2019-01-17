@@ -233,6 +233,23 @@ class Shop extends Controller
 		return Lambda.array(db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false));
 		
 	}
+
+	/**
+	 * record order
+	 */
+	public function doSubmit() {
+		var post:{cart:OrderInSession} = haxe.Json.parse(sugoi.Web.getPostData());
+
+		
+		if(post==null) throw 'Payload is empty';
+		if(post.cart==null) throw 'Cart is empty';
+		
+		var order : OrderInSession = post.cart;
+		app.session.data.order = order;
+
+		Sys.print(haxe.Json.stringify({success:true}));
+		
+	}
 	
 	
 	

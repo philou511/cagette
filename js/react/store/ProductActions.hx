@@ -17,6 +17,7 @@ import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.icon.Icon;
 import mui.CagetteTheme;
+import mui.core.Tooltip;
 import Common;
 
 private typedef Props = {
@@ -128,15 +129,21 @@ class ProductActions extends ReactComponentOfProps<Props> {
     }
 
     function renderQuantityAction() {
+
+        var style = {fontSize:20};
+        var basketIcon = mui.CagetteIcon.get("basket-add",style);
+
         return if(props.quantity <= 0 ) {
-            jsx(' <Button
+            jsx('<Tooltip title="Ajouter ce produit à mon panier" placement=${mui.core.popper.PopperPlacement.Bottom}>
+                    <Button
                         onClick=${addToCart}
                         variant=${Contained}
                         color=${Primary} 
                         className=${props.classes.productBuy} 
                         disableRipple>                        
-                        <i className="icon icon-basket-add"></i>
+                        $basketIcon
                     </Button>
+                </Tooltip>
             ');
         } else {
             jsx('<QuantityInput onChange=${updateQuantity} value=${props.quantity}/>');
@@ -162,7 +169,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                         </Typography>
                     </Grid>
                     
-                    <Grid item xs={3} style={{textAlign:css.TextAlign.Center}}>
+                    <Grid item xs={3} style={{textAlign:css.TextAlign.Left}}>
                         <Typography component="div" className=${classes.cagProductInfo} >
                             <span className="cagProductPrice">
                                 ${Formatting.formatNum(product.price)} €

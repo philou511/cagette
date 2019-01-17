@@ -43,9 +43,10 @@ typedef  CagetteStoreState = {
 @:enum
 abstract ServerUrl(String) to String {
 	var CategoryUrl = '/api/shop/categories';
-	var ProductUrl = '/api/shop/products';
+	var ProductsUrl = '/api/shop/allProducts';
 	var InitUrl = '/api/shop/init';
 	var ViewUrl = '/place/view';
+	var SubmitUrl = '/api/shop/submit';
 }
 
 /*
@@ -101,6 +102,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
 
 	override function componentDidMount() {
+		//Loads init datas
 		var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
 		initRequest.then(function(infos:Dynamic) {
 			setState({
@@ -113,6 +115,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			trace("ERROR", error);
 		});
 
+		//Loads categories list
 		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
@@ -126,15 +129,36 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				categories: categories,
 			});
 
-			var promises = [];
-			subCategories.map(function(subcategory:CategoryInfo) {
-				promises.push(fetch(ProductUrl, GET, {date: props.date, place: props.place, subcategory: subcategory.id}, JSON));
+			//Loads products
+			fetch(ProductsUrl, GET, {date: props.date, place: props.place}, JSON)
+			.then(function(res:Dynamic){
+				var res :{products:Array<ProductInfo>} = res;
+				
+				res.products = Lambda.array(Lambda.map(res.products, function(p:Dynamic) {
+					//default category
+					if( p.categories == null || p.categories.length == 0 ) {
+						p.categories = [DEFAULT_CATEGORY.id];
+					} 
+					//convert unit in enum
+					return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
+				}));
+
+				setState({
+					products:res.products,
+					loading:false,
+					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
+				}, function() {
+					trace("products catalog updated");
+				});
+
+			}).catchError(function(error) {
+				trace("ERROR", error);
 			});
 
 			//categories.unshift(DEFAULT_CATEGORY);
 			categories.unshift(ALL_CATEGORY);
 
-			js.Promise.all(promises).then(function(results:Array<Dynamic>) {
+			/*js.Promise.all(promises).then(function(results:Array<Dynamic>) {
 				var products = [];
 				//trace("results ", results.length);
 				// primises.all respect the order
@@ -162,10 +186,11 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				}, function() {
 					trace("products catalog updated");
 				});
-			});
+			});*/
 		}).catchError(function(error) {
 			trace("ERROR", error);
 		});
+		
 	}
 
 
@@ -193,17 +218,23 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 	
 	function submitOrder(order:OrderSimple) {
-		var orderInSession = {
+		var orderInSession :OrderInSession = {
 			total: order.total,
 			products: order.products.map(function(p:ProductWithQuantity) {
 				return {
 					productId: p.product.id,
-					quantity: p.quantity
+					quantity: p.quantity*1.0
 				};
 			})
 		}
-		trace('Order', orderInSession);
+		
+	
+		fetch(SubmitUrl,POST,{cart:orderInSession},JSON)
+		.then(function(_){
+			js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString();
+		});
 	}
+
 
 	/**
 	TODO : bloc de mise en avant.

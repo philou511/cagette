@@ -35,9 +35,13 @@ private typedef TClasses = Classes<[
     cagWrap,
 ]>
 
+private typedef CategoriesState = {
+    selectedCategoryId : Int,
+}
+
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class Categories extends react.ReactComponentOfProps<CategoriesProps> {
+class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,CategoriesState> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
@@ -74,7 +78,14 @@ class Categories extends react.ReactComponentOfProps<CategoriesProps> {
 
     public function new(props) {
 		super(props);
+        
 	}
+
+    override function componentDidMount() {
+
+        //default category is "all products"
+        setState({selectedCategoryId:0});
+    }
 
     function onCategoryClicked(category:CategoryInfo) {
         if( category.id > 0 )
@@ -82,6 +93,8 @@ class Categories extends react.ReactComponentOfProps<CategoriesProps> {
         else if( category.id == 0 )
             props.resetFilter();
 
+
+        setState({selectedCategoryId:category.id});
         //resetFilter=${props.resetFilter}
         //filterByCategory=${props.filterByCategory}
         //filterBySubCategory=${props.filterBySubCategory}
@@ -98,7 +111,7 @@ class Categories extends react.ReactComponentOfProps<CategoriesProps> {
         var categories = [
             for(category in props.categories)
                 jsx('<Category  key=${category.id} 
-                                active=${false}
+                                active=${category.id==state.selectedCategoryId}
                                 category=${category} 
                                 onClick=${onCategoryClicked.bind(category)}
                 />')

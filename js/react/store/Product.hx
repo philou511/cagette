@@ -52,8 +52,7 @@ private typedef TClasses = Classes<[
     cagProductLabel,
 ]>
 
-typedef ProductState = {
-};
+typedef ProductState = {};
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
@@ -75,7 +74,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 width: '100%',
             },
             media: {       
-                height: 270, //makes an almost square pic by default
+                height: 240,
                 padding: 1,
             },
             cardContent: {
@@ -89,18 +88,21 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 width: 30,
                 height: 30,
                 color: '#F9D800',        
-                backgroundColor: '#ffffff',
+                backgroundColor: '#FFF',
                 marginLeft: "auto",
                 fontSize: 16,
             },
             farmerAvatar: {       
                 color: '#404040',   
                 backgroundColor: '#ededed',
-                border: "3 solid #ffffff",
+                border: "3px solid #FFF",
                 width: 70,
                 height: 70,
-                marginLeft: "auto",
-                fontSize: 10,
+                //marginLeft: "auto",
+                //fontSize: 10,
+                position:css.Position.Absolute,
+                top: 160,
+                right: 12
             },
             cagAvatarContainer: {
                 margin: "3%",
@@ -118,7 +120,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 overflow: Hidden,
             },
             cagProductLabel : {
-                marginLeft : -3,
+                color:mui.CagetteTheme.CGColors.Secondfont,                
             },
             cagProductDesc: {
                 fontSize: '0.9rem',
@@ -132,7 +134,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 padding: "0 10px",
             },
             cagProductInfo : {
-                fontSize : "1.3rem",
+                /*fontSize : "1.3rem",
 
                 "& .cagProductUnit" : {
                     marginRight: "2rem",
@@ -140,7 +142,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
 
                 "& .cagProductPrice" : {
                     color : CGColors.Third,        
-                },
+                },*/
             },
 		}
 	}
@@ -182,6 +184,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                         <Typography component="p" className=${classes.cagProductDesc}>
                             ${renderVendor(props.vendor)} 
                         </Typography>
+
                         <Typography component="p" className=${classes.cagProductLabel}>
                             <Labels product=$product />
                         </Typography>

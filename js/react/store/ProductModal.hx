@@ -26,6 +26,7 @@ import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.icon.Icon;
 import mui.core.common.ShirtSize;
+import mui.core.Tooltip;
 import react.store.redux.action.CartAction;
 import mui.CagetteTheme;
 
@@ -134,13 +135,14 @@ class ProductModal extends ReactComponentOfProps<Props> {
                 scroll=${mui.core.dialog.DialogScrollContainer.Body}>
                 <div className=${classes.modal}>
                     
-                    <Grid container spacing={24}>
-
-                        <Grid item xs={12} style={{textAlign:css.TextAlign.Right}}>
-                            <Button onClick=${close}>
-                                <i className="icon icon-delete"/>&nbsp;Fermer
-                            </Button>
-                        </Grid>
+                    
+                    <Tooltip title="Fermer">
+                        <Button onClick=${close} style={{top:0,position:css.Position.Absolute,right:0}}>
+                            <i className="icon icon-delete"/>
+                        </Button>
+                    </Tooltip>
+                    
+                    <Grid container spacing={24}>              
 
                         <Grid item xs={4} className=${classes.gridItem}>
                             <div>
@@ -178,20 +180,25 @@ class ProductModal extends ReactComponentOfProps<Props> {
                         </Grid>
 
                         <Grid item xs={8} style={{color:mui.CagetteTheme.CGColors.Secondfont}}>                        
-                            <div>
+                            <Typography component="p">
                                 <i className="icon icon-map-marker"/>&nbsp;
                                 ${vendor.city} (${vendor.zipCode})
-                            </div>
-                            <div>
+                            </Typography>
+
+                            <Typography component="p">
                                 <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
-                            </div>
-                            ${vendorAvatar(vendor)}
-                            <div dangerouslySetInnerHTML={{__html: ${vendor.desc}}}></div>
+                            </Typography>
+
+                            <Typography component="p">
+                                ${vendorAvatar(vendor)}
+                            </Typography>
+
+                            <p>    
+                                <div dangerouslySetInnerHTML={{__html: ${vendor.desc}}}></div>
+                            </p>
                         </Grid>
 
                     </Grid>
-
-                    
                    
                 </div>
             </Dialog>
