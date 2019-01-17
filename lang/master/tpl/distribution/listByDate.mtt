@@ -5,7 +5,7 @@
 	<title>::_("Attendance sheet")::</title>
 	<link href="/css/print.css" rel="stylesheet"/>
 </head>
-<body>
+<body style="font-size: ::fontRatio::em;">
 	
 	<h1>::user._amap.name::</h1>
 	<h2>Livraison du ::hDate(date)::</h2>
@@ -126,20 +126,42 @@
 								::if op!=null::
 									::foreach p op.getRelatedPayments()::
 									<tr>
-										<td style="min-width:30px;">
+										<td style="width:20px;vertical-align: middle;">
 											::if(p.pending==true)::
 											<img src="/img/tick_no.png"/>
 											::else::
 											<img src="/img/tick_ok_me.png"/>
 											::end::
 										</td>
-										<td>
+										<td style="width:100px;vertical-align: middle;">
 											::formatNum(p.amount):: ::currency()::
 											::set tpaid = p.amount+tpaid::
 										</td>
-										<td>
-											::p.name::
-										</td>
+										::if(p._data.type != "onthespot")::
+											<td colspan="10" style="vertical-align: middle;">
+												::p.getPaymentTypeName()::
+											</td>
+										::else::	
+											<td style="vertical-align: middle;">
+												::p.getPaymentTypeName()::
+											</td>										
+											::set counter=1::
+											::set style=""::
+											::foreach type onTheSpotAllowedPaymentTypes::
+												<td style="width:20px;vertical-align: middle;">
+													<img src="/img/tick_no.png"/> 
+												</td>
+												::if(counter != onTheSpotAllowedPaymentTypes.length)::
+													::set style="width:100px;vertical-align: middle;"::
+												::else::
+													::set style="vertical-align: middle;"::
+												::end::
+												<td style="::style::">
+													::type.name::&nbsp;&nbsp;
+												</td>	
+												::set counter=counter+1::											
+											::end::
+										::end::																				
 									</tr>
 									::end::
 								::end::
@@ -151,9 +173,9 @@
 								::if(total!=tpaid)::
 								
 								<tr style="background-color:#EEE;">
-									<td><img src="/img/tick_no.png"/></td>
-									<td>::formatNum(total-tpaid):: ::currency()::</td>
-									<td>
+									<td style="vertical-align: middle;"><img src="/img/tick_no.png"/></td>
+									<td style="vertical-align: middle;">::formatNum(total-tpaid):: ::currency()::</td>
+									<td colspan="10" style="vertical-align: middle;">
 										::if(total>tpaid)::
 											::_("To be paid"):: ::formatNum(total-tpaid):: ::currency()::
 										::else::
@@ -189,10 +211,9 @@
 									</td>
 									<td>
 										::formatNum(p.amount):: ::currency()::											
-										 - ::p.name::
+										 - ::p.name:: 
 										 
-										::set pending = pending + p.amount:: 
-										
+										::set pending = pending + p.amount::
 									</td>
 								</tr>
 								::end::

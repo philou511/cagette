@@ -1,6 +1,13 @@
 package service;
 import Common;
 
+enum PaymentContext{
+	PCAll;
+	PCGroupAdmin;
+	PCPayment;
+	PCManualEntry;
+}
+
 /**
  * Payment Service
  * @author web-wizard
@@ -8,54 +15,103 @@ import Common;
 class PaymentService
 {
 	/**
-	 * Get all available payment types, including one from plugins
+	 * Retuns an array of payment types depending on the use case
+	 * @param context 
+	 * @param group 
+	 * @return Array<payment.PaymentType>
 	 */
-	public static function getAllPaymentTypes(){
-		var types = [
-			new payment.Cash(),
-			new payment.Check(),
-			new payment.Transfer(),	
-			new payment.MoneyPot(),						
-		];
-		
-		var e = App.current.event(GetPaymentTypes({types:types}));
-		return switch(e){
-			case GetPaymentTypes(d): d.types;
-			default : null;
-		}
-		
-	}
+	public static function getPaymentTypes(context: PaymentContext, ?group: db.Amap) : Array<payment.PaymentType>
+	{
+		var out : Array<payment.PaymentType> = [];
 
-	public static function getAllowedPaymentTypes(group:db.Amap):Array<payment.Payment>{
-		var out :Array<payment.Payment> = [];
-		
-		//populate with activated payment types.
-		var all = getAllPaymentTypes();
-		if ( group.allowedPaymentsType == null ) return [];
-		for ( t in group.allowedPaymentsType){
+		switch(context)
+		{
+			case PCAll:
+				var types = [
+					new payment.Cash(),
+					new payment.Check(),
+					new payment.Transfer(),	
+					new payment.MoneyPot(),
+					new payment.OnTheSpotPayment(),						
+				];
+				var e = App.current.event(GetPaymentTypes({types:types}));
+				out = switch(e) {
+						case GetPaymentTypes(d): d.types;
+						default : null;
+					}
+
+
+			case PCGroupAdmin:
+				var allPaymentTypes = getPaymentTypes(PCAll);
+				//Exclude On the spot payment
+				var onTheSpot = Lambda.find(allPaymentTypes, function(x) return x.type == payment.OnTheSpotPayment.TYPE);
+				allPaymentTypes.remove(onTheSpot);
+				out = allPaymentTypes;
+
+
+			//For the payment page
+			case PCPayment:
+				if ( group.allowedPaymentsType == null ) return [];
+				var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
+				var hasOnTheSpotPaymentTypes = false;
+				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
+				var all = getPaymentTypes(PCAll);
+				for ( paymentType in group.allowedPaymentsType )
+				{
+					var found = Lambda.find(all, function(a) return a.type == paymentType);
+					if (found != null)  {
+						if (Lambda.has(onTheSpotPaymentTypes, found.type))
+						{
+							hasOnTheSpotPaymentTypes = true;
+							onTheSpotPaymentType.allowedPaymentTypes.push(found);
+							continue; //On the spot payment types are excluded
+						}
+						out.push(found);
+					}
+				}
+				if(hasOnTheSpotPaymentTypes)
+				{
+					out.push(onTheSpotPaymentType);
+				}
+
 			
-			var found = Lambda.find(all, function(a) return a.type == t);
-			if (found != null) out.push(found);
+			//For when a coordinator does a manual refund or adds manually a payment
+			case PCManualEntry:
+				//Exclude the MoneyPot payment
+				var paymentTypesInAdmin = getPaymentTypes(PCGroupAdmin);
+				var moneyPot = Lambda.find(paymentTypesInAdmin, function(x) return x.type == payment.MoneyPot.TYPE);
+				paymentTypesInAdmin.remove(moneyPot);
+				out = paymentTypesInAdmin;
 		}
+
 		return out;
 	}
 
-	public static function getPaymentTypesForManualEntry(group:db.Amap){
 
-		var out = [];
-		var paymentTypes = [];
-		var allowedPaymentTypes = service.PaymentService.getAllowedPaymentTypes(group);
-		if ( !Lambda.exists(allowedPaymentTypes, function(obj) return obj.type == "moneypot" ) ) {
-			paymentTypes = allowedPaymentTypes;
+	/**
+	 * Returns all the payment types that are on the spot and that are allowed for this group
+	 * @param group 
+	 * @return Array<payment.PaymentType>
+	 */
+	public static function getOnTheSpotAllowedPaymentTypes(group: db.Amap) : Array<payment.PaymentType>
+	{
+		if ( group.allowedPaymentsType == null ) return [];
+		var onTheSpotAllowedPaymentTypes : Array<payment.PaymentType> = [];
+		var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
+		var all = getPaymentTypes(PCAll);
+		for (paymentType in onTheSpotPaymentTypes)
+		{
+			if (Lambda.has(group.allowedPaymentsType, paymentType))
+			{
+				var found = Lambda.find(all, function(a) return a.type == paymentType);
+				if (found != null) 
+				{
+					onTheSpotAllowedPaymentTypes.push(found);
+				}			
+			}
 		}
-		else {
-			paymentTypes = service.PaymentService.getAllPaymentTypes();
-		}
-		for ( t in paymentTypes ){
-			if(t.type != "moneypot") out.push({label:t.name,value:t.type});
-		} 
-		
-		return out;
+	
+		return onTheSpotAllowedPaymentTypes;
 	}
 
 	/**
@@ -96,6 +152,9 @@ class PaymentService
 	public static function validateBasket(basket:db.Basket) {
 
 		if (basket == null || basket.isValidated()) return false;
+
+		//This will throw an error if for example there are pending payments of type on the spot
+		basket.canBeValidated();
 		
 		//mark orders as paid
 		var orders = basket.getOrders();
@@ -133,7 +192,7 @@ class PaymentService
 	public static function unvalidateBasket(basket:db.Basket) {
 
 		if (basket == null || !basket.isValidated()) return false;
-		
+
 		//mark orders as paid
 		var orders = basket.getOrders();
 		for ( order in orders ){

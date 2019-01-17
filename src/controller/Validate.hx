@@ -27,6 +27,7 @@ class Validate extends controller.Controller
 		view.place = place;
 		view.date = date;
 		view.basket = b;
+		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
 		
 		checkToken();
 	}
@@ -43,12 +44,17 @@ class Validate extends controller.Controller
 		}
 	}
 	
-	public function doValidateOp(op:db.Operation){
-		if (checkToken()){
-			
-			op.lock();
-			op.pending = false;
-			op.update();
+	public function doValidateOp(operation: db.Operation) 
+	{
+		if (checkToken()) 
+		{
+			operation.lock();
+			operation.pending = false;
+			if (app.params.exists("type"))
+			{
+				operation.data.type = app.params.get("type"); 				
+			}			
+			operation.update();
 			
 			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
@@ -73,8 +79,13 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
-		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.amap);
+		var out = [];
+		for (paymentType in paymentTypes)
+		{
+			out.push({label: paymentType.name, value: paymentType.type});
+		}
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 
 		
 		if (f.isValid()){
@@ -112,8 +123,13 @@ class Validate extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
-		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.amap);
+		var out = [];
+		for (paymentType in paymentTypes)
+		{
+			out.push({label: paymentType.name, value: paymentType.type});
+		}
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		var b = db.Basket.get(user, place, date);
 		var op = b.getOrderOperation(false);
@@ -140,12 +156,20 @@ class Validate extends controller.Controller
 	
 	public function doValidate(){
 		
-		if (checkToken()){
-			
+		if (checkToken()) 
+		{
 			var basket = db.Basket.get(user, place, date);
-			service.PaymentService.validateBasket(basket);
-			
-			throw Ok("/distribution/validate/"+date+"/"+place.id, t._("Order validated"));
+
+			try
+			{
+				service.PaymentService.validateBasket(basket);
+			}
+			catch(e:tink.core.Error)
+			{
+				throw Error("/distribution/validate/" + date + "/" + place.id, e.message);
+			}
+		
+			throw Ok("/distribution/validate/" + date + "/" + place.id, t._("Order validated"));
 			
 		}
 		

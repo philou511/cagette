@@ -46,7 +46,6 @@ class Vendor extends Controller
 		
 		if (form.isValid()) {
 			form.toSpod(vendor); //update model
-			vendor.amap = app.user.amap;
 			vendor.update();
 			throw Ok('/contractAdmin', t._("This supplier has been updated"));
 		}

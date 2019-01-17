@@ -181,9 +181,8 @@
 				<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
 			::elseif(t.getPaymentType()=="transfer")::
 				<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
-			::else::
-				::t.name::<br/>
-				<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
+			::elseif(t.getPaymentType()=="onthespot")::
+				<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
 			::end::
 			
 		::else::

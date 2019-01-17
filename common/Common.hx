@@ -272,7 +272,7 @@ enum Event {
 	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
 	
 	//payments
-	GetPaymentTypes(data:{types:Array<payment.Payment>});
+	GetPaymentTypes(data:{types:Array<payment.PaymentType>});
 	NewOperation(op:db.Operation);
 	
 	#end

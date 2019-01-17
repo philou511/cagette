@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-03 15:13+0000\n"
+"PO-Revision-Date: 2018-12-16 10:08+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
@@ -2122,8 +2122,9 @@ msgid "Canceled"
 msgstr "Abgebrochen"
 
 #: src/db/UserContract.hx:5680
+#, fuzzy
 msgid "multi-weighing products should be ordered only with integer quantities"
-msgstr ""
+msgstr "Mehrfachwägeprodukte sollten nur in ganzzahligen Mengen bestellt werden"
 
 #: src/db/UserContract.hx:7565
 msgid ""
@@ -2211,8 +2212,9 @@ msgid "Variable price based on weight"
 msgstr "Variabler Preis nach Gewicht"
 
 #: src/db/Product.hx:4527
+#, fuzzy
 msgid "Multi-weighing"
-msgstr ""
+msgstr "Mehrfachwägung"
 
 #: src/db/Distribution.hx:7110
 msgid "End hour"

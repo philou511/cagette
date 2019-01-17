@@ -198,7 +198,7 @@ class Contract extends Controller
 			
 			//update rights
 			if ( c.contact != null && (currentContact==null || c.contact.id!=currentContact.id) ) {
-				var ua = db.UserAmap.get(c.contact, app.user.amap, true);
+				var ua = db.UserAmap.get(c.contact, c.amap, true);
 				ua.giveRight(ContractAdmin(c.id));
 				ua.giveRight(Messages);
 				ua.giveRight(Membership);

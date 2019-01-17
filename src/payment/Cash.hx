@@ -4,7 +4,7 @@ package payment;
  * ...
  * @author fbarbut
  */
-class Cash extends payment.Payment
+class Cash extends payment.PaymentType
 {
 	
 	public static var TYPE = "cash";
@@ -15,7 +15,6 @@ class Cash extends payment.Payment
 		this.type = TYPE;
 		this.icon = '<i class="icon icon-cash"></i>';
 		this.name = t._("Cash");
-		//this.desc = t._("Pay by cash at product distribution");
 		this.link = "/transaction/cash";
 	}
 	

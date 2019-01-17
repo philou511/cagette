@@ -61,4 +61,28 @@ class TestPayments extends haxe.unit.TestCase
 		assertEquals(true, b.isValidated());
 	}
 
+	function testMakeOnTheSpotPaymentOperations()
+	{
+		//Take a contract with payments enabled
+		//Make 2 orders
+		var distrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
+		var contract = distrib.contract;
+		var product1 = TestSuite.COURGETTES;
+		var julieOrder1 = service.OrderService.make(TestSuite.JULIE, 1, product1, distrib.id);
+		var julieOrderOperation1 = db.Operation.onOrderConfirm([julieOrder1]);
+		
+		//Payment on the spot
+		var juliePayment1 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.amap, payment.OnTheSpotPayment.TYPE, product1.price, "Payment on the spot", julieOrderOperation1[0]);
+
+		var product2 = TestSuite.CARROTS;
+		var julieOrder2 = service.OrderService.make(TestSuite.JULIE, 1, product2, distrib.id);
+		var julieOrderOperation2 = db.Operation.onOrderConfirm([julieOrder2]);
+		
+		//Payment on the spot
+		var juliePayment2 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.amap, payment.OnTheSpotPayment.TYPE, product2.price, "Payment on the spot", julieOrderOperation2[0]);
+
+		//Check that the second payment is just an update of the first one
+		assertEquals(juliePayment1.id, juliePayment2.id);
+	}
+
 }

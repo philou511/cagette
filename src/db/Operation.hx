@@ -66,17 +66,17 @@ class Operation extends sys.db.Object
 	public function getPaymentTypeName(){
 		var t = getPaymentType();
 		if (t == null) return null;
-		for ( pt in service.PaymentService.getAllPaymentTypes()){
+		for ( pt in service.PaymentService.getPaymentTypes(PCAll)){
 			if (pt.type == t) return pt.name;
 		}
 		return null;
 	}
 	
 	/**
-	 * get payments linked to this order transaction
+	 * get payments linked to this order operation
 	 */
 	public function getRelatedPayments(){
-		return db.Operation.manager.search($relation == this, false);
+		return db.Operation.manager.search($relation == this && $type == Payment, false);
 	}
 	
 	public function getOrderInfos(){
@@ -122,10 +122,6 @@ class Operation extends sys.db.Object
 		//return manager.search($user == user && $group == group && $relation==null,{orderBy:date},false);		
 		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
 	}*/
-	
-	public static function getPaymentOperations(user:db.User, group:db.Amap,?limit=50){
-		return manager.search($user == user && $group == group && $type == Payment, {orderBy:date,limit:limit},false);
-	}
 	
 	public static function getLastOperations(user:db.User, group:db.Amap, ?limit = 50){
 		
@@ -234,24 +230,64 @@ class Operation extends sys.db.Object
 	 * @param	name
 	 * @param	relation
 	 */
-	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation ){
+	public static function makePaymentOperation(user: db.User, group: db.Amap, type: String, amount: Float, name: String, ?relation: db.Operation) : db.Operation
+	{
+
+		if(type == payment.OnTheSpotPayment.TYPE) 
+		{
+			var onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(group);
+			if(onTheSpotAllowedPaymentTypes.length == 1)
+			{
+				//There is only one on the spot payment type so we can directly set it here
+				type = onTheSpotAllowedPaymentTypes[0].type;				
+			}
+			
+			if(relation != null)
+			{
+				var relatedPaymentOperations = relation.getRelatedPayments();
+				for (operation in relatedPaymentOperations)
+				{
+					if(operation.data.type == payment.OnTheSpotPayment.TYPE || Lambda.has(payment.OnTheSpotPayment.getPaymentTypes(), operation.data.type))
+					{
+						return updatePaymentOperation(user, group, operation, amount);						
+					}
+				}
+			}
+		}
 		
-		var t = new db.Operation();
-		t.amount = Math.abs(amount);
-		t.date = Date.now();
-		t.name = name;
-		t.group = group;
-		t.pending = true;
-		t.user = user;
-		t.type = Payment;
-		var data : PaymentInfos = {type:type};
-		t.data = data;
-		if(relation!=null) t.relation = relation;
-		t.insert();
+		var operation = new db.Operation();
+		operation.amount = Math.abs(amount);
+		operation.date = Date.now();
+		operation.name = name;
+		operation.group = group;
+		operation.pending = true;
+		operation.user = user;
+		operation.type = Payment;		
+		var data : PaymentInfos = { type: type };
+		operation.data = data;
+		if(relation != null) operation.relation = relation;
+		operation.insert();
 		
 		service.PaymentService.updateUserBalance(user, group);
 		
-		return t;
+		return operation;
+	}
+
+
+	/**
+	 * Update a payment operation
+	 * @param	amount
+	 */
+	public static function updatePaymentOperation(user: db.User, group: db.Amap, operation: db.Operation, amount: Float) : db.Operation
+	{
+
+		operation.lock();
+		operation.amount += Math.abs(amount);		
+		operation.update();
+		
+		service.PaymentService.updateUserBalance(user, group);
+		
+		return operation;
 	}
 	
 	/**

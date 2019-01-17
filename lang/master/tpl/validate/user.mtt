@@ -93,7 +93,7 @@
 			
 		
 			::if (user._amap.hasShopMode())::
-			<!--  PAYMENT CHECK FOR SHOP MODE -->
+			<!--  PAYMENT CHECK FOR SHOP MODE-->
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
 					<th colspan="9" class="text-center">::_("Payment")::</th>
@@ -116,11 +116,28 @@
 						::end::
 						<td>
 							::if(tt.pending)::
-							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
-								<i class="icon icon-check"></i>
-								::_("This payment was received")::
-							</a>
-							$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
+								::if(tt._data.type != "onthespot")::
+									<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
+										<i class="icon icon-check"/>
+										::_("I have received this payment")::
+									</a>
+								::else::
+									::foreach type onTheSpotAllowedPaymentTypes::
+										<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::&type=::type.type::" class="btn btn-primary btn-sm">
+											<i class="icon icon-check"/>
+											::if(type.type == "cash")::
+												::_(" I have received this payment in cash")::
+											::elseif(type.type == "check")::
+												::_(" I have received this payment by check")::			
+											::elseif(type.type == "transfer")::
+												::_(" I have received this payment by transfer")::											
+											::else::
+												::__(" I have received this payment by ::paymentType::", {paymentType: type.name.toLowerCase()})::
+											::end::										
+										</a>
+									::end::
+								::end::
+								$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
 							::end::
 						</td>
 					</tr>
@@ -220,8 +237,13 @@
 						<td>
 							::if(op.pending && op.type==2)::
 							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
+<<<<<<< HEAD
 								<i class="icon icon-check"></i>
 								::_("This payment has been received")::
+=======
+								<span class="glyphicon glyphicon-ok"></span>
+								::_("I have received this payment")::
+>>>>>>> master
 							</a>
 							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::op.id::?token=::token::)
 							::end::
