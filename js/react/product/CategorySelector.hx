@@ -5,13 +5,13 @@ import react.ReactMacro.jsx;
 import Common;
 import react.Typeahead;
 
-typedef ProductInputProps = {
+private typedef CategorySelectorProps = {
 	formName:String,
 	txpProductId:Int,
 	productName:String,
 }
 
-typedef ProductInputState = {
+private typedef CategorySelectorState = {
 	txpProductId:Int,
 	productName:String,
 	categoryId:Int,
@@ -19,12 +19,13 @@ typedef ProductInputState = {
 }
 
 /**
- * Product Text Input with autocompletion
+ * Select the category of a product
  * 
  * @author fbarbut
 	@deprecated
  */
-class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState> {
+class CategorySelector extends react.ReactComponentOfPropsAndState<PCategorySelectorProps,CategorySelectorState> {
+
 	public static var DICO : TxpDictionnary = null;
 	var options : Array<{id:Int,label:String}>;
 	var imgRef: react.ReactRef<{src:String}>;
@@ -49,26 +50,33 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			<div className="row">
 			
 				<div className="col-md-8">
-					<$AsyncTypeahead 
-						placeholder="Saisissez un nom de produit" 
-						options=$options 
-						onSearch=$onSearch 
-						minLength={3} 
-						style={{width:"350px"}} 
-						onChange=$onChange 
-						onInputChange=$onInputChange 
-						selected={[${state.productName}]} 
-						isLoading=$true
-					/>				
+					
+                    
+
 					<div className = "txpProduct" > ${state.breadcrumb}</div>				
 					
-					<input className="txpProduct" type="hidden" name=$txpProductInputName value=${state.txpProductId} />
-					<input className="txpProduct" type="hidden" name=$inputName value=${state.productName} />
+					<input className="txpProduct" type="hidden" name="$txpProductInputName" value="${state.txpProductId}" />
+					<input className="txpProduct" type="hidden" name="$inputName" value="${state.productName}" />
 				</div>
 				
 				<div className="col-md-4">
 					<img ref=${this.imgRef} className="img-thumbnail" />
 				</div>
+
+                <Modal>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Expansion Panel 1</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                        <Typography>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                            sit amet blandit leo lobortis eget.
+                        </Typography>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                </Modal>
+
 
 			</div>
 		');
@@ -145,7 +153,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			productName:product.name	//do not override product name !		*/
 		});
 		
-		this.imgRef.current.src=DICO.categories[txp.category].image;
+		this.imgRef.current.src="/img/taxo/cat"+txp.category+".png";
 	}
 	
 	/**
@@ -154,7 +162,8 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	 */
 	function getBreadcrumb(product){
 		//cat			
-		var str = DICO.categories.get(product.category).name;
+		var str = D
+		ICO.categories.get(product.category).name;
 		if (product.subCategory != null){
 			str += " / " + DICO.subCategories.get(product.subCategory).name;
 		}

@@ -67,10 +67,12 @@ typedef ProductInfo = {
 	hasFloatQt : Bool,
 	qt:Null<Float>,
 	unitType:Null<Unit>,
+
 	organic:Bool,
 	variablePrice:Bool,
 	wholesale:Bool,
 	active:Bool,
+	bulk:Bool,
 
 	contractId : Int,
 	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
@@ -285,8 +287,8 @@ enum Event {
  */ 
 typedef TxpDictionnary = {
 	products:Map<Int,{id:Int,name:String,category:Int,subCategory:Int}>,
-	categories:Map<Int,{id:Int,name:String}>,
-	subCategories:Map<Int,{id:Int,name:String}>,
+	categories:Map<Int,CategoryInfo>,
+	subCategories:Map<Int,CategoryInfo>,
 	
 }
 

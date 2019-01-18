@@ -198,7 +198,7 @@ Called from controller/Main.hx line 117
 		view.category = 'shop';
 		view.place = place;
 		view.date = date;
-		view.rights = haxe.Serializer.run(app.user.getRights());
+		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
 	}
 	
 	@logged

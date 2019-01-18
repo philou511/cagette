@@ -66,9 +66,9 @@ class Product extends Object
 	public function getImage() {
 		if (image == null) {
 			if (txpProduct != null){				
-				return "/img/taxo/cat" + txpProduct.category.id + ".png";
+				return "/img/taxo/grey/" + txpProduct.category.image + ".png";
 			}else{
-				return "/img/unknown.png";
+				return "/img/taxo/grey/legumes.png";
 			}			
 		}else {
 			return App.current.view.file(image);
@@ -123,6 +123,7 @@ class Product extends Object
 			organic:organic,
 			variablePrice:variablePrice,
 			wholesale:wholesale,
+			bulk:bulk,
 			active: active,
 			distributionId : distribution==null ? null : distribution.id,
 			contractId : contract.id,

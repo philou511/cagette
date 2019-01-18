@@ -10,7 +10,11 @@
 
 <script>
   $(function(){
+    ::if(user!=null)::
     _.pageHeader("::groupName::","::rights::","::user.getName()::",::user.id::);
+    ::else::
+    _.pageHeader("::groupName::",null,null,null);
+    ::end::
     _.shop(::place.id::, "::date::");
     
   });

@@ -16,24 +16,39 @@ class Labels extends react.ReactComponentOfProps<{product:ProductInfo}> {
 
         var style = {
             fontSize:20,
-            color:mui.CagetteTheme.CGColors.Secondfont
+            color:mui.CagetteTheme.CGColors.Secondfont,
+            marginRight:8
         };
 
         var labels = [];
 
         //bio
         if(props.product.organic){
-            labels.push(
-                jsx('<Tooltip key="bio" title="Agriculture biologique" placement=${mui.core.popper.PopperPlacement.Top}>
-                    ${mui.CagetteIcon.get("bio",style)}
-                </Tooltip>')
-            );
+            labels.push( label("bio","Agriculture biologique",style) );
+        }
+
+        //variable-weight
+        if(props.product.variablePrice){
+            labels.push( label("scale","Prix variable selon pesée",style) );
         }
 
         //bulk
+        if(props.product.bulk){
+            labels.push( label("bulk","Vendu en vrac : pensez à prendre un contenant",style) );
+        }
+
+        //wholesale
+        if(props.product.bulk){
+            labels.push( label("wholesale","Ce produit est commandé en gros",style) );
+        }
         
-        //variable-weight
 
         return labels;
+    }
+
+    function label(iconId,name,style){
+        return jsx('<Tooltip key=$iconId title=$name placement=${mui.core.popper.PopperPlacement.Top}>
+            ${mui.CagetteIcon.get(iconId,style)}
+        </Tooltip>');
     }
 }

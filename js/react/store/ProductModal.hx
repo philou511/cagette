@@ -186,6 +186,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                             </Typography>
 
                             <Typography component="p">
+                                <i className="icon icon-link"/>&nbsp;
                                 <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
                             </Typography>
 

@@ -1,6 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
 /**
  * Category
@@ -22,5 +23,13 @@ class TxpCategory extends Object
 	
 	override public function toString(){
 		return '#$id-$name';
+	}
+
+	public function infos():CategoryInfo{
+		return {
+			id:id,
+			name:name,
+			image:'/img/taxo/$image.png',
+		};
 	}
 }

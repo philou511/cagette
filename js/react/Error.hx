@@ -20,7 +20,7 @@ class Error extends react.ReactComponentOfProps<{error:String}>
 		if (props.error == null) return null;
 		
 		return jsx('<div className="alert alert-danger">
-				<span className="glyphicon glyphicon-exclamation-sign"></span> ${props.error}
+				<i className="icon icon-alert"></i> ${props.error}
 			</div>
 		');
 	}

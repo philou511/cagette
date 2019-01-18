@@ -118,13 +118,13 @@
 							::if(tt.pending)::
 								::if(tt._data.type != "onthespot")::
 									<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
-										<i class="icon icon-check"/>
+										<i class="icon icon-check"></i>
 										::_("I have received this payment")::
 									</a>
 								::else::
 									::foreach type onTheSpotAllowedPaymentTypes::
 										<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::&type=::type.type::" class="btn btn-primary btn-sm">
-											<i class="icon icon-check"/>
+											<i class="icon icon-check"></i>
 											::if(type.type == "cash")::
 												::_(" I have received this payment in cash")::
 											::elseif(type.type == "check")::
@@ -237,13 +237,8 @@
 						<td>
 							::if(op.pending && op.type==2)::
 							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
-<<<<<<< HEAD
 								<i class="icon icon-check"></i>
 								::_("This payment has been received")::
-=======
-								<span class="glyphicon glyphicon-ok"></span>
-								::_("I have received this payment")::
->>>>>>> master
 							</a>
 							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::op.id::?token=::token::)
 							::end::

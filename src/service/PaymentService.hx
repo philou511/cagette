@@ -242,7 +242,7 @@ class PaymentService
 
 	public static function getPaymentInfosString(group:db.Amap):String {
 		var out = "";
-		var allowedPaymentTypes = getAllowedPaymentTypes(group);
+		var allowedPaymentTypes = getPaymentTypes(PCPayment,group);
 		out = Lambda.map(allowedPaymentTypes,function(m) return m.name).join(", ");
 		return out;
 	}

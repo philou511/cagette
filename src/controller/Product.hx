@@ -323,16 +323,18 @@ class Product extends Controller
 		}
 		
 		for ( c in db.TxpCategory.manager.all()){
-			out.categories.set(c.id, {id:c.id,name:c.name });
+			out.categories.set(c.id, c.infos());
 		}
 		
 		for ( c in db.TxpSubCategory.manager.all()){
-			out.subCategories.set(c.id, {id:c.id,name:c.name });
+			out.subCategories.set(c.id, c.infos());
 		}
 		
 		Sys.print(haxe.Serializer.run(out));
 		
 	}
+
+	
 	
 	
 	

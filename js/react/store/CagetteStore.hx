@@ -8,6 +8,7 @@ import mui.CagetteTheme;
 import mui.core.Grid;
 import react.PageHeader;
 import mui.core.CircularProgress;
+import react.MuiError;
 
 import utils.HttpUtil;
 
@@ -38,6 +39,7 @@ typedef  CagetteStoreState = {
 
 	var vendors:Array<VendorInfo>;
 	var paymentInfos:String;
+	var errorMessage:String;
 };
 
 @:enum
@@ -88,8 +90,13 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			products:[],
 			loading:true,
 			vendors:[],
-			paymentInfos:""
+			paymentInfos:"",
+			errorMessage : null
 		};
+	}
+
+	function onError(msg:String){
+		setState({errorMessage:msg});
 	}
 
 	static function fetch(url:ServerUrl, ?method:HttpMethod = GET, ?params:Dynamic = null, ?accept:FetchFormat = PLAIN_TEXT,
@@ -112,7 +119,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				paymentInfos:infos.paymentInfos
 			});
 		}).catchError(function(error) {
-			trace("ERROR", error);
+			onError(error);
 		});
 
 		//Loads categories list
@@ -120,10 +127,10 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
 
-			var subCategories = [];
+			/*var subCategories = [];
 			for (category in categories) {
 				subCategories = subCategories.concat(category.subcategories);
-			}
+			}*/
 
 			setState({
 				categories: categories,
@@ -140,7 +147,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 						p.categories = [DEFAULT_CATEGORY.id];
 					} 
 					//convert unit in enum
-					return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
+					if(p.unitType!=null) p = js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
+					return p;
 				}));
 
 				setState({
@@ -148,11 +156,11 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					loading:false,
 					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
 				}, function() {
-					trace("products catalog updated");
+					
 				});
 
 			}).catchError(function(error) {
-				trace("ERROR", error);
+				onError(error);
 			});
 
 			//categories.unshift(DEFAULT_CATEGORY);
@@ -188,7 +196,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				});
 			});*/
 		}).catchError(function(error) {
-			trace("ERROR", error);
+			onError(error);
 		});
 		
 	}
@@ -264,6 +272,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			return 	if( state.loading ) renderLoader();
 					else jsx('<ProductList categories=${state.categories} products=${filter(state.products, state.filter)} vendors=${state.vendors} />');
 		}
+
+		
+
 		return jsx('			
 			<div className="shop">
 
@@ -277,11 +288,15 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					toggleFilterTag=${toggleFilterTag}
 				/>
 
-				{renderPromo()}
-				{renderProducts()}
-				
+				${renderPromo()}
+				${renderProducts()}
+				${state.errorMessage!=null?jsx('<MuiError errorMessage=${state.errorMessage} onClose=$onErrorDialogClose  />'):null}
 			</div>
 		');
+	}
+
+	function onErrorDialogClose(){
+		setState({errorMessage:null});
 	}
 
 	function renderHeader() {

@@ -258,9 +258,10 @@ class App {
 	/**
 		init react page header
 	**/
-	public function pageHeader(groupName:String,rights:String,userName:String,userId:Int)
+	public function pageHeader(groupName:String,_rights:String,userName:String,userId:Int)
 	{
-		var rights : Rights = haxe.Unserializer.run(rights);
+		var rights : Rights = null;
+		if(_rights!=null) rights = haxe.Unserializer.run(_rights);
 		ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
 	}
 

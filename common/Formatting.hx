@@ -76,7 +76,7 @@ class Formatting
 	 * @param	unit
 	 */
 	public static function pricePerUnit(price:Float, qt:Float, u:Unit, ?currency="€"):String{
-		if (unit==null || qt == null || qt == 0 || price==null || price==0) return "";
+		if (u==null || qt == null || qt == 0 || price==null || price==0) return "";
 		var pricePerUnit = price / qt;
 				
 		//turn small prices in Kg

@@ -13,9 +13,6 @@
 		
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
-		<!--
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/shop.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/map.css"/>-->		
 	
 		<!-- JQUERY -->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -24,16 +21,17 @@
 		::if noBootstrap::
 		::else::
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
-		::end::
-
-		<!-- Cagette very own icon font -->
-		<link rel="stylesheet" href="/font/icons.css" />
-		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
 		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
 		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+		
+		::end::
+
+		<!-- Cagette very own icon font -->
+		<link rel="stylesheet" href="/font/icons.css" />
+		
 			
 		<!-- Leaflet CSS -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
