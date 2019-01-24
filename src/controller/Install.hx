@@ -92,8 +92,6 @@ class Install extends controller.Controller
 				place.insert();
 				
 				var vendor = new db.Vendor();
-				vendor.amap = amap;
-
 				vendor.name = t._("Jean Martin EURL");
 				vendor.email = "jean.martin@cagette.net";
 				vendor.zipCode = "00000";

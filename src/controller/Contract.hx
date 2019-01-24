@@ -221,24 +221,52 @@ class Contract extends Controller
 		view.form = form;
 	}
 	
+	/**
+		1- Select VARIABLE ORDER / CSA Contract
+	**/
 	@tpl("contract/insertChoose.mtt")
 	function doInsertChoose() {
-		//checkToken();
+		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
+	}
+
+	/**
+		2- define the vendor
+	**/
+	@tpl("form.mtt")
+	function doDefineVendor(?type=1){
+		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
+		
+		view.title = t._("Define a vendor");
+		var f = new sugoi.form.Form("defVendor");
+		f.addElement(new sugoi.form.elements.StringInput("name",t._("Vendor name"),null,true));
+		f.addElement(new sugoi.form.elements.StringInput("email",t._("Vendor email"),null,true));
+		//f.addElement(new sugoi.form.elements.IntInput("zipCode",t._("zip code"),null,true));
+
+		if(f.isValid()){
+			//look for identical names
+			var name : String = f.getValueOf('name');
+			var email : String = f.getValueOf('email');
+			var vendors = Lambda.array(db.Vendor.manager.search($name.like(name),false));
+			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
+			app.setTemplate('contractadmin/defineVendor.mtt');
+			view.vendors = vendors;
+
+		}
+
+		view.form = f;
 	}
 	
 	/**
 	 * Créé un nouveau contrat
 	 */
 	@tpl("form.mtt")
-	function doInsert(?type:Int) {
+	function doInsert(?type=1) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
-		if (type == null) throw Redirect('/contract/insertChoose');
 		
 		view.title = if (type == db.Contract.TYPE_CONSTORDERS)t._("Create a contract with fixed orders") else t._("Create a contract with variable orders");
 		
 		var c = new db.Contract();
-		
 		var form = Form.fromSpod(c);
 		form.removeElement( form.getElement("amapId") );
 		form.removeElement(form.getElement("type"));
@@ -247,8 +275,6 @@ class Contract extends Controller
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
-			//trace(app.user.amap);
-			//trace(c.amap);
 			c.type = type;
 			c.insert();
 			

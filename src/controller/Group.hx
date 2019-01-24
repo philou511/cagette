@@ -224,13 +224,15 @@ class Group extends controller.Controller
 			place.insert();
 			
 			//contrat AMAP
-			var vendor = new db.Vendor();
-			vendor.amap = g;
-			vendor.name = "Jean Martin EARL";
-			vendor.zipCode = "000";
-			vendor.city = "Langon";
-			vendor.email = "jean@cagette.net";
-			vendor.insert();			
+			var vendor = db.Vendor.manager.select($email=="jean@cagette.net",false);
+			if(vendor==null){
+				new db.Vendor();
+				vendor.name = "Jean Martin EARL";
+				vendor.zipCode = "000";
+				vendor.city = "Langon";
+				vendor.email = "jean@cagette.net";
+				vendor.insert();
+			}
 			
 			if (type == Amap){
 				var contract = new db.Contract();
@@ -271,13 +273,15 @@ class Group extends controller.Controller
 			}
 			
 			//contrat variable
-			var vendor = new db.Vendor();
-			vendor.amap = g;
-			vendor.name = t._("Farm Galinette");
-			vendor.zipCode = "000";
-			vendor.city = t._("Bazas");
-			vendor.email = "galinette@cagette.net";
-			vendor.insert();			
+			var vendor = db.Vendor.manager.select($email=="galinette@cagette.net",false);
+			if(vendor==null){
+				vendor = new db.Vendor();
+				vendor.name = t._("Farm Galinette");
+				vendor.zipCode = "000";
+				vendor.city = t._("Bazas");
+				vendor.email = "galinette@cagette.net";
+				vendor.insert();			
+			}			
 			
 			var contract = new db.Contract();
 			contract.name = t._("Chicken Contract - Example");

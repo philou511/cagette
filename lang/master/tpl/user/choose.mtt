@@ -11,24 +11,22 @@
 		</h2>				
 	</div>
 
-	<div class="col-md-12" ::cond pros!=null && pros.length>0::>
-		<p> ::raw _("Connect to your <b>Cagette Pro</b> account to manage your products, catalogs and deliveries.")::</p>
+	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
+		<!--<p> ::raw _("Connect to your <b>Cagette Pro</b> account to manage your products, catalogs and deliveries.")::</p>-->
+		<p>Connectez-vous à votre <b>compte producteur</b></p>
 	</div>
 
 
 	<!-- cagette pro -->
-	<div class="col-md-12" ::cond pros!=null::>
+	<div class="col-md-12" ::cond vendors!=null::>
 		<div class="row">
-		::foreach p pros::
-			<!-- Cagette pro -->
+		::foreach v vendors::
 			<div class="col-md-4">
-				<a class="clickable proBlock" href="/p/pro/?company=::p.id::">
-					
-					::if p._image!=null::
-					<img src="::file(p._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">
+					::if v._image!=null::
+					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 					::end::						
-					
-					<h4>::p.name::</h4>
+					<h4>::v.name::</h4>
 				</a>
 			</div>
 		::end::

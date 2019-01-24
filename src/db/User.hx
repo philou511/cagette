@@ -352,17 +352,7 @@ class User extends Object {
 		
 	}
 	
-	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
-		var u = db.User.manager.select($email == email || $email2 == email, true);
-		if (u == null){
-			u = new db.User();
-			u.firstName = firstName;
-			u.lastName = lastName;
-			u.email = email;			
-			u.insert();
-		}
-		return u;
-	}
+	
 	
 	/**
 	 * Search for similar users in the DB ( same firstName+lastName or same email )

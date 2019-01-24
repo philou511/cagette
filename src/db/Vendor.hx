@@ -2,7 +2,7 @@ package db;
 import sys.db.Object;
 import sys.db.Types;
 /**
- * Vendor (producteur)
+ * Vendor (farmer/producer/vendor)
  */
 class Vendor extends Object
 {
@@ -22,9 +22,10 @@ class Vendor extends Object
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
 	
-	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
+	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
+	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
+	//@:relation(amapId) public var amap : SNull<Amap>;
 	
-	@:relation(amapId) public var amap : SNull<Amap>;
 	
 	public function new() 
 	{

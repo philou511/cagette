@@ -257,7 +257,7 @@ class Contract extends Object
 	 * @return
 	 */
 	public function populateVendor():FormData<Int>{
-		var vendors = Vendor.manager.search($amap == App.current.user.amap, false);
+		var vendors = Vendor.manager.all(false);
 		var out = [];
 		for (v in vendors) {
 			out.push({label:v.name, value:v.id });

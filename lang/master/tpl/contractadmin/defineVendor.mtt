@@ -1,0 +1,39 @@
+::use 'design.mtt'::
+
+<div class="col-md-12">
+	<div class="article">
+
+		<h2>::_("Select a vendor")::</h2>
+		
+		::_("We found these vendors in our database :")::
+		<div class="row">
+			::foreach v vendors::
+			<div class="col-md-4">
+				<a href="" class="clickable groupBlock">					
+					::if v._image!=null::
+					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+					::end::
+					<b>::v.name::</b>
+					<br/>
+					::v.zipCode:: ::v.city::<br/>
+					::v.email::
+				</a>
+			</div>
+			::end::
+		</div>
+
+		
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="article text-center">
+		<p>
+			::_("The vendor you want to work with is not in this list ?")::
+		</p>
+		<a href="/vendor/insert" class="btn btn-default btn-lg">::_("Key-in a new vendor")::</a>
+
+	</div>
+</div>
+	
+::end::

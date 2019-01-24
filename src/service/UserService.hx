@@ -93,7 +93,7 @@ class UserService
 		var t  = sugoi.i18n.Locale.texts;
 		
 		if (!sugoi.form.validators.EmailValidator.check(email)){
-			throw new Error(500,t._("Invalid email address"));
+			throw new Error(500,t._("Invalid email address")+" : "+email);
 		}
 		
 		if ( db.User.getSameEmail(email).length > 0 ) {
@@ -107,6 +107,25 @@ class UserService
 		user.insert();				
 
 		return user;
+	}
+
+	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
+
+		var t  = sugoi.i18n.Locale.texts;
+		
+		if (!sugoi.form.validators.EmailValidator.check(email)){
+			throw new Error(500,t._("Invalid email address")+" : "+email);
+		}
+
+		var u = db.User.manager.select($email == email || $email2 == email, true);
+		if (u == null){
+			u = new db.User();
+			u.firstName = firstName;
+			u.lastName = lastName;
+			u.email = email;			
+			u.insert();
+		}
+		return u;
 	}
 
 	/**

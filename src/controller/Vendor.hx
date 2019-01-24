@@ -1,8 +1,5 @@
 package controller;
-import db.UserContract;
-import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
-import neko.Web;
 import sugoi.tools.Utils;
 
 
@@ -17,7 +14,7 @@ class Vendor extends Controller
 		
 	}
 	
-	@logged
+	/*@logged
 	@tpl('vendor/default.mtt')
 	function doDefault() {
 		var browse:Int->Int->List<Dynamic>;
@@ -30,19 +27,19 @@ class Vendor extends Controller
 		var count = db.Vendor.manager.count($amap==app.user.amap);
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.vendors = rb;
-	}
+	}*/
 	
 	
-	@tpl("vendor/view.mtt")
+	/*@tpl("vendor/view.mtt")
 	function doView(vendor:db.Vendor) {
 		view.vendor = vendor;
-	}
+	}*/
 	
 	@tpl('form.mtt')
 	function doEdit(vendor:db.Vendor) {
 		
 		var form = sugoi.form.Form.fromSpod(vendor);
-		form.removeElement( form.getElement("amapId") );
+		//form.removeElement( form.getElement("amapId") );
 		
 		if (form.isValid()) {
 			form.toSpod(vendor); //update model
@@ -53,17 +50,17 @@ class Vendor extends Controller
 		view.form = form;
 	}
 	
+
 	@tpl("form.mtt")
 	public function doInsert() {
-		
-		
+				
 		var m = new db.Vendor();
 		var form = sugoi.form.Form.fromSpod(m);
-		form.removeElement(form.getElement("amapId"));
+		//form.removeElement(form.getElement("amapId"));
 		
 		if (form.isValid()) {
 			form.toSpod(m); //update model
-			m.amap = app.user.amap;
+			//m.amap = app.user.amap;
 			m.insert();
 			
 			throw Ok('/contractAdmin/', t._("This supplier has been saved"));
@@ -72,7 +69,7 @@ class Vendor extends Controller
 		view.form = form;
 	}
 	
-	public function doDelete(v:db.Vendor) {
+	/*public function doDelete(v:db.Vendor) {
 		if (!app.user.isAmapManager()) throw t._("Forbidden action");
 		if (checkToken()) {
 					
@@ -83,7 +80,7 @@ class Vendor extends Controller
 			throw Ok("/contractAdmin", t._("Supplier deleted"));
 		}
 		
-	}
+	}*/
 	
 	@tpl('vendor/addimage.mtt')
 	function doAddImage(v:db.Vendor) {
@@ -105,14 +102,12 @@ class Vendor extends Controller
 					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
 				}
 				
-				v.lock();
-				
+				v.lock();				
 				if (v.image != null) {
 					//efface ancienne
 					v.image.lock();
 					v.image.delete();
-				}
-				
+				}				
 				v.image = img;
 				v.update();
 				throw Ok('/contractAdmin/', t._("Image updated"));
