@@ -16,6 +16,7 @@ class Contract extends Controller
 	public function new() 
 	{
 		super();
+		view.nav = ["contractadmin"];
 	}
 	
 	@tpl("contract/view.mtt")
@@ -222,16 +223,7 @@ class Contract extends Controller
 	}
 	
 	/**
-		1- Select VARIABLE ORDER / CSA Contract
-	**/
-	@tpl("contract/insertChoose.mtt")
-	function doInsertChoose() {
-		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
-		
-	}
-
-	/**
-		2- define the vendor
+		1- define the vendor
 	**/
 	@tpl("form.mtt")
 	function doDefineVendor(?type=1){
@@ -249,33 +241,80 @@ class Contract extends Controller
 			var email : String = f.getValueOf('email');
 			var vendors = Lambda.array(db.Vendor.manager.search($name.like(name),false));
 			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
+			if(vendors.length==0) {
+				throw Ok("/contract/insertVendor/"+email+"/"+name,t._("We haven't found any matching vendor in our database, please key-in a record for this new vendor."));
+			}
 			app.setTemplate('contractadmin/defineVendor.mtt');
 			view.vendors = vendors;
+			view.email = email;
+			view.name = name;
 
 		}
 
 		view.form = f;
 	}
+
+	/**
+	  2- create vendor
+	**/
+	@tpl("form.mtt")
+	public function doInsertVendor(email:String,name:String) {
+				
+		var m = new db.Vendor();
+		var form = sugoi.form.Form.fromSpod(m);
+				
+		if (form.isValid()) {
+			form.toSpod(m); //update model
+			m.insert();
+
+			service.VendorService.sendEmailOnAccountCreation(m,app.user,app.user.getAmap());
+			
+			throw Ok('/contract/insertChoose/'+m.id, t._("This supplier has been saved"));
+		}else{
+			form.getElement("email").value = email;
+			form.getElement("name").value = name;
+		}
+
+		view.title = t._("Key-in a new vendor");
+		view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
+		view.form = form;
+	}
+
+	/**
+		3 - Select VARIABLE ORDER / CSA Contract
+	**/
+	@tpl("contract/insertChoose.mtt")
+	function doInsertChoose(vendor:db.Vendor) {
+		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
+		view.vendor = vendor;
+		
+	}
 	
 	/**
-	 * Créé un nouveau contrat
+	 * 4 - create the contract
 	 */
 	@tpl("form.mtt")
-	function doInsert(?type=1) {
+	function doInsert(?type=1,vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
 		view.title = if (type == db.Contract.TYPE_CONSTORDERS)t._("Create a contract with fixed orders") else t._("Create a contract with variable orders");
 		
 		var c = new db.Contract();
+
 		var form = Form.fromSpod(c);
-		form.removeElement( form.getElement("amapId") );
-		form.removeElement(form.getElement("type"));
+		form.removeElement(form.getElement("amapId") );
+		form.removeElement(form.getElement("type"));		
 		form.getElement("userId").required = true;
+		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
+		form.removeElement(form.getElement("vendorId"));
+		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
+
 			
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
 			c.type = type;
+			c.vendor = vendor;
 			c.insert();
 			
 			//right

@@ -53,6 +53,7 @@ class Contract extends Object
 	{
 		super();
 		flags = cast 0;
+		flags.set(UsersCanOrder);
 		distributorNum = 0;
 		
 	}
@@ -257,7 +258,7 @@ class Contract extends Object
 	 * @return
 	 */
 	public function populateVendor():FormData<Int>{
-		var vendors = Vendor.manager.all(false);
+		var vendors = this.amap.getVendors();
 		var out = [];
 		for (v in vendors) {
 			out.push({label:v.name, value:v.id });

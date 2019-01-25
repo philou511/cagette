@@ -76,7 +76,7 @@
 	
 		<div class="btn-group" role="group">
 			::if user.canManageAllContracts():: 
-			$$insert(::_("New contract")::,/contract/insert/)
+			$$insert(::_("New contract")::,/contract/defineVendor/)
 			::end::
 			<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
 			<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> ::_("Calendar")::</a>
@@ -109,7 +109,10 @@
 						<div class="productImg" style="background-image:url('::file(v._image)::');width:48px;height:48px;"></div>
 						::end::
 					</td>
-					<td><b>::v.name::</b></td>
+					<td>
+						<b>::v.name::</b><br/>
+						::v.zipCode:: ::v.city::
+					</td>
 					<td>
 						<div class="btn-group" role="group">
 							$$edit(::_("Edit")::,/vendor/edit/::v.id::)

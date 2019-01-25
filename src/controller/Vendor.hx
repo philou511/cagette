@@ -51,23 +51,7 @@ class Vendor extends Controller
 	}
 	
 
-	@tpl("form.mtt")
-	public function doInsert() {
-				
-		var m = new db.Vendor();
-		var form = sugoi.form.Form.fromSpod(m);
-		//form.removeElement(form.getElement("amapId"));
-		
-		if (form.isValid()) {
-			form.toSpod(m); //update model
-			//m.amap = app.user.amap;
-			m.insert();
-			
-			throw Ok('/contractAdmin/', t._("This supplier has been saved"));
-		}
-		
-		view.form = form;
-	}
+	
 	
 	/*public function doDelete(v:db.Vendor) {
 		if (!app.user.isAmapManager()) throw t._("Forbidden action");
