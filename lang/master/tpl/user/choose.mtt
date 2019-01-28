@@ -42,8 +42,7 @@
 	<!-- groups -->
 	<div class="col-md-12">
 		<div class="row">
-			::foreach ua amaps::
-				::set group = ua._amap::
+			::foreach group amaps::				
 				<div class="col-md-4">
 					<a class="clickable groupBlock"  href="/user/choose?amap=::group.id::">
 					

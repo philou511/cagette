@@ -273,10 +273,14 @@ class User extends Object {
 	}
 	
 	/**
-	 * get groups this user belongs to
+	 * Get groups this user belongs to.	 
 	 */
-	public function getAmaps():List<db.Amap> {
-		return Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap);
+	public function getGroups():Array<db.Amap> {
+		var groups = Lambda.array(Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap));
+		//alphabetical order
+		groups.sort(function(a,b) return a.name>b.name?1:-1 );
+		return groups;
+
 	}
 	
 	public function isMemberOf(amap:Amap) {
