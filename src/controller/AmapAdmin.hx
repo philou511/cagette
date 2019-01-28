@@ -6,6 +6,7 @@ import sugoi.form.Form;
 import Common;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
+import sugoi.form.elements.FloatInput;
 
 
 class AmapAdmin extends Controller
@@ -261,28 +262,26 @@ class AmapAdmin extends Controller
 		}
 		
 		var i = 1;
+		//create field with a value
 		for (k in a.vatRates.keys()) {
-			f.addElement(new StringInput(i+"-k", t._("Name ")+i, k));
-			f.addElement(new StringInput(i + "-v", t._("Rate ")+i, Std.string(a.vatRates.get(k)) ));
-			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
+			f.addElement(new StringInput(i+"-k", t._("Name") +" "+ i, k));
+			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, a.vatRates.get(k) ));
 			i++;
 		}
-		var j = i;
 		
+		//...fill in to get 4 fields
 		for (x in 0...5 - i) {
-			f.addElement(new StringInput(i+"-k", t._("Name ")+i, ""));
-			f.addElement(new StringInput(i + "-v", t._("Rate ")+i, ""));
-			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
+			f.addElement(new StringInput(i+"-k", t._("Name") +" "+ i, null));
+			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, null));
 			i++;
 		}
 		
 		if (f.isValid()) {
 			var d = f.getData();
 			var vats = new Map<String,Float>();
-			var filter = new sugoi.form.filters.FloatFilter();
 			for (i in 1...5) {
 				if (d.get(i + "-k") == null) continue;
-				vats.set(d.get(i + "-k"), filter.filter( d.get(i + "-v")) );
+				vats.set(d.get(i + "-k"), d.get(i + "-v") );
 			}
 			a.lock();
 			a.vatRates = vats;
