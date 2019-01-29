@@ -38,11 +38,14 @@ class Vendor extends Controller
 	@tpl('form.mtt')
 	function doEdit(vendor:db.Vendor) {
 		
+		if(vendor.getGroups().length>1){
+			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+		} 
+
 		var form = sugoi.form.Form.fromSpod(vendor);
-		//form.removeElement( form.getElement("amapId") );
 		
 		if (form.isValid()) {
-			form.toSpod(vendor); //update model
+			form.toSpod(vendor);
 			vendor.update();
 			throw Ok('/contractAdmin', t._("This supplier has been updated"));
 		}
@@ -50,28 +53,15 @@ class Vendor extends Controller
 		view.form = form;
 	}
 	
-
-	
-	
-	/*public function doDelete(v:db.Vendor) {
-		if (!app.user.isAmapManager()) throw t._("Forbidden action");
-		if (checkToken()) {
-					
-			if (db.Contract.manager.search($vendorId == v.id).length > 0) throw Error('/contractAdmin', t._("You cannot delete this supplier because some contracts (current or old) are referencing this supplier."));
-			
-			v.lock();
-			v.delete();
-			throw Ok("/contractAdmin", t._("Supplier deleted"));
-		}
-		
-	}*/
-	
 	@tpl('vendor/addimage.mtt')
-	function doAddImage(v:db.Vendor) {
+	function doAddImage(vendor:db.Vendor) {
 		
-		view.vendor = v;
-		view.image = v.image;
-		
+		if(vendor.getGroups().length>1){
+			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+		} 
+
+		view.vendor = vendor;
+		view.image = vendor.image;		
 		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
 		
 		if (request.exists("image")) {
@@ -86,14 +76,14 @@ class Vendor extends Controller
 					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
 				}
 				
-				v.lock();				
-				if (v.image != null) {
+				vendor.lock();				
+				if (vendor.image != null) {
 					//efface ancienne
-					v.image.lock();
-					v.image.delete();
+					vendor.image.lock();
+					vendor.image.delete();
 				}				
-				v.image = img;
-				v.update();
+				vendor.image = img;
+				vendor.update();
 				throw Ok('/contractAdmin/', t._("Image updated"));
 			}
 		}

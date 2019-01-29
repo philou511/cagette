@@ -24,7 +24,9 @@ class Vendor extends Object
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
-	//@:relation(amapId) public var amap : SNull<Amap>;
+	
+	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
+	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 	
 	
 	public function new() 
@@ -41,6 +43,12 @@ class Vendor extends Object
 	public function getActiveContracts(){
 		var now = Date.now();
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
+	}
+
+	public function getGroups():Array<db.Amap>{
+		var contracts = getActiveContracts();
+		var groups = Lambda.map(contracts,function(c) return c.amap);
+		return tools.ObjectListTool.deduplicate(groups);
 	}
 	
 	public static function getLabels(){

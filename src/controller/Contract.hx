@@ -260,16 +260,17 @@ class Contract extends Controller
 	@tpl("form.mtt")
 	public function doInsertVendor(email:String,name:String) {
 				
-		var m = new db.Vendor();
-		var form = sugoi.form.Form.fromSpod(m);
+		var vendor = new db.Vendor();
+		var form = sugoi.form.Form.fromSpod(vendor);
 				
 		if (form.isValid()) {
-			form.toSpod(m); //update model
-			m.insert();
+			form.toSpod(vendor);
+			vendor.insert();
 
-			service.VendorService.sendEmailOnAccountCreation(m,app.user,app.user.getAmap());
+			service.VendorService.getOrCreateRelatedUser(vendor);
+			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());
 			
-			throw Ok('/contract/insertChoose/'+m.id, t._("This supplier has been saved"));
+			throw Ok('/contract/insertChoose/'+vendor.id, t._("This supplier has been saved"));
 		}else{
 			form.getElement("email").value = email;
 			form.getElement("name").value = name;
