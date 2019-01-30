@@ -125,7 +125,8 @@ class ProductModal extends ReactComponentOfProps<Props> {
         var classes = props.classes;
         var product = props.product;
         var vendor = props.vendor;
-
+        
+        if( product == null || vendor == null ) return null;
         return jsx('
             <Dialog 
                 open={true} 
