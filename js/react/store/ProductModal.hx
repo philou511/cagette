@@ -135,7 +135,6 @@ class ProductModal extends ReactComponentOfProps<Props> {
                 scroll=${mui.core.dialog.DialogScrollContainer.Body}>
                 <div className=${classes.modal}>
                     
-                    
                     <Tooltip title="Fermer">
                         <Button onClick=${close} style={{top:0,position:css.Position.Absolute,right:0}}>
                             <i className="icon icon-delete"/>
@@ -143,7 +142,6 @@ class ProductModal extends ReactComponentOfProps<Props> {
                     </Tooltip>
                     
                     <Grid container spacing={24}>              
-
                         <Grid item xs={4} className=${classes.gridItem}>
                             <div>
                                 <img className=${classes.cover} src=${product.image}/>
@@ -174,7 +172,6 @@ class ProductModal extends ReactComponentOfProps<Props> {
                     </div>
 
                     <Grid container spacing={24}>
-                        
                         <Grid item xs={4}>
                             <img className=${classes.cover} src=${vendor.logoImageUrl} />
                         </Grid>
@@ -194,13 +191,9 @@ class ProductModal extends ReactComponentOfProps<Props> {
                                 ${vendorAvatar(vendor)}
                             </Typography>
 
-                            <p>    
-                                <div dangerouslySetInnerHTML={{__html: ${vendor.desc}}}></div>
-                            </p>
+                            <div dangerouslySetInnerHTML={{__html: ${vendor.desc}}}></div>
                         </Grid>
-
                     </Grid>
-                   
                 </div>
             </Dialog>
         ');

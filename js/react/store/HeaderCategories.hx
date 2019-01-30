@@ -16,7 +16,7 @@ import Common;
 
 using Lambda;
 
-typedef CategoriesProps = {
+typedef HeaderCategoriesProps = {
 	> PublicProps,
 	var classes:TClasses;
 };
@@ -30,18 +30,18 @@ private typedef PublicProps = {
 }
 
 private typedef TClasses = Classes<[
-    cagNavCategories,
+    cagNavHeaderCategories,
     cagCategoryActive,
     cagWrap,
 ]>
 
-private typedef CategoriesState = {
+private typedef HeaderCategoriesState = {
     selectedCategoryId : Int,
 }
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,CategoriesState> {
+class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategoriesProps,HeaderCategoriesState> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
@@ -49,7 +49,7 @@ class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,Cat
                 margin : "auto",
                 padding: "0 10px",
 			},
-            cagNavCategories : {
+            cagNavHeaderCategories : {
                 backgroundColor: CGColors.Bg2,
                 textAlign: Center,
                 textTransform: UpperCase,
@@ -117,7 +117,7 @@ class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,Cat
                 />')
         ];
         return jsx('
-            <div className=${classes.cagNavCategories}>
+            <div className=${classes.cagNavHeaderCategories}>
                 <div className=${classes.cagWrap}>
                     <Grid container spacing={0}>
                         ${categories}

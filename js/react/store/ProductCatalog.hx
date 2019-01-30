@@ -6,7 +6,7 @@ import react.ReactMacro.jsx;
 import mui.core.Grid;
 import classnames.ClassNames.fastNull as classNames;
 import mui.core.styles.Classes;
-import react.store.types.FilteredProductList;
+import react.store.types.FilteredProductCatalog;
 import mui.core.styles.Styles;
 import mui.core.Modal;
 import js.html.Event;
@@ -14,18 +14,18 @@ import mui.core.modal.ModalCloseReason;
 
 using Lambda;
 
-typedef ProductListProps = {
+typedef ProductCatalogProps = {
 	> PublicProps,
 	var classes:TClasses;
 };
 
 private typedef PublicProps = {
 	var categories:Array<CategoryInfo>;
-	var products:FilteredProductList;
+	var products:FilteredProductCatalog;
 	var vendors : Array<VendorInfo>;
 }
 
-private typedef ProductListState = {
+private typedef ProductCatalogState = {
 	var modalOpened:Bool;
 	var modalProduct:Null<ProductInfo>;
 }
@@ -34,7 +34,7 @@ private typedef TClasses = Classes<[categories,]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class ProductList extends react.ReactComponentOf<ProductListProps, ProductListState> {
+class ProductCatalog extends react.ReactComponentOf<ProductCatalogProps, ProductCatalogState> {
 
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
@@ -50,6 +50,12 @@ class ProductList extends react.ReactComponentOf<ProductListProps, ProductListSt
 		super(p);
 		this.state = {modalOpened:false, modalProduct:null};
 	}
+
+/*
+	static function getDerivedStateFromProps(nextProps, prevState) {
+		
+	}
+*/
 
 	override public function render() {
 		var classes = props.classes;
@@ -74,8 +80,8 @@ class ProductList extends react.ReactComponentOf<ProductListProps, ProductListSt
 		if( state.modalOpened == false ) return null;
 		
 		var vendor = Lambda.find(this.props.vendors,function(v){
-				return v.id==state.modalProduct.vendorId;
-			});
+			return v.id==state.modalProduct.vendorId;
+		});
 
         return jsx('
             <ProductModal 
