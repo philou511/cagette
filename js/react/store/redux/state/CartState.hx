@@ -27,7 +27,11 @@ class CartRdcr implements IReducer<CartAction, CartState> {
                 var cp = state.products.copy();
                 for( p in cp ) {
                     if( p.product == product ) {
-                        p.quantity = quantity;
+                        if( quantity > 0 )
+                          p.quantity = quantity;
+                        else
+                            cp.remove(p);
+                        //
                         break;
                     }
                 }
