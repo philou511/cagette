@@ -3,7 +3,6 @@ package react.store;
 import Common;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import react.store.SubCateg;
 import mui.core.Tooltip;
 
 class Labels extends react.ReactComponentOfProps<{product:ProductInfo}> {

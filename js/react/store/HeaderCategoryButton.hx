@@ -38,7 +38,7 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
 				backgroundColor: CGColors.Bg3,
 			},
 			cagCategory: {
-				cursor:"pointer"
+				cursor: "pointer",
 			}
 		}
 	}

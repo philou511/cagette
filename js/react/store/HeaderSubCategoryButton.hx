@@ -16,14 +16,15 @@ import css.AlignContent;
 import css.Properties;
 import css.Overflow;
 
-private typedef Props = {
+private typedef HeaderSubCategoryButtonProps = {
 	> PublicProps,
 	var classes:TClasses;
 }
 
 private typedef PublicProps = {
-    ?label:String,
-    ?onclick:Void->Void,
+    label:String,
+    onclick:Void->Void,
+    active:Bool,
     ?colorClass:String,
     ?icon: String,
 }
@@ -31,12 +32,15 @@ private typedef PublicProps = {
 private typedef TClasses = Classes<[
 	labelChip,
     icon,
+    cagSelect, 
+    cagLabelRouge,
+    cagBio,
 ]>
 
 @:acceptsMoreProps
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class SubCateg extends ReactComponentOfProps<Props> {
+class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryButtonProps> {
     
     public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
@@ -46,10 +50,9 @@ class SubCateg extends ReactComponentOfProps<Props> {
                 margin: 4,
             },
             labelChip : {
-
-                fontSize: "0.7rem",
-                margin: "5px 2px",
-                padding: "0px 5px",
+                fontSize: "0.75rem",
+                margin: "5px 5px",
+                padding: "5px 5px",
 
                 backgroundColor: CGColors.White,    
                 borderRadius: 16,
@@ -58,31 +61,32 @@ class SubCateg extends ReactComponentOfProps<Props> {
 
                 transition: "all 0.5s ease",
 
-                "&::hover" : {
-                    backgroundColor: "#d4d6d8",//untyped color('#FFFFF').darken(10).hex(),
-                },       
+                "&:hover" : {
+                    backgroundColor: "#DCDCDC",//untyped color('#FFFFF').darken(10).hex(),
+                },
+            },
 
-                "&.cagSelect" : {
-                    color:'#E56403',
-                },
-                
-                "&.cagLabelRouge" : {
-                    color:'#E53909',
-                },
+            cagSelect : {
+                color:'#E56403',
+            },
+            
+            cagLabelRouge : {
+                color:'#E53909',
+            },
 
-                "&.cagBio" : {
-                    color:'#16993B',
-                },
-            }
+            cagBio : {
+                color:'#16993B',
+            },
+
 		}
 	}
 
     override function render() {
+        trace(props.active);
         var classes = props.classes;
-        
         var linkClasses = classNames({
-			'${props.classes.labelChip}': true,
-			'${props.colorClass}': true,
+			'${classes.labelChip}': true,
+            '${classes.cagSelect}': props.active,
 		});
         
         var iconClasses = classNames({
@@ -93,9 +97,11 @@ class SubCateg extends ReactComponentOfProps<Props> {
         var others = react.ReactMacro.getExtraProps(props);
         //TODO replace by Chip composant instead?
        // <Chip color="primary" icon={<FaceIcon />} />
+
+       var icon = (props.icon != null) ? jsx('<Icon component="i" className=${iconClasses} /> '): null;
         return jsx('
             <a onClick=${props.onclick} className=${linkClasses} {...others}>
-                <Icon component="i" className=${iconClasses}></Icon> ${props.label}
+                ${icon}${props.label}
             </a>
         ');
     }

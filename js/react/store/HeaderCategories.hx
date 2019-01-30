@@ -36,7 +36,8 @@ private typedef TClasses = Classes<[
 ]>
 
 private typedef HeaderCategoriesState = {
-    selectedCategoryId : Int,
+    activeCategory : CategoryInfo,
+    activeSubCategory : CategoryInfo,
 }
 
 @:publicProps(PublicProps)
@@ -78,23 +79,41 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
 
     public function new(props) {
 		super(props);
-        
+        this.state = {activeCategory:null, activeSubCategory:null};
 	}
 
     override function componentDidMount() {
-
         //default category is "all products"
-        setState({selectedCategoryId:0});
+        setState({activeCategory:props.categories[0], activeSubCategory:null});
+    }
+
+    function onSubCategoryClicked(subcategory:CategoryInfo) {
+        setState({activeSubCategory:subcategory}, function() {
+            applyFilter();
+        });
+    }
+
+    function applyFilter() {
+        if( state.activeCategory == null ) return;
+
+        if( state.activeCategory.id == 0 )
+            props.resetFilter();
+        else if( state.activeSubCategory == null  )
+            props.filterByCategory(state.activeCategory.id);
+        else
+            props.filterBySubCategory(state.activeCategory.id, state.activeSubCategory.id);
     }
 
     function onCategoryClicked(category:CategoryInfo) {
-        if( category.id > 0 )
-            props.filterByCategory(category.id);
-        else if( category.id == 0 )
-            props.resetFilter();
-
-
-        setState({selectedCategoryId:category.id});
+        if( category == state.activeCategory ) {
+            setState({activeSubCategory:null}, function() {
+                applyFilter();
+            });
+        } else {
+            setState({activeCategory:category}, function(){
+                applyFilter();
+            });
+        }
         //resetFilter=${props.resetFilter}
         //filterByCategory=${props.filterByCategory}
         //filterBySubCategory=${props.filterBySubCategory}
@@ -103,20 +122,16 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
 
 	override public function render() {
         var classes = props.classes;
-        var CategoryContainerClasses = classNames({
-			'cagCategoryContainer': true,
-            '${classes.cagCategoryActive}': true,//make this dynamic
-		});
-        //TODO active
         var categories = [
             for(category in props.categories)
                 jsx('<HeaderCategoryButton
                                 key=${category.id} 
-                                active=${category.id==state.selectedCategoryId}
+                                active=${category == state.activeCategory}
                                 category=${category} 
                                 onClick=${onCategoryClicked.bind(category)}
                 />')
         ];
+
         return jsx('
             <div className=${classes.cagNavHeaderCategories}>
                 <div className=${classes.cagWrap}>
@@ -124,6 +139,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
                         ${categories}
                     </Grid>
                 </div>
+                <HeaderSubCategories category=${state.activeCategory} subcategory=${state.activeSubCategory} onClick=${onSubCategoryClicked} />
             </div>
         ');
     }
