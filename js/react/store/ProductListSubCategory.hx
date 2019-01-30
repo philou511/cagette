@@ -11,6 +11,7 @@ import mui.core.styles.Styles;
 import mui.core.Modal;
 import js.html.Event;
 import mui.core.modal.ModalCloseReason;
+import mui.core.Typography;
 
 using Lambda;
 
@@ -31,7 +32,7 @@ class ProductListSubCategory extends react.ReactComponentOfProps<ProductListSubC
 	function new(p) {
 		super(p);
 	}
-	
+
 	override public function render() {
 		var subcategory = props.subcategory;
 		return jsx('
@@ -45,9 +46,6 @@ class ProductListSubCategory extends react.ReactComponentOfProps<ProductListSubC
 	}
 
 	function renderProducts(products:Array<ProductInfo>) {
-		if (products == null || products.length == 0)
-			return null;
-		
 		return products.map(function(product) {
 			var vendor = Lambda.find(this.props.vendors,function(v){
 				return v.id == product.vendorId;

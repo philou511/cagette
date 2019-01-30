@@ -9,6 +9,7 @@ import mui.core.styles.Classes;
 import react.store.types.FilteredProductCatalog;
 import mui.core.styles.Styles;
 import mui.core.Modal;
+import mui.core.Typography;
 import js.html.Event;
 import mui.core.modal.ModalCloseReason;
 
@@ -20,7 +21,7 @@ typedef ProductListCategoryProps = {
 
 private typedef PublicProps = {
 	var category:CategoryInfo;
-	var products:FilteredProductCatalog;
+	var catalog:FilteredProductCatalog;
 	var openModal : ProductInfo->VendorInfo->Void;
 	var vendors : Array<VendorInfo>;
 }
@@ -33,27 +34,28 @@ class ProductListCategory extends react.ReactComponentOfProps<ProductListCategor
 	}
 
 	override public function render() {
-		trace("ProductListCategory::render");
 		var category = props.category;
-		var shouldDisplayCategoryName = props.products.category != null && props.products.subCategory == null
-									|| props.products.category == null && props.products.subCategory == null;
+		var shouldDisplayCategoryName = props.catalog.category != null && props.catalog.subCategory == null
+									|| props.catalog.category == null && props.catalog.subCategory == null;
 		
 		if( shouldDisplayCategoryName ) {
 			//TODO Should be done by server ideally
-			var hasProducts = Lambda.exists(props.products.products, function(p) {
+			var hasProducts = Lambda.exists(props.catalog.products, function(p) {
 				return Lambda.has(p.categories, category.id);
 			});
 
 			if( !hasProducts && category.subcategories != null ) {
 				for( subcategory in category.subcategories ) {
-					hasProducts = Lambda.exists(props.products.products, function(p) {
+					hasProducts = Lambda.exists(props.catalog.products, function(p) {
 						return Lambda.has(p.subcategories, subcategory.id);
 					});
 					if( hasProducts ) break;
 				}
 			}
 
-			if( !hasProducts ) shouldDisplayCategoryName = false;
+			if( !hasProducts ) {
+				shouldDisplayCategoryName = false;
+			}
 		}
 
 		var categoryName =  if(shouldDisplayCategoryName) jsx('<h2>${category.name}</h2>')
@@ -74,20 +76,25 @@ class ProductListCategory extends react.ReactComponentOfProps<ProductListCategor
 			return null;
 		
 		var list = category.subcategories.map(function(subcategory) {
-			var subProducts = props.products.products.filter(function(p) {
+			var subProducts = props.catalog.products.filter(function(p) {
 				return Lambda.has(p.subcategories, subcategory.id);
 			});
 			
 			if( subProducts.length == 0 ) return null;
+
 			return jsx('
 				<ProductListSubCategory key=${subcategory.id} subcategory=${subcategory} products=${subProducts} vendors={props.vendors} openModal=${props.openModal}  />
 			');
 		});
 
-		return jsx('
-			<>
-				$list
-			</>
-		');
+		while(list.remove(null)){}
+
+		var content = list.length == 0 ? jsx('
+					<Typography component="h4" align={Center}>
+						Il n\'y a aucun produit dans cette catégorie ${category.name}
+					</Typography>
+		') : jsx('<>${list}</>');
+
+		return content;
 	}
 }

@@ -21,7 +21,7 @@ typedef ProductCatalogProps = {
 
 private typedef PublicProps = {
 	var categories:Array<CategoryInfo>;
-	var products:FilteredProductCatalog;
+	var catalog:FilteredProductCatalog;
 	var vendors : Array<VendorInfo>;
 }
 
@@ -53,12 +53,13 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 
 	override public function render() {
 		var classes = props.classes;
+		trace('filter catalog', props.catalog.products.length, props.catalog.category);
 		return jsx('
 			<div className=${classes.categories}>
 			   <ProductModal 	product=${state.modalProduct}
 								vendor=${state.modalVendor}
 								onClose=${onModalCloseRequest} />
-			  <ProductCatalogCategories categories=${props.categories} products=${props.products} vendors=${props.vendors} openModal=${openModal} />
+			  <ProductCatalogCategories categories=${props.categories} catalog=${props.catalog} vendors=${props.vendors} openModal=${openModal} />
 			</div>
     	');
 	}
@@ -68,7 +69,6 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
     }
 
     function onModalCloseRequest(event:js.html.Event, reason:ModalCloseReason) {
-		trace("ask for closing "+reason);
         setState({modalProduct:null, modalVendor:null}, function() {trace("modal closed");});
     }
 

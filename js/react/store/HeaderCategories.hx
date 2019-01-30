@@ -105,6 +105,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
     }
 
     function onCategoryClicked(category:CategoryInfo) {
+
         if( category == state.activeCategory ) {
             setState({activeSubCategory:null}, function() {
                 applyFilter();
@@ -114,9 +115,9 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
                 applyFilter();
             });
         }
-        //resetFilter=${props.resetFilter}
-        //filterByCategory=${props.filterByCategory}
-        //filterBySubCategory=${props.filterBySubCategory}
+
+        // pour le bio et le label rouge..
+        // Attention : vérifier l'implémentation du filtre qui n'a pas du être faite !
         //toggleFilterTag=${props.toggleFilterTag}
     }
 
