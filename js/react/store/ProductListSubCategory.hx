@@ -31,7 +31,7 @@ class ProductListSubCategory extends react.ReactComponentOfProps<ProductListSubC
 	function new(p) {
 		super(p);
 	}
-
+	
 	override public function render() {
 		var subcategory = props.subcategory;
 		return jsx('
@@ -43,7 +43,7 @@ class ProductListSubCategory extends react.ReactComponentOfProps<ProductListSubC
 			</div>
 		');
 	}
-	
+
 	function renderProducts(products:Array<ProductInfo>) {
 		if (products == null || products.length == 0)
 			return null;

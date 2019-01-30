@@ -16,7 +16,7 @@ import Common;
 
 using Lambda;
 
-typedef CategoryProps = {
+typedef HeaderCategoryButtonProps = {
 	> PublicProps,
 	var classes:TClasses;
 }
@@ -31,7 +31,7 @@ private typedef TClasses = Classes<[cagCategoryActive,cagCategory]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class Category extends react.ReactComponentOfProps<CategoryProps> {
+class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryButtonProps> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			cagCategoryActive: {

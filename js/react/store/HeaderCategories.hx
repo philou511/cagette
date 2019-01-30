@@ -110,7 +110,8 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
         //TODO active
         var categories = [
             for(category in props.categories)
-                jsx('<Category  key=${category.id} 
+                jsx('<HeaderCategoryButton
+                                key=${category.id} 
                                 active=${category.id==state.selectedCategoryId}
                                 category=${category} 
                                 onClick=${onCategoryClicked.bind(category)}
