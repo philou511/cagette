@@ -113,17 +113,13 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	function renderMap() {
 		if( props.sticky ) return null;
 
-		var addressBlock = props.place.name;
-		var p = props.place;
-		if(p.address1!=null) addressBlock+=", "+p.address1;
-		if(p.address2!=null) addressBlock+=", "+p.address2;
-		if(p.zipCode!=null) addressBlock+=", "+p.zipCode;
-		if(p.city!=null) addressBlock+=" "+p.city;
-
+		var addressBlock = Formatting.getFullAddress(props.place);
+		
 		return jsx('
 			<Typography component="p">
 				${mui.CagetteIcon.get("map-marker")}
 				${addressBlock}
+				${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null} 
 			</Typography>'
 		);
 	}
@@ -174,28 +170,10 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 
 		var paymentInfos = jsx('<span>Paiement: ${props.paymentInfos}</span>');
 		return jsx('
-<<<<<<< HEAD
-            <div className=${classes.cagNavInfo}> 
-				<Typography component="p" onClick=$openMapWindow style=${{cursor:"pointer"}}>
-					${mui.CagetteIcon.get("map-marker")}
-					${addressBlock}
-				</Typography>
-				<Typography component="p">
-					${mui.CagetteIcon.get("calendar")}
-					${distribDate}
-				</Typography>
-				<Typography component="p">
-					${mui.CagetteIcon.get("clock")}
-					${endDates}
-				</Typography>
-				<Typography component="p">
-					${mui.CagetteIcon.get("cash")}
-					${paymentInfos}
-				</Typography>   
-
-				${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null}                  
-			</div>
-        ');
+            <Typography component="p">
+				${mui.CagetteIcon.get("euro")}
+				${paymentInfos}
+			</Typography>');
 	}
 
 	function onOSMWindowClose(_,_){
@@ -205,13 +183,4 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	function openMapWindow(_){
 		setState({placePopup:props.place});
 	}
-=======
-			<Typography component="p">
-				${mui.CagetteIcon.get("cash")}
-				${paymentInfos}
-			</Typography>
-		');
-	}
-
->>>>>>> 5e698a1d6226045c0273d77f7a388a6154ce8f2c
 }
