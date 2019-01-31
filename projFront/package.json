@@ -24,6 +24,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.0",
+    "sticky-events": "^2.3.0",
     "stickyfilljs": "^2.1.0"
   },
   "devDependencies": {

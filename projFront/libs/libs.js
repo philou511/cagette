@@ -24,7 +24,8 @@
     '@material-ui/core': require('@material-ui/core'),
     '@material-ui/core/styles': require('@material-ui/core/styles'),
     '@material-ui/icons': require('@material-ui/icons'),
-    'stickyfilljs': require('stickyfilljs')
+    'stickyfilljs': require('stickyfilljs'),
+    'sticky-events': require('sticky-events')
   });
 
   if (process.env.NODE_ENV !== 'production') {
