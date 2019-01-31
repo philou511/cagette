@@ -4,9 +4,12 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.CagetteTheme.CGColors;
+import mui.Color;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
+import mui.core.Fab;
+import mui.icon.ArrowUpward;
 import mui.core.form.FormControlVariant;
 import mui.core.input.InputType;
 import mui.core.styles.Classes;
@@ -37,6 +40,7 @@ private typedef TClasses = Classes<[
     cagFormContainer,
     cartContainer,
     shadow,
+    fab,
 ]>
 
 private typedef HeaderState = {
@@ -49,7 +53,7 @@ class Header extends react.ReactComponentOf<HeaderProps, HeaderState> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
-				maxWidth: 1240,
+                maxWidth: 1240,
                 margin : "auto",
                 padding: "0 10px",
                 display: "flex",
@@ -76,7 +80,13 @@ class Header extends react.ReactComponentOf<HeaderProps, HeaderState> {
             },
             shadow : {
                 filter: "drop-shadow(0px 4px 2px #00000077)",
-            }
+            },
+            fab: {
+                position: Absolute,
+                //bottom: theme.spacing.unit * 2,
+                top: "calc(100vh - 80px)",
+                right: theme.spacing.unit * 2,
+            },
 		}
 	}
 
@@ -129,12 +139,25 @@ class Header extends react.ReactComponentOf<HeaderProps, HeaderState> {
                         />                                                                                         
                 </Grid>
                 <Grid item xs={3} className=${classes.cartContainer}>
-              
                     <Cart submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
-               
                 </Grid>
+                ${renderFab()}
             </Grid>
         ');
+    }
+
+    function renderFab() {
+        if (state.sticking == false) return null;
+        var classes = props.classes;
+        return jsx('
+            <Fab className=${classes.fab} color={Primary} onClick=${resetScroll}>
+               <ArrowUpward />
+            </Fab>
+        ');
+    }
+
+    function resetScroll() {
+        js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
