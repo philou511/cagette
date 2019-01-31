@@ -177,17 +177,20 @@ class Product extends ReactComponentOf<Props, ProductState> {
                         </div>
                     </CardMedia>
 
-                    <CardContent className=${classes.cardContent}>                        
+                    <CardContent className=${classes.cardContent}>
+
                         <Typography component="h3" className=${classes.cagProductTitle}>
                             ${product.name}
                         </Typography>
+
                         <Typography component="p" className=${classes.cagProductDesc}>
-                            ${product.stock!=null && product.stock<=10  ? renderLowStock(product) : renderVendor(props.vendor)} 
+                            ${product.stock!=null && product.stock<=10 && product.stock>0 ? renderLowStock(product) : renderVendor(props.vendor)} 
                         </Typography>
 
                         <Typography component="p" className=${classes.cagProductLabel}>
                             <Labels product=$product />
                         </Typography>
+
                     </CardContent>           
                 </CardActionArea>
 
@@ -204,8 +207,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
         return jsx('<span>${vendor.name}</span>');
     }
 
-    function renderLowStock(product:ProductInfo){
-
-        return jsx('<span style=${{color:CGColors.Third}}>Seulement ${product.stock} en stock</span>');
+    function renderLowStock(product:ProductInfo){        
+        return jsx('<span style=${{color:CGColors.Third}}>Plus que ${product.stock} en stock</span>');
     }
 }
