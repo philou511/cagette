@@ -132,6 +132,29 @@ h1, h2, h3, h4 {
 a {
   cursor: pointer; }
 
+/* bounce effect */
+.bouncable {
+  animation-duration: 500ms;
+  animation-fill-mode: both; }
+
+/*@-webkit-keyframes bounce { 
+	0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
+	40% {-webkit-transform: translateY(-30px);} 
+	60% {-webkit-transform: translateY(-15px);} 
+ } */
+@keyframes bounce {
+  0%, 50%, 90%, 100% {
+    transform: translateY(0); }
+  25% {
+    transform: translateY(-30px); }
+  70% {
+    transform: translateY(-15px); }
+  95% {
+    transform: translateY(-5px); } }
+
+.bounce {
+  animation-name: bounce; }
+
 /* navigation */
 ul.nav li {
   text-transform: uppercase;

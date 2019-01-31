@@ -182,7 +182,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             ${product.name}
                         </Typography>
                         <Typography component="p" className=${classes.cagProductDesc}>
-                            ${renderVendor(props.vendor)} 
+                            ${product.stock!=null && product.stock<=10  ? renderLowStock(product) : renderVendor(props.vendor)} 
                         </Typography>
 
                         <Typography component="p" className=${classes.cagProductLabel}>
@@ -191,7 +191,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                     </CardContent>           
                 </CardActionArea>
 
-                <$ProductActions product=$product />
+                <$ProductActions product=$product displayVAT={false}/>
             </Card>
         ');
 
@@ -202,5 +202,10 @@ class Product extends ReactComponentOf<Props, ProductState> {
 
     function renderVendor(vendor:VendorInfo){
         return jsx('<span>${vendor.name}</span>');
+    }
+
+    function renderLowStock(product:ProductInfo){
+
+        return jsx('<span style=${{color:CGColors.Third}}>Seulement ${product.stock} en stock</span>');
     }
 }

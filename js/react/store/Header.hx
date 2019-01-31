@@ -11,6 +11,8 @@ import mui.core.form.FormControlVariant;
 import mui.core.input.InputType;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
+import mui.core.InputAdornment;
+import mui.icon.AccountCircle;
 
 import Common;
 
@@ -76,20 +78,25 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 	override public function render() {
         var classes = props.classes;
         
+        var searchIcon = mui.CagetteIcon.get("search",{color:CGColors.Secondfont});
+        var inputProps = {
+            startAdornment: jsx('<InputAdornment position=${mui.core.input.InputAdornmentPosition.Start}>$searchIcon</InputAdornment>')
+        };
+
 		return jsx('
             <Grid container spacing={8} className=${classes.cagWrap}>
                 <Grid item xs={6}> 
                     <DistributionDetails displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
                 </Grid>
-                <Grid item  xs={3} className=${classes.cagFormContainer}>
-                  
+                <Grid item  xs={3} className=${classes.cagFormContainer}>                  
                         <TextField                            
-                            label="Recherche"
+                            id="search-bar"
+                            placeholder="Recherche"
                             variant=${Outlined}
-                            type=${Search}  
+                            type=${Search} 
                             className=${classes.searchField}
-                        />                        
-                                                                   
+                            InputProps=${cast inputProps}
+                        />                                                                                         
                 </Grid>
                 <Grid item xs={3} className=${classes.cartContainer}>
               

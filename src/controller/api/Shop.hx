@@ -59,7 +59,6 @@ class Shop extends Controller
 		
 		//to productInfos
 		var productsInfos : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo,true) ).array();
-				
 		Sys.print(Json.stringify( {products:productsInfos} ));									
 	}
 	

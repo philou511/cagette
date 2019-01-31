@@ -162,7 +162,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                             <Typography component="p" dangerouslySetInnerHTML={{ __html: ${product.desc} }}></Typography>
 
                             <div style=${{background:mui.CagetteTheme.CGColors.Bg2,padding:"12px"}}>
-                                <$ProductActions product=$product />                            
+                                <$ProductActions product=$product displayVAT={true}/>                            
                             </div>
                         </Grid>
                     </Grid>

@@ -28,6 +28,7 @@ private typedef Props = {
 
 private typedef PublicProps = {
     var product:ProductInfo;
+    var displayVAT:Bool;
 }
 
 private typedef ReduxProps = {
@@ -174,7 +175,10 @@ class ProductActions extends ReactComponentOfProps<Props> {
                             <span className="cagProductPrice">
                                 ${Formatting.formatNum(product.price)} €
                             </span> 
-                        </Typography>  
+                        </Typography> 
+                        
+                        ${renderVAT(product)}
+
                     </Grid>
                     
                     <Grid item xs={4} style={{textAlign:css.TextAlign.Right}}>
@@ -184,7 +188,16 @@ class ProductActions extends ReactComponentOfProps<Props> {
                 </Grid>
            </CardActions>
         ');
+    }
 
+    function renderVAT(product:ProductInfo){
+        if(props.displayVAT && product.vat!=null && product.vat!=0 ){
+            return jsx('<Typography className=${props.classes.cagProductPriceRate}>                        
+                ${Formatting.formatNum(product.vat)} % de TVA inclue
+            </Typography>');
+        }else{
+            return null;
+        }
     }
 
 }
