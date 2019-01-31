@@ -156,7 +156,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
     function renderQtAndUnit(p:ProductInfo){
         if(p.qt==0 || p.qt==null) return null;
         if(p.unitType==null) return null;
-        return Formatting.formatNum(product.qt)}+"&nbsp;"+Formatting.unit(product.unitType,product.qt);
+        return jsx('<>${Formatting.formatNum(p.qt)}&nbsp;${Formatting.unit(p.unitType,p.qt)}</>');
     }
 
     override public function render() {

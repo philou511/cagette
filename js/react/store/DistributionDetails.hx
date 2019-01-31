@@ -86,7 +86,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 		var clIconClock = classNames({
 			'icons':true,
 			'icon-clock':true,
-		})*/;
+		});*/
 
 		if (props.orderByEndDates == null || props.orderByEndDates.length == 0)
 			return null;
