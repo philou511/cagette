@@ -20,6 +20,7 @@ typedef ProductListSubCategoryProps = {
 };
 
 private typedef PublicProps = {
+	var displayAll:Bool;
 	var subcategory:CategoryInfo;
 	var products:Array<ProductInfo>;
 	var openModal : ProductInfo->VendorInfo->Void;
@@ -46,16 +47,23 @@ class ProductListSubCategory extends react.ReactComponentOfProps<ProductListSubC
 	}
 
 	function renderProducts(products:Array<ProductInfo>) {
-		return products.map(function(product) {
-			var vendor = Lambda.find(this.props.vendors,function(v){
-				return v.id == product.vendorId;
-			});
+		var numberToDisplay = props.displayAll ? products.length : 8;
 
-			return jsx('
-				<$Grid item xs={12} sm={4} md={3} key=${product.id}>
-					<$Product product=${product} openModal=${props.openModal} vendor=${vendor} />
-				</$Grid>
-			');
-		});
+		return [ for( i in 0...numberToDisplay ) {
+				var product = products[i];
+				if( product == null ) continue;
+				//get the vendor
+				// should be optimized..
+				var vendor = Lambda.find(this.props.vendors,function(v){
+					return v.id == product.vendorId;
+				});
+
+				jsx('
+					<$Grid item xs={12} sm={4} md={3} key=${product.id}>
+						<$Product product=${product} openModal=${props.openModal} vendor=${vendor} />
+					</$Grid>
+				');
+			}
+		];
 	}
 }

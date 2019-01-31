@@ -36,7 +36,7 @@ private typedef TClasses = Classes<[
     cagWrap,
     shadow,
     cagSticky, 
-    cagGridHeight, cagGridHeightSticky,
+    cagGridHeight, cagGridHeightSticky, cagGrid,
 ]>
 
 private typedef HeaderCategoriesState = {
@@ -59,17 +59,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
                 textAlign: Center,
                 textTransform: UpperCase,
                 fontSize: "0.7rem",
-                lineHeight: "0.9rem",
-                "& .cagCategoryContainer" : {
-                    padding: "0 5",   
-                    "& img" : {
-                        display: "block",
-                        margin: "0 auto 10px auto",
-                    }
-                },
-                "& .cagCategoryContainer:hover" : {
-                    backgroundColor: CGColors.Bg3,
-                },
+                lineHeight: "0.9rem", 
             },
             cagSticky : {
                 maxWidth: 1240,
@@ -81,11 +71,14 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
             shadow : {
                 filter: "drop-shadow(0px 4px 1px #00000055)",
             },
+            cagGrid: {
+                
+            },
             cagGridHeight: {
-                height: "7.5em", 
+                height: "9em", 
             },
             cagGridHeightSticky: {
-                height: "4.5em",
+                height: "5em",
             },
         }
     }
@@ -143,6 +136,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
 		});
 
         var categoryGridClasses = classNames({
+            '${classes.cagGrid}': true,
             '${classes.cagGridHeight}': !props.isSticky,
             '${classes.cagGridHeightSticky}': props.isSticky,
         });

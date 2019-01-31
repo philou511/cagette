@@ -12,7 +12,7 @@ import mui.core.Modal;
 import mui.core.Typography;
 import js.html.Event;
 import mui.core.modal.ModalCloseReason;
-
+import mui.icon.SkipNext;
 using Lambda;
 
 typedef ProductListCategoryProps = {
@@ -26,11 +26,16 @@ private typedef PublicProps = {
 	var vendors : Array<VendorInfo>;
 }
 
+typedef ProductListCategoryState = {
+	var displayAll:Bool;
+}
+
 @:publicProps(PublicProps)
-class ProductListCategory extends react.ReactComponentOfProps<ProductListCategoryProps> {
+class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProps, ProductListCategoryState> {
 
 	function new(p) {
 		super(p);
+		this.state = {displayAll:false};
 	}
 
 	override public function render() {
@@ -67,7 +72,15 @@ class ProductListCategory extends react.ReactComponentOfProps<ProductListCategor
 				<div className="subCategories">
 					${renderSubCategories(category)}
 				</div>
+				${renderLoadMoreButton()}
 			</div>
+		');
+	}
+
+	function renderLoadMoreButton() {
+		if( state.displayAll == false ) return null;
+		return jsx('
+			<SkipNext />
 		');
 	}
 
@@ -83,7 +96,7 @@ class ProductListCategory extends react.ReactComponentOfProps<ProductListCategor
 			if( subProducts.length == 0 ) return null;
 
 			return jsx('
-				<ProductListSubCategory key=${subcategory.id} subcategory=${subcategory} products=${subProducts} vendors={props.vendors} openModal=${props.openModal}  />
+				<ProductListSubCategory key=${subcategory.id} displayAll=${state.displayAll} subcategory=${subcategory} products=${subProducts} vendors={props.vendors} openModal=${props.openModal}  />
 			');
 		});
 
