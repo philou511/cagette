@@ -134,7 +134,9 @@ class ProductActions extends ReactComponentOfProps<Props> {
         var style = {fontSize:20};
         var basketIcon = mui.CagetteIcon.get("basket-add",style);
 
-        return if(props.quantity <= 0 ) {
+        return if(props.product.stock<=0){
+            jsx('<span style=${{color:CGColors.Third}}>Rupture <br/>de stock</span>');
+            } else if(props.quantity <= 0 ) {
             jsx('<Tooltip title="Ajouter ce produit à mon panier" placement=${mui.core.popper.PopperPlacement.Bottom}>
                     <Button
                         onClick=${addToCart}
@@ -151,6 +153,12 @@ class ProductActions extends ReactComponentOfProps<Props> {
         }
     }
 
+    function renderQtAndUnit(p:ProductInfo){
+        if(p.qt==0 || p.qt==null) return null;
+        if(p.unitType==null) return null;
+        return Formatting.formatNum(product.qt)}+"&nbsp;"+Formatting.unit(product.unitType,product.qt);
+    }
+
     override public function render() {
         var classes = props.classes;
         var product = props.product;
@@ -162,7 +170,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                     <Grid item xs={5} style={{textAlign:css.TextAlign.Left}}>
                         <Typography component="div" className=${classes.cagProductInfo} >                                 
                             <span className="cagProductUnit">
-                                ${Formatting.formatNum(product.qt)}&nbsp;${Formatting.unit(product.unitType,product.qt)} 
+                                ${renderQtAndUnit(product)}
                                 <div className=${classes.cagProductPriceRate}>
                                     ${Formatting.pricePerUnit(product.price,product.qt,product.unitType)}
                                 </div>

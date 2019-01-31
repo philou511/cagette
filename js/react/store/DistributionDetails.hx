@@ -71,7 +71,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	override public function render() {
 		//icons
 		var classes = props.classes;
-		var clIconMap = classNames({
+		/*var clIconMap = classNames({
 			'icons':true,
 			'icon-map-marker':true,
 		});
@@ -86,7 +86,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 		var clIconClock = classNames({
 			'icons':true,
 			'icon-clock':true,
-		});
+		})*/;
 
 		if (props.orderByEndDates == null || props.orderByEndDates.length == 0)
 			return null;
@@ -115,13 +115,14 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 
 		var addressBlock = Formatting.getFullAddress(props.place);
 		
-		return jsx('
-			<Typography component="p">
+		return jsx('<>
+			<Typography component="p" onClick=$openMapWindow style=${{cursor:"pointer"}}>
 				${mui.CagetteIcon.get("map-marker")}
 				${addressBlock}
-				${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null} 
-			</Typography>'
-		);
+				
+			</Typography>
+			${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null}
+		</>');
 	}
 
 	function renderCalendar() {
