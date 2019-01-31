@@ -24,6 +24,7 @@ typedef DistributionDetailsProps = {
 }
 
 private typedef PublicProps = {
+	var sticky:Bool;
 	var displayLinks:Bool;
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
@@ -90,9 +91,55 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 		if (props.orderByEndDates == null || props.orderByEndDates.length == 0)
 			return null;
 
-		var endDates;
+		
 
-		//Enddates
+		// TODO Think about the way the place adress is built, why an array for zipCode and city ?
+		// TODO LOCALIZATION
+		var viewUrl = '${CagetteStore.ServerUrl.ViewUrl}/${props.place}';
+		
+		
+        /*var textInfos1Link = props.displayLinks ? jsx('<a href="#">Changer</a>') : null;
+        var textInfos3Link = props.displayLinks ? jsx('<a href="#">Plus d\'infos></a>') : null;*/
+		return jsx('
+            <div className=${classes.cagNavInfo}> 
+				${renderMap()}
+				${renderCalendar()}
+				${renderClock()}
+				${renderPaymentInfos()}
+			</div>
+        ');
+	}
+
+	function renderMap() {
+		if( props.sticky ) return null;
+
+		var addressBlock = props.place.name;
+		var p = props.place;
+		if(p.address1!=null) addressBlock+=", "+p.address1;
+		if(p.address2!=null) addressBlock+=", "+p.address2;
+		if(p.zipCode!=null) addressBlock+=", "+p.zipCode;
+		if(p.city!=null) addressBlock+=" "+p.city;
+
+		return jsx('
+			<Typography component="p">
+				${mui.CagetteIcon.get("map-marker")}
+				${addressBlock}
+			</Typography>'
+		);
+	}
+
+	function renderCalendar() {
+		var distribDate = jsx('<span>Distribution le ${Formatting.hDate(props.date)}.</span>');
+		return jsx('
+			<Typography component="p">
+				${mui.CagetteIcon.get("calendar")}
+				${distribDate}
+			</Typography>'
+		);
+	}
+
+	function renderClock() {
+		var endDates;
 		if (props.orderByEndDates.length == 1) {
 			var orderEndDate = Date.fromString(props.orderByEndDates[0].date);
 			endDates = [jsx('<span key=$orderEndDate>La commande fermera le ${Formatting.hDate(orderEndDate)}</span>')];
@@ -114,24 +161,20 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 			});
 		}
 
-		// TODO Think about the way the place adress is built, why an array for zipCode and city ?
-		// TODO LOCALIZATION
-		var viewUrl = '${CagetteStore.ServerUrl.ViewUrl}/${props.place}';
-		
-		var addressBlock = props.place.name;
-		var p = props.place;
-		if(p.address1!=null) addressBlock+=", "+p.address1;
-		if(p.address2!=null) addressBlock+=", "+p.address2;
-		if(p.zipCode!=null) addressBlock+=", "+p.zipCode;
-		if(p.city!=null) addressBlock+=" "+p.city;
-
-        /*var textInfos1Link = props.displayLinks ? jsx('<a href="#">Changer</a>') : null;
-        var textInfos3Link = props.displayLinks ? jsx('<a href="#">Plus d\'infos></a>') : null;*/
-
-        var distribDate = jsx('<span>Distribution le ${Formatting.hDate(props.date)}.</span>');
-        var paymentInfos = jsx('<span>Paiement: ${props.paymentInfos}</span>');
-		
 		return jsx('
+			<Typography component="p">
+				${mui.CagetteIcon.get("clock")}
+				${endDates}
+			</Typography>'
+		);
+	}
+
+	function renderPaymentInfos() {
+		if( props.sticky ) return null;
+
+		var paymentInfos = jsx('<span>Paiement: ${props.paymentInfos}</span>');
+		return jsx('
+<<<<<<< HEAD
             <div className=${classes.cagNavInfo}> 
 				<Typography component="p" onClick=$openMapWindow style=${{cursor:"pointer"}}>
 					${mui.CagetteIcon.get("map-marker")}
@@ -162,4 +205,13 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	function openMapWindow(_){
 		setState({placePopup:props.place});
 	}
+=======
+			<Typography component="p">
+				${mui.CagetteIcon.get("cash")}
+				${paymentInfos}
+			</Typography>
+		');
+	}
+
+>>>>>>> 5e698a1d6226045c0273d77f7a388a6154ce8f2c
 }

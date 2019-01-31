@@ -36,11 +36,16 @@ private typedef TClasses = Classes<[
     searchField,
     cagFormContainer,
     cartContainer,
+    shadow,
 ]>
+
+private typedef HeaderState = {
+    var sticking:Bool;
+}
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class Header extends react.ReactComponentOfProps<HeaderProps> {
+class Header extends react.ReactComponentOf<HeaderProps, HeaderState> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
@@ -50,6 +55,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                 display: "flex",
                 alignItems: Center,
                 justifyContent: Center,
+                backgroundColor: CGColors.White,
 			},
             searchField : {
                 padding: '0.5em',
@@ -68,12 +74,30 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                 justifyContent: Center,
                 height: 70,
             },
+            shadow : {
+                filter: "drop-shadow(0px 4px 2px #00000077)",
+            }
 		}
 	}
 
 	public function new(props) {
 		super(props);
+        this.state = {sticking:false};
 	}
+
+    override function componentDidMount() {
+        trace("we listen to event to deteck stiking of header..");
+
+        var stickyEvents = new sticky.StickyEvents({stickySelector:'.sticky', enabled:true});
+        for( e in stickyEvents.stickyElements ) {
+            e.addEventListener(sticky.StickyEvents.StickyEvent.CHANGE, function(e) {
+                trace("WE have an element changing sticky status");
+                //trace(e.target);
+                setState({sticking: e.detail.isSticky});
+                    
+            });
+        }
+    }
 
 	override public function render() {
         var classes = props.classes;
@@ -83,10 +107,16 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
             startAdornment: jsx('<InputAdornment position=${mui.core.input.InputAdornmentPosition.Start}>$searchIcon</InputAdornment>')
         };
 
+        var headerClasses = classNames({
+			'sticky': true,
+			'${classes.cagWrap}':true,
+            '${classes.shadow}': state.sticking,
+		});
+
 		return jsx('
-            <Grid container spacing={8} className=${classes.cagWrap}>
+            <Grid container spacing={8} className=${headerClasses}>
                 <Grid item xs={6}> 
-                    <DistributionDetails displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
+                    <DistributionDetails sticky=${state.sticking} displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
                 </Grid>
                 <Grid item  xs={3} className=${classes.cagFormContainer}>                  
                         <TextField                            
