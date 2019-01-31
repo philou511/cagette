@@ -111,4 +111,15 @@ class Formatting
 		}
 		return out;
 	}
+
+
+	public static function getFullAddress(p:PlaceInfos){
+		var str = new StringBuf();
+		str.add(p.name+", \n");
+		if (p.address1 != null) str.add(p.address1 + ", \n");
+		if (p.address2 != null) str.add(p.address2 + ", \n");
+		if (p.zipCode != null) 	str.add(p.zipCode);
+		if (p.city != null) 	str.add(" - "+p.city);
+		return str.toString();
+	}
 }

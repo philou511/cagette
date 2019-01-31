@@ -35,7 +35,7 @@ private typedef TClasses = Classes<[cagNavInfo,]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class DistributionDetails extends react.ReactComponentOfProps<DistributionDetailsProps> {
+class DistributionDetails extends react.ReactComponentOfPropsAndState<DistributionDetailsProps,{placePopup:PlaceInfos}> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			cagNavInfo : {
@@ -64,6 +64,7 @@ class DistributionDetails extends react.ReactComponentOfProps<DistributionDetail
 
 	public function new(props) {
 		super(props);
+		this.state = {placePopup:null};
 	}
 
 	override public function render() {
@@ -132,7 +133,7 @@ class DistributionDetails extends react.ReactComponentOfProps<DistributionDetail
 		
 		return jsx('
             <div className=${classes.cagNavInfo}> 
-				<Typography component="p">
+				<Typography component="p" onClick=$openMapWindow style=${{cursor:"pointer"}}>
 					${mui.CagetteIcon.get("map-marker")}
 					${addressBlock}
 				</Typography>
@@ -147,8 +148,18 @@ class DistributionDetails extends react.ReactComponentOfProps<DistributionDetail
 				<Typography component="p">
 					${mui.CagetteIcon.get("cash")}
 					${paymentInfos}
-				</Typography>                     
+				</Typography>   
+
+				${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null}                  
 			</div>
         ');
+	}
+
+	function onOSMWindowClose(_,_){
+		setState({placePopup:null});
+	}
+
+	function openMapWindow(_){
+		setState({placePopup:props.place});
 	}
 }

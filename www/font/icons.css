@@ -1,10 +1,10 @@
 @font-face {
     font-family: "icons";
-    src: url("./icons.eot?3f78e5230638d6dfe542fb396a665b58?#iefix") format("embedded-opentype"),
-url("./icons.woff2?3f78e5230638d6dfe542fb396a665b58") format("woff2"),
-url("./icons.woff?3f78e5230638d6dfe542fb396a665b58") format("woff"),
-url("./icons.ttf?3f78e5230638d6dfe542fb396a665b58") format("truetype"),
-url("./icons.svg?3f78e5230638d6dfe542fb396a665b58#icons") format("svg");
+    src: url("./icons.eot?a794210a2dfe96136752f11591493c87?#iefix") format("embedded-opentype"),
+url("./icons.woff2?a794210a2dfe96136752f11591493c87") format("woff2"),
+url("./icons.woff?a794210a2dfe96136752f11591493c87") format("woff"),
+url("./icons.ttf?a794210a2dfe96136752f11591493c87") format("truetype"),
+url("./icons.svg?a794210a2dfe96136752f11591493c87#icons") format("svg");
 }
 
 i {
@@ -28,10 +28,10 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
 .icon-apple:before {
     content: "\f102";
 }
-.icon-bank_card:before {
+.icon-bank-card:before {
     content: "\f103";
 }
-.icon-bank_transfer:before {
+.icon-bank-transfer:before {
     content: "\f104";
 }
 .icon-basket-add:before {
@@ -58,22 +58,22 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
 .icon-card:before {
     content: "\f10c";
 }
-.icon-cash:before {
+.icon-check:before {
     content: "\f10d";
 }
-.icon-check:before {
+.icon-cheque:before {
     content: "\f10e";
 }
-.icon-cheque:before {
+.icon-chevron-down:before {
     content: "\f10f";
 }
-.icon-chevron-down:before {
+.icon-chevron-left:before {
     content: "\f110";
 }
-.icon-chevron-left:before {
+.icon-chevron-right:before {
     content: "\f111";
 }
-.icon-chevron-right:before {
+.icon-chevron-up:before {
     content: "\f112";
 }
 .icon-chicken:before {
