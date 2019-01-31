@@ -22,12 +22,13 @@ typedef HeaderCategoryButtonProps = {
 }
 
 private typedef PublicProps = {
+	var isSticky:Bool;
 	var category:CategoryInfo;
 	var active:Bool;
 	var onClick:Void->Void;
 }
 
-private typedef TClasses = Classes<[cagCategoryActive,cagCategory]>
+private typedef TClasses = Classes<[cagCategoryActive, cagCategory, img, imgFit]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
@@ -38,7 +39,16 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
 				backgroundColor: CGColors.Bg3,
 			},
 			cagCategory: {
+				height: '100%',
 				cursor: "pointer",
+				padding: 4,
+			},
+			img: {
+				height: '50%',
+			},
+			imgFit: {
+				objectFit: "contain",
+				height: '100%',
 			}
 		}
 	}
@@ -50,19 +60,23 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
 	override public function render() {
 		var classes = props.classes;
 
-		var CategoryContainerClasses = classNames({
+		var catContainerClasses = classNames({
 			'cagCategoryContainer': true,
 			'${classes.cagCategoryActive}': props.active,
 			'${classes.cagCategory}':true,
 		});
+
+		var imgClasses = classNames({
+			'${classes.img}': true,
+			'${classes.imgFit}': props.isSticky,
+		});
 		
+		var name = (props.isSticky) ? null : jsx('${props.category.name}');
 		return jsx('
             <Grid item xs >
-                <div className=${CategoryContainerClasses} onClick=${props.onClick}>
-                    <div>
-                        <img src=${props.category.image} alt=${props.category.name} />
-                        ${props.category.name}
-                    </div>
+                <div className=${catContainerClasses} onClick=${props.onClick}>
+					<img src=${props.category.image} alt=${props.category.name} className=${imgClasses} />
+					${name}
                 </div>
             </Grid>
         ');

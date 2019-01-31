@@ -274,12 +274,16 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					else jsx('<ProductCatalog categories=${state.categories} catalog=${filter(state.products, state.filter)} vendors=${state.vendors} />');
 		}
 
+		var date = Date.fromString(props.date);
+
 		return jsx('			
 			<div className="shop">
-
-				${renderHeader()}
-			
-				<HeaderCategories 
+				<HeaderWrapper 
+					submitOrder=$submitOrder 
+					orderByEndDates=${state.orderByEndDates} 
+					place=${state.place} 
+					paymentInfos=${state.paymentInfos} 
+					date=$date
 					categories=${state.categories}
 					resetFilter=${resetFilter}
 					filterByCategory=${filterByCategory}
@@ -297,15 +301,5 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 	function onErrorDialogClose(){
 		setState({errorMessage:null});
-	}
-
-	
-
-	function renderHeader() {
-		var date = Date.fromString(props.date);
-
-		return jsx('
-			<Header submitOrder=$submitOrder orderByEndDates=${state.orderByEndDates} place=${state.place} paymentInfos=${state.paymentInfos} date=$date/>
-		');
 	}
 }

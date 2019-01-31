@@ -184,7 +184,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				${renderProducts()}
 
 				<Divider variant={Middle} />
-				<DistributionDetails sticky={false} displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
+				<DistributionDetails isSticky={false} displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
 				${renderFooter()}
 
 			</Card>

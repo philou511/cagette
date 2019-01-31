@@ -24,7 +24,7 @@ typedef DistributionDetailsProps = {
 }
 
 private typedef PublicProps = {
-	var sticky:Bool;
+	var isSticky:Bool;
 	var displayLinks:Bool;
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
@@ -111,7 +111,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	}
 
 	function renderMap() {
-		if( props.sticky ) return null;
+		if( props.isSticky ) return null;
 
 		var addressBlock = Formatting.getFullAddress(props.place);
 		
@@ -167,7 +167,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	}
 
 	function renderPaymentInfos() {
-		if( props.sticky ) return null;
+		if( props.isSticky ) return null;
 
 		var paymentInfos = jsx('<span>Paiement: ${props.paymentInfos}</span>');
 		return jsx('
