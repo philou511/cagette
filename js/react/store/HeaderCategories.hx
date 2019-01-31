@@ -16,7 +16,7 @@ import Common;
 
 using Lambda;
 
-typedef CategoriesProps = {
+typedef HeaderCategoriesProps = {
 	> PublicProps,
 	var classes:TClasses;
 };
@@ -30,18 +30,19 @@ private typedef PublicProps = {
 }
 
 private typedef TClasses = Classes<[
-    cagNavCategories,
+    cagNavHeaderCategories,
     cagCategoryActive,
     cagWrap,
 ]>
 
-private typedef CategoriesState = {
-    selectedCategoryId : Int,
+private typedef HeaderCategoriesState = {
+    activeCategory : CategoryInfo,
+    activeSubCategory : CategoryInfo,
 }
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,CategoriesState> {
+class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategoriesProps,HeaderCategoriesState> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
@@ -49,7 +50,7 @@ class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,Cat
                 margin : "auto",
                 padding: "0 10px",
 			},
-            cagNavCategories : {
+            cagNavHeaderCategories : {
                 backgroundColor: CGColors.Bg2,
                 textAlign: Center,
                 textTransform: UpperCase,
@@ -78,51 +79,68 @@ class Categories extends react.ReactComponentOfPropsAndState<CategoriesProps,Cat
 
     public function new(props) {
 		super(props);
-        
+        this.state = {activeCategory:null, activeSubCategory:null};
 	}
 
     override function componentDidMount() {
-
         //default category is "all products"
-        setState({selectedCategoryId:0});
+        setState({activeCategory:props.categories[0], activeSubCategory:null});
+    }
+
+    function onSubCategoryClicked(subcategory:CategoryInfo) {
+        setState({activeSubCategory:subcategory}, function() {
+            applyFilter();
+        });
+    }
+
+    function applyFilter() {
+        if( state.activeCategory == null ) return;
+
+        if( state.activeCategory.id == 0 )
+            props.resetFilter();
+        else if( state.activeSubCategory == null  )
+            props.filterByCategory(state.activeCategory.id);
+        else
+            props.filterBySubCategory(state.activeCategory.id, state.activeSubCategory.id);
     }
 
     function onCategoryClicked(category:CategoryInfo) {
-        if( category.id > 0 )
-            props.filterByCategory(category.id);
-        else if( category.id == 0 )
-            props.resetFilter();
 
+        if( category == state.activeCategory ) {
+            setState({activeSubCategory:null}, function() {
+                applyFilter();
+            });
+        } else {
+            setState({activeCategory:category}, function(){
+                applyFilter();
+            });
+        }
 
-        setState({selectedCategoryId:category.id});
-        //resetFilter=${props.resetFilter}
-        //filterByCategory=${props.filterByCategory}
-        //filterBySubCategory=${props.filterBySubCategory}
+        // pour le bio et le label rouge..
+        // Attention : vérifier l'implémentation du filtre qui n'a pas du être faite !
         //toggleFilterTag=${props.toggleFilterTag}
     }
 
 	override public function render() {
         var classes = props.classes;
-        var CategoryContainerClasses = classNames({
-			'cagCategoryContainer': true,
-            '${classes.cagCategoryActive}': true,//make this dynamic
-		});
-        //TODO active
         var categories = [
             for(category in props.categories)
-                jsx('<Category  key=${category.id} 
-                                active=${category.id==state.selectedCategoryId}
+                jsx('<HeaderCategoryButton
+                                key=${category.id} 
+                                active=${category == state.activeCategory}
                                 category=${category} 
                                 onClick=${onCategoryClicked.bind(category)}
                 />')
         ];
+
         return jsx('
-            <div className=${classes.cagNavCategories}>
+            <div className=${classes.cagNavHeaderCategories}>
                 <div className=${classes.cagWrap}>
                     <Grid container spacing={0}>
                         ${categories}
                     </Grid>
                 </div>
+                <HeaderSubCategories category=${state.activeCategory} subcategory=${state.activeSubCategory} onClick=${onSubCategoryClicked} />
             </div>
         ');
     }

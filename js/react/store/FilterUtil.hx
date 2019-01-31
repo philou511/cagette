@@ -4,14 +4,14 @@ package react.store;
 import js.Promise;
 import haxe.Json;
 
-import react.store.types.FilteredProductList;
+import react.store.types.FilteredProductCatalog;
 import Common.ProductInfo;
 using Lambda;
 
 
 class FilterUtil
 {
-    public static function filterProducts(products:Array<ProductInfo>, ?category:Int, ?subcategory:Int, ?tags:Array<String>, ?producteur:Bool ):FilteredProductList
+    public static function filterProducts(products:Array<ProductInfo>, ?category:Int, ?subcategory:Int, ?tags:Array<String>, ?producteur:Bool ):FilteredProductCatalog
     {
         var fproducts = products.copy();
 

@@ -43,7 +43,7 @@ private typedef TClasses = Classes<[
 class Header extends react.ReactComponentOfProps<HeaderProps> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
-           cagWrap: {
+            cagWrap: {
 				maxWidth: 1240,
                 margin : "auto",
                 padding: "0 10px",
