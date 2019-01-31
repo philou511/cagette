@@ -22,6 +22,7 @@ typedef HeaderCategoriesProps = {
 };
 
 private typedef PublicProps = {
+    var isSticky:Bool;
     var categories:Array<CategoryInfo>;
 	var resetFilter:Void->Void;
 	var filterByCategory:Int->Void;
@@ -33,6 +34,9 @@ private typedef TClasses = Classes<[
     cagNavHeaderCategories,
     cagCategoryActive,
     cagWrap,
+    shadow,
+    cagSticky, 
+    cagGridHeight, cagGridHeightSticky,
 ]>
 
 private typedef HeaderCategoriesState = {
@@ -42,7 +46,7 @@ private typedef HeaderCategoriesState = {
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
-class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategoriesProps,HeaderCategoriesState> {
+class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategoriesProps, HeaderCategoriesState> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
@@ -57,11 +61,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
                 fontSize: "0.7rem",
                 lineHeight: "0.9rem",
                 "& .cagCategoryContainer" : {
-                    height: 100,  
                     padding: "0 5",   
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
                     "& img" : {
                         display: "block",
                         margin: "0 auto 10px auto",
@@ -71,8 +71,21 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
                     backgroundColor: CGColors.Bg3,
                 },
             },
+            cagSticky : {
+                maxWidth: 1240,
+                margin : "auto",
+            },
             cagCategoryActive : {
                 backgroundColor: CGColors.Bg3,
+            },
+            shadow : {
+                filter: "drop-shadow(0px 4px 1px #00000055)",
+            },
+            cagGridHeight: {
+                height: "7.5em", 
+            },
+            cagGridHeightSticky: {
+                height: "4.5em",
             },
         }
     }
@@ -123,10 +136,22 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
 
 	override public function render() {
         var classes = props.classes;
+        var headerClasses = classNames({
+			'${classes.cagNavHeaderCategories}': true,
+            '${classes.cagSticky}': props.isSticky,
+            '${classes.shadow}': props.isSticky,
+		});
+
+        var categoryGridClasses = classNames({
+            '${classes.cagGridHeight}': !props.isSticky,
+            '${classes.cagGridHeightSticky}': props.isSticky,
+        });
+
         var categories = [
             for(category in props.categories)
                 jsx('<HeaderCategoryButton
                                 key=${category.id} 
+                                isSticky=${props.isSticky}
                                 active=${category == state.activeCategory}
                                 category=${category} 
                                 onClick=${onCategoryClicked.bind(category)}
@@ -134,13 +159,13 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
         ];
         
         return jsx('
-            <div className=${classes.cagNavHeaderCategories}>
+            <div className=${headerClasses}>
                 <div className=${classes.cagWrap}>
-                    <Grid container spacing={0}>
+                    <Grid container spacing={0} className=${categoryGridClasses}>
                         ${categories}
                     </Grid>
+                    <HeaderSubCategories category=${state.activeCategory} subcategory=${state.activeSubCategory} onClick=${onSubCategoryClicked} />
                 </div>
-                <HeaderSubCategories category=${state.activeCategory} subcategory=${state.activeSubCategory} onClick=${onSubCategoryClicked} />
             </div>
         ');
     }
