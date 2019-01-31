@@ -12,7 +12,6 @@ import mui.core.Modal;
 import mui.core.Typography;
 import js.html.Event;
 import mui.core.modal.ModalCloseReason;
-import mui.icon.SkipNext;
 using Lambda;
 
 typedef ProductListCategoryProps = {
@@ -26,16 +25,11 @@ private typedef PublicProps = {
 	var vendors : Array<VendorInfo>;
 }
 
-typedef ProductListCategoryState = {
-	var displayAll:Bool;
-}
-
 @:publicProps(PublicProps)
-class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProps, ProductListCategoryState> {
+class ProductListCategory extends react.ReactComponentOfProps<ProductListCategoryProps> {
 
 	function new(p) {
 		super(p);
-		this.state = {displayAll:false};
 	}
 
 	override public function render() {
@@ -72,19 +66,14 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 				<div className="subCategories">
 					${renderSubCategories(category)}
 				</div>
-				${renderLoadMoreButton()}
 			</div>
 		');
 	}
 
-	function renderLoadMoreButton() {
-		if( state.displayAll == false ) return null;
-		return jsx('
-			<SkipNext />
-		');
-	}
-
 	function renderSubCategories(category:CategoryInfo) {
+		var shouldOfferDifferedLoading = props.catalog.category == null;
+		trace("shouldOfferDifferedLoading", shouldOfferDifferedLoading);
+
 		if( category.subcategories == null || category.subcategories.length == 0 ) 
 			return null;
 		
@@ -96,10 +85,11 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 			if( subProducts.length == 0 ) return null;
 
 			return jsx('
-				<ProductListSubCategory key=${subcategory.id} displayAll=${state.displayAll} subcategory=${subcategory} products=${subProducts} vendors={props.vendors} openModal=${props.openModal}  />
+				<ProductListSubCategory displayAll=${!shouldOfferDifferedLoading} key=${subcategory.id} subcategory=${subcategory} products=${subProducts} vendors={props.vendors} openModal=${props.openModal}  />
 			');
 		});
 
+		//remove potentiel null elements
 		while(list.remove(null)){}
 
 		var content = list.length == 0 ? jsx('
