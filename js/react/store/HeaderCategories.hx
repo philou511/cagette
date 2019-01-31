@@ -132,7 +132,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
                                 onClick=${onCategoryClicked.bind(category)}
                 />')
         ];
-
+        
         return jsx('
             <div className=${classes.cagNavHeaderCategories}>
                 <div className=${classes.cagWrap}>

@@ -50,6 +50,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                 display: "flex",
                 alignItems: Center,
                 justifyContent: Center,
+                backgroundColor: CGColors.White,
 			},
             searchField : {
                 padding: '0.5em',
@@ -83,8 +84,13 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
             startAdornment: jsx('<InputAdornment position=${mui.core.input.InputAdornmentPosition.Start}>$searchIcon</InputAdornment>')
         };
 
+        var headerClasses = classNames({
+			'sticky': true,
+			'${classes.cagWrap}':true,
+		});
+
 		return jsx('
-            <Grid container spacing={8} className=${classes.cagWrap}>
+            <Grid container spacing={8} className=${headerClasses}>
                 <Grid item xs={6}> 
                     <DistributionDetails displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
                 </Grid>

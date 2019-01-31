@@ -23,7 +23,8 @@
     'react-router-dom':require('react-router-dom'),
     '@material-ui/core': require('@material-ui/core'),
     '@material-ui/core/styles': require('@material-ui/core/styles'),
-    '@material-ui/icons': require('@material-ui/icons')
+    '@material-ui/icons': require('@material-ui/icons'),
+    'stickyfilljs': require('stickyfilljs')
   });
 
   if (process.env.NODE_ENV !== 'production') {

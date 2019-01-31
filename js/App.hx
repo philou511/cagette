@@ -220,6 +220,10 @@ class App {
 		instanciates mui shop
 	**/
 	public function shop(place:Int, date:String) {
+
+		var elements = js.Browser.window.document.querySelectorAll('.sticky');
+		sticky.Stickyfill.add(elements);
+
 		// Will be merged with default values from mui
 		var theme = mui.core.styles.MuiTheme.createMuiTheme({
 			palette: {
