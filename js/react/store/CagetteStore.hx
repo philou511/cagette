@@ -91,7 +91,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			loading:true,
 			vendors:[],
 			paymentInfos:"",
-			errorMessage : null
+			errorMessage : null,
 		};
 	}
 
@@ -290,6 +290,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				${renderPromo()}
 				${renderProducts()}
 				${state.errorMessage!=null?jsx('<MuiError errorMessage=${state.errorMessage} onClose=$onErrorDialogClose  />'):null}
+				
 			</div>
 		');
 	}
@@ -297,6 +298,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	function onErrorDialogClose(){
 		setState({errorMessage:null});
 	}
+
+	
 
 	function renderHeader() {
 		var date = Date.fromString(props.date);
