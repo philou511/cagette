@@ -65,24 +65,19 @@ class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryBut
                     backgroundColor: "#DCDCDC",//untyped color('#FFFFF').darken(10).hex(),
                 },
             },
-
             cagSelect : {
                 color:'#E56403',
             },
-            
             cagLabelRouge : {
                 color:'#E53909',
             },
-
             cagBio : {
                 color:'#16993B',
             },
-
 		}
 	}
 
     override function render() {
-        trace(props.active);
         var classes = props.classes;
         var linkClasses = classNames({
 			'${classes.labelChip}': true,
@@ -95,10 +90,7 @@ class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryBut
         });
 
         var others = react.ReactMacro.getExtraProps(props);
-        //TODO replace by Chip composant instead?
-       // <Chip color="primary" icon={<FaceIcon />} />
-
-       var icon = (props.icon != null) ? jsx('<Icon component="i" className=${iconClasses} /> '): null;
+        var icon = (props.icon != null) ? jsx('<Icon component="i" className=${iconClasses} /> '): null;
         return jsx('
             <a onClick=${props.onclick} className=${linkClasses} {...others}>
                 ${icon}${props.label}

@@ -39,6 +39,20 @@ class FilterUtil
 
         //TODO PRODUCTEUR group
 
-        return {products:fproducts, producteur:producteur, category:category, subCategory:subcategory};
+        return {products:fproducts, producteur:producteur, category:category, subCategory:subcategory, search:null};
+    }
+
+    public static function searchProducts(products:Array<ProductInfo>, criteria:String ):FilteredProductCatalog
+    {
+        var results = [];
+        //case non sensitive search
+        criteria = criteria.toLowerCase();
+        for( p in products ) 
+        {
+            if( !StringTools.startsWith(p.name.toLowerCase(), criteria) ) continue;
+            results.push(p);
+        }
+
+        return {products:results, producteur:null, category:null, subCategory:null, search:criteria};
     }
 }

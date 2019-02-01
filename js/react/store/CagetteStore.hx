@@ -21,6 +21,7 @@ typedef CagetteStoreProps = {
 };
 
 typedef ProductFilters = {
+	@:optional var search:Null<String>;
 	@:optional var category:Int;
 	@:optional var subcategory:Int;
 	@:optional var tags:Array<String>;
@@ -32,11 +33,8 @@ typedef  CagetteStoreState = {
 	var orderByEndDates:Array<OrderByEndDate>;
 	var categories:Array<CategoryInfo>;
 	var products:Array<ProductInfo>;
-	//var order:OrderSimple;
 	var filter:ProductFilters;
-
 	var loading:Bool;
-
 	var vendors:Array<VendorInfo>;
 	var paymentInfos:String;
 	var errorMessage:String;
@@ -51,33 +49,6 @@ abstract ServerUrl(String) to String {
 	var SubmitUrl = '/api/shop/submit';
 }
 
-/*
-	const styles = {
-	searchField: {
-		width: 200,
-		padding: '0.5em',
-	},
-	cagNavCategories: {
-		padding: 0,
-		height: 100,
-	},
-	button:{
-			size: 'small',
-			textTransform: 'none',
-			color: '#84BD55',
-		},
-	cagSearchInput: {
-		borderRadius: 5,
-
-		border:'1px solid #E5D3BF',
-		padding: '10px 12px',
-		width: 'calc(100%)',
-		'&:focus': {
-			borderColor: '#80bdff',
-		},
-	},
-	}
- */
 class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps, CagetteStoreState> {
 
 	public function new() {
@@ -127,15 +98,10 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
 
-			/*var subCategories = [];
-			for (category in categories) {
-				subCategories = subCategories.concat(category.subcategories);
-			}*/
-
 			setState({
 				categories: categories,
 			});
-
+			
 			//Loads products
 			fetch(ProductsUrl, GET, {date: props.date, place: props.place}, JSON)
 			.then(function(res:Dynamic){
@@ -154,51 +120,17 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				setState({
 					products:res.products,
 					loading:false,
-					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
-				}, function() {
-					
-				});
+				}, function() {});
 
 			}).catchError(function(error) {
 				onError(error);
 			});
-
-			//categories.unshift(DEFAULT_CATEGORY);
+			
 			categories.unshift(ALL_CATEGORY);
 
-			/*js.Promise.all(promises).then(function(results:Array<Dynamic>) {
-				var products = [];
-				//trace("results ", results.length);
-				// primises.all respect the order
-				for (i in 0...results.length) {
-					var result = results[i];
-					var category = subCategories[i];
-					//trace('Category $category contains ${result.products.length} produits');
-					// transform results
-					var catProducts:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
-						if( p.categories == null || p.categories.length == 0 ) {
-							p.categories = [DEFAULT_CATEGORY];
-							//trace("We assign a default category");
-						} 
-						return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
-					}));
-					//productsBySubcategoryIdMapCopy.set(category.id, products);
-					products = products.concat(catProducts);
-				}
-				
-				//trace('${products.length} produits trouvés ');
-				setState({
-					products:products,
-					loading:false,
-					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
-				}, function() {
-					trace("products catalog updated");
-				});
-			});*/
 		}).catchError(function(error) {
 			onError(error);
 		});
-		
 	}
 
 
@@ -207,7 +139,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	function filterByCategory(categoryId:Int) {
-		setState({ filter: {category:categoryId}});
+		setState({ filter: {category:categoryId, subcategory:null } });
 	}
 
 	function filterBySubCategory(categoryId:Int, subCategoryId:Int) {
@@ -235,12 +167,11 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				};
 			})
 		}
-		
 	
 		fetch(SubmitUrl,POST,{cart:orderInSession},JSON)
-		.then(function(_){
-			js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString();
-		});
+			.then(function(_){
+				js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString();
+			});
 	}
 
 
@@ -253,10 +184,18 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		return null;
 	}
 
+	function onSearch(criteria:String) {
+		setState({filter:{search:criteria}});
+	}
+
 	override public function render() {
 		
-		function filter(p, f:ProductFilters) {
-			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
+		function filterCatalog(p, f:ProductFilters) {
+			if( f.search != null ) {
+				return react.store.FilterUtil.searchProducts(state.products, f.search);
+			} else {
+				return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
+			}
 		}
 
 		function renderLoader() {
@@ -271,7 +210,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 		function renderProducts() {
 			return 	if( state.loading ) renderLoader();
-					else jsx('<ProductCatalog categories=${state.categories} catalog=${filter(state.products, state.filter)} vendors=${state.vendors} />');
+					else jsx('<ProductCatalog categories=${state.categories} catalog=${filterCatalog(state.products, state.filter)} vendors=${state.vendors} />');
 		}
 
 		var date = Date.fromString(props.date);
@@ -289,6 +228,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					filterByCategory=${filterByCategory}
 					filterBySubCategory=${filterBySubCategory}
 					toggleFilterTag=${toggleFilterTag}
+					onSearch=${onSearch}
 				/>
 
 				${renderPromo()}

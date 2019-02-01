@@ -38,6 +38,8 @@ private typedef PublicProps = {
 	var filterByCategory:Int->Void;
 	var filterBySubCategory:Int->Int->Void;
 	var toggleFilterTag:String->Void;
+
+    var onSearch:String->Void;
 }
 
 private typedef TClasses = Classes<[
@@ -116,6 +118,7 @@ class HeaderWrapper extends react.ReactComponentOf<HeaderWrapperProps, HeaderWra
                         place=${props.place} 
                         paymentInfos=${props.paymentInfos} 
                         date=${props.date}
+                        onSearch=${props.onSearch}
                         />
 					
                 ${renderHeaderCategories()}

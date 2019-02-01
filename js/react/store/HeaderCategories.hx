@@ -95,6 +95,7 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
     }
 
     function onSubCategoryClicked(subcategory:CategoryInfo) {
+        js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
         setState({activeSubCategory:subcategory}, function() {
             applyFilter();
         });
@@ -113,12 +114,14 @@ class HeaderCategories extends react.ReactComponentOfPropsAndState<HeaderCategor
 
     function onCategoryClicked(category:CategoryInfo) {
 
+        js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
+        
         if( category == state.activeCategory ) {
             setState({activeSubCategory:null}, function() {
                 applyFilter();
             });
         } else {
-            setState({activeCategory:category}, function(){
+            setState({activeCategory:category, activeSubCategory:null}, function(){
                 applyFilter();
             });
         }
