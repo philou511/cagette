@@ -48,11 +48,11 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 
 	static function getDerivedStateFromProps(nextProps:ProductListCategoryProps, currentState:ProductListCategoryState):ProductListCategoryState {
 		if( nextProps.category == null ) return null;
-		trace("getDerivedStateFromProps "+nextProps.catalog.category+", "+nextProps.catalog.subCategory);
-		trace(nextProps.catalog.products.length);
+		//trace("getDerivedStateFromProps "+nextProps.catalog.category+", "+nextProps.catalog.subCategory);
+		//trace(nextProps.catalog.products.length);
 		var data = cleanData(nextProps.category, nextProps.catalog);
 		if( currentState.catalogSize == nextProps.catalog.products.length && data.length == currentState.data.length ) return null;
-		trace("we change state, we need to reload");
+		//trace("we change state, we need to reload");
 		return {data:data, currentSubCategoryCount:0, catalogSize: nextProps.catalog.products.length, loadMore:true};
 	}
 
@@ -82,16 +82,16 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 	}
 
 	override function componentDidMount() {
-		trace("componentDidMount "+state.loadMore);
+		//trace("componentDidMount "+state.loadMore);
 		if( state.loadMore == true ) {
-			trace("we ask for reloading");
+			//trace("we ask for reloading");
 			setState({loadMore:false}, loadMore);
 		}
 	}
 	override function componentDidUpdate(prevProps:ProductListCategoryProps, prevState:ProductListCategoryState) {
-		trace("componentDidUpdate "+state.loadMore);
+		//trace("componentDidUpdate "+state.loadMore);
 		if( state.loadMore == true ) {
-			trace("we ask for reloading");
+			//trace("we ask for reloading");
 			setState({loadMore:false}, loadMore);
 		}
 	}
@@ -123,8 +123,8 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 			');
 		}
 
-		trace("renderSubCategories "+state.currentSubCategoryCount);
-		trace("shouldLoad "+state.loadMore);
+		//trace("renderSubCategories "+state.currentSubCategoryCount);
+		//trace("shouldLoad "+state.loadMore);
 		var list = [for( i in 0...state.currentSubCategoryCount ) {
 			var subcategory = state.data[i].subcategory;
 			var subProducts = state.data[i].products;

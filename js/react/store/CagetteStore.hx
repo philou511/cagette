@@ -38,6 +38,7 @@ typedef  CagetteStoreState = {
 	var vendors:Array<VendorInfo>;
 	var paymentInfos:String;
 	var errorMessage:String;
+	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 };
 
 @:enum
@@ -63,6 +64,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			vendors:[],
 			paymentInfos:"",
 			errorMessage : null,
+			nav:{category:null, subcategory:null},
 		};
 	}
 
@@ -120,6 +122,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				setState({
 					products:res.products,
 					loading:false,
+					nav:{category:categories[0], subcategory:null},
 				}, function() {});
 
 			}).catchError(function(error) {
@@ -133,17 +136,29 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		});
 	}
 
-
 	function resetFilter() {
-		setState({filter:{}});
+		setState({
+			filter:{},
+			nav: {category:state.categories[0], subcategory:null}
+		});
 	}
 
 	function filterByCategory(categoryId:Int) {
-		setState({ filter: {category:categoryId, subcategory:null } });
+		var category = Lambda.find(state.categories, function(c) return c.id == categoryId);
+		setState({ 
+			filter: {category:categoryId, subcategory:null },
+			nav: {category:category, subcategory:null}
+		});
 	}
 
 	function filterBySubCategory(categoryId:Int, subCategoryId:Int) {
-		setState({ filter: {category:categoryId, subcategory:subCategoryId}});
+		var category = Lambda.find(state.categories, function(c) return c.id == categoryId);
+		var subcategory = Lambda.find(category.subcategories, function(c) return c.id == subCategoryId);
+		
+		setState({ 
+			filter: {category:categoryId, subcategory:subCategoryId },
+			nav: {category:category, subcategory:subcategory}
+		});
 	}
 
 	function toggleFilterTag(tag:String) {
@@ -174,7 +189,6 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			});
 	}
 
-
 	/**
 	TODO : bloc de mise en avant.
 	Par défaut ce sera les produits de la semaine. 
@@ -185,18 +199,23 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	function onSearch(criteria:String) {
-		setState({filter:{search:criteria}});
+		if( criteria != null && criteria.length == 0 ) criteria = null;
+		setState({
+			filter:{search:criteria},
+			nav: {category:state.categories[0], subcategory:null}
+		});
+	}
+
+	function filterCatalog(p, f:ProductFilters) {
+		if( f.search != null ) {
+			return react.store.FilterUtil.searchProducts(state.products, f.search);
+		} else {
+			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
+		}
 	}
 
 	override public function render() {
 		
-		function filterCatalog(p, f:ProductFilters) {
-			if( f.search != null ) {
-				return react.store.FilterUtil.searchProducts(state.products, f.search);
-			} else {
-				return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
-			}
-		}
 
 		function renderLoader() {
 			return jsx('
@@ -229,6 +248,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					filterBySubCategory=${filterBySubCategory}
 					toggleFilterTag=${toggleFilterTag}
 					onSearch=${onSearch}
+					nav=${state.nav}
 				/>
 
 				${renderPromo()}

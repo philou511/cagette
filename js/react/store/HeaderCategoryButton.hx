@@ -79,6 +79,8 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
 			'${classes.imgFit}': props.isSticky,
 		});
 		
+		if(props.active) trace("CategoryButton "+props.category.name+" active?"+props.active);
+
 		var name = (props.isSticky) ? null : jsx('${props.category.name}');
 		return jsx('
             <Grid item xs className=${classes.gridItem}>

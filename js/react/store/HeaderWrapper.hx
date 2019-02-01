@@ -39,6 +39,8 @@ private typedef PublicProps = {
 	var toggleFilterTag:String->Void;
 
     var onSearch:String->Void;
+
+    var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 }
 
 private typedef TClasses = Classes<[
@@ -114,6 +116,7 @@ class HeaderWrapper extends react.ReactComponentOf<HeaderWrapperProps, HeaderWra
                     filterByCategory=${props.filterByCategory}
                     filterBySubCategory=${props.filterBySubCategory}
                     toggleFilterTag=${props.toggleFilterTag}
+                    nav=${props.nav}
                 />
 
                 ${renderFab()}

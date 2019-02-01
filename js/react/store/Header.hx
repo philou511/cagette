@@ -90,7 +90,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
     function handleChange(event:js.html.Event):Void {
         var target:js.html.InputElement = cast event.target;
         var criteria:String = target.value;
-        if( criteria.length >= 3 )
+        if( criteria.length >= 3 || criteria.length == 0 )
             props.onSearch(criteria);
     }
 
