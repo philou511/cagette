@@ -109,10 +109,10 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 
 		return jsx('
             <Grid container spacing={8} className=${headerClasses}>
-                <Grid item xs={6}> 
+                <Grid item md={6} xs={12}> 
                     <DistributionDetails isSticky=${props.isSticky} displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
                 </Grid>
-                <Grid item  xs={3} className=${classes.cagFormContainer}>                  
+                <Grid item md={3} xs={6} className=${classes.cagFormContainer}>                  
                         <TextField                            
                             id="search-bar"
                             placeholder="Recherche"
@@ -123,7 +123,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                             onChange=${handleChange}
                         />                                                                                         
                 </Grid>
-                <Grid item xs={3} className=${classes.cartContainer}>
+                <Grid item md={3} xs={6} className=${classes.cartContainer}>
                     <Cart submitOrder=${props.submitOrder} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
                 </Grid>
             </Grid>

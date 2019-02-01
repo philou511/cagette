@@ -14,6 +14,7 @@ import mui.core.form.FormControlVariant;
 import mui.core.input.InputType;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
+import mui.core.Hidden;
 import mui.core.InputAdornment;
 
 import Common;
@@ -73,7 +74,7 @@ class HeaderWrapper extends react.ReactComponentOf<HeaderWrapperProps, HeaderWra
         var stickyEvents = new sticky.StickyEvents({stickySelector:'.sticky', enabled:true});
         for( e in stickyEvents.stickyElements ) {
             e.addEventListener(sticky.StickyEvents.StickyEvent.CHANGE, function(e) {
-                trace("WE have an element changing sticky status");
+                trace("We have an element changing sticky status");
                 //trace(e.target);
                 setState({isSticky: e.detail.isSticky});                    
             });

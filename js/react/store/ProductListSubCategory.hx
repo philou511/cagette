@@ -112,7 +112,7 @@ class ProductListSubCategory extends react.ReactComponentOf<ProductListSubCatego
 				});
 
 				jsx('
-					<$Grid item xs={12} sm={4} md={3} key=${product.id}>
+					<$Grid item xs={6} sm={4} md={3} key=${product.id}>
 						<$Product product=${product} openModal=${props.openModal} vendor=${vendor} />
 					</$Grid>
 				');

@@ -65,7 +65,8 @@ class HeaderCategories extends react.ReactComponentOfProps<HeaderCategoriesProps
                 backgroundColor: CGColors.Bg3,
             },
             shadow : {
-                filter: "drop-shadow(0px 4px 1px #00000055)",
+                //filter: "drop-shadow(0px 4px 1px #00000055)",
+                filter: "drop-shadow(0px 4px 0px #00000022)",
             },
             cagGrid: {
                 

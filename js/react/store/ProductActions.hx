@@ -134,8 +134,8 @@ class ProductActions extends ReactComponentOfProps<Props> {
         var style = {fontSize:20};
         var basketIcon = mui.CagetteIcon.get("basket-add",style);
 
-        return if(props.product.stock<=0){
-            jsx('<span style=${{color:CGColors.Third}}>Rupture <br/>de stock</span>');
+        return if(props.product.stock!=null && props.product.stock<=0){
+            jsx('<span style=${{color:CGColors.Third}}>Rupture<br/>de stock</span>');
             } else if(props.quantity <= 0 ) {
             jsx('<Tooltip title="Ajouter ce produit à mon panier" placement=${mui.core.popper.PopperPlacement.Bottom}>
                     <Button
@@ -146,8 +146,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                         disableRipple>                        
                         $basketIcon
                     </Button>
-                </Tooltip>
-            ');
+                </Tooltip>');
         } else {
             jsx('<QuantityInput onChange=${updateQuantity} value=${props.quantity}/>');
         }
@@ -181,7 +180,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                     <Grid item xs={3} style={{textAlign:css.TextAlign.Left}}>
                         <Typography component="div" className=${classes.cagProductInfo} >
                             <span className="cagProductPrice">
-                                ${Formatting.formatNum(product.price)} €
+                                ${Formatting.formatNum(product.price)}&nbsp;&euro;
                             </span> 
                         </Typography> 
                         
@@ -189,7 +188,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
 
                     </Grid>
                     
-                    <Grid item xs={4} style={{textAlign:css.TextAlign.Right}}>
+                    <Grid item xs={4} style=${{textAlign:css.TextAlign.Right}}>
                         ${renderQuantityAction()}
                     </Grid>
 

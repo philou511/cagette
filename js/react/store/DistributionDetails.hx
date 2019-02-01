@@ -13,8 +13,10 @@ import mui.icon.Icon;
 import mui.core.form.FormControlVariant;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
+import mui.core.Hidden;
 import Common;
 import Formatting;
+//import css.Overflow;
 
 using Lambda;
 
@@ -32,7 +34,7 @@ private typedef PublicProps = {
 	var date : Date;
 }
 
-private typedef TClasses = Classes<[cagNavInfo,]>
+private typedef TClasses = Classes<[cagNavInfo,textSingleLine]>
 
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
@@ -40,9 +42,10 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			cagNavInfo : {
-                fontSize: "0.7rem",
+                /*fontSize: "0.7rem",
 				fontWeight: "lighter",
-                color: CGColors.Secondfont,
+                color: CGColors.Secondfont,*/
+				lineHeight : 1.5,
                 padding: "10px 0",
                 
                 "& p" : {
@@ -60,6 +63,14 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
                     marginRight: "0.2rem",
                 },
             },
+			textSingleLine : {
+				cursor : "pointer",
+				/*
+				Buddy when displayed in Cart Details
+				textOverflow : css.TextOverflow.Ellipsis,
+				whiteSpace : css.WhiteSpace.NoWrap,
+				overflow : cast "hidden",*/
+			}
 		}
 	}
 
@@ -69,90 +80,63 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	}
 
 	override public function render() {
-		//icons
-		var classes = props.classes;
-		/*var clIconMap = classNames({
-			'icons':true,
-			'icon-map-marker':true,
-		});
-		var clIconEuro = classNames({
-			'icons':true,
-			'icon-cash':true,
-		});
-		var clIconDate = classNames({
-			'icons':true,
-			'icon-calendar':true,
-		});
-		var clIconClock = classNames({
-			'icons':true,
-			'icon-clock':true,
-		});*/
-
-		if (props.orderByEndDates == null || props.orderByEndDates.length == 0)
+		
+		if( props.orderByEndDates != null || props.orderByEndDates.length > 0 ) {
+			return jsx('<div className=${props.classes.cagNavInfo}> 
+				<span className=${props.classes.textSingleLine} onClick=$openMapWindow>
+					${renderDistributionDate()} à ${renderLocation()}
+				</span>
+				<Hidden xsDown>
+					${renderClosingDates()}
+					${renderPaymentInfos()}
+				</Hidden>				
+				${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null}
+			</div>');
+		}else{
 			return null;
-
-		
-
-		// TODO Think about the way the place adress is built, why an array for zipCode and city ?
-		// TODO LOCALIZATION
-		var viewUrl = '${CagetteStore.ServerUrl.ViewUrl}/${props.place}';
-		
-		
-        /*var textInfos1Link = props.displayLinks ? jsx('<a href="#">Changer</a>') : null;
-        var textInfos3Link = props.displayLinks ? jsx('<a href="#">Plus d\'infos></a>') : null;*/
-		return jsx('
-            <div className=${classes.cagNavInfo}> 
-				${renderMap()}
-				${renderCalendar()}
-				${renderClock()}
-				${renderPaymentInfos()}
-			</div>
-        ');
+		}
 	}
 
-	function renderMap() {
-		if( props.isSticky ) return null;
+	function renderLocation() {
+		//if( props.isSticky ) return null;
+		if(props.place==null) return null;
 
-		var addressBlock = Formatting.getFullAddress(props.place);
-		
-		return jsx('<>
-			<Typography component="p" onClick=$openMapWindow style=${{cursor:"pointer"}}>
+		return jsx('<span>
 				${mui.CagetteIcon.get("map-marker")}
-				${addressBlock}
-				
-			</Typography>
-			${state.placePopup!=null?jsx('<OSMWindow place=${state.placePopup} onClose=$onOSMWindowClose  />'):null}
-		</>');
+				${props.place.name}				
+			</span>');
 	}
 
-	function renderCalendar() {
-		var distribDate = jsx('<span>Distribution le ${Formatting.hDate(props.date)}.</span>');
+	function renderDistributionDate() {
+		var distribDate = jsx('<span>Distribution le ${Formatting.hDate(props.date)}</span>');
 		return jsx('
-			<Typography component="p">
+			<span>
 				${mui.CagetteIcon.get("calendar")}
 				${distribDate}
-			</Typography>'
+			</span>'
 		);
 	}
 
-	function renderClock() {
+	function renderClosingDates() {
 		var endDates;
 		if (props.orderByEndDates.length == 1) {
+			//single closing date
 			var orderEndDate = Date.fromString(props.orderByEndDates[0].date);
-			endDates = [jsx('<span key=$orderEndDate>La commande fermera le ${Formatting.hDate(orderEndDate)}</span>')];
+			endDates = [jsx('<span key=$orderEndDate>La commande ferme ${Formatting.timeToDate(orderEndDate)}</span>')];
 		} else {
+			//many closing dates
 			endDates = props.orderByEndDates.map(function(order) {
 				if (order.contracts.length == 1) {
 					return jsx('
 						<span key=${order.date}>
-							La commande ${order.contracts[0]} fermera le ${Formatting.hDate(Date.fromString(order.date))} 
+							La commande ${order.contracts[0]} ferme ${Formatting.timeToDate(Date.fromString(order.date))} 
 						</span>
 					');
 				}
 
 				return jsx('
 					<span key=${order.date}>
-						Les autres commandes fermeront le ${Formatting.hDate(Date.fromString(order.date))} 
+						Les autres commandes ferment ${Formatting.timeToDate(Date.fromString(order.date))} 
 					</span>
 				');
 			});
@@ -168,6 +152,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 
 	function renderPaymentInfos() {
 		if( props.isSticky ) return null;
+		if(props.paymentInfos=="" || props.paymentInfos==null) return null;
 
 		var paymentInfos = jsx('<span>Paiement: ${props.paymentInfos}</span>');
 		return jsx('
