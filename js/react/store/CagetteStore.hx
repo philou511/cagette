@@ -127,15 +127,10 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
 
-			/*var subCategories = [];
-			for (category in categories) {
-				subCategories = subCategories.concat(category.subcategories);
-			}*/
-
 			setState({
 				categories: categories,
 			});
-
+			
 			//Loads products
 			fetch(ProductsUrl, GET, {date: props.date, place: props.place}, JSON)
 			.then(function(res:Dynamic){
@@ -154,51 +149,17 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				setState({
 					products:res.products,
 					loading:false,
-					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
-				}, function() {
-					
-				});
+				}, function() {});
 
 			}).catchError(function(error) {
 				onError(error);
 			});
-
-			//categories.unshift(DEFAULT_CATEGORY);
+			
 			categories.unshift(ALL_CATEGORY);
 
-			/*js.Promise.all(promises).then(function(results:Array<Dynamic>) {
-				var products = [];
-				//trace("results ", results.length);
-				// primises.all respect the order
-				for (i in 0...results.length) {
-					var result = results[i];
-					var category = subCategories[i];
-					//trace('Category $category contains ${result.products.length} produits');
-					// transform results
-					var catProducts:Array<ProductInfo> = Lambda.array(Lambda.map(result.products, function(p:Dynamic) {
-						if( p.categories == null || p.categories.length == 0 ) {
-							p.categories = [DEFAULT_CATEGORY];
-							//trace("We assign a default category");
-						} 
-						return js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
-					}));
-					//productsBySubcategoryIdMapCopy.set(category.id, products);
-					products = products.concat(catProducts);
-				}
-				
-				//trace('${products.length} produits trouvés ');
-				setState({
-					products:products,
-					loading:false,
-					//productsBySubcategoryIdMap: productsBySubcategoryIdMapCopy
-				}, function() {
-					trace("products catalog updated");
-				});
-			});*/
 		}).catchError(function(error) {
 			onError(error);
 		});
-		
 	}
 
 
@@ -207,7 +168,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	function filterByCategory(categoryId:Int) {
-		setState({ filter: {category:categoryId}});
+		setState({ filter: {category:categoryId, subcategory:null } });
 	}
 
 	function filterBySubCategory(categoryId:Int, subCategoryId:Int) {

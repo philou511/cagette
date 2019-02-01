@@ -1,8 +1,13 @@
 package react.store;
 
 import Common;
+import react.ReactSuspense;
+import react.React.Module;
 import react.ReactComponent;
+import react.ReactType;
 import react.ReactMacro.jsx;
+import react.ReactSuspense;
+import mui.core.CircularProgress;
 import mui.core.Grid;
 import classnames.ClassNames.fastNull as classNames;
 import mui.core.styles.Classes;
@@ -11,6 +16,7 @@ import mui.core.styles.Styles;
 import mui.core.Modal;
 import js.html.Event;
 import mui.core.modal.ModalCloseReason;
+import react.store.ProductCatalog;
 
 using Lambda;
 
@@ -28,6 +34,8 @@ private typedef PublicProps = {
 private typedef ProductCatalogState = {
 	@:optional var modalProduct:Null<ProductInfo>;
 	@:optional var modalVendor:Null<VendorInfo>;
+
+	var loading:Bool;
 }
 
 private typedef TClasses = Classes<[categories,]>
@@ -46,14 +54,28 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 		}
 	}
 
+/*
+	static var LazyProductCatalogCategories:ReactType = {
+		var p:js.Promise<Module<ReactType>> = new js.Promise(function(resolve:Module<ReactType>->Void, _) {  
+			var m:Module<ReactType> = cast new Module(ProductCatalogCategories); 
+			resolve(m); 
+		});
+		React.lazy(function() { return p; });
+	}
+*/
+
+
 	function new(p) {
 		super(p);
-		this.state = {};
+		this.state = {loading:true};
+		trace("new catalog");
 	}
 
 	override public function render() {
 		var classes = props.classes;
-		trace('filter catalog', props.catalog.products.length, props.catalog.category);
+		//trace('filter catalog', props.catalog.products.length, props.catalog.category);
+		//var loading = jsx('<CircularProgress />');
+		//<ReactSuspense fallback=${loading}>
 		return jsx('
 			<div className=${classes.categories}>
 			   <ProductModal 	product=${state.modalProduct}
