@@ -35,13 +35,7 @@ class Place extends Object
 	}
 	
 	public function getFullAddress(){
-		var str = new StringBuf();
-		str.add(name+", \n");
-		if (address1 != null) str.add(address1 + ", \n");
-		if (address2 != null) str.add(address2 + ", \n");
-		if (zipCode != null) str.add(zipCode);
-		if (city != null) str.add(" - "+city);
-		return str.toString();
+		return Formatting.getFullAddress(this.getInfos());
 	}
 	
 	/**

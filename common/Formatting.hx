@@ -102,24 +102,48 @@ class Formatting
 	/**
 	 * human readable date + time
 	 */
-	public static function hDate(date:Date):String {
+	public static function hDate(date:Date,?year=false):String {
 		if (date == null) return "No date set";
 		var out = DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()];
-		out += " " + date.getFullYear();
+		if(year) out += " " + date.getFullYear();
 		if ( date.getHours() != 0 || date.getMinutes() != 0){
 			out += " à " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
 		}
 		return out;
 	}
 
+	/**
+		Time from now to date
+	**/
+	public static function timeToDate(date:Date):String{
+		var now = Date.now();
+		var diff = date.getTime()/1000 - now.getTime()/1000;
+		var str = new StringBuf();
+		if(diff>0) str.add("dans ") else str.add("il y a ");
+		diff = Math.abs(diff);
+		if(diff < 3600){
+			//minutes
+			str.add( Math.round(diff/60)+" minutes" );
+		}else if (diff < 3600*24 ){
+			//hours
+			str.add( Math.round(diff/3600)+" heures" );
+		}else{
+			//days
+			str.add( Math.round(diff/(3600*24)) +" jours" );
+		}
+		return str.toString();
+
+	}
+
 
 	public static function getFullAddress(p:PlaceInfos){
+		if (p==null) return "";
 		var str = new StringBuf();
 		str.add(p.name+", \n");
 		if (p.address1 != null) str.add(p.address1 + ", \n");
 		if (p.address2 != null) str.add(p.address2 + ", \n");
 		if (p.zipCode != null) 	str.add(p.zipCode);
-		if (p.city != null) 	str.add(" - "+p.city);
+		if (p.city != null) 	str.add(" "+p.city);
 		return str.toString();
 	}
 }

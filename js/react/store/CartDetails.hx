@@ -20,7 +20,6 @@ import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 
 import react.store.redux.action.CartAction;
-import Formatting.unit;
 import Common;
 using Lambda;
 
@@ -73,8 +72,8 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			cartDetails : {
-                fontSize: "1.2rem",
-                fontWeight: "bold",//TODO use enum from externs when available
+                /*fontSize: "1.2rem",
+                fontWeight: "bold",//TODO use enum from externs when available*/
                 display: "flex",
 				flexDirection: css.FlexDirection.Column,
                 width: 400,
@@ -122,17 +121,13 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
                 fontSize: '0.8rem',
                 fontStyle: "normal",
                 textTransform: UpperCase,
-                marginBottom: 3,
-
+                //marginBottom: 3,
 				overflow: Hidden,
 				//whiteSpace: NoWrap,
 				textOverflow: Ellipsis,
-
-				lineHeight: "1.0em",
-  				maxHeight: "1.8em",
-
+				lineHeight: "1.2em",
+  				maxHeight: 80,
 				alignSelf: "flex-start",
-
             },
             cagProductInfoWrap : {       
                 justifyContent: SpaceBetween,
@@ -149,10 +144,10 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
                 },
             },
             cagProductPriceRate : {        
-                fontSize: "0.5rem",
+               /* fontSize: "0.5rem",
                 color : CGColors.Secondfont,
                 marginTop : -3,
-                marginLeft: 3,
+                marginLeft: 3,*/
             },
 		}
 	}
@@ -182,13 +177,18 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 		return jsx('
 			<Card className=${classes.cartDetails}>
 				${renderProducts()}
-
 				<Divider variant={Middle} />
 				<DistributionDetails isSticky={false} displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
 				${renderFooter()}
 
 			</Card>
         ');
+    }
+
+	function renderQtAndUnit(qt:Float,unit:Unit){
+        if(qt==0 || qt==null) return null;
+        if(unit==null) return null;
+        return jsx('<>${Formatting.formatNum(qt)}&nbsp;${Formatting.unit(unit,qt)}</>');
     }
 
 
@@ -209,7 +209,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
         var productsToOrder = props.order.products.map(function(cartProduct:ProductWithQuantity) {
 			var quantity = cartProduct.quantity;
 			var product = cartProduct.product;
-			var productType = unit(product.unitType);
+			
 
 			return jsx('
 				<Grid className=${classes.product} container={true} direction=${Row} spacing={8} key=${product.id}>
@@ -225,16 +225,14 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 						<Typography component="h3" className=${classes.cagProductTitle}>
                             ${product.name}
                         </Typography>
-						 <Typography component="p" className=${classes.cagProductPriceRate} >
-							${product.price} €/${(productType)}
-						</Typography> 
+						
 					</Grid>
 					<Grid item={true} xs={2} className=${classes.gridItem}>
-						<Typography component="p" className=${classes.cagProductInfo} >
-							<span className="cagProductUnit">1${(productType)}</span>	
+						<Typography component="p" className=${classes.cagProductInfo}>
+							<span className="cagProductUnit">${renderQtAndUnit(quantity*product.qt,product.unitType)}</span>	
 						</Typography>
 						<Typography component="p" className=${classes.cagProductInfo} >
-							<span className="cagProductPrice">${product.price} €</span>
+							<span className="cagProductPrice">${Formatting.formatNum(quantity*product.price)}&nbsp;&euro;</span>
 						</Typography>
 					</Grid>
 					<Grid item={true} xs={3}>

@@ -19,6 +19,7 @@ import mui.core.Typography;
 import mui.core.Avatar;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
+import mui.core.Hidden;
 import mui.icon.Icon;
 
 import mui.CagetteTheme;
@@ -163,18 +164,18 @@ class Product extends ReactComponentOf<Props, ProductState> {
         return jsx('
             <Card elevation={0} className=${classes.card}> 
                 <CardActionArea className=${classes.area} onClick=${displayProductInfos}>
-                    <CardMedia
-                        className=${classes.media}
-                        image=${product.image}
-                        >
-                        <div className=${classes.cagAvatarContainer}>
+                    <CardMedia  className=${classes.media} image=${product.image}>
+                        <!--<div className=${classes.cagAvatarContainer}>
                             <Avatar className=${classes.starProduct}>
                                 ${mui.CagetteIcon.get("star")}
                             </Avatar>  
-                        </div>
-                        <div className=${classes.cagAvatarContainer}>
-                            <Avatar src=${props.vendor.faceImageUrl} className=${classes.farmerAvatar}/>  
-                        </div>
+                        </div>-->
+
+                        <Hidden xsDown>
+                            <div className=${classes.cagAvatarContainer}>
+                                <Avatar src=${props.vendor.faceImageUrl} className=${classes.farmerAvatar}/>  
+                            </div>
+                        </Hidden>
                     </CardMedia>
 
                     <CardContent className=${classes.cardContent}>

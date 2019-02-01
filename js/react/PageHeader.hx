@@ -3,8 +3,9 @@ package react;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.core.common.CSSPosition;
-
+import mui.core.Hidden;
 import utils.HttpUtil;
+import mui.CagetteTheme.CGColors;
 
 import mui.core.*;
 
@@ -31,11 +32,14 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
         var anchorEl = state.anchorMenu;
 
         return jsx('
-            <$Grid container justify=${Center} style=${{marginBottom:"12px",maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
-                <$Grid item xs={6}>
-                    <h1>${props.groupName}</h1>
-                </$Grid>
-                <$Grid item xs={6} style=${{textAlign:"right"}}>
+            <Grid container justify=${Center} style=${{/*marginBottom:"12px",*/maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
+                
+                <Grid item md={6} xs={12}>
+                    <h1><a href="/" style=${{textDecoration:"none",color:CGColors.Firstfont}}>${props.groupName}</a></h1>
+                </Grid>
+
+                <Hidden xsDown>
+                <Grid item md={6} xs={false} style=${{textAlign:"right"}}>
                     <div>
                         <$Button onClick=$changeGroup >
                             <i className="icon icon-chevron-left"></i>&nbsp;Changer de groupe
@@ -52,10 +56,10 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
                             </$MenuItem>
                         </$Menu>
                     </div>
+                </Grid>
+                </Hidden>
 
-                </$Grid>
-
-                <$Grid item xs={12}>
+                <!--<$Grid item xs={12}>
                     <$AppBar position=${CSSPosition.Static} color=${mui.Color.Default}>
                         <$Tabs onChange=${ cast handleChange} value="home">
                             <$Tab label="ACCUEIL" value="home"/>
@@ -69,8 +73,8 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
                             
                         </$Tabs>
                     </$AppBar>
-                </$Grid>
-            </$Grid>
+                </$Grid>-->
+            </Grid>
         ');
     }
 

@@ -107,6 +107,12 @@ class Main extends Controller {
 	function doCssdemo() {
 		view.category = 'home';
 	}
+
+	@tpl("css.mtt")
+	function doCssdemo2(){
+
+
+	}
 	
 	@tpl("form.mtt")
 	function doInstall(d:Dispatch) {
