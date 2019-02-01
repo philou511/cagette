@@ -46,6 +46,9 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 		timer = null;
 	}
 
+	/**
+		Triggered when props are updated
+	**/
 	static function getDerivedStateFromProps(nextProps:ProductListCategoryProps, currentState:ProductListCategoryState):ProductListCategoryState {
 		if( nextProps.category == null ) return null;
 		//trace("getDerivedStateFromProps "+nextProps.catalog.category+", "+nextProps.catalog.subCategory);
