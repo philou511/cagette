@@ -33,6 +33,8 @@ private typedef PublicProps = {
 	var orderByEndDates:Array<OrderByEndDate>;
     var paymentInfos:String;
     var date : Date;
+
+    var onSearch:String->Void;
 }
 
 private typedef TClasses = Classes<[
@@ -84,6 +86,13 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		super(props);
 	}
 
+//TODO https://github.com/kiroukou/haxe-lodash-externs
+    function handleChange(event:js.html.Event):Void {
+        var target:js.html.InputElement = cast event.target;
+        var criteria:String = target.value;
+        if( criteria.length >= 3 )
+            props.onSearch(criteria);
+    }
 
 	override public function render() {
         var classes = props.classes;
@@ -111,6 +120,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
                             type=${Search} 
                             className=${classes.searchField}
                             InputProps=${cast inputProps}
+                            onChange=${handleChange}
                         />                                                                                         
                 </Grid>
                 <Grid item xs={3} className=${classes.cartContainer}>

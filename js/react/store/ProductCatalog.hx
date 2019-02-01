@@ -8,6 +8,7 @@ import react.ReactType;
 import react.ReactMacro.jsx;
 import react.ReactSuspense;
 import mui.core.CircularProgress;
+import mui.core.Typography;
 import mui.core.Grid;
 import classnames.ClassNames.fastNull as classNames;
 import mui.core.styles.Classes;
@@ -64,11 +65,9 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 	}
 */
 
-
 	function new(p) {
 		super(p);
 		this.state = {loading:true};
-		trace("new catalog");
 	}
 
 	override public function render() {
@@ -81,9 +80,19 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 			   <ProductModal 	product=${state.modalProduct}
 								vendor=${state.modalVendor}
 								onClose=${onModalCloseRequest} />
-			  <ProductCatalogCategories categories=${props.categories} catalog=${props.catalog} vendors=${props.vendors} openModal=${openModal} />
+				${renderSearchResult()}
+			  	<ProductCatalogCategories categories=${props.categories} catalog=${props.catalog} vendors=${props.vendors} openModal=${openModal} />
 			</div>
     	');
+	}
+
+	function renderSearchResult() {
+		if( props.catalog.search == null ) return null;
+		return jsx('
+			<Typography variant={H3}>
+                Résultats de la recherche pour <i>${props.catalog.search}</i>
+            </Typography>
+		');
 	}
 
 	function openModal(product:ProductInfo, vendor:VendorInfo) {
