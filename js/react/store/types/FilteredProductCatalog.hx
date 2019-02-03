@@ -1,11 +1,18 @@
 package react.store.types;
 
 import Common;
+import react.store.types.Catalog;
+
+typedef CatalogFilter = {
+	@:optional var producteur:Bool;//TODO
+	@:optional var category:Int;
+	@:optional var search:Null<String>;
+	@:optional var subcategory:Int;
+	@:optional var tags:Array<String>;//TODO
+}
 
 typedef FilteredProductCatalog = {
-	var products:Array<ProductInfo>;
-	@:optionnal var producteur:Bool;//TODO
-	@:optionnal var category:Int;//TODO
-	@:optionnal var search:String;
-	var subCategory:Int;
+	var catalog: Catalog;
+	var filter: CatalogFilter;
+	
 }

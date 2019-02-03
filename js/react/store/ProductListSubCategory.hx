@@ -6,6 +6,7 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import classnames.ClassNames.fastNull as classNames;
 import react.store.types.FilteredProductCatalog;
+import react.store.types.Catalog;
 import mui.core.styles.Classes;
 import mui.core.Grid;
 import mui.core.styles.Styles;
@@ -25,8 +26,7 @@ typedef ProductListSubCategoryProps = {
 
 private typedef PublicProps = {
 	@:optional var displayAll:Bool;
-	var subcategory:CategoryInfo;
-	var products:Array<ProductInfo>;
+	var catalog : CatalogSubCategory;
 	var openModal : ProductInfo->VendorInfo->Void;
 	var vendors : Array<VendorInfo>;
 }
@@ -63,19 +63,24 @@ class ProductListSubCategory extends react.ReactComponentOf<ProductListSubCatego
 	}
 
 	override function componentWillMount() {
-		if( props.products.length <= LIMIT_TO_DISPLAY
-			|| props.displayAll ) 
+		if( props.catalog.products.length <= LIMIT_TO_DISPLAY || props.displayAll ) 
 			setState({displayAll:true});
 	}
 
 	override public function render() {
 		var classes = props.classes;
-		var subcategory = props.subcategory;
+		var subcategory = props.catalog.info;
+		var subcategoryName =  jsx('
+			<Typography variant={H5}>
+            	${subcategory.name}
+            </Typography>
+		');
+
 		return jsx('
 			<div className=${classes.subCategory} key=${subcategory.id}>
-				<h3>${subcategory.name}</h3>
+				${subcategory.name}
 				<$Grid container style={{ marginBottom: 20}} spacing={Spacing_24}>
-					${renderProducts(props.products)}
+					${renderProducts(props.catalog.products)}
 				</$Grid>
 				<div className=${classes.button}>
 					${renderLoadMoreButton()}

@@ -24,9 +24,9 @@ typedef ProductCatalogProps = {
 };
 
 private typedef PublicProps = {
-	var categories:Array<CategoryInfo>;
 	var catalog:FilteredProductCatalog;
 	var vendors : Array<VendorInfo>;
+	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 }
 
 private typedef ProductCatalogState = {
@@ -78,16 +78,16 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 								vendor=${state.modalVendor}
 								onClose=${onModalCloseRequest} />
 				${renderSearchResult()}
-			  	<ProductCatalogCategories categories=${props.categories} catalog=${props.catalog} vendors=${props.vendors} openModal=${openModal} />
+			  	<ProductCatalogCategories catalog=${props.catalog} vendors=${props.vendors} openModal=${openModal} nav=${props.nav} />
 			</div>
     	');
 	}
 
 	function renderSearchResult() {
-		if( props.catalog.search == null ) return null;
+		if( props.catalog.filter.search == null ) return null;
 		return jsx('
 			<Typography variant={H3}>
-                Résultats de la recherche pour <i>${props.catalog.search}</i>
+                Résultats de la recherche pour <i>${props.catalog.filter.search}</i>
             </Typography>
 		');
 	}

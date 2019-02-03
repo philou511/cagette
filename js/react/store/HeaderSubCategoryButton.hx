@@ -84,7 +84,6 @@ class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryBut
             '${classes.cagSelect}': props.active,
 		});
         
-        if( props.active ) trace("SubcategoryButton "+props.label+" active?"+props.active);
         var iconClasses = classNames({
             '${props.icon}' : true,
             '${classes.icon}': true,

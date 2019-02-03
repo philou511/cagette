@@ -45,6 +45,7 @@ private typedef TClasses = Classes<[
     shadow,
 ]>
 
+@:build(lib.lodash.Lodash.build())
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class Header extends react.ReactComponentOfProps<HeaderProps> {
@@ -86,12 +87,17 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		super(props);
 	}
 
-//TODO https://github.com/kiroukou/haxe-lodash-externs
+//https://css-tricks.com/debouncing-throttling-explained-examples/
+    @:debounce(1000, {trailing:true})
+    function search(criteria:String) {
+        if( criteria.length >= 3 || criteria.length == 0 )
+            props.onSearch(criteria);
+    }
+
     function handleChange(event:js.html.Event):Void {
         var target:js.html.InputElement = cast event.target;
         var criteria:String = target.value;
-        if( criteria.length >= 3 || criteria.length == 0 )
-            props.onSearch(criteria);
+        search(criteria);
     }
 
 	override public function render() {

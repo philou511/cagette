@@ -114,7 +114,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 	}
 
 	static function mapDispatchToProps(dispatch:redux.Redux.Dispatch):react.Partial<CartProps> {
-		trace("dispatchToProps");
+		//trace("dispatchToProps");
 		return { 
 		}
 	}
