@@ -6,13 +6,15 @@ import react.ReactMacro.jsx;
 import mui.core.Grid;
 import classnames.ClassNames.fastNull as classNames;
 import mui.core.styles.Classes;
-import react.store.types.FilteredProductCatalog;
+import react.store.types.Catalog;
 import mui.core.styles.Styles;
 import mui.core.Modal;
 import mui.core.Typography;
 import mui.core.CircularProgress;
 import js.html.Event;
 import mui.core.modal.ModalCloseReason;
+import react.store.types.Catalog;
+import react.store.types.FilteredProductCatalog;
 using Lambda;
 
 typedef ProductListCategoryProps = {
@@ -20,17 +22,19 @@ typedef ProductListCategoryProps = {
 };
 
 private typedef PublicProps = {
-	var category:CategoryInfo;
-	var catalog:FilteredProductCatalog;
+	var catalog:CatalogCategory;
+	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 	var openModal : ProductInfo->VendorInfo->Void;
 	var vendors : Array<VendorInfo>;
+	var filter: CatalogFilter;
 }
 
 private typedef ProductListCategoryState = {
 	var currentSubCategoryCount:Int;
-	var data:Array<{subcategory:CategoryInfo, products:Array<ProductInfo>}>;
-	var catalogSize:Int;
+	var catalog:CatalogCategory;
 	var loadMore:Bool;
+	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
+	var filter: CatalogFilter;
 }
 
 @:publicProps(PublicProps)
@@ -38,7 +42,7 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 
 	function new(p) {
 		super(p);
-		this.state = {currentSubCategoryCount:0, catalogSize:0, data:[], loadMore:false};
+		this.state = {catalog:null, currentSubCategoryCount:0, loadMore:false, nav:null, filter:null};
 	}
 
 	override function componentWillUnmount() {
@@ -50,35 +54,31 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 		Triggered when props are updated
 	**/
 	static function getDerivedStateFromProps(nextProps:ProductListCategoryProps, currentState:ProductListCategoryState):ProductListCategoryState {
-		if( nextProps.category == null ) return null;
-		//trace("getDerivedStateFromProps "+nextProps.catalog.category+", "+nextProps.catalog.subCategory);
-		//trace(nextProps.catalog.products.length);
-		var data = cleanData(nextProps.category, nextProps.catalog);
-		if( currentState.catalogSize == nextProps.catalog.products.length && data.length == currentState.data.length ) return null;
-		//trace("we change state, we need to reload");
-		return {data:data, currentSubCategoryCount:0, catalogSize: nextProps.catalog.products.length, loadMore:true};
-	}
-
-	static function cleanData(category:CategoryInfo, catalog:FilteredProductCatalog) {
-		if( category.subcategories == null ) return [];
-		
-		var a = [];
-		for( i in 0...category.subcategories.length) {
-			var subcategory = category.subcategories[i];
-			var subProducts = catalog.products.filter(function(p) {
-				return Lambda.has(p.subcategories, subcategory.id);
-			});
-
-			if( subProducts.length == 0 ) continue;
-			a.push({subcategory:subcategory, products:subProducts});
+		if( nextProps.catalog == null ) return null;
+		/*
+		if( currentState.nav != null ) 
+		{
+			//TODO be careful, need to check other filters later..
+			// might be better to send catalog filter instead one
+			if( currentState.nav.category == nextProps.nav.category && currentState.nav.subcategory == nextProps.nav.subcategory )
+				return null;
 		}
-		return a;
+		*/
+		if( currentState.filter != null ) 
+		{
+			var f1 = currentState.filter, f2 = nextProps.filter;
+			if( f1.search == f2.search && f1.category == f2.category && f1.subcategory == f2.subcategory )
+				return null;
+
+		}
+
+		return {catalog:nextProps.catalog, currentSubCategoryCount:0, loadMore:true, nav:nextProps.nav, filter:nextProps.filter};
 	}
 
 	var timer:haxe.Timer;
 	function loadMore() {
-		if( state.data.length == 0 ) return;
-		if( state.currentSubCategoryCount == state.data.length) return;
+		if( state.catalog.subcategories.length == 0 ) return;
+		if( state.currentSubCategoryCount == state.catalog.subcategories.length) return;
 		setState({currentSubCategoryCount:state.currentSubCategoryCount+1}, function() {
 			timer = haxe.Timer.delay(loadMore, 400);
 		});
@@ -92,20 +92,21 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 		}
 	}
 	override function componentDidUpdate(prevProps:ProductListCategoryProps, prevState:ProductListCategoryState) {
-		//trace("componentDidUpdate "+state.loadMore);
 		if( state.loadMore == true ) {
-			//trace("we ask for reloading");
 			setState({loadMore:false}, loadMore);
 		}
 	}
 
 	override public function render() {
-		var categoryName =  if(state.data.length > 0) jsx('<h2>${props.category.name}</h2>')
-							else null;
+		var categoryName =  jsx('
+			<Typography variant={H4}>
+            	${props.catalog.info.name}
+            </Typography>
+		');
 		
 		return jsx('
-			<div className="category" key=${props.category.name}>
-				{categoryName}
+			<div className="category" key=${props.catalog.info.id}>
+				${categoryName}
 				<div className="subCategories">
 					${renderSubCategories()}
 				</div>
@@ -114,25 +115,29 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 	}
 
 	function renderSubCategories() {
-		var shouldOfferDifferedLoading = props.catalog.category == null;
-		
-		var totalProducts = Lambda.fold(state.data, function(d, count:Int) { return count + d.products.length; }, 0);
-		
-		if( (state.data.length == 0 || totalProducts == 0) && props.catalog.category != null ) {
+
+		if( state.catalog.subcategories == null || state.catalog.subcategories.length == 0 ) {
 			return jsx('
 				<Typography component="h4" align={Center}>
-					Il n\'y a aucun produit dans cette catégorie ${props.category.name}
+					Il n\'y a aucun produit dans cette catégorie ${props.catalog.info.name}
 				</Typography>
 			');
 		}
 
-		//trace("renderSubCategories "+state.currentSubCategoryCount);
-		//trace("shouldLoad "+state.loadMore);
+		var shouldOfferDifferedLoading = true;
+		var totalProducts = Lambda.fold(state.catalog.subcategories, function(d, count:Int) { return count + d.products.length; }, 0);
+		if( totalProducts == 0 ) {
+			return jsx('
+				<Typography component="h4" align={Center}>
+					Il n\'y a aucun produit dans cette catégorie ${props.catalog.info.name}
+				</Typography>
+			');
+		}
+
 		var list = [for( i in 0...state.currentSubCategoryCount ) {
-			var subcategory = state.data[i].subcategory;
-			var subProducts = state.data[i].products;
+			var subcategory = state.catalog.subcategories[i];
 			jsx('
-				<ProductListSubCategory displayAll=${!shouldOfferDifferedLoading} key=${subcategory.id} subcategory=${subcategory} products=${subProducts} vendors={props.vendors} openModal=${props.openModal}  />
+				<ProductListSubCategory displayAll=${!shouldOfferDifferedLoading} key=${subcategory.info.id} catalog=${subcategory} vendors=${props.vendors} openModal=${props.openModal}  />
 			');
 		}];
 

@@ -10,6 +10,7 @@
 -lib classnames
 -lib react-types
 -lib tink_json
+-lib haxe-lodash
 
 #-lib js-object
 #-D object-as-dynamic
@@ -19,5 +20,6 @@
 
 -main App
 -debug
+-D debug
 -js ../www/js/app.js
 -D no-deprecation-warnings

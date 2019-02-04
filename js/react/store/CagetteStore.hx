@@ -2,13 +2,16 @@ package react.store;
 
 import js.Promise;
 import haxe.Json;
-import react.ReactComponent;
-import react.ReactMacro.jsx;
 import mui.CagetteTheme;
 import mui.core.Grid;
-import react.PageHeader;
 import mui.core.CircularProgress;
+import react.ReactComponent;
+import react.ReactMacro.jsx;
+import react.PageHeader;
 import react.MuiError;
+
+import react.store.types.Catalog;
+import react.store.types.FilteredProductCatalog;
 
 import utils.HttpUtil;
 
@@ -20,20 +23,13 @@ typedef CagetteStoreProps = {
 	var date:String;
 };
 
-typedef ProductFilters = {
-	@:optional var search:Null<String>;
-	@:optional var category:Int;
-	@:optional var subcategory:Int;
-	@:optional var tags:Array<String>;
-	@:optional var producteur:Bool;
-};
-
 typedef  CagetteStoreState = {
 	var place:PlaceInfos;
 	var orderByEndDates:Array<OrderByEndDate>;
 	var categories:Array<CategoryInfo>;
 	var products:Array<ProductInfo>;
-	var filter:ProductFilters;
+	var catalog:Catalog;
+	var filter:CatalogFilter;
 	var loading:Bool;
 	var vendors:Array<VendorInfo>;
 	var paymentInfos:String;
@@ -60,6 +56,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			categories: [],
 			filter: {},
 			products:[],
+			catalog:null,
 			loading:true,
 			vendors:[],
 			paymentInfos:"",
@@ -69,6 +66,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	function onError(msg:String){
+		trace("ERROR:", msg);
 		setState({errorMessage:msg});
 	}
 
@@ -78,7 +76,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	//TODO CLEAN
-	public static var ALL_CATEGORY = {id:0, name:"Tous les produits",image:"/img/taxo/allProducts.png"};
+	public static var ALL_CATEGORY = {id:0, name:"Tous les produits",image:"/img/taxo/allProducts.png", subcategories:[]};
 	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
 
 	override function componentDidMount() {
@@ -91,7 +89,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				vendors:infos.vendors,
 				paymentInfos:infos.paymentInfos
 			});
-		}).catchError(function(error) {
+		})
+		.catchError(function(error) {
 			onError(error);
 		});
 
@@ -99,6 +98,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
+			//trace(categories);
+			//categories.unshift(DEFAULT_CATEGORY);
 
 			setState({
 				categories: categories,
@@ -119,16 +120,21 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					return p;
 				}));
 
+
+				var catalog = FilterUtil.makeCatalog(categories, res.products);
 				setState({
 					products:res.products,
+					catalog:catalog,
 					loading:false,
 					nav:{category:categories[0], subcategory:null},
-				}, function() {});
+				}, function() {
+					
+				});
 
 			}).catchError(function(error) {
 				onError(error);
 			});
-			
+
 			categories.unshift(ALL_CATEGORY);
 
 		}).catchError(function(error) {
@@ -154,7 +160,6 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	function filterBySubCategory(categoryId:Int, subCategoryId:Int) {
 		var category = Lambda.find(state.categories, function(c) return c.id == categoryId);
 		var subcategory = Lambda.find(category.subcategories, function(c) return c.id == subCategoryId);
-		
 		setState({ 
 			filter: {category:categoryId, subcategory:subCategoryId },
 			nav: {category:category, subcategory:subcategory}
@@ -206,34 +211,33 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		});
 	}
 
-	function filterCatalog(p, f:ProductFilters) {
+	function filterCatalog(p, f:CatalogFilter) {
 		if( f.search != null ) {
-			return react.store.FilterUtil.searchProducts(state.products, f.search);
+			return react.store.FilterUtil.searchProducts(state.catalog, f.search);
 		} else {
-			return FilterUtil.filterProducts(p, f.category, f.subcategory, f.tags, f.producteur);
+			//trace("FilterCatalog", f);
+			var filter = ( f.category == null || f.category == 0 ) ? null : f;
+			return FilterUtil.filterProducts(state.catalog, filter);
 		}
 	}
 
+	function renderLoader() {
+		return jsx('
+			<Grid  container spacing={0} direction=${Column} alignItems=${Center} justify=${Center} style={{ minHeight: "50vh" }}>
+				<Grid item xs={3}>
+					<CircularProgress />
+				</Grid>   
+			</Grid> 
+		');
+	}
+
+	function renderProducts() {
+		return 	if( state.loading ) renderLoader();
+				else jsx('<ProductCatalog catalog=${filterCatalog(state.products, state.filter)} vendors=${state.vendors} nav=${state.nav} />');
+	}
+
 	override public function render() {
-		
-
-		function renderLoader() {
-			return jsx('
-				<Grid  container spacing={0} direction=${Column} alignItems=${Center} justify=${Center} style={{ minHeight: "50vh" }}>
-					<Grid item xs={3}>
-						<CircularProgress />
-					</Grid>   
-				</Grid> 
-			');
-		}
-
-		function renderProducts() {
-			return 	if( state.loading ) renderLoader();
-					else jsx('<ProductCatalog categories=${state.categories} catalog=${filterCatalog(state.products, state.filter)} vendors=${state.vendors} />');
-		}
-
 		var date = Date.fromString(props.date);
-
 		return jsx('			
 			<div className="shop">
 				<HeaderWrapper 
@@ -253,7 +257,8 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 				${renderPromo()}
 				${renderProducts()}
-				${state.errorMessage!=null?jsx('<MuiError errorMessage=${state.errorMessage} onClose=$onErrorDialogClose  />'):null}
+
+				${state.errorMessage != null ? jsx('<MuiError errorMessage=${state.errorMessage} onClose=$onErrorDialogClose  />') : null}
 				
 			</div>
 		');

@@ -19,10 +19,10 @@ typedef ProductCatalogCategoriesProps = {
 };
 
 private typedef PublicProps = {
-	var categories:Array<CategoryInfo>;
 	var catalog:FilteredProductCatalog;
 	var vendors : Array<VendorInfo>;
 	var openModal : ProductInfo->VendorInfo->Void;
+	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 }
 
 @:publicProps(PublicProps)
@@ -34,10 +34,8 @@ class ProductCatalogCategories extends PureComponentOfProps<ProductCatalogCatego
 
 	override public function render() {
 		var categories = [
-			for( category in props.categories ) { 
-				if( props.catalog.category == null ||
-					props.catalog.category == category.id )
-					jsx('<$ProductListCategory key=${category.name} catalog=${props.catalog} category=${category} openModal=${props.openModal} vendors=${props.vendors} />');
+			for( category in props.catalog.catalog.categories ) { 
+				jsx('<$ProductListCategory key=${category.info.id} filter=${props.catalog.filter} catalog=${category} openModal=${props.openModal} vendors=${props.vendors} nav=${props.nav} />');
 			}
 		];
 		return jsx('

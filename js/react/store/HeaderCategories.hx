@@ -83,11 +83,6 @@ class HeaderCategories extends react.ReactComponentOfProps<HeaderCategoriesProps
     public function new(props) {
 		super(props);
 	}
-
-    override function componentDidMount() {
-        //default category is "all products"
-        //setState({activeCategory:props.categories[0], activeSubCategory:null});
-    }
     
     function onSubCategoryClicked(subcategory:CategoryInfo) {
         js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -96,12 +91,8 @@ class HeaderCategories extends react.ReactComponentOfProps<HeaderCategoriesProps
 
     function onCategoryClicked(category:CategoryInfo) {
         js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        if( category == props.nav.category ) {
-            props.resetFilter();
-        } else {
-            props.filterByCategory(category.id);
-        }
+        props.filterByCategory(category.id);
+
         // pour le bio et le label rouge..
         // Attention : vérifier l'implémentation du filtre qui n'a pas du être faite !
         //toggleFilterTag=${props.toggleFilterTag}

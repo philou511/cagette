@@ -6,53 +6,145 @@ import haxe.Json;
 
 import react.store.types.FilteredProductCatalog;
 import Common.ProductInfo;
+import Common.CategoryInfo;
+import react.store.types.Catalog;
+
 using Lambda;
-
-
 class FilterUtil
 {
-    public static function filterProducts(products:Array<ProductInfo>, ?category:Int, ?subcategory:Int, ?tags:Array<String>, ?producteur:Bool ):FilteredProductCatalog
+    public static function filterProducts(catalog:Catalog, ?filter:{category:Int, ?subcategory:Int, ?tags:Array<String>, ?producteur:Bool} ):FilteredProductCatalog
     {
-        var fproducts = products.copy();
+        var copy:Catalog = {categories:catalog.categories.copy()};
+        //
+        var producteur = filter != null ? filter.producteur : null;
+        var category = filter != null ? filter.category : null;
+        var subcategory = filter != null ? filter.subcategory : null;
+        var tags = filter != null ? filter.tags : null;
 
-        if( category != null ) {
-            fproducts = fproducts.filter(function(p:ProductInfo) {
-                return Lambda.has(p.categories, category);
-            });
-        }
+        if( filter != null ) 
+        {
+            var cat:CatalogCategory = cacheCatalogCategory.get(filter.category);
+            if( cat == null ) 
+            {
+                copy.categories = [{info: cacheCategories.get(filter.category), subcategories: []}];
+            }
+            else 
+            {
+                copy.categories = [ Reflect.copy(cat) ];
+            }
+            
+            if( filter.subcategory != null ) 
+            {
+                var subcat:CatalogSubCategory = cacheCatalogSubCategory.get(filter.subcategory);
+                var data = if( subcat == null ) [] else [Reflect.copy(subcat)];
+                copy.categories[0].subcategories = data;
+            }
 
-        if( category != null && subcategory != null ) {
-            fproducts = fproducts.filter(function(p:ProductInfo) {
-                return Lambda.has(p.subcategories, subcategory);
-            });
-        }
-
-        if( tags != null ) {
-            //WRONG !!! Bad implementation at the moment,  it is an OR filter on tags
-            for( tag in tags ) {
-                fproducts = switch( tag.toLowerCase() ) {
-                    case "bio": fproducts.filter(function(p) return p.organic);
-                    default: fproducts;
-                }
+            if( filter.tags != null ) 
+            {
+                throw "To implement";
             }
         }
 
         //TODO PRODUCTEUR group
-
-        return {products:fproducts, producteur:producteur, category:category, subCategory:subcategory, search:null};
+        return {catalog:copy, filter:{producteur:producteur, category:category, subcategory:subcategory, search:null}};
     }
 
-    public static function searchProducts(products:Array<ProductInfo>, criteria:String ):FilteredProductCatalog
+    public static function searchProducts(catalog:Catalog, criteria:String ):FilteredProductCatalog
     {
-        var results = [];
+        var copy:Catalog = {categories:[]};
         //case non sensitive search
         criteria = criteria.toLowerCase();
-        for( p in products ) 
+        for( cat in catalog.categories ) 
         {
-            if( !StringTools.startsWith(p.name.toLowerCase(), criteria) ) continue;
-            results.push(p);
+            var inserted:CatalogCategory = null;
+            for( subcat in cat.subcategories )
+            {
+                var subinserted:CatalogSubCategory = null;
+                for( p in subcat.products )
+                {
+                    if( searchProductName(p.name, criteria) ) 
+                    {
+                        if( inserted == null )
+                        {
+                            inserted = {
+                                info : cat.info,
+                                subcategories: [],
+                            };
+                            copy.categories.push(inserted);
+                        }
+                        if( subinserted == null )
+                        {
+                            subinserted = {
+                                info : subcat.info,
+                                products: [],
+                            }
+                            inserted.subcategories.push(subinserted);
+                        }
+                        subinserted.products.push(p);
+                    }
+                }
+            }
+        }
+        return {catalog:copy, filter:{producteur:null, category:null, subcategory:null, search:criteria}};
+    }
+
+    static public function searchProductName(productName:String, criteria:String) 
+    {
+        return StringTools.startsWith(productName.toLowerCase(), criteria);
+    }
+
+    //cache for faster access here to references
+    static var cacheCategories : Map<Int, CategoryInfo> = new Map();
+    static var cacheSubCategories : Map<Int, CategoryInfo> = new Map();
+    
+    
+    static var cacheCatalogCategory : Map<Int, CatalogCategory> = new Map();
+    static var cacheCatalogSubCategory : Map<Int, CatalogSubCategory> = new Map();
+
+    public static function makeCatalog(categories:Array<CategoryInfo>, products:Array<ProductInfo>)
+    {
+        //make cache first
+        for( c in categories )
+        {
+            cacheCategories.set(c.id, c);
+            for( sub in c.subcategories )
+                cacheSubCategories.set(sub.id, sub);
         }
 
-        return {products:results, producteur:null, category:null, subCategory:null, search:criteria};
+        //
+        var catalog : Catalog = {categories  : []};
+
+        for( p in products ) 
+        {
+            var catId = p.categories[0];
+            var cat:CatalogCategory = cacheCatalogCategory.get(catId);
+            if( cat == null ) 
+            {
+                var info = cacheCategories.get(catId);
+                cat = {
+                    info: info,
+                    subcategories : [],
+                    //products : [],
+                }
+                cacheCatalogCategory.set(catId, cat);
+                catalog.categories.push(cat);
+            }
+
+            var subcatId = p.subcategories[0];
+            var subcat:CatalogSubCategory = cacheCatalogSubCategory.get(subcatId);
+            if( subcat == null ) {
+                subcat = {
+                    info: cacheSubCategories.get(subcatId),
+                    products : [],
+                }
+                cacheCatalogSubCategory.set(subcatId, subcat);
+                cat.subcategories.push(subcat);
+            }
+
+            subcat.products.push(p);
+        }
+
+        return catalog;
     }
 }
