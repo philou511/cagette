@@ -26,7 +26,7 @@ class Group extends controller.Controller
 		group.getMainPlace(); //just to update cache
 		if (app.user != null){
 			
-			view.isMember = Lambda.has(app.user.getAmaps(), group);
+			view.isMember = Lambda.has(app.user.getGroups(), group);
 		}
 	}
 	

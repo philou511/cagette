@@ -118,15 +118,13 @@
 			::raw __content__::
 		</div>	
 		
-		<!--<div class="row">
+		<div class="row">
 			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
 				<span class="glyphicon glyphicon-cog"></span>
-				Attention : Cagette.net sera indisponible le <b>mardi 7 août de 9:00 à 11:00</b>.
-				<br/>
-				Nous déménageons sur un nouveau serveur pour plus de rapidité et de fiabilité.
+				<b>Attention</b> : Cagette.net sera en maintenance le <b>mercredi 6 Février de 23h à 2h</b>.				
 			</div>
-		</div>-->
-
+		</div>
+	
 		<div class="row" id="footer">
 			
 				<div class="col-md-3" >
@@ -147,12 +145,6 @@
 							<a href="https://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
 						</li>
 					</ul>
-					
-					<!--<p style="position: absolute;display: block;top: 96px;width: 700px;">
-						<b>::raw _("Vous êtes producteur ?")::</b>
-						::raw _("Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b> "):: 
-						&nbsp;&nbsp;<a href="http://alilo.fr/formations-producteurs" target="_blank" class="btn btn-xs btn-info">C'est parti !</a>
-					</p>-->
 					
 				</div>
 				<div class="col-md-3" >
