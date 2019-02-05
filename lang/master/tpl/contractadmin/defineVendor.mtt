@@ -3,24 +3,38 @@
 <div class="col-md-12">
 	<div class="article">
 
-		<h2>::_("Select a vendor")::</h2>
+		<h2>::_("Select a vendor")::</h2>		
 		
-		<p>
-			::_("We found these vendors in our database :")::
-		</p>
 		<div class="row">
-			::foreach v vendors::
-			<div class="col-md-4 col-sm-6">
-				<a href="/contract/insertChoose/::v.id::" class="clickable groupBlock">					
-					::if v._image!=null::
-					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
-					::end::
-					<b>::v.name::</b>
+			::if(vendors.length>0)::
+				<div class="col-md-12"><p>
+					::_("We found these vendors in our database :")::
+				</p></div>
+				::foreach v vendors::
+				<div class="col-md-4 col-sm-6">
+					<a href="/contract/insertChoose/::v.id::" class="clickable groupBlock" style="height:200px">					
+						::if v._image!=null::
+						<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+						::end::
+						<p>
+							<b>::v.name::</b>
+						</p>
+						<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
+							::short(v.desc,200)::
+						</p>
+						<p>
+						::v.zipCode:: ::v.city::
+						</p>
+					</a>
+				</div>
+				::end::
+			::else::
+				<div class="text-center alert alert-danger" style="width:50%;margin:auto;">
+					::_("We could not find any vendor matching your search")::
 					<br/>
-					::v.zipCode:: ::v.city::<br/>
-					::v.email::
-				</a>
-			</div>
+					<br/>
+					<a href="/contract/defineVendor" class="btn btn-default btn-sm">::_("Back")::</a>
+				</div>
 			::end::
 		</div>
 
@@ -31,7 +45,7 @@
 <div class="col-md-12">
 	<div class="article text-center">
 		<p>
-			::_("The vendor you want to work with is not in this list ?")::
+			::_("if you have not found your vendor, enter a new record")::
 		</p>
 		<a href="/contract/insertVendor/::email::/::name::" class="btn btn-default btn-lg">::_("Key-in a new vendor")::</a>
 

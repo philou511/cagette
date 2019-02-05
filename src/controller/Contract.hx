@@ -230,20 +230,35 @@ class Contract extends Controller
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
 		view.title = t._("Define a vendor");
+		view.text = t._("Before creating a record for the vendor you want to work with, let's search our database to check if he's not already referenced.");
+
 		var f = new sugoi.form.Form("defVendor");
-		f.addElement(new sugoi.form.elements.StringInput("name",t._("Vendor name"),null,true));
-		f.addElement(new sugoi.form.elements.StringInput("email",t._("Vendor email"),null,true));
+		f.addElement(new sugoi.form.elements.StringInput("name",t._("Vendor or farm name"),null,true));
+		f.addElement(new sugoi.form.elements.StringInput("email",t._("Vendor email"),null,false));
 		//f.addElement(new sugoi.form.elements.IntInput("zipCode",t._("zip code"),null,true));
 
 		if(f.isValid()){
 			//look for identical names
 			var name : String = f.getValueOf('name');
 			var email : String = f.getValueOf('email');
-			var vendors = Lambda.array(db.Vendor.manager.search($name.like(name),false));
-			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
-			if(vendors.length==0) {
-				throw Ok("/contract/insertVendor/"+email+"/"+name,t._("We haven't found any matching vendor in our database, please key-in a record for this new vendor."));
+			var vendors = [];
+			for( n in name.split(" ")){
+				n = n.toLowerCase();
+				if(Lambda.has(["le","la","du","de","l'","a","à","en","sur","qui","ferme"],n)) continue;
+				//search for each term
+				var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
+				vendors = vendors.concat(search);
 			}
+
+			//search by mail
+			if(email!=null){
+				vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
+			}
+			
+			vendors = tools.ObjectListTool.deduplicate(vendors);
+			/*if(vendors.length==0) {
+				throw Ok("/contract/insertVendor/"+email+"/"+name,t._("We haven't found any matching vendor in our database, please key-in a record for this new vendor."));
+			}*/
 			app.setTemplate('contractadmin/defineVendor.mtt');
 			view.vendors = vendors;
 			view.email = email;
@@ -267,8 +282,8 @@ class Contract extends Controller
 			form.toSpod(vendor);
 			vendor.insert();
 
-			service.VendorService.getOrCreateRelatedUser(vendor);
-			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());
+			/*service.VendorService.getOrCreateRelatedUser(vendor);
+			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());*/
 			
 			throw Ok('/contract/insertChoose/'+vendor.id, t._("This supplier has been saved"));
 		}else{
@@ -277,7 +292,7 @@ class Contract extends Controller
 		}
 
 		view.title = t._("Key-in a new vendor");
-		view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
+		//view.text = t._("We will send him/her an email to explain that your group is going to organize orders for him very soon");
 		view.form = form;
 	}
 

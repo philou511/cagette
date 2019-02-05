@@ -258,6 +258,7 @@ class Contract extends Object
 	 * @return
 	 */
 	public function populateVendor():FormData<Int>{
+		if(this.amap==null) return [];
 		var vendors = this.amap.getVendors();
 		var out = [];
 		for (v in vendors) {

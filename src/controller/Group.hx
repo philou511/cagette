@@ -226,7 +226,7 @@ class Group extends controller.Controller
 			//contrat AMAP
 			var vendor = db.Vendor.manager.select($email=="jean@cagette.net",false);
 			if(vendor==null){
-				new db.Vendor();
+				vendor = new db.Vendor();
 				vendor.name = "Jean Martin EARL";
 				vendor.zipCode = "000";
 				vendor.city = "Langon";

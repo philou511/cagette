@@ -24,7 +24,8 @@ class VendorService{
 	**/
 	public static function getVendorsFromUser(user:db.User):Array<db.Vendor>{
 		//get vendors linked to this account
-		var vendors = Lambda.array( db.Vendor.manager.search($user==user,false) );
+		//var vendors = Lambda.array( db.Vendor.manager.search($user==user,false) );
+		var vendors = [];
 		#if plugins
 		var vendors2 = Lambda.array(Lambda.map(pro.db.PUserCompany.getCompanies(user),function(c) return c.vendor));
 		vendors = vendors2.concat(vendors);
@@ -37,6 +38,8 @@ class VendorService{
 		Send an email to the vendor
 	**/
 	public static function sendEmailOnAccountCreation(vendor:db.Vendor,source:db.User,group:db.Amap){
+
+		return;
 		
 		// the vendor and the user is the same person
 		if(vendor.email==source.email) return;

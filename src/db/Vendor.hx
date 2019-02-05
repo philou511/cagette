@@ -27,13 +27,17 @@ class Vendor extends Object
 	
 	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+	@hideInForms public var active:SBool;
 	
 	
 	public function new() 
 	{
 		super();
-		var t = sugoi.i18n.Locale.texts;
-		name = t._("Supplier");
+		active = false;
+		try{
+			var t = sugoi.i18n.Locale.texts;
+			name = t._("Supplier");
+		}catch(e:Dynamic){}
 	}
 	
 	override function toString() {
@@ -49,6 +53,10 @@ class Vendor extends Object
 		var contracts = getActiveContracts();
 		var groups = Lambda.map(contracts,function(c) return c.amap);
 		return tools.ObjectListTool.deduplicate(groups);
+	}
+
+	public static function get(email:String,status:String){
+		return manager.select($email==email && $status==status,false);
 	}
 	
 	public static function getLabels(){

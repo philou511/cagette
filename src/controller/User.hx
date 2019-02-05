@@ -72,11 +72,8 @@ class User extends Controller
 		
 		view.amaps = groups;
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
-<<<<<<< HEAD
 
-=======
 		
->>>>>>> master
 		#if plugins
 		//vendor accounts
 		view.vendors = service.VendorService.getVendorsFromUser(app.user);
