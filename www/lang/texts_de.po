@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-16 10:08+0000\n"
+"PO-Revision-Date: 2019-01-24 10:04+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 3.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
@@ -2122,7 +2122,6 @@ msgid "Canceled"
 msgstr "Abgebrochen"
 
 #: src/db/UserContract.hx:5680
-#, fuzzy
 msgid "multi-weighing products should be ordered only with integer quantities"
 msgstr "Mehrfachwägeprodukte sollten nur in ganzzahligen Mengen bestellt werden"
 
@@ -2212,7 +2211,6 @@ msgid "Variable price based on weight"
 msgstr "Variabler Preis nach Gewicht"
 
 #: src/db/Product.hx:4527
-#, fuzzy
 msgid "Multi-weighing"
 msgstr "Mehrfachwägung"
 
