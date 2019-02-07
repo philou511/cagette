@@ -4,7 +4,7 @@ import sys.db.Types;
 import Common;
 
 /**
- * Vendor (producteur)
+ * Vendor (farmer/producer/vendor)
  */
 class Vendor extends Object
 {
@@ -24,19 +24,28 @@ class Vendor extends Object
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
 	
-	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
+	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
+	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
-	@:relation(amapId) public var amap : SNull<Amap>;
+	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
+	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+	
 	
 	public function new() 
 	{
 		super();
-		var t = sugoi.i18n.Locale.texts;
-		name = t._("Supplier");
+		try{
+			var t = sugoi.i18n.Locale.texts;
+			name = t._("Supplier");
+		}catch(e:Dynamic){}
 	}
 	
 	override function toString() {
 		return name;
+	}
+
+	public function getContracts(){
+		return db.Contract.manager.search($vendor == this,{orderBy:-startDate}, false);
 	}
 
 	public function getActiveContracts(){
@@ -56,6 +65,18 @@ class Vendor extends Object
 			linkUrl:linkUrl,
 			desc:desc
 		};
+	}
+
+
+
+	public function getGroups():Array<db.Amap>{
+		var contracts = getActiveContracts();
+		var groups = Lambda.map(contracts,function(c) return c.amap);
+		return tools.ObjectListTool.deduplicate(groups);
+	}
+
+	public static function get(email:String,status:String){
+		return manager.select($email==email && $status==status,false);
 	}
 	
 	public static function getLabels(){

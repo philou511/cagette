@@ -256,8 +256,12 @@ class Amap extends Object
 		return Place.manager.search($amap == this, false);
 	}
 	
-	public function getVendors() {
-		return Vendor.manager.search($amap == this, false);
+	/**
+		Get vendors with contracts in this group
+	**/
+	public function getVendors():Array<db.Vendor> {
+		var vendors = Lambda.array(Lambda.map(getContracts(),function(c) return c.vendor));
+		return tools.ObjectListTool.deduplicate(vendors);
 	}
 	
 	public function getMembers() {

@@ -68,7 +68,7 @@ class Product extends Object
 			if (txpProduct != null){				
 				return "/img/taxo/grey/" + txpProduct.category.image + ".png";
 			}else{
-				return "/img/taxo/grey/legumes.png";
+				return "/img/taxo/grey/fruits-legumes.png";
 			}			
 		}else {
 			return App.current.view.file(image);

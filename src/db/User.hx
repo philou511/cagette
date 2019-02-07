@@ -279,10 +279,14 @@ class User extends Object {
 	}
 	
 	/**
-	 * get groups this user belongs to
+	 * Get groups this user belongs to.	 
 	 */
-	public function getAmaps():List<db.Amap> {
-		return Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap);
+	public function getGroups():Array<db.Amap> {
+		var groups = Lambda.array(Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap));
+		//alphabetical order
+		groups.sort(function(a,b) return a.name>b.name?1:-1 );
+		return groups;
+
 	}
 	
 	public function isMemberOf(amap:Amap) {
@@ -358,17 +362,7 @@ class User extends Object {
 		
 	}
 	
-	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
-		var u = db.User.manager.select($email == email || $email2 == email, true);
-		if (u == null){
-			u = new db.User();
-			u.firstName = firstName;
-			u.lastName = lastName;
-			u.email = email;			
-			u.insert();
-		}
-		return u;
-	}
+	
 	
 	/**
 	 * Search for similar users in the DB ( same firstName+lastName or same email )

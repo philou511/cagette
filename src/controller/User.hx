@@ -45,11 +45,16 @@ class User extends Controller
 		
 		if (app.user == null) throw t._("You are not connected");
 		
-		var amaps = db.UserAmap.manager.search($user == app.user, false);
+		var groups = app.user.getGroups();
+		var groupsNum = groups.length;
+
+		#if plugins
+		groupsNum+= pro.db.PUserCompany.getCompanies(app.user).length;
+		#end
 		
-		if (amaps.length == 1 && !app.params.exists("show")) {
-			//qu'une amap
-			app.session.data.amapId = amaps.first().amap.id;
+		if (groupsNum == 1 && groups.length==1 && !app.params.exists("show")) {
+			//Belong to only 1 group
+			app.session.data.amapId = groups[0].id;
 			throw Redirect('/');
 		}else{
 			view.noGroup = true; //force template to not display current group
@@ -65,12 +70,13 @@ class User extends Controller
 			throw Redirect('/');
 		}
 		
-		view.amaps = amaps;
+		view.amaps = groups;
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
 
 		
 		#if plugins
-		view.pros = pro.db.PUserCompany.getCompanies(app.user);
+		//vendor accounts
+		view.vendors = service.VendorService.getVendorsFromUser(app.user);
 		#end
 	}
 	
@@ -233,23 +239,18 @@ class User extends Controller
 	 */
 	public function doValidate(k:String ) {
 		
-		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));		
+		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));
 		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
 		var user = db.User.manager.get(uid, true);
 		
 		db.User.login(user, user.email);
 		
-		var groups = user.getAmaps();
-		if(groups.length>0)	app.session.data.amapId = groups.first().id;
+		var groups = user.getGroups();
+		if(groups.length>0)	app.session.data.amapId = groups[0].id;
 		
 		sugoi.db.Cache.destroy("validation" + k);
 	
 		throw Ok("/user/definePassword", t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}));
-		
-		
-		
 	}
-	
-	
 	
 }

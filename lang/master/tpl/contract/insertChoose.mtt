@@ -3,12 +3,10 @@
 	<div class="col-md-12"><h2>::_("Choose a type of contract:")::</h2></div>
 
 	<div class="col-md-6">
-		<div class="article">
-			
+		<div class="article">			
 			<div style="text-align:center;margin-bottom:12px;">
-				<a href="/contract/insert/0" class="btn btn-default btn-lg">::raw _("Create a <b>CSA</b> contract")::</a>
-			</div>
-			
+				<a href="/contract/insert/0/::vendor.id::" class="btn btn-default btn-lg">::raw _("Create a <b>CSA</b> contract")::</a>
+			</div>			
 			<p>
 				::_("It is a contract with a duration of one year or for one season. Products are always the same at each delivery")::
 			</p>
@@ -22,9 +20,8 @@
 		<div class="article">
 			
 			<div style="text-align:center;margin-bottom:12px;">	
-				<a href="/contract/insert/1" class="btn btn-default btn-lg">::raw _("Create a contract with <b>variable orders</b>")::</a>
-			</div>
-	
+				<a href="/contract/insert/1/::vendor.id::" class="btn btn-default btn-lg">::raw _("Create a contract with <b>variable orders</b>")::</a>
+			</div>	
 			<p>
 				::_("It is a contract in which members can change their orders at each delivery. There is a different order for each delivery.")::
 			</p>
