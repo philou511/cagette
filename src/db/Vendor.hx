@@ -27,13 +27,11 @@ class Vendor extends Object
 	
 	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
-	@hideInForms public var active:SBool;
 	
 	
 	public function new() 
 	{
 		super();
-		active = false;
 		try{
 			var t = sugoi.i18n.Locale.texts;
 			name = t._("Supplier");
@@ -47,6 +45,10 @@ class Vendor extends Object
 	public function getActiveContracts(){
 		var now = Date.now();
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
+	}
+
+	public function getContracts(){
+		return db.Contract.manager.search($vendor == this,{orderBy:-startDate}, false);
 	}
 
 	public function getGroups():Array<db.Amap>{

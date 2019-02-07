@@ -38,9 +38,15 @@ class Vendor extends Controller
 	@tpl('form.mtt')
 	function doEdit(vendor:db.Vendor) {
 		
-		if(vendor.getGroups().length>1){
+		/*if(vendor.getGroups().length>1){
 			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
-		} 
+		} */
+
+		if(vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
+
+		#if plugins
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		#end
 
 		var form = sugoi.form.Form.fromSpod(vendor);
 		
@@ -56,9 +62,15 @@ class Vendor extends Controller
 	@tpl('vendor/addimage.mtt')
 	function doAddImage(vendor:db.Vendor) {
 		
-		if(vendor.getGroups().length>1){
+		/*if(vendor.getGroups().length>1){
 			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
-		} 
+		} */
+
+		if(vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
+
+		#if plugins
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		#end
 
 		view.vendor = vendor;
 		view.image = vendor.image;		
