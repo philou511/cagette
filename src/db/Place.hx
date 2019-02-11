@@ -12,7 +12,7 @@ class Place extends Object
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SString<32>;
 	public var city:SString<64>;
-	public var country:SNull<SString<64>>;
+	@hideInForms public var country:SNull<SString<64>>;
 
 	//latitude/longitude
 	public var lat:SNull<SFloat>;
@@ -82,6 +82,23 @@ class Place extends Object
 			latitude : lat,
 			longitude: lng			
 		}
+	}
+
+	/**
+	https://fr.wikipedia.org/wiki/ISO_3166-2
+	**/
+	public static function getCountries():sugoi.form.ListData.FormData<String>{
+
+		return [
+			{label:"France", value:"FR"},
+			{label:"Belgique", value:"BE"},
+			{label:"Espagne", value:"ES"},
+			{label:"Italie", value:"IT"},
+			{label:"Allemagne", value:"DE"},
+			{label:"Suisse", value:"CH"},
+			{label:"Canada", value:"CA"},
+			{label:"Autres", value:"-"},
+		];
 	}
 	
 }

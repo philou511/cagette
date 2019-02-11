@@ -44,6 +44,8 @@ class Main extends Controller {
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;
 
+		
+
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
@@ -56,6 +58,19 @@ class Main extends Controller {
 			return db.UserContract.manager.get(orderId, false).getWhosTurn(distrib);
 		}
 		
+		//register to group without ordering block
+		var hasOneOpenDistrib = false;
+		for( md in distribs){
+			if(md.isActive()) {
+				hasOneOpenDistrib = true;
+				break;
+			}
+		}
+
+		var isMember = app.user==null ? false : app.user.isMemberOf(group);
+		view.registerWithoutOrdering = ( !isMember && group.regOption==db.Amap.RegOption.Open && !hasOneOpenDistrib );
+		
+
 		//event for additionnal blocks on home page
 		var e = Blocks([], "home");
 		app.event(e);

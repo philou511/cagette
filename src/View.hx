@@ -137,8 +137,8 @@ class View extends sugoi.BaseView {
 	 * max length for strings, usefull for tables
 	 */
 	public function short(text:String, length:Int){
-		if (Utf8.length(text) > length){
-			
+		if(text==null) return "";
+		if (Utf8.length(text) > length){			
 			return Utf8.sub(text,0, length)+"…";
 		}else{
 			return text;
