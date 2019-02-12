@@ -189,6 +189,8 @@ class App extends sugoi.BaseApp {
 		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
+		out.set("AddressRequired", "Saisir de l'adresse obligatoire");
+
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");

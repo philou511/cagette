@@ -26,6 +26,8 @@ class User extends Controller
 		if (App.current.user != null) {
 			throw Redirect('/');
 		}
+
+		service.UserService.prepareLoginBoxOptions(view);
 		
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){

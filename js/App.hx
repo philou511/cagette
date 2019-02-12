@@ -170,24 +170,30 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false) {
+	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(
+			jsx('<$LoginBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
+			js.Browser.document.querySelector('#myModal .modal-body')
+		);
 		return false;
 	}
 
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false) {
+	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(
+			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
+			js.Browser.document.querySelector('#myModal .modal-body')
+		);
 		return false;
 	}
 

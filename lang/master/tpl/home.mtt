@@ -301,11 +301,14 @@
 				<img src="/img/join-a-group.jpg"/>
 			</p>
 			<p>
-				Inscrivez-vous à ce groupe, vous recevrez un email pour l'ouverture des prochaines commandes !
+				Inscrivez-vous à ce groupe, <br/>
+				vous recevrez un email pour l'ouverture des prochaines commandes <br/>
+				ainsi que des nouvelles des producteurs !
 			</p>
 
 			::if (user==null)::
-			<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup',null,::getCurrentGroup().hasPhoneRequired()::)">
+			
+			<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
 				<span class="glyphicon glyphicon-plus"></span>
 				M'inscrire à ce groupe
 			</a>

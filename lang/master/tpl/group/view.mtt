@@ -94,7 +94,7 @@
 						<hr />
 						<h4>::_("Already member? Log in:")::</h4>
 						<div class="text-center">
-							<a href="#" onclick="_.loginBox('/group/::group.id::')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> ::_("Log in")::</a>
+							<a href="#" onclick="_.loginBox('/group/::group.id::',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> ::_("Log in")::</a>
 						</div>
 					::end::
 					
