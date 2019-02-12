@@ -40,7 +40,7 @@
 						
 						::if(d._contract.type==1)::
 						<a href="/contractAdmin/orders/::d._contract.id::?d=::d.id::" class="btn btn-default btn-sm">
-							<span class="glyphicon glyphicon-list"></span>&nbsp;::_("Orders")::
+							<i class="icon icon-basket"></i>&nbsp;::_("Orders")::
 						</a>
 						::end::
 
@@ -81,7 +81,7 @@
 	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
 	
 	<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
-		<span class="glyphicon glyphicon-user"></span> ::_("Distributions engagement")::
+		<i class="icon icon-user"></i> ::_("Distributions engagement")::
 	</a>
 	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
 		::_("Old distributions")::

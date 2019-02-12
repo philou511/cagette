@@ -29,12 +29,10 @@
 				</div>
 				::end::
 			::else::
-				<div class="text-center alert alert-danger" style="width:50%;margin:auto;">
-					::_("We could not find any vendor matching your search")::
-					<br/>
-					<br/>
-					<a href="/contract/defineVendor" class="btn btn-default btn-sm">::_("Back")::</a>
-				</div>
+				<div class="col-md-12">
+					$$empty(::_("We could not find any vendor matching your search")::)
+					$$back()
+				</div>					
 			::end::
 		</div>
 
@@ -47,7 +45,8 @@
 		<p>
 			::_("if you have not found your vendor, enter a new record")::
 		</p>
-		<a href="/contract/insertVendor/::email::/::name::" class="btn btn-default btn-lg">::_("Key-in a new vendor")::</a>
+		<a href="/contract/insertVendor/::email::/::name::" class="btn btn-default btn-lg">
+			<i class="icon icon-plus"></i> ::_("Key-in a new vendor")::</a>
 
 	</div>
 </div>

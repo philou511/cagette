@@ -100,7 +100,7 @@
 				::foreach notification getMessages()::
 				<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
 					::if notification.error::
-					<span class="glyphicon glyphicon-exclamation-sign"></span>
+					<i class="icon icon-alert"></i>
 					::else::
 					<i class="icon icon-check"></i>
 					::end::

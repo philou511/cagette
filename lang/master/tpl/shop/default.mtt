@@ -156,7 +156,7 @@
 	<div class="cartDiv">
 		
 		<h3>
-			<i class="icon icon-shopping-cart"></i>
+			<i class="icon icon-basket"></i>
 			::_("My order")::
 			<img id="loader" src="/img/loader.gif"/>
 		</h3>

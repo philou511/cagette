@@ -55,7 +55,7 @@ class UserService
 	/**
 		Full registration by a user himself
 	**/
-	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String){
+	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String,?address:String,?zipCode:String,?city:String){
 		
 		var t  = sugoi.i18n.Locale.texts;
 		
@@ -72,12 +72,26 @@ class UserService
 		user.firstName = firstName;
 		user.lastName = lastName;
 		user.phone = phone;
+		user.address1 = address;
+		user.zipCode = zipCode;
+		user.city = city;
 		user.setPass(pass);
 		user.insert();				
 				
 		var group = App.current.getCurrentGroup();	
 		if (group != null && group.regOption == db.Amap.RegOption.Open){
 			user.makeMemberOf(group);	
+		}
+		if(group!=null){
+
+			if(group.flags.has(PhoneRequired) && (phone==null || phone=="") ){
+				throw new tink.core.Error(t._("Members of this group should provide a phone number"));
+			}
+
+			if(group.flags.has(AddressRequired) && (address==null || address=="" || zipCode==null || zipCode=="" || city==null || city=="") ){
+				throw new tink.core.Error(t._("Members of this group should provide an address"));
+			}
+
 		}
 		
 		db.User.login(user, email);		
@@ -135,5 +149,18 @@ class UserService
 	 */
 	public static function getFromGroup(group:db.Amap):Array<db.User>{
 		return Lambda.array( group.getMembers() );
+	}
+
+
+	public static function prepareLoginBoxOptions(view:View,?group:db.Amap){
+		if(group==null) group = App.current.getCurrentGroup();
+		var loginBoxOptions : Dynamic = {};
+		if(group==null || group.flags==null){
+			view.loginBoxOptions = {};
+			return;
+		} 
+		if(group.flags.has(PhoneRequired)) loginBoxOptions.phoneRequired = true;
+		if(group.flags.has(AddressRequired)) loginBoxOptions.addressRequired = true;
+		view.loginBoxOptions = loginBoxOptions;
 	}
 }

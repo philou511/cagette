@@ -82,12 +82,12 @@
 		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><i class="icon icon-calendar"></i> ::_("Calendar")::</a>
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			::_("Global orders view")::
+			<i class="icon icon-list"></i> ::_("Global orders view")::
 			<span class="caret"></span>
 		  </button>
 		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> ::_("Same day")::</a></li>
-			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> ::_("Timeframe")::</a></li>			
+			<li><a href="/contractAdmin/ordersByDate">::_("Same day")::</a></li>
+			<li><a href="/contractAdmin/ordersByTimeFrame">::_("Timeframe")::</a></li>			
 		  </ul>
 		</div>
 		
@@ -99,7 +99,7 @@
 
 <div class="col-md-6">
 	<div class="article" id="vendors">
-		<h2>::_("Farmers")::</h2>
+		<h2><i class="icon icon-farmer"></i> ::_("Farmers")::</h2>
 		<table class="table">
 			::foreach v vendors::		
 				<tr>
@@ -115,13 +115,8 @@
 					<td>
 						<div class="btn-group" role="group">
 							$$edit(::_("Edit")::,/vendor/edit/::v.id::)
-<<<<<<< HEAD
 							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
-							::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
-=======
-							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>
 							<!-- ::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::-->
->>>>>>> master
 						</div>
 					</td>
 				</tr>
@@ -136,7 +131,7 @@
 <div class="col-md-6">
 	<div class="article" id="places">
 		
-		<h2>::_("Delivery places")::</h2>
+		<h2><i class="icon icon-map-marker"></i> ::_("Delivery places")::</h2>
 		<table class="table">
 			::foreach p places::		
 				<tr>

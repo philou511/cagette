@@ -39,11 +39,9 @@
 	
 		<!-- empty planning -->
 		::if distribs==null || count(distribs)==0::
-			<div class="homeBlock">
-				<!--Votre planning de livraison est vide pour l'instant.-->
-				::_("You delivery planning is currently empty||on homepage when there is no planned deliveries")::
-				<br/>
-			</div>
+			<div class="homeBlock">				
+				$$empty(::_("There is no planned order currently.")::)
+			</div>			
 		::else::
 			
 			
@@ -53,7 +51,6 @@
 				
 				<!-- block with orders -->
 				<div class="distrib">
-
 					::set place = d.getPlace():: 
 					::set active = d.isActive()::
 					::set start = d.getDate()::
@@ -298,6 +295,30 @@
 			::end::
 			
 		::end::
+
+		<div class="homeBlock text-center" ::cond(registerWithoutOrdering==true)::>
+			<p>
+				<img src="/img/join-a-group.jpg"/>
+			</p>
+			<p>
+				Inscrivez-vous à ce groupe, <br/>
+				vous recevrez un email pour l'ouverture des prochaines commandes <br/>
+				ainsi que des nouvelles des producteurs !
+			</p>
+
+			::if (user==null)::
+			
+			<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
+				<span class="glyphicon glyphicon-plus"></span>
+				M'inscrire à ce groupe
+			</a>
+			::else::
+			<a href="/user/joingroup" class="btn btn-primary">
+				<span class="glyphicon glyphicon-plus"></span>
+				M'inscrire à ce groupe
+			</a>
+			::end::
+		</div>
 
 	
 </div>

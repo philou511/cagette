@@ -14,7 +14,7 @@ class OnTheSpotPayment extends payment.PaymentType
 	{
 		var t = sugoi.i18n.Locale.texts;
 		this.type = TYPE;
-		this.icon = '<i class="glyphicon glyphicon-euro" aria-hidden="true"></i>';
+		this.icon = '<i class="icon icon-euro" aria-hidden="true"></i>';
 		this.name = t._("On the spot payment");
 		this.link = "/transaction/onthespot";
 		this.allowedPaymentTypes = [];

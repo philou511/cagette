@@ -23,7 +23,7 @@
 					<td>::d._place.name::</td>
 					<td>
 						<a href="/contractAdmin/orders/::c.id::?d=::d.id::" class="btn btn-default">
-							<span class="glyphicon glyphicon-list"></span>
+							<i class="icon icon-basket"></i>
 							::_("Orders")::
 						</a>
 						

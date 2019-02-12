@@ -12,9 +12,9 @@ enum AmapFlags {
 	CagetteNetwork; //register in cagette.net groups directory
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
-	PhoneRequired;	//phone number of members is required for this group
-	ShopV2; //BETA shop V2
-
+	PhoneRequired;	//phone number of members is required for this group	
+	AddressRequired;//address required for delivery at home
+	ShopV2; 		//BETA shop V2
 }
 
 //user registration options

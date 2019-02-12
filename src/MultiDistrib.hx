@@ -381,5 +381,9 @@ class MultiDistrib
 		return distributions[0].getKey() + "-" + distributions[0].contract.type;
 	}
 
+	public function toString(){
+		return "Multidistrib à "+getPlace().name+" le "+getDate();
+	}
+
 	
 }

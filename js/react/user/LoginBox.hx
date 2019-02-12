@@ -3,11 +3,7 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 
-typedef LoginBoxProps = {
-	redirectUrl:String,
-	message:String,
-	?phoneRequired:Bool
-}
+typedef LoginBoxProps = RegisterBox.RegisterBoxProps;
 
 typedef LoginBoxState = {
 	email:String,
@@ -63,7 +59,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 				<p className="text-center">
 					<b>C\'est votre première visite sur Cagette.net ?</b>{"\u00A0"}{"\u00A0"}
 					<a onClick={registerBox} className="btn btn-default">
-						<i className="icon icon-chevron-right"/> S\'inscrire
+						<i className="icon icon-chevron-right"></i> S\'inscrire
 					</a>
 				</p>
 			</div>
@@ -91,8 +87,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 		ReactDOM.unmountComponentAtNode( body );
 	
 		js.Browser.document.querySelector("#myModal .modal-title").innerHTML = "Inscription";
-		//TODO check message props content
-		ReactDOM.render(jsx('<$RegisterBox message="" redirectUrl=${props.redirectUrl} phoneRequired=${props.phoneRequired} />'),  body );
+		ReactDOM.render(jsx('<$RegisterBox message=${props.message} redirectUrl=${props.redirectUrl} phoneRequired=${props.phoneRequired} addressRequired=${props.addressRequired} />'),  body );
 	}
 	
 	public function submit(?e:js.html.Event){

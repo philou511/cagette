@@ -27,7 +27,7 @@ class User extends Controller
 	 * Register
 	 */
 	public function doRegister(){
-		
+
 		//cleaning
 		var p = app.params;
 		var email = StringTools.trim(p.get("email")).toLowerCase();
@@ -35,8 +35,11 @@ class User extends Controller
 		var firstName = StringTools.trim(p.get("firstName"));
 		var lastName = StringTools.trim(p.get("lastName")).toUpperCase();
 		var phone = p.exists("phone") ? StringTools.trim(p.get("phone")) : null;
+		var address = p.exists("address1") ? StringTools.trim(p.get("address1")) : null;
+		var zipCode = p.exists("zipCode") ? StringTools.trim(p.get("zipCode")) : null;
+		var city = p.exists("city") ? StringTools.trim(p.get("city")) : null;
 		
-		service.UserService.register(firstName, lastName, email, phone, pass);
+		service.UserService.register(firstName, lastName, email, phone, pass, address, zipCode, city);
 		
 		Sys.print(Json.stringify({success:true}));
 	}

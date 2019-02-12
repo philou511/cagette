@@ -26,6 +26,8 @@ class User extends Controller
 		if (App.current.user != null) {
 			throw Redirect('/');
 		}
+
+		service.UserService.prepareLoginBoxOptions(view);
 		
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){
@@ -34,8 +36,7 @@ class User extends Controller
 			view.redirect = "/";
 		}
 	}
-	
-	
+
 	/**
 	 * Choose which group to connect to.
 	 */
@@ -251,6 +252,36 @@ class User extends Controller
 		sugoi.db.Cache.destroy("validation" + k);
 	
 		throw Ok("/user/definePassword", t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}));
+	}
+
+	/**
+		The user just registred or logged in, and want to be a member of this group
+	**/
+	function doJoingroup(){
+
+		if(app.user==null) throw "no user";
+
+		var group = App.current.getCurrentGroup();
+		if(group==null) throw "no group selected";
+		if(group.regOption!=db.Amap.RegOption.Open) throw "this group is not open";
+
+		var user = app.user;
+		user.lock();
+		user.flags.set(HasEmailNotif24h);
+		user.flags.set(HasEmailNotifOuverture);
+		user.update();
+		db.UserAmap.getOrCreate(user,group);
+
+		//warn manager by mail
+		var url = "http://" + App.config.HOST + "/member/view/" + user.id;
+		var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
+		App.quickMail(
+			group.contact.email,
+			group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
+			app.processTemplate("mail/message.mtt", { text:text } ) 
+		);
+
+		throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
 	}
 	
 }

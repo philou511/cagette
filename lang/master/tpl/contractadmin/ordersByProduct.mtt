@@ -59,11 +59,11 @@
 			::if distribution!=null::
 			$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1&d=::distribution.id::)
 			<a href="/contractAdmin/ordersByProductList/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
+				<i class="icon icon-print"></i> ::_("Order form")::</a>
 			::else::
 			$$export(/contractAdmin/ordersByProduct/::c.id::?csv=1)
 			<a href="/contractAdmin/ordersByProductList/::c.id::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
+				<i class="icon icon-print"></i> ::_("Order form")::</a>
 			::end::
 				
 		

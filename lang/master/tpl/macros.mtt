@@ -65,7 +65,7 @@
 		::if(v==true || v==1)::
 		<i class="icon icon-check" style="color:#060"></i>
 		::else::
-		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
+		<i class="icon icon-alert" style="color:#a94442"></i>
 		::end::
 	</macro>
 	
@@ -126,10 +126,10 @@
 		::if u!=null::
 			<b>::u.firstName:: ::u.lastName::</b><br/>
 			<span ::cond u.email!=null::>
-				<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
+					<i class="icon icon-mail"></i> <a href="mailto: ::u.email::">::u.email::</a><br/>			
 			</span>
 			<span ::cond u.phone!=null::>
-				<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
+					<i class="icon icon-phone"></i>  ::u.phone::<br/>			
 			</span>
 		::else:: 
 			::_("No contact")::
@@ -140,7 +140,7 @@
 	
 	<macro name="alert(msg)">
 		<div class="alert alert-danger">
-			<span class="glyphicon glyphicon-exclamation-sign"></span>
+			<i class="icon icon-alert"></i>
 			
 			::raw msg::					
 		</div>
@@ -199,7 +199,13 @@
 	</macro>
 
 	<macro name="back()">	
-	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-chevron-left"></span> ::_("Back")::</a>
+	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i> ::_("Back")::</a>
+	</macro>
+
+	<macro name="empty(txt)">	
+		<div style="text-align:center;width:100%;height:200px;color: #AAA;line-height: 200px;">
+			::txt::
+		</div>		
 	</macro>
 	
 	
@@ -291,10 +297,10 @@
 							::if showBtns::
 							<div class="btn-group">
 								<a href="/p/pro/delivery/edit/::d.id::" title="::_("Edit")::" data-toggle="tooltip" class="btn btn-default btn-sm">
-									<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									<i class="icon icon-edit"></i>
 								</a>
 								<a href="/p/pro/delivery/delete/::d.id::?token=::token::"  title="::_("Delete")::" data-toggle="tooltip" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm" >
-									<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+									<i class="icon icon-delete"></i>
 								</a>
 							</div>
 							::end::

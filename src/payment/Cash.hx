@@ -13,7 +13,7 @@ class Cash extends payment.PaymentType
 	{
 		var t = sugoi.i18n.Locale.texts;
 		this.type = TYPE;
-		this.icon = '<i class="icon icon-cash"></i>';
+		this.icon = '<i class="icon icon-euro"></i>';
 		this.name = t._("Cash");
 		this.link = "/transaction/cash";
 	}

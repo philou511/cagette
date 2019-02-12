@@ -18,6 +18,7 @@ class Vendor extends Object
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SString<32>;
 	public var city:SString<25>;
+	public var country:SNull<SString<64>>;
 	
 	public var desc : SNull<SText>;
 	
@@ -76,6 +77,7 @@ class Vendor extends Object
 	public static function get(email:String,status:String){
 		return manager.select($email==email && $status==status,false);
 	}
+	
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
