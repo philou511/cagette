@@ -53,7 +53,7 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 						</div>					
 					</div>
 					<p className="text-center">						
-						<a onClick=${submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-user"></span> S\'identifier</a>
+						<a onClick=${submit} className="btn btn-primary btn-lg" ><i className="icon icon-user"/> S\'identifier</a>
 						<br/>
 						<br/>
 						<a href="/user/forgottenPassword">Mot de passe oublié ?</a>
@@ -62,7 +62,9 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 				<hr/>
 				<p className="text-center">
 					<b>C\'est votre première visite sur Cagette.net ?</b>{"\u00A0"}{"\u00A0"}
-					<a onClick={registerBox} className="btn btn-default"><span className="glyphicon glyphicon-chevron-right"></span> S\'inscrire</a>
+					<a onClick={registerBox} className="btn btn-default">
+						<i className="icon icon-chevron-right"/> S\'inscrire
+					</a>
 				</p>
 			</div>
 		');

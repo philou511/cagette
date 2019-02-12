@@ -67,8 +67,6 @@ class Vendor extends Object
 		};
 	}
 
-
-
 	public function getGroups():Array<db.Amap>{
 		var contracts = getActiveContracts();
 		var groups = Lambda.map(contracts,function(c) return c.amap);

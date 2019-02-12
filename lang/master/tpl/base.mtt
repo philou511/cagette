@@ -76,7 +76,7 @@
 			  </div>
 			  <div class="modal-footer" style="clear:both;">
 				<button type="button" class="btn btn-default" data-dismiss="modal">
-					<span class='glyphicon glyphicon-remove'></span>  ::_("Close")::
+					<i class="icon icon-delete"></i>  ::_("Close")::
 				</button>				
 			  </div>
 			</div>
