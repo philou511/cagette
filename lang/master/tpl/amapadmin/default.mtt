@@ -25,6 +25,7 @@
 			
 			
 			<p class="linkToShare">
+				<i class="icon icon-link"></i>
 				<a href="http://::HOST::/group/::user._amap.id::">
 					http://::HOST::/group/::user._amap.id::				
 				</a>

@@ -803,6 +803,19 @@ tr.danger td div.basketNumber {
 .payment .icon {
   font-size: 200%; }
 
+/* big colored circle with white icon inside */
+.iconBadge {
+  background-color: #666;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  line-height: 40px;
+  text-align: center;
+  display: inline-block; }
+  .iconBadge i.icon {
+    color: white;
+    font-size: 1.5em; }
+
 /*!
  * https://github.com/YouCanBookMe/react-datetime
  */

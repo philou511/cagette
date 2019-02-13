@@ -52,12 +52,12 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		
 		var input =  if (isSmartQtInput(o)){
 			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
+					<input type="text" className="form-control input-sm text-right" value=${state.inputValue} onChange=${onChange} onKeyPress=${onKeyPress}/>
 					<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
 				</div>');	
 		}else{
 			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
+					<input type="text" className="form-control input-sm text-right" value=${state.inputValue} onChange=${onChange} onKeyPress=${onKeyPress}/>
 				</div>');
 		}
 

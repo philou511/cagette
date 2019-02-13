@@ -44,7 +44,7 @@
 	<div>
 		
 		<a href="?old=1" class="btn btn-default btn-sm">
-			::_("Old orders")::
+				<i class="icon icon-archive"></i> ::_("Old orders")::
 		</a>
 		
 		

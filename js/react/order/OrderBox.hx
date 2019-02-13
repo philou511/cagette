@@ -117,7 +117,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 				<div onKeyPress=${onKeyPress}>
 					<h3>Commandes de ${this.props.userName}</h3>
 					$delivery			
-					<$Error error="${state.error}" />
+					<$Error error=${state.error} />
 					<hr/>
 					<div className="row tableHeader">
 						<div className="col-md-4">Produit</div>
@@ -130,10 +130,10 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 					${renderOrders}	
 					<div>
 						<a onClick=${onClick} className="btn btn-primary">
-							<span className="glyphicon glyphicon-chevron-right"></span> Valider
+							<i className="icon icon-chevron-right"></i> Valider
 						</a>
 						&nbsp;
-						<$Link className="btn btn-default" to="/insert"><span className="glyphicon glyphicon-plus-sign"></span> Ajouter un produit</$Link>
+						<$Link className="btn btn-default" to="/insert"><i className="icon icon-plus"></i> Ajouter un produit</$Link>
 					</div>
 				</div>			
 			');

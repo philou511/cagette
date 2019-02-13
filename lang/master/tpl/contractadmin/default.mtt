@@ -12,7 +12,7 @@
 		<p>
 			::if(!m.isConfirmed())::
 				<a href="/distribution/validate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-primary"> 
-					::dDate(m.getDate())::, ::m.getPlace().name::
+					<i class="icon icon-calendar"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
 				</a>
 				::if (isAdmin)::
 				<a href="/distribution/autovalidate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-danger">Admin : Autovalidate</a>
@@ -31,9 +31,9 @@
 	<div class="article" id="contracts">
 		<h2>
 			::if getParam("old"):: 
-			::_("Old contracts")::
+			<i class="icon icon-book"></i> ::_("Old contracts")::
 			::else::
-			::_("Contracts")::
+			<i class="icon icon-book"></i> ::_("Contracts")::
 			::end::
 		</h2>
 		<table class="table">

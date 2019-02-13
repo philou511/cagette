@@ -58,8 +58,8 @@ class InsertOrder extends react.ReactComponentOfPropsAndState<{contractId:Int,us
 			<div>
 				$redirect
 				<h3>Choisissez le produit à ajouter</h3>
-				<$Link className="btn btn-default" to="/"><span className="glyphicon glyphicon-chevron-left"></span> Retour</$Link>
-				<$Error error="${state.error}" />
+				<$Link className="btn btn-default" to="/"><i className="icon icon-chevron-left"></i> Retour</$Link>
+				<$Error error=${state.error} />
 				<hr />
 				<$ProductSelect onSelect=$onSelectProduct products=${state.products} />
 			</div>			

@@ -50,7 +50,7 @@
 	</macro>
 	
 	<macro name="export(url)">
-		<a href="::url::" class="btn btn-default btn-sm"><i class="icon icon-list"></i> ::_("Excel/CSV Export")::</a>	
+		<a href="::url::" class="btn btn-default btn-sm"><i class="icon icon-download"></i> ::_("Excel/CSV Export")::</a>	
 	</macro>
 	
 	<macro name="bool(v)">
@@ -246,26 +246,24 @@
 			</div>
 			<div class="col-md-8">
 				
+				
+				
 				::if (open==k.length)::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande en cours.">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#F80;"></i>
-				  <i class="fa fa-shopping-basket fa-stack-1x fa-inverse"></i>
+				<span class="iconBadge" style="background-color:#F80;" data-toggle="tooltip" title="Commande en cours.">
+					<i class="icon icon-basket"></i>
 				</span>
 				::elseif(closed==k.length)::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande close. Préparez votre livraison">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#0A0;"></i>
-				  <i class="fa fa-truck fa-stack-1x fa-inverse"></i>
+				<span class="iconBadge" style="background-color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison">
+					<i class="icon icon-truck-shipping"></i>
 				</span>
 				::elseif(notyetopened==k.length)::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande pas encore ouverte">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#999;" ></i>
-				  <i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+				<span class="iconBadge" style="background-color:#999;" data-toggle="tooltip" title="Commande pas encore ouverte">
+					<i class="icon icon-clock"></i>
 				</span>				
 				::else::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Statut mixte">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#999;" ></i>
-				  <i class="fa fa-truck fa-stack-1x fa-inverse"></i>
-				</span>		
+				<span class="iconBadge" style="background-color:#999;" data-toggle="tooltip" title="Statut mixte">
+					<i class="icon icon-truck-shipping"></i>
+				</span>			
 				::end::
 				
 				<b>::k[0]._contract._amap.name::</b><br/>
@@ -277,17 +275,17 @@
 							::if d.orderStartDate!=null::
 								::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
 								<!-- commande en cours -->
-								<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
+								<i class="icon icon-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
 								::elseif now.getTime() > d.orderEndDate.getTime()::
 								<!-- commande terminée -->
-								<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+								<i class="icon icon-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
 								::else::
 								<!-- commande pas ouverte -->
-								<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
+								<i class="icon icon-circle-empty" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
 								::end::
 							::else::
 								<!-- AMAP -->
-								<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+								<i class="icon icon-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
 							::end::
 							
 							::set c = getCatalog(d)::

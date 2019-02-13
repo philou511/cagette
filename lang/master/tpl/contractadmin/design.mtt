@@ -26,7 +26,9 @@
 					<i class="icon icon-basket"></i> ::_("Orders")::</a>
 				</li>
 			<li id="stats">
-				<a href="/contractAdmin/stats/::c.id::">::_("Stats")::</a></li>
+				<a href="/contractAdmin/stats/::c.id::">
+					<i class="icon icon-chart"></i> ::_("Stats")::</a>
+			</li>
 			::if navbar!=null::
 				<hr/>
 				::foreach i navbar::

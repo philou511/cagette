@@ -56,12 +56,12 @@
 			<a href="/member/movetowl/::member.id::" class="btn btn-default btn-sm">::_("Put on waiting list")::</a>
 			
 			<a onclick="_.overlay('/member/lastMessages/::member.id::','Message reçus')" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> 
+			<i class="icon icon-mail"></i>
 				::_("Received messages")::</a>
 			
 			::if !member.isFullyRegistred()::
 			<a href="/member/inviteMember/::member.id::?token=::token::" class="btn btn-default btn-sm">
-				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+				<i class="icon icon-mail"></i>
 				::_("Send an invitation")::</a>
 			::end::
 		</p>
