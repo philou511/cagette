@@ -32,7 +32,8 @@ class PaymentService
 					new payment.Check(),
 					new payment.Transfer(),	
 					new payment.MoneyPot(),
-					new payment.OnTheSpotPayment(),						
+					new payment.OnTheSpotPayment(),		
+					new payment.June(),				
 				];
 				var e = App.current.event(GetPaymentTypes({types:types}));
 				out = switch(e) {

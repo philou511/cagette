@@ -259,4 +259,58 @@ class Transaction extends controller.Controller
 
 	}
 
+
+	/**
+	 * pay by G1
+	 */
+	@tpl("transaction/june.mtt")
+	public function doJune(){
+		
+		//order in session
+		var tmpOrder : OrderInSession = app.session.data.order;	
+		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+
+		if(app.params.get("hash")==null){
+			//redir to payement page on cesium
+			var redirectUrl = "https://"+App.config.HOST+"/transaction/june/?tx={tx}&hash={hash}&comment={comment}&amount={amount}&pubkey={pubkey}";
+			var url = payment.June.getPaymentUrl("8vSBtv7tuKCASYkA4UjRvrMLKAdMx2Vhg9tXVzttXQuU",tmpOrder.total,"Paiement Cagette.net","Producteur TEST",redirectUrl);
+			throw Redirect(url);
+
+		}else{
+
+			var p = app.params;
+			var hash = p.get("hash");
+			var tx = p.get("tx");
+			var comment = p.get("comment");
+			var amount = p.get("amount");
+			var pubkey = p.get("pubkey");
+			var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
+
+			//Do some checks here !
+
+
+			//record order
+			var orders = OrderService.confirmSessionOrder(tmpOrder);
+			var ops = db.Operation.onOrderConfirm(orders);
+			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+			
+			if (Lambda.array(ordersGrouped).length == 1){
+				//one multidistrib
+				var name = t._("Ğ1 payement for the order of ::date::", {date:view.hDate(d.date)}) +'(tx:$tx)';
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.June.TYPE, tmpOrder.total, name, ops[0] );
+			}else{
+				//many distribs
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.June.TYPE, tmpOrder.total, t._("Ğ1 payment ")+'(tx:$tx)' );			
+			}
+			
+
+			throw Ok("/contract", t._("Your payment by Ğ1 is successfull. Your order has been recorded !"));
+		}
+		
+		
+		
+
+	}
+
 }

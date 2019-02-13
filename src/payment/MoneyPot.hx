@@ -1,7 +1,7 @@
 package payment;
 
 /**
- * ...
+ * Money pot 
  * @author web-wizard
  */
 class MoneyPot extends payment.PaymentType
