@@ -165,10 +165,12 @@ class View extends sugoi.BaseView {
 	}
 	
 	public function currency(){
-		if (App.current.user == null || App.current.user.amap == null){
+
+		var group = App.current.getCurrentGroup();
+		if (group==null){
 			return "€";
 		}else{
-			return App.current.user.amap.getCurrency();	
+			return group.getCurrency();	
 		}
 		
 	}

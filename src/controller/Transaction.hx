@@ -287,6 +287,8 @@ class Transaction extends controller.Controller
 			var pubkey = p.get("pubkey");
 			var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
 
+			App.current.logError(app.params.toString());
+
 			//Do some checks here !
 
 
