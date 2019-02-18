@@ -105,9 +105,9 @@
 					::p.getFullCategorization().join(" / ")::
 				</div>
 				::end::
-				<div>
-				::if p.organic ::<img src="/img/AB.png" style="display:inline-block"/>::end::
-				::if p.variablePrice ::<img src="/img/weight.png" style="display:inline-block"/>::end::
+				<div style="color:#AAA">
+				::if p.organic ::<i class="icon icon-bio"></i>::end::
+				::if p.variablePrice ::<i class="icon icon-scale"></i>::end::
 				</div>
 			</td>			
 			<td>::formatNum(p.price)::&nbsp;::currency()::</td>

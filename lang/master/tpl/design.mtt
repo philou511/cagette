@@ -67,9 +67,21 @@
 					<div class="collapse navbar-collapse" id="cagette-navbar">
 						
 						<ul class="nav navbar-nav navbar-left">
-							<li ::attr class if(category=="home") 		'active' ::><a href="/">::_("Home")::</a></li>
-							<li ::attr class if(category=="contract" ) 	'active' ::><a href="/contract">::_("My account")::</a></li>
-							<li ::attr class if(category=="amap") 		'active' ::><a href="/amap">::_("Farmers")::</a></li>
+							<li ::attr class if(category=="home") 		'active' ::>
+								<a href="/">
+									<i class="icon icon-home"></i>  ::_("Home")::
+								</a>
+							</li>
+							<li ::attr class if(category=="contract" ) 	'active' ::>
+								<a href="/contract">
+									<i class="icon icon-user"></i> ::_("My account")::
+								</a>
+							</li>
+							<li ::attr class if(category=="amap") 		'active' ::>
+								<a href="/amap">
+									<i class="icon icon-farmer"></i> ::_("Farmers")::
+								</a>
+							</li>
 							
 						</ul>
 						
@@ -77,15 +89,23 @@
 							<li id="member" ::attr class if(category=="members") 	'active' ::>
 								
 								<a href="/member" ::cond user.canAccessMembership()::>
-									::_("Members")::</a></li>
+									<i class="icon icon-users"></i> ::_("Members")::</a>
+								</li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
-								<a href="/contractAdmin" ::cond user.isContractManager(null)::>::_("Contracts")::</a></li>
+								<a href="/contractAdmin" ::cond user.isContractManager(null)::>
+									<i class="icon icon-book"></i> ::_("Contracts")::
+								</a>
+							</li>
 							<li id="messages" ::attr class if(category=="messages") 	'active' ::>
-								<a href="/messages" ::cond user.canAccessMessages()::>::_("Messaging")::</a></li>
+								<a href="/messages" ::cond user.canAccessMessages()::>
+									<i class="icon icon-mail"></i>  ::_("Messaging")::</a>
+								</li>
 							<li id="amapadmin" ::attr class if(category=="amapadmin") 	'active' ::>
-								<a href="/amapadmin" ::cond user.isAmapManager()::>::_("Group")::</a></li>
+								<a href="/amapadmin" ::cond user.isAmapManager()::>
+									<i class="icon icon-cog"></i>  ::_("Group")::</a>
+								</li>
 							<li ::cond user.isAdmin():: ::attr class if(category=="admin") 	'active' ::>
-								<a href="/admin" >::_("Admin")::</a></li>
+								<a href="/admin" ><i class="icon icon-cog"></i>  ::_("Admin")::</a></li>
 						</ul>
 						
 					</div>

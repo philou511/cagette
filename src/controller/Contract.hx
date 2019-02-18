@@ -277,6 +277,9 @@ class Contract extends Controller
 				
 		var vendor = new db.Vendor();
 		var form = sugoi.form.Form.fromSpod(vendor);
+		form.removeElementByName("country");
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		
 				
 		if (form.isValid()) {
 			form.toSpod(vendor);

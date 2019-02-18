@@ -20,6 +20,10 @@ class TxpCategory extends Object
 		return db.TxpSubCategory.manager.search($category == this, false);
 		
 	}
+
+	public static function all(){
+		return manager.search(true,{orderBy:displayOrder},false);
+	}
 	
 	override public function toString(){
 		return '#$id-$name';

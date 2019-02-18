@@ -74,9 +74,9 @@ typedef ColorPalette = {
 		cgBg03:CGColors,
 	};
 
-	var grey:{
+	/*var grey:{
 		// TODO
-	};
+	};*/
 
 	var text:{
 		primary:String,

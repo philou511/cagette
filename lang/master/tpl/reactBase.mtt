@@ -32,7 +32,7 @@
 	</head>
 
 	::if container==null:: ::set container="container":: ::end::
-	<body class="::container::">
+	<body class="::container::" style="background-color: white;">
 		
 		::if DEBUG::
 		<div style="position: absolute;background: #666;padding: 8px;left: 0;bottom:0;color: #FF0;">DEBUG ::session.lang::</div>

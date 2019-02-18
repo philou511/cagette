@@ -26,7 +26,7 @@
 		$$back()
 		
 	::else::	
-		<h2><i class="icon icon-users"></i> ::_("Members")::</h2>
+		<h2>::_("Members")::</h2>
 	::end::
 	
 	

@@ -55,15 +55,15 @@
 	
 	<macro name="bool(v)">
 		::if v==true::
-		<img src="/img/icons/accept.png" />
+		<i class="icon icon-circle" style="color:#84bd55"></i>
 		::else::
-		<img src="/img/icons/stop.png" />
+		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
 	</macro>
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
-		<i class="icon icon-check" style="color:#060"></i>
+		<i class="icon icon-check" style="color:#84bd55"></i>
 		::else::
 		<i class="icon icon-alert" style="color:#a94442"></i>
 		::end::
@@ -203,8 +203,12 @@
 	</macro>
 
 	<macro name="empty(txt)">	
-		<div style="text-align:center;width:100%;height:200px;color: #AAA;line-height: 200px;">
-			::txt::
+		<div style="text-align:center;width:100%;height:300px;color: #AAA;">
+			<img src="/img/empty.png" />
+			<p>
+				::txt::
+			</p>
+			
 		</div>		
 	</macro>
 	

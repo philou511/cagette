@@ -14,7 +14,8 @@
 	
 				<td>
 					::if d.distributionCycleId!=null::
-					<img src="/img/icons/arrow_refresh.png" style="opacity:0.5;" />
+					<i class="icon icon-refresh"></i>  
+					
 					::end::
 					
 					::set da = getDate(d.date)::

@@ -31,9 +31,9 @@
 	<div class="article" id="contracts">
 		<h2>
 			::if getParam("old"):: 
-			<i class="icon icon-book"></i> ::_("Old contracts")::
+			::_("Old contracts")::
 			::else::
-			<i class="icon icon-book"></i> ::_("Contracts")::
+			::_("Contracts")::
 			::end::
 		</h2>
 		<table class="table">
@@ -99,7 +99,7 @@
 
 <div class="col-md-6">
 	<div class="article" id="vendors">
-		<h2><i class="icon icon-farmer"></i> ::_("Farmers")::</h2>
+		<h2>::_("Farmers")::</h2>
 		<table class="table">
 			::foreach v vendors::		
 				<tr>

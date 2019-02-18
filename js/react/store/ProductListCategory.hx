@@ -118,8 +118,8 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 
 		if( state.catalog.subcategories == null || state.catalog.subcategories.length == 0 ) {
 			return jsx('
-				<Typography component="h4" align={Center}>
-					Il n\'y a aucun produit dans cette catégorie ${props.catalog.info.name}
+				<Typography variant={H5} align={Center}>
+					Il n\'y a aucun produit dans la catégorie "${props.catalog.info.name}"
 				</Typography>
 			');
 		}
@@ -128,8 +128,8 @@ class ProductListCategory extends react.ReactComponentOf<ProductListCategoryProp
 		var totalProducts = Lambda.fold(state.catalog.subcategories, function(d, count:Int) { return count + d.products.length; }, 0);
 		if( totalProducts == 0 ) {
 			return jsx('
-				<Typography component="h4" align={Center}>
-					Il n\'y a aucun produit dans cette catégorie ${props.catalog.info.name}
+				<Typography variant={H5} align={Center}>
+					Il n\'y a aucun produit dans la catégorie "${props.catalog.info.name}"
 				</Typography>
 			');
 		}

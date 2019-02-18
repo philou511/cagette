@@ -86,8 +86,8 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 	function renderSearchResult() {
 		if( props.catalog.filter.search == null ) return null;
 		return jsx('
-			<Typography variant={H3}>
-                Résultats de la recherche pour <i>${props.catalog.filter.search}</i>
+			<Typography style=${{fontSize:'2em','color':'#AAA'}}>
+                Résultats de la recherche pour "<i style=${{'color':'#333'}}>${props.catalog.filter.search}</i>"
             </Typography>
 		');
 	}

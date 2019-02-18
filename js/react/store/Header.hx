@@ -87,7 +87,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		super(props);
 	}
 
-//https://css-tricks.com/debouncing-throttling-explained-examples/
+    //https://css-tricks.com/debouncing-throttling-explained-examples/
     @:debounce(1000, {trailing:true})
     function search(criteria:String) {
         if( criteria.length >= 3 || criteria.length == 0 )

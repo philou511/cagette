@@ -50,6 +50,9 @@ class FilterUtil
         return {catalog:copy, filter:{producteur:producteur, category:category, subcategory:subcategory, search:null}};
     }
 
+    /**
+    search for products
+    **/
     public static function searchProducts(catalog:Catalog, criteria:String ):FilteredProductCatalog
     {
         var copy:Catalog = {categories:[]};
@@ -91,7 +94,7 @@ class FilterUtil
 
     static public function searchProductName(productName:String, criteria:String) 
     {
-        return StringTools.startsWith(productName.toLowerCase(), criteria);
+        return productName.toUpperCase().indexOf(criteria.toUpperCase()) > -1;
     }
 
     //cache for faster access here to references
