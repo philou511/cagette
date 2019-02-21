@@ -215,6 +215,8 @@ class App extends sugoi.BaseApp {
 		out.set("Kilogram", "Kilogrammes");
 		out.set("Gram", "Grammes");
 		out.set("Litre", "Litres");		
+		out.set("Centilitre", "Centilitres");		
+		out.set("Millilitre", "Millilitres");		
 		out.set("htPrice", "Prix H.T");
 		out.set("amount", "Montant");
 		

@@ -239,31 +239,12 @@ class Contract extends Controller
 
 		if(f.isValid()){
 			//look for identical names
-			var name : String = f.getValueOf('name');
-			var email : String = f.getValueOf('email');
-			var vendors = [];
-			for( n in name.split(" ")){
-				n = n.toLowerCase();
-				if(Lambda.has(["le","la","du","de","l'","a","à","en","sur","qui","ferme"],n)) continue;
-				//search for each term
-				var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
-				vendors = vendors.concat(search);
-			}
+			var vendors = service.VendorService.findVendors( f.getValueOf('name') , f.getValueOf('email') );
 
-			//search by mail
-			if(email!=null){
-				vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
-			}
-			
-			vendors = tools.ObjectListTool.deduplicate(vendors);
-			/*if(vendors.length==0) {
-				throw Ok("/contract/insertVendor/"+email+"/"+name,t._("We haven't found any matching vendor in our database, please key-in a record for this new vendor."));
-			}*/
 			app.setTemplate('contractadmin/defineVendor.mtt');
 			view.vendors = vendors;
-			view.email = email;
-			view.name = name;
-
+			view.email = f.getValueOf('email');
+			view.name = f.getValueOf('name');
 		}
 
 		view.form = f;

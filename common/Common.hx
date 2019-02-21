@@ -66,6 +66,7 @@ enum Unit{
 	Gram;
 	Litre;
 	Centilitre;
+	Millilitre;
 }
 
 typedef CategoryInfo = {

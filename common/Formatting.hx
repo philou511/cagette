@@ -67,6 +67,7 @@ class Formatting
 			case Piece: 	"pièce(s)";
 			case Litre: 	"L.";
 			case Centilitre:"cl.";
+			case Millilitre:"ml.";
 		}
 		
 	}
