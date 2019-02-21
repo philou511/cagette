@@ -161,6 +161,7 @@ class View extends sugoi.BaseView {
 			case null,Piece: 	if(plural) t._("pieces||unit of a product)") else t._("piece||unit of a product)");
 			case Litre: 		t._("L.||liter");
 			case Centilitre: 	t._("cl.||centiliter");
+			case Millilitre: 	t._("ml.||milliliter");
 		}
 	}
 	

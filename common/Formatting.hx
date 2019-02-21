@@ -65,7 +65,9 @@ class Formatting
 			case Gram: 		 "g.";			
 			case Litre: 	 "L.";
 			case Centilitre: "cl.";
+			case Millilitre:"ml.";
 			case null,Piece: if(quantity==1.0) "pièce" else "pièces";
+			
 		}
 		
 	}

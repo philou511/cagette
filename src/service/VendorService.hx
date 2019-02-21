@@ -65,7 +65,27 @@ class VendorService{
 		
 		App.sendMail(e);	
 		#end
+	}
+
+	/**
+		Search vendor by name or email
+	**/
+	public static function findVendors(name:String,?email:String){
+		var vendors = [];
+		for( n in name.split(" ")){
+			n = n.toLowerCase();
+			if(Lambda.has(["le","la","du","de","l'","a","à","en","sur","qui","ferme"],n)) continue;
+			//search for each term
+			var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
+			vendors = vendors.concat(search);
+		}
+
+		//search by mail
+		if(email!=null){
+			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
+		}
 		
+		return tools.ObjectListTool.deduplicate(vendors);
 	}
 
 
