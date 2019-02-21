@@ -24,5 +24,10 @@ class June extends payment.PaymentType
 		
 
     }
+
+	public static function checkCurrency(currency:String):Bool{
+		currency = currency.toUpperCase();
+		return currency=="G1" || currency=="Ğ1" || currency=="JUNE";
+	}
 	
 }

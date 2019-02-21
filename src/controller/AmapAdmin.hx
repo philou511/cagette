@@ -19,9 +19,14 @@ class AmapAdmin extends Controller
 		
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();
-		
-		if (app.user.amap.hasPayments()){
+		var g = app.user.amap;
+		if (g.hasPayments()){
 			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Payments") });
+			//June payment options
+			if (g.allowedPaymentsType!=null && Lambda.exists(g.allowedPaymentsType, function(t) return t == payment.June.TYPE) ){
+				nav.push({id:"june",name:"Paiement Ğ1", link:"/amapadmin/june"});	
+			}
+
 		}		
 		
 		var e = Nav(nav,"groupAdmin");
@@ -36,7 +41,7 @@ class AmapAdmin extends Controller
 		view.contractsNum = app.user.amap.getActiveContracts().length;
 		
 		//ping cagette groups directory
-		if (Std.random(10) == 0 && app.user.amap.flags.has(db.Amap.AmapFlags.CagetteNetwork)){
+		/*f (Std.random(10) == 0 && app.user.amap.flags.has(db.Amap.AmapFlags.CagetteNetwork)){
 			var req = new Http("http://annuaire.cagette.net/api/ping?url="+StringTools.urlEncode( "http://" + App.config.HOST  ) );
 			try{
 				req.request();
@@ -44,7 +49,7 @@ class AmapAdmin extends Controller
 				App.current.logError("Error while contacting annuaire.cagette.net : "+e);
 			}
 			
-		}
+		}*/
 		
 	}
 	
@@ -94,6 +99,31 @@ class AmapAdmin extends Controller
 		
 	}
 	
+
+	@tpl("form.mtt")
+	public function doJune(){
+
+		
+
+		var g = app.user.amap;
+		
+		if(!payment.June.checkCurrency(g.currencyCode)){
+			App.current.session.addMessage(t._("Please set the currency code of this group to \"G1\""));
+		}
+		
+		var f = new sugoi.form.Form("june");
+		f.addElement(new sugoi.form.elements.StringInput("publicKey",t._("Payment recipient Public key"),g.junePublicKey,true));
+		if(f.isValid()){
+			g.lock();
+			g.junePublicKey = f.getValueOf("publicKey");
+			g.update();
+			throw Ok('/amapadmin/june',t._("Public key updated"));
+		}
+		view.title = t._("Ğ1 Payments configuration");
+		view.form = f;
+
+
+	}
 	
 	@tpl("amapadmin/rights.mtt")
 	public function doRights() {
