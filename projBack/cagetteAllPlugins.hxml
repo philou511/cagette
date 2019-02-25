@@ -4,12 +4,12 @@
 -lib thx.csv
 -lib datetime
 -lib hscript
--lib smtpmailer
--lib tink_json
+-lib tink_json:0.9.0
 
 -lib sugoi:git:https://github.com/bablukid/sugoi#master
 -lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
 -lib dbadmin:git:https://github.com/ncannasse/dbadmin.git#master
+-lib smtpmailer:git:https://github.com/benmerckx/smtpmailer.git#master
 
 -lib cagette-pro:git:https://bubar@bitbucket.org/bubar/cagette-pro.git#master
 -lib cagette-hosted:git:https://bubar@bitbucket.org/bubar/cagette-hosted.git#master
