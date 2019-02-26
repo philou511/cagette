@@ -2,6 +2,7 @@
 Le logiciel libre des circuits courts.
 
 [![Build Status](https://travis-ci.org/bablukid/cagette.svg?branch=master)](https://travis-ci.org/bablukid/cagette)
+Browser testing tools offered by https://www.browserstack.com/
 
 http://www.cagette.net
 
@@ -15,3 +16,5 @@ Some people call it a "foodhub" : A mix between a groupware and a marketplace, h
 ## Build & install 
 
 Read the Developer page on the wiki to know more about this : http://wiki.cagette.net/dev:index
+
+
