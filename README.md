@@ -1,11 +1,12 @@
-# Cagette.net
+<img src="https://app.cagette.net/img/logo2.png" alt="Cagette.net"/>
+
 Le logiciel libre des circuits courts.
+
+http://www.cagette.net
 
 [![Build Status](https://travis-ci.org/bablukid/cagette.svg?branch=master)](https://travis-ci.org/bablukid/cagette)
 
 Browser testing tools offered by https://www.browserstack.com/
-
-http://www.cagette.net
 
 Documentation : http://www.cagette.net/wiki
 
