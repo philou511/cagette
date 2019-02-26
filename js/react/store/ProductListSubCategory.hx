@@ -15,6 +15,7 @@ import mui.core.Button;
 import mui.icon.ExpandMore;
 import mui.core.modal.ModalCloseReason;
 import mui.core.Typography;
+import react.mui.CagetteTheme;
 import css.TextAlign;
 
 using Lambda;
@@ -44,7 +45,7 @@ private typedef TClasses = Classes<[
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class ProductListSubCategory extends react.ReactComponentOf<ProductListSubCategoryProps, ProductListSubCategoryState> {
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
             subCategory: {
                 textAlign: TextAlign.Left,

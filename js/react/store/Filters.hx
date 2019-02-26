@@ -3,7 +3,7 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import Common;
@@ -26,7 +26,7 @@ private typedef TClasses = Classes<[]>
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class Filters extends react.ReactComponentOfProps<FiltersProps> {
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			button: {
 				size: "small",

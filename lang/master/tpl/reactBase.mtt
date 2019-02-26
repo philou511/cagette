@@ -19,12 +19,12 @@
 		<link rel="stylesheet" href="/font/icons.css" />
 		
         
-        <!-- JQUERY -->
+        <!-- JQUERY (needed by bootstrap)-->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 		
 		
-		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.js -->
-		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+		<!-- polyfills : Object assign , Array find : https://polyfill.io/v3/url-builder -->
+		<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=default%2CArray.prototype.find%2CObject.assign"></script>
 
 		<!-- Haxe JS + libs bundled with browserify -->
 		<script type="text/javascript" src="/js/::getVariable('js')::/libs.js"></script>

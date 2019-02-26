@@ -2,7 +2,7 @@ package react.store;
 
 import js.Promise;
 import haxe.Json;
-import mui.CagetteTheme;
+import react.mui.CagetteTheme;
 import mui.core.Grid;
 import mui.core.CircularProgress;
 import react.ReactComponent;
@@ -77,9 +77,30 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 	//TODO CLEAN
 	public static var ALL_CATEGORY = {id:0, name:"Tous les produits",image:"/img/taxo/allProducts.png", subcategories:[]};
-	public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
+	//public static var DEFAULT_CATEGORY = {id:-1, name:"Autres"};
 
 	override function componentDidMount() {
+
+		//Check browser compat
+		var browser = bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
+		
+		var isValidBrowser = browser.satisfies({
+			"chrome" 	: ">=49",
+			"chromium" 	: ">=49",
+			"firefox" 	: ">=45",
+			"safari" 	: ">=9",
+			"internet explorer" : ">=11",
+			"android webview" 	: ">=70",
+			"samsung" 	: ">=6.4",
+			"edge" 		: ">=17.17134"
+		});
+		if(isValidBrowser!=true){
+			var navigo = '${browser.getBrowserName()} ${browser.getBrowserVersion()}';
+			setState({errorMessage:'Votre navigateur ($navigo) est trop ancien et n\'est pas pris en charge par Cagette.net.<br/>
+			Installez une version récente de <a href="http://www.mozilla.org/firefox/new/">Firefox</a>
+			 ou <a href="https://www.google.com/chrome/browser/desktop/">Chrome</a>.'});
+		}
+
 		//Loads init datas
 		var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
 		initRequest.then(function(infos:Dynamic) {
@@ -112,9 +133,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				
 				res.products = Lambda.array(Lambda.map(res.products, function(p:Dynamic) {
 					//default category
-					if( p.categories == null || p.categories.length == 0 ) {
+					/*if( p.categories == null || p.categories.length == 0 ) {
 						p.categories = [DEFAULT_CATEGORY.id];
-					} 
+					}*/
 					//convert unit in enum
 					if(p.unitType!=null) p = js.Object.assign({}, p, {unitType: Type.createEnumIndex(Unit, p.unitType)});
 					return p;

@@ -4,7 +4,7 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.core.Grid;
 import mui.core.common.Position;
 import mui.core.TextField;
@@ -53,7 +53,7 @@ private typedef CartState = {
 @:wrap(untyped Styles.withStyles(styles))
 class Cart extends react.ReactComponentOf<CartProps, CartState> {
 
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:react.mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			cartIcon : {
 				width: 50,
@@ -169,7 +169,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 					<Icon component="i" className=${iconBasket}></Icon>
 					
 					<Typography className=${classes.price} component="span">${Formatting.formatNum(props.order.total)}&nbsp;&euro;</Typography>
-					${mui.CagetteIcon.get("chevron-down")}
+					${CagetteTheme.getIcon("chevron-down")}
 				</div>
 				<Popover open={state.cartOpen}
 						anchorEl={this.cartRef.current}

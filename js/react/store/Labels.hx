@@ -4,6 +4,7 @@ import Common;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import mui.core.Tooltip;
+import react.mui.CagetteTheme;
 
 class Labels extends react.ReactComponentOfProps<{product:ProductInfo}> {
 
@@ -15,7 +16,7 @@ class Labels extends react.ReactComponentOfProps<{product:ProductInfo}> {
 
         var style = {
             fontSize:20,
-            color:mui.CagetteTheme.CGColors.Secondfont,
+            color:CGColors.Secondfont,
             marginRight:8
         };
 
@@ -47,7 +48,7 @@ class Labels extends react.ReactComponentOfProps<{product:ProductInfo}> {
 
     function label(iconId,name,style){
         return jsx('<Tooltip key=$iconId title=$name placement=${mui.core.popper.PopperPlacement.Top}>
-            ${mui.CagetteIcon.get(iconId,style)}
+            ${CagetteTheme.getIcon(iconId,style)}
         </Tooltip>');
     }
 }

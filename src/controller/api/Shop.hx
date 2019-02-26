@@ -54,7 +54,9 @@ class Shop extends Controller
 	public function doAllProducts(args:{date:String, place:db.Place}){
 		
 		if ( args == null ) throw "You should provide a date and a place";
-		var categsFromTaxo = args.place.amap.flags.has(ShopCategoriesFromTaxonomy);		
+		//var categsFromTaxo = args.place.amap.flags.has(ShopCategoriesFromTaxonomy);	
+		var categsFromTaxo = true;
+			
 		var products = getProducts(args.place, Date.fromString(args.date), categsFromTaxo );
 		
 		//to productInfos

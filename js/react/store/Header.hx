@@ -3,7 +3,7 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.Color;
 import mui.core.Grid;
 import mui.core.TextField;
@@ -49,7 +49,7 @@ private typedef TClasses = Classes<[
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class Header extends react.ReactComponentOfProps<HeaderProps> {
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
             cagWrap: {
                 maxWidth: 1240,
@@ -103,7 +103,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 	override public function render() {
         var classes = props.classes;
         
-        var searchIcon = mui.CagetteIcon.get("search",{color:CGColors.Secondfont});
+        var searchIcon = CagetteTheme.getIcon("search",{color:CGColors.Secondfont});
         var inputProps = {
             startAdornment: jsx('<InputAdornment position=${mui.core.input.InputAdornmentPosition.Start}>$searchIcon</InputAdornment>')
         };

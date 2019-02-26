@@ -8,13 +8,14 @@
   ::set groupName = NAME ::
 ::end::
 
-<script>
-  $(function(){
+<script language="javascript">
+  window.addEventListener("load", function(){
     ::if(user!=null)::
-    _.pageHeader("::groupName::","::rights::","::user.getName()::",::user.id::);
+      _.pageHeader("::groupName::","::rights::","::user.getName()::",::user.id::);
     ::else::
-    _.pageHeader("::groupName::",null,null,null);
+      _.pageHeader("::groupName::",null,null,null);
     ::end::
+
     _.shop(::place.id::, "::date::");
     
   });

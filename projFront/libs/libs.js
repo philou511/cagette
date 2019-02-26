@@ -28,7 +28,9 @@
     'sticky-events': require('sticky-events'),
     'intersection-observer': require('intersection-observer'),//Polyfill for stick-events to work
     'lodash.throttle': require('lodash.throttle'),
-    'lodash.debounce': require('lodash.debounce')
+    'lodash.debounce': require('lodash.debounce'),
+    'bowser': require('bowser'),//browser version detection
+    
   });
 
   if (process.env.NODE_ENV !== 'production') {

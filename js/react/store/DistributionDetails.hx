@@ -4,7 +4,7 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.Typography;
@@ -39,7 +39,7 @@ private typedef TClasses = Classes<[cagNavInfo,textSingleLine]>
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class DistributionDetails extends react.ReactComponentOfPropsAndState<DistributionDetailsProps,{placePopup:PlaceInfos}> {
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			cagNavInfo : {
                 /*fontSize: "0.7rem",
@@ -102,7 +102,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 		if(props.place==null) return null;
 
 		return jsx('<span>
-				${mui.CagetteIcon.get("map-marker")}
+				${CagetteTheme.getIcon("map-marker")}
 				${props.place.name}				
 			</span>');
 	}
@@ -111,7 +111,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 		var distribDate = jsx('<span>Distribution le ${Formatting.hDate(props.date)}</span>');
 		return jsx('
 			<span>
-				${mui.CagetteIcon.get("calendar")}
+				${CagetteTheme.getIcon("calendar")}
 				${distribDate}
 			</span>'
 		);
@@ -144,7 +144,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 
 		return jsx('
 			<Typography component="p">
-				${mui.CagetteIcon.get("clock")}
+				${CagetteTheme.getIcon("clock")}
 				${endDates}
 			</Typography>'
 		);
@@ -157,7 +157,7 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 		var paymentInfos = jsx('<span>Paiement: ${props.paymentInfos}</span>');
 		return jsx('
             <Typography component="p">
-				${mui.CagetteIcon.get("euro")}
+				${CagetteTheme.getIcon("euro")}
 				${paymentInfos}
 			</Typography>');
 	}

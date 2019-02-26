@@ -1,18 +1,9 @@
-package mui;
+package react.mui;
 
+import classnames.ClassNames.fastNull as classNames;
+import mui.icon.Icon;
+import react.ReactMacro.jsx;
 import js.Object;
-
-// This is not complete but exposes what we are currently using of the theme
-typedef CagetteTheme = {
-	var mixins:Mixins;
-	var palette:ColorPalette;
-	var spacing:Spacings;
-	var zIndex:ZIndexes;
-
-	// TODO: typography
-	// TODO: direction
-	// TODO: breakpoints
-}
 
 @:enum 
 abstract CGColors(String) to String {
@@ -28,6 +19,18 @@ abstract CGColors(String) to String {
 
 	var Firstfont = "#404040";//dark grey
 	var Secondfont = "#7F7F7F";//middle grey
+}
+
+// This is not complete but exposes what we are currently using of the theme
+typedef Theme = {
+	var mixins:Mixins;
+	var palette:ColorPalette;
+	var spacing:Spacings;
+	var zIndex:ZIndexes;
+
+	// TODO: typography
+	// TODO: direction
+	// TODO: breakpoints
 }
 
 typedef Spacings = {
@@ -112,4 +115,40 @@ typedef ZIndexes = {
 	var modal:Int;
 	var snackbar:Int;
 	var tooltip:Int;
+}
+
+class CagetteTheme{
+
+	public static function get(){
+		return mui.core.styles.MuiTheme.createMuiTheme({
+			palette: {
+				primary: {main: CGColors.Primary},
+				secondary: {main:CGColors.Secondary},
+				error: {main:"#FF0000"},       
+			},
+			typography: {
+				fontFamily:['Cabin', 'icons', '"Helvetica Neue"','Arial','sans-serif',],
+				fontSize:16, 
+    			useNextVariants: true,//https://material-ui.com/style/typography/#migration-to-typography-v2
+			},
+			overrides: {
+				MuiButton: { // Name of the component ⚛️ / style sheet
+					root: { // Name of the rule
+						minHeight: 'initial',
+						minWidth: 'initial',
+					},
+				},
+			},
+		});
+	}
+
+	/**
+        Get a mui Icon using Cagette's icon font
+    **/
+    public static function getIcon(iconId:String,?style:Dynamic){
+        var classes = {'icons':true};
+        Reflect.setField(classes,"icon-"+iconId,true);
+        var iconObj = classNames(classes);
+        return jsx('<Icon component="i" className=${iconObj} style=$style></Icon>');
+    }
 }

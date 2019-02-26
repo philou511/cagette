@@ -7,7 +7,7 @@ import react.*;
 import react.router.*;
 
 //mui
-import mui.CagetteTheme;
+import react.mui.CagetteTheme;
 
 //redux
 import redux.Redux;
@@ -222,46 +222,32 @@ class App {
 		return createStore(rootReducer, null, middleWare);
 	}
 
+	public function browser(){
+		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
+	}
+
 	/**
 		instanciates mui shop
 	**/
 	public function shop(place:Int, date:String) {
 
+
 		var elements = js.Browser.window.document.querySelectorAll('.sticky');
 		sticky.Stickyfill.add(elements);
 
 		// Will be merged with default values from mui
-		var theme = mui.core.styles.MuiTheme.createMuiTheme({
-			palette: {
-				primary: {main: CGColors.Primary},
-				secondary: {main:CGColors.Secondary},
-				error: {main:"#FF0000"},       
-			},
-			typography: {
-				fontFamily:['Cabin', 'icons', '"Helvetica Neue"','Arial','sans-serif',],
-				fontSize:16, 
-    			useNextVariants: true,//https://material-ui.com/style/typography/#migration-to-typography-v2
-			},
-			overrides: {
-				MuiButton: { // Name of the component ⚛️ / style sheet
-					root: { // Name of the rule
-						minHeight: 'initial',
-						minWidth: 'initial',
-					},
-				},
-			},
-		});
+		
 
 		var store = createReactStore();
 		ReactDOM.render(jsx('
-			<$ReduxProvider store=${store}>
-				<$MuiThemeProvider theme=${theme}>
+			<ReduxProvider store=${store}>
+				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
-						<$CssBaseline />
-						<$CagetteStore date=$date place=$place />
+						<CssBaseline />
+						<CagetteStore date=$date place=$place />
 					</>
-				</$MuiThemeProvider>
-			</$ReduxProvider>
+				</MuiThemeProvider>
+			</ReduxProvider>
 		'), js.Browser.document.querySelector('#shop'));
 	}
 

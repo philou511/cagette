@@ -3,18 +3,10 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
-import mui.core.Card;
-import mui.core.CardMedia;
-import mui.core.CardContent;
-import mui.core.Grid;
-import mui.core.GridList;
-import mui.core.Divider;
-import mui.core.Typography;
-import mui.icon.Icon;
-import mui.core.Button;
-import mui.core.IconButton;
+import react.mui.CagetteTheme;
+import mui.core.*;
 import mui.IconColor;
+import mui.icon.Icon;
 
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
@@ -69,7 +61,7 @@ private typedef TClasses = Classes<[
 @:wrap(untyped Styles.withStyles(styles))
 class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 	
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			cartDetails : {
                 /*fontSize: "1.2rem",
@@ -77,7 +69,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
                 display: "flex",
 				flexDirection: css.FlexDirection.Column,
                 width: 400,
-				padding:10,
+				//padding:10,
             },
 			subcard: {
 				flexDirection: css.FlexDirection.Row,
@@ -89,9 +81,10 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 			cartFooter: {
 				display: "flex",
 				flexDirection: Column,
-				fontSize: "1.8rem",
+				//fontSize: "1.8rem",
 				alignItems:Center,
-				justifyContent:SpaceEvenly,
+				//justifyContent:SpaceEvenly,
+				//height:120
 			},
 			products : {
 				display: "flex",
@@ -176,13 +169,23 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 		var classes = props.classes;
 		return jsx('
 			<Card className=${classes.cartDetails}>
-				${renderProducts()}
-				<Divider variant={Middle} />
-				<DistributionDetails isSticky={false} displayLinks={false} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
-				${renderFooter()}
-
+				<CardContent>
+					${renderProducts()}
+					<Divider variant={Middle} />
+					<DistributionDetails 
+						isSticky={false}
+						displayLinks={false}
+						orderByEndDates=${props.orderByEndDates}
+						place=${props.place}
+						paymentInfos=${props.paymentInfos}
+						date=${props.date}/>
+				</CardContent>
+				<CardActions style=${{height:80}}>
+					${renderFooter()}
+				</CardActions>
 			</Card>
         ');
+		//height is 80, because of a rendering bug in IE11 and Safari 9
     }
 
 	function renderQtAndUnit(qt:Float,unit:Unit){
@@ -249,8 +252,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 
 		//<GridList cellHeight={80} cols={1} className=${classes.products} direction=${Column} spacing={8}>
 		//<Grid className=${classes.products} direction=${Column} spacing={8}>
-		return jsx('
-			
+		return jsx('			
 			<GridList cellHeight={80} cols={1} className=${classes.products} spacing={8}>
 				${productsToOrder}
 			</GridList>

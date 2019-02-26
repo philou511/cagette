@@ -4,7 +4,7 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
@@ -33,7 +33,7 @@ private typedef TClasses = Classes<[cagCategoryActive, cagCategory, img, imgFit,
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryButtonProps> {
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			cagCategoryActive: {
 				backgroundColor: CGColors.Bg3,

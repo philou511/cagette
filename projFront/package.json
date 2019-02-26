@@ -8,12 +8,15 @@
     "@material-ui/core": "3.6.2",
     "@material-ui/icons": "3.0.1",
     "bootstrap": "^3.4.0",
+    "bowser": "^2.1.0",
     "eonasdan-bootstrap-datetimepicker": "^4.7.14",
     "geolib": "^2.0.24",
     "haxe-modular": "^0.7.0",
     "intersection-observer": "^0.5.1",
     "jquery": "^2.2.4",
     "leaflet": "^1.3.1",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "prop-types": "^15.6.2",
     "react": "16.6.0",
     "react-bootstrap-typeahead": "1.4.2",
@@ -26,9 +29,7 @@
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.0",
     "sticky-events": "^2.3.0",
-    "stickyfilljs": "^2.1.0",
-    "lodash.throttle": "^4.1.1",
-    "lodash.debounce": "^4.0.8"
+    "stickyfilljs": "^2.1.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
@@ -48,7 +49,7 @@
     "watch:sass": "npm run build:sass -- --watch",
     "build2": "babel src -d lib",
     "libs:dev": "browserify libs/libs.js -o ../www/js/libs.js -d",
-    "libs:prod": "cross-env NODE_ENV=production browserify ../js/libs/libs.js | uglifyjs -c -m > ../www/js/libs.js",
+    "libs:prod": "cross-env NODE_ENV=production browserify libs/libs.js | uglifyjs -c -m > ../www/js/libs.js",
     "test": "haxe testsJS.hxml && node js/test/tests.js",
     "prepush": "npm test"
   },

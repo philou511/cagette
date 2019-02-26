@@ -21,8 +21,7 @@ import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.core.Hidden;
 import mui.icon.Icon;
-
-import mui.CagetteTheme;
+import react.mui.CagetteTheme;
 import Common;
 
 private typedef Props = {
@@ -61,7 +60,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
 
     //https://cssinjs.org/jss-expand-full?v=v5.3.0
     //https://cssinjs.org/jss-expand-full/?v=v5.3.0#supported-properties
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			button:{
                 size: "small",
@@ -121,7 +120,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 overflow: Hidden,
             },
             cagProductLabel : {
-                color:mui.CagetteTheme.CGColors.Secondfont,                
+                color:CGColors.Secondfont,                
             },
             cagProductDesc: {
                 fontSize: '0.9rem',
@@ -167,7 +166,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                     <CardMedia  className=${classes.media} image=${product.image}>
                         <!--<div className=${classes.cagAvatarContainer}>
                             <Avatar className=${classes.starProduct}>
-                                ${mui.CagetteIcon.get("star")}
+                                ${CagetteTheme.getIcon("star")}
                             </Avatar>  
                         </div>-->
 

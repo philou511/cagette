@@ -35,7 +35,8 @@ class ProductCatalogCategories extends PureComponentOfProps<ProductCatalogCatego
 	override public function render() {
 		var categories = [
 			for( category in props.catalog.catalog.categories ) { 
-				jsx('<$ProductListCategory key=${category.info.id} filter=${props.catalog.filter} catalog=${category} openModal=${props.openModal} vendors=${props.vendors} nav=${props.nav} />');
+				var key = category.info==null ? Std.random(1000) : category.info.id;
+				jsx('<$ProductListCategory key=${key} filter=${props.catalog.filter} catalog=${category} openModal=${props.openModal} vendors=${props.vendors} nav=${props.nav} />');
 			}
 		];
 		return jsx('

@@ -16,7 +16,7 @@ import mui.core.Grid;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import mui.icon.Icon;
-import mui.CagetteTheme;
+import react.mui.CagetteTheme;
 import mui.core.Tooltip;
 import Common;
 
@@ -55,7 +55,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
 
     //https://cssinjs.org/jss-expand-full?v=v5.3.0
     //https://cssinjs.org/jss-expand-full/?v=v5.3.0#supported-properties
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			button:{
                 size: "small",
@@ -132,7 +132,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
     function renderQuantityAction() {
 
         var style = {fontSize:20};
-        var basketIcon = mui.CagetteIcon.get("basket-add",style);
+        var basketIcon = CagetteTheme.getIcon("basket-add",style);
 
         return if(props.product.stock!=null && props.product.stock<=0){
             jsx('<span style=${{color:CGColors.Third}}>Rupture<br/>de stock</span>');

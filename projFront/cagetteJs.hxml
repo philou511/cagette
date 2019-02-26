@@ -10,10 +10,8 @@
 -lib classnames
 -lib react-types
 -lib tink_json
--lib haxe-lodash
+-lib haxe-lodash:git:https://github.com/kiroukou/haxe-lodash-externs.git#master
 
-#-lib js-object
-#-D object-as-dynamic
 -lib redux
 -lib redux-connect
 -lib redux-thunk
@@ -23,3 +21,7 @@
 -D debug
 -js ../www/js/app.js
 -D no-deprecation-warnings
+
+
+#-lib js-object
+#-D object-as-dynamic

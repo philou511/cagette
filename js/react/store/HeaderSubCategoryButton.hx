@@ -4,7 +4,7 @@ package react.store;
 
 // it's just easier with this lib
 import classnames.ClassNames.fastNull as classNames;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import react.ReactComponent;
@@ -42,7 +42,7 @@ private typedef TClasses = Classes<[
 @:wrap(Styles.withStyles(styles))
 class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryButtonProps> {
     
-    public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+    public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
             icon : {
                 fontSize: "inherit",

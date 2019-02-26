@@ -28,7 +28,7 @@ import mui.icon.Icon;
 import mui.core.common.ShirtSize;
 import mui.core.Tooltip;
 import react.store.redux.action.CartAction;
-import mui.CagetteTheme;
+import react.mui.CagetteTheme;
 
 import Common;
 
@@ -59,7 +59,7 @@ private typedef TClasses = Classes<[
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class ProductModal extends ReactComponentOfProps<Props> {
-    public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+    public static function styles(theme:CagetteTheme):ClassesDef<TClasses> {
 		return {
 			modal : {
                 padding:"24px",
@@ -160,7 +160,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
 
                             <Typography component="p" dangerouslySetInnerHTML={{ __html: ${product.desc} }}></Typography>
 
-                            <div style=${{background:mui.CagetteTheme.CGColors.Bg2,padding:"12px"}}>
+                            <div style=${{background:CGColors.Bg2,padding:"12px"}}>
                                 <$ProductActions product=$product displayVAT={true}/>                            
                             </div>
                         </Grid>
@@ -177,7 +177,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                             <img className=${classes.cover} src=${vendor.logoImageUrl} />
                         </Grid>
 
-                        <Grid item xs={8} style={{color:mui.CagetteTheme.CGColors.Secondfont}}>                        
+                        <Grid item xs={8} style=${{color:CGColors.Secondfont}}>                        
                             <Typography component="p">
                                 <i className="icon icon-map-marker"/>&nbsp;
                                 ${vendor.city} (${vendor.zipCode})
@@ -192,7 +192,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                                 ${vendorAvatar(vendor)}
                             </Typography>
 
-                            <div dangerouslySetInnerHTML={{__html: ${vendor.desc}}}></div>
+                            <div dangerouslySetInnerHTML=${{__html: ${vendor.desc}}}></div>
                         </Grid>
                     </Grid>
                 </div>

@@ -3,7 +3,7 @@ package react.store;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.CagetteTheme.CGColors;
+import react.mui.CagetteTheme;
 import mui.Color;
 import mui.core.Grid;
 import mui.core.TextField;
@@ -55,7 +55,7 @@ private typedef HeaderWrapperPropsState = {
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class HeaderWrapper extends react.ReactComponentOf<HeaderWrapperProps, HeaderWrapperPropsState> {
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
             fab: {
                 position: Absolute,

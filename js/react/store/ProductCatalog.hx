@@ -42,7 +42,7 @@ private typedef TClasses = Classes<[categories,]>
 @:wrap(Styles.withStyles(styles))
 class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalogState> {
 
-	public static function styles(theme:mui.CagetteTheme):ClassesDef<TClasses> {
+	public static function styles(theme:react.mui.CagetteTheme):ClassesDef<TClasses> {
 		return {
 			categories : {
                 maxWidth: 1240,
