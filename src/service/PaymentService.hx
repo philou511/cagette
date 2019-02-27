@@ -114,7 +114,7 @@ class PaymentService
 			operation.pending = false;
 			operation.update();
 			
-			for ( payment in basket.getPayments()){
+			for ( payment in basket.getPaymentsOperations()){
 
 				if ( payment.pending){
 					payment.lock();
@@ -153,7 +153,7 @@ class PaymentService
 			operation.pending = true;
 			operation.update();
 			
-			for ( payment in basket.getPayments()){
+			for ( payment in basket.getPaymentsOperations()){
 
 				if (!payment.pending){
 					payment.lock();
