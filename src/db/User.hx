@@ -158,7 +158,7 @@ class User extends Object {
 		return false;			
 	}
 	
-	public function getRights():Rights{
+	public function getRights():Array<Right>{
 		var ua = getUserAmap(getAmap());
 		if (ua == null) return [];
 		return ua.rights;

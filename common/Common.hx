@@ -1,15 +1,18 @@
 /**
  * Common.hx : Shared entities between server and client
  */
-
-enum Right{
+//serialized in DB , so we cant move its place!!!
+/*enum Right{
 	GroupAdmin;					//can manage whole group
 	ContractAdmin(?cid:Int);	//can manage one or all contracts
 	Membership;					//can manage group members
 	Messages;					//can send messages
-}
+}*/
+#if sys
+typedef Right = db.UserAmap.Right;
+#end
 
-typedef Rights = Array<Right>;
+//typedef Rights = Array<Right>;
 
 
 @:keep

@@ -12,7 +12,7 @@ import mui.core.*;
 import Common;
 using Lambda;
 
-typedef PageHeaderProps = {userRights:Rights,groupName:String,userName:String,userId:Int};
+typedef PageHeaderProps = {/*userRights:Rights,*/groupName:String,userName:String,userId:Int};
 
 class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{anchorMenu:js.html.Element}> {
 	
@@ -24,10 +24,14 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
 
     override public function render(){
 
-        var members = hasRight(Right.Membership) ? jsx('<$Tab label="ADHÉRENTS" value="members"/>') : null;
+        /*var members = hasRight(Right.Membership) ? jsx('<$Tab label="ADHÉRENTS" value="members"/>') : null;
         var contracts = hasRight(Right.ContractAdmin()) ? jsx('<$Tab label="CONTRATS" value="contracts"/>') : null;
         var messages = hasRight(Right.Messages) ? jsx('<$Tab label="MESSAGERIE" value="messages"/>') : null;
-        var group = hasRight(Right.GroupAdmin) ? jsx('<$Tab label="GROUPE" value="group"/>') : null;
+        var group = hasRight(Right.GroupAdmin) ? jsx('<$Tab label="GROUPE" value="group"/>') : null;*/
+        var members = null;
+        var contracts = null;
+        var messages = null;
+        var group = null;
 
         var anchorEl = state.anchorMenu;
 
@@ -125,13 +129,14 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
         this.setState({ anchorMenu:cast event.currentTarget});
     }
 
-    public function hasRight(r:Common.Right):Bool {
+/*
+    public function hasRight(r:Right):Bool {
 		if (props.userRights == null) return false;
 		for ( right in props.userRights) {
 			if ( Type.enumEq(r,right) ) return true;
 		}
 		return false;
-	}
+	}*/
 
     function changeGroup(_){
         js.Browser.window.location.href = "/user/choose?show=1";

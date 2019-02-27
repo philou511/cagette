@@ -73,8 +73,15 @@ class Product extends ReactComponentOf<Props, ProductState> {
             area: {     
                 width: '100%',
             },
-            media: {       
-                height: 240,
+            media: {                
+                //XS breakpoint       
+                "@media (min-width:0px)" : {
+					height: 120,
+				},
+                //MD breakpoint
+                "@media (min-width:960px)" : {
+					height: 240,
+				},
                 padding: 1,
             },
             cardContent: {

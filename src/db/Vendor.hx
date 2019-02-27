@@ -77,6 +77,14 @@ class Vendor extends Object
 	public static function get(email:String,status:String){
 		return manager.select($email==email && $status==status,false);
 	}
+
+	public static function getForm(vendor:db.Vendor){
+		var t = sugoi.i18n.Locale.texts;
+		var form = sugoi.form.Form.fromSpod(vendor);
+		form.removeElementByName("country");
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		return form;
+	}
 	
 	
 	public static function getLabels(){

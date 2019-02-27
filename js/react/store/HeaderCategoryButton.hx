@@ -5,11 +5,8 @@ import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.mui.CagetteTheme;
-import mui.core.Grid;
-import mui.core.TextField;
-import mui.core.FormControl;
+import mui.core.*;
 import mui.core.form.FormControlVariant;
-import mui.core.input.InputType;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
 import Common;
@@ -39,7 +36,9 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
 				backgroundColor: CGColors.Bg3,
 			},
 			gridItem : {
-				height: '100%',
+				//"@media (min-width:800px)" : {
+					height: '100%',
+				//}
 			},
 			cagCategory: {
 				height: '100%',
@@ -50,6 +49,9 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
                 },
 				"& span" : {
 					display: "block",
+					/*"@media (max-width:800px)" : {
+						display:"none",
+					}*/
 				}
 			},
 			img: {
@@ -79,14 +81,16 @@ class HeaderCategoryButton extends react.ReactComponentOfProps<HeaderCategoryBut
 			'${classes.imgFit}': props.isSticky,
 		});
 		
-		if(props.active) trace("CategoryButton "+props.category.name+" active?"+props.active);
+		//if(props.active) trace("CategoryButton "+props.category.name+" active?"+props.active);
 
 		var name = (props.isSticky) ? null : jsx('${props.category.name}');
 		return jsx('
             <Grid item xs className=${classes.gridItem}>
                 <div className=${categoryClasses} onClick=${props.onClick}>
+					
 					<img src=${props.category.image} alt=${props.category.name} className=${imgClasses} />
-					<span>${name}</span>
+					
+					<Hidden xsDown><span>${name}</span></Hidden>
                 </div>
             </Grid>
         ');

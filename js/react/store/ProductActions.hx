@@ -166,7 +166,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
             <CardActions className=${classes.cagProductInfoWrap} >
                 <Grid container>
                     
-                    <Grid item xs={4} style=${{textAlign:css.TextAlign.Left}}>
+                    <Grid item md={4} xs={6} style=${{textAlign:css.TextAlign.Left}}>
                         <Typography component="div" className=${classes.cagProductInfo} >                                 
                             <span className="cagProductUnit">
                                 ${renderQtAndUnit(product)}
@@ -177,7 +177,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                         </Typography>
                     </Grid>
                     
-                    <Grid item xs={3} style=${{textAlign:css.TextAlign.Center}}>
+                    <Grid item md={3} xs={6} style=${{textAlign:css.TextAlign.Center}}>
                         <Typography component="div" className=${classes.cagProductInfo} >
                             <span className="cagProductPrice">
                                 ${Formatting.formatNum(product.price)}&nbsp;&euro;
@@ -188,7 +188,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
 
                     </Grid>
                     
-                    <Grid item xs={5} style=${{textAlign:css.TextAlign.Right}}>
+                    <Grid item md={5} xs={12} style=${{textAlign:css.TextAlign.Right}}>
                         ${renderQuantityAction()}
                     </Grid>
 

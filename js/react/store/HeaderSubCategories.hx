@@ -11,10 +11,11 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.types.*;
 import mui.icon.Icon;
+import mui.core.Hidden;
 import css.JustifyContent;
 import css.AlignContent;
 import css.Properties;
-import css.Overflow;
+//import css.Overflow;
 
 private typedef HeaderSubCategoriesProps = {
 	> PublicProps,
@@ -67,13 +68,13 @@ class HeaderSubCategories extends ReactComponentOfProps<HeaderSubCategoriesProps
             for( sub in cat.subcategories )
                 jsx('<HeaderSubCategoryButton key=${sub.id} label=${sub.name} onclick=${props.onClick.bind(sub)} active=${props.subcategory == sub}/>')
         ];
-        return jsx('
-            <div className=${subheaderClasses}>
-                <div className=${classes.cagWrap}>
-                    ${subCategs}
-                </div>
+        return jsx('<Hidden xsDown>
+        <div className=${subheaderClasses}>
+            <div className=${classes.cagWrap}>
+                ${subCategs}
             </div>
-        ');
+        </div>
+        </Hidden>');
     }
 }
 

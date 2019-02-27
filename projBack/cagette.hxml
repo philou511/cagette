@@ -15,12 +15,10 @@
 -lib tink_syntaxhub:0.3.6
 -lib tink_typecrawler:0.6.2
 
--lib smtpmailer
-
-
 -lib sugoi:git:https://github.com/bablukid/sugoi#master
 -lib record-macros:git:https://github.com/HaxeFoundation/record-macros#master
 -lib dbadmin:git:https://github.com/ncannasse/dbadmin#master
+-lib smtpmailer:git:https://github.com/benmerckx/smtpmailer.git#master
 
 -cp ../common
 -cp ../src

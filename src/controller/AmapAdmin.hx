@@ -105,7 +105,7 @@ class AmapAdmin extends Controller
 		for ( u in Lambda.array(users)) {
 			
 			//rights can be null (serialized null) and not null in DB
-			var rights : Null<Rights> = cast u.rights;
+			var rights : Null<Array<Right>> = cast u.rights;
 			if (rights == null || rights.length == 0) {
 				/*u.lock();
 				Reflect.setField(u, "rights", null);

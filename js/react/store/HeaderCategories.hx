@@ -8,9 +8,10 @@ import mui.core.Grid;
 import mui.core.TextField;
 import mui.core.FormControl;
 import mui.core.form.FormControlVariant;
-import mui.core.input.InputType;
+// import mui.core.input.InputType;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
+import mui.core.Hidden;
 
 import Common;
 
@@ -115,23 +116,25 @@ class HeaderCategories extends react.ReactComponentOfProps<HeaderCategoriesProps
         var categories = [
             for(category in props.categories)
                 jsx('<HeaderCategoryButton
-                                key=${category.id} 
-                                isSticky=${props.isSticky}
-                                active=${category == props.nav.category}
-                                category=${category} 
-                                onClick=${onCategoryClicked.bind(category)}
+                        key=${category.id} 
+                        isSticky=${props.isSticky}
+                        active=${category == props.nav.category}
+                        category=${category} 
+                        onClick=${onCategoryClicked.bind(category)}
                 />')
         ];
         
         return jsx('
+        <Hidden xsDown>
             <div className=${headerClasses}>
                 <div className=${classes.cagWrap}>
                     <Grid container spacing={0} className=${categoryGridClasses}>
                         ${categories}
                     </Grid>
-                    <HeaderSubCategories category=${props.nav.category} subcategory=${props.nav.subcategory} onClick=${onSubCategoryClicked} />
+                    <HeaderSubCategories category=${props.nav.category} subcategory=${props.nav.subcategory} onClick=${onSubCategoryClicked} />                    
                 </div>
             </div>
+        </Hidden>
         ');
     }
 }

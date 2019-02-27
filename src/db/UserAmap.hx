@@ -19,7 +19,7 @@ class UserAmap extends Object
 {
 	@:relation(amapId) public var amap : db.Amap;
 	@:relation(userId) public var user : db.User;
-	public var rights : SNull<SData<Array<Common.Right>>>;		// rights in this group
+	public var rights : SNull<SData<Array<Right>>>;		// rights in this group
 	public var balance : SFloat; 						//account balance in group currency
 	static var CACHE = new Map<String,db.UserAmap>();
 	
@@ -54,7 +54,7 @@ class UserAmap extends Object
 	/**
 	 * give right and update DB
 	 */
-	public function giveRight(r:Common.Right) {
+	public function giveRight(r:Right) {
 	
 		if (hasRight(r)) return;
 		if (rights == null) rights = [];
@@ -66,7 +66,7 @@ class UserAmap extends Object
 	/**
 	 * remove right and update DB
 	 */
-	public function removeRight(r:Common.Right) {	
+	public function removeRight(r:Right) {	
 		if (rights == null) return;
 		var newrights = [];
 		for (right in rights.copy()) {
@@ -78,7 +78,7 @@ class UserAmap extends Object
 		update();
 	}
 	
-	public function hasRight(r:Common.Right):Bool {
+	public function hasRight(r:Right):Bool {
 		if (this.user.isAdmin()) return true;
 		if (rights == null) return false;
 		for ( right in rights) {
@@ -87,11 +87,11 @@ class UserAmap extends Object
 		return false;
 	}
 	
-	public function getRightName(r:Common.Right):String {
+	public function getRightName(r:Right):String {
 		var t = sugoi.i18n.Locale.texts;
 		return switch(r) {
 		case GroupAdmin 	: t._("Administrator");
-		case Messages 	: t._("Messaging");
+		case Messages 		: t._("Messaging");
 		case Membership 	: t._("Members management");
 		case ContractAdmin(cid) : 
 			if (cid == null) {

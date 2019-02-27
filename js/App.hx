@@ -256,9 +256,10 @@ class App {
 	**/
 	public function pageHeader(groupName:String,_rights:String,userName:String,userId:Int)
 	{
-		var rights : Rights = null;
-		if(_rights!=null) rights = haxe.Unserializer.run(_rights);
-		ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
+		/*var rights : Rights = null;
+		if(_rights!=null) rights = haxe.Unserializer.run(_rights);*/
+		//ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
+		ReactDOM.render(jsx('<$PageHeader groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
 	}
 
 	
