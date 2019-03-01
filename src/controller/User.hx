@@ -26,6 +26,8 @@ class User extends Controller
 		if (App.current.user != null) {
 			throw Redirect('/');
 		}
+
+		service.UserService.prepareLoginBoxOptions(view);
 		
 		//if its needed to redirect after login
 		if (app.params.exists("redirect")){
@@ -34,8 +36,7 @@ class User extends Controller
 			view.redirect = "/";
 		}
 	}
-	
-	
+
 	/**
 	 * Choose which group to connect to.
 	 */
@@ -45,11 +46,16 @@ class User extends Controller
 		
 		if (app.user == null) throw t._("You are not connected");
 		
-		var amaps = db.UserAmap.manager.search($user == app.user, false);
+		var groups = app.user.getGroups();
+		var groupsNum = groups.length;
+
+		#if plugins
+		groupsNum+= pro.db.PUserCompany.getCompanies(app.user).length;
+		#end
 		
-		if (amaps.length == 1 && !app.params.exists("show")) {
-			//qu'une amap
-			app.session.data.amapId = amaps.first().amap.id;
+		if (groupsNum == 1 && groups.length==1 && !app.params.exists("show")) {
+			//Belong to only 1 group
+			app.session.data.amapId = groups[0].id;
 			throw Redirect('/');
 		}else{
 			view.noGroup = true; //force template to not display current group
@@ -65,12 +71,13 @@ class User extends Controller
 			throw Redirect('/');
 		}
 		
-		view.amaps = amaps;
+		view.amaps = groups;
 		view.wl = db.WaitingList.manager.search($user == app.user, false);
 
 		
 		#if plugins
-		view.pros = pro.db.PUserCompany.getCompanies(app.user);
+		//vendor accounts
+		view.vendors = service.VendorService.getVendorsFromUser(app.user);
 		#end
 	}
 	
@@ -117,7 +124,10 @@ class User extends Controller
 			
 			var email :String = askmailform.getValueOf("email");
 			var user = db.User.manager.select(email == $email, false);
+			//could be user 2
+			if(user==null) user = db.User.manager.select(email == $email2, false);
 			
+			//user not found
 			if (user == null) throw Error(url, t._("This E-mail is not linked to a known account"));
 			
 			//create token
@@ -126,8 +136,8 @@ class User extends Controller
 			
 			var m = new sugoi.mail.Mail();
 			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
-			m.setRecipient(user.email, user.name);					
-			m.setSubject( App.config.NAME+ t._(": password change"));
+			m.setRecipient(email, user.name);					
+			m.setSubject( "["+App.config.NAME+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
@@ -146,14 +156,30 @@ class User extends Controller
 		if (chpassform.isValid()) {
 			//change pass
 			step = 4;
-			
-			
+						
 			if ( chpassform.getValueOf("pass1") == chpassform.getValueOf("pass2")) {
 				
 				var uid = Std.parseInt( chpassform.getValueOf("uid") );
 				var user = db.User.manager.get(uid, true);
-				user.setPass(chpassform.getValueOf("pass1"));
+				var pass = chpassform.getValueOf("pass1");
+				user.setPass(pass);
 				user.update();
+
+				var m = new sugoi.mail.Mail();
+				m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
+				m.setRecipient(user.email, user.name);					
+				if(user.email2!=null) m.setRecipient(user.email2, user.name);					
+				m.setSubject( "["+App.config.NAME+"] : "+t._("New password confirmed"));
+				var emails = [user.email];
+				if(user.email2!=null) emails.push(user.email2);
+				var params = {
+					user:user,
+					emails:emails.join(", "),
+					password:pass,
+					NAME:App.config.NAME
+				}
+				m.setHtmlBody( app.processTemplate('mail/newPasswordConfirmed.mtt', params) );
+				App.sendMail(m);	
 				
 			}else {
 				error = t._("You must key-in two times the same password");
@@ -214,23 +240,48 @@ class User extends Controller
 	 */
 	public function doValidate(k:String ) {
 		
-		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));		
+		var uid = Std.parseInt(sugoi.db.Cache.get("validation" + k));
 		if (uid == null || uid==0) throw Error('/user/login', t._("Your invitation is invalid or expired ($k)"));
 		var user = db.User.manager.get(uid, true);
 		
 		db.User.login(user, user.email);
 		
-		var groups = user.getAmaps();
-		if(groups.length>0)	app.session.data.amapId = groups.first().id;
+		var groups = user.getGroups();
+		if(groups.length>0)	app.session.data.amapId = groups[0].id;
 		
 		sugoi.db.Cache.destroy("validation" + k);
 	
 		throw Ok("/user/definePassword", t._("Congratulations ::userName::, your account is validated!", {userName:user.getName()}));
-		
-		
-		
 	}
-	
-	
+
+	/**
+		The user just registred or logged in, and want to be a member of this group
+	**/
+	function doJoingroup(){
+
+		if(app.user==null) throw "no user";
+
+		var group = App.current.getCurrentGroup();
+		if(group==null) throw "no group selected";
+		if(group.regOption!=db.Amap.RegOption.Open) throw "this group is not open";
+
+		var user = app.user;
+		user.lock();
+		user.flags.set(HasEmailNotif24h);
+		user.flags.set(HasEmailNotifOuverture);
+		user.update();
+		db.UserAmap.getOrCreate(user,group);
+
+		//warn manager by mail
+		var url = "http://" + App.config.HOST + "/member/view/" + user.id;
+		var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
+		App.quickMail(
+			group.contact.email,
+			group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
+			app.processTemplate("mail/message.mtt", { text:text } ) 
+		);
+
+		throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
+	}
 	
 }

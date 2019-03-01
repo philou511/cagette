@@ -4,7 +4,7 @@ package payment;
  * ...
  * @author fbarbut
  */
-class Check extends payment.Payment
+class Check extends payment.PaymentType
 {
 	public static var TYPE = "check";
 
@@ -12,7 +12,7 @@ class Check extends payment.Payment
 	{
 		var t = sugoi.i18n.Locale.texts;
 		this.type = TYPE;
-		this.icon = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
+		this.icon = '<i class="icon icon-cheque"></i>';
 		this.name = t._("Check");
 		this.link = "/transaction/check";
 	}

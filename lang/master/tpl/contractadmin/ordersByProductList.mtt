@@ -73,8 +73,8 @@
 				::formatNum(m.priceTTC)::&nbsp;::currency()::
 			</td>
 			<td>
-				::formatNum(m.total)::&nbsp;::currency()::
-				::set total = total + m.total::
+				::formatNum(m.totalTTC)::&nbsp;::currency()::
+				::set total = total + m.totalTTC::
 			</td>
 		</tr>
 		::end::

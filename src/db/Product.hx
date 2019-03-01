@@ -66,9 +66,9 @@ class Product extends Object
 	public function getImage() {
 		if (image == null) {
 			if (txpProduct != null){				
-				return "/img/taxo/cat" + txpProduct.category.id + ".png";
+				return "/img/taxo/grey/" + txpProduct.category.image + ".png";
 			}else{
-				return "/img/unknown.png";
+				return "/img/taxo/grey/fruits-legumes.png";
 			}			
 		}else {
 			return App.current.view.file(image);
@@ -107,7 +107,6 @@ class Product extends Object
 			ref : ref,
 			name : name,
 			image : getImage(),
-			contractId : contract.id,
 			price : getPrice(),
 			vat : vat,
 			vatValue: (vat != 0 && vat != null) ? (  this.price - (this.price / (vat/100+1))  )  : null,
@@ -124,14 +123,27 @@ class Product extends Object
 			organic:organic,
 			variablePrice:variablePrice,
 			wholesale:wholesale,
+			bulk:bulk,
 			active: active,
 			distributionId : distribution==null ? null : distribution.id,
+			contractId : contract.id,
+			vendorId : contract.vendor.id,
 		}
 		
 		if(populateCategories){
 			if (CategFromTaxo){
-				o.categories = [txpProduct == null?null:txpProduct.category.id];
-				o.subcategories = [txpProduct == null?null:txpProduct.subCategory.id];
+				if(txpProduct!=null){
+					o.categories = [txpProduct.category.id];
+					o.subcategories = [txpProduct.subCategory.id];
+				}else{
+					//get the "others" catgory
+					var txpOther = db.TxpProduct.manager.get(679,false);
+					if(txpOther!=null){
+						o.categories = [txpOther.category.id];
+						o.subcategories = [txpOther.subCategory.id];
+					}
+				}
+				
 			}else{
 				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
 				o.subcategories = o.categories;

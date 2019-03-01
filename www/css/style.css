@@ -88,13 +88,27 @@
   .group-map .popup {
     cursor: pointer; }
 
-/*body{
-  background-color:#F8F4E5 !important;    
-}*/
+i.icon {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle; }
+
+body {
+  font-family: Cabin, Arial, Helvetica, sans-serif;
+  color: #333; }
+
 h1, h2, h3, h4 {
   margin-top: 4px !important;
   margin-bottom: 8px !important;
   font-style: italic; }
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 99; }
 
 /* buttons */
 /*.btn {
@@ -124,10 +138,47 @@ h1, h2, h3, h4 {
 a {
   cursor: pointer; }
 
+/* bounce effect */
+.bouncable {
+  animation-duration: 500ms;
+  animation-fill-mode: both; }
+
+/*@-webkit-keyframes bounce { 
+	0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
+	40% {-webkit-transform: translateY(-30px);} 
+	60% {-webkit-transform: translateY(-15px);} 
+ } */
+@keyframes bounce {
+  0%, 50%, 90%, 100% {
+    transform: translateY(0); }
+  25% {
+    transform: translateY(-30px); }
+  70% {
+    transform: translateY(-15px); }
+  95% {
+    transform: translateY(-5px); } }
+
+.bounce {
+  animation-name: bounce; }
+
 /* navigation */
 ul.nav li {
   text-transform: uppercase;
   font-size: 14px; }
+
+.noSelect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome and Opera */ }
 
 /* subnav in contractadmin*/
 .nav-pills > li.active > a {
@@ -151,7 +202,7 @@ ul.nav li {
     color: #fff;
     font-size: 20px;
     min-width: 32px;
-    /*height: 32px;*/
+    height: 32px;
     padding: 2px 0 0;
     display: inline-block; }
   #footer .cagsocialmedia {
@@ -735,6 +786,35 @@ tr.success td div.basketNumber {
 tr.danger td div.basketNumber {
   background-color: #d9534f;
   color: white; }
+
+/* fixed bar on bottom for buttons */
+.fixedBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: white;
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+  border-top: 3px solid #CCC;
+  z-index: 99; }
+
+/* payment type */
+.payment .icon {
+  font-size: 200%; }
+
+/* big colored circle with white icon inside */
+.iconBadge {
+  background-color: #666;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  line-height: 40px;
+  text-align: center;
+  display: inline-block; }
+  .iconBadge i.icon {
+    color: white;
+    font-size: 1.5em; }
 
 /*!
  * https://github.com/YouCanBookMe/react-datetime

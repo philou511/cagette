@@ -1,6 +1,6 @@
 package service;
 import tink.core.Error;
-import db.UserAmap.Right;
+import Common;
 
 class WaitingListService{
 

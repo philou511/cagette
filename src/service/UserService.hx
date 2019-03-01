@@ -35,7 +35,7 @@ class UserService
 		
 		//new account
 		if (!user.isFullyRegistred()) {
-			var group = user.getAmaps().first();
+			var group = user.getGroups()[0];
 			user.sendInvitation(group);
 			var text = t._("Your account have not been validated yet. We sent an e-mail to ::email:: to finalize your subscription!",{email:user.email});
 			throw new Error(403,text);			
@@ -61,7 +61,7 @@ class UserService
 	/**
 		Full registration by a user himself
 	**/
-	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String){
+	public static function register(firstName:String, lastName:String, email:String, phone:String, pass:String,?address:String,?zipCode:String,?city:String){
 		
 		var t  = sugoi.i18n.Locale.texts;
 		
@@ -78,12 +78,26 @@ class UserService
 		user.firstName = firstName;
 		user.lastName = lastName;
 		user.phone = phone;
+		user.address1 = address;
+		user.zipCode = zipCode;
+		user.city = city;
 		user.setPass(pass);
 		user.insert();				
 				
 		var group = App.current.getCurrentGroup();	
 		if (group != null && group.regOption == db.Amap.RegOption.Open){
 			user.makeMemberOf(group);	
+		}
+		if(group!=null){
+
+			if(group.flags.has(PhoneRequired) && (phone==null || phone=="") ){
+				throw new tink.core.Error(t._("Members of this group should provide a phone number"));
+			}
+
+			if(group.flags.has(AddressRequired) && (address==null || address=="" || zipCode==null || zipCode=="" || city==null || city=="") ){
+				throw new tink.core.Error(t._("Members of this group should provide an address"));
+			}
+
 		}
 		
 		db.User.login(user, email);		
@@ -99,7 +113,7 @@ class UserService
 		var t  = sugoi.i18n.Locale.texts;
 		
 		if (!sugoi.form.validators.EmailValidator.check(email)){
-			throw new Error(500,t._("Invalid email address"));
+			throw new Error(500,t._("Invalid email address")+" : "+email);
 		}
 		
 		if ( db.User.getSameEmail(email).length > 0 ) {
@@ -113,6 +127,25 @@ class UserService
 		user.insert();				
 
 		return user;
+	}
+
+	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
+
+		var t  = sugoi.i18n.Locale.texts;
+		
+		if (!sugoi.form.validators.EmailValidator.check(email)){
+			throw new Error(500,t._("Invalid email address")+" : "+email);
+		}
+
+		var u = db.User.manager.select($email == email || $email2 == email, true);
+		if (u == null){
+			u = new db.User();
+			u.firstName = firstName;
+			u.lastName = lastName;
+			u.email = email;			
+			u.insert();
+		}
+		return u;
 	}
 
 	/**
@@ -148,4 +181,16 @@ class UserService
 		return birthday.getTime() < DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()	? true : false;	
 	}
 
+
+	public static function prepareLoginBoxOptions(view:View,?group:db.Amap){
+		if(group==null) group = App.current.getCurrentGroup();
+		var loginBoxOptions : Dynamic = {};
+		if(group==null || group.flags==null){
+			view.loginBoxOptions = {};
+			return;
+		} 
+		if(group.flags.has(PhoneRequired)) loginBoxOptions.phoneRequired = true;
+		if(group.flags.has(AddressRequired)) loginBoxOptions.addressRequired = true;
+		view.loginBoxOptions = loginBoxOptions;
+	}
 }

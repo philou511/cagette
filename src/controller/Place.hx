@@ -32,6 +32,7 @@ class Place extends Controller
 		var currentAddress = p.getAddress();
 
 		var f = sugoi.form.Form.fromSpod(p);
+		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),p.country,true));
 			
 		if (f.isValid()) {
 		
@@ -45,7 +46,6 @@ class Place extends Controller
 				}
 			}
 
-			p.amap = app.user.amap;
 			p.update();
 			throw Ok('/contractAdmin',t._("this place has been updated"));
 		}
@@ -59,6 +59,7 @@ class Place extends Controller
 		
 		var d = new db.Place();
 		var f = sugoi.form.Form.fromSpod(d);
+		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),"FR",true));
 		
 		if (f.isValid()) {
 			f.toSpod(d); 

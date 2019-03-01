@@ -386,7 +386,7 @@ class OrderService
 		m.addRecipient(d.contract.contact.email , d.contract.contact.getName());
 		m.setSender(App.config.get("default_email"),"Cagette.net");
 		m.setSubject('[${d.contract.amap.name}] Distribution du ${App.current.view.dDate(d.date)} (${d.contract.name})');
-		var orders = getOrdersByProduct({distribution:d});
+		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
 			contract:d.contract,
@@ -439,55 +439,12 @@ class OrderService
 		
 	}
 
-	/**
-	 * Returns a map of vendorId and an object made of contract, distrib, productOrders
-	 * @param date 
-	 * @param place 
-	 */
-	public static function getMultiDistribVendorOrdersByProduct(date:Date, place:db.Place) {
-
-		var t = sugoi.i18n.Locale.texts;
-		
-		var multiDistrib = MultiDistrib.get(date, place);
-		if ( multiDistrib.distributions.length == 0 ) throw new tink.core.Error(t._("There is no delivery at this date"));
-		
-		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
-		
-		for (d in multiDistrib.distributions) {
-
-			var vendorId = d.contract.vendor.id;
-			var vendorData = vendorDataByVendorId.get(vendorId);
-			
-			if (vendorData == null) {
-				vendorDataByVendorId.set( vendorId, {contract:d.contract, distrib:d, orders:getOrdersByProduct( {distribution:d} )});	
-			}
-			else {
-				
-				//add orders with existing ones
-				for ( productOrder in getOrdersByProduct( {distribution:d} )){
-					
-					//find record in existing orders
-					var vendorProductOrders  : Dynamic = Lambda.find(vendorData.orders, function(a) return a.pid == productOrder.pid);
-					if (vendorProductOrders == null){
-						//new product order
-						vendorData.orders.push(productOrder);						
-					}else{
-						//increment existing
-						vendorProductOrders.quantity += untyped productOrder.quantity;
-						vendorProductOrders.total += untyped productOrder.total;
-					}
-				}
-				vendorDataByVendorId.set(vendorId, vendorData);
-			}
-		}
-
-		return vendorDataByVendorId;
-	}
+	
 
 	/*
 	 * Get orders grouped by products. 
 	 */
-	public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
+	/*public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
 		var view = App.current.view;
 		var t = sugoi.i18n.Locale.texts;
 		var where = "";
@@ -510,90 +467,8 @@ class OrderService
 			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
 			
 		}
+	}*/
 	
-		var sql = '
-			select 
-			SUM(quantity) as quantity,
-			p.id as pid,
-			p.name as pname,
-			p.price as price,
-			p.vat as vat,
-			p.ref as ref,
-			SUM(quantity*up.productPrice) as total
-			from UserContract up, Product p 
-			where up.productId = p.id 
-			$where
-			group by p.id
-			order by pname asc; ';
-			
-		var res = sys.db.Manager.cnx.request(sql).results();	
-		var orders = [];
-
-		//populate with full product names
-		for ( r in res){
-			var p = db.Product.manager.get(r.pid, false);
-			var o : OrderByProduct = {
-				quantity:1.0 * r.quantity,
-				smartQt:"",
-				pid:p.id,
-				pname:p.name,
-				ref:r.ref,
-				priceHT:null,
-				priceTTC:r.price,
-				vat:p.vat,
-				total:1.0 * r.quantity * r.price,
-				weightOrVolume:"",
-			};
-
-			//smartQt
-			if( p.hasFloatQt || p.variablePrice ){
-				o.smartQt = view.smartQt(o.quantity, p.qt, p.unitType);
-			}else{
-				o.smartQt = Std.string(o.quantity);
-			}
-			o.weightOrVolume = view.smartQt(o.quantity, p.qt, p.unitType);
-			
-			if ( /*p.hasFloatQt || p.variablePrice ||*/ p.qt==null || p.unitType==null){
-				o.pname = p.name;	
-			}else{
-				o.pname = p.name + " " + view.formatNum(p.qt) +" " + view.unit(p.unitType, o.quantity > 1);					
-			}
-
-			//special case : if product is multiweight, we should count the records number ( and not SUM quantities )
-			if (p.multiWeight){
-				sql = 'select 
-				COUNT(up.id) as quantity 
-				from UserContract up, Product p 
-				where up.productId = p.id and up.quantity > 0 and p.id=${p.id}
-				$where';
-				var count = sys.db.Manager.cnx.request(sql).getIntResult(0);					
-				o.smartQt = ""+count;
-			}			
-			
-			orders.push(o);
-			
-		}
-		
-		
-		if (csv) {
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push({
-					"quantity":view.formatNum(o.quantity),
-					"pname":o.pname,
-					"ref":o.ref,
-					"priceTTC":view.formatNum(o.priceTTC),
-					"total":view.formatNum(o.total)					
-				});				
-			}
-
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "priceTTC", "total"],"Export-"+exportName+"-par produits");
-			return null;
-		}else{
-			return orders;		
-		}
-	}
 
 	public static function sort(orders:Array<UserOrder>){
 		

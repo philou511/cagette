@@ -6,6 +6,7 @@ import sugoi.form.Form;
 import Common;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
+import sugoi.form.elements.FloatInput;
 
 
 class AmapAdmin extends Controller
@@ -103,11 +104,12 @@ class AmapAdmin extends Controller
 		//cleaning 
 		for ( u in Lambda.array(users)) {
 			
-			//rights peut etre null (null seralisé) et pas null en DB
-			if (u.rights == null || u.rights.length == 0) {
-				u.lock();
+			//rights can be null (serialized null) and not null in DB
+			var rights : Null<Array<Right>> = cast u.rights;
+			if (rights == null || rights.length == 0) {
+				/*u.lock();
 				Reflect.setField(u, "rights", null);
-				u.update();
+				u.update();*/
 				users.remove(u);
 				continue;
 			}
@@ -142,7 +144,7 @@ class AmapAdmin extends Controller
 		}
 		
 		var data = [];
-		//for (r in db.UserAmap.Right.getConstructors()) {
+		//for (r in Right.getConstructors()) {
 			//if (r == "ContractAdmin") continue; //managed later
 			//data.push({label:r,value:r});
 		//}
@@ -208,7 +210,7 @@ class AmapAdmin extends Controller
 					}
 					
 				}else {
-					ua.rights.push( db.UserAmap.Right.createByName(r) );	
+					ua.rights.push( Right.createByName(r) );	
 				}
 			}
 			
@@ -216,7 +218,7 @@ class AmapAdmin extends Controller
 			if (ua.user.id == app.user.id && wasManager ) {
 				var isManager = false;
 				for ( r in ua.rights) {
-					if (r.equals(db.UserAmap.Right.GroupAdmin)) {
+					if (r.equals(Right.GroupAdmin)) {
 						isManager = true; 
 						break;
 					}
@@ -261,28 +263,26 @@ class AmapAdmin extends Controller
 		}
 		
 		var i = 1;
+		//create field with a value
 		for (k in a.vatRates.keys()) {
-			f.addElement(new StringInput(i+"-k", t._("Name ")+i, k));
-			f.addElement(new StringInput(i + "-v", t._("Rate ")+i, Std.string(a.vatRates.get(k)) ));
-			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
+			f.addElement(new StringInput(i+"-k", t._("Name") +" "+ i, k));
+			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, a.vatRates.get(k) ));
 			i++;
 		}
-		var j = i;
 		
+		//...fill in to get 4 fields
 		for (x in 0...5 - i) {
-			f.addElement(new StringInput(i+"-k", t._("Name ")+i, ""));
-			f.addElement(new StringInput(i + "-v", t._("Rate ")+i, ""));
-			//f.addElement(new sugoi.form.elements.Html("<hr/>"));
+			f.addElement(new StringInput(i+"-k", t._("Name") +" "+ i, null));
+			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, null));
 			i++;
 		}
 		
 		if (f.isValid()) {
 			var d = f.getData();
 			var vats = new Map<String,Float>();
-			var filter = new sugoi.form.filters.FloatFilter();
 			for (i in 1...5) {
 				if (d.get(i + "-k") == null) continue;
-				vats.set(d.get(i + "-k"), filter.filter( d.get(i + "-v")) );
+				vats.set(d.get(i + "-k"), d.get(i + "-v") );
 			}
 			a.lock();
 			a.vatRates = vats;
@@ -331,7 +331,7 @@ class AmapAdmin extends Controller
 	function doPayments(){
 		
 		var f = new sugoi.form.Form("paymentTypes");
-		var types = service.PaymentService.getAllPaymentTypes();
+		var types = service.PaymentService.getPaymentTypes(PCGroupAdmin);
 		var formdata = [for (t in types){label:t.name, value:t.type}];		
 		var selected = app.user.amap.allowedPaymentsType;
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes", t._("Authorized payment types"),formdata, selected) );

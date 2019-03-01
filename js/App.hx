@@ -1,14 +1,35 @@
+import Common;
+
 //React lib
 import react.ReactMacro.jsx;
 import react.ReactDOM;
 import react.*;
 import react.router.*;
+
+//mui
+import react.mui.CagetteTheme;
+
+//redux
+import redux.Redux;
+import redux.Store;
+import redux.StoreBuilder.*;
+import redux.thunk.Thunk;
+import redux.thunk.ThunkMiddleware;
+import redux.react.Provider as ReduxProvider;
+
 //custom components
 import react.order.*;
 import react.product.*;
-import react.store.*;
+import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
+
+//TODO
+import react.store.Cart;
+
+import mui.core.CssBaseline;
+import mui.core.styles.MuiThemeProvider;
+
 
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
@@ -78,7 +99,7 @@ class App {
 		
 		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
 		
-		ReactDOM.render(jsx('<$VATBox ttc="$ttcprice" currency="$currency" vatRates="$rates" vat="$vat" formName="$formName"/>'),  input.parentElement);
+		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
 		
 		//remove(input);
 		
@@ -97,7 +118,7 @@ class App {
 	 * @param	txpProductId
 	 * @param	formName
 	 */
-	public function getProductInput(divId:String, productName:String, txpProductId:String, formName:String ){
+	public function getProductInput(divId:String, productName:String, txpProductId:Null<Int>, formName:String ){
 
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -105,9 +126,9 @@ class App {
 			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
 			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
 
-			if (txpProductId == null) txpProductId = "";
+			//if (txpProductId == null) txpProductId = null;
 
-			ReactDOM.render(jsx('<$ProductInput productName="$productName" txpProductId="$txpProductId" formName="$formName"/>'),  js.Browser.document.getElementById(divId));
+			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});
 	}
 
@@ -121,8 +142,8 @@ class App {
 		var onValidate = function() js.Browser.location.href = callbackUrl;
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-		ReactDOM.render(jsx('<$OrderBox userId="$userId" distributionId="$distributionId" 
-			contractId="$contractId" contractType="$contractType" date="$date" place="$place" userName="$userName" 
+		ReactDOM.render(jsx('<$OrderBox userId=${userId} distributionId=${distributionId} 
+			contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
 			onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
 
 	}
@@ -147,22 +168,15 @@ class App {
 	 * @param	title
 	 */
 	public function overlay(url:String,?title,?large=true) {
-
-		if (title != null) title = StringTools.urlDecode(title);
-
+		if(title != null) title = StringTools.urlDecode(title);
 		var r = new haxe.Http(url);
 		r.onData = function(data) {
-
 			//setup body and title
 			var m = App.j("#myModal");
 			m.find(".modal-body").html(data);
 			if (title != null) m.find(".modal-title").html(title);
-
 			if (!large) m.find(".modal-dialog").removeClass("modal-lg");
-
-
 			untyped App.j('#myModal').modal(); //bootstrap 3 modal window
-
 		}
 		r.request();
 	}
@@ -170,33 +184,87 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false) {
+	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(
+			jsx('<$LoginBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
+			js.Browser.document.querySelector('#myModal .modal-body')
+		);
 		return false;
 	}
 
 	/**
 	 *  Displays a sign up box
 	 */
-	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false) {
+	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
 		var m = App.j("#myModal");
 		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
-		ReactDOM.render(jsx('<$RegisterBox redirectUrl="$redirectUrl" message=$message phoneRequired="$phoneRequired"/>'),  js.Browser.document.querySelector('#myModal .modal-body'));
+		ReactDOM.render(
+			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
+			js.Browser.document.querySelector('#myModal .modal-body')
+		);
 		return false;
 	}
 
-	public function shop(place:Int, date:String) {
-		ReactDOM.render(jsx('<$Store date=$date place=$place/>'),  js.Browser.document.querySelector('#shop'));
+	private function createReactStore() {
+		// Store creation
+		var rootReducer = Redux.combineReducers({
+			cart: mapReducer(react.store.redux.action.CartAction, new react.store.redux.state.CartState.CartRdcr()),
+		});
+		// create middleware normally, excepted you must use
+		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
+		var middleWare = Redux.applyMiddleware(mapMiddleware(Thunk, new ThunkMiddleware()));
+		return createStore(rootReducer, null, middleWare);
 	}
+
+	public function browser(){
+		return bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
+	}
+
+	/**
+		instanciates mui shop
+	**/
+	public function shop(place:Int, date:String) {
+
+
+		var elements = js.Browser.window.document.querySelectorAll('.sticky');
+		sticky.Stickyfill.add(elements);
+
+		// Will be merged with default values from mui
+		
+
+		var store = createReactStore();
+		ReactDOM.render(jsx('
+			<ReduxProvider store=${store}>
+				<MuiThemeProvider theme=${CagetteTheme.get()}>
+					<>
+						<CssBaseline />
+						<CagetteStore date=$date place=$place />
+					</>
+				</MuiThemeProvider>
+			</ReduxProvider>
+		'), js.Browser.document.querySelector('#shop'));
+	}
+
+	/**
+		init react page header
+	**/
+	public function pageHeader(groupName:String,_rights:String,userName:String,userId:Int)
+	{
+		/*var rights : Rights = null;
+		if(_rights!=null) rights = haxe.Unserializer.run(_rights);*/
+		//ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
+		ReactDOM.render(jsx('<$PageHeader groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));
+	}
+
 	
-	public function groupMap(lat:String,lng:String,address:String) {
-		ReactDOM.render(jsx('<$GroupMapRoot lat="$lat" lng="$lng" address="$address"/>'),  js.Browser.document.querySelector('#map'));
+	public function groupMap(lat:Float,lng:Float,address:String) {
+		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
 	}
 
 	/**

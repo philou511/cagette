@@ -101,7 +101,8 @@
 					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
 					<th>::_("Sub-total")::</th>
 					<th>::_("Fees")::</th>
-					<th>::_("Total")::</th>				
+					<th>::_("Total")::</th>
+					<th>::_("Paid")::</th>			
 				</tr>
 				::set total = 0::
 				::foreach o d.orders::
@@ -121,13 +122,19 @@
 						<td>
 							::formatNum(o.subTotal)::&nbsp;::currency()::
 						</td>
-						<td>
-							
+						<td>							
 							$$nullSafe(::formatNum(o.fees)::)
 						</td>
 						<td>
 							::formatNum(o.total)::&nbsp;::currency()::
 							::set total = total + o.total::
+						</td>
+						<td>
+							::if o.paid==true::
+							<span style="color:#00AA00;">::_("Paid")::</span>
+							::else::
+							<span style="color:#DD0000;">::_("Unpaid")::</span>
+							::end::
 						</td>
 					
 					</tr>
@@ -160,7 +167,7 @@
 		
 		<div class="pull-right">
 			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::_("Do you really want to quit this group ? You won't be a member anymore: you won't receive any new message and won't be able to see your previous orders in this group.")::)>
-				<span class="glyphicon glyphicon-remove"></span>
+				<i class="icon icon-delete"></i>
 				::_("Leave this group")::
 			</a>
 		</div>
@@ -205,12 +212,12 @@
 					<td>  
 						::if t.completion==null::
 							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
-								<span class="glyphicon glyphicon-play"></span> ::_("Start")::
+								<i class="icon icon-chevron-right"></i> ::_("Start")::
 							</a>
 						::else::
 							
 							<a href="/contract/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
-								<span class="glyphicon glyphicon-remove"></span> ::_("Stop")::
+								<i class="icon icon-delete"></i> ::_("Stop")::
 							</a>								
 						::end::
 					</td>

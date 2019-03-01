@@ -1,8 +1,5 @@
 package controller;
-import db.UserContract;
-import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
-import neko.Web;
 import sugoi.tools.Utils;
 
 
@@ -17,7 +14,7 @@ class Vendor extends Controller
 		
 	}
 	
-	@logged
+	/*@logged
 	@tpl('vendor/default.mtt')
 	function doDefault() {
 		var browse:Int->Int->List<Dynamic>;
@@ -30,23 +27,33 @@ class Vendor extends Controller
 		var count = db.Vendor.manager.count($amap==app.user.amap);
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.vendors = rb;
-	}
+	}*/
 	
 	
-	@tpl("vendor/view.mtt")
+	/*@tpl("vendor/view.mtt")
 	function doView(vendor:db.Vendor) {
 		view.vendor = vendor;
-	}
+	}*/
 	
 	@tpl('form.mtt')
 	function doEdit(vendor:db.Vendor) {
 		
+		/*if(vendor.getGroups().length>1){
+			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+		} */
+
+		if(vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
+
+		#if plugins
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		#end
+
 		var form = sugoi.form.Form.fromSpod(vendor);
-		form.removeElement( form.getElement("amapId") );
+		form.removeElementByName("country");
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
 		
 		if (form.isValid()) {
-			form.toSpod(vendor); //update model
-			vendor.amap = app.user.amap;
+			form.toSpod(vendor);
 			vendor.update();
 			throw Ok('/contractAdmin', t._("This supplier has been updated"));
 		}
@@ -54,44 +61,21 @@ class Vendor extends Controller
 		view.form = form;
 	}
 	
-	@tpl("form.mtt")
-	public function doInsert() {
-		
-		
-		var m = new db.Vendor();
-		var form = sugoi.form.Form.fromSpod(m);
-		form.removeElement(form.getElement("amapId"));
-		
-		if (form.isValid()) {
-			form.toSpod(m); //update model
-			m.amap = app.user.amap;
-			m.insert();
-			
-			throw Ok('/contractAdmin/', t._("This supplier has been saved"));
-		}
-		
-		view.form = form;
-	}
-	
-	public function doDelete(v:db.Vendor) {
-		if (!app.user.isAmapManager()) throw t._("Forbidden action");
-		if (checkToken()) {
-					
-			if (db.Contract.manager.search($vendorId == v.id).length > 0) throw Error('/contractAdmin', t._("You cannot delete this supplier because some contracts (current or old) are referencing this supplier."));
-			
-			v.lock();
-			v.delete();
-			throw Ok("/contractAdmin", t._("Supplier deleted"));
-		}
-		
-	}
-	
 	@tpl('vendor/addimage.mtt')
-	function doAddImage(v:db.Vendor) {
+	function doAddImage(vendor:db.Vendor) {
 		
-		view.vendor = v;
-		view.image = v.image;
-		
+		/*if(vendor.getGroups().length>1){
+			throw Error("/contractAdmin",t._("You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."));
+		} */
+
+		if(vendor.email.indexOf("@cagette.net")>-1) throw Error("/contractAdmin","Il est impossible de modifier ce producteur");
+
+		#if plugins
+		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
+		#end
+
+		view.vendor = vendor;
+		view.image = vendor.image;		
 		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
 		
 		if (request.exists("image")) {
@@ -106,16 +90,14 @@ class Vendor extends Controller
 					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
 				}
 				
-				v.lock();
-				
-				if (v.image != null) {
+				vendor.lock();				
+				if (vendor.image != null) {
 					//efface ancienne
-					v.image.lock();
-					v.image.delete();
-				}
-				
-				v.image = img;
-				v.update();
+					vendor.image.lock();
+					vendor.image.delete();
+				}				
+				vendor.image = img;
+				vendor.update();
 				throw Ok('/contractAdmin/', t._("Image updated"));
 			}
 		}

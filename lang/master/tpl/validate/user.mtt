@@ -8,7 +8,7 @@
 					::_("Validate the delivery of the"):: ::hDate(date)::
 				</h3>	
 				<h4
-					><span class="glyphicon glyphicon-map-marker"></span>::place::
+					><i class="icon icon-map-marker"></i>::place::
 				</h4>
 				
 			</div>	
@@ -49,7 +49,7 @@
 					<td>
 						::raw o.smartQt:
 					</td>
-					<td>
+					<td class="ref">
 						$$nullSafe(::o.productRef::)
 					</td>
 					<td>
@@ -93,7 +93,7 @@
 			
 		
 			::if (user._amap.hasShopMode())::
-			<!--  PAYMENT CHECK FOR SHOP MODE -->
+			<!--  PAYMENT CHECK FOR SHOP MODE-->
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
 					<th colspan="9" class="text-center">::_("Payment")::</th>
@@ -116,11 +116,28 @@
 						::end::
 						<td>
 							::if(tt.pending)::
-							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
-								<span class="glyphicon glyphicon-ok"></span>
-								::_("This payment was received")::
-							</a>
-							$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
+								::if(tt._data.type != "onthespot")::
+									<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
+										<i class="icon icon-check"></i>
+										::_("I have received this payment")::
+									</a>
+								::else::
+									::foreach type onTheSpotAllowedPaymentTypes::
+										<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::tt.id::?token=::token::&type=::type.type::" class="btn btn-primary btn-sm">
+											<i class="icon icon-check"></i>
+											::if(type.type == "cash")::
+												::_(" I have received this payment in cash")::
+											::elseif(type.type == "check")::
+												::_(" I have received this payment by check")::			
+											::elseif(type.type == "transfer")::
+												::_(" I have received this payment by transfer")::											
+											::else::
+												::__(" I have received this payment by ::paymentType::", {paymentType: type.name.toLowerCase()})::
+											::end::										
+										</a>
+									::end::
+								::end::
+								$$delete(::_("Del.")::,/validate/::date::/::place.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
 							::end::
 						</td>
 					</tr>
@@ -187,7 +204,7 @@
 				::if(op!=null && tpaid+op.amount < 0)::
 					
 					<a href="" class="btn btn-default btn-lg disabled">
-						<span class="glyphicon glyphicon-ok"></span>
+						<i class="icon icon-check"></i>
 						::_("Validate this order")::
 					</a>
 				
@@ -198,7 +215,7 @@
 				::else::
 				-->
 					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
-						<span class="glyphicon glyphicon-ok"></span>
+						<i class="icon icon-check"></i>
 						::_("Validate this order")::
 					</a>
 				<!--::end::-->
@@ -220,7 +237,7 @@
 						<td>
 							::if(op.pending && op.type==2)::
 							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
-								<span class="glyphicon glyphicon-ok"></span>
+								<i class="icon icon-check"></i>
 								::_("This payment has been received")::
 							</a>
 							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::op.id::?token=::token::)
@@ -251,7 +268,7 @@
 			<p class="text-center">				
 				::if(balance < 0)::
 					<a href="" class="btn btn-default btn-lg disabled">
-						<span class="glyphicon glyphicon-ok"></span>
+						<i class="icon icon-check"></i>
 						::_("Validate this order")::
 					</a>
 				
@@ -262,7 +279,7 @@
 				::else::
 				
 					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
-						<span class="glyphicon glyphicon-ok"></span>
+						<i class="icon icon-check"></i>
 						::_("Validate this order")::
 					</a>
 				::end::

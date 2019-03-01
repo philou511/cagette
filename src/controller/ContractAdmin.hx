@@ -56,26 +56,19 @@ class ContractAdmin extends Controller
 		view.vendors = app.user.amap.getVendors();
 		view.places = app.user.amap.getPlaces();
 		checkToken();
-		
 
 		//Multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			//var inTwoMonth = tools.DateTool.deltaDays(now,60);
-			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
-			for( md in multidistribs.copy()){
+			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now,db.Contract.TYPE_VARORDER);
+			/*for( md in multidistribs.copy()){
 				if(md.hasOnlyConstantOrders()) multidistribs.remove(md);
-			}
+			}*/
 			view.multidistribs = multidistribs; 
 
-			/*var cids = db.Contract.manager.search($amap == app.user.amap && $endDate > oneMonthAgo && $type == db.Contract.TYPE_VARORDER,false).getIds();			
-			//var ds = db.Distribution.manager.search( !$validated && ($date < now) && ($contractId in cids), {orderBy:date}, false);
-			// view.distribs = tools.ObjectListTool.deduplicateDistribsByKey( ds );*/
 		}else{
 			view.multidistribs = [];
 		}
-		
-		
 	}
 
 	/**
@@ -386,13 +379,44 @@ class ContractAdmin extends Controller
 	@tpl('contractadmin/vendorsByDate.mtt')
 	function doVendorsByDate(date:Date,place:db.Place){
 
+		//if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
+
 	    var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
 		try {
-			vendorDataByVendorId = service.OrderService.getMultiDistribVendorOrdersByProduct(date, place);
-		} 
-		catch(e:tink.core.Error) {
+			vendorDataByVendorId = service.ReportService.getMultiDistribVendorOrdersByProduct(date, place);
+		} catch(e:tink.core.Error) {
 			throw Error("/contractAdmin/ordersByDate", e.message);
 		}
+		
+		
+		
+		/*var out = new Map<Int,Dynamic>();//key : vendor id
+		
+		for (d in distribs){
+			var vid = d.contract.vendor.id;
+			var o = out.get(vid);
+			
+			if (o == null){
+				out.set( vid, {contract:d.contract,distrib:d,orders:service.ReportService.getOrdersByProduct( d )});	
+			}else{
+				
+				//add orders with existing ones
+				for ( x in  service.ReportService.getOrdersByProduct( d ) ){
+					
+					//find record in existing orders
+					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
+					if (f == null){
+						//new product order
+						o.orders.push(x);						
+					}else{
+						//increment existing
+						f.quantity += untyped x.quantity;
+						f.total += untyped x.total;
+					}
+				}
+				out.set(vid, o);
+			}
+		}*/
 		
 		view.orders = Lambda.array(vendorDataByVendorId);
 		view.date = date;
@@ -420,11 +444,11 @@ class ContractAdmin extends Controller
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:OrderService.getOrdersByProduct( {distribution:d} )});	
+				out.set( vid, {contract:d.contract,distrib:d,orders:service.ReportService.getOrdersByProduct(d) });	
 			}else{
 				
 				//add orders with existing ones
-				for ( x in OrderService.getOrdersByProduct( {distribution:d} )){
+				for ( x in service.ReportService.getOrdersByProduct(d) ){
 					
 					//find record in existing orders
 					var f : OrderByProduct = Lambda.find(o.orders, function(a:OrderByProduct) return a.pid == x.pid);
@@ -434,7 +458,8 @@ class ContractAdmin extends Controller
 					}else{
 						//increment existing
 						f.quantity += x.quantity;
-						f.total += x.total;
+						f.totalHT += x.totalHT;
+						f.totalTTC += x.totalTTC;
 					}
 				}
 				out.set(vid, o);
@@ -461,11 +486,11 @@ class ContractAdmin extends Controller
 						"ref":o.ref,
 						"priceHT":view.formatNum(o.priceTTC / (1 + o.vat / 100) ),
 						"priceTTC":view.formatNum(o.priceTTC),
-						"totalHT":view.formatNum(o.total / (1 + o.vat / 100)),					
-						"totalTTC":view.formatNum(o.total)					
+						"totalHT":view.formatNum(o.totalHT),					
+						"totalTTC":view.formatNum(o.totalTTC)					
 					});
-					totalTTC += o.total;
-					totalHT += o.total / (1 + o.vat / 100);
+					totalTTC += o.totalTTC;
+					totalHT += o.totalHT;
 				}
 				
 				//total line
@@ -685,7 +710,7 @@ class ContractAdmin extends Controller
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw Error("/contractAdmin/orders/"+contract.id,t._("There is no delivery in this contract, please create at least one distribution."));
 
-		var orders = OrderService.getOrdersByProduct({distribution:d},app.params.exists("csv"));
+		var orders = service.ReportService.getOrdersByProduct(d,app.params.exists("csv"));
 		view.orders = orders;
 		view.distribution = d; 
 		view.c = contract;
@@ -709,7 +734,7 @@ class ContractAdmin extends Controller
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw t._("No delivery in this contract");
 		
-		var orders = OrderService.getOrdersByProduct({distribution:d},false);
+		var orders = service.ReportService.getOrdersByProduct(d,false);
 		view.orders = orders;
 	}
 	

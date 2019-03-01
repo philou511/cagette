@@ -103,7 +103,7 @@ class DistributionService
 	  */
 	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,
 	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
-		orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true):db.Distribution {
+		?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true):db.Distribution {
 
 		var d = new db.Distribution();
 		d.contract = contract;
@@ -166,6 +166,11 @@ class DistributionService
 
 		//We prevent others from modifying it
 		d.lock();
+
+		if(d.validated) {
+			var t = sugoi.i18n.Locale.texts;
+			throw new tink.core.Error(t._("You cannot edit a distribution which has been already validated."));
+		}
 
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
@@ -349,10 +354,8 @@ class DistributionService
 				if (d.contract.type == db.Contract.TYPE_VARORDER && !canDelete(d) ){
 					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
 				}else{
-					d.lock();
 					d.delete();
 				}
-
 			}
 
 			//In case this is a distrib cycle for an amap contract with payments enabled, it will update all the operations
@@ -360,13 +363,8 @@ class DistributionService
 			updateAmapContractOperations(contract);
 
 		}
-
-		 //All cycle distribs have been deleted so we can delete the cycle itself
-		if (messages.length == 0)
-		{	
-			cycle.delete();
-		}
-
+		cycle.delete();
+		
 		return messages;
 	}
 

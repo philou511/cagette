@@ -10,6 +10,7 @@ typedef ProductInputProps = {
 	txpProductId:Int,
 	productName:String,
 }
+
 typedef ProductInputState = {
 	txpProductId:Int,
 	productName:String,
@@ -17,20 +18,18 @@ typedef ProductInputState = {
 	breadcrumb:String,	
 }
 
-
 /**
  * Product Text Input with autocompletion
  * 
  * @author fbarbut
+	@deprecated
  */
-class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState>
-{
-
+class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState> {
 	public static var DICO : TxpDictionnary = null;
 	var options : Array<{id:Int,label:String}>;
-	
-	public function new(props:ProductInputProps) 
-	{
+	var imgRef: react.ReactRef<{src:String}>;
+
+	public function new(props:ProductInputProps) {
 		super(props);
 		options = [];
 		this.state = {
@@ -39,7 +38,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			categoryId : 0,
 			breadcrumb : ""
 		};
-		
+		this.imgRef  = React.createRef();
 	}
 	
 	override public function render(){
@@ -50,7 +49,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			<div className="row">
 			
 				<div className="col-md-8">
-					<AsyncTypeahead 
+					<$AsyncTypeahead 
 						placeholder="Saisissez un nom de produit" 
 						options=$options 
 						onSearch=$onSearch 
@@ -58,17 +57,17 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 						style={{width:"350px"}} 
 						onChange=$onChange 
 						onInputChange=$onInputChange 
-						selected={["${state.productName}"]} 
+						selected={[${state.productName}]} 
 						isLoading=$true
 					/>				
 					<div className = "txpProduct" > ${state.breadcrumb}</div>				
 					
-					<input className="txpProduct" type="hidden" name="$txpProductInputName" value="${state.txpProductId}" />
-					<input className="txpProduct" type="hidden" name="$inputName" value="${state.productName}" />
+					<input className="txpProduct" type="hidden" name=$txpProductInputName value=${state.txpProductId} />
+					<input className="txpProduct" type="hidden" name=$inputName value=${state.productName} />
 				</div>
 				
 				<div className="col-md-4">
-					<img ref="image" className="img-thumbnail" />
+					<img ref=${this.imgRef} className="img-thumbnail" />
 				</div>
 
 			</div>
@@ -146,7 +145,7 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			productName:product.name	//do not override product name !		*/
 		});
 		
-		this.refs.image.src="/img/taxo/cat"+txp.category+".png";
+		this.imgRef.current.src=DICO.categories[txp.category].image;
 	}
 	
 	/**
@@ -162,7 +161,4 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 		str += " / " + product.name;
 		return str;
 	}
-	
-	
-
 }

@@ -16,7 +16,7 @@ class App extends sugoi.BaseApp {
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
 	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
-	public static var VERSION = ([0,9,2]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
+	public static var VERSION = ([0,10]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
 	
 	public function new(){
 		super();
@@ -97,18 +97,16 @@ class App extends sugoi.BaseApp {
 	public static function getTranslationArray() {
 		//var t = sugoi.i18n.Locale.texts;
 		var out = new Map<String,String>();
-		//out.set("firstName", t._("First name") );
-		//out.set("lastName", t._("Last name"));
+
 		out.set("firstName2", "Prénom du conjoint");
 		out.set("lastName2", "Nom du conjoint");
 		out.set("email2", "e-mail du conjoint");
-		//out.set("pass", t._("Password") );
-		//out.set("address1", t._("address") );
-		//out.set("address2", t._("address") );
 		out.set("zipCode", "code postal");
 		out.set("city", "commune");
 		out.set("phone", "téléphone");
 		out.set("phone2", "téléphone du conjoint");
+
+
 		out.set("select", "sélectionnez");
 		out.set("contract", "Contrat");
 		out.set("place", "Lieu");
@@ -185,15 +183,21 @@ class App extends sugoi.BaseApp {
 		out.set("Messages", "Accès à la messagerie");
 		out.set("vat", "TVA");
 		out.set("desc", "Description");
+		
+		//group options
 		out.set("ShopMode", "Mode boutique");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
 		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
+		out.set("AddressRequired", "Saisir de l'adresse obligatoire");
+		out.set("ShopV2", "[BETA] Utiliser la nouvelle boutique");
+
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
 		out.set("linkUrl", "URL du lien");
 		
+		//group type
 		out.set("Amap", "AMAP");
 		out.set("GroupedOrders", "Groupement d'achat");
 		out.set("ProducerDrive", "Collectif de producteurs");
@@ -204,25 +208,32 @@ class App extends sugoi.BaseApp {
 		out.set("WaitingList", "Liste d'attente");
 		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
-		out.set("percent", "Pourcentage");
-		out.set("pinned", "Mets en avant les produits");
-		
 		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
+		out.set("HasPayments", "Gestion des paiements");
+
+		out.set("Soletrader"	, "Micro-entreprise");
+		out.set("Organization"	, "Association");
+		out.set("Business"		, "Société");		
+		
 		out.set("unitType", "Unité");
 		out.set("qt", "Quantité");
 		out.set("Unit", "Pièce");
 		out.set("Kilogram", "Kilogrammes");
 		out.set("Gram", "Grammes");
 		out.set("Litre", "Litres");		
+		out.set("Centilitre", "Centilitres");		
+		out.set("Millilitre", "Millilitres");		
 		out.set("htPrice", "Prix H.T");
 		out.set("amount", "Montant");
+		out.set("percent", "Pourcentage");
+		out.set("pinned", "Mets en avant les produits");
 		
-		out.set("HasPayments", "Gestion des paiements");
+		
 		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");
 				
-		out.set("variablePrice", "Variable price based on weight");
+		out.set("variablePrice", "Prix variable selon pesée");
 		return out;
 	}
 	
@@ -262,11 +273,8 @@ class App extends sugoi.BaseApp {
 	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Amap, ?listId:String, ?sender:db.User){
 		
 		if (group == null) group = App.current.user == null ? null:App.current.user.getAmap();
-		
 		current.event(SendEmail(m));
-		
 		var params = group==null ? null : {remoteId:group.id};
-
 		getMailer().send(m,params,function(o){});
 		
 	}

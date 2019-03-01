@@ -1,0 +1,225 @@
+@font-face {
+    font-family: "icons";
+    src: url("./icons.eot?d9ee027068f3e9875c9416e83a7a7430?#iefix") format("embedded-opentype"),
+url("./icons.woff2?d9ee027068f3e9875c9416e83a7a7430") format("woff2"),
+url("./icons.woff?d9ee027068f3e9875c9416e83a7a7430") format("woff"),
+url("./icons.ttf?d9ee027068f3e9875c9416e83a7a7430") format("truetype"),
+url("./icons.svg?d9ee027068f3e9875c9416e83a7a7430#icons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    font-family: icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-alert:before {
+    content: "\f101";
+}
+.icon-apple:before {
+    content: "\f102";
+}
+.icon-archive:before {
+    content: "\f103";
+}
+.icon-balance:before {
+    content: "\f104";
+}
+.icon-bank-card:before {
+    content: "\f105";
+}
+.icon-bank-transfer:before {
+    content: "\f106";
+}
+.icon-basket-add:before {
+    content: "\f107";
+}
+.icon-basket:before {
+    content: "\f108";
+}
+.icon-bio:before {
+    content: "\f109";
+}
+.icon-book:before {
+    content: "\f10a";
+}
+.icon-bulk:before {
+    content: "\f10b";
+}
+.icon-calendar-check:before {
+    content: "\f10c";
+}
+.icon-calendar:before {
+    content: "\f10d";
+}
+.icon-card:before {
+    content: "\f10e";
+}
+.icon-chart:before {
+    content: "\f10f";
+}
+.icon-check:before {
+    content: "\f110";
+}
+.icon-cheque:before {
+    content: "\f111";
+}
+.icon-chevron-down:before {
+    content: "\f112";
+}
+.icon-chevron-left:before {
+    content: "\f113";
+}
+.icon-chevron-right:before {
+    content: "\f114";
+}
+.icon-chevron-up:before {
+    content: "\f115";
+}
+.icon-chicken:before {
+    content: "\f116";
+}
+.icon-circle-empty:before {
+    content: "\f117";
+}
+.icon-circle:before {
+    content: "\f118";
+}
+.icon-clock:before {
+    content: "\f119";
+}
+.icon-cog:before {
+    content: "\f11a";
+}
+.icon-delete:before {
+    content: "\f11b";
+}
+.icon-download:before {
+    content: "\f11c";
+}
+.icon-edit:before {
+    content: "\f11d";
+}
+.icon-euro:before {
+    content: "\f11e";
+}
+.icon-eye:before {
+    content: "\f11f";
+}
+.icon-facebook:before {
+    content: "\f120";
+}
+.icon-farmer-pro:before {
+    content: "\f121";
+}
+.icon-farmer:before {
+    content: "\f122";
+}
+.icon-fork:before {
+    content: "\f123";
+}
+.icon-github:before {
+    content: "\f124";
+}
+.icon-home:before {
+    content: "\f125";
+}
+.icon-image:before {
+    content: "\f126";
+}
+.icon-link:before {
+    content: "\f127";
+}
+.icon-list:before {
+    content: "\f128";
+}
+.icon-mail:before {
+    content: "\f129";
+}
+.icon-map-marker:before {
+    content: "\f12a";
+}
+.icon-moneypot:before {
+    content: "\f12b";
+}
+.icon-payment-type:before {
+    content: "\f12c";
+}
+.icon-phone:before {
+    content: "\f12d";
+}
+.icon-plus:before {
+    content: "\f12e";
+}
+.icon-print:before {
+    content: "\f12f";
+}
+.icon-products:before {
+    content: "\f130";
+}
+.icon-refresh:before {
+    content: "\f131";
+}
+.icon-scale:before {
+    content: "\f132";
+}
+.icon-search:before {
+    content: "\f133";
+}
+.icon-sign-out:before {
+    content: "\f134";
+}
+.icon-square-check:before {
+    content: "\f135";
+}
+.icon-square:before {
+    content: "\f136";
+}
+.icon-star:before {
+    content: "\f137";
+}
+.icon-student:before {
+    content: "\f138";
+}
+.icon-tag:before {
+    content: "\f139";
+}
+.icon-tote:before {
+    content: "\f13a";
+}
+.icon-truck-shipping:before {
+    content: "\f13b";
+}
+.icon-truck:before {
+    content: "\f13c";
+}
+.icon-twitter:before {
+    content: "\f13d";
+}
+.icon-upload:before {
+    content: "\f13e";
+}
+.icon-user:before {
+    content: "\f13f";
+}
+.icon-users:before {
+    content: "\f140";
+}
+.icon-wholesale:before {
+    content: "\f141";
+}
+.icon-world:before {
+    content: "\f142";
+}
+.icon-youtube:before {
+    content: "\f143";
+}

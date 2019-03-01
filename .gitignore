@@ -2,14 +2,16 @@
 *.php
 config.xml
 www/plugin/*
-Makefile
+Makefile*
 tmp/*
 *node_modules*
 *.map
-.haxelib
+*.haxelib*
 html
 .temp
 *.tar
+
+*.DS_Store*
 
 lang/master/tpl/plugin/*
 
@@ -17,7 +19,6 @@ lang/fr/tpl/*
 lang/en/tpl/*
 lang/de/tpl/*
 lang/es/tpl/*
-
 lang/fr/tmp/*.n
 lang/en/tmp/*.n
 lang/de/tmp/*.n
@@ -29,7 +30,6 @@ www/file/*
 
 www/js/app.js
 www/js/libs.js
-
 
 www/css/.sass-cache
 www/css/*.css

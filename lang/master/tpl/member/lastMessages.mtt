@@ -20,7 +20,7 @@
 		::if m.failure!=null::
 			<span class="glyphicon glyphicon-exclamation-sign"></span> ::m.failure::			
 		::else::
-			<span class="glyphicon glyphicon-ok"></span> ::m.success::
+		<i class="icon icon-check"></i> ::m.success::
 		::end::
 		</td>
 	</tr>

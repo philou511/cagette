@@ -2,7 +2,7 @@
 <div class="col-md-12">
 	<div class="article text-center">
 	
-	<h2>::_("Order payment")::</h2>
+	<h2>::_("Select a mean of payment :")::</h2>
 	
 	<!--<div>
 		::_("Your current balance is"):: <b>::ua.balance::</b> 
@@ -16,9 +16,6 @@
 			::_("Your basket has been recorded, please select a payment method to confirm it.")::			
 		</p>
 	</div>
-		
-		
-
 	
 	<div class="row">
 		::if(paymentTypes==null || paymentTypes.length==0)::
@@ -32,21 +29,34 @@
 		
 		::foreach p paymentTypes::
 		<div class="col-md-4">
+			::set warning = ""::
 			::if(p.type != "moneypot" || allowMoneyPotWithNegativeBalance || futurebalance >= 0)::
 				::set class = "clickable"::
-				::set href = p.link::					
+				::set href = p.link::
+				::if(p.type == "onthespot")::
+					::set warning = ""::
+					::foreach allowedType p.allowedPaymentTypes::
+						::set warning = allowedType.name+". " + warning::
+					::end::
+				::end::					
 			::else::
 				::set class = "clickable disabled"::
 				::set href = "#"::
 				::set warning = _("You do not have sufficient funds to pay this order with your money pot.")::
 			::end::
-			<a class="::class::" href="::href::" style="min-height:120px;vertical-align:middle;">
+			<div class="::class:: payment"  style="min-height:130px;vertical-align:middle;" onclick="javascript:document.location.href='::href::'">
 				<h3>::p.name::</h3>
-				::raw p.icon::
-				::if( warning )::
-					<br/>::warning::
-				::end::
-			</a>
+				<div style="color:#999;margin:24px;">
+					::raw p.icon::
+					::if( warning )::
+						<br/>::warning::
+					::end::
+				</div>
+				<p>
+					<a href="::href::" class="btn btn-primary">Sélectionner</a>
+				</p>
+				
+			</div>
 		</div>
 		
 		::end::

@@ -11,7 +11,6 @@ import utils.HttpUtil;
  */
 class ProductSelect extends react.ReactComponentOfPropsAndState<{onSelect:ProductInfo->Void,products:Array<ProductInfo>},{selected:Int}>
 {
-
 	public function new(props) 
 	{
 		super(props);	

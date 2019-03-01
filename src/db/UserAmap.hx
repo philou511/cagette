@@ -1,6 +1,8 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
+
 
 enum Right{
 	GroupAdmin;					//can manage whole group
@@ -17,8 +19,8 @@ class UserAmap extends Object
 {
 	@:relation(amapId) public var amap : db.Amap;
 	@:relation(userId) public var user : db.User;
-	public var rights : SNull<SData<Array<Right>>>;
-	public var balance : SFloat; //account balance in group currency
+	public var rights : SNull<SData<Array<Right>>>;		// rights in this group
+	public var balance : SFloat; 						//account balance in group currency
 	static var CACHE = new Map<String,db.UserAmap>();
 	
 	
@@ -88,10 +90,10 @@ class UserAmap extends Object
 	public function getRightName(r:Right):String {
 		var t = sugoi.i18n.Locale.texts;
 		return switch(r) {
-		case Right.GroupAdmin 	: t._("Administrator");
-		case Right.Messages 	: t._("Messaging");
-		case Right.Membership 	: t._("Members management");
-		case Right.ContractAdmin(cid) : 
+		case GroupAdmin 	: t._("Administrator");
+		case Messages 		: t._("Messaging");
+		case Membership 	: t._("Members management");
+		case ContractAdmin(cid) : 
 			if (cid == null) {
 				t._("Management of all contracts");
 			}else {
@@ -115,10 +117,6 @@ class UserAmap extends Object
 	override public function insert(){		
 		App.current.event(NewMember(this.user,this.amap));
 		super.insert();
-	}
-	
-	public function getPaymentOperations(){
-		return db.Operation.getPaymentOperations(user, amap);
 	}
 	
 	public function getLastOperations(limit){

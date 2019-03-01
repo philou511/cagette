@@ -46,7 +46,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		//request api avec user + distrib
 		HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT)
 		.then(function(data:String) {
-
+			
 			var data : {orders:Array<UserOrder>} = tink.Json.parse(data);
 			/*for( o in orders){
 				//convert ints to enums, enums have been lost in json serialization
@@ -95,78 +95,76 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	}
 	
 	override public function render(){
-		
 		//edit orders 
-
-
 		var renderOrders = this.state.orders.map(function(o){
 			var k :String = if(o.id!=null) {
 				Std.string(o.id);
 			} else {
 				o.productId+"-"+Std.random(99999);
 			};
-			return jsx('<$Order key="$k" order="$o" onUpdate=$onUpdate parentBox=${this} />')	;
+			return jsx('<$Order key=${k} order=${o} onUpdate=$onUpdate parentBox=${this} />')	;
 		}  );
 
 
-		var delivery = if(props.date==null){
-			null;
-		}else{
-			jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
+		var delivery = 	if(props.date == null) {
+							null;
+						} else {
+							jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
+						}
+
+		var renderOrderBox = function(props:react.router.RouteRenderProps):react.ReactFragment { 
+			return jsx('
+				<div onKeyPress=${onKeyPress}>
+					<h3>Commandes de ${this.props.userName}</h3>
+					$delivery			
+					<$Error error=${state.error} />
+					<hr/>
+					<div className="row tableHeader">
+						<div className="col-md-4">Produit</div>
+						<div className="col-md-1">Ref.</div>
+						<div className="col-md-1">Prix</div>
+						<div className="col-md-2">Qté</div>
+						<div className="col-md-1">Payé</div>
+						<div className="col-md-3">Alterné avec</div>
+					</div>
+					${renderOrders}	
+					<div>
+						<a onClick=${onClick} className="btn btn-primary">
+							<i className="icon icon-chevron-right"></i> Valider
+						</a>
+						&nbsp;
+						<$Link className="btn btn-default" to="/insert"><i className="icon icon-plus"></i> Ajouter un produit</$Link>
+					</div>
+				</div>			
+			');
 		}
 
-		var renderOrderBox = function() return jsx('
-			<div onKeyPress=${onKeyPress}>
-				<h3>Commandes de ${props.userName}</h3>
-				$delivery			
-				<$Error error="${state.error}" />
-				<hr/>
-				<div className="row tableHeader">
-					<div className="col-md-4">Produit</div>
-					<div className="col-md-1">Ref.</div>
-					<div className="col-md-1">Prix</div>
-					<div className="col-md-2">Qté</div>
-					<div className="col-md-1">Payé</div>
-					<div className="col-md-3">Alterné avec</div>
-				</div>
-				${renderOrders}	
-				<div>
-					<a onClick=${onClick} className="btn btn-primary">
-						<span className="glyphicon glyphicon-chevron-right"></span> Valider
-					</a>
-					&nbsp;
-					<$Link className="btn btn-default" to="/insert"><span className="glyphicon glyphicon-plus-sign"></span> Ajouter un produit</$Link>
-				</div>
-			</div>			
-		');
 
-
-		var onProductSelected = function(uo:UserOrder){
-
+		var onProductSelected = function(uo:UserOrder) {
 			var existingOrder = Lambda.find(state.orders,function(x) return x.productId==uo.productId );
-			if(existingOrder!=null){
+			if(existingOrder != null) {
 				existingOrder.quantity += uo.quantity;
 				this.setState(this.state);
-			}else{
+			} else {
 				this.state.orders.push(uo);
 				this.setState(this.state);
 			}
-		
 		};
 
 
 		//insert product box
-		var renderInsertBox = function(){
-			return jsx('<$InsertOrder contractId="${props.contractId}" userId="${props.userId}" distributionId="${props.distributionId}" onInsert=$onProductSelected/>');
+		var renderInsertBox = function(props:react.router.RouteRenderProps):react.ReactFragment {
+			return jsx('<$InsertOrder contractId=${this.props.contractId} userId=${this.props.userId} distributionId=${this.props.distributionId} onInsert=$onProductSelected/>');
 		} 
 
-		return jsx('<$HashRouter>
-			<$Switch>
-				<$Route path="/" exact=$true render=$renderOrderBox	 />
-				<$Route path="/insert" exact=$true render=$renderInsertBox />
-			</$Switch>
-		</$HashRouter>');
-		
+		return jsx('
+			<$HashRouter>
+				<$Switch>
+					<$Route path="/" exact=$true render=$renderOrderBox	 />
+					<$Route path="/insert" exact=$true render=$renderInsertBox />
+				</$Switch>
+			</$HashRouter>
+		');
 	}
 	
 	/**

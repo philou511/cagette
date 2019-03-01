@@ -19,7 +19,7 @@ class Message extends react.ReactComponentOfProps<{message:String}>
 		if (props.message == null) return null;
 		
 		return jsx('<div className="alert alert-warning">
-				<span className="glyphicon glyphicon glyphicon-info-sign"></span> ${props.message}
+				<i className="icon icon-alert"></i> ${props.message}
 			</div>
 		');
 	}

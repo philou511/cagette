@@ -1,14 +1,18 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
+
 /**
- * Vendor (producteur)
+ * Vendor (farmer/producer/vendor)
  */
 class Vendor extends Object
 {
 	public var id : SId;
 	public var name : SString<128>;
 	
+	public var legalStatus : SNull<SEnum<LegalStatus>>;
+
 	public var email : STinyText;
 	public var phone:SNull<SString<19>>;
 		
@@ -16,25 +20,36 @@ class Vendor extends Object
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SString<32>;
 	public var city:SString<25>;
+	public var country:SNull<SString<64>>;
 	
 	public var desc : SNull<SText>;
 	
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
 	
-	@hideInForms @:relation(imageId) public var image : SNull<sugoi.db.File>;
+	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
+	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
-	@:relation(amapId) public var amap : SNull<Amap>;
+	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
+	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+	
 	
 	public function new() 
 	{
 		super();
-		var t = sugoi.i18n.Locale.texts;
-		name = t._("Supplier");
+		legalStatus = Business;
+		try{
+			var t = sugoi.i18n.Locale.texts;
+			name = t._("Supplier");
+		}catch(e:Dynamic){}
 	}
 	
 	override function toString() {
 		return name;
+	}
+
+	public function getContracts(){
+		return db.Contract.manager.search($vendor == this,{orderBy:-startDate}, false);
 	}
 
 	public function getActiveContracts(){
@@ -42,9 +57,38 @@ class Vendor extends Object
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
 
-	public function getContracts(){
-		return db.Contract.manager.search($vendor == this ,{orderBy:-startDate}, false);
+	public function infos():VendorInfo{
+		return {
+			id : id,
+			name : name,
+			faceImageUrl : (image!=null ? App.current.view.file(image) : null ),
+			logoImageUrl : (image!=null ? App.current.view.file(image) : null ),
+			zipCode : zipCode,
+			city : city,
+			linkText:linkText,
+			linkUrl:linkUrl,
+			desc:desc
+		};
 	}
+
+	public function getGroups():Array<db.Amap>{
+		var contracts = getActiveContracts();
+		var groups = Lambda.map(contracts,function(c) return c.amap);
+		return tools.ObjectListTool.deduplicate(groups);
+	}
+
+	public static function get(email:String,status:String){
+		return manager.select($email==email && $status==status,false);
+	}
+
+	public static function getForm(vendor:db.Vendor){
+		var t = sugoi.i18n.Locale.texts;
+		var form = sugoi.form.Form.fromSpod(vendor);
+		form.removeElementByName("country");
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		return form;
+	}
+	
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;

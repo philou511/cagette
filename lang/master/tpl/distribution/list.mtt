@@ -15,7 +15,7 @@
 	</h2>	
 	
 	<p>
-		<span class="glyphicon glyphicon-map-marker"></span><b>::_("Place"):: : </b>
+		<i class="icon icon-map-marker"></i><b>::_("Place"):: : </b>
 		::distrib._place.toString()::, ::distrib._place.getAddress()::
 	</p>
 	<p>
@@ -36,6 +36,8 @@
 		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::, ::end::
 		::if distrib._distributor4!=null:: ::distrib._distributor4.getName()::  ::end::		
 	</p>
+
+	<p>::raw nl2br(distrib._contract._amap.txtDistrib)::</p>
 	
 	<table class="table table-bordered table-hover"  style="width:100%;">
 			::set total = 0:: <!-- big total -->
@@ -147,7 +149,7 @@
 			</tr>
 		</table>
 		
-		<p>::raw nl2br(distrib._contract._amap.txtDistrib)::</p>
+		
 
 		<p class="hidden"><i>::_("Push on \"Control + P\" to print this page.")::</i></p>
 </body>

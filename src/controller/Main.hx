@@ -43,21 +43,13 @@ class Main extends Controller {
 		
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;
-
+		
 
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
 
 		var distribs = MultiDistrib.getFromTimeRange(group,now,in3Month);
-		
-		//fix bug du sorting (les distribs du jour se mettent en bas)
-		/*var out = [];
-		for (x in distribs) out.push(x);
-		out.sort(function(a, b) {
-			return Std.int(a.startDate.getTime()/1000) - Std.int(b.startDate.getTime()/1000);
-		});*/
-		
 		view.distribs = distribs;
 		
 		//view functions
@@ -65,14 +57,32 @@ class Main extends Controller {
 			return db.UserContract.manager.get(orderId, false).getWhosTurn(distrib);
 		}
 		
+		//register to group without ordering block
+		var hasOneOpenDistrib = false;
+		for( md in distribs){
+			if(md.isActive()) {
+				hasOneOpenDistrib = true;
+				break;
+			}
+		}
+
+		var isMember = app.user==null ? false : app.user.isMemberOf(group);
+		var registerWithoutOrdering = ( !isMember && group.regOption==db.Amap.RegOption.Open && !hasOneOpenDistrib );
+		view.registerWithoutOrdering = registerWithoutOrdering;
+		if(registerWithoutOrdering) service.UserService.prepareLoginBoxOptions(view,group);		
+
 		//event for additionnal blocks on home page
 		var e = Blocks([], "home");
 		app.event(e);
 		view.blocks = e.getParameters()[0];
 
 		//message if phone is required
-		if(app.user!=null && app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && app.user.phone==null){
+		if(app.user!=null && group.flags.has(db.Amap.AmapFlags.PhoneRequired) && app.user.phone==null){
 			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
+		}
+		//message if address is required
+		if(app.user!=null && group.flags.has(db.Amap.AmapFlags.AddressRequired) && app.user.city==null){
+			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
 	}
@@ -90,7 +100,7 @@ class Main extends Controller {
 	 *  JSON REST API Entry point
 	 */
 	function doApi(d:Dispatch) {
-				
+		sugoi.Web.setHeader("Content-Type","application/json");
 		try {
 
 			d.dispatch(new controller.Api());
@@ -115,6 +125,12 @@ class Main extends Controller {
 	@tpl("cssDemo.mtt")
 	function doCssdemo() {
 		view.category = 'home';
+	}
+
+	@tpl("css.mtt")
+	function doCssdemo2(){
+
+
 	}
 	
 	@tpl("form.mtt")
@@ -207,6 +223,7 @@ Called from controller/Main.hx line 117
 		view.category = 'shop';
 		view.place = place;
 		view.date = date;
+		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
 	}
 	
 	@logged

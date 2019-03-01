@@ -72,17 +72,17 @@ class Operation extends sys.db.Object
 	public function getPaymentTypeName(){
 		var t = getPaymentType();
 		if (t == null) return null;
-		for ( pt in service.PaymentService.getAllPaymentTypes()){
+		for ( pt in service.PaymentService.getPaymentTypes(PCAll)){
 			if (pt.type == t) return pt.name;
 		}
 		return null;
 	}
 	
 	/**
-	 * get payments linked to this order transaction
+	 * get payments linked to this order operation
 	 */
 	public function getRelatedPayments(){
-		return db.Operation.manager.search($relation == this, false);
+		return db.Operation.manager.search($relation == this && $type == Payment, false);
 	}
 	
 	public function getOrderInfos(){
@@ -128,10 +128,6 @@ class Operation extends sys.db.Object
 		//return manager.search($user == user && $group == group && $relation==null,{orderBy:date},false);		
 		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
 	}*/
-	
-	public static function getPaymentOperations(user:db.User, group:db.Amap,?limit=50){
-		return manager.search($user == user && $group == group && $type == Payment, {orderBy:date,limit:limit},false);
-	}
 	
 	public static function getLastOperations(user:db.User, group:db.Amap, ?limit = 50){
 		
@@ -240,7 +236,7 @@ class Operation extends sys.db.Object
 	 * @param	name
 	 * @param	relation
 	 */
-	public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation, ?remoteOpId : String ){
+	/*public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation, ?remoteOpId : String ){
 		
 		var t = new db.Operation();
 		t.amount = Math.abs(amount);
@@ -256,12 +252,68 @@ class Operation extends sys.db.Object
 		}
 		t.data = data;
 		if(relation!=null) t.relation = relation;
-		t.insert();
+		t.insert();*/
+	public static function makePaymentOperation(user: db.User, group: db.Amap, type: String, amount: Float, name: String, ?relation: db.Operation, ?remoteOpId : String) : db.Operation
+	{
+
+		if(type == payment.OnTheSpotPayment.TYPE) 
+		{
+			var onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(group);
+			if(onTheSpotAllowedPaymentTypes.length == 1)
+			{
+				//There is only one on the spot payment type so we can directly set it here
+				type = onTheSpotAllowedPaymentTypes[0].type;				
+			}
+			
+			if(relation != null)
+			{
+				var relatedPaymentOperations = relation.getRelatedPayments();
+				for (operation in relatedPaymentOperations)
+				{
+					if(operation.data.type == payment.OnTheSpotPayment.TYPE || Lambda.has(payment.OnTheSpotPayment.getPaymentTypes(), operation.data.type))
+					{
+						return updatePaymentOperation(user, group, operation, amount);						
+					}
+				}
+			}
+		}
+		
+		var operation = new db.Operation();
+		operation.amount = Math.abs(amount);
+		operation.date = Date.now();
+		operation.name = name;
+		operation.group = group;
+		operation.pending = true;
+		operation.user = user;
+		operation.type = Payment;		
+		var data : PaymentInfos = { type: type };
+		if ( remoteOpId != null ) {
+			data.remoteOpId = remoteOpId;
+		}
+		operation.data = data;
+		if(relation != null) operation.relation = relation;
+		operation.insert();
 		
 		service.PaymentService.updateUserBalance(user, group);
 		
-		return t;
+		return operation;
+	}
+
+
+	/**
+	 * Update a payment operation
+	 * @param	amount
+	 */
+	public static function updatePaymentOperation(user: db.User, group: db.Amap, operation: db.Operation, amount: Float) : db.Operation
+	{
+
+		operation.lock();
+		operation.amount += Math.abs(amount);		
+		operation.update();
 		
+		service.PaymentService.updateUserBalance(user, group);
+		
+		return operation;
 	}
 	
 	/**
@@ -269,15 +321,19 @@ class Operation extends sys.db.Object
 	 */
 	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true):db.Operation{
 		
+		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
+
 		var date = dkey.split("|")[0];
 		var placeId = Std.parseInt(dkey.split("|")[1]);
 		var transactions  = new List();
 		if (onlyPending){
-			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:date}, true);
+			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:-date}, true);
 		}else{
-			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:date}, true);
+			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
 		}
 		
+		//throw transactions;
+
 		var place = db.Place.manager.get(placeId,false);
 		var date = Date.fromString(date);
 		var basket = db.Basket.get(user, place, date);
@@ -378,6 +434,7 @@ class Operation extends sys.db.Object
 				
 				//existing transaction
 				var existing = db.Operation.findVOrderTransactionFor( k , user, group, false);
+				
 				var op;
 				if (existing != null){
 					op = db.Operation.updateOrderOperation(existing,allOrders,basket);	

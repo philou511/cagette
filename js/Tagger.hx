@@ -13,17 +13,18 @@ class Tagger
 
 	var contractId : Int;
 	var data:TaggerInfos;
+	var pids : Array<Int>; //selected product Ids
 	
 	public function new(cid:Int) 
 	{
 		contractId = cid;
+		pids = [];
 	}
 	
 	public function init() {
 		var req = new haxe.Http("/product/categorizeInit/"+contractId);
 		req.onData = function(_data) {			
 			data = haxe.Json.parse(_data);	
-			//trace(data);
 			render();
 		}
 		req.request();
@@ -31,12 +32,14 @@ class Tagger
 	}
 	
 	function render() {
+
 		var html = new StringBuf();
 		
 		html.add("<table class='table'>");
 		for (p in data.products) {
 			html.add("<tr class='p"+p.product.id+"'>");
-			html.add("<td><input type='checkbox' name='p"+p.product.id+"' /></td>");
+			var checked = Lambda.has(pids,p.product.id) ? "checked" : "";
+			html.add('<td><input type="checkbox" name="p${p.product.id}" $checked/></td>');
 			html.add("<td>" + p.product.name+"</td>");
 			var tags = [];
 			
@@ -88,10 +91,8 @@ class Tagger
 		
 		if (tagId == 0) js.Browser.alert("Impossible de trouver la catégorie selectionnée");
 		
-		var pids = [];
-		
-		for ( e in App.jq("#tagger input:checked").elements() ) {
-			
+		pids = [];
+		for ( e in App.jq("#tagger input:checked").elements() ) {			
 			pids.push(Std.parseInt(e.attr("name").substr(1)));
 		}
 		if (pids.length == 0) js.Browser.alert("Sélectionnez un produit afin de pouvoir lui attribuer une catégorie");
@@ -116,8 +117,6 @@ class Tagger
 	
 	function addTag(tagId:Int, productId:Int) {
 		
-		//trace('tagId $tagId productId $productId');
-		
 		//check for doubles
 		for ( p in data.products) {
 			if (p.product.id == productId) {
@@ -134,8 +133,6 @@ class Tagger
 				break;
 			}
 		}
-		
-		//trace('product $productId not found in data.products ');
 		
 	}
 	

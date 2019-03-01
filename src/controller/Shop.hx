@@ -11,6 +11,9 @@ class Shop extends Controller
 
 	@tpl('shop/default.mtt')
 	public function doDefault(place:db.Place,date:Date) {
+
+		if(place.amap.flags.has(ShopV2)) throw Redirect('/shop2/${place.id}/${date.toString()}');
+
 		var products = getProducts(place,date);
 		view.products = products;
 		view.place = place;

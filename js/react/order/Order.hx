@@ -52,12 +52,12 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		
 		var input =  if (isSmartQtInput(o)){
 			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
+					<input type="text" className="form-control input-sm text-right" value=${state.inputValue} onChange=${onChange} onKeyPress=${onKeyPress}/>
 					<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
 				</div>');	
 		}else{
 			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value="${state.inputValue}" onChange=${onChange} onKeyPress=${onKeyPress}/>
+					<input type="text" className="form-control input-sm text-right" value=${state.inputValue} onChange=${onChange} onKeyPress=${onKeyPress}/>
 				</div>');
 		}
 
@@ -123,8 +123,9 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 	function makeInfos(){
 		var o = state.order;
 		return if ( isSmartQtInput(o) ){
-			jsx('<div className="infos">
-				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)}</b > ${o.productName}				
+			jsx('
+			<div className="infos">
+				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)} </b> ${o.productName}
 			</div>');
 		}else{
 			null;

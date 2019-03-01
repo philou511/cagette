@@ -90,13 +90,13 @@ class View extends sugoi.BaseView {
 	public function formatNum(n:Float):String {
 		if (n == null) return "";
 		
-		//arrondi a 2 apres virgule
+		//round with 2 digits after comma
 		var out  = Std.string(roundTo(n, 2));		
 		
-		//ajout un zéro, 1,8-->1,80
+		//add a zero, 1,8-->1,80
 		if (out.indexOf(".")!=-1 && out.split(".")[1].length == 1) out = out +"0";
 		
-		//virgule et pas point
+		//french : replace point by comma
 		return out.split(".").join(",");
 	}
 	
@@ -137,8 +137,8 @@ class View extends sugoi.BaseView {
 	 * max length for strings, usefull for tables
 	 */
 	public function short(text:String, length:Int){
-		if (Utf8.length(text) > length){
-			
+		if(text==null) return "";
+		if (Utf8.length(text) > length){			
 			return Utf8.sub(text,0, length)+"…";
 		}else{
 			return text;
@@ -161,6 +161,7 @@ class View extends sugoi.BaseView {
 			case null,Piece: 	if(plural) t._("pieces||unit of a product)") else t._("piece||unit of a product)");
 			case Litre: 		t._("L.||liter");
 			case Centilitre: 	t._("cl.||centiliter");
+			case Millilitre: 	t._("ml.||milliliter");
 		}
 	}
 	

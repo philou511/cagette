@@ -95,7 +95,9 @@ class Distribution extends Controller
 		
 		if (!app.user.isContractManager()) throw Error('/', t._("Forbidden action"));
 		
-		view.place = place;
+		view.place = place;		
+		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
+
 		
 		if (type == null) {
 		
@@ -129,10 +131,10 @@ class Distribution extends Controller
 			
 			view.date = date;
 			view.fontRatio = switch(fontSize){
-				case "M" : 125; //100x1.25
-				case "L" : 156; //125x1.25
-				case "XL": 195; //156x1.25
-				default : 100;
+				case "M" : 1; //1em = 16px
+				case "L" : 1.25;
+				case "XL": 1.50;
+				default : 0.75;
 			};
 			
 			switch(type) {
@@ -553,7 +555,7 @@ class Distribution extends Controller
 	@admin
 	public function doAutovalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place);
+		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
 		for ( d in md.distributions){
 			if(d.validated) continue;
 			service.PaymentService.validateDistribution(d);
@@ -564,7 +566,7 @@ class Distribution extends Controller
 	@admin
 	public function doUnvalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place);
+		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
 		for ( d in md.distributions){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);

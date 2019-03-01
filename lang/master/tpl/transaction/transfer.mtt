@@ -4,7 +4,7 @@
 	
 		<div class="alert alert-success" style="font-size: 1.6em;font-weight: bold;">
 			
-			<i class="fa fa-check" aria-hidden="true"></i> ::_("Your order has been recorded !")::
+			<i class="icon icon-check" aria-hidden="true"></i> ::_("Your order has been recorded !")::
 			
 		</div>
 		
@@ -29,7 +29,7 @@
 		
 			<p>
 				<a href="/contract" class="btn btn-default">
-					<span class="glyphicon glyphicon-chevron-right"></span> ::_("Check my orders")::</a>
+					<i class="icon icon-chevron-right"></i> ::_("Check my orders")::</a>
 			</p>
 			
 		</div>

@@ -13,21 +13,25 @@
 		
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
-		<!--
-			<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/shop.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/map.css"/>-->		
 	
 		<!-- JQUERY -->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 		
 		<!-- BOOTSTRAP -->	
+		::if noBootstrap::
+		::else::
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
-		
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
 		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
 		<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 		<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+		
+		::end::
+
+		<!-- Cagette very own icon font -->
+		<link rel="stylesheet" href="/font/icons.css" />
+		
 			
 		<!-- Leaflet CSS -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -37,8 +41,8 @@
 		<!-- typeahead 
 		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.js"></script>	-->	
 		
-		<!-- font awesome -->
-		<script src="https://use.fontawesome.com/97d97e0dab.js"></script>
+		<!-- font awesome
+		<script src="https://use.fontawesome.com/97d97e0dab.js"></script> -->
 		
 		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
@@ -52,11 +56,11 @@
 	<body class="::container::">
 		
 		::if DEBUG::
-		<div style="position: absolute;background: #666;padding: 8px;left: 0;color: #FF0;">DEBUG ::session.lang::</div>
+		<div style="position: absolute;background: #666;padding: 8px;left: 0;bottom:0;color:#FF0;">DEBUG ::session.lang::</div>
 		::end::
 		
 		::if HOST.substr(0,3)=="pp."::
-		<div style="position: absolute;background: #F60;padding: 8px;left: 0;color: #FF0;">PREPROD</div>
+		<div style="position: absolute;background: #F60;padding: 8px;left:0;bottom:0;color: #FF0;">PREPROD</div>
 		::end::
 		
 		<!-- Modal window -->
@@ -72,7 +76,7 @@
 			  </div>
 			  <div class="modal-footer" style="clear:both;">
 				<button type="button" class="btn btn-default" data-dismiss="modal">
-					<span class='glyphicon glyphicon-remove'></span>  ::_("Close")::
+					<i class="icon icon-delete"></i>  ::_("Close")::
 				</button>				
 			  </div>
 			</div>

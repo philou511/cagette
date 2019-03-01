@@ -25,10 +25,9 @@
 	
 	<macro name="nullSafe(text)">::if text==null::::else::::text::::end::</macro>
 	
-	<macro name="edit(text,url)">
-		
+	<macro name="edit(text,url)">		
 		<a href="::url::" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+			<i class="icon icon-edit"></i>
 			&nbsp;::text::
 		</a>	
 	</macro>
@@ -36,14 +35,14 @@
 	<macro name="insert(text,url)">
 		<!--<img src="/img/icons/add.png" style="vertical-align:middle;" />&nbsp;<a href="::url::">::text::</a>-->
 		<a href="::url::" class="btn btn-default btn-sm">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				<i class="icon icon-plus"></i>
 			&nbsp;::text::
 		</a>	
 	</macro>
 	
 	<macro name="delete(text,url)">
 		<a href="::url::" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm" >
-			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				<i class="icon icon-delete"></i>
 		::if text!=null && text!=""::	
 			&nbsp;::text::
 		::end::
@@ -51,22 +50,22 @@
 	</macro>
 	
 	<macro name="export(url)">
-		<a href="::url::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> ::_("Excel/CSV Export")::</a>	
+		<a href="::url::" class="btn btn-default btn-sm"><i class="icon icon-download"></i> ::_("Excel/CSV Export")::</a>	
 	</macro>
 	
 	<macro name="bool(v)">
 		::if v==true::
-		<img src="/img/icons/accept.png" />
+		<i class="icon icon-circle" style="color:#84bd55"></i>
 		::else::
-		<img src="/img/icons/stop.png" />
+		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
 	</macro>
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
-		<span class="glyphicon glyphicon-ok" style="color:#060"></span>
+		<i class="icon icon-check" style="color:#84bd55"></i>
 		::else::
-		<span class="glyphicon glyphicon-exclamation-sign" style="color:#a94442"></span>
+		<i class="icon icon-alert" style="color:#a94442"></i>
 		::end::
 	</macro>
 	
@@ -80,7 +79,7 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
+				<i class="icon icon-map-marker"></i>
 				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
 			</div>
 			::end::
@@ -88,7 +87,7 @@
 	</macro>
 
 	<macro name="place(place)">
-		<span class="glyphicon glyphicon-map-marker"></span>							
+		<i class="icon icon-map-marker"></i>						
 		<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
 		<div class="address">
 			$$nullSafe(::place.address1::)
@@ -113,7 +112,7 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<span class="glyphicon glyphicon-map-marker"></span>
+				<i class="icon icon-map-marker"></i>
 				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
 			</div>
 			::end::
@@ -127,10 +126,10 @@
 		::if u!=null::
 			<b>::u.firstName:: ::u.lastName::</b><br/>
 			<span ::cond u.email!=null::>
-				<span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::u.email::">::u.email::</a><br/>			
+					<i class="icon icon-mail"></i> <a href="mailto: ::u.email::">::u.email::</a><br/>			
 			</span>
 			<span ::cond u.phone!=null::>
-				<span class="glyphicon glyphicon-phone-alt"></span>  ::u.phone::<br/>			
+					<i class="icon icon-phone"></i>  ::u.phone::<br/>			
 			</span>
 		::else:: 
 			::_("No contact")::
@@ -141,7 +140,7 @@
 	
 	<macro name="alert(msg)">
 		<div class="alert alert-danger">
-			<span class="glyphicon glyphicon-exclamation-sign"></span>
+			<i class="icon icon-alert"></i>
 			
 			::raw msg::					
 		</div>
@@ -182,9 +181,8 @@
 				<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
 			::elseif(t.getPaymentType()=="transfer")::
 				<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
-			::else::
-				::t.name::<br/>
-				<span style="font-size:0.90em;color:#AAA;">::hDate(t.date)::</span>
+			::elseif(t.getPaymentType()=="onthespot")::
+				<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
 			::end::
 			
 		::else::
@@ -201,7 +199,17 @@
 	</macro>
 
 	<macro name="back()">	
-	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-chevron-left"></span> ::_("Back")::</a>
+	<a href="#" onclick="window.history.back();" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i> ::_("Back")::</a>
+	</macro>
+
+	<macro name="empty(txt)">	
+		<div style="text-align:center;width:100%;height:300px;color: #AAA;">
+			<img src="/img/empty.png" />
+			<p>
+				::txt::
+			</p>
+			
+		</div>		
 	</macro>
 	
 	
@@ -215,15 +223,20 @@
 				::set closed = 0::
 			
 				::foreach d k::
-					::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
-						<!-- commande en cours -->
-						::set open = open+1::
-					::elseif now.getTime() > d.orderEndDate.getTime()::
-						<!-- commande terminée -->
-						::set closed = closed+1::
+					::if d.orderStartDate!=null::
+						::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+							<!-- commande en cours -->
+							::set open = open+1::
+						::elseif now.getTime() > d.orderEndDate.getTime()::
+							<!-- commande terminée -->
+							::set closed = closed+1::
+						::else::
+							<!-- commande pas ouverte -->
+							::set notyetopened = notyetopened+1::
+						::end::
 					::else::
-						<!-- commande pas ouverte -->
-						::set notyetopened = notyetopened+1::
+						<!-- AMAP : commande terminée -->
+						::set closed = closed+1::
 					::end::
 				::end::
 				
@@ -237,26 +250,24 @@
 			</div>
 			<div class="col-md-8">
 				
+				
+				
 				::if (open==k.length)::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande en cours.">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#F80;"></i>
-				  <i class="fa fa-shopping-basket fa-stack-1x fa-inverse"></i>
+				<span class="iconBadge" style="background-color:#F80;" data-toggle="tooltip" title="Commande en cours.">
+					<i class="icon icon-basket"></i>
 				</span>
 				::elseif(closed==k.length)::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande close. Préparez votre livraison">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#0A0;"></i>
-				  <i class="fa fa-truck fa-stack-1x fa-inverse"></i>
+				<span class="iconBadge" style="background-color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison">
+					<i class="icon icon-truck-shipping"></i>
 				</span>
 				::elseif(notyetopened==k.length)::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Commande pas encore ouverte">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#999;" ></i>
-				  <i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+				<span class="iconBadge" style="background-color:#999;" data-toggle="tooltip" title="Commande pas encore ouverte">
+					<i class="icon icon-clock"></i>
 				</span>				
 				::else::
-				<span class="fa-stack fa-lg" data-toggle="tooltip" title="Statut mixte">
-				  <i class="fa fa-circle fa-stack-2x" style="color:#999;" ></i>
-				  <i class="fa fa-truck fa-stack-1x fa-inverse"></i>
-				</span>		
+				<span class="iconBadge" style="background-color:#999;" data-toggle="tooltip" title="Statut mixte">
+					<i class="icon icon-truck-shipping"></i>
+				</span>			
 				::end::
 				
 				<b>::k[0]._contract._amap.name::</b><br/>
@@ -265,15 +276,20 @@
 				::foreach d k::
 					<tr>
 						<td>
-							::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
-							<!-- commande en cours -->
-							<i class="fa fa-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
-							::elseif now.getTime() > d.orderEndDate.getTime()::
-							<!-- commande terminée -->
-							<i class="fa fa-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+							::if d.orderStartDate!=null::
+								::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+								<!-- commande en cours -->
+								<i class="icon icon-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
+								::elseif now.getTime() > d.orderEndDate.getTime()::
+								<!-- commande terminée -->
+								<i class="icon icon-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
+								::else::
+								<!-- commande pas ouverte -->
+								<i class="icon icon-circle-empty" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
+								::end::
 							::else::
-							<!-- commande pas ouverte -->
-							<i class="fa fa-circle-thin" style="color:#666;" data-toggle="tooltip" title="Commande pas encore ouverte"></i>
+								<!-- AMAP -->
+								<i class="icon icon-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
 							::end::
 							
 							::set c = getCatalog(d)::
@@ -283,10 +299,10 @@
 							::if showBtns::
 							<div class="btn-group">
 								<a href="/p/pro/delivery/edit/::d.id::" title="::_("Edit")::" data-toggle="tooltip" class="btn btn-default btn-sm">
-									<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									<i class="icon icon-edit"></i>
 								</a>
 								<a href="/p/pro/delivery/delete/::d.id::?token=::token::"  title="::_("Delete")::" data-toggle="tooltip" $$confirm(::_("Delete ?")::) class="btn btn-default btn-sm" >
-									<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+									<i class="icon icon-delete"></i>
 								</a>
 							</div>
 							::end::

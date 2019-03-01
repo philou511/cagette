@@ -11,24 +11,22 @@
 		</h2>				
 	</div>
 
-	<div class="col-md-12" ::cond pros!=null && pros.length>0::>
-		<p> ::raw _("Connect to your <b>Cagette Pro</b> account to manage your products, catalogs and deliveries.")::</p>
+	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
+		<!--<p> ::raw _("Connect to your <b>Cagette Pro</b> account to manage your products, catalogs and deliveries.")::</p>-->
+		<p>Connectez-vous à votre <b>compte producteur</b></p>
 	</div>
 
 
 	<!-- cagette pro -->
-	<div class="col-md-12" ::cond pros!=null::>
+	<div class="col-md-12" ::cond vendors!=null::>
 		<div class="row">
-		::foreach p pros::
-			<!-- Cagette pro -->
+		::foreach v vendors::
 			<div class="col-md-4">
-				<a class="clickable proBlock" href="/p/pro/?company=::p.id::">
-					
-					::if p._image!=null::
-					<img src="::file(p._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">
+					::if v._image!=null::
+					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 					::end::						
-					
-					<h4>::p.name::</h4>
+					<h4>::v.name::</h4>
 				</a>
 			</div>
 		::end::
@@ -42,8 +40,7 @@
 	<!-- groups -->
 	<div class="col-md-12">
 		<div class="row">
-			::foreach ua amaps::
-				::set group = ua._amap::
+			::foreach group amaps::				
 				<div class="col-md-4">
 					<a class="clickable groupBlock"  href="/user/choose?amap=::group.id::">
 					
@@ -62,7 +59,7 @@
 					<p>
 						::_("You don't belong to any group yet")::
 					</p>
-					<a class="btn btn-primary" href="/group/create/"><span class="glyphicon glyphicon-chevron-right"></span> ::_("Create my own group")::</a>	
+					<a class="btn btn-primary" href="/group/create/"><i class="icon icon-chevron-right"></i> ::_("Create my own group")::</a>	
 				</div>
 			</div>
 			::end::
@@ -73,9 +70,13 @@
 	<!-- actions -->
 	<div class="col-md-12 text-center" style="margin-bottom:12px;" >
 		::if session.lang!="de"::
-			<a class="btn btn-default btn-lg" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Find other groups near me")::</a>	
+			<a class="btn btn-default btn-lg" href="/group/map">
+				<i class="icon icon-search"></i> ::_("Find other groups near me")::
+			</a>	
 		::end::
-		<a class="btn btn-default btn-lg" href="/group/create/"><span class="glyphicon glyphicon-plus"></span> ::_("Create my own group")::</a>	
+		<a class="btn btn-default btn-lg" href="/group/create/">
+			<i class="icon icon-plus"></i> ::_("Create my own group")::
+		</a>	
 		
 	</div>
 
@@ -94,7 +95,7 @@
 					::__("Request sent on ::date::",{ date:hDate(w.date) })::
 				</td>
 				<td>
-					<a href="/group/listCancel/::w._group.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span> ::_("Cancel")::</a>
+					<a href="/group/listCancel/::w._group.id::" class="btn btn-default btn-xs"><i class="icon icon-delete"></i> ::_("Cancel")::</a>
 				</td>
 			</tr>
 			::end::

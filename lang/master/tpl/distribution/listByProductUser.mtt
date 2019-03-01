@@ -15,7 +15,7 @@
 	</h2>	
 	
 	<p>
-		<span class="glyphicon glyphicon-map-marker"></span><b>::_("Place"):: : </b>
+		<i class="icon icon-map-marker"></i><b>::_("Place"):: : </b>
 		::distrib._place.toString()::, ::distrib._place.getAddress()::
 	</p>
 	<p>

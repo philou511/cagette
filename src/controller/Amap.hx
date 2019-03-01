@@ -27,6 +27,18 @@ class Amap extends Controller
 		var group = app.user.amap;
 		
 		var form = Form.fromSpod(group);
+
+		//remove "shop mode" from flags
+		var flags = form.getElement("flags");
+		untyped flags.excluded = [1];
+
+		//add a custom field for "shopmode"
+		var data = [
+			{label:t._("Shop Mode"),value:"shop"},
+			{label:t._("CSA Mode"),value:"CSA"},
+		];
+		var selected = group.flags.has(db.Amap.AmapFlags.ShopMode) ? "shop" : "CSA";
+		form.addElement( new sugoi.form.elements.RadioGroup("mode",t._("Ordering Mode"),data, selected), 8);
 	
 		if (form.checkToken()) {
 			
@@ -36,6 +48,13 @@ class Amap extends Controller
 			}
 			
 			form.toSpod(group);
+
+			if(form.getValueOf("mode")=="shop") group.flags.set(db.Amap.AmapFlags.ShopMode) else group.flags.unset(db.Amap.AmapFlags.ShopMode);
+
+			if(group.flags.has(db.Amap.AmapFlags.ShopV2)){
+				group.flags.set(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy);
+				group.update();
+			}
 			
 			if (group.extUrl != null){
 				if ( group.extUrl.indexOf("http://") ==-1 &&  group.extUrl.indexOf("https://") ==-1 ){

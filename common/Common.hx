@@ -1,14 +1,25 @@
 /**
  * Common.hx : Shared entities between server and client
  */
+//serialized in DB , so we cant move its place!!!
+/*enum Right{
+	GroupAdmin;					//can manage whole group
+	ContractAdmin(?cid:Int);	//can manage one or all contracts
+	Membership;					//can manage group members
+	Messages;					//can send messages
+}*/
+#if sys
+typedef Right = db.UserAmap.Right;
+#end
+
+//typedef Rights = Array<Right>;
+
 
 @:keep
 typedef OrderSimple = {
-	products: Array<{
-		product:ProductInfo,
-		quantity:Int
-	}>,
-	total:Float
+	products: Array<ProductWithQuantity>,
+	total:Float,//prix total
+	count:Int,//Nombre de produits avec quantité
 }
 
 //A temporary order, waiting for being paid and definitely recorded.
@@ -21,10 +32,25 @@ typedef OrderInSession = {
 		?product:db.Product,
 		?distributionId:Int,
 		#end
-	} > ,
-	?userId:Int,
+	} > ,	
 	total:Float, 	//price to pay
+	?userId:Int,
 	?paymentOp:Int, //payment operation ID
+}
+
+@:keep
+typedef VendorInfo = {
+	id : Int,
+	name : String,
+	desc:String,
+
+	faceImageUrl : Null<String>,
+	logoImageUrl : Null<String>,
+	zipCode : String,
+	city : String,
+
+	linkText:String,
+	linkUrl:String,
 }
 
 @:keep
@@ -32,13 +58,10 @@ typedef ProductInfo = {
 	id : Int,
 	name : String,
 	ref : Null<String>,
-	image : Null<String>,
-	contractId : Int,
+	image : Null<String>,	
 	price : Float,
 	vat : Null<Float>,					//VAT rate
 	vatValue : Null<Float>,				//amount of VAT included in the price
-	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
-	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
 	desc : Null<String>,
 	categories : Null<Array<Int>>,	//used in old shop
 	subcategories : Null<Array<Int>>,  //used in new shop
@@ -47,10 +70,17 @@ typedef ProductInfo = {
 	hasFloatQt : Bool,
 	qt:Null<Float>,
 	unitType:Null<Unit>,
+
 	organic:Bool,
 	variablePrice:Bool,
 	wholesale:Bool,
 	active:Bool,
+	bulk:Bool,
+
+	contractId : Int,
+	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
+	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
+	?vendorId : Int,
 	?distributionId:Null<Int>, //in the context of a distrib
 }
 
@@ -74,11 +104,13 @@ enum Unit{
 	Gram;
 	Litre;
 	Centilitre;
+	Millilitre;
 }
 
 typedef CategoryInfo = {
 	id:Int,
 	name:String,
+	?image : String,
 	?subcategories:Array<CategoryInfo>
 }
 
@@ -195,7 +227,8 @@ typedef OrderByProduct = {
 	priceHT:Float,
 	priceTTC:Float,
 	vat:Float,
-	total:Float,
+	totalHT:Float,
+	totalTTC:Float,
 	weightOrVolume:String,
 };
 typedef OrderByEndDate = {date: String,contracts: Array<String>};
@@ -242,7 +275,7 @@ enum Event {
 	ProductInfosEvent(p:ProductInfo,?d:db.Distribution);	//when infos about a product are displayed
 	
 	//Contracts
-	EditContract(contract:db.Contract);
+	EditContract(contract:db.Contract,form:sugoi.form.Form);
 	DuplicateContract(contract:db.Contract);
 	DeleteContract(contract:db.Contract);
 	
@@ -257,7 +290,7 @@ enum Event {
 	ValidateBasket(basket:db.Basket);
 	
 	//payments
-	GetPaymentTypes(data:{types:Array<payment.Payment>});
+	GetPaymentTypes(data:{types:Array<payment.PaymentType>});
 	NewOperation(op:db.Operation);
 	
 	#end
@@ -270,8 +303,8 @@ enum Event {
  */ 
 typedef TxpDictionnary = {
 	products:Map<Int,{id:Int,name:String,category:Int,subCategory:Int}>,
-	categories:Map<Int,{id:Int,name:String}>,
-	subCategories:Map<Int,{id:Int,name:String}>,
+	categories:Map<Int,CategoryInfo>,
+	subCategories:Map<Int,CategoryInfo>,
 	
 }
 

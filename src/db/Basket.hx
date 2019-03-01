@@ -42,7 +42,7 @@ class Basket extends Object
 		// var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
-			var md = MultiDistrib.get(date, place);
+			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
 			var orders = md.getUserOrders(user);
 			
 			for( o in orders){
@@ -72,7 +72,7 @@ class Basket extends Object
 		if (b == null){
 			
 			//compute basket number
-			var md = MultiDistrib.get(date, place);
+			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;
@@ -158,7 +158,7 @@ class Basket extends Object
 		
 	}
 	
-	public function isValidated(){
+	public function isValidated() {
 
 		var ordersPaid = Lambda.count(getOrders(), function(o) return !o.paid) == 0;
 		var op = getOrderOperation(false);
@@ -170,6 +170,20 @@ class Basket extends Object
 
 	public function getGroup() : db.Amap {
 		return getOrders().first().distribution.contract.amap;
+	}
+
+
+	public function canBeValidated()
+	{
+		var t = sugoi.i18n.Locale.texts;
+		var hasPendingOnTheSpotPayments = Lambda.count(getPaymentsOperations(), function(x) return x.pending && x.data.type == payment.OnTheSpotPayment.TYPE) != 0;
+
+		if (hasPendingOnTheSpotPayments)
+		{
+			throw new tink.core.Error(t._("You need to select manually the type of pending payments on the spot to be able to validate this distribution."));
+		}
+		
+		return !hasPendingOnTheSpotPayments;			
 	}
 	
 }

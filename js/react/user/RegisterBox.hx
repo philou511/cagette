@@ -3,23 +3,37 @@ import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 
-typedef RegisterBoxState = {firstName:String, lastName:String, email:String, password:String, error:String, phone:String};
-typedef RegisterBoxProps = {redirectUrl:String,message:String,phoneRequired:Bool};
+typedef RegisterBoxState = {
+	firstName:String,
+	lastName:String,
+	email:String,
+	password:String,
+	error:String,
+	phone:String,
+	address1:String,
+	zipCode:String,
+	city:String
+};
 
+typedef RegisterBoxProps = {
+	redirectUrl:String,
+	message:String,
+	phoneRequired:Bool,
+	addressRequired:Bool
+};
 
 /**
  * Registration box ( sign up )
  * @author fbarbut
  */
-class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,RegisterBoxState>
+class RegisterBox extends react.ReactComponentOf<RegisterBoxProps,RegisterBoxState>
 {
-
-	
 	public function new(props:RegisterBoxProps) 
 	{
-		if (props.redirectUrl == null) props.redirectUrl = "/";	
+		if (props.redirectUrl == null) props.redirectUrl = "/";
+		if(props.message==null && props.addressRequired) props.message = "L'inscription à ce groupe nécéssite de donner son adresse.";
 		super(props);		
-		this.state = {firstName:"",lastName:"",email:"",password:"",error:null,phone:""};
+		this.state = {firstName:"",lastName:"",email:"",password:"",error:null,phone:"",address1:"",zipCode:"",city:""};
 	}
 	
 	
@@ -31,51 +45,78 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 			phone = jsx('<div className="form-group">
 				<label htmlFor="phone" className="col-sm-4 control-label">Téléphone : </label>
 				<div className="col-sm-8">
-					<input id="phone"  type="text" className="form-control" name="phone" value="${state.phone}" onChange={onChange} />			
+					<input id="phone"  type="text" className="form-control" name="phone" value=${state.phone} onChange=$onChange />			
 				</div>
 			</div>');
 		}
 
+		var address = null;
+		if (props.addressRequired){
+			address = jsx('<span>
+			<div className="form-group">
+				<label htmlFor="address1" className="col-sm-4 control-label">Adresse : </label>
+				<div className="col-sm-8">
+					<input id="address1"  type="text" className="form-control" name="address1" value=${state.address1} onChange=$onChange />			
+				</div>
+			</div>
+			<div className="form-group">
+				<label htmlFor="zipCode" className="col-sm-4 control-label">Code postal : </label>
+				<div className="col-sm-8">
+					<input id="zipCode"  type="text" className="form-control" name="zipCode" value=${state.zipCode} onChange=$onChange />			
+				</div>
+			</div>
+			<div className="form-group">
+				<label htmlFor="city" className="col-sm-4 control-label">Ville/Commune : </label>
+				<div className="col-sm-8">
+					<input id="city"  type="text" className="form-control" name="city" value=${state.city} onChange=$onChange />			
+				</div>
+			</div>
+			</span>');
+		}
+
 		return jsx('
 			<div>
-				<$Error error="${state.error}" />
-				<$Message message="${props.message}" />
+				<$Error error=${state.error} />
+				<$Message message=${props.message} />
 				<form action="" method="post" className="form-horizontal">
 					<div className="form-group">
 						<label htmlFor="firstName" className="col-sm-4 control-label">Prénom : </label>
 						<div className="col-sm-8">
-							<input id="firstName" type="text" name="firstName" value="${state.firstName}" className="form-control" onChange={onChange}/>					
+							<input id="firstName" type="text" name="firstName" value=${state.firstName} className="form-control" onChange=$onChange/>					
 						</div>					
 					</div>
 					<div className="form-group">
 						<label htmlFor="lastName" className="col-sm-4 control-label">Nom : </label>
 						<div className="col-sm-8">
-							<input id="lastName" type="text" name="lastName" value="${state.lastName}" className="form-control" onChange={onChange}/>					
+							<input id="lastName" type="text" name="lastName" value=${state.lastName} className="form-control" onChange=$onChange/>					
 						</div>					
 					</div>
 					<div className="form-group">
 						<label htmlFor="email" className="col-sm-4 control-label">Email : </label>
 						<div className="col-sm-8">
-							<input id="email"  type="text" className="form-control" name="email" value="${state.email}" onChange={onChange} />			
+							<input id="email"  type="text" className="form-control" name="email" value=${state.email} onChange=$onChange />			
 						</div>
 					</div>
 					
-					${phone}
+					$phone
+
+					$address
 					
 					<div className="form-group">
 						<label htmlFor="password" className="col-sm-4 control-label">Mot de passe : </label>
 						<div className="col-sm-8">
-							<input id="password" type="password" name="password" value="${state.password}" className="form-control" onChange={onChange}/>					
+							<input id="password" type="password" name="password" value=${state.password} className="form-control" onChange=$onChange/>					
 						</div>					
 					</div>
 					<p className="text-center">
-						<a onClick={submit} className="btn btn-primary btn-lg" ><span className="glyphicon glyphicon-chevron-right"></span> Inscription</a>
+						<a onClick=$submit className="btn btn-primary btn-lg" >
+						<i className="icon icon-chevron-right"></i> Inscription</a>
 					</p>
 				</form>
 				<hr/>
 				<p className="text-center">
 					<b>Déjà inscrit ? </b>
-					<a onClick={loginBox} className="btn btn-default"><span className="glyphicon glyphicon-user"></span> Connectez-vous ici</a>
+					<a onClick=$loginBox className="btn btn-default"><i className="icon icon-user"></i> Connectez-vous ici</a>
 				</p>
 			</div>
 			
@@ -104,7 +145,10 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 		ReactDOM.unmountComponentAtNode( body );
 	
 		js.Browser.document.querySelector("#myModal .modal-title").innerHTML = "Connexion";
-		ReactDOM.render(jsx('<$LoginBox redirectUrl="${props.redirectUrl}" />'),  body );
+		ReactDOM.render(
+			jsx('<$LoginBox redirectUrl=${props.redirectUrl} message=${props.message} phoneRequired=${props.phoneRequired} addressRequired=${props.addressRequired} />'),
+			body
+		);
 	}
 
 	
@@ -134,6 +178,23 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 			setError("Veuillez saisir votre numéro de téléphone");
 			return;
 		}
+
+		if(props.addressRequired){
+			if(state.address1== ""){
+				setError("Veuillez saisir votre adresse");
+				return;
+			}
+
+			if(state.zipCode== ""){
+				setError("Veuillez saisir votre code postal");
+				return;
+			}
+
+			if(state.city== ""){
+				setError("Veuillez saisir votre ville ou commune de résidence");
+				return;
+			}
+		}
 		
 		//lock button
 		var el : js.html.Element = cast e.target;
@@ -146,6 +207,11 @@ class RegisterBox extends react.ReactComponentOfPropsAndState<RegisterBoxProps,R
 		req.addParameter("password", state.password);
 		req.addParameter("redirecturl", props.redirectUrl);
 		if(props.phoneRequired) req.addParameter("phone", state.phone);
+		if(props.addressRequired){
+			req.addParameter("address1",state.address1);
+			req.addParameter("zipCode",state.zipCode);
+			req.addParameter("city",state.city);
+		}
 		
 		req.onData = req.onError = function(d){
 			var d =  req.responseData;

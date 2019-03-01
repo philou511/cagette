@@ -8,36 +8,14 @@ class Account extends Controller
 	public function new()
 	{
 		super();
-		
 	}
 	
-	
-	function doDefault() {
-	}
-	
+	function doDefault() {}
 	
 	@tpl('form.mtt')
 	function doEdit() {
 		
-		var form = sugoi.form.Form.fromSpod(app.user);
-		form.removeElement(form.getElement("lang"));
-		form.removeElement(form.getElement("pass"));
-		form.removeElement(form.getElement("rights"));
-		form.removeElement(form.getElement("cdate"));
-		form.removeElement(form.getElement("ldate"));
-		form.removeElement( form.getElement("apiKey") );
-		form.removeElement(form.getElement("nationality"));
-		var nationalityOptions = [
-			{label: t._("France"), value: "FR" },
-			{label: t._("Belgique"), value: "BE"}
-		];
-		form.addElement(new StringSelect("nationality", t._("Nationality"), nationalityOptions, app.user.nationality), 15);
-		form.removeElement(form.getElement("countryOfResidence"));
-		var countryOptions = [
-			{label: t._("France"), value: "FR" },
-			{label: t._("Belgique"), value: "BE"}
-		];
-		form.addElement(new StringSelect("countryOfResidence", t._("Country of residence"), countryOptions, app.user.countryOfResidence), 16);
+		var form = db.User.getForm(app.user);
 		
 		if (form.isValid()) {
 			
@@ -66,8 +44,8 @@ class Account extends Controller
 			if (!admin) { app.user.rights.unset(Admin); }
 
 			//Check that the user is at least 18 years old
-			if (!service.UserService.isBirthdayValid(app.user.birthday)) {
-				app.user.birthday = null;
+			if (!service.UserService.isBirthdayValid(app.user.birthDate)) {
+				app.user.birthDate = null;
 			 }
 			
 			app.user.update();

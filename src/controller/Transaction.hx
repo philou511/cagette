@@ -28,8 +28,13 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
-		var paymentTypes = service.PaymentService.getPaymentTypesForManualEntry(app.user.amap);
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), paymentTypes, null, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.amap);
+		var out = [];
+		for (paymentType in paymentTypes)
+		{
+			out.push({label: paymentType.name, value: paymentType.type});
+		}
+		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		//related operation
 		var unpaid = db.Operation.manager.search($user == user && $group == app.user.amap && $type != Payment ,{limit:20,orderBy:-date});
@@ -134,7 +139,7 @@ class Transaction extends controller.Controller
 	
 	
 	/**
-	 * payement entry page
+	 * payment entry page
 	 * @param	distribKey
 	 */
 	@tpl("transaction/pay.mtt")
@@ -147,51 +152,73 @@ class Transaction extends controller.Controller
 		if (order.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		view.amount = order.total;		
-		view.paymentTypes = service.PaymentService.getAllowedPaymentTypes(app.user.amap);
+		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.amap);
 		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
 		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - order.total;
 	}
 	
 	/**
-	 * pay by check
+	 * Use the money pot
 	 */
-	@tpl("transaction/check.mtt")
-	public function doCheck(){
+	@tpl("transaction/moneypot.mtt")
+	public function doMoneypot(){
 		
 		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;	
+		var tmpOrder : OrderInSession = app.session.data.order;		
 		if (tmpOrder == null) throw Redirect("/contract");
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
+		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
+			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
+		}
 		
-		//get a code
-		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
-		var code = payment.Check.getCode(d.date, d.place, app.user);
-		
-		view.code = code;
-		view.amount = tmpOrder.total;
-		
-		//if (checkToken()){
-			
-			//record order
-			var orders = OrderService.confirmSessionOrder(tmpOrder);
-			var ops = db.Operation.onOrderConfirm(orders);
-			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
-			
-			if (Lambda.array(ordersGrouped).length == 1){				
-				//all orders are for the same multidistrib
-				var name = t._("Check for the order of ::date::", {date:view.hDate(d.date)}) + " ("+code+")";
-				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.Check.TYPE, tmpOrder.total, name, ops[0] );		
-			}else{				
-				//orders are for multiple distribs : create one payment
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Check.TYPE, tmpOrder.total, t._("Check") + " ("+code+")" );			
-			}
-			
+		//record order
+		var orders = OrderService.confirmSessionOrder(tmpOrder);
+		var ops = db.Operation.onOrderConfirm(orders);
 
-			//throw Ok("/contract", t._("Your payment by check has been saved. It will be validated by a coordinator at the delivery."));
-		//}
+		view.amount = tmpOrder.total;
+		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 	
 	}
+
+	/**
+	 * Use on the spot payment
+	 */
+	@tpl("transaction/onthespot.mtt")
+	public function doOnthespot()
+	{
+		
+		//order in session
+		var tmpOrder : OrderInSession = app.session.data.order;		
+		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
+		
+		//record order
+		var orders = OrderService.confirmSessionOrder(tmpOrder);
+		var ops = db.Operation.onOrderConfirm(orders);
+
+		view.amount = tmpOrder.total;
+		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
+
+		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
+		
+		var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+		
+		if (Lambda.array(ordersGrouped).length == 1)
+		{				
+			//all orders are for the same multidistrib
+			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(d.date)});
+			db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, tmpOrder.total, name, ops[0] );		
+		}
+		else
+		{				
+			//orders are for multiple distribs : create one payment
+			db.Operation.makePaymentOperation(app.user,app.user.amap,payment.OnTheSpotPayment.TYPE, tmpOrder.total, t._("Payment on the spot"));			
+		}
 	
+	}
+
 	/**
 	 * pay by transfer
 	 */
@@ -231,64 +258,5 @@ class Transaction extends controller.Controller
 		//}
 
 	}
-	
-	/**
-	 * pay by cash
-	 */
-	@tpl("transaction/cash.mtt")
-	public function doCash(){
-		
-		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
-		if (tmpOrder == null) throw Redirect("/contract");
-		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
-		
-		view.amount = tmpOrder.total;
-		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);	
-		
-		//if (checkToken()){
-			
-			//record order
-			var orders = OrderService.confirmSessionOrder(tmpOrder);
-			var ops = db.Operation.onOrderConfirm(orders);
-			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
-			
-			if (Lambda.array(ordersGrouped).length == 1){
-				//same multidistrib
-				var name = t._("Cash for the order of ::date::", {date:view.hDate(d.date)});				
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Cash.TYPE, tmpOrder.total, name , ops[0] );										
-			}else{				
-				//various distribs
-				db.Operation.makePaymentOperation(app.user, app.user.amap, payment.Cash.TYPE, tmpOrder.total, t._("Cash payment"));
-			}
-			
 
-			//throw Ok("/contract", t._("Your order is validated, you commited to pay in cash at the delivery."));
-		//}
-	
-	}
-
-	/**
-	 * Use the money pot
-	 */
-	@tpl("transaction/moneypot.mtt")
-	public function doMoneypot(){
-		
-		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
-		if (tmpOrder == null) throw Redirect("/contract");
-		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
-		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
-		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
-			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
-		}
-		
-		//record order
-		var orders = OrderService.confirmSessionOrder(tmpOrder);
-		var ops = db.Operation.onOrderConfirm(orders);
-
-		view.amount = tmpOrder.total;
-		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
-	
-	}
 }

@@ -107,7 +107,7 @@ class ShopCart
 				return "";
 			}
 			
-			var btn = "<a onClick='cart.remove(" + p.id + ")' class='btn btn-default btn-xs' data-toggle='tooltip' data-placement='top' title='Retirer de la commande'><span class='glyphicon glyphicon-remove'></span></a>&nbsp;";
+			var btn = "<a onClick='cart.remove(" + p.id + ")' class='btn btn-default btn-xs' data-toggle='tooltip' data-placement='top' title='Retirer de la commande'><i class='icon icon-delete'></i></a>&nbsp;";
 			return "<div class='row'> 
 				<div class = 'order col-md-9' > <b> " + x.quantity + " </b> x " + p.name+" </div>
 				<div class = 'col-md-3'> "+btn+"</div>			
@@ -290,10 +290,10 @@ class ShopCart
 	public function filter(cat:Int) {
 		
 		//icone sur bouton
-		App.j(".tag").removeClass("active").children().remove("span");//clean
+		App.j(".tag").removeClass("active").children().remove("i");//clean
 		
 		var bt = App.j("#tag" + cat);
-		bt.addClass("active").prepend("<span class ='glyphicon glyphicon-ok'></span> ");
+		bt.addClass("active").prepend("<i class='icon icon-check'></i> ");
 		
 		
 		//affiche/masque produits

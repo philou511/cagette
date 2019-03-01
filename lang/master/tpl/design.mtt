@@ -26,11 +26,11 @@
 				<div class="dropdown pull-right text-right userName" style="margin-top:16px;">
 					
 					<a class="" style="margin-right:16px;" href="/user/choose?show=1">
-						<span class="glyphicon glyphicon-chevron-left"></span>::_("Change group")::
+						<i class="icon icon-chevron-left"></i> ::_("Change group")::
 					</a>
 
 					<a  class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span>
+						<i class="icon icon-user"></i>
 						::user.getName()::
 						::if user.firstName2!=null::
 							::_("et"):: ::user.lastName2:: ::user.firstName2::  						
@@ -38,14 +38,14 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-						<li><a href="/user/logout"><span class="glyphicon glyphicon-log-out"></span> ::_("Log out")::</a></li>
+						<li><a href="/user/logout"><i class="icon icon-delete"></i> ::_("Log out")::</a></li>
 					</ul>
 					
 				</div>			
 			::else::
 				<div class="pull-right text-right">
-					<a href="/user/login" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-user"></span> ::_("Log in")::</a>
-					<a class="btn btn-default btn-sm" href="/group/map"><span class="glyphicon glyphicon-search"></span> ::_("Look for another group")::</a>	
+					<a href="/user/login" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Log in")::</a>
+					<a class="btn btn-default btn-sm" href="/group/map"><i class="icon icon-search"></i> ::_("Look for another group")::</a>	
 				</div>
 			::end::
 			</div>				
@@ -67,23 +67,45 @@
 					<div class="collapse navbar-collapse" id="cagette-navbar">
 						
 						<ul class="nav navbar-nav navbar-left">
-							<li ::attr class if(category=="home") 		'active' ::><a href="/">::_("Home")::</a></li>
-							<li ::attr class if(category=="contract" ) 	'active' ::><a href="/contract">::_("My account")::</a></li>
-							<li ::attr class if(category=="amap") 		'active' ::><a href="/amap">::_("Farmers")::</a></li>
+							<li ::attr class if(category=="home") 		'active' ::>
+								<a href="/">
+									<i class="icon icon-home"></i>  ::_("Home")::
+								</a>
+							</li>
+							<li ::attr class if(category=="contract" ) 	'active' ::>
+								<a href="/contract">
+									<i class="icon icon-user"></i> ::_("My account")::
+								</a>
+							</li>
+							<li ::attr class if(category=="amap") 		'active' ::>
+								<a href="/amap">
+									<i class="icon icon-farmer"></i> ::_("Farmers")::
+								</a>
+							</li>
 							
 						</ul>
 						
 						<ul class="nav navbar-nav navbar-right">
 							<li id="member" ::attr class if(category=="members") 	'active' ::>
-								<a href="/member" ::cond user.canAccessMembership()::>::_("Members")::</a></li>
+								
+								<a href="/member" ::cond user.canAccessMembership()::>
+									<i class="icon icon-users"></i> ::_("Members")::</a>
+								</li>
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
-								<a href="/contractAdmin" ::cond user.isContractManager(null)::>::_("Contracts")::</a></li>
+								<a href="/contractAdmin" ::cond user.isContractManager(null)::>
+									<i class="icon icon-book"></i> ::_("Contracts")::
+								</a>
+							</li>
 							<li id="messages" ::attr class if(category=="messages") 	'active' ::>
-								<a href="/messages" ::cond user.canAccessMessages()::>::_("Messaging")::</a></li>
+								<a href="/messages" ::cond user.canAccessMessages()::>
+									<i class="icon icon-mail"></i>  ::_("Messaging")::</a>
+								</li>
 							<li id="amapadmin" ::attr class if(category=="amapadmin") 	'active' ::>
-								<a href="/amapadmin" ::cond user.isAmapManager()::>::_("Group")::</a></li>
+								<a href="/amapadmin" ::cond user.isAmapManager()::>
+									<i class="icon icon-cog"></i>  ::_("Group")::</a>
+								</li>
 							<li ::cond user.isAdmin():: ::attr class if(category=="admin") 	'active' ::>
-								<a href="/admin" >::_("Admin")::</a></li>
+								<a href="/admin" ><i class="icon icon-cog"></i>  ::_("Admin")::</a></li>
 						</ul>
 						
 					</div>
@@ -98,9 +120,9 @@
 				::foreach notification getMessages()::
 				<div class="alert ::if notification.error:: alert-danger ::else:: alert-success ::end::" ::cond notification::>
 					::if notification.error::
-					<span class="glyphicon glyphicon-exclamation-sign"></span>
+					<i class="icon icon-alert"></i>
 					::else::
-					<span class="glyphicon glyphicon-ok"></span>
+					<i class="icon icon-check"></i>
 					::end::
 					
 					::raw notification.text::					
@@ -121,12 +143,10 @@
 		<!--<div class="row">
 			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
 				<span class="glyphicon glyphicon-cog"></span>
-				Attention : Cagette.net sera indisponible le <b>mardi 7 août de 9:00 à 11:00</b>.
-				<br/>
-				Nous déménageons sur un nouveau serveur pour plus de rapidité et de fiabilité.
+				<b>Attention</b> : Cagette.net sera en maintenance le <b>mercredi 6 Février de 23h à 2h</b>.				
 			</div>
 		</div>-->
-
+	
 		<div class="row" id="footer">
 			
 				<div class="col-md-3" >
@@ -148,12 +168,6 @@
 						</li>
 					</ul>
 					
-					<!--<p style="position: absolute;display: block;top: 96px;width: 700px;">
-						<b>::raw _("Vous êtes producteur ?")::</b>
-						::raw _("Découvrez nos formations gratuites pour utiliser <b>Cagette Pro</b> "):: 
-						&nbsp;&nbsp;<a href="http://alilo.fr/formations-producteurs" target="_blank" class="btn btn-xs btn-info">C'est parti !</a>
-					</p>-->
-					
 				</div>
 				<div class="col-md-3" >
 					::_("CONTACT US")::
@@ -167,16 +181,16 @@
 					::_("FOLLOW US")::
 					<ul class="cagsocialmedia">
 						<li class="cagfb">
-							<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="fa fa-facebook"></i></a>	
+							<a title="Facebook" href="https://www.facebook.com/cagette" target="_blank"> <i class="icon icon-facebook"></i></a>	
 						</li>
 						<li class="cagtwitter">
-							<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="fa fa-twitter"></i></a> 
+							<a title="Twitter" href="https://twitter.com/Cagettenet" target="_blank"> <i class="icon icon-twitter"></i></a> 
 						</li>
 						<li class="cagyoutube">
-							<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="fa fa-youtube"></i></a> 						
+							<a title="Youtube" href="https://www.youtube.com/channel/UC3cvGxAUrbN9oSZmr1oZEaw" target="_blank"> <i class="icon icon-youtube"></i></a> 						
 						</li>
 						<li style="background-color:#333;">
-							<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="fa fa-github"></i></a> 						
+							<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="icon icon-github"></i></a> 						
 						</li>
 					</ul>
 				</div>

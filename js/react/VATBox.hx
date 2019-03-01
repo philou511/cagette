@@ -35,7 +35,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:Str
 		
 		var rates :Array<Float>= props.vatRates.split("|").map(Std.parseFloat);
 		
-		var options = [for (r in rates) jsx('<option key="$r" value="$r">$r %</option>')  ];
+		var options = [for (r in rates) jsx('<option key=$r value=$r>$r %</option>')  ];
 		var priceInputName = props.formName+"_price";
 		var vatInputName = props.formName+"_vat";
 		
@@ -50,7 +50,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:Str
 				<div className="row">
 					<div className="col-md-4">
 						<div className="input-group">
-							<input type="text" name="htInput" value="${state.htInput}" className="form-control" onChange={onChange}/>
+							<input type="text" name="htInput" value=${state.htInput} className="form-control" onChange=$onChange/>
 							<div className="input-group-addon">${props.currency}</div>
 						</div>
 					</div>
@@ -63,14 +63,14 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:Str
 					
 					<div className="col-md-4">
 						<div className="input-group">
-							<input type="text" name="ttcInput" value="${state.ttcInput}" className="form-control" onChange={onChange}/>
+							<input type="text" name="ttcInput" value=${state.ttcInput} className="form-control" onChange=$onChange/>
 							<div className="input-group-addon">${props.currency}</div>
 						</div>
 					</div>
 				</div>
 				
-				<input type="hidden" name="$priceInputName" value="${state.ttc}" />
-				<input type="hidden" name="$vatInputName" value="${state.vat}" />
+				<input type="hidden" name=$priceInputName 	value=${state.ttc} />
+				<input type="hidden" name=$vatInputName 	value=${state.vat} />
 		
 			</div>
 		');

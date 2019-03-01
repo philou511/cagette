@@ -23,7 +23,7 @@
 					<td>::d._place.name::</td>
 					<td>
 						<a href="/contractAdmin/orders/::c.id::?d=::d.id::" class="btn btn-default">
-							<span class="glyphicon glyphicon-list"></span>
+							<i class="icon icon-basket"></i>
 							::_("Orders")::
 						</a>
 						
@@ -44,7 +44,7 @@
 	<div>
 		
 		<a href="?old=1" class="btn btn-default btn-sm">
-			::_("Old orders")::
+				<i class="icon icon-archive"></i> ::_("Old orders")::
 		</a>
 		
 		

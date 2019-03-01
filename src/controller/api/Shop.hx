@@ -10,7 +10,8 @@ using Lambda;
 class Shop extends Controller
 {
 	/**
-	 * @doc https://app.swaggerhub.com/apis/Cagette.net/Cagette.net/0.9.2#/shop/get_shop_categories
+		List available categories
+		@doc https://app.swaggerhub.com/apis/Cagette.net/Cagette.net/0.9.2#/shop/get_shop_categories
 	 */
 	public function doCategories(args:{date:String, place:db.Place}){
 		
@@ -20,10 +21,10 @@ class Shop extends Controller
 		if (group.flags.has(ShopCategoriesFromTaxonomy)){
 			
 			//TAXO CATEGORIES
-			var taxoCategs = db.TxpCategory.manager.all(false);
+			var taxoCategs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
 			for (txp  in taxoCategs){
 				
-				var c : CategoryInfo = {id:txp.id, name:txp.name, subcategories:[]};
+				var c : CategoryInfo = {id:txp.id, name:txp.name,image:'/img/taxo/${txp.image}.png',subcategories:[]};
 				for (sc in txp.getSubCategories()){
 					c.subcategories.push({id:sc.id,name:sc.name});
 				}
@@ -45,6 +46,22 @@ class Shop extends Controller
 		}
 		
 		Sys.print(Json.stringify({success:true,categories:out}));	
+	}
+
+	/**
+		Get All available products
+	**/
+	public function doAllProducts(args:{date:String, place:db.Place}){
+		
+		if ( args == null ) throw "You should provide a date and a place";
+		//var categsFromTaxo = args.place.amap.flags.has(ShopCategoriesFromTaxonomy);	
+		var categsFromTaxo = true;
+			
+		var products = getProducts(args.place, Date.fromString(args.date), categsFromTaxo );
+		
+		//to productInfos
+		var productsInfos : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo,true) ).array();
+		Sys.print(Json.stringify( {products:productsInfos} ));									
 	}
 	
 	/**
@@ -145,10 +162,17 @@ class Shop extends Controller
 		}		
 	}
 	
-	
+	/**
+		Infos to init the shop : place + order end dates + vendor infos + payment infos
+	**/
 	public function doInit(args:{place:db.Place, date:String}){
 		
-		var out = {place:args.place.getInfos(), orderEndDates: new Array<{date:String,contracts:Array<String>}>() };
+		var out = { 
+			place : args.place.getInfos(),
+			orderEndDates : new Array<{date:String,contracts:Array<String>}>(),
+			vendors : new Array<VendorInfo>(),
+			paymentInfos : service.PaymentService.getPaymentInfosString(args.place.amap)
+		};
 		
 		//order end dates
 		var contracts = db.Contract.getActiveContracts(args.place.amap);
@@ -170,6 +194,13 @@ class Shop extends Controller
 		for ( k in distribByDate.keys() ) {
 			out.orderEndDates.push( {date:k , contracts: distribByDate.get(k).map( function(x) return x.contract.name)} );	
 		}
+
+		//vendors
+		var vendors = [];
+		for( d in distribs){
+			vendors.push(d.contract.vendor.infos());
+		}
+		out.vendors = vendors.deduplicate();
 		
 		
 		Sys.print(Json.stringify( out ));	
@@ -201,6 +232,23 @@ class Shop extends Controller
 		
 		var cids = Lambda.map(distribs, function(d) return d.contract.id);
 		return Lambda.array(db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false));
+		
+	}
+
+	/**
+	 * record order
+	 */
+	public function doSubmit() {
+		var post:{cart:OrderInSession} = haxe.Json.parse(sugoi.Web.getPostData());
+
+		
+		if(post==null) throw 'Payload is empty';
+		if(post.cart==null) throw 'Cart is empty';
+		
+		var order : OrderInSession = post.cart;
+		app.session.data.order = order;
+
+		Sys.print(haxe.Json.stringify({success:true}));
 		
 	}
 	

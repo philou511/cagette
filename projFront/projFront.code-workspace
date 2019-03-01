@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../common"
+		},
+		{
+			"path": "../data"
+		},
+		{
+			"path": "../js"
+		},
+		{
+			"path": "../lang/master/tpl"
+		},
+		{
+			"path": "../www"
+		}
+	]
+}

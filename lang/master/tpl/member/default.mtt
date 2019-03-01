@@ -14,12 +14,16 @@
 		::end::
 		</h2>
 	
-		<p><b>::members.current().length::</b> ::_("members")::.</p>
+		<p>
+			<b>::members.current().length::</b> ::_("members")::.
+		</p>
 		
-		<a href="/member/">::_("Back to main page")::</a>
+		$$back()
+
 	::elseif search!=null::
+
 		<h2>::_("Search"):: : ::search::</h2>
-		<a href="/member/">::_("Back to main page")::</a>
+		$$back()
 		
 	::else::	
 		<h2>::_("Members")::</h2>
@@ -32,7 +36,7 @@
 			::_("You can invite by email all the members who never logged in, in one single clic.")::			
 		</p>
 		<p style="text-align:center;">
-			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> ::_("Send invitations")::</a>
+			<a href="/member/invite/?token=::token::" class="btn btn-primary btn-lg"><i class="icon icon-mail"></i> ::_("Send invitations")::</a>
 		</p>
 	::end::
 
@@ -72,7 +76,7 @@
 				::if members.paginationStartPage != 1::
 					<li>
 						<a href="?page=::members.paginationStartPage-1::">
-							<span class="glyphicon glyphicon-backward"></span>
+								<i class="icon icon-chevron-left"></i>
 						</a>
 					</li>
 				::end::
@@ -86,7 +90,7 @@
 				::if members.paginationEndPage < members.pages + 1::
 					<li>
 						<a href="?page=::members.paginationEndPage::">
-							<span class="glyphicon glyphicon-forward"></span>
+							<i class="icon icon-chevron-right"></i>
 						</a>
 					</li>
 				::end::
@@ -98,9 +102,9 @@
 
 	<div>
 		
-		<a href="/member/insert" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> ::_("New member")::</a>	
+		<a href="/member/insert" class="btn btn-default btn-sm"><i class="icon icon-plus"></i> ::_("New member")::</a>	
 		$$export(::Web.getURI()+"?"+Web.getParamsString()::&csv=1)
-		<a href="/member/import" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-save"></span> ::_("Import members")::</a>
+		<a href="/member/import" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import members")::</a>
 
 	</div>
 
@@ -132,7 +136,7 @@
 				::end::
 				<input type="text" class="form-control" name="search" value="::ssearch::" />
 				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> ::_("Search||search action button")::</button>
+					<button type="submit" class="btn btn-default"><i class="icon icon-search"></i> ::_("Search||search action button")::</button>
 				</span>
 				
 			  </div>

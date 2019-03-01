@@ -12,8 +12,9 @@ enum AmapFlags {
 	CagetteNetwork; //register in cagette.net groups directory
 	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
-	PhoneRequired;	//phone number of members is required for this group
-
+	PhoneRequired;	//phone number of members is required for this group	
+	AddressRequired;//address required for delivery at home
+	ShopV2; 		//BETA shop V2
 }
 
 //user registration options
@@ -39,7 +40,6 @@ class Amap extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
-	public var legalStatus : SNull<SEnum<LegalStatus>>;
 	
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
@@ -73,6 +73,8 @@ class Amap extends Object
 	
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
+
+	public var legalStatus : SNull<SEnum<LegalStatus>>;
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
@@ -182,7 +184,7 @@ class Amap extends Object
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
-			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name, subcategories:null}; }));
+			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name,subcategories:null,image:null}; }));
 			
 			categs.push({
 				id:0,
@@ -259,8 +261,12 @@ class Amap extends Object
 		return Place.manager.search($amap == this, false);
 	}
 	
-	public function getVendors() {
-		return Vendor.manager.search($amap == this, false);
+	/**
+		Get vendors with contracts in this group
+	**/
+	public function getVendors():Array<db.Vendor> {
+		var vendors = Lambda.array(Lambda.map(getContracts(),function(c) return c.vendor));
+		return tools.ObjectListTool.deduplicate(vendors);
 	}
 	
 	public function getMembers() {

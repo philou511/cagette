@@ -5,10 +5,10 @@
 	<div>
 		<p>
 		$$insert(::_("New product")::,/product/insert/::c.id::)
-		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt"></span> ::_("Import from Excel/CSV")::</a>
+		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
 			
 		::if !c._amap.hasTaxonomy()::	
-		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> ::_("Categories")::</a>	
+		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-tag"></i> ::_("Categories")::</a>	
 		::end::
 		
 		</p>
@@ -47,12 +47,12 @@
 	
 	//check all
 	var check = function(){
-		var inputs = $('form.products input');
-		if(inputs.first().prop('checked')==true){
-			inputs.prop('checked',false);
-		}else{
-			inputs.prop('checked',true);
+		var inputs = document.querySelectorAll('form.products input');
+		var value = inputs[0].checked==true;
+		for ( i of inputs ) {
+			i.checked = !value;
 		}
+		
 	}
 	
 	</script>
@@ -105,9 +105,9 @@
 					::p.getFullCategorization().join(" / ")::
 				</div>
 				::end::
-				<div>
-				::if p.organic ::<img src="/img/AB.png" style="display:inline-block"/>::end::
-				::if p.variablePrice ::<img src="/img/weight.png" style="display:inline-block"/>::end::
+				<div style="color:#AAA">
+				::if p.organic ::<i class="icon icon-bio"></i>::end::
+				::if p.variablePrice ::<i class="icon icon-scale"></i>::end::
 				</div>
 			</td>			
 			<td>::formatNum(p.price)::&nbsp;::currency()::</td>
@@ -129,7 +129,7 @@
 			<td>
 				<div class="btn-group" role="group">
 					$$edit(::_("Edit")::,/product/edit/::p.id::)				
-					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>				
+					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>				
 					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
 			</td>
@@ -143,12 +143,16 @@
 	
 	<p>
 		<div class="btn-group" role="group">
-			<a onclick="check();" class="btn btn-default btn-sm"> ::_("Check all")::</a>
+			<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
 		</div>
 		
 		<div class="btn-group" role="group">
-			<a class="btn btn-default btn-sm" onclick="enableProducts()"><span class="glyphicon glyphicon-check"></span> ::_("Enable")::</a>	
-			<a class="btn btn-default btn-sm" onclick="disableProducts()"><span class="glyphicon glyphicon-unchecked"></span> ::_("Disable")::</a>	
+			<a class="btn btn-default btn-sm" onclick="enableProducts()">
+					<i class="icon icon-square-check"></i> ::_("Enable")::
+			</a>	
+			<a class="btn btn-default btn-sm" onclick="disableProducts()">
+					<i class="icon icon-square"></i> ::_("Disable")::
+			</a>	
 		</div>
 		
 	</p>

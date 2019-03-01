@@ -1,0 +1,27 @@
+-dce no
+-cp ../common
+-cp ../js
+-lib sugoi:git:https://github.com/bablukid/sugoi
+-lib hxleaflet:git:https://github.com/bablukid/hxleaflet
+-lib react-next
+-lib material-ui
+-lib react-router-4
+-lib modular
+-lib classnames
+-lib react-types
+-lib tink_json
+-lib haxe-lodash:git:https://github.com/kiroukou/haxe-lodash-externs.git#master
+
+-lib redux
+-lib redux-connect
+-lib redux-thunk
+
+-main App
+-debug
+-D debug
+-js ../www/js/app.js
+-D no-deprecation-warnings
+
+
+#-lib js-object
+#-D object-as-dynamic

@@ -42,7 +42,7 @@ class User extends Object {
 	public var zipCode:SNull<SString<32>>;
 	public var city:SNull<SString<25>>;
 
-	public var birthday : SNull<SDate>;
+	public var birthDate : SNull<SDate>;
 	public var nationality : SNull<SString<2>>;
 	public var countryOfResidence : SNull<SString<2>>;
 	
@@ -89,6 +89,38 @@ class User extends Object {
 		//Who's connected, user1 or user2 ?
 		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
 		
+	}
+
+	public static function getForm(user:db.User){
+		var t = sugoi.i18n.Locale.texts;
+		var form = sugoi.form.Form.fromSpod(user);
+		form.removeElement(form.getElement("lang"));
+		form.removeElement(form.getElement("pass"));
+		form.removeElement(form.getElement("rights"));
+		form.removeElement(form.getElement("cdate"));
+		form.removeElement(form.getElement("ldate"));
+		form.removeElement( form.getElement("apiKey") );
+		form.removeElement(form.getElement("nationality"));
+		
+		form.addElement(new sugoi.form.elements.StringSelect("nationality", t._("Nationality"), getNationalities(), user.nationality), 15);
+		form.removeElement(form.getElement("countryOfResidence"));
+		var countryOptions = db.Place.getCountries();
+		form.addElement(new sugoi.form.elements.StringSelect("countryOfResidence", t._("Country of residence"), countryOptions, user.countryOfResidence), 16);
+		return form;
+	}
+
+	public static function getNationalities(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			{label:t._("French")	,value:"FR"},
+			{label:t._("Belgian")	,value:"BE"},
+			{label:t._("Italian")	,value:"IT"},
+			{label:t._("Spanish")	,value:"ES"},
+			{label:t._("German")	,value:"DE"},
+			{label:t._("Swiss")		,value:"CH"},
+			{label:t._("Canadian")	,value:"CA"},
+			{label:t._("Other")		,value:"-"},
+		];
 	}
 	
 	/**
@@ -162,6 +194,12 @@ class User extends Object {
 		return false;			
 	}
 	
+	public function getRights():Array<Right>{
+		var ua = getUserAmap(getAmap());
+		if (ua == null) return [];
+		return ua.rights;
+	}
+
 	public function canAccessMessages():Bool {
 		var ua = getUserAmap(getAmap());
 		if (ua == null) return false;
@@ -277,10 +315,14 @@ class User extends Object {
 	}
 	
 	/**
-	 * get groups this user belongs to
+	 * Get groups this user belongs to.	 
 	 */
-	public function getAmaps():List<db.Amap> {
-		return Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap);
+	public function getGroups():Array<db.Amap> {
+		var groups = Lambda.array(Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap));
+		//alphabetical order
+		groups.sort(function(a,b) return a.name>b.name?1:-1 );
+		return groups;
+
 	}
 	
 	public function isMemberOf(amap:Amap) {
@@ -356,17 +398,7 @@ class User extends Object {
 		
 	}
 	
-	public static function getOrCreate(firstName:String, lastName:String, email:String):db.User{
-		var u = db.User.manager.select($email == email || $email2 == email, true);
-		if (u == null){
-			u = new db.User();
-			u.firstName = firstName;
-			u.lastName = lastName;
-			u.email = email;			
-			u.insert();
-		}
-		return u;
-	}
+	
 	
 	/**
 	 * Search for similar users in the DB ( same firstName+lastName or same email )
@@ -567,7 +599,7 @@ class User extends Object {
 			"address2"	=>	t._("Address 2"),
 			"zipCode"	=>	t._("Zip code"),
 			"city"		=>	t._("City"),
-			"birthday"  =>	t._("Birthday"),
+			"birthDate"  =>	t._("Birth date"),
 			"nationality" =>  t._("Nationality"),
 			"countryOfResidence" =>  t._("Country of residence"),
 			"rights"	=>	t._("Rights"),

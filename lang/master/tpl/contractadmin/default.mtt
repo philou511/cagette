@@ -12,14 +12,14 @@
 		<p>
 			::if(!m.isConfirmed())::
 				<a href="/distribution/validate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-primary"> 
-					::dDate(m.getDate())::, ::m.getPlace().name::
+					<i class="icon icon-calendar"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
 				</a>
 				::if (isAdmin)::
 				<a href="/distribution/autovalidate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-danger">Admin : Autovalidate</a>
 				::end::
 			::elseif(isAdmin)::
 				<a class="btn btn-default disabled"> 
-					<span class="glyphicon glyphicon-ok"></span> ::dDate(m.getDate())::, ::m.getPlace().name::
+					<i class="icon icon-check"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
 				</a>	
 				<a href="/distribution/unvalidate/::m.getDate().toString().substr(0,10)::/::m.getPlace().id::" class="btn btn-danger">Admin : Unvalidate</a>
 			::end::
@@ -76,18 +76,18 @@
 	
 		
 		::if user.canManageAllContracts():: 
-		$$insert(::_("New contract")::,/contract/insert/)
+		$$insert(::_("New contract")::,/contract/defineVendor/)
 		::end::
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
-		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> ::_("Calendar")::</a>
+		<a href="/contractAdmin/calendar" class="btn btn-default btn-sm"><i class="icon icon-calendar"></i> ::_("Calendar")::</a>
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			::_("Global orders view")::
+			<i class="icon icon-list"></i> ::_("Global orders view")::
 			<span class="caret"></span>
 		  </button>
 		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-			<li><a href="/contractAdmin/ordersByDate"><span class="glyphicon glyphicon-list"></span> ::_("Same day")::</a></li>
-			<li><a href="/contractAdmin/ordersByTimeFrame"><span class="glyphicon glyphicon-list"></span> ::_("Timeframe")::</a></li>			
+			<li><a href="/contractAdmin/ordersByDate">::_("Same day")::</a></li>
+			<li><a href="/contractAdmin/ordersByTimeFrame">::_("Timeframe")::</a></li>			
 		  </ul>
 		</div>
 		
@@ -108,18 +108,22 @@
 						<div class="productImg" style="background-image:url('::file(v._image)::');width:48px;height:48px;"></div>
 						::end::
 					</td>
-					<td><b>::v.name::</b></td>
+					<td>
+						<b>::v.name::</b><br/>
+						::v.zipCode:: ::v.city::
+					</td>
 					<td>
 						<div class="btn-group" role="group">
 							$$edit(::_("Edit")::,/vendor/edit/::v.id::)
-							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> ::_("Picture")::</a>
-							::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::
+							<a href="/vendor/addImage/::v.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>
+							<!-- ::if user.isAmapManager():: $$delete(,/vendor/delete/::v.id::?token=::token::) ::end::-->
 						</div>
 					</td>
 				</tr>
 			::end::
 		</table>
-		$$insert(::_("New farmer")::,/vendor/insert/) 
+		<!--$$insert(::_("New farmer")::,/vendor/insert/) -->
+		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, créez un nouveau contrat</div>
 		
 	</div>	
 </div>
@@ -127,14 +131,16 @@
 <div class="col-md-6">
 	<div class="article" id="places">
 		
-		<h2>::_("Delivery places")::</h2>
+		<h2><i class="icon icon-map-marker"></i> ::_("Delivery places")::</h2>
 		<table class="table">
 			::foreach p places::		
 				<tr>
 					<td><b>::p.name::</b></td>
 					<td>
+						<div class="btn-group" role="group">
 						$$edit(::_("Edit")::,/place/edit/::p.id::)
 						::if user.isAmapManager():: $$delete(::_("Del.||short version for delete")::,/place/delete/::p.id::?token=::token::) ::end::
+						</div>
 					</td>
 				</tr>
 			::end::
