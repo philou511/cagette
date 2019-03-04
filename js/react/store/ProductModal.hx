@@ -59,7 +59,7 @@ private typedef TClasses = Classes<[
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
 class ProductModal extends ReactComponentOfProps<Props> {
-    public static function styles(theme:CagetteTheme):ClassesDef<TClasses> {
+    public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
 			modal : {
                 padding:"24px",
