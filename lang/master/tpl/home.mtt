@@ -298,7 +298,7 @@
 
 		<div class="homeBlock text-center" ::cond(registerWithoutOrdering==true)::>
 			<p>
-				<img src="/img/join-a-group.jpg"/>
+				<img src="/img/join-a-group.png"/>
 			</p>
 			<p>
 				Inscrivez-vous à ce groupe, <br/>

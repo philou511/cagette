@@ -3,7 +3,7 @@ import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
-import react.Typeahead;
+//import react.Typeahead;
 
 typedef ProductInputProps = {
 	formName:String,
@@ -15,17 +15,18 @@ typedef ProductInputState = {
 	txpProductId:Int,
 	productName:String,
 	categoryId:Int,
-	breadcrumb:String,	
+	breadcrumb:String,
+	open:Bool,
+	categories : Array<CategoryInfo>,//categories dico
 }
 
 /**
  * Product Text Input with autocompletion
  * 
  * @author fbarbut
-	@deprecated
  */
 class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps,ProductInputState> {
-	public static var DICO : TxpDictionnary = null;
+	//public static var DICO : TxpDictionnary = null;
 	var options : Array<{id:Int,label:String}>;
 	var imgRef: react.ReactRef<{src:String}>;
 
@@ -36,7 +37,9 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			txpProductId : props.txpProductId,
 			productName : props.productName,
 			categoryId : 0,
-			breadcrumb : ""
+			breadcrumb : "",
+			open:false,
+			categories:[]
 		};
 		this.imgRef  = React.createRef();
 	}
@@ -44,12 +47,8 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	override public function render(){
 		var inputName :String = props.formName+"_name";
 		var txpProductInputName :String = props.formName+"_txpProductId";
-		
-		return jsx('
-			<div className="row">
-			
-				<div className="col-md-8">
-					<$AsyncTypeahead 
+		/*
+		<$AsyncTypeahead 
 						placeholder="Saisissez un nom de produit" 
 						options=$options 
 						onSearch=$onSearch 
@@ -59,11 +58,27 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 						onInputChange=$onInputChange 
 						selected={[${state.productName}]} 
 						isLoading=$true
-					/>				
-					<div className = "txpProduct" > ${state.breadcrumb}</div>				
+					/>	*/
+
+		var categoriesWidget = if(this.state.open) jsx('<CategorySelector categories=${state.categories} onSelect=$onSelect/>') else null;
+
+		var breadcrumb = if( state.breadcrumb!="") jsx('<><i className="icon icon-tag" /> ${state.breadcrumb}<br/></>') else null;
+
+
+		return jsx('
+			<div className="row">
+			
+				<div className="col-md-8">
+					<input className="form-control" type="text" name=$inputName value=${state.productName} onChange=$onChange/>			
+						
+					<div className = "txpProduct" >
+						$breadcrumb
+						<a href="#" className="btn btn-default btn-xs" onClick=$openCategorizeWidget>Catégoriser ce produit</a>
+						$categoriesWidget	
+					</div>				
 					
 					<input className="txpProduct" type="hidden" name=$txpProductInputName value=${state.txpProductId} />
-					<input className="txpProduct" type="hidden" name=$inputName value=${state.productName} />
+					
 				</div>
 				
 				<div className="col-md-4">
@@ -73,92 +88,110 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			</div>
 		');
 	}
-	
-	/**
-	 * Called when typing is stopped 
-	 * @param	o
-	 */
-	function onSearch(o){
-		//trace("on search : "+o);
-	}
-	
-	/**
-	 * Each time a single letter change in the input
-	 * @param	input
-	 */
-	function onInputChange(input:String){
-		trace('on input change $input');
-		this.setState({productName:input});
-	}
-	
-	/**
-	 * Called when an item is selected in suggestions
-	 */
-	function onChange(selection:Array<{label:String,id:Int}>){
-		
-		if (selection == null || selection.length == 0) return;
-		
-		trace("on change "+selection[0]);
-		
-		var product = Lambda.find(DICO.products, function(x) return x.id == selection[0].id);
-		setTaxo(product);
-		this.setState({productName:selection[0].label});
-	}
-	
-	/**
-	 * init typeahead auto-completion features when component is mounted
-	 */
-	override function componentDidMount(){
-		
-		//get dictionnary
-		if (DICO == null){
+
+	override function componentDidMount() {
+
+		//Load categories from API
+		var initRequest = utils.HttpUtil.fetch("/api/product/categories", GET, null, JSON).then(
+			function(data:Dynamic) {
+				var categories:Array<CategoryInfo> = data;
+
+				//sort alphabetically subcategories
+				for( c1 in categories){
+					c1.subcategories.sort(function(a,b){
+						return if(a.name>b.name) 1 else -1;
+					});
+					for(c2 in c1.subcategories){
+						c2.subcategories.sort(function(a,b){
+							return if(a.name>b.name) 1 else -1;
+						});
+					}
+
+				}
+
+
+				if(props.txpProductId==null){
+					
+					this.setState({categories:categories});
+
+				}else{
+
+					this.setState({categories:categories},
+					function(){
+						///we already have a value
+						var infos = getInfos(props.txpProductId);
+						setState({open:false,breadcrumb:infos.breadcrumb,txpProductId:props.txpProductId});
+						imgRef.current.src = infos.image;
+					}
+					);
+					
+					
+
+				}
 			
-			var r = new haxe.Http("/product/getTaxo");
-			r.onData = function(data){
-				//load dico
-				DICO = haxe.Unserializer.run(data);
-				
-				for ( p in DICO.products){
-					options.push({label:p.name,id:p.id});
-				}
-				
-				//default values of input
-				if (props.txpProductId != null){
-					var txp = Lambda.find(DICO.products, function(x) return x.id == props.txpProductId);
-					setTaxo(txp);
-				}
-			};
-			r.request();
-		}
-	}
-	
-	function setTaxo(txp:{id:Int, name:String, category:Int, subCategory:Int}){
-		
-		if (txp == null) return;
-		
-		//trace(txp);
-		
-		this.setState({
-			categoryId:txp.category,
-			txpProductId:txp.id,
-			breadcrumb:getBreadcrumb(txp)/*,
-			productName:product.name	//do not override product name !		*/
-		});
-		
-		this.imgRef.current.src=DICO.categories[txp.category].image;
-	}
-	
+			}		
+
+		).catchError(
+			function(error) {
+				throw error;
+			}
+		);
+	}	
+
 	/**
-	 * generate string like "fruits & vegetables / vegetables / carrots"
-	 * @param	name
-	 */
-	function getBreadcrumb(product){
-		//cat			
-		var str = DICO.categories.get(product.category).name;
-		if (product.subCategory != null){
-			str += " / " + DICO.subCategories.get(product.subCategory).name;
-		}
-		str += " / " + product.name;
-		return str;
+		called when a categ is selected
+	**/
+	function onSelect(id:Int){
+
+		trace(id);
+
+		var infos = getInfos(id);
+
+		setState({open:false,breadcrumb:infos.breadcrumb,txpProductId:id});
+	
+		imgRef.current.src = infos.image;
+
 	}
+
+	function openCategorizeWidget(_){
+		setState({open:true});
+	}
+
+	/**
+		Get infos from a categ3 id
+	**/
+	function getInfos(id:Int) {
+
+        var category1 = null;
+        var category2 = null;
+        var category3 = null;
+
+		for( c1 in state.categories ){
+			category1 = c1;
+			for( c2 in c1.subcategories ){
+				category2 = c2;
+				for( c3 in c2.subcategories){
+					category3 = c3;
+					if(id==c3.id){
+						return {
+							breadcrumb:c1.name+" / "+c2.name+" / "+c3.name,
+							image : c1.image
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+
+    }
+
+	function onChange(event:js.html.Event) {
+		this.setState({productName: untyped event.target.value});
+		event.preventDefault();
+	}
+
+	
+
+	
 }

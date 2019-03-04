@@ -301,12 +301,11 @@ enum Event {
 /*
  * Product Taxonomy structure
  */ 
-typedef TxpDictionnary = {
+/*typedef TxpDictionnary = {
 	products:Map<Int,{id:Int,name:String,category:Int,subCategory:Int}>,
 	categories:Map<Int,CategoryInfo>,
-	subCategories:Map<Int,CategoryInfo>,
-	
-}
+	subCategories:Map<Int,CategoryInfo>,	
+}*/
 
 
 /* 

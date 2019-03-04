@@ -9,6 +9,10 @@
 @import '_map';
 @import '_iconfont';
 
+html{
+	//for rem units
+	font-size: 16px !important;
+}
 body{
 	//usefull when BS is not here
 	font-family: Cabin, Arial, Helvetica, sans-serif;   
