@@ -36,10 +36,8 @@ class Product extends Controller
 		f.removeElementByName("contractId");
 		
 		//Product Taxonomy:
-		//view.taxo = db.TxpProduct.manager.all();
-		//f.addElement(new form.TxpProduct("txpProduct", "taxo",null,false) );
-		var txId = d.txpProduct == null ? "" : Std.string(d.txpProduct.id);
-		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}","$txId","${f.name}");</script>';
+		var txId = d.txpProduct == null ? "null" : Std.string(d.txpProduct.id);
+		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}",$txId,"${f.name}");</script>';
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 
 		if (f.isValid()) {
@@ -308,13 +306,12 @@ class Product extends Controller
 	}	
 
 	
-	@tpl('product/compose.mtt')
-	function doCompose(){
-		
-	}
-	
-	
-	function doGetTaxo(){
+	/*@tpl('product/compose.mtt')
+	function doCompose(){}
+	*/
+
+	//use API now !
+	/*function doGetTaxo(){
 		
 		var out : TxpDictionnary = {products:new Map(), categories:new Map(), subCategories:new Map()};
 		
@@ -332,7 +329,7 @@ class Product extends Controller
 		
 		Sys.print(haxe.Serializer.run(out));
 		
-	}
+	}*/
 
 	
 	

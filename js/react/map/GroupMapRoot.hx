@@ -293,7 +293,7 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
 		var img = if(group.image==null) {
 			null;
 		}else{
-			jsx('<img src="${group.image}" className="img-responsive" />');
+			jsx('<img src=${group.image} className="img-responsive" />');
 		} 
 
 		return jsx('<a target="_blank"

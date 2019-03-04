@@ -11,21 +11,25 @@ import mui.core.ListItem;
 import mui.core.ListItemText;
 import react.mui.CagetteTheme;
 import mui.core.ListItemIcon;
+import mui.core.ListItemAvatar;
+import mui.core.Avatar;
 using Lambda;
 
-class CategorySelector extends react.ReactComponentOfState<{categories : Array<CategoryInfo>}>{
+class CategorySelector extends react.ReactComponentOfPropsAndState<{categories : Array<CategoryInfo>,onSelect:Int->Void},{}>{
 
-	public function new(){
-		super();
-		this.state = {categories:[]};		
+	public function new(props){
+		super(props);
+		this.state = {};		
 	}
 
 	override public function render(){
 		//faire des Item comme là ? https://material-ui.com/demos/dialogs/
 		return jsx('
-			<Dialog onClose={onClose} open={true} >
-				<Typography component="h2" style=${{fontSize:"1.3rem",padding:12}}>Sélectionnez une catégorie</Typography>
-				<SelectionPanel categories={this.state.categories} />
+			<Dialog onClose=$onClose open={true} >
+				<Typography component="h2" style=${{fontSize:"1.3rem",padding:12}}>
+					Sélectionnez une catégorie
+				</Typography>
+				<SelectionPanel categories=${this.props.categories} onSelect=${props.onSelect}/>
         	</Dialog>');
 	}
 
@@ -37,26 +41,13 @@ class CategorySelector extends react.ReactComponentOfState<{categories : Array<C
         onClose(e,mui.core.modal.ModalCloseReason.BackdropClick);
     }
 
-	override function componentDidMount() {
-
-		//Load categories from API
-		var initRequest = utils.HttpUtil.fetch("/api/product/categories", GET, null, JSON).then(
-			function(data:Dynamic) {
-				this.setState({categories:data});
-				this.render();
-			}		
-
-		).catchError(
-			function(error) {
-				throw error;
-			}
-		);
-	}	
+	
 
 }
 
 typedef SelectionPanelProps = {
-	categories : Array<CategoryInfo>
+	categories : Array<CategoryInfo>,
+	onSelect:Int->Void,
 }
 
 typedef SelectionPanelState = {
@@ -109,7 +100,14 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 		} else if (this.state.category2Id==0) {
 			this.setState({ category2Id: id });
 		} else if (this.state.category3Id==0) {
-			this.setState({ category3Id: id });
+			this.setState({ category3Id: id },function(){
+
+				
+				this.props.onSelect(id);
+
+			});
+
+			
 		}
 
 	}
@@ -157,12 +155,21 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 			var onClick = function(){
 				handleClick(item.id);
 			}; 
-             
-			return jsx('
-			 <ListItem button onClick=$onClick key=${item.id}>
-                <ListItemText primary=${item.name} />
-              </ListItem>
-			');
+
+			if(state.category1Id==0){
+				return jsx('<ListItem button onClick=$onClick key=${item.id}>
+				<ListItemAvatar>
+                	<img src=${item.image} style=${{width:64}}/>
+                </ListItemAvatar>
+				<ListItemText primary=${item.name} />
+				</ListItem>');
+			}else{
+				return jsx('
+			 		<ListItem button onClick=$onClick key=${item.id}>
+                		<ListItemText primary=${item.name} />
+              		</ListItem>');
+			}
+			
 		});
 
 		
@@ -183,7 +190,7 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 		
 		return jsx(' 
 		<div>
-			<div style=${{color:CGColors.Secondfont,padding:12,fontWeight:"bold"}}>${getPath()}</div>				   
+			<div style=${{backgroundColor:CGColors.Bg1,padding:12,fontWeight:"bold"}}>${getPath()}</div>				   
 			<List>
 				$productCategories
 			</List>                              
@@ -201,5 +208,7 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 			this.setState({category1Id:0});
 		}
 	}	
+
+	
 }	
 

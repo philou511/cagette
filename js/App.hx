@@ -133,8 +133,6 @@ class App {
 			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
 			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
 
-			//if (txpProductId == null) txpProductId = null;
-
 			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});
 	}
