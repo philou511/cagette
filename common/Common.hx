@@ -90,6 +90,14 @@ typedef ProductWithQuantity = {
 	quantity: Int
 }
 
+//This is used by Mangopay to know which document types to ask for KYC compliance
+enum LegalStatus
+{
+	Soletrader;
+	Organization;
+	Business;
+}
+
 enum Unit{
 	Piece;
 	Kilogram;
@@ -225,6 +233,9 @@ typedef OrderByProduct = {
 };
 typedef OrderByEndDate = {date: String,contracts: Array<String>};
 
+
+typedef RevenueAndFees = {amount:Float,netAmount:Float,fixedFees:Float,variableFees:Float};
+
 /**
 	Event enum used for plugins.
 	
@@ -277,6 +288,7 @@ enum Event {
 	//orders
 	MakeOrder(orders:Array<db.UserContract>); 
 	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
+	ValidateBasket(basket:db.Basket);
 	
 	//payments
 	GetPaymentTypes(data:{types:Array<payment.PaymentType>});
@@ -290,12 +302,11 @@ enum Event {
 /*
  * Product Taxonomy structure
  */ 
-typedef TxpDictionnary = {
+/*typedef TxpDictionnary = {
 	products:Map<Int,{id:Int,name:String,category:Int,subCategory:Int}>,
 	categories:Map<Int,CategoryInfo>,
-	subCategories:Map<Int,CategoryInfo>,
-	
-}
+	subCategories:Map<Int,CategoryInfo>,	
+}*/
 
 
 /* 

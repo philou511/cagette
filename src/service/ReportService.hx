@@ -1,6 +1,9 @@
 package service;
 import Common;
 
+/**
+	Manage various reports on Orders, turnover ...
+**/
 class ReportService{
 
 	/**
@@ -112,6 +115,52 @@ class ReportService{
 			out.turnoverTTC += o.totalTTC;
 		}
 		return out;
+	}
+
+	/**
+		NEW Mangopay
+	 * Returns a map of vendorId and an object made of contract, distrib, productOrders
+	 * @param date 
+	 * @param place 
+	 */
+	public static function getMultiDistribVendorOrdersByProduct(date:Date, place:db.Place) {
+
+		var t = sugoi.i18n.Locale.texts;
+		
+		var multiDistrib = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
+		if ( multiDistrib.distributions.length == 0 ) throw new tink.core.Error(t._("There is no delivery at this date"));
+		
+		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
+		
+		for (d in multiDistrib.distributions) {
+
+			var vendorId = d.contract.vendor.id;
+			var vendorData = vendorDataByVendorId.get(vendorId);
+			
+			if (vendorData == null) {
+				vendorDataByVendorId.set( vendorId, {contract:d.contract, distrib:d, orders:service.ReportService.getOrdersByProduct(d)});	
+			}
+			else {
+				
+				//add orders with existing ones
+				for ( productOrder in service.ReportService.getOrdersByProduct(d)){
+					
+					//find record in existing orders
+					var vendorProductOrders  : Dynamic = Lambda.find(vendorData.orders, function(a) return a.pid == productOrder.pid);
+					if (vendorProductOrders == null){
+						//new product order
+						vendorData.orders.push(productOrder);						
+					}else{
+						//increment existing
+						vendorProductOrders.quantity += untyped productOrder.quantity;
+						vendorProductOrders.total += untyped productOrder.total;
+					}
+				}
+				vendorDataByVendorId.set(vendorId, vendorData);
+			}
+		}
+
+		return vendorDataByVendorId;
 	}
 
 }

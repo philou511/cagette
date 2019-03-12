@@ -40,8 +40,8 @@ class Contract extends Object
 	public var distributorNum:STinyInt;
 	public var flags : SFlags<ContractFlags>;
 	
-	public var percentageValue : SNull<SInt>; 		//fees percentage
-	public var percentageName : SNull<SString<64>>;	//fee name
+	public var percentageValue : SNull<SFloat>; 		//fees percentage
+	public var percentageName : SNull<SString<64>>;		//fee name
 	
 	public var type : SInt;
 	@:skip public static var TYPE_CONSTORDERS = 0; 	//CSA contract 
@@ -53,9 +53,9 @@ class Contract extends Object
 	{
 		super();
 		flags = cast 0;
+		distributorNum = 0;		
 		flags.set(UsersCanOrder);
-		distributorNum = 0;
-		
+	
 	}
 	
 	/**

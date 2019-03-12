@@ -282,13 +282,7 @@ class Member extends Controller
 		
 		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
 		
-		var form = sugoi.form.Form.fromSpod(member);
-		
-		//cleaning		
-		form.removeElement( form.getElement("rights") );
-		form.removeElement( form.getElement("lang") );		
-		form.removeElement( form.getElement("ldate") );
-		form.removeElement( form.getElement("apiKey") );
+		var form = db.User.getForm(member);
 		
 		
 		var isReg = member.isFullyRegistred();
@@ -634,12 +628,7 @@ class Member extends Controller
 		if (!app.user.canAccessMembership()) throw Error("/", t._("Forbidden action"));
 		
 		var m = new db.User();
-		var form = sugoi.form.Form.fromSpod(m);
-		form.removeElement(form.getElement("lang"));
-		form.removeElement(form.getElement("rights"));
-		form.removeElement(form.getElement("pass"));	
-		form.removeElement(form.getElement("ldate") );
-		form.removeElement( form.getElement("apiKey") );
+		var form = db.User.getForm(m);
 		form.addElement(new sugoi.form.elements.Checkbox("warnAmapManager", t._("Send an E-mail to the person in charge of the group"), true));
 		form.getElement("email").addValidator(new EmailValidator());
 		form.getElement("email2").addValidator(new EmailValidator());

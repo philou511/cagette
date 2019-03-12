@@ -378,19 +378,19 @@ class ContractAdmin extends Controller
 	 */
 	@tpl('contractadmin/vendorsByDate.mtt')
 	function doVendorsByDate(date:Date,place:db.Place){
-			
-		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-		var contracts = app.user.amap.getActiveContracts(true);
-		var cids = Lambda.map(contracts, function(c) return c.id);
-		
-		//distribs for both types in active contracts
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 && $place==place , false);		
 
+		//if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
+
+	    var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
+		try {
+			vendorDataByVendorId = service.ReportService.getMultiDistribVendorOrdersByProduct(date, place);
+		} catch(e:tink.core.Error) {
+			throw Error("/contractAdmin/ordersByDate", e.message);
+		}
 		
-		if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 		
-		var out = new Map<Int,Dynamic>();//key : vendor id
+		
+		/*var out = new Map<Int,Dynamic>();//key : vendor id
 		
 		for (d in distribs){
 			var vid = d.contract.vendor.id;
@@ -416,12 +416,11 @@ class ContractAdmin extends Controller
 				}
 				out.set(vid, o);
 			}
-		}
+		}*/
 		
-		view.orders = Lambda.array(out);
+		view.orders = Lambda.array(vendorDataByVendorId);
 		view.date = date;
 	}
-
 	
 	/**
 	 * Global view on orders, producer view

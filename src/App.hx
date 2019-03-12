@@ -43,6 +43,7 @@ class App extends sugoi.BaseApp {
 		plugins.push( new pro.ProPlugIn() );		
 		plugins.push( new connector.ConnectorPlugIn() );				
 		plugins.push( new pro.LemonwayEC() );
+		plugins.push( new pro.MangopayPlugin() );
 		plugins.push( new who.WhoPlugIn() );
 		#end
 	
@@ -96,18 +97,16 @@ class App extends sugoi.BaseApp {
 	public static function getTranslationArray() {
 		//var t = sugoi.i18n.Locale.texts;
 		var out = new Map<String,String>();
-		//out.set("firstName", t._("First name") );
-		//out.set("lastName", t._("Last name"));
+
 		out.set("firstName2", "Prénom du conjoint");
 		out.set("lastName2", "Nom du conjoint");
 		out.set("email2", "e-mail du conjoint");
-		//out.set("pass", t._("Password") );
-		//out.set("address1", t._("address") );
-		//out.set("address2", t._("address") );
 		out.set("zipCode", "code postal");
 		out.set("city", "commune");
 		out.set("phone", "téléphone");
 		out.set("phone2", "téléphone du conjoint");
+
+
 		out.set("select", "sélectionnez");
 		out.set("contract", "Contrat");
 		out.set("place", "Lieu");
@@ -209,10 +208,13 @@ class App extends sugoi.BaseApp {
 		out.set("WaitingList", "Liste d'attente");
 		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
 		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
-		out.set("percent", "Pourcentage");
-		out.set("pinned", "Mets en avant les produits");
-		
 		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
+		out.set("HasPayments", "Gestion des paiements");
+
+		out.set("Soletrader"	, "Micro-entreprise");
+		out.set("Organization"	, "Association");
+		out.set("Business"		, "Société");		
+		
 		out.set("unitType", "Unité");
 		out.set("qt", "Quantité");
 		out.set("Unit", "Pièce");
@@ -223,13 +225,15 @@ class App extends sugoi.BaseApp {
 		out.set("Millilitre", "Millilitres");		
 		out.set("htPrice", "Prix H.T");
 		out.set("amount", "Montant");
+		out.set("percent", "Pourcentage");
+		out.set("pinned", "Mets en avant les produits");
 		
-		out.set("HasPayments", "Gestion des paiements");
+		
 		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");
 				
-		out.set("variablePrice", "Variable price based on weight");
+		out.set("variablePrice", "Prix variable selon pesée");
 		return out;
 	}
 	

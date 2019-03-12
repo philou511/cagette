@@ -1,6 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
 /**
  * Basket : represents the orders of a user for specific date + place
@@ -18,6 +19,8 @@ class Basket extends Object
 	//@:relation(userId) public var user : db.User;
 	//@:relation(placeId) public var place : db.Place;
 	//public var ddate : SDate;	//date of the delivery
+
+	public var data : SNull<SData<Map<Int,RevenueAndFees>>>; //store shared revenue
 	
 	public static var CACHE = new Map<String,db.Basket>();
 	
@@ -85,11 +88,15 @@ class Basket extends Object
 		}		
 		return b;		
 	}
+
+	public function getUser():db.User{
+		return getOrders().first().user;
+	}
 	
 	/**
 	 *  Get basket's orders
 	 */
-	public function getOrders(){
+	public function getOrders() {
 		return db.UserContract.manager.search($basket == this, false);
 	}
 	
@@ -97,7 +104,7 @@ class Basket extends Object
 	 * Returns the list of operations which paid this basket
 	 * @return
 	 */
-	public function getPayments():Iterable<db.Operation>{
+	public function getPaymentsOperations():Iterable<db.Operation> {
 		
 		var op = getOrderOperation(false);
 		if (op == null){
@@ -106,8 +113,42 @@ class Basket extends Object
 			return op.getRelatedPayments();
 		}
 	}
+
+	/**
+	 * Returns the total amount of payments
+	 * @return Float
+	 */
+	public function getTotalPaid() : Float {
+		
+		var payments = getPaymentsOperations();
+		var totalPaid = 0.0;
+
+		//Let's sum up all the payments
+		for( payment in payments ) {
+			totalPaid += payment.amount;
+		}
+
+		return totalPaid;
+
+	}
+
+	/**
+	 * Returns the total amount of all the orders in this basket
+	 * @return Float
+	 */
+	public function getOrdersTotal() : Float {
+
+		var total = 0.0;
+		for( order in getOrders())
+		{
+			total += order.quantity * order.productPrice;
+		}
+
+		return total;
+
+	}
 	
-	public function getOrderOperation(?onlyPending=true):db.Operation{
+	public function getOrderOperation(?onlyPending=true):db.Operation {
 
 		var order = getOrders().first();
         if(order==null) return null;
@@ -122,15 +163,20 @@ class Basket extends Object
 		var ordersPaid = Lambda.count(getOrders(), function(o) return !o.paid) == 0;
 		var op = getOrderOperation(false);
 		var orderOperationNotPending = op!=null ? op.pending == false : true;
-		var paymentOperationsNotPending = Lambda.count(getPayments(), function(p) return p.pending) == 0;
+		var paymentOperationsNotPending = Lambda.count(getPaymentsOperations(), function(p) return p.pending) == 0;
 
 		return ordersPaid && orderOperationNotPending && paymentOperationsNotPending;			
 	}
 
+	public function getGroup() : db.Amap {
+		return getOrders().first().distribution.contract.amap;
+	}
+
+
 	public function canBeValidated()
 	{
 		var t = sugoi.i18n.Locale.texts;
-		var hasPendingOnTheSpotPayments = Lambda.count(getPayments(), function(x) return x.pending && x.data.type == payment.OnTheSpotPayment.TYPE) != 0;
+		var hasPendingOnTheSpotPayments = Lambda.count(getPaymentsOperations(), function(x) return x.pending && x.data.type == payment.OnTheSpotPayment.TYPE) != 0;
 
 		if (hasPendingOnTheSpotPayments)
 		{

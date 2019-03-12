@@ -117,15 +117,8 @@ class Cron extends Controller
 		//Old Messages cleaning
 		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 6));
 		
-		//DB cleaning : I dont know how, but some people have empty string emails...
-		/*for ( u in db.User.manager.search($email == "", true)){
-			u.email = Std.random(9999) + "@cagette.net";
-			u.update();
-		}
-		for ( u in db.User.manager.search($email2 == "", true)){
-			u.email2 = null;
-			u.update();
-		}*/
+		//old sessions cleaning
+		sugoi.db.Session.clean();
 		
 		
 	}

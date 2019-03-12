@@ -44,6 +44,9 @@ class Amap extends Object
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
 	public var contact : SNull<User>;
+	@formPopulate("getMembersFormElementData")
+	@:relation(legalReprId)
+	public var legalRepresentative : SNull<User>;
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
@@ -70,6 +73,8 @@ class Amap extends Object
 	
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
+
+	public var legalStatus : SNull<SEnum<LegalStatus>>;
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
@@ -369,6 +374,7 @@ class Amap extends Object
 		var t = sugoi.i18n.Locale.texts;
 		return [
 			"name" 			=> t._("Group name"),
+			"legalStatus" 	=> t._("Legal status"),
 			"txtIntro" 		=> t._("Short description"),
 			"txtHome" 		=> t._("Homepage text"),
 			"txtDistrib" 	=> t._("Text for distribution lists"),
@@ -377,7 +383,8 @@ class Amap extends Object
 			"flags" 		=> t._("Options"),
 			"groupType" 	=> t._("Group type"),
 			"regOption" 	=> t._("Registration setting"),
-			"contact" 		=> t._("Main contact"),			
+			"contact" 		=> t._("Main contact"),
+			"legalRepresentative" => t._("Legal representative")			
 		];
 	}
 }

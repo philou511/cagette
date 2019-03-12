@@ -12,12 +12,10 @@
 			<li><a href="/amapadmin/vatRates/">::_("VAT rates")::</a></li>
 			<li><a href="/amapadmin/categories/">::_("Categories")::</a></li>
 			<li><a href="/amapadmin/currency/">::_("Currency")::</a></li>
-			::if nav!=null::
-				
+			::if nav!=null::				
 				::foreach i nav::
 				<li><a href="::i.link::">::i.name::</a> </li>
 				::end::		
-				
 			::end::
 		</ul>
 		

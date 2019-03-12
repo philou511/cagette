@@ -3,16 +3,22 @@ import sys.db.Types;
 import tink.core.Error;
 
 enum OperationType{
-	VOrder; //order on a varying order contract
-	COrder;//order on a constant order contract
-	Payment;
+	VOrder; 	//order on a variable order
+	COrder;		//order on a CSA contract
+	Payment;	
 	Membership;	
 }
 
-typedef PaymentInfos = {type:String, ?remoteOpId:Int, ?netAmount:Float}; 
+typedef PaymentInfos = {
+	type : String, 			//payment type (PSP)
+	?remoteOpId : String,		//PSP operation ID 
+	/*?netAmount:Float,		//amount paid less fees
+	?fixedFees:Float,		//PSP fixed fees
+	?variableFees:Float,	//PSP variable fees*/
+}; 
+
 typedef VOrderInfos = {basketId:Int};
 typedef COrderInfos = {contractId:Int};
-
 
 /**
  * Payment operation 
@@ -230,7 +236,24 @@ class Operation extends sys.db.Object
 	 * @param	name
 	 * @param	relation
 	 */
-	public static function makePaymentOperation(user: db.User, group: db.Amap, type: String, amount: Float, name: String, ?relation: db.Operation) : db.Operation
+	/*public static function makePaymentOperation(user:db.User,group:db.Amap,type:String, amount:Float, name:String, ?relation:db.Operation, ?remoteOpId : String ){
+		
+		var t = new db.Operation();
+		t.amount = Math.abs(amount);
+		t.date = Date.now();
+		t.name = name;
+		t.group = group;
+		t.pending = true;
+		t.user = user;
+		t.type = Payment;
+		var data : PaymentInfos = { type: type };
+		if ( remoteOpId != null ) {
+			data.remoteOpId = remoteOpId;
+		}
+		t.data = data;
+		if(relation!=null) t.relation = relation;
+		t.insert();*/
+	public static function makePaymentOperation(user: db.User, group: db.Amap, type: String, amount: Float, name: String, ?relation: db.Operation, ?remoteOpId : String) : db.Operation
 	{
 
 		if(type == payment.OnTheSpotPayment.TYPE) 
@@ -264,6 +287,9 @@ class Operation extends sys.db.Object
 		operation.user = user;
 		operation.type = Payment;		
 		var data : PaymentInfos = { type: type };
+		if ( remoteOpId != null ) {
+			data.remoteOpId = remoteOpId;
+		}
 		operation.data = data;
 		if(relation != null) operation.relation = relation;
 		operation.insert();

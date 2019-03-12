@@ -24,7 +24,7 @@ class UserContract extends Object
 	
 	//store price (1 unit price) and fees (percentage not amount ) rate when the order is done
 	public var productPrice : SFloat;
-	public var feesRate : SInt; //fees in percentage
+	public var feesRate : SFloat; //fees in percentage
 	
 	public var paid : SBool;
 	

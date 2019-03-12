@@ -1,173 +1,214 @@
 package react.product;
-import react.ReactDOM;
+
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
-import react.Typeahead;
+import mui.core.Dialog;
+import mui.core.DialogTitle;
+import mui.core.Typography;
+import mui.core.List;
+import mui.core.ListItem;
+import mui.core.ListItemText;
+import react.mui.CagetteTheme;
+import mui.core.ListItemIcon;
+import mui.core.ListItemAvatar;
+import mui.core.Avatar;
+using Lambda;
 
-private typedef CategorySelectorProps = {
-	formName:String,
-	txpProductId:Int,
-	productName:String,
-}
+class CategorySelector extends react.ReactComponentOfPropsAndState<{categories : Array<CategoryInfo>,onSelect:Int->Void},{}>{
 
-private typedef CategorySelectorState = {
-	txpProductId:Int,
-	productName:String,
-	categoryId:Int,
-	breadcrumb:String,	
-}
-
-/**
- * Select the category of a product
- * 
- * @author fbarbut
-	@deprecated
- */
-class CategorySelector extends react.ReactComponentOfPropsAndState<PCategorySelectorProps,CategorySelectorState> {
-
-	public static var DICO : TxpDictionnary = null;
-	var options : Array<{id:Int,label:String}>;
-	var imgRef: react.ReactRef<{src:String}>;
-
-	public function new(props:ProductInputProps) {
+	public function new(props){
 		super(props);
-		options = [];
-		this.state = {
-			txpProductId : props.txpProductId,
-			productName : props.productName,
-			categoryId : 0,
-			breadcrumb : ""
-		};
-		this.imgRef  = React.createRef();
+		this.state = {};		
 	}
-	
+
 	override public function render(){
-		var inputName :String = props.formName+"_name";
-		var txpProductInputName :String = props.formName+"_txpProductId";
-		
+		//faire des Item comme là ? https://material-ui.com/demos/dialogs/
 		return jsx('
-			<div className="row">
-			
-				<div className="col-md-8">
-					
-                    
+			<Dialog onClose=$onClose open={true} >
+				<Typography component="h2" style=${{fontSize:"1.3rem",padding:12}}>
+					Sélectionnez une catégorie
+				</Typography>
+				<SelectionPanel categories=${this.props.categories} onSelect=${props.onSelect}/>
+        	</Dialog>');
+	}
 
-					<div className = "txpProduct" > ${state.breadcrumb}</div>				
-					
-					<input className="txpProduct" type="hidden" name="$txpProductInputName" value="${state.txpProductId}" />
-					<input className="txpProduct" type="hidden" name="$inputName" value="${state.productName}" />
-				</div>
-				
-				<div className="col-md-4">
-					<img ref=${this.imgRef} className="img-thumbnail" />
-				</div>
+	function onClose(e:js.html.Event,reason:mui.core.modal.ModalCloseReason){
 
-                <Modal>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Expansion Panel 1</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                            sit amet blandit leo lobortis eget.
-                        </Typography>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                </Modal>
+	}	
 
+	function close(e){
+        onClose(e,mui.core.modal.ModalCloseReason.BackdropClick);
+    }
 
-			</div>
-		');
-	}
 	
-	/**
-	 * Called when typing is stopped 
-	 * @param	o
-	 */
-	function onSearch(o){
-		//trace("on search : "+o);
-	}
-	
-	/**
-	 * Each time a single letter change in the input
-	 * @param	input
-	 */
-	function onInputChange(input:String){
-		trace('on input change $input');
-		this.setState({productName:input});
-	}
-	
-	/**
-	 * Called when an item is selected in suggestions
-	 */
-	function onChange(selection:Array<{label:String,id:Int}>){
-		
-		if (selection == null || selection.length == 0) return;
-		
-		trace("on change "+selection[0]);
-		
-		var product = Lambda.find(DICO.products, function(x) return x.id == selection[0].id);
-		setTaxo(product);
-		this.setState({productName:selection[0].label});
-	}
-	
-	/**
-	 * init typeahead auto-completion features when component is mounted
-	 */
-	override function componentDidMount(){
-		
-		//get dictionnary
-		if (DICO == null){
-			
-			var r = new haxe.Http("/product/getTaxo");
-			r.onData = function(data){
-				//load dico
-				DICO = haxe.Unserializer.run(data);
-				
-				for ( p in DICO.products){
-					options.push({label:p.name,id:p.id});
-				}
-				
-				//default values of input
-				if (props.txpProductId != null){
-					var txp = Lambda.find(DICO.products, function(x) return x.id == props.txpProductId);
-					setTaxo(txp);
-				}
-			};
-			r.request();
-		}
-	}
-	
-	function setTaxo(txp:{id:Int, name:String, category:Int, subCategory:Int}){
-		
-		if (txp == null) return;
-		
-		//trace(txp);
-		
-		this.setState({
-			categoryId:txp.category,
-			txpProductId:txp.id,
-			breadcrumb:getBreadcrumb(txp)/*,
-			productName:product.name	//do not override product name !		*/
-		});
-		
-		this.imgRef.current.src="/img/taxo/cat"+txp.category+".png";
-	}
-	
-	/**
-	 * generate string like "fruits & vegetables / vegetables / carrots"
-	 * @param	name
-	 */
-	function getBreadcrumb(product){
-		//cat			
-		var str = D
-		ICO.categories.get(product.category).name;
-		if (product.subCategory != null){
-			str += " / " + DICO.subCategories.get(product.subCategory).name;
-		}
-		str += " / " + product.name;
-		return str;
-	}
+
 }
+
+typedef SelectionPanelProps = {
+	categories : Array<CategoryInfo>,
+	onSelect:Int->Void,
+}
+
+typedef SelectionPanelState = {
+	category1Id:Int,
+	category2Id:Int,
+	category3Id:Int
+}
+
+class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelProps,SelectionPanelState>{
+
+	public function new(props) 
+	{
+		super(props);
+		this.state = {
+			category1Id:0,
+			category2Id:0,
+			category3Id:0
+		};
+	}
+
+	function getPath() {
+        var path = "";
+        var category1Id = this.state.category1Id;
+        var category2Id = this.state.category2Id;
+        var category3Id = this.state.category3Id;
+
+        if (category1Id != 0) {
+            path = this.getLevelCategories(1, 0, 0).filter(function(data) return data.id == category1Id )[0].name;
+        }
+
+        if (category2Id != 0) {
+            path += " / " + this.getLevelCategories(2, category1Id, 0).filter(function(data) return data.id == category2Id )[0].name;
+        }
+
+        if (category3Id != 0) {
+            path += " / " + this.getLevelCategories(3, category1Id, category2Id).filter(function(data) return data.id == category3Id )[0].name;
+        }
+
+        return path;
+    }
+
+        
+	/**
+		Click on a category on any level
+	**/
+	function handleClick(id:Int) {
+		//trace(id);
+		if (this.state.category1Id==0) {
+			this.setState({ category1Id: id });              
+		} else if (this.state.category2Id==0) {
+			this.setState({ category2Id: id });
+		} else if (this.state.category3Id==0) {
+			this.setState({ category3Id: id },function(){
+
+				
+				this.props.onSelect(id);
+
+			});
+
+			
+		}
+
+	}
+
+	function getProductCategories() {
+
+		var productCategories = [];
+		var category1Id = this.state.category1Id;
+		var category2Id = this.state.category2Id;
+		
+		//Level 1
+		if (category1Id == 0) {
+			productCategories = this.getLevelCategories(1, 0, 0);
+		} 
+		//Level 2          
+		else if (category2Id == 0) {
+			productCategories = this.getLevelCategories(2, category1Id, 0);
+		}
+		//Level 3
+		else {            
+			productCategories = this.getLevelCategories(3, category1Id, category2Id);
+		}
+
+		return productCategories;
+
+	}
+
+	function getLevelCategories(level:Int, category1Id:Int, category2Id:Int) {
+		if (level == 1) {
+			return this.props.categories;
+		}
+		else if  (level == 2) {
+			return this.props.categories.filter(function(data) return data.id == category1Id )[0].subcategories;
+		}
+		else {
+
+			var categories2 = this.props.categories.filter(function(data) return data.id == category1Id )[0].subcategories;
+			return categories2.filter(function(data) return data.id == category2Id )[0].subcategories;
+		}
+	}
+
+	override function render() {
+
+		var productCategories = this.getProductCategories().map(function (item){
+			var onClick = function(){
+				handleClick(item.id);
+			}; 
+
+			if(state.category1Id==0){
+				return jsx('<ListItem button onClick=$onClick key=${item.id}>
+				<ListItemAvatar>
+                	<img src=${item.image} style=${{width:64}}/>
+                </ListItemAvatar>
+				<ListItemText primary=${item.name} />
+				</ListItem>');
+			}else{
+				return jsx('
+			 		<ListItem button onClick=$onClick key=${item.id}>
+                		<ListItemText primary=${item.name} />
+              		</ListItem>');
+			}
+			
+		});
+
+		
+
+		if(state.category1Id!=0){
+			productCategories.push(
+				jsx('
+				<ListItem button onClick=$goBack key={0} style=${{backgroundColor:CGColors.Bg1}}>
+					<ListItemIcon>
+							${CagetteTheme.getIcon("chevron-left")}
+					</ListItemIcon>
+					<ListItemText primary="Retour" />
+				</ListItem>
+				')
+			);
+
+		}
+		
+		return jsx(' 
+		<div>
+			<div style=${{backgroundColor:CGColors.Bg1,padding:12,fontWeight:"bold"}}>${getPath()}</div>				   
+			<List>
+				$productCategories
+			</List>                              
+		</div>');
+	
+	}
+
+	function goBack(_){
+			
+		if(state.category3Id!=0) {
+			this.setState({category3Id:0});
+		} else if (state.category2Id!=0){
+			this.setState({category2Id:0});
+		} else {
+			this.setState({category1Id:0});
+		}
+	}	
+
+	
+}	
+

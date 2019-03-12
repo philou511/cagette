@@ -41,6 +41,10 @@ class User extends Object {
 	public var address2:SNull<SString<64>>;
 	public var zipCode:SNull<SString<32>>;
 	public var city:SNull<SString<25>>;
+
+	public var birthDate : SNull<SDate>;
+	public var nationality : SNull<SString<2>>;
+	public var countryOfResidence : SNull<SString<2>>;
 	
 	@:skip public var amap(get_amap, null) : Amap;
 	
@@ -85,6 +89,38 @@ class User extends Object {
 		//Who's connected, user1 or user2 ?
 		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
 		
+	}
+
+	public static function getForm(user:db.User){
+		var t = sugoi.i18n.Locale.texts;
+		var form = sugoi.form.Form.fromSpod(user);
+		form.removeElement(form.getElement("lang"));
+		form.removeElement(form.getElement("pass"));
+		form.removeElement(form.getElement("rights"));
+		form.removeElement(form.getElement("cdate"));
+		form.removeElement(form.getElement("ldate"));
+		form.removeElement( form.getElement("apiKey") );
+		form.removeElement(form.getElement("nationality"));
+		
+		form.addElement(new sugoi.form.elements.StringSelect("nationality", t._("Nationality"), getNationalities(), user.nationality), 15);
+		form.removeElement(form.getElement("countryOfResidence"));
+		var countryOptions = db.Place.getCountries();
+		form.addElement(new sugoi.form.elements.StringSelect("countryOfResidence", t._("Country of residence"), countryOptions, user.countryOfResidence), 16);
+		return form;
+	}
+
+	public static function getNationalities(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			{label:t._("French")	,value:"FR"},
+			{label:t._("Belgian")	,value:"BE"},
+			{label:t._("Italian")	,value:"IT"},
+			{label:t._("Spanish")	,value:"ES"},
+			{label:t._("German")	,value:"DE"},
+			{label:t._("Swiss")		,value:"CH"},
+			{label:t._("Canadian")	,value:"CA"},
+			{label:t._("Other")		,value:"-"},
+		];
 	}
 	
 	/**
@@ -563,6 +599,9 @@ class User extends Object {
 			"address2"	=>	t._("Address 2"),
 			"zipCode"	=>	t._("Zip code"),
 			"city"		=>	t._("City"),
+			"birthDate"  =>	t._("Birth date"),
+			"nationality" =>  t._("Nationality"),
+			"countryOfResidence" =>  t._("Country of residence"),
 			"rights"	=>	t._("Rights"),
 			"cdate"		=>	t._("Registration date"),
 			"flags"		=>	t._("Options"),

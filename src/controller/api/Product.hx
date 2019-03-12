@@ -18,7 +18,7 @@ class Product extends Controller
 	}
 
 	/**
-	Get full categories tree
+		Get full categories tree
 	**/
 	public function doCategories(){
 		var out = new Array<CategoryInfo>();

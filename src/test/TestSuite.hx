@@ -28,6 +28,7 @@ class TestSuite
 		r.add(new pro.test.TestReports());
 		//wholesale-order tests
 		r.add(new who.test.TestWho());
+		r.add(new pro.test.TestMarketplacePayment());
 		#end
 
 		r.run();
@@ -132,13 +133,23 @@ class TestSuite
 	public static var AMAP_DU_JARDIN:db.Amap = null;
 	public static var LOCAVORES:db.Amap = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
+	public static var VENDOR1:db.Vendor = null;
+	public static var VENDOR2:db.Vendor = null;
+	public static var VENDOR3:db.Vendor = null;
 	public static var DISTRIB_CONTRAT_AMAP:db.Distribution = null;
 	public static var DISTRIB_FRUITS_PLACE_DU_VILLAGE:db.Distribution = null;
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
+	public static var DISTRIB_LAITUE:db.Distribution = null;
+	public static var DISTRIB_CAROTTES:db.Distribution = null;
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	public static var COURGETTES:db.Product = null;
+<<<<<<< HEAD
+	public static var LAITUE:db.Product = null;
+	public static var CAROTTES:db.Product = null;
+=======
 	public static var CARROTS:db.Product = null;
+>>>>>>> master
 	public static var FLAN:db.Product = null;
 	public static var CROISSANT:db.Product = null;
 	public static var DISTRIB_PATISSERIES:db.Distribution = null;
@@ -272,7 +283,11 @@ class TestSuite
 
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
+<<<<<<< HEAD
+		//second group : LOCAVORES
+=======
 		//second group 
+>>>>>>> master
 		var a = new db.Amap();
 		a.name = "Les Locavores de la Rue Saucisse";
 		a.contact = f;
@@ -292,7 +307,35 @@ class TestSuite
 		v.email = "courgette@gmail.com";
 		v.zipCode = "00000";
 		v.city = "Bourligeac";
+		v.amap = LOCAVORES;
 		v.insert();
+		VENDOR1 = v;
+
+		var vendor2 = new db.Vendor();
+		vendor2.name = "La ferme de la laitue hystérique";
+		vendor2.email = "laitue@gmail.com";
+		vendor2.zipCode = "33000";
+		vendor2.city = "Auliwoud";
+		vendor2.amap = LOCAVORES;
+		vendor2.insert();
+		VENDOR2 = vendor2;
+
+		var vendor3 = new db.Vendor();
+		vendor3.name = "La ferme des carottes rebelles";
+		vendor3.email = "carottes@gmail.com";
+		vendor3.zipCode = "47100";
+		vendor3.city = "Parmentier";
+		vendor3.amap = LOCAVORES;
+		vendor3.insert();
+		VENDOR3 = vendor3;
+
+		var boulanger = new db.Vendor();
+		boulanger.name = "Boulangerie Turlupain";
+		boulanger.email = "turlupain@gmail.com";
+		boulanger.zipCode = "24000";
+		boulanger.city = "Parmentier";
+		boulanger.amap = LOCAVORES;
+		boulanger.insert();
 		
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
@@ -304,6 +347,24 @@ class TestSuite
 		c.insert();
 		
 		CONTRAT_LEGUMES = c;
+
+		var contract2 = new db.Contract();
+		contract2.name = "Commande Laitue";
+		contract2.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		contract2.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		contract2.vendor = vendor2;
+		contract2.amap = a;
+		contract2.type = db.Contract.TYPE_VARORDER;
+		contract2.insert();
+		
+		var contract3 = new db.Contract();
+		contract3.name = "Commande Carottes";
+		contract3.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		contract3.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		contract3.vendor = vendor3;
+		contract3.amap = a;
+		contract3.type = db.Contract.TYPE_VARORDER;
+		contract3.insert();
 
 		var p = new db.Product();
 		p.name = "Courgettes";
@@ -340,17 +401,64 @@ class TestSuite
 		p.insert();
 
 		CHICKEN = p;
+
+		/*
+		La ferme de la courgette enragée (VENDOR1)
+			- courgettes
+			- carottes
+			- poulet
+		*/
+
+		var product2 = new db.Product();
+		product2.name = "Laitue";
+		product2.qt = 1;
+		product2.unitType = Common.Unit.Kilogram;
+		product2.price = 2.5;
+		product2.organic = true;
+		product2.contract = contract2;
+		product2.insert();
+		LAITUE = product2;
+
+		var product3 = new db.Product();
+		product3.name = "Carottes";
+		product3.qt = 1;
+		product3.unitType = Common.Unit.Kilogram;
+		product3.price = 4.5;
+		product3.organic = true;
+		product3.contract = contract3;
+		product3.insert();
+		CAROTTES = product3;
 		
 		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,null,null,null,null,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
 
-		//PASTRY
+		var distribution2 = new db.Distribution();
+		distribution2.date = new Date(2017, 5, 1, 19, 0, 0);
+		distribution2.contract = contract2;
+		distribution2.place = place;
+		distribution2.insert();
 
+		DISTRIB_LAITUE = distribution2;
+
+		var distribution3 = new db.Distribution();
+		distribution3.date = new Date(2017, 5, 1, 19, 0, 0);
+		distribution3.contract = contract3;
+		distribution3.place = place;
+		distribution3.insert();
+
+		DISTRIB_CAROTTES = distribution3;
+		
+		//boulanger
+		/*
+		 Boulangerie Turlupain
+		 	- Flan
+			- Croissant			
+		*/
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
-		c.vendor = v;
+		c.vendor = boulanger;
 		c.amap = a;
 		c.type = db.Contract.TYPE_VARORDER;
 		c.insert();
@@ -403,7 +511,7 @@ class TestSuite
 		app.plugins.push( new pro.ProPlugIn() );		
 		app.plugins.push( new connector.ConnectorPlugIn() );				
 		//app.plugins.push( new pro.LemonwayEC() );
-		app.plugins.push( new who.WhoPlugIn() );
+		//app.plugins.push( new who.WhoPlugIn() );
 		#end
 		
 		App.current.user = u;

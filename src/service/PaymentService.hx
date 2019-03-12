@@ -173,7 +173,7 @@ class PaymentService
 			operation.pending = false;
 			operation.update();
 			
-			for ( payment in basket.getPayments()){
+			for ( payment in basket.getPaymentsOperations()){
 
 				if ( payment.pending){
 					payment.lock();
@@ -185,6 +185,8 @@ class PaymentService
 			var o = orders.first();
 			updateUserBalance(o.user, o.distribution.place.amap);	
 		}
+
+		App.current.event(ValidateBasket(basket));
 
 		return true;
 	}
@@ -210,7 +212,7 @@ class PaymentService
 			operation.pending = true;
 			operation.update();
 			
-			for ( payment in basket.getPayments()){
+			for ( payment in basket.getPaymentsOperations()){
 
 				if (!payment.pending){
 					payment.lock();

@@ -17,9 +17,7 @@ class User extends Controller
 		//cleaning
 		var email = StringTools.trim(App.current.params.get("email")).toLowerCase();
 		var pass = StringTools.trim(App.current.params.get("password"));
-		
 		service.UserService.login(email, pass);
-		
 		Sys.print(Json.stringify({success:true}));
 	}
 	

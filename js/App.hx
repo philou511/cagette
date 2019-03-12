@@ -111,6 +111,13 @@ class App {
 		//});
 	}*/
 
+
+	public function getCategorySelector(divId:String){
+		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+			ReactDOM.render(jsx('<$CategorySelector />'),  js.Browser.document.getElementById(divId));
+		});	
+	}
+
 	/**
 	 * Removes the form element and replace it by a react js component
 	 * @param	divId
@@ -125,8 +132,6 @@ class App {
 			//dirty stuff to remove "real" input, and replace it by the react one
 			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
 			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
-
-			//if (txpProductId == null) txpProductId = null;
 
 			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});

@@ -1,6 +1,5 @@
 package service;
 import Common;
-import tink.core.Error;
 
 /**
  * Order Service
@@ -60,7 +59,7 @@ class OrderService
 		o.product = product;
 		o.quantity = quantity;
 		o.productPrice = product.price;
-		if (product.contract.hasPercentageOnOrders()) {
+		if ( product.contract.hasPercentageOnOrders() ){
 			o.feesRate = product.contract.percentageValue;
 		}
 		o.user = user;
@@ -229,7 +228,7 @@ class OrderService
 	public static function delete(order:db.UserContract) {
 		var t = sugoi.i18n.Locale.texts;
 
-		if(order==null) throw new Error(t._("This order has already been deleted."));
+		if(order==null) throw new tink.core.Error(t._("This order has already been deleted."));
 		
 		order.lock();
 		
@@ -271,7 +270,7 @@ class OrderService
 			}
 		}
 		else {
-			throw new Error(t._("Deletion not possible: quantity is not zero."));
+			throw new tink.core.Error(t._("Deletion not possible: quantity is not zero."));
 		}
 
 	}
@@ -407,7 +406,7 @@ class OrderService
 
 
 	/**
-	 *  Order summary for a member
+	 *  Send Order summary for a member
 	 *  WARNING : its for one distrib, not for a whole basket !
 	 */
 	public static function sendOrderSummaryToMembers(d:db.Distribution){
@@ -440,6 +439,35 @@ class OrderService
 		
 	}
 
+	
+
+	/*
+	 * Get orders grouped by products. 
+	 */
+	/*public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
+		var view = App.current.view;
+		var t = sugoi.i18n.Locale.texts;
+		var where = "";
+		var exportName = "";
+		
+		//options
+		if (options.distribution != null){
+			
+			//by distrib
+			var d = options.distribution;
+			exportName = t._("Delivery ::contractName:: of the ", {contractName:d.contract.name}) + d.date.toString().substr(0, 10);
+			where += ' and p.contractId = ${d.contract.id}';
+			if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+				where += ' and up.distributionId = ${d.id}';
+			}
+			
+		}else if(options.startDate!=null && options.endDate!=null){
+			
+			//by dates
+			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
+			
+		}
+	}*/
 	
 
 	public static function sort(orders:Array<UserOrder>){

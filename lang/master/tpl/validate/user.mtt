@@ -195,7 +195,7 @@
 			::end::
 			
 			<p class="text-center" ::cond op!=null::>				
-				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund/)				
+				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund?basketid=::basket.id::)				
 				$$insert(::_("Key-in a payment")::,/validate/::date::/::place.id::/::member.id::/addPayment/)
 			</p>
 			

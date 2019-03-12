@@ -1,5 +1,6 @@
 package controller;
 import sugoi.form.Form;
+import sugoi.form.elements.StringSelect;
 
 class Account extends Controller
 {
@@ -7,24 +8,14 @@ class Account extends Controller
 	public function new()
 	{
 		super();
-		
 	}
 	
-	
-	function doDefault() {
-	}
-	
+	function doDefault() {}
 	
 	@tpl('form.mtt')
 	function doEdit() {
 		
-		var form = sugoi.form.Form.fromSpod(app.user);
-		form.removeElement(form.getElement("lang"));
-		form.removeElement(form.getElement("pass"));
-		form.removeElement(form.getElement("rights"));
-		form.removeElement(form.getElement("cdate"));
-		form.removeElement(form.getElement("ldate"));
-		form.removeElement( form.getElement("apiKey") );
+		var form = db.User.getForm(app.user);
 		
 		if (form.isValid()) {
 			
@@ -51,6 +42,11 @@ class Account extends Controller
 			}
 			
 			if (!admin) { app.user.rights.unset(Admin); }
+
+			//Check that the user is at least 18 years old
+			if (!service.UserService.isBirthdayValid(app.user.birthDate)) {
+				app.user.birthDate = null;
+			 }
 			
 			app.user.update();
 			throw Ok('/contract', t._("Your account has been updated"));

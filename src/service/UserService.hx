@@ -27,6 +27,11 @@ class UserService
 		//user exists ?
 		var user = db.User.manager.select( $email == email || $email2 == email , true);
 		if (user == null) throw new Error(404,t._("There is no account with this email"));
+
+		//anti bruteforce
+		if(service.UserService.isBanned()){
+			throw t._("Since you failed to login more than 4 times, your IP address has been banned for 10 minutes.");		
+		}
 		
 		//new account
 		if (!user.isFullyRegistred()) {
@@ -39,6 +44,7 @@ class UserService
 		var pass = haxe.crypto.Md5.encode( App.config.get('key') + password );
 		
 		if (user.pass != pass) {
+			service.UserService.recordBadLogin();
 			throw new Error(403,t._("Invalid password"));
 		}
 		
@@ -149,6 +155,30 @@ class UserService
 	 */
 	public static function getFromGroup(group:db.Amap):Array<db.User>{
 		return Lambda.array( group.getMembers() );
+	}
+
+	public static function isBanned(){		
+		var ip = sugoi.Web.getClientIP();
+		var badTries:Int = sugoi.db.Cache.get("ip-ban-"+ip);
+		if(badTries==null) return false;
+		if(badTries>=5) return true;
+		return false;
+	}
+
+	public static function recordBadLogin(){
+		var ip = sugoi.Web.getClientIP();
+		var badTries:Int = sugoi.db.Cache.get("ip-ban-"+ip);
+		if(badTries==null) badTries = 0;
+		sugoi.db.Cache.set("ip-ban-"+ip,badTries+1, 60 * 10);
+	}
+	/**
+	 *  Checks that the user is at least 18 years old
+	 *  @param birthday - 
+	 *  @return Bool
+	 */
+	public static function isBirthdayValid(birthday:Date): Bool {
+		//Check that the user is at least 18 years old
+		return birthday.getTime() < DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()	? true : false;	
 	}
 
 
