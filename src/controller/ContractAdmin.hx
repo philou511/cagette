@@ -53,7 +53,7 @@ class ContractAdmin extends Controller
 		}
 		
 		view.contracts = contracts;		
-		view.vendors = app.user.amap.getVendors();
+		view.vendors = app.user.amap.getActiveVendors();
 		view.places = app.user.amap.getPlaces();
 		checkToken();
 

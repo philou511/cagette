@@ -131,7 +131,7 @@
 <div class="col-md-6">
 	<div class="article" id="places">
 		
-		<h2><i class="icon icon-map-marker"></i> ::_("Delivery places")::</h2>
+		<h2>::_("Delivery places")::</h2>
 		<table class="table">
 			::foreach p places::		
 				<tr>
@@ -149,7 +149,4 @@
 	</div>
 </div>
 	
-
-
-
 ::end::

@@ -10,6 +10,15 @@ import tools.ArrayTool;
 
 class Main extends Controller {
 	
+	function doDefault(?permalink:String){
+
+		if(permalink==null || permalink=="") throw Redirect("/home");
+		//if permalink is an ID , could use it for group selection ? app.cagette.net/1/contractAdmin ...
+		var p = sugoi.db.Permalink.get(permalink);
+		if(p==null) throw Error("/home",t._("The link \"::link::\" does not exists.",{link:permalink}));
+
+		app.event(Permalink({link:p.link,entityType:p.entityType,entityId:p.entityId}));
+	}
 	
 	/**
 	 * public pages 
@@ -22,7 +31,7 @@ class Main extends Controller {
 	Group homepage
 	**/
 	@tpl("home.mtt")
-	function doDefault() {
+	function doHome() {
 		view.category = 'home';
 		
 		var group = app.getCurrentGroup();		

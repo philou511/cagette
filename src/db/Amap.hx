@@ -263,6 +263,11 @@ class Amap extends Object
 		var vendors = Lambda.array(Lambda.map(getContracts(),function(c) return c.vendor));
 		return tools.ObjectListTool.deduplicate(vendors);
 	}
+
+	public function getActiveVendors():Array<db.Vendor> {
+		var vendors = Lambda.array(Lambda.map(getActiveContracts(),function(c) return c.vendor));
+		return tools.ObjectListTool.deduplicate(vendors);
+	}
 	
 	public function getMembers() {
 		return User.manager.unsafeObjects("Select u.* from User u,UserAmap ua where u.id=ua.userId and ua.amapId="+this.id+" order by u.lastName", false);
