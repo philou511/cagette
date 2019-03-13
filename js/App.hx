@@ -23,6 +23,7 @@ import react.product.*;
 import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
+import react.vendor.*;
 
 //TODO
 import react.store.Cart;
@@ -134,6 +135,19 @@ class App {
 			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
 
 			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
+		});
+	}
+
+	/**
+	 * TO DO
+	 * @param	divId
+	 * @param	vendorId
+	 */
+	public function getVendorPage(divId:String, vendorId:Int ){
+
+		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+
+			ReactDOM.render(jsx('<$VendorPage vendorId=${vendorId}/>'),  js.Browser.document.getElementById(divId));
 		});
 	}
 
