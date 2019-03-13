@@ -31,8 +31,8 @@ private typedef Props = {
 
 private typedef PublicProps = {
     var product : ProductInfo;
-    var openModal : ProductInfo->VendorInfo->Void;
-    var vendor : VendorInfo;
+    var openModal : ProductInfo->VendorInfos->Void;
+    var vendor : VendorInfos;
 }
 
 private typedef TClasses = Classes<[
@@ -179,7 +179,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
 
                         <Hidden xsDown>
                             <div className=${classes.cagAvatarContainer}>
-                                <Avatar src=${props.vendor.faceImageUrl} className=${classes.farmerAvatar}/>  
+                                <Avatar src=${props.vendor.images.portrait} className=${classes.farmerAvatar}/>  
                             </div>
                         </Hidden>
                     </CardMedia>
@@ -210,7 +210,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
         <$SubCateg label="Bio" icon="icon icon-bio" colorClass="cagBio"  />*/
     }
 
-    function renderVendor(vendor:VendorInfo){
+    function renderVendor(vendor:VendorInfos){
         return jsx('<span>${vendor.name}</span>');
     }
 

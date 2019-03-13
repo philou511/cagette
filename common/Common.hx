@@ -14,12 +14,19 @@ typedef Right = db.UserAmap.Right;
 
 //typedef Rights = Array<Right>;
 
+/*@:enum
+abstract Entity(String) {
+	var User 	= "user";
+	var Vendor 	= "vendor";
+	var Group 	= "group";
+	var Product = "product";
+}*/
 
 @:keep
 typedef OrderSimple = {
 	products: Array<ProductWithQuantity>,
-	total:Float,//prix total
-	count:Int,//Nombre de produits avec quantité
+	total:Float,//total price
+	count:Int,	//Nombre de produits avec quantité
 }
 
 //A temporary order, waiting for being paid and definitely recorded.
@@ -39,16 +46,22 @@ typedef OrderInSession = {
 }
 
 @:keep
-typedef VendorInfo = {
-	id : Int,
-	name : String,
-	desc:String,
-
-	faceImageUrl : Null<String>,
-	logoImageUrl : Null<String>,
+typedef VendorInfos = {
+	id 		: Int,
+	name 	: String,
+	desc 	: String,
+	image 	: String,//logo
+	?images : {
+		logo:String,
+		portrait:String,
+		banner:String,
+		farm1:String,
+		farm2:String,
+		farm3:String,
+		farm4:String,
+	},
 	zipCode : String,
 	city : String,
-
 	linkText:String,
 	linkUrl:String,
 }

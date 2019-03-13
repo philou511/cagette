@@ -39,7 +39,7 @@ private typedef Props = {
 
 private typedef PublicProps = {
     var product:ProductInfo;
-    var vendor:VendorInfo;
+    var vendor:VendorInfos;
     var onClose:js.html.Event->ModalCloseReason->Void;
 }
 
@@ -174,7 +174,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
 
                     <Grid container spacing={24}>
                         <Grid item xs={4}>
-                            <img className=${classes.cover} src=${vendor.logoImageUrl} />
+                            <img className=${classes.cover} src=${vendor.images.logo} />
                         </Grid>
 
                         <Grid item xs={8} style=${{color:CGColors.Secondfont}}>                        
@@ -205,10 +205,10 @@ class ProductModal extends ReactComponentOfProps<Props> {
     }
 
     function vendorAvatar(vendor){
-        if(vendor.faceImageUrl==vendor.logoImageUrl){
+        if(vendor.images.logo==vendor.images.portrait){
             return null;
         }else{
-            return jsx('<Avatar src=${vendor.faceImageUrl} style={{width:120,height:120,float:"left"}}/>');
+            return jsx('<Avatar src=${vendor.images.portrait} style={{width:120,height:120,float:"left"}}/>');
         }
     }
 }

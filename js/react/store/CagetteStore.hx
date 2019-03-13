@@ -31,7 +31,7 @@ typedef  CagetteStoreState = {
 	var catalog:Catalog;
 	var filter:CatalogFilter;
 	var loading:Bool;
-	var vendors:Array<VendorInfo>;
+	var vendors:Array<VendorInfos>;
 	var paymentInfos:String;
 	var errorMessage:String;
 	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};

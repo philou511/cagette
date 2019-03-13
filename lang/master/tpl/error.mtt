@@ -17,7 +17,7 @@
 					::_("If this happen repeatedly, please let us know so we can solve the issue.")::
 				</p>
 				<h4>::_("Technical description of the error")::</h4>
-				::if exception!=null && exception.isTinkError:: 
+				::if message==null && exception!=null && exception.isTinkError:: 
 					<div style="color:white;font-family: monospace;background:#BBB;font-size: 0.8em;padding: 3px 8px;border-radius: 3px;display: inline-block;">
 						Code ::exception.code::
 					</div>					

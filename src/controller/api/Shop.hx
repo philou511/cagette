@@ -170,7 +170,7 @@ class Shop extends Controller
 		var out = { 
 			place : args.place.getInfos(),
 			orderEndDates : new Array<{date:String,contracts:Array<String>}>(),
-			vendors : new Array<VendorInfo>(),
+			vendors : new Array<VendorInfos>(),
 			paymentInfos : service.PaymentService.getPaymentInfosString(args.place.amap)
 		};
 		

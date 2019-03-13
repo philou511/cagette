@@ -12,6 +12,7 @@ class Vendor extends Object
 	public var name : SString<128>;
 	
 	public var legalStatus : SNull<SEnum<LegalStatus>>;
+	@hideInForms public var profession : SNull<SInt>;
 
 	public var email : STinyText;
 	public var phone:SNull<SString<19>>;
@@ -57,17 +58,17 @@ class Vendor extends Object
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
 
-	public function infos():VendorInfo{
+	public function infos():VendorInfos{
 		return {
-			id : id,
-			name : name,
-			faceImageUrl : (image!=null ? App.current.view.file(image) : null ),
-			logoImageUrl : (image!=null ? App.current.view.file(image) : null ),
+			id 		: id,
+			name 	: name,
+			desc 	: desc,
+			image 	: App.current.view.file(image),
+			//images 	: null
 			zipCode : zipCode,
-			city : city,
-			linkText:linkText,
-			linkUrl:linkUrl,
-			desc:desc
+			city 	: city,
+			linkText	:linkText,
+			linkUrl		:linkUrl,			
 		};
 	}
 
@@ -84,11 +85,16 @@ class Vendor extends Object
 	public static function getForm(vendor:db.Vendor){
 		var t = sugoi.i18n.Locale.texts;
 		var form = sugoi.form.Form.fromSpod(vendor);
+		
+		//country
 		form.removeElementByName("country");
 		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		
+		//profession
+		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,false),3);
+		
 		return form;
 	}
-	
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
@@ -104,6 +110,15 @@ class Vendor extends Object
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 		];
+	}
+
+	/**
+		Loads vendors professions from json
+	**/
+	public static function getVendorProfessions():Array<{id:Int,name:String}>{
+		var filePath = sugoi.Web.getCwd()+"../data/vendorProfessions.json";
+		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
+		return json.professions;
 	}
 	
 }

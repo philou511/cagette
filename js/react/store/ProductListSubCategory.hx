@@ -28,8 +28,8 @@ typedef ProductListSubCategoryProps = {
 private typedef PublicProps = {
 	@:optional var displayAll:Bool;
 	var catalog : CatalogSubCategory;
-	var openModal : ProductInfo->VendorInfo->Void;
-	var vendors : Array<VendorInfo>;
+	var openModal : ProductInfo->VendorInfos->Void;
+	var vendors : Array<VendorInfos>;
 }
 
 typedef ProductListSubCategoryState = {

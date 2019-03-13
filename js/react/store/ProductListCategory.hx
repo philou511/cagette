@@ -24,8 +24,8 @@ typedef ProductListCategoryProps = {
 private typedef PublicProps = {
 	var catalog:CatalogCategory;
 	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
-	var openModal : ProductInfo->VendorInfo->Void;
-	var vendors : Array<VendorInfo>;
+	var openModal : ProductInfo->VendorInfos->Void;
+	var vendors : Array<VendorInfos>;
 	var filter: CatalogFilter;
 }
 
