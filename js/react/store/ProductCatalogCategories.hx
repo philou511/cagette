@@ -20,8 +20,8 @@ typedef ProductCatalogCategoriesProps = {
 
 private typedef PublicProps = {
 	var catalog:FilteredProductCatalog;
-	var vendors : Array<VendorInfo>;
-	var openModal : ProductInfo->VendorInfo->Void;
+	var vendors : Array<VendorInfos>;
+	var openModal : ProductInfo->VendorInfos->Void;
 	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 }
 

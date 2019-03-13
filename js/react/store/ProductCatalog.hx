@@ -25,13 +25,13 @@ typedef ProductCatalogProps = {
 
 private typedef PublicProps = {
 	var catalog:FilteredProductCatalog;
-	var vendors : Array<VendorInfo>;
+	var vendors : Array<VendorInfos>;
 	var nav:{category:Null<CategoryInfo>, subcategory:Null<CategoryInfo>};
 }
 
 private typedef ProductCatalogState = {
 	@:optional var modalProduct:Null<ProductInfo>;
-	@:optional var modalVendor:Null<VendorInfo>;
+	@:optional var modalVendor:Null<VendorInfos>;
 
 	var loading:Bool;
 }
@@ -92,7 +92,7 @@ class ProductCatalog extends ReactComponentOf<ProductCatalogProps, ProductCatalo
 		');
 	}
 
-	function openModal(product:ProductInfo, vendor:VendorInfo) {
+	function openModal(product:ProductInfo, vendor:VendorInfos) {
         setState({modalProduct:product, modalVendor:vendor}, function() {trace("modal opened");});
     }
 
