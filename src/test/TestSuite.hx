@@ -144,12 +144,10 @@ class TestSuite
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	public static var COURGETTES:db.Product = null;
-<<<<<<< HEAD
+
 	public static var LAITUE:db.Product = null;
-	public static var CAROTTES:db.Product = null;
-=======
 	public static var CARROTS:db.Product = null;
->>>>>>> master
+
 	public static var FLAN:db.Product = null;
 	public static var CROISSANT:db.Product = null;
 	public static var DISTRIB_PATISSERIES:db.Distribution = null;
@@ -283,11 +281,7 @@ class TestSuite
 
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
-<<<<<<< HEAD
 		//second group : LOCAVORES
-=======
-		//second group 
->>>>>>> master
 		var a = new db.Amap();
 		a.name = "Les Locavores de la Rue Saucisse";
 		a.contact = f;
@@ -427,7 +421,7 @@ class TestSuite
 		product3.organic = true;
 		product3.contract = contract3;
 		product3.insert();
-		CAROTTES = product3;
+		CARROTS = product3;
 		
 		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,null,null,null,null,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;

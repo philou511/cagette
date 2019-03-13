@@ -94,6 +94,11 @@ class Contract extends Object
 		var n = Date.now().getTime();
 		return flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
 	}
+
+	public function isActive():Bool{
+		var n = Date.now().getTime();
+		return n < this.endDate.getTime() && n > this.startDate.getTime();
+	}
 	
 	/**
 	 * is currently open to orders

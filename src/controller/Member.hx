@@ -298,7 +298,8 @@ class Member extends Controller
 		//an administrator can modify a user's pass only if he's a not registred user.
 		if (!isReg){
 			app.session.addMessage(t._("This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person."));
-			form.getElement("pass").required = false;
+			//form.getElement("pass").required = false;
+			form.addElement(new sugoi.form.elements.StringInput("pass",t._("Password")));
 		}else{
 			form.removeElement( form.getElement("pass") );
 		}

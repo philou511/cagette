@@ -488,11 +488,11 @@ class TestOrders extends haxe.unit.TestCase
 		var francoisOrderOperation = db.Operation.onOrderConfirm([francoisOrder1, francoisOrder2]);
 		//User 2 buys products for a multidistrib
 		var sebOrder1 = OrderService.make(test.TestSuite.SEB, 3, test.TestSuite.COURGETTES, distrib1.id);
-		var sebOrder2 = OrderService.make(test.TestSuite.SEB, 7, test.TestSuite.CAROTTES, distrib3.id);
+		var sebOrder2 = OrderService.make(test.TestSuite.SEB, 7, test.TestSuite.CARROTS, distrib3.id);
 		var sebOrderOperation = db.Operation.onOrderConfirm([sebOrder1, sebOrder2]);
 		//User 3 buys products for the same multidistrib
 		var julieOrder1 = OrderService.make(test.TestSuite.JULIE, 3, test.TestSuite.LAITUE, distrib2.id);
-		var julieOrder2 = OrderService.make(test.TestSuite.JULIE, 5, test.TestSuite.CAROTTES, distrib3.id);
+		var julieOrder2 = OrderService.make(test.TestSuite.JULIE, 5, test.TestSuite.CARROTS, distrib3.id);
 		var julieOrderOperation = db.Operation.onOrderConfirm([julieOrder1, julieOrder2]);
 		
 		//They all pay by credit card
@@ -501,13 +501,13 @@ class TestOrders extends haxe.unit.TestCase
 		// var juliePayment = db.Operation.makePaymentOperation(test.TestSuite.JULIE,distrib1.contract.amap, payment.Transfer.TYPE, 3 * test.TestSuite.LAITUE.price + 5 * test.TestSuite.CAROTTES.price, "Payment by transfer", julieOrderOperation[0]);
 		
 		//Get all the repartition
-		var vendorDataByVendorId = OrderService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
+		var vendorDataByVendorId = service.ReportService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
     
 		//Check this is what we expect for each vendor
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR1.id).orders[0].total, 3 * test.TestSuite.COURGETTES.price);
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR1.id).orders[1].total, 1 * test.TestSuite.CHICKEN.price);
 		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR2.id).orders[0].total, 5 * test.TestSuite.LAITUE.price);
-		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR3.id).orders[0].total, 12 * test.TestSuite.CAROTTES.price);
+		assertEquals(vendorDataByVendorId.get(test.TestSuite.VENDOR3.id).orders[0].total, 12 * test.TestSuite.CARROTS.price);
 		
 		//assertEquals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
 	}
