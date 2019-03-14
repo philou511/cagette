@@ -2,6 +2,7 @@ package db;
 import sugoi.form.ListData;
 import sys.db.Object;
 import sys.db.Types;
+import Common;
 
 /**
  * Distrib
@@ -231,9 +232,20 @@ class Distribution extends Object
 		this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
 		super.update();
 	}
-	
-	
 
+	public function getInfos():DistributionInfos{
+		return {
+			id:id,
+			vendorId				: this.contract.vendor.id,
+			distributionStartDate	: date.getTime(),
+			distributionEndDate		: end.getTime(),
+			orderStartDate			: orderStartDate.getTime(),
+			orderEndDate			: orderEndDate.getTime(),
+			place 					: place.getInfos()
+		}
+	}
+	
+	
 	/**
      * Get open to orders deliveries
      * @param	contract
@@ -255,7 +267,7 @@ class Distribution extends Object
 	
 	public static function makeKey(date, place){
 		return date.toString().substr(0, 10) +"|"+Std.string(place.id);
-	}
+	}	
 
 	
 	public static function getLabels(){

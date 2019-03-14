@@ -51,6 +51,8 @@ typedef VendorInfos = {
 	name 	: String,
 	desc 	: String,
 	image 	: String,//logo
+	profession : String,
+	?offCagette : String,
 	?images : {
 		logo:String,
 		portrait:String,
@@ -101,6 +103,17 @@ typedef ProductInfo = {
 typedef ProductWithQuantity = {
 	product: ProductInfo,
 	quantity: Int
+}
+
+@:keep
+typedef DistributionInfos = {
+	id:Int,
+	vendorId:Int,
+	distributionStartDate:Float,
+	distributionEndDate:Float,
+	orderStartDate:Float,
+	orderEndDate:Float,
+	place:PlaceInfos,
 }
 
 //This is used by Mangopay to know which document types to ask for KYC compliance

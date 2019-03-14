@@ -33,6 +33,8 @@ class Vendor extends Object
 	
 	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+
+	public static var PROFESSIONS:Array<{id:Int,name:String}>;
 	
 	
 	public function new() 
@@ -59,17 +61,24 @@ class Vendor extends Object
 	}
 
 	public function infos():VendorInfos{
-		return {
+		var out = {
 			id 		: id,
 			name 	: name,
 			desc 	: desc,
 			image 	: App.current.view.file(image),
+			profession : null,
 			//images 	: null
 			zipCode : zipCode,
 			city 	: city,
 			linkText	:linkText,
 			linkUrl		:linkUrl,			
 		};
+
+		if(this.profession!=null){
+			out.profession = Lambda.find(getVendorProfessions(),function(x) return x.id==this.profession).name;
+		}
+
+		return out;
 	}
 
 	public function getGroups():Array<db.Amap>{
@@ -116,8 +125,10 @@ class Vendor extends Object
 		Loads vendors professions from json
 	**/
 	public static function getVendorProfessions():Array<{id:Int,name:String}>{
+		if( PROFESSIONS!=null ) return PROFESSIONS;
 		var filePath = sugoi.Web.getCwd()+"../data/vendorProfessions.json";
 		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
+		PROFESSIONS = json.professions;
 		return json.professions;
 	}
 	
