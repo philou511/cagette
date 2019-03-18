@@ -52,6 +52,12 @@ class ProductService{
 		return ttcPrice / (1 + vatRate / 100);
 	}
 
+	public static function getCategorizerHtml(productName:String,categId:Int,formName:String){
+
+		productName = Formatting.escapeJS(productName);
+		return '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${productName}",$categId,"${formName}");</script>';
+	}
+
 
 
 }

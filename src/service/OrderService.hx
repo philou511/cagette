@@ -363,10 +363,16 @@ class OrderService
 	 * @param	order
 	 */
 	public static function confirmSessionOrder(tmpOrder:OrderInSession){
+		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
 		var user = db.User.manager.get(tmpOrder.userId);
 		for (o in tmpOrder.products){
 			o.product = db.Product.manager.get(o.productId);
+
+			//check that the distrib is still open.
+			var distrib = db.Distribution.manager.get(o.distributionId,false);
+			if(!distrib.canOrderNow()) throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.contract.name}));
+
 			orders.push( make(user, o.quantity, o.product, o.distributionId) );
 		}
 		

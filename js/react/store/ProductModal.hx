@@ -93,9 +93,9 @@ class ProductModal extends ReactComponentOfProps<Props> {
 				fontSize:12,
 			},
 			cover: {                
-                width:"100%"
+                width:"100%",
 				//maxWidth: '300px',
-				//maxHeight: '300px',
+				maxHeight: '400px',
 				//objectFit: "cover",
 			},
 		
@@ -124,9 +124,12 @@ class ProductModal extends ReactComponentOfProps<Props> {
     override public function render() {
         var classes = props.classes;
         var product = props.product;
-        var vendor = props.vendor;
-        
+        var vendor = props.vendor;        
+        if(vendor==null || product==null) return null;
+        var portrait = vendor.images!=null && vendor.images.portrait!=null ? vendor.images.portrait : vendor.image;
         if( product == null || vendor == null ) return null;
+
+
         return jsx('
             <Dialog 
                 open={true} 
@@ -174,7 +177,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
 
                     <Grid container spacing={24}>
                         <Grid item xs={4}>
-                            <img className=${classes.cover} src=${vendor.images.logo} />
+                            <img className=${classes.cover} src=${portrait} />
                         </Grid>
 
                         <Grid item xs={8} style=${{color:CGColors.Secondfont}}>                        
@@ -188,10 +191,6 @@ class ProductModal extends ReactComponentOfProps<Props> {
                                 <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
                             </Typography>
 
-                            <Typography component="p">
-                                ${vendorAvatar(vendor)}
-                            </Typography>
-
                             <div dangerouslySetInnerHTML=${{__html: ${vendor.desc}}}></div>
                         </Grid>
                     </Grid>
@@ -202,13 +201,5 @@ class ProductModal extends ReactComponentOfProps<Props> {
 
     function close(e){
         props.onClose(e,mui.core.modal.ModalCloseReason.BackdropClick);
-    }
-
-    function vendorAvatar(vendor){
-        if(vendor.images.logo==vendor.images.portrait){
-            return null;
-        }else{
-            return jsx('<Avatar src=${vendor.images.portrait} style={{width:120,height:120,float:"left"}}/>');
-        }
-    }
+    }  
 }

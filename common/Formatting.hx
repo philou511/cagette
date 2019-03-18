@@ -148,4 +148,13 @@ class Formatting
 		if (p.city != null) 	str.add(" "+p.city);
 		return str.toString();
 	}
+
+	/**
+	 * To safely print a string in javascript
+	 * @param	str
+	 */
+	public static function escapeJS( str : String ) {
+		if (str == null) return "";
+		return str.split("\\").join("\\\\").split("'").join("\\'").split('\"').join('\\"').split("\r").join("\\r").split("\n").join("\\n");
+	}
 }

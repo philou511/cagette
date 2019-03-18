@@ -94,6 +94,11 @@ class Main extends Controller {
 			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
+		//Delete demo contracts
+		if(checkToken() && app.params.get('action')=='deleteDemoContracts'){
+			var contracts = app.getCurrentGroup().deleteDemoContracts();
+			if(contracts.length>0 ) throw Ok("/","Contrats suivants effacés : "+contracts.map(function(c) return c.name).join(", "));
+		}
 	}
 	
 	//login and stuff

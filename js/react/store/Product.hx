@@ -166,6 +166,8 @@ class Product extends ReactComponentOf<Props, ProductState> {
     override public function render() {
         var classes = props.classes;
         var product = props.product;
+        var v = props.vendor;
+        var portrait = v.images!=null && v.images.portrait!=null ? v.images.portrait : v.image;
 
         return jsx('
             <Card elevation={0} className=${classes.card}> 
@@ -179,7 +181,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
 
                         <Hidden xsDown>
                             <div className=${classes.cagAvatarContainer}>
-                                <Avatar src=${props.vendor.images.portrait} className=${classes.farmerAvatar}/>  
+                                <Avatar src=$portrait className=${classes.farmerAvatar}/>  
                             </div>
                         </Hidden>
                     </CardMedia>

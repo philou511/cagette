@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-03-12 14:13+0100\n"
+"PO-Revision-Date: 2019-03-18 14:18+0100\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
@@ -148,7 +148,7 @@ msgstr ""
 "le mettre à jour lui-même."
 
 #: ../src/controller/Vendor.hx:1533 ../src/controller/Place.hx:746
-#: ../src/controller/Place.hx:1468 ../src/db/Vendor.hx:2385
+#: ../src/controller/Place.hx:1468 ../src/db/Vendor.hx:2384
 #: ../src/db/Place.hx:1416
 msgid "Country"
 msgstr "Pays"
@@ -270,7 +270,7 @@ msgstr "Vous n'êtes pas membre de ce groupe"
 
 #: ../src/controller/Contract.hx:4287 ../src/controller/Contract.hx:6259
 #: ../src/controller/Contract.hx:8124 ../src/controller/Contract.hx:8343
-#: ../src/controller/Member.hx:20178 ../src/controller/Product.hx:1654
+#: ../src/controller/Member.hx:20261 ../src/controller/Product.hx:1654
 #: ../src/controller/Distribution.hx:2256
 #: ../src/controller/Distribution.hx:5862
 #: ../src/controller/Distribution.hx:11544
@@ -631,7 +631,7 @@ msgid "This E-mail is not linked to a known account"
 msgstr "Cet email n'est lié à aucun compte connu"
 
 #: ../src/controller/User.hx:3497 ../src/controller/User.hx:4481
-#: ../src/controller/Member.hx:10999 ../src/db/User.hx:16043
+#: ../src/controller/Member.hx:11082 ../src/db/User.hx:16043
 #: ../lang/master/tpl/design.mtt:5141 ../lang/master/tpl/mail/design.mtt:279
 msgid "Cagette.net"
 msgstr "Cagette.net"
@@ -680,7 +680,7 @@ msgstr ""
 "A nouveau membre vient de rejoindre le groupe sans commander : <br/"
 "><strong>::newMember::</strong><br/> <a href='::url::'>Voir le détail</a>"
 
-#: ../src/controller/User.hx:7846 ../src/controller/Member.hx:22674
+#: ../src/controller/User.hx:7846 ../src/controller/Member.hx:22757
 #: ../lang/master/tpl/member/default.mtt:2537
 msgid "New member"
 msgstr "Nouvel adhérent"
@@ -789,11 +789,15 @@ msgstr ""
 "exceptionnellement autorisé à le définir à sa place. N'oubliez pas de la "
 "prévenir."
 
-#: ../src/controller/Member.hx:9568 ../src/controller/Member.hx:21929
+#: ../src/controller/Member.hx:9389 ../src/db/User.hx:17772
+msgid "Password"
+msgstr "Mot de passe"
+
+#: ../src/controller/Member.hx:9651 ../src/controller/Member.hx:22012
 msgid "Phone number is required in this group."
 msgstr "Le numéro de téléphone est obligatoire pour ce groupe"
 
-#: ../src/controller/Member.hx:10132
+#: ../src/controller/Member.hx:10215
 msgid ""
 "This e-mail was used by another user account. As this user account was not "
 "used, it has been merged into the current user account."
@@ -801,21 +805,21 @@ msgstr ""
 "Cet email était utilisé dans une autre fiche de membre, comme cette fiche "
 "était inutilisée, elle a été fusionnée avec la fiche courante."
 
-#: ../src/controller/Member.hx:10306
+#: ../src/controller/Member.hx:10389
 msgid "Warning, this e-mail or this name already exists for another account : "
 msgstr "Attention, cet email ou ce nom existe déjà pour un autre compte : "
 
-#: ../src/controller/Member.hx:10529
+#: ../src/controller/Member.hx:10612
 msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 "Ces comptes ne peuvent pas être fusionnés car le second compte a des "
 "commandes "
 
-#: ../src/controller/Member.hx:11073
+#: ../src/controller/Member.hx:11156
 msgid "Change your e-mail in your account Cagette.net"
 msgstr "Changement d'email sur votre compte Cagette.net"
 
-#: ../src/controller/Member.hx:11217 ../src/controller/Member.hx:11745
+#: ../src/controller/Member.hx:11300 ../src/controller/Member.hx:11828
 msgid ""
 " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
 "now:"
@@ -823,23 +827,23 @@ msgstr ""
 " vient de modifier votre email dans votre compte Cagette.net.<br/>Votre "
 "email est maintenant :"
 
-#: ../src/controller/Member.hx:11603
+#: ../src/controller/Member.hx:11686
 msgid "Change the e-mail of your account Cagette.net"
 msgstr "Changement d'email sur votre compte Cagette.net"
 
-#: ../src/controller/Member.hx:11943
+#: ../src/controller/Member.hx:12026
 msgid "This member has beed updated"
 msgstr "Ce membre a été mis à jour"
 
-#: ../src/controller/Member.hx:12200
+#: ../src/controller/Member.hx:12283
 msgid "You cannot do that."
 msgstr "Vous ne pouvez pas faire ça."
 
-#: ../src/controller/Member.hx:12298
+#: ../src/controller/Member.hx:12381
 msgid "You cannot delete yourself."
 msgstr "Vous ne pouvez pas vous effacer vous-même."
 
-#: ../src/controller/Member.hx:12484
+#: ../src/controller/Member.hx:12567
 msgid ""
 "Warning, this account has orders. <a class='btn btn-default btn-xs' href='/"
 "member/delete/::userid::?token=::argstoken::&confirm=1'>Remove anyway</a>"
@@ -848,19 +852,19 @@ msgstr ""
 "href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Retirer quand "
 "même</a>"
 
-#: ../src/controller/Member.hx:12808
+#: ../src/controller/Member.hx:12891
 msgid "::user:: has been removed from your group"
 msgstr "::user:: a été retiré(e) de ce groupe"
 
-#: ../src/controller/Member.hx:12919
+#: ../src/controller/Member.hx:13002
 msgid "This person does not belong to \"::amapname::\""
 msgstr "Cette personne ne fait pas partie de \"::amapname::\""
 
-#: ../src/controller/Member.hx:13225
+#: ../src/controller/Member.hx:13308
 msgid "Merge an account with another one"
 msgstr "Fusionner un compte avec un autre"
 
-#: ../src/controller/Member.hx:13281
+#: ../src/controller/Member.hx:13364
 msgid ""
 "This action allows you to merge two accounts (when you have duplicates in "
 "the database for example).<br/>Contracts of account 2 will be moved to "
@@ -872,81 +876,81 @@ msgstr ""
 "rattachés au compte 1, puis le compte 2 sera effacé.<br/>Attention cette "
 "action n'est pas annulable."
 
-#: ../src/controller/Member.hx:13764
+#: ../src/controller/Member.hx:13847
 msgid "Account 1"
 msgstr "Compte 1"
 
-#: ../src/controller/Member.hx:13880
+#: ../src/controller/Member.hx:13963
 msgid "Account 2"
 msgstr "Compte 2"
 
-#: ../src/controller/Member.hx:15037
+#: ../src/controller/Member.hx:15120
 msgid "Both accounts have been merged"
 msgstr "Les deux comptes ont été fusionnés"
 
-#: ../src/controller/Member.hx:15432
+#: ../src/controller/Member.hx:15515
 msgid "Firstname"
 msgstr "Prénom"
 
-#: ../src/controller/Member.hx:15450
+#: ../src/controller/Member.hx:15533
 msgid "Lastname"
 msgstr "Nom"
 
-#: ../src/controller/Member.hx:15467 ../lang/master/tpl/member/view.mtt:613
+#: ../src/controller/Member.hx:15550 ../lang/master/tpl/member/view.mtt:613
 #: ../lang/master/tpl/member/view.mtt:737
 msgid "E-mail"
 msgstr "Email"
 
-#: ../src/controller/Member.hx:15482
+#: ../src/controller/Member.hx:15565
 msgid "Mobile phone"
 msgstr "Téléphone portable"
 
-#: ../src/controller/Member.hx:15503
+#: ../src/controller/Member.hx:15586
 msgid "Partner's firstname"
 msgstr "Prénom conjoint(e)"
 
-#: ../src/controller/Member.hx:15531
+#: ../src/controller/Member.hx:15614
 msgid "Partner's lastname"
 msgstr "Nom conjoint(e)"
 
-#: ../src/controller/Member.hx:15558
+#: ../src/controller/Member.hx:15641
 msgid "Partner's e-mail"
 msgstr "Email conjoint(e)"
 
-#: ../src/controller/Member.hx:15583
+#: ../src/controller/Member.hx:15666
 msgid "Partner's Mobile phone"
 msgstr "Téléphone conjoint(e)"
 
-#: ../src/controller/Member.hx:15614 ../src/db/Vendor.hx:2710
+#: ../src/controller/Member.hx:15697 ../src/db/Vendor.hx:2893
 #: ../src/db/User.hx:17407 ../src/db/Place.hx:1284
 #: ../lang/master/tpl/member/import.mtt:866
 #: ../lang/master/tpl/member/import.mtt:1574
 msgid "Address 1"
 msgstr "Adresse 1"
 
-#: ../src/controller/Member.hx:15632 ../src/db/Vendor.hx:2748
+#: ../src/controller/Member.hx:15715 ../src/db/Vendor.hx:2931
 #: ../src/db/User.hx:17442 ../src/db/Place.hx:1319
 #: ../lang/master/tpl/member/import.mtt:899
 #: ../lang/master/tpl/member/import.mtt:1606
 msgid "Address 2"
 msgstr "Adresse 2"
 
-#: ../src/controller/Member.hx:15650
+#: ../src/controller/Member.hx:15733
 msgid "Post code"
 msgstr "Code postal"
 
-#: ../src/controller/Member.hx:15668 ../src/controller/Group.hx:3834
-#: ../src/db/Vendor.hx:2819 ../src/db/User.hx:17507 ../src/db/Place.hx:1384
+#: ../src/controller/Member.hx:15751 ../src/controller/Group.hx:3834
+#: ../src/db/Vendor.hx:3002 ../src/db/User.hx:17507 ../src/db/Place.hx:1384
 #: ../lang/master/tpl/member/import.mtt:964
 #: ../lang/master/tpl/member/import.mtt:1669
 msgid "City"
 msgstr "Ville"
 
-#: ../src/controller/Member.hx:16004
+#: ../src/controller/Member.hx:16087
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
 msgstr "Le mail <b>::email::</b> est invalide, merci de modifier votre fichier"
 
-#: ../src/controller/Member.hx:16272
+#: ../src/controller/Member.hx:16355
 msgid ""
 "You must fill the name and the firstname of the person. This line is "
 "incomplete: "
@@ -954,7 +958,7 @@ msgstr ""
 "Vous devez saisir le nom et le prénom de cette personne. Cette ligne est "
 "incomplète : "
 
-#: ../src/controller/Member.hx:16438
+#: ../src/controller/Member.hx:16521
 msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
@@ -962,11 +966,11 @@ msgstr ""
 "Chaque personne doit avoir un email pour pouvoir se connecter. ::user0:: ::"
 "user1:: n'en a pas. "
 
-#: ../src/controller/Member.hx:18292
+#: ../src/controller/Member.hx:18375
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
 msgstr "L'email ::useremail:: est invalide, merci de modifier votre fichier"
 
-#: ../src/controller/Member.hx:18620
+#: ../src/controller/Member.hx:18703
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::"
 "userEmail::' is invalid, please check your file"
@@ -974,15 +978,15 @@ msgstr ""
 "L'email du conjoint(e) de ::userFirstName:: ::userLastName:: '::userEmail::' "
 "est invalide, vérifiez votre fichier"
 
-#: ../src/controller/Member.hx:20335
+#: ../src/controller/Member.hx:20418
 msgid "Send an E-mail to the person in charge of the group"
 msgstr "Envoyer un mail au responsable du groupe"
 
-#: ../src/controller/Member.hx:21033
+#: ../src/controller/Member.hx:21116
 msgid "This person is already member of this group"
 msgstr "Cette personne est déjà inscrite dans cette AMAP"
 
-#: ../src/controller/Member.hx:21378
+#: ../src/controller/Member.hx:21461
 msgid ""
 "This person already had an account on Cagette.net, and is now member of your "
 "group."
@@ -990,7 +994,7 @@ msgstr ""
 "Cette personne était déjà inscrite sur Cagette.net, nous l'avons inscrite à "
 "votre groupe."
 
-#: ../src/controller/Member.hx:21580
+#: ../src/controller/Member.hx:21663
 msgid ""
 "Not possible to add this person because there are already some people in the "
 "database having the same firstname and name. Please contact the "
@@ -999,7 +1003,7 @@ msgstr ""
 "Impossible d'ajouter cette personne car plusieurs personnes dans la base de "
 "données ont le même nom et prénom, contactez l'administrateur du site."
 
-#: ../src/controller/Member.hx:22370
+#: ../src/controller/Member.hx:22453
 msgid ""
 "::admin:: just keyed-in contact details of a new member: <br/><strong>::"
 "newMember::</strong><br/> <a href='::url::'>See contact details</a>"
@@ -1007,7 +1011,7 @@ msgstr ""
 "::admin:: vient de saisir un nouvel adhérent : <br/><strong>::newMember::</"
 "strong><br/> <a href='::url::'>Voir le détail</a>"
 
-#: ../src/controller/Member.hx:22828
+#: ../src/controller/Member.hx:22911
 msgid "This person is now member of the group"
 msgstr "Cette personne a bien été enregistrée"
 
@@ -1163,12 +1167,12 @@ msgstr "Confirmez votre inscription à \"::groupName::\""
 msgid "Address"
 msgstr "Adresse"
 
-#: ../src/controller/Group.hx:3760 ../src/db/Vendor.hx:2785
+#: ../src/controller/Group.hx:3760 ../src/db/Vendor.hx:2968
 #: ../src/db/User.hx:17476 ../src/db/Place.hx:1353
 msgid "Zip code"
 msgstr "Code postal"
 
-#: ../src/controller/Group.hx:3905 ../src/db/Vendor.hx:2676
+#: ../src/controller/Group.hx:3905 ../src/db/Vendor.hx:2859
 #: ../src/db/User.hx:17182 ../lang/master/tpl/member/import.mtt:688
 #: ../lang/master/tpl/member/import.mtt:1401
 #: ../lang/master/tpl/member/payments.mtt:521
@@ -1213,7 +1217,7 @@ msgstr "Collectif de producteurs"
 msgid "Farm shop"
 msgstr "Vente à la ferme"
 
-#: ../src/controller/Group.hx:5391 ../src/db/Amap.hx:10025
+#: ../src/controller/Group.hx:5391 ../src/db/Amap.hx:10342
 msgid "Group type"
 msgstr "Type de groupe"
 
@@ -1340,7 +1344,7 @@ msgstr "Début du contrat "
 msgid "Contract end "
 msgstr "Fin du contrat "
 
-#: ../src/controller/ContractAdmin.hx:5473 ../lang/master/tpl/home.mtt:3548
+#: ../src/controller/ContractAdmin.hx:5473 ../lang/master/tpl/home.mtt:3710
 msgid "Distribution"
 msgstr "Distribution"
 
@@ -1352,13 +1356,13 @@ msgstr "Ouverture des commandes "
 msgid "End of orders"
 msgstr "Fin des commandes"
 
-#: ../src/controller/ContractAdmin.hx:6819 ../src/db/Contract.hx:8065
+#: ../src/controller/ContractAdmin.hx:6819 ../src/db/Contract.hx:8204
 #: ../lang/master/tpl/contractadmin/view.mtt:349
 msgid "Start date"
 msgstr "Date de début"
 
 #: ../src/controller/ContractAdmin.hx:6952 ../src/db/Operation.hx:13916
-#: ../src/db/Contract.hx:8103 ../lang/master/tpl/contractadmin/view.mtt:442
+#: ../src/db/Contract.hx:8242 ../lang/master/tpl/contractadmin/view.mtt:442
 msgid "End date"
 msgstr "Date de fin"
 
@@ -1938,7 +1942,7 @@ msgstr "La commande a déjà été effacée."
 msgid "Deletion not possible: quantity is not zero."
 msgstr "Effacement impossible : la quantité n'est pas égale à zéro."
 
-#: ../src/service/OrderService.hx:9073 ../lang/master/tpl/home.mtt:4225
+#: ../src/service/OrderService.hx:9073 ../lang/master/tpl/home.mtt:4387
 #: ../lang/master/tpl/distribution/listByDateShort.mtt:1761
 #: ../lang/master/tpl/distribution/listByDateOnePageContract.mtt:2766
 #: ../lang/master/tpl/distribution/listByDate.mtt:1817
@@ -1958,7 +1962,7 @@ msgstr "Distribution ::contractName:: du "
 msgid "There is no account with this email"
 msgstr "Il n'y a pas de compte avec cet email"
 
-#: ../src/service/UserService.hx:619
+#: ../src/service/UserService.hx:633
 msgid ""
 "Since you failed to login more than 4 times, your IP address has been banned "
 "for 10 minutes."
@@ -1966,7 +1970,7 @@ msgstr ""
 "Vous avez essayé de vous connecter sans succès plus de 4 fois, votre adresse "
 "IP est bannie pendant 10 minutes."
 
-#: ../src/service/UserService.hx:860
+#: ../src/service/UserService.hx:875
 msgid ""
 "Your account have not been validated yet. We sent an e-mail to ::email:: to "
 "finalize your subscription!"
@@ -1974,24 +1978,24 @@ msgstr ""
 "Votre compte n'a pas encore été validé. Nous vous avons envoyé un email à ::"
 "email:: pour finaliser votre inscription !"
 
-#: ../src/service/UserService.hx:1198
+#: ../src/service/UserService.hx:1213
 msgid "Invalid password"
 msgstr "Mot de passe invalide"
 
-#: ../src/service/UserService.hx:1841 ../src/service/UserService.hx:3204
-#: ../src/service/UserService.hx:3757
+#: ../src/service/UserService.hx:1856 ../src/service/UserService.hx:3219
+#: ../src/service/UserService.hx:3772
 msgid "Invalid email address"
 msgstr "L'email que vous avez saisi est invalide"
 
-#: ../src/service/UserService.hx:1952 ../src/service/UserService.hx:3327
+#: ../src/service/UserService.hx:1967 ../src/service/UserService.hx:3342
 msgid "We already have an account with this email address"
 msgstr "Nous avons déjà un compte avec cette adresse email"
 
-#: ../src/service/UserService.hx:2535
+#: ../src/service/UserService.hx:2550
 msgid "Members of this group should provide a phone number"
 msgstr "Les membres de ce groupe doivent fournir leur numéro de téléphone"
 
-#: ../src/service/UserService.hx:2766
+#: ../src/service/UserService.hx:2781
 msgid "Members of this group should provide an address"
 msgstr "Les membres de ce groupe doivent fournir leur adresse"
 
@@ -2214,20 +2218,24 @@ msgstr "Contrat effacé"
 msgid "::name:: contract management"
 msgstr "Gestion du contrat ::name::"
 
-#: ../src/db/Vendor.hx:1094 ../lang/master/tpl/vendor/view.mtt:98
+#: ../src/db/Vendor.hx:1145 ../lang/master/tpl/vendor/view.mtt:98
 msgid "Supplier"
 msgstr "Fournisseur"
 
-#: ../src/db/Vendor.hx:2569
+#: ../src/db/Vendor.hx:2529
+msgid "Profession"
+msgstr "Profession"
+
+#: ../src/db/Vendor.hx:2752
 msgid "Supplier name"
 msgstr "Nom du producteur"
 
-#: ../src/db/Vendor.hx:2608 ../src/db/Contract.hx:8142
+#: ../src/db/Vendor.hx:2791 ../src/db/Contract.hx:8281
 #: ../src/db/Product.hx:5412
 msgid "Description"
 msgstr "Description"
 
-#: ../src/db/Vendor.hx:2645 ../src/db/User.hx:17153
+#: ../src/db/Vendor.hx:2828 ../src/db/User.hx:17153
 #: ../lang/master/tpl/member/import.mtt:659
 #: ../lang/master/tpl/member/import.mtt:1373
 #: ../lang/master/tpl/member/payments.mtt:602
@@ -2237,11 +2245,11 @@ msgstr "Description"
 msgid "Email"
 msgstr "Email"
 
-#: ../src/db/Vendor.hx:2855
+#: ../src/db/Vendor.hx:3038
 msgid "Link text"
 msgstr "Intitulé du lien"
 
-#: ../src/db/Vendor.hx:2895
+#: ../src/db/Vendor.hx:3078
 msgid "Link URL"
 msgstr "URL du lien"
 
@@ -2279,31 +2287,31 @@ msgstr "Distributeur 3"
 msgid "Distributor #4"
 msgstr "Distributeur 4"
 
-#: ../src/db/Contract.hx:8023
+#: ../src/db/Contract.hx:8162
 msgid "Contract name"
 msgstr "Nom du contrat"
 
-#: ../src/db/Contract.hx:8186
+#: ../src/db/Contract.hx:8325
 msgid "Number of required distributors (0 to 4)"
 msgstr "Nbre de distributeurs nécessaires (de 0 à 4)"
 
-#: ../src/db/Contract.hx:8252 ../src/db/User.hx:17742 ../src/db/Amap.hx:9990
+#: ../src/db/Contract.hx:8391 ../src/db/User.hx:17742 ../src/db/Amap.hx:10307
 msgid "Options"
 msgstr "Options"
 
-#: ../src/db/Contract.hx:8293
+#: ../src/db/Contract.hx:8432
 msgid "Fees percentage"
 msgstr "Pourcentage des frais"
 
-#: ../src/db/Contract.hx:8341
+#: ../src/db/Contract.hx:8480
 msgid "Fees label"
 msgstr "Libellé pour ces frais"
 
-#: ../src/db/Contract.hx:8382 ../lang/master/tpl/group/view.mtt:3672
+#: ../src/db/Contract.hx:8521 ../lang/master/tpl/group/view.mtt:3672
 msgid "Contact"
 msgstr "Contact"
 
-#: ../src/db/Contract.hx:8419 ../lang/master/tpl/distribution/list.mtt:772
+#: ../src/db/Contract.hx:8558 ../lang/master/tpl/distribution/list.mtt:772
 #: ../lang/master/tpl/distribution/listByProductUser.mtt:772
 #: ../lang/master/tpl/contractadmin/view.mtt:721
 msgid "Farmer"
@@ -2402,10 +2410,6 @@ msgstr "Date de naissance"
 msgid "Registration date"
 msgstr "Date d'inscription"
 
-#: ../src/db/User.hx:17772
-msgid "Password"
-msgstr "Mot de passe"
-
 #: ../src/db/Basket.hx:4624
 msgid ""
 "You need to select manually the type of pending payments on the spot to be "
@@ -2427,43 +2431,43 @@ msgstr ""
 " Vous pouvez consulter votre planning de distribution ou faire une nouvelle "
 "commande."
 
-#: ../src/db/Amap.hx:9667
+#: ../src/db/Amap.hx:9984
 msgid "Group name"
 msgstr "Nom du groupe"
 
-#: ../src/db/Amap.hx:9707
+#: ../src/db/Amap.hx:10024
 msgid "Legal status"
 msgstr "Statut légal"
 
-#: ../src/db/Amap.hx:9747
+#: ../src/db/Amap.hx:10064
 msgid "Short description"
 msgstr "Courte description"
 
-#: ../src/db/Amap.hx:9791
+#: ../src/db/Amap.hx:10108
 msgid "Homepage text"
 msgstr "Texte sur la page d'accueil"
 
-#: ../src/db/Amap.hx:9833
+#: ../src/db/Amap.hx:10150
 msgid "Text for distribution lists"
 msgstr "Texte listes d'émargement"
 
-#: ../src/db/Amap.hx:9886
+#: ../src/db/Amap.hx:10203
 msgid "Group website URL"
 msgstr "URL du site"
 
-#: ../src/db/Amap.hx:9942
+#: ../src/db/Amap.hx:10259
 msgid "Membership renewal date"
 msgstr "Date de renouvellement d'adhésion"
 
-#: ../src/db/Amap.hx:10063
+#: ../src/db/Amap.hx:10380
 msgid "Registration setting"
 msgstr "Réglage des inscriptions"
 
-#: ../src/db/Amap.hx:10110 ../lang/master/tpl/amap/default.mtt:691
+#: ../src/db/Amap.hx:10427 ../lang/master/tpl/amap/default.mtt:691
 msgid "Main contact"
 msgstr "Contact principal"
 
-#: ../src/db/Amap.hx:10159
+#: ../src/db/Amap.hx:10476
 msgid "Legal representative"
 msgstr "Représentant légal"
 
@@ -2788,69 +2792,73 @@ msgstr ""
 "Pour commencer, nous vous recommandons de suivre la <b>visite guidée</b> "
 "pour découvrir progressivement les principales rubriques du logiciel."
 
-#: ../lang/master/tpl/home.mtt:800
+#: ../lang/master/tpl/home.mtt:806
 msgid "Start the guided tour"
 msgstr "Commencer la visite guidée"
 
-#: ../lang/master/tpl/home.mtt:1102
+#: ../lang/master/tpl/home.mtt:940
+msgid "Delete example orders and contracts"
+msgstr "Effacer les commandes et contrats de démonstration"
+
+#: ../lang/master/tpl/home.mtt:1264
 msgid "Open orders"
 msgstr "Commandes ouvertes"
 
-#: ../lang/master/tpl/home.mtt:1392
+#: ../lang/master/tpl/home.mtt:1554
 msgid "There is no planned order currently."
 msgstr "Il n'y a pas de commande ouverte actuellement."
 
-#: ../lang/master/tpl/home.mtt:2417 ../lang/master/tpl/home.mtt:6345
+#: ../lang/master/tpl/home.mtt:2579 ../lang/master/tpl/home.mtt:6507
 msgid "Modify my order"
 msgstr "Modifier ma commande"
 
-#: ../lang/master/tpl/home.mtt:2598
+#: ../lang/master/tpl/home.mtt:2760
 msgid "Add products"
 msgstr "Ajouter des produits"
 
-#: ../lang/master/tpl/home.mtt:2799 ../lang/master/tpl/home.mtt:8683
+#: ../lang/master/tpl/home.mtt:2961 ../lang/master/tpl/home.mtt:8845
 msgid "Order closed since"
 msgstr "Commande close depuis le"
 
-#: ../lang/master/tpl/home.mtt:2893 ../lang/master/tpl/home.mtt:8777
+#: ../lang/master/tpl/home.mtt:3055 ../lang/master/tpl/home.mtt:8939
 msgid "Order will open on"
 msgstr "La commande ouvre le"
 
-#: ../lang/master/tpl/home.mtt:3127
+#: ../lang/master/tpl/home.mtt:3289
 msgid "My ordered products"
 msgstr "Mes produits commandés"
 
-#: ../lang/master/tpl/home.mtt:4662
+#: ../lang/master/tpl/home.mtt:4824
 msgid "alternated with ::mate::"
 msgstr "alterné avec ::mate::"
 
-#: ../lang/master/tpl/home.mtt:4870 ../lang/master/tpl/home.mtt:5096
+#: ../lang/master/tpl/home.mtt:5032 ../lang/master/tpl/home.mtt:5258
 msgid "It's your turn"
 msgstr "C'est votre tour"
 
-#: ../lang/master/tpl/home.mtt:4941 ../lang/master/tpl/home.mtt:5167
+#: ../lang/master/tpl/home.mtt:5103 ../lang/master/tpl/home.mtt:5329
 msgid "It's his/her turn"
 msgstr "C'est son tour"
 
-#: ../lang/master/tpl/home.mtt:5686
+#: ../lang/master/tpl/home.mtt:5848
 #: ../lang/master/tpl/contractadmin/deliveries.mtt:1219
 msgid "Distribution list"
 msgstr "Liste d'émargement"
 
-#: ../lang/master/tpl/home.mtt:6009
+#: ../lang/master/tpl/home.mtt:6171
 msgid "Permanence"
 msgstr "Permanence"
 
-#: ../lang/master/tpl/home.mtt:6151
+#: ../lang/master/tpl/home.mtt:6313
 msgid "Contract details"
 msgstr "Détails du contrat"
 
-#: ../lang/master/tpl/home.mtt:7207
+#: ../lang/master/tpl/home.mtt:7369
 msgid "Warning, you're engaged in this distribution !"
 msgstr "Attention, vous ou votre conjoint êtes inscrit à cette distribution !"
 
 #. Order button on homepage
-#: ../lang/master/tpl/home.mtt:8440 ../lang/master/tpl/macros.mtt:4349
+#: ../lang/master/tpl/home.mtt:8602 ../lang/master/tpl/macros.mtt:4349
 #: ../lang/master/tpl/contract/view.mtt:2877
 #: ../lang/master/tpl/contract/view.mtt:3199
 #: ../lang/master/tpl/contract/order.mtt:88
@@ -2861,23 +2869,23 @@ msgid "Order"
 msgstr "Commande"
 
 #. Delivery from 18:00 to 19:30
-#: ../lang/master/tpl/home.mtt:9353
+#: ../lang/master/tpl/home.mtt:9515
 msgid "Delivery from ::start:: to ::end::"
 msgstr "Distribution de ::start:: à ::end::"
 
-#: ../lang/master/tpl/home.mtt:11344
+#: ../lang/master/tpl/home.mtt:11506
 msgid "Permanences"
 msgstr "Permanences"
 
-#: ../lang/master/tpl/home.mtt:11375
+#: ../lang/master/tpl/home.mtt:11537
 msgid "Don't forget to register for permanences"
 msgstr "N'oubliez pas de vous inscrire aux permanences"
 
-#: ../lang/master/tpl/home.mtt:11666
+#: ../lang/master/tpl/home.mtt:11828
 msgid "Warning, you don't have defined a password yet !"
 msgstr "Attention, vous n'avez pas encore défini de mot de passe !"
 
-#: ../lang/master/tpl/home.mtt:11835
+#: ../lang/master/tpl/home.mtt:11997
 msgid "Set my password"
 msgstr "Définir mon mot de passe"
 
@@ -5071,11 +5079,11 @@ msgstr "Revenir à la page des tutoriels"
 msgid "OK"
 msgstr "OK"
 
-#: ../common/Common.hx:7462
+#: ../common/Common.hx:7699
 msgid "Guided tour for the coordinator"
 msgstr "Visite guidée du coordinateur"
 
-#: ../common/Common.hx:7552
+#: ../common/Common.hx:7789
 msgid ""
 "<p>In order to better discover Cagette.net, we propose to do a guided tour "
 "of the user interface of the software. <br/> You will then have a global "
@@ -5088,7 +5096,7 @@ msgstr ""
 "p><p>Vous pourrez stopper et reprendre ce tutoriel quand vous le souhaitez.</"
 "p>"
 
-#: ../common/Common.hx:7958
+#: ../common/Common.hx:8195
 msgid ""
 "This part of the navigation bar is visible by all members.</br>It allows to "
 "access to the three main pages:\t<ul><li> The <b>home page</b> which "
@@ -5105,7 +5113,7 @@ msgstr ""
 "li><li>Sur la page <b>producteurs</b>, vous pouvez voir tous les producteurs "
 "et les coordinateurs du groupe</li></ul>"
 
-#: ../common/Common.hx:8474
+#: ../common/Common.hx:8711
 msgid ""
 "This part is <b>for coordinators only.</b>Here you will be able to manage "
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
@@ -5116,7 +5124,7 @@ msgstr ""
 "d'adhérents, les commandes, les produits, etc.<br/>\n"
 "\t\t\t\t\t<p>Cliquez maintenant sur la rubrique <b>Adhérents</b></p>"
 
-#: ../common/Common.hx:8779
+#: ../common/Common.hx:9016
 msgid ""
 "The purpose of this section is to administrate the list of your members.<br/"
 ">Every time that you register a new membrer, an account will be created for "
@@ -5130,7 +5138,7 @@ msgstr ""
 "ou consulter son planning de distribution.\n"
 "\t\t\t\t\t<p>Cliquez maintenant sur <b>un adhérent</b></p>"
 
-#: ../common/Common.hx:9209
+#: ../common/Common.hx:9446
 msgid ""
 "This is the page of a member. Here you can : <ul><li>see and change their "
 "contact details</li><li>manage the membership fee of your group</li><li>see "
@@ -5143,7 +5151,7 @@ msgstr ""
 "<li>voir un récapitulatif de ses commandes</li>\n"
 "</ul>"
 
-#: ../common/Common.hx:9510
+#: ../common/Common.hx:9747
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very "
 "important for coordinators."
@@ -5151,7 +5159,7 @@ msgstr ""
 "Voyons maintenant la section des <b>contrats</b> qui est très importante "
 "pour les coordinateurs."
 
-#: ../common/Common.hx:9729
+#: ../common/Common.hx:9966
 msgid ""
 "Here you find the list of <b>contracts</b>.They inculde a start date, a end "
 "date, and represent your relationship with a farmer. <br/><p>Here you can "
@@ -5170,7 +5178,7 @@ msgstr ""
 "\t\t\t\t\t\t</ul>\n"
 "\t\t\t\t\t</p>"
 
-#: ../common/Common.hx:10134
+#: ../common/Common.hx:10371
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to "
 "key-in the complete address as a map will be displayed based on this address"
@@ -5180,14 +5188,14 @@ msgstr ""
 "\t\t\t\t\tRemplissez une fiche complète pour chacun d'eux afin d'informer au "
 "mieux les adhérents"
 
-#: ../common/Common.hx:10417
+#: ../common/Common.hx:10654
 msgid ""
 "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
 "Allons voir maintenant de plus près comment administrer un contrat. "
 "<b>Cliquez sur ce bouton</b>"
 
-#: ../common/Common.hx:10650
+#: ../common/Common.hx:10887
 msgid ""
 "Here is a summary of the contract.<br/>There are two types of contracts:"
 "<ul><li>Constant contracts: the member commits on buying the same products "
@@ -5202,11 +5210,11 @@ msgstr ""
 "ce qu'il veut à chaque distribution.</li>\n"
 "\t\t\t\t\t</ul>"
 
-#: ../common/Common.hx:11053
+#: ../common/Common.hx:11290
 msgid "Let's see now the page <b>Products</b>"
 msgstr "Allons voir maintenant la page de gestion des <b>produits</b>"
 
-#: ../common/Common.hx:11239
+#: ../common/Common.hx:11476
 msgid ""
 "On this page, you can manage the list of products offered by this supplier."
 "<br/>Define at least the name and the price of products. It is also possible "
@@ -5217,11 +5225,11 @@ msgstr ""
 "\t\t\t\t\tDéfinissez au minimum le nom et le prix de vente des produits. Il "
 "est également possible d'ajouter un descriptif et une photo."
 
-#: ../common/Common.hx:11549
+#: ../common/Common.hx:11786
 msgid "Let's see the <b>deliveries</b> page"
 msgstr "Allons voir maintenant la page de gestion des <b>distributions</b>"
 
-#: ../common/Common.hx:11738
+#: ../common/Common.hx:11975
 msgid ""
 "Here we can manage the list of deliveries for this supplier.<br/>In the "
 "software, a delivery has a date, a start time, and an end time. The location "
@@ -5234,11 +5242,11 @@ msgstr ""
 "\t\t\t\t\tIl faut aussi préciser le lieu de distribution à partir de la "
 "liste que nous avons vue précédemment."
 
-#: ../common/Common.hx:12089
+#: ../common/Common.hx:12326
 msgid "Let's see now the <b>Orders</b> page"
 msgstr "Allons voir maintenant la page de gestion des <b>commandes</b>"
 
-#: ../common/Common.hx:12339
+#: ../common/Common.hx:12576
 msgid ""
 "Here we can manage the list of orders for this supplier.<br/>If you choose "
 "to \"open orders\" to members, they will be able to make their orders online "
@@ -5256,7 +5264,7 @@ msgstr ""
 "\t\t\t\t\tSinon, en tant que coordinateur, vous pouvez saisir les commandes "
 "pour les adhérents depuis cette page."
 
-#: ../common/Common.hx:12783
+#: ../common/Common.hx:13020
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
@@ -5264,7 +5272,7 @@ msgstr ""
 "<p>Nous avons vu l'essentiel en ce qui concerne les contrats.</"
 "p><p>Explorons maintenant la messagerie.</p>"
 
-#: ../common/Common.hx:13010
+#: ../common/Common.hx:13247
 msgid ""
 "<p>The messaging section allows you to send e-mails to different lists of "
 "members. It is not necessary anymore to maintain a lot of lists of e-mails "
@@ -5281,11 +5289,11 @@ msgstr ""
 "qu'expéditeur, vous recevrez donc les réponses sur votre boîte email "
 "habituelle.</p>"
 
-#: ../common/Common.hx:13464
+#: ../common/Common.hx:13701
 msgid "Click here now on this page"
 msgstr "Cliquez maintenant sur cette rubrique"
 
-#: ../common/Common.hx:13620
+#: ../common/Common.hx:13857
 msgid ""
 "<p>In this last page, you can configure everything that is related to your "
 "group.</p><p>The page <b>Access rights</b> is important as it is where you "
@@ -5301,7 +5309,7 @@ msgstr ""
 "messagerie, etc.\n"
 "\t\t\t\t\t</p>"
 
-#: ../common/Common.hx:14004
+#: ../common/Common.hx:14241
 msgid ""
 "<p>This is the last step of this tutorial. I hope that it gave you a good "
 "overview of this software.<br/>To go further, do not hesitate to look at the "

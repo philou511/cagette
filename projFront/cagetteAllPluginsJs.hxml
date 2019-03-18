@@ -19,6 +19,7 @@
 -lib cagette-hosted:git:https://bubar@bitbucket.org/bubar/cagette-hosted.git#master
 
 -main App
+-debug
 -js ../www/js/app.js
 -D no-deprecation-warnings
 

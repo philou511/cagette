@@ -18,8 +18,15 @@
 				::raw _("As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software.")::
 			</p>
 			<p>
-				<a href="/contract/?startTuto=intro" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Start the guided tour")::</a>
+				<a href="/contract/?startTuto=intro" class="btn btn-primary">
+					<i class="icon icon-chevron-right"></i> ::_("Start the guided tour")::
+				</a>
+
+				<a href="/home?action=deleteDemoContracts&token=::token::" class="btn btn-default">
+					::_("Delete example orders and contracts")::
+				</a>
 			</p>
+		
 			
 		</div>
 		::end::

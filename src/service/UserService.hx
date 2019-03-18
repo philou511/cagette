@@ -30,7 +30,7 @@ class UserService
 
 		//anti bruteforce
 		if(service.UserService.isBanned()){
-			throw t._("Since you failed to login more than 4 times, your IP address has been banned for 10 minutes.");		
+			throw new Error(403,t._("Since you failed to login more than 4 times, your IP address has been banned for 10 minutes."));		
 		}
 		
 		//new account
