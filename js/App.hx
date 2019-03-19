@@ -143,11 +143,32 @@ class App {
 	 * @param	divId
 	 * @param	vendorId
 	 */
-	public function getVendorPage(divId:String, vendorId:Int ){
+	public function getVendorPage(divId:String, vendorId:Int ) {
 
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
-			ReactDOM.render(jsx('<$VendorPage vendorId=${vendorId}/>'),  js.Browser.document.getElementById(divId));
+			//Load data from API
+			var vendorInfo:VendorInfos = null;
+			var catalogProducts:Array<ProductInfo> = null;
+			var nextDistributions:Array<DistributionInfos> = null;
+
+			var vendorPromise = utils.HttpUtil.fetch("/api/pro/vendor/28", GET, null, JSON);
+			var catalogPromise = utils.HttpUtil.fetch("/api/pro/catalog/92", GET, null, JSON);
+			var nextDistributionsPromise = utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/28", GET, null, JSON);
+			
+			var initRequest = js.Promise.all([vendorPromise, catalogPromise, nextDistributionsPromise]).then(
+				function(data:Dynamic) {
+					vendorInfo = data[0];
+					catalogProducts = data[1].products;
+					nextDistributions = data[2];
+					ReactDOM.render(jsx('<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions}/>'),  js.Browser.document.getElementById(divId));
+				}
+			).catchError (
+				function(error) {
+					throw error;
+				}
+			);
+
 		});
 	}
 
