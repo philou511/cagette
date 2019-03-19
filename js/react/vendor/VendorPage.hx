@@ -9,103 +9,130 @@ import mui.core.Avatar;
 import mui.core.Button;
 import mui.core.Card;
 import mui.core.CardContent;
+import mui.core.CardActionArea;
 import mui.core.CardActions;
 import mui.core.Grid;
 import mui.core.GridList;
 import mui.core.GridListTile;
+import mui.core.GridListTileBar;
 import mui.core.Link;
+import mui.core.ListSubheader;
 using Lambda;
 
-class VendorPage extends react.ReactComponentOfPropsAndState<{vendorId : Int},{}>{
+class VendorPage extends react.ReactComponentOfPropsAndState<{vendorInfo: VendorInfos, catalogProducts: Array<ProductInfo>, nextDistributions: Array<DistributionInfos>},{}>{
 
 	public function new(props){
 		super(props);
-		this.state = {};		
+		this.state = {};
 	}
 
 	override public function render(){
-		return jsx('<Grid container style=${{maxWidth:"1240px", marginLeft:"150px"}} spacing={8}>
+
+		return jsx('<Grid container spacing={24} direction=${Column} alignContent=${Center} alignItems=${Center} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
 		<Grid item xs={12}>
-        	<img style=${{objectFit:"contain"}} src="https://www.bannerbatterien.com/upload/filecache/Banner-Batterien-Windrder2-web_bd5cb0f721881d106522f6b9cc8f5be6.jpg" alt="Vendor Banner"/>
+        	<img style=${{objectFit:"contain"}} src=${props.vendorInfo.images.banner} alt="Vendor Banner"/>
         </Grid>
-		<Avatar style=${{width:"100px",height:"100px"}} alt="Hello World!" src="https://i.kinja-img.com/gawker-media/image/upload/s--vSY-o42Q--/c_scale,f_auto,fl_progressive,q_80,w_800/ecq5rsk3n1nolujedskk.jpg" />
+		<Avatar style=${{width:"100px",height:"100px",position:css.Position.Absolute,top:"50px"}} alt="Hello World!" src=${props.vendorInfo.images.portrait} />
 		<Typography component="h1" style=${{fontSize:"2rem"}}>
-			La ferme du radis enragé
+			${props.vendorInfo.name}
 		</Typography>
-		${CagetteTheme.getIcon("basket")}
-		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
-			Fruits, confitures
+		<Typography align=${Left} paragraph={true} style=${{fontSize:"1.5rem"}}>
+			${CagetteTheme.getIcon("basket")} ${props.vendorInfo.profession}
 		</Typography>
-		${CagetteTheme.getIcon("map-marker")}
 		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
-			Bordeaux (33000)
+			${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
 		</Typography>
-		${CagetteTheme.getIcon("link")}
 		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
-			 <a href="http://www.monsite.com">
-        		www.monsite.com
+			${CagetteTheme.getIcon("link")}&nbsp;&nbsp;
+			<a href=${props.vendorInfo.linkUrl} target="_blank">
+        		${props.vendorInfo.linkText}
       		</a>
 		</Typography>
-		<Button variant=${Contained} color=${Primary}>
-        	Bio
-      	</Button>
-		<GridList cols={6}>
+		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
+			${props.vendorInfo.desc}
+		</Typography>
+		<GridList cols={4}>
+			<GridListTile key="Subheader" cols={4} style=${{ height: 'auto' }}>
+				<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
+					<br />Quelques uns de nos produits <br />
+				</Typography>
+			</GridListTile>
 			<GridListTile key={1}>
-				<img src="https://material-ui.com/static/images/grid-list/breakfast.jpg" />
+				<img src=${props.catalogProducts[0].image} />
+				<GridListTileBar title=${props.catalogProducts[0].name} />
 			</GridListTile>
 			<GridListTile key={2}>
-				<img src="https://material-ui.com/static/images/grid-list/burgers.jpg" />
+				<img src=${props.catalogProducts[1].image} />
+				<GridListTileBar title=${props.catalogProducts[1].name} />
 			</GridListTile>
 			<GridListTile key={3}>
-				<img src="https://material-ui.com/static/images/grid-list/camera.jpg" />
+				<img src=${props.catalogProducts[2].image} />
+				<GridListTileBar title=${props.catalogProducts[2].name} />
 			</GridListTile>
 			<GridListTile key={4}>
-				<img src="https://material-ui.com/static/images/grid-list/morning.jpg" />
-			</GridListTile>
-			<GridListTile key={5}>
-				<img src="https://material-ui.com/static/images/grid-list/hats.jpg" />
-			</GridListTile>
-			<GridListTile key={6}>
-				<img src="https://material-ui.com/static/images/grid-list/vegetables.jpg" />
+				<img src=${props.catalogProducts[3].image} />
+				<GridListTileBar title=${props.catalogProducts[3].name} />
 			</GridListTile>
       	</GridList>
-		<GridList cols={1}>
+		<GridList cellHeight={160} cols={2}>
+			${props.nextDistributions.map(function(distribution:DistributionInfos) {
+				return jsx('<Card style=${{height: "300px", maxWidth:"400px", margin:"30px"}}>
+			<CardActionArea>
+				<CardContent style=${{height: "200px"}}>
+					<Typography gutterBottom component="p">
+						Prochaine livraison : ${Formatting.hDate(Date.fromTime(distribution.distributionStartDate))}
+					</Typography>
+					<Typography component="p">
+						${CagetteTheme.getIcon("map-marker")}  ${distribution.place.name}<br />
+						${distribution.place.address1}<br />
+						${distribution.place.address2}<br />
+						${distribution.place.city}<br />
+						${distribution.place.zipCode}<br />
+					</Typography>
+					<Typography component="p">
+						Les commandes ouvrent le : ${Formatting.hDate(Date.fromTime(distribution.orderStartDate))}<br />
+						Les commandes ferment le : ${Formatting.hDate(Date.fromTime(distribution.orderEndDate))}
+					</Typography>
+				</CardContent>
+			</CardActionArea>
+			<CardActions>
+				<Button size=${Large} color=${Primary}>
+				Accéder à la vente
+				</Button>
+      		</CardActions>
+    	</Card>');})}
+		</GridList>
+		<Typography component="h1" style=${{fontSize:"2rem"}}>
+			Vous pouvez également me retrouver ici: ${props.vendorInfo.offCagette}
+		</Typography>
+		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
+			Photos de notre exploitation
+		</Typography>
+		<GridList cols={4}>
 			<GridListTile key={1}>
-				<Card>
-					<CardContent>
-						<Typography>
-						Tous les jeudis 12h - 14h
-						LIEU
-						Prochaine livraison jeudi 20 décembre
-						Commandez jusqu\'au 17 décembre à 12h
-
-						${CagetteTheme.getIcon("map-marker")} BORGO - CAMPUS DOM
-						Ancienne route 20290 BORGO
-						</Typography>
-					</CardContent>
-					<CardActions>
-						<Button>Accéder à la vente</Button>
-					</CardActions>
-    			</Card>
+				<img src=${props.vendorInfo.images.farm1} />
 			</GridListTile>
 			<GridListTile key={2}>
-				<Card>
-					<CardContent>
-						<Typography>
-						PROCHAINE LIVRAISON
-						LIEU
-						Commandez jusqu\'au 17 décembre à 12h
-
-						${CagetteTheme.getIcon("map-marker")} BORGO - CAMPUS DOM
-						Ancienne route 20290 BORGO
-						</Typography>
-					</CardContent>
-					<CardActions>
-						<Button>Accéder à la vente</Button>
-					</CardActions>
-    			</Card>
+				<img src=${props.vendorInfo.images.farm2} />
 			</GridListTile>
-      	</GridList>
-		</Grid>');
+			<GridListTile key={3}>
+				<img src=${props.vendorInfo.images.farm3} />
+			</GridListTile>
+			<GridListTile key={4}>
+				<img src=${props.vendorInfo.images.farm4} />
+			</GridListTile>
+		</GridList>
+		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
+				<br />Catalogue complet des produits <br />
+		</Typography>
+		<GridList cellHeight={160} cols={4}>
+			${props.catalogProducts.map(function(product:ProductInfo) {
+				return jsx('<GridListTile key={product.image} cols={1}>
+					<img src={product.image} alt={product.name} />
+					<GridListTileBar title=${product.name} />
+				</GridListTile>');
+			} )}
+		</GridList>
+	</Grid>');
 	}
 }
