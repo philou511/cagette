@@ -198,7 +198,7 @@ class Shop extends Controller
 		//vendors
 		var vendors = [];
 		for( d in distribs){
-			vendors.push(d.contract.vendor.infos());
+			vendors.push(d.contract.vendor.getInfos(true));
 		}
 		out.vendors = vendors.deduplicate();
 		

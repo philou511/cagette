@@ -58,7 +58,68 @@ class Vendor extends Object
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
 
-	public function infos():VendorInfos{
+	public function getImages(){
+
+		var out = {
+			logo:null,
+			portrait:null,
+			banner:null,
+			farm:[],				
+		};
+
+		var files = sugoi.db.EntityFile.getByEntity("vendor",this.id);
+		for( f in files ){
+			switch(f.documentType){				
+				case "logo" 	: out.logo 		= f.file;
+				case "portrait" : out.portrait 	= f.file;
+				case "banner" 	: out.banner 	= f.file;
+				case "farm" 	: out.farm.push(f.file);
+			}
+		}
+
+		if(out.logo==null) out.logo = this.image;
+
+		//sort and splice farm images
+		out.farm.sort(function(a,b){
+			return Math.round((b.cdate.getTime() - a.cdate.getTime())/1000);
+		});
+		out.farm = out.farm.splice(0,4);
+
+		return out;
+	}
+
+	public function getInfos(?withImages=false):VendorInfos{
+
+		var file = function(f){
+			return if(f==null)  null else App.current.view.file(f);
+		}
+		var vendor = this;
+		var out : VendorInfos = {
+			id : id,
+			name : vendor.name,
+			image : file(vendor.image),
+			images : cast {},
+			zipCode : vendor.zipCode,
+			city : vendor.city,
+			linkText:vendor.linkText,
+			linkUrl:vendor.linkUrl,
+			desc:vendor.desc
+		};
+
+		if(withImages){
+			var images = getImages();
+			out.images.logo = file(images.logo);
+			out.images.portrait = file(images.portrait);
+			out.images.banner = file(images.portrait);
+			out.images.farm1 = file(images.farm[0]);
+			out.images.farm2 = file(images.farm[1]);
+			out.images.farm3 = file(images.farm[2]);
+			out.images.farm4 = file(images.farm[3]);
+		}
+		return out;
+	}
+
+	/*public function infos():VendorInfos{
 		return {
 			id 		: id,
 			name 	: name,
@@ -70,7 +131,8 @@ class Vendor extends Object
 			linkText	:linkText,
 			linkUrl		:linkUrl,			
 		};
-	}
+	}*/
+	
 
 	public function getGroups():Array<db.Amap>{
 		var contracts = getActiveContracts();
