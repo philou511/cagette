@@ -3,7 +3,6 @@ import react.ReactDOM;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
-//import react.Typeahead;
 
 typedef ProductInputProps = {
 	formName:String,
@@ -47,20 +46,8 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	override public function render(){
 		var inputName :String = props.formName+"_name";
 		var txpProductInputName :String = props.formName+"_txpProductId";
-		/*
-		<$AsyncTypeahead 
-						placeholder="Saisissez un nom de produit" 
-						options=$options 
-						onSearch=$onSearch 
-						minLength={3} 
-						style={{width:"350px"}} 
-						onChange=$onChange 
-						onInputChange=$onInputChange 
-						selected={[${state.productName}]} 
-						isLoading=$true
-					/>	*/
-
-		var categoriesWidget = if(this.state.open) jsx('<CategorySelector categories=${state.categories} onSelect=$onSelect/>') else null;
+	
+		var categoriesWidget = if(this.state.open) jsx('<CategorySelector categories=${state.categories} onSelect=$onSelect onClose=$onClose/>') else null;
 
 		var breadcrumb = if( state.breadcrumb!="") jsx('<><i className="icon icon-tag" /> ${state.breadcrumb}<br/></>') else null;
 
@@ -69,16 +56,13 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 			<div className="row">
 			
 				<div className="col-md-8">
-					<input className="form-control" type="text" name=$inputName value=${state.productName} onChange=$onChange/>			
-						
+					<input className="form-control" type="text" name=$inputName value=${state.productName} onChange=$onChange/>									
 					<div className = "txpProduct" >
 						$breadcrumb
 						<a href="#" className="btn btn-default btn-xs" onClick=$openCategorizeWidget>Catégoriser ce produit</a>
 						$categoriesWidget	
-					</div>				
-					
-					<input className="txpProduct" type="hidden" name=$txpProductInputName value=${state.txpProductId} />
-					
+					</div>									
+					<input className="txpProduct" type="hidden" name=$txpProductInputName value=${state.txpProductId} />					
 				</div>
 				
 				<div className="col-md-4">
@@ -106,29 +90,19 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 							return if(a.name>b.name) 1 else -1;
 						});
 					}
-
 				}
 
-
-				if(props.txpProductId==null){
-					
+				if(props.txpProductId==null){					
 					this.setState({categories:categories});
-
 				}else{
-
 					this.setState({categories:categories},
 					function(){
 						///we already have a value
 						var infos = getInfos(props.txpProductId);
 						setState({open:false,breadcrumb:infos.breadcrumb,txpProductId:props.txpProductId});
 						imgRef.current.src = infos.image;
-					}
-					);
-					
-					
-
+					});
 				}
-			
 			}		
 
 		).catchError(
@@ -143,12 +117,8 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 	**/
 	function onSelect(id:Int){
 
-		trace(id);
-
 		var infos = getInfos(id);
-
 		setState({open:false,breadcrumb:infos.breadcrumb,txpProductId:id});
-	
 		imgRef.current.src = infos.image;
 
 	}
@@ -188,6 +158,11 @@ class ProductInput extends react.ReactComponentOfPropsAndState<ProductInputProps
 
 	function onChange(event:js.html.Event) {
 		this.setState({productName: untyped event.target.value});
+		event.preventDefault();
+	}
+
+	function onClose(event:js.html.Event,reason:mui.core.modal.ModalCloseReason) {
+		this.setState({open:false});
 		event.preventDefault();
 	}
 

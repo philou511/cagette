@@ -340,13 +340,16 @@ class Contract extends Controller
 		if (checkToken()) {
 			c.lock();
 			
+			//demo contracts
+			var isDemoContract = c.vendor.email=="galinette@cagette.net" || c.vendor.email=="jean@cagette.net";
+
 			//check if there is orders in this contract
 			var products = c.getProducts();
 
 			var orders = db.UserContract.manager.search($productId in Lambda.map(products, function(p) return p.id));
 			var qt = 0.0;
 			for ( o in orders) qt += o.quantity; //there could be "zero c qt" orders
-			if (qt > 0) {
+			if (qt > 0 && !isDemoContract) {
 				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to it."));
 			}
 			

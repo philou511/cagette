@@ -183,6 +183,7 @@ class Product extends Object
 	function check(){		
 		if(this.vat==null) this.vat=0;
 		if(this.name.length>128) this.name = this.name.substr(0,128);
+		if(qt==0.0) qt = null;
 	}
 
 	override public function update(){

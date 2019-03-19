@@ -106,19 +106,6 @@ class App {
 		
 	}
 
-	/*public function getProductComposer(){
-		//js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-			//ReactDOM.render(jsx('<$ComposerApp/>'), js.Browser.document.getElementById("app"));
-		//});
-	}*/
-
-
-	public function getCategorySelector(divId:String){
-		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
-			ReactDOM.render(jsx('<$CategorySelector />'),  js.Browser.document.getElementById(divId));
-		});	
-	}
-
 	/**
 	 * Removes the form element and replace it by a react js component
 	 * @param	divId

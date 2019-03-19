@@ -415,7 +415,13 @@ class Operation extends sys.db.Object
 			
 			// varying contract :
 			//manage separatly orders which occur at different dates
-			var ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
+			var ordersGroup = null;
+			try{
+				ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
+			}catch(e:Dynamic){
+				App.current.logError(service.OrderService.prepare(orders));
+				neko.Lib.rethrow(e);
+			}
 			
 			for ( orders in ordersGroup){
 				

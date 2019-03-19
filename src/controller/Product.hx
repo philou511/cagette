@@ -36,8 +36,8 @@ class Product extends Controller
 		f.removeElementByName("contractId");
 		
 		//Product Taxonomy:
-		var txId = d.txpProduct == null ? "null" : Std.string(d.txpProduct.id);
-		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","${d.name}",$txId,"${f.name}");</script>';
+		var txId = d.txpProduct == null ? null : d.txpProduct.id;
+		var html = service.ProductService.getCategorizerHtml(d.name,txId,f.name);
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 
 		if (f.isValid()) {
@@ -76,7 +76,7 @@ class Product extends Controller
 		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
 		
 		var formName = f.name;
-		var html = '<div id="pInput"></div><script language="javascript">_.getProductInput("pInput","",null,"$formName");</script>';
+		var html = service.ProductService.getCategorizerHtml("",null,formName);
 		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 		
 		if (f.isValid()) {

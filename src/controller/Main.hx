@@ -59,6 +59,8 @@ class Main extends Controller {
 		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
 
 		var distribs = MultiDistrib.getFromTimeRange(group,now,in3Month);
+		//special case for farmers with one distrib , far in future.
+		if(distribs.length==0) distribs = MultiDistrib.getFromTimeRange(group,now,DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 12));
 		view.distribs = distribs;
 		
 		//view functions
@@ -94,6 +96,11 @@ class Main extends Controller {
 			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
+		//Delete demo contracts
+		if(checkToken() && app.params.get('action')=='deleteDemoContracts'){
+			var contracts = app.getCurrentGroup().deleteDemoContracts();
+			if(contracts.length>0 ) throw Ok("/","Contrats suivants effacés : "+contracts.map(function(c) return c.name).join(", "));
+		}
 	}
 	
 	//login and stuff

@@ -172,9 +172,13 @@ class Transaction extends controller.Controller
 			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
 		}
 		
-		//record order
-		var orders = OrderService.confirmSessionOrder(tmpOrder);
-		var ops = db.Operation.onOrderConfirm(orders);
+		try{
+			//record order
+			var orders = OrderService.confirmSessionOrder(tmpOrder);
+			var ops = db.Operation.onOrderConfirm(orders);
+		}catch(e:tink.core.Error){
+			throw Error("/transaction/pay/",e.message);
+		}
 
 		view.amount = tmpOrder.total;
 		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
@@ -194,28 +198,30 @@ class Transaction extends controller.Controller
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
 		
-		//record order
-		var orders = OrderService.confirmSessionOrder(tmpOrder);
-		var ops = db.Operation.onOrderConfirm(orders);
+		try{
+			//record order
+			var orders = OrderService.confirmSessionOrder(tmpOrder);
+			var ops = db.Operation.onOrderConfirm(orders);
 
-		view.amount = tmpOrder.total;
-		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
+			view.amount = tmpOrder.total;
+			view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 
-		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
-		
-		var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
-		
-		if (Lambda.array(ordersGrouped).length == 1)
-		{				
-			//all orders are for the same multidistrib
-			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(d.date)});
-			db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, tmpOrder.total, name, ops[0] );		
+			var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
+			
+			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+			
+			if (Lambda.array(ordersGrouped).length == 1){				
+				//all orders are for the same multidistrib
+				var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(d.date)});
+				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, tmpOrder.total, name, ops[0] );		
+			}else{				
+				//orders are for multiple distribs : create one payment
+				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.OnTheSpotPayment.TYPE, tmpOrder.total, t._("Payment on the spot"));			
+			}
+		}catch(e:tink.core.Error){
+			throw Error("/transaction/pay/",e.message);
 		}
-		else
-		{				
-			//orders are for multiple distribs : create one payment
-			db.Operation.makePaymentOperation(app.user,app.user.amap,payment.OnTheSpotPayment.TYPE, tmpOrder.total, t._("Payment on the spot"));			
-		}
+		
 	
 	}
 
@@ -237,8 +243,7 @@ class Transaction extends controller.Controller
 		view.code = code;
 		view.amount = tmpOrder.total;
 		
-		//if (checkToken()){
-			
+		try{			
 			//record order
 			var orders = OrderService.confirmSessionOrder(tmpOrder);
 			var ops = db.Operation.onOrderConfirm(orders);
@@ -252,10 +257,9 @@ class Transaction extends controller.Controller
 				//many distribs
 				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, t._("Bank transfer")+" ("+code+")" );			
 			}
-			
-
-			//throw Ok("/contract", t._("Your payment by transfer has been saved. It will be validated by a coordinator."));
-		//}
+		}catch(e:tink.core.Error){
+			throw Error("/transaction/pay/",e.message);
+		}
 
 	}
 

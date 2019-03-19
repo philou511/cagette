@@ -108,11 +108,12 @@ class Cron extends Controller
 			App.sendMail(m);
 		}
 		
-		
-		//DEMO CONTRATS deletion after 7 days ( see controller.Group.doCreate() )
-		db.Contract.manager.delete($name == "Contrat AMAP Maraîcher Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7));
-		db.Contract.manager.delete($name == "Contrat Poulet Exemple" && $startDate < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7));
-
+		//Demo contracts : deletion after 7 days
+		var sevenDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7);
+		var heightDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 8);
+		for( g in db.Amap.manager.search($cdate<sevenDaysAgo && $cdate>heightDaysAgo) ){
+			g.deleteDemoContracts();
+		}		
 		
 		//Old Messages cleaning
 		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 6));

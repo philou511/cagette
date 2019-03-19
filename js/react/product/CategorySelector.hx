@@ -3,19 +3,17 @@ package react.product;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
-import mui.core.Dialog;
-import mui.core.DialogTitle;
-import mui.core.Typography;
-import mui.core.List;
-import mui.core.ListItem;
-import mui.core.ListItemText;
+import mui.core.*;
 import react.mui.CagetteTheme;
-import mui.core.ListItemIcon;
-import mui.core.ListItemAvatar;
-import mui.core.Avatar;
 using Lambda;
 
-class CategorySelector extends react.ReactComponentOfPropsAndState<{categories : Array<CategoryInfo>,onSelect:Int->Void},{}>{
+private typedef Props = {
+	categories : Array<CategoryInfo>,
+	onSelect:Int->Void,
+	onClose:js.html.Event->mui.core.modal.ModalCloseReason->Void,
+}
+
+class CategorySelector extends react.ReactComponentOfPropsAndState<Props,{}>{
 
 	public function new(props){
 		super(props);
@@ -25,23 +23,22 @@ class CategorySelector extends react.ReactComponentOfPropsAndState<{categories :
 	override public function render(){
 		//faire des Item comme là ? https://material-ui.com/demos/dialogs/
 		return jsx('
-			<Dialog onClose=$onClose open={true} >
-				<Typography component="h2" style=${{fontSize:"1.3rem",padding:12}}>
+			<Dialog onClose=$close open={true} >
+				<Typography component="h2" style=${{fontSize:"1.3rem",padding:12,marginTop:12}}>
 					Sélectionnez une catégorie
 				</Typography>
 				<SelectionPanel categories=${this.props.categories} onSelect=${props.onSelect}/>
+				<DialogActions>
+					<Button onClick=${close}>
+                        ${CagetteTheme.getIcon("delete")} Fermer
+                    </Button>
+				</DialogActions>
         	</Dialog>');
 	}
 
-	function onClose(e:js.html.Event,reason:mui.core.modal.ModalCloseReason){
-
-	}	
-
 	function close(e){
-        onClose(e,mui.core.modal.ModalCloseReason.BackdropClick);
+		props.onClose(e,mui.core.modal.ModalCloseReason.BackdropClick);
     }
-
-	
 
 }
 
@@ -94,22 +91,16 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 		Click on a category on any level
 	**/
 	function handleClick(id:Int) {
-		//trace(id);
+
 		if (this.state.category1Id==0) {
 			this.setState({ category1Id: id });              
 		} else if (this.state.category2Id==0) {
 			this.setState({ category2Id: id });
 		} else if (this.state.category3Id==0) {
 			this.setState({ category3Id: id },function(){
-
-				
 				this.props.onSelect(id);
-
 			});
-
-			
 		}
-
 	}
 
 	function getProductCategories() {
@@ -138,12 +129,9 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 	function getLevelCategories(level:Int, category1Id:Int, category2Id:Int) {
 		if (level == 1) {
 			return this.props.categories;
-		}
-		else if  (level == 2) {
+		} else if(level == 2) {
 			return this.props.categories.filter(function(data) return data.id == category1Id )[0].subcategories;
-		}
-		else {
-
+		} else {
 			var categories2 = this.props.categories.filter(function(data) return data.id == category1Id )[0].subcategories;
 			return categories2.filter(function(data) return data.id == category2Id )[0].subcategories;
 		}
@@ -179,7 +167,7 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 				jsx('
 				<ListItem button onClick=$goBack key={0} style=${{backgroundColor:CGColors.Bg1}}>
 					<ListItemIcon>
-							${CagetteTheme.getIcon("chevron-left")}
+						${CagetteTheme.getIcon("chevron-left")}
 					</ListItemIcon>
 					<ListItemText primary="Retour" />
 				</ListItem>
@@ -188,9 +176,11 @@ class SelectionPanel extends react.ReactComponentOfPropsAndState<SelectionPanelP
 
 		}
 		
-		return jsx(' 
-		<div>
-			<div style=${{backgroundColor:CGColors.Bg1,padding:12,fontWeight:"bold"}}>${getPath()}</div>				   
+		var path = getPath();
+		var pathElement = path=="" ? null : jsx('<div style=${{backgroundColor:CGColors.Bg1,padding:12,fontWeight:"bold"}}>$path</div>');
+
+		return jsx('<div>
+				$pathElement		   
 			<List>
 				$productCategories
 			</List>                              

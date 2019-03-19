@@ -369,6 +369,23 @@ class Amap extends Object
 		
 		return currency;		
 	}
+
+	public function deleteDemoContracts(){
+		var out = [];
+
+		for( email in ["galinette@cagette.net","jean@cagette.net"]){
+			var v = db.Vendor.manager.select($email == email);
+			for( c in getContracts()){
+				if( c.vendor.id==v.id) {
+					c.lock();
+					out.push(c);
+					c.delete();
+				}
+			}
+
+		}
+		return out;
+	}
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
