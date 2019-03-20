@@ -48,11 +48,11 @@ class User extends Object {
 	
 	@:skip public var amap(get_amap, null) : Amap;
 	
-	public var cdate : SDate; 				//creation
-	public var ldate : SNull<SDateTime>;	//derniere connexion
+	public var cdate : SDate; 				//last creation
+	public var ldate : SNull<SDateTime>;	//last connection
 	
 	public var flags : SFlags<UserFlags>;
-	
+	@hideInForms public var tos	 : SBool; //terms of service / CGU	
 	@hideInForms public var tutoState : SNull<SData<{name:String,step:Int}>>; //tutorial state
 	
 	public var apiKey : SNull<SString<128>>; //private API key

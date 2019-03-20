@@ -182,5 +182,9 @@ class Vendor extends Object
 		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
 		return json.professions;
 	}
+
+	public function getLink():sugoi.db.Permalink{		
+		return sugoi.db.Permalink.getByEntity(this.id,"vendor");
+	}
 	
 }
