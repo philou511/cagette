@@ -164,6 +164,7 @@ class Vendor extends Object
 			"name" 				=> t._("Supplier name"),
 			"desc" 				=> t._("Description"),
 			"email" 			=> t._("Email"),
+			"legalStatus"		=> t._("Legal status"),
 			"phone" 			=> t._("Phone"),
 			"address1" 			=> t._("Address 1"),
 			"address2" 			=> t._("Address 2"),
