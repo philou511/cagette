@@ -109,6 +109,7 @@ typedef ProductWithQuantity = {
 typedef DistributionInfos = {
 	id:Int,
 	vendorId:Int,
+	groupId:Int,
 	distributionStartDate:Float,
 	distributionEndDate:Float,
 	orderStartDate:Float,
@@ -117,8 +118,7 @@ typedef DistributionInfos = {
 }
 
 //This is used by Mangopay to know which document types to ask for KYC compliance
-enum LegalStatus
-{
+enum LegalStatus{
 	Soletrader;
 	Organization;
 	Business;

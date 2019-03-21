@@ -32,7 +32,7 @@ class VendorPage extends react.ReactComponentOfPropsAndState<{vendorInfo: Vendor
 		<Grid item xs={12}>
         	<img style=${{objectFit:"contain"}} src=${props.vendorInfo.images.banner} alt="Vendor Banner"/>
         </Grid>
-		<Avatar style=${{width:"100px",height:"100px",position:css.Position.Absolute,top:"50px"}} alt="Hello World!" src=${props.vendorInfo.images.portrait} />
+		<Avatar style=${{width:"100px",height:"100px",position:css.Position.Absolute,top:"50px"}} src=${props.vendorInfo.images.portrait} />
 		<Typography component="h1" style=${{fontSize:"2rem"}}>
 			${props.vendorInfo.name}
 		</Typography>

@@ -130,7 +130,7 @@ class App {
 	 * @param	divId
 	 * @param	vendorId
 	 */
-	public function getVendorPage(divId:String, vendorId:Int ) {
+	public function getVendorPage(divId:String, vendorId:Int, catalogId:Int ) {
 
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -139,16 +139,16 @@ class App {
 			var catalogProducts:Array<ProductInfo> = null;
 			var nextDistributions:Array<DistributionInfos> = null;
 
-			var vendorPromise = utils.HttpUtil.fetch("/api/pro/vendor/28", GET, null, JSON);
+			var vendorPromise = utils.HttpUtil.fetch("/api/pro/vendor/"+vendorId, GET, null, JSON);
 			var catalogPromise = utils.HttpUtil.fetch("/api/pro/catalog/92", GET, null, JSON);
-			var nextDistributionsPromise = utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/28", GET, null, JSON);
+			var nextDistributionsPromise = utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/"+vendorId, GET, null, JSON);
 			
 			var initRequest = js.Promise.all([vendorPromise, catalogPromise, nextDistributionsPromise]).then(
 				function(data:Dynamic) {
 					vendorInfo = data[0];
 					catalogProducts = data[1].products;
 					nextDistributions = data[2];
-					ReactDOM.render(jsx('<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions}/>'),  js.Browser.document.getElementById(divId));
+					ReactDOM.render(jsx('<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions} />'),  js.Browser.document.getElementById(divId));
 				}
 			).catchError (
 				function(error) {

@@ -27,6 +27,9 @@ class Vendor extends Object
 	
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
+
+	@hideInForms public var directory : SBool;
+	@hideInForms public var offCagette : SNull<SText>;
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
@@ -41,6 +44,7 @@ class Vendor extends Object
 	{
 		super();
 		legalStatus = Business;
+		directory = true;
 		try{
 			var t = sugoi.i18n.Locale.texts;
 			name = t._("Supplier");
@@ -60,24 +64,70 @@ class Vendor extends Object
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
 
-	public function infos():VendorInfos{
+	public function getImages(){
+
 		var out = {
-			id 		: id,
-			name 	: name,
-			desc 	: desc,
-			image 	: App.current.view.file(image),
-			profession : null,
-			//images 	: null
-			zipCode : zipCode,
-			city 	: city,
-			linkText	:linkText,
-			linkUrl		:linkUrl,			
+			logo:null,
+			portrait:null,
+			banner:null,
+			farm:[],				
+		};
+
+		var files = sugoi.db.EntityFile.getByEntity("vendor",this.id);
+		for( f in files ){
+			switch(f.documentType){				
+				case "logo" 	: out.logo 		= f.file;
+				case "portrait" : out.portrait 	= f.file;
+				case "banner" 	: out.banner 	= f.file;
+				case "farm" 	: out.farm.push(f.file);
+			}
+		}
+
+		if(out.logo==null) out.logo = this.image;
+
+		//sort and splice farm images
+		out.farm.sort(function(a,b){
+			return Math.round((b.cdate.getTime() - a.cdate.getTime())/1000);
+		});
+		out.farm = out.farm.splice(0,4);
+
+		return out;
+	}
+
+	public function getInfos(?withImages=false):VendorInfos{
+
+		var file = function(f){
+			return if(f==null)  null else App.current.view.file(f);
+		}
+		var vendor = this;
+		var out : VendorInfos = {
+			id : id,
+			name : vendor.name,
+			profession:null,
+			offCagette:offCagette,
+			image : file(vendor.image),
+			images : cast {},
+			zipCode : vendor.zipCode,
+			city : vendor.city,
+			linkText:vendor.linkText,
+			linkUrl:vendor.linkUrl,
+			desc:vendor.desc
 		};
 
 		if(this.profession!=null){
 			out.profession = Lambda.find(getVendorProfessions(),function(x) return x.id==this.profession).name;
 		}
 
+		if(withImages){
+			var images = getImages();
+			out.images.logo = file(images.logo);
+			out.images.portrait = file(images.portrait);
+			out.images.banner = file(images.banner);
+			out.images.farm1 = file(images.farm[0]);
+			out.images.farm2 = file(images.farm[1]);
+			out.images.farm3 = file(images.farm[2]);
+			out.images.farm4 = file(images.farm[3]);
+		}
 		return out;
 	}
 
@@ -111,6 +161,7 @@ class Vendor extends Object
 			"name" 				=> t._("Supplier name"),
 			"desc" 				=> t._("Description"),
 			"email" 			=> t._("Email"),
+			"legalStatus"		=> t._("Legal status"),
 			"phone" 			=> t._("Phone"),
 			"address1" 			=> t._("Address 1"),
 			"address2" 			=> t._("Address 2"),
@@ -130,6 +181,10 @@ class Vendor extends Object
 		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
 		PROFESSIONS = json.professions;
 		return json.professions;
+	}
+
+	public function getLink():sugoi.db.Permalink{		
+		return sugoi.db.Permalink.getByEntity(this.id,"vendor");
 	}
 	
 }

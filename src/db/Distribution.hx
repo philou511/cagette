@@ -237,6 +237,7 @@ class Distribution extends Object
 		return {
 			id:id,
 			vendorId				: this.contract.vendor.id,
+			groupId				: this.contract.amap.id,
 			distributionStartDate	: date.getTime(),
 			distributionEndDate		: end.getTime(),
 			orderStartDate			: orderStartDate.getTime(),
