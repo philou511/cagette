@@ -17,37 +17,48 @@ import mui.core.GridListTile;
 import mui.core.GridListTileBar;
 import mui.core.Link;
 import mui.core.ListSubheader;
+import react.vendor.SimpleMap;
 using Lambda;
 
-class VendorPage extends react.ReactComponentOfPropsAndState<{vendorInfo: VendorInfos, catalogProducts: Array<ProductInfo>, nextDistributions: Array<DistributionInfos>},{}>{
+class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, catalogProducts: Array<ProductInfo>, nextDistributions: Array<DistributionInfos>}>{
+
+
 
 	public function new(props){
 		super(props);
-		this.state = {};
 	}
 
 	override public function render(){
 
-		return jsx('<Grid container spacing={24} direction=${Column} alignContent=${Center} alignItems=${Center} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
-		<Grid item xs={12}>
-        	<img style=${{objectFit:"contain"}} src=${props.vendorInfo.images.banner} alt="Vendor Banner"/>
+		var distributionMarkers: Array<MarkerInfo> = Lambda.array(Lambda.map(props.nextDistributions,function(distrib) return { key: Std.string(distrib.id), latitude: distrib.place.latitude, longitude: distrib.place.longitude, content: jsx('
+			<div>
+				<span>${distrib.id}</span><br />
+				<a href=${"/group/" + distrib.groupId} target="_blank">Voir le groupe</a>
+			</div>') } ));
+
+		return jsx('
+		<Grid container spacing={0} direction=${Row} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
+			<Grid item xs={12}>
+				<div style=${{backgroundImage: 'url("${props.vendorInfo.images.banner}")', backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center", position: "relative", width: "100%", height: "300px"}} >TEST</div>
+			 </Grid>
+		<Grid item xs={12} style=${{textAlign:"center"}}>
+			<Avatar style=${{width:"100px", height:"100px", marginLeft: "auto", marginRight: "auto", marginTop: "-50px"}} src=${props.vendorInfo.images.portrait} />
+			<h1 style=${{fontStyle: "normal"}}>${props.vendorInfo.name}</h1>
+			<Grid item md={12} xs={12} style=${{textAlign:"center"}}>
+				<Typography component="p" style=${{fontSize:"1.3rem"}}>
+					${CagetteTheme.getIcon("basket")} ${props.vendorInfo.profession}
+				</Typography>
+				<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
+					${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
+				</Typography>
+				<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
+					${CagetteTheme.getIcon("link")}&nbsp;&nbsp;
+					<a href=${props.vendorInfo.linkUrl} target="_blank">
+						${props.vendorInfo.linkText}
+					</a>
+				</Typography>
+			</Grid>
         </Grid>
-		<Avatar style=${{width:"100px",height:"100px",position:css.Position.Absolute,top:"50px"}} src=${props.vendorInfo.images.portrait} />
-		<Typography component="h1" style=${{fontSize:"2rem"}}>
-			${props.vendorInfo.name}
-		</Typography>
-		<Typography align=${Left} paragraph={true} style=${{fontSize:"1.5rem"}}>
-			${CagetteTheme.getIcon("basket")} ${props.vendorInfo.profession}
-		</Typography>
-		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
-			${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
-		</Typography>
-		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
-			${CagetteTheme.getIcon("link")}&nbsp;&nbsp;
-			<a href=${props.vendorInfo.linkUrl} target="_blank">
-        		${props.vendorInfo.linkText}
-      		</a>
-		</Typography>
 		<Typography paragraph={true} style=${{fontSize:"1.5rem"}}>
 			${props.vendorInfo.desc}
 		</Typography>
@@ -74,34 +85,42 @@ class VendorPage extends react.ReactComponentOfPropsAndState<{vendorInfo: Vendor
 				<GridListTileBar title=${props.catalogProducts[3].name} />
 			</GridListTile>
       	</GridList>
-		<GridList cellHeight={160} cols={2}>
-			${props.nextDistributions.map(function(distribution:DistributionInfos) {
-				return jsx('<Card style=${{height: "300px", maxWidth:"400px", margin:"30px"}}>
-			<CardActionArea>
-				<CardContent style=${{height: "200px"}}>
-					<Typography gutterBottom component="p">
-						Prochaine livraison : ${Formatting.hDate(Date.fromTime(distribution.distributionStartDate))}
-					</Typography>
-					<Typography component="p">
-						${CagetteTheme.getIcon("map-marker")}  ${distribution.place.name}<br />
-						${distribution.place.address1}<br />
-						${distribution.place.address2}<br />
-						${distribution.place.city}<br />
-						${distribution.place.zipCode}<br />
-					</Typography>
-					<Typography component="p">
-						Les commandes ouvrent le : ${Formatting.hDate(Date.fromTime(distribution.orderStartDate))}<br />
-						Les commandes ferment le : ${Formatting.hDate(Date.fromTime(distribution.orderEndDate))}
-					</Typography>
-				</CardContent>
-			</CardActionArea>
-			<CardActions>
-				<Button size=${Large} color=${Primary}>
-				Accéder à la vente
-				</Button>
-      		</CardActions>
-    	</Card>');})}
-		</GridList>
+		<Grid item xs={12} sm={4} style=${{height: "500px", overflowY: Scroll, overflowX: Hidden, marginTop: "50px"}}>
+			<GridList cellHeight={350} cols={1}>
+				${props.nextDistributions.map(function(distribution:DistributionInfos) {				
+					return jsx('
+					<GridListTile key=${distribution.id}>
+						<Card style=${{height: "300px"}}>
+							<CardActionArea>
+								<CardContent style=${{height: "300px"}}>
+									<Typography gutterBottom component="p">
+										Prochaine livraison : ${Formatting.hDate(Date.fromTime(distribution.distributionStartDate))}
+									</Typography>
+									<Typography component="p">
+										${CagetteTheme.getIcon("map-marker")}  ${distribution.place.name}<br />
+										${distribution.place.address1}<br />
+										${distribution.place.address2}<br />
+										${distribution.place.city}<br />
+										${distribution.place.zipCode}<br />
+									</Typography>
+									<Typography component="p">
+										Les commandes ouvrent le : ${Formatting.hDate(Date.fromTime(distribution.orderStartDate))}<br />
+										Les commandes ferment le : ${Formatting.hDate(Date.fromTime(distribution.orderEndDate))}
+									</Typography>									
+								</CardContent>
+							</CardActionArea>
+							<CardActions style=${{ marginTop: "60px", padding:"0px" }}>
+								<Button href=${"/group/" + distribution.groupId} size=${Large} color=${Primary}>
+									Accéder à la vente
+								</Button>
+							</CardActions>
+						</Card>
+					</GridListTile>');})}
+			</GridList>
+		</Grid>
+		<Grid item xs={12} sm={8} className="distributions-map" style=${{marginTop: "50px"}}>
+			<SimpleMap markers=${distributionMarkers} />
+        </Grid>
 		<Typography component="h1" style=${{fontSize:"2rem"}}>
 			Vous pouvez également me retrouver ici: ${props.vendorInfo.offCagette}
 		</Typography>

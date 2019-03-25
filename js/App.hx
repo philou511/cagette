@@ -148,8 +148,14 @@ class App {
 					vendorInfo = data[0];
 					catalogProducts = data[1].products;
 					nextDistributions = data[2];
-					ReactDOM.render(jsx('<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions} />'),  js.Browser.document.getElementById(divId));
-				}
+					ReactDOM.render(jsx('
+						<MuiThemeProvider theme=${CagetteTheme.get()}>
+							<>
+								<CssBaseline />
+								<$VendorPage vendorInfo=${vendorInfo} catalogProducts=${catalogProducts} nextDistributions=${nextDistributions} />
+							</>
+						</MuiThemeProvider>'),  js.Browser.document.getElementById(divId));
+			}
 			).catchError (
 				function(error) {
 					throw error;

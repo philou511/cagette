@@ -1022,3 +1022,15 @@ td.rdtYear:hover {
   width: 100%;
   font-size: 1.2em;
   margin-top: 37px; }
+
+
+/*
+  Distributions map on Vendor Page
+*/
+.distributions-map {
+  height: 500px;
+  width: 100%;
+  }
+  .distributions-map .leaflet-container {
+    height: 500px; 
+  }

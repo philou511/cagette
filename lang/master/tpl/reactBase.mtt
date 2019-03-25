@@ -10,6 +10,11 @@
 				::NAME::
 			::end::
 		</title>
+
+		<!-- Leaflet CSS -->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+		integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+		crossorigin=""/>
 		
 		<!-- Cagette CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
@@ -29,6 +34,24 @@
 		<!-- Haxe JS + libs bundled with browserify -->
 		<script type="text/javascript" src="/js/::getVariable('js')::/libs.js"></script>
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>
+
+		<!-- Social Meta Tags -->
+		::if socialShareData!=null::
+		<meta property="og:type" content="::socialShareData.facebookType::"/>
+		<meta property="og:url" content="::socialShareData.url::"/>
+		<meta property="og:title" content="::socialShareData.title::"/>
+		<meta property="og:description" content="::socialShareData.description::"/>
+		<meta property="og:image" content="::socialShareData.imageUrl::"/>
+		<meta property="og:image:alt" content="::socialShareData.imageAlt::"/>
+		
+		<meta name="twitter:card" content="::socialShareData.twitterType::"/>
+		<meta name="twitter:site" content="::socialShareData.twitterUsername::"/>
+		<meta name="twitter:title" content="::socialShareData.title::"/>
+		<meta name="twitter:description" content="::socialShareData.description::"/>
+		<meta name="twitter:image" content="::socialShareData.imageUrl::"/>
+		<meta name="twitter:image:alt" content="::socialShareData.imageAlt::"/>
+		::end::
+
 	</head>
 
 	::if container==null:: ::set container="container":: ::end::
