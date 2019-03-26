@@ -20,9 +20,13 @@ body{
 }
 
 h1,h2,h3,h4{
-  margin-top: 4px !important;
-  margin-bottom: 8px !important;
+  //margin-top: 4px !important;
+  //margin-bottom: 8px !important;
   font-style: italic;
+}
+
+a{
+	color: #3c763d;
 }
 
 .sticky {
@@ -118,7 +122,8 @@ ul.nav li {
 	border-radius: 8px;
 	padding: 20px;
 	ul>li>a {
-		color: #333; 
+		color: #333;
+		text-decoration: none; 
 	}
 	
 	ul {
@@ -129,37 +134,27 @@ ul.nav li {
 	  font-size: 14px;
 	}
 	
-	.cagsocialmedia li a {
-	  color : #fff;
-	  font-size:  20px;	  
-	  min-width: 32px;
-	  height: 32px;
-	  padding: 2px 0 0;
-	  display : inline-block;
+	.cagsocialmedia {
+		vertical-align: top;
+	  	li {
+			display: inline-block;
+			text-align: center; 
+			a {
+				color : #fff;
+				font-size:  20px;	  
+				min-width: 32px;
+				height: 32px;
+				padding: 2px 0 0;
+				display : inline-block;
+			}
+
+			&.cagfb 	 { background-color : #4267B2; }
+			&.cagtwitter { background-color : #1DA1F2; }
+			&.cagyoutube { background-color : #FF0000; }
+			&.caggithub  { background-color : #333333; }
+		}
 	}
 	
-	.cagsocialmedia {
-	  vertical-align: top;
-	}
-
-	.cagsocialmedia li {
-	  display: inline-block;
-	  text-align: center; 
-	 
-	}
-
-	.cagfb {
-	  background-color : #4267B2;
-	}
-
-	.cagtwitter {
-	  background-color  : #1DA1F2;
-	}
-
-	.cagyoutube {
-	  background-color  :  #FF0000;
-	}
-
 }
 
 #subfooter {
@@ -1209,3 +1204,12 @@ td.rdtYear:hover {
   font-size: 1.2em;
   margin-top: 37px;
 }
+
+//vendor page
+.distributions-map {
+	height: 500px;
+	width: 100%;
+}
+.distributions-map .leaflet-container {
+	height: 500px; 
+} 

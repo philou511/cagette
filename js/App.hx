@@ -139,15 +139,17 @@ class App {
 			var catalogProducts:Array<ProductInfo> = null;
 			var nextDistributions:Array<DistributionInfos> = null;
 
-			var vendorPromise = utils.HttpUtil.fetch("/api/pro/vendor/"+vendorId, GET, null, JSON);
-			var catalogPromise = utils.HttpUtil.fetch("/api/pro/catalog/92", GET, null, JSON);
-			var nextDistributionsPromise = utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/"+vendorId, GET, null, JSON);
+			var promises = [];
+			promises.push( utils.HttpUtil.fetch("/api/pro/vendor/"+vendorId, GET, null, JSON) );
+			promises.push(  utils.HttpUtil.fetch("/api/pro/vendor/nextDistributions/"+vendorId, GET, null, JSON) );
+			if(catalogId!=null) promises.push( utils.HttpUtil.fetch("/api/pro/catalog/"+catalogId, GET, null, JSON) );			
 			
-			var initRequest = js.Promise.all([vendorPromise, catalogPromise, nextDistributionsPromise]).then(
+			var initRequest = js.Promise.all(promises).then(
 				function(data:Dynamic) {
 					vendorInfo = data[0];
-					catalogProducts = data[1].products;
-					nextDistributions = data[2];
+					nextDistributions = data[1];
+					catalogProducts = data[2]==null ? [] : data[2].products;
+					
 					ReactDOM.render(jsx('
 						<MuiThemeProvider theme=${CagetteTheme.get()}>
 							<>
@@ -289,6 +291,7 @@ class App {
 	**/
 	public function pageHeader(groupName:String,_rights:String,userName:String,userId:Int)
 	{
+		groupName = StringTools.urlDecode(groupName);
 		/*var rights : Rights = null;
 		if(_rights!=null) rights = haxe.Unserializer.run(_rights);*/
 		//ReactDOM.render(jsx('<$PageHeader userRights=$rights groupName=$groupName userName=$userName userId=$userId />'), js.Browser.document.querySelector('#header'));

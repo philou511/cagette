@@ -96,16 +96,17 @@ i.icon {
   vertical-align: middle; }
 
 html {
-  font-size: 16px; }
+  font-size: 16px !important; }
 
 body {
   font-family: Cabin, Arial, Helvetica, sans-serif;
   color: #333; }
 
 h1, h2, h3, h4 {
-  margin-top: 4px !important;
-  margin-bottom: 8px !important;
   font-style: italic; }
+
+a {
+  color: #3c763d; }
 
 .sticky {
   position: -webkit-sticky;
@@ -194,31 +195,34 @@ ul.nav li {
   border-radius: 8px;
   padding: 20px; }
   #footer ul > li > a {
-    color: #333; }
+    color: #333;
+    text-decoration: none; }
   #footer ul {
     margin: 3px 0 0;
     padding: 0;
     text-align: left;
     list-style: none;
     font-size: 14px; }
-  #footer .cagsocialmedia li a {
-    color: #fff;
-    font-size: 20px;
-    min-width: 32px;
-    height: 32px;
-    padding: 2px 0 0;
-    display: inline-block; }
   #footer .cagsocialmedia {
     vertical-align: top; }
-  #footer .cagsocialmedia li {
-    display: inline-block;
-    text-align: center; }
-  #footer .cagfb {
-    background-color: #4267B2; }
-  #footer .cagtwitter {
-    background-color: #1DA1F2; }
-  #footer .cagyoutube {
-    background-color: #FF0000; }
+    #footer .cagsocialmedia li {
+      display: inline-block;
+      text-align: center; }
+      #footer .cagsocialmedia li a {
+        color: #fff;
+        font-size: 20px;
+        min-width: 32px;
+        height: 32px;
+        padding: 2px 0 0;
+        display: inline-block; }
+      #footer .cagsocialmedia li.cagfb {
+        background-color: #4267B2; }
+      #footer .cagsocialmedia li.cagtwitter {
+        background-color: #1DA1F2; }
+      #footer .cagsocialmedia li.cagyoutube {
+        background-color: #FF0000; }
+      #footer .cagsocialmedia li.caggithub {
+        background-color: #333333; }
 
 #subfooter {
   /*background-color : #313131;
@@ -1023,14 +1027,9 @@ td.rdtYear:hover {
   font-size: 1.2em;
   margin-top: 37px; }
 
-
-/*
-  Distributions map on Vendor Page
-*/
 .distributions-map {
   height: 500px;
-  width: 100%;
-  }
-  .distributions-map .leaflet-container {
-    height: 500px; 
-  }
+  width: 100%; }
+
+.distributions-map .leaflet-container {
+  height: 500px; }

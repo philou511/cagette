@@ -3,17 +3,20 @@
 
 <div id='shop'></div>
 
-::set groupName = getCurrentGroup()::
+::set group = getCurrentGroup()::
+::set groupName = group.name::
 ::if groupName==null || noGroup==true::
   ::set groupName = NAME ::
 ::end::
 
+
+
 <script language="javascript">
   window.addEventListener("load", function(){
     ::if(user!=null)::
-      _.pageHeader("::groupName::","::rights::","::user.getName()::",::user.id::);
+      _.pageHeader("::raw urlEncode(groupName)::","::rights::","::user.getName()::",::user.id::);
     ::else::
-      _.pageHeader("::groupName::",null,null,null);
+      _.pageHeader("::raw urlEncode(groupName)::",null,null,null);
     ::end::
 
     _.shop(::place.id::, "::date::");

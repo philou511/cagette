@@ -1,5 +1,5 @@
 {
-  "name": "Cagette.net",
+  "name": "cagette.net",
   "description": "le logiciel libre du circuit court",
   "author": "François Barbut <francois@alilo.fr>",
   "license": "GPL-2.0",
@@ -19,7 +19,6 @@
     "lodash.throttle": "^4.1.1",
     "prop-types": "^15.6.2",
     "react": "16.6.0",
-    "react-bootstrap-typeahead": "1.4.2",
     "react-datetime": "^2.9.0",
     "react-dom": "^16.6.0",
     "react-leaflet": "^1.8.0",

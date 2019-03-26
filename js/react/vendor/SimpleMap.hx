@@ -44,16 +44,16 @@ typedef MarkerInfo = {
 class SimpleMap extends react.ReactComponentOfProps<{markers: Array<MarkerInfo>}> {
 
 	var markerIcon = L.icon({
-    iconUrl: '/img/marker.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -30],
-    className: 'icon'
-  });
+		iconUrl: '/img/marker.svg',
+		iconSize: [40, 40],
+		iconAnchor: [20, 40],
+		popupAnchor: [0, -30],
+		className: 'icon'
+	});
 
 	function getLatLngBounds() {
-    return Lambda.array(Lambda.map(props.markers,function(marker) return [marker.latitude, marker.longitude]));
-  }
+		return Lambda.array(Lambda.map(props.markers,function(marker) return [marker.latitude, marker.longitude]));
+	}
 
 	public function new(){
 		super(props);

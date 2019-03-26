@@ -11,7 +11,7 @@
 			<div class="col-md-8">
 				::set groupName = getCurrentGroup()::
 				::if groupName!=null && noGroup!=true::
-					<h1>::groupName::</h1>
+					<h1 style="margin-bottom:8px;margin-top:4px;">::groupName::</h1>
 				::else::
 					<div style="margin-bottom:22px;" >
 							<a href="http://www.cagette.net" target="_blank">

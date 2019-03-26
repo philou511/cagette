@@ -3,7 +3,9 @@ package react.mui;
 import classnames.ClassNames.fastNull as classNames;
 import mui.icon.Icon;
 import react.ReactMacro.jsx;
+import mui.core.Typography;
 import js.Object;
+import Common;
 
 @:enum 
 abstract CGColors(String) to String {
@@ -151,4 +153,23 @@ class CagetteTheme{
         var iconObj = classNames(classes);
         return jsx('<Icon component="i" className=${iconObj} style=$style></Icon>');
     }
+
+	/**
+	return a H2 title
+	**/
+	public static function h2(text:String){
+		return jsx('<Typography variant=${mui.core.typography.TypographyVariant.H2} style=${{fontSize:"2rem",marginTop:22,marginBottom:11}}>
+				$text
+			</Typography>');
+	}
+
+	public static function place(place:PlaceInfos){
+		var out = [];
+		out.push(jsx('<>${CagetteTheme.getIcon("map-marker")}  ${place.name}<br /></>'));
+		if(place.address1!=null) out.push(jsx('<>${place.address1}<br /></>'));
+		if(place.address2!=null) out.push(jsx('<>${place.address2}<br /></>'));
+		out.push(jsx('<>${place.zipCode} </>'));
+		out.push(jsx('<>${place.city}</>'));
+		return out;									
+	}
 }

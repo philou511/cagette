@@ -13,7 +13,6 @@
     'react-redux': require('react-redux'),
     'prop-types': require('prop-types'),
     'react-dom': require('react-dom'),
-    'react-bootstrap-typeahead': require('react-bootstrap-typeahead'),
     'react-datetime': require('react-datetime'),
     'leaflet': require('leaflet'),
     'react-leaflet': require('react-leaflet'),
@@ -33,9 +32,9 @@
     
   });
 
-  if (process.env.NODE_ENV !== 'production') {
+  /*if (process.env.NODE_ENV !== 'production') {
     // enable React hot-reload
     require('haxe-modular');
-  }
+  }*/
 
 })(typeof $hx_scope != "undefined" ? $hx_scope : $hx_scope = {});

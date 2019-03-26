@@ -114,6 +114,16 @@ class Formatting
 		return out;
 	}
 
+	public static function dayOfWeek(date:Date):String{
+		if (date == null) return "No date set";
+		return DAYS[date.getDay()];
+	}
+
+	public static function month(date:Date):String{
+		if (date == null) return "No date set";
+		return MONTHS[date.getMonth()];
+	}
+
 	/**
 		Time from now to date
 	**/

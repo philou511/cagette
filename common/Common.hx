@@ -540,3 +540,17 @@ typedef OrdersReportOptions = {
 	?contracts:Array<Int>,			//which contracts
 	?distributions:Array<Int>,
 }
+
+/**
+	Opengraph / twittercard datas
+**/
+typedef SocialShareData = {
+	var facebookType: String;
+	var url: String;
+	var title: String;
+	var description: String;
+	var imageUrl: String;
+	var imageAlt: String;
+	var twitterType: String;
+	var twitterUsername: String;
+} 
