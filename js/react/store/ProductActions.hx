@@ -91,7 +91,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
             },
             cagProductPriceRate : {        
                 fontSize: "0.9rem",
-                color : CGColors.Secondfont,
+                color : CGColors.MediumGrey,
                 //marginTop : -5,
                 //marginLeft: 5,
             },

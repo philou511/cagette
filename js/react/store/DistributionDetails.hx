@@ -53,11 +53,11 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
                 },
 
                 "& a" : {
-                    color : CGColors.Firstfont, // !important   hum....
+                    color : CGColors.DarkGrey, // !important   hum....
                 },
 
                 "& i" : {
-                    color : CGColors.Firstfont,
+                    color : CGColors.MediumGrey,
                     fontSize: "1em",
                     verticalAlign: "middle",//TODO replace later with proper externs enum
                     marginRight: "0.2rem",

@@ -50,6 +50,7 @@ typedef VendorInfos = {
 	id 		: Int,
 	name 	: String,
 	desc 	: String,
+	longDesc: String,
 	image 	: String,//logo
 	profession : String,
 	?offCagette : String,

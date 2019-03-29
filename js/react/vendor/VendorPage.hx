@@ -23,8 +23,6 @@ using Lambda;
 
 class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, catalogProducts: Array<ProductInfo>, nextDistributions: Array<DistributionInfos>}>{
 
-
-
 	public function new(props){
 		super(props);
 
@@ -34,6 +32,10 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		}
 		if(props.vendorInfo.images.portrait==null) {
 			props.vendorInfo.images.portrait = props.vendorInfo.image;
+		}
+
+		if(props.vendorInfo.longDesc==null) {
+			props.vendorInfo.longDesc = props.vendorInfo.desc.split("\n").join("<br/>");
 		}
 	}
 
@@ -53,7 +55,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 				
 				${getProfession()}
 
-				<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.Secondfont}}>
+				<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.MediumGrey}}>
 					${CagetteTheme.getIcon("map-marker")} ${props.vendorInfo.city} (${props.vendorInfo.zipCode})
 				</Typography>
 
@@ -61,8 +63,8 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 			
         	</Grid>
 
-			<Typography component="p" style=${{fontSize:"1rem",margin:24}}>
-				<span dangerouslySetInnerHTML=${{__html: ${props.vendorInfo.desc.split("\n").join("<br/>")}}}></span>
+			<Typography component="div" style=${{fontSize:"1rem",margin:24}}>
+				<ExpandableText text=${props.vendorInfo.longDesc} height=${280} />
 			</Typography>
 			
 
@@ -82,7 +84,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 
 	function getProfession(){
 
-		return props.vendorInfo.profession==null ? null : jsx('<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.Secondfont}}>
+		return props.vendorInfo.profession==null ? null : jsx('<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.MediumGrey}}>
 			${props.vendorInfo.profession}
 		</Typography>');
 	}
@@ -91,7 +93,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		var v = props.vendorInfo;
 		if(v.linkUrl==null) return null;
 		
-		return jsx('<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.Secondfont}}>
+		return jsx('<Typography component="p" style=${{fontSize:"1.1rem",color:CGColors.MediumGrey}}>
 			${CagetteTheme.getIcon("link")}&nbsp;&nbsp;
 			<a href=${v.linkUrl} target="_blank">
 				${(v.linkText==null) ? v.linkUrl : v.linkText }
@@ -139,7 +141,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 							</Grid>
 
 							<Grid item xs={8}>
-								<Typography component="p" style=${{color:CGColors.Secondfont}}>
+								<Typography component="p" style=${{color:CGColors.MediumGrey}}>
 									${CagetteTheme.place(distribution.place)}
 								</Typography>
 							</Grid>
@@ -189,7 +191,8 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		if(props.vendorInfo.offCagette==null) return null;
 		return jsx('<Grid item xs={12}>
 			<Typography style=${{fontSize:"1.3rem",margin:24,marginBottom:12}}>
-				Retrouvez nous aussi : <b>${props.vendorInfo.offCagette}</b>
+				<b>Retrouvez nous aussi : </b>
+				<span dangerouslySetInnerHTML=${{__html: ${props.vendorInfo.offCagette.split("\n").join("<br/>")}}}></span>
 			</Typography>
 		</Grid>');
 	}

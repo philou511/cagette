@@ -29,12 +29,12 @@ class Vendor extends Object
 	public var linkUrl:SNull<SString<256>>;
 
 	@hideInForms public var directory : SBool;
+	@hideInForms public var longDesc : SNull<SText>;
 	@hideInForms public var offCagette : SNull<SText>;
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
-	@hideInForms @:relation(amapId) public var amap : SNull<Amap>;//DEPRECATED
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 
 	public static var PROFESSIONS:Array<{id:Int,name:String}>;
@@ -111,7 +111,8 @@ class Vendor extends Object
 			city : vendor.city,
 			linkText:vendor.linkText,
 			linkUrl:vendor.linkUrl,
-			desc:vendor.desc
+			desc:vendor.desc,
+			longDesc:vendor.longDesc
 		};
 
 		if(this.profession!=null){

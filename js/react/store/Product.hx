@@ -127,11 +127,11 @@ class Product extends ReactComponentOf<Props, ProductState> {
                 overflow: Hidden,
             },
             cagProductLabel : {
-                color:CGColors.Secondfont,                
+                color:CGColors.MediumGrey,                
             },
             cagProductDesc: {
                 fontSize: '0.9rem',
-                color : CGColors.Secondfont,
+                color : CGColors.MediumGrey,
                 marginBottom : 0,
                 maxHeight: 65,
                 overflow: Hidden,

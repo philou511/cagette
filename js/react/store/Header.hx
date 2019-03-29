@@ -103,7 +103,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 	override public function render() {
         var classes = props.classes;
         
-        var searchIcon = CagetteTheme.getIcon("search",{color:CGColors.Secondfont});
+        var searchIcon = CagetteTheme.getIcon("search",{color:CGColors.MediumGrey});
         var inputProps = {
             startAdornment: jsx('<InputAdornment position=${mui.core.input.InputAdornmentPosition.Start}>$searchIcon</InputAdornment>')
         };

@@ -16,7 +16,7 @@ class Labels extends react.ReactComponentOfProps<{product:ProductInfo}> {
 
         var style = {
             fontSize:20,
-            color:CGColors.Secondfont,
+            color:CGColors.MediumGrey,
             marginRight:8
         };
 

@@ -180,7 +180,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                             <img className=${classes.cover} src=${portrait} />
                         </Grid>
 
-                        <Grid item xs={8} style=${{color:CGColors.Secondfont}}>                        
+                        <Grid item xs={8} style=${{color:CGColors.MediumGrey}}>                        
                             <Typography component="p">
                                 <i className="icon icon-map-marker"/>&nbsp;
                                 ${vendor.city} (${vendor.zipCode})

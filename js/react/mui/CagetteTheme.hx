@@ -19,8 +19,9 @@ abstract CGColors(String) to String {
 	var Bg2 = "#F8F4E5"; //same but lighter
 	var Bg3 = "#F2EBD9"; //used for active category BG
 
-	var Firstfont = "#404040";//dark grey
-	var Secondfont = "#7F7F7F";//middle grey
+	var DarkGrey = "#404040";//ex first font
+	var MediumGrey = "#7F7F7F";//ex second font
+	var LightGrey = "#DDDDDD";
 }
 
 // This is not complete but exposes what we are currently using of the theme

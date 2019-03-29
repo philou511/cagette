@@ -39,7 +39,7 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
             <Grid container justify=${Center} style=${{/*marginBottom:"12px",*/maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
                 
                 <Grid item md={6} xs={12}>
-                    <h1><a href="/" style=${{textDecoration:"none",color:CGColors.Firstfont}}>${props.groupName}</a></h1>
+                    <h1><a href="/" style=${{textDecoration:"none",color:CGColors.DarkGrey}}>${props.groupName}</a></h1>
                 </Grid>
 
                 <Hidden xsDown>
