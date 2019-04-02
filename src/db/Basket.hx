@@ -104,13 +104,13 @@ class Basket extends Object
 	 * Returns the list of operations which paid this basket
 	 * @return
 	 */
-	public function getPaymentsOperations():Iterable<db.Operation> {
+	public function getPaymentsOperations():Array<db.Operation> {
 		
 		var op = getOrderOperation(false);
 		if (op == null){
 			return [];
 		}else{			
-			return op.getRelatedPayments();
+			return Lambda.array(op.getRelatedPayments());
 		}
 	}
 

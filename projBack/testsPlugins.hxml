@@ -29,9 +29,8 @@
 -cp ../src
 -cp ../lang/master/tpl
 
-
 -D plugins
 
--neko www/tests.n
+-neko ../www/tests.n
 -main test.TestSuite
 

@@ -9,9 +9,11 @@
 -lib smtpmailer
 -lib record-macros
 -lib tink_json
--cp common
--cp src
--cp lang/master/tpl
--neko www/tests.n
- -main test.TestSuite
+
+-cp ../common
+-cp ../src
+-cp ../lang/master/tpl
+
+-neko ../www/tests.n
+-main test.TestSuite
 

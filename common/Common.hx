@@ -320,6 +320,10 @@ enum Event {
 	//payments
 	GetPaymentTypes(data:{types:Array<payment.PaymentType>});
 	NewOperation(op:db.Operation);
+	PreOperationDelete(op:db.Operation);
+	PreOperationEdit(op:db.Operation);
+	PreRefund(form:sugoi.form.Form,basket:db.Basket,refundAmount:Float);
+	Refund(operation:db.Operation,basket:db.Basket);
 	
 	#end
 	

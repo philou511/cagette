@@ -28,7 +28,7 @@ class TestSuite
 		r.add(new pro.test.TestReports());
 		//wholesale-order tests
 		r.add(new who.test.TestWho());
-		r.add(new pro.test.TestMarketplacePayment());
+		//r.add(new pro.test.TestMarketplacePayment());
 		#end
 
 		r.run();
@@ -301,7 +301,6 @@ class TestSuite
 		v.email = "courgette@gmail.com";
 		v.zipCode = "00000";
 		v.city = "Bourligeac";
-		v.amap = LOCAVORES;
 		v.insert();
 		VENDOR1 = v;
 
@@ -310,7 +309,6 @@ class TestSuite
 		vendor2.email = "laitue@gmail.com";
 		vendor2.zipCode = "33000";
 		vendor2.city = "Auliwoud";
-		vendor2.amap = LOCAVORES;
 		vendor2.insert();
 		VENDOR2 = vendor2;
 
@@ -319,7 +317,6 @@ class TestSuite
 		vendor3.email = "carottes@gmail.com";
 		vendor3.zipCode = "47100";
 		vendor3.city = "Parmentier";
-		vendor3.amap = LOCAVORES;
 		vendor3.insert();
 		VENDOR3 = vendor3;
 
@@ -328,7 +325,6 @@ class TestSuite
 		boulanger.email = "turlupain@gmail.com";
 		boulanger.zipCode = "24000";
 		boulanger.city = "Parmentier";
-		boulanger.amap = LOCAVORES;
 		boulanger.insert();
 		
 		var c = new db.Contract();
