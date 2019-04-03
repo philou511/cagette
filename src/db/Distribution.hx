@@ -11,27 +11,26 @@ class Distribution extends Object
 {
 	public var id : SId;	
 	
-	@:relation(contractId) 
-	public var contract : Contract;
+	@hideInForms @:relation(contractId) 	public var contract : Contract;
+	@hideInForms @:relation(multiDistribId) public var multiDistrib : SNull<MultiDistrib>;
 	
-	@formPopulate("placePopulate")
-	@:relation(placeId)
-	public var place : Place;
+	//deprecated
+	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
 	
 	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;
 	
 	//start and end date for delivery
-	public var date : SDateTime; 
-	public var end : SDateTime;
+	public var date : SNull<SDateTime>; 
+	public var end : SNull<SDateTime>;
 	
 	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	
-	@formPopulate("populate") @:relation(distributor1Id) public var distributor1 : SNull<db.User>; 
-	@formPopulate("populate") @:relation(distributor2Id) public var distributor2 : SNull<db.User>; 
-	@formPopulate("populate") @:relation(distributor3Id) public var distributor3 : SNull<db.User>; 
-	@formPopulate("populate") @:relation(distributor4Id) public var distributor4 : SNull<db.User>; 	
+	@formPopulate("distributorPopulate") @:relation(distributor1Id) public var distributor1 : SNull<db.User>; 
+	@formPopulate("distributorPopulate") @:relation(distributor2Id) public var distributor2 : SNull<db.User>; 
+	@formPopulate("distributorPopulate") @:relation(distributor3Id) public var distributor3 : SNull<db.User>; 
+	@formPopulate("distributorPopulate") @:relation(distributor4Id) public var distributor4 : SNull<db.User>; 	
 	
 	@hideInForms public var validated :SBool;
 	
@@ -48,7 +47,7 @@ class Distribution extends Object
 	/**
 	 * get group members list as form data
 	 */
-	public function populate():FormData<Int> {
+	public function distributorPopulate():FormData<Int> {
 		if(App.current.user!=null && App.current.user.getAmap()!=null){
 			return App.current.user.getAmap().getMembersFormElementData();				
 		}else{
@@ -100,7 +99,7 @@ class Distribution extends Object
 	 * String to identify this distribution (debug use only)
 	 */
 	override public function toString() {
-		return "#" + id + " Delivery " + date.toString() + " of " + contract.name;		
+		return "#" + id + " Distribution - " + contract.name;		
 	}
 	
 	public function getOrders() {
@@ -229,21 +228,59 @@ class Distribution extends Object
 	}*/
 
 	override public function update(){
-		this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
+		if(this.date!=null){
+			this.end = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), this.end.getHours(), this.end.getMinutes(), 0);
+		}
+		
 		super.update();
 	}
 
 	public function getInfos():DistributionInfos{
-		return {
+		var out = {
 			id:id,
 			vendorId				: this.contract.vendor.id,
-			groupId				: this.contract.amap.id,
-			distributionStartDate	: date.getTime(),
-			distributionEndDate		: end.getTime(),
-			orderStartDate			: orderStartDate.getTime(),
-			orderEndDate			: orderEndDate.getTime(),
-			place 					: place.getInfos()
-		}
+			groupId					: this.contract.amap.id,
+			distributionStartDate	: date==null ? multiDistrib.distribStartDate.getTime() : date.getTime(),
+			distributionEndDate		: end==null ? multiDistrib.distribEndDate.getTime() : end.getTime(),
+			orderStartDate			: null,
+			orderEndDate			: null,
+			place 					: multiDistrib.place.getInfos()
+		};
+
+		out.orderStartDate = if(orderStartDate==null){
+			if(multiDistrib.orderStartDate==null){
+				null;
+			}else{
+				multiDistrib.orderStartDate.getTime();
+			}
+		}else{ 
+			orderStartDate.getTime(); 
+		};
+
+		out.orderEndDate = if(orderEndDate==null){
+			if(multiDistrib.orderEndDate==null){
+				null;
+			}else{
+				multiDistrib.orderEndDate.getTime();
+			}
+		}else{ 
+			orderEndDate.getTime(); 
+		};
+
+		return out;
+
+	}
+
+	/**
+		Trick for retrocompat with code made before Multidistrib entity (2019-04)
+	**/
+	public function populate(){
+		date =  date==null ? multiDistrib.distribStartDate : date;
+		end  =  end==null ? multiDistrib.distribEndDate : end;
+		orderStartDate = orderStartDate==null ? multiDistrib.orderStartDate : orderStartDate;
+		orderEndDate = orderEndDate==null ? multiDistrib.orderEndDate : orderEndDate;
+		place = null;
+
 	}
 	
 	

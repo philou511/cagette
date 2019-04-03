@@ -44,9 +44,9 @@ class Contract extends Object
 	public var percentageName : SNull<SString<64>>;		//fee name
 	
 	public var type : SInt;
+
 	@:skip public static var TYPE_CONSTORDERS = 0; 	//CSA contract 
-	@:skip public static var TYPE_VARORDER = 1;		//varying orders contract
-	
+	@:skip public static var TYPE_VARORDER = 1;		//varying orders contract	
 	@:skip var cache_hasActiveDistribs : Bool;
 	
 	public function new() 

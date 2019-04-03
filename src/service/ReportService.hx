@@ -127,12 +127,12 @@ class ReportService{
 
 		var t = sugoi.i18n.Locale.texts;
 		
-		var multiDistrib = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
-		if ( multiDistrib.distributions.length == 0 ) throw new tink.core.Error(t._("There is no delivery at this date"));
+		var multiDistrib = db.MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
+		if ( multiDistrib.getDistributions().length == 0 ) throw new tink.core.Error(t._("There is no delivery at this date"));
 		
 		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
 		
-		for (d in multiDistrib.distributions) {
+		for (d in multiDistrib.getDistributions()) {
 
 			var vendorId = d.contract.vendor.id;
 			var vendorData = vendorDataByVendorId.get(vendorId);

@@ -60,10 +60,8 @@ class ContractAdmin extends Controller
 		//Multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now,db.Contract.TYPE_VARORDER);
-			/*for( md in multidistribs.copy()){
-				if(md.hasOnlyConstantOrders()) multidistribs.remove(md);
-			}*/
+			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now,db.Contract.TYPE_VARORDER);
+
 			view.multidistribs = multidistribs; 
 
 		}else{
@@ -741,23 +739,43 @@ class ContractAdmin extends Controller
 	/**
 	 * Lists deliveries for this contract
 	 */
-	@tpl("contractadmin/deliveries.mtt")
+	@tpl("contractadmin/distributions.mtt")
 	function doDistributions(contract:db.Contract, ?args: { old:Bool } ) {
+
 		view.nav.push("distributions");
 		sendNav(contract);
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		view.c = contract;
-		
+
+		var multidistribs = [];
+		var now = Date.now();
+
 		if (args != null && args.old) {
 			//display also old deliveries
-			view.deliveries = contract.getDistribs(false);			
+			//distributions = Lambda.array(contract.getDistribs(false));	
+
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, DateTools.delta(now,1000.0*60*60*24*-365) , now, contract.type);
+
 		}else {
-			view.deliveries = db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} );			
+			//distributions = Lambda.array(db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} ));
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, now , DateTools.delta(now,1000.0*60*60*24*365) , contract.type);			
 		}
 		
-		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);
+		view.multidistribs = multidistribs;
+		view.c = contract;
+		view.contract = contract;
+
+		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);		
+	}
+
+	function doParticipate(md:db.MultiDistrib,contract:db.Contract){
+		try{
+			service.DistributionService.participate(md,contract);
+		}catch(e:tink.core.Error){
+			throw Error("/contractAdmin/distributions/"+contract.id,e.message);
+		}
 		
+		throw Ok("/contractAdmin/distributions/"+contract.id,t._("Distribution date added"));
 	}
 	
 	/**

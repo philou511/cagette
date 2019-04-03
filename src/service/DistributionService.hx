@@ -1,5 +1,6 @@
 package service;
 import Common;
+import tink.core.Error;
 
 /**
  * Distribution Service
@@ -44,11 +45,16 @@ class DistributionService
 	 */
 	public static function checkDistrib(d:db.Distribution) {
 
-		//Generic variables 
 		var t = sugoi.i18n.Locale.texts;
 		var view = App.current.view;
-		
 		var c = d.contract;
+
+		if (d.date==null) {
+			throw new Error(t._("This distribution has no date."));
+		}
+		if (c.type == db.Contract.TYPE_VARORDER && (d.orderStartDate==null||d.orderEndDate==null)) {
+			throw new Error(t._("This distribution should have an order opening date and an order closing date."));
+		}	
 
 		var distribs1;
 		var distribs2;	
@@ -72,15 +78,15 @@ class DistributionService
 		}
 			
 		if (distribs1.length != 0 || distribs2.length != 0 || distribs3.length != 0) {
-			throw new tink.core.Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
+			throw new Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
 		}
  
-		if (d.date.getTime() > c.endDate.getTime()) throw new tink.core.Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-		if (d.date.getTime() < c.startDate.getTime()) throw new tink.core.Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
+		if (d.date.getTime() > c.endDate.getTime()) throw new Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
+		if (d.date.getTime() < c.startDate.getTime()) throw new Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
 		
 		if (c.type == db.Contract.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new tink.core.Error(t._("The distribution start date must be set after the orders end date."));
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new tink.core.Error(t._("The orders end date must be set after the orders start date !"));
+			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
+			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
 		}
 
 	}
@@ -103,7 +109,7 @@ class DistributionService
 	  */
 	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,
 	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
-		?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true):db.Distribution {
+		?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {
 
 		var d = new db.Distribution();
 		d.contract = contract;
@@ -118,14 +124,23 @@ class DistributionService
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
 		}
-					
+
+		//end date cleaning			
 		if (end == null) {
 			d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
-		}
-		else {
+		} else {
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), end.getHours(), end.getMinutes(), 0);
 		} 
 		
+		//link to a multiDistrib
+		if(md==null){
+			md = db.MultiDistrib.get(d.date, d.place, d.contract.type);
+		}
+		if(md==null){
+			md = createMd(d.place,d.contract.type, d.date, d.end, d.orderStartDate, d.orderEndDate );
+		}
+		d.multiDistrib = md;
+
 		DistributionService.checkDistrib(d);
 		
 		if(distributionCycle == null && dispatchEvent) {
@@ -144,6 +159,29 @@ class DistributionService
 
 			return d;
 		}
+	}
+
+	public static function createMd(place:db.Place,type:Int,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+
+		var md = new db.MultiDistrib();
+		md.distribStartDate = distribStartDate;
+		md.distribEndDate 	= distribEndDate;
+		if(type==db.Contract.TYPE_VARORDER){
+			md.orderStartDate 	= orderStartDate;
+			md.orderEndDate 	= orderEndDate;
+		}		
+		md.place 			= place;
+		md.type 			= type;
+		md.insert();
+		return md;
+	}
+
+	public static function participate(md:db.MultiDistrib,contract:db.Contract){
+		
+		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,
+			null,null,null,null,md.orderStartDate,md.orderEndDate,null,true,md
+		);
+
 	}
 
 	 /**
@@ -166,10 +204,19 @@ class DistributionService
 
 		//We prevent others from modifying it
 		d.lock();
+		var t = sugoi.i18n.Locale.texts;
 
 		if(d.validated) {
-			var t = sugoi.i18n.Locale.texts;
 			throw new tink.core.Error(t._("You cannot edit a distribution which has been already validated."));
+		}
+
+		//cannot change to a different date than the multidistrib
+		if(date.toString().substr(0,10) != d.multiDistrib.distribStartDate.toString().substr(0,10) ){
+			throw new tink.core.Error(t._("The distribution date is different from the date of the general distribution."));
+		}
+		//cannot change the place
+		if(placeId != d.multiDistrib.place.id ){
+			throw new tink.core.Error(t._("The distribution place is different from the place of the general distribution."));
 		}
 
 		d.date = date;
@@ -190,7 +237,7 @@ class DistributionService
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), end.getHours(), end.getMinutes(), 0);
 		} 
 		
-		DistributionService.checkDistrib(d);
+		checkDistrib(d);
 
 		if(dispatchEvent) App.current.event(EditDistrib(d));
 		
@@ -238,6 +285,7 @@ class DistributionService
 			App.current.event(DeleteDistrib(d));
 		}
 		d.delete();
+
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
 		//names and amounts with the new number of distribs
 		updateAmapContractOperations(contract);
@@ -276,7 +324,7 @@ class DistributionService
 	 *  Creates all the distributions from the first date
 	 *  @param dc - 
 	 */
-	public static function createCycleDistribs(dc:db.DistributionCycle) {
+	static function createCycleDistribs(dc:db.DistributionCycle) {
 
 		//Generic variables 
 		var t = sugoi.i18n.Locale.texts;
@@ -298,8 +346,8 @@ class DistributionService
 				switch(dc.cycleType) {
 					case Weekly :
 						datePointer = DateTools.delta(datePointer, oneDay * 7.0);
-						App.log("on ajoute "+(oneDay * 7.0)+"millisec pour ajouter 7 jours");
-						App.log('pointer : $datePointer');
+						//App.log("on ajoute "+(oneDay * 7.0)+"millisec pour ajouter 7 jours");
+						//App.log('pointer : $datePointer');
 						
 					case BiWeekly : 	
 						datePointer = DateTools.delta(datePointer, oneDay * 14.0);
@@ -325,9 +373,10 @@ class DistributionService
 			
 			var dates = getDates(dc, datePointer);
 			
-			service.DistributionService.create(dc.contract,dates.date,
-			new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.endHour.getHours(),dc.endHour.getMinutes(),0),
-			dc.place.id,null,null,null,null,dates.orderStartDate,dates.orderEndDate,dc);
+			create(dc.contract,dates.date,
+				new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.endHour.getHours(),dc.endHour.getMinutes(),0),
+				dc.place.id,null,null,null,null,dates.orderStartDate,dates.orderEndDate,dc
+			);
 
 		}
 	}

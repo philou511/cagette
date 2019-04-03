@@ -80,7 +80,7 @@ class Basket extends Object
 			b.insert();
 			
 			//try to find orders and link them to the basket			
-			var dids = tools.ObjectListTool.getIds(md.distributions);
+			var dids = tools.ObjectListTool.getIds(md.getDistributions());
 			for ( o in db.UserContract.manager.search( ($distributionId in dids) && ($user == user), true)){
 				o.basket = b;
 				o.update();

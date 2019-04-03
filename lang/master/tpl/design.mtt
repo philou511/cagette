@@ -38,6 +38,10 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+						::if(isAdmin)::
+						<li><a href="/admin"><i class="icon icon-cog"></i> ::_("Admin")::</a></li>
+						<li><a href="/db"><i class="icon icon-cog"></i> ::_("Database")::</a></li>
+						::end::
 						<li><a href="/user/logout"><i class="icon icon-delete"></i> ::_("Log out")::</a></li>
 					</ul>
 					
@@ -86,11 +90,16 @@
 						</ul>
 						
 						<ul class="nav navbar-nav navbar-right">
-							<li id="member" ::attr class if(category=="members") 	'active' ::>
-								
+							<li id="member" ::attr class if(category=="members") 	'active' ::>								
 								<a href="/member" ::cond user.canAccessMembership()::>
 									<i class="icon icon-users"></i> ::_("Members")::</a>
 								</li>
+
+							<li ::cond user.isAdmin():: ::attr class if(category=="distribution") 	'active' ::>
+								<a href="/distribution" >
+									<i class="icon icon-calendar"></i>  ::_("Distributions")::</a>
+							</li>
+
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
 								<a href="/contractAdmin" ::cond user.isContractManager(null)::>
 									<i class="icon icon-book"></i> ::_("Contracts")::
@@ -104,8 +113,7 @@
 								<a href="/amapadmin" ::cond user.isAmapManager()::>
 									<i class="icon icon-cog"></i>  ::_("Group")::</a>
 								</li>
-							<li ::cond user.isAdmin():: ::attr class if(category=="admin") 	'active' ::>
-								<a href="/admin" ><i class="icon icon-cog"></i>  ::_("Admin")::</a></li>
+							
 						</ul>
 						
 					</div>

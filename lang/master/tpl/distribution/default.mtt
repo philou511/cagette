@@ -1,0 +1,110 @@
+::use 'design.mtt'::
+
+<div class="col-md-6">
+    <h2 style="margin-bottom:24px;margin-top:0px">::_("Distributions")::</h2>
+</div>
+<div class="col-md-6 text-right">
+    <a href="/distribution/insertMd" class="btn btn-default btn-sm"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
+</div>
+
+::if(distribs.length==0)::
+    <div class="col-md-12">
+        <div class="article">
+            $$empty(Pas de distributions...)
+        </div>
+    </div>
+::end::
+
+::foreach d distribs::
+    <div class="col-md-12">
+        <div class="distrib">
+            ::set place = d.getPlace():: 
+            ::set active = d.isActive()::
+            ::set start = d.getDate()::
+            ::set end = d.getEndDate()::
+            ::set ordersStartDate = d.getOrdersStartDate()::
+            ::set ordersEndDate = d.getOrdersEndDate()::
+            
+            ::set class =""::
+            ::if !active:: 
+                ::set class="disabled"::
+            ::end::
+            
+            <div class="header ::class::">
+                
+                <div class="text-right pull-right">
+                    ::if active==true::
+                        Commande ouverte
+                        
+                    ::elseif(ordersEndDate!=null)::		
+                        <!--Fermeture des commandes :-->													
+                        ::if Date.now().getTime() > ordersEndDate.getTime()::
+                            ::_("Order closed since"):: <br/>
+                            ::hDate(ordersEndDate)::
+                        ::else::
+                            ::_("Order will open on"):: <br/>
+                            ::hDate(ordersStartDate)::
+                        ::end::
+                    ::end::
+                    
+                </div>
+                
+                <div class="dateBoxOffset">
+                ::set s = getDate(start)::
+                ::if isToday(start)::
+                    $$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,null)
+                ::else::
+                    $$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
+                ::end::
+                </div>
+                
+                <div class="info">						
+                    ::set e = getDate(end)::
+                    <i class="icon icon-clock"></i>
+                    ::set start = s.h+":"+s.i::
+                    ::set end = e.h+":"+e.i::
+                    
+                    ::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
+                    <br/>
+                    $$place(::place::)
+                </div>	
+            </div>
+            
+            
+            <div class="content" style="background-color:white;">
+                <p>
+                    ::if(d.type==0)::
+                    Contrats AMAP
+                    ::else::
+                    Commandes variables
+                    ::end::
+                </p>  
+                <p>
+                    <b>Producteurs participants à cette distribution :</b>
+                    <ul>
+                        ::foreach dist d.getDistributions()::             
+                        <li>
+                            ::set contract = dist._contract::
+                            <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
+                        </li>
+                        ::end::
+                    </ul>
+                </p>
+                              
+                <div class="text-center">
+                    <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm"><i class="icon icon-basket"></i> Commandes</a>
+                    <a href=" /distribution/listByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::/all/S" class="btn btn-default btn-sm"><i class="icon icon-print"></i> Liste d'émargement</a>
+                </div>
+            </div>
+
+            
+        </div>
+
+	
+    </div>
+    ::end::
+			
+
+
+
+::end::

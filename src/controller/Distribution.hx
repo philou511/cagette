@@ -8,6 +8,20 @@ import Common;
 class Distribution extends Controller
 {
 
+	public function new(){
+		super();
+		view.category = "distribution";
+	}
+
+	@tpl('distribution/default.mtt')
+	function doDefault(){
+		var n = Date.now();
+		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
+		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
+		view.distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
+
+	}
+
 
 	/**
 	 * Attendance sheet by user-product (single distrib)
@@ -17,8 +31,7 @@ class Distribution extends Controller
 		view.distrib = d;
 		view.place = d.place;
 		view.contract = d.contract;
-		view.orders = service.OrderService.prepare(d.getOrders());
-		
+		view.orders = service.OrderService.prepare(d.getOrders());		
 	}
 
 	/**
@@ -292,6 +305,9 @@ class Distribution extends Controller
 		view.title = t._("Modify a delivery");
 	}
 	
+	/**
+		Insert a distribution
+	**/
 	@tpl("form.mtt")
 	public function doInsert(contract:db.Contract) {
 		
@@ -360,6 +376,74 @@ class Distribution extends Controller
 	
 		view.form = form;
 		view.title = t._("Create a distribution");
+	}
+
+	/**
+		Insert a multidistribution
+	**/
+	@tpl("form.mtt")
+	public function doInsertMd(?type=1) {
+		
+		if (!app.user.isContractManager()) throw Error('/', t._('Forbidden action') );
+		
+		var md = new db.MultiDistrib();
+		md.place = app.user.amap.getMainPlace();
+		var form = sugoi.form.Form.fromSpod(md);
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time") );
+		form.addElement(x, 3);
+		form.removeElementByName("type");
+		
+		//default values
+		form.getElement("distribStartDate").value 	= DateTool.now().deltaDays(30).setHourMinute(19, 0);
+		form.getElement("distribEndDate").value 	= DateTool.now().deltaDays(30).setHourMinute(20, 0);
+
+		//orders opening/closing	
+		if (type == db.Contract.TYPE_CONSTORDERS ) {
+			form.removeElementByName("orderStartDate");
+			form.removeElementByName("orderEndDate");			
+		}else{
+			form.getElement("orderStartDate").value = DateTool.now().deltaDays(10).setHourMinute(8, 0);	
+			form.getElement("orderEndDate").value = DateTool.now().deltaDays(20).setHourMinute(23, 59);
+		}
+
+		//vendors to add
+		var label = type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
+		var datas = [];
+		for( c in md.place.amap.getActiveContracts()){
+			if( c.type==type) datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
+		}
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,null,true);
+		form.addElement(el);
+		
+		if (form.isValid()) {
+
+			try {
+				md = service.DistributionService.createMd(
+					db.Place.manager.get(form.getValueOf("placeId"),false),
+					type,
+					form.getValueOf("distribStartDate"),
+					form.getValueOf("distribEndDate"),
+					form.getValueOf("orderStartDate"),
+					form.getValueOf("orderEndDate")
+				);
+
+				var contractIds:Array<Int> = form.getValueOf("contracts");
+				for( cid in contractIds){
+					var contract = db.Contract.manager.get(cid,false);
+					service.DistributionService.participate(md,contract);
+				}
+
+
+			} catch(e:tink.core.Error){
+				throw Error('/distribution/insertMd/' +type ,e.message);
+			}
+			
+			throw Ok('/distribution' , t._("The distribution has been recorded") );	
+		}
+	
+		view.form = form;
+		view.title = t._("Create a general distribution");
 	}
 	
 	/**
@@ -540,7 +624,7 @@ class Distribution extends Controller
 		
 		if (!app.user.isAmapManager()) throw t._("Forbidden access");
 		
-		var md = MultiDistrib.get(date, place, db.Contract.TYPE_VARORDER);
+		var md = db.MultiDistrib.get(date, place, db.Contract.TYPE_VARORDER);
 		
 		view.confirmed = md.checkConfirmed();
 		view.users = md.getUsers();
@@ -555,8 +639,8 @@ class Distribution extends Controller
 	@admin
 	public function doAutovalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-		for ( d in md.distributions){
+		var md = db.MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
+		for ( d in md.getDistributions()){
 			if(d.validated) continue;
 			service.PaymentService.validateDistribution(d);
 		}	
@@ -566,14 +650,83 @@ class Distribution extends Controller
 	@admin
 	public function doUnvalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-		for ( d in md.distributions){
+		var md = db.MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
+		for ( d in md.getDistributions()){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);
 		}	
 		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
 	}
+
+	@admin 
+	function doMigrate(){
+
+		//MIGRATE to the new multidistrib Db architecture
+		for( d in db.Distribution.manager.search($multiDistrib==null,{limit:200},true)){
+
+
+			//look for an existing md
+			var from = DateTools.delta(d.date,1000.0*60*60*-3);
+			var end = DateTools.delta(d.date,1000.0*60*60*3);
+			if(d.contract==null) {
+				trace(d.id+" has no contract<br/>");
+				if(App.config.DEBUG) d.delete();
+				continue;
+			}
+			if(d.date==null) {
+				trace(d.id+" has no date<br/>");
+				if(App.config.DEBUG) d.delete();
+				continue;
+			}
+			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribEndDate<=end && $place==d.place && $type==d.contract.type,true);
+			if(mds.length>1) throw 'too many mds !';
+			var md : db.MultiDistrib = null;
+			if(mds.length==0){
+				
+				//Create it
+				md = new db.MultiDistrib();
+				md.place = d.place;
+				md.type = d.contract.type;
+				md.distribStartDate = d.date;
+				md.distribEndDate = d.end;
+				md.orderStartDate = d.orderStartDate;
+				md.orderEndDate = d.orderEndDate;
+				md.insert();
+
+			}else{
+				md = mds.first();
+			}
+
+			//null identical fields
+			/*
+			if(md.distribStartDate.getTime()==d.date.getTime()) d.date = null;
+			if(md.distribEndDate.getTime()==d.end.getTime()) d.end = null;
+			if(md.orderStartDate!=null && md.orderStartDate.getTime()==d.orderStartDate.getTime()) d.orderStartDate = null;
+			if(md.orderEndDate!=null && md.orderEndDate.getTime()==d.orderEndDate.getTime()) d.orderEndDate = null;			
+			*/
+
+			//bind to it
+			d.multiDistrib = md;
+			d.update();
+
+			trace(d.toString()+"<br/>");
+		}
+
+
+	}
 	
-	
-	
+	@admin 
+	function doMigrate2(){
+		//finalement on ne nullifie plus les champs de db.Distribution pour se préserver des bugs dans un premier temps
+		for( d in db.Distribution.manager.search( $date==null && $multiDistrib!=null ,true)){
+
+			d.date = d.multiDistrib.distribStartDate;
+			d.end = d.multiDistrib.distribEndDate;
+			d.orderStartDate = d.multiDistrib.orderStartDate;
+			d.orderEndDate = d.multiDistrib.orderEndDate;
+			d.place = d.multiDistrib.place;
+			d.update();
+
+		}
+	}
 }

@@ -1,32 +1,44 @@
-package;
+package db;
+import sys.db.Object;
+import sys.db.Types;
 import Common;
 using tools.ObjectListTool;
 using Lambda;
-using tools.ObjectListTool;
 
 /**
- *  MultiDistrib represents many db.Distribution
- 	which happen on the same day + same place.
- * 
+ * MultiDistrib represents a global distributions with many vendors. 	
  * @author fbarbut
  */
-class MultiDistrib
+class MultiDistrib extends Object
 {
-	public var distributions : Array<db.Distribution>;
-	public var contracts : Array<db.Contract>;
-	//public var actions : Array<Link>;
-	public var extraHtml : String;
-	public var type : Null<Int>; //contract type, both contract types cannot be mixed in a same multidistrib.
+	public var id : SId;
+	public var distribStartDate : SDateTime; 
+	public var distribEndDate : SDateTime;
+	public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
+	public var orderStartDate : SNull<SDateTime>; 
+	public var orderEndDate : SNull<SDateTime>;
+	
+	@formPopulate("placePopulate")
+	@:relation(placeId)
+	public var place : Place;
+
+	@:skip public var contracts : Array<db.Contract>;
+	@:skip public var extraHtml : String;
+	
 
 	public function new(){
-		distributions  = [];
+		super();
 		contracts = [];
 		extraHtml = "";
-		//actions = [];
 	}
 	
 	public static function get(date:Date, place:db.Place,contractType:Int){
-		var m = new MultiDistrib();
+		var start = tools.DateTool.setHourMinute(date, 0, 0);
+		var end = tools.DateTool.setHourMinute(date, 23, 59);
+
+		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place && $type==contractType,false);
+
+		/*var m = new MultiDistrib();
 		
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
@@ -46,13 +58,13 @@ class MultiDistrib
 		var cids = contracts.getIds();
 		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();		
 		m.type = contractType;
-		return m;
+		return m;*/
 	}
 
 	/**
 		Get multidistribs from a time range + place + type
 	**/
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
+	/*public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
 		var multidistribs = [];
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
@@ -88,6 +100,29 @@ class MultiDistrib
 		multidistribs.sort(function(x,y){
 			return Math.round( x.getDate().getTime()/1000 ) - Math.round(y.getDate().getTime()/1000 );
 		});
+
+		return multidistribs;
+	}*/
+
+	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
+		var multidistribs = new Array<db.MultiDistrib>();
+		var start = tools.DateTool.setHourMinute(from, 0, 0);
+		var end = tools.DateTool.setHourMinute(to, 23, 59);
+		var placeIds = group.getPlaces().getIds();
+
+		if(contractType==null){
+			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds),false));
+		}else{
+			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds) && $type==contractType ,false));
+		}
+		
+		//sort by date desc
+		multidistribs.sort(function(x,y){
+			return Math.round( x.getDate().getTime()/1000 ) - Math.round(y.getDate().getTime()/1000 );
+		});
+
+		//trigger event
+		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
 
 		return multidistribs;
 	}
@@ -211,18 +246,15 @@ class MultiDistrib
 	}*/
 
 	public function getPlace(){
-		if(distributions.length==0) throw "This multidistrib is empty";
-		return distributions[0].place;
+		return place;
 	}
 
 	public function getDate(){
-		if(distributions.length==0) throw "This multidistrib is empty";
-		return distributions[0].date;
+		return distribStartDate;
 	}
 
 	public function getEndDate(){
-		if(distributions.length==0) throw "This multidistrib is empty";
-		return distributions[0].end;
+		return distribEndDate;
 	}
 
 	public function getProductsExcerpt():Array<ProductInfo>{
@@ -243,7 +275,7 @@ class MultiDistrib
 		}
 
 		var products = [];
-		for( d in distributions){
+		for( d in getDistributions()){
 			for ( p in d.contract.getProductsPreview(9)){
 				products.push( p.infos(null,false) );	
 			}
@@ -257,7 +289,7 @@ class MultiDistrib
 
 	public function userHasOrders(user:db.User):Bool{
 		if(user==null) return false;
-		for ( d in distributions){
+		for ( d in getDistributions()){
 			if(d.getUserOrders(user).length>0) return true;						
 		}
 		return false;
@@ -281,7 +313,7 @@ class MultiDistrib
 	public function getOrdersStartDate(){
 		var date = null;
 
-		for( d in distributions ){
+		for( d in getDistributions() ){
 			if(d.orderStartDate==null) continue;
 			//display closest opening date
 			if (date == null){
@@ -305,7 +337,7 @@ class MultiDistrib
 	public function getOrdersEndDate(){
 		var date = null;
 
-		for( d in distributions ){
+		for( d in getDistributions() ){
 			if(d.orderEndDate==null) continue;
 			//display most far closing date
 			if (date == null){
@@ -317,12 +349,23 @@ class MultiDistrib
 		return date;
 	}
 
+	public function getDistributions(){
+		return Lambda.array(db.Distribution.manager.search($multiDistrib==this,false));
+	}
+
+	public function getDistributionForContract(contract:db.Contract):db.Distribution{
+		for( d in getDistributions()){
+			if(d.contract.id == contract.id) return d;
+		}
+		return null;
+	}
+
 	/**
 	 * Get all orders involved in this multidistrib
 	 */
 	public function getOrders(){
 		var out = [];
-		for ( d in distributions){
+		for ( d in getDistributions()){
 			out = out.concat(d.getOrders().array());
 		}
 		return out;		
@@ -334,7 +377,7 @@ class MultiDistrib
 	 */
 	public function getUserOrders(user:db.User){
 		var out = [];
-		for ( d in distributions){
+		for ( d in getDistributions() ){
 			var pids = Lambda.map( d.contract.getProducts(false), function(x) return x.id);		
 			var userOrders =  db.UserContract.manager.search( $userId == user.id && $distributionId==d.id && $productId in pids , false);	
 			for( o in userOrders ){
@@ -355,8 +398,8 @@ class MultiDistrib
 	public function isConfirmed():Bool{
 		//cannot be in future
 		if(getDate().getTime()>Date.now().getTime()) return false;
-
-		return Lambda.count( distributions, function(d) return d.validated) == distributions.length;
+		var distributions = getDistributions();
+		return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
 	}
 	
 	public function checkConfirmed():Bool{
@@ -364,7 +407,7 @@ class MultiDistrib
 		var c = Lambda.count( orders, function(d) return d.paid) == orders.length;
 		
 		if (c){
-			for ( d in distributions){
+			for ( d in getDistributions()){
 				if (!d.validated){
 					d.lock();
 					d.validated = true;
@@ -378,11 +421,33 @@ class MultiDistrib
 
 	//get key by date-place-type
 	public function getKey(){
-		return distributions[0].getKey() + "-" + distributions[0].contract.type;
+		return "md"+this.id;
+		//return distributions[0].getKey() + "-" + distributions[0].contract.type;
 	}
 
-	public function toString(){
+	override public function toString(){
 		return "Multidistrib à "+getPlace().name+" le "+getDate();
+	}
+
+	public function placePopulate():sugoi.form.ListData.FormData<Int> {
+		var out = [];
+		var places = new List();
+		if(this.place!=null){			
+			places = db.Place.manager.search($amapId == this.place.amap.id, false);
+		}
+		for (p in places) out.push( { label:p.name,value:p.id} );
+		return out;
+	}
+
+	public static function getLabels(){
+		var t = sugoi.i18n.Locale.texts;
+		return [
+			"distribStartDate"	=> t._("Date"),
+			"distribEndDate"	=> t._("End hour"),
+			"place" 			=> t._("Place"),
+			"orderStartDate" 	=> t._("Orders opening date"),
+			"orderEndDate" 		=> t._("Orders closing date"),
+		];
 	}
 
 	

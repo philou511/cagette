@@ -103,7 +103,7 @@
 					<div class="myorder">::_("My ordered products"):: :</div>
 					
 					<div class="content orders">
-					::foreach dist d.distributions::
+					::foreach dist d.getDistributions()::
 						::set orders = prepare(dist.getUserOrders(user))::
 						::if orders.length>0::
 							<h4>
@@ -207,7 +207,7 @@
 									::i.name::
 							</a>					
 						::end::-->
-						::raw d.extraHtml::
+						$$nullSafe(::raw d.extraHtml::)
 					</div>
 
 
@@ -290,7 +290,7 @@
 
 					<!-- extra html -->
 					<div class="text-center">
-						::raw d.extraHtml::
+						$$nullSafe(::raw d.extraHtml::)
 					</div>
 					</div>
 

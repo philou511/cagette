@@ -291,7 +291,7 @@ enum Event {
 	DeleteDistrib(distrib:db.Distribution);
 	PreNewDistribCycle(cycle:db.DistributionCycle);	
 	NewDistribCycle(cycle:db.DistributionCycle);
-	MultiDistribEvent(md:MultiDistrib);
+	MultiDistribEvent(md:db.MultiDistrib);
 	
 	//Products
 	PreNewProduct(contract:db.Contract);	//when displaying the insert distribution form

@@ -58,9 +58,9 @@ class Main extends Controller {
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
 
-		var distribs = MultiDistrib.getFromTimeRange(group,now,in3Month);
+		var distribs = db.MultiDistrib.getFromTimeRange(group,now,in3Month);
 		//special case for farmers with one distrib , far in future.
-		if(distribs.length==0) distribs = MultiDistrib.getFromTimeRange(group,now,DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 12));
+		if(distribs.length==0) distribs = db.MultiDistrib.getFromTimeRange(group,now,DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 12));
 		view.distribs = distribs;
 		
 		//view functions
@@ -219,7 +219,7 @@ Called from controller/Main.hx line 117
 	
 	@logged
 	function doDistribution(d:Dispatch) {
-		view.category = 'contractadmin';
+		view.category = 'distribution';
 		d.dispatch(new controller.Distribution());
 	}
 	

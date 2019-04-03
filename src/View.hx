@@ -229,7 +229,7 @@ class View extends sugoi.BaseView {
 	
 
 	public function getDate(date:Date) {
-		if (date == null) throw "date is null";
+		if (date == null) return null;
 		if (DAYS == null) initDate();
 		
 		return {
