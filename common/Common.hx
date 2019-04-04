@@ -111,6 +111,7 @@ typedef DistributionInfos = {
 	id:Int,
 	vendorId:Int,
 	groupId:Int,
+	groupName:String,
 	distributionStartDate:Float,
 	distributionEndDate:Float,
 	orderStartDate:Float,

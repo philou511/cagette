@@ -237,11 +237,12 @@ class Distribution extends Object
 		return {
 			id:id,
 			vendorId				: this.contract.vendor.id,
-			groupId				: this.contract.amap.id,
+			groupId					: this.contract.amap.id,
+			groupName				: this.contract.amap.name,
 			distributionStartDate	: date.getTime(),
 			distributionEndDate		: end.getTime(),
-			orderStartDate			: orderStartDate.getTime(),
-			orderEndDate			: orderEndDate.getTime(),
+			orderStartDate			: orderStartDate==null ? null : orderStartDate.getTime(),
+			orderEndDate			: orderEndDate==null ? null : orderEndDate.getTime(),
 			place 					: place.getInfos()
 		}
 	}
