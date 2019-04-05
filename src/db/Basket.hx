@@ -7,9 +7,11 @@ import Common;
  * Basket : represents the orders of a user for specific date + place
  */
 //@:index(userId,placeId,ddate,unique)
+@:index(basketRef)
 class Basket extends Object
 {
 	public var id : SId;
+	public var basketRef : SNull<SString<256>>; //basket unique ref, used also by tmpBasket
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
 

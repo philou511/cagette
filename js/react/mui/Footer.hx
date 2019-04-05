@@ -7,20 +7,18 @@ import mui.core.Grid;
 
 class Footer extends react.ReactComponent
 {
-
 	override public function render(){
 		
-	
 		return jsx('<div id="footer" style=${{width:"100%",backgroundColor:CGColors.Secondary,marginTop:32,paddingTop:24,paddingBottom:24,color:CGColors.White}}>
 			<Grid container spacing={0} direction=${Row} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
                 
-                <Grid item xs={3} style=${{textAlign:"left"}}>
+                <Grid item md={3} xs={12} style=${{textAlign:"left"}}>
 					<a href="http://www.cagette.net" target="_blank">
 						<img src="/img/logo.png" alt="Cagette.net"/>
 					</a>  
 				</Grid>
 
-				<Grid item xs={3} style=${{textAlign:"left"}}>
+				<Grid item md={3} xs={12} style=${{textAlign:"left"}}>
 					AIDE
 					<ul>
 						<li> 
@@ -35,7 +33,7 @@ class Footer extends react.ReactComponent
 					</ul>					
 				</Grid>
 
-				<Grid item xs={3} style=${{textAlign:"left"}}>
+				<Grid item md={3} xs={12} style=${{textAlign:"left"}}>
 					CONTACTEZ-NOUS
 					<ul>
 						<li>
@@ -44,7 +42,7 @@ class Footer extends react.ReactComponent
 					</ul>
 				</Grid>
 
-				<Grid item xs={3} style=${{textAlign:"right"}}>
+				<Grid item md={3} xs={12} style=${{textAlign:"right"}}>
 					SUIVEZ-NOUS
 					<ul className="cagsocialmedia" style=${{textAlign:"right"}}>
 						<li className="cagfb">
@@ -69,13 +67,8 @@ class Footer extends react.ReactComponent
 						</li>
 					</ul>
 				</Grid>
-				
-
-
             </Grid>
 			</div>
 		');
 	}
-
-	
 }
