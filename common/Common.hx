@@ -45,6 +45,14 @@ typedef OrderInSession = {
 	?paymentOp:Int, //payment operation ID
 }
 
+//OrderInSession v2 for db.TmpBasket
+typedef TmpBasketData = {
+	products:Array <{
+		productId:Int,
+		quantity:Float,
+	}> ,		
+}
+
 @:keep
 typedef VendorInfos = {
 	id 		: Int,
@@ -100,6 +108,7 @@ typedef ProductInfo = {
 	?distributionId:Null<Int>, //in the context of a distrib
 }
 
+//used in shop client
 @:keep
 typedef ProductWithQuantity = {
 	product: ProductInfo,

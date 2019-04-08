@@ -199,8 +199,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 	
 	function submitOrder(order:OrderSimple) {
-		var orderInSession :OrderInSession = {
-			total: order.total,
+		var tmpBasket : TmpBasketData = {
 			products: order.products.map(function(p:ProductWithQuantity) {
 				return {
 					productId: p.product.id,
@@ -209,7 +208,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 			})
 		}
 	
-		fetch(SubmitUrl,POST,{cart:orderInSession},JSON)
+		fetch(SubmitUrl,POST,{cart:tmpBasket},JSON)
 			.then(function(_){
 				js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString();
 			});

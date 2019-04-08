@@ -161,28 +161,29 @@ class Shop extends Controller
 	
 	
 	/**
-	 * validate the order
+	 * Validate the temporary basket
+
+	 TODO : place and date will be removed when multiDistrib will be added to tmpBasket
 	 */
 	@tpl('shop/needLogin.mtt')
-	public function doValidate(place:db.Place, date:Date){
+	public function doValidate(place:db.Place, date:Date, tmpBasket:db.TmpBasket){
 		
-		//login is needed : display a loginbox
+		//Login is needed : display a loginbox
 		if (app.user == null) {
-			view.redirect = "/shop/validate/" + place.id + "/" + date.toString().substr(0, 10);
+			view.redirect = "/" + sugoi.Web.getURI();
 			view.group = place.amap;
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
 			return;
 		}
 		
-		//add the user to this group if needed
+		//Add the user to this group if needed
 		if (place.amap.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, place.amap) == null){
 			app.user.makeMemberOf(place.amap);			
 		}
-
-		var order : OrderInSession = app.session.data.order;
-		if (order == null || order.products == null || order.products.length == 0) {
-			throw Error("/", t._("Your order is empty") );
+		
+		if (tmpBasket.data.products == null || tmpBasket.data.products.length == 0) {
+			throw Error("/", t._("Your basket is empty") );
 		}
 		
 		if (place == null) throw "place cannot be empty";
@@ -194,14 +195,16 @@ class Shop extends Controller
 		order.total = 0.0;
 		
 		//cleaning
-		for (o in order.products.copy()) {
+		tmpBasket.lock();
+		var orders = tmpBasket.data.products;
+		for (o in orders.copy()) {
 			
 			var p = db.Product.manager.get(o.productId, false);
 			
 			//check that the products are from this group (we never know...)
 			if (p.contract.amap.id != app.user.amap.id){
 				app.session.data.order = null;
-				throw Error("/", t._("This cart is invalid") );
+				throw Error("/", t._("This basket contains products from another group") );
 			}
 			
 			//check if the product is available
@@ -242,7 +245,8 @@ class Shop extends Controller
 		}
 		
 		//store cart in session
-		app.session.data.order = order;		
+		tmpBasket.data = orders;		
+		tmpBasket.update();
 		
 		//debug
 		for ( p in order.products){
@@ -254,7 +258,7 @@ class Shop extends Controller
 		
 		if (app.user.amap.hasPayments()){			
 			//Go to payments page
-			throw Redirect("/transaction/pay/");
+			throw Redirect("/transaction/pay/"+tmpBasket.id);
 		}else{
 			//no payments, confirm direclty
 			OrderService.confirmSessionOrder(order);			

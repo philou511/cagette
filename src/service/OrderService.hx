@@ -357,6 +357,28 @@ class OrderService
 		
 		return sort(out);
 	}
+
+	/**
+		Record a temporary basket
+	**/
+	public static function makeTmpBasket(user:db.User,tmpBasketData:TmpBasketData):db.TmpBasket {
+
+		if( tmpBasketData==null || tmpBasketData.products.length==0) throw "empty datas";
+
+		//generate basketRef
+		var product = db.Product.manager.get(tmpBasketData.products[0].productId,false);
+		if(product==null) throw "invalid product Id";
+		var group = product.contract.amap;
+		var ref = user.id+"-"+group.id+"-"+Date.now().toString()+"-"+Std.random(1000);
+
+		var tmp = new db.TmpBasket();
+		tmp.user = user;
+		tmp.group = group;
+		tmp.data = tmpBasketData;
+		tmp.basketRef = ref;
+		tmp.insert();
+		return tmp;
+	}
 	
 	/**
 	 * Confirms an order : create real orders from tmp orders in session

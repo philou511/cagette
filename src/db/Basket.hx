@@ -7,16 +7,19 @@ import Common;
  * Basket : represents the orders of a user for specific date + place
  */
 //@:index(userId,placeId,ddate,unique)
+@:index(basketRef)
 class Basket extends Object
 {
 	public var id : SId;
+	public var basketRef : SNull<SString<256>>;
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
+	@:relation(userId) public var user : SNull<db.User>;
 
 	//TODO : link baskets to a multidistrib ID.
 	
 	//2018-07-21 fbarbut : we cannot use keys like this, because some distribution's place or date may change after orders are made.
-	//@:relation(userId) public var user : db.User;
+	//
 	//@:relation(placeId) public var place : db.Place;
 	//public var ddate : SDate;	//date of the delivery
 

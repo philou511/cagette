@@ -236,17 +236,15 @@ class Shop extends Controller
 	}
 
 	/**
-	 * record order
+	 * Record temporary basket sent from the shop client.
 	 */
 	public function doSubmit() {
-		var post:{cart:OrderInSession} = haxe.Json.parse(sugoi.Web.getPostData());
-
+		var post:{cart:TmpBasketData} = haxe.Json.parse(sugoi.Web.getPostData());
 		
 		if(post==null) throw 'Payload is empty';
 		if(post.cart==null) throw 'Cart is empty';
 		
-		var order : OrderInSession = post.cart;
-		app.session.data.order = order;
+		service.OrderService.makeTmpBasket(app.user,post.cart);
 
 		Sys.print(haxe.Json.stringify({success:true}));
 		
