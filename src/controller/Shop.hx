@@ -248,14 +248,6 @@ class Shop extends Controller
 		tmpBasket.data = orders;		
 		tmpBasket.update();
 		
-		//debug
-		for ( p in order.products){
-			if (p.distributionId == null){
-				App.current.logError(place.amap.name + " : panier sans distrib Id : " + Std.string(order) );
-				break;
-			}
-		}
-		
 		if (app.user.amap.hasPayments()){			
 			//Go to payments page
 			throw Redirect("/transaction/pay/"+tmpBasket.id);
