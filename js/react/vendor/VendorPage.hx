@@ -184,6 +184,9 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 
 		var cols = if(products.length<4) products.length else 4;
 
+		//if width under sm
+		if(js.Browser.window.document.body.clientWidth<600) cols = 1;
+
 		return jsx('<GridList cols=$cols>$products</GridList>');
 	}
 
@@ -202,6 +205,8 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 
 		if(props.catalogProducts==null || props.catalogProducts.length==0) return null;
 		var cols = if(props.catalogProducts.length<4) props.catalogProducts.length else 4;
+		//if width under sm
+		if(js.Browser.window.document.body.clientWidth<600) cols = 1;
 
 		return jsx('<><Grid item xs={12}>
 			${CagetteTheme.h2("Nos produits")}

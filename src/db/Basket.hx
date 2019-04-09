@@ -11,7 +11,7 @@ import Common;
 class Basket extends Object
 {
 	public var id : SId;
-	public var basketRef : SNull<SString<256>>;
+	public var basketRef : SNull<SString<256>>; //basket unique reference, used also for tmpBaskets
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
 	@:relation(userId) public var user : SNull<db.User>;

@@ -361,6 +361,20 @@ class App {
 		}
 		
 	}
+
+	/**
+		Anti doubleclick link function
+	**/
+	public static var linkClicked = false;
+	public function goto(url:String){
+		
+		if(!linkClicked) {
+			js.Browser.document.location.href=url;
+			linkClicked = true;
+		}else{
+			js.Browser.console.log("double click detected");
+		}
+	}
 }
 
 

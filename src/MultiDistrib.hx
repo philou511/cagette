@@ -349,8 +349,24 @@ class MultiDistrib
 		for ( o in getOrders()) users.push(o.user);
 		return users.deduplicate();		
 	}
-	
-	
+
+	public function getGroup():db.Amap{
+		if(distributions.length==0) throw "This multidistrib is empty";
+		return distributions[0].place.amap;
+
+	}
+
+	public function getBaskets():Array<db.Basket>{
+
+		var baskets = new Map<Int,db.Basket>();
+		for(d in distributions){
+			for( b in d.getBaskets()){
+				baskets.set(b.id,b);
+			}
+		}
+		return Lambda.array(baskets);
+
+	}
 	
 	public function isConfirmed():Bool{
 		//cannot be in future
