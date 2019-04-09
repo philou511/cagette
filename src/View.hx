@@ -227,6 +227,9 @@ class View extends sugoi.BaseView {
 		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
 	}
 	
+	public function fromTimestamp(ts:String){
+		return Date.fromTime(Std.parseInt(ts)*1000.0);
+	}
 
 	public function getDate(date:Date) {
 		if (date == null) throw "date is null";
