@@ -361,7 +361,7 @@ class OrderService
 	/**
 		Record a temporary basket
 	**/
-	public static function makeTmpBasket(user:db.User,tmpBasketData:TmpBasketData):db.TmpBasket {
+	public static function makeTmpBasket(user:db.User,multiDistrib:MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
 
 		if( tmpBasketData==null || tmpBasketData.products.length==0) throw "empty datas";
 
@@ -373,7 +373,8 @@ class OrderService
 
 		var tmp = new db.TmpBasket();
 		tmp.user = user;
-		tmp.group = group;
+		tmp.ddate = multiDistrib.getDate();
+		tmp.place = multiDistrib.getPlace();
 		tmp.data = tmpBasketData;
 		tmp.basketRef = ref;
 		tmp.insert();
@@ -381,14 +382,14 @@ class OrderService
 	}
 	
 	/**
-	 * Confirms an order : create real orders from tmp orders in session
+	 * Confirms an order : create real orders from a temporary basket
 	 * @param	order
 	 */
-	public static function confirmSessionOrder(tmpOrder:OrderInSession){
+	public static function confirmTmpBasket(tmpBasket:db.TmpBasket){
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
-		var user = db.User.manager.get(tmpOrder.userId);
-		for (o in tmpOrder.products){
+		var user = tmpBasket.user;
+		for (o in tmpBasket.data.products){
 			o.product = db.Product.manager.get(o.productId);
 
 			//check that the distrib is still open.
@@ -399,7 +400,7 @@ class OrderService
 		}
 		
 		App.current.event(MakeOrder(orders));
-		App.current.session.data.order = null;	
+		tmpBasket.delete();
 		
 		return orders;
 	}

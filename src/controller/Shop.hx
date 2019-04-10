@@ -163,7 +163,7 @@ class Shop extends Controller
 	/**
 	 * Validate the temporary basket
 
-	 TODO : place and date will be removed when multiDistrib will be added to tmpBasket
+		TODO : place and date will be removed when multiDistrib will be added to tmpBasket
 	 */
 	@tpl('shop/needLogin.mtt')
 	public function doValidate(place:db.Place, date:Date, tmpBasket:db.TmpBasket){
@@ -192,7 +192,7 @@ class Shop extends Controller
 		var products = getProducts(place, date);
 
 		var errors = [];
-		order.total = 0.0;
+		//order.total = 0.0;
 		
 		//cleaning
 		tmpBasket.lock();
@@ -210,25 +210,21 @@ class Shop extends Controller
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
 				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
-				order.products.remove(o);
+				orders.remove(o);
 				continue;
-			}else{
-				o.product = p;
 			}
 
 			//check quantities ( ie : ordered a floatQt when not permitted )
 			if(o.quantity==0){
-				order.products.remove(o);
+				orders.remove(o);
 			}
 
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){
 				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
-				order.products.remove(o);
+				orders.remove(o);
 				continue;
-			}else{
-				o.distributionId = d.id;
 			}
 			
 			//moderate order according available stocks
@@ -240,17 +236,17 @@ class Shop extends Controller
 				}
 			}
 		
-			order.total += p.getPrice() * o.quantity;
+			//order.total += p.getPrice() * o.quantity;
 		}
 		
-		order.userId = app.user.id;
+		//order.userId = app.user.id;
 		
 		if (errors.length > 0) {
 			app.session.addMessage(errors.join("<br/>"), true);
 		}
 		
-		//store cart in session
-		tmpBasket.data = orders;		
+		//update tmp basket
+		tmpBasket.data = {products:orders};		
 		tmpBasket.update();
 		
 		if (app.user.amap.hasPayments()){			
@@ -258,7 +254,7 @@ class Shop extends Controller
 			throw Redirect("/transaction/pay/"+tmpBasket.id);
 		}else{
 			//no payments, confirm direclty
-			OrderService.confirmSessionOrder(order);			
+			OrderService.confirmTmpBasket(tmpBasket);			
 			throw Ok("/contract", t._("Your order has been confirmed") );	
 		}
 

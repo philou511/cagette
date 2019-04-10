@@ -236,17 +236,20 @@ class Shop extends Controller
 	}
 
 	/**
-	 * Record temporary basket sent from the shop client.
+		Record temporary basket sent from the shop client.
+
+	 	TODO : replace place/ddate by multidistrib
 	 */
-	public function doSubmit() {
+	public function doSubmit(place:db.Place, ddate:Date) {
 		var post:{cart:TmpBasketData} = haxe.Json.parse(sugoi.Web.getPostData());
 		
 		if(post==null) throw 'Payload is empty';
 		if(post.cart==null) throw 'Cart is empty';
 		
-		service.OrderService.makeTmpBasket(app.user,post.cart);
+		var multiDistrib = MultiDistrib.get(ddate,place,db.Contract.TYPE_VARORDER);
+		var tmpBasket = service.OrderService.makeTmpBasket(app.user,multiDistrib, post.cart);
 
-		Sys.print(haxe.Json.stringify({success:true}));
+		Sys.print(haxe.Json.stringify({success:true,tmpBasketId:tmpBasket.id}));
 		
 	}
 	

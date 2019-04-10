@@ -139,48 +139,49 @@ class Transaction extends controller.Controller
 	
 	
 	/**
-	 * payment entry page
-	 * @param	distribKey
+	 * Payment entry point
+	 * @param	tmpBasket
 	 */
 	@tpl("transaction/pay.mtt")
-	public function doPay() {
+	public function doPay(tmpBasket:db.TmpBasket) {
 
 		view.category = 'home';
-
-		var order : OrderInSession = app.session.data.order;
-		if (order == null) throw Redirect("/");
-		if (order.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
-		view.amount = order.total;		
+		if (tmpBasket == null) throw Redirect("/");
+		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		
+		var total = tmpBasket.getTotal()
+		view.amount = total;		
+		view.tmpBasket = tmpBasket;
 		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.amap);
 		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
-		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - order.total;
+		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
+		
 	}
 	
 	/**
 	 * Use the money pot
 	 */
 	@tpl("transaction/moneypot.mtt")
-	public function doMoneypot(){
-		
-		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
-		if (tmpOrder == null) throw Redirect("/contract");
-		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
-		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
+	public function doMoneypot(tmpBasket:db.TmpBasket){
+
+		if (tmpBasket == null) throw Redirect("/contract");
+		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		var total = tmpBasket.getTotal();
+		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
 		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
 			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
 		}
 		
 		try{
 			//record order
-			var orders = OrderService.confirmSessionOrder(tmpOrder);
+			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			var ops = db.Operation.onOrderConfirm(orders);
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
 		}
 
-		view.amount = tmpOrder.total;
+		view.amount = total;
 		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 	
 	}
@@ -189,28 +190,26 @@ class Transaction extends controller.Controller
 	 * Use on the spot payment
 	 */
 	@tpl("transaction/onthespot.mtt")
-	public function doOnthespot()
+	public function doOnthespot(tmpBasket:db.TmpBasket)
 	{
-		
-		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
-		if (tmpOrder == null) throw Redirect("/contract");
-		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
-		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
+		if (tmpBasket == null) throw Redirect("/contract");
+		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		var total = tmpBasket.getTotal();
+		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
 		
 		try{
 			//record order
-			var orders = OrderService.confirmSessionOrder(tmpOrder);
+			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			var ops = db.Operation.onOrderConfirm(orders);
 
-			view.amount = tmpOrder.total;
+			view.amount = total;
 			view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 
 			var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
 			
 			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
-			if (Lambda.array(ordersGrouped).length == 1){				
+			if ( Lambda.array(ordersGrouped).length == 1 ){				
 				//all orders are for the same multidistrib
 				var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(d.date)});
 				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, tmpOrder.total, name, ops[0] );		
@@ -226,10 +225,10 @@ class Transaction extends controller.Controller
 	}
 
 	/**
-	 * pay by transfer
+	 * Pay by transfer
 	 */
 	@tpl("transaction/transfer.mtt")
-	public function doTransfer(){
+	public function doTransfer(tmpBasket:db.TmpBasket){
 		
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;	
@@ -245,7 +244,7 @@ class Transaction extends controller.Controller
 		
 		try{			
 			//record order
-			var orders = OrderService.confirmSessionOrder(tmpOrder);
+			var orders = OrderService.confirmTmpBasket(tmpOrder);
 			var ops = db.Operation.onOrderConfirm(orders);
 			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
 			
