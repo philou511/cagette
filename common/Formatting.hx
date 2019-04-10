@@ -90,6 +90,9 @@ class Formatting
 				case Centilitre:
 					pricePerUnit *= 100;
 					u = Litre;
+				case Millilitre:
+					pricePerUnit *= 1000;
+					u = Litre;
 				default :
 			}
 		}			
