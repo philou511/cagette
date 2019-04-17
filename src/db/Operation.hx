@@ -395,8 +395,10 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * Create/update the needed order operations and returns the related operations
-	 * @param	orders
+		Create/update the needed order operations and returns the related operations.
+		Can handle orders happening on different multidistribs.
+		Returns created/updated order operations.
+		@param	orders
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		

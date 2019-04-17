@@ -390,13 +390,22 @@ class OrderService
 		var orders = [];
 		var user = tmpBasket.user;
 		for (o in tmpBasket.data.products){
-			o.product = db.Product.manager.get(o.productId);
+			var p = db.Product.manager.get(o.productId);
 
-			//check that the distrib is still open.
-			var distrib = db.Distribution.manager.get(o.distributionId,false);
-			if(!distrib.canOrderNow()) throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.contract.name}));
+			//find related distrib
+			var distrib = null;
+			for( d in tmpBasket.getMultiDistrib().distributions){
+				if(d.contract.id==p.contract.id){
+					distrib = d;
+				}
+			}
 
-			orders.push( make(user, o.quantity, o.product, o.distributionId) );
+			//check that the distrib is still open.			
+			if(!distrib.canOrderNow()){
+				throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.contract.name}));
+			}
+
+			orders.push( make(user, o.quantity, p, distrib.id ) );
 		}
 		
 		App.current.event(MakeOrder(orders));

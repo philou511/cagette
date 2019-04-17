@@ -150,13 +150,12 @@ class Transaction extends controller.Controller
 		if (tmpBasket == null) throw Redirect("/");
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
-		var total = tmpBasket.getTotal()
+		var total = tmpBasket.getTotal();
 		view.amount = total;		
 		view.tmpBasket = tmpBasket;
 		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.amap);
 		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
 		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
-		
 	}
 	
 	/**
@@ -177,6 +176,8 @@ class Transaction extends controller.Controller
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			var ops = db.Operation.onOrderConfirm(orders);
+			tmpBasket.delete();
+			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
 		}
@@ -200,23 +201,19 @@ class Transaction extends controller.Controller
 		try{
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
-			var ops = db.Operation.onOrderConfirm(orders);
+			var orderOps = db.Operation.onOrderConfirm(orders);
 
 			view.amount = total;
 			view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 
-			var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
+			var date = tmpBasket.getMultiDistrib().getDate();		
 			
-			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+			//all orders are for the same multidistrib
+			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(date)});
+			db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, total, name, orderOps[0] );	
+
+			tmpBasket.delete();	
 			
-			if ( Lambda.array(ordersGrouped).length == 1 ){				
-				//all orders are for the same multidistrib
-				var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(d.date)});
-				db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, tmpOrder.total, name, ops[0] );		
-			}else{				
-				//orders are for multiple distribs : create one payment
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.OnTheSpotPayment.TYPE, tmpOrder.total, t._("Payment on the spot"));			
-			}
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
 		}
@@ -235,27 +232,24 @@ class Transaction extends controller.Controller
 		if (tmpOrder == null) throw Redirect("/contract");
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
-		//get a code
-		var d = db.Distribution.manager.get(tmpOrder.products[0].distributionId, false);		
-		var code = payment.Check.getCode(d.date, d.place, app.user);
+		var md = tmpBasket.getMultiDistrib();
+		var date = md.getDate();	
+		var total = tmpBasket.getTotal();
+		var code = payment.Check.getCode(date, md.getPlace(), app.user);
 		
 		view.code = code;
 		view.amount = tmpOrder.total;
 		
 		try{			
 			//record order
-			var orders = OrderService.confirmTmpBasket(tmpOrder);
-			var ops = db.Operation.onOrderConfirm(orders);
-			var ordersGrouped = tools.ObjectListTool.groupOrdersByKey(orders);
+			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			var orderOps = db.Operation.onOrderConfirm(orders);
 			
-			if (Lambda.array(ordersGrouped).length == 1){
-				//one multidistrib
-				var name = t._("Transfer for the order of ::date::", {date:view.hDate(d.date)}) + " ("+code+")";
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, name, ops[0] );
-			}else{
-				//many distribs
-				db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, tmpOrder.total, t._("Bank transfer")+" ("+code+")" );			
-			}
+			var name = t._("Transfer for the order of ::date::", {date:view.hDate(date)}) + " ("+code+")";
+			db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, total, name, orderOps[0] );
+
+			tmpBasket.delete();
+			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
 		}
