@@ -203,8 +203,8 @@ class Group extends controller.Controller
 			case ProducerDrive,FarmShop : 
 				g.flags.set(ShopMode);								
 				g.flags.set(PhoneRequired);
-				g.flags.set(ShopV2);
-				g.flags.set(ShopCategoriesFromTaxonomy);
+				//g.flags.set(ShopV2);
+				//g.flags.set(ShopCategoriesFromTaxonomy);
 				g.regOption = Open;
 			}
 			
