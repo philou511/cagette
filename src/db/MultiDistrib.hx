@@ -450,5 +450,13 @@ class MultiDistrib extends Object
 		];
 	}
 
+	public function getGroup(){
+		return place.amap;
+	}
+
+	public function getBaskets():Array<db.Basket>{
+		return [];
+	}
+
 	
 }
