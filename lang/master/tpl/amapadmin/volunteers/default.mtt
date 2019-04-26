@@ -1,0 +1,44 @@
+::use 'amapadmin/design.mtt'::
+
+<h2>::_("Volunteers")::</h2>
+
+<p>
+	::raw _("Here you can define volunteers roles.")::
+</p>
+
+<table class="table table-bordered">
+	<tr>
+		<th>
+			::_("Volunteer Role")::
+		</th>
+		<th>
+			::_("Contract Name")::
+		</th>
+		<th></th>
+	</tr>
+	
+	::foreach role volunteerRoles::
+	<tr>
+		<td>
+			<span>::role.name::</span>
+		</td>
+		<td>
+			::if role._contract!=null ::
+				<span>::role._contract.name::</span>
+            ::else::
+				<span>::_("All contracts")::</span>
+            ::end::
+		</td>
+		<td>
+			$$edit(::_("Edit")::,/amapadmin/volunteers/editRole/::role.id::)
+			$$delete(::_("Delete")::,/amapadmin/volunteers/deleteRole/::role.id::?token=::token::)
+		</td>
+	</tr>
+	
+	::end::
+</table>
+
+
+$$insert(::_("Add a role")::,/amapadmin/volunteers/insertRole)
+
+::end::
