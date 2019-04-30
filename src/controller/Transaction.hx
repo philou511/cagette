@@ -238,7 +238,7 @@ class Transaction extends controller.Controller
 		var code = payment.Check.getCode(date, md.getPlace(), app.user);
 		
 		view.code = code;
-		view.amount = tmpOrder.total;
+		view.amount = total;
 		
 		try{			
 			//record order

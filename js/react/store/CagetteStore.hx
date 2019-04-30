@@ -199,19 +199,24 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 	
 	function submitOrder(order:OrderSimple) {
-		var tmpBasket : TmpBasketData = {
-			products: order.products.map(function(p:ProductWithQuantity) {
-				return {
-					productId: p.product.id,
-					quantity: p.quantity*1.0
-				};
-			})
-		}
-	
-		fetch(SubmitUrl,POST,{cart:tmpBasket},JSON)
-			.then(function(_){
-				js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString();
+		try{
+			var tmpBasket : TmpBasketData = {
+				products: order.products.map(function(p:ProductWithQuantity) {
+					return {
+						productId: p.product.id,
+						quantity: p.quantity*1.0
+					};
+				})
+			}
+		
+			HttpUtil.fetch("/api/shop/submit"+"/"+props.place+"/"+props.date.toString(),POST,{cart:tmpBasket},JSON)
+			.then(function(data:Dynamic){
+				js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString()+"/"+data.tmpBasketId;
 			});
+		}catch(e:Dynamic){
+			onError( Std.string(e) );
+		}
+		
 	}
 
 	/**

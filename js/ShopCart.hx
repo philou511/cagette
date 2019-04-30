@@ -12,7 +12,7 @@ class ShopCart
 	public var productsArray : Array<ProductInfo>; //to keep order of products
 	public var categories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var pinnedCategories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
-	public var order : OrderInSession;
+	public var order : TmpBasketData;
 	
 	var loader : JQuery; //ajax loader gif
 	
@@ -30,9 +30,8 @@ class ShopCart
 	public function new() 
 	{
 		products = new Map();
-		productsArray = [];
-		
-		order = cast { products:[] };
+		productsArray = [];		
+		order = { products:[] };
 		categories = [];
 		pinnedCategories = [];
 	}
@@ -256,8 +255,6 @@ class ShopCart
 			}
 		}
 		App.j(".product").show();
-
-
 	}
 
 	/**
@@ -265,7 +262,6 @@ class ShopCart
 	 */
 	public function isEmpty(){
 		return order.products.length == 0;
-
 	}
 
 	/**
@@ -274,14 +270,13 @@ class ShopCart
 	public function submit() {
 		
 		var req = new haxe.Http("/shop/submit");
-		req.onData = function(d) {
+		req.onData = function(data) {
+			var data : {tmpBasketId:Int,success:Bool} = haxe.Json.parse(data);
 			App.instance.setWarningOnUnload(false);
-			js.Browser.location.href = "/shop/validate/"+place+"/"+date;
-			
+			js.Browser.location.href = "/shop/validate/"+place+"/"+date+"/"+data.tmpBasketId;
 		}
 		req.addParameter("data", haxe.Json.stringify(order));
-		req.request(true);
-		
+		req.request(true);		
 	}
 	
 	/**

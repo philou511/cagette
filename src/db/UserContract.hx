@@ -175,14 +175,14 @@ class UserContract extends Object
 		return out;
 	}
 	
-	public static function getTotalPrice(tmpOrder:OrderInSession){
+	/*public static function getTotalPrice(tmpOrder:OrderInSession){
 		var t = 0.0;
 		for ( o in tmpOrder.products){				
 			var p = db.Product.manager.get(o.productId, false);
 			t += o.quantity * p.getPrice();				
 		}
 		return t;
-	}
+	}*/
 
 	function check(){
 		if(quantity==null) quantity == 1;

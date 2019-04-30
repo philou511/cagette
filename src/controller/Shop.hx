@@ -8,6 +8,7 @@ class Shop extends Controller
 	
 	var distribs : List<db.Distribution>;
 	var contracts : List<db.Contract>;
+	var tmpBasket : db.TmpBasket;
 
 	@tpl('shop/default.mtt')
 	public function doDefault(place:db.Place,date:Date) {
@@ -31,6 +32,7 @@ class Shop extends Controller
 		app.event(e);
 		view.blocks = e.getParameters()[0];
 	}
+
 	
 	/**
 	 * prints the full product list and current cart in JSON
@@ -38,20 +40,24 @@ class Shop extends Controller
 	public function doInit(place:db.Place,date:Date) {
 		
 		//init order serverside if needed		
-		var order :OrderInSession = app.session.data.order; 
-		if ( order == null) {
-			app.session.data.order = order = cast {products:[]};
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId == null) {
+			var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
+			tmpBasket = service.OrderService.makeTmpBasket(app.user,md, {products:[]});
+			app.session.data.tmpBasketId = tmpBasket.id;
+			//app.session.data.order = order = cast {products:[]};
+		}else{
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
 		}
 		
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
 		
-		if (place.amap.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
-			
+		if (place.amap.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){			
 			//TAXO CATEGORIES
 			products = getProducts(place, date, true);
-		}else{
-			
+		}else{			
 			//CUSTOM CATEGORIES
 			products = getProducts(place, date, false);
 		}
@@ -59,13 +65,16 @@ class Shop extends Controller
 		categs = place.amap.getCategoryGroups();
 
 		//clean 
-		for ( p in order.products){
+		/*for ( p in order.products){
 			p.product = null;
-		}
-		Sys.print( haxe.Serializer.run( {products:products,categories:categs,order:order} ) );
+		}*/
+
+		Sys.print( haxe.Serializer.run( {
+			products:products,
+			categories:categs,
+			order:tmpBasket.data
+		} ) );
 	}
-	
-	
 	
 	/**
 	 * Get the available products list
@@ -76,14 +85,9 @@ class Shop extends Controller
 	
 		for (c in Lambda.array(contracts)) {
 			//only varying orders
-			if (c.type != db.Contract.TYPE_VARORDER) {
-				contracts.remove(c);
-			}
+			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);
 			
-			if (!c.isVisibleInShop()) {
-				contracts.remove(c);
-			}
-			
+			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
 
 		view.contracts = contracts;
@@ -125,8 +129,17 @@ class Shop extends Controller
 	 */
 	public function doSubmit() {
 		
-		var order : OrderInSession = haxe.Json.parse(app.params.get("data"));
-		app.session.data.order = order;
+		var order : TmpBasketData = haxe.Json.parse(app.params.get("data"));
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+		}
+		tmpBasket.data = order;
+		tmpBasket.update();
+
+		app.session.data.tmpBasketId = null;
+		Sys.print( haxe.Json.stringify( {success:true,tmpBasketId:tmpBasket.id} ) );
 		
 	}
 	
@@ -135,9 +148,15 @@ class Shop extends Controller
 	 */
 	public function doAdd(productId:Int, quantity:Int) {
 	
-		var order : OrderInSession =  app.session.data.order;
-		if ( order == null) order = cast { products:[] };		
-		order.products.push( { productId:productId, quantity:quantity } );		
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+		}
+			
+		tmpBasket.data.products.push( { productId:productId, quantity:quantity } );		
+		tmpBasket.update();
+
 		Sys.print( haxe.Json.stringify( {success:true} ) );
 		
 	}
@@ -147,14 +166,18 @@ class Shop extends Controller
 	 */
 	public function doRemove(pid:Int) {
 	
-		var order:OrderInSession =  app.session.data.order;
-		if ( order == null) return;
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+		}
 		
-		for ( p in order.products.copy()) {
+		for ( p in tmpBasket.data.products.copy()) {
 			if (p.productId == pid) {
-				order.products.remove(p);
+				tmpBasket.data.products.remove(p);
 			}
 		}
+		tmpBasket.update();
 		
 		Sys.print( haxe.Json.stringify( { success:true } ) );		
 	}

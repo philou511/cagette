@@ -132,7 +132,7 @@ class OrderService
 	/**
 	 * Edit an existing order (quantity)
 	 */
-	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool) {
+	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool):db.UserContract {
 		
 		var t = sugoi.i18n.Locale.texts;
 		
@@ -363,12 +363,12 @@ class OrderService
 	**/
 	public static function makeTmpBasket(user:db.User,multiDistrib:MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
 
-		if( tmpBasketData==null || tmpBasketData.products.length==0) throw "empty datas";
+		if( tmpBasketData==null) throw "empty datas";
 
 		//generate basketRef
-		var product = db.Product.manager.get(tmpBasketData.products[0].productId,false);
-		if(product==null) throw "invalid product Id";
-		var group = product.contract.amap;
+		/*var product = db.Product.manager.get(tmpBasketData.products[0].productId,false);
+		if(product==null) throw "invalid product Id";*/
+		var group = multiDistrib.getGroup();
 		var ref = user.id+"-"+group.id+"-"+Date.now().toString()+"-"+Std.random(1000);
 
 		var tmp = new db.TmpBasket();
