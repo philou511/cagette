@@ -270,7 +270,7 @@ class Amap extends Object
 	}
 
 	public function getActiveVendors():Array<db.Vendor> {
-		var vendors = Lambda.array(Lambda.map(getActiveContracts(),function(c) return c.vendor));
+		var vendors = Lambda.array(Lambda.map(getActiveContracts(true),function(c) return c.vendor));
 		return tools.ObjectListTool.deduplicate(vendors);
 	}
 	
