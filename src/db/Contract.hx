@@ -279,7 +279,7 @@ class Contract extends Object
 			"startDate" 		=> t._("Start date"),
 			"endDate" 			=> t._("End date"),
 			"description" 		=> t._("Description"),
-			"distributorNum" 	=> t._("Number of required distributors (0 to 4)"),
+			"distributorNum" 	=> t._("Number of required volunteers for a duty period"),
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
 			"percentageName" 	=> t._("Fees label"),			

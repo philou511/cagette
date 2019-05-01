@@ -1,14 +1,16 @@
 package controller;
+import db.Contract;
 import db.UserContract;
+import db.VolunteerRole;
 import sugoi.form.elements.DateDropdowns;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
-import db.Contract;
 import Common;
 import plugin.Tutorial;
 using Std;
 import service.OrderService;
+
 
 class Contract extends Controller
 {
@@ -314,6 +316,18 @@ class Contract extends Controller
 			c.type = type;
 			c.vendor = vendor;
 			c.insert();
+
+			//Let's add the Volunteer Roles for the number of volunteers needed
+			var maxIndex = form.getValueOf("distributorNum") + 1;
+			for ( i in 1...maxIndex ) {
+				
+				var role = new VolunteerRole();
+				role.name = "Permanence " + c.name + " " + i;
+				role.group = app.user.amap;
+				role.contract = c;
+				role.insert();
+			
+			}
 			
 			//right
 			if (c.contact != null) {

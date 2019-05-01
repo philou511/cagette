@@ -296,9 +296,13 @@ class AmapAdmin extends Controller
 	}
 	
 	function doCategories(d:haxe.web.Dispatch) {
-		d.dispatch(new controller.Categories());
+		d.dispatch(new controller.amapadmin.Categories());
 	}
-	
+
+	function doVolunteers(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.amapadmin.Volunteers());
+	}
+
 	/**
 	 * Set up group currency. Default is EURO
 	 */
