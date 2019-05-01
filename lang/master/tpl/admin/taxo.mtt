@@ -1,7 +1,7 @@
 ﻿::use 'admin/design.mtt'::
 		
 		<h2>Dictionnaire de produits</h2>
-
+		$$export(?csv=1)
 		<table class="table table-bordered">
 		::foreach c categ::
 			<tr>

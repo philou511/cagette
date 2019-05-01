@@ -75,8 +75,24 @@ class Admin extends Controller {
 	
 	@tpl("admin/taxo.mtt")
 	function doTaxo(){
-		
-		view.categ = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
+		var categs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
+		view.categ = categs;
+
+		if(app.params.has("csv")){
+			
+			var data = new Array<Array<String>>();
+			for ( c in categs){
+				data.push([Std.string(c.id),c.name]);
+				for( c2 in c.getSubCategories()){
+					data.push(["","",Std.string(c2.id),c2.name]);
+					for( p in c2.getProducts()){
+						data.push(["","","","",Std.string(p.id),p.name]);
+					}
+				}
+			}
+
+			sugoi.tools.Csv.printCsvDataFromStringArray(data,[],"categories.csv");
+		}
 		
 	}
 	
