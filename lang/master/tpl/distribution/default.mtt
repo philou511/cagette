@@ -93,13 +93,16 @@
                               
                 <div class="text-center">
                     <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm">
-                        <i class="icon icon-basket"></i> Commandes
+                        <i class="icon icon-basket"></i>::_("Orders")::
                     </a>
                     <a href=" /distribution/listByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::/all/S" class="btn btn-default btn-sm">
-                        <i class="icon icon-print"></i> Liste d'émargement
+                        <i class="icon icon-print"></i>::_("Attendance sheet")::
                     </a>
-                    <a href=" /distribution/permanence/::d.id::" class="btn btn-default btn-sm">
-                        <i class="icon icon-user"></i> Permanence
+                    <a href=" /distribution/volunteerRoles/::d.id::" class="btn btn-default btn-sm">
+                        <i class="icon icon-user"></i>::_("Volunteer roles")::
+                    </a>
+                    <a href=" /distribution/volunteers/::d.id::" class="btn btn-default btn-sm">
+                        <i class="icon icon-user"></i>::_("Volunteers")::
                     </a>
                 </div>
             </div>

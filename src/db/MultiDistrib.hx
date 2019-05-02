@@ -25,6 +25,7 @@ class MultiDistrib extends Object
 	@:skip public var contracts : Array<db.Contract>;
 	@:skip public var extraHtml : String;
 	
+	@hideInForms public var volunteerRolesIds : SNull<String>;
 
 	public function new(){
 		super();
