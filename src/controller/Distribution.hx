@@ -2,8 +2,10 @@ package controller;
 import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
-using tools.DateTool;
+import tink.core.Error;
 import Common;
+using tools.DateTool;
+
 
 class Distribution extends Controller
 {
@@ -19,9 +21,8 @@ class Distribution extends Controller
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
 		view.distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
-
+		checkToken();
 	}
-
 
 	/**
 	 * Attendance sheet by user-product (single distrib)
@@ -110,7 +111,6 @@ class Distribution extends Controller
 		
 		view.place = place;		
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
-
 		
 		if (type == null) {
 		
@@ -206,6 +206,9 @@ class Distribution extends Controller
 		}
 	}
 	
+	/**
+		Delete a distribution
+	**/
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
@@ -213,17 +216,30 @@ class Distribution extends Controller
 		var contractId = d.contract.id;
 		try {
 			service.DistributionService.delete(d);
-		}
-		catch(e:tink.core.Error){
+		} catch(e:Error){
 			throw Error("/contractAdmin/distributions/" + contractId, e.message);
 		}
 		
-		throw Ok("/contractAdmin/distributions/" + contractId, t._("the delivery has been deleted"));
+		throw Ok("/contractAdmin/distributions/" + contractId, t._("The distribution has been deleted"));
+	}
 
+	/**
+		Delete a Multidistribution
+	**/
+	function doDeleteMd(md:db.MultiDistrib){
+		if(checkToken()){
+			try{
+				service.DistributionService.deleteMd(md);
+			}catch(e:Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}
+			throw Ok("/distribution",t._("The distribution has been deleted"));
+			
+		}
 	}
 	
 	/**
-	 * Edit a distribution
+		Edit a distribution
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
@@ -246,9 +262,7 @@ class Distribution extends Controller
 
 			var orderStartDate = null;
 			var orderEndDate = null;
-
 			try{
-
 				if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 					orderStartDate = form.getValueOf("orderStartDate");
 					orderEndDate = form.getValueOf("orderEndDate");
@@ -264,22 +278,18 @@ class Distribution extends Controller
 				form.getValueOf("distributor4Id"),
 				orderStartDate,
 				orderEndDate);
-
-			}
-			catch(e:tink.core.Error){
+			} catch(e:Error){
 				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 			
 			if (d.date == null) {
 				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
 				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
-			}
-			else {
+			} else {
 				throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
 			}
 			
-		}
-		else {
+		} else {
 			app.event(PreEditDistrib(d));
 		}
 		
@@ -424,8 +434,8 @@ class Distribution extends Controller
 					type,
 					form.getValueOf("distribStartDate"),
 					form.getValueOf("distribEndDate"),
-					form.getValueOf("orderStartDate"),
-					form.getValueOf("orderEndDate")
+					type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderStartDate"),
+					type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderEndDate")
 				);
 
 				var contractIds:Array<Int> = form.getValueOf("contracts");
@@ -444,6 +454,66 @@ class Distribution extends Controller
 	
 		view.form = form;
 		view.title = t._("Create a general distribution");
+	}
+
+	/**
+		Insert a multidistribution
+	**/
+	@tpl("form.mtt")
+	public function doEditMd(md:db.MultiDistrib) {
+		
+		if (!app.user.isContractManager()) throw Error('/', t._('Forbidden action') );
+		
+		md.place = app.user.amap.getMainPlace();
+		var form = sugoi.form.Form.fromSpod(md);
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time"), md.distribEndDate );
+		form.addElement(x, 3);
+		form.removeElementByName("type");
+		
+		//orders opening/closing	
+		if (md.type == db.Contract.TYPE_CONSTORDERS ) {
+			form.removeElementByName("orderStartDate");
+			form.removeElementByName("orderEndDate");			
+		}
+
+		//vendors to add
+		var label = md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
+		var datas = [];
+		for( c in md.place.amap.getActiveContracts()){
+			if( c.type==md.type) datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
+		}
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,null,true);
+		form.addElement(el);
+		
+		if (form.isValid()) {
+
+			try {
+				md = service.DistributionService.createMd(
+					db.Place.manager.get(form.getValueOf("placeId"),false),
+					md.type,
+					form.getValueOf("distribStartDate"),
+					form.getValueOf("distribEndDate"),
+					md.type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderStartDate"),
+					md.type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderEndDate")
+				);
+
+				var contractIds:Array<Int> = form.getValueOf("contracts");
+				for( cid in contractIds){
+					var contract = db.Contract.manager.get(cid,false);
+					service.DistributionService.participate(md,contract);
+				}
+
+
+			} catch(e:Error){
+				throw Error('/distribution/insertMd/' +md.type ,e.message);
+			}
+			
+			throw Ok('/distribution' , t._("The distribution has been recorded") );	
+		}
+	
+		view.form = form;
+		view.title = t._("Edit a general distribution");
 	}
 	
 	/**

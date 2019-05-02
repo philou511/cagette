@@ -4,7 +4,18 @@
     <h2 style="margin-bottom:24px;margin-top:0px">::_("Distributions")::</h2>
 </div>
 <div class="col-md-6 text-right">
-    <a href="/distribution/insertMd" class="btn btn-default btn-sm"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
+    
+    <div class="dropdown" style="display:inline-block;">
+        <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <i class="icon icon-plus"></i> Distribution ponctuelle  
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="/distribution/insertMd/1"><i class="icon icon-plus"></i> Commandes variables</a></li>
+            <li><a href="/distribution/insertMd/0"><i class="icon icon-plus"></i> Contrats AMAP</a></li>			
+        </ul>
+    </div>
+    
 </div>
 
 ::if(distribs.length==0)::
@@ -73,14 +84,13 @@
             
             <div class="content" style="background-color:white;">
                 <p>
-                    ::if(d.type==0)::
-                    Contrats AMAP
-                    ::else::
-                    Commandes variables
-                    ::end::
-                </p>  
-                <p>
-                    <b>Producteurs participants à cette distribution :</b>
+                    <b>
+                        ::if(d.type==0)::
+                        Contrats AMAP :
+                        ::else::
+                        Commandes variables :
+                        ::end::
+                    </b>
                     <ul>
                         ::foreach dist d.getDistributions()::             
                         <li>
@@ -92,6 +102,15 @@
                 </p>
                               
                 <div class="text-center">
+
+                    <a href="/distribution/editMd/::d.id::" class="btn btn-default btn-sm">
+                        <i class="icon icon-edit"></i> Modifier
+                    </a>
+
+                    <a href="/distribution/deleteMd/::d.id::?token=::token::" class="btn btn-default btn-sm">
+                        <i class="icon icon-delete"></i> Suppr.
+                    </a>
+
                     <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm">
                         <i class="icon icon-basket"></i> Commandes
                     </a>
