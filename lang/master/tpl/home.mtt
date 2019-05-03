@@ -370,7 +370,7 @@
 		
 	</div>
 	
-	<div class="block" ::cond (contractsWithDistributors.length>0) ::>
+	<div class="block">
 		
 		<a href=" /distribution/VolunteersCalendar" class="btn btn-default btn-sm">
 			<i class="icon icon-calendar"></i> Calendrier des permanences
