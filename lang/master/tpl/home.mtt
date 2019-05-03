@@ -225,7 +225,7 @@
 
 							<div class="alert alert-danger" ::cond d.id%2==1::>										
 								<i class="icon icon-alert"></i>
-								Il manque <b>3 bénévoles</b> pour cette distribution !
+								Il manque <b>3 bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont : <b>Accueil des nouveaux, permanence légumes</b>
 								<p style="margin-top:12px;">
 									<a href="" class="btn btn-danger btn-sm"><i class="icon icon-chevron-right"></i> Inscription</a>
 								</p>
@@ -370,14 +370,11 @@
 		
 	</div>
 	
-	<div class="block" ::cond (false && contractsWithDistributors.length>0) ::>
-		<h3>::_("Permanences")::</h3>
-		<p>::_("Don't forget to register for permanences")::</p>
-		<ul>
-		::foreach c contractsWithDistributors::
-			<li><a href="/distribution/planning/::c.id::">::c.name::</a></li>
-		::end::
-		</ul>
+	<div class="block" ::cond (contractsWithDistributors.length>0) ::>
+		
+		<a href=" /distribution/VolunteersCalendar" class="btn btn-default btn-sm">
+			<i class="icon icon-calendar"></i> Calendrier des permanences
+		</a>
 	</div>
 	
 	<div class="alert alert-danger" ::cond user!=null && !user.isFullyRegistred()::>

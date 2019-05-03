@@ -69,10 +69,6 @@ class Api extends Controller
 		d.dispatch(new controller.api.Order());
 	}	
 
-	public function doDFC(d:haxe.web.Dispatch) {
-		d.dispatch(new controller.api.DFC());
-	}
-	
 	/**
 	 * Get distribution planning for this group
 	 * 

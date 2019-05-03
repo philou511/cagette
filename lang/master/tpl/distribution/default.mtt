@@ -84,21 +84,32 @@
             
             <div class="content" style="background-color:white;">
                 <p>
-                    <b>
+                    ::set distributions = d.getDistributions()::
+                   
+                    
+                        <b>
+                        ::distributions.length::
                         ::if(d.type==0)::
-                        Contrats AMAP :
+                        Contrats AMAP
                         ::else::
-                        Commandes variables :
+                        Commandes variables
                         ::end::
-                    </b>
-                    <ul>
-                        ::foreach dist d.getDistributions()::             
-                        <li>
-                            ::set contract = dist._contract::
-                            <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
-                        </li>
-                        ::end::
-                    </ul>
+                        
+                        , ::d.getVendors().length:: producteurs
+                    
+                    </b> 
+                        <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-xs btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
+                        
+                    <div id="md::d.id::" style="display:none;">
+                        <ul>
+                            ::foreach dist distributions::             
+                            <li>
+                                ::set contract = dist._contract::
+                                <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
+                            </li>
+                            ::end::
+                        </ul>
+                    </div>
                 </p>
                               
                 <div class="text-center">

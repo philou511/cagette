@@ -170,9 +170,22 @@ class DistributionService
 			md.orderStartDate 	= orderStartDate;
 			md.orderEndDate 	= orderEndDate;
 		}		
-		md.place 			= place;
-		md.type 			= type;
+		md.place = place;
+		md.type  = type;
 		md.insert();
+		return md;
+	}
+
+	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+		md.lock();
+		md.distribStartDate = distribStartDate;
+		md.distribEndDate 	= distribEndDate;
+		if(md.type==db.Contract.TYPE_VARORDER){
+			md.orderStartDate 	= orderStartDate;
+			md.orderEndDate 	= orderEndDate;
+		}		
+		md.place = place;
+		md.update();
 		return md;
 	}
 

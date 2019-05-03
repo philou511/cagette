@@ -477,39 +477,63 @@ class Distribution extends Controller
 			form.removeElementByName("orderEndDate");			
 		}
 
-		//vendors to add
+		//contracts
 		var label = md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
 		var datas = [];
+		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
-			if( c.type==md.type) datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
+			if( c.type==md.type) datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
 		}
-		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,null,true);
+		var distributions = md.getDistributions();
+		for( d in distributions){
+			checked.push(Std.string(d.contract.id));
+		}
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,checked,true);
 		form.addElement(el);
 		
 		if (form.isValid()) {
 
 			try {
-				md = service.DistributionService.createMd(
+				service.DistributionService.editMd(
+					md,
 					db.Place.manager.get(form.getValueOf("placeId"),false),
-					md.type,
 					form.getValueOf("distribStartDate"),
 					form.getValueOf("distribEndDate"),
 					md.type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderStartDate"),
 					md.type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderEndDate")
 				);
 
-				var contractIds:Array<Int> = form.getValueOf("contracts");
+				var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
 				for( cid in contractIds){
-					var contract = db.Contract.manager.get(cid,false);
-					service.DistributionService.participate(md,contract);
+					var d = Lambda.find(distributions, function(d) return d.contract.id==cid );
+					if(d==null){
+						//create it
+						var contract = db.Contract.manager.get(cid,false);
+						service.DistributionService.participate(md,contract);
+					}else{
+						//update it
+						d.lock();
+						d.date = md.distribStartDate;
+						d.end = md.distribEndDate;
+						d.orderStartDate = md.orderStartDate;
+						d.orderEndDate = md.orderEndDate;
+						d.place = md.place;
+						d.update();
+					}
 				}
 
+				// delete it
+				for( d in distributions){
+					if(!Lambda.has(contractIds,d.contract.id)){
+						service.DistributionService.delete(d);
+					}
+				}
 
 			} catch(e:Error){
-				throw Error('/distribution/insertMd/' +md.type ,e.message);
+				throw Error('/distribution/editMd/' +md.type ,e.message);
 			}
 			
-			throw Ok('/distribution' , t._("The distribution has been recorded") );	
+			throw Ok('/distribution' , t._("The distribution has been updated") );	
 		}
 	
 		view.form = form;
