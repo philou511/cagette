@@ -387,14 +387,40 @@ class MultiDistrib extends Object
 		}
 		return out;		
 	}
+
+	public function getVendors():Array<db.Vendor>{
+		var vendors = new Map<Int,db.Vendor>();
+		for( d in getDistributions()) vendors.set(d.contract.vendor.id,d.contract.vendor);
+		return Lambda.array(vendors);
+	}
 	
 	public function getUsers(){
 		var users = [];
 		for ( o in getOrders()) users.push(o.user);
 		return users.deduplicate();		
 	}
-	
-	
+
+	public function getState():String{
+		var now = Date.now().getTime();
+		
+		if( getDate().getTime() > now ){
+			//before distrib
+			//notYetOpen
+			//open
+			//closed
+			//today
+			return "beforeDistrib";
+
+		}else{
+			//after distrib
+			if(isConfirmed()){
+				return "validated";
+			}else{
+				return "distributed";
+			}
+		}
+	}
+		
 	
 	public function isConfirmed():Bool{
 		//cannot be in future

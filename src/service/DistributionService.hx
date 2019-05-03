@@ -170,16 +170,44 @@ class DistributionService
 			md.orderStartDate 	= orderStartDate;
 			md.orderEndDate 	= orderEndDate;
 		}		
-		md.place 			= place;
-		md.type 			= type;
+		md.place = place;
+		md.type  = type;
 		md.insert();
 		return md;
+	}
+
+	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+		md.lock();
+		md.distribStartDate = distribStartDate;
+		md.distribEndDate 	= distribEndDate;
+		if(md.type==db.Contract.TYPE_VARORDER){
+			md.orderStartDate 	= orderStartDate;
+			md.orderEndDate 	= orderEndDate;
+		}		
+		md.place = place;
+		md.update();
+		return md;
+	}
+
+	public static function deleteMd(md:db.MultiDistrib){
+		var t = sugoi.i18n.Locale.texts;
+		md.lock();
+		for(d in md.getDistributions()){
+			if(!canDelete(d)) {
+				throw new Error(t._("Deletion non possible: some orders are saved for this delivery."));
+			}else{
+				d.lock();
+				d.delete();
+			}
+		}
+
+		md.delete();
 	}
 
 	public static function participate(md:db.MultiDistrib,contract:db.Contract){
 		
 		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,
-			null,null,null,null,md.orderStartDate,md.orderEndDate,null,true,md
+			null,null,null,null,md.orderStartDate,md.orderEndDate,null,false,md
 		);
 
 	}
@@ -207,16 +235,16 @@ class DistributionService
 		var t = sugoi.i18n.Locale.texts;
 
 		if(d.validated) {
-			throw new tink.core.Error(t._("You cannot edit a distribution which has been already validated."));
+			throw new Error(t._("You cannot edit a distribution which has been already validated."));
 		}
 
 		//cannot change to a different date than the multidistrib
 		if(date.toString().substr(0,10) != d.multiDistrib.distribStartDate.toString().substr(0,10) ){
-			throw new tink.core.Error(t._("The distribution date is different from the date of the general distribution."));
+			throw new Error(t._("The distribution date is different from the date of the general distribution."));
 		}
 		//cannot change the place
 		if(placeId != d.multiDistrib.place.id ){
-			throw new tink.core.Error(t._("The distribution place is different from the place of the general distribution."));
+			throw new Error(t._("The distribution place is different from the place of the general distribution."));
 		}
 
 		d.date = date;
@@ -276,7 +304,7 @@ class DistributionService
 	public static function delete(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
 		if ( !canDelete(d) ) {
-			throw new tink.core.Error(t._("Deletion non possible: some orders are saved for this delivery."));
+			throw new Error(t._("Deletion non possible: some orders are saved for this delivery."));
 		}
 
 		var contract = d.contract;
@@ -307,7 +335,7 @@ class DistributionService
 		var orderEndDate = null;
 		if (dc.contract.type == db.Contract.TYPE_VARORDER){
 			
-			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw new tink.core.Error(t._("daysBeforeOrderEnd or daysBeforeOrderStart is null"));
+			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw new Error(t._("daysBeforeOrderEnd or daysBeforeOrderStart is null"));
 			
 			var a = DateTools.delta(startDate, -1.0 * dc.daysBeforeOrderStart * 1000 * 60 * 60 * 24);
 			var h : Date = dc.openingHour;
@@ -332,7 +360,7 @@ class DistributionService
 		//switch end date to 23:59 to avoid the last distribution to be skipped
 		dc.endDate = tools.DateTool.setHourMinute(dc.endDate,23,59);
 		
-		if (dc.id == null) throw new tink.core.Error(t._("this distributionCycle has not been recorded"));
+		if (dc.id == null) throw new Error(t._("this distributionCycle has not been recorded"));
 		
 		//iterations
 		//For first distrib
@@ -458,10 +486,10 @@ class DistributionService
 		}
 				
 		if (dc.endDate.getTime() > contract.endDate.getTime()) {
-			throw new tink.core.Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(contract.endDate)}));
+			throw new Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(contract.endDate)}));
 		}
 		if (dc.startDate.getTime() < contract.startDate.getTime()) {
-			throw new tink.core.Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)}));
+			throw new Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)}));
 		}
 
 		if(dispatchEvent){

@@ -44,15 +44,16 @@ class Main extends Controller {
 		view.amap = group;
 		
 		//contract with open orders
-		var openContracts = Lambda.filter(group.getActiveContracts(), function(c) return c.isUserOrderAvailable());
-		view.openContracts = openContracts;
+		if(!group.hasShopMode()){
+			var openContracts = Lambda.filter(group.getActiveContracts(), function(c) return c.isUserOrderAvailable());
+			view.openContracts = openContracts;
+		}
 		
 		//register to become "distributor"
-		view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.amap.getActiveContracts(), function(c) return c.distributorNum > 0);
+		//view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.amap.getActiveContracts(), function(c) return c.distributorNum > 0);
 		
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;
-		
 
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
