@@ -810,28 +810,17 @@ class Distribution extends Controller
 			form.addElement( new IntSelect(roleId, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name, members, selectedUserId, false, t._("No volunteer assigned")) );
 		}
 
-
 		if (form.isValid()) {
 
-			var userIdByRoleId = new Map<Int, Int>();
-			var uniqueUserIds = [];
-			for ( id in roleIds ) {
+			try {
 
-				var userId = form.getValueOf(id);
-				if ( !Lambda.has(uniqueUserIds, userId) ) {
-
-					if( userId != null ) {
-						uniqueUserIds.push(userId);
-					}
-					userIdByRoleId[Std.parseInt(id)] = userId;
-				}
-				else {
-
-					throw Error('/distribution/volunteers/' + multiDistrib.id, t._("A volunteer can't be assigned to multiple roles for the same distribution!") );
-				}				
+				service.VolunteerService.updateVolunteers(multiDistrib, form.getData());
 			}
+			catch(e: tink.core.Error){
 
-			service.VolunteerService.updateVolunteers(multiDistrib, userIdByRoleId);
+				throw Error("/distribution/volunteers/" + multiDistrib.id, e.message);
+			}
+			
 			throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));
 		}
 
@@ -839,4 +828,47 @@ class Distribution extends Controller
 		view.form = form;
 
 	}
+
+	//View volunteers planning for each role and multidistrib date
+	// @tpl("form.mtt")
+	// function doVolunteersCalendar(multiDistrib: db.MultiDistrib) {
+		
+	// 	var form = new sugoi.form.Form("volunteers");
+
+	// 	var roleIds = [];
+	// 	if (multiDistrib.volunteerRolesIds != null) {
+
+	// 		roleIds = multiDistrib.volunteerRolesIds.split(",");
+	// 	}
+	// 	else {
+
+	// 		throw Error('/distribution/volunteerRoles/' + multiDistrib.id, t._("You need to first select the volunteer roles for this distribution") );
+	// 	}
+
+	// 	var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
+	// 	for ( roleId in roleIds ) {
+
+	// 		var selectedVolunteer = db.Volunteer.manager.search($multiDistrib == multiDistrib && $volunteerRole == db.VolunteerRole.manager.get(Std.parseInt(roleId))).first();
+	// 		var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
+	// 		form.addElement( new IntSelect(roleId, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name, members, selectedUserId, false, t._("No volunteer assigned")) );
+	// 	}
+
+	// 	if (form.isValid()) {
+
+	// 		try {
+
+	// 			service.VolunteerService.updateVolunteers(multiDistrib, form.getData());
+	// 		}
+	// 		catch(e: tink.core.Error){
+
+	// 			throw Error("/distribution/volunteers/" + multiDistrib.id, e.message);
+	// 		}
+			
+	// 		throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));
+	// 	}
+
+	// 	view.title = t._("Select a volunteer for each role for this multidistrib");
+	// 	view.form = form;
+
+	// }
 }

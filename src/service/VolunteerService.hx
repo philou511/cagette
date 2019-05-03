@@ -1,6 +1,5 @@
 package service;
 import Common;
-import tink.core.Error;
 
 /**
  * Volunteer Service
@@ -8,7 +7,37 @@ import tink.core.Error;
  */
 class VolunteerService
 {
-	public static function updateVolunteers(multiDistrib: db.MultiDistrib, userIdByRoleId: Map<Int, Int>) {
+	public static function updateVolunteers(multiDistrib: db.MultiDistrib, rawData: Map<String, Dynamic>) {
+
+		var t = sugoi.i18n.Locale.texts;
+
+		var userIdByRoleId = new Map<Int, Int>();
+		var uniqueUserIds = [];
+		var roleIds = [];
+		if (multiDistrib.volunteerRolesIds != null) {
+
+			roleIds = multiDistrib.volunteerRolesIds.split(",");
+		}
+		else {
+
+			throw new tink.core.Error(t._("You need to first select the volunteer roles for this distribution."));
+		}
+
+		for ( id in roleIds ) {
+
+			var userId = rawData[id];
+			if ( !Lambda.has(uniqueUserIds, userId) ) {
+
+				if( userId != null ) {
+					uniqueUserIds.push(userId);
+				}
+				userIdByRoleId[Std.parseInt(id)] = userId;
+			}
+			else {
+
+				throw new tink.core.Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
+			}				
+		}
 
 		var volunteers = db.Volunteer.manager.search($multiDistrib == multiDistrib);
 		for ( volunteer in volunteers ) {
