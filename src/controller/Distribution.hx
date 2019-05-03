@@ -3,9 +3,9 @@ import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 import tink.core.Error;
+import sugoi.form.elements.IntSelect;
 import Common;
 using tools.DateTool;
-
 
 class Distribution extends Controller
 {
@@ -439,6 +439,7 @@ class Distribution extends Controller
 				);
 
 				var contractIds:Array<Int> = form.getValueOf("contracts");
+				
 				for( cid in contractIds){
 					var contract = db.Contract.manager.get(cid,false);
 					service.DistributionService.participate(md,contract);
@@ -449,7 +450,7 @@ class Distribution extends Controller
 				throw Error('/distribution/insertMd/' +type ,e.message);
 			}
 			
-			throw Ok('/distribution' , t._("The distribution has been recorded") );	
+			throw Ok('/distribution/volunteerRoles/' + md.id, t._("The distribution has been recorded") );	
 		}
 	
 		view.form = form;
@@ -822,5 +823,113 @@ class Distribution extends Controller
 			d.update();
 
 		}
+	}
+
+	//  Manage volunteer roles for the specified multidistrib
+	@tpl("form.mtt")
+	function doVolunteerRoles(multiDistrib: db.MultiDistrib) {
+		
+		var form = new sugoi.form.Form("volunteerroles");
+
+		var roles = [];
+
+		//Get all the volunteer roles for the group and for the selected contracts
+		var allVolunteerRoles = db.VolunteerRole.manager.search($group == app.user.amap);
+		var generalRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == null);
+		var checkedRoles = [];
+		var roleIds = multiDistrib.volunteerRolesIds != null ? multiDistrib.volunteerRolesIds.split(",") : null;
+		for ( role in generalRoles ) {
+
+			roles.push( { label: role.name, value: Std.string(role.id) } );
+			if ( roleIds == null || Lambda.has(roleIds, Std.string(role.id) ) ) {
+				checkedRoles.push(Std.string(role.id));
+			}
+			
+		}	
+
+		for ( distrib in multiDistrib.getDistributions() ) {
+
+			var contractRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == distrib.contract);
+			for ( role in contractRoles ) {
+
+				roles.push( { label: role.name + " - " + distrib.contract.vendor.name, value: Std.string(role.id) } );
+				if ( roleIds == null || Lambda.has(roleIds, Std.string(role.id)) ) {
+					checkedRoles.push(Std.string(role.id));
+				}
+			}
+			
+		}
+		
+		var volunteerRolesCheckboxes = new sugoi.form.elements.CheckboxGroup("roles", "", roles, checkedRoles, true);
+
+		form.addElement(volunteerRolesCheckboxes);
+		
+	                                                
+		if (form.isValid()) {
+			
+			multiDistrib.lock();
+			multiDistrib.volunteerRolesIds = form.getValueOf("roles").join(",");
+			multiDistrib.update();
+			throw Ok("/distribution", t._("Volunteer Roles have been saved for this distribution"));
+			
+		}
+
+		view.title = t._("Select volunteer roles for this multidistrib");
+		view.form = form;
+
+	}
+
+	//  Assign volunteer to roles for the specified multidistrib
+	@tpl("form.mtt")
+	function doVolunteers(multiDistrib: db.MultiDistrib) {
+		
+		var form = new sugoi.form.Form("volunteers");
+
+		var roleIds = [];
+		if (multiDistrib.volunteerRolesIds != null) {
+
+			roleIds = multiDistrib.volunteerRolesIds.split(",");
+		}
+		else {
+
+			throw Error('/distribution/volunteerRoles/' + multiDistrib.id, t._("You need to first select the volunteer roles for this distribution") );
+		}
+
+		var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
+		for ( roleId in roleIds ) {
+
+			var selectedVolunteer = db.Volunteer.manager.search($multiDistrib == multiDistrib && $volunteerRole == db.VolunteerRole.manager.get(Std.parseInt(roleId))).first();
+			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
+			form.addElement( new IntSelect(roleId, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name, members, selectedUserId, false, t._("No volunteer assigned")) );
+		}
+
+
+		if (form.isValid()) {
+
+			var userIdByRoleId = new Map<Int, Int>();
+			var uniqueUserIds = [];
+			for ( id in roleIds ) {
+
+				var userId = form.getValueOf(id);
+				if ( !Lambda.has(uniqueUserIds, userId) ) {
+
+					if( userId != null ) {
+						uniqueUserIds.push(userId);
+					}
+					userIdByRoleId[Std.parseInt(id)] = userId;
+				}
+				else {
+
+					throw Error('/distribution/volunteers/' + multiDistrib.id, t._("A volunteer can't be assigned to multiple roles for the same distribution!") );
+				}				
+			}
+
+			service.VolunteerService.updateVolunteers(multiDistrib, userIdByRoleId);
+			throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));
+		}
+
+		view.title = t._("Select a volunteer for each role for this multidistrib");
+		view.form = form;
+
 	}
 }

@@ -25,6 +25,7 @@ class MultiDistrib extends Object
 	@:skip public var contracts : Array<db.Contract>;
 	@:skip public var extraHtml : String;
 	
+	@hideInForms public var volunteerRolesIds : SNull<String>;
 
 	public function new(){
 		super();
@@ -402,12 +403,14 @@ class MultiDistrib extends Object
 	public function getState():String{
 		var now = Date.now().getTime();
 		
-		if(getDate().getTime() > now){
+		if( getDate().getTime() > now ){
 			//before distrib
 			//notYetOpen
 			//open
 			//closed
 			//today
+			return "beforeDistrib";
+
 		}else{
 			//after distrib
 			if(isConfirmed()){

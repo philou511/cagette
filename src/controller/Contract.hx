@@ -322,7 +322,7 @@ class Contract extends Controller
 			for ( i in 1...maxIndex ) {
 				
 				var role = new VolunteerRole();
-				role.name = "Permanence " + c.name + " " + i;
+				role.name = t._("Duty period") + " " + c.name + " " + i;
 				role.group = app.user.amap;
 				role.contract = c;
 				role.insert();
