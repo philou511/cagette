@@ -923,45 +923,75 @@ class Distribution extends Controller
 	}
 
 	//View volunteers planning for each role and multidistrib date
-	// @tpl("form.mtt")
-	// function doVolunteersCalendar(multiDistrib: db.MultiDistrib) {
+	@tpl('distribution/volunteersCalendar.mtt')
+	function doVolunteersCalendar(?args: { distrib: db.MultiDistrib, role: db.VolunteerRole } ) {
+
+		if (args != null) {
+
+			if ( args.distrib != null && args.role != null ) {
+
+				var existingVolunteer = db.Volunteer.manager.search($multiDistrib == args.distrib && $volunteerRole == args.role).first();
+				if ( existingVolunteer == null ) {
+					var volunteer = new db.Volunteer();
+					volunteer.user = app.user;
+					volunteer.multiDistrib = args.distrib;
+					volunteer.volunteerRole = args.role;					
+					volunteer.insert();
+				}				
+			}			
+		}
 		
-	// 	var form = new sugoi.form.Form("volunteers");
+		var n = Date.now();
+		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
+		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
+		var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
 
-	// 	var roleIds = [];
-	// 	if (multiDistrib.volunteerRolesIds != null) {
+		//Let's find all the unique volunteer roles for this set of multidistribs	
+		var uniqueRoleIds = [];
+		var multidistribRoleIds = [];
+		var userByMultidistribByRole = new Map<Int, Map<Int, db.User>>();
+		var fullByMultidistrib = new Map<Int, Bool>();
+		for ( multiDistrib in multidistribs ) {
 
-	// 		roleIds = multiDistrib.volunteerRolesIds.split(",");
-	// 	}
-	// 	else {
+			if (multiDistrib.volunteerRolesIds != null) {
 
-	// 		throw Error('/distribution/volunteerRoles/' + multiDistrib.id, t._("You need to first select the volunteer roles for this distribution") );
-	// 	}
+				multidistribRoleIds = multiDistrib.volunteerRolesIds.split(",");
 
-	// 	var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
-	// 	for ( roleId in roleIds ) {
+				for ( roleId in multidistribRoleIds ) {
 
-	// 		var selectedVolunteer = db.Volunteer.manager.search($multiDistrib == multiDistrib && $volunteerRole == db.VolunteerRole.manager.get(Std.parseInt(roleId))).first();
-	// 		var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
-	// 		form.addElement( new IntSelect(roleId, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name, members, selectedUserId, false, t._("No volunteer assigned")) );
-	// 	}
+					var userByMultidistrib = userByMultidistribByRole[Std.parseInt(roleId)];
+					if ( !Lambda.has(uniqueRoleIds, roleId) ) {
 
-	// 	if (form.isValid()) {
+						uniqueRoleIds.push(roleId);			
+						
+						if ( userByMultidistrib == null ) {
 
-	// 		try {
+							userByMultidistrib = new Map<Int, db.User>();
+						}						
+					}
 
-	// 			service.VolunteerService.updateVolunteers(multiDistrib, form.getData());
-	// 		}
-	// 		catch(e: tink.core.Error){
+					var volunteer : db.Volunteer = db.Volunteer.manager.search($multiDistrib == multiDistrib && $volunteerRole == db.VolunteerRole.manager.get(Std.parseInt(roleId))).first();
+					userByMultidistrib[multiDistrib.id] = volunteer != null ? volunteer.user : null;
+					userByMultidistribByRole[Std.parseInt(roleId)] = userByMultidistrib;
 
-	// 			throw Error("/distribution/volunteers/" + multiDistrib.id, e.message);
-	// 		}
-			
-	// 		throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));
-	// 	}
+					if ( volunteer == null ) {
+						
+						fullByMultidistrib[multiDistrib.id] = false;
+					}
+				}				
+			}
 
-	// 	view.title = t._("Select a volunteer for each role for this multidistrib");
-	// 	view.form = form;
+			if ( fullByMultidistrib[multiDistrib.id] == null ) { 
 
-	// }
+				fullByMultidistrib[multiDistrib.id] = true;
+			}
+		}		
+
+		view.multidistribs = multidistribs;
+		view.uniqueRoles = Lambda.map(uniqueRoleIds, function(roleId) return db.VolunteerRole.manager.get(Std.parseInt(roleId)));
+		view.userByMultidistribByRole = userByMultidistribByRole;
+		view.fullByMultidistrib = fullByMultidistrib;
+
+
+	}
 }

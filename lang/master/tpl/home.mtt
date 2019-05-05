@@ -213,9 +213,9 @@
 								</ul>
 							</div>-->
 							
-							<div class="alert alert-warning" ::cond d.id%2==0::>										
+							<div class="alert alert-warning" ::cond userRoleByMultidistribId.get(d.id)!=null::>										
 								<i class="icon icon-alert"></i>
-								Attention, vous ou votre conjoint(e) êtes inscrit(e) comme bénévole pour le rôle <b>Accueil des nouveaux</b>.
+								Attention, vous ou votre conjoint(e) êtes inscrit(e) comme bénévole pour le rôle <b>::userRoleByMultidistribId.get(d.id).name::</b>.
 								<p style="margin-top:12px;">
 									<a href="" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Détails Permanence")::</a>
 									<a href="" class="btn btn-default btn-sm"><i class="icon icon-delete"></i> ::_("Me désister")::</a>
@@ -223,10 +223,15 @@
 								
 							</div>
 
-							<div class="alert alert-danger" ::cond d.id%2==1::>										
+							<div class="alert alert-danger" ::cond unfilledRolesByMultidistribId.get(d.id)!=null::>										
 								<i class="icon icon-alert"></i>
-								Il manque <b>3 bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont : <b>Accueil des nouveaux, permanence légumes</b>
-								<p style="margin-top:12px;">
+								Il manque <b>::unfilledRolesByMultidistribId.get(d.id).length:: bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont :<br/>
+								<div class="text-center">
+									::foreach role unfilledRolesByMultidistribId.get(d.id)::
+									<b>::role.name::</b><br/>
+									::end::
+								</div>
+								<p class="text-right" style="margin-top:12px;">
 									<a href="" class="btn btn-danger btn-sm"><i class="icon icon-chevron-right"></i> Inscription</a>
 								</p>
 								
@@ -370,9 +375,9 @@
 		
 	</div>
 	
-	<div class="block" ::cond (contractsWithDistributors.length>0) ::>
+	<div class="block">
 		
-		<a href=" /distribution/VolunteersCalendar" class="btn btn-default btn-sm">
+		<a href=" /distribution/volunteersCalendar" class="btn btn-default btn-sm">
 			<i class="icon icon-calendar"></i> Calendrier des permanences
 		</a>
 	</div>

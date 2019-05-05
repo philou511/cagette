@@ -63,6 +63,48 @@ class Main extends Controller {
 		//special case for farmers with one distrib , far in future.
 		if(distribs.length==0) distribs = db.MultiDistrib.getFromTimeRange(group,now,DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 12));
 		view.distribs = distribs;
+
+		//Map for each multidistrib the volunteer role the current user is assigned to
+		var userRoleByMultidistribId = new Map<Int, db.VolunteerRole>();
+		for ( multidistrib in distribs ) {
+
+			if (multidistrib.volunteerRolesIds != null) {
+
+				var existingVolunteer = db.Volunteer.manager.search( $user == app.user && $multiDistrib == multidistrib ).first();
+				if ( existingVolunteer != null ) {
+					
+					userRoleByMultidistribId[multidistrib.id] = existingVolunteer.volunteerRole;
+				}								
+			}
+		}
+		view.userRoleByMultidistribId = userRoleByMultidistribId;
+
+		//Map for each multidistrib the Volunteer Roles needed to be filled by volunteer
+		var unfilledRolesByMultidistribId = new Map<Int, Array<db.VolunteerRole>>();
+		for ( multidistrib in distribs ) {
+
+			if (multidistrib.volunteerRolesIds != null) {
+
+				var multidistribRoleIds = multidistrib.volunteerRolesIds.split(",");
+
+				for ( roleId in multidistribRoleIds ) {
+
+					var volunteerRole: db.VolunteerRole = db.VolunteerRole.manager.get(Std.parseInt(roleId));
+					var existingVolunteer = db.Volunteer.manager.search( $multiDistrib == multidistrib && $volunteerRole == volunteerRole ).first();
+
+					if ( existingVolunteer == null ) {
+
+						if ( unfilledRolesByMultidistribId[multidistrib.id] == null ) {
+
+							unfilledRolesByMultidistribId[multidistrib.id] = new Array<db.VolunteerRole>();							
+						}				
+						
+						unfilledRolesByMultidistribId[multidistrib.id].push(volunteerRole);
+					}
+				}				
+			}
+		}
+		view.unfilledRolesByMultidistribId = unfilledRolesByMultidistribId;
 		
 		//view functions
 		view.getWhosTurn = function(orderId:Int, distrib:Distribution) {
