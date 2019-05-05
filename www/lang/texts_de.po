@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-01-24 10:04+0000\n"
+"PO-Revision-Date: 2019-05-06 16:47+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4\n"
+"X-Generator: Weblate 3.7-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
@@ -3825,9 +3825,8 @@ msgid "One time distribution"
 msgstr "Einmalige Verteilung"
 
 #: lang/master/tpl/contractadmin/deliveries.mtt:2031
-#, fuzzy
 msgid "Distributions engagement"
-msgstr "Lieferverbindlichkeit"
+msgstr "Lieferteilnahme"
 
 #: lang/master/tpl/contractadmin/deliveries.mtt:2166
 msgid "Old distributions"
