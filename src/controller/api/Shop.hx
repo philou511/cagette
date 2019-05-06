@@ -24,7 +24,7 @@ class Shop extends Controller
 			var taxoCategs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
 			for (txp  in taxoCategs){
 				
-				var c : CategoryInfo = {id:txp.id, name:txp.name,image:'/img/taxo/${txp.image}.png',subcategories:[]};
+				var c : CategoryInfo = {id:txp.id, name:txp.name,image:'/img/taxo/${txp.image}.png',displayOrder:txp.displayOrder,subcategories:[]};
 				for (sc in txp.getSubCategories()){
 					c.subcategories.push({id:sc.id,name:sc.name});
 				}
@@ -33,8 +33,9 @@ class Shop extends Controller
 			
 		}else{
 			
+			throw "please enable standard categories";
 			//CUSTOM CATEGORIES
-			var catGroups = db.CategoryGroup.get(group);
+			/*var catGroups = db.CategoryGroup.get(group);
 			for (cat  in catGroups){
 				
 				var c : CategoryInfo = {id:cat.id, name:cat.name, subcategories:[]};
@@ -42,7 +43,7 @@ class Shop extends Controller
 					c.subcategories.push({id:sc.id,name:sc.name});
 				}
 				out.push(c);
-			}
+			}*/
 		}
 		
 		Sys.print(Json.stringify({success:true,categories:out}));	

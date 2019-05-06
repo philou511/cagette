@@ -139,7 +139,8 @@ typedef CategoryInfo = {
 	id:Int,
 	name:String,
 	?image : String,
-	?subcategories:Array<CategoryInfo>
+	?subcategories:Array<CategoryInfo>,
+	?displayOrder:Int,
 }
 
 /**

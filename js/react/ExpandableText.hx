@@ -23,7 +23,7 @@ class ExpandableText extends react.ReactComponentOfPropsAndState<{text:String,he
         var height = props.height+"px";
 
         //don't need expandable block
-        if(props.text.length<1800) return jsx('<>${props.text}</>');
+        if(props.text.length<1800) return jsx('<span dangerouslySetInnerHTML=${{__html: props.text}}></span>');
 		
 		return jsx('<>
         <Collapse in=${state.open} collapsedHeight=$height>
