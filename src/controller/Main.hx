@@ -70,7 +70,7 @@ class Main extends Controller {
 
 			if (multidistrib.volunteerRolesIds != null) {
 
-				var existingVolunteer = db.Volunteer.manager.search( $user == app.user && $multiDistrib == multidistrib ).first();
+				var existingVolunteer = db.Volunteer.manager.select( $user == app.user && $multiDistrib == multidistrib, false );
 				if ( existingVolunteer != null ) {
 					
 					userRoleByMultidistribId[multidistrib.id] = existingVolunteer.volunteerRole;
@@ -90,7 +90,7 @@ class Main extends Controller {
 				for ( roleId in multidistribRoleIds ) {
 
 					var volunteerRole: db.VolunteerRole = db.VolunteerRole.manager.get(Std.parseInt(roleId));
-					var existingVolunteer = db.Volunteer.manager.search( $multiDistrib == multidistrib && $volunteerRole == volunteerRole ).first();
+					var existingVolunteer = db.Volunteer.manager.select( $multiDistrib == multidistrib && $volunteerRole == volunteerRole, false );
 
 					if ( existingVolunteer == null ) {
 

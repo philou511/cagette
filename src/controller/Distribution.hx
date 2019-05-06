@@ -3,7 +3,9 @@ import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 import tink.core.Error;
+import sugoi.form.elements.Html;
 import sugoi.form.elements.IntSelect;
+import sugoi.form.elements.Readonly;
 import Common;
 using tools.DateTool;
 
@@ -898,7 +900,7 @@ class Distribution extends Controller
 		var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
 		for ( roleId in roleIds ) {
 
-			var selectedVolunteer = db.Volunteer.manager.search($multiDistrib == multiDistrib && $volunteerRole == db.VolunteerRole.manager.get(Std.parseInt(roleId))).first();
+			var selectedVolunteer = multiDistrib.getVolunteerForRole(db.VolunteerRole.manager.get(Std.parseInt(roleId)));
 			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
 			form.addElement( new IntSelect(roleId, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name, members, selectedUserId, false, t._("No volunteer assigned")) );
 		}
@@ -922,23 +924,102 @@ class Distribution extends Controller
 
 	}
 
+	//Manage role subscription for logged in user
+	@tpl('distribution/volunteerSubscription.mtt')
+	function doVolunteerSubscription(multidistrib: db.MultiDistrib, ?args: { role: db.VolunteerRole, add: Bool }) {
+
+		if (args != null) {
+
+			try {
+
+				if( args.add ) {
+
+					service.VolunteerService.addUserToRole(app.user, multidistrib, args.role);
+				}
+				else {
+
+					service.VolunteerService.removeUserFromRole(app.user, multidistrib, args.role);
+				}
+			}
+			catch(e: tink.core.Error){
+
+				throw Error("/distribution/volunteerSubscription", e.message);
+			}
+		
+			if (args.add) {
+
+				throw Ok("/distribution/volunteerSubscription", t._("You have been successfully added to the selected role."));
+			}
+			else {
+
+				throw Ok("/distribution/volunteerSubscription", t._("You have been successfully removed from the selected role."));
+
+			}
+		}
+		
+		var volunteerRoles: Array<db.VolunteerRole> = multidistrib.getVolunteerRoles();
+		if (volunteerRoles == null) {
+
+			throw Error('/distribution/', t._("There are no volunteer roles defined for this distribution") );
+		}
+
+		// for ( roleId in roleIds ) {
+
+		// 	var existingVolunteer = service.VolunteerService.getVolunteer(multiDistrib, db.VolunteerRole.manager.get(Std.parseInt(roleId)));
+		// 	form.addElement( new Html(roleId, existingVolunteer != null ? existingVolunteer.user.getCoupleName() : null, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name) );
+		// }
+		
+		var multidistribRoleIds = [];
+		var userByRole = new Map<Int, db.User>();
+		
+		if (multidistrib.volunteerRolesIds != null) {
+
+			multidistribRoleIds = multidistrib.volunteerRolesIds.split(",");
+
+			for ( roleId in multidistribRoleIds ) {
+
+				var user = userByRole[Std.parseInt(roleId)];
+				// if ( !Lambda.has(uniqueRoleIds, roleId) ) {
+
+				// 	uniqueRoleIds.push(roleId);			
+					
+				// 	if ( userByMultidistrib == null ) {
+
+				// 		userByMultidistrib = new Map<Int, db.User>();
+				// 	}						
+				// }
+
+				
+				var volunteer = multidistrib.getVolunteerForRole(db.VolunteerRole.manager.get(Std.parseInt(roleId)));
+				//userByMultidistrib[multiDistrib.id] = volunteer != null ? volunteer.user : null;
+				//userByMultidistribByRole[Std.parseInt(roleId)] = userByMultidistrib;
+
+			}				
+		}
+
+		view.multidistrib = multidistrib;
+		view.roles = volunteerRoles;
+		view.roles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
+		view.title = t._("Select a volunteer for each role for this multidistrib");
+	
+	}
+
 	//View volunteers planning for each role and multidistrib date
 	@tpl('distribution/volunteersCalendar.mtt')
 	function doVolunteersCalendar(?args: { distrib: db.MultiDistrib, role: db.VolunteerRole } ) {
 
 		if (args != null) {
 
-			if ( args.distrib != null && args.role != null ) {
+			try {
 
-				var existingVolunteer = db.Volunteer.manager.search($multiDistrib == args.distrib && $volunteerRole == args.role).first();
-				if ( existingVolunteer == null ) {
-					var volunteer = new db.Volunteer();
-					volunteer.user = app.user;
-					volunteer.multiDistrib = args.distrib;
-					volunteer.volunteerRole = args.role;					
-					volunteer.insert();
-				}				
-			}			
+				service.VolunteerService.addUserToRole(app.user, args.distrib, args.role);
+			}
+			catch(e: tink.core.Error){
+
+				throw Error("/distribution/volunteersCalendar", e.message);
+			}
+		
+			throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
 		}
 		
 		var n = Date.now();
@@ -947,22 +1028,20 @@ class Distribution extends Controller
 		var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
 
 		//Let's find all the unique volunteer roles for this set of multidistribs	
-		var uniqueRoleIds = [];
-		var multidistribRoleIds = [];
+		var uniqueRoles = [];
 		var userByMultidistribByRole = new Map<Int, Map<Int, db.User>>();
 		var fullByMultidistrib = new Map<Int, Bool>();
-		for ( multiDistrib in multidistribs ) {
+		for ( multidistrib in multidistribs ) {
 
-			if (multiDistrib.volunteerRolesIds != null) {
+			if (multidistrib.volunteerRolesIds != null) {
 
-				multidistribRoleIds = multiDistrib.volunteerRolesIds.split(",");
+				var multidistribVolunteerRoles = multidistrib.getVolunteerRoles();
+				for ( role in multidistribVolunteerRoles ) {
 
-				for ( roleId in multidistribRoleIds ) {
+					var userByMultidistrib = userByMultidistribByRole[role.id];
+					if ( !Lambda.has(uniqueRoles, role) ) {
 
-					var userByMultidistrib = userByMultidistribByRole[Std.parseInt(roleId)];
-					if ( !Lambda.has(uniqueRoleIds, roleId) ) {
-
-						uniqueRoleIds.push(roleId);			
+						uniqueRoles.push(role);			
 						
 						if ( userByMultidistrib == null ) {
 
@@ -970,28 +1049,16 @@ class Distribution extends Controller
 						}						
 					}
 
-					var volunteer : db.Volunteer = db.Volunteer.manager.search($multiDistrib == multiDistrib && $volunteerRole == db.VolunteerRole.manager.get(Std.parseInt(roleId))).first();
-					userByMultidistrib[multiDistrib.id] = volunteer != null ? volunteer.user : null;
-					userByMultidistribByRole[Std.parseInt(roleId)] = userByMultidistrib;
-
-					if ( volunteer == null ) {
-						
-						fullByMultidistrib[multiDistrib.id] = false;
-					}
+					var volunteer = multidistrib.getVolunteerForRole(role);
+					userByMultidistrib[multidistrib.id] = volunteer != null ? volunteer.user : null;
+					userByMultidistribByRole[role.id] = userByMultidistrib;			
 				}				
-			}
-
-			if ( fullByMultidistrib[multiDistrib.id] == null ) { 
-
-				fullByMultidistrib[multiDistrib.id] = true;
 			}
 		}		
 
 		view.multidistribs = multidistribs;
-		view.uniqueRoles = Lambda.map(uniqueRoleIds, function(roleId) return db.VolunteerRole.manager.get(Std.parseInt(roleId)));
+		uniqueRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
+		view.uniqueRoles = uniqueRoles;
 		view.userByMultidistribByRole = userByMultidistribByRole;
-		view.fullByMultidistrib = fullByMultidistrib;
-
-
 	}
 }

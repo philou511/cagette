@@ -485,5 +485,51 @@ class MultiDistrib extends Object
 		return [];
 	}
 
+
+	public function getVolunteerRoles() {
+
+		var volunteerRoles: Array<db.VolunteerRole> = null;
+		if (this.volunteerRolesIds != null) {
+
+			var multidistribRoleIds = this.volunteerRolesIds.split(",");
+			volunteerRoles = new Array<db.VolunteerRole>();
+			for ( roleId in multidistribRoleIds ) {
+
+				volunteerRoles.push( db.VolunteerRole.manager.get(Std.parseInt(roleId)) );
+			}
+
+		}
+		
+		return volunteerRoles;
+	}
+
+	public function getVolunteers() {
+
+		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this, false));
+	}
+
+	public function hasVacantVolunteerRoles() {
+
+		if (this.volunteerRolesIds != null) {
+
+			if ( this.volunteerRolesIds.split(",").length > db.Volunteer.manager.count($multiDistrib == this) ) {
+
+				return true;
+			} 
+		}
+		
+		return false;
+	}
+
+	public function getVolunteerForRole(role: db.VolunteerRole) {
+
+		return db.Volunteer.manager.select($multiDistrib == this && $volunteerRole == role, false);
+	}
+
+	public function getVolunteerForUser(user: db.User) {
+
+		return db.Volunteer.manager.select($multiDistrib == this && $user == user, false);
+	}
+
 	
 }

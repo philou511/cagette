@@ -5,8 +5,9 @@ import Common;
  * Volunteer Service
  * @author web-wizard
  */
-class VolunteerService
+class VolunteerService 
 {
+
 	public static function updateVolunteers(multiDistrib: db.MultiDistrib, rawData: Map<String, Dynamic>) {
 
 		var t = sugoi.i18n.Locale.texts;
@@ -83,6 +84,64 @@ class VolunteerService
 			}					
 		}
 		
+	}
+
+	public static function addUserToRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
+
+		var t = sugoi.i18n.Locale.texts;
+		if ( multidistrib != null && role != null ) {
+
+			//Check that the user is not already assigned to a role for this multidistrib
+			var userAlreadyAssigned = multidistrib.getVolunteerForUser(user);
+			if ( userAlreadyAssigned != null ) {
+
+				throw new tink.core.Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
+			}
+			else {
+				
+				var existingVolunteer = multidistrib.getVolunteerForRole(role);
+				if ( existingVolunteer == null ) {
+					var volunteer = new db.Volunteer();
+					volunteer.user = user;
+					volunteer.multiDistrib = multidistrib;
+					volunteer.volunteerRole = role;					
+					volunteer.insert();
+				}
+				else {
+
+					throw new tink.core.Error(t._("This role is already filled by a volunteer!"));
+				}				
+			}
+		}
+		else {
+
+			throw new tink.core.Error(t._("Missing distribution or role in the url!"));
+		}			
+
+	}
+
+	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
+
+		var t = sugoi.i18n.Locale.texts;
+		if ( user != null && multidistrib != null && role != null ) {
+
+			//Look for the volunteer for that user
+			var foundVolunteer = multidistrib.getVolunteerForUser(user);
+			if ( foundVolunteer != null && foundVolunteer.volunteerRole.id == role.id ) {
+
+				foundVolunteer.lock();
+				foundVolunteer.delete();
+			}
+			else {
+				
+				throw new tink.core.Error(t._("This user is not assigned to this role!"));				
+			}
+		}
+		else {
+
+			throw new tink.core.Error(t._("Missing distribution or role in the url!"));
+		}			
+
 	}
 
 }

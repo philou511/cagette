@@ -1,0 +1,49 @@
+::use 'design.mtt'::
+<div id="content" class="col-md-12">
+	<div class="article">
+		
+		<p>
+			::raw _("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you. The goal of attendances consists in helping during the delivery of products.")::
+		</p>
+		
+		<div style="margin-bottom:30px;">
+		<table class="table table-bordered">
+			<tr>
+				<td></td>
+				::set date = getDate(multidistrib.distribStartDate)::
+				::if multidistrib.getVolunteers().length == multidistrib.getVolunteerRoles().length::
+				::set color = "lightgreen"::
+				::else::
+				::set color = "orange"::
+				::end::
+				<th style="font-size:12px;line-height:14px;text-align:center;background-color: ::color::">::date.dow::<br/>
+					::date.d::<br/>
+					::date.m::<br/>
+					::date.h+":"+date.i::</th>
+			</tr>
+			
+			::foreach role roles::
+			<!-- Volunteers for this role -->
+			<tr>
+				<td style="white-space: nowrap;">
+					<b>::role.name::</b>
+				</td>				
+				
+				<td style="text-align:center;">
+					::if multidistrib.getVolunteerForRole(role)!=null::
+						::multidistrib.getVolunteerForRole(role)._user.getCoupleName()::
+					::elseif  multidistrib.getVolunteerForUser(user) == null::
+					<a href="/distribution/volunteersCalendar?distrib=::multidistrib.id::&role=::role.id::" class="btn btn-default btn-lg">::_("Join")::</a>
+					::end::
+				</td>
+			</tr>		
+			::end::	
+			
+		</table>
+		</div>
+		
+		$$back()
+	</div>
+</div>
+
+::end::
