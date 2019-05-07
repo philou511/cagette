@@ -431,7 +431,6 @@ class Distribution extends Controller
 			try {
 				md = service.DistributionService.createMd(
 					db.Place.manager.get(form.getValueOf("placeId"),false),
-					type,
 					form.getValueOf("distribStartDate"),
 					form.getValueOf("distribEndDate"),
 					type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderStartDate"),
@@ -473,17 +472,17 @@ class Distribution extends Controller
 		form.removeElementByName("type");
 		
 		//orders opening/closing	
-		if (md.type == db.Contract.TYPE_CONSTORDERS ) {
+		/*if (md.type == db.Contract.TYPE_CONSTORDERS ) {
 			form.removeElementByName("orderStartDate");
 			form.removeElementByName("orderEndDate");			
-		}
+		}*/
 
 		//contracts
-		var label = md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
+		var label = "Contrats";//md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
 		var datas = [];
 		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
-			if( c.type==md.type) datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
+			/*if( c.type==md.type)*/ datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
 		}
 		var distributions = md.getDistributions();
 		for( d in distributions){
@@ -500,8 +499,8 @@ class Distribution extends Controller
 					db.Place.manager.get(form.getValueOf("placeId"),false),
 					form.getValueOf("distribStartDate"),
 					form.getValueOf("distribEndDate"),
-					md.type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderStartDate"),
-					md.type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderEndDate")
+					form.getValueOf("orderStartDate"),
+					form.getValueOf("orderEndDate")
 				);
 
 				var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
@@ -531,7 +530,7 @@ class Distribution extends Controller
 				}
 
 			} catch(e:Error){
-				throw Error('/distribution/editMd/' +md.type ,e.message);
+				throw Error('/distribution/editMd/'  ,e.message);
 			}
 			
 			throw Ok('/distribution' , t._("The distribution has been updated") );	
@@ -719,8 +718,7 @@ class Distribution extends Controller
 		
 		if (!app.user.isAmapManager()) throw t._("Forbidden access");
 		
-		var md = db.MultiDistrib.get(date, place, db.Contract.TYPE_VARORDER);
-		
+		var md = db.MultiDistrib.get(date, place);		
 		view.confirmed = md.checkConfirmed();
 		view.users = md.getUsers();
 		view.date = date;
@@ -734,8 +732,8 @@ class Distribution extends Controller
 	@admin
 	public function doAutovalidate(date:Date,place:db.Place){
 
-		var md = db.MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-		for ( d in md.getDistributions()){
+		var md = db.MultiDistrib.get(date,place);
+		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
 			if(d.validated) continue;
 			service.PaymentService.validateDistribution(d);
 		}	
@@ -745,8 +743,8 @@ class Distribution extends Controller
 	@admin
 	public function doUnvalidate(date:Date,place:db.Place){
 
-		var md = db.MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-		for ( d in md.getDistributions()){
+		var md = db.MultiDistrib.get(date,place);
+		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);
 		}	
@@ -773,7 +771,7 @@ class Distribution extends Controller
 				if(App.config.DEBUG) d.delete();
 				continue;
 			}
-			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribEndDate<=end && $place==d.place && $type==d.contract.type,true);
+			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribEndDate<=end && $place==d.place,true);
 			if(mds.length>1) throw 'too many mds !';
 			var md : db.MultiDistrib = null;
 			if(mds.length==0){
@@ -781,7 +779,6 @@ class Distribution extends Controller
 				//Create it
 				md = new db.MultiDistrib();
 				md.place = d.place;
-				md.type = d.contract.type;
 				md.distribStartDate = d.date;
 				md.distribEndDate = d.end;
 				md.orderStartDate = d.orderStartDate;

@@ -4,6 +4,7 @@
 <div style="margin-top:12px;"></div>
 ::end::
 
+::set hasShopMode = amap.hasShopMode()::
 <div id="content" class="col-md-8">
 	
 		<!-- Welcoming message + access to tutos-->
@@ -26,15 +27,12 @@
 					::_("Delete example orders and contracts")::
 				</a>
 			</p>
-		
-			
 		</div>
 		::end::
 	
-		<!-- standard mode order forms -->
-		::if !amap.hasShopMode()::
+		<!-- AMAP style order forms -->
+		::if !hasShopMode::
 		<div class="homeBlock" ::cond ( openContracts!=null && openContracts.length>0 )::>
-			<img src="/img/order.png" width="64" height="64" style="float:right;" />
 			<h2>::_("Open orders")::</h2>
 			<ul>
 				::foreach c openContracts::
@@ -75,7 +73,8 @@
 						::end::
 						</div>
 
-						<div class="pull-right text-right" ::cond amap.hasShopMode() && d.type==1 ::>
+						::if hasShopMode && d.type==1 ::
+						<div class="pull-right text-right">
 							::if active::
 								<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
 									<i class="icon icon-edit"></i> ::_("Modify my order")::
@@ -94,6 +93,7 @@
 								::end::
 							::end::
 						</div>
+						::end::
 						
 						<div class="info">					
 							$$place(::place::)
@@ -103,7 +103,7 @@
 					<div class="myorder">::_("My ordered products"):: :</div>
 					
 					<div class="content orders">
-					::foreach dist d.getDistributions()::
+					::foreach dist d.getDistributions(1)::
 						::set orders = prepare(dist.getUserOrders(user))::
 						::if orders.length>0::
 							<h4>
@@ -178,12 +178,9 @@
 								
 								&nbsp; <a href="/contract/view/::dist._contract.id::"><i class="icon icon-list"></i> ::_("Contract details")::</a>
 								
-								::if !amap.hasShopMode() && dist._contract.type==1::
+								::if !hasShopMode && dist._contract.type==1::
 								&nbsp; <a href="/contract/order/::dist._contract.id::"><i class="icon icon-edit"></i> ::_("Modify my order")::</a>
 								::end::
-								
-								
-								
 							</div>
 						::end::
 					
@@ -234,20 +231,13 @@
 								<p class="text-right" style="margin-top:12px;">
 									<a href="" class="btn btn-danger btn-sm"><i class="icon icon-chevron-right"></i> Inscription</a>
 								</p>
-								
 							</div>
 					</div>
-
-					
 				</div>
 				
 				
-				
-				::elseif(amap.hasShopMode())::
+				::elseif(true || hasShopMode)::
 			
-
-				
-				
 				<!-- delivery open to orders (only for shopmode) -->
 				<div class="distrib">
 					::set place = d.getPlace():: 
@@ -306,17 +296,16 @@
 						</div>	
 					</div>
 					
-					
 					<div class="content ::class::">
 						<!-- products previews-->
 						::foreach p d.getProductsExcerpt()::
 							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
 						::end::
 
-					<!-- extra html -->
-					<div class="text-center">
-						$$nullSafe(::raw d.extraHtml::)
-					</div>
+						<!-- extra html -->
+						<div class="text-center">
+							$$nullSafe(::raw d.extraHtml::)
+						</div>
 					</div>
 
 					
@@ -327,6 +316,11 @@
 			::end::
 			
 		::end::
+
+
+
+
+
 
 		<div class="homeBlock text-center" ::cond(registerWithoutOrdering==true)::>
 			<p>

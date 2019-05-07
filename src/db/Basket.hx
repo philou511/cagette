@@ -42,10 +42,8 @@ class Basket extends Object
 		// var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
-			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
-			var orders = md.getUserOrders(user);
-			
-			for( o in orders){
+			var md = MultiDistrib.get(date, place);
+			for( o in md.getUserOrders(user)){
 				if(o.basket!=null) {
 					b = o.basket;
 					break;
@@ -72,7 +70,7 @@ class Basket extends Object
 		if (b == null){
 			
 			//compute basket number
-			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
+			var md = MultiDistrib.get(date, place);
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;
@@ -80,7 +78,7 @@ class Basket extends Object
 			b.insert();
 			
 			//try to find orders and link them to the basket			
-			var dids = tools.ObjectListTool.getIds(md.getDistributions());
+			var dids = tools.ObjectListTool.getIds(md.getDistributions(db.Contract.TYPE_VARORDER));
 			for ( o in db.UserContract.manager.search( ($distributionId in dids) && ($user == user), true)){
 				o.basket = b;
 				o.update();
