@@ -2,10 +2,6 @@
 <div id="content" class="col-md-12">
 	<div class="article">
 		
-		<p>
-			::raw _("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you. The goal of attendances consists in helping during the delivery of products.")::
-		</p>
-		
 		<div style="overflow-x:scroll;margin-bottom:30px;">
 		<table class="table table-bordered">
 			<tr>
@@ -32,16 +28,19 @@
 				</td>				
 				
 				::foreach d multidistribs::
-				::set userByMultidistrib = userByMultidistribByRole.get(role.id)::
-				::if userByMultidistrib.exists(d.id):: 
+				::if d.hasVolunteerRole(role):: 
 					::set color="transparent"::
 				::else::
 					::set color="lightgrey":: 									
 				::end::								
 				<td style="text-align:center;background-color: ::color::">
-					::if userByMultidistrib.get(d.id)!=null::
-						::userByMultidistrib.get(d.id).getCoupleName()::
-					::elseif userByMultidistrib.exists(d.id) && d.getVolunteerForUser(user) == null::
+					::set volunteer = d.getVolunteerForRole(role)::
+					::if volunteer!=null::
+						::volunteer._user.getCoupleName()::
+						::if volunteer._user.id == user.id::
+							<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
+						::end::
+					::elseif d.hasVolunteerRole(role) && d.getVolunteerForUser(user) == null::
 					<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::" class="btn btn-default btn-lg">::_("Join")::</a>
 					::end::
 				</td>

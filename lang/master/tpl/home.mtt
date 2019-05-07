@@ -212,27 +212,28 @@
 									<li ::cond dist.distributor4Id!=null::><i class="icon icon-user"></i> ::dist._distributor4.getCoupleName():: </li>
 								</ul>
 							</div>-->
-							
-							<div class="alert alert-warning" ::cond userRoleByMultidistribId.get(d.id)!=null::>										
+							::set userVolunteer = d.getVolunteerForUser(user)::
+							<div class="alert alert-warning" ::cond userVolunteer!=null::>										
 								<i class="icon icon-alert"></i>
-								Attention, vous ou votre conjoint(e) êtes inscrit(e) comme bénévole pour le rôle <b>::userRoleByMultidistribId.get(d.id).name::</b>.
+								Attention, vous ou votre conjoint(e) êtes inscrit(e) comme bénévole pour le rôle <b>::userVolunteer._volunteerRole.name::</b>.
 								<p style="margin-top:12px;">
-									<a href="" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Détails Permanence")::</a>
-									<a href="" class="btn btn-default btn-sm"><i class="icon icon-delete"></i> ::_("Me désister")::</a>
+									<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Détails Permanence")::</a>
+									<a href="/distribution/unsubscribeFromRole/::d.id::/::userVolunteer._volunteerRole.id::" class="btn btn-default btn-sm"><i class="icon icon-delete"></i> ::_("Me désister")::</a>
 								</p>
 								
 							</div>
 
-							<div class="alert alert-danger" ::cond unfilledRolesByMultidistribId.get(d.id)!=null::>										
+							::set vacantVolunteerRoles = d.getVacantVolunteerRoles()::
+							<div class="alert alert-danger" ::cond userVolunteer == null && vacantVolunteerRoles != null::>										
 								<i class="icon icon-alert"></i>
-								Il manque <b>::unfilledRolesByMultidistribId.get(d.id).length:: bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont :<br/>
+								Il manque <b>::vacantVolunteerRoles.length:: bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont :<br/>
 								<div class="text-center">
-									::foreach role unfilledRolesByMultidistribId.get(d.id)::
+									::foreach role vacantVolunteerRoles::
 									<b>::role.name::</b><br/>
 									::end::
 								</div>
 								<p class="text-right" style="margin-top:12px;">
-									<a href="" class="btn btn-danger btn-sm"><i class="icon icon-chevron-right"></i> Inscription</a>
+									<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-danger btn-sm"><i class="icon icon-chevron-right"></i> Inscription</a>
 								</p>
 								
 							</div>

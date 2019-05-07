@@ -8,31 +8,27 @@ import Common;
 class VolunteerService 
 {
 
-	public static function updateVolunteers(multiDistrib: db.MultiDistrib, rawData: Map<String, Dynamic>) {
+	public static function updateVolunteers(multidistrib: db.MultiDistrib, rawData: Map<String, Dynamic>) {
 
 		var t = sugoi.i18n.Locale.texts;
 
 		var userIdByRoleId = new Map<Int, Int>();
 		var uniqueUserIds = [];
-		var roleIds = [];
-		if (multiDistrib.volunteerRolesIds != null) {
-
-			roleIds = multiDistrib.volunteerRolesIds.split(",");
-		}
-		else {
+		var volunteerRoles = multidistrib.getVolunteerRoles();
+		if (volunteerRoles == null) {
 
 			throw new tink.core.Error(t._("You need to first select the volunteer roles for this distribution."));
 		}
 
-		for ( id in roleIds ) {
+		for ( role in volunteerRoles ) {
 
-			var userId = rawData[id];
+			var userId = rawData[Std.string(role.id)];
 			if ( !Lambda.has(uniqueUserIds, userId) ) {
 
 				if( userId != null ) {
 					uniqueUserIds.push(userId);
 				}
-				userIdByRoleId[Std.parseInt(id)] = userId;
+				userIdByRoleId[role.id] = userId;
 			}
 			else {
 
@@ -40,7 +36,7 @@ class VolunteerService
 			}				
 		}
 
-		var volunteers = db.Volunteer.manager.search($multiDistrib == multiDistrib);
+		var volunteers = multidistrib.getVolunteers();
 		for ( volunteer in volunteers ) {
 
 			var userIdForThisRole = userIdByRoleId[volunteer.volunteerRole.id];
@@ -55,7 +51,7 @@ class VolunteerService
 
 					var volunteerCopy = new db.Volunteer();
 					volunteerCopy.user = db.User.manager.get(userIdForThisRole);
-					volunteerCopy.multiDistrib = multiDistrib;
+					volunteerCopy.multiDistrib = multidistrib;
 					volunteerCopy.volunteerRole = volunteer.volunteerRole;					
 					volunteerCopy.insert();		
 					volunteer.delete();				
@@ -77,7 +73,7 @@ class VolunteerService
 
 				var volunteer = new db.Volunteer();
 				volunteer.user = db.User.manager.get(userIdForThisRole);
-				volunteer.multiDistrib = multiDistrib;
+				volunteer.multiDistrib = multidistrib;
 				volunteer.volunteerRole = db.VolunteerRole.manager.get(roleId);					
 				volunteer.insert();
 

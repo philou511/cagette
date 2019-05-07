@@ -2,10 +2,6 @@
 <div id="content" class="col-md-12">
 	<div class="article">
 		
-		<p>
-			::raw _("Subscribe now by selecting checkboxes corresponding to dates which are convenient for you. The goal of attendances consists in helping during the delivery of products.")::
-		</p>
-		
 		<div style="margin-bottom:30px;">
 		<table class="table table-bordered">
 			<tr>
