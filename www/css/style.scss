@@ -317,23 +317,18 @@ div.reportHeader{
 }
 
 
- 
 /* a product order in a table style */
 .productOrder{
 	
 	border-bottom:1px solid #DDD;
 	margin-bottom:6px;
 	
-	
-	
 	.infos{
 		color:#AAA;
 		font-size:0.8em;
 	}
-	
-	
-	
 }
+
 /* A product reference */
 .ref{
 	color:#AAA;
@@ -717,7 +712,7 @@ span.tag.active{
 /* Distribution box for the homepage */
 .distrib{
 	
-	margin: 0px 0px 28px 0px;
+	margin: 0px 0px 42px 0px;
 	position:relative;
 	
 	.header{
@@ -728,7 +723,7 @@ span.tag.active{
 		border-top-left-radius:8px;
 		border-top-right-radius:8px;		
 		color:#FFF;
-		background-color:#749E3C;
+		background-color:#B2823F;
 		vertical-align:middle;			
 		margin:0;
 		padding: 6px 6px 6px 90px;
@@ -739,6 +734,9 @@ span.tag.active{
 		}
 		&.orders{
 			background-color:#B2823F;
+		}
+		&.active{
+			background-color: #85B14D;
 		}
 		
 		.info{
@@ -770,21 +768,21 @@ span.tag.active{
 		}
 	}
 	
-	.myorder{
-		font-weight:bold;
-		color:#999;
-		background:white;
-		padding: 11px 0 4px 16px;
-	}
 	
 	.content{
-		padding: 6px 6px 6px 6px;
-		background-color:#85B14D;
-		border-bottom-left-radius:8px;
-		border-bottom-right-radius:8px;
+		padding: 12px;
+		background-color:white;
+
+		&.myorder{
+			background:#FFF;
+			font-weight:bold;
+			color:#999;
+			background:white;
+			padding: 11px 0 4px 16px;
+		}
 		
 		&.disabled{
-			background:#AAA;
+			//background:#AAA;
 			opacity: 1;
 		}
 		
@@ -792,15 +790,21 @@ span.tag.active{
 			background:#FFF;
 			padding-left: 50px;
 		}
-		
-		.footer{
-			color:#999;
-			a{color:#999;}
-			font-size:0.9em;
-			
+
+		.alert{
+			margin-bottom: 0;
 		}
 	}
-	
+
+	.footer{
+		min-height: 8px;
+		color:#999;
+		a{color:#999;}
+		font-size:0.9em;
+		border-bottom-left-radius:8px;
+		border-bottom-right-radius:8px;
+		background:#FFF;		
+	}
 	
 
 }

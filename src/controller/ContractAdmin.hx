@@ -60,8 +60,7 @@ class ContractAdmin extends Controller
 		//Multidistribs to validate
 		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now,db.Contract.TYPE_VARORDER);
-
+			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
 			view.multidistribs = multidistribs; 
 
 		}else{
@@ -754,11 +753,11 @@ class ContractAdmin extends Controller
 			//display also old deliveries
 			//distributions = Lambda.array(contract.getDistribs(false));	
 
-			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, DateTools.delta(now,1000.0*60*60*24*-365) , now, contract.type);
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, DateTools.delta(now,1000.0*60*60*24*-365) , now);
 
 		}else {
 			//distributions = Lambda.array(db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} ));
-			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, now , DateTools.delta(now,1000.0*60*60*24*365) , contract.type);			
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, now , DateTools.delta(now,1000.0*60*60*24*365) );			
 		}
 		
 		view.multidistribs = multidistribs;

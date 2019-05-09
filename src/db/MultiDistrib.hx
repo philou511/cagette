@@ -15,7 +15,7 @@ class MultiDistrib extends Object
 	@hideInForms @:relation(groupId) public var group : db.Amap;
 	public var distribStartDate : SDateTime; 
 	public var distribEndDate : SDateTime;
-	public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
+	//public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
 	
@@ -34,11 +34,11 @@ class MultiDistrib extends Object
 		extraHtml = "";
 	}
 	
-	public static function get(date:Date, place:db.Place,contractType:Int){
+	public static function get(date:Date, place:db.Place/*,contractType:Int*/){
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 
-		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place && $type==contractType,false);
+		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,false);
 
 		/*var m = new MultiDistrib();
 		
@@ -106,17 +106,17 @@ class MultiDistrib extends Object
 		return multidistribs;
 	}*/
 
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
+	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date/*,?contractType:Int*/):Array<MultiDistrib>{
 		var multidistribs = new Array<db.MultiDistrib>();
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
 		var placeIds = group.getPlaces().getIds();
 
-		if(contractType==null){
+		//if(contractType==null){
 			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds),false));
-		}else{
+		/*}else{
 			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds) && $type==contractType ,false));
-		}
+		}*/
 		
 		//sort by date desc
 		multidistribs.sort(function(x,y){
@@ -289,9 +289,9 @@ class MultiDistrib extends Object
 
 	}
 
-	public function userHasOrders(user:db.User):Bool{
+	public function userHasOrders(user:db.User,type:Int):Bool{
 		if(user==null) return false;
-		for ( d in getDistributions()){
+		for ( d in getDistributions(type)){
 			if(d.getUserOrders(user).length>0) return true;						
 		}
 		return false;
@@ -351,8 +351,16 @@ class MultiDistrib extends Object
 		return date;
 	}
 
-	public function getDistributions(){
-		return Lambda.array(db.Distribution.manager.search($multiDistrib==this,false));
+	/**
+		Get distributions for constant orders or variable orders.
+	**/
+	public function getDistributions(?type:Int){
+		if(type==null) return Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
+		var out = [];
+		for ( d in db.Distribution.manager.search($multiDistrib==this,false)){
+			if( d.contract.type==type ) out.push(d);
+		}
+		return out;
 	}
 
 	public function getDistributionForContract(contract:db.Contract):db.Distribution{

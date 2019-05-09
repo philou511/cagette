@@ -134,10 +134,10 @@ class DistributionService
 		
 		//link to a multiDistrib
 		if(md==null){
-			md = db.MultiDistrib.get(d.date, d.place, d.contract.type);
+			md = db.MultiDistrib.get(d.date, d.place);
 		}
 		if(md==null){
-			md = createMd(d.place,d.contract.type, d.date, d.end, d.orderStartDate, d.orderEndDate );
+			md = createMd(d.place, d.date, d.end, d.orderStartDate, d.orderEndDate );
 		}
 		d.multiDistrib = md;
 
@@ -161,17 +161,17 @@ class DistributionService
 		}
 	}
 
-	public static function createMd(place:db.Place,type:Int,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+	public static function createMd(place:db.Place,/*type:Int,*/distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
 
 		var md = new db.MultiDistrib();
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
-		if(type==db.Contract.TYPE_VARORDER){
+		//if(type==db.Contract.TYPE_VARORDER){
 			md.orderStartDate 	= orderStartDate;
 			md.orderEndDate 	= orderEndDate;
-		}		
+		//}		
 		md.place = place;
-		md.type  = type;
+		//md.type  = type;
 		md.insert();
 		return md;
 	}
@@ -180,10 +180,10 @@ class DistributionService
 		md.lock();
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
-		if(md.type==db.Contract.TYPE_VARORDER){
+		//if(md.type==db.Contract.TYPE_VARORDER){
 			md.orderStartDate 	= orderStartDate;
 			md.orderEndDate 	= orderEndDate;
-		}		
+		//}		
 		md.place = place;
 		md.update();
 		return md;
@@ -194,7 +194,7 @@ class DistributionService
 		md.lock();
 		for(d in md.getDistributions()){
 			if(!canDelete(d)) {
-				throw new Error(t._("Deletion non possible: some orders are saved for this delivery."));
+				throw new Error(t._("Deletion not possible: some orders are saved for this delivery."));
 			}else{
 				d.lock();
 				d.delete();
@@ -304,7 +304,7 @@ class DistributionService
 	public static function delete(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
 		if ( !canDelete(d) ) {
-			throw new Error(t._("Deletion non possible: some orders are saved for this delivery."));
+			throw new Error(t._("Deletion not possible: some orders are saved for this delivery."));
 		}
 
 		var contract = d.contract;

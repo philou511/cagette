@@ -83,34 +83,46 @@
             
             
             <div class="content" style="background-color:white;">
-                <p>
-                    ::set distributions = d.getDistributions()::
-                   
-                    
-                        <b>
-                        ::distributions.length::
-                        ::if(d.type==0)::
-                        Contrats AMAP
-                        ::else::
-                        Commandes variables
-                        ::end::
-                        
-                        , ::d.getVendors().length:: producteurs
-                    
-                    </b> 
-                        <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-xs btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
-                        
-                    <div id="md::d.id::" style="display:none;">
-                        <ul>
-                            ::foreach dist distributions::             
-                            <li>
-                                ::set contract = dist._contract::
-                                <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
-                            </li>
-                            ::end::
-                        </ul>
+                <div class="row">
+                    <div class="col-md-4">
+                        STATUS
                     </div>
-                </p>
+                    <div class="col-md-4">
+                            <b>::d.getVendors().length:: producteurs</b> 
+                            <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-xs btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
+                            
+                            <div id="md::d.id::" style="display:none;">
+                                <b>Contrats AMAP :</b>             
+                                <ul>
+                                    ::foreach dist d.getDistributions(0)::
+                                    <li>
+                                        ::set contract = dist._contract::
+                                        <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
+                                    </li>
+                                    ::end::
+                                </ul>
+                                <b>Commandes variables :</b>             
+                                <ul>
+                                    ::foreach dist d.getDistributions(1)::
+                                    <li>
+                                        ::set contract = dist._contract::
+                                        <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
+                                    </li>
+                                    ::end::
+                                </ul>
+                            </div>
+                    </div>
+                    <div class="col-md-4">
+
+                        XXX commandes,<br/>
+                        C.A XXXX €
+
+                    </div>
+
+
+                </div>
+
+                <hr/>
                               
                 <div class="text-center">
 
