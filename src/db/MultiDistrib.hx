@@ -288,9 +288,9 @@ class MultiDistrib extends Object
 
 	}
 
-	public function userHasOrders(user:db.User):Bool{
+	public function userHasOrders(user:db.User,type:Int):Bool{
 		if(user==null) return false;
-		for ( d in getDistributions()){
+		for ( d in getDistributions(type)){
 			if(d.getUserOrders(user).length>0) return true;						
 		}
 		return false;
