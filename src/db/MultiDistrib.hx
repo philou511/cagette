@@ -12,6 +12,7 @@ using Lambda;
 class MultiDistrib extends Object
 {
 	public var id : SId;
+	@hideInForms @:relation(groupId) public var group : db.Amap;
 	public var distribStartDate : SDateTime; 
 	public var distribEndDate : SDateTime;
 	public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
@@ -498,6 +499,7 @@ class MultiDistrib extends Object
 				volunteerRoles.push( db.VolunteerRole.manager.get(Std.parseInt(roleId)) );
 			}
 
+			volunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
 		}
 		
 		return volunteerRoles;
@@ -537,6 +539,7 @@ class MultiDistrib extends Object
 				vacantVolunteerRoles.remove(volunteer.volunteerRole);
 			}
 
+			vacantVolunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
 			return vacantVolunteerRoles;
 		}
 	}
@@ -557,6 +560,11 @@ class MultiDistrib extends Object
 
 		return db.Volunteer.manager.select($multiDistrib == this && $user == user, false);
 	}
+	
+	public function canVolunteersJoin() {
 
+		var joinDate = DateTools.delta( this.distribStartDate, - 1000.0 * 60 * 60 * 24 * this.group.daysBeforeDutyPeriodsOpen );
+		return Date.now().getTime() >= joinDate.getTime();		
+	}
 	
 }

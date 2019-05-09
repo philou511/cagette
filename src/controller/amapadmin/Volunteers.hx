@@ -1,6 +1,8 @@
 package controller.amapadmin;
+import sugoi.form.elements.IntInput;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
+import sugoi.form.elements.TextArea;
 
 class Volunteers extends controller.Controller
 {
@@ -10,6 +12,27 @@ class Volunteers extends controller.Controller
 		view.volunteerRoles = db.VolunteerRole.manager.search($group == app.user.amap);
 		
 		checkToken();
+
+		var form = new sugoi.form.Form("msg");
+		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers:"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
+		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail:"), app.user.amap.volunteersMailDaysBeforeDutyPeriod, true) );
+		form.addElement( new TextArea("mailcontent", t._("Message:"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles:"), app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
+
+		if (form.isValid()) {
+			
+			app.user.amap.lock();
+			app.user.amap.daysBeforeDutyPeriodsOpen = form.getValueOf("dutyperiodsopen");
+			app.user.amap.volunteersMailDaysBeforeDutyPeriod = form.getValueOf("maildays");
+			app.user.amap.volunteersMailContent = form.getValueOf("mailcontent");
+			app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod = form.getValueOf("alertmaildays");
+			app.user.amap.update();
+			
+			throw Ok("/amapadmin/volunteers", t._("Volunteers Mail has been successfully updated"));
+			
+		}
+		
+		view.form = form;
 
 	}
 

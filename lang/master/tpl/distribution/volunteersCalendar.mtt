@@ -1,8 +1,40 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 	<div class="article">
+
+			<div style="width:250px;float:left;margin-right: 20px;" class="input-group date" id="datetimepicker-from">       
+				<span class="input-group-addon">					
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+				<input type="text" class="form-control"/>
+			</div>
+			<div style="width:250px;margin-bottom: 50px;" class="input-group date" id="datetimepicker-to">       
+				<span class="input-group-addon">					
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+				<input type="text" class="form-control"/>
+			</div>
+			
+			<input type="hidden" name="listBydate_from" id="datetimepickerdata-from" value="2019-05-01 00:00:00"/>
+			<script type="text/javascript">
+				$(function () {
+					$('#datetimepicker-from').datetimepicker(
+						{
+							locale:'fr',
+							format:'LL',
+							defaultDate:moment("2019-05-01 00:00:00", "YYYY-MM-DD HH:mm:ss")
+						}
+					);
+					//stores the date in mysql format in a hidden input element	
+					$('#datetimepicker-from').on('dp.change',function(e){
+						var d = $('#datetimepicker-from').data('DateTimePicker').date();//moment.js obj
+						$('#datetimepickerdata-from').val( d.format('YYYY-MM-DD HH:mm:ss'));
+					});
+				});
+			</script>
 		
 		<div style="overflow-x:scroll;margin-bottom:30px;">
+
 		<table class="table table-bordered">
 			<tr>
 				<td></td>
@@ -40,9 +72,11 @@
 						::if volunteer._user.id == user.id::
 							<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
 						::end::
-					::elseif d.hasVolunteerRole(role) && d.getVolunteerForUser(user) == null::
+					::elseif d.canVolunteersJoin() && d.hasVolunteerRole(role) && d.getVolunteerForUser(user) == null::
 					<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::" class="btn btn-default btn-lg">::_("Join")::</a>
-					::end::
+					::elseif !d.canVolunteersJoin()::
+					::_("Duty periods open for volunteers") + " " + d._group.daysBeforeDutyPeriodsOpen + " " + _("days before the duty period")::
+					::end::					
 				</td>
 				::end::
 			</tr>		

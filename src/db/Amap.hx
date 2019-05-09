@@ -81,6 +81,12 @@ class Amap extends Object
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
+
+	//Volunteers for duty periods
+	public var volunteersMailDaysBeforeDutyPeriod: SNull<STinyInt>;
+	public var volunteersMailContent: SNull<SText>;
+	public var vacantVolunteerRolesMailDaysBeforeDutyPeriod: SNull<STinyInt>;
+	public var daysBeforeDutyPeriodsOpen: SNull<STinyInt>;
 	
 	public function new() 
 	{
@@ -94,7 +100,33 @@ class Amap extends Object
 		currency = "€";
 		currencyCode = "EUR";
 		checkOrder = "";
-		
+		volunteersMailContent = "Rappel : Vous êtes inscrit à la permanence du ${DATE}
+
+		${LISTE_PERMANENT}
+		${INFO_LIVRAISON}
+
+		Si vous faîtes une permanence pour la première fois: tout d'abord vous n'êtes pas seul et vous serez certainement initié par une famille qui a déjà fait une permanence. Ensuite essayez de faire une permanence sur un contrat AMAP que vous possèdez.
+
+		AVANT 18h15
+
+		Arrivée à 18h00 (15' avant la distribution)
+		Prendre un tablier dans le casier AMAP à la fois pour se protéger et s'identifier comme permanencier
+		Toutes les permanenciers présents aident les producteurs à installer les produits
+
+		PENDANT
+
+		Ensuite chaque coordinateur de chaque producteur, récupère dans le casier AMAP la feuille d'émargement où le détail du panier de chaque contrat est mentionné.
+		Quand le paysan producteur est présent, il suffit de suivre ses consignes
+		Faire signer la feuille d'émargement aux familles avant de distribuer leur panier
+		A la fin de la distribution (19h30) on téléphone aux familles absentes et l'on trouve une solution pour leur panier, le loge du gardien est ouverte jusqu'à 22h (fermée pendant les vacances scolaires)
+
+		APRES 19h30
+
+		Si la famille n'est pas en direct au téléphone, on ne laisse pas de message sur leur répondeur, et l'ensemble des permanenciers se partagent les produits restants, en aucun cas le paysan producteur ne peut repartir avec (il ne peut pas vendre 2 fois un même produit)
+		A la fin de la distribution l'ensemble des permanenciers aident les paysans producteurs à charger leur véhicule
+		Un coup de balai est collectivement fait avant de quitter les lieux avant de ranger les listes et les tabliers dans le casier AMAP.";
+		volunteersMailDaysBeforeDutyPeriod = 4;
+		vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
 	}
 	
 	/**
