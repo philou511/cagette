@@ -233,10 +233,11 @@ class Distribution extends Controller
 			try{
 				service.DistributionService.deleteMd(md);
 			}catch(e:Error){
-				throw Error(sugoi.Web.getURI(),e.message);
+				throw Error("/distribution",e.message);
 			}
 			throw Ok("/distribution",t._("The distribution has been deleted"));
-			
+		}else{
+			throw Error("/distribution",t._("Bad token"));
 		}
 	}
 	
@@ -757,10 +758,9 @@ class Distribution extends Controller
 	function doMigrate(){
 
 		//MIGRATE to the new multidistrib Db architecture
-		for( d in db.Distribution.manager.search($multiDistrib==null,{limit:200},true)){
+		for( d in db.Distribution.manager.search($multiDistrib==null,true)){
 
-
-			//look for an existing md
+			//look for an existing md 3 hours around
 			var from = DateTools.delta(d.date,1000.0*60*60*-3);
 			var end = DateTools.delta(d.date,1000.0*60*60*3);
 			if(d.contract==null) {
@@ -773,14 +773,15 @@ class Distribution extends Controller
 				if(App.config.DEBUG) d.delete();
 				continue;
 			}
-			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribEndDate<=end && $place==d.place,true);
-			if(mds.length>1) throw 'too many mds !';
+			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribStartDate<end && $place==d.place,true);
+			if(mds.length>1) trace('too many mds !'+mds.length);
 			var md : db.MultiDistrib = null;
 			if(mds.length==0){
 				
 				//Create it
 				md = new db.MultiDistrib();
 				md.place = d.place;
+				md.group = d.place.amap;
 				md.distribStartDate = d.date;
 				md.distribEndDate = d.end;
 				md.orderStartDate = d.orderStartDate;
@@ -807,22 +808,63 @@ class Distribution extends Controller
 		}
 
 
-	}
-	
-	@admin 
-	function doMigrate2(){
-		//finalement on ne nullifie plus les champs de db.Distribution pour se préserver des bugs dans un premier temps
-		for( d in db.Distribution.manager.search( $date==null && $multiDistrib!=null ,true)){
+		//update group params
+		for ( g in db.Amap.manager.all(true)){
 
-			d.date = d.multiDistrib.distribStartDate;
-			d.end = d.multiDistrib.distribEndDate;
-			d.orderStartDate = d.multiDistrib.orderStartDate;
-			d.orderEndDate = d.multiDistrib.orderEndDate;
-			d.place = d.multiDistrib.place;
-			d.update();
+			g.volunteersMailContent = "Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DEBUT],<br/>
+		Lieu de distribution : [LIEU]<br/>
+		<br/>
+		Voici la liste des bénévoles inscrits :<br/>
+		[LISTE_BENEVOLES]<br/>";
+		
+			g.volunteersMailDaysBeforeDutyPeriod = 4;
+			g.vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
+			g.daysBeforeDutyPeriodsOpen = 60;
+			g.update();
+
+			//create volunteers rôles
+			for( c in g.getActiveContracts()){
+				service.VolunteerService.createRoleForContract(c,c.distributorNum);
+			}
+		}
+
+		//check all rôles for each MD
+		for(md in db.MultiDistrib.manager.all(true)){
+			var roles = db.VolunteerRole.manager.search($group==md.group);
+			md.lock();
+			md.volunteerRolesIds = Lambda.map(roles,function(r) return r.id).join(",");
+			md.update();
+		}
+
+		//migre les inscriptions aux distribs
+		for ( g in db.Amap.manager.all()){
+			for( c in g.getActiveContracts()){
+				var roles = Lambda.array(db.VolunteerRole.manager.search($contract==c));
+				for ( d in c.getDistribs(false)){
+
+					for( i in 1...5){
+
+						var uid = Reflect.field(d,'distributor'+i+'Id');
+						if( uid!=null && roles[i-1]!=null ){
+							var user = db.User.manager.get(uid,false);
+							try{
+								//may fail for same volunteer on same md
+							service.VolunteerService.addUserToRole(user,d.multiDistrib,roles[i-1]);
+							}catch(e:Dynamic){}
+						}
+
+					}
+
+				}
+			}
 
 		}
+
+
+
 	}
+	
+	
 
 	//  Manage volunteer roles for the specified multidistrib
 	@tpl("form.mtt")

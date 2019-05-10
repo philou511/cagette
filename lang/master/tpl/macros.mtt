@@ -89,6 +89,7 @@
 	<macro name="place(place)">
 		<i class="icon icon-map-marker"></i>						
 		<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
+		<br/>
 		<span class="address">
 			$$nullSafe(::place.address1::)
 			$$nullSafe(::place.address2::)

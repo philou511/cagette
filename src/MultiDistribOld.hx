@@ -1,46 +1,32 @@
-package db;
-import sys.db.Object;
-import sys.db.Types;
+package;
 import Common;
 using tools.ObjectListTool;
 using Lambda;
+using tools.ObjectListTool;
 
 /**
- * MultiDistrib represents a global distributions with many vendors. 	
+ *  MultiDistrib represents many db.Distribution
+ 	which happen on the same day + same place.
+ * 
  * @author fbarbut
  */
-class MultiDistrib extends Object
+class MultiDistribOld
 {
-	public var id : SId;
-	@hideInForms @:relation(groupId) public var group : db.Amap;
-	public var distribStartDate : SDateTime; 
-	public var distribEndDate : SDateTime;
-	//public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
-	public var orderStartDate : SNull<SDateTime>; 
-	public var orderEndDate : SNull<SDateTime>;
-	
-	@formPopulate("placePopulate")
-	@:relation(placeId)
-	public var place : Place;
-
-	@:skip public var contracts : Array<db.Contract>;
-	@:skip public var extraHtml : String;
-	
-	@hideInForms public var volunteerRolesIds : SNull<String>;
+	public var distributions : Array<db.Distribution>;
+	public var contracts : Array<db.Contract>;
+	//public var actions : Array<Link>;
+	public var extraHtml : String;
+	public var type : Null<Int>; //contract type, both contract types cannot be mixed in a same multidistrib.
 
 	public function new(){
-		super();
+		distributions  = [];
 		contracts = [];
 		extraHtml = "";
+		//actions = [];
 	}
 	
-	public static function get(date:Date, place:db.Place/*,contractType:Int*/){
-		var start = tools.DateTool.setHourMinute(date, 0, 0);
-		var end = tools.DateTool.setHourMinute(date, 23, 59);
-
-		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,false);
-
-		/*var m = new MultiDistrib();
+	public static function get(date:Date, place:db.Place,contractType:Int){
+		var m = new MultiDistribOld();
 		
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
@@ -60,13 +46,13 @@ class MultiDistrib extends Object
 		var cids = contracts.getIds();
 		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();		
 		m.type = contractType;
-		return m;*/
+		return m;
 	}
 
 	/**
 		Get multidistribs from a time range + place + type
 	**/
-	/*public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
+	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistribOld>{
 		var multidistribs = [];
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
@@ -74,7 +60,7 @@ class MultiDistrib extends Object
 		var distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) , { orderBy:date }, false).array();
 
 		//sort by day-place-type
-		var multidistribs = new Map<String,MultiDistrib>();
+		var multidistribs = new Map<String,MultiDistribOld>();
 		for ( d in distributions){
 
 			//filter by contractType
@@ -85,7 +71,7 @@ class MultiDistrib extends Object
 			var key = d.getKey() + "-" + d.contract.type;
 			
 			if(multidistribs[key]==null){
-				var m = new MultiDistrib();
+				var m = new MultiDistribOld();
 				m.distributions.push(d);
 				m.type = d.contract.type;
 				multidistribs[key] = m;
@@ -96,35 +82,12 @@ class MultiDistrib extends Object
 		var multidistribs = Lambda.array(multidistribs);
 
 		//trigger event
-		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
+		for(md in multidistribs) App.current.event(MultiDistribEvent(null,md));
 		
 		//sort by date desc
 		multidistribs.sort(function(x,y){
 			return Math.round( x.getDate().getTime()/1000 ) - Math.round(y.getDate().getTime()/1000 );
 		});
-
-		return multidistribs;
-	}*/
-
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date/*,?contractType:Int*/):Array<MultiDistrib>{
-		var multidistribs = new Array<db.MultiDistrib>();
-		var start = tools.DateTool.setHourMinute(from, 0, 0);
-		var end = tools.DateTool.setHourMinute(to, 23, 59);
-		var placeIds = group.getPlaces().getIds();
-
-		//if(contractType==null){
-			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds),false));
-		/*}else{
-			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds) && $type==contractType ,false));
-		}*/
-		
-		//sort by date desc
-		multidistribs.sort(function(x,y){
-			return Math.round( x.getDate().getTime()/1000 ) - Math.round(y.getDate().getTime()/1000 );
-		});
-
-		//trigger event
-		for(md in multidistribs) App.current.event(MultiDistribEvent(md,null));
 
 		return multidistribs;
 	}
@@ -248,15 +211,18 @@ class MultiDistrib extends Object
 	}*/
 
 	public function getPlace(){
-		return place;
+		if(distributions.length==0) throw "This multidistrib is empty";
+		return distributions[0].place;
 	}
 
 	public function getDate(){
-		return distribStartDate;
+		if(distributions.length==0) throw "This multidistrib is empty";
+		return distributions[0].date;
 	}
 
 	public function getEndDate(){
-		return distribEndDate;
+		if(distributions.length==0) throw "This multidistrib is empty";
+		return distributions[0].end;
 	}
 
 	public function getProductsExcerpt():Array<ProductInfo>{
@@ -277,7 +243,7 @@ class MultiDistrib extends Object
 		}
 
 		var products = [];
-		for( d in getDistributions()){
+		for( d in distributions){
 			for ( p in d.contract.getProductsPreview(9)){
 				products.push( p.infos(null,false) );	
 			}
@@ -289,9 +255,9 @@ class MultiDistrib extends Object
 
 	}
 
-	public function userHasOrders(user:db.User,type:Int):Bool{
+	public function userHasOrders(user:db.User):Bool{
 		if(user==null) return false;
-		for ( d in getDistributions(type)){
+		for ( d in distributions){
 			if(d.getUserOrders(user).length>0) return true;						
 		}
 		return false;
@@ -315,7 +281,7 @@ class MultiDistrib extends Object
 	public function getOrdersStartDate(){
 		var date = null;
 
-		for( d in getDistributions() ){
+		for( d in distributions ){
 			if(d.orderStartDate==null) continue;
 			//display closest opening date
 			if (date == null){
@@ -339,7 +305,7 @@ class MultiDistrib extends Object
 	public function getOrdersEndDate(){
 		var date = null;
 
-		for( d in getDistributions() ){
+		for( d in distributions ){
 			if(d.orderEndDate==null) continue;
 			//display most far closing date
 			if (date == null){
@@ -352,30 +318,11 @@ class MultiDistrib extends Object
 	}
 
 	/**
-		Get distributions for constant orders or variable orders.
-	**/
-	public function getDistributions(?type:Int){
-		if(type==null) return Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
-		var out = [];
-		for ( d in db.Distribution.manager.search($multiDistrib==this,false)){
-			if( d.contract.type==type ) out.push(d);
-		}
-		return out;
-	}
-
-	public function getDistributionForContract(contract:db.Contract):db.Distribution{
-		for( d in getDistributions()){
-			if(d.contract.id == contract.id) return d;
-		}
-		return null;
-	}
-
-	/**
 	 * Get all orders involved in this multidistrib
 	 */
 	public function getOrders(){
 		var out = [];
-		for ( d in getDistributions()){
+		for ( d in distributions){
 			out = out.concat(d.getOrders().array());
 		}
 		return out;		
@@ -387,7 +334,7 @@ class MultiDistrib extends Object
 	 */
 	public function getUserOrders(user:db.User){
 		var out = [];
-		for ( d in getDistributions() ){
+		for ( d in distributions){
 			var pids = Lambda.map( d.contract.getProducts(false), function(x) return x.id);		
 			var userOrders =  db.UserContract.manager.search( $userId == user.id && $distributionId==d.id && $productId in pids , false);	
 			for( o in userOrders ){
@@ -396,12 +343,6 @@ class MultiDistrib extends Object
 		}
 		return out;		
 	}
-
-	public function getVendors():Array<db.Vendor>{
-		var vendors = new Map<Int,db.Vendor>();
-		for( d in getDistributions()) vendors.set(d.contract.vendor.id,d.contract.vendor);
-		return Lambda.array(vendors);
-	}
 	
 	public function getUsers(){
 		var users = [];
@@ -409,33 +350,29 @@ class MultiDistrib extends Object
 		return users.deduplicate();		
 	}
 
-	public function getState():String{
-		var now = Date.now().getTime();
-		
-		if( getDate().getTime() > now ){
-			//before distrib
-			//notYetOpen
-			//open
-			//closed
-			//today
-			return "beforeDistrib";
+	public function getGroup():db.Amap{
+		if(distributions.length==0) throw "This multidistrib is empty";
+		return distributions[0].place.amap;
 
-		}else{
-			//after distrib
-			if(isConfirmed()){
-				return "validated";
-			}else{
-				return "distributed";
+	}
+
+	public function getBaskets():Array<db.Basket>{
+
+		var baskets = new Map<Int,db.Basket>();
+		for(d in distributions){
+			for( b in d.getBaskets()){
+				baskets.set(b.id,b);
 			}
 		}
+		return Lambda.array(baskets);
+
 	}
-		
 	
 	public function isConfirmed():Bool{
 		//cannot be in future
 		if(getDate().getTime()>Date.now().getTime()) return false;
-		var distributions = getDistributions();
-		return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
+
+		return Lambda.count( distributions, function(d) return d.validated) == distributions.length;
 	}
 	
 	public function checkConfirmed():Bool{
@@ -443,7 +380,7 @@ class MultiDistrib extends Object
 		var c = Lambda.count( orders, function(d) return d.paid) == orders.length;
 		
 		if (c){
-			for ( d in getDistributions()){
+			for ( d in distributions){
 				if (!d.validated){
 					d.lock();
 					d.validated = true;
@@ -457,122 +394,12 @@ class MultiDistrib extends Object
 
 	//get key by date-place-type
 	public function getKey(){
-		return "md"+this.id;
-		//return distributions[0].getKey() + "-" + distributions[0].contract.type;
+		return distributions[0].getKey() + "-" + distributions[0].contract.type;
 	}
 
-	override public function toString(){
+	public function toString(){
 		return "Multidistrib à "+getPlace().name+" le "+getDate();
 	}
 
-	public function placePopulate():sugoi.form.ListData.FormData<Int> {
-		var out = [];
-		var places = new List();
-		if(this.place!=null){			
-			places = db.Place.manager.search($amapId == this.place.amap.id, false);
-		}
-		for (p in places) out.push( { label:p.name,value:p.id} );
-		return out;
-	}
-
-	public static function getLabels(){
-		var t = sugoi.i18n.Locale.texts;
-		return [
-			"distribStartDate"	=> t._("Date"),
-			"distribEndDate"	=> t._("End hour"),
-			"place" 			=> t._("Place"),
-			"orderStartDate" 	=> t._("Orders opening date"),
-			"orderEndDate" 		=> t._("Orders closing date"),
-		];
-	}
-
-	public function getGroup(){
-		return place.amap;
-	}
-
-	public function getBaskets():Array<db.Basket>{
-		return [];
-	}
-
-
-	public function getVolunteerRoles() {
-
-		var volunteerRoles: Array<db.VolunteerRole> = null;
-		if (this.volunteerRolesIds != null) {
-
-			var multidistribRoleIds = this.volunteerRolesIds.split(",");
-			volunteerRoles = new Array<db.VolunteerRole>();
-			for ( roleId in multidistribRoleIds ) {
-
-				volunteerRoles.push( db.VolunteerRole.manager.get(Std.parseInt(roleId)) );
-			}
-
-			volunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
-		}
-		
-		return volunteerRoles;
-	}
-
-	public function getVolunteers() {
-
-		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this, false));
-	}
-
-	public function hasVacantVolunteerRoles() {
-
-		if (this.volunteerRolesIds != null) {
-
-			if ( this.volunteerRolesIds.split(",").length > db.Volunteer.manager.count($multiDistrib == this) ) {
-
-				return true;
-			} 
-		}
-		
-		return false;
-	}
-
-	public function getVacantVolunteerRoles() {
-
-		if (!hasVacantVolunteerRoles()) {
-
-			return null;
-		}
-		else {
-
-			var volunteers = getVolunteers();
-			var vacantVolunteerRoles = getVolunteerRoles();
-
-			for ( volunteer in volunteers ) {
-
-				vacantVolunteerRoles.remove(volunteer.volunteerRole);
-			}
-
-			vacantVolunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
-			return vacantVolunteerRoles;
-		}
-	}
-
-	public function hasVolunteerRole(role: db.VolunteerRole) {
-
-		var volunteerRoles: Array<db.VolunteerRole> = getVolunteerRoles();
-		if (volunteerRoles == null) return false;
-		return Lambda.has(volunteerRoles, role);
-	}
-
-	public function getVolunteerForRole(role: db.VolunteerRole) {
-
-		return db.Volunteer.manager.select($multiDistrib == this && $volunteerRole == role, false);
-	}
-
-	public function getVolunteerForUser(user: db.User) {
-
-		return db.Volunteer.manager.select($multiDistrib == this && $user == user, false);
-	}
-	
-	public function canVolunteersJoin() {
-
-		var joinDate = DateTools.delta( this.distribStartDate, - 1000.0 * 60 * 60 * 24 * this.group.daysBeforeDutyPeriodsOpen );
-		return Date.now().getTime() >= joinDate.getTime();		
-	}
 	
 }

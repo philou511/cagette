@@ -1,5 +1,6 @@
 package service;
 import Common;
+import tink.core.Error;
 
 /**
  * Volunteer Service
@@ -17,7 +18,7 @@ class VolunteerService
 		var volunteerRoles = multidistrib.getVolunteerRoles();
 		if (volunteerRoles == null) {
 
-			throw new tink.core.Error(t._("You need to first select the volunteer roles for this distribution."));
+			throw new Error(t._("You need to first select the volunteer roles for this distribution."));
 		}
 
 		for ( role in volunteerRoles ) {
@@ -32,7 +33,7 @@ class VolunteerService
 			}
 			else {
 
-				throw new tink.core.Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
+				throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 			}				
 		}
 
@@ -85,34 +86,31 @@ class VolunteerService
 	public static function addUserToRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
 
 		var t = sugoi.i18n.Locale.texts;
-		if ( multidistrib != null && role != null ) {
+		if ( multidistrib == null ) throw new Error(t._("Multidistribution is null"));
+		if ( role == null ) throw new Error(t._("Role is null"));
 
-			//Check that the user is not already assigned to a role for this multidistrib
-			var userAlreadyAssigned = multidistrib.getVolunteerForUser(user);
-			if ( userAlreadyAssigned != null ) {
+		//Check that the user is not already assigned to a role for this multidistrib
+		var userAlreadyAssigned = multidistrib.getVolunteerForUser(user);
+		if ( userAlreadyAssigned != null ) {
 
-				throw new tink.core.Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
-			}
-			else {
-				
-				var existingVolunteer = multidistrib.getVolunteerForRole(role);
-				if ( existingVolunteer == null ) {
-					var volunteer = new db.Volunteer();
-					volunteer.user = user;
-					volunteer.multiDistrib = multidistrib;
-					volunteer.volunteerRole = role;					
-					volunteer.insert();
-				}
-				else {
-
-					throw new tink.core.Error(t._("This role is already filled by a volunteer!"));
-				}				
-			}
+			throw new tink.core.Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 		}
 		else {
+			
+			var existingVolunteer = multidistrib.getVolunteerForRole(role);
+			if ( existingVolunteer == null ) {
+				var volunteer = new db.Volunteer();
+				volunteer.user = user;
+				volunteer.multiDistrib = multidistrib;
+				volunteer.volunteerRole = role;					
+				volunteer.insert();
+			}
+			else {
 
-			throw new tink.core.Error(t._("Missing distribution or role in the url!"));
-		}			
+				throw new tink.core.Error(t._("This role is already filled by a volunteer!"));
+			}				
+		}
+				
 
 	}
 
@@ -139,5 +137,18 @@ class VolunteerService
 		}			
 
 	}
+
+	public static function createRoleForContract(c:db.Contract,number:Int){
+		var t = sugoi.i18n.Locale.texts;
+		for ( i in 1...(number+1) ) {
+			
+			var role = new db.VolunteerRole();
+			role.name = t._("Duty period") + " " + c.name + " " + i;
+			role.group = c.amap;
+			role.contract = c;
+			role.insert();
+		
+		}
+	} 
 
 }
