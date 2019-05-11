@@ -318,16 +318,7 @@ class Contract extends Controller
 			c.insert();
 
 			//Let's add the Volunteer Roles for the number of volunteers needed
-			var maxIndex = form.getValueOf("distributorNum") + 1;
-			for ( i in 1...maxIndex ) {
-				
-				var role = new VolunteerRole();
-				role.name = t._("Duty period") + " " + c.name + " " + i;
-				role.group = app.user.amap;
-				role.contract = c;
-				role.insert();
-			
-			}
+			service.VolunteerService.createRoleForContract(c,form.getValueOf("distributorNum"));
 			
 			//right
 			if (c.contact != null) {

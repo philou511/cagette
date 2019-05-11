@@ -625,7 +625,7 @@ span.tag.active {
 
 /* Distribution box for the homepage */
 .distrib {
-  margin: 0px 0px 42px 0px;
+  margin: 0px 0px 28px 0px;
   position: relative; }
   .distrib .header {
     display: block;
@@ -634,7 +634,7 @@ span.tag.active {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     color: #FFF;
-    background-color: #B2823F;
+    background-color: #749E3C;
     vertical-align: middle;
     margin: 0;
     padding: 6px 6px 6px 90px; }
@@ -643,8 +643,6 @@ span.tag.active {
       opacity: 1; }
     .distrib .header.orders {
       background-color: #B2823F; }
-    .distrib .header.active {
-      background-color: #85B14D; }
     .distrib .header .info {
       font-size: 16px;
       line-height: 22px;
@@ -666,31 +664,27 @@ span.tag.active {
       font-weight: normal;
       font-size: 0.9em;
       line-height: 16px; }
+  .distrib .myorder {
+    font-weight: bold;
+    color: #999;
+    background: white;
+    padding: 11px 0 4px 16px; }
   .distrib .content {
-    padding: 12px;
-    background-color: white; }
-    .distrib .content.myorder {
-      background: #FFF;
-      font-weight: bold;
-      color: #999;
-      background: white;
-      padding: 11px 0 4px 16px; }
+    padding: 6px 6px 6px 6px;
+    background-color: #85B14D;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px; }
     .distrib .content.disabled {
+      background: #AAA;
       opacity: 1; }
     .distrib .content.orders {
       background: #FFF;
       padding-left: 50px; }
-    .distrib .content .alert {
-      margin-bottom: 0; }
-  .distrib .footer {
-    min-height: 8px;
-    color: #999;
-    font-size: 0.9em;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background: #FFF; }
-    .distrib .footer a {
-      color: #999; }
+    .distrib .content .footer {
+      color: #999;
+      font-size: 0.9em; }
+      .distrib .content .footer a {
+        color: #999; }
 
 div.groupImg {
   background: no-repeat center;

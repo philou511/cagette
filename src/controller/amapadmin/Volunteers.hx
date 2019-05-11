@@ -14,10 +14,10 @@ class Volunteers extends controller.Controller
 		checkToken();
 
 		var form = new sugoi.form.Form("msg");
-		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers:"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
-		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail:"), app.user.amap.volunteersMailDaysBeforeDutyPeriod, true) );
-		form.addElement( new TextArea("mailcontent", t._("Message:"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
-		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles:"), app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
+		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
+		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail"), app.user.amap.volunteersMailDaysBeforeDutyPeriod, true) );
+		form.addElement( new TextArea("mailcontent", t._("Email body sent to volunteers"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles"), app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
 
 		if (form.isValid()) {
 			

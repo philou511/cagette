@@ -1,7 +1,7 @@
 ::use 'amapadmin/design.mtt'::
+<h2>::_("Dutty periods")::</h2>
 
-<h2>::_("Volunteers")::</h2>
-
+<h3>::_("Volunteer roles")::</h3>
 <p>
 	::raw _("Here you can define volunteers roles.")::
 </p>
@@ -42,17 +42,19 @@
 $$insert(::_("Add a role")::,/amapadmin/volunteers/insertRole)
 
 
-<h3>::_("Define the instructions mail for volunteers")::</h3>		
+<h3>
+	::_("Delays and messages")::
+</h3>		
 
 ::raw form::
 
-
-<h3>::_("Tokens available to use in the email body")::</h3>
-<p style="margin-left: 200px;">
-	[DATE_DEBUT]&nbsp;&nbsp;::_("Start date of the distribution")::<br/>
-	[DATE_FIN]&nbsp;&nbsp;::_("End date of the distribution")::<br/>
-	[LIEU]&nbsp;&nbsp;::_("Place of the distribution")::<br/> 
-	[LISTE_BENEVOLES]&nbsp;&nbsp;::_("List of volunteers for this distribution")::
+<hr/>
+<b>::_("Variables available to use in the email body")::</b> :
+<p style="margin-left: 100px;">
+	[DATE_DEBUT]&nbsp; : &nbsp;::_("Start date of the distribution")::<br/>
+	[DATE_FIN]&nbsp; : &nbsp;::_("End date of the distribution")::<br/>
+	[LIEU]&nbsp; : &nbsp;::_("Place of the distribution")::<br/> 
+	[LISTE_BENEVOLES]&nbsp; : &nbsp;::_("List of volunteers for this distribution")::
 </p>
 
 
@@ -63,13 +65,6 @@ $$insert(::_("Add a role")::,/amapadmin/volunteers/insertRole)
 		plugins: "autolink textcolor emoticons image",
 		toolbar: "styleselect bold italic alignleft aligncenter emoticons image bullist outdent indent forecolor",
 		language: '::session.lang::',
-		image_list: [
-			::foreach c user._amap.getActiveContracts(false)::
-				::if c._vendor._image!=null::
-					{title: '::escapeJS(c._vendor.name)::', value: '::file(c._vendor._image)::'},			
-				::end::
-			::end::
-		  ]
 	
 	});	
 </script>
