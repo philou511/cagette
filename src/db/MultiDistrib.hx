@@ -504,7 +504,11 @@ class MultiDistrib extends Object
 			volunteerRoles = new Array<db.VolunteerRole>();
 			for ( roleId in multidistribRoleIds ) {
 
-				volunteerRoles.push( db.VolunteerRole.manager.get(Std.parseInt(roleId)) );
+				var volunteerRole = db.VolunteerRole.manager.get(Std.parseInt(roleId));
+				if ( volunteerRole != null ) {
+
+					volunteerRoles.push( volunteerRole );
+				}
 			}
 
 			volunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });

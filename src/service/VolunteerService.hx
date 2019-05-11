@@ -8,6 +8,21 @@ import Common;
 class VolunteerService 
 {
 
+	public static function deleteVolunteerRole(role: db.VolunteerRole) {
+
+		var t = sugoi.i18n.Locale.texts;
+
+		if ( db.Volunteer.manager.count($volunteerRole == role) == 0 ) {
+
+			role.lock();
+			role.delete();
+		}
+		else {
+
+			throw new tink.core.Error(t._("You can't delete this role because there are volunteers assigned to this role. You need to delete the volunteers first."));
+		}
+	}
+
 	public static function updateVolunteers(multidistrib: db.MultiDistrib, rawData: Map<String, Dynamic>) {
 
 		var t = sugoi.i18n.Locale.texts;
@@ -137,7 +152,33 @@ class VolunteerService
 
 			throw new tink.core.Error(t._("Missing distribution or role in the url!"));
 		}			
+	}
 
+	public static function updateMultiDistribVolunteerRoles(multidistrib: db.MultiDistrib, rolesIds: String) {
+
+		var t = sugoi.i18n.Locale.texts;
+
+		var volunteers = multidistrib.getVolunteers();
+
+		if ( volunteers != null ) {
+
+			var roleIds = rolesIds.split(',');
+			for ( roleId in roleIds ) {
+
+				volunteers = Lambda.array(Lambda.filter(volunteers, function(volunteer) return volunteer.volunteerRole.id != Std.parseInt(roleId)));
+			}
+		}
+		
+		if ( volunteers == null || volunteers.length == 0 ) {
+
+			multidistrib.lock();
+			multidistrib.volunteerRolesIds = rolesIds;
+			multidistrib.update();
+		}
+		else {
+
+			throw new tink.core.Error(t._("You can't remove some roles because there are volunteers assigned to those roles. You need to delete the volunteers first."));
+		}
 	}
 
 }

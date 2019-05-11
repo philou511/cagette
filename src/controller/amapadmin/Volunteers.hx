@@ -108,26 +108,22 @@ class Volunteers extends controller.Controller
 
 		if ( checkToken() ) {
 
-			if (db.Volunteer.manager.count($volunteerRole == role) == 0) {
+			try {
 
-				role.lock();
-				role.delete();
-				throw Ok("/amapadmin/volunteers", t._("Volunteer Role has been successfully deleted"));
-
+				service.VolunteerService.deleteVolunteerRole(role);
 			}
-			else {
+			catch(e: tink.core.Error){
 
-				throw Error('/amapadmin/volunteers', t._("You can't delete this role because some users are linked to it."));
-
+				throw Error("/amapadmin/volunteers", e.message);
 			}
-			
+
+			throw Ok("/amapadmin/volunteers", t._("Volunteer Role has been successfully deleted"));
 		}
 		else {
 
 			throw Redirect("/amapadmin/volunteers");
 
 		}
-		
 	}
-		
+	
 }

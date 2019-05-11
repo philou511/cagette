@@ -826,7 +826,7 @@ class Distribution extends Controller
 
 	//  Manage volunteer roles for the specified multidistrib
 	@tpl("form.mtt")
-	function doVolunteerRoles(multiDistrib: db.MultiDistrib) {
+	function doVolunteerRoles(multidistrib: db.MultiDistrib) {
 		
 		var form = new sugoi.form.Form("volunteerroles");
 
@@ -836,7 +836,7 @@ class Distribution extends Controller
 		var allVolunteerRoles = db.VolunteerRole.manager.search($group == app.user.amap);
 		var generalRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == null);
 		var checkedRoles = [];
-		var roleIds = multiDistrib.volunteerRolesIds != null ? multiDistrib.volunteerRolesIds.split(",") : null;
+		var roleIds = multidistrib.volunteerRolesIds != null ? multidistrib.volunteerRolesIds.split(",") : null;
 		for ( role in generalRoles ) {
 
 			roles.push( { label: role.name, value: Std.string(role.id) } );
@@ -846,7 +846,7 @@ class Distribution extends Controller
 			
 		}	
 
-		for ( distrib in multiDistrib.getDistributions() ) {
+		for ( distrib in multidistrib.getDistributions() ) {
 
 			var contractRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == distrib.contract);
 			for ( role in contractRoles ) {
@@ -865,10 +865,16 @@ class Distribution extends Controller
 		
 	                                                
 		if (form.isValid()) {
-			
-			multiDistrib.lock();
-			multiDistrib.volunteerRolesIds = form.getValueOf("roles").join(",");
-			multiDistrib.update();
+
+			try {
+
+				service.VolunteerService.updateMultiDistribVolunteerRoles( multidistrib, form.getValueOf("roles").join(",") );
+			}
+			catch(e: tink.core.Error){
+
+				throw Error("/distribution/volunteerRoles/" + multidistrib.id, e.message);
+			}
+
 			throw Ok("/distribution", t._("Volunteer Roles have been saved for this distribution"));
 			
 		}
@@ -880,37 +886,33 @@ class Distribution extends Controller
 
 	//  Assign volunteer to roles for the specified multidistrib
 	@tpl("form.mtt")
-	function doVolunteers(multiDistrib: db.MultiDistrib) {
+	function doVolunteers(multidistrib: db.MultiDistrib) {
 		
 		var form = new sugoi.form.Form("volunteers");
 
-		var roleIds = [];
-		if (multiDistrib.volunteerRolesIds != null) {
+		var volunteerRoles = multidistrib.getVolunteerRoles();
+		if ( volunteerRoles == null ) {
 
-			roleIds = multiDistrib.volunteerRolesIds.split(",");
-		}
-		else {
-
-			throw Error('/distribution/volunteerRoles/' + multiDistrib.id, t._("You need to first select the volunteer roles for this distribution") );
+			throw Error('/distribution/volunteerRoles/' + multidistrib.id, t._("You need to first select the volunteer roles for this distribution") );
 		}
 
 		var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
-		for ( roleId in roleIds ) {
+		for ( role in volunteerRoles ) {
 
-			var selectedVolunteer = multiDistrib.getVolunteerForRole(db.VolunteerRole.manager.get(Std.parseInt(roleId)));
+			var selectedVolunteer = multidistrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
 			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
-			form.addElement( new IntSelect(roleId, db.VolunteerRole.manager.get(Std.parseInt(roleId)).name, members, selectedUserId, false, t._("No volunteer assigned")) );
+			form.addElement( new IntSelect(Std.string(role.id), db.VolunteerRole.manager.get(role.id).name, members, selectedUserId, false, t._("No volunteer assigned")) );
 		}
 
 		if (form.isValid()) {
 
 			try {
 
-				service.VolunteerService.updateVolunteers(multiDistrib, form.getData());
+				service.VolunteerService.updateVolunteers(multidistrib, form.getData());
 			}
 			catch(e: tink.core.Error){
 
-				throw Error("/distribution/volunteers/" + multiDistrib.id, e.message);
+				throw Error("/distribution/volunteers/" + multidistrib.id, e.message);
 			}
 			
 			throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));

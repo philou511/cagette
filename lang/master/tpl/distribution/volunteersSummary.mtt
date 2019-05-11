@@ -26,8 +26,12 @@
 				</td>				
 				
 				<td style="text-align:center;">
-					::if multidistrib.getVolunteerForRole(role)!=null::
-						::multidistrib.getVolunteerForRole(role)._user.getCoupleName()::
+					::set volunteer = multidistrib.getVolunteerForRole(role)::
+					::if volunteer!=null::
+						::volunteer._user.getCoupleName()::
+						::if volunteer._user.id == user.id::
+							<br/><a href="/distribution/unsubscribeFromRole/::multidistrib.id::/::role.id::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
+						::end::
 					::elseif  multidistrib.getVolunteerForUser(user) == null::
 					<a href="/distribution/volunteersCalendar?distrib=::multidistrib.id::&role=::role.id::" class="btn btn-default btn-lg">::_("Join")::</a>
 					::end::

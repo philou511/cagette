@@ -281,7 +281,7 @@
 						</div>
 	
 						::set vacantVolunteerRoles = d.getVacantVolunteerRoles()::
-						<div class="alert alert-danger" ::cond userVolunteer == null && vacantVolunteerRoles != null::>										
+						<div class="alert alert-danger" ::cond userVolunteer == null && vacantVolunteerRoles != null  && vacantVolunteerRoles.length != 0::>										
 							<i class="icon icon-alert"></i>
 							Il manque <b>::vacantVolunteerRoles.length:: bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont :<br/>
 							<div class="text-center">
