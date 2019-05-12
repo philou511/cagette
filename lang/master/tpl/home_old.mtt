@@ -353,7 +353,7 @@
 	
 	<div class="block">
 		<a href=" /distribution/volunteersCalendar" class="btn btn-default btn-sm">
-			<i class="icon icon-calendar"></i> ::_("Dutty periods calendar")::
+			<i class="icon icon-calendar"></i> ::_("Duty periods calendar")::
 		</a>
 	</div>
 	

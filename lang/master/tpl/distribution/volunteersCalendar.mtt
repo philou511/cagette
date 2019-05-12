@@ -2,50 +2,70 @@
 <div id="content" class="col-md-12">
 	<div class="article">
 
-			<div style="width:250px;float:left;margin-right: 20px;" class="input-group date" id="datetimepicker-from">       
+			<div style="width:210px;float:left;margin-right: 20px;" class="input-group date" id="datetimepicker-from">       
 				<span class="input-group-addon">					
 					<span class="glyphicon glyphicon-calendar"></span>
 				</span>
 				<input type="text" class="form-control"/>
 			</div>
-			<div style="width:250px;margin-bottom: 50px;" class="input-group date" id="datetimepicker-to">       
+			<div style="width:210px;float:left;margin-right:20px;" class="input-group date" id="datetimepicker-to">       
 				<span class="input-group-addon">					
 					<span class="glyphicon glyphicon-calendar"></span>
 				</span>
 				<input type="text" class="form-control"/>
 			</div>
+
+			<a id ="okdatepicker" href="::initialUrl::" class="btn btn-primary">OK</a>			
 			
-			<input type="hidden" name="listBydate_from" id="datetimepickerdata-from" value="2019-05-01 00:00:00"/>
 			<script type="text/javascript">
 				$(function () {
 					$('#datetimepicker-from').datetimepicker(
 						{
 							locale:'fr',
 							format:'LL',
-							defaultDate:moment("2019-05-01 00:00:00", "YYYY-MM-DD HH:mm:ss")
+							defaultDate:moment("::from::", "YYYY-MM-DD")
 						}
 					);
-					//stores the date in mysql format in a hidden input element	
+					$('#datetimepicker-to').datetimepicker(
+						{
+							locale:'fr',
+							format:'LL',
+							defaultDate:moment("::to::", "YYYY-MM-DD")
+						}
+					);
+					
 					$('#datetimepicker-from').on('dp.change',function(e){
-						var d = $('#datetimepicker-from').data('DateTimePicker').date();//moment.js obj
-						$('#datetimepickerdata-from').val( d.format('YYYY-MM-DD HH:mm:ss'));
+						setDatesUrl();
 					});
+					$('#datetimepicker-to').on('dp.change',function(e){
+						setDatesUrl();					
+					});
+
+
 				});
+
+				function setDatesUrl() {
+					var fromDate = $('#datetimepicker-from').data('DateTimePicker').date().format('YYYY-MM-DD');
+					var toDate = $('#datetimepicker-to').data('DateTimePicker').date().format('YYYY-MM-DD');
+					$('#okdatepicker').attr("href", "?from=" + fromDate + "&to=" + toDate);     				
+				}
 			</script>
 		
-		<div style="overflow-x:scroll;margin-bottom:30px;">
+		<div style="overflow-x:scroll;margin-top:20px;margin-bottom:30px;min-width:100%;" ::cond multidistribs.length != 0 ::>
 
-		<table class="table table-bordered">
+		<table class="table table-bordered"  style="table-layout: fixed; width: autos;">
 			<tr>
-				<td></td>
+				<th style="width:200px;"></th>
 				::foreach d multidistribs::
 				::set date = getDate(d.distribStartDate)::
-				::if !d.hasVacantVolunteerRoles()::
+				::if d.hasVacantVolunteerRoles()::
+				::set color = "orange"::
+				::elseif d.canVolunteersJoin()::
 				::set color = "lightgreen"::
 				::else::
-				::set color = "orange"::
+				::set color = "transparent"::
 				::end::
-				<th style="width: 200px;font-size:12px;line-height:14px;text-align:center;background-color: ::color::">::date.dow::<br/>
+				<th style="width:200px;font-size:12px;line-height:14px;text-align:center;background-color: ::color::">::date.dow::<br/>
 					::date.d::<br/>
 					::date.m::<br/>
 					::date.h+":"+date.i::</th>
@@ -55,7 +75,7 @@
 			::foreach role uniqueRoles::
 			<!-- Volunteers for this role -->
 			<tr>
-				<td style="white-space: nowrap;">
+				<td style="width:200px;">
 					<b>::role.name::</b>
 				</td>				
 				
@@ -65,18 +85,20 @@
 				::else::
 					::set color="lightgrey":: 									
 				::end::								
-				<td style="text-align:center;background-color: ::color::">
+				<td style="width:500px;text-align:center;background-color: ::color::">
 					::set volunteer = d.getVolunteerForRole(role)::
-					::if volunteer!=null::
-						::volunteer._user.getCoupleName()::
-						::if volunteer._user.id == user.id::
-							<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
+					::if d.hasVolunteerRole(role)::
+						::if volunteer!=null::
+							::volunteer._user.getCoupleName()::
+							::if volunteer._user.id == user.id::
+								<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::?returnUrl=/distribution/volunteersCalendar?from=::from::&to=::to::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
+							::end::
+						::elseif d.canVolunteersJoin() && d.getVolunteerForUser(user) == null::
+						<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::&from=::from::&to=::to::" class="btn btn-default btn-lg">::_("Join")::</a>
+						::elseif !d.canVolunteersJoin()::
+						::_("Duty periods open for volunteers") + " " + d._group.daysBeforeDutyPeriodsOpen + " " + _("days before the duty period")::
 						::end::
-					::elseif d.canVolunteersJoin() && d.hasVolunteerRole(role) && d.getVolunteerForUser(user) == null::
-					<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::" class="btn btn-default btn-lg">::_("Join")::</a>
-					::elseif !d.canVolunteersJoin()::
-					::_("Duty periods open for volunteers") + " " + d._group.daysBeforeDutyPeriodsOpen + " " + _("days before the duty period")::
-					::end::					
+					::end::						
 				</td>
 				::end::
 			</tr>		
@@ -84,7 +106,11 @@
 			
 		</table>
 		</div>
-		
+
+		<div style="margin-top:20px;margin-bottom:30px;width:100%;" ::cond multidistribs.length == 0 ::>
+			::_("There are no distributions in the specified time range")::
+		</div>
+			
 		$$back()
 	</div>
 </div>

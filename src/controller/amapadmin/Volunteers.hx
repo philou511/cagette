@@ -14,13 +14,24 @@ class Volunteers extends controller.Controller
 		checkToken();
 
 		var form = new sugoi.form.Form("msg");
-		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
+		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers (between 7 and 180"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
 		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail"), app.user.amap.volunteersMailDaysBeforeDutyPeriod, true) );
 		form.addElement( new TextArea("mailcontent", t._("Email body sent to volunteers"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
 		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles"), app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
 
 		if (form.isValid()) {
-			
+
+			try {
+
+				service.VolunteerService.isNumberOfDaysValid( form.getValueOf("dutyperiodsopen"), "volunteersCanJoin" );
+				service.VolunteerService.isNumberOfDaysValid( form.getValueOf("maildays"), "instructionsMail" );
+				service.VolunteerService.isNumberOfDaysValid( form.getValueOf("alertmaildays"), "vacantRolesMail" );
+			}
+			catch(e: tink.core.Error) {
+
+				throw Error("/amapadmin/volunteers", e.message);
+			}			
+
 			app.user.amap.lock();
 			app.user.amap.daysBeforeDutyPeriodsOpen = form.getValueOf("dutyperiodsopen");
 			app.user.amap.volunteersMailDaysBeforeDutyPeriod = form.getValueOf("maildays");
@@ -28,7 +39,7 @@ class Volunteers extends controller.Controller
 			app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod = form.getValueOf("alertmaildays");
 			app.user.amap.update();
 			
-			throw Ok("/amapadmin/volunteers", t._("Volunteers Mail has been successfully updated"));
+			throw Ok("/amapadmin/volunteers", t._("Your changes have been successfully saved."));
 			
 		}
 		

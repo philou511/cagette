@@ -1,5 +1,6 @@
 package service;
 import Common;
+import sugoi.mail.Mail;
 import tink.core.Error;
 
 /**
@@ -15,8 +16,21 @@ class VolunteerService
 
 		if ( db.Volunteer.manager.count($volunteerRole == role) == 0 ) {
 
+			var roleId = Std.string(role.id);
 			role.lock();
 			role.delete();
+
+			//Let's find all the multidistribs that have this role in volunteerRolesIds
+			var roleIdInMultidistribs = Lambda.array( db.MultiDistrib.manager.search( $group == role.group && $volunteerRolesIds.like("%" + roleId + "%"), true ) );
+			for ( multidistrib in roleIdInMultidistribs ) {
+
+				var roleIds = multidistrib.volunteerRolesIds.split(',');
+				if ( roleIds.remove(roleId) ) {
+
+					multidistrib.volunteerRolesIds = roleIds.join(',');
+					multidistrib.update();
+				}
+			}
 		}
 		else {
 
@@ -129,7 +143,7 @@ class VolunteerService
 
 	}
 
-	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
+	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole, reason: String ) {
 
 		var t = sugoi.i18n.Locale.texts;
 		if ( user != null && multidistrib != null && role != null ) {
@@ -140,6 +154,44 @@ class VolunteerService
 
 				foundVolunteer.lock();
 				foundVolunteer.delete();
+
+				//Send notification email to either the coordinators or all the members depending on the current date
+				var mail = new Mail();
+				mail.setSender(App.config.get("default_email"),"Cagette.net");
+				var now = Date.now();
+				var alertDate = DateTools.delta( multidistrib.distribStartDate, - 1000.0 * 60 * 60 * 24 * multidistrib.group.vacantVolunteerRolesMailDaysBeforeDutyPeriod );
+				var message: String = t._( "::fullname:: has left the role ::role:: for the following reason:<br/>::reason::<br/>",
+				                         { fullname : user.getName(), role : role.name, reason : reason } );				
+				message += t._("This role needs to be filled.");
+
+				if ( now.getTime() <=  alertDate.getTime() ) {
+
+					//Recipients are the coordinators
+					var adminUsers = service.GroupService.getGroupMembersWithRights( multidistrib.group, [ Right.GroupAdmin ] );
+					for ( admin in adminUsers ) {
+
+						mail.addRecipient( admin.email, admin.getName() );
+						if ( admin.email2 != null ) {
+							mail.addRecipient( admin.email2 );
+						}
+					}
+				}
+				else {
+
+					var members = Lambda.array( multidistrib.group.getMembers() );
+					//Recipients are all members
+					for ( member in members ) {
+
+						mail.addRecipient( member.email, member.getName() );
+						if ( member.email2 != null ) {
+							mail.addRecipient( member.email2 );
+						}
+					}
+				}
+				
+				mail.setSubject( t._( "[::group::] A role has been left for ::date:: distribution", { group : multidistrib.group.name, date : App.current.view.hDate( multidistrib.distribStartDate ) } ) );
+				mail.setHtmlBody( App.current.processTemplate("mail/message.mtt", { text: message, group: multidistrib.group  } ) );
+				App.sendMail(mail);
 			}
 			else {
 				
@@ -190,6 +242,53 @@ class VolunteerService
 			role.insert();
 		
 		}
-	} 
+	}
 
+	public static function isNumberOfDaysValid( numberOfDays: Int, type: String ) {
+
+		var t = sugoi.i18n.Locale.texts;
+
+		if ( Std.is( numberOfDays, Int ) ) {
+			
+			switch( type ) {
+
+				case "volunteersCanJoin":
+				
+					if ( numberOfDays <  7 ) {
+
+						throw new tink.core.Error(t._("The number of days before the volunteers can join a duty period needs to be greater than 6 days."));
+					}
+					else if ( numberOfDays > 181 ) {
+
+						throw new tink.core.Error(t._("The number of days before the volunteers can join a duty period needs to be lower than 181 days."));
+					}
+
+				case "instructionsMail":
+
+					if ( numberOfDays <  2 ) {
+
+						throw new tink.core.Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be greater than 1 day."));
+					}
+					else if ( numberOfDays > 15 ) {
+
+						throw new tink.core.Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be lower than 15 days."));
+					}
+
+				case "vacantRolesMail":
+
+					if ( numberOfDays <  2 ) {
+
+						throw new tink.core.Error(t._("The number of days before the duty periods to send the vacant roles mail to all members needs to be greater than 1 day."));
+					}
+					else if ( numberOfDays > 15 ) {
+
+						throw new tink.core.Error(t._("The number of days before the duty periods to send the instructions mail to all members needs to be lower than 15 days."));
+					}
+			}
+		}
+		else {
+
+			throw new tink.core.Error(t._("One or more numbers of days you entered is not an integer. You can only use integers. "));
+		}	
+	}
 }

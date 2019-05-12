@@ -164,6 +164,7 @@ class DistributionService
 	public static function createMd(place:db.Place,/*type:Int,*/distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
 
 		var md = new db.MultiDistrib();
+		md.group = place.amap;
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
 		//if(type==db.Contract.TYPE_VARORDER){

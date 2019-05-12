@@ -5,6 +5,7 @@ import sugoi.form.elements.HourDropDowns;
 import tink.core.Error;
 import sugoi.form.elements.Html;
 import sugoi.form.elements.IntSelect;
+import sugoi.form.elements.StringInput;
 import sugoi.form.elements.TextArea;
 import Common;
 using tools.DateTool;
@@ -432,10 +433,15 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
+
+				var distribStartDate = form.getValueOf("distribStartDate");
+				var endDate = form.getValueOf("distribEndDate");			
+				var distribEndDate = DateTool.setHourMinute( distribStartDate, endDate.getHours(), endDate.getMinutes() );
+				
 				md = service.DistributionService.createMd(
 					db.Place.manager.get(form.getValueOf("placeId"),false),
-					form.getValueOf("distribStartDate"),
-					form.getValueOf("distribEndDate"),
+					distribStartDate,
+					distribEndDate,
 					type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderStartDate"),
 					type==db.Contract.TYPE_CONSTORDERS ? null : form.getValueOf("orderEndDate")
 				);
@@ -446,9 +452,9 @@ class Distribution extends Controller
 					var contract = db.Contract.manager.get(cid,false);
 					service.DistributionService.participate(md,contract);
 				}
+			}
+			catch(e:tink.core.Error) {
 
-
-			} catch(e:tink.core.Error){
 				throw Error('/distribution/insertMd/' +type ,e.message);
 			}
 			
@@ -868,7 +874,7 @@ class Distribution extends Controller
 
 	//  Manage volunteer roles for the specified multidistrib
 	@tpl("form.mtt")
-	function doVolunteerRoles(multidistrib: db.MultiDistrib) {
+	function doVolunteerRoles(distrib: db.MultiDistrib) {
 		
 		var form = new sugoi.form.Form("volunteerroles");
 
@@ -878,7 +884,7 @@ class Distribution extends Controller
 		var allVolunteerRoles = db.VolunteerRole.manager.search($group == app.user.amap);
 		var generalRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == null);
 		var checkedRoles = [];
-		var roleIds = multidistrib.volunteerRolesIds != null ? multidistrib.volunteerRolesIds.split(",") : null;
+		var roleIds = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",") : null;
 		for ( role in generalRoles ) {
 
 			roles.push( { label: role.name, value: Std.string(role.id) } );
@@ -888,7 +894,7 @@ class Distribution extends Controller
 			
 		}	
 
-		for ( distrib in multidistrib.getDistributions() ) {
+		for ( distrib in distrib.getDistributions() ) {
 
 			var contractRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == distrib.contract);
 			for ( role in contractRoles ) {
@@ -910,11 +916,11 @@ class Distribution extends Controller
 
 			try {
 
-				service.VolunteerService.updateMultiDistribVolunteerRoles( multidistrib, form.getValueOf("roles").join(",") );
+				service.VolunteerService.updateMultiDistribVolunteerRoles( distrib, form.getValueOf("roles").join(",") );
 			}
 			catch(e: tink.core.Error){
 
-				throw Error("/distribution/volunteerRoles/" + multidistrib.id, e.message);
+				throw Error("/distribution/volunteerRoles/" + distrib.id, e.message);
 			}
 
 			throw Ok("/distribution", t._("Volunteer Roles have been saved for this distribution"));
@@ -928,20 +934,20 @@ class Distribution extends Controller
 
 	//  Assign volunteer to roles for the specified multidistrib
 	@tpl("form.mtt")
-	function doVolunteers(multidistrib: db.MultiDistrib) {
+	function doVolunteers(distrib: db.MultiDistrib) {
 		
 		var form = new sugoi.form.Form("volunteers");
 
-		var volunteerRoles = multidistrib.getVolunteerRoles();
+		var volunteerRoles = distrib.getVolunteerRoles();
 		if ( volunteerRoles == null ) {
 
-			throw Error('/distribution/volunteerRoles/' + multidistrib.id, t._("You need to first select the volunteer roles for this distribution") );
+			throw Error('/distribution/volunteerRoles/' + distrib.id, t._("You need to first select the volunteer roles for this distribution") );
 		}
 
 		var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
 		for ( role in volunteerRoles ) {
 
-			var selectedVolunteer = multidistrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
+			var selectedVolunteer = distrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
 			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
 			form.addElement( new IntSelect(Std.string(role.id), db.VolunteerRole.manager.get(role.id).name, members, selectedUserId, false, t._("No volunteer assigned")) );
 		}
@@ -950,11 +956,11 @@ class Distribution extends Controller
 
 			try {
 
-				service.VolunteerService.updateVolunteers(multidistrib, form.getData());
+				service.VolunteerService.updateVolunteers(distrib, form.getData());
 			}
 			catch(e: tink.core.Error){
 
-				throw Error("/distribution/volunteers/" + multidistrib.id, e.message);
+				throw Error("/distribution/volunteers/" + distrib.id, e.message);
 			}
 			
 			throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));
@@ -967,9 +973,9 @@ class Distribution extends Controller
 
 	//View volunteers list for this distribution and you can sign up for a role
 	@tpl('distribution/volunteersSummary.mtt')
-	function doVolunteersSummary(multidistrib: db.MultiDistrib, ?args: { role: db.VolunteerRole }) {
+	function doVolunteersSummary(distrib: db.MultiDistrib, ?args: { role: db.VolunteerRole }) {
 
-		var volunteerRoles: Array<db.VolunteerRole> = multidistrib.getVolunteerRoles();
+		var volunteerRoles: Array<db.VolunteerRole> = distrib.getVolunteerRoles();
 		if (volunteerRoles == null) {
 
 			throw Error('/distribution/', t._("There are no volunteer roles defined for this distribution") );
@@ -979,53 +985,59 @@ class Distribution extends Controller
 
 			try {
 
-				service.VolunteerService.addUserToRole(app.user, multidistrib, args.role);
+				service.VolunteerService.addUserToRole(app.user, distrib, args.role);
 			}
 			catch(e: tink.core.Error){
 
-				throw Error("/distribution/volunteersSummary/" + multidistrib.id, e.message);
+				throw Error("/distribution/volunteersSummary/" + distrib.id, e.message);
 			}
 		
-			throw Ok("/distribution/volunteersSummary/" + multidistrib.id, t._("You have been successfully added to the selected role."));
+			throw Ok("/distribution/volunteersSummary/" + distrib.id, t._("You have been successfully added to the selected role."));
 		}
 		
-		view.multidistrib = multidistrib;
-		view.roles = volunteerRoles;
-		// view.roles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
-	
+		view.multidistrib = distrib;
+		view.roles = volunteerRoles;	
 	}
 
 	//Remove user from role for the specified multidistrib
 	@tpl("form.mtt")
-	function doUnsubscribeFromRole(multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
+	function doUnsubscribeFromRole(distrib: db.MultiDistrib, role: db.VolunteerRole, ?args: { returnUrl: String, ?to: String } ) {
+		
+		if ( args != null && args.returnUrl != null ) {
+
+			var toArg = args.to != null ? "&to=" + args.to : "";
+			App.current.session.data.volunteersReturnUrl = args.returnUrl + toArg;						
+		}		
 		
 		var form = new sugoi.form.Form("unsubscribe");
 
-		var volunteer = multidistrib.getVolunteerForRole(role);
+		var returnUrl = App.current.session.data.volunteersReturnUrl != null ? App.current.session.data.volunteersReturnUrl : '/distribution/unsubscribeFromRole/' + distrib.id + '/' + role.id;
+		
+		var volunteer = distrib.getVolunteerForRole(role);
 		if (volunteer == null) {
 
-			throw Error('/distribution/volunteersSummary/' + multidistrib.id, t._("There is no volunteer to remove for this role!") );
+			throw Error( returnUrl, t._("There is no volunteer to remove for this role!") );
 		}
 		else if (volunteer.user.id != app.user.id) {
 
-			throw Error('/distribution/volunteersSummary/' + multidistrib.id, t._("You can only remove yourself from a role.") );
+			throw Error( returnUrl, t._("You can only remove yourself from a role.") );
 
 		}
 
 		form.addElement( new TextArea("unsubscriptionreason", "Reason for leaving the role :", "", true, null, "style='width:500px;height:350px;'") );
-
+			
 		if (form.isValid()) {
 
 			try {
 
-				service.VolunteerService.removeUserFromRole(app.user, multidistrib, role);
+				service.VolunteerService.removeUserFromRole( app.user, distrib, role, form.getValueOf("unsubscriptionreason") );
 			}
 			catch(e: tink.core.Error){
 
-				throw Error("/distribution/volunteersSummary/" + multidistrib.id, e.message);
+				throw Error( returnUrl, e.message );
 			}
 			
-			throw Ok("/distribution/volunteersSummary/" + multidistrib.id, t._("You have been successfully removed from this role."));
+			throw Ok( returnUrl, t._("You have been successfully removed from this role.") );
 		}
 
 		view.title = t._("Enter the reason why you are leaving this role.");
@@ -1035,27 +1047,50 @@ class Distribution extends Controller
 
 	//View volunteers planning for each role and multidistrib date
 	@tpl('distribution/volunteersCalendar.mtt')
-	function doVolunteersCalendar(?args: { distrib: db.MultiDistrib, role: db.VolunteerRole } ) {
-
-		if (args != null) {
-
-			try {
-
-				service.VolunteerService.addUserToRole(app.user, args.distrib, args.role);
-			}
-			catch(e: tink.core.Error){
-
-				throw Error("/distribution/volunteersCalendar", e.message);
-			}
+	function doVolunteersCalendar(?args: { ?distrib: db.MultiDistrib, ?role: db.VolunteerRole, ?from: Date, ?to: Date } ) {
 		
-			throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
+		var multidistribs : Array<db.MultiDistrib> = [];
+		var from: Date = null;
+		var to: Date = null;
+
+		if ( args != null ) {
+
+			if ( args.distrib != null && args.role != null ) {
+
+				try {
+
+					service.VolunteerService.addUserToRole( app.user, args.distrib, args.role );
+				}
+				catch(e: tink.core.Error) {
+
+					throw Error("/distribution/volunteersCalendar", e.message);
+				}
+		
+				if ( args.from == null || args.to == null ) {
+
+					throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
+				}
+				else {
+
+					throw Ok("/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to, t._("You have been successfully assigned to the selected role."));
+				}
+			}
+			
+			if ( args.from != null && args.to != null ) {
+
+				from = args.from;
+				to = args.to;
+			}
 		}
-		
-		var n = Date.now();
-		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
-		var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
 
+		if ( from == null || to == null ) {
+
+			from = Date.now();
+			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.amap.daysBeforeDutyPeriodsOpen );			
+		}
+
+		multidistribs = db.MultiDistrib.getFromTimeRange( app.user.amap, from, to );
+		
 		//Let's find all the unique volunteer roles for this set of multidistribs	
 		var uniqueRoles = [];
 		for ( multidistrib in multidistribs ) {
@@ -1076,38 +1111,8 @@ class Distribution extends Controller
 		view.multidistribs = multidistribs;
 		uniqueRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
 		view.uniqueRoles = uniqueRoles;
-		// var d = Date.now().toString();
-		// var defaultDate = 'moment("' + Date.now() + '", "YYYY-MM-DD HH:mm:ss")';
-		
-		// return "
-		// 		<div class='input-group date' id='datetimepicker-"+name+"'>       
-		// 			<span class='input-group-addon'>
-		// 				<!--<i class='icon icon-calendar'></i>-->
-		// 				<span class='glyphicon glyphicon-calendar'></span>
-		// 			</span>
-		// 			<input type='text' class='form-control' />
-		// 		</div>
-			
-		// 	<input type='hidden' name='_"+name+"' id='datetimepickerdata-"+name+"' value='"+d+"'/>
-		// 	<script type='text/javascript'>
-		// 		$(function () {
-		// 			$('#datetimepicker-"+name+"').datetimepicker(
-		// 				{
-		// 					locale:'fr',
-		// 					format:'"+this.format+"',
-		// 					defaultDate:"+defaultDate+"
-		// 				}
-		// 			);
-		// 			//stores the date in mysql format in a hidden input element	
-		// 			$('#datetimepicker-"+name+"').on('dp.change',function(e){
-		// 				var d = $('#datetimepicker-"+name+"').data('DateTimePicker').date();//moment.js obj
-		// 				//fix 2038 date overflow bug https://en.wikipedia.org/wiki/Year_2038_problem
-		// 				if(d.year()>2037) d.year(2037);
-		// 				console.log(d.toString());
-		// 				$('#datetimepickerdata-"+name+"').val( d.format('YYYY-MM-DD HH:mm:ss'));
-		// 			});
-		// 		});
-		// 	</script>";
-		// trace(datePicker.render());
+		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
+		view.from = from.toString().substr(0,10);
+		view.to = to.toString().substr(0,10);		
 	}
 }

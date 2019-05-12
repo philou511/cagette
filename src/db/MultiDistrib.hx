@@ -106,14 +106,13 @@ class MultiDistrib extends Object
 		return multidistribs;
 	}*/
 
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date/*,?contractType:Int*/):Array<MultiDistrib>{
+	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date /*,?contractType:Int*/ ) : Array<MultiDistrib> {
 		var multidistribs = new Array<db.MultiDistrib>();
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
-		var placeIds = group.getPlaces().getIds();
-
+		
 		//if(contractType==null){
-			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds),false));
+			multidistribs = Lambda.array(db.MultiDistrib.manager.search( $group == group && $distribStartDate >= start && $distribStartDate <= end, false ));
 		/*}else{
 			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds) && $type==contractType ,false));
 		}*/
@@ -524,9 +523,10 @@ class MultiDistrib extends Object
 
 	public function hasVacantVolunteerRoles() {
 
-		if (this.volunteerRolesIds != null) {
+		if ( this.volunteerRolesIds != null && canVolunteersJoin() ) {
 
-			if ( this.volunteerRolesIds.split(",").length > db.Volunteer.manager.count($multiDistrib == this) ) {
+			var volunteerRoles = this.getVolunteerRoles();
+			if ( volunteerRoles != null && volunteerRoles.length > db.Volunteer.manager.count($multiDistrib == this) ) {
 
 				return true;
 			} 

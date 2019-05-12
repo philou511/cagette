@@ -266,16 +266,16 @@
 					
 					
 
-					<!--dutty period-->
+					<!--duty period-->
 					<div class="content">
 						
 						::set userVolunteer = d.getVolunteerForUser(user)::
 						<div class="alert alert-warning" ::cond userVolunteer!=null::>										
 							<i class="icon icon-alert"></i>
-							Attention, vous ou votre conjoint(e) êtes inscrit(e) comme bénévole pour le rôle <b>::userVolunteer._volunteerRole.name::</b>.
+							::_("Please be aware that you or your spouse is a volunteer for the role:"):: <b>::userVolunteer._volunteerRole.name::</b>.							
 							<p style="margin-top:12px;">
-								<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Détails Permanence")::</a>
-								<a href="/distribution/unsubscribeFromRole/::d.id::/::userVolunteer._volunteerRole.id::" class="btn btn-default btn-sm"><i class="icon icon-delete"></i> ::_("Me désister")::</a>
+								<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Duty period details")::</a>
+								<a href="/distribution/unsubscribeFromRole/::d.id::/::userVolunteer._volunteerRole.id::?returnUrl=/homenew" class="btn btn-default btn-sm"><i class="icon icon-delete"></i> ::_("Unsubscribe")::</a>
 							</p>
 							
 						</div>
@@ -283,7 +283,7 @@
 						::set vacantVolunteerRoles = d.getVacantVolunteerRoles()::
 						<div class="alert alert-danger" ::cond userVolunteer == null && vacantVolunteerRoles != null  && vacantVolunteerRoles.length != 0::>										
 							<i class="icon icon-alert"></i>
-							Il manque <b>::vacantVolunteerRoles.length:: bénévoles</b> pour cette distribution ! Les rôles à pourvoir sont :<br/>
+							::_("We need")::<b> ::vacantVolunteerRoles.length::</b> ::_("volunteer(s) for the following roles:"):: :<br/>							
 							<div class="text-center">
 								::foreach role vacantVolunteerRoles::
 								<b>::role.name::</b><br/>
@@ -363,7 +363,7 @@
 	
 	<div class="block">
 		<a href=" /distribution/volunteersCalendar" class="btn btn-default btn-sm">
-			<i class="icon icon-calendar"></i> ::_("Dutty periods calendar")::
+			<i class="icon icon-calendar"></i> ::_("Duty periods calendar")::
 		</a>
 	</div>
 	
