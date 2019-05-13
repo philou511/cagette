@@ -53,7 +53,7 @@
 		
 		<div style="overflow-x:scroll;margin-top:20px;margin-bottom:30px;min-width:100%;" ::cond multidistribs.length != 0 ::>
 
-		<table class="table table-bordered"  style="table-layout: fixed; width: autos;">
+		<table class="table table-bordered"  style="table-layout: fixed;">
 			<tr>
 				<th style="width:200px;"></th>
 				::foreach d multidistribs::
