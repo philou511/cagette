@@ -283,7 +283,7 @@
 						::set vacantVolunteerRoles = d.getVacantVolunteerRoles()::
 						<div class="alert alert-danger" ::cond userVolunteer == null && vacantVolunteerRoles != null  && vacantVolunteerRoles.length != 0::>										
 							<i class="icon icon-alert"></i>
-							::_("We need")::<b> ::vacantVolunteerRoles.length::</b> ::_("volunteer(s) for the following roles:"):: :<br/>							
+							::raw __("We need <b>::rolesNum::</b> volunteer(s) for the following roles:",{rolesNum:vacantVolunteerRoles.length}):: :<br/>							
 							<div class="text-center">
 								::foreach role vacantVolunteerRoles::
 								<b>::role.name::</b><br/>

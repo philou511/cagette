@@ -356,12 +356,11 @@ Called from controller/Main.hx line 117
 	}
 	
 	@logged
-	function doValidate(date:Date, place:db.Place, user:db.User, d:haxe.web.Dispatch){
+	function doValidate(multiDistrib:db.MultiDistrib,user:db.User,d:haxe.web.Dispatch){
 		
 		var v = new controller.Validate();
-		v.date = date;
-		v.place = place;
-		v.user = user;		
+		v.multiDistrib = multiDistrib;
+		v.user = user;
 		d.dispatch(v);
 	}
 	

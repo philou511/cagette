@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-05-10 16:21+0200\n"
+"PO-Revision-Date: 2019-05-13 14:06+0200\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
@@ -52,7 +52,7 @@ msgstr "Montant"
 
 #: ../src/controller/Transaction.hx:840 ../src/controller/Transaction.hx:2907
 #: ../src/controller/Validate.hx:4508 ../src/db/Operation.hx:14032
-#: ../src/db/MultiDistrib.hx:13518 ../src/db/Distribution.hx:9025
+#: ../src/db/MultiDistrib.hx:13486 ../src/db/Distribution.hx:9025
 #: ../lang/master/tpl/member/lastMessages.mtt:50
 #: ../lang/master/tpl/contractadmin/selectDistrib.mtt:191
 msgid "Date"
@@ -116,7 +116,7 @@ msgstr "Virement pour la commande du ::date::"
 #: ../src/controller/Product.hx:2650 ../src/controller/Product.hx:3296
 #: ../src/controller/Product.hx:5408 ../src/controller/Product.hx:6138
 #: ../src/controller/Product.hx:6873 ../src/controller/Product.hx:7569
-#: ../src/controller/Distribution.hx:22455
+#: ../src/controller/Distribution.hx:22624
 msgid "Forbidden access"
 msgstr "Accès interdit"
 
@@ -150,10 +150,10 @@ msgstr "Vous n'êtes pas membre de ce groupe"
 #: ../src/controller/Contract.hx:4313 ../src/controller/Contract.hx:6285
 #: ../src/controller/Contract.hx:8150 ../src/controller/Contract.hx:8369
 #: ../src/controller/Member.hx:20261 ../src/controller/Product.hx:1579
-#: ../src/controller/Distribution.hx:2784
-#: ../src/controller/Distribution.hx:6423
-#: ../src/controller/Distribution.hx:17359
-#: ../src/controller/Distribution.hx:20443
+#: ../src/controller/Distribution.hx:2751
+#: ../src/controller/Distribution.hx:6390
+#: ../src/controller/Distribution.hx:17528
+#: ../src/controller/Distribution.hx:20612
 msgid "Forbidden action"
 msgstr "Action interdite"
 
@@ -240,62 +240,58 @@ msgstr "Créer un contrat à commande variable"
 msgid "Vendor"
 msgstr "Producteur"
 
-#: ../src/controller/Contract.hx:9382
-msgid "Duty period"
-msgstr "Permanence"
-
-#: ../src/controller/Contract.hx:9779
+#: ../src/controller/Contract.hx:9594
 msgid "New contract created"
 msgstr "Nouveau contrat créé"
 
-#: ../src/controller/Contract.hx:10030
+#: ../src/controller/Contract.hx:9845
 msgid "You don't have the authorization to remove a contract"
 msgstr "Vous n'avez pas le droit de supprimer un contrat"
 
-#: ../src/controller/Contract.hx:10614
+#: ../src/controller/Contract.hx:10429
 msgid "You cannot delete this contract because some orders are linked to it."
 msgstr ""
 "Vous ne pouvez pas effacer ce contrat car il y a des commandes rattachées à "
 "ce contrat."
 
-#: ../src/controller/Contract.hx:11010
+#: ../src/controller/Contract.hx:10825
 msgid "Contract deleted"
 msgstr "Contrat supprimé"
 
-#: ../src/controller/Contract.hx:11075 ../src/controller/Product.hx:3131
+#: ../src/controller/Contract.hx:10890 ../src/controller/Product.hx:3131
 msgid "Token error"
 msgstr "Erreur de token"
 
-#: ../src/controller/Contract.hx:11641 ../src/controller/Contract.hx:14812
+#: ../src/controller/Contract.hx:11456 ../src/controller/Contract.hx:14627
 msgid "This contract is not opened for orders"
 msgstr "Ce contrat n'est pas ouvert aux commandes"
 
-#: ../src/controller/Contract.hx:13871 ../src/controller/Contract.hx:16877
+#: ../src/controller/Contract.hx:13686 ../src/controller/Contract.hx:16692
 msgid "Could not find the product ::produ:: and delivery ::deliv::"
 msgstr ""
 "Impossible de retrouver le produit ::produ:: et la distribution ::deliv::"
 
-#: ../src/controller/Contract.hx:14348 ../src/controller/Contract.hx:20112
+#: ../src/controller/Contract.hx:14163 ../src/controller/Contract.hx:19927
 msgid "Your order has been updated"
 msgstr "Votre commande a été mise à jour"
 
-#: ../src/controller/Contract.hx:17522
+#: ../src/controller/Contract.hx:17337
 msgid "Your CSA order has been saved"
 msgstr "Votre commande AMAP a été enregistrée"
 
-#: ../src/controller/Contract.hx:17605
+#: ../src/controller/Contract.hx:17420
 msgid "In order to save your order, please choose a means of payment."
 msgstr ""
 "Pour que votre commande soit enregistrée, choisissez une méthode de paiement."
 
-#: ../src/controller/Contract.hx:18147
+#: ../src/controller/Contract.hx:17962
 msgid ""
 "This delivery has already taken place, you can no longer modify the order."
 msgstr ""
 "Cette distribution s'est déjà déroulée, vous ne pouvez plus modifier la "
 "commande."
 
-#: ../src/controller/Contract.hx:18274
+#: ../src/controller/Contract.hx:18089
 msgid ""
 "<br/>As the manager of the contract you can modify the order from this page: "
 "<a href='/contractAdmin'>Management of contracts</a>"
@@ -304,7 +300,7 @@ msgstr ""
 "depuis la page de gestion des commandes dans <a href='/"
 "contractAdmin'>Gestion contrats</a>"
 
-#: ../src/controller/Contract.hx:19561
+#: ../src/controller/Contract.hx:19376
 msgid "Error, could not find the order"
 msgstr "Erreur, impossible de retrouver la commande"
 
@@ -345,9 +341,9 @@ msgid "Rights"
 msgstr "Droits"
 
 #: ../src/controller/AmapAdmin.hx:4575
-#: ../src/controller/amapadmin/Volunteers.hx:2181
-#: ../src/controller/amapadmin/Volunteers.hx:3272
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:504
+#: ../src/controller/amapadmin/Volunteers.hx:2618
+#: ../src/controller/amapadmin/Volunteers.hx:3709
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:503
 msgid "All contracts"
 msgstr "Tous les contrats"
 
@@ -1108,37 +1104,38 @@ msgid "Category deleted"
 msgstr "Catégorie effacée"
 
 #: ../src/controller/amapadmin/Volunteers.hx:495
-msgid "Number of days before duty periods open to volunteers"
+msgid ""
+"Number of days before duty periods open to volunteers (between 7 and 180"
 msgstr ""
-"Ouverture des inscriptions aux permanences (en jours avant la distribution)"
+"Ouverture des inscriptions aux permanences ( en jours avant la distribution )"
 
-#: ../src/controller/amapadmin/Volunteers.hx:651
+#: ../src/controller/amapadmin/Volunteers.hx:670
 msgid "Number of days before duty period to send mail"
 msgstr ""
 "Envoi du mail d'information aux bénévoles (en jours avant la distribution)"
 
-#: ../src/controller/amapadmin/Volunteers.hx:812
+#: ../src/controller/amapadmin/Volunteers.hx:831
 msgid "Email body sent to volunteers"
 msgstr "Corps de l'email envoyé aux bénévoles"
 
-#: ../src/controller/amapadmin/Volunteers.hx:976
+#: ../src/controller/amapadmin/Volunteers.hx:995
 msgid ""
 "Number of days before duty period to send mail for vacant volunteer roles"
 msgstr ""
 "Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
 "distribution) "
 
-#: ../src/controller/amapadmin/Volunteers.hx:1584
-msgid "Volunteers Mail has been successfully updated"
-msgstr "Le mail aux bénévoles a bien été mis à jour"
+#: ../src/controller/amapadmin/Volunteers.hx:2024
+msgid "Your changes have been successfully saved."
+msgstr "Vos modifications ont bien été enregistrées."
 
-#: ../src/controller/amapadmin/Volunteers.hx:1889
-#: ../src/controller/amapadmin/Volunteers.hx:2887
+#: ../src/controller/amapadmin/Volunteers.hx:2326
+#: ../src/controller/amapadmin/Volunteers.hx:3324
 msgid "Volunteer role name"
 msgstr "Nom du rôle de bénévole"
 
-#: ../src/controller/amapadmin/Volunteers.hx:2134
-#: ../src/controller/amapadmin/Volunteers.hx:3212
+#: ../src/controller/amapadmin/Volunteers.hx:2571
+#: ../src/controller/amapadmin/Volunteers.hx:3649
 #: ../lang/master/tpl/distribution/listByDateOnePageContract.mtt:460
 #: ../lang/master/tpl/member/view.mtt:3034
 #: ../lang/master/tpl/member/view.mtt:4277
@@ -1148,31 +1145,22 @@ msgstr "Nom du rôle de bénévole"
 msgid "Contract"
 msgstr "Contrat"
 
-#: ../src/controller/amapadmin/Volunteers.hx:2558
+#: ../src/controller/amapadmin/Volunteers.hx:2995
 msgid "Volunteer Role has been successfully added"
 msgstr "Le rôle a bien été ajouté"
 
-#: ../src/controller/amapadmin/Volunteers.hx:2634
-#: ../src/controller/amapadmin/Volunteers.hx:3703
+#: ../src/controller/amapadmin/Volunteers.hx:3071
+#: ../src/controller/amapadmin/Volunteers.hx:4140
 msgid "Create a volunteer role"
 msgstr "Créer un rôle de volontaire"
 
-#: ../src/controller/amapadmin/Volunteers.hx:3625
+#: ../src/controller/amapadmin/Volunteers.hx:4062
 msgid "Volunteer Role has been successfully updated"
 msgstr "Le rôle a bien été mis à jour"
 
-#: ../src/controller/amapadmin/Volunteers.hx:4038
+#: ../src/controller/amapadmin/Volunteers.hx:4532
 msgid "Volunteer Role has been successfully deleted"
 msgstr "Le rôle a bien été supprimé"
-
-#: ../src/controller/amapadmin/Volunteers.hx:4150
-#, fuzzy
-#| msgid ""
-#| "You cannot delete this contract because some orders are linked to it."
-msgid "You can't delete this role because some users are linked to it."
-msgstr ""
-"Vous ne pouvez pas effacer ce contrat car il y a des commandes rattachées à "
-"ce contrat."
 
 #: ../src/controller/Group.hx:1293 ../src/controller/Group.hx:3377
 #: ../src/controller/Install.hx:1550
@@ -1433,7 +1421,7 @@ msgstr "Vue globale des commandes"
 #: ../src/controller/ContractAdmin.hx:8320
 #: ../src/controller/ContractAdmin.hx:10938
 #: ../src/controller/ContractAdmin.hx:11897
-#: ../src/service/ReportService.hx:3878
+#: ../src/service/ReportService.hx:3902
 msgid "There is no delivery at this date"
 msgstr "Il n'y a aucune distribution à cette date"
 
@@ -1497,10 +1485,8 @@ msgid "No delivery in this contract"
 msgstr "Aucune distribution dans ce contrat"
 
 #: ../src/controller/ContractAdmin.hx:24617
-#, fuzzy
-#| msgid "Distributions to validate"
 msgid "Distribution date added"
-msgstr "Distributions à valider"
+msgstr "Date de distribution ajoutée"
 
 #: ../src/controller/ContractAdmin.hx:28671
 msgid "The contract has been canceled"
@@ -1523,40 +1509,38 @@ msgstr "Désolé, l'email intitulé <b>::title::</b> n'a pas pu être envoyé."
 msgid "Email not sent"
 msgstr "Email non envoyé"
 
-#: ../src/controller/Cron.hx:3591
-msgid ""
-"[::group::] Instructions for the volunteers of the ::date:: distribution"
-msgstr ""
-"[::group::] Instructions pour les bénévoles de la distribution du ::date:: "
+#: ../src/controller/Cron.hx:3625
+msgid "Instructions for the volunteers of the ::date:: distribution"
+msgstr "Instructions pour les bénévoles de la distribution du ::date:: "
 
-#: ../src/controller/Cron.hx:6273
+#: ../src/controller/Cron.hx:6262
 msgid "[::group::] We need more volunteers for ::date:: distribution"
 msgstr "[::group::] Besoin de volontaires pour la distribution du ::date::"
 
-#: ../src/controller/Cron.hx:13460
+#: ../src/controller/Cron.hx:13449
 msgid "Opening of orders for the delivery of <b>::date::</b>"
 msgstr "Ouverture des commandes pour la distribution du <b>::date::</b>"
 
-#: ../src/controller/Cron.hx:13594
+#: ../src/controller/Cron.hx:13583
 msgid "The following suppliers are involved :"
 msgstr "Producteurs participant :"
 
-#: ../src/controller/Cron.hx:13863
+#: ../src/controller/Cron.hx:13852
 msgid ""
 "Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>"
 msgstr ""
 "N'oubliez pas la distribution le <b>::day::</b> de ::from:: à ::to::<br/>"
 
-#: ../src/controller/Cron.hx:14030
+#: ../src/controller/Cron.hx:14019
 msgid "Your products to collect :"
 msgstr "Vos produits à récupérer :"
 
-#: ../src/controller/Cron.hx:14272
+#: ../src/controller/Cron.hx:14261
 #: ../lang/master/tpl/contractadmin/orders.mtt:2835
 msgid "alternated with"
 msgstr "alterné avec"
 
-#: ../src/controller/Cron.hx:14562
+#: ../src/controller/Cron.hx:14551
 msgid ""
 "<b>Warning: you are in charge of the delivery ! Do not forget to print the "
 "attendance sheet.</b>"
@@ -1564,15 +1548,15 @@ msgstr ""
 "<b>ATTENTION : vous ou votre conjoint(e) êtes de permanence ! N'oubliez pas "
 "d'imprimer la liste d'émargement.</b>"
 
-#: ../src/controller/Cron.hx:15015 ../lang/master/tpl/shop/default.mtt:776
+#: ../src/controller/Cron.hx:15004 ../lang/master/tpl/shop/default.mtt:776
 msgid "Distribution on ::date::"
 msgstr "Distribution le ::date::"
 
-#: ../src/controller/Cron.hx:15634
+#: ../src/controller/Cron.hx:15623
 msgid "<p>This step is important in order to:</p>"
 msgstr "<p>Cette étape est importante afin de :</p>"
 
-#: ../src/controller/Cron.hx:15698
+#: ../src/controller/Cron.hx:15687
 msgid ""
 "<ul><li>Update orders if delivered quantities are different from ordered "
 "quantities</li>"
@@ -1580,7 +1564,7 @@ msgstr ""
 "<ul><li>Mettre à jour les commandes si les quantités livrées sont "
 "différentes des quantités commandées</li>"
 
-#: ../src/controller/Cron.hx:15808
+#: ../src/controller/Cron.hx:15797
 msgid ""
 "<li>Confirm the reception of payments (checks, cash, transfers) in order to "
 "mark orders as 'paid'</li></ul>"
@@ -1588,23 +1572,23 @@ msgstr ""
 "<li>Confirmer la réception des paiements (chèques, espèces, virements) afin "
 "de classer les commandes comme 'payées'</li></ul>"
 
-#: ../src/controller/Cron.hx:16441
+#: ../src/controller/Cron.hx:16430
 msgid "Validation of the ::date:: distribution"
 msgstr "Validation de la distribution du ::date::"
 
-#: ../src/controller/Cron.hx:16529 ../src/controller/Cron.hx:17882
-#: ../src/controller/Cron.hx:19500
+#: ../src/controller/Cron.hx:16518 ../src/controller/Cron.hx:17871
+#: ../src/controller/Cron.hx:19489
 msgid "[::group::] Validation of the ::date:: distribution"
 msgstr "[::group::] Validation de la distribution du ::date::"
 
-#: ../src/controller/Cron.hx:16786
+#: ../src/controller/Cron.hx:16775
 msgid ""
 "<p>Your distribution just finished, don't forget to <b>validate</b> it</p>"
 msgstr ""
 "<p>Votre distribution vient de se terminer, n'oubliez pas de la <b>valider</"
 "b></p>"
 
-#: ../src/controller/Cron.hx:16900
+#: ../src/controller/Cron.hx:16889
 msgid ""
 "<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
 "must be connected to your group Cagette)"
@@ -1612,15 +1596,15 @@ msgstr ""
 "<p><a href='::distriburl::'>Cliquez ici pour valider la distribution</a> "
 "(vous devez être connecté(e) à votre groupe Cagette.net)</p>"
 
-#: ../src/controller/Cron.hx:17790
+#: ../src/controller/Cron.hx:17779
 msgid ": Validation of the delivery of the "
 msgstr ": Validation de la distribution du "
 
-#: ../src/controller/Cron.hx:18139
+#: ../src/controller/Cron.hx:18128
 msgid "<p>Reminder: you have a delivery to validate.</p>"
 msgstr "<p>Rappel : Vous avez une distribution à valider.</p>"
 
-#: ../src/controller/Cron.hx:18228
+#: ../src/controller/Cron.hx:18217
 msgid ""
 "<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
 "must be connected to your Cagette group)"
@@ -1628,11 +1612,11 @@ msgstr ""
 "<p><a href='::distriburl::'>Cliquez ici pour valider la distribution</a> "
 "(vous devez être connecté(e) à votre groupe Cagette.net )</p>"
 
-#: ../src/controller/Cron.hx:19404
+#: ../src/controller/Cron.hx:19393
 msgid ": Validation of the distribution of the "
 msgstr ": Validation de la distribution du "
 
-#: ../src/controller/Cron.hx:19633
+#: ../src/controller/Cron.hx:19622
 msgid ""
 "<p>As you did not validate it manually after 10 days, <br/>the delivery of "
 "the ::deliveryDate:: has been validated automatically</p>"
@@ -1797,52 +1781,50 @@ msgstr ""
 msgid "Modifications saved"
 msgstr "Modifications enregistrées"
 
-#: ../src/controller/Distribution.hx:3178
+#: ../src/controller/Distribution.hx:3145
 msgid "One person per page"
 msgstr "Une personne par page"
 
-#: ../src/controller/Distribution.hx:3238
+#: ../src/controller/Distribution.hx:3205
 msgid "One person per page sorted by contract"
 msgstr "Une personne par page triée par contrat"
 
-#: ../src/controller/Distribution.hx:3312
+#: ../src/controller/Distribution.hx:3279
 msgid "All"
 msgstr "Tout à la suite"
 
-#: ../src/controller/Distribution.hx:3356
+#: ../src/controller/Distribution.hx:3323
 msgid "All but without prices and totals"
 msgstr "Tout à la suite sans les prix et totaux"
 
-#: ../src/controller/Distribution.hx:6693
-#: ../src/controller/Distribution.hx:6992
-#, fuzzy
-#| msgid "The distribution has been recorded"
+#: ../src/controller/Distribution.hx:6660
+#: ../src/controller/Distribution.hx:6959
 msgid "The distribution has been deleted"
-msgstr "La distribution a été enregistrée"
+msgstr "La distribution a été supprimée"
 
-#: ../src/controller/Distribution.hx:7075
+#: ../src/controller/Distribution.hx:7042
 msgid "Bad token"
 msgstr "Mauvais jeton"
 
-#: ../src/controller/Distribution.hx:7574
-#: ../src/controller/Distribution.hx:10098
-#: ../src/controller/Distribution.hx:12688
-#: ../src/controller/Distribution.hx:15024
-#: ../src/controller/Distribution.hx:17976
+#: ../src/controller/Distribution.hx:7541
+#: ../src/controller/Distribution.hx:10065
+#: ../src/controller/Distribution.hx:12655
+#: ../src/controller/Distribution.hx:15193
+#: ../src/controller/Distribution.hx:18145
 msgid "End time"
 msgstr "Heure de fin"
 
-#: ../src/controller/Distribution.hx:7759
-#: ../src/controller/Distribution.hx:10462 ../src/db/MultiDistrib.hx:13626
+#: ../src/controller/Distribution.hx:7726
+#: ../src/controller/Distribution.hx:10429 ../src/db/MultiDistrib.hx:13594
 msgid "Orders opening date"
 msgstr "Date d'ouverture des commandes"
 
-#: ../src/controller/Distribution.hx:7878
-#: ../src/controller/Distribution.hx:10612 ../src/db/MultiDistrib.hx:13677
+#: ../src/controller/Distribution.hx:7845
+#: ../src/controller/Distribution.hx:10579 ../src/db/MultiDistrib.hx:13645
 msgid "Orders closing date"
 msgstr "Date de clôture des commandes"
 
-#: ../src/controller/Distribution.hx:8669
+#: ../src/controller/Distribution.hx:8636
 msgid ""
 "The distribution has been proposed to the supplier, please wait for its "
 "validation"
@@ -1850,25 +1832,25 @@ msgstr ""
 "La distribution a été proposée au producteur, attendez maintenant sa "
 "validation"
 
-#: ../src/controller/Distribution.hx:8895
-#: ../src/controller/Distribution.hx:12081
-#: ../src/controller/Distribution.hx:14505
+#: ../src/controller/Distribution.hx:8862
+#: ../src/controller/Distribution.hx:12048
+#: ../src/controller/Distribution.hx:14674
 msgid "The distribution has been recorded"
 msgstr "La distribution a été enregistrée"
 
-#: ../src/controller/Distribution.hx:9035
+#: ../src/controller/Distribution.hx:9002
 msgid "Edit a distribution"
 msgstr "Modifier une distribution"
 
-#: ../src/controller/Distribution.hx:9455
+#: ../src/controller/Distribution.hx:9422
 msgid "The delivery is now up to date"
 msgstr "La distribution a été mise à jour"
 
-#: ../src/controller/Distribution.hx:9537
+#: ../src/controller/Distribution.hx:9504
 msgid "Modify a delivery"
 msgstr "Modifier une distribution"
 
-#: ../src/controller/Distribution.hx:11525
+#: ../src/controller/Distribution.hx:11492
 msgid ""
 "Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be "
 "patient, you will receive an e-mail indicating if the request has been "
@@ -1878,125 +1860,116 @@ msgstr ""
 ">Soyez patient(e), Vous recevrez un email qui vous indiquera si votre "
 "demande a été acceptée ou refusée."
 
-#: ../src/controller/Distribution.hx:11949
+#: ../src/controller/Distribution.hx:11916
 msgid "Distribution request sent"
 msgstr "Demande de distribution envoyée"
 
-#: ../src/controller/Distribution.hx:12239
+#: ../src/controller/Distribution.hx:12206
 msgid "Create a distribution"
 msgstr "Créer une distribution"
 
-#: ../src/controller/Distribution.hx:14592
-#, fuzzy
-#| msgid "Create a distribution"
+#: ../src/controller/Distribution.hx:14761
 msgid "Create a general distribution"
-msgstr "Créer une distribution"
+msgstr "Créer une distribution générale"
 
-#: ../src/controller/Distribution.hx:17037
-#, fuzzy
-#| msgid "The distribution has been recorded"
+#: ../src/controller/Distribution.hx:17206
 msgid "The distribution has been updated"
-msgstr "La distribution a été enregistrée"
+msgstr "La distribution a été mise à jour"
 
-#: ../src/controller/Distribution.hx:17123
-#, fuzzy
-#| msgid "Edit a distribution"
+#: ../src/controller/Distribution.hx:17292
 msgid "Edit a general distribution"
 msgstr "Modifier une distribution"
 
-#: ../src/controller/Distribution.hx:17781
+#: ../src/controller/Distribution.hx:17950
 msgid "Start time"
 msgstr "Heure de début"
 
-#: ../src/controller/Distribution.hx:18323
+#: ../src/controller/Distribution.hx:18492
 msgid "Opening time"
 msgstr "Heure d'ouverture"
 
-#: ../src/controller/Distribution.hx:18616
+#: ../src/controller/Distribution.hx:18785
 msgid "Closing time"
 msgstr "Heure de fermeture"
 
-#: ../src/controller/Distribution.hx:20060
+#: ../src/controller/Distribution.hx:20229
 msgid "The delivery has been saved"
 msgstr "La distribution a été enregistrée"
 
-#: ../src/controller/Distribution.hx:20226
+#: ../src/controller/Distribution.hx:20395
 msgid "Schedule a recurrent delivery"
 msgstr "Programmer une distribution récurrente"
 
-#: ../src/controller/Distribution.hx:20742
+#: ../src/controller/Distribution.hx:20911
 msgid "Recurrent deliveries deleted"
 msgstr "Distributions récurrentes effacées"
 
-#: ../src/controller/Distribution.hx:22986
+#: ../src/controller/Distribution.hx:23155
 msgid "This distribution have been validated"
 msgstr "La distribution a été validée"
 
-#: ../src/controller/Distribution.hx:23325
+#: ../src/controller/Distribution.hx:23494
 msgid "This distribution have been Unvalidated"
 msgstr "La distribution a été invalidée"
 
-#: ../src/controller/Distribution.hx:27087
+#: ../src/controller/Distribution.hx:28369
 msgid "Volunteer Roles have been saved for this distribution"
 msgstr "Les rôles de bénévoles ont été définis pour cette distribution"
 
-#: ../src/controller/Distribution.hx:27174
+#: ../src/controller/Distribution.hx:28456
 msgid "Select volunteer roles for this multidistrib"
 msgstr "Sélectionnez les rôles de bénévoles pour cette distribution"
 
-#: ../src/controller/Distribution.hx:27645
-#, fuzzy
-#| msgid "You need to select at least one product to perform this action"
+#: ../src/controller/Distribution.hx:28865
 msgid "You need to first select the volunteer roles for this distribution"
-msgstr "Vous devez sélectionner au moins un produit pour faire cette action"
+msgstr ""
+"Vous devez d'abord sélectionner les rôles de bénévoles pour cette "
+"distribution"
 
-#: ../src/controller/Distribution.hx:28224
+#: ../src/controller/Distribution.hx:29431
 msgid "No volunteer assigned"
 msgstr "Pas de bénévoles définis"
 
-#: ../src/controller/Distribution.hx:28523
+#: ../src/controller/Distribution.hx:29720
 msgid "Volunteers have been assigned to roles for this distribution"
 msgstr "Les bénévoles ont été enregistrés pour cette distribution"
 
-#: ../src/controller/Distribution.hx:28613
+#: ../src/controller/Distribution.hx:29810
 msgid "Select a volunteer for each role for this multidistrib"
-msgstr ""
+msgstr "Sélectionnez un(e) bénévole pour chaque rôle pour cette distribution"
 
-#: ../src/controller/Distribution.hx:29069
+#: ../src/controller/Distribution.hx:30256
 msgid "There are no volunteer roles defined for this distribution"
 msgstr "Il n'y a pas de rôles de bénévoles définis pour cette distribution"
 
-#: ../src/controller/Distribution.hx:29469
-#, fuzzy
-#| msgid "The order has been successfully deleted."
+#: ../src/controller/Distribution.hx:30641
 msgid "You have been successfully added to the selected role."
-msgstr "La commande a bien été effacée."
+msgstr "Vous avez été enregistré pour ce rôle."
 
-#: ../src/controller/Distribution.hx:30087
+#: ../src/controller/Distribution.hx:31528
 msgid "There is no volunteer to remove for this role!"
 msgstr "Il n'y a pas de bénévole à effacer pour ce rôle !"
 
-#: ../src/controller/Distribution.hx:30265
-#, fuzzy
-#| msgid "You cannot remove yourself your admin rights."
+#: ../src/controller/Distribution.hx:31664
 msgid "You can only remove yourself from a role."
 msgstr ""
-"Par sécurité, vous ne pouvez pas vous enlevez vous même les droits de "
-"gestion du groupe."
 
-#: ../src/controller/Distribution.hx:30776
+#: ../src/controller/Distribution.hx:31778
+msgid "Reason for leaving the role"
+msgstr "Raison pour laquelle vous vous désistez"
+
+#: ../src/controller/Distribution.hx:32137
 msgid "You have been successfully removed from this role."
 msgstr "Vous êtes bien désinscrit pour ce rôle."
 
-#: ../src/controller/Distribution.hx:30856
+#: ../src/controller/Distribution.hx:32218
 msgid "Enter the reason why you are leaving this role."
 msgstr "Saisissez la raison pour laquelle vous vous désistez."
 
-#: ../src/controller/Distribution.hx:31410
-#, fuzzy
-#| msgid "The order has been successfully deleted."
+#: ../src/controller/Distribution.hx:33018
+#: ../src/controller/Distribution.hx:33190
 msgid "You have been successfully assigned to the selected role."
-msgstr "La commande a bien été effacée."
+msgstr "Vous avez été enregistré pour ce rôle."
 
 #: ../src/App.hx:8658
 msgid ""
@@ -2027,7 +2000,7 @@ msgstr ""
 "avez sélectionnée."
 
 #: ../src/service/DistributionService.hx:3869
-#: ../src/service/DistributionService.hx:17562
+#: ../src/service/DistributionService.hx:17587
 msgid ""
 "The date of the delivery must be prior to the end of the contract (::"
 "contractEndDate::)"
@@ -2036,7 +2009,7 @@ msgstr ""
 "contractEndDate::)"
 
 #: ../src/service/DistributionService.hx:4071
-#: ../src/service/DistributionService.hx:17793
+#: ../src/service/DistributionService.hx:17818
 msgid ""
 "The date of the delivery must be after the begining of the contract (::"
 "contractBeginDate::)"
@@ -2056,41 +2029,40 @@ msgstr ""
 "La date de fermeture des commandes doit se situer après la date d'ouverture "
 "des commandes !"
 
-#: ../src/service/DistributionService.hx:7965
-#: ../src/service/DistributionService.hx:11059
-#, fuzzy
-#| msgid "Deletion non possible: some orders are saved for this delivery."
+#: ../src/service/DistributionService.hx:7990
+#: ../src/service/DistributionService.hx:11084
 msgid "Deletion not possible: some orders are saved for this delivery."
 msgstr ""
 "Effacement impossible : des commandes sont enregistrées pour cette "
-"distribution."
+"distribution. "
 
-#: ../src/service/DistributionService.hx:9116
+#: ../src/service/DistributionService.hx:9141
 msgid "You cannot edit a distribution which has been already validated."
 msgstr "Vous ne pouvez pas modifier une distribution qui a déjà été validée."
 
-#: ../src/service/DistributionService.hx:9370
+#: ../src/service/DistributionService.hx:9395
 msgid ""
 "The distribution date is different from the date of the general distribution."
 msgstr ""
 "La date de distribution est différente de la date de la distribution "
 "principale."
 
-#: ../src/service/DistributionService.hx:9551
+#: ../src/service/DistributionService.hx:9576
 msgid ""
 "The distribution place is different from the place of the general "
 "distribution."
 msgstr ""
+"Le lieu de distribution est différent du lieu de la distribution principale."
 
-#: ../src/service/DistributionService.hx:12063
+#: ../src/service/DistributionService.hx:12088
 msgid "daysBeforeOrderEnd or daysBeforeOrderStart is null"
 msgstr "daysBeforeOrderEnd or daysBeforeOrderStart is null"
 
-#: ../src/service/DistributionService.hx:13080
+#: ../src/service/DistributionService.hx:13105
 msgid "this distributionCycle has not been recorded"
 msgstr "Ce cycle de distribution n'a pas été enregistré"
 
-#: ../src/service/DistributionService.hx:15697
+#: ../src/service/DistributionService.hx:15722
 msgid ""
 "The delivery of the ::delivDate:: could not be deleted because it has orders."
 msgstr ""
@@ -2148,6 +2120,8 @@ msgstr "Annulé"
 #: ../src/service/OrderService.hx:10650
 msgid "Orders are closed for \"::contract::\", please modify your order."
 msgstr ""
+"Les commandes sont fermées pour \"::contract::\", modifiez votre commande "
+"svp."
 
 #: ../src/service/OrderService.hx:13264 ../src/service/ReportService.hx:442
 msgid "Delivery ::contractName:: of the "
@@ -2268,30 +2242,127 @@ msgstr ""
 "<p><b>::name::</b> était inscrit à la liste d'attente.</p><p><b>::admin::</"
 "b> a accepté sa demande.</p>"
 
-#: ../src/service/VolunteerService.hx:444
+#: ../src/service/VolunteerService.hx:932
+#, fuzzy
+#| msgid "You can't delete this role because some users are linked to it."
+msgid ""
+"You can't delete this role because there are volunteers assigned to this "
+"role. You need to delete the volunteers first."
+msgstr ""
+"Vous ne pouvez pas effacer ce rôle car il y a des bénévoles enregistrés pour "
+"ce rôle."
+
+#: ../src/service/VolunteerService.hx:1390
 msgid "You need to first select the volunteer roles for this distribution."
 msgstr "Vous devez d'abord définir des rôles pour cette distribution."
 
-#: ../src/service/VolunteerService.hx:806
-#: ../src/service/VolunteerService.hx:2471
+#: ../src/service/VolunteerService.hx:1742
+#: ../src/service/VolunteerService.hx:3559
 msgid ""
 "A volunteer can't be assigned to multiple roles for the same distribution!"
 msgstr ""
 "Un bénévole ne peut pas être assigné à plusieurs rôles pour la même "
 "distribution !"
 
-#: ../src/service/VolunteerService.hx:2911
+#: ../src/service/VolunteerService.hx:3297
+msgid "This distribution has already been validated"
+msgstr "La distribution a déjà été validée"
+
+#: ../src/service/VolunteerService.hx:3976
 msgid "This role is already filled by a volunteer!"
 msgstr "Ce rôle est déjà pris par un autre bénévole !"
 
-#: ../src/service/VolunteerService.hx:3022
-#: ../src/service/VolunteerService.hx:3695
+#: ../src/service/VolunteerService.hx:5752
+msgid "A role has been left for ::date:: distribution"
+msgstr "Un rôle a été abandonné pour la distribution du ::date::"
+
+#: ../src/service/VolunteerService.hx:6118
+msgid "This user is not assigned to this role!"
+msgstr "Cet adhérent n'est pas assigné à ce rôle !"
+
+#: ../src/service/VolunteerService.hx:6209
 msgid "Missing distribution or role in the url!"
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:3594
-msgid "This user is not assigned to this role!"
-msgstr "Cet adhérent n'est pas assigné à ce rôle !"
+#: ../src/service/VolunteerService.hx:6897
+msgid ""
+"You can't remove some roles because there are volunteers assigned to those "
+"roles. You need to delete the volunteers first."
+msgstr ""
+"Vous ne pouvez pas supprimer ces rôles car il y a des bénévoles inscrits "
+"pour ces rôles. Désinscrivez ces bénévoles d'abord."
+
+#: ../src/service/VolunteerService.hx:7234
+msgid "Duty period"
+msgstr "Permanence"
+
+#: ../src/service/VolunteerService.hx:7636
+msgid ""
+"The number of days before the volunteers can join a duty period needs to be "
+"greater than 6 days."
+msgstr ""
+"Le nombre de jours qui définissent l'ouverture des inscriptions aux "
+"permanences doit être supérieur à 6 jours."
+
+#: ../src/service/VolunteerService.hx:7820
+msgid ""
+"The number of days before the volunteers can join a duty period needs to be "
+"lower than 181 days."
+msgstr ""
+"Le nombre de jours qui définissent l'ouverture des inscriptions aux "
+"permanences doit être inferieur à 181 jours."
+
+#: ../src/service/VolunteerService.hx:8029
+#, fuzzy
+#| msgid ""
+#| "Number of days before duty period to send mail for vacant volunteer roles"
+msgid ""
+"The number of days before the duty periods to send the instructions mail to "
+"all the volunteers needs to be greater than 1 day."
+msgstr ""
+"Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
+"distribution) "
+
+#: ../src/service/VolunteerService.hx:8242
+#, fuzzy
+#| msgid ""
+#| "Number of days before duty period to send mail for vacant volunteer roles"
+msgid ""
+"The number of days before the duty periods to send the instructions mail to "
+"all the volunteers needs to be lower than 15 days."
+msgstr ""
+"Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
+"distribution) "
+
+#: ../src/service/VolunteerService.hx:8480
+#, fuzzy
+#| msgid ""
+#| "Number of days before duty period to send mail for vacant volunteer roles"
+msgid ""
+"The number of days before the duty periods to send the vacant roles mail to "
+"all members needs to be greater than 1 day."
+msgstr ""
+"Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
+"distribution) "
+
+#: ../src/service/VolunteerService.hx:8686
+#, fuzzy
+#| msgid ""
+#| "Number of days before duty period to send mail for vacant volunteer roles"
+msgid ""
+"The number of days before the duty periods to send the instructions mail to "
+"all members needs to be lower than 15 days."
+msgstr ""
+"Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
+"distribution) "
+
+#: ../src/service/VolunteerService.hx:8870
+msgid ""
+"One or more numbers of days you entered is not an integer. You can only use "
+"integers. "
+msgstr ""
+"Le nombre de jours que vous avez saisi n'est pas un nombre entier. Vous ne "
+"pouvez utiliser que des nombres entiers."
 
 #. kilogramms
 #: ../src/View.hx:3369 ../common/Formatting.hx:1326
@@ -2489,7 +2560,7 @@ msgstr "Commande du ::date::"
 msgid "Text"
 msgstr "Texte"
 
-#: ../src/db/Operation.hx:14098 ../src/db/MultiDistrib.hx:13588
+#: ../src/db/Operation.hx:14098 ../src/db/MultiDistrib.hx:13556
 #: ../src/db/DistributionCycle.hx:1197 ../src/db/Distribution.hx:9091
 #: ../lang/master/tpl/distribution/list.mtt:485
 #: ../lang/master/tpl/distribution/listByProductUser.mtt:485
@@ -2542,7 +2613,7 @@ msgstr "Contact"
 msgid "Farmer"
 msgstr "Producteur"
 
-#: ../src/db/MultiDistrib.hx:13554 ../src/db/Distribution.hx:9057
+#: ../src/db/MultiDistrib.hx:13522 ../src/db/Distribution.hx:9057
 msgid "End hour"
 msgstr "Heure de fin"
 
@@ -2816,6 +2887,7 @@ msgstr "Statut"
 #: ../lang/master/tpl/messages/message.mtt:1212
 #: ../lang/master/tpl/vendor/addimage.mtt:542
 #: ../lang/master/tpl/macros.mtt:6047 ../lang/master/tpl/place/view.mtt:594
+#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:4153
 msgid "Back"
 msgstr "Retour"
 
@@ -2933,7 +3005,7 @@ msgstr "Date de cotisation"
 
 #: ../lang/master/tpl/membership/default.mtt:448
 #: ../lang/master/tpl/macros.mtt:9666
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:649
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:648
 #: ../lang/master/tpl/contractadmin/orders.mtt:6434
 #: ../lang/master/tpl/contractadmin/orders.mtt:6792
 msgid "Delete"
@@ -3029,7 +3101,7 @@ msgstr "Il n'y a pas de commande ouverte actuellement."
 #. Delivery from 18:00 to 19:30
 #: ../lang/master/tpl/home.mtt:2439
 #: ../lang/master/tpl/distribution/default.mtt:2974
-#: ../lang/master/tpl/home_old.mtt:9515
+#: ../lang/master/tpl/home_old.mtt:9538
 msgid "Delivery from ::start:: to ::end::"
 msgstr "Distribution de ::start:: à ::end::"
 
@@ -3038,7 +3110,7 @@ msgid "My ordered products"
 msgstr "Mes produits commandés"
 
 #: ../lang/master/tpl/home.mtt:4304 ../lang/master/tpl/home.mtt:4629
-#: ../lang/master/tpl/home_old.mtt:2579 ../lang/master/tpl/home_old.mtt:6507
+#: ../lang/master/tpl/home_old.mtt:2579 ../lang/master/tpl/home_old.mtt:6514
 msgid "Modify my order"
 msgstr "Modifier ma commande"
 
@@ -3048,13 +3120,13 @@ msgstr "Ajouter des produits"
 
 #: ../lang/master/tpl/home.mtt:5027
 #: ../lang/master/tpl/distribution/default.mtt:1985
-#: ../lang/master/tpl/home_old.mtt:2961 ../lang/master/tpl/home_old.mtt:8845
+#: ../lang/master/tpl/home_old.mtt:2961 ../lang/master/tpl/home_old.mtt:8868
 msgid "Order closed since"
 msgstr "Commande close depuis le"
 
 #: ../lang/master/tpl/home.mtt:5127
 #: ../lang/master/tpl/distribution/default.mtt:2133
-#: ../lang/master/tpl/home_old.mtt:3055 ../lang/master/tpl/home_old.mtt:8939
+#: ../lang/master/tpl/home_old.mtt:3055 ../lang/master/tpl/home_old.mtt:8962
 msgid "Order will open on"
 msgstr "La commande ouvre le"
 
@@ -3064,7 +3136,7 @@ msgstr "La commande ouvre le"
 #: ../lang/master/tpl/contract/view.mtt:3199
 #: ../lang/master/tpl/contract/order.mtt:88
 #: ../lang/master/tpl/contract/orderAndPay.mtt:88
-#: ../lang/master/tpl/home_old.mtt:8602
+#: ../lang/master/tpl/home_old.mtt:8625
 #: ../lang/master/tpl/shop/default.mtt:3925
 #: ../lang/master/tpl/shop/choose.mtt:2054
 msgid "Order"
@@ -3090,28 +3162,43 @@ msgstr "C'est son tour"
 
 #: ../lang/master/tpl/home.mtt:8583
 #: ../lang/master/tpl/contractadmin/distributions.mtt:1508
-#: ../lang/master/tpl/home_old.mtt:5848
+#: ../lang/master/tpl/home_old.mtt:5852
 msgid "Distribution list"
 msgstr "Liste d'émargement"
 
-#: ../lang/master/tpl/home.mtt:9439
-#| msgid "Permanence"
-msgid "Détails Permanence"
-msgstr "Détails Permanence"
-
-#: ../lang/master/tpl/home.mtt:9633
-msgid "Me désister"
+#: ../lang/master/tpl/home.mtt:9150
+msgid "Please be aware that you or your spouse is a volunteer for the role:"
 msgstr ""
+"Attention, vous ou votre conjoint(e) être enregistré(e) comme bénévole pour "
+"ce rôle : "
 
-#: ../lang/master/tpl/home.mtt:12175 ../lang/master/tpl/home_old.mtt:11571
-msgid "Dutty periods calendar"
+#: ../lang/master/tpl/home.mtt:9438
+msgid "Duty period details"
+msgstr "Détails Permanences"
+
+#: ../lang/master/tpl/home.mtt:9651
+#: ../lang/master/tpl/distribution/volunteersSummary.mtt:1136
+#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:3330
+msgid "Unsubscribe"
+msgstr "Se désinscrire"
+
+#: ../lang/master/tpl/home.mtt:9976
+msgid "We need <b>::rolesNum::</b> volunteer(s) for the following roles:"
+msgstr ""
+"Nous avons besoin de <b>::rolesNum::</b> bénévole(s) pour les rôles "
+"suivants :"
+
+#: ../lang/master/tpl/home.mtt:12240
+#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:90
+#: ../lang/master/tpl/home_old.mtt:11594
+msgid "Duty periods calendar"
 msgstr "Calendrier des permanences"
 
-#: ../lang/master/tpl/home.mtt:12315 ../lang/master/tpl/home_old.mtt:11711
+#: ../lang/master/tpl/home.mtt:12379 ../lang/master/tpl/home_old.mtt:11733
 msgid "Warning, you don't have defined a password yet !"
 msgstr "Attention, vous n'avez pas encore défini de mot de passe !"
 
-#: ../lang/master/tpl/home.mtt:12484 ../lang/master/tpl/home_old.mtt:11880
+#: ../lang/master/tpl/home.mtt:12548 ../lang/master/tpl/home_old.mtt:11902
 msgid "Set my password"
 msgstr "Définir mon mot de passe"
 
@@ -3188,7 +3275,7 @@ msgstr "Vous paierez votre commande sur place."
 #: ../lang/master/tpl/macros.mtt:9470 ../lang/master/tpl/member/view.mtt:1322
 #: ../lang/master/tpl/member/payments.mtt:1557
 #: ../lang/master/tpl/plugin/pro/delivery/orders.mtt:1170
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:579
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:578
 #: ../lang/master/tpl/contractadmin/orders.mtt:3244
 #: ../lang/master/tpl/contractadmin/orders.mtt:3424
 #: ../lang/master/tpl/contractadmin/orders.mtt:3968
@@ -3540,8 +3627,8 @@ msgstr "N°"
 msgid "To be validated"
 msgstr "A valider"
 
-#: ../lang/master/tpl/distribution/volunteersSummary.mtt:1123
-#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:2776
+#: ../lang/master/tpl/distribution/volunteersSummary.mtt:1354
+#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:3588
 msgid "Join"
 msgstr "Rejoindre"
 
@@ -3563,7 +3650,7 @@ msgid "Orders"
 msgstr "Commandes"
 
 #: ../lang/master/tpl/distribution/default.mtt:6304
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:70
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:69
 msgid "Volunteer roles"
 msgstr "Rôle de bénévoles"
 
@@ -3651,17 +3738,14 @@ msgstr "complet"
 msgid "Validate"
 msgstr "Valider"
 
-#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:2519
-msgid "Unsubscribe"
-msgstr "Se désinscrire"
+#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:3662
+msgid "Duty periods open for volunteers ::days:: days before the duty period"
+msgstr ""
+"Permanences ouvertes aux inscriptions ::days:: jours avant la permanence"
 
-#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:2838
-msgid "Duty periods open for volunteers"
-msgstr "Permanences ouvertes à inscription"
-
-#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:2927
-msgid "days before the duty period"
-msgstr "Jours avant la permanence"
+#: ../lang/master/tpl/distribution/volunteersCalendar.mtt:3988
+msgid "There are no distributions in the specified time range"
+msgstr "Il n'y a pas de distributions dans cette fenêtre de temps."
 
 #: ../lang/master/tpl/member/view.mtt:52
 #: ../lang/master/tpl/member/payments.mtt:52
@@ -4088,50 +4172,46 @@ msgid "Display"
 msgstr "Afficher"
 
 #: ../lang/master/tpl/amapadmin/volunteers/default.mtt:37
-msgid "Dutty periods"
+msgid "Duty periods"
 msgstr "Permanences"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:109
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:108
 msgid "Here you can define volunteers roles."
 msgstr "Ici vous pouvez définir les rôles de bénévoles."
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:215
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:214
 msgid "Volunteer Role"
 msgstr "Rôle de bénévole"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:257
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:256
 msgid "Contract Name"
 msgstr "Nom du contrat"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:773
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:772
 msgid "Add a role"
 msgstr "Ajouter un rôle"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:833
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:834
 msgid "Delays and messages"
 msgstr "Délais et messages"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:893
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:895
 msgid "Variables available to use in the email body"
 msgstr "Variables disponibles dans le corps du mail"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1013
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1015
 msgid "Start date of the distribution"
 msgstr "Date de début de distribution"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1084
-#, fuzzy
-#| msgid "One time distribution"
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1086
 msgid "End date of the distribution"
-msgstr "Distribution ponctuelle"
+msgstr "Date de fin de distribution"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1149
-#, fuzzy
-#| msgid "One time distribution"
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1151
 msgid "Place of the distribution"
-msgstr "Distribution ponctuelle"
+msgstr "Lieu de distribution"
 
-#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1223
+#: ../lang/master/tpl/amapadmin/volunteers/default.mtt:1225
 msgid "List of volunteers for this distribution"
 msgstr "Liste des bénévoles inscrits à cette distribution"
 
@@ -4239,10 +4319,8 @@ msgid "<b>::totalAdh::</b> member(s) in this distribution."
 msgstr "<b>::totalAdh::</b> adhérents dans cette distribution."
 
 #: ../lang/master/tpl/contractadmin/distributions.mtt:662
-#, fuzzy
-#| msgid "Participate to deliveries"
 msgid "Participate"
-msgstr "Participations aux livraisons"
+msgstr "Participer"
 
 #: ../lang/master/tpl/contractadmin/distributions.mtt:1677
 #: ../lang/master/tpl/contractadmin/distributions.mtt:2223
@@ -5229,15 +5307,15 @@ msgstr "Retour à la validation de distribution"
 msgid "Payment history of this member"
 msgstr "Historique de paiement de ce membre"
 
-#: ../lang/master/tpl/home_old.mtt:6171
+#: ../lang/master/tpl/home_old.mtt:6175
 msgid "Permanence"
 msgstr "Permanence"
 
-#: ../lang/master/tpl/home_old.mtt:6313
+#: ../lang/master/tpl/home_old.mtt:6320
 msgid "Contract details"
 msgstr "Détails du contrat"
 
-#: ../lang/master/tpl/home_old.mtt:7369
+#: ../lang/master/tpl/home_old.mtt:7389
 msgid "Warning, you're engaged in this distribution !"
 msgstr "Attention, vous ou votre conjoint êtes inscrit à cette distribution !"
 
@@ -5380,6 +5458,18 @@ msgstr ""
 #: ../lang/master/tpl/mail/invitation.mtt:949
 msgid "and your password on the website"
 msgstr "et votre mot de passe en vous rendant sur le site web"
+
+#: ../lang/master/tpl/mail/volunteerUnsuscribed.mtt:43
+msgid ""
+"<b>::fullname::</b> has left the role <b>::role::</b> for the following "
+"reason:"
+msgstr ""
+"<b>::fullname::</b> s'est désisté pour le rôle <b>::role::</b> et a indiqué "
+"la raison suivante :<br/><i>::reason::</i> :"
+
+#: ../lang/master/tpl/mail/volunteerUnsuscribed.mtt:213
+msgid "This role needs to be assigned to another person."
+msgstr "Ce rôle doit être attribué à une autre personne."
 
 #: ../lang/master/tpl/mail/design.mtt:218
 msgid "This e-mail was sent from"
@@ -5644,6 +5734,20 @@ msgstr ""
 "<b>documentation</b> dont le lien est toujours disponible en bas de "
 "l'écran.\n"
 "\t\t\t\t\t</p>"
+
+#, fuzzy
+#~| msgid "Distribution list"
+#~ msgid "Multidistribution is null"
+#~ msgstr "Liste d'émargement"
+
+#~ msgid "Volunteers Mail has been successfully updated"
+#~ msgstr "Le mail aux bénévoles a bien été mis à jour"
+
+#~ msgid "Détails Permanence"
+#~ msgstr "Détails Permanence"
+
+#~ msgid "days before the duty period"
+#~ msgstr "Jours avant la permanence"
 
 #~ msgid "Editing a credit card payment is not allowed"
 #~ msgstr "Modifier un paiement par carte bancaire n'est pas autorisé"

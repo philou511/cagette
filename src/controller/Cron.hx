@@ -110,7 +110,7 @@ class Cron extends Controller
 						volunteersList += volunteer.volunteerRole.name + " : " + volunteer.user.getCoupleName() + "<br/>";
 					}
 					
-					mail.setSubject( t._("[::group::] Instructions for the volunteers of the ::date:: distribution",{group : multidistrib.group.name, date : view.hDate(multidistrib.distribStartDate)}) );
+					mail.setSubject( "["+multidistrib.group.name+"] "+ t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
 					//Let's replace all the tokens
 					var emailBody = StringTools.replace( multidistrib.group.volunteersMailContent, "[DATE_DEBUT]", view.hDate(multidistrib.distribStartDate) );
 					emailBody = StringTools.replace( emailBody, "[DATE_FIN]", view.hDate(multidistrib.distribEndDate) ); 
@@ -388,10 +388,6 @@ class Cron extends Controller
 						text += "</ul>";
 					}
 				
-					if (u.distrib.isDistributor(u.user)) {
-						text += t._("<b>Warning: you are in charge of the delivery ! Do not forget to print the attendance sheet.</b>");
-					}
-					
 					try{
 						var m = new Mail();
 						m.setSender(App.config.get("default_email"), "Cagette.net");

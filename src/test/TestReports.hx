@@ -36,17 +36,17 @@ class TestReports extends haxe.unit.TestCase
 		var d = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
 		var carrots = TestSuite.CARROTS;
 		var courgettes = TestSuite.COURGETTES;
-		var poulet = TestSuite.CHICKEN;
+		var potatoes = TestSuite.POTATOES;
 
 		OrderService.make(seb,4,courgettes,d.id);
-		OrderService.make(seb,1,poulet,d.id);
+		OrderService.make(seb,1,potatoes,d.id);
 
 		OrderService.make(francois,6,courgettes,d.id);
-		OrderService.make(francois,2,poulet,d.id);
+		OrderService.make(francois,2,potatoes,d.id);
 		OrderService.make(francois,3,carrots,d.id);
 
 		OrderService.make(julie,8,carrots,d.id);
-		OrderService.make(julie,3,poulet,d.id);
+		OrderService.make(julie,3,potatoes,d.id);
 
 		//record orders on ANOTHER distrib
 		var d2 = service.DistributionService.create(
@@ -54,12 +54,11 @@ class TestReports extends haxe.unit.TestCase
 			new Date(2018,2,12,0,0,0),
 			new Date(2018,2,12,0,3,0),
 			d.contract.amap.getPlaces().first().id,
-			null,null,null,null,
 			new Date(2018,2,8,0,0,0),
 			new Date(2018,2,11,0,0,0)
 		);
 		OrderService.make(julie,6,carrots,d2.id);
-		OrderService.make(julie,1,poulet,d2.id);
+		OrderService.make(julie,1,potatoes,d2.id);
 
 		var orders = ReportService.getOrdersByProduct(d);
 
@@ -81,6 +80,49 @@ class TestReports extends haxe.unit.TestCase
 
 
 	}
+
+	/**
+	
+		ENABLE THIS FOR MANGOPAY MARKETPLACE PAYMENTS
+	**/
+	/*function testVendorOrdersByProduct(){
+		// Take 3 vendors
+		// Each has their own distrib for one inactive multidistrib
+		// Take 3 users
+		// Each user makes different purchases in this multidistrib but also for other distribs
+		// Check that totals are what we expect by vendor products
+
+		//User 1 buys products for a multidistrib
+		var francoisOrder1 = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.POTATOES, TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE.id);
+		var francoisOrder2 = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.LAITUE, TestSuite.DISTRIB_LAITUE.id);
+		var francoisOrderOperation = db.Operation.onOrderConfirm([francoisOrder1, francoisOrder2]);
+
+		//User 2 buys products for a multidistrib
+		var sebOrder1 = OrderService.make(TestSuite.SEB, 3, TestSuite.COURGETTES, TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE.id);
+		var sebOrder2 = OrderService.make(TestSuite.SEB, 7, TestSuite.CARROTS, TestSuite.DISTRIB_CAROTTES.id);
+		var sebOrderOperation = db.Operation.onOrderConfirm([sebOrder1, sebOrder2]);
+
+		//User 3 buys products for the same multidistrib
+		var julieOrder1 = OrderService.make(TestSuite.JULIE, 3, TestSuite.LAITUE, TestSuite.DISTRIB_LAITUE.id);
+		var julieOrder2 = OrderService.make(TestSuite.JULIE, 5, TestSuite.CARROTS, TestSuite.DISTRIB_CAROTTES.id);
+		var julieOrderOperation = db.Operation.onOrderConfirm([julieOrder1, julieOrder2]);
+		
+		//They all pay by credit card
+		// var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,distrib1.contract.amap, payment.Transfer.TYPE, TestSuite.POTATOES.price + 2 * TestSuite.LAITUE.price, "Payment by transfer", francoisOrderOperation[0]);
+		// var sebPayment = db.Operation.makePaymentOperation(TestSuite.SEB,distrib1.contract.amap, payment.Transfer.TYPE, 3 * TestSuite.COURGETTES.price + 7 * TestSuite.CAROTTES.price, "Payment by transfer", sebOrderOperation[0]);
+		// var juliePayment = db.Operation.makePaymentOperation(TestSuite.JULIE,distrib1.contract.amap, payment.Transfer.TYPE, 3 * TestSuite.LAITUE.price + 5 * TestSuite.CAROTTES.price, "Payment by transfer", julieOrderOperation[0]);
+		
+		//Get all the repartition
+		var vendorDataByVendorId = service.ReportService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
+
+		//Check this is what we expect for each vendor
+		assertEquals( 3 * TestSuite.COURGETTES.price, vendorDataByVendorId.get(TestSuite.VENDOR1.id).orders[0].total);
+		assertEquals( 1 * TestSuite.POTATOES.price	, vendorDataByVendorId.get(TestSuite.VENDOR1.id).orders[1].total );
+		assertEquals( 5 * TestSuite.LAITUE.price 	, vendorDataByVendorId.get(TestSuite.VENDOR2.id).orders[0].total);
+		assertEquals( 12 * TestSuite.CARROTS.price	, vendorDataByVendorId.get(TestSuite.VENDOR3.id).orders[0].total);
+		
+		//assertEquals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
+	}*/
 	
 	/**
 	 * run once at the beginning

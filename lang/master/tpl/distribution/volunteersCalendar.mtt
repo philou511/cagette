@@ -2,12 +2,17 @@
 <div id="content" class="col-md-12">
 	<div class="article">
 
+		<h3>::_("Duty periods calendar")::</h3>
+
+		<div>
+			<div style="float:left;width:50px;">Du</div>
 			<div style="width:210px;float:left;margin-right: 20px;" class="input-group date" id="datetimepicker-from">       
 				<span class="input-group-addon">					
 					<span class="glyphicon glyphicon-calendar"></span>
 				</span>
 				<input type="text" class="form-control"/>
 			</div>
+			<div style="float:left;width:50px;">au</div>
 			<div style="width:210px;float:left;margin-right:20px;" class="input-group date" id="datetimepicker-to">       
 				<span class="input-group-addon">					
 					<span class="glyphicon glyphicon-calendar"></span>
@@ -50,6 +55,8 @@
 					$('#okdatepicker').attr("href", "?from=" + fromDate + "&to=" + toDate);     				
 				}
 			</script>
+
+		</div>
 		
 		<div style="overflow-x:scroll;margin-top:20px;margin-bottom:30px;min-width:100%;" ::cond multidistribs.length != 0 ::>
 
@@ -65,7 +72,7 @@
 				::else::
 				::set color = "transparent"::
 				::end::
-				<th style="width:200px;font-size:12px;line-height:14px;text-align:center;background-color: ::color::">::date.dow::<br/>
+				<th style="width:200px;line-height:16px;text-align:center;background-color: ::color::">::date.dow::<br/>
 					::date.d::<br/>
 					::date.m::<br/>
 					::date.h+":"+date.i::</th>
@@ -76,7 +83,7 @@
 			<!-- Volunteers for this role -->
 			<tr>
 				<td style="width:200px;">
-					<b>::role.name::</b>
+					<i class="icon icon-user"></i> ::role.name::
 				</td>				
 				
 				::foreach d multidistribs::
@@ -91,12 +98,15 @@
 						::if volunteer!=null::
 							::volunteer._user.getCoupleName()::
 							::if volunteer._user.id == user.id::
-								<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::?returnUrl=/distribution/volunteersCalendar?from=::from::&to=::to::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
+								<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::?returnUrl=/distribution/volunteersCalendar?from=::from::&to=::to::" class="btn btn-default btn-danger">
+									::_("Unsubscribe")::
+								</a>
 							::end::
 						::elseif d.canVolunteersJoin() && d.getVolunteerForUser(user) == null::
-						<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::&from=::from::&to=::to::" class="btn btn-default btn-lg">::_("Join")::</a>
+						<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::&from=::from::&to=::to::" class="btn btn-default">::_("Join")::</a>
 						::elseif !d.canVolunteersJoin()::
-						::_("Duty periods open for volunteers") + " " + d._group.daysBeforeDutyPeriodsOpen + " " + _("days before the duty period")::
+							
+							::__("Duty periods open for volunteers ::days:: days before the duty period",{days:d._group.daysBeforeDutyPeriodsOpen})::
 						::end::
 					::end::						
 				</td>
@@ -111,7 +121,9 @@
 			::_("There are no distributions in the specified time range")::
 		</div>
 			
-		$$back()
+		<a href="/" class="btn btn-default btn-sm">
+			<i class="icon icon-chevron-left"></i> ::_("Back")::
+		</a>
 	</div>
 </div>
 

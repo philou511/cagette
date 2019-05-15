@@ -106,7 +106,6 @@ class VolunteerService
 				volunteer.multiDistrib = multidistrib;
 				volunteer.volunteerRole = db.VolunteerRole.manager.get(roleId);					
 				volunteer.insert();
-
 			}					
 		}
 		
@@ -115,14 +114,15 @@ class VolunteerService
 	public static function addUserToRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
 
 		var t = sugoi.i18n.Locale.texts;
-		if ( multidistrib == null ) throw new Error(t._("Multidistribution is null"));
-		if ( role == null ) throw new Error(t._("Role is null"));
+		if ( multidistrib == null ) throw "Multidistribution is null";
+		if ( role == null ) throw "Role is null";
+		if ( multidistrib.isConfirmed() ) throw new Error(t._("This distribution has already been validated"));
 
 		//Check that the user is not already assigned to a role for this multidistrib
 		var userAlreadyAssigned = multidistrib.getVolunteerForUser(user);
 		if ( userAlreadyAssigned != null ) {
 
-			throw new tink.core.Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
+			throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 		}
 		else {
 			
@@ -136,11 +136,9 @@ class VolunteerService
 			}
 			else {
 
-				throw new tink.core.Error(t._("This role is already filled by a volunteer!"));
+				throw new Error(t._("This role is already filled by a volunteer!"));
 			}				
 		}
-				
-
 	}
 
 	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole, reason: String ) {
@@ -160,16 +158,12 @@ class VolunteerService
 				mail.setSender(App.config.get("default_email"),"Cagette.net");
 				var now = Date.now();
 				var alertDate = DateTools.delta( multidistrib.distribStartDate, - 1000.0 * 60 * 60 * 24 * multidistrib.group.vacantVolunteerRolesMailDaysBeforeDutyPeriod );
-				var message: String = t._( "::fullname:: has left the role ::role:: for the following reason:<br/>::reason::<br/>",
-				                         { fullname : user.getName(), role : role.name, reason : reason } );				
-				message += t._("This role needs to be filled.");
 
 				if ( now.getTime() <=  alertDate.getTime() ) {
 
 					//Recipients are the coordinators
 					var adminUsers = service.GroupService.getGroupMembersWithRights( multidistrib.group, [ Right.GroupAdmin ] );
 					for ( admin in adminUsers ) {
-
 						mail.addRecipient( admin.email, admin.getName() );
 						if ( admin.email2 != null ) {
 							mail.addRecipient( admin.email2 );
@@ -181,53 +175,51 @@ class VolunteerService
 					var members = Lambda.array( multidistrib.group.getMembers() );
 					//Recipients are all members
 					for ( member in members ) {
-
 						mail.addRecipient( member.email, member.getName() );
 						if ( member.email2 != null ) {
 							mail.addRecipient( member.email2 );
 						}
 					}
 				}
-				
-				mail.setSubject( t._( "[::group::] A role has been left for ::date:: distribution", { group : multidistrib.group.name, date : App.current.view.hDate( multidistrib.distribStartDate ) } ) );
-				mail.setHtmlBody( App.current.processTemplate("mail/message.mtt", { text: message, group: multidistrib.group  } ) );
+				var date = App.current.view.hDate(multidistrib.distribStartDate);
+				var subject = "["+multidistrib.group.name+"] ";
+				subject += t._( "A role has been left for ::date:: distribution",{date:date});
+				mail.setSubject( subject );
+				var html = App.current.processTemplate("mail/volunteerUnsuscribed.mtt", { fullname : user.getName(), role : role.name, reason : reason, group: multidistrib.group  } );
+				mail.setHtmlBody( html );
 				App.sendMail(mail);
 			}
 			else {
 				
-				throw new tink.core.Error(t._("This user is not assigned to this role!"));				
+				throw new Error(t._("This user is not assigned to this role!"));				
 			}
 		}
 		else {
 
-			throw new tink.core.Error(t._("Missing distribution or role in the url!"));
+			throw new Error(t._("Missing distribution or role in the url!"));
 		}			
 	}
 
 	public static function updateMultiDistribVolunteerRoles(multidistrib: db.MultiDistrib, rolesIds: String) {
 
 		var t = sugoi.i18n.Locale.texts;
-
 		var volunteers = multidistrib.getVolunteers();
 
 		if ( volunteers != null ) {
 
 			var roleIds = rolesIds.split(',');
 			for ( roleId in roleIds ) {
-
 				volunteers = Lambda.array(Lambda.filter(volunteers, function(volunteer) return volunteer.volunteerRole.id != Std.parseInt(roleId)));
 			}
 		}
 		
 		if ( volunteers == null || volunteers.length == 0 ) {
-
 			multidistrib.lock();
 			multidistrib.volunteerRolesIds = rolesIds;
 			multidistrib.update();
 		}
 		else {
-
-			throw new tink.core.Error(t._("You can't remove some roles because there are volunteers assigned to those roles. You need to delete the volunteers first."));
+			throw new Error(t._("You can't remove some roles because there are volunteers assigned to those roles. You need to delete the volunteers first."));
 		}
 	}
 
@@ -291,4 +283,11 @@ class VolunteerService
 			throw new tink.core.Error(t._("One or more numbers of days you entered is not an integer. You can only use integers. "));
 		}	
 	}
+
+	public static function getRolesFromGroup(group:db.Amap):Array<db.VolunteerRole>{
+		return Lambda.array(db.VolunteerRole.manager.search($group==group));
+	}
+
+	
+
 }

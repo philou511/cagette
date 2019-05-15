@@ -9,18 +9,20 @@ import Common;
  */
 class Validate extends controller.Controller
 {
-	public var date : Date;
+	public var multiDistrib : db.MultiDistrib;
 	public var user : db.User;
-	public var place : db.Place;
+	
 	
 	@tpl('validate/user.mtt')
 	public function doDefault(){
 		view.member = user;
+		var place = multiDistrib.getPlace();
+		var date = multiDistrib.getDate();
 		
 		if (!app.user.amap.hasShopMode()){
 			//get last operations and check balance
-			view.operations = db.Operation.getLastOperations(this.user,place.amap,10);
-			view.balance = db.UserAmap.get(this.user, place.amap).balance;
+			view.operations = db.Operation.getLastOperations(user,place.amap,10);
+			view.balance = db.UserAmap.get(user, place.amap).balance;
 		}
 		
 		var b = db.Basket.get(user, place, date);			
@@ -29,6 +31,7 @@ class Validate extends controller.Controller
 		view.date = date;
 		view.basket = b;
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
+		view.distribution = multiDistrib;
 		
 		checkToken();
 	}
@@ -41,7 +44,7 @@ class Validate extends controller.Controller
 			
 			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Operation deleted"));
+			throw Ok("/validate/" + multiDistrib.id + "/" + user.id, t._("Operation deleted"));
 		}
 	}
 	
@@ -59,7 +62,7 @@ class Validate extends controller.Controller
 			
 			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Operation validated"));
+			throw Ok("/validate/"+multiDistrib.id+"/"+user.id, t._("Operation validated"));
 		}
 	}
 	
@@ -76,7 +79,7 @@ class Validate extends controller.Controller
 		var refundAmount = basket.getTotalPaid() - basket.getOrdersTotal();		
 		if(refundAmount <= 0) {
 			//There is nothing to refund
-			throw Error("/validate/" + date + "/" + place.id + "/" + user.id, t._("There is nothing to refund"));
+			throw Error("/validate/" + multiDistrib.id + "/" + user.id, t._("There is nothing to refund"));
 		}
 		
 		if (!app.user.isContractManager()) throw t._("Forbidden access");
@@ -85,11 +88,11 @@ class Validate extends controller.Controller
 		operation.user = user;
 		operation.date = Date.now();
 		
-		var b = db.Basket.get(user, place, date);
+		var b = db.Basket.get(user, multiDistrib.getPlace(), multiDistrib.getDate());
 		var orderOperation = b.getOrderOperation(false);
 		if(orderOperation == null) throw "unable to find related order operation";
 		
-		var f = new sugoi.form.Form(t._("payment"), "/validate/" + date + "/" + place.id + "/" + user.id + "/addRefund?basketid=" + basketId);
+		var f = new sugoi.form.Form(t._("payment"), "/validate/" + multiDistrib.id + "/" + user.id + "/addRefund?basketid=" + basketId);
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));		
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), refundAmount, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
@@ -120,7 +123,7 @@ class Validate extends controller.Controller
 			App.current.event(Refund(operation,basket));
 			service.PaymentService.updateUserBalance(user, app.user.amap);
 						
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Refund saved"));
+			throw Ok("/validate/"+multiDistrib.id+"/"+user.id, t._("Refund saved"));
 		}
 		
 		view.title = t._("Key-in a refund for ::user::",{user:user.getCoupleName()});
@@ -148,7 +151,7 @@ class Validate extends controller.Controller
 		}
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
-		var b = db.Basket.get(user, place, date);
+		var b = db.Basket.get(user, multiDistrib.getPlace(), multiDistrib.getDate());
 		var op = b.getOrderOperation(false);
 		if(op==null) throw "unable to find related order operation";
 		
@@ -164,7 +167,7 @@ class Validate extends controller.Controller
 			
 			service.PaymentService.updateUserBalance(user, app.user.amap);
 			
-			throw Ok("/validate/"+date+"/"+place.id+"/"+user.id, t._("Payment saved"));
+			throw Ok("/validate/"+multiDistrib.id+"/"+user.id, t._("Payment saved"));
 		}
 		
 		view.title = t._("Key-in a payment for ::user::",{user:user.getCoupleName()});
@@ -175,18 +178,16 @@ class Validate extends controller.Controller
 		
 		if (checkToken()) 
 		{
-			var basket = db.Basket.get(user, place, date);
+			var basket = db.Basket.get(user, multiDistrib.getPlace(), multiDistrib.getDate());
 
-			try
-			{
+			try{
 				service.PaymentService.validateBasket(basket);
 			}
-			catch(e:tink.core.Error)
-			{
-				throw Error("/distribution/validate/" + date + "/" + place.id, e.message);
+			catch(e:tink.core.Error) {
+				throw Error("/distribution/validate/" + multiDistrib.id, e.message);
 			}
 		
-			throw Ok("/distribution/validate/" + date + "/" + place.id, t._("Order validated"));
+			throw Ok("/distribution/validate/" + multiDistrib.id , t._("Order validated"));
 			
 		}
 		

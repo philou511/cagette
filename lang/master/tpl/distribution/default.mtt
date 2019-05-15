@@ -4,17 +4,9 @@
     <h2 style="margin-bottom:24px;margin-top:0px">::_("Distributions")::</h2>
 </div>
 <div class="col-md-6 text-right">
+    <a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Créer une distribution</a>
+
     
-    <div class="dropdown" style="display:inline-block;">
-        <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <i class="icon icon-plus"></i> Distribution ponctuelle  
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="/distribution/insertMd/1"><i class="icon icon-plus"></i> Commandes variables</a></li>
-            <li><a href="/distribution/insertMd/0"><i class="icon icon-plus"></i> Contrats AMAP</a></li>			
-        </ul>
-    </div>
     
 </div>
 
@@ -30,36 +22,13 @@
     <div class="col-md-12">
         <div class="distrib">
             ::set place = d.getPlace():: 
-            ::set active = d.isActive()::
             ::set start = d.getDate()::
             ::set end = d.getEndDate()::
             ::set ordersStartDate = d.getOrdersStartDate()::
             ::set ordersEndDate = d.getOrdersEndDate()::
             
-            ::set class =""::
-            ::if !active:: 
-                ::set class="disabled"::
-            ::end::
-            
-            <div class="header ::class::">
-                
-                <div class="text-right pull-right">
-                    ::if active==true::
-                        Commande ouverte
-                        
-                    ::elseif(ordersEndDate!=null)::		
-                        <!--Fermeture des commandes :-->													
-                        ::if Date.now().getTime() > ordersEndDate.getTime()::
-                            ::_("Order closed since"):: <br/>
-                            ::hDate(ordersEndDate)::
-                        ::else::
-                            ::_("Order will open on"):: <br/>
-                            ::hDate(ordersStartDate)::
-                        ::end::
-                    ::end::
-                    
-                </div>
-                
+            <div class="header orders" class="row">
+                                       
                 <div class="dateBoxOffset">
                 ::set s = getDate(start)::
                 ::if isToday(start)::
@@ -69,25 +38,25 @@
                 ::end::
                 </div>
                 
-                <div class="info">						
+                <div class="col-md-6">						
                     ::set e = getDate(end)::
                     <i class="icon icon-clock"></i>
                     ::set start = s.h+":"+s.i::
                     ::set end = e.h+":"+e.i::
                     
                     ::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
-                    <br/>
-                    $$place(::place::)
-                </div>	
+                </div>
+
+                <div class="col-md-6 info">						
+                        $$place(::place::)
+                </div>
             </div>
-            
+
             
             <div class="content" style="background-color:white;">
                 <div class="row">
-                    <div class="col-md-4">
-                        STATUS
-                    </div>
-                    <div class="col-md-4">
+                    
+                    <div class="col-md-8">
                             <b>::d.getVendors().length:: producteurs</b> 
                             <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-xs btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
                             
@@ -114,8 +83,8 @@
                     </div>
                     <div class="col-md-4">
 
-                        XXX commandes,<br/>
-                        C.A XXXX €
+                        <b>::d.getBaskets().length::</b> commande(s) <br/>
+                        pour un total de <b>::d.getTotalIncome():: ::currency()::</b>
 
                     </div>
 

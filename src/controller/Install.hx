@@ -268,5 +268,141 @@ class Install extends controller.Controller
 		}
 		
 	}
+
+	/**
+	migrate to multidistribs
+	**/
+	@admin 
+	function doMigrateMultidistribs(){
+
+		//MIGRATE to the new multidistrib Db architecture
+		for( d in db.Distribution.manager.search($multiDistrib==null,{orderBy:-date,limit:10000},true)){
+
+			//look for an existing md 3 hours around
+			var from = DateTools.delta(d.date,1000.0*60*60*-3);
+			var end = DateTools.delta(d.date,1000.0*60*60*3);
+			if(d.contract==null) {
+				trace(d.id+" has no contract<br/>");
+				if(App.config.DEBUG) d.delete();
+				continue;
+			}
+			if(d.date==null) {
+				trace(d.id+" has no date<br/>");
+				if(App.config.DEBUG) d.delete();
+				continue;
+			}
+			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribStartDate<end && $place==d.place,true);
+			if(mds.length>1) trace('too many mds !'+mds.length);
+			var md : db.MultiDistrib = null;
+			if(mds.length==0){
+				
+				//Create it
+				md = new db.MultiDistrib();
+				md.place = d.place;
+				md.group = d.place.amap;
+				md.distribStartDate = d.date;
+				md.distribEndDate = d.end;
+				md.orderStartDate = d.orderStartDate;
+				md.orderEndDate = d.orderEndDate;
+				md.insert();
+
+			}else{
+				md = mds.first();
+			}
+
+			//null identical fields
+			/*
+			if(md.distribStartDate.getTime()==d.date.getTime()) d.date = null;
+			if(md.distribEndDate.getTime()==d.end.getTime()) d.end = null;
+			if(md.orderStartDate!=null && md.orderStartDate.getTime()==d.orderStartDate.getTime()) d.orderStartDate = null;
+			if(md.orderEndDate!=null && md.orderEndDate.getTime()==d.orderEndDate.getTime()) d.orderEndDate = null;			
+			*/
+
+			//bind to it
+			d.multiDistrib = md;
+			d.update();
+
+			trace(d.toString()+"<br/>");
+		}
+
+
+		
+
+
+
+	}
+	
+	/**
+		migrate to new duty period mgmt
+	**/
+	@admin 
+	function doMigrateDutyPeriods(){
+		
+		//update group params
+		Sys.print("update group params and create roles.");
+		for ( g in db.Amap.manager.all(true)){
+
+			g.volunteersMailContent = "Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DEBUT],<br/>
+		Lieu de distribution : [LIEU]<br/>
+		<br/>
+		Voici la liste des bénévoles inscrits :<br/>
+		[LISTE_BENEVOLES]<br/>";
+		
+			g.volunteersMailDaysBeforeDutyPeriod = 4;
+			g.vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
+			g.daysBeforeDutyPeriodsOpen = 60;
+			g.update();
+
+			//create volunteers rôles
+			for( c in g.getActiveContracts()){
+				service.VolunteerService.createRoleForContract(c,c.distributorNum);
+			}
+		}
+
+		//check all rôles for each MD
+		Sys.print("check roles for multidistribs.");
+		for(md in db.MultiDistrib.manager.all(true)){
+			var roles = [];
+			var allRoles = VolunteerService.getRolesFromGroup(md.group);
+			///general roles
+			//var generalRoles = Lambda.filter(allRoles, function(role) return role.contract == null);		
+			//for( cr in generalRoles) roles.push(cr);
+			//contract roles
+			for ( distrib in md.getDistributions() ) {
+				var cid = distrib.contract.id;
+				var contractRoles = Lambda.filter(allRoles, function(role) return role.contract!=null && role.contract.id == cid);
+				for( cr in contractRoles) roles.push(cr);
+			}
+
+			md.lock();
+			md.volunteerRolesIds = Lambda.map(roles,function(r) return r.id).join(",");
+			md.update();
+		}
+
+		Sys.print("migrate volunteer assignements.");
+		//migre les inscriptions aux distribs
+		for ( g in db.Amap.manager.all()){
+			for( c in g.getActiveContracts()){
+				var roles = Lambda.array(db.VolunteerRole.manager.search($contract==c));
+				for ( d in c.getDistribs(false)){
+
+					for( i in 1...5){
+
+						var uid = Reflect.field(d,'distributor'+i+'Id');
+						if( uid!=null && roles[i-1]!=null ){
+							var user = db.User.manager.get(uid,false);
+							try{
+								//may fail for same volunteer on same md
+								service.VolunteerService.addUserToRole(user,d.multiDistrib,roles[i-1]);
+							}catch(e:Dynamic){}
+						}
+
+					}
+
+				}
+			}
+
+		}
+	}	
 	
 }

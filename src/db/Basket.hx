@@ -33,16 +33,18 @@ class Basket extends Object
 		CACHE = new Map<String,db.Basket>();
 	}
 	
-	public static function get(user:db.User, place:db.Place, date:Date, ?lock = false):db.Basket{
+	//public static function get(user:db.User, md:db.MultiDistrib, ?lock = false):db.Basket{
+	public static function get(user:db.User,place:db.Place,date:Date, ?lock = false):db.Basket{
 		
-		date = tools.DateTool.setHourMinute(date, 0, 0);
+		//date = tools.DateTool.setHourMinute(date, 0, 0);
 
 		//caching
 		// var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
 		// var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
-			var md = MultiDistrib.get(date, place);
+			var md = db.MultiDistrib.get(date, place);
+			if(md==null) return null;
 			for( o in md.getUserOrders(user)){
 				if(o.basket!=null) {
 					b = o.basket;
@@ -71,6 +73,7 @@ class Basket extends Object
 			
 			//compute basket number
 			var md = MultiDistrib.get(date, place);
+			if(md==null) throw "md is null when creating basket";
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;
@@ -151,7 +154,7 @@ class Basket extends Object
 		var order = getOrders().first();
         if(order==null) return null;
 
-		var key = db.Distribution.makeKey(order.distribution.date, order.distribution.place);
+		var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
 		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending);
 		
 	}

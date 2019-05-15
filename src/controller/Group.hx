@@ -2,6 +2,7 @@ package controller;
 import sugoi.form.elements.StringInput;
 import service.OrderService;
 import service.WaitingListService;
+import service.DistributionService;
 import Common;
 
 /**
@@ -189,6 +190,7 @@ class Group extends controller.Controller
 			case null : 
 				throw "unknown group type";
 			case db.Amap.GroupType.Amap : 
+				g.flags.unset(db.Amap.AmapFlags.ShopMode);
 				g.flags.set(db.Amap.AmapFlags.HasMembership);
 				g.regOption = db.Amap.RegOption.WaitingList;
 				
@@ -262,15 +264,11 @@ class Group extends controller.Controller
 				p.organic = true;
 				p.contract = contract;
 				p.insert();
-			
+				
+				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
+				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);				
 				OrderService.make(user, 1, p, null, true);
 				
-				var d = new db.Distribution();
-				d.contract = contract;
-				d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-				d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
-				d.place = place;
-				d.insert();
 				
 			}
 			
@@ -314,14 +312,15 @@ class Group extends controller.Controller
 			p.contract = contract;
 			p.insert();
 			
-			var d = new db.Distribution();
-			d.contract = contract;
-			d.orderStartDate = Date.now();
-			d.orderEndDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 19);
-			d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);
-			d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
-			d.place = place;
-			d.insert();
+			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);
+			var d = DistributionService.create(
+				contract,
+				date,
+				DateTools.delta(date, 1000.0 * 60 * 90),
+				place.id,
+				Date.now(),
+				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 18)
+			);				
 			
 			OrderService.make(user, 2, egg, d.id);
 			OrderService.make(user, 1, p, d.id);

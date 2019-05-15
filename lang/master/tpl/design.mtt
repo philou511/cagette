@@ -92,12 +92,13 @@
 						<ul class="nav navbar-nav navbar-right">
 							<li id="member" ::attr class if(category=="members") 	'active' ::>								
 								<a href="/member" ::cond user.canAccessMembership()::>
-									<i class="icon icon-users"></i> ::_("Members")::</a>
-								</li>
-
-							<li ::cond user.isAdmin():: ::attr class if(category=="distribution") 	'active' ::>
-								<a href="/distribution" >
-									<i class="icon icon-calendar"></i>  ::_("Distributions")::</a>
+									<i class="icon icon-users"></i> ::_("Members")::
+								</a>
+							</li>
+							<li ::attr class if(category=="distribution") 	'active' ::>
+								<a href="/distribution" ::cond user.canManageAllContracts()::>
+									<i class="icon icon-calendar"></i>  ::_("Distributions")::
+								</a>
 							</li>
 
 							<li id="contractadmin" ::attr class if(category=="contractadmin") 'active' ::>
@@ -107,12 +108,14 @@
 							</li>
 							<li id="messages" ::attr class if(category=="messages") 	'active' ::>
 								<a href="/messages" ::cond user.canAccessMessages()::>
-									<i class="icon icon-mail"></i>  ::_("Messaging")::</a>
-								</li>
+									<i class="icon icon-mail"></i>  ::_("Messaging")::
+								</a>
+							</li>
 							<li id="amapadmin" ::attr class if(category=="amapadmin") 	'active' ::>
 								<a href="/amapadmin" ::cond user.isAmapManager()::>
-									<i class="icon icon-cog"></i>  ::_("Group")::</a>
-								</li>
+									<i class="icon icon-cog"></i>  ::_("Group")::
+								</a>
+							</li>
 							
 						</ul>
 						

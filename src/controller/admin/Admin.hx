@@ -171,7 +171,7 @@ class Admin extends Controller {
 
 	}
 
-	function doCheckDistribValidation() {
+	/*function doCheckDistribValidation() {
 
 		Sys.println("===== Liste des distributions validées ayant des opérations/paiements non validés ====<br>");
 
@@ -217,7 +217,7 @@ class Admin extends Controller {
 
 		Sys.println("===== Fin de la liste ====");
 
-	}
+	}*/
 
 }
 

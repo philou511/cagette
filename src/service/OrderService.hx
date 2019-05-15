@@ -254,7 +254,7 @@ class OrderService
 				
 				//Get the basket for this user
 				var place = order.distribution.place;
-				var basket = db.Basket.get(user, place, order.distribution.date);
+				var basket = db.Basket.get(user, place, order.distribution.multiDistrib.distribStartDate);
 				
 				if( contract.amap.hasPayments() ){
 					var orders = basket.getOrders();
@@ -310,8 +310,6 @@ class OrderService
 			//new way
 			x.product = o.product.infos();
 			x.product.price = o.productPrice;//do not use current price, but price of the order
-
-			
 			x.quantity = o.quantity;
 			
 			//smartQt

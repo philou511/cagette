@@ -372,9 +372,9 @@ class MultiDistrib extends Object
 	/**
 	 * Get all orders involved in this multidistrib
 	 */
-	public function getOrders(){
+	public function getOrders(?type:Int){
 		var out = [];
-		for ( d in getDistributions()){
+		for ( d in getDistributions(type)){
 			out = out.concat(d.getOrders().array());
 		}
 		return out;		
@@ -402,9 +402,9 @@ class MultiDistrib extends Object
 		return Lambda.array(vendors);
 	}
 	
-	public function getUsers(){
+	public function getUsers(?type:Int){
 		var users = [];
-		for ( o in getOrders()) users.push(o.user);
+		for ( o in getOrders(type)) users.push(o.user);
 		return users.deduplicate();		
 	}
 
@@ -489,8 +489,21 @@ class MultiDistrib extends Object
 		return place.amap;
 	}
 
+	/**
+		TODO : refacto with foreign key with multidistrib
+	**/
 	public function getBaskets():Array<db.Basket>{
-		return [];
+		var baskets = [];
+		for( o in getOrders()){
+			if(o.basket!=null) baskets.push(o.basket);
+		}
+		return baskets.deduplicate();
+	}
+
+	public function getTotalIncome():Float{
+		var income = 0.0;
+		for( b in getBaskets()) income+=b.getOrdersTotal();
+		return income;
 	}
 
 

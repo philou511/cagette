@@ -643,6 +643,9 @@ span.tag.active {
       opacity: 1; }
     .distrib .header.orders {
       background-color: #B2823F; }
+    .distrib .header.admin {
+      background-color: #F2EBD9;
+      color: #333; }
     .distrib .header .info {
       font-size: 16px;
       line-height: 22px;

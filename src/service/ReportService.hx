@@ -1,5 +1,6 @@
 package service;
 import Common;
+import tink.core.Error;
 
 /**
 	Manage various reports on Orders, turnover ...
@@ -81,6 +82,7 @@ class ReportService{
 				$where';
 				var count = sys.db.Manager.cnx.request(sql).getIntResult(0);					
 				o.smartQt = ""+count;
+				o.quantity = count;
 			}			
 			
 			orders.push(o);
@@ -118,7 +120,7 @@ class ReportService{
 	}
 
 	/**
-		NEW Mangopay
+	NEW Mangopay
 	 * Returns a map of vendorId and an object made of contract, distrib, productOrders
 	 * @param date 
 	 * @param place 
@@ -128,7 +130,7 @@ class ReportService{
 		var t = sugoi.i18n.Locale.texts;
 		
 		var multiDistrib = db.MultiDistrib.get(date, place);
-		if ( multiDistrib.getDistributions().length == 0 ) throw new tink.core.Error(t._("There is no delivery at this date"));
+		if ( multiDistrib.getDistributions().length == 0 ) throw new Error(t._("There is no delivery at this date"));
 		
 		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
 		

@@ -37,6 +37,18 @@ class DistributionService
 		}
 	}
 
+
+	public static function checkMultiDistrib(md:db.MultiDistrib){
+
+		var t = sugoi.i18n.Locale.texts;
+
+		if (md.distribStartDate==null) {
+			throw new Error(t._("This distribution has no date."));
+		}else{		
+			//end date
+			md.distribEndDate = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), md.distribEndDate.getHours(), md.distribEndDate.getMinutes(), 0);
+		}
+	}
 	
 	/**
 	 * checks if dates are correct and if that there is no other distribution in the same time range
@@ -107,19 +119,19 @@ class DistributionService
 	  *  @param dispatchEvent=true - 
 	  *  @return db.Distribution
 	  */
-	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,
-	 	?distributor1Id:Int,?distributor2Id:Int,?distributor3Id:Int,?distributor4Id:Int,
-		?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {
+	 public static function create(contract:db.Contract,date:Date,end:Date,placeId:Int,?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {
 
 		var d = new db.Distribution();
 		d.contract = contract;
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
 		d.distributionCycle = distributionCycle;
-		if(distributor1Id != null) d.distributor1 = db.User.manager.get(distributor1Id);
+
+		/*if(distributor1Id != null) d.distributor1 = db.User.manager.get(distributor1Id);
 		if(distributor2Id != null) d.distributor2 = db.User.manager.get(distributor2Id);
 		if(distributor3Id != null) d.distributor3 = db.User.manager.get(distributor3Id);
-		if(distributor4Id != null) d.distributor4 = db.User.manager.get(distributor4Id);
+		if(distributor4Id != null) d.distributor4 = db.User.manager.get(distributor4Id);*/
+
 		if(contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
@@ -174,6 +186,9 @@ class DistributionService
 		md.place = place;
 		//md.type  = type;
 		md.insert();
+
+		checkMultiDistrib(md);
+
 		return md;
 	}
 
@@ -187,6 +202,8 @@ class DistributionService
 		//}		
 		md.place = place;
 		md.update();
+
+		checkMultiDistrib(md);
 		return md;
 	}
 
@@ -207,9 +224,7 @@ class DistributionService
 
 	public static function participate(md:db.MultiDistrib,contract:db.Contract){
 		
-		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,
-			null,null,null,null,md.orderStartDate,md.orderEndDate,null,false,md
-		);
+		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,false,md);
 
 	}
 
@@ -219,17 +234,11 @@ class DistributionService
 	  *  @param date - 
 	  *  @param end - 
 	  *  @param placeId - 
-	  *  @param distributor1Id - 
-	  *  @param distributor2Id - 
-	  *  @param distributor3Id - 
-	  *  @param distributor4Id - 
 	  *  @param orderStartDate - 
 	  *  @param orderEndDate - 
 	  *  @return db.Distribution
 	  */
-	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,
-	 	distributor1Id:Int,distributor2Id:Int,distributor3Id:Int,distributor4Id:Int,
-		orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
+	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
 		//We prevent others from modifying it
 		d.lock();
@@ -250,10 +259,10 @@ class DistributionService
 
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
-		d.distributor1 = db.User.manager.get(distributor1Id);
+		/*d.distributor1 = db.User.manager.get(distributor1Id);
 		d.distributor2 = db.User.manager.get(distributor2Id);
 		d.distributor3 = db.User.manager.get(distributor3Id);
-		d.distributor4 = db.User.manager.get(distributor4Id);
+		d.distributor4 = db.User.manager.get(distributor4Id);*/
 		if(d.contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
@@ -404,7 +413,7 @@ class DistributionService
 			
 			create(dc.contract,dates.date,
 				new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.endHour.getHours(),dc.endHour.getMinutes(),0),
-				dc.place.id,null,null,null,null,dates.orderStartDate,dates.orderEndDate,dc
+				dc.place.id,dates.orderStartDate,dates.orderEndDate,dc
 			);
 
 		}

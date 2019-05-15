@@ -195,8 +195,8 @@
 			::end::
 			
 			<p class="text-center" ::cond op!=null::>				
-				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund?basketid=::basket.id::)				
-				$$insert(::_("Key-in a payment")::,/validate/::date::/::place.id::/::member.id::/addPayment/)
+				$$insert(::_("Key-in a refund")::,/validate/::distribution.id::/::member.id::/addRefund?basketid=::basket.id::)				
+				$$insert(::_("Key-in a payment")::,/validate/::distribution.id::/::member.id::/addPayment/)
 			</p>
 			
 			<p class="text-center">	
@@ -214,7 +214,7 @@
 				
 				::else::
 				-->
-					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
+					<a href="/validate/::distribution.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
 						<i class="icon icon-check"></i>
 						::_("Validate this order")::
 					</a>
@@ -236,11 +236,11 @@
 						$$operation(::op::)
 						<td>
 							::if(op.pending && op.type==2)::
-							<a href="/validate/::date::/::place.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
+							<a href="/validate/::distribution.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
 								<i class="icon icon-check"></i>
 								::_("This payment has been received")::
 							</a>
-							$$delete(Suppr.,/validate/::date::/::place.id::/::member.id::/deleteOp/::op.id::?token=::token::)
+							$$delete(Suppr.,/validate/::distribution.id::/::member.id::/deleteOp/::op.id::?token=::token::)
 							::end::
 						</td>
 					</tr>
@@ -261,8 +261,8 @@
 			</table>
 			
 			<p class="text-center">				
-				$$insert(::_("Key-in a refund")::,/validate/::date::/::place.id::/::member.id::/addRefund/)				
-				$$insert(::_("Key-in a payment")::,/validate/::date::/::place.id::/::member.id::/addPayment/)
+				$$insert(::_("Key-in a refund")::,/validate/::distribution.id::/::member.id::/addRefund/)				
+				$$insert(::_("Key-in a payment")::,/validate/::distribution.id::/::member.id::/addPayment/)
 			</p>
 			
 			<p class="text-center">				
@@ -278,7 +278,7 @@
 				
 				::else::
 				
-					<a href="/validate/::date::/::place.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
+					<a href="/validate/::distribution.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
 						<i class="icon icon-check"></i>
 						::_("Validate this order")::
 					</a>
@@ -290,7 +290,7 @@
 			<!-- END -->
 			
 			<p class="text-center">
-				<a href="/distribution/validate/::date::/::place.id::" class="btn btn-default btn-sm">
+				<a href="/distribution/validate/::distribution.id::" class="btn btn-default btn-sm">
 					<span class="glyphicon glyphicon-chevron-left"></span> ::_("Back to the delivery validation")::
 				</a>
 				<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Payment history of this member")::</a>
