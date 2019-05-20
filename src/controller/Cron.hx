@@ -9,6 +9,15 @@ using tools.DateTool;
 class Cron extends Controller
 {
 
+	var now : Date;
+
+	public function new(){
+		super();
+
+		//For testing purposes you can add an arg to build a "fake now"
+		this.now = App.current.params.exists("now") ? Date.fromString(App.current.params.get("now")) : Date.now();
+	}
+
 	public function doDefault() 
 	{
 		
@@ -81,8 +90,7 @@ class Cron extends Controller
 
 		var task = new sugoi.tools.TransactionWrappedTask(function() {
 
-			//For testing purposes you can add an arg for the date now to get the results you want
-			var now = App.current.params.exists("now") ? Date.fromString(App.current.params.get("now")) : Date.now();
+			
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
@@ -126,8 +134,6 @@ class Cron extends Controller
 
 		var taskVolunteersAlert = new sugoi.tools.TransactionWrappedTask(function() {
 
-			//For testing purposes you can add an arg for the date now to get the results you want
-			var now = App.current.params.exists("now") ? Date.fromString(App.current.params.get("now")) : Date.now();
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
@@ -169,7 +175,9 @@ class Cron extends Controller
 
 	}
 	
-	
+	/**
+		Daily cron job
+	**/
 	public function doDaily() {
 		if (!canRun()) return;
 		

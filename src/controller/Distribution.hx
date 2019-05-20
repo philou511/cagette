@@ -758,143 +758,6 @@ class Distribution extends Controller
 		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
 	}
 
-	/**
-	migrate to multidistribs
-	**/
-	@admin 
-	function doMigrate1(){
-
-		//MIGRATE to the new multidistrib Db architecture
-		for( d in db.Distribution.manager.search($multiDistrib==null,{orderBy:-date,limit:10000},true)){
-
-			//look for an existing md 3 hours around
-			var from = DateTools.delta(d.date,1000.0*60*60*-3);
-			var end = DateTools.delta(d.date,1000.0*60*60*3);
-			if(d.contract==null) {
-				trace(d.id+" has no contract<br/>");
-				if(App.config.DEBUG) d.delete();
-				continue;
-			}
-			if(d.date==null) {
-				trace(d.id+" has no date<br/>");
-				if(App.config.DEBUG) d.delete();
-				continue;
-			}
-			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribStartDate<end && $place==d.place,true);
-			if(mds.length>1) trace('too many mds !'+mds.length);
-			var md : db.MultiDistrib = null;
-			if(mds.length==0){
-				
-				//Create it
-				md = new db.MultiDistrib();
-				md.place = d.place;
-				md.group = d.place.amap;
-				md.distribStartDate = d.date;
-				md.distribEndDate = d.end;
-				md.orderStartDate = d.orderStartDate;
-				md.orderEndDate = d.orderEndDate;
-				md.insert();
-
-			}else{
-				md = mds.first();
-			}
-
-			//null identical fields
-			/*
-			if(md.distribStartDate.getTime()==d.date.getTime()) d.date = null;
-			if(md.distribEndDate.getTime()==d.end.getTime()) d.end = null;
-			if(md.orderStartDate!=null && md.orderStartDate.getTime()==d.orderStartDate.getTime()) d.orderStartDate = null;
-			if(md.orderEndDate!=null && md.orderEndDate.getTime()==d.orderEndDate.getTime()) d.orderEndDate = null;			
-			*/
-
-			//bind to it
-			d.multiDistrib = md;
-			d.update();
-
-			trace(d.toString()+"<br/>");
-		}
-
-
-		
-
-
-
-	}
-	
-	/**
-		migrate to new duty period mgmt
-	**/
-	@admin 
-	function doMigrate2(){
-		
-		//update group params
-		Sys.print("update group params and create roles.");
-		for ( g in db.Amap.manager.all(true)){
-
-			g.volunteersMailContent = "Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DEBUT],<br/>
-		Lieu de distribution : [LIEU]<br/>
-		<br/>
-		Voici la liste des bénévoles inscrits :<br/>
-		[LISTE_BENEVOLES]<br/>";
-		
-			g.volunteersMailDaysBeforeDutyPeriod = 4;
-			g.vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
-			g.daysBeforeDutyPeriodsOpen = 60;
-			g.update();
-
-			//create volunteers rôles
-			for( c in g.getActiveContracts()){
-				service.VolunteerService.createRoleForContract(c,c.distributorNum);
-			}
-		}
-
-		//check all rôles for each MD
-		Sys.print("check roles for multidistribs.");
-		for(md in db.MultiDistrib.manager.all(true)){
-			var roles = [];
-			var allRoles = VolunteerService.getRolesFromGroup(md.group);
-			///general roles
-			//var generalRoles = Lambda.filter(allRoles, function(role) return role.contract == null);		
-			//for( cr in generalRoles) roles.push(cr);
-			//contract roles
-			for ( distrib in md.getDistributions() ) {
-				var cid = distrib.contract.id;
-				var contractRoles = Lambda.filter(allRoles, function(role) return role.contract!=null && role.contract.id == cid);
-				for( cr in contractRoles) roles.push(cr);
-			}
-
-			md.lock();
-			md.volunteerRolesIds = Lambda.map(roles,function(r) return r.id).join(",");
-			md.update();
-		}
-
-		Sys.print("migrate volunteer assignements.");
-		//migre les inscriptions aux distribs
-		for ( g in db.Amap.manager.all()){
-			for( c in g.getActiveContracts()){
-				var roles = Lambda.array(db.VolunteerRole.manager.search($contract==c));
-				for ( d in c.getDistribs(false)){
-
-					for( i in 1...5){
-
-						var uid = Reflect.field(d,'distributor'+i+'Id');
-						if( uid!=null && roles[i-1]!=null ){
-							var user = db.User.manager.get(uid,false);
-							try{
-								//may fail for same volunteer on same md
-								service.VolunteerService.addUserToRole(user,d.multiDistrib,roles[i-1]);
-							}catch(e:Dynamic){}
-						}
-
-					}
-
-				}
-			}
-
-		}
-	}	
-
-
 	//  Manage volunteer roles for the specified multidistrib
 	@tpl("form.mtt")
 	function doVolunteerRoles(distrib: db.MultiDistrib) {
@@ -904,7 +767,7 @@ class Distribution extends Controller
 		var roles = [];
 
 		//Get all the volunteer roles for the group and for the selected contracts
-		var allVolunteerRoles = db.VolunteerRole.manager.search($group == distrib.group);
+		var allVolunteerRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
 		
 		var generalRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == null);
 		var checkedRoles = [];
@@ -958,7 +821,6 @@ class Distribution extends Controller
 
 		var volunteerRoles = distrib.getVolunteerRoles();
 		if ( volunteerRoles == null ) {
-
 			throw Error('/distribution/volunteerRoles/' + distrib.id, t._("You need to first select the volunteer roles for this distribution") );
 		}
 
@@ -1033,13 +895,9 @@ class Distribution extends Controller
 		
 		var volunteer = distrib.getVolunteerForRole(role);
 		if (volunteer == null) {
-
 			throw Error( returnUrl, t._("There is no volunteer to remove for this role!") );
-		}
-		else if (volunteer.user.id != app.user.id) {
-
+		} else if (volunteer.user.id != app.user.id) {
 			throw Error( returnUrl, t._("You can only remove yourself from a role.") );
-
 		}
 
 		form.addElement( new TextArea("unsubscriptionreason", t._("Reason for leaving the role") , null, true, null, "style='width:500px;height:350px;'") );
@@ -1116,7 +974,6 @@ class Distribution extends Controller
 				for ( role in multidistribVolunteerRoles ) {
 
 					if ( !Lambda.has(uniqueRoles, role) ) {
-
 						uniqueRoles.push(role);								
 					}					
 				}				
@@ -1124,7 +981,11 @@ class Distribution extends Controller
 		}		
 
 		view.multidistribs = multidistribs;
-		uniqueRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
+		uniqueRoles.sort(function(b, a) { 
+			var a_str = (a.contract == null ? "null" : Std.string(a.contract.id)) + a.name.toLowerCase();
+			var b_str = (b.contract == null ? "null" : Std.string(b.contract.id)) + b.name.toLowerCase();
+			return  a_str < b_str ? 1 : -1;
+		});
 		view.uniqueRoles = uniqueRoles;
 		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
 		view.from = from.toString().substr(0,10);

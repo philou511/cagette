@@ -150,9 +150,6 @@ class VolunteerService
 			var foundVolunteer = multidistrib.getVolunteerForUser(user);
 			if ( foundVolunteer != null && foundVolunteer.volunteerRole.id == role.id ) {
 
-				foundVolunteer.lock();
-				foundVolunteer.delete();
-
 				//Send notification email to either the coordinators or all the members depending on the current date
 				var mail = new Mail();
 				mail.setSender(App.config.get("default_email"),"Cagette.net");
@@ -162,15 +159,19 @@ class VolunteerService
 				if ( now.getTime() <=  alertDate.getTime() ) {
 
 					//Recipients are the coordinators
-					var adminUsers = service.GroupService.getGroupMembersWithRights( multidistrib.group, [ Right.GroupAdmin ] );
+					var rights = if(foundVolunteer.volunteerRole.contract==null){
+						[ Right.GroupAdmin ];
+					}else{
+						[ Right.ContractAdmin(foundVolunteer.volunteerRole.contract.id) ];
+					}
+					var adminUsers = service.GroupService.getGroupMembersWithRights( multidistrib.group, rights );
 					for ( admin in adminUsers ) {
 						mail.addRecipient( admin.email, admin.getName() );
 						if ( admin.email2 != null ) {
 							mail.addRecipient( admin.email2 );
 						}
 					}
-				}
-				else {
+				}else{
 
 					var members = Lambda.array( multidistrib.group.getMembers() );
 					//Recipients are all members
@@ -188,6 +189,10 @@ class VolunteerService
 				var html = App.current.processTemplate("mail/volunteerUnsuscribed.mtt", { fullname : user.getName(), role : role.name, reason : reason, group: multidistrib.group  } );
 				mail.setHtmlBody( html );
 				App.sendMail(mail);
+
+				//delete assignment
+				foundVolunteer.lock();
+				foundVolunteer.delete();
 			}
 			else {
 				
@@ -285,9 +290,10 @@ class VolunteerService
 	}
 
 	public static function getRolesFromGroup(group:db.Amap):Array<db.VolunteerRole>{
-		return Lambda.array(db.VolunteerRole.manager.search($group==group));
+		return Lambda.array(db.VolunteerRole.manager.search($group==group,{orderBy:[contractId,name]}));
 	}
 
+	
 	
 
 }

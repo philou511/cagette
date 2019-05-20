@@ -523,7 +523,11 @@ class MultiDistrib extends Object
 				}
 			}
 
-			volunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
+			volunteerRoles.sort(function(b, a) { 
+				var a_str = (a.contract == null ? "null" : Std.string(a.contract.id)) + a.name.toLowerCase();
+				var b_str = (b.contract == null ? "null" : Std.string(b.contract.id)) + b.name.toLowerCase();
+				return  a_str < b_str ? 1 : -1;
+			});
 		}
 		
 		return volunteerRoles;

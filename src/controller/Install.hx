@@ -2,6 +2,7 @@ package controller;
 import sugoi.db.Variable;
 import sugoi.form.elements.StringInput;
 import thx.semver.Version;
+import service.VolunteerService;
 import Common;
 
 /**
@@ -324,12 +325,6 @@ class Install extends controller.Controller
 
 			trace(d.toString()+"<br/>");
 		}
-
-
-		
-
-
-
 	}
 	
 	/**

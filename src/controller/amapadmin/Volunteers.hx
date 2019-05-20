@@ -3,13 +3,14 @@ import sugoi.form.elements.IntInput;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.TextArea;
+import service.VolunteerService;
 
 class Volunteers extends controller.Controller
 {
 	@tpl("amapadmin/volunteers/default.mtt")
 	function doDefault() {
 
-		view.volunteerRoles = db.VolunteerRole.manager.search($group == app.user.amap);
+		view.volunteerRoles = VolunteerService.getRolesFromGroup(app.user.amap);
 		
 		checkToken();
 
@@ -23,9 +24,9 @@ class Volunteers extends controller.Controller
 
 			try {
 
-				service.VolunteerService.isNumberOfDaysValid( form.getValueOf("dutyperiodsopen"), "volunteersCanJoin" );
-				service.VolunteerService.isNumberOfDaysValid( form.getValueOf("maildays"), "instructionsMail" );
-				service.VolunteerService.isNumberOfDaysValid( form.getValueOf("alertmaildays"), "vacantRolesMail" );
+				VolunteerService.isNumberOfDaysValid( form.getValueOf("dutyperiodsopen"), "volunteersCanJoin" );
+				VolunteerService.isNumberOfDaysValid( form.getValueOf("maildays"), "instructionsMail" );
+				VolunteerService.isNumberOfDaysValid( form.getValueOf("alertmaildays"), "vacantRolesMail" );
 			}
 			catch(e: tink.core.Error) {
 
@@ -121,7 +122,7 @@ class Volunteers extends controller.Controller
 
 			try {
 
-				service.VolunteerService.deleteVolunteerRole(role);
+				VolunteerService.deleteVolunteerRole(role);
 			}
 			catch(e: tink.core.Error){
 
