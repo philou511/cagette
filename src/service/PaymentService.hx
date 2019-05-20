@@ -10,7 +10,7 @@ enum PaymentContext{
 
 /**
  * Payment Service
- * @author web-wizard
+ * @author web-wizard,fbarbut
  */
 class PaymentService
 {
