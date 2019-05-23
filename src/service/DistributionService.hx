@@ -45,8 +45,9 @@ class DistributionService
 		if (md.distribStartDate==null) {
 			throw new Error(t._("This distribution has no date."));
 		}else{		
-			//end date
+			//fix end date
 			md.distribEndDate = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), md.distribEndDate.getHours(), md.distribEndDate.getMinutes(), 0);
+			md.update();
 		}
 	}
 	
@@ -179,12 +180,9 @@ class DistributionService
 		md.group = place.amap;
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
-		//if(type==db.Contract.TYPE_VARORDER){
-			md.orderStartDate 	= orderStartDate;
-			md.orderEndDate 	= orderEndDate;
-		//}		
+		md.orderStartDate 	= orderStartDate;
+		md.orderEndDate 	= orderEndDate;
 		md.place = place;
-		//md.type  = type;
 		md.insert();
 
 		checkMultiDistrib(md);
@@ -196,10 +194,8 @@ class DistributionService
 		md.lock();
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
-		//if(md.type==db.Contract.TYPE_VARORDER){
-			md.orderStartDate 	= orderStartDate;
-			md.orderEndDate 	= orderEndDate;
-		//}		
+		md.orderStartDate 	= orderStartDate;
+		md.orderEndDate 	= orderEndDate;
 		md.place = place;
 		md.update();
 
@@ -212,7 +208,7 @@ class DistributionService
 		md.lock();
 		for(d in md.getDistributions()){
 			if(!canDelete(d)) {
-				throw new Error(t._("Deletion not possible: some orders are saved for this delivery."));
+				throw new Error(t._("Deletion not possible: some orders are recorded for this distribution."));
 			}else{
 				d.lock();
 				d.delete();
@@ -222,7 +218,24 @@ class DistributionService
 		md.delete();
 	}
 
+	/**
+		Participate to a multidistrib.
+	**/
 	public static function participate(md:db.MultiDistrib,contract:db.Contract){
+		var t = sugoi.i18n.Locale.texts;
+
+		for( d in md.getDistributions()){
+			if(d.contract.id==contract.id){
+				throw new Error(t._("This contract is already participating to this distribution"));
+			}
+		}
+
+		if( contract.type == db.Contract.TYPE_VARORDER){
+			if(md.orderStartDate==null || md.orderEndDate==null){
+				var url = "/distribution/editMd/" + md.id;
+				throw new Error(t._("You can't participate to this distribution because no order start date has been defined. <a href='::url::' target='_blank'>Please update the general distribution first</a>.",{url:url}));
+			}
+		}
 		
 		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,false,md);
 

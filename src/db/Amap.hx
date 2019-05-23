@@ -87,6 +87,7 @@ class Amap extends Object
 	@hideInForms public var volunteersMailContent: SText;
 	@hideInForms public var vacantVolunteerRolesMailDaysBeforeDutyPeriod: STinyInt;
 	@hideInForms public var daysBeforeDutyPeriodsOpen: STinyInt;
+	@hideInForms public var alertMailContent: SText;
 	
 	public function new() 
 	{
@@ -100,15 +101,23 @@ class Amap extends Object
 		currency = "€";
 		currencyCode = "EUR";
 		checkOrder = "";
-		volunteersMailContent = "Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DEBUT],<br/>
-		Lieu de distribution : [LIEU]<br/>
+		
+		//duty periods props
+		daysBeforeDutyPeriodsOpen = 60;
+		volunteersMailContent = "<b>Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DISTRIBUTION],</b><br/>
+		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
 		<br/>
 		Voici la liste des bénévoles inscrits :<br/>
 		[LISTE_BENEVOLES]<br/>";
-		
+
 		volunteersMailDaysBeforeDutyPeriod = 4;
+		alertMailContent = "Nous avons besoin de <b>bénévoles pour la permanence du [DATE_DISTRIBUTION]</b><br/>
+		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
+		Les roles suivants sont à pourvoir :<br/>
+		[ROLES_MANQUANTS]<br/>
+		Cliquez sur \"calendrier des permanences\" pour vous inscrire !";
 		vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
-		daysBeforeDutyPeriodsOpen = 60;
+		
 	}
 	
 	/**

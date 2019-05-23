@@ -335,13 +335,12 @@ class Install extends controller.Controller
 		
 		//update group params
 		Sys.print("update group params and create roles.");
+		var a = new db.Amap();
+
 		for ( g in db.Amap.manager.all(true)){
 
-			g.volunteersMailContent = "Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DEBUT],<br/>
-		Lieu de distribution : [LIEU]<br/>
-		<br/>
-		Voici la liste des bénévoles inscrits :<br/>
-		[LISTE_BENEVOLES]<br/>";
+			g.volunteersMailContent = a.volunteersMailContent;
+			g.alertMailContent = a.alertMailContent;
 		
 			g.volunteersMailDaysBeforeDutyPeriod = 4;
 			g.vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;

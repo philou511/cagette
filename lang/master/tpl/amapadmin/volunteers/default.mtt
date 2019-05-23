@@ -48,15 +48,6 @@ $$insert(::_("Add a role")::,/amapadmin/volunteers/insertRole)
 
 ::raw form::
 
-<hr/>
-<b>::_("Variables available to use in the email body")::</b> :
-<p style="margin-left: 100px;">
-	[DATE_DEBUT]&nbsp; : &nbsp;::_("Start date of the distribution")::<br/>
-	[DATE_FIN]&nbsp; : &nbsp;::_("End date of the distribution")::<br/>
-	[LIEU]&nbsp; : &nbsp;::_("Place of the distribution")::<br/> 
-	[LISTE_BENEVOLES]&nbsp; : &nbsp;::_("List of volunteers for this distribution")::
-</p>
-
 
 <script src="/js/tinymce/tinymce.min.js"></script>
 <script>

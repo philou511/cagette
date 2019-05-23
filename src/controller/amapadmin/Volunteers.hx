@@ -16,29 +16,39 @@ class Volunteers extends controller.Controller
 
 		var form = new sugoi.form.Form("msg");
 		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers (between 7 and 180"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
+		
 		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail"), app.user.amap.volunteersMailDaysBeforeDutyPeriod, true) );
-		form.addElement( new TextArea("mailcontent", t._("Email body sent to volunteers"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new TextArea("volunteersMailContent", t._("Email body sent to volunteers"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new sugoi.form.elements.Html("html1","<b>Variables utilisables dans l'email :</b><br/>
+				[DATE_DISTRIBUTION] : Date de la distribution<br/>
+				[LIEU_DISTRIBUTION] : Lieu de la distribution<br/> 
+				[LISTE_BENEVOLES] : Liste des bénévoles inscrits à cette permanence"));
 		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles"), app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
+		form.addElement( new TextArea("alertMailContent", t._("Alert email body"), app.user.amap.alertMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new sugoi.form.elements.Html("html2","<b>Variables utilisables dans l'email :</b><br/>
+				[DATE_DISTRIBUTION] : Date de la distribution<br/>
+				[LIEU_DISTRIBUTION] : Lieu de la distribution<br/> 
+				[ROLES_MANQUANTS] : Rôles restant à pourvoir"));
 
 		if (form.isValid()) {
 
 			try {
-
 				VolunteerService.isNumberOfDaysValid( form.getValueOf("dutyperiodsopen"), "volunteersCanJoin" );
 				VolunteerService.isNumberOfDaysValid( form.getValueOf("maildays"), "instructionsMail" );
 				VolunteerService.isNumberOfDaysValid( form.getValueOf("alertmaildays"), "vacantRolesMail" );
 			}
 			catch(e: tink.core.Error) {
-
 				throw Error("/amapadmin/volunteers", e.message);
 			}			
 
-			app.user.amap.lock();
-			app.user.amap.daysBeforeDutyPeriodsOpen = form.getValueOf("dutyperiodsopen");
-			app.user.amap.volunteersMailDaysBeforeDutyPeriod = form.getValueOf("maildays");
-			app.user.amap.volunteersMailContent = form.getValueOf("mailcontent");
-			app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod = form.getValueOf("alertmaildays");
-			app.user.amap.update();
+			var group  = app.user.amap;
+			group.lock();
+			group.daysBeforeDutyPeriodsOpen = form.getValueOf("dutyperiodsopen");
+			group.volunteersMailDaysBeforeDutyPeriod = form.getValueOf("maildays");
+			group.volunteersMailContent = form.getValueOf("volunteersMailContent");
+			group.vacantVolunteerRolesMailDaysBeforeDutyPeriod = form.getValueOf("alertmaildays");
+			group.alertMailContent = form.getValueOf("alertMailContent");
+			group.update();
 			
 			throw Ok("/amapadmin/volunteers", t._("Your changes have been successfully saved."));
 			

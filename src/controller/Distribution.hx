@@ -477,16 +477,9 @@ class Distribution extends Controller
 		form.removeElementByName("distribEndDate");
 		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time"), md.distribEndDate );
 		form.addElement(x, 3);
-		//form.removeElementByName("type");
-		
-		//orders opening/closing	
-		/*if (md.type == db.Contract.TYPE_CONSTORDERS ) {
-			form.removeElementByName("orderStartDate");
-			form.removeElementByName("orderEndDate");			
-		}*/
 
 		//contracts
-		var label = "Contrats";//md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
+		var label = t._("Contracts");//md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
 		var datas = [];
 		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
@@ -519,14 +512,14 @@ class Distribution extends Controller
 						var contract = db.Contract.manager.get(cid,false);
 						service.DistributionService.participate(md,contract);
 					}else{
-						//update it
-						d.lock();
+						//do not update it
+						/*d.lock();
 						d.date = md.distribStartDate;
 						d.end = md.distribEndDate;
 						d.orderStartDate = md.orderStartDate;
 						d.orderEndDate = md.orderEndDate;
 						d.place = md.place;
-						d.update();
+						d.update();*/
 					}
 				}
 

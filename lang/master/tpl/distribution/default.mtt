@@ -42,9 +42,15 @@
                     ::set e = getDate(end)::
                     <i class="icon icon-clock"></i>
                     ::set start = s.h+":"+s.i::
-                    ::set end = e.h+":"+e.i::
-                    
+                    ::set end = e.h+":"+e.i::                    
                     ::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
+
+                    ::if(d.orderStartDate!=null)::
+                    <p>
+                        <i class="icon icon-calendar"></i> ::_("Orders start date")::  :  ::hDate(d.orderStartDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders end date")::  :  ::hDate(d.orderEndDate)::<br/>
+                    </p>
+                    ::end::
                 </div>
 
                 <div class="col-md-6 info">						
@@ -61,24 +67,83 @@
                             <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-xs btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
                             
                             <div id="md::d.id::" style="display:none;">
-                                <b>Contrats AMAP :</b>             
-                                <ul>
-                                    ::foreach dist d.getDistributions(0)::
-                                    <li>
-                                        ::set contract = dist._contract::
-                                        <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
-                                    </li>
+                                
+                                <table class="table table-bordered">
+                                    
+                                    ::set distribs = d.getDistributions(0)::
+                                    ::if(distribs.length>0)::
+                                    <tr>
+                                        <th colspan="3">Contrats AMAP</th>
+                                    </tr>
+                                    ::foreach dist distribs::
+                                    <tr>
+                                        <td>
+                                            ::set contract = dist._contract::
+                                            <a href="/contract/view/::contract.id::">::contract.name::</a>
+                                        </td>
+                                        <td>
+                                            ::contract._vendor.name::
+                                        </td>
+                                        <td>
+                                            ::if(d.distribStartDate.getTime() != dist.date.getTime())::
+                                            <div class="alert alert-warning">
+                                                ::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
+                                            </div>
+                                            ::end::
+
+                                            ::if(d.distribEndDate.getTime() != dist.end.getTime())::
+                                            <div class="alert alert-warning">
+                                                ::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
+                                            </div>
+                                            ::end::                                            
+                                        </td>
+                                    </tr>
                                     ::end::
-                                </ul>
-                                <b>Commandes variables :</b>             
-                                <ul>
-                                    ::foreach dist d.getDistributions(1)::
-                                    <li>
-                                        ::set contract = dist._contract::
-                                        <a href="/contract/view/::contract.id::">::contract.name::</a> de <b>::contract._vendor.name::</b>
-                                    </li>
                                     ::end::
-                                </ul>
+                                
+                                    ::set distribs = d.getDistributions(1)::
+                                    ::if(distribs.length>0)::
+                                    <tr>
+                                        <th colspan="3">Commandes variables</th>
+                                    </tr>                                
+                                    ::foreach dist distribs::
+                                    <tr>
+                                        <td>
+                                            ::set contract = dist._contract::
+                                            <a href="/contract/view/::contract.id::">::contract.name::</a>
+                                        </td>
+                                        <td>
+                                            ::contract._vendor.name::
+                                        </td>
+                                        <td>
+                                            ::if(d.distribStartDate.getTime() != dist.date.getTime())::
+                                            <div class="alert alert-warning">
+                                                ::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
+                                            </div>
+                                            ::end::
+
+                                            ::if(d.distribEndDate.getTime() != dist.end.getTime())::
+                                            <div class="alert alert-warning">
+                                                ::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
+                                            </div>
+                                            ::end::
+
+                                            ::if(d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
+                                            <div class="alert alert-warning">
+                                                ::_("Order start date is different from general distribution"):: : ::hDate(dist.orderStartDate)::
+                                            </div>
+                                            ::end::
+
+                                            ::if(d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
+                                            <div class="alert alert-warning">
+                                                ::_("Order end date is different from general distribution"):: : ::hDate(dist.orderEndDate)::
+                                            </div>
+                                            ::end::
+                                        </td>
+                                    </tr>
+                                    ::end::
+                                    ::end::
+                                </table>
                             </div>
                     </div>
                     <div class="col-md-4">

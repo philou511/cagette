@@ -88,41 +88,43 @@ class Cron extends Controller
 		
 		distribValidationNotif();
 
+		//instructions for dutyperiod volunteers
 		var task = new sugoi.tools.TransactionWrappedTask(function() {
-
-			
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
-													   'SELECT distrib.* 
-														FROM db.MultiDistrib distrib INNER JOIN db.Amap amap
-														ON distrib.groupId = amap.id
-														WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY)
-														AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY);', false));
-
+				'SELECT distrib.* 
+				FROM MultiDistrib distrib INNER JOIN Amap amap
+				ON distrib.groupId = amap.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY);', false));
+			printTitle("Volunteers instruction mail");
+			
 			for (multidistrib  in multidistribs) {
 
 				var volunteers: Array<db.Volunteer> = multidistrib.getVolunteers();
 				if ( volunteers.length != 0 ) {
-
+					print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
 					mail.setSender(App.config.get("default_email"),"Cagette.net");
-					var volunteersList: String = "";
+					var volunteersList = "<ul>";
 					for ( volunteer in  volunteers ) {
 						
 						mail.addRecipient( volunteer.user.email, volunteer.user.getName() );
 						if ( volunteer.user.email2 != null ) {
 							mail.addRecipient( volunteer.user.email2 );
 						}
-						volunteersList += volunteer.volunteerRole.name + " : " + volunteer.user.getCoupleName() + "<br/>";
+						volunteersList += "<li>"+volunteer.volunteerRole.name + " : " + volunteer.user.getCoupleName() + "</li>";
 					}
+					volunteersList += "</ul>";
 					
 					mail.setSubject( "["+multidistrib.group.name+"] "+ t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
+					
 					//Let's replace all the tokens
-					var emailBody = StringTools.replace( multidistrib.group.volunteersMailContent, "[DATE_DEBUT]", view.hDate(multidistrib.distribStartDate) );
-					emailBody = StringTools.replace( emailBody, "[DATE_FIN]", view.hDate(multidistrib.distribEndDate) ); 
-					emailBody = StringTools.replace( emailBody, "[LIEU]", multidistrib.place.name ); 
+					var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
+					var emailBody = StringTools.replace( multidistrib.group.volunteersMailContent, "[DATE_DISTRIBUTION]", ddate );
+					emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 					emailBody = StringTools.replace( emailBody, "[LISTE_BENEVOLES]", volunteersList ); 
 					mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.group  } ) );
 					App.sendMail(mail);
@@ -138,18 +140,18 @@ class Cron extends Controller
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
-													   'SELECT distrib.* 
-														FROM db.MultiDistrib distrib INNER JOIN db.Amap amap
-														ON distrib.groupId = amap.id
-														WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
-														AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
+				'SELECT distrib.* 
+				FROM MultiDistrib distrib INNER JOIN Amap amap
+				ON distrib.groupId = amap.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
 
 
 			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
 			var members = Lambda.array( app.user.amap.getMembers() );
-
+			printTitle("Volunteers alerts");
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
-
+				print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
 				mail.setSender(App.config.get("default_email"),"Cagette.net");
 				for ( member in members ) {
@@ -159,15 +161,20 @@ class Cron extends Controller
 						mail.addRecipient( member.email2 );
 					}
 				}
-				var vacantVolunteerRolesList: String = "Nous avons besoin de bénévoles pour les roles suivants :<br/>";
-				var vacantVolunteerRoles = multidistrib.getVacantVolunteerRoles();
-				for ( role in  vacantVolunteerRoles ) {
 
-					vacantVolunteerRolesList += role.name + "<br/>";
-				}
+				//vacant roles
+				var vacantVolunteerRolesList = "<ul>"+Lambda.map( multidistrib.getVacantVolunteerRoles(),function (r) return "<li>"+r.name+"</li>").join("\n")+"</ul>";
 				
 				mail.setSubject( t._("[::group::] We need more volunteers for ::date:: distribution",{group : multidistrib.group.name, date : view.hDate(multidistrib.distribStartDate)}) );
-				mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: vacantVolunteerRolesList, group: multidistrib.group  } ) );
+				
+				//Let's replace all the tokens
+				var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
+				var emailBody = StringTools.replace( multidistrib.group.alertMailContent, "[DATE_DISTRIBUTION]", ddate );
+				emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
+				emailBody = StringTools.replace( emailBody, "[ROLES_MANQUANTS]", vacantVolunteerRolesList ); 				
+									
+				mail.setHtmlBody( emailBody );
+
 				App.sendMail(mail);
 			}			
 		});
@@ -499,7 +506,7 @@ class Cron extends Controller
 		 */ 
 		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
-		print('AUTOVALIDATION');
+		printTitle('Autovalidate unvalidated distributions');
 		print('Find distributions from $from to $to');
 		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , true);
 		for ( d in Lambda.array(ds)){
@@ -542,7 +549,7 @@ class Cron extends Controller
 	 * (like "SELECT * FROM BufferedMail WHERE sdate IS NULL ORDER BY cdate DESC LIMIT 100 FOR UPDATE Lock wait timeout exceeded; try restarting transaction") 
 	 */
 	function sendEmailsfromBuffer(index:Int){
-		print("<h3>Send 10 Emails from Buffer</h3>");		
+		printTitle("Send 10 Emails from Buffer");		
 		//send
 		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,10],orderBy:-cdate},false)  ){
 			e.lock();
@@ -571,6 +578,10 @@ class Cron extends Controller
 	
 	
 	public static function print(text){
-		Sys.println( text + "<br/>" );
+		Sys.println( "<pre>"+ text + "</pre><br/>" );
+	}
+
+	public static function printTitle(title){
+		Sys.println("<h2>"+title+"</h2>");
 	}
 }
