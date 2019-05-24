@@ -128,11 +128,6 @@ class DistributionService
 		d.place = db.Place.manager.get(placeId);
 		d.distributionCycle = distributionCycle;
 
-		/*if(distributor1Id != null) d.distributor1 = db.User.manager.get(distributor1Id);
-		if(distributor2Id != null) d.distributor2 = db.User.manager.get(distributor2Id);
-		if(distributor3Id != null) d.distributor3 = db.User.manager.get(distributor3Id);
-		if(distributor4Id != null) d.distributor4 = db.User.manager.get(distributor4Id);*/
-
 		if(contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
@@ -154,6 +149,17 @@ class DistributionService
 		}
 		d.multiDistrib = md;
 
+		//check role if needed
+		var roles = service.VolunteerService.getRolesFromContract(contract);
+		if(roles.length>0){			
+			var roleIds = md.getVolunteerRoleIds();
+			roleIds = roleIds.concat(roles.map( function(r) return r.id ));
+			md.volunteerRolesIds = roleIds.join(",");
+		}
+		
+		md.update();
+		
+
 		DistributionService.checkDistrib(d);
 		
 		if(distributionCycle == null && dispatchEvent) {
@@ -174,7 +180,7 @@ class DistributionService
 		}
 	}
 
-	public static function createMd(place:db.Place,/*type:Int,*/distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+	public static function createMd(place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
 
 		var md = new db.MultiDistrib();
 		md.group = place.amap;
@@ -183,6 +189,12 @@ class DistributionService
 		md.orderStartDate 	= orderStartDate;
 		md.orderEndDate 	= orderEndDate;
 		md.place = place;
+
+		//add default general roles
+		var roles = service.VolunteerService.getRolesFromGroup(place.amap);
+		var generalRoles = Lambda.array(Lambda.filter(roles,function(r) return r.contract==null));
+		md.volunteerRolesIds = generalRoles.map( function(r) return Std.string(r.id) ).join(",");
+
 		md.insert();
 
 		checkMultiDistrib(md);
@@ -223,6 +235,7 @@ class DistributionService
 	**/
 	public static function participate(md:db.MultiDistrib,contract:db.Contract){
 		var t = sugoi.i18n.Locale.texts;
+		md.lock();
 
 		for( d in md.getDistributions()){
 			if(d.contract.id==contract.id){
@@ -341,6 +354,13 @@ class DistributionService
 		//names and amounts with the new number of distribs
 		updateAmapContractOperations(contract);
 
+		//delete multidistrib if needed
+		if(d.multiDistrib!=null){
+			if(d.multiDistrib.getDistributions().length == 0){
+				deleteMd(d.multiDistrib);
+			}
+		}
+
 	}
 
 	/**
@@ -451,10 +471,10 @@ class DistributionService
 			var contract = Lambda.array(children)[0].contract;
 			for ( d in children ){
 			
-				if (d.contract.type == db.Contract.TYPE_VARORDER && !canDelete(d) ){
+				try{
+					delete(d);
+				}catch(e:tink.core.Error){
 					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
-				}else{
-					d.delete();
 				}
 			}
 

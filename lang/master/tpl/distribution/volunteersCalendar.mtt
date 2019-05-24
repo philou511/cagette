@@ -64,18 +64,28 @@
 			<tr>
 				<th style="width:200px;"></th>
 				::foreach d multidistribs::
-				::set date = getDate(d.distribStartDate)::
-				::if d.hasVacantVolunteerRoles()::
-				::set color = "orange"::
-				::elseif d.canVolunteersJoin()::
-				::set color = "lightgreen"::
-				::else::
-				::set color = "transparent"::
-				::end::
-				<th style="width:200px;line-height:16px;text-align:center;background-color: ::color::">::date.dow::<br/>
-					::date.d::<br/>
-					::date.m::<br/>
-					::date.h+":"+date.i::</th>
+					::set date = getDate(d.distribStartDate)::
+					::if d.hasVacantVolunteerRoles()::
+						::set color = "orange"::
+					::elseif d.canVolunteersJoin()::
+						::set color = "lightgreen"::
+					::else::
+						::set color = "transparent"::
+					::end::
+					<td style="width:200px;line-height:16px;text-align:center;background-color: ::color::">
+						
+
+						<b>::date.dow:: ::date.d:: ::date.m::</b><br/>
+						::date.h+":"+date.i::<br/><br/>
+
+						::if (color=="orange")::
+							<i class="icon icon-alert"></i>
+						::end::
+						::if (color=="lightgreen")::
+							<i class="icon icon-check"></i>
+						::end::
+						<b>::d.getVolunteers().length::</b> inscrit(s) sur <b>::d.getVolunteerRoles().length::</b> requis
+					</td>
 				::end::
 			</tr>
 			
@@ -96,14 +106,16 @@
 					::set volunteer = d.getVolunteerForRole(role)::
 					::if d.hasVolunteerRole(role)::
 						::if volunteer!=null::
+							<!--volunteer registred -->
 							::volunteer._user.getCoupleName()::
 							::if volunteer._user.id == user.id::
 								<a href="/distribution/unsubscribeFromRole/::d.id::/::role.id::?returnUrl=/distribution/volunteersCalendar?from=::from::&to=::to::" class="btn btn-default btn-danger">
 									::_("Unsubscribe")::
 								</a>
 							::end::
-						::elseif d.canVolunteersJoin() && d.getVolunteerForUser(user) == null::
-						<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::&from=::from::&to=::to::" class="btn btn-default">::_("Join")::</a>
+						::elseif d.canVolunteersJoin() ::
+							<!-- join -->
+							<a href="/distribution/volunteersCalendar?distrib=::d.id::&role=::role.id::&from=::from::&to=::to::" class="btn btn-default">::_("Join")::</a>
 						::elseif !d.canVolunteersJoin()::
 							
 							::__("Duty periods open for volunteers ::days:: days before the duty period",{days:d._group.daysBeforeDutyPeriodsOpen})::

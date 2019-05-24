@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-05-22 15:23+0200\n"
+"PO-Revision-Date: 2019-05-23 16:00+0200\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
@@ -1911,7 +1911,7 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:26115
 msgid "No volunteer assigned"
-msgstr "Pas de bénévoles définis"
+msgstr "Pas de bénévole défini"
 
 #: ../src/controller/Distribution.hx:26404
 msgid "Volunteers have been assigned to roles for this distribution"

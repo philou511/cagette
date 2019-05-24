@@ -512,13 +512,11 @@ class MultiDistrib extends Object
 		var volunteerRoles: Array<db.VolunteerRole> = null;
 		if (this.volunteerRolesIds != null) {
 
-			var multidistribRoleIds = this.volunteerRolesIds.split(",");
+			var multidistribRoleIds = getVolunteerRoleIds();
 			volunteerRoles = new Array<db.VolunteerRole>();
 			for ( roleId in multidistribRoleIds ) {
-
-				var volunteerRole = db.VolunteerRole.manager.get(Std.parseInt(roleId));
+				var volunteerRole = db.VolunteerRole.manager.get(roleId);
 				if ( volunteerRole != null ) {
-
 					volunteerRoles.push( volunteerRole );
 				}
 			}
@@ -533,67 +531,64 @@ class MultiDistrib extends Object
 		return volunteerRoles;
 	}
 
-	public function getVolunteers() {
+	public function getVolunteerRoleIds():Array<Int>{
+		if(volunteerRolesIds==null) return [];
+		return volunteerRolesIds.split(",").map(Std.parseInt);
+	}
 
+	public function getVolunteers() {
 		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this, false));
 	}
+
 
 	public function hasVacantVolunteerRoles() {
 
 		if ( this.volunteerRolesIds != null && canVolunteersJoin() ) {
-
 			var volunteerRoles = this.getVolunteerRoles();
 			if ( volunteerRoles != null && volunteerRoles.length > db.Volunteer.manager.count($multiDistrib == this) ) {
-
 				return true;
 			} 
 		}
-		
 		return false;
 	}
 
-	public function getVacantVolunteerRoles() {
+	public function getVacantVolunteerRoles():Array<db.VolunteerRole> {
 
-		if (!hasVacantVolunteerRoles()) {
-
-			return null;
-		}
-		else {
-
+		if (hasVacantVolunteerRoles()) {
 			var volunteers = getVolunteers();
 			var vacantVolunteerRoles = getVolunteerRoles();
 
 			for ( volunteer in volunteers ) {
-
 				vacantVolunteerRoles.remove(volunteer.volunteerRole);
 			}
-
 			vacantVolunteerRoles.sort(function(b, a) { return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1; });
 			return vacantVolunteerRoles;
 		}
+
+		return [];
 	}
 
 	public function hasVolunteerRole(role: db.VolunteerRole) {
-
 		var volunteerRoles: Array<db.VolunteerRole> = getVolunteerRoles();
 		if (volunteerRoles == null) return false;
 		return Lambda.has(volunteerRoles, role);
 	}
 
 	public function getVolunteerForRole(role: db.VolunteerRole) {
-
 		return db.Volunteer.manager.select($multiDistrib == this && $volunteerRole == role, false);
 	}
 
 	public function getVolunteerForUser(user: db.User) {
-
 		return db.Volunteer.manager.select($multiDistrib == this && $user == user, false);
 	}
 	
+	/**
+		Can volunteers join ( check on date and daysBeforeDutyPeriodsOpen )
+	**/
 	public function canVolunteersJoin() {
-
 		var joinDate = DateTools.delta( this.distribStartDate, - 1000.0 * 60 * 60 * 24 * this.group.daysBeforeDutyPeriodsOpen );
 		return Date.now().getTime() >= joinDate.getTime();		
 	}
-	
+
+
 }

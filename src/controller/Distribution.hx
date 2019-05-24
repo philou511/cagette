@@ -760,27 +760,26 @@ class Distribution extends Controller
 		var roles = [];
 
 		//Get all the volunteer roles for the group and for the selected contracts
-		var allVolunteerRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
+		var allRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
+		var generalRoles = Lambda.filter(allRoles, function(role) return role.contract == null);
+		var checkedRoles = new Array<String>();
+		var roleIds : Array<Int> = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",").map(Std.parseInt) : [];
 		
-		var generalRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract == null);
-		var checkedRoles = [];
-		var roleIds = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",") : null;
+		//general roles
 		for ( role in generalRoles ) {
-
 			roles.push( { label: role.name, value: Std.string(role.id) } );
-			if ( roleIds == null || Lambda.has(roleIds, Std.string(role.id) ) ) {
+			if ( Lambda.has(roleIds, role.id) ) {
 				checkedRoles.push(Std.string(role.id));
-			}
-			
+			}			
 		}	
 
 		//display roles linked to active contracts in this distrib
 		for ( distrib in distrib.getDistributions() ) {
 			var cid = distrib.contract.id;
-			var contractRoles = Lambda.filter(allVolunteerRoles, function(role) return role.contract!=null && role.contract.id == cid);
+			var contractRoles = Lambda.filter(allRoles, function(role) return role.contract!=null && role.contract.id == cid);
 			for ( role in contractRoles ) {
 				roles.push( { label: role.name + " - " + distrib.contract.vendor.name, value: Std.string(role.id) } );
-				if ( roleIds == null || Lambda.has(roleIds, Std.string(role.id)) ) {
+				if ( roleIds == null || Lambda.has(roleIds, role.id) ) {
 					checkedRoles.push(Std.string(role.id));
 				}
 			}
@@ -792,7 +791,8 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
-				service.VolunteerService.updateMultiDistribVolunteerRoles( distrib, form.getValueOf("roles").join(",") );
+				var roleIds : Array<Int> = form.getValueOf("roles").map(Std.parseInt);
+				service.VolunteerService.updateMultiDistribVolunteerRoles( distrib, roleIds );
 			}
 			catch(e: tink.core.Error){
 				throw Error("/distribution/volunteerRoles/" + distrib.id, e.message);
@@ -828,11 +828,11 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
-
-				service.VolunteerService.updateVolunteers(distrib, form.getData());
-			}
-			catch(e: tink.core.Error){
-
+				var roleIdsToUserIds = new Map<Int,Int>();
+				var datas = form.getData();
+				for( k in datas.keys() ) roleIdsToUserIds[Std.parseInt(k)] = datas[k];  
+				service.VolunteerService.updateVolunteers(distrib, roleIdsToUserIds );
+			} catch(e: tink.core.Error){
 				throw Error("/distribution/volunteers/" + distrib.id, e.message);
 			}
 			

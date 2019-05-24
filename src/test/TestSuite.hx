@@ -15,9 +15,11 @@ class TestSuite
 		var r = new haxe.unit.TestRunner();
 
 		//Cagette core tests
-		r.add(new test.TestUser());
-		r.add(new test.TestOrders());		
 		r.add(new test.TestTools());
+		
+		/*r.add(new test.TestUser());
+		r.add(new test.TestOrders());		
+		
 		r.add(new test.TestDistributions());
 		r.add(new test.TestPayments());
 		r.add(new test.TestReports());
@@ -32,7 +34,7 @@ class TestSuite
 		r.add(new who.test.TestWho());
 		//r.add(new pro.test.TestMarketplacePayment());
 		#end
-
+*/
 		r.run();
 	}
 
@@ -85,6 +87,8 @@ class TestSuite
 			db.Vendor.manager,
 			db.Place.manager,
 			db.MultiDistrib.manager,
+			db.Volunteer.manager,
+			db.VolunteerRole.manager,
 			db.Distribution.manager,
 			db.DistributionCycle.manager,						
 			

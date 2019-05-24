@@ -38,21 +38,60 @@ class VolunteerService
 		}
 	}
 
-	public static function updateVolunteers(multidistrib: db.MultiDistrib, rawData: Map<String, Dynamic>) {
+	/**
+		Update volunteers for a distrib (coordinator action)
+	**/
+	public static function updateVolunteers(multiDistrib: db.MultiDistrib, roleIdsToUserIds: Map<Int, Int>) {
 
 		var t = sugoi.i18n.Locale.texts;
 
-		var userIdByRoleId = new Map<Int, Int>();
-		var uniqueUserIds = [];
-		var volunteerRoles = multidistrib.getVolunteerRoles();
+		var volunteerRoles = multiDistrib.getVolunteerRoles();
 		if (volunteerRoles == null) {
-
 			throw new Error(t._("You need to first select the volunteer roles for this distribution."));
 		}
 
+		//syncrhonize the map to a volunteer list
+		var ls = new tools.ListSynchronizer< {role:Int,user:Int} , db.Volunteer>();
+
+		var source = [];
+		for( k in roleIdsToUserIds.keys()){
+			if(k!=null && roleIdsToUserIds[k]!=null) source.push({role:k,user:roleIdsToUserIds[k]});
+		}
+		ls.setSourceDatas( source );
+		ls.setDestinationDatas( multiDistrib.getVolunteers() );
+		ls.isEqualTo = function(s,v){
+			return s.user==v.user.id && s.role==v.volunteerRole.id;
+		};
+		ls.createNewEntity = function(s){
+			var v = new db.Volunteer();
+			v.user = db.User.manager.get(s.user,false);
+			v.multiDistrib = multiDistrib;
+			v.volunteerRole = db.VolunteerRole.manager.get(s.role,false);
+			v.insert();
+			return v;
+		};
+		ls.deleteEntity = function(v){
+			v.delete();
+		};
+		ls.updateEntity = function(s,v){
+			return v;
+		};
+		var newList = ls.sync();
+
+
+		//remove others (previously created)
+
+
+		/*
+
+		var userIdByRoleId = new Map<Int, Int>();
+		var uniqueUserIds = [];
+		
+
 		for ( role in volunteerRoles ) {
 
-			var userId = rawData[Std.string(role.id)];
+			var userId = roleIdsToUserIds[role.id];
+
 			if ( !Lambda.has(uniqueUserIds, userId) ) {
 
 				if( userId != null ) {
@@ -61,7 +100,6 @@ class VolunteerService
 				userIdByRoleId[role.id] = userId;
 			}
 			else {
-
 				throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 			}				
 		}
@@ -107,10 +145,14 @@ class VolunteerService
 				volunteer.volunteerRole = db.VolunteerRole.manager.get(roleId);					
 				volunteer.insert();
 			}					
-		}
+		}*/
 		
 	}
 
+	/**
+		A user suscribes to a role.
+		An error is thrown if the role is already filled.
+	**/
 	public static function addUserToRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole) {
 
 		var t = sugoi.i18n.Locale.texts;
@@ -119,12 +161,11 @@ class VolunteerService
 		if ( multidistrib.isConfirmed() ) throw new Error(t._("This distribution has already been validated"));
 
 		//Check that the user is not already assigned to a role for this multidistrib
-		var userAlreadyAssigned = multidistrib.getVolunteerForUser(user);
+		/*var userAlreadyAssigned = multidistrib.getVolunteerForUser(user);
 		if ( userAlreadyAssigned != null ) {
-
 			throw new Error(t._("A volunteer can't be assigned to multiple roles for the same distribution!"));
 		}
-		else {
+		else {*/
 			
 			var existingVolunteer = multidistrib.getVolunteerForRole(role);
 			if ( existingVolunteer == null ) {
@@ -133,12 +174,11 @@ class VolunteerService
 				volunteer.multiDistrib = multidistrib;
 				volunteer.volunteerRole = role;					
 				volunteer.insert();
-			}
-			else {
-
+				return volunteer;
+			} else {
 				throw new Error(t._("This role is already filled by a volunteer!"));
 			}				
-		}
+		//}
 	}
 
 	public static function removeUserFromRole(user: db.User, multidistrib: db.MultiDistrib, role: db.VolunteerRole, reason: String ) {
@@ -205,25 +245,23 @@ class VolunteerService
 		}			
 	}
 
-	public static function updateMultiDistribVolunteerRoles(multidistrib: db.MultiDistrib, rolesIds: String) {
+
+	public static function updateMultiDistribVolunteerRoles(multidistrib: db.MultiDistrib, rolesIds: Array<Int>) {
 
 		var t = sugoi.i18n.Locale.texts;
 		var volunteers = multidistrib.getVolunteers();
 
-		if ( volunteers != null ) {
-
-			var roleIds = rolesIds.split(',');
-			for ( roleId in roleIds ) {
-				volunteers = Lambda.array(Lambda.filter(volunteers, function(volunteer) return volunteer.volunteerRole.id != Std.parseInt(roleId)));
+		if ( volunteers != null && volunteers.length>0 ) {
+			for ( roleId in rolesIds ) {
+				volunteers = Lambda.array(Lambda.filter(volunteers, function(volunteer) return volunteer.volunteerRole.id != roleId));
 			}
 		}
 		
 		if ( volunteers == null || volunteers.length == 0 ) {
 			multidistrib.lock();
-			multidistrib.volunteerRolesIds = rolesIds;
+			multidistrib.volunteerRolesIds = rolesIds.join(",");
 			multidistrib.update();
-		}
-		else {
+		} else {
 			throw new Error(t._("You can't remove some roles because there are volunteers assigned to those roles. You need to delete the volunteers first."));
 		}
 	}
@@ -291,6 +329,10 @@ class VolunteerService
 
 	public static function getRolesFromGroup(group:db.Amap):Array<db.VolunteerRole>{
 		return Lambda.array(db.VolunteerRole.manager.search($group==group,{orderBy:[contractId,name]}));
+	}
+
+	public static function getRolesFromContract(contract:db.Contract):Array<db.VolunteerRole>{
+		return Lambda.array(db.VolunteerRole.manager.search($contract==contract,{orderBy:[contractId,name]}));
 	}
 
 	

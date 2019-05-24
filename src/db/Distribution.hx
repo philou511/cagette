@@ -27,10 +27,10 @@ class Distribution extends Object
 	
 	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	
-	@formPopulate("distributorPopulate") @:relation(distributor1Id) public var distributor1 : SNull<db.User>; 
-	@formPopulate("distributorPopulate") @:relation(distributor2Id) public var distributor2 : SNull<db.User>; 
-	@formPopulate("distributorPopulate") @:relation(distributor3Id) public var distributor3 : SNull<db.User>; 
-	@formPopulate("distributorPopulate") @:relation(distributor4Id) public var distributor4 : SNull<db.User>; 	
+	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor1Id) public var distributor1 : SNull<db.User>; 
+	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor2Id) public var distributor2 : SNull<db.User>; 
+	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor3Id) public var distributor3 : SNull<db.User>; 
+	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor4Id) public var distributor4 : SNull<db.User>; 	
 	
 	@hideInForms public var validated :SBool;
 	
