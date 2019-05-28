@@ -53,21 +53,127 @@
                     ::end::
                 </div>
 
-                <div class="col-md-6 info">						
+                <div class="col-md-3 info">						
                         $$place(::place::)
+                </div>
+                <div class="col-md-3">
+                        <a href="/distribution/editMd/::d.id::" class="btn btn-default btn-sm">
+                            <i class="icon icon-edit"></i> Modifier
+                        </a>
+    
+                        <a href="/distribution/deleteMd/::d.id::?token=::token::" class="btn btn-default btn-sm">
+                            <i class="icon icon-delete"></i> Suppr.
+                        </a>
+
                 </div>
             </div>
 
-            
+            <style>
+                .dashBoardBlock{
+                    min-height: 150px;
+                    border:solid 3px #CCC;
+                    border-radius: 12px;
+                    padding: 12px;
+                    text-align: center;
+                }
+                .dashBoardBlock .title{
+                    color:#AAA;
+                    font-weight: bold;
+                }
+                .dashBoardBlock .number{
+                    font-size: 2em;
+                    font-weight: bold;
+                }
+                .dashBoardBlock .actions{
+                    width:80%;
+                    margin:12px auto 0 auto;
+
+                }
+                .dashBoardBlock .actions .btn{
+                    width:100%;
+                    margin-bottom: 8px;
+                }
+            </style>
             <div class="content" style="background-color:white;">
                 <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="dashBoardBlock">
+                            <div class="title">::_("Status")::</div>
+                        </div>
+                    </div>
                     
-                    <div class="col-md-8">
-                            <b>::d.getVendors().length:: producteurs</b> 
-                            <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-xs btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
+                    <div class="col-md-3">
+                        <div class="dashBoardBlock">
+                            <div class="title">::_("Vendors")::</div>
+                            <div class="number">::d.getVendors().length::</div>
+                            <div class="actions">
+                                <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-sm btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
+                            </div>
                             
-                            <div id="md::d.id::" style="display:none;">
+                        </div>    
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="dashBoardBlock">
+                            ::set volunteers = d.getVolunteers().length::
+                            ::set roles = d.getVolunteerRoles().length::
+                            <div class="title">
+                                ::if (volunteers==roles)::
+                                    <i class="icon icon-check"></i>
+                                ::else::
+                                    <i class="icon icon-alert"></i>
+                                ::end::
+                                ::_("Duty periods")::
+                            </div>
+                            
+                            
+                            <div class="number">
+                                ::volunteers:: / ::roles::
+                            </div>
+                            bénévoles inscrit(s)<br/>
+                            <div class="actions">
+                                    <a href=" /distribution/volunteerRoles/::d.id::" class="btn btn-default btn-sm">
+                                        <i class="icon icon-user"></i> ::_("Volunteer roles")::
+                                    </a>
+                                    <a href=" /distribution/volunteers/::d.id::" class="btn btn-default btn-sm">
+                                        <i class="icon icon-user"></i> ::_("Registred volunteers")::
+                                    </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="dashBoardBlock">
+                            <div class="title">::_("Orders")::</div>
+                            <div class="number">::d.getBaskets().length::</div>
+                            <div>
+                                Commande(s)<br/>
+                                pour un total de <b>::d.getTotalIncome():: ::currency()::</b>
+                                <br/>
                                 
+                            </div>
+                            <div class="actions">
+                                    <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm">
+                                        <i class="icon icon-basket"></i> ::_("Orders")::
+                                    </a>
+                                    <a href=" /distribution/listByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::/all/S" class="btn btn-default btn-sm">
+                                        <i class="icon icon-print"></i> ::_("Attendance sheet")::
+                                    </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- vendor infos-->
+                <div>
+                    
+                        <div id="md::d.id::" style="display:none;">
+                                <hr/>
                                 <table class="table table-bordered">
                                     
                                     ::set distribs = d.getDistributions(0)::
@@ -128,13 +234,13 @@
                                             </div>
                                             ::end::
 
-                                            ::if(d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
+                                            ::if(d.orderStartDate!=null && d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
                                             <div class="alert alert-warning">
                                                 ::_("Order start date is different from general distribution"):: : ::hDate(dist.orderStartDate)::
                                             </div>
                                             ::end::
 
-                                            ::if(d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
+                                            ::if(d.orderEndDate!=null && d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
                                             <div class="alert alert-warning">
                                                 ::_("Order end date is different from general distribution"):: : ::hDate(dist.orderEndDate)::
                                             </div>
@@ -145,42 +251,9 @@
                                     ::end::
                                 </table>
                             </div>
-                    </div>
-                    <div class="col-md-4">
-
-                        <b>::d.getBaskets().length::</b> commande(s) <br/>
-                        pour un total de <b>::d.getTotalIncome():: ::currency()::</b>
-
-                    </div>
-
-
                 </div>
 
-                <hr/>
-                              
-                <div class="text-center">
-
-                    <a href="/distribution/editMd/::d.id::" class="btn btn-default btn-sm">
-                        <i class="icon icon-edit"></i> Modifier
-                    </a>
-
-                    <a href="/distribution/deleteMd/::d.id::?token=::token::" class="btn btn-default btn-sm">
-                        <i class="icon icon-delete"></i> Suppr.
-                    </a>
-
-                    <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm">
-                        <i class="icon icon-basket"></i> ::_("Orders")::
-                    </a>
-                    <a href=" /distribution/listByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::/all/S" class="btn btn-default btn-sm">
-                        <i class="icon icon-print"></i> ::_("Attendance sheet")::
-                    </a>
-                    <a href=" /distribution/volunteerRoles/::d.id::" class="btn btn-default btn-sm">
-                        <i class="icon icon-user"></i> ::_("Volunteer roles")::
-                    </a>
-                    <a href=" /distribution/volunteers/::d.id::" class="btn btn-default btn-sm">
-                        <i class="icon icon-user"></i> ::_("Volunteers")::
-                    </a>
-                </div>
+            
             </div>
 
             

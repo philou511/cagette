@@ -30,14 +30,16 @@
 		::if v.phone!=null :: ::v.phone:: ::end::
 	</p>
 	<p>	
-		<b>::_("Members on duty"):: : </b>
-		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::, ::end::
-		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::, ::end::
-		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::, ::end::
-		::if distrib._distributor4!=null:: ::distrib._distributor4.getName()::  ::end::		
+		<b>::_("Volunteers on duty"):: : </b>
+		::foreach v volunteers::
+		::v._volunteerRole.name:: : ::v._user.getName()::,
+		::end::
 	</p>
 
-	<p>::raw nl2br(distrib._contract._amap.txtDistrib)::</p>
+	<p ::cond distrib._contract._amap.txtDistrib!=null::>
+		<b>::_("Instructions"):: : </b>
+		::raw nl2br(distrib._contract._amap.txtDistrib)::
+	</p>
 	
 	<table class="table table-bordered table-hover"  style="width:100%;">
 			::set total = 0:: <!-- big total -->

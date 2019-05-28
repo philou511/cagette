@@ -509,7 +509,7 @@ class MultiDistrib extends Object
 
 	public function getVolunteerRoles() {
 
-		var volunteerRoles: Array<db.VolunteerRole> = null;
+		var volunteerRoles: Array<db.VolunteerRole> = [];
 		if (this.volunteerRolesIds != null) {
 
 			var multidistribRoleIds = getVolunteerRoleIds();

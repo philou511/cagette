@@ -39,7 +39,9 @@ class Distribution extends Controller
 		view.distrib = d;
 		view.place = d.place;
 		view.contract = d.contract;
-		view.orders = service.OrderService.prepare(d.getOrders());		
+		view.orders = service.OrderService.prepare(d.getOrders());
+		//volunteers whose role is linked to this contract
+		view.volunteers = Lambda.filter(d.multiDistrib.getVolunteers(),function(v) return v.volunteerRole.contract!=null && v.volunteerRole.contract.id==d.contract.id);		
 	}
 
 	/**
