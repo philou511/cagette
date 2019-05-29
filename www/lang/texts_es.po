@@ -3,19 +3,20 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-28 22:39+0100\n"
-"Last-Translator: David Di Santi <ddisanti1@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2019-05-08 23:48+0000\n"
+"Last-Translator: Mauricio Lopez Chazaro <mauricioeneltrabajo@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/cagette/"
+"translations/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.7-dev\n"
 
 #: src/payment/Cash.hx:294
 msgid "Cash"
-msgstr ""
+msgstr "Efectivo"
 
 #: src/payment/Cash.hx:323 src/payment/MoneyPot.hx:349
 msgid "Pay by cash at product distribution"
@@ -27,7 +28,7 @@ msgstr ""
 
 #: src/payment/Transfer.hx:302 src/controller/Transaction.hx:7955
 msgid "Bank transfer"
-msgstr ""
+msgstr "Transferencia bancaria"
 
 #: src/payment/Check.hx:294 src/controller/Transaction.hx:6583
 msgid "Check"
@@ -36,7 +37,7 @@ msgstr ""
 #: src/controller/Transaction.hx:393 src/controller/Transaction.hx:2379
 #: src/controller/Transaction.hx:4134 src/controller/Transaction.hx:4572
 msgid "Action forbidden"
-msgstr ""
+msgstr "Acción prohibida"
 
 #. label or name for a payment
 #: src/controller/Transaction.hx:636 src/controller/Transaction.hx:2677
@@ -47,27 +48,27 @@ msgstr ""
 #: src/controller/Transaction.hx:753 src/controller/Transaction.hx:2797
 #: src/controller/Validate.hx:1874 src/controller/Validate.hx:3210
 msgid "Amount"
-msgstr ""
+msgstr "Cantidad"
 
 #: src/controller/Transaction.hx:840 src/controller/Transaction.hx:2889
 #: src/controller/Validate.hx:3297 src/db/Operation.hx:11940
 #: src/db/Distribution.hx:7235 lang/master/tpl/member/lastMessages.mtt:50
 #: lang/master/tpl/contractadmin/selectDistrib.mtt:191
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: src/controller/Transaction.hx:1024 src/controller/Validate.hx:2140
 #: src/controller/Validate.hx:3481
 msgid "Payment type"
-msgstr ""
+msgstr "Tipo de pago"
 
 #: src/controller/Transaction.hx:1369 src/controller/Transaction.hx:3398
 msgid "As a payment for :"
-msgstr ""
+msgstr "Como pago de:"
 
 #: src/controller/Transaction.hx:2044
 msgid "Payment recorded"
-msgstr ""
+msgstr "Pago guardado"
 
 #: src/controller/Transaction.hx:2097
 msgid "Record a payment for ::user::"
@@ -79,7 +80,7 @@ msgstr ""
 
 #: src/controller/Transaction.hx:2982
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmado"
 
 #: src/controller/Transaction.hx:3877
 msgid "Operation updated"
@@ -184,23 +185,23 @@ msgstr ""
 
 #: src/controller/Categories.hx:902
 msgid "Vegetables"
-msgstr ""
+msgstr "Vegetales"
 
 #: src/controller/Categories.hx:921
 msgid "Fruits"
-msgstr ""
+msgstr "Frutas"
 
 #: src/controller/Categories.hx:936
 msgid "Fish"
-msgstr ""
+msgstr "Pescado"
 
 #: src/controller/Categories.hx:949
 msgid "Red meat"
-msgstr ""
+msgstr "Carne"
 
 #: src/controller/Categories.hx:966
 msgid "Breads"
-msgstr ""
+msgstr "Panes"
 
 #: src/controller/Categories.hx:981
 msgid "Grocery"
@@ -208,7 +209,7 @@ msgstr ""
 
 #: src/controller/Categories.hx:997
 msgid "Beverages"
-msgstr ""
+msgstr "Bebidas"
 
 #: src/controller/Categories.hx:1024
 msgid "Labels"
@@ -232,35 +233,35 @@ msgstr ""
 
 #: src/controller/Categories.hx:1520 src/db/CategoryGroup.hx:1044
 msgid "Color"
-msgstr ""
+msgstr "Color"
 
 #: src/controller/Categories.hx:1663
 msgid "Group modified"
-msgstr ""
+msgstr "Grupo modificado"
 
 #: src/controller/Categories.hx:1713
 msgid "Modify the group "
-msgstr ""
+msgstr "Modificar el grupo "
 
 #: src/controller/Categories.hx:2191
 msgid "Group added"
-msgstr ""
+msgstr "Grupo añadido"
 
 #: src/controller/Categories.hx:2238
 msgid "Create a group of categories"
-msgstr ""
+msgstr "Crear un grupo de categorías"
 
 #: src/controller/Categories.hx:2606
 msgid "Category added"
-msgstr ""
+msgstr "Categoría añadida"
 
 #: src/controller/Categories.hx:2656
 msgid "Create a category"
-msgstr ""
+msgstr "Crear una categoría"
 
 #: src/controller/Categories.hx:3004
 msgid "Modify the category "
-msgstr ""
+msgstr "Modificar la categoría "
 
 #: src/controller/Categories.hx:3235
 msgid ""
