@@ -310,9 +310,9 @@ enum Event {
 	DeleteContract(contract:db.Contract);
 	
 	//crons
-	DailyCron;
-	HourlyCron;
-	MinutelyCron;
+	DailyCron(now:Date);
+	HourlyCron(now:Date);
+	MinutelyCron(now:Date);
 	
 	//orders
 	MakeOrder(orders:Array<db.UserContract>); 
