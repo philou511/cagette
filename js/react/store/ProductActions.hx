@@ -165,7 +165,6 @@ class ProductActions extends ReactComponentOfProps<Props> {
         return jsx('
             <CardActions className=${classes.cagProductInfoWrap} >
                 <Grid container>
-                    
                     <Grid item md={4} xs={6} style=${{textAlign:css.TextAlign.Left}}>
                         <Typography component="div" className=${classes.cagProductInfo} >                                 
                             <span className="cagProductUnit">

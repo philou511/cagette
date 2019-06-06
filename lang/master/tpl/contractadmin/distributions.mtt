@@ -91,9 +91,6 @@
 	$$insert(::_("One time distribution")::,/distribution/insert/::c.id::)
 	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
 	
-	<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
-		<i class="icon icon-user"></i> ::_("Distributions engagement")::
-	</a>
 	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
 		::_("Old distributions")::
 	</a>

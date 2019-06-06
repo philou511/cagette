@@ -51,7 +51,7 @@ class FilterUtil
     }
 
     /**
-    search for products
+        Search for products
     **/
     public static function searchProducts(catalog:Catalog, criteria:String ):FilteredProductCatalog
     {
@@ -147,6 +147,11 @@ class FilterUtil
 
             subcat.products.push(p);
         }
+
+        //re-sort categories
+        catalog.categories.sort(function(a,b){
+            return a.info.displayOrder - b.info.displayOrder;
+        });
 
         return catalog;
     }

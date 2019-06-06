@@ -83,7 +83,6 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 		//Check browser compat
 		var browser = bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
-		
 		var isValidBrowser = browser.satisfies({
 			"chrome" 	: ">=49",
 			"chromium" 	: ">=49",
@@ -119,12 +118,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
-			//trace(categories);
 			//categories.unshift(DEFAULT_CATEGORY);
 
-			setState({
-				categories: categories,
-			});
+			setState({categories: categories});
 			
 			//Loads products
 			fetch(ProductsUrl, GET, {date: props.date, place: props.place}, JSON)
@@ -148,8 +144,6 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					catalog:catalog,
 					loading:false,
 					nav:{category:categories[0], subcategory:null},
-				}, function() {
-					
 				});
 
 			}).catchError(function(error) {
@@ -232,10 +226,12 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		});
 	}
 
-	function filterCatalog(p, f:CatalogFilter) {
+	function filterCatalog(p, f:CatalogFilter):FilteredProductCatalog {
+		//filtered by a search
 		if( f.search != null ) {
 			return react.store.FilterUtil.searchProducts(state.catalog, f.search);
 		} else {
+			//filtered by a category / subcategory
 			//trace("FilterCatalog", f);
 			var filter = ( f.category == null || f.category == 0 ) ? null : f;
 			return FilterUtil.filterProducts(state.catalog, filter);

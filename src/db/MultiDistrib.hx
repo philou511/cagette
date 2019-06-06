@@ -312,42 +312,11 @@ class MultiDistrib extends Object
 	}
 
 	public function getOrdersStartDate(){
-		var date = null;
-
-		for( d in getDistributions() ){
-			if(d.orderStartDate==null) continue;
-			//display closest opening date
-			if (date == null){
-				date = d.orderStartDate;
-			}else if (date.getTime() > d.orderStartDate.getTime()){
-				date = d.orderStartDate;
-			}
-		}
-		return date;
+		return orderStartDate;
 	}
 
-	/*public function hasOnlyConstantOrders(){		
-		for(d in distributions){
-			if( d.contract.type==db.Contract.TYPE_VARORDER ) {
-				return false;
-			}
-		}
-		return true;
-	}*/
-
 	public function getOrdersEndDate(){
-		var date = null;
-
-		for( d in getDistributions() ){
-			if(d.orderEndDate==null) continue;
-			//display most far closing date
-			if (date == null){
-				date = d.orderEndDate;
-			}else if (date.getTime() < d.orderEndDate.getTime()){
-				date = d.orderEndDate;
-			}
-		}
-		return date;
+		return orderEndDate;
 	}
 
 	/**
@@ -410,14 +379,21 @@ class MultiDistrib extends Object
 
 	public function getState():String{
 		var now = Date.now().getTime();
+		if(getOrdersStartDate()==null || getOrdersEndDate()==null) return null;
 		
 		if( getDate().getTime() > now ){
-			//before distrib
-			//notYetOpen
-			//open
-			//closed
-			//today
-			return "beforeDistrib";
+			//we're before distrib
+
+			if( getOrdersStartDate().getTime() > now ){
+				return "notYetOpen";
+			}
+			
+			if( getOrdersEndDate().getTime() > now ){
+				return "open";
+			}else{
+				return "closed";
+			}
+			
 
 		}else{
 			//after distrib
@@ -427,6 +403,8 @@ class MultiDistrib extends Object
 				return "distributed";
 			}
 		}
+
+
 	}
 		
 	
@@ -500,9 +478,16 @@ class MultiDistrib extends Object
 		return baskets.deduplicate();
 	}
 
+	/**
+		Get total income of the md, variable and constant
+	**/
 	public function getTotalIncome():Float{
 		var income = 0.0;
-		for( b in getBaskets()) income+=b.getOrdersTotal();
+		
+		for( d in getDistributions()){
+			income += d.getTurnOver();
+		}
+
 		return income;
 	}
 

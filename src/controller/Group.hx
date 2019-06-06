@@ -3,6 +3,7 @@ import sugoi.form.elements.StringInput;
 import service.OrderService;
 import service.WaitingListService;
 import service.DistributionService;
+import db.Amap;
 import Common;
 
 /**
@@ -184,30 +185,30 @@ class Group extends controller.Controller
 			g.name = f.getValueOf("name");
 			g.contact = user;
 			
-			var type:db.Amap.GroupType = Type.createEnumIndex(db.Amap.GroupType, Std.parseInt(f.getValueOf("type")) );
+			var type:GroupType = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );
 			
 			switch(type){
 			case null : 
 				throw "unknown group type";
-			case db.Amap.GroupType.Amap : 
-				g.flags.unset(db.Amap.AmapFlags.ShopMode);
-				g.flags.set(db.Amap.AmapFlags.HasMembership);
-				g.regOption = db.Amap.RegOption.WaitingList;
+
+			case Amap : 
+				g.flags.unset(ShopMode);
+				g.flags.set(HasMembership);
+				g.regOption = WaitingList;
 				
-			case db.Amap.GroupType.GroupedOrders :
-				g.flags.set(db.Amap.AmapFlags.ShopMode);
-				g.flags.set(db.Amap.AmapFlags.HasMembership);
-				g.regOption = db.Amap.RegOption.WaitingList;
+			case GroupedOrders :
+				g.flags.set(ShopMode);
+				g.flags.set(HasMembership);
+				g.flags.set(ShopV2);
+				g.flags.set(ShopCategoriesFromTaxonomy);
+				g.regOption = WaitingList;
 				
-			case db.Amap.GroupType.ProducerDrive : 
-				g.flags.set(db.Amap.AmapFlags.ShopMode);
-				g.regOption = db.Amap.RegOption.Open;
-				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
-				
-			case db.Amap.GroupType.FarmShop : 
-				g.flags.set(db.Amap.AmapFlags.ShopMode);
-				g.regOption = db.Amap.RegOption.Open;
-				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
+			case ProducerDrive,FarmShop : 
+				g.flags.set(ShopMode);								
+				g.flags.set(PhoneRequired);
+				//g.flags.set(ShopV2);
+				//g.flags.set(ShopCategoriesFromTaxonomy);
+				g.regOption = Open;
 			}
 			
 			g.groupType = type;

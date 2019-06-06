@@ -75,8 +75,24 @@ class Admin extends Controller {
 	
 	@tpl("admin/taxo.mtt")
 	function doTaxo(){
-		
-		view.categ = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
+		var categs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
+		view.categ = categs;
+
+		if(app.params.get("csv")=="1"){
+			
+			var data = new Array<Array<String>>();
+			for ( c in categs){
+				data.push([c.name]);
+				for( c2 in c.getSubCategories()){
+					data.push(["",c2.name]);
+					for( p in c2.getProducts()){
+						data.push(["","",Std.string(p.id),p.name]);
+					}
+				}
+			}
+
+			sugoi.tools.Csv.printCsvDataFromStringArray(data,[],"categories.csv");
+		}
 		
 	}
 	
@@ -110,7 +126,6 @@ class Admin extends Controller {
 	@tpl("admin/graph.mtt")
 	function doGraph(?key:String,?year:Int,?month:Int){
 
-
 		var from = new Date(year,month,1,0,0,0);
 		var to = new Date(year,month+1,0,23,59,59);
 
@@ -124,12 +139,8 @@ class Admin extends Controller {
 						var value = db.Basket.manager.count($cdate>=_from && $cdate<=_to);
 						var g = db.Graph.record(key,value, _from );
 						// trace(value,_from,g);
-						
 					}
-
-
 			}
-
 		}
 
 		var data = db.Graph.getRange(key,from,to);
@@ -144,12 +155,7 @@ class Admin extends Controller {
 		averageValue = total/data.length;
 		view.total = total;
 		view.averageValue = averageValue;
-
-
-
-
 	}
-	
 
 }
 

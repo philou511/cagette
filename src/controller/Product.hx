@@ -16,14 +16,14 @@ class Product extends Controller
 	}
 	
 	@tpl('form.mtt')
-	function doEdit(d:db.Product) {
+	function doEdit(product:db.Product) {
 		
-		if (!app.user.canManageContract(d.contract)) throw t._("Forbidden access");
+		if (!app.user.canManageContract(product.contract)) throw t._("Forbidden access");
 		
-		var f = sugoi.form.Form.fromSpod(d);
+		var f = sugoi.form.Form.fromSpod(product);
 		
 		//stock mgmt ?
-		if (!d.contract.hasStockManagement()) f.removeElementByName('stock');	
+		if (!product.contract.hasStockManagement()) f.removeElementByName('stock');	
 		
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
@@ -31,23 +31,26 @@ class Product extends Controller
 		for (k in app.user.amap.vatRates.keys()) {
 			data.push( { label:k, value:app.user.amap.vatRates[k] } );
 		}
-		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
+		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
 
 		f.removeElementByName("contractId");
 		
 		//Product Taxonomy:
-		var txId = d.txpProduct == null ? null : d.txpProduct.id;
-		var html = service.ProductService.getCategorizerHtml(d.name,txId,f.name);
-		f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
-
-		if (f.isValid()) {
-			
-			f.toSpod(d);
-			app.event(EditProduct(d));
-			d.update();
-			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been updated"));
+		if(product.contract.amap.flags.has(ShopCategoriesFromTaxonomy)){
+			var txId = product.txpProduct == null ? null : product.txpProduct.id;
+			var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
+			f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
 		}else{
-			app.event(PreEditProduct(d));
+			f.removeElementByName("txpProductId");
+		}
+		
+		if (f.isValid()) {
+			f.toSpod(product);
+			app.event(EditProduct(product));
+			product.update();
+			throw Ok('/contractAdmin/products/'+product.contract.id, t._("The product has been updated"));
+		}else{
+			app.event(PreEditProduct(product));
 		}
 		
 		view.form = f;

@@ -213,6 +213,11 @@ class Shop extends Controller
 				o.product = p;
 			}
 
+			//check quantities ( ie : ordered a floatQt when not permitted )
+			if(o.quantity==0){
+				order.products.remove(o);
+			}
+
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){

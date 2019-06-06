@@ -238,8 +238,9 @@ class Distribution extends Object
 	public function getInfos():DistributionInfos{
 		var out = {
 			id:id,
+			groupId		: place.amap.id,
+			groupName 	: place.amap.name,
 			vendorId				: this.contract.vendor.id,
-			groupId					: this.contract.amap.id,
 			distributionStartDate	: date==null ? multiDistrib.distribStartDate.getTime() : date.getTime(),
 			distributionEndDate		: end==null ? multiDistrib.distribEndDate.getTime() : end.getTime(),
 			orderStartDate			: null,

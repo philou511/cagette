@@ -713,61 +713,6 @@ class ContractAdmin extends Controller
 		throw Ok("/contractAdmin/distributions/"+contract.id,t._("Distribution date added"));
 	}
 	
-	/**
-	 * Attendance to distribution
-	 */
-	@tpl("contractadmin/distributionp.mtt")
-	function doDistributionp(contract:db.Contract) {
-		view.nav.push("distributions");
-		sendNav(contract);
-		
-		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		
-		var distribs = contract.getDistribs(false);
-		var userCount = new Map<Int,Int>();
-		var suscribers = contract.getUsers();
-		for( u in suscribers) userCount[u.id] = 0;
-		//populate 
-
-		var increment = function(user:db.User){
-			if(user==null) return;
-			var x = userCount[user.id];
-			if(x==null){
-				userCount[user.id] = 1;
-			}else{
-				userCount[user.id] = x+1;
-			} 
-		}
-		
-		for ( d in distribs) {
-			increment(d.distributor1);
-			increment(d.distributor2);
-			increment(d.distributor3);
-			increment(d.distributor4);
-		}
-			
-		var out1 = new Array<{user:db.User,count:Int}>();//suscribers 
-		var out2 = new Array<{user:db.User,count:Int}>();//not suscribers
-		for( k in userCount.keys()){
-			if(Lambda.find(suscribers,function(s) return s.id==k)!=null){
-				out1.push( { user:db.User.manager.get(k), count:userCount[k] } );
-			}else{
-				out2.push( { user:db.User.manager.get(k), count:userCount[k] } );
-			}
-			
-		} 
-
-		var num =  (distribs.length*contract.distributorNum) / suscribers.length;		
-		view.num = Std.string(num).substr(0,4);
-		view.numRounded = Math.round(num);
-		view.users = suscribers.length;
-		view.distributorNum = contract.distributorNum;
-		view.distribs = distribs.length;
-		view.c = contract;
-		view.participations = out1;
-		view.extParticipations = out2;
-	}
-	
 	@tpl("contractadmin/view.mtt")
 	function doView(contract:db.Contract) {
 		view.nav.push("view");

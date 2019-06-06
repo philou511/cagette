@@ -8,7 +8,6 @@ using tools.DateTool;
 
 class Cron extends Controller
 {
-
 	var now : Date;
 
 	public function new(){
@@ -18,10 +17,7 @@ class Cron extends Controller
 		this.now = App.current.params.exists("now") ? Date.fromString(App.current.params.get("now")) : Date.now();
 	}
 
-	public function doDefault() 
-	{
-		
-	}
+	public function doDefault(){}
 	
 	/**
 	 * CLI only en prod
@@ -45,7 +41,7 @@ class Cron extends Controller
 	public function doMinute() {
 		if (!canRun()) return;
 		
-		app.event(MinutelyCron);
+		app.event(MinutelyCron(this.now));
 
 		//managing buffered emails
 		for( i in 0...5){
@@ -80,14 +76,8 @@ class Cron extends Controller
 	 */
 	public function doHour() {
 		
-		app.event(HourlyCron);
+		app.event(HourlyCron(this.now));
 		
-		distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
-		distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
-		distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
-		
-		distribValidationNotif();
-
 		//instructions for dutyperiod volunteers
 		var task = new sugoi.tools.TransactionWrappedTask(function() {
 			//Let's get all the multidistribs that start in the right time range
@@ -180,6 +170,19 @@ class Cron extends Controller
 		});
 		taskVolunteersAlert.execute(!App.config.DEBUG);
 
+		//Distrib notifications
+		var task = new sugoi.tools.TransactionWrappedTask(function(){
+			distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
+			distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
+			distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
+		});
+		task.execute(true);
+
+		//Distrib Validation notifications				
+		var task = new sugoi.tools.TransactionWrappedTask(distribValidationNotif);
+		task.execute(true);
+
+		//sendOrdersByProductWhenOrdersClose();
 	}
 	
 	/**
@@ -188,7 +191,7 @@ class Cron extends Controller
 	public function doDaily() {
 		if (!canRun()) return;
 		
-		app.event(DailyCron);
+		app.event(DailyCron(this.now));
 		
 		//ERRORS MONITORING
 		var n = Date.now();
@@ -506,7 +509,7 @@ class Cron extends Controller
 		 */ 
 		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
-		printTitle('Autovalidate unvalidated distributions');
+		print('<h3>Autovalidation of unvalidated distribs</h3>');
 		print('Find distributions from $from to $to');
 		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , true);
 		for ( d in Lambda.array(ds)){
@@ -533,6 +536,7 @@ class Cron extends Controller
 		//email
 		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
 		for ( d in ds ){
+			if(d.contract.amap.contact==null) continue;
 			// var subj = d.contract.amap.name + t._(": Validation of the distribution of the ") + App.current.view.hDate(d.date);
 			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
 			var html = t._("<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>", {deliveryDate:App.current.view.hDate(d.date)});

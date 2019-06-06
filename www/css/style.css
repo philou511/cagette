@@ -313,7 +313,7 @@ table.product {
     font-weight: bold; }
 
 /* GLOBAL TABLE SKINNING */
-table.table tr.head > td {
+table.table tr.head > td, table.table thead tr td {
   border-top: 3px solid #DDD;
   height: 30px;
   font-size: 120%;
@@ -322,12 +322,12 @@ table.table tr.head > td {
 table.table tr.subrow {
   background-color: #EEE; }
 
+table.table tr.disabled td, table.table tr.inactive td {
+  opacity: 0.4; }
+
 table.listing tr td {
   white-space: nowrap;
   overflow-x: hidden; }
-
-table.table tr.disabled td, table.table tr.inactive td {
-  opacity: 0.4; }
 
 /* DIV TABLE */
 div.tableHeader {

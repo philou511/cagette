@@ -193,6 +193,8 @@ class Distribution extends Controller
 
 			var orders3 = service.OrderService.prepare(Lambda.list(orders));
 			view.orders = orders3;
+			var md = db.MultiDistrib.get(date,place);
+			view.volunteers = md.getVolunteers();
 			
 			if (type == "csv") {
 				var data = new Array<Dynamic>();
@@ -913,7 +915,9 @@ class Distribution extends Controller
 		view.form = form;
 	}
 
-	//View volunteers planning for each role and multidistrib date
+	/**
+		Members can view volunteers planning for each role and multidistrib date
+	**/
 	@tpl('distribution/volunteersCalendar.mtt')
 	function doVolunteersCalendar(?args: { ?distrib: db.MultiDistrib, ?role: db.VolunteerRole, ?from: Date, ?to: Date } ) {
 		
@@ -982,6 +986,125 @@ class Distribution extends Controller
 			return  a_str < b_str ? 1 : -1;
 		});
 		view.uniqueRoles = uniqueRoles;
+		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
+		view.from = from.toString().substr(0,10);
+		view.to = to.toString().substr(0,10);		
+	}
+
+
+	/**
+		Members can view volunteers planning for each role and multidistrib date
+	**/
+	@tpl('distribution/volunteersParticipation.mtt')
+	function doVolunteersParticipation(?args: { ?from: Date, ?to: Date } ) {
+				
+		var from: Date = null;
+		var to: Date = null;
+
+		if ( args != null ) {
+			if ( args.from != null && args.to != null ) {
+				from = args.from;
+				to = args.to;
+			}
+		}
+
+		if ( from == null || to == null ) {
+			var timeframe = app.user.amap.getMembershipTimeframe(Date.now());
+			from = timeframe.from;
+			to = timeframe.to;
+		}
+
+		var multiDistribs = db.MultiDistrib.getFromTimeRange( app.user.amap, from, to );
+		var members = app.user.amap.getMembers();
+
+		//init + generic roles
+		var totalRolesToBeDone = 0;	
+		var totalRolesDone = 0;
+		var genericRolesToBeDone = 0;
+		var genericRolesDoneByMemberId = new Map<Int,Int>();
+		var contractRolesDoneByMemberId = new Map<Int,Int>();
+		var contractRolesToBeDoneByMemberId = new Map<Int,Int>();
+		var contractRolesToBeDoneByContractId = new Map<Int,Int>();
+		var membersNumByContractId = new Map<Int,Int>();
+		var membersListByContractId = new Map<Int,Array<db.User>>();
+		for( u in members ){
+			genericRolesDoneByMemberId[u.id] = 0;
+			contractRolesDoneByMemberId[u.id] = 0;
+			contractRolesToBeDoneByMemberId[u.id] = 0;
+		}
+		for( md in multiDistribs ){
+			var roles = md.getVolunteerRoles();
+			for( role in roles){
+				totalRolesToBeDone ++;
+				if(role.isGenericRole()){
+					genericRolesToBeDone++;
+				}else{
+					if(contractRolesToBeDoneByContractId[role.contract.id]==null){
+						contractRolesToBeDoneByContractId[role.contract.id]=1; 
+					} else {
+						contractRolesToBeDoneByContractId[role.contract.id]++;
+					}
+				}
+			}
+		}
+
+		//contract roles
+		for( cid in contractRolesToBeDoneByContractId.keys()) membersListByContractId[cid] = [];
+
+		for(md in multiDistribs){
+
+			//populate member list by contract id
+			for( d in md.getDistributions()){
+				if(membersListByContractId[d.contract.id]==null){
+					//this contract has no roles
+					continue;
+				}
+				for( u in members){
+					if(d.getUserOrders(u).length>0){
+						membersListByContractId[d.contract.id].push(u);
+					} 
+				}
+			}
+
+			//volunteers			
+			for( v in md.getVolunteers()){
+				totalRolesDone++;
+				if(v.volunteerRole.isGenericRole()){
+					genericRolesDoneByMemberId[v.user.id]++;
+				}else{
+					contractRolesDoneByMemberId[v.user.id]++;
+				}
+			}
+			
+
+		}
+
+		//roles to be done spread over members
+		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
+		for( cid in membersListByContractId.keys()){
+			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
+			membersNumByContractId[cid] = membersListByContractId[cid].length;
+		}
+
+		for( m in members){
+			for( cid in membersListByContractId.keys()){
+				//if this user is involved in this contract
+				if(Lambda.find(membersListByContractId[cid],function(u)return u.id==m.id)!=null){
+					//role to be done for this user = contract roles to be done for this contract / members num involved in this contract
+					contractRolesToBeDoneByMemberId[m.id] =  Math.ceil( contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid] );
+				}
+			}
+		}
+
+		view.members = members;
+		view.multiDistribs = multiDistribs;
+		view.genericRolesToBeDone = genericRolesToBeDone;
+		view.genericRolesDoneByMemberId = genericRolesDoneByMemberId;
+		view.contractRolesDoneByMemberId = contractRolesDoneByMemberId;
+		view.contractRolesToBeDoneByMemberId = contractRolesToBeDoneByMemberId;
+		view.totalRolesToBeDone = totalRolesToBeDone;
+		view.totalRolesDone = totalRolesDone;
+		
 		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
 		view.from = from.toString().substr(0,10);
 		view.to = to.toString().substr(0,10);		

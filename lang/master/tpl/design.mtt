@@ -151,12 +151,25 @@
 			::raw __content__::
 		</div>	
 		
-		<!--<div class="row">
+		<div class="row">
+			<!--
 			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
 				<span class="glyphicon glyphicon-cog"></span>
 				<b>Attention</b> : Cagette.net sera en maintenance le <b>mercredi 6 Février de 23h à 2h</b>.				
+				
 			</div>
-		</div>-->
+			-->
+			<div class="col-md-12 alert-warning text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">					
+					<b>Connaissez-vous <a href="http://www.lilo.org" target="_blank">Lilo</a> ?</b> &nbsp;&nbsp;&nbsp; C'est un moteur de recherche alternatif et éthique qui soutient les projets à impact positif !
+					<br/>
+					<br/>
+					<a href="http://www.lilo.org/fr/cagette-net/?utm_source=cagette-net" target="_blank" class="btn btn-primary">
+						<span class="glyphicon glyphicon-heart"></span>
+						Soutenez-nous en nous donnant vos gouttes d'eau
+						<span class="glyphicon glyphicon-heart"></span>
+					</a>
+			</div>
+		</div>
 	
 		<div class="row" id="footer">
 			
@@ -177,16 +190,26 @@
 						<li>
 							<a href="https://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
 						</li>
-					</ul>
-					
-				</div>
-				<div class="col-md-3" >
-					::_("CONTACT US")::
-					<ul>
 						<li>
 							::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
 						</li>
 					</ul>
+					
+				</div>
+				<div class="col-md-3" >
+					SOUTENEZ-NOUS
+					<ul>
+						<li>
+							<a href="http://www.lilo.org/fr/cagette-net/?utm_source=cagette-net" target="_blank">Notre page Lilo</a>
+						</li>
+					</ul>
+					<!-- PAYPAL !-->
+					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin-top:12px;">
+						<input type="hidden" name="cmd" value="_s-xclick"/>
+						<input type="hidden" name="hosted_button_id" value="S9KT7FQS7P622"/>
+						<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne"/>
+						<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1"/>
+					</form>
 				</div>
 				<div class="col-md-3" >
 					::_("FOLLOW US")::
@@ -206,17 +229,7 @@
 					</ul>
 				</div>
 				
-				<div class="col-md-3">
-					<!-- PAYPAL !-->
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-					<input type="hidden" name="cmd" value="_s-xclick"/>
-					<input type="hidden" name="hosted_button_id" value="S9KT7FQS7P622"/>
-					<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne"/>
-					<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1"/>
-					</form>
-
-
-				</div>
+			
 			
 		</div>
 		

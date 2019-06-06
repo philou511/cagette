@@ -270,18 +270,26 @@ table.product{
 /* GLOBAL TABLE SKINNING */
 
 //separator between rows
-table.table tr.head>td{
-	//border-top: 1px solid #BBB;
-	border-top: 3px solid #DDD;
-	height: 30px;
-	font-size:120%;
-    vertical-align: bottom; 
+table.table{
+	
+	tr.head>td, thead tr td{
+		//border-top: 1px solid #BBB;
+		border-top: 3px solid #DDD;
+		height: 30px;
+		font-size:120%;
+		vertical-align: bottom; 
+	}
+
+	//sub-row, darker bg
+	tr.subrow{
+		background-color:#EEE;
+	}
+
+	tr.disabled td,tr.inactive td{
+		opacity:0.4;
+	}
 }
 
-//sub-row, darker bg
-table.table tr.subrow{
-	background-color:#EEE;
-}
 
 //listing have no overflow
 table.listing tr td{
@@ -289,9 +297,6 @@ table.listing tr td{
 	overflow-x:hidden;
 }
 
-table.table tr.disabled td,table.table tr.inactive td{
-	opacity:0.4;
-}
 
 
 /* DIV TABLE */ 

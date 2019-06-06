@@ -115,8 +115,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 			latitude: distrib.place.latitude,
 			longitude: distrib.place.longitude,
 			content: jsx('<div>
-				<span>${distrib.id}</span><br />
-				<a href=${"/group/" + distrib.groupId} target="_blank">Voir le groupe</a>
+				<a href=${"/group/" + distrib.groupId} target="_blank">${distrib.groupName}</a>
 			</div>') 
 		} ));
 
@@ -141,20 +140,23 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 							</Grid>
 
 							<Grid item xs={8}>
-								<Typography component="p" style=${{color:CGColors.MediumGrey}}>
+								<Typography component="p" style=${{color:CGColors.MediumGrey}} >
+									<b>${distribution.groupName}</b>
+									<br/>
 									${CagetteTheme.place(distribution.place)}
 								</Typography>
 							</Grid>
 						</Grid>
 
-						<Typography component="p">
+						<Typography component="p" style=${{marginTop:12}}>
 							Commande ouverte du ${Formatting.hDate(Date.fromTime(distribution.orderStartDate))}<br />
 							au ${Formatting.hDate(Date.fromTime(distribution.orderEndDate))}
-						</Typography>									
+						</Typography>
+
 					</CardContent>
 
 					<CardActions>
-						<Button href=${"/group/" + distribution.groupId} size=$Medium color=$Primary variant=$Contained>
+						<Button onClick=${function(){js.Browser.window.open("/group/" + distribution.groupId,"_blank");}} size=$Medium color=$Primary variant=$Contained>
 							Commander
 						</Button>
 					</CardActions>
@@ -182,6 +184,9 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 
 		var cols = if(products.length<4) products.length else 4;
 
+		//if width under sm
+		if(js.Browser.window.document.body.clientWidth<600) cols = 1;
+
 		return jsx('<GridList cols=$cols>$products</GridList>');
 	}
 
@@ -191,8 +196,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		if(props.vendorInfo.offCagette==null) return null;
 		return jsx('<Grid item xs={12}>
 			<Typography style=${{fontSize:"1.3rem",margin:24,marginBottom:12}}>
-				<b>Retrouvez nous aussi : </b>
-				<span dangerouslySetInnerHTML=${{__html: ${props.vendorInfo.offCagette.split("\n").join("<br/>")}}}></span>
+				<span dangerouslySetInnerHTML=${{__html: "<b>Retrouvez nous aussi : </b>"+${props.vendorInfo.offCagette.split("\n").join("<br/>")}}}></span>
 			</Typography>
 		</Grid>');
 	}
@@ -201,6 +205,8 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 
 		if(props.catalogProducts==null || props.catalogProducts.length==0) return null;
 		var cols = if(props.catalogProducts.length<4) props.catalogProducts.length else 4;
+		//if width under sm
+		if(js.Browser.window.document.body.clientWidth<600) cols = 1;
 
 		return jsx('<><Grid item xs={12}>
 			${CagetteTheme.h2("Nos produits")}

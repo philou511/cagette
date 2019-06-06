@@ -111,6 +111,7 @@ typedef DistributionInfos = {
 	id:Int,
 	vendorId:Int,
 	groupId:Int,
+	groupName:String,
 	distributionStartDate:Float,
 	distributionEndDate:Float,
 	orderStartDate:Float,
@@ -138,7 +139,8 @@ typedef CategoryInfo = {
 	id:Int,
 	name:String,
 	?image : String,
-	?subcategories:Array<CategoryInfo>
+	?subcategories:Array<CategoryInfo>,
+	?displayOrder:Int,
 }
 
 /**
@@ -308,9 +310,9 @@ enum Event {
 	DeleteContract(contract:db.Contract);
 	
 	//crons
-	DailyCron;
-	HourlyCron;
-	MinutelyCron;
+	DailyCron(now:Date);
+	HourlyCron(now:Date);
+	MinutelyCron(now:Date);
 	
 	//orders
 	MakeOrder(orders:Array<db.UserContract>); 

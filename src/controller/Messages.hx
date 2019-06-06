@@ -47,6 +47,10 @@ class Messages extends Controller
 				if (d.email != null) mails.push(d.email);
 				if (d.email2 != null) mails.push(d.email2);
 			}
+
+			if(form.getValueOf("text")=="" || form.getValueOf("text")==null){
+				throw Error("/messages",t._("The message body is empty !"));
+			}
 			
 			//send mail confirmation link
 			var e = new sugoi.mail.Mail();		
@@ -90,7 +94,7 @@ class Messages extends Controller
 	
 	@tpl("messages/message.mtt")
 	public function doMessage(msg:Message) {
-		
+		if (msg.amap.id!=app.user.amap.id) throw Error("/", t._("Non authorized access"));
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", t._("Non authorized access"));
 		
 		view.list = getListName(msg.recipientListId);
