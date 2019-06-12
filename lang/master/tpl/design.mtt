@@ -140,12 +140,13 @@
 			::raw __content__::
 		</div>	
 		
-		<!--<div class="row">
+		<div class="row">
 			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
 				<span class="glyphicon glyphicon-cog"></span>
-				<b>Attention</b> : Cagette.net sera en maintenance le <b>mercredi 6 Février de 23h à 2h</b>.				
+				<b>Attention</b> : Cagette.net sera en maintenance le <b>mardi 18 juin de 9h à 11h</b>.<br/>
+				Le site ne sera pas accessible pendant cette période.			
 			</div>
-		</div>-->
+		</div>
 	
 		<div class="row" id="footer">
 			

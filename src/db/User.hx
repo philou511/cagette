@@ -111,7 +111,7 @@ class User extends Object {
 
 	public static function getNationalities(){
 		var t = sugoi.i18n.Locale.texts;
-		return [
+		var n =  [
 			{label:t._("French")	,value:"FR"},
 			{label:t._("Belgian")	,value:"BE"},
 			{label:t._("Italian")	,value:"IT"},
@@ -119,8 +119,13 @@ class User extends Object {
 			{label:t._("German")	,value:"DE"},
 			{label:t._("Swiss")		,value:"CH"},
 			{label:t._("Canadian")	,value:"CA"},
-			{label:t._("Other")		,value:"-"},
 		];
+		
+		//ISO 3166-1
+		for( x in ["AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ","BR","BS","BT","BV","BW","BY","BZ","CC","CD","CF","CG","CI","CK","CL","CM","CN","CO","CR","CU","CV","CW","CX","CY","CZ","DJ","DK","DM","DO","DZ","EC","EE","EG","EH","ER","ET","FI","FJ","FK","FM","FO","GA","GB","GD","GE","GF","GG","GH","GI","GL","GM","GN","GP","GQ","GR","GS","GT","GU","GW","GY","HK","HM","HN","HR","HT","HU","ID","IE","IL","IM","IN","IO","IQ","IR","IS","JE","JM","JO","JP","KE","KG","KH","KI","KM","KN","KP","KR","KW","KY","KZ","LA","LB","LC","LI","LK","LR","LS","LT","LU","LV","LY","MA","MC","MD","ME","MF","MG","MH","MK","ML","MM","MN","MO","MP","MQ","MR","MS","MT","MU","MV","MW","MX","MY","MZ","NA","NC","NE","NF","NG","NI","NL","NO","NP","NR","NU","NZ","OM","PA","PE","PF","PG","PH","PK","PL","PM","PN","PR","PS","PT","PW","PY","QA","RE","RO","RS","RU","RW","SA","SB","SC","SD","SE","SG","SH","SI","SJ","SK","SL","SM","SN","SO","SR","SS","ST","SV","SX","SY","SZ","TC","TD","TF","TG","TH","TJ","TK","TL","TM","TN","TO","TR","TT","TV","TW","TZ","UA","UG","UM","US","UY","UZ","VA","VC","VE","VG","VI","VN","VU","WF","WS","YE","YT","ZA","ZM","ZW"]){
+			n.push({label:x,value:x});
+		}
+		return n;
 	}
 	
 	/**
