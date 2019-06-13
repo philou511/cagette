@@ -4,6 +4,8 @@
 <div style="margin-top:12px;"></div>
 ::end::
 
+
+
 ::set hasShopMode = amap.hasShopMode()::
 <div id="content" class="col-md-8">
 	
@@ -385,4 +387,8 @@
 		::end::
 	::end::
 </div>
+
+
+
+
 ::end::

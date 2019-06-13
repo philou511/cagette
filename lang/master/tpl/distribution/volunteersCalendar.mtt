@@ -57,6 +57,23 @@
 			</script>
 
 		</div>
+
+		::if(done >= toBeDone)::
+			::set class="success text-success"::
+		::else::
+			::set class="danger text-danger"::
+		::end::		
+		<div class="::class::" style="margin:18px">
+			
+			::if(done >= toBeDone)::
+				<i class="icon icon-check"></i>
+			::else::
+				<i class="icon icon-alert"></i>
+			::end::
+			Votre participation aux permanences : <b>::done::</b> permanences faites ou prévues sur  <b>::toBeDone::</b> permanences à faire.
+			<span style="font-size:0.9em;">( du ::hDate(timeframe.from):: au ::hDate(timeframe.to):: )</span>
+			
+		</div>
 		
 		<div style="overflow-x:scroll;margin-top:20px;margin-bottom:30px;min-width:100%;" ::cond multidistribs.length != 0 ::>
 

@@ -95,7 +95,7 @@
 									<i class="icon icon-users"></i> ::_("Members")::
 								</a>
 							</li>
-							<li ::attr class if(category=="distribution") 	'active' ::>
+							<li id="distributions" ::attr class if(category=="distribution") 	'active' ::>
 								<a href="/distribution" ::cond user.canManageAllContracts()::>
 									<i class="icon icon-calendar"></i>  ::_("Distributions")::
 								</a>

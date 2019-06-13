@@ -930,33 +930,26 @@ class Distribution extends Controller
 			if ( args.distrib != null && args.role != null ) {
 
 				try {
-
 					service.VolunteerService.addUserToRole( app.user, args.distrib, args.role );
 				}
 				catch(e: tink.core.Error) {
-
 					throw Error("/distribution/volunteersCalendar", e.message);
 				}
 		
 				if ( args.from == null || args.to == null ) {
-
 					throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
-				}
-				else {
-
+				} else {
 					throw Ok("/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to, t._("You have been successfully assigned to the selected role."));
 				}
 			}
 			
 			if ( args.from != null && args.to != null ) {
-
 				from = args.from;
 				to = args.to;
 			}
 		}
 
 		if ( from == null || to == null ) {
-
 			from = Date.now();
 			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.amap.daysBeforeDutyPeriodsOpen );			
 		}
@@ -988,7 +981,85 @@ class Distribution extends Controller
 		view.uniqueRoles = uniqueRoles;
 		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
 		view.from = from.toString().substr(0,10);
-		view.to = to.toString().substr(0,10);		
+		view.to = to.toString().substr(0,10);
+
+		//duty periods user's participation	
+		var me = app.user;
+		var timeframe = me.amap.getMembershipTimeframe(Date.now());
+		view.timeframe = timeframe;	
+
+		var multiDistribs = db.MultiDistrib.getFromTimeRange( me.amap, timeframe.from, timeframe.to );
+		var members = me.amap.getMembers();
+		var genericRolesDone = 0;
+		var genericRolesToBeDone = 0;
+		var contractRolesDone = 0;
+		var contractRolesToBeDone = 0;
+		var contractRolesToBeDoneByContractId = new Map<Int,Int>();
+		var membersNumByContractId = new Map<Int,Int>();
+		var membersListByContractId = new Map<Int,Array<db.User>>();
+		for( md in multiDistribs ){
+			var roles = md.getVolunteerRoles();
+			for( role in roles){
+				if(role.isGenericRole()){
+					genericRolesToBeDone++;
+				}else{
+					if(contractRolesToBeDoneByContractId[role.contract.id]==null){
+						contractRolesToBeDoneByContractId[role.contract.id]=1; 
+					} else {
+						contractRolesToBeDoneByContractId[role.contract.id]++;
+					}
+				}
+			}
+		}
+
+		//contract roles
+		for( cid in contractRolesToBeDoneByContractId.keys()) membersListByContractId[cid] = [];
+
+		for(md in multiDistribs){
+
+			//populate member list by contract id
+			for( d in md.getDistributions()){
+				if(membersListByContractId[d.contract.id]==null){
+					//this contract has no roles
+					continue;
+				}
+				for( u in members){
+					if(d.getUserOrders(u).length>0){
+						membersListByContractId[d.contract.id].push(u);
+					} 
+				}
+			}
+
+			//volunteers			
+			for( v in md.getVolunteers()){
+				if(v.user.id!=me.id) continue;
+				if(v.volunteerRole.isGenericRole()){
+					genericRolesDone++;
+				}else{
+					contractRolesDone++;
+				}
+			}
+		}
+
+		//roles to be done spread over members
+		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
+		for( cid in membersListByContractId.keys()){
+			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
+			membersNumByContractId[cid] = membersListByContractId[cid].length;
+		}
+
+		
+		for( cid in membersListByContractId.keys()){
+			//if this user is involved in this contract
+			if(Lambda.find(membersListByContractId[cid],function(u)return u.id==me.id)!=null){
+				//role to be done for this user = contract roles to be done for this contract / members num involved in this contract
+				contractRolesToBeDone +=  Math.ceil( contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid] );
+			}
+		}
+
+		view.toBeDone = genericRolesToBeDone + contractRolesToBeDone;
+		view.done = genericRolesDone + contractRolesDone;
+		
 	}
 
 
@@ -1091,7 +1162,7 @@ class Distribution extends Controller
 				//if this user is involved in this contract
 				if(Lambda.find(membersListByContractId[cid],function(u)return u.id==m.id)!=null){
 					//role to be done for this user = contract roles to be done for this contract / members num involved in this contract
-					contractRolesToBeDoneByMemberId[m.id] =  Math.ceil( contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid] );
+					contractRolesToBeDoneByMemberId[m.id] +=  Math.ceil( contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid] );
 				}
 			}
 		}

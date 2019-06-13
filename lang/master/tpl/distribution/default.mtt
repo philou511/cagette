@@ -214,10 +214,7 @@
                             <div class="actions">
                                     <a href="/contractAdmin/ordersByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::" class="btn btn-default btn-sm">
                                         <i class="icon icon-basket"></i> ::_("Orders")::
-                                    </a>
-                                    <a href=" /distribution/listByDate/::d.getDate().toString().substr(0,10)::/::d._place.id::/all/S" class="btn btn-default btn-sm">
-                                        <i class="icon icon-print"></i> ::_("Attendance sheet")::
-                                    </a>
+                                    </a>                                   
                             </div>
                             
                         </div>
@@ -311,7 +308,4 @@
     </div>
 ::end::
 			
-
-
-
 ::end::

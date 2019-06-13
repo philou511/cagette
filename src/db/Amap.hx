@@ -361,7 +361,9 @@ class Amap extends Object
 	public function getMembershipTimeframe(d:Date):{from:Date,to:Date}{
 		if (d == null) d = Date.now();
 		var n = membershipRenewalDate;
-		if (n == null) n = Date.now();
+		if (n == null){
+			n = new Date( 2000,8,1,0,0,0 ); //default renewal date at 1st september
+		} 
 		var renewalDate = new Date(d.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 		if (d.getTime() < renewalDate.getTime()) {
 			return { from: renewalDate.setYear(renewalDate.getFullYear()-1)  , to : renewalDate };
