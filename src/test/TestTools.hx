@@ -39,8 +39,22 @@ class TestTools extends haxe.unit.TestCase
 
 		assertEquals( false , tools.FloatTool.isInt(10.08) );
 		assertEquals( true , tools.FloatTool.isInt(10.00) );
+	}
 
+	function testStockDispatch(){
+		//base stock 15kg, 3 offers : 10kg, 1kg, 5kg
 
+		var stocks = tools.StockTool.dispatchOffers( 15 , ["10kg"=>10,"1kg"=>1, "5kg"=>5] );
+
+		assertEquals(stocks["10kg"],0);// 0 x 10kg
+		assertEquals(stocks["1kg"],10);// 10 x 1kg
+		assertEquals(stocks["5kg"],1);// 1 x 5kg
+
+		var stocks = tools.StockTool.dispatchOffers( 30 , ["10kg"=>10, "1kg"=>1, "5kg"=>5] );
+
+		assertEquals(stocks["10kg"],1);// 1 x 10kg
+		assertEquals(stocks["1kg"],10);// 10 x 1kg
+		assertEquals(stocks["5kg"],2);// 2 x 5kg
 	}
 
 /*

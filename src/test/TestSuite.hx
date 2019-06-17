@@ -13,14 +13,14 @@ class TestSuite
 		var r = new haxe.unit.TestRunner();
 
 		//Cagette core tests
-		r.add(new test.TestUser());
-		r.add(new test.TestOrders());		
 		r.add(new test.TestTools());
+		r.add(new test.TestUser());
+		r.add(new test.TestOrders());				
 		r.add(new test.TestDistributions());
 		r.add(new test.TestPayments());
 		r.add(new test.TestReports());
 
-		#if plugins
+		// #if plugins
 		//Cagette-pro tests, keep in this order
 		r.add(new pro.test.TestProductService());
 		r.add(new pro.test.TestRemoteCatalog());
@@ -29,7 +29,7 @@ class TestSuite
 		//wholesale-order tests
 		r.add(new who.test.TestWho());
 		//r.add(new pro.test.TestMarketplacePayment());
-		#end
+		// #end
 
 		r.run();
 	}

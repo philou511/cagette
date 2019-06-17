@@ -232,6 +232,10 @@ class App extends sugoi.BaseApp {
 		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");
+
+		//stock strategy
+		out.set("ByProduct"	, "Par produit (produits vrac, stockés sans conditionnement)");
+		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
 		out.set("variablePrice", "Prix variable selon pesée");
 		return out;
