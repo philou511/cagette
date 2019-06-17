@@ -35,19 +35,19 @@ class Basket extends Object
 		CACHE = new Map<String,db.Basket>();
 	}
 	
-	public static function get(user:db.User, place:db.Place, date:Date, ?lock = false):db.Basket{
+	//public static function get(user:db.User, md:db.MultiDistrib, ?lock = false):db.Basket{
+	public static function get(user:db.User,place:db.Place,date:Date, ?lock = false):db.Basket{
 		
-		date = tools.DateTool.setHourMinute(date, 0, 0);
+		//date = tools.DateTool.setHourMinute(date, 0, 0);
 
 		//caching
 		// var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
 		// var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
-			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
-			var orders = md.getUserOrders(user);
-			
-			for( o in orders){
+			var md = db.MultiDistrib.get(date, place);
+			if(md==null) return null;
+			for( o in md.getUserOrders(user)){
 				if(o.basket!=null) {
 					b = o.basket;
 					break;
@@ -74,7 +74,8 @@ class Basket extends Object
 		if (b == null){
 			
 			//compute basket number
-			var md = MultiDistrib.get(date, place,db.Contract.TYPE_VARORDER);
+			var md = MultiDistrib.get(date, place);
+			if(md==null) throw "md is null when creating basket";
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;
@@ -82,7 +83,7 @@ class Basket extends Object
 			b.insert();
 			
 			//try to find orders and link them to the basket			
-			var dids = tools.ObjectListTool.getIds(md.distributions);
+			var dids = tools.ObjectListTool.getIds(md.getDistributions(db.Contract.TYPE_VARORDER));
 			for ( o in db.UserContract.manager.search( ($distributionId in dids) && ($user == user), true)){
 				o.basket = b;
 				o.update();
@@ -155,7 +156,7 @@ class Basket extends Object
 		var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
         if(order==null) return null;
 
-		var key = db.Distribution.makeKey(order.distribution.date, order.distribution.place);
+		var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
 		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending);
 		
 	}

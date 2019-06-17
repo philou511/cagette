@@ -10,7 +10,7 @@ using tools.ObjectListTool;
  * 
  * @author fbarbut
  */
-class MultiDistrib
+class MultiDistribOld
 {
 	public var distributions : Array<db.Distribution>;
 	public var contracts : Array<db.Contract>;
@@ -26,7 +26,7 @@ class MultiDistrib
 	}
 	
 	public static function get(date:Date, place:db.Place,contractType:Int){
-		var m = new MultiDistrib();
+		var m = new MultiDistribOld();
 		
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
@@ -52,7 +52,7 @@ class MultiDistrib
 	/**
 		Get multidistribs from a time range + place + type
 	**/
-	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
+	public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistribOld>{
 		var multidistribs = [];
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
@@ -60,7 +60,7 @@ class MultiDistrib
 		var distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) , { orderBy:date }, false).array();
 
 		//sort by day-place-type
-		var multidistribs = new Map<String,MultiDistrib>();
+		var multidistribs = new Map<String,MultiDistribOld>();
 		for ( d in distributions){
 
 			//filter by contractType
@@ -71,7 +71,7 @@ class MultiDistrib
 			var key = d.getKey() + "-" + d.contract.type;
 			
 			if(multidistribs[key]==null){
-				var m = new MultiDistrib();
+				var m = new MultiDistribOld();
 				m.distributions.push(d);
 				m.type = d.contract.type;
 				multidistribs[key] = m;
@@ -82,7 +82,7 @@ class MultiDistrib
 		var multidistribs = Lambda.array(multidistribs);
 
 		//trigger event
-		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
+		for(md in multidistribs) App.current.event(MultiDistribEvent(null,md));
 		
 		//sort by date desc
 		multidistribs.sort(function(x,y){

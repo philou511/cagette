@@ -248,4 +248,18 @@ class PaymentService
 		out = Lambda.map(allowedPaymentTypes,function(m) return m.name).join(", ");
 		return out;
 	}
+
+	/**
+		Get multidistrib turnover by payment type
+	**/
+	public static function getMultiDistribTurnoverByPaymentType(md:db.MultiDistrib):Map<String,{ht:Float,ttc:Float}>{
+		var out = new Map<String,{ht:Float,ttc:Float}>();
+
+		/*for( b in md.getBaskets()){
+			for( op in b.getPaymentsOperations()){
+				
+			}
+		}*/
+		return out;
+	}
 }

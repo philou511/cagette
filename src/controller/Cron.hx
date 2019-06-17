@@ -46,7 +46,7 @@ class Cron extends Controller
 		//managing buffered emails
 		for( i in 0...5){
 			var task = new sugoi.tools.TransactionWrappedTask(sendEmailsfromBuffer.bind(i*10));
-			task.execute(true);
+			task.execute(!App.config.DEBUG);
 		}
 		
 		//warns admin about emails that cannot be sent
@@ -59,14 +59,14 @@ class Cron extends Controller
 				e.delete();
 			}
 		});
-		task.execute(true);
+		task.execute(!App.config.DEBUG);
 
 		//Delete old emails
 		var task = new sugoi.tools.TransactionWrappedTask(function(){
 			var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
 			sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
 		});
-		task.execute(true);
+		task.execute(!App.config.DEBUG);
 	}
 	
 	/**
@@ -78,20 +78,116 @@ class Cron extends Controller
 		
 		app.event(HourlyCron(this.now));
 		
+		//instructions for dutyperiod volunteers
+		var task = new sugoi.tools.TransactionWrappedTask(function() {
+			//Let's get all the multidistribs that start in the right time range
+			var fromNow = now.setHourMinute( now.getHours(), 0 );
+			var toNow = now.setHourMinute( now.getHours() + 1, 0);
+			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
+				'SELECT distrib.* 
+				FROM MultiDistrib distrib INNER JOIN Amap amap
+				ON distrib.groupId = amap.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY);', false));
+			printTitle("Volunteers instruction mail");
+			
+			for (multidistrib  in multidistribs) {
+
+				var volunteers: Array<db.Volunteer> = multidistrib.getVolunteers();
+				if ( volunteers.length != 0 ) {
+					print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
+					var mail = new Mail();
+					mail.setSender(App.config.get("default_email"),"Cagette.net");
+					var volunteersList = "<ul>";
+					for ( volunteer in  volunteers ) {
+						
+						mail.addRecipient( volunteer.user.email, volunteer.user.getName() );
+						if ( volunteer.user.email2 != null ) {
+							mail.addRecipient( volunteer.user.email2 );
+						}
+						volunteersList += "<li>"+volunteer.volunteerRole.name + " : " + volunteer.user.getCoupleName() + "</li>";
+					}
+					volunteersList += "</ul>";
+					
+					mail.setSubject( "["+multidistrib.group.name+"] "+ t._("Instructions for the volunteers of the ::date:: distribution",{date : view.hDate(multidistrib.distribStartDate)}) );
+					
+					//Let's replace all the tokens
+					var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
+					var emailBody = StringTools.replace( multidistrib.group.volunteersMailContent, "[DATE_DISTRIBUTION]", ddate );
+					emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
+					emailBody = StringTools.replace( emailBody, "[LISTE_BENEVOLES]", volunteersList ); 
+					mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.group  } ) );
+					App.sendMail(mail);
+				}
+			}			
+		});
+		task.execute(!App.config.DEBUG);
+
+
+		var taskVolunteersAlert = new sugoi.tools.TransactionWrappedTask(function() {
+
+			//Let's get all the multidistribs that start in the right time range
+			var fromNow = now.setHourMinute( now.getHours(), 0 );
+			var toNow = now.setHourMinute( now.getHours() + 1, 0);
+			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
+				'SELECT distrib.* 
+				FROM MultiDistrib distrib INNER JOIN Amap amap
+				ON distrib.groupId = amap.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
+
+
+			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
+			var members = Lambda.array( app.user.amap.getMembers() );
+			printTitle("Volunteers alerts");
+			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
+				print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
+				var mail = new Mail();
+				mail.setSender(App.config.get("default_email"),"Cagette.net");
+				for ( member in members ) {
+
+					mail.addRecipient( member.email, member.getName() );
+					if ( member.email2 != null ) {
+						mail.addRecipient( member.email2 );
+					}
+				}
+
+				//vacant roles
+				var vacantVolunteerRolesList = "<ul>"+Lambda.map( multidistrib.getVacantVolunteerRoles(),function (r) return "<li>"+r.name+"</li>").join("\n")+"</ul>";
+				
+				mail.setSubject( t._("[::group::] We need more volunteers for ::date:: distribution",{group : multidistrib.group.name, date : view.hDate(multidistrib.distribStartDate)}) );
+				
+				//Let's replace all the tokens
+				var ddate = t._("::date:: from ::startHour:: to ::endHour::",{date:view.dDate(multidistrib.distribStartDate),startHour:view.hHour(multidistrib.distribStartDate),endHour:view.hHour(multidistrib.distribEndDate)});
+				var emailBody = StringTools.replace( multidistrib.group.alertMailContent, "[DATE_DISTRIBUTION]", ddate );
+				emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
+				emailBody = StringTools.replace( emailBody, "[ROLES_MANQUANTS]", vacantVolunteerRolesList ); 				
+									
+				mail.setHtmlBody( emailBody );
+
+				App.sendMail(mail);
+			}			
+		});
+		taskVolunteersAlert.execute(!App.config.DEBUG);
+
+		//Distrib notifications
 		var task = new sugoi.tools.TransactionWrappedTask(function(){
 			distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
 			distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
 		});
 		task.execute(true);
-				
+
+		//Distrib Validation notifications				
 		var task = new sugoi.tools.TransactionWrappedTask(distribValidationNotif);
 		task.execute(true);
 
 		//sendOrdersByProductWhenOrdersClose();
 	}
 	
-	
+	/**
+		Daily cron job
+	**/
 	public function doDaily() {
 		if (!canRun()) return;
 		
@@ -310,10 +406,6 @@ class Cron extends Controller
 						text += "</ul>";
 					}
 				
-					if (u.distrib.isDistributor(u.user)) {
-						text += t._("<b>Warning: you are in charge of the delivery ! Do not forget to print the attendance sheet.</b>");
-					}
-					
 					try{
 						var m = new Mail();
 						m.setSender(App.config.get("default_email"), "Cagette.net");
@@ -461,7 +553,7 @@ class Cron extends Controller
 	 * (like "SELECT * FROM BufferedMail WHERE sdate IS NULL ORDER BY cdate DESC LIMIT 100 FOR UPDATE Lock wait timeout exceeded; try restarting transaction") 
 	 */
 	function sendEmailsfromBuffer(index:Int){
-		print("<h3>Send 10 Emails from Buffer</h3>");		
+		printTitle("Send 10 Emails from Buffer");		
 		//send
 		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,10],orderBy:-cdate},false)  ){
 			e.lock();
@@ -490,6 +582,10 @@ class Cron extends Controller
 	
 	
 	public static function print(text){
-		Sys.println( text + "<br/>" );
+		Sys.println( "<pre>"+ text + "</pre><br/>" );
+	}
+
+	public static function printTitle(title){
+		Sys.println("<h2>"+title+"</h2>");
 	}
 }

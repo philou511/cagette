@@ -68,7 +68,7 @@ class Api extends Controller
 	public function doOrder(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.api.Order());
 	}	
-	
+
 	/**
 	 * Get distribution planning for this group
 	 * 

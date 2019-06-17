@@ -1,14 +1,16 @@
 package controller;
+import db.Contract;
 import db.UserContract;
+import db.VolunteerRole;
 import sugoi.form.elements.DateDropdowns;
 import sugoi.form.elements.Input;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
-import db.Contract;
 import Common;
 import plugin.Tutorial;
 using Std;
 import service.OrderService;
+
 
 class Contract extends Controller
 {
@@ -168,6 +170,7 @@ class Contract extends Controller
 		var form = Form.fromSpod(c);
 		form.removeElement( form.getElement("amapId") );
 		form.removeElement(form.getElement("type"));
+		form.removeElement(form.getElement("distributorNum"));
 		form.getElement("userId").required = true;
 
 		app.event(EditContract(c,form));
@@ -314,6 +317,9 @@ class Contract extends Controller
 			c.type = type;
 			c.vendor = vendor;
 			c.insert();
+
+			//Let's add the Volunteer Roles for the number of volunteers needed
+			service.VolunteerService.createRoleForContract(c,form.getValueOf("distributorNum"));
 			
 			//right
 			if (c.contact != null) {
