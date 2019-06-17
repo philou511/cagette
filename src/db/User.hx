@@ -138,11 +138,12 @@ class User extends Object {
 		if (ua == null) return false;
 		return ua.hasRight(Right.GroupAdmin);
 	}
+
 	public function isGroupManager(){
 		return isAmapManager();
 	}
 	
-	function getUserAmap(amap:db.Amap):db.UserAmap {
+	public function getUserAmap(amap:db.Amap):db.UserAmap {
 		return db.UserAmap.get(this, amap);
 	}
 	

@@ -89,7 +89,7 @@ class UserContract extends Object
 	
 		var can = false;
 		if (this.product.contract.type == db.Contract.TYPE_VARORDER) {
-			
+			if(this.distribution==null) return false;
 			if (this.distribution.orderStartDate == null) {
 				can = true;
 			}else {

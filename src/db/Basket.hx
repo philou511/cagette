@@ -152,7 +152,7 @@ class Basket extends Object
 	
 	public function getOrderOperation(?onlyPending=true):db.Operation {
 
-		var order = getOrders().first();
+		var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
         if(order==null) return null;
 
 		var key = db.Distribution.makeKey(order.distribution.date, order.distribution.place);
