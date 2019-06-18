@@ -142,7 +142,7 @@ class DistributionService
 		
 		//link to a multiDistrib
 		if(md==null){
-			md = db.MultiDistrib.get(d.date, d.place);
+			md = db.MultiDistrib.get(d.date, d.place, true);
 		}
 		if(md==null){
 			md = createMd(d.place, d.date, d.end, d.orderStartDate, d.orderEndDate );

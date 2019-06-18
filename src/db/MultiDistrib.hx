@@ -34,11 +34,11 @@ class MultiDistrib extends Object
 		extraHtml = "";
 	}
 	
-	public static function get(date:Date, place:db.Place/*,contractType:Int*/){
+	public static function get(date:Date, place:db.Place, ?lock=false/*,contractType:Int*/){
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 
-		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,false);
+		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,lock);
 
 		/*var m = new MultiDistrib();
 		

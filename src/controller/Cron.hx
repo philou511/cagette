@@ -138,14 +138,12 @@ class Cron extends Controller
 
 
 			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
-			var members = Lambda.array( app.user.amap.getMembers() );
 			printTitle("Volunteers alerts");
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
 				print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
 				mail.setSender(App.config.get("default_email"),"Cagette.net");
-				for ( member in members ) {
-
+				for ( member in multidistrib.group.getMembers() ) {
 					mail.addRecipient( member.email, member.getName() );
 					if ( member.email2 != null ) {
 						mail.addRecipient( member.email2 );

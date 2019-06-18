@@ -113,15 +113,28 @@ class Distribution extends Object
 		}
 	}
 
-	public function getUserOrders(user:db.User){
+	
+
+	/**
+		Has user Orders ?
+	**/
+	@:skip var pids : Array<Int>;
+	public function hasUserOrders(user:db.User):Bool{
 		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
-			var pids = db.Product.manager.search($contract == this.contract, false);
-			var pids = Lambda.map(pids, function(x) return x.id);		
+			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($contract == this.contract, false));
+			return UserContract.manager.search( (($productId in pids) && ($user==user || $user2==user) ),{limit:1}, false).length > 0; 
+		}else{
+			return UserContract.manager.search($distribution == this  && $user==user,{limit:1}, false).length > 0; 
+		}
+	}
+
+	public function getUserOrders(user:db.User):List<db.UserContract>{
+		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
+			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($contract == this.contract, false));			
 			return UserContract.manager.search( (($productId in pids) && ($user==user || $user2==user) ), false); 
 		}else{
 			return UserContract.manager.search($distribution == this  && $user==user, false); 
 		}
-
 	}
 	
 	public function getUsers():Iterable<db.User>{		
@@ -140,9 +153,10 @@ class Distribution extends Object
 	/**
 	 * Get TTC turnover for this distribution
 	 */
-	public function getTurnOver(){
-		
-		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(contract.getProducts()).join(",") +") ";
+	public function getTurnOver():Float{
+		var products = contract.getProducts();
+		if(products.length==0) return 0.0;
+		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(products).join(",") +") ";
 		if (contract.type == db.Contract.TYPE_VARORDER) {
 			sql += " and distributionId=" + this.id;	
 		}

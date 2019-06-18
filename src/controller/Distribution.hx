@@ -1024,7 +1024,7 @@ class Distribution extends Controller
 					continue;
 				}
 				for( u in members){
-					if(d.getUserOrders(u).length>0){
+					if(d.hasUserOrders(u)){
 						membersListByContractId[d.contract.id].push(u);
 					} 
 				}
@@ -1131,7 +1131,8 @@ class Distribution extends Controller
 					continue;
 				}
 				for( u in members){
-					if(d.getUserOrders(u).length>0){
+					if(d.hasUserOrders(u)){
+					//if(d.getUserOrders(u).length>0){
 						membersListByContractId[d.contract.id].push(u);
 					} 
 				}
