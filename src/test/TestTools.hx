@@ -57,6 +57,55 @@ class TestTools extends haxe.unit.TestCase
 		assertEquals(stocks["5kg"],2);// 2 x 5kg
 	}
 
+	function testListSynchronizer(){
+
+		TestSuite.initDB();
+		TestSuite.initDatas();
+
+		//create initial state : francois and seb are member of a group.
+		var francois = TestSuite.FRANCOIS;
+		var seb = TestSuite.SEB;
+		var julie = TestSuite.JULIE;
+		var group = TestSuite.AMAP_DU_JARDIN;
+		francois.makeMemberOf(group);
+		seb.makeMemberOf(group);
+
+		//source datas is an array of INt ( users to assign to this group )
+		//destination datas is an array of UserAmap.
+		var ls = new tools.ListSynchronizer<Int,db.UserAmap>();
+
+		//we want to remove seb and add Julie
+		ls.setSourceDatas( [julie.id,francois.id] );
+		ls.setDestinationDatas( Lambda.array(db.UserAmap.manager.search($amap==group)) );
+		ls.isEqualTo = function(id:Int,ua:db.UserAmap){
+			return id==ua.user.id;
+		};
+		ls.createNewEntity = function(id:Int){
+			var u = db.User.manager.get(id,false);
+			return u.makeMemberOf(group);
+		};
+		ls.deleteEntity = function(ua:db.UserAmap){
+			ua.delete();
+		};
+		ls.updateEntity = function(id:Int,ua:db.UserAmap){
+			ua.user = db.User.manager.get(id);
+			ua.update();
+			return ua;
+		};
+		var newList = ls.sync();
+
+		assertTrue( newList.length==2 );
+		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==julie.id )!=null );
+		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==francois.id )!=null );
+
+		//reload from DB
+		var newList = Lambda.array(db.UserAmap.manager.search($amap==group));
+
+		assertTrue( newList.length==2 );
+		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==julie.id )!=null );
+		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==francois.id )!=null );
+	}
+
 /*
 	@admin
 	public function doTests() {

@@ -1,4 +1,4 @@
-package controller ;
+package controller.amapadmin;
 
 class Categories extends controller.Controller
 {

@@ -36,7 +36,7 @@ class AmapAdmin extends Controller
 		view.contractsNum = app.user.amap.getActiveContracts().length;
 		
 		//ping cagette groups directory
-		if (Std.random(10) == 0 && app.user.amap.flags.has(db.Amap.AmapFlags.CagetteNetwork)){
+		/*if (Std.random(10) == 0 && app.user.amap.flags.has(db.Amap.AmapFlags.CagetteNetwork)){
 			var req = new Http("http://annuaire.cagette.net/api/ping?url="+StringTools.urlEncode( "http://" + App.config.HOST  ) );
 			try{
 				req.request();
@@ -44,7 +44,7 @@ class AmapAdmin extends Controller
 				App.current.logError("Error while contacting annuaire.cagette.net : "+e);
 			}
 			
-		}
+		}*/
 		
 	}
 	
@@ -296,9 +296,13 @@ class AmapAdmin extends Controller
 	}
 	
 	function doCategories(d:haxe.web.Dispatch) {
-		d.dispatch(new controller.Categories());
+		d.dispatch(new controller.amapadmin.Categories());
 	}
-	
+
+	function doVolunteers(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.amapadmin.Volunteers());
+	}
+
 	/**
 	 * Set up group currency. Default is EURO
 	 */

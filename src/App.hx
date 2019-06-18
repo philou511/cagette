@@ -16,7 +16,7 @@ class App extends sugoi.BaseApp {
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
 	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
-	public static var VERSION = ([0,10]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
+	public static var VERSION = ([0,11]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
 	
 	public function new(){
 		super();
@@ -249,7 +249,8 @@ class App extends sugoi.BaseApp {
 		
 		var mailer : sugoi.mail.IMailer = new sugoi.mail.BufferedMailer();
 		
-		if(App.config.DEBUG){ 
+
+		if(App.config.DEBUG || App.config.HOST=="pp.cagette.net" || App.config.HOST=="localhost"){ 
 
 			//Dev env : emails are written to tmp folder
 			mailer = new sugoi.mail.DebugMailer();

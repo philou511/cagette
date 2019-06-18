@@ -3,6 +3,7 @@ import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
+using tools.DateTool;
 
 enum AmapFlags {
 	HasMembership; 	//membership management
@@ -81,6 +82,13 @@ class Amap extends Object
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
+
+	//Volunteers for duty periods
+	@hideInForms public var volunteersMailDaysBeforeDutyPeriod: STinyInt;
+	@hideInForms public var volunteersMailContent: SText;
+	@hideInForms public var vacantVolunteerRolesMailDaysBeforeDutyPeriod: STinyInt;
+	@hideInForms public var daysBeforeDutyPeriodsOpen: STinyInt;
+	@hideInForms public var alertMailContent: SText;
 	
 	public function new() 
 	{
@@ -94,6 +102,22 @@ class Amap extends Object
 		currency = "€";
 		currencyCode = "EUR";
 		checkOrder = "";
+		
+		//duty periods props
+		daysBeforeDutyPeriodsOpen = 60;
+		volunteersMailContent = "<b>Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DISTRIBUTION],</b><br/>
+		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
+		<br/>
+		Voici la liste des bénévoles inscrits :<br/>
+		[LISTE_BENEVOLES]<br/>";
+
+		volunteersMailDaysBeforeDutyPeriod = 4;
+		alertMailContent = "Nous avons besoin de <b>bénévoles pour la permanence du [DATE_DISTRIBUTION]</b><br/>
+		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
+		Les roles suivants sont à pourvoir :<br/>
+		[ROLES_MANQUANTS]<br/>
+		Cliquez sur \"calendrier des permanences\" pour vous inscrire !";
+		vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
 		
 	}
 	
@@ -332,6 +356,21 @@ class Amap extends Object
 		//}else {
 			//return year - 1;
 		//}
+	}
+
+	public function getMembershipTimeframe(d:Date):{from:Date,to:Date}{
+		if (d == null) d = Date.now();
+		var n = membershipRenewalDate;
+		if (n == null){
+			n = new Date( 2000,8,1,0,0,0 ); //default renewal date at 1st september
+		} 
+		var renewalDate = new Date(d.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
+		if (d.getTime() < renewalDate.getTime()) {
+			return { from: renewalDate.setYear(renewalDate.getFullYear()-1)  , to : renewalDate };
+		}else {
+			return { from : renewalDate , to : renewalDate.setYear(renewalDate.getFullYear()+1)};
+		}
+
 	}
 	
 	/**

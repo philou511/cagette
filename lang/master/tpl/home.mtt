@@ -4,6 +4,9 @@
 <div style="margin-top:12px;"></div>
 ::end::
 
+
+
+::set hasShopMode = amap.hasShopMode()::
 <div id="content" class="col-md-8">
 	
 		<!-- Welcoming message + access to tutos-->
@@ -26,15 +29,12 @@
 					::_("Delete example orders and contracts")::
 				</a>
 			</p>
-		
-			
 		</div>
 		::end::
 	
-		<!-- standard mode order forms -->
-		::if !amap.hasShopMode()::
+		<!-- AMAP style order forms -->
+		::if !hasShopMode::
 		<div class="homeBlock" ::cond ( openContracts!=null && openContracts.length>0 )::>
-			<img src="/img/order.png" width="64" height="64" style="float:right;" />
 			<h2>::_("Open orders")::</h2>
 			<ul>
 				::foreach c openContracts::
@@ -52,280 +52,293 @@
 		::else::
 			
 			
-			::foreach d distribs::
-				
-				::if d.userHasOrders(user)::
-				
-				<!-- block with orders -->
-				<div class="distrib">
-					::set place = d.getPlace():: 
-					::set active = d.isActive()::
-					::set start = d.getDate()::
-					::set end = d.getEndDate()::
-					::set ordersStartDate = d.getOrdersStartDate()::
-					::set ordersEndDate = d.getOrdersEndDate()::
-					<div class="header orders">
-						
-						<div class="dateBoxOffset">
-						::set s = getDate(start)::
-						::if isToday(start)::
-							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,null)
-						::else::
-							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
-						::end::
-						</div>
+		::foreach d distribs::
+			
+			<div class="distrib">
+				::set place = d.getPlace():: 
+				::set active = d.isActive()::
+				::set start = d.getDate()::
+				::set end = d.getEndDate()::
+				::set ordersStartDate = d.getOrdersStartDate()::
+				::set ordersEndDate = d.getOrdersEndDate()::
 
-						<div class="pull-right text-right" ::cond amap.hasShopMode() && d.type==1 ::>
-							::if active::
-								<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-									<i class="icon icon-edit"></i> ::_("Modify my order")::
-								</a>
-								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-									<i class="icon icon-plus"></i> ::_("Add products")::
-								</a>
-							::elseif(ordersEndDate!=null)::		
-								<!--Fermeture des commandes :-->													
-								::if Date.now().getTime() > ordersEndDate.getTime()::
-									::_("Order closed since"):: <br/>
-									::hDate(ordersEndDate)::
-								::else::
-									::_("Order will open on"):: <br/>
-									::hDate(ordersStartDate)::
+				<!-- header -->
+				<div class="header ::if active:: active ::end::">
+
+					<!-- date box -->						
+					<div class="dateBoxOffset">
+					::set s = getDate(start)::
+					::if isToday(start)::
+						$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,null)
+					::else::
+						$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
+					::end::
+					</div>
+
+					<!-- distribution date -->						
+					<div class="info">						
+						::set e = getDate(end)::
+						<i class="icon icon-clock"></i>
+						::set start = s.h+":"+s.i::
+						::set end = e.h+":"+e.i::							
+						::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
+					</div>
+
+					<!-- distribution place -->	
+					<div class="info">$$place(::place::)</div>
+
+				</div>
+
+				<!-- Variable order block-->
+				::if d.getDistributions(1).length>0::
+
+					::if d.userHasOrders(user,1)::
+					
+						<!-- Variable order block with orders -->
+						<div class="content myorder">::_("My ordered products"):: :</div>
+						<div class="content orders">
+						::foreach dist d.getDistributions(1)::
+							::set orders = prepare(dist.getUserOrders(user))::
+							::if orders.length>0::
+								<h4>
+									::set s = getDate(dist.date) ::
+									::set e = getDate(dist.end)::								
+									<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+									&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
+								</h4>
+								
+								<div class="row">
+									::foreach c orders::									
+										<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
+											<table>
+												<tr>
+													<td>
+														<div style="background-image:url('::c.productImage::')" class="productImg" /> 
+													</td>
+													<td class="name">
+														<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
+														<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity ==0:: >
+															::_("Canceled")::
+														</span>
+														::c.productName::
+													</td>
+												</tr>
+											</table>
+										</div>									
+									::end::
+								</div>
+
+								::if !hasShopMode::
+								<div class="footer">								
+									<a href="/contract/order/::dist._contract.id::"><i class="icon icon-edit"></i> ::_("Modify my order")::</a>								
+								</div>
+								::end::
+								
+								::if hasShopMode:: 
+								<div>
+									::if active::
+										<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
+											<i class="icon icon-edit"></i> ::_("Modify my order")::
+										</a>
+										<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
+											<i class="icon icon-plus"></i> ::_("Add products")::
+										</a>
+									::elseif(ordersEndDate!=null)::		
+										<!--Fermeture des commandes :-->													
+										::if Date.now().getTime() > ordersEndDate.getTime()::
+											::_("Order closed since"):: <br/>
+											::hDate(ordersEndDate)::
+										::else::
+											::_("Order will open on"):: <br/>
+											::hDate(ordersStartDate)::
+										::end::
+									::end::
+								</div>
 								::end::
 							::end::
-						</div>
 						
-						<div class="info">					
-							$$place(::place::)
-						</div>
-					</div>
-					
-					<div class="myorder">::_("My ordered products"):: :</div>
-					
-					<div class="content orders">
-					::foreach dist d.distributions::
-						::set orders = prepare(dist.getUserOrders(user))::
-						::if orders.length>0::
-							<h4>
-								::set s = getDate(dist.date) ::
-								::set e = getDate(dist.end)::
-								
-								<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
-								&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
-							</h4>
-							
-							<div class="row">
-								::foreach c orders::
-									
-									<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
-										<table>
-											<tr>
-												<td>
-													<div style="background-image:url('::c.productImage::')" class="productImg" /> 
-												</td>
-												<td class="name">
-													<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
-													<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity ==0:: >
-														::_("Canceled")::
-													</span>
-													::c.productName::
-													
-													::if c.userId2!=null::
-														::if user.id==c.userId::
-															::set you = c.userName::
-															::set mate = c.userName2::
-														::else::
-															::set mate = c.userName::
-															::set you = c.userName2::
-														::end::
-												
-														<br/>( 
-														
-														::raw __("alternated with ::mate::",{mate:mate})::, 
-														
-														::if getWhosTurn(c.id,dist)==false::
-												
-															::if c.userName == you::
-																<span style="color:#080">::_("It's your turn")::</span>
-															::else::
-																::_("It's his/her turn")::
-															::end::
-														::else::
-															::if c.userName2 == you::
-																<span style="color:#080">::_("It's your turn")::</span>
-															::else::
-																::_("It's his/her turn")::
-															::end::
-														::end::
-														)
-													::end::
-												</td>
-											</tr>
-										</table>
-									</div>
-									
-								::end::
-							</div>
-					
-							<div class="footer">
-								::if user.isContractManager(dist._contract) || dist.distributor1Id==user.id || dist.distributor2Id==user.id || dist.distributor3Id==user.id || dist.distributor4Id==user.id:: 
-									<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
-								::end::
-								
-								<span ::cond dist.distributor1Id!=null || dist.distributor2Id!=null || dist.distributor3Id!=null || dist.distributor4Id!=null::>
-									&nbsp; <a href="#" onclick="$('#distributors::dist.id::').toggle();return false;"><i class="icon icon-chevron-user"></i> ::_("Permanence")::</a>
-								</span>
-								
-								&nbsp; <a href="/contract/view/::dist._contract.id::"><i class="icon icon-list"></i> ::_("Contract details")::</a>
-								
-								::if !amap.hasShopMode() && dist._contract.type==1::
-								&nbsp; <a href="/contract/order/::dist._contract.id::"><i class="icon icon-edit"></i> ::_("Modify my order")::</a>
-								::end::
-								
-								<div id="distributors::dist.id::" style="display:none;margin:8px;">
-									<ul>
-										<li ::cond dist.distributor1Id!=null::><i class="icon icon-user"></i> ::dist._distributor1.getCoupleName():: </li>
-										<li ::cond dist.distributor2Id!=null::><i class="icon icon-user"></i> ::dist._distributor2.getCoupleName():: </li>
-										<li ::cond dist.distributor3Id!=null::><i class="icon icon-user"></i> ::dist._distributor3.getCoupleName():: </li>
-										<li ::cond dist.distributor4Id!=null::><i class="icon icon-user"></i> ::dist._distributor4.getCoupleName():: </li>
-									</ul>
-								</div>
-								
-								<div class="distribMessage" ::cond dist.distributor1Id==user.id || dist.distributor2Id==user.id ||dist.distributor3Id==user.id || dist.distributor4Id==user.id::>
-									::_("Warning, you're engaged in this distribution !")::
-								</div>
-							</div>
 						::end::
-					
-					::end::
-
-					<!-- extra html -->
-					<div class="text-center">
-						<!--::foreach i d.actions::
-							<a href="::i.link::" class="btn btn-default btn-sm">
-								<span ::cond i.icon:: class="glyphicon glyphicon-::i.icon::" ></span>
-									::i.name::
-							</a>					
-						::end::-->
-						::raw d.extraHtml::
-					</div>
-
-
-					</div>
-
-					
-				</div>
-				
-				
-				
-				::elseif(amap.hasShopMode())::
-			
-
-				
-				
-				<!-- delivery open to orders (only for shopmode) -->
-				<div class="distrib">
-					::set place = d.getPlace():: 
-					::set active = d.isActive()::
-					::set start = d.getDate()::
-					::set end = d.getEndDate()::
-					::set ordersStartDate = d.getOrdersStartDate()::
-					::set ordersEndDate = d.getOrdersEndDate()::
-					
-					::set class =""::
-					::if !active:: 
-						::set class="disabled"::
-					::end::
-					
-					<div class="header ::class::">
-						
-						<div class="text-right pull-right">
-							::if active==true::
+						</div>
+					::else::
+						<!-- no var order -->
+						<div class="content orders">
+							<!-- products previews-->
+							::foreach p d.getProductsExcerpt()::
+							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
+							::end::
+							<div class="text-center">
+								::start::
 								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-lg btn-primary">
 									<i class="icon icon-chevron-right"></i>
 									::_("Order||Order button on homepage")::
 								</a>
-								<br/>
+							</div>
+						</div>
+						
+					::end::	
+				<!--end VAR order block-->
+				::end::
+			
+				<!-- AMAP order block-->
+				::if d.userHasOrders(user,0)::
+					
+					<div class="content myorder">::_("My CSA contracts"):: :</div>
+					<div class="content orders">
+						::foreach dist d.getDistributions(0)::
+							::set orders = prepare(dist.getUserOrders(user))::
+							::if orders.length>0::
+								<h4>
+									::set s = getDate(dist.date) ::
+									::set e = getDate(dist.end)::
+									
+									<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+									&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
+								</h4>
 								
-							::elseif(ordersEndDate!=null)::		
-								<!--Fermeture des commandes :-->													
-								::if Date.now().getTime() > ordersEndDate.getTime()::
-									::_("Order closed since"):: <br/>
-									::hDate(ordersEndDate)::
-								::else::
-									::_("Order will open on"):: <br/>
-									::hDate(ordersStartDate)::
-								::end::
+								<div class="row">
+									::foreach c orders::										
+										<div class="col-xs-12 col-sm-6 col-lg-4" ::cond orders.length>0:: >
+											<table>
+												<tr>
+													<td>
+														<div style="background-image:url('::c.productImage::')" class="productImg" /> 
+													</td>
+													<td class="name">
+														<span ::cond c.quantity >1:: ><b>::raw c.smartQt::</b></span>
+														<span style="background-color: #B00;color:white;padding: 2px;border-radius: 3px;margin-right:3px;" ::cond c.quantity ==0:: >
+															::_("Canceled")::
+														</span>
+														::c.productName::
+														
+														::if c.userId2!=null::
+															::if user.id==c.userId::
+																::set you = c.userName::
+																::set mate = c.userName2::
+															::else::
+																::set mate = c.userName::
+																::set you = c.userName2::
+															::end::
+													
+															<br/>( 
+															
+															::raw __("alternated with ::mate::",{mate:mate})::, 
+															
+															::if getWhosTurn(c.id,dist)==false::
+													
+																::if c.userName == you::
+																	<span style="color:#080">::_("It's your turn")::</span>
+																::else::
+																	::_("It's his/her turn")::
+																::end::
+															::else::
+																::if c.userName2 == you::
+																	<span style="color:#080">::_("It's your turn")::</span>
+																::else::
+																	::_("It's his/her turn")::
+																::end::
+															::end::
+															)
+														::end::
+													</td>
+												</tr>
+											</table>
+										</div>
+										
+									::end::
+								</div>
+						
+								<div class="footer">
+									::if user.isContractManager(dist._contract):: 
+										<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
+									::end::
+								</div>
+
 							::end::
-							
-						</div>
 						
-						<div class="dateBoxOffset">
-						::set s = getDate(start)::
-						::if isToday(start)::
-							$$today(::s.dow::,::s.d::,::s.m::,::s.y::,::s.h::,null)
-						::else::
-							$$date(::s.dow::,::s.d::,::s.m::,::s.y::,null)
 						::end::
-						</div>
-						
-						<div class="info">						
-							::set e = getDate(end)::
-							<i class="icon icon-clock"></i>
-							::set start = s.h+":"+s.i::
-							::set end = e.h+":"+e.i::
-							
-							::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
-							<br/>
-							$$place(::place::)
-						</div>	
 					</div>
+				::else::
+				<div class="content">
+					<!-- no orders : just a message -->
+					<p class="disabled">
+						Vous n'avez pas de produits à récupérer ce jour là.
+					</p>
+				</div>
+				::end::
 					
 					
-					<div class="content ::class::">
-						<!-- products previews-->
-						::foreach p d.getProductsExcerpt()::
-							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
-						::end::
+
+					<!--duty period-->
+					<div class="content">
+						
+						::set userVolunteer = d.getVolunteerForUser(user)::
+						<div class="alert alert-warning" ::cond userVolunteer!=null::>										
+							<i class="icon icon-alert"></i>
+							::_("Please be aware that you or your spouse is a volunteer for the role:"):: <b>::userVolunteer._volunteerRole.name::</b>.							
+							<p style="margin-top:12px;">
+								<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-default btn-sm"><i class="icon icon-user"></i> ::_("Duty period details")::</a>
+								<a href="/distribution/unsubscribeFromRole/::d.id::/::userVolunteer._volunteerRole.id::?returnUrl=/homenew" class="btn btn-default btn-sm"><i class="icon icon-delete"></i> ::_("Unsubscribe")::</a>
+							</p>
+							
+						</div>
+	
+						::set vacantVolunteerRoles = d.getVacantVolunteerRoles()::
+						<div class="alert alert-danger" ::cond userVolunteer == null && vacantVolunteerRoles != null  && vacantVolunteerRoles.length != 0::>										
+							<i class="icon icon-alert"></i>
+							::raw __("We need <b>::rolesNum::</b> volunteer(s) for the following roles:",{rolesNum:vacantVolunteerRoles.length}):: :<br/>							
+							<div class="text-center">
+								::foreach role vacantVolunteerRoles::
+								<b>::role.name::</b><br/>
+								::end::
+							</div>
+							<p class="text-right" style="margin-top:12px;">
+								<a href="/distribution/volunteersSummary/::d.id::" class="btn btn-danger btn-sm"><i class="icon icon-chevron-right"></i> Inscription</a>
+							</p>
+						</div>
+					</div>
 
 					<!-- extra html -->
-					<div class="text-center">
-						::raw d.extraHtml::
+					::if(d.extraHtml!=null)::
+					<div class="content" style="font-weight:normal;">
+						<div class="text-center">
+							$$nullSafe(::raw d.extraHtml::)
+						</div>
 					</div>
-					</div>
+					::end::
 
-					
+					<div class="footer"></div>
+
+
 				</div>
-	
-				::end::	
-		
-			::end::
-			
+		<!-- end distrib-->
 		::end::
+	::end::
 
-		<div class="homeBlock text-center" ::cond(registerWithoutOrdering==true)::>
-			<p>
-				<img src="/img/join-a-group.png"/>
-			</p>
-			<p>
-				Inscrivez-vous à ce groupe, <br/>
-				vous recevrez un email pour l'ouverture des prochaines commandes <br/>
-				ainsi que des nouvelles des producteurs !
-			</p>
 
-			::if (user==null)::
-			
-			<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
-				<span class="glyphicon glyphicon-plus"></span>
-				M'inscrire à ce groupe
-			</a>
-			::else::
-			<a href="/user/joingroup" class="btn btn-primary">
-				<span class="glyphicon glyphicon-plus"></span>
-				M'inscrire à ce groupe
-			</a>
-			::end::
-		</div>
+
+	<!-- join group -->
+	<div class="homeBlock text-center" ::cond(registerWithoutOrdering==true)::>
+		<p>
+			<img src="/img/join-a-group.png"/>
+		</p>
+		<p>
+			Inscrivez-vous à ce groupe, <br/>
+			vous recevrez un email pour l'ouverture des prochaines commandes <br/>
+			ainsi que des nouvelles des producteurs !
+		</p>
+
+		::if (user==null)::		
+		<a href="#" class="btn btn-primary" onclick="_.registerBox('/user/joingroup',null,::loginBoxOptions.phoneRequired::,::loginBoxOptions.addressRequired::)">
+			<span class="glyphicon glyphicon-plus"></span>
+			M'inscrire à ce groupe
+		</a>
+		::else::
+		<a href="/user/joingroup" class="btn btn-primary">
+			<span class="glyphicon glyphicon-plus"></span>
+			M'inscrire à ce groupe
+		</a>
+		::end::
+	</div>
 
 	
 </div>
@@ -350,14 +363,10 @@
 		
 	</div>
 	
-	<div class="block" ::cond contractsWithDistributors.length>0 ::>
-		<h3>::_("Permanences")::</h3>
-		<p>::_("Don't forget to register for permanences")::</p>
-		<ul>
-		::foreach c contractsWithDistributors::
-			<li><a href="/distribution/planning/::c.id::">::c.name::</a></li>
-		::end::
-		</ul>
+	<div class="block">
+		<a href="/distribution/volunteersCalendar" class="btn btn-default btn-sm">
+			<i class="icon icon-calendar"></i> ::_("Duty periods calendar")::
+		</a>
 	</div>
 	
 	<div class="alert alert-danger" ::cond user!=null && !user.isFullyRegistred()::>
@@ -378,4 +387,8 @@
 		::end::
 	::end::
 </div>
+
+
+
+
 ::end::

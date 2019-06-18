@@ -1,0 +1,49 @@
+::use 'design.mtt'::
+<div id="content" class="col-md-12">
+	<div class="article">
+		
+		<div style="margin-bottom:30px;">
+		<table class="table table-bordered">
+			<tr>
+				<td></td>
+				::set date = getDate(multidistrib.distribStartDate)::
+				::if multidistrib.getVolunteers().length == multidistrib.getVolunteerRoles().length::
+				::set color = "lightgreen"::
+				::else::
+				::set color = "orange"::
+				::end::
+				<th style="font-size:12px;line-height:14px;text-align:center;background-color: ::color::">::date.dow::<br/>
+					::date.d::<br/>
+					::date.m::<br/>
+					::date.h+":"+date.i::</th>
+			</tr>
+			
+			::foreach role roles::
+			<!-- Volunteers for this role -->
+			<tr>
+				<td>
+					<b>::role.name::</b>
+				</td>				
+				
+				<td style="text-align:center;">
+					::set volunteer = multidistrib.getVolunteerForRole(role)::
+					::if volunteer!=null::
+						::volunteer._user.getCoupleName()::
+						::if volunteer._user.id == user.id::
+							<br/><a href="/distribution/unsubscribeFromRole/::multidistrib.id::/::role.id::?returnUrl=/distribution/volunteersSummary/::multidistrib.id::" class="btn btn-default btn-lg">::_("Unsubscribe")::</a>
+						::end::
+					::elseif  multidistrib.getVolunteerForUser(user) == null::
+					<a href="/distribution/volunteersSummary/::multidistrib.id::?role=::role.id::" class="btn btn-default btn-lg">::_("Join")::</a>
+					::end::
+				</td>
+			</tr>		
+			::end::	
+			
+		</table>
+		</div>
+		
+		$$back()
+	</div>
+</div>
+
+::end::

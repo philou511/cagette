@@ -29,7 +29,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e1 = null;
 		try {
 			var distrib1 = service.DistributionService.create(existingDistrib.contract,new Date(2018, 5, 1, 18, 0, 0),new Date(2018, 5, 1, 18, 30, 0),
-			existingDistrib.place.id,null,null,null,null,new Date(2018, 4, 1, 18, 0, 0),new Date(2018, 4, 30, 18, 30, 0));
+			existingDistrib.place.id,new Date(2018, 4, 1, 18, 0, 0),new Date(2018, 4, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error) {
 			e1 = x;
@@ -40,7 +40,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e2 = null;
 		try {
 			var distrib2 = service.DistributionService.create(existingDistrib.contract,new Date(2017, 5, 1, 19, 30, 0),new Date(2017, 5, 1, 20, 30, 0),
-			existingDistrib.place.id,null,null,null,null,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
+			existingDistrib.place.id,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error) {
 			e2 = x;
@@ -51,7 +51,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e3 = null;
 		try{
 			var distrib3 = service.DistributionService.create(existingDistrib.contract,new Date(2017, 5, 1, 17, 30, 0),new Date(2017, 5, 1, 19, 30, 0),
-			existingDistrib.place.id,null,null,null,null,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
+			existingDistrib.place.id,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error){
 			e3 = x;
@@ -62,7 +62,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e4 = null;
 		try{
 			var distrib4 = service.DistributionService.create(existingDistrib.contract,new Date(2017, 5, 1, 17, 30, 0),new Date(2017, 5, 1, 21, 30, 0),
-			existingDistrib.place.id,null,null,null,null,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
+			existingDistrib.place.id,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error){
 			e4 = x;
@@ -73,7 +73,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e5 = null;
 		try{
 			var distrib5 = service.DistributionService.create(existingDistrib.contract,new Date(2017, 5, 1, 17, 30, 0),new Date(2017, 5, 1, 18, 59, 0),
-			existingDistrib.place.id,null,null,null,null,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
+			existingDistrib.place.id,new Date(2017, 4, 1, 18, 0, 0),new Date(2017, 4, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error){
 			e5 = x;
@@ -84,7 +84,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e6 = null;
 		try{
 			var distrib6 = service.DistributionService.create(existingDistrib.contract,new Date(2017, 3, 1, 17, 30, 0),new Date(2017, 3, 1, 18, 59, 0),
-			existingDistrib.place.id,null,null,null,null,new Date(2017, 2, 1, 18, 0, 0),new Date(2017, 3, 30, 18, 30, 0));
+			existingDistrib.place.id,new Date(2017, 2, 1, 18, 0, 0),new Date(2017, 3, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error){
 			e6 = x;
@@ -191,8 +191,8 @@ class TestDistributions extends haxe.unit.TestCase
 		//A variable contract with a distribution that has orders
 		var ordersDistrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
 		var ordersDistribId = ordersDistrib.id;
-		var chicken = TestSuite.CHICKEN;
-		var order = service.OrderService.make(TestSuite.FRANCOIS, 1, chicken, ordersDistrib.id);
+		var POTATOES = TestSuite.POTATOES;
+		var order = service.OrderService.make(TestSuite.FRANCOIS, 1, POTATOES, ordersDistrib.id);
 
 		var e = null;
 		try{
@@ -201,8 +201,8 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e = x;
 		}
-		assertEquals(e.message, "Deletion non possible: some orders are saved for this delivery.");
-		assertTrue(db.Distribution.manager.get(ordersDistribId) != null);
+		assertTrue( e!=null && e.message.indexOf("Deletion") > -1 ); //deletion not possible
+		assertTrue( db.Distribution.manager.get(ordersDistribId) != null );
 
 		//A variable contract with a distribution that has no orders
 		var noOrdersDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
@@ -263,7 +263,7 @@ class TestDistributions extends haxe.unit.TestCase
 		var e = null;
 		try{
 			distrib = service.DistributionService.create(contract,new Date(2018, 5, 1, 18, 0, 0),new Date(2018, 5, 1, 18, 30, 0),
-			amapDistrib.place.id,null,null,null,null,new Date(2018, 4, 1, 18, 0, 0),new Date(2018, 4, 30, 18, 30, 0));
+			amapDistrib.place.id,new Date(2018, 4, 1, 18, 0, 0),new Date(2018, 4, 30, 18, 30, 0));
 		}
 		catch(x:tink.core.Error){
 			e = x;

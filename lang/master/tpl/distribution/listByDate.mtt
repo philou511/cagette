@@ -9,6 +9,13 @@
 	
 	<h1>::user._amap.name::</h1>
 	<h2>Livraison du ::hDate(date)::</h2>
+
+	<p>	
+		<b>::_("Volunteers on duty"):: : </b>
+		::foreach v volunteers::
+		::v._volunteerRole.name:: : ::v._user.getName()::,
+		::end::
+	</p>
 	
 		<table style="width:100%;">
 				::set name = ""::

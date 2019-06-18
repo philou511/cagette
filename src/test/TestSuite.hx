@@ -1,5 +1,7 @@
 package test;
 import Common;
+import service.DistributionService;
+
 /**
  * CAGETTE.NET TEST SUITE
  * @author fbarbut
@@ -82,6 +84,9 @@ class TestSuite
 			db.Product.manager,
 			db.Vendor.manager,
 			db.Place.manager,
+			db.MultiDistrib.manager,
+			db.Volunteer.manager,
+			db.VolunteerRole.manager,
 			db.Distribution.manager,
 			db.DistributionCycle.manager,						
 			
@@ -126,8 +131,7 @@ class TestSuite
 	public static var FRANCOIS:db.User = null; 
 	public static var SEB:db.User = null; 
 	public static var JULIE:db.User = null; 
-
-	public static var CHICKEN:db.Product = null; 
+	
 	public static var STRAWBERRIES:db.Product = null; 
 	public static var APPLES:db.Product = null; 
 	public static var AMAP_DU_JARDIN:db.Amap = null;
@@ -143,10 +147,13 @@ class TestSuite
 	public static var DISTRIB_CAROTTES:db.Distribution = null;
 	public static var CONTRAT_LEGUMES:db.Contract = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
+	
 	public static var COURGETTES:db.Product = null;
+	public static var CARROTS:db.Product = null;
+	public static var POTATOES:db.Product = null; 
 
 	public static var LAITUE:db.Product = null;
-	public static var CARROTS:db.Product = null;
+	
 
 	public static var FLAN:db.Product = null;
 	public static var CROISSANT:db.Product = null;
@@ -158,7 +165,7 @@ class TestSuite
 		
 		var f = new db.User();
 		f.firstName = "François";
-		f.lastName = "B";
+		f.lastName = "BUBR";
 		f.email = "francois@alilo.fr";
 		f.insert();
 
@@ -166,7 +173,7 @@ class TestSuite
 		
 		var u = new db.User();
 		u.firstName = "Seb";
-		u.lastName = "Z";
+		u.lastName = "ZUKL";
 		u.email = "sebastien@alilo.fr";
 		u.insert();		
 
@@ -174,7 +181,7 @@ class TestSuite
 
 		var u = new db.User();
 		u.firstName = "Julie";
-		u.lastName = "B";
+		u.lastName = "BRBIC";
 		u.email = "julie@alilo.fr";
 		u.insert();		
 
@@ -224,15 +231,7 @@ class TestSuite
 
 		PANIER_AMAP_LEGUMES = p;
 
-		var d = new db.Distribution();
-		d.date = new Date(2017, 5, 1, 19, 0, 0);
-		d.end = new Date(2017, 5, 1, 20, 0, 0);
-		d.orderStartDate = new Date(2017, 4, 1, 20, 0, 0);
-		d.orderEndDate = new Date(2017, 4, 30, 20, 0, 0);
-		d.contract = c;
-		d.place = place;
-		d.insert();
-
+		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_CONTRAT_AMAP = d;
 		
 		//varying contract for strawberries with stock mgmt
@@ -270,15 +269,7 @@ class TestSuite
 		
 		APPLES = p;
 
-		var d = new db.Distribution();
-		d.date = new Date(2017, 5, 1, 19, 0, 0);
-		d.end = new Date(2017, 5, 1, 20, 0, 0);
-		d.orderStartDate = new Date(2017, 4, 1, 20, 0, 0);
-		d.orderEndDate = new Date(2017, 4, 30, 20, 0, 0);
-		d.contract = c;
-		d.place = place;
-		d.insert();
-
+		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
 		//second group : LOCAVORES
@@ -296,6 +287,11 @@ class TestSuite
 		place.amap = a;
 		place.insert();
 		
+		/*
+		La ferme de la courgette enragée (VENDOR1)
+			- courgettes
+			- pdt
+		*/
 		var v = new db.Vendor();
 		v.name = "La ferme de la courgette enragée";
 		v.email = "courgette@gmail.com";
@@ -304,29 +300,6 @@ class TestSuite
 		v.insert();
 		VENDOR1 = v;
 
-		var vendor2 = new db.Vendor();
-		vendor2.name = "La ferme de la laitue hystérique";
-		vendor2.email = "laitue@gmail.com";
-		vendor2.zipCode = "33000";
-		vendor2.city = "Auliwoud";
-		vendor2.insert();
-		VENDOR2 = vendor2;
-
-		var vendor3 = new db.Vendor();
-		vendor3.name = "La ferme des carottes rebelles";
-		vendor3.email = "carottes@gmail.com";
-		vendor3.zipCode = "47100";
-		vendor3.city = "Parmentier";
-		vendor3.insert();
-		VENDOR3 = vendor3;
-
-		var boulanger = new db.Vendor();
-		boulanger.name = "Boulangerie Turlupain";
-		boulanger.email = "turlupain@gmail.com";
-		boulanger.zipCode = "24000";
-		boulanger.city = "Parmentier";
-		boulanger.insert();
-		
 		var c = new db.Contract();
 		c.name = "Commande Legumes";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
@@ -337,24 +310,6 @@ class TestSuite
 		c.insert();
 		
 		CONTRAT_LEGUMES = c;
-
-		var contract2 = new db.Contract();
-		contract2.name = "Commande Laitue";
-		contract2.startDate = new Date(2017, 1, 1, 0, 0, 0);
-		contract2.endDate = new Date(2017, 12, 31, 23, 59, 0);
-		contract2.vendor = vendor2;
-		contract2.amap = a;
-		contract2.type = db.Contract.TYPE_VARORDER;
-		contract2.insert();
-		
-		var contract3 = new db.Contract();
-		contract3.name = "Commande Carottes";
-		contract3.startDate = new Date(2017, 1, 1, 0, 0, 0);
-		contract3.endDate = new Date(2017, 12, 31, 23, 59, 0);
-		contract3.vendor = vendor3;
-		contract3.amap = a;
-		contract3.type = db.Contract.TYPE_VARORDER;
-		contract3.insert();
 
 		var p = new db.Product();
 		p.name = "Courgettes";
@@ -369,18 +324,7 @@ class TestSuite
 		COURGETTES = p;
 		
 		var p = new db.Product();
-		p.name = "Carottes";
-		p.qt = 1;		
-		p.unitType = Common.Unit.Kilogram;
-		p.price = 2.8;
-		p.vat = 5.5;
-		p.contract = c;
-		p.insert();
-		
-		CARROTS = p;
-
-		var p = new db.Product();
-		p.name = "Poulet";
+		p.name = "Pommes de Terre";
 		p.qt = 1.5;
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 15;
@@ -390,14 +334,30 @@ class TestSuite
 		p.contract = c;
 		p.insert();
 
-		CHICKEN = p;
+		POTATOES = p;
 
-		/*
-		La ferme de la courgette enragée (VENDOR1)
-			- courgettes
-			- carottes
-			- poulet
-		*/
+		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
+		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
+
+
+		//Ferme de la laitue
+		// - laitue
+		var vendor2 = new db.Vendor();
+		vendor2.name = "La ferme de la laitue hystérique";
+		vendor2.email = "laitue@gmail.com";
+		vendor2.zipCode = "33000";
+		vendor2.city = "Auliwoud";
+		vendor2.insert();
+		VENDOR2 = vendor2;
+
+		var contract2 = new db.Contract();
+		contract2.name = "Commande Laitue";
+		contract2.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		contract2.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		contract2.vendor = vendor2;
+		contract2.amap = a;
+		contract2.type = db.Contract.TYPE_VARORDER;
+		contract2.insert();
 
 		var product2 = new db.Product();
 		product2.name = "Laitue";
@@ -409,41 +369,55 @@ class TestSuite
 		product2.insert();
 		LAITUE = product2;
 
-		var product3 = new db.Product();
-		product3.name = "Carottes";
-		product3.qt = 1;
-		product3.unitType = Common.Unit.Kilogram;
-		product3.price = 4.5;
-		product3.organic = true;
-		product3.contract = contract3;
-		product3.insert();
-		CARROTS = product3;
-		
-		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,null,null,null,null,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
-		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
-
-		var distribution2 = new db.Distribution();
-		distribution2.date = new Date(2017, 5, 1, 19, 0, 0);
-		distribution2.contract = contract2;
-		distribution2.place = place;
-		distribution2.insert();
-
+		var distribution2 = DistributionService.create(contract2,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_LAITUE = distribution2;
 
-		var distribution3 = new db.Distribution();
-		distribution3.date = new Date(2017, 5, 1, 19, 0, 0);
-		distribution3.contract = contract3;
-		distribution3.place = place;
-		distribution3.insert();
+		//
 
-		DISTRIB_CAROTTES = distribution3;
+		var vendor3 = new db.Vendor();
+		vendor3.name = "La ferme des carottes rebelles";
+		vendor3.email = "carottes@gmail.com";
+		vendor3.zipCode = "47100";
+		vendor3.city = "Parmentier";
+		vendor3.insert();
+		VENDOR3 = vendor3;
+
+		var contract3 = new db.Contract();
+		contract3.name = "Commande Carottes";
+		contract3.startDate = new Date(2017, 1, 1, 0, 0, 0);
+		contract3.endDate = new Date(2017, 12, 31, 23, 59, 0);
+		contract3.vendor = vendor3;
+		contract3.amap = a;
+		contract3.type = db.Contract.TYPE_VARORDER;
+		contract3.insert();
+
+		var p = new db.Product();
+		p.name = "Carottes";
+		p.qt = 1;		
+		p.unitType = Common.Unit.Kilogram;
+		p.price = 2.8;
+		p.vat = 5.5;
+		p.contract = contract3;
+		p.insert();
 		
-		//boulanger
+		CARROTS = p;
+
+		var distribution3 = DistributionService.create(contract3,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+		DISTRIB_CAROTTES = distribution3;
+
+		
 		/*
 		 Boulangerie Turlupain
 		 	- Flan
 			- Croissant			
 		*/
+		var boulanger = new db.Vendor();
+		boulanger.name = "Boulangerie Turlupain";
+		boulanger.email = "turlupain@gmail.com";
+		boulanger.zipCode = "24000";
+		boulanger.city = "Parmentier";
+		boulanger.insert();
+
 		var c = new db.Contract();
 		c.name = "Commande Pâtisseries";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
@@ -474,13 +448,10 @@ class TestSuite
 
 		CROISSANT = p;
 
-		var d = new db.Distribution();
-		d.date = new Date(2017, 5, 1, 19, 0, 0);
-		d.contract = c;
-		d.place = place;
-		d.insert();
-
+		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_PATISSERIES = d;
+		
+		
 	}
 	
 	static function initApp(u:db.User){
