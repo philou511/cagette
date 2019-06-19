@@ -276,19 +276,37 @@ class DistributionService
 
 		//cannot change to a different date than the multidistrib
 		if(date.toString().substr(0,10) != d.multiDistrib.distribStartDate.toString().substr(0,10) ){
-			throw new Error(t._("The distribution date is different from the date of the general distribution."));
+			if(d.multiDistrib.getDistributions().length==1){
+				//can change if its the only one
+				d.multiDistrib.lock();
+				d.multiDistrib.distribStartDate = date;
+				d.multiDistrib.distribEndDate = end; 
+				if(d.contract.type==db.Contract.TYPE_VARORDER){
+					d.multiDistrib.orderStartDate = orderStartDate;
+					d.multiDistrib.orderEndDate = orderEndDate;
+				}
+				d.multiDistrib.update();
+			}else{
+				throw new Error(t._("The distribution date is different from the date of the general distribution."));
+			}
+			
 		}
+
 		//cannot change the place
 		if(placeId != d.multiDistrib.place.id ){
-			throw new Error(t._("The distribution place is different from the place of the general distribution."));
+			if(d.multiDistrib.getDistributions().length==1){
+				//can change if its the only one
+				d.multiDistrib.lock();
+				d.multiDistrib.place = db.Place.manager.get(placeId);
+				d.multiDistrib.update();
+			}else{
+				throw new Error(t._("The distribution place is different from the place of the general distribution."));
+			}
+			
 		}
 
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
-		/*d.distributor1 = db.User.manager.get(distributor1Id);
-		d.distributor2 = db.User.manager.get(distributor2Id);
-		d.distributor3 = db.User.manager.get(distributor3Id);
-		d.distributor4 = db.User.manager.get(distributor4Id);*/
 		if(d.contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
@@ -296,8 +314,7 @@ class DistributionService
 					
 		if (end == null) {
 			d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
-		}
-		else {
+		} else {
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), end.getHours(), end.getMinutes(), 0);
 		} 
 		
@@ -348,6 +365,16 @@ class DistributionService
 		if (dispatchEvent) {
 			App.current.event(DeleteDistrib(d));
 		}
+
+		//erase zero qt orders
+		for ( order in d.getOrders() ){
+			if(order.quantity==0.0) {
+				order.lock();
+				order.delete();
+			}
+		}
+
+
 		d.delete();
 
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations

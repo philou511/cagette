@@ -19,6 +19,7 @@ class Group extends controller.Controller
 	function doDefault(group:db.Amap){
 		
 		if (group.regOption == db.Amap.RegOption.Open) {
+			if (app.session.data == null) app.session.data = {};
 			app.session.data.amapId = group.id;
 			throw Redirect("/");
 		}

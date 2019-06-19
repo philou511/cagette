@@ -183,6 +183,7 @@ class PaymentService
 			}
 
 			var o = orders.first();
+			if(o.distribution==null) throw o.id+" order has no distrib";
 			updateUserBalance(o.user, o.distribution.place.amap);	
 		}
 

@@ -75,7 +75,7 @@ class Basket extends Object
 			
 			//compute basket number
 			var md = MultiDistrib.get(date, place);
-			if(md==null) throw "md is null when creating basket";
+			if(md==null) throw "md is null when creating basket : "+date+", "+place;
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;

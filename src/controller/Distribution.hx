@@ -406,26 +406,30 @@ class Distribution extends Controller
 		var md = new db.MultiDistrib();
 		md.place = app.user.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
-		form.removeElementByName("distribEndDate");
-		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time") );
-		form.addElement(x, 3);
-		//form.removeElementByName("type");
+
+		//date
+		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), null);	
+		untyped e.format = "LL";
+		form.addElement(e, 3);
 		
-		//default values
-		form.getElement("distribStartDate").value 	= DateTool.now().deltaDays(30).setHourMinute(19, 0);
-		form.getElement("distribEndDate").value 	= DateTool.now().deltaDays(30).setHourMinute(20, 0);
-
-		//orders opening/closing	
-		/*if (type == db.Contract.TYPE_CONSTORDERS ) {
-			form.removeElementByName("orderStartDate");
-			form.removeElementByName("orderEndDate");			
-		}else{*/
-			form.getElement("orderStartDate").value = DateTool.now().deltaDays(10).setHourMinute(8, 0);	
-			form.getElement("orderEndDate").value = DateTool.now().deltaDays(20).setHourMinute(23, 59);
-		//}
-
+		//start hour
+		form.removeElementByName("distribStartDate");
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time") );
+		form.addElement(x, 3);
+		
+		//end hour
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time") );
+		form.addElement(x, 4);		
+		
+		//default values		
+		form.getElement("date").value 				= DateTool.now().deltaDays(30);
+		form.getElement("startHour").value 			= DateTool.now().deltaDays(30).setHourMinute(19, 0);
+		form.getElement("endHour").value 			= DateTool.now().deltaDays(30).setHourMinute(20, 0);
+		form.getElement("orderStartDate").value 	= DateTool.now().deltaDays(10).setHourMinute(8, 0);	
+		form.getElement("orderEndDate").value 		= DateTool.now().deltaDays(20).setHourMinute(23, 59);
+		
 		//vendors to add
-		//var label = type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
 		var datas = [];
 		for( c in md.place.amap.getActiveContracts()){
 			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
@@ -436,10 +440,11 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
-
-				var distribStartDate = form.getValueOf("distribStartDate");
-				var endDate = form.getValueOf("distribEndDate");			
-				var distribEndDate = DateTool.setHourMinute( distribStartDate, endDate.getHours(), endDate.getMinutes() );
+				var date = form.getValueOf("date");
+				var startHour = form.getValueOf("startHour");
+				var endHour = form.getValueOf("endHour");
+				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
+				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
 				
 				md = service.DistributionService.createMd(
 					db.Place.manager.get(form.getValueOf("placeId"),false),
@@ -478,16 +483,28 @@ class Distribution extends Controller
 		
 		md.place = app.user.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
-		form.removeElementByName("distribEndDate");
-		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time"), md.distribEndDate );
-		form.addElement(x, 3);
 
+		//date
+		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), md.distribStartDate);	
+		untyped e.format = "LL";
+		form.addElement(e, 3);
+		
+		//start hour
+		form.removeElementByName("distribStartDate");
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time"), md.distribStartDate );
+		form.addElement(x, 3);
+		
+		//end hour
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time"), md.distribEndDate );
+		form.addElement(x, 4);		
+		
 		//contracts
-		var label = t._("Contracts");//md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
+		var label = t._("Contracts");
 		var datas = [];
 		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
-			/*if( c.type==md.type)*/ datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
+			datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
 		}
 		var distributions = md.getDistributions();
 		for( d in distributions){
@@ -499,11 +516,18 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
+
+				var date = form.getValueOf("date");
+				var startHour = form.getValueOf("startHour");
+				var endHour = form.getValueOf("endHour");
+				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
+				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
+
 				service.DistributionService.editMd(
 					md,
 					db.Place.manager.get(form.getValueOf("placeId"),false),
-					form.getValueOf("distribStartDate"),
-					form.getValueOf("distribEndDate"),
+					distribStartDate,
+					distribEndDate,
 					form.getValueOf("orderStartDate"),
 					form.getValueOf("orderEndDate")
 				);
