@@ -31,7 +31,7 @@ class Main extends Controller {
 		OLD homepage
 	**/
 	@tpl("home_old.mtt")
-	function doHome() {
+	function doHome_old() {
 		view.category = 'home';
 		
 		var group = app.getCurrentGroup();		
@@ -107,7 +107,7 @@ class Main extends Controller {
 		NEW homepage
 	**/
 	@tpl("home.mtt")
-	function doHomenew() {
+	function doHome() {
 		view.category = 'home';
 		
 		var group = app.getCurrentGroup();		

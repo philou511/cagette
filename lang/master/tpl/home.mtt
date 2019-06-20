@@ -34,13 +34,27 @@
 	
 		<!-- AMAP style order forms -->
 		::if !hasShopMode::
-		<div class="homeBlock" ::cond ( openContracts!=null && openContracts.length>0 )::>
-			<h2>::_("Open orders")::</h2>
-			<ul>
-				::foreach c openContracts::
-					<li><a href="/contract/view/::c.id::">::c.name::</a></li>
-				::end::	
-			</ul>			
+		<div class="row" ::cond ( openContracts!=null && openContracts.length>0 ):: style="margin-bottom: 24px;">
+			
+			<div class="col-md-12">
+				<h2>::_("Open orders")::</h2>
+			</div>	
+				
+			::foreach c openContracts::
+			<div class="col-md-4 col-sm-6">
+				<a href="/contract/view/::c.id::" class="clickable groupBlock">					
+					::set v = c._vendor::
+					::if v._image!=null::
+					<div style="background-image:url('::file(v._image)::');float:left;margin-right:12px;" class="productImg"/> 
+					::end::
+
+					<b>::c.name::</b>
+					<br/>
+					<div class="disabled">::v.name::</div>
+				</a>
+			</div>
+			::end::
+
 		</div>
 		::end::
 	
@@ -79,9 +93,9 @@
 					<div class="info">						
 						::set e = getDate(end)::
 						<i class="icon icon-clock"></i>
-						::set start = s.h+":"+s.i::
-						::set end = e.h+":"+e.i::							
-						::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:start,end:end})::
+						::set startHour = s.h+":"+s.i::
+						::set endHour = e.h+":"+e.i::							
+						::__("Delivery from ::start:: to ::end::||Delivery from 18:00 to 19:30",{start:startHour,end:endHour})::
 					</div>
 
 					<!-- distribution place -->	
@@ -130,7 +144,8 @@
 
 								::if !hasShopMode::
 								<div class="footer">								
-									<a href="/contract/order/::dist._contract.id::"><i class="icon icon-edit"></i> ::_("Modify my order")::</a>								
+									<a href="/contract/order/::dist._contract.id::">
+										<i class="icon icon-edit"></i> ::_("Modify my order")::</a>								
 								</div>
 								::end::
 								
@@ -159,18 +174,19 @@
 						
 						::end::
 						</div>
-					::else::
-						<!-- no var order -->
+
+					::elseif(hasShopMode)::
+						
+						<!-- no var order : if not shopmode, display order btn -->
 						<div class="content orders">
 							<!-- products previews-->
 							::foreach p d.getProductsExcerpt()::
 							<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.image::')" class="productImg"/> 
 							::end::
 							<div class="text-center">
-								::start::
 								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-lg btn-primary">
 									<i class="icon icon-chevron-right"></i>
-									::_("Order||Order button on homepage")::
+									Commander
 								</a>
 							</div>
 						</div>
@@ -182,7 +198,9 @@
 				<!-- AMAP order block-->
 				::if d.userHasOrders(user,0)::
 					
-					<div class="content myorder">::_("My CSA contracts"):: :</div>
+					<div class="content myorder" style="border-top:2px solid #EEE;">
+						::_("My CSA contracts"):: :
+					</div>
 					<div class="content orders">
 						::foreach dist d.getDistributions(0)::
 							::set orders = prepare(dist.getUserOrders(user))::
@@ -258,12 +276,19 @@
 						::end::
 					</div>
 				::else::
-				<div class="content">
-					<!-- no orders : just a message -->
-					<p class="disabled">
-						Vous n'avez pas de produits à récupérer ce jour là.
-					</p>
-				</div>
+
+					<!-- no orders in CSA Contracts -->
+					::if(!hasShopMode)::
+					<div class="content myorder" style="border-top:2px solid #EEE;">
+						::_("CSA contracts"):: :
+					</div>
+					<div class="content" >
+						<p class="disabled">
+							Vous n'avez pas de produits à récupérer ce jour là.
+						</p>
+					</div>
+					::end::
+
 				::end::
 					
 					
