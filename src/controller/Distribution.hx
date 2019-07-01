@@ -559,7 +559,7 @@ class Distribution extends Controller
 				}
 
 			} catch(e:Error){
-				throw Error('/distribution/editMd/'  ,e.message);
+				throw Error('/distribution/editMd/'+md.id  ,e.message);
 			}
 			
 			throw Ok('/distribution' , t._("The distribution has been updated") );	
@@ -673,7 +673,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
 
 		var contractId = cycle.contract.id;
-		var messages = service.DistributionService.deleteCycleDistribs(cycle);
+		var messages = service.DistributionService.deleteCycleDistribs(cycle,true);
 		if (messages.length > 0){			
 			App.current.session.addMessage( messages.join("<br/>"),true);	
 		}
@@ -769,9 +769,8 @@ class Distribution extends Controller
 	}
 
 	@admin
-	public function doUnvalidate(date:Date,place:db.Place){
+	public function doUnvalidate(md:db.MultiDistrib){
 
-		var md = db.MultiDistrib.get(date,place);
 		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);

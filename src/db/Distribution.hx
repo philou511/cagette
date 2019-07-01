@@ -154,7 +154,7 @@ class Distribution extends Object
 	 * Get TTC turnover for this distribution
 	 */
 	public function getTurnOver():Float{
-		var products = contract.getProducts();
+		var products = contract.getProducts(false);
 		if(products.length==0) return 0.0;
 		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(products).join(",") +") ";
 		if (contract.type == db.Contract.TYPE_VARORDER) {

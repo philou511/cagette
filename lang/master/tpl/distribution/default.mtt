@@ -243,6 +243,8 @@
 										::contract._vendor.name::
 									</td>
 									<td>
+										
+
 										::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
@@ -274,6 +276,9 @@
 										::contract._vendor.name::
 									</td>
 									<td>
+
+										$$edit(Modifier,/distribution/edit/::dist.id::)
+
 										::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::

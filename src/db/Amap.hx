@@ -87,7 +87,7 @@ class Amap extends Object
 	@hideInForms public var volunteersMailDaysBeforeDutyPeriod: STinyInt;
 	@hideInForms public var volunteersMailContent: SText;
 	@hideInForms public var vacantVolunteerRolesMailDaysBeforeDutyPeriod: STinyInt;
-	@hideInForms public var daysBeforeDutyPeriodsOpen: STinyInt;
+	@hideInForms public var daysBeforeDutyPeriodsOpen: SInt;
 	@hideInForms public var alertMailContent: SText;
 	
 	public function new() 

@@ -1,6 +1,7 @@
 package service;
 import Common;
 import tink.core.Error;
+using tools.DateTool;
 
 /**
  * Distribution Service
@@ -202,7 +203,11 @@ class DistributionService
 		return md;
 	}
 
+	/**
+		Edit a multidistrib.		
+	**/
 	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+		
 		md.lock();
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
@@ -212,9 +217,24 @@ class DistributionService
 		md.update();
 
 		checkMultiDistrib(md);
+
+		//update related distributions
+		for( d in md.getDistributions()){
+			//sync distrib date
+			d.lock();
+			d.date =  d.date.setDateMonth(distribStartDate.getDate(),distribStartDate.getMonth()).setYear(distribStartDate.getFullYear());
+			d.end = d.end.setDateMonth(distribStartDate.getDate(),distribStartDate.getMonth()).setYear(distribStartDate.getFullYear());
+			d.update();
+
+			//let opening/closing date untouched
+		}
+
 		return md;
 	}
 
+	/**
+		Delete a multidistribution
+	**/
 	public static function deleteMd(md:db.MultiDistrib){
 		var t = sugoi.i18n.Locale.texts;
 		md.lock();
@@ -301,8 +321,7 @@ class DistributionService
 				d.multiDistrib.update();
 			}else{
 				throw new Error(t._("The distribution place is different from the place of the general distribution."));
-			}
-			
+			}			
 		}
 
 		d.date = date;
@@ -483,7 +502,7 @@ class DistributionService
 	 *   Deletes all distributions which are part of this cycle
 	 *  @param cycle - 
 	 */
-	public static function deleteCycleDistribs(cycle:db.DistributionCycle){
+	public static function deleteCycleDistribs(cycle:db.DistributionCycle,dispatchEvent:Bool):Array<String>{
 
 		cycle.lock();
 
@@ -499,7 +518,7 @@ class DistributionService
 			for ( d in children ){
 			
 				try{
-					delete(d);
+					delete(d,dispatchEvent);
 				}catch(e:tink.core.Error){
 					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
 				}

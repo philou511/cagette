@@ -126,25 +126,20 @@ class Volunteers extends controller.Controller
 	/**
 	 * Delete a volunteer role
 	 */
-	function doDeleteRole(role: db.VolunteerRole, args: { token:String }) {
+	function doDeleteRole(role: db.VolunteerRole, args: { token:String , ?force:Bool}) {
 
 		if ( checkToken() ) {
 
 			try {
-
-				VolunteerService.deleteVolunteerRole(role);
+				VolunteerService.deleteVolunteerRole(role,args.force);
 			}
 			catch(e: tink.core.Error){
-
 				throw Error("/amapadmin/volunteers", e.message);
 			}
 
 			throw Ok("/amapadmin/volunteers", t._("Volunteer Role has been successfully deleted"));
-		}
-		else {
-
+		} else {
 			throw Redirect("/amapadmin/volunteers");
-
 		}
 	}
 	
