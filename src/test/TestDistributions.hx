@@ -124,7 +124,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(weeklyDistribs[3].end.toString(), new Date(2019, 0, 14, 14, 0, 0).toString());
 		assertEquals(weeklyDistribs[4].date.toString(), new Date(2019, 0, 21, 13, 0, 0).toString());
 		assertEquals(weeklyDistribs[4].end.toString(), new Date(2019, 0, 21, 14, 0, 0).toString());
-		service.DistributionService.deleteCycleDistribs(weeklyDistribCycle);
+		service.DistributionService.deleteCycleDistribs(weeklyDistribCycle,false);
 
 		var monthlyDistribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,Monthly,new Date(2018, 9, 30, 0, 0, 0),
 		new Date(2019, 2, 31, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
@@ -144,7 +144,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(monthlyDistribs[4].end.toString(), new Date(2019, 1, 26, 14, 0, 0).toString());
 		assertEquals(monthlyDistribs[5].date.toString(), new Date(2019, 2, 26, 13, 0, 0).toString());
 		assertEquals(monthlyDistribs[5].end.toString(), new Date(2019, 2, 26, 14, 0, 0).toString());
-		service.DistributionService.deleteCycleDistribs(monthlyDistribCycle);
+		service.DistributionService.deleteCycleDistribs(monthlyDistribCycle,false);
 		
 		var biweeklyDistribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,BiWeekly,new Date(2018, 9, 30, 0, 0, 0),
 		new Date(2019, 0, 31, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
@@ -166,7 +166,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(biweeklyDistribs[5].end.toString(), new Date(2019, 0, 8, 14, 0, 0).toString());
 		assertEquals(biweeklyDistribs[6].date.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
 		assertEquals(biweeklyDistribs[6].end.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
-		service.DistributionService.deleteCycleDistribs(biweeklyDistribCycle);
+		service.DistributionService.deleteCycleDistribs(biweeklyDistribCycle,false);
 	
 		var triweeklyDistribCycle = service.DistributionService.createCycle(TestSuite.CONTRAT_LEGUMES,TriWeekly,new Date(2018, 9, 30, 0, 0, 0),
 		new Date(2019, 0, 31, 0, 0, 0),new Date(2018, 5, 4, 13, 0, 0),new Date(2018, 5, 4, 14, 0, 0),10,2,
@@ -184,7 +184,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(triweeklyDistribs[3].end.toString(), new Date(2019, 0, 1, 14, 0, 0).toString());
 		assertEquals(triweeklyDistribs[4].date.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
 		assertEquals(triweeklyDistribs[4].end.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
-		service.DistributionService.deleteCycleDistribs(triweeklyDistribCycle);
+		service.DistributionService.deleteCycleDistribs(triweeklyDistribCycle,false);
 	}
 
 	function testDelete() { 
@@ -287,7 +287,7 @@ class TestDistributions extends haxe.unit.TestCase
 		assertEquals(sebOperation.amount, -273);
 
 		//Delete the distrib cycle
-		service.DistributionService.deleteCycleDistribs(weeklyDistribCycle);
+		service.DistributionService.deleteCycleDistribs(weeklyDistribCycle,false);
 		//Check names and amounts are modified accordingly
 		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		assertEquals(francoisOperation.amount, -26);

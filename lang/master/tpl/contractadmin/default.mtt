@@ -1,7 +1,6 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
-	
 	<!-- Distributions to validate -->
 	<div class="article text-center" ::cond multidistribs.length>0:: style="max-height:400px;overflow-y: auto;">
 		<h2>::_("Distributions to validate")::</h2>
@@ -11,17 +10,25 @@
 		::foreach m multidistribs::	
 		<p>
 			::if(!m.isConfirmed())::
+			
 				<a href="/distribution/validate/::m.id::" class="btn btn-primary"> 
 					<i class="icon icon-calendar"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
 				</a>
+				
 				::if (isAdmin)::
 				<a href="/distribution/autovalidate/::m.id::" class="btn btn-danger">Admin : Autovalidate</a>
 				::end::
-			::elseif(isAdmin)::
+
+			::else::
+
 				<a class="btn btn-default disabled"> 
 					<i class="icon icon-check"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
 				</a>	
+				
+				::if(isAdmin)::
 				<a href="/distribution/unvalidate/::m.id::" class="btn btn-danger">Admin : Unvalidate</a>
+				::end::
+			
 			::end::
 		</p>	
 		::end::	
@@ -47,11 +54,23 @@
 				::end::
 				<tr  class="::class::" >
 					<td>
+						::if c.type==0::
+						<div class="tag big" style="background-color:#e5d3bf;" data-toggle="tooltip" title="Contrat AMAP">
+							<i class="icon icon-refresh"></i>
+						</div>
+						::else::
+						<div class="tag big" style="background-color:#e5d3bf" data-toggle="tooltip" title="Commande variable">
+							<i class="icon icon-basket"></i>
+						</div>
+						::end::
+					</td>
+					<td>
 						::if c._vendor._image!=null::
-						<div class="productImg" style="background-image:url('::file(c._vendor._image)::');width:48px;height:48px;" ></div>
+						<div class="productImg" style="background-image:url('::file(c._vendor._image)::');width:48px;height:48px;margin:0" ></div>
 						::end::
 					</td>
 					<td>::c._vendor.name::</td>
+					
 					<td>
 						<b>::c.name::</b>
 					</td>

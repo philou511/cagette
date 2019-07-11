@@ -58,7 +58,7 @@ class ContractAdmin extends Controller
 		checkToken();
 
 		//Multidistribs to validate
-		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
+		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
 			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
 			view.multidistribs = multidistribs; 
@@ -607,10 +607,7 @@ class ContractAdmin extends Controller
 					var d = new db.Distribution();
 					d.contract = nc;
 					d.date = ds.date;
-					d.distributor1 = ds.distributor1;
-					d.distributor2 = ds.distributor2;
-					d.distributor3 = ds.distributor3;
-					d.distributor4 = ds.distributor4;
+					d.multiDistrib = ds.multiDistrib;
 					d.orderStartDate = ds.orderStartDate;
 					d.orderEndDate = ds.orderEndDate;
 					d.end = ds.end;

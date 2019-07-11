@@ -31,7 +31,9 @@ class VolunteerService
 				}
 			}
 		} else {
-			throw new tink.core.Error(t._("You can't delete this role because there are volunteers assigned to this role. <a href='::url::' class='btn btn-default'>Force deletion</a>",{url:"/amapadmin/volunteers/deleteRole/"+role.id+"?token="+App.current.view.token+"&force=1"}));
+			var str = "Vous ne pouvez pas supprimer ce rôle car il y a des bénévoles inscrits à ce rôle.";
+			str += "<a href='/amapadmin/volunteers/deleteRole/"+role.id+"?token="+App.current.view.token+"&force=1' class='btn btn-default'>Supprimer quand-même</a>";
+			throw new Error( str );
 		}
 	}
 
@@ -268,7 +270,8 @@ class VolunteerService
 		for ( i in 1...(number+1) ) {
 			
 			var role = new db.VolunteerRole();
-			role.name = t._("Duty period") + " " + c.name + " " + i;
+			role.name = t._("Duty period");
+			role.name += " " + c.name + " " + i;
 			role.group = c.amap;
 			role.contract = c;
 			role.insert();

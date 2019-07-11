@@ -276,14 +276,8 @@ class DistributionService
 
 	 /**
 	  *  Modifies an existing distribution and prevents distribution overlapping and other checks
-	  *  @param d - 
-	  *  @param date - 
-	  *  @param end - 
-	  *  @param placeId - 
-	  *  @param orderStartDate - 
-	  *  @param orderEndDate - 
-	  *  @return db.Distribution
-	  */
+	  	@deprecated 
+	 */
 	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
 		//We prevent others from modifying it
@@ -336,6 +330,40 @@ class DistributionService
 		} else {
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), end.getHours(), end.getMinutes(), 0);
 		} 
+		
+		checkDistrib(d);
+
+		if(dispatchEvent) App.current.event(EditDistrib(d));
+		
+		if (d.date == null){
+			return d;
+		} else {
+			d.update();
+			return d;
+		}
+	}
+
+	/**
+		Edit a Distribution (new way, with multidistribs)
+	**/
+	public static function edit2(d:db.Distribution,md:db.MultiDistrib,distribStartHour:Date,distribEndHour:Date,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
+
+		//We prevent others from modifying it
+		d.lock();
+		var t = sugoi.i18n.Locale.texts;
+
+		if(d.validated) {
+			throw new Error(t._("You cannot edit a distribution which has been already validated."));
+		}
+
+		d.multiDistrib = md;
+		d.date = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribStartHour.getHours(), distribStartHour.getMinutes(), 0);
+		d.end  = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribEndHour.getHours(), distribEndHour.getMinutes(), 0);
+		
+		if(d.contract.type==db.Contract.TYPE_VARORDER){
+			d.orderStartDate = orderStartDate;
+			d.orderEndDate = orderEndDate;
+		}
 		
 		checkDistrib(d);
 

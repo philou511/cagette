@@ -561,15 +561,23 @@ div.reportHeader {
     color: #FFFFFF !important; }
 
 /* categories */
-span.tag {
+.tag {
   color: white;
   font-size: 80%;
   padding: 4px;
   background-color: #666666;
   border-radius: 4px;
-  line-height: 30px; }
+  line-height: 30px;
+  text-align: center; }
+  .tag.big {
+    font-size: 1.2em;
+    min-width: 30px;
+    min-height: 48px;
+    font-weight: bold;
+    line-height: 48px;
+    padding: 0; }
 
-span.tag.active {
+.tag.active {
   padding: 12px;
   font-size: 16px;
   line-height: 45px; }
@@ -582,7 +590,6 @@ span.tag.active {
   font-size: 14px; }
   .popover h3.popover-title {
     color: #BB9931 !important;
-    background-color: none;
     font-weight: normal;
     font-size: 20px; }
   .popover .popover-content {

@@ -6,7 +6,7 @@ package payment;
  */
 class Check extends payment.PaymentType
 {
-	public static var TYPE = "check";
+	public static var TYPE(default, never) = "check";
 
 	public function new() 
 	{

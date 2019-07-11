@@ -319,7 +319,7 @@ class Operation extends sys.db.Object
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */
-	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true):db.Operation{
+	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true,?basket:db.Basket):db.Operation{
 		
 		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
 
@@ -332,14 +332,15 @@ class Operation extends sys.db.Object
 			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
 		}
 		
-		//throw transactions;
 
-		var place = db.Place.manager.get(placeId,false);
-		var date = Date.fromString(date);
-		var basket = db.Basket.get(user, place, date);
-		if(basket==null) throw new Error('No basket found for user #'+user.id+', place #'+place.id+', date '+date);
+		if(basket==null){
+			var place = db.Place.manager.get(placeId,false);
+			var date = Date.fromString(date);
+			basket = db.Basket.get(user, place, date);
+			if(basket==null) throw new Error('No basket found for user #'+user.id+', place #'+place.id+', date '+date);
+		}
 		
-		for ( t in transactions){
+		for ( t in transactions ){
 			switch(t.type){
 				case VOrder :
 					var data : VOrderInfos = t.data;

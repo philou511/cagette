@@ -17,7 +17,7 @@ class TestSuite
 		//Cagette core tests
 		r.add(new test.TestTools());
 		
-		/*r.add(new test.TestUser());
+		r.add(new test.TestUser());
 		r.add(new test.TestOrders());		
 		
 		r.add(new test.TestDistributions());
@@ -34,7 +34,6 @@ class TestSuite
 		r.add(new who.test.TestWho());
 		//r.add(new pro.test.TestMarketplacePayment());
 		#end
-*/
 		r.run();
 	}
 

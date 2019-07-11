@@ -157,7 +157,7 @@ class Basket extends Object
         if(order==null) return null;
 
 		var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
-		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending);
+		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending, this);
 		
 	}
 	

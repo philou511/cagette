@@ -9,6 +9,17 @@
 				</td>
 				<td>
 					::if contract.type==0::
+					<div class="tag big" style="background-color:#e5d3bf;width:48px;display:inline-block;" data-toggle="tooltip" title="Contrat AMAP">
+						<i class="icon icon-refresh"></i>
+					</div>
+					::else::
+					<div class="tag big" style="background-color:#e5d3bf;width:48px;display:inline-block;" data-toggle="tooltip" title="Commande variable">
+						<i class="icon icon-basket"></i>
+					</div>
+					::end::
+
+
+					::if contract.type==0::
 					::_("CSA Contract")::
 					::else::
 					::_("Variable order contract")::

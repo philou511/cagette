@@ -7,7 +7,7 @@ package payment;
 class Cash extends payment.PaymentType
 {
 	
-	public static var TYPE = "cash";
+	public static var TYPE(default, never)  = "cash";
 
 	public function new() 
 	{

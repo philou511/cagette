@@ -89,8 +89,8 @@
 
                     ::if(d.orderStartDate!=null)::
                     <p>
-                        <i class="icon icon-calendar"></i> ::_("Orders start date")::  :  ::hDate(d.orderStartDate)::<br/>
-                        <i class="icon icon-calendar"></i> ::_("Orders end date")::  :  ::hDate(d.orderEndDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders opening")::  :  ::hDate(d.orderStartDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders closing")::    :  ::hDate(d.orderEndDate)::<br/>
                     </p>
                     ::end::
                 </div>
