@@ -277,7 +277,7 @@ class MultiDistrib extends Object
 
 		var products = [];
 		for( d in getDistributions()){
-			for ( p in d.contract.getProductsPreview(9)){
+			for ( p in d.contract.getProductsPreview(8)){
 				products.push( p.infos(null,false) );	
 			}
 		}
@@ -489,6 +489,14 @@ class MultiDistrib extends Object
 		return baskets.deduplicate();
 	}
 
+	public function getUserBasket(user:db.User){
+		var orders = getUserOrders(user);
+		for( o in orders ){
+			if(o.basket!=null) return o.basket;
+		}
+		return null;
+	}
+
 	/**
 		Get total income of the md, variable and constant
 	**/
@@ -574,8 +582,8 @@ class MultiDistrib extends Object
 		return db.Volunteer.manager.select($multiDistrib == this && $volunteerRole == role, false);
 	}
 
-	public function getVolunteerForUser(user: db.User) {
-		return db.Volunteer.manager.select($multiDistrib == this && $user == user, false);
+	public function getVolunteerForUser(user: db.User): Array<db.Volunteer> {
+		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this && $user == user, false));
 	}
 	
 	/**

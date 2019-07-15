@@ -185,9 +185,9 @@ class VolunteerService
 		var t = sugoi.i18n.Locale.texts;
 		if ( user != null && multidistrib != null && role != null ) {
 
-			//Look for the volunteer for that user
-			var foundVolunteer = multidistrib.getVolunteerForUser(user);
-			if ( foundVolunteer != null && foundVolunteer.volunteerRole.id == role.id ) {
+			//Look for the volunteer for that user adn this role
+			var foundVolunteer = Lambda.find(multidistrib.getVolunteerForUser(user), function(v) return v.volunteerRole.id==role.id);
+			if ( foundVolunteer != null ) {
 
 				//Send notification email to either the coordinators or all the members depending on the current date
 				var mail = new Mail();

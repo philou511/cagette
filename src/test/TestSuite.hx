@@ -13,7 +13,7 @@ class TestSuite
 		
 		connectDb();
 		var r = new haxe.unit.TestRunner();
-
+s
 		//Cagette core tests
 		r.add(new test.TestTools());
 		r.add(new test.TestUser());
