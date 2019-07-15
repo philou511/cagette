@@ -403,33 +403,39 @@ class MultiDistrib extends Object
 				return "distributed";
 			}
 		}
-
-
 	}
-		
+	
 	
 	public function isConfirmed():Bool{
 		//cannot be in future
 		if(getDate().getTime()>Date.now().getTime()) return false;
-		var distributions = getDistributions();
+		var distributions = getDistributions(db.Contract.TYPE_VARORDER);
 		return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
+	}
+
+	public function isValidated(){
+		return isConfirmed();
 	}
 	
 	public function checkConfirmed():Bool{
-		var orders = getOrders();
-		var c = Lambda.count( orders, function(d) return d.paid) == orders.length;
 		
-		if (c){
-			for ( d in getDistributions()){
-				if (!d.validated){
+		for ( d in getDistributions(db.Contract.TYPE_VARORDER)){
+			if(!d.validated){
+				var orders = d.getOrders();
+				var allOrdersPaid = Lambda.count( orders , function(d) return d.paid) == orders.length;		
+
+				if (allOrdersPaid){
 					d.lock();
 					d.validated = true;
 					d.update();
 				}
+
 			}
+			
 		}
 		
-		return c;
+		
+		return isConfirmed();
 	}
 
 	//get key by date-place-type
@@ -439,7 +445,12 @@ class MultiDistrib extends Object
 	}
 
 	override public function toString(){
-		return "Multidistrib à "+getPlace().name+" le "+getDate();
+		try{
+			return "Multidistrib à "+getPlace().name+" le "+getDate();
+		}catch(e:Dynamic){
+			return "#"+this.id;
+		}
+		
 	}
 
 	public function placePopulate():sugoi.form.ListData.FormData<Int> {

@@ -629,16 +629,26 @@ div.reportHeader{
 
 
 /* categories */
-span.tag{
+.tag{
 	color:white;
 	font-size:80%;
-	//font-weight:bold;
 	padding:4px;
 	background-color:#666666;
 	border-radius:4px;
 	line-height: 30px;
+	text-align: center;
+
+	&.big{
+		font-size: 1.2em;
+		min-width: 30px;
+		min-height: 48px;
+		font-weight: bold;
+		line-height: 48px;
+		padding:0;
+	}
 }
-span.tag.active{
+
+.tag.active{
 	padding:12px;
 	font-size: 16px;
 	line-height: 45px;

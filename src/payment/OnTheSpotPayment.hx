@@ -7,7 +7,7 @@ package payment;
 class OnTheSpotPayment extends payment.PaymentType
 {
 	
-	public static var TYPE = "onthespot";
+	public static var TYPE(default, never) = "onthespot";
 	public var allowedPaymentTypes : Array<payment.PaymentType>;
 
 	public function new() 

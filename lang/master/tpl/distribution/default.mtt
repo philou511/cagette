@@ -89,8 +89,8 @@
 
                     ::if(d.orderStartDate!=null)::
                     <p>
-                        <i class="icon icon-calendar"></i> ::_("Orders start date")::  :  ::hDate(d.orderStartDate)::<br/>
-                        <i class="icon icon-calendar"></i> ::_("Orders end date")::  :  ::hDate(d.orderEndDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders opening")::  :  ::hDate(d.orderStartDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders closing")::    :  ::hDate(d.orderEndDate)::<br/>
                     </p>
                     ::end::
                 </div>
@@ -243,6 +243,8 @@
 										::contract._vendor.name::
 									</td>
 									<td>
+										
+
 										::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
@@ -274,6 +276,9 @@
 										::contract._vendor.name::
 									</td>
 									<td>
+
+										$$edit(Modifier,/distribution/edit/::dist.id::)
+
 										::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::

@@ -10,11 +10,11 @@ import tink.core.Error;
 class VolunteerService 
 {
 
-	public static function deleteVolunteerRole(role: db.VolunteerRole) {
+	public static function deleteVolunteerRole(role: db.VolunteerRole, ?force=false) {
 
 		var t = sugoi.i18n.Locale.texts;
-
-		if ( db.Volunteer.manager.count($volunteerRole == role) == 0 ) {
+		
+		if ( db.Volunteer.manager.count($volunteerRole == role) == 0 || force) {
 
 			var roleId = Std.string(role.id);
 			role.lock();
@@ -26,15 +26,14 @@ class VolunteerService
 
 				var roleIds = multidistrib.volunteerRolesIds.split(',');
 				if ( roleIds.remove(roleId) ) {
-
 					multidistrib.volunteerRolesIds = roleIds.join(',');
 					multidistrib.update();
 				}
 			}
-		}
-		else {
-
-			throw new tink.core.Error(t._("You can't delete this role because there are volunteers assigned to this role. You need to delete the volunteers first."));
+		} else {
+			var str = "Vous ne pouvez pas supprimer ce rôle car il y a des bénévoles inscrits à ce rôle.";
+			str += "<a href='/amapadmin/volunteers/deleteRole/"+role.id+"?token="+App.current.view.token+"&force=1' class='btn btn-default'>Supprimer quand-même</a>";
+			throw new Error( str );
 		}
 	}
 
@@ -271,7 +270,8 @@ class VolunteerService
 		for ( i in 1...(number+1) ) {
 			
 			var role = new db.VolunteerRole();
-			role.name = t._("Duty period") + " " + c.name + " " + i;
+			role.name = t._("Duty period");
+			role.name += " " + c.name + " " + i;
 			role.group = c.amap;
 			role.contract = c;
 			role.insert();
@@ -283,48 +283,36 @@ class VolunteerService
 
 		var t = sugoi.i18n.Locale.texts;
 
-		if ( Std.is( numberOfDays, Int ) ) {
+		switch( type ) {
+
+			case "volunteersCanJoin":
 			
-			switch( type ) {
+				if ( numberOfDays <  7 ) {
+					throw new Error(t._("The number of days before the volunteers can join a duty period needs to be greater than 6 days."));
+				}
+				else if ( numberOfDays > 181 ) {
+					throw new Error(t._("The number of days before the volunteers can join a duty period needs to be lower than 181 days."));
+				}
 
-				case "volunteersCanJoin":
-				
-					if ( numberOfDays <  7 ) {
+			case "instructionsMail":
 
-						throw new tink.core.Error(t._("The number of days before the volunteers can join a duty period needs to be greater than 6 days."));
-					}
-					else if ( numberOfDays > 181 ) {
+				if ( numberOfDays <  2 ) {
+					throw new Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be greater than 1 day."));
+				}
+				else if ( numberOfDays > 15 ) {
+					throw new Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be lower than 15 days."));
+				}
 
-						throw new tink.core.Error(t._("The number of days before the volunteers can join a duty period needs to be lower than 181 days."));
-					}
+			case "vacantRolesMail":
 
-				case "instructionsMail":
-
-					if ( numberOfDays <  2 ) {
-
-						throw new tink.core.Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be greater than 1 day."));
-					}
-					else if ( numberOfDays > 15 ) {
-
-						throw new tink.core.Error(t._("The number of days before the duty periods to send the instructions mail to all the volunteers needs to be lower than 15 days."));
-					}
-
-				case "vacantRolesMail":
-
-					if ( numberOfDays <  2 ) {
-
-						throw new tink.core.Error(t._("The number of days before the duty periods to send the vacant roles mail to all members needs to be greater than 1 day."));
-					}
-					else if ( numberOfDays > 15 ) {
-
-						throw new tink.core.Error(t._("The number of days before the duty periods to send the instructions mail to all members needs to be lower than 15 days."));
-					}
-			}
+				if ( numberOfDays <  2 ) {
+					throw new Error(t._("The number of days before the duty periods to send the vacant roles mail to all members needs to be greater than 1 day."));
+				}
+				else if ( numberOfDays > 15 ) {
+					throw new Error(t._("The number of days before the duty periods to send the instructions mail to all members needs to be lower than 15 days."));
+				}
 		}
-		else {
-
-			throw new tink.core.Error(t._("One or more numbers of days you entered is not an integer. You can only use integers. "));
-		}	
+		
 	}
 
 	public static function getRolesFromGroup(group:db.Amap):Array<db.VolunteerRole>{

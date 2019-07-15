@@ -75,7 +75,7 @@ class Basket extends Object
 			
 			//compute basket number
 			var md = MultiDistrib.get(date, place);
-			if(md==null) throw "md is null when creating basket";
+			if(md==null) throw "md is null when creating basket : "+date+", "+place;
 			
 			b = new Basket();
 			b.num = md.getUsers().length + 1;
@@ -157,7 +157,7 @@ class Basket extends Object
         if(order==null) return null;
 
 		var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
-		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending);
+		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending, this);
 		
 	}
 	

@@ -9,6 +9,7 @@ import Common;
 import service.VolunteerService;
 import service.DistributionService;
 using tools.DateTool;
+using Lambda;
 
 
 class Distribution extends Controller
@@ -262,11 +263,32 @@ class Distribution extends Controller
 		var contract = d.contract;
 		
 		var form = sugoi.form.Form.fromSpod(d);
-		form.removeElement(form.getElement("contractId"));
-		form.removeElement(form.getElement("end"));
+		form.removeElementByName("placeId");
+		form.removeElementByName("date");
+		form.removeElementByName("end");
+		form.removeElement(form.getElement("contractId"));		
 		form.removeElement(form.getElement("distributionCycleId"));
-		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") ,d.end,true);
+
+		//date
+		var threeMonthAgo = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
+		var inThreeMonth  = DateTools.delta(d.multiDistrib.distribStartDate , 1000.0*60*60*24*30.5*3); 
+		var mds = db.MultiDistrib.getFromTimeRange(d.contract.amap,threeMonthAgo,inThreeMonth);
+		
+		var mds = mds.filter(function(md) return !md.isValidated() ).map(function(md) return {label:view.hDate(md.getDate()), value:md.id});
+		var e = new sugoi.form.elements.IntSelect("md",t._("General distribution"), mds ,d.multiDistrib.id);			
+		form.addElement(e, 1);
+
+		var html = new sugoi.form.elements.Html("note",t._("You can customize some parameters for this farmer : distribution hour, order opening and closing dates :"));
+		form.addElement(html, 2);
+		
+		//start hour		
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Distribution start time"), d.date );
 		form.addElement(x, 3);
+		
+		//end hour
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("Distribution end time"), d.end );
+		form.addElement(x, 4);
+		
 		
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
@@ -283,12 +305,39 @@ class Distribution extends Controller
 					orderEndDate = form.getValueOf("orderEndDate");
 				}
 
-				d = service.DistributionService.edit(d,
-				form.getValueOf("date"),
-				form.getValueOf("end"),
-				form.getValueOf("placeId"),				
-				orderStartDate,
-				orderEndDate);
+				var md = db.MultiDistrib.manager.get(form.getValueOf("md"));
+
+				if(md.id!=d.multiDistrib.id){
+					/* 
+					FORBID THIS WITH CREDIT CARD PAYMENTS 
+					because it would make the order and payment ops out of sync
+					*/
+					var orders = d.getOrders();
+					if(d.contract.amap.hasPayments() && orders.length>0){
+						throw Error("/distribution",t._("Sorry, you can't move the distribution of this farmer to a different date when payments management is enabled in your group."));
+					}
+
+					//different multidistrib id ! should change the basket					
+					for ( o in orders ){
+						o.lock();
+						//find new basket
+						o.basket = db.Basket.getOrCreate(o.user, md.place, md.getDate());
+						o.update();
+					}
+				}
+
+				//do not launch event, avoid notifs for now
+				d = DistributionService.edit2(
+					d,
+					md,
+					form.getValueOf("startHour"),
+					form.getValueOf("endHour"),				
+					orderStartDate,
+					orderEndDate,
+					false
+				);
+				
+
 			} catch(e:Error){
 				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
@@ -305,7 +354,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._("Edit a distribution");
+		view.title = t._("Edit a distribution of ::farmer::",{farmer:d.contract.vendor.name});
 	}
 	
 	@tpl('form.mtt')
@@ -406,26 +455,30 @@ class Distribution extends Controller
 		var md = new db.MultiDistrib();
 		md.place = app.user.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
-		form.removeElementByName("distribEndDate");
-		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time") );
-		form.addElement(x, 3);
-		//form.removeElementByName("type");
+
+		//date
+		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), null);	
+		untyped e.format = "LL";
+		form.addElement(e, 3);
 		
-		//default values
-		form.getElement("distribStartDate").value 	= DateTool.now().deltaDays(30).setHourMinute(19, 0);
-		form.getElement("distribEndDate").value 	= DateTool.now().deltaDays(30).setHourMinute(20, 0);
-
-		//orders opening/closing	
-		/*if (type == db.Contract.TYPE_CONSTORDERS ) {
-			form.removeElementByName("orderStartDate");
-			form.removeElementByName("orderEndDate");			
-		}else{*/
-			form.getElement("orderStartDate").value = DateTool.now().deltaDays(10).setHourMinute(8, 0);	
-			form.getElement("orderEndDate").value = DateTool.now().deltaDays(20).setHourMinute(23, 59);
-		//}
-
+		//start hour
+		form.removeElementByName("distribStartDate");
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time") );
+		form.addElement(x, 3);
+		
+		//end hour
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time") );
+		form.addElement(x, 4);		
+		
+		//default values		
+		form.getElement("date").value 				= DateTool.now().deltaDays(30);
+		form.getElement("startHour").value 			= DateTool.now().deltaDays(30).setHourMinute(19, 0);
+		form.getElement("endHour").value 			= DateTool.now().deltaDays(30).setHourMinute(20, 0);
+		form.getElement("orderStartDate").value 	= DateTool.now().deltaDays(10).setHourMinute(8, 0);	
+		form.getElement("orderEndDate").value 		= DateTool.now().deltaDays(20).setHourMinute(23, 59);
+		
 		//vendors to add
-		//var label = type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
 		var datas = [];
 		for( c in md.place.amap.getActiveContracts()){
 			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
@@ -436,10 +489,11 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
-
-				var distribStartDate = form.getValueOf("distribStartDate");
-				var endDate = form.getValueOf("distribEndDate");			
-				var distribEndDate = DateTool.setHourMinute( distribStartDate, endDate.getHours(), endDate.getMinutes() );
+				var date = form.getValueOf("date");
+				var startHour = form.getValueOf("startHour");
+				var endHour = form.getValueOf("endHour");
+				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
+				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
 				
 				md = service.DistributionService.createMd(
 					db.Place.manager.get(form.getValueOf("placeId"),false),
@@ -461,7 +515,12 @@ class Distribution extends Controller
 				throw Error('/distribution/insertMd/' ,e.message);
 			}
 			
-			throw Ok('/distribution/volunteerRoles/' + md.id, t._("The distribution has been recorded") );	
+			if(service.VolunteerService.getRolesFromGroup(app.user.amap).length>0){
+				throw Ok('/distribution/volunteerRoles/' + md.id, t._("The distribution has been recorded, please define which roles are needed.") );	
+			}else{
+				throw Ok('/distribution/', t._("The distribution has been recorded") );	
+			}
+			
 		}
 	
 		view.form = form;
@@ -478,16 +537,32 @@ class Distribution extends Controller
 		
 		md.place = app.user.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
-		form.removeElementByName("distribEndDate");
-		var x = new sugoi.form.elements.HourDropDowns("distribEndDate", t._("End time"), md.distribEndDate );
-		form.addElement(x, 3);
 
+		//date
+		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), md.distribStartDate);	
+		untyped e.format = "LL";
+		form.addElement(e, 3);
+		
+		//start hour
+		form.removeElementByName("distribStartDate");
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time"), md.distribStartDate );
+		form.addElement(x, 3);
+		
+		//end hour
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time"), md.distribEndDate );
+		form.addElement(x, 4);
+
+		//override dates
+		var overrideDates = new sugoi.form.elements.Checkbox("override","Recaler tous les producteurs sur ces horaires",false);		
+		form.addElement(overrideDates,7);
+		
 		//contracts
-		var label = t._("Contracts");//md.type==db.Contract.TYPE_CONSTORDERS ? "Contrats AMAP" : "Commandes variables";
+		var label = t._("Contracts");
 		var datas = [];
 		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
-			/*if( c.type==md.type)*/ datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
+			datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
 		}
 		var distributions = md.getDistributions();
 		for( d in distributions){
@@ -499,11 +574,18 @@ class Distribution extends Controller
 		if (form.isValid()) {
 
 			try {
+
+				var date = form.getValueOf("date");
+				var startHour = form.getValueOf("startHour");
+				var endHour = form.getValueOf("endHour");
+				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
+				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
+
 				service.DistributionService.editMd(
 					md,
 					db.Place.manager.get(form.getValueOf("placeId"),false),
-					form.getValueOf("distribStartDate"),
-					form.getValueOf("distribEndDate"),
+					distribStartDate,
+					distribEndDate,
 					form.getValueOf("orderStartDate"),
 					form.getValueOf("orderEndDate")
 				);
@@ -515,15 +597,14 @@ class Distribution extends Controller
 						//create it
 						var contract = db.Contract.manager.get(cid,false);
 						service.DistributionService.participate(md,contract);
-					}else{
-						//do not update it
-						/*d.lock();
+					}else if(form.getValueOf("override")==true){
+						//override dates
+						d.lock();
 						d.date = md.distribStartDate;
 						d.end = md.distribEndDate;
 						d.orderStartDate = md.orderStartDate;
-						d.orderEndDate = md.orderEndDate;
-						d.place = md.place;
-						d.update();*/
+						d.orderEndDate = md.orderEndDate;						
+						d.update();
 					}
 				}
 
@@ -535,7 +616,7 @@ class Distribution extends Controller
 				}
 
 			} catch(e:Error){
-				throw Error('/distribution/editMd/'  ,e.message);
+				throw Error('/distribution/editMd/'+md.id  ,e.message);
 			}
 			
 			throw Ok('/distribution' , t._("The distribution has been updated") );	
@@ -649,7 +730,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
 
 		var contractId = cycle.contract.id;
-		var messages = service.DistributionService.deleteCycleDistribs(cycle);
+		var messages = service.DistributionService.deleteCycleDistribs(cycle,true);
 		if (messages.length > 0){			
 			App.current.session.addMessage( messages.join("<br/>"),true);	
 		}
@@ -657,71 +738,16 @@ class Distribution extends Controller
 		throw Ok("/contractAdmin/distributions/" + contractId, t._("Recurrent deliveries deleted"));
 	}
 	
-	/**
-	 * Doodle-like participation planning
-	 */
-	@tpl("distribution/planning.mtt")
-	public function doPlanning(contract:db.Contract) {
-	
-		view.contract = contract;
-
-		var doodle = new Map<Int,{user:db.User,planning:Map<Int,Bool>}>();
-		var distribs = contract.getDistribs(true, 150);
-		
-		for ( d in distribs ) {
-			for (u in [d.distributor1, d.distributor2, d.distributor3, d.distributor4]) {
-				if (u != null) {
-					
-					var udoodle = doodle.get(u.id);
-					
-					if (udoodle == null) udoodle = { user:u, planning:new Map<Int,Bool>() };
-					udoodle.planning.set(d.id, true);
-					doodle.set(u.id, udoodle);
-				}
-			}
-		}
-		view.distribs = distribs;
-		view.doodle = doodle;
-		
-	}
 	
 	/**
-	 * Ajax service for doPlanning()
-	 */
-	public function doRegister(args: { register:Bool, distrib:db.Distribution } ) {
-		
-		if (args != null) {
-			var d = args.distrib;
-			d.lock();
-			
-			if (args.register) {
-				
-				if (d.distributor1 == null) d.distributor1 = app.user;
-				else if (d.distributor2 == null) d.distributor2 = app.user;
-				else if (d.distributor3 == null) d.distributor3 = app.user;
-				else if (d.distributor4 == null) d.distributor4 = app.user;
-				
-			}else {
-				if (d.distributor1 == app.user) d.distributor1 = null;
-				else if (d.distributor2 == app.user) d.distributor2 = null;
-				else if (d.distributor3 == app.user) d.distributor3 = null;
-				else if (d.distributor4 == app.user) d.distributor4 = null;
-			}
-			
-			d.update();
-		}
-		
-	}
-	
-	/**
-	 * Validate a multi-distrib
+	 * Validate a multiDistrib (main page)
 	 * @param	date
 	 * @param	place
 	 */
 	@tpl('distribution/validate.mtt')
 	public function doValidate(multiDistrib:db.MultiDistrib){
 		
-		if (!app.user.isAmapManager()) throw t._("Forbidden access");	
+		if (!app.user.isAmapManager() && !app.user.canManageAllContracts()) throw t._("Forbidden access");	
 			
 		view.confirmed = multiDistrib.checkConfirmed();
 		view.users = multiDistrib.getUsers(db.Contract.TYPE_VARORDER);
@@ -745,9 +771,8 @@ class Distribution extends Controller
 	}
 
 	@admin
-	public function doUnvalidate(date:Date,place:db.Place){
+	public function doUnvalidate(md:db.MultiDistrib){
 
-		var md = db.MultiDistrib.get(date,place);
 		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);
@@ -755,7 +780,9 @@ class Distribution extends Controller
 		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
 	}
 
-	//  Manage volunteer roles for the specified multidistrib
+	/**
+		Manage volunteer roles for the specified multidistrib
+	**/ 
 	@tpl("form.mtt")
 	function doVolunteerRoles(distrib: db.MultiDistrib) {
 		
@@ -810,7 +837,9 @@ class Distribution extends Controller
 
 	}
 
-	//  Assign volunteer to roles for the specified multidistrib
+	/**
+		Assign volunteer to roles for the specified multidistrib
+	**/  
 	@tpl("form.mtt")
 	function doVolunteers(distrib: db.MultiDistrib) {
 		

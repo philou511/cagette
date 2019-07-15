@@ -229,6 +229,10 @@
 							<a title="Github" href="https://github.com/bablukid/cagette" target="_blank"> <i class="icon icon-github"></i></a> 						
 						</li>
 					</ul>
+
+					<br/>
+					Cagette.net est réalisé <br/>
+					par la <a href='https://www.alilo.fr' target='_blank'>SCOP Alilo</a>
 				</div>
 				
 			
@@ -236,7 +240,6 @@
 		</div>
 		
 		<div class="row" id="subfooter">
-			::raw _("Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img src='/img/alilo-trans-black.png' /></a>")::<br/>
 			<span>version ::VERSION::-::getPlatform()::</span>
 		</div>
 		

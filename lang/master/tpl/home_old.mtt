@@ -192,10 +192,10 @@
 							</div>
 					
 							<div class="footer">
-								<!--::if user.isContractManager(dist._contract) || dist.distributor1Id==user.id || dist.distributor2Id==user.id || dist.distributor3Id==user.id || dist.distributor4Id==user.id:: 
-									<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
-								::end::
 								
+								<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
+								
+								<!--
 								<span ::cond dist.distributor1Id!=null || dist.distributor2Id!=null || dist.distributor3Id!=null || dist.distributor4Id!=null::>
 									&nbsp; <a href="#" onclick="$('#distributors::dist.id::').toggle();return false;"><i class="icon icon-chevron-user"></i> ::_("Permanence")::</a>
 								</span>-->

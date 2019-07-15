@@ -1,6 +1,7 @@
 package service;
 import Common;
 import tink.core.Error;
+using tools.DateTool;
 
 /**
  * Distribution Service
@@ -202,7 +203,11 @@ class DistributionService
 		return md;
 	}
 
+	/**
+		Edit a multidistrib.		
+	**/
 	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+		
 		md.lock();
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
@@ -212,9 +217,24 @@ class DistributionService
 		md.update();
 
 		checkMultiDistrib(md);
+
+		//update related distributions
+		for( d in md.getDistributions()){
+			//sync distrib date
+			d.lock();
+			d.date =  d.date.setDateMonth(distribStartDate.getDate(),distribStartDate.getMonth()).setYear(distribStartDate.getFullYear());
+			d.end = d.end.setDateMonth(distribStartDate.getDate(),distribStartDate.getMonth()).setYear(distribStartDate.getFullYear());
+			d.update();
+
+			//let opening/closing date untouched
+		}
+
 		return md;
 	}
 
+	/**
+		Delete a multidistribution
+	**/
 	public static function deleteMd(md:db.MultiDistrib){
 		var t = sugoi.i18n.Locale.texts;
 		md.lock();
@@ -256,14 +276,8 @@ class DistributionService
 
 	 /**
 	  *  Modifies an existing distribution and prevents distribution overlapping and other checks
-	  *  @param d - 
-	  *  @param date - 
-	  *  @param end - 
-	  *  @param placeId - 
-	  *  @param orderStartDate - 
-	  *  @param orderEndDate - 
-	  *  @return db.Distribution
-	  */
+	  	@deprecated 
+	 */
 	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
 		//We prevent others from modifying it
@@ -276,19 +290,36 @@ class DistributionService
 
 		//cannot change to a different date than the multidistrib
 		if(date.toString().substr(0,10) != d.multiDistrib.distribStartDate.toString().substr(0,10) ){
-			throw new Error(t._("The distribution date is different from the date of the general distribution."));
+			if(d.multiDistrib.getDistributions().length==1){
+				//can change if its the only one
+				d.multiDistrib.lock();
+				d.multiDistrib.distribStartDate = date;
+				d.multiDistrib.distribEndDate = end; 
+				if(d.contract.type==db.Contract.TYPE_VARORDER){
+					d.multiDistrib.orderStartDate = orderStartDate;
+					d.multiDistrib.orderEndDate = orderEndDate;
+				}
+				d.multiDistrib.update();
+			}else{
+				throw new Error(t._("The distribution date is different from the date of the general distribution."));
+			}
+			
 		}
+
 		//cannot change the place
 		if(placeId != d.multiDistrib.place.id ){
-			throw new Error(t._("The distribution place is different from the place of the general distribution."));
+			if(d.multiDistrib.getDistributions().length==1){
+				//can change if its the only one
+				d.multiDistrib.lock();
+				d.multiDistrib.place = db.Place.manager.get(placeId);
+				d.multiDistrib.update();
+			}else{
+				throw new Error(t._("The distribution place is different from the place of the general distribution."));
+			}			
 		}
 
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
-		/*d.distributor1 = db.User.manager.get(distributor1Id);
-		d.distributor2 = db.User.manager.get(distributor2Id);
-		d.distributor3 = db.User.manager.get(distributor3Id);
-		d.distributor4 = db.User.manager.get(distributor4Id);*/
 		if(d.contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
 			d.orderEndDate = orderEndDate;
@@ -296,10 +327,43 @@ class DistributionService
 					
 		if (end == null) {
 			d.end = DateTools.delta(d.date, 1000.0 * 60 * 60);
-		}
-		else {
+		} else {
 			d.end = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate(), end.getHours(), end.getMinutes(), 0);
 		} 
+		
+		checkDistrib(d);
+
+		if(dispatchEvent) App.current.event(EditDistrib(d));
+		
+		if (d.date == null){
+			return d;
+		} else {
+			d.update();
+			return d;
+		}
+	}
+
+	/**
+		Edit a Distribution (new way, with multidistribs)
+	**/
+	public static function edit2(d:db.Distribution,md:db.MultiDistrib,distribStartHour:Date,distribEndHour:Date,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
+
+		//We prevent others from modifying it
+		d.lock();
+		var t = sugoi.i18n.Locale.texts;
+
+		if(d.validated) {
+			throw new Error(t._("You cannot edit a distribution which has been already validated."));
+		}
+
+		d.multiDistrib = md;
+		d.date = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribStartHour.getHours(), distribStartHour.getMinutes(), 0);
+		d.end  = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribEndHour.getHours(), distribEndHour.getMinutes(), 0);
+		
+		if(d.contract.type==db.Contract.TYPE_VARORDER){
+			d.orderStartDate = orderStartDate;
+			d.orderEndDate = orderEndDate;
+		}
 		
 		checkDistrib(d);
 
@@ -348,6 +412,16 @@ class DistributionService
 		if (dispatchEvent) {
 			App.current.event(DeleteDistrib(d));
 		}
+
+		//erase zero qt orders
+		for ( order in d.getOrders() ){
+			if(order.quantity==0.0) {
+				order.lock();
+				order.delete();
+			}
+		}
+
+
 		d.delete();
 
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
@@ -456,7 +530,7 @@ class DistributionService
 	 *   Deletes all distributions which are part of this cycle
 	 *  @param cycle - 
 	 */
-	public static function deleteCycleDistribs(cycle:db.DistributionCycle){
+	public static function deleteCycleDistribs(cycle:db.DistributionCycle,dispatchEvent:Bool):Array<String>{
 
 		cycle.lock();
 
@@ -472,7 +546,7 @@ class DistributionService
 			for ( d in children ){
 			
 				try{
-					delete(d);
+					delete(d,dispatchEvent);
 				}catch(e:tink.core.Error){
 					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
 				}

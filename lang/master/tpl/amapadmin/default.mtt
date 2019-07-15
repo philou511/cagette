@@ -34,16 +34,26 @@
 			<p>
 				<a href="/group/::user._amap.id::" class="btn btn-default"><i class="icon icon-chevron-right"></i>&nbsp; ::_("Display")::</a>
 			</p>
+
+			::if isAdmin::
+			<p>
+				<br/>
+				<br/>
+				<br/>
+				<a class="btn btn-danger btn-sm" href="/p/hosted/group/::user._amap.id::">Fiche sur le backoffice</a>
+			</p>
+			::end::
 			
 			
 		</div>
 		
-		<div class="col-md-6">
-			
+		<div class="col-md-6">			
 			::if user._amap._image!=null::
 			<img src="::file(user._amap._image)::" style="width: 100%;" class="thumbnail" />
 			::end::
 		</div>
+
+
 
 	</div>
 

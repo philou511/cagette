@@ -31,7 +31,7 @@ class Validate extends controller.Controller
 		view.date = date;
 		view.basket = b;
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
-		view.distribution = multiDistrib;
+		view.md = multiDistrib;
 		
 		checkToken();
 	}

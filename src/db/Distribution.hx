@@ -26,12 +26,6 @@ class Distribution extends Object
 	public var end : SNull<SDateTime>;
 	
 	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
-	
-	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor1Id) public var distributor1 : SNull<db.User>; 
-	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor2Id) public var distributor2 : SNull<db.User>; 
-	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor3Id) public var distributor3 : SNull<db.User>; 
-	@hideInForms @formPopulate("distributorPopulate") @:relation(distributor4Id) public var distributor4 : SNull<db.User>; 	
-	
 	@hideInForms public var validated :SBool;
 	
 	public static var DISTRIBUTION_VALIDATION_LIMIT = 10;
@@ -75,7 +69,7 @@ class Distribution extends Object
 		return out;
 	}
 	
-	public function hasEnoughDistributors() {
+	/*public function hasEnoughDistributors() {
 		var n = contract.distributorNum;
 		
 		var d = 0;
@@ -93,7 +87,7 @@ class Distribution extends Object
 			(distributor2!=null && u.id == distributor2.id) || 
 			(distributor3!=null && u.id == distributor3.id) || 
 			(distributor4!=null && u.id == distributor4.id);
-	}
+	}*/
 	
 	/**
 	 * String to identify this distribution (debug use only)
@@ -154,7 +148,7 @@ class Distribution extends Object
 	 * Get TTC turnover for this distribution
 	 */
 	public function getTurnOver():Float{
-		var products = contract.getProducts();
+		var products = contract.getProducts(false);
 		if(products.length==0) return 0.0;
 		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(products).join(",") +") ";
 		if (contract.type == db.Contract.TYPE_VARORDER) {
