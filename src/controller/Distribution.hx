@@ -603,7 +603,13 @@ class Distribution extends Controller
 						d.date = md.distribStartDate;
 						d.end = md.distribEndDate;
 						d.orderStartDate = md.orderStartDate;
-						d.orderEndDate = md.orderEndDate;						
+						d.orderEndDate = md.orderEndDate;
+						d.place = md.place;						
+						d.update();
+					}else{
+						//sync only place
+						d.lock();
+						d.place = md.place;
 						d.update();
 					}
 				}

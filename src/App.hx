@@ -187,11 +187,13 @@ class App extends sugoi.BaseApp {
 		//group options
 		out.set("ShopMode", "Mode boutique");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
-		out.set("ShopCategoriesFromTaxonomy", "Catégoriser automatiquement les produits");
+		out.set("CustomizedCategories", "Catégories customisées");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
-		out.set("AddressRequired", "Saisir de l'adresse obligatoire");
-		out.set("ShopV2", "[BETA] Utiliser la nouvelle boutique");
+		out.set("AddressRequired", "Saisie de l'adresse obligatoire");
+		
+
+		out.set("ShopV2", "Nouvelle boutique");
 
 		out.set("ref", "Référence");
 		out.set("linkText", "Intitulé du lien");
@@ -200,8 +202,8 @@ class App extends sugoi.BaseApp {
 		//group type
 		out.set("Amap", "AMAP");
 		out.set("GroupedOrders", "Groupement d'achat");
-		out.set("ProducerDrive", "Collectif de producteurs");
-		out.set("FarmShop", "Vente à la ferme");
+		out.set("ProducerDrive", "En direct d'un collectif de producteurs");
+		out.set("FarmShop", "En direct d'un producteur");
 		
 		out.set("regOption", "Inscription de nouveaux adhérents");
 		out.set("Closed", "Fermé : Le coordinateur ajoute les nouveaux adhérents");

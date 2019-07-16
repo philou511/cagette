@@ -51,8 +51,8 @@ class Amap extends Controller
 
 			if(form.getValueOf("mode")=="shop") group.flags.set(db.Amap.AmapFlags.ShopMode) else group.flags.unset(db.Amap.AmapFlags.ShopMode);
 
-			if(group.flags.has(db.Amap.AmapFlags.ShopV2)){
-				group.flags.set(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy);
+			if(group.betaFlags.has(db.Amap.BetaFlags.ShopV2)){
+				group.flags.unset(db.Amap.AmapFlags.CustomizedCategories);
 				group.update();
 			}
 			

@@ -172,8 +172,8 @@ class Group extends controller.Controller
 		var data = [
 			{label:t._("CSA"),value:"0"},
 			{label:t._("Grouped orders"),value:"1"},
-			{label:t._("Farmers collective"),value:"2"},
-			{label:t._("Farm shop"),value:"3"},
+			{label:"En direct d'un collectif de producteurs",value:"2"},
+			{label:"En direct d'un producteur",value:"3"},
 		];	
 		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1","1",true,true,true);
 		f.addElement(gt);
@@ -200,15 +200,15 @@ class Group extends controller.Controller
 			case GroupedOrders :
 				g.flags.set(ShopMode);
 				g.flags.set(HasMembership);
-				g.flags.set(ShopV2);
-				g.flags.set(ShopCategoriesFromTaxonomy);
+				g.betaFlags.set(ShopV2);
+				// g.flags.set(ShopCategoriesFromTaxonomy);
 				g.regOption = WaitingList;
 				
 			case ProducerDrive,FarmShop : 
 				g.flags.set(ShopMode);								
 				g.flags.set(PhoneRequired);
-				//g.flags.set(ShopV2);
-				//g.flags.set(ShopCategoriesFromTaxonomy);
+				g.betaFlags.set(ShopV2);
+				// g.flags.set(ShopCategoriesFromTaxonomy);
 				g.regOption = Open;
 			}
 			

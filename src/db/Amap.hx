@@ -11,10 +11,15 @@ enum AmapFlags {
 	HasPayments; 	//manage payments and user balance
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
+	CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
+	UnUsed;
+	
+}
+
+enum BetaFlags{
 	ShopV2; 		//BETA shop V2
 }
 
@@ -62,6 +67,8 @@ class Amap extends Object
 	public var vatRates : SData<Map<String,Float>>;
 	
 	public var flags:SFlags<AmapFlags>;
+	public var betaFlags:SFlags<BetaFlags>;
+
 	public var groupType:SNull<SEnum<GroupType>>;
 	
 	@hideInForms @:relation(imageId)
@@ -96,6 +103,7 @@ class Amap extends Object
 		flags = cast 0;
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
+		betaFlags = cast 0;
 		vatRates = ["5,5%" => 5.5, "20%" => 20];
 		cdate = Date.now();
 		regOption = Open;
@@ -187,7 +195,7 @@ class Amap extends Object
 	}
 	
 	public function hasTaxonomy(){
-		return flags != null && flags.has(ShopCategoriesFromTaxonomy);
+		return flags != null && !flags.has(CustomizedCategories);
 	}
 	
 	public function hasPhoneRequired(){
@@ -204,7 +212,7 @@ class Amap extends Object
 		var t = sugoi.i18n.Locale.texts;
 		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
 		
-		if (this.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+		if (!this.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
@@ -437,6 +445,7 @@ class Amap extends Object
 			"extUrl" 		=> t._("Group website URL"),
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
+			"betaFlags" 	=> t._("Nouvelles fonctionnalités"),
 			"groupType" 	=> t._("Group type"),
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),

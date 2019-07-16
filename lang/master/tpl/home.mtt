@@ -109,11 +109,12 @@
 					::if d.userHasOrders(user,1)::
 					
 						<!-- Variable order block with orders -->
-						<!--<div class="content myorder">::_("My order"):: :</div>-->
+						<div class="content myorder" ::cond !hasShopMode::>Mes commandes variables :</div>
+
 						<div class="content orders text-center">
 							::set basket = d.getUserBasket(user)::
 							::set title = "Commande du "+hDate(d.getDate())::
-								<a href="#" onclick="_.overlay('/account/basket/::basket.id::','::title::')" class="btn btn-default btn-sm">
+								<a onclick="_.overlay('/account/basket/::basket.id::','::title::')" class="btn btn-default btn-sm">
 									
 									<i class="icon icon-basket"></i> ::_("My order"):: : ::formatNum(basket.getOrdersTotal()):: ::currency()::
 								</a>
