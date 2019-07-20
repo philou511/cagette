@@ -77,7 +77,7 @@
 				::set ordersEndDate = d.getOrdersEndDate()::
 
 				<!-- header -->
-				<div class="header ::if active:: active ::end::">
+				<div class="header ::if (active && hasShopMode):: active ::end::">
 
 					<!-- date box -->						
 					<div class="dateBoxOffset">
@@ -259,7 +259,7 @@
 								</div>
 						
 								<div class="footer">
-									::if user.isContractManager(dist._contract) || d.getVolunteerForUser(user)!=null:: 
+									::if user.isContractManager(dist._contract) || d.getVolunteerForUser(user).length>0:: 
 										<a href="/distribution/list/::dist.id::"><i class="icon icon-print"></i>  ::_("Distribution list")::</a>
 									::end::
 								</div>
