@@ -18,7 +18,7 @@ class Shop extends Controller
 		var out = new Array<CategoryInfo>();
 		var group = args.place.amap;
 		
-		if (group.flags.has(ShopCategoriesFromTaxonomy)){
+		if ( !group.flags.has(CustomizedCategories)){
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
@@ -33,7 +33,7 @@ class Shop extends Controller
 			
 		}else{
 			
-			throw "please enable standard categories";
+			throw "Please disable customized categories";
 			//CUSTOM CATEGORIES
 			/*var catGroups = db.CategoryGroup.get(group);
 			for (cat  in catGroups){
@@ -72,9 +72,9 @@ class Shop extends Controller
 		
 		if ( args == null || (args.category == null && args.subcategory == null)) throw "You should provide a category Id or a subcategory Id";
 		//need some optimization : populating all thses objects eats memory, and we need only the ids !		
-		var products = getProducts(args.place, Date.fromString(args.date), args.place.amap.flags.has(ShopCategoriesFromTaxonomy));
+		var products = getProducts(args.place, Date.fromString(args.date), !args.place.amap.flags.has(CustomizedCategories));
 		var pids  = products.getIds();
-		var categsFromTaxo = args.place.amap.flags.has(ShopCategoriesFromTaxonomy);		
+		var categsFromTaxo = !args.place.amap.flags.has(CustomizedCategories);		
 		var catName = "undefined category";
 		
 		if( categsFromTaxo ){

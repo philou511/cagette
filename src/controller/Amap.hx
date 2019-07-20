@@ -28,9 +28,9 @@ class Amap extends Controller
 		
 		var form = Form.fromSpod(group);
 
-		//remove "shop mode" from flags
+		//remove "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
-		untyped flags.excluded = [1];
+		untyped flags.excluded = [1,3,9];
 
 		//add a custom field for "shopmode"
 		var data = [
@@ -51,8 +51,8 @@ class Amap extends Controller
 
 			if(form.getValueOf("mode")=="shop") group.flags.set(db.Amap.AmapFlags.ShopMode) else group.flags.unset(db.Amap.AmapFlags.ShopMode);
 
-			if(group.flags.has(db.Amap.AmapFlags.ShopV2)){
-				group.flags.set(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy);
+			if(group.betaFlags.has(db.Amap.BetaFlags.ShopV2)){
+				group.flags.unset(db.Amap.AmapFlags.CustomizedCategories);
 				group.update();
 			}
 			

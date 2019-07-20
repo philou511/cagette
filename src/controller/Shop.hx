@@ -12,7 +12,7 @@ class Shop extends Controller
 	@tpl('shop/default.mtt')
 	public function doDefault(place:db.Place,date:Date) {
 
-		if(place.amap.flags.has(ShopV2)) throw Redirect('/shop2/${place.id}/${date.toString()}');
+		if(place.amap.betaFlags.has(ShopV2)) throw Redirect('/shop2/${place.id}/${date.toString()}');
 
 		var products = getProducts(place,date);
 		view.products = products;
@@ -46,7 +46,7 @@ class Shop extends Controller
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
 		
-		if (place.amap.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+		if (!place.amap.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
 			
 			//TAXO CATEGORIES
 			products = getProducts(place, date, true);

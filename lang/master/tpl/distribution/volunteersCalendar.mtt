@@ -92,11 +92,11 @@
 						::set color = ""::
 					::end::
 					<td style="width:200px;line-height:16px;text-align:center;" class="::class::">
-						<b>::date.dow:: ::date.d:: ::date.m::</b><br/>
-						::date.h+":"+date.i::<br/><br/>
-
-						
-							<i class="::icon::"></i>
+						<b>::date.dow:: ::date.d:: ::date.m::</b>
+						<br/>
+						::date.h+":"+date.i::<br/>
+						<br/>
+						<i class="::icon::"></i>
 						
 						<b>::d.getVolunteers().length::</b> inscrit(s) sur <b>::d.getVolunteerRoles().length::</b> requis
 					</td>

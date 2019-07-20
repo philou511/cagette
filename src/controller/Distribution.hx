@@ -904,7 +904,7 @@ class Distribution extends Controller
 				throw Error("/distribution/volunteersSummary/" + distrib.id, e.message);
 			}
 		
-			throw Ok("/distribution/volunteersSummary/" + distrib.id, t._("You have been successfully added to the selected role."));
+			throw Ok("/home/", t._("You have been successfully added to the selected role."));
 		}
 		
 		view.multidistrib = distrib;

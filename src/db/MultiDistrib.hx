@@ -258,7 +258,7 @@ class MultiDistrib extends Object
 		return distribEndDate;
 	}
 
-	public function getProductsExcerpt():Array<ProductInfo>{
+	public function getProductsExcerpt(productNum:Int):Array<ProductInfo>{
 		var key = "productsExcerpt-"+getKey();
 		var cache:Array<Int> = sugoi.db.Cache.get(key);
 		if(cache!=null){
@@ -277,12 +277,12 @@ class MultiDistrib extends Object
 
 		var products = [];
 		for( d in getDistributions()){
-			for ( p in d.contract.getProductsPreview(9)){
+			for ( p in d.contract.getProductsPreview(productNum)){
 				products.push( p.infos(null,false) );	
 			}
 		}
 		products = thx.Arrays.shuffle(products);			
-		products = products.slice(0, 9);
+		products = products.slice(0, productNum);
 		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
 		return products;	
 
@@ -291,7 +291,7 @@ class MultiDistrib extends Object
 	public function userHasOrders(user:db.User,type:Int):Bool{
 		if(user==null) return false;
 		for ( d in getDistributions(type)){
-			if(d.getUserOrders(user).length>0) return true;						
+			if(d.hasUserOrders(user)) return true;						
 		}
 		return false;
 	}
@@ -489,6 +489,14 @@ class MultiDistrib extends Object
 		return baskets.deduplicate();
 	}
 
+	public function getUserBasket(user:db.User){
+		var orders = getUserOrders(user);
+		for( o in orders ){
+			if(o.basket!=null) return o.basket;
+		}
+		return null;
+	}
+
 	/**
 		Get total income of the md, variable and constant
 	**/
@@ -574,8 +582,8 @@ class MultiDistrib extends Object
 		return db.Volunteer.manager.select($multiDistrib == this && $volunteerRole == role, false);
 	}
 
-	public function getVolunteerForUser(user: db.User) {
-		return db.Volunteer.manager.select($multiDistrib == this && $user == user, false);
+	public function getVolunteerForUser(user: db.User): Array<db.Volunteer> {
+		return Lambda.array(db.Volunteer.manager.search($multiDistrib == this && $user == user, false));
 	}
 	
 	/**
