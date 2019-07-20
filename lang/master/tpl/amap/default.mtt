@@ -40,7 +40,7 @@
 					<div class="article">
 						<div class="row">
 							<div class="col-md-3 text-center">
-								<div ::cond c._vendor._image!=null:: style="background-image:url('::file(c._vendor._image)::');width:100px;height:100px;" class="productImg"/> 									
+								<div ::cond c._vendor._image!=null:: style="background-image:url('::file(c._vendor._image)::');" class="productImg xl"/> 									
 								<p>
 									<b>::c._vendor.name::</b><br/>
 									::c._vendor.city:: (::c._vendor.zipCode::)
@@ -52,7 +52,7 @@
 																
 								<div style="font-size:0;">
 								::foreach p c.getProductsPreview(5)::
-									<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.getImage()::')" class="productImg"/> 
+									<div data-toggle="tooltip" data-placement="top" title="::p.name::"  style="background-image:url('::p.getImage()::')" class="productImg medium"/> 
 								::end::
 								</div>
 

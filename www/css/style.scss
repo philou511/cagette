@@ -840,16 +840,37 @@ div.groupImg{
 	height: 110px;
 }
 
-// product thumbnail for shop and home page
+/**
+	Product thumbnails
+**/
 div.productImg{
-	display:inline-block;
-	border-radius: 3px;
-	width:70px;
-	height:70px;
-	margin:4px;
+	display:inline-block;	
+	border: solid 2px #f8f4e5;	
 	background:no-repeat center;
 	background-size: cover;
-	//margin:0;
+	margin:4px;
+	//default size is medium
+	width:70px;
+	height:70px;
+	border-radius: 8px;	
+
+	&.small{
+		width:48px;
+		height:48px;
+		border-radius: 4px;
+	}
+
+	&.medium{
+		width:70px;
+		height:70px;
+		border-radius: 8px;	
+	}
+
+	&.xl{
+		width:100px;
+		height:100px;
+		border-radius: 10px;	
+	}
 }
 
 //Product React component

@@ -28,9 +28,9 @@ class Amap extends Controller
 		
 		var form = Form.fromSpod(group);
 
-		//remove "shop mode" from flags
+		//remove "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
-		untyped flags.excluded = [1];
+		untyped flags.excluded = [1,3,9];
 
 		//add a custom field for "shopmode"
 		var data = [

@@ -258,7 +258,7 @@ class MultiDistrib extends Object
 		return distribEndDate;
 	}
 
-	public function getProductsExcerpt():Array<ProductInfo>{
+	public function getProductsExcerpt(productNum:Int):Array<ProductInfo>{
 		var key = "productsExcerpt-"+getKey();
 		var cache:Array<Int> = sugoi.db.Cache.get(key);
 		if(cache!=null){
@@ -277,12 +277,12 @@ class MultiDistrib extends Object
 
 		var products = [];
 		for( d in getDistributions()){
-			for ( p in d.contract.getProductsPreview(8)){
+			for ( p in d.contract.getProductsPreview(productNum)){
 				products.push( p.infos(null,false) );	
 			}
 		}
 		products = thx.Arrays.shuffle(products);			
-		products = products.slice(0, 9);
+		products = products.slice(0, productNum);
 		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
 		return products;	
 
