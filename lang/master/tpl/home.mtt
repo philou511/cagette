@@ -4,8 +4,6 @@
 <div style="margin-top:12px;"></div>
 ::end::
 
-
-
 ::set hasShopMode = amap.hasShopMode()::
 <div id="content" class="col-md-8">
 	
@@ -312,7 +310,7 @@
 					::if(d.extraHtml!=null)::
 					<div class="content" style="font-weight:normal;">
 						<div class="text-center">
-							$$nullSafe(::raw d.extraHtml::)
+							::raw d.extraHtml::
 						</div>
 					</div>
 					::end::
@@ -400,6 +398,23 @@
 </div>
 
 
-
+<script>
+	//<![CDATA[
+	$(function(){
+		/*window.setTimeout(function(){
+			var txt = "Cet onglet vous permet d'avoir une vue d'ensemble sur toutes vos distributions, leurs commandes et les producteurs qui y participent.";
+			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>En savoir plus</a>";
+			_.newFeature("#cagette-navbar #distributions","Nouvel onglet \"Distributions\"",txt,"bottom");
+		},2000);
+		
+		window.setTimeout(function(){
+			var txt = "Il est maintenant possible de créer des rôles afin d'avoir une gestion plus souple des permanences.";
+			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:permanences' target='_blank'>En savoir plus</a>";
+			_.newFeature("#dutyPeriodsCalendarButton","Nouveau système de gestion des permanences",txt,"bottom");
+		},3000);
+		*/
+	});
+	//]]>
+</script>
 
 ::end::
