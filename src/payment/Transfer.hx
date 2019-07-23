@@ -7,7 +7,7 @@ package payment;
 class Transfer extends payment.PaymentType
 {
 	
-	public static var TYPE = "transfer";
+	public static var TYPE(default, never) = "transfer";
 
 	public function new() 
 	{

@@ -6,31 +6,22 @@ import Common;
 /**
  * Temporary Basket
  */
-@:index(basketRef)
+@:index(ref)
 class TmpBasket extends Object
 {
     public var id : SId;
-	public var basketRef : SNull<SString<256>>;
+	public var ref : SNull<SString<256>>;
 	public var cdate : SDateTime; //date when the order has been placed
 	public var data : SData<TmpBasketData>;
     @:relation(userId)  public var user  : SNull<db.User>; //ordering is possible without being logged
-    
-	
-	public var ddate : SDate; 							//multidistrib date
-	@:relation(placeId) public var place : db.Place;	//multidistrib place
-
-    //TODO : remove placeId and ddate + link baskets to a multidistrib ID.
-    //@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
+    @:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 	
 	public function new(){
 		super();
 		cdate = Date.now();
 	}
 
-	public function getMultiDistrib():MultiDistrib{
-		return MultiDistrib.get(ddate,place,db.Contract.TYPE_VARORDER);
-	}
-
+	
 	/**
 		Get total amount to pay for this basket
 	**/
@@ -41,6 +32,14 @@ class TmpBasket extends Object
 			total += o.quantity * p.getPrice();
 		}
 		return total;
+	}
+
+	public function getOrders(){
+		var out = new Array<{product:db.Product,quantity:Float}>();
+		for( p in data.products){
+			out.push({product:db.Product.manager.get(p.productId,false) , quantity : p.quantity});
+		}
+		return out;
 	}
 
 	

@@ -23,6 +23,10 @@ class DateTool
 		return new Date(d.getFullYear(), month, date, d.getHours(), d.getMinutes(), 0);
 	}
 
+	public static function setYear(d:Date,year:Int):Date{
+		return new Date(year, d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), 0);
+	}
+
 
 	public static function getLastHourRange(?now:Date){
 		if(now==null) now = Date.now();

@@ -3,6 +3,7 @@ import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
 import Common;
+using tools.DateTool;
 
 enum AmapFlags {
 	HasMembership; 	//membership management
@@ -10,10 +11,15 @@ enum AmapFlags {
 	HasPayments; 	//manage payments and user balance
 	ComputeMargin;	//compute margin instead of percentage
 	CagetteNetwork; //register in cagette.net groups directory
-	ShopCategoriesFromTaxonomy;  //the custom categories are not used anymore, use product taxonomy instead
+	CustomizedCategories;  //the custom categories are not used anymore, use product taxonomy instead
 	HidePhone; 		//Hide manager phone on group public page
 	PhoneRequired;	//phone number of members is required for this group	
 	AddressRequired;//address required for delivery at home
+	UnUsed;
+	
+}
+
+enum BetaFlags{
 	ShopV2; 		//BETA shop V2
 }
 
@@ -61,6 +67,8 @@ class Amap extends Object
 	public var vatRates : SData<Map<String,Float>>;
 	
 	public var flags:SFlags<AmapFlags>;
+	public var betaFlags:SFlags<BetaFlags>;
+
 	public var groupType:SNull<SEnum<GroupType>>;
 	
 	@hideInForms @:relation(imageId)
@@ -81,6 +89,13 @@ class Amap extends Object
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
+
+	//Volunteers for duty periods
+	@hideInForms public var volunteersMailDaysBeforeDutyPeriod: STinyInt;
+	@hideInForms public var volunteersMailContent: SText;
+	@hideInForms public var vacantVolunteerRolesMailDaysBeforeDutyPeriod: STinyInt;
+	@hideInForms public var daysBeforeDutyPeriodsOpen: SInt;
+	@hideInForms public var alertMailContent: SText;
 	
 	public function new() 
 	{
@@ -88,12 +103,29 @@ class Amap extends Object
 		flags = cast 0;
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
+		betaFlags = cast 0;
 		vatRates = ["5,5%" => 5.5, "20%" => 20];
 		cdate = Date.now();
 		regOption = Open;
 		currency = "€";
 		currencyCode = "EUR";
 		checkOrder = "";
+		
+		//duty periods props
+		daysBeforeDutyPeriodsOpen = 60;
+		volunteersMailContent = "<b>Rappel : Vous êtes inscrit(e) à la permanence du [DATE_DISTRIBUTION],</b><br/>
+		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
+		<br/>
+		Voici la liste des bénévoles inscrits :<br/>
+		[LISTE_BENEVOLES]<br/>";
+
+		volunteersMailDaysBeforeDutyPeriod = 4;
+		alertMailContent = "Nous avons besoin de <b>bénévoles pour la permanence du [DATE_DISTRIBUTION]</b><br/>
+		Lieu de distribution : [LIEU_DISTRIBUTION]<br/>
+		Les roles suivants sont à pourvoir :<br/>
+		[ROLES_MANQUANTS]<br/>
+		Cliquez sur \"calendrier des permanences\" pour vous inscrire !";
+		vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
 		
 	}
 	
@@ -163,7 +195,7 @@ class Amap extends Object
 	}
 	
 	public function hasTaxonomy(){
-		return flags != null && flags.has(ShopCategoriesFromTaxonomy);
+		return flags != null && !flags.has(CustomizedCategories);
 	}
 	
 	public function hasPhoneRequired(){
@@ -180,11 +212,11 @@ class Amap extends Object
 		var t = sugoi.i18n.Locale.texts;
 		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
 		
-		if (this.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){
+		if (!this.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
-			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return {id:c.id, name:c.name,subcategories:null,image:null}; }));
+			var c : Array<CategoryInfo> = Lambda.array(Lambda.map( taxoCategs, function(c){return cast {id:c.id, name:c.name}; }));
 			
 			categs.push({
 				id:0,
@@ -270,7 +302,7 @@ class Amap extends Object
 	}
 
 	public function getActiveVendors():Array<db.Vendor> {
-		var vendors = Lambda.array(Lambda.map(getActiveContracts(),function(c) return c.vendor));
+		var vendors = Lambda.array(Lambda.map(getActiveContracts(true),function(c) return c.vendor));
 		return tools.ObjectListTool.deduplicate(vendors);
 	}
 	
@@ -332,6 +364,21 @@ class Amap extends Object
 		//}else {
 			//return year - 1;
 		//}
+	}
+
+	public function getMembershipTimeframe(d:Date):{from:Date,to:Date}{
+		if (d == null) d = Date.now();
+		var n = membershipRenewalDate;
+		if (n == null){
+			n = new Date( 2000,8,1,0,0,0 ); //default renewal date at 1st september
+		} 
+		var renewalDate = new Date(d.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
+		if (d.getTime() < renewalDate.getTime()) {
+			return { from: renewalDate.setYear(renewalDate.getFullYear()-1)  , to : renewalDate };
+		}else {
+			return { from : renewalDate , to : renewalDate.setYear(renewalDate.getFullYear()+1)};
+		}
+
 	}
 	
 	/**
@@ -398,6 +445,7 @@ class Amap extends Object
 			"extUrl" 		=> t._("Group website URL"),
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
+			"betaFlags" 	=> t._("Nouvelles fonctionnalités"),
 			"groupType" 	=> t._("Group type"),
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),

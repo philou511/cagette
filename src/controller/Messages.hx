@@ -43,9 +43,13 @@ class Messages extends Controller
 			var listId = form.getElement("list").value;
 			var dest = getSelection(listId);
 			var mails = [];
-			for ( d in dest) {
+			for ( d in dest) {				
 				if (d.email != null) mails.push(d.email);
 				if (d.email2 != null) mails.push(d.email2);
+			}
+
+			if(form.getValueOf("text")=="" || form.getValueOf("text")==null){
+				throw Error("/messages",t._("The message body is empty !"));
 			}
 			
 			//send mail confirmation link
@@ -90,7 +94,7 @@ class Messages extends Controller
 	
 	@tpl("messages/message.mtt")
 	public function doMessage(msg:Message) {
-		
+		if (msg.amap.id!=app.user.amap.id) throw Error("/", t._("Non authorized access"));
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", t._("Non authorized access"));
 		
 		view.list = getListName(msg.recipientListId);
@@ -172,11 +176,14 @@ class Messages extends Controller
 				//tout le monde
 				out =  Lambda.array(app.user.amap.getMembers());
 					
-			case "2":				
+			case "2":
+				//bureau				
 				var users = [];
-				users.push(app.user.amap.contact);
-				for ( c in db.Contract.manager.search($amap == app.user.amap)) {
-					if (!Lambda.has(users, c.contact)) {
+				if(app.user.amap.contact!=null){
+					users.push(app.user.amap.contact);
+				}
+				for ( c in app.user.amap.getActiveContracts()) {
+					if (c.contact!=null) {
 						users.push(c.contact);
 					}
 				}
@@ -184,11 +191,11 @@ class Messages extends Controller
 				//ajouter les autres personnes ayant les droits Admin ou Gestion Adhérents ou Gestion Contrats
  				for (ua in Lambda.array(db.UserAmap.manager.search($rights != null && $amap == app.user.amap, false))) {
  					if (ua.hasRight(GroupAdmin) || ua.hasRight(Membership) || ua.hasRight(ContractAdmin())) {
- 						if (!Lambda.has(users, ua.user)) users.push(ua.user);
+ 						users.push(ua.user);
  					}
  				}
 				
-				out = users;
+				out = tools.ObjectListTool.deduplicate(users);
 			
 			case "3":
 				//moi

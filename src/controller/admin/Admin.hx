@@ -75,8 +75,24 @@ class Admin extends Controller {
 	
 	@tpl("admin/taxo.mtt")
 	function doTaxo(){
-		
-		view.categ = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
+		var categs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
+		view.categ = categs;
+
+		if(app.params.get("csv")=="1"){
+			
+			var data = new Array<Array<String>>();
+			for ( c in categs){
+				data.push([c.name]);
+				for( c2 in c.getSubCategories()){
+					data.push(["",c2.name]);
+					for( p in c2.getProducts()){
+						data.push(["","",Std.string(p.id),p.name]);
+					}
+				}
+			}
+
+			sugoi.tools.Csv.printCsvDataFromStringArray(data,[],"categories.csv");
+		}
 		
 	}
 	
@@ -110,7 +126,6 @@ class Admin extends Controller {
 	@tpl("admin/graph.mtt")
 	function doGraph(?key:String,?year:Int,?month:Int){
 
-
 		var from = new Date(year,month,1,0,0,0);
 		var to = new Date(year,month+1,0,23,59,59);
 
@@ -124,12 +139,8 @@ class Admin extends Controller {
 						var value = db.Basket.manager.count($cdate>=_from && $cdate<=_to);
 						var g = db.Graph.record(key,value, _from );
 						// trace(value,_from,g);
-						
 					}
-
-
 			}
-
 		}
 
 		var data = db.Graph.getRange(key,from,to);
@@ -144,79 +155,6 @@ class Admin extends Controller {
 		averageValue = total/data.length;
 		view.total = total;
 		view.averageValue = averageValue;
-
-
-
-
-	}
-	
-	function doFixDistribValidation() {
-
-		Sys.println("===== Liste des distributions ayant été re-validées ====<br>");
-
-		//Get the current group
-		var group = app.user.amap;
-		//Get all the contracts for this given group
-		var contractIds = Lambda.map(group.getContracts(),function(x) return x.id);
-		//Get all the validated distributions for this given group
-		var validatedDistribs = db.Distribution.manager.search( ($contractId in contractIds) && $validated == true, {orderBy:date}, false);
-		for (distrib in validatedDistribs){
-
-			service.PaymentService.validateDistribution(distrib);
-			Sys.println(distrib.toString() + "<br>");
-
-		}
-
-		Sys.println("===== Fin de la liste ====");
-
-	}
-
-	function doCheckDistribValidation() {
-
-		Sys.println("===== Liste des distributions validées ayant des opérations/paiements non validés ====<br>");
-
-		//Get the current group
-		var group = app.user.amap;
-		//Get all the contracts for this given group
-		var contractIds = Lambda.map(group.getContracts(),function(x) return x.id);
-		//Get all the validated distributions for this given group
-		var validatedDistribs = db.Distribution.manager.search( ($contractId in contractIds) && $validated == true, {orderBy:date}, false);
-		for (distrib in validatedDistribs){
-
-			for (user in distrib.getUsers()){
-		
-				var basket = db.Basket.get(user, distrib.place, distrib.date);
-				if (basket == null || basket.isValidated()) continue;
-		
-				for (order in basket.getOrders()){
-					if (!order.paid) {
-						Sys.println(order.distribution.toString() + "<br>");
-						Sys.println(order.toString() + "<br>");
-					}		
-				}
-
-				var operation = basket.getOrderOperation(false);
-				if (operation != null){
-					
-					if (operation.pending) {
-						Sys.println(distrib.toString() + "<br>");
-						Sys.println(operation.toString() + "<br>");
-					}
-				
-					for ( payment in basket.getPaymentsOperations()){
-
-						if (payment.pending){
-							Sys.println(distrib.toString() + "<br>");
-							Sys.println(payment.toString() + "<br>");
-						}
-					}	
-				}
-
-			}
-		}
-
-		Sys.println("===== Fin de la liste ====");
-
 	}
 
 }

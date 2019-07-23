@@ -29,13 +29,13 @@
 		::if v.email!=null :: ::v.email:: ::end::, 
 		::if v.phone!=null :: ::v.phone:: ::end::
 	</p>
-	<p>	
+	<!--<p>	
 		<b>::_("Members on duty"):: : </b>
 		::if distrib._distributor1!=null:: ::distrib._distributor1.getName()::, ::end::
 		::if distrib._distributor2!=null:: ::distrib._distributor2.getName()::, ::end::
 		::if distrib._distributor3!=null:: ::distrib._distributor3.getName()::, ::end::
 		::if distrib._distributor4!=null:: ::distrib._distributor4.getName()::  ::end::		
-	</p>
+	</p>-->
 	
 	<table class="table table-bordered table-hover"  style="width:100%;">
 		<tr>

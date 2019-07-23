@@ -148,7 +148,8 @@ typedef CategoryInfo = {
 	id:Int,
 	name:String,
 	?image : String,
-	?subcategories:Array<CategoryInfo>
+	?subcategories:Array<CategoryInfo>,
+	?displayOrder:Int,
 }
 
 /**
@@ -301,7 +302,7 @@ enum Event {
 	DeleteDistrib(distrib:db.Distribution);
 	PreNewDistribCycle(cycle:db.DistributionCycle);	
 	NewDistribCycle(cycle:db.DistributionCycle);
-	MultiDistribEvent(md:MultiDistrib);
+	MultiDistribEvent(md:db.MultiDistrib,oldmd:MultiDistribOld);
 	
 	//Products
 	PreNewProduct(contract:db.Contract);	//when displaying the insert distribution form
@@ -318,9 +319,9 @@ enum Event {
 	DeleteContract(contract:db.Contract);
 	
 	//crons
-	DailyCron;
-	HourlyCron;
-	MinutelyCron;
+	DailyCron(now:Date);
+	HourlyCron(now:Date);
+	MinutelyCron(now:Date);
 	
 	//orders
 	MakeOrder(orders:Array<db.UserContract>); 

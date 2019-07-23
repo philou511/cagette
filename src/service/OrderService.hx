@@ -254,7 +254,7 @@ class OrderService
 				
 				//Get the basket for this user
 				var place = order.distribution.place;
-				var basket = db.Basket.get(user, place, order.distribution.date);
+				var basket = db.Basket.get(user, place, order.distribution.multiDistrib.distribStartDate);
 				
 				if( contract.amap.hasPayments() ){
 					var orders = basket.getOrders();
@@ -310,8 +310,6 @@ class OrderService
 			//new way
 			x.product = o.product.infos();
 			x.product.price = o.productPrice;//do not use current price, but price of the order
-
-			
 			x.quantity = o.quantity;
 			
 			//smartQt
@@ -361,22 +359,19 @@ class OrderService
 	/**
 		Record a temporary basket
 	**/
-	public static function makeTmpBasket(user:db.User,multiDistrib:MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
-
-		if( tmpBasketData==null) throw "empty datas";
+	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
+		//basket with no products is allowed ( init an empty basket )
+		if( tmpBasketData==null) throw "Basket is empty";
 
 		//generate basketRef
-		/*var product = db.Product.manager.get(tmpBasketData.products[0].productId,false);
-		if(product==null) throw "invalid product Id";*/
 		var group = multiDistrib.getGroup();
-		var ref = user.id+"-"+group.id+"-"+Date.now().toString()+"-"+Std.random(1000);
+		var ref = user.id+"-"+group.id+"-"+Date.now().toString().substr(0,10)+"-"+Std.random(1000);
 
 		var tmp = new db.TmpBasket();
 		tmp.user = user;
-		tmp.ddate = multiDistrib.getDate();
-		tmp.place = multiDistrib.getPlace();
+		tmp.multiDistrib = multiDistrib;
 		tmp.data = tmpBasketData;
-		tmp.basketRef = ref;
+		tmp.ref = ref;
 		tmp.insert();
 		return tmp;
 	}
@@ -394,7 +389,7 @@ class OrderService
 
 			//find related distrib
 			var distrib = null;
-			for( d in tmpBasket.getMultiDistrib().distributions){
+			for( d in tmpBasket.multiDistrib.getDistributions()){
 				if(d.contract.id==p.contract.id){
 					distrib = d;
 				}
@@ -509,22 +504,38 @@ class OrderService
 	
 
 	public static function sort(orders:Array<UserOrder>){
-		
 		//order by lastname (+lastname2 if exists), then contract
 		orders.sort(function(a, b) {
 			
 			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId > b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
-				
 				return 1;
 			}
 			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId < b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
-				 
 				return -1;
 			}
 			return 0;
 		});
-		
 		return orders;
+	}
+
+	/**
+		Returns tmp basket
+	**/
+	public static function getTmpBasket(user:db.User,group:db.Amap):db.TmpBasket{
+		for( b in db.TmpBasket.manager.search($user==user)){
+			if(b.multiDistrib.group.id==group.id) return b;
+		}
+		return null;
+	}
+
+	/**
+		Action triggered from controllers to check if we have a tmpBasket to validate
+	**/
+	public static function checkTmpBasket(user,group){
+		var tmpBasket = getTmpBasket(user,group);
+		if(tmpBasket!=null){
+			throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
+		}
 	}
 	
 	

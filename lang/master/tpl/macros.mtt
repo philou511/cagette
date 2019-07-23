@@ -89,12 +89,13 @@
 	<macro name="place(place)">
 		<i class="icon icon-map-marker"></i>						
 		<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
-		<div class="address">
+		<br/>
+		<span class="address">
 			$$nullSafe(::place.address1::)
 			$$nullSafe(::place.address2::)
 			$$nullSafe(::place.zipCode::)
 			$$nullSafe(::place.city::)
-		</div>
+		</span>
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">

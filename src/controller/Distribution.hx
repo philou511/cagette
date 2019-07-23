@@ -2,12 +2,35 @@ package controller;
 import db.UserContract;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
-using tools.DateTool;
+import tink.core.Error;
+import sugoi.form.elements.IntSelect;
+import sugoi.form.elements.TextArea;
 import Common;
+import service.VolunteerService;
+import service.DistributionService;
+using tools.DateTool;
+using Lambda;
+
 
 class Distribution extends Controller
 {
 
+	public function new(){
+		super();
+		view.category = "distribution";
+	}
+
+	@tpl('distribution/default.mtt')
+	function doDefault(){
+
+		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+
+		var n = Date.now();
+		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
+		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
+		view.distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
+		checkToken();
+	}
 
 	/**
 	 * Attendance sheet by user-product (single distrib)
@@ -18,7 +41,8 @@ class Distribution extends Controller
 		view.place = d.place;
 		view.contract = d.contract;
 		view.orders = service.OrderService.prepare(d.getOrders());
-		
+		//volunteers whose role is linked to this contract
+		view.volunteers = Lambda.filter(d.multiDistrib.getVolunteers(),function(v) return v.volunteerRole.contract!=null && v.volunteerRole.contract.id==d.contract.id);		
 	}
 
 	/**
@@ -97,7 +121,6 @@ class Distribution extends Controller
 		
 		view.place = place;		
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
-
 		
 		if (type == null) {
 		
@@ -171,6 +194,8 @@ class Distribution extends Controller
 
 			var orders3 = service.OrderService.prepare(Lambda.list(orders));
 			view.orders = orders3;
+			var md = db.MultiDistrib.get(date,place);
+			view.volunteers = md.getVolunteers();
 			
 			if (type == "csv") {
 				var data = new Array<Dynamic>();
@@ -193,6 +218,9 @@ class Distribution extends Controller
 		}
 	}
 	
+	/**
+		Delete a distribution
+	**/
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
@@ -200,17 +228,34 @@ class Distribution extends Controller
 		var contractId = d.contract.id;
 		try {
 			service.DistributionService.delete(d);
-		}
-		catch(e:tink.core.Error){
+		} catch(e:Error){
 			throw Error("/contractAdmin/distributions/" + contractId, e.message);
 		}
 		
-		throw Ok("/contractAdmin/distributions/" + contractId, t._("the delivery has been deleted"));
+		throw Ok("/contractAdmin/distributions/" + contractId, t._("The distribution has been deleted"));
+	}
 
+	/**
+		Delete a Multidistribution
+	**/
+	function doDeleteMd(md:db.MultiDistrib){
+		
+		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+
+		if(checkToken()){
+			try{
+				service.DistributionService.deleteMd(md);
+			}catch(e:Error){
+				throw Error("/distribution",e.message);
+			}
+			throw Ok("/distribution",t._("The distribution has been deleted"));
+		}else{
+			throw Error("/distribution",t._("Bad token"));
+		}
 	}
 	
 	/**
-	 * Edit a distribution
+		Edit a distribution
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
@@ -218,11 +263,32 @@ class Distribution extends Controller
 		var contract = d.contract;
 		
 		var form = sugoi.form.Form.fromSpod(d);
-		form.removeElement(form.getElement("contractId"));
-		form.removeElement(form.getElement("end"));
+		form.removeElementByName("placeId");
+		form.removeElementByName("date");
+		form.removeElementByName("end");
+		form.removeElement(form.getElement("contractId"));		
 		form.removeElement(form.getElement("distributionCycleId"));
-		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") ,d.end,true);
+
+		//date
+		var threeMonthAgo = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
+		var inThreeMonth  = DateTools.delta(d.multiDistrib.distribStartDate , 1000.0*60*60*24*30.5*3); 
+		var mds = db.MultiDistrib.getFromTimeRange(d.contract.amap,threeMonthAgo,inThreeMonth);
+		
+		var mds = mds.filter(function(md) return !md.isValidated() ).map(function(md) return {label:view.hDate(md.getDate()), value:md.id});
+		var e = new sugoi.form.elements.IntSelect("md",t._("General distribution"), mds ,d.multiDistrib.id);			
+		form.addElement(e, 1);
+
+		var html = new sugoi.form.elements.Html("note",t._("You can customize some parameters for this farmer : distribution hour, order opening and closing dates :"));
+		form.addElement(html, 2);
+		
+		//start hour		
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Distribution start time"), d.date );
 		form.addElement(x, 3);
+		
+		//end hour
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("Distribution end time"), d.end );
+		form.addElement(x, 4);
+		
 		
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
@@ -233,45 +299,62 @@ class Distribution extends Controller
 
 			var orderStartDate = null;
 			var orderEndDate = null;
-
 			try{
-
 				if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 					orderStartDate = form.getValueOf("orderStartDate");
 					orderEndDate = form.getValueOf("orderEndDate");
 				}
 
-				d = service.DistributionService.edit(d,
-				form.getValueOf("date"),
-				form.getValueOf("end"),
-				form.getValueOf("placeId"),
-				form.getValueOf("distributor1Id"),
-				form.getValueOf("distributor2Id"),
-				form.getValueOf("distributor3Id"),
-				form.getValueOf("distributor4Id"),
-				orderStartDate,
-				orderEndDate);
+				var md = db.MultiDistrib.manager.get(form.getValueOf("md"));
 
-			}
-			catch(e:tink.core.Error){
+				if(md.id!=d.multiDistrib.id){
+					/* 
+					FORBID THIS WITH CREDIT CARD PAYMENTS 
+					because it would make the order and payment ops out of sync
+					*/
+					var orders = d.getOrders();
+					if(d.contract.amap.hasPayments() && orders.length>0){
+						throw Error("/distribution",t._("Sorry, you can't move the distribution of this farmer to a different date when payments management is enabled in your group."));
+					}
+
+					//different multidistrib id ! should change the basket					
+					for ( o in orders ){
+						o.lock();
+						//find new basket
+						o.basket = db.Basket.getOrCreate(o.user, md.place, md.getDate());
+						o.update();
+					}
+				}
+
+				//do not launch event, avoid notifs for now
+				d = DistributionService.edit2(
+					d,
+					md,
+					form.getValueOf("startHour"),
+					form.getValueOf("endHour"),				
+					orderStartDate,
+					orderEndDate,
+					false
+				);
+				
+
+			} catch(e:Error){
 				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 			
 			if (d.date == null) {
 				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
 				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
-			}
-			else {
+			} else {
 				throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
 			}
 			
-		}
-		else {
+		} else {
 			app.event(PreEditDistrib(d));
 		}
 		
 		view.form = form;
-		view.title = t._("Edit a distribution");
+		view.title = t._("Edit a distribution of ::farmer::",{farmer:d.contract.vendor.name});
 	}
 	
 	@tpl('form.mtt')
@@ -292,6 +375,9 @@ class Distribution extends Controller
 		view.title = t._("Modify a delivery");
 	}
 	
+	/**
+		Insert a distribution
+	**/
 	@tpl("form.mtt")
 	public function doInsert(contract:db.Contract) {
 		
@@ -333,10 +419,6 @@ class Distribution extends Controller
 				form.getValueOf("date"),
 				form.getValueOf("end"),
 				form.getValueOf("placeId"),
-				form.getValueOf("distributor1Id"),
-				form.getValueOf("distributor2Id"),
-				form.getValueOf("distributor3Id"),
-				form.getValueOf("distributor4Id"),
 				orderStartDate,
 				orderEndDate);
 			}
@@ -360,6 +442,194 @@ class Distribution extends Controller
 	
 		view.form = form;
 		view.title = t._("Create a distribution");
+	}
+
+	/**
+		Insert a multidistribution
+	**/
+	@tpl("form.mtt")
+	public function doInsertMd() {
+		
+		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+		
+		var md = new db.MultiDistrib();
+		md.place = app.user.amap.getMainPlace();
+		var form = sugoi.form.Form.fromSpod(md);
+
+		//date
+		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), null);	
+		untyped e.format = "LL";
+		form.addElement(e, 3);
+		
+		//start hour
+		form.removeElementByName("distribStartDate");
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time") );
+		form.addElement(x, 3);
+		
+		//end hour
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time") );
+		form.addElement(x, 4);		
+		
+		//default values		
+		form.getElement("date").value 				= DateTool.now().deltaDays(30);
+		form.getElement("startHour").value 			= DateTool.now().deltaDays(30).setHourMinute(19, 0);
+		form.getElement("endHour").value 			= DateTool.now().deltaDays(30).setHourMinute(20, 0);
+		form.getElement("orderStartDate").value 	= DateTool.now().deltaDays(10).setHourMinute(8, 0);	
+		form.getElement("orderEndDate").value 		= DateTool.now().deltaDays(20).setHourMinute(23, 59);
+		
+		//vendors to add
+		var datas = [];
+		for( c in md.place.amap.getActiveContracts()){
+			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
+		}
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Contrats"),datas,null,true);
+		form.addElement(el);
+		
+		if (form.isValid()) {
+
+			try {
+				var date = form.getValueOf("date");
+				var startHour = form.getValueOf("startHour");
+				var endHour = form.getValueOf("endHour");
+				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
+				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
+				
+				md = service.DistributionService.createMd(
+					db.Place.manager.get(form.getValueOf("placeId"),false),
+					distribStartDate,
+					distribEndDate,
+					form.getValueOf("orderStartDate"),
+					form.getValueOf("orderEndDate")
+				);
+
+				var contractIds:Array<Int> = form.getValueOf("contracts");
+				
+				for( cid in contractIds){
+					var contract = db.Contract.manager.get(cid,false);
+					service.DistributionService.participate(md,contract);
+				}
+			}
+			catch(e:tink.core.Error) {
+
+				throw Error('/distribution/insertMd/' ,e.message);
+			}
+			
+			if(service.VolunteerService.getRolesFromGroup(app.user.amap).length>0){
+				throw Ok('/distribution/volunteerRoles/' + md.id, t._("The distribution has been recorded, please define which roles are needed.") );	
+			}else{
+				throw Ok('/distribution/', t._("The distribution has been recorded") );	
+			}
+			
+		}
+	
+		view.form = form;
+		view.title = t._("Create a general distribution");
+	}
+
+	/**
+		Insert a multidistribution
+	**/
+	@tpl("form.mtt")
+	public function doEditMd(md:db.MultiDistrib) {
+		
+		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+		
+		md.place = app.user.amap.getMainPlace();
+		var form = sugoi.form.Form.fromSpod(md);
+
+		//date
+		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), md.distribStartDate);	
+		untyped e.format = "LL";
+		form.addElement(e, 3);
+		
+		//start hour
+		form.removeElementByName("distribStartDate");
+		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time"), md.distribStartDate );
+		form.addElement(x, 3);
+		
+		//end hour
+		form.removeElementByName("distribEndDate");
+		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time"), md.distribEndDate );
+		form.addElement(x, 4);
+
+		//override dates
+		var overrideDates = new sugoi.form.elements.Checkbox("override","Recaler tous les producteurs sur ces horaires",false);		
+		form.addElement(overrideDates,7);
+		
+		//contracts
+		var label = t._("Contracts");
+		var datas = [];
+		var checked = [];
+		for( c in md.place.amap.getActiveContracts()){
+			datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
+		}
+		var distributions = md.getDistributions();
+		for( d in distributions){
+			checked.push(Std.string(d.contract.id));
+		}
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,checked,true);
+		form.addElement(el);
+		
+		if (form.isValid()) {
+
+			try {
+
+				var date = form.getValueOf("date");
+				var startHour = form.getValueOf("startHour");
+				var endHour = form.getValueOf("endHour");
+				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
+				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
+
+				service.DistributionService.editMd(
+					md,
+					db.Place.manager.get(form.getValueOf("placeId"),false),
+					distribStartDate,
+					distribEndDate,
+					form.getValueOf("orderStartDate"),
+					form.getValueOf("orderEndDate")
+				);
+
+				var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
+				for( cid in contractIds){
+					var d = Lambda.find(distributions, function(d) return d.contract.id==cid );
+					if(d==null){
+						//create it
+						var contract = db.Contract.manager.get(cid,false);
+						service.DistributionService.participate(md,contract);
+					}else if(form.getValueOf("override")==true){
+						//override dates
+						d.lock();
+						d.date = md.distribStartDate;
+						d.end = md.distribEndDate;
+						d.orderStartDate = md.orderStartDate;
+						d.orderEndDate = md.orderEndDate;
+						d.place = md.place;						
+						d.update();
+					}else{
+						//sync only place
+						d.lock();
+						d.place = md.place;
+						d.update();
+					}
+				}
+
+				// delete it
+				for( d in distributions){
+					if(!Lambda.has(contractIds,d.contract.id)){
+						service.DistributionService.delete(d);
+					}
+				}
+
+			} catch(e:Error){
+				throw Error('/distribution/editMd/'+md.id  ,e.message);
+			}
+			
+			throw Ok('/distribution' , t._("The distribution has been updated") );	
+		}
+	
+		view.form = form;
+		view.title = t._("Edit a general distribution");
 	}
 	
 	/**
@@ -466,7 +736,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
 
 		var contractId = cycle.contract.id;
-		var messages = service.DistributionService.deleteCycleDistribs(cycle);
+		var messages = service.DistributionService.deleteCycleDistribs(cycle,true);
 		if (messages.length > 0){			
 			App.current.session.addMessage( messages.join("<br/>"),true);	
 		}
@@ -474,78 +744,21 @@ class Distribution extends Controller
 		throw Ok("/contractAdmin/distributions/" + contractId, t._("Recurrent deliveries deleted"));
 	}
 	
-	/**
-	 * Doodle-like participation planning
-	 */
-	@tpl("distribution/planning.mtt")
-	public function doPlanning(contract:db.Contract) {
-	
-		view.contract = contract;
-
-		var doodle = new Map<Int,{user:db.User,planning:Map<Int,Bool>}>();
-		var distribs = contract.getDistribs(true, 150);
-		
-		for ( d in distribs ) {
-			for (u in [d.distributor1, d.distributor2, d.distributor3, d.distributor4]) {
-				if (u != null) {
-					
-					var udoodle = doodle.get(u.id);
-					
-					if (udoodle == null) udoodle = { user:u, planning:new Map<Int,Bool>() };
-					udoodle.planning.set(d.id, true);
-					doodle.set(u.id, udoodle);
-				}
-			}
-		}
-		view.distribs = distribs;
-		view.doodle = doodle;
-		
-	}
 	
 	/**
-	 * Ajax service for doPlanning()
-	 */
-	public function doRegister(args: { register:Bool, distrib:db.Distribution } ) {
-		
-		if (args != null) {
-			var d = args.distrib;
-			d.lock();
-			
-			if (args.register) {
-				
-				if (d.distributor1 == null) d.distributor1 = app.user;
-				else if (d.distributor2 == null) d.distributor2 = app.user;
-				else if (d.distributor3 == null) d.distributor3 = app.user;
-				else if (d.distributor4 == null) d.distributor4 = app.user;
-				
-			}else {
-				if (d.distributor1 == app.user) d.distributor1 = null;
-				else if (d.distributor2 == app.user) d.distributor2 = null;
-				else if (d.distributor3 == app.user) d.distributor3 = null;
-				else if (d.distributor4 == app.user) d.distributor4 = null;
-			}
-			
-			d.update();
-		}
-		
-	}
-	
-	/**
-	 * Validate a multi-distrib
+	 * Validate a multiDistrib (main page)
 	 * @param	date
 	 * @param	place
 	 */
 	@tpl('distribution/validate.mtt')
-	public function doValidate(date:Date, place:db.Place){
+	public function doValidate(multiDistrib:db.MultiDistrib){
 		
-		if (!app.user.isAmapManager()) throw t._("Forbidden access");
-		
-		var md = MultiDistrib.get(date, place, db.Contract.TYPE_VARORDER);
-		
-		view.confirmed = md.checkConfirmed();
-		view.users = md.getUsers();
-		view.date = date;
-		view.place = place;
+		if (!app.user.isAmapManager() && !app.user.canManageAllContracts()) throw t._("Forbidden access");	
+			
+		view.confirmed = multiDistrib.checkConfirmed();
+		view.users = multiDistrib.getUsers(db.Contract.TYPE_VARORDER);
+		view.distribution = multiDistrib;
+
 	}
 
 
@@ -555,8 +768,8 @@ class Distribution extends Controller
 	@admin
 	public function doAutovalidate(date:Date,place:db.Place){
 
-		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-		for ( d in md.distributions){
+		var md = db.MultiDistrib.get(date,place);
+		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
 			if(d.validated) continue;
 			service.PaymentService.validateDistribution(d);
 		}	
@@ -564,16 +777,443 @@ class Distribution extends Controller
 	}
 
 	@admin
-	public function doUnvalidate(date:Date,place:db.Place){
+	public function doUnvalidate(md:db.MultiDistrib){
 
-		var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-		for ( d in md.distributions){
+		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);
 		}	
 		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
 	}
-	
-	
-	
+
+	/**
+		Manage volunteer roles for the specified multidistrib
+	**/ 
+	@tpl("form.mtt")
+	function doVolunteerRoles(distrib: db.MultiDistrib) {
+		
+		var form = new sugoi.form.Form("volunteerroles");
+
+		var roles = [];
+
+		//Get all the volunteer roles for the group and for the selected contracts
+		var allRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
+		var generalRoles = Lambda.filter(allRoles, function(role) return role.contract == null);
+		var checkedRoles = new Array<String>();
+		var roleIds : Array<Int> = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",").map(Std.parseInt) : [];
+		
+		//general roles
+		for ( role in generalRoles ) {
+			roles.push( { label: role.name, value: Std.string(role.id) } );
+			if ( Lambda.has(roleIds, role.id) ) {
+				checkedRoles.push(Std.string(role.id));
+			}			
+		}	
+
+		//display roles linked to active contracts in this distrib
+		for ( distrib in distrib.getDistributions() ) {
+			var cid = distrib.contract.id;
+			var contractRoles = Lambda.filter(allRoles, function(role) return role.contract!=null && role.contract.id == cid);
+			for ( role in contractRoles ) {
+				roles.push( { label: role.name + " - " + distrib.contract.vendor.name, value: Std.string(role.id) } );
+				if ( roleIds == null || Lambda.has(roleIds, role.id) ) {
+					checkedRoles.push(Std.string(role.id));
+				}
+			}
+		}
+		
+		var volunteerRolesCheckboxes = new sugoi.form.elements.CheckboxGroup("roles", "", roles, checkedRoles, true);
+		form.addElement(volunteerRolesCheckboxes);
+	                                                
+		if (form.isValid()) {
+
+			try {
+				var roleIds : Array<Int> = form.getValueOf("roles").map(Std.parseInt);
+				service.VolunteerService.updateMultiDistribVolunteerRoles( distrib, roleIds );
+			}
+			catch(e: tink.core.Error){
+				throw Error("/distribution/volunteerRoles/" + distrib.id, e.message);
+			}
+
+			throw Ok("/distribution", t._("Volunteer Roles have been saved for this distribution"));
+		}
+
+		view.title = t._("Select volunteer roles for this multidistrib");
+		view.form = form;
+
+	}
+
+	/**
+		Assign volunteer to roles for the specified multidistrib
+	**/  
+	@tpl("form.mtt")
+	function doVolunteers(distrib: db.MultiDistrib) {
+		
+		var form = new sugoi.form.Form("volunteers");
+
+		var volunteerRoles = distrib.getVolunteerRoles();
+		if ( volunteerRoles == null ) {
+			throw Error('/distribution/volunteerRoles/' + distrib.id, t._("You need to first select the volunteer roles for this distribution") );
+		}
+
+		var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
+		for ( role in volunteerRoles ) {
+
+			var selectedVolunteer = distrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
+			var selectedUserId = selectedVolunteer != null ? selectedVolunteer.user.id : null;
+			form.addElement( new IntSelect(Std.string(role.id), db.VolunteerRole.manager.get(role.id).name, members, selectedUserId, false, t._("No volunteer assigned")) );
+		}
+
+		if (form.isValid()) {
+
+			try {
+				var roleIdsToUserIds = new Map<Int,Int>();
+				var datas = form.getData();
+				for( k in datas.keys() ) roleIdsToUserIds[Std.parseInt(k)] = datas[k];  
+				service.VolunteerService.updateVolunteers(distrib, roleIdsToUserIds );
+			} catch(e: tink.core.Error){
+				throw Error("/distribution/volunteers/" + distrib.id, e.message);
+			}
+			
+			throw Ok("/distribution", t._("Volunteers have been assigned to roles for this distribution"));
+		}
+
+		view.title = t._("Select a volunteer for each role for this multidistrib");
+		view.form = form;
+
+	}
+
+	//View volunteers list for this distribution and you can sign up for a role
+	@tpl('distribution/volunteersSummary.mtt')
+	function doVolunteersSummary(distrib: db.MultiDistrib, ?args: { role: db.VolunteerRole }) {
+
+		var volunteerRoles: Array<db.VolunteerRole> = distrib.getVolunteerRoles();
+		if (volunteerRoles == null) {
+
+			throw Error('/distribution/', t._("There are no volunteer roles defined for this distribution") );
+		}	
+
+		if (args != null && args.role != null) {
+
+			try {
+
+				service.VolunteerService.addUserToRole(app.user, distrib, args.role);
+			}
+			catch(e: tink.core.Error){
+
+				throw Error("/distribution/volunteersSummary/" + distrib.id, e.message);
+			}
+		
+			throw Ok("/home/", t._("You have been successfully added to the selected role."));
+		}
+		
+		view.multidistrib = distrib;
+		view.roles = volunteerRoles;	
+	}
+
+	//Remove user from role for the specified multidistrib
+	@tpl("form.mtt")
+	function doUnsubscribeFromRole(distrib: db.MultiDistrib, role: db.VolunteerRole, ?args: { returnUrl: String, ?to: String } ) {
+		
+		if ( args != null && args.returnUrl != null ) {
+
+			var toArg = args.to != null ? "&to=" + args.to : "";
+			App.current.session.data.volunteersReturnUrl = args.returnUrl + toArg;						
+		}		
+		
+		var form = new sugoi.form.Form("unsubscribe");
+
+		var returnUrl = App.current.session.data.volunteersReturnUrl != null ? App.current.session.data.volunteersReturnUrl : '/distribution/unsubscribeFromRole/' + distrib.id + '/' + role.id;
+		
+		var volunteer = distrib.getVolunteerForRole(role);
+		if (volunteer == null) {
+			throw Error( returnUrl, t._("There is no volunteer to remove for this role!") );
+		} else if (volunteer.user.id != app.user.id) {
+			throw Error( returnUrl, t._("You can only remove yourself from a role.") );
+		}
+
+		form.addElement( new TextArea("unsubscriptionreason", t._("Reason for leaving the role") , null, true, null, "style='width:500px;height:350px;'") );
+			
+		if (form.isValid()) {
+
+			try {
+				service.VolunteerService.removeUserFromRole( app.user, distrib, role, form.getValueOf("unsubscriptionreason") );
+			}
+			catch(e: tink.core.Error){
+				throw Error( returnUrl, e.message );
+			}
+			
+			throw Ok( returnUrl, t._("You have been successfully removed from this role.") );
+		}
+
+		view.title = t._("Enter the reason why you are leaving this role.");
+		view.form = form;
+	}
+
+	/**
+		Members can view volunteers planning for each role and multidistrib date
+	**/
+	@tpl('distribution/volunteersCalendar.mtt')
+	function doVolunteersCalendar(?args: { ?distrib: db.MultiDistrib, ?role: db.VolunteerRole, ?from: Date, ?to: Date } ) {
+		
+		var multidistribs : Array<db.MultiDistrib> = [];
+		var from: Date = null;
+		var to: Date = null;
+
+		if ( args != null ) {
+
+			if ( args.distrib != null && args.role != null ) {
+
+				try {
+					service.VolunteerService.addUserToRole( app.user, args.distrib, args.role );
+				}
+				catch(e: tink.core.Error) {
+					throw Error("/distribution/volunteersCalendar", e.message);
+				}
+		
+				if ( args.from == null || args.to == null ) {
+					throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
+				} else {
+					throw Ok("/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to, t._("You have been successfully assigned to the selected role."));
+				}
+			}
+			
+			if ( args.from != null && args.to != null ) {
+				from = args.from;
+				to = args.to;
+			}
+		}
+
+		if ( from == null || to == null ) {
+			from = Date.now();
+			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.amap.daysBeforeDutyPeriodsOpen );			
+		}
+
+		multidistribs = db.MultiDistrib.getFromTimeRange( app.user.amap, from, to );
+		
+		//Let's find all the unique volunteer roles for this set of multidistribs	
+		var uniqueRoles = [];
+		for ( multidistrib in multidistribs ) {
+
+			if (multidistrib.volunteerRolesIds != null) {
+
+				var multidistribVolunteerRoles = multidistrib.getVolunteerRoles();
+				for ( role in multidistribVolunteerRoles ) {
+
+					if ( !Lambda.has(uniqueRoles, role) ) {
+						uniqueRoles.push(role);								
+					}					
+				}				
+			}
+		}		
+
+		view.multidistribs = multidistribs;
+		uniqueRoles.sort(function(b, a) { 
+			var a_str = (a.contract == null ? "null" : Std.string(a.contract.id)) + a.name.toLowerCase();
+			var b_str = (b.contract == null ? "null" : Std.string(b.contract.id)) + b.name.toLowerCase();
+			return  a_str < b_str ? 1 : -1;
+		});
+		view.uniqueRoles = uniqueRoles;
+		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
+		view.from = from.toString().substr(0,10);
+		view.to = to.toString().substr(0,10);
+
+		//duty periods user's participation	
+		var me = app.user;
+		var timeframe = me.amap.getMembershipTimeframe(Date.now());
+		view.timeframe = timeframe;	
+
+		var multiDistribs = db.MultiDistrib.getFromTimeRange( me.amap, timeframe.from, timeframe.to );
+		var members = me.amap.getMembers();
+		var genericRolesDone = 0;
+		var genericRolesToBeDone = 0;
+		var contractRolesDone = 0;
+		var contractRolesToBeDone = 0;
+		var contractRolesToBeDoneByContractId = new Map<Int,Int>();
+		var membersNumByContractId = new Map<Int,Int>();
+		var membersListByContractId = new Map<Int,Array<db.User>>();
+		for( md in multiDistribs ){
+			var roles = md.getVolunteerRoles();
+			for( role in roles){
+				if(role.isGenericRole()){
+					genericRolesToBeDone++;
+				}else{
+					if(contractRolesToBeDoneByContractId[role.contract.id]==null){
+						contractRolesToBeDoneByContractId[role.contract.id]=1; 
+					} else {
+						contractRolesToBeDoneByContractId[role.contract.id]++;
+					}
+				}
+			}
+		}
+
+		//contract roles
+		for( cid in contractRolesToBeDoneByContractId.keys()) membersListByContractId[cid] = [];
+
+		for(md in multiDistribs){
+
+			//populate member list by contract id
+			for( d in md.getDistributions()){
+				if(membersListByContractId[d.contract.id]==null){
+					//this contract has no roles
+					continue;
+				}
+				for( u in members){
+					if(d.hasUserOrders(u)){
+						membersListByContractId[d.contract.id].push(u);
+					} 
+				}
+			}
+
+			//volunteers			
+			for( v in md.getVolunteers()){
+				if(v.user.id!=me.id) continue;
+				if(v.volunteerRole.isGenericRole()){
+					genericRolesDone++;
+				}else{
+					contractRolesDone++;
+				}
+			}
+		}
+
+		//roles to be done spread over members
+		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
+		for( cid in membersListByContractId.keys()){
+			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
+			membersNumByContractId[cid] = membersListByContractId[cid].length;
+		}
+
+		
+		for( cid in membersListByContractId.keys()){
+			//if this user is involved in this contract
+			if(Lambda.find(membersListByContractId[cid],function(u)return u.id==me.id)!=null){
+				//role to be done for this user = contract roles to be done for this contract / members num involved in this contract
+				contractRolesToBeDone +=  Math.ceil( contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid] );
+			}
+		}
+
+		view.toBeDone = genericRolesToBeDone + contractRolesToBeDone;
+		view.done = genericRolesDone + contractRolesDone;
+		
+	}
+
+
+	/**
+		Members can view volunteers planning for each role and multidistrib date
+	**/
+	@tpl('distribution/volunteersParticipation.mtt')
+	function doVolunteersParticipation(?args: { ?from: Date, ?to: Date } ) {
+				
+		var from: Date = null;
+		var to: Date = null;
+
+		if ( args != null ) {
+			if ( args.from != null && args.to != null ) {
+				from = args.from;
+				to = args.to;
+			}
+		}
+
+		if ( from == null || to == null ) {
+			var timeframe = app.user.amap.getMembershipTimeframe(Date.now());
+			from = timeframe.from;
+			to = timeframe.to;
+		}
+
+		var multiDistribs = db.MultiDistrib.getFromTimeRange( app.user.amap, from, to );
+		var members = app.user.amap.getMembers();
+
+		//init + generic roles
+		var totalRolesToBeDone = 0;	
+		var totalRolesDone = 0;
+		var genericRolesToBeDone = 0;
+		var genericRolesDoneByMemberId = new Map<Int,Int>();
+		var contractRolesDoneByMemberId = new Map<Int,Int>();
+		var contractRolesToBeDoneByMemberId = new Map<Int,Int>();
+		var contractRolesToBeDoneByContractId = new Map<Int,Int>();
+		var membersNumByContractId = new Map<Int,Int>();
+		var membersListByContractId = new Map<Int,Array<db.User>>();
+		for( u in members ){
+			genericRolesDoneByMemberId[u.id] = 0;
+			contractRolesDoneByMemberId[u.id] = 0;
+			contractRolesToBeDoneByMemberId[u.id] = 0;
+		}
+		for( md in multiDistribs ){
+			var roles = md.getVolunteerRoles();
+			for( role in roles){
+				totalRolesToBeDone ++;
+				if(role.isGenericRole()){
+					genericRolesToBeDone++;
+				}else{
+					if(contractRolesToBeDoneByContractId[role.contract.id]==null){
+						contractRolesToBeDoneByContractId[role.contract.id]=1; 
+					} else {
+						contractRolesToBeDoneByContractId[role.contract.id]++;
+					}
+				}
+			}
+		}
+
+		//contract roles
+		for( cid in contractRolesToBeDoneByContractId.keys()) membersListByContractId[cid] = [];
+
+		for(md in multiDistribs){
+
+			//populate member list by contract id
+			for( d in md.getDistributions()){
+				if(membersListByContractId[d.contract.id]==null){
+					//this contract has no roles
+					continue;
+				}
+				for( u in members){
+					if(d.hasUserOrders(u)){
+					//if(d.getUserOrders(u).length>0){
+						membersListByContractId[d.contract.id].push(u);
+					} 
+				}
+			}
+
+			//volunteers			
+			for( v in md.getVolunteers()){
+				totalRolesDone++;
+				if(v.volunteerRole.isGenericRole()){
+					genericRolesDoneByMemberId[v.user.id]++;
+				}else{
+					contractRolesDoneByMemberId[v.user.id]++;
+				}
+			}
+			
+
+		}
+
+		//roles to be done spread over members
+		genericRolesToBeDone = Math.ceil(genericRolesToBeDone / members.length);
+		for( cid in membersListByContractId.keys()){
+			membersListByContractId[cid] = tools.ObjectListTool.deduplicate(membersListByContractId[cid]);
+			membersNumByContractId[cid] = membersListByContractId[cid].length;
+		}
+
+		for( m in members){
+			for( cid in membersListByContractId.keys()){
+				//if this user is involved in this contract
+				if(Lambda.find(membersListByContractId[cid],function(u)return u.id==m.id)!=null){
+					//role to be done for this user = contract roles to be done for this contract / members num involved in this contract
+					contractRolesToBeDoneByMemberId[m.id] +=  Math.ceil( contractRolesToBeDoneByContractId[cid] / membersNumByContractId[cid] );
+				}
+			}
+		}
+
+		view.members = members;
+		view.multiDistribs = multiDistribs;
+		view.genericRolesToBeDone = genericRolesToBeDone;
+		view.genericRolesDoneByMemberId = genericRolesDoneByMemberId;
+		view.contractRolesDoneByMemberId = contractRolesDoneByMemberId;
+		view.contractRolesToBeDoneByMemberId = contractRolesToBeDoneByMemberId;
+		view.totalRolesToBeDone = totalRolesToBeDone;
+		view.totalRolesDone = totalRolesDone;
+		
+		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
+		view.from = from.toString().substr(0,10);
+		view.to = to.toString().substr(0,10);		
+	}
 }

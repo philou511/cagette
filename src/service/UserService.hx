@@ -148,6 +148,10 @@ class UserService
 		return u;
 	}
 
+	public static function getByEmail(email:String):db.User{
+		return db.User.manager.select($email == email || $email2 == email, true);
+	}
+
 	/**
 	 *  get users belonging to a group
 	 *  @param group - 

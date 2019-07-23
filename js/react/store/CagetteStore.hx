@@ -19,12 +19,12 @@ import Common;
 using Lambda;
 
 typedef CagetteStoreProps = {
-	var place:Int;
-	var date:String;
+	var multiDistribId:Int;
 };
 
-typedef  CagetteStoreState = {
+typedef CagetteStoreState = {
 	var place:PlaceInfos;
+	var distributionStartDate : Date;
 	var orderByEndDates:Array<OrderByEndDate>;
 	var categories:Array<CategoryInfo>;
 	var products:Array<ProductInfo>;
@@ -52,6 +52,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		super();
 		state = {
 			place: null,
+			distributionStartDate : null,
 			orderByEndDates: [],
 			categories: [],
 			filter: {},
@@ -83,7 +84,6 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 		//Check browser compat
 		var browser = bowser.Bowser.getParser(js.Browser.window.navigator.userAgent);
-		
 		var isValidBrowser = browser.satisfies({
 			"chrome" 	: ">=49",
 			"chromium" 	: ">=49",
@@ -102,10 +102,11 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		}
 
 		//Loads init datas
-		var initRequest = fetch(InitUrl, GET, {date: props.date, place: props.place}, JSON);
+		var initRequest = fetch(InitUrl, GET, {multiDistrib: props.multiDistribId}, JSON);
 		initRequest.then(function(infos:Dynamic) {
 			setState({
 				place: infos.place,
+				distributionStartDate : Date.fromString(infos.distributionStartDate),
 				orderByEndDates: infos.orderEndDates,
 				vendors:infos.vendors,
 				paymentInfos:infos.paymentInfos
@@ -116,18 +117,15 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		});
 
 		//Loads categories list
-		var categoriesRequest = fetch(CategoryUrl, GET, {date: props.date, place: props.place}, JSON);
+		var categoriesRequest = fetch(CategoryUrl, GET, {multiDistrib: props.multiDistribId}, JSON);
 		categoriesRequest.then(function(results:Dynamic) {
 			var categories:Array<CategoryInfo> = results.categories;
-			//trace(categories);
 			//categories.unshift(DEFAULT_CATEGORY);
 
-			setState({
-				categories: categories,
-			});
+			setState({categories: categories});
 			
 			//Loads products
-			fetch(ProductsUrl, GET, {date: props.date, place: props.place}, JSON)
+			fetch(ProductsUrl, GET, {multiDistrib: props.multiDistribId}, JSON)
 			.then(function(res:Dynamic){
 				var res :{products:Array<ProductInfo>} = res;
 				
@@ -148,8 +146,6 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					catalog:catalog,
 					loading:false,
 					nav:{category:categories[0], subcategory:null},
-				}, function() {
-					
 				});
 
 			}).catchError(function(error) {
@@ -209,9 +205,9 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 				})
 			}
 		
-			HttpUtil.fetch("/api/shop/submit"+"/"+props.place+"/"+props.date.toString(),POST,{cart:tmpBasket},JSON)
+			HttpUtil.fetch("/api/shop/submit"+"/"+props.multiDistribId ,POST,{cart:tmpBasket},JSON)
 			.then(function(data:Dynamic){
-				js.Browser.location.href = "/shop/validate/"+props.place+"/"+props.date.toString()+"/"+data.tmpBasketId;
+				js.Browser.location.href = "/shop/validate/"+data.tmpBasketId;
 			});
 		}catch(e:Dynamic){
 			onError( Std.string(e) );
@@ -236,10 +232,12 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		});
 	}
 
-	function filterCatalog(p, f:CatalogFilter) {
+	function filterCatalog(p, f:CatalogFilter):FilteredProductCatalog {
+		//filtered by a search
 		if( f.search != null ) {
 			return react.store.FilterUtil.searchProducts(state.catalog, f.search);
 		} else {
+			//filtered by a category / subcategory
 			//trace("FilterCatalog", f);
 			var filter = ( f.category == null || f.category == 0 ) ? null : f;
 			return FilterUtil.filterProducts(state.catalog, filter);
@@ -262,7 +260,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 	}
 
 	override public function render() {
-		var date = Date.fromString(props.date);
+		
 		return jsx('			
 			<div className="shop">
 				<HeaderWrapper 
@@ -270,7 +268,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 					orderByEndDates=${state.orderByEndDates} 
 					place=${state.place} 
 					paymentInfos=${state.paymentInfos} 
-					date=$date
+					date=${state.distributionStartDate}
 					categories=${state.categories}
 					resetFilter=${resetFilter}
 					filterByCategory=${filterByCategory}

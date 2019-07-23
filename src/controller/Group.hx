@@ -2,6 +2,8 @@ package controller;
 import sugoi.form.elements.StringInput;
 import service.OrderService;
 import service.WaitingListService;
+import service.DistributionService;
+import db.Amap;
 import Common;
 
 /**
@@ -17,6 +19,7 @@ class Group extends controller.Controller
 	function doDefault(group:db.Amap){
 		
 		if (group.regOption == db.Amap.RegOption.Open) {
+			if (app.session.data == null) app.session.data = {};
 			app.session.data.amapId = group.id;
 			throw Redirect("/");
 		}
@@ -169,8 +172,8 @@ class Group extends controller.Controller
 		var data = [
 			{label:t._("CSA"),value:"0"},
 			{label:t._("Grouped orders"),value:"1"},
-			{label:t._("Farmers collective"),value:"2"},
-			{label:t._("Farm shop"),value:"3"},
+			{label:"En direct d'un collectif de producteurs",value:"2"},
+			{label:"En direct d'un producteur",value:"3"},
 		];	
 		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1","1",true,true,true);
 		f.addElement(gt);
@@ -183,29 +186,30 @@ class Group extends controller.Controller
 			g.name = f.getValueOf("name");
 			g.contact = user;
 			
-			var type:db.Amap.GroupType = Type.createEnumIndex(db.Amap.GroupType, Std.parseInt(f.getValueOf("type")) );
+			var type:GroupType = Type.createEnumIndex(GroupType, Std.parseInt(f.getValueOf("type")) );
 			
 			switch(type){
 			case null : 
 				throw "unknown group type";
-			case db.Amap.GroupType.Amap : 
-				g.flags.set(db.Amap.AmapFlags.HasMembership);
-				g.regOption = db.Amap.RegOption.WaitingList;
+
+			case Amap : 
+				g.flags.unset(ShopMode);
+				g.flags.set(HasMembership);
+				g.regOption = WaitingList;
 				
-			case db.Amap.GroupType.GroupedOrders :
-				g.flags.set(db.Amap.AmapFlags.ShopMode);
-				g.flags.set(db.Amap.AmapFlags.HasMembership);
-				g.regOption = db.Amap.RegOption.WaitingList;
+			case GroupedOrders :
+				g.flags.set(ShopMode);
+				g.flags.set(HasMembership);
+				g.betaFlags.set(ShopV2);
+				// g.flags.set(ShopCategoriesFromTaxonomy);
+				g.regOption = WaitingList;
 				
-			case db.Amap.GroupType.ProducerDrive : 
-				g.flags.set(db.Amap.AmapFlags.ShopMode);
-				g.regOption = db.Amap.RegOption.Open;
-				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
-				
-			case db.Amap.GroupType.FarmShop : 
-				g.flags.set(db.Amap.AmapFlags.ShopMode);
-				g.regOption = db.Amap.RegOption.Open;
-				g.flags.set(db.Amap.AmapFlags.PhoneRequired);
+			case ProducerDrive,FarmShop : 
+				g.flags.set(ShopMode);								
+				g.flags.set(PhoneRequired);
+				g.betaFlags.set(ShopV2);
+				// g.flags.set(ShopCategoriesFromTaxonomy);
+				g.regOption = Open;
 			}
 			
 			g.groupType = type;
@@ -262,15 +266,11 @@ class Group extends controller.Controller
 				p.organic = true;
 				p.contract = contract;
 				p.insert();
-			
+				
+				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
+				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);				
 				OrderService.make(user, 1, p, null, true);
 				
-				var d = new db.Distribution();
-				d.contract = contract;
-				d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-				d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
-				d.place = place;
-				d.insert();
 				
 			}
 			
@@ -314,14 +314,15 @@ class Group extends controller.Controller
 			p.contract = contract;
 			p.insert();
 			
-			var d = new db.Distribution();
-			d.contract = contract;
-			d.orderStartDate = Date.now();
-			d.orderEndDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 19);
-			d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);
-			d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
-			d.place = place;
-			d.insert();
+			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);
+			var d = DistributionService.create(
+				contract,
+				date,
+				DateTools.delta(date, 1000.0 * 60 * 90),
+				place.id,
+				Date.now(),
+				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 18)
+			);				
 			
 			OrderService.make(user, 2, egg, d.id);
 			OrderService.make(user, 1, p, d.id);

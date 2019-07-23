@@ -116,7 +116,14 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		return jsx('
             <Grid container spacing={8} className=${headerClasses}>
                 <Grid item md={6} xs={12}> 
-                    <DistributionDetails isSticky=${props.isSticky} displayLinks={true} orderByEndDates=${props.orderByEndDates} place=${props.place} paymentInfos=${props.paymentInfos} date=${props.date}/>
+                    <DistributionDetails 
+                        isSticky=${props.isSticky} 
+                        displayLinks=${true} 
+                        orderByEndDates=${props.orderByEndDates} 
+                        place=${props.place} 
+                        paymentInfos=${props.paymentInfos} 
+                        date=${props.date}
+                    />
                 </Grid>
                 <Grid item md={3} xs={6} className=${classes.cagFormContainer}>                  
                         <TextField                            

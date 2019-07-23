@@ -44,9 +44,9 @@ class Contract extends Object
 	public var percentageName : SNull<SString<64>>;		//fee name
 	
 	public var type : SInt;
+
 	@:skip public static var TYPE_CONSTORDERS = 0; 	//CSA contract 
-	@:skip public static var TYPE_VARORDER = 1;		//varying orders contract
-	
+	@:skip public static var TYPE_VARORDER = 1;		//varying orders contract	
 	@:skip var cache_hasActiveDistribs : Bool;
 	
 	public function new() 
@@ -279,7 +279,7 @@ class Contract extends Object
 			"startDate" 		=> t._("Start date"),
 			"endDate" 			=> t._("End date"),
 			"description" 		=> t._("Description"),
-			"distributorNum" 	=> t._("Number of required distributors (0 to 4)"),
+			"distributorNum" 	=> t._("Number of required volunteers for a duty period"),
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
 			"percentageName" 	=> t._("Fees label"),			

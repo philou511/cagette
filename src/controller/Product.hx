@@ -36,7 +36,7 @@ class Product extends Controller
 		f.removeElementByName("contractId");
 		
 		//Product Taxonomy:
-		if(product.contract.amap.flags.has(ShopCategoriesFromTaxonomy)){
+		if(!product.contract.amap.flags.has(CustomizedCategories)){
 			var txId = product.txpProduct == null ? null : product.txpProduct.id;
 			var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
 			f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);

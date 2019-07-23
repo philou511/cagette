@@ -223,7 +223,6 @@ class View extends sugoi.BaseView {
 	public function dDate(date:Date):String {
 		if (date == null) return t._("no date set");
 		if (DAYS == null) initDate();
-		
 		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
 	}
 	
@@ -232,7 +231,7 @@ class View extends sugoi.BaseView {
 	}
 
 	public function getDate(date:Date) {
-		if (date == null) throw "date is null";
+		if (date == null) return null;
 		if (DAYS == null) initDate();
 		
 		return {
@@ -244,8 +243,6 @@ class View extends sugoi.BaseView {
 			i: StringTools.lpad(Std.string(date.getMinutes()),"0",2)
 		};
 	}
-	
-	
 	
 	public function getProductImage(e):String {
 		return Std.string(e).substr(2).toLowerCase()+".png";

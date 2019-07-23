@@ -74,6 +74,9 @@ class App {
 		untyped js.Browser.window._ = new App();
 	}
 
+	/**
+		Old Shop
+	**/
 	public function getCart() {
 		return new ShopCart();
 	}
@@ -183,8 +186,10 @@ class App {
 
 	}
 
+	/**
+		Trigger bootstrap actions after React comps init
+	**/
 	function postReact(){
-		trace("post react");
 		haxe.Timer.delay(function(){
 			untyped jq('[data-toggle="tooltip"]').tooltip();
 			untyped jq('[data-toggle="popover"]').popover();
@@ -264,7 +269,7 @@ class App {
 	/**
 		instanciates mui shop
 	**/
-	public function shop(place:Int, date:String) {
+	public function shop(multiDistribId:Int) {
 
 
 		var elements = js.Browser.window.document.querySelectorAll('.sticky');
@@ -279,7 +284,7 @@ class App {
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<CagetteStore date=$date place=$place />
+						<CagetteStore multiDistribId=$multiDistribId />
 					</>
 				</MuiThemeProvider>
 			</ReduxProvider>
@@ -375,6 +380,41 @@ class App {
 			js.Browser.console.log("double click detected");
 		}
 	}
+
+	/**
+		Display a notif about new features 3 times
+	**/
+	public function newFeature(selector:String,title:String,message:String,placement:String){
+		var element = js.Browser.document.querySelector(selector);
+		if(element==null) return;
+
+		//do not show after 3 times
+		var storage = js.Browser.getLocalStorage();
+		if (storage.getItem("newFeature."+selector) == "3") return;
+
+		//prepare Bootstrap "popover"
+		var x = jq(element).first().attr("title",title);
+		var text = "<p>" + message + "</p>";
+		
+		var options = { container:"body", content:text, html:true , placement:placement};
+		untyped  x.popover(options).popover('show');
+		//click anywhere to hide
+		App.jq("html").click(function(_) {
+			untyped x.popover('hide');				
+		});
+		
+
+		var storage = js.Browser.getLocalStorage();
+		var i = storage.getItem("newFeature."+selector);
+		if(i==null) i = "0";
+		storage.setItem("newFeature."+selector, Std.string( Std.parseInt(i)+1 ) );
+		
+		//highlight
+		//App.jq(element).first().addClass("highlight");
+
+		
+	}
+
 }
 
 

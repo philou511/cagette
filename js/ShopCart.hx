@@ -23,8 +23,9 @@ class ShopCart
 	var jWindow : JQuery;
 	var cartContainer : JQuery;
 	
-	var date : String;
-	var place : Int;
+	// var date : String;
+	// var place : Int;
+	var multiDistribId : Int;
 
 
 	public function new() 
@@ -273,7 +274,7 @@ class ShopCart
 		req.onData = function(data) {
 			var data : {tmpBasketId:Int,success:Bool} = haxe.Json.parse(data);
 			App.instance.setWarningOnUnload(false);
-			js.Browser.location.href = "/shop/validate/"+place+"/"+date+"/"+data.tmpBasketId;
+			js.Browser.location.href = "/shop/validate/"+data.tmpBasketId;
 		}
 		req.addParameter("data", haxe.Json.stringify(order));
 		req.request(true);		
@@ -345,14 +346,15 @@ class ShopCart
 	/**
 	 * loads products DB and existing cart in ajax
 	 */
-	public function init(place:Int,date:String) {
+	public function init(multiDistribId:Int) {
 
-		this.place = place;
-		this.date = date;
+		// this.place = place;
+		// this.date = date;
+		this.multiDistribId = multiDistribId;
 		
 		loader = App.j("#cartContainer #loader");
 		
-		var req = new haxe.Http("/shop/init/"+place+"/"+date);
+		var req = new haxe.Http("/shop/init/"+multiDistribId);
 		req.onData = function(data) {
 			loader.hide();
 			

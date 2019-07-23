@@ -149,6 +149,13 @@ class Transaction extends controller.Controller
 		
 		if (tmpBasket == null) throw Redirect("/");
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
+
+		//has another tmpBasket than this one for the same md ?
+		/*for( b in db.TmpBasket.manager.search($user==app.user && $multiDistrib == tmpBasket.multiDistrib,false)){
+			if(b.id!=tmpBasket.id){
+				throw Redirect("/transaction/tmpBasket/"+b.id);
+			}
+		}*/
 		
 		var total = tmpBasket.getTotal();
 		view.amount = total;		
@@ -156,6 +163,46 @@ class Transaction extends controller.Controller
 		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.amap);
 		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
 		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
+	}
+
+	@tpl("transaction/tmpBasket.mtt")
+	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool}){
+
+		if(args!=null){
+			if(args.cancel){
+				tmpBasket.lock();
+				tmpBasket.delete();
+				throw Ok("/",t._("You basket has been canceled"));
+			}else if(args.confirm){				
+				throw Redirect("/shop/validate/"+tmpBasket.id);				
+			}
+		}
+
+		//check if we have a confirmed payment for this.
+		#if plugins
+		//MANGOPAY : search for "unlinked" confirmed payIns on Mangopay
+		var mpUser = mangopay.db.MangopayUser.get(tmpBasket.user);
+		if(mpUser!=null){
+			//time range : from 24h ago until now
+			var to = Date.now();
+			var from = DateTools.delta(to, 1000.0*60*60*24*-1 );
+			var ops = mangopay.Mangopay.getUserTransactions(mpUser.mangopayUserId,20,1,from,to,mangopay.Types.TransactionType.Payin);
+			for( o in ops) trace(o);
+
+			/*
+				TODO : prendre les payins validés.
+				vérifier qu'il n'y a aucune op dans cagette reliée à cette transaction = trouver le "unlinked op".
+				si le montant correspond : bingo.
+
+			*/
+
+		}
+		
+
+
+		#end
+
+		view.tmpBasket = tmpBasket;		
 	}
 	
 	/**
@@ -206,7 +253,7 @@ class Transaction extends controller.Controller
 			view.amount = total;
 			view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
 
-			var date = tmpBasket.getMultiDistrib().getDate();		
+			var date = tmpBasket.multiDistrib.getDate();		
 			
 			//all orders are for the same multidistrib
 			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(date)});
@@ -232,7 +279,7 @@ class Transaction extends controller.Controller
 		if (tmpOrder == null) throw Redirect("/contract");
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
-		var md = tmpBasket.getMultiDistrib();
+		var md = tmpBasket.multiDistrib;
 		var date = md.getDate();	
 		var total = tmpBasket.getTotal();
 		var code = payment.Check.getCode(date, md.getPlace(), app.user);

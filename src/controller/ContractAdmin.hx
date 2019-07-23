@@ -58,12 +58,9 @@ class ContractAdmin extends Controller
 		checkToken();
 
 		//Multidistribs to validate
-		if(app.user.isAmapManager() && app.user.amap.hasPayments()){
+		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			var multidistribs = MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now,db.Contract.TYPE_VARORDER);
-			/*for( md in multidistribs.copy()){
-				if(md.hasOnlyConstantOrders()) multidistribs.remove(md);
-			}*/
+			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
 			view.multidistribs = multidistribs; 
 
 		}else{
@@ -151,70 +148,6 @@ class ContractAdmin extends Controller
 		
 		
 		view.form = form;
-	}
-	
-	/**
-	 * displays a calendar of the current month 
-	 * with all events ( contracts start and end, deliveries... )
-	 */
-	@tpl('contractadmin/calendar.mtt')
-	public function doCalendar() {
-		
-		var contracts = db.Contract.getActiveContracts(app.user.amap, true, false);	
-		
-		//Events of the month in a calendar
-		var cal = Calendar.getMonthViewMap();
-		
-		for ( c in contracts) {
-			var start = c.startDate.toString().substr(0,10);
-			var end = c.endDate.toString().substr(0,10);
-			if (cal.exists( start )) {
-				var v = cal.get(start);
-				v.push( { name: t._("Contract start ") + c.name,  color:Calendar.COLOR_CONTRACT } );
-				cal.set( start, v );
-			}
-			if (cal.exists( end )) {
-				var v = cal.get(end);
-				v.push(		{ name: t._("Contract end ")  +c.name,  color:Calendar.COLOR_CONTRACT } );
-				cal.set( end, v );
-			}
-			
-			//deliveries
-			for ( d in c.getDistribs(false)) {
-				var start = d.date.toString().substr(0,10);
-				
-				if (cal.exists( start )) {
-					var v = cal.get( start );
-					v.push(		{ name: t._("Distribution") +" "+d.contract.name,  color:Calendar.COLOR_DELIVERY } );
-					cal.set( start, v );
-				}
-				
-				if ( d.orderStartDate != null && d.orderStartDate != null ) {
-					var k = d.orderStartDate.toString().substr(0,10);
-					if (cal.exists( k )) {
-						var v = cal.get( k );
-						v.push(		{ name: t._("Opening of orders ") +d.contract.name,  color:Calendar.COLOR_ORDER } );
-						cal.set( k , v );
-					}
-					
-					var k = d.orderEndDate.toString().substr(0,10);
-					if (cal.exists( k )) {
-						var v = cal.get( k );
-						v.push(		{ name: t._("End of orders") +d.contract.name,  color:Calendar.COLOR_ORDER } );
-						cal.set( k , v );
-					}
-					
-				}
-				
-			}
-			
-		}
-		
-		var n = Date.now();
-		view.now = new Date(n.getFullYear(),n.getMonth(),n.getDate(),0,0,0).getTime();
-		view.calendar = Calendar.mapToArray( cal );
-		
-		
 	}
 	
 	/**
@@ -674,10 +607,7 @@ class ContractAdmin extends Controller
 					var d = new db.Distribution();
 					d.contract = nc;
 					d.date = ds.date;
-					d.distributor1 = ds.distributor1;
-					d.distributor2 = ds.distributor2;
-					d.distributor3 = ds.distributor3;
-					d.distributor4 = ds.distributor4;
+					d.multiDistrib = ds.multiDistrib;
 					d.orderStartDate = ds.orderStartDate;
 					d.orderEndDate = ds.orderEndDate;
 					d.end = ds.end;
@@ -741,78 +671,43 @@ class ContractAdmin extends Controller
 	/**
 	 * Lists deliveries for this contract
 	 */
-	@tpl("contractadmin/deliveries.mtt")
+	@tpl("contractadmin/distributions.mtt")
 	function doDistributions(contract:db.Contract, ?args: { old:Bool } ) {
+
 		view.nav.push("distributions");
 		sendNav(contract);
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		view.c = contract;
-		
+
+		var multidistribs = [];
+		var now = Date.now();
+
 		if (args != null && args.old) {
 			//display also old deliveries
-			view.deliveries = contract.getDistribs(false);			
+			//distributions = Lambda.array(contract.getDistribs(false));	
+
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, DateTools.delta(now,1000.0*60*60*24*-365) , now);
+
 		}else {
-			view.deliveries = db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} );			
+			//distributions = Lambda.array(db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} ));
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, now , DateTools.delta(now,1000.0*60*60*24*365) );			
 		}
 		
-		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);
-		
-	}
-	
-	/**
-	 * Attendance to distribution
-	 */
-	@tpl("contractadmin/distributionp.mtt")
-	function doDistributionp(contract:db.Contract) {
-		view.nav.push("distributions");
-		sendNav(contract);
-		
-		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		
-		var distribs = contract.getDistribs(false);
-		var userCount = new Map<Int,Int>();
-		var suscribers = contract.getUsers();
-		for( u in suscribers) userCount[u.id] = 0;
-		//populate 
-
-		var increment = function(user:db.User){
-			if(user==null) return;
-			var x = userCount[user.id];
-			if(x==null){
-				userCount[user.id] = 1;
-			}else{
-				userCount[user.id] = x+1;
-			} 
-		}
-		
-		for ( d in distribs) {
-			increment(d.distributor1);
-			increment(d.distributor2);
-			increment(d.distributor3);
-			increment(d.distributor4);
-		}
-			
-		var out1 = new Array<{user:db.User,count:Int}>();//suscribers 
-		var out2 = new Array<{user:db.User,count:Int}>();//not suscribers
-		for( k in userCount.keys()){
-			if(Lambda.find(suscribers,function(s) return s.id==k)!=null){
-				out1.push( { user:db.User.manager.get(k), count:userCount[k] } );
-			}else{
-				out2.push( { user:db.User.manager.get(k), count:userCount[k] } );
-			}
-			
-		} 
-
-		var num =  (distribs.length*contract.distributorNum) / suscribers.length;		
-		view.num = Std.string(num).substr(0,4);
-		view.numRounded = Math.round(num);
-		view.users = suscribers.length;
-		view.distributorNum = contract.distributorNum;
-		view.distribs = distribs.length;
+		view.multidistribs = multidistribs;
 		view.c = contract;
-		view.participations = out1;
-		view.extParticipations = out2;
+		view.contract = contract;
+
+		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);		
+	}
+
+	function doParticipate(md:db.MultiDistrib,contract:db.Contract){
+		try{
+			service.DistributionService.participate(md,contract);
+		}catch(e:tink.core.Error){
+			throw Error("/contractAdmin/distributions/"+contract.id,e.message);
+		}
+		
+		throw Ok("/contractAdmin/distributions/"+contract.id,t._("Distribution date added"));
 	}
 	
 	@tpl("contractadmin/view.mtt")

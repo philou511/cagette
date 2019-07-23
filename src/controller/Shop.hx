@@ -11,15 +11,20 @@ class Shop extends Controller
 	var tmpBasket : db.TmpBasket;
 
 	@tpl('shop/default.mtt')
-	public function doDefault(place:db.Place,date:Date) {
+	public function doDefault(md:db.MultiDistrib) {
 
-		if(place.amap.flags.has(ShopV2)) throw Redirect('/shop2/${place.id}/${date.toString()}');
+		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 
-		var products = getProducts(place,date);
+		var date = md.getDate();
+		var place = md.getPlace();
+		if(place.amap.betaFlags.has(ShopV2)) throw Redirect('/shop2/${md.id}');
+
+		var products = getProducts(md);
 		view.products = products;
 		view.place = place;
 		view.date = date;
-		view.group = place.amap;		
+		view.group = place.amap;
+		view.multiDistrib = md;		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
 
 		//message if phone is required
@@ -35,34 +40,35 @@ class Shop extends Controller
 
 	
 	/**
-	 * prints the full product list and current cart in JSON
+	 * prints the full product list and current cart 
 	 */
-	public function doInit(place:db.Place,date:Date) {
+	public function doInit(md:db.MultiDistrib) {
 		
 		//init order serverside if needed		
 		var tmpBasketId:Int = app.session.data.tmpBasketId; 
 		var tmpBasket = null;
-		if ( tmpBasketId == null) {
-			var md = MultiDistrib.get(date,place,db.Contract.TYPE_VARORDER);
-			tmpBasket = service.OrderService.makeTmpBasket(app.user,md, {products:[]});
-			app.session.data.tmpBasketId = tmpBasket.id;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);			
 			//app.session.data.order = order = cast {products:[]};
-		}else{
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
 		}
 		
+		if(tmpBasket==null){
+			tmpBasket = service.OrderService.makeTmpBasket(app.user,md, {products:[]});
+			app.session.data.tmpBasketId = tmpBasket.id;
+		}		
+
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
 		
-		if (place.amap.flags.has(db.Amap.AmapFlags.ShopCategoriesFromTaxonomy)){			
+		if (!md.getGroup().flags.has(db.Amap.AmapFlags.CustomizedCategories)){			
 			//TAXO CATEGORIES
-			products = getProducts(place, date, true);
+			products = getProducts(md, true);
 		}else{			
 			//CUSTOM CATEGORIES
-			products = getProducts(place, date, false);
+			products = getProducts(md, false);
 		}
 		
-		categs = place.amap.getCategoryGroups();
+		categs = md.getGroup().getCategoryGroups();
 
 		//clean 
 		/*for ( p in order.products){
@@ -79,7 +85,10 @@ class Shop extends Controller
 	/**
 	 * Get the available products list
 	 */
-	private function getProducts(place,date,?categsFromTaxo=false):Array<ProductInfo> {
+	private function getProducts(md:db.MultiDistrib,?categsFromTaxo=false):Array<ProductInfo> {
+
+		var date = md.getDate();
+		var place = md.getPlace();
 
 		contracts = db.Contract.getActiveContracts(app.getCurrentGroup());
 	
@@ -184,35 +193,37 @@ class Shop extends Controller
 	
 	
 	/**
-	 * Validate the temporary basket
-
-		TODO : place and date will be removed when multiDistrib will be added to tmpBasket
-	 */
+		Confirms the temporary basket.
+		The user can come from the old shop, or from /transaction/tmpBasket.
+		- clean order
+		- ask to login is needed
+		- redirect to payment page if needed
+	**/
 	@tpl('shop/needLogin.mtt')
-	public function doValidate(place:db.Place, date:Date, tmpBasket:db.TmpBasket){
+	public function doValidate(tmpBasket:db.TmpBasket){
 		
 		//Login is needed : display a loginbox
 		if (app.user == null) {
 			view.redirect = "/" + sugoi.Web.getURI();
-			view.group = place.amap;
+			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
 			return;
 		}
+
+		var md = tmpBasket.multiDistrib;
+		var group = md.getGroup();
 		
 		//Add the user to this group if needed
-		if (place.amap.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, place.amap) == null){
-			app.user.makeMemberOf(place.amap);			
+		if (group.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, group) == null){
+			app.user.makeMemberOf( group );			
 		}
 		
 		if (tmpBasket.data.products == null || tmpBasket.data.products.length == 0) {
 			throw Error("/", t._("Your basket is empty") );
 		}
 		
-		if (place == null) throw "place cannot be empty";
-		if (date == null) throw "date cannot be empty";		
-
-		var products = getProducts(place, date);
+		var products = getProducts(tmpBasket.multiDistrib);
 
 		var errors = [];
 		//order.total = 0.0;

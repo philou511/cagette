@@ -13,7 +13,7 @@
           _.pageHeader("::raw urlEncode(group.name)::",null,null,null);
         ::end::
 
-        _.shop(::place.id::, "::date::");
+        _.shop(::md.id::);
         
       });
     </script>

@@ -3,36 +3,44 @@
 <h2>::_("Distributions")::</h2>
 
 	<table class="table">
-		::foreach d deliveries::
+		::set now = Date.now().getTime()::
+
+		::foreach md multidistribs::
 		
-			::if d.date!=null && d.date.getTime() < Date.now().getTime()::
+			::if md.getDate().getTime() < now::
 				::set style = "opacity:0.5;"::
 			::else::
 				::set style = ""::
 			::end::
-			<tr  style="::style::" >
-	
+
+			::set d = md.getDistributionForContract(contract)::
+
+			<tr style="::style::" >
+
+				::if(d==null)::
+				<td colspan="2" class="disabled">
+					Ne participe pas à la distribution
+					<br/>
+					du ::hDate(md.getDate())::
+				</td>
+				<td>
+					<a href="/contractAdmin/participate/::md.id::/::c.id::" class="btn btn-default btn-sm">
+						<i class="icon icon-plus"></i> ::_("Participate")::
+					</a>
+				</td>
+				::else::
+				<span style="display:none;">::d.populate()::</span>
 				<td>
 					::if d.distributionCycleId!=null::
 					<i class="icon icon-refresh"></i>  
-					
 					::end::
 					
-					::set da = getDate(d.date)::
-					
-					::if d.end!=null::
-					
-						::set e = getDate(d.end)::
-					::end::
-					
-					::da.dow:: ::da.d:: ::da.m::   de ::da.h+":"+da.i:: 
-					
-					::if d.end!=null::
-						à ::e.h+":"+e.i::
-					::end::
+					::dDate(d.date):: 
+
+					de ::hHour(d.date):: à ::hHour(d.end)::
 				</td>
 				<td>
-					::d._place.name::
+					::md._place.name::
 				</td>
 				<td>
 					<div class="btn-group">
@@ -50,7 +58,9 @@
 						</a>
 					</div>
 				</td>
+				::end::
 			</tr>
+			
 		::end::
 	</table>	
 
@@ -81,9 +91,6 @@
 	$$insert(::_("One time distribution")::,/distribution/insert/::c.id::)
 	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
 	
-	<a href="/contractAdmin/distributionp/::c.id::" class="btn btn-default btn-sm">
-		<i class="icon icon-user"></i> ::_("Distributions engagement")::
-	</a>
 	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
 		::_("Old distributions")::
 	</a>

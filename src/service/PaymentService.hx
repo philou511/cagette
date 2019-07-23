@@ -10,7 +10,7 @@ enum PaymentContext{
 
 /**
  * Payment Service
- * @author web-wizard
+ * @author web-wizard,fbarbut
  */
 class PaymentService
 {
@@ -183,6 +183,7 @@ class PaymentService
 			}
 
 			var o = orders.first();
+			if(o.distribution==null) throw o.id+" order has no distrib";
 			updateUserBalance(o.user, o.distribution.place.amap);	
 		}
 
@@ -246,6 +247,20 @@ class PaymentService
 		var out = "";
 		var allowedPaymentTypes = getPaymentTypes(PCPayment,group);
 		out = Lambda.map(allowedPaymentTypes,function(m) return m.name).join(", ");
+		return out;
+	}
+
+	/**
+		Get multidistrib turnover by payment type
+	**/
+	public static function getMultiDistribTurnoverByPaymentType(md:db.MultiDistrib):Map<String,{ht:Float,ttc:Float}>{
+		var out = new Map<String,{ht:Float,ttc:Float}>();
+
+		/*for( b in md.getBaskets()){
+			for( op in b.getPaymentsOperations()){
+				
+			}
+		}*/
 		return out;
 	}
 }
