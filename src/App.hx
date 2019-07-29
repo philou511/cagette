@@ -7,10 +7,11 @@ class App extends sugoi.BaseApp {
 	public static var current : App = null;
 	public static var t : sugoi.i18n.translator.ITranslator;
 	public static var config = sugoi.BaseApp.config;
+
 	
 	public var eventDispatcher :hxevents.Dispatcher<Event>;	
 	public var plugins : Array<sugoi.plugin.IPlugIn>;
-	
+	public var breadcrumb : Array<Link>;
 	/**
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
@@ -20,6 +21,7 @@ class App extends sugoi.BaseApp {
 	
 	public function new(){
 		super();
+		breadcrumb = [];
 	}
 	
 	public static function main() {
@@ -187,7 +189,7 @@ class App extends sugoi.BaseApp {
 		//group options
 		out.set("ShopMode", "Mode boutique");
 		out.set("ComputeMargin", "Appliquer une marge à la place des pourcentages");
-		out.set("CustomizedCategories", "Catégories customisées");
+		out.set("CustomizedCategories", "Catégories personnalisées");
 		out.set("HidePhone", "Masquer le téléphone du responsable sur la page publique");
 		out.set("PhoneRequired", "Saisie du numéro de téléphone obligatoire");
 		out.set("AddressRequired", "Saisie de l'adresse obligatoire");

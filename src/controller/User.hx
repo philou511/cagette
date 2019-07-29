@@ -43,6 +43,9 @@ class User extends Controller
 	@logged
 	@tpl("user/choose.mtt")
 	function doChoose(?args: { amap:db.Amap } ) {
+
+		//home page
+		app.breadcrumb = [];
 		
 		if (app.user == null) throw t._("You are not connected");
 		

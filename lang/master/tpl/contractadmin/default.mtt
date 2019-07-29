@@ -38,9 +38,9 @@
 	<div class="article" id="contracts">
 		<h2>
 			::if getParam("old"):: 
-			::_("Old contracts")::
+			::_("Old catalogs")::
 			::else::
-			::_("Contracts")::
+			::_("Catalogs")::
 			::end::
 		</h2>
 		<table class="table">
