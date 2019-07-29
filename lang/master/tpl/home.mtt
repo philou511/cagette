@@ -71,8 +71,8 @@
 				::set active = d.isActive()::
 				::set start = d.getDate()::
 				::set end = d.getEndDate()::
-				::set ordersStartDate = d.getOrdersStartDate()::
-				::set ordersEndDate = d.getOrdersEndDate()::
+				::set ordersStartDate = d.getOrdersStartDate(false)::
+				::set ordersEndDate = d.getOrdersEndDate(false)::
 
 				<!-- header -->
 				<div class="header ::if (active && hasShopMode):: active ::end::">

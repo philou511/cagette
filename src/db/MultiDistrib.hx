@@ -39,11 +39,7 @@ class MultiDistrib extends Object
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 
 		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,lock);
-
-		
 	}
-
-
 
 	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date ) : Array<MultiDistrib> {
 		var multidistribs = new Array<db.MultiDistrib>();
@@ -246,12 +242,32 @@ class MultiDistrib extends Object
 		}
 	}
 
-	public function getOrdersStartDate(){
-		return orderStartDate;
+	public function getOrdersStartDate(?includingExceptions=false){
+		if(includingExceptions){
+			//find earliest order start date 
+			var date = orderStartDate;
+			for(d in getDistributions()){
+				if(d.orderStartDate.getTime() < date.getTime()) date = d.orderStartDate;
+			}
+			return date;
+		}else{
+			return orderStartDate;
+		}
+		
 	}
 
-	public function getOrdersEndDate(){
-		return orderEndDate;
+	public function getOrdersEndDate(?includingExceptions=false){
+		if(includingExceptions){
+			//find lates order end date 
+			var date = orderEndDate;
+			for(d in getDistributions()){
+				if(d.orderEndDate.getTime() > date.getTime()) date = d.orderEndDate;
+			}
+			return date;
+		}else{
+			return orderEndDate;
+		}
+		
 	}
 
 	/**
@@ -319,11 +335,11 @@ class MultiDistrib extends Object
 		if( getDate().getTime() > now ){
 			//we're before distrib
 
-			if( getOrdersStartDate().getTime() > now ){
+			if( getOrdersStartDate(true).getTime() > now ){
 				return "notYetOpen";
 			}
 			
-			if( getOrdersEndDate().getTime() > now ){
+			if( getOrdersEndDate(true).getTime() > now ){
 				return "open";
 			}else{
 				return "closed";
