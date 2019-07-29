@@ -1,6 +1,9 @@
 package controller;
 import sugoi.form.Form;
 import sugoi.form.elements.StringSelect;
+import Common;
+using Std;
+import plugin.Tutorial;
 
 class Account extends Controller
 {
@@ -10,7 +13,131 @@ class Account extends Controller
 		super();
 	}
 	
-	function doDefault() {}
+	/**
+	 * "my account" page
+	 */
+	@tpl("account/default.mtt")
+	function doDefault() {
+		
+		//Create the list of links to change the language
+		var langs = App.config.get("langs").split(";");
+		var langNames = App.config.get("langnames").split(";");
+		var i=0;
+		var langLinks = "";
+		for (lang in langs)
+		{
+			langLinks += "<li><a href=\"?lang=" + langs[i] + "\">" + langNames[i] + "</a></li>";
+			i++;
+		}
+		view.langLinks = langLinks;
+		view.langText = langNames[langs.indexOf(app.session.lang)];
+
+		//change account lang
+		if (app.params.exists("lang") && app.user!=null){
+			app.user.lock();
+			app.user.lang = app.params.get("lang");
+			app.user.update();
+		}
+		
+		var ua = db.UserAmap.get(app.user, app.user.amap);
+		if (ua == null) throw Error("/", t._("You are not a member of this group"));
+		
+		var constOrders = null;
+		var varOrders = new Map<String,Array<db.UserContract>>();
+		
+		var a = App.current.user.amap;		
+		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
+		
+		//constant orders
+		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == a && $endDate > oneMonthAgo, false);		
+		constOrders = [];
+		for ( c in contracts){
+			var orders = app.user.getOrdersFromContracts([c]);
+			if (orders.length == 0) continue;
+			constOrders.push({contract:c, orders:service.OrderService.prepare(orders) });
+		}
+				
+		//variable orders, grouped by date
+		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == a && $endDate > oneMonthAgo, false);
+		
+		for (c in contracts) {
+			var ds = c.getDistribs(false);
+			for (d in ds) {
+				//store orders in a stringmap like "2015-01-01" => [order1,order2,...]
+				var k = d.date.toString().substr(0, 10);
+				var orders = app.user.getOrdersFromDistrib(d);
+				if (orders.length > 0) {
+					if (!varOrders.exists(k)) {
+						varOrders.set(k, Lambda.array(orders));
+					}else {
+						var z = varOrders.get(k).concat(Lambda.array(orders));
+						varOrders.set(k, z);
+					}	
+				}
+			}
+		}
+		
+		//final structure
+		var varOrders2 = new Array<{date:Date,orders:Array<UserOrder>}>();
+		for ( k in varOrders.keys()) {
+
+			var d = new Date(k.split("-")[0].parseInt(), k.split("-")[1].parseInt() - 1, k.split("-")[2].parseInt(), 0, 0, 0);
+			var orders = service.OrderService.prepare( Lambda.list(varOrders[k]) );
+			
+			varOrders2.push({date:d,orders:orders});
+		}
+		
+		//sort by date desc
+		varOrders2.sort(function(b, a) {
+			return Math.round(a.date.getTime()/1000)-Math.round(b.date.getTime()/1000);
+		});
+		
+		view.varOrders = varOrders2;
+		view.constOrders = constOrders;
+		
+		
+		// tutorials
+		if (app.user.isAmapManager()) {
+			
+			
+			//actions
+			if (app.params.exists('startTuto') ) {
+				
+				//start a tuto
+				app.user.lock();
+				var t = app.params.get('startTuto'); 
+				app.user.tutoState = {name:t,step:0};
+				app.user.update();
+			}
+			
+		
+			//tuto state
+			var tutos = new Array<{name:String,completion:Float,key:String}>();
+			
+			for ( k in Tutorial.all().keys() ) {	
+				var t = Tutorial.all().get(k);
+				
+				var completion = null;
+				if (app.user.tutoState!=null && app.user.tutoState.name == k) completion = app.user.tutoState.step / t.steps.length;
+				
+				tutos.push( { name:t.name, completion:completion , key:k } );
+			}
+			
+			view.tutos = tutos;
+		}
+		
+		//should be able to stop tuto in any case
+		if (app.params.exists('stopTuto')) {
+			//stopped tuto from a tuto window
+			app.user.lock();
+			app.user.tutoState = null;
+			app.user.update();	
+			view.stopTuto = true;
+		}
+		
+		checkToken();
+		view.userAmap = ua;
+	}
 	
 	@tpl('form.mtt')
 	function doEdit() {

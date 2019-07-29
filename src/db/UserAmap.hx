@@ -122,5 +122,21 @@ class UserAmap extends Object
 	public function getLastOperations(limit){
 		return db.Operation.getLastOperations(user, amap, limit);
 	}
+
+	public function isGroupManager() {
+		return hasRight(Right.GroupAdmin);
+	}
+
+	public function canManageAllContracts(){
+		if (rights == null) return false;
+		for (r in rights) {
+			switch(r) {
+				case Right.ContractAdmin(cid):
+					if(cid==null) return true;
+				default:
+			}
+		}
+		return false;			
+	}
 	
 }

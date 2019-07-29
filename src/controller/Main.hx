@@ -9,6 +9,16 @@ import Common;
 import tools.ArrayTool;
 
 class Main extends Controller {
+
+	public function new(){
+		super();
+
+		//init group breadcrumb
+		var group = App.current.getCurrentGroup();
+		if(group!=null)
+			addBc("g"+group.id, "Groupe Cagette : "+group.name, "/home");
+
+	}
 	
 	function doDefault(?permalink:String){
 
@@ -27,14 +37,12 @@ class Main extends Controller {
 		d.dispatch(new controller.Group());
 	}
 
-	
-
 	/**
 		NEW homepage
 	**/
 	@tpl("home.mtt")
 	function doHome() {
-		view.category = 'home';
+		addBc("home","Commandes","/home");
 		
 		var group = app.getCurrentGroup();		
 		if ( app.user!=null && group == null) {			
@@ -108,6 +116,7 @@ class Main extends Controller {
 	
 	//login and stuff
 	function doUser(d:Dispatch) {
+		// addBc("user","Membres","/user");
 		d.dispatch(new controller.User());
 	}
 	
@@ -143,7 +152,6 @@ class Main extends Controller {
 	
 	@tpl("cssDemo.mtt")
 	function doCssdemo() {
-		view.category = 'home';
 	}
 
 	@tpl("css.mtt")
@@ -186,60 +194,52 @@ Called from controller/Main.hx line 117
 
 	@logged
 	function doMember(d:Dispatch) {
-		view.category = 'members';
+		addBc("member","Membres","/member");
 		d.dispatch(new controller.Member());
 	}
 	
 	@logged
-	function doStats(d:Dispatch) {
-		view.category = 'stats';
-		d.dispatch(new Stats());
-	}
-	
-	@logged
 	function doAccount(d:Dispatch) {
-		view.category = 'account';
+		addBc("account","Mon compte","/account");
 		d.dispatch(new controller.Account());
 	}
 
 	@logged
 	function doVendor(d:Dispatch) {
-		view.category = 'contractadmin';
+		addBc("contractAdmin","Producteur","/contractAdmin");
 		d.dispatch(new controller.Vendor());
 	}
 	
 	@logged
 	function doPlace(d:Dispatch) {
-		view.category = 'contractadmin';
 		d.dispatch(new controller.Place());
 	}
 	
 	@logged
 	function doTransaction(d:Dispatch) {
-		view.category = 'members';
+		addBc("shop","Boutique","/shop");
 		d.dispatch(new controller.Transaction());
 	}
 	
 	@logged
 	function doDistribution(d:Dispatch) {
-		view.category = 'distribution';
+		addBc("distribution","Distributions","/distribution");
 		d.dispatch(new controller.Distribution());
 	}
 	
 	@logged
 	function doMembership(d:Dispatch) {
-		view.category = 'members';
+		addBc("member","Membres","/member");
 		d.dispatch(new controller.Membership());
 	}
 	
 	function doShop(d:Dispatch) {
-		view.category = 'shop';
+		addBc("shop","Boutique","/shop");
 		d.dispatch(new controller.Shop());
 	}
 
 	@tpl('shop/default2.mtt')
 	function doShop2(place:db.Place, date:String) {
-		view.category = 'shop';
 		view.place = place;
 		view.date = date;
 		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
@@ -247,37 +247,36 @@ Called from controller/Main.hx line 117
 	
 	@logged
 	function doProduct(d:Dispatch) {
-		view.category = 'contractadmin';
 		d.dispatch(new controller.Product());
 	}
 	
 	@logged
 	function doAmap(d:Dispatch) {
-		view.category = 'amap';
+		addBc("amap","Producteurs","/amap");
 		d.dispatch(new controller.Amap());
 	}
 	
 	@logged
 	function doContract(d:Dispatch) {
-		view.category = 'contract';
+		addBc("contract","Catalogues","/contractAdmin");
 		d.dispatch(new Contract());
 	}
 	
 	@logged
 	function doContractAdmin(d:Dispatch) {
-		view.category = 'contractadmin';
+		addBc("contract","Catalogues","/contractAdmin");
 		d.dispatch(new ContractAdmin());
 	}
 	
 	@logged
 	function doMessages(d:Dispatch) {
-		view.category = 'messages';
+		addBc("messages","Messagerie","/messages");
 		d.dispatch(new Messages());
 	}
 	
 	@logged
 	function doAmapadmin(d:Dispatch) {
-		view.category = 'amapadmin';
+		addBc("amapadmin","Paramètres","/amapadmin");
 		d.dispatch(new AmapAdmin());
 	}
 	
