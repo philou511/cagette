@@ -1,10 +1,7 @@
 /**
-
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
-
 **/
-
 @import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
 @import '_map';
 @import '_iconfont';
@@ -394,13 +391,14 @@ div.reportHeader{
 	border-radius:8px;
 	color:inherit;
 	background-color:white;
-	margin-bottom:12px;	
+	margin-bottom:22px;	
 	padding:8px;
+	z-index: 10;
 	
 	&:hover{
 		cursor: pointer;
-		background-color:lighten(#F0D277,10%);
-		border-color:darken(#F0D277,10%);
+		background-color:lighten(#8a6d3b,50%);
+		//border-color:darken(#F0D277,10%);
 		text-decoration:none;
 		transition: all 0.15s ease;
 	}
@@ -418,6 +416,31 @@ div.reportHeader{
 		cursor: not-allowed;
 	}
 
+	
+
+}
+
+//icon badge within Clickables
+.blockIconBadge{
+	color:darken(#bad096,20%);
+	background-color:white;	
+	padding:4px;
+	position: absolute;
+	top:-18px;
+	right:0px;
+	z-index: 50;
+	border-radius: 20px;
+	font-size: 1.5em;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	border: 3px solid #bad096;
+	line-height: 20px;
+	
+	&.group{
+		border:3px solid lighten(#8a6d3b,40%);
+		color:lighten(#8a6d3b,40%);
+	}
 }
 
 /* a cagette group block (use it with .clickable ) */

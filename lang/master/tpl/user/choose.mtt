@@ -12,7 +12,7 @@
 	</div>
 
 	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
-		<p>Connectez-vous à votre <b>compte producteur</b></p>
+		<p>Connectez-vous à votre <b>compte producteur</b> :</p>
 	</div>
 
 
@@ -21,11 +21,16 @@
 		<div class="row">
 		::foreach v vendors::
 			<div class="col-md-4">
+				<div class="blockIconBadge" data-toggle="tooltip" title="Producteur équipé de Cagette Pro">
+					<i class="icon icon-farmer-pro"></i>
+				</div>
 				<a class="clickable proBlock" href="/p/pro/?vendor=::v.id::">
+					
 					::if v._image!=null::
 					<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 					::end::						
 					<h4>::v.name::</h4>
+					
 				</a>
 			</div>
 		::end::
@@ -41,7 +46,10 @@
 		<div class="row">
 			::foreach group amaps::				
 				<div class="col-md-4">
-					<a class="clickable groupBlock"  href="/user/choose?amap=::group.id::">
+					<div class="blockIconBadge group" >
+						<i class="icon icon-map-marker"></i>
+					</div>
+					<a class="clickable groupBlock"  href="/user/choose?group=::group.id::">
 					
 						::if group._image!=null::
 						<img src="::file(group._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />

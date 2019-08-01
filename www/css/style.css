@@ -1,8 +1,6 @@
 /**
-
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
-
 **/
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,400i,700");
 /*
@@ -374,12 +372,12 @@ div.reportHeader {
   border-radius: 8px;
   color: inherit;
   background-color: white;
-  margin-bottom: 12px;
-  padding: 8px; }
+  margin-bottom: 22px;
+  padding: 8px;
+  z-index: 10; }
   .clickable:hover {
     cursor: pointer;
-    background-color: #f5e1a5;
-    border-color: #ebc349;
+    background-color: #eee5d6;
     text-decoration: none;
     transition: all 0.15s ease; }
   .clickable:active {
@@ -391,6 +389,25 @@ div.reportHeader {
   .clickable.disabled {
     background-color: lightgray;
     cursor: not-allowed; }
+
+.blockIconBadge {
+  color: #8cb050;
+  background-color: white;
+  padding: 4px;
+  position: absolute;
+  top: -18px;
+  right: 0px;
+  z-index: 50;
+  border-radius: 20px;
+  font-size: 1.5em;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 3px solid #bad096;
+  line-height: 20px; }
+  .blockIconBadge.group {
+    border: 3px solid #deceb3;
+    color: #deceb3; }
 
 /* a cagette group block (use it with .clickable ) */
 .groupBlock {
