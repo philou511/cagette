@@ -246,7 +246,7 @@ class MultiDistrib extends Object
 		if(includingExceptions){
 			//find earliest order start date 
 			var date = orderStartDate;
-			for(d in getDistributions()){
+			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
 				if(d.orderStartDate.getTime() < date.getTime()) date = d.orderStartDate;
 			}
 			return date;
@@ -260,13 +260,17 @@ class MultiDistrib extends Object
 		if(includingExceptions){
 			//find lates order end date 
 			var date = orderEndDate;
-			for(d in getDistributions()){
+			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
 				if(d.orderEndDate.getTime() > date.getTime()) date = d.orderEndDate;
 			}
 			return date;
 		}else{
 			return orderEndDate;
 		}
+		
+	}
+
+	public function getUserTmpBasket(user:db.User){
 		
 	}
 
