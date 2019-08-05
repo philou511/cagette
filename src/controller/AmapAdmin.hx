@@ -23,6 +23,10 @@ class AmapAdmin extends Controller
 		if (app.user.amap.hasPayments()) {
 			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment") });
 		}	
+		if(!app.user.amap.hasTaxonomy()){
+			nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories") });
+		}
+		
 
 		var e = Nav(nav,"groupAdmin");
 		app.event(e);

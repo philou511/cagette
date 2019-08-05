@@ -65,9 +65,7 @@
 						::end::
 					</td>
 					<td>
-						::if c._vendor._image!=null::
-						<div class="productImg" style="background-image:url('::file(c._vendor._image)::');width:48px;height:48px;margin:0" ></div>
-						::end::
+						<div class="productImg" style="background-image:url('::c._vendor.getImage()::');width:48px;height:48px;margin:0" ></div>
 					</td>
 					<td>::c._vendor.name::</td>
 					
@@ -95,8 +93,9 @@
 	
 		
 		::if user.canManageAllContracts():: 
-		$$insert(::_("New contract")::,/contract/defineVendor/)
+			$$insert(::_("Create of find a catalog")::,/contract/defineVendor/)
 		::end::
+
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -122,9 +121,7 @@
 			::foreach v vendors::		
 				<tr>
 					<td>
-						::if v._image!=null::
-						<div class="productImg" style="background-image:url('::file(v._image)::');width:48px;height:48px;"></div>
-						::end::
+						<div class="productImg" style="background-image:url('::v.getImage()::');width:48px;height:48px;"></div>
 					</td>
 					<td>
 						<b>::v.name::</b><br/>

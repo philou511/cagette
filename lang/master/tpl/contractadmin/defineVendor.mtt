@@ -7,25 +7,57 @@
 		
 		<div class="row">
 			::if(vendors.length>0)::
-				<div class="col-md-12"><p>
-					::_("We found these vendors in our database :")::
-				</p></div>
+
+				<div class="col-md-12" style="margin-bottom:24px;">
+					<p>::_("We found these vendors in our database :")::</p>
+				</div>
+
 				::foreach v vendors::
 				<div class="col-md-4 col-sm-6">
-					<a href="/contract/insertChoose/::v.id::" class="clickable groupBlock" style="height:200px">					
-						::if v._image!=null::
-						<img src="::file(v._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
+					::set cpro = v.getCpro()::
+
+					::if(cpro!=null)::
+					<div class="blockIconBadge" data-toggle="tooltip" title="Producteur équipé de Cagette Pro">
+						<i class="icon icon-farmer-pro"></i>
+					</div>					
+					::end::
+
+					<div class="boxed" style="height:300px">					
+						<div class="row">
+							<div class="col-md-4">													
+								<div class="productImg xl" style="background-image:url('::v.getImage()::');"></div>								
+							</div>
+							<div class="col-md-8">
+									<h4>::v.name::</h4>
+									::v.zipCode:: ::v.city::
+									<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
+										::short(v.desc,80)::
+									</p>
+							</div>
+						</div>
+						
+						<p style="line-height: 38px;">
+						::if(cpro!=null)::
+							
+								Catalogue(s) :
+								
+								::foreach catalog cpro.getActiveCatalogs()::
+									
+										<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
+											<i class="icon icon-book"></i> ::catalog.name::
+									</a>&nbsp;
+								::end::
+								
+						
 						::end::
-						<p>
-							<b>::v.name::</b>
+						
+							<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
+								<i class="icon icon-plus"></i> Nouveau catalogue
+							</a>
 						</p>
-						<p ::cond(v.desc!=null):: style="color:#999;font-size:0.9em;">
-							::short(v.desc,200)::
-						</p>
-						<p>
-						::v.zipCode:: ::v.city::
-						</p>
-					</a>
+						
+					</div>
+
 				</div>
 				::end::
 			::else::

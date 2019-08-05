@@ -11,6 +11,21 @@
 		</h2>				
 	</div>
 
+	<div class="col-md-8 col-md-offset-2">
+		<div class="alert alert-warning">
+			<i class="icon icon-info"></i> <b>Mise à jour de Septembre 2019</b>
+			<p>
+				Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de Cagette.net.
+				La gestion des distributions a aussi été améliorée suite aux changements initiés en juin.
+				<br/>
+				<br/>
+				<a href='https://www.youtube.com' class="btn btn-default btn-sm" target='_blank'>Voir la vidéo pour se mettre à la page ( 5mn )</a>
+			</p>
+
+		</div>
+
+	</div>
+
 	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
 		<p>Connectez-vous à votre <b>compte producteur</b> :</p>
 	</div>
@@ -108,8 +123,18 @@
 			</table>
 		</div>
 	</div>
-
-	
+	<script>
+			//<![CDATA[
+			/*$(function(){
+				window.setTimeout(function(){
+					var txt = "Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de Cagette.net.<br/>";
+					txt += "La gestion des distributions a aussi été revue.";
+					txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>Voir la vidéo pour se mettre à la page</a>";
+					_.newFeature(".row h2","Mise à jour de la rentrée",txt,"bottom");
+				},2000);
+			});*/
+			//]]>
+		</script>
 
 
 ::end::

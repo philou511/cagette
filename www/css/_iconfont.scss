@@ -8,4 +8,7 @@ i.icon{
     font-style: normal;
 	-webkit-font-smoothing: antialiased;
 	vertical-align: middle;
+
+	min-width: 1em;//use always same width
+    text-align: center;
 }

@@ -276,7 +276,7 @@ class DistributionService
 
 	 /**
 	  *  Modifies an existing distribution and prevents distribution overlapping and other checks
-	  	@deprecated 
+	  	@deprecated !
 	 */
 	 public static function edit(d:db.Distribution,date:Date,end:Date,placeId:Int,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
@@ -344,9 +344,9 @@ class DistributionService
 	}
 
 	/**
-		Edit a Distribution (new way, with multidistribs)
+		Edit attendance of a farmer to a distribution(md)
 	**/
-	public static function edit2(d:db.Distribution,md:db.MultiDistrib,distribStartHour:Date,distribEndHour:Date,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
+	public static function editAttendance(d:db.Distribution,md:db.MultiDistrib,/*distribStartHour:Date,distribEndHour:Date,*/orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
 		//We prevent others from modifying it
 		d.lock();
@@ -357,8 +357,10 @@ class DistributionService
 		}
 
 		d.multiDistrib = md;
-		d.date = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribStartHour.getHours(), distribStartHour.getMinutes(), 0);
-		d.end  = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribEndHour.getHours(), distribEndHour.getMinutes(), 0);
+		//d.date = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribStartHour.getHours(), distribStartHour.getMinutes(), 0);
+		//d.end  = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribEndHour.getHours(), distribEndHour.getMinutes(), 0);
+		d.date = md.distribStartDate;
+		d.end = md.distribEndDate;
 		
 		if(d.contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
@@ -404,7 +406,7 @@ class DistributionService
 	public static function delete(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
 		if ( !canDelete(d) ) {
-			throw new Error(t._("Deletion not possible: some orders are saved for this delivery."));
+			throw new Error(t._("Deletion not possible: orders are recorded for ::vendorName:: on ::date::.",{vendorName:d.contract.vendor.name,date:Formatting.hDate(d.date)}));
 		}
 
 		var contract = d.contract;

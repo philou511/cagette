@@ -1,7 +1,7 @@
-/**
+/*
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
-**/
+*/
 @import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
 @import '_map';
 @import '_iconfont';
@@ -17,14 +17,14 @@ body{
 }
 
 h1,h2,h3,h4{
-  //margin-top: 4px !important;
-  //margin-bottom: 8px !important;
-  font-style: italic;
+	//margin-top: 4px !important;
+	//margin-bottom: 8px !important;
+	font-style: italic;
 }
 
 h1{
 	margin-bottom: 8px !important;
-    margin-top: 4px !important;
+	margin-top: 4px !important;
 }
 
 a{
@@ -125,17 +125,17 @@ a{
 
 /* navigation */
 ul.nav li {
-  text-transform: uppercase;
-  font-size: 14px;
+	text-transform: uppercase;
+	font-size: 14px;
 }
 
 .noSelect {
 	-webkit-touch-callout: none; /* iOS Safari */
-	  -webkit-user-select: none; /* Safari */
-	   -khtml-user-select: none; /* Konqueror HTML */
+		-webkit-user-select: none; /* Safari */
+		 -khtml-user-select: none; /* Konqueror HTML */
 		 -moz-user-select: none; /* Firefox */
-		  -ms-user-select: none; /* Internet Explorer/Edge */
-			  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+			-ms-user-select: none; /* Internet Explorer/Edge */
+				user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
 /* subnav in contractadmin*/
@@ -156,16 +156,16 @@ ul.nav li {
 	}
 	
 	ul {
-	  margin: 3px 0 0;
-	  padding: 0;
-	  text-align: left;
-	  list-style: none;
-	  font-size: 14px;
+		margin: 3px 0 0;
+		padding: 0;
+		text-align: left;
+		list-style: none;
+		font-size: 14px;
 	}
 	
 	.cagsocialmedia {
 		vertical-align: top;
-		  li {
+			li {
 			display: inline-block;
 			text-align: center; 
 			a {
@@ -187,14 +187,14 @@ ul.nav li {
 }
 
 #subfooter {
-  /*background-color : #313131;
-  color : #fff;*/
-  text-align: center;
-  font-size : 14px;
-  padding : 15px 0 25px 0; 
-  span {
-	  color :#979797;
-	  font-size : 11px;
+	/*background-color : #313131;
+	color : #fff;*/
+	text-align: center;
+	font-size : 14px;
+	padding : 15px 0 25px 0; 
+	span {
+		color :#979797;
+		font-size : 11px;
 	}
 }
 
@@ -347,7 +347,7 @@ div.tableHeader{
 
 div.reportHeader{
 	background-color:#DDD;
-   
+	 
 }
 
 
@@ -384,10 +384,24 @@ div.reportHeader{
 	background-color: #f5f5f5;
 }
 
+.boxed{
+	display:block;	
+	border: 1px #DDD solid;
+	border-radius:8px;
+	color:inherit;
+	background-color:white;
+	margin-bottom:22px;	
+	padding:8px;
+	z-index: 10;
+
+	overflow-y: auto;
+    overflow-x: hidden;
+}
+
 /* make <a> like clickable divs  */
 .clickable{
-	display:block;
-	//border:1px solid #CCC;
+	display:block;	
+	border: 1px #DDD solid;
 	border-radius:8px;
 	color:inherit;
 	background-color:white;
@@ -415,9 +429,6 @@ div.reportHeader{
 		background-color: lightgray;
 		cursor: not-allowed;
 	}
-
-	
-
 }
 
 //icon badge within Clickables
@@ -487,6 +498,10 @@ div.reportHeader{
 
 .header{
 	.accountBlock{
+		div.pull-right{
+			margin-right : 16px;
+			margin-top: 16px;
+		}
 		a{
 			color: #777;
 		}

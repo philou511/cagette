@@ -275,19 +275,19 @@ class Distribution extends Controller
 		var mds = db.MultiDistrib.getFromTimeRange(d.contract.amap,threeMonthAgo,inThreeMonth);
 		
 		var mds = mds.filter(function(md) return !md.isValidated() ).map(function(md) return {label:view.hDate(md.getDate()), value:md.id});
-		var e = new sugoi.form.elements.IntSelect("md",t._("General distribution"), mds ,d.multiDistrib.id);			
+		var e = new sugoi.form.elements.IntSelect("md",t._("Change distribution"), mds ,d.multiDistrib.id);			
 		form.addElement(e, 1);
 
-		var html = new sugoi.form.elements.Html("note",t._("You can customize some parameters for this farmer : distribution hour, order opening and closing dates :"));
-		form.addElement(html, 2);
+		/*var html = new sugoi.form.elements.Html("note",t._("You can customize some parameters for this farmer : distribution hour, order opening and closing dates :"));
+		form.addElement(html, 2);*/
 		
 		//start hour		
-		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Distribution start time"), d.date );
-		form.addElement(x, 3);
+		/*var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Distribution start time"), d.date );
+		form.addElement(x, 3);*/
 		
 		//end hour
-		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("Distribution end time"), d.end );
-		form.addElement(x, 4);
+		/*var x = new sugoi.form.elements.HourDropDowns("endHour", t._("Distribution end time"), d.end );
+		form.addElement(x, 4);*/
 		
 		
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
@@ -327,11 +327,11 @@ class Distribution extends Controller
 				}
 
 				//do not launch event, avoid notifs for now
-				d = DistributionService.edit2(
+				d = DistributionService.editAttendance(
 					d,
 					md,
-					form.getValueOf("startHour"),
-					form.getValueOf("endHour"),				
+					/*form.getValueOf("startHour"),
+					form.getValueOf("endHour"),				*/
 					orderStartDate,
 					orderEndDate,
 					false
@@ -346,7 +346,14 @@ class Distribution extends Controller
 				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
 				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
 			} else {
-				throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
+
+				if(app.user.isGroupManager() || app.user.canManageAllContracts() ){
+					throw Ok('/distribution', t._("The distribution has been recorded") );
+				}else{
+					throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
+				}
+
+				
 			}
 			
 		} else {
@@ -354,7 +361,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._("Edit a distribution of ::farmer::",{farmer:d.contract.vendor.name});
+		view.title = t._("Attendance of ::farmer:: to the ::date:: distribution",{farmer:d.contract.vendor.name,date:view.dDate(d.date)});
 	}
 	
 	@tpl('form.mtt')

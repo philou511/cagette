@@ -6,8 +6,7 @@
 		<ul id="subnav" class="nav nav-tabs nav-stacked" >
 			
 			<li><a href="/amapadmin/rights/">::_("Administration rights")::</a></li>
-			<li><a href="/amapadmin/vatRates/">::_("VAT rates")::</a></li>
-			<li><a href="/amapadmin/categories/">::_("Categories")::</a></li>
+			<li><a href="/amapadmin/vatRates/">::_("VAT rates")::</a></li>			
 			<li><a href="/amapadmin/volunteers/">::_("Duty Periods")::</a></li>
 			<li><a href="/amapadmin/currency/">::_("Currency")::</a></li>
 			::if nav!=null::				
@@ -26,10 +25,6 @@
 	<div class="article">
 	::raw __content__::	
 	</div>
-	
-	
-	
-	
 </div>
 
 ::end::

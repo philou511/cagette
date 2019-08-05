@@ -17,7 +17,7 @@ class App extends sugoi.BaseApp {
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
 	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
-	public static var VERSION = ([0,11]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
+	public static var VERSION = ([0,12]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
 	
 	public function new(){
 		super();

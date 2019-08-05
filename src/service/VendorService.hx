@@ -74,7 +74,7 @@ class VendorService{
 		var vendors = [];
 		for( n in name.split(" ")){
 			n = n.toLowerCase();
-			if(Lambda.has(["le","la","du","de","l'","a","à","en","sur","qui","ferme"],n)) continue;
+			if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
 			//search for each term
 			var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
 			vendors = vendors.concat(search);
@@ -85,7 +85,21 @@ class VendorService{
 			vendors = vendors.concat(Lambda.array(db.Vendor.manager.search($email==email,false)));
 		}
 		
-		return tools.ObjectListTool.deduplicate(vendors);
+		vendors = tools.ObjectListTool.deduplicate(vendors);
+
+		#if plugins
+		//cpro first
+		for( v in vendors.copy() ){
+			if( v.getCpro()!=null ){
+				vendors.remove(v);
+				vendors.unshift(v);
+			} 
+		}
+
+		#end
+
+
+		return vendors;
 	}
 
 

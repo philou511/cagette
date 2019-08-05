@@ -224,7 +224,7 @@
 
                 </div>
 
-                <!-- vendor infos-->
+                <!-- Farmers infos-->
 
 				<div id="md::d.id::" style="display:none;">
 					<hr/>
@@ -243,9 +243,8 @@
 									<td>
 										::contract._vendor.name::
 									</td>
-									<td>
-										
-
+									<td>										
+									<!--
 										::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
@@ -257,6 +256,7 @@
 											::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
 										</div>
 										::end::                                            
+									-->
 									</td>
 								</tr>
 							::end::
@@ -277,10 +277,7 @@
 										::contract._vendor.name::
 									</td>
 									<td>
-
-										$$edit(Modifier,/distribution/edit/::dist.id::)
-
-										::if(d.distribStartDate.getTime() != dist.date.getTime())::
+										<!--::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
 										</div>
@@ -290,19 +287,26 @@
 										<div class="alert alert-warning">
 											::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
 										</div>
-										::end::
+										::end::-->
 
 										::if(d.orderStartDate!=null && d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
 										<div class="alert alert-warning">
-											::_("Order start date is different from general distribution"):: : ::hDate(dist.orderStartDate)::
+											<i class="icon icon-info"></i> ::_("Order start date is different from general distribution"):: : <b>::hDate(dist.orderStartDate)::</b>
 										</div>
 										::end::
 
 										::if(d.orderEndDate!=null && d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
 										<div class="alert alert-warning">
-											::_("Order end date is different from general distribution"):: : ::hDate(dist.orderEndDate)::
+												<i class="icon icon-info"></i> ::_("Order end date is different from general distribution"):: : <b>::hDate(dist.orderEndDate)::</b>
 										</div>
 										::end::
+
+										<p>
+											<a href="/distribution/edit/::dist.id::" class="btn btn-default btn-sm">
+												<i class="icon icon-calendar"></i> Changer dates
+											</a>
+										</p>
+
 									</td>
 								</tr>
 							::end::

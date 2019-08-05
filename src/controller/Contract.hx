@@ -117,6 +117,7 @@ class Contract extends Controller
 		//f.addElement(new sugoi.form.elements.IntInput("zipCode",t._("zip code"),null,true));
 
 		if(f.isValid()){
+			
 			//look for identical names
 			var vendors = service.VendorService.findVendors( f.getValueOf('name') , f.getValueOf('email') );
 

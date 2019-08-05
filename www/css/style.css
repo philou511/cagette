@@ -1,7 +1,7 @@
-/**
+/*
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
-**/
+*/
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,400i,700");
 /*
   Group map on /group/map
@@ -91,7 +91,9 @@ i.icon {
   display: inline-block;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
-  vertical-align: middle; }
+  vertical-align: middle;
+  min-width: 1em;
+  text-align: center; }
 
 html {
   font-size: 16px !important; }
@@ -226,7 +228,7 @@ ul.nav li {
 
 #subfooter {
   /*background-color : #313131;
-  color : #fff;*/
+	color : #fff;*/
   text-align: center;
   font-size: 14px;
   padding: 15px 0 25px 0; }
@@ -366,9 +368,20 @@ div.reportHeader {
   border-radius: 6px;
   background-color: #f5f5f5; }
 
+.boxed {
+  display: block;
+  border: 1px #DDD solid;
+  border-radius: 8px;
+  color: inherit;
+  background-color: white;
+  margin-bottom: 22px;
+  padding: 8px;
+  z-index: 10; }
+
 /* make <a> like clickable divs  */
 .clickable {
   display: block;
+  border: 1px #DDD solid;
   border-radius: 8px;
   color: inherit;
   background-color: white;
@@ -444,6 +457,10 @@ div.reportHeader {
 	}*/ }
   .proBlock:hover {
     background: #a3c073; }
+
+.header .accountBlock div.pull-right {
+  margin-right: 16px;
+  margin-top: 16px; }
 
 .header .accountBlock a {
   color: #777; }

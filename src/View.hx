@@ -59,6 +59,10 @@ class View extends sugoi.BaseView {
 	function getProduct (pid:Int){ 
 		return db.Product.manager.get(pid, false);		
 	}
+
+	function getPlace(placeId:Int){
+		return db.Place.manager.get(placeId,false);
+	}
 	
 		
 	/**
