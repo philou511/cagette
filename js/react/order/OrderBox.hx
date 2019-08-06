@@ -124,7 +124,6 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 						<div className="col-md-1">Ref.</div>
 						<div className="col-md-1">Prix</div>
 						<div className="col-md-2">Qté</div>
-						<div className="col-md-1">Payé</div>
 						<div className="col-md-3">Alterné avec</div>
 					</div>
 					${renderOrders}	

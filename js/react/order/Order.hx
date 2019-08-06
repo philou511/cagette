@@ -99,8 +99,6 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 				$input			
 				${makeInfos()}
 			</div>
-			
-			${paidInput()}
 						
 			<div className="col-md-3">$alternated</div>
 	
@@ -111,15 +109,6 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		return Formatting.formatNum(f);
 	}
 
-	function paidInput(){
-		if(hasPayments) return null;
-		if(state.order.paid){
-			return jsx('<div className="col-md-1"><input type="checkbox" name="paid" value="1" checked="checked" onChange=${onChangePaid} /></div>');
-		}else{
-			return jsx('<div className="col-md-1"><input type="checkbox" name="paid" value="1" onChange=${onChangePaid} /></div>');
-		}
-	}
-	
 	function makeInfos(){
 		var o = state.order;
 		return if ( isSmartQtInput(o) ){
