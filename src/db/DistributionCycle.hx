@@ -16,16 +16,17 @@ enum CycleType {
 class DistributionCycle extends Object
 {
 	public var id : SId;	
-	@:relation(contractId) public var contract : Contract;
+	//@:relation(contractId) public var contract : Contract;
+	@hideInForms @:relation(groupId) public var group : db.Amap;
 	public var cycleType:SEnum<CycleType>;
-	public var startDate : SDate; //debut
-	public var endDate : SDate;	//fin de la recurrence
+	public var startDate : SDate; 	//cycle start date
+	public var endDate : SDate;		//cycle end date
 	public var startHour : SDateTime; 
 	public var endHour : SDateTime;	
-	public var daysBeforeOrderStart:SNull<STinyInt>;
-	public var daysBeforeOrderEnd:SNull<STinyInt>;
-	public var openingHour:SNull<SDate>;
-	public var closingHour:SNull<SDate>;
+	public var daysBeforeOrderStart : SNull<STinyInt>;
+	public var daysBeforeOrderEnd : SNull<STinyInt>;
+	public var openingHour : SNull<SDate>;
+	public var closingHour : SNull<SDate>;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
 	
 	public function new() {
@@ -35,9 +36,9 @@ class DistributionCycle extends Object
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
 		return [
-			"cycleType"		=> t._("Fréquence"),
-			"startDate" 	=> t._("Date de début"),
-			"endDate"		=> t._("Date de fin"),
+			"cycleType"		=> t._("Frequency"),
+			"startDate" 	=> t._("Cycle start date"),
+			"endDate"		=> t._("Cycle end date"),
 			"daysBeforeOrderStart" 		=> t._("Ouverture de commande (nbre de jours avant distribution)"),			
 			"daysBeforeOrderEnd"		=> t._("Fermeture de commande (nbre de jours avant distribution)"),
 			"place" 		=> t._("Place"),		

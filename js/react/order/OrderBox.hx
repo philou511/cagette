@@ -107,10 +107,10 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 
 
 		var delivery = 	if(props.date == null) {
-							null;
-						} else {
-							jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
-						}
+			null;
+		} else {
+			jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
+		}
 
 		var renderOrderBox = function(props:react.router.RouteRenderProps):react.ReactFragment { 
 			return jsx('
@@ -171,7 +171,8 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	 * called when an order is updated
 	 */
 	function onUpdate(data:UserOrder){
-		/*trace("ON UPDATE : " + data);
+		trace("ON UPDATE : " + data);
+		/*
 		for ( o in state.orders){
 			if (o.id == data.id) {
 				o.quantity = data.quantity;

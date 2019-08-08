@@ -127,6 +127,9 @@ body.cpro ol.breadcrumb li + li:before {
 body.cpro ol.breadcrumb a {
   color: #3c763d; }
 
+.hidden {
+  display: none; }
+
 div.footer-info {
   color: #8a6d3b;
   margin: 24px 0; }
@@ -376,7 +379,9 @@ div.reportHeader {
   background-color: white;
   margin-bottom: 22px;
   padding: 8px;
-  z-index: 10; }
+  z-index: 10;
+  overflow-y: auto;
+  overflow-x: hidden; }
 
 /* make <a> like clickable divs  */
 .clickable {
@@ -754,15 +759,19 @@ div.productImg {
   width: 70px;
   height: 70px;
   border-radius: 8px; }
-  div.productImg.small {
+  div.productImg.extra-small, div.productImg.xs {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px; }
+  div.productImg.sm, div.productImg.small {
     width: 48px;
     height: 48px;
     border-radius: 4px; }
-  div.productImg.medium {
+  div.productImg.md, div.productImg.medium {
     width: 70px;
     height: 70px;
     border-radius: 8px; }
-  div.productImg.xl {
+  div.productImg.large, div.productImg.xl {
     width: 100px;
     height: 100px;
     border-radius: 10px; }

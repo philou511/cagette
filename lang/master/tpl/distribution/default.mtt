@@ -5,7 +5,8 @@
 </div>
 
 <div class="col-md-6 text-right">
-    <a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Créer une distribution</a>
+	<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Créer une distribution</a>
+	<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
 
     <div class="btn-group">
         <button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -90,7 +91,7 @@
                     ::if(d.orderStartDate!=null)::
                     <p>
                         <i class="icon icon-calendar"></i> ::_("Orders opening")::  :  ::hDate(d.orderStartDate)::<br/>
-                        <i class="icon icon-calendar"></i> ::_("Orders closing")::    :  ::hDate(d.orderEndDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders closing")::  :  ::hDate(d.orderEndDate)::<br/>
                     </p>
                     ::end::
                 </div>
@@ -146,9 +147,13 @@
 									</span>
 								::elseif(status=="distributed")::
 									<span style="color:#AAA;">
-										<div class="number"><i class="icon icon-basket"></i></div>
+										
 										<div class="status">::_("Distribution done")::</div>
+										<br/>
 									</span>
+									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
+										<i class="icon icon-check"></i> Valider cette distribution
+									</a>
 								::elseif(status=="validated")::
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>
@@ -315,7 +320,34 @@
 				</div>
             </div>
         </div>
-    </div>
+	</div>
 ::end::
+
+<!-- CYCLES -->
+<div class="col-md-12" ::cond cycles.length>0::>
+	<div class="article">
+		<h4>::_("Distribution cycle")::</h4>
+		<table class="table">			
+			::foreach c cycles::
+			<tr>
+				<td>
+					<b>
+					::switch c.cycleType:: 						
+					::case::  ::_("Weekly")::
+					::case::  ::_("Monthly")::
+					::case::  ::_("Every 2 weeks")::
+					::case::  ::_("Every 3 weeks")::
+					::end::
+					</b>
+					: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+				</td>
+				<td>
+					$$delete(::_("Delete")::,::"/distribution/deleteCycle/"+c.id::)
+				</td>
+			</tr>
+			::end::
+		</table>
+	</div>
+</div>
 			
 ::end::

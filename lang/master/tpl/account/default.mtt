@@ -1,0 +1,260 @@
+::use 'design.mtt'::
+<div class="col-md-8">
+	<h2>::_("Last orders")::</h2>
+	
+	::if constOrders.length>0::
+	<div class="article">
+		
+		<!-- CONSTANT ORDERS -->
+		
+		<h3>::_("CSA Contracts")::</h3>
+		
+		::foreach c constOrders::
+		
+		<h4>::c.contract.name::</h4>
+		<table class="table table-bordered table-condensed" >
+			<tr>
+				<th>::_("Qty||short version for quantity")::</th>
+				<th>::_("Product")::</th>
+				<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
+				<th>::_("Sub-total")::</th>
+				<th>::_("Fees")::</th>
+				<th>::_("Total")::</th>
+				<th>::_("Paid")::</th>
+			</tr>
+		::set total = 0::
+		::foreach m c.orders::
+			<tr>
+				<td>
+					::raw m.smartQt::
+				</td>
+				<td>
+					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
+					<img src="::m.productImage::" style="width:32px;height:32px;" />
+					::m.productName::
+					</a>
+					::if m.userName2 != null::
+						<br /><span class="glyphicon glyphicon-refresh"></span> ::_("Order alternated with")::
+						::if user.id == m.userId::
+							::m.userName2::
+						::else::
+							::m.userName::
+						::end::
+					::end::
+
+				</td>
+				<td>
+					::formatNum(m.productPrice)::&nbsp;::currency()::
+				</td>
+				<td>
+					::formatNum(m.subTotal)::&nbsp;::currency()::
+				</td>
+				<td>
+					<!-- frais -->
+					::if m.percentageValue!=null::
+					<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
+						::formatNum(m.fees)::&nbsp;::currency()::
+					</a>
+					::end::
+				</td>
+				<td>
+					<!-- total -->
+					::formatNum(m.total)::&nbsp;::currency()::	
+					::set total = total + m.total::
+				</td>
+				<td>
+					::if m.paid==true::
+					<span style="color:#00AA00;">::_("Paid")::</span>
+					::else::
+					<span style="color:#DD0000;">::_("Unpaid")::</span>
+					::end::
+				</td>
+				
+			</tr>
+		::end::	
+		<tr>
+			<td colspan="7" class="text-right">
+				<b>Total :
+				::formatNum(total)::&nbsp;::currency()::</b>
+			
+				::set d = c.contract.getDistribs(false,null).length::
+				( soit ::formatNum(d*total)::&nbsp;::currency():: pour ::d:: livraisons )
+			</td>
+		</tr>
+	
+		</table>
+		::end::
+		
+	</div>	
+	::end::
+
+	<!-- VARYING ORDERS -->
+	::if count(varOrders)>0::
+	<div class="article">
+	
+		::foreach d varOrders::
+			<h4>::_("Order delivered on"):: ::hDate(d.date)::</h4>
+			<table class="table table-bordered table-condensed" >
+				<tr>
+					<th>::_("Qty||short version for quantity")::</th>
+					<th>::_("Product")::</th>
+					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
+					<th>::_("Sub-total")::</th>
+					<th>::_("Fees")::</th>
+					<th>::_("Total")::</th>
+					<th>::_("Paid")::</th>			
+				</tr>
+				::set total = 0::
+				::foreach o d.orders::
+					<tr>
+						<td>							
+							::raw o.smartQt::
+						</td>
+						<td>
+							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
+								<img src="::o.productImage::" style="width:32px;height:32px;" />
+								 ::o.productName::
+							</a>
+						</td>
+						<td>
+							::formatNum(o.productPrice)::&nbsp;::currency()::
+						</td>
+						<td>
+							::formatNum(o.subTotal)::&nbsp;::currency()::
+						</td>
+						<td>							
+							$$nullSafe(::formatNum(o.fees)::)
+						</td>
+						<td>
+							::formatNum(o.total)::&nbsp;::currency()::
+							::set total = total + o.total::
+						</td>
+						<td>
+							::if o.paid==true::
+							<span style="color:#00AA00;">::_("Paid")::</span>
+							::else::
+							<span style="color:#DD0000;">::_("Unpaid")::</span>
+							::end::
+						</td>
+					
+					</tr>
+				::end::	
+				<tr>
+					<td colspan="4">
+						::if !user._amap.hasPayments():: 
+							$$edit(Modifier cette commande,/contract/editOrderByDate/::d.date::)
+						::end::
+						
+					</td>
+					<td>TOTAL</td>
+					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
+				</tr>
+			</table>
+		::end::
+	</div>
+	::end::	
+
+	
+</div>
+<div class="col-md-4">
+	<h3>::_("Profile")::</h3>
+	<div class="article">
+		
+		<p>
+			$$contact(::user::)	
+		</p>
+		
+		
+		<div class="pull-right">
+			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::_("Do you really want to quit this group ? You won't be a member anymore: you won't receive any new message and won't be able to see your previous orders in this group.")::)>
+				<i class="icon icon-delete"></i>
+				::_("Leave this group")::
+			</a>
+		</div>
+		
+		$$edit(::_("Edit")::,/account/edit)
+		
+	</div>
+	
+	::if user.getAmap().hasPayments()::
+	<h3>::_("Payments")::</h3>
+	<div  class="article">
+		<span style="font-size:1.3em;">
+			::_("Balance"):: : 
+			::if userAmap.balance<0:: 
+				::set color = "C00"::
+			::else::
+				::set color = "0C0"::
+			::end::
+			<span style="color:#::color::;">
+				::userAmap.balance:: ::currency()::
+			</span>
+		</span>
+		
+		<span style="margin-left:30px;">
+			<a href="/account/payments" class="btn btn-default btn-small">
+				<i class="fa fa-credit-card" aria-hidden="true"></i>
+				::_("Payments details")::
+			</a>
+		</span>
+	</div>
+	::end::
+	
+	
+	::if user.isAmapManager()::
+	<h3>::_("Tutorials")::</h3>
+	<div class="article">
+		<table class="table">
+			
+			::foreach t tutos::
+				<tr>
+					<td>::t.name::</td>
+					<td>  
+						::if t.completion==null::
+							<a href="/account/?startTuto=::t.key::" class="btn btn-default btn-xs">
+								<i class="icon icon-chevron-right"></i> ::_("Start")::
+							</a>
+						::else::
+							
+							<a href="/account/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
+								<i class="icon icon-delete"></i> ::_("Stop")::
+							</a>								
+						::end::
+					</td>
+				</tr>
+			::end::
+			
+		</table>
+		
+			::if stopTuto:: 
+			<div id="stopTuto" data-toggle="popover" title='::_("Tutorial stopped")::' data-placement="left" data-content="::_("You'll be able to restart it here.")::" ></div>
+			<script>
+				$(function(){
+					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);
+				});
+			</script>
+			::end::		
+	</div>	
+	::end::
+	
+	<h3>::_("Language")::</h3>
+	<div class="article">
+		::_("Display the interface in another language"):: (beta)
+		:
+		<ul>
+
+			::raw langLinks::
+			
+		</ul>
+		<p>
+			::_("Current language is")::
+			<b>
+				::langText::
+			</b>
+		</p>
+	</div>
+	
+</div>
+
+
+::end::

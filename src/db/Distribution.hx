@@ -25,7 +25,7 @@ class Distribution extends Object
 	public var date : SNull<SDateTime>; 
 	public var end : SNull<SDateTime>;
 	
-	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
+	
 	@hideInForms public var validated :SBool;
 	
 	public static var DISTRIBUTION_VALIDATION_LIMIT = 10;

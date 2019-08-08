@@ -20,15 +20,39 @@ class Distribution extends Controller
 		view.category = "distribution";
 	}
 
+	function checkHasDistributionSectionAccess(){
+		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+	}
+
 	@tpl('distribution/default.mtt')
 	function doDefault(){
 
-		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+		checkHasDistributionSectionAccess();
 
-		var n = Date.now();
-		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
-		view.distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,now,in3Month);
+		var now = Date.now();
+		var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
+		var distribs = [];
+		//Multidistribs
+		if( app.user.amap.hasPayments() ){
+
+			//include unvalidated distribs
+			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
+			var intwoMonth = tools.DateTool.deltaDays(now,60);			
+			distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,intwoMonth);
+			for( md in distribs.copy()){
+				if( md.getDate().getTime() < yesterday.getTime() && md.isValidated() ) distribs.remove(md);				
+			}
+			
+
+		}else{
+			//only next distribs			
+			var in3Month = DateTools.delta(yesterday, 1000.0 * 60 * 60 * 24 * 30 * 3);
+			distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,yesterday,in3Month);
+		}
+
+		view.distribs = distribs;
+		view.cycles = db.DistributionCycle.manager.search( $group==app.user.amap && $endDate > now && $startDate < now , false);
+
 		checkToken();
 	}
 
@@ -278,17 +302,6 @@ class Distribution extends Controller
 		var e = new sugoi.form.elements.IntSelect("md",t._("Change distribution"), mds ,d.multiDistrib.id);			
 		form.addElement(e, 1);
 
-		/*var html = new sugoi.form.elements.Html("note",t._("You can customize some parameters for this farmer : distribution hour, order opening and closing dates :"));
-		form.addElement(html, 2);*/
-		
-		//start hour		
-		/*var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Distribution start time"), d.date );
-		form.addElement(x, 3);*/
-		
-		//end hour
-		/*var x = new sugoi.form.elements.HourDropDowns("endHour", t._("Distribution end time"), d.end );
-		form.addElement(x, 4);*/
-		
 		
 		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
@@ -306,36 +319,17 @@ class Distribution extends Controller
 				}
 
 				var md = db.MultiDistrib.manager.get(form.getValueOf("md"));
-
-				if(md.id!=d.multiDistrib.id){
-					/* 
-					FORBID THIS WITH CREDIT CARD PAYMENTS 
-					because it would make the order and payment ops out of sync
-					*/
-					var orders = d.getOrders();
-					if(d.contract.amap.hasPayments() && orders.length>0){
-						throw Error("/distribution",t._("Sorry, you can't move the distribution of this farmer to a different date when payments management is enabled in your group."));
-					}
-
-					//different multidistrib id ! should change the basket					
-					for ( o in orders ){
-						o.lock();
-						//find new basket
-						o.basket = db.Basket.getOrCreate(o.user, md.place, md.getDate());
-						o.update();
-					}
-				}
-
+				
 				//do not launch event, avoid notifs for now
 				d = DistributionService.editAttendance(
 					d,
 					md,
 					/*form.getValueOf("startHour"),
-					form.getValueOf("endHour"),				*/
+					form.getValueOf("endHour"),*/
 					orderStartDate,
 					orderEndDate,
 					false
-				);
+				);							
 				
 
 			} catch(e:Error){
@@ -352,8 +346,6 @@ class Distribution extends Controller
 				}else{
 					throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
 				}
-
-				
 			}
 			
 		} else {
@@ -367,7 +359,7 @@ class Distribution extends Controller
 	@tpl('form.mtt')
 	function doEditCycle(d:db.DistributionCycle) {
 		
-		if (!app.user.isContractManager(d.contract)) throw Error('/', 'Action interdite');
+		/*checkHasDistributionSectionAccess();
 		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
@@ -379,7 +371,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._("Modify a delivery");
+		view.title = t._("Modify a delivery");*/
 	}
 	
 	/**
@@ -457,7 +449,7 @@ class Distribution extends Controller
 	@tpl("form.mtt")
 	public function doInsertMd() {
 		
-		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+		checkHasDistributionSectionAccess();
 		
 		var md = new db.MultiDistrib();
 		md.place = app.user.amap.getMainPlace();
@@ -490,7 +482,7 @@ class Distribution extends Controller
 		for( c in md.place.amap.getActiveContracts()){
 			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
 		}
-		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Contrats"),datas,null,true);
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Catalogs"),datas,null,true);
 		form.addElement(el);
 		
 		if (form.isValid()) {
@@ -501,21 +493,17 @@ class Distribution extends Controller
 				var endHour = form.getValueOf("endHour");
 				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
 				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
+				var contractIds:Array<Int> = form.getValueOf("contracts");
 				
 				md = service.DistributionService.createMd(
 					db.Place.manager.get(form.getValueOf("placeId"),false),
 					distribStartDate,
 					distribEndDate,
 					form.getValueOf("orderStartDate"),
-					form.getValueOf("orderEndDate")
+					form.getValueOf("orderEndDate"),
+					contractIds
 				);
-
-				var contractIds:Array<Int> = form.getValueOf("contracts");
 				
-				for( cid in contractIds){
-					var contract = db.Contract.manager.get(cid,false);
-					service.DistributionService.participate(md,contract);
-				}
 			}
 			catch(e:tink.core.Error) {
 
@@ -540,7 +528,7 @@ class Distribution extends Controller
 	@tpl("form.mtt")
 	public function doEditMd(md:db.MultiDistrib) {
 		
-		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
+		checkHasDistributionSectionAccess();
 		
 		md.place = app.user.amap.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
@@ -645,7 +633,7 @@ class Distribution extends Controller
 	@tpl("form.mtt")
 	public function doInsertCycle(contract:db.Contract) {
 		
-		if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
+		/*if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
 		
 		var dc = new db.DistributionCycle();
 		dc.place = contract.amap.getMainPlace();
@@ -733,6 +721,97 @@ class Distribution extends Controller
 		
 		view.form = form;
 		view.title = t._("Schedule a recurrent delivery");
+		*/
+	}
+
+	/**
+	 * create a multidistribution cycle
+	 */
+	@tpl("form.mtt")
+	public function doInsertMdCycle() {		
+
+		checkHasDistributionSectionAccess();
+		
+		var dc = new db.DistributionCycle();
+		dc.place = app.user.amap.getMainPlace();
+		var form = sugoi.form.Form.fromSpod(dc);
+		
+		
+		form.getElement("startDate").value = DateTool.now();
+		form.getElement("endDate").value   = DateTool.now().deltaDays(30);
+		
+		//start hour
+		form.removeElementByName("startHour");
+		var x = new HourDropDowns("startHour", t._("Distributions start time"), DateTool.now().setHourMinute( 19, 0) , true);
+		form.addElement(x, 5);
+		
+		//end hour
+		form.removeElement(form.getElement("endHour"));
+		var x = new HourDropDowns("endHour", t._("Distributions end time"), DateTool.now().setHourMinute(20, 0), true);
+		form.addElement(x, 6);
+			
+		form.getElement("daysBeforeOrderStart").value = 10;
+		form.getElement("daysBeforeOrderStart").required = true;
+		form.removeElementByName("openingHour");
+		var x = new HourDropDowns("openingHour", t._("Opening time"), DateTool.now().setHourMinute(8, 0) , true);
+		form.addElement(x, 8);
+		
+		form.getElement("daysBeforeOrderEnd").value = 2;
+		form.getElement("daysBeforeOrderEnd").required = true;
+		form.removeElementByName("closingHour");
+		var x = new HourDropDowns("closingHour", t._("Closing time"), DateTool.now().setHourMinute(23, 55) , true);
+		form.addElement(x, 10);
+
+		//vendors to add
+		var datas = [];
+		for( c in app.user.amap.getActiveContracts()){
+			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
+		}
+		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Catalogs"),datas,null,true);
+		form.addElement(el);
+		
+		
+		if (form.isValid()) {
+
+			var createdDistribCycle = null;
+			var daysBeforeOrderStart = null;
+			var daysBeforeOrderEnd = null;
+			var openingHour = null;
+			var closingHour = null;
+
+			try{
+				daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+				daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+				openingHour = form.getValueOf("openingHour");
+				closingHour = form.getValueOf("closingHour");
+
+				createdDistribCycle = service.DistributionService.createCycle(
+					app.user.amap,
+					form.getElement("cycleType").getValue(),
+					form.getValueOf("startDate"),	
+					form.getValueOf("endDate"),	
+					form.getValueOf("startHour"),
+					form.getValueOf("endHour"),											
+					daysBeforeOrderStart,											
+					daysBeforeOrderEnd,											
+					openingHour,	
+					closingHour,																	
+					form.getValueOf("placeId"),
+					form.getValueOf("contracts")
+
+				);
+			} catch(e:tink.core.Error){
+				throw Error('/distribution/' , e.message);
+			}
+
+			if (createdDistribCycle != null) {
+				throw Ok('/distribution/' , t._("The delivery has been saved"));
+			}
+			 
+		}
+		
+		view.form = form;
+		view.title = t._("Schedule a recurrent delivery");
 	}
 	
 	/**
@@ -740,15 +819,14 @@ class Distribution extends Controller
 	 */
 	public function doDeleteCycle(cycle:db.DistributionCycle){
 		
-		if (!app.user.isContractManager(cycle.contract)) throw Error('/', t._("Forbidden action"));
-
-		var contractId = cycle.contract.id;
-		var messages = service.DistributionService.deleteCycleDistribs(cycle,true);
+		checkHasDistributionSectionAccess();
+		
+		var messages = service.DistributionService.deleteDistribCycle(cycle);
 		if (messages.length > 0){			
 			App.current.session.addMessage( messages.join("<br/>"),true);	
 		}
 		
-		throw Ok("/contractAdmin/distributions/" + contractId, t._("Recurrent deliveries deleted"));
+		throw Ok("/distribution/" , t._("Recurrent deliveries deleted"));
 	}
 	
 	
@@ -760,7 +838,7 @@ class Distribution extends Controller
 	@tpl('distribution/validate.mtt')
 	public function doValidate(multiDistrib:db.MultiDistrib){
 		
-		if (!app.user.isAmapManager() && !app.user.canManageAllContracts()) throw t._("Forbidden access");	
+		checkHasDistributionSectionAccess();
 			
 		view.confirmed = multiDistrib.checkConfirmed();
 		view.users = multiDistrib.getUsers(db.Contract.TYPE_VARORDER);

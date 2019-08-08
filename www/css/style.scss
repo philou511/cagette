@@ -55,6 +55,11 @@ body.cpro{
 	}
 }
 
+//used in Js app.toggle()
+.hidden{
+	display: none;
+}
+
 //informations before footer, maintenance ...
 div.footer-info{
 	color:#8a6d3b;
@@ -922,21 +927,27 @@ div.productImg{
 	//default size is medium
 	width:70px;
 	height:70px;
-	border-radius: 8px;	
+	border-radius: 8px;
+	
+	&.extra-small,&.xs{
+		width:32px;
+		height:32px;
+		border-radius: 4px;
+	}
 
-	&.small{
+	&.sm,&.small{
 		width:48px;
 		height:48px;
 		border-radius: 4px;
 	}
 
-	&.medium{
+	&.md,&.medium{
 		width:70px;
 		height:70px;
 		border-radius: 8px;	
 	}
 
-	&.xl{
+	&.large,&.xl{
 		width:100px;
 		height:100px;
 		border-radius: 10px;	

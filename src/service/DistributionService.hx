@@ -127,7 +127,7 @@ class DistributionService
 		d.contract = contract;
 		d.date = date;
 		d.place = db.Place.manager.get(placeId);
-		d.distributionCycle = distributionCycle;
+		//d.distributionCycle = distributionCycle;
 
 		if(contract.type==db.Contract.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
@@ -146,7 +146,7 @@ class DistributionService
 			md = db.MultiDistrib.get(d.date, d.place, true);
 		}
 		if(md==null){
-			md = createMd(d.place, d.date, d.end, d.orderStartDate, d.orderEndDate );
+			md = createMd(d.place, d.date, d.end, d.orderStartDate, d.orderEndDate,[] );
 		}
 		d.multiDistrib = md;
 
@@ -181,7 +181,7 @@ class DistributionService
 		}
 	}
 
-	public static function createMd(place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+	public static function createMd(place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date,contractIds:Array<Int>,?cycle:db.DistributionCycle):db.MultiDistrib{
 
 		var md = new db.MultiDistrib();
 		md.group = place.amap;
@@ -189,6 +189,7 @@ class DistributionService
 		md.distribEndDate 	= distribEndDate;
 		md.orderStartDate 	= orderStartDate;
 		md.orderEndDate 	= orderEndDate;
+		if(cycle!=null) md.distributionCycle = cycle;
 		md.place = place;
 
 		//add default general roles
@@ -199,6 +200,11 @@ class DistributionService
 		md.insert();
 
 		checkMultiDistrib(md);
+
+		for( cid in contractIds){
+			var contract = db.Contract.manager.get(cid,false);
+			service.DistributionService.participate(md,contract);
+		}
 
 		return md;
 	}
@@ -239,12 +245,7 @@ class DistributionService
 		var t = sugoi.i18n.Locale.texts;
 		md.lock();
 		for(d in md.getDistributions()){
-			if(!canDelete(d)) {
-				throw new Error(t._("Deletion not possible: some orders are recorded for this distribution."));
-			}else{
-				d.lock();
-				d.delete();
-			}
+			delete(d,false);
 		}
 
 		md.delete();
@@ -356,9 +357,27 @@ class DistributionService
 			throw new Error(t._("You cannot edit a distribution which has been already validated."));
 		}
 
+		if(md.id!=d.multiDistrib.id){
+			/* 
+			FORBID THIS WITH CREDIT CARD PAYMENTS 
+			because it would make the order and payment ops out of sync
+			*/
+			var orders = d.getOrders();
+			if(d.contract.amap.hasPayments() && orders.length>0){
+				throw new Error(t._("Sorry, you can't move the distribution of this farmer to a different date when payments management is enabled in your group."));
+			}
+
+			//different multidistrib id ! should change the basket					
+			for ( o in orders ){
+				o.lock();
+				//find new basket
+				o.basket = db.Basket.getOrCreate(o.user, md.place, md.getDate());
+				o.update();
+			}
+		}
+
 		d.multiDistrib = md;
-		//d.date = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribStartHour.getHours(), distribStartHour.getMinutes(), 0);
-		//d.end  = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), distribEndHour.getHours(), distribEndHour.getMinutes(), 0);
+		//do not allow to customize distribution date anymore
 		d.date = md.distribStartDate;
 		d.end = md.distribEndDate;
 		
@@ -423,7 +442,6 @@ class DistributionService
 			}
 		}
 
-
 		d.delete();
 
 		//In case this is a distrib for an amap contract with payments enabled, it will update all the operations
@@ -452,7 +470,7 @@ class DistributionService
 		var startDate = new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.startHour.getHours(),dc.startHour.getMinutes(),0);
 		var orderStartDate = null;
 		var orderEndDate = null;
-		if (dc.contract.type == db.Contract.TYPE_VARORDER){
+		//if (dc.contract.type == db.Contract.TYPE_VARORDER){
 			
 			if (dc.daysBeforeOrderEnd == null || dc.daysBeforeOrderStart == null) throw new Error(t._("daysBeforeOrderEnd or daysBeforeOrderStart is null"));
 			
@@ -463,7 +481,7 @@ class DistributionService
 			var a = DateTools.delta(startDate, -1.0 * dc.daysBeforeOrderEnd * 1000 * 60 * 60 * 24);
 			var h : Date = dc.closingHour;
 			orderEndDate = new Date(a.getFullYear(), a.getMonth(), a.getDate(), h.getHours(), h.getMinutes(), 0);			
-		}
+		//}
 		return { date: startDate, orderStartDate: orderStartDate, orderEndDate: orderEndDate };
 	}
 
@@ -471,7 +489,7 @@ class DistributionService
 	 *  Creates all the distributions from the first date
 	 *  @param dc - 
 	 */
-	static function createCycleDistribs(dc:db.DistributionCycle) {
+	static function createCycleDistribs(dc:db.DistributionCycle,contractIds:Array<Int>) {
 
 		//Generic variables 
 		var t = sugoi.i18n.Locale.texts;
@@ -520,9 +538,14 @@ class DistributionService
 			
 			var dates = getDates(dc, datePointer);
 			
-			create(dc.contract,dates.date,
+			createMd(
+				dc.place,
+				dates.date,
 				new Date(datePointer.getFullYear(),datePointer.getMonth(),datePointer.getDate(),dc.endHour.getHours(),dc.endHour.getMinutes(),0),
-				dc.place.id,dates.orderStartDate,dates.orderEndDate,dc
+				dates.orderStartDate,
+				dates.orderEndDate,
+				contractIds,
+				dc
 			);
 
 		}
@@ -532,91 +555,63 @@ class DistributionService
 	 *   Deletes all distributions which are part of this cycle
 	 *  @param cycle - 
 	 */
-	public static function deleteCycleDistribs(cycle:db.DistributionCycle,dispatchEvent:Bool):Array<String>{
+	public static function deleteDistribCycle(cycle:db.DistributionCycle):Array<String>{
 
 		cycle.lock();
-
-		//Generic variables 
-		var t = sugoi.i18n.Locale.texts;
-		var view = App.current.view;
-		
-		var children = db.Distribution.manager.search($distributionCycle == cycle, true);
 		var messages = [];
-		if(children.length != 0) {
-
-			var contract = Lambda.array(children)[0].contract;
-			for ( d in children ){
-			
-				try{
-					delete(d,dispatchEvent);
-				}catch(e:tink.core.Error){
-					messages.push(t._("The delivery of the ::delivDate:: could not be deleted because it has orders.", {delivDate:view.hDate(d.date)}));
-				}
-			}
-
-			//In case this is a distrib cycle for an amap contract with payments enabled, it will update all the operations
-			//names and amounts with the new number of distribs
-			updateAmapContractOperations(contract);
-
-		}
-		cycle.delete();
 		
+		var children = db.MultiDistrib.manager.search($distributionCycle == cycle, true);
+				
+		for ( d in children ){			
+			try{
+				deleteMd(d);
+			}catch(e:tink.core.Error){
+				messages.push(e.message);
+			}
+		}
+
+		cycle.delete();
 		return messages;
 	}
 
 	 /**
-	  *  Creates a new distribution cycle and prevents distribution overlapping and other checks
-	  *  @param contract - 
-	  *  @param cycleType - 
-	  *  @param startDate - 
-	  *  @param endDate - 
-	  *  @param startHour - 
-	  *  @param endHour - 
-	  *  @param daysBeforeOrderStart - 
-	  *  @param daysBeforeOrderEnd - 
-	  *  @param openingHour - 
-	  *  @param closingHour - 
-	  *  @param placeId - 
-	  *  @param dispatchEvent=true - 
-	  *  @return db.DistributionCycle
+	  *  Creates a new distribution cycle
 	  */
-	 public static function createCycle(contract:db.Contract,cycleType:db.DistributionCycle.CycleType,startDate:Date,endDate:Date,
+	 public static function createCycle(group:db.Amap,cycleType:db.DistributionCycle.CycleType,startDate:Date,endDate:Date,
 	 startHour:Date,endHour:Date,daysBeforeOrderStart:Null<Int>,daysBeforeOrderEnd:Null<Int>,openingHour:Null<Date>,closingHour:Null<Date>,
-	 placeId:Int,?dispatchEvent=true):db.DistributionCycle {
+	 placeId:Int,contractIds:Array<Int>):db.DistributionCycle {
 
 		 //Generic variables 
 		var t = sugoi.i18n.Locale.texts;
 		var view = App.current.view;
 		
 		var dc = new db.DistributionCycle();
-		dc.contract = contract;
+		dc.group = group;
 		dc.cycleType = cycleType;
 		dc.startDate = startDate;
 		dc.endDate = endDate;
 		dc.startHour = startHour;
 		dc.endHour = endHour;
 		dc.place = db.Place.manager.get(placeId);
-
-		if (contract.type == db.Contract.TYPE_VARORDER) {
-			dc.daysBeforeOrderStart = daysBeforeOrderStart;
-			dc.daysBeforeOrderEnd = daysBeforeOrderEnd;
-			dc.openingHour = openingHour;
-			dc.closingHour = closingHour;			
-		}
+		dc.daysBeforeOrderStart = daysBeforeOrderStart;
+		dc.daysBeforeOrderEnd = daysBeforeOrderEnd;
+		dc.openingHour = openingHour;
+		dc.closingHour = closingHour;			
+		
 				
-		if (dc.endDate.getTime() > contract.endDate.getTime()) {
+		/*if (dc.endDate.getTime() > contract.endDate.getTime()) {
 			throw new Error(t._("The date of the delivery must be prior to the end of the contract (::contractEndDate::)", {contractEndDate:view.hDate(contract.endDate)}));
 		}
 		if (dc.startDate.getTime() < contract.startDate.getTime()) {
 			throw new Error(t._("The date of the delivery must be after the begining of the contract (::contractBeginDate::)", {contractBeginDate:view.hDate(contract.startDate)}));
-		}
+		}*/
 
-		if(dispatchEvent){
+		/*if(dispatchEvent){
 			App.current.event(NewDistribCycle(dc));
-		}
+		}*/
 		
 		dc.insert();
-		createCycleDistribs(dc);
+		createCycleDistribs(dc,contractIds);
 
 		return dc;
 

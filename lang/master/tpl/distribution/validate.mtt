@@ -37,10 +37,10 @@
 			</div>	
 		
 		
-		<p class="text-center">
+		<!--<p class="text-center">
 			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
 				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>	
-		</p>
+		</p>-->
 		
 		
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
@@ -86,7 +86,15 @@
 			
 
 		</table>
+
+		<a href="/distribution/" class="btn btn-default btn-sm">
+			<i class="icon icon-chevron-left"></i> ::_("Back")::
+		</a>
+
 	</div>
+
+
+	
 	
 </div>
 

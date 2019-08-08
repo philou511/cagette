@@ -24,7 +24,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		if (state.order.productUnit == null) state.order.productUnit = Piece;
 		if (state.order.productQt == null) state.order.productQt = 1;
 		
-		state.inputValue = if ( isSmartQtInput(state.order) ){
+		state.inputValue = if( isSmartQtInput(state.order) ){
 			Std.string(round(state.order.quantity * state.order.productQt));
 		}else{
 			Std.string(state.order.quantity);

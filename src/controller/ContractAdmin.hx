@@ -60,7 +60,10 @@ class ContractAdmin extends Controller
 		//Multidistribs to validate
 		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
+			var multidistribs = [];
+			for( md in db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now)){
+				if( !md.isValidated() ) multidistribs.push(md);				
+			}
 			view.multidistribs = multidistribs; 
 
 		}else{
@@ -697,7 +700,7 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		view.contract = contract;
 
-		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);		
+				
 	}
 
 	function doParticipate(md:db.MultiDistrib,contract:db.Contract){

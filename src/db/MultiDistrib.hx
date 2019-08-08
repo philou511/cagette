@@ -18,6 +18,7 @@ class MultiDistrib extends Object
 	//public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
+	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	
 	@formPopulate("placePopulate")
 	@:relation(placeId)
@@ -42,6 +43,7 @@ class MultiDistrib extends Object
 	}
 
 	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date ) : Array<MultiDistrib> {
+
 		var multidistribs = new Array<db.MultiDistrib>();
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
@@ -358,6 +360,10 @@ class MultiDistrib extends Object
 				return "distributed";
 			}
 		}
+	}
+
+	public function getStatus(){
+		return getState();
 	}
 	
 	
