@@ -37,10 +37,15 @@
 			</div>	
 		
 		
-		<!--<p class="text-center">
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
-				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>	
-		</p>-->
+		<p class="text-center">
+				<!--<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
+				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>-->	
+				
+
+				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-danger" $$confirm(Confirmez-vous que les commandes et les paiements de cette distribution sont bien à jour ? Il ne sera plus possible de modifier les commandes après avoir validé cette distribution)>
+					<i class="icon icon-check"></i> Valider toute la distribution
+				</a>
+		</p>
 		
 		
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
@@ -87,9 +92,11 @@
 
 		</table>
 
-		<a href="/distribution/" class="btn btn-default btn-sm">
-			<i class="icon icon-chevron-left"></i> ::_("Back")::
-		</a>
+		<p class="text-left">
+			<a href="/distribution/" class="btn btn-default">
+				<i class="icon icon-chevron-left"></i> ::_("Back")::
+			</a>
+		</p>
 
 	</div>
 

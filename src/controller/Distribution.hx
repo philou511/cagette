@@ -848,17 +848,22 @@ class Distribution extends Controller
 
 
 	/**
-	 * Admin can autovalidate a multidistrib
+	 * validate a multidistrib
 	 */
-	@admin
-	public function doAutovalidate(date:Date,place:db.Place){
+	public function doAutovalidate(md:db.MultiDistrib){
 
-		var md = db.MultiDistrib.get(date,place);
-		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
+		checkHasDistributionSectionAccess();
+
+		for ( d in md.getDistributions()){
 			if(d.validated) continue;
-			service.PaymentService.validateDistribution(d);
+			try{
+				service.PaymentService.validateDistribution(d);
+			}catch(e:tink.core.Error){
+				throw Error("/distribution/validate/"+md.id, e.message);
+			}
+			
 		}	
-		throw Ok("/contractAdmin",t._("This distribution have been validated"));
+		throw Ok( "/distribution/validate/"+md.id , t._("This distribution have been validated") );
 	}
 
 	@admin

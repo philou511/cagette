@@ -175,10 +175,6 @@ class Vendor extends Object
 		return json.professions;
 	}
 
-	public function getLink():sugoi.db.Permalink{		
-		return sugoi.db.Permalink.getByEntity(this.id,"vendor");
-	}
-
 	#if plugins
 	public function getCpro():pro.db.CagettePro{
 		return pro.db.CagettePro.getFromVendor(this);
@@ -203,5 +199,18 @@ class Vendor extends Object
 	}
 
 
+	public function getLink():String{		
+		var permalink =  sugoi.db.Permalink.getByEntity(this.id,"vendor");
+		return permalink==null ? "/p/pro/public/vendor/"+id : "/"+permalink.link;		
+	}
+
+	public function getAddress(){
+		var str = new StringBuf();
+		if(address1!=null) str.add(address1);
+		if(address2!=null) str.add(", "+address2);
+		if(zipCode!=null) str.add(", "+zipCode);
+		if(city!=null) str.add(" "+city);
+		return str.toString();
+	}
 	
 }
