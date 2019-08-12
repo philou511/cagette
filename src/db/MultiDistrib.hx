@@ -549,5 +549,15 @@ class MultiDistrib extends Object
 		return Date.now().getTime() >= joinDate.getTime();		
 	}
 
+	public function getDistributionFromProduct(product:db.Product):db.Distribution{
+		for( d in getDistributions()){
+			for( p in d.contract.getProducts(false)){
+				if(p.id==product.id) return d;
+
+			}
+		}
+
+		return null;
+	}
 
 }

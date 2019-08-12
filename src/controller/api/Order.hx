@@ -9,43 +9,29 @@ import service.OrderService;
 class Order extends Controller
 {
 	/**
-	 * get orders of a user from a contractId (constant contract) or a distributionId (varying contract)
+		Get orders of a user for a multidistrib.
+		Possible to filter for a distribution only
 	 */
-	public function doGet(userId:Int){
+	public function doGet(user:db.User,multiDistrib:db.MultiDistrib,?args:{contract:db.Contract}){
 
 		checkIsLogged();
 		
-		//params
-		var p = app.params;
-		var distributionId = Std.parseInt(p.get("distributionId"));
-		var contractId = Std.parseInt(p.get("contractId"));
-		if (distributionId == null && contractId == null) throw "You should provide a contractId or a distributionId";
-		var user = db.User.manager.get(userId, false);
-		if (user == null) throw 'user #$userId doesn\'t exists';
-		var c : db.Contract = null;
-		var d : db.Distribution = null;
-		if (distributionId == null) {
-			c = db.Contract.manager.get(contractId, false);
-		}else{
-			d = db.Distribution.manager.get(distributionId, false);
-			c = d.contract;
-		}
+		var contract = (args!=null && args.contract!=null) ? args.contract : null;
 		
 		//rights	
-		if (!app.user.canManageContract(c)) throw new Error(t._("You do not have the authorization to manage this contract"));
-		if (d != null && d.validated) throw new Error(t._("This delivery has been already validated"));
-		if (c.type == db.Contract.TYPE_VARORDER && d == null ) throw "this contract is a 'varying order contract', please provide a distributionId";
+		if (!app.user.canManageAllContracts()) throw new Error(t._("You do not have the authorization to manage this contract"));
+		if (multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
 		
 		//get datas
-		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
-		var orders;		
-		if (c.type == db.Contract.TYPE_VARORDER) {
-			orders = db.UserContract.manager.search($user == user && $distributionId==d.id && ($productId in pids), true);	
-		}else {
-			orders = db.UserContract.manager.search($user == user && ($productId in pids), true);
+		var orders =[];
+
+		if(contract==null){
+			orders = multiDistrib.getUserOrders(user);
+		}else{
+			orders = Lambda.array(multiDistrib.getDistributionForContract(contract).getUserOrders(user));
 		}
-		var orders = OrderService.prepare(orders);
-		
+
+		var orders = OrderService.prepare(orders);		
 		Sys.print(tink.Json.stringify({success:true,orders:orders}));
 	}
 	
@@ -53,58 +39,41 @@ class Order extends Controller
 	 * Update orders of a user ( from react OrderBox component )
 	 * @param	userId
 	 */
-	public function doUpdate(userId:Int){
+	public function doUpdate(user:db.User,multiDistrib:db.MultiDistrib){
 
 		checkIsLogged();
 		
 		//GET params
 		var p = app.params;
-		var distributionId = Std.parseInt(p.get("distributionId"));
-		var contractId = Std.parseInt(p.get("contractId"));
+		
 
 		//POST payload
 		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
-		data = haxe.Json.parse( StringTools.urlDecode(sugoi.Web.getPostData()) ).orders;
+		var raw = StringTools.urlDecode(sugoi.Web.getPostData());
 		
-		if (distributionId == null && contractId == null) throw "You should provide a contractId or a distributionId";
-		var user = db.User.manager.get(userId, false);
-		if (user == null) throw 'user #$userId doesn\'t exists';
-		
-		var c : db.Contract = null;
-		var d : db.Distribution = null;
-		if (distributionId == null) {
-			c = db.Contract.manager.get(contractId, false);
+		if(raw==null){
+			throw new Error("Order datas are null");
 		}else{
-			d = db.Distribution.manager.get(distributionId, false);
-			c = d.contract;
+			data = haxe.Json.parse(raw).orders;
 		}
-		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
 		
-		//rights & checks
+		//rights
 		//fbarbut 2018-11-13 : too many problems when people try to edit the order of someone who left the group...
 		//if (!user.isMemberOf(c.amap)) throw new Error(t._("::user:: is not member of this group", {user:user.name}));
-		if (!app.user.canManageContract(c)) throw new Error(t._("You do not have the authorization to manage this contract"));
-		if (d != null && d.validated) throw new Error(t._("This delivery has been already validated"));
-		if (c.type == db.Contract.TYPE_VARORDER && d == null ) throw "this contract is a 'varying order contract', please provide a distributionId";
+		if (!app.user.canManageAllContracts()) throw new Error(t._("You do not have the authorization to manage this contract"));
+		if (multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
 		
-		/*
-		 * record orders
-		 **/ 
-		
+		//record orders
+	
 		//find existing orders
-		var exOrders = null;
-		if (c.type == db.Contract.TYPE_VARORDER) {
-			exOrders = db.UserContract.manager.search($user == user && $distributionId==d.id && ($productId in pids), true);	
-		}else {
-			exOrders = db.UserContract.manager.search($user == user && ($productId in pids), true);
-		}
-		
+		var exOrders = multiDistrib.getUserOrders(user);
+				
 		var orders = [];
 		for (o in data) {
 			
 			//get product
 			var product = db.Product.manager.get(o.productId, false);
-			if (product.contract.id != c.id) throw "product " + o.productId + " is not in contract " + c.id;
+			//if (product.contract.id != c.id) throw "product " + o.productId + " is not in contract " + c.id;
 			
 			//find existing order				
 			var uo = Lambda.find(exOrders, function(uo) return uo.id == o.id);
@@ -128,6 +97,9 @@ class Order extends Controller
 				if (o != null) orders.push(o);
 			}else {
 				//new record
+				var d = multiDistrib.getDistributionFromProduct(product);
+				if(d.contract.type==db.Contract.TYPE_CONSTORDERS) d = null; //no need if csa contract
+
 				var o =  OrderService.make(user, o.qt , product, d == null ? null : d.id, o.paid , user2, invert);
 				if (o != null) orders.push(o);
 			}
@@ -138,5 +110,8 @@ class Order extends Controller
 		
 		Sys.print(Json.stringify({success:true, orders:data}));
 	}
+
+
+	
 	
 }
