@@ -514,20 +514,11 @@ class User extends Object {
 		
 	}
 	
-	public function sendInvitation(group:db.Amap) {
+	public function sendInvitation(group:db.Amap,?force=false) {
 		
 		var t = sugoi.i18n.Locale.texts;
 		
-		if (isFullyRegistred()) throw t._("This user cannot receive an invitation");
-		
-		/*var group : db.Amap = null;
-		
-		if (App.current.user == null) {			
-			group = this.getAmaps().first();	
-		}else {
-			//prend l'amap du user connecté qui a lancé l'invite.
-			group = App.current.user.amap;	
-		}*/
+		if (isFullyRegistred() && !force) throw t._("This user cannot receive an invitation");
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
