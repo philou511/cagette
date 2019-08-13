@@ -18,7 +18,7 @@ class MultiDistrib extends Object
 	//public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
-	@:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
+	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	
 	@formPopulate("placePopulate")
 	@:relation(placeId)

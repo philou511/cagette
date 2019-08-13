@@ -396,8 +396,8 @@ class Operation extends sys.db.Object
 	}
 	
 	/**
-	 * Create/update the needed order operations and returns the related operations
-	 * @param	orders
+		Create/update the needed order operations and returns the related operations.
+	 	Orders are supposed to be from the same user.
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		

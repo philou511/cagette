@@ -873,7 +873,7 @@ class Distribution extends Controller
 			if(!d.validated) continue;
 			service.PaymentService.unvalidateDistribution(d);
 		}	
-		throw Ok("/contractAdmin",t._("This distribution have been Unvalidated"));
+		throw Ok( "/distribution/validate/"+md.id ,t._("This distribution have been Unvalidated"));
 	}
 
 	/**
@@ -1305,5 +1305,96 @@ class Distribution extends Controller
 		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
 		view.from = from.toString().substr(0,10);
 		view.to = to.toString().substr(0,10);		
+	}
+
+	/**
+		Remove a product from orders.
+	**/
+	@tpl('form.mtt')
+	function doMissingProduct(distrib:db.MultiDistrib){
+
+		var form = new sugoi.form.Form("missingProduct");
+
+		var datas = [];
+		for( d in distrib.getDistributions(db.Contract.TYPE_VARORDER)){
+			datas.push({label:d.contract.name.toUpperCase(),value:null});
+			for( p in d.contract.getProducts(false)){
+				datas.push({label:"---- "+p.getName()+" : "+p.getPrice()+view.currency(),value:p.id});
+			}
+		}
+
+		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Undelivered product"),datas,null,true) );
+
+		if(form.isValid()){
+			var pid = form.getValueOf("product");
+			var product = db.Product.manager.get(pid,false);
+			if(pid==null || pid==0 || product==null){
+				throw Error(sugoi.Web.getURI(), t._("Please select a product") );
+			} 
+			var count = 0;
+			for( order in distrib.getOrders(db.Contract.TYPE_VARORDER)){
+				if(product.id==order.product.id){
+					//set qt to 0
+					service.OrderService.edit(order,0);
+					db.Operation.onOrderConfirm([order]);//updates payments
+					count++;
+				}
+			}
+			throw Ok("/distribution/validate/"+distrib.id , t._("The undelivered product has been removed from ::n:: orders.",{n:count}));
+
+		}
+
+		view.form = form;
+		view.title = t._("Remove an undelivered product from orders");
+	}
+
+	/**
+		Change a price in orders.
+	**/
+	@tpl('form.mtt')
+	function doChangePrice(distrib:db.MultiDistrib){
+
+		var form = new sugoi.form.Form("changePrice");
+
+		var datas = [];
+		for( d in distrib.getDistributions(db.Contract.TYPE_VARORDER)){
+			datas.push({label:d.contract.name.toUpperCase(),value:null});
+			for( p in d.contract.getProducts(false)){
+				datas.push({label:"---- "+p.getName()+" : "+p.getPrice()+view.currency(),value:p.id});
+			}
+		}
+
+		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Undelivered product"),datas,null,true) );
+		form.addElement( new sugoi.form.elements.FloatInput("price","Nouveau prix", 0, true));
+
+		if(form.isValid()){
+			var pid = form.getValueOf("product");
+			var product = db.Product.manager.get(pid,false);
+			if(pid==null || pid==0 || product==null){
+				throw Error(sugoi.Web.getURI(), t._("Please select a product") );
+			}
+			var price : Float = form.getValueOf("price");
+
+			var count = 0;
+			for( order in distrib.getOrders(db.Contract.TYPE_VARORDER)){
+				if(product.id==order.product.id){
+					//change price
+					order.lock();
+					order.productPrice = price;
+					order.update();
+
+					db.Operation.onOrderConfirm([order]);//updates payments
+					count++;
+				}
+			}
+			var productName = product.getName();
+			var priceStr = price+view.currency();
+			throw Ok("/distribution/validate/"+distrib.id , t._("The price of ::product:: has been modified to ::price:: in orders.",{product:productName,price:priceStr}));
+
+		}
+
+		view.form = form;
+		view.title = t._("Remove an undelivered product from orders");
+
 	}
 }
