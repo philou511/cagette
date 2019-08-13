@@ -39,83 +39,14 @@ class MultiDistrib extends Object
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 
 		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,lock);
-
-		/*var m = new MultiDistrib();
-		
-		var start = tools.DateTool.setHourMinute(date, 0, 0);
-		var end = tools.DateTool.setHourMinute(date, 23, 59);
-		
-		var contracts = place.amap.getContracts().array();
-
-		//filter by type
-		if(contractType==db.Contract.TYPE_VARORDER){
-			for(c in contracts.copy() ){
-				if(c.type!=db.Contract.TYPE_VARORDER) contracts.remove(c);
-			}
-		}else if(contractType==db.Contract.TYPE_CONSTORDERS){
-			for(c in contracts.copy() ){
-				if(c.type!=db.Contract.TYPE_CONSTORDERS) contracts.remove(c);
-			}
-		}
-		var cids = contracts.getIds();
-		m.distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) && $place==place, { orderBy:date }, false).array();		
-		m.type = contractType;
-		return m;*/
 	}
 
-	/**
-		Get multidistribs from a time range + place + type
-	**/
-	/*public static function getFromTimeRange(group:db.Amap,from:Date,to:Date,?contractType:Int):Array<MultiDistrib>{
-		var multidistribs = [];
-		var start = tools.DateTool.setHourMinute(from, 0, 0);
-		var end = tools.DateTool.setHourMinute(to, 23, 59);
-		var cids = group.getContracts().getIds();
-		var distributions = db.Distribution.manager.search(($contractId in cids) && ($date >= start) && ($date <= end) , { orderBy:date }, false).array();
-
-		//sort by day-place-type
-		var multidistribs = new Map<String,MultiDistrib>();
-		for ( d in distributions){
-
-			//filter by contractType
-			if(contractType!=null){
-				if(d.contract.type!=contractType) continue;
-			}
-
-			var key = d.getKey() + "-" + d.contract.type;
-			
-			if(multidistribs[key]==null){
-				var m = new MultiDistrib();
-				m.distributions.push(d);
-				m.type = d.contract.type;
-				multidistribs[key] = m;
-			}else{
-				multidistribs[key].distributions.push(d);
-			}
-		}
-		var multidistribs = Lambda.array(multidistribs);
-
-		//trigger event
-		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
-		
-		//sort by date desc
-		multidistribs.sort(function(x,y){
-			return Math.round( x.getDate().getTime()/1000 ) - Math.round(y.getDate().getTime()/1000 );
-		});
-
-		return multidistribs;
-	}*/
-
-	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date /*,?contractType:Int*/ ) : Array<MultiDistrib> {
+	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date ) : Array<MultiDistrib> {
 		var multidistribs = new Array<db.MultiDistrib>();
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
 		
-		//if(contractType==null){
-			multidistribs = Lambda.array(db.MultiDistrib.manager.search( $group == group && $distribStartDate >= start && $distribStartDate <= end, false ));
-		/*}else{
-			multidistribs = Lambda.array(db.MultiDistrib.manager.search($distribStartDate>=start && $distribStartDate<=end && ($placeId in placeIds) && $type==contractType ,false));
-		}*/
+		multidistribs = Lambda.array(db.MultiDistrib.manager.search( $group == group && $distribStartDate >= start && $distribStartDate <= end, false ));
 		
 		//sort by date desc
 		multidistribs.sort(function(x,y){
@@ -123,7 +54,7 @@ class MultiDistrib extends Object
 		});
 
 		//trigger event
-		for(md in multidistribs) App.current.event(MultiDistribEvent(md,null));
+		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
 
 		return multidistribs;
 	}
@@ -311,12 +242,36 @@ class MultiDistrib extends Object
 		}
 	}
 
-	public function getOrdersStartDate(){
-		return orderStartDate;
+	public function getOrdersStartDate(?includingExceptions=false){
+		if(includingExceptions){
+			//find earliest order start date 
+			var date = orderStartDate;
+			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
+				if(d.orderStartDate.getTime() < date.getTime()) date = d.orderStartDate;
+			}
+			return date;
+		}else{
+			return orderStartDate;
+		}
+		
 	}
 
-	public function getOrdersEndDate(){
-		return orderEndDate;
+	public function getOrdersEndDate(?includingExceptions=false){
+		if(includingExceptions){
+			//find lates order end date 
+			var date = orderEndDate;
+			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
+				if(d.orderEndDate.getTime() > date.getTime()) date = d.orderEndDate;
+			}
+			return date;
+		}else{
+			return orderEndDate;
+		}
+		
+	}
+
+	public function getUserTmpBasket(user:db.User){
+		
 	}
 
 	/**
@@ -384,11 +339,11 @@ class MultiDistrib extends Object
 		if( getDate().getTime() > now ){
 			//we're before distrib
 
-			if( getOrdersStartDate().getTime() > now ){
+			if( getOrdersStartDate(true).getTime() > now ){
 				return "notYetOpen";
 			}
 			
-			if( getOrdersEndDate().getTime() > now ){
+			if( getOrdersEndDate(true).getTime() > now ){
 				return "open";
 			}else{
 				return "closed";
@@ -594,5 +549,15 @@ class MultiDistrib extends Object
 		return Date.now().getTime() >= joinDate.getTime();		
 	}
 
+	public function getDistributionFromProduct(product:db.Product):db.Distribution{
+		for( d in getDistributions()){
+			for( p in d.contract.getProducts(false)){
+				if(p.id==product.id) return d;
+
+			}
+		}
+
+		return null;
+	}
 
 }

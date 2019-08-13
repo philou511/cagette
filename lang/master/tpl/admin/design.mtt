@@ -8,15 +8,15 @@
 		</div>
 		
 		<ul class="nav nav-tabs nav-stacked" >
-			<li><a href="/db">Base de données</a> </li>
-			<li><a href="/admin/taxo">Dictionnaire de produits</a> </li>			
-			<li><a href="/admin/errors">Errors</a> </li>			
-			<li><a href="/admin/smtp">Conf. Email</a> </li>			
-			<li><a href="/admin/emails">Emails</a> </li>			
+			<li><a href="/db"><i class="icon icon-cog"></i>  Base de données</a> </li>
+			<li><a href="/admin/taxo"><i class="icon icon-tag"></i>  Catégorisation</a> </li>			
+			<li><a href="/admin/errors"><i class="icon icon-alert"></i>  Errors</a> </li>			
+			<li><a href="/admin/smtp"><i class="icon icon-cog"></i>  Conf. Email</a> </li>			
+			<li><a href="/admin/emails"><i class="icon icon-mail"></i>  Emails</a> </li>			
 			<!--<li><a href="/admin/plugins">Plugins</a> </li>-->
 			::if nav!=null::
 					::foreach i nav::
-					<li><a href="::i.link::">::i.name::</a> </li>
+					<li><a href="::i.link::"> <i class="icon icon-::i.icon::"></i> ::i.name:: </a> </li>
 					::end::		
 			::end::
 		</ul>
