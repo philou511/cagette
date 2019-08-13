@@ -177,10 +177,35 @@ class App {
 		var onValidate = function() js.Browser.location.href = callbackUrl;
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-		ReactDOM.render(jsx('<$OrderBox userId=${userId} distributionId=${distributionId} 
-			contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
-			onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
+		// ReactDOM.render(jsx('<$OrderBox userId=${userId} distributionId=${distributionId} 
+		// 	contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
+		// 	onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
 
+		var store = createOrderBoxReduxStore();
+		ReactDOM.render(jsx('
+			<ReduxProvider store=${store}>
+				<MuiThemeProvider theme=${CagetteTheme.get()}>
+					<>
+						<CssBaseline />
+						<OrderBox userId=${userId} distributionId=${distributionId} 
+						contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
+						onValidate=$onValidate currency=$currency hasPayments=$hasPayments orders2=${null} />
+					</>
+				</MuiThemeProvider>
+			</ReduxProvider>
+		'), node, postReact);
+
+	}
+
+	private function createOrderBoxReduxStore() {
+		// Store creation
+		var rootReducer = Redux.combineReducers({
+			orderBox: mapReducer(react.order.redux.actions.OrderBoxAction, new react.order.redux.reducers.OrderBoxReducer()),
+		});
+		// create middleware normally, excepted you must use
+		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
+		var middleWare = Redux.applyMiddleware(mapMiddleware(Thunk, new ThunkMiddleware()));
+		return createStore( rootReducer, null, middleWare );
 	}
 
 	/**

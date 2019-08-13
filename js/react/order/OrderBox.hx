@@ -8,12 +8,14 @@ import react.router.HashRouter;
 import react.router.Route;
 import react.router.Switch;
 import react.router.Link;
+import react.order.redux.reducers.OrderBoxReducer;
 
 typedef OrderBoxState = {
-	orders:Array<UserOrder>,
+	orders : Array<UserOrder>,	
 	error:String,
 	users:Null<Array<UserInfo>>,
 };
+
 typedef OrderBoxProps = {
 	userId:Int,
 	distributionId:Int,
@@ -24,13 +26,17 @@ typedef OrderBoxProps = {
 	userName:String,
 	onValidate:Void->Void,
 	currency:String,
-	hasPayments:Bool
+	hasPayments:Bool,
+	orders2 : Array<UserOrder>,
+	// error:String,
+	// users:Null<Array<UserInfo>>
 };
 
 /**
  * A box to edit/add orders of a member
  * @author fbarbut
  */
+// @:connect
 class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBoxState>
 {
 
@@ -100,7 +106,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			var k :String = if(o.id!=null) {
 				Std.string(o.id);
 			} else {
-				o.productId+"-"+Std.random(99999);
+				o.product.id + "-" + Std.random(99999);
 			};
 			return jsx('<$Order key=${k} order=${o} onUpdate=$onUpdate parentBox=${this} />')	;
 		}  );
@@ -124,7 +130,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 						<div className="col-md-1">Ref.</div>
 						<div className="col-md-1">Prix</div>
 						<div className="col-md-2">Qté</div>
-						<div className="col-md-3">Alterné avec</div>
+						${ this.props.contractType == 0 ? jsx('<div className="col-md-3">Alterné avec</div>') : null }
 					</div>
 					${renderOrders}	
 					<div>
@@ -140,7 +146,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 
 
 		var onProductSelected = function(uo:UserOrder) {
-			var existingOrder = Lambda.find(state.orders,function(x) return x.productId==uo.productId );
+			var existingOrder = Lambda.find(state.orders,function(x) return x.product.id == uo.product.id );
 			if(existingOrder != null) {
 				existingOrder.quantity += uo.quantity;
 				this.setState(this.state);
@@ -153,7 +159,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 
 		//insert product box
 		var renderInsertBox = function(props:react.router.RouteRenderProps):react.ReactFragment {
-			return jsx('<$InsertOrder contractId=${this.props.contractId} userId=${this.props.userId} distributionId=${this.props.distributionId} onInsert=$onProductSelected/>');
+			return jsx('<$InsertOrder selectedProduct=${null} contractId=${this.props.contractId} userId=${this.props.userId} distributionId=${this.props.distributionId} />');
 		} 
 
 		return jsx('
@@ -187,7 +193,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	function onClick(?_){
 		
 		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
-		for ( o in state.orders) data.push({id:o.id, productId : o.productId, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
+		for ( o in state.orders) data.push({id:o.id, productId : o.product.id, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
 		
 		var req = { orders:data };
 		
@@ -216,6 +222,40 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 		if(e.key=="Enter") onClick();
 	}
 
-	
+
+	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState, ownProps: OrderBoxProps ): react.Partial<OrderBoxProps> {
+
+		js.Browser.console.log( "Coucou !" );
+
+		// var storeProduct = 0;
+        // for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
+		// return {
+		// 	quantity: storeProduct,
+		// }
+
+		var existingOrder = Lambda.find( ownProps.orders2, function(order) return order.product.id == state.selectedProduct.id );
+		if( existingOrder != null ) {
+		
+			existingOrder.quantity += 1;			
+		}
+		else {
+
+			var order : UserOrder = cast {
+						id: null,
+						product: state.selectedProduct,
+						quantity: 1,
+						productId: state.selectedProduct.id,
+						productPrice: state.selectedProduct.price,
+						paid: false,
+						invert: false,
+						user2: null
+						};
+			
+			ownProps.orders2.push(order);
+		}
+
+		js.Browser.console.log( ownProps.orders2 );
+		return { orders2 : ownProps.orders2 };
+	}
 	
 }

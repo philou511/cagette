@@ -99,9 +99,9 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 				$input			
 				${makeInfos()}
 			</div>
-						
-			<div className="col-md-3">$alternated</div>
-	
+
+			${ props.parentBox.props.contractType == 0 ? jsx('<div className="col-md-3">$alternated</div>') : null }
+			
 		</div>');
 	}
 	

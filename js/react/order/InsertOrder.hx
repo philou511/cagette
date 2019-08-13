@@ -7,19 +7,40 @@ import utils.HttpUtil;
 import react.product.ProductSelect;
 import react.router.Redirect;
 import react.router.Link;
+import react.order.redux.reducers.OrderBoxReducer.LeanProduct;
+
+
+typedef InsertOrdersProps = {
+	
+	var selectedProduct : LeanProduct;
+	var contractId : Int;
+	var userId : Int;
+	var distributionId : Int;
+	
+}
+
+
+typedef InsertOrdersState = {
+
+	var products: Array<ProductInfo>;
+	var error: String;	
+}
+
+	
 
 
 /**
  * A box to add an order to a member
  * @author fbarbut
  */
-class InsertOrder extends react.ReactComponentOfPropsAndState<{contractId:Int,userId:Int,distributionId:Int,onInsert:UserOrder->Void},{products:Array<ProductInfo>,error:String,selected:Int}>
+@:connect
+class InsertOrder extends react.ReactComponentOfPropsAndState<InsertOrdersProps, InsertOrdersState>
 {
 
 	public function new(props) 
 	{
 		super(props);	
-		state = {products:[],error:null,selected:null};
+		state = { products:[], error: null };
 	}
 	
 	override function componentDidMount()
@@ -34,7 +55,7 @@ class InsertOrder extends react.ReactComponentOfPropsAndState<{contractId:Int,us
 			}*/
 
 			var data : {products:Array<ProductInfo>} = tink.Json.parse(data);
-			setState({products:data.products, error:null,selected:null});
+			setState({products: data.products, error: null});
 
 		}).catchError(function(data) {
 			var data = Std.string(data);
@@ -52,33 +73,42 @@ class InsertOrder extends react.ReactComponentOfPropsAndState<{contractId:Int,us
 	
 	override public function render(){
 		//redirect to orderBox if a product is selected
-		var redirect =  if(state.selected!=null) jsx('<$Redirect to="/" />') else null;
-
-		return jsx('
+		//Julie
+		// var redirect =  if(props.selectedProduct != null) jsx('<$Redirect to="/" />') else null;
+		trace("on y passe !");
+		return jsx('			
 			<div>
-				$redirect
+				${ props.selectedProduct != null ? jsx('<$Redirect to="/" />') : null }
 				<h3>Choisissez le produit à ajouter</h3>
 				<$Link className="btn btn-default" to="/"><i className="icon icon-chevron-left"></i> Retour</$Link>
 				<$Error error=${state.error} />
 				<hr />
-				<$ProductSelect onSelect=$onSelectProduct products=${state.products} />
+				<$ProductSelect products=${state.products} />			
 			</div>			
 		');
 	}
 
-	function onSelectProduct(p:ProductInfo){
-		var uo : UserOrder = cast {
-			id:null,
-			product:p,
-			quantity:1,
-			productId:p.id,
-			productPrice:p.price,
-			paid:false,
-			invert:false,
-			user2:null
-		};
-		props.onInsert(uo);
-		setState(cast {selected:p.id});
+			// order.products.map(function(p:ProductWithQuantity) {
+			// 	return {
+			// 		productId: p.product.id,
+			// 		quantity: p.quantity*1.0
+			// 	};
+			// })
+
+	//Julie
+	// function onSelectProduct(p:ProductInfo){
+	// 	var uo : UserOrder = cast {
+	// 		id:null,
+	// 		product:p,
+	// 		quantity:1,
+	// 		productId:p.id,
+	// 		productPrice:p.price,
+	// 		paid:false,
+	// 		invert:false,
+	// 		user2:null
+	// 	};
+	// 	props.onInsert(uo);
+	// 	setState(cast {selected:p.id});
 		
 		//do not insert order now, just warn the OrderBox		
 /*
@@ -105,8 +135,19 @@ class InsertOrder extends react.ReactComponentOfPropsAndState<{contractId:Int,us
 			setState(cast {error:d.error.message});
 		});
 */		
-	}
+	// }
 	
-
 	
+	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<InsertOrdersProps> {
+	
+		trace("mapStateToProps est exécuté !");
+		trace(state);
+		for (key in Reflect.fields(state)) {
+			trace(key);
+			trace(Reflect.field(state, key));
+			trace(Reflect.field(state, key).selectedProduct);
+		}		
+		//trace(state.selectedProduct);
+		return { selectedProduct: Reflect.field(state, "orderBox").selectedProduct };
+	}		
 }
