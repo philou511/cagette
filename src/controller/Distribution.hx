@@ -1396,7 +1396,8 @@ class Distribution extends Controller
 		}
 
 		view.form = form;
-		view.title = t._("Remove an undelivered product from orders");
+		view.title = t._("Change the price of a product in orders");
+		view.text = "Attention, cette opération met à jour le prix d'un produit dans les commandes de cette distribution, mais ne change pas le prix du produit dans le catalogue.";
 
 	}
 }

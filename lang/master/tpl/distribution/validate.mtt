@@ -35,16 +35,16 @@
 				
 			</div>	
 		
-		
+		::if(!confirmed)::
 		<p class="text-center">
 				<!--<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
 				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>-->	
 				
-				::if(!confirmed)::
 				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-danger" $$confirm(Confirmez-vous que les commandes et les paiements de cette distribution sont bien à jour ? Il ne sera plus possible de modifier les commandes après avoir validé cette distribution)>
 					<i class="icon icon-check"></i> Valider toute la distribution
 				</a>
-
+		</p>				
+		<p class="text-center">
 				<a href="/distribution/changePrice/::distribution.id::" class="btn btn-default" >
 					<i class="icon icon-euro"></i> Changement de prix
 				</a>
@@ -52,8 +52,12 @@
 				<a href="/distribution/missingProduct/::distribution.id::" class="btn btn-default" >
 					<i class="icon icon-products"></i> Produit non livré
 				</a>
-				::end::
+
+				<a href="/distribution/counter/::distribution.id::" class="btn btn-default" >
+					<i class="icon icon-payment-type"></i> Caisse et encaissements
+				</a>
 		</p>
+		::end::
 		
 		
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
