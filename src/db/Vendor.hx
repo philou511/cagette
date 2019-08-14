@@ -185,9 +185,11 @@ class Vendor extends Object
 	}
 
 	public function getLink():String{		
-		var permalink =  sugoi.db.Permalink.getByEntity(this.id,"vendor");
+		var permalink = sugoi.db.Permalink.getByEntity(this.id,"vendor");
 		return permalink==null ? "/p/pro/public/vendor/"+id : "/"+permalink.link;		
 	}
+
+
 
 	public function getAddress(){
 		var str = new StringBuf();
