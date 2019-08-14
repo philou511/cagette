@@ -21,13 +21,19 @@ class Contract extends Controller
 		view.nav = ["contractadmin"];
 	}
 	
+	//retrocompat
+	public function doDefault(){
+		throw Redirect("/account");
+	}
+
+	
 	@tpl("contract/view.mtt")
 	public function doView(c:db.Contract) {
 		view.category = 'amap';
 		view.c = c;
 	}
 	
-	
+
 
 	/**
 	 * Edit a contract 
@@ -38,7 +44,7 @@ class Contract extends Controller
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager(c)) throw Error('/', t._("Forbidden action"));
 
-		view.title = t._("Edit contract ::contractName::",{contractName:c.name});
+		view.title = t._("Edit catalog \"::contractName::\"",{contractName:c.name});
 
 		var group = c.amap;
 		var currentContact = c.contact;
@@ -95,7 +101,7 @@ class Contract extends Controller
 				
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, t._("Contract updated"));
+			throw Ok("/contractAdmin/view/"+c.id, t._("Catalog updated"));
 		}
 		
 		view.form = form;
@@ -175,7 +181,7 @@ class Contract extends Controller
 	function doInsert(?type=1,vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = if (type == db.Contract.TYPE_CONSTORDERS)t._("Create a contract with fixed orders") else t._("Create a contract with variable orders");
+		view.title = if (type == db.Contract.TYPE_CONSTORDERS) t._("Create a CSA contract") else t._("Create a variable orders catalog");
 		
 		var c = new db.Contract();
 
@@ -207,7 +213,7 @@ class Contract extends Controller
 				ua.update();
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, t._("New contract created"));
+			throw Ok("/contractAdmin/view/"+c.id, t._("New catalog created"));
 		}
 		
 		view.form = form;
@@ -515,7 +521,7 @@ class Contract extends Controller
 			var msg = t._("This delivery has already taken place, you can no longer modify the order.");
 			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page: <a href='/contractAdmin'>Management of contracts</a>");
 			
-			throw Error("/contract", msg);
+			throw Error("/account", msg);
 		}
 		
 		// Il faut regarder le contrat de chaque produit et verifier si le contrat est toujours ouvert à la commande.		
@@ -562,7 +568,7 @@ class Contract extends Controller
 			
 			app.event(MakeOrder(orders_out));
 			
-			throw Ok("/contract", t._("Your order has been updated"));
+			throw Ok("/account", t._("Your order has been updated"));
 		}
 	}
 }

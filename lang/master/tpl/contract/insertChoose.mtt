@@ -20,10 +20,10 @@
 		<div class="article">
 			
 			<div style="text-align:center;margin-bottom:12px;">	
-				<a href="/contract/insert/1/::vendor.id::" class="btn btn-default btn-lg">::raw _("Create a contract with <b>variable orders</b>")::</a>
+				<a href="/contract/insert/1/::vendor.id::" class="btn btn-default btn-lg">::raw _("Create a <b>variable order catalog</b>")::</a>
 			</div>	
 			<p>
-				::_("It is a contract in which members can change their orders at each delivery. There is a different order for each delivery.")::
+				::_("Variable orders allow members can change their orders at each delivery. There is a different order for each delivery.")::
 			</p>
 			<p>
 				<i>::raw _("Example: Jean orders a basket that costs 10&euro; for the first delivery, then nothing for the second delivery, then a basket for 20&euro; etc.")::</i>

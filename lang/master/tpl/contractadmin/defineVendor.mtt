@@ -37,23 +37,27 @@
 						</div>
 						
 						<p style="line-height: 38px;">
+						
 						::if(cpro!=null)::
-							
+								::set catalogs = cpro.getActiveCatalogs()::
 								Catalogue(s) :
 								
-								::foreach catalog cpro.getActiveCatalogs()::
-									
-										<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
-											<i class="icon icon-book"></i> ::catalog.name::
+								::foreach catalog catalogs::									
+									<a href="/p/pro/public/::catalog.id::" class="btn btn-default btn-sm" target="_blank">
+										<i class="icon icon-book"></i> ::catalog.name::
 									</a>&nbsp;
 								::end::
-								
+								::if(catalogs.length==0)::
+								<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
+									<i class="icon icon-plus"></i> Nouveau catalogue
+								</a>
+								::end::
 						
-						::end::
-						
+						::else::						
 							<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 								<i class="icon icon-plus"></i> Nouveau catalogue
 							</a>
+						::end::
 						</p>
 						
 					</div>

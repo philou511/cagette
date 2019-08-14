@@ -27,7 +27,7 @@
 			</p>
 		
 			<p>
-				<a href="/contract" class="btn btn-default">
+				<a href="/account" class="btn btn-default">
 				<i class="icon icon-chevron-right"></i> ::_("Check my orders")::</a>
 
 				<a href="/account/payments" class="btn btn-default">

@@ -540,11 +540,13 @@ class Distribution extends Controller
 		
 		//start hour
 		form.removeElementByName("distribStartDate");
+		md.distribStartDate = md.distribStartDate.setHourMinute( md.distribStartDate.getHours() , Math.floor(md.distribStartDate.getMinutes()/5) * 5 ); //minutes should be a multiple of 5
 		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time"), md.distribStartDate );
 		form.addElement(x, 3);
 		
 		//end hour
 		form.removeElementByName("distribEndDate");
+		md.distribEndDate = md.distribEndDate.setHourMinute( md.distribEndDate.getHours() , Math.floor(md.distribEndDate.getMinutes()/5) * 5 );//minutes should be a multiple of 5
 		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time"), md.distribEndDate );
 		form.addElement(x, 4);
 
@@ -553,7 +555,7 @@ class Distribution extends Controller
 		form.addElement(overrideDates,7);
 		
 		//contracts
-		var label = t._("Contracts");
+		var label = t._("Catalogs");
 		var datas = [];
 		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
