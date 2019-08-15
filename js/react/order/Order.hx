@@ -140,13 +140,7 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		
 		this.setState(state);
 		if (props.onUpdate != null) props.onUpdate(state.order);
-	}
-
-	function onChangePaid(e:js.html.Event){		
-		state.order.paid = untyped e.target.checked;
-		this.setState(state);
-		if (props.onUpdate != null) props.onUpdate(state.order);
-	}
+	}	
 
 	function onChangeInvert(e:js.html.Event){
 		state.order.invertSharedOrder = untyped e.target.checked;

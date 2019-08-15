@@ -27,9 +27,7 @@ typedef OrderBoxProps = {
 	onValidate:Void->Void,
 	currency:String,
 	hasPayments:Bool,
-	orders2 : Array<UserOrder>,
-	// error:String,
-	// users:Null<Array<UserInfo>>
+	orders2 : Array<UserOrder>
 };
 
 /**
@@ -63,8 +61,8 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			if(props.contractType==0) loadUsers();
 
 		}).catchError(function(data) {
-			var data = Std.string(data);
-			trace("Error",data);
+
+			var data = Std.string(data);			
 			if(data.substr(0,1)=="{"){
 				//json error from server
 				var data : ErrorInfos = haxe.Json.parse(data);
@@ -204,8 +202,8 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			if (props.onValidate != null) props.onValidate();
 
 		}).catchError(function(data) {
+
 			var data = Std.string(data);
-			trace("Error",data);
 			if(data.substr(0,1)=="{"){
 				//json error from server
 				var data : ErrorInfos = haxe.Json.parse(data);
@@ -223,15 +221,7 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 	}
 
 
-	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState, ownProps: OrderBoxProps ): react.Partial<OrderBoxProps> {
-
-		js.Browser.console.log( "Coucou !" );
-
-		// var storeProduct = 0;
-        // for( p in st.cart.products ) { if( p.product == ownProps.product) {storeProduct = p.quantity ; break; }}
-		// return {
-		// 	quantity: storeProduct,
-		// }
+	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState, ownProps: OrderBoxProps ): react.Partial<OrderBoxProps> {		
 
 		var existingOrder = Lambda.find( ownProps.orders2, function(order) return order.product.id == state.selectedProduct.id );
 		if( existingOrder != null ) {
@@ -254,7 +244,6 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 			ownProps.orders2.push(order);
 		}
 
-		js.Browser.console.log( ownProps.orders2 );
 		return { orders2 : ownProps.orders2 };
 	}
 	

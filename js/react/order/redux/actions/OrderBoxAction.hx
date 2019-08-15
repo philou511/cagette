@@ -4,10 +4,9 @@ import Common.ProductInfo;
 
 enum OrderBoxAction
 {
-    SelectProduct( product: ProductInfo );
-    AddOrder( product: ProductInfo );
-    UpdateQuantity( product: ProductInfo, quantity: Float );
+    FetchContractProductsSuccess( products: Array<ProductInfo> );
+    FetchContractProductsFailure( error: String );
+    SelectProduct( product: ProductInfo );    
     // Validate;
-    // FetchMultidistribOrders( userId: Int, multiDistributionId: Int );
-    // FetchContractProducts( contractId: Int );
+    // FetchMultidistribOrders( userId: Int, multiDistributionId: Int );    
 }

@@ -6,7 +6,7 @@ import redux.IReducer;
 import react.order.redux.actions.OrderBoxAction;
 import Common;
 
-typedef LeanProduct = {
+typedef StateProduct = {
     
 	id : Int,
 	name : String,
@@ -25,9 +25,11 @@ typedef LeanProduct = {
 }
 
 typedef OrderBoxState = {
-    selectedProduct : LeanProduct,   
+
+    selectedProduct : StateProduct,   
     orders : Array<UserOrder>,
-	products : Array<ProductInfo>
+	products : Array<ProductInfo>,
+    error : String
 };
 
 class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
@@ -35,17 +37,25 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 	public function new() {}
 
 	public var initState: OrderBoxState = {
+
         selectedProduct : null,
         orders : [],
-        products : [] 
+        products : [],
+        error : null 
     };
 
 	public function reduce( state: OrderBoxState, action: OrderBoxAction ): OrderBoxState
     {
 		var partial: Partial<OrderBoxState> = switch (action) {
 
+            case FetchContractProductsSuccess( products ):
+                { products: products };
+
+            case FetchContractProductsFailure( error ):
+                { error: error };
+
             case SelectProduct( product ):                
-                var selected : LeanProduct = cast {
+                var selected : StateProduct = cast {
                     id : product.id,
                     name : product.name,
                     ref : product.ref,
@@ -58,39 +68,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                     wholesale : product.wholesale,
                     active : product.active,
                     contractId : product.contractId
-                };
-                trace("Action SelectProduct exécutée !");
-                trace(selected);              
-                { selectedProduct: selected };
-               
+                };                     
+                { selectedProduct: selected };      
             
-			case UpdateQuantity( product, quantity ):
-                var orders = state.orders.copy();
-                for( prod in orders ) {
-                    if( prod.product == product ) {
-                        if( quantity > 0 )
-                            prod.quantity = quantity;
-                        else
-                            orders.remove(prod);
-                        break;
-                    }
-                }
-                { orders: orders };
-
-            case AddOrder( product ): 
-                var orders = state.orders.copy();
-                // orders.push( { product: product, quantity: 1 } );
-                { orders: orders };
+			         
 
 		}
-        
-        trace(state);
-        trace(partial);
+                
 		return ( state == partial ? state : js.Object.assign({}, state, partial) );
 	}
 }
-
-//------------------  To Do  ---------------
-//Validate
-//FetchMultidistribOrders( userId: Int, multiDistributionId: Int );
-//FetchContractProducts( contractId: Int );
