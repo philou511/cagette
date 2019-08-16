@@ -2,12 +2,26 @@ package controller.api;
 import haxe.Json;
 import tink.core.Error;
 import service.OrderService;
+import Common;
 
 /**
  * Public order API
  */
 class Order extends Controller
 {
+	public function doContracts( multiDistrib : db.MultiDistrib, ?args:{contractType:Int} ) {
+
+		var contracts = new Array<ContractInfo>();
+		var type = (args!=null && args.contractType!=null)  ?  args.contractType : null;
+		for( d in multiDistrib.getDistributions(type) ){
+			var c = d.contract;
+			var image = c.vendor.image==null ? null : view.file(c.vendor.image);
+			contracts.push({id:c.id,name:c.name,image:image});
+		}
+		Sys.print(haxe.Json.stringify(contracts));
+
+	}
+
 	/**
 		Get orders of a user for a multidistrib.
 		Possible to filter for a distribution only
