@@ -171,25 +171,21 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, contractType:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool,callbackUrl:String){
+	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, callbackUrl : String){
 
-		untyped App.j("#myModal").modal();
-		var onValidate = function() js.Browser.location.href = callbackUrl;
+		untyped App.j("#myModal").modal();		
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-		// ReactDOM.render(jsx('<$OrderBox userId=${userId} distributionId=${distributionId} 
-		// 	contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
-		// 	onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
-
+	
 		var store = createOrderBoxReduxStore();
 		ReactDOM.render(jsx('
 			<ReduxProvider store=${store}>
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<OrderBox userId=${userId} distributionId=${distributionId} 
+						<OrderBox userId=${userId} multiDistribId=${multiDistribId}
 						contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
-						onValidate=$onValidate currency=$currency hasPayments=$hasPayments orders2=${null} />
+						callbackUrl=$callbackUrl currency=$currency orders2=${null} />
 					</>
 				</MuiThemeProvider>
 			</ReduxProvider>

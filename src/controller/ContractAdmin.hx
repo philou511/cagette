@@ -482,6 +482,7 @@ class ContractAdmin extends Controller
 		var d = null;
 		if (contract.type == db.Contract.TYPE_VARORDER ){
 			view.distribution = args.d;
+			view.multiDistribId = args.d.multiDistrib.id;
 			d = args.d;
 		}
 		view.c = contract;

@@ -9,10 +9,11 @@ import react.order.redux.actions.thunk.OrderBoxThunk;
 
 
 typedef ProductSelectProps = {
-	var contractId: Int;
-	var products: Array<ProductInfo>;
-	var onClick: ProductInfo->Void;	
-	var fetchContractProducts: Int -> Void;
+
+	var contractId : Int;
+	var products : Array<ProductInfo>;
+	var selectProduct : Int->Void;	
+	var fetchContractProducts : Int -> Void;
 }
 
 /**
@@ -32,8 +33,8 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 
 		var products = props.products.map(function(product){
             			
-			return jsx('<div key=${product.id} className="col-md-6" onClick=${props.onClick.bind(product)}>
-							<div className="clickable"><$Product productInfo=$product /></div>			
+			return jsx('<div key=${product.id} className="col-md-6" onClick=${props.selectProduct.bind(product.id)}>
+							<div className="clickable"><Product productInfo=$product /></div>			
 						</div>');
 		});
 
@@ -42,6 +43,7 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 
 	override function componentDidMount()
 	{
+		trace("ON EST DANS componentDidMount DE ProductSelect");
 		props.fetchContractProducts( props.contractId );
 	}
 
@@ -54,11 +56,10 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 				
 		return { 
 			
-			onClick: function(product) { dispatch(OrderBoxAction.SelectProduct(product)); },
+			selectProduct: function(productId) { dispatch(OrderBoxAction.SelectProduct(productId)); },
 			fetchContractProducts: function( contractId: Int ) return dispatch( OrderBoxThunk.fetchContractProducts( contractId ) ) 
 		
 		}
-
 	}	
 
 }	

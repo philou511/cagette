@@ -9,104 +9,84 @@ import react.router.Route;
 import react.router.Switch;
 import react.router.Link;
 import react.order.redux.reducers.OrderBoxReducer;
+import react.order.redux.actions.thunk.OrderBoxThunk;
 
-typedef OrderBoxState = {
-	orders : Array<UserOrder>,	
-	error:String,
-	users:Null<Array<UserInfo>>,
-};
+// typedef OrderBoxState = {
+
+// 	var error : String;
+// 	var users : Null<Array<UserInfo>>;
+// };
 
 typedef OrderBoxProps = {
-	userId:Int,
-	distributionId:Int,
-	contractId:Int,
-	contractType:Int,
-	date:String,
-	place:String,
-	userName:String,
-	onValidate:Void->Void,
-	currency:String,
-	hasPayments:Bool,
-	orders2 : Array<UserOrder>
+
+	var userId : Int;
+	var multiDistribId : Int;
+	var contractId : Int;
+	var contractType : Int;
+	var date : String;
+	var place : String;
+	var userName : String;
+	var callbackUrl : String;
+	var currency : String;
+	var orders : Array<UserOrder>;
+	var fetchMultiDistribUserOrders : Int -> Int -> Int -> Void;
+	var saveMultiDistribUserOrders : Int -> Int -> String -> Void; 
 };
 
+//Julie class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBoxState>
 /**
  * A box to edit/add orders of a member
  * @author fbarbut
  */
-// @:connect
-class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBoxState>
+@:connect
+class OrderBox extends react.ReactComponentOfProps<OrderBoxProps>
 {
 
 	public function new(props) 
 	{
 		super(props);	
-		state = { orders : [], error : null, users:null };
+		// state = { orders : [], error : null, users : null };
 	}
 	
-	override function componentDidMount()
-	{
-
-		//request api avec user + distrib
-		HttpUtil.fetch("/api/order/get/"+props.userId, GET, {distributionId:props.distributionId,contractId:props.contractId}, PLAIN_TEXT)
-		.then(function(data:String) {
-			
-			var data : {orders:Array<UserOrder>} = tink.Json.parse(data);
-			/*for( o in orders){
-				//convert ints to enums, enums have been lost in json serialization
-				o.productUnit = Type.createEnumIndex(Unit, cast o.productUnit );	
-			}*/
-			setState({orders:data.orders, error:null});
-
-			if(props.contractType==0) loadUsers();
-
-		}).catchError(function(data) {
-
-			var data = Std.string(data);			
-			if(data.substr(0,1)=="{"){
-				//json error from server
-				var data : ErrorInfos = haxe.Json.parse(data);
-				setState( cast {error:data.error.message} );
-			}else{
-				//js error
-				setState( cast {error:data} );
-			}
-		});
+	override function componentDidMount() {
+		
+		props.fetchMultiDistribUserOrders( props.userId, props.multiDistribId, props.contractId );		
 	}
 
 	/**
 	 *  load user list when contract is constant orders
 	 */
-	function loadUsers(){
-		HttpUtil.fetch("/api/user/getFromGroup/", GET, {}, PLAIN_TEXT)
-		.then(function(data:String) {
+	//  Julie
+	// function loadUsers(){
+	// 	HttpUtil.fetch("/api/user/getFromGroup/", GET, {}, PLAIN_TEXT)
+	// 	.then(function(data:String) {
 
-			var data : {users:Array<UserInfo>} = tink.Json.parse(data);
-			setState({users:data.users, error:null});
+	// 		var data : {users:Array<UserInfo>} = tink.Json.parse(data);
+	// 		setState({users:data.users, error:null});
 
-		}).catchError(function(data) {
+	// 	}).catchError(function(data) {
 
-			var data = Std.string(data);
-			if(data.substr(0,1)=="{"){
-				//json error from server
-				var data : ErrorInfos = haxe.Json.parse(data);
-				setState( cast {error:data.error.message} );
-			}else{
-				//js error
-				setState( cast {error:data} );
-			}
-		});
-	}
+	// 		var data = Std.string(data);
+	// 		if(data.substr(0,1)=="{"){
+	// 			//json error from server
+	// 			var data : ErrorInfos = haxe.Json.parse(data);
+	// 			setState( cast {error:data.error.message} );
+	// 		}else{
+	// 			//js error
+	// 			setState( cast {error:data} );
+	// 		}
+	// 	});
+	// }
 	
 	override public function render(){
 		//edit orders 
-		var renderOrders = this.state.orders.map(function(o){
+		var renderOrders = props.orders.map(function(o){
 			var k :String = if(o.id!=null) {
 				Std.string(o.id);
 			} else {
 				o.product.id + "-" + Std.random(99999);
 			};
-			return jsx('<$Order key=${k} order=${o} onUpdate=$onUpdate parentBox=${this} />')	;
+			return jsx('<Order key=${k} order=${o} currency=${props.currency} contractType=${props.contractType} />')	;
 		}  );
 
 
@@ -116,12 +96,17 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 							jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 						}
 
+		var validateButton = jsx('<a onClick=${props.saveMultiDistribUserOrders.bind( props.userId, props.multiDistribId, props.callbackUrl )} className="btn btn-primary">
+									<i className="icon icon-chevron-right"></i> Valider
+								 </a>');
+		
+
+		//Julie <Error error=${state.error} />
 		var renderOrderBox = function(props:react.router.RouteRenderProps):react.ReactFragment { 
 			return jsx('
 				<div onKeyPress=${onKeyPress}>
 					<h3>Commandes de ${this.props.userName}</h3>
-					$delivery			
-					<$Error error=${state.error} />
+					$delivery								
 					<hr/>
 					<div className="row tableHeader">
 						<div className="col-md-4">Produit</div>
@@ -132,119 +117,96 @@ class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBo
 					</div>
 					${renderOrders}	
 					<div>
-						<a onClick=${onClick} className="btn btn-primary">
-							<i className="icon icon-chevron-right"></i> Valider
-						</a>
+						${validateButton}						
 						&nbsp;
-						<$Link className="btn btn-default" to="/insert"><i className="icon icon-plus"></i> Ajouter un produit</$Link>
+						<Link className="btn btn-default" to="/insert"><i className="icon icon-plus"></i> Ajouter un produit</Link>
 					</div>
 				</div>			
 			');
 		}
 
+		
+		
 
-		var onProductSelected = function(uo:UserOrder) {
-			var existingOrder = Lambda.find(state.orders,function(x) return x.product.id == uo.product.id );
-			if(existingOrder != null) {
-				existingOrder.quantity += uo.quantity;
-				this.setState(this.state);
-			} else {
-				this.state.orders.push(uo);
-				this.setState(this.state);
-			}
-		};
-
+		//Julie
+		// var onProductSelected = function(uo:UserOrder) {
+		// 	var existingOrder = Lambda.find(state.orders,function(x) return x.product.id == uo.product.id );
+		// 	if(existingOrder != null) {
+		// 		existingOrder.quantity += uo.quantity;
+		// 		this.setState(this.state);
+		// 	} else {
+		// 		this.state.orders.push(uo);
+		// 		this.setState(this.state);
+		// 	}
+		// };
 
 		//insert product box
 		var renderInsertBox = function(props:react.router.RouteRenderProps):react.ReactFragment {
-			return jsx('<$InsertOrder selectedProduct=${null} contractId=${this.props.contractId} userId=${this.props.userId} distributionId=${this.props.distributionId} />');
+			return jsx('<InsertOrder contractId=${this.props.contractId} userId=${this.props.userId} multiDistribId=${this.props.multiDistribId} />');
 		} 
 
 		return jsx('
-			<$HashRouter>
-				<$Switch>
-					<$Route path="/" exact=$true render=$renderOrderBox	 />
-					<$Route path="/insert" exact=$true render=$renderInsertBox />
-				</$Switch>
-			</$HashRouter>
+			<HashRouter>
+				<Switch>
+					<Route path="/" exact=$true render=$renderOrderBox	 />
+					<Route path="/insert" exact=$true render=$renderInsertBox />
+				</Switch>
+			</HashRouter>
 		');
-	}
-	
-	/**
-	 * called when an order is updated
-	 */
-	function onUpdate(data:UserOrder){
-		/*trace("ON UPDATE : " + data);
-		for ( o in state.orders){
-			if (o.id == data.id) {
-				o.quantity = data.quantity;
-				o.paid = data.paid;
-				break;
-			}
-		}
-		setState(this.state);*/
-	}
+	}	
 	
 	/**
 	 * submit updated orders to the API
 	 */
-	function onClick(?_){
+	// function saveOrders(?_) {
 		
-		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
-		for ( o in state.orders) data.push({id:o.id, productId : o.product.id, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
+	// 	var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
+	// 	for ( o in state.orders) data.push({id:o.id, productId : o.product.id, qt: o.quantity, paid : o.paid, invertSharedOrder:o.invertSharedOrder, userId2:o.userId2});
 		
-		var req = { orders:data };
+	// 	var req = { orders:data };
 		
-		var p = HttpUtil.fetch("/api/order/update/"+props.userId+"?distributionId="+props.distributionId+"&contractId="+props.contractId, POST, req, JSON);
-		p.then(function(data:Dynamic) {
+	// 	var p = HttpUtil.fetch("/api/order/update/"+props.userId+"?distributionId="+props.distributionId+"&contractId="+props.contractId, POST, req, JSON);
+	// 	p.then(function(data:Dynamic) {
 
-			//WOOT
-			if (props.onValidate != null) props.onValidate();
+	// 		if (props.onValidate != null) props.onValidate();
 
-		}).catchError(function(data) {
+	// 	}).catchError(function(data) {
 
-			var data = Std.string(data);
-			if(data.substr(0,1)=="{"){
-				//json error from server
-				var data : ErrorInfos = haxe.Json.parse(data);
-				setState( cast {error:data.error.message} );
-			}else{
-				//js error
-				setState( cast {error:data} );
-			}
-		});
-		
-	}
+	// 		var data = Std.string(data);
+	// 		if(data.substr(0,1)=="{"){
+	// 			//json error from server
+	// 			var data : ErrorInfos = haxe.Json.parse(data);
+	// 			setState( cast {error:data.error.message} );
+	// 		}else{
+	// 			//js error
+	// 			setState( cast {error:data} );
+	// 		}
+	// 	});		
+	// }
 
 	function onKeyPress(e:js.html.KeyboardEvent){
-		if(e.key=="Enter") onClick();
+		//Julie
+		// if(e.key=="Enter") saveOrders();
 	}
 
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState, ownProps: OrderBoxProps ): react.Partial<OrderBoxProps> {		
 
-		var existingOrder = Lambda.find( ownProps.orders2, function(order) return order.product.id == state.selectedProduct.id );
-		if( existingOrder != null ) {
-		
-			existingOrder.quantity += 1;			
-		}
-		else {
-
-			var order : UserOrder = cast {
-						id: null,
-						product: state.selectedProduct,
-						quantity: 1,
-						productId: state.selectedProduct.id,
-						productPrice: state.selectedProduct.price,
-						paid: false,
-						invert: false,
-						user2: null
-						};
-			
-			ownProps.orders2.push(order);
-		}
-
-		return { orders2 : ownProps.orders2 };
+		return { orders: Reflect.field(state, "orderBox").orders };
 	}
+
+	static function mapDispatchToProps( dispatch : redux.Redux.Dispatch ) : react.Partial<OrderBoxProps> {
+				
+		return { 
+			
+			fetchMultiDistribUserOrders : function( userId : Int, multiDistribId : Int, contractId : Int ) {
+				return dispatch( OrderBoxThunk.fetchMultiDistribUserOrders( userId, multiDistribId, contractId ) );
+			},
+			saveMultiDistribUserOrders : function( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+				return dispatch( OrderBoxThunk.saveMultiDistribUserOrders( userId, multiDistribId, callbackUrl ) );
+			}
+		}
+
+	}	
 	
 }

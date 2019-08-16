@@ -11,7 +11,7 @@ class Order extends Controller
 	/**
 		Get orders of a user for a multidistrib.
 		Possible to filter for a distribution only
-	 */
+	 */	
 	public function doGet(user:db.User,multiDistrib:db.MultiDistrib,?args:{contract:db.Contract}){
 
 		checkIsLogged();

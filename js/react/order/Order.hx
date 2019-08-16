@@ -4,75 +4,78 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
 import react.product.Product;
+import react.order.redux.actions.OrderBoxAction;
+
+
+typedef OrderProps = {
+
+	var order : UserOrder;
+	var users : Null<Array<UserInfo>>;
+	var currency : String;
+	var contractType : Int;	
+	var updateOrderQuantity : Float -> Void;
+	var reverseRotation : js.html.Event -> Void;
+	var updateOrderUserId2 : js.html.Event -> Void;
+}
+
+typedef OrderState = {
+
+	var quantityInputValue : String;
+}
+
 
 /**
  * A User order
  * @author fbarbut
  */
-class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdate:UserOrder->Void,parentBox:react.order.OrderBox},{order:UserOrder,inputValue:String}>
+@:connect
+class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 {
-	var hasPayments :Bool;
-	var currency : String;
-
 	public function new(props) 
 	{
 		super(props);
-		state = {order:props.order,inputValue:null};
-		hasPayments = props.parentBox.props.hasPayments;
-		currency = props.parentBox.props.currency;
+		state = { quantityInputValue : null };
+		state.quantityInputValue = if ( isSmartQtInput() ) {
+
+										Std.string( round( props.order.quantity * props.order.productQt ) );
+								  	}
+								  	else {
+
+										Std.string( props.order.quantity );
+									}		
 		
-		if (state.order.productUnit == null) state.order.productUnit = Piece;
-		if (state.order.productQt == null) state.order.productQt = 1;
-		
-		state.inputValue = if ( isSmartQtInput(state.order) ){
-			Std.string(round(state.order.quantity * state.order.productQt));
-		}else{
-			Std.string(state.order.quantity);
-		}
+		if (props.order.productQt == null) props.order.productQt = 1;		
 	}
 	
-	override public function render(){
-		var o = state.order;
-		/*var unit = if (o.productHasFloatQt || o.productHasVariablePrice){
-			jsx('<div className="col-md-1">${Formatting.unit(o.productUnit)}</div>');
-		}else{
-			jsx('<div className="col-md-1"></div>');
-		}*/
+	override public function render() {
 		
-		/*
-		//use smart qt only if hasFloatQt
-		var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
-			jsx('<div className="col-md-3">${o.productName}</div>');
-		}else{			
-			jsx('<div className="col-md-3">${o.productName} ${o.productQt} ${Formatting.unit(o.productUnit)}</div>');
-		}
-		*/
-		/*var productName = if (o.productHasFloatQt || o.productHasVariablePrice){
-			jsx('<div className="col-md-3">${o.productName}</div>');*/
-		
-		var input =  if (isSmartQtInput(o)){
+		var input =  if ( isSmartQtInput() ) {
+
 			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value=${state.inputValue} onChange=${onChange} onKeyPress=${onKeyPress}/>
-					<div className="input-group-addon">${Formatting.unit(o.productUnit)}</div>
+					<input type="text" className="form-control input-sm text-right" value=${state.quantityInputValue} onChange=${updateQuantity}/>
+					<div className="input-group-addon">${getProductUnit()}</div>
 				</div>');	
-		}else{
+		}
+		else {
+
 			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value=${state.inputValue} onChange=${onChange} onKeyPress=${onKeyPress}/>
+					<input type="text" className="form-control input-sm text-right" value=${state.quantityInputValue} onChange=${updateQuantity}/>
 				</div>');
 		}
 
-		var alternated = if(props.parentBox.props.contractType==0 && props.parentBox.state.users!=null){
-			//constant orders
-			var options = props.parentBox.state.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
+		var alternated = if( props.contractType == 0 && props.users != null ) {
 
-			var checkbox = if(o.invertSharedOrder){
-				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=$onChangeInvert />');
+			//constant orders
+			var options = props.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
+
+			var checkbox = if(props.order.invertSharedOrder){
+				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=${props.reverseRotation} />');
 			}else{
-				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="1"  onChange=$onChangeInvert />');
+				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="1"  onChange=${props.reverseRotation} />');
 			}	
 
 			jsx('<div>
-				<select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${onChangeUser2} value=${o.userId2}>
+				<select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${props.updateOrderUserId2} value=${props.order.userId2}>
 					<option value="0">-</option>
 					$options					
 				</select>				
@@ -84,15 +87,15 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 		
 		return jsx('<div className="productOrder row">
 			<div className="col-md-4">
-				<$Product productInfo=${o.product} />
+				<Product productInfo=${props.order.product} />
 			</div>
 
 			<div className="col-md-1 ref">
-				${o.productRef}
+				${props.order.productRef}
 			</div>
 
 			<div className="col-md-1">
-				${round(o.quantity * o.productPrice)}&nbsp;${currency}
+				${round(props.order.quantity * props.order.productPrice)}&nbsp;${props.currency}
 			</div>
 			
 			<div className="col-md-2">
@@ -100,64 +103,87 @@ class Order extends react.ReactComponentOfPropsAndState<{order:UserOrder,onUpdat
 				${makeInfos()}
 			</div>
 
-			${ props.parentBox.props.contractType == 0 ? jsx('<div className="col-md-3">$alternated</div>') : null }
+			${ props.contractType == 0 ? jsx('<div className="col-md-3">$alternated</div>') : null }
 			
 		</div>');
 	}
 	
-	function round(f){
+	function round(f) {
+
 		return Formatting.formatNum(f);
 	}
 
-	function makeInfos(){
-		var o = state.order;
-		return if ( isSmartQtInput(o) ){
+	function makeInfos() {
+
+		return if ( isSmartQtInput() ) {
+
 			jsx('
 			<div className="infos">
-				<b> ${round(o.quantity)} </b> x <b>${o.productQt} ${Formatting.unit(o.productUnit)} </b> ${o.productName}
+				<b> ${round(props.order.quantity)} </b> x <b>${props.order.productQt} ${getProductUnit()} </b> ${props.order.productName}
 			</div>');
-		}else{
+		}
+		else {
+
 			null;
 		}
 	}
 
-	function isSmartQtInput(o:UserOrder):Bool{
-		return o.product.hasFloatQt || o.product.variablePrice || o.product.wholesale;
+	function isSmartQtInput() : Bool {
+
+		return props.order.product.hasFloatQt || props.order.product.variablePrice || props.order.product.wholesale;
 	}
-	
-	function onChange(e:js.html.Event){
+
+	function updateQuantity( e: js.html.Event ) {
+
 		e.preventDefault();		
-		var value :String = untyped (e.target.value == "") ? "0" : e.target.value;
-		state.inputValue = value;
-		var v = Formatting.parseFloat(value);
-		var o = state.order;
-		if ( isSmartQtInput(o) ){
+
+		var value: String = untyped (e.target.value == "") ? "0" : e.target.value;
+		setState( { quantityInputValue : value } );
+
+		var orderQuantity : Float = Formatting.parseFloat(value);
+		if ( isSmartQtInput() ) {
+
 			//the value is a smart qt, so we need re-compute the quantity
-			o.quantity = v / o.productQt;
-		}else{
-			o.quantity = v;	
-		}
+			orderQuantity = orderQuantity / props.order.productQt;
+		}				
+		props.updateOrderQuantity(orderQuantity); 
+	}
+
+	function getQuantityValue() : String {
+
+		trace("on passe dans getQuantityValue!!!!");
+		var temp : String = 	isSmartQtInput() ? Std.string( round( props.order.quantity * props.order.productQt ) ) : Std.string( props.order.quantity );
+		trace(temp);
+		return temp;
 		
-		this.setState(state);
-		if (props.onUpdate != null) props.onUpdate(state.order);
-	}	
-
-	function onChangeInvert(e:js.html.Event){
-		state.order.invertSharedOrder = untyped e.target.checked;
-		this.setState(state);
-		if (props.onUpdate != null) props.onUpdate(state.order);
 	}
 
-	function onChangeUser2(e:js.html.Event){
-		var v = Std.parseInt(untyped e.target.value);
-		state.order.userId2 = v==0 ? null : v;
-		this.setState(state);
-		if (props.onUpdate != null) props.onUpdate(state.order);
+	function getProductUnit() : String {
+
+		var productUnit: Unit = props.order.productUnit != null ? props.order.productUnit : Piece;
+		return Formatting.unit( productUnit ); 		
 	}
-	
-	function onKeyPress(event:js.html.KeyboardEvent){
-		/*if(event.key == 'Enter'){
-			trace('enter !');
-		}*/
+
+	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<OrderProps> {	
+		
+		return { users: Reflect.field(state, "orderBox").users };
 	}
+
+	static function mapDispatchToProps( dispatch: redux.Redux.Dispatch, ownProps: OrderProps ) : react.Partial<OrderProps> {
+				
+		return { 
+
+				updateOrderQuantity: function( orderQuantity ) {
+					dispatch( OrderBoxAction.UpdateOrderQuantity( ownProps.order.id, orderQuantity ) ); 
+				},
+				reverseRotation: function( e: js.html.Event ) {
+					dispatch( OrderBoxAction.ReverseOrderRotation( ownProps.order.id, untyped e.target.checked ) ); 
+				},
+				updateOrderUserId2: function( e: js.html.Event ) { 
+					var userId2 = Std.parseInt(untyped e.target.value); 
+					dispatch( OrderBoxAction.UpdateOrderUserId2( ownProps.order.id, userId2 == 0 ? null : userId2 ) );				
+				}
+		}
+	}
+
 }
