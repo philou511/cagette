@@ -110,7 +110,8 @@ h1 {
   margin-top: 4px !important; }
 
 a {
-  color: #3c763d; }
+  color: #3c763d;
+  cursor: pointer; }
 
 ol.breadcrumb {
   padding: 0;
@@ -134,9 +135,6 @@ div.footer-info {
   color: #8a6d3b;
   margin: 24px 0; }
 
-.navbar {
-  margin-bottom: 8px !important; }
-
 .sticky {
   position: -webkit-sticky;
   position: sticky;
@@ -144,9 +142,6 @@ div.footer-info {
   z-index: 99; }
 
 /* buttons */
-a {
-  cursor: pointer; }
-
 /* bounce effect */
 .bouncable {
   animation-duration: 500ms;
@@ -170,10 +165,23 @@ a {
 .bounce {
   animation-name: bounce; }
 
-/* navigation */
+/* Navigation */
+.navbar {
+  margin-bottom: 8px !important; }
+
+ul.nav.admin {
+  background-color: #EEE; }
+  ul.nav.admin li.active > a {
+    background-color: #E0E0E0 !important; }
+
 ul.nav li {
   text-transform: uppercase;
   font-size: 14px; }
+  ul.nav li a {
+    color: #777; }
+  ul.nav li.active > a {
+    background-color: #EEE !important;
+    color: #e95216 !important; }
 
 .noSelect {
   -webkit-touch-callout: none;
@@ -188,11 +196,6 @@ ul.nav li {
   /* Internet Explorer/Edge */
   user-select: none;
   /* Non-prefixed version, currently supported by Chrome and Opera */ }
-
-/* subnav in contractadmin*/
-.nav-pills > li.active > a {
-  background-color: #efe9d5 !important;
-  color: #e95216 !important; }
 
 /* Footer */
 #footer {

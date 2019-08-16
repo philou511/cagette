@@ -64,7 +64,7 @@
 							
 						</ul>
 						
-						<ul class="nav navbar-nav navbar-right">
+						<ul class="nav navbar-nav navbar-right admin" >
 							<li id="member" ::attr class if(category=="member") 	'active' ::>								
 								<a href="/member" ::cond user.canAccessMembership()::>
 									<i class="icon icon-users"></i> ::_("Members")::
@@ -89,8 +89,7 @@
 								<a href="/amapadmin" ::cond user.isAmapManager()::>
 									<i class="icon icon-cog"></i>  Paramètres
 								</a>
-							</li>
-							
+							</li>							
 						</ul>
 						
 					</div>

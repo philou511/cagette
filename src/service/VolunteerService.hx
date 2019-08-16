@@ -267,6 +267,7 @@ class VolunteerService
 
 	public static function createRoleForContract(c:db.Contract,number:Int){
 		var t = sugoi.i18n.Locale.texts;
+		number = number>20 ? 20 : number;
 		for ( i in 1...(number+1) ) {
 			
 			var role = new db.VolunteerRole();

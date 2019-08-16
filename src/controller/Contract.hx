@@ -153,7 +153,7 @@ class Contract extends Controller
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
 			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());*/
 			
-			throw Ok('/contract/insertChoose/'+vendor.id, t._("This supplier has been saved"));
+			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
 		}else{
 			form.getElement("email").value = email;
 			form.getElement("name").value = name;
@@ -169,35 +169,34 @@ class Contract extends Controller
 	**/
 	@tpl("contract/insertChoose.mtt")
 	function doInsertChoose(vendor:db.Vendor) {
-		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
-		view.vendor = vendor;
-		
+		throw Redirect("/contract/insert/"+vendor.id);
 	}
 	
 	/**
 	 * 4 - create the contract
 	 */
-	@tpl("form.mtt")
-	function doInsert(?type=1,vendor:db.Vendor) {
+	@tpl("contract/insert.mtt")
+	function doInsert(vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = if (type == db.Contract.TYPE_CONSTORDERS) t._("Create a CSA contract") else t._("Create a variable orders catalog");
+		view.title = t._("Create a catalog");
 		
 		var c = new db.Contract();
 
 		var form = Form.fromSpod(c);
 		form.removeElement(form.getElement("amapId") );
-		form.removeElement(form.getElement("type"));		
+		form.removeElement(form.getElement("type"));
+		form.getElement("name").value = "Commande "+vendor.name;
 		form.getElement("userId").required = true;
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
-
+		form.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue est un contrat AMAP",false));
 			
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
-			c.type = type;
+			c.type = form.getValueOf("csa")==true ? db.Contract.TYPE_CONSTORDERS : db.Contract.TYPE_VARORDER;
 			c.vendor = vendor;
 			c.insert();
 

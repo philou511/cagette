@@ -259,6 +259,19 @@ class Distribution extends Controller
 		throw Ok("/contractAdmin/distributions/" + contractId, t._("The distribution has been deleted"));
 	}
 
+	function doNotAttend(d:db.Distribution) {
+		
+		if (!app.user.isContractManager(d.contract)) throw Error('/distribution', t._("Forbidden action"));		
+		var contractId = d.contract.id;
+		try {
+			service.DistributionService.delete(d);
+		} catch(e:Error){
+			throw Error('/distribution', e.message);
+		}
+		
+		throw Ok('/distribution', "Ce producteur ne participe plus à la distribution");
+	}
+
 	/**
 		Delete a Multidistribution
 	**/
@@ -444,6 +457,150 @@ class Distribution extends Controller
 	}
 
 	/**
+		Invite farmers to a single distrib
+	**/
+	@tpl("form.mtt")
+	function doInviteFarmers(distrib:db.MultiDistrib){
+		
+		var form = new sugoi.form.Form("invite");
+		
+		//vendors to add
+		var regularVendors = [];
+		var checked = [];
+		var distributions = distrib.getDistributions();
+		for( d in distributions){
+			checked.push(Std.string(d.contract.id));
+		}
+		#if plugins
+		var cproVendors = [];
+		var invitationsSent = [];
+
+		for( c in distrib.place.amap.getActiveContracts()){
+			var rc = connector.db.RemoteCatalog.getFromContract(c);
+			if( rc!=null ){
+				//is cpro
+				if( pro.db.PNotif.getDistributionInvitation(rc.getCatalog(),distrib).length>0 ){
+					//has already a pending notif
+					invitationsSent.push(c);
+				}else{
+					//invitable
+					cproVendors.push({label: c.vendor.name +" : "+c.name,value:Std.string(c.id)});
+				}				
+			}else{
+				regularVendors.push({label:c.vendor.name +" : "+c.name,value:Std.string(c.id)});
+			}
+		}
+		if(cproVendors.length>0 || invitationsSent.length>0){
+			
+			var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Invitez les producteurs Cagette Pro à participer à cette distribution : Si vous cochez une case, le producteur correspondant recevra une demande qu'il pourra accepter ou refuser</div>";
+			form.addElement( new sugoi.form.elements.Html("html1",html,"Producteurs Cagette Pro") );
+			form.addElement( new sugoi.form.elements.CheckboxGroup("cproVendors","",cproVendors,checked,true) );
+			var html = "";
+			for(i in invitationsSent) html += '<div class="disabled">${i.name} : <b>invitation envoyée</b></div>';
+			form.addElement(new sugoi.form.elements.Html("invitationSent",html,""));
+		}
+		#else
+		for( c in distrib.place.amap.getActiveContracts()){
+			regularVendors.push({label:c.vendor.name +" : "+c.name,value:Std.string(c.id)});
+		}
+		#end
+		
+		var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Vous avez la main pour gérer les catalogues de ces producteurs invités. Attention, décocher une case annulera la participation du producteur à cette distribution</div>";
+		form.addElement( new sugoi.form.elements.Html("html2",html,"Producteurs invités") );
+		form.addElement( new sugoi.form.elements.CheckboxGroup("invitedVendors","",regularVendors,checked,true) );
+		
+
+		
+
+		if(form.isValid()){
+
+			var existingDistributions = distributions;
+			var existingCproDistributions = [];
+			#if plugins
+			//build existing cpro distribution list
+			for(d in existingDistributions.copy()){
+				if(connector.db.RemoteCatalog.getFromContract(d.contract)!=null){
+					existingDistributions.remove(d);
+					existingCproDistributions.push(d);
+				}
+			}
+			#end
+
+			//regular vendors
+			var contractIds:Array<Int> = form.getValueOf("invitedVendors").map(Std.parseInt);
+			for( cid in contractIds){
+				var d = Lambda.find(existingDistributions, function(d) return d.contract.id==cid );
+				if(d==null){
+					//create it					
+					try{
+						var contract = db.Contract.manager.get(cid,false);
+						service.DistributionService.participate(distrib,contract);
+					}catch(e:tink.core.Error){
+						throw Error("/distribution",e.message);
+					}
+				}
+			}
+
+			// delete it
+			for( d in existingDistributions){
+				if(!Lambda.has(contractIds,d.contract.id)){
+					try{
+						service.DistributionService.delete(d);
+					}catch(e:tink.core.Error){
+						throw Error("/distribution",e.message);
+					}
+				}
+			}
+
+			#if plugins
+			//cpro vendors
+			var contractIds:Array<Int> = form.getValueOf("cproVendors").map(Std.parseInt);
+			for( cid in contractIds ){
+				var d = Lambda.find(existingCproDistributions, function(d) return d.contract.id==cid );				
+				if(d==null){
+					var contract = db.Contract.manager.get(cid,false);
+					var rc = connector.db.RemoteCatalog.getFromContract(contract);
+					var hasNotif = pro.db.PNotif.getDistributionInvitation(rc.getCatalog(),distrib).length>0;
+					if(!hasNotif){
+						//send notif
+						var contract = db.Contract.manager.get(cid,false);
+						var rc = connector.db.RemoteCatalog.getFromContract(contract);
+						var catalog = rc.getCatalog();
+						if(catalog!=null){
+							pro.db.PNotif.distributionInvitation(catalog, distrib, app.user);
+						}
+					}
+					
+				}
+			}
+
+			// delete it
+			for( d in existingCproDistributions){
+				if(!Lambda.has(contractIds,d.contract.id)){
+					try{
+						service.DistributionService.delete(d,false);
+					}catch(e:tink.core.Error){
+						throw Error("/distribution",e.message);
+					}
+				}
+			}
+			#end
+
+			throw Ok("/distribution","La liste des producteurs invités à été mise à jour");
+		}
+
+		view.form = form;
+		view.title = "Ajouter / supprimer des producteurs pour la distribution du "+view.dDate(distrib.getDate());
+	}
+
+	@tpl("form.mtt")
+	function doInviteFarmersCycle(cycle:db.DistributionCycle){
+
+		view.text = "Fonctionnalité bientôt disponible";
+		view.form = new sugoi.form.Form("pouet");
+	}
+
+	/**
 		Insert a multidistribution
 	**/
 	@tpl("form.mtt")
@@ -475,15 +632,7 @@ class Distribution extends Controller
 		form.getElement("startHour").value 			= DateTool.now().deltaDays(30).setHourMinute(19, 0);
 		form.getElement("endHour").value 			= DateTool.now().deltaDays(30).setHourMinute(20, 0);
 		form.getElement("orderStartDate").value 	= DateTool.now().deltaDays(10).setHourMinute(8, 0);	
-		form.getElement("orderEndDate").value 		= DateTool.now().deltaDays(20).setHourMinute(23, 59);
-		
-		//vendors to add
-		var datas = [];
-		for( c in md.place.amap.getActiveContracts()){
-			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
-		}
-		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Catalogs"),datas,null,true);
-		form.addElement(el);
+		form.getElement("orderEndDate").value 		= DateTool.now().deltaDays(20).setHourMinute(23, 59);				
 		
 		if (form.isValid()) {
 
@@ -493,7 +642,7 @@ class Distribution extends Controller
 				var endHour = form.getValueOf("endHour");
 				var distribStartDate = 	DateTool.setHourMinute( date, startHour.getHours(), startHour.getMinutes() );
 				var distribEndDate = 	DateTool.setHourMinute( date, endHour.getHours(), 	endHour.getMinutes() );
-				var contractIds:Array<Int> = form.getValueOf("contracts");
+				
 				
 				md = service.DistributionService.createMd(
 					db.Place.manager.get(form.getValueOf("placeId"),false),
@@ -501,7 +650,7 @@ class Distribution extends Controller
 					distribEndDate,
 					form.getValueOf("orderStartDate"),
 					form.getValueOf("orderEndDate"),
-					contractIds
+					[]
 				);
 				
 			}
@@ -551,11 +700,13 @@ class Distribution extends Controller
 		form.addElement(x, 4);
 
 		//override dates
+		
 		var overrideDates = new sugoi.form.elements.Checkbox("override","Recaler tous les producteurs sur ces horaires",false);		
 		form.addElement(overrideDates,7);
 		
+		
 		//contracts
-		var label = t._("Catalogs");
+		/*var label = t._("Catalogs");
 		var datas = [];
 		var checked = [];
 		for( c in md.place.amap.getActiveContracts()){
@@ -566,7 +717,7 @@ class Distribution extends Controller
 			checked.push(Std.string(d.contract.id));
 		}
 		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,checked,true);
-		form.addElement(el);
+		form.addElement(el);*/
 		
 		if (form.isValid()) {
 
@@ -587,7 +738,20 @@ class Distribution extends Controller
 					form.getValueOf("orderEndDate")
 				);
 
-				var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
+				//sync
+				for( d in md.getDistributions()){
+					d.lock();
+					d.date = md.distribStartDate;
+					d.end = md.distribEndDate;
+					d.place = md.place;
+					if(form.getValueOf("override")==true){
+						d.orderStartDate = md.orderStartDate;
+						d.orderEndDate = md.orderEndDate;
+					}
+					d.update();
+				}
+
+				/*var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
 				for( cid in contractIds){
 					var d = Lambda.find(distributions, function(d) return d.contract.id==cid );
 					if(d==null){
@@ -616,7 +780,7 @@ class Distribution extends Controller
 					if(!Lambda.has(contractIds,d.contract.id)){
 						service.DistributionService.delete(d);
 					}
-				}
+				}*/
 
 			} catch(e:Error){
 				throw Error('/distribution/editMd/'+md.id  ,e.message);
@@ -765,12 +929,12 @@ class Distribution extends Controller
 		form.addElement(x, 10);
 
 		//vendors to add
-		var datas = [];
+		/*var datas = [];
 		for( c in app.user.amap.getActiveContracts()){
 			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
 		}
 		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Catalogs"),datas,null,true);
-		form.addElement(el);
+		form.addElement(el);*/
 		
 		
 		if (form.isValid()) {
@@ -799,7 +963,7 @@ class Distribution extends Controller
 					openingHour,	
 					closingHour,																	
 					form.getValueOf("placeId"),
-					form.getValueOf("contracts")
+					[]/*form.getValueOf("contracts")*/
 
 				);
 			} catch(e:tink.core.Error){
@@ -813,7 +977,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._("Schedule a recurrent delivery");
+		view.title = "Programmer un cycle de distribution";
 	}
 	
 	/**

@@ -111,7 +111,7 @@ msgstr ""
 msgid "Image updated"
 msgstr ""
 
-#: ../src/controller/Contract.hx:794 ../src/controller/Contract.hx:2825 ../src/controller/Contract.hx:4694 ../src/controller/Contract.hx:4913 ../src/controller/Member.hx:20261 ../src/controller/Product.hx:1775 ../src/controller/Distribution.hx:3898 ../src/controller/Distribution.hx:7623 ../src/controller/Distribution.hx:20543
+#: ../src/controller/Contract.hx:794 ../src/controller/Contract.hx:2825 ../src/controller/Contract.hx:4848 ../src/controller/Member.hx:20261 ../src/controller/Product.hx:1775 ../src/controller/Distribution.hx:3898 ../src/controller/Distribution.hx:7623 ../src/controller/Distribution.hx:8062 ../src/controller/Distribution.hx:25829
 msgid "Forbidden action"
 msgstr ""
 
@@ -159,83 +159,79 @@ msgstr ""
 msgid "zip code"
 msgstr ""
 
-#: ../src/controller/Contract.hx:4173
+#: ../src/controller/Contract.hx:4167
 msgid "This supplier has been saved"
 msgstr ""
 
-#: ../src/controller/Contract.hx:4324 ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:1267 ../lang/master/tpl/contractadmin/defineVendor.mtt:2097
+#: ../src/controller/Contract.hx:4318 ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:1267 ../lang/master/tpl/contractadmin/defineVendor.mtt:2338
 msgid "Key-in a new vendor"
 msgstr ""
 
-#: ../src/controller/Contract.hx:4368
+#: ../src/controller/Contract.hx:4362
 msgid ""
 "We will send him/her an email to explain that your group is going to organize "
 "orders for him very soon"
 msgstr ""
 
-#: ../src/controller/Contract.hx:4999
-msgid "Create a CSA contract"
+#: ../src/controller/Contract.hx:4892
+msgid "Create a catalog"
 msgstr ""
 
-#: ../src/controller/Contract.hx:5033
-msgid "Create a variable orders catalog"
-msgstr ""
-
-#: ../src/controller/Contract.hx:5540
+#: ../src/controller/Contract.hx:5440
 msgid "Vendor"
 msgstr ""
 
-#: ../src/controller/Contract.hx:6119
+#: ../src/controller/Contract.hx:6203
 msgid "New catalog created"
 msgstr ""
 
-#: ../src/controller/Contract.hx:6369
+#: ../src/controller/Contract.hx:6453
 msgid "You don't have the authorization to remove a contract"
 msgstr ""
 
-#: ../src/controller/Contract.hx:6953
+#: ../src/controller/Contract.hx:7037
 msgid "You cannot delete this contract because some orders are linked to it."
 msgstr ""
 
-#: ../src/controller/Contract.hx:7349
+#: ../src/controller/Contract.hx:7433
 msgid "Contract deleted"
 msgstr ""
 
-#: ../src/controller/Contract.hx:7414 ../src/controller/Product.hx:3327
+#: ../src/controller/Contract.hx:7498 ../src/controller/Product.hx:3327
 msgid "Token error"
 msgstr ""
 
-#: ../src/controller/Contract.hx:7980 ../src/controller/Contract.hx:11151
+#: ../src/controller/Contract.hx:8064 ../src/controller/Contract.hx:11235
 msgid "This contract is not opened for orders"
 msgstr ""
 
-#: ../src/controller/Contract.hx:10210 ../src/controller/Contract.hx:13216
+#: ../src/controller/Contract.hx:10294 ../src/controller/Contract.hx:13300
 msgid "Could not find the product ::produ:: and delivery ::deliv::"
 msgstr ""
 
-#: ../src/controller/Contract.hx:10687 ../src/controller/Contract.hx:16449
+#: ../src/controller/Contract.hx:10771 ../src/controller/Contract.hx:16533
 msgid "Your order has been updated"
 msgstr ""
 
-#: ../src/controller/Contract.hx:13861
+#: ../src/controller/Contract.hx:13945
 msgid "Your CSA order has been saved"
 msgstr ""
 
-#: ../src/controller/Contract.hx:13944
+#: ../src/controller/Contract.hx:14028
 msgid "In order to save your order, please choose a means of payment."
 msgstr ""
 
-#: ../src/controller/Contract.hx:14486
+#: ../src/controller/Contract.hx:14570
 msgid "This delivery has already taken place, you can no longer modify the order."
 msgstr ""
 
-#: ../src/controller/Contract.hx:14613
+#: ../src/controller/Contract.hx:14697
 msgid ""
 "<br/>As the manager of the contract you can modify the order from this page: "
 "<a href='/contractAdmin'>Management of contracts</a>"
 msgstr ""
 
-#: ../src/controller/Contract.hx:15899
+#: ../src/controller/Contract.hx:15983
 msgid "Error, could not find the order"
 msgstr ""
 
@@ -271,7 +267,7 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: ../src/controller/AmapAdmin.hx:4484 ../src/db/User.hx:18892 ../lang/master/tpl/member/view.mtt:6040 ../lang/master/tpl/amapadmin/rights.mtt:220
+#: ../src/controller/AmapAdmin.hx:4484 ../src/db/User.hx:19002 ../lang/master/tpl/member/view.mtt:6040 ../lang/master/tpl/amapadmin/rights.mtt:220
 msgid "Rights"
 msgstr ""
 
@@ -303,7 +299,7 @@ msgstr ""
 msgid "Modify the rights of ::user::"
 msgstr ""
 
-#: ../src/controller/AmapAdmin.hx:7069 ../src/controller/AmapAdmin.hx:7290 ../src/db/Place.hx:1254 ../lang/master/tpl/product/import.mtt:1866 ../lang/master/tpl/distribution/listByDateShort.mtt:415 ../lang/master/tpl/distribution/listByDate.mtt:567 ../lang/master/tpl/member/waiting.mtt:153 ../lang/master/tpl/amapadmin/rights.mtt:193 ../lang/master/tpl/contractadmin/view.mtt:1256 ../lang/master/tpl/contractadmin/products.mtt:1740
+#: ../src/controller/AmapAdmin.hx:7069 ../src/controller/AmapAdmin.hx:7290 ../src/db/Place.hx:1254 ../lang/master/tpl/product/import.mtt:1866 ../lang/master/tpl/distribution/listByDateShort.mtt:415 ../lang/master/tpl/distribution/listByDate.mtt:567 ../lang/master/tpl/member/waiting.mtt:153 ../lang/master/tpl/amapadmin/rights.mtt:193 ../lang/master/tpl/contractadmin/view.mtt:1173 ../lang/master/tpl/contractadmin/products.mtt:1740
 msgid "Name"
 msgstr ""
 
@@ -439,7 +435,7 @@ msgstr ""
 msgid "This E-mail is not linked to a known account"
 msgstr ""
 
-#: ../src/controller/User.hx:3552 ../src/controller/User.hx:4536 ../src/controller/Member.hx:11082 ../src/db/User.hx:17264 ../lang/master/tpl/design.mtt:5145 ../lang/master/tpl/mail/design.mtt:279
+#: ../src/controller/User.hx:3552 ../src/controller/User.hx:4536 ../src/controller/Member.hx:11082 ../src/db/User.hx:17374 ../lang/master/tpl/macros.mtt:12170 ../lang/master/tpl/mail/design.mtt:279
 msgid "Cagette.net"
 msgstr ""
 
@@ -535,7 +531,7 @@ msgstr ""
 msgid "Unknown selection"
 msgstr ""
 
-#: ../src/controller/Member.hx:3022 ../lang/master/tpl/member/default.mtt:685 ../lang/master/tpl/design.mtt:2173
+#: ../src/controller/Member.hx:3022 ../lang/master/tpl/member/default.mtt:685 ../lang/master/tpl/design.mtt:2180
 msgid "Members"
 msgstr ""
 
@@ -583,7 +579,7 @@ msgid ""
 "to do it. Please don't forget to tell this person."
 msgstr ""
 
-#: ../src/controller/Member.hx:9389 ../src/db/User.hx:18993
+#: ../src/controller/Member.hx:9389 ../src/db/User.hx:19103
 msgid "Password"
 msgstr ""
 
@@ -701,11 +697,11 @@ msgstr ""
 msgid "Partner's Mobile phone"
 msgstr ""
 
-#: ../src/controller/Member.hx:15697 ../src/db/Vendor.hx:5121 ../src/db/User.hx:18628 ../src/db/Place.hx:1284 ../lang/master/tpl/member/import.mtt:866 ../lang/master/tpl/member/import.mtt:1574
+#: ../src/controller/Member.hx:15697 ../src/db/Vendor.hx:5121 ../src/db/User.hx:18738 ../src/db/Place.hx:1284 ../lang/master/tpl/member/import.mtt:866 ../lang/master/tpl/member/import.mtt:1574
 msgid "Address 1"
 msgstr ""
 
-#: ../src/controller/Member.hx:15715 ../src/db/Vendor.hx:5159 ../src/db/User.hx:18663 ../src/db/Place.hx:1319 ../lang/master/tpl/member/import.mtt:899 ../lang/master/tpl/member/import.mtt:1606
+#: ../src/controller/Member.hx:15715 ../src/db/Vendor.hx:5159 ../src/db/User.hx:18773 ../src/db/Place.hx:1319 ../lang/master/tpl/member/import.mtt:899 ../lang/master/tpl/member/import.mtt:1606
 msgid "Address 2"
 msgstr ""
 
@@ -713,7 +709,7 @@ msgstr ""
 msgid "Post code"
 msgstr ""
 
-#: ../src/controller/Member.hx:15751 ../src/controller/Group.hx:3942 ../src/db/Vendor.hx:5230 ../src/db/User.hx:18728 ../src/db/Place.hx:1384 ../lang/master/tpl/member/import.mtt:964 ../lang/master/tpl/member/import.mtt:1669
+#: ../src/controller/Member.hx:15751 ../src/controller/Group.hx:3942 ../src/db/Vendor.hx:5230 ../src/db/User.hx:18838 ../src/db/Place.hx:1384 ../lang/master/tpl/member/import.mtt:964 ../lang/master/tpl/member/import.mtt:1669
 msgid "City"
 msgstr ""
 
@@ -1049,11 +1045,11 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: ../src/controller/Group.hx:3868 ../src/db/Vendor.hx:5196 ../src/db/User.hx:18697 ../src/db/Place.hx:1353
+#: ../src/controller/Group.hx:3868 ../src/db/Vendor.hx:5196 ../src/db/User.hx:18807 ../src/db/Place.hx:1353
 msgid "Zip code"
 msgstr ""
 
-#: ../src/controller/Group.hx:4013 ../src/db/Vendor.hx:5087 ../src/db/User.hx:18403 ../lang/master/tpl/member/import.mtt:688 ../lang/master/tpl/member/import.mtt:1401 ../lang/master/tpl/member/payments.mtt:521 ../lang/master/tpl/member/waiting.mtt:208 ../lang/master/tpl/contractadmin/view.mtt:1443
+#: ../src/controller/Group.hx:4013 ../src/db/Vendor.hx:5087 ../src/db/User.hx:18513 ../lang/master/tpl/member/import.mtt:688 ../lang/master/tpl/member/import.mtt:1401 ../lang/master/tpl/member/payments.mtt:521 ../lang/master/tpl/member/waiting.mtt:208 ../lang/master/tpl/contractadmin/view.mtt:1360
 msgid "Phone"
 msgstr ""
 
@@ -1193,11 +1189,11 @@ msgstr ""
 msgid "Products copied from "
 msgstr ""
 
-#: ../src/controller/ContractAdmin.hx:4930 ../src/db/Contract.hx:8203 ../lang/master/tpl/contractadmin/view.mtt:787
+#: ../src/controller/ContractAdmin.hx:4930 ../src/db/Contract.hx:8203 ../lang/master/tpl/contractadmin/view.mtt:704
 msgid "Start date"
 msgstr ""
 
-#: ../src/controller/ContractAdmin.hx:5063 ../src/db/Operation.hx:14113 ../src/db/Contract.hx:8241 ../lang/master/tpl/contractadmin/view.mtt:880
+#: ../src/controller/ContractAdmin.hx:5063 ../src/db/Operation.hx:14113 ../src/db/Contract.hx:8241 ../lang/master/tpl/contractadmin/view.mtt:797
 msgid "End date"
 msgstr ""
 
@@ -1547,202 +1543,202 @@ msgstr ""
 msgid "All but without prices and totals"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:7893 ../src/controller/Distribution.hx:8281
+#: ../src/controller/Distribution.hx:7893 ../src/controller/Distribution.hx:8673
 msgid "The distribution has been deleted"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:8364
+#: ../src/controller/Distribution.hx:8756
 msgid "Bad token"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:9357
+#: ../src/controller/Distribution.hx:9749
 msgid "Change distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:9569 ../src/controller/Distribution.hx:12481 ../src/db/MultiDistrib.hx:11815
+#: ../src/controller/Distribution.hx:9961 ../src/controller/Distribution.hx:12873 ../src/db/MultiDistrib.hx:11815
 msgid "Orders opening date"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:9688 ../src/controller/Distribution.hx:12631 ../src/db/MultiDistrib.hx:11866
+#: ../src/controller/Distribution.hx:10080 ../src/controller/Distribution.hx:13023 ../src/db/MultiDistrib.hx:11866
 msgid "Orders closing date"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:10473
+#: ../src/controller/Distribution.hx:10865
 msgid "The distribution has been proposed to the supplier, please wait for its validation"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:10745 ../src/controller/Distribution.hx:10860 ../src/controller/Distribution.hx:13944 ../src/controller/Distribution.hx:16681
+#: ../src/controller/Distribution.hx:11137 ../src/controller/Distribution.hx:11252 ../src/controller/Distribution.hx:14336 ../src/controller/Distribution.hx:21638
 msgid "The distribution has been recorded"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:11006
+#: ../src/controller/Distribution.hx:11398
 msgid "Attendance of ::farmer:: to the ::date:: distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:11472
+#: ../src/controller/Distribution.hx:11864
 msgid "The delivery is now up to date"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:11554
+#: ../src/controller/Distribution.hx:11946
 msgid "Modify a delivery"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:12117 ../src/controller/Distribution.hx:14832 ../src/controller/Distribution.hx:17888 ../src/controller/Distribution.hx:21160
+#: ../src/controller/Distribution.hx:12509 ../src/controller/Distribution.hx:20125 ../src/controller/Distribution.hx:22845 ../src/controller/Distribution.hx:26446
 msgid "End time"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:13388
+#: ../src/controller/Distribution.hx:13780
 msgid ""
 "Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be "
 "patient, you will receive an e-mail indicating if the request has been validated "
 "or refused."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:13812
+#: ../src/controller/Distribution.hx:14204
 msgid "Distribution request sent"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:14102
+#: ../src/controller/Distribution.hx:14494
 msgid "Create a distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:14452 ../src/controller/Distribution.hx:17117
+#: ../src/controller/Distribution.hx:19745 ../src/controller/Distribution.hx:22074
 msgid "Distribution date"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:14665 ../src/controller/Distribution.hx:17527 ../src/controller/Distribution.hx:20965
+#: ../src/controller/Distribution.hx:19958 ../src/controller/Distribution.hx:22484 ../src/controller/Distribution.hx:26251
 msgid "Start time"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:15562 ../src/controller/Distribution.hx:18162 ../src/controller/Distribution.hx:25065 ../lang/master/tpl/contractadmin/default.mtt:1337 ../lang/master/tpl/design.mtt:2660
-msgid "Catalogs"
-msgstr ""
-
-#: ../src/controller/Distribution.hx:16555
+#: ../src/controller/Distribution.hx:21512
 msgid "The distribution has been recorded, please define which roles are needed."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:16777
+#: ../src/controller/Distribution.hx:21734
 msgid "Create a general distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:20219
+#: ../src/controller/Distribution.hx:23127 ../src/controller/Distribution.hx:30353 ../lang/master/tpl/contractadmin/default.mtt:1337 ../lang/master/tpl/design.mtt:2667
+msgid "Catalogs"
+msgstr ""
+
+#: ../src/controller/Distribution.hx:25505
 msgid "The distribution has been updated"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:20305
+#: ../src/controller/Distribution.hx:25591
 msgid "Edit a general distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:21507 ../src/controller/Distribution.hx:24471
+#: ../src/controller/Distribution.hx:26793 ../src/controller/Distribution.hx:29757
 msgid "Opening time"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:21800 ../src/controller/Distribution.hx:24758
+#: ../src/controller/Distribution.hx:27086 ../src/controller/Distribution.hx:30044
 msgid "Closing time"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:23244 ../src/controller/Distribution.hx:26193
+#: ../src/controller/Distribution.hx:28530 ../src/controller/Distribution.hx:31489
 msgid "The delivery has been saved"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:23410 ../src/controller/Distribution.hx:26282
+#: ../src/controller/Distribution.hx:28696
 msgid "Schedule a recurrent delivery"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:23959
+#: ../src/controller/Distribution.hx:29245
 msgid "Distributions start time"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:24168
+#: ../src/controller/Distribution.hx:29454
 msgid "Distributions end time"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:26679
+#: ../src/controller/Distribution.hx:31976
 msgid "Recurrent deliveries deleted"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:27513
+#: ../src/controller/Distribution.hx:32810
 msgid "This distribution have been validated"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:27820
+#: ../src/controller/Distribution.hx:33117
 msgid "This distribution have been Unvalidated"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:29789
+#: ../src/controller/Distribution.hx:35086
 msgid "Volunteer Roles have been saved for this distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:29872
+#: ../src/controller/Distribution.hx:35169
 msgid "Select volunteer roles for this multidistrib"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:30289
+#: ../src/controller/Distribution.hx:35586
 msgid "You need to first select the volunteer roles for this distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:30855
+#: ../src/controller/Distribution.hx:36152
 msgid "No volunteer assigned"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:31298
+#: ../src/controller/Distribution.hx:36595
 msgid "Volunteers have been assigned to roles for this distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:31388
+#: ../src/controller/Distribution.hx:36685
 msgid "Select a volunteer for each role for this multidistrib"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:31834
+#: ../src/controller/Distribution.hx:37131
 msgid "There are no volunteer roles defined for this distribution"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:32180
+#: ../src/controller/Distribution.hx:37477
 msgid "You have been successfully added to the selected role."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:33066
+#: ../src/controller/Distribution.hx:38363
 msgid "There is no volunteer to remove for this role!"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:33199
+#: ../src/controller/Distribution.hx:38496
 msgid "You can only remove yourself from a role."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:33312
+#: ../src/controller/Distribution.hx:38609
 msgid "Reason for leaving the role"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:33671
+#: ../src/controller/Distribution.hx:38968
 msgid "You have been successfully removed from this role."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:33752
+#: ../src/controller/Distribution.hx:39049
 msgid "Enter the reason why you are leaving this role."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:34570 ../src/controller/Distribution.hx:34737
+#: ../src/controller/Distribution.hx:39867 ../src/controller/Distribution.hx:40034
 msgid "You have been successfully assigned to the selected role."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:43206 ../src/controller/Distribution.hx:44496
+#: ../src/controller/Distribution.hx:48503 ../src/controller/Distribution.hx:49793
 msgid "Undelivered product"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:43450 ../src/controller/Distribution.hx:44829
+#: ../src/controller/Distribution.hx:48747 ../src/controller/Distribution.hx:50126
 msgid "Please select a product"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:43807
+#: ../src/controller/Distribution.hx:49104
 msgid "The undelivered product has been removed from ::n:: orders."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:43927 ../src/controller/Distribution.hx:45504
+#: ../src/controller/Distribution.hx:49224 ../src/controller/Distribution.hx:50801
 msgid "Remove an undelivered product from orders"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:45350
+#: ../src/controller/Distribution.hx:50647
 msgid "The price of ::product:: has been modified to ::price:: in orders."
 msgstr ""
 
@@ -1766,11 +1762,11 @@ msgid ""
 "you've selected."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:4334 ../src/service/DistributionService.hx:20297
+#: ../src/service/DistributionService.hx:4334 ../src/service/DistributionService.hx:20295
 msgid "The date of the delivery must be prior to the end of the contract (::contractEndDate::)"
 msgstr ""
 
-#: ../src/service/DistributionService.hx:4536 ../src/service/DistributionService.hx:20528
+#: ../src/service/DistributionService.hx:4536 ../src/service/DistributionService.hx:20526
 msgid "The date of the delivery must be after the begining of the contract (::contractBeginDate::)"
 msgstr ""
 
@@ -1783,43 +1779,43 @@ msgid "The orders end date must be set after the orders start date !"
 msgstr ""
 
 #: ../src/service/DistributionService.hx:9557
-msgid "This contract is already participating to this distribution"
+msgid "This vendor is already participating to this distribution"
 msgstr ""
 
-#: ../src/service/DistributionService.hx:9811
+#: ../src/service/DistributionService.hx:9809
 msgid ""
 "You can't participate to this distribution because no order start date has "
 "been defined. <a href='::url::' target='_blank'>Please update the general "
 "distribution first</a>."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:10553 ../src/service/DistributionService.hx:12669
+#: ../src/service/DistributionService.hx:10551 ../src/service/DistributionService.hx:12667
 msgid "You cannot edit a distribution which has been already validated."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:11209
+#: ../src/service/DistributionService.hx:11207
 msgid "The distribution date is different from the date of the general distribution."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:11614
+#: ../src/service/DistributionService.hx:11612
 msgid "The distribution place is different from the place of the general distribution."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:13006
+#: ../src/service/DistributionService.hx:13004
 msgid ""
 "Sorry, you can't move the distribution of this farmer to a different date "
 "when payments management is enabled in your group."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:14422
+#: ../src/service/DistributionService.hx:14420
 msgid "Deletion not possible: orders are recorded for ::vendorName:: on ::date::."
 msgstr ""
 
-#: ../src/service/DistributionService.hx:15798
+#: ../src/service/DistributionService.hx:15796
 msgid "daysBeforeOrderEnd or daysBeforeOrderStart is null"
 msgstr ""
 
-#: ../src/service/DistributionService.hx:16840
+#: ../src/service/DistributionService.hx:16838
 msgid "this distributionCycle has not been recorded"
 msgstr ""
 
@@ -1993,41 +1989,41 @@ msgid ""
 "roles. You need to delete the volunteers first."
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:8662
+#: ../src/service/VolunteerService.hx:8698
 msgid "Duty period"
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:9020
+#: ../src/service/VolunteerService.hx:9056
 msgid ""
 "The number of days before the volunteers can join a duty period needs to "
 "be greater than 6 days."
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:9190
+#: ../src/service/VolunteerService.hx:9226
 msgid ""
 "The number of days before the volunteers can join a duty period needs to "
 "be lower than 181 days."
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:9384
+#: ../src/service/VolunteerService.hx:9420
 msgid ""
 "The number of days before the duty periods to send the instructions mail "
 "to all the volunteers needs to be greater than 1 day."
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:9583
+#: ../src/service/VolunteerService.hx:9619
 msgid ""
 "The number of days before the duty periods to send the instructions mail "
 "to all the volunteers needs to be lower than 15 days."
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:9806
+#: ../src/service/VolunteerService.hx:9842
 msgid ""
 "The number of days before the duty periods to send the vacant roles mail "
 "to all members needs to be greater than 1 day."
 msgstr ""
 
-#: ../src/service/VolunteerService.hx:9998
+#: ../src/service/VolunteerService.hx:10034
 msgid ""
 "The number of days before the duty periods to send the instructions mail "
 "to all members needs to be lower than 15 days."
@@ -2157,7 +2153,7 @@ msgstr ""
 msgid "Administrator"
 msgstr ""
 
-#: ../src/db/UserAmap.hx:2172 ../lang/master/tpl/design.mtt:2885
+#: ../src/db/UserAmap.hx:2172 ../lang/master/tpl/design.mtt:2892
 msgid "Messaging"
 msgstr ""
 
@@ -2193,7 +2189,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: ../src/db/Vendor.hx:5014 ../src/db/User.hx:18374 ../lang/master/tpl/member/import.mtt:659 ../lang/master/tpl/member/import.mtt:1373 ../lang/master/tpl/member/payments.mtt:602 ../lang/master/tpl/member/payments.mtt:725 ../lang/master/tpl/member/waiting.mtt:180 ../lang/master/tpl/contractadmin/view.mtt:1346
+#: ../src/db/Vendor.hx:5014 ../src/db/User.hx:18484 ../lang/master/tpl/member/import.mtt:659 ../lang/master/tpl/member/import.mtt:1373 ../lang/master/tpl/member/payments.mtt:602 ../lang/master/tpl/member/payments.mtt:725 ../lang/master/tpl/member/waiting.mtt:180 ../lang/master/tpl/contractadmin/view.mtt:1263
 msgid "Email"
 msgstr ""
 
@@ -2249,7 +2245,7 @@ msgstr ""
 msgid "Number of required volunteers during a distribution"
 msgstr ""
 
-#: ../src/db/Contract.hx:8401 ../src/db/User.hx:18963 ../src/db/Amap.hx:11989
+#: ../src/db/Contract.hx:8401 ../src/db/User.hx:19073 ../src/db/Amap.hx:11989
 msgid "Options"
 msgstr ""
 
@@ -2265,7 +2261,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: ../src/db/Contract.hx:8568 ../lang/master/tpl/distribution/list.mtt:772 ../lang/master/tpl/distribution/listByProductUser.mtt:772 ../lang/master/tpl/contractadmin/view.mtt:1159
+#: ../src/db/Contract.hx:8568 ../lang/master/tpl/distribution/list.mtt:772 ../lang/master/tpl/distribution/listByProductUser.mtt:772 ../lang/master/tpl/contractadmin/view.mtt:1076
 msgid "Farmer"
 msgstr ""
 
@@ -2273,11 +2269,11 @@ msgstr ""
 msgid "End hour"
 msgstr ""
 
-#: ../src/db/User.hx:2927 ../src/db/User.hx:18800
+#: ../src/db/User.hx:2927 ../src/db/User.hx:18910
 msgid "Nationality"
 msgstr ""
 
-#: ../src/db/User.hx:3177 ../src/db/User.hx:18848
+#: ../src/db/User.hx:3177 ../src/db/User.hx:18958
 msgid "Country of residence"
 msgstr ""
 
@@ -2309,51 +2305,51 @@ msgstr ""
 msgid "Canadian"
 msgstr ""
 
-#: ../src/db/User.hx:16804
+#: ../src/db/User.hx:16914
 msgid "This user cannot receive an invitation"
 msgstr ""
 
-#: ../src/db/User.hx:17073
+#: ../src/db/User.hx:17183
 msgid "Invitation"
 msgstr ""
 
-#: ../src/db/User.hx:17134
+#: ../src/db/User.hx:17244
 msgid "Invitation Cagette.net"
 msgstr ""
 
-#: ../src/db/User.hx:18305 ../lang/master/tpl/member/import.mtt:592 ../lang/master/tpl/member/import.mtt:1308
+#: ../src/db/User.hx:18415 ../lang/master/tpl/member/import.mtt:592 ../lang/master/tpl/member/import.mtt:1308
 msgid "First name"
 msgstr ""
 
-#: ../src/db/User.hx:18341 ../lang/master/tpl/member/import.mtt:626 ../lang/master/tpl/member/import.mtt:1341
+#: ../src/db/User.hx:18451 ../lang/master/tpl/member/import.mtt:626 ../lang/master/tpl/member/import.mtt:1341
 msgid "Last name"
 msgstr ""
 
-#: ../src/db/User.hx:18435 ../lang/master/tpl/member/import.mtt:717 ../lang/master/tpl/member/import.mtt:1429
+#: ../src/db/User.hx:18545 ../lang/master/tpl/member/import.mtt:717 ../lang/master/tpl/member/import.mtt:1429
 msgid "Partner first name"
 msgstr ""
 
-#: ../src/db/User.hx:18480 ../lang/master/tpl/member/import.mtt:759 ../lang/master/tpl/member/import.mtt:1470
+#: ../src/db/User.hx:18590 ../lang/master/tpl/member/import.mtt:759 ../lang/master/tpl/member/import.mtt:1470
 msgid "Partner last name"
 msgstr ""
 
-#: ../src/db/User.hx:18521 ../lang/master/tpl/member/import.mtt:800 ../lang/master/tpl/member/import.mtt:1510
+#: ../src/db/User.hx:18631 ../lang/master/tpl/member/import.mtt:800 ../lang/master/tpl/member/import.mtt:1510
 msgid "Partner email"
 msgstr ""
 
-#: ../src/db/User.hx:18558
+#: ../src/db/User.hx:18668
 msgid "Partner phone"
 msgstr ""
 
-#: ../src/db/User.hx:18594 ../lang/master/tpl/account/default.mtt:6219
+#: ../src/db/User.hx:18704 ../lang/master/tpl/account/default.mtt:6219
 msgid "Language"
 msgstr ""
 
-#: ../src/db/User.hx:18760
+#: ../src/db/User.hx:18870
 msgid "Birth date"
 msgstr ""
 
-#: ../src/db/User.hx:18922 ../lang/master/tpl/member/waiting.mtt:236
+#: ../src/db/User.hx:19032 ../lang/master/tpl/member/waiting.mtt:236
 msgid "Registration date"
 msgstr ""
 
@@ -2636,7 +2632,7 @@ msgstr ""
 msgid "Subscription payment date"
 msgstr ""
 
-#: ../lang/master/tpl/membership/default.mtt:448 ../lang/master/tpl/macros.mtt:11716 ../lang/master/tpl/distribution/default.mtt:12842 ../lang/master/tpl/amapadmin/volunteers/default.mtt:648 ../lang/master/tpl/contractadmin/orders.mtt:6434 ../lang/master/tpl/contractadmin/orders.mtt:6792
+#: ../lang/master/tpl/membership/default.mtt:448 ../lang/master/tpl/macros.mtt:11716 ../lang/master/tpl/distribution/default.mtt:13802 ../lang/master/tpl/amapadmin/volunteers/default.mtt:648 ../lang/master/tpl/contractadmin/orders.mtt:6434 ../lang/master/tpl/contractadmin/orders.mtt:6792
 msgid "Delete"
 msgstr ""
 
@@ -2732,7 +2728,7 @@ msgstr ""
 msgid "Leave this group"
 msgstr ""
 
-#: ../lang/master/tpl/account/default.mtt:4648 ../lang/master/tpl/home.mtt:4748 ../lang/master/tpl/macros.mtt:11520 ../lang/master/tpl/member/view.mtt:1322 ../lang/master/tpl/member/payments.mtt:1557 ../lang/master/tpl/plugin/pro/delivery/orders.mtt:1170 ../lang/master/tpl/amapadmin/volunteers/default.mtt:578 ../lang/master/tpl/contractadmin/orders.mtt:3244 ../lang/master/tpl/contractadmin/orders.mtt:3424 ../lang/master/tpl/contractadmin/orders.mtt:3968 ../lang/master/tpl/contractadmin/orders.mtt:4309 ../lang/master/tpl/contractadmin/view.mtt:983 ../lang/master/tpl/contractadmin/products.mtt:3293 ../lang/master/tpl/contractadmin/default.mtt:4100 ../lang/master/tpl/contractadmin/default.mtt:4873 ../lang/master/tpl/amap/default.mtt:612
+#: ../lang/master/tpl/account/default.mtt:4648 ../lang/master/tpl/home.mtt:4748 ../lang/master/tpl/macros.mtt:11520 ../lang/master/tpl/member/view.mtt:1322 ../lang/master/tpl/member/payments.mtt:1557 ../lang/master/tpl/plugin/pro/delivery/orders.mtt:1172 ../lang/master/tpl/amapadmin/volunteers/default.mtt:578 ../lang/master/tpl/contractadmin/orders.mtt:3244 ../lang/master/tpl/contractadmin/orders.mtt:3424 ../lang/master/tpl/contractadmin/orders.mtt:3968 ../lang/master/tpl/contractadmin/orders.mtt:4309 ../lang/master/tpl/contractadmin/view.mtt:900 ../lang/master/tpl/contractadmin/products.mtt:3293 ../lang/master/tpl/contractadmin/default.mtt:4121 ../lang/master/tpl/contractadmin/default.mtt:4894 ../lang/master/tpl/amap/default.mtt:612
 msgid "Edit"
 msgstr ""
 
@@ -2810,7 +2806,7 @@ msgstr ""
 msgid "My order"
 msgstr ""
 
-#: ../lang/master/tpl/home.mtt:5924 ../lang/master/tpl/distribution/default.mtt:5197
+#: ../lang/master/tpl/home.mtt:5924 ../lang/master/tpl/distribution/default.mtt:5194
 msgid "Orders closed"
 msgstr ""
 
@@ -2960,6 +2956,26 @@ msgstr ""
 
 #: ../lang/master/tpl/macros.mtt:7608
 msgid "You need to pay on the spot at the collection of products"
+msgstr ""
+
+#: ../lang/master/tpl/macros.mtt:12254
+msgid "HELP"
+msgstr ""
+
+#: ../lang/master/tpl/macros.mtt:12354
+msgid "Documentation"
+msgstr ""
+
+#: ../lang/master/tpl/macros.mtt:12490
+msgid "Facebook group"
+msgstr ""
+
+#: ../lang/master/tpl/macros.mtt:12768
+msgid "Propose features"
+msgstr ""
+
+#: ../lang/master/tpl/macros.mtt:13684
+msgid "FOLLOW US"
 msgstr ""
 
 #: ../lang/master/tpl/product/addimage.mtt:44
@@ -3151,11 +3167,11 @@ msgstr ""
 msgid "Join"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:97 ../lang/master/tpl/contractadmin/design.mtt:852 ../lang/master/tpl/design.mtt:2418
+#: ../lang/master/tpl/distribution/default.mtt:97 ../lang/master/tpl/contractadmin/design.mtt:852 ../lang/master/tpl/design.mtt:2425
 msgid "Distributions"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:626 ../lang/master/tpl/distribution/default.mtt:7179 ../lang/master/tpl/amapadmin/volunteers/default.mtt:37
+#: ../lang/master/tpl/distribution/default.mtt:626 ../lang/master/tpl/distribution/default.mtt:7451 ../lang/master/tpl/amapadmin/volunteers/default.mtt:37
 msgid "Duty periods"
 msgstr ""
 
@@ -3171,71 +3187,71 @@ msgstr ""
 msgid "Orders closing"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:4815
+#: ../lang/master/tpl/distribution/default.mtt:4812
 msgid "Orders not yet open"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:4998
+#: ../lang/master/tpl/distribution/default.mtt:4995
 msgid "Orders open"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:5362
+#: ../lang/master/tpl/distribution/default.mtt:5359
 msgid "Distribution done"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:5762
+#: ../lang/master/tpl/distribution/default.mtt:5759
 msgid "Distribution confirmed"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:6113
+#: ../lang/master/tpl/distribution/default.mtt:6156
 msgid "Vendors"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:7731 ../lang/master/tpl/amapadmin/volunteers/default.mtt:69
+#: ../lang/master/tpl/distribution/default.mtt:8003 ../lang/master/tpl/amapadmin/volunteers/default.mtt:69
 msgid "Volunteer roles"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:7981
+#: ../lang/master/tpl/distribution/default.mtt:8253
 msgid "Registred volunteers"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:8351 ../lang/master/tpl/distribution/default.mtt:9032 ../lang/master/tpl/contractadmin/orders.mtt:45 ../lang/master/tpl/contractadmin/distributions.mtt:1547 ../lang/master/tpl/contractadmin/design.mtt:1038 ../lang/master/tpl/contractadmin/contract.mtt:305 ../lang/master/tpl/contractadmin/selectDistrib.mtt:83 ../lang/master/tpl/contractadmin/selectDistrib.mtt:691
+#: ../lang/master/tpl/distribution/default.mtt:8623 ../lang/master/tpl/distribution/default.mtt:9304 ../lang/master/tpl/contractadmin/orders.mtt:45 ../lang/master/tpl/contractadmin/distributions.mtt:1547 ../lang/master/tpl/contractadmin/design.mtt:1038 ../lang/master/tpl/contractadmin/contract.mtt:305 ../lang/master/tpl/contractadmin/selectDistrib.mtt:83 ../lang/master/tpl/contractadmin/selectDistrib.mtt:691
 msgid "Orders"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:9941 ../lang/master/tpl/distribution/default.mtt:10989
+#: ../lang/master/tpl/distribution/default.mtt:10403 ../lang/master/tpl/distribution/default.mtt:11616
 msgid "Distribution start date is different from general distribution"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:10194 ../lang/master/tpl/distribution/default.mtt:11242
+#: ../lang/master/tpl/distribution/default.mtt:10656 ../lang/master/tpl/distribution/default.mtt:11869
 msgid "Distribution end date is different from general distribution"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:11563
+#: ../lang/master/tpl/distribution/default.mtt:12190
 msgid "Order start date is different from general distribution"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:11889
+#: ../lang/master/tpl/distribution/default.mtt:12516
 msgid "Order end date is different from general distribution"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:12445 ../lang/master/tpl/contractadmin/distributions.mtt:1882 ../lang/master/tpl/contractadmin/distributions.mtt:2428
+#: ../lang/master/tpl/distribution/default.mtt:13241 ../lang/master/tpl/contractadmin/distributions.mtt:1882 ../lang/master/tpl/contractadmin/distributions.mtt:2428
 msgid "Distribution cycle"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:12605 ../lang/master/tpl/plugin/pro/delivery/default.mtt:3918 ../lang/master/tpl/contractadmin/distributions.mtt:2027
+#: ../lang/master/tpl/distribution/default.mtt:13401 ../lang/master/tpl/plugin/pro/delivery/default.mtt:3918 ../lang/master/tpl/contractadmin/distributions.mtt:2027
 msgid "Weekly"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:12636 ../lang/master/tpl/plugin/pro/delivery/default.mtt:3949 ../lang/master/tpl/contractadmin/distributions.mtt:2057
+#: ../lang/master/tpl/distribution/default.mtt:13432 ../lang/master/tpl/plugin/pro/delivery/default.mtt:3949 ../lang/master/tpl/contractadmin/distributions.mtt:2057
 msgid "Monthly"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:12668 ../lang/master/tpl/plugin/pro/delivery/default.mtt:3981 ../lang/master/tpl/contractadmin/distributions.mtt:2088
+#: ../lang/master/tpl/distribution/default.mtt:13464 ../lang/master/tpl/plugin/pro/delivery/default.mtt:3981 ../lang/master/tpl/contractadmin/distributions.mtt:2088
 msgid "Every 2 weeks"
 msgstr ""
 
-#: ../lang/master/tpl/distribution/default.mtt:12706 ../lang/master/tpl/plugin/pro/delivery/default.mtt:4019 ../lang/master/tpl/contractadmin/distributions.mtt:2125
+#: ../lang/master/tpl/distribution/default.mtt:13502 ../lang/master/tpl/plugin/pro/delivery/default.mtt:4019 ../lang/master/tpl/contractadmin/distributions.mtt:2125
 msgid "Every 3 weeks"
 msgstr ""
 
@@ -3451,7 +3467,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: ../lang/master/tpl/member/payments.mtt:1614 ../lang/master/tpl/plugin/pro/delivery/default.mtt:4155 ../lang/master/tpl/contractadmin/distributions.mtt:2255 ../lang/master/tpl/contractadmin/products.mtt:3480 ../lang/master/tpl/contractadmin/default.mtt:2643 ../lang/master/tpl/contractadmin/default.mtt:4952 ../lang/master/tpl/validate/user.mtt:3956
+#: ../lang/master/tpl/member/payments.mtt:1614 ../lang/master/tpl/plugin/pro/delivery/default.mtt:4155 ../lang/master/tpl/contractadmin/distributions.mtt:2255 ../lang/master/tpl/contractadmin/products.mtt:3480 ../lang/master/tpl/contractadmin/default.mtt:2664 ../lang/master/tpl/contractadmin/default.mtt:4973 ../lang/master/tpl/validate/user.mtt:3956
 msgid "Del."
 msgstr ""
 
@@ -3578,7 +3594,7 @@ msgstr ""
 msgid "In credit"
 msgstr ""
 
-#: ../lang/master/tpl/plugin/pro/delivery/view.mtt:1602 ../lang/master/tpl/contractadmin/ordersByProduct.mtt:1604 ../lang/master/tpl/contractadmin/ordersByProduct.mtt:1824
+#: ../lang/master/tpl/plugin/pro/delivery/view.mtt:245 ../lang/master/tpl/contractadmin/ordersByProduct.mtt:1604 ../lang/master/tpl/contractadmin/ordersByProduct.mtt:1824
 msgid "Order form"
 msgstr ""
 
@@ -3590,7 +3606,7 @@ msgstr ""
 msgid "We found these vendors in our database :"
 msgstr ""
 
-#: ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:908 ../lang/master/tpl/contractadmin/defineVendor.mtt:1711
+#: ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:908 ../lang/master/tpl/contractadmin/defineVendor.mtt:1952
 msgid "We could not find any vendor matching your search"
 msgstr ""
 
@@ -3602,7 +3618,7 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: ../lang/master/tpl/amapadmin/addimage.mtt:40 ../lang/master/tpl/amapadmin/default.mtt:434
+#: ../lang/master/tpl/amapadmin/addimage.mtt:40 ../lang/master/tpl/amapadmin/default.mtt:421
 msgid "Choose a logo"
 msgstr ""
 
@@ -3610,21 +3626,17 @@ msgstr ""
 msgid "Format : JPG, GIF or PNG"
 msgstr ""
 
-#: ../lang/master/tpl/amapadmin/default.mtt:219
-msgid "contracts in progress"
-msgstr ""
-
-#: ../lang/master/tpl/amapadmin/default.mtt:288
+#: ../lang/master/tpl/amapadmin/default.mtt:275
 msgid "Edit properties"
 msgstr ""
 
-#: ../lang/master/tpl/amapadmin/default.mtt:501
+#: ../lang/master/tpl/amapadmin/default.mtt:488
 msgid ""
 "Your group has a public page, You can use it as a micro-website.<br/>Copy-paste "
 "the address of this page and share it !"
 msgstr ""
 
-#: ../lang/master/tpl/amapadmin/default.mtt:963
+#: ../lang/master/tpl/amapadmin/default.mtt:950
 msgid "Display"
 msgstr ""
 
@@ -3744,19 +3756,15 @@ msgstr ""
 msgid "Contract type"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/view.mtt:665
+#: ../lang/master/tpl/contractadmin/view.mtt:576
 msgid "CSA Contract"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/view.mtt:706
-msgid "Variable order contract"
-msgstr ""
-
-#: ../lang/master/tpl/contractadmin/view.mtt:1067
+#: ../lang/master/tpl/contractadmin/view.mtt:984
 msgid "Duplicate"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/view.mtt:1590 ../lang/master/tpl/contractadmin/products.mtt:44 ../lang/master/tpl/contractadmin/design.mtt:648 ../lang/master/tpl/contractadmin/contract.mtt:146 ../lang/master/tpl/contractadmin/stocks.mtt:47 ../lang/master/tpl/stats/default.mtt:138 ../lang/master/tpl/stats/default.mtt:215
+#: ../lang/master/tpl/contractadmin/view.mtt:1507 ../lang/master/tpl/contractadmin/products.mtt:44 ../lang/master/tpl/contractadmin/design.mtt:648 ../lang/master/tpl/contractadmin/contract.mtt:146 ../lang/master/tpl/contractadmin/stocks.mtt:47 ../lang/master/tpl/stats/default.mtt:138 ../lang/master/tpl/stats/default.mtt:215
 msgid "Products"
 msgstr ""
 
@@ -3883,7 +3891,7 @@ msgstr ""
 msgid "You need to select at least one product to perform this action"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/products.mtt:3441 ../lang/master/tpl/contractadmin/default.mtt:4244
+#: ../lang/master/tpl/contractadmin/products.mtt:3441 ../lang/master/tpl/contractadmin/default.mtt:4265
 msgid "Picture"
 msgstr ""
 
@@ -3895,7 +3903,7 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/defineVendor.mtt:1907
+#: ../lang/master/tpl/contractadmin/defineVendor.mtt:2148
 msgid "if you have not found your vendor, enter a new record"
 msgstr ""
 
@@ -3915,43 +3923,43 @@ msgstr ""
 msgid "Old catalogs"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:2533
+#: ../lang/master/tpl/contractadmin/default.mtt:2554
 msgid "Manage"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:2858
+#: ../lang/master/tpl/contractadmin/default.mtt:2879
 msgid "Create of find a catalog"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:3047
+#: ../lang/master/tpl/contractadmin/default.mtt:3068
 msgid "Old contracts"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:3343
+#: ../lang/master/tpl/contractadmin/default.mtt:3364
 msgid "Global orders view"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:3524
+#: ../lang/master/tpl/contractadmin/default.mtt:3545
 msgid "Same day"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:3601
+#: ../lang/master/tpl/contractadmin/default.mtt:3622
 msgid "Timeframe"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:3739 ../lang/master/tpl/design.mtt:1871
+#: ../lang/master/tpl/contractadmin/default.mtt:3760 ../lang/master/tpl/design.mtt:1871
 msgid "Farmers"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:4438
+#: ../lang/master/tpl/contractadmin/default.mtt:4459
 msgid "New farmer"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:4686
+#: ../lang/master/tpl/contractadmin/default.mtt:4707
 msgid "Delivery places"
 msgstr ""
 
-#: ../lang/master/tpl/contractadmin/default.mtt:5107
+#: ../lang/master/tpl/contractadmin/default.mtt:5128
 msgid "New delivery place"
 msgstr ""
 
@@ -4326,26 +4334,6 @@ msgstr ""
 
 #: ../lang/master/tpl/design.mtt:1698
 msgid "My account"
-msgstr ""
-
-#: ../lang/master/tpl/design.mtt:5225
-msgid "HELP"
-msgstr ""
-
-#: ../lang/master/tpl/design.mtt:5322
-msgid "Documentation"
-msgstr ""
-
-#: ../lang/master/tpl/design.mtt:5455
-msgid "Facebook group"
-msgstr ""
-
-#: ../lang/master/tpl/design.mtt:5727
-msgid "Propose features"
-msgstr ""
-
-#: ../lang/master/tpl/design.mtt:6622
-msgid "FOLLOW US"
 msgstr ""
 
 #: ../lang/master/tpl/validate/user.mtt:2120

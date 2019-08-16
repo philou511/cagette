@@ -260,7 +260,7 @@ class DistributionService
 
 		for( d in md.getDistributions()){
 			if(d.contract.id==contract.id){
-				throw new Error(t._("This contract is already participating to this distribution"));
+				throw new Error(t._("This vendor is already participating to this distribution"));
 			}
 		}
 
