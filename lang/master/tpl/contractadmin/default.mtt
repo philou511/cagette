@@ -100,7 +100,7 @@
 			$$insert(::_("Create of find a catalog")::,/contract/defineVendor/)
 		::end::
 
-		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens catalogues</a>
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 			<i class="icon icon-list"></i> ::_("Global orders view")::
@@ -142,7 +142,7 @@
 			::end::
 		</table>
 		<!--$$insert(::_("New farmer")::,/vendor/insert/) -->
-		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, créez un nouveau contrat</div>
+		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, cliquez sur "Créer ou trouver un catalogue"</div>
 		
 	</div>	
 </div>

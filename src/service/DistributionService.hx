@@ -449,11 +449,11 @@ class DistributionService
 		updateAmapContractOperations(contract);
 
 		//delete multidistrib if needed
-		if(d.multiDistrib!=null){
+		/*if(d.multiDistrib!=null){
 			if(d.multiDistrib.getDistributions().length == 0){
 				deleteMd(d.multiDistrib);
 			}
-		}
+		}*/
 
 	}
 

@@ -492,7 +492,7 @@ class Distribution extends Controller
 		}
 		if(cproVendors.length>0 || invitationsSent.length>0){
 			
-			var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Invitez les producteurs Cagette Pro à participer à cette distribution : Si vous cochez une case, le producteur correspondant recevra une demande qu'il pourra accepter ou refuser</div>";
+			var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Invitez les producteurs Cagette Pro à participer à cette distribution : Si vous cochez une case, le producteur correspondant recevra une demande qu'il pourra accepter ou refuser.</div>";
 			form.addElement( new sugoi.form.elements.Html("html1",html,"Producteurs Cagette Pro") );
 			form.addElement( new sugoi.form.elements.CheckboxGroup("cproVendors","",cproVendors,checked,true) );
 			var html = "";
@@ -505,7 +505,7 @@ class Distribution extends Controller
 		}
 		#end
 		
-		var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Vous avez la main pour gérer les catalogues de ces producteurs invités. Attention, décocher une case annulera la participation du producteur à cette distribution</div>";
+		var html = "<div class='alert alert-warning'><i class='icon icon-info'></i> Vous avez la main pour gérer les catalogues de ces producteurs invités. Attention, décocher une case annulera la participation du producteur à cette distribution.</div>";
 		form.addElement( new sugoi.form.elements.Html("html2",html,"Producteurs invités") );
 		form.addElement( new sugoi.form.elements.CheckboxGroup("invitedVendors","",regularVendors,checked,true) );
 		
@@ -554,33 +554,35 @@ class Distribution extends Controller
 
 			#if plugins
 			//cpro vendors
-			var contractIds:Array<Int> = form.getValueOf("cproVendors").map(Std.parseInt);
-			for( cid in contractIds ){
-				var d = Lambda.find(existingCproDistributions, function(d) return d.contract.id==cid );				
-				if(d==null){
-					var contract = db.Contract.manager.get(cid,false);
-					var rc = connector.db.RemoteCatalog.getFromContract(contract);
-					var hasNotif = pro.db.PNotif.getDistributionInvitation(rc.getCatalog(),distrib).length>0;
-					if(!hasNotif){
-						//send notif
+			if(cproVendors.length>0){
+				var contractIds:Array<Int> = form.getValueOf("cproVendors").map(Std.parseInt);
+				for( cid in contractIds ){
+					var d = Lambda.find(existingCproDistributions, function(d) return d.contract.id==cid );				
+					if(d==null){
 						var contract = db.Contract.manager.get(cid,false);
 						var rc = connector.db.RemoteCatalog.getFromContract(contract);
-						var catalog = rc.getCatalog();
-						if(catalog!=null){
-							pro.db.PNotif.distributionInvitation(catalog, distrib, app.user);
+						var hasNotif = pro.db.PNotif.getDistributionInvitation(rc.getCatalog(),distrib).length>0;
+						if(!hasNotif){
+							//send notif
+							var contract = db.Contract.manager.get(cid,false);
+							var rc = connector.db.RemoteCatalog.getFromContract(contract);
+							var catalog = rc.getCatalog();
+							if(catalog!=null){
+								pro.db.PNotif.distributionInvitation(catalog, distrib, app.user);
+							}
 						}
+						
 					}
-					
 				}
-			}
 
-			// delete it
-			for( d in existingCproDistributions){
-				if(!Lambda.has(contractIds,d.contract.id)){
-					try{
-						service.DistributionService.delete(d,false);
-					}catch(e:tink.core.Error){
-						throw Error("/distribution",e.message);
+				// delete it
+				for( d in existingCproDistributions){
+					if(!Lambda.has(contractIds,d.contract.id)){
+						try{
+							service.DistributionService.delete(d,false);
+						}catch(e:tink.core.Error){
+							throw Error("/distribution",e.message);
+						}
 					}
 				}
 			}
