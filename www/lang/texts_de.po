@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-05-06 16:47+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"PO-Revision-Date: 2019-08-26 00:24+0000\n"
+"Last-Translator: Swann Martinet <swann.ranskassa@laposte.net>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
 "Language: de\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7-dev\n"
+"X-Generator: Weblate 3.9-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
@@ -1781,12 +1781,12 @@ msgstr "Wir haben bereits ein Konto mit dieser E-Mail-Adresse"
 #. kilogramms
 #: src/View.hx:3308 common/Formatting.hx:1337
 msgid "Kg."
-msgstr "Kg."
+msgstr "kg"
 
 #. gramms
 #: src/View.hx:3349 common/Formatting.hx:1377
 msgid "g."
-msgstr "g."
+msgstr "g"
 
 #. unit of a product)
 #: src/View.hx:3400
@@ -1801,12 +1801,12 @@ msgstr "Anzahl"
 #. liter
 #: src/View.hx:3490 common/Formatting.hx:1462
 msgid "L."
-msgstr "L."
+msgstr "L"
 
 #. centiliter
 #: src/View.hx:3529 common/Formatting.hx:1501
 msgid "cl."
-msgstr "cl."
+msgstr "cL"
 
 #: src/View.hx:4064
 msgid "Sunday"
