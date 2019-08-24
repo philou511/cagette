@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-06-04 11:40+0200\n"
-"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
+"PO-Revision-Date: 2019-08-26 00:24+0000\n"
+"Last-Translator: Swann Martinet <swann.ranskassa@laposte.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Weblate 3.9-dev\n"
 
 #: ../src/payment/Cash.hx:276
 msgid "Cash"
@@ -225,8 +225,8 @@ msgid ""
 "We will send him/her an email to explain that your group is going to "
 "organize orders for him very soon"
 msgstr ""
-"Nous lui enverrons un email pour lui expliquer que votre groupe va organiser "
-"des commandes pour lui très bientôt."
+"Nous lui enverrons un courriel pour lui expliquer que votre groupe va "
+"organiser des commandes pour lui très bientôt"
 
 #: ../src/controller/Contract.hx:8454
 msgid "Create a contract with fixed orders"
@@ -682,7 +682,7 @@ msgstr "Mot de passe"
 
 #: ../src/controller/Member.hx:9651 ../src/controller/Member.hx:22012
 msgid "Phone number is required in this group."
-msgstr "Le numéro de téléphone est obligatoire pour ce groupe"
+msgstr "Le numéro de téléphone est obligatoire pour ce groupe."
 
 #: ../src/controller/Member.hx:10215
 msgid ""
@@ -700,7 +700,7 @@ msgstr "Attention, cet email ou ce nom existe déjà pour un autre compte : "
 msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 "Ces comptes ne peuvent pas être fusionnés car le second compte a des "
-"commandes "
+"commandes"
 
 #: ../src/controller/Member.hx:11156
 msgid "Change your e-mail in your account Cagette.net"
@@ -1127,8 +1127,8 @@ msgstr "Corps de l'email envoyé aux bénévoles"
 msgid ""
 "Number of days before duty period to send mail for vacant volunteer roles"
 msgstr ""
-"Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
-"distribution) "
+"Nombre de jours avant la permanence pour envoyer un courriel pour les rôles "
+"de bénévole vacants"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1533
 msgid "Alert email body"
@@ -1288,8 +1288,8 @@ msgid ""
 "This contract is an example where the customer has to commit to buy the "
 "whole year as with AMAPs"
 msgstr ""
-"Ce contrat est un exemple de contrat maraîcher avec engagement à l'année "
-"comme on le trouve dans les AMAP."
+"Ce contrat est une exemple où le client doit acheter l'année entière comme "
+"avec AMAP"
 
 #: ../src/controller/Group.hx:7642 ../src/controller/Install.hx:3252
 msgid "Big basket of vegetables"
@@ -1421,7 +1421,7 @@ msgstr "Date de distribution"
 msgid "This page allows you to have a global view on orders of all contracts"
 msgstr ""
 "Cette page vous permet d'avoir une vision d'ensemble des commandes tous "
-"contrats confondus."
+"contrats confondus"
 
 #: ../src/controller/ContractAdmin.hx:7995
 msgid "<br/>Select a delivery date:"
@@ -1499,7 +1499,7 @@ msgstr "Email non envoyé"
 
 #: ../src/controller/Cron.hx:3564
 msgid "Instructions for the volunteers of the ::date:: distribution"
-msgstr "Instructions pour les bénévoles de la distribution du ::date:: "
+msgstr "Instructions pour les bénévoles de la distribution du ::date::"
 
 #: ../src/controller/Cron.hx:3745 ../src/controller/Cron.hx:6250
 msgid "::date:: from ::startHour:: to ::endHour::"
@@ -1853,8 +1853,6 @@ msgid "Create a distribution"
 msgstr "Créer une distribution"
 
 #: ../src/controller/Distribution.hx:13793
-#, fuzzy
-#| msgid "Contracts"
 msgid "Contrats"
 msgstr "Contrats"
 
@@ -1948,7 +1946,7 @@ msgstr "Il n'y a pas de bénévole à effacer pour ce rôle !"
 
 #: ../src/controller/Distribution.hx:28753
 msgid "You can only remove yourself from a role."
-msgstr ""
+msgstr "Vous ne pouvez que vous retirer vous-même d'un rôle."
 
 #: ../src/controller/Distribution.hx:28866
 msgid "Reason for leaving the role"
@@ -1978,7 +1976,7 @@ msgstr ""
 #: ../src/service/DistributionService.hx:1306
 #: ../src/service/DistributionService.hx:1947
 msgid "This distribution has no date."
-msgstr "Cette distribution n'a pas de date"
+msgstr "Cette distribution n'a pas de date."
 
 #: ../src/service/DistributionService.hx:2105
 msgid ""
@@ -2017,8 +2015,8 @@ msgstr ""
 #: ../src/service/DistributionService.hx:4778
 msgid "The distribution start date must be set after the orders end date."
 msgstr ""
-"La date de début de distribution doit être située après la fermeture des "
-"commandes"
+"La date de début de distribution doit être établie après la fermeture des "
+"commandes."
 
 #: ../src/service/DistributionService.hx:4933
 msgid "The orders end date must be set after the orders start date !"
@@ -2067,12 +2065,12 @@ msgstr ""
 #: ../src/service/DistributionService.hx:12027
 msgid "Deletion not possible: some orders are saved for this delivery."
 msgstr ""
-"Effacement impossible : des commandes sont enregistrées pour cette "
-"distribution. "
+"Effacement impossible : des commandes sont enregistrées pour cette livraison."
 
 #: ../src/service/DistributionService.hx:13187
+#, fuzzy
 msgid "daysBeforeOrderEnd or daysBeforeOrderStart is null"
-msgstr "daysBeforeOrderEnd or daysBeforeOrderStart is null"
+msgstr "daysBeforeOrderEnd ou daysBeforeOrderStart est vide"
 
 #: ../src/service/DistributionService.hx:14204
 msgid "this distributionCycle has not been recorded"
@@ -2296,7 +2294,7 @@ msgstr "Cet adhérent n'est pas assigné à ce rôle !"
 
 #: ../src/service/VolunteerService.hx:7473
 msgid "Missing distribution or role in the url!"
-msgstr ""
+msgstr "Distribution manquante ou rôle dans l'URL !"
 
 #: ../src/service/VolunteerService.hx:8145
 msgid ""
@@ -2331,28 +2329,32 @@ msgid ""
 "The number of days before the duty periods to send the instructions mail to "
 "all the volunteers needs to be greater than 1 day."
 msgstr ""
-"Le nombre de jours pour l'envoi du mail d'instructions doit être supérieur à "
-"1."
+"Le nombre de jours avant les permanences pour l'envoi du courriel "
+"d'instructions doit être supérieur à 1."
 
 #: ../src/service/VolunteerService.hx:9490
 msgid ""
 "The number of days before the duty periods to send the instructions mail to "
 "all the volunteers needs to be lower than 15 days."
 msgstr ""
-"Le nombre de jours pour l'envoi du mail d'instructions doit être inférieur à "
-"15."
+"Le nombre de jours avant les permanences pour l'envoi du courriel "
+"d'instructions à tous les bénévoles doit être inférieur à 15."
 
 #: ../src/service/VolunteerService.hx:9728
 msgid ""
 "The number of days before the duty periods to send the vacant roles mail to "
 "all members needs to be greater than 1 day."
 msgstr ""
+"Le nombre de jours avant les permanences avant l'envoi du courriel pour les "
+"rôles vacants à tous les membres doit être de plus de 1."
 
 #: ../src/service/VolunteerService.hx:9934
 msgid ""
 "The number of days before the duty periods to send the instructions mail to "
 "all members needs to be lower than 15 days."
 msgstr ""
+"Le nombre de jours avant les permanences pour envoyer le courriel "
+"d'instructions à tous les membres doit être inférieur à 15."
 
 #: ../src/service/VolunteerService.hx:10118
 msgid ""
@@ -2360,7 +2362,7 @@ msgid ""
 "integers. "
 msgstr ""
 "Le nombre de jours que vous avez saisi n'est pas un nombre entier. Vous ne "
-"pouvez utiliser que des nombres entiers."
+"pouvez utiliser que des nombres entiers. "
 
 #. kilogramms
 #: ../src/View.hx:3369 ../common/Formatting.hx:1326
@@ -2391,12 +2393,12 @@ msgstr "L"
 #. centiliter
 #: ../src/View.hx:3590 ../common/Formatting.hx:1490
 msgid "cl."
-msgstr "cl"
+msgstr "cL"
 
 #. milliliter
 #: ../src/View.hx:3635
 msgid "ml."
-msgstr "ml."
+msgstr "mL"
 
 #: ../src/View.hx:4170
 msgid "Sunday"
@@ -2775,7 +2777,7 @@ msgstr "Longitude"
 
 #: ../src/db/UserContract.hx:3505
 msgid "Delivery ::contractName:: "
-msgstr "Distribution ::contractName::"
+msgstr "Distribution ::contractName:: "
 
 #: ../src/db/UserContract.hx:3840
 msgid "Per member"
@@ -2783,23 +2785,23 @@ msgstr "Par adhérent"
 
 #: ../src/db/DistributionCycle.hx:891
 msgid "Fréquence"
-msgstr ""
+msgstr "Fréquence"
 
 #: ../src/db/DistributionCycle.hx:929
 msgid "Date de début"
-msgstr ""
+msgstr "Date de début"
 
 #: ../src/db/DistributionCycle.hx:969
 msgid "Date de fin"
-msgstr ""
+msgstr "Date de fin"
 
 #: ../src/db/DistributionCycle.hx:1020
 msgid "Ouverture de commande (nbre de jours avant distribution)"
-msgstr ""
+msgstr "Ouverture de commande (nombre de jours avant distribution)"
 
 #: ../src/db/DistributionCycle.hx:1116
 msgid "Fermeture de commande (nbre de jours avant distribution)"
-msgstr ""
+msgstr "Fermeture de commande (nombre de jours avant distribution)"
 
 #: ../src/db/Product.hx:5333
 msgid "Product name"
@@ -2972,7 +2974,7 @@ msgstr ""
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:343
 msgid "You chose to pay with your money pot."
-msgstr "Vous avez choisi de payer avec votre cagnotte"
+msgstr "Vous avez choisi de payer avec votre cagnotte."
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:419
 msgid ""
@@ -3273,7 +3275,7 @@ msgstr "Ce virement doit être validé par un coordinateur"
 
 #: ../lang/master/tpl/macros.mtt:5558
 msgid "You need to pay on the spot at the collection of products"
-msgstr "Vous paierez votre commande sur place."
+msgstr "Vous paierez votre commande sur place à la livraison de vos produits"
 
 #: ../lang/master/tpl/macros.mtt:9470 ../lang/master/tpl/member/view.mtt:1322
 #: ../lang/master/tpl/member/payments.mtt:1557
@@ -3383,7 +3385,7 @@ msgid ""
 "the order of columns"
 msgstr ""
 "Remplissez ce fichier, ou modifiez un fichier existant en respectant l'ordre "
-"des colonnes du fichier de démonstration."
+"des colonnes du fichier de démonstration"
 
 #: ../lang/master/tpl/product/import.mtt:2995
 msgid ""
@@ -3709,26 +3711,26 @@ msgstr "Commandes"
 msgid "Distribution start date is different from general distribution"
 msgstr ""
 "La date de début de distribution est différente de la date de la "
-"distribution principale."
+"distribution principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:11301
 #: ../lang/master/tpl/distribution/default.mtt:13325
 msgid "Distribution end date is different from general distribution"
 msgstr ""
 "La date de fin de distribution est différente de la date de fin de la "
-"distribution principale."
+"distribution principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:13785
 msgid "Order start date is different from general distribution"
 msgstr ""
 "La date d'ouverture des commandes est différente de celle de la distribution "
-"principale."
+"principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:14245
 msgid "Order end date is different from general distribution"
 msgstr ""
 "La date de fermeture des commandes est différente de celle de la "
-"distribution principale."
+"distribution principale"
 
 #: ../lang/master/tpl/distribution/listByDate.mtt:2965
 msgid "Payment:"
@@ -3824,7 +3826,7 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/volunteersCalendar.mtt:4324
 msgid "There are no distributions in the specified time range"
-msgstr "Il n'y a pas de distributions dans cette fenêtre de temps."
+msgstr "Il n'y a pas de distributions sur cette période"
 
 #: ../lang/master/tpl/distribution/listByProductUser.mtt:918
 msgid "Members on duty"
@@ -3861,7 +3863,7 @@ msgstr "Inscrit depuis"
 
 #: ../lang/master/tpl/member/view.mtt:1237
 msgid "This member has not set a password"
-msgstr "Cet adhérent n'a pas défini de mot de passe "
+msgstr "Cet adhérent n'a pas défini de mot de passe"
 
 #: ../lang/master/tpl/member/view.mtt:1377
 msgid "Remove from group"
@@ -4347,7 +4349,7 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4421
 msgid "Prod. ID"
-msgstr "Ref."
+msgstr "Réf."
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4582
 msgid "Unit price including taxes"
@@ -4451,7 +4453,7 @@ msgid ""
 msgstr ""
 "Attention, si le prix du produit a évolué au fil de la vente, chaque "
 "commande d'adhérent est prise en compte avec le prix au moment où la "
-"commande a été faite."
+"commande a été faite"
 
 #: ../lang/master/tpl/contractadmin/ordersByProductList.mtt:1509
 #: ../lang/master/tpl/contractadmin/ordersByProduct.mtt:561
@@ -4900,7 +4902,7 @@ msgid ""
 "always the same at each delivery"
 msgstr ""
 "C'est un contrat avec un engagement à l'année ou à la saison. Les produits "
-"sont toujours les mêmes à chaque livraison."
+"sont toujours les mêmes à chaque livraison"
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:505
 msgid ""
@@ -4969,7 +4971,7 @@ msgstr ""
 "Vous pouvez modifier ici une commande déjà réalisée. Si vous souhaitez "
 "enlever un article, mettez simplement la quantité à zéro.<br/>\n"
 "Vous ne pourrez pas forcément modifier tous les articles car la commande "
-"peut être close pour certains fournisseurs."
+"peut être close pour certains fournisseurs"
 
 #: ../lang/master/tpl/contract/orderByDate.mtt:1538
 msgid "Order closed or already paid"
@@ -5281,19 +5283,19 @@ msgstr "J'ai reçu ce paiement"
 
 #: ../lang/master/tpl/validate/user.mtt:3480
 msgid " I have received this payment in cash"
-msgstr "J'ai reçu ce paiement en liquide"
+msgstr " J'ai reçu ce paiement en liquide"
 
 #: ../lang/master/tpl/validate/user.mtt:3583
 msgid " I have received this payment by check"
-msgstr "J'ai reçu ce paiement par chèque"
+msgstr " J'ai reçu ce paiement par chèque"
 
 #: ../lang/master/tpl/validate/user.mtt:3693
 msgid " I have received this payment by transfer"
-msgstr "J'ai reçu ce paiement par virement"
+msgstr " J'ai reçu ce paiement par virement"
 
 #: ../lang/master/tpl/validate/user.mtt:3788
 msgid " I have received this payment by ::paymentType::"
-msgstr "J'ai reçu ce paiement par ::paymentType::"
+msgstr " J'ai reçu ce paiement par ::paymentType::"
 
 #: ../lang/master/tpl/validate/user.mtt:4336
 msgid "Total paid"
@@ -5498,13 +5500,13 @@ msgid ""
 "about the next delivery dates, orders and current contracts"
 msgstr ""
 "Ce logiciel en ligne facilite l'organisation du groupe en vous informant sur "
-"les prochaines dates de livraisons, les commandes et les contrats en cours."
+"les prochaines dates de livraisons, les commandes et les contrats en cours"
 
 #: ../lang/master/tpl/mail/invitation.mtt:720
 msgid "In order to finalize the subscription, please choose your password"
 msgstr ""
 "Afin de finaliser votre inscription, vous êtes invité(e) à définir votre mot "
-"de passe."
+"de passe"
 
 #: ../lang/master/tpl/mail/invitation.mtt:809
 msgid "You will then be able to connect anytime by using your e-mail"
