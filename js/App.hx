@@ -176,6 +176,9 @@ class App {
 		untyped App.j("#myModal").modal();		
 		var node = js.Browser.document.querySelector('#myModal .modal-body');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+
+		//Julie
+		contractId = null;
 	
 		var store = createOrderBoxReduxStore();
 		ReactDOM.render(jsx('

@@ -10,7 +10,7 @@ import react.order.redux.reducers.OrderBoxReducer.OrderBoxState;
 class OrderBoxThunk {
 
 
-    public static function fetchMultiDistribUserOrders( userId : Int, multiDistribId : Int, ?contractId: Int ) {
+    public static function fetchMultiDistribOrders( userId : Int, multiDistribId : Int, ?contractId: Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch: redux.Redux.Dispatch, getState: Void->OrderBoxState ) {
 
@@ -26,7 +26,7 @@ class OrderBoxThunk {
             .then( function( data : String ) {
                 
                 var data : { orders : Array<UserOrder> } = tink.Json.parse(data);
-                dispatch( OrderBoxAction.FetchMultiDistribUserOrdersSuccess( data.orders ) );
+                dispatch( OrderBoxAction.FetchMultiDistribOrdersSuccess( data.orders ) );
                 return data.orders;      
 
                 // setState({orders:data.orders, error:null});
@@ -50,7 +50,7 @@ class OrderBoxThunk {
 
     }
 
-    public static function saveMultiDistribUserOrders( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+    public static function saveMultiDistribOrders( userId : Int, multiDistribId : Int, callbackUrl : String ) {
     
         return redux.thunk.Thunk.Action( function( dispatch: redux.Redux.Dispatch, getState: Void->react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) {
 

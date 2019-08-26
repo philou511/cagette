@@ -10,6 +10,7 @@ import react.router.Switch;
 import react.router.Link;
 import react.order.redux.reducers.OrderBoxReducer;
 import react.order.redux.actions.thunk.OrderBoxThunk;
+using Lambda;
 
 // typedef OrderBoxState = {
 
@@ -29,8 +30,8 @@ typedef OrderBoxProps = {
 	var callbackUrl : String;
 	var currency : String;
 	var orders : Array<UserOrder>;
-	var fetchMultiDistribUserOrders : Int -> Int -> Int -> Void;
-	var saveMultiDistribUserOrders : Int -> Int -> String -> Void; 
+	var fetchMultiDistribOrders : Int -> Int -> Int -> Void;
+	var saveMultiDistribOrders : Int -> Int -> String -> Void; 
 };
 
 //Julie class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps,OrderBoxState>
@@ -50,7 +51,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps>
 	
 	override function componentDidMount() {
 		
-		props.fetchMultiDistribUserOrders( props.userId, props.multiDistribId, props.contractId );		
+		props.fetchMultiDistribOrders( props.userId, props.multiDistribId, props.contractId );		
 	}
 
 	/**
@@ -79,24 +80,55 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps>
 	// }
 	
 	override public function render(){
-		//edit orders 
-		var renderOrders = props.orders.map(function(o){
-			var k :String = if(o.id!=null) {
-				Std.string(o.id);
-			} else {
-				o.product.id + "-" + Std.random(99999);
-			};
-			return jsx('<Order key=${k} order=${o} currency=${props.currency} contractType=${props.contractType} />')	;
-		}  );
 
+		//Let's group orders by contract id to display them for each contract in the case where the contract id is null (i.e multidistrib mode)
+		var ordersByContractId : Map<Int, Array<UserOrder>> = getOrdersByContractId();		
+		// var contractOrders = ordersByContractId[contractId].map( function(order) {
 
+		// 	var key : String = if( order.id != null ) {
+			
+		// 		Std.string(order.id);
+		// 	}
+		// 	else {
+			
+		// 		order.product.id + "-" + Std.random(99999);
+		// 	};
+
+		// 	return jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' );
+		// });
+		// var contractIds : Array<Int> = Lambda.array(ordersByContractId.keys());
+		var contractIds = [for( contractId in ordersByContractId.keys()) contractId];
+		// var allOrders = contractIds.map( function(contractId) {
+		var allOrders = [];	
+		for( contractId in ordersByContractId.keys() ) {
+				
+			allOrders.push( jsx('<h4>${ordersByContractId[contractId][0].contractName}</h4>') );
+
+			for ( order in ordersByContractId[contractId] ) {
+
+				var key : String = if( order.id != null ) {
+				
+					Std.string(order.id);
+				}
+				else {
+				
+					order.product.id + "-" + Std.random(99999);
+				};
+
+				allOrders.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' ));
+			}
+						
+			// return contractOrders;
+		}
+		// });
+		
 		var delivery = 	if(props.date == null) {
 							null;
 						} else {
 							jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 						}
 
-		var validateButton = jsx('<a onClick=${props.saveMultiDistribUserOrders.bind( props.userId, props.multiDistribId, props.callbackUrl )} className="btn btn-primary">
+		var validateButton = jsx('<a onClick=${props.saveMultiDistribOrders.bind( props.userId, props.multiDistribId, props.callbackUrl )} className="btn btn-primary">
 									<i className="icon icon-chevron-right"></i> Valider
 								 </a>');
 		
@@ -115,7 +147,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps>
 						<div className="col-md-2">Qté</div>
 						${ this.props.contractType == 0 ? jsx('<div className="col-md-3">Alterné avec</div>') : null }
 					</div>
-					${renderOrders}	
+					${allOrders}	
 					<div>
 						${validateButton}						
 						&nbsp;
@@ -154,6 +186,67 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps>
 			</HashRouter>
 		');
 	}	
+
+
+// 	function renderAllOrders() { 
+
+// 		var ordersByContractId : Map<Int, Array<UserOrder>> = getOrdersByContractId();		
+// 		for ( contractId in ordersByContractId.keys() ) {
+
+// 			return jsx('
+// 				<h3>Contrat ${ordersByContractId[contractId][0].contractName}</h3>
+				
+// 			');
+// 		}
+
+// 		return jsx('<h3>TEST</h3>');
+// // ${renderContractOrders( contractId )}	
+// 	}
+
+
+	// function renderContractOrders( contractId : Int ) { 
+
+	// 	var ordersByContractId : Map<Int, Array<db.UserOrder>> = getOrdersByContractId();
+	// 	// var allOrders = ordersByContractId.keys().map( function(contractId) {
+	// 	// for ( contractId in ordersByContractId.keys() ) {
+
+	// 		// var contractName = jsx( '<h3>Contrat ${ordersByContractId[contractId].contractName}</h3>' );
+
+	// 		var contractOrders = ordersByContractId[contractId].map( function(order) {
+
+	// 			var key : String = if( order.id != null ) {
+				
+	// 				Std.string(order.id);
+	// 			}
+	// 			else {
+				
+	// 				order.product.id + "-" + Std.random(99999);
+	// 			};
+
+	// 			return jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' );
+	// 		});
+
+	// 	// };
+
+	// }
+
+
+	function getOrdersByContractId() {
+		
+		var ordersByContractId = new Map<Int, Array<UserOrder>>();
+		for( order in props.orders ) {
+
+			if( ordersByContractId[order.contractId] == null ) {
+
+				ordersByContractId[order.contractId] = [];
+			}
+			
+			ordersByContractId[order.contractId].push(order);
+			
+		}
+
+		return ordersByContractId; 
+	}
 	
 	/**
 	 * submit updated orders to the API
@@ -199,11 +292,11 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps>
 				
 		return { 
 			
-			fetchMultiDistribUserOrders : function( userId : Int, multiDistribId : Int, contractId : Int ) {
-				return dispatch( OrderBoxThunk.fetchMultiDistribUserOrders( userId, multiDistribId, contractId ) );
+			fetchMultiDistribOrders : function( userId : Int, multiDistribId : Int, contractId : Int ) {
+				return dispatch( OrderBoxThunk.fetchMultiDistribOrders( userId, multiDistribId, contractId ) );
 			},
-			saveMultiDistribUserOrders : function( userId : Int, multiDistribId : Int, callbackUrl : String ) {
-				return dispatch( OrderBoxThunk.saveMultiDistribUserOrders( userId, multiDistribId, callbackUrl ) );
+			saveMultiDistribOrders : function( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+				return dispatch( OrderBoxThunk.saveMultiDistribOrders( userId, multiDistribId, callbackUrl ) );
 			}
 		}
 

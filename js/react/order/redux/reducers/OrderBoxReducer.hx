@@ -52,7 +52,7 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
     {
 		var partial: Partial<OrderBoxState> = switch (action) {
 
-            case FetchMultiDistribUserOrdersSuccess( orders ):
+            case FetchMultiDistribOrdersSuccess( orders ):
                 { orders: orders };
 
             case UpdateOrderQuantity( orderId, quantity ):

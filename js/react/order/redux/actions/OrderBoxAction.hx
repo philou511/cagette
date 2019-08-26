@@ -12,6 +12,6 @@ enum OrderBoxAction
     UpdateOrderQuantity( orderId: Int, quantity: Float );
     ReverseOrderRotation( orderId: Int, reverseRotation: Bool );
     UpdateOrderUserId2( orderId: Int, userId2: Int );
-    FetchMultiDistribUserOrdersSuccess( orders : Array<UserOrder> );
+    FetchMultiDistribOrdersSuccess( orders : Array<UserOrder> );
     ResetSelectedProduct;
 }
