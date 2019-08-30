@@ -1,58 +1,64 @@
 
 package react.order.redux.actions.thunk;
 
-import react.order.redux.actions.OrderBoxAction;
 import utils.HttpUtil;
+import Common.ContractInfo;
 import Common.ProductInfo;
+import Common.UserInfo;
 import Common.UserOrder;
 import react.order.redux.reducers.OrderBoxReducer.OrderBoxState;
+
 
 class OrderBoxThunk {
 
 
-    public static function fetchMultiDistribOrders( userId : Int, multiDistribId : Int, ?contractId: Int ) {
+    public static function fetchOrders( userId : Int, multiDistribId : Int, ?contractId: Int, ?contractType: Int ) {
     
-        return redux.thunk.Thunk.Action( function( dispatch: redux.Redux.Dispatch, getState: Void->OrderBoxState ) {
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
-            ////////////////////////
-            // api/order/get/23396/779?contract=6395
-            // 23396 = userId
-            // 779 = multidistribId
-            // 6395 = contractId (optionnel) si tu veux filter pour un seul contrat et pas pour toute la multidistrib
-            ////////////////////////
-
-            //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified
-            return HttpUtil.fetch("/api/order/get/" + userId + "/" + multiDistribId, GET, { contract : contractId }, PLAIN_TEXT)
+            //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
+            return HttpUtil.fetch( "/api/order/get/" + userId + "/" + multiDistribId, GET, { contract : contractId }, PLAIN_TEXT )
             .then( function( data : String ) {
                 
                 var data : { orders : Array<UserOrder> } = tink.Json.parse(data);
-                dispatch( OrderBoxAction.FetchMultiDistribOrdersSuccess( data.orders ) );
-                return data.orders;      
+                dispatch( OrderBoxAction.FetchOrdersSuccess( data.orders ) );
 
-                // setState({orders:data.orders, error:null});
+                //Load users for amap type contracts
+                if ( contractType == 0 ) { 
 
-                // if( props.contractType == 0 ) loadUsers();
+                    fetchUsers();
+                }
+            })
+            .catchError(function(data) {
 
+                handleError( data, dispatch );
             });
-            // .catchError(function(data) {
-
-            //     var data = Std.string(data);			
-            //     if(data.substr(0,1)=="{"){
-            //         //json error from server
-            //         var data : ErrorInfos = haxe.Json.parse(data);
-            //         setState( cast {error:data.error.message} );
-            //     }else{
-            //         //js error
-            //         setState( cast {error:data} );
-            //     }
-            // });
         });
 
     }
 
-    public static function saveMultiDistribOrders( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+    static function fetchUsers() {
     
-        return redux.thunk.Thunk.Action( function( dispatch: redux.Redux.Dispatch, getState: Void->react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) {
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+
+            //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
+            return HttpUtil.fetch( "/api/user/getFromGroup/", GET, {}, PLAIN_TEXT )
+		    .then( function( data : String ) {
+                
+                var data : { users : Array<UserInfo> } = tink.Json.parse(data);
+                dispatch( OrderBoxAction.FetchUsersSuccess( data.users ) );
+            })
+            .catchError(function(data) {
+
+                handleError( data, dispatch );
+            });
+	    });
+
+    }
+
+    public static function updateOrders( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+    
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             var data = new Array<{ id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int }>();
             var state : OrderBoxState = Reflect.field(getState(), "orderBox");           
@@ -67,57 +73,69 @@ class OrderBoxThunk {
                             userId2 : order.userId2 } );
             } 
 
-           return HttpUtil.fetch("/api/order/update/" + userId + "/" + multiDistribId, POST, { orders : data }, JSON)
+            return HttpUtil.fetch( "/api/order/update/" + userId + "/" + multiDistribId, POST, { orders : data }, JSON )
             .then( function( data : Dynamic ) {
 
                 js.Browser.location.href = callbackUrl;
+            })
+            .catchError( function(data) {
 
+                handleError( data, dispatch );
             });
-            // .catchError( function(data) {
-
-            //     var data = Std.string(data);
-            //     if(data.substr(0,1)=="{"){
-            //         //json error from server
-            //         var data : ErrorInfos = haxe.Json.parse(data);
-            //         setState( cast {error:data.error.message} );
-            //     }else{
-            //         //js error
-            //         setState( cast {error:data} );
-            //     }
-            // });
-           
         });
 
-    } 
-
-    public static function fetchContractProducts( contractId : Int ) {
+    }
     
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void->OrderBoxState ) {
+    public static function fetchContracts( multiDistribId : Int ) {
+    
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
                
-            //Loads all the products for the selected contract
-            return HttpUtil.fetch("/api/product/get/", GET, { contractId: contractId }, PLAIN_TEXT)
+            //Loads all the contracts (of variable type only) for the given multiDistrib
+            return HttpUtil.fetch( "/api/order/contracts/" + multiDistribId, GET, { contractType: 1 }, PLAIN_TEXT )
+            .then( function( data : String ) {             
+
+                var data : { contracts : Array<ContractInfo> } = tink.Json.parse(data);               
+                dispatch( OrderBoxAction.FetchContractsSuccess( data.contracts ) );
+            })
+            .catchError( function(data) {                    
+                
+                handleError( data, dispatch );
+            });
+        });
+
+    }
+
+    public static function fetchProducts( contractId : Int ) {
+    
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+               
+            //Loads all the products for the current contract
+            return HttpUtil.fetch( "/api/product/get/", GET, { contractId : contractId }, PLAIN_TEXT )
             .then( function( data : String ) {
 
                 var data : { products : Array<ProductInfo> } = tink.Json.parse(data);               
-                dispatch( OrderBoxAction.FetchContractProductsSuccess( data.products ) );
-                return data.products;                        
+                dispatch( OrderBoxAction.FetchProductsSuccess( data.products ) );                                     
+            })
+            .catchError( function(data) {
 
-            }).catchError( function(data) {
-
-                var data = Std.string(data);
-                if( data.substr(0,1) == "{" ) { //json error from server
-                    
-                    var data : ErrorInfos = haxe.Json.parse(data);                
-                    dispatch( OrderBoxAction.FetchContractProductsFailure( data.error.message ) );
-                }
-                else { //js error
-                    
-                    dispatch( OrderBoxAction.FetchContractProductsFailure( data ) );
-                }
-
+                handleError( data, dispatch );
             });
-
         });
+
+    }
+
+    static function handleError( data : Dynamic, dispatch : redux.Redux.Dispatch ) {
+
+        var data = Std.string(data);                
+        if( data.substr(0,1) == "{" ) { //json error from server
+            
+            var data : ErrorInfos = haxe.Json.parse(data);                
+            dispatch( OrderBoxAction.FetchFailure( data.error.message ) );
+        }
+        else { //js error
+            
+            dispatch( OrderBoxAction.FetchFailure( data ) );
+        }
     }
 	
 }

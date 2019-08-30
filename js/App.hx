@@ -18,7 +18,7 @@ import redux.thunk.ThunkMiddleware;
 import redux.react.Provider as ReduxProvider;
 
 //custom components
-import react.order.*;
+import react.order.redux.components.OrderBox;
 import react.product.*;
 import react.store.CagetteStore;
 import react.map.*;

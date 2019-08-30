@@ -1,8 +1,10 @@
-package react.order;
-import react.ReactDOM;
+package react.order.redux.components;
+
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import Common;
+import Common.Unit;
+import Common.UserInfo;
+import Common.UserOrder;
 import react.product.Product;
 import react.order.redux.actions.OrderBoxAction;
 
@@ -147,16 +149,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 			orderQuantity = orderQuantity / props.order.productQt;
 		}				
 		props.updateOrderQuantity(orderQuantity); 
-	}
-
-	function getQuantityValue() : String {
-
-		trace("on passe dans getQuantityValue!!!!");
-		var temp : String = 	isSmartQtInput() ? Std.string( round( props.order.quantity * props.order.productQt ) ) : Std.string( props.order.quantity );
-		trace(temp);
-		return temp;
-		
-	}
+	}	
 
 	function getProductUnit() : String {
 
@@ -166,23 +159,23 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<OrderProps> {	
 		
-		return { users: Reflect.field(state, "orderBox").users };
+		return { users : Reflect.field(state, "orderBox").users };
 	}
 
 	static function mapDispatchToProps( dispatch: redux.Redux.Dispatch, ownProps: OrderProps ) : react.Partial<OrderProps> {
 				
 		return { 
 
-				updateOrderQuantity: function( orderQuantity ) {
-					dispatch( OrderBoxAction.UpdateOrderQuantity( ownProps.order.id, orderQuantity ) ); 
-				},
-				reverseRotation: function( e: js.html.Event ) {
-					dispatch( OrderBoxAction.ReverseOrderRotation( ownProps.order.id, untyped e.target.checked ) ); 
-				},
-				updateOrderUserId2: function( e: js.html.Event ) { 
-					var userId2 = Std.parseInt(untyped e.target.value); 
-					dispatch( OrderBoxAction.UpdateOrderUserId2( ownProps.order.id, userId2 == 0 ? null : userId2 ) );				
-				}
+			updateOrderQuantity : function( orderQuantity ) {
+									dispatch( OrderBoxAction.UpdateOrderQuantity( ownProps.order.id, orderQuantity ) ); 
+								},
+			reverseRotation : function( e: js.html.Event ) {
+								dispatch( OrderBoxAction.ReverseOrderRotation( ownProps.order.id, untyped e.target.checked ) ); 
+							  },
+			updateOrderUserId2 : function( e: js.html.Event ) { 
+									var userId2 = Std.parseInt(untyped e.target.value); 
+									dispatch( OrderBoxAction.UpdateOrderUserId2( ownProps.order.id, userId2 == 0 ? null : userId2 ) );				
+								 }
 		}
 	}
 

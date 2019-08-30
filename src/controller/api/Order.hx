@@ -9,16 +9,17 @@ import Common;
  */
 class Order extends Controller
 {
-	public function doContracts( multiDistrib : db.MultiDistrib, ?args:{contractType:Int} ) {
+	public function doContracts( multiDistrib : db.MultiDistrib, ?args : { contractType : Int } ) {
 
 		var contracts = new Array<ContractInfo>();
-		var type = (args!=null && args.contractType!=null)  ?  args.contractType : null;
-		for( d in multiDistrib.getDistributions(type) ){
-			var c = d.contract;
-			var image = c.vendor.image==null ? null : view.file(c.vendor.image);
-			contracts.push({id:c.id,name:c.name,image:image});
+		var type = ( args != null && args.contractType != null ) ? args.contractType : null;
+		for( distrib in multiDistrib.getDistributions(type) ) {
+			
+			var image = distrib.contract.vendor.image == null ? null : view.file( distrib.contract.vendor.image );
+			contracts.push( { id : distrib.contract.id, name : distrib.contract.name, image : image } );
 		}
-		Sys.print(haxe.Json.stringify(contracts));
+
+		Sys.print( Json.stringify({ success : true, contracts : contracts }) );
 
 	}
 

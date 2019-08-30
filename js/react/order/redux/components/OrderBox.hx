@@ -1,0 +1,164 @@
+package react.order.redux.components;
+
+import react.ReactComponent;
+import react.ReactMacro.jsx;
+import Common.UserOrder;
+import react.router.HashRouter;
+import react.router.Route;
+import react.router.Switch;
+import react.router.Link;
+import react.order.redux.actions.thunk.OrderBoxThunk;
+
+
+typedef OrderBoxProps = {
+
+	var userId : Int;
+	var multiDistribId : Int;
+	var contractId : Int;
+	var contractType : Int;
+	var date : String;
+	var place : String;
+	var userName : String;
+	var callbackUrl : String;
+	var currency : String;
+	var orders : Array<UserOrder>;
+	var fetchOrders : Int -> Int -> Int -> Void;
+	var updateOrders : Int -> Int -> String -> Void;
+	var error : String;
+};
+
+
+/**
+ * A box to edit/add orders of a member
+ * @author fbarbut
+ */
+@:connect
+class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
+
+	public function new(props) {
+
+		super(props);	
+	}
+	
+	override function componentDidMount() {
+		
+		props.fetchOrders( props.userId, props.multiDistribId, props.contractId );		
+	}
+	
+	override public function render(){
+		
+		//Let's group orders by contract id to display them for each contract
+		var ordersByContractId = new Map<Int, Array<UserOrder>>();
+		for( order in props.orders ) {
+
+			if( ordersByContractId[order.contractId] == null ) {
+
+				ordersByContractId[order.contractId] = [];
+			}
+			
+			ordersByContractId[order.contractId].push(order);			
+		}
+
+		var ordersByContract = [];
+		for( contractId in ordersByContractId.keys() ) {
+					
+			ordersByContract.push( jsx('<h4 key=${contractId}>${ordersByContractId[contractId][0].contractName}</h4>') );			
+
+			for ( order in ordersByContractId[contractId] ) {
+
+				var key : String = if( order.id != null ) {
+				
+					Std.string(order.id);
+				}
+				else {
+				
+					order.product.id + "-" + Std.random(99999);
+				};
+
+				ordersByContract.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' ));
+			}	
+		}
+				
+		var delivery = 	props.date == null ? null : jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
+
+		var validateButton = jsx('<a onClick=${props.updateOrders.bind( props.userId, props.multiDistribId, props.callbackUrl )} className="btn btn-primary">
+									<i className="icon icon-chevron-right"></i> Valider
+								 </a>' );
+
+
+		var addButtonTo = props.contractId == null ? "/contracts" : "/insert";
+		
+        var renderOrderBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment { 
+			return jsx('<div onKeyPress=${onKeyPress}>
+							<h3>Commandes de ${this.props.userName}</h3>
+							$delivery
+							<Error error=${this.props.error} />							
+							<hr/>
+							<div className="row tableHeader">
+								<div className="col-md-4">Produit</div>
+								<div className="col-md-1">Ref.</div>
+								<div className="col-md-1">Prix</div>
+								<div className="col-md-2">Qté</div>
+								${ this.props.contractType == 0 ? jsx('<div className="col-md-3">Alterné avec</div>') : null }
+							</div>
+							${ordersByContract}	
+							<div>
+								${validateButton}						
+								&nbsp;
+								<Link className="btn btn-default" to=${addButtonTo}>
+									<i className="icon icon-plus"></i> Ajouter un produit
+								</Link>
+							</div>
+						</div>');
+		}
+
+		//Display contracts box
+		var renderContractsBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
+			return jsx('<ContractsBox multiDistribId=${this.props.multiDistribId} />');
+		} 
+
+		//insert product box
+		var renderInsertBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
+			return jsx('<InsertOrder contractId=${this.props.contractId} userId=${this.props.userId} multiDistribId=${this.props.multiDistribId} />');
+		} 
+
+		return jsx('
+			<HashRouter>
+				<Switch>
+					<Route path="/" exact=$true render=$renderOrderBox />
+					${ props.contractId != null ? null : jsx('<Route path="/contracts" exact=$true render=$renderContractsBox />') }
+					<Route path="/insert" exact=$true render=$renderInsertBox />
+				</Switch>
+			</HashRouter>
+		');
+	}	
+
+	function onKeyPress(e : js.html.KeyboardEvent) {
+		
+		if ( e.key == "Enter" ) {
+
+			props.updateOrders( props.userId, props.multiDistribId, props.callbackUrl );
+		} 
+	}
+
+	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<OrderBoxProps> {		
+
+		return { orders: Reflect.field(state, "orderBox").orders,
+				 error : Reflect.field(state, "orderBox").error };
+	}
+
+	static function mapDispatchToProps( dispatch : redux.Redux.Dispatch ) : react.Partial<OrderBoxProps> {
+				
+		return { 
+			
+			fetchOrders : function( userId : Int, multiDistribId : Int, contractId : Int ) {
+							return dispatch( OrderBoxThunk.fetchOrders( userId, multiDistribId, contractId ) );
+						  },
+			updateOrders : function( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+							return dispatch( OrderBoxThunk.updateOrders( userId, multiDistribId, callbackUrl ) );
+						  }
+		}
+
+	}	
+	
+}
