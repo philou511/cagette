@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-08-26 00:24+0000\n"
-"Last-Translator: Swann Martinet <swann.ranskassa@laposte.net>\n"
+"PO-Revision-Date: 2019-09-03 22:24+0000\n"
+"Last-Translator: francois blanck <francois.blanck@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -2068,7 +2068,6 @@ msgstr ""
 "Effacement impossible : des commandes sont enregistrées pour cette livraison."
 
 #: ../src/service/DistributionService.hx:13187
-#, fuzzy
 msgid "daysBeforeOrderEnd or daysBeforeOrderStart is null"
 msgstr "daysBeforeOrderEnd ou daysBeforeOrderStart est vide"
 
