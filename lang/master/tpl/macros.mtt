@@ -208,10 +208,19 @@
 			<img src="/img/empty.png" />
 			<p>
 				::txt::
-			</p>
-			
+			</p>			
 		</div>		
 	</macro>
+
+	<macro name="timeframe(timeframe)">
+		::set next = timeframe.next()	::
+		::set previous = timeframe.previous()	::
+		<div>
+			<a href="?from=::previous.from.toString()::&to=::previous.to.toString()::" class="btn btn-default btn-sm"><i class="icon icon-chevron-left"></i></a>
+			Du ::dDate(timeframe.from):: au ::dDate(timeframe.to)::
+			<a href="?from=::next.from.toString()::&to=::next.to.toString()::" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i></a>
+		</div>
+	</macro>	
 	
 	
 	<macro name="deliveryPro(k,showBtns)">
