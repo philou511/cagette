@@ -90,12 +90,14 @@ class VendorService{
 		#if plugins
 		//cpro first
 		for( v in vendors.copy() ){
-			if( v.getCpro()!=null ){
+			var cpro = v.getCpro();
+			if( cpro !=null ){
 				vendors.remove(v);
+				//do not display students cpro accounts !
+				if(cpro.disabled) continue;
 				vendors.unshift(v);
 			} 
 		}
-
 		#end
 
 
