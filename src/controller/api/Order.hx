@@ -31,14 +31,13 @@ class Order extends Controller
 		contract arg : we want to edit the orders of one single catalog/contract
 		multiDistrib arg : we want to edit the orders of the whole distribution
 	 */	
-	public function doGet(user:db.User,?args:{contract:db.Contract,multiDistrib:db.MultiDistrib}){
+	public function doGet(user:db.User,args:{?contract:db.Contract,?multiDistrib:db.MultiDistrib}){
 
 		checkIsLogged();
-		
 		var contract = (args!=null && args.contract!=null) ? args.contract : null;
 		var multiDistrib = (args!=null && args.multiDistrib!=null) ? args.multiDistrib : null;
-		if(contract==null && multiDistrib==null) throw new Error("You should provide at least a contract or a multiDistrib");
-		if( contract.type==db.Contract.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA contract for a multiDistrib");
+		if( contract==null && multiDistrib==null ) throw new Error("You should provide at least a contract or a multiDistrib");
+		if( contract!=null && contract.type==db.Contract.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA contract for a multiDistrib");
 		
 		//rights	
 		if (contract==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
