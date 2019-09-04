@@ -11,12 +11,11 @@ class Tuto
 	var step:Int;
 	
 	static var LAST_ELEMENT :String = null; //last hightlit element
+	static var STOP_URL  = "/account?stopTuto=";
 	
 	public function new(name:String, step:Int){
-		
 		this.name = name;
 		this.step = step;
-		
 		TutoDatas.get(name, init);
 	}
 	
@@ -48,7 +47,7 @@ class Tuto
 			var bt = App.jq("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> "+t._("Come back to tutorials page")+"</a>");
 			bt.click(function(?_) {
 				untyped m.modal('hide');
-				js.Browser.location.href = "/contract?stopTuto=1";
+				js.Browser.location.href = STOP_URL+name;
 			});
 			m.find(".modal-footer").append(bt);
 			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
@@ -64,7 +63,7 @@ class Tuto
 			m.find(".modal-body").html(s.text); 
 			m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
 			
-			var bt = App.jq("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> "+t._("OK")+"</a>");
+			var bt = App.jq("<a class='btn btn-default'><i class='icon icon-chevron-right'></i> "+t._("OK")+"</a>");
 			bt.click(function(?_) {
 				untyped m.modal('hide');
 				new Tuto(name, step + 1);
@@ -81,7 +80,7 @@ class Tuto
 			switch(s.action) {
 				case TANext :
 					
-					bt = App.jq("<p><a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-chevron-right'></span> "+t._("Next")+"</a></p>");
+					bt = App.jq("<p><a class='btn btn-default btn-sm'><i class='icon icon-chevron-right'></i> "+t._("Next")+"</a></p>");
 					bt.click(function(?_) {
 						//untyped m.modal('hide');
 						new Tuto(name, step + 1);
@@ -123,7 +122,7 @@ class Tuto
 	function makeCloseButton(?text) {
 		var bt = App.jq("<a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-remove'></span> "+(text==null?"":text)+"</a>");
 		bt.click(function(?_) {			
-			js.Browser.location.href = "/contract?stopTuto=1";
+			js.Browser.location.href = STOP_URL+name;
 		});
 		return bt;
 	}

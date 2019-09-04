@@ -275,11 +275,11 @@ class Contract extends Object
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
 		return [
-			"name" 				=> t._("Contract name"),
+			"name" 				=> t._("Catalog name"),
 			"startDate" 		=> t._("Start date"),
 			"endDate" 			=> t._("End date"),
 			"description" 		=> t._("Description"),
-			"distributorNum" 	=> t._("Number of required volunteers for a duty period"),
+			"distributorNum" 	=> t._("Number of required volunteers during a distribution"),
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
 			"percentageName" 	=> t._("Fees label"),			

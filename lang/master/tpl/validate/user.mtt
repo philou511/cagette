@@ -173,6 +173,30 @@
 					</td></tr>
 				::end::				
 			</table>
+
+			<!-- Membership -->
+			::if user._amap.hasMembership()::
+			<table class="table table-condensed table-bordered">
+				<tr style="background-color:#DDD;">
+					<th class="text-center">::_("Membership")::</th>
+				</tr>
+				<tr>
+					<td class="text-center">
+						::if userGroup.hasValidMembership()::
+							$$check(true) ::_("Membership up to date")::
+						::else::
+							$$check(false) ::_("Membership to renew")::
+						::end::
+						::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user._amap.getPeriodName(null)::</b>
+						
+						<a href="/membership/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+					</td>
+				</tr>
+
+			</table>
+			::end::
+
+
 			
 			<!-- credit / debit / ok message -->
 			::if(tpaid!=null && amount!=null)::

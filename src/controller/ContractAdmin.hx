@@ -60,7 +60,10 @@ class ContractAdmin extends Controller
 		//Multidistribs to validate
 		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.amap.hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			var multidistribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now);
+			var multidistribs = [];
+			for( md in db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now)){
+				if( !md.isValidated() ) multidistribs.push(md);				
+			}
 			view.multidistribs = multidistribs; 
 
 		}else{
@@ -252,7 +255,7 @@ class ContractAdmin extends Controller
 			
 			view.form = f;
 			view.title = t._("Global view of orders");
-			view.text = t._("This page allows you to have a global view on orders of all contracts");
+			view.text = t._("This page allows you to have a global view on orders of all catalogs");
 			view.text += t._("<br/>Select a delivery date:");
 			app.setTemplate("form.mtt");
 			
@@ -547,7 +550,7 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+contract.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name", t._("Name of the new contract"), contract.name.substr(0,50)  + " - copy"));		
+		form.addElement(new StringInput("name", t._("Name of the new catalog"), contract.name.substr(0,50)  + " - copy"));		
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
@@ -619,7 +622,7 @@ class ContractAdmin extends Controller
 			
 			app.event(DuplicateContract(contract));
 			
-			throw Ok("/contractAdmin/view/" + nc.id, t._("The contract has been duplicated"));
+			throw Ok("/contractAdmin/view/" + nc.id, t._("The catalog has been duplicated"));
 		}
 		
 		view.form = form;
@@ -639,7 +642,7 @@ class ContractAdmin extends Controller
 		
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw Error("/contractAdmin/orders/"+contract.id,t._("There is no delivery in this contract, please create at least one distribution."));
+		if (d == null) throw Error("/contractAdmin/orders/"+contract.id,t._("There is no delivery in this catalog, please create at least one distribution."));
 
 		var orders = service.ReportService.getOrdersByProduct(d,app.params.exists("csv"));
 		view.orders = orders;
@@ -655,7 +658,7 @@ class ContractAdmin extends Controller
 	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
-		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
+		if (!app.user.canManageContract(contract)) throw Error("/", t._("Forbidden access"));
 		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
 		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
@@ -663,7 +666,7 @@ class ContractAdmin extends Controller
 		view.group = contract.amap;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
-		if (d == null) throw t._("No delivery in this contract");
+		if (d == null) throw t._("No delivery in this catalog");
 		
 		var orders = service.ReportService.getOrdersByProduct(d,false);
 		view.orders = orders;
@@ -698,7 +701,7 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		view.contract = contract;
 
-		view.cycles = db.DistributionCycle.manager.search( $contract==contract && $endDate > Date.now() ,false);		
+				
 	}
 
 	function doParticipate(md:db.MultiDistrib,contract:db.Contract){
@@ -775,10 +778,10 @@ class ContractAdmin extends Controller
 	 * @param	uc
 	 */
 	function doDelete(uc:UserContract) {
-		if (!app.user.canManageContract(uc.product.contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
+		if (!app.user.canManageContract(uc.product.contract)) throw Error("/", t._("Forbidden access"));
 		uc.lock();
 		uc.delete();
-		throw Ok('/contractAdmin/orders/'+uc.product.contract.id, t._("The contract has been canceled"));
+		throw Ok('/contractAdmin/orders/'+uc.product.contract.id, t._("The catalog has been canceled"));
 	}
 	
 

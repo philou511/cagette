@@ -165,7 +165,7 @@ class Transaction extends controller.Controller
 		
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;		
-		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder == null) throw Redirect("/account");
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
 		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
@@ -193,9 +193,8 @@ class Transaction extends controller.Controller
 	{
 		
 		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;		
-		if (tmpOrder == null) throw Redirect("/contract");
-		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		var tmpOrder : OrderInSession = app.session.data.order;				
+		if (tmpOrder == null || tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - tmpOrder.total;
 		
 		try{
@@ -233,7 +232,7 @@ class Transaction extends controller.Controller
 		
 		//order in session
 		var tmpOrder : OrderInSession = app.session.data.order;	
-		if (tmpOrder == null) throw Redirect("/contract");
+		if (tmpOrder == null) throw Redirect("/account");
 		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		//get a code

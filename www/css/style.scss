@@ -1,13 +1,19 @@
-/**
-
+/*
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
-
-**/
-
+*/
 @import url('https://fonts.googleapis.com/css?family=Cabin:400,400i,700');
 @import '_map';
 @import '_iconfont';
+
+$mediumGreen : #3c763d;
+$lightGreen : #84bd55; //primary buttons color
+
+$lightBrown : #f8f4e5; //background
+
+
+$darkGrey : #333;
+
 
 html{
 	//for rem units
@@ -16,56 +22,74 @@ html{
 body{
 	//usefull when BS is not here
 	font-family: Cabin, Arial, Helvetica, sans-serif;   
-	color:#333; 
+	color:$darkGrey; 
 }
 
 h1,h2,h3,h4{
-  //margin-top: 4px !important;
-  //margin-bottom: 8px !important;
-  font-style: italic;
+	//margin-top: 4px !important;
+	//margin-bottom: 8px !important;
+	font-style: italic;
+}
+
+h1{
+	margin-bottom: 8px !important;
+	margin-top: 4px !important;
 }
 
 a{
-	color: #3c763d;
+	color: $mediumGreen;
+	cursor : pointer;
 }
 
+ol.breadcrumb{
+	padding: 0;
+	margin: 0 0 8px 0px;
+
+	li+li:before{
+		color:lighten(#8a6d3b,40%);
+	}
+	a{
+		color:lighten(#8a6d3b,15%);
+	}
+	background: none;
+}
+
+body.cpro{
+	ol.breadcrumb{
+		li+li:before{
+			color:lighten(#3c763d,25%);
+		}
+		a{
+			color:#3c763d;
+		}
+	}
+}
+
+//used in Js app.toggle()
+.hidden{
+	display: none;
+}
+
+//informations before footer, maintenance ...
+div.footer-info{
+	color:#8a6d3b;
+	margin:24px 0;
+
+}
+
+
+
+
+
 .sticky {
-    position: -webkit-sticky;
-    position: sticky;
+	position: -webkit-sticky;
+	position: sticky;
 	top: 0;
 	z-index: 99;
 }
 
 /* buttons */
 
-/*.btn {
-  text-transform: uppercase;
-  font-size: 14px !important;
-  padding : 7px 25px !important;
-  font-weight:normal !important;
-}
-
-/*.btn-lg{
-	font-size: 16px !important;
-}
-
-.btn-sm {
-  font-size: 12px !important;
-  padding : 5px 10px !important;
-}
-
-.btn-xs {
-  font-size: 11px !important;
-  padding : 2px 5px !important;
-}
-
-.btn-link {
-  text-transform: none;
-}*/
-
-a{
-	cursor:pointer;
-}
 
 /* bounce effect */
 .bouncable { 
@@ -83,9 +107,9 @@ a{
  
  @keyframes bounce { 
 	0%, 50%, 90%, 100% {transform: translateY(0);} 
-    25% {transform: translateY(-30px);} 
-    70% {transform: translateY(-15px);}
-    95% {transform: translateY(-5px);} 
+	25% {transform: translateY(-30px);} 
+	70% {transform: translateY(-15px);}
+	95% {transform: translateY(-5px);} 
  }
  
  .bounce { 
@@ -94,26 +118,49 @@ a{
  }
 
 
-/* navigation */
-ul.nav li {
-  text-transform: uppercase;
-  font-size: 14px;
+/* Navigation */
+
+.navbar{
+	margin-bottom: 8px !important;
 }
+
+//admin buttons in navbar
+ul.nav{
+
+	&.admin{
+		background-color: #EEE;
+		li.active > a {
+			background-color: #E0E0E0 !important;
+		}
+	}
+		
+	li {
+		text-transform: uppercase;
+		font-size: 14px;
+		a{
+			color:#777;
+		}
+
+		&.active > a {
+			background-color: #EEE !important;
+			color: #e95216 !important;
+		}
+	}
+}
+
+
+ 
+
 
 .noSelect {
 	-webkit-touch-callout: none; /* iOS Safari */
-	  -webkit-user-select: none; /* Safari */
-	   -khtml-user-select: none; /* Konqueror HTML */
-		 -moz-user-select: none; /* Firefox */
-		  -ms-user-select: none; /* Internet Explorer/Edge */
-			  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-/* subnav in contractadmin*/
-.nav-pills > li.active > a {
-  background-color: #efe9d5 !important;
-  color: #e95216 !important;
-} 
 
 /* Footer */
 
@@ -127,16 +174,16 @@ ul.nav li {
 	}
 	
 	ul {
-	  margin: 3px 0 0;
-	  padding: 0;
-	  text-align: left;
-	  list-style: none;
-	  font-size: 14px;
+		margin: 3px 0 0;
+		padding: 0;
+		text-align: left;
+		list-style: none;
+		font-size: 14px;
 	}
 	
 	.cagsocialmedia {
 		vertical-align: top;
-	  	li {
+			li {
 			display: inline-block;
 			text-align: center; 
 			a {
@@ -158,14 +205,14 @@ ul.nav li {
 }
 
 #subfooter {
-  /*background-color : #313131;
-  color : #fff;*/
-  text-align: center;
-  font-size : 14px;
-  padding : 15px 0 25px 0; 
-  span {
-	  color :#979797;
-	  font-size : 11px;
+	/*background-color : #313131;
+	color : #fff;*/
+	text-align: center;
+	font-size : 14px;
+	padding : 15px 0 25px 0; 
+	span {
+		color :#979797;
+		font-size : 11px;
 	}
 }
 
@@ -303,9 +350,9 @@ table.listing tr td{
 // used in UserOrder react comp
 div.tableHeader{
 	font-weight: bold;
-    color: #AAA;
-    border-bottom: 1px solid #DDD;
-    margin-bottom: 12px;
+	color: #AAA;
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 12px;
 }
 	
 
@@ -318,7 +365,7 @@ div.tableHeader{
 
 div.reportHeader{
 	background-color:#DDD;
-   
+	 
 }
 
 
@@ -350,25 +397,40 @@ div.reportHeader{
 .linkToShare{
 	font-family:Monospace;
 	padding: 12px;
-    border: 1px solid #DDD;
-    border-radius: 6px;
+	border: 1px solid #DDD;
+	border-radius: 6px;
 	background-color: #f5f5f5;
+}
+
+.boxed{
+	display:block;	
+	border: 1px #DDD solid;
+	border-radius:8px;
+	color:inherit;
+	background-color:white;
+	margin-bottom:22px;	
+	padding:8px;
+	z-index: 10;
+
+	overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* make <a> like clickable divs  */
 .clickable{
-	display:block;
-	//border:1px solid #CCC;
+	display:block;	
+	border: 1px #DDD solid;
 	border-radius:8px;
 	color:inherit;
 	background-color:white;
-	margin-bottom:12px;	
+	margin-bottom:22px;	
 	padding:8px;
+	z-index: 10;
 	
 	&:hover{
 		cursor: pointer;
-		background-color:lighten(#F0D277,10%);
-		border-color:darken(#F0D277,10%);
+		background-color:lighten(#8a6d3b,50%);
+		//border-color:darken(#F0D277,10%);
 		text-decoration:none;
 		transition: all 0.15s ease;
 	}
@@ -385,7 +447,29 @@ div.reportHeader{
 		background-color: lightgray;
 		cursor: not-allowed;
 	}
+}
 
+//icon badge within Clickables
+.blockIconBadge{
+	color:darken(#bad096,20%);
+	background-color:white;	
+	padding:4px;
+	position: absolute;
+	top:-18px;
+	right:0px;
+	z-index: 50;
+	border-radius: 20px;
+	font-size: 1.5em;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	border: 3px solid #bad096;
+	line-height: 20px;
+	
+	&.group{
+		border:3px solid lighten(#8a6d3b,40%);
+		color:lighten(#8a6d3b,40%);
+	}
 }
 
 /* a cagette group block (use it with .clickable ) */
@@ -432,6 +516,10 @@ div.reportHeader{
 
 .header{
 	.accountBlock{
+		div.pull-right{
+			margin-right : 16px;
+			margin-top: 16px;
+		}
 		a{
 			color: #777;
 		}
@@ -613,7 +701,7 @@ div.reportHeader{
 		font-size:14px;
 		font-weight:bold;
 		text-align:center;
-	    margin: 0px;
+		margin: 0px;
 		border-radius:4px;
 	}
 
@@ -730,7 +818,7 @@ div.reportHeader{
 /* hightlight a zone for tutos */
 .highlight{
 	border: 2px dashed orange;
-    border-radius: 16px;
+	border-radius: 16px;
 }
 
  
@@ -852,21 +940,27 @@ div.productImg{
 	//default size is medium
 	width:70px;
 	height:70px;
-	border-radius: 8px;	
+	border-radius: 8px;
+	
+	&.extra-small,&.xs{
+		width:32px;
+		height:32px;
+		border-radius: 4px;
+	}
 
-	&.small{
+	&.sm,&.small{
 		width:48px;
 		height:48px;
 		border-radius: 4px;
 	}
 
-	&.medium{
+	&.md,&.medium{
 		width:70px;
 		height:70px;
 		border-radius: 8px;	
 	}
 
-	&.xl{
+	&.large,&.xl{
 		width:100px;
 		height:100px;
 		border-radius: 10px;	
@@ -989,7 +1083,7 @@ div.basketNumber{
 	display:inline-block;
 	background-color:#333;
 	border-radius: 10px;
-    padding: 6px;
+	padding: 6px;
 	
 	font-weight:bold;
 	color:#CCC;
@@ -1009,12 +1103,12 @@ tr.danger td div.basketNumber{
 /* fixed bar on bottom for buttons */
 .fixedBar{
 	position: fixed;
-    bottom: 0;
-    left: 0;
-    background: white;
-    width: 100%;
-    margin: 0;
-    padding: 8px;
+	bottom: 0;
+	left: 0;
+	background: white;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
 	border-top: 3px solid #CCC;
 	z-index: 99;
 }

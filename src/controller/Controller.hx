@@ -13,7 +13,13 @@ class Controller extends sugoi.BaseController
 		super();
 		
 		//gettext translator
-		this.t = sugoi.i18n.Locale.texts;		
+		this.t = sugoi.i18n.Locale.texts;	
+
+		
+	}
+
+	public function addBc(id:String,name:String,link:String){
+		app.breadcrumb.push({id:id,name:name,link:link});
 	}
 
 	function nav(id:String):Array<Link>{

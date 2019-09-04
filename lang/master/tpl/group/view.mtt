@@ -41,7 +41,7 @@
 						
 					::if isMember::
 						<!-- connected and member of the group-->
-						<a href="/user/choose?amap=::group.id::" class="btn btn-primary">
+						<a href="/user/choose?group=::group.id::" class="btn btn-primary">
 							<i class="icon icon-chevron-right"></i>
 							 ::_("Go to my account")::
 						</a>

@@ -26,7 +26,7 @@
 			::if ctotal::
 			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per member")::</a>
 			::else::
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per contract")::</a>
+			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per catalog")::</a>
 			::end::
 			
 			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per supplier")::</a>

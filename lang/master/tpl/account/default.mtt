@@ -211,12 +211,12 @@
 					<td>::t.name::</td>
 					<td>  
 						::if t.completion==null::
-							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
+							<a href="/account/?startTuto=::t.key::" class="btn btn-default btn-xs">
 								<i class="icon icon-chevron-right"></i> ::_("Start")::
 							</a>
 						::else::
 							
-							<a href="/contract/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
+							<a href="/account/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
 								<i class="icon icon-delete"></i> ::_("Stop")::
 							</a>								
 						::end::

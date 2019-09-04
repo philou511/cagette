@@ -21,25 +21,38 @@
 					><i class="icon icon-map-marker"></i>::place::
 				</h4>
 				
-				<p>
-					::if(confirmed)::
-					<div class="alert alert-success block-center" style="width:150px;margin:auto;">
-						<i class="icon icon-check"></i>
-						::_("Validated")::
-					</div>
-					::else::
-					<div class="alert alert-danger block-center" style="width:150px;margin:auto;">
-						<span class="glyphicon glyphicon-exclamation-sign"></span>
-						::_("Not validated")::
-					</div>				
-					::end::	
-				</p>
+				::if(confirmed)::
+				<div style="font-size:1.5em;margin:32px;">
+					<i class="icon icon-check"></i> ::_("Validated")::
+				</div>
+				::else::
+				<div style="color:#AAA;font-size:1.5em;margin:32px;">
+					<i class="icon icon-circle-empty"></i> ::_("Not validated")::
+				</div>
+				::end::
+
+				
+				
 			</div>	
 		
 		
 		<p class="text-center">
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
-				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>	
+				<!--<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
+				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>-->	
+				
+				::if(!confirmed)::
+				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-danger" $$confirm(Confirmez-vous que les commandes et les paiements de cette distribution sont bien à jour ? Il ne sera plus possible de modifier les commandes après avoir validé cette distribution)>
+					<i class="icon icon-check"></i> Valider toute la distribution
+				</a>
+
+				<a href="/distribution/changePrice/::distribution.id::" class="btn btn-default" >
+					<i class="icon icon-euro"></i> Changement de prix
+				</a>
+
+				<a href="/distribution/missingProduct/::distribution.id::" class="btn btn-default" >
+					<i class="icon icon-products"></i> Produit non livré
+				</a>
+				::end::
 		</p>
 		
 		
@@ -86,7 +99,17 @@
 			
 
 		</table>
+
+		<p class="text-left">
+			<a href="/distribution/" class="btn btn-default">
+				<i class="icon icon-chevron-left"></i> ::_("Back")::
+			</a>
+		</p>
+
 	</div>
+
+
+	
 	
 </div>
 

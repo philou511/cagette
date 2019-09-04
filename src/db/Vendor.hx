@@ -64,6 +64,14 @@ class Vendor extends Object
 		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
 
+	public function getImage():String{
+		if (image == null) {
+			return "/img/vendor.png";
+		}else {
+			return App.current.view.file(image);
+		}
+	}
+
 	public function getImages(){
 
 		var out = {
@@ -155,6 +163,23 @@ class Vendor extends Object
 		
 		return form;
 	}
+
+	/**
+		Loads vendors professions from json
+	**/
+	public static function getVendorProfessions():Array<{id:Int,name:String}>{
+		if( PROFESSIONS!=null ) return PROFESSIONS;
+		var filePath = sugoi.Web.getCwd()+"../data/vendorProfessions.json";
+		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
+		PROFESSIONS = json.professions;
+		return json.professions;
+	}
+
+	#if plugins
+	public function getCpro():pro.db.CagettePro{
+		return pro.db.CagettePro.getFromVendor(this);
+	}
+	#end	
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
@@ -173,21 +198,13 @@ class Vendor extends Object
 		];
 	}
 
-	/**
-		Loads vendors professions from json
-	**/
-	public static function getVendorProfessions():Array<{id:Int,name:String}>{
-		if( PROFESSIONS!=null ) return PROFESSIONS;
-		var filePath = sugoi.Web.getCwd()+"../data/vendorProfessions.json";
-		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
-		PROFESSIONS = json.professions;
-		return json.professions;
-	}
 
 	public function getLink():String{		
-		var permalink =  sugoi.db.Permalink.getByEntity(this.id,"vendor");
+		var permalink = sugoi.db.Permalink.getByEntity(this.id,"vendor");
 		return permalink==null ? "/p/pro/public/vendor/"+id : "/"+permalink.link;		
 	}
+
+
 
 	public function getAddress(){
 		var str = new StringBuf();

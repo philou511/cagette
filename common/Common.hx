@@ -396,7 +396,7 @@ class TutoDatas {
 			
 		TUTOS = [
 			"intro" => {
-				name:t._("Guided tour for the coordinator"),
+				name:t._("Guided tour for the group administrator"),
 				steps:[
 					{
 						element:null,
@@ -406,13 +406,13 @@ class TutoDatas {
 					},
 					{
 						element:"ul.nav.navbar-left",
-						text:t._( "This part of the navigation bar is visible by all members.</br>It allows to access to the three main pages:	<ul><li> The <b>home page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>Farmers</b> page,  you can see all farmers and coordinators of the group</ul>"),
+						text:t._( "This part of the navigation bar is visible by all members.</br>It allows to access the three main pages:	<ul><li> The <b>order page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>Farmers</b> page,  you can see all farmers and administrators of the group</ul>"),
 						action: TANext,
 						placement : TPBottom
 					},
 					{
 						element:"ul.nav.navbar-right",
-						text:t._("This part is <b>for coordinators only.</b>Here you will be able to manage the register of members, orders,  products, etc.<br/><p>Now click on the <b>Members</b> section</p>"),
+						text:t._("This part is <b>for administrators only.</b> Here you will be able to manage the register of members, orders,  products, etc.<br/><p>Now click on the <b>Members</b> section</p>"),
 						action: TAPage("/member"),
 						placement : TPBottom
 
@@ -426,32 +426,45 @@ class TutoDatas {
 						text:t._("This is the page of a member. Here you can : <ul><li>see and change their contact details</li><li>manage the membership fee of your group</li><li>see a summary of their orders</li></ul>"),
 						action: TANext,
 						placement : TPRight
+					},
+					{
+						element:"ul.nav #distributions",
+						text:t._("Please click on the <b>distributions</b> section."),
+						action: TAPage("/distribution"),
+						placement : TPBottom
 					},{
+						element:"div.distrib:nth-child(1)",
+						text:t._("In this section, you can manage the global distribution planning. This dashboard gives an overview of the next distributions : are orders open ? , how many farmers are attending ?, how many volunteers do you need..."),
+						action: TANext,
+						placement : TPBottom
+
+					},					
+					{
 						element:"ul.nav #contractadmin",
-						text:t._("Now let's have a look at the <b>contracts</b> section which is very important for coordinators."),
+						text:t._("Now let's have a look at the <b>catalogs</b> section."),
 						action: TAPage("/contractAdmin"),
 						placement : TPBottom
 					},{
 						element:"#contracts",
-						text:t._("Here you find the list of <b>contracts</b>.They inculde a start date, a end date, and represent your relationship with a farmer. <br/><p>Here you can manage :<ul><li>the list of products of this farmer</li><li>the orders of members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"),
+						text:t._("Here is the list of <b>catalogs</b>. They include a start date, a end date, and contain the products you can purchase from a specific farmer."),
 						action: TANext,
 						placement : TPBottom
 
-					},{
+					}/*,{
 					element:"#places",
 					   text:t._("Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to key-in the complete address as a map will be displayed based on this address"),
 					   action: TANext,
 					   placement : TPTop
 
-				   },{
+				   }*/,{
 					   element:"#contracts table .btn:first",
-					   text:t._("Let's look closer at how to manage a contract. <b>Click on this button</b>"),
+					   text:t._("Let's look closer at how to manage a catalog. <b>Click on this button</b>"),
 					   action: TAPage("/contractAdmin/view/*"),
 					   placement : TPBottom
 
 				   },{
 					   element:".table.table-bordered:first",
-					   text:t._("Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant contracts: the member commits on buying the same products during the whole duration of the contract</li><li>Variable contracts: the member can choose what he buys for each delivery.</li></ul>"),
+					   text:t._("Here is a summary of the catalog.<br/>There are two types of contracts:<ul><li>CSA contracts: the member commits on buying the same products during the whole duration of the contract</li><li>Variable orders : the member can choose what he buys for each delivery.</li></ul>"),
 					   action: TANext,
 					   placement : TPRight
 
@@ -462,7 +475,7 @@ class TutoDatas {
 					   placement:TPRight
 				   },{
 					   element:".article .table",
-					   text:t._("On this page, you can manage the list of products offered by this supplier.<br/>Define at least the name and the price of products. It is also possible to add a description and a picture."),
+					   text:t._("On this page, you can manage the list of products offered by this supplier.<br/>Define at least the name and the price of products. It is also recommended to add a description and a picture."),
 					   action: TANext,
 					   placement : TPTop
 
@@ -473,7 +486,7 @@ class TutoDatas {
 					   placement:TPRight
 				   },{
 					   element:".article .table",
-					   text:t._("Here we can manage the list of deliveries for this supplier.<br/>In the software, a delivery has a date, a start time, and an end time. The location of the delivery must also be defined, by using the list that we have already seen."),
+					   text:t._("Here you can view the distributions which have been planified from the distribution section.<br/>Everyone who has access to this page can define if the products of this catalog will be available or not to a specific distribution."),
 					   action: TANext,
 					   placement : TPLeft
 
@@ -484,19 +497,19 @@ class TutoDatas {
 					   placement:TPRight
 				   },{
 					   element:".article .table",
-					   text:t._("Here we can manage the list of orders for this supplier.<br/>If you choose to \"open orders\" to members, they will be able to make their orders online themselves.<br/>This page will centralize automatically the orders for this supplier.  Otherwise, as a coordinator, you will be able to enter orders on behalf of a member."),
+					   text:t._("Here we can manage the list of orders for this supplier.<br/>If you choose to \"open orders\" to members, they will be able to make their orders online themselves.<br/>This page will centralize automatically the orders for this supplier.  Otherwise, as a administrator, you will be able to enter orders on behalf of a member."),
 					   action: TANext,
 					   placement : TPLeft
 
 				   },{
 					   element:"ul.nav #messages",
-					   text:t._("<p>We have seen the main features related to contracts.</p><p>Let's see the <b>messaging</b> section.</p>"),
+					   text:t._("<p>We have seen the main features related to catalogs.</p><p>Let's see the <b>messaging</b> section.</p>"),
 					   action: TAPage("/messages"),
 					   placement : TPBottom
 
 				   },{
 					   element:null,
-					   text:t._("<p>The messaging section allows you to send e-mails to different lists of members. It is not necessary anymore to maintain a lot of lists of e-mails depending on contracts, as all these lists are automatically generated.</p>  <p>E-mails are sent with your e-mail address as sender, so you will receive answers in your own mailbox.</p>"),
+					   text:t._("<p>The messaging section allows you to send e-mails to different lists of members. It is not necessary anymore to maintain a lot of lists of e-mails depending on catalogs, as all these lists are automatically generated.</p>  <p>E-mails are sent with your e-mail address as sender, so you will receive answers in your own mailbox.</p>"),
 					   action: TANext,
 					   placement : null
 
@@ -504,15 +517,15 @@ class TutoDatas {
 					   element:"ul.nav #amapadmin",
 					   text:t._("Click here now on this page"),
 					   action : TAPage("/amapadmin"),
-					   placement : TPBottom,
+					   placement : TPLeft,
 				   },{
 					   element:"#subnav",
-					   text:t._("<p>In this last page, you can configure everything that is related to your group.</p><p>The page <b>Access rights</b> is important as it is where you can define other coordinators among members. They will then be able to manage one or many contracts, send emails, etc.</p>"),
+					   text:t._("<p>In this last page, you can configure everything that is related to your group.</p><p>The <b>Administration rights</b> page is important, it's where you can define other administrators among members. They will then be able to manage one or many catalogs, send emails, etc.</p>"),
 					   action:TANext,
 					   placement : TPBottom
 				   },{
-					   element:"#footer",
-					   text:t._("<p>This is the last step of this tutorial. I hope that it gave you a good overview of this software.<br/>To go further, do not hesitate to look at the <b>documentation</b>. The link is always available at the bottom of the screen.</p>"),
+					   element:"#helpMenu",
+					   text:t._("<p>This is the last step of this tutorial. I hope that it gave you a good overview of this software.<br/>To go further, do not hesitate to look at the <b>documentation</b>. The link is always available at the top-right corner of the screen.</p>"),
 					   action:TANext,
 					   placement : TPBottom
 				   }

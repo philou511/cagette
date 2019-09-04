@@ -100,7 +100,7 @@ class App {
 		
 		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
 		
-		//remove(input);
+	
 		
 	}
 
@@ -277,7 +277,7 @@ class App {
 		});
 		// create middleware normally, excepted you must use
 		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
-		var middleWare = Redux.applyMiddleware(mapMiddleware(Thunk, new ThunkMiddleware()));
+		var middleWare = Redux.applyMiddleware( mapMiddleware( Thunk, new ThunkMiddleware() ) );
 		return createStore(rootReducer, null, middleWare);
 	}
 
@@ -429,9 +429,25 @@ class App {
 		storage.setItem("newFeature."+selector, Std.string( Std.parseInt(i)+1 ) );
 		
 		//highlight
-		//App.jq(element).first().addClass("highlight");
+		//App.jq(element).first().addClass("highlight");	
+	}
 
-		
+	public function toggle(selector:String){
+		for ( el in js.Browser.document.querySelectorAll(selector)){
+			untyped el.classList.toggle("hidden");
+		}
+	}
+
+	public function show(selector:String){
+		for ( el in js.Browser.document.querySelectorAll(selector)){
+			untyped el.classList.remove("hidden");
+		}
+	}
+
+	public function hide(selector:String){
+		for ( el in js.Browser.document.querySelectorAll(selector)){
+			untyped el.classList.add("hidden");
+		}
 	}
 
 }

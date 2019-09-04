@@ -7,7 +7,9 @@ import Common;
  */
 class Product extends Controller
 {
-
+	/**
+		List all products of a conctract
+	**/
 	public function doGet(args:{?contractId:db.Contract}) {
 	
 		if(args==null || args.contractId==null) throw "invalid params";

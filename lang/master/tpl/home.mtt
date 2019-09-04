@@ -1,8 +1,7 @@
 ::use 'design.mtt'::
 
-::if user==null::
+
 <div style="margin-top:12px;"></div>
-::end::
 
 ::set hasShopMode = amap.hasShopMode()::
 <div id="content" class="col-md-8">
@@ -19,12 +18,12 @@
 				::raw _("As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software.")::
 			</p>
 			<p>
-				<a href="/contract/?startTuto=intro" class="btn btn-primary">
+				<a href="/account/?startTuto=intro" class="btn btn-primary">
 					<i class="icon icon-chevron-right"></i> ::_("Start the guided tour")::
 				</a>
 
 				<a href="/home?action=deleteDemoContracts&token=::token::" class="btn btn-default">
-					::_("Delete example orders and contracts")::
+					::_("Delete example orders and catalogs")::
 				</a>
 			</p>
 		</div>
@@ -166,7 +165,7 @@
 								::if(status=="notYetOpen")::
 								<span class="disabled" style="font-size: 1.2em;">
 									<i class="icon icon-clock"></i>
-									La commande n'est pas encore ouverte
+									La commande ouvrira le ::hDate(ordersStartDate)::
 								</span>
 								::elseif(status=="open")::
 								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-lg btn-primary">
@@ -197,10 +196,10 @@
 							::set orders = prepare(dist.getUserOrders(user))::
 							::if orders.length>0::
 								<h4>
-									::set s = getDate(dist.date) ::
+								<!--::set s = getDate(dist.date) ::
 									::set e = getDate(dist.end)::
-									
 									<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+								-->
 									&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
 								</h4>
 								

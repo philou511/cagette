@@ -4,8 +4,12 @@
 	<!-- Distributions to validate -->
 	<div class="article text-center" ::cond multidistribs.length>0:: style="max-height:400px;overflow-y: auto;">
 		<h2>::_("Distributions to validate")::</h2>
+		<div class="alert alert-warning">
+			<i class="icon icon-info"></i>
+			La validation de distribution se fait maintenant dans l'onglet <a href="/distribution">Distributions</a>.
+		</div>
 		
-		<p>::_("You need to validate these distributions which took place recently")::</p>
+		<!--<p>::_("You need to validate these distributions which took place recently")::</p>
 		
 		::foreach m multidistribs::	
 		<p>
@@ -32,15 +36,15 @@
 			::end::
 		</p>	
 		::end::	
-		
+		-->
 	</div>
 	
 	<div class="article" id="contracts">
 		<h2>
 			::if getParam("old"):: 
-			::_("Old contracts")::
+			::_("Old catalogs")::
 			::else::
-			::_("Contracts")::
+			::_("Catalogs")::
 			::end::
 		</h2>
 		<table class="table">
@@ -59,15 +63,13 @@
 							<i class="icon icon-refresh"></i>
 						</div>
 						::else::
-						<div class="tag big" style="background-color:#e5d3bf" data-toggle="tooltip" title="Commande variable">
+						<div class="tag big" style="background-color:#e5d3bf" data-toggle="tooltip" title="Catalogue standard (commande variable)">
 							<i class="icon icon-basket"></i>
 						</div>
 						::end::
 					</td>
 					<td>
-						::if c._vendor._image!=null::
-						<div class="productImg" style="background-image:url('::file(c._vendor._image)::');width:48px;height:48px;margin:0" ></div>
-						::end::
+						<div class="productImg" style="background-image:url('::c._vendor.getImage()::');width:48px;height:48px;margin:0" ></div>
 					</td>
 					<td>::c._vendor.name::</td>
 					
@@ -95,9 +97,10 @@
 	
 		
 		::if user.canManageAllContracts():: 
-		$$insert(::_("New contract")::,/contract/defineVendor/)
+			$$insert(::_("Create of find a catalog")::,/contract/defineVendor/)
 		::end::
-		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> ::_("Old contracts")::</a>
+
+		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens catalogues</a>
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 			<i class="icon icon-list"></i> ::_("Global orders view")::
@@ -122,9 +125,7 @@
 			::foreach v vendors::		
 				<tr>
 					<td>
-						::if v._image!=null::
-						<div class="productImg" style="background-image:url('::file(v._image)::');width:48px;height:48px;"></div>
-						::end::
+						<div class="productImg" style="background-image:url('::v.getImage()::');width:48px;height:48px;"></div>
 					</td>
 					<td>
 						<b>::v.name::</b><br/>
@@ -141,7 +142,7 @@
 			::end::
 		</table>
 		<!--$$insert(::_("New farmer")::,/vendor/insert/) -->
-		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, créez un nouveau contrat</div>
+		<div class="alert alert-warning text-center">Pour référencer un nouveau producteur, cliquez sur "Créer ou trouver un catalogue"</div>
 		
 	</div>	
 </div>

@@ -42,31 +42,30 @@ class User extends Controller
 	 */
 	@logged
 	@tpl("user/choose.mtt")
-	function doChoose(?args: { amap:db.Amap } ) {
+	function doChoose(?args: { group:db.Amap } ) {
+
+		//home page
+		app.breadcrumb = [];
 		
 		if (app.user == null) throw t._("You are not connected");
 		
 		var groups = app.user.getGroups();
-		var groupsNum = groups.length;
+		
+		view.noGroup = true; //force template to not display current group
+		view.hasRights = Lambda.count( groups, function(g){
+			var ua = db.UserAmap.get(app.user,g);			
+			var res = ua!=null && ua.rights!=null && ua.rights.length>0;
+			//trace(ua.rights);
+			return res;
+		}) > 0;
 
-		#if plugins
-		groupsNum+= pro.db.PUserCompany.getCompanies(app.user).length;
-		#end
 		
-		if (groupsNum == 1 && groups.length==1 && !app.params.exists("show")) {
-			//Belong to only 1 group
-			app.session.data.amapId = groups[0].id;
-			throw Redirect('/');
-		}else{
-			view.noGroup = true; //force template to not display current group
-		}
-		
-		if (args!=null && args.amap!=null) {
+		if (args!=null && args.group!=null) {
 			//select a group
 			var which = app.session.data==null ? 0 : app.session.data.whichUser ;
 			app.session.data.order = null;
 			app.session.data.newGroup = null;
-			app.session.data.amapId = args.amap.id;
+			app.session.data.amapId = args.group.id;
 			app.session.data.whichUser = which;
 			throw Redirect('/');
 		}
