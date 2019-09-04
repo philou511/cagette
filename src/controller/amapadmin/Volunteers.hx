@@ -69,7 +69,7 @@ class Volunteers extends controller.Controller
 
 		form.addElement( new StringInput("name", t._("Volunteer role name"), null, true) );
 		var activeContracts = Lambda.array(Lambda.map(app.user.amap.getActiveContracts(), function(contract) return { label: contract.name, value: contract.id }));
-		form.addElement( new IntSelect('contract',t._("Contract"), activeContracts, null, false, t._("All contracts")) );
+		form.addElement( new IntSelect('contract',t._("Related catalog"), activeContracts, null, false, t._("None")) );
 	                                                
 		if (form.isValid()) {
 			
@@ -102,7 +102,7 @@ class Volunteers extends controller.Controller
 		form.addElement( new StringInput("name", t._("Volunteer role name"), role.name, true) );
 		var activeContracts = Lambda.array(Lambda.map(app.user.amap.getActiveContracts(), function(contract) return { label: contract.name, value: contract.id }));
 		var defaultContractId = role.contract != null ? role.contract.id : null;
-		form.addElement( new IntSelect('contract',t._("Contract"), activeContracts, defaultContractId, false, t._("All contracts")) );
+		form.addElement( new IntSelect('contract',t._("Related catalog"), activeContracts, defaultContractId, false, t._("None")) );
 	                                                
 		if (form.isValid()) {
 			

@@ -23,7 +23,7 @@
 				</a>
 
 				<a href="/home?action=deleteDemoContracts&token=::token::" class="btn btn-default">
-					::_("Delete example orders and contracts")::
+					::_("Delete example orders and catalogs")::
 				</a>
 			</p>
 		</div>

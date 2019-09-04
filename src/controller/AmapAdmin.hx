@@ -172,7 +172,7 @@ class AmapAdmin extends Controller
 		//Rights on contracts
 		var data = [];
 		var populate :Array<String> = [];
-		data.push({value:"contractAll",label:t._("All contracts")});
+		data.push({value:"contractAll",label:t._("All catalogs")});
 		for (r in app.user.amap.getActiveContracts(true)) {
 			data.push( { label:r.name , value:"contract"+Std.string(r.id) } );
 		}
@@ -193,7 +193,7 @@ class AmapAdmin extends Controller
 		}
 		
 
-		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", t._("Contracts management") , data, populate, true, true) );
+		form.addElement( new sugoi.form.elements.CheckboxGroup("rights", t._("Catalogs management") , data, populate, true, true) );
 		
 		if (form.checkToken()) {
 			

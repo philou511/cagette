@@ -152,11 +152,11 @@ class Distribution extends Controller
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
 			f.addElement(new sugoi.form.elements.RadioGroup("type", "Affichage", [
 				{ value:"one", label:t._("One person per page") },
-				{ value:"contract", label:t._("One person per page sorted by contract") },
+				{ value:"contract", label:t._("One person per page sorted by catalog") },
 				{ value:"all", label:t._("All") },
 				{ value:"allshort", label:t._("All but without prices and totals") },
 			],"all"));
-			f.addElement(new sugoi.form.elements.RadioGroup("fontSize", "Taille de police", [
+			f.addElement(new sugoi.form.elements.RadioGroup("fontSize", t._("Font size"), [
 				{ value:"S" , label:"S"  },
 				{ value:"M" , label:"M"  },
 				{ value:"L" , label:"L"  },
