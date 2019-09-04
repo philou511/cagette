@@ -5,7 +5,7 @@
 </div>
 
 <div class="col-md-6 text-right">
-	<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Créer une distribution</a>
+	<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
 	<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
 
     <div class="btn-group">
@@ -110,7 +110,6 @@
 
                 </div>
             </div>
-
             
             <div class="content" style="background-color:white;">
                 <div class="row">
@@ -120,8 +119,7 @@
                             
 							::set status = d.getState()::
 							
-							::if(status==null || vdistribs.length==0)::
-							
+							::if(status==null || vdistribs.length==0)::							
 								<span style="color:#AAA;">
 									<div class="number"><i class="icon icon-products"></i></div>
 									<div class="status" style="font-size:0.9em;">
@@ -129,7 +127,6 @@
 										Pas de dates de commande à gérer.
 									</div>
 								</span>
-
 							::else::
 
 								::if(status=="notYetOpen")::
@@ -164,14 +161,28 @@
 							::end::
 
                         </div>
-                    </div>
-                    
+					</div>
+					
+                    <!-- VENDORS -->
                     <div class="col-md-3">
+						::set vendors = d.getVendors()::
                         <div class="dashBoardBlock">
                             <div class="title"><i class="icon icon-farmer"></i> ::_("Vendors")::</div>
-                            <div class="number">::d.getVendors().length::</div>
+                            <div class="number">::vendors.length::</div>
                             <div class="actions">
-                                <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-sm btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
+								::if(vendors.length>0)::
+																
+								<a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-sm btn-noAntiDoubleClick">
+									<span class="caret"></span> Producteurs participants
+								</a>
+									
+								::else::
+									<a href="/distribution/inviteFarmers/::d.id::" class="btn btn-primary">
+										Inviter des producteurs
+									</a>
+								::end::
+
+
                             </div>
                             
                         </div>    
@@ -232,7 +243,15 @@
                 <!-- Farmers infos-->
 
 				<div id="md::d.id::" style="display:none;">
+					
 					<hr/>
+
+					<p>
+						<a href="/distribution/inviteFarmers/::d.id::" class="btn btn-primary">
+							<i class="icon icon-plus"></i> Ajouter / supprimer des producteurs
+						</a>
+					</p>
+
 					<table class="table table-bordered">
 						
 						::if(cdistribs.length>0)::
@@ -262,6 +281,9 @@
 										</div>
 										::end::                                            
 									-->
+										<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-delete"></i> Ne participe plus
+										</a>
 									</td>
 								</tr>
 							::end::
@@ -310,6 +332,10 @@
 											<a href="/distribution/edit/::dist.id::" class="btn btn-default btn-sm">
 												<i class="icon icon-calendar"></i> Changer dates
 											</a>
+
+											<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
+												<i class="icon icon-delete"></i> Ne participe plus
+											</a>
 										</p>
 
 									</td>
@@ -342,6 +368,10 @@
 					: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
 				</td>
 				<td>
+					<a href="/distribution/inviteFarmersCycle/::c.id::" class="btn btn-default btn-sm">
+						<i class="icon icon-farmer"></i> Producteurs participants
+					</a>
+
 					$$delete(::_("Delete")::,::"/distribution/deleteCycle/"+c.id::)
 				</td>
 			</tr>

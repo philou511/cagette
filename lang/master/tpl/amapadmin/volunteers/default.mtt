@@ -12,7 +12,7 @@
 			::_("Volunteer Role")::
 		</th>
 		<th>
-			::_("Contract Name")::
+			::_("Related catalog")::
 		</th>
 		<th></th>
 	</tr>
@@ -26,12 +26,14 @@
 			::if role._contract!=null ::
 				<span>::role._contract.name::</span>
             ::else::
-				<span>::_("All contracts")::</span>
+				<span>::_("None")::</span>
             ::end::
 		</td>
 		<td>
+			<div class="btn-group">
 			$$edit(::_("Edit")::,/amapadmin/volunteers/editRole/::role.id::)
 			$$delete(::_("Delete")::,/amapadmin/volunteers/deleteRole/::role.id::?token=::token::)
+			</div>
 		</td>
 	</tr>
 	

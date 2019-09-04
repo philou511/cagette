@@ -6,6 +6,15 @@
 @import '_map';
 @import '_iconfont';
 
+$mediumGreen : #3c763d;
+$lightGreen : #84bd55; //primary buttons color
+
+$lightBrown : #f8f4e5; //background
+
+
+$darkGrey : #333;
+
+
 html{
 	//for rem units
 	font-size: 16px !important;
@@ -13,7 +22,7 @@ html{
 body{
 	//usefull when BS is not here
 	font-family: Cabin, Arial, Helvetica, sans-serif;   
-	color:#333; 
+	color:$darkGrey; 
 }
 
 h1,h2,h3,h4{
@@ -28,7 +37,8 @@ h1{
 }
 
 a{
-	color: #3c763d;
+	color: $mediumGreen;
+	cursor : pointer;
 }
 
 ol.breadcrumb{
@@ -67,24 +77,8 @@ div.footer-info{
 
 }
 
-// ol.breadcrumb{
-// 	padding:8px;
-// 	width: 100%;
-// 	position: fixed;
-//     left: 0;
-//     top: 0;
-//     background: brown;
-// 	li+li:before{
-// 		color:lighten(#8a6d3b,40%);
-// 	}
-// 	a{
-// 		color:lighten(#8a6d3b,40%);
-// 	}
-// }
 
-.navbar{
-	margin-bottom: 8px !important;
-}
+
 
 
 .sticky {
@@ -96,10 +90,6 @@ div.footer-info{
 
 /* buttons */
 
-
-a{
-	cursor:pointer;
-}
 
 /* bounce effect */
 .bouncable { 
@@ -128,26 +118,49 @@ a{
  }
 
 
-/* navigation */
-ul.nav li {
-	text-transform: uppercase;
-	font-size: 14px;
+/* Navigation */
+
+.navbar{
+	margin-bottom: 8px !important;
 }
+
+//admin buttons in navbar
+ul.nav{
+
+	&.admin{
+		background-color: #EEE;
+		li.active > a {
+			background-color: #E0E0E0 !important;
+		}
+	}
+		
+	li {
+		text-transform: uppercase;
+		font-size: 14px;
+		a{
+			color:#777;
+		}
+
+		&.active > a {
+			background-color: #EEE !important;
+			color: #e95216 !important;
+		}
+	}
+}
+
+
+ 
+
 
 .noSelect {
 	-webkit-touch-callout: none; /* iOS Safari */
-		-webkit-user-select: none; /* Safari */
-		 -khtml-user-select: none; /* Konqueror HTML */
-		 -moz-user-select: none; /* Firefox */
-			-ms-user-select: none; /* Internet Explorer/Edge */
-				user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-/* subnav in contractadmin*/
-.nav-pills > li.active > a {
-	background-color: #efe9d5 !important;
-	color: #e95216 !important;
-} 
 
 /* Footer */
 

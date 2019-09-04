@@ -153,7 +153,7 @@ class Contract extends Controller
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
 			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());*/
 			
-			throw Ok('/contract/insertChoose/'+vendor.id, t._("This supplier has been saved"));
+			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
 		}else{
 			form.getElement("email").value = email;
 			form.getElement("name").value = name;
@@ -167,37 +167,36 @@ class Contract extends Controller
 	/**
 		3 - Select VARIABLE ORDER / CSA Contract
 	**/
-	@tpl("contract/insertChoose.mtt")
+	//@tpl("contract/insertChoose.mtt")
 	function doInsertChoose(vendor:db.Vendor) {
-		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
-		view.vendor = vendor;
-		
+		throw Redirect("/contract/insert/"+vendor.id);
 	}
 	
 	/**
 	 * 4 - create the contract
 	 */
-	@tpl("form.mtt")
-	function doInsert(?type=1,vendor:db.Vendor) {
+	@tpl("contract/insert.mtt")
+	function doInsert(vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = if (type == db.Contract.TYPE_CONSTORDERS) t._("Create a CSA contract") else t._("Create a variable orders catalog");
+		view.title = t._("Create a catalog");
 		
 		var c = new db.Contract();
 
 		var form = Form.fromSpod(c);
 		form.removeElement(form.getElement("amapId") );
-		form.removeElement(form.getElement("type"));		
+		form.removeElement(form.getElement("type"));
+		form.getElement("name").value = "Commande "+vendor.name;
 		form.getElement("userId").required = true;
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
-
+		form.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue est un contrat AMAP",false));
 			
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
-			c.type = type;
+			c.type = form.getValueOf("csa")==true ? db.Contract.TYPE_CONSTORDERS : db.Contract.TYPE_VARORDER;
 			c.vendor = vendor;
 			c.insert();
 
@@ -224,7 +223,7 @@ class Contract extends Controller
 	 */
 	function doDelete(c:db.Contract) {
 		
-		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
+		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("Forbidden access"));
 		
 		if (checkToken()) {
 			c.lock();
@@ -239,7 +238,7 @@ class Contract extends Controller
 			var qt = 0.0;
 			for ( o in orders) qt += o.quantity; //there could be "zero c qt" orders
 			if (qt > 0 && !isDemoContract) {
-				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to it."));
+				throw Error("/contractAdmin", t._("You cannot delete this catalog because some orders are linked to it."));
 			}
 			
 			//remove admin rights and delete contract	
@@ -254,7 +253,7 @@ class Contract extends Controller
 			app.event(DeleteContract(c));
 			
 			c.delete();
-			throw Ok("/contractAdmin", t._("Contract deleted"));
+			throw Ok("/contractAdmin", t._("Catalog deleted"));
 		}
 		
 		throw Error("/contractAdmin", t._("Token error"));
@@ -274,7 +273,7 @@ class Contract extends Controller
 		//checks
 		if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened for orders"));
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 
 		
 		var distributions = [];
@@ -395,7 +394,7 @@ class Contract extends Controller
 		//checks
 		if (!app.user.amap.hasPayments()) throw Redirect("/contract/order/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened for orders"));
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 		
 		var distributions = [];
 		/* If its a varying contract, we display a column by distribution*/
@@ -519,7 +518,7 @@ class Contract extends Controller
 		if (Date.now().getTime() > date.getTime()) {
 			
 			var msg = t._("This delivery has already taken place, you can no longer modify the order.");
-			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page: <a href='/contractAdmin'>Management of contracts</a>");
+			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the catalog you can modify the order from this page: <a href='/contractAdmin'>Catalog management</a>");
 			
 			throw Error("/account", msg);
 		}

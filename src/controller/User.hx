@@ -50,19 +50,15 @@ class User extends Controller
 		if (app.user == null) throw t._("You are not connected");
 		
 		var groups = app.user.getGroups();
-		//var groupsNum = groups.length;
-
-		#if plugins
-		//groupsNum+= pro.db.PUserCompany.getCompanies(app.user).length;
-		#end
 		
-		/*if (groupsNum == 1 && groups.length==1 && !app.params.exists("show")) {
-			//Belong to only 1 group
-			//app.session.data.amapId = groups[0].id;
-			//throw Redirect('/');
-		}else{*/
-			view.noGroup = true; //force template to not display current group
-		//}
+		view.noGroup = true; //force template to not display current group
+		view.hasRights = Lambda.count( groups, function(g){
+			var ua = db.UserAmap.get(app.user,g);			
+			var res = ua!=null && ua.rights!=null && ua.rights.length>0;
+			//trace(ua.rights);
+			return res;
+		}) > 0;
+
 		
 		if (args!=null && args.group!=null) {
 			//select a group

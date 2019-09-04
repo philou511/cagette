@@ -146,6 +146,10 @@ class User extends Object {
 	public function getUserAmap(amap:db.Amap):db.UserAmap {
 		return db.UserAmap.get(this, amap);
 	}
+
+	public function getUserAmaps(){
+		return Lambda.array(db.UserAmap.manager.search($user == this, false));
+	}
 	
 	public function isFullyRegistred(){
 		return pass != null && pass != "";

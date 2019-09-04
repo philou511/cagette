@@ -10,20 +10,25 @@
 		 !
 		</h2>				
 	</div>
-
-	<div class="col-md-8 col-md-offset-2">
-		<div class="alert alert-warning">
-			<i class="icon icon-info"></i> <b>Mise à jour de Septembre 2019</b>
+	<div class="col-md-8 col-md-offset-2" ::cond hasRights==true::>
+		<div class="alert alert-danger">
 			<p>
-				Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de Cagette.net.
-				La gestion des distributions a aussi été améliorée suite aux changements initiés en juin.
-				<br/>
-				<br/>
-				<a href='https://www.youtube.com' class="btn btn-default btn-sm" target='_blank'>Voir la vidéo pour se mettre à la page ( 5mn )</a>
+				<i class="icon icon-info"></i> <b>Mise à jour de Septembre 2019</b>
+			</p>
+			<p>
+				Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de l'interface de Cagette.net.	
+				Voici deux vidéos pour découvrir les nouveautés en quelques minutes  :
 			</p>
 
+			<p>
+				<a href='https://youtu.be/i-LytdsRB5I' class="btn btn-default btn-sm" target='_blank'>
+					<i class="icon icon-youtube"></i> Pour les administrateurs de groupe
+				</a>
+				<a href='https://www.youtube.com/watch?v=CiN9h8EFX0k' class="btn btn-default btn-sm" target='_blank'>
+					<i class="icon icon-youtube"></i> Pour les producteurs Cagette Pro
+				</a>
+			</p>
 		</div>
-
 	</div>
 
 	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
@@ -64,8 +69,7 @@
 					<div class="blockIconBadge group" >
 						<i class="icon icon-map-marker"></i>
 					</div>
-					<a class="clickable groupBlock"  href="/user/choose?group=::group.id::">
-					
+					<a class="clickable groupBlock"  href="/user/choose?group=::group.id::">					
 						::if group._image!=null::
 						<img src="::file(group._image)::" class="img-responsive" style="width:92px;float:left;margin-right:12px;" />
 						::end::						

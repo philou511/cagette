@@ -14,8 +14,7 @@ class MultiDistrib extends Object
 	public var id : SId;
 	@hideInForms @:relation(groupId) public var group : db.Amap;
 	public var distribStartDate : SDateTime; 
-	public var distribEndDate : SDateTime;
-	//public var type : SInt; //contract type, both contract types cannot be mixed in a same multidistrib.
+	public var distribEndDate : SDateTime;	
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
 	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;

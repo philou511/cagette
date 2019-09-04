@@ -97,12 +97,13 @@
 	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
 
 	-->
-
+	::if(c._amap._contact!=null)::
 	<div class="alert alert-warning">
 		<i class="icon icon-info"></i>
 		Pour créer de nouvelles distributions, il faut maintenant aller dans l'onglet "Distributions".<br/>
 		Si vous n'y avez pas acccès, demandez à <a href="mailto:<::c._amap._contact.email::>::c._amap._contact.getName()::">l'administrateur du groupe</a> de créer la distribution que vous souhaitez.
 	</div>
+	::end::
 	
 	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
 		::_("Old distributions")::

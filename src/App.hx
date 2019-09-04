@@ -124,12 +124,6 @@ class App extends sugoi.BaseApp {
 		out.set("txtDistrib", "Texte à faire figurer sur les listes d'émargement lors des distributions");
 		out.set("extUrl", "URL du site du groupe.");
 		
-		out.set("distributor1", "Distributeur 1");
-		out.set("distributor2", "Distributeur 2");
-		out.set("distributor3", "Distributeur 3");
-		out.set("distributor4", "Distributeur 4");
-		out.set("distributorNum", "Nbre de distributeurs nécessaires (de 0 à 4)");
-		
 		out.set("startDate", "Date de début");
 		out.set("endDate", "Date de fin");
 		
@@ -173,7 +167,7 @@ class App extends sugoi.BaseApp {
 		
 		out.set("membershipRenewalDate", "Adhésions : Date de renouvellement");
 		out.set("membershipPrice", "Adhésions : Coût de l'adhésion");
-		out.set("UsersCanOrder", "Les adhérents peuvent saisir leur commande en ligne");
+		out.set("UsersCanOrder", "Les membres peuvent saisir leur commande en ligne");
 		out.set("StockManagement", "Gestion des stocks");
 		out.set("contact", "Responsable");
 		out.set("PercentageOnOrders", "Ajouter des frais au pourcentage de la commande");
@@ -181,7 +175,7 @@ class App extends sugoi.BaseApp {
 		out.set("percentageName", "Libellé pour ces frais");
 		out.set("fees", "frais");
 		out.set("AmapAdmin", "Administrateur du groupe");
-		out.set("Membership", "Accès à la gestion des adhérents");
+		out.set("Membership", "Accès à la gestion des membres");
 		out.set("Messages", "Accès à la messagerie");
 		out.set("vat", "TVA");
 		out.set("desc", "Description");
@@ -203,15 +197,16 @@ class App extends sugoi.BaseApp {
 		
 		//group type
 		out.set("Amap", "AMAP");
-		out.set("GroupedOrders", "Groupement d'achat");
-		out.set("ProducerDrive", "En direct d'un collectif de producteurs");
-		out.set("FarmShop", "En direct d'un producteur");
+		out.set("GroupedOrders", 	"Groupement d'achat");
+		out.set("ProducerDrive", 	"En direct d'un collectif de producteurs");
+		out.set("FarmShop", 		"En direct d'un producteur");
 		
-		out.set("regOption", "Inscription de nouveaux adhérents");
-		out.set("Closed", "Fermé : Le coordinateur ajoute les nouveaux adhérents");
-		out.set("WaitingList", "Liste d'attente");
-		out.set("Open", "Ouvert : tout le monde peut s'inscrire");
-		out.set("Full", "Complet : Le groupe n'accepte plus de nouveaux adhérents");
+		out.set("regOption", 	"Inscription de nouveaux membres");
+		out.set("Closed", 		"Fermé : L'administrateur ajoute les nouveaux membres");
+		out.set("WaitingList", 	"Liste d'attente");
+		out.set("Open", 		"Ouvert : tout le monde peut s'inscrire");
+		out.set("Full", 		"Complet : Le groupe n'accepte plus de nouveaux membres");
+
 		out.set("CagetteNetwork", "Me lister dans l'annuaire des groupes Cagette.net");
 		out.set("HasPayments", "Gestion des paiements");
 

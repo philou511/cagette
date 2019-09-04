@@ -95,13 +95,13 @@ class UserAmap extends Object
 		case Membership 	: t._("Members management");
 		case ContractAdmin(cid) : 
 			if (cid == null) {
-				t._("Management of all contracts");
+				t._("Management of all catalogs");
 			}else {
 				var c = db.Contract.manager.get(cid);
 				if(c==null) {
 					t._("Deleted contract");	
 				}else{
-					t._("::name:: contract management",{name:c.name});
+					t._("::name:: catalog management",{name:c.name});
 				}
 			}
 		}
