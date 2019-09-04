@@ -17,7 +17,7 @@ class OrderBoxThunk {
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
-            return HttpUtil.fetch( "/api/order/get/" + userId + "/" + multiDistribId, GET, { contract : contractId }, PLAIN_TEXT )
+            return HttpUtil.fetch( "/api/order/get/" + userId, GET, { contract : contractId, multiDistrib : multiDistribId }, PLAIN_TEXT )
             .then( function( data : String ) {
                 
                 var data : { orders : Array<UserOrder> } = tink.Json.parse(data);

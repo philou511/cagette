@@ -42,7 +42,7 @@ class Order extends Controller
 		//rights	
 		if (contract==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
 		if (contract!=null && !app.user.canManageContract(contract)) throw new Error(403,t._("You do not have the authorization to manage this catalog"));
-		if (multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
+		if ( multiDistrib != null && multiDistrib.isValidated() ) throw new Error(t._("This delivery has been already validated"));
 		
 		//get datas
 		var orders =[];
