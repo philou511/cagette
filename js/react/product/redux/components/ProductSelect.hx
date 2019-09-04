@@ -47,7 +47,7 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<ProductSelectProps> {	
 		
-		return { products : Reflect.field(state, "orderBox").products };
+		return { products : Reflect.field(state, "reduxApp").products };
 	}
 
 	static function mapDispatchToProps( dispatch: redux.Redux.Dispatch ) : react.Partial<ProductSelectProps> {

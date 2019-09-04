@@ -26,33 +26,30 @@ class OrderBoxThunk {
                 //Load users for amap type contracts
                 if ( contractType == 0 ) { 
 
-                    fetchUsers();
+                    fetchUsers( dispatch );
                 }
             })
             .catchError(function(data) {
-
+               
                 handleError( data, dispatch );
             });
         });
 
     }
 
-    static function fetchUsers() {
-    
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+    static function fetchUsers( dispatch : redux.Redux.Dispatch ) {
 
-            //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
-            return HttpUtil.fetch( "/api/user/getFromGroup/", GET, {}, PLAIN_TEXT )
-		    .then( function( data : String ) {
-                
-                var data : { users : Array<UserInfo> } = tink.Json.parse(data);
-                dispatch( OrderBoxAction.FetchUsersSuccess( data.users ) );
-            })
-            .catchError(function(data) {
+        //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
+        return HttpUtil.fetch( "/api/user/getFromGroup/", GET, {}, PLAIN_TEXT )
+        .then( function( data : String ) {
 
-                handleError( data, dispatch );
-            });
-	    });
+            var data : { users : Array<UserInfo> } = tink.Json.parse(data);
+            dispatch( OrderBoxAction.FetchUsersSuccess( data.users ) );
+        })
+        .catchError(function(data) {
+
+            handleError( data, dispatch );
+        });
 
     }
 
@@ -61,7 +58,7 @@ class OrderBoxThunk {
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             var data = new Array<{ id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int }>();
-            var state : OrderBoxState = Reflect.field(getState(), "orderBox");           
+            var state : OrderBoxState = Reflect.field(getState(), "reduxApp");           
 
             for ( order in state.orders) {
 

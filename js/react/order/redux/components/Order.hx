@@ -7,6 +7,11 @@ import Common.UserInfo;
 import Common.UserOrder;
 import react.product.Product;
 import react.order.redux.actions.OrderBoxAction;
+import mui.core.input.InputAdornmentPosition;
+import mui.core.TextField;
+import mui.core.InputAdornment;
+import mui.core.OutlinedInput;
+import mui.core.NativeSelect;
 
 
 typedef OrderProps = {
@@ -37,6 +42,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 	{
 		super(props);
 		state = { quantityInputValue : null };
+		if (props.order.productQt == null) props.order.productQt = 1;	
 		state.quantityInputValue = if ( isSmartQtInput() ) {
 
 										Std.string( round( props.order.quantity * props.order.productQt ) );
@@ -44,63 +50,65 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 								  	else {
 
 										Std.string( props.order.quantity );
-									}		
-		
-		if (props.order.productQt == null) props.order.productQt = 1;		
+									}
+	
 	}
 	
 	override public function render() {
+
+		var inputProps = { endAdornment: jsx('<InputAdornment position={End}>${getProductUnit()}</InputAdornment>') };
+		var input =  isSmartQtInput() ?
+		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} InputProps=${cast inputProps} />') :
+		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} /> ');
 		
-		var input =  if ( isSmartQtInput() ) {
-
-			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value=${state.quantityInputValue} onChange=${updateQuantity}/>
-					<div className="input-group-addon">${getProductUnit()}</div>
-				</div>');	
-		}
-		else {
-
-			jsx('<div className="input-group">
-					<input type="text" className="form-control input-sm text-right" value=${state.quantityInputValue} onChange=${updateQuantity}/>
-				</div>');
-		}
-
 		var alternated = if( props.contractType == 0 && props.users != null ) {
 
 			//constant orders
 			var options = props.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
 
-			var checkbox = if(props.order.invertSharedOrder){
-				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=${props.reverseRotation} />');
-			}else{
+			var checkbox = if(props.order.invertSharedOrder) {
+
+				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=${props.reverseRotation} />');				
+			}
+			else {
+
 				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="1"  onChange=${props.reverseRotation} />');
 			}	
 
+			var inputSelect = jsx('<OutlinedInput />');
 			jsx('<div>
-				<select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${props.updateOrderUserId2} value=${props.order.userId2}>
-					<option value="0">-</option>
-					$options					
-				</select>				
-				$checkbox
+					<NativeSelect value=${props.order.userId2} onChange=${props.updateOrderUserId2} input=${cast inputSelect} >	
+						<option value="0">-</option>
+						$options						
+					</NativeSelect>
+					$checkbox
 			</div>');
-		}else{
+
+		}
+		else {
+
 			null;
 		}
+
+		// <select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${props.updateOrderUserId2} value=${props.order.userId2}>
+		// 			<option value="0">-</option>
+		// 			$options					
+		// 		</select>			
 		
 		return jsx('<div className="productOrder row">
 			<div className="col-md-4">
 				<Product productInfo=${props.order.product} />
 			</div>
 
-			<div className="col-md-1 ref">
+			<div className="col-md-3 ref text-center" style=${{ paddingTop: 15 }} >
 				${props.order.productRef}
 			</div>
 
-			<div className="col-md-1">
+			<div className="col-md-1" style=${{ paddingTop: 15 }} >
 				${round(props.order.quantity * props.order.productPrice)}&nbsp;${props.currency}
 			</div>
 			
-			<div className="col-md-2">
+			<div className="col-md-2" >
 				$input			
 				${makeInfos()}
 			</div>
@@ -135,7 +143,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		return props.order.product.hasFloatQt || props.order.product.variablePrice || props.order.product.wholesale;
 	}
 
-	function updateQuantity( e: js.html.Event ) {
+	function updateQuantity( e: js.html.Event ) {		
 
 		e.preventDefault();		
 
@@ -153,13 +161,13 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 	function getProductUnit() : String {
 
-		var productUnit: Unit = props.order.productUnit != null ? props.order.productUnit : Piece;
+		var productUnit : Unit = props.order.product.unitType != null ? props.order.product.unitType : Piece;
 		return Formatting.unit( productUnit ); 		
 	}
 
 	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<OrderProps> {	
 		
-		return { users : Reflect.field(state, "orderBox").users };
+		return { users : Reflect.field(state, "reduxApp").users };
 	}
 
 	static function mapDispatchToProps( dispatch: redux.Redux.Dispatch, ownProps: OrderProps ) : react.Partial<OrderProps> {

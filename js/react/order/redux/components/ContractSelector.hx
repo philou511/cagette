@@ -47,7 +47,7 @@ class ContractSelector extends react.ReactComponentOfProps<ContractSelectorProps
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<ContractSelectorProps> {	
 		
-		return { contracts: Reflect.field(state, "orderBox").contracts };
+		return { contracts: Reflect.field(state, "reduxApp").contracts };
 	}
 
 	static function mapDispatchToProps( dispatch : redux.Redux.Dispatch ) : react.Partial<ContractSelectorProps> {

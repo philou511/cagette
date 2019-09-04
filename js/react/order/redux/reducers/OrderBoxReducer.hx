@@ -53,7 +53,7 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 
                     if( order.id == orderId ) {
 
-                        if( quantity > 0 ) {
+                        if( quantity >= 0 ) {
 
                             order.quantity = quantity;
                         }                          
@@ -87,13 +87,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 { orders : copiedOrders };
 
             case FetchContractsSuccess( contracts ):
-                { contracts : contracts, redirectTo : null };
+                { contracts : contracts, redirectTo : null, error : null };
             
             case SelectContract( contractId ):
                 { selectedContractId : contractId, redirectTo : "products" };
             
             case FetchProductsSuccess( products ):
-                { products : products, redirectTo : null };
+                { products : products, redirectTo : null, error : null };
 
             case SelectProduct( productId ):
                 var copiedOrders = state.orders.copy();
@@ -114,8 +114,8 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                     var contract = Lambda.find( state.contracts, function( contract ) return contract.id == selectedProduct.contractId );
                     var order : UserOrder = cast {
                     			id: null,
-                                contractId: contract.id,
-                                contractName: contract.name,
+                                contractId: selectedProduct.contractId,
+                                contractName: contract != null ? contract.name : null,
                     			product: selectedProduct,
                     			quantity: 1,
                     			productId: productId,

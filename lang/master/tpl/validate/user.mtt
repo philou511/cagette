@@ -16,7 +16,15 @@
 			::set total = 0::
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">Commande</th>
+					<th colspan="6" class="text-center">Commande</th>
+					<th colspan="3" class="text-center">
+						<a class="btn btn-default btn-xs"
+						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', '/validate/::md.id::/::member.id::')">
+							<i class="icon icon-edit"></i>
+								::_("Edit")::
+						</a>
+						<div id="ordersdialog-container"></div>						
+					</th>										
 				</tr>
 				<tr class="head">
 					<td colspan="9">

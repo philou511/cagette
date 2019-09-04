@@ -35,6 +35,9 @@ class InsertOrder extends react.ReactComponentOfProps<InsertOrderProps>
 
 		var backButtonTo = props.contractId != null ? "/" : "/contracts";
 
+		trace("RENDER");
+		trace(props.redirectTo);
+
 		//redirect to orderBox if a product is selected
 		return props.redirectTo == "orders" ? jsx('<Redirect to="/" />') : 		
 		jsx('			
@@ -52,9 +55,9 @@ class InsertOrder extends react.ReactComponentOfProps<InsertOrderProps>
 			
 		return { 
 			
-			selectedContractId : Reflect.field(state, "orderBox").selectedContractId, 
-			redirectTo : Reflect.field(state, "orderBox").redirectTo,
-			error : Reflect.field(state, "orderBox").error
+			selectedContractId : Reflect.field(state, "reduxApp").selectedContractId, 
+			redirectTo : Reflect.field(state, "reduxApp").redirectTo,
+			error : Reflect.field(state, "reduxApp").error
 		};
 	}
 	

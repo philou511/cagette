@@ -45,7 +45,7 @@ class ContractsBox  extends react.ReactComponentOfProps<ContractsBoxProps>
 	
 	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<ContractsBoxProps> {
 
-		return { redirectTo : Reflect.field(state, "orderBox").redirectTo, error : Reflect.field(state, "orderBox").error };
+		return { redirectTo : Reflect.field(state, "reduxApp").redirectTo, error : Reflect.field(state, "reduxApp").error };
 	}
 
 }
