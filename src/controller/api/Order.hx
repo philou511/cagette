@@ -23,6 +23,17 @@ class Order extends Controller
 
 	}
 
+	function checkRights(user:db.User,contract:db.Contract,multiDistrib:db.MultiDistrib){
+
+		if( contract==null && multiDistrib==null ) throw new Error("You should provide at least a contract or a multiDistrib");
+		if( contract!=null && contract.type==db.Contract.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA contract for a multiDistrib");
+		
+		//rights	
+		if (contract==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
+		if (contract!=null && !app.user.canManageContract(contract)) throw new Error(403,t._("You do not have the authorization to manage this catalog"));
+		if ( multiDistrib != null && multiDistrib.isValidated() ) throw new Error(t._("This delivery has been already validated"));
+	}
+
 	/**
 		Get orders of a user for a multidistrib.
 		Possible to filter for a distribution only
@@ -36,13 +47,8 @@ class Order extends Controller
 		checkIsLogged();
 		var contract = (args!=null && args.contract!=null) ? args.contract : null;
 		var multiDistrib = (args!=null && args.multiDistrib!=null) ? args.multiDistrib : null;
-		if( contract==null && multiDistrib==null ) throw new Error("You should provide at least a contract or a multiDistrib");
-		if( contract!=null && contract.type==db.Contract.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA contract for a multiDistrib");
-		
-		//rights	
-		if (contract==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
-		if (contract!=null && !app.user.canManageContract(contract)) throw new Error(403,t._("You do not have the authorization to manage this catalog"));
-		if ( multiDistrib != null && multiDistrib.isValidated() ) throw new Error(t._("This delivery has been already validated"));
+
+		checkRights(user,contract,multiDistrib);
 		
 		//get datas
 		var orders =[];
@@ -67,13 +73,15 @@ class Order extends Controller
 	 * Update orders of a user ( from react OrderBox component )
 	 * @param	userId
 	 */
-	public function doUpdate(user:db.User,multiDistrib:db.MultiDistrib){
+	public function doUpdate( user:db.User, args:{?contract:db.Contract,?multiDistrib:db.MultiDistrib} ){
 
 		checkIsLogged();
+		var contract = (args!=null && args.contract!=null) ? args.contract : null;
+		var multiDistrib = (args!=null && args.multiDistrib!=null) ? args.multiDistrib : null;
+		checkRights(user,contract,multiDistrib);
 		
 		//GET params
 		var p = app.params;
-		
 
 		//POST payload
 		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
@@ -89,12 +97,23 @@ class Order extends Controller
 		//fbarbut 2018-11-13 : too many problems when people try to edit the order of someone who left the group...
 		//if (!user.isMemberOf(c.amap)) throw new Error(t._("::user:: is not member of this group", {user:user.name}));
 		if (!app.user.canManageAllContracts()) throw new Error(t._("You do not have the authorization to manage this contract"));
-		if (multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
+		if (multiDistrib!=null && multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
 		
 		//record orders
 	
 		//find existing orders
-		var exOrders = multiDistrib.getUserOrders(user);
+		var exOrders = [];
+		if(contract==null){
+			//we edit a whole multidistrib
+			exOrders = multiDistrib.getUserOrders(user);
+		}else{
+			//edit a single catalog
+			var d = null;
+			if(multiDistrib!=null){
+				d = multiDistrib.getDistributionForContract(contract);
+			}
+			exOrders = contract.getUserOrders(user, d);			
+		}
 				
 		var orders = [];
 		for (o in data) {

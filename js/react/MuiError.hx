@@ -19,8 +19,7 @@ class MuiError extends react.ReactComponentOfProps<{errorMessage:String,onClose:
 	public function new(props:Dynamic) 
 	{
 		super(props);
-	}
-	
+	}	
 	
 	override public function render(){
 		return jsx('<Dialog open=${props.errorMessage != null} onClose=${props.onClose}>                

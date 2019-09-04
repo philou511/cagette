@@ -22,7 +22,7 @@ class Contract extends react.ReactComponentOfProps<{ contract : ContractInfo }>
 		
 		return jsx('<div className="contract row">
 						<div className="col-md-4">
-							<div src="${props.contract.image}" className="contractImg" style=$imgStyle/>
+							<div src="${props.contract.image}" className="productImg" style=$imgStyle/>
 						</div>
 						<div className="col-md-8">
 							<strong>${props.contract.name}</strong><br/>							
