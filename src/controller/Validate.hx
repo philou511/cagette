@@ -12,7 +12,9 @@ class Validate extends controller.Controller
 	public var multiDistrib : db.MultiDistrib;
 	public var user : db.User;
 	
-	
+	/**
+		Validate a distrib
+	**/
 	@tpl('validate/user.mtt')
 	public function doDefault(){
 		view.member = user;
@@ -37,6 +39,9 @@ class Validate extends controller.Controller
 		checkToken();
 	}
 	
+	/**
+		Delete a payment operation
+	**/
 	public function doDeleteOp(op:db.Operation){
 		if (checkToken()){
 			
@@ -193,5 +198,7 @@ class Validate extends controller.Controller
 		}
 		
 	}
+
+	
 	
 }

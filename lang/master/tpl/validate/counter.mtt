@@ -1,0 +1,61 @@
+::use 'design.mtt'::
+
+	<div class="col-md-12">
+		<div class="article">
+			
+			<div class="text-center">
+				<h3>
+					Gestion de caisse
+                </h3>
+                <h4>
+                    <i class="icon icon-calendar"></i> ::hDate(distribution.getDate())::
+                </h4>	
+				<h4>
+					<i class="icon icon-map-marker"></i> ::distribution.getPlace().name::
+				</h4>
+				
+            </div>
+
+            <hr/>
+
+            <div>
+                <h4>
+					Fond de caisse avant distribution
+                </h4>
+                <form method="POST">
+                    <input name="counterBeforeDistrib" type="number" step="any"  value="0" class="form-control" style="display: inline-block;width:100px;"/>
+                    <input type="submit" value="Mettre à jour" class="btn btn-primary" style="display: inline-block"/>
+                </form>
+            </div>
+
+            <div>
+                <h4>
+                    Encaissements (liquide)
+                </h4>
+                
+                ::sales.cashTurnover.ttc:: &euro;
+            </div>
+            
+            <div>
+                <h4>
+					Personnes qui n'ont pas payé
+				</h4>
+            </div>
+
+            <div>
+                <h4>
+					Récapitulatif
+                </h4>
+                <p>
+                    Votre caisse doit contenir : 
+                    <b>::sales.cashTurnover.ttc:: &euro;</b>
+
+
+                </p>
+            </div>
+
+			
+			
+		</div>
+	</div>
+::end::

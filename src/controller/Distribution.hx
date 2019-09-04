@@ -1532,8 +1532,8 @@ class Distribution extends Controller
 			}
 		}
 
-		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Undelivered product"),datas,null,true) );
-		form.addElement( new sugoi.form.elements.FloatInput("price","Nouveau prix", 0, true));
+		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Product which price has changed"),datas,null,true) );
+		form.addElement( new sugoi.form.elements.FloatInput("price",t._("New price"), 0, true));
 
 		if(form.isValid()){
 			var pid = form.getValueOf("product");
@@ -1565,5 +1565,17 @@ class Distribution extends Controller
 		view.title = t._("Change the price of a product in orders");
 		view.text = "Attention, cette opération met à jour le prix d'un produit dans les commandes de cette distribution, mais ne change pas le prix du produit dans le catalogue.";
 
+	}
+
+
+	/**
+		Counter management (Cash)
+	**/
+	@tpl('validate/counter.mtt')
+	function doCounter(distribution:db.MultiDistrib){
+		view.distribution = distribution;
+		#if plugins
+		view.sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
+		#end
 	}
 }

@@ -54,7 +54,7 @@
 				</a>
 
 				<a href="/distribution/counter/::distribution.id::" class="btn btn-default" >
-					<i class="icon icon-payment-type"></i> Caisse et encaissements
+					<i class="icon icon-payment-type"></i> Gestion de caisse
 				</a>
 		</p>
 		::end::
