@@ -51,7 +51,8 @@ class Amap extends Controller
 
 			if(form.getValueOf("mode")=="shop") group.flags.set(db.Amap.AmapFlags.ShopMode) else group.flags.unset(db.Amap.AmapFlags.ShopMode);
 
-			if(group.betaFlags.has(db.Amap.BetaFlags.ShopV2)){
+			if(group.betaFlags.has(db.Amap.BetaFlags.ShopV2) && group.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
+				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);
 				group.flags.unset(db.Amap.AmapFlags.CustomizedCategories);
 				group.update();
 			}

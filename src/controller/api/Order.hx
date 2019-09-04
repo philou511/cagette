@@ -26,28 +26,42 @@ class Order extends Controller
 	/**
 		Get orders of a user for a multidistrib.
 		Possible to filter for a distribution only
+		(Used by OrderBox react component)
+
+		contract arg : we want to edit the orders of one single catalog/contract
+		multiDistrib arg : we want to edit the orders of the whole distribution
 	 */	
-	public function doGet(user:db.User,multiDistrib:db.MultiDistrib,?args:{contract:db.Contract}){
+	public function doGet(user:db.User,?args:{contract:db.Contract,multiDistrib:db.MultiDistrib}){
 
 		checkIsLogged();
 		
 		var contract = (args!=null && args.contract!=null) ? args.contract : null;
+		var multiDistrib = (args!=null && args.multiDistrib!=null) ? args.multiDistrib : null;
+		if(contract==null && multiDistrib==null) throw new Error("You should provide at least a contract or a multiDistrib");
+		if( contract.type==db.Contract.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA contract for a multiDistrib");
 		
 		//rights	
-		if (!app.user.canManageAllContracts()) throw new Error(t._("You do not have the authorization to manage this contract"));
+		if (contract==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
+		if (contract!=null && !app.user.canManageContract(contract)) throw new Error(403,t._("You do not have the authorization to manage this catalog"));
 		if (multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
 		
 		//get datas
 		var orders =[];
 
 		if(contract==null){
+			//we edit a whole multidistrib
 			orders = multiDistrib.getUserOrders(user);
 		}else{
-			orders = Lambda.array(multiDistrib.getDistributionForContract(contract).getUserOrders(user));
+			//edit a single catalog
+			var d = null;
+			if(multiDistrib!=null){
+				d = multiDistrib.getDistributionForContract(contract);
+			}
+			orders = contract.getUserOrders(user, d);			
 		}
 
 		var orders = OrderService.prepare(orders);		
-		Sys.print(tink.Json.stringify({success:true,orders:orders}));
+		Sys.print( tink.Json.stringify({success:true,orders:orders}) );
 	}
 	
 	/**

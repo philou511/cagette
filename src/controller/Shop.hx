@@ -263,7 +263,7 @@ class Shop extends Controller
 		}else{
 			//no payments, confirm direclty
 			OrderService.confirmSessionOrder(order);			
-			throw Ok("/contract", t._("Your order has been confirmed") );	
+			throw Ok("/account", t._("Your order has been confirmed") );	
 		}
 
 	}

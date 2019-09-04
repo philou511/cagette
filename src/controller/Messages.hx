@@ -116,11 +116,11 @@ class Messages extends Controller
 	function getLists() :FormData<String>{
 		var out = [
 			{value:'1', label: t._("Everyone")},
-			{value:'2', label: t._("The board: persons in charge + contracts + memberships")},
+			{value:'2', label: t._("The board: people with administration rights in this group")},
 		];
 		
 		out.push( { value:'3', label: t._("TEST: me + spouse") } );
-		out.push( { value:'4', label: t._("Members without contract/order") } );
+		out.push( { value:'4', label: t._("Members without any order") } );
 		if(app.user.amap.hasMembership()) out.push( { value:'5', label:t._("Memberships to be renewed")} );
 		
 		

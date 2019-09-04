@@ -7,6 +7,7 @@ class View extends sugoi.BaseView {
 	
 	var t : sugoi.i18n.GetText;
 	
+	
 	public function new() {
 		super();
 		this.Std = Std;
@@ -15,7 +16,7 @@ class View extends sugoi.BaseView {
 		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
 		this.ArrayTool = ArrayTool;
-		this.t = sugoi.i18n.Locale.texts;		
+		this.t = sugoi.i18n.Locale.texts;
 	}
 	
 	public function count(i) {
@@ -24,6 +25,10 @@ class View extends sugoi.BaseView {
 	
 	public function abs(n){
 		return Math.abs(n);
+	}
+
+	public function breadcrumb():Array<Link>{
+		return App.current.breadcrumb;
 	}
 
 	/**
@@ -38,6 +43,8 @@ class View extends sugoi.BaseView {
 			//trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
 			this.displayTuto(u.tutoState.name, u.tutoState.step);	
 		}
+
+		
 	}
 	
 	function getCurrentGroup(){
@@ -51,6 +58,10 @@ class View extends sugoi.BaseView {
 	
 	function getProduct (pid:Int){ 
 		return db.Product.manager.get(pid, false);		
+	}
+
+	function getPlace(placeId:Int){
+		return db.Place.manager.get(placeId,false);
 	}
 	
 		

@@ -1,6 +1,6 @@
 ::use 'amapadmin/design.mtt'::
 
-<h2>::_("Categories")::</h2>
+<h2>::_("Customized categories")::</h2>
 
 <p>
 	::raw _("Categories allow to sort your products per category, for example \"vegetables, meet, backery, etc.\"<br/>	It is possible to create many groups of categories in order to sort products as we wish.")::

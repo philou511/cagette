@@ -235,15 +235,15 @@ class Group extends controller.Controller
 				vendor = new db.Vendor();
 				vendor.name = "Jean Martin EARL";
 				vendor.zipCode = "000";
-				vendor.city = "Langon";
+				vendor.city = "St Martin de la Cagette";
 				vendor.email = "jean@cagette.net";
 				vendor.insert();
 			}
 			
 			if (type == Amap){
 				var contract = new db.Contract();
-				contract.name = t._("CSA contract Vegetables - Example");
-				contract.description = t._("This contract is an example where the customer has to commit to buy the whole year as with AMAPs");
+				contract.name = t._("Vegetables CSA contract - Example");
+				contract.description = t._("CSA contract example");
 				contract.amap  = g;
 				contract.type = 0;
 				contract.vendor = vendor;
@@ -280,14 +280,14 @@ class Group extends controller.Controller
 				vendor = new db.Vendor();
 				vendor.name = t._("Farm Galinette");
 				vendor.zipCode = "000";
-				vendor.city = t._("Bazas");
+				vendor.city = "St Martin de la Cagette";
 				vendor.email = "galinette@cagette.net";
 				vendor.insert();			
 			}			
 			
 			var contract = new db.Contract();
-			contract.name = t._("Chicken Contract - Example");
-			contract.description = t._("Example of contract with variable orders. It is allowed to order something else at every delivery.");
+			contract.name = t._("Chicken catalog - Example");
+			contract.description = t._("Chicken catalog example.");
 			contract.amap  = g;
 			contract.type = 1;
 			contract.vendor = vendor;
