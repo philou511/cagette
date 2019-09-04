@@ -54,10 +54,10 @@ class Order extends Controller
 		var orders =[];
 
 		if(contract==null){
-			//we edit a whole multidistrib
-			orders = multiDistrib.getUserOrders(user);
+			//we edit a whole multidistrib, edit only var orders.
+			orders = multiDistrib.getUserOrders(user , db.Contract.TYPE_VARORDER);
 		}else{
-			//edit a single catalog
+			//edit a single catalog, may be CSA or variable
 			var d = null;
 			if(multiDistrib!=null){
 				d = multiDistrib.getDistributionForContract(contract);
