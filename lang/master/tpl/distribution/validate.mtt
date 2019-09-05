@@ -53,9 +53,9 @@
 					<i class="icon icon-products"></i> Produit non livré
 				</a>
 
-				<a href="/distribution/counter/::distribution.id::" class="btn btn-default" >
+				<!--<a href="/distribution/counter/::distribution.id::" class="btn btn-default" >
 					<i class="icon icon-payment-type"></i> Gestion de caisse
-				</a>
+				</a>-->
 		</p>
 		::end::
 		

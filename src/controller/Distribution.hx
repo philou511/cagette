@@ -1573,9 +1573,26 @@ class Distribution extends Controller
 	**/
 	@tpl('validate/counter.mtt')
 	function doCounter(distribution:db.MultiDistrib){
+
+		if(app.params.get("counterBeforeDistrib")!=null){
+			distribution.lock();
+			distribution.counterBeforeDistrib = Std.parseFloat(app.params.get("counterBeforeDistrib"));
+			distribution.update();
+		}
 		view.distribution = distribution;
 		#if plugins
 		view.sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
 		#end
+
+		//user who have not paid
+		var notPaid = new Array<{user:db.User,amount:Float}>();
+		for( basket in distribution.getBaskets() ){
+			var ops = basket.getPaymentsOperations();
+			if(ops.length==0){
+				notPaid.push({user:basket.getUser(),amount:basket.getOrdersTotal()});
+			}
+		}
+		view.notPaid = notPaid;
+
 	}
 }

@@ -23,7 +23,7 @@ class MultiDistrib extends Object
 	@:relation(placeId)
 	public var place : Place;
 
-	@hideInForms public var counterBeforeDistrib:SNull<SFloat>; //counter before distrib "fond de caisse"
+	@hideInForms public var counterBeforeDistrib:SFloat; //counter before distrib "fond de caisse"
 
 	@:skip public var contracts : Array<db.Contract>;
 	@:skip public var extraHtml : String;
