@@ -60,6 +60,7 @@ class OrdersDialog extends react.ReactComponentOfPropsAndState<OrdersDialogProps
 	function handleClose( e : Null<js.html.Event> ) {
 
 		setState( { openDialog : false } );
+		js.Browser.location.hash = "/";
 	}
 
 }

@@ -35,9 +35,6 @@ class InsertOrder extends react.ReactComponentOfProps<InsertOrderProps>
 
 		var backButtonTo = props.contractId != null ? "/" : "/contracts";
 
-		trace("RENDER");
-		trace(props.redirectTo);
-
 		//redirect to orderBox if a product is selected
 		return props.redirectTo == "orders" ? jsx('<Redirect to="/" />') : 		
 		jsx('			

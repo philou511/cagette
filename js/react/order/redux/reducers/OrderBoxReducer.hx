@@ -131,10 +131,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 { orders : copiedOrders, redirectTo : "orders"  };
 
             case FetchFailure( error ):
-                { error : error, redirectTo : null };            
+                { error : error, redirectTo : null };
+
+            case ResetRedirection:
+                 { redirectTo : null };
 
         }
-
+        
 		return ( state == partial ? state : js.Object.assign({}, state, partial) );
 	}
 }

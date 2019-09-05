@@ -12,7 +12,7 @@ import react.order.redux.reducers.OrderBoxReducer.OrderBoxState;
 class OrderBoxThunk {
 
 
-    public static function fetchOrders( userId : Int, multiDistribId : Int, ?contractId: Int, ?contractType: Int ) {
+    public static function fetchOrders( userId : Int, multiDistribId : Int, contractId: Int, contractType: Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
@@ -53,7 +53,7 @@ class OrderBoxThunk {
 
     }
 
-    public static function updateOrders( userId : Int, multiDistribId : Int, callbackUrl : String ) {
+    public static function updateOrders( userId : Int, callbackUrl : String, multiDistribId : Int, contractId: Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
@@ -70,7 +70,22 @@ class OrderBoxThunk {
                             userId2 : order.userId2 } );
             } 
 
-            return HttpUtil.fetch( "/api/order/update/" + userId + "/" + multiDistribId, POST, { orders : data }, JSON )
+            var args = "";
+            if ( multiDistribId != null ) {
+
+                args +=  "?multiDistrib=" + multiDistribId;
+
+                if( contractId != null ) {
+
+                    args +=  "&contract=" + contractId;
+                }
+            }
+            else if ( contractId != null ) {
+
+                args +=  "?contract=" + contractId;
+            }
+
+            return HttpUtil.fetch( "/api/order/update/" + userId + args, POST, { orders : data }, JSON )
             .then( function( data : Dynamic ) {
 
                 js.Browser.location.href = callbackUrl;

@@ -38,20 +38,11 @@ typedef OrderState = {
 @:connect
 class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 {
-	public function new(props) 
-	{
+	public function new(props) {
+
 		super(props);
-		state = { quantityInputValue : null };
-		if (props.order.productQt == null) props.order.productQt = 1;	
-		state.quantityInputValue = if ( isSmartQtInput() ) {
-
-										Std.string( round( props.order.quantity * props.order.productQt ) );
-								  	}
-								  	else {
-
-										Std.string( props.order.quantity );
-									}
-	
+		if (props.order.product.qt == null) props.order.product.qt = 1;
+		state = { quantityInputValue : getDisplayQuantity() };
 	}
 	
 	override public function render() {
@@ -60,7 +51,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		var input =  isSmartQtInput() ?
 		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} InputProps=${cast inputProps} />') :
 		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} /> ');
-		
+
 		var alternated = if( props.contractType == 0 && props.users != null ) {
 
 			//constant orders
@@ -90,30 +81,30 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 			null;
 		}
 
-		// <select className="form-control input-sm" style=${{width:"150px",display:"inline-block"}} onChange=${props.updateOrderUserId2} value=${props.order.userId2}>
-		// 			<option value="0">-</option>
-		// 			$options					
-		// 		</select>			
+		var className1 = props.contractType != 0 ? "col-md-5" : "col-md-3";
+		var className2 = props.contractType != 0 ? "col-md-3 ref text-center" : "col-md-2 ref text-center";
+		var className3 = props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
+		var className4 = props.contractType != 0 ? "col-md-2" : "col-md-2";
 		
 		return jsx('<div className="productOrder row">
-			<div className="col-md-4">
+			<div className=${className1}>
 				<Product productInfo=${props.order.product} />
 			</div>
 
-			<div className="col-md-3 ref text-center" style=${{ paddingTop: 15 }} >
+			<div className=${className2} style=${{ paddingTop: 15 }} >
 				${props.order.productRef}
 			</div>
 
-			<div className="col-md-1" style=${{ paddingTop: 15 }} >
+			<div className=${className3} style=${{ paddingTop: 15 }} >
 				${round(props.order.quantity * props.order.productPrice)}&nbsp;${props.currency}
 			</div>
 			
-			<div className="col-md-2" >
+			<div className=${className4} >
 				$input			
 				${makeInfos()}
 			</div>
 
-			${ props.contractType == 0 ? jsx('<div className="col-md-3">$alternated</div>') : null }
+			${ props.contractType == 0 ? jsx('<div className="col-md-4">$alternated</div>') : null }
 			
 		</div>');
 	}
@@ -129,7 +120,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 			jsx('
 			<div className="infos">
-				<b> ${round(props.order.quantity)} </b> x <b>${props.order.productQt} ${getProductUnit()} </b> ${props.order.productName}
+				<b> ${getProductQuantity()} </b> x <b>${props.order.product.qt} ${getProductUnit()} </b> ${props.order.productName}
 			</div>');
 		}
 		else {
@@ -154,7 +145,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		if ( isSmartQtInput() ) {
 
 			//the value is a smart qt, so we need re-compute the quantity
-			orderQuantity = orderQuantity / props.order.productQt;
+			orderQuantity = orderQuantity / props.order.product.qt;
 		}				
 		props.updateOrderQuantity(orderQuantity); 
 	}	
@@ -163,6 +154,24 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 		var productUnit : Unit = props.order.product.unitType != null ? props.order.product.unitType : Piece;
 		return Formatting.unit( productUnit ); 		
+	}
+
+	function getDisplayQuantity() : String {
+
+		if ( isSmartQtInput() ) {
+
+			return Std.string( round( props.order.quantity * props.order.product.qt ) );
+		}
+		else {
+
+			return Std.string( props.order.quantity );
+		}
+
+	}
+
+	function getProductQuantity() : String {
+
+		return Std.string( round(  Formatting.parseFloat(state.quantityInputValue) / props.order.product.qt ) );
 	}
 
 	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<OrderProps> {	

@@ -144,10 +144,13 @@ class Order extends Controller
 				if (o != null) orders.push(o);
 			}else {
 				//new record
-				var d = multiDistrib.getDistributionFromProduct(product);
-				if(d.contract.type==db.Contract.TYPE_CONSTORDERS) d = null; //no need if csa contract
+				var distrib = null; //no need if csa contract
+				if( contract.type != db.Contract.TYPE_CONSTORDERS ) {
 
-				var o =  OrderService.make(user, o.qt , product, d == null ? null : d.id, o.paid , user2, invert);
+					distrib = multiDistrib.getDistributionFromProduct(product);
+				}
+				
+				var o =  OrderService.make(user, o.qt , product, distrib == null ? null : distrib.id, o.paid , user2, invert);
 				if (o != null) orders.push(o);
 			}
 		}

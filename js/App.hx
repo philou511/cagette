@@ -171,15 +171,8 @@ class App {
 	
 	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, callbackUrl : String){
 
-		//Julie
-		// untyped App.j("#myModal").modal();		
-		// var node = js.Browser.document.querySelector('#myModal .modal-body');
-		// ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-
 		var node = js.Browser.document.querySelector('#ordersdialog-container');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-
-		// var contractType = 0;
 	
 		var store = createOrderBoxReduxStore();
 		ReactDOM.render(jsx('

@@ -7,6 +7,7 @@ import react.router.HashRouter;
 import react.router.Route;
 import react.router.Switch;
 import react.router.Link;
+import react.order.redux.actions.OrderBoxAction;
 import react.order.redux.actions.thunk.OrderBoxThunk;
 
 //Material UI
@@ -27,8 +28,10 @@ typedef OrderBoxProps = {
 	var currency : String;
 	var orders : Array<UserOrder>;
 	var fetchOrders : Int -> Int -> Int -> Int -> Void;
-	var updateOrders : Int -> Int -> String -> Void;
+	var updateOrders : Int -> String -> Int -> Int -> Void;
+	var resetRedirection : Void -> Void;
 	var error : String;
+	var redirectTo : String;
 };
 
 
@@ -85,18 +88,14 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 				
 		var delivery = 	props.date == null ? null : jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 
-		//Julie
-		// var validateButton = jsx('<a onClick=${props.updateOrders.bind( props.userId, props.multiDistribId, props.callbackUrl )} className="btn btn-primary">
-		// 							<i className="icon icon-chevron-right"></i> Valider
-		// 						 </a>' );
-
-		var validateButton = jsx('<Button onClick=${props.updateOrders.bind( props.userId, props.multiDistribId, props.callbackUrl )} variant={Contained} style=${{color:CGColors.White, backgroundColor:CGColors.Secondary}} >
+		var validateButton = jsx('<Button onClick=${props.updateOrders.bind( props.userId, props.callbackUrl, props.multiDistribId, props.contractId )} variant={Contained} style=${{color:CGColors.White, backgroundColor:CGColors.Secondary}} >
 									${CagetteTheme.getIcon("chevron-right")}&nbsp;Valider
 								 </Button>');				
-		 		 
-		var addButtonTo = props.contractId == null ? "/contracts" : "/insert";
-
-		// var className1 = this.props.contractType != 0 ? "col-md-4 text-center" : ;
+		
+		var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
+		var className2 = this.props.contractType != 0 ? "col-md-3 text-center" : "col-md-2 text-center";
+		var className3 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
+		var className4 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
 		
         var renderOrderBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment { 
 			return jsx('<div onKeyPress=${onKeyPress}>
@@ -105,17 +104,17 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 							<Error error=${this.props.error} />							
 							<hr/>
 							<div className="row tableHeader" >
-								<div className="col-md-4 text-center">Produit</div>
-								<div className="col-md-3 text-center">Ref.</div>
-								<div className="col-md-1 text-center">Prix</div>
-								<div className="col-md-2 text-center">Qté</div>
+								<div className=${className1}>Produit</div>
+								<div className=${className2}>Ref.</div>
+								<div className=${className3}>Prix</div>
+								<div className=${className4}>Qté</div>
 								${ this.props.contractType == 0 ? jsx('<div className="col-md-3 text-center">Alterné avec</div>') : null }
 							</div>
 							${ordersByContract}	
 							<div style=${{marginTop: 20}}>
 								${validateButton}						
 								&nbsp;																
-								<Button onClick=${function() { js.Browser.location.hash = addButtonTo; }} size={Medium} variant={Outlined}>
+								<Button onClick=${handleClick} size={Medium} variant={Outlined}>
 									${CagetteTheme.getIcon("plus")}&nbsp;&nbsp;Ajouter un produit
 								</Button>			
 							</div>
@@ -147,14 +146,25 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		
 		if ( e.key == "Enter" ) {
 
-			props.updateOrders( props.userId, props.multiDistribId, props.callbackUrl );
+			props.updateOrders( props.userId, props.callbackUrl, props.multiDistribId, props.contractId );
 		} 
+	}
+
+	function handleClick( e : js.html.Event ) {
+
+		if ( props.redirectTo != null ) { 
+
+			props.resetRedirection();
+		}
+	
+		js.Browser.location.hash = props.contractId == null ? "/contracts" : "/insert";
 	}
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<OrderBoxProps> {		
 
 		return { orders: Reflect.field(state, "reduxApp").orders,
-				 error : Reflect.field(state, "reduxApp").error };
+				 error : Reflect.field(state, "reduxApp").error,
+				 redirectTo : Reflect.field(state, "reduxApp").redirectTo };
 	}
 
 	static function mapDispatchToProps( dispatch : redux.Redux.Dispatch ) : react.Partial<OrderBoxProps> {
@@ -164,9 +174,10 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 			fetchOrders : function( userId : Int, multiDistribId : Int, contractId : Int, contractType : Int ) {
 							return dispatch( OrderBoxThunk.fetchOrders( userId, multiDistribId, contractId, contractType ) );
 						  },
-			updateOrders : function( userId : Int, multiDistribId : Int, callbackUrl : String ) {
-							return dispatch( OrderBoxThunk.updateOrders( userId, multiDistribId, callbackUrl ) );
-						  }
+			updateOrders : function( userId : Int, callbackUrl : String, multiDistribId : Int, contractId : Int ) {
+							return dispatch( OrderBoxThunk.updateOrders( userId, callbackUrl, multiDistribId, contractId ) );
+						  },
+			resetRedirection : function() { dispatch(OrderBoxAction.ResetRedirection); }
 		}
 
 	}	
