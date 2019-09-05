@@ -115,12 +115,8 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                                 contractId: selectedProduct.contractId,
                                 contractName: contract != null ? contract.name : null,
                     			product: selectedProduct,
-                    			quantity: 1,
-                    			productId: productId,
-                    			productPrice: selectedProduct.price,
-                    			paid: false,
-                    			invert: false,
-                    			user2: null
+                    			quantity: 1,                     			
+                    			paid: false
                     			};
                     
                     copiedOrders.push(order);

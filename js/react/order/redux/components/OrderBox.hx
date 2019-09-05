@@ -82,7 +82,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 				ordersByContract.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' ));
 
-				totalPrice += order.quantity * order.productPrice;
+				totalPrice += order.quantity * order.product.price;
 						
 			}	
 		}

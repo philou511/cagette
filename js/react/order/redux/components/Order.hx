@@ -91,7 +91,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 			</div>
 
 			<div className=${className3} style=${{ paddingTop: 15 }} >
-				${round(props.order.quantity * props.order.productPrice)}&nbsp;${props.currency}
+				${round(props.order.quantity * props.order.product.price)}&nbsp;${props.currency}
 			</div>
 			
 			<div className=${className4} >
