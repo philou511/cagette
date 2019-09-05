@@ -1532,8 +1532,8 @@ class Distribution extends Controller
 			}
 		}
 
-		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Undelivered product"),datas,null,true) );
-		form.addElement( new sugoi.form.elements.FloatInput("price","Nouveau prix", 0, true));
+		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Change product price"),datas,null,true) );
+		form.addElement( new sugoi.form.elements.FloatInput("price",t._("New product price"), 0, true));
 
 		if(form.isValid()){
 			var pid = form.getValueOf("product");
@@ -1562,7 +1562,7 @@ class Distribution extends Controller
 		}
 
 		view.form = form;
-		view.title = t._("Remove an undelivered product from orders");
+		view.title = t._("Change product price");
 
 	}
 }
