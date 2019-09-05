@@ -5,6 +5,10 @@ import react.ReactMacro.jsx;
 import react.router.Redirect;
 import react.router.Link;
 
+//Material UI
+import react.mui.CagetteTheme;
+import mui.core.Button;
+
 
 typedef ContractsBoxProps = {
 	
@@ -35,7 +39,9 @@ class ContractsBox  extends react.ReactComponentOfProps<ContractsBoxProps>
 		jsx('			
 			<div>								
 				<h3>Choisissez le contrat dont vous voulez voir les produits</h3>
-				<Link className="btn btn-default" to="/"><i className="icon icon-chevron-left"></i> Retour</Link>
+				<Button onClick=${function(){ js.Browser.location.hash = "/"; }} size={Medium} variant={Outlined}>
+					${CagetteTheme.getIcon("chevron-left")}&nbsp;&nbsp;Retour
+				</Button>
 				<Error error=${props.error} />				
 				<hr />
 				<ContractSelector multiDistribId=${props.multiDistribId} />						

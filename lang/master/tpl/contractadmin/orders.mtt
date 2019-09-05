@@ -85,17 +85,6 @@
 							::set totalAdh = totalAdh+1::
 						</td>
 						<td>
-							<!--
-							::if distribution!=null::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>
-								::_("Edit")::</a>
-							::else::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 
-								::_("Edit")::</a>
-							::end::
-							-->
-							
-							
 							::if distribution!=null::
 							<a class="btn btn-default btn-xs"
 								onclick="_.initOrderBox(::m.userId::,::multiDistribId::,::distribution._contract.id::,::distribution._contract.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getAmap().currency::', '/contractAdmin/orders/::c.id::?d=::distribution.id::')">

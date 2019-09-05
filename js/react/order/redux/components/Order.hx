@@ -8,6 +8,8 @@ import Common.UserOrder;
 import react.product.Product;
 import react.order.redux.actions.OrderBoxAction;
 import mui.core.input.InputAdornmentPosition;
+import mui.core.Checkbox;
+import mui.core.FormControlLabel;
 import mui.core.TextField;
 import mui.core.InputAdornment;
 import mui.core.OutlinedInput;
@@ -51,28 +53,22 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 		var inputProps = { endAdornment: jsx('<InputAdornment position={End}>${getProductUnit()}</InputAdornment>') };
 		var input =  isSmartQtInput() ?
-		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} InputProps=${cast inputProps} />') :
-		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} /> ');
+		jsx('<TextField key=${"input-" + props.order.id} variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} InputProps=${cast inputProps} />') :
+		jsx('<TextField key=${"input-" + props.order.id} variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} /> ');
 
 		//constant orders
-		var alternated = if( props.contractType == 0 && props.users != null ) {
-
-			var checkboxValue = state.invertSharedOrder ? "1" : "0";
-			var checkboxChecked = state.invertSharedOrder ? "checked" : "";	
-
-			var checkbox = props.order.invertSharedOrder ? 
-							jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" checked="checked" value="1" onChange=$reverseUsersRotation />') :
-							jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="0" onChange=$reverseUsersRotation />');
+		var alternated = if( props.contractType == 0 && props.users != null ) {			
 
 			var options = props.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
 			var inputSelect = jsx('<OutlinedInput labelWidth={0} />');
+			var checkboxProps = jsx('<Checkbox key=${"checkbox-" + props.order.id} checked=${state.invertSharedOrder} onChange=$reverseUsersRotation value=${Std.string(props.order.id)} color={Primary} />');
 			jsx('<div>
-					<NativeSelect value=${state.userId2Value} onChange=${updateUserId2} input=${cast inputSelect} >	
+					<NativeSelect key=${"select-" + props.order.id} value=${state.userId2Value} onChange=${updateUserId2} input=${cast inputSelect} style=${{fontSize:"0.95rem", height: 45, width: "100%" }} >	
 						<option value="0">-</option>
 						$options						
 					</NativeSelect>
-					$checkbox
-			</div>');		
+					<FormControlLabel key=${"label-" + props.order.id} control=${ cast checkboxProps } label="Inverser la rotation" />					
+				</div>');		
 
 		}
 		else {
@@ -162,7 +158,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 	function reverseUsersRotation( e: js.html.Event ) {		
 
-		e.preventDefault();		
+		e.preventDefault();
 
 		var value : Bool = untyped (e.target.checked == "") ? false : e.target.checked;
 		setState( { invertSharedOrder : value } );

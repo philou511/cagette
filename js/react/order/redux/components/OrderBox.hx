@@ -147,9 +147,9 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		return jsx('
 			<HashRouter>
 				<Switch>
-					<Route path="/" exact=$true render=$renderOrderBox />
-					${ props.contractId != null ? null : jsx('<Route path="/contracts" exact=$true render=$renderContractsBox />') }
-					<Route path="/insert" exact=$true render=$renderInsertBox />
+					<Route key="orders" path="/" exact=$true render=$renderOrderBox />
+					${ props.contractId != null ? null : jsx('<Route key="contracts" path="/contracts" exact=$true render=$renderContractsBox />') }
+					<Route key="products" path="/insert" exact=$true render=$renderInsertBox />
 				</Switch>
 			</HashRouter>
 		');

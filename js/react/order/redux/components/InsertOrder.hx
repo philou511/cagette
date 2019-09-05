@@ -6,6 +6,10 @@ import react.product.redux.components.ProductSelect;
 import react.router.Redirect;
 import react.router.Link;
 
+//Material UI
+import react.mui.CagetteTheme;
+import mui.core.Button;
+
 
 typedef InsertOrderProps = {
 
@@ -33,14 +37,14 @@ class InsertOrder extends react.ReactComponentOfProps<InsertOrderProps>
 
 		var contractId = props.contractId != null ? props.contractId : props.selectedContractId;
 
-		var backButtonTo = props.contractId != null ? "/" : "/contracts";
-
 		//redirect to orderBox if a product is selected
 		return props.redirectTo == "orders" ? jsx('<Redirect to="/" />') : 		
 		jsx('			
 			<div>				
 				<h3>Choisissez le produit à ajouter</h3>
-				<Link className="btn btn-default" to=${backButtonTo}><i className="icon icon-chevron-left"></i> Retour</Link>
+				<Button onClick=${function(){ js.Browser.location.hash = props.contractId != null ? "/" : "/contracts"; }} size={Medium} variant={Outlined}>
+					${CagetteTheme.getIcon("chevron-left")}&nbsp;&nbsp;Retour
+				</Button>
 				<Error error=${props.error} />
 				<hr />
 				<ProductSelect contractId=${contractId} />			
