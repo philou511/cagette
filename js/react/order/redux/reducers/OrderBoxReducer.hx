@@ -67,7 +67,9 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 for( order in copiedOrders ) {
 
                     if( order.id == orderId ) {
-
+                        
+                        trace("ReverseOrderRotation");
+                        trace(reverseRotation);
                         order.invertSharedOrder = reverseRotation;
                         break;
                     }
@@ -75,12 +77,17 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 { orders : copiedOrders };
 
             case UpdateOrderUserId2( orderId, userId2 ):
-               
+                trace("UpdateOrderUserId2");
+                trace(orderId);
+                trace(userId2);
+
                 var copiedOrders = state.orders.copy();
                 for( order in copiedOrders ) {
 
                     if( order.id == orderId ) {
 
+                        trace("FOUND");
+                        trace(order.id);
                         order.userId2 = userId2;
                         break;
                     }

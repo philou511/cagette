@@ -21,13 +21,15 @@ typedef OrderProps = {
 	var currency : String;
 	var contractType : Int;	
 	var updateOrderQuantity : Float -> Void;
-	var reverseRotation : js.html.Event -> Void;
-	var updateOrderUserId2 : js.html.Event -> Void;
+	var reverseRotation : Bool -> Void;
+	var updateOrderUserId2 : Int -> Void;
 }
 
 typedef OrderState = {
 
 	var quantityInputValue : String;
+	var userId2Value : Int;
+	var invertSharedOrder : Bool;
 }
 
 
@@ -42,7 +44,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 		super(props);
 		if (props.order.product.qt == null) props.order.product.qt = 1;
-		state = { quantityInputValue : getDisplayQuantity() };
+		state = { quantityInputValue : getDisplayQuantity(), userId2Value : props.order.userId2, invertSharedOrder : props.order.invertSharedOrder };
 	}
 	
 	override public function render() {
@@ -52,28 +54,26 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} InputProps=${cast inputProps} />') :
 		jsx('<TextField variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} /> ');
 
+		//constant orders
 		var alternated = if( props.contractType == 0 && props.users != null ) {
 
-			//constant orders
+			var checkboxValue = state.invertSharedOrder ? "1" : "0";
+			var checkboxChecked = state.invertSharedOrder ? "checked" : "";	
+			trace("RENDER");		
+			trace(props.order.invertSharedOrder);
+			var checkbox = props.order.invertSharedOrder ? 
+							jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" checked="checked" value="1" onChange=$reverseUsersRotation />') :
+							jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="0" onChange=$reverseUsersRotation />');
+
 			var options = props.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
-
-			var checkbox = if(props.order.invertSharedOrder) {
-
-				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" checked="checked" type="checkbox" value="1"  onChange=${props.reverseRotation} />');				
-			}
-			else {
-
-				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="1"  onChange=${props.reverseRotation} />');
-			}	
-
 			var inputSelect = jsx('<OutlinedInput labelWidth={0} />');
 			jsx('<div>
-					<NativeSelect value=${props.order.userId2} onChange=${props.updateOrderUserId2} input=${cast inputSelect} >	
+					<NativeSelect value=${state.userId2Value} onChange=${updateUserId2} input=${cast inputSelect} >	
 						<option value="0">-</option>
 						$options						
 					</NativeSelect>
 					$checkbox
-			</div>');
+			</div>');		
 
 		}
 		else {
@@ -150,6 +150,30 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		props.updateOrderQuantity(orderQuantity); 
 	}	
 
+
+	function updateUserId2( e: js.html.Event ) {		
+
+		e.preventDefault();		
+
+		var value : Int = untyped (e.target.value == "") ? null : e.target.value;
+		setState( { userId2Value : value } );
+
+		props.updateOrderUserId2(value); 
+	}	
+
+	function reverseUsersRotation( e: js.html.Event ) {		
+
+		e.preventDefault();		
+
+		trace("reverseUsersRotation");
+		var value : Bool = untyped (e.target.checked == "") ? false : e.target.checked;
+		setState( { invertSharedOrder : value } );
+
+		trace(value);
+
+		props.reverseRotation(value); 
+	}	
+
 	function getProductUnit() : String {
 
 		var productUnit : Unit = props.order.product.unitType != null ? props.order.product.unitType : Piece;
@@ -186,11 +210,10 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 			updateOrderQuantity : function( orderQuantity ) {
 									dispatch( OrderBoxAction.UpdateOrderQuantity( ownProps.order.id, orderQuantity ) ); 
 								},
-			reverseRotation : function( e: js.html.Event ) {
-								dispatch( OrderBoxAction.ReverseOrderRotation( ownProps.order.id, untyped e.target.checked ) ); 
+			reverseRotation : function( reverseRotation : Bool ) {
+								dispatch( OrderBoxAction.ReverseOrderRotation( ownProps.order.id, reverseRotation ) ); 
 							  },
-			updateOrderUserId2 : function( e: js.html.Event ) { 
-									var userId2 = Std.parseInt(untyped e.target.value); 
+			updateOrderUserId2 : function( userId2 : Int ) {
 									dispatch( OrderBoxAction.UpdateOrderUserId2( ownProps.order.id, userId2 == 0 ? null : userId2 ) );				
 								 }
 		}
