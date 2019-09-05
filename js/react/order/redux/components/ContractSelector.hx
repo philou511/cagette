@@ -55,7 +55,9 @@ class ContractSelector extends react.ReactComponentOfProps<ContractSelectorProps
 		return { 
 			
 			selectContract : function( contractId : Int ) { 
-								dispatch(OrderBoxAction.SelectContract( contractId )); 
+								dispatch(OrderBoxAction.SelectContract( contractId ));
+								//Redirects to InsertOrder when a contract is selected	
+								js.Browser.location.hash = "/insert";
 							},
 			fetchContracts : function( multiDistribId : Int ) {
 								dispatch(OrderBoxThunk.fetchContracts( multiDistribId ));

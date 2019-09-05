@@ -55,7 +55,9 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 		return { 
 			
 			selectProduct : function(productId) { 
-								dispatch(OrderBoxAction.SelectProduct(productId)); 
+								dispatch(OrderBoxAction.SelectProduct(productId));
+								//Redirects to orderBox when a product is selected
+								js.Browser.location.hash = "/";
 							},
 			fetchProducts : function( contractId : Int ) {
 								dispatch(OrderBoxThunk.fetchProducts( contractId )); 		

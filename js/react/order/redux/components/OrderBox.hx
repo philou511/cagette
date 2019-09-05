@@ -6,7 +6,6 @@ import Common.UserOrder;
 import react.router.HashRouter;
 import react.router.Route;
 import react.router.Switch;
-import react.router.Link;
 import react.order.redux.actions.OrderBoxAction;
 import react.order.redux.actions.thunk.OrderBoxThunk;
 
@@ -29,9 +28,7 @@ typedef OrderBoxProps = {
 	var orders : Array<UserOrder>;
 	var fetchOrders : Int -> Int -> Int -> Int -> Void;
 	var updateOrders : Int -> String -> Int -> Int -> Void;
-	var resetRedirection : Void -> Void;
-	var error : String;
-	var redirectTo : String;
+	var error : String;	
 };
 
 
@@ -127,7 +124,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 							<div style=${{marginTop: 20}}>
 								${validateButton}						
 								&nbsp;																
-								<Button onClick=${handleClick} size={Medium} variant={Outlined}>
+								<Button onClick=${function() { js.Browser.location.hash = this.props.contractId == null ? "/contracts" : "/insert"; }} size={Medium} variant={Outlined}>
 									${CagetteTheme.getIcon("plus")}&nbsp;&nbsp;Ajouter un produit
 								</Button>			
 							</div>
@@ -161,23 +158,12 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 			props.updateOrders( props.userId, props.callbackUrl, props.multiDistribId, props.contractId );
 		} 
-	}
-
-	function handleClick( e : js.html.Event ) {
-
-		if ( props.redirectTo != null ) { 
-
-			props.resetRedirection();
-		}
-	
-		js.Browser.location.hash = props.contractId == null ? "/contracts" : "/insert";
-	}
+	}	
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<OrderBoxProps> {		
 
 		return { orders: Reflect.field(state, "reduxApp").orders,
-				 error : Reflect.field(state, "reduxApp").error,
-				 redirectTo : Reflect.field(state, "reduxApp").redirectTo };
+				 error : Reflect.field(state, "reduxApp").error };
 	}
 
 	static function mapDispatchToProps( dispatch : redux.Redux.Dispatch ) : react.Partial<OrderBoxProps> {
@@ -189,8 +175,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 						  },
 			updateOrders : function( userId : Int, callbackUrl : String, multiDistribId : Int, contractId : Int ) {
 							return dispatch( OrderBoxThunk.updateOrders( userId, callbackUrl, multiDistribId, contractId ) );
-						  },
-			resetRedirection : function() { dispatch(OrderBoxAction.ResetRedirection); }
+						  }
 		}
 
 	}	

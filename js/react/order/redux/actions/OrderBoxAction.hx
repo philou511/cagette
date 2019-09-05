@@ -18,5 +18,4 @@ enum OrderBoxAction
     FetchProductsSuccess( products: Array<ProductInfo> );
     SelectProduct( productId: Int );                
     FetchFailure( error: String );
-    ResetRedirection; 
 }

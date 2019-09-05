@@ -16,7 +16,6 @@ typedef OrderBoxState = {
     var contracts : Array<ContractInfo>;
     var selectedContractId : Int;
 	var products : Array<ProductInfo>;	
-    var redirectTo : String;
     var error : String;
 };
 
@@ -32,7 +31,6 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
         contracts : [],
         selectedContractId : null,
         products : [],
-        redirectTo : null,
         error : null
     };
 
@@ -42,10 +40,10 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 		var partial : Partial<OrderBoxState> = switch (action) {
 
             case FetchOrdersSuccess( orders ):
-                { orders : orders, redirectTo : null, error : null };
+                { orders : orders, error : null };
 
             case FetchUsersSuccess( users ):
-                { users : users, redirectTo : null, error : null };
+                { users : users, error : null };
 
             case UpdateOrderQuantity( orderId, quantity ):
                 var copiedOrders = state.orders.copy();
@@ -87,13 +85,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 { orders : copiedOrders };
 
             case FetchContractsSuccess( contracts ):
-                { contracts : contracts, redirectTo : null, error : null };
+                { contracts : contracts, error : null };
             
             case SelectContract( contractId ):
-                { selectedContractId : contractId, redirectTo : "products" };
+                { selectedContractId : contractId };
             
             case FetchProductsSuccess( products ):
-                { products : products, redirectTo : null, error : null };
+                { products : products, error : null };
 
             case SelectProduct( productId ):
                 var copiedOrders = state.orders.copy();
@@ -128,13 +126,10 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                     copiedOrders.push(order);
 
                 }
-                { orders : copiedOrders, redirectTo : "orders"  };
+                { orders : copiedOrders };
 
             case FetchFailure( error ):
-                { error : error, redirectTo : null };
-
-            case ResetRedirection:
-                 { redirectTo : null };
+                { error : error };
 
         }       
         
