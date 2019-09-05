@@ -145,7 +145,7 @@ class Order extends Controller
 			}else {
 				//new record
 				var distrib = null; //no need if csa contract
-				if( contract.type != db.Contract.TYPE_CONSTORDERS ) {
+				if( multiDistrib != null ) {
 
 					distrib = multiDistrib.getDistributionFromProduct(product);
 				}

@@ -66,7 +66,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 				jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="1"  onChange=${props.reverseRotation} />');
 			}	
 
-			var inputSelect = jsx('<OutlinedInput />');
+			var inputSelect = jsx('<OutlinedInput labelWidth={0} />');
 			jsx('<div>
 					<NativeSelect value=${props.order.userId2} onChange=${props.updateOrderUserId2} input=${cast inputSelect} >	
 						<option value="0">-</option>

@@ -75,6 +75,7 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 { orders : copiedOrders };
 
             case UpdateOrderUserId2( orderId, userId2 ):
+               
                 var copiedOrders = state.orders.copy();
                 for( order in copiedOrders ) {
 
@@ -113,7 +114,7 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                     var selectedProduct = Lambda.find( state.products, function( product ) return product.id == productId );
                     var contract = Lambda.find( state.contracts, function( contract ) return contract.id == selectedProduct.contractId );
                     var order : UserOrder = cast {
-                    			id: null,
+                    			id: 0 - Std.random(1000000),
                                 contractId: selectedProduct.contractId,
                                 contractName: contract != null ? contract.name : null,
                     			product: selectedProduct,
@@ -136,7 +137,7 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
             case ResetRedirection:
                  { redirectTo : null };
 
-        }
+        }       
         
 		return ( state == partial ? state : js.Object.assign({}, state, partial) );
 	}
