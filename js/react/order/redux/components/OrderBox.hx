@@ -67,6 +67,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		}
 
 		var ordersByContract = [];
+		var totalPrice = 0.0;
 		for( contractId in ordersByContractId.keys() ) {
 					
 			ordersByContract.push( jsx('<h4 key=${contractId}>${ordersByContractId[contractId][0].contractName}</h4>') );			
@@ -83,8 +84,20 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 				};
 
 				ordersByContract.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' ));
+				totalPrice+=order.total;
 			}	
 		}
+		//total
+		var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
+		var className2 = this.props.contractType != 0 ? "col-md-3 text-center" : "col-md-2 text-center";
+		var className3 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
+		var className4 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
+		ordersByContract.push(jsx('<div className="row">			
+			<div className=${className1}></div>
+			<div className=${className2}><b>TOTAL</b></div>
+			<div className=${className3}><b>${Formatting.formatNum(totalPrice)}&nbsp;&euro;</b></div>
+			<div className=${className4}></div>
+			</div>'));
 				
 		var delivery = 	props.date == null ? null : jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 
@@ -92,10 +105,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 									${CagetteTheme.getIcon("chevron-right")}&nbsp;Valider
 								 </Button>');				
 		
-		var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
-		var className2 = this.props.contractType != 0 ? "col-md-3 text-center" : "col-md-2 text-center";
-		var className3 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
-		var className4 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
+		
 		
         var renderOrderBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment { 
 			return jsx('<div onKeyPress=${onKeyPress}>

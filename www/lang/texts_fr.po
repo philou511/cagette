@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-09-03 18:13+0200\n"
+"PO-Revision-Date: 2019-09-05 09:52+0200\n"
 "Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/cagette/"
 "translations/fr/>\n"
@@ -1754,7 +1754,7 @@ msgstr "Tout à la suite sans les prix et totaux"
 
 #: ../src/controller/Distribution.hx:4590
 msgid "Font size"
-msgstr ""
+msgstr "Taille de police"
 
 #: ../src/controller/Distribution.hx:7890
 #: ../src/controller/Distribution.hx:8670
@@ -1966,12 +1966,11 @@ msgid "You have been successfully assigned to the selected role."
 msgstr "Vous avez été enregistré pour ce rôle."
 
 #: ../src/controller/Distribution.hx:48565
-#: ../src/controller/Distribution.hx:49855
 msgid "Undelivered product"
 msgstr "Produit non livré"
 
 #: ../src/controller/Distribution.hx:48809
-#: ../src/controller/Distribution.hx:50188
+#: ../src/controller/Distribution.hx:50199
 msgid "Please select a product"
 msgstr "Sélectionnez un produit"
 
@@ -1980,11 +1979,19 @@ msgid "The undelivered product has been removed from ::n:: orders."
 msgstr "Le produit non livré a été retiré de ::n:: commandes."
 
 #: ../src/controller/Distribution.hx:49286
-#: ../src/controller/Distribution.hx:50863
 msgid "Remove an undelivered product from orders"
 msgstr "Retirer des commandes un produit non livré"
 
-#: ../src/controller/Distribution.hx:50709
+#: ../src/controller/Distribution.hx:49855
+#: ../src/controller/Distribution.hx:50874
+msgid "Change product price"
+msgstr "Changer le prix d'un produit"
+
+#: ../src/controller/Distribution.hx:49965
+msgid "New product price"
+msgstr "Nouveau prix pour ce produit"
+
+#: ../src/controller/Distribution.hx:50720
 msgid "The price of ::product:: has been modified to ::price:: in orders."
 msgstr "Le prix de ::product:: a été ajusté à ::price:: dans les commandes."
 
@@ -5811,9 +5818,6 @@ msgstr ""
 
 #~ msgid "Create my own group"
 #~ msgstr "Créer mon propre groupe"
-
-#~ msgid "Change group"
-#~ msgstr "Changer de groupe"
 
 #~ msgid "Group"
 #~ msgstr "Groupe"
