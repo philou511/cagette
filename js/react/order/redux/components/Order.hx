@@ -59,8 +59,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 			var checkboxValue = state.invertSharedOrder ? "1" : "0";
 			var checkboxChecked = state.invertSharedOrder ? "checked" : "";	
-			trace("RENDER");		
-			trace(props.order.invertSharedOrder);
+
 			var checkbox = props.order.invertSharedOrder ? 
 							jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" checked="checked" value="1" onChange=$reverseUsersRotation />') :
 							jsx('<input data-toggle="tooltip" title="Inverser l\'alternance" type="checkbox" value="0" onChange=$reverseUsersRotation />');
@@ -165,11 +164,8 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 		e.preventDefault();		
 
-		trace("reverseUsersRotation");
 		var value : Bool = untyped (e.target.checked == "") ? false : e.target.checked;
 		setState( { invertSharedOrder : value } );
-
-		trace(value);
 
 		props.reverseRotation(value); 
 	}	

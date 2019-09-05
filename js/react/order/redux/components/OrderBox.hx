@@ -84,9 +84,12 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 				};
 
 				ordersByContract.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' ));
-				totalPrice+=order.total;
+
+				totalPrice += order.quantity * order.productPrice;
+						
 			}	
 		}
+
 		//total
 		var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
 		var className2 = this.props.contractType != 0 ? "col-md-3 text-center" : "col-md-2 text-center";
@@ -98,7 +101,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 			<div className=${className3}><b>${Formatting.formatNum(totalPrice)}&nbsp;&euro;</b></div>
 			<div className=${className4}></div>
 			</div>'));
-				
+			
 		var delivery = 	props.date == null ? null : jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 
 		var validateButton = jsx('<Button onClick=${props.updateOrders.bind( props.userId, props.callbackUrl, props.multiDistribId, props.contractId )} variant={Contained} style=${{color:CGColors.White, backgroundColor:CGColors.Secondary}} >
