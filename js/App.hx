@@ -170,8 +170,10 @@ class App {
 	}
 	
 	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, callbackUrl : String){
-
-		var node = js.Browser.document.querySelector('#ordersdialog-container');
+		var node = js.Browser.document.createDivElement();
+		node.id = "ordersdialog-container";
+		js.Browser.document.body.appendChild(node);
+		//var node = js.Browser.document.querySelector('#ordersdialog-container');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
 	
 		var store = createOrderBoxReduxStore();

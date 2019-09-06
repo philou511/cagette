@@ -22,8 +22,7 @@
 						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', '/validate/::md.id::/::member.id::')">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
-						</a>
-						<div id="ordersdialog-container"></div>						
+						</a>			
 					</th>										
 				</tr>
 				<tr class="head">

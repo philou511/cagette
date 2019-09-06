@@ -6,7 +6,6 @@
 		::_("Delivery of the"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		
-		<div id="orderBox"></div><!-- for react -->
 
 		<div style="margin:8px 0;">
 

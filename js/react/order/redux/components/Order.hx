@@ -67,7 +67,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 						<option value="0">-</option>
 						$options						
 					</NativeSelect>
-					<FormControlLabel key=${"label-" + props.order.id} control=${ cast checkboxProps } label="Inverser la rotation" />					
+					<FormControlLabel key=${"label-" + props.order.id} control=${ cast checkboxProps } label="Inverser l\'alternance" />					
 				</div>');		
 
 		}

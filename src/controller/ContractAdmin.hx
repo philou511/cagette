@@ -305,6 +305,8 @@ class ContractAdmin extends Controller
 			view.date = date;
 			view.place = place;
 			view.ctotal = app.params.exists("ctotal");
+
+			view.distrib = db.MultiDistrib.get(date,place);
 		}
 	}
 	
