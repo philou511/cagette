@@ -272,13 +272,16 @@ class User extends Controller
 		db.UserAmap.getOrCreate(user,group);
 
 		//warn manager by mail
-		var url = "http://" + App.config.HOST + "/member/view/" + user.id;
-		var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
-		App.quickMail(
-			group.contact.email,
-			group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
-			app.processTemplate("mail/message.mtt", { text:text } ) 
-		);
+		if(group.contact!=null){
+			var url = "http://" + App.config.HOST + "/member/view/" + user.id;
+			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
+			App.quickMail(
+				group.contact.email,
+				group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
+				app.processTemplate("mail/message.mtt", { text:text } ) 
+			);	
+		}
+		
 
 		throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
 	}

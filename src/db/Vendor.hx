@@ -28,9 +28,9 @@ class Vendor extends Object
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
 
-	@hideInForms public var directory : SBool;
-	@hideInForms public var longDesc : SNull<SText>;
-	@hideInForms public var offCagette : SNull<SText>;
+	@hideInForms public var directory 	: SBool;
+	@hideInForms public var longDesc 	: SNull<SText>;
+	@hideInForms public var offCagette 	: SNull<SText>;
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
