@@ -4,10 +4,11 @@ import Common;
 import react.ReactMacro.jsx;
 import react.ReactDOM;
 import react.*;
-import react.router.*;
 
 //mui
 import react.mui.CagetteTheme;
+import mui.core.CssBaseline;
+import mui.core.styles.MuiThemeProvider;
 
 //redux
 import redux.Redux;
@@ -18,7 +19,7 @@ import redux.thunk.ThunkMiddleware;
 import redux.react.Provider as ReduxProvider;
 
 //custom components
-import react.order.*;
+import react.order.OrdersDialog;
 import react.product.*;
 import react.store.CagetteStore;
 import react.map.*;
@@ -27,9 +28,6 @@ import react.vendor.*;
 
 //TODO
 import react.store.Cart;
-
-import mui.core.CssBaseline;
-import mui.core.styles.MuiThemeProvider;
 
 
 //require bootstrap JS since it's bundled with browserify
@@ -171,16 +169,35 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId:Int, distributionId:Int, contractId:Int, contractType:Int, date:String, place:String, userName:String, currency:String, hasPayments:Bool,callbackUrl:String){
-
-		untyped App.j("#myModal").modal();
-		var onValidate = function() js.Browser.location.href = callbackUrl;
-		var node = js.Browser.document.querySelector('#myModal .modal-body');
+	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, callbackUrl : String){
+		var node = js.Browser.document.createDivElement();
+		node.id = "ordersdialog-container";
+		js.Browser.document.body.appendChild(node);
+		//var node = js.Browser.document.querySelector('#ordersdialog-container');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
-		ReactDOM.render(jsx('<$OrderBox userId=${userId} distributionId=${distributionId} 
-			contractId=${contractId} contractType=${contractType} date=${date} place=${place} userName=${userName} 
-			onValidate=$onValidate currency=$currency hasPayments=$hasPayments />'),node,postReact);
+	
+		var store = createOrderBoxReduxStore();
+		ReactDOM.render(jsx('
+			<ReduxProvider store=${store}>
+				<MuiThemeProvider theme=${CagetteTheme.get()}>
+					<>
+						<CssBaseline />
+						<OrdersDialog userId=$userId multiDistribId=$multiDistribId contractId=$contractId contractType=$contractType
+						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency />							
+					</>
+				</MuiThemeProvider>
+			</ReduxProvider>
+		'), node );
 
+	}
+
+	private function createOrderBoxReduxStore() {
+		// Store creation
+		var rootReducer = Redux.combineReducers({ reduxApp : mapReducer(react.order.redux.actions.OrderBoxAction, new react.order.redux.reducers.OrderBoxReducer()) });
+		// create middleware normally, excepted you must use
+		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
+		var middleWare = Redux.applyMiddleware(mapMiddleware(Thunk, new ThunkMiddleware()));
+		return createStore( rootReducer, null, middleWare );
 	}
 
 	/**

@@ -6,7 +6,6 @@
 		::_("Delivery of the"):: <b>::hDate(distribution.date)::</b>
 		::end::
 		
-		<div id="orderBox"></div><!-- for react -->
 
 		<div style="margin:8px 0;">
 
@@ -85,31 +84,20 @@
 							::set totalAdh = totalAdh+1::
 						</td>
 						<td>
-							<!--
-							::if distribution!=null::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::?d=::distribution.id::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>
-								::_("Edit")::</a>
-							::else::
-							<a href="/contractAdmin/edit/::c.id::/::m.userId::" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 
-								::_("Edit")::</a>
-							::end::
-							-->
-							
-							
 							::if distribution!=null::
 							<a class="btn btn-default btn-xs"
-								onclick="_.initOrderBox(::m.userId::,::distribution.id::,::distribution._contract.id::,::distribution._contract.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getAmap().currency::',::user.getAmap().hasPayments()::,'/contractAdmin/orders/::c.id::?d=::distribution.id::')">
+								onclick="_.initOrderBox(::m.userId::,::multiDistribId::,::distribution._contract.id::,::distribution._contract.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getAmap().currency::', '/contractAdmin/orders/::c.id::?d=::distribution.id::')">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
-							</a>
+							</a>							
 							::else::
 							<a class="btn btn-default btn-xs"
-								onclick="_.initOrderBox(::m.userId::, null, ::c.id::,::c.type::, null, null, '::escapeJS(m.userName)::','::user.getAmap().currency::',::user.getAmap().hasPayments()::,'/contractAdmin/orders/::c.id::')">
+								onclick="_.initOrderBox(::m.userId::, null, ::c.id::,::c.type::, null, null, '::escapeJS(m.userName)::','::user.getAmap().currency::', '/contractAdmin/orders/::c.id::')">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
 							</a>
 							::end::
-						
+							<div id="ordersdialog-container"></div>
 														
 						</td>
 					

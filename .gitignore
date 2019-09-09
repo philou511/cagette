@@ -28,8 +28,7 @@ www/lang/*.mo
 
 www/file/*
 
-www/js/app.js
-www/js/libs.js
+www/js/*
 
 www/css/.sass-cache
 www/css/*.css

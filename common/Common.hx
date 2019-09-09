@@ -69,6 +69,15 @@ typedef VendorInfos = {
 	linkUrl:String,
 }
 
+typedef ContractInfo = {
+	id:Int,
+	name:String,
+	image:Null<String>
+
+}
+
+
+
 @:keep
 typedef ProductInfo = {
 	id : Int,

@@ -1718,11 +1718,11 @@ msgstr ""
 msgid "You have been successfully assigned to the selected role."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:48565 ../src/controller/Distribution.hx:49855
+#: ../src/controller/Distribution.hx:48565
 msgid "Undelivered product"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:48809 ../src/controller/Distribution.hx:50188
+#: ../src/controller/Distribution.hx:48809 ../src/controller/Distribution.hx:50199
 msgid "Please select a product"
 msgstr ""
 
@@ -1730,11 +1730,19 @@ msgstr ""
 msgid "The undelivered product has been removed from ::n:: orders."
 msgstr ""
 
-#: ../src/controller/Distribution.hx:49286 ../src/controller/Distribution.hx:50863
+#: ../src/controller/Distribution.hx:49286
 msgid "Remove an undelivered product from orders"
 msgstr ""
 
-#: ../src/controller/Distribution.hx:50709
+#: ../src/controller/Distribution.hx:49855 ../src/controller/Distribution.hx:50874
+msgid "Change product price"
+msgstr ""
+
+#: ../src/controller/Distribution.hx:49965
+msgid "New product price"
+msgstr ""
+
+#: ../src/controller/Distribution.hx:50720
 msgid "The price of ::product:: has been modified to ::price:: in orders."
 msgstr ""
 

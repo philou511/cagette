@@ -1532,8 +1532,13 @@ class Distribution extends Controller
 			}
 		}
 
+<<<<<<< HEAD
 		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Product which price has changed"),datas,null,true) );
 		form.addElement( new sugoi.form.elements.FloatInput("price",t._("New price"), 0, true));
+=======
+		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Change product price"),datas,null,true) );
+		form.addElement( new sugoi.form.elements.FloatInput("price",t._("New product price"), 0, true));
+>>>>>>> orderbox
 
 		if(form.isValid()){
 			var pid = form.getValueOf("product");
@@ -1562,6 +1567,7 @@ class Distribution extends Controller
 		}
 
 		view.form = form;
+<<<<<<< HEAD
 		view.title = t._("Change the price of a product in orders");
 		view.text = "Attention, cette opération met à jour le prix d'un produit dans les commandes de cette distribution, mais ne change pas le prix du produit dans le catalogue.";
 
@@ -1593,6 +1599,9 @@ class Distribution extends Controller
 			}
 		}
 		view.notPaid = notPaid;
+=======
+		view.title = t._("Change product price");
+>>>>>>> orderbox
 
 	}
 }
