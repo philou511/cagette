@@ -26,7 +26,7 @@
 			::if ctotal::
 			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per member")::</a>
 			::else::
-			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per contract")::</a>
+			<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::?ctotal=1" class="btn btn-default btn-sm">::_("Sub-totals per catalog")::</a>
 			::end::
 			
 			<a href="/contractAdmin/vendorsByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">::_("Totals per supplier")::</a>
@@ -62,6 +62,12 @@
 								<span class="glyphicon glyphicon-refresh"></span> ::_("alternately with"):: ::m.userName2::
 							::end::
 							::set contractTotal = 0::
+
+							<a class="btn btn-default btn-xs pull-right"
+						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', '/contractAdmin/ordersByDate/::date::/::place.id::')">
+							<i class="icon icon-edit"></i>
+								::_("Edit")::
+						</a>	
 						</td>
 					</tr>
 					<tr>
@@ -73,7 +79,7 @@
 						<th>::_("Sub-total")::</th>
 						<th>::_("Fees")::</th>
 						<th>::_("Total")::</th>
-						<th>::_("Paid")::</th>
+						
 					</tr>
 			
 				::end::
@@ -119,13 +125,7 @@
 						::set subtotal = subtotal + m.total::
 						::set contractTotal = contractTotal + m.total::
 					</td>
-					<td>
-						::if m.paid==true::
-						<span style="color:#00AA00;">::_("Paid")::</span>
-						::else::
-						<span style="color:#DD0000;">::_("Not paid")::</span>
-						::end::
-					</td>
+					
 					
 				</tr>
 			
@@ -135,7 +135,7 @@
 					<tr style="background:#DDD;">					
 						<th colspan="7" class="text-right">Total ::m.contractName::</th>
 						<th>::formatNum(contractTotal)::&nbsp;::currency()::</th>					
-						<th></th>
+						
 						::set contractTotal = 0::
 					</tr>
 				::end::
@@ -147,7 +147,6 @@
 					<tr style="border-top:2px solid #AAA;">					
 						<th colspan="7" class="text-right">::_("Total member")::</th>
 						<th>::formatNum(subtotal)::&nbsp;::currency()::</th>					
-						<th></th>
 						::set subtotal = 0::
 					</tr>
 					::end::
@@ -160,7 +159,6 @@
 			<tr style="background:#CCC;font-size:1.3em;">					
 				<th colspan="7" class="text-right">::_("Total of all orders:"):: </th>
 				<th>::formatNum(total)::&nbsp;::currency()::</th>					
-				<th></th>
 			</tr>
 				
 

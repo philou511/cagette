@@ -1,22 +1,29 @@
 ::use 'design.mtt'::
 
-<div class="col-md-6">
-    <h2 style="margin-bottom:24px;margin-top:0px">::_("Distributions")::</h2>
+<h2 style="margin:12px">::_("Distributions")::</h2>
+<div class="row" style="margin-bottom:24px;">
+
+		<div class="col-md-6">
+				$$timeframe(::timeframe::)
+			</div>
+			
+			<div class="col-md-6 text-right">
+				<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
+				<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
+			
+				<div class="btn-group">
+					<button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="caret"></span> ::_("Duty periods"):: 
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="/distribution/volunteersCalendar"><i class="icon icon-calendar"></i> ::_("Duty periods calendar")::</a></li>
+						<li><a href="/distribution/volunteersParticipation"><i class="icon icon-calendar"></i> ::_("Duty periods participations")::</a></li>          
+					</ul>
+				</div>
+			</div>
+
 </div>
 
-<div class="col-md-6 text-right">
-    <a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Créer une distribution</a>
-
-    <div class="btn-group">
-        <button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<span class="caret"></span> ::_("Duty periods"):: 
-        </button>
-        <ul class="dropdown-menu">
-        	<li><a href="/distribution/volunteersCalendar"><i class="icon icon-calendar"></i> ::_("Duty periods calendar")::</a></li>
-        	<li><a href="/distribution/volunteersParticipation"><i class="icon icon-calendar"></i> ::_("Duty periods participations")::</a></li>          
-        </ul>
-    </div>
-</div>
 
 <style>
 		.dashBoardBlock{
@@ -64,8 +71,8 @@
             ::set place = d.getPlace():: 
             ::set start = d.getDate()::
             ::set end = d.getEndDate()::
-            ::set ordersStartDate = d.getOrdersStartDate()::
-			::set ordersEndDate = d.getOrdersEndDate()::
+            ::set ordersStartDate = d.getOrdersStartDate(false)::
+			::set ordersEndDate = d.getOrdersEndDate(false)::
 			::set vdistribs = d.getDistributions(1)::
 			::set cdistribs = d.getDistributions(0)::
             
@@ -90,7 +97,7 @@
                     ::if(d.orderStartDate!=null)::
                     <p>
                         <i class="icon icon-calendar"></i> ::_("Orders opening")::  :  ::hDate(d.orderStartDate)::<br/>
-                        <i class="icon icon-calendar"></i> ::_("Orders closing")::    :  ::hDate(d.orderEndDate)::<br/>
+                        <i class="icon icon-calendar"></i> ::_("Orders closing")::  :  ::hDate(d.orderEndDate)::<br/>
                     </p>
                     ::end::
                 </div>
@@ -109,7 +116,6 @@
 
                 </div>
             </div>
-
             
             <div class="content" style="background-color:white;">
                 <div class="row">
@@ -119,8 +125,7 @@
                             
 							::set status = d.getState()::
 							
-							::if(status==null || vdistribs.length==0)::
-							
+							::if(status==null || vdistribs.length==0)::							
 								<span style="color:#AAA;">
 									<div class="number"><i class="icon icon-products"></i></div>
 									<div class="status" style="font-size:0.9em;">
@@ -128,7 +133,6 @@
 										Pas de dates de commande à gérer.
 									</div>
 								</span>
-
 							::else::
 
 								::if(status=="notYetOpen")::
@@ -146,27 +150,50 @@
 									</span>
 								::elseif(status=="distributed")::
 									<span style="color:#AAA;">
-										<div class="number"><i class="icon icon-basket"></i></div>
+										
 										<div class="status">::_("Distribution done")::</div>
+										<br/>
 									</span>
+									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
+										<i class="icon icon-check"></i> Valider cette distribution
+									</a>
 								::elseif(status=="validated")::
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>
 										<div class="status">::_("Distribution confirmed")::</div>
+										::if isAdmin::
+										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-xs">
+											<i class="icon icon-check"></i> Dévalider cette distribution
+										</a>
+										::end::
 									</span>
 								::end::
 								
 							::end::
 
                         </div>
-                    </div>
-                    
+					</div>
+					
+                    <!-- VENDORS -->
                     <div class="col-md-3">
+						::set vendors = d.getVendors()::
                         <div class="dashBoardBlock">
                             <div class="title"><i class="icon icon-farmer"></i> ::_("Vendors")::</div>
-                            <div class="number">::d.getVendors().length::</div>
+                            <div class="number">::vendors.length::</div>
                             <div class="actions">
-                                <a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-sm btn-noAntiDoubleClick"><span class="caret"></span> Détail</a>
+								::if(vendors.length>0)::
+																
+								<a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-sm btn-noAntiDoubleClick">
+									<span class="caret"></span> Producteurs participants
+								</a>
+									
+								::else::
+									<a href="/distribution/inviteFarmers/::d.id::" class="btn btn-primary">
+										Inviter des producteurs
+									</a>
+								::end::
+
+
                             </div>
                             
                         </div>    
@@ -224,10 +251,18 @@
 
                 </div>
 
-                <!-- vendor infos-->
+                <!-- Farmers infos-->
 
 				<div id="md::d.id::" style="display:none;">
+					
 					<hr/>
+
+					<p>
+						<a href="/distribution/inviteFarmers/::d.id::" class="btn btn-primary">
+							<i class="icon icon-plus"></i> Ajouter / supprimer des producteurs
+						</a>
+					</p>
+
 					<table class="table table-bordered">
 						
 						::if(cdistribs.length>0)::
@@ -243,9 +278,8 @@
 									<td>
 										::contract._vendor.name::
 									</td>
-									<td>
-										
-
+									<td>										
+									<!--
 										::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
@@ -257,6 +291,10 @@
 											::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
 										</div>
 										::end::                                            
+									-->
+										<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-delete"></i> Ne participe plus
+										</a>
 									</td>
 								</tr>
 							::end::
@@ -277,10 +315,7 @@
 										::contract._vendor.name::
 									</td>
 									<td>
-
-										$$edit(Modifier,/distribution/edit/::dist.id::)
-
-										::if(d.distribStartDate.getTime() != dist.date.getTime())::
+										<!--::if(d.distribStartDate.getTime() != dist.date.getTime())::
 										<div class="alert alert-warning">
 											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
 										</div>
@@ -290,19 +325,30 @@
 										<div class="alert alert-warning">
 											::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
 										</div>
-										::end::
+										::end::-->
 
 										::if(d.orderStartDate!=null && d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
 										<div class="alert alert-warning">
-											::_("Order start date is different from general distribution"):: : ::hDate(dist.orderStartDate)::
+											<i class="icon icon-info"></i> ::_("Order start date is different from general distribution"):: : <b>::hDate(dist.orderStartDate)::</b>
 										</div>
 										::end::
 
 										::if(d.orderEndDate!=null && d.orderEndDate.getTime() != dist.orderEndDate.getTime())::
 										<div class="alert alert-warning">
-											::_("Order end date is different from general distribution"):: : ::hDate(dist.orderEndDate)::
+												<i class="icon icon-info"></i> ::_("Order end date is different from general distribution"):: : <b>::hDate(dist.orderEndDate)::</b>
 										</div>
 										::end::
+
+										<p>
+											<a href="/distribution/edit/::dist.id::" class="btn btn-default btn-sm">
+												<i class="icon icon-calendar"></i> Changer dates
+											</a>
+
+											<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
+												<i class="icon icon-delete"></i> Ne participe plus
+											</a>
+										</p>
+
 									</td>
 								</tr>
 							::end::
@@ -311,7 +357,38 @@
 				</div>
             </div>
         </div>
-    </div>
+	</div>
 ::end::
+
+<!-- CYCLES -->
+<div class="col-md-12" ::cond cycles.length>0::>
+	<div class="article">
+		<h4>::_("Distribution cycle")::</h4>
+		<table class="table">			
+			::foreach c cycles::
+			<tr>
+				<td>
+					<b>
+					::switch c.cycleType:: 						
+					::case::  ::_("Weekly")::
+					::case::  ::_("Monthly")::
+					::case::  ::_("Every 2 weeks")::
+					::case::  ::_("Every 3 weeks")::
+					::end::
+					</b>
+					: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+				</td>
+				<td>
+					<a href="/distribution/inviteFarmersCycle/::c.id::" class="btn btn-default btn-sm">
+						<i class="icon icon-farmer"></i> Producteurs participants
+					</a>
+
+					$$delete(::_("Delete")::,::"/distribution/deleteCycle/"+c.id::)
+				</td>
+			</tr>
+			::end::
+		</table>
+	</div>
+</div>
 			
 ::end::

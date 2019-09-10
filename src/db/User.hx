@@ -146,6 +146,10 @@ class User extends Object {
 	public function getUserAmap(amap:db.Amap):db.UserAmap {
 		return db.UserAmap.get(this, amap);
 	}
+
+	public function getUserAmaps(){
+		return Lambda.array(db.UserAmap.manager.search($user == this, false));
+	}
 	
 	public function isFullyRegistred(){
 		return pass != null && pass != "";
@@ -514,20 +518,11 @@ class User extends Object {
 		
 	}
 	
-	public function sendInvitation(group:db.Amap) {
+	public function sendInvitation(group:db.Amap,?force=false) {
 		
 		var t = sugoi.i18n.Locale.texts;
 		
-		if (isFullyRegistred()) throw t._("This user cannot receive an invitation");
-		
-		/*var group : db.Amap = null;
-		
-		if (App.current.user == null) {			
-			group = this.getAmaps().first();	
-		}else {
-			//prend l'amap du user connecté qui a lancé l'invite.
-			group = App.current.user.amap;	
-		}*/
+		if (isFullyRegistred() && !force) throw t._("This user cannot receive an invitation");
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
@@ -579,6 +574,14 @@ class User extends Object {
 		if (this.lastName2 != null) this.lastName2 = this.lastName2.toUpperCase();
 
 		if(pass==null) pass="";
+	}
+
+	/**
+		get "quit group" link for emails footer
+	**/
+	public function getQuitGroupLink(group:db.Amap){
+		var protocol = App.config.DEBUG ? "http://" : "https://";
+		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
 	}
 	
 	public function infos():UserInfo{

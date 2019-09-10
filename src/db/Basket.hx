@@ -16,8 +16,8 @@ class Basket extends Object
 	public var num : SInt;		 				//Basket number
 
 
-	/*@:relation(userId) public var user : SNull<db.User>; //nullable just because it doesn exist in prod 
-	@:relation(multiDistribId) public var multiDistrib : SNull<db.MultiDistrib>;*/
+	@:relation(userId) public var user : SNull<db.User>; //nullable just because it doesn exist in prod 
+	@:relation(multiDistribId) public var multiDistrib : SNull<db.MultiDistrib>;
 
 	public var data : SNull<SData<Map<Int,RevenueAndFees>>>; //store shared revenue
 	
@@ -32,17 +32,13 @@ class Basket extends Object
 		CACHE = new Map<String,db.Basket>();
 	}
 	
-	//public static function get(user:db.User, md:db.MultiDistrib, ?lock = false):db.Basket{
-	public static function get(user:db.User,place:db.Place,date:Date, ?lock = false):db.Basket{
-		
-		//date = tools.DateTool.setHourMinute(date, 0, 0);
+	public static function get(user:db.User, md:db.MultiDistrib, ?lock = false):db.Basket{
 
 		//caching
-		// var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
-		// var b = CACHE.get(k);
+		/* var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
+		 var b = CACHE.get(k);
 		var b = null;
-		// if (b == null){
-			var md = db.MultiDistrib.get(date, place);
+		 if (b == null){			
 			if(md==null) return null;
 			for( o in md.getUserOrders(user)){
 				if(o.basket!=null) {
@@ -50,10 +46,12 @@ class Basket extends Object
 					break;
 				}
 			}
-			// CACHE.set(k, b);
-		// }
+			CACHE.set(k, b);
+		 }
 		
-		return b;
+		return b;*/
+
+		return db.Basket.manager
 	}
 	
 	/**

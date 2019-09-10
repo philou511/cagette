@@ -1,6 +1,6 @@
 ::use 'contractadmin/design.mtt'::
 
-<h2>::_("Distributions")::</h2>
+<h2>Participation aux distributions</h2>
 
 	<table class="table">
 		::set now = Date.now().getTime()::
@@ -44,8 +44,13 @@
 				</td>
 				<td>
 					<div class="btn-group">
-						$$edit(::_("Edit")::,/distribution/edit/::d.id::) 
-						$$delete(::_("Del.")::,/distribution/delete/::d.id::)
+						<a href="/distribution/delete/::d.id::" class="btn btn-default btn-sm">
+							<i class="icon icon-delete"></i>&nbsp;Ne plus participer
+						</a>
+
+						<a href="/distribution/edit/::d.id::" class="btn btn-default btn-sm">
+							<i class="icon icon-calendar"></i>&nbsp;::_("Dates")::
+						</a>						
 						
 						::if(d._contract.type==1)::
 						<a href="/contractAdmin/orders/::d._contract.id::?d=::d.id::" class="btn btn-default btn-sm">
@@ -64,7 +69,7 @@
 		::end::
 	</table>	
 
-	<table ::cond cycles.length>0:: class="table">
+	<!--<table ::cond cycles.length>0:: class="table">
 		<tr>
 			<th>::_("Distribution cycle")::</th>		
 			<th></th>
@@ -90,8 +95,24 @@
 
 	$$insert(::_("One time distribution")::,/distribution/insert/::c.id::)
 	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
+
+	-->
+	::if(c._amap._contact!=null)::
+	<div class="alert alert-warning">
+		<i class="icon icon-info"></i>
+		Pour créer de nouvelles distributions, il faut maintenant aller dans l'onglet "Distributions".<br/>
+		Si vous n'y avez pas acccès, demandez à <a href="mailto:<::c._amap._contact.email::>::c._amap._contact.getName()::">l'administrateur du groupe</a> de créer la distribution que vous souhaitez.
+	</div>
+	::end::
 	
-	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-		::_("Old distributions")::
+	
+	
+	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
+		<i class="icon icon-check"></i> Participer à toutes les distributions
 	</a>
+
+	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
+		<i class="icon icon-archive"></i> ::_("Old distributions")::
+	</a>
+	
 ::end::

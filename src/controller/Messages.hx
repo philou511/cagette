@@ -32,18 +32,18 @@ class Messages extends Controller
 		}
 		
 		var lists = getLists();
-		form.addElement( new StringInput("senderName", t._("Sender name"),senderName,true));
-		form.addElement( new StringInput("senderMail", t._("Sender E-Mail"),senderMail,true));
-		form.addElement( new StringSelect("list", t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
-		form.addElement( new StringInput("subject", t._("Subject:"),"",false,null,"style='width:500px;'") );
-		form.addElement( new TextArea("text", t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
+		form.addElement( new StringInput("senderName", 	t._("Sender name"),senderName,true));
+		form.addElement( new StringInput("senderMail", 	t._("Sender E-Mail"),senderMail,true));
+		form.addElement( new StringSelect("list", 		t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
+		form.addElement( new StringInput("subject", 	t._("Subject:"),"",false,null,"style='width:500px;'") );
+		form.addElement( new TextArea("text", 			t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
 		
 		if (form.checkToken()) {
 			
 			var listId = form.getElement("list").value;
-			var dest = getSelection(listId);
+			var recipients = getSelection(listId);
 			var mails = [];
-			for ( d in dest) {				
+			for ( d in recipients ) {				
 				if (d.email != null) mails.push(d.email);
 				if (d.email2 != null) mails.push(d.email2);
 			}
@@ -116,11 +116,11 @@ class Messages extends Controller
 	function getLists() :FormData<String>{
 		var out = [
 			{value:'1', label: t._("Everyone")},
-			{value:'2', label: t._("The board: persons in charge + contracts + memberships")},
+			{value:'2', label: t._("The board: people with administration rights in this group")},
 		];
 		
 		out.push( { value:'3', label: t._("TEST: me + spouse") } );
-		out.push( { value:'4', label: t._("Members without contract/order") } );
+		out.push( { value:'4', label: t._("Members without any order") } );
 		if(app.user.amap.hasMembership()) out.push( { value:'5', label:t._("Memberships to be renewed")} );
 		
 		

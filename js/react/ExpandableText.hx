@@ -21,13 +21,14 @@ class ExpandableText extends react.ReactComponentOfPropsAndState<{text:String,he
 	override public function render(){
 		
         var height = props.height+"px";
+        var text = props.text==null ? "" : props.text;
 
         //don't need expandable block
-        if(props.text.length<1800) return jsx('<span dangerouslySetInnerHTML=${{__html: props.text}}></span>');
+        if(text.length<1800) return jsx('<span dangerouslySetInnerHTML=${{__html: text}}></span>');
 		
 		return jsx('<>
         <Collapse in=${state.open} collapsedHeight=$height>
-            <span dangerouslySetInnerHTML=${{__html: props.text}}></span>            
+            <span dangerouslySetInnerHTML=${{__html: text}}></span>            
         </Collapse>
         <div style=${{width:"100%",textAlign:css.AlignContent.Center,borderTop:"3px solid "+CGColors.LightGrey}}>
             <Button onClick=$toggle size=$Small style=${{color:CGColors.MediumGrey}}>

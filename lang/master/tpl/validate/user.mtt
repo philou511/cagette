@@ -16,7 +16,14 @@
 			::set total = 0::
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">Commande</th>
+					<th colspan="6" class="text-center">Commande</th>
+					<th colspan="3" class="text-center">
+						<a class="btn btn-default btn-xs"
+						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', '/validate/::md.id::/::member.id::')">
+							<i class="icon icon-edit"></i>
+								::_("Edit")::
+						</a>			
+					</th>										
 				</tr>
 				<tr class="head">
 					<td colspan="9">
@@ -29,7 +36,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th>::_("Contract")::</th>
+					<th>::_("Catalog")::</th>
 					<th>::_("Qty")::</th>
 					<th>::_("Ref")::</th>
 					<th>::_("Product")::</th>
@@ -165,6 +172,30 @@
 					</td></tr>
 				::end::				
 			</table>
+
+			<!-- Membership -->
+			::if user._amap.hasMembership()::
+			<table class="table table-condensed table-bordered">
+				<tr style="background-color:#DDD;">
+					<th class="text-center">::_("Membership")::</th>
+				</tr>
+				<tr>
+					<td class="text-center">
+						::if userGroup.hasValidMembership()::
+							$$check(true) ::_("Membership up to date")::
+						::else::
+							$$check(false) ::_("Membership to renew")::
+						::end::
+						::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user._amap.getPeriodName(null)::</b>
+						
+						<a href="/membership/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+					</td>
+				</tr>
+
+			</table>
+			::end::
+
+
 			
 			<!-- credit / debit / ok message -->
 			::if(tpaid!=null && amount!=null)::

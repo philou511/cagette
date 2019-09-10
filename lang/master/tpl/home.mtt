@@ -1,10 +1,7 @@
 ::use 'design.mtt'::
 
-::if user==null::
+
 <div style="margin-top:12px;"></div>
-::end::
-
-
 
 ::set hasShopMode = amap.hasShopMode()::
 <div id="content" class="col-md-8">
@@ -21,12 +18,12 @@
 				::raw _("As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software.")::
 			</p>
 			<p>
-				<a href="/contract/?startTuto=intro" class="btn btn-primary">
+				<a href="/account/?startTuto=intro" class="btn btn-primary">
 					<i class="icon icon-chevron-right"></i> ::_("Start the guided tour")::
 				</a>
 
 				<a href="/home?action=deleteDemoContracts&token=::token::" class="btn btn-default">
-					::_("Delete example orders and contracts")::
+					::_("Delete example orders and catalogs")::
 				</a>
 			</p>
 		</div>
@@ -73,8 +70,8 @@
 				::set active = d.isActive()::
 				::set start = d.getDate()::
 				::set end = d.getEndDate()::
-				::set ordersStartDate = d.getOrdersStartDate()::
-				::set ordersEndDate = d.getOrdersEndDate()::
+				::set ordersStartDate = d.getOrdersStartDate(false)::
+				::set ordersEndDate = d.getOrdersEndDate(false)::
 
 				<!-- header -->
 				<div class="header ::if (active && hasShopMode):: active ::end::">
@@ -168,7 +165,7 @@
 								::if(status=="notYetOpen")::
 								<span class="disabled" style="font-size: 1.2em;">
 									<i class="icon icon-clock"></i>
-									La commande n'est pas encore ouverte
+									La commande ouvrira le ::hDate(ordersStartDate)::
 								</span>
 								::elseif(status=="open")::
 								<a href="/shop/::d.id::" class="btn btn-lg btn-primary">
@@ -199,10 +196,10 @@
 							::set orders = prepare(dist.getUserOrders(user))::
 							::if orders.length>0::
 								<h4>
-									::set s = getDate(dist.date) ::
+								<!--::set s = getDate(dist.date) ::
 									::set e = getDate(dist.end)::
-									
 									<span style="color:#999;"><i class="icon icon-clock"></i> ::s.h+":"+s.i:: - ::e.h+":"+e.i::</span>
+								-->
 									&nbsp;::_("Distribution"):: <a href="/contract/view/::dist._contract.id::">::dist._contract.name::</a>
 								</h4>
 								
@@ -312,7 +309,7 @@
 					::if(d.extraHtml!=null)::
 					<div class="content" style="font-weight:normal;">
 						<div class="text-center">
-							$$nullSafe(::raw d.extraHtml::)
+							::raw d.extraHtml::
 						</div>
 					</div>
 					::end::
@@ -400,6 +397,23 @@
 </div>
 
 
-
+<script>
+	//<![CDATA[
+	$(function(){
+		/*window.setTimeout(function(){
+			var txt = "Cet onglet vous permet d'avoir une vue d'ensemble sur toutes vos distributions, leurs commandes et les producteurs qui y participent.";
+			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>En savoir plus</a>";
+			_.newFeature("#cagette-navbar #distributions","Nouvel onglet \"Distributions\"",txt,"bottom");
+		},2000);
+		
+		window.setTimeout(function(){
+			var txt = "Il est maintenant possible de créer des rôles afin d'avoir une gestion plus souple des permanences.";
+			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:permanences' target='_blank'>En savoir plus</a>";
+			_.newFeature("#dutyPeriodsCalendarButton","Nouveau système de gestion des permanences",txt,"bottom");
+		},3000);
+		*/
+	});
+	//]]>
+</script>
 
 ::end::

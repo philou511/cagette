@@ -4,7 +4,7 @@
 	::if select!=null::
 		<h2>::_("Selection :||show a sublist of members which has been selected")::
 		::if select=="nocontract"::
-			::_("Members without any contracts")::
+			::_("Members without any order")::
 		::elseif select=="nomembership"::
 			::_("Members whose membership should be renewed")::
 		::elseif select=="newusers"::

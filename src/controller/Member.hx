@@ -397,7 +397,7 @@ class Member extends Controller
 		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
 		
 		view.title = t._("Merge an account with another one");
-		view.text = t._("This action allows you to merge two accounts (when you have duplicates in the database for example).<br/>Contracts of account 2 will be moved to account 1, and account 2 will be deleted. Warning, it is not possible to cancel this action.");
+		view.text = t._("This action allows you to merge two accounts (when you have duplicates in the database for example).<br/>Orders of account 2 will be moved to account 1, and account 2 will be deleted. Warning, it is not possible to cancel this action.");
 		
 		var form = new Form("merge");
 		

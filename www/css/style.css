@@ -1,9 +1,7 @@
-/**
-
+/*
 	Cagette.net SASS stylesheet
 	Use it with with bootstrap 3
-
-**/
+*/
 @import url("https://fonts.googleapis.com/css?family=Cabin:400,400i,700");
 /*
   Group map on /group/map
@@ -93,7 +91,9 @@ i.icon {
   display: inline-block;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
-  vertical-align: middle; }
+  vertical-align: middle;
+  min-width: 1em;
+  text-align: center; }
 
 html {
   font-size: 16px !important; }
@@ -105,8 +105,35 @@ body {
 h1, h2, h3, h4 {
   font-style: italic; }
 
+h1 {
+  margin-bottom: 8px !important;
+  margin-top: 4px !important; }
+
 a {
+  color: #3c763d;
+  cursor: pointer; }
+
+ol.breadcrumb {
+  padding: 0;
+  margin: 0 0 8px 0px;
+  background: none; }
+  ol.breadcrumb li + li:before {
+    color: #deceb3; }
+  ol.breadcrumb a {
+    color: #b89559; }
+
+body.cpro ol.breadcrumb li + li:before {
+  color: #77ba79; }
+
+body.cpro ol.breadcrumb a {
   color: #3c763d; }
+
+.hidden {
+  display: none; }
+
+div.footer-info {
+  color: #8a6d3b;
+  margin: 24px 0; }
 
 .sticky {
   position: -webkit-sticky;
@@ -115,33 +142,6 @@ a {
   z-index: 99; }
 
 /* buttons */
-/*.btn {
-  text-transform: uppercase;
-  font-size: 14px !important;
-  padding : 7px 25px !important;
-  font-weight:normal !important;
-}
-
-/*.btn-lg{
-	font-size: 16px !important;
-}
-
-.btn-sm {
-  font-size: 12px !important;
-  padding : 5px 10px !important;
-}
-
-.btn-xs {
-  font-size: 11px !important;
-  padding : 2px 5px !important;
-}
-
-.btn-link {
-  text-transform: none;
-}*/
-a {
-  cursor: pointer; }
-
 /* bounce effect */
 .bouncable {
   animation-duration: 500ms;
@@ -165,10 +165,23 @@ a {
 .bounce {
   animation-name: bounce; }
 
-/* navigation */
+/* Navigation */
+.navbar {
+  margin-bottom: 8px !important; }
+
+ul.nav.admin {
+  background-color: #EEE; }
+  ul.nav.admin li.active > a {
+    background-color: #E0E0E0 !important; }
+
 ul.nav li {
   text-transform: uppercase;
   font-size: 14px; }
+  ul.nav li a {
+    color: #777; }
+  ul.nav li.active > a {
+    background-color: #EEE !important;
+    color: #e95216 !important; }
 
 .noSelect {
   -webkit-touch-callout: none;
@@ -183,11 +196,6 @@ ul.nav li {
   /* Internet Explorer/Edge */
   user-select: none;
   /* Non-prefixed version, currently supported by Chrome and Opera */ }
-
-/* subnav in contractadmin*/
-.nav-pills > li.active > a {
-  background-color: #efe9d5 !important;
-  color: #e95216 !important; }
 
 /* Footer */
 #footer {
@@ -226,7 +234,7 @@ ul.nav li {
 
 #subfooter {
   /*background-color : #313131;
-  color : #fff;*/
+	color : #fff;*/
   text-align: center;
   font-size: 14px;
   padding: 15px 0 25px 0; }
@@ -366,18 +374,31 @@ div.reportHeader {
   border-radius: 6px;
   background-color: #f5f5f5; }
 
-/* make <a> like clickable divs  */
-.clickable {
+.boxed {
   display: block;
+  border: 1px #DDD solid;
   border-radius: 8px;
   color: inherit;
   background-color: white;
-  margin-bottom: 12px;
-  padding: 8px; }
+  margin-bottom: 22px;
+  padding: 8px;
+  z-index: 10;
+  overflow-y: auto;
+  overflow-x: hidden; }
+
+/* make <a> like clickable divs  */
+.clickable {
+  display: block;
+  border: 1px #DDD solid;
+  border-radius: 8px;
+  color: inherit;
+  background-color: white;
+  margin-bottom: 22px;
+  padding: 8px;
+  z-index: 10; }
   .clickable:hover {
     cursor: pointer;
-    background-color: #f5e1a5;
-    border-color: #ebc349;
+    background-color: #eee5d6;
     text-decoration: none;
     transition: all 0.15s ease; }
   .clickable:active {
@@ -389,6 +410,25 @@ div.reportHeader {
   .clickable.disabled {
     background-color: lightgray;
     cursor: not-allowed; }
+
+.blockIconBadge {
+  color: #8cb050;
+  background-color: white;
+  padding: 4px;
+  position: absolute;
+  top: -18px;
+  right: 0px;
+  z-index: 50;
+  border-radius: 20px;
+  font-size: 1.5em;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 3px solid #bad096;
+  line-height: 20px; }
+  .blockIconBadge.group {
+    border: 3px solid #deceb3;
+    color: #deceb3; }
 
 /* a cagette group block (use it with .clickable ) */
 .groupBlock {
@@ -425,6 +465,10 @@ div.reportHeader {
 	}*/ }
   .proBlock:hover {
     background: #a3c073; }
+
+.header .accountBlock div.pull-right {
+  margin-right: 16px;
+  margin-top: 16px; }
 
 .header .accountBlock a {
   color: #777; }
@@ -718,15 +762,19 @@ div.productImg {
   width: 70px;
   height: 70px;
   border-radius: 8px; }
-  div.productImg.small {
+  div.productImg.extra-small, div.productImg.xs {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px; }
+  div.productImg.sm, div.productImg.small {
     width: 48px;
     height: 48px;
     border-radius: 4px; }
-  div.productImg.medium {
+  div.productImg.md, div.productImg.medium {
     width: 70px;
     height: 70px;
     border-radius: 8px; }
-  div.productImg.xl {
+  div.productImg.large, div.productImg.xl {
     width: 100px;
     height: 100px;
     border-radius: 10px; }

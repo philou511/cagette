@@ -22,137 +22,19 @@ class Contract extends Controller
 		view.nav = ["contractadmin"];
 	}
 	
+	//retrocompat
+	public function doDefault(){
+		throw Redirect("/account");
+	}
+
+	
 	@tpl("contract/view.mtt")
 	public function doView(c:db.Contract) {
 		view.category = 'amap';
 		view.c = c;
 	}
 	
-	/**
-	 * "my account" page
-	 */
-	@tpl("contract/default.mtt")
-	function doDefault() {
-		
-		//Create the list of links to change the language
-		var langs = App.config.get("langs").split(";");
-		var langNames = App.config.get("langnames").split(";");
-		var i=0;
-		var langLinks = "";
-		for (lang in langs)
-		{
-			langLinks += "<li><a href=\"?lang=" + langs[i] + "\">" + langNames[i] + "</a></li>";
-			i++;
-		}
-		view.langLinks = langLinks;
-		view.langText = langNames[langs.indexOf(app.session.lang)];
 
-		//change account lang
-		if (app.params.exists("lang") && app.user!=null){
-			app.user.lock();
-			app.user.lang = app.params.get("lang");
-			app.user.update();
-		}
-		
-		var ua = db.UserAmap.get(app.user, app.user.amap);
-		if (ua == null) throw Error("/", t._("You are not a member of this group"));
-		
-		var constOrders = null;
-		var varOrders = new Map<String,Array<db.UserContract>>();
-		
-		var a = App.current.user.amap;		
-		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
-		
-		//constant orders
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == a && $endDate > oneMonthAgo, false);		
-		constOrders = [];
-		for ( c in contracts){
-			var orders = app.user.getOrdersFromContracts([c]);
-			if (orders.length == 0) continue;
-			constOrders.push({contract:c, orders:service.OrderService.prepare(orders) });
-		}
-				
-		//variable orders, grouped by date
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == a && $endDate > oneMonthAgo, false);
-		
-		for (c in contracts) {
-			var ds = c.getDistribs(false);
-			for (d in ds) {
-				//store orders in a stringmap like "2015-01-01" => [order1,order2,...]
-				var k = d.date.toString().substr(0, 10);
-				var orders = app.user.getOrdersFromDistrib(d);
-				if (orders.length > 0) {
-					if (!varOrders.exists(k)) {
-						varOrders.set(k, Lambda.array(orders));
-					}else {
-						var z = varOrders.get(k).concat(Lambda.array(orders));
-						varOrders.set(k, z);
-					}	
-				}
-			}
-		}
-		
-		//final structure
-		var varOrders2 = new Array<{date:Date,orders:Array<UserOrder>}>();
-		for ( k in varOrders.keys()) {
-
-			var d = new Date(k.split("-")[0].parseInt(), k.split("-")[1].parseInt() - 1, k.split("-")[2].parseInt(), 0, 0, 0);
-			var orders = service.OrderService.prepare( Lambda.list(varOrders[k]) );
-			
-			varOrders2.push({date:d,orders:orders});
-		}
-		
-		//sort by date desc
-		varOrders2.sort(function(b, a) {
-			return Math.round(a.date.getTime()/1000)-Math.round(b.date.getTime()/1000);
-		});
-		
-		view.varOrders = varOrders2;
-		view.constOrders = constOrders;
-		
-		
-		// tutorials
-		if (app.user.isAmapManager()) {
-			
-			
-			//actions
-			if (app.params.exists('startTuto') ) {
-				
-				//start a tuto
-				app.user.lock();
-				var t = app.params.get('startTuto'); 
-				app.user.tutoState = {name:t,step:0};
-				app.user.update();
-			}
-			
-		
-			//tuto state
-			var tutos = new Array<{name:String,completion:Float,key:String}>();
-			
-			for ( k in Tutorial.all().keys() ) {	
-				var t = Tutorial.all().get(k);
-				
-				var completion = null;
-				if (app.user.tutoState!=null && app.user.tutoState.name == k) completion = app.user.tutoState.step / t.steps.length;
-				
-				tutos.push( { name:t.name, completion:completion , key:k } );
-			}
-			
-			view.tutos = tutos;
-		}
-		
-		//should be able to stop tuto in any case
-		if (app.params.exists('stopTuto')) {
-			//stopped tuto from a tuto window
-			app.user.lock();
-			app.user.tutoState = null;
-			app.user.update();	
-			view.stopTuto = true;
-		}
-		
-		checkToken();
-		view.userAmap = ua;
-	}
 
 	/**
 	 * Edit a contract 
@@ -163,7 +45,7 @@ class Contract extends Controller
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager(c)) throw Error('/', t._("Forbidden action"));
 
-		view.title = t._("Edit contract ::contractName::",{contractName:c.name});
+		view.title = t._("Edit catalog \"::contractName::\"",{contractName:c.name});
 
 		var group = c.amap;
 		var currentContact = c.contact;
@@ -220,7 +102,7 @@ class Contract extends Controller
 				
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, t._("Contract updated"));
+			throw Ok("/contractAdmin/view/"+c.id, t._("Catalog updated"));
 		}
 		
 		view.form = form;
@@ -242,6 +124,7 @@ class Contract extends Controller
 		//f.addElement(new sugoi.form.elements.IntInput("zipCode",t._("zip code"),null,true));
 
 		if(f.isValid()){
+			
 			//look for identical names
 			var vendors = service.VendorService.findVendors( f.getValueOf('name') , f.getValueOf('email') );
 
@@ -271,7 +154,7 @@ class Contract extends Controller
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
 			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());*/
 			
-			throw Ok('/contract/insertChoose/'+vendor.id, t._("This supplier has been saved"));
+			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
 		}else{
 			form.getElement("email").value = email;
 			form.getElement("name").value = name;
@@ -285,37 +168,36 @@ class Contract extends Controller
 	/**
 		3 - Select VARIABLE ORDER / CSA Contract
 	**/
-	@tpl("contract/insertChoose.mtt")
+	//@tpl("contract/insertChoose.mtt")
 	function doInsertChoose(vendor:db.Vendor) {
-		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
-		view.vendor = vendor;
-		
+		throw Redirect("/contract/insert/"+vendor.id);
 	}
 	
 	/**
 	 * 4 - create the contract
 	 */
-	@tpl("form.mtt")
-	function doInsert(?type=1,vendor:db.Vendor) {
+	@tpl("contract/insert.mtt")
+	function doInsert(vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = if (type == db.Contract.TYPE_CONSTORDERS)t._("Create a contract with fixed orders") else t._("Create a contract with variable orders");
+		view.title = t._("Create a catalog");
 		
 		var c = new db.Contract();
 
 		var form = Form.fromSpod(c);
 		form.removeElement(form.getElement("amapId") );
-		form.removeElement(form.getElement("type"));		
+		form.removeElement(form.getElement("type"));
+		form.getElement("name").value = "Commande "+vendor.name;
 		form.getElement("userId").required = true;
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
-
+		form.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue est un contrat AMAP",false));
 			
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.amap = app.user.amap;
-			c.type = type;
+			c.type = form.getValueOf("csa")==true ? db.Contract.TYPE_CONSTORDERS : db.Contract.TYPE_VARORDER;
 			c.vendor = vendor;
 			c.insert();
 
@@ -331,7 +213,7 @@ class Contract extends Controller
 				ua.update();
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, t._("New contract created"));
+			throw Ok("/contractAdmin/view/"+c.id, t._("New catalog created"));
 		}
 		
 		view.form = form;
@@ -342,7 +224,7 @@ class Contract extends Controller
 	 */
 	function doDelete(c:db.Contract) {
 		
-		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("You don't have the authorization to remove a contract"));
+		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("Forbidden access"));
 		
 		if (checkToken()) {
 			c.lock();
@@ -357,7 +239,7 @@ class Contract extends Controller
 			var qt = 0.0;
 			for ( o in orders) qt += o.quantity; //there could be "zero c qt" orders
 			if (qt > 0 && !isDemoContract) {
-				throw Error("/contractAdmin", t._("You cannot delete this contract because some orders are linked to it."));
+				throw Error("/contractAdmin", t._("You cannot delete this catalog because some orders are linked to it."));
 			}
 			
 			//remove admin rights and delete contract	
@@ -372,7 +254,7 @@ class Contract extends Controller
 			app.event(DeleteContract(c));
 			
 			c.delete();
-			throw Ok("/contractAdmin", t._("Contract deleted"));
+			throw Ok("/contractAdmin", t._("Catalog deleted"));
 		}
 		
 		throw Error("/contractAdmin", t._("Token error"));
@@ -392,7 +274,7 @@ class Contract extends Controller
 		//checks
 		//if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened for orders"));
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 
 		
 		var distributions = [];
@@ -509,7 +391,7 @@ class Contract extends Controller
 		//checks
 		if (!app.user.amap.hasPayments()) throw Redirect("/contract/order/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This contract is not opened for orders"));
+		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 		
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
@@ -633,9 +515,9 @@ class Contract extends Controller
 		if (Date.now().getTime() > date.getTime()) {
 			
 			var msg = t._("This delivery has already taken place, you can no longer modify the order.");
-			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the contract you can modify the order from this page: <a href='/contractAdmin'>Management of contracts</a>");
+			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the catalog you can modify the order from this page: <a href='/contractAdmin'>Catalog management</a>");
 			
-			throw Error("/contract", msg);
+			throw Error("/account", msg);
 		}
 		
 		// Il faut regarder le contrat de chaque produit et verifier si le contrat est toujours ouvert à la commande.		
@@ -682,7 +564,7 @@ class Contract extends Controller
 			
 			app.event(MakeOrder(orders_out));
 			
-			throw Ok("/contract", t._("Your order has been updated"));
+			throw Ok("/account", t._("Your order has been updated"));
 		}
 	}
 }

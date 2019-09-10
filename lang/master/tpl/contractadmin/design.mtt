@@ -12,7 +12,7 @@
 					<i class="icon icon-home"></i> ::_("Summary")::</a></li>
 			<li id="edit">
 				<a href="/contract/edit/::c.id::">
-					<i class="icon icon-edit"></i> ::_("Edit contract")::</a></li>
+					<i class="icon icon-edit"></i> ::_("Edit catalog")::</a></li>
 			<li id="products" ::attr class if(nav[1]=="products") 'active'::>
 				<a href="/contractAdmin/products/::c.id::">
 					<i class="icon icon-products"></i> ::_("Products")::

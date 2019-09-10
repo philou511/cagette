@@ -1,0 +1,69 @@
+::use 'design.mtt'::
+
+	<div class="col-md-12">
+		<div class="article">
+			
+			<div class="text-center">
+				<h3>
+					Gestion de caisse
+                </h3>
+                <h4>
+                    <i class="icon icon-calendar"></i> ::hDate(distribution.getDate())::
+                </h4>	
+				<h4>
+					<i class="icon icon-map-marker"></i> ::distribution.getPlace().name::
+				</h4>
+				
+            </div>
+
+         
+            <table class="table table-bordered" style="width:600px;margin:auto;">
+                <tr>
+                    <td><b>Fond de caisse avant distribution</b></td>
+                    <td>
+                        <form method="POST">
+                        <input name="counterBeforeDistrib" type="number" step="any"  value="::distribution.counterBeforeDistrib::" class="form-control" style="display: inline-block;width:100px;"/>
+                        <input type="submit" value="Mettre à jour" class="btn btn-primary" style="display: inline-block"/>
+                    </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td> <b>Encaissements (liquide)</b></td>
+                    <td>::sales.cashTurnover.ttc:: &euro;</td>
+                </tr>
+                <tr>
+                    <td> <b>Membres qui n'ont pas payé</b></td>
+                    <td>
+                        ::if(notPaid.length>0)::
+                        ::set total = 0.0::
+                        <ul>
+                        ::foreach np notPaid::
+                            <li>::np.user.getName():: : ::formatNum(np.amount):: ::currency()::</li>
+                            ::set total = total + np.amount::
+                        ::end::
+                        </ul>
+                        ::else::
+                            Aucune
+                        ::end::
+                        Total impayé : ::formatNum(total):: ::currency()::
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Votre caisse doit contenir</b>
+                    </td>
+                    <td> 
+                        ::formatNum(distribution.counterBeforeDistrib + sales.cashTurnover.ttc):: &euro;
+                    </td>
+                </tr>
+
+                    
+              
+            </table>
+
+			<a href="/distribution/validate/::distribution.id::" class="btn btn-default btn-sm">
+                <i class="icon icon-chevron-left"></i> Retour
+            </a>
+		</div>
+	</div>
+::end::

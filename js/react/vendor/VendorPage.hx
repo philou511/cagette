@@ -35,7 +35,8 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		}
 
 		if(props.vendorInfo.longDesc==null) {
-			props.vendorInfo.longDesc = props.vendorInfo.desc.split("\n").join("<br/>");
+			var desc = props.vendorInfo.desc==null ? "" : props.vendorInfo.desc;
+			props.vendorInfo.longDesc = desc.split("\n").join("<br/>");
 		}
 	}
 
@@ -196,7 +197,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		if(props.vendorInfo.offCagette==null) return null;
 		return jsx('<Grid item xs={12}>
 			<Typography style=${{fontSize:"1.3rem",margin:24,marginBottom:12}}>
-				<span dangerouslySetInnerHTML=${{__html: "<b>Retrouvez nous aussi : </b>"+${props.vendorInfo.offCagette.split("\n").join("<br/>")}}}></span>
+				<span dangerouslySetInnerHTML=${{__html: "<b>Retrouvez nous aussi : </b>"+${props.vendorInfo.offCagette}}}></span>
 			</Typography>
 		</Grid>');
 	}

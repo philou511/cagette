@@ -12,7 +12,9 @@ class Validate extends controller.Controller
 	public var multiDistrib : db.MultiDistrib;
 	public var user : db.User;
 	
-	
+	/**
+		Validate a distrib
+	**/
 	@tpl('validate/user.mtt')
 	public function doDefault(){
 		view.member = user;
@@ -32,10 +34,14 @@ class Validate extends controller.Controller
 		view.basket = b;
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
 		view.md = multiDistrib;
+		view.userGroup = db.UserAmap.get(this.user, this.multiDistrib.getGroup());
 		
 		checkToken();
 	}
 	
+	/**
+		Delete a payment operation
+	**/
 	public function doDeleteOp(op:db.Operation){
 		if (checkToken()){
 			
@@ -192,5 +198,7 @@ class Validate extends controller.Controller
 		}
 		
 	}
+
+	
 	
 }

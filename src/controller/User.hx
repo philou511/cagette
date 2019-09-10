@@ -42,31 +42,28 @@ class User extends Controller
 	 */
 	@logged
 	@tpl("user/choose.mtt")
-	function doChoose(?args: { amap:db.Amap } ) {
+	function doChoose(?args: { group:db.Amap } ) {
+
+		//home page
+		app.breadcrumb = [];
 		
 		if (app.user == null) throw t._("You are not connected");
 		
 		var groups = app.user.getGroups();
-		var groupsNum = groups.length;
+		
+		view.noGroup = true; //force template to not display current group
+		view.hasRights = Lambda.find( groups, function(g){
+			var ua = db.UserAmap.get(app.user,g);			
+			return ua!=null && ua.rights!=null && ua.rights.length>0;
+		})!=null;
 
-		#if plugins
-		groupsNum+= pro.db.PUserCompany.getCompanies(app.user).length;
-		#end
 		
-		if (groupsNum == 1 && groups.length==1 && !app.params.exists("show")) {
-			//Belong to only 1 group
-			app.session.data.amapId = groups[0].id;
-			throw Redirect('/');
-		}else{
-			view.noGroup = true; //force template to not display current group
-		}
-		
-		if (args!=null && args.amap!=null) {
+		if (args!=null && args.group!=null) {
 			//select a group
 			var which = app.session.data==null ? 0 : app.session.data.whichUser ;
 			app.session.data.order = null;
 			app.session.data.newGroup = null;
-			app.session.data.amapId = args.amap.id;
+			app.session.data.amapId = args.group.id;
 			app.session.data.whichUser = which;
 			throw Redirect('/');
 		}
@@ -273,15 +270,44 @@ class User extends Controller
 		db.UserAmap.getOrCreate(user,group);
 
 		//warn manager by mail
-		var url = "http://" + App.config.HOST + "/member/view/" + user.id;
-		var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
-		App.quickMail(
-			group.contact.email,
-			group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
-			app.processTemplate("mail/message.mtt", { text:text } ) 
-		);
+		if(group.contact!=null){
+			var url = "http://" + App.config.HOST + "/member/view/" + user.id;
+			var text = t._("A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{newMember:user.getCoupleName(),url:url});
+			App.quickMail(
+				group.contact.email,
+				group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
+				app.processTemplate("mail/message.mtt", { text:text } ) 
+			);	
+		}
+		
 
 		throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
+	}
+
+	/**
+		Quit a group.  Should work even if user is not logged in. ( link in emails footer )
+	**/
+	@tpl('account/quit.mtt')
+	function doQuitGroup(group:db.Amap,user:db.User,key:String){
+		//return "https://"+App.config.HOST+"/account/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id);
+		if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) != key){
+			throw Error("/","Lien invalide");
+		}
+
+		view.group = group;
+		view.member = user;
+
+		if (checkToken()){
+			var url = app.user==null ? "/user/" : "/user/choose?show=1";
+			var name = group.name;
+			var ua = db.UserAmap.get(user, group,true);
+			if(ua==null){
+				throw Ok(url, "Vous ne faisiez plus partie du groupe "+name);	
+			}
+			ua.delete();
+			App.current.session.data.amapId = null;
+			throw Ok(url, t._("You left the group ::groupName::", {groupName:name}));
+		}
 	}
 	
 }

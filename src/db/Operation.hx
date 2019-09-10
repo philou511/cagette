@@ -359,7 +359,7 @@ class Operation extends sys.db.Object
 	 */
 	public static function findCOrderTransactionFor(contract:db.Contract, user:db.User):db.Operation{
 		
-		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "contract type should be TYPE_CONSTORDERS";
+		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "catalog type should be TYPE_CONSTORDERS";
 		
 		var transactions = manager.search($user == user && $group == contract.amap && $amount<=0 && $type==COrder, {orderBy:date,limit:100}, true);
 		
@@ -400,6 +400,7 @@ class Operation extends sys.db.Object
 		Can handle orders happening on different multidistribs.
 		Returns created/updated order operations.
 		@param	orders
+	 	Orders are supposed to be from the same user.
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		

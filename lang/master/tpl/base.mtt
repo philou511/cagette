@@ -20,7 +20,7 @@
 		<!-- BOOTSTRAP -->	
 		::if noBootstrap::
 		::else::
-		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="/css/::getVariable('css')::/bootstrap.min.css" />
 		<!-- bootstrap datepicker -->
 		<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
 		<script type="text/javascript" src="/bower_components/moment/locale/fr.js"></script>
@@ -30,7 +30,7 @@
 		::end::
 
 		<!-- Cagette very own icon font -->
-		<link rel="stylesheet" href="/font/icons.css" />
+		<link rel="stylesheet" href="/font/icons.css?v=::getVariable('css')::" />
 		
 			
 		<!-- Leaflet CSS -->
@@ -48,7 +48,12 @@
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
 		<!-- Haxe JS + libs bundled with browserify -->
+		
+		::if(DEBUG)::
+		<script type="text/javascript" src="/js/::getVariable('js')::/libs.dev.js"></script>
+		::else::
 		<script type="text/javascript" src="/js/::getVariable('js')::/libs.js"></script>
+		::end::
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>
 	</head>
 

@@ -22,7 +22,7 @@ class UserContract extends Object
 	@formPopulate("populateProducts") @:relation(productId)
 	public var product : Product;
 	
-	//store price (1 unit price) and fees (percentage not amount ) rate when the order is done
+	//store price (1 unit price without fees) and fees (percentage not amount) rate when the order is done
 	public var productPrice : SFloat;
 	public var feesRate : SFloat; //fees in percentage
 	

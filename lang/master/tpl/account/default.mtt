@@ -166,7 +166,7 @@
 		
 		
 		<div class="pull-right">
-			<a href="/account/quit?token=::token::" class="btn btn-default btn-sm" $$confirm(::_("Do you really want to quit this group ? You won't be a member anymore: you won't receive any new message and won't be able to see your previous orders in this group.")::)>
+			<a href="::user.getQuitGroupLink(user.getAmap())::" class="btn btn-default btn-sm">
 				<i class="icon icon-delete"></i>
 				::_("Leave this group")::
 			</a>
@@ -211,12 +211,12 @@
 					<td>::t.name::</td>
 					<td>  
 						::if t.completion==null::
-							<a href="/contract/?startTuto=::t.key::" class="btn btn-default btn-xs">
+							<a href="/account/?startTuto=::t.key::" class="btn btn-default btn-xs">
 								<i class="icon icon-chevron-right"></i> ::_("Start")::
 							</a>
 						::else::
 							
-							<a href="/contract/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
+							<a href="/account/?stopTuto=::t.key::" class="btn btn-primary btn-xs">
 								<i class="icon icon-delete"></i> ::_("Stop")::
 							</a>								
 						::end::

@@ -40,7 +40,7 @@
 					<div class="article">
 						<div class="row">
 							<div class="col-md-3 text-center">
-								<div ::cond c._vendor._image!=null:: style="background-image:url('::file(c._vendor._image)::');" class="productImg xl"/> 									
+								<div style="background-image:url('::c._vendor.getImage()::');" class="productImg xl"/> 									
 								<p>
 									<b>::c._vendor.name::</b><br/>
 									::c._vendor.city:: (::c._vendor.zipCode::)
