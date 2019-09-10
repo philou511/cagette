@@ -183,18 +183,7 @@ class Account extends Controller
 		view.title = t._("Modify my account");
 	}
 	
-	/**
-		Quit group
-	**/
-	function doQuit(){
-		if (checkToken()){
-			var name = app.user.amap.name;
-			var ua = db.UserAmap.get(app.user, app.user.amap,true);
-			ua.delete();
-			App.current.session.data.amapId = null;
-			throw Ok("/user/choose?show=1", t._("You left the group ::groupName::", {groupName:name}));
-		}
-	}
+
 
 	/**
 		View a basket in a popup
@@ -224,6 +213,8 @@ class Account extends Controller
 		view.member = m;
 		view.balance = db.UserAmap.get(m,app.user.amap).balance;
 	}
+
+	
 	
 	
 }

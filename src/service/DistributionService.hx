@@ -245,9 +245,8 @@ class DistributionService
 		var t = sugoi.i18n.Locale.texts;
 		md.lock();
 		for(d in md.getDistributions()){
-			delete(d,false);
+			cancelParticipation(d,false);
 		}
-
 		md.delete();
 	}
 
@@ -271,7 +270,7 @@ class DistributionService
 			}
 		}
 		
-		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,false,md);
+		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,true,md);
 
 	}
 
@@ -418,11 +417,9 @@ class DistributionService
 
 
 	/**
-	 *  Deletes a distribution
-	 *  @param d - 
-	 *  @param dispatchEvent=true - 
+	 *  Cancel participation of a farmer to a multidistrib
 	 */
-	public static function delete(d:db.Distribution,?dispatchEvent=true) {
+	public static function cancelParticipation(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
 		if ( !canDelete(d) ) {
 			throw new Error(t._("Deletion not possible: orders are recorded for ::vendorName:: on ::date::.",{vendorName:d.contract.vendor.name,date:Formatting.hDate(d.date)}));

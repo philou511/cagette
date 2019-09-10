@@ -575,6 +575,14 @@ class User extends Object {
 
 		if(pass==null) pass="";
 	}
+
+	/**
+		get "quit group" link for emails footer
+	**/
+	public function getQuitGroupLink(group:db.Amap){
+		var protocol = App.config.DEBUG ? "http://" : "https://";
+		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
+	}
 	
 	public function infos():UserInfo{
 		return {

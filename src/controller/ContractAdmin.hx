@@ -678,7 +678,7 @@ class ContractAdmin extends Controller
 	 * Lists deliveries for this contract
 	 */
 	@tpl("contractadmin/distributions.mtt")
-	function doDistributions(contract:db.Contract, ?args: { old:Bool } ) {
+	function doDistributions(contract:db.Contract, ?args: { ?old:Bool,?participateToAllDistributions:Bool } ) {
 
 		view.nav.push("distributions");
 		sendNav(contract);
@@ -697,6 +697,15 @@ class ContractAdmin extends Controller
 		}else {
 			//distributions = Lambda.array(db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} ));
 			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, now , DateTools.delta(now,1000.0*60*60*24*365) );			
+		}
+
+		if(args!=null && args.participateToAllDistributions){
+			for( d in multidistribs){
+				if( d.getDistributionForContract(contract)==null ){
+					service.DistributionService.participate(d,contract);
+				}				
+			}
+			app.session.addMessage(contract.vendor.name+" participe maintenant à toutes les distributions");
 		}
 		
 		view.multidistribs = multidistribs;

@@ -30,28 +30,34 @@ class Distribution extends Controller
 		checkHasDistributionSectionAccess();
 
 		var now = Date.now();
-		var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
+		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
+		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
+		var timeframe = new tools.Timeframe(from,to);
+
+
 		var distribs = [];
 		//Multidistribs
-		if( app.user.amap.hasPayments() ){
+		distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,timeframe.from,timeframe.to);
+		
 
-			//include unvalidated distribs
-			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
-			var intwoMonth = tools.DateTool.deltaDays(now,60);			
-			distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,intwoMonth);
-			for( md in distribs.copy()){
-				if( md.getDate().getTime() < yesterday.getTime() && md.isValidated() ) distribs.remove(md);				
+		if( app.user.amap.hasPayments() && app.params.get("_from")==null){
+
+	
+	
+
+			//include unvalidated distribs in the past
+			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.amap , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );
+			for( md in unvalidated.copy()){
+				if( !md.isValidated() ) distribs.unshift(md);				
 			}
 			
 
-		}else{
-			//only next distribs			
-			var in3Month = DateTools.delta(yesterday, 1000.0 * 60 * 60 * 24 * 30 * 3);
-			distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,yesterday,in3Month);
 		}
 
 		view.distribs = distribs;
-		view.cycles = db.DistributionCycle.manager.search( $group==app.user.amap && $endDate > now && $startDate < now , false);
+		//cycle who have either startDate or EndDate in the timeframe
+		view.cycles = db.DistributionCycle.manager.search( $group==app.user.amap && (($startDate > timeframe.from && $startDate < timeframe.to) || ($endDate > timeframe.from && $endDate < timeframe.to) ) , false);
+		view.timeframe = timeframe;
 
 		checkToken();
 	}
@@ -248,27 +254,25 @@ class Distribution extends Controller
 	function doDelete(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
-		
 		var contractId = d.contract.id;
 		try {
-			service.DistributionService.delete(d);
+			service.DistributionService.cancelParticipation(d,false);
 		} catch(e:Error){
 			throw Error("/contractAdmin/distributions/" + contractId, e.message);
-		}
-		
-		throw Ok("/contractAdmin/distributions/" + contractId, t._("The distribution has been deleted"));
+		}		
+		throw Ok("/contractAdmin/distributions/" + contractId, "Ce producteur ne participe plus à la distribution");
 	}
 
+	//same as above but from distribution page
 	function doNotAttend(d:db.Distribution) {
 		
 		if (!app.user.isContractManager(d.contract)) throw Error('/distribution', t._("Forbidden action"));		
 		var contractId = d.contract.id;
 		try {
-			service.DistributionService.delete(d);
+			service.DistributionService.cancelParticipation(d,false);
 		} catch(e:Error){
 			throw Error('/distribution', e.message);
-		}
-		
+		}		
 		throw Ok('/distribution', "Ce producteur ne participe plus à la distribution");
 	}
 
@@ -545,7 +549,7 @@ class Distribution extends Controller
 			for( d in existingDistributions){
 				if(!Lambda.has(contractIds,d.contract.id)){
 					try{
-						service.DistributionService.delete(d);
+						service.DistributionService.cancelParticipation(d);
 					}catch(e:tink.core.Error){
 						throw Error("/distribution",e.message);
 					}
@@ -579,7 +583,7 @@ class Distribution extends Controller
 				for( d in existingCproDistributions){
 					if(!Lambda.has(contractIds,d.contract.id)){
 						try{
-							service.DistributionService.delete(d,false);
+							service.DistributionService.cancelParticipation(d,false);
 						}catch(e:tink.core.Error){
 							throw Error("/distribution",e.message);
 						}
@@ -1532,13 +1536,8 @@ class Distribution extends Controller
 			}
 		}
 
-<<<<<<< HEAD
 		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Product which price has changed"),datas,null,true) );
 		form.addElement( new sugoi.form.elements.FloatInput("price",t._("New price"), 0, true));
-=======
-		form.addElement( new sugoi.form.elements.IntSelect("product",t._("Change product price"),datas,null,true) );
-		form.addElement( new sugoi.form.elements.FloatInput("price",t._("New product price"), 0, true));
->>>>>>> orderbox
 
 		if(form.isValid()){
 			var pid = form.getValueOf("product");
@@ -1567,7 +1566,6 @@ class Distribution extends Controller
 		}
 
 		view.form = form;
-<<<<<<< HEAD
 		view.title = t._("Change the price of a product in orders");
 		view.text = "Attention, cette opération met à jour le prix d'un produit dans les commandes de cette distribution, mais ne change pas le prix du produit dans le catalogue.";
 
@@ -1599,9 +1597,6 @@ class Distribution extends Controller
 			}
 		}
 		view.notPaid = notPaid;
-=======
-		view.title = t._("Change product price");
->>>>>>> orderbox
 
 	}
 }

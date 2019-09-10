@@ -32,18 +32,18 @@ class Messages extends Controller
 		}
 		
 		var lists = getLists();
-		form.addElement( new StringInput("senderName", t._("Sender name"),senderName,true));
-		form.addElement( new StringInput("senderMail", t._("Sender E-Mail"),senderMail,true));
-		form.addElement( new StringSelect("list", t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
-		form.addElement( new StringInput("subject", t._("Subject:"),"",false,null,"style='width:500px;'") );
-		form.addElement( new TextArea("text", t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
+		form.addElement( new StringInput("senderName", 	t._("Sender name"),senderName,true));
+		form.addElement( new StringInput("senderMail", 	t._("Sender E-Mail"),senderMail,true));
+		form.addElement( new StringSelect("list", 		t._("Recipients"),lists,"1", true,null,"style='width:500px;'"));
+		form.addElement( new StringInput("subject", 	t._("Subject:"),"",false,null,"style='width:500px;'") );
+		form.addElement( new TextArea("text", 			t._("Message:"), "", false, null, "style='width:500px;height:350px;'") );
 		
 		if (form.checkToken()) {
 			
 			var listId = form.getElement("list").value;
-			var dest = getSelection(listId);
+			var recipients = getSelection(listId);
 			var mails = [];
-			for ( d in dest) {				
+			for ( d in recipients ) {				
 				if (d.email != null) mails.push(d.email);
 				if (d.email2 != null) mails.push(d.email2);
 			}
@@ -62,7 +62,7 @@ class Messages extends Controller
 			//sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			var text :String = form.getValueOf("text");
-			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
+			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,user:list:getListName(listId) });		
 			e.setHtmlBody(html);
 		
 			App.sendMail(e,app.user.getAmap(),listId,app.user);		

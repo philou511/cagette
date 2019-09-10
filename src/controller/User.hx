@@ -52,12 +52,10 @@ class User extends Controller
 		var groups = app.user.getGroups();
 		
 		view.noGroup = true; //force template to not display current group
-		view.hasRights = Lambda.count( groups, function(g){
+		view.hasRights = Lambda.find( groups, function(g){
 			var ua = db.UserAmap.get(app.user,g);			
-			var res = ua!=null && ua.rights!=null && ua.rights.length>0;
-			//trace(ua.rights);
-			return res;
-		}) > 0;
+			return ua!=null && ua.rights!=null && ua.rights.length>0;
+		})!=null;
 
 		
 		if (args!=null && args.group!=null) {
@@ -284,6 +282,32 @@ class User extends Controller
 		
 
 		throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
+	}
+
+	/**
+		Quit a group.  Should work even if user is not logged in. ( link in emails footer )
+	**/
+	@tpl('account/quit.mtt')
+	function doQuitGroup(group:db.Amap,user:db.User,key:String){
+		//return "https://"+App.config.HOST+"/account/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id);
+		if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) != key){
+			throw Error("/","Lien invalide");
+		}
+
+		view.group = group;
+		view.member = user;
+
+		if (checkToken()){
+			var url = app.user==null ? "/user/" : "/user/choose?show=1";
+			var name = group.name;
+			var ua = db.UserAmap.get(user, group,true);
+			if(ua==null){
+				throw Ok(url, "Vous ne faisiez plus partie du groupe "+name);	
+			}
+			ua.delete();
+			App.current.session.data.amapId = null;
+			throw Ok(url, t._("You left the group ::groupName::", {groupName:name}));
+		}
 	}
 	
 }

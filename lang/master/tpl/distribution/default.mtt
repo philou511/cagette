@@ -1,23 +1,29 @@
 ::use 'design.mtt'::
 
-<div class="col-md-6">
-    <h2 style="margin-bottom:24px;margin-top:0px">::_("Distributions")::</h2>
+<h2 style="margin:12px">::_("Distributions")::</h2>
+<div class="row" style="margin-bottom:24px;">
+
+		<div class="col-md-6">
+				$$timeframe(::timeframe::)
+			</div>
+			
+			<div class="col-md-6 text-right">
+				<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
+				<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
+			
+				<div class="btn-group">
+					<button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="caret"></span> ::_("Duty periods"):: 
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="/distribution/volunteersCalendar"><i class="icon icon-calendar"></i> ::_("Duty periods calendar")::</a></li>
+						<li><a href="/distribution/volunteersParticipation"><i class="icon icon-calendar"></i> ::_("Duty periods participations")::</a></li>          
+					</ul>
+				</div>
+			</div>
+
 </div>
 
-<div class="col-md-6 text-right">
-	<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
-	<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
-
-    <div class="btn-group">
-        <button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<span class="caret"></span> ::_("Duty periods"):: 
-        </button>
-        <ul class="dropdown-menu">
-        	<li><a href="/distribution/volunteersCalendar"><i class="icon icon-calendar"></i> ::_("Duty periods calendar")::</a></li>
-        	<li><a href="/distribution/volunteersParticipation"><i class="icon icon-calendar"></i> ::_("Duty periods participations")::</a></li>          
-        </ul>
-    </div>
-</div>
 
 <style>
 		.dashBoardBlock{
@@ -155,6 +161,11 @@
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>
 										<div class="status">::_("Distribution confirmed")::</div>
+										::if isAdmin::
+										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-xs">
+											<i class="icon icon-check"></i> Dévalider cette distribution
+										</a>
+										::end::
 									</span>
 								::end::
 								

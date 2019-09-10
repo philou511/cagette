@@ -105,8 +105,14 @@
 	</div>
 	::end::
 	
+	
+	
+	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
+		<i class="icon icon-check"></i> Participer à toutes les distributions
+	</a>
+
 	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-		::_("Old distributions")::
+		<i class="icon icon-archive"></i> ::_("Old distributions")::
 	</a>
 	
 ::end::

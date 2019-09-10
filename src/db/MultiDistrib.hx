@@ -36,11 +36,11 @@ class MultiDistrib extends Object
 		extraHtml = "";
 	}
 	
-	public static function get(date:Date, place:db.Place, ?lock=false/*,contractType:Int*/){
+	public static function get(date:Date, place:db.Place, ?lock=false){
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
 
-		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place /*&& $type==contractType*/,lock);
+		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place,lock);
 	}
 
 	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date ) : Array<MultiDistrib> {
@@ -49,7 +49,7 @@ class MultiDistrib extends Object
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
 		var end = tools.DateTool.setHourMinute(to, 23, 59);
 		
-		multidistribs = Lambda.array(db.MultiDistrib.manager.search( $group == group && $distribStartDate >= start && $distribStartDate <= end, false ));
+		multidistribs = Lambda.array(db.MultiDistrib.manager.search( $group == group && $distribStartDate >= start && $distribStartDate < end, false ));
 		
 		//sort by date desc
 		multidistribs.sort(function(x,y){
