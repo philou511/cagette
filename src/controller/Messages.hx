@@ -62,7 +62,7 @@ class Messages extends Controller
 			//sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			var text :String = form.getValueOf("text");
-			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,user:list:getListName(listId) });		
+			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
 			e.setHtmlBody(html);
 		
 			App.sendMail(e,app.user.getAmap(),listId,app.user);		
