@@ -319,28 +319,22 @@ class Operation extends sys.db.Object
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */
-	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true,?basket:db.Basket):db.Operation{
+	public static function findVOrderOperation(distrib:db.MultiDistrib, user:db.User,?onlyPending=true):db.Operation{
 		
 		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
 
-		var date = dkey.split("|")[0];
-		var placeId = Std.parseInt(dkey.split("|")[1]);
-		var transactions  = new List();
+		var operations  = new List();
 		if (onlyPending){
-			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:-date}, true);
+			operations = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:-date}, true);
 		}else{
-			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
+			operations = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
 		}
 		
-
-		if(basket==null){
-			var place = db.Place.manager.get(placeId,false);
-			var date = Date.fromString(date);
-			basket = db.Basket.get(user, place, date);
-			if(basket==null) throw new Error('No basket found for user #'+user.id+', place #'+place.id+', date '+date);
-		}
+		var basket = db.Basket.get(user, distrib);
+		if(basket==null) throw new Error('No basket found for user #'+user.id+', md #'+distrib.id );
 		
-		for ( t in transactions ){
+		
+		for ( t in operations ){
 			switch(t.type){
 				case VOrder :
 					var data : VOrderInfos = t.data;
@@ -440,7 +434,7 @@ class Operation extends sys.db.Object
 				var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
 				
 				//existing transaction
-				var existing = db.Operation.findVOrderTransactionFor( k , user, group, false);
+				var existing = db.Operation.findVOrderOperation( k , user, group, false);
 				
 				var op;
 				if (existing != null){

@@ -260,7 +260,7 @@ class OrderService
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders.first().id==order.id ){
-						var operation = db.Operation.findVOrderTransactionFor(order.distribution.getKey(), user, place.amap);
+						var operation = db.Operation.findVOrderOperation(order.distribution.getKey(), user, place.amap);
 						if(operation!=null) operation.delete();
 					}
 
