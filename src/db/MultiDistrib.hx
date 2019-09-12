@@ -12,23 +12,22 @@ using Lambda;
 class MultiDistrib extends Object
 {
 	public var id : SId;
-	@hideInForms @:relation(groupId) public var group : db.Amap;
+	
 	public var distribStartDate : SDateTime; 
 	public var distribEndDate : SDateTime;	
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
-	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	
-	@formPopulate("placePopulate")
-	@:relation(placeId)
-	public var place : Place;
+	@hideInForms @:relation(groupId) public var group : db.Amap;
+	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
+	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 
 	@hideInForms public var counterBeforeDistrib:SFloat; //counter before distrib "fond de caisse"
+	@hideInForms public var volunteerRolesIds : SNull<String>;
 
 	@:skip public var contracts : Array<db.Contract>;
 	@:skip public var extraHtml : String;
 	
-	@hideInForms public var volunteerRolesIds : SNull<String>;
 
 	public function new(){
 		super();
@@ -36,6 +35,9 @@ class MultiDistrib extends Object
 		extraHtml = "";
 	}
 	
+	/**
+		Get a distribution for date + place.
+	**/
 	public static function get(date:Date, place:db.Place, ?lock=false){
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
@@ -408,7 +410,7 @@ class MultiDistrib extends Object
 
 	override public function toString(){
 		try{
-			return "Multidistrib à "+getPlace().name+" le "+getDate();
+			return "#"+id+" Multidistrib à "+getPlace().name+" le "+getDate();
 		}catch(e:Dynamic){
 			return "#"+this.id;
 		}

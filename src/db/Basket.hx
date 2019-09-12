@@ -15,13 +15,6 @@ class Basket extends Object
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
 
-	//TODO : link baskets to a multidistrib ID.
-	
-	//2018-07-21 fbarbut : we cannot use keys like this, because some distribution's place or date may change after orders are made.
-	//@:relation(userId) public var user : db.User;
-	//@:relation(placeId) public var place : db.Place;
-	//public var ddate : SDate;	//date of the delivery
-
 	public var data : SNull<SData<Map<Int,RevenueAndFees>>>; //store shared revenue
 	
 	public static var CACHE = new Map<String,db.Basket>();

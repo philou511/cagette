@@ -70,7 +70,7 @@ class DistributionService
 			throw new Error(t._("This distribution should have an order opening date and an order closing date."));
 		}	
 
-		var distribs1;
+		/*var distribs1;
 		var distribs2;	
 		var distribs3;	
 		//We are checking that there is no existing distribution with an overlapping time frame for the same place and contract
@@ -93,7 +93,7 @@ class DistributionService
 			
 		if (distribs1.length != 0 || distribs2.length != 0 || distribs3.length != 0) {
 			throw new Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
-		}
+		}*/
  
 		if (d.date.getTime() > c.endDate.getTime()) throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
 		if (d.date.getTime() < c.startDate.getTime()) throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
@@ -183,8 +183,13 @@ class DistributionService
 
 	public static function createMd(place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date,contractIds:Array<Int>,?cycle:db.DistributionCycle):db.MultiDistrib{
 
-		var md = new db.MultiDistrib();
-		md.group = place.amap;
+		var md = db.MultiDistrib.get(distribStartDate,place,true);
+		if(md==null){
+			md = new db.MultiDistrib();
+			md.group = place.amap;
+			md.place = place;
+		}
+		
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
 		md.orderStartDate 	= orderStartDate;
@@ -197,7 +202,7 @@ class DistributionService
 		var generalRoles = Lambda.array(Lambda.filter(roles,function(r) return r.contract==null));
 		md.volunteerRolesIds = generalRoles.map( function(r) return Std.string(r.id) ).join(",");
 
-		md.insert();
+		if(md.id!=null) md.update() else md.insert();
 
 		checkMultiDistrib(md);
 
@@ -437,6 +442,21 @@ class DistributionService
 				order.lock();
 				order.delete();
 			}
+		}
+
+		//uncheck volunteers roles
+		var roles = service.VolunteerService.getRolesFromContract(d.contract);
+		if(roles.length>0){			
+			var roleIds = d.multiDistrib.getVolunteerRoleIds();
+			for( roleId in roleIds.copy()){
+				
+				if(Lambda.find(roles, function(r) return r.id==roleId)!=null){
+					roleIds.remove(roleId);
+				} 
+			}
+			d.multiDistrib.lock();
+			d.multiDistrib.volunteerRolesIds = roleIds.join(",");
+			d.multiDistrib.update();
 		}
 
 		d.delete();

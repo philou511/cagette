@@ -655,8 +655,8 @@ class Distribution extends Controller
 					distribStartDate,
 					distribEndDate,
 					form.getValueOf("orderStartDate"),
-					form.getValueOf("orderEndDate"),
-					[]
+					form.getValueOf("orderEndDate")	,
+					[]				
 				);
 				
 			}
@@ -665,11 +665,11 @@ class Distribution extends Controller
 				throw Error('/distribution/insertMd/' ,e.message);
 			}
 			
-			if(service.VolunteerService.getRolesFromGroup(app.user.amap).length>0){
+			/*if(service.VolunteerService.getRolesFromGroup(app.user.amap).length>0){
 				throw Ok('/distribution/volunteerRoles/' + md.id, t._("The distribution has been recorded, please define which roles are needed.") );	
-			}else{
+			}else{*/
 				throw Ok('/distribution/', t._("The distribution has been recorded") );	
-			}
+			//}
 			
 		}
 	
@@ -1100,7 +1100,7 @@ class Distribution extends Controller
 			throw Ok("/distribution", t._("Volunteer Roles have been saved for this distribution"));
 		}
 
-		view.title = t._("Select volunteer roles for this multidistrib");
+		view.title = "Sélectionner les rôles nécéssaires à la distribution du "+view.hDate(distrib.getDate());
 		view.form = form;
 
 	}
