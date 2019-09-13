@@ -86,6 +86,12 @@ class OrderService
 			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
 			o.basket = basket;			
 		}
+
+		//checks
+		if(o.product.contract.type==db.Contract.TYPE_VARORDER){
+			if(o.distribution==null) throw "cant record an order for a variable catalog without a distribution linked";
+			if(o.basket==null) throw "this order should have a basket";
+		}
 		
 		o.insert();
 		
@@ -205,7 +211,7 @@ class OrderService
 				order.product.update();					
 			}	
 		}
-		
+
 		//update order
 		if (newquantity == 0) {
 			order.quantity = 0;			
@@ -215,6 +221,13 @@ class OrderService
 			order.quantity = newquantity;
 			order.update();				
 		}	
+
+		//checks
+		var o = order;
+		if(o.product.contract.type==db.Contract.TYPE_VARORDER){
+			if(o.distribution==null) throw "cant record an order for a variable catalog without a distribution linked";
+			if(o.basket==null) throw "this order should have a basket";
+		}
 
 		App.current.event(e);	
 

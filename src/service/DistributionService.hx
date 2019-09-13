@@ -438,7 +438,7 @@ class DistributionService
 
 		//erase zero qt orders
 		for ( order in d.getOrders() ){
-			if(order.quantity==0.0) {
+			if(order.quantity==0.0 || order.quantity==0) {
 				order.lock();
 				order.delete();
 			}
