@@ -325,9 +325,9 @@ class Operation extends sys.db.Object
 
 		var operations  = new List();
 		if (onlyPending){
-			operations = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:-date}, true);
+			operations = manager.search($user == user && $group == distrib.getGroup() && $pending == true && $type==VOrder , {orderBy:-date}, true);
 		}else{
-			operations = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
+			operations = manager.search($user == user && $group == distrib.getGroup() && $type==VOrder , {orderBy:-date}, true);
 		}
 		
 		var basket = db.Basket.get(user, distrib);
@@ -351,7 +351,7 @@ class Operation extends sys.db.Object
 	/**
 	 * when updating a constant order, we need to update the existing operation.
 	 */
-	public static function findCOrderTransactionFor(contract:db.Contract, user:db.User):db.Operation{
+	public static function findCOrderOperation(contract:db.Contract, user:db.User):db.Operation{
 		
 		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "catalog type should be TYPE_CONSTORDERS";
 		
@@ -391,16 +391,23 @@ class Operation extends sys.db.Object
 	
 	/**
 		Create/update the needed order operations and returns the related operations.
-	 	Orders are supposed to be from the same user.
+	 	Orders are supposed to be from the same user...but could from various distribs
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		
 		if (orders.length == 0) return null;
 		if (orders[0] == null) return null;
 		
+		for( o in orders){
+			if(o.user.id!=orders[0].user.id){
+				throw new Error("Those orders are from different users");
+			}
+		}
+
 		var out = [];
 		var user = orders[0].user;
 		var group = orders[0].product.contract.amap;
+		
 		
 		//should not go further if group has not activated payements
 		if (user==null || !group.hasPayments()) return null;
@@ -428,13 +435,14 @@ class Operation extends sys.db.Object
 						break;
 					}
 				}
+
+				var distrib = basket.multiDistrib;
 				
-				//get all orders for the same multidistrib, in order to update related operation.
-				var k = orders[0].distribution.getKey();				
-				var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
+				//get all orders for the same multidistrib, in order to update related operation.				
+				var allOrders = distrib.getUserOrders(user, db.Contract.TYPE_VARORDER);	
 				
 				//existing transaction
-				var existing = db.Operation.findVOrderOperation( k , user, group, false);
+				var existing = db.Operation.findVOrderOperation( distrib , user, false);
 				
 				var op;
 				if (existing != null){
@@ -454,12 +462,11 @@ class Operation extends sys.db.Object
 			}
 			
 		}else{
-			
 			// constant contract
 			// create/update a transaction computed like $distribNumber * $price.
 			var contract = orders[0].product.contract;
 			
-			var existing = db.Operation.findCOrderTransactionFor( contract , user);
+			var existing = db.Operation.findCOrderOperation( contract , user);
 			if (existing != null){
 				out.push( db.Operation.updateOrderOperation(existing, contract.getUserOrders(user) ) );
 			}else{
@@ -467,10 +474,7 @@ class Operation extends sys.db.Object
 			}
 		}
 		
-		
-		
 		return out;
-		
 	}
 	
 	public function populate(){

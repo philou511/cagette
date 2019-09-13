@@ -140,13 +140,16 @@ class Basket extends Object
 
 	}
 	
+	/**
+		Get order operation related to this basket
+	**/
 	public function getOrderOperation(?onlyPending=true):db.Operation {
 
 		var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
         if(order==null) return null;
 
-		var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
-		return db.Operation.findVOrderTransactionFor(key, order.user, order.distribution.place.amap, onlyPending, this);
+		//var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
+		return db.Operation.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
 		
 	}
 	

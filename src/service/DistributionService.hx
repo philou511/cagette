@@ -23,7 +23,7 @@ class DistributionService
 			for ( user in users ){
 
 				//Get the one operation for this amap contract and user
-				var operation = db.Operation.findCOrderTransactionFor(contract, user);
+				var operation = db.Operation.findCOrderOperation(contract, user);
 
 				if (operation != null)
 				{
@@ -375,7 +375,7 @@ class DistributionService
 			for ( o in orders ){
 				o.lock();
 				//find new basket
-				o.basket = db.Basket.getOrCreate(o.user, md.place, md.getDate());
+				o.basket = db.Basket.getOrCreate(o.user, md);
 				o.update();
 			}
 		}
