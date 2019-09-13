@@ -12,7 +12,7 @@ class Distribution extends Object
 	public var id : SId;	
 	
 	@hideInForms @:relation(contractId) 	public var contract : Contract;
-	@hideInForms @:relation(multiDistribId) public var multiDistrib : SNull<MultiDistrib>;
+	@hideInForms @:relation(multiDistribId) public var multiDistrib : MultiDistrib;
 	
 	//deprecated
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
