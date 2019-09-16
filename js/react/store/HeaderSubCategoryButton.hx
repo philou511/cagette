@@ -83,13 +83,13 @@ class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryBut
 			'${classes.labelChip}': true,
             '${classes.cagSelect}': props.active,
 		});
-        
+
         var iconClasses = classNames({
             '${props.icon}' : true,
             '${classes.icon}': true,
         });
 
-        var others = react.ReactMacro.getExtraProps(props);
+        var others = react.CustomReactUtil.getExtraProps(props);
         var icon = (props.icon != null) ? jsx('<Icon component="i" className=${iconClasses} /> '): null;
         return jsx('
             <a onClick=${props.onclick} className=${linkClasses} {...others}>
