@@ -45,12 +45,14 @@ typedef OrderState = {
 @:connect
 class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 {
+	// var paymentsEnabled : Bool;
 
 	public function new(props) {
 
 		super(props);
 		if (props.order.product.qt == null) props.order.product.qt = 1;
 		state = { quantityInputValue : getDisplayQuantity(), paid : props.order.paid, userId2Value : props.order.userId2, invertSharedOrder : props.order.invertSharedOrder };
+		// paymentsEnabled = props.hasPayments;
 	}
 	
 	override public function render() {
@@ -80,10 +82,40 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 			null;
 		}
 
-		var className1 = props.contractType != 0 ? "col-md-5" : "col-md-3";
-		var className2 = props.contractType != 0 ? "col-md-2 ref text-center" : "col-md-2 ref text-center";
-		var className3 = props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
-		var className4 = props.contractType != 0 ? "col-md-2" : "col-md-2";
+		// var className1 = props.contractType != 0 ? "col-md-5" : "col-md-3";
+		// var className2 = props.contractType != 0 ? "col-md-2 ref text-center" : "col-md-2 ref text-center";
+		// var className3 = props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
+		// var className4 = props.contractType != 0 ? "col-md-2" : "col-md-2";
+
+		var className1 = "";
+		var className2 = "";
+		var className3 = "";
+		var className4 = "";
+
+		if ( props.contractType != 0 ) {
+
+			className1 = "col-md-5 text-center";
+			className2 = "col-md-3 ref text-center";
+			className3 = "col-md-2 text-center";
+			className4 = "col-md-2 text-center";
+
+			if ( !props.hasPayments ) {
+
+				className2 = "col-md-2 ref text-center";
+			}
+		}
+		else {
+
+			className1 = "col-md-3 text-center";
+			className2 = "col-md-2 ref text-center";
+			className3 = "col-md-1 text-center";
+			className4 = "col-md-2 text-center";
+
+			if ( !props.hasPayments ) {
+
+				className2 = "col-md-1 ref text-center";
+			}
+		}		
 		
 		return jsx('<div className="productOrder row">
 			<div className=${className1}>
@@ -115,9 +147,9 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		return Formatting.formatNum(f);
 	}
 
-	function paidInput( hasPayments : Bool ) {
-
-		if ( hasPayments ) {
+	function paidInput( paymentsEnabled : Bool ) {
+		
+		if ( paymentsEnabled ) {
 
 			return null;
 		}

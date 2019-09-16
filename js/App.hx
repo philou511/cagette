@@ -174,10 +174,6 @@ class App {
 		var node = js.Browser.document.querySelector('#ordersdialog-container');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
 	
-		trace(hasPayments);
-		trace(hasPayments==true);
-		trace(hasPayments==false);
-
 		var store = createOrderBoxReduxStore();
 		ReactDOM.render(jsx('
 			<ReduxProvider store=${store}>
