@@ -46,17 +46,17 @@ class PageHeader extends react.ReactComponentOfPropsAndState<PageHeaderProps,{an
                 <Grid item md={6} xs={false} style=${{textAlign:"right"}}>
                     <div>
                         <$Button onClick=$changeGroup >
-                            <i className="icon icon-chevron-left"></i>&nbsp;Changer de groupe
+                            <i className="icon icon-chevron-left"></i> Commandes
                         </$Button>
                         <$Button onClick=$onUserMenuOpen aria-owns=${anchorEl!=null ? "simple-menu" : null} aria-haspopup>
-                            <i className="icon icon-user"></i>&nbsp;${props.userName}
+                            <i className="icon icon-user"></i> ${props.userName}
                         </$Button>
                         <$Menu id="simple-menu"
                         anchorEl=${anchorEl}
                         open=${anchorEl!=null}
                         onClose=$onUserMenuClose>
                             <$MenuItem onClick=${ cast onUserMenuClick} key="logout" value="logoute">
-                                <i className="icon icon-delete"></i>&nbsp;Déconnexion
+                                <i className="icon icon-delete"></i> Déconnexion
                             </$MenuItem>
                         </$Menu>
                     </div>

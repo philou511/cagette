@@ -191,7 +191,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 	function renderQtAndUnit(qt:Float,unit:Unit){
         if(qt==0 || qt==null) return null;
         if(unit==null) return null;
-        return jsx('<>${Formatting.formatNum(qt)}&nbsp;${Formatting.unit(unit,qt)}</>');
+        return jsx('<>${Formatting.formatNum(qt)}${Formatting.unit(unit,qt)}</>');
     }
 
 
@@ -235,7 +235,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 							<span className="cagProductUnit">${renderQtAndUnit(quantity*product.qt,product.unitType)}</span>	
 						</Typography>
 						<Typography component="p" className=${classes.cagProductInfo} >
-							<span className="cagProductPrice">${Formatting.formatNum(quantity*product.price)}&nbsp;&euro;</span>
+							<span className="cagProductPrice">${Formatting.formatNum(quantity*product.price)} €</span>
 						</Typography>
 					</Grid>
 					<Grid item={true} xs={3}>
