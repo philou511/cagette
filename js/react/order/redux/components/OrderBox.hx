@@ -25,6 +25,7 @@ typedef OrderBoxProps = {
 	var userName : String;
 	var callbackUrl : String;
 	var currency : String;
+	var hasPayments : Bool;
 	var orders : Array<UserOrder>;
 	var fetchOrders : Int -> Int -> Int -> Int -> Void;
 	var updateOrders : Int -> String -> Int -> Int -> Void;
@@ -41,7 +42,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 	public function new(props) {
 
-		super(props);	
+		super(props);
 	}
 	
 	override function componentDidMount() {
@@ -49,7 +50,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		props.fetchOrders( props.userId, props.multiDistribId, props.contractId, props.contractType );		
 	}
 	
-	override public function render(){
+	override public function render() {
 		
 		//Let's group orders by contract id to display them for each contract
 		var ordersByContractId = new Map<Int, Array<UserOrder>>();
@@ -80,7 +81,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 					order.product.id + "-" + Std.random(99999);
 				};
 
-				ordersByContract.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} contractType=${props.contractType} />' ));
+				ordersByContract.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} hasPayments=${props.hasPayments} contractType=${props.contractType} />' ));
 
 				totalPrice += order.quantity * order.product.price;
 						
@@ -88,10 +89,41 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		}
 
 		//total
-		var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
-		var className2 = this.props.contractType != 0 ? "col-md-3 text-center" : "col-md-2 text-center";
-		var className3 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
-		var className4 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
+		// var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
+		// var className2 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
+		// var className3 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
+		// var className4 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
+
+		var className1 = "";
+		var className2 = "";
+		var className3 = "";
+		var className4 = "";
+
+		if ( props.contractType != 0 ) {
+
+			className1 = "col-md-5 text-center";
+			className2 = "col-md-3 ref text-center";
+			className3 = "col-md-2 text-center";
+			className4 = "col-md-2 text-center";
+
+			if ( !props.hasPayments ) {
+
+				className2 = "col-md-2 ref text-center";
+			}
+		}
+		else {
+
+			className1 = "col-md-3 text-center";
+			className2 = "col-md-2 ref text-center";
+			className3 = "col-md-1 text-center";
+			className4 = "col-md-2 text-center";
+
+			if ( !props.hasPayments ) {
+
+				className2 = "col-md-1 ref text-center";
+			}
+		}		
+
 		ordersByContract.push(jsx('<div className="row">			
 			<div className=${className1}></div>
 			<div className=${className2}><b>TOTAL</b></div>
@@ -108,16 +140,18 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		
 		
         var renderOrderBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment { 
+
 			return jsx('<div onKeyPress=${onKeyPress}>
 							<h3>Commandes de ${this.props.userName}</h3>
 							$delivery
 							<Error error=${this.props.error} />							
 							<hr/>
 							<div className="row tableHeader" >
-								<div className=${className1}>Produit</div>
+								<div className=${className1}>Produits</div>
 								<div className=${className2}>Ref.</div>
 								<div className=${className3}>Prix</div>
 								<div className=${className4}>Qté</div>
+								${ !this.props.hasPayments ? jsx('<div className="col-md-1 text-center">Payé</div>') : null }
 								${ this.props.contractType == 0 ? jsx('<div className="col-md-3 text-center">Alterné avec</div>') : null }
 							</div>
 							${ordersByContract}	
