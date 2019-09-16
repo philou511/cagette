@@ -319,28 +319,22 @@ class Operation extends sys.db.Object
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */
-	public static function findVOrderTransactionFor(dkey:String, user:db.User, group:db.Amap,?onlyPending=true,?basket:db.Basket):db.Operation{
+	public static function findVOrderOperation(distrib:db.MultiDistrib, user:db.User,?onlyPending=true):db.Operation{
 		
 		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
 
-		var date = dkey.split("|")[0];
-		var placeId = Std.parseInt(dkey.split("|")[1]);
-		var transactions  = new List();
+		var operations  = new List();
 		if (onlyPending){
-			transactions = manager.search($user == user && $group == group && $pending == true && $type==VOrder , {orderBy:-date}, true);
+			operations = manager.search($user == user && $group == distrib.getGroup() && $pending == true && $type==VOrder , {orderBy:-date}, true);
 		}else{
-			transactions = manager.search($user == user && $group == group && $type==VOrder , {orderBy:-date}, true);
+			operations = manager.search($user == user && $group == distrib.getGroup() && $type==VOrder , {orderBy:-date}, true);
 		}
 		
-
-		if(basket==null){
-			var place = db.Place.manager.get(placeId,false);
-			var date = Date.fromString(date);
-			basket = db.Basket.get(user, place, date);
-			if(basket==null) throw new Error('No basket found for user #'+user.id+', place #'+place.id+', date '+date);
-		}
+		var basket = db.Basket.get(user, distrib);
+		if(basket==null) throw new Error('No basket found for user #'+user.id+', md #'+distrib.id );
 		
-		for ( t in transactions ){
+		
+		for ( t in operations ){
 			switch(t.type){
 				case VOrder :
 					var data : VOrderInfos = t.data;
@@ -357,7 +351,7 @@ class Operation extends sys.db.Object
 	/**
 	 * when updating a constant order, we need to update the existing operation.
 	 */
-	public static function findCOrderTransactionFor(contract:db.Contract, user:db.User):db.Operation{
+	public static function findCOrderOperation(contract:db.Contract, user:db.User):db.Operation{
 		
 		if (contract.type != db.Contract.TYPE_CONSTORDERS) throw "catalog type should be TYPE_CONSTORDERS";
 		
@@ -397,16 +391,23 @@ class Operation extends sys.db.Object
 	
 	/**
 		Create/update the needed order operations and returns the related operations.
-	 	Orders are supposed to be from the same user.
+	 	Orders are supposed to be from the same user...but could from various distribs
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		
 		if (orders.length == 0) return null;
 		if (orders[0] == null) return null;
 		
+		for( o in orders){
+			if(o.user.id!=orders[0].user.id){
+				throw new Error("Those orders are from different users");
+			}
+		}
+
 		var out = [];
 		var user = orders[0].user;
 		var group = orders[0].product.contract.amap;
+		
 		
 		//should not go further if group has not activated payements
 		if (user==null || !group.hasPayments()) return null;
@@ -434,13 +435,14 @@ class Operation extends sys.db.Object
 						break;
 					}
 				}
+
+				var distrib = basket.multiDistrib;
 				
-				//get all orders for the same multidistrib, in order to update related operation.
-				var k = orders[0].distribution.getKey();				
-				var allOrders = db.UserContract.getUserOrdersByMultiDistrib(k, user, group);	
+				//get all orders for the same multidistrib, in order to update related operation.				
+				var allOrders = distrib.getUserOrders(user, db.Contract.TYPE_VARORDER);	
 				
 				//existing transaction
-				var existing = db.Operation.findVOrderTransactionFor( k , user, group, false);
+				var existing = db.Operation.findVOrderOperation( distrib , user, false);
 				
 				var op;
 				if (existing != null){
@@ -460,12 +462,11 @@ class Operation extends sys.db.Object
 			}
 			
 		}else{
-			
 			// constant contract
 			// create/update a transaction computed like $distribNumber * $price.
 			var contract = orders[0].product.contract;
 			
-			var existing = db.Operation.findCOrderTransactionFor( contract , user);
+			var existing = db.Operation.findCOrderOperation( contract , user);
 			if (existing != null){
 				out.push( db.Operation.updateOrderOperation(existing, contract.getUserOrders(user) ) );
 			}else{
@@ -473,10 +474,7 @@ class Operation extends sys.db.Object
 			}
 		}
 		
-		
-		
 		return out;
-		
 	}
 	
 	public function populate(){

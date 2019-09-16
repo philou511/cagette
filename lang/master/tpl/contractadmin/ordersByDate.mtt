@@ -51,7 +51,7 @@
 					<tr style="background-color:#666;">
 						<td colspan="9" style="font-size:120%;color:#e7e7e7;">
 							
-							::set basket = getBasket(m.userId,place.id,date)::
+							::set basket = getBasket(m.basketId)::
 							
 							<div class="basketNumber" ::cond basket!=null:: >
 								<i class="fa fa-shopping-basket" aria-hidden="true"></i> ::_("Num"):: ::basket.num::

@@ -304,7 +304,7 @@ class TestOrders extends haxe.unit.TestCase
 		var order2Id = order2.id;
 		order2 = OrderService.edit(order2, 0);
 		db.Operation.onOrderConfirm([order2]);
-		var operation = db.Operation.findCOrderTransactionFor(amapContract, TestSuite.FRANCOIS);
+		var operation = db.Operation.findCOrderOperation(amapContract, TestSuite.FRANCOIS);
 		var operationId = operation.id;
 		var e3 = null;
 		try {
@@ -380,12 +380,12 @@ class TestOrders extends haxe.unit.TestCase
 		db.Operation.onOrderConfirm([order2]);
 
 		assertEquals(2, variableContract.getUserOrders(TestSuite.FRANCOIS,variableDistrib).length); //François has 2 orders
-		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib.place,variableDistrib.date);
+		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib.multiDistrib);
 		assertEquals(2, basket.getOrders().length);
 
-		var operation1 = db.Operation.findVOrderTransactionFor(order1.distribution.getKey(), TestSuite.FRANCOIS, variableContract.amap);
+		var operation1 = db.Operation.findVOrderOperation(order1.distribution.multiDistrib, TestSuite.FRANCOIS);
 		var operation1Id = operation1.id;
-		var operation2 = db.Operation.findVOrderTransactionFor(order2.distribution.getKey(), TestSuite.FRANCOIS, variableContract.amap);
+		var operation2 = db.Operation.findVOrderOperation(order2.distribution.multiDistrib, TestSuite.FRANCOIS);
 		var operation2Id = operation2.id;
 		assertEquals(operation1Id,operation2Id);
 		var e2 = null;
@@ -422,7 +422,7 @@ class TestOrders extends haxe.unit.TestCase
 		assertTrue(order1.basket!=null);
 		// trace("WE GOT A BASKET "+order1.basket.id);
 		// trace("... THEN RE-GET BASKET  user "+TestSuite.FRANCOIS.id+" place "+variableDistrib1.place.id+" date "+variableDistrib1.date);
-		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib1.place,variableDistrib1.date);
+		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib1.multiDistrib);
 		assertTrue(basket!=null);
 		assertEquals(1, basket.getOrders().length);
 		db.Operation.onOrderConfirm([order1]);
@@ -440,10 +440,10 @@ class TestOrders extends haxe.unit.TestCase
 		db.Operation.onOrderConfirm([order2]);
 
 		//check basket
-		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib1.place,variableDistrib1.date);
+		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib1.multiDistrib);
 		assertEquals(2, basket.getOrders().length);
 
-		var operation = db.Operation.findVOrderTransactionFor(order1.distribution.getKey(), TestSuite.FRANCOIS, variableDistrib1.contract.amap);
+		var operation = db.Operation.findVOrderOperation(order1.distribution.multiDistrib, TestSuite.FRANCOIS);
 		var operationId = operation.id;
 
 

@@ -27,7 +27,7 @@ class Validate extends controller.Controller
 			view.balance = db.UserAmap.get(user, place.amap).balance;
 		}
 		
-		var b = db.Basket.get(user, place, date);			
+		var b = db.Basket.get(user, multiDistrib);			
 		view.orders = service.OrderService.prepare(b.getOrders());
 		view.place = place;
 		view.date = date;
@@ -94,7 +94,7 @@ class Validate extends controller.Controller
 		operation.user = user;
 		operation.date = Date.now();
 		
-		var b = db.Basket.get(user, multiDistrib.getPlace(), multiDistrib.getDate());
+		var b = db.Basket.get(user, multiDistrib );
 		var orderOperation = b.getOrderOperation(false);
 		if(orderOperation == null) throw "unable to find related order operation";
 		
@@ -157,7 +157,7 @@ class Validate extends controller.Controller
 		}
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
-		var b = db.Basket.get(user, multiDistrib.getPlace(), multiDistrib.getDate());
+		var b = db.Basket.get(user, multiDistrib );
 		var op = b.getOrderOperation(false);
 		if(op==null) throw "unable to find related order operation";
 		
@@ -184,7 +184,7 @@ class Validate extends controller.Controller
 		
 		if (checkToken()) 
 		{
-			var basket = db.Basket.get(user, multiDistrib.getPlace(), multiDistrib.getDate());
+			var basket = db.Basket.get(user, multiDistrib );
 
 			try{
 				service.PaymentService.validateBasket(basket);

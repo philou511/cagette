@@ -16,15 +16,12 @@ class Distribution extends Object
 	
 	//deprecated
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
+	public var date : SNull<SDateTime>; 
+	public var end : SNull<SDateTime>;
 	
 	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;
-	
-	//start and end date for delivery
-	public var date : SNull<SDateTime>; 
-	public var end : SNull<SDateTime>;
-	
 	
 	@hideInForms public var validated :SBool;
 	
