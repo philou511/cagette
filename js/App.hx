@@ -169,11 +169,11 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, callbackUrl : String){
+	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
+
 		var node = js.Browser.document.createDivElement();
 		node.id = "ordersdialog-container";
 		js.Browser.document.body.appendChild(node);
-		//var node = js.Browser.document.querySelector('#ordersdialog-container');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
 	
 		var store = createOrderBoxReduxStore();
@@ -183,7 +183,7 @@ class App {
 					<>
 						<CssBaseline />
 						<OrdersDialog userId=$userId multiDistribId=$multiDistribId contractId=$contractId contractType=$contractType
-						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency />							
+						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
 					</>
 				</MuiThemeProvider>
 			</ReduxProvider>
@@ -338,9 +338,9 @@ class App {
 
 
 	#if plugins
-	public function getHostedPlugin(){
+	/*public function getHostedPlugin(){
 		return new hosted.js.App();
-	}
+	}*/
 	#end
 
 	/**

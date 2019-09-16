@@ -20,7 +20,8 @@ typedef OrdersDialogProps = {
 	var place : String;
 	var userName : String;
 	var callbackUrl : String;
-	var currency : String;	
+	var currency : String;
+	var hasPayments : Bool;
 };
 
 typedef OrdersDialogState = {
@@ -46,7 +47,7 @@ class OrdersDialog extends react.ReactComponentOfPropsAndState<OrdersDialogProps
 		return jsx('<Dialog onClose=${this.handleClose} fullWidth={true} maxWidth={MD} scroll={Body} open=${state.openDialog} >
 				<DialogContent>
 					<OrderBox userId=${props.userId} multiDistribId=${props.multiDistribId} contractId=${props.contractId} contractType=${props.contractType}
-					date=${props.date} place=${props.place} userName=${props.userName} callbackUrl=${props.callbackUrl} currency=${props.currency} />
+					date=${props.date} place=${props.place} userName=${props.userName} callbackUrl=${props.callbackUrl} currency=${props.currency} hasPayments=${props.hasPayments} />
 				</DialogContent>
 				<DialogActions>
 					<Button onClick=${this.handleClose}>
