@@ -21,8 +21,10 @@ typedef OrderProps = {
 	var order : UserOrder;
 	var users : Null<Array<UserInfo>>;
 	var currency : String;
+	var hasPayments : Bool;
 	var contractType : Int;	
 	var updateOrderQuantity : Float -> Void;
+	var updatePaid : Bool -> Void;
 	var reverseRotation : Bool -> Void;
 	var updateOrderUserId2 : Int -> Void;
 }
@@ -30,6 +32,7 @@ typedef OrderProps = {
 typedef OrderState = {
 
 	var quantityInputValue : String;
+	var paid : Bool;
 	var userId2Value : Int;
 	var invertSharedOrder : Bool;
 }
@@ -42,11 +45,12 @@ typedef OrderState = {
 @:connect
 class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 {
+
 	public function new(props) {
 
 		super(props);
 		if (props.order.product.qt == null) props.order.product.qt = 1;
-		state = { quantityInputValue : getDisplayQuantity(), userId2Value : props.order.userId2, invertSharedOrder : props.order.invertSharedOrder };
+		state = { quantityInputValue : getDisplayQuantity(), paid : props.order.paid, userId2Value : props.order.userId2, invertSharedOrder : props.order.invertSharedOrder };
 	}
 	
 	override public function render() {
@@ -77,7 +81,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		}
 
 		var className1 = props.contractType != 0 ? "col-md-5" : "col-md-3";
-		var className2 = props.contractType != 0 ? "col-md-3 ref text-center" : "col-md-2 ref text-center";
+		var className2 = props.contractType != 0 ? "col-md-2 ref text-center" : "col-md-2 ref text-center";
 		var className3 = props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
 		var className4 = props.contractType != 0 ? "col-md-2" : "col-md-2";
 		
@@ -87,7 +91,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 			</div>
 
 			<div className=${className2} style=${{ paddingTop: 15 }} >
-				${props.order.productRef}
+				${props.order.product.ref}
 			</div>
 
 			<div className=${className3} style=${{ paddingTop: 15 }} >
@@ -99,6 +103,8 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 				${makeInfos()}
 			</div>
 
+			${paidInput( props.hasPayments )}				
+
 			${ props.contractType == 0 ? jsx('<div className="col-md-4">$alternated</div>') : null }
 			
 		</div>');
@@ -109,13 +115,25 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		return Formatting.formatNum(f);
 	}
 
+	function paidInput( hasPayments : Bool ) {
+
+		if ( hasPayments ) {
+
+			return null;
+		}
+        
+		return jsx('<div className="col-md-1 text-center" >
+						<Checkbox checked=${state.paid} onChange=$updatePaid value=${Std.string(props.order.id)} color={Primary} />
+					</div>');
+	}
+
 	function makeInfos() {
 
 		return if ( isSmartQtInput() ) {
 
 			jsx('
 			<div className="infos">
-				<b> ${getProductQuantity()} </b> x <b>${props.order.product.qt} ${getProductUnit()} </b> ${props.order.productName}
+				<b> ${getProductQuantity()} </b> x <b>${props.order.product.qt} ${getProductUnit()} </b> ${props.order.product.name}
 			</div>');
 		}
 		else {
@@ -154,6 +172,16 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		setState( { userId2Value : value } );
 
 		props.updateOrderUserId2(value); 
+	}	
+
+	function updatePaid( e: js.html.Event ) {		
+
+		e.preventDefault();
+
+		var value : Bool = untyped (e.target.checked == "") ? false : e.target.checked;
+		setState( { paid : value } );
+
+		props.updatePaid(value); 
 	}	
 
 	function reverseUsersRotation( e: js.html.Event ) {		
@@ -207,7 +235,10 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 							  },
 			updateOrderUserId2 : function( userId2 : Int ) {
 									dispatch( OrderBoxAction.UpdateOrderUserId2( ownProps.order.id, userId2 == 0 ? null : userId2 ) );				
-								 }
+								 },
+			updatePaid : function( paid : Bool ) {
+								dispatch( OrderBoxAction.UpdatePaid( ownProps.order.id, paid ) );
+			}
 		}
 	}
 

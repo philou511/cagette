@@ -84,6 +84,18 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 }
                 { orders : copiedOrders };
 
+            case UpdatePaid( orderId, paid ):
+                var copiedOrders = state.orders.copy();
+                for( order in copiedOrders ) {
+
+                    if( order.id == orderId ) {
+
+                        order.paid = paid;
+                        break;
+                    }
+                }
+                { orders : copiedOrders };
+
             case FetchContractsSuccess( contracts ):
                 { contracts : contracts, error : null };
             
