@@ -64,7 +64,7 @@
 							::set contractTotal = 0::
 
 							<a class="btn btn-default btn-xs pull-right"
-						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', '/contractAdmin/ordersByDate/::date::/::place.id::')">
+						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getAmap().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::')">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>	
