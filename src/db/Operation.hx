@@ -322,6 +322,8 @@ class Operation extends sys.db.Object
 	public static function findVOrderOperation(distrib:db.MultiDistrib, user:db.User,?onlyPending=true):db.Operation{
 		
 		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
+		if(distrib==null) throw "Distrib is null";
+		if(user==null) throw "User is null";
 
 		var operations  = new List();
 		if (onlyPending){

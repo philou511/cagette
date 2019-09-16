@@ -64,7 +64,7 @@
 			
 			::foreach u users::
 				
-				::set basket = getBasket(u.id,place.id,date)::
+				::set basket = getBasket2(u.id,place.id,date)::
 				
 				::if(basket.isValidated()==true)::
 					::set class="success"::

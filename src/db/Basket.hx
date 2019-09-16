@@ -15,8 +15,8 @@ class Basket extends Object
 	public var cdate : SDateTime; //date when the order has been placed
 	public var num : SInt;		 //order number
 
-	@:relation(userId) public var user : SNull<db.User>;
-	@:relation(multiDistribId) public var multiDistrib : SNull<db.MultiDistrib>;
+	@:relation(userId) public var user : db.User;
+	@:relation(multiDistribId) public var multiDistrib : db.MultiDistrib;
 
 	public var data : SNull<SData<Map<Int,RevenueAndFees>>>; //store shared revenue
 	
@@ -31,16 +31,19 @@ class Basket extends Object
 		CACHE = new Map<String,db.Basket>();
 	}
 	
-	public static function get(user:db.User,distrib:db.MultiDistrib, ?lock = false):db.Basket{
-		
+	/*public static function get(user:db.User,distrib:db.MultiDistrib, ?lock = false):db.Basket{
 		return manager.select($user==user && $multiDistrib==distrib,lock);
+	}*/
+	public static function get(user:db.User,md:db.MultiDistrib, ?lock = false):db.Basket{
+		
+		//date = tools.DateTool.setHourMinute(date, 0, 0);
 
 		//caching
-		/*var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
-		var b = CACHE.get(k);
+		// var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
+		// var b = CACHE.get(k);
 		var b = null;
-		if (b == null){
-			var md = db.MultiDistrib.get(date, place);
+		// if (b == null){
+			//var md = db.MultiDistrib.get(date, place);
 			if(md==null) return null;
 			for( o in md.getUserOrders(user)){
 				if(o.basket!=null) {
@@ -48,10 +51,12 @@ class Basket extends Object
 					break;
 				}
 			}
-			CACHE.set(k, b);
-		}		
-		return b;*/
+			// CACHE.set(k, b);
+		// }
+		
+		return b;
 	}
+
 	
 	/**
 	 * Get a Basket or create it if it doesn't exists.
@@ -70,16 +75,10 @@ class Basket extends Object
 			b.user = user;
 			//TODO : should be more safe to do something like "b.num = MAX(num)+1 FROM Basket"
 			b.insert();
-			
-			//try to find orders and link them to the basket			
-			/*var dids = tools.ObjectListTool.getIds(md.getDistributions(db.Contract.TYPE_VARORDER));
-			for ( o in db.UserContract.manager.search( ($distributionId in dids) && ($user == user), true)){
-				o.basket = b;
-				o.update();
-			}*/
 		}		
 		return b;		
 	}
+	
 
 	public function getUser():db.User{
 		return getOrders().first().user;

@@ -39,7 +39,7 @@
 					<td style="font-size:120%">
 						::if m.userName != name || m.userName2 != name2::
 								<b>
-									::set basket = getBasket(m.userId,place.id,date)::							
+									::set basket = getBasket(m.basketId)::							
 									<span ::cond basket!=null::>N°::basket.num:: - </span>
 									
 									::m.userName::
