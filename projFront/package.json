@@ -34,7 +34,7 @@
     "browserify": "^14.4.0",
     "cross-env": "^5.1.1",
     "node-sass": "^4.11.0",
-    "npm-run-all": "^4.1.2"  
+    "npm-run-all": "^4.1.2"
   },
   "scripts": {
     "build": "npm-run-all --parallel build:*",
