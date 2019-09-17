@@ -154,7 +154,7 @@ class UserContract extends Object
 	 * 
 	 * @param	distribKey "$date|$placeId"
 	 */
-	public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Amap):Array<db.UserContract>{	
+	/*public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Amap):Array<db.UserContract>{	
 		//var contracts = db.Contract.getActiveContracts(group);
 		var contracts = db.Contract.manager.search($amap == group, false); //should be able to edit a contract which is closed
 		for ( c in Lambda.array(contracts)){
@@ -173,7 +173,7 @@ class UserContract extends Object
 		}
 		
 		return out;
-	}
+	}*/
 	
 	/*public static function getTotalPrice(tmpOrder:OrderInSession){
 		var t = 0.0;

@@ -32,6 +32,10 @@ class DistributionCycle extends Object
 	public function new() {
 		super();
 	}
+
+	public function getDistributions():Array<db.MultiDistrib>{
+		return Lambda.array( db.MultiDistrib.manager.search($distributionCycle == this, false) );
+	}
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;

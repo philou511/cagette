@@ -45,8 +45,8 @@ class TestPayments extends haxe.unit.TestCase
 		assertEquals(true, sebOrder.paid);
 
 		//order operation is not pending
-		var francoisOperation = db.Operation.findVOrderTransactionFor(francoisOrder.distribution.getKey(), TestSuite.FRANCOIS, contract.amap, false);
-		var sebOperation 	  = db.Operation.findVOrderTransactionFor(sebOrder.distribution.getKey(), TestSuite.SEB, contract.amap, false);		
+		var francoisOperation = db.Operation.findVOrderOperation(francoisOrder.distribution.multiDistrib, TestSuite.FRANCOIS, false);
+		var sebOperation 	  = db.Operation.findVOrderOperation(sebOrder.distribution.multiDistrib, TestSuite.SEB, false);		
 		assertEquals(francoisOperation.pending, false);
 		assertEquals(sebOperation.pending, false);
 
@@ -55,9 +55,9 @@ class TestPayments extends haxe.unit.TestCase
 		assertEquals(sebPayment.pending, false);
 
 		//basket are validated 
-		var b = db.Basket.get(TestSuite.SEB,distrib.place,distrib.date);
+		var b = db.Basket.get(TestSuite.SEB,distrib.multiDistrib);
 		assertEquals(true, b.isValidated());
-		var b = db.Basket.get(TestSuite.FRANCOIS,distrib.place,distrib.date);
+		var b = db.Basket.get(TestSuite.FRANCOIS,distrib.multiDistrib);
 		assertEquals(true, b.isValidated());
 	}
 

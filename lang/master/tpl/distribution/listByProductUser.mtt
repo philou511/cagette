@@ -51,7 +51,7 @@
 		::foreach user users::
 			<tr>
 				<th>
-					::set basket = getBasket(user.id,distrib._place.id,distrib.date)::							
+					::set basket = getBasket2(user.id,distrib._place.id,distrib.date)::							
 					<span ::cond basket!=null::>N°::basket.num:: - </span>	
 
 					::user.getCoupleName()::

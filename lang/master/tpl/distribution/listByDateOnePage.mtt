@@ -45,7 +45,7 @@
 					<td style='width:33%;'>
 						
 						<b style="font-size:150%;">
-							::set basket = getBasket(m.userId,place.id,date)::							
+							::set basket = getBasket(m.basketId)::							
 							<span ::cond basket!=null::>::_("Num"):: ::basket.num:: - </span>
 							::m.userName::
 						</b>

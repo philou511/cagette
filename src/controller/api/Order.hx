@@ -93,12 +93,6 @@ class Order extends Controller
 			data = haxe.Json.parse(raw).orders;
 		}
 		
-		//rights
-		//fbarbut 2018-11-13 : too many problems when people try to edit the order of someone who left the group...
-		//if (!user.isMemberOf(c.amap)) throw new Error(t._("::user:: is not member of this group", {user:user.name}));
-		if (!app.user.canManageAllContracts()) throw new Error(t._("You do not have the authorization to manage this contract"));
-		if (multiDistrib!=null && multiDistrib.isValidated()) throw new Error(t._("This delivery has been already validated"));
-		
 		//record orders
 	
 		//find existing orders

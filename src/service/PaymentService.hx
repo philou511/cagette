@@ -123,7 +123,7 @@ class PaymentService
 	public static function validateDistribution(distrib:db.Distribution) {
 
 		for ( user in distrib.getUsers()){
-			var basket = db.Basket.get(user, distrib.place, distrib.date);
+			var basket = db.Basket.get(user, distrib.multiDistrib );
 			validateBasket(basket);
 		}
 		//finally validate distrib
@@ -135,7 +135,7 @@ class PaymentService
 	public static function unvalidateDistribution(distrib:db.Distribution) {
 
 		for ( user in distrib.getUsers()){
-			var basket = db.Basket.get(user, distrib.place, distrib.date);
+			var basket = db.Basket.get(user, distrib.multiDistrib);
 			unvalidateBasket(basket);
 		}
 		//finally validate distrib

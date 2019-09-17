@@ -12,19 +12,16 @@ class Distribution extends Object
 	public var id : SId;	
 	
 	@hideInForms @:relation(contractId) 	public var contract : Contract;
-	@hideInForms @:relation(multiDistribId) public var multiDistrib : SNull<MultiDistrib>;
+	@hideInForms @:relation(multiDistribId) public var multiDistrib : MultiDistrib;
 	
 	//deprecated
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
+	public var date : SNull<SDateTime>; 
+	public var end : SNull<SDateTime>;
 	
 	//when orders are open
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;
-	
-	//start and end date for delivery
-	public var date : SNull<SDateTime>; 
-	public var end : SNull<SDateTime>;
-	
 	
 	@hideInForms public var validated :SBool;
 	

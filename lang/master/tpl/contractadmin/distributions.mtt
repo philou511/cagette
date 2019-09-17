@@ -2,6 +2,14 @@
 
 <h2>Participation aux distributions</h2>
 
+	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
+		<i class="icon icon-check"></i> Participer à toutes les distributions
+	</a>
+
+	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
+		<i class="icon icon-archive"></i> ::_("Old distributions")::
+	</a>
+
 	<table class="table">
 		::set now = Date.now().getTime()::
 
@@ -107,12 +115,6 @@
 	
 	
 	
-	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
-		<i class="icon icon-check"></i> Participer à toutes les distributions
-	</a>
-
-	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-		<i class="icon icon-archive"></i> ::_("Old distributions")::
-	</a>
+	
 	
 ::end::

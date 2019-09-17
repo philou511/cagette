@@ -12,23 +12,22 @@ using Lambda;
 class MultiDistrib extends Object
 {
 	public var id : SId;
-	@hideInForms @:relation(groupId) public var group : db.Amap;
+	
 	public var distribStartDate : SDateTime; 
 	public var distribEndDate : SDateTime;	
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
-	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 	
-	@formPopulate("placePopulate")
-	@:relation(placeId)
-	public var place : Place;
+	@hideInForms @:relation(groupId) public var group : db.Amap;
+	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
+	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 
 	@hideInForms public var counterBeforeDistrib:SFloat; //counter before distrib "fond de caisse"
+	@hideInForms public var volunteerRolesIds : SNull<String>;
 
 	@:skip public var contracts : Array<db.Contract>;
 	@:skip public var extraHtml : String;
 	
-	@hideInForms public var volunteerRolesIds : SNull<String>;
 
 	public function new(){
 		super();
@@ -36,6 +35,9 @@ class MultiDistrib extends Object
 		extraHtml = "";
 	}
 	
+	/**
+		Get a distribution for date + place.
+	**/
 	public static function get(date:Date, place:db.Place, ?lock=false){
 		var start = tools.DateTool.setHourMinute(date, 0, 0);
 		var end = tools.DateTool.setHourMinute(date, 23, 59);
@@ -192,6 +194,9 @@ class MultiDistrib extends Object
 		return distribEndDate;
 	}
 
+	/**
+		prepare an excerpt of products ( and store it in cache )
+	**/
 	public function getProductsExcerpt(productNum:Int):Array<ProductInfo>{
 		var key = "productsExcerpt-"+getKey();
 		var cache:Array<Int> = sugoi.db.Cache.get(key);
@@ -207,19 +212,23 @@ class MultiDistrib extends Object
 			// }
 			
 			return out;
-		}
-
-		var products = [];
-		for( d in getDistributions()){
-			for ( p in d.contract.getProductsPreview(productNum)){
-				products.push( p.infos(null,false) );	
+		}else{
+			var products = [];
+			for( d in getDistributions(db.Contract.TYPE_VARORDER)){
+				for ( p in d.contract.getProductsPreview(productNum)){
+					products.push( p.infos(null,false) );	
+				}
 			}
+			products = thx.Arrays.shuffle(products);			
+			products = products.slice(0, productNum);
+			sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
+			return products;	
 		}
-		products = thx.Arrays.shuffle(products);			
-		products = products.slice(0, productNum);
-		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
-		return products;	
 
+	}
+
+	public function deleteProductsExcerpt(){
+		sugoi.db.Cache.destroy("productsExcerpt-"+getKey());
 	}
 
 	public function userHasOrders(user:db.User,type:Int):Bool{
@@ -231,14 +240,15 @@ class MultiDistrib extends Object
 	}
 	
 	/**
-	orders currently open ?
+		Are orders currently open ?
+		( including exceptions )
 	**/
 	public function isActive(){
 
 		if (getOrdersStartDate() == null) return false; //constant orders
 			
 		var now = Date.now();	
-		if (now.getTime() >= getOrdersStartDate().getTime()  && now.getTime() <= getOrdersEndDate().getTime() ){			
+		if (now.getTime() >= getOrdersStartDate(true).getTime()  && now.getTime() <= getOrdersEndDate(true).getTime() ){			
 			return true;				
 		}else {
 			return false;				
@@ -404,7 +414,7 @@ class MultiDistrib extends Object
 
 	override public function toString(){
 		try{
-			return "Multidistrib à "+getPlace().name+" le "+getDate();
+			return "#"+id+" Multidistrib à "+getPlace().name+" le "+getDate();
 		}catch(e:Dynamic){
 			return "#"+this.id;
 		}

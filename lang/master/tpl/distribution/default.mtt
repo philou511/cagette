@@ -154,9 +154,13 @@
 										<div class="status">::_("Distribution done")::</div>
 										<br/>
 									</span>
+
+									::if(d._place._amap.hasPayments())::
 									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
 										<i class="icon icon-check"></i> Valider cette distribution
 									</a>
+									::end::
+									
 								::elseif(status=="validated")::
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>

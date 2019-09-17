@@ -13,7 +13,7 @@ class TestSuite
 		
 		connectDb();
 		var r = new haxe.unit.TestRunner();
-s
+
 		//Cagette core tests
 		r.add(new test.TestTools());
 		r.add(new test.TestUser());
@@ -22,7 +22,7 @@ s
 		r.add(new test.TestPayments());
 		r.add(new test.TestReports());
 
-		// #if plugins
+		#if plugins
 		//Cagette-pro tests, keep in this order
 		r.add(new pro.test.TestProductService());
 		r.add(new pro.test.TestRemoteCatalog());
@@ -31,7 +31,7 @@ s
 		//wholesale-order tests
 		r.add(new who.test.TestWho());
 		//r.add(new pro.test.TestMarketplacePayment());
-		// #end
+		#end
 
 		r.run();
 	}

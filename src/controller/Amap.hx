@@ -57,9 +57,10 @@ class Amap extends Controller
 				group.update();
 			}
 
-			//forbid AMAP+payments
+			//warning AMAP+payments
 			if( !group.flags.has(db.Amap.AmapFlags.ShopMode) &&  group.hasPayments() ){
-				App.current.session.addMessage("Impossible d'activer la gestion des paiements avec les AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
+				//App.current.session.addMessage("ATTENTION : nous ne vous recommandons pas d'activer la gestion des paiements si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
+				App.current.session.addMessage("L'activation de la gestion des paiements n'est pas autorisée si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
 				group.flags.unset(db.Amap.AmapFlags.HasPayments);
 				group.update();
 			}

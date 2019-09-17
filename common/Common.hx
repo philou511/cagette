@@ -189,6 +189,7 @@ typedef Block = {
 
 typedef UserOrder = {
 	id:Int,
+	?basketId:Int,
 	userId:Int,
 	userName:String,
 	?userEmail : String,
@@ -205,7 +206,6 @@ typedef UserOrder = {
 	?productImage:String,
 	?productQt:Float,
 	?productUnit:Unit,
-
 	?productHasFloatQt:Bool,
 	?productHasVariablePrice:Bool,
 

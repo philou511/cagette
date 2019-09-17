@@ -244,25 +244,28 @@ class VolunteerService
 		}			
 	}
 
-
+	/**
+		update roles needed for distribution
+	**/
 	public static function updateMultiDistribVolunteerRoles(multidistrib: db.MultiDistrib, rolesIds: Array<Int>) {
 
 		var t = sugoi.i18n.Locale.texts;
 		var volunteers = multidistrib.getVolunteers();
+		
 
-		if ( volunteers != null && volunteers.length>0 ) {
-			for ( roleId in rolesIds ) {
-				volunteers = Lambda.array(Lambda.filter(volunteers, function(volunteer) return volunteer.volunteerRole.id != roleId));
+		// is there volunteers registred for a role that is not needed anymore
+		if ( volunteers != null && volunteers.length>0 ) {			
+			for ( volunteer in volunteers ) {
+				if( Lambda.find(rolesIds, function(roleId) return roleId==volunteer.volunteerRole.id)==null ){
+					throw new Error('Impossible de désélectionner le rôle "${volunteer.volunteerRole.name}", car il y a des personnes qui se sont inscrites à ce rôle (${volunteer.user.getName()})');
+				}				
 			}
 		}
 		
-		if ( volunteers == null || volunteers.length == 0 ) {
-			multidistrib.lock();
-			multidistrib.volunteerRolesIds = rolesIds.join(",");
-			multidistrib.update();
-		} else {
-			throw new Error(t._("You can't remove some roles because there are volunteers assigned to those roles. You need to delete the volunteers first."));
-		}
+		//update roles
+		multidistrib.lock();
+		multidistrib.volunteerRolesIds = rolesIds.join(",");
+		multidistrib.update();
 	}
 
 	public static function createRoleForContract(c:db.Contract,number:Int){

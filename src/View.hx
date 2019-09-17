@@ -301,10 +301,18 @@ class View extends sugoi.BaseView {
 	}
 
 	
-	public function getBasket(userId, placeId, date){
+	public function getBasket(id){
+		return db.Basket.manager.get(id,false);
+	}
+
+	/**
+	@deprecated
+	**/
+	public function getBasket2(userId, placeId, date){
 		var user = getUser(userId);
 		var place = db.Place.manager.get(placeId, false);
-		return db.Basket.getOrCreate(user, place, date);
+		var md = db.MultiDistrib.get(date,place);
+		return db.Basket.getOrCreate(user, md);
 	}
 	
 	public function getPlatform(){

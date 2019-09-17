@@ -155,7 +155,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
     function renderQtAndUnit(p:ProductInfo){
         if(p.qt==0 || p.qt==null) return null;
         if(p.unitType==null) return null;
-        return jsx('<>${Formatting.formatNum(p.qt)}&nbsp;${Formatting.unit(p.unitType,p.qt)}</>');
+        return jsx('<>${Formatting.formatNum(p.qt)} ${Formatting.unit(p.unitType,p.qt)}</>');
     }
 
     override public function render() {
@@ -179,7 +179,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                     <Grid item md={3} xs={6} style=${{textAlign:css.TextAlign.Center}}>
                         <Typography component="div" className=${classes.cagProductInfo} >
                             <span className="cagProductPrice">
-                                ${Formatting.formatNum(product.price)}&nbsp;&euro;
+                                ${Formatting.formatNum(product.price)} €
                             </span> 
                         </Typography> 
                         

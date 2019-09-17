@@ -80,11 +80,17 @@ class OrderService
 			}
 		}
 		
-		//create a basket object
+		//create a basket
 		if (distribId != null){
 			var dist = o.distribution;
-			var basket = db.Basket.getOrCreate(user, dist.place, dist.date);			
+			var basket = db.Basket.getOrCreate(user, dist.multiDistrib);			
 			o.basket = basket;			
+		}
+
+		//checks
+		if(o.product.contract.type==db.Contract.TYPE_VARORDER){
+			if(o.distribution==null) throw "cant record an order for a variable catalog without a distribution linked";
+			if(o.basket==null) throw "this order should have a basket";
 		}
 		
 		o.insert();
@@ -205,7 +211,7 @@ class OrderService
 				order.product.update();					
 			}	
 		}
-		
+
 		//update order
 		if (newquantity == 0) {
 			order.quantity = 0;			
@@ -215,6 +221,13 @@ class OrderService
 			order.quantity = newquantity;
 			order.update();				
 		}	
+
+		//checks
+		var o = order;
+		if(o.product.contract.type==db.Contract.TYPE_VARORDER){
+			if(o.distribution==null) throw "cant record an order for a variable catalog without a distribution linked";
+			if(o.basket==null) throw "this order should have a basket";
+		}
 
 		App.current.event(e);	
 
@@ -245,7 +258,7 @@ class OrderService
 				if( contract.amap.hasPayments() ){
 					var orders = contract.getUserOrders(user);
 					if( orders.length == 0 ){
-						var operation = db.Operation.findCOrderTransactionFor(contract, user);
+						var operation = db.Operation.findCOrderOperation(contract, user);
 						if(operation!=null) operation.delete();
 					}
 				}
@@ -254,13 +267,13 @@ class OrderService
 				
 				//Get the basket for this user
 				var place = order.distribution.place;
-				var basket = db.Basket.get(user, place, order.distribution.multiDistrib.distribStartDate);
+				var basket = db.Basket.get(user, order.distribution.multiDistrib);
 				
 				if( contract.amap.hasPayments() ){
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders.first().id==order.id ){
-						var operation = db.Operation.findVOrderTransactionFor(order.distribution.getKey(), user, place.amap);
+						var operation = db.Operation.findVOrderOperation(basket.multiDistrib, user);
 						if(operation!=null) operation.delete();
 					}
 
@@ -287,6 +300,7 @@ class OrderService
 		
 			var x : UserOrder = cast { };
 			x.id = o.id;
+			x.basketId = o.basket==null ? null : o.basket.id;
 			x.userId = o.user.id;
 			x.userName = o.user.getCoupleName();
 			x.userEmail = o.user.email;
