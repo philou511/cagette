@@ -16,7 +16,7 @@
 			<div class="vat">
 				
 				::if p.vat!=null && p.vat!=0::
-					::p.vat:: ::_("VAT included")::<br/>
+					::__("including ::vat::% of VAT",{vat:p.vat})::<br/>
 				::end::
 				
 				::if p.contractTax!=null::

@@ -194,6 +194,9 @@ class MultiDistrib extends Object
 		return distribEndDate;
 	}
 
+	/**
+		prepare an excerpt of products ( and store it in cache )
+	**/
 	public function getProductsExcerpt(productNum:Int):Array<ProductInfo>{
 		var key = "productsExcerpt-"+getKey();
 		var cache:Array<Int> = sugoi.db.Cache.get(key);
@@ -209,19 +212,23 @@ class MultiDistrib extends Object
 			// }
 			
 			return out;
-		}
-
-		var products = [];
-		for( d in getDistributions()){
-			for ( p in d.contract.getProductsPreview(productNum)){
-				products.push( p.infos(null,false) );	
+		}else{
+			var products = [];
+			for( d in getDistributions(db.Contract.TYPE_VARORDER)){
+				for ( p in d.contract.getProductsPreview(productNum)){
+					products.push( p.infos(null,false) );	
+				}
 			}
+			products = thx.Arrays.shuffle(products);			
+			products = products.slice(0, productNum);
+			sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
+			return products;	
 		}
-		products = thx.Arrays.shuffle(products);			
-		products = products.slice(0, productNum);
-		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
-		return products;	
 
+	}
+
+	public function deleteProductsExcerpt(){
+		sugoi.db.Cache.destroy("productsExcerpt-"+getKey());
 	}
 
 	public function userHasOrders(user:db.User,type:Int):Bool{
@@ -233,14 +240,15 @@ class MultiDistrib extends Object
 	}
 	
 	/**
-	orders currently open ?
+		Are orders currently open ?
+		( including exceptions )
 	**/
 	public function isActive(){
 
 		if (getOrdersStartDate() == null) return false; //constant orders
 			
 		var now = Date.now();	
-		if (now.getTime() >= getOrdersStartDate().getTime()  && now.getTime() <= getOrdersEndDate().getTime() ){			
+		if (now.getTime() >= getOrdersStartDate(true).getTime()  && now.getTime() <= getOrdersEndDate(true).getTime() ){			
 			return true;				
 		}else {
 			return false;				

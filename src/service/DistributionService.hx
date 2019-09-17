@@ -196,13 +196,24 @@ class DistributionService
 		md.orderEndDate 	= orderEndDate;
 		if(cycle!=null) md.distributionCycle = cycle;
 		md.place = place;
+		
 
-		//add default general roles
-		var roles = service.VolunteerService.getRolesFromGroup(place.amap);
-		var generalRoles = Lambda.array(Lambda.filter(roles,function(r) return r.contract==null));
-		md.volunteerRolesIds = generalRoles.map( function(r) return Std.string(r.id) ).join(",");
+		if(md.id!=null){
 
-		if(md.id!=null) md.update() else md.insert();
+			//do not touch existing volunteerRolesIds
+
+			md.update();
+
+		} else {
+
+			//add default general roles
+			var roles = service.VolunteerService.getRolesFromGroup(place.amap);
+			var generalRoles = Lambda.array(Lambda.filter(roles,function(r) return r.contract==null));
+			md.volunteerRolesIds = generalRoles.map( function(r) return Std.string(r.id) ).join(",");
+
+			md.insert();
+		}
+			
 
 		checkMultiDistrib(md);
 
@@ -274,6 +285,8 @@ class DistributionService
 				throw new Error(t._("You can't participate to this distribution because no order start date has been defined. <a href='::url::' target='_blank'>Please update the general distribution first</a>.",{url:url}));
 			}
 		}
+
+		md.deleteProductsExcerpt();
 		
 		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,true,md);
 
@@ -458,6 +471,8 @@ class DistributionService
 			d.multiDistrib.volunteerRolesIds = roleIds.join(",");
 			d.multiDistrib.update();
 		}
+
+		d.multiDistrib.deleteProductsExcerpt();
 
 		d.delete();
 
