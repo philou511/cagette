@@ -3,6 +3,10 @@ import db.Operation.OperationType;
 import Common;
 import service.OrderService;
 using Lambda;
+#if plugins
+import mangopay.Mangopay;
+import mangopay.Types;
+#end
 
 /**
  * Transction controller
@@ -178,28 +182,12 @@ class Transaction extends controller.Controller
 			}
 		}
 
-		//check if we have a confirmed payment for this.
+		
 		#if plugins
 		//MANGOPAY : search for "unlinked" confirmed payIns on Mangopay
-		var mpUser = mangopay.db.MangopayUser.get(tmpBasket.user);
-		if(mpUser!=null){
-			//time range : from 24h ago until now
-			var to = Date.now();
-			var from = DateTools.delta(to, 1000.0*60*60*24*-1 );
-			var ops = mangopay.Mangopay.getUserTransactions(mpUser.mangopayUserId,20,1,from,to,mangopay.Types.TransactionType.Payin);
-			for( o in ops) trace(o);
-
-			/*
-				TODO : prendre les payins validés.
-				vérifier qu'il n'y a aucune op dans cagette reliée à cette transaction = trouver le "unlinked op".
-				si le montant correspond : bingo.
-
-			*/
-
+		if(mangopay.MangopayPlugin.checkTmpBasket(tmpBasket)!=null){
+			throw Ok("/home","Votre paiement a été pris en compte et votre commande a bien été enregistrée.");
 		}
-		
-
-
 		#end
 
 		view.tmpBasket = tmpBasket;		

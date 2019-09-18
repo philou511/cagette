@@ -261,7 +261,7 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * Make an order by contract ( standard mode )
+	 * Make an order by contract ( CSA mode )
 	 * The form is prepopulated if orders have already been made.
 	 * 
 	 * It should work for constant orders ( will display one column )
@@ -269,7 +269,7 @@ class Contract extends Controller
 	 * 
 	 */
 	@tpl("contract/order.mtt")
-	function doOrder(c:db.Contract ) {
+	function doOrder( c:db.Contract ) {
 		
 		//checks
 		//if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
