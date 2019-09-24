@@ -122,6 +122,19 @@
 		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
 	</macro>
+
+	<macro name="bigBool(v)">
+			::if v==true::
+			<div class="iconBadge" style="background-color:#84bd55;">
+				<i class="icon icon-check"></i>
+			</div>
+			::else::
+			<div class="iconBadge" style="background-color:#CCC;">
+				<i class="icon icon-delete"></i>
+			</div>
+			
+			::end::
+		</macro>
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::

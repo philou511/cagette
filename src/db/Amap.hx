@@ -104,6 +104,7 @@ class Amap extends Object
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
 		betaFlags = cast 0;
+		betaFlags.set(ShopV2);
 		vatRates = ["5,5%" => 5.5, "20%" => 20];
 		cdate = Date.now();
 		regOption = Open;

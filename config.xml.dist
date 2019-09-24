@@ -9,9 +9,9 @@
 	webmaster_email = "mon_email@mon_domaine.fr"
 	
 	database="mysql://docker:docker@mysql/db"
-	sqllog="0"
+	sqllog="1"
 	
-	debug="0"
+	debug="1"
 	cache="0"
 	maintain="0"
 	cachetpl="0"

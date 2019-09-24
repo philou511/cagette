@@ -4,7 +4,7 @@ import sys.db.Types;
 import Common;
 
 /**
- * Basket : represents the orders of a user for specific date + place
+ * Basket : represents the orders of a user for specific multidistrib
  */
 //@:index(userId,placeId,ddate,unique)
 @:index(ref)
@@ -31,10 +31,10 @@ class Basket extends Object
 		CACHE = new Map<String,db.Basket>();
 	}
 	
-	/*public static function get(user:db.User,distrib:db.MultiDistrib, ?lock = false):db.Basket{
+	public static function get(user:db.User,distrib:db.MultiDistrib, ?lock = false):db.Basket{
 		return manager.select($user==user && $multiDistrib==distrib,lock);
-	}*/
-	public static function get(user:db.User,md:db.MultiDistrib, ?lock = false):db.Basket{
+	}
+	/*public static function get(user:db.User,md:db.MultiDistrib, ?lock = false):db.Basket{
 		
 		//date = tools.DateTool.setHourMinute(date, 0, 0);
 
@@ -55,7 +55,7 @@ class Basket extends Object
 		// }
 		
 		return b;
-	}
+	}*/
 
 	
 	/**
@@ -66,14 +66,12 @@ class Basket extends Object
 		var b = get(user, distrib, true);
 			
 		if (b == null){
-			
 			//compute basket number
-
 			b = new Basket();
-			b.num = distrib.getUsers().length + 1;
+			var max : Int = sys.db.Manager.cnx.request("select max(num) from Basket where multiDistribId="+distrib.id).getIntResult(0);
+			b.num = max + 1;
 			b.multiDistrib = distrib;
 			b.user = user;
-			//TODO : should be more safe to do something like "b.num = MAX(num)+1 FROM Basket"
 			b.insert();
 		}		
 		return b;		
