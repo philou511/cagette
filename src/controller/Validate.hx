@@ -24,9 +24,9 @@ class Validate extends controller.Controller
 		if (!app.user.amap.hasShopMode()){
 			//get last operations and check balance
 			view.operations = db.Operation.getLastOperations(user,place.amap,10);
-			view.balance = db.UserAmap.get(user, place.amap).balance;
+			
 		}
-		
+		view.balance = db.UserAmap.get(user, place.amap).balance;
 		var b = db.Basket.get(user, multiDistrib);			
 		view.orders = service.OrderService.prepare(b.getOrders());
 		view.place = place;

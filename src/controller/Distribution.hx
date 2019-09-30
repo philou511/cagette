@@ -1573,7 +1573,7 @@ class Distribution extends Controller
 
 
 	/**
-		Counter management (Cash)
+		Counter management
 	**/
 	@tpl('validate/counter.mtt')
 	function doCounter(distribution:db.MultiDistrib){
@@ -1584,9 +1584,21 @@ class Distribution extends Controller
 			distribution.update();
 		}
 		view.distribution = distribution;
+
 		#if plugins
 		view.sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
 		#end
+
+		//orders total by VAT rate
+		var ordersByVat = new Map<Int,{ht:Float,ttc:Float}>();
+		for( o in distribution.getOrders(db.Contract.TYPE_VARORDER)){
+			var key = Math.round(o.product.vat*100);
+			if(ordersByVat[key]==null) ordersByVat[key] = {ht:0.0,ttc:0.0};
+			var total = o.quantity * o.productPrice;
+			ordersByVat[key].ttc += total;
+			ordersByVat[key].ht += (total/(1+o.product.vat/100));
+		}
+		view.ordersByVat = ordersByVat;
 
 		//user who have not paid
 		var notPaid = new Array<{user:db.User,amount:Float}>();

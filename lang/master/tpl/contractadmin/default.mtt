@@ -1,43 +1,7 @@
 ::use 'design.mtt'::
 
 <div class="col-md-12">
-	<!-- Distributions to validate -->
-	<div class="article text-center" ::cond multidistribs.length>0:: style="max-height:400px;overflow-y: auto;">
-		<h2>::_("Distributions to validate")::</h2>
-		<div class="alert alert-warning">
-			<i class="icon icon-info"></i>
-			La validation de distribution se fait maintenant dans l'onglet <a href="/distribution">Distributions</a>.
-		</div>
-		
-		<!--<p>::_("You need to validate these distributions which took place recently")::</p>
-		
-		::foreach m multidistribs::	
-		<p>
-			::if(!m.isConfirmed())::
-			
-				<a href="/distribution/validate/::m.id::" class="btn btn-primary"> 
-					<i class="icon icon-calendar"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
-				</a>
-				
-				::if (isAdmin)::
-				<a href="/distribution/autovalidate/::m.id::" class="btn btn-danger">Admin : Autovalidate</a>
-				::end::
-
-			::else::
-
-				<a class="btn btn-default disabled"> 
-					<i class="icon icon-check"></i> ::dDate(m.getDate())::, ::m.getPlace().name::
-				</a>	
-				
-				::if(isAdmin)::
-				<a href="/distribution/unvalidate/::m.id::" class="btn btn-danger">Admin : Unvalidate</a>
-				::end::
-			
-			::end::
-		</p>	
-		::end::	
-		-->
-	</div>
+	
 	
 	<div class="article" id="contracts">
 		<h2>
