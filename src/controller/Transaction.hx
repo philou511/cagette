@@ -262,10 +262,8 @@ class Transaction extends controller.Controller
 	@tpl("transaction/transfer.mtt")
 	public function doTransfer(tmpBasket:db.TmpBasket){
 		
-		//order in session
-		var tmpOrder : OrderInSession = app.session.data.order;	
-		if (tmpOrder == null) throw Redirect("/account");
-		if (tmpOrder.products.length == 0) throw Error("/", t._("Your cart is empty"));
+		if (tmpBasket == null) throw Redirect("/contract");
+		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		
 		var md = tmpBasket.multiDistrib;
 		var date = md.getDate();	

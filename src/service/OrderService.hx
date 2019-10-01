@@ -24,6 +24,7 @@ class OrderService
 
 		if(product.contract.type==db.Contract.TYPE_VARORDER && distribId==null) throw "You have to provide a distribId";
 		if(quantity==null) throw "Quantity is null";
+		if(quantity<0) throw "Quantity is negative";
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){
@@ -146,6 +147,8 @@ class OrderService
 		
 		//quantity
 		if (newquantity == null) newquantity = 0;
+		if(newquantity<0) throw "Quantity is negative";
+		
 		if ( !canHaveFloatQt(order.product) ){
 			if( !tools.FloatTool.isInt(newquantity)  ) {
 				throw new tink.core.Error(t._("Error : product \"::product::\" quantity should be integer",{product:order.product.name}));

@@ -194,7 +194,7 @@ class Shop extends Controller
 	
 	/**
 		Confirms the temporary basket.
-		The user can come from the old shop, or from /transaction/tmpBasket.
+		The user can come from the old or new shop, or from /transaction/tmpBasket.
 		- clean order
 		- ask to login is needed
 		- redirect to payment page if needed

@@ -30,7 +30,7 @@ typedef OrderSimple = {
 }
 
 //A temporary order, waiting for being paid and definitely recorded.
-@:keep
+/*@:keep
 typedef OrderInSession = {
 	products:Array <{
 		productId:Int,
@@ -43,7 +43,7 @@ typedef OrderInSession = {
 	total:Float, 	//price to pay
 	?userId:Int,
 	?paymentOp:Int, //payment operation ID
-}
+}*/
 
 //OrderInSession v2 for db.TmpBasket
 typedef TmpBasketData = {
