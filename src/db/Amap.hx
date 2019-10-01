@@ -50,9 +50,7 @@ class Amap extends Object
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
 	public var contact : SNull<User>;
-	@formPopulate("getMembersFormElementData")
-	@:relation(legalReprId)
-	public var legalRepresentative : SNull<User>;
+	
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
@@ -82,7 +80,9 @@ class Amap extends Object
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 
-	public var legalStatus : SNull<SEnum<LegalStatus>>;
+	//mangopay (DEPRECATED)
+	@hideInForms public var legalStatus : SNull<SEnum<LegalStatus>>;
+	@hideInForms @formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
@@ -104,6 +104,7 @@ class Amap extends Object
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
 		betaFlags = cast 0;
+		betaFlags.set(ShopV2);
 		vatRates = ["5,5%" => 5.5, "20%" => 20];
 		cdate = Date.now();
 		regOption = Open;

@@ -1,6 +1,8 @@
 ::use 'design.mtt'::
 <div class="col-md-8">
 	<h2>::_("Last orders")::</h2>
+
+	::set payments = user._amap.hasPayments()::
 	
 	::if constOrders.length>0::
 	<div class="article">
@@ -20,7 +22,7 @@
 				<th>::_("Sub-total")::</th>
 				<th>::_("Fees")::</th>
 				<th>::_("Total")::</th>
-				<th>::_("Paid")::</th>
+				<th ::cond !payments::>::_("Paid")::</th>
 			</tr>
 		::set total = 0::
 		::foreach m c.orders::
@@ -62,7 +64,7 @@
 					::formatNum(m.total)::&nbsp;::currency()::	
 					::set total = total + m.total::
 				</td>
-				<td>
+				<td ::cond !payments::>
 					::if m.paid==true::
 					<span style="color:#00AA00;">::_("Paid")::</span>
 					::else::
@@ -102,7 +104,7 @@
 					<th>::_("Sub-total")::</th>
 					<th>::_("Fees")::</th>
 					<th>::_("Total")::</th>
-					<th>::_("Paid")::</th>			
+					<th ::cond !payments::>::_("Paid")::</th>			
 				</tr>
 				::set total = 0::
 				::foreach o d.orders::
@@ -129,7 +131,7 @@
 							::formatNum(o.total)::&nbsp;::currency()::
 							::set total = total + o.total::
 						</td>
-						<td>
+						<td ::cond !payments::>
 							::if o.paid==true::
 							<span style="color:#00AA00;">::_("Paid")::</span>
 							::else::

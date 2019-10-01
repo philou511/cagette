@@ -83,9 +83,7 @@ class OrderService
 		
 		//create a basket
 		if (distribId != null){
-			var dist = o.distribution;
-			var basket = db.Basket.getOrCreate(user, dist.multiDistrib);			
-			o.basket = basket;			
+			o.basket = db.Basket.getOrCreate(user, o.distribution.multiDistrib);			
 		}
 
 		//checks

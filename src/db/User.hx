@@ -526,7 +526,7 @@ class User extends Object {
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire in 1 month
+		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30 * 3); //expire in 3 month
 		
 		var e = new sugoi.mail.Mail();
 		if (group != null){
@@ -619,6 +619,16 @@ class User extends Object {
 			"flags"		=>	t._("Options"),
 			"pass"		=>	t._("Password"),
 		];
+	}
+
+	public function getAddress(){
+		var str = new StringBuf();
+		if (address1 != null) str.add(address1 + ", \n");
+		if (address2 != null) str.add(address2 + ", \n");
+		if (zipCode != null) str.add(zipCode);
+		if (city != null) str.add(" - "+city);
+		if(countryOfResidence != null) str.add(", "+countryOfResidence);
+		return str.toString();
 	}
 	
 	

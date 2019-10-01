@@ -18,7 +18,7 @@ class Product extends Object
 	
 	//prix TTC
 	public var price : SFloat;
-	public var vat : SFloat;
+	public var vat : SFloat;			//VAT rate in percent
 	
 	public var desc : SNull<SText>;
 	public var stock : SNull<SFloat>; //if qantity can be float, stock should be float

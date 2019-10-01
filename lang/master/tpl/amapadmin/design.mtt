@@ -11,7 +11,11 @@
 			<li><a href="/amapadmin/currency/">::_("Currency")::</a></li>
 			::if nav!=null::				
 				::foreach i nav::
-				<li><a href="::i.link::">::i.name::</a> </li>
+				<li ::attr class if(nav[1]==i.id) 'active'::>
+					<a href="::i.link::">
+						<i ::cond i.icon:: class="icon icon-::i.icon::" ></i>
+						::i.name::</a>					
+				</li>
 				::end::		
 			::end::
 		</ul>

@@ -55,9 +55,32 @@ class TestOrders extends haxe.unit.TestCase
 		var o = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.APPLES, d.id);
 		assertEquals(1, o.basket.num);
 
+		//check bug of 2018-07 : changing the date and place of the distribution leads to lost basket (because basket were indexed on user-date-place)
+		/*d.lock();
+		d.date = new Date(2028,1,1,0,0,0);
+
+		var place = new db.Place();
+		place.name = "Chez Momo";
+		place.zipCode = "54";
+		place.amap = d.contract.amap;
+		place.insert();
+
+		d.place = place;
+		d.update();*/
 		
+
+		//Seb's basket is still 2
+		var basket = db.Basket.get(TestSuite.SEB,d.multiDistrib);
+		assertEquals(2, basket.num);
+
+		var o = OrderService.make(TestSuite.SEB, 1, TestSuite.APPLES, d.id);
+		assertEquals(2, o.basket.num);
+
+		var o2 = OrderService.edit(o,5,true,null,false);
+  		assertEquals(2, o2.basket.num);
+
 		//order to a different distrib in same contract should start a new numbering
-		var d2 = service.DistributionService.create(d.contract,new Date(2026,6,6,0,0,0),new Date(2026,6,6,1,0,0),d.place.id,new Date(2026,6,4,0,0,0),new Date(2026,6,5,0,0,0));
+		var d2 = service.DistributionService.create(d.contract,new Date(2026,6,6,0,0,0),new Date(2026,6,6,1,0,0),TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.place.id,new Date(2026,6,4,0,0,0),new Date(2026,6,5,0,0,0));
 		var o = OrderService.make(TestSuite.SEB, 12, TestSuite.APPLES, d2.id);
 		assertEquals(1, o.basket.num);
 
