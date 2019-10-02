@@ -361,7 +361,7 @@ class ShopCart
 			var data : { 
 				products:Array<ProductInfo>,
 				categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>,
-				order:OrderInSession } = haxe.Unserializer.run(data);
+				order:TmpBasketData } = haxe.Unserializer.run(data);
 
 			//populate local categories lists
 			for ( cg in data.categories){

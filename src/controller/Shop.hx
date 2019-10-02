@@ -202,13 +202,21 @@ class Shop extends Controller
 	@tpl('shop/needLogin.mtt')
 	public function doValidate(tmpBasket:db.TmpBasket){
 		
+		tmpBasket.lock();
+
 		//Login is needed : display a loginbox
 		if (app.user == null) {
-			view.redirect = "/" + sugoi.Web.getURI();
+			view.redirect = sugoi.Web.getURI();
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
 			return;
+		}else{
+			//case where the user just logged in
+			if(tmpBasket.user==null){
+				tmpBasket.user = app.user;
+				tmpBasket.update();
+			}
 		}
 
 		var md = tmpBasket.multiDistrib;

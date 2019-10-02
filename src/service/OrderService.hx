@@ -380,7 +380,7 @@ class OrderService
 
 		//generate basketRef
 		var group = multiDistrib.getGroup();
-		var ref = user.id+"-"+group.id+"-"+Date.now().toString().substr(0,10)+"-"+Std.random(1000);
+		var ref = (user==null?0:user.id)+"-"+group.id+"-"+Date.now().toString().substr(0,10)+"-"+Std.random(1000);
 
 		var tmp = new db.TmpBasket();
 		tmp.user = user;
@@ -547,8 +547,18 @@ class OrderService
 		Action triggered from controllers to check if we have a tmpBasket to validate
 	**/
 	public static function checkTmpBasket(user,group){
+		//user can be null, if open group
+		if(user==null) return;
+		
 		var tmpBasket = getTmpBasket(user,group);
 		if(tmpBasket!=null){
+
+			if(tmpBasket.data.products.length==0){
+				tmpBasket.lock();
+				tmpBasket.delete();
+				return;
+			}
+
 			throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
 		}
 	}

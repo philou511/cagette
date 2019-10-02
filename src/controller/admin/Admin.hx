@@ -224,6 +224,13 @@ class Admin extends Controller {
 		group.IBAN = null;		
 		group.insert();	
 
+		var place = new db.Place();
+		place.name = "Place du village";
+		place.zipCode = "00000";
+		place.city = "St Martin de la Cagette";
+		place.amap = group;
+		place.insert();
+
 		//Add Alilo team members to the newly created group
 		addUserToGroup( 'admin@cagette.net', group );
 		addUserToGroup( 'francois@alilo.fr', group );

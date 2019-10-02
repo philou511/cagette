@@ -81,8 +81,10 @@ class Amap extends Object
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 
 	//mangopay (DEPRECATED)
-	@hideInForms public var legalStatus : SNull<SEnum<LegalStatus>>;
-	@hideInForms @formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
+	//@hideInForms 
+	public var legalStatus : SNull<SEnum<LegalStatus>>;
+	//@hideInForms 
+	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
