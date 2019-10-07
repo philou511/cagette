@@ -120,10 +120,10 @@ class PaymentService
 	 *  
 	 * @param distrib
 	 */
-	public static function validateDistribution(distrib:db.Distribution) {
+	public static function validateDistribution(distrib:db.MultiDistrib) {
 
 		for ( user in distrib.getUsers()){
-			var basket = db.Basket.get(user, distrib.multiDistrib );
+			var basket = db.Basket.get(user, distrib );
 			validateBasket(basket);
 		}
 		//finally validate distrib
@@ -132,10 +132,10 @@ class PaymentService
 		distrib.update();
 	}
 
-	public static function unvalidateDistribution(distrib:db.Distribution) {
+	public static function unvalidateDistribution(distrib:db.MultiDistrib) {
 
 		for ( user in distrib.getUsers()){
-			var basket = db.Basket.get(user, distrib.multiDistrib);
+			var basket = db.Basket.get(user, distrib);
 			unvalidateBasket(basket);
 		}
 		//finally validate distrib

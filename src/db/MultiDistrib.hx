@@ -25,6 +25,8 @@ class MultiDistrib extends Object
 	@hideInForms public var counterBeforeDistrib:SFloat; //counter before distrib "fond de caisse"
 	@hideInForms public var volunteerRolesIds : SNull<String>;
 
+	@hideInForms public var validated:SNull<SBool>;
+
 	@:skip public var contracts : Array<db.Contract>;
 	@:skip public var extraHtml : String;
 	
@@ -33,6 +35,7 @@ class MultiDistrib extends Object
 		super();
 		contracts = [];
 		extraHtml = "";
+		validated = false;
 	}
 	
 	/**
@@ -257,9 +260,11 @@ class MultiDistrib extends Object
 
 	public function getOrdersStartDate(?includingExceptions=false){
 		if(includingExceptions){
+			if(orderStartDate==null) return null;
 			//find earliest order start date 
 			var date = orderStartDate;
 			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
+				if(d.orderStartDate==null) continue;
 				if(d.orderStartDate.getTime() < date.getTime()) date = d.orderStartDate;
 			}
 			return date;
@@ -271,9 +276,11 @@ class MultiDistrib extends Object
 
 	public function getOrdersEndDate(?includingExceptions=false){
 		if(includingExceptions){
+			if(orderEndDate==null) return null;
 			//find lates order end date 
 			var date = orderEndDate;
 			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
+				if(d.orderEndDate==null) continue;
 				if(d.orderEndDate.getTime() > date.getTime()) date = d.orderEndDate;
 			}
 			return date;
@@ -381,15 +388,16 @@ class MultiDistrib extends Object
 	public function isConfirmed():Bool{
 		//cannot be in future
 		if(getDate().getTime()>Date.now().getTime()) return false;
-		var distributions = getDistributions(db.Contract.TYPE_VARORDER);
-		return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
+		//var distributions = getDistributions(db.Contract.TYPE_VARORDER);
+		//return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
+		return validated == true;
 	}
 
 	public function isValidated(){
 		return isConfirmed();
 	}
 	
-	public function checkConfirmed():Bool{
+	/*public function checkConfirmed():Bool{
 		
 		for ( d in getDistributions(db.Contract.TYPE_VARORDER)){
 			if(!d.validated){
@@ -401,14 +409,11 @@ class MultiDistrib extends Object
 					d.validated = true;
 					d.update();
 				}
-
 			}
-			
 		}
 		
-		
 		return isConfirmed();
-	}
+	}*/
 
 	//get key by date-place-type
 	public function getKey(){

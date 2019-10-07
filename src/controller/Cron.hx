@@ -439,30 +439,28 @@ class Cron extends Controller
 		/*
 		 * warn administrator if a distribution just ended
 		 */ 
-		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
+		var distribs = db.MultiDistrib.manager.search( !$validated && ($distribStartDate >= from) && ($distribStartDate < to) , false);
 		
-		for ( d in Lambda.array(ds)){
-			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
-				ds.remove(d);
-			}else if ( !d.contract.amap.hasPayments() ){
-				ds.remove(d);
+		for ( d in Lambda.array(distribs)){
+			if ( !d.getGroup().hasPayments() ){
+				distribs.remove(d);
 			}
 		}
 		
-		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+
 		var view = App.current.view;
 		
-		for ( d in ds ){
-			// var subj = "["+d.contract.amap.name+"] " + t._("Validation of the ::date:: distribution",{date:view.hDate(d.date)});
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
+		for ( d in distribs ){
 			
-			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
+			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			
+			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;
 			
 			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
 			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
 			
-			App.quickMail(d.contract.amap.contact.email, subj, html);
+			App.quickMail(d.getGroup().contact.email, subj, html);
 		}
 		
 		/*
@@ -473,29 +471,23 @@ class Cron extends Controller
 		var to = now.setHourMinute( now.getHours()+1 , 0).deltaDays(-3);
 		
 		//warn administrator if a distribution just ended
-		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , false);
+		var distribs = db.MultiDistrib.manager.search( !$validated && ($distribStartDate >= from) && ($distribStartDate < to) , false);
 		
-		for ( d in Lambda.array(ds)){
-			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
-				ds.remove(d);
-			}else if ( !d.contract.amap.hasPayments() ){
-				ds.remove(d);
+		for ( d in Lambda.array(distribs)){
+			if ( !d.getGroup().hasPayments() ){
+				distribs.remove(d);
 			}
 		}
 		
-		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
+		for ( d in distribs ){
 		
-		for ( d in ds ){
-			// var subj = d.contract.amap.name + t._(": Validation of the delivery of the ") + App.current.view.hDate(d.date);
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
-			
-			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.date.toString().substr(0,10)+"/"+d.place.id;
-			
+			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;		
 			var html = t._("<p>Reminder: you have a delivery to validate.</p>");
 			html += explain;
 			html += t._("<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)", {distriburl:url});
 			
-			App.quickMail(d.contract.amap.contact.email, subj, html);
+			App.quickMail(d.getGroup().contact.email, subj, html);
 		}
 		
 		
@@ -506,36 +498,28 @@ class Cron extends Controller
 		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 		print('<h3>Autovalidation of unvalidated distribs</h3>');
 		print('Find distributions from $from to $to');
-		var ds = db.Distribution.manager.search( !$validated && ($end >= from) && ($end < to) , true);
-		for ( d in Lambda.array(ds)){
-			if ( d.contract.type != db.Contract.TYPE_VARORDER ){
-				ds.remove(d);
-			}else if ( !d.contract.amap.hasPayments() ){
-				ds.remove(d);
+		var distribs = db.MultiDistrib.manager.search( !$validated && ($distribStartDate >= from) && ($distribStartDate < to) , false);
+		for ( d in Lambda.array(distribs)){
+			if ( !d.getGroup().hasPayments() ){
+				distribs.remove(d);
 			}
 		}
 
-		for (d in ds)
-		{
+		for (d in distribs){
 			print(d.toString());
-
-			try
-			{
+			try	{
 				service.PaymentService.validateDistribution(d);
-			}
-			catch(e:tink.core.Error)
-			{
+			}catch(e:tink.core.Error){
+				print(e.message);
 				continue;
 			}
 		}
 		//email
-		var ds = tools.ObjectListTool.deduplicateDistribsByKey(ds);
-		for ( d in ds ){
-			if(d.contract.amap.contact==null) continue;
-			// var subj = d.contract.amap.name + t._(": Validation of the distribution of the ") + App.current.view.hDate(d.date);
-			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.contract.amap.name , date : view.hDate(d.date)});
-			var html = t._("<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>", {deliveryDate:App.current.view.hDate(d.date)});
-			App.quickMail(d.contract.amap.contact.email, subj, html);
+		for ( d in distribs ){
+			if(d.getGroup().contact==null) continue;
+			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
+			var html = t._("<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>", {deliveryDate:App.current.view.hDate(d.distribStartDate)});
+			App.quickMail(d.getGroup().contact.email, subj, html);
 		}
 		
 	}

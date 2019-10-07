@@ -23,7 +23,7 @@ class Distribution extends Object
 	@hideInForms public var orderStartDate : SNull<SDateTime>; 
 	@hideInForms public var orderEndDate : SNull<SDateTime>;
 	
-	@hideInForms public var validated :SBool;
+	//@hideInForms public var validated :SBool;
 	
 	public static var DISTRIBUTION_VALIDATION_LIMIT = 10;
 	
@@ -32,7 +32,7 @@ class Distribution extends Object
 		super();
 		date = Date.now();
 		end = DateTools.delta(date, 1000 * 60 * 90);
-		validated = false;
+
 	}
 	
 	/**

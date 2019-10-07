@@ -180,23 +180,20 @@ class Validate extends controller.Controller
 		view.form = f;	
 	}
 	
+	/**
+	Validate a user's basket
+	**/
 	public function doValidate(){
 		
-		if (checkToken()) 
-		{
+		if (checkToken()) {
 			var basket = db.Basket.get(user, multiDistrib );
-
 			try{
 				service.PaymentService.validateBasket(basket);
+			} catch(e:tink.core.Error) {
+				throw Error("/validate/" + multiDistrib.id+"/"+user.id, e.message);
 			}
-			catch(e:tink.core.Error) {
-				throw Error("/distribution/validate/" + multiDistrib.id, e.message);
-			}
-		
-			throw Ok("/distribution/validate/" + multiDistrib.id , t._("Order validated"));
-			
+			throw Ok("/distribution/validate/" + multiDistrib.id , t._("Order validated"));			
 		}
-		
 	}
 
 	

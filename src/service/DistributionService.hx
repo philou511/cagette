@@ -302,7 +302,7 @@ class DistributionService
 		d.lock();
 		var t = sugoi.i18n.Locale.texts;
 
-		if(d.validated) {
+		if(d.multiDistrib.validated) {
 			throw new Error(t._("You cannot edit a distribution which has been already validated."));
 		}
 
@@ -370,7 +370,7 @@ class DistributionService
 		d.lock();
 		var t = sugoi.i18n.Locale.texts;
 
-		if(d.validated) {
+		if(d.multiDistrib.validated) {
 			throw new Error(t._("You cannot edit a distribution which has been already validated."));
 		}
 
@@ -648,4 +648,6 @@ class DistributionService
 		return dc;
 
 	}
+
+
 }

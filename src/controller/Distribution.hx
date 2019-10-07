@@ -10,6 +10,8 @@ import service.VolunteerService;
 import service.DistributionService;
 using tools.DateTool;
 using Lambda;
+using Formatting;
+using Std;
 
 
 class Distribution extends Controller
@@ -1012,7 +1014,6 @@ class Distribution extends Controller
 		
 		checkHasDistributionSectionAccess();
 			
-		view.confirmed = multiDistrib.checkConfirmed();
 		view.users = multiDistrib.getUsers(db.Contract.TYPE_VARORDER);
 		view.distribution = multiDistrib;
 
@@ -1025,26 +1026,28 @@ class Distribution extends Controller
 	public function doAutovalidate(md:db.MultiDistrib){
 
 		checkHasDistributionSectionAccess();
+		if(md.validated) return;
 
-		for ( d in md.getDistributions()){
-			if(d.validated) continue;
-			try{
-				service.PaymentService.validateDistribution(d);
-			}catch(e:tink.core.Error){
-				throw Error("/distribution/validate/"+md.id, e.message);
-			}
+		try{
+			service.PaymentService.validateDistribution(md);
+		}catch(e:tink.core.Error){
+			throw Error("/distribution/validate/"+md.id, e.message);
+		}
 			
-		}	
 		throw Ok( "/distribution/validate/"+md.id , t._("This distribution have been validated") );
 	}
 
 	@admin
 	public function doUnvalidate(md:db.MultiDistrib){
+		checkHasDistributionSectionAccess();
+		if(!md.validated) return;
 
-		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
-			if(!d.validated) continue;
-			service.PaymentService.unvalidateDistribution(d);
-		}	
+		try{
+			service.PaymentService.unvalidateDistribution(md);
+		}catch(e:tink.core.Error){
+			throw Error("/distribution/validate/"+md.id, e.message);
+		}
+			
 		throw Ok( "/distribution/validate/"+md.id ,t._("This distribution have been Unvalidated"));
 	}
 
@@ -1586,29 +1589,76 @@ class Distribution extends Controller
 		view.distribution = distribution;
 
 		#if plugins
-		view.sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
+		var sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
+		view.sales = sales;
 		#end
 
-		//orders total by VAT rate
-		var ordersByVat = new Map<Int,{ht:Float,ttc:Float}>();
-		for( o in distribution.getOrders(db.Contract.TYPE_VARORDER)){
-			var key = Math.round(o.product.vat*100);
-			if(ordersByVat[key]==null) ordersByVat[key] = {ht:0.0,ttc:0.0};
-			var total = o.quantity * o.productPrice;
-			ordersByVat[key].ttc += total;
-			ordersByVat[key].ht += (total/(1+o.product.vat/100));
-		}
+		//orders total by VAT rate	
+		var ordersByVat = 	service.ReportService.getOrdersByVAT(distribution);
 		view.ordersByVat = ordersByVat;
 
-		//user who have not paid
+		//user who have not paid / paid too much / partially paid
 		var notPaid = new Array<{user:db.User,amount:Float}>();
+		var partiallyPaid = new Array<{user:db.User,amount:Float}>();
+		var paidTooMuch = new Array<{user:db.User,amount:Float}>();
+
 		for( basket in distribution.getBaskets() ){
+			var orderOp = basket.getOrderOperation(false);
+			if(orderOp==null) continue;
 			var ops = basket.getPaymentsOperations();
-			if(ops.length==0){
+			var paid = 0.0;
+			var order = Math.abs(orderOp.amount);
+
+			if(ops.length==0 && order>0){
 				notPaid.push({user:basket.getUser(),amount:basket.getOrdersTotal()});
+			}else{
+					
+				for( o in ops) paid+=o.amount;
+				if(paid.roundTo(2) > order.roundTo(2)) {					
+					paidTooMuch.push({user:basket.getUser(),amount:paid-order});
+				}
+				if(paid.roundTo(2) < order.roundTo(2)) {
+					partiallyPaid.push({user:basket.getUser(),amount:order-paid});
+				}
+
+
 			}
 		}
+
+		if(app.params.get("csv")=="1"){
+			var out = new Array<Array<String>>();
+			out.push(['Fond de caisse avant distribution',distribution.counterBeforeDistrib.string()]);
+			#if plugins
+			out.push(['Encaissements en liquide',sales.cashTurnover.ttc.string()]);
+			out.push(['La caisse doit contenir',(distribution.counterBeforeDistrib+sales.cashTurnover.ttc).string()]);
+			out.push(['Encaissements en chèque',sales.checkTurnover.ttc.string()]);
+			#end
+			out.push([]);
+			out.push(['Total commande par taux de TVA','HT','TTC']);
+			for(k in ordersByVat.keys()){
+				out.push([ (k/100)+"%" , Formatting.formatNum(ordersByVat[k].ht) , Formatting.formatNum(ordersByVat[k].ttc) ]);
+			}
+			out.push([]);
+			out.push(['Commandes non payées']);
+			out.push(['Membre','Montant impayé']);
+			for(u in notPaid) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+			out.push([]);
+			out.push(['Commandes payées partiellement']);
+			out.push(['Membre','Montant manquant']);
+			for(u in partiallyPaid) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+			out.push([]);
+			out.push(['Avoirs']);
+			out.push(['Membre','Montant avoir']);
+			for(u in paidTooMuch) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+
+			app.setTemplate(null);
+			sugoi.tools.Csv.printCsvDataFromStringArray(out,[],"Encaissements "+view.hDate(distribution.distribStartDate)+".csv");			
+		}
+		
+
 		view.notPaid = notPaid;
+		view.paidTooMuch = paidTooMuch;
+		view.partiallyPaid = partiallyPaid;
 
 	}
 }
