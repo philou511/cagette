@@ -70,12 +70,12 @@ class Operation extends sys.db.Object
 	 * get translated payment type name
 	 */
 	public function getPaymentTypeName(){
-		var t = getPaymentType();
+		var t = getPaymentType();		
 		if (t == null) return null;
 		for ( pt in service.PaymentService.getPaymentTypes(PCAll)){
 			if (pt.type == t) return pt.name;
 		}
-		return null;
+		return t;
 	}
 	
 	/**
@@ -393,7 +393,8 @@ class Operation extends sys.db.Object
 	
 	/**
 		Create/update the needed order operations and returns the related operations.
-	 	Orders are supposed to be from the same user...but could from various distribs
+		Can handle orders happening on different multidistribs.		
+	 	Orders are supposed to be from the same user.
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserContract>):Array<db.Operation>{
 		

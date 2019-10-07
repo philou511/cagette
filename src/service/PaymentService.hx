@@ -26,6 +26,7 @@ class PaymentService
 
 		switch(context)
 		{
+			//every payment type
 			case PCAll:
 				var types = [
 					new payment.Cash(),

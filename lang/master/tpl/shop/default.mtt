@@ -77,7 +77,7 @@
 				var cart;
 				$(function(){
 					cart = _.getCart();
-					cart.init("::place.id::","::date.toString().substr(0,10)::");
+					cart.init(::multiDistrib.id::);
 				});
 			</script>
 			

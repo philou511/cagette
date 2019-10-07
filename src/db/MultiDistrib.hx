@@ -290,10 +290,6 @@ class MultiDistrib extends Object
 		
 	}
 
-	public function getUserTmpBasket(user:db.User){
-		
-	}
-
 	/**
 		Get distributions for constant orders or variable orders.
 	**/
@@ -464,6 +460,11 @@ class MultiDistrib extends Object
 			if(o.basket!=null) baskets.push(o.basket);
 		}
 		return baskets.deduplicate();
+		//return Lambda.array(db.Basket.manager.search($multiDistrib==this,false));
+	}
+
+	public function getTmpBaskets():Array<db.TmpBasket>{
+		return Lambda.array(db.TmpBasket.manager.search($multiDistrib==this,false));
 	}
 
 	public function getUserBasket(user:db.User){
@@ -472,6 +473,10 @@ class MultiDistrib extends Object
 			if(o.basket!=null) return o.basket;
 		}
 		return null;
+	}
+
+	public function getUserTmpBasket(user:db.User):db.TmpBasket{
+		return db.TmpBasket.manager.select($multiDistrib==this && $user==user,false);
 	}
 
 	/**

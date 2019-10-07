@@ -168,7 +168,7 @@
 									La commande ouvrira le ::hDate(ordersStartDate)::
 								</span>
 								::elseif(status=="open")::
-								<a href="/shop/::place.id::/::start.toString().substr(0,10)::" class="btn btn-lg btn-primary">
+								<a href="/shop/::d.id::" class="btn btn-lg btn-primary">
 									<i class="icon icon-chevron-right"></i>
 									Commander
 								</a>

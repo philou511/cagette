@@ -157,5 +157,102 @@ class Admin extends Controller {
 		view.averageValue = averageValue;
 	}
 
+	@tpl("admin/default.mtt")
+	function doCreateTestGroups() {
+		
+		getOrCreateTestGroup( 'GT1 AMAP St Glinglin', Amap, Closed );
+
+		var flags : sys.db.Types.SFlags<db.Amap.AmapFlags> = cast 0;
+		flags.set(ShopMode);
+		getOrCreateTestGroup( 'GT2 Locavores affamés', GroupedOrders, WaitingList, flags );
+
+		var flags : sys.db.Types.SFlags<db.Amap.AmapFlags> = cast 0;
+		flags.set(ShopMode);
+		flags.set(HasPayments);		
+		var betaFlags : sys.db.Types.SFlags<db.Amap.BetaFlags> = cast 0;
+		betaFlags.set(ShopV2);
+		getOrCreateTestGroup( 'GT3 Locavores rassasiés', GroupedOrders, Open, flags, betaFlags, ["mangopay", "cash", "check", "transfer"] );
+
+		var flags : sys.db.Types.SFlags<db.Amap.AmapFlags> = cast 0;
+		flags.set(ShopMode);
+		flags.set(HasPayments);		
+		getOrCreateTestGroup( 'GT4 Locavores gloutons', GroupedOrders, Open, flags, cast 0, ["lemonway", "cash", "check", "transfer"] );
+
+		var flags : sys.db.Types.SFlags<db.Amap.AmapFlags> = cast 0;
+		flags.set(ShopMode);
+		flags.set(HasPayments);	
+		var betaFlags : sys.db.Types.SFlags<db.Amap.BetaFlags> = cast 0;
+		betaFlags.set(ShopV2);	
+		getOrCreateTestGroup( 'GT5 Les légumes de Jojo', GroupedOrders, Open, flags, betaFlags, ["moneypot"] );
+		
+		view.now = Date.now();
+	}
+
+	/**
+	 * Get or create group by name
+	 * 
+	 */
+	public static function getOrCreateTestGroup( name : String, groupType : db.Amap.GroupType, regOption : db.Amap.RegOption,
+												 ?flags : sys.db.Types.SFlags<db.Amap.AmapFlags>, ?betaFlags : sys.db.Types.SFlags<db.Amap.BetaFlags>,  
+												 ?allowedPaymentsType : Array<String> ) : db.Amap {
+
+		//Get or create
+		var group = db.Amap.manager.search( $name == name ).first();
+		if ( group != null ) {
+			return group;
+		}
+
+		var group = new db.Amap();
+		group.name = name;
+		group.contact = null;
+		group.txtIntro = "Groupe de test " + group.name;
+		group.txtHome = "Groupe de test " + group.name;
+		group.txtDistrib = null;
+		group.extUrl = null;
+		group.membershipRenewalDate = null;
+		group.membershipPrice = 0;
+		group.vatRates = ["5,5%" => 5.5, "20%" => 20];
+		group.flags = flags;
+		group.betaFlags = betaFlags;
+		group.groupType = groupType;
+		group.image = null;
+		group.regOption = regOption;
+		group.currency = "€";
+		group.currencyCode = "EUR";
+		group.allowedPaymentsType = allowedPaymentsType;
+		group.checkOrder = group.name;
+		group.IBAN = null;		
+		group.insert();	
+
+		var place = new db.Place();
+		place.name = "Place du village";
+		place.zipCode = "00000";
+		place.city = "St Martin de la Cagette";
+		place.amap = group;
+		place.insert();
+
+		//Add Alilo team members to the newly created group
+		addUserToGroup( 'admin@cagette.net', group );
+		addUserToGroup( 'francois@alilo.fr', group );
+		addUserToGroup( 'sebastien@alilo.fr', group );
+		addUserToGroup( 'mhelene@alilo.fr', group );
+		addUserToGroup( 'deborah@alilo.fr', group );
+		addUserToGroup( 'melanie@aqva.re', group );
+		addUserToGroup( 'julie_barbic@yahoo.fr', group );
+				
+		return group;
+	}
+
+	public static function addUserToGroup( email : String, group : db.Amap ) {
+
+		var user = db.User.manager.search( $email == email ).first();
+		if ( user != null ) {
+			var usergroup = new db.UserAmap();
+			usergroup.user = user;
+			usergroup.amap = group;
+			usergroup.insert();			
+		}
+	}
+
 }
 

@@ -12,7 +12,7 @@ class ShopCart
 	public var productsArray : Array<ProductInfo>; //to keep order of products
 	public var categories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var pinnedCategories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
-	public var order : OrderInSession;
+	public var order : TmpBasketData;
 	
 	var loader : JQuery; //ajax loader gif
 	
@@ -23,16 +23,16 @@ class ShopCart
 	var jWindow : JQuery;
 	var cartContainer : JQuery;
 	
-	var date : String;
-	var place : Int;
+	// var date : String;
+	// var place : Int;
+	var multiDistribId : Int;
 
 
 	public function new() 
 	{
 		products = new Map();
-		productsArray = [];
-		
-		order = cast { products:[] };
+		productsArray = [];		
+		order = { products:[] };
 		categories = [];
 		pinnedCategories = [];
 	}
@@ -256,8 +256,6 @@ class ShopCart
 			}
 		}
 		App.j(".product").show();
-
-
 	}
 
 	/**
@@ -265,7 +263,6 @@ class ShopCart
 	 */
 	public function isEmpty(){
 		return order.products.length == 0;
-
 	}
 
 	/**
@@ -274,14 +271,13 @@ class ShopCart
 	public function submit() {
 		
 		var req = new haxe.Http("/shop/submit");
-		req.onData = function(d) {
+		req.onData = function(data) {
+			var data : {tmpBasketId:Int,success:Bool} = haxe.Json.parse(data);
 			App.instance.setWarningOnUnload(false);
-			js.Browser.location.href = "/shop/validate/"+place+"/"+date;
-			
+			js.Browser.location.href = "/shop/validate/"+data.tmpBasketId;
 		}
 		req.addParameter("data", haxe.Json.stringify(order));
-		req.request(true);
-		
+		req.request(true);		
 	}
 	
 	/**
@@ -350,21 +346,22 @@ class ShopCart
 	/**
 	 * loads products DB and existing cart in ajax
 	 */
-	public function init(place:Int,date:String) {
+	public function init(multiDistribId:Int) {
 
-		this.place = place;
-		this.date = date;
+		// this.place = place;
+		// this.date = date;
+		this.multiDistribId = multiDistribId;
 		
 		loader = App.j("#cartContainer #loader");
 		
-		var req = new haxe.Http("/shop/init/"+place+"/"+date);
+		var req = new haxe.Http("/shop/init/"+multiDistribId);
 		req.onData = function(data) {
 			loader.hide();
 			
 			var data : { 
 				products:Array<ProductInfo>,
 				categories:Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>,
-				order:OrderInSession } = haxe.Unserializer.run(data);
+				order:TmpBasketData } = haxe.Unserializer.run(data);
 
 			//populate local categories lists
 			for ( cg in data.categories){

@@ -8,17 +8,23 @@ class Shop extends Controller
 	
 	var distribs : List<db.Distribution>;
 	var contracts : List<db.Contract>;
+	var tmpBasket : db.TmpBasket;
 
 	@tpl('shop/default.mtt')
-	public function doDefault(place:db.Place,date:Date) {
+	public function doDefault(md:db.MultiDistrib) {
 
-		if(place.amap.betaFlags.has(ShopV2)) throw Redirect('/shop2/${place.id}/${date.toString()}');
+		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 
-		var products = getProducts(place,date);
+		var date = md.getDate();
+		var place = md.getPlace();
+		if(place.amap.betaFlags.has(ShopV2)) throw Redirect('/shop2/${md.id}');
+
+		var products = getProducts(md);
 		view.products = products;
 		view.place = place;
 		view.date = date;
-		view.group = place.amap;		
+		view.group = place.amap;
+		view.multiDistrib = md;		
 		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
 
 		//message if phone is required
@@ -31,59 +37,66 @@ class Shop extends Controller
 		app.event(e);
 		view.blocks = e.getParameters()[0];
 	}
+
 	
 	/**
-	 * prints the full product list and current cart in JSON
+	 * prints the full product list and current cart 
 	 */
-	public function doInit(place:db.Place,date:Date) {
+	public function doInit(md:db.MultiDistrib) {
 		
 		//init order serverside if needed		
-		var order :OrderInSession = app.session.data.order; 
-		if ( order == null) {
-			app.session.data.order = order = cast {products:[]};
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);			
+			//app.session.data.order = order = cast {products:[]};
 		}
 		
+		if(tmpBasket==null){
+			tmpBasket = service.OrderService.makeTmpBasket(app.user,md, {products:[]});
+			app.session.data.tmpBasketId = tmpBasket.id;
+		}		
+
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
 		
-		if (!place.amap.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
-			
+		if (!md.getGroup().flags.has(db.Amap.AmapFlags.CustomizedCategories)){			
 			//TAXO CATEGORIES
-			products = getProducts(place, date, true);
-		}else{
-			
+			products = getProducts(md, true);
+		}else{			
 			//CUSTOM CATEGORIES
-			products = getProducts(place, date, false);
+			products = getProducts(md, false);
 		}
 		
-		categs = place.amap.getCategoryGroups();
+		categs = md.getGroup().getCategoryGroups();
 
 		//clean 
-		for ( p in order.products){
+		/*for ( p in order.products){
 			p.product = null;
-		}
-		Sys.print( haxe.Serializer.run( {products:products,categories:categs,order:order} ) );
+		}*/
+
+		Sys.print( haxe.Serializer.run( {
+			products:products,
+			categories:categs,
+			order:tmpBasket.data
+		} ) );
 	}
-	
-	
 	
 	/**
 	 * Get the available products list
 	 */
-	private function getProducts(place,date,?categsFromTaxo=false):Array<ProductInfo> {
+	private function getProducts(md:db.MultiDistrib,?categsFromTaxo=false):Array<ProductInfo> {
+
+		var date = md.getDate();
+		var place = md.getPlace();
 
 		contracts = db.Contract.getActiveContracts(app.getCurrentGroup());
 	
 		for (c in Lambda.array(contracts)) {
 			//only varying orders
-			if (c.type != db.Contract.TYPE_VARORDER) {
-				contracts.remove(c);
-			}
+			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);
 			
-			if (!c.isVisibleInShop()) {
-				contracts.remove(c);
-			}
-			
+			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
 
 		view.contracts = contracts;
@@ -125,8 +138,17 @@ class Shop extends Controller
 	 */
 	public function doSubmit() {
 		
-		var order : OrderInSession = haxe.Json.parse(app.params.get("data"));
-		app.session.data.order = order;
+		var order : TmpBasketData = haxe.Json.parse(app.params.get("data"));
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+		}
+		tmpBasket.data = order;
+		tmpBasket.update();
+
+		app.session.data.tmpBasketId = null;
+		Sys.print( haxe.Json.stringify( {success:true,tmpBasketId:tmpBasket.id} ) );
 		
 	}
 	
@@ -135,9 +157,15 @@ class Shop extends Controller
 	 */
 	public function doAdd(productId:Int, quantity:Int) {
 	
-		var order : OrderInSession =  app.session.data.order;
-		if ( order == null) order = cast { products:[] };		
-		order.products.push( { productId:productId, quantity:quantity } );		
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+		}
+			
+		tmpBasket.data.products.push( { productId:productId, quantity:quantity } );		
+		tmpBasket.update();
+
 		Sys.print( haxe.Json.stringify( {success:true} ) );
 		
 	}
@@ -147,85 +175,98 @@ class Shop extends Controller
 	 */
 	public function doRemove(pid:Int) {
 	
-		var order:OrderInSession =  app.session.data.order;
-		if ( order == null) return;
+		var tmpBasketId:Int = app.session.data.tmpBasketId; 
+		var tmpBasket = null;
+		if ( tmpBasketId != null) {
+			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+		}
 		
-		for ( p in order.products.copy()) {
+		for ( p in tmpBasket.data.products.copy()) {
 			if (p.productId == pid) {
-				order.products.remove(p);
+				tmpBasket.data.products.remove(p);
 			}
 		}
+		tmpBasket.update();
 		
 		Sys.print( haxe.Json.stringify( { success:true } ) );		
 	}
 	
 	
 	/**
-	 * validate the order
-	 */
+		Confirms the temporary basket.
+		The user can come from the old or new shop, or from /transaction/tmpBasket.
+		- clean order
+		- ask to login is needed
+		- redirect to payment page if needed
+	**/
 	@tpl('shop/needLogin.mtt')
-	public function doValidate(place:db.Place, date:Date){
+	public function doValidate(tmpBasket:db.TmpBasket){
 		
-		//login is needed : display a loginbox
+		tmpBasket.lock();
+
+		//Login is needed : display a loginbox
 		if (app.user == null) {
-			view.redirect = "/shop/validate/" + place.id + "/" + date.toString().substr(0, 10);
-			view.group = place.amap;
+			view.redirect = sugoi.Web.getURI();
+			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
 			view.message =  t._("In order to confirm your order, You need to authenticate.");
 			return;
-		}
-		
-		//add the user to this group if needed
-		if (place.amap.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, place.amap) == null){
-			app.user.makeMemberOf(place.amap);			
+		}else{
+			//case where the user just logged in
+			if(tmpBasket.user==null){
+				tmpBasket.user = app.user;
+				tmpBasket.update();
+			}
 		}
 
-		var order : OrderInSession = app.session.data.order;
-		if (order == null || order.products == null || order.products.length == 0) {
-			throw Error("/", t._("Your order is empty") );
+		var md = tmpBasket.multiDistrib;
+		var group = md.getGroup();
+		
+		//Add the user to this group if needed
+		if (group.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, group) == null){
+			app.user.makeMemberOf( group );			
 		}
 		
-		if (place == null) throw "place cannot be empty";
-		if (date == null) throw "date cannot be empty";		
-
-		var products = getProducts(place, date);
+		if (tmpBasket.data.products == null || tmpBasket.data.products.length == 0) {
+			throw Error("/", t._("Your basket is empty") );
+		}
+		
+		var products = getProducts(tmpBasket.multiDistrib);
 
 		var errors = [];
-		order.total = 0.0;
+		//order.total = 0.0;
 		
 		//cleaning
-		for (o in order.products.copy()) {
+		tmpBasket.lock();
+		var orders = tmpBasket.data.products;
+		for (o in orders.copy()) {
 			
 			var p = db.Product.manager.get(o.productId, false);
 			
 			//check that the products are from this group (we never know...)
 			if (p.contract.amap.id != app.user.amap.id){
 				app.session.data.order = null;
-				throw Error("/", t._("This cart is invalid") );
+				throw Error("/", t._("This basket contains products from another group") );
 			}
 			
 			//check if the product is available
 			if (Lambda.find(products, function(x) return x.id == o.productId) == null) {
 				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
-				order.products.remove(o);
+				orders.remove(o);
 				continue;
-			}else{
-				o.product = p;
 			}
 
 			//check quantities ( ie : ordered a floatQt when not permitted )
 			if(o.quantity==0){
-				order.products.remove(o);
+				orders.remove(o);
 			}
 
 			//find distrib
 			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
 			if ( d == null ){
 				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
-				order.products.remove(o);
+				orders.remove(o);
 				continue;
-			}else{
-				o.distributionId = d.id;
 			}
 			
 			//moderate order according available stocks
@@ -237,33 +278,26 @@ class Shop extends Controller
 				}
 			}
 		
-			order.total += p.getPrice() * o.quantity;
+			//order.total += p.getPrice() * o.quantity;
 		}
 		
-		order.userId = app.user.id;
+		//order.userId = app.user.id;
 		
 		if (errors.length > 0) {
 			app.session.addMessage(errors.join("<br/>"), true);
 		}
 		
-		//store cart in session
-		app.session.data.order = order;		
-		
-		//debug
-		for ( p in order.products){
-			if (p.distributionId == null){
-				App.current.logError(place.amap.name + " : panier sans distrib Id : " + Std.string(order) );
-				break;
-			}
-		}
+		//update tmp basket
+		tmpBasket.data = {products:orders};		
+		tmpBasket.update();
 		
 		if (app.user.amap.hasPayments()){			
 			//Go to payments page
-			throw Redirect("/transaction/pay/");
+			throw Redirect("/transaction/pay/"+tmpBasket.id);
 		}else{
 			//no payments, confirm direclty
-			OrderService.confirmSessionOrder(order);			
-			throw Ok("/account", t._("Your order has been confirmed") );	
+			OrderService.confirmTmpBasket(tmpBasket);			
+			throw Ok("/contract", t._("Your order has been confirmed") );	
 		}
 
 	}

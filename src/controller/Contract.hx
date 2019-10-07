@@ -8,8 +8,9 @@ import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import Common;
 import plugin.Tutorial;
-using Std;
 import service.OrderService;
+using Std;
+using Lambda;
 
 
 class Contract extends Controller
@@ -260,7 +261,7 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * Make an order by contract ( standard mode )
+	 * Make an order by contract ( CSA mode )
 	 * The form is prepopulated if orders have already been made.
 	 * 
 	 * It should work for constant orders ( will display one column )
@@ -268,10 +269,10 @@ class Contract extends Controller
 	 * 
 	 */
 	@tpl("contract/order.mtt")
-	function doOrder(c:db.Contract ) {
+	function doOrder( c:db.Contract ) {
 		
 		//checks
-		if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
+		//if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
 		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 
@@ -293,14 +294,11 @@ class Contract extends Controller
 			for ( d in distributions){
 				var datas = [];
 				for ( p in products) {
-					var ua = { order:null, product:p };
-					
-					var order = db.UserContract.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);	
-					
+					var ua = { order:null, product:p };					
+					var order = db.UserContract.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);						
 					if (order != null) ua.order = order;
 					datas.push(ua);
-				}
-				
+				}				
 				userOrders.push({distrib:d,datas:datas});
 			}
 			
@@ -308,28 +306,21 @@ class Contract extends Controller
 			
 			var datas = [];
 			for ( p in products) {
-				var ua = { order:null, product:p };
-				
-				var order = db.UserContract.manager.select($user == app.user && $productId == p.id, true);
-				
+				var ua = { order:null, product:p };				
+				var order = db.UserContract.manager.select($user == app.user && $productId == p.id, true);				
 				if (order != null) ua.order = order;
 				datas.push(ua);
 			}
 			
-			userOrders.push({distrib:null,datas:datas});
-			
+			userOrders.push({distrib:null,datas:datas});			
 		}
 
 		
 		//form check
 		if (checkToken()) {
-			
-			//get dsitrib if needed
-			//var distrib : db.Distribution = null;
-			//if (c.type == db.Contract.TYPE_VARORDER) {
-				//distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
-			//}
-			
+
+			var orders = [];
+
 			for (k in app.params.keys()) {
 				
 				if (k.substr(0, 1) != "d") continue;
@@ -358,7 +349,7 @@ class Contract extends Controller
 					}
 				}
 				
-				if (uo == null) throw t._("Could not find the product ::produ:: and delivery ::deliv::", {produ:pid, deliv:did});
+				if (uo == null) throw t._("Could not find the product ::product:: and delivery ::delivery::", {product:pid, delivery:did});
 				
 				var q = 0.0;
 				
@@ -371,12 +362,18 @@ class Contract extends Controller
 				
 				
 				if (uo.order != null) {	
-					OrderService.edit(uo.order, q);
+					orders.push( OrderService.edit(uo.order, q));
 				}else {
-					OrderService.make(app.user, q, uo.product, did);
+					orders.push( OrderService.make(app.user, q, uo.product, did));
 				}
 				
 			}
+
+			//create order operation only
+			if (app.user.amap.hasPayments()){		
+				var orderOps = db.Operation.onOrderConfirm(orders);
+			}
+
 			throw Ok("/contract/order/"+c.id, t._("Your order has been updated"));
 		}
 		
@@ -388,7 +385,7 @@ class Contract extends Controller
 	/**
 	 * Make an order by contract ( standard mode ) + payment process
 	 */
-	@tpl("contract/orderAndPay.mtt")
+	/*@tpl("contract/orderAndPay.mtt")
 	function doOrderAndPay(c:db.Contract ) {
 		
 		//checks
@@ -397,7 +394,7 @@ class Contract extends Controller
 		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 		
 		var distributions = [];
-		/* If its a varying contract, we display a column by distribution*/
+		// If its a varying contract, we display a column by distribution
 		if (c.type == db.Contract.TYPE_VARORDER) {
 			distributions = db.Distribution.getOpenToOrdersDeliveries(c);
 		}
@@ -500,7 +497,7 @@ class Contract extends Controller
 		
 		view.c = view.contract = c;
 		view.userOrders = userOrders;		
-	}
+	}*/
 	
 	
 	/**
