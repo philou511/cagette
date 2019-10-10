@@ -12,7 +12,10 @@ import Common.UserOrder;
 typedef OrderBoxState = {
 
     var orders : Array<UserOrder>;
+    var ordersWereFetched : Bool;
     var users : Array<UserInfo>;    
+    var selectedUserId : Int;
+    var selectedUserName : String;
     var contracts : Array<ContractInfo>;
     var selectedContractId : Int;
 	var products : Array<ProductInfo>;	
@@ -26,8 +29,11 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 
 	public var initState: OrderBoxState = {
 
-        orders : [],       
+        orders : [],
+        ordersWereFetched : false,        
         users : null,
+        selectedUserId : null,
+        selectedUserName : null,
         contracts : [],
         selectedContractId : null,
         products : [],
@@ -40,10 +46,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 		var partial : Partial<OrderBoxState> = switch (action) {
 
             case FetchOrdersSuccess( orders ):
-                { orders : orders, error : null };
+                { orders : orders, ordersWereFetched : true, error : null };
 
             case FetchUsersSuccess( users ):
                 { users : users, error : null };
+            
+            case SelectUser( userId, userName ):
+                { selectedUserId : userId, selectedUserName : userName };
 
             case UpdateOrderQuantity( orderId, quantity ):
                 var copiedOrders = state.orders.copy();

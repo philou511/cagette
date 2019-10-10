@@ -8,6 +8,7 @@ import react.router.Route;
 import react.router.Switch;
 import react.order.redux.actions.OrderBoxAction;
 import react.order.redux.actions.thunk.OrderBoxThunk;
+import react.user.redux.components.UserSelector;
 
 //Material UI
 import react.mui.CagetteTheme;
@@ -17,6 +18,8 @@ import mui.core.Button;
 typedef OrderBoxProps = {
 
 	var userId : Int;
+	var selectedUserId : Int;
+	var selectedUserName : String;
 	var multiDistribId : Int;
 	var contractId : Int;
 	var contractType : Int;
@@ -28,6 +31,7 @@ typedef OrderBoxProps = {
 	var hasPayments : Bool;
 	var orders : Array<UserOrder>;
 	var fetchOrders : Int -> Int -> Int -> Int -> Void;
+	var ordersWereFetched : Bool;
 	var updateOrders : Int -> String -> Int -> Int -> Void;
 	var error : String;	
 };
@@ -43,14 +47,28 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 	public function new(props) {
 
 		super(props);
-	}
+	}	
 	
 	override function componentDidMount() {
+
+		var userId = props.userId != null ? props.userId : props.selectedUserId;
+		if( userId != null ) {
+
+			props.fetchOrders( userId, props.multiDistribId, props.contractId, props.contractType );		
+		}
 		
-		props.fetchOrders( props.userId, props.multiDistribId, props.contractId, props.contractType );		
 	}
 	
 	override public function render() {
+
+		var userId = props.userId != null ? props.userId : props.selectedUserId;
+		var userName = props.userName != null ? props.userName : props.selectedUserName;
+
+		//If there is no orders the user is redirected to the next screen
+		if ( props.ordersWereFetched && ( props.orders == null || props.orders.length == 0 ) ) {
+
+			js.Browser.location.hash = props.contractId == null ? "/contracts" : "/insert";
+		}
 		
 		//Let's group orders by contract id to display them for each contract
 		var ordersByContractId = new Map<Int, Array<UserOrder>>();
@@ -87,12 +105,6 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 						
 			}	
 		}
-
-		//total
-		// var className1 = this.props.contractType != 0 ? "col-md-5 text-center" : "col-md-3 text-center";
-		// var className2 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
-		// var className3 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
-		// var className4 = this.props.contractType != 0 ? "col-md-2 text-center" : "col-md-2 text-center";
 
 		var className1 = "";
 		var className2 = "";
@@ -133,16 +145,21 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 			
 		var delivery = 	props.date == null ? null : jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 
-		var validateButton = jsx('<Button onClick=${props.updateOrders.bind( props.userId, props.callbackUrl, props.multiDistribId, props.contractId )} variant={Contained} style=${{color:CGColors.White, backgroundColor:CGColors.Secondary}} >
+		var validateButton = jsx('<Button onClick=${props.updateOrders.bind( userId, props.callbackUrl, props.multiDistribId, props.contractId )} variant={Contained} style=${{color:CGColors.White, backgroundColor:CGColors.Secondary}} >
 									${CagetteTheme.getIcon("chevron-right")}&nbsp;Valider
 								 </Button>');				
 		
-		
-		
+		//Display user selector in the case we don't have a userId
+		var renderUserSelector = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
+			return jsx('<UserSelector multiDistribId=${this.props.multiDistribId} contractId=${this.props.contractId} contractType=${this.props.contractType} />');
+		} 
+				
         var renderOrderBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment { 
 
-			return jsx('<div onKeyPress=${onKeyPress}>
-							<h3>Commandes de ${this.props.userName}</h3>
+			if ( userId != null ) {
+
+				return jsx('<div onKeyPress=${onKeyPress}>
+							<h3>Commandes de $userName</h3>
 							$delivery
 							<Error error=${this.props.error} />							
 							<hr/>
@@ -163,6 +180,14 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 								</Button>			
 							</div>
 						</div>');
+
+			}
+			else {
+
+				js.Browser.location.hash = "/user";
+				return null;
+			}
+			
 		}
 
 		//Display contracts box
@@ -172,12 +197,13 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 		//insert product box
 		var renderInsertBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
-			return jsx('<InsertOrder contractId=${this.props.contractId} userId=${this.props.userId} multiDistribId=${this.props.multiDistribId} />');
+			return jsx('<InsertOrder contractId=${this.props.contractId} userId=${userId} multiDistribId=${this.props.multiDistribId} />');
 		} 
 
 		return jsx('
 			<HashRouter>
 				<Switch>
+					${ userId != null ? null : jsx('<Route key="user" path="/user" exact=$true render=$renderUserSelector />') }
 					<Route key="orders" path="/" exact=$true render=$renderOrderBox />
 					${ props.contractId != null ? null : jsx('<Route key="contracts" path="/contracts" exact=$true render=$renderContractsBox />') }
 					<Route key="products" path="/insert" exact=$true render=$renderInsertBox />
@@ -189,15 +215,18 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 	function onKeyPress(e : js.html.KeyboardEvent) {
 		
 		if ( e.key == "Enter" ) {
-
-			props.updateOrders( props.userId, props.callbackUrl, props.multiDistribId, props.contractId );
+			var userId = props.userId != null ? props.userId : props.selectedUserId;
+			props.updateOrders( userId, props.callbackUrl, props.multiDistribId, props.contractId );
 		} 
 	}	
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<OrderBoxProps> {		
 
-		return { orders: Reflect.field(state, "reduxApp").orders,
-				 error : Reflect.field(state, "reduxApp").error };
+		return {	selectedUserId : Reflect.field(state, "reduxApp").selectedUserId,
+					selectedUserName : Reflect.field(state, "reduxApp").selectedUserName,
+					orders : Reflect.field(state, "reduxApp").orders,
+					ordersWereFetched : Reflect.field(state, "reduxApp").ordersWereFetched,
+					error : Reflect.field(state, "reduxApp").error };
 	}
 
 	static function mapDispatchToProps( dispatch : redux.Redux.Dispatch ) : react.Partial<OrderBoxProps> {

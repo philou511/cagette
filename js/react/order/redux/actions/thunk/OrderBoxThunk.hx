@@ -26,7 +26,7 @@ class OrderBoxThunk {
                 //Load users for amap type contracts
                 if ( contractType == 0 ) { 
 
-                    fetchUsers( dispatch );
+                    getUsers( dispatch );
                 }
             })
             .catchError(function(data) {
@@ -37,7 +37,7 @@ class OrderBoxThunk {
 
     }
 
-    static function fetchUsers( dispatch : redux.Redux.Dispatch ) {
+    static function getUsers( dispatch : redux.Redux.Dispatch ) {
 
         //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
         return HttpUtil.fetch( "/api/user/getFromGroup/", GET, {}, PLAIN_TEXT )
@@ -49,6 +49,16 @@ class OrderBoxThunk {
         .catchError(function(data) {
 
             handleError( data, dispatch );
+        });
+
+    }
+
+     public static function fetchUsers() {
+    
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+
+            return getUsers( dispatch );
+           
         });
 
     }
@@ -138,7 +148,7 @@ class OrderBoxThunk {
 
     static function handleError( data : Dynamic, dispatch : redux.Redux.Dispatch ) {
 
-        var data = Std.string(data);                
+        var data = Std.string(data);
         if( data.substr(0,1) == "{" ) { //json error from server
             
             var data : ErrorInfos = haxe.Json.parse(data);                

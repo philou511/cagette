@@ -10,6 +10,7 @@ enum OrderBoxAction
 {
     FetchOrdersSuccess( orders : Array<UserOrder> );
     FetchUsersSuccess( users : Array<UserInfo> );
+    SelectUser( userId : Int, userName : String );
     UpdateOrderQuantity( orderId : Int, quantity : Float );
     ReverseOrderRotation( orderId : Int, reverseRotation : Bool );
     UpdateOrderUserId2( orderId : Int, userId2 : Int );

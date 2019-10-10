@@ -10,12 +10,18 @@
 		<div style="margin:8px 0;">
 
 			::if distribution!=null::
-			<a href="/contractAdmin/edit/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
-				<i class="icon icon-plus"></i> ::_("New order")::</a>	
+				<a class="btn btn-default btn-sm"
+					onclick="_.initOrderBox(null,::multiDistribId::,::distribution._contract.id::,::distribution._contract.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::',null,'::user.getAmap().currency::', ::user.getAmap().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::')">
+					<i class="icon icon-plus"></i>
+					::_("New order")::
+				</a>							
 			::else::
-			<a href="/contractAdmin/edit/::c.id::" class="btn btn-default btn-sm">
-				<i class="icon icon-plus"></i> ::_("New order")::</a>	
-			::end::
+				<a class="btn btn-default btn-sm"
+					onclick="_.initOrderBox(null, null, ::c.id::,::c.type::, null, null, null,'::user.getAmap().currency::', ::user.getAmap().hasPayments()::, '/contractAdmin/orders/::c.id::')">
+					<i class="icon icon-edit"></i>
+					::_("New order")::
+				</a>
+			::end::			
 			
 			::if distribution!=null::
 				$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
