@@ -12,19 +12,19 @@ import react.order.redux.reducers.OrderBoxReducer.OrderBoxState;
 class OrderBoxThunk {
 
 
-    public static function fetchOrders( userId : Int, multiDistribId : Int, contractId: Int, contractType: Int ) {
+    public static function fetchOrders( userId : Int, multiDistribId : Int, catalogId: Int, catalogType: Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
-            //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
-            return HttpUtil.fetch( "/api/order/get/" + userId, GET, { contract : contractId, multiDistrib : multiDistribId }, PLAIN_TEXT )
+            //Fetches all the orders for this user and this multiDistrib and for a given catalog if it's specified otherwise for any catalog of this multiDistrib
+            return HttpUtil.fetch( "/api/order/get/" + userId, GET, { contract : catalogId, multiDistrib : multiDistribId }, PLAIN_TEXT )
             .then( function( data : String ) {
                 
                 var data : { orders : Array<UserOrder> } = tink.Json.parse(data);
                 dispatch( OrderBoxAction.FetchOrdersSuccess( data.orders ) );
 
-                //Load users for amap type contracts
-                if ( contractType == 0 ) { 
+                //Load users for amap type catalogs
+                if ( catalogType == 0 ) { 
 
                     getUsers( dispatch );
                 }
@@ -39,7 +39,7 @@ class OrderBoxThunk {
 
     static function getUsers( dispatch : redux.Redux.Dispatch ) {
 
-        //Fetches all the orders for this user and this multiDistrib and for a given Contract if it's specified otherwise for any contract of this multiDistrib
+        //Fetches all the orders for this user and this multiDistrib and for a given catalog if it's specified otherwise for any catalog of this multiDistrib
         return HttpUtil.fetch( "/api/user/getFromGroup/", GET, {}, PLAIN_TEXT )
         .then( function( data : String ) {
 
@@ -63,7 +63,7 @@ class OrderBoxThunk {
 
     }
 
-    public static function updateOrders( userId : Int, callbackUrl : String, multiDistribId : Int, contractId: Int ) {
+    public static function updateOrders( userId : Int, callbackUrl : String, multiDistribId : Int, catalogId: Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
@@ -85,14 +85,14 @@ class OrderBoxThunk {
 
                 args +=  "?multiDistrib=" + multiDistribId;
 
-                if( contractId != null ) {
+                if( catalogId != null ) {
 
-                    args +=  "&contract=" + contractId;
+                    args +=  "&contract=" + catalogId;
                 }
             }
-            else if ( contractId != null ) {
+            else if ( catalogId != null ) {
 
-                args +=  "?contract=" + contractId;
+                args +=  "?contract=" + catalogId;
             }
 
             return HttpUtil.fetch( "/api/order/update/" + userId + args, POST, { orders : data }, JSON )
@@ -108,16 +108,16 @@ class OrderBoxThunk {
 
     }
     
-    public static function fetchContracts( multiDistribId : Int ) {
+    public static function fetchCatalogs( multiDistribId : Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
                
-            //Loads all the contracts (of variable type only) for the given multiDistrib
+            //Loads all the catalogs (of variable type only) for the given multiDistrib
             return HttpUtil.fetch( "/api/order/contracts/" + multiDistribId, GET, { contractType: 1 }, PLAIN_TEXT )
             .then( function( data : String ) {             
 
                 var data : { contracts : Array<ContractInfo> } = tink.Json.parse(data);               
-                dispatch( OrderBoxAction.FetchContractsSuccess( data.contracts ) );
+                dispatch( OrderBoxAction.FetchCatalogsSuccess( data.contracts ) );
             })
             .catchError( function(data) {                    
                 
@@ -127,12 +127,12 @@ class OrderBoxThunk {
 
     }
 
-    public static function fetchProducts( contractId : Int ) {
+    public static function fetchProducts( catalogId : Int ) {
     
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
                
-            //Loads all the products for the current contract
-            return HttpUtil.fetch( "/api/product/get/", GET, { contractId : contractId }, PLAIN_TEXT )
+            //Loads all the products for the current catalog
+            return HttpUtil.fetch( "/api/product/get/", GET, { contractId : catalogId }, PLAIN_TEXT )
             .then( function( data : String ) {
 
                 var data : { products : Array<ProductInfo> } = tink.Json.parse(data);               

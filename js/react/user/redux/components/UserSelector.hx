@@ -16,8 +16,8 @@ typedef UserSelectorProps = {
 	var fetchUsers : Void -> Void;
 	var selectUser : Int -> String -> Void;	
 	var multiDistribId : Int;
-	var contractId : Int;
-	var contractType : Int;	
+	var catalogId : Int;
+	var catalogType : Int;	
 	var fetchOrders : Int -> Int -> Int -> Int -> Void;	
 }
 
@@ -77,7 +77,7 @@ class UserSelector extends react.ReactComponentOfPropsAndState<UserSelectorProps
 
 		var userName : String = props.users.filter( function( user ) return user.id == userId )[0].name;
 		props.selectUser( userId, userName );
-		props.fetchOrders( userId, props.multiDistribId, props.contractId, props.contractType );		
+		props.fetchOrders( userId, props.multiDistribId, props.catalogId, props.catalogType );		
 		js.Browser.location.hash = "/";
 	}
 
@@ -92,8 +92,8 @@ class UserSelector extends react.ReactComponentOfPropsAndState<UserSelectorProps
 
 			fetchUsers : function() { dispatch(OrderBoxThunk.fetchUsers()); },
 			selectUser : function( userId : Int, userName : String ) { dispatch(OrderBoxAction.SelectUser( userId, userName ));	},
-			fetchOrders : function( userId : Int, multiDistribId : Int, contractId : Int, contractType : Int ) {
-							return dispatch( OrderBoxThunk.fetchOrders( userId, multiDistribId, contractId, contractType ) ); }			
+			fetchOrders : function( userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int ) {
+							return dispatch( OrderBoxThunk.fetchOrders( userId, multiDistribId, catalogId, catalogType ) ); }			
 		}
 	}	
 

@@ -22,7 +22,7 @@ typedef OrderProps = {
 	var users : Null<Array<UserInfo>>;
 	var currency : String;
 	var hasPayments : Bool;
-	var contractType : Int;	
+	var catalogType : Int;	
 	var updateOrderQuantity : Float -> Void;
 	var updatePaid : Bool -> Void;
 	var reverseRotation : Bool -> Void;
@@ -63,7 +63,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 		jsx('<TextField key=${"input-" + props.order.id} variant={Outlined} type={Text} value=${state.quantityInputValue} onChange=${updateQuantity} /> ');
 
 		//constant orders
-		var alternated = if( props.contractType == 0 && props.users != null ) {			
+		var alternated = if( props.catalogType == 0 && props.users != null ) {			
 
 			var options = props.users.map(function(x) return jsx('<option key=${x.id} value=${x.id}>${x.name}</option>') );
 			var inputSelect = jsx('<OutlinedInput labelWidth={0} />');
@@ -81,18 +81,13 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 			null;
 		}
-
-		// var className1 = props.contractType != 0 ? "col-md-5" : "col-md-3";
-		// var className2 = props.contractType != 0 ? "col-md-2 ref text-center" : "col-md-2 ref text-center";
-		// var className3 = props.contractType != 0 ? "col-md-2 text-center" : "col-md-1 text-center";
-		// var className4 = props.contractType != 0 ? "col-md-2" : "col-md-2";
-
+	
 		var className1 = "";
 		var className2 = "";
 		var className3 = "";
 		var className4 = "";
 
-		if ( props.contractType != 0 ) {
+		if ( props.catalogType != 0 ) {
 
 			className1 = "col-md-5 text-center";
 			className2 = "col-md-3 ref text-center";
@@ -137,7 +132,7 @@ class Order extends react.ReactComponentOfPropsAndState<OrderProps, OrderState>
 
 			${paidInput( props.hasPayments )}				
 
-			${ props.contractType == 0 ? jsx('<div className="col-md-4">$alternated</div>') : null }
+			${ props.catalogType == 0 ? jsx('<div className="col-md-4">$alternated</div>') : null }
 			
 		</div>');
 	}

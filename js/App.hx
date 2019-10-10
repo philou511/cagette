@@ -169,7 +169,7 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
+	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "ordersdialog-container";
@@ -182,7 +182,7 @@ class App {
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<OrdersDialog userId=$userId multiDistribId=$multiDistribId contractId=$contractId contractType=$contractType
+						<OrdersDialog userId=$userId multiDistribId=$multiDistribId catalogId=$catalogId catalogType=$catalogType
 						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
 					</>
 				</MuiThemeProvider>

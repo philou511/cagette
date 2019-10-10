@@ -14,8 +14,8 @@ typedef OrdersDialogProps = {
 
 	var userId : Int;
 	var multiDistribId : Int;
-	var contractId : Int;
-	var contractType : Int;
+	var catalogId : Int;
+	var catalogType : Int;
 	var date : String;
 	var place : String;
 	var userName : String;
@@ -46,7 +46,7 @@ class OrdersDialog extends react.ReactComponentOfPropsAndState<OrdersDialogProps
 
 		return jsx('<Dialog onClose=${this.handleClose} fullWidth={true} maxWidth={MD} scroll={Body} open=${state.openDialog} >
 				<DialogContent>
-					<OrderBox userId=${props.userId} multiDistribId=${props.multiDistribId} contractId=${props.contractId} contractType=${props.contractType}
+					<OrderBox userId=${props.userId} multiDistribId=${props.multiDistribId} catalogId=${props.catalogId} catalogType=${props.catalogType}
 					date=${props.date} place=${props.place} userName=${props.userName} callbackUrl=${props.callbackUrl} currency=${props.currency} hasPayments=${props.hasPayments} />
 				</DialogContent>
 				<DialogActions>

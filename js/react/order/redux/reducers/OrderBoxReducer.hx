@@ -16,8 +16,8 @@ typedef OrderBoxState = {
     var users : Array<UserInfo>;    
     var selectedUserId : Int;
     var selectedUserName : String;
-    var contracts : Array<ContractInfo>;
-    var selectedContractId : Int;
+    var catalogs : Array<ContractInfo>;
+    var selectedCatalogId : Int;
 	var products : Array<ProductInfo>;	
     var error : String;
 };
@@ -34,8 +34,8 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
         users : null,
         selectedUserId : null,
         selectedUserName : null,
-        contracts : [],
-        selectedContractId : null,
+        catalogs : [],
+        selectedCatalogId : null,
         products : [],
         error : null
     };
@@ -105,11 +105,11 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 }
                 { orders : copiedOrders };
 
-            case FetchContractsSuccess( contracts ):
-                { contracts : contracts, error : null };
+            case FetchCatalogsSuccess( catalogs ):
+                { catalogs : catalogs, error : null };
             
-            case SelectContract( contractId ):
-                { selectedContractId : contractId };
+            case SelectCatalog( catalogId ):
+                { selectedCatalogId : catalogId };
             
             case FetchProductsSuccess( products ):
                 { products : products, error : null };
@@ -130,11 +130,11 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 if ( !orderFound ) {
 
                     var selectedProduct = Lambda.find( state.products, function( product ) return product.id == productId );
-                    var contract = Lambda.find( state.contracts, function( contract ) return contract.id == selectedProduct.contractId );
+                    var catalog = Lambda.find( state.catalogs, function( catalog ) return catalog.id == selectedProduct.contractId );
                     var order : UserOrder = cast {
                     			id: 0 - Std.random(1000000),
                                 contractId: selectedProduct.contractId,
-                                contractName: contract != null ? contract.name : null,
+                                contractName: catalog != null ? catalog.name : null,
                     			product: selectedProduct,
                     			quantity: 1,                     			
                     			paid: false

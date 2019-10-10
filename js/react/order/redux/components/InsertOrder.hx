@@ -11,8 +11,8 @@ import mui.core.Button;
 
 typedef InsertOrderProps = {
 
-	var contractId : Int;
-	var selectedContractId : Int;
+	var catalogId : Int;
+	var selectedCatalogId : Int;
 	var error : String;
 }
 
@@ -32,16 +32,16 @@ class InsertOrder extends react.ReactComponentOfProps<InsertOrderProps>
 
 	override public function render() {
 
-		var contractId = props.contractId != null ? props.contractId : props.selectedContractId;
+		var catalogId = props.catalogId != null ? props.catalogId : props.selectedCatalogId;
 
 		return jsx('<div>				
 						<h3>Choisissez le produit à ajouter</h3>
-						<Button onClick=${function(){ js.Browser.location.hash = props.contractId != null ? "/" : "/contracts"; }} size={Medium} variant={Outlined}>
+						<Button onClick=${function(){ js.Browser.location.hash = props.catalogId != null ? "/" : "/catalogs"; }} size={Medium} variant={Outlined}>
 							${CagetteTheme.getIcon("chevron-left")}&nbsp;&nbsp;Retour
 						</Button>
 						<Error error=${props.error} />
 						<hr />
-						<ProductSelect contractId=${contractId} />			
+						<ProductSelect catalogId=${catalogId} />			
 					</div>			
 		');
 	}	
@@ -50,7 +50,7 @@ class InsertOrder extends react.ReactComponentOfProps<InsertOrderProps>
 			
 		return { 
 			
-			selectedContractId : Reflect.field(state, "reduxApp").selectedContractId, 
+			selectedCatalogId : Reflect.field(state, "reduxApp").selectedCatalogId, 
 			error : Reflect.field(state, "reduxApp").error
 		};
 	}
