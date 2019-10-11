@@ -103,51 +103,7 @@ class UserContract extends Object
 		return can && !this.paid;
 	}
 	
-	/**
-	 * get users orders for a distribution
-	 */
-	public static function getOrders(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):Array<UserOrder>{
-		var view = App.current.view;
-		var orders = new Array<db.UserContract>();
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			orders = contract.getOrders(distribution);	
-		}else {
-			orders = contract.getOrders();
-		}
-		
-		var orders = service.OrderService.prepare(orders);
-		
-		//CSV export
-		if (csv) {
-			var t = sugoi.i18n.Locale.texts;			
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push( { 
-					"name":o.userName,
-					"productName":o.productName,
-					"price":view.formatNum(o.productPrice),
-					"quantity":view.formatNum(o.quantity),
-					"fees":view.formatNum(o.fees),
-					"total":view.formatNum(o.total),
-					"paid":o.paid
-				});				
-			}
-			
-			var exportName = "";
-			if (distribution != null){
-				exportName = contract.amap.name + " - " + t._("Delivery ::contractName:: ", {contractName:contract.name}) + distribution.date.toString().substr(0, 10);					
-			}else{
-				exportName = contract.amap.name + " - " + contract.name;
-			}
-			
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity", "fees", "total", "paid"], exportName+" - " + t._("Per member"));			
-			return null;
-		}else{
-			return orders;
-		}
-		
-	}
+	
 	
 	/**
 	 * Get the orders (varying orders) of a user for a multidistrib ( distribs with same day + same place )

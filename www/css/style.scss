@@ -320,8 +320,17 @@ table.product{
 table.table{
 	
 	tr.head>td, thead tr td{
-		//border-top: 1px solid #BBB;
 		border-top: 3px solid #DDD;
+		height: 30px;
+		font-size:120%;
+		vertical-align: bottom; 
+	}
+
+	tr.darkhead>td{
+		background-color:#777;
+		color:white;
+		//links are white, but not for btn buttons 
+		a:not(.btn){ color:white;}
 		height: 30px;
 		font-size:120%;
 		vertical-align: bottom; 
@@ -355,21 +364,12 @@ div.tableHeader{
 	margin-bottom: 12px;
 }
 	
-
-
-/*table.table>tbody>tr>th{
-	background-color:white;
-	color:#BBB;
-	border-top:none;
-}*/
-
 div.reportHeader{
 	background-color:#DDD;
 	 
 }
 
 
- 
 /* a product order in a table style */
 .productOrder{
 	

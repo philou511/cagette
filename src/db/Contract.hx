@@ -228,15 +228,24 @@ class Contract extends Object
 	 * @param	d
 	 * @return
 	 */
-	public function getUserOrders(u:db.User,?d:db.Distribution):Array<db.UserContract> {
+	public function getUserOrders(u:db.User,?d:db.Distribution,?includeUser2=true):Array<db.UserContract> {
 		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
 
 		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserContract>();
 		if (d != null && d.contract.type==db.Contract.TYPE_VARORDER) {
-			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
-		}else {
-			ucs = UserContract.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);
+			if(includeUser2){
+				ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
+			}else{
+				ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u), false);
+			}
+		}else{
+			if(includeUser2){
+				ucs = UserContract.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);
+			}else{
+				ucs = UserContract.manager.search( ($productId in pids) && ($user==u),false);
+			}
+			
 		}
 		return Lambda.array(ucs);
 	}

@@ -327,6 +327,15 @@ table.table tr.head > td, table.table thead tr td {
   font-size: 120%;
   vertical-align: bottom; }
 
+table.table tr.darkhead > td {
+  background-color: #777;
+  color: white;
+  height: 30px;
+  font-size: 120%;
+  vertical-align: bottom; }
+  table.table tr.darkhead > td a:not(.btn) {
+    color: white; }
+
 table.table tr.subrow {
   background-color: #EEE; }
 
@@ -344,11 +353,6 @@ div.tableHeader {
   border-bottom: 1px solid #DDD;
   margin-bottom: 12px; }
 
-/*table.table>tbody>tr>th{
-	background-color:white;
-	color:#BBB;
-	border-top:none;
-}*/
 div.reportHeader {
   background-color: #DDD; }
 

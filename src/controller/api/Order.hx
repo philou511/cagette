@@ -62,7 +62,7 @@ class Order extends Controller
 			if(multiDistrib!=null){
 				d = multiDistrib.getDistributionForContract(contract);
 			}
-			orders = contract.getUserOrders(user, d);			
+			orders = contract.getUserOrders(user, d, false);			
 		}
 
 		var orders = OrderService.prepare(orders);		

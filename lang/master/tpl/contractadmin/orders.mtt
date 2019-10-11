@@ -18,7 +18,7 @@
 			::else::
 				<a class="btn btn-default btn-sm"
 					onclick="_.initOrderBox(null, null, ::c.id::,::c.type::, null, null, null,'::user.getAmap().currency::', ::user.getAmap().hasPayments()::, '/contractAdmin/orders/::c.id::')">
-					<i class="icon icon-edit"></i>
+					<i class="icon icon-plus"></i>
 					::_("New order")::
 				</a>
 			::end::			
@@ -69,9 +69,9 @@
 				::foreach m orders::
 				
 				::if m.userName != name || m.userName2 != name2::
-					<tr style="background-color:#666;">
+					<tr  class="darkhead">
 
-						<td colspan="7" style="font-size:120%;color:#e7e7e7;">
+						<td colspan="7">
 							
 							::if distribution!=null::
 							::set basket = getBasket(m.basketId)::							
@@ -80,7 +80,7 @@
 							</div>
 							::end::
 							
-							::m.userName:: 
+							<a href="/member/view/::m.userId::" target="_blank">::m.userName::</a> 
 							::if m.userName2!=null::
 								<span class="glyphicon glyphicon-refresh"></span> ::_("alternated with"):: ::m.userName2::
 							::end::

@@ -491,7 +491,7 @@ class ContractAdmin extends Controller
 			d = args.d;
 		}
 		view.c = contract;
-		var orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
+		var orders = service.OrderService.getOrders(contract, d, app.params.exists("csv"));
 		
 		if ( !app.params.exists("csv") ){
 			
@@ -813,7 +813,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Edit a user's orders
 	 */
-	@tpl("contractadmin/edit.mtt")
+	/*@tpl("contractadmin/edit.mtt")
 	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
 		view.nav.push("orders");
 		sendNav(c);
@@ -931,6 +931,6 @@ class ContractAdmin extends Controller
 			}
 			view.userOrders = userOrders;
 		}
-	}
+	}*/
 	
 }
