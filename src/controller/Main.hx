@@ -53,6 +53,9 @@ class Main extends Controller {
 
 		view.amap = group;
 		
+		//has unconfirmed basket ?
+		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
+
 		//contract with open orders
 		if(!group.hasShopMode()){
 			var openContracts = Lambda.filter(group.getActiveContracts(), function(c) return c.isUserOrderAvailable());
@@ -239,9 +242,12 @@ Called from controller/Main.hx line 117
 	}
 
 	@tpl('shop/default2.mtt')
-	function doShop2(place:db.Place, date:String) {
-		view.place = place;
-		view.date = date;
+	function doShop2(md:db.MultiDistrib) {
+		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
+		view.category = 'shop';
+		view.place = md.getPlace();
+		view.date = md.getDate();
+		view.md = md;
 		view.rights = app.user!=null ? haxe.Serializer.run(app.user.getRights()) : null;
 	}
 	

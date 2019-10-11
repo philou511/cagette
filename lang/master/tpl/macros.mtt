@@ -243,7 +243,7 @@
 		<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
 		::elseif x==2::
 		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
-		<i class="icon icon-euro" aria-hidden="true"></i> ::_("Payment"):: ::t.getPaymentTypeName()::
+		<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> ::_("Subscription")::
 		::end::

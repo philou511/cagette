@@ -1,7 +1,9 @@
 ::use 'design.mtt'::
-
-	<div class="col-md-12">
-		<div class="article">
+<div class="article">
+<div class="row">
+    
+	    <div class="col-md-12">
+		
 			
 			<div class="text-center">
 				<h3>
@@ -14,8 +16,10 @@
 					<i class="icon icon-map-marker"></i> ::distribution.getPlace().name::
 				</h4>
             </div>
-         
-            <table class="table table-bordered" style="width:600px;margin:auto;">
+        </div>
+        
+        <div class="col-md-6">
+            <table class="table table-bordered">
                 <tr>
                     <td><b>Fond de caisse avant distribution</b></td>
                     <td>
@@ -29,35 +33,22 @@
                     <td> <b>Encaissements en liquide</b></td>
                     <td>::sales.cashTurnover.ttc:: &euro;</td>
                 </tr>
-                <tr>
-                    <td> <b>Encaissements en chèques</b></td>
-                    <td>::sales.checkTurnover.ttc:: &euro;</td>
-                </tr>
-                <tr>
-                    <td> <b>Membres qui n'ont pas payé</b></td>
-                    <td>
-                        ::if(notPaid.length>0)::
-                        ::set total = 0.0::
-                        <ul>
-                        ::foreach np notPaid::
-                            <li>::np.user.getName():: : ::formatNum(np.amount):: ::currency()::</li>
-                            ::set total = total + np.amount::
-                        ::end::
-                        </ul>
-                        ::else::
-                            Aucune
-                        ::end::
-                        Total impayé : ::formatNum(total):: ::currency()::
-                    </td>
-                </tr>
+                
+               
                 <tr>
                     <td>
-                        <b>Votre caisse doit contenir</b>
+                        <b>La caisse doit contenir</b>
                     </td>
                     <td> 
                         ::formatNum(distribution.counterBeforeDistrib + sales.cashTurnover.ttc):: &euro;
                     </td>
                 </tr>
+
+                <tr>
+                    <td> <b>Encaissements en chèque</b></td>
+                    <td>::sales.checkTurnover.ttc:: &euro;</td>
+                </tr>
+
                 <tr>
                     <td>
                         <b>Total Commande par taux de TVA</b>
@@ -81,15 +72,94 @@
 
                     </td>
                 </tr>
+
+                
                  
               
             </table>
 
             
+        </div>
+        
 
-			<a href="/distribution/validate/::distribution.id::" class="btn btn-default btn-sm">
-                <i class="icon icon-chevron-left"></i> Retour
-            </a>
-		</div>
-	</div>
+        <div class="col-md-6">
+                <table class="table table-bordered">
+                    
+                    <tr>
+                        <td> <b>Commandes non payées</b></td>
+                        <td>
+                            ::if(notPaid.length>0)::
+                                ::set total = 0.0::
+                                <ul>
+                                ::foreach np notPaid::
+                                    <li>::np.user.getName():: : ::formatNum(np.amount):: ::currency()::</li>
+                                    ::set total = total + np.amount::
+                                ::end::
+                                </ul>
+                                Total impayé : ::formatNum(total):: ::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <b>Commandes payées partiellement</b></td>
+                        <td>
+                            ::if(partiallyPaid.length>0)::
+                                ::set total = 0.0::
+                                <ul>
+                                ::foreach b partiallyPaid::
+                                    <li>::b.user.getName():: : manque ::formatNum(b.amount):: ::currency()::</li>
+                                    ::set total = total + b.amount::
+                                ::end::
+                                </ul>
+                                Total dettes : ::formatNum(total):: ::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
+                            
+                        </td>
+    
+                    </tr>
+                    <tr>
+                            <td> <b>Avoirs</b></td>
+                            <td>
+                                ::if(paidTooMuch.length>0)::
+                                    ::set total = 0.0::
+                                    <ul>
+                                    ::foreach b paidTooMuch::
+                                        <li>::b.user.getName():: : avoir de ::formatNum(b.amount):: ::currency()::</li>
+                                        ::set total = total + b.amount::
+                                    ::end::
+                                    </ul>
+                                    Total avoirs : ::formatNum(total):: ::currency()::
+                                ::else::
+                                    Aucun
+                                ::end::
+                                
+                            </td>
+        
+                        </tr>
+                    
+                  
+                </table>
+    
+                
+    
+                
+            </div>
+
+            <div class="col-md-12">
+                    <a href="/distribution/validate/::distribution.id::" class="btn btn-default btn-sm">
+                        <i class="icon icon-chevron-left"></i> Retour
+                    </a>
+
+                    $$export(?csv=1)
+            </div>
+            
+
+
+    </div>
+</div>
 ::end::

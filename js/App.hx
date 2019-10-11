@@ -72,6 +72,9 @@ class App {
 		untyped js.Browser.window._ = new App();
 	}
 
+	/**
+		Old Shop
+	**/
 	public function getCart() {
 		return new ShopCart();
 	}
@@ -283,7 +286,7 @@ class App {
 	/**
 		instanciates mui shop
 	**/
-	public function shop(place:Int, date:String) {
+	public function shop(multiDistribId:Int) {
 
 
 		var elements = js.Browser.window.document.querySelectorAll('.sticky');
@@ -298,7 +301,7 @@ class App {
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<CagetteStore date=$date place=$place />
+						<CagetteStore multiDistribId=$multiDistribId />
 					</>
 				</MuiThemeProvider>
 			</ReduxProvider>

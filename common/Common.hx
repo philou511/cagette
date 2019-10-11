@@ -30,7 +30,7 @@ typedef OrderSimple = {
 }
 
 //A temporary order, waiting for being paid and definitely recorded.
-@:keep
+/*@:keep
 typedef OrderInSession = {
 	products:Array <{
 		productId:Int,
@@ -43,6 +43,14 @@ typedef OrderInSession = {
 	total:Float, 	//price to pay
 	?userId:Int,
 	?paymentOp:Int, //payment operation ID
+}*/
+
+//OrderInSession v2 for db.TmpBasket
+typedef TmpBasketData = {
+	products:Array <{
+		productId:Int,
+		quantity:Float,
+	}> ,		
 }
 
 @:keep
@@ -109,6 +117,7 @@ typedef ProductInfo = {
 	?distributionId:Null<Int>, //in the context of a distrib
 }
 
+//used in shop client
 @:keep
 typedef ProductWithQuantity = {
 	product: ProductInfo,
@@ -129,11 +138,6 @@ typedef DistributionInfos = {
 }
 
 //This is used by Mangopay to know which document types to ask for KYC compliance
-enum LegalStatus{
-	Soletrader;
-	Organization;
-	Business;
-}
 
 enum Unit{
 	Piece;

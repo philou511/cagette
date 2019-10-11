@@ -39,8 +39,8 @@ class Basket extends Object
 		//date = tools.DateTool.setHourMinute(date, 0, 0);
 
 		//caching
-		// var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
-		// var b = CACHE.get(k);
+		 var k = user.id + "-" + place.id + "-" + date.toString().substr(0, 10);
+		 var b = CACHE.get(k);
 		var b = null;
 		// if (b == null){
 			//var md = db.MultiDistrib.get(date, place);
@@ -51,10 +51,11 @@ class Basket extends Object
 					break;
 				}
 			}
-			// CACHE.set(k, b);
-		// }
+			CACHE.set(k, b);
+		 }
 		
 		return b;
+
 	}*/
 
 	

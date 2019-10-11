@@ -108,11 +108,11 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 	}
 
 	function renderDistributionDate() {
-		var distribDate = jsx('<span>Distribution le ${Formatting.hDate(props.date)}</span>');
+		if(props.date==null) return null;
 		return jsx('
 			<span>
 				${CagetteTheme.getIcon("calendar")}
-				${distribDate}
+				<span>Distribution le ${Formatting.hDate(props.date)}</span>
 			</span>'
 		);
 	}

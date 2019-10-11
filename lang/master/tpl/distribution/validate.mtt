@@ -9,6 +9,7 @@
 
 	::set date = distribution.getDate()::
 	::set place = distribution.getPlace()::
+	::set confirmed = distribution.isValidated()::
 
 	<div class="col-md-12">
 		<div class="article">
@@ -35,16 +36,10 @@
 				
 			</div>	
 		
-		::if(!confirmed)::
+		
+						
 		<p class="text-center">
-				<!--<a href="/contractAdmin/ordersByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm">
-				<i class="icon icon-list"></i> ::_("Back to the summary sheet of orders"):: </a>-->	
-				
-				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-danger" $$confirm(Confirmez-vous que les commandes et les paiements de cette distribution sont bien à jour ? Il ne sera plus possible de modifier les commandes après avoir validé cette distribution)>
-					<i class="icon icon-check"></i> Valider toute la distribution
-				</a>
-		</p>				
-		<p class="text-center">
+				::if(!confirmed)::
 				<a href="/distribution/changePrice/::distribution.id::" class="btn btn-default" >
 					<i class="icon icon-euro"></i> Changement de prix
 				</a>
@@ -52,14 +47,15 @@
 				<a href="/distribution/missingProduct/::distribution.id::" class="btn btn-default" >
 					<i class="icon icon-products"></i> Produit non livré
 				</a>
+				::end::
 
 				<a href="/distribution/counter/::distribution.id::" class="btn btn-default" >
 					<i class="icon icon-payment-type"></i> Encaissements
 				</a>
 		</p>
-		::end::
 		
 		
+		::set basketValidated=0::
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
 			
 			::foreach u users::
@@ -67,6 +63,7 @@
 				::set basket = getBasket2(u.id,place.id,date)::
 				
 				::if(basket.isValidated()==true)::
+					::set basketValidated = basketValidated+1::
 					::set class="success"::
 				::else::
 					::set class="danger"::
@@ -98,11 +95,23 @@
 				</tr>
 				
 			::end::
-				
-				
-			
-
 		</table>
+
+
+		::if(!confirmed)::
+		<p class="text-center">
+
+				::if(basketValidated < users.length)::
+				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-lg btn-danger" $$confirm(Confirmez-vous que les commandes et les paiements de cette distribution sont bien à jour ? Il ne sera plus possible de modifier les commandes après avoir validé cette distribution)>
+					<i class="icon icon-check"></i> Valider la distribution
+				</a>
+				::else::
+				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-lg btn-primary" >
+					<i class="icon icon-check"></i> Valider la distribution
+				</a>
+				::end::
+		</p>
+		::end::
 
 		<p class="text-left">
 			<a href="/distribution/" class="btn btn-default">

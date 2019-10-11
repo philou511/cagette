@@ -819,7 +819,7 @@ class ContractAdmin extends Controller
 		sendNav(c);
 		
 		if (!app.user.canManageContract(c)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
+		if (args.d != null && args.d.multiDistrib.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
 		
 		view.c = view.contract = c;
 		view.u = user;

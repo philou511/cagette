@@ -24,6 +24,7 @@ class OrderService
 
 		if(product.contract.type==db.Contract.TYPE_VARORDER && distribId==null) throw "You have to provide a distribId";
 		if(quantity==null) throw "Quantity is null";
+		if(quantity<0) throw "Quantity is negative";
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){
@@ -136,7 +137,7 @@ class OrderService
 	/**
 	 * Edit an existing order (quantity)
 	 */
-	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool) {
+	public static function edit(order:db.UserContract, newquantity:Float, ?paid:Bool , ?user2:db.User,?invert:Bool):db.UserContract {
 		
 		var t = sugoi.i18n.Locale.texts;
 		
@@ -144,6 +145,8 @@ class OrderService
 		
 		//quantity
 		if (newquantity == null) newquantity = 0;
+		if(newquantity<0) throw "Quantity is negative";
+		
 		if ( !canHaveFloatQt(order.product) ){
 			if( !tools.FloatTool.isInt(newquantity)  ) {
 				throw new tink.core.Error(t._("Error : product \"::product::\" quantity should be integer",{product:order.product.name}));
@@ -367,27 +370,56 @@ class OrderService
 		
 		return sort(out);
 	}
+
+	/**
+		Record a temporary basket
+	**/
+	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
+		//basket with no products is allowed ( init an empty basket )
+		if( tmpBasketData==null) throw "Basket is empty";
+
+		//generate basketRef
+		var group = multiDistrib.getGroup();
+		var ref = (user==null?0:user.id)+"-"+group.id+"-"+Date.now().toString().substr(0,10)+"-"+Std.random(1000);
+
+		var tmp = new db.TmpBasket();
+		tmp.user = user;
+		tmp.multiDistrib = multiDistrib;
+		tmp.data = tmpBasketData;
+		tmp.ref = ref;
+		tmp.insert();
+		return tmp;
+	}
 	
 	/**
-	 * Confirms an order : create real orders from tmp orders in session
+	 * Confirms an order : create real orders from a temporary basket
 	 * @param	order
 	 */
-	public static function confirmSessionOrder(tmpOrder:OrderInSession){
+	public static function confirmTmpBasket(tmpBasket:db.TmpBasket){
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
-		var user = db.User.manager.get(tmpOrder.userId);
-		for (o in tmpOrder.products){
-			o.product = db.Product.manager.get(o.productId);
+		var user = tmpBasket.user;
+		for (o in tmpBasket.data.products){
+			var p = db.Product.manager.get(o.productId);
 
-			//check that the distrib is still open.
-			var distrib = db.Distribution.manager.get(o.distributionId,false);
-			if(!distrib.canOrderNow()) throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.contract.name}));
+			//find related distrib
+			var distrib = null;
+			for( d in tmpBasket.multiDistrib.getDistributions()){
+				if(d.contract.id==p.contract.id){
+					distrib = d;
+				}
+			}
 
-			orders.push( make(user, o.quantity, o.product, o.distributionId) );
+			//check that the distrib is still open.			
+			if(!distrib.canOrderNow()){
+				throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.contract.name}));
+			}
+
+			orders.push( make(user, o.quantity, p, distrib.id ) );
 		}
 		
 		App.current.event(MakeOrder(orders));
-		App.current.session.data.order = null;	
+		tmpBasket.delete();
 		
 		return orders;
 	}
@@ -487,22 +519,48 @@ class OrderService
 	
 
 	public static function sort(orders:Array<UserOrder>){
-		
 		//order by lastname (+lastname2 if exists), then contract
 		orders.sort(function(a, b) {
 			
 			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId > b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
-				
 				return 1;
 			}
 			if (a.userName + a.userId + a.userName2 + a.userId2 + a.contractId < b.userName + b.userId + b.userName2 + b.userId2 + b.contractId ) {
-				 
 				return -1;
 			}
 			return 0;
 		});
-		
 		return orders;
+	}
+
+	/**
+		Returns tmp basket
+	**/
+	public static function getTmpBasket(user:db.User,group:db.Amap):db.TmpBasket{
+		for( b in db.TmpBasket.manager.search($user==user)){
+			if(b.multiDistrib.group.id==group.id) return b;
+		}
+		return null;
+	}
+
+	/**
+		Action triggered from controllers to check if we have a tmpBasket to validate
+	**/
+	public static function checkTmpBasket(user,group){
+		//user can be null, if open group
+		if(user==null) return;
+		
+		var tmpBasket = getTmpBasket(user,group);
+		if(tmpBasket!=null){
+
+			if(tmpBasket.data.products.length==0){
+				tmpBasket.lock();
+				tmpBasket.delete();
+				return;
+			}
+
+			throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
+		}
 	}
 	
 	

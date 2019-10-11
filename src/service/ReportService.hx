@@ -165,4 +165,19 @@ class ReportService{
 		return vendorDataByVendorId;
 	}
 
+	/**
+		Get orders total by VAT rate.
+	**/
+	public static function getOrdersByVAT(distribution:db.MultiDistrib){
+		var ordersByVat = new Map<Int,{ht:Float,ttc:Float}>();
+		for( o in distribution.getOrders(db.Contract.TYPE_VARORDER)){
+			var key = Math.round(o.product.vat*100);
+			if(ordersByVat[key]==null) ordersByVat[key] = {ht:0.0,ttc:0.0};
+			var total = o.quantity * o.productPrice;
+			ordersByVat[key].ttc += total;
+			ordersByVat[key].ht += (total/(1+o.product.vat/100));
+		}
+		return ordersByVat;
+	}
+
 }
