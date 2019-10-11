@@ -1442,9 +1442,11 @@ class Distribution extends Controller
 			for( v in md.getVolunteers()){
 				totalRolesDone++;
 				if(v.volunteerRole.isGenericRole()){
-					genericRolesDoneByMemberId[v.user.id]++;
+					if(genericRolesDoneByMemberId[v.user.id]!=null) 
+						genericRolesDoneByMemberId[v.user.id]++;
 				}else{
-					contractRolesDoneByMemberId[v.user.id]++;
+					if(contractRolesDoneByMemberId[v.user.id]!=null) 
+						contractRolesDoneByMemberId[v.user.id]++;
 				}
 			}
 			

@@ -11,7 +11,7 @@ class Vendor extends Object
 	public var id : SId;
 	public var name : SString<128>;
 	
-	public var legalStatus : SNull<SEnum<LegalStatus>>;
+	//public var legalStatus : SNull<SEnum<LegalStatus>>;
 	@hideInForms public var profession : SNull<SInt>;
 
 	public var email : STinyText;
@@ -43,7 +43,6 @@ class Vendor extends Object
 	public function new() 
 	{
 		super();
-		legalStatus = Business;
 		directory = true;
 		try{
 			var t = sugoi.i18n.Locale.texts;

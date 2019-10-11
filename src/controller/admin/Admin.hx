@@ -126,6 +126,13 @@ class Admin extends Controller {
 	@tpl("admin/graph.mtt")
 	function doGraph(?key:String,?year:Int,?month:Int){
 
+		if(key==null) {
+			var now = Date.now();
+			view.year = now.getFullYear();
+			view.month = now.getMonth();
+			return;
+		}
+
 		var from = new Date(year,month,1,0,0,0);
 		var to = new Date(year,month+1,0,23,59,59);
 
@@ -139,6 +146,18 @@ class Admin extends Controller {
 						var value = db.Basket.manager.count($cdate>=_from && $cdate<=_to);
 						var g = db.Graph.record(key,value, _from );
 						// trace(value,_from,g);
+					}
+				case "turnover":
+					for( d in 1...to.getDate()){
+						var _from = new Date(year,month,d,0,0,0);
+						var _to = new Date(year,month,d,23,59,59);
+						var baskets = db.Basket.manager.search($cdate>=_from && $cdate<=_to);
+						var value = 0.0;
+						for( b in baskets){
+							value += b.getOrdersTotal();
+						}
+						var g = db.Graph.record(key , Math.round(value) , _from );
+						
 					}
 			}
 		}

@@ -138,11 +138,6 @@ typedef DistributionInfos = {
 }
 
 //This is used by Mangopay to know which document types to ask for KYC compliance
-enum LegalStatus{
-	Soletrader;
-	Organization;
-	Business;
-}
 
 enum Unit{
 	Piece;

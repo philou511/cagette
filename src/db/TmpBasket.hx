@@ -27,8 +27,9 @@ class TmpBasket extends Object
 	**/
 	public function getTotal():Float{
 		var total = 0.0;
-		for( o in this.data.products){
+		for( o in data.products){
 			var p = db.Product.manager.get(o.productId,false);
+			if(p==null) continue;
 			total += o.quantity * p.getPrice();
 		}
 		return total;
@@ -36,8 +37,10 @@ class TmpBasket extends Object
 
 	public function getOrders(){
 		var out = new Array<{product:db.Product,quantity:Float}>();
-		for( p in data.products){
-			out.push({product:db.Product.manager.get(p.productId,false) , quantity : p.quantity});
+		for( o in data.products){
+			var p = db.Product.manager.get(o.productId,false);
+			if(p==null) continue;
+			out.push({product:p , quantity : o.quantity});
 		}
 		return out;
 	}
