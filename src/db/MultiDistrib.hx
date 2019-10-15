@@ -217,7 +217,7 @@ class MultiDistrib extends Object
 				products.push( p.infos(null,false) );	
 			}
 		}
-		products = thx.Arrays.shuffle(products);			
+		//products = thx.Arrays.shuffle(products);			
 		products = products.slice(0, productNum);
 		sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
 		return products;	

@@ -366,9 +366,11 @@ enum TutoPlacement {
 	TPRight;
 }
 
+typedef TutoInfos = {name:String, steps:Array<{element:String,text:String,action:TutoAction,placement:TutoPlacement}>};
+
 class TutoDatas {
 
-	public static var TUTOS;
+	public static var TUTOS: Map<String,TutoInfos> = null;
 	
 	#if js
 	//async 
@@ -384,7 +386,7 @@ class TutoDatas {
 	}
 	#else
 	//sync 
-	public static function get(tuto:String):{name:String, steps:Array<{element:String,text:String,action:TutoAction,placement:TutoPlacement}>}
+	public static function get(tuto:String):TutoInfos
 	{
 		sugoi.i18n.Locale.init(App.current.getLang());
 		init(sugoi.i18n.Locale.texts);

@@ -1,7 +1,7 @@
 package controller;
 import sugoi.db.Variable;
 import sugoi.form.elements.StringInput;
-import thx.semver.Version;
+//import thx.semver.Version;
 import service.VolunteerService;
 import Common;
 
@@ -158,7 +158,7 @@ class Install extends controller.Controller
 		
 		var out = {parameter:"version", valid:false, message:""};
 		
-		var v = Variable.get("version");
+		/*var v = Variable.get("version");
 		if (v == null || v=="") {
 			Variable.set("version", App.VERSION.toString());
 			v = App.VERSION.toString();
@@ -175,7 +175,7 @@ class Install extends controller.Controller
 		}else{
 			out.valid = true;
 			out.message = t._("Current version") +v.toString()+"";
-		}
+		}*/
 		
 		return out;
 		
@@ -189,7 +189,7 @@ class Install extends controller.Controller
 		
 		var log = [];
 		
-		var currentVersion = thx.semver.Version.stringToVersion(Variable.get("version"));
+		/*var currentVersion = thx.semver.Version.stringToVersion(Variable.get("version"));
 		
 		//Migrations to 0.9.2
 		if (currentVersion.lessThan( thx.semver.Version.arrayToVersion([0,9,2]) )){
@@ -201,7 +201,7 @@ class Install extends controller.Controller
 			_0_9_2_dbMigration();
 			
 			sugoi.db.Variable.set("version", "0.9.2");
-		}
+		}*/
 		
 		//Migrations to 1.0.0
 		//...

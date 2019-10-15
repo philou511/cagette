@@ -7,15 +7,21 @@ class View extends sugoi.BaseView {
 	
 	var t : sugoi.i18n.GetText;
 	
+	var days : Array<String>;
+	var months : Array<String>;
+	var hours : Array<Int>;
+	var minutes : Array<Int>;
+
+	
 	
 	public function new() {
 		super();
-		this.Std = Std;
+		/*this.Std = Std;
 		this.Date = Date;
 		this.Web = sugoi.Web;
 		this.Lambda = Lambda;
 		this.VERSION = App.VERSION.toString();
-		this.ArrayTool = ArrayTool;
+		this.ArrayTool = ArrayTool;*/
 		this.t = sugoi.i18n.Locale.texts;
 	}
 	
@@ -195,10 +201,10 @@ class View extends sugoi.BaseView {
 		t = sugoi.i18n.Locale.texts;
 		DAYS = [t._("Sunday"), t._("Monday"), t._("Tuesday"), t._("Wednesday"), t._("Thursday"), t._("Friday"), t._("Saturday")];
 		MONTHS = [t._("January"), t._("February"), t._("March"), t._("April"), t._("May"), t._("June"), t._("July"), t._("August"), t._("September"), t._("October"), t._("November"), t._("December")];
-		this.DAYS = DAYS;
-		this.MONTHS = MONTHS;
-		this.HOURS = HOURS;
-		this.MINUTES = MINUTES;
+		this.days = DAYS;
+		this.months = MONTHS;
+		this.hours = HOURS;
+		this.minutes = MINUTES;
 	}
 	
 	/**
