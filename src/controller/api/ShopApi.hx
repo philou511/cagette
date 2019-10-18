@@ -2,7 +2,7 @@ package controller.api;
 import haxe.Json;
 import tink.core.Error;
 import Common;
-import db.Amap;
+import db.Group;
 import tools.ArrayTool;
 using tools.ObjectListTool;
 using Lambda;
@@ -178,10 +178,10 @@ class ShopApi extends Controller
 		};
 		
 		//order end dates
-		var contracts = db.Contract.getActiveContracts(md.getGroup());
+		var contracts = db.Catalog.getActiveContracts(md.getGroup());
 	
 		for (c in Lambda.array(contracts)) {			
-			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);//only varying orders
+			if (c.type != db.Catalog.TYPE_VARORDER) contracts.remove(c);//only varying orders
 			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
 		
@@ -191,11 +191,11 @@ class ShopApi extends Controller
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == args.multiDistrib.getPlace(), false);
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == args.multiDistrib.getPlace(), false);
 		var distribByDate = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
 		out.orderEndDates  = [];
 		for ( k in distribByDate.keys() ) {
-			out.orderEndDates.push( {date:k , contracts: distribByDate.get(k).map( function(x) return x.contract.name)} );	
+			out.orderEndDates.push( {date:k , contracts: distribByDate.get(k).map( function(x) return x.catalog.name)} );	
 		}
 
 		//vendors
@@ -219,12 +219,12 @@ class ShopApi extends Controller
 	 */
 	private function getProducts(md:db.MultiDistrib,?categsFromTaxo=false):Array<db.Product> {
 
-		var contracts = db.Contract.getActiveContracts(md.getGroup());
+		var contracts = db.Catalog.getActiveContracts(md.getGroup());
 		var date = md.getDate();
 		var place = md.getPlace();
 	
 		for (c in Lambda.array(contracts)) {			
-			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);//only varying orders
+			if (c.type != db.Catalog.TYPE_VARORDER) contracts.remove(c);//only varying orders
 			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
 		
@@ -233,10 +233,10 @@ class ShopApi extends Controller
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
 		
-		var cids = Lambda.map(distribs, function(d) return d.contract.id);
-		return Lambda.array(db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false));
+		var cids = Lambda.map(distribs, function(d) return d.catalog.id);
+		return Lambda.array(db.Product.manager.search(($catalogId in cids) && $active==true, { orderBy:name }, false));
 		
 	}
 

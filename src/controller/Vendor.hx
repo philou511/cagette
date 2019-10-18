@@ -21,10 +21,10 @@ class Vendor extends Controller
 		
 		//default display
 		browse = function(index:Int, limit:Int) {
-			return db.Vendor.manager.search($id > index && $amap==app.user.amap, { limit:limit, orderBy:-id }, false);
+			return db.Vendor.manager.search($id > index && $amap==app.user.getGroup(), { limit:limit, orderBy:-id }, false);
 		}
 		
-		var count = db.Vendor.manager.count($amap==app.user.amap);
+		var count = db.Vendor.manager.count($amap==app.user.getGroup());
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.vendors = rb;
 	}*/

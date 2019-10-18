@@ -7,23 +7,10 @@ enum ContractFlags {
 	UsersCanOrder;  		//adhérents peuvent saisir eux meme la commande en ligne
 	StockManagement; 		//gestion des commandes
 	PercentageOnOrders;		//calcul d'une commission supplémentaire 
-	
-	//LogisticMgmt;		//gestion logistique
-	//SubGroups;		//sous groupes pour commandes groupées
-	//InviteFriends;	//peut inviter des amis à participer à la commande
-	
 }
 
-/**
- * Contract
- * 
- * un contrat réunissant pluseiurs produits d'un meme fournisseur
- * qui sont livrés au meme endroit et meme moment;
- * 
- */
-class Contract extends Object
+class Catalog extends Object
 {
-
 	public var id : SId;
 	public var name : SString<64>;
 	
@@ -36,7 +23,7 @@ class Contract extends Object
 	
 	public var description:SNull<SText>;
 	
-	@:relation(amapId) public var amap:Amap;
+	@:relation(groupId) public var group:db.Group;
 	public var distributorNum:STinyInt;
 	public var flags : SFlags<ContractFlags>;
 	
@@ -45,8 +32,8 @@ class Contract extends Object
 	
 	public var type : SInt;
 
-	@:skip public static var TYPE_CONSTORDERS = 0; 	//CSA contract 
-	@:skip public static var TYPE_VARORDER = 1;		//varying orders contract	
+	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
+	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
 	@:skip var cache_hasActiveDistribs : Bool;
 	
 	public function new() 
@@ -73,10 +60,10 @@ class Contract extends Object
 			
 			//for varying orders, we need to know if there are some available deliveries
 			var n = Date.now();			
-			var d = db.Distribution.manager.count( $orderStartDate <= n && $orderEndDate >= n && $contractId==this.id);
+			var d = db.Distribution.manager.count( $orderStartDate <= n && $orderEndDate >= n && $catalogId==this.id);
 			
 			//tmp : add the "old" deliveries which have a null orderStartDate
-			//d += db.Distribution.manager.count( $orderStartDate == null && $date > n  && $contractId == this.id );
+			//d += db.Distribution.manager.count( $orderStartDate == null && $date > n  && $catalogId == this.id );
 			
 			//cache_hasActiveDistribs = d > 0;
 			//return cache_hasActiveDistribs && isVisibleInShop();
@@ -108,7 +95,7 @@ class Contract extends Object
 		var n = now.getTime();
 		
 		var contractOpen = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
-		var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $contractId==this.id);
+		var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
 		
 		return contractOpen && d > 0;
 	}
@@ -131,7 +118,7 @@ class Contract extends Object
 	public function computeFees(basePrice:Float) {
 		if (!hasPercentageOnOrders()) return 0.0;
 		
-		if (amap.flags.has(ComputeMargin)) {
+		if (group.flags.has(ComputeMargin)) {
 			//commercial margin
 			return (basePrice / ((100 - percentageValue) / 100)) - basePrice;
 			
@@ -147,15 +134,15 @@ class Contract extends Object
 	 * @param	large = false	Si true, montre les contrats terminés depuis moins d'un mois
 	 * @param	lock = false
 	 */
-	public static function getActiveContracts(amap:Amap,?large = false, ?lock = false) {
+	public static function getActiveContracts(amap:db.Group,?large = false, ?lock = false) {
 		var now = Date.now();
 		var end = Date.now();
 	
 		if (large) {
 			end = DateTools.delta(end , -1000.0 * 60 * 60 * 24 * 30);
-			return db.Contract.manager.search($amap == amap && $endDate > end,{orderBy:-vendorId}, lock);	
+			return db.Catalog.manager.search($group == amap && $endDate > end,{orderBy:-vendorId}, lock);	
 		}else {
-			return db.Contract.manager.search($amap == amap && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
+			return db.Catalog.manager.search($group == amap && $endDate > now && $startDate < now,{orderBy:-vendorId}, lock);	
 		}
 	}
 	
@@ -166,9 +153,9 @@ class Contract extends Object
 	 */
 	public function getProducts(?onlyActive = true):List<Product> {
 		if (onlyActive) {
-			return Product.manager.search($contract==this && $active==true,{orderBy:name},false);	
+			return Product.manager.search($catalog==this && $active==true,{orderBy:name},false);	
 		}else {
-			return Product.manager.search($contract==this,{orderBy:name},false);	
+			return Product.manager.search($catalog==this,{orderBy:name},false);	
 		}
 	}
 	
@@ -177,7 +164,7 @@ class Contract extends Object
 	 * @param	limit = 6
 	 */
 	public function getProductsPreview(?limit = 6){
-		return Product.manager.search($contract==this && $active==true,{limit:limit,orderBy:-id},false);	
+		return Product.manager.search($catalog==this && $active==true,{limit:limit,orderBy:-id},false);	
 	}
 	
 		
@@ -187,7 +174,7 @@ class Contract extends Object
 	 */
 	public function getUsers():Array<db.User> {
 		var pids = getProducts().map(function(x) return x.id);
-		var ucs = UserContract.manager.search($productId in pids, false);
+		var ucs = UserOrder.manager.search($productId in pids, false);
 		var ucs2 = [];
 		for( uc in ucs) {
 			ucs2.push(uc.user);
@@ -208,16 +195,16 @@ class Contract extends Object
 	 * @param	d	A delivery is needed for varying orders contract
 	 * @return
 	 */
-	public function getOrders(?d:db.Distribution):Array<db.UserContract> {
+	public function getOrders(?d:db.Distribution):Array<db.UserOrder> {
 		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
 		
 		//get product ids, some of the products may have been disabled but we keep the order
 		var pids = getProducts(false).map(function(x) return x.id);
-		var ucs = new List<db.UserContract>();
+		var ucs = new List<db.UserOrder>();
 		if (type == TYPE_VARORDER) {
-			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	
+			ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	
 		}else {
-			ucs = UserContract.manager.search( ($productId in pids) ,{orderBy:userId}, false);	
+			ucs = db.UserOrder.manager.search( ($productId in pids) ,{orderBy:userId}, false);	
 		}		
 		return Lambda.array(ucs);
 	}
@@ -228,15 +215,24 @@ class Contract extends Object
 	 * @param	d
 	 * @return
 	 */
-	public function getUserOrders(u:db.User,?d:db.Distribution):Array<db.UserContract> {
+	public function getUserOrders(u:db.User,?d:db.Distribution,?includeUser2=true):Array<db.UserOrder> {
 		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
 
 		var pids = getProducts(false).map(function(x) return x.id);
-		var ucs = new List<db.UserContract>();
-		if (d != null && d.contract.type==db.Contract.TYPE_VARORDER) {
-			ucs = UserContract.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
-		}else {
-			ucs = UserContract.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);
+		var ucs = new List<db.UserOrder>();
+		if (d != null && d.catalog.type==db.Catalog.TYPE_VARORDER) {
+			if(includeUser2){
+				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
+			}else{
+				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u), false);
+			}
+		}else{
+			if(includeUser2){
+				ucs = db.UserOrder.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);
+			}else{
+				ucs = db.UserOrder.manager.search( ($productId in pids) && ($user==u),false);
+			}
+			
 		}
 		return Lambda.array(ucs);
 	}
@@ -244,9 +240,9 @@ class Contract extends Object
 	public function getDistribs(excludeOld = true,?limit=999):List<Distribution> {
 		if (excludeOld) {
 			//still include deliveries which just expired in last 24h
-			return Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24) && $contract == this, { orderBy:date,limit:limit } );
+			return Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24) && $catalog == this, { orderBy:date,limit:limit } );
 		}else{
-			return Distribution.manager.search( $contract == this, { orderBy:date,limit:limit } );
+			return Distribution.manager.search( $catalog == this, { orderBy:date,limit:limit } );
 		}
 	}
 	
@@ -255,7 +251,7 @@ class Contract extends Object
 	}
 	
 	public function populate() {
-		return App.current.user.amap.getMembersFormElementData();
+		return App.current.user.getGroup().getMembersFormElementData();
 	}
 	
 	/**
@@ -263,8 +259,8 @@ class Contract extends Object
 	 * @return
 	 */
 	public function populateVendor():FormData<Int>{
-		if(this.amap==null) return [];
-		var vendors = this.amap.getVendors();
+		if(this.group==null) return [];
+		var vendors = this.group.getVendors();
 		var out = [];
 		for (v in vendors) {
 			out.push({label:v.name, value:v.id });

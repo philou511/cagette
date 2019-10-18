@@ -10,21 +10,21 @@ class Volunteers extends controller.Controller
 	@tpl("amapadmin/volunteers/default.mtt")
 	function doDefault() {
 
-		view.volunteerRoles = VolunteerService.getRolesFromGroup(app.user.amap);
+		view.volunteerRoles = VolunteerService.getRolesFromGroup(app.user.getGroup());
 		
 		checkToken();
 
 		var form = new sugoi.form.Form("msg");
-		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers (between 7 and 180"), app.user.amap.daysBeforeDutyPeriodsOpen, true) );
+		form.addElement( new IntInput("dutyperiodsopen", t._("Number of days before duty periods open to volunteers (between 7 and 180"), app.user.getGroup().daysBeforeDutyPeriodsOpen, true) );
 		
-		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail"), app.user.amap.volunteersMailDaysBeforeDutyPeriod, true) );
-		form.addElement( new TextArea("volunteersMailContent", t._("Email body sent to volunteers"), app.user.amap.volunteersMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new IntInput("maildays", t._("Number of days before duty period to send mail"), app.user.getGroup().volunteersMailDaysBeforeDutyPeriod, true) );
+		form.addElement( new TextArea("volunteersMailContent", t._("Email body sent to volunteers"), app.user.getGroup().volunteersMailContent, true, null, "style='height:300px;'") );
 		form.addElement( new sugoi.form.elements.Html("html1","<b>Variables utilisables dans l'email :</b><br/>
 				[DATE_DISTRIBUTION] : Date de la distribution<br/>
 				[LIEU_DISTRIBUTION] : Lieu de la distribution<br/> 
 				[LISTE_BENEVOLES] : Liste des bénévoles inscrits à cette permanence"));
-		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles"), app.user.amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
-		form.addElement( new TextArea("alertMailContent", t._("Alert email body"), app.user.amap.alertMailContent, true, null, "style='height:300px;'") );
+		form.addElement( new IntInput("alertmaildays", t._("Number of days before duty period to send mail for vacant volunteer roles"), app.user.getGroup().vacantVolunteerRolesMailDaysBeforeDutyPeriod, true) );
+		form.addElement( new TextArea("alertMailContent", t._("Alert email body"), app.user.getGroup().alertMailContent, true, null, "style='height:300px;'") );
 		form.addElement( new sugoi.form.elements.Html("html2","<b>Variables utilisables dans l'email :</b><br/>
 				[DATE_DISTRIBUTION] : Date de la distribution<br/>
 				[LIEU_DISTRIBUTION] : Lieu de la distribution<br/> 
@@ -41,7 +41,7 @@ class Volunteers extends controller.Controller
 				throw Error("/amapadmin/volunteers", e.message);
 			}			
 
-			var group  = app.user.amap;
+			var group  = app.user.getGroup();
 			group.lock();
 			group.daysBeforeDutyPeriodsOpen = form.getValueOf("dutyperiodsopen");
 			group.volunteersMailDaysBeforeDutyPeriod = form.getValueOf("maildays");
@@ -68,18 +68,18 @@ class Volunteers extends controller.Controller
 		var form = new sugoi.form.Form("volunteerrole");
 
 		form.addElement( new StringInput("name", t._("Volunteer role name"), null, true) );
-		var activeContracts = Lambda.array(Lambda.map(app.user.amap.getActiveContracts(), function(contract) return { label: contract.name, value: contract.id }));
+		var activeContracts = Lambda.array(Lambda.map(app.user.getGroup().getActiveContracts(), function(contract) return { label: contract.name, value: contract.id }));
 		form.addElement( new IntSelect('contract',t._("Related catalog"), activeContracts, null, false, t._("None")) );
 	                                                
 		if (form.isValid()) {
 			
 			role.name = form.getValueOf("name");
-			role.group = app.user.amap;
+			role.group = app.user.getGroup();
 			var contractId = form.getValueOf("contract");
 		
 			if (contractId != null)  
 			{
-				role.contract = db.Contract.manager.get(contractId);
+				role.catalog = db.Catalog.manager.get(contractId);
 			}
 			role.insert();
 			throw Ok("/amapadmin/volunteers", t._("Volunteer Role has been successfully added"));
@@ -100,8 +100,8 @@ class Volunteers extends controller.Controller
 		var form = new sugoi.form.Form("volunteerrole");
 
 		form.addElement( new StringInput("name", t._("Volunteer role name"), role.name, true) );
-		var activeContracts = Lambda.array(Lambda.map(app.user.amap.getActiveContracts(), function(contract) return { label: contract.name, value: contract.id }));
-		var defaultContractId = role.contract != null ? role.contract.id : null;
+		var activeContracts = Lambda.array(Lambda.map(app.user.getGroup().getActiveContracts(), function(contract) return { label: contract.name, value: contract.id }));
+		var defaultContractId = role.catalog != null ? role.catalog.id : null;
 		form.addElement( new IntSelect('contract',t._("Related catalog"), activeContracts, defaultContractId, false, t._("None")) );
 	                                                
 		if (form.isValid()) {
@@ -110,7 +110,7 @@ class Volunteers extends controller.Controller
 
 			role.name = form.getValueOf("name");
 			var contractId = form.getValueOf("contract");
-			role.contract = contractId != null ? db.Contract.manager.get(contractId) : null;
+			role.catalog = contractId != null ? db.Catalog.manager.get(contractId) : null;
 			
 			role.update();
 

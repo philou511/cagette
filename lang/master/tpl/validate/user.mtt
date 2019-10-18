@@ -1,8 +1,8 @@
 ::use 'design.mtt'::
+	<div class="article">
+	<div class="row">
 
-	<div class="col-md-12">
-		<div class="article">
-			
+		<div class="col-md-12">
 			<div class="text-center">
 				<h3>
 					::_("Validate the delivery of the"):: ::hDate(date)::
@@ -19,7 +19,7 @@
 					<th colspan="6" class="text-center">Commande</th>
 					<th colspan="3" class="text-center">
 						<a class="btn btn-default btn-xs"
-						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', '/validate/::md.id::/::member.id::')">
+						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getGroup().hasPayments()::, '/validate/::md.id::/::member.id::')">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>			
@@ -97,9 +97,11 @@
 				</tr>
 				
 			</table>
-			
+		</div>	
 		
-			::if (user._amap.hasShopMode())::
+		
+		<div class="col-md-12">
+			
 			<!--  PAYMENT CHECK FOR SHOP MODE-->
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
@@ -172,32 +174,15 @@
 					</td></tr>
 				::end::				
 			</table>
-
-			<!-- Membership -->
-			::if user._amap.hasMembership()::
-			<table class="table table-condensed table-bordered">
-				<tr style="background-color:#DDD;">
-					<th class="text-center">::_("Membership")::</th>
-				</tr>
-				<tr>
-					<td class="text-center">
-						::if userGroup.hasValidMembership()::
-							$$check(true) ::_("Membership up to date")::
-						::else::
-							$$check(false) ::_("Membership to renew")::
-						::end::
-						::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user._amap.getPeriodName(null)::</b>
-						
-						<a href="/membership/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
-					</td>
-				</tr>
-
-			</table>
-			::end::
-
-
 			
-			<!-- credit / debit / ok message -->
+
+		</div>
+
+		
+		
+		<!-- credit / debit / ok message -->
+		<div class="col-md-12" style="margin-bottom: 24px;">
+			
 			::if(tpaid!=null && amount!=null)::
 			
 				::if(tpaid+amount != 0)::
@@ -209,13 +194,13 @@
 					::if(tpaid+amount > 0):: 
 
 						$$check(::false::)		
-						::set str = Math.abs(tpaid+amount)+"&nbsp;"+currency()::
+						::set str = formatNum(Math.abs(tpaid+amount))+"&nbsp;"+currency()::
 						::raw __("Paid too much, credit of ::amount::",{amount:str})::
 						
 					::elseif(tpaid+amount < 0)::
 					
 						$$check(::false::)						
-						::_("Missing"):: ::Math.abs(tpaid+amount):: ::currency()::
+						::_("Missing"):: ::formatNum(Math.abs(tpaid+amount))::&nbsp;::currency()::
 						
 					::else::	
 					
@@ -224,109 +209,81 @@
 					::end::
 				</div>
 			::end::
-			
+		
 			<p class="text-center" ::cond op!=null::>				
 				$$insert(::_("Key-in a refund")::,/validate/::md.id::/::member.id::/addRefund?basketid=::basket.id::)				
 				$$insert(::_("Key-in a payment")::,/validate/::md.id::/::member.id::/addPayment/)
 			</p>
 			
 			<p class="text-center">	
-				<!--
-				::if(op!=null && tpaid+op.amount < 0)::
-					
-					<a href="" class="btn btn-default btn-lg disabled">
-						<i class="icon icon-check"></i>
-						::_("Validate this order")::
-					</a>
-				
-					<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
-					::raw _("You cannot validate this order because the amount paid<br/> by the member does not correspond to the total amount of his order!")::
-					</div>
-				
-				::else::
-				-->
-					<a href="/validate/::md.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
-						<i class="icon icon-check"></i>
-						::_("Validate this order")::
-					</a>
-				<!--::end::-->
+				<a href="/validate/::md.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
+					<i class="icon icon-check"></i>
+					::_("Validate this order")::
+				</a>
 			</p>
-			
-			::else::
-			
-			<!--  PAYMENT CHECK FOR STANDARD MODE -->
-			
+		</div>
+
+
+		<!-- Membership -->
+		
+		<div class="col-md-6">
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">
-					<th colspan="9" class="text-center">
-						Solde de l'adhérent <a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-xs">::_("Details")::</a>						
-					</th>
+					<th class="text-center">::_("Membership")::</th>
 				</tr>
-				::foreach op operations::
-					<tr>
-						$$operation(::op::)
-						<td>
-							::if(op.pending && op.type==2)::
-							<a href="/validate/::md.id::/::member.id::/validateOp/::op.id::?token=::token::" class="btn btn-primary btn-sm">
-								<i class="icon icon-check"></i>
-								::_("This payment has been received")::
-							</a>
-							$$delete(Suppr.,/validate/::md.id::/::member.id::/deleteOp/::op.id::?token=::token::)
+				<tr>
+					<td class="text-center">
+						::if user.getGroup().hasMembership()::
+							::if userGroup.hasValidMembership()::
+								$$check(true) ::_("Membership up to date")::
+							::else::
+								$$check(false) ::_("Membership to renew")::
 							::end::
-						</td>
-					</tr>
-				::end::
-				<tr style="font-size:1.3em;">
-					<td colspan="2"></td>
-					<td>Solde&nbsp;:</td>
-					::if balance<0:: 
-						::set color = "C00"::
-					::else::
-						::set color = "0C0"::
-					::end::
-					<td style="color:#::color::;">
-						::balance::&nbsp;::currency()::
+							::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
+							<br/>
+							<a href="/membership/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+						::else::
+							<span class="disabled">Pas de gestion des adhésions dans ce groupe</span>
+						::end::
 					</td>
-					<td></td>
 				</tr>
+
 			</table>
+		</div>
+		
+
+		<!-- BALANCE -->
+		::if (user.getGroup().hasShopMode())::
+		<div class="col-md-6">
+			<table class="table table-condensed table-bordered">
+				<tr style="background-color:#DDD;">
+					<th class="text-center">Solde du membre</th>
+				</tr>
+				<tr>
+					<td class="text-center">
+						<b>$$balance(::balance::)</b>
+						<br/>
+						<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Payment history of this member")::</a>
+					</td>
+				</tr>
+
+			</table>
+		</div>
+		::end::
+
 			
-			<p class="text-center">				
-				$$insert(::_("Key-in a refund")::,/validate/::md.id::/::member.id::/addRefund/)				
-				$$insert(::_("Key-in a payment")::,/validate/::md.id::/::member.id::/addPayment/)
-			</p>
-			
-			<p class="text-center">				
-				::if(balance < 0)::
-					<a href="" class="btn btn-default btn-lg disabled">
-						<i class="icon icon-check"></i>
-						::_("Validate this order")::
-					</a>
-				
-					<div class="alert alert-danger text-center" style="width:50%;margin:auto;">
-						::raw _("You cannot validate this order<br/>because the balance of the member is negative")::
-					</div>
-				
-				::else::
-				
-					<a href="/validate/::md.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
-						<i class="icon icon-check"></i>
-						::_("Validate this order")::
-					</a>
-				::end::
-			</p>
-			
-			::end::
-			
-			<!-- END -->
-			
+		<!-- Footer -->
+		<div class="col-md-12">
 			<p class="text-center">
 				<a href="/distribution/validate/::md.id::" class="btn btn-default btn-sm">
-					<span class="glyphicon glyphicon-chevron-left"></span> ::_("Back to the delivery validation")::
+					<i class="icon icon-chevron-left"></i> ::_("Back to the delivery validation")::
 				</a>
-				<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Payment history of this member")::</a>
-			</p>
-		
+
+				<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">
+					<i class="icon icon-user"></i> ::_("Payment history of this member")::
+				</a>
+			</p>		
 		</div>
+	</div>
 	</div>
 ::end::

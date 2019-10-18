@@ -52,13 +52,8 @@ class App {
 	}
 
 	/**
-	 * Returns a jquery object like $() in javascript
-	 * @deprecated
-	 */
-	public static inline function j(r:Dynamic):js.JQuery {
-		return new js.JQuery(r);
-	}
-
+	Returns a jquery object like $() in javascript
+	**/
 	public static inline function jq(r:Dynamic):js.jquery.JQuery{
 		return new js.jquery.JQuery(r);
 	}
@@ -72,6 +67,9 @@ class App {
 		untyped js.Browser.window._ = new App();
 	}
 
+	/**
+		Old Shop
+	**/
 	public function getCart() {
 		return new ShopCart();
 	}
@@ -116,8 +114,8 @@ class App {
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
 			//dirty stuff to remove "real" input, and replace it by the react one
-			App.j("form input[name='"+formName+"_name']").parent().parent().remove();
-			App.j("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
+			App.jq("form input[name='"+formName+"_name']").parent().parent().remove();
+			App.jq("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
 
 			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});
@@ -169,11 +167,11 @@ class App {
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
-	public function initOrderBox(userId : Int, multiDistribId : Int, contractId : Int, contractType : Int, date : String, place : String, userName : String, currency : String, callbackUrl : String){
+	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
+
 		var node = js.Browser.document.createDivElement();
 		node.id = "ordersdialog-container";
 		js.Browser.document.body.appendChild(node);
-		//var node = js.Browser.document.querySelector('#ordersdialog-container');
 		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
 	
 		var store = createOrderBoxReduxStore();
@@ -182,8 +180,8 @@ class App {
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<OrdersDialog userId=$userId multiDistribId=$multiDistribId contractId=$contractId contractType=$contractType
-						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency />							
+						<OrdersDialog userId=$userId multiDistribId=$multiDistribId catalogId=$catalogId catalogType=$catalogType
+						date=$date place=$place userName=$userName callbackUrl=$callbackUrl currency=$currency hasPayments=$hasPayments />							
 					</>
 				</MuiThemeProvider>
 			</ReduxProvider>
@@ -226,11 +224,11 @@ class App {
 		var r = new haxe.Http(url);
 		r.onData = function(data) {
 			//setup body and title
-			var m = App.j("#myModal");
+			var m = App.jq("#myModal");
 			m.find(".modal-body").html(data);
 			if (title != null) m.find(".modal-title").html(title);
 			if (!large) m.find(".modal-dialog").removeClass("modal-lg");
-			untyped App.j('#myModal').modal(); //bootstrap 3 modal window
+			untyped App.jq('#myModal').modal(); //bootstrap 3 modal window
 		}
 		r.request();
 	}
@@ -239,7 +237,7 @@ class App {
 	 * Displays a login box
 	 */
 	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-		var m = App.j("#myModal");
+		var m = App.jq("#myModal");
 		m.find(".modal-title").html("S'identifier");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
@@ -254,7 +252,7 @@ class App {
 	 *  Displays a sign up box
 	 */
 	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-		var m = App.j("#myModal");
+		var m = App.jq("#myModal");
 		m.find(".modal-title").html("S'inscrire");
 		m.find(".modal-dialog").removeClass("modal-lg");
 		untyped m.modal();
@@ -283,7 +281,7 @@ class App {
 	/**
 		instanciates mui shop
 	**/
-	public function shop(place:Int, date:String) {
+	public function shop(multiDistribId:Int) {
 
 
 		var elements = js.Browser.window.document.querySelectorAll('.sticky');
@@ -298,7 +296,7 @@ class App {
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<CagetteStore date=$date place=$place />
+						<CagetteStore multiDistribId=$multiDistribId />
 					</>
 				</MuiThemeProvider>
 			</ReduxProvider>
@@ -338,9 +336,9 @@ class App {
 
 
 	#if plugins
-	public function getHostedPlugin(){
+	/*public function getHostedPlugin(){
 		return new hosted.js.App();
-	}
+	}*/
 	#end
 
 	/**

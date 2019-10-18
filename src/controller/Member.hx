@@ -22,7 +22,7 @@ class Member extends Controller
 		checkToken();
 		
 		var browse:Int->Int->List<Dynamic>;
-		var uids = db.UserAmap.manager.search($amap == app.user.getAmap(), false);
+		var uids = db.UserGroup.manager.search($amap == app.user.getGroup(), false);
 		var uids = Lambda.map(uids, function(ua) return ua.user.id);
 		if (args != null && args.search != null) {
 			
@@ -102,7 +102,7 @@ class Member extends Controller
 			view.newUsers = db.User.getUsers_NewUsers().length;	
 		}
 		
-		view.waitingList = db.WaitingList.manager.count($group == app.user.amap);
+		view.waitingList = db.WaitingList.manager.count($group == app.user.getGroup());
 		
 	}
 	
@@ -111,12 +111,12 @@ class Member extends Controller
 	 */
 	function doMovetowl(u:db.User){
 		
-		var ua = db.UserAmap.get(u, app.user.amap, true);
+		var ua = db.UserGroup.get(u, app.user.getGroup(), true);
 		ua.delete();
 		
 		var wl = new db.WaitingList();
 		wl.user = u;
-		wl.group = app.user.amap;
+		wl.group = app.user.getGroup();
 		wl.insert();
 		
 		throw Ok("/member", u.getName() +" "+ t._("is now on waiting list.") );
@@ -133,18 +133,18 @@ class Member extends Controller
 		if (args != null){
 			if (args.add != null){
 				
-				service.WaitingListService.approveRequest(args.add,app.user.amap);
+				service.WaitingListService.approveRequest(args.add,app.user.getGroup());
 				throw Ok("/member/waiting", t._("Membership request accepted") );
 				
 			}else if (args.remove != null){
 				
-				service.WaitingListService.cancelRequest(args.remove,app.user.amap);
+				service.WaitingListService.cancelRequest(args.remove,app.user.getGroup());
 				throw Ok("/member/waiting", t._("Membership request refused") );
 				
 			}
 		}
 		
-		view.waitingList = db.WaitingList.manager.search($group == app.user.amap,{orderBy:-date});
+		view.waitingList = db.WaitingList.manager.search($group == app.user.getGroup(),{orderBy:-date});
 	}
 	
 	/**
@@ -153,7 +153,7 @@ class Member extends Controller
 	function doInviteMember(u:db.User){
 		
 		if (checkToken() ) {
-			u.sendInvitation(app.user.amap);
+			u.sendInvitation(app.user.getGroup());
 			throw Ok('/member/view/'+u.id, t._("Invitation sent.") );
 		}
 		
@@ -169,7 +169,7 @@ class Member extends Controller
 			var users = db.User.getUsers_NewUsers();
 			try{
 				for ( u in users) {
-					u.sendInvitation(app.user.amap);
+					u.sendInvitation(app.user.getGroup());
 					Sys.sleep(0.2);
 				}
 			}catch (e:String){
@@ -189,23 +189,23 @@ class Member extends Controller
 	function doView(member:db.User) {
 		
 		view.member = member;
-		var userAmap = db.UserAmap.get(member, app.user.amap);
+		var userAmap = db.UserGroup.get(member, app.user.getGroup());
 		if (userAmap == null) throw Error("/member", t._("This person does not belong to your group"));
 		
 		view.userAmap = userAmap; 
-		view.canLoginAs = (db.UserAmap.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
+		view.canLoginAs = (db.UserGroup.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
 		
 		//orders
 		var row = { constOrders:new Array<UserOrder>(), varOrders:new Map<String,Array<UserOrder>>() };
 			
 		//commandes fixes
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == app.user.amap && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
+		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_CONSTORDERS && $group == app.user.getGroup() && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
 		var orders = member.getOrdersFromContracts(contracts);
 		row.constOrders = service.OrderService.prepare(orders);
 		
 		//commandes variables groupées par date de distrib
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == app.user.amap && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
-		var distribs = new Map<String,List<db.UserContract>>();
+		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_VARORDER && $group == app.user.getGroup() && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
+		var distribs = new Map<String,List<db.UserOrder>>();
 		for (c in contracts) {
 			var ds = c.getDistribs();
 			for (d in ds) {
@@ -240,12 +240,12 @@ class Member extends Controller
 	 * @param	user
 	 * @param	amap
 	 */	
-	function doLoginas(member:db.User, amap:db.Amap) {
+	function doLoginas(member:db.User, amap:db.Group) {
 	
 		if (!app.user.isAdmin()){
 			if (!app.user.isAmapManager()) return;
 			if (member.isAdmin()) return;
-			if ( db.UserAmap.manager.count($userId == member.id) > 1 ) return;
+			if ( db.UserGroup.manager.count($userId == member.id) > 1 ) return;
 			
 		}
 		
@@ -260,7 +260,7 @@ class Member extends Controller
 		var out = new Array<{date:Date,subject:String,success:String,failure:String}>();
 		var threeMonth = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30.5 * 3);
 		
-		for ( m in sugoi.db.BufferedMail.manager.search($remoteId == app.user.amap.id && $cdate > threeMonth, {limit:10, orderBy:-cdate})){
+		for ( m in sugoi.db.BufferedMail.manager.search($remoteId == app.user.getGroup().id && $cdate > threeMonth, {limit:10, orderBy:-cdate})){
 			
 			var status : sugoi.mail.IMailer.MailerResult = m.status;
 			
@@ -286,7 +286,7 @@ class Member extends Controller
 		
 		
 		var isReg = member.isFullyRegistred();
-		var groupNum = db.UserAmap.manager.count($userId == member.id);
+		var groupNum = db.UserGroup.manager.count($userId == member.id);
 		
 		//an administrator can modify a user's email only if he's not member elsewhere
 		if (groupNum > 1){			
@@ -306,7 +306,7 @@ class Member extends Controller
 		
 		if (form.checkToken()) {
 			
-			if (app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && form.getValueOf("phone") == null ){
+			if (app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && form.getValueOf("phone") == null ){
 				throw Error("/member/edit/"+member.id, t._("Phone number is required in this group."));
 			}
 			
@@ -321,7 +321,7 @@ class Member extends Controller
 				
 				//Let's merge the 2 users if it has no orders.
 				var id = sim.first().id;
-				if (db.UserContract.manager.search( $userId == id || $userId2 == id , false).length == 0) {
+				if (db.UserOrder.manager.search( $userId == id || $userId2 == id , false).length == 0) {
 					//merge
 					member.merge( sim.first() );
 					app.session.addMessage(t._("This e-mail was used by another user account. As this user account was not used, it has been merged into the current user account."));
@@ -375,16 +375,16 @@ class Member extends Controller
 		if (checkToken()) {
 			if (!app.user.canAccessMembership()) throw t._("You cannot do that.");
 			if (user.id == app.user.id) throw Error("/member/view/" + user.id, t._("You cannot delete yourself."));
-			if ( Lambda.count(user.getOrders(app.user.amap),function(x) return x.quantity>0) > 0 && !args.confirm) {
+			if ( Lambda.count(user.getOrders(app.user.getGroup()),function(x) return x.quantity>0) > 0 && !args.confirm) {
 				throw Error("/member/view/"+user.id, t._("Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Remove anyway</a>", {userid:user.id, argstoken:args.token}));
 			}
 		
-			var ua = db.UserAmap.get(user, app.user.amap, true);
+			var ua = db.UserGroup.get(user, app.user.getGroup(), true);
 			if (ua != null) {
 				ua.delete();
 				throw Ok("/member", t._("::user:: has been removed from your group",{user:user.getName()}));
 			}else {
-				throw Error("/member", t._("This person does not belong to \"::amapname::\"", {amapname:app.user.amap.name}));
+				throw Error("/member", t._("This person does not belong to \"::amapname::\"", {amapname:app.user.getGroup().name}));
 			}	
 		}else {
 			throw Redirect("/member/view/"+user.id);
@@ -401,7 +401,7 @@ class Member extends Controller
 		
 		var form = new Form("merge");
 		
-		var members = app.user.amap.getMembers();
+		var members = app.user.getGroup().getMembers();
 		var members = Lambda.array(Lambda.map(members, function(x) return { key:Std.string(x.id), value:x.getName() } ));
 		var mlist = new Selectbox("member1", t._("Account 1"), members, Std.string(user.id));
 		form.addElement( mlist );
@@ -419,7 +419,7 @@ class Member extends Controller
 			
 			//on prend tout à m2 pour donner à m1			
 			//change usercontracts
-			var contracts = db.UserContract.manager.search($user==m2 || $user2==m2,true);
+			var contracts = db.UserOrder.manager.search($user==m2 || $user2==m2,true);
 			for (c in contracts) {
 				if (c.user.id == m2.id) c.user = m1;
 				if (c.user2!=null && c.user2.id == m2.id) c.user2 = m1;
@@ -427,14 +427,14 @@ class Member extends Controller
 			}
 			
 			//group memberships
-			var adh = db.UserAmap.manager.search($user == m2, true);
+			var adh = db.UserGroup.manager.search($user == m2, true);
 			for ( a in adh) {
 				a.user = m1;
 				a.update();
 			}
 			
 			//change contacts
-			var contacts = db.Contract.manager.search($contact==m2,true);
+			var contacts = db.Catalog.manager.search($contact==m2,true);
 			for (c in contacts) {
 				c.contact = m1;
 				c.update();
@@ -471,11 +471,7 @@ class Member extends Controller
 			csv.setHeaders([t._("Firstname"), t._("Lastname"), t._("E-mail"), t._("Mobile phone"), t._("Partner's firstname"), t._("Partner's lastname"), t._("Partner's e-mail"), t._("Partner's Mobile phone"), t._("Address 1"), t._("Address 2"), t._("Post code"), t._("City")]);
 			
 			//utf8 encode if needed
-			try{
-				if (!haxe.Utf8.validate(data)){
-					data = haxe.Utf8.encode(data);
-				}
-			}catch (e:Dynamic){ }
+			data = Formatting.utf8(data);
 			var unregistred = csv.importDatas(data);
 			
 			/*var checkEmail = function(email){
@@ -514,11 +510,6 @@ class Member extends Controller
 				for ( i in 0...row.length) {
 					var t = row[i];
 					if (t != "" && t != null) {
-						try{
-							if (!Utf8.validate(t)) {
-								t = Utf8.encode(t);	
-							}
-						}catch (e:Dynamic) {}
 						row[i] = t;
 					}
 				}
@@ -583,9 +574,9 @@ class Member extends Controller
 				user.city = u[11];				
 				user.insert();
 				
-				var ua = new db.UserAmap();
+				var ua = new db.UserGroup();
 				ua.user = user;
-				ua.amap = app.user.amap;
+				ua.amap = app.user.getGroup();
 				ua.insert();
 			}
 			
@@ -596,13 +587,13 @@ class Member extends Controller
 				var email2 = u[6];
 				
 				var us = db.User.getSameEmail(email, email2);
-				var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(us, function(u) return u.id), false);
+				var userAmaps = db.UserGroup.manager.search($amap == app.user.getGroup() && $userId in Lambda.map(us, function(u) return u.id), false);
 				
 				//member exists but is not member of this group.
 				if (userAmaps.length == 0) {					
-					var ua = new db.UserAmap();
+					var ua = new db.UserGroup();
 					ua.user = us.first();
-					ua.amap = app.user.amap;
+					ua.amap = app.user.getGroup();
 					ua.insert();
 				}
 			}
@@ -639,7 +630,7 @@ class Member extends Controller
 			//check doublon de User et de UserAmap
 			var userSims = db.User.getSameEmail(form.getValueOf("email"),form.getValueOf("email2"));
 			view.userSims = userSims;
-			var userAmaps = db.UserAmap.manager.search($amap == app.user.amap && $userId in Lambda.map(userSims, function(u) return u.id), false);
+			var userAmaps = db.UserGroup.manager.search($amap == app.user.getGroup() && $userId in Lambda.map(userSims, function(u) return u.id), false);
 			view.userAmaps = userAmaps;
 			
 			if (userAmaps.length > 0) {
@@ -650,9 +641,9 @@ class Member extends Controller
 				//des users existent avec ce nom , 
 				//if (userSims.length == 1) {
 					// si yen a qu'un on l'inserte
-					var ua = new db.UserAmap();
+					var ua = new db.UserGroup();
 					ua.user = userSims.first();
-					ua.amap = app.user.amap;
+					ua.amap = app.user.getGroup();
 					ua.insert();	
 					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
 				/*}else {
@@ -663,7 +654,7 @@ class Member extends Controller
 				return;
 			}else {
 				
-				if (app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && form.getValueOf("phone") == null ){
+				if (app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && form.getValueOf("phone") == null ){
 					throw Error("/member/insert", t._("Phone number is required in this group."));
 				}
 				
@@ -674,17 +665,17 @@ class Member extends Controller
 				u.insert();
 				
 				//insert userAmap
-				var ua = new db.UserAmap();
+				var ua = new db.UserGroup();
 				ua.user = u;
-				ua.amap = app.user.getAmap();
+				ua.amap = app.user.getGroup();
 				ua.insert();	
 				
 				if (form.getValueOf("warnAmapManager") == "1") {
 					var url = "http://" + App.config.HOST + "/member/view/" + u.id;
 					var text = t._("::admin:: just keyed-in contact details of a new member: <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>",{admin:app.user.getName(),newMember:u.getCoupleName(),url:url});
 					App.quickMail(
-						app.user.getAmap().contact.email,
-						app.user.amap.name +" - "+ t._("New member") + " : " + u.getCoupleName(),
+						app.user.getGroup().contact.email,
+						app.user.getGroup().name +" - "+ t._("New member") + " : " + u.getCoupleName(),
 						app.processTemplate("mail/message.mtt", { text:text } ) 
 					);
 				}
@@ -704,28 +695,28 @@ class Member extends Controller
 	@tpl('member/payments.mtt')
 	function doPayments(m:db.User){
 		
-		service.PaymentService.updateUserBalance(m, app.user.amap);		
+		service.PaymentService.updateUserBalance(m, app.user.getGroup());		
        var browse:Int->Int->List<Dynamic>;
 		
 		//default display
 		browse = function(index:Int, limit:Int) {
-			return db.Operation.getOperationsWithIndex(m,app.user.amap,index,limit,true);
+			return db.Operation.getOperationsWithIndex(m,app.user.getGroup(),index,limit,true);
 		}
 		
-		var count = db.Operation.countOperations(m,app.user.amap);
+		var count = db.Operation.countOperations(m,app.user.getGroup());
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.rb = rb;
 		view.member = m;
-		view.balance = db.UserAmap.get(m, app.user.amap).balance;
+		view.balance = db.UserGroup.get(m, app.user.getGroup()).balance;
 		
 		checkToken();
 	}
 	
 	@tpl('member/balance.mtt')
 	function doBalance(){
-		view.balanced = db.UserAmap.manager.search($amap == app.user.amap && $balance == 0.0, false);
-		view.credit = db.UserAmap.manager.search($amap == app.user.amap && $balance > 0, false);
-		view.debt = db.UserAmap.manager.search($amap == app.user.amap && $balance < 0, false);
+		view.balanced = db.UserGroup.manager.search($amap == app.user.getGroup() && $balance == 0.0, false);
+		view.credit = db.UserGroup.manager.search($amap == app.user.getGroup() && $balance > 0, false);
+		view.debt = db.UserGroup.manager.search($amap == app.user.getGroup() && $balance < 0, false);
 	}
 	
 }

@@ -4,11 +4,10 @@
 -lib hscript
 -lib tink_core
 -lib tink_json
-
--lib sugoi
 -lib record-macros
 -lib hx3compat
 
+-lib sugoi
 -lib cagette-pro
 
 -cp ../common

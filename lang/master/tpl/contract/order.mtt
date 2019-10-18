@@ -49,7 +49,7 @@
 						</a>
 					</td>
 					<td>
-						::set price = uo.product.price + uo.product._contract.computeFees(uo.product.price)::
+						::set price = uo.product.price + uo.product._catalog.computeFees(uo.product.price)::
 						::formatNum(price)::&nbsp;::currency()::
 					</td>
 					
@@ -100,7 +100,7 @@
 					
 						::if o.order!=null::
 							::set q = o.order.quantity::
-							::set price = o.product.price + o.product._contract.computeFees(o.product.price)::
+							::set price = o.product.price + o.product._catalog.computeFees(o.product.price)::
 							
 							::set total = total+(q*price)::
 						

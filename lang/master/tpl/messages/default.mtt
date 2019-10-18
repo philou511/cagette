@@ -42,7 +42,7 @@
 		toolbar: "styleselect bold italic alignleft aligncenter emoticons image bullist outdent indent forecolor",
 		language: '::session.lang::',
 		image_list: [
-			::foreach c user._amap.getActiveContracts(false)::
+			::foreach c user.getGroup().getActiveContracts(false)::
 				::if c._vendor._image!=null::
 					{title: '::escapeJS(c._vendor.name)::', value: '::file(c._vendor._image)::'},			
 				::end::

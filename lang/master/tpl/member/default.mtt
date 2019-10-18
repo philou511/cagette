@@ -122,8 +122,8 @@
 			<li><a href="/member/?select=nocontract">::_("Without orders or contracts")::</a></li>
 			<li><a href="/member/?select=contract">::_("With orders or contracts")::</a></li>
 			<li><a href="/member/?select=newusers">::_("Never logged in")::</a></li>
-			<li ::cond user._amap.hasMembership()::><a href="/member/?select=nomembership">::_("Memberships to renew")::</a></li>
-			<li ::cond user._amap.hasPayments()::><a href="/member/balance">::_("Members balance")::</a></li>
+			<li ::cond user.getGroup().hasMembership()::><a href="/member/?select=nomembership">::_("Memberships to renew")::</a></li>
+			<li ::cond user.getGroup().hasPayments()::><a href="/member/balance">::_("Members balance")::</a></li>
 			
 		</ul>
 		

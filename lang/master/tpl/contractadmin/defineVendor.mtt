@@ -47,11 +47,12 @@
 										<i class="icon icon-book"></i> ::catalog.name::
 									</a>&nbsp;
 								::end::
-								::if(catalogs.length==0)::
+								
+								<!-- even if the vendor is cpro, we can create a catalog for him -->
 								<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">
 									<i class="icon icon-plus"></i> Nouveau catalogue
 								</a>
-								::end::
+								
 						
 						::else::						
 							<a href="/contract/insertChoose/::v.id::" class="btn btn-default btn-sm">

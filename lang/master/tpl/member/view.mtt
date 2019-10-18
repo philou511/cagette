@@ -67,12 +67,12 @@
 		</p>
 
 		<p ::cond canLoginAs::>
-			<a href="/member/loginas/::member.id::/::userAmap._amap.id::" class="btn btn-danger btn-xs">::_("Log in as this member")::</a>
+			<a href="/member/loginas/::member.id::/::userAmap._group.id::" class="btn btn-danger btn-xs">::_("Log in as this member")::</a>
 		</p>
 	</div>
 	
 	
-	::if user._amap.hasMembership()::
+	::if user.getGroup().hasMembership()::
 	<h2>::_("Membership fee")::</h2>
 	<div class="article">
 		::if userAmap.hasValidMembership()::
@@ -80,7 +80,7 @@
 		::else::
 			$$bool(false) ::_("Membership to renew")::
 		::end::
-		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user._amap.getPeriodName(null)::</b>
+		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
 		<br/>
 		<a href="/membership/::member.id::" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 		
@@ -183,7 +183,7 @@
 </div>
 
 
-<div ::cond user.getAmap().hasPayments():: class="col-md-8">
+<div ::cond user.getGroup().hasPayments():: class="col-md-8">
 	<div class="article">
 		
 		<span style="font-size:1.3em;">

@@ -1,6 +1,6 @@
 package ;
 import Common;
-import js.JQuery;
+import js.jquery.JQuery;
 /**
  * 
  * Tag products with categories

@@ -42,7 +42,7 @@ class User extends Controller
 	 */
 	@logged
 	@tpl("user/choose.mtt")
-	function doChoose(?args: { group:db.Amap } ) {
+	function doChoose(?args: { group:db.Group } ) {
 
 		//home page
 		app.breadcrumb = [];
@@ -53,7 +53,7 @@ class User extends Controller
 		
 		view.noGroup = true; //force template to not display current group
 		view.hasRights = Lambda.find( groups, function(g){
-			var ua = db.UserAmap.get(app.user,g);			
+			var ua = db.UserGroup.get(app.user,g);			
 			return ua!=null && ua.rights!=null && ua.rights.length>0;
 		})!=null;
 
@@ -133,7 +133,7 @@ class User extends Controller
 			
 			var m = new sugoi.mail.Mail();
 			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
-			m.setRecipient(email, user.name);					
+			m.setRecipient(email, user.getName());					
 			m.setSubject( "["+App.config.NAME+"] : "+t._("Password change"));
 			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
@@ -164,8 +164,8 @@ class User extends Controller
 
 				var m = new sugoi.mail.Mail();
 				m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
-				m.setRecipient(user.email, user.name);					
-				if(user.email2!=null) m.setRecipient(user.email2, user.name);					
+				m.setRecipient(user.email, user.getName());					
+				if(user.email2!=null) m.setRecipient(user.email2, user.getName());					
 				m.setSubject( "["+App.config.NAME+"] : "+t._("New password confirmed"));
 				var emails = [user.email];
 				if(user.email2!=null) emails.push(user.email2);
@@ -260,14 +260,14 @@ class User extends Controller
 
 		var group = App.current.getCurrentGroup();
 		if(group==null) throw "no group selected";
-		if(group.regOption!=db.Amap.RegOption.Open) throw "this group is not open";
+		if(group.regOption!=db.Group.RegOption.Open) throw "this group is not open";
 
 		var user = app.user;
 		user.lock();
 		user.flags.set(HasEmailNotif24h);
 		user.flags.set(HasEmailNotifOuverture);
 		user.update();
-		db.UserAmap.getOrCreate(user,group);
+		db.UserGroup.getOrCreate(user,group);
 
 		//warn manager by mail
 		if(group.contact!=null){
@@ -288,7 +288,7 @@ class User extends Controller
 		Quit a group.  Should work even if user is not logged in. ( link in emails footer )
 	**/
 	@tpl('account/quit.mtt')
-	function doQuitGroup(group:db.Amap,user:db.User,key:String){
+	function doQuitGroup(group:db.Group,user:db.User,key:String){
 		//return "https://"+App.config.HOST+"/account/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id);
 		if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) != key){
 			throw Error("/","Lien invalide");
@@ -300,7 +300,7 @@ class User extends Controller
 		if (checkToken()){
 			var url = app.user==null ? "/user/" : "/user/choose?show=1";
 			var name = group.name;
-			var ua = db.UserAmap.get(user, group,true);
+			var ua = db.UserGroup.get(user, group,true);
 			if(ua==null){
 				throw Ok(url, "Vous ne faisiez plus partie du groupe "+name);	
 			}

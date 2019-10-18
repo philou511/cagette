@@ -10,7 +10,7 @@ class Product extends Controller
 	/**
 		List all products of a conctract
 	**/
-	public function doGet(args:{?contractId:db.Contract}) {
+	public function doGet(args:{?contractId:db.Catalog}) {
 	
 		if(args==null || args.contractId==null) throw "invalid params";
 

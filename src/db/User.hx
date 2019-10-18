@@ -1,7 +1,7 @@
 package db;
 import sys.db.Object;
 import sys.db.Types;
-import db.UserAmap;
+import db.UserGroup;
 import Common;
 
 enum UserFlags {
@@ -23,7 +23,7 @@ class User extends Object {
 
 	public var id : SId;
 	public var lang : SString<2>;
-	@:skip public var name(get, set) : String;
+	//@:skip public var name(get, set) : String;
 	public var pass : STinyText;
 	public var rights : SFlags<RightSite>;
 	
@@ -46,7 +46,7 @@ class User extends Object {
 	public var nationality : SNull<SString<2>>;
 	public var countryOfResidence : SNull<SString<2>>;
 	
-	@:skip public var amap(get_amap, null) : Amap;
+	//@:skip public var amap(get_amap, null) : Amap;
 	
 	public var cdate : SDate; 				//last creation
 	public var ldate : SNull<SDateTime>;	//last connection
@@ -132,9 +132,9 @@ class User extends Object {
 	 * is this user the manager of the current group
 	 */
 	public function isAmapManager() {
-		var a = getAmap();
+		var a = getGroup();
 		if (a == null) return false;
-		var ua = getUserAmap(a);
+		var ua = getUserGroup(a);
 		if (ua == null) return false;
 		return ua.hasRight(Right.GroupAdmin);
 	}
@@ -143,22 +143,22 @@ class User extends Object {
 		return isAmapManager();
 	}
 	
-	public function getUserAmap(amap:db.Amap):db.UserAmap {
-		return db.UserAmap.get(this, amap);
+	public function getUserGroup(amap:db.Group):db.UserGroup {
+		return db.UserGroup.get(this, amap);
 	}
 
-	public function getUserAmaps(){
-		return Lambda.array(db.UserAmap.manager.search($user == this, false));
+	public function getUserGroups(){
+		return Lambda.array(db.UserGroup.manager.search($user == this, false));
 	}
 	
 	public function isFullyRegistred(){
 		return pass != null && pass != "";
 	}
 	
-	public function makeMemberOf(group:db.Amap){
-		var ua = db.UserAmap.get(this, group);
+	public function makeMemberOf(group:db.Group){
+		var ua = db.UserGroup.get(this, group);
 		if (ua == null) {
-			ua = new db.UserAmap();
+			ua = new db.UserGroup();
 			ua.user = this;
 			ua.amap = group;
 			ua.insert();
@@ -173,12 +173,12 @@ class User extends Object {
 	 * si null, est ce qu'il a la gestion d'un des contrat, n'importe lequel (utilse pour afficher 'gestion contrat' dans la nav )
 	 * @param	contract
 	 */
-	public function isContractManager(?contract:db.Contract ) {
+	public function isContractManager(?contract:db.Catalog ) {
 		if (isAdmin()) return true;
 		if (contract != null) {			
 			return canManageContract(contract);
 		}else {
-			var ua = getUserAmap(getAmap());
+			var ua = getUserGroup(getGroup());
 			if (ua == null) return false;
 			if (ua.rights == null) return false;
 			for (r in ua.rights) {
@@ -194,7 +194,7 @@ class User extends Object {
 	
 	public function canManageAllContracts(){
 		if (isAdmin()) return true;
-		var ua = getUserAmap(getAmap());
+		var ua = getUserGroup(getGroup());
 		if (ua == null) return false;
 		if (ua.rights == null) return false;
 		for (r in ua.rights) {
@@ -208,27 +208,27 @@ class User extends Object {
 	}
 	
 	public function getRights():Array<Right>{
-		var ua = getUserAmap(getAmap());
+		var ua = getUserGroup(getGroup());
 		if (ua == null) return [];
 		return ua.rights;
 	}
 
 	public function canAccessMessages():Bool {
-		var ua = getUserAmap(getAmap());
+		var ua = getUserGroup(getGroup());
 		if (ua == null) return false;
 		if (ua.hasRight(Right.Messages)) return true;
 		return false;
 	}
 	
 	public function canAccessMembership():Bool {
-		var ua = getUserAmap(getAmap());
+		var ua = getUserGroup(getGroup());
 		if (ua == null) return false;
 		if (ua.hasRight(Right.Membership)) return true;
 		return false;
 	}
 	
-	public function canManageContract(c:db.Contract):Bool {
-		var ua = getUserAmap(c.amap);
+	public function canManageContract(c:db.Catalog):Bool {
+		var ua = getUserGroup(c.group);
 		if (ua == null) return false;
 		if (ua.hasRight(Right.ContractAdmin())) return true;
 		if (ua.hasRight(Right.ContractAdmin(c.id))) return true;		
@@ -236,14 +236,10 @@ class User extends Object {
 	}
 	
 	public function getContractManager(?lock=false) {
-		return Contract.manager.search($amap == amap && $contact == this, false);
+		return db.Catalog.manager.search($group == getGroup() && $contact == this, false);
 	}
 	
 	public function getName() {
-		return get_name();
-	}
-	
-	public function get_name() {
 		return lastName + " " + firstName;
 	}
 	
@@ -253,13 +249,6 @@ class User extends Object {
 			n = n + " / " + lastName2 + " " + firstName2;
 		}
 		return n;
-	}
-	
-	public function set_name(name:String) {
-		var name = name.split(' ');
-		firstName = name[0];
-		lastName = name[1];
-		return firstName+" "+lastName;
 	}
 	
 	/**
@@ -280,12 +269,12 @@ class User extends Object {
 	 * @param	_amap		force une amap
 	 * @param	lock=false
 	 */
-	public function getOrders(?_amap:db.Amap,?lock = false):List<UserContract> {
-		var a = _amap == null ? getAmap() : _amap;
+	public function getOrders(?_amap:db.Group,?lock = false):List<db.UserOrder> {
+		var a = _amap == null ? getGroup() : _amap;
 		var c = a.getActiveContracts(true);
 		var cids = Lambda.map(c,function(m) return m.id);
-		var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
-		var out =  UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);		
+		var pids = Lambda.map(db.Product.manager.search($catalogId in cids,false), function(x) return x.id);
+		var out =  db.UserOrder.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);		
 		return out;
 		
 	}
@@ -293,28 +282,24 @@ class User extends Object {
 	/**
 	 * renvoie les commandes à partir d'une liste de contrats
 	 */
-	public function getOrdersFromContracts(c:Iterable<db.Contract>):List<db.UserContract> {
+	public function getOrdersFromContracts(c:Iterable<db.Catalog>):List<db.UserOrder> {
 		var cids = Lambda.map(c,function(m) return m.id);
-		var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
-		return UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, false);		
+		var pids = Lambda.map(db.Product.manager.search($catalogId in cids,false), function(x) return x.id);
+		return db.UserOrder.manager.search(($userId == id || $userId2 == id) && $productId in pids, false);		
 	}
 	
 	/**
 	 * renvoie les commandes de contrat variables à partir d'une distribution
 	 */
-	public function getOrdersFromDistrib(d:db.Distribution):List<db.UserContract> {
-		var pids = Lambda.map(db.Product.manager.search($contractId == d.contract.id, false), function(x) return x.id);		
-		return UserContract.manager.search(($userId == id || $userId2 == id) && $distributionId==d.id && $productId in pids , false);	
-	}
-	
-	public function get_amap():Amap {
-		return getAmap();
+	public function getOrdersFromDistrib(d:db.Distribution):List<db.UserOrder> {
+		var pids = Lambda.map(db.Product.manager.search($catalogId == d.catalog.id, false), function(x) return x.id);		
+		return db.UserOrder.manager.search(($userId == id || $userId2 == id) && $distributionId==d.id && $productId in pids , false);	
 	}
 	
 	/**
 	 * renvoie l'amap selectionnée par le user en cours
 	 */
-	public function getAmap() {
+	public function getGroup() {
 		
 		if (App.current.user != null && id != App.current.user.id) throw "This function is valid only for the current user";
 		if (App.current.session == null) return null;
@@ -323,23 +308,23 @@ class User extends Object {
 		if (a == null) {
 			return null;
 		}else {			
-			return Amap.manager.get(a,false);
+			return db.Group.manager.get(a,false);
 		}
 	}
 	
 	/**
 	 * Get groups this user belongs to.	 
 	 */
-	public function getGroups():Array<db.Amap> {
-		var groups = Lambda.array(Lambda.map(UserAmap.manager.search($user == this, false), function(o) return o.amap));
+	public function getGroups():Array<db.Group> {
+		var groups = Lambda.array(Lambda.map(UserGroup.manager.search($user == this, false), function(o) return o.amap));
 		//alphabetical order
 		groups.sort(function(a,b) return a.name>b.name?1:-1 );
 		return groups;
 
 	}
 	
-	public function isMemberOf(amap:Amap) {
-		return UserAmap.manager.select($user == this && $amapId == amap.id, false) != null;
+	public function isMemberOf(group:db.Group) {
+		return UserGroup.manager.select($user == this && $groupId == group.id, false) != null;
 	}
 	
 	
@@ -348,16 +333,15 @@ class User extends Object {
 	 * @param	lock=false
 	 * @return
 	 */
-	public function getContracts(?lock=false):Array<Contract> {
+	public function getContracts(?lock=false):Array<db.Catalog> {
 		var out = [];
 		var ucs = getOrders(lock);
 		for (uc in ucs) {
-			if (!Lambda.has(out, uc.product.contract)) {
-				out.push(uc.product.contract);
+			if (!Lambda.has(out, uc.product.catalog)) {
+				out.push(uc.product.catalog);
 			}	
 		}
 		return out;
-		
 	}
 	
 	/**
@@ -460,8 +444,8 @@ class User extends Object {
 	 *  Get users with no contracts
 	 **/ 
 	public static function getUsers_NoContracts(?index:Int,?limit:Int):List<db.User> {
-		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
-		var uc = UserContract.manager.search($productId in productsIds, false);
+		var productsIds = App.current.user.getGroup().getProducts().map(function(x) return x.id);
+		var uc = db.UserOrder.manager.search($productId in productsIds, false);
 		var uc2 = uc.map(function(x) return x.user.id); //liste des userId avec un contrat dans cette amap
 
 		// J. Le Clerc - BUGFIX#1 Ne pas oublier les contrats alternés
@@ -473,10 +457,10 @@ class User extends Object {
 		
 		if (uc2.length > 0){
 			//les gens qui sont dans cette amap et qui n'ont pas de contrat de cette amap
-			var ua = db.UserAmap.manager.unsafeObjects("select * from UserAmap where amapId=" + App.current.user.getAmap().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
+			var ua = db.UserGroup.manager.unsafeObjects("select * from UserAmap where groupId=" + App.current.user.getGroup().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
 			return Lambda.map(ua, function(x) return x.user);	
 		}else{
-			return App.current.user.amap.getMembers();
+			return App.current.user.getGroup().getMembers();
 		}
 		
 	}
@@ -485,18 +469,18 @@ class User extends Object {
 	 * User with contracts
 	 */
 	public static function getUsers_Contracts(?index:Int,?limit:Int):List<db.User> {
-		var productsIds = App.current.user.getAmap().getProducts().map(function(x) return x.id);
+		var productsIds = App.current.user.getGroup().getProducts().map(function(x) return x.id);
 		if (productsIds.length == 0) return new List();
-		return db.User.manager.unsafeObjects("select u.* from User u, UserContract uc where uc.productId IN(" + productsIds.join(",") + ") AND (uc.userId=u.id OR uc.userId2=u.id) group by u.id  ORDER BY u.lastName", false);	
+		return db.User.manager.unsafeObjects("select u.* from User u, UserOrder uc where uc.productId IN(" + productsIds.join(",") + ") AND (uc.userId=u.id OR uc.userId2=u.id) group by u.id  ORDER BY u.lastName", false);	
 	}
 	
 	
 	public static function getUsers_NoMembership(?index:Int,?limit:Int):List<db.User> {
 		var ua = new List();
 		if (index == null && limit == null) {
-			ua = db.UserAmap.manager.search($amap == App.current.user.amap, false);	
+			ua = db.UserGroup.manager.search($amap == App.current.user.getGroup(), false);	
 		}else {
-			ua = db.UserAmap.manager.search($amap == App.current.user.amap,{limit:[index,limit]}, false);
+			ua = db.UserGroup.manager.search($amap == App.current.user.getGroup(),{limit:[index,limit]}, false);
 		}
 		
 		for (u in Lambda.array(ua)) {
@@ -508,7 +492,7 @@ class User extends Object {
 	
 	public static function getUsers_NewUsers(?index:Int, ?limit:Int):List<db.User> {
 		
-		var uas = db.UserAmap.manager.search($amap == App.current.user.amap, false);
+		var uas = db.UserGroup.manager.search($amap == App.current.user.getGroup(), false);
 		var ids = Lambda.map(uas, function(x) return x.user.id);
 		if (index == null && limit == null) {
 			return  db.User.manager.search($pass == "" && ($id in ids), {orderBy:lastName} ,false);
@@ -518,7 +502,7 @@ class User extends Object {
 		
 	}
 	
-	public function sendInvitation(group:db.Amap,?force=false) {
+	public function sendInvitation(group:db.Group,?force=false) {
 		
 		var t = sugoi.i18n.Locale.texts;
 		
@@ -526,7 +510,7 @@ class User extends Object {
 		
 		//store token
 		var k = sugoi.db.Session.generateId();
-		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30); //expire in 1 month
+		sugoi.db.Cache.set("validation" + k, this.id, 60 * 60 * 24 * 30 * 3); //expire in 3 month
 		
 		var e = new sugoi.mail.Mail();
 		if (group != null){
@@ -579,7 +563,7 @@ class User extends Object {
 	/**
 		get "quit group" link for emails footer
 	**/
-	public function getQuitGroupLink(group:db.Amap){
+	public function getQuitGroupLink(group:db.Group){
 		var protocol = App.config.DEBUG ? "http://" : "https://";
 		return protocol+App.config.HOST+"/user/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+this.id);
 	}
@@ -619,6 +603,16 @@ class User extends Object {
 			"flags"		=>	t._("Options"),
 			"pass"		=>	t._("Password"),
 		];
+	}
+
+	public function getAddress(){
+		var str = new StringBuf();
+		if (address1 != null) str.add(address1 + ", \n");
+		if (address2 != null) str.add(address2 + ", \n");
+		if (zipCode != null) str.add(zipCode);
+		if (city != null) str.add(" - "+city);
+		if(countryOfResidence != null) str.add(", "+countryOfResidence);
+		return str.toString();
 	}
 	
 	

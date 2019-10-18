@@ -1,20 +1,22 @@
 -dce no
 -cp ../common
 -cp ../js
--lib sugoi:git:https://github.com/bablukid/sugoi
--lib hxleaflet:git:https://github.com/bablukid/hxleaflet
+
+-lib sugoi
 -lib react-next
--lib material-ui
--lib react-router-4
--lib modular
 -lib classnames
 -lib react-types
--lib tink_json
--lib haxe-lodash:git:https://github.com/kiroukou/haxe-lodash-externs.git#master
-
+-lib react-router-4
 -lib redux
 -lib redux-connect
 -lib redux-thunk
+-lib material-ui
+-lib hxleaflet
+-lib modular
+-lib tink_json
+-lib haxe-lodash
+-lib jQueryExtern
+
 
 -main App
 -debug

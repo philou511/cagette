@@ -33,7 +33,7 @@
 		
 		<select name="tag" id="tag" class="form-control">
     
-			::foreach cg user._amap.getCategoryGroups()::
+			::foreach cg user.getGroup().getCategoryGroups()::
 			<optgroup label="::cg.name::">
 				::foreach cat cg.categs::
 				<option value="::cat.id::">::cat.name::</option>	

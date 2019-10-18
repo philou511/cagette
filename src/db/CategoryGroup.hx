@@ -9,7 +9,7 @@ class CategoryGroup extends sys.db.Object
 	public var color : STinyInt; //color id
 	public var pinned : SBool; //if true, the products tagged with these categories will be pinned on top of the shop.
 	
-	@:relation(amapId) public  var amap:db.Amap;
+	@:relation(amapId) public  var amap:db.Group;
 	
 	@:skip public static var COLORS = [
 		0x7BAD1C, //vert clair
@@ -32,7 +32,7 @@ class CategoryGroup extends sys.db.Object
 		return db.Category.manager.search($categoryGroup == this, false);
 	}
 	
-	public static function get(amap:db.Amap):List<CategoryGroup> {
+	public static function get(amap:db.Group):List<CategoryGroup> {
 		return manager.search($amap == amap, false);
 	}
 	

@@ -9,7 +9,7 @@ import react.order.redux.actions.thunk.OrderBoxThunk;
 
 typedef ProductSelectProps = {
 
-	var contractId : Int;
+	var catalogId : Int;
 	var products : Array<ProductInfo>;
 	var selectProduct : Int -> Void;	
 	var fetchProducts : Int -> Void;
@@ -42,7 +42,7 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 
 	override function componentDidMount() {
 
-		props.fetchProducts( props.contractId );
+		props.fetchProducts( props.catalogId );
 	}
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<ProductSelectProps> {	
@@ -59,8 +59,8 @@ class ProductSelect extends react.ReactComponentOfProps<ProductSelectProps>
 								//Redirects to orderBox when a product is selected
 								js.Browser.location.hash = "/";
 							},
-			fetchProducts : function( contractId : Int ) {
-								dispatch(OrderBoxThunk.fetchProducts( contractId )); 		
+			fetchProducts : function( catalogId : Int ) {
+								dispatch(OrderBoxThunk.fetchProducts( catalogId )); 		
 							}			
 		}
 	}	

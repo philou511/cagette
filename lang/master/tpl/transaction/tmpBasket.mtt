@@ -16,7 +16,7 @@
         </div>
 
         <p class="text-center" style="margin-bottom:32px;">
-            ::if(user.getAmap().hasPayments())::
+            ::if(user.getGroup().hasPayments())::
             <a href="?confirm=1" class="btn btn-primary btn-lg"><i class="icon icon-check"></i> Confirmer et payer</a>
             ::else::
             <a href="?confirm=1" class="btn btn-primary btn-lg"><i class="icon icon-check"></i> Confirmer</a>
@@ -39,12 +39,18 @@
                     <td>							
                         ::raw o.quantity::
                     </td>
-                    <td>                        
-                        <img src="::file(o.product._image)::" style="width:32px;height:32px;" />
-                        ::o.product.name::                        
+                    <td>
+                        ::if(o.product!=null)::                        
+                            <img src="::file(o.product._image)::" style="width:32px;height:32px;" />
+                            ::o.product.name::                        
+                        ::else::
+                            null product
+                        ::end::
                     </td>      
                     <td>
-                        ::formatNum(o.product.price*o.quantity)::&nbsp;::currency()::
+                        ::if(o.product!=null)::
+                            ::formatNum(o.product.price*o.quantity)::&nbsp;::currency()::
+                        ::end::
                     </td>
                 </tr>
             ::end::	

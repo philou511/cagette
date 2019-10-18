@@ -198,10 +198,10 @@ class VolunteerService
 				if ( now.getTime() <=  alertDate.getTime() ) {
 
 					//Recipients are the coordinators
-					var rights = if(foundVolunteer.volunteerRole.contract==null){
+					var rights = if(foundVolunteer.volunteerRole.catalog==null){
 						[ Right.GroupAdmin ];
 					}else{
-						[ Right.ContractAdmin(foundVolunteer.volunteerRole.contract.id) ];
+						[ Right.ContractAdmin(foundVolunteer.volunteerRole.catalog.id) ];
 					}
 					var adminUsers = service.GroupService.getGroupMembersWithRights( multidistrib.group, rights );
 					for ( admin in adminUsers ) {
@@ -268,7 +268,7 @@ class VolunteerService
 		multidistrib.update();
 	}
 
-	public static function createRoleForContract(c:db.Contract,number:Int){
+	public static function createRoleForContract(c:db.Catalog,number:Int){
 		var t = sugoi.i18n.Locale.texts;
 		number = number>20 ? 20 : number;
 		for ( i in 1...(number+1) ) {
@@ -276,8 +276,8 @@ class VolunteerService
 			var role = new db.VolunteerRole();
 			role.name = t._("Duty period");
 			role.name += " " + c.name + " " + i;
-			role.group = c.amap;
-			role.contract = c;
+			role.group = c.group;
+			role.catalog = c;
 			role.insert();
 		
 		}
@@ -319,12 +319,12 @@ class VolunteerService
 		
 	}
 
-	public static function getRolesFromGroup(group:db.Amap):Array<db.VolunteerRole>{
-		return Lambda.array(db.VolunteerRole.manager.search($group==group,{orderBy:[contractId,name]}));
+	public static function getRolesFromGroup(group:db.Group):Array<db.VolunteerRole>{
+		return Lambda.array(db.VolunteerRole.manager.search($group==group,{orderBy:[catalogId,name]}));
 	}
 
-	public static function getRolesFromContract(contract:db.Contract):Array<db.VolunteerRole>{
-		return Lambda.array(db.VolunteerRole.manager.search($contract==contract,{orderBy:[contractId,name]}));
+	public static function getRolesFromContract(catalog:db.Catalog):Array<db.VolunteerRole>{
+		return Lambda.array(db.VolunteerRole.manager.search($catalog==catalog,{orderBy:[catalogId,name]}));
 	}
 
 	

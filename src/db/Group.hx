@@ -5,7 +5,7 @@ import sys.db.Types;
 import Common;
 using tools.DateTool;
 
-enum AmapFlags {
+enum GroupFlags {
 	HasMembership; 	//membership management
 	ShopMode; 		//shop mode / standard mode
 	HasPayments; 	//manage payments and user balance
@@ -40,9 +40,9 @@ enum GroupType{
 
 
 /**
- * AMAP
+ * Group
  */
-class Amap extends Object
+class Group extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
@@ -50,9 +50,7 @@ class Amap extends Object
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
 	public var contact : SNull<User>;
-	@formPopulate("getMembersFormElementData")
-	@:relation(legalReprId)
-	public var legalRepresentative : SNull<User>;
+	
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
@@ -66,7 +64,7 @@ class Amap extends Object
 	@hideInForms 
 	public var vatRates : SData<Map<String,Float>>;
 	
-	public var flags:SFlags<AmapFlags>;
+	public var flags:SFlags<GroupFlags>;
 	public var betaFlags:SFlags<BetaFlags>;
 
 	public var groupType:SNull<SEnum<GroupType>>;
@@ -82,7 +80,9 @@ class Amap extends Object
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
 
-	public var legalStatus : SNull<SEnum<LegalStatus>>;
+	//@hideInForms public var legalStatus : SNull<STinyUInt>; //0 soletrader,1 organization,2 business
+
+	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
@@ -104,6 +104,7 @@ class Amap extends Object
 		flags.set(CagetteNetwork);
 		flags.set(ShopMode);
 		betaFlags = cast 0;
+		betaFlags.set(ShopV2);
 		vatRates = ["5,5%" => 5.5, "20%" => 20];
 		cdate = Date.now();
 		regOption = Open;
@@ -212,7 +213,7 @@ class Amap extends Object
 		var t = sugoi.i18n.Locale.texts;
 		var categs = new Array<{id:Int,name:String,color:String,pinned:Bool,categs:Array<CategoryInfo>}>();	
 		
-		if (!this.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
+		if (!this.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 			
 			//TAXO CATEGORIES
 			var taxoCategs = db.TxpCategory.manager.all(false);
@@ -256,19 +257,19 @@ class Amap extends Object
 	 * @param	large=false
 	 */
 	public function getActiveContracts(?large=false) {
-		return Contract.getActiveContracts(this, large, false);
+		return db.Catalog.getActiveContracts(this, large, false);
 	}
 	
 	public function getContracts() {
-		return Contract.manager.search($amap == this, false);
+		return db.Catalog.manager.search($group == this, false);
 	}
 	
 	/**
 	 * récupere les produits des contracts actifs
 	 */
 	public function getProducts() {
-		var contracts = db.Contract.getActiveContracts(App.current.user.amap,false,false);
-		return Product.manager.search( $contractId in Lambda.map(contracts, function(c) return c.id),{orderBy:name}, false);
+		var contracts = db.Catalog.getActiveContracts(App.current.user.getGroup(),false,false);
+		return Product.manager.search( $catalogId in Lambda.map(contracts, function(c) return c.id),{orderBy:name}, false);
 	}
 	
 	/**
@@ -290,7 +291,7 @@ class Amap extends Object
 	}
 	
 	public function getPlaces() {
-		return Place.manager.search($amap == this, false);
+		return db.Place.manager.search($group == this, false);
 	}
 	
 	/**
@@ -307,11 +308,11 @@ class Amap extends Object
 	}
 	
 	public function getMembers() {
-		return User.manager.unsafeObjects("Select u.* from User u,UserAmap ua where u.id=ua.userId and ua.amapId="+this.id+" order by u.lastName", false);
+		return User.manager.unsafeObjects("Select u.* from User u,UserGroup ua where u.id=ua.userId and ua.groupId="+this.id+" order by u.lastName", false);
 	}
 	
 	public function getMembersNum():Int{
-		return UserAmap.manager.count($amapId == this.id);
+		return UserGroup.manager.count($groupId == this.id);
 	}
 	
 	public function getMembersFormElementData():FormData<Int> {

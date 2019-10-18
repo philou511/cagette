@@ -2,8 +2,16 @@
 
 <h2>Participation aux distributions</h2>
 
+	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
+		<i class="icon icon-check"></i> Participer à toutes les distributions
+	</a>
+
+	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
+		<i class="icon icon-archive"></i> ::_("Old distributions")::
+	</a>
+
 	<table class="table">
-		::set now = Date.now().getTime()::
+		::set now = now().getTime()::
 
 		::foreach md multidistribs::
 		
@@ -52,8 +60,8 @@
 							<i class="icon icon-calendar"></i>&nbsp;::_("Dates")::
 						</a>						
 						
-						::if(d._contract.type==1)::
-						<a href="/contractAdmin/orders/::d._contract.id::?d=::d.id::" class="btn btn-default btn-sm">
+						::if(d._catalog.type==1)::
+						<a href="/contractAdmin/orders/::d._catalog.id::?d=::d.id::" class="btn btn-default btn-sm">
 							<i class="icon icon-basket"></i>&nbsp;::_("Orders")::
 						</a>
 						::end::
@@ -97,22 +105,16 @@
 	$$insert(::_("Distribution cycle")::,/distribution/insertCycle/::c.id::) 
 
 	-->
-	::if(c._amap._contact!=null)::
+	::if(c._group._contact!=null)::
 	<div class="alert alert-warning">
 		<i class="icon icon-info"></i>
 		Pour créer de nouvelles distributions, il faut maintenant aller dans l'onglet "Distributions".<br/>
-		Si vous n'y avez pas acccès, demandez à <a href="mailto:<::c._amap._contact.email::>::c._amap._contact.getName()::">l'administrateur du groupe</a> de créer la distribution que vous souhaitez.
+		Si vous n'y avez pas acccès, demandez à <a href="mailto:<::c._group._contact.email::>::c._group._contact.getName()::">l'administrateur du groupe</a> de créer la distribution que vous souhaitez.
 	</div>
 	::end::
 	
 	
 	
-	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
-		<i class="icon icon-check"></i> Participer à toutes les distributions
-	</a>
-
-	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-		<i class="icon icon-archive"></i> ::_("Old distributions")::
-	</a>
+	
 	
 ::end::

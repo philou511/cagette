@@ -122,8 +122,10 @@ tests:
 	fi
 	@docker-compose run --workdir="/var/www/www" neko neko tests.n mysql://root:root@mysql/tests
 
-cp_plugin:
-	cp -R .haxelib/cagette-hosted/git/tpl/* ../lang/master/tpl/plugin/hosted/
-	cp -R .haxelib/cagette-pro/git/tpl/* ../lang/master/tpl/plugin/pro/
-	cp -R .haxelib/cagette-wholesale-order/git/tpl/* ../lang/master/tpl/plugin/who/
+cp_plugin:	
+	#cp -R /home/bubar/projects/cagette-pro/tpl/* ../lang/master/tpl/plugin/pro/
+	cp -R ../devLibs/cagette-pro/tpl/* ../lang/master/tpl/plugin/pro/
+	#cp -R .haxelib/cagette-pro/git/tpl/* ../lang/master/tpl/plugin/pro/
+	#cp -R .haxelib/cagette-hosted/git/tpl/* ../lang/master/tpl/plugin/hosted/
+	#cp -R .haxelib/cagette-wholesale-order/git/tpl/* ../lang/master/tpl/plugin/who/
 		

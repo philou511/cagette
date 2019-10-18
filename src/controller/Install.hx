@@ -70,15 +70,15 @@ class Install extends controller.Controller
 				user.setPass("admin");
 				user.insert();
 			
-				var amap = new db.Amap();
+				var amap = new db.Group();
 				amap.name = f.getValueOf("amapName");
 				amap.contact = user;
 
-				amap.flags.set(db.Amap.AmapFlags.HasMembership);
-				//amap.flags.set(db.Amap.AmapFlags.IsAmap);
+				amap.flags.set(db.Group.GroupFlags.HasMembership);
+				//amap.flags.set(db.Group.GroupFlags.IsAmap);
 				amap.insert();
 				
-				var ua = new db.UserAmap();
+				var ua = new db.UserGroup();
 				ua.user = user;
 				ua.amap = amap;
 				ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
@@ -87,7 +87,7 @@ class Install extends controller.Controller
 				//example datas
 				var place = new db.Place();
 				place.name = t._("Marketplace");
-				place.amap = amap;
+				place.group = amap;
 				place.address1 = t._("Place Jules Verne");
 				place.zipCode = "00000";
 				place.city = t._("St Martin de la Cagette");
@@ -100,9 +100,9 @@ class Install extends controller.Controller
 				vendor.city = "Martignac";
 				vendor.insert();
 				
-				var contract = new db.Contract();
+				var contract = new db.Catalog();
 				contract.name = t._("Vegetables Contract Example");
-				contract.amap  = amap;
+				contract.group  = amap;
 				contract.type = 0;
 				contract.vendor = vendor;
 				contract.startDate = Date.now();
@@ -115,17 +115,17 @@ class Install extends controller.Controller
 				p.name = t._("Big basket of vegetables");
 				p.price = 15;
 				p.vat = 5;
-				p.contract = contract;
+				p.catalog = contract;
 				p.insert();
 				
 				var p = new db.Product();
 				p.name = t._("Small basket of vegetables");
 				p.price = 10;
 				p.vat = 5;
-				p.contract = contract;
+				p.catalog = contract;
 				p.insert();
 			
-				var uc = new db.UserContract();
+				var uc = new db.UserOrder();
 				uc.user = user;
 				uc.product = p;
 				uc.paid = true;
@@ -134,7 +134,7 @@ class Install extends controller.Controller
 				uc.insert();
 				
 				var d = new db.Distribution();
-				d.contract = contract;
+				d.catalog = contract;
 				d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
 				d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
 				d.place = place;
@@ -250,153 +250,5 @@ class Install extends controller.Controller
 		}
 		
 	}
-	
-	@admin
-	function _0_9_2_dbMigration(){
-		
-		//recompute prices on orders
-		for ( order in db.UserContract.manager.all(true)){
-			order.productPrice = order.product.price;
-			order.feesRate = order.product.contract.percentageValue;
-			order.update();
-		}
-		
-		
-		//activate payment orders
-		for ( a in db.Amap.manager.all(true)){
-			a.allowedPaymentsType = ["cash", "transfer", "check"];
-			a.update();
-		}
-		
-	}
-
-	/**
-	migrate to multidistribs
-	**/
-	@admin 
-	function doMigrateMultidistribs(){
-
-		//MIGRATE to the new multidistrib Db architecture
-		for( d in db.Distribution.manager.search($multiDistrib==null,{orderBy:-date,limit:10000},true)){
-
-			//look for an existing md 3 hours around
-			var from = DateTools.delta(d.date,1000.0*60*60*-3);
-			var end = DateTools.delta(d.date,1000.0*60*60*3);
-			if(d.contract==null) {
-				trace(d.id+" has no contract<br/>");
-				if(App.config.DEBUG) d.delete();
-				continue;
-			}
-			if(d.date==null) {
-				trace(d.id+" has no date<br/>");
-				if(App.config.DEBUG) d.delete();
-				continue;
-			}
-			var mds = db.MultiDistrib.manager.search($distribStartDate>=from && $distribStartDate<end && $place==d.place,true);
-			if(mds.length>1) trace('too many mds !'+mds.length);
-			var md : db.MultiDistrib = null;
-			if(mds.length==0){
-				
-				//Create it
-				md = new db.MultiDistrib();
-				md.place = d.place;
-				md.group = d.place.amap;
-				md.distribStartDate = d.date;
-				md.distribEndDate = d.end;
-				md.orderStartDate = d.orderStartDate;
-				md.orderEndDate = d.orderEndDate;
-				md.insert();
-
-			}else{
-				md = mds.first();
-			}
-
-			//null identical fields
-			/*
-			if(md.distribStartDate.getTime()==d.date.getTime()) d.date = null;
-			if(md.distribEndDate.getTime()==d.end.getTime()) d.end = null;
-			if(md.orderStartDate!=null && md.orderStartDate.getTime()==d.orderStartDate.getTime()) d.orderStartDate = null;
-			if(md.orderEndDate!=null && md.orderEndDate.getTime()==d.orderEndDate.getTime()) d.orderEndDate = null;			
-			*/
-
-			//bind to it
-			d.multiDistrib = md;
-			d.update();
-
-			trace(d.toString()+"<br/>");
-		}
-	}
-	
-	/**
-		migrate to new duty period mgmt
-	**/
-	@admin 
-	function doMigrateDutyPeriods(){
-		
-		//update group params
-		Sys.print("update group params and create roles.");
-		var a = new db.Amap();
-
-		for ( g in db.Amap.manager.all(true)){
-
-			g.volunteersMailContent = a.volunteersMailContent;
-			g.alertMailContent = a.alertMailContent;
-		
-			g.volunteersMailDaysBeforeDutyPeriod = 4;
-			g.vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
-			g.daysBeforeDutyPeriodsOpen = 60;
-			g.update();
-
-			//create volunteers rôles
-			for( c in g.getActiveContracts()){
-				service.VolunteerService.createRoleForContract(c,c.distributorNum);
-			}
-		}
-
-		//check all rôles for each MD
-		Sys.print("check roles for multidistribs.");
-		for(md in db.MultiDistrib.manager.all(true)){
-			var roles = [];
-			var allRoles = VolunteerService.getRolesFromGroup(md.group);
-			///general roles
-			//var generalRoles = Lambda.filter(allRoles, function(role) return role.contract == null);		
-			//for( cr in generalRoles) roles.push(cr);
-			//contract roles
-			for ( distrib in md.getDistributions() ) {
-				var cid = distrib.contract.id;
-				var contractRoles = Lambda.filter(allRoles, function(role) return role.contract!=null && role.contract.id == cid);
-				for( cr in contractRoles) roles.push(cr);
-			}
-
-			md.lock();
-			md.volunteerRolesIds = Lambda.map(roles,function(r) return r.id).join(",");
-			md.update();
-		}
-
-		Sys.print("migrate volunteer assignements.");
-		//migre les inscriptions aux distribs
-		for ( g in db.Amap.manager.all()){
-			for( c in g.getActiveContracts()){
-				var roles = Lambda.array(db.VolunteerRole.manager.search($contract==c));
-				for ( d in c.getDistribs(false)){
-
-					for( i in 1...5){
-
-						var uid = Reflect.field(d,'distributor'+i+'Id');
-						if( uid!=null && roles[i-1]!=null ){
-							var user = db.User.manager.get(uid,false);
-							try{
-								//may fail for same volunteer on same md
-								service.VolunteerService.addUserToRole(user,d.multiDistrib,roles[i-1]);
-							}catch(e:Dynamic){}
-						}
-
-					}
-
-				}
-			}
-
-		}
-	}	
 	
 }

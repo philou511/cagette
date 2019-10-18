@@ -122,6 +122,19 @@
 		<i class="icon icon-circle-empty" style="color:#888"></i>
 		::end::
 	</macro>
+
+	<macro name="bigBool(v)">
+		::if v==true::
+		<div class="iconBadge" style="background-color:#84bd55;">
+			<i class="icon icon-check"></i>
+		</div>
+		::else::
+		<div class="iconBadge" style="background-color:#CCC;">
+			<i class="icon icon-delete"></i>
+		</div>
+		
+		::end::
+	</macro>
 	
 	<macro name="check(v)">
 		::if(v==true || v==1)::
@@ -131,6 +144,16 @@
 		::end::
 	</macro>
 	
+	<macro name="balance(balance)">
+		::if balance<0:: 
+			::set color = "C00"::
+		::else::
+			::set color = "0C0"::
+		::end::
+		<span style="color:#::color::;">
+			::formatNum(balance)::&nbsp;::currency()::
+		</span>
+	</macro>
 	
 	<macro name="date(dow,d,m,y,place)">
 		<div class="dateBox" >
@@ -164,9 +187,9 @@
 		<div class="dateBox" style="background-color:#080;" >
 			<img src="/img/go.png"/>
 			<div style="font-size:16px;margin-bottom:8px;">
-				::if Std.parseInt(h)<=12::
+				::if parseInt(h)<=12::
 					::_("THIS MORNING")::
-				::elseif Std.parseInt(h)<18::
+				::elseif parseInt(h)<18::
 					<span style="font-size:14px;">CET<br/>::_("AFTERNOON")::</span>
 				::else::
 					::_("THIS EVENING")::
@@ -220,7 +243,7 @@
 		<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
 		::elseif x==2::
 		<!--<span style="margin-left:48px;">::_("Payment"):: ::_(t.getPaymentType())::</span>-->
-		<i class="icon icon-euro" aria-hidden="true"></i> ::_("Payment"):: ::t.getPaymentTypeName()::
+		<i class="icon icon-euro" aria-hidden="true"></i> ::t.getPaymentTypeName()::
 		::else::						
 		<i class="fa fa-user" aria-hidden="true"></i> ::_("Subscription")::
 		::end::
@@ -290,7 +313,7 @@
 	
 	
 	<macro name="deliveryPro(k,showBtns)">
-		::set now = Date.now()::
+		::set now = now()::
 		<div class="row">
 			<div class="col-md-4 text-center">
 				<!-- find color/icon to display -->
@@ -346,7 +369,7 @@
 				</span>			
 				::end::
 				
-				<b>::k[0]._contract._amap.name::</b><br/>
+				<b>::k[0]._catalog._group.name::</b><br/>
 				
 				<table>
 				::foreach d k::

@@ -7,7 +7,7 @@
 </head>
 <body>
 	
-	<h1>::user._amap.name::</h1>
+	<h1>::user.getGroup().name::</h1>
 	<h2>Livraison du ::hDate(date)::</h2>
 	
 	
@@ -39,7 +39,7 @@
 					<td style="font-size:120%">
 						::if m.userName != name || m.userName2 != name2::
 								<b>
-									::set basket = getBasket(m.userId,place.id,date)::							
+									::set basket = getBasket(m.basketId)::							
 									<span ::cond basket!=null::>N°::basket.num:: - </span>
 									
 									::m.userName::
@@ -90,7 +90,7 @@
 
 				</table>
 				
-				<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
+				<p>::raw nl2br(user.getGroup().txtDistrib)::</p>
 		
 				<p class="hidden">
 					<i>::_("Push on \"Control + P\" to print this page.")::</i>					

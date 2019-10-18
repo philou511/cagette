@@ -7,10 +7,10 @@ class VolunteerRole extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
-	@:relation(groupId) public  var group : db.Amap;
-	@:relation(contractId) 	public var contract : SNull<db.Contract>;
+	@:relation(groupId) public  var group : db.Group;
+	@:relation(catalogId) 	public var catalog : SNull<db.Catalog>;
 
 	public function isGenericRole():Bool{
-		return contract==null;
+		return catalog==null;
 	}
 }

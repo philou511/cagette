@@ -182,13 +182,11 @@ class ProductModal extends ReactComponentOfProps<Props> {
 
                         <Grid item xs={8} style=${{color:CGColors.MediumGrey}}>                        
                             <Typography component="p">
-                                <i className="icon icon-map-marker"/>&nbsp;
-                                ${vendor.city} (${vendor.zipCode})
+                                <i className="icon icon-map-marker"/> ${vendor.city} (${vendor.zipCode})
                             </Typography>
 
                             <Typography component="p">
-                                <i className="icon icon-link"/>&nbsp;
-                                <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
+                                <i className="icon icon-link"/> <a href=${vendor.linkUrl} target="_blank">${vendor.linkText}</a>
                             </Typography>
 
                             <div dangerouslySetInnerHTML=${{__html: ${vendor.desc}}}></div>

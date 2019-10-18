@@ -129,7 +129,7 @@ class TestReports extends haxe.unit.TestCase
 	 */
 	/*override function setup(){
 		
-		sys.db.Manager.cnx.request("TRUNCATE TABLE UserContract;");
+		sys.db.Manager.cnx.request("TRUNCATE TABLE UserOrder;");
 		
 		var bubar = db.User.manager.get(1);
 		var seb = db.User.manager.get(2);
@@ -140,16 +140,16 @@ class TestReports extends haxe.unit.TestCase
 		var pommes = db.Product.manager.get(3);
 		var distrib = fraises.contract.getDistribs().first();
 		
-		db.UserContract.make(bubar, 4, fraises, distrib.id);
-		db.UserContract.make(seb, 2, pommes, distrib.id);
+		db.UserOrder.make(bubar, 4, fraises, distrib.id);
+		db.UserOrder.make(seb, 2, pommes, distrib.id);
 		
 		//vegetables from group 2
 		var courgettes = db.Product.manager.get(4);
 		var carottes = db.Product.manager.get(5);
 		var distrib = courgettes.contract.getDistribs().first();
 		
-		db.UserContract.make(bubar, 1, carottes ,distrib.id);
-		db.UserContract.make(seb, 5, courgettes ,distrib.id);
+		db.UserOrder.make(bubar, 1, carottes ,distrib.id);
+		db.UserOrder.make(seb, 5, courgettes ,distrib.id);
 	}*/
 	
 

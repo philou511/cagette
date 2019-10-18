@@ -286,10 +286,10 @@ class TestDistributions extends haxe.unit.TestCase
 		db.Operation.onOrderConfirm([sebOrder]);
 
 		//Check initial operation names and amounts
-		var francoisOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.FRANCOIS);
+		var francoisOperation = db.Operation.findCOrderOperation(contract, TestSuite.FRANCOIS);
 		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
 		assertEquals(francoisOperation.amount, -13);
-		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
 		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
 		assertEquals(sebOperation.amount, -39);
 
@@ -312,7 +312,7 @@ class TestDistributions extends haxe.unit.TestCase
 		//Check names and amounts are modified accordingly
 		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		assertEquals(francoisOperation.amount, -26);
-		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
 		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		assertEquals(sebOperation.amount, -78);
 
@@ -334,7 +334,7 @@ class TestDistributions extends haxe.unit.TestCase
 		//Check names and amounts are modified accordingly
 		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
 		assertEquals(francoisOperation.amount, -91);
-		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
 		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
 		assertEquals(sebOperation.amount, -273);
 
@@ -343,7 +343,7 @@ class TestDistributions extends haxe.unit.TestCase
 		//Check names and amounts are modified accordingly
 		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		assertEquals(francoisOperation.amount, -26);
-		var sebOperation = db.Operation.findCOrderTransactionFor(contract, TestSuite.SEB);
+		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
 		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		assertEquals(sebOperation.amount, -78);
 	}

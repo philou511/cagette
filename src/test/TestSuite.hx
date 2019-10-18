@@ -74,13 +74,13 @@ class TestSuite
 			db.ProductCategory.manager,
 
 			db.Basket.manager,
-			db.UserContract.manager,
-			db.UserAmap.manager,
+			db.UserOrder.manager,
+			db.UserGroup.manager,
 			db.Operation.manager,
 
 			db.User.manager,
-			db.Amap.manager,
-			db.Contract.manager,
+			db.Group.manager,
+			db.Catalog.manager,
 			db.Product.manager,
 			db.Vendor.manager,
 			db.Place.manager,
@@ -134,8 +134,8 @@ class TestSuite
 	
 	public static var STRAWBERRIES:db.Product = null; 
 	public static var APPLES:db.Product = null; 
-	public static var AMAP_DU_JARDIN:db.Amap = null;
-	public static var LOCAVORES:db.Amap = null;
+	public static var AMAP_DU_JARDIN:db.Group = null;
+	public static var LOCAVORES:db.Group = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
 	public static var VENDOR1:db.Vendor = null;
 	public static var VENDOR2:db.Vendor = null;
@@ -145,7 +145,7 @@ class TestSuite
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
 	public static var DISTRIB_LAITUE:db.Distribution = null;
 	public static var DISTRIB_CAROTTES:db.Distribution = null;
-	public static var CONTRAT_LEGUMES:db.Contract = null;
+	public static var CONTRAT_LEGUMES:db.Catalog = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	
 	public static var COURGETTES:db.Product = null;
@@ -190,10 +190,10 @@ class TestSuite
 		initApp(u);
 		
 		//GROUP "AMAP du Jardin public"
-		var a = new db.Amap();
+		var a = new db.Group();
 		a.name = "AMAP du Jardin public";
 		a.contact = f;
-		a.flags.set(db.Amap.AmapFlags.HasPayments);
+		a.flags.set(db.Group.GroupFlags.HasPayments);
 		a.insert();
 		AMAP_DU_JARDIN = a;
 		
@@ -214,13 +214,13 @@ class TestSuite
 		v.city = "Bourligheim";
 		v.insert();
 		
-		var c = new db.Contract();
+		var c = new db.Catalog();
 		c.name = "Contrat AMAP Légumes";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
-		c.type = db.Contract.TYPE_CONSTORDERS;
+		c.type = db.Catalog.TYPE_CONSTORDERS;
 		c.insert();
 		
 		var p = new db.Product();
@@ -235,13 +235,13 @@ class TestSuite
 		DISTRIB_CONTRAT_AMAP = d;
 		
 		//varying contract for strawberries with stock mgmt
-		var c = new db.Contract();
+		var c = new db.Catalog();
 		c.name = "Commande fruits";
 		c.vendor = v;
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
-		c.flags.set(db.Contract.ContractFlags.StockManagement);
-		c.type = db.Contract.TYPE_VARORDER;
+		c.flags.set(db.Catalog.ContractFlags.StockManagement);
+		c.type = db.Catalog.TYPE_VARORDER;
 		c.amap = a;
 		c.insert();
 		
@@ -273,10 +273,10 @@ class TestSuite
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
 		//second group : LOCAVORES
-		var a = new db.Amap();
+		var a = new db.Group();
 		a.name = "Les Locavores de la Rue Saucisse";
 		a.contact = f;
-		a.flags.set(db.Amap.AmapFlags.HasPayments);
+		a.flags.set(db.Group.GroupFlags.HasPayments);
 		a.insert();
 		LOCAVORES = a;
 		
@@ -300,13 +300,13 @@ class TestSuite
 		v.insert();
 		VENDOR1 = v;
 
-		var c = new db.Contract();
+		var c = new db.Catalog();
 		c.name = "Commande Legumes";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
 		c.amap = a;
-		c.type = db.Contract.TYPE_VARORDER;
+		c.type = db.Catalog.TYPE_VARORDER;
 		c.insert();
 		
 		CONTRAT_LEGUMES = c;
@@ -350,13 +350,13 @@ class TestSuite
 		vendor2.insert();
 		VENDOR2 = vendor2;
 
-		var contract2 = new db.Contract();
+		var contract2 = new db.Catalog();
 		contract2.name = "Commande Laitue";
 		contract2.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		contract2.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		contract2.vendor = vendor2;
 		contract2.amap = a;
-		contract2.type = db.Contract.TYPE_VARORDER;
+		contract2.type = db.Catalog.TYPE_VARORDER;
 		contract2.insert();
 
 		var product2 = new db.Product();
@@ -382,13 +382,13 @@ class TestSuite
 		vendor3.insert();
 		VENDOR3 = vendor3;
 
-		var contract3 = new db.Contract();
+		var contract3 = new db.Catalog();
 		contract3.name = "Commande Carottes";
 		contract3.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		contract3.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		contract3.vendor = vendor3;
 		contract3.amap = a;
-		contract3.type = db.Contract.TYPE_VARORDER;
+		contract3.type = db.Catalog.TYPE_VARORDER;
 		contract3.insert();
 
 		var p = new db.Product();
@@ -418,13 +418,13 @@ class TestSuite
 		boulanger.city = "Parmentier";
 		boulanger.insert();
 
-		var c = new db.Contract();
+		var c = new db.Catalog();
 		c.name = "Commande Pâtisseries";
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		c.vendor = boulanger;
 		c.amap = a;
-		c.type = db.Contract.TYPE_VARORDER;
+		c.type = db.Catalog.TYPE_VARORDER;
 		c.insert();
 
 		var p = new db.Product();

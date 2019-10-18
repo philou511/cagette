@@ -12,9 +12,12 @@ import Common.UserOrder;
 typedef OrderBoxState = {
 
     var orders : Array<UserOrder>;
+    var ordersWereFetched : Bool;
     var users : Array<UserInfo>;    
-    var contracts : Array<ContractInfo>;
-    var selectedContractId : Int;
+    var selectedUserId : Int;
+    var selectedUserName : String;
+    var catalogs : Array<ContractInfo>;
+    var selectedCatalogId : Int;
 	var products : Array<ProductInfo>;	
     var error : String;
 };
@@ -26,10 +29,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 
 	public var initState: OrderBoxState = {
 
-        orders : [],       
+        orders : [],
+        ordersWereFetched : false,        
         users : null,
-        contracts : [],
-        selectedContractId : null,
+        selectedUserId : null,
+        selectedUserName : null,
+        catalogs : [],
+        selectedCatalogId : null,
         products : [],
         error : null
     };
@@ -40,10 +46,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 		var partial : Partial<OrderBoxState> = switch (action) {
 
             case FetchOrdersSuccess( orders ):
-                { orders : orders, error : null };
+                { orders : orders, ordersWereFetched : true, error : null };
 
             case FetchUsersSuccess( users ):
                 { users : users, error : null };
+            
+            case SelectUser( userId, userName ):
+                { selectedUserId : userId, selectedUserName : userName };
 
             case UpdateOrderQuantity( orderId, quantity ):
                 var copiedOrders = state.orders.copy();
@@ -84,11 +93,23 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 }
                 { orders : copiedOrders };
 
-            case FetchContractsSuccess( contracts ):
-                { contracts : contracts, error : null };
+            case UpdatePaid( orderId, paid ):
+                var copiedOrders = state.orders.copy();
+                for( order in copiedOrders ) {
+
+                    if( order.id == orderId ) {
+
+                        order.paid = paid;
+                        break;
+                    }
+                }
+                { orders : copiedOrders };
+
+            case FetchCatalogsSuccess( catalogs ):
+                { catalogs : catalogs, error : null };
             
-            case SelectContract( contractId ):
-                { selectedContractId : contractId };
+            case SelectCatalog( catalogId ):
+                { selectedCatalogId : catalogId };
             
             case FetchProductsSuccess( products ):
                 { products : products, error : null };
@@ -109,11 +130,11 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
                 if ( !orderFound ) {
 
                     var selectedProduct = Lambda.find( state.products, function( product ) return product.id == productId );
-                    var contract = Lambda.find( state.contracts, function( contract ) return contract.id == selectedProduct.contractId );
+                    var catalog = Lambda.find( state.catalogs, function( catalog ) return catalog.id == selectedProduct.catalogId );
                     var order : UserOrder = cast {
                     			id: 0 - Std.random(1000000),
-                                contractId: selectedProduct.contractId,
-                                contractName: contract != null ? contract.name : null,
+                                contractId: selectedProduct.catalogId,
+                                contractName: catalog != null ? catalog.name : null,
                     			product: selectedProduct,
                     			quantity: 1,                     			
                     			paid: false

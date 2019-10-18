@@ -14,14 +14,14 @@ enum Right{
 /**
  * A user which is member of a group
  */
-@:id(userId,amapId)
-class UserAmap extends Object
+@:id(userId,groupId)
+class UserGroup extends Object
 {
-	@:relation(amapId) public var amap : db.Amap;
+	@:relation(groupId) public var amap : db.Group;
 	@:relation(userId) public var user : db.User;
 	public var rights : SNull<SData<Array<Right>>>;		// rights in this group
 	public var balance : SFloat; 						//account balance in group currency
-	static var CACHE = new Map<String,db.UserAmap>();
+	static var CACHE = new Map<String,db.UserGroup>();
 	
 	
 	public function new(){
@@ -29,21 +29,21 @@ class UserAmap extends Object
 		balance = 0;
 	}
 	
-	public static function get(user:User, amap:Amap, ?lock = false) {
-		if (user == null || amap == null) return null;
+	public static function get(user:User, group:db.Group, ?lock = false) {
+		if (user == null || group == null) return null;
 		//SPOD doesnt cache elements with double primary key, so lets do it manually
-		var c = CACHE.get(user.id + "-" + amap.id);
+		var c = CACHE.get(user.id + "-" + group.id);
 		if (c == null) {
-			c = manager.select($user == user && $amap == amap, true/*lock*/);		
-			CACHE.set(user.id + "-" + amap.id,c);
+			c = manager.select($user == user && $amap == group, true/*lock*/);		
+			CACHE.set(user.id + "-" + group.id,c);
 		}
 		return c;	
 	}
 	
-	public static function getOrCreate(user:db.User, group:db.Amap){
+	public static function getOrCreate(user:db.User, group:db.Group){
 		var ua = get(user, group);
 		if ( ua == null){
-			ua = new UserAmap();
+			ua = new UserGroup();
 			ua.user = user;
 			ua.amap = group;
 			ua.insert();
@@ -97,7 +97,7 @@ class UserAmap extends Object
 			if (cid == null) {
 				t._("Management of all catalogs");
 			}else {
-				var c = db.Contract.manager.get(cid);
+				var c = db.Catalog.manager.get(cid);
 				if(c==null) {
 					t._("Deleted contract");	
 				}else{

@@ -6,7 +6,7 @@ import Common;
 /**
  * a product order 
  */
-class UserContract extends Object
+class UserOrder extends Object
 {
 	public var id : SId;
 	
@@ -50,7 +50,7 @@ class UserContract extends Object
 	}
 	
 	public function populate() {
-		return App.current.user.getAmap().getMembersFormElementData();
+		return App.current.user.getGroup().getMembersFormElementData();
 	}
 	
 	
@@ -64,7 +64,7 @@ class UserContract extends Object
 		if (user2 == null) throw "this contract is not shared";
 		
 		//compter le nbre de distrib pour ce contrat
-		var c = Distribution.manager.count( $contract == product.contract && $date >= product.contract.startDate && $date <= distrib.date);		
+		var c = Distribution.manager.count( $catalog == product.catalog && $date >= product.catalog.startDate && $date <= distrib.date);		
 		var r = c % 2 == 0;
 		if (flags.has(InvertSharedOrder)){
 			return !r;
@@ -88,7 +88,7 @@ class UserContract extends Object
 	public function canModify():Bool {
 	
 		var can = false;
-		if (this.product.contract.type == db.Contract.TYPE_VARORDER) {
+		if (this.product.catalog.type == db.Catalog.TYPE_VARORDER) {
 			if(this.distribution==null) return false;
 			if (this.distribution.orderStartDate == null) {
 				can = true;
@@ -97,68 +97,24 @@ class UserContract extends Object
 				can = n > this.distribution.orderStartDate.getTime() && n < this.distribution.orderEndDate.getTime();
 			}
 		}else {
-			can = this.product.contract.isUserOrderAvailable();
+			can = this.product.catalog.isUserOrderAvailable();
 		}
 		
 		return can && !this.paid;
 	}
 	
-	/**
-	 * get users orders for a distribution
-	 */
-	public static function getOrders(contract:db.Contract, ?distribution:db.Distribution, ?csv = false):Array<UserOrder>{
-		var view = App.current.view;
-		var orders = new Array<db.UserContract>();
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
-			orders = contract.getOrders(distribution);	
-		}else {
-			orders = contract.getOrders();
-		}
-		
-		var orders = service.OrderService.prepare(orders);
-		
-		//CSV export
-		if (csv) {
-			var t = sugoi.i18n.Locale.texts;			
-			var data = new Array<Dynamic>();
-			
-			for (o in orders) {
-				data.push( { 
-					"name":o.userName,
-					"productName":o.productName,
-					"price":view.formatNum(o.productPrice),
-					"quantity":view.formatNum(o.quantity),
-					"fees":view.formatNum(o.fees),
-					"total":view.formatNum(o.total),
-					"paid":o.paid
-				});				
-			}
-			
-			var exportName = "";
-			if (distribution != null){
-				exportName = contract.amap.name + " - " + t._("Delivery ::contractName:: ", {contractName:contract.name}) + distribution.date.toString().substr(0, 10);					
-			}else{
-				exportName = contract.amap.name + " - " + contract.name;
-			}
-			
-			sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity", "fees", "total", "paid"], exportName+" - " + t._("Per member"));			
-			return null;
-		}else{
-			return orders;
-		}
-		
-	}
+	
 	
 	/**
 	 * Get the orders (varying orders) of a user for a multidistrib ( distribs with same day + same place )
 	 * 
 	 * @param	distribKey "$date|$placeId"
 	 */
-	public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Amap):Array<db.UserContract>{	
-		//var contracts = db.Contract.getActiveContracts(group);
-		var contracts = db.Contract.manager.search($amap == group, false); //should be able to edit a contract which is closed
+	/*public static function getUserOrdersByMultiDistrib(distribKey:String, user:db.User,group:db.Group):Array<db.UserOrder>{	
+		//var contracts = db.Catalog.getActiveContracts(group);
+		var contracts = db.Catalog.manager.search($amap == group, false); //should be able to edit a contract which is closed
 		for ( c in Lambda.array(contracts)){
-			if (c.type == db.Contract.TYPE_CONSTORDERS){
+			if (c.type == db.Catalog.TYPE_CONSTORDERS){
 				contracts.remove(c); //only varying orders
 			}
 		}
@@ -166,23 +122,23 @@ class UserContract extends Object
 		var cids = Lambda.map(contracts, function(x) return x.id);
 		var start = Date.fromString(distribKey.split("|")[0] + " 00:00:00");
 		var end = Date.fromString(distribKey.split("|")[0] + " 23:59:00");
-		var ds = db.Distribution.manager.search($date > start && $date < end && ($contractId in cids), false);
+		var ds = db.Distribution.manager.search($date > start && $date < end && ($catalogId in cids), false);
 		var out = [];
 		for (d in ds) {
 			out = out.concat(Lambda.array(user.getOrdersFromDistrib(d)));
 		}
 		
 		return out;
-	}
+	}*/
 	
-	public static function getTotalPrice(tmpOrder:OrderInSession){
+	/*public static function getTotalPrice(tmpOrder:OrderInSession){
 		var t = 0.0;
 		for ( o in tmpOrder.products){				
 			var p = db.Product.manager.get(o.productId, false);
 			t += o.quantity * p.getPrice();				
 		}
 		return t;
-	}
+	}*/
 
 	function check(){
 		if(quantity==null) quantity == 1;

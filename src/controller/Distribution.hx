@@ -1,5 +1,5 @@
 package controller;
-import db.UserContract;
+import db.UserOrder;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
 import tink.core.Error;
@@ -10,6 +10,8 @@ import service.VolunteerService;
 import service.DistributionService;
 using tools.DateTool;
 using Lambda;
+using Formatting;
+using Std;
 
 
 class Distribution extends Controller
@@ -37,16 +39,16 @@ class Distribution extends Controller
 
 		var distribs = [];
 		//Multidistribs
-		distribs = db.MultiDistrib.getFromTimeRange(app.user.amap,timeframe.from,timeframe.to);
+		distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
 		
 
-		if( app.user.amap.hasPayments() && app.params.get("_from")==null){
+		if( app.user.getGroup().hasPayments() && app.params.get("_from")==null){
 
 	
 	
 
 			//include unvalidated distribs in the past
-			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.amap , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );
+			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.getGroup() , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );
 			for( md in unvalidated.copy()){
 				if( !md.isValidated() ) distribs.unshift(md);				
 			}
@@ -56,7 +58,7 @@ class Distribution extends Controller
 
 		view.distribs = distribs;
 		//cycle who have either startDate or EndDate in the timeframe
-		view.cycles = db.DistributionCycle.manager.search( $group==app.user.amap && (($startDate > timeframe.from && $startDate < timeframe.to) || ($endDate > timeframe.from && $endDate < timeframe.to) ) , false);
+		view.cycles = db.DistributionCycle.manager.search( $group==app.user.getGroup() && (($startDate > timeframe.from && $startDate < timeframe.to) || ($endDate > timeframe.from && $endDate < timeframe.to) ) , false);
 		view.timeframe = timeframe;
 
 		checkToken();
@@ -69,10 +71,10 @@ class Distribution extends Controller
 	function doList(d:db.Distribution) {
 		view.distrib = d;
 		view.place = d.place;
-		view.contract = d.contract;
+		view.contract = d.catalog;
 		view.orders = service.OrderService.prepare(d.getOrders());
 		//volunteers whose role is linked to this contract
-		view.volunteers = Lambda.filter(d.multiDistrib.getVolunteers(),function(v) return v.volunteerRole.contract!=null && v.volunteerRole.contract.id==d.contract.id);		
+		view.volunteers = Lambda.filter(d.multiDistrib.getVolunteers(),function(v) return v.volunteerRole.catalog!=null && v.volunteerRole.catalog.id==d.catalog.id);		
 	}
 
 	/**
@@ -82,8 +84,8 @@ class Distribution extends Controller
 	function doListByProductUser(d:db.Distribution) {
 		view.distrib = d;
 		view.place = d.place;
-		view.contract = d.contract;
-		// view.orders = UserContract.prepare(d.getOrders());
+		view.contract = d.catalog;
+		// view.orders = UserOrder.prepare(d.getOrders());
 		
 		//make a 2 dimensons table :  data[userId][productId]
 		//WARNING : BUGS WILL APPEAR if there is many Order line for the same product
@@ -150,7 +152,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager()) throw Error('/', t._("Forbidden action"));
 		
 		view.place = place;		
-		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.amap);
+		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());
 		
 		if (type == null) {
 		
@@ -201,24 +203,24 @@ class Distribution extends Controller
 			
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-			var contracts = app.user.amap.getActiveContracts(true);
+			var contracts = app.user.getGroup().getActiveContracts(true);
 			//var cids = Lambda.map(contracts, function(c) return c.id);
 			var cconst = [];
 			var cvar = [];
 			for ( c in contracts) {
-				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Contract.TYPE_VARORDER) cvar.push(c.id);
+				if (c.type == db.Catalog.TYPE_CONSTORDERS) cconst.push(c.id);
+				if (c.type == db.Catalog.TYPE_VARORDER) cvar.push(c.id);
 			}
 			
 			//commandes variables
-			var distribs = db.Distribution.manager.search(($contractId in cvar) && $date >= d1 && $date <= d2 && $place==place, false);		
-			var orders = db.UserContract.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
+			var distribs = db.Distribution.manager.search(($catalogId in cvar) && $date >= d1 && $date <= d2 && $place==place, false);		
+			var orders = db.UserOrder.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
 			
 			//commandes fixes
-			var distribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && $place==place, false);
+			var distribs = db.Distribution.manager.search(($catalogId in cconst) && $date >= d1 && $date <= d2 && $place==place, false);
 			var orders = Lambda.array(orders);
 			for ( d in distribs) {
-				var orders2 = db.UserContract.manager.search($productId in Lambda.map(d.contract.getProducts(), function(d) return d.id)  , { orderBy:userId } );
+				var orders2 = db.UserOrder.manager.search($productId in Lambda.map(d.catalog.getProducts(), function(d) return d.id)  , { orderBy:userId } );
 				orders = orders.concat(Lambda.array(orders2));
 			}
 
@@ -253,8 +255,8 @@ class Distribution extends Controller
 	**/
 	function doDelete(d:db.Distribution) {
 		
-		if (!app.user.isContractManager(d.contract)) throw Error('/', t._("Forbidden action"));
-		var contractId = d.contract.id;
+		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._("Forbidden action"));
+		var contractId = d.catalog.id;
 		try {
 			service.DistributionService.cancelParticipation(d,false);
 		} catch(e:Error){
@@ -266,8 +268,8 @@ class Distribution extends Controller
 	//same as above but from distribution page
 	function doNotAttend(d:db.Distribution) {
 		
-		if (!app.user.isContractManager(d.contract)) throw Error('/distribution', t._("Forbidden action"));		
-		var contractId = d.contract.id;
+		if (!app.user.isContractManager(d.catalog)) throw Error('/distribution', t._("Forbidden action"));		
+		var contractId = d.catalog.id;
 		try {
 			service.DistributionService.cancelParticipation(d,false);
 		} catch(e:Error){
@@ -300,8 +302,8 @@ class Distribution extends Controller
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
-		if (!app.user.isContractManager(d.contract)) throw Error('/', t._('Forbidden action') );		
-		var contract = d.contract;
+		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
+		var contract = d.catalog;
 		
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElementByName("placeId");
@@ -313,14 +315,14 @@ class Distribution extends Controller
 		//date
 		var threeMonthAgo = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
 		var inThreeMonth  = DateTools.delta(d.multiDistrib.distribStartDate , 1000.0*60*60*24*30.5*3); 
-		var mds = db.MultiDistrib.getFromTimeRange(d.contract.amap,threeMonthAgo,inThreeMonth);
+		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,threeMonthAgo,inThreeMonth);
 		
 		var mds = mds.filter(function(md) return !md.isValidated() ).map(function(md) return {label:view.hDate(md.getDate()), value:md.id});
 		var e = new sugoi.form.elements.IntSelect("md",t._("Change distribution"), mds ,d.multiDistrib.id);			
 		form.addElement(e, 1);
 
 		
-		if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+		if (d.catalog.type == db.Catalog.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
 			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
 		}		
@@ -330,7 +332,7 @@ class Distribution extends Controller
 			var orderStartDate = null;
 			var orderEndDate = null;
 			try{
-				if (d.contract.type == db.Contract.TYPE_VARORDER ) {
+				if (d.catalog.type == db.Catalog.TYPE_VARORDER ) {
 					orderStartDate = form.getValueOf("orderStartDate");
 					orderEndDate = form.getValueOf("orderEndDate");
 				}
@@ -370,7 +372,7 @@ class Distribution extends Controller
 		}
 		
 		view.form = form;
-		view.title = t._("Attendance of ::farmer:: to the ::date:: distribution",{farmer:d.contract.vendor.name,date:view.dDate(d.date)});
+		view.title = t._("Attendance of ::farmer:: to the ::date:: distribution",{farmer:d.catalog.vendor.name,date:view.dDate(d.date)});
 	}
 	
 	@tpl('form.mtt')
@@ -384,7 +386,7 @@ class Distribution extends Controller
 		if (form.isValid()) {
 			form.toSpod(d); //update model
 			d.update();
-			throw Ok('/contractAdmin/distributions/'+d.contract.id, t._("The delivery is now up to date"));
+			throw Ok('/contractAdmin/distributions/'+d.catalog.id, t._("The delivery is now up to date"));
 		}
 		
 		view.form = form;
@@ -395,12 +397,12 @@ class Distribution extends Controller
 		Insert a distribution
 	**/
 	@tpl("form.mtt")
-	public function doInsert(contract:db.Contract) {
+	public function doInsert(contract:db.Catalog) {
 		
 		if (!app.user.isContractManager(contract)) throw Error('/', t._('Forbidden action') );
 		
 		var d = new db.Distribution();
-		d.place = contract.amap.getMainPlace();
+		d.place = contract.group.getMainPlace();
 		var form = sugoi.form.Form.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		form.removeElement(form.getElement("distributionCycleId"));
@@ -412,7 +414,7 @@ class Distribution extends Controller
 		form.getElement("date").value = DateTool.now().deltaDays(30).setHourMinute(19, 0);
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
 			
-		if (contract.type == db.Contract.TYPE_VARORDER ) {
+		if (contract.type == db.Catalog.TYPE_VARORDER ) {
 			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
 			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
 		}
@@ -425,7 +427,7 @@ class Distribution extends Controller
 
 			try {
 				
-				if (contract.type == db.Contract.TYPE_VARORDER ) {
+				if (contract.type == db.Catalog.TYPE_VARORDER ) {
 					orderStartDate = form.getValueOf("orderStartDate");
 					orderEndDate = form.getValueOf("orderEndDate");
 				}
@@ -447,7 +449,7 @@ class Distribution extends Controller
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
 				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
 			} else {
-				throw Ok('/contractAdmin/distributions/'+ createdDistrib.contract.id , t._("The distribution has been recorded") );	
+				throw Ok('/contractAdmin/distributions/'+ createdDistrib.catalog.id , t._("The distribution has been recorded") );	
 			}
 			
 		}else{
@@ -473,13 +475,13 @@ class Distribution extends Controller
 		var checked = [];
 		var distributions = distrib.getDistributions();
 		for( d in distributions){
-			checked.push(Std.string(d.contract.id));
+			checked.push(Std.string(d.catalog.id));
 		}
 		#if plugins
 		var cproVendors = [];
 		var invitationsSent = [];
 
-		for( c in distrib.place.amap.getActiveContracts()){
+		for( c in distrib.place.group.getActiveContracts()){
 			var rc = connector.db.RemoteCatalog.getFromContract(c);
 			if( rc!=null ){
 				//is cpro
@@ -523,7 +525,7 @@ class Distribution extends Controller
 			#if plugins
 			//build existing cpro distribution list
 			for(d in existingDistributions.copy()){
-				if(connector.db.RemoteCatalog.getFromContract(d.contract)!=null){
+				if(connector.db.RemoteCatalog.getFromContract(d.catalog)!=null){
 					existingDistributions.remove(d);
 					existingCproDistributions.push(d);
 				}
@@ -533,11 +535,11 @@ class Distribution extends Controller
 			//regular vendors
 			var contractIds:Array<Int> = form.getValueOf("invitedVendors").map(Std.parseInt);
 			for( cid in contractIds){
-				var d = Lambda.find(existingDistributions, function(d) return d.contract.id==cid );
+				var d = Lambda.find(existingDistributions, function(d) return d.catalog.id==cid );
 				if(d==null){
 					//create it					
 					try{
-						var contract = db.Contract.manager.get(cid,false);
+						var contract = db.Catalog.manager.get(cid,false);
 						service.DistributionService.participate(distrib,contract);
 					}catch(e:tink.core.Error){
 						throw Error("/distribution",e.message);
@@ -547,7 +549,7 @@ class Distribution extends Controller
 
 			// delete it
 			for( d in existingDistributions){
-				if(!Lambda.has(contractIds,d.contract.id)){
+				if(!Lambda.has(contractIds,d.catalog.id)){
 					try{
 						service.DistributionService.cancelParticipation(d);
 					}catch(e:tink.core.Error){
@@ -561,14 +563,14 @@ class Distribution extends Controller
 			if(cproVendors.length>0){
 				var contractIds:Array<Int> = form.getValueOf("cproVendors").map(Std.parseInt);
 				for( cid in contractIds ){
-					var d = Lambda.find(existingCproDistributions, function(d) return d.contract.id==cid );				
+					var d = Lambda.find(existingCproDistributions, function(d) return d.catalog.id==cid );				
 					if(d==null){
-						var contract = db.Contract.manager.get(cid,false);
+						var contract = db.Catalog.manager.get(cid,false);
 						var rc = connector.db.RemoteCatalog.getFromContract(contract);
 						var hasNotif = pro.db.PNotif.getDistributionInvitation(rc.getCatalog(),distrib).length>0;
 						if(!hasNotif){
 							//send notif
-							var contract = db.Contract.manager.get(cid,false);
+							var contract = db.Catalog.manager.get(cid,false);
 							var rc = connector.db.RemoteCatalog.getFromContract(contract);
 							var catalog = rc.getCatalog();
 							if(catalog!=null){
@@ -581,7 +583,7 @@ class Distribution extends Controller
 
 				// delete it
 				for( d in existingCproDistributions){
-					if(!Lambda.has(contractIds,d.contract.id)){
+					if(!Lambda.has(contractIds,d.catalog.id)){
 						try{
 							service.DistributionService.cancelParticipation(d,false);
 						}catch(e:tink.core.Error){
@@ -615,7 +617,7 @@ class Distribution extends Controller
 		checkHasDistributionSectionAccess();
 		
 		var md = new db.MultiDistrib();
-		md.place = app.user.amap.getMainPlace();
+		md.place = app.user.getGroup().getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
 
 		//date
@@ -665,7 +667,7 @@ class Distribution extends Controller
 				throw Error('/distribution/insertMd/' ,e.message);
 			}
 			
-			/*if(service.VolunteerService.getRolesFromGroup(app.user.amap).length>0){
+			/*if(service.VolunteerService.getRolesFromGroup(app.user.getGroup()).length>0){
 				throw Ok('/distribution/volunteerRoles/' + md.id, t._("The distribution has been recorded, please define which roles are needed.") );	
 			}else{*/
 				throw Ok('/distribution/', t._("The distribution has been recorded") );	
@@ -685,7 +687,7 @@ class Distribution extends Controller
 		
 		checkHasDistributionSectionAccess();
 		
-		md.place = app.user.amap.getMainPlace();
+		md.place = app.user.getGroup().getMainPlace();
 		var form = sugoi.form.Form.fromSpod(md);
 
 		//date
@@ -720,7 +722,7 @@ class Distribution extends Controller
 		}
 		var distributions = md.getDistributions();
 		for( d in distributions){
-			checked.push(Std.string(d.contract.id));
+			checked.push(Std.string(d.catalog.id));
 		}
 		var el = new sugoi.form.elements.CheckboxGroup("contracts",label,datas,checked,true);
 		form.addElement(el);*/
@@ -759,10 +761,10 @@ class Distribution extends Controller
 
 				/*var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
 				for( cid in contractIds){
-					var d = Lambda.find(distributions, function(d) return d.contract.id==cid );
+					var d = Lambda.find(distributions, function(d) return d.catalog.id==cid );
 					if(d==null){
 						//create it
-						var contract = db.Contract.manager.get(cid,false);
+						var contract = db.Catalog.manager.get(cid,false);
 						service.DistributionService.participate(md,contract);
 					}else if(form.getValueOf("override")==true){
 						//override dates
@@ -783,7 +785,7 @@ class Distribution extends Controller
 
 				// delete it
 				for( d in distributions){
-					if(!Lambda.has(contractIds,d.contract.id)){
+					if(!Lambda.has(contractIds,d.catalog.id)){
 						service.DistributionService.delete(d);
 					}
 				}*/
@@ -803,7 +805,7 @@ class Distribution extends Controller
 	 * create a distribution cycle for a contract
 	 */
 	@tpl("form.mtt")
-	public function doInsertCycle(contract:db.Contract) {
+	public function doInsertCycle(contract:db.Catalog) {
 		
 		/*if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
 		
@@ -825,7 +827,7 @@ class Distribution extends Controller
 		var x = new HourDropDowns("endHour", t._("End time"), DateTool.now().setHourMinute(20, 0), true);
 		form.addElement(x, 6);
 		
-		if (contract.type == db.Contract.TYPE_VARORDER){
+		if (contract.type == db.Catalog.TYPE_VARORDER){
 			
 			form.getElement("daysBeforeOrderStart").value = 10;
 			form.getElement("daysBeforeOrderStart").required = true;
@@ -857,7 +859,7 @@ class Distribution extends Controller
 
 			try{
 				
-				if (contract.type == db.Contract.TYPE_VARORDER) {
+				if (contract.type == db.Catalog.TYPE_VARORDER) {
 					daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
 					daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
 					openingHour = form.getValueOf("openingHour");
@@ -905,7 +907,7 @@ class Distribution extends Controller
 		checkHasDistributionSectionAccess();
 		
 		var dc = new db.DistributionCycle();
-		dc.place = app.user.amap.getMainPlace();
+		dc.place = app.user.getGroup().getMainPlace();
 		var form = sugoi.form.Form.fromSpod(dc);
 		
 		
@@ -936,7 +938,7 @@ class Distribution extends Controller
 
 		//vendors to add
 		/*var datas = [];
-		for( c in app.user.amap.getActiveContracts()){
+		for( c in app.user.getGroup().getActiveContracts()){
 			datas.push({label:c.name+" - "+c.vendor.name,value:c.id});
 		}
 		var el = new sugoi.form.elements.CheckboxGroup("contracts",t._("Catalogs"),datas,null,true);
@@ -958,7 +960,7 @@ class Distribution extends Controller
 				closingHour = form.getValueOf("closingHour");
 
 				createdDistribCycle = service.DistributionService.createCycle(
-					app.user.amap,
+					app.user.getGroup(),
 					form.getElement("cycleType").getValue(),
 					form.getValueOf("startDate"),	
 					form.getValueOf("endDate"),	
@@ -1012,8 +1014,7 @@ class Distribution extends Controller
 		
 		checkHasDistributionSectionAccess();
 			
-		view.confirmed = multiDistrib.checkConfirmed();
-		view.users = multiDistrib.getUsers(db.Contract.TYPE_VARORDER);
+		view.users = multiDistrib.getUsers(db.Catalog.TYPE_VARORDER);
 		view.distribution = multiDistrib;
 
 	}
@@ -1025,26 +1026,28 @@ class Distribution extends Controller
 	public function doAutovalidate(md:db.MultiDistrib){
 
 		checkHasDistributionSectionAccess();
+		if(md.validated) return;
 
-		for ( d in md.getDistributions()){
-			if(d.validated) continue;
-			try{
-				service.PaymentService.validateDistribution(d);
-			}catch(e:tink.core.Error){
-				throw Error("/distribution/validate/"+md.id, e.message);
-			}
+		try{
+			service.PaymentService.validateDistribution(md);
+		}catch(e:tink.core.Error){
+			throw Error("/distribution/validate/"+md.id, e.message);
+		}
 			
-		}	
 		throw Ok( "/distribution/validate/"+md.id , t._("This distribution have been validated") );
 	}
 
 	@admin
 	public function doUnvalidate(md:db.MultiDistrib){
+		checkHasDistributionSectionAccess();
+		if(!md.validated) return;
 
-		for ( d in md.getDistributions(db.Contract.TYPE_VARORDER)){
-			if(!d.validated) continue;
-			service.PaymentService.unvalidateDistribution(d);
-		}	
+		try{
+			service.PaymentService.unvalidateDistribution(md);
+		}catch(e:tink.core.Error){
+			throw Error("/distribution/validate/"+md.id, e.message);
+		}
+			
 		throw Ok( "/distribution/validate/"+md.id ,t._("This distribution have been Unvalidated"));
 	}
 
@@ -1060,7 +1063,7 @@ class Distribution extends Controller
 
 		//Get all the volunteer roles for the group and for the selected contracts
 		var allRoles = VolunteerService.getRolesFromGroup(distrib.getGroup());
-		var generalRoles = Lambda.filter(allRoles, function(role) return role.contract == null);
+		var generalRoles = Lambda.filter(allRoles, function(role) return role.catalog == null);
 		var checkedRoles = new Array<String>();
 		var roleIds : Array<Int> = distrib.volunteerRolesIds != null ? distrib.volunteerRolesIds.split(",").map(Std.parseInt) : [];
 		
@@ -1074,10 +1077,10 @@ class Distribution extends Controller
 
 		//display roles linked to active contracts in this distrib
 		for ( distrib in distrib.getDistributions() ) {
-			var cid = distrib.contract.id;
-			var contractRoles = Lambda.filter(allRoles, function(role) return role.contract!=null && role.contract.id == cid);
+			var cid = distrib.catalog.id;
+			var contractRoles = Lambda.filter(allRoles, function(role) return role.catalog!=null && role.catalog.id == cid);
 			for ( role in contractRoles ) {
-				roles.push( { label: role.name + " - " + distrib.contract.vendor.name, value: Std.string(role.id) } );
+				roles.push( { label: role.name + " - " + distrib.catalog.vendor.name, value: Std.string(role.id) } );
 				if ( roleIds == null || Lambda.has(roleIds, role.id) ) {
 					checkedRoles.push(Std.string(role.id));
 				}
@@ -1118,7 +1121,7 @@ class Distribution extends Controller
 			throw Error('/distribution/volunteerRoles/' + distrib.id, t._("You need to first select the volunteer roles for this distribution") );
 		}
 
-		var members = Lambda.array(Lambda.map(app.user.amap.getMembers(), function(user) return { label: user.getName(), value: user.id } ));
+		var members = Lambda.array(Lambda.map(app.user.getGroup().getMembers(), function(user) return { label: user.getName(), value: user.id } ));
 		for ( role in volunteerRoles ) {
 
 			var selectedVolunteer = distrib.getVolunteerForRole(db.VolunteerRole.manager.get(role.id));
@@ -1248,10 +1251,10 @@ class Distribution extends Controller
 
 		if ( from == null || to == null ) {
 			from = Date.now();
-			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.amap.daysBeforeDutyPeriodsOpen );			
+			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.getGroup().daysBeforeDutyPeriodsOpen );			
 		}
 
-		multidistribs = db.MultiDistrib.getFromTimeRange( app.user.amap, from, to );
+		multidistribs = db.MultiDistrib.getFromTimeRange( app.user.getGroup(), from, to );
 		
 		//Let's find all the unique volunteer roles for this set of multidistribs	
 		var uniqueRoles = [];
@@ -1271,8 +1274,8 @@ class Distribution extends Controller
 
 		view.multidistribs = multidistribs;
 		uniqueRoles.sort(function(b, a) { 
-			var a_str = (a.contract == null ? "null" : Std.string(a.contract.id)) + a.name.toLowerCase();
-			var b_str = (b.contract == null ? "null" : Std.string(b.contract.id)) + b.name.toLowerCase();
+			var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
+			var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
 			return  a_str < b_str ? 1 : -1;
 		});
 		view.uniqueRoles = uniqueRoles;
@@ -1282,11 +1285,11 @@ class Distribution extends Controller
 
 		//duty periods user's participation	
 		var me = app.user;
-		var timeframe = me.amap.getMembershipTimeframe(Date.now());
+		var timeframe = me.getGroup().getMembershipTimeframe(Date.now());
 		view.timeframe = timeframe;	
 
-		var multiDistribs = db.MultiDistrib.getFromTimeRange( me.amap, timeframe.from, timeframe.to );
-		var members = me.amap.getMembers();
+		var multiDistribs = db.MultiDistrib.getFromTimeRange( me.getGroup(), timeframe.from, timeframe.to );
+		var members = me.getGroup().getMembers();
 		var genericRolesDone = 0;
 		var genericRolesToBeDone = 0;
 		var contractRolesDone = 0;
@@ -1300,10 +1303,10 @@ class Distribution extends Controller
 				if(role.isGenericRole()){
 					genericRolesToBeDone++;
 				}else{
-					if(contractRolesToBeDoneByContractId[role.contract.id]==null){
-						contractRolesToBeDoneByContractId[role.contract.id]=1; 
+					if(contractRolesToBeDoneByContractId[role.catalog.id]==null){
+						contractRolesToBeDoneByContractId[role.catalog.id]=1; 
 					} else {
-						contractRolesToBeDoneByContractId[role.contract.id]++;
+						contractRolesToBeDoneByContractId[role.catalog.id]++;
 					}
 				}
 			}
@@ -1316,13 +1319,13 @@ class Distribution extends Controller
 
 			//populate member list by contract id
 			for( d in md.getDistributions()){
-				if(membersListByContractId[d.contract.id]==null){
+				if(membersListByContractId[d.catalog.id]==null){
 					//this contract has no roles
 					continue;
 				}
 				for( u in members){
 					if(d.hasUserOrders(u)){
-						membersListByContractId[d.contract.id].push(u);
+						membersListByContractId[d.catalog.id].push(u);
 					} 
 				}
 			}
@@ -1377,13 +1380,13 @@ class Distribution extends Controller
 		}
 
 		if ( from == null || to == null ) {
-			var timeframe = app.user.amap.getMembershipTimeframe(Date.now());
+			var timeframe = app.user.getGroup().getMembershipTimeframe(Date.now());
 			from = timeframe.from;
 			to = timeframe.to;
 		}
 
-		var multiDistribs = db.MultiDistrib.getFromTimeRange( app.user.amap, from, to );
-		var members = app.user.amap.getMembers();
+		var multiDistribs = db.MultiDistrib.getFromTimeRange( app.user.getGroup(), from, to );
+		var members = app.user.getGroup().getMembers();
 
 		//init + generic roles
 		var totalRolesToBeDone = 0;	
@@ -1407,10 +1410,10 @@ class Distribution extends Controller
 				if(role.isGenericRole()){
 					genericRolesToBeDone++;
 				}else{
-					if(contractRolesToBeDoneByContractId[role.contract.id]==null){
-						contractRolesToBeDoneByContractId[role.contract.id]=1; 
+					if(contractRolesToBeDoneByContractId[role.catalog.id]==null){
+						contractRolesToBeDoneByContractId[role.catalog.id]=1; 
 					} else {
-						contractRolesToBeDoneByContractId[role.contract.id]++;
+						contractRolesToBeDoneByContractId[role.catalog.id]++;
 					}
 				}
 			}
@@ -1423,14 +1426,14 @@ class Distribution extends Controller
 
 			//populate member list by contract id
 			for( d in md.getDistributions()){
-				if(membersListByContractId[d.contract.id]==null){
+				if(membersListByContractId[d.catalog.id]==null){
 					//this contract has no roles
 					continue;
 				}
 				for( u in members){
 					if(d.hasUserOrders(u)){
 					//if(d.getUserOrders(u).length>0){
-						membersListByContractId[d.contract.id].push(u);
+						membersListByContractId[d.catalog.id].push(u);
 					} 
 				}
 			}
@@ -1439,9 +1442,11 @@ class Distribution extends Controller
 			for( v in md.getVolunteers()){
 				totalRolesDone++;
 				if(v.volunteerRole.isGenericRole()){
-					genericRolesDoneByMemberId[v.user.id]++;
+					if(genericRolesDoneByMemberId[v.user.id]!=null) 
+						genericRolesDoneByMemberId[v.user.id]++;
 				}else{
-					contractRolesDoneByMemberId[v.user.id]++;
+					if(contractRolesDoneByMemberId[v.user.id]!=null) 
+						contractRolesDoneByMemberId[v.user.id]++;
 				}
 			}
 			
@@ -1488,9 +1493,9 @@ class Distribution extends Controller
 		var form = new sugoi.form.Form("missingProduct");
 
 		var datas = [];
-		for( d in distrib.getDistributions(db.Contract.TYPE_VARORDER)){
-			datas.push({label:d.contract.name.toUpperCase(),value:null});
-			for( p in d.contract.getProducts(false)){
+		for( d in distrib.getDistributions(db.Catalog.TYPE_VARORDER)){
+			datas.push({label:d.catalog.name.toUpperCase(),value:null});
+			for( p in d.catalog.getProducts(false)){
 				datas.push({label:"---- "+p.getName()+" : "+p.getPrice()+view.currency(),value:p.id});
 			}
 		}
@@ -1504,7 +1509,7 @@ class Distribution extends Controller
 				throw Error(sugoi.Web.getURI(), t._("Please select a product") );
 			} 
 			var count = 0;
-			for( order in distrib.getOrders(db.Contract.TYPE_VARORDER)){
+			for( order in distrib.getOrders(db.Catalog.TYPE_VARORDER)){
 				if(product.id==order.product.id){
 					//set qt to 0
 					service.OrderService.edit(order,0);
@@ -1529,9 +1534,9 @@ class Distribution extends Controller
 		var form = new sugoi.form.Form("changePrice");
 
 		var datas = [];
-		for( d in distrib.getDistributions(db.Contract.TYPE_VARORDER)){
-			datas.push({label:d.contract.name.toUpperCase(),value:null});
-			for( p in d.contract.getProducts(false)){
+		for( d in distrib.getDistributions(db.Catalog.TYPE_VARORDER)){
+			datas.push({label:d.catalog.name.toUpperCase(),value:null});
+			for( p in d.catalog.getProducts(false)){
 				datas.push({label:"---- "+p.getName()+" : "+p.getPrice()+view.currency(),value:p.id});
 			}
 		}
@@ -1548,7 +1553,7 @@ class Distribution extends Controller
 			var price : Float = form.getValueOf("price");
 
 			var count = 0;
-			for( order in distrib.getOrders(db.Contract.TYPE_VARORDER)){
+			for( order in distrib.getOrders(db.Catalog.TYPE_VARORDER)){
 				if(product.id==order.product.id){
 					//change price
 					order.lock();
@@ -1573,7 +1578,7 @@ class Distribution extends Controller
 
 
 	/**
-		Counter management (Cash)
+		Counter management
 	**/
 	@tpl('validate/counter.mtt')
 	function doCounter(distribution:db.MultiDistrib){
@@ -1584,19 +1589,78 @@ class Distribution extends Controller
 			distribution.update();
 		}
 		view.distribution = distribution;
+
 		#if plugins
-		view.sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
+		var sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
+		view.sales = sales;
 		#end
 
-		//user who have not paid
+		//orders total by VAT rate	
+		var ordersByVat = 	service.ReportService.getOrdersByVAT(distribution);
+		view.ordersByVat = ordersByVat;
+
+		//user who have not paid / paid too much / partially paid
 		var notPaid = new Array<{user:db.User,amount:Float}>();
+		var partiallyPaid = new Array<{user:db.User,amount:Float}>();
+		var paidTooMuch = new Array<{user:db.User,amount:Float}>();
+
 		for( basket in distribution.getBaskets() ){
+			var orderOp = basket.getOrderOperation(false);
+			if(orderOp==null) continue;
 			var ops = basket.getPaymentsOperations();
-			if(ops.length==0){
+			var paid = 0.0;
+			var order = Math.abs(orderOp.amount);
+
+			if(ops.length==0 && order>0){
 				notPaid.push({user:basket.getUser(),amount:basket.getOrdersTotal()});
+			}else{
+					
+				for( o in ops) paid+=o.amount;
+				if(paid.roundTo(2) > order.roundTo(2)) {					
+					paidTooMuch.push({user:basket.getUser(),amount:paid-order});
+				}
+				if(paid.roundTo(2) < order.roundTo(2)) {
+					partiallyPaid.push({user:basket.getUser(),amount:order-paid});
+				}
+
+
 			}
 		}
+
+		if(app.params.get("csv")=="1"){
+			var out = new Array<Array<String>>();
+			out.push(['Fond de caisse avant distribution',distribution.counterBeforeDistrib.string()]);
+			#if plugins
+			out.push(['Encaissements en liquide',sales.cashTurnover.ttc.string()]);
+			out.push(['La caisse doit contenir',(distribution.counterBeforeDistrib+sales.cashTurnover.ttc).string()]);
+			out.push(['Encaissements en chèque',sales.checkTurnover.ttc.string()]);
+			#end
+			out.push([]);
+			out.push(['Total commande par taux de TVA','HT','TTC']);
+			for(k in ordersByVat.keys()){
+				out.push([ (k/100)+"%" , Formatting.formatNum(ordersByVat[k].ht) , Formatting.formatNum(ordersByVat[k].ttc) ]);
+			}
+			out.push([]);
+			out.push(['Commandes non payées']);
+			out.push(['Membre','Montant impayé']);
+			for(u in notPaid) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+			out.push([]);
+			out.push(['Commandes payées partiellement']);
+			out.push(['Membre','Montant manquant']);
+			for(u in partiallyPaid) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+			out.push([]);
+			out.push(['Avoirs']);
+			out.push(['Membre','Montant avoir']);
+			for(u in paidTooMuch) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+
+			app.setTemplate(null);
+			sugoi.tools.Csv.printCsvDataFromStringArray(out,[],"Encaissements "+view.hDate(distribution.distribStartDate)+".csv");			
+		}
+		
+
 		view.notPaid = notPaid;
+		view.paidTooMuch = paidTooMuch;
+		view.partiallyPaid = partiallyPaid;
 
 	}
 }

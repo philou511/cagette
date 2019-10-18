@@ -8,20 +8,20 @@ import react.mui.CagetteTheme;
 import mui.core.Button;
 
 
-typedef ContractsBoxProps = {
+typedef CatalogsBoxProps = {
 	
-	var contractId : Int;
+	var catalogId : Int;
 	var multiDistribId : Int;	
 	var error : String;
 }
 
 
 /**
- * A box to select a contract to then choose telated products to be added to the orders of the user
+ * A box to select a catalog to then choose related products to be added to the orders of the user
  * @author web-wizard
  */
 @:connect
-class ContractsBox  extends react.ReactComponentOfProps<ContractsBoxProps>
+class CatalogsBox  extends react.ReactComponentOfProps<CatalogsBoxProps>
 {
 
 	public function new(props) {
@@ -32,18 +32,18 @@ class ContractsBox  extends react.ReactComponentOfProps<ContractsBoxProps>
 	override public function render() {	
 			
 		return jsx('<div>								
-						<h3>Choisissez le contrat dont vous voulez voir les produits</h3>
+						<h3>Choisissez le catalogue dont vous voulez voir les produits</h3>
 						<Button onClick=${function(){ js.Browser.location.hash = "/"; }} size={Medium} variant={Outlined}>
 							${CagetteTheme.getIcon("chevron-left")}&nbsp;&nbsp;Retour
 						</Button>
 						<Error error=${props.error} />				
 						<hr />
-						<ContractSelector multiDistribId=${props.multiDistribId} />						
+						<CatalogSelector multiDistribId=${props.multiDistribId} />						
 					</div>			
 		');
 	}
 	
-	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<ContractsBoxProps> {
+	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<CatalogsBoxProps> {
 
 		return { error : Reflect.field(state, "reduxApp").error };
 	}

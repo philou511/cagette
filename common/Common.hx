@@ -9,7 +9,7 @@
 	Messages;					//can send messages
 }*/
 #if sys
-typedef Right = db.UserAmap.Right;
+typedef Right = db.UserGroup.Right;
 #end
 
 //typedef Rights = Array<Right>;
@@ -30,7 +30,7 @@ typedef OrderSimple = {
 }
 
 //A temporary order, waiting for being paid and definitely recorded.
-@:keep
+/*@:keep
 typedef OrderInSession = {
 	products:Array <{
 		productId:Int,
@@ -43,6 +43,14 @@ typedef OrderInSession = {
 	total:Float, 	//price to pay
 	?userId:Int,
 	?paymentOp:Int, //payment operation ID
+}*/
+
+//OrderInSession v2 for db.TmpBasket
+typedef TmpBasketData = {
+	products:Array <{
+		productId:Int,
+		quantity:Float,
+	}> ,		
 }
 
 @:keep
@@ -102,13 +110,14 @@ typedef ProductInfo = {
 	active:Bool,
 	bulk:Bool,
 
-	contractId : Int,
-	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
-	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
+	catalogId : Int,
+	catalogTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
+	catalogTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
 	?vendorId : Int,
 	?distributionId:Null<Int>, //in the context of a distrib
 }
 
+//used in shop client
 @:keep
 typedef ProductWithQuantity = {
 	product: ProductInfo,
@@ -129,11 +138,6 @@ typedef DistributionInfos = {
 }
 
 //This is used by Mangopay to know which document types to ask for KYC compliance
-enum LegalStatus{
-	Soletrader;
-	Organization;
-	Business;
-}
 
 enum Unit{
 	Piece;
@@ -180,6 +184,7 @@ typedef Block = {
 
 typedef UserOrder = {
 	id:Int,
+	?basketId:Int,
 	userId:Int,
 	userName:String,
 	?userEmail : String,
@@ -196,7 +201,6 @@ typedef UserOrder = {
 	?productImage:String,
 	?productQt:Float,
 	?productUnit:Unit,
-
 	?productHasFloatQt:Bool,
 	?productHasVariablePrice:Bool,
 
@@ -218,7 +222,7 @@ typedef UserOrder = {
 	canceled:Bool,	
 	canModify:Bool,
 	
-	contractId:Int,
+	catalogId:Int,
 	contractName:String,
 }
 
@@ -291,11 +295,11 @@ enum Event {
 	
 	#if sys
 	SendEmail(message : sugoi.mail.Mail);		//an email is sent
-	NewMember(user:db.User,group:db.Amap);		//a new member is added to a group
-	NewGroup(group:db.Amap, author:db.User);	//a new group is created
+	NewMember(user:db.User,group:db.Group);		//a new member is added to a group
+	NewGroup(group:db.Group, author:db.User);	//a new group is created
 	
 	//Distributions
-	PreNewDistrib(contract:db.Contract);		//when displaying the insert distribution form
+	PreNewDistrib(contract:db.Catalog);		//when displaying the insert distribution form
 	NewDistrib(distrib:db.Distribution);		//when a new distrinbution is created
 	PreEditDistrib(distrib:db.Distribution);
 	EditDistrib(distrib:db.Distribution);
@@ -305,7 +309,7 @@ enum Event {
 	MultiDistribEvent(md:db.MultiDistrib);
 	
 	//Products
-	PreNewProduct(contract:db.Contract);	//when displaying the insert distribution form
+	PreNewProduct(contract:db.Catalog);	//when displaying the insert distribution form
 	NewProduct(product:db.Product);			//when a new product is created
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
@@ -314,9 +318,9 @@ enum Event {
 	ProductInfosEvent(p:ProductInfo,?d:db.Distribution);	//when infos about a product are displayed
 	
 	//Contracts
-	EditContract(contract:db.Contract,form:sugoi.form.Form);
-	DuplicateContract(contract:db.Contract);
-	DeleteContract(contract:db.Contract);
+	EditContract(contract:db.Catalog,form:sugoi.form.Form);
+	DuplicateContract(contract:db.Catalog);
+	DeleteContract(contract:db.Catalog);
 	
 	//crons
 	DailyCron(now:Date);
@@ -324,7 +328,7 @@ enum Event {
 	MinutelyCron(now:Date);
 	
 	//orders
-	MakeOrder(orders:Array<db.UserContract>); 
+	MakeOrder(orders:Array<db.UserOrder>); 
 	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
 	ValidateBasket(basket:db.Basket);
 	

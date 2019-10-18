@@ -42,7 +42,7 @@
     "build:sass": "node-sass ../www/css -o ../www/css",
     "watch:sass": "npm run build:sass -- --watch",
     "build2": "babel src -d lib",
-    "libs:dev": "browserify libs/libs.js -o ../www/js/libs.js -d",
+    "libs:dev": "browserify libs/libs.js -o ../www/js/libs.dev.js -d",
     "libs:prod": "cross-env NODE_ENV=production browserify libs/libs.js -o ../www/js/libs.js",
     "test": "haxe testsJS.hxml && node js/test/tests.js",
     "prepush": "npm test"

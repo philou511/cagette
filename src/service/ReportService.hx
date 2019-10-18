@@ -17,9 +17,9 @@ class ReportService{
 
 		if(distribution==null) throw "distribution should not be null";
 		
-		var exportName = t._("Delivery ::contractName:: of the ", {contractName:distribution.contract.name}) + distribution.date.toString().substr(0, 10);
-		where += ' and p.contractId = ${distribution.contract.id}';
-		if (distribution.contract.type == db.Contract.TYPE_VARORDER ) {
+		var exportName = t._("Delivery ::contractName:: of the ", {contractName:distribution.catalog.name}) + distribution.date.toString().substr(0, 10);
+		where += ' and p.contractId = ${distribution.catalog.id}';
+		if (distribution.catalog.type == db.Catalog.TYPE_VARORDER ) {
 			where += ' and up.distributionId = ${distribution.id}';
 		}
 
@@ -32,7 +32,7 @@ class ReportService{
 			AVG(p.vat) as vat,
 			p.ref as ref,			
 			SUM(quantity*up.productPrice) as totalTTC
-			from UserContract up, Product p 
+			from UserOrder up, Product p 
 			where up.productId = p.id 
 			$where
 			group by ref,pname,price 
@@ -77,7 +77,7 @@ class ReportService{
 			if (p.multiWeight){
 				sql = 'select 
 				COUNT(up.id) as quantity 
-				from UserContract up, Product p 
+				from UserOrder up, Product p 
 				where up.productId = p.id and up.quantity > 0 and p.id=${p.id}
 				$where';
 				var count = sys.db.Manager.cnx.request(sql).getIntResult(0);					
@@ -134,13 +134,13 @@ class ReportService{
 		
 		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
 		
-		for (d in multiDistrib.getDistributions(db.Contract.TYPE_VARORDER)) {
+		for (d in multiDistrib.getDistributions(db.Catalog.TYPE_VARORDER)) {
 
-			var vendorId = d.contract.vendor.id;
+			var vendorId = d.catalog.vendor.id;
 			var vendorData = vendorDataByVendorId.get(vendorId);
 			
 			if (vendorData == null) {
-				vendorDataByVendorId.set( vendorId, {contract:d.contract, distrib:d, orders:service.ReportService.getOrdersByProduct(d)});	
+				vendorDataByVendorId.set( vendorId, {contract:d.catalog, distrib:d, orders:service.ReportService.getOrdersByProduct(d)});	
 			}
 			else {
 				
@@ -163,6 +163,21 @@ class ReportService{
 		}
 
 		return vendorDataByVendorId;
+	}
+
+	/**
+		Get orders total by VAT rate.
+	**/
+	public static function getOrdersByVAT(distribution:db.MultiDistrib){
+		var ordersByVat = new Map<Int,{ht:Float,ttc:Float}>();
+		for( o in distribution.getOrders(db.Catalog.TYPE_VARORDER)){
+			var key = Math.round(o.product.vat*100);
+			if(ordersByVat[key]==null) ordersByVat[key] = {ht:0.0,ttc:0.0};
+			var total = o.quantity * o.productPrice;
+			ordersByVat[key].ttc += total;
+			ordersByVat[key].ht += (total/(1+o.product.vat/100));
+		}
+		return ordersByVat;
 	}
 
 }

@@ -1,6 +1,8 @@
 ::use 'design.mtt'::
 <div class="col-md-8">
 	<h2>::_("Last orders")::</h2>
+
+	::set payments = user.getGroup().hasPayments()::
 	
 	::if constOrders.length>0::
 	<div class="article">
@@ -20,7 +22,7 @@
 				<th>::_("Sub-total")::</th>
 				<th>::_("Fees")::</th>
 				<th>::_("Total")::</th>
-				<th>::_("Paid")::</th>
+				<th ::cond !payments::>::_("Paid")::</th>
 			</tr>
 		::set total = 0::
 		::foreach m c.orders::
@@ -62,7 +64,7 @@
 					::formatNum(m.total)::&nbsp;::currency()::	
 					::set total = total + m.total::
 				</td>
-				<td>
+				<td ::cond !payments::>
 					::if m.paid==true::
 					<span style="color:#00AA00;">::_("Paid")::</span>
 					::else::
@@ -102,7 +104,7 @@
 					<th>::_("Sub-total")::</th>
 					<th>::_("Fees")::</th>
 					<th>::_("Total")::</th>
-					<th>::_("Paid")::</th>			
+					<th ::cond !payments::>::_("Paid")::</th>			
 				</tr>
 				::set total = 0::
 				::foreach o d.orders::
@@ -129,7 +131,7 @@
 							::formatNum(o.total)::&nbsp;::currency()::
 							::set total = total + o.total::
 						</td>
-						<td>
+						<td ::cond !payments::>
 							::if o.paid==true::
 							<span style="color:#00AA00;">::_("Paid")::</span>
 							::else::
@@ -141,7 +143,7 @@
 				::end::	
 				<tr>
 					<td colspan="4">
-						::if !user._amap.hasPayments():: 
+						::if !user.getGroup().hasPayments():: 
 							$$edit(Modifier cette commande,/contract/editOrderByDate/::d.date::)
 						::end::
 						
@@ -166,7 +168,7 @@
 		
 		
 		<div class="pull-right">
-			<a href="::user.getQuitGroupLink(user.getAmap())::" class="btn btn-default btn-sm">
+			<a href="::user.getQuitGroupLink(user.getGroup())::" class="btn btn-default btn-sm">
 				<i class="icon icon-delete"></i>
 				::_("Leave this group")::
 			</a>
@@ -176,7 +178,7 @@
 		
 	</div>
 	
-	::if user.getAmap().hasPayments()::
+	::if user.getGroup().hasPayments()::
 	<h3>::_("Payments")::</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">

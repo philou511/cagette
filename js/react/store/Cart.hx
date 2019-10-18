@@ -168,7 +168,7 @@ class Cart extends react.ReactComponentOf<CartProps, CartState> {
 				<div ref={this.cartRef} className=${classes.cagMiniBasketContainer} onClick=${onCartClicked}>
 					<Icon component="i" className=${iconBasket}></Icon>
 					
-					<Typography className=${classes.price} component="span">${Formatting.formatNum(props.order.total)}&nbsp;&euro;</Typography>
+					<Typography className=${classes.price} component="span">${Formatting.formatNum(props.order.total)} €</Typography>
 					${CagetteTheme.getIcon("chevron-down")}
 				</div>
 				<Popover open={state.cartOpen}

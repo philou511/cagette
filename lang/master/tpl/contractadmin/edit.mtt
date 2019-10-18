@@ -38,7 +38,7 @@
 					<th>::_("Product")::</th>
 					<th>::_("Price")::</th>
 					<th>::_("Quantity")::</th>
-					<th ::cond !user._amap.hasPayments()::>::_("Status")::</th>
+					<th ::cond !user.getGroup().hasPayments()::>::_("Status")::</th>
 					::if distribution==null::<th>::_("Alternately with :")::</th>::end::
 				</tr>
 				::set total = 0::
@@ -75,7 +75,7 @@
 					</td>
 					
 					<!-- "paid" checkbox only if payments are not enabled -->
-					<td class="paid" ::cond !user._amap.hasPayments()::>
+					<td class="paid" ::cond !user.getGroup().hasPayments()::>
 						::_("Paid:"):: 
 						::if uo.order!=null::			
 						<input type="checkbox" name="paid::uo.product.id::" value="1" ::attr checked (uo.order.paid==true ):: />
@@ -126,7 +126,7 @@
 						<th>::_("Total")::</th>
 						<th>::total+extra::::currency()::</th>
 						<th></th>
-						<th ::cond !user._amap.hasPayments()::>
+						<th ::cond !user.getGroup().hasPayments()::>
 							<a href="#"  id="checkButton">::_("Check all")::</a>
 							<script language="javascript">
 							var globalCheck = true;

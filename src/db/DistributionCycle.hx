@@ -17,7 +17,7 @@ class DistributionCycle extends Object
 {
 	public var id : SId;	
 	//@:relation(contractId) public var contract : Contract;
-	@hideInForms @:relation(groupId) public var group : db.Amap;
+	@hideInForms @:relation(groupId) public var group : db.Group;
 	public var cycleType:SEnum<CycleType>;
 	public var startDate : SDate; 	//cycle start date
 	public var endDate : SDate;		//cycle end date
@@ -51,8 +51,8 @@ class DistributionCycle extends Object
 	
 	public function placePopulate():Array<{label:String,value:Int}> {
 		var out = [];
-		if ( App.current.user == null || App.current.user.amap == null ) return out;
-		var places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
+		if ( App.current.user == null || App.current.user.getGroup() == null ) return out;
+		var places = db.Place.manager.search($group == App.current.user.getGroup(), false);
 		for (p in places) out.push( { label:p.name,value :p.id } );
 		return out;
 	}

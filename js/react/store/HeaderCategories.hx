@@ -1,5 +1,6 @@
 package react.store;
 // it's just easier with this lib
+import js.html.ScrollBehavior;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
@@ -86,12 +87,12 @@ class HeaderCategories extends react.ReactComponentOfProps<HeaderCategoriesProps
 	}
     
     function onSubCategoryClicked(subcategory:CategoryInfo) {
-        js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
+        js.Browser.window.scrollTo({ top: 0, behavior: ScrollBehavior.SMOOTH });
         props.filterBySubCategory(props.nav.category.id, subcategory.id);
     }
 
     function onCategoryClicked(category:CategoryInfo) {
-        js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
+        js.Browser.window.scrollTo({ top: 0, behavior: ScrollBehavior.SMOOTH });
         props.filterByCategory(category.id);
 
         // pour le bio et le label rouge..

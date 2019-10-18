@@ -28,7 +28,7 @@
 				::set warning = ""::
 				::if(p.type != "moneypot" || allowMoneyPotWithNegativeBalance || futurebalance >= 0)::
 					::set class = "clickable"::
-					::set href = p.link::
+					::set href = p.link+"/"+tmpBasket.id::
 					::if(p.type == "onthespot")::
 						::set warning = ""::
 						::foreach allowedType p.allowedPaymentTypes::

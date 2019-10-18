@@ -1,5 +1,5 @@
 package controller;
-import db.UserContract;
+import db.UserOrder;
 import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
@@ -40,9 +40,9 @@ class ContractAdmin extends Controller
 		
 		var contracts;
 		if (args != null && args.old) {
-			contracts = db.Contract.manager.search($amap == app.user.amap && $endDate < Date.now() ,{orderBy:-startDate},false);	
+			contracts = db.Catalog.manager.search($group == app.user.getGroup() && $endDate < Date.now() ,{orderBy:-startDate},false);	
 		}else {
-			contracts = db.Contract.getActiveContracts(app.user.amap, true, false);	
+			contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false);	
 		}
 
 		//filter if current user is not manager
@@ -53,15 +53,15 @@ class ContractAdmin extends Controller
 		}
 		
 		view.contracts = contracts;		
-		view.vendors = app.user.amap.getActiveVendors();
-		view.places = app.user.amap.getPlaces();
+		view.vendors = app.user.getGroup().getActiveVendors();
+		view.places = app.user.getGroup().getPlaces();
 		checkToken();
 
 		//Multidistribs to validate
-		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.amap.hasPayments()){
+		if( (app.user.canManageAllContracts()||app.user.isAmapManager() )  && app.user.getGroup().hasPayments()){
 			var twoMonthAgo = tools.DateTool.deltaDays(now,-60);
 			var multidistribs = [];
-			for( md in db.MultiDistrib.getFromTimeRange(app.user.amap,twoMonthAgo,now)){
+			for( md in db.MultiDistrib.getFromTimeRange(app.user.getGroup(),twoMonthAgo,now)){
 				if( !md.isValidated() ) multidistribs.push(md);				
 			}
 			view.multidistribs = multidistribs; 
@@ -75,7 +75,7 @@ class ContractAdmin extends Controller
 	 * Manage products
 	 */
 	@tpl("contractadmin/products.mtt")
-	function doProducts(contract:db.Contract,?args:{?enable:String,?disable:String}) {
+	function doProducts(contract:db.Catalog,?args:{?enable:String,?disable:String}) {
 		view.nav.push("products");
 		sendNav(contract);
 		
@@ -83,7 +83,7 @@ class ContractAdmin extends Controller
 		view.c = contract;
 		
 		//checks
-		if (app.user.amap.hasShopMode() && !app.user.amap.hasTaxonomy() ) {		
+		if (app.user.getGroup().hasShopMode() && !app.user.getGroup().hasTaxonomy() ) {		
 			for ( p in contract.getProducts(false)) {
 				if (p.getCategories().length == 0) {
 					app.session.addMessage(t._("Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>", {contractid:contract.id}), true);
@@ -117,10 +117,10 @@ class ContractAdmin extends Controller
 	 * copy products from a contract to an other
 	 */
 	@admin @tpl("form.mtt")
-	function doCopyProducts(contract:db.Contract) {
+	function doCopyProducts(contract:db.Catalog) {
 		view.title = t._("Copy products in: ")+contract.name;
 		var form = new Form("copy");
-		var contracts = app.user.amap.getActiveContracts();
+		var contracts = app.user.getGroup().getActiveContracts();
 		var contracts  = Lambda.map(contracts, function(c) return {key:Std.string(c.id),value:Std.string(c.name) } );
 		form.addElement(new sugoi.form.elements.Selectbox("source", t._("Copy products from: "),Lambda.array(contracts)));
 		form.addElement(new sugoi.form.elements.Checkbox("delete", t._("Delete existing products (all orders will be deleted!)")));
@@ -133,14 +133,14 @@ class ContractAdmin extends Controller
 				}
 			}
 			
-			var source = db.Contract.manager.get(Std.parseInt(form.getValueOf("source")), false);
+			var source = db.Catalog.manager.get(Std.parseInt(form.getValueOf("source")), false);
 			var prods = source.getProducts();
 			for ( source_p in prods) {
 				var p = new db.Product();
 				p.name = source_p.name;
 				p.price = source_p.price;
 				//p.type = source_p.type;
-				p.contract = contract;
+				p.catalog = contract;
 				p.insert();
 			}
 			
@@ -176,8 +176,8 @@ class ContractAdmin extends Controller
 			el.format = 'LL';
 			f.addElement(el);
 			
-			//var places = Lambda.map(app.user.amap.getPlaces(), function(p) return {label:p.name,value:p.id} );
-			//f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
+			//var places = Lambda.map(app.user.getGroup().getPlaces(), function(p) return {label:p.name,value:p.id} );
+			//f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.getGroup().getMainPlace().id,true));
 			
 			view.form = f;
 			view.title = t._("Global view of orders");
@@ -197,27 +197,27 @@ class ContractAdmin extends Controller
 			
 			var d1 = tools.DateTool.setHourMinute(from,0,0);
 			var d2 = tools.DateTool.setHourMinute(to,23,59);
-			var contracts = app.user.amap.getActiveContracts(true);
+			var contracts = app.user.getGroup().getActiveContracts(true);
 			var cconst = [];
 			var cvar = [];
 			for ( c in contracts) {
-				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Contract.TYPE_VARORDER) 	cvar.push(c.id);				
+				if (c.type == db.Catalog.TYPE_CONSTORDERS) cconst.push(c.id);
+				if (c.type == db.Catalog.TYPE_VARORDER) 	cvar.push(c.id);				
 			}
 			
 			//distribs
-			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);		
-			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);	
+			var vdistribs = db.Distribution.manager.search(($catalogId in cvar)   && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);		
+			var cdistribs = db.Distribution.manager.search(($catalogId in cconst) && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);	
 			
 			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 			
 			//varying orders
-			var varorders = db.UserContract.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
+			var varorders = db.UserOrder.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
 			
 			//constant orders
 			var constorders = [];
 			for ( d in cdistribs) {
-				var orders2 = db.UserContract.manager.search($productId in d.contract.getProducts().getIds(), { orderBy:userId } );
+				var orders2 = db.UserOrder.manager.search($productId in d.catalog.getProducts().getIds(), { orderBy:userId } );
 				constorders = constorders.concat(Lambda.array(orders2));
 			}
 			
@@ -250,8 +250,8 @@ class ContractAdmin extends Controller
 			el.format = 'LL';
 			f.addElement(el);
 			
-			var places = Lambda.map(app.user.amap.getPlaces(), function(p) return {label:p.name,value:p.id} );
-			f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.amap.getMainPlace().id,true));
+			var places = Lambda.map(app.user.getGroup().getPlaces(), function(p) return {label:p.name,value:p.id} );
+			f.addElement(new sugoi.form.elements.IntSelect("placeId", "Lieu", Lambda.array(places),app.user.getGroup().getMainPlace().id,true));
 			
 			view.form = f;
 			view.title = t._("Global view of orders");
@@ -273,27 +273,27 @@ class ContractAdmin extends Controller
 			
 			var d1 = date.setHourMinute(0, 0);
 			var d2 = date.setHourMinute(23,59);
-			var contracts = app.user.amap.getActiveContracts(true);
+			var contracts = app.user.getGroup().getActiveContracts(true);
 			var cconst = [];
 			var cvar = [];
 			for ( c in contracts) {
-				if (c.type == db.Contract.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Contract.TYPE_VARORDER) 	cvar.push(c.id);				
+				if (c.type == db.Catalog.TYPE_CONSTORDERS) cconst.push(c.id);
+				if (c.type == db.Catalog.TYPE_VARORDER) 	cvar.push(c.id);				
 			}
 			
 			//distribs
-			var vdistribs = db.Distribution.manager.search(($contractId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
-			var cdistribs = db.Distribution.manager.search(($contractId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
+			var vdistribs = db.Distribution.manager.search(($catalogId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
+			var cdistribs = db.Distribution.manager.search(($catalogId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
 			
 			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 			
 			//varying orders
-			var varorders = db.UserContract.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
+			var varorders = db.UserOrder.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
 			
 			//constant orders
 			var constorders = [];
 			for ( d in cdistribs) {
-				var orders2 = db.UserContract.manager.search($productId in d.contract.getProducts().getIds(), { orderBy:userId } );
+				var orders2 = db.UserOrder.manager.search($productId in d.catalog.getProducts().getIds(), { orderBy:userId } );
 				constorders = constorders.concat(Lambda.array(orders2));
 			}
 			
@@ -368,21 +368,21 @@ class ContractAdmin extends Controller
 			
 		var d1 = tools.DateTool.setHourMinute(from,0,0);
 		var d2 = tools.DateTool.setHourMinute(to,23,59);
-		var contracts = app.user.amap.getActiveContracts(true);
+		var contracts = app.user.getGroup().getActiveContracts(true);
 		var cids = contracts.getIds();
 		
 		//distribs for both types in active contracts
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= d1 && $date <= d2 /*&& $place==place*/, false);		
 		if ( distribs.length == 0 ) throw Error("/contractAdmin/", t._("There is no delivery during this period"));
 		
-		var out = new Map<Int,{contract:db.Contract,distrib:db.Distribution,orders:Array<OrderByProduct>}>();//key : vendor id
+		var out = new Map<Int,{contract:db.Catalog,distrib:db.Distribution,orders:Array<OrderByProduct>}>();//key : vendor id
 		
 		for (d in distribs){
-			var vid = d.contract.vendor.id;
+			var vid = d.catalog.vendor.id;
 			var o = out.get(vid);
 			
 			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:service.ReportService.getOrdersByProduct(d) });	
+				out.set( vid, {contract:d.catalog,distrib:d,orders:service.ReportService.getOrdersByProduct(d) });	
 			}else{
 				
 				//add orders with existing ones
@@ -459,13 +459,13 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders(contract:db.Contract, args:{?d:db.Distribution,?delete:db.UserContract}) {
+	function doOrders(contract:db.Catalog, args:{?d:db.Distribution,?delete:db.UserOrder}) {
 		view.nav.push("orders");
 		sendNav(contract);
 		
 		//Checking permissions
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (contract.type == db.Contract.TYPE_VARORDER && args != null && args.d == null ) { 
+		if (contract.type == db.Catalog.TYPE_VARORDER && args != null && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
 
@@ -485,13 +485,13 @@ class ContractAdmin extends Controller
 		}
 
 		var d = null;
-		if (contract.type == db.Contract.TYPE_VARORDER ){
+		if (contract.type == db.Catalog.TYPE_VARORDER ){
 			view.distribution = args.d;
 			view.multiDistribId = args.d.multiDistrib.id;
 			d = args.d;
 		}
 		view.c = contract;
-		var orders = db.UserContract.getOrders(contract, d, app.params.exists("csv"));
+		var orders = service.OrderService.getOrders(contract, d, app.params.exists("csv"));
 		
 		if ( !app.params.exists("csv") ){
 			
@@ -514,16 +514,16 @@ class ContractAdmin extends Controller
 	/**
 	 * hidden feature : updates orders by setting current product price.
 	 */
-	function doUpdatePrices(contract:db.Contract, args:{?d:db.Distribution}) {
+	function doUpdatePrices(contract:db.Catalog, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) { 
+		if (contract.type == db.Catalog.TYPE_VARORDER && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
 		var d = null;
-		if (contract.type == db.Contract.TYPE_VARORDER ){
+		if (contract.type == db.Catalog.TYPE_VARORDER ){
 			view.distribution = args.d;
 			d = args.d;
 		}
@@ -544,7 +544,7 @@ class ContractAdmin extends Controller
 	 *  Duplicate a contract
 	 */
 	@tpl("form.mtt")
-	function doDuplicate(contract:db.Contract) {
+	function doDuplicate(contract:db.Catalog) {
 
 		sendNav(contract);
 		if (!app.user.isAmapManager()) throw Error("/", t._("You do not have the authorization to manage this contract"));
@@ -558,11 +558,11 @@ class ContractAdmin extends Controller
 		
 		if (form.checkToken()) {
 
-			var nc = new db.Contract();
+			var nc = new db.Catalog();
 			nc.name = form.getValueOf("name");
 			nc.startDate = contract.startDate;
 			nc.endDate = contract.endDate;
-			nc.amap = contract.amap;
+			nc.group = contract.group;
 			nc.contact = contract.contact;
 			nc.description = contract.description;
 			nc.distributorNum = contract.distributorNum;
@@ -575,7 +575,7 @@ class ContractAdmin extends Controller
 			
 			//give right to this contract
 			if(contract.contact!=null){
-				var ua = db.UserAmap.get(contract.contact, contract.amap);
+				var ua = db.UserGroup.get(contract.contact, contract.group);
 				ua.giveRight(ContractAdmin(nc.id));
 			}
 			
@@ -586,7 +586,7 @@ class ContractAdmin extends Controller
 					var p = new db.Product();
 					p.name = source_p.name;
 					p.price = source_p.price;
-					p.contract = nc;
+					p.catalog = nc;
 					p.image = source_p.image;
 					p.desc = source_p.desc;
 					p.ref = source_p.ref;
@@ -611,7 +611,7 @@ class ContractAdmin extends Controller
 			if (form.getValueOf("copyDeliveries") == true) {
 				for ( ds in contract.getDistribs()) {
 					var d = new db.Distribution();
-					d.contract = nc;
+					d.catalog = nc;
 					d.date = ds.date;
 					d.multiDistrib = ds.multiDistrib;
 					d.orderStartDate = ds.orderStartDate;
@@ -636,11 +636,11 @@ class ContractAdmin extends Controller
 	 * Orders grouped by product
 	 */
 	@tpl("contractadmin/ordersByProduct.mtt")
-	function doOrdersByProduct(contract:db.Contract, args:{?d:db.Distribution}) {
+	function doOrdersByProduct(contract:db.Catalog, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
+		if (contract.type == db.Catalog.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
@@ -657,15 +657,15 @@ class ContractAdmin extends Controller
 	 * Purchase order to print
 	 */
 	@tpl("contractadmin/ordersByProductList.mtt")
-	function doOrdersByProductList(contract:db.Contract, args:{?d:db.Distribution}) {
+	function doOrdersByProductList(contract:db.Catalog, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("Forbidden access"));
-		if (contract.type == db.Contract.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
+		if (contract.type == db.Catalog.TYPE_VARORDER && args.d == null ) throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		
-		if (contract.type == db.Contract.TYPE_VARORDER ) view.distribution = args.d;
+		if (contract.type == db.Catalog.TYPE_VARORDER ) view.distribution = args.d;
 		view.c = contract;
-		view.group = contract.amap;
+		view.group = contract.group;
 		var d = args != null ? args.d : null;
 		if (d == null) d = contract.getDistribs(false).first();
 		if (d == null) throw t._("No delivery in this catalog");
@@ -678,7 +678,7 @@ class ContractAdmin extends Controller
 	 * Lists deliveries for this contract
 	 */
 	@tpl("contractadmin/distributions.mtt")
-	function doDistributions(contract:db.Contract, ?args: { ?old:Bool,?participateToAllDistributions:Bool } ) {
+	function doDistributions(contract:db.Catalog, ?args: { ?old:Bool,?participateToAllDistributions:Bool } ) {
 
 		view.nav.push("distributions");
 		sendNav(contract);
@@ -692,11 +692,11 @@ class ContractAdmin extends Controller
 			//display also old deliveries
 			//distributions = Lambda.array(contract.getDistribs(false));	
 
-			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, DateTools.delta(now,1000.0*60*60*24*-365) , now);
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.group, DateTools.delta(now,1000.0*60*60*24*-365) , now);
 
 		}else {
 			//distributions = Lambda.array(db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} ));
-			multidistribs = db.MultiDistrib.getFromTimeRange(contract.amap, now , DateTools.delta(now,1000.0*60*60*24*365) );			
+			multidistribs = db.MultiDistrib.getFromTimeRange(contract.group, now , DateTools.delta(now,1000.0*60*60*24*365) );			
 		}
 
 		if(args!=null && args.participateToAllDistributions){
@@ -715,7 +715,7 @@ class ContractAdmin extends Controller
 				
 	}
 
-	function doParticipate(md:db.MultiDistrib,contract:db.Contract){
+	function doParticipate(md:db.MultiDistrib,contract:db.Catalog){
 		try{
 			service.DistributionService.participate(md,contract);
 		}catch(e:tink.core.Error){
@@ -726,7 +726,7 @@ class ContractAdmin extends Controller
 	}
 	
 	@tpl("contractadmin/view.mtt")
-	function doView(contract:db.Contract) {
+	function doView(contract:db.Catalog) {
 		view.nav.push("view");
 		sendNav(contract);
 		
@@ -736,7 +736,7 @@ class ContractAdmin extends Controller
 	
 	
 	@tpl("contractadmin/stats.mtt")
-	function doStats(contract:db.Contract, ?args: { stat:Int } ) {
+	function doStats(contract:db.Catalog, ?args: { stat:Int } ) {
 		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		view.c = contract;
@@ -751,7 +751,7 @@ class ContractAdmin extends Controller
 				if(pids.length==0){
 					view.anciennete = new List();
 				}else{
-					view.anciennete = sys.db.Manager.cnx.request("select YEAR(u.cdate) as uyear ,count(DISTINCT u.id) as cnt from User u, UserContract up where up.userId=u.id and up.productId IN (" + pids.join(",") + ") group by uyear;").results();
+					view.anciennete = sys.db.Manager.cnx.request("select YEAR(u.cdate) as uyear ,count(DISTINCT u.id) as cnt from User u, UserOrder up where up.userId=u.id and up.productId IN (" + pids.join(",") + ") group by uyear;").results();
 				}
 				
 			case 1 : 
@@ -760,7 +760,7 @@ class ContractAdmin extends Controller
 				var total = 0;
 				var totalPrice = 0;
 				if(pids.length!=0){	
-					var repartition = sys.db.Manager.cnx.request("select sum(quantity) as quantity,productId,p.name,p.price from UserContract up, Product p where up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") and up.productId=p.id group by productId").results();
+					var repartition = sys.db.Manager.cnx.request("select sum(quantity) as quantity,productId,p.name,p.price from UserOrder up, Product p where up.productId IN (" + contract.getProducts().map(function(x) return x.id).join(",") + ") and up.productId=p.id group by productId").results();
 					for ( r in repartition) {
 						total += r.quantity;
 						totalPrice += r.price*r.quantity; 
@@ -788,16 +788,16 @@ class ContractAdmin extends Controller
 	 * Efface une commande
 	 * @param	uc
 	 */
-	function doDelete(uc:UserContract) {
-		if (!app.user.canManageContract(uc.product.contract)) throw Error("/", t._("Forbidden access"));
+	function doDelete(uc:db.UserOrder) {
+		if (!app.user.canManageContract(uc.product.catalog)) throw Error("/", t._("Forbidden access"));
 		uc.lock();
 		uc.delete();
-		throw Ok('/contractAdmin/orders/'+uc.product.contract.id, t._("The catalog has been canceled"));
+		throw Ok('/contractAdmin/orders/'+uc.product.catalog.id, t._("The catalog has been canceled"));
 	}
 	
 
 	@tpl("contractadmin/selectDistrib.mtt")
-	function doSelectDistrib(c:db.Contract, ?args:{old:Bool}) {
+	function doSelectDistrib(c:db.Catalog, ?args:{old:Bool}) {
 		view.nav.push("orders");
 		sendNav(c);
 		
@@ -813,39 +813,39 @@ class ContractAdmin extends Controller
 	/**
 	 * Edit a user's orders
 	 */
-	@tpl("contractadmin/edit.mtt")
-	function doEdit(c:db.Contract, ?user:db.User, args:{?d:db.Distribution}) {
+	/*@tpl("contractadmin/edit.mtt")
+	function doEdit(c:db.Catalog, ?user:db.User, args:{?d:db.Distribution}) {
 		view.nav.push("orders");
 		sendNav(c);
 		
 		if (!app.user.canManageContract(c)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (args.d != null && args.d.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
+		if (args.d != null && args.d.multiDistrib.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
 		
 		view.c = view.contract = c;
 		view.u = user;
 		view.distribution = args.d;
 			
 		//need to select a distribution for varying orders contracts
-		if (c.type == db.Contract.TYPE_VARORDER && args.d == null ) {
+		if (c.type == db.Catalog.TYPE_VARORDER && args.d == null ) {
 			
 			throw Redirect("/contractAdmin/orders/" + c.id);
 			
 		}else {
 			
 			//members of the group
-			view.users = app.user.amap.getMembersFormElementData();
+			view.users = app.user.getGroup().getMembersFormElementData();
 			
-			var userOrders = new Array<{order:db.UserContract,product:db.Product}>();
+			var userOrders = new Array<{order:db.UserOrder,product:db.Product}>();
 			var products = c.getProducts(false);
 			
 			for ( p in products) {
 				var ua = { order:null, product:p };
 				
-				var order : db.UserContract = null;
-				if (c.type == db.Contract.TYPE_VARORDER) {
-					order = db.UserContract.manager.select($user == user && $productId == p.id && $distributionId==args.d.id, true);	
+				var order : db.UserOrder = null;
+				if (c.type == db.Catalog.TYPE_VARORDER) {
+					order = db.UserOrder.manager.select($user == user && $productId == p.id && $distributionId==args.d.id, true);	
 				}else {
-					order = db.UserContract.manager.select($user == user && $productId == p.id, true);
+					order = db.UserOrder.manager.select($user == user && $productId == p.id, true);
 				}
 				
 				if (order != null) ua.order = order;
@@ -862,12 +862,12 @@ class ContractAdmin extends Controller
 						var user = app.params.get("user");
 						throw t._("Unable to find user #::num::",{num:user});
 					}
-					if (!user.isMemberOf(app.user.amap)) throw user + " is not member of this group";
+					if (!user.isMemberOf(app.user.getGroup())) throw user + " is not member of this group";
 				}
 				
 				//get distrib if needed
 				var distrib : db.Distribution = null;
-				if (c.type == db.Contract.TYPE_VARORDER) {
+				if (c.type == db.Catalog.TYPE_VARORDER) {
 					distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
 				}
 				
@@ -891,7 +891,7 @@ class ContractAdmin extends Controller
 								var user = app.params.get("user2");
 								throw t._("Unable to find user #::num::",{num:user});
 							}
-							if (!user2.isMemberOf(app.user.amap)) throw t._("::user:: is not part of this group",{user:user2});
+							if (!user2.isMemberOf(app.user.getGroup())) throw t._("::user:: is not part of this group",{user:user2});
 							if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
 							
 							invert = app.params.get("invert" + pid) == "1";
@@ -931,6 +931,6 @@ class ContractAdmin extends Controller
 			}
 			view.userOrders = userOrders;
 		}
-	}
+	}*/
 	
 }

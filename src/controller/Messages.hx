@@ -1,6 +1,6 @@
 package controller;
 import db.Message;
-import db.UserContract;
+import db.UserOrder;
 import sugoi.form.ListData;
 import sugoi.form.elements.*;
 import sugoi.form.Form;
@@ -62,14 +62,14 @@ class Messages extends Controller
 			//sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			var text :String = form.getValueOf("text");
-			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.amap,list:getListName(listId) });		
+			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.getGroup(),list:getListName(listId) });		
 			e.setHtmlBody(html);
 		
-			App.sendMail(e,app.user.getAmap(),listId,app.user);		
+			App.sendMail(e,app.user.getGroup(),listId,app.user);		
 			
 			//store message
 			var lm = new db.Message();
-			lm.amap =  app.user.amap;
+			lm.amap =  app.user.getGroup();
 			lm.recipients = Lambda.array(Lambda.map(e.getRecipients(), function(x) return x.email));
 			lm.title = e.getSubject();
 			lm.date = Date.now();
@@ -85,16 +85,16 @@ class Messages extends Controller
 		view.form = form;
 		
 		if (app.user.isAmapManager()) {
-			view.sentMessages = Message.manager.search($amap == app.user.amap && $recipientListId!=null, {orderBy:-date,limit:20}, false);
+			view.sentMessages = Message.manager.search($amap == app.user.getGroup() && $recipientListId!=null, {orderBy:-date,limit:20}, false);
 		}else {
-			view.sentMessages = Message.manager.search($amap == app.user.amap && $recipientListId!=null && $sender == app.user, {orderBy:-date,limit:20}, false);	
+			view.sentMessages = Message.manager.search($amap == app.user.getGroup() && $recipientListId!=null && $sender == app.user, {orderBy:-date,limit:20}, false);	
 		}
 		
 	}
 	
 	@tpl("messages/message.mtt")
 	public function doMessage(msg:Message) {
-		if (msg.amap.id!=app.user.amap.id) throw Error("/", t._("Non authorized access"));
+		if (msg.amap.id!=app.user.getGroup().id) throw Error("/", t._("Non authorized access"));
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", t._("Non authorized access"));
 		
 		view.list = getListName(msg.recipientListId);
@@ -121,10 +121,10 @@ class Messages extends Controller
 		
 		out.push( { value:'3', label: t._("TEST: me + spouse") } );
 		out.push( { value:'4', label: t._("Members without any order") } );
-		if(app.user.amap.hasMembership()) out.push( { value:'5', label:t._("Memberships to be renewed")} );
+		if(app.user.getGroup().hasMembership()) out.push( { value:'5', label:t._("Memberships to be renewed")} );
 		
 		
-		var contracts = db.Contract.getActiveContracts(app.user.amap,true);
+		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(),true);
 		for ( c in contracts) {
 			var label =  t._("Subscribers") + " " + c.toString();
 			out.push({value:'c'+c.id,label:label});
@@ -153,9 +153,9 @@ class Messages extends Controller
 			//contrats
 			var contract = Std.parseInt(listId.substr(1));
 			
-			var pids = db.Product.manager.search($contractId == contract, false);
+			var pids = db.Product.manager.search($catalogId == contract, false);
 			var pids = Lambda.map(pids, function(x) return x.id);
-			var up = db.UserContract.manager.search($productId in pids, false);
+			var up = db.UserOrder.manager.search($productId in pids, false);
 			
 			
 			var users = [];
@@ -174,22 +174,22 @@ class Messages extends Controller
 			switch(listId) {
 			case "1": 		
 				//tout le monde
-				out =  Lambda.array(app.user.amap.getMembers());
+				out =  Lambda.array(app.user.getGroup().getMembers());
 					
 			case "2":
 				//bureau				
 				var users = [];
-				if(app.user.amap.contact!=null){
-					users.push(app.user.amap.contact);
+				if(app.user.getGroup().contact!=null){
+					users.push(app.user.getGroup().contact);
 				}
-				for ( c in app.user.amap.getActiveContracts()) {
+				for ( c in app.user.getGroup().getActiveContracts()) {
 					if (c.contact!=null) {
 						users.push(c.contact);
 					}
 				}
 				
 				//ajouter les autres personnes ayant les droits Admin ou Gestion Adhérents ou Gestion Contrats
- 				for (ua in Lambda.array(db.UserAmap.manager.search($rights != null && $amap == app.user.amap, false))) {
+ 				for (ua in Lambda.array(db.UserGroup.manager.search($rights != null && $amap == app.user.getGroup(), false))) {
  					if (ua.hasRight(GroupAdmin) || ua.hasRight(Membership) || ua.hasRight(ContractAdmin())) {
  						users.push(ua.user);
  					}

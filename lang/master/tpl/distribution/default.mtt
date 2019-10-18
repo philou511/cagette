@@ -76,7 +76,7 @@
 			::set vdistribs = d.getDistributions(1)::
 			::set cdistribs = d.getDistributions(0)::
             
-            <div class="header orders row" style="height: 82px;">
+            <div class="header orders row">
                                        
                 <div class="dateBoxOffset">
                 ::set s = getDate(start)::
@@ -149,13 +149,11 @@
 										<div class="status">::_("Orders closed")::</div>
 									</span>
 								::elseif(status=="distributed")::
-									<span style="color:#AAA;">
-										
+									<span style="color:#AAA;">										
 										<div class="status">::_("Distribution done")::</div>
 										<br/>
 									</span>
-
-									::if(d._place._amap.hasPayments())::
+									::if(d._place._group.hasPayments())::
 									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
 										<i class="icon icon-check"></i> Valider cette distribution
 									</a>
@@ -164,10 +162,16 @@
 								::elseif(status=="validated")::
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>
-										<div class="status">::_("Distribution confirmed")::</div>
+										<div class="status">
+											::_("Distribution confirmed")::
+										</div>
+										<br/>
+										<a href="/distribution/counter/::d.id::" class="btn btn-default btn-sm" >
+											<i class="icon icon-payment-type"></i> Encaissements
+										</a>
 										::if isAdmin::
-										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-xs">
-											<i class="icon icon-check"></i> Dévalider cette distribution
+										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-sm">
+											<i class="icon icon-check"></i> Dévalider
 										</a>
 										::end::
 									</span>
@@ -276,7 +280,7 @@
 							::foreach dist cdistribs::
 								<tr>
 									<td>
-										::set contract = dist._contract::
+										::set contract = dist._catalog::
 										<a href="/contract/view/::contract.id::">::contract.name::</a>
 									</td>
 									<td>
@@ -312,7 +316,7 @@
 							::foreach dist vdistribs::
 								<tr>
 									<td>
-										::set contract = dist._contract::
+										::set contract = dist._catalog::
 										<a href="/contract/view/::contract.id::">::contract.name::</a>
 									</td>
 									<td>

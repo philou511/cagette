@@ -20,12 +20,13 @@ class PaymentService
 	 * @param group 
 	 * @return Array<payment.PaymentType>
 	 */
-	public static function getPaymentTypes(context: PaymentContext, ?group: db.Amap) : Array<payment.PaymentType>
+	public static function getPaymentTypes(context: PaymentContext, ?group: db.Group) : Array<payment.PaymentType>
 	{
 		var out : Array<payment.PaymentType> = [];
 
 		switch(context)
 		{
+			//every payment type
 			case PCAll:
 				var types = [
 					new payment.Cash(),
@@ -93,7 +94,7 @@ class PaymentService
 	 * @param group 
 	 * @return Array<payment.PaymentType>
 	 */
-	public static function getOnTheSpotAllowedPaymentTypes(group: db.Amap) : Array<payment.PaymentType>
+	public static function getOnTheSpotAllowedPaymentTypes(group: db.Group) : Array<payment.PaymentType>
 	{
 		if ( group.allowedPaymentsType == null ) return [];
 		var onTheSpotAllowedPaymentTypes : Array<payment.PaymentType> = [];
@@ -120,10 +121,10 @@ class PaymentService
 	 *  
 	 * @param distrib
 	 */
-	public static function validateDistribution(distrib:db.Distribution) {
+	public static function validateDistribution(distrib:db.MultiDistrib) {
 
 		for ( user in distrib.getUsers()){
-			var basket = db.Basket.get(user, distrib.place, distrib.date);
+			var basket = db.Basket.get(user, distrib );
 			validateBasket(basket);
 		}
 		//finally validate distrib
@@ -132,10 +133,10 @@ class PaymentService
 		distrib.update();
 	}
 
-	public static function unvalidateDistribution(distrib:db.Distribution) {
+	public static function unvalidateDistribution(distrib:db.MultiDistrib) {
 
 		for ( user in distrib.getUsers()){
-			var basket = db.Basket.get(user, distrib.place, distrib.date);
+			var basket = db.Basket.get(user, distrib);
 			unvalidateBasket(basket);
 		}
 		//finally validate distrib
@@ -184,7 +185,7 @@ class PaymentService
 
 			var o = orders.first();
 			if(o.distribution==null) throw o.id+" order has no distrib";
-			updateUserBalance(o.user, o.distribution.place.amap);	
+			updateUserBalance(o.user, o.distribution.place.group);	
 		}
 
 		App.current.event(ValidateBasket(basket));
@@ -223,7 +224,7 @@ class PaymentService
 			}
 
 			var o = orders.first();
-			updateUserBalance(o.user, o.distribution.place.amap);	
+			updateUserBalance(o.user, o.distribution.place.group);	
 		}
 
 		return true;
@@ -233,9 +234,9 @@ class PaymentService
 	/**
 	 * update user balance
 	 */
-	public static function updateUserBalance(user:db.User,group:db.Amap){
+	public static function updateUserBalance(user:db.User,group:db.Group){
 		
-		var ua = db.UserAmap.getOrCreate(user, group);
+		var ua = db.UserGroup.getOrCreate(user, group);
 		var b = sys.db.Manager.cnx.request('SELECT SUM(amount) FROM Operation WHERE userId=${user.id} and groupId=${group.id} and !(type=2 and pending=1)').getFloatResult(0);
 		b = Math.round(b * 100) / 100;
 		ua.balance = b;
@@ -243,7 +244,7 @@ class PaymentService
 	}
 
 
-	public static function getPaymentInfosString(group:db.Amap):String {
+	public static function getPaymentInfosString(group:db.Group):String {
 		var out = "";
 		var allowedPaymentTypes = getPaymentTypes(PCPayment,group);
 		out = Lambda.map(allowedPaymentTypes,function(m) return m.name).join(", ");

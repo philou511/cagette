@@ -20,6 +20,12 @@
 			</div>	
 		
 		<div class="text-center">
+
+			<a class="btn btn-default btn-sm"
+				onclick="_.initOrderBox(null, ::distrib.id::, null, 1,'::escapeJS(hDate(date))::','::escapeJS(place.toString())::', null, '::currency()::', ::user.getGroup().hasPayments()::, '/contractAdmin/ordersByDate/::date::/::place.id::')">
+				<i class="icon icon-plus"></i>
+				::_("New order")::
+			</a>
 			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::/csv" class="btn btn-default btn-sm"> <i class="icon icon-list"></i> ::_("CSV Export"):: </a>
 			<a href="/distribution/listByDate/::date.toString().substr(0,10)::/::place.id::" class="btn btn-default btn-sm"> <i class="icon icon-print"></i> ::_("Attendance sheet"):: </a>
 			
@@ -48,30 +54,30 @@
 				<!-- name change -->
 				::if orders[i-1]==null || m.userName != orders[i-1].userName || m.userName2 != orders[i-1].userName2::
 				
-					<tr style="background-color:#666;">
-						<td colspan="9" style="font-size:120%;color:#e7e7e7;">
+					<tr class="darkhead">
+						<td colspan="9">
 							
-							::set basket = getBasket(m.userId,place.id,date)::
+							::set basket = getBasket(m.basketId)::
 							
 							<div class="basketNumber" ::cond basket!=null:: >
 								<i class="fa fa-shopping-basket" aria-hidden="true"></i> ::_("Num"):: ::basket.num::
 							</div>
 							
-							::m.userName:: 
+							<a href="/member/view/::m.userId::" target="_blank">::m.userName::</a> 
 							::if m.userName2!=null::
 								<span class="glyphicon glyphicon-refresh"></span> ::_("alternately with"):: ::m.userName2::
 							::end::
 							::set contractTotal = 0::
 
 							<a class="btn btn-default btn-xs pull-right"
-						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', '/contractAdmin/ordersByDate/::date::/::place.id::')">
+						onclick="_.initOrderBox( ::m.userId::, ::distrib.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(m.userName)::','::currency()::', ::user.getGroup().hasPayments()::,'/contractAdmin/ordersByDate/::date::/::place.id::')">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>	
 						</td>
 					</tr>
 					<tr>
-						<th>::_("Contract")::</th>
+						<th>::_("Catalog")::</th>
 						<th>::_("Qty")::</th>
 						<th>::_("Ref")::</th>
 						<th>::_("Product")::</th>

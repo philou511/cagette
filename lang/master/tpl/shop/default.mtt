@@ -50,11 +50,11 @@
 							::set dists = infos.get(k)::
 							
 							::if dists.length==1::
-								::dists[0]._contract.name::
+								::dists[0]._catalog.name::
 							::else::
 								::set tt = ""::
 								::foreach d dists::
-									::set tt = tt  + d._contract.name + ". "::
+									::set tt = tt  + d._catalog.name + ". "::
 								::end::
 								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">::_("Autres")::</span>
 							::end::
@@ -77,7 +77,7 @@
 				var cart;
 				$(function(){
 					cart = _.getCart();
-					cart.init("::place.id::","::date.toString().substr(0,10)::");
+					cart.init(::multiDistrib.id::);
 				});
 			</script>
 			

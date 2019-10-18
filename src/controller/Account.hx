@@ -39,17 +39,17 @@ class Account extends Controller
 			app.user.update();
 		}
 		
-		var ua = db.UserAmap.get(app.user, app.user.amap);
+		var ua = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ua == null) throw Error("/", t._("You are not a member of this group"));
 		
 		var constOrders = null;
-		var varOrders = new Map<String,Array<db.UserContract>>();
+		var varOrders = new Map<String,Array<db.UserOrder>>();
 		
-		var a = App.current.user.amap;		
+		var a = App.current.user.getGroup();		
 		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
 		
 		//constant orders
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_CONSTORDERS && $amap == a && $endDate > oneMonthAgo, false);		
+		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_CONSTORDERS && $group == a && $endDate > oneMonthAgo, false);		
 		constOrders = [];
 		for ( c in contracts){
 			var orders = app.user.getOrdersFromContracts([c]);
@@ -58,7 +58,7 @@ class Account extends Controller
 		}
 				
 		//variable orders, grouped by date
-		var contracts = db.Contract.manager.search($type == db.Contract.TYPE_VARORDER && $amap == a && $endDate > oneMonthAgo, false);
+		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_VARORDER && $group == a && $endDate > oneMonthAgo, false);
 		
 		for (c in contracts) {
 			var ds = c.getDistribs(false);
@@ -204,14 +204,14 @@ class Account extends Controller
 		
 		//default display
 		browse = function(index:Int, limit:Int) {
-			return db.Operation.getOperationsWithIndex(m,app.user.amap,index,limit,true);
+			return db.Operation.getOperationsWithIndex(m,app.user.getGroup(),index,limit,true);
 		}
 		
-		var count = db.Operation.countOperations(m,app.user.amap);
+		var count = db.Operation.countOperations(m,app.user.getGroup());
 		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);
 		view.rb = rb;
 		view.member = m;
-		view.balance = db.UserAmap.get(m,app.user.amap).balance;
+		view.balance = db.UserGroup.get(m,app.user.getGroup()).balance;
 	}
 
 	
