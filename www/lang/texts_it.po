@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-06-18 19:05+0000\n"
-"Last-Translator: Alexandre Domingues <alexandre.filipe.domingues@gmail.com>\n"
+"PO-Revision-Date: 2019-10-23 18:53+0000\n"
+"Last-Translator: Marc Yustin <marcyustin@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/cagette/"
 "translations/it/>\n"
 "Language: it\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7\n"
+"X-Generator: Weblate 3.9.1-dev\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
 msgid "Cash"
@@ -20,104 +20,108 @@ msgstr "Contanti"
 
 #: src/payment/Cash.hx:323
 msgid "Pay by cash at product distribution"
-msgstr ""
+msgstr "Pagamento in contanti alla distribuzione del prodotto"
 
 #: src/payment/Transfer.hx:302 src/controller/Transaction.hx:7392
 msgid "Bank transfer"
-msgstr ""
+msgstr "Bonifico bancario"
 
 #: src/payment/Check.hx:294 src/controller/Transaction.hx:6017
 #: src/controller/Validate.hx:3321
 msgid "Check"
-msgstr ""
+msgstr "Assegno"
 
 #: src/controller/Transaction.hx:364 src/controller/Transaction.hx:2358
 #: src/controller/Transaction.hx:4079
 msgid "Action forbidden"
-msgstr ""
+msgstr "Azione vietata"
 
 #. label or name for a payment
 #: src/controller/Transaction.hx:607 src/controller/Transaction.hx:2656
 #: src/controller/Validate.hx:1684 src/controller/Validate.hx:3030
 msgid "Label"
-msgstr ""
+msgstr "Etichetta"
 
 #: src/controller/Transaction.hx:724 src/controller/Transaction.hx:2776
 #: src/controller/Validate.hx:1781 src/controller/Validate.hx:3139
 msgid "Amount"
-msgstr ""
+msgstr "Importo"
 
 #: src/controller/Transaction.hx:811 src/controller/Transaction.hx:2868
 #: src/controller/Validate.hx:3226 src/db/Operation.hx:12399
 #: src/db/Distribution.hx:7078 lang/master/tpl/member/lastMessages.mtt:50
 #: lang/master/tpl/contractadmin/selectDistrib.mtt:191
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: src/controller/Transaction.hx:1021
 msgid "Payment type"
-msgstr ""
+msgstr "Tipo di pagamento"
 
 #: src/controller/Transaction.hx:1358 src/controller/Transaction.hx:3377
 msgid "As a payment for :"
-msgstr ""
+msgstr "Come pagamento per :"
 
 #: src/controller/Transaction.hx:2023
 msgid "Payment recorded"
-msgstr ""
+msgstr "Pagamento registrato"
 
 #: src/controller/Transaction.hx:2076
 msgid "Record a payment for ::user::"
-msgstr ""
+msgstr "Registrare un pagamento per ::user::"
 
 #: src/controller/Transaction.hx:2481
 msgid "Editing a credit card payment is not allowed"
-msgstr ""
+msgstr "Non è consentita la modifica di un pagamento con carta di credito"
 
 #: src/controller/Transaction.hx:2961
 msgid "Confirmed"
-msgstr ""
+msgstr "Confermato"
 
 #: src/controller/Transaction.hx:3856
 msgid "Operation updated"
-msgstr ""
+msgstr "Operazione aggiornata"
 
 #: src/controller/Transaction.hx:4197
 msgid "Deleting a credit card payment is not allowed"
-msgstr ""
+msgstr "Non è consentita la cancellazione di un pagamento con carta di credito"
 
 #: src/controller/Transaction.hx:4338 src/controller/Validate.hx:980
 msgid "Operation deleted"
-msgstr ""
+msgstr "Operazione cancellata"
 
 #: src/controller/Transaction.hx:4636 src/controller/Transaction.hx:5048
 #: src/controller/Transaction.hx:6489 src/controller/Transaction.hx:7846
 msgid "Your cart is empty"
-msgstr ""
+msgstr "Il tuo carrello è vuoto"
 
 #: src/controller/Transaction.hx:5647
 msgid "Check for the order of ::date::"
-msgstr ""
+msgstr "Controlla l'ordine del ::date::"
 
 #: src/controller/Transaction.hx:6089
 msgid ""
 "Your payment by check has been saved. It will be validated by a coordinator "
 "at the delivery."
 msgstr ""
+"Il tuo pagamento con assegno è stato salvato. Sarà convalidato da un "
+"coordinatore al momento della consegna."
 
 #: src/controller/Transaction.hx:7060
 msgid "Transfer for the order of ::date::"
-msgstr ""
+msgstr "Trasferimento per l'ordine del ::date::"
 
 #: src/controller/Transaction.hx:7470
 msgid ""
 "Your payment by transfer has been saved. It will be validated by a "
 "coordinator."
 msgstr ""
+"Il pagamento tramite bonifico è stato salvato. Sarà convalidato da un "
+"coordinatore."
 
 #: src/controller/Transaction.hx:8316
 msgid "Cash for the order of ::date::"
-msgstr ""
+msgstr "Contanti per l'ordine del ::date::"
 
 #: src/controller/Transaction.hx:8644
 msgid "Cash payment"
