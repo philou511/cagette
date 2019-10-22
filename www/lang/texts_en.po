@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-11 16:25+0000\n"
-"Last-Translator: William Jayberlinos <jayberlinos68@gmail.com>\n"
+"PO-Revision-Date: 2019-10-23 18:53+0000\n"
+"Last-Translator: homycal <jullien.nom@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/cagette/"
 "translations/en/>\n"
 "Language: en\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2.1\n"
+"X-Generator: Weblate 3.9.1-dev\n"
 
 #: src/App.hx:2527 src/db/User.hx:15991 lang/master/tpl/member/import.mtt:612
 #: lang/master/tpl/member/import.mtt:1355
@@ -34,16 +34,15 @@ msgstr "Adresse"
 
 #: lang/master/tpl/home.mtt:14
 msgid "Default user credentials are :"
-msgstr ""
+msgstr "Default user credentials are :"
 
 #: lang/master/tpl/home.mtt:25
 msgid "Database administration and migration"
-msgstr ""
+msgstr "Database administration and migration"
 
 #: lang/master/tpl/translation.mtt:6
-#, fuzzy
 msgid "Manage text translation with GetText"
-msgstr "Gérais la traduction de vos textes avec GetText"
+msgstr "Manage text translation with GetText"
 
 #: lang/master/tpl/translation.mtt:9
 msgid "Switch to English"
@@ -77,43 +76,44 @@ msgid "You left the group ::groupName::"
 msgstr "Vous avez quitté le groupe ::grouName::"
 
 #: src/controller/admin/Admin.hx:1790
+#, fuzzy
 msgid "Configuration updated"
-msgstr ""
+msgstr "Configuration updated"
 
 #: src/controller/admin/Admin.hx:1852
 msgid "Email service configuration"
-msgstr ""
+msgstr "Email service configuration"
 
 #: src/controller/Amap.hx:539
 msgid "You don't have access to this section"
-msgstr ""
+msgstr "You don't have access to this section"
 
 #: src/controller/Amap.hx:954
 msgid "The group has been updated."
-msgstr ""
+msgstr "The group has been updated."
 
 #: src/controller/AmapAdmin.hx:338 src/controller/AmapAdmin.hx:1435
 #: src/controller/ContractAdmin.hx:2414
 msgid "Access forbidden"
-msgstr ""
+msgstr "Access forbidden"
 
 #: src/controller/AmapAdmin.hx:591 lang/master/tpl/contract/default.mtt:4697
 #: lang/master/tpl/member/payments.mtt:903
 msgid "Payments"
-msgstr ""
+msgstr "Payments"
 
 #: src/controller/AmapAdmin.hx:1689
 msgid "The sent image was too big. The maximum allowed size is 12MB"
-msgstr ""
+msgstr "The sent image was too big. The maximum allowed size is 12MB"
 
 #: src/controller/AmapAdmin.hx:2482 src/controller/Vendor.hx:2957
 msgid "Image updated"
-msgstr ""
+msgstr "Image updated"
 
 #: src/controller/AmapAdmin.hx:3580
 #: lang/master/tpl/contractadmin/distributionp.mtt:627
 msgid "Member"
-msgstr ""
+msgstr "Member"
 
 #: src/controller/AmapAdmin.hx:3857
 msgid "Group administrator"
