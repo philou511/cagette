@@ -19,6 +19,7 @@ import redux.thunk.ThunkMiddleware;
 import redux.react.Provider as ReduxProvider;
 
 //custom components
+import react.file.ImageUploaderDialog;
 import react.order.OrdersDialog;
 import react.product.*;
 import react.store.CagetteStore;
@@ -168,6 +169,14 @@ class App {
 		});
 	}
 
+	public function openImageUploader( uploadURL : String, uploadedImageURL : String ) {
+
+		ReactDOM.render(jsx('
+			<div>
+				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL />
+			</div>'),  js.Browser.document.querySelector('#imageUploader'));
+	}
+	
 	public function initReportHeader(){
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}

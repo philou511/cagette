@@ -278,6 +278,7 @@ class Product extends Controller
 		
 		view.c = product.contract;
 		view.image = product.image;
+		view.productId = product.id;
 		
 		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
 		

@@ -29,6 +29,12 @@
 	
 </div>
 
+<div id="imageUploader" class="row">
+	<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/product/addImage/::productId::', null)">
+			::_("Ajouter une image")::
+	</a>
+</div>
+
 
 
 ::end::
