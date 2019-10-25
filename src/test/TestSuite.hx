@@ -28,7 +28,6 @@ class TestSuite
 		r.add(new pro.test.TestRemoteCatalog());
 		r.add(new pro.test.TestDistribService());
 		r.add(new pro.test.TestReports());
-		//wholesale-order tests
 		r.add(new who.test.TestWho());
 		//r.add(new pro.test.TestMarketplacePayment());
 		#end
@@ -201,7 +200,7 @@ class TestSuite
 		place.name = "Place du village";
 		place.zipCode = "00000";
 		place.city = "St Martin";
-		place.amap = a;
+		place.group = a;
 		place.insert();
 
 		PLACE_DU_VILLAGE = place;
@@ -219,14 +218,14 @@ class TestSuite
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
-		c.amap = a;
+		c.group = a;
 		c.type = db.Catalog.TYPE_CONSTORDERS;
 		c.insert();
 		
 		var p = new db.Product();
 		p.name = "Panier Légumes";
 		p.price = 13;
-		p.contract = c;
+		p.catalog = c;
 		p.insert();
 
 		PANIER_AMAP_LEGUMES = p;
@@ -240,9 +239,9 @@ class TestSuite
 		c.vendor = v;
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
-		c.flags.set(db.Catalog.ContractFlags.StockManagement);
+		c.flags.set(db.Catalog.CatalogFlags.StockManagement);
 		c.type = db.Catalog.TYPE_VARORDER;
-		c.amap = a;
+		c.group = a;
 		c.insert();
 		
 		var p = new db.Product();
@@ -251,7 +250,7 @@ class TestSuite
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 10;
 		p.organic = true;
-		p.contract = c;
+		p.catalog = c;
 		p.stock = 8;
 		p.insert();
 		
@@ -263,7 +262,7 @@ class TestSuite
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 6;
 		p.organic = true;
-		p.contract = c;
+		p.catalog = c;
 		p.stock = 12;
 		p.insert();
 		
@@ -284,7 +283,7 @@ class TestSuite
 		place.name = "Rue Saucisse";
 		place.zipCode = "00000";
 		place.city = "St Martin";
-		place.amap = a;
+		place.group = a;
 		place.insert();
 		
 		/*
@@ -305,7 +304,7 @@ class TestSuite
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2030, 12, 31, 23, 59, 0);
 		c.vendor = v;
-		c.amap = a;
+		c.group = a;
 		c.type = db.Catalog.TYPE_VARORDER;
 		c.insert();
 		
@@ -318,7 +317,7 @@ class TestSuite
 		p.price = 3.5;
 		p.vat = 5.5;
 		p.organic = true;
-		p.contract = c;
+		p.catalog = c;
 		p.insert();
 
 		COURGETTES = p;
@@ -331,7 +330,7 @@ class TestSuite
 		p.vat = 5.5;
 		p.multiWeight = true;
 		p.hasFloatQt = true;
-		p.contract = c;
+		p.catalog = c;
 		p.insert();
 
 		POTATOES = p;
@@ -355,7 +354,7 @@ class TestSuite
 		contract2.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		contract2.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		contract2.vendor = vendor2;
-		contract2.amap = a;
+		contract2.group = a;
 		contract2.type = db.Catalog.TYPE_VARORDER;
 		contract2.insert();
 
@@ -365,7 +364,7 @@ class TestSuite
 		product2.unitType = Common.Unit.Kilogram;
 		product2.price = 2.5;
 		product2.organic = true;
-		product2.contract = contract2;
+		product2.catalog = contract2;
 		product2.insert();
 		LAITUE = product2;
 
@@ -387,7 +386,7 @@ class TestSuite
 		contract3.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		contract3.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		contract3.vendor = vendor3;
-		contract3.amap = a;
+		contract3.group = a;
 		contract3.type = db.Catalog.TYPE_VARORDER;
 		contract3.insert();
 
@@ -397,7 +396,7 @@ class TestSuite
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 2.8;
 		p.vat = 5.5;
-		p.contract = contract3;
+		p.catalog = contract3;
 		p.insert();
 		
 		CARROTS = p;
@@ -423,7 +422,7 @@ class TestSuite
 		c.startDate = new Date(2017, 1, 1, 0, 0, 0);
 		c.endDate = new Date(2017, 12, 31, 23, 59, 0);
 		c.vendor = boulanger;
-		c.amap = a;
+		c.group = a;
 		c.type = db.Catalog.TYPE_VARORDER;
 		c.insert();
 
@@ -433,7 +432,7 @@ class TestSuite
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 3.5;
 		p.organic = true;
-		p.contract = c;
+		p.catalog = c;
 		p.insert();
 
 		FLAN = p;
@@ -443,7 +442,7 @@ class TestSuite
 		p.qt = 1;
 		p.unitType = Common.Unit.Kilogram;
 		p.price = 2.8;
-		p.contract = c;
+		p.catalog = c;
 		p.insert();
 
 		CROISSANT = p;

@@ -506,7 +506,7 @@ class Distribution extends Controller
 			form.addElement(new sugoi.form.elements.Html("invitationSent",html,""));
 		}
 		#else
-		for( c in distrib.place.amap.getActiveContracts()){
+		for( c in distrib.place.group.getActiveContracts()){
 			regularVendors.push({label:c.vendor.name +" : "+c.name,value:Std.string(c.id)});
 		}
 		#end
@@ -717,7 +717,7 @@ class Distribution extends Controller
 		/*var label = t._("Catalogs");
 		var datas = [];
 		var checked = [];
-		for( c in md.place.amap.getActiveContracts()){
+		for( c in md.place.group.getActiveContracts()){
 			datas.push({label:c.name+" - "+c.vendor.name,value:Std.string(c.id)});
 		}
 		var distributions = md.getDistributions();

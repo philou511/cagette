@@ -18,7 +18,7 @@ class ReportService{
 		if(distribution==null) throw "distribution should not be null";
 		
 		var exportName = t._("Delivery ::contractName:: of the ", {contractName:distribution.catalog.name}) + distribution.date.toString().substr(0, 10);
-		where += ' and p.contractId = ${distribution.catalog.id}';
+		where += ' and p.catalogId = ${distribution.catalog.id}';
 		if (distribution.catalog.type == db.Catalog.TYPE_VARORDER ) {
 			where += ' and up.distributionId = ${distribution.id}';
 		}

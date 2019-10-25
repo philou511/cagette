@@ -42,10 +42,14 @@
 						::m.productName::
 					</td>
 					<td>
-						::formatNum(m.productPrice)::&nbsp;::currency()::
+						::formatNum(m.productPrice)::
+						&nbsp;
+						::currency()::
 					</td>
 					<td>
-						::formatNum(m.subTotal)::&nbsp;::currency()::
+						::formatNum(m.subTotal)::
+						&nbsp;
+						::currency()::
 					</td>
 					<td>
 						<!-- frais -->

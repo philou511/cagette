@@ -85,7 +85,7 @@ class Cron extends Controller
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
-				FROM MultiDistrib distrib INNER JOIN Group group
+				FROM MultiDistrib distrib INNER JOIN `Group` group
 				ON distrib.groupId = group.id
 				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL group.volunteersMailDaysBeforeDutyPeriod DAY)
 				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL group.volunteersMailDaysBeforeDutyPeriod DAY);', false));
@@ -131,7 +131,7 @@ class Cron extends Controller
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
-				FROM MultiDistrib distrib INNER JOIN Group group
+				FROM MultiDistrib distrib INNER JOIN `Group` group
 				ON distrib.groupId = group.id
 				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL group.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
 				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL group.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));

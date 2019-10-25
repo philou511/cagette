@@ -295,7 +295,7 @@ class Group extends controller.Controller
 			contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
 			contract.contact = user;
 			contract.distributorNum = 2;
-			contract.flags.set(db.Catalog.ContractFlags.UsersCanOrder);
+			contract.flags.set(db.Catalog.CatalogFlags.UsersCanOrder);
 			contract.insert();
 			
 			var egg = new db.Product();

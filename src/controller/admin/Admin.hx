@@ -1,4 +1,7 @@
 package controller.admin;
+import db.Catalog;
+import pro.db.CagettePro;
+import db.MultiDistrib;
 import haxe.web.Dispatch;
 import Common;
 
@@ -271,6 +274,80 @@ class Admin extends Controller {
 			usergroup.amap = group;
 			usergroup.insert();			
 		}
+	}
+
+	/**
+		clean datas to prepare a dataset
+	**/
+	public function doDataset(){
+
+		if( !App.config.DEBUG && App.config.HOST.substr(0,3)!="pp." ) {
+			Sys.print("Interdit dans cet environnement");
+			return;
+		}
+
+		//delete old distribs.
+		MultiDistrib.manager.delete( $distribStartDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
+
+		//delete old messages
+		db.Message.manager.delete( $date < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360 * 2) );
+
+		//delete old contracts
+		Catalog.manager.delete( $endDate < DateTools.delta(Date.now(),-1000 * 60 * 60 * 24 * 360) );
+
+
+		//delete small groups
+		for( g in db.Group.manager.all(true)){
+			if(g.getMembersNum()<30){
+				if(g.name.indexOf("GT")==-1){
+					g.delete();
+				}
+			}
+
+			if(g.getActiveContracts().length==0){
+				if(g.name.indexOf("GT")==-1){
+					g.delete();
+				}
+			}
+		}
+
+		//delete cagette pro
+		CagettePro.manager.delete($training==true);	
+
+
+		//delete unlinked vendors
+		for ( v in db.Vendor.manager.all(true)	){
+			if(db.Catalog.manager.select($vendor==v,false)==null){
+				v.delete();
+			}
+		}
+		
+		//clean files
+		for( f in sugoi.db.File.manager.all(true)){
+			//product file
+			if(db.Product.manager.select($image==f)!=null) continue;
+
+			//entity file 
+			if(sugoi.db.EntityFile.manager.select($file==f)!=null) continue;			
+			
+			//vendor logo
+			if(db.Group.manager.select($image==f)!=null) continue;
+
+			//group logo
+			if(db.Vendor.manager.select($image==f)!=null) continue;
+
+			#if plugins
+			if(pro.db.PProduct.manager.select($image==f)!=null) continue;
+			if(pro.db.POffer.manager.select($image==f)!=null) continue;
+
+			#end
+
+			f.delete();
+		}
+
+
+		
+
 	}
 
 }

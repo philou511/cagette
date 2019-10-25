@@ -278,7 +278,7 @@ class TestDistributions extends haxe.unit.TestCase
 		//Take an amap contract with payments enabled
 		//Take 2 users and make orders for each
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
-		var contract = amapDistrib.contract;
+		var contract = amapDistrib.catalog;
 		var panier = TestSuite.PANIER_AMAP_LEGUMES;
 		var francoisOrder = service.OrderService.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
 		db.Operation.onOrderConfirm([francoisOrder]);
@@ -318,7 +318,7 @@ class TestDistributions extends haxe.unit.TestCase
 
 		//Add a distrib cycle
 		var weeklyDistribCycle = DistributionService.createCycle(
-			contract.amap,
+			contract.group,
 			Weekly,
 			new Date(2018, 11, 24, 0, 0, 0),
 			new Date(2019, 0, 24, 0, 0, 0),

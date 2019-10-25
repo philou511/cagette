@@ -76,7 +76,7 @@ class Contract extends Controller
 			
 			//no stock mgmt for constant orders
 			if (c.hasStockManagement() && c.type==db.Catalog.TYPE_CONSTORDERS) {
-				c.flags.unset(ContractFlags.StockManagement);
+				c.flags.unset(CatalogFlags.StockManagement);
 				app.session.addMessage(t._("Managing stock is not available for CSA contracts"), true);
 			}
 			

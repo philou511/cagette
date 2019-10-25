@@ -1,5 +1,6 @@
 package;
 import Common;
+using Std;
 
 /**
  * Formatting tools used on both client and server side.
@@ -120,6 +121,11 @@ class Formatting
 	public static  function dDate(date:Date):String{
 		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
 	}
+
+	public static function hHour(date:Date){
+		return StringTools.lpad(date.getHours().string(), "0", 2) + ":" + StringTools.lpad(date.getMinutes().string(), "0", 2);
+	}
+	
 
 	public static function getDate(date:Date) {
 		return {

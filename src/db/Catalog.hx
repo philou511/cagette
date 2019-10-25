@@ -3,7 +3,7 @@ import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
 
-enum ContractFlags {
+enum CatalogFlags {
 	UsersCanOrder;  		//adhérents peuvent saisir eux meme la commande en ligne
 	StockManagement; 		//gestion des commandes
 	PercentageOnOrders;		//calcul d'une commission supplémentaire 
@@ -25,7 +25,7 @@ class Catalog extends Object
 	
 	@:relation(groupId) public var group:db.Group;
 	public var distributorNum:STinyInt;
-	public var flags : SFlags<ContractFlags>;
+	public var flags : SFlags<CatalogFlags>;
 	
 	public var percentageValue : SNull<SFloat>; 		//fees percentage
 	public var percentageName : SNull<SString<64>>;		//fee name

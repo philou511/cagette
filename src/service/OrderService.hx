@@ -440,10 +440,10 @@ class OrderService
 			contract:d.catalog,
 			distribution:d,
 			orders:orders,
-			formatNum:App.current.view.formatNum,
+			formatNum:Formatting.formatNum,
 			currency:App.current.view.currency,
-			dDate:App.current.view.dDate,
-			hHour:App.current.view.hHour,
+			dDate:Formatting.dDate,
+			hHour:Formatting.hHour,
 			group:d.catalog.group
 		} );
 		
@@ -474,10 +474,10 @@ class OrderService
 				contract:d.catalog,
 				distribution:d,
 				orders:orders,
-				formatNum:App.current.view.formatNum,
+				formatNum:Formatting.formatNum,
 				currency:App.current.view.currency,
-				dDate:App.current.view.dDate,
-				hHour:App.current.view.hHour,
+				dDate:Formatting.dDate,
+				hHour:Formatting.hHour,
 				group:d.catalog.group
 			} );
 			
