@@ -85,10 +85,10 @@ class Cron extends Controller
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
-				FROM MultiDistrib distrib INNER JOIN `Group` group
-				ON distrib.groupId = group.id
-				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL group.volunteersMailDaysBeforeDutyPeriod DAY)
-				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL group.volunteersMailDaysBeforeDutyPeriod DAY);', false));
+				FROM MultiDistrib distrib INNER JOIN `Group` g
+				ON distrib.groupId = g.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false));
 			printTitle("Volunteers instruction mail");
 			
 			for (multidistrib  in multidistribs) {
@@ -131,10 +131,10 @@ class Cron extends Controller
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
-				FROM MultiDistrib distrib INNER JOIN `Group` group
-				ON distrib.groupId = group.id
-				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL group.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
-				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL group.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
+				FROM MultiDistrib distrib INNER JOIN `Group` g
+				ON distrib.groupId = g.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
 
 			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
 			printTitle("Volunteers alerts");

@@ -232,7 +232,7 @@ class Group extends Object
 			//CUSTOM CATEGORIES
 			var catGroups = db.CategoryGroup.get(this);
 			for ( cg in catGroups){
-				var color = App.current.view.intToHex(db.CategoryGroup.COLORS[cg.color]);
+				var color = Formatting.intToHex(db.CategoryGroup.COLORS[cg.color]);
 				categs.push({
 					id:cg.id,
 					name:cg.name,

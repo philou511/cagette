@@ -24,8 +24,34 @@ class Shop extends Controller
 		view.place = place;
 		view.date = date;
 		view.group = place.group;
-		view.multiDistrib = md;		
-		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		view.multiDistrib = md;	
+
+		//various closing dates	
+		var infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		var str = "";
+		if (Lambda.count(infos) == 1){
+			str = Formatting.hDate( infos.iterator().next()[0].orderEndDate );
+		}else{
+			str = "<ul>";
+			for( k in infos.keys()){
+				str+="<li>";
+				var dists = infos.get(k);
+				
+				if (dists.length==1){
+					str += dists[0].catalog.name;
+				} else {
+					var tt = "";
+					for(d  in dists) tt  += d.catalog.name + ". ";					
+					str += '<span data-toggle="tooltip" title="$tt" style="text-decoration:underline;">Autres</span>';
+				}
+				
+				str += ": "+Formatting.hDate(Date.fromString(k));
+				str+="</li>";
+			}
+			str +="</ul>";
+		}
+		view.infos = str;
+
 
 		//message if phone is required
 		if(app.user!=null && app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){

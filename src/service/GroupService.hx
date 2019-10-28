@@ -60,7 +60,7 @@ class GroupService
 	**/
 	public static function getGroupMembersWithRights(group:db.Group,?rights:Array<Right>):Array<db.User>{
 
-		var membersWithAnyRights = db.UserGroup.manager.search($rights!=null && $amap==group,false).array();
+		var membersWithAnyRights = db.UserGroup.manager.search($rights!=null && $group==group,false).array();
 		if(rights==null){
 			return Lambda.map(membersWithAnyRights,function(ua) return ua.user).array();
 		}else{

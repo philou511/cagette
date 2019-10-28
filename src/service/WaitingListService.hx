@@ -106,7 +106,7 @@ class WaitingListService{
 
 		if (db.UserGroup.get(user, group, false) == null){
 			var ua = new db.UserGroup();
-			ua.amap = wl.group;
+			ua.group = wl.group;
 			ua.user = wl.user;
 			ua.insert();	
 		}

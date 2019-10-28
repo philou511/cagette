@@ -17,7 +17,7 @@ enum Right{
 @:id(userId,groupId)
 class UserGroup extends Object
 {
-	@:relation(groupId) public var amap : db.Group;
+	@:relation(groupId) public var group : db.Group;
 	@:relation(userId) public var user : db.User;
 	public var rights : SNull<SData<Array<Right>>>;		// rights in this group
 	public var balance : SFloat; 						//account balance in group currency
@@ -34,7 +34,7 @@ class UserGroup extends Object
 		//SPOD doesnt cache elements with double primary key, so lets do it manually
 		var c = CACHE.get(user.id + "-" + group.id);
 		if (c == null) {
-			c = manager.select($user == user && $amap == group, true/*lock*/);		
+			c = manager.select($user == user && $group == group, true/*lock*/);		
 			CACHE.set(user.id + "-" + group.id,c);
 		}
 		return c;	
@@ -45,7 +45,7 @@ class UserGroup extends Object
 		if ( ua == null){
 			ua = new UserGroup();
 			ua.user = user;
-			ua.amap = group;
+			ua.group = group;
 			ua.insert();
 		}
 		return ua;
@@ -109,18 +109,18 @@ class UserGroup extends Object
 	
 	public function hasValidMembership():Bool {
 		
-		if (amap.membershipRenewalDate == null) return false;
-		var cotis = db.Membership.get(this.user, this.amap, this.amap.getMembershipYear());
+		if (group.membershipRenewalDate == null) return false;
+		var cotis = db.Membership.get(this.user, this.group, this.group.getMembershipYear());
 		return cotis != null;
 	}
 	
 	override public function insert(){		
-		App.current.event(NewMember(this.user,this.amap));
+		App.current.event(NewMember(this.user,this.group));
 		super.insert();
 	}
 	
 	public function getLastOperations(limit){
-		return db.Operation.getLastOperations(user, amap, limit);
+		return db.Operation.getLastOperations(user, group, limit);
 	}
 
 	public function isGroupManager() {

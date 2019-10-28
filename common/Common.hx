@@ -211,19 +211,19 @@ typedef UserOrder = {
 	smartQt:String,
 	subTotal:Float,
 	
-	fees:Null<Float>,
-	percentageName:Null<String>,
-	percentageValue:Null<Float>,
+	?fees:Null<Float>,
+	?percentageName:Null<String>,
+	?percentageValue:Null<Float>,
 	total:Float,
 	
 	//flags
 	paid:Bool,
 	invertSharedOrder:Bool,
-	canceled:Bool,	
-	canModify:Bool,
+	?canceled:Bool,	
+	?canModify:Bool,
 	
 	catalogId:Int,
-	contractName:String,
+	catalogName:String,
 }
 
 

@@ -67,7 +67,9 @@
 		</p>
 
 		<p ::cond canLoginAs::>
-			<a href="/member/loginas/::member.id::/::userAmap._group.id::" class="btn btn-danger btn-xs">::_("Log in as this member")::</a>
+			<a href="/member/loginas/::member.id::/::userGroup._group.id::" class="btn btn-danger btn-xs">
+				::_("Log in as this member")::
+			</a>
 		</p>
 	</div>
 	
@@ -75,7 +77,7 @@
 	::if user.getGroup().hasMembership()::
 	<h2>::_("Membership fee")::</h2>
 	<div class="article">
-		::if userAmap.hasValidMembership()::
+		::if userGroup.hasValidMembership()::
 			$$bool(true) ::_("Membership up to date")::
 		::else::
 			$$bool(false) ::_("Membership to renew")::
@@ -188,13 +190,13 @@
 		
 		<span style="font-size:1.3em;">
 			::_("Balance"):: : 
-			::if userAmap.balance<0:: 
+			::if userGroup.balance<0:: 
 				::set color = "C00"::
 			::else::
 				::set color = "0C0"::
 			::end::
 			<span style="color:#::color::;">
-				::userAmap.balance:: ::currency()::
+				::userGroup.balance:: ::currency()::
 			</span>
 		</span>
 		
@@ -209,12 +211,12 @@
 </div>
 
 
-<div class="col-md-4" ::cond userAmap.rights!=null && userAmap._rights!=null::>
+<div class="col-md-4" ::cond userGroup.rights!=null && userGroup._rights!=null::>
 	<h3>::_("Rights")::</h3>
 	<div class="article">
 		<ul>
-		::foreach r userAmap._rights::
-		<li>::userAmap.getRightName(r)::</li>
+		::foreach r userGroup._rights::
+		<li>::userGroup.getRightName(r)::</li>
 		::end::
 		</ul>
 	</div>	

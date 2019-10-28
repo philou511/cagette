@@ -22,7 +22,7 @@ class Member extends Controller
 		checkToken();
 		
 		var browse:Int->Int->List<Dynamic>;
-		var uids = db.UserGroup.manager.search($amap == app.user.getGroup(), false);
+		var uids = db.UserGroup.manager.search($group == app.user.getGroup(), false);
 		var uids = Lambda.map(uids, function(ua) return ua.user.id);
 		if (args != null && args.search != null) {
 			
@@ -189,10 +189,10 @@ class Member extends Controller
 	function doView(member:db.User) {
 		
 		view.member = member;
-		var userAmap = db.UserGroup.get(member, app.user.getGroup());
-		if (userAmap == null) throw Error("/member", t._("This person does not belong to your group"));
+		var userGroup = db.UserGroup.get(member, app.user.getGroup());
+		if (userGroup == null) throw Error("/member", t._("This person does not belong to your group"));
 		
-		view.userAmap = userAmap; 
+		view.userGroup = userGroup; 
 		view.canLoginAs = (db.UserGroup.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
 		
 		//orders
@@ -576,7 +576,7 @@ class Member extends Controller
 				
 				var ua = new db.UserGroup();
 				ua.user = user;
-				ua.amap = app.user.getGroup();
+				ua.group = app.user.getGroup();
 				ua.insert();
 			}
 			
@@ -587,13 +587,13 @@ class Member extends Controller
 				var email2 = u[6];
 				
 				var us = db.User.getSameEmail(email, email2);
-				var userAmaps = db.UserGroup.manager.search($amap == app.user.getGroup() && $userId in Lambda.map(us, function(u) return u.id), false);
+				var userAmaps = db.UserGroup.manager.search($group == app.user.getGroup() && $userId in Lambda.map(us, function(u) return u.id), false);
 				
 				//member exists but is not member of this group.
 				if (userAmaps.length == 0) {					
 					var ua = new db.UserGroup();
 					ua.user = us.first();
-					ua.amap = app.user.getGroup();
+					ua.group = app.user.getGroup();
 					ua.insert();
 				}
 			}
@@ -630,7 +630,7 @@ class Member extends Controller
 			//check doublon de User et de UserAmap
 			var userSims = db.User.getSameEmail(form.getValueOf("email"),form.getValueOf("email2"));
 			view.userSims = userSims;
-			var userAmaps = db.UserGroup.manager.search($amap == app.user.getGroup() && $userId in Lambda.map(userSims, function(u) return u.id), false);
+			var userAmaps = db.UserGroup.manager.search($group == app.user.getGroup() && $userId in Lambda.map(userSims, function(u) return u.id), false);
 			view.userAmaps = userAmaps;
 			
 			if (userAmaps.length > 0) {
@@ -643,7 +643,7 @@ class Member extends Controller
 					// si yen a qu'un on l'inserte
 					var ua = new db.UserGroup();
 					ua.user = userSims.first();
-					ua.amap = app.user.getGroup();
+					ua.group = app.user.getGroup();
 					ua.insert();	
 					throw Ok('/member/', t._("This person already had an account on Cagette.net, and is now member of your group."));
 				/*}else {
@@ -667,7 +667,7 @@ class Member extends Controller
 				//insert userAmap
 				var ua = new db.UserGroup();
 				ua.user = u;
-				ua.amap = app.user.getGroup();
+				ua.group = app.user.getGroup();
 				ua.insert();	
 				
 				if (form.getValueOf("warnAmapManager") == "1") {
@@ -714,9 +714,9 @@ class Member extends Controller
 	
 	@tpl('member/balance.mtt')
 	function doBalance(){
-		view.balanced = db.UserGroup.manager.search($amap == app.user.getGroup() && $balance == 0.0, false);
-		view.credit = db.UserGroup.manager.search($amap == app.user.getGroup() && $balance > 0, false);
-		view.debt = db.UserGroup.manager.search($amap == app.user.getGroup() && $balance < 0, false);
+		view.balanced = db.UserGroup.manager.search($group == app.user.getGroup() && $balance == 0.0, false);
+		view.credit = db.UserGroup.manager.search($group == app.user.getGroup() && $balance > 0, false);
+		view.debt = db.UserGroup.manager.search($group == app.user.getGroup() && $balance < 0, false);
 	}
 	
 }

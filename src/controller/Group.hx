@@ -217,7 +217,7 @@ class Group extends controller.Controller
 			
 			var ua = new db.UserGroup();
 			ua.user = user;
-			ua.amap = g;
+			ua.group = g;
 			ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
 			ua.insert();
 			

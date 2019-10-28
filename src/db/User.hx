@@ -160,7 +160,7 @@ class User extends Object {
 		if (ua == null) {
 			ua = new db.UserGroup();
 			ua.user = this;
-			ua.amap = group;
+			ua.group = group;
 			ua.insert();
 		}
 		return ua;
@@ -316,7 +316,7 @@ class User extends Object {
 	 * Get groups this user belongs to.	 
 	 */
 	public function getGroups():Array<db.Group> {
-		var groups = Lambda.array(Lambda.map(UserGroup.manager.search($user == this, false), function(o) return o.amap));
+		var groups = Lambda.array(Lambda.map(UserGroup.manager.search($user == this, false), function(o) return o.group));
 		//alphabetical order
 		groups.sort(function(a,b) return a.name>b.name?1:-1 );
 		return groups;
@@ -478,9 +478,9 @@ class User extends Object {
 	public static function getUsers_NoMembership(?index:Int,?limit:Int):List<db.User> {
 		var ua = new List();
 		if (index == null && limit == null) {
-			ua = db.UserGroup.manager.search($amap == App.current.user.getGroup(), false);	
+			ua = db.UserGroup.manager.search($group == App.current.user.getGroup(), false);	
 		}else {
-			ua = db.UserGroup.manager.search($amap == App.current.user.getGroup(),{limit:[index,limit]}, false);
+			ua = db.UserGroup.manager.search($group == App.current.user.getGroup(),{limit:[index,limit]}, false);
 		}
 		
 		for (u in Lambda.array(ua)) {
@@ -492,7 +492,7 @@ class User extends Object {
 	
 	public static function getUsers_NewUsers(?index:Int, ?limit:Int):List<db.User> {
 		
-		var uas = db.UserGroup.manager.search($amap == App.current.user.getGroup(), false);
+		var uas = db.UserGroup.manager.search($group == App.current.user.getGroup(), false);
 		var ids = Lambda.map(uas, function(x) return x.user.id);
 		if (index == null && limit == null) {
 			return  db.User.manager.search($pass == "" && ($id in ids), {orderBy:lastName} ,false);

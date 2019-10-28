@@ -103,7 +103,7 @@
 	<div>
 		
 		<a href="/member/insert" class="btn btn-default btn-sm"><i class="icon icon-plus"></i> ::_("New member")::</a>	
-		$$export(::Web.getURI()+"?"+Web.getParamsString()::&csv=1)
+		$$export(::getURI()+"?"+getParamsString()::&csv=1)
 		<a href="/member/import" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import members")::</a>
 
 	</div>

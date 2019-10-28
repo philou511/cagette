@@ -36,7 +36,7 @@ class AmapAdmin extends Controller
 	
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
-		view.membersNum = UserGroup.manager.count($amap == app.user.getGroup());
+		view.membersNum = UserGroup.manager.count($group == app.user.getGroup());
 		view.contractsNum = app.user.getGroup().getActiveContracts().length;
 		
 		//ping cagette groups directory
@@ -103,7 +103,7 @@ class AmapAdmin extends Controller
 	public function doRights() {
 		
 		//liste les gens qui ont des droits dans le groupe
-		var users = db.UserGroup.manager.search($rights != null && $amap == app.user.getGroup(), false);
+		var users = db.UserGroup.manager.search($rights != null && $group == app.user.getGroup(), false);
 		
 		//cleaning 
 		for ( u in Lambda.array(users)) {

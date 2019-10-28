@@ -271,7 +271,7 @@ class Admin extends Controller {
 		if ( user != null ) {
 			var usergroup = new db.UserGroup();
 			usergroup.user = user;
-			usergroup.amap = group;
+			usergroup.group = group;
 			usergroup.insert();			
 		}
 	}

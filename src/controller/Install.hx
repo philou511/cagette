@@ -80,7 +80,7 @@ class Install extends controller.Controller
 				
 				var ua = new db.UserGroup();
 				ua.user = user;
-				ua.amap = amap;
+				ua.group = amap;
 				ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
 				ua.insert();
 				

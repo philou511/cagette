@@ -362,7 +362,7 @@ class OrderService
 			x.paid = o.paid;
 			x.invertSharedOrder = o.flags.has(InvertSharedOrder);
 			x.catalogId = c.id;
-			x.contractName = c.name;
+			x.catalogName = c.name;
 			x.canModify = o.canModify(); 
 			
 			out.push(x);

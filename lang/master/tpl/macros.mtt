@@ -280,7 +280,13 @@
 			-
 		::end::
 	</td>
-	<td>::formatNum(Math.abs(t.amount))::&nbsp;::currency()::</td>
+	<td>
+		::if(t.amount<0)::
+			::formatNum(0-t.amount)::&nbsp;::currency()::
+		::else::
+			::formatNum(t.amount)::&nbsp;::currency()::
+		::end::
+	</td>
 	::set class=""::
 	</macro>
 

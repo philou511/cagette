@@ -21,8 +21,10 @@
 -main App
 -debug
 -D debug
--js ../www/js/app.js
 -D no-deprecation-warnings
+-D react-auto-jsx
+-js ../www/js/app.js
+
 
 
 #-lib js-object

@@ -10,7 +10,6 @@ import Common.UserOrder;
 
 
 typedef OrderBoxState = {
-
     var orders : Array<UserOrder>;
     var ordersWereFetched : Bool;
     var users : Array<UserInfo>;    
@@ -131,14 +130,13 @@ class OrderBoxReducer implements IReducer<OrderBoxAction, OrderBoxState> {
 
                     var selectedProduct = Lambda.find( state.products, function( product ) return product.id == productId );
                     var catalog = Lambda.find( state.catalogs, function( catalog ) return catalog.id == selectedProduct.catalogId );
-                    var order : UserOrder = cast {
-                    			id: 0 - Std.random(1000000),
-                                contractId: selectedProduct.catalogId,
-                                contractName: catalog != null ? catalog.name : null,
-                    			product: selectedProduct,
-                    			quantity: 1,                     			
-                    			paid: false
-                    			};
+                    var order : UserOrder = cast {};
+                    order.id =  0 - Std.random(1000000);
+                    order.catalogId =  selectedProduct.catalogId;
+                    order.catalogName =  catalog != null ? catalog.name : null;
+                    order.product =  selectedProduct;
+                    order.quantity =  1;                  			
+                    order.paid = false;
                     
                     copiedOrders.push(order);
 

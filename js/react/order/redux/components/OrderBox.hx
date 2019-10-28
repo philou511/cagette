@@ -66,43 +66,41 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 		//If there is no orders the user is redirected to the next screen
 		if ( props.ordersWereFetched && ( props.orders == null || props.orders.length == 0 ) ) {
-
 			js.Browser.location.hash = props.catalogId == null ? "/catalogs" : "/insert";
 		}
 		
 		//Let's group orders by catalog id to display them for each catalog
 		var ordersByCatalogId = new Map<Int, Array<UserOrder>>();
 		for( order in props.orders ) {
-
 			if( ordersByCatalogId[order.catalogId] == null ) {
-
 				ordersByCatalogId[order.catalogId] = [];
-			}
-			
+			}			
 			ordersByCatalogId[order.catalogId].push(order);			
 		}
 
 		var ordersByCatalog = [];
 		var totalPrice = 0.0;
-		for( catalogId in ordersByCatalogId.keys() ) {
+		
+		trace(props.orders);
+		trace(ordersByCatalogId);
 
-			ordersByCatalog.push( jsx('<h4 key=${catalogId}>${ordersByCatalogId[catalogId][0].contractName}</h4>') );			
+		for( catalogId in ordersByCatalogId.keys() ) {
+			// trace(catalogId);
+			// trace(ordersByCatalogId[catalogId]);
+			// if(ordersByCatalogId[catalogId]==null) continue;
+
+			ordersByCatalog.push( jsx('<h4 key=$catalogId>${ordersByCatalogId[catalogId][0].catalogName}</h4>') );			
 
 			for ( order in ordersByCatalogId[catalogId] ) {
 
 				var key : String = if( order.id != null ) {
-				
 					Std.string(order.id);
-				}
-				else {
-				
+				}else {
 					order.product.id + "-" + Std.random(99999);
 				};
 
 				ordersByCatalog.push( jsx( '<Order key=${key} order=${order} currency=${props.currency} hasPayments=${props.hasPayments} catalogType=${props.catalogType} />' ));
-
 				totalPrice += order.quantity * order.product.price;
-						
 			}	
 		}
 
@@ -163,16 +161,16 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 							$delivery
 							<Error error=${this.props.error} />							
 							<hr/>
-							<div className="row tableHeader" >
-								<div className=${className1}>Produits</div>
-								<div className=${className2}>Ref.</div>
-								<div className=${className3}>Prix</div>
-								<div className=${className4}>Qté</div>
-								${ !this.props.hasPayments ? jsx('<div className="col-md-1 text-center">Payé</div>') : null }
-								${ this.props.catalogType == 0 ? jsx('<div className="col-md-3 text-center">Alterné avec</div>') : null }
+							<div key="header" className="row tableHeader" >
+								<div key="prod" className=${className1}>Produits</div>
+								<div key="ref" className=${className2}>Ref.</div>
+								<div key="price" className=${className3}>Prix</div>
+								<div key="qty" className=${className4}>Qté</div>
+								${ !this.props.hasPayments ? jsx('<div key="paid" className="col-md-1 text-center">Payé</div>') : null }
+								${ this.props.catalogType == 0 ? jsx('<div key="alternated" className="col-md-3 text-center">Alterné avec</div>') : null }
 							</div>
 							${ordersByCatalog}	
-							<div style=${{marginTop: 20}}>
+							<div key="footer" style=${{marginTop: 20}}>
 								${validateButton}						
 								&nbsp;																
 								<Button onClick=${function() { js.Browser.location.hash = this.props.catalogId == null ? "/catalogs" : "/insert"; }} size={Medium} variant={Outlined}>

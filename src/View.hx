@@ -1,3 +1,4 @@
+import sugoi.Web;
 using Std;
 import Common;
 import haxe.Utf8;
@@ -75,24 +76,7 @@ class View extends sugoi.BaseView {
 	}
 	
 	
-	public function color(id:Int) {
-		if (id == null) throw "color cant be null";
-		//try{
-			return intToHex(db.CategoryGroup.COLORS[id]);
-		//}catch (e:Dynamic) return "#000000";
-	}
 	
-	/**
-	 * convert a RVB color from Int to Hexa
-	 * @param	c
-	 * @param	leadingZeros=6
-	 */
-	public function intToHex(c:Int, ?leadingZeros=6):String {
-		var h = StringTools.hex(c);
-		while (h.length<leadingZeros)
-			h="0"+h;
-		return "#"+h;
-	}
 	
 	/**
 	 * Format prices
@@ -246,16 +230,6 @@ class View extends sugoi.BaseView {
 
 	public function getDate(date:Date) {
 		if (date == null) return null;
-		/*if (DAYS == null) initDate();
-		
-		return {
-			dow: DAYS[date.getDay()],
-			d : date.getDate(),
-			m: MONTHS[date.getMonth()],
-			y: date.getFullYear(),			
-			h: StringTools.lpad(Std.string(date.getHours()),"0",2),
-			i: StringTools.lpad(Std.string(date.getMinutes()),"0",2)
-		};*/
 		return Formatting.getDate(date);
 	}
 	
@@ -309,18 +283,19 @@ class View extends sugoi.BaseView {
 		return db.Basket.manager.get(id,false);
 	}
 
-	/**
-	@deprecated
-	**/
-	public function getBasket2(userId, placeId, date){
-		var user = getUser(userId);
-		var place = db.Place.manager.get(placeId, false);
-		var md = db.MultiDistrib.get(date,place);
-		return db.Basket.getOrCreate(user, md);
-	}
+
 	
 	public function getPlatform(){
 		return #if neko "Neko" #else "PHP" #end ;
+	}
+
+
+	public function getURI(){
+		return Web.getURI();
+	}
+
+	public function getParamsString(){
+		return Web.getParamsString();
 	}
 	
 	/** 
