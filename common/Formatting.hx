@@ -192,12 +192,7 @@ class Formatting
 		return str.split("\\").join("\\\\").split("'").join("\\'").split('\"').join('\\"').split("\r").join("\\r").split("\n").join("\\n");
 	}
 
-	public static function color(id:Int) {
-		if (id == null) throw "color cant be null";
-		//try{
-			return intToHex(db.CategoryGroup.COLORS[id]);
-		//}catch (e:Dynamic) return "#000000";
-	}
+	
 	
 	/**
 	 * convert a RVB color from Int to Hexa
@@ -228,6 +223,13 @@ class Formatting
 			}
 		}catch (e:Dynamic){ }
 		return str;
+	}
+
+	public static function color(id:Int) {
+		if (id == null) throw "color cant be null";
+		//try{
+			return intToHex(db.CategoryGroup.COLORS[id]);
+		//}catch (e:Dynamic) return "#000000";
 	}
 	#end
 }

@@ -1,0 +1,88 @@
+::use 'admin/design.mtt'::
+
+	<div class="article">
+		
+		<h2>::member.getName():: - ::ua._group.name::</h2>
+		
+		<div>
+			<a href="/p/hosted/user/view/::member.id::" class="btn btn-default">Fiche utilisateur</a>
+			<a href="/p/hosted/group/::ua._group.id::" class="btn btn-default">Fiche groupe</a>
+		</div>
+
+		<h3>Dernières commandes</h3>
+		<p>
+			<table class="table table-bordered table-condensed">
+			::foreach md mds::
+			<tr>
+				<td>::hDate(md.getDate())::</td>
+				<td>
+					<!-- BASKETS -->
+					::set orders = md.getUserOrders(member,null)::
+					::if orders.length > 0::
+						
+						::set basket = orders[0]._basket::
+						<b>Panier #::basket.id::</b>
+						<ul>
+						::foreach o basket.getOrders()::
+							<li>::o.quantity:: x ::o._product.getName()::</li>
+						::end::						
+						</ul>
+					::end::
+					
+					<!-- TMP BASKETS-->
+					::set basket = md.getUserTmpBasket(member)::
+					::if(basket!=null)::
+					<div style="color:green">
+						<b>Panier en cours #::basket.ref::</b>
+						<ul>
+						::foreach o basket.getOrders()::
+							::if(o.product!=null)::
+							<li>::o.quantity:: x ::o.product.getName()::</li>
+							::else::
+							<li>null product ?</li>
+							::end::
+						::end::						
+						</ul>
+					</div>
+					::end::
+				</td>
+			</tr>			
+			::end::
+			</table>
+		</p>
+		
+		<h3>Operations</h3>
+		<p>
+			<table class="table table-bordered table-condensed">
+				::foreach op operations::
+				<tr>
+					$$operation(::op::)
+					
+					<td>
+						<a onclick="_.overlay('/p/hosted/operation/::op.id::','',false)" class="btn btn-default btn-xs">Detail</a>
+					</td>
+				</tr>
+				::end::
+			</table>
+		</p>
+		
+		<h3>Lemonway pending carts</h3>
+		<p>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th>token</th>
+					<th>value</th>
+					<th>expire</th>
+				</tr>
+				::foreach p pendingCarts::
+				<tr>
+					<td>::p.name::</td>
+					<td>::p.value::</td>
+					<td>::p.expire::</td>
+				</tr>
+				::end::
+			</table>
+		</p>
+		
+	</div>
+::end::

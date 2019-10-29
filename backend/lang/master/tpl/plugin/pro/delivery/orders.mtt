@@ -1,0 +1,92 @@
+::use 'plugin/pro/delivery/design.mtt'::
+	
+		<div style="margin:12px 0;">
+			$$export(?csv=1)
+			<a href="/p/pro/delivery/list/::distribution.id::" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> Liste d'émargement</a>
+		</div>
+		
+		::set total = 0::
+		::set totalAdh = 0::
+		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
+				::set name = ""::
+
+				::foreach m orders::
+				
+				::if m.userName != name::
+					<tr style="background-color:#666;">
+						<td colspan="6" style="font-size:120%;color:#e7e7e7;">
+							::m.userName:: 
+							::set name =  m.userName ::	
+							::set totalAdh = totalAdh+1::
+						</td>
+						<td>
+							<a class="btn btn-default btn-xs"
+							onclick="_.initOrderBox(::m.userId::,::distribution._multiDistrib.id::,::distribution._catalog.id::,::distribution._catalog.type::,'::hDate(distribution.date)::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::distribution._catalog._group.currency::', '::distribution._catalog._group.hasPayments()::', '/p/pro/delivery/orders/::distribution.id::')">
+							<span class="glyphicon glyphicon-edit"></span>
+							::_("Edit")::
+							</a>
+					
+						</td>
+					</tr>
+					<tr>
+						<th>Qté</th>
+						<th>Réf.</th>
+						<th>Produit</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="Prix unitaire TTC">P.U</a></th>
+						<th>Sous-total</th>
+						<th>Frais</th>
+						<th>Total</th>
+					</tr>
+				::end::
+				
+				<tr>
+					<td>
+						::raw m.smartQt:
+					</td>
+					<td class="ref">
+						$$nullSafe(::m.productRef::)
+					</td>
+					<td>
+						::m.productName::
+					</td>
+					<td>
+						::formatNum(m.productPrice)::&nbsp;::currency()::
+					</td>
+					<td>
+						::formatNum(m.subTotal)::&nbsp;::currency()::
+					</td>
+					<td>
+						<!-- frais -->
+						::if m.percentageValue!=null::
+						<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
+							::formatNum(m.fees)::&nbsp;::currency()::
+						</a>
+						::end::
+					</td>
+					<td>
+						<!-- total -->
+						::formatNum(m.total)::&nbsp;::currency()::
+						::set total = total + m.total::
+					</td>
+					
+				</tr>
+				::end::
+				
+				
+				
+				<tr style="background:#DDD;">
+					
+					<th colspan="6">Total</th>
+					<th>::formatNum(total)::&nbsp;::currency()::</th>
+					
+				</tr>
+				
+
+				</table>
+
+
+				<div style="margin-top:18px;margin-bottom:18px;">
+					<b>::totalAdh::</b> adhérents dans cette commande.					
+				</div>
+
+::end::

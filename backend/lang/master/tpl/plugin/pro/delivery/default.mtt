@@ -1,0 +1,158 @@
+::use 'plugin/pro/design.mtt'::
+
+<div class="col-md-6">
+	<div class="article">
+		<h2>Prochaines distributions</h2>
+		
+		<p>
+		$$insert(Livraison ponctuelle,/p/pro/delivery/insert)	
+		$$insert(Livraisons récurrentes,/p/pro/delivery/insertCycle)	
+		</p>
+		
+		::foreach k distribs::
+			$$deliveryPro(::k::,true)
+			<hr/>
+		::end::
+	</div>
+</div>
+
+<div class="col-md-6">
+
+	<div class="article">
+		
+		<h4>Récapitulatifs</h4>
+		
+		<form class="form-horizontal" action="/p/pro/delivery/export" method="GET">
+			
+			<script>
+			var setDate = function(name){
+				var d = $('#datetimepicker-'+name).data('DateTimePicker').date();//moment.js obj
+				$('#datetimepickerdata-'+name).val( d.format('YYYY-MM-DD HH:mm:ss'))
+			};
+			</script>
+			
+			<div class="form-group">
+				<label class="col-md-4 control-label">
+					Type 
+				</label>
+				
+				<div class="col-md-8">
+					<input type="radio" class="" name="type" value="products" checked="checked" /> Par produits<br/>
+					<input type="radio" class="" name="type" value="members" /> Par membres<br/>
+					<input type="radio" class="" name="type" value="groups" /> Par Groupe-produits (CSV)<br/>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				
+				<label for="startDate" class="col-md-4 control-label" id="startDate__Label">
+					Date de début
+				</label>
+				
+				<div class="col-md-8">
+					<div class="input-group date" id="datetimepicker-startDate">       
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type="text" class="form-control" />
+					</div>
+					
+					<input type="hidden" name="startDate" id="datetimepickerdata-startDate" value=""/>
+					<script type="text/javascript">
+						$(function () {
+							$('#datetimepicker-startDate').datetimepicker(
+								{
+									locale:'fr',
+									format:'LLLL',
+									defaultDate:moment().format("YYYY-MM-DD 00:00:00")
+								}
+							);
+							//stores the date in mysql format in a hidden input element	
+							$('#datetimepicker-startDate').on('dp.change',function(e){ setDate("startDate"); });
+							setDate("startDate");
+						});
+					</script>
+				</div>
+			</div>
+					
+					
+			<div class="form-group">
+				
+				<label for="endDate" class="col-md-4 control-label" id="endDate__Label">
+					Date de fin
+				</label>
+				
+				<div class="col-md-8">
+					<div class="input-group date" id="datetimepicker-endDate">       
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+						<input type="text" class="form-control" />
+					</div>
+			
+					<input type="hidden" name="endDate" id="datetimepickerdata-endDate" value=""/>
+					<script type="text/javascript">
+						$(function () {
+							$('#datetimepicker-endDate').datetimepicker(
+								{
+									locale:'fr',
+									format:'LLLL',
+									defaultDate:moment().add(7, 'days').format("YYYY-MM-DD 23:59:59")
+								}
+							);
+							//stores the date in mysql format in a hidden input element	
+							$('#datetimepicker-endDate').on('dp.change',function(e){ setDate("endDate"); });
+							setDate("endDate");
+						});
+					</script>
+				</div>
+			</div>		
+					
+					
+			<div class="form-group">
+				<div class="col-md-offset-4 col-md-8">
+					<input type="submit" class="btn btn-primary" value="Valider" />
+				</div>
+				
+				
+			</div>		
+			
+		</form>
+	</div>	
+
+	<div class="alert alert-warning">
+		<i class="icon icon-info"></i> Vous êtes en mode <b>Réseau captif</b> : contrairement au mode par défaut, 
+		vous pouvez directement programmer des distributions sur l'ensemble de votre réseau de groupes.
+	</div>
+</div>
+
+<div class="col-md-12" ::cond cycles.length>0::>
+	<div class="article">
+
+		<h4>Cycles de distributions</h4>
+		<table class="table">
+			
+			::foreach c cycles::
+			<tr>
+				<td><b>::c._group.name::</b></td>
+				<td><b>
+					::switch c.cycleType:: 						
+					::case::  ::_("Weekly")::
+					::case::  ::_("Monthly")::
+					::case::  ::_("Every 2 weeks")::
+					::case::  ::_("Every 3 weeks")::
+					::end::
+					</b>
+					: Du ::hDate(c.startDate):: au ::hDate(c.endDate)::
+				</td>
+				<td>
+					$$delete(::_("Del.")::,::"/p/pro/delivery/deleteCycle/"+c.id+"?token="+token::)
+				</td>
+			</tr>
+			::end::
+		</table>
+	</div>
+</div>
+
+
+::end::

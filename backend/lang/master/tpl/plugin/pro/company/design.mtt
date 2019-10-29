@@ -1,0 +1,67 @@
+::use 'plugin/pro/design.mtt'::
+
+::if(company!=null)::
+<div class="col-md-3">
+	<div class="article">
+		<ul id="subnav" class="nav nav-pills nav-stacked">
+			<li ::attr class if(nav[1]=="default") 		'active'::><a href="/p/pro/company">Mon compte</a></li>
+			<li ::attr class if(nav[1]=="users") 		'active'::><a href="/p/pro/company/users">Utilisateurs</a></li>
+			<li ::attr class if(nav[1]=="vendors") 		'active'::><a href="/p/pro/company/vendors">Autres producteurs</a></li>
+			<li ::attr class if(nav[1]=="publicPage") 	'active'::><a href="/p/pro/company/publicPage">Ma page producteur</a></li>
+			<li ::cond !company.freeCpro:: ::attr class if(nav[1]=="abo") 'active'::><a href="/p/pro/company/abo">Abonnement</a></li>
+			::if navbar!=null::
+				::foreach i navbar::
+				<li ::attr class if(nav[1]==i.id) 'active'::>
+					<a href="::i.link::">
+						<span ::cond i.icon:: class="icon icon-::i.icon::" ></span>
+						::i.name::</a>					
+				</li>
+				::end::		
+			::end::			
+		</ul>
+	</div>
+</div>
+::end::
+
+<div class="col-md-9">
+	<div class="article">
+		::raw __content__::
+	</div>
+</div>
+
+::if(company==null)::
+<div class="col-md-9">
+	<div class="article" style="background: #d0e4b2">
+		
+		::set link = 'https://www.cagette.net/producteurs?utm_source=freevendor'::
+				
+		<p>
+			<a href="::link::" target="_blank" style="float:left;">
+				<img src="https://www.cagette.net/wp-content/uploads/2017/12/photo3.jpg" style="width:300px;margin-right:12px;margin-bottom: 150px;border: 4px solid white;border-radius: 8px;"/>
+			</a>
+			<h4>Voulez-vous devenir autonome dans la gestion de votre vente directe sur Internet ?</h4>
+
+			Découvrez <b>Cagette Pro</b> et notre formation <b>"Développer sa vente directe grâce à Internet"</b> !
+			<br/>
+			<br/>
+			A l'issu de cette formation, vous saurez comment gérer votre catalogue de produits et vos ventes sur Cagette.net en toute autonomie.
+			<b>Depuis un seul tableau de bord, vous pourrez organiser vos commandes sur l'ensemble de vos points de livraisons</b> : AMAPs, groupements d'achats, vente à la ferme, Drives de producteurs...
+		</p>
+		<p style='text-align:center;'>
+			<a class="btn btn-primary" href="::link::" target="_blank">EN SAVOIR PLUS</a>
+		</p>
+	</div>
+</div>
+<div class="col-md-3" ::cond groups.length>0::>
+		<div class="article" style="background: #d0e4b2">
+			Les groupes Cagette suivants vous ont déjà référencé :
+			<ul>
+				::foreach g groups::
+				<li><a href="/group/::g.id::">::g.name::</a></li>
+				::end::
+			</ul>
+		</div>
+</div>
+::end::
+
+::end::

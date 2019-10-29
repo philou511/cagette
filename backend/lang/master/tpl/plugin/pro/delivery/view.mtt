@@ -1,0 +1,86 @@
+::use 'plugin/pro/delivery/design.mtt'::
+
+::set d = distrib::
+
+	<div style="margin:12px 0;">
+		<a href="/p/pro/delivery/ordersByProductList/::distribution.id::" class="btn btn-default btn-sm">
+			<span class="glyphicon glyphicon-list"></span> ::_("Order form")::</a>
+
+		$$export(/p/pro/delivery/view/::distribution.id::?csv=1)
+		
+	</div>
+
+
+	<table class="table table-striped">
+		<tr>
+			<td>Groupe</td>
+			<td>
+				<b>::distribution._catalog._group.name::</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Date de livraison
+			</td>
+			<td>
+				::hDate(distribution.date)::
+			</td>
+		</tr>
+		<tr>
+			<td>Adresse</td>
+			<td>
+				::distribution._place.getFullAddress()::
+			</td>				
+		</tr>
+		<tr>
+			<td>Fermeture des commandes</td>
+			<td>
+				::hDate(distribution.orderEndDate)::
+			</td>				
+		</tr>
+	</table>
+		
+		
+
+	<table class="table table-bordered table-hover"  style="width:100%;">
+		<tr>
+			<th>Poids/Vol.</th>
+			<th>Quantités</th>				
+			<th>Produit</th>
+			<th>Référence</th>
+			<th>Prix unitaire TTC</th>
+			<th>Total</th>
+		</tr>
+		::set total = 0::
+			::foreach m orders::
+			<tr>
+				<td>::raw m.weightOrVolume::</td>
+				<td>
+					::formatNum(m.quantity)::
+				</td>
+				<td>
+					::m.pname::
+				</td>
+				<td class="ref">
+					$$nullSafe(::m.ref::)
+				</td>
+				<td>
+					::formatNum(m.priceTTC)::&nbsp;::currency()::
+				</td>
+				<td>
+					::formatNum(m.totalTTC)::&nbsp;::currency()::
+					::set total = total + m.totalTTC::
+				</td>
+			</tr>
+			::end::
+			
+			<tr style="background:#DDD;">					
+				<th colspan="4"></th>
+				<th class="text-right">Total :</th>
+				<th>::formatNum(total)::&nbsp;::currency()::</th>	
+			</tr>
+
+		</table>
+				
+				
+::end::

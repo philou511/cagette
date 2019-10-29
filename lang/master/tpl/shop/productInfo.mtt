@@ -57,7 +57,7 @@
 			</p>
 			
 			<p ::cond p.desc!=null::>
-				::raw p.desc::
+				::raw nl2br(p.desc)::
 			</p>
 			
 		</div>
