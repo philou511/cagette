@@ -55,12 +55,12 @@ class Vendor extends Object
 	}
 
 	public function getContracts(){
-		return db.Contract.manager.search($vendor == this,{orderBy:-startDate}, false);
+		return db.Catalog.manager.search($vendor == this,{orderBy:-startDate}, false);
 	}
 
 	public function getActiveContracts(){
 		var now = Date.now();
-		return db.Contract.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
+		return db.Catalog.manager.search($vendor == this && $startDate < now && $endDate > now ,{orderBy:-startDate}, false);
 	}
 
 	public function getImage():String{
@@ -139,9 +139,9 @@ class Vendor extends Object
 		return out;
 	}
 
-	public function getGroups():Array<db.Amap>{
+	public function getGroups():Array<db.Group>{
 		var contracts = getActiveContracts();
-		var groups = Lambda.map(contracts,function(c) return c.amap);
+		var groups = Lambda.map(contracts,function(c) return c.group);
 		return tools.ObjectListTool.deduplicate(groups);
 	}
 
@@ -175,7 +175,7 @@ class Vendor extends Object
 	}
 
 	#if plugins
-	public function getCpro():pro.db.CagettePro{
+	public function getCpro(){
 		return pro.db.CagettePro.getFromVendor(this);
 	}
 	#end	

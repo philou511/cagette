@@ -63,7 +63,7 @@ class Place extends Controller
 		
 		if (f.isValid()) {
 			f.toSpod(d); 
-			d.amap = app.user.amap;
+			d.group = app.user.getGroup();
 			d.insert();
 			throw Ok('/contractAdmin',t._("The place has been registred") );
 		}

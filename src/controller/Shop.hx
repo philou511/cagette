@@ -7,7 +7,7 @@ class Shop extends Controller
 {
 	
 	var distribs : List<db.Distribution>;
-	var contracts : List<db.Contract>;
+	var contracts : List<db.Catalog>;
 	var tmpBasket : db.TmpBasket;
 
 	@tpl('shop/default.mtt')
@@ -17,18 +17,44 @@ class Shop extends Controller
 
 		var date = md.getDate();
 		var place = md.getPlace();
-		if(place.amap.betaFlags.has(ShopV2)) throw Redirect('/shop2/${md.id}');
+		if(place.group.betaFlags.has(ShopV2)) throw Redirect('/shop2/${md.id}');
 
 		var products = getProducts(md);
 		view.products = products;
 		view.place = place;
 		view.date = date;
-		view.group = place.amap;
-		view.multiDistrib = md;		
-		view.infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		view.group = place.group;
+		view.multiDistrib = md;	
+
+		//various closing dates	
+		var infos = ArrayTool.groupByDate(Lambda.array(distribs), "orderEndDate");
+		var str = "";
+		if (Lambda.count(infos) == 1){
+			str = Formatting.hDate( infos.iterator().next()[0].orderEndDate );
+		}else{
+			str = "<ul>";
+			for( k in infos.keys()){
+				str+="<li>";
+				var dists = infos.get(k);
+				
+				if (dists.length==1){
+					str += dists[0].catalog.name;
+				} else {
+					var tt = "";
+					for(d  in dists) tt  += d.catalog.name + ". ";					
+					str += '<span data-toggle="tooltip" title="$tt" style="text-decoration:underline;">Autres</span>';
+				}
+				
+				str += ": "+Formatting.hDate(Date.fromString(k));
+				str+="</li>";
+			}
+			str +="</ul>";
+		}
+		view.infos = str;
+
 
 		//message if phone is required
-		if(app.user!=null && app.user.amap.flags.has(db.Amap.AmapFlags.PhoneRequired) && app.user.phone==null){
+		if(app.user!=null && app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
 			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
@@ -60,7 +86,7 @@ class Shop extends Controller
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
 		
-		if (!md.getGroup().flags.has(db.Amap.AmapFlags.CustomizedCategories)){			
+		if (!md.getGroup().flags.has(db.Group.GroupFlags.CustomizedCategories)){			
 			//TAXO CATEGORIES
 			products = getProducts(md, true);
 		}else{			
@@ -90,11 +116,11 @@ class Shop extends Controller
 		var date = md.getDate();
 		var place = md.getPlace();
 
-		contracts = db.Contract.getActiveContracts(app.getCurrentGroup());
+		contracts = db.Catalog.getActiveContracts(app.getCurrentGroup());
 	
 		for (c in Lambda.array(contracts)) {
 			//only varying orders
-			if (c.type != db.Contract.TYPE_VARORDER) contracts.remove(c);
+			if (c.type != db.Catalog.TYPE_VARORDER) contracts.remove(c);
 			
 			if (!c.isVisibleInShop()) contracts.remove(c);
 		}
@@ -107,17 +133,17 @@ class Shop extends Controller
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
 		//distribs open to orders, and where distribDate is in the date given as parameter
-		distribs = db.Distribution.manager.search(($contractId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
+		distribs = db.Distribution.manager.search(($catalogId in cids) && $orderStartDate <= now && $orderEndDate >= now && $date > d1 && $end < d2 && $place == place, false);
 		var products = [];
 		for ( d in distribs){
-			for (p in d.contract.getProducts(true)){
+			for (p in d.catalog.getProducts(true)){
 				products.push( p.infos(categsFromTaxo,null,d) );
 			}
 		}
 		return products;
 
 		/*var cids = Lambda.map(distribs, function(d) return d.contract.id);
-		var products = db.Product.manager.search(($contractId in cids) && $active==true, { orderBy:name }, false);
+		var products = db.Product.manager.search(($catalogId in cids) && $active==true, { orderBy:name }, false);
 
 		return Lambda.array(Lambda.map(products, function(p) return p.infos(categsFromTaxo)));*/
 	}
@@ -130,7 +156,7 @@ class Shop extends Controller
 		var d = args!=null && args.distribution!=null ? args.distribution : null;
 		view.p = p.infos(null,null,d);
 		view.product = p;
-		view.vendor = p.contract.vendor;
+		view.vendor = p.catalog.vendor;
 	}
 	
 	/**
@@ -223,7 +249,7 @@ class Shop extends Controller
 		var group = md.getGroup();
 		
 		//Add the user to this group if needed
-		if (group.regOption == db.Amap.RegOption.Open && db.UserAmap.get(app.user, group) == null){
+		if (group.regOption == db.Group.RegOption.Open && db.UserGroup.get(app.user, group) == null){
 			app.user.makeMemberOf( group );			
 		}
 		
@@ -244,7 +270,7 @@ class Shop extends Controller
 			var p = db.Product.manager.get(o.productId, false);
 			
 			//check that the products are from this group (we never know...)
-			if (p.contract.amap.id != app.user.amap.id){
+			if (p.catalog.group.id != app.user.getGroup().id){
 				app.session.data.order = null;
 				throw Error("/", t._("This basket contains products from another group") );
 			}
@@ -262,7 +288,7 @@ class Shop extends Controller
 			}
 
 			//find distrib
-			var d = Lambda.find(distribs, function(d) return d.contract.id == p.contract.id);
+			var d = Lambda.find(distribs, function(d) return d.catalog.id == p.catalog.id);
 			if ( d == null ){
 				errors.push( t._("This distribution does not supply the product <b>::pname::</b>",{pname:p.name}) );
 				orders.remove(o);
@@ -270,7 +296,7 @@ class Shop extends Controller
 			}
 			
 			//moderate order according available stocks
-			if (p.stock != null && p.contract.hasStockManagement() ) {
+			if (p.stock != null && p.catalog.hasStockManagement() ) {
 				if (p.stock - o.quantity < 0) {
 					var canceled = o.quantity - p.stock;
 					o.quantity -= canceled;
@@ -291,7 +317,7 @@ class Shop extends Controller
 		tmpBasket.data = {products:orders};		
 		tmpBasket.update();
 		
-		if (app.user.amap.hasPayments()){			
+		if (app.user.getGroup().hasPayments()){			
 			//Go to payments page
 			throw Redirect("/transaction/pay/"+tmpBasket.id);
 		}else{

@@ -5,7 +5,7 @@ class Categories extends controller.Controller
 	@tpl("categories/default.mtt")
 	public function doDefault() {
 		
-		view.groups = db.CategoryGroup.manager.search($amap == app.user.amap, false);
+		view.groups = db.CategoryGroup.manager.search($amap == app.user.getGroup(), false);
 		
 		checkToken();
 		
@@ -16,7 +16,7 @@ class Categories extends controller.Controller
 	 */
 	public function doGenerate() {
 		
-		if ( db.CategoryGroup.manager.search($amap == app.user.amap, false).length != 0) {
+		if ( db.CategoryGroup.manager.search($amap == app.user.getGroup(), false).length != 0) {
 			throw Error("/amapadmin/categories", t._("The category list is not empty.") );
 		}
 		
@@ -25,7 +25,7 @@ class Categories extends controller.Controller
 			var cg = new db.CategoryGroup();
 			cg.name = catGroupName;
 			cg.color = color;
-			cg.amap = app.user.amap;
+			cg.amap = app.user.getGroup();
 			cg.insert();
 			
 			for (c in cats) {
@@ -80,7 +80,7 @@ class Categories extends controller.Controller
 		if (form.isValid()) {
 			
 			form.toSpod(g);
-			g.amap = app.user.amap;
+			g.amap = app.user.getGroup();
 			g.insert();
 			throw Ok("/amapadmin/categories", t._("Group added"));
 			

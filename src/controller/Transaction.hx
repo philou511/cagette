@@ -32,7 +32,7 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
 		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
-		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.amap);
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.getGroup());
 		var out = [];
 		for (paymentType in paymentTypes)
 		{
@@ -41,7 +41,7 @@ class Transaction extends controller.Controller
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		//related operation
-		var unpaid = db.Operation.manager.search($user == user && $group == app.user.amap && $type != Payment ,{limit:20,orderBy:-date});
+		var unpaid = db.Operation.manager.search($user == user && $group == app.user.getGroup() && $type != Payment ,{limit:20,orderBy:-date});
 		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
 		f.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
 		
@@ -50,7 +50,7 @@ class Transaction extends controller.Controller
 			op.type = db.Operation.OperationType.Payment;
 			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
 			op.data = data;
-			op.group = app.user.amap;
+			op.group = app.user.getGroup();
 			op.user = user;
 			
 			if (f.getValueOf("unpaid") != null){
@@ -66,7 +66,7 @@ class Transaction extends controller.Controller
 			
 			op.insert();
 			
-			service.PaymentService.updateUserBalance(user, app.user.amap);
+			service.PaymentService.updateUserBalance(user, app.user.getGroup());
 			
 			throw Ok("/member/payments/" + user.id, t._("Payment recorded") );
 			
@@ -80,7 +80,7 @@ class Transaction extends controller.Controller
 	@tpl('form.mtt')
 	public function doEdit(op:db.Operation){
 		
-		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) {
+		if (!app.user.canAccessMembership() || op.group.id != app.user.getGroup().id ) {
 			throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
 		}
 		
@@ -126,7 +126,7 @@ class Transaction extends controller.Controller
 	 * Delete an operation
 	 */
 	public function doDelete(op:db.Operation){	
-		if (!app.user.canAccessMembership() || op.group.id != app.user.amap.id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));	
+		if (!app.user.canAccessMembership() || op.group.id != app.user.getGroup().id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));	
 		
 		App.current.event(PreOperationDelete(op));
 
@@ -164,9 +164,9 @@ class Transaction extends controller.Controller
 		var total = tmpBasket.getTotal();
 		view.amount = total;		
 		view.tmpBasket = tmpBasket;
-		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.amap);
-		view.allowMoneyPotWithNegativeBalance = app.user.amap.allowMoneyPotWithNegativeBalance;	
-		view.futurebalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
+		view.paymentTypes = service.PaymentService.getPaymentTypes(PCPayment, app.user.getGroup());
+		view.allowMoneyPotWithNegativeBalance = app.user.getGroup().allowMoneyPotWithNegativeBalance;	
+		view.futurebalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 	}
 
 	@tpl("transaction/tmpBasket.mtt")
@@ -202,8 +202,8 @@ class Transaction extends controller.Controller
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var total = tmpBasket.getTotal();
-		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
-		if (!app.user.amap.allowMoneyPotWithNegativeBalance && futureBalance < 0) {
+		var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
+		if (!app.user.getGroup().allowMoneyPotWithNegativeBalance && futureBalance < 0) {
 			throw Error("/transaction/pay", t._("You do not have sufficient funds to pay this order with your money pot."));
 		}
 		
@@ -218,7 +218,7 @@ class Transaction extends controller.Controller
 		}
 
 		view.amount = total;
-		view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
+		view.balance = db.UserGroup.get(app.user, app.user.getGroup()).balance;
 	
 	}
 
@@ -231,7 +231,7 @@ class Transaction extends controller.Controller
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 		var total = tmpBasket.getTotal();
-		var futureBalance = db.UserAmap.get(app.user, app.user.amap).balance - total;
+		var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 		
 		try{
 			//record order
@@ -239,13 +239,13 @@ class Transaction extends controller.Controller
 			var orderOps = db.Operation.onOrderConfirm(orders);
 
 			view.amount = total;
-			view.balance = db.UserAmap.get(app.user, app.user.amap).balance;
+			view.balance = db.UserGroup.get(app.user, app.user.getGroup()).balance;
 
 			var date = tmpBasket.multiDistrib.getDate();		
 			
 			//all orders are for the same multidistrib
 			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(date)});
-			db.Operation.makePaymentOperation(app.user,app.user.amap, payment.OnTheSpotPayment.TYPE, total, name, orderOps[0] );	
+			db.Operation.makePaymentOperation(app.user,app.user.getGroup(), payment.OnTheSpotPayment.TYPE, total, name, orderOps[0] );	
 
 			tmpBasket.delete();	
 			
@@ -279,7 +279,7 @@ class Transaction extends controller.Controller
 			var orderOps = db.Operation.onOrderConfirm(orders);
 			
 			var name = t._("Transfer for the order of ::date::", {date:view.hDate(date)}) + " ("+code+")";
-			db.Operation.makePaymentOperation(app.user,app.user.amap,payment.Transfer.TYPE, total, name, orderOps[0] );
+			db.Operation.makePaymentOperation(app.user,app.user.getGroup(),payment.Transfer.TYPE, total, name, orderOps[0] );
 
 			tmpBasket.delete();
 			

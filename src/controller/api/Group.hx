@@ -23,7 +23,7 @@ class Group extends Controller
 			
 			//Request by zone
 			#if plugins
-			var sql = "select p.* from Place p, Hosting h where h.id=p.amapId and h.visible=1 and ";
+			var sql = "select p.* from Place p, Hosting h where h.id=p.groupId and h.visible=1 and ";
 			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';			
 			#else
 			var sql = "select p.* from Place p where ";
@@ -51,9 +51,9 @@ class Group extends Controller
 		
 		for ( p in places){
 			out.push({
-				id : p.amap.id,
-				name : p.amap.name,
-				image : p.amap.image==null ? null : view.file(p.amap.image),
+				id : p.group.id,
+				name : p.group.name,
+				image : p.group.image==null ? null : view.file(p.group.image),
 				place : p.getInfos()
 			});
 		}
@@ -67,7 +67,7 @@ class Group extends Controller
 	function findGroupByDist(lat:Float, lng:Float,?limit=5){
 		#if plugins
 		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p, Hosting h ';
-		sql += "where h.id=p.amapId and h.visible=1 and p.lat is not null ";		
+		sql += "where h.id=p.groupId and h.visible=1 and p.lat is not null ";		
 		sql += 'order by dist asc LIMIT $limit';
 		#else
 		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p ';

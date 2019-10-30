@@ -1,3 +1,4 @@
+import sugoi.Web;
 using Std;
 import Common;
 import haxe.Utf8;
@@ -7,15 +8,10 @@ class View extends sugoi.BaseView {
 	
 	var t : sugoi.i18n.GetText;
 	
-	
+	var tuto:{ name:String, step:Int };
+
 	public function new() {
 		super();
-		this.Std = Std;
-		this.Date = Date;
-		this.Web = sugoi.Web;
-		this.Lambda = Lambda;
-		this.VERSION = App.VERSION.toString();
-		this.ArrayTool = ArrayTool;
 		this.t = sugoi.i18n.Locale.texts;
 	}
 	
@@ -25,6 +21,10 @@ class View extends sugoi.BaseView {
 	
 	public function abs(n){
 		return Math.abs(n);
+	}
+
+	public function parseInt(s:String):Int{
+		return Std.parseInt(s);
 	}
 
 	public function breadcrumb():Array<Link>{
@@ -76,24 +76,7 @@ class View extends sugoi.BaseView {
 	}
 	
 	
-	public function color(id:Int) {
-		if (id == null) throw "color cant be null";
-		//try{
-			return intToHex(db.CategoryGroup.COLORS[id]);
-		//}catch (e:Dynamic) return "#000000";
-	}
 	
-	/**
-	 * convert a RVB color from Int to Hexa
-	 * @param	c
-	 * @param	leadingZeros=6
-	 */
-	public function intToHex(c:Int, ?leadingZeros=6):String {
-		var h = StringTools.hex(c);
-		while (h.length<leadingZeros)
-			h="0"+h;
-		return "#"+h;
-	}
 	
 	/**
 	 * Format prices
@@ -149,8 +132,8 @@ class View extends sugoi.BaseView {
 	 */
 	public function short(text:String, length:Int){
 		if(text==null) return "";
-		if (Utf8.length(text) > length){			
-			return Utf8.sub(text,0, length)+"…";
+		if (text.length > length){			
+			return text.substr(0, length)+"…";
 		}else{
 			return text;
 		}
@@ -177,34 +160,33 @@ class View extends sugoi.BaseView {
 	}
 	
 	public function currency(){
-		if (App.current.user == null || App.current.user.amap == null){
+		if (App.current.user == null || App.current.user.getGroup() == null){
 			return "€";
 		}else{
-			return App.current.user.amap.getCurrency();	
+			return App.current.user.getGroup().getCurrency();	
 		}
 		
 	}
 	
-	public static var DAYS = null;
-	public static var MONTHS = null;
-	public static var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-	public static var MINUTES = [0,5,10,15,20,25,30,35,40,45,50,55];
+
 	
 	
 	public function initDate(){
-		t = sugoi.i18n.Locale.texts;
+		/*t = sugoi.i18n.Locale.texts;
 		DAYS = [t._("Sunday"), t._("Monday"), t._("Tuesday"), t._("Wednesday"), t._("Thursday"), t._("Friday"), t._("Saturday")];
 		MONTHS = [t._("January"), t._("February"), t._("March"), t._("April"), t._("May"), t._("June"), t._("July"), t._("August"), t._("September"), t._("October"), t._("November"), t._("December")];
-		this.DAYS = DAYS;
-		this.MONTHS = MONTHS;
-		this.HOURS = HOURS;
-		this.MINUTES = MINUTES;
+		this.days = DAYS;
+		this.months = MONTHS;
+		this.hours = HOURS;
+		this.minutes = MINUTES;*/
 	}
 	
 	/**
 	 * human readable date + time
 	 */
 	public function hDate(date:Date):String {
+		return Formatting.hDate(date);
+		/*
 		if (date == null) return t._("no date set");
 		if (DAYS == null) initDate();
 		
@@ -214,7 +196,7 @@ class View extends sugoi.BaseView {
 			
 			out += " " + sugoi.i18n.Locale.texts._("at||time : at 12:30") + " " + StringTools.lpad(Std.string(date.getHours()), "0", 2) + ":" + StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
 		}
-		return out;
+		return out;*/
 	}
 
 	/**
@@ -227,14 +209,19 @@ class View extends sugoi.BaseView {
 	public function oHour(hour:Int,min:Int){
 		return StringTools.lpad(hour.string(), "0", 2) + ":" + StringTools.lpad(min.string(), "0", 2);
 	}
+
+	public function now(){
+		return Date.now();
+	}
 	
 	/**
 	 *  human readable date
 	 */
 	public function dDate(date:Date):String {
-		if (date == null) return t._("no date set");
+		return Formatting.dDate(date);
+		/*if (date == null) return t._("no date set");
 		if (DAYS == null) initDate();
-		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
+		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();*/
 	}
 	
 	public function fromTimestamp(ts:String){
@@ -243,23 +230,14 @@ class View extends sugoi.BaseView {
 
 	public function getDate(date:Date) {
 		if (date == null) return null;
-		if (DAYS == null) initDate();
-		
-		return {
-			dow: DAYS[date.getDay()],
-			d : date.getDate(),
-			m: MONTHS[date.getMonth()],
-			y: date.getFullYear(),			
-			h: StringTools.lpad(Std.string(date.getHours()),"0",2),
-			i: StringTools.lpad(Std.string(date.getMinutes()),"0",2)
-		};
+		return Formatting.getDate(date);
 	}
 	
 	public function getProductImage(e):String {
 		return Std.string(e).substr(2).toLowerCase()+".png";
 	}
 
-	public function prepare(orders:Iterable<db.UserContract>){
+	public function prepare(orders:Iterable<db.UserOrder>){
 		return service.OrderService.prepare(orders);
 	}
 	
@@ -297,7 +275,7 @@ class View extends sugoi.BaseView {
 		
 	
 	public function isAmap(){
-		return App.current.user.amap.groupType == db.Amap.GroupType.Amap;
+		return App.current.user.getGroup().groupType == db.Group.GroupType.Amap;
 	}
 
 	
@@ -305,18 +283,19 @@ class View extends sugoi.BaseView {
 		return db.Basket.manager.get(id,false);
 	}
 
-	/**
-	@deprecated
-	**/
-	public function getBasket2(userId, placeId, date){
-		var user = getUser(userId);
-		var place = db.Place.manager.get(placeId, false);
-		var md = db.MultiDistrib.get(date,place);
-		return db.Basket.getOrCreate(user, md);
-	}
+
 	
 	public function getPlatform(){
 		return #if neko "Neko" #else "PHP" #end ;
+	}
+
+
+	public function getURI(){
+		return Web.getURI();
+	}
+
+	public function getParamsString(){
+		return Web.getParamsString();
 	}
 	
 	/** 

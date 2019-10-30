@@ -7,11 +7,11 @@
 </head>
 <body>		
 	<h2>
-		::contract._amap.name:: - 
+		::contract._group.name:: - 
 		::__("Distribution of the ::date::, from ::from:: to ::to::",{date:dDate(distrib.date),from:hHour(distrib.date),to:hHour(distrib.end)})::
 	</h2>
 	<h2>
-		::distrib._contract.name:: - ::distrib._contract._vendor.name::
+		::distrib._catalog.name:: - ::distrib._catalog._vendor.name::
 	</h2>	
 	
 	<p>
@@ -84,7 +84,7 @@
 		</tr>
 	</table>
 
-	<p>::raw nl2br(distrib._contract._amap.txtDistrib)::</p>
+	<p>::raw nl2br(distrib._catalog._group.txtDistrib)::</p>
 	<p class="hidden"><i>::_("Push on \"Control + P\" to print this page.")::</i></p>
 
 </body>

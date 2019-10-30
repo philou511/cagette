@@ -37,7 +37,7 @@ class VendorService{
 	/**
 		Send an email to the vendor
 	**/
-	public static function sendEmailOnAccountCreation(vendor:db.Vendor,source:db.User,group:db.Amap){
+	public static function sendEmailOnAccountCreation(vendor:db.Vendor,source:db.User,group:db.Group){
 
 		return;
 		

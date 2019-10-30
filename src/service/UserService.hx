@@ -52,7 +52,7 @@ class UserService
 		
 		//register the user to the current group if needed
 		var group = App.current.getCurrentGroup();	
-		if (group != null && group.regOption == db.Amap.RegOption.Open && db.UserAmap.get(user, group) == null){
+		if (group != null && group.regOption == db.Group.RegOption.Open && db.UserGroup.get(user, group) == null){
 			user.makeMemberOf(group);			
 		}
 		
@@ -85,7 +85,7 @@ class UserService
 		user.insert();				
 				
 		var group = App.current.getCurrentGroup();	
-		if (group != null && group.regOption == db.Amap.RegOption.Open){
+		if (group != null && group.regOption == db.Group.RegOption.Open){
 			user.makeMemberOf(group);	
 		}
 		if(group!=null){
@@ -157,7 +157,7 @@ class UserService
 	 *  @param group - 
 	 *  @return Array<db.User>
 	 */
-	public static function getFromGroup(group:db.Amap):Array<db.User>{
+	public static function getFromGroup(group:db.Group):Array<db.User>{
 		return Lambda.array( group.getMembers() );
 	}
 
@@ -186,7 +186,7 @@ class UserService
 	}
 
 
-	public static function prepareLoginBoxOptions(view:View,?group:db.Amap){
+	public static function prepareLoginBoxOptions(view:Dynamic,?group:db.Group){
 		if(group==null) group = App.current.getCurrentGroup();
 		var loginBoxOptions : Dynamic = {};
 		if(group==null || group.flags==null){

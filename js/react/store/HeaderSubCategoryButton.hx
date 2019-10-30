@@ -89,13 +89,12 @@ class HeaderSubCategoryButton extends ReactComponentOfProps<HeaderSubCategoryBut
             '${classes.icon}': true,
         });
 
+        //Rudy : descends les props de HeaderSubCategoryButton au <a href> sauf celles qu'il "consomme" lui-même
         var others = react.CustomReactUtil.getExtraProps(props);
         var icon = (props.icon != null) ? jsx('<Icon component="i" className=${iconClasses} /> '): null;
-        return jsx('
-            <a onClick=${props.onclick} className=${linkClasses} {...others}>
+        return <a onClick=${props.onclick} className=${linkClasses} {...others}>
                 ${icon}${props.label}
-            </a>
-        ');
+            </a>;
     }
 }
 

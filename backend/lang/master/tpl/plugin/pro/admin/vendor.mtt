@@ -1,0 +1,73 @@
+::use 'admin/design.mtt'::
+
+<h4>Producteur #::vendor.id::</h4>
+<h2>::vendor.name::</h2>
+
+<p>
+	<img ::cond(vendor._image!=null):: src="::file(vendor._image)::" style="float: right;max-width:200px"/>
+	::vendor.address1::<br/>
+	::vendor.address2::<br/>
+	::vendor.zipCode:: ::vendor.city::
+</p>
+<p>
+	Tel. : ::vendor.phone::<br/>
+	Email : ::vendor.email::
+</p>
+<p>
+	<a href="/p/pro?vendor=::vendor.id::" class="btn btn-default btn-sm">se connecter sur son compte producteur</a>
+	<a href="/db/Vendor/edit/::vendor.id::" class="btn btn-default btn-sm">Modifier</a>
+	<a href="/p/pro/admin/dedupInfo/::vendor.email::" class="btn btn-default btn-sm">Deduplication par email</a>
+	<a href="/p/pro/admin/findduplicatesbyname/::vendor.name::" class="btn btn-default btn-sm">Deduplication par nom</a>
+	<a ::cond(stats.type!=0):: href="/p/pro/admin/createCpro/::vendor.id::" class="btn btn-default btn-sm">passer en Cagette Pro</a>
+	
+</p>
+<p>
+	Type <b>
+		::switch(stats._type)::
+		::case:: 
+			Cagette Pro  (# ::cpro.id::)
+		::case:: Gratuit
+		::case:: Invité
+		::end::
+	</b>
+	
+	::if(cpro!=null)::
+		<br/>
+		::if(cpro.training==true)::<i class="icon icon-student" style="color:#336600"></i> Compte pédagogique<br/> ::end::
+		::if(cpro.freeCpro==false)::<i  class="icon icon-euro" style="color:#FF6600"></i> Compte payant<br/> ::end::
+	::end::
+	<br/>	
+	Actif $$bool(::stats.active::)<br/>
+
+</p>
+
+<p>
+	<b>Contrats actuels et passés :</b>
+	<ul>
+		::foreach c vendor.getContracts()::
+		::if(c.isActive())::
+		<li> 
+			::c.name:: chez <a href="/p/hosted/group/::c._group.id::">::c._group.name::</a>
+		</li>
+		::else::
+		<li style="opacity:0.5"> 
+			
+			::c.name:: chez <a href="/p/hosted/group/::c._group.id::">::c._group.name::</a>
+		</li>
+		::end::
+		::end::
+	</ul>
+</p>
+
+<p>
+	<b>Formations suivies :</b>
+	<ul>
+		::foreach c courses::		
+		<li> 
+			<a href="/p/hosted/course/view/::c._course.id::">::c._course.name::</a>
+		</li>
+		::end::
+	</ul>
+</p>
+
+::end::

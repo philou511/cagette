@@ -50,10 +50,10 @@ class TestReports extends haxe.unit.TestCase
 
 		//record orders on ANOTHER distrib
 		var d2 = service.DistributionService.create(
-			d.contract,
+			d.catalog,
 			new Date(2018,2,12,0,0,0),
 			new Date(2018,2,12,0,3,0),
-			d.contract.amap.getPlaces().first().id,
+			d.catalog.group.getPlaces().first().id,
 			new Date(2018,2,8,0,0,0),
 			new Date(2018,2,11,0,0,0)
 		);
@@ -108,9 +108,9 @@ class TestReports extends haxe.unit.TestCase
 		var julieOrderOperation = db.Operation.onOrderConfirm([julieOrder1, julieOrder2]);
 		
 		//They all pay by credit card
-		// var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,distrib1.contract.amap, payment.Transfer.TYPE, TestSuite.POTATOES.price + 2 * TestSuite.LAITUE.price, "Payment by transfer", francoisOrderOperation[0]);
-		// var sebPayment = db.Operation.makePaymentOperation(TestSuite.SEB,distrib1.contract.amap, payment.Transfer.TYPE, 3 * TestSuite.COURGETTES.price + 7 * TestSuite.CAROTTES.price, "Payment by transfer", sebOrderOperation[0]);
-		// var juliePayment = db.Operation.makePaymentOperation(TestSuite.JULIE,distrib1.contract.amap, payment.Transfer.TYPE, 3 * TestSuite.LAITUE.price + 5 * TestSuite.CAROTTES.price, "Payment by transfer", julieOrderOperation[0]);
+		// var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,distrib1.catalog.amap, payment.Transfer.TYPE, TestSuite.POTATOES.price + 2 * TestSuite.LAITUE.price, "Payment by transfer", francoisOrderOperation[0]);
+		// var sebPayment = db.Operation.makePaymentOperation(TestSuite.SEB,distrib1.catalog.amap, payment.Transfer.TYPE, 3 * TestSuite.COURGETTES.price + 7 * TestSuite.CAROTTES.price, "Payment by transfer", sebOrderOperation[0]);
+		// var juliePayment = db.Operation.makePaymentOperation(TestSuite.JULIE,distrib1.catalog.amap, payment.Transfer.TYPE, 3 * TestSuite.LAITUE.price + 5 * TestSuite.CAROTTES.price, "Payment by transfer", julieOrderOperation[0]);
 		
 		//Get all the repartition
 		var vendorDataByVendorId = service.ReportService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
@@ -129,7 +129,7 @@ class TestReports extends haxe.unit.TestCase
 	 */
 	/*override function setup(){
 		
-		sys.db.Manager.cnx.request("TRUNCATE TABLE UserContract;");
+		sys.db.Manager.cnx.request("TRUNCATE TABLE UserOrder;");
 		
 		var bubar = db.User.manager.get(1);
 		var seb = db.User.manager.get(2);
@@ -138,18 +138,18 @@ class TestReports extends haxe.unit.TestCase
 		var fraises = db.Product.manager.get(2);
 		fraises.stock = 30;
 		var pommes = db.Product.manager.get(3);
-		var distrib = fraises.contract.getDistribs().first();
+		var distrib = fraises.catalog.getDistribs().first();
 		
-		db.UserContract.make(bubar, 4, fraises, distrib.id);
-		db.UserContract.make(seb, 2, pommes, distrib.id);
+		db.UserOrder.make(bubar, 4, fraises, distrib.id);
+		db.UserOrder.make(seb, 2, pommes, distrib.id);
 		
 		//vegetables from group 2
 		var courgettes = db.Product.manager.get(4);
 		var carottes = db.Product.manager.get(5);
-		var distrib = courgettes.contract.getDistribs().first();
+		var distrib = courgettes.catalog.getDistribs().first();
 		
-		db.UserContract.make(bubar, 1, carottes ,distrib.id);
-		db.UserContract.make(seb, 5, courgettes ,distrib.id);
+		db.UserOrder.make(bubar, 1, carottes ,distrib.id);
+		db.UserOrder.make(seb, 5, courgettes ,distrib.id);
 	}*/
 	
 

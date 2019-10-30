@@ -3,7 +3,7 @@ import sugoi.form.elements.StringInput;
 import service.OrderService;
 import service.WaitingListService;
 import service.DistributionService;
-import db.Amap;
+import db.Group;
 import Common;
 
 /**
@@ -16,9 +16,9 @@ class Group extends controller.Controller
 	 * Public page of a group
 	 */
 	@tpl('group/view.mtt')
-	function doDefault(group:db.Amap){
+	function doDefault(group:db.Group){
 		
-		if (group.regOption == db.Amap.RegOption.Open) {
+		if (group.regOption == db.Group.RegOption.Open) {
 			if (app.session.data == null) app.session.data = {};
 			app.session.data.amapId = group.id;
 			throw Redirect("/");
@@ -40,10 +40,10 @@ class Group extends controller.Controller
 	 * the user can be logged or not !
 	 */
 	@tpl('form.mtt')
-	function doList(group:db.Amap){
+	function doList(group:db.Group){
 		
 		//checks
-		if (group.regOption != db.Amap.RegOption.WaitingList) throw Redirect("/group/" + group.id);
+		if (group.regOption != db.Group.RegOption.WaitingList) throw Redirect("/group/" + group.id);
 		if (app.user != null) {
 			try{
 				WaitingListService.canRegister(app.user,group);
@@ -84,7 +84,7 @@ class Group extends controller.Controller
 	/**
 		Cancel suscription request
 	**/
-	function doListCancel(group:db.Amap){
+	function doListCancel(group:db.Group){
 		try{
 			WaitingListService.removeFromWl(app.user,group);
 		}catch(e:tink.core.Error){				
@@ -100,11 +100,11 @@ class Group extends controller.Controller
 	 * 	the user can be logged or not !
 	
 	@tpl('form.mtt')
-	function doRegister(group:db.Amap){
+	function doRegister(group:db.Group){
 		
-		if (group.regOption != db.Amap.RegOption.Open) throw Redirect("/group/" + group.id);
+		if (group.regOption != db.Group.RegOption.Open) throw Redirect("/group/" + group.id);
 		if (app.user != null){			
-			if ( db.UserAmap.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));			
+			if ( db.UserGroup.manager.select($amapId == group.id && $user == app.user) != null) throw Error("/group/" + group.id, t._("You are already member of this group."));			
 		}
 		
 		var form = new sugoi.form.Form("reg");	
@@ -144,7 +144,7 @@ class Group extends controller.Controller
 				
 			}			
 			
-			var w = new db.UserAmap();
+			var w = new db.UserGroup();
 			w.user = app.user;
 			w.amap = group;
 			w.insert();
@@ -182,7 +182,7 @@ class Group extends controller.Controller
 			
 			var user = app.user;
 			
-			var g = new db.Amap();
+			var g = new db.Group();
 			g.name = f.getValueOf("name");
 			g.contact = user;
 			
@@ -215,9 +215,9 @@ class Group extends controller.Controller
 			g.groupType = type;
 			g.insert();
 			
-			var ua = new db.UserAmap();
+			var ua = new db.UserGroup();
 			ua.user = user;
-			ua.amap = g;
+			ua.group = g;
 			ua.rights = [Right.GroupAdmin,Right.Membership,Right.Messages,Right.ContractAdmin(null)];
 			ua.insert();
 			
@@ -226,7 +226,7 @@ class Group extends controller.Controller
 			place.name = t._("Market square");
 			place.zipCode  = "000";
 			place.city = "St Martin de la Cagette";
-			place.amap = g;
+			place.group = g;
 			place.insert();
 			
 			//contrat AMAP
@@ -241,10 +241,10 @@ class Group extends controller.Controller
 			}
 			
 			if (type == Amap){
-				var contract = new db.Contract();
+				var contract = new db.Catalog();
 				contract.name = t._("Vegetables CSA contract - Example");
 				contract.description = t._("CSA contract example");
-				contract.amap  = g;
+				contract.group  = g;
 				contract.type = 0;
 				contract.vendor = vendor;
 				contract.startDate = Date.now();
@@ -257,14 +257,14 @@ class Group extends controller.Controller
 				p.name = t._("Big basket of vegetables");
 				p.price = 15;
 				p.organic = true;
-				p.contract = contract;
+				p.catalog = contract;
 				p.insert();
 				
 				var p = new db.Product();
 				p.name = t._("Small basket of vegetables");
 				p.price = 10;
 				p.organic = true;
-				p.contract = contract;
+				p.catalog = contract;
 				p.insert();
 				
 				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
@@ -285,17 +285,17 @@ class Group extends controller.Controller
 				vendor.insert();			
 			}			
 			
-			var contract = new db.Contract();
+			var contract = new db.Catalog();
 			contract.name = t._("Chicken catalog - Example");
 			contract.description = t._("Chicken catalog example.");
-			contract.amap  = g;
+			contract.group  = g;
 			contract.type = 1;
 			contract.vendor = vendor;
 			contract.startDate = Date.now();
 			contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
 			contract.contact = user;
 			contract.distributorNum = 2;
-			contract.flags.set(db.Contract.ContractFlags.UsersCanOrder);
+			contract.flags.set(db.Catalog.CatalogFlags.UsersCanOrder);
 			contract.insert();
 			
 			var egg = new db.Product();
@@ -303,7 +303,7 @@ class Group extends controller.Controller
 			egg.price = 5;
 			//egg.type = 6;
 			egg.organic = true;
-			egg.contract = contract;
+			egg.catalog = contract;
 			egg.insert();
 			
 			var p = new db.Product();
@@ -311,7 +311,7 @@ class Group extends controller.Controller
 			//p.type = 2;
 			p.price = 9.50;
 			p.organic = true;
-			p.contract = contract;
+			p.catalog = contract;
 			p.insert();
 			
 			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);

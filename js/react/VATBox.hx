@@ -117,7 +117,7 @@ class VATBox extends react.ReactComponentOfPropsAndState<{ttc:Float,currency:Str
 		
 	}
 	
-	inline function round(f:Float):Float{
+	function round(f:Float):Float{
 		return Math.round(f * 100) / 100;
 	}
 

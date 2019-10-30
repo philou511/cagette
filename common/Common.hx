@@ -9,7 +9,7 @@
 	Messages;					//can send messages
 }*/
 #if sys
-typedef Right = db.UserAmap.Right;
+typedef Right = db.UserGroup.Right;
 #end
 
 //typedef Rights = Array<Right>;
@@ -110,9 +110,9 @@ typedef ProductInfo = {
 	active:Bool,
 	bulk:Bool,
 
-	contractId : Int,
-	contractTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
-	contractTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
+	catalogId : Int,
+	catalogTax : Null<Float>, 		//pourcentage de commission défini dans le contrat
+	catalogTaxName : Null<String>,	//label pour la commission : ex: "frais divers"
 	?vendorId : Int,
 	?distributionId:Null<Int>, //in the context of a distrib
 }
@@ -211,19 +211,19 @@ typedef UserOrder = {
 	smartQt:String,
 	subTotal:Float,
 	
-	fees:Null<Float>,
-	percentageName:Null<String>,
-	percentageValue:Null<Float>,
+	?fees:Null<Float>,
+	?percentageName:Null<String>,
+	?percentageValue:Null<Float>,
 	total:Float,
 	
 	//flags
 	paid:Bool,
 	invertSharedOrder:Bool,
-	canceled:Bool,	
-	canModify:Bool,
+	?canceled:Bool,	
+	?canModify:Bool,
 	
-	contractId:Int,
-	contractName:String,
+	catalogId:Int,
+	catalogName:String,
 }
 
 
@@ -295,11 +295,11 @@ enum Event {
 	
 	#if sys
 	SendEmail(message : sugoi.mail.Mail);		//an email is sent
-	NewMember(user:db.User,group:db.Amap);		//a new member is added to a group
-	NewGroup(group:db.Amap, author:db.User);	//a new group is created
+	NewMember(user:db.User,group:db.Group);		//a new member is added to a group
+	NewGroup(group:db.Group, author:db.User);	//a new group is created
 	
 	//Distributions
-	PreNewDistrib(contract:db.Contract);		//when displaying the insert distribution form
+	PreNewDistrib(contract:db.Catalog);		//when displaying the insert distribution form
 	NewDistrib(distrib:db.Distribution);		//when a new distrinbution is created
 	PreEditDistrib(distrib:db.Distribution);
 	EditDistrib(distrib:db.Distribution);
@@ -309,7 +309,7 @@ enum Event {
 	MultiDistribEvent(md:db.MultiDistrib);
 	
 	//Products
-	PreNewProduct(contract:db.Contract);	//when displaying the insert distribution form
+	PreNewProduct(contract:db.Catalog);	//when displaying the insert distribution form
 	NewProduct(product:db.Product);			//when a new product is created
 	PreEditProduct(product:db.Product);
 	EditProduct(product:db.Product);
@@ -318,9 +318,9 @@ enum Event {
 	ProductInfosEvent(p:ProductInfo,?d:db.Distribution);	//when infos about a product are displayed
 	
 	//Contracts
-	EditContract(contract:db.Contract,form:sugoi.form.Form);
-	DuplicateContract(contract:db.Contract);
-	DeleteContract(contract:db.Contract);
+	EditContract(contract:db.Catalog,form:sugoi.form.Form);
+	DuplicateContract(contract:db.Catalog);
+	DeleteContract(contract:db.Catalog);
 	
 	//crons
 	DailyCron(now:Date);
@@ -328,7 +328,7 @@ enum Event {
 	MinutelyCron(now:Date);
 	
 	//orders
-	MakeOrder(orders:Array<db.UserContract>); 
+	MakeOrder(orders:Array<db.UserOrder>); 
 	StockMove(order:{product:db.Product, move:Float}); //when a stock is modified
 	ValidateBasket(basket:db.Basket);
 	
@@ -370,9 +370,11 @@ enum TutoPlacement {
 	TPRight;
 }
 
+typedef TutoInfos = {name:String, steps:Array<{element:String,text:String,action:TutoAction,placement:TutoPlacement}>};
+
 class TutoDatas {
 
-	public static var TUTOS;
+	public static var TUTOS: Map<String,TutoInfos> = null;
 	
 	#if js
 	//async 
@@ -388,7 +390,7 @@ class TutoDatas {
 	}
 	#else
 	//sync 
-	public static function get(tuto:String):{name:String, steps:Array<{element:String,text:String,action:TutoAction,placement:TutoPlacement}>}
+	public static function get(tuto:String):TutoInfos
 	{
 		sugoi.i18n.Locale.init(App.current.getLang());
 		init(sugoi.i18n.Locale.texts);

@@ -1,0 +1,75 @@
+::use 'plugin/pro/company/design.mtt'::
+	
+	<div class=" article">
+		<h3>Ma page producteur</h3>		
+		
+        ::if(link!=null)::
+        <p>
+            Transmettez cette URL à vos clients, ou utilisez là sur votre site ou les réseaux sociaux.
+        </p>
+        <p class="linkToShare">
+            <i class="icon icon-link"></i>
+            <a href="https://::HOST::/::link.link::">
+                https://::HOST::/::link.link::				
+            </a>
+        </p>
+        ::else::
+        <p>
+            $$insert(Créer ma page producteur,/p/pro/company/createLink)
+        </p>
+        ::end::
+        
+        <hr/>
+
+        <p>::raw form::</p>
+        
+        <hr/>
+
+        <div class="row">
+			<div class="col-md-6">
+				<p>	
+					<h4>Bannière</h4>				
+					<a href="/p/pro/company/addImage/?type=banner" class="btn btn-default btn-sm">
+						<i class="icon icon-image"></i>&nbsp;Envoyer une image
+					</a>
+				</p>
+			</div>			
+			<div class="col-md-6">				
+				::if images.banner!=null::
+				<img src="::file(images.banner)::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
+				::end::
+			</div>
+        </div>
+        
+        ::foreach i farmImagesNum::
+        <div class="row">
+			<div class="col-md-6">
+				<p>	
+					<h4>Photo de votre ferme (::i+1::)</h4>				
+					<a href="/p/pro/company/addImage/?type=farm" class="btn btn-default btn-sm">
+						<i class="icon icon-image"></i>&nbsp;Envoyer une image
+					</a>
+				</p>
+			</div>			
+			<div class="col-md-6">				
+				::if images.farm[i]!=null::
+				<img src="::file(images.farm[i])::" style="max-width: 256px;max-height: 128px;" class="thumbnail" />
+				::end::
+			</div>
+        </div>
+        ::end::
+		
+	</div>
+
+	<script src="/js/tinymce/tinymce.min.js"></script>
+	<script>
+		tinymce.init({ 
+			selector:'textarea',
+			plugins: "autolink textcolor emoticons image ",
+			toolbar: "styleselect bold italic alignleft aligncenter emoticons bullist outdent indent forecolor",
+			language: '::session.lang::',
+			menubar: false,
+			height:300
+		});	
+	</script>
+::end::

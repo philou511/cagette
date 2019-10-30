@@ -20,7 +20,7 @@
 				 <b>::formatNum(amount):: ::currency()::</b>
 				
 				::_("to the following bank account:")::<br/>
-				::_("IBAN:")::  <b>::user._amap.IBAN::</b>
+				::_("IBAN:")::  <b>::user.getGroup().IBAN::</b>
 			</p>
 			<p>
 				::_("Mention this reference in the label of the transfer in order to facilitate its process:")::<br/>

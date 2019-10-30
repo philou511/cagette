@@ -1,4 +1,7 @@
 package controller;
+import neko.Utf8;
+import haxe.io.Encoding;
+import haxe.io.Bytes;
 import sugoi.form.Form;
 import Common;
 import sugoi.form.ListData.FormData;
@@ -18,25 +21,25 @@ class Product extends Controller
 	@tpl('form.mtt')
 	function doEdit(product:db.Product) {
 		
-		if (!app.user.canManageContract(product.contract)) throw t._("Forbidden access");
+		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
 		
 		var f = sugoi.form.Form.fromSpod(product);
 		
 		//stock mgmt ?
-		if (!product.contract.hasStockManagement()) f.removeElementByName('stock');	
+		if (!product.catalog.hasStockManagement()) f.removeElementByName('stock');	
 		
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
 		var data :FormData<Float> = [];
-		for (k in app.user.amap.vatRates.keys()) {
-			data.push( { label:k, value:app.user.amap.vatRates[k] } );
+		for (k in app.user.getGroup().vatRates.keys()) {
+			data.push( { label:k, value:app.user.getGroup().vatRates[k] } );
 		}
 		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
 
 		f.removeElementByName("contractId");
 		
 		//Product Taxonomy:
-		if(!product.contract.amap.flags.has(CustomizedCategories)){
+		if(!product.catalog.group.flags.has(CustomizedCategories)){
 			var txId = product.txpProduct == null ? null : product.txpProduct.id;
 			var html = service.ProductService.getCategorizerHtml(product.name,txId,f.name);
 			f.addElement(new sugoi.form.elements.Html("html",html, 'Nom'),1);
@@ -48,7 +51,7 @@ class Product extends Controller
 			f.toSpod(product);
 			app.event(EditProduct(product));
 			product.update();
-			throw Ok('/contractAdmin/products/'+product.contract.id, t._("The product has been updated"));
+			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));
 		}else{
 			app.event(PreEditProduct(product));
 		}
@@ -58,7 +61,7 @@ class Product extends Controller
 	}
 	
 	@tpl("form.mtt")
-	public function doInsert(contract:db.Contract ) {
+	public function doInsert(contract:db.Catalog ) {
 		
 		if (!app.user.isContractManager(contract)) throw Error("/", t._("Forbidden action")); 
 		
@@ -73,8 +76,8 @@ class Product extends Controller
 		//vat selector
 		f.removeElement( f.getElement('vat') );
 		var data = [];
-		for (k in app.user.amap.vatRates.keys()) {
-			data.push( { value:app.user.amap.vatRates[k], label:k } );
+		for (k in app.user.getGroup().vatRates.keys()) {
+			data.push( { value:app.user.getGroup().vatRates[k], label:k } );
 		}
 		f.addElement( new FloatSelect("vat", "TVA", data, d.vat ) );
 		
@@ -84,10 +87,10 @@ class Product extends Controller
 		
 		if (f.isValid()) {
 			f.toSpod(d);
-			d.contract = contract;
+			d.catalog = contract;
 			app.event(NewProduct(d));
 			d.insert();
-			throw Ok('/contractAdmin/products/'+d.contract.id, t._("The product has been saved"));
+			throw Ok('/contractAdmin/products/'+d.catalog.id, t._("The product has been saved"));
 		}else{
 			app.event(PreNewProduct(contract));
 		}
@@ -98,17 +101,17 @@ class Product extends Controller
 	
 	public function doDelete(p:db.Product) {
 		
-		if (!app.user.canManageContract(p.contract)) throw t._("Forbidden access");
+		if (!app.user.canManageContract(p.catalog)) throw t._("Forbidden access");
 		
 		if (checkToken()) {
 			
 			app.event(DeleteProduct(p));
 			
-			var orders = db.UserContract.manager.search($productId == p.id, false);
+			var orders = db.UserOrder.manager.search($productId == p.id, false);
 			if (orders.length > 0) {
 				throw Error("/contractAdmin", t._("Not possible to delete this product because some orders are referencing it"));
 			}
-			var cid = p.contract.id;
+			var cid = p.catalog.id;
 			p.lock();
 			p.delete();
 			
@@ -119,7 +122,7 @@ class Product extends Controller
 	
 	
 	@tpl('product/import.mtt')
-	function doImport(c:db.Contract, ?args: { confirm:Bool } ) {
+	function doImport(c:db.Catalog, ?args: { confirm:Bool } ) {
 		
 		if (!app.user.canManageContract(c)) throw t._("Forbidden access");
 			
@@ -131,13 +134,8 @@ class Product extends Controller
 		
 		// get the uploaded file content
 		if (request.get("file") != null) {
-			//convert to utf-8 if needed
 			var csvData = request.get("file");
-			try{
-				if (!haxe.Utf8.validate(csvData)){
-					csvData = haxe.Utf8.encode(csvData);
-				}
-			}catch (e:Dynamic){ }
+			csvData = Formatting.utf8(csvData);
 			var datas = csv.importDatasAsMap(csvData);
 			
 			app.session.data.csvImportedData = datas;
@@ -175,7 +173,7 @@ class Product extends Controller
 					product.organic = p["organic"] != null;
 					product.hasFloatQt = p["floatQt"] != null;
 					
-					product.contract = c;
+					product.catalog = c;
 					product.insert();
 				}
 				
@@ -196,16 +194,16 @@ class Product extends Controller
 	}
 	
 	@tpl("product/categorize.mtt")
-	public function doCategorize(contract:db.Contract) {
+	public function doCategorize(contract:db.Catalog) {
 		
 		
 		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
-		if (db.CategoryGroup.get(app.user.amap).length == 0) throw Error("/contractAdmin", t._("You must first define categories before you can assign a category to a product"));
+		if (db.CategoryGroup.get(app.user.getGroup()).length == 0) throw Error("/contractAdmin", t._("You must first define categories before you can assign a category to a product"));
 		
 		//var form = new sugoi.form.Form("cat");
 		//
-		//for ( g in db.CategoryGroup.get(app.user.amap)) {
+		//for ( g in db.CategoryGroup.get(app.user.getGroup())) {
 			//var data = [];
 			//for ( c in g.getCategories()) {
 				//data.push({key:Std.string(c.id),value:c.name});
@@ -222,7 +220,7 @@ class Product extends Controller
 	 * init du Tagger
 	 * @param	contract
 	 */	
-	public function doCategorizeInit(contract:db.Contract) {
+	public function doCategorizeInit(contract:db.Catalog) {
 		
 		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
@@ -236,7 +234,7 @@ class Product extends Controller
 			data.products.push({product:p.infos(),categories:Lambda.array(Lambda.map(p.getCategories(),function(x) return x.id))});
 		}
 		
-		for (cg in db.CategoryGroup.get(app.user.amap)) {
+		for (cg in db.CategoryGroup.get(app.user.getGroup())) {
 			
 			var x = { id:cg.id, categoryGroupName:cg.name, color:App.current.view.intToHex(db.CategoryGroup.COLORS[cg.color]),tags:[] };
 			
@@ -250,7 +248,7 @@ class Product extends Controller
 		Sys.print(haxe.Json.stringify(data));
 	}
 	
-	public function doCategorizeSubmit(contract:db.Contract) {
+	public function doCategorizeSubmit(contract:db.Catalog) {
 		
 		if (!app.user.canManageContract(contract)) throw t._("Forbidden access");
 		
@@ -271,43 +269,7 @@ class Product extends Controller
 	}
 	
 	
-	@tpl('product/addimage.mtt')
-	function doAddImage(product:db.Product) {
-		
-		if (!app.user.canManageContract(product.contract)) throw t._("Forbidden access");
-		
-		view.c = product.contract;
-		view.image = product.image;
-		view.productId = product.id;
-		
-		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
-		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-			if (image != null && image.length > 0) {
-				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);	
-				}
-				
-				product.lock();
-				
-				if (product.image != null) {
-					//efface ancienne
-					product.image.lock();
-					product.image.delete();
-				}
-				
-				product.image = img;
-				product.update();
-				throw Ok('/product/addImage/'+product.id,'Image mise à jour');
-			}
-		}
-	}	
+
 
 	
 	/*@tpl('product/compose.mtt')

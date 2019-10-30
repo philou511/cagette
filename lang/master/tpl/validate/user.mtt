@@ -19,7 +19,7 @@
 					<th colspan="6" class="text-center">Commande</th>
 					<th colspan="3" class="text-center">
 						<a class="btn btn-default btn-xs"
-						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getAmap().hasPayments()::, '/validate/::md.id::/::member.id::')">
+						onclick="_.initOrderBox( ::member.id::, ::md.id::, null, 1, '::escapeJS(hDate(date))::', '::escapeJS(place.toString())::', '::escapeJS(member.getName())::','::currency()::', ::user.getGroup().hasPayments()::, '/validate/::md.id::/::member.id::')">
 							<i class="icon icon-edit"></i>
 								::_("Edit")::
 						</a>			
@@ -233,13 +233,13 @@
 				</tr>
 				<tr>
 					<td class="text-center">
-						::if user._amap.hasMembership()::
+						::if user.getGroup().hasMembership()::
 							::if userGroup.hasValidMembership()::
 								$$check(true) ::_("Membership up to date")::
 							::else::
 								$$check(false) ::_("Membership to renew")::
 							::end::
-							::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user._amap.getPeriodName(null)::</b>
+							::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
 							<br/>
 							<a href="/membership/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 						::else::
@@ -253,7 +253,7 @@
 		
 
 		<!-- BALANCE -->
-		::if (user._amap.hasShopMode())::
+		::if (user.getGroup().hasShopMode())::
 		<div class="col-md-6">
 			<table class="table table-condensed table-bordered">
 				<tr style="background-color:#DDD;">

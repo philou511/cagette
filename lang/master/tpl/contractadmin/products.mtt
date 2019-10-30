@@ -7,7 +7,7 @@
 		$$insert(::_("New product")::,/product/insert/::c.id::)
 		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
 			
-		::if !c._amap.hasTaxonomy()::	
+		::if !c._group.hasTaxonomy()::	
 		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-tag"></i> ::_("Categories")::</a>	
 		::end::
 		
@@ -90,7 +90,7 @@
 				::p.qt::&nbsp;::unit(p._unitType,false)::
 				::end::
 				
-				::if !c._amap.hasTaxonomy()::	
+				::if !c._group.hasTaxonomy()::	
 				<div>
 					::foreach c p.getCategories()::
 					<span class='tag' style='background-color: ::c.getColor()::;'>::c.name::</span>
@@ -124,8 +124,22 @@
 			</td>
 			<td>
 				<div class="btn-group" role="group">
-					$$edit(::_("Edit")::,/product/edit/::p.id::)				
-					<a href="/product/addImage/::p.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> ::_("Picture")::</a>				
+					$$edit(::_("Edit")::,/product/edit/::p.id::)
+
+					
+					
+					::if(p._image!=null)::
+						::set img = "\""+file(p._image)+"\""::
+					::else::
+						::set img = null::
+					::end::
+					
+					
+					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/product/image/::p.id::', ::img::, 300, 300)">
+						<i class="icon icon-image"></i> ::_("Picture")::
+					</a>
+					
+					
 					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
 			</td>
@@ -136,6 +150,8 @@
 
 	</form>
 	
+
+	<div id="imageUploader"></div>
 	
 	<p>
 		<div class="btn-group" role="group">

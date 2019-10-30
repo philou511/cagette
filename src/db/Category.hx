@@ -13,7 +13,7 @@ class Category extends sys.db.Object
 	 * get category color in hexa
 	 */
 	public function getColor():String {
-		return App.current.view.intToHex(db.CategoryGroup.COLORS[categoryGroup.color]);
+		return Formatting.intToHex(db.CategoryGroup.COLORS[categoryGroup.color]);
 	}
 	
 	public function infos():CategoryInfo{

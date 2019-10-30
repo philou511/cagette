@@ -12,7 +12,7 @@
 				</tr>
 			::foreach d distributions::
 			
-				::if d.date!=null && d.date.getTime() < Date.now().getTime()::
+				::if d.date!=null && d.date.getTime() < now().getTime()::
 					::set style = "opacity:0.5;"::
 				::else::
 					::set style = ""::

@@ -2,7 +2,7 @@
 <div class="col-md-8">
 	<h2>::_("Last orders")::</h2>
 
-	::set payments = user._amap.hasPayments()::
+	::set payments = user.getGroup().hasPayments()::
 	
 	::if constOrders.length>0::
 	<div class="article">
@@ -143,7 +143,7 @@
 				::end::	
 				<tr>
 					<td colspan="4">
-						::if !user._amap.hasPayments():: 
+						::if !user.getGroup().hasPayments():: 
 							$$edit(Modifier cette commande,/contract/editOrderByDate/::d.date::)
 						::end::
 						
@@ -168,7 +168,7 @@
 		
 		
 		<div class="pull-right">
-			<a href="::user.getQuitGroupLink(user.getAmap())::" class="btn btn-default btn-sm">
+			<a href="::user.getQuitGroupLink(user.getGroup())::" class="btn btn-default btn-sm">
 				<i class="icon icon-delete"></i>
 				::_("Leave this group")::
 			</a>
@@ -178,7 +178,7 @@
 		
 	</div>
 	
-	::if user.getAmap().hasPayments()::
+	::if user.getGroup().hasPayments()::
 	<h3>::_("Payments")::</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">

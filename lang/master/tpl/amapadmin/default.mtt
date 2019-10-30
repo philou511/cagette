@@ -1,6 +1,6 @@
 ::use 'amapadmin/design.mtt'::
 
-	<h3>::user._amap.name::</h3>		
+	<h3>::user.getGroup().name::</h3>		
 	
 	<div class="row">
 		
@@ -26,13 +26,13 @@
 			
 			<p class="linkToShare">
 				<i class="icon icon-link"></i>
-				<a href="http://::HOST::/group/::user._amap.id::">
-					http://::HOST::/group/::user._amap.id::				
+				<a href="http://::HOST::/group/::user.getGroup().id::">
+					http://::HOST::/group/::user.getGroup().id::				
 				</a>
 			</p>
 			
 			<p>
-				<a href="/group/::user._amap.id::" class="btn btn-default"><i class="icon icon-chevron-right"></i>&nbsp; ::_("Display")::</a>
+				<a href="/group/::user.getGroup().id::" class="btn btn-default"><i class="icon icon-chevron-right"></i>&nbsp; ::_("Display")::</a>
 			</p>
 
 			::if isAdmin::
@@ -40,7 +40,7 @@
 				<br/>
 				<br/>
 				<br/>
-				<a class="btn btn-danger btn-sm" href="/p/hosted/group/::user._amap.id::">Fiche sur le backoffice</a>
+				<a class="btn btn-danger btn-sm" href="/p/hosted/group/::user.getGroup().id::">Fiche sur le backoffice</a>
 			</p>
 			::end::
 			
@@ -48,8 +48,8 @@
 		</div>
 		
 		<div class="col-md-6">			
-			::if user._amap._image!=null::
-			<img src="::file(user._amap._image)::" style="width: 100%;" class="thumbnail" />
+			::if user.getGroup()._image!=null::
+			<img src="::file(user.getGroup()._image)::" style="width: 100%;" class="thumbnail" />
 			::end::
 		</div>
 

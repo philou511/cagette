@@ -11,7 +11,7 @@ class Membership extends controller.Controller
 
 	@tpl("membership/default.mtt")
 	function doDefault(member:db.User) {
-		var userAmap = db.UserAmap.get(member, app.user.amap,true);
+		var userAmap = db.UserGroup.get(member, app.user.getGroup(),true);
 		if (userAmap == null) throw Error("/member", t._("This person is not a member of your group"));
 		
 		//formulaire
@@ -23,17 +23,17 @@ class Membership extends controller.Controller
 			
 			var y = now.getFullYear() - x;
 			var yy = DateTools.delta(now, DateTools.days(365) * -x);
-			data.push({label:app.user.amap.getPeriodName(yy),value:app.user.amap.getMembershipYear(yy)});
+			data.push({label:app.user.getGroup().getPeriodName(yy),value:app.user.getGroup().getMembershipYear(yy)});
 		}
-		f.addElement(new IntSelect("year", t._("Period"), data,app.user.amap.getMembershipYear(),true));
+		f.addElement(new IntSelect("year", t._("Period"), data,app.user.getGroup().getMembershipYear(),true));
 		f.addElement(new sugoi.form.elements.DateDropdowns("date", t._("Date of payment of subscription"), null, true));
 		if (f.isValid()) {
 			var y : Int = f.getValueOf("year");
 			
-			if (db.Membership.get(member, app.user.amap, y) != null) throw Error("/membership/"+member.id, t._("This subscription has been already keyed-in"));
+			if (db.Membership.get(member, app.user.getGroup(), y) != null) throw Error("/membership/"+member.id, t._("This subscription has been already keyed-in"));
 			
 			var cotis = new db.Membership();
-			cotis.amap = app.user.amap;
+			cotis.amap = app.user.getGroup();
 			cotis.user = member;
 			cotis.year = y;
 			cotis.date = f.getElement("date").value;
@@ -42,7 +42,7 @@ class Membership extends controller.Controller
 		}
 		
 		//années de cotisation
-		var memberships = db.Membership.manager.search($user == member && $amap == app.user.amap,{orderBy:-year}, false);
+		var memberships = db.Membership.manager.search($user == member && $amap == app.user.getGroup(),{orderBy:-year}, false);
 		//for ( m in memberships) {
 			//Reflect.setField(m, 'yearDate', new Date(m.year, 1, 1, 1, 1, 1));
 		//}
@@ -58,7 +58,7 @@ class Membership extends controller.Controller
 	public function doDelete(member:db.User, year:Int,?args:{token:String}) {
 		
 		if (checkToken()) {
-			var cotis = db.Membership.get(member, app.user.amap, year, true);
+			var cotis = db.Membership.get(member, app.user.getGroup(), year, true);
 			if (cotis == null) throw Error("/", t._("This subscription does not exist"));
 			
 			cotis.delete();

@@ -1,0 +1,8 @@
+-D material-ui=0.14.7
+# @install: lix --silent download "haxelib:/material-ui#0.14.7" into material-ui/0.14.7/haxelib
+-lib css-types
+-lib js-object
+-lib react-types
+-lib react-event-listener
+-lib react-transition-group
+-cp ${HAXE_LIBCACHE}/material-ui/0.14.7/haxelib/src

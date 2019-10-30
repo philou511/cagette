@@ -1,0 +1,39 @@
+::use 'design.mtt'::
+
+<div class="col-md-12">
+	<div class="article">
+		<h3 ::cond title!=null::>::title::</h3>
+		
+		::if user.getGroup()==null:: 
+		
+		<div class="alert alert-danger" role="alert">
+		  
+			<p>
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
+				Vous devez être connecté à votre groupe pour pouvoir importer ce catalogue.
+			</p>
+			<p>
+				Merci de bien vouloir vous connecter et revenir sur cette page pour faire l'import de catalogue.
+			</p>
+			
+			<a href="/user/login" class="btn btn-default">Cliquez ici pour vous connecter</a>
+		</div>
+		
+		::else::
+		
+			::raw form::
+			
+		::end::
+
+		<hr/>
+
+		<div class="alert alert-warning">
+			<i class="icon icon-info"></i>
+			<b>Option "Ce catalogue sera un contrat AMAP"</b><br/>
+			Si vous cochez cette option, les commandes seront identiques pour chaque distribution, sans possibilité de variation.<br/>
+			Si vous décochez cette option, vous créérez un catalogue standard qui permet de faire une commande différente à chaque distribution.			
+		</div>
+	</div>
+</div>
+
+::end::

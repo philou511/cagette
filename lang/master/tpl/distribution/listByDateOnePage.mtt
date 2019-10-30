@@ -9,7 +9,7 @@
 	<!-- page head-->
 	::fill head::
 	<td >
-		<h1 style='text-align:right;'>::user._amap.name::</h1>
+		<h1 style='text-align:right;'>::user.getGroup().name::</h1>
 		<h2 style='text-align:right;'>::_("Delivery of the"):: ::hDate(date)::</h2>
 	</td>
 	::end::
@@ -59,7 +59,7 @@
 						::end::
 					</td>
 					<td style='text-align:right;'>
-						<b>::user._amap.name::</b>
+						<b>::user.getGroup().name::</b>
 					</td>
 				</tr>
 				<tr>
@@ -140,7 +140,7 @@
 				::end::
 	::end::
 	
-	<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
+	<p>::raw nl2br(user.getGroup().txtDistrib)::</p>
 
 	<p class="hidden"><i>::_("Push on \"Control + P\" to print this page.")::</i></p>
 	

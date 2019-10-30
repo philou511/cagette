@@ -18,7 +18,7 @@ class Place extends Object
 	public var lat:SNull<SFloat>;
 	public var lng:SNull<SFloat>;
 	
-	@hideInForms @:relation(amapId) public var amap : Amap;
+	@hideInForms @:relation(groupId) public var group : db.Group;
 	
 	public function new() 
 	{

@@ -87,7 +87,7 @@ class Basket extends Object
 	 *  Get basket's orders
 	 */
 	public function getOrders() {
-		return db.UserContract.manager.search($basket == this, false);
+		return db.UserOrder.manager.search($basket == this, false);
 	}
 	
 	/**
@@ -161,8 +161,9 @@ class Basket extends Object
 		return ordersPaid && orderOperationNotPending && paymentOperationsNotPending;			
 	}
 
-	public function getGroup() : db.Amap {
-		return getOrders().first().distribution.contract.amap;
+	public function getGroup() : db.Group {
+		//return getOrders().first().distribution.catalog.group;
+		return multiDistrib.group;
 	}
 
 

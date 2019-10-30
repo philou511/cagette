@@ -1,6 +1,6 @@
 package controller;
-import db.Contract;
-import db.UserContract;
+import db.Catalog;
+import db.UserOrder;
 import db.VolunteerRole;
 import sugoi.form.elements.DateDropdowns;
 import sugoi.form.elements.Input;
@@ -29,7 +29,7 @@ class Contract extends Controller
 
 	
 	@tpl("contract/view.mtt")
-	public function doView(c:db.Contract) {
+	public function doView(c:db.Catalog) {
 		view.category = 'amap';
 		view.c = c;
 	}
@@ -40,14 +40,14 @@ class Contract extends Controller
 	 * Edit a contract 
 	 */
 	@tpl("form.mtt")
-	function doEdit(c:db.Contract) {
+	function doEdit(c:db.Catalog) {
 		
 		view.category = 'contractadmin';
 		if (!app.user.isContractManager(c)) throw Error('/', t._("Forbidden action"));
 
 		view.title = t._("Edit catalog \"::contractName::\"",{contractName:c.name});
 
-		var group = c.amap;
+		var group = c.group;
 		var currentContact = c.contact;
 		
 		var form = Form.fromSpod(c);
@@ -60,7 +60,7 @@ class Contract extends Controller
 		
 		if (form.checkToken()) {
 			form.toSpod(c);
-			c.amap = group;
+			c.group = group;
 			
 			//checks & warnings
 			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and a label."));
@@ -75,8 +75,8 @@ class Contract extends Controller
 			}
 			
 			//no stock mgmt for constant orders
-			if (c.hasStockManagement() && c.type==db.Contract.TYPE_CONSTORDERS) {
-				c.flags.unset(ContractFlags.StockManagement);
+			if (c.hasStockManagement() && c.type==db.Catalog.TYPE_CONSTORDERS) {
+				c.flags.unset(CatalogFlags.StockManagement);
 				app.session.addMessage(t._("Managing stock is not available for CSA contracts"), true);
 			}
 			
@@ -85,7 +85,7 @@ class Contract extends Controller
 			
 			//update rights
 			if ( c.contact != null && (currentContact==null || c.contact.id!=currentContact.id) ) {
-				var ua = db.UserAmap.get(c.contact, c.amap, true);
+				var ua = db.UserGroup.get(c.contact, c.group, true);
 				ua.giveRight(ContractAdmin(c.id));
 				ua.giveRight(Messages);
 				ua.giveRight(Membership);
@@ -93,7 +93,7 @@ class Contract extends Controller
 				
 				//remove rights to old contact
 				if (currentContact != null) {
-					var x = db.UserAmap.get(currentContact, c.amap, true);
+					var x = db.UserGroup.get(currentContact, c.group, true);
 					if (x != null) {
 						x.removeRight(ContractAdmin(c.id));
 						x.update();						
@@ -152,7 +152,7 @@ class Contract extends Controller
 			vendor.insert();
 
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
-			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getAmap());*/
+			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getGroup());*/
 			
 			throw Ok('/contract/insert/'+vendor.id, t._("This supplier has been saved"));
 		}else{
@@ -182,7 +182,7 @@ class Contract extends Controller
 		
 		view.title = t._("Create a catalog");
 		
-		var c = new db.Contract();
+		var c = new db.Catalog();
 
 		var form = Form.fromSpod(c);
 		form.removeElement(form.getElement("amapId") );
@@ -196,8 +196,8 @@ class Contract extends Controller
 			
 		if (form.checkToken()) {
 			form.toSpod(c);
-			c.amap = app.user.amap;
-			c.type = form.getValueOf("csa")==true ? db.Contract.TYPE_CONSTORDERS : db.Contract.TYPE_VARORDER;
+			c.group = app.user.getGroup();
+			c.type = form.getValueOf("csa")==true ? db.Catalog.TYPE_CONSTORDERS : db.Catalog.TYPE_VARORDER;
 			c.vendor = vendor;
 			c.insert();
 
@@ -206,7 +206,7 @@ class Contract extends Controller
 			
 			//right
 			if (c.contact != null) {
-				var ua = db.UserAmap.get(c.contact, app.user.amap, true);
+				var ua = db.UserGroup.get(c.contact, app.user.getGroup(), true);
 				ua.giveRight(ContractAdmin(c.id));
 				ua.giveRight(Messages);
 				ua.giveRight(Membership);
@@ -222,7 +222,7 @@ class Contract extends Controller
 	/**
 	 * Delete a contract (... and its products, orders & distributions)
 	 */
-	function doDelete(c:db.Contract) {
+	function doDelete(c:db.Catalog) {
 		
 		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("Forbidden access"));
 		
@@ -235,7 +235,7 @@ class Contract extends Controller
 			//check if there is orders in this contract
 			var products = c.getProducts();
 
-			var orders = db.UserContract.manager.search($productId in Lambda.map(products, function(p) return p.id));
+			var orders = db.UserOrder.manager.search($productId in Lambda.map(products, function(p) return p.id));
 			var qt = 0.0;
 			for ( o in orders) qt += o.quantity; //there could be "zero c qt" orders
 			if (qt > 0 && !isDemoContract) {
@@ -244,7 +244,7 @@ class Contract extends Controller
 			
 			//remove admin rights and delete contract	
 			if(c.contact!=null){
-				var ua = db.UserAmap.get(c.contact, c.amap, true);
+				var ua = db.UserGroup.get(c.contact, c.group, true);
 				if (ua != null) {
 					ua.removeRight(ContractAdmin(c.id));
 					ua.update();	
@@ -269,33 +269,33 @@ class Contract extends Controller
 	 * 
 	 */
 	@tpl("contract/order.mtt")
-	function doOrder( c:db.Contract ) {
+	function doOrder( c:db.Catalog ) {
 		
 		//checks
-		//if (app.user.amap.hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
-		if (app.user.amap.hasShopMode()) throw Redirect("/shop");
+		//if (app.user.getGroup().hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
+		if (app.user.getGroup().hasShopMode()) throw Redirect("/shop");
 		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 
 		
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
-		if (c.type == db.Contract.TYPE_VARORDER) {
+		if (c.type == db.Catalog.TYPE_VARORDER) {
 			distributions = db.Distribution.getOpenToOrdersDeliveries(c);
 		}else{
 			distributions = [null];
 		}
 		
 		//list of distribs with a list of product and optionnaly an order
-		var userOrders = new Array< {distrib:db.Distribution,datas:Array<{order:db.UserContract,product:db.Product}>} >();
+		var userOrders = new Array< {distrib:db.Distribution,datas:Array<{order:db.UserOrder,product:db.Product}>} >();
 		var products = c.getProducts();
 		
-		if ( c.type == db.Contract.TYPE_VARORDER ){
+		if ( c.type == db.Catalog.TYPE_VARORDER ){
 			
 			for ( d in distributions){
 				var datas = [];
 				for ( p in products) {
 					var ua = { order:null, product:p };					
-					var order = db.UserContract.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);						
+					var order = db.UserOrder.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);						
 					if (order != null) ua.order = order;
 					datas.push(ua);
 				}				
@@ -307,7 +307,7 @@ class Contract extends Controller
 			var datas = [];
 			for ( p in products) {
 				var ua = { order:null, product:p };				
-				var order = db.UserContract.manager.select($user == app.user && $productId == p.id, true);				
+				var order = db.UserOrder.manager.select($user == app.user && $productId == p.id, true);				
 				if (order != null) ua.order = order;
 				datas.push(ua);
 			}
@@ -370,7 +370,7 @@ class Contract extends Controller
 			}
 
 			//create order operation only
-			if (app.user.amap.hasPayments()){		
+			if (app.user.getGroup().hasPayments()){		
 				var orderOps = db.Operation.onOrderConfirm(orders);
 			}
 
@@ -386,21 +386,21 @@ class Contract extends Controller
 	 * Make an order by contract ( standard mode ) + payment process
 	 */
 	/*@tpl("contract/orderAndPay.mtt")
-	function doOrderAndPay(c:db.Contract ) {
+	function doOrderAndPay(c:db.Catalog ) {
 		
 		//checks
-		if (!app.user.amap.hasPayments()) throw Redirect("/contract/order/" + c.id);
-		if (app.user.amap.hasShopMode()) throw Redirect("/");
+		if (!app.user.getGroup().hasPayments()) throw Redirect("/contract/order/" + c.id);
+		if (app.user.getGroup().hasShopMode()) throw Redirect("/");
 		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
 		
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
-		if (c.type == db.Contract.TYPE_VARORDER) {
+		if (c.type == db.Catalog.TYPE_VARORDER) {
 			distributions = db.Distribution.getOpenToOrdersDeliveries(c);
 		}
 		
 		//list of distribs with a list of product and optionnaly an order
-		var userOrders = new Array< {distrib:db.Distribution,datas:Array<{order:db.UserContract,product:db.Product}>} >();
+		var userOrders = new Array< {distrib:db.Distribution,datas:Array<{order:db.UserOrder,product:db.Product}>} >();
 		var products = c.getProducts();
 		
 		for ( d in distributions){
@@ -408,11 +408,11 @@ class Contract extends Controller
 			for ( p in products) {
 				var ua = { order:null, product:p };
 				
-				var order : db.UserContract = null;
-				if (c.type == db.Contract.TYPE_VARORDER) {
-					order = db.UserContract.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);	
+				var order : db.UserOrder = null;
+				if (c.type == db.Catalog.TYPE_VARORDER) {
+					order = db.UserOrder.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);	
 				}else {
-					order = db.UserContract.manager.select($user == app.user && $productId == p.id, true);
+					order = db.UserOrder.manager.select($user == app.user && $productId == p.id, true);
 				}
 				
 				if (order != null) ua.order = order;
@@ -428,7 +428,7 @@ class Contract extends Controller
 			
 			//get distrib if needed
 			var distrib = null;
-			if (c.type == db.Contract.TYPE_VARORDER) {
+			if (c.type == db.Catalog.TYPE_VARORDER) {
 				distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
 			}
 			
@@ -485,7 +485,7 @@ class Contract extends Controller
 			App.current.session.data.order = orders;
 			
 			//Go to payments page			
-			if (c.type == db.Contract.TYPE_CONSTORDERS) {
+			if (c.type == db.Catalog.TYPE_CONSTORDERS) {
 				throw Ok("/contract/order/"+c.id, t._("Your CSA order has been saved"));
 			}else{
 				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a means of payment."));
@@ -506,7 +506,7 @@ class Contract extends Controller
 	@tpl("contract/orderByDate.mtt")
 	function doEditOrderByDate(date:Date) {
 		
-		if (app.user.amap.hasPayments()) {
+		if (app.user.getGroup().hasPayments()) {
 			//when payments are active, the user cannot modify his order
 			throw Redirect("/");
 		}
@@ -524,9 +524,9 @@ class Contract extends Controller
 		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
-		var cids = Lambda.map(app.user.amap.getActiveContracts(true), function(c) return c.id);
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= d1 && $date <=d2 , false);
-		var orders = db.UserContract.manager.search($userId==app.user.id && $distributionId in Lambda.map(distribs,function(d)return d.id)  );
+		var cids = Lambda.map(app.user.getGroup().getActiveContracts(true), function(c) return c.id);
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= d1 && $date <=d2 , false);
+		var orders = db.UserOrder.manager.search($userId==app.user.id && $distributionId in Lambda.map(distribs,function(d)return d.id)  );
 		view.orders = service.OrderService.prepare(orders);
 		view.date = date;
 		

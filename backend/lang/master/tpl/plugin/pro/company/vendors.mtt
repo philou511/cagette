@@ -1,0 +1,39 @@
+::use 'plugin/pro/company/design.mtt'::
+	
+	<div class=" article">
+		<h3>Autres producteurs</h3>		
+		
+		<p>
+			Gérez ici les producteurs dont vous revendez les produits.<br/>
+			Il vous sera possible de mettre en ligne des catalogues de produits rattachés à ces producteurs. 
+			Vos clients sauront en toute transparence d'ou viennent les produits qui leur sont présentés.
+		</p>
+		
+		<table class="table table-striped">
+			::foreach v vendors::
+			<tr>
+				<td>						
+					::if v._image!=null::
+						<img src="::file(v._image)::" class="img-thumbnail" style="height:64px;" />
+					::end::
+				</td>
+				<td>::v.name::</td>
+				<td>
+					<div class="btn-group">
+						$$edit(Gestion,/p/pro/company/editVendor/::v.id::)
+						<a href="/p/pro/company/addVendorImage/::v.id::" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-picture"></span> Photo</a>
+						$$delete(Suppr.,/p/pro/company/deleteVendor/::v.id::?token=::token::)
+					</div>
+				</td>
+			</tr>
+			
+			
+			::end::
+		</table>
+		
+		$$insert(Nouveau producteur,/p/pro/company/defineVendor/)
+		
+	</div>
+
+
+::end::

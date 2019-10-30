@@ -1,0 +1,38 @@
+::use 'admin/design.mtt'::
+
+<h2>Déduplication par email</h2>
+
+
+<table class="table table-bordered table-condensed table-striped" >
+	
+	::foreach v vendors::	
+	<tr>
+		<td>
+			<a href="/p/pro/admin/dedupInfo/::v.email::?token=::token::&vid=::v.id::" class="btn btn-default btn-sm">Dédup. en gardant celui là</a>
+			<br/>
+			<a href="/p/pro/admin/dedupInfo/::v.email::?token=::token::&vid=::v.id::&type=formation" class="btn btn-default btn-sm">Dédup. Formation</a>
+			<br/>
+			<a href="/p/pro/admin/vendor/::v.id::" class="btn btn-default btn-xs">&laquo; Fiche producteur</a>
+		</td>
+		<td>
+			<a href="/db/Vendor/edit/::v.id::" target="_blank">::v.name::</a>			
+		</td>
+		<td style="font-size:0.6em;">::short(v.desc,120)::</td>
+		<td><img ::cond (v._image!=null):: src="::file(v._image)::" width="120"/></td>
+		<td>::v.email::</td>
+		<td>::v.zipCode::</td>
+		<td>::v.city::</td>
+		<td>::if (isCpro(v))::
+			<b>$$bool(::true::) CPRO</b>
+		::end::
+		</td>
+		<td>
+			::if(v.status!=null)::
+				::v.status::
+			::end::
+		</td>
+	</tr>
+	::end::
+</table>
+
+::end::

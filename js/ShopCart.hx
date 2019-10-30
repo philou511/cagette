@@ -1,5 +1,5 @@
 import Common;
-import js.JQuery;
+import js.jquery.JQuery;
 /**
  * JS Shopping Cart
  * 
@@ -7,7 +7,6 @@ import js.JQuery;
  */
 class ShopCart
 {
-
 	public var products : Map<Int,ProductInfo>; //product db
 	public var productsArray : Array<ProductInfo>; //to keep order of products
 	public var categories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
@@ -42,7 +41,7 @@ class ShopCart
 	public function add(pid:Int) {
 		loader.show();
 		
-		var q = App.j('#productQt' + pid).val();
+		var q = App.jq('#productQt' + pid).val();
 		var qt = 0.0;
 		var p = this.products.get(pid);
 		if (p.hasFloatQt) {
@@ -96,7 +95,7 @@ class ShopCart
 	 * Render the shopping cart and total
 	 */
 	function render() {
-		var c = App.j("#cart");
+		var c = App.jq("#cart");
 		c.empty();
 		
 		//render items in shopping cart
@@ -233,7 +232,7 @@ class ShopCart
 		}
 		//trace("----------------");
 		//render
-		var container = App.j(".shop .body");
+		var container = App.jq(".shop .body");
 		//render firts "pinned" groups , then "groups"
 		for ( source in [pinned, groups]){
 
@@ -255,7 +254,7 @@ class ShopCart
 				}
 			}
 		}
-		App.j(".product").show();
+		App.jq(".product").show();
 	}
 
 	/**
@@ -286,18 +285,18 @@ class ShopCart
 	public function filter(cat:Int) {
 		
 		//icone sur bouton
-		App.j(".tag").removeClass("active").children().remove("i");//clean
+		App.jq(".tag").removeClass("active").children().remove("i");//clean
 		
-		var bt = App.j("#tag" + cat);
+		var bt = App.jq("#tag" + cat);
 		bt.addClass("active").prepend("<i class='icon icon-check'></i> ");
 		
 		
 		//affiche/masque produits
 		for (p in products) {
 			if (cat==0 || Lambda.has(p.categories, cat)) {
-				App.j(".shop .product" + p.id).fadeIn(300);
+				App.jq(".shop .product" + p.id).fadeIn(300);
 			}else {
-				App.j(".shop .product" + p.id).fadeOut(300);
+				App.jq(".shop .product" + p.id).fadeOut(300);
 			}
 		}
 		
@@ -352,7 +351,7 @@ class ShopCart
 		// this.date = date;
 		this.multiDistribId = multiDistribId;
 		
-		loader = App.j("#cartContainer #loader");
+		loader = App.jq("#cartContainer #loader");
 		
 		var req = new haxe.Http("/shop/init/"+multiDistribId);
 		req.onData = function(data) {
@@ -375,7 +374,7 @@ class ShopCart
 			//product DB
 			for (p in data.products) {
 				//catch dom element for further usage
-				untyped p.element = App.j(".product"+p.id);
+				untyped p.element = App.jq(".product"+p.id);
 
 				var id : Int = p.id;
 				//var id : Int = p.id;
@@ -401,8 +400,8 @@ class ShopCart
 		//scroll mgmt, only for large screens. Otherwise let the cart on page bottom.
 		/*if (js.Browser.window.matchMedia("(min-width: 1024px)").matches) {
 			
-			jWindow = App.j(js.Browser.window);
-			cartContainer = App.j("#cartContainer");
+			jWindow = App.jq(js.Browser.window);
+			cartContainer = App.jq("#cartContainer");
 			cartTop = cartContainer.position().top;
 			cartLeft = cartContainer.position().left;
 			cartWidth = cartContainer.width();

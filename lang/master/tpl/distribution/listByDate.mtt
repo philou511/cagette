@@ -7,7 +7,7 @@
 </head>
 <body style="font-size: ::fontRatio::em;">
 	
-	<h1>::user._amap.name::</h1>
+	<h1>::user.getGroup().name::</h1>
 	<h2>Livraison du ::hDate(date)::</h2>
 
 	<p>	
@@ -116,11 +116,11 @@
 					</tr>
 			
 					<!-- PAIEMENTS -->
-					<tr ::cond user._amap.hasPayments()::>
+					<tr ::cond user.getGroup().hasPayments()::>
 						
 						<!--  PAYMENT CHECK FOR SHOP MODE -->
 						
-						::if (user._amap.hasShopMode())::
+						::if (user.getGroup().hasShopMode())::
 
 					
 						<td></td>
@@ -198,7 +198,7 @@
 						::else::
 						<!--  PAYMENT CHECK FOR STANDARD MODE -->
 						<td></td>
-						::set ua = u.getUserAmap(user._amap)::
+						::set ua = u.getUserAmap(user.getGroup())::
 						::set balance = ua.balance::
 						<th>::_("Balance of the member:"):: ::ua.balance:: ::currency()::</th>
 						<td colspan="6">							
@@ -255,7 +255,7 @@
 
 				</table>
 				
-				<p>::raw nl2br(user.getAmap().txtDistrib)::</p>
+				<p>::raw nl2br(user.getGroup().txtDistrib)::</p>
 		
 				<p class="hidden">
 					<i>::_("Push on \"Control + P\" to print this page.")::</i>					

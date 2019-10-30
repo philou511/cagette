@@ -32,7 +32,7 @@
 		
 			::if user != null && noGroup!=true::
 
-			<nav class="navbar navbar-default" ::cond user.getAmap()!=null::>
+			<nav class="navbar navbar-default" ::cond user.getGroup()!=null::>
 					<div class="navbar-header">
 					  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#cagette-navbar">
 						<span class="sr-only">Toggle navigation</span>						

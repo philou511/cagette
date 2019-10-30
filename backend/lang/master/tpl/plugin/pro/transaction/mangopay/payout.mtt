@@ -1,0 +1,44 @@
+::use 'design.mtt'::
+<div class="col-md-12">
+	<div class="article text-center">
+
+        <!--
+        <pre>{ CreationDate => 1551777421, Nature => REGULAR, 
+            DebitedFunds => { Currency => EUR, Amount => 935 }, 
+            ResultMessage => Success, CreditedFunds => { Currency => EUR, Amount => 935 }, 
+            BankAccountId => 62202988, CreditedWalletId => null, Id => 62203178, Tag => null, CreditedUserId => null, DebitedWalletId => 62189273, AuthorId => 62189272, 
+            PaymentType => BANK_WIRE, ExecutionDate => 1551777421, BankWireRef => EC2019-03-05-69, 
+            ResultCode => 000000, Fees => { Currency => EUR, Amount => 0 }, Type => PAYOUT, Status => SUCCEEDED }
+        </pre>-->
+	
+		<h2>PayOut</h2>
+
+        <table class="table table-striped table-bordered" >
+            <tr>
+                <td>Date de création</td>
+                <td>::hDate(Date.fromTime(payout.CreationDate*1000.0))::</td>
+            </tr>
+            <tr>
+                <td>Nature</td>
+                <td>::payout.Nature::</td>
+            </tr>
+            <tr>
+                <td>DebitedFunds</td>
+                <td>::payout.DebitedFunds.Amount/100:: ::payout.DebitedFunds.Currency::</td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>::payout.Status::</td>
+            </tr>
+            <tr>
+                <td>ExecutionDate</td>
+                <td>::hDate(Date.fromTime(payout.ExecutionDate*1000.0))::</td>
+            </tr>
+        </table>
+
+	</div>	
+</div>
+
+
+
+::end::

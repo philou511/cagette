@@ -11,7 +11,7 @@
 			</tr>
 			::foreach m memberships::
 			<tr>				
-				<td>::user._amap.getPeriodNameFromYear(m.year)::</td>
+				<td>::user.getGroup().getPeriodNameFromYear(m.year)::</td>
 				<td>::hDate(m.date)::</td>
 				<td>
 					$$delete(::_("Delete")::,/membership/delete/::member.id::/::m.year::?token=::token::)

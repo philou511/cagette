@@ -5,7 +5,7 @@ import Common;
 class WaitingListService{
 
 
-	public static function registerToWl(user:db.User,group:db.Amap,message:String){
+	public static function registerToWl(user:db.User,group:db.Group,message:String){
 		var t  = sugoi.i18n.Locale.texts;
 
 		canRegister(user,group);
@@ -19,7 +19,7 @@ class WaitingListService{
 		//emails
 		var html = t._("<p><b>::name::</b> suscribed to the waiting list of <b>::group::</b> on ::date::</p>",{
 			group:group.name,
-			name:user.name,
+			name:user.getName(),
 			date:App.current.view.hDate(Date.now())
 		});
 		if(message!=null && message!=""){
@@ -30,20 +30,20 @@ class WaitingListService{
 
 			App.quickMail(
 				u.email,
-				t._("[::group::] ::name:: suscribed to the waiting list.",{group:group.name,name:user.name}),
+				t._("[::group::] ::name:: suscribed to the waiting list.",{group:group.name,name:user.getName()}),
 				html,
 				group
 			);
 		}
 	}
 
-	public static function canRegister(user:db.User,group:db.Amap){
+	public static function canRegister(user:db.User,group:db.Group){
 		var t  = sugoi.i18n.Locale.texts;
 		
 		if ( db.WaitingList.manager.select($amapId == group.id && $user == user) != null) {
 			throw new Error(t._("You are already in the waiting list of this group"));
 		}
-		if ( db.UserAmap.manager.select($amapId == group.id && $user == user) != null) {
+		if ( db.UserGroup.manager.select($groupId == group.id && $user == user) != null) {
 			throw new Error(t._("You are already member of this group."));
 		}
 	}
@@ -51,7 +51,7 @@ class WaitingListService{
 	/**
 		the user cancels his request
 	**/
-	public static function removeFromWl(user:db.User,group:db.Amap){
+	public static function removeFromWl(user:db.User,group:db.Group){
 		var t  = sugoi.i18n.Locale.texts;
 		if ( user == null) {
 			throw new Error(t._("You should be logged in."));
@@ -68,7 +68,7 @@ class WaitingListService{
 	/**
 		an admin cancels a request
 	**/
-	public static function cancelRequest(user:db.User,group:db.Amap){
+	public static function cancelRequest(user:db.User,group:db.Group){
 		var t  = sugoi.i18n.Locale.texts;
 		if ( user == null) throw "user is null";
 		var wl = db.WaitingList.manager.select($amapId == group.id && $user == user,true);
@@ -86,8 +86,8 @@ class WaitingListService{
 			if(u.id==App.current.user.id) continue;
 			App.quickMail(
 				u.email,
-				t._("[::group::] ::name:: membership request has been refused by ::admin::.",{group:group.name, name:user.name, admin:App.current.user.name}),
-				t._("<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has refused his/her request.</p>",{name:user.name, admin:App.current.user.name}),
+				t._("[::group::] ::name:: membership request has been refused by ::admin::.",{group:group.name, name:user.getName(), admin:App.current.user.getName()}),
+				t._("<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has refused his/her request.</p>",{name:user.getName(), admin:App.current.user.getName()}),
 				group
 			);
 		}
@@ -98,15 +98,15 @@ class WaitingListService{
 	/**
 		an admin approves a request
 	**/
-	public static function approveRequest(user:db.User,group:db.Amap){
+	public static function approveRequest(user:db.User,group:db.Group){
 		var t  = sugoi.i18n.Locale.texts;
 		if ( user == null) throw "user is null";
 		var wl = db.WaitingList.manager.select($amapId == group.id && $user == user,true);
 		if ( wl == null) throw "this user is not in waiting list";
 
-		if (db.UserAmap.get(user, group, false) == null){
-			var ua = new db.UserAmap();
-			ua.amap = wl.group;
+		if (db.UserGroup.get(user, group, false) == null){
+			var ua = new db.UserGroup();
+			ua.group = wl.group;
 			ua.user = wl.user;
 			ua.insert();	
 		}
@@ -126,8 +126,8 @@ class WaitingListService{
 			if(u.id==App.current.user.id) continue;
 			App.quickMail(
 				u.email,
-				t._("[::group::] ::name:: membership request has been accepted by ::admin::.",{group:group.name, name:user.name, admin:App.current.user.name}),
-				t._("<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has accepted his/her request.</p>",{name:user.name, admin:App.current.user.name}),
+				t._("[::group::] ::name:: membership request has been accepted by ::admin::.",{group:group.name, name:user.getName(), admin:App.current.user.getName()}),
+				t._("<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has accepted his/her request.</p>",{name:user.getName(), admin:App.current.user.getName()}),
 				group
 			);
 		}

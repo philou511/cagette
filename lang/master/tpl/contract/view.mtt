@@ -99,7 +99,7 @@
 				<br/>::d._place.name::
 				
 				<p ::cond d.canOrderNow()::>					
-					::if user._amap.hasShopMode()::
+					::if user.getGroup().hasShopMode()::
 						<a href="/shop/::d._place.id::/::d.date.toString().substr(0,10)::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>					
 					::end::					
 				</p>
@@ -112,7 +112,7 @@
 			::_("No planned distributions.")::
 		</p>
 		::else::
-		<p ::cond !user._amap.hasShopMode()::>
+		<p ::cond !user.getGroup().hasShopMode()::>
 			<a href="/contract/order/::c.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
 		</p>		
 		::end::

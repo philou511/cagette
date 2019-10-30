@@ -18,7 +18,7 @@ class MultiDistrib extends Object
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
 	
-	@hideInForms @:relation(groupId) public var group : db.Amap;
+	@hideInForms @:relation(groupId) public var group : db.Group;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
 	@hideInForms @:relation(distributionCycleId) public var distributionCycle : SNull<DistributionCycle>;
 
@@ -27,7 +27,7 @@ class MultiDistrib extends Object
 
 	@hideInForms public var validated:SNull<SBool>;
 
-	@:skip public var contracts : Array<db.Contract>;
+	@:skip public var contracts : Array<db.Catalog>;
 	@:skip public var extraHtml : String;
 	
 
@@ -48,7 +48,7 @@ class MultiDistrib extends Object
 		return db.MultiDistrib.manager.select($distribStartDate>=start && $distribStartDate<=end && $place==place,lock);
 	}
 
-	public static function getFromTimeRange( group: db.Amap, from: Date, to: Date ) : Array<MultiDistrib> {
+	public static function getFromTimeRange( group: db.Group, from: Date, to: Date ) : Array<MultiDistrib> {
 
 		var multidistribs = new Array<db.MultiDistrib>();
 		var start = tools.DateTool.setHourMinute(from, 0, 0);
@@ -70,7 +70,7 @@ class MultiDistrib extends Object
 	/**
 	 * TODO : refacto this to use getFromTimeRange();
 	 */
-	/*public static function getNextMultiDeliveries(group:db.Amap){
+	/*public static function getNextMultiDeliveries(group:db.Group){
 		
 		var out = new Map < String, {
 			place:db.Place, 		//common delivery place
@@ -86,15 +86,15 @@ class MultiDistrib extends Object
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
 	
-		var contracts = db.Contract.getActiveContracts(group);
+		var contracts = db.Catalog.getActiveContracts(group);
 		var cids = Lambda.map(contracts, function(p) return p.id);
 		
-		//var pids = Lambda.map(db.Product.manager.search($contractId in cids,false), function(x) return x.id);
-		//var out =  UserContract.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);	
+		//var pids = Lambda.map(db.Product.manager.search($catalogId in cids,false), function(x) return x.id);
+		//var out =  UserOrder.manager.search(($userId == id || $userId2 == id) && $productId in pids, lock);	
 		
 		//available deliveries
 		var inSixMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 6);
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $date >= now && $date <= inSixMonth , { orderBy:date }, false);
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= now && $date <= inSixMonth , { orderBy:date }, false);
 		
 		for (d in distribs) {			
 			
@@ -115,7 +115,7 @@ class MultiDistrib extends Object
 				}		
 
 				//if its a constant order contract, skip this delivery		
-				if (d.contract.type == db.Contract.TYPE_CONSTORDERS){		
+				if (d.contract.type == db.Catalog.TYPE_CONSTORDERS){		
 					continue;		
 				}
 				
@@ -125,7 +125,7 @@ class MultiDistrib extends Object
 				}	
 			}
 			
-			if (d.contract.type == db.Contract.TYPE_VARORDER){
+			if (d.contract.type == db.Catalog.TYPE_VARORDER){
 				
 				//old distribs may have an empty orderStartDate
 				if (d.orderStartDate == null) {
@@ -205,24 +205,23 @@ class MultiDistrib extends Object
 		var cache:Array<Int> = sugoi.db.Cache.get(key);
 		if(cache!=null){
 			var out = [];
-			//try{
+			try{
 				for( pid in cache.array()){
 					var p = db.Product.manager.get(pid,false);
 					if(p!=null) out.push(p.infos());
 				}
-			//}catch(e:Dynamic){
-			// 	sugoi.db.Cache.destroy(key);
-			// }
-			
+			}catch(e:Dynamic){
+			 	sugoi.db.Cache.destroy(key);
+			}			
 			return out;
 		}else{
 			var products = [];
-			for( d in getDistributions(db.Contract.TYPE_VARORDER)){
-				for ( p in d.contract.getProductsPreview(productNum)){
+			for( d in getDistributions(db.Catalog.TYPE_VARORDER)){
+				for ( p in d.catalog.getProductsPreview(productNum)){
 					products.push( p.infos(null,false) );	
 				}
 			}
-			products = thx.Arrays.shuffle(products);			
+			//products = thx.Arrays.shuffle(products);			
 			products = products.slice(0, productNum);
 			sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
 			return products;	
@@ -263,7 +262,7 @@ class MultiDistrib extends Object
 			if(orderStartDate==null) return null;
 			//find earliest order start date 
 			var date = orderStartDate;
-			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
+			for(d in getDistributions(db.Catalog.TYPE_VARORDER)){
 				if(d.orderStartDate==null) continue;
 				if(d.orderStartDate.getTime() < date.getTime()) date = d.orderStartDate;
 			}
@@ -279,7 +278,7 @@ class MultiDistrib extends Object
 			if(orderEndDate==null) return null;
 			//find lates order end date 
 			var date = orderEndDate;
-			for(d in getDistributions(db.Contract.TYPE_VARORDER)){
+			for(d in getDistributions(db.Catalog.TYPE_VARORDER)){
 				if(d.orderEndDate==null) continue;
 				if(d.orderEndDate.getTime() > date.getTime()) date = d.orderEndDate;
 			}
@@ -297,14 +296,14 @@ class MultiDistrib extends Object
 		if(type==null) return Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
 		var out = [];
 		for ( d in db.Distribution.manager.search($multiDistrib==this,false)){
-			if( d.contract.type==type ) out.push(d);
+			if( d.catalog.type==type ) out.push(d);
 		}
 		return out;
 	}
 
-	public function getDistributionForContract(contract:db.Contract):db.Distribution{
+	public function getDistributionForContract(contract:db.Catalog):db.Distribution{
 		for( d in getDistributions()){
-			if(d.contract.id == contract.id) return d;
+			if(d.catalog.id == contract.id) return d;
 		}
 		return null;
 	}
@@ -327,8 +326,8 @@ class MultiDistrib extends Object
 	public function getUserOrders(user:db.User,?type:Int){
 		var out = [];
 		for ( d in getDistributions(type) ){
-			var pids = Lambda.map( d.contract.getProducts(false), function(x) return x.id);		
-			var userOrders =  db.UserContract.manager.search( $userId == user.id && $distributionId==d.id && $productId in pids , false);	
+			var pids = Lambda.map( d.catalog.getProducts(false), function(x) return x.id);		
+			var userOrders =  db.UserOrder.manager.search( $userId == user.id && $distributionId==d.id && $productId in pids , false);	
 			for( o in userOrders ){
 				out.push(o);
 			}
@@ -338,7 +337,7 @@ class MultiDistrib extends Object
 
 	public function getVendors():Array<db.Vendor>{
 		var vendors = new Map<Int,db.Vendor>();
-		for( d in getDistributions()) vendors.set(d.contract.vendor.id,d.contract.vendor);
+		for( d in getDistributions()) vendors.set(d.catalog.vendor.id,d.catalog.vendor);
 		return Lambda.array(vendors);
 	}
 	
@@ -384,7 +383,7 @@ class MultiDistrib extends Object
 	public function isConfirmed():Bool{
 		//cannot be in future
 		if(getDate().getTime()>Date.now().getTime()) return false;
-		//var distributions = getDistributions(db.Contract.TYPE_VARORDER);
+		//var distributions = getDistributions(db.Catalog.TYPE_VARORDER);
 		//return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
 		return validated == true;
 	}
@@ -395,7 +394,7 @@ class MultiDistrib extends Object
 	
 	/*public function checkConfirmed():Bool{
 		
-		for ( d in getDistributions(db.Contract.TYPE_VARORDER)){
+		for ( d in getDistributions(db.Catalog.TYPE_VARORDER)){
 			if(!d.validated){
 				var orders = d.getOrders();
 				var allOrdersPaid = Lambda.count( orders , function(d) return d.paid) == orders.length;		
@@ -430,7 +429,7 @@ class MultiDistrib extends Object
 		var out = [];
 		var places = new List();
 		if(this.place!=null){			
-			places = db.Place.manager.search($amapId == this.place.amap.id, false);
+			places = db.Place.manager.search($groupId == this.place.group.id, false);
 		}
 		for (p in places) out.push( { label:p.name,value:p.id} );
 		return out;
@@ -448,7 +447,7 @@ class MultiDistrib extends Object
 	}
 
 	public function getGroup(){
-		return place.amap;
+		return place.group;
 	}
 
 	/**
@@ -508,8 +507,8 @@ class MultiDistrib extends Object
 			}
 
 			volunteerRoles.sort(function(b, a) { 
-				var a_str = (a.contract == null ? "null" : Std.string(a.contract.id)) + a.name.toLowerCase();
-				var b_str = (b.contract == null ? "null" : Std.string(b.contract.id)) + b.name.toLowerCase();
+				var a_str = (a.catalog == null ? "null" : Std.string(a.catalog.id)) + a.name.toLowerCase();
+				var b_str = (b.catalog == null ? "null" : Std.string(b.catalog.id)) + b.name.toLowerCase();
 				return  a_str < b_str ? 1 : -1;
 			});
 		}
@@ -578,7 +577,7 @@ class MultiDistrib extends Object
 
 	public function getDistributionFromProduct(product:db.Product):db.Distribution{
 		for( d in getDistributions()){
-			for( p in d.contract.getProducts(false)){
+			for( p in d.catalog.getProducts(false)){
 				if(p.id==product.id) return d;
 
 			}

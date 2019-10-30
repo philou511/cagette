@@ -1,0 +1,10 @@
+::use 'plugin/pro/catalog/design.mtt'::
+
+	<h4>Relier ce catalogue dans un groupe que je pilote</h4>
+	<p>
+		Si vous êtes administrateur d'un groupe Cagette, vous pouvez relier ce catalogue au groupe.
+	</p>
+
+	::raw form::
+	
+::end::

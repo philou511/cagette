@@ -9,7 +9,7 @@ class ProductService{
 	public static function batchDisableProducts(productIds:Array<Int>){
 
 		var data = {pids:productIds,enable:false};
-		var contract = db.Product.manager.get(productIds[0], true).contract;
+		var contract = db.Product.manager.get(productIds[0], true).catalog;
 		var products = contract.getProducts(false);
 
 		App.current.event( BatchEnableProducts(data) );
@@ -32,7 +32,7 @@ class ProductService{
 	public static function batchEnableProducts(productIds:Array<Int>){
 
 		var data = {pids:productIds,enable:true};
-		var contract = db.Product.manager.get(productIds[0], true).contract;
+		var contract = db.Product.manager.get(productIds[0], true).catalog;
 		var products = contract.getProducts(false);
 
 		App.current.event( BatchEnableProducts(data) );

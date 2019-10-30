@@ -187,9 +187,9 @@
 		<div class="dateBox" style="background-color:#080;" >
 			<img src="/img/go.png"/>
 			<div style="font-size:16px;margin-bottom:8px;">
-				::if Std.parseInt(h)<=12::
+				::if parseInt(h)<=12::
 					::_("THIS MORNING")::
-				::elseif Std.parseInt(h)<18::
+				::elseif parseInt(h)<18::
 					<span style="font-size:14px;">CET<br/>::_("AFTERNOON")::</span>
 				::else::
 					::_("THIS EVENING")::
@@ -280,7 +280,13 @@
 			-
 		::end::
 	</td>
-	<td>::formatNum(Math.abs(t.amount))::&nbsp;::currency()::</td>
+	<td>
+		::if(t.amount<0)::
+			::formatNum(0-t.amount)::&nbsp;::currency()::
+		::else::
+			::formatNum(t.amount)::&nbsp;::currency()::
+		::end::
+	</td>
 	::set class=""::
 	</macro>
 
@@ -313,7 +319,7 @@
 	
 	
 	<macro name="deliveryPro(k,showBtns)">
-		::set now = Date.now()::
+		::set _now = now()::
 		<div class="row">
 			<div class="col-md-4 text-center">
 				<!-- find color/icon to display -->
@@ -323,10 +329,10 @@
 			
 				::foreach d k::
 					::if d.orderStartDate!=null::
-						::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+						::if _now.getTime() > d.orderStartDate.getTime() && _now.getTime() < d.orderEndDate.getTime()::
 							<!-- commande en cours -->
 							::set open = open+1::
-						::elseif now.getTime() > d.orderEndDate.getTime()::
+						::elseif _now.getTime() > d.orderEndDate.getTime()::
 							<!-- commande terminée -->
 							::set closed = closed+1::
 						::else::
@@ -369,17 +375,17 @@
 				</span>			
 				::end::
 				
-				<b>::k[0]._contract._amap.name::</b><br/>
+				<b>::k[0]._catalog._group.name::</b><br/>
 				
 				<table>
 				::foreach d k::
 					<tr>
 						<td>
 							::if d.orderStartDate!=null::
-								::if now.getTime() > d.orderStartDate.getTime() && now.getTime() < d.orderEndDate.getTime()::
+								::if _now.getTime() > d.orderStartDate.getTime() && _now.getTime() < d.orderEndDate.getTime()::
 								<!-- commande en cours -->
 								<i class="icon icon-circle" style="color:#F80;" data-toggle="tooltip" title="Commande en cours."></i>
-								::elseif now.getTime() > d.orderEndDate.getTime()::
+								::elseif _now.getTime() > d.orderEndDate.getTime()::
 								<!-- commande terminée -->
 								<i class="icon icon-circle" style="color:#0A0;" data-toggle="tooltip" title="Commande close. Préparez votre livraison"></i>
 								::else::

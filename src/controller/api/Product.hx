@@ -1,4 +1,6 @@
 package controller.api;
+import sys.io.File;
+import haxe.crypto.Base64;
 import Common;
 
 /**
@@ -10,7 +12,7 @@ class Product extends Controller
 	/**
 		List all products of a conctract
 	**/
-	public function doGet(args:{?contractId:db.Contract}) {
+	public function doGet(args:{?contractId:db.Catalog}) {
 	
 		if(args==null || args.contractId==null) throw "invalid params";
 
@@ -55,5 +57,45 @@ class Product extends Controller
 		Sys.print(tink.Json.stringify(out));
 
 	}
+
+	
+	function doImage(product:db.Product) {
+		
+		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
+		
+		var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
+		//var request = app.params;
+		
+		if (request.exists("file")) {
+			
+			//Image
+			var image = request.get("file");
+			if (image != null && image.length > 0) {
+				//var img = sugoi.db.File.create(request.get("file"), request.get("filename"));
+
+				var s = request.get("file");
+				s = s.substr( "data:image/png;base64,".length );
+				var b = Base64.decode(s);
+				var img = sugoi.db.File.createFromBytes(b, request.get("filename"));
+				
+				/*
+				//DEBUG
+				var path = sugoi.Web.getCwd()+"../tmp/_image.png";
+				File.saveBytes(path , b);*/
+				
+				product.lock();
+				if (product.image != null) {
+					//efface ancienne
+					product.image.lock();
+					product.image.delete();
+				}				
+				product.image = img;
+				product.update();
+				Sys.print(haxe.Json.stringify({success:true}));
+			}
+		}else{
+			Sys.print(haxe.Json.stringify({success:false}));
+		}
+	}	
 	
 }

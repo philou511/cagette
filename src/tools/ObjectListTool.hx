@@ -99,9 +99,9 @@ class ObjectListTool
 	/**
 	 * Groupe orders by multidistrib key (date+placeId)
 	 */
-	public static function groupOrdersByKey(ucs:Iterable<db.UserContract>){
+	public static function groupOrdersByKey(ucs:Iterable<db.UserOrder>){
 		
-		var out = new Map<String,Array<db.UserContract>>();
+		var out = new Map<String,Array<db.UserOrder>>();
 		for ( uc in ucs) {
 			var k = uc.distribution.getKey();
 			var v = out.get(k);
@@ -120,7 +120,7 @@ class ObjectListTool
 		var out = new Map<String,Array<db.Distribution>>();
 		for ( d in dists){
 			
-			var k = d.date.toString().substr(0, 10) + "-" + d.contract.amap.id;
+			var k = d.date.toString().substr(0, 10) + "-" + d.catalog.group.id;
 			
 			var x = out[k];
 			if (x == null) x = [];

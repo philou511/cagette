@@ -23,22 +23,23 @@ class TestPayments extends haxe.unit.TestCase
 		//Take a contract with payments enabled
 		//Take 2 users and make orders for each
 		var distrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
-		var contract = distrib.contract;
+		var contract = distrib.catalog;
 		var product = TestSuite.COURGETTES;
 		var francoisOrder = service.OrderService.make(TestSuite.FRANCOIS, 1, product, distrib.id);
 		var francoisOrderOperation = db.Operation.onOrderConfirm([francoisOrder]);
 		var sebOrder = service.OrderService.make(TestSuite.SEB, 3, product, distrib.id);
 		var sebOrderOperation = db.Operation.onOrderConfirm([sebOrder]);
 		//They both pay by check
-		var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,contract.amap, payment.Check.TYPE, product.price, "Payment by check", francoisOrderOperation[0]);
-		var sebPayment      = db.Operation.makePaymentOperation(TestSuite.SEB,contract.amap, payment.Check.TYPE, 3 * product.price, "Payment by check", sebOrderOperation[0] );	
+		var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,contract.group, payment.Check.TYPE, product.price, "Payment by check", francoisOrderOperation[0]);
+		var sebPayment      = db.Operation.makePaymentOperation(TestSuite.SEB,contract.group, payment.Check.TYPE, 3 * product.price, "Payment by check", sebOrderOperation[0] );	
 
+		var md = distrib.multiDistrib;
 		//Autovalidate this old distrib and check that all the payments are validated
-		service.PaymentService.validateDistribution(distrib);
+		service.PaymentService.validateDistribution(md);
 		
 		//distrib should be validated
-		assertTrue(contract.amap.hasPayments());
-		assertEquals(true, distrib.validated);
+		assertTrue(contract.group.hasPayments());
+		assertEquals(true, md.validated);
 		
 		//orders should be marked as paid
 		assertEquals(true, francoisOrder.paid);
@@ -66,20 +67,20 @@ class TestPayments extends haxe.unit.TestCase
 		//Take a contract with payments enabled
 		//Make 2 orders
 		var distrib = TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE;
-		var contract = distrib.contract;
+		var contract = distrib.catalog;
 		var product1 = TestSuite.COURGETTES;
 		var julieOrder1 = service.OrderService.make(TestSuite.JULIE, 1, product1, distrib.id);
 		var julieOrderOperation1 = db.Operation.onOrderConfirm([julieOrder1]);
 		
 		//Payment on the spot
-		var juliePayment1 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.amap, payment.OnTheSpotPayment.TYPE, product1.price, "Payment on the spot", julieOrderOperation1[0]);
+		var juliePayment1 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.group, payment.OnTheSpotPayment.TYPE, product1.price, "Payment on the spot", julieOrderOperation1[0]);
 
 		var product2 = TestSuite.CARROTS;
 		var julieOrder2 = service.OrderService.make(TestSuite.JULIE, 1, product2, distrib.id);
 		var julieOrderOperation2 = db.Operation.onOrderConfirm([julieOrder2]);
 		
 		//Payment on the spot
-		var juliePayment2 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.amap, payment.OnTheSpotPayment.TYPE, product2.price, "Payment on the spot", julieOrderOperation2[0]);
+		var juliePayment2 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.group, payment.OnTheSpotPayment.TYPE, product2.price, "Payment on the spot", julieOrderOperation2[0]);
 
 		//Check that the second payment is just an update of the first one
 		assertEquals(juliePayment1.id, juliePayment2.id);

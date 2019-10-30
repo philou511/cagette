@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<style>body{ font-family:'Arial','sans-serif';}</style>
+	</head>
+	<body>
+		<p>Bonjour,</p>
+
+		<p>Vous venez de créer le groupe “<b>::group.name::</b>” sur Cagette.net.<br/>
+		Nous espérons que la découverte de l'interface se passe au mieux pour vous. </p>
+		
+		<p>Nous avons mis en place plusieurs choses pour vous aider :</p>
+		
+		<ul>
+			<li>
+				<p>Une "<b>visite guidée du coordinateur</b>" que vous pouvez retrouver à tout moment dans l'onglet "<em>MON COMPTE</em>" lorsque vous êtes connecté à votre groupe Cagette.net.</p>
+			</li>
+
+			<li>
+				<p>Une <a href="http://wiki.cagette.net">documentation en ligne</a> pour connaître les détails du fonctionnement de Cagette.net. La documentation est accessible à tout moment en bas de l'écran sur Cagette.net. </p>
+			</li>
+			
+			<li>
+				<p>Un groupe Facebook nommé <a href="https://www.facebook.com/groups/EntraideCagette/">La communauté d'entraide Cagette.net</a> pour vous accueillir. Grâce à lui, vous pourrez échanger avec d'autres utilisateurs. Vous pouvez aussi témoigner de vos avancées. C'est précieux pour la communauté !</p>
+			</li>
+						
+		</ul>
+		
+		
+		<p>
+			Nous avons créé le logiciel libre et gratuit Cagette.net pour soutenir les groupements d'achats et les AMAP qui s'engagent en faveur d'une alimentation locale et solidaire.  <br/>
+			Nous ne prélevons aucune commission sur les commandes effectuées sur la plate-forme.
+		</p>
+		
+		<p>
+			Vous êtes nombreux à nous demander comment nous finançons le développement de Cagette.net : nous sommes un organisme de formation nommé <a href="https://www.alilo.fr">Alilo</a> qui a pour vocation d'accompagner les producteurs qui commercialisent leur production en circuit court.
+			Nous avons fait ce choix pour permettre aux producteurs d’être autonomes grâce aux circuits courts et aux outils numériques.
+		</p>
+		
+		
+		<p>
+			Pour ceux qui croient en notre projet et qui souhaitent nous soutenir, vous pouvez nous faire un don ( Lien en bas de page lorsque vous êtes sur Cagette.net ).
+			L'intégralité des dons sont investis dans le développement de Cagette.net.
+		</p>
+		
+		Merci pour votre engagement et bonne suite dans vos projets !
+		
+
+		<p>
+			François Barbut et Sébastien Zulke,<br/>
+			Créateurs de Cagette.net
+		</p>
+		<p>
+			<a href="http://www.alilo.fr">www.alilo.fr</a><br/>
+			<a href="http://www.cagette.net">www.cagette.net</a><br/>
+		</p>
+		<p>
+			<a href="https://www.cagette.net/"><img src="https://app.cagette.net/img/logo2.png" title="Cagette.net"/></a>
+		</p>
+	
+		
+	</body>
+</html>

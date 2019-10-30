@@ -19,9 +19,9 @@ class GroupService
 	 * copy groups.
 	 * @param	g
 	 */
-	public static function duplicateGroup(g:db.Amap){
+	public static function duplicateGroup(g:db.Group){
 		
-		var d = new db.Amap();
+		var d = new db.Group();
 		d.name = g.name+" (copy)";
 		d.contact = g.contact;
 		d.txtIntro = g.txtIntro;
@@ -47,7 +47,7 @@ class GroupService
 		return d;
 	}
 	
-	static function duplicateCategories(from:db.Amap,to:db.Amap){
+	static function duplicateCategories(from:db.Group,to:db.Group){
 		
 	}
 	
@@ -58,9 +58,9 @@ class GroupService
 	/**
 		Get users with rights in this group
 	**/
-	public static function getGroupMembersWithRights(group:db.Amap,?rights:Array<Right>):Array<db.User>{
+	public static function getGroupMembersWithRights(group:db.Group,?rights:Array<Right>):Array<db.User>{
 
-		var membersWithAnyRights = db.UserAmap.manager.search($rights!=null && $amap==group,false).array();
+		var membersWithAnyRights = db.UserGroup.manager.search($rights!=null && $group==group,false).array();
 		if(rights==null){
 			return Lambda.map(membersWithAnyRights,function(ua) return ua.user).array();
 		}else{

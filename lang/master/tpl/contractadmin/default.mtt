@@ -13,9 +13,9 @@
 		</h2>
 		<table class="table">
 			::foreach c contracts::
-				::if c.endDate!=null && c.endDate.getTime() < Date.now().getTime()::
+				::if c.endDate!=null && c.endDate.getTime() < now().getTime()::
 					::set class = "disabled"::
-				::elseif c.startDate!=null && c.startDate.getTime() > Date.now().getTime()::
+				::elseif c.startDate!=null && c.startDate.getTime() > now().getTime()::
 					::set class = "disabled"::
 				::else::
 					::set class = ""::

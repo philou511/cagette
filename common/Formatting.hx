@@ -1,5 +1,6 @@
 package;
 import Common;
+using Std;
 
 /**
  * Formatting tools used on both client and server side.
@@ -117,6 +118,26 @@ class Formatting
 		return out;
 	}
 
+	public static  function dDate(date:Date):String{
+		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
+	}
+
+	public static function hHour(date:Date){
+		return StringTools.lpad(date.getHours().string(), "0", 2) + ":" + StringTools.lpad(date.getMinutes().string(), "0", 2);
+	}
+	
+
+	public static function getDate(date:Date) {
+		return {
+			dow: DAYS[date.getDay()],
+			d : date.getDate(),
+			m: MONTHS[date.getMonth()],
+			y: date.getFullYear(),			
+			h: StringTools.lpad(Std.string(date.getHours()),"0",2),
+			i: StringTools.lpad(Std.string(date.getMinutes()),"0",2)
+		};
+	}
+
 	public static function dayOfWeek(date:Date):String{
 		if (date == null) return "No date set";
 		return DAYS[date.getDay()];
@@ -170,4 +191,45 @@ class Formatting
 		if (str == null) return "";
 		return str.split("\\").join("\\\\").split("'").join("\\'").split('\"').join('\\"').split("\r").join("\\r").split("\n").join("\\n");
 	}
+
+	
+	
+	/**
+	 * convert a RVB color from Int to Hexa
+	 * @param	c
+	 * @param	leadingZeros=6
+	 */
+	public static function intToHex(c:Int, ?leadingZeros=6):String {
+		var h = StringTools.hex(c);
+		while (h.length<leadingZeros)
+			h="0"+h;
+		return "#"+h;
+	}
+
+	/**
+		If string is not UTF8 encoded, encode it
+	**/
+	#if sys
+	public  static function utf8(str:String):String{
+		// var bytes = haxe.io.Bytes.ofString(csvData);
+		try{
+			// if (!UnicodeString.validate(bytes,Encoding.UTF8)){
+			if(!haxe.Utf8.validate(str)){
+				/*trace("not UTF8");
+				csvData = bytes.getString(0,bytes.length,Encoding.RawNative);
+				trace(UnicodeString.validate(bytes,Encoding.UTF8));*/
+				str = haxe.Utf8.encode(str);
+				// trace(csvData);
+			}
+		}catch (e:Dynamic){ }
+		return str;
+	}
+
+	public static function color(id:Int) {
+		if (id == null) throw "color cant be null";
+		//try{
+			return intToHex(db.CategoryGroup.COLORS[id]);
+		//}catch (e:Dynamic) return "#000000";
+	}
+	#end
 }

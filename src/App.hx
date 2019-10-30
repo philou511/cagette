@@ -1,5 +1,5 @@
 import db.User;
-import thx.semver.Version;
+//import thx.semver.Version;
 import Common;
  
 class App extends sugoi.BaseApp {
@@ -17,7 +17,7 @@ class App extends sugoi.BaseApp {
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
 	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
-	public static var VERSION = ([0,12]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
+	public static var VERSION = "0.13"/*([0,12]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate())*/;
 	
 	public function new(){
 		super();
@@ -59,7 +59,7 @@ class App extends sugoi.BaseApp {
 		if (a == null) {
 			return null;
 		}else {			
-			return db.Amap.manager.get(a,false);
+			return db.Group.manager.get(a,false);
 		}
 	}
 	
@@ -241,7 +241,7 @@ class App extends sugoi.BaseApp {
 	}
 	
 	public function populateAmapMembers() {		
-		return user.amap.getMembersFormElementData();
+		return user.getGroup().getMembersFormElementData();
 	}
 	
 	public static function getMailer():sugoi.mail.IMailer {
@@ -274,16 +274,16 @@ class App extends sugoi.BaseApp {
 	/**
 	 * Send an email
 	 */
-	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Amap, ?listId:String, ?sender:db.User){
+	public static function sendMail(m:sugoi.mail.Mail, ?group:db.Group, ?listId:String, ?sender:db.User){
 		
-		if (group == null) group = App.current.user == null ? null:App.current.user.getAmap();
+		if (group == null) group = App.current.user == null ? null:App.current.user.getGroup();
 		current.event(SendEmail(m));
 		var params = group==null ? null : {remoteId:group.id};
 		getMailer().send(m,params,function(o){});
 		
 	}
 	
-	public static function quickMail(to:String, subject:String, html:String,?group:db.Amap){
+	public static function quickMail(to:String, subject:String, html:String,?group:db.Group){
 		var e = new sugoi.mail.Mail();		
 		e.setSubject(subject);
 		e.setRecipient(to);			

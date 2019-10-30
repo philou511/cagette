@@ -192,9 +192,9 @@
 		
 	</div>
 	
-	$$today(Mercredi,15,Décembre,19,90,::user._amap._mainPlace::)
+	$$today(Mercredi,15,Décembre,19,90,::user.getGroup()._mainPlace::)
 	
-	$$date(Mercredi,15,Décembre,19,::user._amap._mainPlace::)
+	$$date(Mercredi,15,Décembre,19,::user.getGroup()._mainPlace::)
 	
 	
 </div>

@@ -23,8 +23,8 @@
 			<span>::role.name::</span>
 		</td>
 		<td>
-			::if role._contract!=null ::
-				<span>::role._contract.name::</span>
+			::if role._catalog!=null ::
+				<span>::role._catalog.name::</span>
             ::else::
 				<span>::_("None")::</span>
             ::end::

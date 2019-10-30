@@ -13,7 +13,7 @@ class TestOrders extends haxe.unit.TestCase
 		super();
 	}
 	
-	var c : db.Contract;
+	var c : db.Catalog;
 	var p : db.Product;
 	var bob : db.User;
 	
@@ -27,7 +27,7 @@ class TestOrders extends haxe.unit.TestCase
 		
 		db.Basket.emptyCache();
 
-		c = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.contract;
+		c = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.catalog;
 
 		p = TestSuite.STRAWBERRIES;
 		p.lock();
@@ -62,7 +62,7 @@ class TestOrders extends haxe.unit.TestCase
 		var place = new db.Place();
 		place.name = "Chez Momo";
 		place.zipCode = "54";
-		place.amap = d.contract.amap;
+		place.group = d.catalog.group;
 		place.insert();
 
 		d.place = place;
@@ -80,7 +80,7 @@ class TestOrders extends haxe.unit.TestCase
   		assertEquals(2, o2.basket.num);
 
 		//order to a different distrib in same contract should start a new numbering
-		var d2 = service.DistributionService.create(d.contract,new Date(2026,6,6,0,0,0),new Date(2026,6,6,1,0,0),TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.place.id,new Date(2026,6,4,0,0,0),new Date(2026,6,5,0,0,0));
+		var d2 = service.DistributionService.create(d.catalog,new Date(2026,6,6,0,0,0),new Date(2026,6,6,1,0,0),TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE.place.id,new Date(2026,6,4,0,0,0),new Date(2026,6,5,0,0,0));
 		var o = OrderService.make(TestSuite.SEB, 12, TestSuite.APPLES, d2.id);
 		assertEquals(1, o.basket.num);
 
@@ -93,8 +93,8 @@ class TestOrders extends haxe.unit.TestCase
 		
 		var stock = p.stock;
 		
-		assertTrue(c.type == db.Contract.TYPE_VARORDER);
-		assertTrue(c.flags.has(db.Contract.ContractFlags.StockManagement));
+		assertTrue(c.type == db.Catalog.TYPE_VARORDER);
+		assertTrue(c.flags.has(db.Catalog.CatalogFlags.StockManagement));
 		assertTrue(stock == 8);
 		
 		//bob orders 3 strawberries, stock fall to 2
@@ -137,7 +137,7 @@ class TestOrders extends haxe.unit.TestCase
 	 */
 	function testOrderEdit(){
 
-		var o = db.UserContract.manager.select( $user == bob && $product == p, true);	
+		var o = db.UserOrder.manager.select( $user == bob && $product == p, true);	
 		
 		//no order, stock at 8
 		assertEquals(p.stock , 8);
@@ -202,7 +202,7 @@ class TestOrders extends haxe.unit.TestCase
 	function testOrderWithMultiWeightProduct(){
 		
 		var POTATOES = TestSuite.POTATOES;
-		var distrib = db.Distribution.manager.select($contract == POTATOES.contract, false);
+		var distrib = db.Distribution.manager.select($catalog == POTATOES.catalog, false);
 		
 		var order = OrderService.make(bob, 1, POTATOES, distrib.id);
 		assertEquals(1.0, order.quantity);
@@ -236,7 +236,7 @@ class TestOrders extends haxe.unit.TestCase
 	 */
 	function testMakeOrderAndZeroQuantity(){
 		var fraises = TestSuite.STRAWBERRIES;
-		var distrib = db.Distribution.manager.select($contract == fraises.contract, false);
+		var distrib = db.Distribution.manager.select($catalog == fraises.catalog, false);
 		
 		var order = OrderService.make(bob, 1, fraises, distrib.id);
 		
@@ -264,7 +264,7 @@ class TestOrders extends haxe.unit.TestCase
 
 		//[Test case] Should throw an error when trying to delete order and that the quantity is not zero
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
-		var amapContract = amapDistrib.contract;
+		var amapContract = amapDistrib.catalog;
 		var order = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
 		var orderId = order.id;
 		db.Operation.onOrderConfirm([order]);
@@ -276,7 +276,7 @@ class TestOrders extends haxe.unit.TestCase
 			e1 = x;
 		}
 		assertEquals(e1.message, "Deletion not possible: quantity is not zero.");
-		assertTrue(db.UserContract.manager.get(orderId) != null);
+		assertTrue(db.UserOrder.manager.get(orderId) != null);
 		
 		//[Test case] Amap contract and quantity zero with payments disabled
 		//Check that order is deleted
@@ -289,7 +289,7 @@ class TestOrders extends haxe.unit.TestCase
 			e2 = x;
 		}
 		assertEquals(e2, null);
-		assertEquals(db.UserContract.manager.get(orderId), null);
+		assertEquals(db.UserOrder.manager.get(orderId), null);
 
 		//[Test case] Amap contract and quantity zero with payments enabled and 2 orders
 		//Check that first order is deleted but operation amount is at 0 
@@ -314,7 +314,7 @@ class TestOrders extends haxe.unit.TestCase
 			e3 = x;
 		}
 		assertEquals(e3, null);
-		assertEquals(db.UserContract.manager.get(order1Id), null);
+		assertEquals(db.UserOrder.manager.get(order1Id), null);
 		assertTrue(db.Operation.manager.get(operationId) != null);
 		assertEquals(operation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
 		assertEquals(operation.amount, 0);
@@ -326,14 +326,14 @@ class TestOrders extends haxe.unit.TestCase
 			e4 = x;
 		}
 		assertEquals(null, e4);
-		assertEquals(null, db.UserContract.manager.get(order2Id));
+		assertEquals(null, db.UserOrder.manager.get(order2Id));
 		assertEquals(null, db.Operation.manager.get(operationId));
 
 		//[Test case] Var Order contract and quantity zero with payments disabled
 		//Check that order is deleted
 		var variableDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
 
-		var g = variableDistrib.contract.amap;		
+		var g = variableDistrib.catalog.group;		
 		g.lock();
 		g.flags.unset(HasPayments);
 		g.update();
@@ -350,20 +350,20 @@ class TestOrders extends haxe.unit.TestCase
 	    catch(x:tink.core.Error){
 			e1 = x;
 		}
-		assertEquals(false,variableDistrib.contract.amap.hasPayments() );
+		assertEquals(false,variableDistrib.catalog.group.hasPayments() );
 		assertEquals(null, e1);
-		assertEquals(null, db.UserContract.manager.get(orderId));
+		assertEquals(null, db.UserOrder.manager.get(orderId));
 
 		//[Test case] Var Order contract and quantity zero with payments enabled and 2 orders
 		//Check that first order is deleted
 		//Check that operation is deleted only at the second order deletion
 		variableDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
-		var variableContract = variableDistrib.contract;
-		var g = variableDistrib.contract.amap;		
+		var variableContract = variableDistrib.catalog;
+		var g = variableDistrib.catalog.group;		
 		g.lock();
 		g.flags.set(HasPayments);
 		g.update();
-		assertTrue(variableContract.amap.hasPayments());
+		assertTrue(variableContract.group.hasPayments());
 
 		var order1 = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
 		db.Operation.onOrderConfirm([order1]);
@@ -397,7 +397,7 @@ class TestOrders extends haxe.unit.TestCase
 			e2 = x;
 		}
 		assertEquals(null, e2);
-		assertEquals(null, db.UserContract.manager.get(order1Id) ); //order 1 is deleted
+		assertEquals(null, db.UserOrder.manager.get(order1Id) ); //order 1 is deleted
 		assertTrue( db.Operation.manager.get(operation1Id) != null); //operation should be here
 		assertEquals(0.0,operation1.amount);
 		assertEquals(1 , basket.getOrders().length);
@@ -410,7 +410,7 @@ class TestOrders extends haxe.unit.TestCase
 			e3 = x;
 		}
 		assertEquals(null, e3);
-		assertEquals(null, db.UserContract.manager.get(order2Id)); //order 2 is deleted
+		assertEquals(null, db.UserOrder.manager.get(order2Id)); //order 2 is deleted
 		assertEquals(null, db.Operation.manager.get(operation1Id)); //operation should be deleted
 		assertEquals(0 , basket.getOrders().length);
 
@@ -455,7 +455,7 @@ class TestOrders extends haxe.unit.TestCase
 			e4 = x;
 		}
 		assertEquals(e4, null);
-		assertEquals(db.UserContract.manager.get(order1Id), null);
+		assertEquals(db.UserOrder.manager.get(order1Id), null);
 		assertTrue(db.Operation.manager.get(operationId) != null);	//op should still be here
 		assertEquals(0.0,operation.amount);//...with amount 0
 
@@ -467,7 +467,7 @@ class TestOrders extends haxe.unit.TestCase
 			e5 = x;
 		}
 		assertEquals(e5, null);
-		assertEquals(db.UserContract.manager.get(order2Id), null);
+		assertEquals(db.UserOrder.manager.get(order2Id), null);
 		assertEquals(db.Operation.manager.get(operation1Id), null);
 		assertEquals(db.Operation.manager.get(operation2Id), null);
 	}

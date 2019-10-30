@@ -1,5 +1,5 @@
 package controller;
-import db.UserContract;
+import db.UserOrder;
 import sugoi.form.Form;
 
 class Amap extends Controller
@@ -12,7 +12,7 @@ class Amap extends Controller
 	
 	@tpl("amap/default.mtt")
 	function doDefault() {
-		var contracts = db.Contract.getActiveContracts(app.user.amap, true, false);
+		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false);
 		for ( c in Lambda.array(contracts).copy()) {
 			if (c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
 		}
@@ -24,7 +24,7 @@ class Amap extends Controller
 		
 		if (!app.user.isAmapManager()) throw t._("You don't have access to this section");
 		
-		var group = app.user.amap;
+		var group = app.user.getGroup();
 		
 		var form = Form.fromSpod(group);
 
@@ -37,31 +37,31 @@ class Amap extends Controller
 			{label:t._("Shop Mode"),value:"shop"},
 			{label:t._("CSA Mode"),value:"CSA"},
 		];
-		var selected = group.flags.has(db.Amap.AmapFlags.ShopMode) ? "shop" : "CSA";
+		var selected = group.flags.has(db.Group.GroupFlags.ShopMode) ? "shop" : "CSA";
 		form.addElement( new sugoi.form.elements.RadioGroup("mode",t._("Ordering Mode"),data, selected), 8);
 	
 		if (form.checkToken()) {
 			
-			if(form.getValueOf("id") != app.user.amap.id) {
-				var editedGroup = db.Amap.manager.get(form.getValueOf("id"),false);
-				throw Error("/amap/edit",'Erreur, vous êtes en train de modifier "${editedGroup.name}" alors que vous êtes connecté à "${app.user.amap.name}"');
+			if(form.getValueOf("id") != app.user.getGroup().id) {
+				var editedGroup = db.Group.manager.get(form.getValueOf("id"),false);
+				throw Error("/amap/edit",'Erreur, vous êtes en train de modifier "${editedGroup.name}" alors que vous êtes connecté à "${app.user.getGroup().name}"');
 			}
 			
 			form.toSpod(group);
 
-			if(form.getValueOf("mode")=="shop") group.flags.set(db.Amap.AmapFlags.ShopMode) else group.flags.unset(db.Amap.AmapFlags.ShopMode);
+			if(form.getValueOf("mode")=="shop") group.flags.set(db.Group.GroupFlags.ShopMode) else group.flags.unset(db.Group.GroupFlags.ShopMode);
 
-			if(group.betaFlags.has(db.Amap.BetaFlags.ShopV2) && group.flags.has(db.Amap.AmapFlags.CustomizedCategories)){
+			if(group.betaFlags.has(db.Group.BetaFlags.ShopV2) && group.flags.has(db.Group.GroupFlags.CustomizedCategories)){
 				App.current.session.addMessage("Vous ne pouvez pas activer les catégories personnalisées et la nouvelle boutique. La nouvelle boutique ne fonctionne pas avec les catégories personnalisées.",true);
-				group.flags.unset(db.Amap.AmapFlags.CustomizedCategories);
+				group.flags.unset(db.Group.GroupFlags.CustomizedCategories);
 				group.update();
 			}
 
 			//warning AMAP+payments
-			if( !group.flags.has(db.Amap.AmapFlags.ShopMode) &&  group.hasPayments() ){
+			if( !group.flags.has(db.Group.GroupFlags.ShopMode) &&  group.hasPayments() ){
 				//App.current.session.addMessage("ATTENTION : nous ne vous recommandons pas d'activer la gestion des paiements si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
 				App.current.session.addMessage("L'activation de la gestion des paiements n'est pas autorisée si vous êtes une AMAP. Ce cas de figure n'est pas bien géré par Cagette.net.",true);
-				group.flags.unset(db.Amap.AmapFlags.HasPayments);
+				group.flags.unset(db.Group.GroupFlags.HasPayments);
 				group.update();
 			}
 			

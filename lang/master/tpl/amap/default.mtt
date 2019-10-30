@@ -6,18 +6,18 @@
 		<div class="block">
 			
 			<h4>
-				::user._amap.name::
+				::user.getGroup().name::
 			</h4>
 
-			::if user._amap._image!=null::
-			::if user._amap.extUrl!=null && user._amap.extUrl!=""::
-			<a href="::user._amap.extUrl::"><img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
+			::if user.getGroup()._image!=null::
+			::if user.getGroup().extUrl!=null && user.getGroup().extUrl!=""::
+			<a href="::user.getGroup().extUrl::"><img src="::file(user.getGroup()._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/></a>
 			::else::
-			<img src="::file(user._amap._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
+			<img src="::file(user.getGroup()._image)::" style="margin:auto;display: block;width: 100%;" class="thumbnail" /><br/>
 			::end::
 			::end::
 			
-			::raw nl2br(user.getAmap().txtIntro)::
+			::raw nl2br(user.getGroup().txtIntro)::
 			<br/>
 			::if user.isAmapManager()::
 			$$edit(::_("Edit")::,amap/edit)
@@ -27,7 +27,7 @@
 		
 		<div class="block">
 			<b>::_("Main contact"):: :</b><br/>
-			$$contact(::user.getAmap()._contact::)	
+			$$contact(::user.getGroup()._contact::)	
 		</div>
 
 	</div>

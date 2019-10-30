@@ -85,10 +85,10 @@ class Cron extends Controller
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
-				FROM MultiDistrib distrib INNER JOIN Amap amap
-				ON distrib.groupId = amap.id
-				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY)
-				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.volunteersMailDaysBeforeDutyPeriod DAY);', false));
+				FROM MultiDistrib distrib INNER JOIN `Group` g
+				ON distrib.groupId = g.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false));
 			printTitle("Volunteers instruction mail");
 			
 			for (multidistrib  in multidistribs) {
@@ -131,10 +131,10 @@ class Cron extends Controller
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
-				FROM MultiDistrib distrib INNER JOIN Amap amap
-				ON distrib.groupId = amap.id
-				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
-				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL amap.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
+				FROM MultiDistrib distrib INNER JOIN `Group` g
+				ON distrib.groupId = g.id
+				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY)
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
 
 			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
 			printTitle("Volunteers alerts");
@@ -212,7 +212,7 @@ class Cron extends Controller
 		//Demo contracts : deletion after 7 days
 		var sevenDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7);
 		var heightDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 8);
-		for( g in db.Amap.manager.search($cdate<sevenDaysAgo && $cdate>heightDaysAgo) ){
+		for( g in db.Group.manager.search($cdate<sevenDaysAgo && $cdate>heightDaysAgo) ){
 			g.deleteDemoContracts();
 		}		
 		
@@ -293,16 +293,16 @@ class Cron extends Controller
 		//We have now the distribs we want to notify about.
 		var distribsByContractId = new Map<Int,db.Distribution>();
 		for (d in distribs) {			
-			if (d == null || d.contract==null) continue;
-			distribsByContractId.set(d.contract.id, d);
+			if (d == null || d.catalog==null) continue;
+			distribsByContractId.set(d.catalog.id, d);
 		}
 
 		//Boucle sur les distributions pour gerer le cas de plusieurs distributions le même jour sur le même contrat
  		var orders = [];
  		for (d in distribs) {
-			if (d == null || d.contract==null) continue;
+			if (d == null || d.catalog==null) continue;
  			//get orders for both type of contracts
-			for ( x in d.contract.getOrders(d)) orders.push(x);
+			for ( x in d.catalog.getOrders(d)) orders.push(x);
 		}
 		
 		/*
@@ -312,27 +312,27 @@ class Cron extends Controller
 		var users = new Map <String,{
 			user:db.User,
 			distrib:db.Distribution,
-			products:Array<db.UserContract>,
+			products:Array<db.UserOrder>,
 			vendors:Array<db.Vendor>		
 		}>();
 		
 		for (o in orders) {
 			
-			var x = users.get(o.user.id+"-"+o.product.contract.amap.id);
+			var x = users.get(o.user.id+"-"+o.product.catalog.group.id);
 			if (x == null) x = {user:o.user,distrib:null,products:[],vendors:[]};
-			x.distrib = distribsByContractId.get(o.product.contract.id);
+			x.distrib = distribsByContractId.get(o.product.catalog.id);
 			x.products.push(o);			
-			users.set(o.user.id+"-"+o.product.contract.amap.id, x);
-			//trace (o.userId+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
+			users.set(o.user.id+"-"+o.product.catalog.group.id, x);
+			//trace (o.userId+"-"+o.product.catalog.amap.id, x);Sys.print("<br/>\n");
 			 
 			// Prévenir également le deuxième user en cas des commandes alternées
  			if (o.user2 != null) {
- 				var x = users.get(o.user2.id+"-"+o.product.contract.amap.id);
+ 				var x = users.get(o.user2.id+"-"+o.product.catalog.group.id);
  				if (x == null) x = {user:o.user2,distrib:null,products:[],vendors:[]};
- 				x.distrib = distribsByContractId.get(o.product.contract.id);
+ 				x.distrib = distribsByContractId.get(o.product.catalog.id);
  				x.products.push(o);
- 				users.set(o.user2.id+"-"+o.product.contract.amap.id, x);
- 				//trace (o.user2.id+"-"+o.product.contract.amap.id, x);Sys.print("<br/>\n");
+ 				users.set(o.user2.id+"-"+o.product.catalog.group.id, x);
+ 				//trace (o.user2.id+"-"+o.product.catalog.amap.id, x);Sys.print("<br/>\n");
  			}
 		}
 
@@ -348,14 +348,14 @@ class Cron extends Controller
 		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
 		{
  			for (d in distribs) {
-				var memberList = d.contract.amap.getMembers();
+				var memberList = d.catalog.group.getMembers();
 				for (u in memberList) {
-					var x = users.get(u.id+"-"+d.contract.amap.id);
+					var x = users.get(u.id+"-"+d.catalog.group.id);
 					if (x == null) x = {user:u,distrib:null,products:[],vendors:[]};
-					x.distrib = distribsByContractId.get(d.contract.id);
-					x.vendors.push(d.contract.vendor);
-					users.set(u.id+"-"+d.contract.amap.id, x);
-					//print(u.id+"-"+d.contract.amap.id, x);
+					x.distrib = distribsByContractId.get(d.catalog.id);
+					x.vendors.push(d.catalog.vendor);
+					users.set(u.id+"-"+d.catalog.group.id, x);
+					//print(u.id+"-"+d.catalog.amap.id, x);
 				}
 			}
 		}
@@ -365,7 +365,7 @@ class Cron extends Controller
 			if (u.user.flags.has(flag) ) {
 				
 				if (u.user.email != null) {
-					var group = u.distrib.contract.amap;
+					var group = u.distrib.catalog.group;
 					this.t = sugoi.i18n.Locale.init(u.user.lang); //switch to the user language
 
 					var text;
@@ -409,7 +409,7 @@ class Cron extends Controller
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
 						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
 						m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-						App.sendMail(m , u.distrib.contract.amap);	
+						App.sendMail(m , u.distrib.catalog.group);	
 					}catch (e:Dynamic){						
 						app.logError(e); //email could be invalid
 					}

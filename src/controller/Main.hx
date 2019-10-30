@@ -1,6 +1,6 @@
 package controller;
 import db.Distribution;
-import db.UserContract;
+import db.UserOrder;
 import haxe.Json;
 import haxe.web.Dispatch;
 import sugoi.form.elements.StringInput;
@@ -47,7 +47,7 @@ class Main extends Controller {
 		var group = app.getCurrentGroup();		
 		if ( app.user!=null && group == null) {			
 			throw Redirect("/user/choose");
-		}else if (app.user == null && (group==null || group.regOption!=db.Amap.RegOption.Open) ) {
+		}else if (app.user == null && (group==null || group.regOption!=db.Group.RegOption.Open) ) {
 			throw Redirect("/user/login");
 		}
 
@@ -63,7 +63,7 @@ class Main extends Controller {
 		}
 		
 		//register to become "distributor"
-		//view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.amap.getActiveContracts(), function(c) return c.distributorNum > 0);
+		//view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.getGroup().getActiveContracts(), function(c) return c.distributorNum > 0);
 		
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;
@@ -79,7 +79,7 @@ class Main extends Controller {
 
 		//view functions
 		view.getWhosTurn = function(orderId:Int, distrib:Distribution) {
-			return db.UserContract.manager.get(orderId, false).getWhosTurn(distrib);
+			return db.UserOrder.manager.get(orderId, false).getWhosTurn(distrib);
 		}
 		
 		//register to group without ordering block
@@ -92,7 +92,7 @@ class Main extends Controller {
 		}
 
 		var isMember = app.user==null ? false : app.user.isMemberOf(group);
-		var registerWithoutOrdering = ( !isMember && group.regOption==db.Amap.RegOption.Open && !hasOneOpenDistrib );
+		var registerWithoutOrdering = ( !isMember && group.regOption==db.Group.RegOption.Open && !hasOneOpenDistrib );
 		view.registerWithoutOrdering = registerWithoutOrdering;
 		if(registerWithoutOrdering) service.UserService.prepareLoginBoxOptions(view,group);		
 
@@ -102,11 +102,11 @@ class Main extends Controller {
 		view.blocks = e.getParameters()[0];
 
 		//message if phone is required
-		if(app.user!=null && group.flags.has(db.Amap.AmapFlags.PhoneRequired) && app.user.phone==null){
+		if(app.user!=null && group.flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
 			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 		//message if address is required
-		if(app.user!=null && group.flags.has(db.Amap.AmapFlags.AddressRequired) && app.user.city==null){
+		if(app.user!=null && group.flags.has(db.Group.GroupFlags.AddressRequired) && app.user.city==null){
 			app.session.addMessage(t._("Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
@@ -303,7 +303,7 @@ Called from controller/Main.hx line 117
 	@admin
 	function doDb(d:Dispatch) {
 		d.parts = []; //disable haxe.web.Dispatch
-		sys.db.Admin.handler();
+		sys.db.admin.Admin.handler();
 	}
 	
 	

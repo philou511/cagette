@@ -41,29 +41,7 @@
 					<span class="info">
 						<i class="icon icon-clock"></i> ::_("Orders will close on")::
 					</span>
-					::if ArrayTool.mapLength(infos) == 1::
-						::hDate( infos.iterator().next()[0].orderEndDate )::
-					::else::
-						<ul>
-						::foreach k infos.keys()::
-							<li>
-							::set dists = infos.get(k)::
-							
-							::if dists.length==1::
-								::dists[0]._contract.name::
-							::else::
-								::set tt = ""::
-								::foreach d dists::
-									::set tt = tt  + d._contract.name + ". "::
-								::end::
-								<span data-toggle="tooltip" title="::tt::" style="text-decoration:underline;">::_("Autres")::</span>
-							::end::
-							
-							: ::hDate(Date.fromString(k))::
-							</li>
-						::end::
-						</ul>
-					::end::
+					::raw infos::
 				</div>
 			</div>
 

@@ -72,22 +72,22 @@ class TestTools extends haxe.unit.TestCase
 
 		//source datas is an array of INt ( users to assign to this group )
 		//destination datas is an array of UserAmap.
-		var ls = new tools.ListSynchronizer<Int,db.UserAmap>();
+		var ls = new tools.ListSynchronizer<Int,db.UserGroup>();
 
 		//we want to remove seb and add Julie
 		ls.setSourceDatas( [julie.id,francois.id] );
-		ls.setDestinationDatas( Lambda.array(db.UserAmap.manager.search($amap==group)) );
-		ls.isEqualTo = function(id:Int,ua:db.UserAmap){
+		ls.setDestinationDatas( Lambda.array(db.UserGroup.manager.search($amap==group)) );
+		ls.isEqualTo = function(id:Int,ua:db.UserGroup){
 			return id==ua.user.id;
 		};
 		ls.createNewEntity = function(id:Int){
 			var u = db.User.manager.get(id,false);
 			return u.makeMemberOf(group);
 		};
-		ls.deleteEntity = function(ua:db.UserAmap){
+		ls.deleteEntity = function(ua:db.UserGroup){
 			ua.delete();
 		};
-		ls.updateEntity = function(id:Int,ua:db.UserAmap){
+		ls.updateEntity = function(id:Int,ua:db.UserGroup){
 			ua.user = db.User.manager.get(id);
 			ua.update();
 			return ua;
@@ -99,7 +99,7 @@ class TestTools extends haxe.unit.TestCase
 		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==francois.id )!=null );
 
 		//reload from DB
-		var newList = Lambda.array(db.UserAmap.manager.search($amap==group));
+		var newList = Lambda.array(db.UserGroup.manager.search($amap==group));
 
 		assertTrue( newList.length==2 );
 		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==julie.id )!=null );
@@ -121,7 +121,7 @@ class TestTools extends haxe.unit.TestCase
 		
 		//test les fonctions de cotisation
 		
-		var amap = db.Amap.manager.get(1);
+		var amap = db.Group.manager.get(1);
 		
 		amap.membershipRenewalDate = new Date(2015, 0, 1,0,0,0);
 		amap.update();

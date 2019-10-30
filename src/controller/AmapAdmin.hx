@@ -1,5 +1,5 @@
 package controller;
-import db.UserAmap;
+import db.UserGroup;
 import haxe.Http;
 import neko.Web;
 import sugoi.form.Form;
@@ -20,10 +20,10 @@ class AmapAdmin extends Controller
 		//lance un event pour demander aux plugins si ils veulent ajouter un item dans la nav
 		var nav = new Array<Link>();
 		
-		if (app.user.amap.hasPayments()) {
+		if (app.user.getGroup().hasPayments()) {
 			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment") });
 		}	
-		if(!app.user.amap.hasTaxonomy()){
+		if(!app.user.getGroup().hasTaxonomy()){
 			nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories") });
 		}
 		
@@ -36,11 +36,11 @@ class AmapAdmin extends Controller
 	
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
-		view.membersNum = UserAmap.manager.count($amap == app.user.amap);
-		view.contractsNum = app.user.amap.getActiveContracts().length;
+		view.membersNum = UserGroup.manager.count($group == app.user.getGroup());
+		view.contractsNum = app.user.getGroup().getActiveContracts().length;
 		
 		//ping cagette groups directory
-		/*if (Std.random(10) == 0 && app.user.amap.flags.has(db.Amap.AmapFlags.CagetteNetwork)){
+		/*if (Std.random(10) == 0 && app.user.getGroup().flags.has(db.Group.GroupFlags.CagetteNetwork)){
 			var req = new Http("http://annuaire.cagette.net/api/ping?url="+StringTools.urlEncode( "http://" + App.config.HOST  ) );
 			try{
 				req.request();
@@ -58,7 +58,7 @@ class AmapAdmin extends Controller
 		if (!app.user.isAmapManager()) throw Error("/", t._("Access forbidden"));
 		
 		var user = app.user;
-		view.image = user.amap.image;
+		view.image = user.getGroup().image;
 		
 		var request = new Map();
 		try {
@@ -81,16 +81,16 @@ class AmapAdmin extends Controller
 					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);				
 				}
 				
-				user.amap.lock();
+				user.getGroup().lock();
 				
-				if (user.amap.image != null) {
+				if (user.getGroup().image != null) {
 					//delete previous file
-					user.amap.image.lock();
-					user.amap.image.delete();
+					user.getGroup().image.lock();
+					user.getGroup().image.delete();
 				}
 				
-				user.amap.image = img;
-				user.amap.update();
+				user.getGroup().image = img;
+				user.getGroup().update();
 				
 				throw Ok('/amapadmin/', t._("Image updated"));
 			}
@@ -103,7 +103,7 @@ class AmapAdmin extends Controller
 	public function doRights() {
 		
 		//liste les gens qui ont des droits dans le groupe
-		var users = db.UserAmap.manager.search($rights != null && $amap == app.user.amap, false);
+		var users = db.UserGroup.manager.search($rights != null && $group == app.user.getGroup(), false);
 		
 		//cleaning 
 		for ( u in Lambda.array(users)) {
@@ -123,7 +123,7 @@ class AmapAdmin extends Controller
 				switch(r) {
 					case ContractAdmin(cid):
 						if (cid == null) continue;
-						var c = db.Contract.manager.get(cid);
+						var c = db.Catalog.manager.get(cid);
 						if (c == null) {
 							u.lock();
 							u.removeRight(r);
@@ -144,7 +144,7 @@ class AmapAdmin extends Controller
 		var form = new sugoi.form.Form("editRight");
 		
 		if (u == null) {
-			form.addElement( new IntSelect("user", t._("Member") , app.user.amap.getMembersFormElementData(), null, true) );	
+			form.addElement( new IntSelect("user", t._("Member") , app.user.getGroup().getMembersFormElementData(), null, true) );	
 		}
 		
 		var data = [];
@@ -156,10 +156,10 @@ class AmapAdmin extends Controller
 		data.push({label:t._("Membership management"),value:"Membership"});
 		data.push({label:t._("Messages"),value:"Messages"});
 		
-		var ua : db.UserAmap = null;
+		var ua : db.UserGroup = null;
 		var populate :Array<String> = null;
 		if (u != null) {
-			ua = db.UserAmap.get(u, app.user.amap, true);
+			ua = db.UserGroup.get(u, app.user.getGroup(), true);
 			if (ua == null) throw "no user";
 			if (ua.rights == null) ua.rights = [];
 			//populate form
@@ -173,7 +173,7 @@ class AmapAdmin extends Controller
 		var data = [];
 		var populate :Array<String> = [];
 		data.push({value:"contractAll",label:t._("All catalogs")});
-		for (r in app.user.amap.getActiveContracts(true)) {
+		for (r in app.user.getGroup().getActiveContracts(true)) {
 			data.push( { label:r.name , value:"contract"+Std.string(r.id) } );
 		}
 		
@@ -200,7 +200,7 @@ class AmapAdmin extends Controller
 			var wasManager = app.user.isAmapManager();
 			
 			if (u == null) {				
-				ua = db.UserAmap.manager.select($userId == Std.parseInt(form.getValueOf("user")) && $amapId == app.user.amap.id, true);
+				ua = db.UserGroup.manager.select($userId == Std.parseInt(form.getValueOf("user")) && $groupId == app.user.getGroup().id, true);
 			}
 			ua.rights = [];
 
@@ -257,11 +257,11 @@ class AmapAdmin extends Controller
 	public function doVatRates() {
 		
 		var f = new sugoi.form.Form("vat");
-		var a = app.user.amap;
+		var a = app.user.getGroup();
 		
 		if (a.vatRates == null) {
 			a.lock();
-			var x = new db.Amap();
+			var x = new db.Group();
 			a.vatRates = x.vatRates;
 			a.update();
 		}
@@ -316,15 +316,15 @@ class AmapAdmin extends Controller
 		view.title = t._("Currency used by your group.");
 		
 		var f = new sugoi.form.Form("curr");
-		f.addElement(new sugoi.form.elements.StringInput("currency", t._("Currency symbol"), app.user.amap.getCurrency()));
-		f.addElement(new sugoi.form.elements.StringInput("currencyCode", t._("3 digit ISO code"), app.user.amap.currencyCode));
+		f.addElement(new sugoi.form.elements.StringInput("currency", t._("Currency symbol"), app.user.getGroup().getCurrency()));
+		f.addElement(new sugoi.form.elements.StringInput("currencyCode", t._("3 digit ISO code"), app.user.getGroup().currencyCode));
 		
 		if ( f.isValid()){
 			
-			app.user.amap.lock();
-			app.user.amap.currency = f.getValueOf("currency");
-			app.user.amap.currencyCode = f.getValueOf("currencyCode");
-			app.user.amap.update();
+			app.user.getGroup().lock();
+			app.user.getGroup().currency = f.getValueOf("currency");
+			app.user.getGroup().currencyCode = f.getValueOf("currencyCode");
+			app.user.getGroup().update();
 			
 			throw Ok("/amapadmin/currency", t._("Currency updated"));
 		}
@@ -341,22 +341,22 @@ class AmapAdmin extends Controller
 		var f = new sugoi.form.Form("paymentTypes");
 		var types = service.PaymentService.getPaymentTypes(PCGroupAdmin);
 		var formdata = [for (t in types){label:t.name, value:t.type}];		
-		var selected = app.user.amap.allowedPaymentsType;
+		var selected = app.user.getGroup().allowedPaymentsType;
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes", t._("Authorized payment types"),formdata, selected) );
 		
-		if (app.user.amap.checkOrder == ""){
-			app.user.amap.lock();
-			app.user.amap.checkOrder = app.user.amap.name;
-			app.user.amap.update();
+		if (app.user.getGroup().checkOrder == ""){
+			app.user.getGroup().lock();
+			app.user.getGroup().checkOrder = app.user.getGroup().name;
+			app.user.getGroup().update();
 		}
-		f.addElement( new sugoi.form.elements.StringInput("checkOrder", t._("Make the check payable to"), app.user.amap.checkOrder, false)); 
-		f.addElement( new sugoi.form.elements.StringInput("IBAN", t._("IBAN of your bank account for transfers"), app.user.amap.IBAN, false)); 
-		f.addElement(new sugoi.form.elements.Checkbox("allowMoneyPotWithNegativeBalance", t._("Allow money pots with negative balance"), app.user.amap.allowMoneyPotWithNegativeBalance));
+		f.addElement( new sugoi.form.elements.StringInput("checkOrder", t._("Make the check payable to"), app.user.getGroup().checkOrder, false)); 
+		f.addElement( new sugoi.form.elements.StringInput("IBAN", t._("IBAN of your bank account for transfers"), app.user.getGroup().IBAN, false)); 
+		f.addElement(new sugoi.form.elements.Checkbox("allowMoneyPotWithNegativeBalance", t._("Allow money pots with negative balance"), app.user.getGroup().allowMoneyPotWithNegativeBalance));
 		
 		if (f.isValid()){
 			
 			var p = f.getValueOf("paymentTypes");
-			var a = app.user.amap;
+			var a = app.user.getGroup();
 			a.lock();
 			a.allowedPaymentsType = p;
 			a.checkOrder = f.getValueOf("checkOrder");

@@ -1,5 +1,6 @@
 package react.store;
 // it's just easier with this lib
+import js.html.ScrollBehavior;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
@@ -93,7 +94,8 @@ class HeaderWrapper extends react.ReactComponentOf<HeaderWrapperProps, HeaderWra
     }
 
     function resetScroll() {
-        js.Browser.window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        js.Browser.window.scrollTo({ top: 0, behavior: ScrollBehavior.SMOOTH });
     }
 
 	override public function render() {

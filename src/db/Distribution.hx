@@ -11,7 +11,7 @@ class Distribution extends Object
 {
 	public var id : SId;	
 	
-	@hideInForms @:relation(contractId) 	public var contract : Contract;
+	@hideInForms @:relation(catalogId) 	public var catalog : db.Catalog;
 	@hideInForms @:relation(multiDistribId) public var multiDistrib : MultiDistrib;
 	
 	//deprecated
@@ -39,8 +39,8 @@ class Distribution extends Object
 	 * get group members list as form data
 	 */
 	public function distributorPopulate():FormData<Int> {
-		if(App.current.user!=null && App.current.user.getAmap()!=null){
-			return App.current.user.getAmap().getMembersFormElementData();				
+		if(App.current.user!=null && App.current.user.getGroup()!=null){
+			return App.current.user.getGroup().getMembersFormElementData();				
 		}else{
 			return [];
 		}
@@ -54,12 +54,12 @@ class Distribution extends Object
 	public function placePopulate():FormData<Int> {
 		var out = [];
 		var places = new List();
-		if(this.contract!=null){
+		if(this.catalog!=null){
 			//edit form
-			places = db.Place.manager.search($amapId == this.contract.amap.id, false);
+			places = db.Place.manager.search($groupId == this.catalog.group.id, false);
 		}else{
 			//insert form
-			places = db.Place.manager.search($amapId == App.current.user.amap.id, false);
+			places = db.Place.manager.search($groupId == App.current.user.getGroup().id, false);
 		}
 		
 		for (p in places) out.push( { label:p.name,value:p.id} );
@@ -90,17 +90,17 @@ class Distribution extends Object
 	 * String to identify this distribution (debug use only)
 	 */
 	override public function toString() {
-		return "#" + id + " Distribution - " + contract.name;		
+		return "#" + id + " Distribution - " + catalog.name;		
 	}
 	
 	public function getOrders() {
 			
-		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
-			var pids = db.Product.manager.search($contract == this.contract, false);
+		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
+			var pids = db.Product.manager.search($catalog == this.catalog, false);
 			var pids = Lambda.map(pids, function(x) return x.id);		
-			return UserContract.manager.search( ($productId in pids), false); 
+			return db.UserOrder.manager.search( ($productId in pids), false); 
 		}else{
-			return UserContract.manager.search($distribution == this, false); 
+			return db.UserOrder.manager.search($distribution == this, false); 
 		}
 	}
 
@@ -111,20 +111,20 @@ class Distribution extends Object
 	**/
 	@:skip var pids : Array<Int>;
 	public function hasUserOrders(user:db.User):Bool{
-		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
-			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($contract == this.contract, false));
-			return UserContract.manager.search( (($productId in pids) && ($user==user || $user2==user) ),{limit:1}, false).length > 0; 
+		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
+			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($catalog == this.catalog, false));
+			return db.UserOrder.manager.search( (($productId in pids) && ($user==user || $user2==user) ),{limit:1}, false).length > 0; 
 		}else{
-			return UserContract.manager.search($distribution == this  && $user==user,{limit:1}, false).length > 0; 
+			return db.UserOrder.manager.search($distribution == this  && $user==user,{limit:1}, false).length > 0; 
 		}
 	}
 
-	public function getUserOrders(user:db.User):List<db.UserContract>{
-		if ( this.contract.type == Contract.TYPE_CONSTORDERS){
-			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($contract == this.contract, false));			
-			return UserContract.manager.search( (($productId in pids) && ($user==user || $user2==user) ), false); 
+	public function getUserOrders(user:db.User):List<db.UserOrder>{
+		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
+			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($catalog == this.catalog, false));			
+			return db.UserOrder.manager.search( (($productId in pids) && ($user==user || $user2==user) ), false); 
 		}else{
-			return UserContract.manager.search($distribution == this  && $user==user, false); 
+			return db.UserOrder.manager.search($distribution == this  && $user==user, false); 
 		}
 	}
 	
@@ -145,10 +145,10 @@ class Distribution extends Object
 	 * Get TTC turnover for this distribution
 	 */
 	public function getTurnOver():Float{
-		var products = contract.getProducts(false);
+		var products = catalog.getProducts(false);
 		if(products.length==0) return 0.0;
-		var sql = "select SUM(quantity * productPrice) from UserContract  where productId IN (" + tools.ObjectListTool.getIds(products).join(",") +") ";
-		if (contract.type == db.Contract.TYPE_VARORDER) {
+		var sql = "select SUM(quantity * productPrice) from UserOrder  where productId IN (" + tools.ObjectListTool.getIds(products).join(",") +") ";
+		if (catalog.type == db.Catalog.TYPE_VARORDER) {
 			sql += " and distributionId=" + this.id;	
 		}
 	
@@ -160,13 +160,13 @@ class Distribution extends Object
 	 */
 	public function getHTTurnOver(){
 		
-		var pids = tools.ObjectListTool.getIds(contract.getProducts(false));
+		var pids = tools.ObjectListTool.getIds(catalog.getProducts(false));
 		
-		var sql = "select SUM(uc.quantity *  (p.price/(1+p.vat/100)) ) from UserContract uc, Product p ";
+		var sql = "select SUM(uc.quantity *  (p.price/(1+p.vat/100)) ) from UserOrder uc, Product p ";
 		sql += "where uc.productId IN (" + pids.join(",") +") ";
 		sql += "and p.id=uc.productId ";
 		
-		if (contract.type == db.Contract.TYPE_VARORDER) {
+		if (catalog.type == db.Catalog.TYPE_VARORDER) {
 			sql += " and uc.distributionId=" + this.id;	
 		}
 	
@@ -179,10 +179,10 @@ class Distribution extends Object
 	public function canOrderNow() {
 		
 		if (orderEndDate == null) {
-			return this.contract.isUserOrderAvailable();
+			return this.catalog.isUserOrderAvailable();
 		}else {
 			var n = Date.now().getTime();
-			var f = this.contract.flags.has(UsersCanOrder);
+			var f = this.catalog.flags.has(UsersCanOrder);
 			
 			return f && n < orderEndDate.getTime() && n > orderStartDate.getTime();
 			
@@ -200,12 +200,12 @@ class Distribution extends Object
 
 		var now = Date.now();
 
-		var contracts = Contract.getActiveContracts(App.current.user.amap);
+		var contracts = Contract.getActiveContracts(App.current.user.getGroup());
 		var cids = Lambda.map(contracts, function(p) return p.id);
 
 		//available deliveries + some of the next deliveries
 
-		var distribs = db.Distribution.manager.search(($contractId in cids) && $orderEndDate >= now, { orderBy:date }, false);
+		var distribs = db.Distribution.manager.search(($catalogId in cids) && $orderEndDate >= now, { orderBy:date }, false);
 		var inOneMonth = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30);
 		for (d in distribs) {
 
@@ -243,9 +243,9 @@ class Distribution extends Object
 	public function getInfos():DistributionInfos{
 		var out = {
 			id:id,
-			groupId		: place.amap.id,
-			groupName 	: place.amap.name,
-			vendorId				: this.contract.vendor.id,
+			groupId		: place.group.id,
+			groupName 	: place.group.name,
+			vendorId				: this.catalog.vendor.id,
 			distributionStartDate	: date==null ? multiDistrib.distribStartDate.getTime() : date.getTime(),
 			distributionEndDate		: end==null ? multiDistrib.distribEndDate.getTime() : end.getTime(),
 			orderStartDate			: null,
@@ -294,9 +294,9 @@ class Distribution extends Object
      * Get open to orders deliveries
      * @param	contract
      */
-    public static function getOpenToOrdersDeliveries(contract:db.Contract){
+    public static function getOpenToOrdersDeliveries(contract:db.Catalog){
 
-        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $contract==contract,{orderBy:date},false));
+        return Lambda.array(manager.search($orderStartDate <= Date.now() && $orderEndDate >= Date.now() && $catalog==contract,{orderBy:date},false));
 
     }
 

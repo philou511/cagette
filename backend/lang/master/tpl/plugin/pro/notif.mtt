@@ -1,0 +1,267 @@
+<div class="col-md-4">
+
+	<div class="iconBadge">
+		::switch notif._type::
+		<!-- default -->
+		<i class="icon icon-alert"></i>
+		::case::
+		<!-- catalog import -->
+		<i class="icon icon-upload"></i>
+		::case::
+		<!-- delivery request -->
+		<i class="icon icon-truck"></i>
+		::end::
+	</div>
+	
+	::switch notif._type::
+		<!-- default -->
+	::case::
+		<!-- catalog import -->		
+		<h2>Demande de liaison de catalogue</h2>
+	::case::
+		<!-- delivery request -->
+		<h2>Demande de livraison</h2>	
+	::case::
+		<!--  -->
+	
+	::case::
+		<!-- delivery request -->
+		<h2>Modification de livraison</h2>	
+	
+	::end::
+	
+	<div>
+		Reçue ::hDate(notif.date)::
+	</div>
+	<div>
+		::if notif._group!=null::
+		<b>::notif._group.name::</b>
+		::end::
+	</div>
+	
+	
+	
+	
+</div>
+<div class="col-md-8">
+	
+	::switch notif._type::
+		<!-- default -->
+		<p>unkown notification type</p>
+		::notif::
+		
+	::case::
+		<!-- catalog import -->
+		<table class="table table-striped">
+			<tr>
+				<td>Catalogue</td>
+				<th>
+					<a href="/p/pro/catalog/view/::notif._content.catalogId::">::getCatalog(notif._content.catalogId).name::</a>
+				</th>
+			</tr>
+			<tr>
+				::set user = getUser(notif._content.userId)::
+				::set group = notif._group::
+
+				<td>Demandé par :</td>
+				<td>$$contact(::user::)</td>
+			</tr>
+			<tr>
+				<td>Groupe :</td>
+				<td>::group.name::</td>
+			</tr>
+			<tr>
+				<td>Lieu :</td>
+				<td>
+					::if(group.getMainPlace()!=null)::
+						::group.getMainPlace().getFullAddress()::
+					::else::
+						Inconnu
+					::end::
+				</td>
+			</tr>
+			<tr>
+				<td>Type de catalogue :</td>
+				<td>
+					::if(notif._content.catalogType==0)::
+						Contrat AMAP
+					::else::
+						Catalogue standard ( commande variable )
+					::end::
+
+				</td>
+			</tr>
+			<tr>
+				<td>Message</td>
+				<td>::raw nl2br(notif._content.message)::</td>
+			</tr>
+		</table>
+	
+		<div class="text-center">
+			<a href="/p/pro/catalog/approveImport/::notif.id::" class="btn btn-primary btn-lg" >
+				<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+				&nbsp;Approuver
+			</a>
+			
+			<a href="/p/pro/notif/delete/::notif.id::?token=::token::" $$confirm(Supprimer cette demande ?)  class="btn btn-danger btn-lg" >
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				&nbsp;Effacer
+			</a>
+		</div>
+	
+	::case::
+		<!-- delivery request-->
+		<table class="table table-striped">
+			::set d = getDistrib(notif._content.distribId)::
+			<tr>
+				<td>Contact</td>
+				<td>
+					$$contact(::notif._sender::)
+				</td>
+			</tr>
+			::if(d!=null)::
+			<tr>
+				<td>Date</td>
+				<th>
+					::hDate( d.getDate() )::
+				</th>
+			</tr>
+			<tr>
+				<td>Ouverture des commandes</td>
+				<td>
+					::hDate( d.getOrdersStartDate(false) )::
+				</td>
+			</tr>
+			<tr>
+				<td>Fermeture des commandes</td>
+				<td>
+					::hDate( d.getOrdersEndDate(false) )::
+				</td>
+			</tr>
+			<tr>
+				<td>Adresse de livraison</td>
+				<td>::d.getPlace().getFullAddress()::</td>
+			</tr>
+			<tr>
+				<td>Catalogue concerné</td>
+				<td>
+					::getCatalog(notif._content.pcatalogId).name::
+				</td>
+			</tr>
+			::else::
+			<tr>
+				<td>Distribution annulée</td>
+			</tr>
+			::end::
+			
+		</table>
+	
+		<div class="text-center">
+			<a href="/p/pro/catalog/acceptDelivery/::notif.id::" class="btn btn-primary btn-lg" >
+				<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+				&nbsp;Accepter
+			</a>
+			
+			<a href="/p/pro/notif/delete/::notif.id::?token=::token::" $$confirm(Supprimer cette demande ?)  class="btn btn-danger btn-lg" >
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+
+				&nbsp;Refuser
+			</a>
+		</div>
+	
+	::case::
+
+		orders closed
+	
+	::case::
+	
+		<!-- DISTRIBUTION UPDATE -->
+		<table class="table table-striped">
+			<tr>
+				<td>Date</td>
+				::if hDate(notif._content.oldDistribution.date) == hDate(notif._content.newDistribution.date)::
+				<td>
+					::hDate(notif._content.oldDistribution.date):: (inchangé)
+				</td>
+				::else::
+				<td class="danger">					
+					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle date : </span><br/>
+					<b>::hDate(notif._content.newDistribution.date)::</b><br/>
+					( à la place de  ::hDate(notif._content.oldDistribution.date):: )
+				</td>
+				::end::
+				
+			</tr>
+			<tr>
+				<td>Ouverture des commandes</td>
+				
+				::if hDate(notif._content.oldDistribution.orderStartDate) == hDate(notif._content.newDistribution.orderStartDate)::
+				<td>
+					::hDate(notif._content.oldDistribution.orderStartDate):: (inchangé)					
+				</td>
+				::else::
+				<td class="danger">
+					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle date : </span><br/>
+					<b>::hDate(notif._content.newDistribution.orderStartDate)::</b><br/>
+					( à la place de  ::hDate(notif._content.oldDistribution.orderStartDate):: )
+				</td>
+				::end::
+			</tr>
+			<tr>
+				<td>Fermeture des commandes</td>
+				::if hDate(notif._content.oldDistribution.orderEndDate) == hDate(notif._content.newDistribution.orderEndDate)::
+				<td>
+					::hDate(notif._content.oldDistribution.orderEndDate):: (inchangé)					
+				</td>
+				::else::
+				<td class="danger">
+					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle date : </span><br/>
+					<b>::hDate(notif._content.newDistribution.orderEndDate)::</b><br/>
+					( à la place de  ::hDate(notif._content.oldDistribution.orderEndDate):: )
+				</td>
+				::end::
+			</tr>
+			<tr>
+				<td>Adresse de livraison</td>
+				
+				::if notif._content.oldDistribution.place == notif._content.newDistribution.place::
+				<td>
+					::notif._content.oldDistribution.place:: (inchangé)					
+				</td>
+				::else::
+				<td class="danger">
+					<span style="color:#A00"><i class="fa fa-warning"></i> Nouvelle adresse : </span><br/>
+					<b>::notif._content.newDistribution.place::</b><br/>
+					( à la place de  ::notif._content.oldDistribution.place:: )
+				</td>
+				::end::
+				
+			</tr>
+			
+		</table>
+	
+		<div class="text-center">
+			<a href="/p/pro/catalog/acceptDeliveryUpdate/::notif.id::" class="btn btn-primary btn-lg" >
+				<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+				&nbsp;Accepter
+			</a>
+			
+			<a href="/p/pro/notif/delete/::notif.id::?token=::token::" $$confirm(Supprimer cette demande ?)  class="btn btn-danger btn-lg" >
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+
+				&nbsp;Refuser
+			</a>
+		</div>
+	
+	
+	::end::
+	
+	
+	
+</div>
+
+
+
+
+
+	

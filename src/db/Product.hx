@@ -13,8 +13,8 @@ class Product extends Object
 	public var name : SString<128>;	
 	public var ref : SNull<SString<32>>;	//référence produit
 	
-	@:relation(contractId)
-	public var contract : Contract;
+	@:relation(catalogId)
+	public var catalog : db.Catalog;
 	
 	//prix TTC
 	public var price : SFloat;
@@ -75,10 +75,9 @@ class Product extends Object
 		}
 	}
 	
-	public function getName(){
-	
+	public function getName(){	
 		if (unitType != null && qt != null && qt != 0){
-			return name +" " + qt + " " + App.current.view.unit(unitType);
+			return name +" " + qt + " " + Formatting.unit(unitType);
 		}else{
 			return name;
 		}
@@ -92,7 +91,7 @@ class Product extends Object
 	 * get price including margins
 	 */
 	public function getPrice():Float{
-		return (price + contract.computeFees(price)).clean();
+		return (price + catalog.computeFees(price)).clean();
 	}
 	
 	/**
@@ -110,13 +109,13 @@ class Product extends Object
 			price : getPrice(),
 			vat : vat,
 			vatValue: (vat != 0 && vat != null) ? (  this.price - (this.price / (vat/100+1))  )  : null,
-			contractTax : contract.percentageValue,
-			contractTaxName : contract.percentageName,
+			catalogTax : catalog.percentageValue,
+			catalogTaxName : catalog.percentageName,
 			desc : App.current.view.nl2br(desc),
 			categories : null,
 			subcategories:null,
-			orderable : this.contract.isUserOrderAvailable(),
-			stock : contract.hasStockManagement() ? this.stock : null,
+			orderable : this.catalog.isUserOrderAvailable(),
+			stock : catalog.hasStockManagement() ? this.stock : null,
 			hasFloatQt : hasFloatQt,
 			qt:qt,
 			unitType:unitType,
@@ -126,8 +125,8 @@ class Product extends Object
 			bulk:bulk,
 			active: active,
 			distributionId : distribution==null ? null : distribution.id,
-			contractId : contract.id,
-			vendorId : contract.vendor.id,
+			catalogId : catalog.id,
+			vendorId : catalog.vendor.id,
 		}
 		
 		if(populateCategories){
@@ -172,18 +171,18 @@ class Product extends Object
 		return txpProduct.getFullCategorization();
 	}
 	
-	public static function getByRef(c:db.Contract, ref:String){
+	public static function getByRef(c:db.Catalog, ref:String){
 		var pids = tools.ObjectListTool.getIds(c.getProducts(false));
 		return db.Product.manager.select($ref == ref && $id in pids, false);
 	}
 
-	/**
-	 * Fix values that will make mysql 5.7 scream
-	 */
 	function check(){		
+		//Fix values that will make mysql 5.7 scream
 		if(this.vat==null) this.vat=0;
 		if(this.name.length>128) this.name = this.name.substr(0,128);
 		if(qt==0.0) qt = null;
+		//round like 0.00
+		price = Formatting.roundTo(price,2);
 	}
 
 	override public function update(){
