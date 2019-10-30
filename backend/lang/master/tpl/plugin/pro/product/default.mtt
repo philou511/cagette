@@ -65,9 +65,16 @@
                                 <i class="icon icon-chevron-down"></i> Voir les offres
                             </a>
 							$$edit(Modifier,/p/pro/product/edit/::p.id::)
-							<a href="/p/pro/product/addImage/::p.id::" class="btn btn-default btn-sm"> <i class="icon icon-image"></i> Photo</a>
+							
+
+							<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/product/image/::p.id::', null, 300, 300)">
+								<i class="icon icon-image"></i> ::_("Picture")::
+							</a>
+
+
 							$$delete(Supprimer,/p/pro/product/delete/::p.id::?token=::token::)
 						</div>
+						<div id="imageUploader"></div>
 					</td>
 
 				</tr>
@@ -123,8 +130,9 @@
 											<a onclick="_.overlay('/p/pro/offer/preview/::off.id::','::urlEncode(off.getName())::')" class="btn btn-default btn-sm">
 												<i class="icon icon-eye"></i> Voir</a>
 											$$edit(Mod.,/p/pro/offer/edit/::off.id::)
-											<a href="/p/pro/offer/addImage/::off.id::" class="btn btn-default btn-sm">
-												<i class="icon icon-image"></i> Photo</a>
+											<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/pro/offer/image/::off.id::', null, 300, 300)">
+												<i class="icon icon-image"></i> ::_("Picture")::
+											</a>
 											$$delete( ,/p/pro/offer/delete/::off.id::)
 										</div>
 									</td>

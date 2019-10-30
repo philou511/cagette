@@ -165,10 +165,12 @@ class App {
 	}
 
 	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int ) {
+		var node =  js.Browser.document.querySelector('#imageUploader');
+		ReactDOM.unmountComponentAtNode(node); 
 		ReactDOM.render(jsx('
 			<div>
 				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL width=$width height=$height />
-			</div>'),  js.Browser.document.querySelector('#imageUploader'));
+			</div>'), node);
 	}
 	
 	public function initReportHeader(){

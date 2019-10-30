@@ -125,15 +125,12 @@
 			<td>
 				<div class="btn-group" role="group">
 					$$edit(::_("Edit")::,/product/edit/::p.id::)
-
-					
 					
 					::if(p._image!=null)::
 						::set img = "\""+file(p._image)+"\""::
 					::else::
 						::set img = null::
 					::end::
-					
 					
 					<a class="btn btn-default btn-sm" onclick="_.openImageUploader('/api/product/image/::p.id::', ::img::, 300, 300)">
 						<i class="icon icon-image"></i> ::_("Picture")::
@@ -142,6 +139,7 @@
 					
 					$$delete(::_("Del.")::,/product/delete/::p.id::?token=::token::)
 				</div>
+				<div id="imageUploader"></div>
 			</td>
 
 		</tr>
@@ -151,7 +149,7 @@
 	</form>
 	
 
-	<div id="imageUploader"></div>
+	
 	
 	<p>
 		<div class="btn-group" role="group">

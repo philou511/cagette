@@ -71,18 +71,9 @@ class Product extends Controller
 			//Image
 			var image = request.get("file");
 			if (image != null && image.length > 0) {
-				//var img = sugoi.db.File.create(request.get("file"), request.get("filename"));
+				
+				var img = sugoi.db.File.createFromDataUrl(request.get("file"), request.get("filename"));
 
-				var s = request.get("file");
-				s = s.substr( "data:image/png;base64,".length );
-				var b = Base64.decode(s);
-				var img = sugoi.db.File.createFromBytes(b, request.get("filename"));
-				
-				/*
-				//DEBUG
-				var path = sugoi.Web.getCwd()+"../tmp/_image.png";
-				File.saveBytes(path , b);*/
-				
 				product.lock();
 				if (product.image != null) {
 					//efface ancienne
