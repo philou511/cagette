@@ -234,8 +234,13 @@ class Distribution extends Controller
 				
 				for (o in orders3) {
 					data.push( { 
-						"name":o.userName,
+						"userId":o.userId,
+						"userName":o.userName,
 						"productName":o.productName,
+						"ref":o.product.ref,
+						"catalogName":o.catalogName,
+						"catalogId":o.catalogId,
+						"vendorId":o.product.vendorId,
 						"price":view.formatNum(o.productPrice),
 						"quantity":o.quantity,
 						"fees":view.formatNum(o.fees),
@@ -244,7 +249,10 @@ class Distribution extends Controller
 					});				
 				}
 
-				sugoi.tools.Csv.printCsvDataFromObjects(data, ["name",  "productName", "price", "quantity","fees","total", "paid"],"Export-commandes-"+date.toString().substr(0,10)+"-Cagette");
+				sugoi.tools.Csv.printCsvDataFromObjects(
+					data,
+					["userId","userName","productName","ref","catalogName","catalogId","vendorId","price", "quantity","fees","total", "paid"],
+					"Export-commandes-"+date.toString().substr(0,10)+"-Cagette");
 				return;	
 			}
 		}

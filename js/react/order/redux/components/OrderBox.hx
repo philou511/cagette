@@ -178,10 +178,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 								</Button>			
 							</div>
 						</div>');
-
-			}
-			else {
-
+			} else {
 				js.Browser.location.hash = "/user";
 				return null;
 			}
@@ -190,24 +187,22 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 		//Display catalogs box
 		var renderCatalogsBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
-			return jsx('<CatalogsBox multiDistribId=${this.props.multiDistribId} />');
+			return <CatalogsBox multiDistribId=${this.props.multiDistribId} />;
 		} 
 
 		//insert product box
 		var renderInsertBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
-			return jsx('<InsertOrder catalogId=${this.props.catalogId} userId=${userId} multiDistribId=${this.props.multiDistribId} />');
+			return <InsertOrder catalogId=${this.props.catalogId} userId=${userId} multiDistribId=${this.props.multiDistribId} />;
 		} 
 
-		return jsx('
-			<HashRouter>
+		return <HashRouter>
 				<Switch>
-					${ userId != null ? null : jsx('<Route key="user" path="/user" exact=$true render=$renderUserSelector />') }
+					${ userId != null ? null : <Route key="user" path="/user" exact=$true render=$renderUserSelector /> }
 					<Route key="orders" path="/" exact=$true render=$renderOrderBox />
-					${ props.catalogId != null ? null : jsx('<Route key="catalogs" path="/catalogs" exact=$true render=$renderCatalogsBox />') }
+					${ props.catalogId != null ? null : <Route key="catalogs" path="/catalogs" exact=$true render=$renderCatalogsBox /> }
 					<Route key="products" path="/insert" exact=$true render=$renderInsertBox />
 				</Switch>
-			</HashRouter>
-		');
+			</HashRouter>;
 	}	
 
 	function onKeyPress(e : js.html.KeyboardEvent) {

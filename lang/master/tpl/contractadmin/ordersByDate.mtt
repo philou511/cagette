@@ -94,7 +94,7 @@
 				<tr>
 					<td>
 						<a href="/contractAdmin/view/::m.contractId::">
-							::short(m.contractName,40)::
+							::short(m.catalogName,40)::
 						</a>
 					</td>
 					<td>

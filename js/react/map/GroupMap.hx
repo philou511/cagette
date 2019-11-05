@@ -90,16 +90,16 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
     };
   }
 
-  function getMap(element:Dynamic):Void {
-    map = element.leafletElement;
-  }
+	function getMap(element:Dynamic):Void {
+		map = element.leafletElement;
+	}
 
-  function getFeatureGroup(element:Dynamic):Void {
-    featureGroup = element.leafletElement;
-    setState({
-      isFitting: true
-    }, fitBounds);
-  }
+	function getFeatureGroup(element:Dynamic):Void {
+    	featureGroup = element.leafletElement;
+    	setState({
+      		isFitting: true
+    	}, fitBounds);
+  	}
 
   	function getMarker(element:Dynamic, id:Int):Void {
     	if (element != null)

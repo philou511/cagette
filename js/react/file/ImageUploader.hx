@@ -24,7 +24,7 @@ typedef ImageUploaderState = {
 	var image : js.html.File;
 	var position : { x : Float, y : Float };
 	var scale : Float;
-	var rotate : Int;
+  	var rotate : Int;
 	var preview : { img : Dynamic, rect : { x : Float, y : Float, width : Float, height : Float },  scale : Float, width : Int, height : Int, borderRadius : Float };
 	var width : Int;
 	var height : Int;
@@ -44,7 +44,9 @@ class ImageUploader extends ReactComponentOfPropsAndState<ImageUploaderProps, Im
 		avatarEditorRef  = React.createRef();
 		
 		//use this to see if the haxe extern is linked to the js object
-		trace(DropZone);
+		//trace(DropZone);
+		//trace(AvatarEditor);
+		//js.html.Console.log(AvatarEditor);
   	}
  
  	function updateImage( e : js.html.Event ) {

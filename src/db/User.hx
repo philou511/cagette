@@ -614,6 +614,31 @@ class User extends Object {
 		if(countryOfResidence != null) str.add(", "+countryOfResidence);
 		return str.toString();
 	}
+
+	
+
+	public function getUserVoiceInfos():{type:String,id:Int,name:String}{
+		#if plugins
+		var uc = pro.db.PUserCompany.manager.select($user==this);
+		if(uc==null){
+			var g  = this.getGroup();
+			if(g==null) return null;
+			return {
+				type:"Administrateur de groupe",
+				id:g.id,
+				name:g.name
+			};
+		}else{			
+			var vendor = uc.company.vendor;
+			return {
+				type:"Cagette Pro",
+				id:vendor.id,
+				name:vendor.name
+			};
+		}
+		#end
+		return null;
+	}
 	
 	
 }
