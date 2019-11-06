@@ -556,12 +556,10 @@ class Cron extends Controller
 		for ( d in db.Distribution.manager.search($orderEndDate >= range.from && $orderEndDate < range.to, false)){
 			service.OrderService.sendOrdersByProductReport(d);
 		}
-
 	}
 	
-	
 	public static function print(text){
-		Sys.println( "<pre>"+ text + "</pre><br/>" );
+		Sys.println( "<pre>"+ text + "</pre>" );
 	}
 
 	public static function printTitle(title){

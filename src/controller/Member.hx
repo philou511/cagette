@@ -1,4 +1,6 @@
 package controller;
+import service.OrderService;
+import db.MultiDistrib;
 import Common;
 import haxe.Utf8;
 import sugoi.form.Form;
@@ -195,10 +197,11 @@ class Member extends Controller
 		view.userGroup = userGroup; 
 		view.canLoginAs = (db.UserGroup.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
 		
+		/*
 		//orders
-		var row = { constOrders:new Array<UserOrder>(), varOrders:new Map<String,Array<UserOrder>>() };
+		var row = {constOrders:new Array<UserOrder>(), varOrders:{distribution:null,orders:new Array<UserOrder>>()};
 			
-		//commandes fixes
+		//CSA orders
 		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_CONSTORDERS && $group == app.user.getGroup() && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
 		var orders = member.getOrdersFromContracts(contracts);
 		row.constOrders = service.OrderService.prepare(orders);
@@ -231,6 +234,20 @@ class Member extends Controller
 		
 		
 		view.userContracts = row;
+		*/
+
+		var now = Date.now();
+		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
+		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
+		var timeframe = new tools.Timeframe(from,to);
+		var distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
+
+
+		view.distribs = distribs;
+		view.getUserOrders = function(md:db.MultiDistrib){
+			return OrderService.prepare(md.getUserOrders(member,db.Catalog.TYPE_VARORDER));
+		}
+
 		checkToken(); //to insert a token in tpl
 		
 	}	

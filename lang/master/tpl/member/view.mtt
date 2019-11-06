@@ -87,6 +87,8 @@
 		<a href="/membership/::member.id::" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 		
 	</div>
+	::else::
+
 	::end::
 
 	
@@ -95,6 +97,7 @@
 <div class="col-md-8">
 	<h2>::_("Current orders")::</h2>
 	<div class="article">
+		<!--
 		::set o = userContracts::
 		::if o.constOrders.length>0::
 			<h4>::_("CSA contracts")::</h4>		
@@ -122,16 +125,17 @@
 						</td>
 						<td>::p.subTotal:: ::currency()::</td>
 						<td>
-							<a href="/contract/view/::p.contractId::">::p.contractName::</a>
+							<a href="/contract/view/::p.catalogId::">::p.catalogName::</a>
 						</td>
 					</tr>
 				::end::			
 			</table>
 			::end::
-			
-			::if count(o.varOrders)>0::
-				::foreach d o.varOrders.keys()::
-					<h4>::__("Order for ::date::",{date:d})::</h4>
+		-->	
+
+			::if distribs.length>0::
+				::foreach d distribs::
+					<h4>::__("Order for ::date::",{date:hDate(d.getDate())})::</h4>
 					
 					<table class="table table-bordered table-condensed" >
 						<tr>
@@ -145,12 +149,12 @@
 							
 						</tr>
 						::set total = 0::
-						::foreach p o.varOrders.get(d)::
+						::foreach p getUserOrders(d)::
 							<tr>
 								<td>::raw p.smartQt::</td>
 								<td>::p.productName::</td>
-								<td>::p.productPrice::&nbsp;::currency()::</td>
-								<td>::p.subTotal::&nbsp;::currency()::</td>
+								<td>::formatNum(p.productPrice)::&nbsp;::currency()::</td>
+								<td>::formatNum(p.subTotal)::&nbsp;::currency()::</td>
 								<td>
 									<!-- frais -->
 									::if p.percentageValue!=null::
@@ -166,7 +170,7 @@
 								
 								</td>
 								<td>
-									<a href="/contract/view/::p.contractId::">::p.contractName::</a>
+									<a href="/contract/view/::p.catalogId::">::p.catalogName::</a>
 								</td>
 							
 							</tr>
@@ -175,6 +179,7 @@
 							<td colspan="4"></td>
 							<td>::_("TOTAL")::</td>
 							<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
+							<td></td>
 						</tr>
 					</table>
 				::end::
@@ -185,8 +190,8 @@
 </div>
 
 
-<div ::cond user.getGroup().hasPayments():: class="col-md-8">
-	<div class="article">
+<div  class="col-md-8">
+	<div ::cond user.getGroup().hasPayments():: class="article">
 		
 		<span style="font-size:1.3em;">
 			::_("Balance"):: : 

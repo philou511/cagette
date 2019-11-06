@@ -20,7 +20,7 @@ class UnitQuantity extends sugoi.form.elements.FloatInput
 		return '
 			<div class="input-group">
 				'+r+'
-				<div class="input-group-addon">'+App.current.view.unit(unit)+'</div>
+				<div class="input-group-addon">'+Formatting.unit(unit)+'</div>
 			</div>';
 	}
 	

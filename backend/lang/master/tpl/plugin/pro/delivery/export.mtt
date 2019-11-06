@@ -80,7 +80,7 @@
 				</table>
 				
 				
-				$$export(::Web.getURI()+"?"+Web.getParamsString()+"&csv=1"::)
+				$$export(::getURI()+"?"+getParamsString()+"&csv=1"::)
 	</div>
 </div>
 ::end::

@@ -36,7 +36,7 @@ class Product extends Controller
 		}
 		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );
 
-		f.removeElementByName("contractId");
+		f.removeElementByName("catalogId");
 		
 		//Product Taxonomy:
 		if(!product.catalog.group.flags.has(CustomizedCategories)){
@@ -68,7 +68,7 @@ class Product extends Controller
 		var d = new db.Product();
 		var f = sugoi.form.Form.fromSpod(d);
 		
-		f.removeElementByName("contractId");
+		f.removeElementByName("catalogId");
 		
 		//stock mgmt ?
 		if (!contract.hasStockManagement()) f.removeElementByName('stock');
@@ -236,7 +236,7 @@ class Product extends Controller
 		
 		for (cg in db.CategoryGroup.get(app.user.getGroup())) {
 			
-			var x = { id:cg.id, categoryGroupName:cg.name, color:App.current.view.intToHex(db.CategoryGroup.COLORS[cg.color]),tags:[] };
+			var x = { id:cg.id, categoryGroupName:cg.name, color:Formatting.intToHex(db.CategoryGroup.COLORS[cg.color]),tags:[] };
 			
 			for (t in cg.getCategories()) {
 				x.tags.push({id:t.id,name:t.name});

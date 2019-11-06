@@ -35,6 +35,7 @@ class Validate extends controller.Controller
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());
 		view.md = multiDistrib;
 		view.userGroup = db.UserGroup.get(this.user, this.multiDistrib.getGroup());
+		view.abs = Math.abs;
 		
 		checkToken();
 	}

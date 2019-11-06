@@ -49,8 +49,8 @@
 				::foreach o orders::
 				<tr>
 					<td>
-						<a href="/contractAdmin/view/::o.contractId::">
-							::short(o.contractName,40)::
+						<a href="/contractAdmin/view/::o.catalogId::">
+							::short(o.catalogName,40)::
 						</a>
 					</td>
 					<td>
@@ -194,13 +194,13 @@
 					::if(tpaid+amount > 0):: 
 
 						$$check(::false::)		
-						::set str = formatNum(Math.abs(tpaid+amount))+"&nbsp;"+currency()::
+						::set str = formatNum(abs(tpaid+amount))+"&nbsp;"+currency()::
 						::raw __("Paid too much, credit of ::amount::",{amount:str})::
 						
 					::elseif(tpaid+amount < 0)::
 					
 						$$check(::false::)						
-						::_("Missing"):: ::formatNum(Math.abs(tpaid+amount))::&nbsp;::currency()::
+						::_("Missing"):: ::formatNum(abs(tpaid+amount))::&nbsp;::currency()::
 						
 					::else::	
 					

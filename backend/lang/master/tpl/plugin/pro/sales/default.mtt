@@ -52,7 +52,6 @@
 
 		::foreach d distribs::
 			
-			::set now = Date.now()::
 			<div class="row distrib" style="margin-bottom:24px;">
 				<div class="col-md-2 text-center">
 					

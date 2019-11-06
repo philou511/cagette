@@ -457,7 +457,7 @@ class User extends Object {
 		
 		if (uc2.length > 0){
 			//les gens qui sont dans cette amap et qui n'ont pas de contrat de cette amap
-			var ua = db.UserGroup.manager.unsafeObjects("select * from UserAmap where groupId=" + App.current.user.getGroup().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
+			var ua = db.UserGroup.manager.unsafeObjects("select * from UserGroup where groupId=" + App.current.user.getGroup().id +" and userId NOT IN(" + uc2.join(",") + ")", false);						
 			return Lambda.map(ua, function(x) return x.user);	
 		}else{
 			return App.current.user.getGroup().getMembers();

@@ -13,8 +13,7 @@ class Product extends Object
 	public var name : SString<128>;	
 	public var ref : SNull<SString<32>>;	//référence produit
 	
-	@:relation(catalogId)
-	public var catalog : db.Catalog;
+	@hideInForms  @:relation(catalogId) public var catalog : db.Catalog;
 	
 	//prix TTC
 	public var price : SFloat;

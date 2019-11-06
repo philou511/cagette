@@ -93,7 +93,7 @@
 				<!-- 1 order line -->
 				<tr>
 					<td>
-						<a href="/contractAdmin/view/::m.contractId::">
+						<a href="/contractAdmin/view/::m.catalogId::">
 							::short(m.catalogName,40)::
 						</a>
 					</td>
@@ -136,10 +136,10 @@
 				</tr>
 			
 				<!-- contract total -->
-				::if  ctotal && (orders[i+1]==null || m.contractName != orders[i+1].contractName || m.userName != orders[i+1].userName )::
+				::if  ctotal && (orders[i+1]==null || m.catalogName != orders[i+1].catalogName || m.userName != orders[i+1].userName )::
 					
 					<tr style="background:#DDD;">					
-						<th colspan="7" class="text-right">Total ::m.contractName::</th>
+						<th colspan="7" class="text-right">Total ::m.catalogName::</th>
 						<th>::formatNum(contractTotal)::&nbsp;::currency()::</th>					
 						
 						::set contractTotal = 0::

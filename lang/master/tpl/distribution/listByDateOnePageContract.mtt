@@ -98,16 +98,16 @@
 					::set class=""::
 				::end::
 				<tr class="::class::">	
-					::if currentContract != short(m.contractName,40) ::
+					::if currentContract != short(m.catalogName,40) ::
 						::if currentContract == "" ::
 							::set td_style="" ::
 						::else::
 							::set td_style="border-top: 2px solid #AAA;" ::
 						::end::
 						<td style="::td_style::" >
-							::short(m.contractName,40)::
+							::short(m.catalogName,40)::
 					    </td>
-					    ::set currentContract = short(m.contractName,40)::
+					    ::set currentContract = short(m.catalogName,40)::
 					::else::
 						<td> </td>
 					::end::

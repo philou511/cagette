@@ -1,3 +1,4 @@
+import db.Basket;
 import sugoi.Web;
 using Std;
 import Common;
@@ -283,12 +284,13 @@ class View extends sugoi.BaseView {
 		return db.Basket.manager.get(id,false);
 	}
 
-
+	public function getBasket2(user,md){
+		return db.Basket.get(user,md);
+	}
 	
 	public function getPlatform(){
 		return #if neko "Neko" #else "PHP" #end ;
 	}
-
 
 	public function getURI(){
 		return Web.getURI();

@@ -31,8 +31,6 @@
 					<i class="icon icon-circle-empty"></i> ::_("Not validated")::
 				</div>
 				::end::
-
-				
 				
 			</div>	
 		
@@ -60,7 +58,7 @@
 			
 			::foreach u users::
 				
-				::set basket = getBasket2(u.id,place.id,date)::
+				::set basket = getBasket2(u,distribution)::
 				
 				::if(basket.isValidated()==true)::
 					::set basketValidated = basketValidated+1::
