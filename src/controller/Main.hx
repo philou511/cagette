@@ -155,12 +155,10 @@ class Main extends Controller {
 	
 	@tpl("cssDemo.mtt")
 	function doCssdemo() {
-	}
-
-	@tpl("css.mtt")
-	function doCssdemo2(){
-
-
+		//debug stringmap haxe4
+		var users = new Map<String,String>();
+		users["bob"] = "is a nice fellow";
+		view.users = users;
 	}
 	
 	@tpl("form.mtt")

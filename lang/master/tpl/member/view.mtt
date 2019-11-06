@@ -95,7 +95,7 @@
 </div>
 
 <div class="col-md-8">
-	<h2>::_("Current orders")::</h2>
+	<h2>::_("Orders")::</h2>
 	<div class="article">
 		<!--
 		::set o = userContracts::
@@ -132,9 +132,50 @@
 			</table>
 			::end::
 		-->	
+			::if(constOrders.length>0)::
+			<h4>Contrats AMAP</h4>
+			<table class="table table-bordered table-condensed" >
+					<tr>
+						<th>::_("Qty||short version for quantity")::</th>
+						<th>::_("Product")::</th>
+						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of unit price")::</a></th>
+						<th>::_("Total")::</th>
+						<th>::_("Contract")::</th>
+						
+					</tr>
+					::set total = 0::
+					::foreach p constOrders::
+						<tr>
+							<td>::raw p.smartQt::</td>
+							<td>::p.productName::</td>
+							<td>::formatNum(p.productPrice)::&nbsp;::currency()::</td>
+							
+							<td>
+								<!-- total -->
+								::formatNum(p.total)::&nbsp;::currency()::
+								::set total = total + p.total::
+							
+							</td>
+							<td>
+								<a href="/contract/view/::p.catalogId::">::p.catalogName::</a>
+							</td>
+						
+						</tr>
+					::end::			
+					<tr>
+						<td colspan="2"></td>
+						<td>::_("TOTAL")::</td>
+						<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
+						<td></td>
+					</tr>
+				</table>
+			::end::
+
 
 			::if distribs.length>0::
 				::foreach d distribs::
+					::set orders = getUserOrders(d)::
+					::if(orders.length>0)::
 					<h4>::__("Order for ::date::",{date:hDate(d.getDate())})::</h4>
 					
 					<table class="table table-bordered table-condensed" >
@@ -145,11 +186,11 @@
 							<th>::_("Sub-total")::</th>
 							<th>::_("Fees")::</th>
 							<th>::_("Total")::</th>
-							<th>::_("Contract")::</th>
+							<th>::_("Catalog")::</th>
 							
 						</tr>
 						::set total = 0::
-						::foreach p getUserOrders(d)::
+						::foreach p orders::
 							<tr>
 								<td>::raw p.smartQt::</td>
 								<td>::p.productName::</td>
@@ -182,6 +223,7 @@
 							<td></td>
 						</tr>
 					</table>
+					::end::
 				::end::
 			::end::	
 		

@@ -4,27 +4,8 @@
 	<div class="article">
 		<h3 ::cond title!=null::>::title::</h3>
 		
-		::if user.getGroup()==null:: 
+		::raw form::
 		
-		<div class="alert alert-danger" role="alert">
-		  
-			<p>
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
-				Vous devez être connecté à votre groupe pour pouvoir importer ce catalogue.
-			</p>
-			<p>
-				Merci de bien vouloir vous connecter et revenir sur cette page pour faire l'import de catalogue.
-			</p>
-			
-			<a href="/user/login" class="btn btn-default">Cliquez ici pour vous connecter</a>
-		</div>
-		
-		::else::
-		
-			::raw form::
-			
-		::end::
-
 		<hr/>
 
 		<div class="alert alert-warning">

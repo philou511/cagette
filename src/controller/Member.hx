@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import service.OrderService;
 import db.MultiDistrib;
 import Common;
@@ -237,16 +238,26 @@ class Member extends Controller
 		*/
 
 		var now = Date.now();
-		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
+		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-7, 0, 0, 0);
 		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
 		var timeframe = new tools.Timeframe(from,to);
 		var distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
 
-
+		//variable orders
 		view.distribs = distribs;
 		view.getUserOrders = function(md:db.MultiDistrib){
 			return OrderService.prepare(md.getUserOrders(member,db.Catalog.TYPE_VARORDER));
 		}
+
+		//const orders subscriptions
+		var constOrders = [];
+		var catalogs = app.user.getGroup().getActiveContracts();
+		for( c in catalogs ){
+			if(c.type==Catalog.TYPE_CONSTORDERS){
+				constOrders = constOrders.concat( OrderService.prepare(c.getUserOrders(member)) );
+			}
+		}
+		view.constOrders = constOrders;
 
 		checkToken(); //to insert a token in tpl
 		
