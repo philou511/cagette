@@ -34,11 +34,16 @@ class Contract extends Controller
 		view.category = 'amap';
 		view.catalog = catalog;
 
-		var documents = sugoi.db.EntityFile.getByEntity('catalog', catalog.id, 'document');
-		var visibleDocuments = new Array<sugoi.db.EntityFile>();
-		view.documents = documents;
+		var isSubscribedToCatalog = true;
+		var allDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity('catalog', catalog.id, 'document');
+		if ( catalog.type == 0 ) { //Amap catalog
+
+			var userCatalogs : Array<db.Catalog> = app.user.getContracts();
+			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == catalog.id ); 
+		}
 		
-		//Add visible documents
+		view.visibleDocuments = isSubscribedToCatalog ? allDocuments : allDocuments.filter( function( doc ) return doc.data != 'subscribers' );
+		
 	}
 	
 
