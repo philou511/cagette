@@ -376,6 +376,15 @@
 			<i class="icon icon-calendar"></i> ::_("Duty periods calendar")::
 		</a>
 	</div>
+
+	<div class="block" ::cond visibleDocuments.length != 0::>
+		<h4>Documents</h4>
+		<div>
+			::foreach doc visibleDocuments::
+				<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+			::end::
+		</div>		
+	</div>
 	
 	<div class="alert alert-danger" ::cond user!=null && !user.isFullyRegistred()::>
 		<p>

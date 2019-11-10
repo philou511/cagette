@@ -2,13 +2,13 @@
 <div class="col-md-9">
 	<div class="article">
 		
-		<h2>::c.name::</h2>
+		<h2>::catalog.name::</h2>
 			
 		<div class="row">	
 			
 			<div class="col-md-12">
-				::if c.description!=null::
-					::raw nl2br(c.description)::
+				::if catalog.description!=null::
+					::raw nl2br(catalog.description)::
 				::end::
 			</div>
 
@@ -17,7 +17,7 @@
 		<hr/>	
 			
 		<div class="row">
-			::foreach p c.getProducts(true)::
+			::foreach p catalog.getProducts(true)::
 			<div class="col-md-4" id="product::p.id::">
 			<table class="product">
 				<tr>
@@ -44,7 +44,7 @@
 		<hr/>
 		
 		<div class="row">
-			::set vendor = c._vendor::
+			::set vendor = catalog._vendor::
 			<div class="col-md-3" ::cond vendor._image!=null::>
 				
 				<img src="::file(vendor._image)::" class="img-thumbnail" />
@@ -73,15 +73,27 @@
 			</div>
 			<div class="col-md-4">		
 				<h4>::_("Coordinator")::</h4>
-				::if c._contact!=null::
-				<b>::c._contact.firstName:: ::c._contact.lastName::</b><br/>
-				<span ::cond c._contact.email!=null::><span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::c._contact.email::">::c._contact.email::</a><br/></span>
-				<span ::cond c._contact.phone!=null::><span class="glyphicon glyphicon-phone-alt"></span> ::c._contact.phone::<br/></span>
+				::if catalog._contact!=null::
+				<b>::catalog._contact.firstName:: ::catalog._contact.lastName::</b><br/>
+				<span ::cond catalog._contact.email!=null::><span class="glyphicon glyphicon-envelope"></span> <a href="mailto: ::catalog._contact.email::">::catalog._contact.email::</a><br/></span>
+				<span ::cond catalog._contact.phone!=null::><span class="glyphicon glyphicon-phone-alt"></span> ::catalog._contact.phone::<br/></span>
 				::end::
 			</div>
 			
 		</div>
-	
+		::if documents.length != 0::
+			<hr/>	
+			<div class="row" style=" justify-content: center; display: flex;">
+				<div class="col-md-6">		
+					<h4>Documents associés au catalogue</h4>
+					<div>
+						::foreach doc documents::
+							<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+						::end::
+					</div>
+				</div>
+			</div>
+		::end::
 	</div>
 </div>
 <div class="col-md-3">
@@ -90,7 +102,7 @@
 	<div class="article">
 		<h3>::_("Next distributions")::</h3>
 		
-		::set distribs = c.getDistribs(true,null)::
+		::set distribs = catalog.getDistribs(true,null)::
 		<ul style="max-height:600px;overflow-y:auto;">
 			::foreach d distribs::
 			<li>
@@ -113,7 +125,7 @@
 		</p>
 		::else::
 		<p ::cond !user.getGroup().hasShopMode()::>
-			<a href="/contract/order/::c.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
+			<a href="/contract/order/::catalog.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
 		</p>		
 		::end::
 		

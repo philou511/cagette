@@ -16,9 +16,10 @@ class Group extends controller.Controller
 	 * Public page of a group
 	 */
 	@tpl('group/view.mtt')
-	function doDefault(group:db.Group){
+	function doDefault( group : db.Group ) {
 		
-		if (group.regOption == db.Group.RegOption.Open) {
+		if ( group.regOption == db.Group.RegOption.Open ) {
+
 			if (app.session.data == null) app.session.data = {};
 			app.session.data.amapId = group.id;
 			throw Redirect("/");
@@ -28,11 +29,17 @@ class Group extends controller.Controller
 		view.contracts = group.getActiveContracts();
 		view.pageTitle = group.name;
 		group.getMainPlace(); //just to update cache
-		if (app.user != null){			
-			view.isMember = Lambda.has(app.user.getGroups(), group);
-		}else{
+
+		var allDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity( 'group', group.id, 'document' );
+		var isMember = app.user == null ? false : app.user.isMemberOf(group); 
+		if ( app.user == null ) {
+
 			service.UserService.prepareLoginBoxOptions(view,group);
-		}
+		}	
+
+		view.isMember = isMember;
+		view.visibleDocuments = isMember ? allDocuments : allDocuments.filter( function( doc ) return doc.data == 'public' );
+
 	}
 	
 	/**

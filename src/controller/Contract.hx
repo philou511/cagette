@@ -29,9 +29,16 @@ class Contract extends Controller
 
 	
 	@tpl("contract/view.mtt")
-	public function doView(c:db.Catalog) {
+	public function doView( catalog : db.Catalog ) {
+
 		view.category = 'amap';
-		view.c = c;
+		view.catalog = catalog;
+
+		var documents = sugoi.db.EntityFile.getByEntity('catalog', catalog.id, 'document');
+		var visibleDocuments = new Array<sugoi.db.EntityFile>();
+		view.documents = documents;
+		
+		//Add visible documents
 	}
 	
 
