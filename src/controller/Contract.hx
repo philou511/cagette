@@ -29,9 +29,21 @@ class Contract extends Controller
 
 	
 	@tpl("contract/view.mtt")
-	public function doView(c:db.Catalog) {
+	public function doView( catalog : db.Catalog ) {
+
 		view.category = 'amap';
-		view.c = c;
+		view.catalog = catalog;
+
+		var isSubscribedToCatalog = true;
+		var allDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity('catalog', catalog.id, 'document');
+		if ( catalog.type == 0 ) { //Amap catalog
+
+			var userCatalogs : Array<db.Catalog> = app.user.getContracts();
+			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == catalog.id ); 
+		}
+		
+		view.visibleDocuments = isSubscribedToCatalog ? allDocuments : allDocuments.filter( function( doc ) return doc.data != 'subscribers' );
+		
 	}
 	
 

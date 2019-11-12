@@ -42,6 +42,7 @@ class Main extends Controller {
 	**/
 	@tpl("home.mtt")
 	function doHome() {
+
 		addBc("home","Commandes","/home");
 		
 		var group = app.getCurrentGroup();		
@@ -115,6 +116,10 @@ class Main extends Controller {
 			var contracts = app.getCurrentGroup().deleteDemoContracts();
 			if(contracts.length>0 ) throw Ok("/","Contrats suivants effacés : "+contracts.map(function(c) return c.name).join(", "));
 		}
+
+		var allDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity( 'group', group.id, 'document' );
+		view.visibleDocuments = isMember ? allDocuments : allDocuments.filter( function( doc ) return doc.data == 'public' );
+
 	}
 	
 	//login and stuff
@@ -271,7 +276,13 @@ Called from controller/Main.hx line 117
 		addBc("contract","Catalogues","/contractAdmin");
 		d.dispatch(new ContractAdmin());
 	}
-	
+
+	@logged
+	function doDocuments( dispatch : Dispatch ) {
+
+		dispatch.dispatch( new Documents() );
+	}
+	 
 	@logged
 	function doMessages(d:Dispatch) {
 		addBc("messages","Messagerie","/messages");

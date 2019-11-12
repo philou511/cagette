@@ -144,8 +144,18 @@
  							<span class="glyphicon glyphicon-phone-alt"></span>  ::group._contact.phone::<br/>
  						</span>
 					</p>
-					
+
 					<hr/>
+					
+					<p ::cond visibleDocuments.length != 0::>
+						<h3>Documents</h3>
+						<div>
+							::foreach doc visibleDocuments::
+								<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+							::end::
+						</div>
+						<hr/>													
+					</p>
 					
 					<p>
 						<h3>::_("Suppliers and products")::</h3>

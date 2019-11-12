@@ -33,6 +33,5 @@ www/js/*
 www/css/.sass-cache
 www/css/*.css
 
-projBack/lang/
-
+devLibs/
 

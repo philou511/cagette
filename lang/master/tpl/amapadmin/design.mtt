@@ -4,24 +4,36 @@
 	<div class="panel panel-warning">
 		
 		<ul id="subnav" class="nav nav-tabs nav-stacked" >
-			
-			<li><a href="/amapadmin/rights/">::_("Administration rights")::</a></li>
-			<li><a href="/amapadmin/vatRates/">::_("VAT rates")::</a></li>			
-			<li><a href="/amapadmin/volunteers/">::_("Duty Periods")::</a></li>
-			<li><a href="/amapadmin/currency/">::_("Currency")::</a></li>
-			::if nav!=null::				
+			<li id="rights" ::attr class if(nav[1]=="rights") 'active'::>
+				<a href="/amapadmin/rights/">::_("Administration rights")::</a>
+			</li>
+			<li id="rates">
+				<a href="/amapadmin/vatRates/">::_("VAT rates")::</a>
+			</li>			
+			<li id="volunteers" ::attr class if(nav[1]=="volunteers") 'active'::>
+				<a href="/amapadmin/volunteers/">::_("Duty Periods")::</a>
+			</li>
+			<li id="currency">
+				<a href="/amapadmin/currency/">::_("Currency")::</a>
+			</li>
+			::if nav != null::				
 				::foreach i nav::
-				<li ::attr class if(nav[1]==i.id) 'active'::>
-					<a href="::i.link::">
-						<i ::cond i.icon:: class="icon icon-::i.icon::" ></i>
-						::i.name::</a>					
-				</li>
+					::if i.name != null::
+						<li ::attr class if(nav[1]==i.id) 'active'::>
+							<a href="::i.link::">
+								<i ::cond i.icon:: class="icon icon-::i.icon::" ></i>
+								::i.name::
+							</a>						
+						</li>
+					::end::
 				::end::		
 			::end::
+			<li id="documents" ::attr class if(nav[1]=="documents") 'active'::>
+				<a href="/amapadmin/documents">Documents</a>
+			</li>
 		</ul>
 		
-	</div>	
-	
+	</div>
 </div>
 
 

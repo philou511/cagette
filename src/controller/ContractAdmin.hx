@@ -5,6 +5,7 @@ import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
+import sugoi.form.elements.RadioGroup;
 import Common;
 import datetime.DateTime;
 using tools.ObjectListTool;
@@ -737,8 +738,12 @@ class ContractAdmin extends Controller
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		view.c = view.contract = contract;
+	}	
+
+	function doDocuments( dispatch : haxe.web.Dispatch ) {
+
+		dispatch.dispatch( new controller.Documents() );
 	}
-	
 	
 	@tpl("contractadmin/stats.mtt")
 	function doStats(contract:db.Catalog, ?args: { stat:Int } ) {

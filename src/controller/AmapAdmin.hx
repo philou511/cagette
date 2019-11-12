@@ -135,6 +135,7 @@ class AmapAdmin extends Controller
 		}
 		
 		view.users = users;
+		view.nav.push( 'rights' );
 	}
 	
 	
@@ -296,7 +297,6 @@ class AmapAdmin extends Controller
 		}
 		view.title = t._("Edit VAT rates");
 		view.form = f;
-		
 	}
 	
 	function doCategories(d:haxe.web.Dispatch) {
@@ -305,6 +305,11 @@ class AmapAdmin extends Controller
 
 	function doVolunteers(d:haxe.web.Dispatch) {
 		d.dispatch(new controller.amapadmin.Volunteers());
+	}
+
+	function doDocuments( dispatch : haxe.web.Dispatch ) {
+
+		dispatch.dispatch( new controller.Documents() );
 	}
 
 	/**

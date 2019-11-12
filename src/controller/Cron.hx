@@ -222,7 +222,25 @@ class Cron extends Controller
 		//old sessions cleaning
 		sugoi.db.Session.clean();
 		
-		
+		//Delete old documents of catalogs that have ended 18 months ago
+		var task = new sugoi.tools.TransactionWrappedTask( function() {
+
+			var eighteenMonthsAgo = DateTools.delta( Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 18 );
+			var oneDayBefore = DateTools.delta( eighteenMonthsAgo, -1000 * 60 * 60 * 24 );
+			//Catalogs that have ended during that time range
+			var endedCatalogs = db.Catalog.manager.search( $endDate >= oneDayBefore && $endDate < eighteenMonthsAgo, false );
+			var documents : List<sugoi.db.EntityFile>  = null;
+			for ( catalog in endedCatalogs ) {
+
+				documents = sugoi.db.EntityFile.getByEntity( 'catalog', catalog.id, 'document' );
+				for ( document in documents ) {
+
+					document.file.delete();
+					document.delete();
+				}
+			}
+		});
+		task.execute(!App.config.DEBUG);
 	}
 	
 	/**
