@@ -144,7 +144,6 @@ class Transaction extends controller.Controller
 	
 	/**
 	 * Payment entry point
-	 * @param	tmpBasket
 	 */
 	@tpl("transaction/pay.mtt")
 	public function doPay(tmpBasket:db.TmpBasket) {
@@ -152,14 +151,14 @@ class Transaction extends controller.Controller
 		view.category = 'home';
 		
 		if (tmpBasket == null) throw Redirect("/");
+		tmpBasket.lock();
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 
-		//has another tmpBasket than this one for the same md ?
-		/*for( b in db.TmpBasket.manager.search($user==app.user && $multiDistrib == tmpBasket.multiDistrib,false)){
-			if(b.id!=tmpBasket.id){
-				throw Redirect("/transaction/tmpBasket/"+b.id);
-			}
-		}*/
+		//case where the user just logged in
+		if(tmpBasket.user==null){
+			tmpBasket.user = app.user;
+			tmpBasket.update();
+		}
 		
 		var total = tmpBasket.getTotal();
 		view.amount = total;		
@@ -211,7 +210,6 @@ class Transaction extends controller.Controller
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			var ops = db.Operation.onOrderConfirm(orders);
-			tmpBasket.delete();
 			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
@@ -230,15 +228,14 @@ class Transaction extends controller.Controller
 	{
 		if (tmpBasket == null) throw Redirect("/contract");
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
-		var total = tmpBasket.getTotal();
-		var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 		
 		try{
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			var orderOps = db.Operation.onOrderConfirm(orders);
-
+			var total = tmpBasket.getTotal();
 			view.amount = total;
+			//var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 			view.balance = db.UserGroup.get(app.user, app.user.getGroup()).balance;
 
 			var date = tmpBasket.multiDistrib.getDate();		
@@ -246,8 +243,6 @@ class Transaction extends controller.Controller
 			//all orders are for the same multidistrib
 			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(date)});
 			db.Operation.makePaymentOperation(app.user,app.user.getGroup(), payment.OnTheSpotPayment.TYPE, total, name, orderOps[0] );	
-
-			tmpBasket.delete();	
 			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
@@ -281,7 +276,6 @@ class Transaction extends controller.Controller
 			var name = t._("Transfer for the order of ::date::", {date:view.hDate(date)}) + " ("+code+")";
 			db.Operation.makePaymentOperation(app.user,app.user.getGroup(),payment.Transfer.TYPE, total, name, orderOps[0] );
 
-			tmpBasket.delete();
 			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);

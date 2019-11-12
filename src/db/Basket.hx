@@ -78,16 +78,15 @@ class Basket extends Object
 		return b;		
 	}
 	
-
 	public function getUser():db.User{
-		return getOrders().first().user;
+		return this.user;
 	}
 	
 	/**
 	 *  Get basket's orders
 	 */
-	public function getOrders() {
-		return db.UserOrder.manager.search($basket == this, false);
+	public function getOrders():Array<db.UserOrder> {
+		return Lambda.array(db.UserOrder.manager.search($basket == this, false));
 	}
 	
 	/**
@@ -131,7 +130,7 @@ class Basket extends Object
 		var total = 0.0;
 		for( order in getOrders())
 		{
-			total += order.quantity * order.productPrice;
+			total += order.quantity * (order.productPrice * (1+order.feesRate/100));
 		}
 
 		return total;

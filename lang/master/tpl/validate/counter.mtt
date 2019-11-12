@@ -45,8 +45,17 @@
                 </tr>
 
                 <tr>
-                    <td> <b>Encaissements en chèque</b></td>
+                    <td> <b>Encaissements en chèque</b> </td>
                     <td>::sales.checkTurnover.ttc:: &euro;</td>
+                </tr>
+                <tr>
+                    <td> <b>Encaissements Carte bancaire</b> </td>
+                    <td>
+                        
+                        ::sales.mpTurnover.ttc:: 
+                        ::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc):: =
+                        ::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;
+                    </td>
                 </tr>
 
                 <tr>

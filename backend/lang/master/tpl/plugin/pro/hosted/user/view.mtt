@@ -38,11 +38,15 @@
 		<h3>Gère ces producteurs :</h3>
 
 		<p>
-			<ul>
-			::foreach v vendors::
-			<li><a href="/p/pro/admin/vendor/::v.id::">::v.name::</a></li>
-			::end::
-			</ul>
+			<table class="table table-bordered table-condensed">
+				::foreach v vendors::
+					<tr>
+						<td>
+							<a href="/p/pro/admin/vendor/::v.id::">::v.name::</a>
+						</td>
+					</tr>
+				::end::
+			</table>
 		</p>
 
 		<p>

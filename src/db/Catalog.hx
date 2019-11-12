@@ -23,7 +23,7 @@ class Catalog extends Object
 	
 	public var description:SNull<SText>;
 	
-	@:relation(groupId) public var group:db.Group;
+	@:hideInForms @:relation(groupId) public var group:db.Group;
 	public var distributorNum:STinyInt;
 	public var flags : SFlags<CatalogFlags>;
 	

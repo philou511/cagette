@@ -75,7 +75,6 @@ class Shop extends Controller
 		var tmpBasket = null;
 		if ( tmpBasketId != null) {
 			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);			
-			//app.session.data.order = order = cast {products:[]};
 		}
 		
 		if(tmpBasket==null){
@@ -232,6 +231,7 @@ class Shop extends Controller
 
 		//Login is needed : display a loginbox
 		if (app.user == null) {
+			app.session.data.tmpBasketId = tmpBasket.id;
 			view.redirect = sugoi.Web.getURI();
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
@@ -263,7 +263,6 @@ class Shop extends Controller
 		//order.total = 0.0;
 		
 		//cleaning
-		tmpBasket.lock();
 		var orders = tmpBasket.data.products;
 		for (o in orders.copy()) {
 			
@@ -271,7 +270,6 @@ class Shop extends Controller
 			
 			//check that the products are from this group (we never know...)
 			if (p.catalog.group.id != app.user.getGroup().id){
-				app.session.data.order = null;
 				throw Error("/", t._("This basket contains products from another group") );
 			}
 			

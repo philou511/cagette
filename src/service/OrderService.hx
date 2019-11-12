@@ -1,4 +1,5 @@
 package service;
+import db.TmpBasket;
 import Common;
 
 /**
@@ -273,7 +274,7 @@ class OrderService
 				if( contract.group.hasPayments() ){
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
-					if( orders.length == 1 && orders.first().id==order.id ){
+					if( orders.length == 1 && orders[0].id==order.id ){
 						var operation = db.Operation.findVOrderOperation(basket.multiDistrib, user);
 						if(operation!=null) operation.delete();
 					}
@@ -392,10 +393,10 @@ class OrderService
 	}
 	
 	/**
-	 * Confirms an order : create real orders from a temporary basket
-	 * @param	order
+	 * 	Confirms an order : create real orders from a temporary basket.
+		Should not return a basket, because this basket can include older orders.
 	 */
-	public static function confirmTmpBasket(tmpBasket:db.TmpBasket){
+	public static function confirmTmpBasket(tmpBasket:db.TmpBasket):Array<db.UserOrder>{
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
 		var user = tmpBasket.user;
@@ -419,8 +420,11 @@ class OrderService
 		}
 		
 		App.current.event(MakeOrder(orders));
-		tmpBasket.delete();
 		
+		//delete tmpBasket
+		if(App.current.session.data.tmpBasketId==tmpBasket.id) App.current.session.data.tmpBasketId=null;
+		tmpBasket.delete();
+
 		return orders;
 	}
 
@@ -546,20 +550,46 @@ class OrderService
 	/**
 		Action triggered from controllers to check if we have a tmpBasket to validate
 	**/
-	public static function checkTmpBasket(user,group){
-		//user can be null, if open group
-		if(user==null) return;
-		
-		var tmpBasket = getTmpBasket(user,group);
-		if(tmpBasket!=null){
+	public static function checkTmpBasket(user:db.User,group:db.Group){
+		var tmpBasket:db.TmpBasket = null;
 
+		//check for a basket created when offline ( tmpBasketId stored in session )
+		if(App.current.session.data.tmpBasketId!=null){
+			tmpBasket = TmpBasket.manager.get(App.current.session.data.tmpBasketId);
+			if(tmpBasket!=null){
+				if(tmpBasket.multiDistrib.getGroup().id==group.id){
+					
+					if(tmpBasket.user!=null && user!=null){
+						//same user ?
+						if(tmpBasket.user.id!=user.id) tmpBasket = null;
+
+					}else if(tmpBasket.user==null && user!=null){
+						//attribute to a user
+						tmpBasket.update();
+						tmpBasket.user = user;
+						tmpBasket.update();
+					}
+
+					
+				}
+			}
+			
+		}
+		
+		//check for a tmpBasket attached to a user
+		if(tmpBasket==null && user!=null ){
+			tmpBasket = getTmpBasket(user,group);
+		}
+		
+		if(tmpBasket!=null){
 			if(tmpBasket.data.products.length==0){
 				tmpBasket.lock();
 				tmpBasket.delete();
-				return;
+			}else{
+				throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
 			}
 
-			throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
+			
 		}
 	}
 

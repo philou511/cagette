@@ -402,6 +402,8 @@ class Operation extends sys.db.Object
 		if (orders[0] == null) return null;
 		
 		for( o in orders){
+			if(o.user==null) throw "order "+o.id+" has no user";
+			
 			if(o.user.id!=orders[0].user.id){
 				throw new Error("Those orders are from different users");
 			}
@@ -410,10 +412,6 @@ class Operation extends sys.db.Object
 		var out = [];
 		var user = orders[0].user;
 		var group = orders[0].product.catalog.group;
-		
-		
-		//should not go further if group has not activated payements
-		if (user==null || !group.hasPayments()) return null;
 		
 		//we consider that ALL orders are from the same contract type : varying or constant
 		if (orders[0].product.catalog.type == db.Catalog.TYPE_VARORDER ){

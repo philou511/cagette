@@ -183,7 +183,7 @@ class PaymentService
 				}
 			}
 
-			var o = orders.first();
+			var o = orders[0];
 			if(o.distribution==null) throw o.id+" order has no distrib";
 			updateUserBalance(o.user, o.distribution.place.group);	
 		}
@@ -223,7 +223,7 @@ class PaymentService
 				}
 			}
 
-			var o = orders.first();
+			var o = orders[0];
 			updateUserBalance(o.user, o.distribution.place.group);	
 		}
 
