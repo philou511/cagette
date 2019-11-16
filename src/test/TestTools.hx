@@ -76,7 +76,7 @@ class TestTools extends haxe.unit.TestCase
 
 		//we want to remove seb and add Julie
 		ls.setSourceDatas( [julie.id,francois.id] );
-		ls.setDestinationDatas( Lambda.array(db.UserGroup.manager.search($amap==group)) );
+		ls.setDestinationDatas( Lambda.array(db.UserGroup.manager.search($group==group)) );
 		ls.isEqualTo = function(id:Int,ua:db.UserGroup){
 			return id==ua.user.id;
 		};
@@ -99,7 +99,7 @@ class TestTools extends haxe.unit.TestCase
 		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==francois.id )!=null );
 
 		//reload from DB
-		var newList = Lambda.array(db.UserGroup.manager.search($amap==group));
+		var newList = Lambda.array(db.UserGroup.manager.search($group==group));
 
 		assertTrue( newList.length==2 );
 		assertTrue( Lambda.find(newList,function(ua) return ua.user.id==julie.id )!=null );

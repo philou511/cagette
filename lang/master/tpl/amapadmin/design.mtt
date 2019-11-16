@@ -16,6 +16,11 @@
 			<li id="currency">
 				<a href="/amapadmin/currency/">::_("Currency")::</a>
 			</li>
+			<li id="documents" ::attr class if(nav[1]=="documents") 'active'::>
+				<a href="/amapadmin/documents">
+					<i class="icon icon-file-pdf"></i> Documents
+				</a>
+			</li>
 			::if nav != null::				
 				::foreach i nav::
 					::if i.name != null::
@@ -28,9 +33,6 @@
 					::end::
 				::end::		
 			::end::
-			<li id="documents" ::attr class if(nav[1]=="documents") 'active'::>
-				<a href="/amapadmin/documents">Documents</a>
-			</li>
 		</ul>
 		
 	</div>

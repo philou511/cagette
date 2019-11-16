@@ -521,15 +521,20 @@ class OrderService
 		}
 	}*/
 	
-
+	/**
+		Order by lastname (+lastname2 if exists), then catalog, the productName
+	**/
 	public static function sort(orders:Array<UserOrder>){
-		//order by lastname (+lastname2 if exists), then contract
+		var astr=null;
+		var bstr=null;
 		orders.sort(function(a, b) {
+			astr = a.userName + a.userId + a.userName2 + a.userId2 + a.catalogId + a.productName;
+			bstr = b.userName + b.userId + b.userName2 + b.userId2 + b.catalogId + a.productName;
 			
-			if (a.userName + a.userId + a.userName2 + a.userId2 + a.catalogId > b.userName + b.userId + b.userName2 + b.userId2 + b.catalogId ) {
+			if (astr > bstr ) {
 				return 1;
 			}
-			if (a.userName + a.userId + a.userName2 + a.userId2 + a.catalogId < b.userName + b.userId + b.userName2 + b.userId2 + b.catalogId ) {
+			if (astr < bstr ) {
 				return -1;
 			}
 			return 0;

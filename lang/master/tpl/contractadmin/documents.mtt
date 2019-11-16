@@ -8,7 +8,20 @@
 
 	<div class="article">
 
-		<h3>Documents</h3>
+        <h3>Documents</h3>
+        
+        <p>
+            ::if(catalog !=null)::
+                Vous pouvez ici envoyer des documents PDF relatifs à ce catalogue.
+                Ils seront visibles sur la page du catalogue (accessible depuis l'onglet "producteurs" pour les membres du groupe) 
+                en fonction des paramètres de visibilités que vous aurez choisis.<br/>
+                Si vous êtes administrateur du groupe, il est également possible d'envoyer des documents plus génériques au niveau du groupe dans le menu "Documents" de l'onglet "paramètres".
+            ::else::
+                Vous pouvez ici envoyer des documents PDF relatifs à votre groupe en général.<br/>
+                Ils seront visibles sur votre page publique et sur la page des commandes en fonction des paramètres de visibilités que vous aurez choisis.
+                Il est également possible d'envoyer des documents relatifs à un catalogue/contrat dans le menu "Documents" des catalogues.
+            ::end::
+        </p>
 	
         <br/>
         ::if catalog != null::
@@ -61,7 +74,7 @@
                         
                     </table>
                 ::else::
-                    Il n'y a pas de document enregistré.
+                    $$empty(Aucun document pour l'instant.)
                 ::end::
                 
             </div>
