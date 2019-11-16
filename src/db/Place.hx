@@ -78,6 +78,34 @@ class Place extends Object
 		}
 	}
 
+	override public function update(){
+		check();
+		super.update();
+	}
+
+	override public  function insert(){
+		check();
+		super.insert();
+	}
+
+	function check(){
+
+		if(lat!=null){
+			if(lat<-90) lat = -90;
+			if(lat>90) lat = 90;
+		}
+
+		if(lng!=null){
+			if(lng<-180) lng = -180;
+			if(lng>180) lng = 180;
+		}
+
+		//cannot have a value for only lng or lat 
+		if(lat==null || lng==null){
+			lat = lng = null;
+		}
+	}
+
 	/**
 	https://fr.wikipedia.org/wiki/ISO_3166-2
 	**/

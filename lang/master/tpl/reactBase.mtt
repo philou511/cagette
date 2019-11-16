@@ -35,7 +35,7 @@
 		::if DEBUG::
 		<script type="text/javascript" src="/js/::getVariable('js')::/libs.dev.js"></script>
 		::else::
-		<script type="text/javascript" src="/js/::getVariable('js')::/libs.js"></script>
+		<script type="text/javascript" src="/js/::getVariable('js')::/libs.prod.js"></script>
 		::end::
 
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>

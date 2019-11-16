@@ -130,8 +130,10 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
   	}
 
 	function getGroupDistance(group:GroupOnMap):Float {
-		if (state.point == null)
+			
+		if(state.point ==null || group==null || group.place==null || group.place.latitude==null || group.place.longitude==null ){
 			return null;
+		}
 		
 		var start = {
 			latitude: state.point.lat,
@@ -195,7 +197,7 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
 	function renderSuggestion(obj:Dynamic) {
 		return jsx('
 		<div className="autocomplete-item">
-			<i className="fa fa-map-marker autocomplete-icon" />
+			<i className="icon icon-map-marker autocomplete-icon" />
 			<strong>${obj.formattedSuggestion.mainText}</strong>&nbsp;
 			<small className="text-muted">${obj.formattedSuggestion.secondaryText}</small>
 		</div>

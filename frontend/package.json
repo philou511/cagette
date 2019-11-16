@@ -35,8 +35,11 @@
   "devDependencies": {
     "browserify": "^14.4.0",
     "cross-env": "^5.1.1",
+    "envify": "^4.1.0",
     "node-sass": "^4.11.0",
-    "npm-run-all": "^4.1.2"
+    "npm-run-all": "^4.1.2",
+    "terser": "^4.4.0",
+    "uglifyify": "^5.0.2"
   },
   "scripts": {
     "build": "npm-run-all --parallel build:*",
@@ -45,7 +48,8 @@
     "watch:sass": "npm run build:sass -- --watch",
     "build2": "babel src -d lib",
     "libs:dev": "browserify libs/libs.js -o ../www/js/libs.dev.js -d",
-    "libs:prod": "cross-env NODE_ENV=production browserify libs/libs.js -o ../www/js/libs.js",
+    "libs:prod__old": "cross-env NODE_ENV=production browserify libs/libs.js -o ../www/js/libs.js",
+    "libs:prod": "browserify libs/libs.js -g [ envify --NODE_ENV production ] -g uglifyify | terser --compress --mangle > ../www/js/libs.prod.js",
     "test": "haxe testsJS.hxml && node js/test/tests.js",
     "prepush": "npm test"
   },

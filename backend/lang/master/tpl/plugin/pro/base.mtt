@@ -30,14 +30,14 @@
 		<script type="text/javascript" src="/bower_components/typeahead.js/dist/typeahead.jquery.js"></script>	-->	
 
 				
-		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.js -->
+		<!-- polyfill for IE11 : Object.assign() doesnt exists in IE11 , error in libs.prod.js -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
 		<!-- Haxe JS + libs bundled with browserify -->
 		::if(DEBUG)::
 		<script type="text/javascript" src="/js/::getVariable('js')::/libs.dev.js"></script>
 		::else::
-		<script type="text/javascript" src="/js/::getVariable('js')::/libs.js"></script>
+		<script type="text/javascript" src="/js/::getVariable('js')::/libs.prod.js"></script>
 		::end::
 		<script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>
 	</head>
