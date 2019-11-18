@@ -1,4 +1,5 @@
 package service;
+import db.MultiDistrib;
 import db.TmpBasket;
 import Common;
 
@@ -375,9 +376,9 @@ class OrderService
 	/**
 		Record a temporary basket
 	**/
-	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
+	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, ?tmpBasketData:TmpBasketData):db.TmpBasket {
 		//basket with no products is allowed ( init an empty basket )
-		if( tmpBasketData==null) throw "Basket is empty";
+		if( tmpBasketData==null) tmpBasketData = {products:[]};
 
 		//generate basketRef
 		var group = multiDistrib.getGroup();
@@ -552,33 +553,37 @@ class OrderService
 		return null;
 	}
 
+	public static function getOrCreateTmpBasket(user:db.User,distrib:MultiDistrib):db.TmpBasket{
+		var tb = getTmpBasket(user,distrib.getGroup());
+		if(tb==null) getTmpBasketFromSession(distrib.getGroup());
+
+		if(tb!=null && tb.multiDistrib.id==distrib.id){
+			return tb;
+		} else{
+			tb = makeTmpBasket(user,distrib);
+			App.current.session.data.tmpBasketId = tb.id;
+			return tb;
+		}
+	}
+
 	/**
 		Action triggered from controllers to check if we have a tmpBasket to validate
 	**/
 	public static function checkTmpBasket(user:db.User,group:db.Group){
-		var tmpBasket:db.TmpBasket = null;
 
-		//check for a basket created when offline ( tmpBasketId stored in session )
-		if(App.current.session.data.tmpBasketId!=null){
-			tmpBasket = TmpBasket.manager.get(App.current.session.data.tmpBasketId);
-			if(tmpBasket!=null){
-				if(tmpBasket.multiDistrib.getGroup().id==group.id){
-					
-					if(tmpBasket.user!=null && user!=null){
-						//same user ?
-						if(tmpBasket.user.id!=user.id) tmpBasket = null;
+		//check for a basket created when logged off ( tmpBasketId stored in session )
+		var tmpBasket = getTmpBasketFromSession(group);
+		if(tmpBasket!=null){
+			if(tmpBasket.user!=null && user!=null){
+				//same user ?
+				if(tmpBasket.user.id!=user.id) tmpBasket = null;
 
-					}else if(tmpBasket.user==null && user!=null){
-						//attribute to a user
-						tmpBasket.update();
-						tmpBasket.user = user;
-						tmpBasket.update();
-					}
-
-					
-				}
+			}else if(tmpBasket.user==null && user!=null){
+				//attribute to a user
+				tmpBasket.update();
+				tmpBasket.user = user;
+				tmpBasket.update();
 			}
-			
 		}
 		
 		//check for a tmpBasket attached to a user
@@ -593,8 +598,26 @@ class OrderService
 			}else{
 				throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
 			}
+		}
+	}
 
+	/**
+		Get a tmpBasket from session.
+		Checks that it belongs to the current group.
+	**/
+	public static function getTmpBasketFromSession(group:db.Group){
+		if(group==null) return null;
+		var tmpBasketId:Int = App.current.session.data.tmpBasketId; 		
+		if ( tmpBasketId != null) {
+			var tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+			if(tmpBasket!=null && tmpBasket.multiDistrib.getGroup().id==group.id){
+				return tmpBasket;
+			}else{
+				return null;
+			}
 			
+		}else{
+			return null;
 		}
 	}
 

@@ -2,9 +2,7 @@ import Common;
 import js.jquery.JQuery;
 /**
  * JS Shopping Cart
- * 
- * @author fbarbut<francois.barbut@gmail.com>
- */
+ **/
 class ShopCart
 {
 	public var products : Map<Int,ProductInfo>; //product db
@@ -57,7 +55,7 @@ class ShopCart
 		//trace("qté : "+qt);
 		
 		//add server side
-		var r = new haxe.Http('/shop/add/$pid/$qt');
+		var r = new haxe.Http('/shop/add/$multiDistribId/$pid/$qt');
 		
 		r.onData = function(data:String) {
 			
@@ -314,7 +312,7 @@ class ShopCart
 		loader.show();
 		
 		//add server side
-		var r = new haxe.Http('/shop/remove/$pid');
+		var r = new haxe.Http('/shop/remove/$multiDistribId/$pid');
 		
 		r.onData = function(data:String) {
 			

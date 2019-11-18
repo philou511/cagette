@@ -166,7 +166,7 @@
 
 								<span class="disabled" style="font-size: 1.2em;">
 									<i class="icon icon-clock"></i>
-									La commande ouvrira le ::hDate(ordersStartDate)::
+									La commande ouvrira ::hDate(ordersStartDate)::
 								</span>
 
 								::elseif(status=="open")::
@@ -177,7 +177,7 @@
 								</a>
 								<div class="disabled" style="font-size: 1.2em;margin-top:18px;">
 									<i class="icon icon-clock"></i>
-									La commande ferme le ::hDate(ordersEndDate)::
+									La commande fermera ::hDate(ordersEndDate)::
 								</div>
 
 								::elseif(status=="closed")::

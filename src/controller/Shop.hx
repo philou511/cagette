@@ -71,16 +71,7 @@ class Shop extends Controller
 	public function doInit(md:db.MultiDistrib) {
 		
 		//init order serverside if needed		
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);			
-		}
-		
-		if(tmpBasket==null){
-			tmpBasket = service.OrderService.makeTmpBasket(app.user,md, {products:[]});
-			app.session.data.tmpBasketId = tmpBasket.id;
-		}		
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
@@ -180,17 +171,14 @@ class Shop extends Controller
 	/**
 	 * add a product to the cart
 	 */
-	public function doAdd(productId:Int, quantity:Int) {
+	public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
 	
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-		}
-			
-		tmpBasket.data.products.push( { productId:productId, quantity:quantity } );		
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);			
+		tmpBasket.data.products.push({ 
+			productId:productId,
+			quantity:quantity
+		});		
 		tmpBasket.update();
-
 		Sys.print( haxe.Json.stringify( {success:true} ) );
 		
 	}
@@ -198,13 +186,9 @@ class Shop extends Controller
 	/**
 	 * remove a product from cart 
 	 */
-	public function doRemove(pid:Int) {
+	public function doRemove(md:db.MultiDistrib, pid:Int) {
 	
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-		}
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 		
 		for ( p in tmpBasket.data.products.copy()) {
 			if (p.productId == pid) {
@@ -212,7 +196,6 @@ class Shop extends Controller
 			}
 		}
 		tmpBasket.update();
-		
 		Sys.print( haxe.Json.stringify( { success:true } ) );		
 	}
 	
