@@ -4,19 +4,19 @@
 	<div class="panel panel-warning">
 		
 		<ul id="subnav" class="nav nav-tabs nav-stacked" >
-			<li id="rights" ::attr class if(nav[1]=="rights") 'active'::>
+			<li id="rights" ::attr class if(nav!=null && nav[1]=="rights") 'active'::>
 				<a href="/amapadmin/rights/">::_("Administration rights")::</a>
 			</li>
 			<li id="rates">
 				<a href="/amapadmin/vatRates/">::_("VAT rates")::</a>
 			</li>			
-			<li id="volunteers" ::attr class if(nav[1]=="volunteers") 'active'::>
+			<li id="volunteers" ::attr class if(nav!=null && nav[1]=="volunteers") 'active'::>
 				<a href="/amapadmin/volunteers/">::_("Duty Periods")::</a>
 			</li>
 			<li id="currency">
 				<a href="/amapadmin/currency/">::_("Currency")::</a>
 			</li>
-			<li id="documents" ::attr class if(nav[1]=="documents") 'active'::>
+			<li id="documents" ::attr class if(nav!=null && nav[1]=="documents") 'active'::>
 				<a href="/amapadmin/documents">
 					<i class="icon icon-file-pdf"></i> Documents
 				</a>
