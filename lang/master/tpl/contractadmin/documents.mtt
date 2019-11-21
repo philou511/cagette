@@ -24,7 +24,6 @@
                         <tr>
                             <th style="text-align: center;">Document</th>
                             <th style="text-align: center;">Visibilité</th>
-                            <th style="text-align: center;"></th>
                         </tr>
                         ::foreach doc documents::
                         <tr style="text-align: center;">
