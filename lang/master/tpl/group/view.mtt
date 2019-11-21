@@ -147,10 +147,10 @@
 
 					<hr/>
 					
-					<p ::cond visibleDocuments.length != 0::>
+					<p ::cond visibleGroupDocuments.length != 0::>
 						<h3>Documents</h3>
 						<div>
-							::foreach doc visibleDocuments::
+							::foreach doc visibleGroupDocuments::
 								<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
 							::end::
 						</div>
@@ -163,18 +163,26 @@
 							::_("Non-complete extract of available products:")::
 						</p>
 				
-						::foreach c contracts::
+						::foreach catalog contracts::
 						<p>
-							<b>::c.name::</b><br/>
-							::c._vendor.name::, $$nullSafe(::c._vendor.zipCode::) $$nullSafe(::c._vendor.city::)
+							<b>::catalog.name::</b><br/>
+							::catalog._vendor.name::, $$nullSafe(::catalog._vendor.zipCode::) $$nullSafe(::catalog._vendor.city::)
 							<div class="row">
-								::foreach p c.getProductsPreview(6)::
+								::foreach p catalog.getProductsPreview(6)::
 								<div class="col-md-2" data-toggle="tooltip" data-placement="top" title="::p.name::" >									
 									<div style="background-image:url('::p.getImage()::')" class="productImg"/> 
 								</div>
-								::end::	
+								::end::
 							</div>
-						</p>	
+							<div class="row">
+								<div style="padding-left:15px;">									
+									::foreach doc visibleCatalogsDocuments.get( catalog.id )::
+										<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+									::end::
+								</div>
+							</div>	
+						</p>
+						<br/>
 						::end::
 				
 					</p>
