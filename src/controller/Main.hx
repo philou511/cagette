@@ -282,6 +282,12 @@ Called from controller/Main.hx line 117
 
 		dispatch.dispatch( new Documents() );
 	}
+
+	@logged
+	function doSubscriptions( dispatch : Dispatch ) {
+
+		dispatch.dispatch( new Subscriptions() );
+	}
 	 
 	@logged
 	function doMessages(d:Dispatch) {

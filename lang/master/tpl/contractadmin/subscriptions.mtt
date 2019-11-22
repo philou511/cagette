@@ -1,0 +1,123 @@
+::use 'contractadmin/design.mtt'::
+
+	<div class="article">
+
+		<h3>Souscriptions</h3>
+	
+        <br/>
+        $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
+        
+        <div class="row" style="margin-top: 10px; margin-bottom: 24px;">
+            <div class="col-md-12">
+                ::if subscriptions != null && subscriptions.length != 0::
+                    <table class="table table-striped table-bordered">
+                        <tr>
+                            <th style="text-align: center;">Membre</th>
+                            <th style="text-align: center;">Engagement</th>
+                            <th style="text-align: center;">Période d'engagement</th>
+                            <th style="text-align: center;">Nombre de distributions</th>
+                            <th style="text-align: center;">Total</th>
+                            <th style="text-align: center;">Payé</th>
+                            <th style="text-align: center;">Solde</th>
+                        </tr>
+                        ::foreach subscription subscriptions::
+                        <tr style="text-align: center;">
+                            <td style="vertical-align: middle;">
+                                <div style="overflow-wrap: break-word;">
+                                    <a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+                                </div>                                
+                            </td>
+                            <td style="vertical-align: middle;">
+                                Panier pour 2-3 personnes           
+                            </td>
+                            <td style="vertical-align: middle;">
+                                Du ::dDate(subscription.startDate):: au ::dDate(subscription.endDate)::
+                            </td>
+                            <td style="vertical-align: middle;">
+                                52
+                            </td>
+                            <td style="vertical-align: middle;">
+                                624,00 €
+                            </td>
+                            <td style="vertical-align: middle;">
+                                624,00 €
+                            </td>
+                            <td style="vertical-align: middle;">
+                                0,00 €
+                            </td>
+                            <td style="vertical-align: middle;">
+                                $$edit( ::_("Edit")::, /contractAdmin/subscriptions/edit/::subscription.id:: )
+                                &nbsp;&nbsp;
+                                $$delete( ::_("Delete")::, /contractAdmin/subscriptions/delete/::subscription.id::?token=::token:: )
+                            </td>
+                        </tr>
+                        ::end::
+                        <!-- <tr style="text-align: center;">
+                            <td style="vertical-align: middle;">
+                                <div style="overflow-wrap: break-word;max-width: 450px;">
+                                    <a href="/member/view/12230" target="_blank">DUPONT Isabelle</a>
+                                </div>                                
+                            </td>
+                            <td style="vertical-align: middle;">
+                                Panier pour 4 à 5 mangeurs        
+                            </td>
+                            <td style="width:250px;vertical-align: middle;">
+                                Du <span style="color:red;">01/01/2019</span> au 31/09/2019
+                            </td>
+                            <td style="width:250px;vertical-align: middle;">
+                                <span style="color:red;">40</span>
+                            </td>
+                            <td style="width:250px;vertical-align: middle;">
+                                480,00 €
+                            </td>
+                            <td style="width:250px;vertical-align: middle;">
+                                500,00 €
+                            </td>
+                            <td style="width:250px;vertical-align: middle;">
+                                20,00 €
+                            </td>
+                        </tr> -->
+                        <!-- ::foreach subscription subscriptions::
+                        <tr style="text-align: center;">
+                            <td style="vertical-align: middle;">
+                                <div style="overflow-wrap: break-word;max-width: 450px;">
+                                    <i class="icon icon-file-pdf"></i>
+                                    <a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a>
+                                </div>                                
+                            </td>
+                            <td style="vertical-align: middle;">
+                                ::if doc.data != null::
+                                    ::if doc.data == "subscribers"::
+                                        Souscripteurs du contrat
+                                    ::elseif doc.data == "members"::
+                                        Membres du groupe
+                                    ::else::
+                                        Public
+                                    ::end::
+                                ::end::                                
+                            </td>
+                            <td style="width:250px;vertical-align: middle;">
+                                ::if catalog != null::
+                                    $$edit( ::_("Edit")::, /contractAdmin/documents/edit/::doc.id::/::catalog.id:: )
+                                    &nbsp;&nbsp;
+                                    $$delete( ::_("Delete")::, /contractAdmin/documents/delete/::doc.id::/::catalog.id::?token=::token:: )
+                                ::else::
+                                    $$edit( ::_("Edit")::, /amapadmin/documents/edit/::doc.id:: )
+                                    &nbsp;&nbsp;
+                                    $$delete( ::_("Delete")::, /amapadmin/documents/delete/::doc.id::?token=::token:: )
+                                ::end::
+                            </td>
+                        </tr>
+                        ::end:: -->
+                        
+                    </table>
+                ::else::
+                    Il n'y a pas de souscription pour ce catalogue.
+                ::end::
+                
+            </div>
+            
+        </div>
+
+    </div>
+::end::

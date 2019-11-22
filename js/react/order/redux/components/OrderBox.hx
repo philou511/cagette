@@ -61,6 +61,8 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 	
 	override public function render() {
 
+		js.html.Console.log( "OrderBox render");
+
 		var userId = props.userId != null ? props.userId : props.selectedUserId;
 		var userName = props.userName != null ? props.userName : props.selectedUserName;
 
@@ -81,14 +83,8 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		var ordersByCatalog = [];
 		var totalPrice = 0.0;
 		
-		trace(props.orders);
-		trace(ordersByCatalogId);
-
 		for( catalogId in ordersByCatalogId.keys() ) {
-			// trace(catalogId);
-			// trace(ordersByCatalogId[catalogId]);
-			// if(ordersByCatalogId[catalogId]==null) continue;
-
+		
 			ordersByCatalog.push( jsx('<h4 key=$catalogId>${ordersByCatalogId[catalogId][0].catalogName}</h4>') );			
 
 			for ( order in ordersByCatalogId[catalogId] ) {
@@ -149,17 +145,19 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		
 		//Display user selector in the case we don't have a userId
 		var renderUserSelector = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
+			js.html.Console.log( "renderUserSelector");
 			return jsx('<UserSelector multiDistribId=${this.props.multiDistribId} catalogId=${this.props.catalogId} catalogType=${this.props.catalogType} />');
 		} 
 				
         var renderOrderBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment { 
 
+			js.html.Console.log( "renderOrderBox");
+
 			if ( userId != null ) {
 
 				return jsx('<div onKeyPress=${onKeyPress}>
 							<h3>Commandes de $userName</h3>
-							$delivery
-							<Error error=${this.props.error} />							
+							$delivery							
 							<hr/>
 							<div key="header" className="row tableHeader" >
 								<div key="prod" className=${className1}>Produits</div>
@@ -179,6 +177,7 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 							</div>
 						</div>');
 			} else {
+				js.html.Console.log( "js.Browser.location.hash = /user" );
 				js.Browser.location.hash = "/user";
 				return null;
 			}
@@ -187,22 +186,27 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 
 		//Display catalogs box
 		var renderCatalogsBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
+			js.html.Console.log( "renderCatalogsBox");
 			return <CatalogsBox multiDistribId=${this.props.multiDistribId} />;
 		} 
 
 		//insert product box
 		var renderInsertBox = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
+			js.html.Console.log( "renderInsertBox");
 			return <InsertOrder catalogId=${this.props.catalogId} userId=${userId} multiDistribId=${this.props.multiDistribId} />;
 		} 
 
-		return <HashRouter>
-				<Switch>
-					${ userId != null ? null : <Route key="user" path="/user" exact=$true render=$renderUserSelector /> }
-					<Route key="orders" path="/" exact=$true render=$renderOrderBox />
-					${ props.catalogId != null ? null : <Route key="catalogs" path="/catalogs" exact=$true render=$renderCatalogsBox /> }
-					<Route key="products" path="/insert" exact=$true render=$renderInsertBox />
-				</Switch>
-			</HashRouter>;
+		return  <div>
+					<Error error=${this.props.error} />
+					<HashRouter>
+						<Switch>
+							${ userId != null ? null : <Route key="user" path="/user" exact=$true render=$renderUserSelector /> }
+							<Route key="orders" path="/" exact=$true render=$renderOrderBox />
+							${ props.catalogId != null ? null : <Route key="catalogs" path="/catalogs" exact=$true render=$renderCatalogsBox /> }
+							<Route key="products" path="/insert" exact=$true render=$renderInsertBox />
+						</Switch>
+					</HashRouter>
+				</div>;
 	}	
 
 	function onKeyPress(e : js.html.KeyboardEvent) {

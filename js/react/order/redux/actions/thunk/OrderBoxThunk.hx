@@ -17,7 +17,7 @@ class OrderBoxThunk {
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             //Fetches all the orders for this user and this multiDistrib and for a given catalog if it's specified otherwise for any catalog of this multiDistrib
-            return HttpUtil.fetch( "/api/order/get/" + userId, GET, { contract : catalogId, multiDistrib : multiDistribId }, PLAIN_TEXT )
+            return HttpUtil.fetch( "/api/order/get/" + userId, GET, { catalog : catalogId, multiDistrib : multiDistribId }, PLAIN_TEXT )
             .then( function( data : String ) {
                 
                 var data : { orders : Array<UserOrder> } = tink.Json.parse(data);
@@ -87,12 +87,12 @@ class OrderBoxThunk {
 
                 if( catalogId != null ) {
 
-                    args +=  "&contract=" + catalogId;
+                    args +=  "&catalog=" + catalogId;
                 }
             }
             else if ( catalogId != null ) {
 
-                args +=  "?contract=" + catalogId;
+                args +=  "?catalog=" + catalogId;
             }
 
             return HttpUtil.fetch( "/api/order/update/" + userId + args, POST, { orders : data }, JSON )
@@ -113,11 +113,11 @@ class OrderBoxThunk {
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
                
             //Loads all the catalogs (of variable type only) for the given multiDistrib
-            return HttpUtil.fetch( "/api/order/contracts/" + multiDistribId, GET, { contractType: 1 }, PLAIN_TEXT )
+            return HttpUtil.fetch( "/api/order/catalogs/" + multiDistribId, GET, { catalogType: 1 }, PLAIN_TEXT )
             .then( function( data : String ) {             
 
-                var data : { contracts : Array<ContractInfo> } = tink.Json.parse(data);               
-                dispatch( OrderBoxAction.FetchCatalogsSuccess( data.contracts ) );
+                var data : { catalogs : Array<ContractInfo> } = tink.Json.parse(data);               
+                dispatch( OrderBoxAction.FetchCatalogsSuccess( data.catalogs ) );
             })
             .catchError( function(data) {                    
                 
@@ -132,7 +132,7 @@ class OrderBoxThunk {
         return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
                
             //Loads all the products for the current catalog
-            return HttpUtil.fetch( "/api/product/get/", GET, { contractId : catalogId }, PLAIN_TEXT )
+            return HttpUtil.fetch( "/api/product/get/", GET, { catalogId : catalogId }, PLAIN_TEXT )
             .then( function( data : String ) {
 
                 var data : { products : Array<ProductInfo> } = tink.Json.parse(data);               

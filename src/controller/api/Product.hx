@@ -12,13 +12,13 @@ class Product extends Controller
 	/**
 		List all products of a conctract
 	**/
-	public function doGet(args:{?contractId:db.Catalog}) {
+	public function doGet( args : { ?catalogId : db.Catalog } ) {
 	
-		if(args==null || args.contractId==null) throw "invalid params";
+		if( args == null || args.catalogId == null ) throw "invalid params";
 
-		var out = {products:new Array<ProductInfo>()};
-		for( p in args.contractId.getProducts(false)) out.products.push(p.infos(false,false)); 
-		Sys.print(tink.Json.stringify(out));
+		var out = { products:new Array<ProductInfo>() };
+		for( p in args.catalogId.getProducts(false) ) out.products.push( p.infos(false,false) ); 
+		Sys.print( tink.Json.stringify(out) );
 	}
 
 	/**

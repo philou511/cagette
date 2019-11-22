@@ -45,7 +45,7 @@ class Group extends controller.Controller
 		for ( catalog in activeCatalogs ) {
 
 			var allCatalogDocuments : List<sugoi.db.EntityFile> = sugoi.db.EntityFile.getByEntity( 'catalog', catalog.id, 'document' );
-			var visibleCatalogDocuments = allCatalogDocuments.filter( function( doc ) return doc.data == 'public' );
+			var visibleCatalogDocuments = isMember ? allCatalogDocuments : allCatalogDocuments.filter( function( doc ) return doc.data == 'public' );
 			visibleCatalogsDocuments.set( catalog.id, visibleCatalogDocuments );
 		}
 		view.visibleCatalogsDocuments = visibleCatalogsDocuments;
