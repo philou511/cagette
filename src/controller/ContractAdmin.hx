@@ -141,7 +141,6 @@ class ContractAdmin extends Controller
 				var p = new db.Product();
 				p.name = source_p.name;
 				p.price = source_p.price;
-				//p.type = source_p.type;
 				p.catalog = contract;
 				p.insert();
 			}
@@ -317,9 +316,7 @@ class ContractAdmin extends Controller
 	 * Global view on orders, producer view
 	 */
 	@tpl('contractadmin/vendorsByDate.mtt')
-	function doVendorsByDate(date:Date,place:db.Place){
-
-		//if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
+	function doVendorsByDate(date:Date,place:db.Place) {
 
 	    var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
 		try {
@@ -327,36 +324,6 @@ class ContractAdmin extends Controller
 		} catch(e:tink.core.Error) {
 			throw Error("/contractAdmin/ordersByDate", e.message);
 		}
-		
-		
-		
-		/*var out = new Map<Int,Dynamic>();//key : vendor id
-		
-		for (d in distribs){
-			var vid = d.contract.vendor.id;
-			var o = out.get(vid);
-			
-			if (o == null){
-				out.set( vid, {contract:d.contract,distrib:d,orders:service.ReportService.getOrdersByProduct( d )});	
-			}else{
-				
-				//add orders with existing ones
-				for ( x in  service.ReportService.getOrdersByProduct( d ) ){
-					
-					//find record in existing orders
-					var f  : Dynamic = Lambda.find(o.orders, function(a) return a.pid == x.pid);
-					if (f == null){
-						//new product order
-						o.orders.push(x);						
-					}else{
-						//increment existing
-						f.quantity += untyped x.quantity;
-						f.total += untyped x.total;
-					}
-				}
-				out.set(vid, o);
-			}
-		}*/
 		
 		view.orders = Lambda.array(vendorDataByVendorId);
 		view.date = date;
@@ -467,7 +434,7 @@ class ContractAdmin extends Controller
 		
 		//Checking permissions
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (contract.type == db.Catalog.TYPE_VARORDER && args != null && args.d == null ) { 
+		if ( args != null && args.d == null ) { 
 			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
 		}
 
@@ -744,6 +711,11 @@ class ContractAdmin extends Controller
 
 		dispatch.dispatch( new controller.Documents() );
 	}
+
+	function doSubscriptions( dispatch : haxe.web.Dispatch ) {
+
+		dispatch.dispatch( new controller.Subscriptions() );
+	}
 	
 	@tpl("contractadmin/stats.mtt")
 	function doStats(contract:db.Catalog, ?args: { stat:Int } ) {
@@ -819,128 +791,5 @@ class ContractAdmin extends Controller
 		}
 		
 	}
-	
-	/**
-	 * Edit a user's orders
-	 */
-	/*@tpl("contractadmin/edit.mtt")
-	function doEdit(c:db.Catalog, ?user:db.User, args:{?d:db.Distribution}) {
-		view.nav.push("orders");
-		sendNav(c);
-		
-		if (!app.user.canManageContract(c)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if (args.d != null && args.d.multiDistrib.validated) throw Error("/contractAdmin/orders/" + c.id + "?d=" + args.d.id, t._("This delivery has been already validated"));
-		
-		view.c = view.contract = c;
-		view.u = user;
-		view.distribution = args.d;
-			
-		//need to select a distribution for varying orders contracts
-		if (c.type == db.Catalog.TYPE_VARORDER && args.d == null ) {
-			
-			throw Redirect("/contractAdmin/orders/" + c.id);
-			
-		}else {
-			
-			//members of the group
-			view.users = app.user.getGroup().getMembersFormElementData();
-			
-			var userOrders = new Array<{order:db.UserOrder,product:db.Product}>();
-			var products = c.getProducts(false);
-			
-			for ( p in products) {
-				var ua = { order:null, product:p };
-				
-				var order : db.UserOrder = null;
-				if (c.type == db.Catalog.TYPE_VARORDER) {
-					order = db.UserOrder.manager.select($user == user && $productId == p.id && $distributionId==args.d.id, true);	
-				}else {
-					order = db.UserOrder.manager.select($user == user && $productId == p.id, true);
-				}
-				
-				if (order != null) ua.order = order;
-				userOrders.push(ua);
-			}
-			
-			//form check
-			if (checkToken()) {
-				
-				//it's a new order, the user has been defined in the form.
-				if (user == null) {
-					user = db.User.manager.get(Std.parseInt(app.params.get("user")));
-					if (user == null){
-						var user = app.params.get("user");
-						throw t._("Unable to find user #::num::",{num:user});
-					}
-					if (!user.isMemberOf(app.user.getGroup())) throw user + " is not member of this group";
-				}
-				
-				//get distrib if needed
-				var distrib : db.Distribution = null;
-				if (c.type == db.Catalog.TYPE_VARORDER) {
-					distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
-				}
-				
-				var orders = [];
-				
-				for (k in app.params.keys()) {
-					var param = app.params.get(k);
-					if (k.substr(0, "product".length) == "product") {
-						
-						//trouve le produit dans userOrders
-						var pid = Std.parseInt(k.substr("product".length));
-						var uo = Lambda.find(userOrders, function(uo) return uo.product.id == pid);
-						if (uo == null) throw t._("Unable to find product ::pid::", {pid:pid});
-						
-						//user2 ?
-						var user2 : db.User = null;
-						var invert = false;
-						if (app.params.get("user2" + pid) != null && app.params.get("user2" + pid) != "0") {
-							user2 = db.User.manager.get(Std.parseInt(app.params.get("user2"+pid)));
-							if (user2 == null) {
-								var user = app.params.get("user2");
-								throw t._("Unable to find user #::num::",{num:user});
-							}
-							if (!user2.isMemberOf(app.user.getGroup())) throw t._("::user:: is not part of this group",{user:user2});
-							if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
-							
-							invert = app.params.get("invert" + pid) == "1";
-						}
-						
-						//filter quantity
-						var q = 0.0;
-						if (uo.product.hasFloatQt ) {
-							param = StringTools.replace(param, ",", ".");
-							q = Std.parseFloat(param);
-						}else {
-							q = Std.parseInt(param);
-						}
-						if(q==null)	continue; //ignore bad qt input
-						
-						//record order
-						if (uo.order != null) {
-							//existing record
-							var o = OrderService.edit(uo.order, q, (app.params.get("paid" + pid) == "1"), user2, invert);
-							if (o != null) orders.push(o);
-						}else {
-							//new record
-							var o =  OrderService.make(user, q, uo.product, distrib == null ? null : distrib.id, (app.params.get("paid" + pid) == "1"), user2, invert);
-							if (o != null) orders.push(o);
-						}
-					}
-				}
-				
-				app.event(MakeOrder(orders));
-				db.Operation.onOrderConfirm(orders);
-				
-				if (distrib != null) {
-					throw Ok("/contractAdmin/orders/" + c.id +"?d="+distrib.id, t._("The order has been updated"));
-				}else {
-					throw Ok("/contractAdmin/orders/" + c.id, t._("The order has been updated"));						
-				}
-			}
-			view.userOrders = userOrders;
-		}
-	}*/
 	
 }

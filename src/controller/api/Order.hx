@@ -9,28 +9,28 @@ import Common;
  */
 class Order extends Controller
 {
-	public function doContracts( multiDistrib : db.MultiDistrib, ?args : { contractType : Int } ) {
+	public function doCatalogs( multiDistrib : db.MultiDistrib, ?args : { catalogType : Int } ) {
 
-		var contracts = new Array<ContractInfo>();
-		var type = ( args != null && args.contractType != null ) ? args.contractType : null;
+		var catalogs = new Array<ContractInfo>();
+		var type = ( args != null && args.catalogType != null ) ? args.catalogType : null;
 		for( distrib in multiDistrib.getDistributions(type) ) {
 			
 			var image = distrib.catalog.vendor.image == null ? null : view.file( distrib.catalog.vendor.image );
-			contracts.push( { id : distrib.catalog.id, name : distrib.catalog.name, image : image } );
+			catalogs.push( { id : distrib.catalog.id, name : distrib.catalog.name, image : image } );
 		}
 
-		Sys.print( Json.stringify({ success : true, contracts : contracts }) );
+		Sys.print( Json.stringify({ success : true, catalogs : catalogs }) );
 
 	}
 
-	function checkRights(user:db.User,contract:db.Catalog,multiDistrib:db.MultiDistrib){
+	function checkRights(user:db.User,catalog:db.Catalog,multiDistrib:db.MultiDistrib){
 
-		if( contract==null && multiDistrib==null ) throw new Error("You should provide at least a contract or a multiDistrib");
-		if( contract!=null && contract.type==db.Catalog.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA contract for a multiDistrib");
+		if( catalog==null && multiDistrib==null ) throw new Error("You should provide at least a catalog or a multiDistrib");
+		if( catalog!=null && catalog.type==db.Catalog.TYPE_CONSTORDERS && multiDistrib!=null ) throw new Error("You cant edit a CSA catalog for a multiDistrib");
 		
 		//rights	
-		if (contract==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
-		if (contract!=null && !app.user.canManageContract(contract)) throw new Error(403,t._("You do not have the authorization to manage this catalog"));
+		if (catalog==null && !app.user.canManageAllContracts()) throw new Error(403,t._("Forbidden access"));
+		if (catalog!=null && !app.user.canManageContract(catalog)) throw new Error(403,t._("You do not have the authorization to manage this catalog"));
 		if ( multiDistrib != null && multiDistrib.isValidated() ) throw new Error(t._("This delivery has been already validated"));
 	}
 
@@ -39,30 +39,40 @@ class Order extends Controller
 		Possible to filter for a distribution only
 		(Used by OrderBox react component)
 
-		contract arg : we want to edit the orders of one single catalog/contract
+		catalog arg : we want to edit the orders of one single catalog/contract
 		multiDistrib arg : we want to edit the orders of the whole distribution
 	 */	
-	public function doGet(user:db.User,args:{?contract:db.Catalog,?multiDistrib:db.MultiDistrib}){
+	public function doGet( user : db.User, args : { ?catalog : db.Catalog, ?multiDistrib : db.MultiDistrib } ) {
 
 		checkIsLogged();
-		var contract = (args!=null && args.contract!=null) ? args.contract : null;
-		var multiDistrib = (args!=null && args.multiDistrib!=null) ? args.multiDistrib : null;
+		var catalog = ( args != null && args.catalog != null ) ? args.catalog : null;
+		var multiDistrib = ( args != null && args.multiDistrib != null ) ? args.multiDistrib : null;
 
-		checkRights(user,contract,multiDistrib);
-		
+		checkRights( user, catalog, multiDistrib );
+
+		if ( catalog != null && catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+			//The user needs a subscription for this catalog to have orders
+			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
+			if ( subscription == null ) {
+				
+				throw new Error( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes."  );
+			}
+		}
+
 		//get datas
 		var orders =[];
 
-		if(contract==null){
+		if(catalog==null){
 			//we edit a whole multidistrib, edit only var orders.
 			orders = multiDistrib.getUserOrders(user , db.Catalog.TYPE_VARORDER);
 		}else{
 			//edit a single catalog, may be CSA or variable
 			var d = null;
 			if(multiDistrib!=null){
-				d = multiDistrib.getDistributionForContract(contract);
+				d = multiDistrib.getDistributionForContract(catalog);
 			}
-			orders = contract.getUserOrders(user, d, false);			
+			orders = catalog.getUserOrders(user, d, false);			
 		}
 
 		var orders = OrderService.prepare(orders);		
@@ -73,85 +83,114 @@ class Order extends Controller
 	 * Update orders of a user ( from react OrderBox component )
 	 * @param	userId
 	 */
-	public function doUpdate( user:db.User, args:{?contract:db.Catalog,?multiDistrib:db.MultiDistrib} ){
+	public function doUpdate( user : db.User, args : { ?catalog : db.Catalog, ?multiDistrib : db.MultiDistrib } ) {
 
 		checkIsLogged();
-		var contract = (args!=null && args.contract!=null) ? args.contract : null;
-		var multiDistrib = (args!=null && args.multiDistrib!=null) ? args.multiDistrib : null;
-		checkRights(user,contract,multiDistrib);
+		var catalog = ( args != null && args.catalog != null ) ? args.catalog : null;
+		var multiDistrib = ( args != null && args.multiDistrib != null ) ? args.multiDistrib : null;
+		checkRights( user, catalog, multiDistrib );
 		
-		//GET params
-		var p = app.params;
-
 		//POST payload
-		var data = new Array<{id:Int,productId:Int,qt:Float,paid:Bool,invertSharedOrder:Bool,userId2:Int}>();
-		var raw = StringTools.urlDecode(sugoi.Web.getPostData());
+		var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+		var raw = StringTools.urlDecode( sugoi.Web.getPostData() );
 		
-		if(raw==null){
-			throw new Error("Order datas are null");
-		}else{
-			data = haxe.Json.parse(raw).orders;
+		if( raw == null ) {
+
+			throw new Error( 'Order datas are null' );
+		}
+		else {
+
+			ordersData = haxe.Json.parse(raw).orders;
 		}
 		
-		//record orders
-	
-		//find existing orders
-		var exOrders = [];
-		if(contract==null){
-			//we edit a whole multidistrib
-			exOrders = multiDistrib.getUserOrders(user);
-		}else{
-			//edit a single catalog
-			var d = null;
-			if(multiDistrib!=null){
-				d = multiDistrib.getDistributionForContract(contract);
+		// Save orders
+		// --------------------
+		// Find existing orders
+		var existingOrders = [];
+		if ( catalog == null ) {
+
+			// Edit a whole multidistrib
+			existingOrders = multiDistrib.getUserOrders( user );
+		}
+		else {
+
+			// Edit a single catalog
+			var distrib = null;
+			if( multiDistrib != null ) {
+
+				distrib = multiDistrib.getDistributionForContract( catalog );
 			}
-			exOrders = contract.getUserOrders(user, d);			
+			existingOrders = catalog.getUserOrders( user, distrib );			
 		}
 				
 		var orders = [];
-		for (o in data) {
+		for ( order in ordersData ) {
 			
-			//get product
-			var product = db.Product.manager.get(o.productId, false);
-			//if (product.contract.id != c.id) throw "product " + o.productId + " is not in contract " + c.id;
+			// Get product
+			var product = db.Product.manager.get( order.productId, false );
 			
-			//find existing order				
-			var uo = Lambda.find(exOrders, function(uo) return uo.id == o.id);
+			// Find existing order				
+			var existingOrder = Lambda.find( existingOrders, function(x) return x.id == order.id );
 				
-			//user2 + invert
+			// User2 + Invert
 			var user2 : db.User = null;
 			var invert = false;
-			if ( o.userId2 != null ) {
-				user2 = db.User.manager.get(o.userId2,false);
-				if (user2 == null) throw t._("Unable to find user #::num::",{num:o.userId2});
-				if (!user2.isMemberOf(product.catalog.group)) throw t._("::user:: is not part of this group",{user:user2});
-				if (user.id == user2.id) throw t._("Both selected accounts must be different ones");
+			if ( order.userId2 != null ) {
+
+				user2 = db.User.manager.get( order.userId2, false );
+				if ( user2 == null ) throw t._( "Unable to find user #::num::", { num : order.userId2 } );
+				if ( !user2.isMemberOf( product.catalog.group ) ) throw t._( "::user:: is not part of this group", { user : user2 } );
+				if ( user.id == user2.id ) throw t._( "Both selected accounts must be different ones" );
 				
-				invert = o.invertSharedOrder;
+				invert = order.invertSharedOrder;
 			}
 			
-			//record order
-			if (uo != null) {
-				//existing record
-				var o = OrderService.edit(uo, o.qt, o.paid , user2, invert);
-				if (o != null) orders.push(o);
-			}else {
-				//new record
-				var distrib = null; //no need if csa contract
-				if( multiDistrib != null ) {
-					distrib = multiDistrib.getDistributionFromProduct(product);
+			// Save order
+			if ( existingOrder != null ) {
+
+				// Edit existing order
+				var updatedOrder = OrderService.edit( existingOrder, order.qt, order.paid , user2, invert );
+				if ( updatedOrder != null ) orders.push( updatedOrder );
+			}
+			else {
+
+				// Insert new order
+				var distrib = null; //no need if csa catalog
+				if( multiDistrib != null ) {  //RAJOUTER CONDITION VARORDERS
+
+					distrib = multiDistrib.getDistributionFromProduct( product );
+					var newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid , user2, invert );
+					if ( newOrder != null ) orders.push( newOrder );
+				}
+				else {
+					
+					// Faire une loop sur les distributions pour créer une order par distribution
+
+					var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
+					if ( subscription == null ) {
+						
+						throw new Error( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes."  );
+					}
+
+					var distributions = db.Distribution.manager.search( $catalog == catalog && $date >= subscription.startDate && $end <= subscription.endDate );
+
+					for ( distrib in distributions ) {
+
+						var newOrder =  OrderService.make( user, order.qt , product,  distrib.id, order.paid , user2, invert, subscription );
+						if ( newOrder != null ) orders.push( newOrder );
+					}
+					
+>>>>>>> WIP Subscriptions
 				}
 				
-				var o =  OrderService.make(user, o.qt , product, distrib == null ? null : distrib.id, o.paid , user2, invert);
-				if (o != null) orders.push(o);
 			}
+
 		}
 		
-		app.event(MakeOrder(orders));
-		db.Operation.onOrderConfirm(orders);
+		app.event( MakeOrder( orders ) );
+		db.Operation.onOrderConfirm( orders );
 		
-		Sys.print(Json.stringify({success:true, orders:data}));
+		Sys.print( Json.stringify( { success : true, orders : ordersData } ) );
 	}
 
 

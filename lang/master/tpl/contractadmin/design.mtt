@@ -37,6 +37,11 @@
 					<i class="icon icon-file-pdf"></i> Documents
 				</a>
 			</li>
+			<li id="subscriptions" ::attr class if(nav[1]=="subscriptions") 'active'::>
+				<a href="/contractAdmin/subscriptions/::c.id::">
+					<i class="icon icon-calendar-check"></i> Souscriptions
+				</a>
+			</li>
 			<li id="stats">
 				<a href="/contractAdmin/stats/::c.id::">
 					<i class="icon icon-chart"></i> ::_("Stats")::

@@ -10,9 +10,7 @@ import mui.core.Button;
 
 typedef CatalogsBoxProps = {
 	
-	var catalogId : Int;
-	var multiDistribId : Int;	
-	var error : String;
+	var multiDistribId : Int;
 }
 
 
@@ -30,22 +28,15 @@ class CatalogsBox  extends react.ReactComponentOfProps<CatalogsBoxProps>
 	}	
 
 	override public function render() {	
-			
-		return jsx('<div>								
-						<h3>Choisissez le catalogue dont vous voulez voir les produits</h3>
-						<Button onClick=${function(){ js.Browser.location.hash = "/"; }} size={Medium} variant={Outlined}>
-							${CagetteTheme.getIcon("chevron-left")}&nbsp;&nbsp;Retour
-						</Button>
-						<Error error=${props.error} />				
-						<hr />
-						<CatalogSelector multiDistribId=${props.multiDistribId} />						
-					</div>			
-		');
+
+		return <div>								
+					<h3>Choisissez le catalogue dont vous voulez voir les produits</h3>
+					<Button onClick=${function(){ js.Browser.location.hash = "/"; }} size={Medium} variant={Outlined}>
+						${CagetteTheme.getIcon("chevron-left")}&nbsp;&nbsp;Retour
+					</Button>
+					<hr />
+					<CatalogSelector multiDistribId=${props.multiDistribId} />						
+				</div>;
 	}
 	
-	static function mapStateToProps( state : react.order.redux.reducers.OrderBoxReducer.OrderBoxState ) : react.Partial<CatalogsBoxProps> {
-
-		return { error : Reflect.field(state, "reduxApp").error };
-	}
-
 }

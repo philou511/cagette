@@ -1,8 +1,8 @@
 package react.user.redux.components;
 
 import react.ReactComponent;
-import react.ReactMacro.jsx;
 import Common.UserInfo;
+import react.ReactMacro.jsx;
 import react.order.redux.actions.OrderBoxAction;
 import react.order.redux.actions.thunk.OrderBoxThunk;
 import mui.core.OutlinedInput;
@@ -18,7 +18,7 @@ typedef UserSelectorProps = {
 	var multiDistribId : Int;
 	var catalogId : Int;
 	var catalogType : Int;	
-	var fetchOrders : Int -> Int -> Int -> Int -> Void;	
+	var fetchOrders : Int -> Int -> Int -> Int -> Void;
 }
 
 typedef UserSelectorState = {
@@ -44,27 +44,29 @@ class UserSelector extends react.ReactComponentOfPropsAndState<UserSelectorProps
 
 	override public function render() {
 
+		js.html.Console.log( 'UserSelector render');
+
 		if ( props.users != null ) {
 
 			var options = props.users.map( function( user ) return jsx('<option key=${user.id} value=${user.id}>${user.name}</option>') );
-			var inputSelect = jsx('<OutlinedInput labelWidth={0} />');
-			return jsx('
-			<div style=${{ marginLeft: "30%" }}>
-				<NativeSelect value=${state.userIdValue} onChange=${updateUserId} input=${cast inputSelect} style=${{fontSize:"0.95rem", height: 45, width: "70%" }} >	
-					<option value="0">Sélectionnez la personne associée à la nouvelle commande</option>
-					$options						
-				</NativeSelect>					
-			</div>');
+			return <div style=${{ marginLeft: "30%" }}>
+						<NativeSelect value=${state.userIdValue} onChange=${updateUserId} input=${{ <OutlinedInput labelWidth={0} /> }} style=${{fontSize:"0.95rem", height: 45, width: "70%" }} >	
+							<option value="0">Sélectionnez la personne associée à la nouvelle commande</option>
+							$options				
+						</NativeSelect>
+												
+					</div>;
 		}
 		else {
 
-			return jsx('<div></div>');
+			return <div></div>;
 		}
 				
 	}
 	
 	override function componentDidMount() {
 
+		js.html.Console.log( 'UserSelector componentDidMount');
         props.fetchUsers();
 	}
 
@@ -77,8 +79,8 @@ class UserSelector extends react.ReactComponentOfPropsAndState<UserSelectorProps
 
 		var userName : String = props.users.filter( function( user ) return user.id == userId )[0].name;
 		props.selectUser( userId, userName );
-		props.fetchOrders( userId, props.multiDistribId, props.catalogId, props.catalogType );		
-		js.Browser.location.hash = "/";
+		props.fetchOrders( userId, props.multiDistribId, props.catalogId, props.catalogType );
+		
 	}
 
 	static function mapStateToProps( state: react.order.redux.reducers.OrderBoxReducer.OrderBoxState ): react.Partial<UserSelectorProps> {	
