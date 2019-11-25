@@ -163,13 +163,12 @@
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>
 										<div class="status">
-											::_("Distribution confirmed")::
+												<a href="/distribution/validate/::d.id::">Distribution validée</a>
 										</div>
-										<br/>
-										<a href="/distribution/counter/::d.id::" class="btn btn-default btn-sm" >
-											<i class="icon icon-payment-type"></i> Encaissements
-										</a>
+										
+										
 										::if isAdmin::
+										<br/>
 										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-sm">
 											<i class="icon icon-check"></i> Dévalider
 										</a>

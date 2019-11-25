@@ -13,6 +13,10 @@ class Shop extends Controller
 	@tpl('shop/default.mtt')
 	public function doDefault(md:db.MultiDistrib) {
 
+		if(app.getCurrentGroup()==null){
+			throw Redirect("/group/"+md.getGroup().id);
+		}
+
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 
 		var date = md.getDate();
@@ -54,7 +58,7 @@ class Shop extends Controller
 
 
 		//message if phone is required
-		if(app.user!=null && app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
+		if(app.user!=null && md.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
 			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
@@ -152,14 +156,11 @@ class Shop extends Controller
 	/**
 	 * receive cart
 	 */
-	public function doSubmit() {
+	public function doSubmit(md:db.MultiDistrib) {
 		
 		var order : TmpBasketData = haxe.Json.parse(app.params.get("data"));
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-		}
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
+		tmpBasket.lock();
 		tmpBasket.data = order;
 		tmpBasket.update();
 

@@ -53,6 +53,7 @@ class PaymentService
 			//For the payment page
 			case PCPayment:
 				if ( group.allowedPaymentsType == null ) return [];
+				//ontheSpot payment type replaces checks or cash
 				var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
 				var hasOnTheSpotPaymentTypes = false;
 				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
@@ -61,8 +62,7 @@ class PaymentService
 				{
 					var found = Lambda.find(all, function(a) return a.type == paymentType);
 					if (found != null)  {
-						if (Lambda.has(onTheSpotPaymentTypes, found.type))
-						{
+						if ( Lambda.has(onTheSpotPaymentTypes, found.type) ){
 							hasOnTheSpotPaymentTypes = true;
 							onTheSpotPaymentType.allowedPaymentTypes.push(found);
 							continue; //On the spot payment types are excluded

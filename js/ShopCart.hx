@@ -267,7 +267,7 @@ class ShopCart
      */
 	public function submit() {
 		
-		var req = new haxe.Http("/shop/submit");
+		var req = new haxe.Http("/shop/submit/"+multiDistribId);
 		req.onData = function(data) {
 			var data : {tmpBasketId:Int,success:Bool} = haxe.Json.parse(data);
 			App.instance.setWarningOnUnload(false);

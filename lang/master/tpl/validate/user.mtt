@@ -93,7 +93,6 @@
 					<th colspan="7" class="text-right">::_("Total ordered")::</th>
 					<th>::formatNum(total)::&nbsp;::currency()::</th>					
 					<th></th>
-					
 				</tr>
 				
 			</table>
@@ -281,6 +280,10 @@
 
 				<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">
 					<i class="icon icon-user"></i> ::_("Payment history of this member")::
+				</a>
+
+				<a href="/member/invoice/::member.id::/::md.id::" target="_blank" class="btn btn-default btn-sm">
+					<i class="icon icon-file"></i> Reçu
 				</a>
 			</p>		
 		</div>

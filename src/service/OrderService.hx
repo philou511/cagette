@@ -20,7 +20,7 @@ class OrderService
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool):db.UserOrder {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool):Null<db.UserOrder> {
 		
 		var t = sugoi.i18n.Locale.texts;
 
@@ -417,7 +417,8 @@ class OrderService
 				throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.catalog.name}));
 			}
 
-			orders.push( make(user, o.quantity, p, distrib.id ) );
+			var order = make(user, o.quantity, p, distrib.id );
+			if(order!=null) orders.push( order );
 		}
 		
 		App.current.event(MakeOrder(orders));
@@ -547,6 +548,8 @@ class OrderService
 		Returns tmp basket
 	**/
 	public static function getTmpBasket(user:db.User,group:db.Group):db.TmpBasket{
+		if(user==null) return null;
+		if(group==null) throw "should have a group here";
 		for( b in db.TmpBasket.manager.search($user==user)){
 			if(b.multiDistrib.group.id==group.id) return b;
 		}

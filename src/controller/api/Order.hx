@@ -140,7 +140,6 @@ class Order extends Controller
 				//new record
 				var distrib = null; //no need if csa contract
 				if( multiDistrib != null ) {
-
 					distrib = multiDistrib.getDistributionFromProduct(product);
 				}
 				

@@ -398,11 +398,14 @@ class Operation extends sys.db.Object
 	 */
 	public static function onOrderConfirm(orders:Array<db.UserOrder>):Array<db.Operation>{
 		
+		//make sure we dont have null orders in the array
+		orders = orders.filter( o -> return o!=null );
 		if (orders.length == 0) return null;
-		if (orders[0] == null) return null;
 		
 		for( o in orders){
-			if(o.user==null) throw "order "+o.id+" has no user";
+			if(o.user==null){
+				throw new Error("order "+o.id+" has no user");
+			} 
 			
 			if(o.user.id!=orders[0].user.id){
 				throw new Error("Those orders are from different users");
@@ -482,18 +485,6 @@ class Operation extends sys.db.Object
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 	
-	/*public static function getLabels(){
-		var t = sugoi.i18n.Locale.texts;
-		return [
-			"name" 				=> t._("Text"),
-			"date" 				=> t._("Date"),
-			"endDate" 			=> t._("End date"),
-			"place" 			=> t._("Place"),
-			"distributor1" 		=> t._("Distributor #1"),
-			"distributor2" 		=> t._("Distributor #2"),
-			"distributor3" 		=> t._("Distributor #3"),
-			"distributor4" 		=> t._("Distributor #4"),						
-		];
-	}*/
+
 	
 }
