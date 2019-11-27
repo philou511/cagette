@@ -6,6 +6,8 @@
 -lib tink_json
 -lib record-macros
 -lib hx3compat
+-lib thx.csv
+-lib thx.semver
 
 -lib sugoi
 -lib cagette-pro

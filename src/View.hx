@@ -8,11 +8,13 @@ import tools.ArrayTool;
 class View extends sugoi.BaseView {
 	
 	var t : sugoi.i18n.GetText;
+	var VERSION:String;
 	
 	var tuto:{ name:String, step:Int };
 
 	public function new() {
 		super();
+		this.VERSION = App.VERSION.toString();
 		this.t = sugoi.i18n.Locale.texts;
 	}
 	
