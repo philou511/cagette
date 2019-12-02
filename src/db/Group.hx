@@ -418,6 +418,17 @@ class Group extends Object
 		return currency;		
 	}
 
+	public function getVisibleDocuments( isMemberOfGroup : Bool ) : List<sugoi.db.EntityFile> {
+
+		if ( isMemberOfGroup ) {
+
+			return sugoi.db.EntityFile.manager.search( $entityType == 'group' && $entityId == this.id && $documentType == 'document', false);
+		}
+		
+		return sugoi.db.EntityFile.manager.search( $entityType == 'group' && $entityId == this.id && $documentType == 'document' && $data == 'public', false);
+
+	}
+
 	public function deleteDemoContracts(){
 		var out = [];
 

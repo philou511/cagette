@@ -92,8 +92,8 @@ class Main extends Controller {
 			}
 		}
 
-		var isMember = app.user==null ? false : app.user.isMemberOf(group);
-		var registerWithoutOrdering = ( !isMember && group.regOption==db.Group.RegOption.Open && !hasOneOpenDistrib );
+		var isMemberOfGroup = app.user==null ? false : app.user.isMemberOf(group);
+		var registerWithoutOrdering = ( !isMemberOfGroup && group.regOption==db.Group.RegOption.Open && !hasOneOpenDistrib );
 		view.registerWithoutOrdering = registerWithoutOrdering;
 		if(registerWithoutOrdering) service.UserService.prepareLoginBoxOptions(view,group);		
 
@@ -117,8 +117,7 @@ class Main extends Controller {
 			if(contracts.length>0 ) throw Ok("/","Contrats suivants effacés : "+contracts.map(function(c) return c.name).join(", "));
 		}
 
-		var allDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity( 'group', group.id, 'document' );
-		view.visibleDocuments = isMember ? allDocuments : allDocuments.filter( function( doc ) return doc.data == 'public' );
+		view.visibleDocuments = group.getVisibleDocuments( isMemberOfGroup );
 
 	}
 	
