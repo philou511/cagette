@@ -439,7 +439,7 @@ class OrderService
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
 		m.setSender(App.config.get("default_email"),"Cagette.net");
-		m.setSubject('[${d.catalog.group.name}] Distribution du ${App.current.view.dDate(d.date)} (${d.catalog.name})');
+		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 

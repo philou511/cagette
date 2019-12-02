@@ -293,18 +293,17 @@ class App extends sugoi.BaseApp {
 	}
 	
 	/**
-	 * process a template and returns the generated string
-	 * @param	tpl
-	 * @param	ctx
-	 */
+		process a template and returns the generated string
+		(used for emails)
+	**/
 	public function processTemplate(tpl:String, ctx:Dynamic):String {
 		
+		//inject usefull vars in view
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
-		
-		//i18n functions
+		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );		
+
 		ctx._ = App.current.view._;
 		ctx.__ = App.current.view.__;
-		
 		
 		var tpl = loadTemplate(tpl);
 		var html = tpl.execute(ctx);	
