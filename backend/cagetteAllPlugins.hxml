@@ -4,6 +4,7 @@
 -lib hscript
 -lib tink_core
 -lib tink_json
+-lib tink_http
 -lib record-macros
 -lib hx3compat
 -lib thx.csv
