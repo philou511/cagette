@@ -1,4 +1,4 @@
-package test;
+package test;import utest.Assert;
 import Common;
 import test.TestSuite;
 import service.ReportService;
@@ -9,7 +9,7 @@ import service.OrderService;
  * 
  * @author fbarbut
  */
-class TestReports extends haxe.unit.TestCase
+class TestReports extends utest.Test
 {
 	
 	public function new(){
@@ -17,7 +17,7 @@ class TestReports extends haxe.unit.TestCase
 		super();
 	}
 
-	override function setup(){
+	function setup(){
 
 		TestSuite.initDB();
 		TestSuite.initDatas();
@@ -64,9 +64,9 @@ class TestReports extends haxe.unit.TestCase
 
 		//courgettes x 10
 		var courgettesOrder = Lambda.find(orders, function(o) return o.pid==courgettes.id);
-		assertEquals( 10.0 , courgettesOrder.quantity );
-		assertEquals( 35.0 , courgettesOrder.totalTTC );
-		assertEquals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
+		Assert.equals( 10.0 , courgettesOrder.quantity );
+		Assert.equals( 35.0 , courgettesOrder.totalTTC );
+		Assert.equals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
 
 		//the report stays the same, even if the product has a new price.
 		courgettes.lock();
@@ -74,9 +74,9 @@ class TestReports extends haxe.unit.TestCase
 		courgettes.update();
 		var orders = ReportService.getOrdersByProduct(d);
 		var courgettesOrder = Lambda.find(orders, function(o) return o.pid==courgettes.id);
-		assertEquals( 10.0 , courgettesOrder.quantity );
-		assertEquals( 35.0 , courgettesOrder.totalTTC );
-		assertEquals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
+		Assert.equals( 10.0 , courgettesOrder.quantity );
+		Assert.equals( 35.0 , courgettesOrder.totalTTC );
+		Assert.equals( 33.18 , tools.FloatTool.clean(courgettesOrder.totalHT) );
 
 
 	}
@@ -116,18 +116,18 @@ class TestReports extends haxe.unit.TestCase
 		var vendorDataByVendorId = service.ReportService.getMultiDistribVendorOrdersByProduct(distrib1.date, distrib1.place);
 
 		//Check this is what we expect for each vendor
-		assertEquals( 3 * TestSuite.COURGETTES.price, vendorDataByVendorId.get(TestSuite.VENDOR1.id).orders[0].total);
-		assertEquals( 1 * TestSuite.POTATOES.price	, vendorDataByVendorId.get(TestSuite.VENDOR1.id).orders[1].total );
-		assertEquals( 5 * TestSuite.LAITUE.price 	, vendorDataByVendorId.get(TestSuite.VENDOR2.id).orders[0].total);
-		assertEquals( 12 * TestSuite.CARROTS.price	, vendorDataByVendorId.get(TestSuite.VENDOR3.id).orders[0].total);
+		Assert.equals( 3 * TestSuite.COURGETTES.price, vendorDataByVendorId.get(TestSuite.VENDOR1.id).orders[0].total);
+		Assert.equals( 1 * TestSuite.POTATOES.price	, vendorDataByVendorId.get(TestSuite.VENDOR1.id).orders[1].total );
+		Assert.equals( 5 * TestSuite.LAITUE.price 	, vendorDataByVendorId.get(TestSuite.VENDOR2.id).orders[0].total);
+		Assert.equals( 12 * TestSuite.CARROTS.price	, vendorDataByVendorId.get(TestSuite.VENDOR3.id).orders[0].total);
 		
-		//assertEquals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
+		//Assert.equals(null, db.Operation.manager.get(operationId), null); //op should have been deleted
 	}*/
 	
 	/**
 	 * run once at the beginning
 	 */
-	/*override function setup(){
+	/*function setup(){
 		
 		sys.db.Manager.cnx.request("TRUNCATE TABLE UserOrder;");
 		
@@ -164,10 +164,10 @@ class TestReports extends haxe.unit.TestCase
 		var carottes = db.Product.manager.get(5);
 		
 		//check we got the right products
-		assertEquals("Fraises",fraises.name);
-		assertEquals("Pommes",pommes.name);
-		assertEquals("Courgettes",courgettes.name);
-		assertEquals("Carottes", carottes.name);
+		Assert.equals("Fraises",fraises.name);
+		Assert.equals("Pommes",pommes.name);
+		Assert.equals("Courgettes",courgettes.name);
+		Assert.equals("Carottes", carottes.name);
 		
 		var options = { startDate:new Date(2017, 5, 1, 0, 0, 0), endDate:new Date(2017, 5, 31, 0, 0, 0), groups:[], contracts:[] };
 		
@@ -175,14 +175,14 @@ class TestReports extends haxe.unit.TestCase
 		
 		var data = rep.byProduct();
 		
-		assertEquals(4,data.length); //should be the 4 products
+		Assert.equals(4,data.length); //should be the 4 products
 		
 		for ( d in data){
 			switch(d.pname){
-				case "Fraises": assertEquals(d.qt, 4);
-				case "Pommes": assertEquals(d.qt, 2);
-				case "Carottes": assertEquals(d.qt, 1);
-				case "Courgettes": assertEquals(d.qt, 5);			
+				case "Fraises": Assert.equals(d.qt, 4);
+				case "Pommes": Assert.equals(d.qt, 2);
+				case "Carottes": Assert.equals(d.qt, 1);
+				case "Courgettes": Assert.equals(d.qt, 5);			
 			}
 		}
 		
@@ -198,12 +198,12 @@ class TestReports extends haxe.unit.TestCase
 		
 		var rep = new pro.OrderReport(options);
 		var data = rep.byProduct();
-		assertEquals(2,data.length); //should be the 2 products
+		Assert.equals(2,data.length); //should be the 2 products
 		
 		for ( d in data){
 			switch(d.pname){
-				case "Fraises": assertEquals(d.qt, 4);
-				case "Pommes": assertEquals(d.qt, 2);				
+				case "Fraises": Assert.equals(d.qt, 4);
+				case "Pommes": Assert.equals(d.qt, 2);				
 			}
 		}
 	}*/

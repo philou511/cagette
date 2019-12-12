@@ -1,10 +1,10 @@
-package test;
+package test;import utest.Assert;
 import service.DistributionService;
 
 /**
  * Test distributions
  */
-class TestDistributions extends haxe.unit.TestCase
+class TestDistributions extends utest.Test
 {
 	
 	public function new(){
@@ -14,7 +14,7 @@ class TestDistributions extends haxe.unit.TestCase
 	/**
 	 * 
 	 */
-	override function setup(){		
+	function setup(){		
 		TestSuite.initDB();
 		TestSuite.initDatas();
 	}
@@ -33,7 +33,7 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error) {
 			e1 = x;
 		}
-		assertEquals(e1, null);
+		Assert.equals(e1, null);
 
 		//existingDistrib.date <= distrib2.date && existingDistrib.end >= distrib2.date
 		var e2 = null;
@@ -44,7 +44,7 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error) {
 			e2 = x;
 		}
-		assertEquals(e2.message, "There is already a distribution at this place overlapping with the time range you've selected.");
+		Assert.equals(e2.message, "There is already a distribution at this place overlapping with the time range you've selected.");
 
 		//existingDistrib.date <= distrib3.end && existingDistrib.end >= distrib3.end
 		var e3 = null;
@@ -55,7 +55,7 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e3 = x;
 		}
-		assertEquals(e3.message, "There is already a distribution at this place overlapping with the time range you've selected.");
+		Assert.equals(e3.message, "There is already a distribution at this place overlapping with the time range you've selected.");
 
 		//existingDistrib.date >= distrib4.date && existingDistrib.end <= distrib4.end
 		var e4 = null;
@@ -66,7 +66,7 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e4 = x;
 		}
-		assertEquals(e4.message, "There is already a distribution at this place overlapping with the time range you've selected.");
+		Assert.equals(e4.message, "There is already a distribution at this place overlapping with the time range you've selected.");
 
 		//existingDistrib.date  > distrib5.end
 		var e5 = null;
@@ -77,7 +77,7 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e5 = x;
 		}
-		assertEquals(e5, null);
+		Assert.equals(e5, null);
 
 		//existingDistrib.date  > distrib6.end
 		var e6 = null;
@@ -88,7 +88,7 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e6 = x;
 		}
-		assertEquals(e6.message, "The distribution start date must be set after the orders end date.");
+		Assert.equals(e6.message, "The distribution start date must be set after the orders end date.");
 
 	}*/
 
@@ -116,17 +116,17 @@ class TestDistributions extends haxe.unit.TestCase
 			[TestSuite.CONTRAT_LEGUMES.id]);
 
 		var weeklyDistribs = weeklyDistribCycle.getDistributions();
-		assertEquals(weeklyDistribs.length, 5);
-		assertEquals(weeklyDistribs[0].distribStartDate.toString(), new Date(2018, 11, 24, 13, 0, 0).toString());
-		assertEquals(weeklyDistribs[0].distribEndDate.toString(), new Date(2018, 11, 24, 14, 0, 0).toString());
-		assertEquals(weeklyDistribs[1].distribStartDate.toString(), new Date(2018, 11, 31, 13, 0, 0).toString());
-		assertEquals(weeklyDistribs[1].distribEndDate.toString(), new Date(2018, 11, 31, 14, 0, 0).toString());
-		assertEquals(weeklyDistribs[2].distribStartDate.toString(), new Date(2019, 0, 7, 13, 0, 0).toString());
-		assertEquals(weeklyDistribs[2].distribEndDate.toString(), new Date(2019, 0, 7, 14, 0, 0).toString());
-		assertEquals(weeklyDistribs[3].distribStartDate.toString(), new Date(2019, 0, 14, 13, 0, 0).toString());
-		assertEquals(weeklyDistribs[3].distribEndDate.toString(), new Date(2019, 0, 14, 14, 0, 0).toString());
-		assertEquals(weeklyDistribs[4].distribStartDate.toString(), new Date(2019, 0, 21, 13, 0, 0).toString());
-		assertEquals(weeklyDistribs[4].distribEndDate.toString(), new Date(2019, 0, 21, 14, 0, 0).toString());
+		Assert.equals(weeklyDistribs.length, 5);
+		Assert.equals(weeklyDistribs[0].distribStartDate.toString(), new Date(2018, 11, 24, 13, 0, 0).toString());
+		Assert.equals(weeklyDistribs[0].distribEndDate.toString(), new Date(2018, 11, 24, 14, 0, 0).toString());
+		Assert.equals(weeklyDistribs[1].distribStartDate.toString(), new Date(2018, 11, 31, 13, 0, 0).toString());
+		Assert.equals(weeklyDistribs[1].distribEndDate.toString(), new Date(2018, 11, 31, 14, 0, 0).toString());
+		Assert.equals(weeklyDistribs[2].distribStartDate.toString(), new Date(2019, 0, 7, 13, 0, 0).toString());
+		Assert.equals(weeklyDistribs[2].distribEndDate.toString(), new Date(2019, 0, 7, 14, 0, 0).toString());
+		Assert.equals(weeklyDistribs[3].distribStartDate.toString(), new Date(2019, 0, 14, 13, 0, 0).toString());
+		Assert.equals(weeklyDistribs[3].distribEndDate.toString(), new Date(2019, 0, 14, 14, 0, 0).toString());
+		Assert.equals(weeklyDistribs[4].distribStartDate.toString(), new Date(2019, 0, 21, 13, 0, 0).toString());
+		Assert.equals(weeklyDistribs[4].distribEndDate.toString(), new Date(2019, 0, 21, 14, 0, 0).toString());
 		DistributionService.deleteDistribCycle(weeklyDistribCycle);
 
 		var monthlyDistribCycle = service.DistributionService.createCycle(
@@ -144,19 +144,19 @@ class TestDistributions extends haxe.unit.TestCase
 			[TestSuite.CONTRAT_LEGUMES.id]);
 
 		var monthlyDistribs = monthlyDistribCycle.getDistributions();
-		assertEquals(monthlyDistribs.length, 6);
-		assertEquals(monthlyDistribs[0].distribStartDate.toString(), new Date(2018, 9, 30, 13, 0, 0).toString());
-		assertEquals(monthlyDistribs[0].distribEndDate.toString(), new Date(2018, 9, 30, 14, 0, 0).toString());
-		assertEquals(monthlyDistribs[1].distribStartDate.toString(), new Date(2018, 10, 27, 13, 0, 0).toString());
-		assertEquals(monthlyDistribs[1].distribEndDate.toString(), new Date(2018, 10, 27, 14, 0, 0).toString());
-		assertEquals(monthlyDistribs[2].distribStartDate.toString(), new Date(2018, 11, 25, 13, 0, 0).toString());
-		assertEquals(monthlyDistribs[2].distribEndDate.toString(), new Date(2018, 11, 25, 14, 0, 0).toString());
-		assertEquals(monthlyDistribs[3].distribStartDate.toString(), new Date(2019, 0, 29, 13, 0, 0).toString());
-		assertEquals(monthlyDistribs[3].distribEndDate.toString(), new Date(2019, 0, 29, 14, 0, 0).toString());
-		assertEquals(monthlyDistribs[4].distribStartDate.toString(), new Date(2019, 1, 26, 13, 0, 0).toString());
-		assertEquals(monthlyDistribs[4].distribEndDate.toString(), new Date(2019, 1, 26, 14, 0, 0).toString());
-		assertEquals(monthlyDistribs[5].distribStartDate.toString(), new Date(2019, 2, 26, 13, 0, 0).toString());
-		assertEquals(monthlyDistribs[5].distribEndDate.toString(), new Date(2019, 2, 26, 14, 0, 0).toString());
+		Assert.equals(monthlyDistribs.length, 6);
+		Assert.equals(monthlyDistribs[0].distribStartDate.toString(), new Date(2018, 9, 30, 13, 0, 0).toString());
+		Assert.equals(monthlyDistribs[0].distribEndDate.toString(), new Date(2018, 9, 30, 14, 0, 0).toString());
+		Assert.equals(monthlyDistribs[1].distribStartDate.toString(), new Date(2018, 10, 27, 13, 0, 0).toString());
+		Assert.equals(monthlyDistribs[1].distribEndDate.toString(), new Date(2018, 10, 27, 14, 0, 0).toString());
+		Assert.equals(monthlyDistribs[2].distribStartDate.toString(), new Date(2018, 11, 25, 13, 0, 0).toString());
+		Assert.equals(monthlyDistribs[2].distribEndDate.toString(), new Date(2018, 11, 25, 14, 0, 0).toString());
+		Assert.equals(monthlyDistribs[3].distribStartDate.toString(), new Date(2019, 0, 29, 13, 0, 0).toString());
+		Assert.equals(monthlyDistribs[3].distribEndDate.toString(), new Date(2019, 0, 29, 14, 0, 0).toString());
+		Assert.equals(monthlyDistribs[4].distribStartDate.toString(), new Date(2019, 1, 26, 13, 0, 0).toString());
+		Assert.equals(monthlyDistribs[4].distribEndDate.toString(), new Date(2019, 1, 26, 14, 0, 0).toString());
+		Assert.equals(monthlyDistribs[5].distribStartDate.toString(), new Date(2019, 2, 26, 13, 0, 0).toString());
+		Assert.equals(monthlyDistribs[5].distribEndDate.toString(), new Date(2019, 2, 26, 14, 0, 0).toString());
 		DistributionService.deleteDistribCycle(monthlyDistribCycle);
 		
 		var biweeklyDistribCycle = DistributionService.createCycle(
@@ -175,21 +175,21 @@ class TestDistributions extends haxe.unit.TestCase
 		);
 
 		var biweeklyDistribs = biweeklyDistribCycle.getDistributions();
-		assertEquals(biweeklyDistribs.length, 7);
-		assertEquals(biweeklyDistribs[0].distribStartDate.toString(), new Date(2018, 9, 30, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[0].distribEndDate.toString(), new Date(2018, 9, 30, 14, 0, 0).toString());
-		assertEquals(biweeklyDistribs[1].distribStartDate.toString(), new Date(2018, 10, 13, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[1].distribEndDate.toString(), new Date(2018, 10, 13, 14, 0, 0).toString());
-		assertEquals(biweeklyDistribs[2].distribStartDate.toString(), new Date(2018, 10, 27, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[2].distribEndDate.toString(), new Date(2018, 10, 27, 14, 0, 0).toString());
-		assertEquals(biweeklyDistribs[3].distribStartDate.toString(), new Date(2018, 11, 11, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[3].distribEndDate.toString(), new Date(2018, 11, 11, 14, 0, 0).toString());
-		assertEquals(biweeklyDistribs[4].distribStartDate.toString(), new Date(2018, 11, 25, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[4].distribEndDate.toString(), new Date(2018, 11, 25, 14, 0, 0).toString());
-		assertEquals(biweeklyDistribs[5].distribStartDate.toString(), new Date(2019, 0, 8, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[5].distribEndDate.toString(), new Date(2019, 0, 8, 14, 0, 0).toString());
-		assertEquals(biweeklyDistribs[6].distribStartDate.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
-		assertEquals(biweeklyDistribs[6].distribEndDate.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs.length, 7);
+		Assert.equals(biweeklyDistribs[0].distribStartDate.toString(), new Date(2018, 9, 30, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[0].distribEndDate.toString(), new Date(2018, 9, 30, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[1].distribStartDate.toString(), new Date(2018, 10, 13, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[1].distribEndDate.toString(), new Date(2018, 10, 13, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[2].distribStartDate.toString(), new Date(2018, 10, 27, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[2].distribEndDate.toString(), new Date(2018, 10, 27, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[3].distribStartDate.toString(), new Date(2018, 11, 11, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[3].distribEndDate.toString(), new Date(2018, 11, 11, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[4].distribStartDate.toString(), new Date(2018, 11, 25, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[4].distribEndDate.toString(), new Date(2018, 11, 25, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[5].distribStartDate.toString(), new Date(2019, 0, 8, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[5].distribEndDate.toString(), new Date(2019, 0, 8, 14, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[6].distribStartDate.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
+		Assert.equals(biweeklyDistribs[6].distribEndDate.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
 		DistributionService.deleteDistribCycle(biweeklyDistribCycle);
 	
 		var triweeklyDistribCycle = DistributionService.createCycle(
@@ -208,17 +208,17 @@ class TestDistributions extends haxe.unit.TestCase
 			);
 
 		var triweeklyDistribs = triweeklyDistribCycle.getDistributions();
-		assertEquals(triweeklyDistribs.length, 5);
-		assertEquals(triweeklyDistribs[0].distribStartDate.toString(), new Date(2018, 9, 30, 13, 0, 0).toString());
-		assertEquals(triweeklyDistribs[0].distribEndDate.toString(), new Date(2018, 9, 30, 14, 0, 0).toString());
-		assertEquals(triweeklyDistribs[1].distribStartDate.toString(), new Date(2018, 10, 20, 13, 0, 0).toString());
-		assertEquals(triweeklyDistribs[1].distribEndDate.toString(), new Date(2018, 10, 20, 14, 0, 0).toString());
-		assertEquals(triweeklyDistribs[2].distribStartDate.toString(), new Date(2018, 11, 11, 13, 0, 0).toString());
-		assertEquals(triweeklyDistribs[2].distribEndDate.toString(), new Date(2018, 11, 11, 14, 0, 0).toString());
-		assertEquals(triweeklyDistribs[3].distribStartDate.toString(), new Date(2019, 0, 1, 13, 0, 0).toString());
-		assertEquals(triweeklyDistribs[3].distribEndDate.toString(), new Date(2019, 0, 1, 14, 0, 0).toString());
-		assertEquals(triweeklyDistribs[4].distribStartDate.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
-		assertEquals(triweeklyDistribs[4].distribEndDate.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
+		Assert.equals(triweeklyDistribs.length, 5);
+		Assert.equals(triweeklyDistribs[0].distribStartDate.toString(), new Date(2018, 9, 30, 13, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[0].distribEndDate.toString(), new Date(2018, 9, 30, 14, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[1].distribStartDate.toString(), new Date(2018, 10, 20, 13, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[1].distribEndDate.toString(), new Date(2018, 10, 20, 14, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[2].distribStartDate.toString(), new Date(2018, 11, 11, 13, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[2].distribEndDate.toString(), new Date(2018, 11, 11, 14, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[3].distribStartDate.toString(), new Date(2019, 0, 1, 13, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[3].distribEndDate.toString(), new Date(2019, 0, 1, 14, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[4].distribStartDate.toString(), new Date(2019, 0, 22, 13, 0, 0).toString());
+		Assert.equals(triweeklyDistribs[4].distribEndDate.toString(), new Date(2019, 0, 22, 14, 0, 0).toString());
 		DistributionService.deleteDistribCycle(triweeklyDistribCycle);
 	}
 
@@ -236,8 +236,8 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e = x;
 		}
-		assertTrue( e!=null && e.message.indexOf("Deletion") > -1 ); //deletion not possible
-		assertTrue( db.Distribution.manager.get(ordersDistribId) != null );
+		Assert.isTrue( e!=null && e.message.indexOf("Deletion") > -1 ); //deletion not possible
+		Assert.isTrue( db.Distribution.manager.get(ordersDistribId) != null );
 
 		//A variable contract with a distribution that has no orders
 		var noOrdersDistrib = TestSuite.DISTRIB_FRUITS_PLACE_DU_VILLAGE;
@@ -250,8 +250,8 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e = x;
 		}
-		assertEquals(e, null);
-		assertEquals(db.Distribution.manager.get(noOrdersDistribId), null);
+		Assert.equals(e, null);
+		Assert.equals(db.Distribution.manager.get(noOrdersDistribId), null);
 
 		//An Amap contract with a distribution that has orders
 		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
@@ -266,8 +266,8 @@ class TestDistributions extends haxe.unit.TestCase
 		catch(x:tink.core.Error){
 			e = x;
 		}
-		assertEquals(e, null);
-		assertEquals(db.Distribution.manager.get(amapDistribId), null);
+		Assert.equals(e, null);
+		Assert.equals(db.Distribution.manager.get(amapDistribId), null);
 		
 	}
 
@@ -287,11 +287,11 @@ class TestDistributions extends haxe.unit.TestCase
 
 		//Check initial operation names and amounts
 		var francoisOperation = db.Operation.findCOrderOperation(contract, TestSuite.FRANCOIS);
-		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
-		assertEquals(francoisOperation.amount, -13);
+		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
+		Assert.equals(francoisOperation.amount, -13);
 		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
-		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
-		assertEquals(sebOperation.amount, -39);
+		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
+		Assert.equals(sebOperation.amount, -39);
 
 		//Add a distrib
 		var distrib = null;
@@ -310,11 +310,11 @@ class TestDistributions extends haxe.unit.TestCase
 			e = x;
 		}
 		//Check names and amounts are modified accordingly
-		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
-		assertEquals(francoisOperation.amount, -26);
+		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		Assert.equals(francoisOperation.amount, -26);
 		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
-		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
-		assertEquals(sebOperation.amount, -78);
+		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		Assert.equals(sebOperation.amount, -78);
 
 		//Add a distrib cycle
 		var weeklyDistribCycle = DistributionService.createCycle(
@@ -332,20 +332,20 @@ class TestDistributions extends haxe.unit.TestCase
 			[contract.id]
 		);
 		//Check names and amounts are modified accordingly
-		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
-		assertEquals(francoisOperation.amount, -91);
+		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
+		Assert.equals(francoisOperation.amount, -91);
 		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
-		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
-		assertEquals(sebOperation.amount, -273);
+		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
+		Assert.equals(sebOperation.amount, -273);
 
 		//Delete the distrib cycle
 		DistributionService.deleteDistribCycle(weeklyDistribCycle);
 		//Check names and amounts are modified accordingly
-		assertEquals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
-		assertEquals(francoisOperation.amount, -26);
+		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		Assert.equals(francoisOperation.amount, -26);
 		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
-		assertEquals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
-		assertEquals(sebOperation.amount, -78);
+		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
+		Assert.equals(sebOperation.amount, -78);
 	}
 
 }

@@ -1,6 +1,6 @@
 
 
-package test;
+package test;import utest.Assert;
 import db.UserGroup;
 import Common;
 
@@ -9,7 +9,7 @@ import Common;
  * 
  * @author web-wizard
  */
-class TestUser extends haxe.unit.TestCase
+class TestUser extends utest.Test
 {
 	
 	public function new(){
@@ -25,7 +25,7 @@ class TestUser extends haxe.unit.TestCase
 	/**
 	 * get a contract + a user
 	 */
-	override function setup(){
+	function setup(){
 		TestSuite.initDB();
 		TestSuite.initDatas();
 		
@@ -42,7 +42,7 @@ class TestUser extends haxe.unit.TestCase
 	function testViewContract(){        
         userAmap = db.UserGroup.getOrCreate(user, group1);
         userAmap.giveRight(Right.GroupAdmin);
-        assertFalse(user.canManageContract(contract));
+        Assert.isFalse(user.canManageContract(contract));
 	}
 
 }
