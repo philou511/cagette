@@ -17,24 +17,25 @@ class TestSuite
 		var r = new Runner();
 
 		//Cagette core tests
-		// r.add(new test.TestTools());
-		// r.add(new test.TestUser());
-		r.add(new test.TestOrders());				
-		// r.add(new test.TestDistributions());
-		// r.add(new test.TestPayments());
-		r.add(new test.TestSubscriptions());
-		// r.add(new test.TestReports());
+		r.addCase(new test.TestTools());
+		r.addCase(new test.TestUser());
+		r.addCase(new test.TestOrders());				
+		r.addCase(new test.TestDistributions());
+		r.addCase(new test.TestPayments());
+		r.addCase(new test.TestReports());
+		r.addCase(new test.TestSubscriptions());
 
-		// #if plugins
-		// //Cagette-pro tests, keep in this order
-		// r.add(new pro.test.TestProductService());
-		// r.add(new pro.test.TestRemoteCatalog());
-		// r.add(new pro.test.TestDistribService());
-		// r.add(new pro.test.TestReports());
-		// r.add(new who.test.TestWho());
-		// //r.add(new pro.test.TestMarketplacePayment());
-		// #end
-
+		#if plugins
+		//Cagette-pro tests, keep in this order
+		r.addCase(new pro.test.TestProductService());
+		r.addCase(new pro.test.TestRemoteCatalog());
+		r.addCase(new pro.test.TestDistribService());
+		r.addCase(new pro.test.TestReports());
+		r.addCase(new who.test.TestWho());
+		r.addCase(new pro.test.TestStock());
+		//r.addCase(new pro.test.TestMarketplacePayment());
+		#end
+		Report.create(r);
 		r.run();
 	}
 
