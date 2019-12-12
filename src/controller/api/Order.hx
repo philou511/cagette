@@ -50,33 +50,19 @@ class Order extends Controller
 
 		checkRights( user, catalog, multiDistrib );
 
+		var subscription : db.Subscription = null;
 		if ( catalog != null && catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 			//The user needs a subscription for this catalog to have orders
-			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
+			subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
 			if ( subscription == null ) {
 				
 				throw new Error( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes."  );
 			}
 		}
 
-		//get datas
-		var orders =[];
-
-		if(catalog==null){
-			//we edit a whole multidistrib, edit only var orders.
-			orders = multiDistrib.getUserOrders(user , db.Catalog.TYPE_VARORDER);
-		}else{
-			//edit a single catalog, may be CSA or variable
-			var d = null;
-			if(multiDistrib!=null){
-				d = multiDistrib.getDistributionForContract(catalog);
-			}
-			orders = catalog.getUserOrders(user, d, false);			
-		}
-
-		var orders = OrderService.prepare(orders);		
-		Sys.print( tink.Json.stringify({success:true,orders:orders}) );
+		var orders : Array<db.UserOrder> = OrderService.getUserOrders( user, catalog, multiDistrib, subscription );
+		Sys.print( tink.Json.stringify( { success : true, orders : OrderService.prepare(orders) } ) );
 	}
 	
 	/**
@@ -92,6 +78,7 @@ class Order extends Controller
 		
 		//POST payload
 		var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+		
 		var raw = StringTools.urlDecode( sugoi.Web.getPostData() );
 		
 		if( raw == null ) {
@@ -102,98 +89,10 @@ class Order extends Controller
 
 			ordersData = haxe.Json.parse(raw).orders;
 		}
-		
-		// Save orders
-		// --------------------
-		// Find existing orders
-		var existingOrders = [];
-		if ( catalog == null ) {
 
-			// Edit a whole multidistrib
-			existingOrders = multiDistrib.getUserOrders( user );
-		}
-		else {
-
-			// Edit a single catalog
-			var distrib = null;
-			if( multiDistrib != null ) {
-
-				distrib = multiDistrib.getDistributionForContract( catalog );
-			}
-			existingOrders = catalog.getUserOrders( user, distrib );			
-		}
-				
-		var orders = [];
-		for ( order in ordersData ) {
-			
-			// Get product
-			var product = db.Product.manager.get( order.productId, false );
-			
-			// Find existing order				
-			var existingOrder = Lambda.find( existingOrders, function(x) return x.id == order.id );
-				
-			// User2 + Invert
-			var user2 : db.User = null;
-			var invert = false;
-			if ( order.userId2 != null ) {
-
-				user2 = db.User.manager.get( order.userId2, false );
-				if ( user2 == null ) throw t._( "Unable to find user #::num::", { num : order.userId2 } );
-				if ( !user2.isMemberOf( product.catalog.group ) ) throw t._( "::user:: is not part of this group", { user : user2 } );
-				if ( user.id == user2.id ) throw t._( "Both selected accounts must be different ones" );
-				
-				invert = order.invertSharedOrder;
-			}
-			
-			// Save order
-			if ( existingOrder != null ) {
-
-				// Edit existing order
-				var updatedOrder = OrderService.edit( existingOrder, order.qt, order.paid , user2, invert );
-				if ( updatedOrder != null ) orders.push( updatedOrder );
-			}
-			else {
-
-				// Insert new order
-				var distrib = null; //no need if csa catalog
-				if( multiDistrib != null ) {  //RAJOUTER CONDITION VARORDERS
-
-					distrib = multiDistrib.getDistributionFromProduct( product );
-					var newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid , user2, invert );
-					if ( newOrder != null ) orders.push( newOrder );
-				}
-				else {
-					
-					// Faire une loop sur les distributions pour créer une order par distribution
-
-					var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
-					if ( subscription == null ) {
-						
-						throw new Error( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes."  );
-					}
-
-					var distributions = db.Distribution.manager.search( $catalog == catalog && $date >= subscription.startDate && $end <= subscription.endDate );
-
-					for ( distrib in distributions ) {
-
-						var newOrder =  OrderService.make( user, order.qt , product,  distrib.id, order.paid , user2, invert, subscription );
-						if ( newOrder != null ) orders.push( newOrder );
-					}
-					
->>>>>>> WIP Subscriptions
-				}
-				
-			}
-
-		}
-		
-		app.event( MakeOrder( orders ) );
-		db.Operation.onOrderConfirm( orders );
-		
+		OrderService.createOrUpdateOrders( user, multiDistrib, catalog, ordersData );
 		Sys.print( Json.stringify( { success : true, orders : ordersData } ) );
+
 	}
-
-
-	
 	
 }

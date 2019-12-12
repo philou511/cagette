@@ -32,14 +32,16 @@
 					<i class="icon icon-basket"></i> ::_("Orders")::
 				</a>
 			</li>
+			::if !c._group.hasShopMode() ::
+				<li id="subscriptions" ::attr class if(nav[1]=="subscriptions") 'active'::>
+					<a href="/contractAdmin/subscriptions/::c.id::">
+						<i class="icon icon-calendar-check"></i> Souscriptions
+					</a>
+				</li>
+			::end::
 			<li id="documents" ::attr class if(nav[1]=="documents") 'active'::>
 				<a href="/contractAdmin/documents/::c.id::">
 					<i class="icon icon-file-pdf"></i> Documents
-				</a>
-			</li>
-			<li id="subscriptions" ::attr class if(nav[1]=="subscriptions") 'active'::>
-				<a href="/contractAdmin/subscriptions/::c.id::">
-					<i class="icon icon-calendar-check"></i> Souscriptions
 				</a>
 			</li>
 			<li id="stats">
