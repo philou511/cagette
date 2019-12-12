@@ -277,13 +277,6 @@ class Install extends controller.Controller
 
 			for ( user in ordersByUser.keys() ) {
 
-				var subscription = new db.Subscription();
-				subscription.user = user;
-				subscription.catalog = catalog;
-				subscription.startDate = new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
-				subscription.endDate = new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
-				subscription.insert();
-
 				var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
 				for ( order in ordersByUser[user] ) {
 
@@ -293,11 +286,21 @@ class Install extends controller.Controller
 					}
 				}
 				
-				trace( "****USER***** " + user );
-				trace( ordersData );
-				trace( "****GROUP***** " + catalog.group );
-				trace( "****CATALOG***** " + catalog );
-				SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+				if ( ordersData.length != 0 ) {
+
+					trace( "****USER***** " + user );
+					trace( ordersData );
+					trace( "****GROUP***** " + catalog.group );
+					trace( "****CATALOG***** " + catalog );
+					var subscription = new db.Subscription();
+					subscription.user = user;
+					subscription.catalog = catalog;
+					subscription.startDate = new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
+					subscription.endDate = new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
+					subscription.insert();
+					SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+
+				}
 
 				for ( order in ordersByUser[user] ) {
 
