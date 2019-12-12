@@ -4,13 +4,19 @@
 -lib hscript
 -lib tink_core
 -lib tink_json
-
--lib sugoi
+-lib tink_http
 -lib record-macros
 -lib hx3compat
+-lib thx.csv
+-lib thx.semver
+
+-lib sugoi
+
 
 -cp ../common
 -cp ../src
 -cp ../lang/master/tpl
+
 -neko ../www/index.n
+
 -main App

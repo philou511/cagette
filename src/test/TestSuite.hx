@@ -29,6 +29,7 @@ class TestSuite
 		r.add(new pro.test.TestDistribService());
 		r.add(new pro.test.TestReports());
 		r.add(new who.test.TestWho());
+		r.add(new pro.test.TestStock());
 		//r.add(new pro.test.TestMarketplacePayment());
 		#end
 
@@ -133,8 +134,10 @@ class TestSuite
 	
 	public static var STRAWBERRIES:db.Product = null; 
 	public static var APPLES:db.Product = null; 
+	
 	public static var AMAP_DU_JARDIN:db.Group = null;
 	public static var LOCAVORES:db.Group = null;
+
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
 	public static var VENDOR1:db.Vendor = null;
 	public static var VENDOR2:db.Vendor = null;

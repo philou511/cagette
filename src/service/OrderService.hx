@@ -394,27 +394,34 @@ class OrderService
 	}
 	
 	/**
-	 * 	Confirms an order : create real orders from a temporary basket.
+	 * 	Create real orders from a temporary basket.
 		Should not return a basket, because this basket can include older orders.
 	 */
 	public static function confirmTmpBasket(tmpBasket:db.TmpBasket):Array<db.UserOrder>{
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
 		var user = tmpBasket.user;
+		var distributions = tmpBasket.multiDistrib.getDistributions();
 		for (o in tmpBasket.data.products){
 			var p = db.Product.manager.get(o.productId);
 
 			//find related distrib
 			var distrib = null;
-			for( d in tmpBasket.multiDistrib.getDistributions()){
+			for( d in distributions){
 				if(d.catalog.id==p.catalog.id){
 					distrib = d;
 				}
 			}
 
+			if(distrib==null) {
+				App.current.session.addMessage('Le produit "${p.getName()}" n\'est pas disponible pour cette distribution, il a été retiré de votre commande.',true);
+				continue;
+			}
+
 			//check that the distrib is still open.			
 			if(!distrib.canOrderNow()){
-				throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.catalog.name}));
+				App.current.session.addMessage('Il n\'est plus possible de commander le produit "${p.getName()}", il a été retiré de votre commande.',true);
+				continue;
 			}
 
 			var order = make(user, o.quantity, p, distrib.id );

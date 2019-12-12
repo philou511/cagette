@@ -16,6 +16,7 @@
 -cp ../common
 -cp ../src
 -cp ../lang/master/tpl
+
 -neko ../www/index.n
 
 -D plugins

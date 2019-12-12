@@ -4,8 +4,11 @@
 -lib hscript
 -lib tink_core
 -lib tink_json
+-lib tink_http
 -lib record-macros
 -lib hx3compat
+-lib thx.csv
+-lib thx.semver
 
 -lib sugoi
 -lib cagette-pro
@@ -13,6 +16,8 @@
 -cp ../common
 -cp ../src
 -cp ../lang/master/tpl
+
+-D no-deprecation-warnings
 
 -neko ../www/tests.n
 -main test.TestSuite

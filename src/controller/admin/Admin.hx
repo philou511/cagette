@@ -1,6 +1,5 @@
 package controller.admin;
 import db.Catalog;
-import pro.db.CagettePro;
 import db.MultiDistrib;
 import haxe.web.Dispatch;
 import Common;
@@ -312,7 +311,9 @@ class Admin extends Controller {
 		}
 
 		//delete cagette pro
-		CagettePro.manager.delete($training==true);	
+		#if plugins
+		pro.db.CagettePro.manager.delete($training==true);	
+		#end
 
 
 		//delete unlinked vendors
