@@ -195,18 +195,17 @@ class Catalog extends Object
 	 * @param	d	A delivery is needed for varying orders contract
 	 * @return
 	 */
-	public function getOrders(?d:db.Distribution):Array<db.UserOrder> {
-		if (type == TYPE_VARORDER && d == null) throw "This type of contract must have a delivery";
+	public function getOrders( distribution : db.Distribution ) : Array<db.UserOrder> {
+
+		if ( distribution == null ) throw "This type of contract must have a delivery";
 		
 		//get product ids, some of the products may have been disabled but we keep the order
-		var pids = getProducts(false).map(function(x) return x.id);
-		var ucs = new List<db.UserOrder>();
-		if (type == TYPE_VARORDER) {
-			ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d,{orderBy:userId}, false);	
-		}else {
-			ucs = db.UserOrder.manager.search( ($productId in pids) ,{orderBy:userId}, false);	
-		}		
-		return Lambda.array(ucs);
+		var productIds = getProducts(false).map( function( product ) return product.id );
+
+		var orders = new List<db.UserOrder>();
+		orders = db.UserOrder.manager.search( ( $productId in productIds ) && $distribution == distribution, {orderBy:userId}, false );	
+	
+		return Lambda.array(orders);
 	}
 
 	/**
@@ -227,10 +226,25 @@ class Catalog extends Object
 				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u), false);
 			}
 		}else{
-			if(includeUser2){
-				ucs = db.UserOrder.manager.search( ($productId in pids) && ($user==u || $user2==u ),false);
-			}else{
-				ucs = db.UserOrder.manager.search( ($productId in pids) && ($user==u),false);
+
+			if ( includeUser2 ) {
+
+				
+
+				var orders = db.UserOrder.manager.search( ($productId in pids) && ($user==u || $user2==u ), false );
+				if( orders.length != 0 ) {
+
+					ucs.push( orders.first() );
+				}
+				
+			}
+			else {
+
+				var orders = db.UserOrder.manager.search( ( $productId in pids ) && ( $user == u ), false );
+				if( orders.length != 0 ) {
+
+					ucs.push( orders.first() );
+				}
 			}
 			
 		}

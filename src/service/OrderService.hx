@@ -1,5 +1,6 @@
 package service;
 import Common;
+import tink.core.Error;
 
 /**
  * Order Service
@@ -22,20 +23,20 @@ class OrderService
 		
 		var t = sugoi.i18n.Locale.texts;
 
-		if(product.catalog.type==db.Catalog.TYPE_VARORDER && distribId==null) throw "You have to provide a distribId";
-		if(quantity==null) throw "Quantity is null";
-		if(quantity<0) throw "Quantity is negative";
+		if( distribId == null ) throw new Error( "You have to provide a distribId" );
+		if( quantity == null ) throw new Error( "Quantity is null" );
+		if( quantity < 0 ) throw new Error( "Quantity is negative" );
 
 		//quantity
 		if ( !canHaveFloatQt(product) ){
 			if( !tools.FloatTool.isInt(quantity)  ) {
-				throw new tink.core.Error(t._("Error : product \"::product::\" quantity should be integer",{product:product.name}));
+				throw new Error( t._("Error : product \"::product::\" quantity should be integer",{product:product.name}) );
 			}
 		}
 		
 		//multiweight : make one row per product
 		if (product.multiWeight && quantity > 1.0){
-			if (product.multiWeight && quantity != Math.abs(quantity)) throw t._("multi-weighing products should be ordered only with integer quantities");
+			if (product.multiWeight && quantity != Math.abs(quantity)) throw new Error( t._("multi-weighing products should be ordered only with integer quantities") );
 			
 			var o = null;
 			for ( i in 0...Math.round(quantity)){
@@ -87,10 +88,8 @@ class OrderService
 		}
 
 		//checks
-		if(o.product.catalog.type==db.Catalog.TYPE_VARORDER){
-			if(o.distribution==null) throw "cant record an order for a variable catalog without a distribution linked";
-			if(o.basket==null) throw "this order should have a basket";
-		}
+		if(o.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
+		if(o.basket==null) throw new Error( "this order should have a basket" );
 
 		if (subscription != null ) { 
 
@@ -150,11 +149,11 @@ class OrderService
 		
 		//quantity
 		if (newquantity == null) newquantity = 0;
-		if(newquantity<0) throw "Quantity is negative";
+		if(newquantity<0) throw new Error( "Quantity is negative" );
 		
 		if ( !canHaveFloatQt(order.product) ){
 			if( !tools.FloatTool.isInt(newquantity)  ) {
-				throw new tink.core.Error(t._("Error : product \"::product::\" quantity should be integer",{product:order.product.name}));
+				throw new Error( t._( "Error : product \"::product::\" quantity should be integer",{ product:order.product.name } ) );
 			}
 		}
 		
@@ -230,10 +229,8 @@ class OrderService
 
 		//checks
 		var o = order;
-		if(o.product.catalog.type==db.Catalog.TYPE_VARORDER){
-			if(o.distribution==null) throw "cant record an order for a variable catalog without a distribution linked";
-			if(o.basket==null) throw "this order should have a basket";
-		}
+		if(o.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked");
+		if(o.basket==null) throw new Error( "this order should have a basket" );
 
 		App.current.event(e);	
 
@@ -247,7 +244,7 @@ class OrderService
 	public static function delete(order:db.UserOrder) {
 		var t = sugoi.i18n.Locale.texts;
 
-		if(order==null) throw new tink.core.Error(t._("This order has already been deleted."));
+		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
 		
 		order.lock();
 		
@@ -289,7 +286,7 @@ class OrderService
 			}
 		}
 		else {
-			throw new tink.core.Error(t._("Deletion not possible: quantity is not zero."));
+			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 
 	}
@@ -302,6 +299,7 @@ class OrderService
 		var orders = Lambda.array(orders);
 		var view = App.current.view;
 		var t = sugoi.i18n.Locale.texts;
+
 		for (o in orders) {
 		
 			var x : UserOrder = cast { };
@@ -381,7 +379,7 @@ class OrderService
 	**/
 	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
 		//basket with no products is allowed ( init an empty basket )
-		if( tmpBasketData==null) throw "Basket is empty";
+		if( tmpBasketData==null) throw new Error( "Basket is empty" );
 
 		//generate basketRef
 		var group = multiDistrib.getGroup();
@@ -417,7 +415,7 @@ class OrderService
 
 			//check that the distrib is still open.			
 			if(!distrib.canOrderNow()){
-				throw new tink.core.Error(500,t._("Orders are closed for \"::contract::\", please modify your order.",{contract:distrib.catalog.name}));
+				throw new Error( 500, t._( "Orders are closed for \"::contract::\", please modify your order.", { contract : distrib.catalog.name } ) );
 			}
 
 			orders.push( make(user, o.quantity, p, distrib.id ) );
@@ -491,36 +489,6 @@ class OrderService
 		}
 		
 	}
-
-	
-
-	/*
-	 * Get orders grouped by products. 
-	 */
-	/*public static function getOrdersByProduct( options:{?distribution:db.Distribution,?startDate:Date,?endDate:Date}, ?csv = false):Array<OrderByProduct>{
-		var view = App.current.view;
-		var t = sugoi.i18n.Locale.texts;
-		var where = "";
-		var exportName = "";
-		
-		//options
-		if (options.distribution != null){
-			
-			//by distrib
-			var d = options.distribution;
-			exportName = t._("Delivery ::contractName:: of the ", {contractName:d.contract.name}) + d.date.toString().substr(0, 10);
-			where += ' and p.contractId = ${d.contract.id}';
-			if (d.contract.type == db.Catalog.TYPE_VARORDER ) {
-				where += ' and up.distributionId = ${d.id}';
-			}
-			
-		}else if(options.startDate!=null && options.endDate!=null){
-			
-			//by dates
-			//exportName = "Distribution "+d.contract.name+" du " + d.date.toString().substr(0, 10);
-			
-		}
-	}*/
 	
 
 	public static function sort(orders:Array<UserOrder>){
@@ -571,15 +539,12 @@ class OrderService
 	/**
 	 * get users orders for a distribution
 	 */
-	public static function getOrders(contract:db.Catalog, ?distribution:db.Distribution, ?csv = false):Array<UserOrder>{
+	public static function getOrders( contract : db.Catalog, ?distribution : db.Distribution, ?csv = false) : Array<UserOrder> {
+
 		var view = App.current.view;
 		var orders = new Array<db.UserOrder>();
-		if (contract.type == db.Catalog.TYPE_VARORDER ) {
-			orders = contract.getOrders(distribution);	
-		}else {
-			orders = contract.getOrders();
-		}
-		
+		orders = contract.getOrders(distribution);	
+				
 		var orders = prepare(orders);
 		
 		//CSV export
@@ -613,9 +578,128 @@ class OrderService
 		}
 		
 	}
-	
-	
 
+
+	// Get orders of a user for a multi distrib or a catalog
+	public static function getUserOrders( user : db.User, ?catalog : db.Catalog, ?multiDistrib : db.MultiDistrib, ?subscription : db.Subscription ) : Array<db.UserOrder> {
+	 
+		var orders : Array<db.UserOrder>;
+		if( catalog == null ) {
+
+			//We edit a whole multidistrib, edit only var orders.
+			orders = multiDistrib.getUserOrders(user , db.Catalog.TYPE_VARORDER);
+		}
+		else {
+			
+			//Edit a single catalog, may be CSA or variable
+			var distrib = null;
+			if( multiDistrib != null ) {
+
+				distrib = multiDistrib.getDistributionForContract(catalog);
+			}
+
+			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+				orders = catalog.getUserOrders( user, distrib, false );
+			}
+			else {
+
+				orders = SubscriptionService.getSubscriptionOrders( subscription );
+			}
+				
+		}
+
+		return orders;
+		
+	}
+
+	// Create or update orders 
+	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog,
+	ordersData : Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } > ) : Array<db.UserOrder> {
+		
+		if ( multiDistrib == null && catalog == null ) {
+
+			throw new Error('You should provide at least a catalog or a multiDistrib');
+		}
+
+		var t = sugoi.i18n.Locale.texts;
+
+		var orders : Array<db.UserOrder> = [];
+		if ( multiDistrib == null && catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
+			if ( subscription == null ) {
+				
+				throw TypedError.typed( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes.", SubscriptionService.SubscriptionServiceError.NoSubscription );
+			}
+
+			if ( SubscriptionService.hasPastDistribOrders( subscription ) ) {
+
+				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
+				la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionService.SubscriptionServiceError.PastOrders );
+			}
+
+			orders = SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+		}
+		else {
+
+			// Find existing orders
+			var existingOrders = [];
+			if ( catalog == null ) {
+
+				// Edit a whole multidistrib
+				existingOrders = multiDistrib.getUserOrders( user );
+			}
+			else {
+
+				// Edit a single catalog
+				var distrib = null;
+				if( multiDistrib != null ) {
+
+					distrib = multiDistrib.getDistributionForContract( catalog );
+				}
+				existingOrders = catalog.getUserOrders( user, distrib );			
+			}
+					
+			for ( order in ordersData ) {
+				
+				// Get product
+				var product = db.Product.manager.get( order.productId, false );
+				
+				// Find existing order				
+				var existingOrder = Lambda.find( existingOrders, function(x) return x.id == order.id );
+				
+				// Save order
+				if ( existingOrder != null ) {
+
+					// Edit existing order
+					var updatedOrder = OrderService.edit( existingOrder, order.qt, order.paid );
+					if ( updatedOrder != null ) orders.push( updatedOrder );
+				}
+				else {
+
+					// Insert new order
+					var distrib = null; //no need if csa catalog
+					if( multiDistrib != null ) { 
+
+						distrib = multiDistrib.getDistributionFromProduct( product );
+					}
+					
+					var newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
+					if ( newOrder != null ) orders.push( newOrder );
+					
+				}
+
+			}
+
+		}	
+
+		App.current.event( MakeOrder( orders ) );
+		db.Operation.onOrderConfirm( orders );
+
+		return orders;
+		
+	}
 
 	
 }

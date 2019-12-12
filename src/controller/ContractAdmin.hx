@@ -427,41 +427,49 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders(contract:db.Catalog, args:{?d:db.Distribution,?delete:db.UserOrder}) {
-		view.nav.push("orders");
-		sendNav(contract);
+	function doOrders( catalog : db.Catalog, args : { ?d : db.Distribution, ?delete : db.UserOrder } ) {
+
+		view.nav.push( "orders" );
+		sendNav( catalog );
 		
 		//Checking permissions
-		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		if ( args != null && args.d == null ) { 
-			throw Redirect("/contractAdmin/selectDistrib/" + contract.id); 
-		}
+		if ( !app.user.canManageContract( catalog ) ) throw Error( "/", t._("You do not have the authorization to manage this contract") );
+		if ( args != null && args.d == null ) throw Redirect( "/contractAdmin/selectDistrib/" + catalog.id );
 
 		//Delete specified order with quantity of zero
-		if (checkToken() && args != null && args.delete != null ) { 
+		if ( checkToken() && args != null && args.delete != null ) {
+
 			try {
+
 				service.OrderService.delete(args.delete);
-			} catch(e:tink.core.Error){
-				throw Error("/contractAdmin/orders/" + contract.id, e.message);
 			}
-			if(args.d!=null){
-				throw Ok("/contractAdmin/orders/" + contract.id + "?d="+args.d.id, t._("The order has been deleted."));
-			}else{
-				throw Ok("/contractAdmin/orders/" + contract.id, t._("The order has been deleted."));
+			catch( e : tink.core.Error ) {
+
+				throw Error( "/contractAdmin/orders/" + catalog.id, e.message );
+			}
+			if( args.d != null ) {
+
+				throw Ok("/contractAdmin/orders/" + catalog.id + "?d="+args.d.id, t._("The order has been deleted."));
+			}
+			else {
+
+				throw Ok("/contractAdmin/orders/" + catalog.id, t._("The order has been deleted."));
 			}
 			
 		}
 
-		var d = null;
-		if (contract.type == db.Catalog.TYPE_VARORDER ){
-			view.distribution = args.d;
-			view.multiDistribId = args.d.multiDistrib.id;
-			d = args.d;
+		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+			app.setTemplate('contractadmin/csaorders.mtt');
 		}
-		view.c = contract;
-		var orders = service.OrderService.getOrders(contract, d, app.params.exists("csv"));
 		
-		if ( !app.params.exists("csv") ){
+		view.distribution = args.d;
+		view.multiDistribId = args.d.multiDistrib.id;
+		view.c = catalog;
+
+		var orders = service.OrderService.getOrders( catalog, args.d, app.params.exists("csv") );
+		
+		if ( !app.params.exists("csv") ) {
 			
 			//show orders on disabled products
 			var disabledProducts = 0;

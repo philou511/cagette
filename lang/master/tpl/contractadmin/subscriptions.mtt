@@ -18,39 +18,70 @@
                             <th style="text-align: center;">Nombre de distributions</th>
                             <th style="text-align: center;">Total</th>
                             <th style="text-align: center;">Payé</th>
-                            <th style="text-align: center;">Solde</th>
                         </tr>
                         ::foreach subscription subscriptions::
-                        <tr style="text-align: center;">
-                            <td style="vertical-align: middle;">
-                                <div style="overflow-wrap: break-word;">
-                                    <a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
-                                </div>                                
-                            </td>
-                            <td style="vertical-align: middle;">
-                                Panier pour 2-3 personnes           
-                            </td>
-                            <td style="vertical-align: middle;">
-                                Du ::dDate(subscription.startDate):: au ::dDate(subscription.endDate)::
-                            </td>
-                            <td style="vertical-align: middle;">
-                                52
-                            </td>
-                            <td style="vertical-align: middle;">
-                                624,00 €
-                            </td>
-                            <td style="vertical-align: middle;">
-                                624,00 €
-                            </td>
-                            <td style="vertical-align: middle;">
-                                0,00 €
-                            </td>
-                            <td style="vertical-align: middle;">
-                                $$edit( ::_("Edit")::, /contractAdmin/subscriptions/edit/::subscription.id:: )
-                                &nbsp;&nbsp;
-                                $$delete( ::_("Delete")::, /contractAdmin/subscriptions/delete/::subscription.id::?token=::token:: )
-                            </td>
-                        </tr>
+                            ::set orderName = subscriptionService.getDescription(subscription)::
+                            ::if orderName == null::
+                                ::set class="danger text-danger"::
+                            ::else::
+                                ::set class=""::
+                            ::end::
+                            <tr style="text-align: center;">
+                                <td style="vertical-align: middle;">
+                                    <div style="overflow-wrap: break-word;">
+                                        <a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+                                    </div>                                
+                                </td>
+                                <td class="::class::" style="vertical-align: middle;">
+                                    ::if orderName == null::
+                                        AUCUNE COMMANDE
+                                    ::else::
+                                        ::raw(orderName)::
+                                    ::end::
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    Du ::dateToString(subscription.startDate)::
+                                    au ::dateToString(subscription.endDate)::
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    ::subscriptionService.getSubscriptionNbDistributions(subscription)::
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    ::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    $$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <div class="dropdown" style="display:inline-block;">
+                                        <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu::subscription._user.id::" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="icon icon-cog"></i> Gérer
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu::subscription._user.id::">
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/edit/::subscription.id::">
+                                                    <i class="icon icon-edit"></i> ::_("Edit")::
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a onclick="_.initOrderBox( ::subscription._user.id::, null, ::catalog.id::, ::catalog.type::, null, null, '::escapeJS(subscription._user.userName)::', '::group.currency::', ::group.hasPayments()::, '/contractAdmin/subscriptions/::catalog.id::')">
+                                                    <i class="icon icon-basket"></i> ::_("Order")::
+                                                </a>
+                                            </li>
+                                            <!-- <li>
+                                                <a href="/distribution/list">
+                                                    <i class="icon icon-card"></i> ::_("Payment")::
+                                                </a>
+                                            </li> -->
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/delete/::subscription.id::?token=::token::">
+                                                    <i class="icon icon-delete"></i> ::_("Delete")::
+                                                </a>
+                                            </li>	
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
                         ::end::
                         <!-- <tr style="text-align: center;">
                             <td style="vertical-align: middle;">
@@ -118,6 +149,8 @@
             </div>
             
         </div>
+
+        <div id="ordersdialog-container"></div>
 
     </div>
 ::end::

@@ -15,22 +15,23 @@ class TestSuite
 		var r = new haxe.unit.TestRunner();
 
 		//Cagette core tests
-		r.add(new test.TestTools());
-		r.add(new test.TestUser());
+		// r.add(new test.TestTools());
+		// r.add(new test.TestUser());
 		r.add(new test.TestOrders());				
-		r.add(new test.TestDistributions());
-		r.add(new test.TestPayments());
-		r.add(new test.TestReports());
+		// r.add(new test.TestDistributions());
+		// r.add(new test.TestPayments());
+		r.add(new test.TestSubscriptions());
+		// r.add(new test.TestReports());
 
-		#if plugins
-		//Cagette-pro tests, keep in this order
-		r.add(new pro.test.TestProductService());
-		r.add(new pro.test.TestRemoteCatalog());
-		r.add(new pro.test.TestDistribService());
-		r.add(new pro.test.TestReports());
-		r.add(new who.test.TestWho());
-		//r.add(new pro.test.TestMarketplacePayment());
-		#end
+		// #if plugins
+		// //Cagette-pro tests, keep in this order
+		// r.add(new pro.test.TestProductService());
+		// r.add(new pro.test.TestRemoteCatalog());
+		// r.add(new pro.test.TestDistribService());
+		// r.add(new pro.test.TestReports());
+		// r.add(new who.test.TestWho());
+		// //r.add(new pro.test.TestMarketplacePayment());
+		// #end
 
 		r.run();
 	}
@@ -87,7 +88,8 @@ class TestSuite
 			db.Volunteer.manager,
 			db.VolunteerRole.manager,
 			db.Distribution.manager,
-			db.DistributionCycle.manager,						
+			db.DistributionCycle.manager,
+			db.Subscription.manager,						
 			
 			//sugoi tables
 			sugoi.db.Cache.manager,
@@ -136,6 +138,8 @@ class TestSuite
 	public static var AMAP_DU_JARDIN:db.Group = null;
 	public static var LOCAVORES:db.Group = null;
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
+	public static var BOTTE_AMAP:db.Product = null;
+	public static var SOUPE_AMAP:db.Product = null;
 	public static var VENDOR1:db.Vendor = null;
 	public static var VENDOR2:db.Vendor = null;
 	public static var VENDOR3:db.Vendor = null;
@@ -144,6 +148,7 @@ class TestSuite
 	public static var DISTRIB_LEGUMES_RUE_SAUCISSE:db.Distribution = null;
 	public static var DISTRIB_LAITUE:db.Distribution = null;
 	public static var DISTRIB_CAROTTES:db.Distribution = null;
+	public static var CONTRAT_AMAP : db.Catalog = null;
 	public static var CONTRAT_LEGUMES:db.Catalog = null;
 	public static var PLACE_DU_VILLAGE:db.Place = null;	
 	
@@ -221,6 +226,8 @@ class TestSuite
 		c.group = a;
 		c.type = db.Catalog.TYPE_CONSTORDERS;
 		c.insert();
+
+		CONTRAT_AMAP = c;
 		
 		var p = new db.Product();
 		p.name = "Panier Légumes";
@@ -230,9 +237,25 @@ class TestSuite
 
 		PANIER_AMAP_LEGUMES = p;
 
+		var product = new db.Product();
+		product.name = "Botte Oignons";
+		product.price = 2;
+		product.catalog = c;
+		product.insert();
+
+		BOTTE_AMAP = product;
+
+		var product = new db.Product();
+		product.name = "Mix pour Soupe";
+		product.price = 10.50;
+		product.catalog = c;
+		product.insert();
+
+		SOUPE_AMAP = product;
+
 		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_CONTRAT_AMAP = d;
-		
+
 		//varying contract for strawberries with stock mgmt
 		var c = new db.Catalog();
 		c.name = "Commande fruits";

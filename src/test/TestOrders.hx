@@ -1,6 +1,9 @@
 package test;
 import Common;
+import service.DistributionService;
 import service.OrderService;
+import service.SubscriptionService;
+
 /**
  * Test order making, updating and deleting
  * 
@@ -216,8 +219,6 @@ class TestOrders extends haxe.unit.TestCase
 		
 		//we should get 3 different orders
 		var orders = distrib.getOrders();
-		
-		//trace(OrderService.prepare(orders));
 		
 		assertEquals(3, orders.length);
 		for ( o in orders){
@@ -472,6 +473,130 @@ class TestOrders extends haxe.unit.TestCase
 		assertEquals(db.Operation.manager.get(operation2Id), null);
 	}
 
+	/**
+	 *  Test order deletion and operation deletion in various contexts
+	 	@author jbarbic
+	 */
+	function testServiceCreateOrUpdateOrders() {
+
+		var catalog = TestSuite.CONTRAT_AMAP;
+		var botteOignons = TestSuite.BOTTE_AMAP;
+		var panierAmap = TestSuite.PANIER_AMAP_LEGUMES;
+		var soupeAmap = TestSuite.SOUPE_AMAP;
+
+		DistributionService.create( catalog, new Date(2030, 5, 1, 19, 0, 0), new Date(2030, 5, 1, 20, 0, 0), TestSuite.PLACE_DU_VILLAGE.id, new Date(2030, 4, 1, 20, 0, 0), new Date(2030, 4, 30, 20, 0, 0) );
+		DistributionService.create( catalog, new Date(2030, 6, 1, 19, 0, 0), new Date(2030, 6, 1, 20, 0, 0), TestSuite.PLACE_DU_VILLAGE.id, new Date(2030, 5, 1, 20, 0, 0), new Date(2030, 5, 30, 20, 0, 0) );		
+
+		var subscription : db.Subscription = null;
+		var error1 = null;
+		try {
+			
+			subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, catalog.endDate );
+		}
+	    catch( e : tink.core.Error ) {
+
+			error1 = e;
+		}
+		assertEquals( error1.data, PastDistributions );
+
+		var error2 = null;
+		try {
+
+			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate );
+		}
+	    catch( e : tink.core.Error ) {
+
+			error2 = e;
+		}
+		assertEquals( error2, null );
+
+		var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+		ordersData.push( { id : null, productId : botteOignons.id, qt : 3, paid : false, invertSharedOrder : false, userId2 : null } );
+		ordersData.push( { id : null, productId : panierAmap.id, qt : 2, paid : false, invertSharedOrder : false, userId2 : null } );
+		OrderService.createOrUpdateOrders( bob, null, catalog, ordersData );
+
+		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
+		for ( distribution in subscriptionDistributions ) {
+
+			var distribOrders = db.UserOrder.manager.search( $user == bob && $subscription == subscription && $distribution == distribution, false );
+			assertEquals( distribOrders.length, 2 );
+			var order1 = Lambda.array( distribOrders )[0];
+			var order2 = Lambda.array( distribOrders )[1];
+			assertEquals( order1.product.id, botteOignons.id );
+			assertEquals( order1.quantity, 3 );
+			assertEquals( order2.product.id, panierAmap.id );
+			assertEquals( order2.quantity, 2 );
+		}
+
+		var subscriptionOrders = SubscriptionService.getSubscriptionOrders( subscription );
+
+		assertEquals( subscriptionOrders.length, 2 );
+		var order1 = Lambda.array( subscriptionOrders )[0];
+		var order2 = Lambda.array( subscriptionOrders )[1];
+		assertEquals( order1.product.id, botteOignons.id );
+		assertEquals( order1.quantity, 3 );
+		assertEquals( order2.product.id, panierAmap.id );
+		assertEquals( order2.quantity, 2 );
+
+		//Je modifie une commande existante mais je n'ai pas le droit
+		var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+		ordersData.push( { id : null, productId : panierAmap.id, qt : 3, paid : false, invertSharedOrder : false, userId2 : null } );
+		ordersData.push( { id : null, productId : soupeAmap.id, qt : 2, paid : false, invertSharedOrder : false, userId2 : null } );
+		var error = null;
+		try {
+
+			OrderService.createOrUpdateOrders( bob, null, catalog, ordersData );
+		}
+	    catch( e : tink.core.Error ) {
+
+			error = e;
+		}
+		assertEquals( error, null );
+
+		//Je modifie la date de fin de la souscription pour recréer une nouvelle souscription et ajouter des orders
+		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
+		for ( distribution in subscriptionDistributions ) {
+
+			var distribOrders = db.UserOrder.manager.search( $user == bob && $subscription == subscription && $distribution == distribution, false );
+			assertEquals( distribOrders.length, 2 );
+			var order1 = Lambda.array( distribOrders )[0];
+			var order2 = Lambda.array( distribOrders )[1];
+			assertEquals( order1.product.id, panierAmap.id );
+			assertEquals( order1.quantity, 3 );
+			assertEquals( order2.product.id, soupeAmap.id );
+			assertEquals( order2.quantity, 2 );
+		}
+
+		var subscriptionOrders = SubscriptionService.getSubscriptionOrders( subscription );
+
+		assertEquals( subscriptionOrders.length, 2 );
+		var order1 = Lambda.array( subscriptionOrders )[0];
+		var order2 = Lambda.array( subscriptionOrders )[1];
+		assertEquals( order1.product.id, panierAmap.id );
+		assertEquals( order1.quantity, 3 );
+		assertEquals( order2.product.id, soupeAmap.id );
+		assertEquals( order2.quantity, 2 );
+
+	}
+
+	/**
+	 *  Test order deletion and operation deletion in various contexts
+	 	@author jbarbic
+	 */
+	// function testServiceGetUserOrders() {
+
+	// 	//Créer des orders pour une multidistrib
+	// 	//DISTRIB_PATISSERIES
+		
+	// 	//Tester get ok
+
+	// 	//Créer des orders pour un catalog d'amap en mode variable
+	// 	//Tester get ok
+
+	// 	//Créer des orders pour un catalog d'amap en mode constant
+	// 	//Tester get ok
+
+	// }
 	
 
 }
