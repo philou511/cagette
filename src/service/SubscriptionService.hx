@@ -46,7 +46,7 @@ class SubscriptionService
 
 	public static function getSubscriptionOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
 
-		var oneDistrib = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate ).first();
+		var oneDistrib = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate ).first();
 		return Lambda.array( db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib ) );
 	}
 

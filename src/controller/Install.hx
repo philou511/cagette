@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import sugoi.db.Variable;
 import sugoi.form.elements.StringInput;
 //import thx.semver.Version;
@@ -249,6 +250,68 @@ class Install extends controller.Controller
 			pro.insert();
 		}
 		
+	}
+
+	@admin
+	public function doMigrateCSAOrders(){
+
+		var csaCatalogs = db.Catalog.manager.search( $type == db.Catalog.TYPE_CONSTORDERS );
+		for ( catalog in csaCatalogs ) {
+			
+			var ordersByUser = new Map< db.User, Array<db.UserOrder> >();
+			var productIds = catalog.getProducts(false).map( function(x) return x.id );
+			var orders = db.UserOrder.manager.search( $productId in productIds, false );
+			for ( order in orders ) {
+
+				if ( ordersByUser[order.user] == null ) {
+
+					ordersByUser[order.user] = [];
+				}
+				
+				if ( order.subscription == null ) {
+
+					ordersByUser[order.user].push( order );
+				}
+
+			}
+
+			for ( user in ordersByUser.keys() ) {
+
+				var subscription = new db.Subscription();
+				subscription.user = user;
+				subscription.catalog = catalog;
+				subscription.startDate = new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
+				subscription.endDate = new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
+				subscription.insert();
+
+				var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+				for ( order in ordersByUser[user] ) {
+
+					if ( order.quantity > 0 ) {
+
+						ordersData.push( { id : null, productId : order.product.id, qt : order.quantity, paid : order.paid, invertSharedOrder : order.hasInvertSharedOrder(), userId2 : order.user2 == null ? null : order.user2.id } );
+					}
+				}
+				
+				trace( "****USER***** " + user );
+				trace( ordersData );
+				trace( "****GROUP***** " + catalog.group );
+				trace( "****CATALOG***** " + catalog );
+				SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+
+				for ( order in ordersByUser[user] ) {
+
+					trace( order );
+
+					order.lock();
+					order.delete();
+
+				}
+
+			}
+		
+		}
+
 	}
 	
 }
