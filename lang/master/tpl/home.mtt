@@ -163,20 +163,30 @@
 							::set status = d.getState()::
 							<div class="text-center">
 								::if(status=="notYetOpen")::
+
 								<span class="disabled" style="font-size: 1.2em;">
 									<i class="icon icon-clock"></i>
-									La commande ouvrira le ::hDate(ordersStartDate)::
+									La commande ouvrira ::hDate(ordersStartDate)::
 								</span>
+
 								::elseif(status=="open")::
+								
 								<a href="/shop/::d.id::" class="btn btn-lg btn-primary">
 									<i class="icon icon-chevron-right"></i>
 									Commander
 								</a>
+								<div class="disabled" style="font-size: 1.2em;margin-top:18px;">
+									<i class="icon icon-clock"></i>
+									La commande fermera ::hDate(ordersEndDate)::
+								</div>
+
 								::elseif(status=="closed")::
+								
 								<span class="disabled" style="font-size: 1.2em;">
 									<i class="icon icon-clock"></i>
 									::_("Orders closed")::
 								</span>
+								
 								::end::
 							</div>
 						</div>

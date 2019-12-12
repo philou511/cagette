@@ -13,6 +13,10 @@ class Shop extends Controller
 	@tpl('shop/default.mtt')
 	public function doDefault(md:db.MultiDistrib) {
 
+		if(app.getCurrentGroup()==null){
+			throw Redirect("/group/"+md.getGroup().id);
+		}
+
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 
 		var date = md.getDate();
@@ -54,7 +58,7 @@ class Shop extends Controller
 
 
 		//message if phone is required
-		if(app.user!=null && app.user.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
+		if(app.user!=null && md.getGroup().flags.has(db.Group.GroupFlags.PhoneRequired) && app.user.phone==null){
 			app.session.addMessage(t._("Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."),true);
 		}
 
@@ -71,17 +75,7 @@ class Shop extends Controller
 	public function doInit(md:db.MultiDistrib) {
 		
 		//init order serverside if needed		
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);			
-			//app.session.data.order = order = cast {products:[]};
-		}
-		
-		if(tmpBasket==null){
-			tmpBasket = service.OrderService.makeTmpBasket(app.user,md, {products:[]});
-			app.session.data.tmpBasketId = tmpBasket.id;
-		}		
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 
 		var products = [];
 		var categs = new Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>();		
@@ -162,14 +156,11 @@ class Shop extends Controller
 	/**
 	 * receive cart
 	 */
-	public function doSubmit() {
+	public function doSubmit(md:db.MultiDistrib) {
 		
 		var order : TmpBasketData = haxe.Json.parse(app.params.get("data"));
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-		}
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);	
+		tmpBasket.lock();
 		tmpBasket.data = order;
 		tmpBasket.update();
 
@@ -181,17 +172,14 @@ class Shop extends Controller
 	/**
 	 * add a product to the cart
 	 */
-	public function doAdd(productId:Int, quantity:Int) {
+	public function doAdd(md:db.MultiDistrib, productId:Int, quantity:Int) {
 	
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-		}
-			
-		tmpBasket.data.products.push( { productId:productId, quantity:quantity } );		
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);			
+		tmpBasket.data.products.push({ 
+			productId:productId,
+			quantity:quantity
+		});		
 		tmpBasket.update();
-
 		Sys.print( haxe.Json.stringify( {success:true} ) );
 		
 	}
@@ -199,13 +187,9 @@ class Shop extends Controller
 	/**
 	 * remove a product from cart 
 	 */
-	public function doRemove(pid:Int) {
+	public function doRemove(md:db.MultiDistrib, pid:Int) {
 	
-		var tmpBasketId:Int = app.session.data.tmpBasketId; 
-		var tmpBasket = null;
-		if ( tmpBasketId != null) {
-			tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
-		}
+		var tmpBasket = OrderService.getOrCreateTmpBasket(app.user,md);
 		
 		for ( p in tmpBasket.data.products.copy()) {
 			if (p.productId == pid) {
@@ -213,7 +197,6 @@ class Shop extends Controller
 			}
 		}
 		tmpBasket.update();
-		
 		Sys.print( haxe.Json.stringify( { success:true } ) );		
 	}
 	
@@ -232,6 +215,7 @@ class Shop extends Controller
 
 		//Login is needed : display a loginbox
 		if (app.user == null) {
+			app.session.data.tmpBasketId = tmpBasket.id;
 			view.redirect = sugoi.Web.getURI();
 			view.group = tmpBasket.multiDistrib.getGroup();
 			view.register = true;
@@ -263,7 +247,6 @@ class Shop extends Controller
 		//order.total = 0.0;
 		
 		//cleaning
-		tmpBasket.lock();
 		var orders = tmpBasket.data.products;
 		for (o in orders.copy()) {
 			
@@ -271,7 +254,6 @@ class Shop extends Controller
 			
 			//check that the products are from this group (we never know...)
 			if (p.catalog.group.id != app.user.getGroup().id){
-				app.session.data.order = null;
 				throw Error("/", t._("This basket contains products from another group") );
 			}
 			

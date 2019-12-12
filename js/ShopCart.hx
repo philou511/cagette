@@ -2,9 +2,7 @@ import Common;
 import js.jquery.JQuery;
 /**
  * JS Shopping Cart
- * 
- * @author fbarbut<francois.barbut@gmail.com>
- */
+ **/
 class ShopCart
 {
 	public var products : Map<Int,ProductInfo>; //product db
@@ -57,7 +55,7 @@ class ShopCart
 		//trace("qté : "+qt);
 		
 		//add server side
-		var r = new haxe.Http('/shop/add/$pid/$qt');
+		var r = new haxe.Http('/shop/add/$multiDistribId/$pid/$qt');
 		
 		r.onData = function(data:String) {
 			
@@ -269,7 +267,7 @@ class ShopCart
      */
 	public function submit() {
 		
-		var req = new haxe.Http("/shop/submit");
+		var req = new haxe.Http("/shop/submit/"+multiDistribId);
 		req.onData = function(data) {
 			var data : {tmpBasketId:Int,success:Bool} = haxe.Json.parse(data);
 			App.instance.setWarningOnUnload(false);
@@ -314,7 +312,7 @@ class ShopCart
 		loader.show();
 		
 		//add server side
-		var r = new haxe.Http('/shop/remove/$pid');
+		var r = new haxe.Http('/shop/remove/$multiDistribId/$pid');
 		
 		r.onData = function(data:String) {
 			

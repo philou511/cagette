@@ -53,7 +53,7 @@ class Categories extends controller.Controller
 		var form = sugoi.form.Form.fromSpod(g);
 		
 		form.removeElementByName("color");
-		form.removeElementByName("amapId");
+		form.removeElementByName("groupId");
 		form.addElement(new form.ColorRadioGroup("color", t._("Color") , Std.string(g.color) ));		
 		
 		if (form.isValid()) {
@@ -74,7 +74,7 @@ class Categories extends controller.Controller
 		var form = sugoi.form.Form.fromSpod(g );
 		
 		form.removeElementByName("color");
-		form.removeElementByName("amapId");
+		form.removeElementByName("groupId");
 		form.addElement(new form.ColorRadioGroup("color", "Couleur", Std.string(g.color)));		
 		
 		if (form.isValid()) {

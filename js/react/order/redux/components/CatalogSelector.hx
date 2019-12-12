@@ -8,10 +8,9 @@ import react.order.redux.actions.thunk.OrderBoxThunk;
 
 
 typedef CatalogSelectorProps = {
-	
 	var multiDistribId : Int;
 	var catalogs : Array<ContractInfo>;
-	var selectCatalog : Int->Void;	
+	var selectCatalog : Int-> Void;	
 	var fetchCatalogs : Int -> Void;
 }
 
@@ -24,14 +23,18 @@ class CatalogSelector extends react.ReactComponentOfProps<CatalogSelectorProps>
 {
 
 	public function new(props) {
-
 		super(props);			
 	}
 
 	override public function render() {
 
+		//if there is only one catalog, skip this step
+		if(props.catalogs.length==1){
+			props.selectCatalog(props.catalogs[0].id);
+			return null;
+		}
+
 		var catalogs = props.catalogs.map(function( catalog ){
-            			
 			return jsx('<div key=${catalog.id} className="col-md-6" onClick=${props.selectCatalog.bind(catalog.id)}>
 							<div className="clickable"><Catalog catalog=$catalog /></div>			
 						</div>');

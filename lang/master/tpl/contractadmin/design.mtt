@@ -41,7 +41,7 @@
 			::end::
 			<li id="documents" ::attr class if(nav[1]=="documents") 'active'::>
 				<a href="/contractAdmin/documents/::c.id::">
-					<i class="icon icon-file"></i> Documents
+					<i class="icon icon-file-pdf"></i> Documents
 				</a>
 			</li>
 			<li id="stats">

@@ -8,7 +8,7 @@ import Common;
 
 /**
  * ...
- * @author fbarbut<francois.barbut@gmail.com>
+ * @author fbarbut
  */
 class Install extends controller.Controller
 {

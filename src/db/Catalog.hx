@@ -23,7 +23,7 @@ class Catalog extends Object
 	
 	public var description:SNull<SText>;
 	
-	@:relation(groupId) public var group:db.Group;
+	@:hideInForms @:relation(groupId) public var group:db.Group;
 	public var distributorNum:STinyInt;
 	public var flags : SFlags<CatalogFlags>;
 	
@@ -258,6 +258,30 @@ class Catalog extends Object
 		}else{
 			return Distribution.manager.search( $catalog == this, { orderBy:date,limit:limit } );
 		}
+	}
+
+	public function getVisibleDocuments( user : db.User ) : List<sugoi.db.EntityFile> {
+
+		var isSubscribedToCatalog = false;
+		if ( user != null && this.type == db.Catalog.TYPE_CONSTORDERS ) { //Amap catalog
+
+			var userCatalogs : Array<db.Catalog> = user.getContracts(this.group);
+			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == this.id ); 
+		}
+
+		if ( isSubscribedToCatalog ) {
+
+			return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document', false);
+		}
+
+		if ( user != null && user.isMemberOf(group) ) {
+
+			return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document' && $data != 'subscribers', false);
+		}
+		
+		
+		return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document' && $data == 'public', false);
+
 	}
 	
 	override function toString() {

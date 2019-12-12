@@ -33,16 +33,8 @@ class Contract extends Controller
 
 		view.category = 'amap';
 		view.catalog = catalog;
-
-		var isSubscribedToCatalog = true;
-		var allDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity('catalog', catalog.id, 'document');
-		if ( catalog.type == 0 ) { //Amap catalog
-
-			var userCatalogs : Array<db.Catalog> = app.user.getContracts();
-			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == catalog.id ); 
-		}
-		
-		view.visibleDocuments = isSubscribedToCatalog ? allDocuments : allDocuments.filter( function( doc ) return doc.data != 'subscribers' );
+	
+		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
 		
 	}
 	
@@ -63,7 +55,7 @@ class Contract extends Controller
 		var currentContact = c.contact;
 		
 		var form = Form.fromSpod(c);
-		form.removeElement( form.getElement("amapId") );
+		form.removeElement( form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("distributorNum"));
 		form.getElement("userId").required = true;
@@ -197,7 +189,7 @@ class Contract extends Controller
 		var c = new db.Catalog();
 
 		var form = Form.fromSpod(c);
-		form.removeElement(form.getElement("amapId") );
+		form.removeElement(form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.getElement("name").value = "Commande "+vendor.name;
 		form.getElement("userId").required = true;

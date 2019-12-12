@@ -33,7 +33,16 @@
                     <td> <b>Encaissements en liquide</b></td>
                     <td>::sales.cashTurnover.ttc:: &euro;</td>
                 </tr>
-                
+                ::if(sales.onTheSpotTurnover.ttc>0)::
+                <tr>
+                    <td>
+                        <b>Encaissements sur place indéfini (chèque ou liquide)</b>
+                    </td>
+                    <td>
+                        ::sales.onTheSpotTurnover.ttc:: &euro;
+                    </td>
+                </tr>
+                ::end::
                
                 <tr>
                     <td>
@@ -45,8 +54,17 @@
                 </tr>
 
                 <tr>
-                    <td> <b>Encaissements en chèque</b></td>
+                    <td> <b>Encaissements en chèque</b> </td>
                     <td>::sales.checkTurnover.ttc:: &euro;</td>
+                </tr>
+                <tr>
+                    <td> <b>Encaissements Carte bancaire</b> </td>
+                    <td>
+                        
+                        ::sales.mpTurnover.ttc:: 
+                        ::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc):: =
+                        ::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;
+                    </td>
                 </tr>
 
                 <tr>

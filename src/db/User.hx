@@ -333,9 +333,10 @@ class User extends Object {
 	 * @param	lock=false
 	 * @return
 	 */
-	public function getContracts(?lock=false):Array<db.Catalog> {
+	public function getContracts( group : db.Group, ?lock=false ) : Array<db.Catalog> {
+
 		var out = [];
-		var ucs = getOrders(lock);
+		var ucs = getOrders( group, lock );
 		for (uc in ucs) {
 			if (!Lambda.has(out, uc.product.catalog)) {
 				out.push(uc.product.catalog);

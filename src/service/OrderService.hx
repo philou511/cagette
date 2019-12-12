@@ -1,4 +1,6 @@
 package service;
+import db.MultiDistrib;
+import db.TmpBasket;
 import Common;
 import tink.core.Error;
 
@@ -19,7 +21,7 @@ class OrderService
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool, ?subscription : db.Subscription ) : db.UserOrder {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool, ?subscription : db.Subscription ) : Null<db.UserOrder> {
 		
 		var t = sugoi.i18n.Locale.texts;
 
@@ -275,7 +277,7 @@ class OrderService
 				if( contract.group.hasPayments() ){
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
-					if( orders.length == 1 && orders.first().id==order.id ){
+					if( orders.length == 1 && orders[0].id==order.id ){
 						var operation = db.Operation.findVOrderOperation(basket.multiDistrib, user);
 						if(operation!=null) operation.delete();
 					}
@@ -377,9 +379,9 @@ class OrderService
 	/**
 		Record a temporary basket
 	**/
-	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, tmpBasketData:TmpBasketData):db.TmpBasket {
+	public static function makeTmpBasket(user:db.User,multiDistrib:db.MultiDistrib, ?tmpBasketData:TmpBasketData):db.TmpBasket {
 		//basket with no products is allowed ( init an empty basket )
-		if( tmpBasketData==null) throw new Error( "Basket is empty" );
+		if( tmpBasketData==null) tmpBasketData = {products:[]};
 
 		//generate basketRef
 		var group = multiDistrib.getGroup();
@@ -395,35 +397,46 @@ class OrderService
 	}
 	
 	/**
-	 * Confirms an order : create real orders from a temporary basket
-	 * @param	order
+	 * 	Create real orders from a temporary basket.
+		Should not return a basket, because this basket can include older orders.
 	 */
-	public static function confirmTmpBasket(tmpBasket:db.TmpBasket){
+	public static function confirmTmpBasket(tmpBasket:db.TmpBasket):Array<db.UserOrder>{
 		var t = sugoi.i18n.Locale.texts;
 		var orders = [];
 		var user = tmpBasket.user;
+		var distributions = tmpBasket.multiDistrib.getDistributions();
 		for (o in tmpBasket.data.products){
 			var p = db.Product.manager.get(o.productId);
 
 			//find related distrib
 			var distrib = null;
-			for( d in tmpBasket.multiDistrib.getDistributions()){
+			for( d in distributions){
 				if(d.catalog.id==p.catalog.id){
 					distrib = d;
 				}
 			}
 
-			//check that the distrib is still open.			
-			if(!distrib.canOrderNow()){
-				throw new Error( 500, t._( "Orders are closed for \"::contract::\", please modify your order.", { contract : distrib.catalog.name } ) );
+			if(distrib==null) {
+				App.current.session.addMessage('Le produit "${p.getName()}" n\'est pas disponible pour cette distribution, il a été retiré de votre commande.',true);
+				continue;
 			}
 
-			orders.push( make(user, o.quantity, p, distrib.id ) );
+			//check that the distrib is still open.			
+			if(!distrib.canOrderNow()){
+				App.current.session.addMessage('Il n\'est plus possible de commander le produit "${p.getName()}", il a été retiré de votre commande.',true);
+				continue;
+			}
+
+			var order = make(user, o.quantity, p, distrib.id );
+			if(order!=null) orders.push( order );
 		}
 		
 		App.current.event(MakeOrder(orders));
-		tmpBasket.delete();
 		
+		//delete tmpBasket
+		if(App.current.session.data.tmpBasketId==tmpBasket.id) App.current.session.data.tmpBasketId=null;
+		tmpBasket.delete();
+
 		return orders;
 	}
 
@@ -436,7 +449,7 @@ class OrderService
 		var m = new sugoi.mail.Mail();
 		m.addRecipient(d.catalog.contact.email , d.catalog.contact.getName());
 		m.setSender(App.config.get("default_email"),"Cagette.net");
-		m.setSubject('[${d.catalog.group.name}] Distribution du ${App.current.view.dDate(d.date)} (${d.catalog.name})');
+		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
 		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
@@ -490,15 +503,20 @@ class OrderService
 		
 	}
 	
-
+	/**
+		Order by lastname (+lastname2 if exists), then catalog, the productName
+	**/
 	public static function sort(orders:Array<UserOrder>){
-		//order by lastname (+lastname2 if exists), then contract
+		var astr=null;
+		var bstr=null;
 		orders.sort(function(a, b) {
+			astr = a.userName + a.userId + a.userName2 + a.userId2 + a.catalogId + a.productName;
+			bstr = b.userName + b.userId + b.userName2 + b.userId2 + b.catalogId + a.productName;
 			
-			if (a.userName + a.userId + a.userName2 + a.userId2 + a.catalogId > b.userName + b.userId + b.userName2 + b.userId2 + b.catalogId ) {
+			if (astr > bstr ) {
 				return 1;
 			}
-			if (a.userName + a.userId + a.userName2 + a.userId2 + a.catalogId < b.userName + b.userId + b.userName2 + b.userId2 + b.catalogId ) {
+			if (astr < bstr ) {
 				return -1;
 			}
 			return 0;
@@ -510,29 +528,79 @@ class OrderService
 		Returns tmp basket
 	**/
 	public static function getTmpBasket(user:db.User,group:db.Group):db.TmpBasket{
+		if(user==null) return null;
+		if(group==null) throw "should have a group here";
 		for( b in db.TmpBasket.manager.search($user==user)){
 			if(b.multiDistrib.group.id==group.id) return b;
 		}
 		return null;
 	}
 
+	public static function getOrCreateTmpBasket(user:db.User,distrib:MultiDistrib):db.TmpBasket{
+		var tb = getTmpBasket(user,distrib.getGroup());
+		if(tb==null) getTmpBasketFromSession(distrib.getGroup());
+
+		if(tb!=null && tb.multiDistrib.id==distrib.id){
+			return tb;
+		} else{
+			tb = makeTmpBasket(user,distrib);
+			App.current.session.data.tmpBasketId = tb.id;
+			return tb;
+		}
+	}
+
 	/**
 		Action triggered from controllers to check if we have a tmpBasket to validate
 	**/
-	public static function checkTmpBasket(user,group){
-		//user can be null, if open group
-		if(user==null) return;
-		
-		var tmpBasket = getTmpBasket(user,group);
-		if(tmpBasket!=null){
+	public static function checkTmpBasket(user:db.User,group:db.Group){
 
+		//check for a basket created when logged off ( tmpBasketId stored in session )
+		var tmpBasket = getTmpBasketFromSession(group);
+		if(tmpBasket!=null){
+			if(tmpBasket.user!=null && user!=null){
+				//same user ?
+				if(tmpBasket.user.id!=user.id) tmpBasket = null;
+
+			}else if(tmpBasket.user==null && user!=null){
+				//attribute to a user
+				tmpBasket.update();
+				tmpBasket.user = user;
+				tmpBasket.update();
+			}
+		}
+		
+		//check for a tmpBasket attached to a user
+		if(tmpBasket==null && user!=null ){
+			tmpBasket = getTmpBasket(user,group);
+		}
+		
+		if(tmpBasket!=null){
 			if(tmpBasket.data.products.length==0){
 				tmpBasket.lock();
 				tmpBasket.delete();
-				return;
+			}else{
+				throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
 			}
+		}
+	}
 
-			throw sugoi.ControllerAction.ControllerAction.RedirectAction("/transaction/tmpBasket/"+tmpBasket.id);
+	/**
+		Get a tmpBasket from session.
+		Checks that it belongs to the current group.
+	**/
+	public static function getTmpBasketFromSession(group:db.Group){
+		if(group==null) return null;
+		var tmpBasketId:Int = App.current.session.data.tmpBasketId; 		
+		if ( tmpBasketId != null) {
+			var tmpBasket = db.TmpBasket.manager.get(tmpBasketId,true);
+			if(tmpBasket!=null && tmpBasket.multiDistrib.getGroup().id==group.id){
+				return tmpBasket;
+			}else{
+				return null;
+			}
+			
+		}else{
+			return null;
 		}
 	}
 

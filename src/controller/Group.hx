@@ -31,22 +31,20 @@ class Group extends controller.Controller
 		view.pageTitle = group.name;
 		group.getMainPlace(); //just to update cache
 
-		var allGroupDocuments : List<sugoi.db.EntityFile>  = sugoi.db.EntityFile.getByEntity( 'group', group.id, 'document' );
-		var isMember = app.user == null ? false : app.user.isMemberOf(group); 
+		var isMemberOfGroup = app.user == null ? false : app.user.isMemberOf(group); 
 		if ( app.user == null ) {
 
 			service.UserService.prepareLoginBoxOptions(view,group);
 		}	
 
-		view.isMember = isMember;
-		view.visibleGroupDocuments = isMember ? allGroupDocuments : allGroupDocuments.filter( function( doc ) return doc.data == 'public' );
+		view.isMember = isMemberOfGroup;
 
+		// Documents
+		view.visibleGroupDocuments = group.getVisibleDocuments( isMemberOfGroup );
 		var visibleCatalogsDocuments = new Map< Int, List<sugoi.db.EntityFile> >();
 		for ( catalog in activeCatalogs ) {
-
-			var allCatalogDocuments : List<sugoi.db.EntityFile> = sugoi.db.EntityFile.getByEntity( 'catalog', catalog.id, 'document' );
-			var visibleCatalogDocuments = isMember ? allCatalogDocuments : allCatalogDocuments.filter( function( doc ) return doc.data == 'public' );
-			visibleCatalogsDocuments.set( catalog.id, visibleCatalogDocuments );
+			
+			visibleCatalogsDocuments.set( catalog.id, catalog.getVisibleDocuments( app.user ) );
 		}
 		view.visibleCatalogsDocuments = visibleCatalogsDocuments;
 

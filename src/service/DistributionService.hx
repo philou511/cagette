@@ -107,18 +107,7 @@ class DistributionService
 
 	 /**
 	  *  Creates a new distribution and prevents distribution overlapping and other checks
-	  *  @param contract - 
-	  *  @param date - 
-	  *  @param end - 
-	  *  @param placeId - 
-	  *  @param distributor1Id - 
-	  *  @param distributor2Id - 
-	  *  @param distributor3Id - 
-	  *  @param distributor4Id - 
-	  *  @param orderStartDate - 
-	  *  @param orderEndDate - 
-	  *  @param distributionCycle - 
-	  *  @param dispatchEvent=true - 
+
 	  *  @return db.Distribution
 	  */
 	 public static function create(contract:db.Catalog,date:Date,end:Date,placeId:Int,?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {

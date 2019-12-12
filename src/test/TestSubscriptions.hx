@@ -1,5 +1,6 @@
 package test;
 import Common;
+import utest.*;
 import service.DistributionService;
 import service.OrderService;
 import service.SubscriptionService;
@@ -9,7 +10,7 @@ import service.SubscriptionService;
  * 
  * @author web-wizard
  */
-class TestSubscriptions extends haxe.unit.TestCase
+class TestSubscriptions extends utest.Test
 {
 	
 	public function new(){
@@ -24,7 +25,7 @@ class TestSubscriptions extends haxe.unit.TestCase
 	/**
 	 * get a contract + a user + a product + empty orders
 	 */
-	override function setup(){
+	function setup(){
 
 		TestSuite.initDB();
 		TestSuite.initDatas();

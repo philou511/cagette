@@ -1,4 +1,5 @@
 package controller;
+import tink.core.Error;
 import db.UserOrder;
 import sugoi.form.elements.Checkbox;
 import sugoi.form.elements.Selectbox;
@@ -678,7 +679,11 @@ class ContractAdmin extends Controller
 		if(args!=null && args.participateToAllDistributions){
 			for( d in multidistribs){
 				if( d.getDistributionForContract(contract)==null ){
-					service.DistributionService.participate(d,contract);
+					try{
+						service.DistributionService.participate(d,contract);
+					}catch(e:Error){
+						app.session.addMessage(e.message,true);
+					}
 				}				
 			}
 			app.session.addMessage(contract.vendor.name+" participe maintenant à toutes les distributions");

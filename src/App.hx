@@ -1,5 +1,5 @@
 import db.User;
-//import thx.semver.Version;
+import thx.semver.Version;
 import Common;
  
 class App extends sugoi.BaseApp {
@@ -16,8 +16,7 @@ class App extends sugoi.BaseApp {
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
-	//public static var VERSION = ([0,9,2]  : Version).withPre("july");
-	public static var VERSION = "0.13"/*([0,12]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate())*/;
+	public static var VERSION = ([0,13]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
 	
 	public function new(){
 		super();
@@ -294,15 +293,15 @@ class App extends sugoi.BaseApp {
 	}
 	
 	/**
-	 * process a template and returns the generated string
-	 * @param	tpl
-	 * @param	ctx
-	 */
+		process a template and returns the generated string
+		(used for emails)
+	**/
 	public function processTemplate(tpl:String, ctx:Dynamic):String {
 		
+		//inject usefull vars in view
 		Reflect.setField(ctx, 'HOST', App.config.HOST);
-		Reflect.setField(ctx, 'hDate', App.current.view.hDate);
-		//i18n functions
+		Reflect.setField(ctx, 'hDate', date -> return Formatting.hDate(date) );		
+
 		ctx._ = App.current.view._;
 		ctx.__ = App.current.view.__;
 		

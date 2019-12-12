@@ -1,6 +1,8 @@
-package test;
+package test;import utest.Assert;
 import Common;
-import service.DistributionService;
+import utest.Runner;
+import utest.ui.Report;
+
 
 /**
  * CAGETTE.NET TEST SUITE
@@ -12,27 +14,28 @@ class TestSuite
 	static function main() {
 		
 		connectDb();
-		var r = new haxe.unit.TestRunner();
+		var r = new Runner();
 
 		//Cagette core tests
-		// r.add(new test.TestTools());
-		// r.add(new test.TestUser());
-		r.add(new test.TestOrders());				
-		// r.add(new test.TestDistributions());
-		// r.add(new test.TestPayments());
-		r.add(new test.TestSubscriptions());
-		// r.add(new test.TestReports());
+		r.addCase(new test.TestTools());
+		r.addCase(new test.TestUser());
+		r.addCase(new test.TestOrders());				
+		r.addCase(new test.TestDistributions());
+		r.addCase(new test.TestPayments());
+		r.addCase(new test.TestReports());
 
-		// #if plugins
-		// //Cagette-pro tests, keep in this order
-		// r.add(new pro.test.TestProductService());
-		// r.add(new pro.test.TestRemoteCatalog());
-		// r.add(new pro.test.TestDistribService());
-		// r.add(new pro.test.TestReports());
-		// r.add(new who.test.TestWho());
-		// //r.add(new pro.test.TestMarketplacePayment());
-		// #end
-
+		#if plugins
+		//Cagette-pro tests, keep in this order
+		r.addCase(new pro.test.TestProductService());
+		r.addCase(new pro.test.TestRemoteCatalog());
+		r.addCase(new pro.test.TestDistribService());
+		r.addCase(new pro.test.TestReports());
+		r.addCase(new who.test.TestWho());
+		r.addCase(new pro.test.TestStock());
+		r.addCase(new pro.test.TestSubscriptions());
+		//r.addCase(new pro.test.TestMarketplacePayment());
+		#end
+		Report.create(r);
 		r.run();
 	}
 
@@ -135,8 +138,10 @@ class TestSuite
 	
 	public static var STRAWBERRIES:db.Product = null; 
 	public static var APPLES:db.Product = null; 
+	
 	public static var AMAP_DU_JARDIN:db.Group = null;
 	public static var LOCAVORES:db.Group = null;
+
 	public static var PANIER_AMAP_LEGUMES:db.Product = null;
 	public static var BOTTE_AMAP:db.Product = null;
 	public static var SOUPE_AMAP:db.Product = null;
@@ -252,8 +257,8 @@ class TestSuite
 		product.insert();
 
 		SOUPE_AMAP = product;
-
-		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+		
+		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_CONTRAT_AMAP = d;
 
 		//varying contract for strawberries with stock mgmt
@@ -291,7 +296,7 @@ class TestSuite
 		
 		APPLES = p;
 
-		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_FRUITS_PLACE_DU_VILLAGE = d;
 		
 		//second group : LOCAVORES
@@ -358,7 +363,7 @@ class TestSuite
 
 		POTATOES = p;
 
-		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
+		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 19, 2, 0),place.id,new Date(2017, 4, 10, 19, 0, 0),new Date(2017, 4, 20, 19, 0, 0));		
 		DISTRIB_LEGUMES_RUE_SAUCISSE = d;
 
 
@@ -391,7 +396,7 @@ class TestSuite
 		product2.insert();
 		LAITUE = product2;
 
-		var distribution2 = DistributionService.create(contract2,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+		var distribution2 = service.DistributionService.create(contract2,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_LAITUE = distribution2;
 
 		//
@@ -424,7 +429,7 @@ class TestSuite
 		
 		CARROTS = p;
 
-		var distribution3 = DistributionService.create(contract3,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+		var distribution3 = service.DistributionService.create(contract3,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_CAROTTES = distribution3;
 
 		
@@ -470,7 +475,7 @@ class TestSuite
 
 		CROISSANT = p;
 
-		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_PATISSERIES = d;
 		
 		

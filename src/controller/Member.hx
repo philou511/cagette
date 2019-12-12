@@ -746,5 +746,43 @@ class Member extends Controller
 		view.credit = db.UserGroup.manager.search($group == app.user.getGroup() && $balance > 0, false);
 		view.debt = db.UserGroup.manager.search($group == app.user.getGroup() && $balance < 0, false);
 	}
+
+	@tpl('member/invoice.mtt')
+	function doInvoice(m:db.User,md:db.MultiDistrib){
+		
+		//orders grouped by vendors
+		var orders = service.OrderService.prepare(md.getUserOrders(m));
+		var ordersByVendors = new Map<Int,Array<UserOrder>>();
+		for( o in orders) {
+			var or = ordersByVendors.get(o.product.vendorId);
+			if(or==null) or = [];
+			or.push(o);
+			ordersByVendors.set(o.product.vendorId,or);
+		}
+
+		//grouped by VAT
+		var ordersByVat = new Map<Int,{ht:Float,ttc:Float}>();
+		for( o in orders){
+			var key = Math.round(o.product.vat*100);
+			if(ordersByVat[key]==null) ordersByVat[key] = {ht:0.0,ttc:0.0};
+			var total = o.quantity * o.productPrice;
+			ordersByVat[key].ttc += total;
+			ordersByVat[key].ht += (total/(1+o.product.vat/100));
+		}
+		view.ordersByVat = ordersByVat;
+
+		var basket = md.getUserBasket(m);
+		var paymentOps = basket.getPaymentsOperations();
+
+		view.member = m;
+		view.ordersByVendors = ordersByVendors;
+		view.md = md;
+		view.getVendor = function(id) return db.Vendor.manager.get(id,false);
+		view.paymentOps = paymentOps;
+
+
+	}
+
+
 	
 }

@@ -1,18 +1,18 @@
-package test;
+package test;import utest.Assert;
 
 /**
  * Test payments
  * 
  * @author web-wizard
  */
-class TestPayments extends haxe.unit.TestCase
+class TestPayments extends utest.Test
 {
 	
 	public function new(){
 		super();
 	}
 	
-	override function setup(){		
+	function setup(){		
 		TestSuite.initDB();
 		TestSuite.initDatas();
 		db.Basket.emptyCache();
@@ -38,28 +38,28 @@ class TestPayments extends haxe.unit.TestCase
 		service.PaymentService.validateDistribution(md);
 		
 		//distrib should be validated
-		assertTrue(contract.group.hasPayments());
-		assertEquals(true, md.validated);
+		Assert.isTrue(contract.group.hasPayments());
+		Assert.equals(true, md.validated);
 		
 		//orders should be marked as paid
-		assertEquals(true, francoisOrder.paid);
-		assertEquals(true, sebOrder.paid);
+		Assert.equals(true, francoisOrder.paid);
+		Assert.equals(true, sebOrder.paid);
 
 		//order operation is not pending
 		var francoisOperation = db.Operation.findVOrderOperation(francoisOrder.distribution.multiDistrib, TestSuite.FRANCOIS, false);
 		var sebOperation 	  = db.Operation.findVOrderOperation(sebOrder.distribution.multiDistrib, TestSuite.SEB, false);		
-		assertEquals(francoisOperation.pending, false);
-		assertEquals(sebOperation.pending, false);
+		Assert.equals(francoisOperation.pending, false);
+		Assert.equals(sebOperation.pending, false);
 
 		//payment operation is not pending
-		assertEquals(francoisPayment.pending, false);
-		assertEquals(sebPayment.pending, false);
+		Assert.equals(francoisPayment.pending, false);
+		Assert.equals(sebPayment.pending, false);
 
 		//basket are validated 
 		var b = db.Basket.get(TestSuite.SEB,distrib.multiDistrib);
-		assertEquals(true, b.isValidated());
+		Assert.equals(true, b.isValidated());
 		var b = db.Basket.get(TestSuite.FRANCOIS,distrib.multiDistrib);
-		assertEquals(true, b.isValidated());
+		Assert.equals(true, b.isValidated());
 	}
 
 	function testMakeOnTheSpotPaymentOperations()
@@ -83,7 +83,7 @@ class TestPayments extends haxe.unit.TestCase
 		var juliePayment2 = db.Operation.makePaymentOperation(TestSuite.JULIE,contract.group, payment.OnTheSpotPayment.TYPE, product2.price, "Payment on the spot", julieOrderOperation2[0]);
 
 		//Check that the second payment is just an update of the first one
-		assertEquals(juliePayment1.id, juliePayment2.id);
+		Assert.equals(juliePayment1.id, juliePayment2.id);
 	}
 
 }

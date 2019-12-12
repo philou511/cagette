@@ -7,6 +7,7 @@ import Common.ProductInfo;
 import Common.UserInfo;
 import Common.UserOrder;
 import react.order.redux.reducers.OrderBoxReducer.OrderBoxState;
+import redux.thunk.Thunk;
 
 
 class OrderBoxThunk {
@@ -14,7 +15,7 @@ class OrderBoxThunk {
 
     public static function fetchOrders( userId : Int, multiDistribId : Int, catalogId: Int, catalogType: Int ) {
     
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+        return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             //Fetches all the orders for this user and this multiDistrib and for a given catalog if it's specified otherwise for any catalog of this multiDistrib
             return HttpUtil.fetch( "/api/order/get/" + userId, GET, { catalog : catalogId, multiDistrib : multiDistribId }, PLAIN_TEXT )
@@ -55,7 +56,7 @@ class OrderBoxThunk {
 
      public static function fetchUsers() {
     
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+        return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             return getUsers( dispatch );
            
@@ -65,7 +66,7 @@ class OrderBoxThunk {
 
     public static function updateOrders( userId : Int, callbackUrl : String, multiDistribId : Int, catalogId: Int ) {
     
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+        return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
             var data = new Array<{ id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int }>();
             var state : OrderBoxState = Reflect.field(getState(), "reduxApp");           
@@ -97,51 +98,79 @@ class OrderBoxThunk {
 
             return HttpUtil.fetch( "/api/order/update/" + userId + args, POST, { orders : data }, JSON )
             .then( function( data : Dynamic ) {
-
                 js.Browser.location.href = callbackUrl;
             })
             .catchError( function(data) {
-
                 handleError( data, dispatch );
             });
         });
 
     }
     
+
+    static var CATALOGS_CACHE = new Array<ContractInfo>();
+
     public static function fetchCatalogs( multiDistribId : Int ) {
-    
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
-               
-            //Loads all the catalogs (of variable type only) for the given multiDistrib
-            return HttpUtil.fetch( "/api/order/catalogs/" + multiDistribId, GET, { catalogType: 1 }, PLAIN_TEXT )
-            .then( function( data : String ) {             
 
-                var data : { catalogs : Array<ContractInfo> } = tink.Json.parse(data);               
-                dispatch( OrderBoxAction.FetchCatalogsSuccess( data.catalogs ) );
-            })
-            .catchError( function(data) {                    
-                
-                handleError( data, dispatch );
-            });
+        return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+
+            if(CATALOGS_CACHE.length==0){
+               
+                //Loads all the catalogs (of variable type only) for the given multiDistrib
+                return HttpUtil.fetch( "/api/order/catalogs/" + multiDistribId, GET, { catalogType: 1 }, PLAIN_TEXT )
+                .then( function( data : String ) {             
+                    var data : { catalogs : Array<ContractInfo> } = tink.Json.parse(data);  
+                    CATALOGS_CACHE = data.contracts;             
+                    dispatch( OrderBoxAction.FetchCatalogsSuccess( data.catalogs ) );
+                })
+                .catchError( function(data) {                                    
+                    handleError( data, dispatch );
+                });
+            
+            }else{
+
+                //from cache
+                return new js.Promise(function(resolve,reject){resolve("");})
+                .then(function(data){
+                    dispatch( OrderBoxAction.FetchCatalogsSuccess( CATALOGS_CACHE ) );
+                });
+
+            }
         });
 
     }
+
+    static var PRODUCTS_CACHE = new Map<Int,Array<ProductInfo>>(); //key is catalogId
 
     public static function fetchProducts( catalogId : Int ) {
     
-        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
-               
-            //Loads all the products for the current catalog
-            return HttpUtil.fetch( "/api/product/get/", GET, { catalogId : catalogId }, PLAIN_TEXT )
-            .then( function( data : String ) {
+        return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
-                var data : { products : Array<ProductInfo> } = tink.Json.parse(data);               
-                dispatch( OrderBoxAction.FetchProductsSuccess( data.products ) );                                     
-            })
-            .catchError( function(data) {
+            if(PRODUCTS_CACHE[catalogId]==null){
 
-                handleError( data, dispatch );
-            });
+                //Loads all the products for the current catalog
+                return HttpUtil.fetch( "/api/product/get/", GET, { catalogId : catalogId }, PLAIN_TEXT )
+                .then( function( data : String ) {
+
+                    var data : { products : Array<ProductInfo> } = tink.Json.parse(data);  
+                    PRODUCTS_CACHE[catalogId] = data.products;             
+                    dispatch( OrderBoxAction.FetchProductsSuccess( data.products ) );                                     
+                })
+                .catchError( function(data) {
+
+                    handleError( data, dispatch );
+                });
+
+            }else{
+
+                //from cache
+                return new js.Promise(function(resolve,reject){resolve("");})
+                .then(function(data){
+                    trace("get products from cache catalog "+catalogId);
+                    dispatch( OrderBoxAction.FetchProductsSuccess( PRODUCTS_CACHE[catalogId] ) );
+                });
+
+            }                  
         });
 
     }
