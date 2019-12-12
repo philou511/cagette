@@ -120,7 +120,7 @@ class OrderBoxThunk {
                 return HttpUtil.fetch( "/api/order/catalogs/" + multiDistribId, GET, { catalogType: 1 }, PLAIN_TEXT )
                 .then( function( data : String ) {             
                     var data : { catalogs : Array<ContractInfo> } = tink.Json.parse(data);  
-                    CATALOGS_CACHE = data.contracts;             
+                    CATALOGS_CACHE = data.catalogs;             
                     dispatch( OrderBoxAction.FetchCatalogsSuccess( data.catalogs ) );
                 })
                 .catchError( function(data) {                                    
