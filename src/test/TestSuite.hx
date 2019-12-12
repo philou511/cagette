@@ -23,6 +23,7 @@ class TestSuite
 		r.addCase(new test.TestDistributions());
 		r.addCase(new test.TestPayments());
 		r.addCase(new test.TestReports());
+		r.addCase(new test.TestSubscriptions());
 
 		#if plugins
 		//Cagette-pro tests, keep in this order
@@ -32,7 +33,6 @@ class TestSuite
 		r.addCase(new pro.test.TestReports());
 		r.addCase(new who.test.TestWho());
 		r.addCase(new pro.test.TestStock());
-		r.addCase(new pro.test.TestSubscriptions());
 		//r.addCase(new pro.test.TestMarketplacePayment());
 		#end
 		Report.create(r);

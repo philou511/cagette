@@ -5,7 +5,6 @@ using tools.DateTool;
 using Lambda;
 
 enum SubscriptionServiceError {
-
 	NoSubscription;
 	PastDistributionsWithoutOrders;
 	PastOrders;
