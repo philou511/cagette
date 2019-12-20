@@ -35,7 +35,7 @@ class SubscriptionService
 
 			totalPrice += order.quantity * order.productPrice;
 		}
-		return totalPrice;
+		return Formatting.roundTo( totalPrice, 2 );
 	}
 
 	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : List<db.UserOrder> {
@@ -160,10 +160,6 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-
-		// var obj = subscription;
-		// for( field in Reflect.fields(obj) ) {
-		// trace(" obj." + field + " = " + Reflect.field(obj, field));
 
 		if ( isSubscriptionValid( subscription ) ) {
 
@@ -331,7 +327,7 @@ class SubscriptionService
 				// User2 + Invert
 				var user2 : db.User = null;
 				var invert = false;
-				if ( order.userId2 != null ) {
+				if ( order.userId2 != null && order.userId2 != 0 ) {
 
 					user2 = db.User.manager.get( order.userId2, false );
 					if ( user2 == null ) throw new Error( t._( "Unable to find user #::num::", { num : order.userId2 } ) );
