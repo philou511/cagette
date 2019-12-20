@@ -69,7 +69,7 @@ class OrderService
 		o.user = user;
 		if (user2 != null) {
 			o.user2 = user2;
-			if (invert != null) o.flags.set(InvertSharedOrder);
+			if ( invert ) o.flags.set(InvertSharedOrder);
 		}
 		if (paid != null) o.paid = paid;
 		if (distribId != null) o.distribution = db.Distribution.manager.get(distribId);
@@ -688,6 +688,11 @@ class OrderService
 		if ( multiDistrib == null && catalog == null ) {
 
 			throw new Error('You should provide at least a catalog or a multiDistrib');
+		}
+
+		if ( ordersData.length == 0 ) {
+
+			throw new Error('Il n\'y a pas de commandes définies.');
 		}
 
 		var t = sugoi.i18n.Locale.texts;
