@@ -1,654 +1,695 @@
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: francois@alilo.fr\n"
+"PO-Revision-Date: 2019-12-28 11:21+0000\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"cagette/translations/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.10\n"
 
 #: ../src/payment/Cash.hx:276
 msgid "Cash"
-msgstr ""
+msgstr "Dinheiro"
 
 #: ../src/payment/MoneyPot.hx:291
 msgid "Money pot"
-msgstr ""
+msgstr "Pote de dinheiro"
 
 #: ../src/payment/OnTheSpotPayment.hx:377
 msgid "On the spot payment"
-msgstr ""
+msgstr "Pagamento no local"
 
 #: ../src/payment/Transfer.hx:312 ../src/controller/Transaction.hx:8761
 msgid "Bank transfer"
-msgstr ""
+msgstr "Transferência bancária"
 
 #: ../src/payment/Check.hx:278
 msgid "Check"
-msgstr ""
+msgstr "Cheque"
 
 #: ../src/controller/Transaction.hx:393 ../src/controller/Transaction.hx:2496 ../src/controller/Transaction.hx:4152 ../src/controller/Transaction.hx:4443
 msgid "Action forbidden"
-msgstr ""
+msgstr "Ação proibida"
 
 #. label or name for a payment
 #: ../src/controller/Transaction.hx:636 ../src/controller/Transaction.hx:2695 ../src/controller/Validate.hx:2718 ../src/controller/Validate.hx:4429
 msgid "Label"
-msgstr ""
+msgstr "Etiqueta"
 
 #: ../src/controller/Transaction.hx:753 ../src/controller/Transaction.hx:2815 ../src/controller/Validate.hx:2817 ../src/controller/Validate.hx:4538
 msgid "Amount"
-msgstr ""
+msgstr "Quantidade"
 
 #: ../src/controller/Transaction.hx:840 ../src/controller/Transaction.hx:2907 ../src/controller/Validate.hx:4625 ../src/db/Operation.hx:14032 ../src/db/MultiDistrib.hx:13704 ../src/db/Distribution.hx:9099 ../lang/master/tpl/member/lastMessages.mtt:50 ../lang/master/tpl/contractadmin/selectDistrib.mtt:191
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: ../src/controller/Transaction.hx:1150 ../src/controller/Validate.hx:3214 ../src/controller/Validate.hx:4935
 msgid "Payment type"
-msgstr ""
+msgstr "Tipo de pagamento"
 
 #: ../src/controller/Transaction.hx:1486 ../src/controller/Transaction.hx:3416
 msgid "As a payment for :"
-msgstr ""
+msgstr "Como um pagamento para:"
 
 #: ../src/controller/Transaction.hx:2161
 msgid "Payment recorded"
-msgstr ""
+msgstr "Pagamento gravado"
 
 #: ../src/controller/Transaction.hx:2214
 msgid "Record a payment for ::user::"
-msgstr ""
+msgstr "Gravar um pagamento para ::user::"
 
 #: ../src/controller/Transaction.hx:3000
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmado"
 
 #: ../src/controller/Transaction.hx:3895
 msgid "Operation updated"
-msgstr ""
+msgstr "Operação atualizado"
 
 #: ../src/controller/Transaction.hx:4557 ../src/controller/Validate.hx:1216
 msgid "Operation deleted"
-msgstr ""
+msgstr "Operação excluída"
 
 #: ../src/controller/Transaction.hx:4882 ../src/controller/Transaction.hx:5503 ../src/controller/Transaction.hx:6440 ../src/controller/Transaction.hx:7878
 msgid "Your cart is empty"
-msgstr ""
+msgstr "Seu carrinho está vazio"
 
 #: ../src/controller/Transaction.hx:5733 ../lang/master/tpl/transaction/pay.mtt:1181
 msgid "You do not have sufficient funds to pay this order with your money pot."
 msgstr ""
+"Você não tem fundos suficientes para pagar este pedido com seu pote de "
+"dinheiro."
 
 #: ../src/controller/Transaction.hx:7077
 msgid "Payment on the spot for the order of ::date::"
-msgstr ""
+msgstr "Pagamento no local para o pedido de ::date::"
 
 #: ../src/controller/Transaction.hx:7467
 msgid "Payment on the spot"
-msgstr ""
+msgstr "Pagamento no local"
 
 #: ../src/controller/Transaction.hx:8429
 msgid "Transfer for the order of ::date::"
-msgstr ""
+msgstr "Transferência para o pedido de ::date::"
 
 #: ../src/controller/Vendor.hx:192 ../src/controller/Validate.hx:2192 ../src/controller/Validate.hx:4226 ../src/controller/Product.hx:466 ../src/controller/Product.hx:2851 ../src/controller/Product.hx:3497 ../src/controller/Product.hx:5609 ../src/controller/Product.hx:6339 ../src/controller/Product.hx:7074 ../src/controller/Product.hx:7770 ../src/controller/Distribution.hx:22487
 msgid "Forbidden access"
-msgstr ""
+msgstr "Acesso negado"
 
 #: ../src/controller/Vendor.hx:885 ../src/controller/Vendor.hx:1910
 msgid ""
 "You can't edit this vendor profile because he's active in more than one group. "
 "If you want him to update his profile, please ask him to do so."
 msgstr ""
+"Você não pode editar esse perfil de produtor porque ele está ativo em mais "
+"de um grupo. Se você quiser que ele atualize seu perfil, por favor, peça-lhe "
+"para fazê-lo."
 
 #: ../src/controller/Vendor.hx:1533 ../src/controller/Place.hx:746 ../src/controller/Place.hx:1468 ../src/db/Vendor.hx:3937 ../src/db/Place.hx:1416
 msgid "Country"
-msgstr ""
+msgstr "País"
 
 #: ../src/controller/Vendor.hx:1696
 msgid "This supplier has been updated"
-msgstr ""
+msgstr "Este fornecedor foi atualizado"
 
 #: ../src/controller/Vendor.hx:3190 ../src/controller/AmapAdmin.hx:2442
 msgid "Image updated"
-msgstr ""
+msgstr "Imagem atualizada"
 
 #: ../src/controller/Contract.hx:1292
 msgid "You are not a member of this group"
-msgstr ""
+msgstr "Você não é um membro deste grupo"
 
 #: ../src/controller/Contract.hx:4313 ../src/controller/Contract.hx:6285 ../src/controller/Contract.hx:8150 ../src/controller/Contract.hx:8369 ../src/controller/Member.hx:20261 ../src/controller/Product.hx:1780 ../src/controller/Distribution.hx:3124 ../src/controller/Distribution.hx:6763 ../src/controller/Distribution.hx:17388 ../src/controller/Distribution.hx:20472
 msgid "Forbidden action"
-msgstr ""
+msgstr "Ação proibida"
 
 #: ../src/controller/Contract.hx:4355
 msgid "Edit contract ::contractName::"
-msgstr ""
+msgstr "Editar contrato ::contractName::"
 
 #: ../src/controller/Contract.hx:4878
 msgid "If you would like to add fees to the order, define a rate (%) and a label."
 msgstr ""
+"Se você gostaria de adicionar taxas ao pedido, defina uma taxa (%) e um "
+"etiqueta."
 
 #: ../src/controller/Contract.hx:5089
 msgid ""
 "Warning about management of stock. Please fill the field \"stock\" for all "
 "your products"
 msgstr ""
+"Aviso sobre a gestão de estoque. Por favor, preencha o campo \"estoque\" "
+"para todos os seus produtos"
 
 #: ../src/controller/Contract.hx:5417
 msgid "Managing stock is not available for CSA contracts"
-msgstr ""
+msgstr "A gestão de estoque não está disponível para contratos CSA"
 
 #: ../src/controller/Contract.hx:6083
 msgid "Contract updated"
-msgstr ""
+msgstr "Contrato atualizado"
 
 #: ../src/controller/Contract.hx:6329
 msgid "Define a vendor"
-msgstr ""
+msgstr "Definir um produtor"
 
 #: ../src/controller/Contract.hx:6367
 msgid ""
 "Before creating a record for the vendor you want to work with, let's search "
 "our database to check if he's not already referenced."
 msgstr ""
+"Antes de criar um registro para o produtor com o qual você deseja trabalhar, "
+"vamos pesquisar em nosso banco de dados para verificar se ele não já está "
+"referenciado."
 
 #: ../src/controller/Contract.hx:6608
 msgid "Vendor or farm name"
-msgstr ""
+msgstr "Nome da fazenda ou produtor"
 
 #: ../src/controller/Contract.hx:6707
 msgid "Vendor email"
-msgstr ""
+msgstr "E-mail do produtor"
 
 #: ../src/controller/Contract.hx:6801 ../lang/master/tpl/member/import.mtt:932 ../lang/master/tpl/member/import.mtt:1638
 msgid "zip code"
-msgstr ""
+msgstr "Código postal"
 
 #: ../src/controller/Contract.hx:7629
 msgid "This supplier has been saved"
-msgstr ""
+msgstr "Este fornecedor foi salvo"
 
 #: ../src/controller/Contract.hx:7780 ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:1267 ../lang/master/tpl/contractadmin/defineVendor.mtt:1259
 msgid "Key-in a new vendor"
-msgstr ""
+msgstr "Inserir um novo produtor"
 
 #: ../src/controller/Contract.hx:7824
 msgid ""
 "We will send him/her an email to explain that your group is going to organize "
 "orders for him very soon"
 msgstr ""
+"Enviaremos um e-mail para explicar que seu grupo vai organizar pedidos para "
+"ele muito em breve"
 
 #: ../src/controller/Contract.hx:8454
 msgid "Create a contract with fixed orders"
-msgstr ""
+msgstr "Criar um contrato com pedidos fixos"
 
 #: ../src/controller/Contract.hx:8502
 msgid "Create a contract with variable orders"
-msgstr ""
+msgstr "Criar um contrato com pedidos variáveis"
 
 #: ../src/controller/Contract.hx:9015
 msgid "Vendor"
-msgstr ""
+msgstr "Produtor"
 
 #: ../src/controller/Contract.hx:9594
 msgid "New contract created"
-msgstr ""
+msgstr "Novo contrato criado"
 
 #: ../src/controller/Contract.hx:9845
 msgid "You don't have the authorization to remove a contract"
-msgstr ""
+msgstr "Você não tem a autorização para remover um contrato"
 
 #: ../src/controller/Contract.hx:10429
 msgid "You cannot delete this contract because some orders are linked to it."
 msgstr ""
+"você não pode excluir este contrato porque alguns pedidos estão vinculados a "
+"ele."
 
 #: ../src/controller/Contract.hx:10825
 msgid "Contract deleted"
-msgstr ""
+msgstr "Contrato excluído"
 
 #: ../src/controller/Contract.hx:10890 ../src/controller/Product.hx:3332
 msgid "Token error"
-msgstr ""
+msgstr "Erro no token"
 
 #: ../src/controller/Contract.hx:11456 ../src/controller/Contract.hx:14627
 msgid "This contract is not opened for orders"
-msgstr ""
+msgstr "Este contrato não está aberto para pedidos"
 
 #: ../src/controller/Contract.hx:13686 ../src/controller/Contract.hx:16692
 msgid "Could not find the product ::produ:: and delivery ::deliv::"
-msgstr ""
+msgstr "Não foi possível localizar o produto ::produ:: e entrega ::deliv::"
 
 #: ../src/controller/Contract.hx:14163 ../src/controller/Contract.hx:19927
 msgid "Your order has been updated"
-msgstr ""
+msgstr "Seu pedido foi atualizado"
 
 #: ../src/controller/Contract.hx:17337
 msgid "Your CSA order has been saved"
-msgstr ""
+msgstr "Seu pedido CSA foi salvo"
 
 #: ../src/controller/Contract.hx:17420
 msgid "In order to save your order, please choose a means of payment."
-msgstr ""
+msgstr "Para salvar seu pedido, escolha um meio de pagamento."
 
 #: ../src/controller/Contract.hx:17962
 msgid "This delivery has already taken place, you can no longer modify the order."
-msgstr ""
+msgstr "Esta entrega já ocorreu, você não pode mais modificar o pedido."
 
 #: ../src/controller/Contract.hx:18089
 msgid ""
 "<br/>As the manager of the contract you can modify the order from this page: "
 "<a href='/contractAdmin'>Management of contracts</a>"
 msgstr ""
+"<br/>Como gerente do contrato, você pode modificar o pedido por esta página: "
+"<a href='/contractAdmin'>Gerência de contratos</a>"
 
 #: ../src/controller/Contract.hx:19376
 msgid "Error, could not find the order"
-msgstr ""
+msgstr "Erro, não foi possível encontrar o pedido"
 
 #: ../src/controller/AmapAdmin.hx:361 ../src/controller/AmapAdmin.hx:1432 ../src/controller/ContractAdmin.hx:2082
 msgid "Access forbidden"
-msgstr ""
+msgstr "Acesso negado"
 
 #: ../src/controller/AmapAdmin.hx:609 ../src/controller/AmapAdmin.hx:10026
 msgid "Means of payment"
-msgstr ""
+msgstr "Meios de pagamento"
 
 #: ../src/controller/AmapAdmin.hx:1677
 msgid "The sent image was too big. The maximum allowed size is 12MB"
-msgstr ""
+msgstr "A imagem enviada é grande demais. O tamanho permitido é 12 MB"
 
 #: ../src/controller/AmapAdmin.hx:3540 ../lang/master/tpl/distribution/volunteersParticipation.mtt:1930
 msgid "Member"
-msgstr ""
+msgstr "Membro"
 
 #: ../src/controller/AmapAdmin.hx:3797
 msgid "Group administrator"
-msgstr ""
+msgstr "Administrador de grupo"
 
 #: ../src/controller/AmapAdmin.hx:3866
 msgid "Membership management"
-msgstr ""
+msgstr "Gerenciamento de membros"
 
 #: ../src/controller/AmapAdmin.hx:3936
 msgid "Messages"
-msgstr ""
+msgstr "Mensagens"
 
 #: ../src/controller/AmapAdmin.hx:4344 ../src/db/User.hx:17800 ../lang/master/tpl/member/view.mtt:6040 ../lang/master/tpl/amapadmin/rights.mtt:230
 msgid "Rights"
-msgstr ""
+msgstr "Direitos"
 
 #: ../src/controller/AmapAdmin.hx:4575 ../src/controller/amapadmin/Volunteers.hx:3406 ../src/controller/amapadmin/Volunteers.hx:4497 ../lang/master/tpl/amapadmin/volunteers/default.mtt:503
 msgid "All contracts"
-msgstr ""
+msgstr "Todos contratos"
 
 #: ../src/controller/AmapAdmin.hx:5076
 msgid "Contracts management"
-msgstr ""
+msgstr "Gerenciamento de contratos"
 
 #: ../src/controller/AmapAdmin.hx:6076
 msgid "You cannot strip yourself of admin rights."
-msgstr ""
+msgstr "Você não pode se retirar dos direitos de administração."
 
 #: ../src/controller/AmapAdmin.hx:6273
 msgid "Rights removed"
-msgstr ""
+msgstr "Direitos removidos"
 
 #: ../src/controller/AmapAdmin.hx:6342
 msgid "Rights created or modified"
-msgstr ""
+msgstr "Direitos criados ou modificados"
 
 #: ../src/controller/AmapAdmin.hx:6429
 msgid "Give rights to a user"
-msgstr ""
+msgstr "Dar direitos a um usuário"
 
 #: ../src/controller/AmapAdmin.hx:6485
 msgid "Modify the rights of ::user::"
-msgstr ""
+msgstr "Modificar os direitos de ::user::"
 
 #: ../src/controller/AmapAdmin.hx:6929 ../src/controller/AmapAdmin.hx:7150 ../src/db/Place.hx:1254 ../lang/master/tpl/product/import.mtt:1866 ../lang/master/tpl/distribution/listByDateShort.mtt:415 ../lang/master/tpl/distribution/listByDate.mtt:424 ../lang/master/tpl/member/waiting.mtt:153 ../lang/master/tpl/amapadmin/rights.mtt:203 ../lang/master/tpl/contractadmin/view.mtt:818 ../lang/master/tpl/contractadmin/products.mtt:1740
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: ../src/controller/AmapAdmin.hx:6996 ../src/controller/AmapAdmin.hx:7220
 msgid "Rate"
-msgstr ""
+msgstr "Taxa"
 
 #: ../src/controller/AmapAdmin.hx:7543
 msgid "Rate updated"
-msgstr ""
+msgstr "Taxa atualizada"
 
 #: ../src/controller/AmapAdmin.hx:7588
 msgid "Edit VAT rates"
-msgstr ""
+msgstr "Editar taxa de IVA"
 
 #: ../src/controller/AmapAdmin.hx:7955
 msgid "Currency used by your group."
-msgstr ""
+msgstr "Moeda usada para seu grupo."
 
 #: ../src/controller/AmapAdmin.hx:8097
 msgid "Currency symbol"
-msgstr ""
+msgstr "Símbolo da moeda"
 
 #: ../src/controller/AmapAdmin.hx:8219
 msgid "3 digit ISO code"
-msgstr ""
+msgstr "Código ISO de 3 dígitos"
 
 #: ../src/controller/AmapAdmin.hx:8509
 msgid "Currency updated"
-msgstr ""
+msgstr "Moeda atualizada"
 
 #: ../src/controller/AmapAdmin.hx:8948
 msgid "Authorized payment types"
-msgstr ""
+msgstr "Tipos de pagamentos autorizados"
 
 #: ../src/controller/AmapAdmin.hx:9217
 msgid "Make the check payable to"
-msgstr ""
+msgstr "Fazer um cheque pagável a"
 
 #: ../src/controller/AmapAdmin.hx:9347
 msgid "IBAN of your bank account for transfers"
-msgstr ""
+msgstr "IBAN da sua conta de banco para transferências"
 
 #: ../src/controller/AmapAdmin.hx:9509
 msgid "Allow money pots with negative balance"
-msgstr ""
+msgstr "Permitir potes de dinheiro com balança negativa"
 
 #: ../src/controller/AmapAdmin.hx:9967
 msgid "Payment options updated"
-msgstr ""
+msgstr "Opções de pagamento atualizadas"
 
 #: ../src/controller/admin/Admin.hx:2123
 msgid "Configuration updated"
-msgstr ""
+msgstr "Configuração atualizada"
 
 #: ../src/controller/admin/Admin.hx:2181
 msgid "Email service configuration"
-msgstr ""
+msgstr "Configuração do serviço de e-mail"
 
 #: ../src/controller/Messages.hx:795
 msgid "Sender name"
-msgstr ""
+msgstr "Nome do remetente"
 
 #: ../src/controller/Messages.hx:882
 msgid "Sender E-Mail"
-msgstr ""
+msgstr "E-mail do remetente"
 
 #: ../src/controller/Messages.hx:966
 msgid "Recipients"
-msgstr ""
+msgstr "Destinatários"
 
 #: ../src/controller/Messages.hx:1077 ../lang/master/tpl/messages/message.mtt:110
 msgid "Subject:"
-msgstr ""
+msgstr "Assunto:"
 
 #: ../src/controller/Messages.hx:1174
 msgid "Message:"
-msgstr ""
+msgstr "Mensagem:"
 
 #: ../src/controller/Messages.hx:1603
 msgid "The message body is empty !"
-msgstr ""
+msgstr "O corpo da mensagem está vazio !"
 
 #: ../src/controller/Messages.hx:2758
 msgid "The message has been sent"
-msgstr ""
+msgstr "A mensagem foi enviada"
 
 #: ../src/controller/Messages.hx:3289 ../src/controller/Messages.hx:3402
 msgid "Non authorized access"
-msgstr ""
+msgstr "Acesso não autorizado"
 
 #: ../src/controller/Messages.hx:3897
 msgid "Everyone"
-msgstr ""
+msgstr "Todo mundo"
 
 #: ../src/controller/Messages.hx:3937
 msgid "The board: persons in charge + contracts + memberships"
-msgstr ""
+msgstr "O conselho: pessoas encarregadas + contratos + membros"
 
 #: ../src/controller/Messages.hx:4041
 msgid "TEST: me + spouse"
-msgstr ""
+msgstr "TESTE: eu + cônjuge"
 
 #: ../src/controller/Messages.hx:4103
 msgid "Members without contract/order"
-msgstr ""
+msgstr "Membros sem contrato/pedido"
 
 #: ../src/controller/Messages.hx:4211 ../src/controller/Member.hx:2097
 msgid "Memberships to be renewed"
-msgstr ""
+msgstr "Membros a serem renovados"
 
 #: ../src/controller/Messages.hx:4366
 msgid "Subscribers"
-msgstr ""
+msgstr "Assinantes"
 
 #: ../src/controller/User.hx:884
 msgid "You are not connected"
-msgstr ""
+msgstr "Você não está conectado"
 
 #: ../src/controller/User.hx:2322
 msgid "Please key-in your E-Mail address"
-msgstr ""
+msgstr "Por favor, insira seu endereço de e-mail"
 
 #: ../src/controller/User.hx:2480 ../src/controller/User.hx:5689
 msgid "Your new password"
-msgstr ""
+msgstr "Sua nova senha"
 
 #: ../src/controller/User.hx:2616 ../src/controller/User.hx:5755
 msgid "Again your new password"
-msgstr ""
+msgstr "Novamente, sua nova senha"
 
 #: ../src/controller/User.hx:3208
 msgid "This E-mail is not linked to a known account"
-msgstr ""
+msgstr "Este e-mail não está vinculado a uma conta conhecida"
 
 #: ../src/controller/User.hx:3497 ../src/controller/User.hx:4481 ../src/controller/Member.hx:11082 ../src/db/User.hx:16172 ../lang/master/tpl/design.mtt:5480 ../lang/master/tpl/mail/design.mtt:279
 msgid "Cagette.net"
-msgstr ""
+msgstr "Cagette.net"
 
 #: ../src/controller/User.hx:3609
 msgid "Password change"
-msgstr ""
+msgstr "Alteração de senha"
 
 #: ../src/controller/User.hx:4015
 msgid "Invalid request"
-msgstr ""
+msgstr "Requisição inválida"
 
 #: ../src/controller/User.hx:4671
 msgid "New password confirmed"
-msgstr ""
+msgstr "Nova senha confirmada"
 
 #: ../src/controller/User.hx:5037 ../src/controller/User.hx:6206
 msgid "You must key-in two times the same password"
-msgstr ""
+msgstr "Você deve inserir duas vezes a mesma senha"
 
 #: ../src/controller/User.hx:5575
 msgid "You already have a password"
-msgstr ""
+msgstr "Você já tem uma senha"
 
 #: ../src/controller/User.hx:6100
 msgid "Congratulations, your account is now protected by a password."
-msgstr ""
+msgstr "Parabéns, sua conta está agora protegido por uma senha."
 
 #: ../src/controller/User.hx:6303
 msgid "Create a password for your account"
-msgstr ""
+msgstr "Crie uma senha para sua conta"
 
 #: ../src/controller/User.hx:6586
 msgid "Your invitation is invalid or expired ($k)"
-msgstr ""
+msgstr "Seu convite é inválido ou expirou ($k)"
 
 #: ../src/controller/User.hx:6903
 msgid "Congratulations ::userName::, your account is validated!"
-msgstr ""
+msgstr "Parabéns, ::userName::! Sua conta foi validada!"
 
 #: ../src/controller/User.hx:7602
 msgid ""
 "A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> "
 "<a href='::url::'>See contact details</a>"
 msgstr ""
+"Um novo membro se juntou ao grupo sem ter um pedido: <br/"
+"><strong>::newMember::</strong><br/> <a href='::url::'>Ver detalhes do "
+"contato</a>"
 
 #: ../src/controller/User.hx:7846 ../src/controller/Member.hx:22757 ../lang/master/tpl/member/default.mtt:2537
 msgid "New member"
-msgstr ""
+msgstr "Novo membro"
 
 #: ../src/controller/User.hx:7978
 msgid ""
 "You're now a member of \"::group::\" ! You'll receive an email as soon as "
 "next order will open"
 msgstr ""
+"Você é agora um membro de \"::group::\" ! Você vai receber um e-mail assim "
+"que o próximo pedido for feito"
 
 #: ../src/controller/Controller.hx:535
 msgid "You should be logged in to perform this action."
-msgstr ""
+msgstr "Você tem que estar autenticado para realizar esta ação."
 
 #: ../src/controller/Amap.hx:515
 msgid "You don't have access to this section"
-msgstr ""
+msgstr "Você não tem acesso a esta seção"
 
 #: ../src/controller/Amap.hx:802
 msgid "Shop Mode"
-msgstr ""
+msgstr "Modo loja"
 
 #: ../src/controller/Amap.hx:844
 msgid "CSA Mode"
-msgstr ""
+msgstr "Modo CSA"
 
 #: ../src/controller/Amap.hx:1019
 msgid "Ordering Mode"
-msgstr ""
+msgstr "Modo de pedido"
 
 #: ../src/controller/Amap.hx:1912
 msgid "The group has been updated."
-msgstr ""
+msgstr "O grupo foi atualizado."
 
 #: ../src/controller/Member.hx:1391
 msgid "Without contracts"
-msgstr ""
+msgstr "Sem contratos"
 
 #: ../src/controller/Member.hx:1744
 msgid "With orders"
-msgstr ""
+msgstr "Com pedidos"
 
 #: ../src/controller/Member.hx:2452
 msgid "Never connected"
-msgstr ""
+msgstr "Nunca conectado"
 
 #: ../src/controller/Member.hx:2633
 msgid "Unknown selection"
-msgstr ""
+msgstr "Seleção desconhecida"
 
 #: ../src/controller/Member.hx:3022 ../lang/master/tpl/member/default.mtt:685 ../lang/master/tpl/design.mtt:3342
 msgid "Members"
-msgstr ""
+msgstr "Membros"
 
 #: ../src/controller/Member.hx:3906
 msgid "is now on waiting list."
-msgstr ""
+msgstr "está agora na lista de espera."
 
 #: ../src/controller/Member.hx:4231
 msgid "Membership request accepted"
-msgstr ""
+msgstr "Pedido de adesão aceito"
 
 #: ../src/controller/Member.hx:4419
 msgid "Membership request refused"
-msgstr ""
+msgstr "Pedido de adesão recusado"
 
 #: ../src/controller/Member.hx:4753
 msgid "Invitation sent."
-msgstr ""
+msgstr "Convite enviado."
 
 #: ../src/controller/Member.hx:5198
 msgid "An error occurred while sending emails, please retry"
-msgstr ""
+msgstr "Ocorreu um erro ao enviar e-mails. Por favor, tente novamente"
 
 #: ../src/controller/Member.hx:5298
 msgid "Congratulations, you just sent <b>::userLength::</b> invitations"
-msgstr ""
+msgstr "Parabéns, você acabou de enviar <b>::userLength::</b> convites"
 
 #: ../src/controller/Member.hx:5604
 msgid "This person does not belong to your group"
-msgstr ""
+msgstr "Esta pessoa não pertence ao seu grupo"
 
 #: ../src/controller/Member.hx:8463
 msgid "You cannot modify the account of an administrator"
-msgstr ""
+msgstr "Você não pode modificar a conta de um administrador"
 
 #: ../src/controller/Member.hx:8887
 msgid ""
 "For security reasons, you cannot modify the e-mail of this person because "
 "this person is a member of more than 1 group."
 msgstr ""
+"Por razões de segurança, você não pode modificar o e-mail dessa pessoa "
+"porque essa pessoa é membro de mais de 1 grupo."
 
 #: ../src/controller/Member.hx:9145
 msgid ""
 "This person did not define yet a password. You are exceptionaly authorized "
 "to do it. Please don't forget to tell this person."
 msgstr ""
+"Essa pessoa ainda não definiu uma senha. Você está excepcionalmente "
+"autorizado a fazê-lo. Por favor, não se esqueça de contar a essa pessoa."
 
 #: ../src/controller/Member.hx:9389 ../src/db/User.hx:17901
 msgid "Password"
-msgstr ""
+msgstr "Senha"
 
 #: ../src/controller/Member.hx:9651 ../src/controller/Member.hx:22012
 msgid "Phone number is required in this group."
-msgstr ""
+msgstr "O número de telefone é necessário neste grupo."
 
 #: ../src/controller/Member.hx:10215
 msgid ""
 "This e-mail was used by another user account. As this user account was not "
 "used, it has been merged into the current user account."
 msgstr ""
+"Este e-mail foi usado por outra conta de usuário. Como essa conta de usuário "
+"não foi usada, ela foi mesclada à conta de usuário atual."
 
 #: ../src/controller/Member.hx:10389
 msgid "Warning, this e-mail or this name already exists for another account : "
-msgstr ""
+msgstr "Aviso, este e-mail ou este nome já existe para outra conta: "
 
 #: ../src/controller/Member.hx:10612
 msgid "These accounts can't be merged because the second account has orders"
-msgstr ""
+msgstr "Essas contas não podem ser mescladas porque a segunda conta tem pedidos"
 
 #: ../src/controller/Member.hx:11156
 msgid "Change your e-mail in your account Cagette.net"
-msgstr ""
+msgstr "Altere seu e-mail na sua conta de Cagette.net"
 
 #: ../src/controller/Member.hx:11300 ../src/controller/Member.hx:11828
 msgid ""
 " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
 "now:"
 msgstr ""
+" apenas modificou seu e-mail em sua conta Cagette.net.<br/>Seu e-mail é "
+"agora:"
 
 #: ../src/controller/Member.hx:11686
 msgid "Change the e-mail of your account Cagette.net"
-msgstr ""
+msgstr "Alterar o e-mail da sua conta Cagette.net"
 
 #: ../src/controller/Member.hx:12026
 msgid "This member has beed updated"
-msgstr ""
+msgstr "Este membro foi atualizado"
 
 #: ../src/controller/Member.hx:12283
 msgid "You cannot do that."
-msgstr ""
+msgstr "Você não pode fazer isso."
 
 #: ../src/controller/Member.hx:12381
 msgid "You cannot delete yourself."
-msgstr ""
+msgstr "Você não pode excluir a si próprio."
 
 #: ../src/controller/Member.hx:12567
 msgid ""
 "Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Remove "
 "anyway</a>"
 msgstr ""
+"Aviso, esta conta possui pedidos. <a class='btn btn-default btn-xs' href='/"
+"member/delete/::userid::?token=::argstoken::&confirm=1'>Remover mesmo "
+"assim</a>"
 
 #: ../src/controller/Member.hx:12891
 msgid "::user:: has been removed from your group"
-msgstr ""
+msgstr "::user:: foi removido do seu grupo"
 
 #: ../src/controller/Member.hx:13002
 msgid "This person does not belong to \"::amapname::\""
-msgstr ""
+msgstr "Esta pessoa não pertence a \"::amapname::\""
 
 #: ../src/controller/Member.hx:13308
 msgid "Merge an account with another one"
-msgstr ""
+msgstr "Mesclar uma conta a outra"
 
 #: ../src/controller/Member.hx:13364
 msgid ""
@@ -657,780 +698,838 @@ msgid ""
 "1, and account 2 will be deleted. Warning, it is not possible to cancel this "
 "action."
 msgstr ""
+"Essa ação permite a você mesclar duas contas (quando você há duplicatas no "
+"banco de dados, por exemplo).<br/>Os contratos da conta 2 serão transferidos "
+"para a conta 1 e a conta 2 será excluída. Aviso, não é possível cancelar "
+"esta ação."
 
 #: ../src/controller/Member.hx:13847
 msgid "Account 1"
-msgstr ""
+msgstr "Conta 1"
 
 #: ../src/controller/Member.hx:13963
 msgid "Account 2"
-msgstr ""
+msgstr "Conta 2"
 
 #: ../src/controller/Member.hx:15120
 msgid "Both accounts have been merged"
-msgstr ""
+msgstr "As duas contas foram mescladas"
 
 #: ../src/controller/Member.hx:15515
 msgid "Firstname"
-msgstr ""
+msgstr "Nome"
 
 #: ../src/controller/Member.hx:15533
 msgid "Lastname"
-msgstr ""
+msgstr "Sobrenome"
 
 #: ../src/controller/Member.hx:15550 ../lang/master/tpl/member/view.mtt:613 ../lang/master/tpl/member/view.mtt:737
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 #: ../src/controller/Member.hx:15565
 msgid "Mobile phone"
-msgstr ""
+msgstr "Telefone celular"
 
 #: ../src/controller/Member.hx:15586
 msgid "Partner's firstname"
-msgstr ""
+msgstr "Nome do(a) cônjuge"
 
 #: ../src/controller/Member.hx:15614
 msgid "Partner's lastname"
-msgstr ""
+msgstr "Sobrenome do(a) cônjuge"
 
 #: ../src/controller/Member.hx:15641
 msgid "Partner's e-mail"
-msgstr ""
+msgstr "E-mail do(a) cônjuge"
 
 #: ../src/controller/Member.hx:15666
 msgid "Partner's Mobile phone"
-msgstr ""
+msgstr "Telefone celular do(a) cônjuge"
 
 #: ../src/controller/Member.hx:15697 ../src/db/Vendor.hx:4488 ../src/db/User.hx:17536 ../src/db/Place.hx:1284 ../lang/master/tpl/member/import.mtt:866 ../lang/master/tpl/member/import.mtt:1574
 msgid "Address 1"
-msgstr ""
+msgstr "Endereço 1"
 
 #: ../src/controller/Member.hx:15715 ../src/db/Vendor.hx:4526 ../src/db/User.hx:17571 ../src/db/Place.hx:1319 ../lang/master/tpl/member/import.mtt:899 ../lang/master/tpl/member/import.mtt:1606
 msgid "Address 2"
-msgstr ""
+msgstr "Endereço 2"
 
 #: ../src/controller/Member.hx:15733
 msgid "Post code"
-msgstr ""
+msgstr "Código postal"
 
 #: ../src/controller/Member.hx:15751 ../src/controller/Group.hx:3886 ../src/db/Vendor.hx:4597 ../src/db/User.hx:17636 ../src/db/Place.hx:1384 ../lang/master/tpl/member/import.mtt:964 ../lang/master/tpl/member/import.mtt:1669
 msgid "City"
-msgstr ""
+msgstr "Cidade"
 
 #: ../src/controller/Member.hx:16087
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
 msgstr ""
+"O e-mail <b>::email::</b> é inválido. Por favor, atualize seu arquivo CSV"
 
 #: ../src/controller/Member.hx:16355
 msgid "You must fill the name and the firstname of the person. This line is incomplete: "
 msgstr ""
+"Você ainda deve preencher o nome e o sobrenome da pessoa. Esta linha está "
+"incompleta: "
 
 #: ../src/controller/Member.hx:16521
 msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
 msgstr ""
+"Cada pessoa deve ter um e-mail para poder se autenticar. ::user0:: ::user1:: "
+"não têm um. "
 
 #: ../src/controller/Member.hx:18375
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
-msgstr ""
+msgstr "O e-mail ::useremail:: é inválido. Por favor, modifique seu arquivo"
 
 #: ../src/controller/Member.hx:18703
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::userEmail::' "
 "is invalid, please check your file"
 msgstr ""
+"O e-mail do(a) cônjuge de ::userFirstName:: ::userLastName:: \"::userEmail::"
+"\" é inválido. Por favor, verifique o seu arquivo"
 
 #: ../src/controller/Member.hx:20418
 msgid "Send an E-mail to the person in charge of the group"
-msgstr ""
+msgstr "Envie um e-mail para a pessoa responsável pelo grupo"
 
 #: ../src/controller/Member.hx:21116
 msgid "This person is already member of this group"
-msgstr ""
+msgstr "Essa pessoa já é membro deste grupo"
 
 #: ../src/controller/Member.hx:21461
 msgid ""
 "This person already had an account on Cagette.net, and is now member of your "
 "group."
 msgstr ""
+"Essa pessoa já tinha uma conta sobre Cagette.net, e agora é membro do seu "
+"grupo."
 
 #: ../src/controller/Member.hx:21663
 msgid ""
 "Not possible to add this person because there are already some people in "
 "the database having the same firstname and name. Please contact the administrator."
 msgstr ""
+"Não é possível adicionar essa pessoa, porque já existem algumas pessoas no "
+"banco de dados com o mesmo nome e sobrenome. Por favor, entre em contato com "
+"o administrador."
 
 #: ../src/controller/Member.hx:22453
 msgid ""
 "::admin:: just keyed-in contact details of a new member: <br/><strong>::newMember::</strong><br/> "
 "<a href='::url::'>See contact details</a>"
 msgstr ""
+"::admin:: acabou de inserir detalhes de contato de um novo membro: <br/"
+"><strong>::newMember::</strong><br/> <a href='::url::'>Ver detalhes do "
+"contato</a>"
 
 #: ../src/controller/Member.hx:22911
 msgid "This person is now member of the group"
-msgstr ""
+msgstr "Esta pessoa é agora membro do grupo"
 
 #: ../src/controller/Membership.hx:383
 msgid "This person is not a member of your group"
-msgstr ""
+msgstr "Esta pessoa não é membro do seu grupo"
 
 #: ../src/controller/Membership.hx:835 ../lang/master/tpl/membership/default.mtt:196
 msgid "Period"
-msgstr ""
+msgstr "Período"
 
 #: ../src/controller/Membership.hx:958
 msgid "Date of payment of subscription"
-msgstr ""
+msgstr "Data de pagamento da assinatura"
 
 #: ../src/controller/Membership.hx:1174
 msgid "This subscription has been already keyed-in"
-msgstr ""
+msgstr "Esta assinatura já foi inserida"
 
 #: ../src/controller/Membership.hx:1442
 msgid "Subscription saved"
-msgstr ""
+msgstr "Assinatura salva"
 
 #: ../src/controller/Membership.hx:2044
 msgid "This subscription does not exist"
-msgstr ""
+msgstr "Esta assinatura não existe"
 
 #: ../src/controller/Membership.hx:2149
 msgid "Subscription deleted"
-msgstr ""
+msgstr "Assinatura excluída"
 
 #: ../src/controller/Place.hx:1009
 msgid ""
 "Oops, we're unable to find where is located this address. This place will "
 "not be shown on the map."
 msgstr ""
+"Opa, não conseguimos descobrir onde está localizado este endereço. Este "
+"lugar não será mostrado no mapa."
 
 #: ../src/controller/Place.hx:1188
 msgid "this place has been updated"
-msgstr ""
+msgstr "Este lugar foi atualizado"
 
 #: ../src/controller/Place.hx:1264
 msgid "Edit a place"
-msgstr ""
+msgstr "Editar um lugar"
 
 #: ../src/controller/Place.hx:1632
 msgid "The place has been registred"
-msgstr ""
+msgstr "O lugar foi registrado"
 
 #: ../src/controller/Place.hx:1710
 msgid "Register a new delivery place"
-msgstr ""
+msgstr "Registrar um novo lugar de entrega"
 
 #: ../src/controller/Place.hx:1974
 msgid ""
 "You can't delete this place because one or more distributions are linked "
 "to this place."
 msgstr ""
+"Você não pode excluir este lugar porque uma ou mais distribuições estão "
+"vinculadas a este lugar."
 
 #: ../src/controller/Place.hx:2134
 msgid "Place deleted"
-msgstr ""
+msgstr "Lugar excluído"
 
 #: ../src/controller/api/Order.hx:1007 ../src/controller/api/Order.hx:3132 ../src/controller/ContractAdmin.hx:14572 ../src/controller/ContractAdmin.hx:16144 ../src/controller/ContractAdmin.hx:16953 ../src/controller/ContractAdmin.hx:19815 ../src/controller/ContractAdmin.hx:20692 ../src/controller/ContractAdmin.hx:21564 ../src/controller/ContractAdmin.hx:23029 ../src/controller/ContractAdmin.hx:24574 ../src/controller/ContractAdmin.hx:24865 ../src/controller/ContractAdmin.hx:26638 ../src/controller/ContractAdmin.hx:27387
 msgid "You do not have the authorization to manage this contract"
-msgstr ""
+msgstr "Você não tem autorização para gerenciar este contrato"
 
 #: ../src/controller/api/Order.hx:1122 ../src/controller/api/Order.hx:3247 ../src/controller/ContractAdmin.hx:27561
 msgid "This delivery has been already validated"
-msgstr ""
+msgstr "Esta entrega já foi validada"
 
 #: ../src/controller/api/Order.hx:3014
 msgid "::user:: is not member of this group"
-msgstr ""
+msgstr "::user:: não é membro deste grupo"
 
 #: ../src/controller/api/Order.hx:4308 ../src/controller/ContractAdmin.hx:28848 ../src/controller/ContractAdmin.hx:29984
 msgid "Unable to find user #::num::"
-msgstr ""
+msgstr "Não foi possível encontrar o usuário nº ::num::"
 
 #: ../src/controller/api/Order.hx:4417 ../src/controller/ContractAdmin.hx:30092
 msgid "::user:: is not part of this group"
-msgstr ""
+msgstr "::user:: não faz parte deste grupo"
 
 #: ../src/controller/api/Order.hx:4508 ../src/controller/ContractAdmin.hx:30186
 msgid "Both selected accounts must be different ones"
-msgstr ""
+msgstr "Ambas as contas selecionadas devem ser diferentes"
 
 #: ../src/controller/amapadmin/Categories.hx:470
 msgid "The category list is not empty."
-msgstr ""
+msgstr "A lista de categorias não está vazia."
 
 #: ../src/controller/amapadmin/Categories.hx:886
 msgid "Product types"
-msgstr ""
+msgstr "Tipos de produtos"
 
 #: ../src/controller/amapadmin/Categories.hx:911
 msgid "Vegetables"
-msgstr ""
+msgstr "Vegetáveis"
 
 #: ../src/controller/amapadmin/Categories.hx:930
 msgid "Fruits"
-msgstr ""
+msgstr "Frutas"
 
 #: ../src/controller/amapadmin/Categories.hx:945
 msgid "Fish"
-msgstr ""
+msgstr "Peixes"
 
 #: ../src/controller/amapadmin/Categories.hx:958
 msgid "Red meat"
-msgstr ""
+msgstr "Carne vermelha"
 
 #: ../src/controller/amapadmin/Categories.hx:975
 msgid "Breads"
-msgstr ""
+msgstr "Pães"
 
 #: ../src/controller/amapadmin/Categories.hx:990
 msgid "Grocery"
-msgstr ""
+msgstr "Mercearia"
 
 #: ../src/controller/amapadmin/Categories.hx:1006
 msgid "Beverages"
-msgstr ""
+msgstr "Bebidas"
 
 #: ../src/controller/amapadmin/Categories.hx:1033
 msgid "Labels"
-msgstr ""
+msgstr "Etiquetas"
 
 #: ../src/controller/amapadmin/Categories.hx:1051
 msgid "Certified organic agriculture"
-msgstr ""
+msgstr "Agricultura orgânica certificada"
 
 #: ../src/controller/amapadmin/Categories.hx:1089
 msgid "Uncertified organic agriculture"
-msgstr ""
+msgstr "Agricultura orgânica não certificada"
 
 #: ../src/controller/amapadmin/Categories.hx:1129
 msgid "Non organic"
-msgstr ""
+msgstr "Não orgânico"
 
 #: ../src/controller/amapadmin/Categories.hx:1191
 msgid "Default categories have been created"
-msgstr ""
+msgstr "Foram criadas categorias padrão"
 
 #: ../src/controller/amapadmin/Categories.hx:1529 ../src/db/CategoryGroup.hx:1044
 msgid "Color"
-msgstr ""
+msgstr "Cor"
 
 #: ../src/controller/amapadmin/Categories.hx:1672
 msgid "Group modified"
-msgstr ""
+msgstr "Grupo modificado"
 
 #: ../src/controller/amapadmin/Categories.hx:1722
 msgid "Modify the group "
-msgstr ""
+msgstr "Modificar o grupo "
 
 #: ../src/controller/amapadmin/Categories.hx:2200
 msgid "Group added"
-msgstr ""
+msgstr "Grupo adicionado"
 
 #: ../src/controller/amapadmin/Categories.hx:2247
 msgid "Create a group of categories"
-msgstr ""
+msgstr "Criar um grupo de categorias"
 
 #: ../src/controller/amapadmin/Categories.hx:2615
 msgid "Category added"
-msgstr ""
+msgstr "Categoria adicionada"
 
 #: ../src/controller/amapadmin/Categories.hx:2665
 msgid "Create a category"
-msgstr ""
+msgstr "Criar uma categoria"
 
 #: ../src/controller/amapadmin/Categories.hx:3013
 msgid "Modify the category "
-msgstr ""
+msgstr "Modificar a categoria "
 
 #: ../src/controller/amapadmin/Categories.hx:3244
 msgid "All categories must be removed from this group before it can be deleted."
 msgstr ""
+"Todas as categorias devem ser removidas deste grupo antes que ele possa ser "
+"excluído."
 
 #: ../src/controller/amapadmin/Categories.hx:3395
 msgid "Group deleted"
-msgstr ""
+msgstr "Grupo excluído"
 
 #: ../src/controller/amapadmin/Categories.hx:3628
 msgid "Category deleted"
-msgstr ""
+msgstr "Categoria excluída"
 
 #: ../src/controller/amapadmin/Volunteers.hx:521
 msgid "Number of days before duty periods open to volunteers (between 7 and 180"
 msgstr ""
+"Número de dias antes dos períodos de serviço abertos aos voluntários (entre "
+"7 e 180)"
 
 #: ../src/controller/amapadmin/Volunteers.hx:699
 msgid "Number of days before duty period to send mail"
-msgstr ""
+msgstr "Número de dias antes do período de serviço para enviar e-mail"
 
 #: ../src/controller/amapadmin/Volunteers.hx:870
 msgid "Email body sent to volunteers"
-msgstr ""
+msgstr "Corpo do e-mail enviado para voluntários"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1330
 msgid "Number of days before duty period to send mail for vacant volunteer roles"
 msgstr ""
+"Número de dias antes do período de serviço para enviar e-mails para funções "
+"voluntárias vagas"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1533
 msgid "Alert email body"
-msgstr ""
+msgstr "Corpo do e-mail de alerta"
 
 #: ../src/controller/amapadmin/Volunteers.hx:2812
 msgid "Your changes have been successfully saved."
-msgstr ""
+msgstr "Suas alterações foram salvas com sucesso."
 
 #: ../src/controller/amapadmin/Volunteers.hx:3114 ../src/controller/amapadmin/Volunteers.hx:4112
 msgid "Volunteer role name"
-msgstr ""
+msgstr "Nome da função voluntária"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3359 ../src/controller/amapadmin/Volunteers.hx:4437 ../lang/master/tpl/distribution/listByDateOnePageContract.mtt:460 ../lang/master/tpl/member/view.mtt:3034 ../lang/master/tpl/member/view.mtt:4277 ../lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1549 ../lang/master/tpl/contractadmin/ordersByDate.mtt:2309 ../lang/master/tpl/validate/user.mtt:732
 msgid "Contract"
-msgstr ""
+msgstr "Contrato"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3783
 msgid "Volunteer Role has been successfully added"
-msgstr ""
+msgstr "Função voluntária foi adicionada com sucesso"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3859 ../src/controller/amapadmin/Volunteers.hx:4928
 msgid "Create a volunteer role"
-msgstr ""
+msgstr "Criar uma função voluntária"
 
 #: ../src/controller/amapadmin/Volunteers.hx:4850
 msgid "Volunteer Role has been successfully updated"
-msgstr ""
+msgstr "Função voluntária foi atualizada com sucesso"
 
 #: ../src/controller/amapadmin/Volunteers.hx:5312
 msgid "Volunteer Role has been successfully deleted"
-msgstr ""
+msgstr "Função voluntária foi excluída com sucesso"
 
 #: ../src/controller/Group.hx:1345 ../src/controller/Group.hx:3429 ../src/controller/Install.hx:1583
 msgid "Your firstname"
-msgstr ""
+msgstr "Seu primeiro nome"
 
 #: ../src/controller/Group.hx:1429 ../src/controller/Group.hx:3513 ../src/controller/Install.hx:1664
 msgid "Your lastname"
-msgstr ""
+msgstr "Seu sobrenome"
 
 #: ../src/controller/Group.hx:1510 ../src/controller/Group.hx:3588
 msgid "Your e-mail"
-msgstr ""
+msgstr "Seu e-mail"
 
 #: ../src/controller/Group.hx:1606
 msgid "Leave a message"
-msgstr ""
+msgstr "Deixar uma mensagem"
 
 #: ../src/controller/Group.hx:2020
 msgid ""
 "Your subscription to the waiting list has been recorded. You will receive "
 "an e-mail as soon as your request is processed."
 msgstr ""
+"Sua assinatura da lista de espera foi registrada. Você receberá um e-mail "
+"assim que sua solicitação for processada."
 
 #: ../src/controller/Group.hx:2267
 msgid "Subscription to \"::groupeName::\" waiting list"
-msgstr ""
+msgstr "Assinatura para a lista de espera de \"::groupeName::\""
 
 #: ../src/controller/Group.hx:2628
 msgid "You've been removed from the waiting list"
-msgstr ""
+msgstr "Você foi removido da lista de espera"
 
 #: ../src/controller/Group.hx:3068 ../src/service/WaitingListService.hx:1320
 msgid "You are already member of this group."
-msgstr ""
+msgstr "Você já é um membro deste grupo."
 
 #: ../src/controller/Group.hx:3194
 msgid "Join the group"
-msgstr ""
+msgstr "Entrar no grupo"
 
 #: ../src/controller/Group.hx:3271
 msgid "Confirm your subscription to \"::groupName::\""
-msgstr ""
+msgstr "Confirmar sua assinatura a \"::groupName::\""
 
 #: ../src/controller/Group.hx:3733
 msgid "Address"
-msgstr ""
+msgstr "Endereço"
 
 #: ../src/controller/Group.hx:3812 ../src/db/Vendor.hx:4563 ../src/db/User.hx:17605 ../src/db/Place.hx:1353
 msgid "Zip code"
-msgstr ""
+msgstr "Código postal"
 
 #: ../src/controller/Group.hx:3957 ../src/db/Vendor.hx:4454 ../src/db/User.hx:17311 ../lang/master/tpl/member/import.mtt:688 ../lang/master/tpl/member/import.mtt:1401 ../lang/master/tpl/member/payments.mtt:521 ../lang/master/tpl/member/waiting.mtt:208 ../lang/master/tpl/contractadmin/view.mtt:1005
 msgid "Phone"
-msgstr ""
+msgstr "Telefone"
 
 #: ../src/controller/Group.hx:4496
 msgid "You already subscribed to Cagette.net, please log in on this page"
 msgstr ""
+"Você já se inscreveu a Cagette.net. Por favor, autentique-se nesta página"
 
 #: ../src/controller/Group.hx:4771
 msgid "Your subscription has been taken into account"
-msgstr ""
+msgstr "Sua assinatura foi levada em conta"
 
 #: ../src/controller/Group.hx:4848
 msgid "Subscription to \"::groupName::\""
-msgstr ""
+msgstr "Assinatura a \"::groupName::\""
 
 #: ../src/controller/Group.hx:5036
 msgid "Create a new Cagette Group"
-msgstr ""
+msgstr "Criar um novo grupo de Cagette"
 
 #: ../src/controller/Group.hx:5147 ../src/controller/Install.hx:1497
 msgid "Name of your group"
-msgstr ""
+msgstr "Nome do seu grupo"
 
 #: ../src/controller/Group.hx:5229
 msgid "CSA"
-msgstr ""
+msgstr "CSA"
 
 #: ../src/controller/Group.hx:5262
 msgid "Grouped orders"
-msgstr ""
+msgstr "Pedidos agrupados"
 
 #: ../src/controller/Group.hx:5306
 msgid "Farmers collective"
-msgstr ""
+msgstr "Coletivo de fazendeiros"
 
 #: ../src/controller/Group.hx:5354
 msgid "Farm shop"
-msgstr ""
+msgstr "Loja da fazenda"
 
 #: ../src/controller/Group.hx:5443 ../src/db/Amap.hx:11885
 msgid "Group type"
-msgstr ""
+msgstr "Tipo de grupo"
 
 #: ../src/controller/Group.hx:6618
 msgid "Market square"
-msgstr ""
+msgstr "Praça do mercado"
 
 #: ../src/controller/Group.hx:7140
 msgid "CSA contract Vegetables - Example"
-msgstr ""
+msgstr "Contrato CSA de vegetáveis - Exemplo"
 
 #: ../src/controller/Group.hx:7209
 msgid ""
 "This contract is an example where the customer has to commit to buy the whole "
 "year as with AMAPs"
 msgstr ""
+"Este contrato é um exemplo em que o cliente tem que se comprometer a comprar "
+"o ano inteiro, como com CSAs"
 
 #: ../src/controller/Group.hx:7642 ../src/controller/Install.hx:3252
 msgid "Big basket of vegetables"
-msgstr ""
+msgstr "Cesta grande dos vegetais"
 
 #: ../src/controller/Group.hx:7806 ../src/controller/Install.hx:3409
 msgid "Small basket of vegetables"
-msgstr ""
+msgstr "Cesta pequena dos vegetais"
 
 #: ../src/controller/Group.hx:8339
 msgid "Farm Galinette"
-msgstr ""
+msgstr "Fazenda de Galinette"
 
 #: ../src/controller/Group.hx:8408
 msgid "Bazas"
-msgstr ""
+msgstr "Bazas"
 
 #: ../src/controller/Group.hx:8558
 msgid "Chicken Contract - Example"
-msgstr ""
+msgstr "Contrato de frango - Exemplo"
 
 #: ../src/controller/Group.hx:8619
 msgid ""
 "Example of contract with variable orders. It is allowed to order something "
 "else at every delivery."
 msgstr ""
+"Exemplo de contrato com pedidos variáveis. É permitido pedir algo mais em "
+"cada entrega."
 
 #: ../src/controller/Group.hx:9111
 msgid "12 eggs"
-msgstr ""
+msgstr "12 ovos"
 
 #: ../src/controller/Group.hx:9277
 msgid "Chicken"
-msgstr ""
+msgstr "Frango"
 
 #: ../src/controller/Shop.hx:761 ../src/controller/Main.hx:3066 ../src/controller/Main.hx:6086
 msgid ""
 "Members of this group should provide a phone number. <a href='/account/edit'>Please "
 "click here to update your account</a>."
 msgstr ""
+"Os membros deste grupo devem fornecer um número de telefone. <a href='/"
+"account/edit'>Clique aqui para atualizar sua conta</a>."
 
 #: ../src/controller/Shop.hx:4848
 msgid "In order to confirm your order, You need to authenticate."
-msgstr ""
+msgstr "Para confirmar o seu pedido, você precisa autenticar."
 
 #: ../src/controller/Shop.hx:5277
 msgid "Your order is empty"
-msgstr ""
+msgstr "O seu pedido está vazio"
 
 #: ../src/controller/Shop.hx:5791
 msgid "This cart is invalid"
-msgstr ""
+msgstr "Este carrinho é inválido"
 
 #: ../src/controller/Shop.hx:5967 ../src/controller/Shop.hx:6401
 msgid "This distribution does not supply the product <b>::pname::</b>"
-msgstr ""
+msgstr "Esta distribuição não fornece o produto <b>::pname::</b>"
 
 #: ../src/controller/Shop.hx:6814
 msgid "Order of ::pname:: reduced to ::oquantity:: to match remaining stock"
 msgstr ""
+"Pedido de ::pname:: reduzido a ::oquantity:: para coincidir com o estoque "
+"restante"
 
 #: ../src/controller/Shop.hx:7597
 msgid "Your order has been confirmed"
-msgstr ""
+msgstr "Seu pedido foi confirmado"
 
 #: ../src/controller/ContractAdmin.hx:440
 msgid "You don't have the authorization to manage contracts"
-msgstr ""
+msgstr "Você não tem autorização para gerenciar contratos"
 
 #: ../src/controller/ContractAdmin.hx:2330
 msgid ""
 "Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click "
 "here to add categories</a>"
 msgstr ""
+"Aviso, pelo menos um produto não tem nenhuma categoria. <a href='/product/"
+"categorize/::contractid::'>Clique aqui para adicionar categorias</a>"
 
 #: ../src/controller/ContractAdmin.hx:3211
 msgid "Copy products in: "
-msgstr ""
+msgstr "Copiar produtos em: "
 
 #: ../src/controller/ContractAdmin.hx:3511
 msgid "Copy products from: "
-msgstr ""
+msgstr "Copiar produtos de: "
 
 #: ../src/controller/ContractAdmin.hx:3627
 msgid "Delete existing products (all orders will be deleted!)"
-msgstr ""
+msgstr "Excluir os produtos existentes (todos os pedidos serão excluídos!)"
 
 #: ../src/controller/ContractAdmin.hx:4234
 msgid "Products copied from "
-msgstr ""
+msgstr "Produtos copiados de "
 
 #: ../src/controller/ContractAdmin.hx:4811 ../src/db/Contract.hx:8204 ../lang/master/tpl/contractadmin/view.mtt:349
 msgid "Start date"
-msgstr ""
+msgstr "Data de início"
 
 #: ../src/controller/ContractAdmin.hx:4944 ../src/db/Operation.hx:14064 ../src/db/Contract.hx:8242 ../lang/master/tpl/contractadmin/view.mtt:442
 msgid "End date"
-msgstr ""
+msgstr "Data final"
 
 #: ../src/controller/ContractAdmin.hx:5291 ../src/controller/ContractAdmin.hx:7856
 msgid "Global view of orders"
-msgstr ""
+msgstr "Visão global dos pedidos"
 
 #: ../src/controller/ContractAdmin.hx:6442 ../src/controller/ContractAdmin.hx:9060 ../src/controller/ContractAdmin.hx:10019 ../src/service/ReportService.hx:3915
 msgid "There is no delivery at this date"
-msgstr ""
+msgstr "Não há entrega nesta data"
 
 #: ../src/controller/ContractAdmin.hx:7511
 msgid "Delivery date"
-msgstr ""
+msgstr "Data de entrega"
 
 #: ../src/controller/ContractAdmin.hx:7901
 msgid "This page allows you to have a global view on orders of all contracts"
 msgstr ""
+"Esta página permite que você tenha uma visão global sobre pedidos de todos "
+"os contratos"
 
 #: ../src/controller/ContractAdmin.hx:7995
 msgid "<br/>Select a delivery date:"
-msgstr ""
+msgstr "<br/>Selecione uma data de entrega:"
 
 #: ../src/controller/ContractAdmin.hx:11761
 msgid "There is no delivery during this period"
-msgstr ""
+msgstr "Não há entrega durante este período"
 
 #: ../src/controller/ContractAdmin.hx:13893
 msgid "Orders from the ::fromDate:: to the ::toDate:: per supplier.csv"
-msgstr ""
+msgstr "Pedidos de ::fromDate:: até ::toDate:: por supplier.csv"
 
 #: ../src/controller/ContractAdmin.hx:15162 ../src/controller/ContractAdmin.hx:15262
 msgid "The order has been deleted."
-msgstr ""
+msgstr "O pedido foi excluído."
 
 #: ../src/controller/ContractAdmin.hx:16740
 msgid "Prices are now up to date."
-msgstr ""
+msgstr "Os preços estão agora atualizados."
 
 #: ../src/controller/ContractAdmin.hx:17163
 msgid "Name of the new contract"
-msgstr ""
+msgstr "Nome do novo contrato"
 
 #: ../src/controller/ContractAdmin.hx:17288
 msgid "Copy products"
-msgstr ""
+msgstr "Copiar produtos"
 
 #: ../src/controller/ContractAdmin.hx:17366
 msgid "Copy deliveries"
-msgstr ""
+msgstr "Copiar entregas"
 
 #: ../src/controller/ContractAdmin.hx:19487
 msgid "The contract has been duplicated"
-msgstr ""
+msgstr "O contrato foi duplicado"
 
 #: ../src/controller/ContractAdmin.hx:20182
 msgid "There is no delivery in this contract, please create at least one distribution."
 msgstr ""
+"Não há entrega neste contrato. Por favor, crie pelo menos uma distribuição."
 
 #: ../src/controller/ContractAdmin.hx:21146
 msgid "No delivery in this contract"
-msgstr ""
+msgstr "Nenhuma entrega neste contrato"
 
 #: ../src/controller/ContractAdmin.hx:22739
 msgid "Distribution date added"
-msgstr ""
+msgstr "Data de distribuição adicionada"
 
 #: ../src/controller/ContractAdmin.hx:26793
 msgid "The contract has been canceled"
-msgstr ""
+msgstr "O contrato foi cancelado"
 
 #: ../src/controller/ContractAdmin.hx:29595
 msgid "Unable to find product ::pid::"
-msgstr ""
+msgstr "Não foi possível encontrar o produto ::pid::"
 
 #: ../src/controller/ContractAdmin.hx:31227 ../src/controller/ContractAdmin.hx:31322
 msgid "The order has been updated"
-msgstr ""
+msgstr "O pedido foi atualizado"
 
 #: ../src/controller/Cron.hx:1300
 msgid "Sorry, the email entitled <b>::title::</b> could not be sent."
-msgstr ""
+msgstr "Desculpe, o e-mail intitulado <b>::title::</b> não pôde ser enviado."
 
 #: ../src/controller/Cron.hx:1420
 msgid "Email not sent"
-msgstr ""
+msgstr "E-mail não enviado"
 
 #: ../src/controller/Cron.hx:3564
 msgid "Instructions for the volunteers of the ::date:: distribution"
-msgstr ""
+msgstr "Instruções para os voluntários da distribuição de ::date::"
 
 #: ../src/controller/Cron.hx:3745 ../src/controller/Cron.hx:6250
 msgid "::date:: from ::startHour:: to ::endHour::"
-msgstr ""
+msgstr "::date:: de ::startHour:: para ::endHour::"
 
 #: ../src/controller/Cron.hx:6038
 msgid "[::group::] We need more volunteers for ::date:: distribution"
 msgstr ""
+"[::group::] Precisamos de mais voluntários para a distribuição de ::date::"
 
 #: ../src/controller/Cron.hx:14260
 msgid "Opening of orders for the delivery of <b>::date::</b>"
-msgstr ""
+msgstr "Abertura de pedidos para a entrega de <b>::date::</b>"
 
 #: ../src/controller/Cron.hx:14394
 msgid "The following suppliers are involved :"
-msgstr ""
+msgstr "Os seguintes fornecedores estão envolvidos:"
 
 #: ../src/controller/Cron.hx:14663
 msgid "Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>"
-msgstr ""
+msgstr "Não se esqueça da entrega em <b>::day::</b> de ::from:: até ::to::<br/>"
 
 #: ../src/controller/Cron.hx:14830
 msgid "Your products to collect :"
-msgstr ""
+msgstr "Seus produtos para coletar:"
 
 #: ../src/controller/Cron.hx:15072 ../lang/master/tpl/contractadmin/orders.mtt:2835
 msgid "alternated with"
-msgstr ""
+msgstr "alternado com"
 
 #: ../src/controller/Cron.hx:15639 ../lang/master/tpl/shop/default.mtt:776
 msgid "Distribution on ::date::"
-msgstr ""
+msgstr "Distribuição em ::date::"
 
 #: ../src/controller/Cron.hx:16258
 msgid "<p>This step is important in order to:</p>"
-msgstr ""
+msgstr "<p>Este passo é importante para:</p>"
 
 #: ../src/controller/Cron.hx:16322
 msgid ""
 "<ul><li>Update orders if delivered quantities are different from ordered "
 "quantities</li>"
 msgstr ""
+"<ul><li>Atualize os pedidos se as quantidades entregues forem diferentes das "
+"quantidades encomendadas</li>"
 
 #: ../src/controller/Cron.hx:16432
 msgid ""
 "<li>Confirm the reception of payments (checks, cash, transfers) in order "
 "to mark orders as 'paid'</li></ul>"
 msgstr ""
+"<li>Confirme o recebimento de pagamentos (cheques, dinheiro, transferências) "
+"para marcar ordens como \"pagas\"</li></ul>"
 
 #: ../src/controller/Cron.hx:17065
 msgid "Validation of the ::date:: distribution"
-msgstr ""
+msgstr "Validação da distribuição de ::date::"
 
 #: ../src/controller/Cron.hx:17153 ../src/controller/Cron.hx:18506 ../src/controller/Cron.hx:20204
 msgid "[::group::] Validation of the ::date:: distribution"
-msgstr ""
+msgstr "[::group::] Validação da distribuição de ::date::"
 
 #: ../src/controller/Cron.hx:17410
 msgid "<p>Your distribution just finished, don't forget to <b>validate</b> it</p>"
 msgstr ""
+"<p>Sua distribuição acabou de terminar, não se esqueça de "
+"<b>validá-la</b></p>"
 
 #: ../src/controller/Cron.hx:17524
 msgid ""
 "<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
 "must be connected to your group Cagette)"
 msgstr ""
+"<p><a href='::distriburl::'>Clique aqui para validar a distribuição</a> ("
+"Você deve estar conectado ao seu grupo Cagette)"
 
 #: ../src/controller/Cron.hx:18414
 msgid ": Validation of the delivery of the "
-msgstr ""
+msgstr ": Validação da entrega de "
 
 #: ../src/controller/Cron.hx:18763
 msgid "<p>Reminder: you have a delivery to validate.</p>"
-msgstr ""
+msgstr "<p>Lembrete: você tem uma entrega para validar.</p>"
 
 #: ../src/controller/Cron.hx:18852
 msgid ""
 "<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
 "must be connected to your Cagette group)"
 msgstr ""
+"<p><a href='::distriburl::'>Clique aqui para validar a entrega</a> (Você "
+"deve estar conectado ao seu grupo Cagette)"
 
 #: ../src/controller/Cron.hx:20108
 msgid ": Validation of the distribution of the "
-msgstr ""
+msgstr ": Validação da distribuição de "
 
 #: ../src/controller/Cron.hx:20337
 msgid ""
 "<p>As you did not validate it manually after 10 days, <br/>the delivery of "
 "the ::deliveryDate:: has been validated automatically</p>"
 msgstr ""
+"<p>Como você não a validou manualmente após 10 dias, <br/>a entrega de "
+"::deliveryDate:: foi validada automaticamente</p>"
 
 #: ../src/controller/Validate.hx:1640
 msgid "Operation validated"
-msgstr ""
+msgstr "Operação validada"
 
 #: ../src/controller/Validate.hx:2106
 msgid "There is nothing to refund"
-msgstr ""
+msgstr "Não há nada para reembolsar"
 
 #: ../src/controller/Validate.hx:2558
 msgid "payment"
-msgstr ""
+msgstr "pagamento"
 
 #: ../src/controller/Validate.hx:2732
 msgid "Refund"
-msgstr ""
+msgstr "Reembolso"
 
 #: ../src/controller/Validate.hx:3985
 msgid "Refund saved"
-msgstr ""
+msgstr "Reembolso salvo"
 
 #: ../src/controller/Validate.hx:4029
 msgid "Key-in a refund for ::user::"
-msgstr ""
+msgstr "Inserir um reembolso para ::user::"
 
 #: ../src/controller/Validate.hx:4443
 msgid "Additional payment"
-msgstr ""
+msgstr "Pagamento adicional"
 
 #: ../src/controller/Validate.hx:5549
 msgid "Payment saved"
-msgstr ""
+msgstr "Pagamento salvo"
 
 #: ../src/controller/Validate.hx:5594
 msgid "Key-in a payment for ::user::"
-msgstr ""
+msgstr "Inserir um pagamento para ::user::"
 
 #: ../src/controller/Validate.hx:6062
 msgid "Order validated"
-msgstr ""
+msgstr "Pedido validado"
 
 #: ../src/controller/Install.hx:2424
 msgid "Marketplace"
-msgstr ""
+msgstr "Mercado"
 
 #: ../src/controller/Install.hx:2488
 msgid "Place Jules Verne"
@@ -1446,151 +1545,160 @@ msgstr ""
 
 #: ../src/controller/Install.hx:2885
 msgid "Vegetables Contract Example"
-msgstr ""
+msgstr "Exemplo de contrato de vegetais"
 
 #: ../src/controller/Install.hx:4057
 msgid ""
 "Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
 "password is 'admin'"
 msgstr ""
+"Grupo e usuário \"admin\" criado. Seu e-mail é \"admin@cagette.net\" e sua "
+"senha é \"admin\""
 
 #: ../src/controller/Install.hx:4652
 msgid "You must update your database to version "
-msgstr ""
+msgstr "Você deve atualizar seu banco de dados para a versão "
 
 #: ../src/controller/Install.hx:4780
 msgid "Current version"
-msgstr ""
+msgstr "Versão atual"
 
 #: ../src/controller/Install.hx:5180
 msgid "Installation of the dictionnary of products (taxonomy)"
-msgstr ""
+msgstr "Instalação do dicionário de produtos (taxonomia)"
 
 #: ../src/controller/Install.hx:5289
 msgid "Improvement on saving orders"
-msgstr ""
+msgstr "Melhoria na economia de encomendas"
 
 #: ../src/controller/Install.hx:5467
 msgid "Following update have been performed:<ul>"
-msgstr ""
+msgstr "As seguintes atualizações foram realizadas:<ul>"
 
 #: ../src/controller/Main.hx:546
 msgid "The link \"::link::\" does not exists."
-msgstr ""
+msgstr "O link \"::link::\"não existe."
 
 #: ../src/controller/Main.hx:3367 ../src/controller/Main.hx:6387
 msgid ""
 "Members of this group should provide an address. <a href='/account/edit'>Please "
 "click here to update your account</a>."
 msgstr ""
+"Os membros deste grupo devem fornecer um endereço. <a href='/account/edit'>"
+"Clique aqui para atualizar sua conta</a>."
 
 #: ../src/controller/Account.hx:586 ../src/controller/Account.hx:777
 msgid "Email ::em:: is invalid"
-msgstr ""
+msgstr "O e-mail ::em:: é inválido"
 
 #: ../src/controller/Account.hx:1041
 msgid "This email is already used by another account."
-msgstr ""
+msgstr "Este e-mail já é usado por outra conta."
 
 #: ../src/controller/Account.hx:1361
 msgid "Your account has been updated"
-msgstr ""
+msgstr "Sua conta foi atualizada"
 
 #: ../src/controller/Account.hx:1442
 msgid "Modify my account"
-msgstr ""
+msgstr "Modificar a minha conta"
 
 #: ../src/controller/Account.hx:1716
 msgid "You left the group ::groupName::"
-msgstr ""
+msgstr "Você deixou o grupo ::groupName::"
 
 #: ../src/controller/Product.hx:1491
 msgid "The product has been updated"
-msgstr ""
+msgstr "O produto foi atualizado"
 
 #: ../src/controller/Product.hx:1616
 msgid "Modify a product"
-msgstr ""
+msgstr "Modificar um produto"
 
 #: ../src/controller/Product.hx:2596
 msgid "The product has been saved"
-msgstr ""
+msgstr "O produto foi salvo"
 
 #: ../src/controller/Product.hx:2719
 msgid "Key-in a new product"
-msgstr ""
+msgstr "Inserir um novo produto"
 
 #: ../src/controller/Product.hx:3078
 msgid "Not possible to delete this product because some orders are referencing it"
 msgstr ""
+"Não é possível excluir este produto porque alguns pedidos fazem referência a "
+"ele"
 
 #: ../src/controller/Product.hx:3271
 msgid "Product deleted"
-msgstr ""
+msgstr "Produto excluído"
 
 #: ../src/controller/Product.hx:5722
 msgid "You must first define categories before you can assign a category to a product"
 msgstr ""
+"Primeiro, você deve definir categorias antes de poder atribuir uma categoria "
+"a um produto"
 
 #: ../src/controller/Product.hx:7599
 msgid "Modifications saved"
-msgstr ""
+msgstr "Modificações salvas"
 
 #: ../src/controller/Distribution.hx:3518
 msgid "One person per page"
-msgstr ""
+msgstr "Uma pessoa por página"
 
 #: ../src/controller/Distribution.hx:3578
 msgid "One person per page sorted by contract"
-msgstr ""
+msgstr "Uma pessoa por página classificada por contrato"
 
 #: ../src/controller/Distribution.hx:3652
 msgid "All"
-msgstr ""
+msgstr "Tudo"
 
 #: ../src/controller/Distribution.hx:3696
 msgid "All but without prices and totals"
-msgstr ""
+msgstr "Tudo, mas sem preços e totais"
 
 #: ../src/controller/Distribution.hx:7033 ../src/controller/Distribution.hx:7421
 msgid "The distribution has been deleted"
-msgstr ""
+msgstr "A distribuição foi excluída"
 
 #: ../src/controller/Distribution.hx:7504
 msgid "Bad token"
-msgstr ""
+msgstr "Token inválido"
 
 #: ../src/controller/Distribution.hx:8003 ../src/controller/Distribution.hx:10375 ../src/controller/Distribution.hx:12806 ../src/controller/Distribution.hx:15256 ../src/controller/Distribution.hx:18005
 msgid "End time"
-msgstr ""
+msgstr "Tempo final"
 
 #: ../src/controller/Distribution.hx:8188 ../src/controller/Distribution.hx:10739 ../src/db/MultiDistrib.hx:13812
 msgid "Orders opening date"
-msgstr ""
+msgstr "Data de abertura de pedidos"
 
 #: ../src/controller/Distribution.hx:8307 ../src/controller/Distribution.hx:10889 ../src/db/MultiDistrib.hx:13863
 msgid "Orders closing date"
-msgstr ""
+msgstr "Data de encerramento de pedidos"
 
 #: ../src/controller/Distribution.hx:8946
 msgid "The distribution has been proposed to the supplier, please wait for its validation"
 msgstr ""
+"A distribuição foi proposta ao fornecedor. Por favor, aguarde a sua validação"
 
 #: ../src/controller/Distribution.hx:9172 ../src/controller/Distribution.hx:12202 ../src/controller/Distribution.hx:14733
 msgid "The distribution has been recorded"
-msgstr ""
+msgstr "A distribuição foi registrada"
 
 #: ../src/controller/Distribution.hx:9312
 msgid "Edit a distribution"
-msgstr ""
+msgstr "Editar uma distribuição"
 
 #: ../src/controller/Distribution.hx:9732
 msgid "The delivery is now up to date"
-msgstr ""
+msgstr "A entrega está agora atualizada"
 
 #: ../src/controller/Distribution.hx:9814
 msgid "Modify a delivery"
-msgstr ""
+msgstr "Modificar uma entrega"
 
 #: ../src/controller/Distribution.hx:11646
 msgid ""
@@ -1598,150 +1706,165 @@ msgid ""
 "patient, you will receive an e-mail indicating if the request has been validated "
 "or refused."
 msgstr ""
+"Seu pedido de entrega foi enviado para <b>::supplierName::</b>.<br/> Seja "
+"paciente, você receberá um e-mail indicando se a solicitação foi validada ou "
+"recusada."
 
 #: ../src/controller/Distribution.hx:12070
 msgid "Distribution request sent"
-msgstr ""
+msgstr "Pedido de distribuição enviado"
 
 #: ../src/controller/Distribution.hx:12360
 msgid "Create a distribution"
-msgstr ""
+msgstr "Criar uma distribuição"
 
 #: ../src/controller/Distribution.hx:13793
 msgid "Contrats"
-msgstr ""
+msgstr "Contratos"
 
 #: ../src/controller/Distribution.hx:14820
 msgid "Create a general distribution"
-msgstr ""
+msgstr "Criar uma distribuição geral"
 
 #: ../src/controller/Distribution.hx:15348 ../lang/master/tpl/contractadmin/default.mtt:1104 ../lang/master/tpl/design.mtt:3816
 msgid "Contracts"
-msgstr ""
+msgstr "Contratos"
 
 #: ../src/controller/Distribution.hx:17066
 msgid "The distribution has been updated"
-msgstr ""
+msgstr "A distribuição foi atualizada"
 
 #: ../src/controller/Distribution.hx:17152
 msgid "Edit a general distribution"
-msgstr ""
+msgstr "Editar uma distribuição geral"
 
 #: ../src/controller/Distribution.hx:17810
 msgid "Start time"
-msgstr ""
+msgstr "Horário de início"
 
 #: ../src/controller/Distribution.hx:18352
 msgid "Opening time"
-msgstr ""
+msgstr "Horário de abertura"
 
 #: ../src/controller/Distribution.hx:18645
 msgid "Closing time"
-msgstr ""
+msgstr "Horário de fechamento"
 
 #: ../src/controller/Distribution.hx:20089
 msgid "The delivery has been saved"
-msgstr ""
+msgstr "A entrega foi salva"
 
 #: ../src/controller/Distribution.hx:20255
 msgid "Schedule a recurrent delivery"
-msgstr ""
+msgstr "Agendar uma entrega recorrente"
 
 #: ../src/controller/Distribution.hx:20771
 msgid "Recurrent deliveries deleted"
-msgstr ""
+msgstr "Entregas recorrentes excluídas"
 
 #: ../src/controller/Distribution.hx:23013
 msgid "This distribution have been validated"
-msgstr ""
+msgstr "Esta distribuição foi validada"
 
 #: ../src/controller/Distribution.hx:23352
 msgid "This distribution have been Unvalidated"
-msgstr ""
+msgstr "Esta distribuição foi invalidada"
 
 #: ../src/controller/Distribution.hx:25313
 msgid "Volunteer Roles have been saved for this distribution"
-msgstr ""
+msgstr "Funções voluntárias foram salvas para esta distribuição"
 
 #: ../src/controller/Distribution.hx:25396
 msgid "Select volunteer roles for this multidistrib"
-msgstr ""
+msgstr "Selecione funções voluntárias para esta multidistribuição"
 
 #: ../src/controller/Distribution.hx:25804
 msgid "You need to first select the volunteer roles for this distribution"
 msgstr ""
+"Você precisa primeiro selecionar as funções voluntárias para esta "
+"distribuição"
 
 #: ../src/controller/Distribution.hx:26370
 msgid "No volunteer assigned"
-msgstr ""
+msgstr "Nenhum voluntário atribuído"
 
 #: ../src/controller/Distribution.hx:26813
 msgid "Volunteers have been assigned to roles for this distribution"
-msgstr ""
+msgstr "Os voluntários foram atribuídos para funções para esta distribuição"
 
 #: ../src/controller/Distribution.hx:26903
 msgid "Select a volunteer for each role for this multidistrib"
-msgstr ""
+msgstr "Selecione um voluntário para cada função para esta multidistribuição"
 
 #: ../src/controller/Distribution.hx:27349
 msgid "There are no volunteer roles defined for this distribution"
-msgstr ""
+msgstr "Não há funções voluntárias definidas para esta distribuição"
 
 #: ../src/controller/Distribution.hx:27734
 msgid "You have been successfully added to the selected role."
-msgstr ""
+msgstr "Você foi adicionado(a) com sucesso à função selecionada."
 
 #: ../src/controller/Distribution.hx:28620
 msgid "There is no volunteer to remove for this role!"
-msgstr ""
+msgstr "Não há voluntários para esta função!"
 
 #: ../src/controller/Distribution.hx:28753
 msgid "You can only remove yourself from a role."
-msgstr ""
+msgstr "Você só pode remover você mesmo(a) de uma função."
 
 #: ../src/controller/Distribution.hx:28866
 msgid "Reason for leaving the role"
-msgstr ""
+msgstr "Motivo para deixar a função"
 
 #: ../src/controller/Distribution.hx:29225
 msgid "You have been successfully removed from this role."
-msgstr ""
+msgstr "Você foi removido com sucesso deste papel."
 
 #: ../src/controller/Distribution.hx:29306
 msgid "Enter the reason why you are leaving this role."
-msgstr ""
+msgstr "Insira o motivo pelo qual você está deixando esta função."
 
 #: ../src/controller/Distribution.hx:30127 ../src/controller/Distribution.hx:30299
 msgid "You have been successfully assigned to the selected role."
-msgstr ""
+msgstr "Você foi atribuído(a) com sucesso à função selecionada."
 
 #: ../src/App.hx:8733
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
 msgstr ""
+"Por favor, configure as configurações de e-mail <href='/admin/emails'>nesta "
+"seção</a>"
 
 #: ../src/service/DistributionService.hx:1306 ../src/service/DistributionService.hx:1947
 msgid "This distribution has no date."
-msgstr ""
+msgstr "Esta distribuição não tem data."
 
 #: ../src/service/DistributionService.hx:2105
 msgid ""
 "This distribution should have an order opening date and an order closing "
 "date."
 msgstr ""
+"Esta distribuição deve ter uma data de abertura da ordem e uma data de "
+"fechamento da pedidos."
 
 #: ../src/service/DistributionService.hx:4140
 msgid ""
 "There is already a distribution at this place overlapping with the time range "
 "you've selected."
 msgstr ""
+"Já existe uma distribuição neste lugar sobrepondo o intervalo de tempo que "
+"você selecionou."
 
 #: ../src/service/DistributionService.hx:4312 ../src/service/DistributionService.hx:18621
 msgid "The date of the delivery must be prior to the end of the contract (::contractEndDate::)"
 msgstr ""
+"A data da entrega deve ser anterior ao término do contrato "
+"(::contractEndDate::)"
 
 #: ../src/service/DistributionService.hx:4514 ../src/service/DistributionService.hx:18852
 msgid "The date of the delivery must be after the begining of the contract (::contractBeginDate::)"
 msgstr ""
+"A data da entrega deve ser posterior ao início do contrato "
+"(::contractBeginDate:::)"
 
 #: ../src/service/DistributionService.hx:4778
 msgid "The distribution start date must be set after the orders end date."
@@ -3076,7 +3199,7 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/default.mtt:6042
 msgid "Vendors"
-msgstr ""
+msgstr "Produtores"
 
 #: ../lang/master/tpl/distribution/default.mtt:7660 ../lang/master/tpl/amapadmin/volunteers/default.mtt:69
 msgid "Volunteer roles"
