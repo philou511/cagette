@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2019-12-11 16:49+0000\n"
+"PO-Revision-Date: 2020-01-07 11:21+0000\n"
 "Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "cagette/translations/pt_PT/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 3.10.1-dev\n"
 
 #: ../src/payment/Cash.hx:276
 msgid "Cash"
@@ -63,7 +63,7 @@ msgstr "Pagamento registado"
 
 #: ../src/controller/Transaction.hx:2214
 msgid "Record a payment for ::user::"
-msgstr ""
+msgstr "Registar uma pagamento para ::user::"
 
 #: ../src/controller/Transaction.hx:3000
 msgid "Confirmed"
@@ -113,7 +113,7 @@ msgstr "País"
 
 #: ../src/controller/Vendor.hx:1696
 msgid "This supplier has been updated"
-msgstr ""
+msgstr "Este fornecedor foi atualizado"
 
 #: ../src/controller/Vendor.hx:3190 ../src/controller/AmapAdmin.hx:2442
 msgid "Image updated"
@@ -129,7 +129,7 @@ msgstr "Ação proibida"
 
 #: ../src/controller/Contract.hx:4355
 msgid "Edit contract ::contractName::"
-msgstr ""
+msgstr "Editar contrato ::contractName::"
 
 #: ../src/controller/Contract.hx:4878
 msgid "If you would like to add fees to the order, define a rate (%) and a label."
@@ -151,21 +151,24 @@ msgstr "Contrato atualizado"
 
 #: ../src/controller/Contract.hx:6329
 msgid "Define a vendor"
-msgstr ""
+msgstr "Definir um vendedor"
 
 #: ../src/controller/Contract.hx:6367
 msgid ""
 "Before creating a record for the vendor you want to work with, let's search "
 "our database to check if he's not already referenced."
 msgstr ""
+"Antes de criar um registo para o vendedor com o qual deseja trabalhar, nós "
+"vamos pesquisar na nossa base de dados para verificar se ele já não foi "
+"mencionado."
 
 #: ../src/controller/Contract.hx:6608
 msgid "Vendor or farm name"
-msgstr ""
+msgstr "Vendedor ou nome da quinta"
 
 #: ../src/controller/Contract.hx:6707
 msgid "Vendor email"
-msgstr ""
+msgstr "E-mail do vendedor"
 
 #: ../src/controller/Contract.hx:6801 ../lang/master/tpl/member/import.mtt:932 ../lang/master/tpl/member/import.mtt:1638
 msgid "zip code"
@@ -173,11 +176,11 @@ msgstr "código postal"
 
 #: ../src/controller/Contract.hx:7629
 msgid "This supplier has been saved"
-msgstr ""
+msgstr "Este fornecedor foi guardado"
 
 #: ../src/controller/Contract.hx:7780 ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:1267 ../lang/master/tpl/contractadmin/defineVendor.mtt:1259
 msgid "Key-in a new vendor"
-msgstr ""
+msgstr "Digite um novo vendedor"
 
 #: ../src/controller/Contract.hx:7824
 msgid ""
