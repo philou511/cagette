@@ -681,9 +681,9 @@ class OrderService
 		
 	}
 
-	// Create or update orders 
+	// Create or update orders for variable catalogs
 	public static function createOrUpdateOrders( user : db.User, multiDistrib : db.MultiDistrib, catalog : db.Catalog,
-	ordersData : Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } > ) : Array<db.UserOrder> {
+	ordersData : Array< { id : Int, productId : Int, qt : Float, paid : Bool } > ) : Array<db.UserOrder> {
 		
 		if ( multiDistrib == null && catalog == null ) {
 
@@ -695,77 +695,56 @@ class OrderService
 			throw new Error('Il n\'y a pas de commandes définies.');
 		}
 
-		var t = sugoi.i18n.Locale.texts;
-
 		var orders : Array<db.UserOrder> = [];
-		if ( multiDistrib == null && catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+		
+		// Find existing orders
+		var existingOrders = [];
+		if ( catalog == null ) {
 
-			var subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
-			if ( subscription == null ) {
-				
-				throw TypedError.typed( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes.", SubscriptionService.SubscriptionServiceError.NoSubscription );
-			}
-
-			if ( SubscriptionService.hasPastDistribOrders( subscription ) ) {
-
-				throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
-				la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionService.SubscriptionServiceError.PastOrders );
-			}
-
-			orders = SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+			// Edit a whole multidistrib
+			existingOrders = multiDistrib.getUserOrders( user );
 		}
 		else {
 
-			// Find existing orders
-			var existingOrders = [];
-			if ( catalog == null ) {
+			// Edit a single catalog
+			var distrib = null;
+			if( multiDistrib != null ) {
 
-				// Edit a whole multidistrib
-				existingOrders = multiDistrib.getUserOrders( user );
+				distrib = multiDistrib.getDistributionForContract( catalog );
+			}
+			existingOrders = catalog.getUserOrders( user, distrib );			
+		}
+				
+		for ( order in ordersData ) {
+			
+			// Get product
+			var product = db.Product.manager.get( order.productId, false );
+			
+			// Find existing order				
+			var existingOrder = Lambda.find( existingOrders, function(x) return x.id == order.id );
+			
+			// Save order
+			if ( existingOrder != null ) {
+
+				// Edit existing order
+				var updatedOrder = OrderService.edit( existingOrder, order.qt, order.paid );
+				if ( updatedOrder != null ) orders.push( updatedOrder );
 			}
 			else {
 
-				// Edit a single catalog
+				// Insert new order
 				var distrib = null;
-				if( multiDistrib != null ) {
+				if( multiDistrib != null ) { 
 
-					distrib = multiDistrib.getDistributionForContract( catalog );
+					distrib = multiDistrib.getDistributionFromProduct( product );
 				}
-				existingOrders = catalog.getUserOrders( user, distrib );			
-			}
-					
-			for ( order in ordersData ) {
 				
-				// Get product
-				var product = db.Product.manager.get( order.productId, false );
+				var newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
+				if ( newOrder != null ) orders.push( newOrder );
 				
-				// Find existing order				
-				var existingOrder = Lambda.find( existingOrders, function(x) return x.id == order.id );
-				
-				// Save order
-				if ( existingOrder != null ) {
-
-					// Edit existing order
-					var updatedOrder = OrderService.edit( existingOrder, order.qt, order.paid );
-					if ( updatedOrder != null ) orders.push( updatedOrder );
-				}
-				else {
-
-					// Insert new order
-					var distrib = null; //no need if csa catalog
-					if( multiDistrib != null ) { 
-
-						distrib = multiDistrib.getDistributionFromProduct( product );
-					}
-					
-					var newOrder =  OrderService.make( user, order.qt , product, distrib == null ? null : distrib.id, order.paid );
-					if ( newOrder != null ) orders.push( newOrder );
-					
-				}
-
 			}
 
-		}	
+		}
 
 		App.current.event( MakeOrder( orders ) );
 		db.Operation.onOrderConfirm( orders );

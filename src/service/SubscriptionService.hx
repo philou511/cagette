@@ -153,7 +153,8 @@ class SubscriptionService
 	  *  Creates a new subscription and prevents subscription overlapping and other checks
 	  *  @return db.Subscription
 	  */
-	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date ) : db.Subscription {
+	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date,
+	 ordersData : Array< { productId : Int, qt : Float, userId2 : Int, invertSharedOrder : Bool } > ) : db.Subscription {
 
 		var subscription = new db.Subscription();
 		subscription.user = user;
@@ -166,29 +167,24 @@ class SubscriptionService
 			subscription.insert();
 		}
 
+		createCSARecurrentOrders( subscription, ordersData );
+
 		return subscription;
 
 	}
 
 
-	 public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date ) {
+	 public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
+	 ordersData : Array< { productId : Int, qt : Float, userId2 : Int, invertSharedOrder : Bool } > ) {
 
-		
-	
 		subscription.lock();
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
-		var subscriptionOrders = getSubscriptionOrders( subscription );
-		for ( order in subscriptionOrders ) {
-
-			ordersData.push( { id : null, productId : order.product.id, qt : order.quantity, paid : false, invertSharedOrder : false, userId2 : null } );
-			
-		}
+		
 		if ( isSubscriptionValid( subscription ) ) {
 
 			subscription.update();
-			SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
+			createCSARecurrentOrders( subscription, ordersData );
 		}
 
 	}
@@ -300,11 +296,17 @@ class SubscriptionService
 
 
 	public static function createCSARecurrentOrders( subscription : db.Subscription,
-		ordersData : Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } > ) : Array<db.UserOrder> {
+		ordersData : Array< { productId : Int, qt : Float, userId2 : Int, invertSharedOrder : Bool } > ) : Array<db.UserOrder> {
 
-		if ( subscription == null ) {
-			
-			throw new Error( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes."  );
+		if ( ordersData.length == 0 ) {
+
+			throw new Error('Il n\'y a pas de commandes définies.');
+		}
+
+		if ( SubscriptionService.hasPastDistribOrders( subscription ) ) {
+
+			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
+			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionService.SubscriptionServiceError.PastOrders );
 		}
 
 		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
@@ -323,30 +325,35 @@ class SubscriptionService
 
 			for ( order in ordersData ) {
 
-				var product = db.Product.manager.get( order.productId, false );
-				// User2 + Invert
-				var user2 : db.User = null;
-				var invert = false;
-				if ( order.userId2 != null && order.userId2 != 0 ) {
+				if ( order.qt > 0 ) {
 
-					user2 = db.User.manager.get( order.userId2, false );
-					if ( user2 == null ) throw new Error( t._( "Unable to find user #::num::", { num : order.userId2 } ) );
-					if ( !user2.isMemberOf( product.catalog.group ) ) throw new Error( t._( "::user:: is not part of this group", { user : user2 } ) );
-					if ( subscription.user.id == user2.id ) throw new Error( t._( "Both selected accounts must be different ones" ) );
+					var product = db.Product.manager.get( order.productId, false );
+					// User2 + Invert
+					var user2 : db.User = null;
+					var invert = false;
+					if ( order.userId2 != null && order.userId2 != 0 ) {
+
+						user2 = db.User.manager.get( order.userId2, false );
+						if ( user2 == null ) throw new Error( t._( "Unable to find user #::num::", { num : order.userId2 } ) );
+						if ( !user2.isMemberOf( product.catalog.group ) ) throw new Error( t._( "::user:: is not part of this group", { user : user2 } ) );
+						if ( subscription.user.id == user2.id ) throw new Error( t._( "Both selected accounts must be different ones" ) );
+						
+						invert = order.invertSharedOrder;
+					}
 					
-					invert = order.invertSharedOrder;
-				}
-				
+					var newOrder =  OrderService.make( subscription.user, order.qt , product,  distribution.id, false , user2, invert, subscription );
+					if ( newOrder != null ) orders.push( newOrder );
 
-				var newOrder =  OrderService.make( subscription.user, order.qt , product,  distribution.id, order.paid , user2, invert, subscription );
-				if ( newOrder != null ) orders.push( newOrder );
+				}
 
 			}
 		}
-
+		
+		App.current.event( MakeOrder( orders ) );
+		db.Operation.onOrderConfirm( orders );
+	
 		return orders;
 		
 	}
-
-
+	
 }
