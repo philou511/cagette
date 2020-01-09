@@ -47,6 +47,8 @@
 					::set productOrder = getProductOrder(product.id)::
 					::if productOrder != null::
 						::set quantity = productOrder.quantity::
+						::set user2Id = productOrder.userId2::
+						::set invert = productOrder.hasInvertSharedOrder()::
 					::end::
 				::end::
 
@@ -62,12 +64,13 @@
 						<select name="user2::product.id::" id="user2::product.id::" class="form-control">
 							<option value="0">-</option>
 							::foreach member members::
-								<option value="::member.value::">::member.label::</option>
+								<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
 							::end::
 						</select>
+
 					</div>
 					<div class="col-sm-1">
-						<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" />
+						<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
 					</div>
 
 				</div>

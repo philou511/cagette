@@ -63,11 +63,6 @@
                                                     <i class="icon icon-edit"></i> ::_("Edit")::
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a onclick="_.initOrderBox( ::subscription._user.id::, null, ::catalog.id::, ::catalog.type::, null, null, '::escapeJS(subscription._user.userName)::', '::group.currency::', ::group.hasPayments()::, '/contractAdmin/subscriptions/::catalog.id::')">
-                                                    <i class="icon icon-basket"></i> ::_("Order")::
-                                                </a>
-                                            </li>
                                             <!-- <li>
                                                 <a href="/distribution/list">
                                                     <i class="icon icon-card"></i> ::_("Payment")::
