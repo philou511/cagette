@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-10-23 18:53+0000\n"
-"Last-Translator: Marc Yustin <marcyustin@gmail.com>\n"
+"PO-Revision-Date: 2020-01-14 09:21+0000\n"
+"Last-Translator: Francesco Bisignani <tassobaramba2@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/cagette/"
 "translations/it/>\n"
 "Language: it\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1-dev\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
 msgid "Cash"
@@ -125,11 +125,13 @@ msgstr "Contanti per l'ordine del ::date::"
 
 #: src/controller/Transaction.hx:8644
 msgid "Cash payment"
-msgstr ""
+msgstr "Pagamento in contanti"
 
 #: src/controller/Transaction.hx:8703
 msgid "Your order is validated, you commited to pay in cash at the delivery."
 msgstr ""
+"Il tuo ordine è stato confermato. Come da te richiesto, il pagamento avverrà "
+"in contanti."
 
 #: src/controller/Vendor.hx:271 src/controller/Validate.hx:1396
 #: src/controller/Validate.hx:2827 src/controller/Product.hx:454
@@ -138,15 +140,15 @@ msgstr ""
 #: src/controller/Product.hx:7314 src/controller/Product.hx:8010
 #: src/controller/Distribution.hx:14698
 msgid "Forbidden access"
-msgstr ""
+msgstr "Accesso proibito"
 
 #: src/controller/Vendor.hx:1133
 msgid "This supplier has been updated"
-msgstr ""
+msgstr "Le informazioni su questo fornitore sono state aggiornate"
 
 #: src/controller/Vendor.hx:1515
 msgid "This supplier has been saved"
-msgstr ""
+msgstr "Le informazioni su questo fornitore sono state salvate"
 
 #: src/controller/Vendor.hx:1665 src/controller/Contract.hx:4179
 #: src/controller/Contract.hx:6139 src/controller/Member.hx:21131
@@ -154,7 +156,7 @@ msgstr ""
 #: src/controller/Distribution.hx:4170 src/controller/Distribution.hx:10027
 #: src/controller/Distribution.hx:12688
 msgid "Forbidden action"
-msgstr ""
+msgstr "Azione non consentita"
 
 #: src/controller/Vendor.hx:1813
 msgid ""
@@ -164,11 +166,11 @@ msgstr ""
 
 #: src/controller/Vendor.hx:1987
 msgid "Supplier deleted"
-msgstr ""
+msgstr "Fornitore eliminato"
 
 #: src/controller/Vendor.hx:2839 src/controller/AmapAdmin.hx:2393
 msgid "Image updated"
-msgstr ""
+msgstr "Immagine aggiornata"
 
 #: src/controller/Categories.hx:461
 msgid "The category list is not empty."
@@ -176,27 +178,27 @@ msgstr ""
 
 #: src/controller/Categories.hx:877
 msgid "Product types"
-msgstr ""
+msgstr "Tipo di prodotti"
 
 #: src/controller/Categories.hx:902
 msgid "Vegetables"
-msgstr ""
+msgstr "Verdura"
 
 #: src/controller/Categories.hx:921
 msgid "Fruits"
-msgstr ""
+msgstr "Frutta"
 
 #: src/controller/Categories.hx:936
 msgid "Fish"
-msgstr ""
+msgstr "Pesce"
 
 #: src/controller/Categories.hx:949
 msgid "Red meat"
-msgstr ""
+msgstr "Carni rosse"
 
 #: src/controller/Categories.hx:966
 msgid "Breads"
-msgstr ""
+msgstr "Pane"
 
 #: src/controller/Categories.hx:981
 msgid "Grocery"
@@ -204,7 +206,7 @@ msgstr ""
 
 #: src/controller/Categories.hx:997
 msgid "Beverages"
-msgstr ""
+msgstr "Bevande"
 
 #: src/controller/Categories.hx:1024
 msgid "Labels"
