@@ -21,7 +21,7 @@ class OrderService
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?user2:db.User, ?invert:Bool, ?subscription : db.Subscription ) : db.UserOrder {
+	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?subscription : db.Subscription, ?user2:db.User, ?invert:Bool ) : Null<db.UserOrder> {
 		
 		var t = sugoi.i18n.Locale.texts;
 

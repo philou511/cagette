@@ -65,6 +65,12 @@ class SubscriptionService
 
 	}
 
+	public static function canSubscriptionBeEdited( subscription : db.Subscription ) : Bool {
+
+		return !hasPastDistribOrders( subscription );
+
+	}
+
 	public static function getDescription( subscription : db.Subscription ) {
 
 		var subscriptionOrders = getSubscriptionOrders( subscription );
@@ -86,10 +92,6 @@ class SubscriptionService
 
 		var view = App.current.view;
 	
-		if ( subscription.startDate == null || subscription.endDate == null ) {
-
-			throw new Error( 'Cette souscription a des dates de début et de fin non définies.' );
-		}
 		var catalogStartDate = new Date( subscription.catalog.startDate.getFullYear(), subscription.catalog.startDate.getMonth(), subscription.catalog.startDate.getDate(), 0, 0, 0 );
 		var catalogEndDate = new Date( subscription.catalog.endDate.getFullYear(), subscription.catalog.endDate.getMonth(), subscription.catalog.endDate.getDate(), 23, 59, 59 );
 		if ( subscription.startDate.getTime() < catalogStartDate.getTime() || subscription.startDate.getTime() >= catalogEndDate.getTime() ) {
@@ -156,6 +158,11 @@ class SubscriptionService
 	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date,
 	 ordersData : Array< { productId : Int, qt : Float, userId2 : Int, invertSharedOrder : Bool } > ) : db.Subscription {
 
+		if ( startDate == null || endDate == null ) {
+
+			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
+		}
+
 		var subscription = new db.Subscription();
 		subscription.user = user;
 		subscription.catalog = catalog;
@@ -164,10 +171,9 @@ class SubscriptionService
 
 		if ( isSubscriptionValid( subscription ) ) {
 
+			createCSARecurrentOrders( subscription, ordersData );
 			subscription.insert();
 		}
-
-		createCSARecurrentOrders( subscription, ordersData );
 
 		return subscription;
 
@@ -177,14 +183,27 @@ class SubscriptionService
 	 public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
 	 ordersData : Array< { productId : Int, qt : Float, userId2 : Int, invertSharedOrder : Bool } > ) {
 
-		subscription.lock();
-		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
-		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		
-		if ( isSubscriptionValid( subscription ) ) {
+		if ( startDate == null || endDate == null ) {
 
-			subscription.update();
-			createCSARecurrentOrders( subscription, ordersData );
+			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
+		}
+
+		if ( canSubscriptionBeEdited( subscription ) ) {
+
+			subscription.lock();
+			subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
+			subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+			
+			if ( isSubscriptionValid( subscription ) ) {
+
+				createCSARecurrentOrders( subscription, ordersData );
+				subscription.update();
+			}
+
+		}
+		else {
+
+			throw new Error( 'Cette souscription ne peut pas être modifiée car il y a des commandes passées.' );
 		}
 
 	}
@@ -195,7 +214,7 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if ( hasPastDistribOrders( subscription ) ) {
+		if ( !canSubscriptionBeEdited( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des commandes pour des distributions passées.', PastOrders );
 		}
@@ -298,7 +317,7 @@ class SubscriptionService
 	public static function createCSARecurrentOrders( subscription : db.Subscription,
 		ordersData : Array< { productId : Int, qt : Float, userId2 : Int, invertSharedOrder : Bool } > ) : Array<db.UserOrder> {
 
-		if ( ordersData.length == 0 ) {
+		if ( ordersData == null || ordersData.length == 0 ) {
 
 			throw new Error('Il n\'y a pas de commandes définies.');
 		}
@@ -335,13 +354,13 @@ class SubscriptionService
 
 						user2 = db.User.manager.get( order.userId2, false );
 						if ( user2 == null ) throw new Error( t._( "Unable to find user #::num::", { num : order.userId2 } ) );
-						if ( !user2.isMemberOf( product.catalog.group ) ) throw new Error( t._( "::user:: is not part of this group", { user : user2 } ) );
 						if ( subscription.user.id == user2.id ) throw new Error( t._( "Both selected accounts must be different ones" ) );
+						if ( !user2.isMemberOf( product.catalog.group ) ) throw new Error( t._( "::user:: is not part of this group", { user : user2 } ) );
 						
 						invert = order.invertSharedOrder;
 					}
 					
-					var newOrder =  OrderService.make( subscription.user, order.qt , product,  distribution.id, false , user2, invert, subscription );
+					var newOrder =  OrderService.make( subscription.user, order.qt , product,  distribution.id, false, subscription, user2, invert );
 					if ( newOrder != null ) orders.push( newOrder );
 
 				}

@@ -98,42 +98,45 @@
 	<h2>::_("Orders")::</h2>
 	<div class="article">
 		::if(constOrders.length>0)::
-		<h4>Contrats AMAP</h4>
-		<table class="table table-bordered table-condensed" >
-				<tr>
-					<th>::_("Qty||short version for quantity")::</th>
-					<th>::_("Product")::</th>
-					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of unit price")::</a></th>
-					<th>::_("Total")::</th>
-					<th>::_("Contract")::</th>
-					
-				</tr>
-				::set total = 0::
-				::foreach p constOrders::
+			<h4>Contrats AMAP</h4>
+			::foreach catalog subscriptionsByCatalog.keys()::
+				<h4>::catalog.name::</h4>
+				<table class="table table-striped table-bordered">
 					<tr>
-						<td>::raw p.smartQt::</td>
-						<td>::p.productName::</td>
-						<td>::formatNum(p.productPrice)::&nbsp;::currency()::</td>
-						
-						<td>
-							<!-- total -->
-							::formatNum(p.total)::&nbsp;::currency()::
-							::set total = total + p.total::
-						
-						</td>
-						<td>
-							<a href="/contract/view/::p.catalogId::">::p.catalogName::</a>
-						</td>
-					
+						<th style="text-align: center;">Engagement</th>
+						<th style="text-align: center;">Période d'engagement</th>
+						<th style="text-align: center;">Nombre de distributions</th>
+						<th style="text-align: center;">Total</th>
 					</tr>
-				::end::			
-				<tr>
-					<td colspan="2"></td>
-					<td>::_("TOTAL")::</td>
-					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
-					<td></td>
-				</tr>
-			</table>
+					::foreach subscription subscriptionsByCatalog.get(catalog)::
+						::set orderName = subscriptionService.getDescription(subscription)::
+						::if orderName == null::
+							::set class="danger text-danger"::
+						::else::
+							::set class=""::
+						::end::
+						<tr style="text-align: center;">
+							<td class="::class::" style="vertical-align: middle;">
+								::if orderName == null::
+									AUCUNE COMMANDE
+								::else::
+									::raw(orderName)::
+								::end::
+							</td>
+							<td style="vertical-align: middle;">
+								Du ::dateToString(subscription.startDate)::
+								au ::dateToString(subscription.endDate)::
+							</td>
+							<td style="vertical-align: middle;">
+								::subscriptionService.getSubscriptionNbDistributions(subscription)::
+							</td>
+							<td style="vertical-align: middle;">
+								::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+							</td>
+						</tr>
+					::end::
+				</table>
+			::end::
 		::end::
 
 

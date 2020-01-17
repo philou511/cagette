@@ -54,7 +54,8 @@ class ContractAdmin extends Controller
 			}
 		}
 		
-		view.contracts = contracts;		
+		view.contracts = contracts;
+		view.type_constorders = db.Catalog.TYPE_CONSTORDERS;
 		view.vendors = app.user.getGroup().getActiveVendors();
 		view.places = app.user.getGroup().getPlaces();
 		checkToken();
