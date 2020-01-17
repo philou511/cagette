@@ -5,6 +5,16 @@
 		<h3 ::cond title != null:: >::title::</h3>
 		<br/>
 
+		<div class="row" ::cond !canBeEdited:: >
+
+			<div id="content" class="col-md-12">
+				<div class="alert  alert-danger ">
+					<i class="icon icon-alert"></i> Cette souscription ne peut pas être modifiée car il y a des commandes passées.
+				</div>
+			</div>
+
+		</div>
+
 		<form id="subscription" class="form-horizontal" name="subscription" method="POST" action="">
 
 			<input type="hidden" name="token" value="::token::"/>

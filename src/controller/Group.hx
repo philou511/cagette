@@ -190,7 +190,7 @@ class Group extends controller.Controller
 			{label:"En direct d'un collectif de producteurs",value:"2"},
 			{label:"En direct d'un producteur",value:"3"},
 		];	
-		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1","1",true,true,true);
+		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
 		f.addElement(gt);
 		
 		if (f.checkToken()) {
@@ -255,12 +255,13 @@ class Group extends controller.Controller
 				vendor.insert();
 			}
 			
-			if (type == Amap){
+			if ( type == Amap ) {
+
 				var contract = new db.Catalog();
 				contract.name = t._("Vegetables CSA contract - Example");
 				contract.description = t._("CSA contract example");
 				contract.group  = g;
-				contract.type = 0;
+				contract.type = db.Catalog.TYPE_CONSTORDERS;
 				contract.vendor = vendor;
 				contract.startDate = Date.now();
 				contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
@@ -268,25 +269,26 @@ class Group extends controller.Controller
 				contract.distributorNum = 2;
 				contract.insert();
 				
-				var p = new db.Product();
-				p.name = t._("Big basket of vegetables");
-				p.price = 15;
-				p.organic = true;
-				p.catalog = contract;
-				p.insert();
+				var product = new db.Product();
+				product.name = t._("Big basket of vegetables");
+				product.price = 15;
+				product.organic = true;
+				product.catalog = contract;
+				product.insert();
 				
-				var p = new db.Product();
-				p.name = t._("Small basket of vegetables");
-				p.price = 10;
-				p.organic = true;
-				p.catalog = contract;
-				p.insert();
+				var product = new db.Product();
+				product.name = t._("Small basket of vegetables");
+				product.price = 10;
+				product.organic = true;
+				product.catalog = contract;
+				product.insert();
 				
 				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);				
-				OrderService.make(user, 1, p, null, true);
-				
-				
+				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);
+				var ordersData = new Array< { productId : Int, qt : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				ordersData.push( { productId : product.id, qt : 1, invertSharedOrder : false, userId2 : null } );
+				var subscription = service.SubscriptionService.createSubscription( user, contract, contract.startDate, contract.endDate, ordersData );
+
 			}
 			
 			//contrat variable
@@ -304,7 +306,7 @@ class Group extends controller.Controller
 			contract.name = t._("Chicken catalog - Example");
 			contract.description = t._("Chicken catalog example.");
 			contract.group  = g;
-			contract.type = 1;
+			contract.type = db.Catalog.TYPE_VARORDER;
 			contract.vendor = vendor;
 			contract.startDate = Date.now();
 			contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);

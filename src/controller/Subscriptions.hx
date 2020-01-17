@@ -134,11 +134,6 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez entrer au moins une quantité pour un produit." );
 				}
 
-				var subscription = new db.Subscription();
-				subscription.user = user;
-				subscription.catalog = catalog;
-				subscription.startDate = startDate;
-				subscription.endDate = endDate;
 				service.SubscriptionService.createSubscription( user, catalog, startDate, endDate, ordersData );
 
 				throw Ok( '/contractAdmin/subscriptions/' + catalog.id, 'La souscription pour ' + user.getName() + ' a bien été ajoutée.' );
@@ -152,6 +147,7 @@ class Subscriptions extends controller.Controller
 		}
 	
 		view.title = 'Nouvelle souscription';
+		view.canBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
 		view.showmember = true;
@@ -170,7 +166,9 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = subscription.catalog.getProducts();
 
-		if ( checkToken() ) {
+		var canBeEdited = service.SubscriptionService.canSubscriptionBeEdited( subscription );
+
+		if ( checkToken() && canBeEdited ) {
 
 			try {
 
@@ -230,8 +228,9 @@ class Subscriptions extends controller.Controller
 
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscription.user.getName() + ' a bien été mise à jour.' );
 		}
-	
+
 		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
+		view.canBeEdited = canBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
 		view.showmember = false;

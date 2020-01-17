@@ -31,7 +31,7 @@
 			<div class="form-group">
 				<label for="visibility" class="col-md-4 control-label">Visibilité</label>
 				<div class="col-md-6">
-					::if catalog != null && catalog.type == 0::  
+					::if catalog != null && catalog.type == type_constorders::  
 						<input type="radio" name="visibility" value="subscribers" /> Souscripteurs du contrat<br/>
 					::end::
 					<input type="radio" name="visibility" value="members" checked="checked" /> Membres du groupe<br/>

@@ -258,6 +258,25 @@ class Member extends Controller
 			}
 		}
 		view.constOrders = constOrders;
+		view.subscriptionService = service.SubscriptionService;
+		view.dateToString = function( date : Date ) {
+
+			return DateTools.format( date, "%d/%m/%Y");
+		}
+		var subscriptionsByCatalog = new Map< db.Catalog, Array<db.Subscription> >();
+		var memberSubscriptions = db.Subscription.manager.search( $user == member, false );
+		for ( subscription in memberSubscriptions ) {
+
+			if ( subscriptionsByCatalog[subscription.catalog] == null ) {
+
+				subscriptionsByCatalog[subscription.catalog] = [];
+			}
+
+			subscriptionsByCatalog[subscription.catalog].push( subscription );
+
+		}
+		view.subscriptionsByCatalog = subscriptionsByCatalog;
+		
 
 		checkToken(); //to insert a token in tpl
 		
