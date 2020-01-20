@@ -174,7 +174,7 @@ class Catalog extends Object
 	 */
 	public function getUsers():Array<db.User> {
 		var pids = getProducts().map(function(x) return x.id);
-		var ucs = UserOrder.manager.search($productId in pids, false);
+		var ucs = db.UserOrder.manager.search($productId in pids, false);
 		var ucs2 = [];
 		for( uc in ucs) {
 			ucs2.push(uc.user);

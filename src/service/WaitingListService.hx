@@ -135,6 +135,10 @@ class WaitingListService{
 		wl.delete();
 	}
 
+	public static function countUsersInWl(group:db.Group) {
+		return db.WaitingList.manager.count($group == group);	
+	}
+
 
 
 }

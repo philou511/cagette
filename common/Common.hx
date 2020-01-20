@@ -246,6 +246,11 @@ typedef UserInfo = {
 	
 }
 
+typedef UserList = {
+	id:String,
+	name:String,
+	count:Int
+}
 
 typedef GroupOnMap = {
 	id:Int,

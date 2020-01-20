@@ -2,16 +2,8 @@
 <div class="col-md-9">
 <div class="article">
 	::if select!=null::
-		<h2>::_("Selection :||show a sublist of members which has been selected")::
-		::if select=="nocontract"::
-			::_("Members without any order")::
-		::elseif select=="nomembership"::
-			::_("Members whose membership should be renewed")::
-		::elseif select=="newusers"::
-			::_("Members who has never logged in")::
-		::elseif select=="contract"::
-			::_("Members with orders or contracts")::
-		::end::
+		<h2>Liste :
+		::getListName(select)::
 		</h2>
 	
 		<p>
@@ -23,14 +15,17 @@
 	::elseif search!=null::
 
 		<h2>::_("Search"):: : ::search::</h2>
+
 		$$back()
 		
-	::else::	
+	::else::
+
 		<h2>::_("Members")::</h2>
+
 	::end::
 	
 	
-	::if select=="newusers"::
+	::if select=="newUsers"::
 		<hr/>
 		<p style="text-align:center;">
 			::_("You can invite by email all the members who never logged in, in one single clic.")::			
@@ -116,52 +111,45 @@
 	
 	
 	<div class="block">
-		<h3>::_("Selections")::</h3>
-		<ul>
-			<li><a href="/member/">::_("All members")::</a></li>
-			<li><a href="/member/?select=nocontract">::_("Without orders or contracts")::</a></li>
-			<li><a href="/member/?select=contract">::_("With orders or contracts")::</a></li>
-			<li><a href="/member/?select=newusers">::_("Never logged in")::</a></li>
-			<li ::cond user.getGroup().hasMembership()::><a href="/member/?select=nomembership">::_("Memberships to renew")::</a></li>
-			<li ::cond user.getGroup().hasPayments()::><a href="/member/balance">::_("Members balance")::</a></li>
-			
-		</ul>
-		
 		<form class="form-search" action="/member/" method="get">
 			<div class="input-group">
-				::if search==null::
-					::set ssearch=""::
-				::else::
-					::set ssearch=search::
-				::end::
-				<input type="text" class="form-control" name="search" value="::ssearch::" />
-				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"><i class="icon icon-search"></i> ::_("Search||search action button")::</button>
-				</span>
-				
-			  </div>
-		 </form>
+			::if search==null::
+				::set ssearch=""::
+			::else::
+				::set ssearch=search::
+			::end::
+			<input type="text" class="form-control" name="search" value="::ssearch::" />
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-default">
+					<i class="icon icon-search"></i> ::_("Search||search action button")::
+				</button>
+			</span>
+			
+			</div>
+		</form>
+
+		<h3>Listes</h3>
+		<ul>
+			::foreach list userLists::
+				<li>
+					<a href="/member/?select=::list.id::">::list.name::</a>
+					::if(list.count!=null)::
+					(<b>::list.count::</b>)
+					::end::
+				</li>
+			::end::
+		</ul>
+		
+		
 	</div>
 	
 	
-	<div class="block">
-		<h3>::_("Waiting list")::</h3>
-		<p>
-		::raw __("There is <b>::waitingList::</b> people on waiting list.",{waitingList:waitingList})::
-		<br/>
-		<a href="/member/waiting" class="btn btn-default btn-sm">::_("Display the list")::</a>
-		</p>
-	</div>
+
 	
 	
-	::if select!="newusers"::
 	<div class="block">		
-		<h3>::_("New members")::</h3>
-		::raw __("There is <b>::newUsers::</b> members who never logged in",{newUsers:newUsers})::
-		<br/>
-		<a href="/member/?select=newusers" class="btn btn-default btn-sm">::_("Display the list")::</a>
+		<a ::cond user.getGroup().hasPayments():: href="/member/balance" class="btn btn-default btn-sm">::_("Members balance")::</a>
 	</div>
-	::end::
 	
 </div>
 

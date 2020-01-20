@@ -1,4 +1,7 @@
 package controller;
+import sugoi.form.elements.DatePicker;
+import sugoi.form.elements.StringInput;
+import sugoi.form.elements.Checkbox;
 import db.UserOrder;
 import sugoi.form.Form;
 
@@ -28,9 +31,9 @@ class Amap extends Controller
 		
 		var form = Form.fromSpod(group);
 
-		//remove "shop mode", "marge a la place des %", "unused" from flags
+		//remove "membership", "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
-		untyped flags.excluded = [1,3,9];
+		untyped flags.excluded = [0,1,3,9];
 
 		//add a custom field for "shopmode"
 		var data = [
@@ -39,6 +42,8 @@ class Amap extends Controller
 		];
 		var selected = group.flags.has(db.Group.GroupFlags.ShopMode) ? "shop" : "CSA";
 		form.addElement( new sugoi.form.elements.RadioGroup("mode",t._("Ordering Mode"),data, selected), 8);
+
+		
 	
 		if (form.checkToken()) {
 			

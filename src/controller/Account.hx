@@ -136,7 +136,7 @@ class Account extends Controller
 		}
 		
 		checkToken();
-		view.userAmap = ua;
+		view.userGroup = ua;
 	}
 	
 	@tpl('form.mtt')

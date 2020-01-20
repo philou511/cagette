@@ -11,10 +11,17 @@
 				<a href="/amapadmin/vatRates/">::_("VAT rates")::</a>
 			</li>			
 			<li id="volunteers" ::attr class if(nav!=null && nav[1]=="volunteers") 'active'::>
-				<a href="/amapadmin/volunteers/">::_("Duty Periods")::</a>
+				<a href="/amapadmin/volunteers/">
+					<i class="icon icon-users"></i>  ::_("Duty Periods")::</a>
+			</li>
+			<li id="membership" ::attr class if(nav!=null && nav[1]=="membership") 'active'::>
+				<a href="/amapadmin/membership/">
+					<i class="icon icon-users"></i>  Adhésions</a>
 			</li>
 			<li id="currency">
-				<a href="/amapadmin/currency/">::_("Currency")::</a>
+				 <a href="/amapadmin/currency/">
+					<i class="icon icon-payment-type"></i> ::_("Currency")::
+				</a>
 			</li>
 			<li id="documents" ::attr class if(nav!=null && nav[1]=="documents") 'active'::>
 				<a href="/amapadmin/documents">
