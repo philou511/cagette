@@ -47,5 +47,15 @@ class ArrayTool
 		for (x in m) i++;
 		return i;
 	}
+
+	public static function deduplicate<T>(array:Array<T>):Array<T> {
+        var l = [];
+        for (v in array) {
+         	if (l.indexOf(v) == -1) { // array has not v
+            	l.push(v);
+            }
+         }
+        return l;
+    }
 	
 }
