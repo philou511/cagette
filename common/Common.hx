@@ -84,7 +84,10 @@ typedef ContractInfo = {
 
 }
 
-
+typedef GroupInfo = {
+	id : Int,
+	name : String,
+}
 
 @:keep
 typedef ProductInfo = {
