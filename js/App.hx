@@ -165,7 +165,8 @@ class App {
 	}
 
 	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int ) {
-		var node =  js.Browser.document.querySelector('#imageUploader');
+		var node = js.Browser.document.createDivElement();
+		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); 
 		ReactDOM.render(jsx('
 			<div>
