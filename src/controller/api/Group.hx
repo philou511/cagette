@@ -9,6 +9,38 @@ import Common;
 class Group extends Controller
 {
 	/**
+	 * 
+	 */
+	 public function doDefault(group:db.Group) {
+		switch (sugoi.Web.getMethod()) {
+			case "POST":
+				if (!app.user.isAmapManager()) throw Error("/", t._("Access forbidden"));
+
+				var request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb
+				
+				// IMAGE
+				if (request.exists("file")) {
+					var image = request.get("file");
+
+					if (image != null && image.length > 0) {
+						var img = sugoi.db.File.createFromDataUrl(request.get("file"), request.get("filename"));
+						group.lock();
+						if (group.image != null) {
+							//efface ancienne
+							group.image.lock();
+							group.image.delete();
+						}				
+						group.image = img;
+						group.update();
+					}
+				}
+				Sys.print(haxe.Json.stringify(group.infos()));
+			default: Sys.print(haxe.Json.stringify({}));
+		}
+	}	
+
+
+	/**
 	 * JSON map datas
 	 * 
 	 * Request by zone : http://localhost/api/group/map?minLat=42.8115217450979&maxLat=51.04139389812637=&minLng=-18.369140624999996&maxLng=23.13720703125
@@ -76,5 +108,4 @@ class Group extends Controller
 		#end
 		return db.Place.manager.unsafeObjects(sql, false);
 	}
-	
 }
