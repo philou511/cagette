@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-05-08 23:48+0000\n"
-"Last-Translator: Mauricio Lopez Chazaro <mauricioeneltrabajo@gmail.com>\n"
+"PO-Revision-Date: 2020-01-24 07:21+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/cagette/"
 "translations/es/>\n"
 "Language: es\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7-dev\n"
+"X-Generator: Weblate 3.11-dev\n"
 
 #: src/payment/Cash.hx:294
 msgid "Cash"
@@ -32,7 +32,7 @@ msgstr "Transferencia bancaria"
 
 #: src/payment/Check.hx:294 src/controller/Transaction.hx:6583
 msgid "Check"
-msgstr ""
+msgstr "Cheque"
 
 #: src/controller/Transaction.hx:393 src/controller/Transaction.hx:2379
 #: src/controller/Transaction.hx:4134 src/controller/Transaction.hx:4572
@@ -43,12 +43,12 @@ msgstr "Acción prohibida"
 #: src/controller/Transaction.hx:636 src/controller/Transaction.hx:2677
 #: src/controller/Validate.hx:1777 src/controller/Validate.hx:3101
 msgid "Label"
-msgstr ""
+msgstr "Etiqueta"
 
 #: src/controller/Transaction.hx:753 src/controller/Transaction.hx:2797
 #: src/controller/Validate.hx:1874 src/controller/Validate.hx:3210
 msgid "Amount"
-msgstr "Cantidad"
+msgstr "Monto"
 
 #: src/controller/Transaction.hx:840 src/controller/Transaction.hx:2889
 #: src/controller/Validate.hx:3297 src/db/Operation.hx:11940
@@ -126,7 +126,7 @@ msgstr ""
 
 #: src/controller/Transaction.hx:9203
 msgid "Cash payment"
-msgstr ""
+msgstr "Pago en efectivo"
 
 #: src/controller/Transaction.hx:9262
 msgid "Your order is validated, you commited to pay in cash at the delivery."
@@ -166,6 +166,8 @@ msgid ""
 "You cannot delete this supplier because some contracts (current or old) are "
 "referencing this supplier."
 msgstr ""
+"No puede eliminar este proveedor porque algunos contratos (activos o "
+"antiguos) hacen referencia a este."
 
 #: src/controller/Vendor.hx:1987
 msgid "Supplier deleted"
@@ -4525,43 +4527,45 @@ msgstr ""
 
 #: lang/master/tpl/mail/invitation.mtt:720
 msgid "In order to finalize the subscription, please choose your password"
-msgstr ""
+msgstr "Para finalizar su suscripción, elija su contraseña"
 
 #: lang/master/tpl/mail/invitation.mtt:809
 msgid "You will then be able to connect anytime by using your e-mail"
 msgstr ""
+"Podrá entonces conectarse en cualquier momento utilizando su dirección de "
+"correo"
 
 #: lang/master/tpl/mail/invitation.mtt:949
 msgid "and your password on the website"
-msgstr ""
+msgstr "y su contraseña en el sitio web"
 
 #: lang/master/tpl/mail/invitation.mtt:1268
 msgid "Finalize your subscription"
-msgstr ""
+msgstr "Finalice su suscripción"
 
 #: lang/master/tpl/mail/design.mtt:218
 msgid "This e-mail was sent from"
-msgstr ""
+msgstr "Este mensaje se envió desde"
 
 #: lang/master/tpl/mail/design.mtt:336
 msgid "You receive this message because you are part of"
-msgstr ""
+msgstr "Ha recibido este mensaje porque forma parte de"
 
 #: js/Tuto.hx:970
 msgid "This tutorial is over."
-msgstr ""
+msgstr "Este tutorial se ha terminado."
 
 #: js/Tuto.hx:1108
 msgid "Come back to tutorials page"
-msgstr ""
+msgstr "Volver a la página de tutoriales"
 
 #: js/Tuto.hx:1848
 msgid "OK"
-msgstr ""
+msgstr "Aceptar"
 
 #: common/Common.hx:6421
 msgid "Guided tour for the coordinator"
-msgstr ""
+msgstr "Visita guiada para el coordinador"
 
 #: common/Common.hx:6511
 msgid ""
@@ -4570,6 +4574,10 @@ msgid ""
 "overview on the different tools that are available to you.</p><p>You will be "
 "able to stop and start again this tutorial whenever you want.</p>"
 msgstr ""
+"<p>Para descubrir mejor Cagette.net, le proponemos realizar una visita "
+"guiada por la interfaz de usuario del programa.<br/>Entonces contará con una "
+"visión global de las distintas herramientas de que dispone.</p><p>Podrá "
+"detener y comenzar de nuevo este tutorial siempre que lo desee.</p>"
 
 #: common/Common.hx:6917
 msgid ""
@@ -4580,6 +4588,13 @@ msgid ""
 "history</li><li> On the <b>Farmers</b> page,  you can see all farmers and "
 "coordinators of the group</ul>"
 msgstr ""
+"Esta parte de la barra de navegación es visible por todos los miembros.</br>"
+"Permite acceder a las tres páginas principales:\t<ul><li> La <b>página de "
+"inicio</b>, que muestra los pedidos y la planificación de las "
+"entregas.</li><li> En la página <b>Mi cuenta</b> puede actualizar su "
+"información personal y revisar su histórico de pedidos</li><li> En la página "
+"<b>Productores</b> puede ver todos los productores y coordinadores del "
+"grupo</ul>"
 
 #: common/Common.hx:7433
 msgid ""
@@ -4587,6 +4602,9 @@ msgid ""
 "the register of members, orders,  products, etc.<br/><p>Now click on the "
 "<b>Members</b> section</p>"
 msgstr ""
+"Esta parte se reserva <b>solo a coordinadores.</b>Aquí podrá gestionar el "
+"registro de miembros, pedidos, productos, etcétera.<br/><p>Ahora pulse en la "
+"sección <b>Miembros</b></p>"
 
 #: common/Common.hx:7738
 msgid ""
@@ -4595,6 +4613,11 @@ msgid ""
 "him/her. Now the member can join you at Cagette.net and order or consult the "
 "planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
 msgstr ""
+"El propósito de esta sección es administrar la lista de sus miembros.<br/>"
+"Cada vez que registre un miembro nuevo, se creará una cuenta para él o ella. "
+"Entonces el miembro podrá unírsele por medio de Cagette.net y pedir o "
+"consultar la planificación de las entregas.<p>Pulse ahora en un "
+"<b>miembro</b> de la lista</p>"
 
 #: common/Common.hx:8168
 msgid ""
@@ -4602,12 +4625,17 @@ msgid ""
 "contact details</li><li>manage the membership fee of your group</li><li>see "
 "a summary of their orders</li></ul>"
 msgstr ""
+"Esta es la página de un miembro. Aquí puede: <ul><li>ver y cambiar sus datos "
+"de contacto</li><li>gestionar la cuota de afiliación de su grupo</li><li>ver "
+"un resumen de sus pedidos</li></ul>"
 
 #: common/Common.hx:8469
 msgid ""
 "Now let's have a look at the <b>contracts</b> section which is very "
 "important for coordinators."
 msgstr ""
+"Ahora echemos un vistazo a la sección de <b>contratos</b>, la cual es de "
+"suma importancia para los coordinadores."
 
 #: common/Common.hx:8688
 msgid ""
@@ -4616,17 +4644,26 @@ msgid ""
 "manage :<ul><li>the list of products of this farmer</li><li>the orders of "
 "members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
 msgstr ""
+"Aquí hallará la lista of <b>contratos</b>. Estos incluyen una fecha de "
+"inicio y una de finalización, y representan su relación con un productor.<br/"
+"><p>Aquí puede gestionar:<ul><li>la lista de productos de este "
+"productor</li><li>los pedidos de miembros hacia este productor</li><li>y "
+"planificar la programación de entregas</li></ul></p>"
 
 #: common/Common.hx:9093
 msgid ""
 "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to "
 "key-in the complete address as a map will be displayed based on this address"
 msgstr ""
+"Aquí puede gestionar la lista de <b>sitios de entrega</b>.<br/>No olvide "
+"teclear la dirección completa, ya que con base en esta dirección se mostrará "
+"un mapa"
 
 #: common/Common.hx:9376
 msgid ""
 "Let's look closer at how to manage a contract. <b>Click on this button</b>"
 msgstr ""
+"Miremos más de cerca cómo gestionar un contrato. <b>Pulse en este botón</b>"
 
 #: common/Common.hx:9609
 msgid ""
@@ -4635,10 +4672,14 @@ msgid ""
 "during the whole duration of the contract</li><li>Variable contracts: the "
 "member can choose what he buys for each delivery.</li></ul>"
 msgstr ""
+"He aquí un resumen del contrato.<br/>Existen dos tipos de contratos:<ul><li>"
+"Contratos constantes: el miembro se compromete a comprar los mismos "
+"productos durante toda la extensión del contrato</li><li>Contratos variables:"
+" el miembro puede elegir lo que compra en cada entrega.</li></ul>"
 
 #: common/Common.hx:10012
 msgid "Let's see now the page <b>Products</b>"
-msgstr ""
+msgstr "Veamos ahora la página <b>Productos</b>"
 
 #: common/Common.hx:10198
 msgid ""
@@ -4646,10 +4687,13 @@ msgid ""
 "<br/>Define at least the name and the price of products. It is also possible "
 "to add a description and a picture."
 msgstr ""
+"En esta página puede gestionar la lista de productos ofrecidos por este "
+"proveedor.<br/>Defina por lo menos el nombre y el precio de los productos. "
+"Asimismo, es posible añadir una descripción y una imagen."
 
 #: common/Common.hx:10508
 msgid "Let's see the <b>deliveries</b> page"
-msgstr ""
+msgstr "Veamos la página de <b>entregas</b>"
 
 #: common/Common.hx:10697
 msgid ""
@@ -4658,10 +4702,14 @@ msgid ""
 "of the delivery must also be defined, by using the list that we have already "
 "seen."
 msgstr ""
+"Aquí podemos gestionar la lista de entregas de este proveedor.<br/>En el "
+"programa, una entrega tiene una fecha, una hora de inicio y una hora de "
+"finalización. La ubicación de la entrega ha de definirse también, utilizando "
+"la lista que ya hemos visto."
 
 #: common/Common.hx:11048
 msgid "Let's see now the <b>Orders</b> page"
-msgstr ""
+msgstr "Ahora revisemos la página <b>Pedidos</b>"
 
 #: common/Common.hx:11298
 msgid ""
@@ -4671,12 +4719,19 @@ msgid ""
 "supplier.  Otherwise, as a coordinator, you will be able to enter orders on "
 "behalf of a member."
 msgstr ""
+"Aquí es posible gestionar la lista de pedidos de este proveedor.<br/>Si opta "
+"por «abrir los pedidos» a los miembros, serán capaces de efectuar sus "
+"pedidos en línea por sí solos.<br/>Esta página centralizará automáticamente "
+"los pedidos a este proveedor. Por lo demás, como coordinador, usted podrá "
+"hacer pedidos en nombre de un miembro."
 
 #: common/Common.hx:11742
 msgid ""
 "<p>We have seen the main features related to contracts.</p><p>Let's see the "
 "<b>messaging</b> section.</p>"
 msgstr ""
+"<p>Hemos visto lo esencial en lo que respecta a los contratos.</p><p>"
+"Exploremos ahora la sección de <b>mensajería</b>.</p>"
 
 #: common/Common.hx:11969
 msgid ""
@@ -4686,10 +4741,15 @@ msgid ""
 "<p>E-mails are sent with your e-mail address as sender, so you will receive "
 "answers in your own mailbox.</p>"
 msgstr ""
+"<p>La sección de mensajería le permite enviar mensajes de correo a "
+"diferentes listas de miembros. Ya no hace falta mantener numerosas listas de "
+"direcciones en función de los contratos, dado que estas listas se generan "
+"automáticamente.</p><p>Los mensajes se envían con su dirección como "
+"remitente, de modo que recibirá cualesquier respuestas en su buzón.</p>"
 
 #: common/Common.hx:12423
 msgid "Click here now on this page"
-msgstr ""
+msgstr "Pulse ahora aquí en esta página"
 
 #: common/Common.hx:12579
 msgid ""
@@ -4698,6 +4758,11 @@ msgid ""
 "can define other coordinators among members. They will then be able to "
 "manage one or many contracts, send emails, etc.</p>"
 msgstr ""
+"<p>En esta última página puede configurar todo lo relacionado con su "
+"grupo.</p><p>La página <b>Privilegios de acceso</b> es importante ya que es "
+"donde puede definir otros coordinadores de entre los miembros. Entonces "
+"serán capaces de gestionar uno o más contratos, enviar mensajes por correo, "
+"etcétera.</p>"
 
 #: common/Common.hx:12963
 msgid ""
@@ -4706,6 +4771,10 @@ msgid ""
 "<b>documentation</b>. The link is always available at the bottom of the "
 "screen.</p>"
 msgstr ""
+"<p>Este es el último paso de este tutoria. Espero que le haya ofrecido una "
+"visión general adecuada de este programa.<br/>Para aprender más, no dude en "
+"consultar la <b>documentación</b>. El enlace está en todo momento disponible "
+"en la parte inferior de la pantalla.</p>"
 
 #~ msgid "Default user credentials are :"
 #~ msgstr "Las credenciales de usuario son :"
