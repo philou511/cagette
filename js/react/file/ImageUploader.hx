@@ -175,11 +175,13 @@ class ImageUploader extends ReactComponentOfPropsAndState<ImageUploaderProps, Im
 		/*onLoadFailure=$onLoadFailure
 					onLoadSuccess=${logCallback.bind('onLoadSuccess')}
 			  		onImageReady=${logCallback.bind('onImageReady')}
-					  	*/
+							*/
+			var ratio = 537 / props.width;
 	  	var image = state.image != null ? jsx('
 			<div>
 				<AvatarEditor 
-			  		ref=$avatarEditorRef
+						ref=$avatarEditorRef
+						style={{ width: ${props.width} * ${ratio}, height: ${props.height} * ${ratio} }}
 					scale=${state.scale}
 					width=${state.width}
 					height=${state.height}
