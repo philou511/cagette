@@ -1,5 +1,7 @@
 package react.store;
 
+import mui.core.grid.GridSpacing;
+import css.AlignSelf;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
@@ -120,7 +122,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				textOverflow: Ellipsis,
 				lineHeight: "1.2em",
   				maxHeight: 80,
-				alignSelf: "flex-start",
+				alignSelf: AlignSelf.FlexStart,
             },
             cagProductInfoWrap : {       
                 justifyContent: SpaceBetween,
@@ -215,7 +217,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 			
 
 			return jsx('
-				<Grid className=${classes.product} container={true} direction=${Row} spacing={8} key=${product.id}>
+				<Grid className=${classes.product} container={true} direction=${Row} spacing=${GridSpacing.Spacing_8} key=${product.id}>
 					<Grid item xs={2} className=${classes.gridItem}>
 						<Card className=${classes.subcard} elevation={0}>
 							<CardMedia

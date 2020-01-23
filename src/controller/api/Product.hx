@@ -9,6 +9,13 @@ import Common;
  */
 class Product extends Controller
 {
+	
+	public function  doDefault(product:db.Product) {
+		Sys.print(haxe.Json.stringify(product.infos()));
+	}
+	
+	
+	
 	/**
 		List all products of a conctract
 	**/

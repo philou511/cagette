@@ -125,14 +125,14 @@ class CagetteTheme{
 	public static function get(){
 		return mui.core.styles.MuiTheme.createMuiTheme({
 			palette: {
-				primary: {main: CGColors.Primary},
-				secondary: {main:CGColors.Secondary},
-				error: {main:"#FF0000"},       
+				primary: 	{main: cast CGColors.Primary},
+				secondary: 	{main: cast CGColors.Secondary},
+				error: 		{main: cast "#FF0000"},       
 			},
 			typography: {
 				fontFamily:['Cabin', 'icons', '"Helvetica Neue"','Arial','sans-serif',],
 				fontSize:16, 
-    			useNextVariants: true,//https://material-ui.com/style/typography/#migration-to-typography-v2
+    			//useNextVariants: true,//https://material-ui.com/style/typography/#migration-to-typography-v2
 			},
 			overrides: {
 				MuiButton: { // Name of the component ⚛️ / style sheet

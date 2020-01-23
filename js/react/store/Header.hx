@@ -1,5 +1,6 @@
 package react.store;
 // it's just easier with this lib
+import mui.core.grid.GridSpacing;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
@@ -114,7 +115,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		});
 
 		return jsx('
-            <Grid container spacing={8} className=${headerClasses}>
+            <Grid container spacing=${GridSpacing.Spacing_8} className=${headerClasses}>
                 <Grid item md={6} xs={12}> 
                     <DistributionDetails 
                         isSticky=${props.isSticky} 

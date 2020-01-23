@@ -145,7 +145,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                         </Button>
                     </Tooltip>
                     
-                    <Grid container spacing={24}>              
+                    <Grid container spacing=${cast 24}>              
                         <Grid item xs={4} className=${classes.gridItem}>
                             <div>
                                 <img className=${classes.cover} src=${product.image}/>
@@ -175,7 +175,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                         </h2>
                     </div>
 
-                    <Grid container spacing={24}>
+                    <Grid container spacing=${cast 24}>
                         <Grid item xs={4}>
                             <img className=${classes.cover} src=${portrait} />
                         </Grid>

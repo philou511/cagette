@@ -80,7 +80,7 @@ class ProductListSubCategory extends react.ReactComponentOf<ProductListSubCatego
 		return jsx('
 			<div className=${classes.subCategory} key=${subcategory.id}>
 				${subcategoryName}
-				<$Grid container style={{ marginBottom: 20}} spacing={Spacing_24}>
+				<$Grid container style={{ marginBottom: 20}} spacing=${cast 24}>
 					${renderProducts(props.catalog.products)}
 				</$Grid>
 				<div className=${classes.button}>

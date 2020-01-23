@@ -1,6 +1,6 @@
--D tink_hxx=0.22.1
-# @install: lix --silent download "haxelib:/tink_hxx#0.22.1" into tink_hxx/0.22.1/haxelib
+# @install: lix --silent download "haxelib:/tink_hxx#0.22.3" into tink_hxx/0.22.3/haxelib
 -lib html-entities
--lib tink_parse
 -lib tink_anon
--cp ${HAXE_LIBCACHE}/tink_hxx/0.22.1/haxelib/src
+-lib tink_parse
+-cp ${HAXE_LIBCACHE}/tink_hxx/0.22.3/haxelib/src
+-D tink_hxx=0.22.3

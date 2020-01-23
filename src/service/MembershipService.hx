@@ -6,7 +6,15 @@ class MembershipService{
 
     public function new(group:db.Group){
         this.group = group;
-    }
+	}
+	
+	public function getUserMemberships(user:db.User){
+		return db.Membership.manager.search($user == user && $amap == group,{orderBy:-year}, false).array();
+	}
+
+	public function getPeriodName(year:Int):String{
+		return group.getPeriodNameFromYear(year);
+	}
 
 
     public function countUpToDateMemberships(){

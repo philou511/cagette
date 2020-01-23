@@ -1,6 +1,8 @@
 package controller.api;
+import service.MembershipService;
 import haxe.Json;
 import tink.core.Error;
+import service.PaymentService;
 import Common;
 
 /**
@@ -8,6 +10,46 @@ import Common;
  */
 class User extends Controller
 {
+
+	public function doDefault(user:db.User){
+		//get a user
+	}
+
+	/**
+		get membership status of a user in a group
+	**/
+	public function doMembership(user:db.User,group:db.Group){
+		var ug = db.UserGroup.get(user,group);
+		if(ug==null){
+			throw new Error(403,"Not found");
+		}else{
+			var out = {
+				userName:null,
+				availableYears: new Array<{name:String,id:Int}>(),
+				memberships: new Array<{name:String,id:Int,date:Date}>(),
+				membershipFee:null,
+				distributions: new Array<{name:String,id:Int}>(),
+				paymentTypes: new Array<{id:String,name:String}>(),
+			};
+
+			out.userName = user.getName();
+			out.membershipFee = group.membershipFee;
+			if(group.hasPayments()){
+				out.paymentTypes = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).map(p -> return {id:p.type,name:p.name});
+			}
+			var ms = new MembershipService(group);
+			out.memberships = ms.getUserMemberships(user).map(m->{
+				return {
+					id : m.year ,
+					name : ms.getPeriodName(m.year),
+					date : m.date
+				};
+			});
+			
+
+			Sys.print(haxe.Json.stringify(out));
+		}
+	}
 	
 	/**
 	 * Login

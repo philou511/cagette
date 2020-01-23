@@ -7,7 +7,7 @@ package payment;
 class PaymentType
 {
 
-	public var type:String;
+	public var type:String;	// = id
 	public var icon:String;
 	public var name:String; //translated name
 	public var link:String;

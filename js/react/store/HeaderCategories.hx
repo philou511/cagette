@@ -1,5 +1,6 @@
 package react.store;
 // it's just easier with this lib
+import mui.core.grid.GridSpacing;
 import js.html.ScrollBehavior;
 import classnames.ClassNames.fastNull as classNames;
 import react.ReactComponent;
@@ -129,7 +130,7 @@ class HeaderCategories extends react.ReactComponentOfProps<HeaderCategoriesProps
         <Hidden xsDown>
             <div className=${headerClasses}>
                 <div className=${classes.cagWrap}>
-                    <Grid container spacing={0} className=${categoryGridClasses}>
+                    <Grid container spacing=${GridSpacing.Spacing_0} className=${categoryGridClasses}>
                         ${categories}
                     </Grid>
                     <HeaderSubCategories category=${props.nav.category} subcategory=${props.nav.subcategory} onClick=${onSubCategoryClicked} />                    
