@@ -231,7 +231,7 @@ class Cron extends Controller
 			print('Catalogs that have ended between $oneDayBefore and $eighteenMonthsAgo');
 			//Catalogs that have ended during that time range
 			var endedCatalogs = db.Catalog.manager.search( $endDate >= oneDayBefore && $endDate < eighteenMonthsAgo, false );
-			var documents : List<sugoi.db.EntityFile>  = null;
+			var documents : Array<sugoi.db.EntityFile>  = null;
 			for ( catalog in endedCatalogs ) {
 
 				documents = sugoi.db.EntityFile.getByEntity( 'catalog', catalog.id, 'document' );
