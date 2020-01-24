@@ -55,7 +55,7 @@ class Contract extends Controller
 		var currentContact = c.contact;
 		
 		var form = Form.fromSpod(c);
-		form.removeElement( form.getElement("groupId") );
+		form.removeElement(form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("distributorNum"));
 		form.getElement("userId").required = true;

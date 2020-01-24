@@ -1,4 +1,5 @@
 package controller;
+import sys.db.RecordInfos;
 import neko.Utf8;
 import haxe.io.Encoding;
 import haxe.io.Bytes;

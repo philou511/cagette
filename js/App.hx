@@ -164,12 +164,13 @@ class App {
 		});
 	}
 
-	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int ) {
-		var node =  js.Browser.document.querySelector('#imageUploader');
+	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
+		var node = js.Browser.document.createDivElement();
+		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); 
 		ReactDOM.render(jsx('
 			<div>
-				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL width=$width height=$height />
+				<ImageUploaderDialog uploadURL=$uploadURL uploadedImageURL=$uploadedImageURL width=$width height=$height formFieldName=$formFieldName />
 			</div>'), node);
 	}
 	

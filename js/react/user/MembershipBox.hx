@@ -3,17 +3,9 @@ package react.user;
 import js.html.Console;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import mui.core.CircularProgress;
 import react.Error;
-import mui.core.Grid;
-import mui.core.Table;
-import mui.core.TableHead;
-import mui.core.TableRow;
-import mui.core.TableCell;
-import mui.core.TableBody;
-import mui.core.Paper;
-import mui.core.Button;
 import react.mui.CagetteTheme;
+import mui.core.*;
 
 typedef MembershipBoxState = {
     loading:Bool,
@@ -72,7 +64,7 @@ class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,Mem
         if(state.loading){
             content = <div><CircularProgress /></div>;
         }else{
-            content =  <Grid container>
+            content =  <Grid container spacing=${mui.core.grid.GridSpacing.Spacing_4}>
                 <Grid item xs={12}>
                     <h3>Adhésions de ${state.userName}</h3>
                 </Grid>
@@ -94,6 +86,7 @@ class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,Mem
                                     <TableCell>${Formatting.hDate(row.date)}</TableCell>
                                     <TableCell>
                                         <Button onClick=${deleteMembership.bind(row.id)} size=$Small variant=$Outlined >
+                                            ${CagetteTheme.getIcon("delete",{fontSize:12})} 
                                             Supprimer
                                         </Button>    
                                     </TableCell>
@@ -106,6 +99,14 @@ class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,Mem
 
                 <Grid item xs={6}>
                     <h4>Saisir une adhésion</h4>
+                    <FormControl>
+                        <InputLabel>Année</InputLabel>
+                        <Select value={Date.now().getFullYear()} onChange={handleChange}>
+                        ${
+                            state.availableYears.map( y -> return <MenuItem value=${y.id}>${y.name}</MenuItem> )
+                        }
+                        </Select>
+                    </FormControl>
                 </Grid>
                 
             </Grid>;
@@ -116,7 +117,11 @@ class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,Mem
             $content
         </div>');
 
-	}
+    }
+    
+    function handleChange(){
+
+    }
       
     function deleteMembership(year:Int){
         

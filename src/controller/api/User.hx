@@ -45,8 +45,16 @@ class User extends Controller
 					date : m.date
 				};
 			});
-			
 
+
+			out.availableYears = [];
+			var now = Date.now();
+			for ( x in -4...2) {
+				var yy = DateTools.delta(now, DateTools.days(365) * x);
+				out.availableYears.push({name : group.getPeriodName(yy) , id : group.getMembershipYear(yy)});
+			}
+
+			out.availableYears.reverse();
 			Sys.print(haxe.Json.stringify(out));
 		}
 	}

@@ -445,6 +445,13 @@ class Group extends Object
 		}
 		return out;
 	}
+
+	public function infos(): GroupInfo {
+		return {
+			id: id,
+			name: name
+		}
+	}
 	
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
