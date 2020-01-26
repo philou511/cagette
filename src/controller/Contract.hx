@@ -273,78 +273,91 @@ class Contract extends Controller
 	 * 
 	 */
 	@tpl("contract/order.mtt")
-	function doOrder( c:db.Catalog ) {
+	function doOrder( catalog : db.Catalog ) {
 		
 		//checks
 		//if (app.user.getGroup().hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.getGroup().hasShopMode()) throw Redirect("/shop");
-		if (!c.isUserOrderAvailable()) throw Error("/", t._("This catalog is not opened for orders"));
+		if ( !catalog.isUserOrderAvailable() ) throw Error( "/", t._("This catalog is not opened for orders") );
 
-		
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
-		if (c.type == db.Catalog.TYPE_VARORDER) {
-			distributions = db.Distribution.getOpenToOrdersDeliveries(c);
+		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+			distributions = db.Distribution.getOpenToOrdersDeliveries( catalog );
 		}else{
 			distributions = [null];
 		}
 		
 		//list of distribs with a list of product and optionnaly an order
-		var userOrders = new Array< {distrib:db.Distribution,datas:Array<{order:db.UserOrder,product:db.Product}>} >();
-		var products = c.getProducts();
+		var userOrders = new Array< { distrib : db.Distribution, data : Array< { order : db.UserOrder, product : db.Product }> } >();
+		var products = catalog.getProducts();
 		
-		if ( c.type == db.Catalog.TYPE_VARORDER ){
+		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			
 			for ( d in distributions){
-				var datas = [];
+				var data = [];
 				for ( p in products) {
 					var ua = { order:null, product:p };					
 					var order = db.UserOrder.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);						
 					if (order != null) ua.order = order;
-					datas.push(ua);
+					data.push(ua);
 				}				
-				userOrders.push({distrib:d,datas:datas});
+				userOrders.push( { distrib : d, data : data } );
 			}
 			
-		}else{
+		}
+		else {
 			
-			var datas = [];
-			for ( p in products) {
-				var ua = { order:null, product:p };				
-				var order = db.UserOrder.manager.select($user == app.user && $productId == p.id, true);				
-				if (order != null) ua.order = order;
-				datas.push(ua);
+			var data = [];
+			for ( product in products) {
+
+				var orderProduct = { order : null, product : product };
+				// var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
+				// if ( order != null ) orderProduct.order = order;
+				data.push( orderProduct );
 			}
 			
-			userOrders.push({distrib:null,datas:datas});			
+			userOrders.push( { distrib : null, data : data } );
 		}
 
 		
 		//form check
-		if (checkToken()) {
+		if ( checkToken() ) {
 
 			var orders = [];
+			var ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> ();
 
-			for (k in app.params.keys()) {
+
+			for ( k in app.params.keys() ) {
 				
-				if (k.substr(0, 1) != "d") continue;
-				var qt = app.params.get(k);
-				if (qt == "") continue;
+				if ( k.substr(0, 1) != "d" ) continue;
+				var qt = app.params.get( k );
+				if ( qt == "" ) continue;
 				
 				var pid = null;
 				var did = null;
-				try{
-				pid = Std.parseInt(k.split("-")[1].substr(1));
-				did = Std.parseInt(k.split("-")[0].substr(1));
-				}catch (e:Dynamic){trace("unable to parse key "+k); }
+				try {
+
+					pid = Std.parseInt(k.split("-")[1].substr(1));
+					did = Std.parseInt(k.split("-")[0].substr(1));
+				}
+				catch ( e:Dynamic ) { 
+				
+					trace("unable to parse key "+k);
+				}
 				
 				//find related element in userOrders
 				var uo = null;
-				for ( x in userOrders){
+				for ( x in userOrders ) {
+
 					if (x.distrib!=null && x.distrib.id != did) {
+						
 						continue;
-					}else{
-						for (a in x.datas){
+					}
+					else {
+
+						for ( a in x.data ){
 							if (a.product.id == pid){
 								uo = a;
 								break;
@@ -355,34 +368,63 @@ class Contract extends Controller
 				
 				if (uo == null) throw t._("Could not find the product ::product:: and delivery ::delivery::", {product:pid, delivery:did});
 				
-				var q = 0.0;
+				var quantity = 0.0;
 				
-				if (uo.product.hasFloatQt ) {
+				if ( uo.product.hasFloatQt ) {
+
 					var param = StringTools.replace(qt, ",", ".");
-					q = Std.parseFloat(param);
-				}else {
-					q = Std.parseInt(qt);
+					quantity = Std.parseFloat(param);
+
+				}
+				else {
+
+					quantity = Std.parseInt(qt);
 				}
 				
+				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 				
-				if (uo.order != null) {	
-					orders.push( OrderService.edit(uo.order, q));
-				}else {
-					orders.push( OrderService.make(app.user, q, uo.product, did));
+					if ( uo.order != null ) {
+
+						orders.push( OrderService.edit(uo.order, quantity));
+					}
+					else {
+
+						orders.push( OrderService.make(app.user, quantity, uo.product, did));
+					}
 				}
+				else {
+
+					ordersData.push( { productId : uo.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
+				}
+
+			}
+			
+			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+				try {
+
+					service.SubscriptionService.createSubscription( app.user, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+				}
+				catch ( e : Dynamic ) { 
 				
+					throw Error( "/contract/order/" + catalog.id, e.message );
+				}
+
 			}
 
 			//create order operation only
-			if (app.user.getGroup().hasPayments()){		
+			if ( catalog.type == db.Catalog.TYPE_VARORDER && app.user.getGroup().hasPayments() ) {
+
 				var orderOps = db.Operation.onOrderConfirm(orders);
 			}
 
-			throw Ok("/contract/order/"+c.id, t._("Your order has been updated"));
+
+			throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
 		}
 		
-		view.c = view.contract = c;
+		view.c = view.contract = catalog;
 		view.userOrders = userOrders;
+		
 	}
 	
 	

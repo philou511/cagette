@@ -10,6 +10,7 @@ class Subscription extends Object {
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDate;
 	public var endDate : SDate;
+	@hideInForms public var isValidated : SBool;
 
 	public function populate() {
 		

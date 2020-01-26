@@ -35,7 +35,7 @@
 			
 			::if userOrders.length>0::	
 			
-				::foreach uo userOrders[0].datas::
+				::foreach uo userOrders[0].data::
 				<tr>
 					<td>
 						<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
@@ -59,7 +59,7 @@
 					::foreach d userOrders::
 					<td>
 		
-						::set o = d.datas[i]::
+						::set o = d.data[i]::
 						
 						::if o.order==null::
 							::set q = ""::
@@ -96,7 +96,7 @@
 					<th>
 						
 					::set total=0::
-					::foreach o d.datas::
+					::foreach o d.data::
 					
 						::if o.order!=null::
 							::set q = o.order.quantity::

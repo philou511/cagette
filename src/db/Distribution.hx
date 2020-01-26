@@ -120,12 +120,12 @@ class Distribution extends Object
 	}
 
 	public function getUserOrders(user:db.User):List<db.UserOrder>{
-		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
-			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($catalog == this.catalog, false));			
-			return db.UserOrder.manager.search( (($productId in pids) && ($user==user || $user2==user) ), false); 
-		}else{
+		// if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
+		// 	if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($catalog == this.catalog, false));			
+		// 	return db.UserOrder.manager.search( (($productId in pids) && ($user==user || $user2==user) ), false); 
+		// }else{
 			return db.UserOrder.manager.search($distribution == this  && $user==user, false); 
-		}
+		// }
 	}
 	
 	public function getUsers():Iterable<db.User>{		
