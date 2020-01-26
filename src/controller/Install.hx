@@ -277,12 +277,12 @@ class Install extends controller.Controller
 
 			for ( user in ordersByUser.keys() ) {
 
-				var ordersData = new Array< { id : Int, productId : Int, qt : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
+				var ordersData = new Array< { id : Int, productId : Int, quantity : Float, paid : Bool, invertSharedOrder : Bool, userId2 : Int } >();
 				for ( order in ordersByUser[user] ) {
 
 					if ( order.quantity > 0 ) {
 
-						ordersData.push( { id : null, productId : order.product.id, qt : order.quantity, paid : order.paid, invertSharedOrder : order.hasInvertSharedOrder(), userId2 : order.user2 == null ? null : order.user2.id } );
+						ordersData.push( { id : null, productId : order.product.id, quantity : order.quantity, paid : order.paid, invertSharedOrder : order.hasInvertSharedOrder(), userId2 : order.user2 == null ? null : order.user2.id } );
 					}
 				}
 				

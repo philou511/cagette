@@ -26,6 +26,7 @@ class Subscriptions extends controller.Controller
 		view.group = db.Group.manager.get( catalog.group.id );
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
+		view.validationsCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.isValidated; } );
 
 		view.dateToString = function( date : Date ) {
 
@@ -95,7 +96,7 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 				
-				var ordersData = new Array< { productId : Int, qt : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				for ( product in catalogProducts ) {
 
 					var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
@@ -124,7 +125,7 @@ class Subscriptions extends controller.Controller
 
 					if ( quantity != 0 ) {
 
-						ordersData.push( { productId : product.id, qt : quantity, invertSharedOrder : invert, userId2 : userId2 } );
+						ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
 					}
 					
 				}
@@ -179,7 +180,7 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 
-				var ordersData = new Array< { productId : Int, qt : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				for ( product in catalogProducts ) {
 
 					var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
@@ -208,7 +209,7 @@ class Subscriptions extends controller.Controller
 
 					if ( quantity != 0 ) {
 
-						ordersData.push( { productId : product.id, qt : quantity, invertSharedOrder : invert, userId2 : userId2 } );
+						ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
 					}
 					
 				}
@@ -244,6 +245,24 @@ class Subscriptions extends controller.Controller
 		view.enddate = subscription.endDate;
 		view.nav.push( 'subscriptions' );
 
+	}
+
+
+	public function doValidate( subscription : db.Subscription ) {
+
+		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+
+		try {
+			
+			service.SubscriptionService.updateSubscription( subscription, subscription.startDate, subscription.endDate, null, true );
+		}
+		catch( error : Error ) {
+			
+			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
+		}
+
+		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscription.user.getName() + ' a bien été validée.' );
+		
 	}
 
 

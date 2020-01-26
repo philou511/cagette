@@ -52,33 +52,39 @@ class OrderService
 		
 		//check for previous orders on the same distrib
 		var prevOrders = new List<db.UserOrder>();
-		if (distribId == null) {
-			prevOrders = db.UserOrder.manager.search($product==product && $user==user, true);
-		}else {
-			prevOrders = db.UserOrder.manager.search($product==product && $user==user && $distributionId==distribId, true);
+		if ( product.catalog.type == db.Catalog.TYPE_VARORDER ) {
+			
+			if (distribId == null) {
+
+				prevOrders = db.UserOrder.manager.search($product==product && $user==user, true);
+			}
+			else {
+
+				prevOrders = db.UserOrder.manager.search($product==product && $user==user && $distributionId==distribId, true);
+			}
 		}
 		
 		//Create order object
-		var o = new db.UserOrder();
-		o.product = product;
-		o.quantity = quantity;
-		o.productPrice = product.price;
+		var order = new db.UserOrder();
+		order.product = product;
+		order.quantity = quantity;
+		order.productPrice = product.price;
 		if ( product.catalog.hasPercentageOnOrders() ){
-			o.feesRate = product.catalog.percentageValue;
+			order.feesRate = product.catalog.percentageValue;
 		}
-		o.user = user;
+		order.user = user;
 		if (user2 != null) {
-			o.user2 = user2;
-			if ( invert ) o.flags.set(InvertSharedOrder);
+			order.user2 = user2;
+			if ( invert ) order.flags.set(InvertSharedOrder);
 		}
-		if (paid != null) o.paid = paid;
-		if (distribId != null) o.distribution = db.Distribution.manager.get(distribId);
+		if (paid != null) order.paid = paid;
+		if (distribId != null) order.distribution = db.Distribution.manager.get(distribId);
 		
 		//cumulate quantities if there is a similar previous order
 		if (prevOrders.length > 0 && !product.multiWeight) {
 			for (prevOrder in prevOrders) {
 				//if (!prevOrder.paid) {
-					o.quantity += prevOrder.quantity;
+					order.quantity += prevOrder.quantity;
 					prevOrder.delete();
 				//}
 			}
@@ -86,57 +92,59 @@ class OrderService
 		
 		//create a basket
 		if (distribId != null){
-			o.basket = db.Basket.getOrCreate(user, o.distribution.multiDistrib);			
+			order.basket = db.Basket.getOrCreate(user, order.distribution.multiDistrib);			
 		}
 
 		//checks
-		if(o.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
-		if(o.basket==null) throw new Error( "this order should have a basket" );
+		if(order.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked" );
+		if(order.basket==null) throw new Error( "this order should have a basket" );
+		if( subscription != null && subscription.id == null ) throw new Error( "La souscription a un id null." );
 
-		if (subscription != null ) { 
+		if ( subscription != null ) { 
 
-			o.subscription = subscription;
+			order.subscription = subscription;
 		 }
 		
-		o.insert();
+		order.insert();
 		
 		//Stocks
-		if (o.product.stock != null) {
-			var c = o.product.catalog;
+		if (order.product.stock != null) {
+			var c = order.product.catalog;
 			if (c.hasStockManagement()) {
-				//trace("stock for "+quantity+" x "+product.name);
-				if (o.product.stock == 0) {
+				
+				if (order.product.stock == 0) {
 					if (App.current.session != null) {
-						App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:o.product.name}), true);
+						App.current.session.addMessage(t._("There is no more '::productName::' in stock, we removed it from your order", {productName:order.product.name}), true);
 					}
-					o.quantity -= quantity;
-					if ( o.quantity <= 0 ) {
-						o.delete();
+					order.quantity -= quantity;
+					if ( order.quantity <= 0 ) {
+						order.delete();
 						return null;	
 					}
-				}else if (o.product.stock - quantity < 0) {
-					var canceled = quantity - o.product.stock;
-					o.quantity -= canceled;
-					o.update();
+				}else if (order.product.stock - quantity < 0) {
+					var canceled = quantity - order.product.stock;
+					order.quantity -= canceled;
+					order.update();
 					
 					if (App.current.session != null) {
-						var msg = t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:o.product.name, oQuantity:o.quantity});
+						var msg = t._("We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore", {productName:order.product.name, oQuantity:order.quantity});
 						App.current.session.addMessage(msg, true);
 					}
-					o.product.lock();
-					o.product.stock = 0;
-					o.product.update();
-					App.current.event(StockMove({product:o.product, move:0 - (quantity - canceled) }));
+					order.product.lock();
+					order.product.stock = 0;
+					order.product.update();
+					App.current.event(StockMove({product:order.product, move:0 - (quantity - canceled) }));
 					
 				}else {
-					o.product.lock();
-					o.product.stock -= quantity;
-					o.product.update();	
-					App.current.event(StockMove({product:o.product, move:0 - quantity}));
+					order.product.lock();
+					order.product.stock -= quantity;
+					order.product.update();	
+					App.current.event(StockMove({product:order.product, move:0 - quantity}));
 				}
 			}	
 		}
-		return o;
+
+		return order;
 	}
 
 

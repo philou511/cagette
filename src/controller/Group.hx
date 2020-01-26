@@ -285,8 +285,8 @@ class Group extends controller.Controller
 				
 				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
 				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);
-				var ordersData = new Array< { productId : Int, qt : Float, invertSharedOrder : Bool, userId2 : Int } >();
-				ordersData.push( { productId : product.id, qt : 1, invertSharedOrder : false, userId2 : null } );
+				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
 				var subscription = service.SubscriptionService.createSubscription( user, contract, contract.startDate, contract.endDate, ordersData );
 
 			}
