@@ -39,7 +39,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<{name: Strin
       <MuiPickersUtilsProvider utils=$FrLocalizedUtils locale=${DateFnsLocale.fr}>
         ${
           switch (props.type) {
-            case "time": jsx('<TimePicker name=${props.name} ampm={false} value=${state.date} onChange=$onChange />');
+            case "time": jsx('<TimePicker name=${props.name} ampm={false} cancelLabel="Annuler" value=${state.date} onChange=$onChange />');
             case "datetime-local": jsx('<DateTimePicker name=${props.name} format="dd/MM/yyyy hh:mm" ampm={false} cancelLabel="Annuler" value=${state.date} onChange=$onChange />');
             default: jsx('<DatePicker name=${props.name} format="dd/MM/yyyy" cancelLabel="Annuler" value=${state.date} onChange=$onChange />');
           }
