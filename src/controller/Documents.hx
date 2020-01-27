@@ -15,7 +15,7 @@ class Documents extends controller.Controller
 	@tpl("contractadmin/documents.mtt")
 	function doDefault( ?catalog : db.Catalog ) {
 
-		var documents : List<sugoi.db.EntityFile>  = null;
+		var documents : Array<sugoi.db.EntityFile>  = null;
 		if( catalog != null ) {
 
 			if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
