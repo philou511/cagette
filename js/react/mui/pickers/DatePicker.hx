@@ -7,7 +7,9 @@ typedef DatePickerProps = {
   onChange: (date: Date) -> Void,
   ?format: String,
   ?cancelLabel: String,
-  ?name: String
+  ?name: String,
+  ?fullWidth: Bool,
+  ?InputProps: Dynamic,
 };
 
 @:jsRequire('@material-ui/pickers', 'DatePicker')

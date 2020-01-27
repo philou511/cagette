@@ -9,6 +9,8 @@ typedef DateTimePickerProps = {
   ?format: String,
   ?cancelLabel: String,
   ?ampm: Bool,
+  ?fullWidth: Bool,
+  ?InputProps: Dynamic,
 };
 
 @:jsRequire('@material-ui/pickers', 'DateTimePicker')

@@ -677,6 +677,7 @@ class Distribution extends Controller
 		view.title = t._("Create a general distribution");
 	}
 	
+
 	/**
 		Insert a multidistribution
 	**/

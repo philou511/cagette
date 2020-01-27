@@ -8,7 +8,9 @@ typedef TimePickerProps = {
   ?format: String,
   ?cancelLabel: String,
   ?ampm: Bool,
-  ?name: String
+  ?name: String,
+  ?fullWidth: Bool,
+  ?InputProps: Dynamic,
 };
 
 @:jsRequire('@material-ui/pickers', 'TimePicker')
