@@ -17,7 +17,6 @@
     'react-dom': require('react-dom'),
     'react-dropzone': require('react-dropzone'),
     'react-avatar-editor': require('react-avatar-editor'),
-    'react-datetime': require('react-datetime'),
     'leaflet': require('leaflet'),
     'react-leaflet': require('react-leaflet'),
     'react-places-autocomplete': require('react-places-autocomplete'),

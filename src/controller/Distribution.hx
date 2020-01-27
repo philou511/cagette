@@ -621,7 +621,6 @@ class Distribution extends Controller
 
 		//date
 		var e = new form.CagetteDatePicker("date",t._("Distribution date"), null);	
-		untyped e.format = "LL";
 		form.addElement(e, 3);
 		
 		//start hour

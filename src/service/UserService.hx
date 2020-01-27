@@ -181,6 +181,7 @@ class UserService
 	 *  @return Bool
 	 */
 	public static function isBirthdayValid(birthday:Date): Bool {
+		if(birthday==null) return true;
 		//Check that the user is at least 18 years old
 		return birthday.getTime() < DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()	? true : false;	
 	}
