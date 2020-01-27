@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.NativeDatePicker;
 import sugoi.form.elements.IntSelect;
 using Std;
 /**
@@ -26,7 +27,7 @@ class Membership extends controller.Controller
 			data.push({label:app.user.getGroup().getPeriodName(yy),value:app.user.getGroup().getMembershipYear(yy)});
 		}
 		f.addElement(new IntSelect("year", t._("Period"), data,app.user.getGroup().getMembershipYear(),true));
-		f.addElement(new sugoi.form.elements.DateDropdowns("date", t._("Date of payment of subscription"), null, true));
+		f.addElement(new NativeDatePicker("date", t._("Date of payment of subscription"), null, NativeDatePickerType.date, true));
 		if (f.isValid()) {
 			var y : Int = f.getValueOf("year");
 			
