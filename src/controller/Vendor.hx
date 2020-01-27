@@ -48,7 +48,7 @@ class Vendor extends Controller
 		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
 		#end
 
-		var form = sugoi.form.Form.fromSpod(vendor);
+		var form = form.CagetteForm.fromSpod(vendor);
 		form.removeElementByName("country");
 		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
 		

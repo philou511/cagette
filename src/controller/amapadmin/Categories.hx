@@ -50,7 +50,7 @@ class Categories extends controller.Controller
 	@tpl('form.mtt')
 	function doEditGroup(g:db.CategoryGroup) {
 		
-		var form = sugoi.form.Form.fromSpod(g);
+		var form = form.CagetteForm.fromSpod(g);
 		
 		form.removeElementByName("color");
 		form.removeElementByName("groupId");
@@ -71,7 +71,7 @@ class Categories extends controller.Controller
 	@tpl('form.mtt')
 	function doInsertGroup() {
 		var g = new db.CategoryGroup();
-		var form = sugoi.form.Form.fromSpod(g );
+		var form = form.CagetteForm.fromSpod(g );
 		
 		form.removeElementByName("color");
 		form.removeElementByName("groupId");
@@ -93,7 +93,7 @@ class Categories extends controller.Controller
 	@tpl('form.mtt')
 	function doInsert(g:db.CategoryGroup) {
 		var c = new db.Category();
-		var form = sugoi.form.Form.fromSpod(c);
+		var form = form.CagetteForm.fromSpod(c);
 		
 		form.removeElementByName("categoryGroupId");
 		
@@ -114,7 +114,7 @@ class Categories extends controller.Controller
 	@tpl('form.mtt')
 	function doEdit(c:db.Category) {
 		
-		var form = sugoi.form.Form.fromSpod(c);
+		var form = form.CagetteForm.fromSpod(c);
 		
 		form.removeElementByName("categoryGroupId");
 		

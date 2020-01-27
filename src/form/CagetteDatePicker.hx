@@ -35,10 +35,10 @@ class CagetteDatePicker extends NativeDatePicker {
         var parts = v.split(" ");
         var dateParts = parts[0].split("/");
         var timeParts = parts[1].split(":");
-        value = new Date(Std.parseInt(dateParts[2]), Std.parseInt(dateParts[1]), Std.parseInt(dateParts[0]), Std.parseInt(timeParts[0]), Std.parseInt(timeParts[1]), 0);
+        value = new Date(Std.parseInt(dateParts[2]), Std.parseInt(dateParts[1]) - 1, Std.parseInt(dateParts[0]), Std.parseInt(timeParts[0]), Std.parseInt(timeParts[1]), 0);
       default: 
         var parts = v.split("/");
-        value = new Date(Std.parseInt(parts[2]), Std.parseInt(parts[1]), Std.parseInt(parts[0]), 0, 0, 0);
+        value = new Date(Std.parseInt(parts[2]), Std.parseInt(parts[1]) - 1, Std.parseInt(parts[0]), 0, 0, 0);
     }
   }
 }
