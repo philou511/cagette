@@ -26,6 +26,7 @@ import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
+import react.CagetteDatePicker;
 
 //TODO
 import react.store.Cart;
@@ -454,6 +455,25 @@ class App {
 		}
 	}
 
+	public function generateDatePicker(
+		selector: String,
+		name: String,
+		?date: Date,
+		?type: String = "date"
+	) {
+		var dateValue = date == null ? Date.now() : date;
+		ReactDOM.render(
+			jsx('
+				<MuiThemeProvider theme=${CagetteTheme.get()}>
+					<>
+						<CssBaseline />
+						<CagetteDatePicker name=$name value=$dateValue type=$type />
+					</>
+				</MuiThemeProvider>
+			'),
+			js.Browser.document.querySelector(selector)
+		);
+	}
 }
 
 
