@@ -26,7 +26,12 @@
     'react-router-dom':require('react-router-dom'),
     '@material-ui/core': require('@material-ui/core'),
     '@material-ui/core/styles': require('@material-ui/core/styles'),
+    '@material-ui/pickers': require('@material-ui/pickers'),
+    '@date-io/date-fns': require('@date-io/date-fns'),
     '@material-ui/icons': require('@material-ui/icons'),
+    'date-fns': require('date-fns'),
+    'date-fns/locale': require('date-fns/locale'),
+    'date-fns/format': require('date-fns/format'),
     'stickyfilljs': require('stickyfilljs'),
     'sticky-events': require('sticky-events'),
     'intersection-observer': require('intersection-observer'),//Polyfill for stick-events to work

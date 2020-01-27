@@ -2,6 +2,7 @@ package controller;
 import db.Operation.OperationType;
 using Lambda;
 import Common;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 
 /**
  * Distribution validation
@@ -102,7 +103,7 @@ class Validate extends controller.Controller
 		var f = new sugoi.form.Form(t._("payment"), "/validate/" + multiDistrib.id + "/" + user.id + "/addRefund?basketid=" + basketId);
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Refund"), true));		
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), refundAmount, true));
-		f.addElement(new sugoi.form.elements.DatePicker("date", "Date", Date.now(), true));
+		f.addElement(new form.CagetteDatePicker("date", "Date", Date.now(), NativeDatePickerType.date, true));
 		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.getGroup());
 		var out = [];
 		for (paymentType in paymentTypes){
@@ -149,7 +150,7 @@ class Validate extends controller.Controller
 		var f = new sugoi.form.Form("payment");
 		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label"), t._("Additional payment"), true));
 		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
-		f.addElement(new sugoi.form.elements.DatePicker("date", t._("Date"), Date.now(), true));
+		f.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), NativeDatePickerType.date, true));
 		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.getGroup());
 		var out = [];
 		for (paymentType in paymentTypes)
