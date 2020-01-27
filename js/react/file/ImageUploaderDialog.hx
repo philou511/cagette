@@ -15,6 +15,7 @@ typedef ImageUploaderDialogProps = {
 	var uploadedImageURL : String;	//URl of the existing image
 	var width : Int;		//width constraint
 	var height : Int;		//height constraint
+	var ?formFieldName: String;
 };
 
 typedef ImageUploaderDialogState = {
@@ -46,7 +47,7 @@ class ImageUploaderDialog extends ReactComponentOfPropsAndState<ImageUploaderDia
 						Ajouter une photo
 					</DialogTitle>
 					<DialogContent>
-						<ImageUploader uploadURL=${props.uploadURL} uploadCallback=$handleClickUpload width=${props.width} height=${props.height} />
+						<ImageUploader uploadURL=${props.uploadURL} uploadCallback=$handleClickUpload width=${props.width} height=${props.height} formFieldName=${props.formFieldName} />
 					</DialogContent>
 				</Dialog>
 			</div>'

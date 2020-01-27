@@ -52,53 +52,6 @@ class AmapAdmin extends Controller
 		
 	}
 	
-	@tpl("amapadmin/addimage.mtt")
-	function doAddimage() {
-
-		if (!app.user.isAmapManager()) throw Error("/", t._("Access forbidden"));
-		
-		var user = app.user;
-		view.image = user.getGroup().image;
-		
-		var request = new Map();
-		try {
-			request = sugoi.tools.Utils.getMultipart(1024 * 1024 * 12); //12Mb	
-		}catch (e:Dynamic) {
-			throw Error("/amapadmin", t._("The sent image was too big. The maximum allowed size is 12MB"));
-		}
-		
-		if (request.exists("image")) {
-			
-			//Image
-			var image = request.get("image");
-	
-			if (image != null && image.length > 0) {
-				
-				var img : sugoi.db.File = null;
-				if ( Sys.systemName() == "Windows") {
-					img = sugoi.db.File.create(request.get("image"), request.get("image_filename"));
-				}else {
-					img = sugoi.tools.UploadedImage.resizeAndStore(request.get("image"), request.get("image_filename"), 400, 400);				
-				}
-				
-				user.getGroup().lock();
-				
-				if (user.getGroup().image != null) {
-					//delete previous file
-					user.getGroup().image.lock();
-					user.getGroup().image.delete();
-				}
-				
-				user.getGroup().image = img;
-				user.getGroup().update();
-				
-				throw Ok('/amapadmin/', t._("Image updated"));
-			}
-		}
-		
-	}
-	
-	
 	@tpl("amapadmin/rights.mtt")
 	public function doRights() {
 		

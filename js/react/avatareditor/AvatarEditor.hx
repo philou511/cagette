@@ -13,6 +13,7 @@ typedef AvatarEditorProps = {
     onPositionChange : {x:Float,y:Float}->Void,
 	image:js.html.File,
 	?className:String,
+	?style:Dynamic,
 
 	/*image: string | File;
         width?: number;

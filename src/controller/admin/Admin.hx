@@ -231,7 +231,7 @@ class Admin extends Controller {
 		group.txtDistrib = null;
 		group.extUrl = null;
 		group.membershipRenewalDate = null;
-		group.membershipPrice = 0;
+		group.membershipFee = 0;
 		group.vatRates = ["5,5%" => 5.5, "20%" => 20];
 		group.flags = flags;
 		group.betaFlags = betaFlags;

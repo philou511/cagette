@@ -29,7 +29,7 @@ class GroupService
 		d.txtDistrib = g.txtDistrib;
 		d.extUrl = g.extUrl;
 		d.membershipRenewalDate = g.membershipRenewalDate;
-		d.membershipPrice = g.membershipPrice;
+		d.membershipFee = g.membershipFee;
 		d.vatRates = g.vatRates;
 		d.flags = g.flags;
 		d.groupType = g.groupType;

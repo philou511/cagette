@@ -18,6 +18,7 @@ typedef ImageUploaderProps = {
 	var uploadCallback : String -> Void;
 	var width:Int;
 	var height:Int;
+	var ?formFieldName: String;
 };
 
 typedef ImageUploaderState = {
@@ -164,7 +165,7 @@ class ImageUploader extends ReactComponentOfPropsAndState<ImageUploaderProps, Im
 
 	  			var data = new js.html.FormData();
 	   			// If we had a real file, we could use `file.name` as third argument
-	  			data.append("file", image);
+	  			data.append(props.formFieldName != null ? props.formFieldName : "file", image);
 	  			request.open("POST", props.uploadURL);
 	  			request.send(data);
 		});
@@ -174,11 +175,13 @@ class ImageUploader extends ReactComponentOfPropsAndState<ImageUploaderProps, Im
 		/*onLoadFailure=$onLoadFailure
 					onLoadSuccess=${logCallback.bind('onLoadSuccess')}
 			  		onImageReady=${logCallback.bind('onImageReady')}
-					  	*/
+							*/
+			var ratio = 537 / props.width;
 	  	var image = state.image != null ? jsx('
 			<div>
 				<AvatarEditor 
-			  		ref=$avatarEditorRef
+						ref=$avatarEditorRef
+						style={{ width: ${props.width} * ${ratio}, height: ${props.height} * ${ratio} }}
 					scale=${state.scale}
 					width=${state.width}
 					height=${state.height}

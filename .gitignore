@@ -14,6 +14,7 @@ html
 *.DS_Store*
 
 lang/master/tpl/plugin/*
+backend/lang/*
 
 lang/fr/tpl/*
 lang/en/tpl/*
@@ -34,4 +35,6 @@ www/css/.sass-cache
 www/css/*.css
 
 devLibs/
+
+backend/lang
 
