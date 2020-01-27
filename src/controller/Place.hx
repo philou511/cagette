@@ -31,7 +31,7 @@ class Place extends Controller
 		
 		var currentAddress = p.getAddress();
 
-		var f = sugoi.form.Form.fromSpod(p);
+		var f = form.CagetteForm.fromSpod(p);
 		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),p.country,true));
 			
 		if (f.isValid()) {
@@ -58,7 +58,7 @@ class Place extends Controller
 	public function doInsert() {
 		
 		var d = new db.Place();
-		var f = sugoi.form.Form.fromSpod(d);
+		var f = form.CagetteForm.fromSpod(d);
 		f.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),"FR",true));
 		
 		if (f.isValid()) {

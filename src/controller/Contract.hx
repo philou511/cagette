@@ -53,7 +53,7 @@ class Contract extends Controller
 		var group = c.group;
 		var currentContact = c.contact;
 		
-		var form = Form.fromSpod(c);
+		var form = form.CagetteForm.fromSpod(c);
 		form.removeElement( form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("distributorNum"));
@@ -187,7 +187,7 @@ class Contract extends Controller
 		
 		var c = new db.Catalog();
 
-		var form = Form.fromSpod(c);
+		var form = form.CagetteForm.fromSpod(c);
 		form.removeElement(form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.getElement("name").value = "Commande "+vendor.name;

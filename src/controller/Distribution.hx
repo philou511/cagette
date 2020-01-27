@@ -313,7 +313,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
 		var contract = d.catalog;
 		
-		var form = sugoi.form.Form.fromSpod(d);
+		var form = form.CagetteForm.fromSpod(d);
 		form.removeElementByName("placeId");
 		form.removeElementByName("date");
 		form.removeElementByName("end");
@@ -411,7 +411,7 @@ class Distribution extends Controller
 		
 		var d = new db.Distribution();
 		d.place = contract.group.getMainPlace();
-		var form = sugoi.form.Form.fromSpod(d);
+		var form = form.CagetteForm.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		form.removeElement(form.getElement("distributionCycleId"));
 		form.removeElement(form.getElement("end"));
@@ -626,7 +626,7 @@ class Distribution extends Controller
 		
 		var md = new db.MultiDistrib();
 		md.place = app.user.getGroup().getMainPlace();
-		var form = sugoi.form.Form.fromSpod(md);
+		var form = form.CagetteForm.fromSpod(md);
 
 		//date
 		var e = new form.CagetteDatePicker("date",t._("Distribution date"), null);	
@@ -696,7 +696,7 @@ class Distribution extends Controller
 		checkHasDistributionSectionAccess();
 		
 		md.place = app.user.getGroup().getMainPlace();
-		var form = sugoi.form.Form.fromSpod(md);
+		var form = form.CagetteForm.fromSpod(md);
 
 		//date
 		var e = new form.CagetteDatePicker("date",t._("Distribution date"), md.distribStartDate);	
@@ -916,7 +916,7 @@ class Distribution extends Controller
 		
 		var dc = new db.DistributionCycle();
 		dc.place = app.user.getGroup().getMainPlace();
-		var form = sugoi.form.Form.fromSpod(dc);
+		var form = form.CagetteForm.fromSpod(dc);
 		
 		
 		form.getElement("startDate").value = DateTool.now();

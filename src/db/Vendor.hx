@@ -159,7 +159,7 @@ class Vendor extends Object
 
 	public static function getForm(vendor:db.Vendor){
 		var t = sugoi.i18n.Locale.texts;
-		var form = sugoi.form.Form.fromSpod(vendor);
+		var form = form.CagetteForm.fromSpod(vendor);
 		
 		//country
 		form.removeElementByName("country");

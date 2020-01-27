@@ -23,7 +23,7 @@ class Product extends Controller
 		
 		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
 		
-		var f = sugoi.form.Form.fromSpod(product);
+		var f = form.CagetteForm.fromSpod(product);
 		
 		//stock mgmt ?
 		if (!product.catalog.hasStockManagement()) f.removeElementByName('stock');	
@@ -66,7 +66,7 @@ class Product extends Controller
 		if (!app.user.isContractManager(contract)) throw Error("/", t._("Forbidden action")); 
 		
 		var d = new db.Product();
-		var f = sugoi.form.Form.fromSpod(d);
+		var f = form.CagetteForm.fromSpod(d);
 		
 		f.removeElementByName("catalogId");
 		

@@ -27,7 +27,7 @@ class Membership extends controller.Controller
 			data.push({label:app.user.getGroup().getPeriodName(yy),value:app.user.getGroup().getMembershipYear(yy)});
 		}
 		f.addElement(new IntSelect("year", t._("Period"), data,app.user.getGroup().getMembershipYear(),true));
-		f.addElement(new NativeDatePicker("date", t._("Date of payment of subscription"), null, NativeDatePickerType.date, true));
+		f.addElement(new form.CagetteDatePicker("date", t._("Date of payment of subscription"), null, NativeDatePickerType.date, true));
 		if (f.isValid()) {
 			var y : Int = f.getValueOf("year");
 			

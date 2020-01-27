@@ -93,7 +93,7 @@ class User extends Object {
 
 	public static function getForm(user:db.User){
 		var t = sugoi.i18n.Locale.texts;
-		var form = sugoi.form.Form.fromSpod(user);
+		var form = form.CagetteForm.fromSpod(user);
 		form.removeElement(form.getElement("lang"));
 		form.removeElement(form.getElement("pass"));
 		form.removeElement(form.getElement("rights"));
