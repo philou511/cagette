@@ -6,6 +6,7 @@ typedef IPickerProps = {
   ?name: String,
   ?format: String,
   ?InputProps: Dynamic,
+  ?DialogProps: Dynamic,
   ?fullWidth: Bool,
   ?cancelLabel: String,
   ?clearable: Bool,

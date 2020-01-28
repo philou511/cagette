@@ -1,21 +1,31 @@
 package react;
 
+import dateIO.DateFnsUtils;
+import dateFns.DateFnsLocale;
+import dateFns.DateFns;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
+import react.mui.CagetteTheme;
+import mui.core.styles.Classes;
+import mui.core.styles.Styles;
 import react.mui.pickers.MuiPickersUtilsProvider;
 import react.mui.pickers.DatePicker;
 import react.mui.pickers.TimePicker;
 import react.mui.pickers.DateTimePicker;
-import react.mui.MUIStyles;
-import dateIO.DateFnsUtils;
-import dateFns.DateFnsLocale;
-import dateFns.DateFns;
+import classnames.ClassNames.fastNull as classNames;
 
-typedef CagetteDatePickerProps = {
+typedef PublicProps = {
   name: String,
   type: String,
   ?value: Date,
   ?required: Bool,
+}
+
+typedef TClasses = Classes<[input, dialog]>;
+
+typedef CagetteDatePickerProps = {
+  > PublicProps,
+  var classes:TClasses;
 };
 
 class FrLocalizedUtils extends DateFnsUtils {
@@ -33,7 +43,23 @@ class FrLocalizedUtils extends DateFnsUtils {
   }
 }
 
-class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDatePickerProps & {classes: Dynamic},{?date:Date}> {
+
+@:publicProps(PublicProps)
+@:wrap(Styles.withStyles(styles))
+class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDatePickerProps,{?date:Date}> {
+
+  public static function styles(theme:Theme):ClassesDef<TClasses> {
+    return {
+      input: {
+        textTransform: css.TextTransform.Capitalize
+      },
+      dialog: {
+        "& h3": {
+          fontSize: "3rem"
+        }
+      }
+    }
+  }
 
 	public function new(props:Dynamic) {
     super(props);
@@ -56,7 +82,12 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
               <TimePicker
                 InputProps={{
                   classes: {
-                    input: ${props.classes.picker}
+                    input: ${props.classes.input}
+                  }
+                }}
+                DialogProps={{
+                  classes: {
+                    dialogRoot: ${props.classes.dialog}
                   }
                 }}
                 fullWidth
@@ -74,7 +105,12 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
               <DateTimePicker
                 InputProps={{
                   classes: {
-                    input: ${props.classes.picker}
+                    input: ${props.classes.input}
+                  }
+                }}
+                DialogProps={{
+                  classes: {
+                    dialogRoot: ${props.classes.dialog}
                   }
                 }}
                 fullWidth
@@ -91,7 +127,12 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
               <DatePicker
                 InputProps={{
                   classes: {
-                    input: ${props.classes.picker}
+                    input: ${props.classes.input}
+                  }
+                }}
+                DialogProps={{
+                  classes: {
+                    dialogRoot: ${props.classes.dialog}
                   }
                 }}
                 fullWidth
@@ -117,15 +158,15 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
 }
 
 
-class CagetteDatePicker extends react.ReactComponentOfProps<CagetteDatePickerProps> {
-  override public function render() {
+// class CagetteDatePicker extends react.ReactComponentOfProps<CagetteDatePickerProps> {
+//   override public function render() {
 
-    var Component = MUIStyles.withStyles({
-      picker: {
-        textTransform: "capitalize"
-      }
-    })(_CagetteDatePicker);
+//     var Component = MUIStyles.withStyles({
+//       picker: {
+//         textTransform: "capitalize"
+//       }
+//     })(_CagetteDatePicker);
 
-    return jsx('<Component name=${props.name} value=${props.value} type=${props.type} required=${props.required} />');
-  }
-}
+//     return jsx('<Component name=${props.name} value=${props.value} type=${props.type} required=${props.required} />');
+//   }
+// }
