@@ -148,7 +148,7 @@ class Subscriptions extends controller.Controller
 		}
 	
 		view.title = 'Nouvelle souscription';
-		view.canBeEdited = true;
+		view.canOrdersBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
 		view.showmember = true;
@@ -167,9 +167,9 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = subscription.catalog.getProducts();
 
-		var canBeEdited = service.SubscriptionService.canSubscriptionBeEdited( subscription );
+		var canOrdersBeEdited = service.SubscriptionService.canSubscriptionOrdersBeEdited( subscription );
 
-		if ( checkToken() && canBeEdited ) {
+		if ( checkToken() ) {
 
 			try {
 
@@ -181,42 +181,46 @@ class Subscriptions extends controller.Controller
 				}
 
 				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
-				for ( product in catalogProducts ) {
+				
+				if ( canOrdersBeEdited ) {
 
-					var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
-					var user2 : db.User = null;
-					var userId2 : Int = Std.parseInt( app.params.get( 'user2' + product.id ) );
-					var invert = false;
-					if ( userId2 != null && userId2 != 0 ) {
+					for ( product in catalogProducts ) {
 
-						user2 = db.User.manager.get( userId2 );
-						if ( user2 == null ) {
+						var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
+						var user2 : db.User = null;
+						var userId2 : Int = Std.parseInt( app.params.get( 'user2' + product.id ) );
+						var invert = false;
+						if ( userId2 != null && userId2 != 0 ) {
 
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
+							user2 = db.User.manager.get( userId2 );
+							if ( user2 == null ) {
+
+								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
+							}
+							if ( !user2.isMemberOf( subscription.catalog.group ) ) {
+
+								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
+							}
+							if ( subscription.user.id == user2.id ) {
+								
+								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
+							}
+
+							invert = app.params.get( 'invert' + product.id ) == "true";
+
 						}
-						if ( !user2.isMemberOf( subscription.catalog.group ) ) {
 
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, subscription.user + " ne fait pas partie de ce groupe." );
+						if ( quantity != 0 ) {
+
+							ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
 						}
-						if ( subscription.user.id == user2.id ) {
-							
-							throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous ne pouvez pas alterner avec la personne qui a la souscription." );
-						}
-
-						invert = app.params.get( 'invert' + product.id ) == "true";
-
+						
 					}
 
-					if ( quantity != 0 ) {
+					if ( ordersData.length == 0 ) {
 
-						ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
+						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez entrer au moins une quantité pour un produit." );
 					}
-					
-				}
-
-				if ( ordersData.length == 0 ) {
-
-					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez entrer au moins une quantité pour un produit." );
 				}
 
 				service.SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData );
@@ -231,7 +235,7 @@ class Subscriptions extends controller.Controller
 		}
 
 		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
-		view.canBeEdited = canBeEdited;
+		view.canOrdersBeEdited = canOrdersBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
 		view.showmember = false;
