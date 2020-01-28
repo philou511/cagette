@@ -135,7 +135,13 @@ class OrderBoxThunk {
                     dispatch( OrderBoxAction.FetchCatalogsSuccess( CATALOGS_CACHE ) );
                 });
 
-            }
+                var data : { catalogs : Array<ContractInfo> } = tink.Json.parse(data);               
+                dispatch( OrderBoxAction.FetchCatalogsSuccess( data.catalogs ) );
+            })
+            .catchError( function(data) {                    
+                
+                handleError( data, dispatch );
+            });
         });
 
     }
@@ -144,7 +150,11 @@ class OrderBoxThunk {
 
     public static function fetchProducts( catalogId : Int ) {
     
-        return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+        return redux.thunk.Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
+               
+            //Loads all the products for the current catalog
+            return HttpUtil.fetch( "/api/product/get/", GET, { catalogId : catalogId }, PLAIN_TEXT )
+            .then( function( data : String ) {
 
             if(PRODUCTS_CACHE[catalogId]==null){
 

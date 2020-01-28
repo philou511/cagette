@@ -460,91 +460,41 @@ class Contract extends Controller
 				}else {
 					order = db.UserOrder.manager.select($user == app.user && $productId == p.id, true);
 				}
-				
-				if (order != null) ua.order = order;
-				datas.push(ua);
+				else {
+
+					ordersData.push( { productId : uo.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
+				}
+
 			}
 			
-			userOrders.push({distrib:d,datas:datas});
+			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+				try {
+
+					service.SubscriptionService.createSubscription( app.user, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+				}
+				catch ( e : Dynamic ) { 
+				
+					throw Error( "/contract/order/" + catalog.id, e.message );
+				}
+
+			}
+
+			//create order operation only
+			if ( catalog.type == db.Catalog.TYPE_VARORDER && app.user.getGroup().hasPayments() ) {
+
+				var orderOps = db.Operation.onOrderConfirm(orders);
+			}
+
+
+			throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
 		}
 		
+		view.c = view.contract = catalog;
+		view.userOrders = userOrders;
 		
-		//form check
-		if (checkToken()) {
-			
-			//get distrib if needed
-			var distrib = null;
-			if (c.type == db.Catalog.TYPE_VARORDER) {
-				distrib = db.Distribution.manager.get(Std.parseInt(app.params.get("distribution")), false);
-			}
-			
-			var orders : OrderInSession = {products:[],userId:app.user.id,total:0};
-			
-			for (k in app.params.keys()) {
-				
-				if (k.substr(0, 1) != "d") continue;
-				var qt = app.params.get(k);
-				if (qt == "") continue;
-				
-				var pid = null;
-				var did = null;
-				try{
-					pid = Std.parseInt(k.split("-")[1].substr(1));
-					did = Std.parseInt(k.split("-")[0].substr(1));
-				}catch (e:Dynamic){
-					trace("unable to parse key "+k);					
-				}
-				
-				//find related element in userOrders
-				var uo = null;
-				for ( x in userOrders){
-					if (x.distrib!=null && x.distrib.id != did) {
-						continue;
-					}else{
-						for (a in x.datas){
-							if (a.product.id == pid){
-								uo = a;
-								break;
-							}
-						}
-					}
-				}
-				
-				if (uo == null) throw t._("Could not find the product ::produ:: and delivery ::deliv::", {produ:pid, deliv:did});
-					
-				//quantity
-				var q = 0.0;				
-				if (uo.product.hasFloatQt ) {
-					var param = StringTools.replace(qt, ",", ".");
-					q = Std.parseFloat(param);
-				}else {
-					q = Std.parseInt(qt);
-				}
-				
-				orders.products.push({productId:pid, quantity:q, distributionId:did});
-				
-				var p = db.Product.manager.get(pid, false);
-				orders.total += p.getPrice() * q;
-				
-			}
-			
-			App.current.session.data.order = orders;
-			
-			//Go to payments page			
-			if (c.type == db.Catalog.TYPE_CONSTORDERS) {
-				throw Ok("/contract/order/"+c.id, t._("Your CSA order has been saved"));
-			}else{
-				throw Ok("/transaction/pay/", t._("In order to save your order, please choose a means of payment."));
-			}
-			
-			
-			
-		}
-		
-		view.c = view.contract = c;
-		view.userOrders = userOrders;		
-	}*/
-	
+	}
+
 	
 	/**
 	 * A user edit an order for a multidistrib.

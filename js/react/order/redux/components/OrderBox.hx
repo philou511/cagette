@@ -83,9 +83,6 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 		var ordersByCatalog = [];
 		var totalPrice = 0.0;
 		
-		//trace(props.orders);
-		// trace(ordersByCatalogId);
-
 		for( catalogId in ordersByCatalogId.keys() ) {
 		
 			ordersByCatalog.push( jsx('<h4 key=$catalogId>${ordersByCatalogId[catalogId][0].catalogName}</h4>') );			

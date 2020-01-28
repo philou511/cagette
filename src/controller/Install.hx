@@ -297,6 +297,7 @@ class Install extends controller.Controller
 					subscription.catalog = catalog;
 					subscription.startDate = new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
 					subscription.endDate = new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
+					subscription.isValidated = true;
 					subscription.insert();
 					SubscriptionService.createCSARecurrentOrders( subscription, ordersData );
 

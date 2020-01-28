@@ -256,8 +256,8 @@ class TestSuite
 		product.insert();
 
 		SOUPE_AMAP = product;
-		
-		var d = service.DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
+
+		var d = DistributionService.create(c,new Date(2017, 5, 1, 19, 0, 0),new Date(2017, 5, 1, 20, 0, 0),place.id,new Date(2017, 4, 1, 20, 0, 0),new Date(2017, 4, 30, 20, 0, 0));		
 		DISTRIB_CONTRAT_AMAP = d;
 
 		//varying contract for strawberries with stock mgmt

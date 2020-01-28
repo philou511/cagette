@@ -91,8 +91,5 @@ class Order extends Controller
 
 		Sys.print( Json.stringify( { success : true, orders : ordersData } ) );
 	}
-
-
-	
 	
 }

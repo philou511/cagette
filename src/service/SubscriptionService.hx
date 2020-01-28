@@ -5,9 +5,11 @@ using tools.DateTool;
 using Lambda;
 
 enum SubscriptionServiceError {
+
 	NoSubscription;
 	PastDistributionsWithoutOrders;
 	PastOrders;
+	OverlappingSubscription;
 }
 
 /**
@@ -67,7 +69,7 @@ class SubscriptionService
 
 	}
 
-	public static function canSubscriptionBeEdited( subscription : db.Subscription ) : Bool {
+	public static function canSubscriptionOrdersBeEdited( subscription : db.Subscription ) : Bool {
 
 		return !subscription.isValidated || !hasPastDistribOrders( subscription );
 
@@ -148,7 +150,7 @@ class SubscriptionService
 				
 			if ( subscriptions1.length != 0 || subscriptions2.length != 0 || subscriptions3.length != 0 ) {
 
-				throw new Error( 'Il y a déjà une souscription pour ce membre pendant la période choisie.' );
+				throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.', OverlappingSubscription );
 			}
 
 		}
@@ -174,11 +176,21 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+		subscription.isValidated = isValidated;
 
 		if ( isSubscriptionValid( subscription ) ) {
 
 			subscription.insert();
-			createCSARecurrentOrders( subscription, ordersData );
+			try {
+
+				createCSARecurrentOrders( subscription, ordersData );
+			}
+			catch ( error : Error ) {
+
+				subscription.delete();
+				throw new Error( error.message );
+			}
+			
 		}
 
 		return subscription;
@@ -193,32 +205,39 @@ class SubscriptionService
 
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
 		}
-
-		if ( validateSubscription || canSubscriptionBeEdited( subscription ) ) {
-
-			subscription.lock();
+		
+		// if ( validateSubscription || canSubscriptionBeEdited( subscription ) ) {
+			
 			if ( validateSubscription ) {
 
 				subscription.isValidated = true;
 			}
 			subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 			subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-			
+
 			if ( isSubscriptionValid( subscription ) ) {
 
+				subscription.lock();
+				if ( validateSubscription ) {
+
+					subscription.isValidated = true;
+				}
+				subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
+				subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 				subscription.update();
-				if ( ordersData != null ) {
+
+				if ( ordersData != null && ordersData.length != 0 ) {
 
 					createCSARecurrentOrders( subscription, ordersData );
 				}
 				
 			}
 
-		}
-		else {
+		// }
+		// else {
 
-			throw new Error( 'Cette souscription ne peut pas être modifiée car il y a des commandes passées.' );
-		}
+		// 	throw new Error( 'Cette souscription ne peut pas être modifiée car il y a des commandes passées.' );
+		// }
 
 	}
 
@@ -228,7 +247,7 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if ( !canSubscriptionBeEdited( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
+		if ( !canSubscriptionOrdersBeEdited( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des commandes pour des distributions passées.', PastOrders );
 		}

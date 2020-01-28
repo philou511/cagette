@@ -95,13 +95,13 @@ class Distribution extends Object
 	
 	public function getOrders() {
 			
-		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
-			var pids = db.Product.manager.search($catalog == this.catalog, false);
-			var pids = Lambda.map(pids, function(x) return x.id);		
-			return db.UserOrder.manager.search( ($productId in pids), false); 
-		}else{
-			return db.UserOrder.manager.search($distribution == this, false); 
-		}
+		// if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
+		// 	var pids = db.Product.manager.search($catalog == this.catalog, false);
+		// 	var pids = Lambda.map(pids, function(x) return x.id);		
+		// 	return db.UserOrder.manager.search( ($productId in pids), false); 
+		// }else{
+		return db.UserOrder.manager.search($distribution == this, false); 
+		// }
 	}
 
 	
@@ -148,9 +148,9 @@ class Distribution extends Object
 		var products = catalog.getProducts(false);
 		if(products.length==0) return 0.0;
 		var sql = "select SUM(quantity * productPrice) from UserOrder  where productId IN (" + tools.ObjectListTool.getIds(products).join(",") +") ";
-		if (catalog.type == db.Catalog.TYPE_VARORDER) {
+		// if (catalog.type == db.Catalog.TYPE_VARORDER) {
 			sql += " and distributionId=" + this.id;	
-		}
+		// }
 	
 		return sys.db.Manager.cnx.request(sql).getFloatResult(0);
 	}
