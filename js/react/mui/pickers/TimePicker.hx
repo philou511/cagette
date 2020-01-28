@@ -1,18 +1,12 @@
 package react.mui.pickers;
 
 import react.ReactComponent;
+import react.mui.pickers.IPickerProps;
 
 typedef TimePickerProps = {
-  value: Date,
-  onChange: (date: Date) -> Void,
-  ?format: String,
-  ?cancelLabel: String,
-  ?ampm: Bool,
-  ?name: String,
-  ?fullWidth: Bool,
-  ?InputProps: Dynamic,
+  ?ampm: Bool
 };
 
 @:jsRequire('@material-ui/pickers', 'TimePicker')
-extern class TimePicker extends react.ReactComponentOfProps<TimePickerProps> {}
+extern class TimePicker extends react.ReactComponentOfProps<IPickerProps & TimePickerProps> {}
 

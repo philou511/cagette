@@ -13,8 +13,9 @@ import dateFns.DateFns;
 
 typedef CagetteDatePickerProps = {
   name: String,
-  value: Date,
   type: String,
+  ?value: Date,
+  ?required: Bool,
 };
 
 class FrLocalizedUtils extends DateFnsUtils {
@@ -32,7 +33,7 @@ class FrLocalizedUtils extends DateFnsUtils {
   }
 }
 
-class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDatePickerProps & {classes: Dynamic},{date:Date}> {
+class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDatePickerProps & {classes: Dynamic},{?date:Date}> {
 
 	public function new(props:Dynamic) {
     super(props);
@@ -45,6 +46,8 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
     var dateFormat = "EEEE d MMMM yyyy";
     var timeFormat = "HH'h'mm";
     var datetimeFormat = dateFormat + " à " + timeFormat;
+    var required = props.required == null ? false : props.required;
+    var clearable = !required;
     return jsx('
       <MuiPickersUtilsProvider utils=$FrLocalizedUtils locale=${DateFnsLocale.fr}>
         ${
@@ -59,11 +62,14 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
                 fullWidth
                 format=$timeFormat
                 ampm={false}
+                clearable=$clearable
+                clearLabel="Effacer"
                 cancelLabel="Annuler"
                 name=${props.name}
                 value=${state.date}
-                onChange=$onChange />
-              ');
+                onChange=$onChange  
+                />
+            ');
             case "datetime-local": jsx('
               <DateTimePicker
                 InputProps={{
@@ -75,6 +81,8 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
                 format=$datetimeFormat
                 name=${props.name}
                 ampm={false}
+                clearable=$clearable
+                clearLabel="Effacer"
                 cancelLabel="Annuler"
                 value=${state.date}
                 onChange=$onChange />
@@ -89,7 +97,11 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
                 fullWidth
                 format=$dateFormat
                 name=${props.name}
-                cancelLabel="Annuler" value=${state.date}
+                required=$required
+                clearable=$clearable
+                clearLabel="Effacer"
+                cancelLabel="Annuler"
+                value=${state.date}
                 onChange=$onChange
               />
             ');
@@ -114,6 +126,6 @@ class CagetteDatePicker extends react.ReactComponentOfProps<CagetteDatePickerPro
       }
     })(_CagetteDatePicker);
 
-    return jsx('<Component name=${props.name} value=${props.value} type=${props.type} />');
+    return jsx('<Component name=${props.name} value=${props.value} type=${props.type} required=${props.required} />');
   }
 }

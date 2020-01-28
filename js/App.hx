@@ -459,15 +459,15 @@ class App {
 		selector: String,
 		name: String,
 		?date: Date,
-		?type: String = "date"
+		?type: String = "date",
+		?required: Bool = false
 	) {
-		var dateValue = date == null ? Date.now() : date;
 		ReactDOM.render(
 			jsx('
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<CagetteDatePicker name=$name value=$dateValue type=$type />
+						<CagetteDatePicker name=$name value=$date type=$type required=$required />
 					</>
 				</MuiThemeProvider>
 			'),

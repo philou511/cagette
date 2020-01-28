@@ -12,11 +12,13 @@ class CagetteDatePicker extends NativeDatePicker {
   override public function render():String {
     var inputName = this.parentForm.name + "_" + this.name;
     var inputType = renderInputType();
+    var pValue = value != null ? ('"' + value.toString() + '"') : null;
     return '
       <div id="$inputName" ></div>
       <script>
         document.addEventListener("DOMContentLoaded", function() {
-          _.generateDatePicker("#$inputName", "$inputName", "$value", "$inputType");
+          console.log($pValue);
+          _.generateDatePicker("#$inputName", "$inputName", $pValue, "$inputType", $required);
         });
       </script>
     ';
