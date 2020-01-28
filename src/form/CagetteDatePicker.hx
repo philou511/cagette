@@ -28,8 +28,8 @@ class CagetteDatePicker extends NativeDatePicker {
     if(str=="") return null;
 
     var date = Date.now();
-    var rDate = ~/([a-z]*) ([0-9]*) ([a-z]*) ([0-9]*)/;
-    var rDatetime = ~/([a-z]*) ([0-9]*) ([a-z]*) ([0-9]*) à ([0-9]*)h([0-9]*)/;
+    var rDate = ~/([A-zÀ-ú]*) ([0-9]*) ([A-zÀ-ú]*) ([0-9]*)/;
+    var rDatetime = ~/([A-zÀ-ú]*) ([0-9]*) ([A-zÀ-ú]*) ([0-9]*) à ([0-9]*)h([0-9]*)/;
     var rTime = ~/([0-9]*)h([0-9])*/;
 
     switch (type) {
