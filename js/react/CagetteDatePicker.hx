@@ -1,20 +1,31 @@
 package react;
 
+import dateIO.DateFnsUtils;
+import dateFns.DateFnsLocale;
+import dateFns.DateFns;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
+import react.mui.CagetteTheme;
+import mui.core.styles.Classes;
+import mui.core.styles.Styles;
 import react.mui.pickers.MuiPickersUtilsProvider;
 import react.mui.pickers.DatePicker;
 import react.mui.pickers.TimePicker;
 import react.mui.pickers.DateTimePicker;
-import react.mui.MUIStyles;
-import dateIO.DateFnsUtils;
-import dateFns.DateFnsLocale;
-import dateFns.DateFns;
+import classnames.ClassNames.fastNull as classNames;
+
+typedef PublicProps = {
+  name: String,
+  type: String,
+  ?value: Date,
+  ?required: Bool,
+}
+
+typedef TClasses = Classes<[input, dialog]>;
 
 typedef CagetteDatePickerProps = {
-  name: String,
-  value: Date,
-  type: String,
+  > PublicProps,
+  var classes:TClasses;
 };
 
 class FrLocalizedUtils extends DateFnsUtils {
@@ -32,7 +43,23 @@ class FrLocalizedUtils extends DateFnsUtils {
   }
 }
 
-class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDatePickerProps & {classes: Dynamic},{date:Date}> {
+
+@:publicProps(PublicProps)
+@:wrap(Styles.withStyles(styles))
+class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDatePickerProps,{?date:Date}> {
+
+  public static function styles(theme:Theme):ClassesDef<TClasses> {
+    return {
+      input: {
+        textTransform: css.TextTransform.Capitalize
+      },
+      dialog: {
+        "& h3": {
+          fontSize: "44px"
+        }
+      }
+    }
+  }
 
 	public function new(props:Dynamic) {
     super(props);
@@ -45,6 +72,8 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
     var dateFormat = "EEEE d MMMM yyyy";
     var timeFormat = "HH'h'mm";
     var datetimeFormat = dateFormat + " à " + timeFormat;
+    var required = props.required == null ? false : props.required;
+    var clearable = !required;
     return jsx('
       <MuiPickersUtilsProvider utils=$FrLocalizedUtils locale=${DateFnsLocale.fr}>
         ${
@@ -53,28 +82,43 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
               <TimePicker
                 InputProps={{
                   classes: {
-                    input: ${props.classes.picker}
+                    input: ${props.classes.input}
+                  }
+                }}
+                DialogProps={{
+                  classes: {
+                    dialogRoot: ${props.classes.dialog}
                   }
                 }}
                 fullWidth
                 format=$timeFormat
                 ampm={false}
+                clearable=$clearable
+                clearLabel="Effacer"
                 cancelLabel="Annuler"
                 name=${props.name}
                 value=${state.date}
-                onChange=$onChange />
-              ');
+                onChange=$onChange  
+                />
+            ');
             case "datetime-local": jsx('
               <DateTimePicker
                 InputProps={{
                   classes: {
-                    input: ${props.classes.picker}
+                    input: ${props.classes.input}
+                  }
+                }}
+                DialogProps={{
+                  classes: {
+                    dialogRoot: ${props.classes.dialog}
                   }
                 }}
                 fullWidth
                 format=$datetimeFormat
                 name=${props.name}
                 ampm={false}
+                clearable=$clearable
+                clearLabel="Effacer"
                 cancelLabel="Annuler"
                 value=${state.date}
                 onChange=$onChange />
@@ -83,13 +127,22 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
               <DatePicker
                 InputProps={{
                   classes: {
-                    input: ${props.classes.picker}
+                    input: ${props.classes.input}
+                  }
+                }}
+                DialogProps={{
+                  classes: {
+                    dialogRoot: ${props.classes.dialog}
                   }
                 }}
                 fullWidth
                 format=$dateFormat
                 name=${props.name}
-                cancelLabel="Annuler" value=${state.date}
+                required=$required
+                clearable=$clearable
+                clearLabel="Effacer"
+                cancelLabel="Annuler"
+                value=${state.date}
                 onChange=$onChange
               />
             ');
@@ -105,15 +158,15 @@ class _CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDate
 }
 
 
-class CagetteDatePicker extends react.ReactComponentOfProps<CagetteDatePickerProps> {
-  override public function render() {
+// class CagetteDatePicker extends react.ReactComponentOfProps<CagetteDatePickerProps> {
+//   override public function render() {
 
-    var Component = MUIStyles.withStyles({
-      picker: {
-        textTransform: "capitalize"
-      }
-    })(_CagetteDatePicker);
+//     var Component = MUIStyles.withStyles({
+//       picker: {
+//         textTransform: "capitalize"
+//       }
+//     })(_CagetteDatePicker);
 
-    return jsx('<Component name=${props.name} value=${props.value} type=${props.type} />');
-  }
-}
+//     return jsx('<Component name=${props.name} value=${props.value} type=${props.type} required=${props.required} />');
+//   }
+// }
