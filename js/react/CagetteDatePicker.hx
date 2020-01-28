@@ -17,7 +17,7 @@ import classnames.ClassNames.fastNull as classNames;
 typedef PublicProps = {
   name: String,
   type: String,
-  ?value: Date,
+  ?value: String,
   ?required: Bool,
 }
 
@@ -63,9 +63,13 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
 
 	public function new(props:Dynamic) {
     super(props);
-    state = {
-      date: props.value
-    };
+    state = {};
+    if (props.value) {
+      state.date = Date.fromString(props.value);
+    }
+    // state = {
+    //   date: new Date(props.value)
+    // };
 	}
 	
 	override public function render() {
@@ -96,6 +100,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 clearable=$clearable
                 clearLabel="Effacer"
                 cancelLabel="Annuler"
+                invalidDateMessage="Format de date invalide"
                 name=${props.name}
                 value=${state.date}
                 onChange=$onChange  
@@ -120,6 +125,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 clearable=$clearable
                 clearLabel="Effacer"
                 cancelLabel="Annuler"
+                invalidDateMessage="Format de date invalide"
                 value=${state.date}
                 onChange=$onChange />
               ');
@@ -142,6 +148,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 clearable=$clearable
                 clearLabel="Effacer"
                 cancelLabel="Annuler"
+                invalidDateMessage="Format de date invalide"
                 value=${state.date}
                 onChange=$onChange
               />
@@ -156,17 +163,3 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
     this.setState({ date: date });
   }
 }
-
-
-// class CagetteDatePicker extends react.ReactComponentOfProps<CagetteDatePickerProps> {
-//   override public function render() {
-
-//     var Component = MUIStyles.withStyles({
-//       picker: {
-//         textTransform: "capitalize"
-//       }
-//     })(_CagetteDatePicker);
-
-//     return jsx('<Component name=${props.name} value=${props.value} type=${props.type} required=${props.required} />');
-//   }
-// }

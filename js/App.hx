@@ -458,7 +458,7 @@ class App {
 	public function generateDatePicker(
 		selector: String,
 		name: String,
-		?date: Date,
+		?date: String,
 		?type: String = "date",
 		?required: Bool = false
 	) {
