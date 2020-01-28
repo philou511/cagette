@@ -55,7 +55,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
       },
       dialog: {
         "& h3": {
-          fontSize: "3rem"
+          fontSize: "44px"
         }
       }
     }
