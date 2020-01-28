@@ -293,7 +293,6 @@ class Cron extends Controller
 			var endedCatalogs = db.Catalog.manager.search( $endDate >= oneDayBefore && $endDate < eighteenMonthsAgo, false );
 			var documents : Array<sugoi.db.EntityFile>  = null;
 			for ( catalog in endedCatalogs ) {
-
 				documents = sugoi.db.EntityFile.getByEntity( 'catalog', catalog.id, 'document' );
 				for ( document in documents ) {
 

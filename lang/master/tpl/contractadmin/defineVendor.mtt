@@ -39,7 +39,7 @@
 						<p style="line-height: 38px;">
 						
 						::if(cpro!=null)::
-								::set catalogs = cpro.getActiveCatalogs()::
+								::set catalogs = cpro.getActiveVisibleCatalogs()::
 								Catalogue(s) :
 								
 								::foreach catalog catalogs::									

@@ -159,7 +159,7 @@ class OrderBoxThunk {
             if(PRODUCTS_CACHE[catalogId]==null){
 
                 //Loads all the products for the current catalog
-                return HttpUtil.fetch( "/api/product/get/", GET, { contractId : catalogId }, PLAIN_TEXT )
+                return HttpUtil.fetch( "/api/product/get/", GET, { catalogId : catalogId }, PLAIN_TEXT )
                 .then( function( data : String ) {
 
                     var data : { products : Array<ProductInfo> } = tink.Json.parse(data);  

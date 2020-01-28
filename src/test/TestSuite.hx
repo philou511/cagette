@@ -29,7 +29,6 @@ class TestSuite
 		//Cagette-pro tests, keep in this order
 		r.addCase(new pro.test.TestProductService());
 		r.addCase(new pro.test.TestRemoteCatalog());
-		r.addCase(new pro.test.TestDistribService());
 		r.addCase(new pro.test.TestReports());
 		r.addCase(new who.test.TestWho());
 		r.addCase(new pro.test.TestStock());
