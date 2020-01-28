@@ -181,15 +181,7 @@ class SubscriptionService
 		if ( isSubscriptionValid( subscription ) ) {
 
 			subscription.insert();
-			try {
-
-				createCSARecurrentOrders( subscription, ordersData );
-			}
-			catch ( error : Error ) {
-
-				subscription.delete();
-				throw new Error( error.message );
-			}
+			createCSARecurrentOrders( subscription, ordersData );
 			
 		}
 
@@ -207,7 +199,8 @@ class SubscriptionService
 		}
 		
 		// if ( validateSubscription || canSubscriptionBeEdited( subscription ) ) {
-			
+			subscription.lock();
+
 			if ( validateSubscription ) {
 
 				subscription.isValidated = true;
@@ -217,13 +210,6 @@ class SubscriptionService
 
 			if ( isSubscriptionValid( subscription ) ) {
 
-				subscription.lock();
-				if ( validateSubscription ) {
-
-					subscription.isValidated = true;
-				}
-				subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
-				subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 				subscription.update();
 
 				if ( ordersData != null && ordersData.length != 0 ) {
