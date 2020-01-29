@@ -32,7 +32,7 @@ class User extends Controller
 		}else{
 
 			var post = sugoi.Web.getMultipart(1024*1024);
-			if(post!=null){
+			if(post.count()>0){
 
 				//Add a membership
 				var params = post;
