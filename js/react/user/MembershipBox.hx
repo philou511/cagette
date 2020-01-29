@@ -6,6 +6,9 @@ import react.ReactMacro.jsx;
 import react.Error;
 import react.mui.CagetteTheme;
 import mui.core.*;
+import react.mui.Box;
+import react.user.MembershipHistory;
+import react.user.MemberShipForm;
 
 typedef MembershipBoxState = {
     loading:Bool,
@@ -23,7 +26,6 @@ typedef MembershipBoxProps = {
     userId:Int,
     groupId:Int,
     callbackUrl:String,
-	
 };
 
 class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,MembershipBoxState> {
@@ -34,7 +36,6 @@ class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,Mem
     }
       
     override function componentDidMount() {
-
 		//load 
 		utils.HttpUtil.fetch('/api/user/membership/${props.userId}/${props.groupId}', GET, null, JSON).then(
 			function(data:Dynamic) {
@@ -64,59 +65,32 @@ class MembershipBox extends ReactComponentOfPropsAndState<MembershipBoxProps,Mem
         if(state.loading){
             content = <div><CircularProgress /></div>;
         }else{
-            content =  <Grid container spacing=${mui.core.grid.GridSpacing.Spacing_4}>
-                <Grid item xs={12}>
-                    <h3>Adhésions de ${state.userName}</h3>
-                </Grid>
-                <Grid item xs={6}>
-                    <h4>Historique</h4>
-                    <Paper>
-                        <Table stickyHeader>
-                            <TableHead>
-                            <TableRow>
-                                <TableCell>Année</TableCell>
-                                <TableCell>Date de cotis.</TableCell>
-                                <TableCell></TableCell>
-                            </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            ${state.memberships.map(row -> return 
-                                <TableRow key={row.id}>
-                                    <TableCell>{row.name}</TableCell>
-                                    <TableCell>${Formatting.hDate(row.date)}</TableCell>
-                                    <TableCell>
-                                        <Button onClick=${deleteMembership.bind(row.id)} size=$Small variant=$Outlined >
-                                            ${CagetteTheme.getIcon("delete",{fontSize:12})} 
-                                            Supprimer
-                                        </Button>    
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                            </TableBody>
-                        </Table>
-                    </Paper>
-                </Grid>
+            content = 
+                <Grid container>
+                    <Box mb={4}>
+                        <Typography variant={mui.core.typography.TypographyVariant.H5}>Adhésions de ${state.userName}</Typography>
+                    </Box>
 
-                <Grid item xs={6}>
-                    <h4>Saisir une adhésion</h4>
-                    <FormControl>
-                        <InputLabel>Année</InputLabel>
-                        <Select value={Date.now().getFullYear()} onChange={handleChange}>
-                        ${
-                            state.availableYears.map( y -> return <MenuItem value=${y.id}>${y.name}</MenuItem> )
-                        }
-                        </Select>
-                    </FormControl>
+                    <Grid container spacing=${mui.core.grid.GridSpacing.Spacing_4}>
+                        <Grid item xs={6}>
+                            <MembershipHistory memberships={state.memberships} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MemberShipForm
+                                userId=${props.userId}
+                                groupId=${props.groupId}
+                                availableYears=${state.availableYears}
+                                paymentTypes=${state.paymentTypes} />
+                        </Grid>
+                    </Grid>
                 </Grid>
-                
-            </Grid>;
+            ;
         }
 
         return jsx('<div>
             <Error error=${state.error}/>
             $content
         </div>');
-
     }
     
     function handleChange(){

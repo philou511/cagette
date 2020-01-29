@@ -33,7 +33,12 @@
     'lodash.throttle': require('lodash.throttle'),
     'lodash.debounce': require('lodash.debounce'),
     'bowser': require('bowser'),//browser version detection
-    
+    'formik': require('formik'),
+    'formik-material-ui': require('formik-material-ui'),
+    'formik-material-ui-pickers': require('formik-material-ui-pickers'),
+    '@material-ui/pickers': require('@material-ui/pickers'),
+    '@date-io/date-fns': require('@date-io/date-fns'),
+    'date-fns': require('date-fns'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {

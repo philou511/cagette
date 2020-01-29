@@ -13,7 +13,10 @@ typedef InsertOrderProps = {
 
 	var catalogId : Int;
 	var selectedCatalogId : Int;
-	var error : String;
+    var error : String;
+    
+    var userId: Int; // TODO
+    var multiDistribId: Int; // TODO
 }
 
 
