@@ -31,10 +31,11 @@ class User extends Controller
 			throw new Error(NotFound,"Not found");
 		}else{
 
-			if(neko.Web.getMethod()=="POST"){
+			var post = sugoi.Web.getMultipart(1024*1024);
+			if(post!=null){
 
 				//Add a membership
-				var params = app.params;
+				var params = post;
 				if(params["year"]==null) throw new Error("Missing 'year' param");
 				if(params["date"]==null) throw new Error("Missing 'date' param");
 				if(group.membershipFee==null && params["membershipFee"]==null) throw new Error("Missing 'membershipFee' param");

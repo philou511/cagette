@@ -45,7 +45,9 @@ private typedef TClasses = Classes<[
     cartContainer,
     shadow,
 ]>
-
+/**
+    Shop header
+**/
 @:build(lib.lodash.Lodash.build())
 @:publicProps(PublicProps)
 @:wrap(Styles.withStyles(styles))
@@ -115,7 +117,7 @@ class Header extends react.ReactComponentOfProps<HeaderProps> {
 		});
 
 		return jsx('
-            <Grid container spacing=${GridSpacing.Spacing_8} className=${headerClasses}>
+            <Grid container spacing=${GridSpacing.Spacing_2} className=${headerClasses}>
                 <Grid item md={6} xs={12}> 
                     <DistributionDetails 
                         isSticky=${props.isSticky} 
