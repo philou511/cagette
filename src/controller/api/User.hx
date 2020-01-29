@@ -19,9 +19,14 @@ class User extends Controller
 		get membership status of a user in a group
 	**/
 	public function doMembership(user:db.User,group:db.Group){
+
+		if(!app.user.canAccessMembership()){
+			throw new Error(Unauthorized,"Access forbidden");
+		}
+
 		var ug = db.UserGroup.get(user,group);
 		if(ug==null){
-			throw new Error(403,"Not found");
+			throw new Error(NotFound,"Not found");
 		}else{
 			var out = {
 				userName:null,
@@ -58,6 +63,34 @@ class User extends Controller
 			Sys.print(haxe.Json.stringify(out));
 		}
 	}
+
+
+	public function doDeleteMembership(user:db.User,group:db.Group,year:Int){
+
+		if(!app.user.canAccessMembership()){
+			throw new Error(Unauthorized,"Not found");
+		}
+
+		var ug = db.UserGroup.get(user,group);
+		if(ug==null){
+			throw new Error(NotFound,"Not found");
+		}else{
+			var ms = new MembershipService(group);
+			var membership = ms.getUserMemberships(user).find(m->return m.year==year);
+			if(membership!=null){
+				membership.lock();
+				membership.delete();
+			}
+			var memberships = ms.getUserMemberships(user).map(m->{
+				return {
+					id : m.year ,
+					name : ms.getPeriodName(m.year),
+					date : m.date
+				};
+			});
+			Sys.print(haxe.Json.stringify({memberships:memberships}));
+		}
+	}	
 	
 	/**
 	 * Login
