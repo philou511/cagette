@@ -72,6 +72,13 @@ class User extends Controller
 				};
 			});
 
+			var from = tools.DateTool.deltaDays(Date.now(),-30);
+			var to = tools.DateTool.deltaDays(Date.now(),5);
+			out.distributions = db.MultiDistrib.getFromTimeRange(group,from,to).map(d->return {
+				id:d.id,
+				name:"Distribution du "+Formatting.hDate(d.distribStartDate)
+			});
+
 
 			out.availableYears = [];
 			var now = Date.now();
