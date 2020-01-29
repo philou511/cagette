@@ -3,15 +3,15 @@ import sys.db.Types;
 import tink.core.Error;
 
 enum OperationType{
-	VOrder; 	//order on a variable order
-	COrder;		//order on a CSA contract
-	Payment;	
-	Membership;	
+	VOrder; 	//order on a variable order (debt)
+	COrder;		//order on a CSA contract	(debt)
+	Payment;	//payment of a debt	
+	Membership;	//membership (debt)
 }
 
 typedef PaymentInfos = {
 	type : String, 			//payment type (PSP)
-	?remoteOpId : String,		//PSP operation ID 
+	?remoteOpId : String,	//PSP operation ID 
 	/*?netAmount:Float,		//amount paid less fees
 	?fixedFees:Float,		//PSP fixed fees
 	?variableFees:Float,	//PSP variable fees*/
@@ -19,6 +19,7 @@ typedef PaymentInfos = {
 
 typedef VOrderInfos = {basketId:Int};
 typedef COrderInfos = {contractId:Int};
+typedef MembershipInfos = {year:Int};
 
 /**
  * Payment operation 

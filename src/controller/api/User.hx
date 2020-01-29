@@ -25,9 +25,31 @@ class User extends Controller
 		}
 
 		var ug = db.UserGroup.get(user,group);
+		var ms = new MembershipService(group);
+
 		if(ug==null){
 			throw new Error(NotFound,"Not found");
 		}else{
+
+			if(neko.Web.getMethod()=="POST"){
+
+				//Add a membership
+				var params = app.params;
+				if(params["year"]==null) throw new Error("Missing 'year' param");
+				if(params["date"]==null) throw new Error("Missing 'date' param");
+				if(group.membershipFee==null && params["membershipFee"]==null) throw new Error("Missing 'membershipFee' param");
+				if(group.hasPayments() && params["paymentType"]==null) throw new Error("Missing 'paymentType' param");
+
+				var year = params["year"].parseInt();
+				var date = Date.fromString(params["date"]);
+				var membershipFee = group.membershipFee==null ? params["membershipFee"].parseInt() : group.membershipFee;
+				var paymentType = params["paymentType"];
+				var distribution = db.MultiDistrib.manager.get(params["distributionId"].parseInt(),false);
+
+				ms.createMembership(user,year,date,membershipFee,paymentType,distribution);
+
+			}
+
 			var out = {
 				userName:null,
 				availableYears: new Array<{name:String,id:Int}>(),
@@ -42,7 +64,6 @@ class User extends Controller
 			if(group.hasPayments()){
 				out.paymentTypes = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).map(p -> return {id:p.type,name:p.name});
 			}
-			var ms = new MembershipService(group);
 			out.memberships = ms.getUserMemberships(user).map(m->{
 				return {
 					id : m.year ,
@@ -76,7 +97,7 @@ class User extends Controller
 			throw new Error(NotFound,"Not found");
 		}else{
 			var ms = new MembershipService(group);
-			var membership = ms.getUserMemberships(user).find(m->return m.year==year);
+			var membership = ms.getUserMembership(user,year);
 			if(membership!=null){
 				membership.lock();
 				membership.delete();
@@ -90,7 +111,9 @@ class User extends Controller
 			});
 			Sys.print(haxe.Json.stringify({memberships:memberships}));
 		}
-	}	
+	}
+	
+
 	
 	/**
 	 * Login

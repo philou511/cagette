@@ -1,4 +1,7 @@
 package service;
+import service.PaymentService;
+import tink.core.Error;
+import db.Operation;
 
 class MembershipService{
 
@@ -8,12 +11,72 @@ class MembershipService{
         this.group = group;
 	}
 	
-	public function getUserMemberships(user:db.User){
+	public function getUserMemberships(user:db.User):Array<db.Membership>{
 		return db.Membership.manager.search($user == user && $amap == group,{orderBy:-year}, false).array();
+	}
+
+	public function getUserMembership(user:db.User,year:Int):db.Membership{
+		return db.Membership.manager.select($user == user && $amap == group && $year==year, false);
 	}
 
 	public function getPeriodName(year:Int):String{
 		return group.getPeriodNameFromYear(year);
+	}
+
+	public function createMembership(user:db.User,year:Int,date:Date,?membershipFee:Int,?paymentType:String,?distribution:db.MultiDistrib):db.Membership{
+		
+		//check if exising
+		if(getUserMembership(user,year)!=null){
+			throw new Error("Membership already exists");
+		}
+
+		//get payment type object
+		var paymentType = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).find(pt -> return paymentType==pt.type);
+
+		
+		var op : db.Operation = null;
+		if(group.hasPayments()){
+
+			if(paymentType==null){
+				throw new Error("missing paymentType");
+			}
+
+			switch(paymentType.type){
+				case payment.Check.TYPE , payment.Transfer.TYPE , payment.Cash.TYPE : //ok
+				default : throw new Error("Membership payement can only be transfer, cash or check");
+			}
+
+			//debt operation
+			op = new db.Operation();
+			op.user = user;			
+			op.group = group;
+			op.name = "Adhésion "+getPeriodName(year);
+			op.amount = 0 - membershipFee;
+			op.date = date;
+			op.type = Membership;
+			var data : MembershipInfos = {year:year};
+			op.data = data;			
+			op.pending = false;				
+			op.insert();	
+			
+			var paymentOp = db.Operation.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , op );
+			paymentOp.pending = false;
+			paymentOp.update();
+
+			service.PaymentService.updateUserBalance(user,group);
+		}
+
+		var cotis = new db.Membership();
+		cotis.amap = group;
+		cotis.user = user;
+		cotis.year = year;
+		cotis.date = date;
+		cotis.distribution = distribution;
+		cotis.operation = op;
+		cotis.insert();
+
+		return cotis;
+
 	}
 
 
