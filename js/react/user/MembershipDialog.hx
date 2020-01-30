@@ -202,6 +202,7 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                 availableYears=${state.availableYears}
                 paymentTypes=${state.paymentTypes}
                 membershipFee=${state.membershipFee}
+                distributions=${state.distributions}
                 onSubmit=$lock
                 onSubmitComplete=$onSubmitComplete
             />

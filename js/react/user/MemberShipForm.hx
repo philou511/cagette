@@ -22,6 +22,7 @@ typedef MemberShipFormProps = {
     groupId: Int,
     availableYears: Array<{name:String,id:Int}>,
     paymentTypes: Array<{id:String,name:String}>,
+    distributions:Array<{name:String,id:Int}>,
     ?membershipFee: Int,
     ?onSubmit: () -> Void,
     ?onSubmitComplete: (success: Bool) -> Void,
@@ -40,6 +41,7 @@ typedef FormProps = {
     year: Int,
     membershipFee: Int,
     paymentType: String,
+    ?distributionId: Int,
 };
 
 @:publicProps(MemberShipFormProps)
@@ -71,6 +73,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                         year: props.availableYears[0].id,
                         membershipFee: (props.membershipFee == null) ? 0 : props.membershipFee,
                         paymentType: props.paymentTypes[0].id,
+                        distributionId: (props.distributions.length > 0) ? props.distributions[0].id : null
                     }}
                     onSubmit=$onSubmit
                 >
@@ -122,6 +125,8 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                         ${props.paymentTypes.map(p -> <MenuItem key=${p.id} value=${p.id}>${p.name}</MenuItem>)}
                                     </Select>
                                 </FormControl>
+
+                               {renderDistributionField()}
                                 
                             </CardContent>
                             <CardActions>
@@ -143,6 +148,18 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         ;
 
         return jsx('$res');
+    }
+
+    private function renderDistributionField() {
+        if (props.distributions.length < 1) return null;
+        return 
+            <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
+                <InputLabel id="mb-distrib">Lors de la distribution</InputLabel>
+                <Select labelId="mb-distrib" name="distributionId" fullWidth>
+                    ${props.distributions.map(d -> <MenuItem key=${d.id} value=${d.id}>${d.name}</MenuItem>)}
+                </Select>
+            </FormControl>
+        ;
     }
 
     private function renderStatus(?status: Dynamic) {
@@ -170,6 +187,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         data.append("year", Std.string(values.year));
         data.append("membershipFee", Std.string(values.membershipFee));
         data.append("paymentType", values.paymentType);
+        if (values.distributionId != null) data.append("distributionId", Std.string(values.distributionId));
 
         js.Browser.window.fetch(url, {
             method: "POST",
