@@ -104,7 +104,9 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                         required
                                         name="membershipFee"
                                         label="Montant"
-                                        
+                                        InputProps={{
+                                            endAdornment: "€"
+                                        }}
                                         type=${mui.core.input.InputType.Number}
                                     />
                                 </FormControl>
