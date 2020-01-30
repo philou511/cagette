@@ -14,7 +14,8 @@ import mui.core.styles.Styles;
 import mui.core.styles.Classes;
 import react.mui.CagetteTheme;
 import react.mui.Box;
-import dateIO.DateFnsUtils;
+import dateFns.DateFnsLocale;
+import dateFns.FrDateFnsUtils;
 
 typedef MemberShipFormProps = {
     userId: Int,
@@ -25,7 +26,7 @@ typedef MemberShipFormProps = {
     ?onSubmitComplete: () -> Void,
 };
 
-typedef MemberShipFormClasses = Classes<[snack, snackMessage]>;
+typedef MemberShipFormClasses = Classes<[datePickerInput, snack, snackMessage]>;
 
 
 typedef MemberShipFormPropsWithClasses = {
@@ -46,6 +47,9 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
 
     public static function styles(theme:Theme):ClassesDef<MemberShipFormClasses> {
         return {
+            datePickerInput: {
+                textTransform: css.TextTransform.Capitalize
+              },
             snack: {
                 backgroundColor: "#f44336"
             },
@@ -59,7 +63,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
 
     override public function render() {
         var res =
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <MuiPickersUtilsProvider utils={FrDateFnsUtils} locale=${DateFnsLocale.fr} >
                 <Formik
                     initialValues={{
                         date: new js.lib.Date(),
@@ -74,7 +78,16 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                             {renderStatus(formikProps.status)}
                             <CardContent>
                                 <FormControl fullWidth>
-                                    <DatePicker label="Date de cotisaion" name="date" required  />
+                                    <DatePicker
+                                        InputProps={{
+                                            classes: {
+                                            input: ${props.classes.datePickerInput}
+                                            }
+                                        }}
+                                        label="Date de cotisaion"
+                                        name="date"
+                                        format="EEEE d MMMM yyyy"
+                                        required  />
                                 </FormControl>
                                 
                                 <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>

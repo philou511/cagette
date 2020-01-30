@@ -5,6 +5,7 @@ import react.ReactMacro.jsx;
 import react.mui.CagetteTheme;
 import mui.core.*;
 import dateFns.DateFns;
+import dateFns.DateFnsLocale;
 import mui.icon.Delete;
 
 typedef MembershipHistoryProps = {
@@ -82,7 +83,7 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
         return 
             <TableRow key={row.id}>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{DateFns.format(Date.fromString(row.date), "d MMMM yyyy")}</TableCell>
+                <TableCell>{DateFns.format(Date.fromString(row.date), "d MMMM yyyy", {locale: DateFnsLocale.fr})}</TableCell>
                 <TableCell>
                     <IconButton disabled=${props.isLocked} onClick=$onClick>
                         <Delete />
