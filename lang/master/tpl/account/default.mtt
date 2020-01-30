@@ -231,8 +231,18 @@
 			::if stopTuto:: 
 			<div id="stopTuto" data-toggle="popover" title='::_("Tutorial stopped")::' data-placement="left" data-content="::_("You'll be able to restart it here.")::" ></div>
 			<script>
-				$(function(){
-					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);
+				document.addEventListener("DOMContentLoaded", function() {
+					console.log("jquery", $("#stopTuto"));
+					console.log("vanilla", document.getElementById("stopTuto").popover);
+
+					
+
+					setTimeout(function() {
+						var el = document.getElementById("stopTuto");
+						var popover = new Popover(el);
+						el.show();
+						//$("#stopTuto").popover("show");
+					}, 1000);
 				});
 			</script>
 			::end::		
