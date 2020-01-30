@@ -84,7 +84,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                             input: ${props.classes.datePickerInput}
                                             }
                                         }}
-                                        label="Date de cotisaion"
+                                        label="Date de cotisation"
                                         name="date"
                                         format="EEEE d MMMM yyyy"
                                         required  />
@@ -108,7 +108,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                 </FormControl>
                                 
                                 <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
-                                    <InputLabel id="mb-payment">Paiemnt</InputLabel>
+                                    <InputLabel id="mb-payment">Paiement</InputLabel>
                                     <Select labelId="mb-payment" name="paymentType" fullWidth required>
                                         ${props.paymentTypes.map(p -> <MenuItem key=${p.id} value=${p.id}>${p.name}</MenuItem>)}
                                     </Select>
