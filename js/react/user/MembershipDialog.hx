@@ -138,7 +138,7 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                 setState({
                     isLoading : false,
                     isLocked: false,
-                    tabIndex: availableYears.length == 0 ? 0 : state.tabIndex,
+                    tabIndex: 0,
 
                     userName : res.userName,
                     paymentTypes : res.paymentTypes,
