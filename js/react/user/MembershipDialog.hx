@@ -1,11 +1,14 @@
 package react.user;
 
+import haxe.Timer;
 import css.TextAlign;
 import mui.core.common.Breakpoint;
 import react.types.HandlerOrVoid;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.mui.CagetteTheme;
+import react.mui.Alert;
+import react.mui.Box;
 import mui.core.*;
 import mui.core.Tabs;
 import mui.core.styles.Classes;
@@ -33,6 +36,7 @@ typedef MembershipDialogState = {
     isLocked: Bool,
     tabIndex: Int,
     canAdd: Bool,
+    submitSuccess: Bool,
 
     userName:String,
     availableYears:Array<{name:String,id:Int}>,
@@ -45,6 +49,8 @@ typedef MembershipDialogState = {
 @:publicProps(MembershipDialogProps)
 @:wrap(Styles.withStyles(styles))
 class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPropsWithClasses, MembershipDialogState> {
+
+    private var submitSuccessTimer: Timer;
 
     public static function styles(theme:Theme):ClassesDef<TClasses> {
         return {
@@ -76,11 +82,16 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
             isLoading: true,
             tabIndex: 0,
             canAdd: true,
+            submitSuccess: false,
         };    
     }
 
     override function componentDidMount() {
         loadData();
+    }
+
+    override function componentWillUnmount() {
+        stopSubmitSuccessTimer();
     }
 
   	override public function render() {
@@ -108,6 +119,11 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                             <Tab label="Ajouter" disabled=${state.isLocked || state.availableYears.length == 0} />
                         </Tabs>
                     </AppBar>
+                    <Collapse in=${state.submitSuccess}>
+                        <Box m={2}>
+                            <Alert severity="success">Nouvelle adhésion enregistrée</Alert>
+                        </Box>
+                    </Collapse>
                     ${renderTab()}
                     ${renderLoader()}
                 </Card>
@@ -187,9 +203,23 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                 paymentTypes=${state.paymentTypes}
                 membershipFee=${state.membershipFee}
                 onSubmit=$lock
-                onSubmitComplete=$loadData
+                onSubmitComplete=$onSubmitComplete
             />
         ;
+    }
+
+    private function onSubmitComplete(success: Bool) {
+        stopSubmitSuccessTimer();
+        setState({ submitSuccess: success });
+
+        if (success) {
+            submitSuccessTimer = new Timer(5000);
+            submitSuccessTimer.run = function() {
+                setState({ submitSuccess: false });
+            };
+        }
+
+        loadData();
     }
 
     private function renderLoader() {
@@ -199,5 +229,9 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
 
     private function lock() {
         setState({ isLocked: true });
+    }
+
+    private function stopSubmitSuccessTimer() {
+        if (submitSuccessTimer != null) submitSuccessTimer.stop();
     }
 }

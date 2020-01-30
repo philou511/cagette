@@ -27,6 +27,7 @@
     '@material-ui/core': require('@material-ui/core'),
     '@material-ui/core/styles': require('@material-ui/core/styles'),
     '@material-ui/icons': require('@material-ui/icons'),
+    '@material-ui/lab': require('@material-ui/lab'),
     'stickyfilljs': require('stickyfilljs'),
     'sticky-events': require('sticky-events'),
     'intersection-observer': require('intersection-observer'),//Polyfill for stick-events to work

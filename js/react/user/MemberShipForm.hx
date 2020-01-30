@@ -24,7 +24,7 @@ typedef MemberShipFormProps = {
     paymentTypes: Array<{id:String,name:String}>,
     ?membershipFee: Int,
     ?onSubmit: () -> Void,
-    ?onSubmitComplete: () -> Void,
+    ?onSubmitComplete: (success: Bool) -> Void,
 };
 
 typedef MemberShipFormClasses = Classes<[datePickerInput, snack, snackMessage]>;
@@ -136,7 +136,6 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                     </Button>
                                 </Box>
                             </CardActions>
-                            ${renderProgress(formikProps.isSubmitting)}
                         </Form>
                     )}
                 </Formik>
@@ -160,16 +159,6 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         ;
     }
 
-    private function renderProgress(isSubmitting: Bool) {
-        if (!isSubmitting) return null;
-        return
-            <Box height={4}>
-                <LinearProgress />
-            </Box>
-        ;
-    }
-
-
     private function onSubmit(values: FormProps, formikBag: Dynamic) {
         formikBag.setStatus(null);
         if (props.onSubmit != null) props.onSubmit();
@@ -187,7 +176,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
             body: data
         }).then(function(res) {
             formikBag.setSubmitting(false);
-            if (props.onSubmitComplete != null) props.onSubmitComplete();
+            if (props.onSubmitComplete != null) props.onSubmitComplete(res.ok);
 
             if (!res.ok) {
                 formikBag.setStatus("Un erreur est survenue");
