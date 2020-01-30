@@ -13,11 +13,11 @@ import mui.core.*;
 import mui.core.Tabs;
 import mui.core.styles.Classes;
 import mui.core.styles.Styles;
-import mui.core.common.Breakpoint;
+import mui.icon.Close;
 import react.user.MemberShipForm;
 import react.user.MembershipHistory;
 
-typedef TClasses = Classes<[modal, card, cardHeaderTitle, loaderContainer]>;
+typedef TClasses = Classes<[modal, card, loaderContainer]>;
 
 typedef MembershipDialogProps = {
     userId: Int,
@@ -62,9 +62,6 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
             card: {
                 minWidth: 610  
             },
-            cardHeaderTitle: {
-                textAlign: TextAlign.Center
-            },
             loaderContainer: {
                 minWidth: 610,
                 minHeight: 300,
@@ -104,10 +101,17 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
             content = 
                 <Card className=${props.classes.card}>
                     <CardHeader
-                        title=$cardTitle
-                        classes={{
-                            title: props.classes.cardHeaderTitle
-                        }}
+                        title={
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Box width={48} height={48}></Box>
+                                <Typography>$cardTitle</Typography>
+                                <Box width={48} height={48}>
+                                    <IconButton onClick=$onClose disabled=${state.isLocked}>
+                                        <Close />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        }
                         />
                     <AppBar position=${mui.core.common.CSSPosition.Static}>
                         <Tabs
