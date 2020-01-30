@@ -4,6 +4,8 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import react.mui.CagetteTheme;
 import mui.core.*;
+import mui.core.styles.Styles;
+import mui.core.styles.Classes;
 import dateFns.DateFns;
 import dateFns.DateFnsLocale;
 import mui.icon.Delete;
@@ -17,9 +19,27 @@ typedef MembershipHistoryProps = {
     ?onDeleteComplete: () -> Void,
 };
 
-class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryProps, { ?yearToDelete: Int }> {
+typedef MembershipHistoryClasses = Classes<[headTableCell]>;
 
-    public function new(props: MembershipHistoryProps) {
+typedef MembershipHistoryPropsWithClasses = {
+    >MembershipHistoryProps,
+    classes: MembershipHistoryClasses,
+};
+
+@:publicProps(MembershipHistoryProps)
+@:wrap(Styles.withStyles(styles))
+class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryPropsWithClasses, { ?yearToDelete: Int }> {
+
+    public static function styles(theme:Theme):ClassesDef<MembershipHistoryClasses> {
+        return {
+            headTableCell: {
+                backgroundColor: "#F2EBD9",
+                fontWeight: "900"
+            },
+        }
+    }
+
+    public function new(props: MembershipHistoryPropsWithClasses) {
         super(props);
         state = cast {};
     }
@@ -31,9 +51,9 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Année</TableCell>
-                            <TableCell>Date de cotis.</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}>Année</TableCell>
+                            <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}>Date de cotis.</TableCell>
+                            <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -82,9 +102,9 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
 
         return 
             <TableRow key={row.id}>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{DateFns.format(Date.fromString(row.date), "d MMMM yyyy", {locale: DateFnsLocale.fr})}</TableCell>
-                <TableCell>
+                <TableCell align=${mui.core.common.Align.Center}>{row.name}</TableCell>
+                <TableCell align=${mui.core.common.Align.Center}>{DateFns.format(Date.fromString(row.date), "d MMMM yyyy", {locale: DateFnsLocale.fr})}</TableCell>
+                <TableCell align=${mui.core.common.Align.Center}>
                     <IconButton disabled=${props.isLocked} onClick=$onClick>
                         <Delete />
                     </IconButton>

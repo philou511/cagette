@@ -1,5 +1,6 @@
 package react.user;
 
+import css.TextAlign;
 import mui.core.common.Breakpoint;
 import react.types.HandlerOrVoid;
 import react.ReactComponent;
@@ -13,7 +14,7 @@ import mui.core.common.Breakpoint;
 import react.user.MemberShipForm;
 import react.user.MembershipHistory;
 
-typedef TClasses = Classes<[modal, card, loaderContainer]>;
+typedef TClasses = Classes<[modal, card, cardHeaderTitle, loaderContainer]>;
 
 typedef MembershipDialogProps = {
     userId: Int,
@@ -55,6 +56,9 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
             card: {
                 minWidth: 610  
             },
+            cardHeaderTitle: {
+                textAlign: TextAlign.Center
+            },
             loaderContainer: {
                 minWidth: 610,
                 minHeight: 300,
@@ -88,7 +92,12 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
             var cardTitle = 'Adhésions de ${state.userName}';
             content = 
                 <Card className=${props.classes.card}>
-                    <CardHeader title=$cardTitle />
+                    <CardHeader
+                        title=$cardTitle
+                        classes={{
+                            title: props.classes.cardHeaderTitle
+                        }}
+                        />
                     <AppBar position=${mui.core.common.CSSPosition.Static}>
                         <Tabs
                             centered
