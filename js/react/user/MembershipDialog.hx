@@ -37,9 +37,9 @@ typedef MembershipDialogState = {
     userName:String,
     availableYears:Array<{name:String,id:Int}>,
     memberships:Array<{name:String,date:Date,id:Int}>,
-    membershipFee:Int,
     distributions:Array<{name:String,id:Int}>,
     paymentTypes:Array<{id:String,name:String}>,
+    ?membershipFee:Int,
 }
 
 @:publicProps(MembershipDialogProps)
@@ -185,6 +185,7 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                 groupId=${props.groupId}
                 availableYears=${state.availableYears}
                 paymentTypes=${state.paymentTypes}
+                membershipFee=${state.membershipFee}
                 onSubmit=$lock
                 onSubmitComplete=$loadData
             />

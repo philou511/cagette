@@ -22,6 +22,7 @@ typedef MemberShipFormProps = {
     groupId: Int,
     availableYears: Array<{name:String,id:Int}>,
     paymentTypes: Array<{id:String,name:String}>,
+    ?membershipFee: Int,
     ?onSubmit: () -> Void,
     ?onSubmitComplete: () -> Void,
 };
@@ -37,7 +38,7 @@ typedef MemberShipFormPropsWithClasses = {
 typedef FormProps = {
     date: Date,
     year: Int,
-    membershipFee: Float,
+    membershipFee: Int,
     paymentType: String,
 };
 
@@ -68,7 +69,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                     initialValues={{
                         date: new js.lib.Date(),
                         year: props.availableYears[0].id,
-                        membershipFee: 0,
+                        membershipFee: (props.membershipFee == null) ? 0 : props.membershipFee,
                         paymentType: props.paymentTypes[0].id,
                     }}
                     onSubmit=$onSubmit
@@ -105,7 +106,11 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                         name="membershipFee"
                                         label="Montant"
                                         InputProps={{
-                                            endAdornment: "€"
+                                            endAdornment: "€",
+                                        }}
+                                        inputProps={{
+                                            min: 0,
+                                            step: 1
                                         }}
                                         type=${mui.core.input.InputType.Number}
                                     />
