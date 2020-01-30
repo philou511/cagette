@@ -5,6 +5,7 @@ import react.ReactComponent;
 typedef DatePickerProps = {
     name: String,
     ?label: String,
+    ?cancelLabel: String,
     ?fullWidth: Bool,
     ?required: Bool,
     ?format: String,

@@ -85,6 +85,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                             }
                                         }}
                                         label="Date de cotisation"
+                                        cancelLabel="Annuler"
                                         name="date"
                                         format="EEEE d MMMM yyyy"
                                         required  />
@@ -103,6 +104,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                         required
                                         name="membershipFee"
                                         label="Montant"
+                                        
                                         type=${mui.core.input.InputType.Number}
                                     />
                                 </FormControl>
