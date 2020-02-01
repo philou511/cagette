@@ -114,7 +114,7 @@ class OrderBoxThunk {
 
         return Thunk.Action( function( dispatch : redux.Redux.Dispatch, getState : Void -> OrderBoxState ) {
 
-            if(CATALOGS_CACHE.length==0){
+            if(CATALOGS_CACHE.length==0) {
                
                 //Loads all the catalogs (of variable type only) for the given multiDistrib
                 return HttpUtil.fetch( "/api/order/catalogs/" + multiDistribId, GET, { catalogType: 1 }, PLAIN_TEXT )
@@ -127,21 +127,15 @@ class OrderBoxThunk {
                     handleError( data, dispatch );
                 });
             
-            }else{
+            }
+            else {
 
                 //from cache
                 return new js.Promise(function(resolve,reject){resolve("");})
                 .then(function(data){
                     dispatch( OrderBoxAction.FetchCatalogsSuccess( CATALOGS_CACHE ) );
                 });
-
-                var data : { catalogs : Array<ContractInfo> } = tink.Json.parse(data);               
-                dispatch( OrderBoxAction.FetchCatalogsSuccess( data.catalogs ) );
-            })
-            .catchError( function(data) {                    
-                
-                handleError( data, dispatch );
-            });
+            }
         });
 
     }
@@ -181,6 +175,8 @@ class OrderBoxThunk {
                 });
 
             }                  
+        });
+
         });
 
     }

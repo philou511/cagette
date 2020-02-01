@@ -82,14 +82,17 @@ class Order extends Controller
 		var raw = StringTools.urlDecode( sugoi.Web.getPostData() );
 		
 		if( raw == null ) {
+
 			throw new Error( 'Order datas are null' );
-		} else { 
+		}
+		else {
+
 			ordersData = haxe.Json.parse(raw).orders;
 		}
-		
-		OrderService.createOrUpdateOrders( user, multiDistrib, catalog, ordersData );
 
+		OrderService.createOrUpdateOrders( user, multiDistrib, catalog, ordersData );
 		Sys.print( Json.stringify( { success : true, orders : ordersData } ) );
+
 	}
 	
 }

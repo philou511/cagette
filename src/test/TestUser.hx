@@ -16,9 +16,23 @@ class TestUser extends utest.Test
 		super();
 	}
 	
+	var contract : db.Catalog;
+	var user : db.User;
+    var group1 : db.Group;
+    var group2 : db.Group;
+    var userAmap : db.UserGroup;
+	
+	/**
+	 * get a contract + a user
+	 */
 	function setup(){
 		TestSuite.initDB();
 		TestSuite.initDatas();
+		
+		contract = db.Catalog.manager.get(3);
+		user = db.User.manager.get(1);
+        group1 = db.Group.manager.get(1);
+        group2 = db.Group.manager.get(2);
 	}
 	
 	/**
@@ -26,10 +40,9 @@ class TestUser extends utest.Test
      he/she doesn't belong to
 	 */
 	function testViewContract(){        
-        var userAmap = db.UserGroup.getOrCreate(TestSuite.FRANCOIS, TestSuite.AMAP_DU_JARDIN);
+        userAmap = db.UserGroup.getOrCreate(user, group1);
         userAmap.giveRight(Right.GroupAdmin);
-		var catalog = TestSuite.LOCAVORES.getContracts().first();
-        Assert.isFalse( TestSuite.FRANCOIS.canManageContract(catalog) );
+        Assert.isFalse(user.canManageContract(contract));
 	}
 
 }

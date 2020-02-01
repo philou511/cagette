@@ -1,5 +1,4 @@
 package controller;
-import db.DistributionCycle;
 import db.UserOrder;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
@@ -10,6 +9,7 @@ import Common;
 import service.VolunteerService;
 import service.DistributionService;
 using tools.DateTool;
+using Lambda;
 using Formatting;
 using Std;
 
@@ -36,20 +36,29 @@ class Distribution extends Controller
 		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
 		var timeframe = new tools.Timeframe(from,to);
 
-		var distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
+
+		var distribs = [];
+		//Multidistribs
+		distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
+		
 
 		if( app.user.getGroup().hasPayments() && app.params.get("_from")==null){
+
+	
+	
 
 			//include unvalidated distribs in the past
 			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.getGroup() , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );
 			for( md in unvalidated.copy()){
 				if( !md.isValidated() ) distribs.unshift(md);				
 			}
+			
+
 		}
 
 		view.distribs = distribs;
-		
-		view.cycles = DistributionCycle.getFromTimeFrame(app.user.getGroup(), timeframe);
+		//cycle who have either startDate or EndDate in the timeframe
+		view.cycles = db.DistributionCycle.manager.search( $group==app.user.getGroup() && (($startDate > timeframe.from && $startDate < timeframe.to) || ($endDate > timeframe.from && $endDate < timeframe.to) ) , false);
 		view.timeframe = timeframe;
 
 		checkToken();

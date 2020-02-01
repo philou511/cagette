@@ -518,9 +518,7 @@ class MultiDistrib extends Object
 
 	public function getVolunteerRoleIds():Array<Int>{
 		if(volunteerRolesIds==null) return [];
-		var rolesIds = volunteerRolesIds.split(",").map(Std.parseInt);
-		rolesIds = tools.ArrayTool.deduplicate(rolesIds);
-		return rolesIds;
+		return volunteerRolesIds.split(",").map(Std.parseInt);
 	}
 
 	public function getVolunteers() {

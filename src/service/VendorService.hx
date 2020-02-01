@@ -76,8 +76,7 @@ class VendorService{
 			n = n.toLowerCase();
 			if(Lambda.has(["le","la","les","du","de","l'","a","à","au","en","sur","qui","ferme","GAEC","EARL","SCEA","jardin","jardins"],n)) continue;
 			//search for each term
-			//var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
-			var search = Lambda.array(db.Vendor.manager.search( $name.like('%$n%'),{limit:20},false));
+			var search = Lambda.array(db.Vendor.manager.unsafeObjects('SELECT * FROM Vendor WHERE name LIKE "%$n%" LIMIT 20',false));
 			vendors = vendors.concat(search);
 		}
 

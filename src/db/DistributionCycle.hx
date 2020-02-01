@@ -1,5 +1,4 @@
 package db;
-import tools.Timeframe;
 import sys.db.Object;
 import sys.db.Types;
 using tools.DateTool;
@@ -17,6 +16,7 @@ enum CycleType {
 class DistributionCycle extends Object
 {
 	public var id : SId;	
+	//@:relation(contractId) public var contract : Contract;
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	public var cycleType:SEnum<CycleType>;
 	public var startDate : SDate; 	//cycle start date
@@ -35,20 +35,6 @@ class DistributionCycle extends Object
 
 	public function getDistributions():Array<db.MultiDistrib>{
 		return Lambda.array( db.MultiDistrib.manager.search($distributionCycle == this, false) );
-	}
-
-	/**
-		Get cycles who have either startDate or EndDate in the timeframe
-	**/
-	public static function getFromTimeFrame(group:db.Group, timeframe:Timeframe){
-		return db.DistributionCycle.manager.search( 
-			$group==group && (
-				($startDate > timeframe.from && $startDate < timeframe.to) 
-				||
-				($endDate > timeframe.from && $endDate < timeframe.to) 
-				||
-				($startDate < timeframe.from && $endDate > timeframe.to) 
-			) , false);
 	}
 	
 	public static function getLabels(){

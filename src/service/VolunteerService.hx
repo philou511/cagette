@@ -264,7 +264,6 @@ class VolunteerService
 		
 		//update roles
 		multidistrib.lock();
-		rolesIds = tools.ArrayTool.deduplicate(rolesIds);
 		multidistrib.volunteerRolesIds = rolesIds.join(",");
 		multidistrib.update();
 	}
