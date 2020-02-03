@@ -264,10 +264,11 @@ class App {
 	 *  Displays a sign up box
 	 */
 	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-		var m = App.jq("#myModal");
-		m.find(".modal-title").html("S'inscrire");
-		m.find(".modal-dialog").removeClass("modal-lg");
-		untyped m.modal();
+		var modalElement = Browser.document.getElementById("myModal");
+		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
+		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+		var modal = new bootstrap.Modal(modalElement);
+		modal.show();
 		ReactDOM.render(
 			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
