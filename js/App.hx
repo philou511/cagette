@@ -28,6 +28,7 @@ import react.store.CagetteStore;
 import react.map.*;
 import react.user.*;
 import react.vendor.*;
+import react.TutoModal;
 
 //TODO
 import react.store.Cart;
@@ -459,6 +460,21 @@ class App {
 		}
 	}
 
+	public function tutoModal() {
+		var id = "tuto-modal-container";
+		var modalContainer = Browser.document.getElementById(id);
+		if (modalContainer == null) {
+			modalContainer = Browser.document.createElement("div");
+			modalContainer.setAttribute("id", id);
+			Browser.document.body.appendChild(modalContainer);
+		} 
+		ReactDOM.unmountComponentAtNode(modalContainer); 
+		ReactDOM.render(
+			jsx('<TutoModal />'),
+			modalContainer
+		);
+		return false;
+	}
 }
 
 

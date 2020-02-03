@@ -26,8 +26,9 @@ class Tuto
 	 */
 	function init(tuto) 
 	{
+		App.instance.tutoModal();
+
 		var s = tuto.steps[step];
-		trace("TUTO.init", s);
 		
 		//close previous popovers
 		// var p = App.jq(".popover");
@@ -40,8 +41,6 @@ class Tuto
 			/**
 			 * tutorial is finished : display a modal window
 			 */
-			var m2 = Browser.document.getElementById("myModal");
-
 			var m = App.jq('#myModal');
 			untyped m.modal('show');
 			m.addClass("help");			
@@ -59,44 +58,41 @@ class Tuto
 			/**
 			 * no element, make a modal window (usually its the first step of the tutorial)
 			 */
-			 var modalElement = App.jq('#myModal');
-			//  var modalElement = Browser.document.getElementById("myModal");
-			 var modalElement2 = Browser.document.getElementById("myModal");
-			 var modal = new bootstrap.Modal(modalElement2);
-			 modal.show();
+			var modalElement = Browser.document.getElementById("myModal");
+			var modal = new bootstrap.Modal(modalElement);
+			modal.show();
 			
-			 modalElement2.classList.add("help");
-			 modalElement2.querySelector('.modal-body').innerHTML = s.text;
-			 modalElement2.querySelector('.modal-header').innerHTML = "<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name;
-			// modalElement.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
+			modalElement.classList.add("help");
+			modalElement.querySelector('.modal-body').innerHTML = s.text;
+			modalElement.querySelector('.modal-header').innerHTML = "<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name;
+			modalElement.querySelector('.modal-dialog').classList.remove("modal-lg");
+
+			var confirmButtonIcon = Browser.document.createElement('i');
+			confirmButtonIcon.classList.add("icon");
+			confirmButtonIcon.classList.add("icon-chevron-right");
 			
-			var bt = App.jq("<a class='btn btn-default'><i class='icon icon-chevron-right'></i> "+t._("OK")+"</a>");
-			bt.click(function(?_) {
+			var confirmButton = Browser.document.createElement('a');
+			confirmButton.classList.add("btn");
+			confirmButton.classList.add("btn-default");
+			confirmButton.appendChild(confirmButtonIcon);
+			confirmButton.appendChild(Browser.document.createTextNode(" " + t._("OK")));
+
+			modalElement.querySelector(".modal-footer").append(confirmButton);
+			
+			confirmButton.onclick = function () {
 				modal.hide();
 				new Tuto(name, step + 1);
-			});
-			modalElement.find(".modal-footer").append(bt);
-			modalElement.find(".modal-dialog").removeClass("modal-lg"); //small window pls
-			
-		}else {
-			
+			}; 	
+		} else {
+			trace("LLLLLAAAAAA");
 			//prepare Bootstrap "popover"
-			var x = App.jq(s.element).first().attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
+			// var x = App.jq(s.element).first().attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
+			var x = Browser.document.querySelector(s.element);
+			x.setAttribute("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
+			
 			var text = "<p>" + s.text + "</p>";
 			var bt = null;
-			switch(s.action) {
-				case TANext :
-					
-					bt = App.jq("<p><a class='btn btn-default btn-sm'><i class='icon icon-chevron-right'></i> "+t._("Next")+"</a></p>");
-					bt.click(function(?_) {
-						//untyped m.modal('hide');
-						new Tuto(name, step + 1);
-						if(LAST_ELEMENT!=null) App.jq(s.element).removeClass("highlight");
-					});
-					
-				default:
-			}
-			
+
 			//configure and open popover			
 			var p = switch(s.placement) {
 				case TPTop: "top";
@@ -105,33 +101,65 @@ class Tuto
 				case TPRight : "right";
 				default : null;
 			}
-			var options = { container:"body", content:text, html:true , placement:p};
-			// untyped x.popover(options).popover('show');	
+
+			var popover = new bootstrap.Popover(x, { container: "body", content: text , placement: p });
+			popover.show();
+
+			switch(s.action) {
+				case TANext :
+					var nextIcon = Browser.document.createElement('i');
+					nextIcon.classList.add("icon");
+					nextIcon.classList.add("icon-chevron-right");
+					var link = Browser.document.createElement('a');
+					link.classList.add("btn");
+					link.classList.add("btn-default");
+					link.appendChild(nextIcon);
+					link.appendChild(Browser.document.createTextNode(" " + t._("Next")));
+					bt = Browser.document.createElement('p');
+					bt.appendChild(link);
+
+					bt.onclick = function () {
+						new Tuto(name, step + 1);
+						popover.hide();
+						if (LAST_ELEMENT!=null) {
+							x.classList.remove("highlight");
+						}
+					}
+				default:
+			}
 			
 			
 			//add a footer
-			var footer = App.jq("<div class='footer'><div class='pull-left'></div><div class='pull-right'></div></div>");
+			var footer = Browser.document.createElement("div");
+			footer.classList.add("footer");
+			footer.innerHTML = "<div class='pull-left'></div><div class='pull-right'></div>";
+
+			if (bt != null) footer.querySelector(".pull-right").append(bt);
+			footer.querySelector(".pull-left").append(createCloseButton(t._('Stop')));
 			
-			if (bt != null) footer.find(".pull-right").append(bt);
-			footer.find(".pull-left").append(makeCloseButton(t._('Stop')));
+			x.addEventListener("show.bs.popover", function () {
+				trace("AADED", Browser.document.querySelector(".popover .popover-content"));
+				Browser.document.querySelector(".popover .popover-content").append(footer);
+			}, false);
+
 			
-			// App.jq(".popover .popover-content").append(footer);
-			
-			//highlight
-			App.jq(s.element).first().addClass("highlight");
+			Browser.document.querySelector(s.element).classList.add("highlight");
 			LAST_ELEMENT = s.element;
 		}
 	}
-	
-	/**
-	 * Make a "close" bt
-	 */
-	function makeCloseButton(?text) {
-		var bt = App.jq("<a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-remove'></span> "+(text==null?"":text)+"</a>");
-		bt.click(function(?_) {			
-			js.Browser.location.href = STOP_URL+name;
-		});
-		return bt;
+
+	function createCloseButton(?text) {
+		var icon = Browser.document.createElement("span");
+		icon.classList.add("glyphicon");
+		icon.classList.add("glyphicon-remove");
+
+		var btn = Browser.document.createElement("a");
+		btn.classList.add("btn");
+		btn.classList.add("btn-default");
+		btn.classList.add("btn");
+		btn.appendChild(icon);
+		btn.appendChild(Browser.document.createTextNode(text==null ? "" : text));
+
+		return btn;
 	}
-	
 }
