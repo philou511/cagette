@@ -81,6 +81,10 @@ class Basket extends Object
 	public function getUser():db.User{
 		return this.user;
 	}
+
+	public function getDistribution():db.MultiDistrib{
+		return this.multiDistrib;
+	}
 	
 	/**
 	 *  Get basket's orders
