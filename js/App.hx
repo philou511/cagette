@@ -1,3 +1,4 @@
+import bootstrap.Modal;
 import js.Browser;
 import Common;
 
@@ -234,11 +235,13 @@ class App {
 		var r = new haxe.Http(url);
 		r.onData = function(data) {
 			//setup body and title
-			var m = App.jq("#myModal");
-			m.find(".modal-body").html(data);
-			if (title != null) m.find(".modal-title").html(title);
-			if (!large) m.find(".modal-dialog").removeClass("modal-lg");
-			untyped App.jq('#myModal').modal(); //bootstrap 3 modal window
+
+			var modalElement = Browser.document.getElementById("myModal");
+			var modal = new Modal(modalElement);
+			modalElement.querySelector(".modal-body").innerHTML = data;
+			if (title != null) modalElement.querySelector(".modal-title").innerHTML = title;
+			if (!large) modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+			modal.show();
 		}
 		r.request();
 	}
