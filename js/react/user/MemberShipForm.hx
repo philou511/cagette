@@ -41,7 +41,7 @@ typedef FormProps = {
     year: Int,
     membershipFee: Int,
     paymentType: String,
-    ?distributionId: Int,
+    distributionId: Int,
 };
 
 @:publicProps(MemberShipFormProps)
@@ -73,7 +73,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                         year: props.availableYears[0].id,
                         membershipFee: (props.membershipFee == null) ? 0 : props.membershipFee,
                         paymentType: props.paymentTypes[0].id,
-                        distributionId: (props.distributions.length > 0) ? props.distributions[0].id : null
+                        distributionId: -1
                     }}
                     onSubmit=$onSubmit
                 >
@@ -156,6 +156,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
             <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
                 <InputLabel id="mb-distrib">Lors de la distribution</InputLabel>
                 <Select labelId="mb-distrib" name="distributionId" fullWidth>
+                    <MenuItem value={-1}><span>&nbsp;</span></MenuItem>
                     ${props.distributions.map(d -> <MenuItem key=${d.id} value=${d.id}>${d.name}</MenuItem>)}
                 </Select>
             </FormControl>
@@ -187,7 +188,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         data.append("year", Std.string(values.year));
         data.append("membershipFee", Std.string(values.membershipFee));
         data.append("paymentType", values.paymentType);
-        if (values.distributionId != null) data.append("distributionId", Std.string(values.distributionId));
+        if (values.distributionId != null || values.distributionId != -1) data.append("distributionId", Std.string(values.distributionId));
 
         js.Browser.window.fetch(url, {
             method: "POST",
