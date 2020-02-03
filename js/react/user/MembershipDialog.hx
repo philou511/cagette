@@ -60,7 +60,7 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                 justifyContent: css.JustifyContent.Center,
             },
             card: {
-                minWidth: 610  
+                width: 610,
             },
             loaderContainer: {
                 minWidth: 610,
