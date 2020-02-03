@@ -179,7 +179,7 @@ class ProductActions extends ReactComponentOfProps<Props> {
                     <Grid item md={3} xs={6} style=${{textAlign:css.TextAlign.Center}}>
                         <Typography component="div" className=${classes.cagProductInfo} >
                             <span className="cagProductPrice">
-                                ${Formatting.formatNum(product.price)} €
+                                ${Formatting.formatNum(product.price)}&nbsp;&euro;
                             </span> 
                         </Typography> 
                         

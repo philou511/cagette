@@ -232,12 +232,6 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Distribution());
 	}
 	
-	@logged
-	function doMembership(d:Dispatch) {
-		addBc("member","Membres","/member");
-		d.dispatch(new controller.Membership());
-	}
-	
 	function doShop(d:Dispatch) {
 		addBc("shop","Boutique","/shop");
 		d.dispatch(new controller.Shop());
