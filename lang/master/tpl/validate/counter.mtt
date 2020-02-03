@@ -20,6 +20,9 @@
         
         <div class="col-md-6">
             <table class="table table-bordered">
+                <tr class="darkhead">
+                    <td colspan="2">Caisse et encaissements</td>
+                </tr>
                 <tr>
                     <td><b>Fond de caisse avant distribution</b></td>
                     <td>
@@ -57,6 +60,11 @@
                     <td> <b>Encaissements en chèque</b> </td>
                     <td>::sales.checkTurnover.ttc:: &euro;</td>
                 </tr>
+                <tr>
+                    <td> <b>Encaissements par virement</b> </td>
+                    <td>::sales.transferTurnover.ttc:: &euro;</td>
+                </tr>
+
                 <tr>
                     <td> <b>Encaissements Carte bancaire</b> </td>
                     <td>
@@ -102,7 +110,9 @@
 
         <div class="col-md-6">
                 <table class="table table-bordered">
-                    
+                    <tr class="darkhead">
+                        <td colspan="2">Irrégularités</td>
+                    </tr>
                     <tr>
                         <td> <b>Commandes non payées</b></td>
                         <td>
@@ -163,7 +173,22 @@
                   
                 </table>
     
-                
+                ::if(distribution.getGroup().hasMembership())::
+                <table class="table table-bordered">
+                    <tr class="darkhead">
+                        <td colspan="2">Adhésions</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre de cotisations saisies</th>
+                        <td>::membershipNum::</td>
+                    </tr>
+                    <tr>
+                        <th>Montant des cotisations</th>
+                        <td>::formatNum(membershipAmount):: ::currency()::</td>
+                    </tr>
+
+                </table>
+                ::end::
     
                 
             </div>

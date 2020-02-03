@@ -80,6 +80,9 @@ class MembershipService{
 
 	}
 
+	public function getMembershipsFromDistrib(distribution:db.MultiDistrib){
+		return db.Membership.manager.search($distribution==distribution);
+	}
 
     public function countUpToDateMemberships(){
 		var year = group.getMembershipYear();

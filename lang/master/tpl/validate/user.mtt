@@ -266,15 +266,27 @@
 				<tr style="background-color:#DDD;">
 					<th class="text-center">Solde du membre</th>
 				</tr>
+				
 				<tr>
-					<td class="text-center">
+					::if(balance<0)::
+					<td class="text-center alert-danger">
+						<b>$$balance(::balance::)</b>
+						<br/>
+						<a href="/member/payments/::member.id::" target="_blank" class="btn btn-danger btn-sm">
+							<i class="icon icon-euro"></i> ::_("Payment history of this member")::
+						</a>
+					</td>
+					::else::
+					<td class="text-center alert-success">
 						<b>$$balance(::balance::)</b>
 						<br/>
 						<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">
 							<i class="icon icon-euro"></i> ::_("Payment history of this member")::
 						</a>
 					</td>
+					::end::
 				</tr>
+
 
 			</table>
 		</div>

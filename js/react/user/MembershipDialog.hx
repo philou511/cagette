@@ -24,7 +24,6 @@ typedef MembershipDialogProps = {
     groupId: Int,
     ?distributionId:Int,
     callbackUrl: String,
-    distributionId: Int,
 };
 
 typedef MembershipDialogPropsWithClasses = {
