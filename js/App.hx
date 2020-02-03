@@ -1,3 +1,4 @@
+import js.Browser;
 import Common;
 
 //React lib
@@ -245,11 +246,13 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-		var m = App.jq("#myModal");
-		m.find(".modal-title").html("S'identifier");
-		m.find(".modal-dialog").removeClass("modal-lg");
-		untyped m.modal();
+	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {	
+		var modalElement = Browser.document.getElementById("myModal");
+		modalElement.querySelector(".modal-title").innerHTML = "S'identifier";
+		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+		var modal = new bootstrap.Modal(modalElement);
+		modal.show();
+
 		ReactDOM.render(
 			jsx('<$LoginBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
