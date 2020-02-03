@@ -214,10 +214,9 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
         var productsToOrder = props.order.products.map(function(cartProduct:ProductWithQuantity) {
 			var quantity = cartProduct.quantity;
 			var product = cartProduct.product;
-			
 
 			return jsx('
-				<Grid className=${classes.product} container={true} direction=${Row} spacing=${GridSpacing.Spacing_8} key=${product.id}>
+				<Grid className=${classes.product} container={true} direction=${Row} spacing=${GridSpacing.Spacing_1} key=${product.id}>
 					<Grid item xs={2} className=${classes.gridItem}>
 						<Card className=${classes.subcard} elevation={0}>
 							<CardMedia
@@ -237,7 +236,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 							<span className="cagProductUnit">${renderQtAndUnit(quantity*product.qt,product.unitType)}</span>	
 						</Typography>
 						<Typography component="p" className=${classes.cagProductInfo} >
-							<span className="cagProductPrice">${Formatting.formatNum(quantity*product.price)} €</span>
+							<span className="cagProductPrice">${Formatting.formatNum(quantity*product.price)}&nbsp;&euro;</span>
 						</Typography>
 					</Grid>
 					<Grid item={true} xs={3}>

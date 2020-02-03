@@ -7,7 +7,6 @@ import react.ReactMacro.jsx;
 import react.types.*;
 import css.JustifyContent;
 import css.AlignContent;
-
 import mui.core.Button;
 import mui.core.Card;
 import mui.core.CardMedia;
@@ -169,6 +168,12 @@ class Product extends ReactComponentOf<Props, ProductState> {
         var v = props.vendor;
         var portrait = v.images!=null && v.images.portrait!=null ? v.images.portrait : v.image;
 
+        var avatar = portrait==null ? null : jsx('<Hidden xsDown>
+            <div className=${classes.cagAvatarContainer}>
+                <Avatar src=$portrait className=${classes.farmerAvatar}/>  
+            </div>
+        </Hidden>');
+
         return jsx('
             <Card elevation={0} className=${classes.card}> 
                 <CardActionArea className=${classes.area} onClick=${displayProductInfos}>
@@ -179,11 +184,7 @@ class Product extends ReactComponentOf<Props, ProductState> {
                             </Avatar>  
                         </div>-->
 
-                        <Hidden xsDown>
-                            <div className=${classes.cagAvatarContainer}>
-                                <Avatar src=$portrait className=${classes.farmerAvatar}/>  
-                            </div>
-                        </Hidden>
+                        $avatar
                     </CardMedia>
 
                     <CardContent className=${classes.cardContent}>

@@ -24,6 +24,7 @@ typedef MembershipDialogProps = {
     groupId: Int,
     ?distributionId:Int,
     callbackUrl: String,
+    distributionId: Int,
 };
 
 typedef MembershipDialogPropsWithClasses = {
@@ -173,6 +174,13 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
 
     private function onClose() {
         if (!state.isLocked) setState({ isOpened: false });
+
+        //reload host page after closing window
+        if(props.callbackUrl!=null){
+            haxe.Timer.delay(function(){
+                js.Browser.document.location.href = props.callbackUrl;
+            },250);
+        }
     }
 
     private function onTabChange(e: js.html.Event, newValue: Int) {

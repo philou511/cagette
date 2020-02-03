@@ -43,7 +43,7 @@ class User extends Controller
 
 				var year = params["year"].parseInt();
 				var date = Date.fromString(params["date"]);
-				var membershipFee = group.membershipFee==null ? params["membershipFee"].parseInt() : group.membershipFee;
+				var membershipFee = params["membershipFee"].parseInt();
 				var paymentType = params["paymentType"];
 				var distribution = db.MultiDistrib.manager.get(params["distributionId"].parseInt(),false);
 
@@ -108,7 +108,17 @@ class User extends Controller
 			var membership = ms.getUserMembership(user,year);
 			if(membership!=null){
 				membership.lock();
+				if(membership.operation!=null){
+					var op = membership.operation;
+					op.lock();
+					op.relation.lock();
+					op.relation.delete();					
+					op.delete();
+					service.PaymentService.updateUserBalance(user,group);
+				}
 				membership.delete();
+
+				
 			}
 			var memberships = ms.getUserMemberships(user).map(m->{
 				return {

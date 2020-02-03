@@ -34,7 +34,7 @@ class MembershipService{
 		var paymentType = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).find(pt -> return paymentType==pt.type);
 
 		
-		var op : db.Operation = null;
+		var paymentOp : db.Operation = null;
 		if(group.hasPayments()){
 
 			if(paymentType==null){
@@ -47,7 +47,7 @@ class MembershipService{
 			}
 
 			//debt operation
-			op = new db.Operation();
+			var op = new db.Operation();
 			op.user = user;			
 			op.group = group;
 			op.name = "Adhésion "+getPeriodName(year);
@@ -59,7 +59,8 @@ class MembershipService{
 			op.pending = false;				
 			op.insert();	
 			
-			var paymentOp = db.Operation.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , op );
+			paymentOp = db.Operation.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , op );
+			paymentOp.date = date;
 			paymentOp.pending = false;
 			paymentOp.update();
 
@@ -72,7 +73,7 @@ class MembershipService{
 		cotis.year = year;
 		cotis.date = date;
 		cotis.distribution = distribution;
-		cotis.operation = op;
+		cotis.operation = paymentOp;
 		cotis.insert();
 
 		return cotis;

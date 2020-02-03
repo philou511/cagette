@@ -274,7 +274,7 @@ class App {
 		return false;
 	}
 
-	public function membershipBox(userId:Int, groupId:Int, ?distributionId:Int, ?callbackUrl:String){
+	public function membershipBox(userId:Int,groupId:Int,?callbackUrl:String,?distributionId:Int){
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
@@ -285,7 +285,7 @@ class App {
 			<MuiThemeProvider theme=${CagetteTheme.get()}>
 				<>
 					<CssBaseline />
-					<MembershipDialog userId=$userId groupId=$groupId distributionId=$distributionId callbackUrl=$callbackUrl />							
+					<MembershipDialog userId=$userId groupId=$groupId callbackUrl=$callbackUrl distributionId=$distributionId />							
 				</>
 			</MuiThemeProvider>
 		'), node );
