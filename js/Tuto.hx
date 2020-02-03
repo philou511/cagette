@@ -1,4 +1,5 @@
 package;
+import js.Browser;
 import Common;
 
 /**
@@ -25,12 +26,12 @@ class Tuto
 	 */
 	function init(tuto) 
 	{
-
 		var s = tuto.steps[step];
+		trace("TUTO.init", s);
 		
 		//close previous popovers
-		var p = App.jq(".popover");
-		untyped p.popover('hide');
+		// var p = App.jq(".popover");
+		// untyped p.popover('hide');
 		
 		var t = App.instance.t;
 		if (t == null) trace("Gettext translator is null");
@@ -39,6 +40,8 @@ class Tuto
 			/**
 			 * tutorial is finished : display a modal window
 			 */
+			var m2 = Browser.document.getElementById("myModal");
+
 			var m = App.jq('#myModal');
 			untyped m.modal('show');
 			m.addClass("help");			
@@ -53,23 +56,27 @@ class Tuto
 			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
 			
 		}else if (s.element == null) {
-		
 			/**
 			 * no element, make a modal window (usually its the first step of the tutorial)
 			 */
-			var m = App.jq('#myModal');
-			untyped m.modal('show');
-			m.addClass("help");
-			m.find(".modal-body").html(s.text); 
-			m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
+			 var modalElement = App.jq('#myModal');
+			//  var modalElement = Browser.document.getElementById("myModal");
+			 var modalElement2 = Browser.document.getElementById("myModal");
+			 var modal = new bootstrap.Modal(modalElement2);
+			 modal.show();
+			
+			 modalElement2.classList.add("help");
+			 modalElement2.querySelector('.modal-body').innerHTML = s.text;
+			 modalElement2.querySelector('.modal-header').innerHTML = "<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name;
+			// modalElement.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
 			
 			var bt = App.jq("<a class='btn btn-default'><i class='icon icon-chevron-right'></i> "+t._("OK")+"</a>");
 			bt.click(function(?_) {
-				untyped m.modal('hide');
+				modal.hide();
 				new Tuto(name, step + 1);
 			});
-			m.find(".modal-footer").append(bt);
-			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
+			modalElement.find(".modal-footer").append(bt);
+			modalElement.find(".modal-dialog").removeClass("modal-lg"); //small window pls
 			
 		}else {
 			
@@ -99,7 +106,7 @@ class Tuto
 				default : null;
 			}
 			var options = { container:"body", content:text, html:true , placement:p};
-			untyped x.popover(options).popover('show');	
+			// untyped x.popover(options).popover('show');	
 			
 			
 			//add a footer
@@ -108,7 +115,7 @@ class Tuto
 			if (bt != null) footer.find(".pull-right").append(bt);
 			footer.find(".pull-left").append(makeCloseButton(t._('Stop')));
 			
-			App.jq(".popover .popover-content").append(footer);
+			// App.jq(".popover .popover-content").append(footer);
 			
 			//highlight
 			App.jq(s.element).first().addClass("highlight");

@@ -56,6 +56,7 @@ class App {
 	Returns a jquery object like $() in javascript
 	**/
 	public static inline function jq(r:Dynamic):js.jquery.JQuery{
+		trace("CALL JQUERY");
 		return new js.jquery.JQuery(r);
 	}
 
@@ -98,9 +99,6 @@ class App {
 		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
 		
 		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
-		
-	
-		
 	}
 
 	/**
@@ -214,8 +212,8 @@ class App {
 	**/
 	function postReact(){
 		haxe.Timer.delay(function(){
-			untyped jq('[data-toggle="tooltip"]').tooltip();
-			untyped jq('[data-toggle="popover"]').popover();
+		// 	untyped jq('[data-toggle="tooltip"]').tooltip();
+		// 	untyped jq('[data-toggle="popover"]').popover();
 		},500);
 		
 	}
@@ -420,10 +418,10 @@ class App {
 		var text = "<p>" + message + "</p>";
 		
 		var options = { container:"body", content:text, html:true , placement:placement};
-		untyped  x.popover(options).popover('show');
+		// untyped  x.popover(options).popover('show');
 		//click anywhere to hide
 		App.jq("html").click(function(_) {
-			untyped x.popover('hide');				
+			// untyped x.popover('hide');				
 		});
 		
 

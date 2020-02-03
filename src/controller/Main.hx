@@ -314,5 +314,7 @@ Called from controller/Main.hx line 117
 		sys.db.admin.Admin.handler();
 	}
 	
-	
+	@tpl("test.mtt")
+	function doTest(d:Dispatch) {
+	}
 }

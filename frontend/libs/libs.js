@@ -7,7 +7,7 @@
     //
     // list npm modules required in Haxe
     //
-    'bootstrap': require('bootstrap'),
+    // 'bootstrap': require('bootstrap'),
     'react': require('react'),
     'redux': require('redux'),
     'react-avatar-editor': require('react-avatar-editor'),
@@ -33,7 +33,7 @@
     'lodash.throttle': require('lodash.throttle'),
     'lodash.debounce': require('lodash.debounce'),
     'bowser': require('bowser'),//browser version detection
-    
+    'bootstrap.native': require('bootstrap.native'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {
