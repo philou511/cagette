@@ -65,12 +65,16 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
     }
 
     override public function render() {
+        var now = Date.now();
+        var findedDefaulYear = props.availableYears.find(y -> y.id == now.getFullYear());
+        var defaultYearId = findedDefaulYear != null ? findedDefaulYear.id : props.availableYears[0].id;
+        
         var res =
             <MuiPickersUtilsProvider utils={FrDateFnsUtils} locale=${DateFnsLocale.fr} >
                 <Formik
                     initialValues={{
                         date: new js.lib.Date(),
-                        year: props.availableYears[0].id,
+                        year: defaultYearId,
                         membershipFee: (props.membershipFee == null) ? 0 : props.membershipFee,
                         paymentType: props.paymentTypes[0].id,
                         distributionId: -1
