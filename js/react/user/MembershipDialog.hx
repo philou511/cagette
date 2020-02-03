@@ -22,6 +22,7 @@ typedef TClasses = Classes<[modal, card, loaderContainer]>;
 typedef MembershipDialogProps = {
     userId: Int,
     groupId: Int,
+    ?distributionId:Int,
     callbackUrl: String,
 };
 
@@ -207,6 +208,7 @@ class MembershipDialog extends ReactComponentOfPropsAndState<MembershipDialogPro
                 paymentTypes=${state.paymentTypes}
                 membershipFee=${state.membershipFee}
                 distributions=${state.distributions}
+                distributionId=${props.distributionId}
                 onSubmit=$lock
                 onSubmitComplete=$onSubmitComplete
             />

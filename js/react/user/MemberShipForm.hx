@@ -23,6 +23,7 @@ typedef MemberShipFormProps = {
     availableYears: Array<{name:String,id:Int}>,
     paymentTypes: Array<{id:String,name:String}>,
     distributions:Array<{name:String,id:Int}>,
+    ?distributionId:Int,
     ?membershipFee: Int,
     ?onSubmit: () -> Void,
     ?onSubmitComplete: (success: Bool) -> Void,
@@ -69,6 +70,8 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         var findedDefaulYear = props.availableYears.find(y -> y.id == now.getFullYear());
         var defaultYearId = findedDefaulYear != null ? findedDefaulYear.id : props.availableYears[0].id;
         
+        var defaultDistributionId = props.distributionId != null ? props.distributionId : -1;
+        
         var res =
             <MuiPickersUtilsProvider utils={FrDateFnsUtils} locale=${DateFnsLocale.fr} >
                 <Formik
@@ -77,7 +80,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                         year: defaultYearId,
                         membershipFee: (props.membershipFee == null) ? 0 : props.membershipFee,
                         paymentType: props.paymentTypes[0].id,
-                        distributionId: -1
+                        distributionId: defaultDistributionId
                     }}
                     onSubmit=$onSubmit
                 >
