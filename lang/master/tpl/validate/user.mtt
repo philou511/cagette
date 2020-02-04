@@ -234,7 +234,7 @@
 					<th class="text-center">::_("Membership")::</th>
 				</tr>
 				<tr>
-					::if user.getGroup().hasMembership()::
+					::if (user.getGroup().hasMembership() && userGroup!=null)::
 						
 							::if userGroup.hasValidMembership()::
 								<td class="text-center alert-success" style="padding:24px;">

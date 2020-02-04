@@ -79,7 +79,7 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                         date: new js.lib.Date(),
                         year: defaultYearId,
                         membershipFee: (props.membershipFee == null) ? 0 : props.membershipFee,
-                        paymentType: props.paymentTypes[0].id,
+                        paymentType: props.paymentTypes.length>0 ? props.paymentTypes[0].id : null,
                         distributionId: defaultDistributionId
                     }}
                     onSubmit=$onSubmit
@@ -126,14 +126,8 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                                     />
                                 </FormControl>
                                 
-                                <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
-                                    <InputLabel id="mb-payment">Paiement</InputLabel>
-                                    <Select labelId="mb-payment" name="paymentType" fullWidth required>
-                                        ${props.paymentTypes.map(p -> <MenuItem key=${p.id} value=${p.id}>${p.name}</MenuItem>)}
-                                    </Select>
-                                </FormControl>
-
-                               {renderDistributionField()}
+                                {renderPaymentTypeField()}
+                                {renderDistributionField()}
                                 
                             </CardContent>
                             <CardActions>
@@ -155,6 +149,19 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         ;
 
         return jsx('$res');
+    }
+
+    private function renderPaymentTypeField(){
+        if(props.paymentTypes==null || props.paymentTypes.length==0){
+            return null;
+        }else{
+            return <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
+                <InputLabel id="mb-payment">Paiement</InputLabel>
+                <Select labelId="mb-payment" name="paymentType" fullWidth required>
+                    ${props.paymentTypes.map(p -> <MenuItem key=${p.id} value=${p.id}>${p.name}</MenuItem>)}
+                </Select>
+            </FormControl>;
+        }
     }
 
     private function renderDistributionField() {
