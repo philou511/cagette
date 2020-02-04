@@ -167,7 +167,7 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = subscription.catalog.getProducts();
 
-		var canOrdersBeEdited = service.SubscriptionService.canSubscriptionOrdersBeEdited( subscription );
+		var canOrdersBeEdited = !service.SubscriptionService.hasPastDistribOrders( subscription );
 
 		if ( checkToken() ) {
 

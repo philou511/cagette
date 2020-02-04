@@ -31,7 +31,7 @@ class SubscriptionService
 
 	public static function getSubscriptionDistributions( subscription : db.Subscription ) : List<db.Distribution> {
 
-		return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate );
+		return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, false );
 	}
 
 	public static function getSubscriptionNbDistributions( subscription : db.Subscription ) : Int {
@@ -41,7 +41,7 @@ class SubscriptionService
 
 	public static function getSubscriptionTotalPrice( subscription : db.Subscription ) : Float {
 
-		var orders = db.UserOrder.manager.search( $subscription == subscription );
+		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
 		var totalPrice = 0.0;
 		
 		for ( order in orders ) {
@@ -54,18 +54,18 @@ class SubscriptionService
 
 	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : List<db.UserOrder> {
 
-		return db.UserOrder.manager.search( $subscription == subscription );
+		return db.UserOrder.manager.search( $subscription == subscription, false );
 	}
 
 	public static function getSubscriptionOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
 
-		var oneDistrib = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate ).first();
-		return Lambda.array( db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib ) );
+		var oneDistrib = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate, false ).first();
+		return Lambda.array( db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib, false ) );
 	}
 
 	public static function isSubscriptionPaid( subscription : db.Subscription ) : Bool {
 
-		var orders = db.UserOrder.manager.search( $subscription == subscription );
+		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in orders ) {
 
 			if ( !order.paid ) {
@@ -76,12 +76,6 @@ class SubscriptionService
 		}
 
 		return true;
-
-	}
-
-	public static function canSubscriptionOrdersBeEdited( subscription : db.Subscription ) : Bool {
-
-		return !subscription.isValidated || !hasPastDistribOrders( subscription );
 
 	}
 
@@ -207,33 +201,22 @@ class SubscriptionService
 
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
 		}
-		
-		// if ( validateSubscription || canSubscriptionBeEdited( subscription ) ) {
-			subscription.lock();
 
-			if ( validateSubscription ) {
+		subscription.lock();
 
-				subscription.isValidated = true;
-			}
-			subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
-			subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+		if ( validateSubscription ) {
 
-			if ( isSubscriptionValid( subscription ) ) {
+			subscription.isValidated = true;
+		}
+		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
+		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 
-				subscription.update();
+		if ( isSubscriptionValid( subscription ) ) {
 
-				if ( ordersData != null && ordersData.length != 0 ) {
-
-					createCSARecurrentOrders( subscription, ordersData );
-				}
-				
-			}
-
-		// }
-		// else {
-
-		// 	throw new Error( 'Cette souscription ne peut pas être modifiée car il y a des distributions passées avec des commandes.' );
-		// }
+			subscription.update();
+			createCSARecurrentOrders( subscription, ordersData );
+			
+		}
 
 	}
 
@@ -243,7 +226,7 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if ( !canSubscriptionOrdersBeEdited( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
+		if ( hasPastDistribOrders( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
@@ -276,7 +259,7 @@ class SubscriptionService
 
 			var now = Date.now();
 			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
-			var pastDistributions : List<db.Distribution> = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate );
+			var pastDistributions : List<db.Distribution> = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate, false );
 			for ( distribution in pastDistributions ) {
 
 				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) != 0 ) {
@@ -296,7 +279,7 @@ class SubscriptionService
 
 		var now = Date.now();
 		var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
-		var orders =  db.UserOrder.manager.search( $subscription == subscription ).array();
+		var orders =  db.UserOrder.manager.search( $subscription == subscription, false ).array();
 		for ( order in orders ) {
 
 			if ( order.distribution != null && order.distribution.date.getTime() <= endOfToday.getTime() && ( order.distribution.date.getTime() < subscription.startDate.getTime() || order.distribution.date.getTime() > subscription.endDate.getTime() ) ) {
@@ -319,7 +302,7 @@ class SubscriptionService
 
 			var now = Date.now();
 			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
-			var pastDistributions : List<db.Distribution> = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate );
+			var pastDistributions : List<db.Distribution> = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate, false );
 			for ( distribution in pastDistributions ) {
 
 				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) == 0 ) {
@@ -348,10 +331,14 @@ class SubscriptionService
 
 		if ( ordersData == null || ordersData.length == 0 ) {
 
-			throw new Error('Il n\'y a pas de commandes définies.');
-		}
+			ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >();
+			var subscriptionOrders = getSubscriptionOrders( subscription );
+			for ( order in subscriptionOrders ) {
 
-		if ( hasPastDistribOrders( subscription ) ) {
+				ordersData.push( { productId : order.product.id, quantity : order.quantity, userId2 : order.user2 != null ? order.user2.id : null, invertSharedOrder : order.hasInvertSharedOrder() } );
+			}
+		}
+		else if ( hasPastDistribOrders( subscription ) ) {
 
 			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
 			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionService.SubscriptionServiceError.PastOrders );
