@@ -217,9 +217,9 @@ class UserService
 			lists.push({id:"membership",	name:"Adhésion à jour",			count:upToDateMemberships	});
 		}
 		
-		if(group.regOption == RegOption.WaitingList){
-			lists.push({id:"waitingList",	name:"List d'attente",			count:service.WaitingListService.countUsersInWl(group)	});
-		}
+		//if(group.regOption == RegOption.WaitingList){
+			lists.push({id:"waitingList",	name:"Liste d'attente",			count:service.WaitingListService.countUsersInWl(group)	});
+		//}
 
 		return lists;
 	}

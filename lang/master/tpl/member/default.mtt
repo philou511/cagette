@@ -1,16 +1,61 @@
 ::use 'design.mtt'::
 <div class="col-md-9">
 <div class="article">
-	::if select!=null::
+	::if list!=null::
 		<h2>Liste :
-		::getListName(select)::
+		::getListName(list)::
 		</h2>
 	
 		<p>
 			<b>::members.current().length::</b> ::_("members")::.
 		</p>
 		
-		$$back()
+		<p>
+			
+
+			<script>			
+				var batchAction = function(action){
+					var ids = _.getCheckboxesId('form.members');
+					if(action==undefined){
+						alert("Action inconnue");
+					}
+					if(action=="membership"){
+						window.confirm("Cette action va saisir une cotisation par chèque pour l'année en cours pour tous les membres sélectionnés. Confirmez vous cette action ?");
+					}
+					if(ids.length==0){
+						alert("Vous devez sélectionner un ou plusieurs membres de ce groupe");
+					}else{
+						var l = document.location;
+						l.href = l.protocol +"//"+ l.host + "/member/batch?"+action+"="+ ids.join("|");
+					}
+					
+				};
+				
+				//check all
+				var check = function(){
+					var inputs = document.querySelectorAll('form.members input');
+					var value = inputs[0].checked==true;
+					for ( i of inputs ) {
+						i.checked = !value;
+					}
+				}
+				
+				</script>
+
+				<div class="btn-group" role="group">
+					$$back()					
+				</div>
+				<div class="btn-group" role="group" style="margin-left: 12px;">
+					Actions par lot :
+				</div>
+				<div class="btn-group" role="group">
+					
+					<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
+					<a class="btn btn-default btn-sm" onclick="batchAction('waitingList')">Remettre en liste d'attente</a>	
+					<a class="btn btn-default btn-sm" onclick="batchAction('exclude')">Retirer du groupe</a>	
+					<a class="btn btn-default btn-sm" onclick="batchAction('membership')">Saisir cotisation</a>	
+			</div>
+		</p>
 
 	::elseif search!=null::
 
@@ -25,7 +70,7 @@
 	::end::
 	
 	
-	::if select=="newUsers"::
+	::if list=="newUsers"::
 		<hr/>
 		<p style="text-align:center;">
 			::_("You can invite by email all the members who never logged in, in one single clic.")::			
@@ -35,11 +80,12 @@
 		</p>
 	::end::
 
+	<form method="GET" class="members">
 	<table class="table table-bordered table-hover table-striped"  style="width:100%;">
 	::foreach m members.current()::	
 	<tr>
-		
-		<td>
+		::if(list!=null)::<td><input type="checkbox" name="checkbox" value="::m.id::" /></td>::end::
+		<td>			
 			<a href="/member/view/::m.id::">
 			::m.lastName:: ::m.firstName:: 
 			::if m.lastName2!=null::
@@ -64,7 +110,7 @@
 	</tr>
 	::end::
 
-	<tr ::cond select==null && search==null::>
+	<tr ::cond list==null && search==null::>
 		<td colspan="2" class="text-center">
 
 			<ul class="pagination">
@@ -94,6 +140,7 @@
 	</tr>
 
 	</table>
+	</form>
 
 	<div>
 		
@@ -132,7 +179,7 @@
 		<ul>
 			::foreach list userLists::
 				<li>
-					<a href="/member/?select=::list.id::">::list.name::</a>
+					<a href="/member/?list=::list.id::">::list.name::</a>
 					::if(list.count!=null)::
 					(<b>::list.count::</b>)
 					::end::

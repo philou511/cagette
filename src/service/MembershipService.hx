@@ -41,6 +41,14 @@ class MembershipService{
 				throw new Error("missing paymentType");
 			}
 
+			if(membershipFee==null){
+				if(group.membershipFee==null){
+					throw new Error("You should define a membership fee");
+				}else{
+					membershipFee = group.membershipFee;
+				}
+			}
+
 			switch(paymentType.type){
 				case payment.Check.TYPE , payment.Transfer.TYPE , payment.Cash.TYPE : //ok
 				default : throw new Error("Membership payement can only be transfer, cash or check");
