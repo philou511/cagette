@@ -19,6 +19,16 @@ enum SubscriptionServiceError {
 class SubscriptionService
 {
 
+	public static function hasUserCatalogSubscription( user : db.User, catalog : db.Catalog, isValidated : Bool ) : Bool {
+
+		return db.Subscription.manager.count( $user == user && $catalog == catalog && $isValidated == isValidated ) != 0;
+	}
+
+	public static function getUserCatalogSubscription( user : db.User, catalog : db.Catalog, isValidated : Bool ) : db.Subscription {
+
+		return db.Subscription.manager.select( $user == user && $catalog == catalog && $isValidated == isValidated, false );
+	}
+
 	public static function getSubscriptionDistributions( subscription : db.Subscription ) : List<db.Distribution> {
 
 		return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate );
@@ -222,7 +232,7 @@ class SubscriptionService
 		// }
 		// else {
 
-		// 	throw new Error( 'Cette souscription ne peut pas être modifiée car il y a des commandes passées.' );
+		// 	throw new Error( 'Cette souscription ne peut pas être modifiée car il y a des distributions passées avec des commandes.' );
 		// }
 
 	}
@@ -235,7 +245,7 @@ class SubscriptionService
 
 		if ( !canSubscriptionOrdersBeEdited( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
 
-			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des commandes pour des distributions passées.', PastOrders );
+			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
 
 		//Delete all the orders for this subscription

@@ -35,6 +35,7 @@ class Contract extends Controller
 		view.catalog = catalog;
 	
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
+		view.hasUserCatalogSubscription = service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true );
 		
 	}
 	
@@ -279,6 +280,8 @@ class Contract extends Controller
 		//if (app.user.getGroup().hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
 		if (app.user.getGroup().hasShopMode()) throw Redirect("/shop");
 		if ( !catalog.isUserOrderAvailable() ) throw Error( "/", t._("This catalog is not opened for orders") );
+		//When there is already a validated subscription we prevent the user from accesing this page and entering a new subscription
+		if ( service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true ) ) throw Redirect( '/contract/view/' + catalog.id );
 
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
@@ -298,7 +301,7 @@ class Contract extends Controller
 			for ( d in distributions){
 				var data = [];
 				for ( p in products) {
-					var ua = { order:null, product:p };					
+					var ua = { order:null, product:p };
 					var order = db.UserOrder.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);						
 					if (order != null) ua.order = order;
 					data.push(ua);
@@ -313,8 +316,16 @@ class Contract extends Controller
 			for ( product in products) {
 
 				var orderProduct = { order : null, product : product };
-				// var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
-				// if ( order != null ) orderProduct.order = order;
+				var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
+				// var subscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
+				// if ( subscription != null ) {
+
+				// 	var subscriptionOrders = service.SubscriptionService.getSubscriptionOrders( subscription );
+				// 	var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id ); ;
+					
+				// }
+				if ( order != null ) orderProduct.order = order;
+
 				data.push( orderProduct );
 			}
 			
@@ -403,7 +414,16 @@ class Contract extends Controller
 
 				try {
 
-					service.SubscriptionService.createSubscription( app.user, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+					var pendingSubscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
+					if ( pendingSubscription != null ) {
+
+						service.SubscriptionService.updateSubscription( pendingSubscription, catalog.startDate, catalog.endDate, ordersData, false );
+					}
+					else {
+
+						service.SubscriptionService.createSubscription( app.user, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+					}
+					
 				}
 				catch ( e : Dynamic ) { 
 				
@@ -424,6 +444,7 @@ class Contract extends Controller
 		
 		view.c = view.contract = catalog;
 		view.userOrders = userOrders;
+		view.isCSACatalog = catalog.type == db.Catalog.TYPE_CONSTORDERS;
 		
 	}
 

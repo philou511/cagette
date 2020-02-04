@@ -54,7 +54,7 @@ class Order extends Controller
 		if ( catalog != null && catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 			//The user needs a subscription for this catalog to have orders
-			subscription = db.Subscription.manager.select( $user == user && $catalog == catalog, false );
+			subscription = service.SubscriptionService.getUserCatalogSubscription( user, catalog, true );
 			if ( subscription == null ) {
 				
 				throw new Error( "Il n\'y a pas de souscription à ce nom. Il faut d\'abord créer une souscription pour cette personne pour pouvoir ajouter des commandes."  );

@@ -124,9 +124,13 @@
 			::_("No planned distributions.")::
 		</p>
 		::else::
-		<p ::cond !user.getGroup().hasShopMode()::>
-			<a href="/contract/order/::catalog.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
-		</p>		
+				<p ::cond !hasUserCatalogSubscription && !user.getGroup().hasShopMode()::>
+					<a href="/contract/order/::catalog.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
+				</p>
+				<p ::cond hasUserCatalogSubscription::>
+					<br />
+					Votre souscription à ce catalogue a déjà été validée. Vous ne pouvez plus la modifier.
+				</p>
 		::end::
 		
 		

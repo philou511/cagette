@@ -9,7 +9,7 @@
 
 			<div id="content" class="col-md-12">
 				<div class="alert  alert-danger ">
-					<i class="icon icon-alert"></i> Les commandes de cette souscription ne peuvent pas êtres modifiée car il y a des commandes passées.
+					<i class="icon icon-alert"></i> Les commandes de cette souscription ne peuvent pas êtres modifiée car il y a des distributions passées avec des commandes.
 				</div>
 			</div>
 

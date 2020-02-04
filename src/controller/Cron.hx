@@ -180,47 +180,41 @@ class Cron extends Controller
 				AND Distribution.date >= DATE_ADD(\'${fromNow}\', INTERVAL 3 DAY)
 				AND Distribution.date < DATE_ADD(\'${toNow}\', INTERVAL 3 DAY);', false ) );
 			
-			var subscriptionsToValidateByCatalogByGroup = new Map< db.Group, Map< db.Catalog, Array< db.Subscription > > >();
+			var subscriptionsToValidateByCatalog = new Map< db.Catalog, Array< db.Subscription > >();
 			for ( subscription in subscriptionsToValidate ) {
 
-				if ( subscriptionsToValidateByCatalogByGroup[ subscription.catalog.group ] == null ) {
+				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
 
-					subscriptionsToValidateByCatalogByGroup[ subscription.catalog.group ] = new Map< db.Catalog, Array< db.Subscription > >();
+					subscriptionsToValidateByCatalog[ subscription.catalog ] = new Array< db.Subscription >();
 				}
-				if ( subscriptionsToValidateByCatalogByGroup[ subscription.catalog.group ][ subscription.catalog ] == null ) {
-
-					subscriptionsToValidateByCatalogByGroup[ subscription.catalog.group ][ subscription.catalog ] = new Array< db.Subscription >();
-				}
-				subscriptionsToValidateByCatalogByGroup[ subscription.catalog.group ][ subscription.catalog ].push( subscription );
+				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
 			}
 
 			printTitle("Subscriptions to validate alert emails");
-			for ( group in subscriptionsToValidateByCatalogByGroup.keys() ) {
+						
+			//List of subscriptions grouped by catalog
+			for ( catalog in subscriptionsToValidateByCatalog.keys() ) {
 
-				print( group.name );
-				
-				//List of subscriptions grouped by catalog
+				print( catalog.name );
+
 				var message : String = 'Bonjour, <br /><br />
 				Attention, les souscriptions suivantes n\'ont pas été validées, alors qu\'une distribution approche.
 				Vous devez au plus vite valider ou effacer ces souscriptions et vous assurer qu\'elles correspondent
-				bien au contrat signé, et aux produits que l\'adhérent a commandé.';
-				for ( catalog in subscriptionsToValidateByCatalogByGroup[ group ].keys() ) {
+				bien au contrat signé, et aux produits que l\'adhérent a commandés.';
 
-					message += '<h3> Catalogue : ' + catalog.name + '</h3> <ul>';
-					subscriptionsToValidateByCatalogByGroup[ group ][ catalog ].sort( function(b, a) {
-		
-						return  a.user.getName() < b.user.getName() ? 1 : -1;
-					} );
-					for ( subscription in subscriptionsToValidateByCatalogByGroup[ group ][ catalog ] ) {
+				message += '<h3> Catalogue : ' + catalog.name + '</h3> <ul>';
+				subscriptionsToValidateByCatalog[ catalog ].sort( function(b, a) {
+	
+					return  a.user.getName() < b.user.getName() ? 1 : -1;
+				} );
+				for ( subscription in subscriptionsToValidateByCatalog[ catalog ] ) {
 
-						message += '<li>' + subscription.user.getName() + '</li>';
+					message += '<li>' + subscription.user.getName() + '</li>';
 
-					}
-					message += '</ul>';
 				}
-				
-				App.quickMail( group.contact.email, group.name + ' : Il y a des souscriptions à valider', message, group );
+				message += '</ul>';
 
+				App.quickMail( catalog.contact.email, catalog.name + ' : Il y a des souscriptions à valider', message, catalog.group );
 			}
 			
 		});
