@@ -35,8 +35,6 @@ class Tuto
 		var t = App.instance.t;
 		if (t == null) trace("Gettext translator is null");
 		
-s = null;
-
 		if (s == null) {
 			/**
 			 * tutorial is finished : display a modal window
