@@ -12,7 +12,7 @@ class ShopCart
 	public var pinnedCategories : Array<{name:String,pinned:Bool,categs:Array<CategoryInfo>}>; //categ db
 	public var order : TmpBasketData;
 	
-	var loader : JQuery; //ajax loader gif
+	// var loader : JQuery; //ajax loader gif
 	
 	//for scroll mgmt
 	var cartTop : Int;
@@ -35,7 +35,8 @@ class ShopCart
 	}
 	
 	public function add(pid:Int) {
-		loader.show();
+		// loader.show();
+		toggleLoader(true);
 		
 		var q = untyped Browser.document.getElementById('productQt' + pid).value;
 		var qt = 0.0;
@@ -54,7 +55,8 @@ class ShopCart
 		//add server side
 		var r = new haxe.Http('/shop/add/$multiDistribId/$pid/$qt');
 		r.onData = function(data:String) {
-			loader.hide();
+			// loader.hide();
+			toggleLoader(false);
 			var d = haxe.Json.parse(data);
 			if (!d.success) js.Browser.alert("Erreur : "+d);
 			subAdd(pid, qt);
@@ -139,7 +141,6 @@ class ShopCart
 
 
 	function findCategoryName(cid:Int):String{
-
 		for ( cg in this.categories ){
 			for (c in cg.categs){
 				if (cid == c.id) {
@@ -160,25 +161,14 @@ class ShopCart
 	/**
 	 * Dynamically sort products by categories
 	 */
-	public function sortProductsBy(){
-
-		//store products by groups
+	public function sortProductsBy() {
 		var groups = new Map<Int,{name:String,products:Array<ProductInfo>}>();
 		var pinned = new Map<Int,{name:String,products:Array<ProductInfo>}>();
-
 		var firstCategGroup = this.categories[0].categs;
-
-		//trace(firstCategGroup);
-		//trace(pinnedCategories);
-
 		var pList = this.productsArray.copy();
-
-		//for ( p in pList) trace(p.name+" : " + p.categories);
-		//trace("----------------");
 
 		//sort by categs
 		for ( p in pList.copy() ){
-			//trace(p.name+" : " + p.categories);
 			untyped p.element.remove();
 
 			for ( categ in p.categories){
@@ -314,14 +304,16 @@ class ShopCart
 	 */
 	public function remove(pid:Int ) {
 		
-		loader.show();
+		// loader.show();
+		toggleLoader(true);
 		
 		//add server side
 		var r = new haxe.Http('/shop/remove/$multiDistribId/$pid');
 		
 		r.onData = function(data:String) {
 			
-			loader.hide();
+			// loader.hide();
+			toggleLoader(false);
 			
 			var d = haxe.Json.parse(data);
 			if (!d.success) js.Browser.alert("Erreur : "+d);
@@ -339,26 +331,22 @@ class ShopCart
 			
 		}
 		r.request();
-		
-		
-		
-		
 	}
 	
 	/**
 	 * loads products DB and existing cart in ajax
 	 */
 	public function init(multiDistribId:Int) {
-
 		// this.place = place;
 		// this.date = date;
 		this.multiDistribId = multiDistribId;
 		
-		loader = App.jq("#cartContainer #loader");
+		// loader = App.jq("#cartContainer #loader");
 		
 		var req = new haxe.Http("/shop/init/"+multiDistribId);
 		req.onData = function(data) {
-			loader.hide();
+			// loader.hide();
+			toggleLoader(false);
 			
 			var data : { 
 				products:Array<ProductInfo>,
@@ -436,9 +424,11 @@ class ShopCart
 			cartContainer.css('top', "");
 			cartContainer.css('width', "");
 		}
-		
-		
-		
+	}
+
+
+	private function toggleLoader(show: Bool) {
+		Browser.document.getElementById("loader").style.display = show ? "block" : "none";
 	}
 	
 }
