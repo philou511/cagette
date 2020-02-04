@@ -1,6 +1,9 @@
+import js.html.NodeList;
+import js.html.Node;
 import js.Browser;
 import Common;
 import js.jquery.JQuery;
+import utils.DOMUtils;
 /**
  * JS Shopping Cart
  **/
@@ -64,7 +67,6 @@ class ShopCart
 		}
 		r.request();
 	}
-	
 	
 	function subAdd(pid, qt:Float ) {
 		for ( p in order.products) {
@@ -138,7 +140,6 @@ class ShopCart
 			App.instance.setWarningOnUnload(false);
 		}
 	}
-
 
 	function findCategoryName(cid:Int):String{
 		for ( cg in this.categories ){
@@ -261,7 +262,6 @@ class ShopCart
      * submit cart
      */
 	public function submit() {
-		
 		var req = new haxe.Http("/shop/submit/"+multiDistribId);
 		req.onData = function(data) {
 			var data : {tmpBasketId:Int,success:Bool} = haxe.Json.parse(data);
@@ -276,26 +276,26 @@ class ShopCart
 	 * filter products by category
 	 */
 	public function filter(cat:Int) {
-		
-		//icone sur bouton
-		App.jq(".tag").removeClass("active").children().remove("i");//clean
-		
-		var bt = App.jq("#tag" + cat);
-		bt.addClass("active").prepend("<i class='icon icon-check'></i> ");
-		
+		var tags = Browser.document.querySelectorAll(".tag");
+		for (i in 0...tags.length) {
+			var tag: js.html.Element = cast tags[i];
+			tag.classList.remove("active");
+			var icon = tag.querySelector("i");
+			if (icon != null) tag.removeChild(icon);
+		}
+
+		var current = Browser.document.getElementById("tag" + cat);
+		current.classList.add("active");
+		current.innerHTML = "<i class='icon icon-check'></i> " + current.innerHTML;
 		
 		//affiche/masque produits
 		for (p in products) {
 			if (cat==0 || Lambda.has(p.categories, cat)) {
-				App.jq(".shop .product" + p.id).fadeIn(300);
+				DOMUtils.fadeIn(Browser.document.querySelector(".shop .product" + p.id));
 			}else {
-				App.jq(".shop .product" + p.id).fadeOut(300);
+				DOMUtils.fadeOut(Browser.document.querySelector(".shop .product" + p.id));
 			}
 		}
-		
-		
-		
-		
 	}
 	
 	/**
