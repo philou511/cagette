@@ -168,14 +168,10 @@ class ShopCart
 		var firstCategGroup = this.categories[0].categs;
 		var pList = this.productsArray.copy();
 
-		//sort by categs
-		for ( p in pList.copy() ){
-			untyped p.element.remove();
-
-			for ( categ in p.categories){
-
-				if (Lambda.find(firstCategGroup, function(c) return c.id == categ) != null){
-
+		for (p in pList.copy()) {
+			untyped p.element.parentNode.removeChild(p.element);
+			for (categ in p.categories) {
+				if (Lambda.find(firstCategGroup, function(c) return c.id == categ) != null) {
 					//is in this category group
 					var g = groups.get(categ);
 					if ( g == null){
@@ -183,36 +179,26 @@ class ShopCart
 						g = {name:name,products:[]};
 					}
 					g.products.push(p);
-					//trace("remove " + p.name);
 					pList.remove(p);
 					groups.set(categ, g);
-
-				}
-				else{
-					// is in pinned group ?
+				} else {
 					var isInPinnedCateg = false;
-					for ( cg in pinnedCategories){
-							if (Lambda.find(cg.categs, function(c) return c.id == categ) != null){
-								isInPinnedCateg = true;
-								break;
-							}
+					for (cg in pinnedCategories) {
+						if (Lambda.find(cg.categs, function(c) return c.id == categ) != null){
+							isInPinnedCateg = true;
+							break;
+						}
 					}
-
-					if (isInPinnedCateg){
-
+					if (isInPinnedCateg) {
 						var c = pinned.get(categ);
-						if ( c == null){
-
+						if (c == null) {
 							var name = findCategoryName(categ);
 							c = {name:name,products:[]};
 						}
 						c.products.push(p);
-						//trace( "add " + p.name+" in PINNED");
 						pList.remove(p);
 						pinned.set(categ, c);
-
-
-					}else{
+					} else {
 						//not in the selected categ nor in pinned groups
 						continue;
 					}
@@ -220,35 +206,37 @@ class ShopCart
 			}
 		}
 
-		//if some untagged products remain
-		if (pList.length > 0){
+		if (pList.length > 0) {
 			groups.set(0,{name:"Autres",products:pList});
 		}
-		//trace("----------------");
-		//render
-		var container = App.jq(".shop .body");
+
+		var containerEl = Browser.document.querySelector(".shop .body");
+
 		//render firts "pinned" groups , then "groups"
-		for ( source in [pinned, groups]){
-
+		for (source in [pinned, groups]) {
 			for (o in source){
-
 				if (o.products.length == 0) continue;
-				container.append("<div class='col-md-12 col-xs-12 col-sm-12 col-lg-12'><div class='catHeader'>" + o.name + "</div></div>");
-				for ( p in o.products){
-					//trace("GROUP "+o.name+" : "+p.name);
-					//if the element has already been inserted, we need to clone it
-					if (untyped p.element.parent().length == 0){
-						container.append( untyped p.element );
-					}else{
-						var clone = untyped p.element.clone();
-						container.append( clone );
+
+				var row = Browser.document.createElement("div");
+				row.className = "col-md-12 col-xs-12 col-sm-12 col-lg-12";
+				row.innerHTML = "<div class='catHeader'>" + o.name + "</div>";
+				containerEl.appendChild(row);
+
+				for (p in o.products) {
+					if (untyped p.element.parentNode == null || untyped p.element.parentNode.length == 0) {
+						containerEl.appendChild(untyped p.element);
+					} else {
+						var clone = untyped p.element.cloneNode(true);
+						containerEl.appendChild(clone);
 					}
-
-
 				}
 			}
 		}
-		App.jq(".product").show();
+
+		var productNodeEls = Browser.document.querySelectorAll(".product");
+		for (i in 0...productNodeEls.length) {
+			untyped productNodeEls[i].style.display = "block";
+		}
 	}
 
 	/**
@@ -303,7 +291,6 @@ class ShopCart
 	 * @param	pid
 	 */
 	public function remove(pid:Int ) {
-		
 		// loader.show();
 		toggleLoader(true);
 		
@@ -311,7 +298,6 @@ class ShopCart
 		var r = new haxe.Http('/shop/remove/$multiDistribId/$pid');
 		
 		r.onData = function(data:String) {
-			
 			// loader.hide();
 			toggleLoader(false);
 			
@@ -327,8 +313,6 @@ class ShopCart
 				}
 			}
 			render();
-			
-			
 		}
 		r.request();
 	}
@@ -337,15 +321,9 @@ class ShopCart
 	 * loads products DB and existing cart in ajax
 	 */
 	public function init(multiDistribId:Int) {
-		// this.place = place;
-		// this.date = date;
 		this.multiDistribId = multiDistribId;
-		
-		// loader = App.jq("#cartContainer #loader");
-		
 		var req = new haxe.Http("/shop/init/"+multiDistribId);
 		req.onData = function(data) {
-			// loader.hide();
 			toggleLoader(false);
 			
 			var data : { 
@@ -357,7 +335,7 @@ class ShopCart
 			for ( cg in data.categories){
 				if (cg.pinned){
 					pinnedCategories.push(cg);
-				}else{
+				} else {
 					categories.push(cg);
 				}
 			}
@@ -365,25 +343,21 @@ class ShopCart
 			//product DB
 			for (p in data.products) {
 				//catch dom element for further usage
-				untyped p.element = App.jq(".product"+p.id);
+				untyped p.element = Browser.document.querySelector(".product"+p.id);
 
 				var id : Int = p.id;
 				//var id : Int = p.id;
  				//id = id + 1;
 				this.products.set(id, p);
 				this.productsArray.push(p);
-				//trace(p.name+" : " + p.categories);
 			}
 			
 			//existing order
 			for ( p in data.order.products) {
 				subAdd(p.productId,p.quantity );
 			}
-			
 			render();
-			
 			sortProductsBy();
-
 		}
 		req.request();
 		
@@ -399,8 +373,6 @@ class ShopCart
 			jWindow.scroll(onScroll);
 			
 		}*/ 	
-		
-		
 	}
 	
 	/**
@@ -412,7 +384,6 @@ class ShopCart
 		//cart container top position		
 		
 		if (jWindow.scrollTop() > cartTop) {
-			//trace("absolute !");
 			cartContainer.addClass("scrolled");
 			cartContainer.css('left', Std.string(cartLeft) + "px");			
 			cartContainer.css('top', Std.string(/*cartTop*/10) + "px");
