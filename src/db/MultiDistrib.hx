@@ -30,7 +30,6 @@ class MultiDistrib extends Object
 	@:skip public var contracts : Array<db.Catalog>;
 	@:skip public var extraHtml : String;
 	
-
 	public function new(){
 		super();
 		contracts = [];

@@ -17,6 +17,7 @@ import mui.core.modal.ModalCloseReason;
 import mui.core.Typography;
 import react.mui.CagetteTheme;
 import css.TextAlign;
+import mui.core.grid.GridSpacing;
 
 using Lambda;
 
@@ -80,7 +81,7 @@ class ProductListSubCategory extends react.ReactComponentOf<ProductListSubCatego
 		return jsx('
 			<div className=${classes.subCategory} key=${subcategory.id}>
 				${subcategoryName}
-				<$Grid container style={{ marginBottom: 20}} spacing={Spacing_24}>
+				<$Grid container style={{ marginBottom: 20}} spacing=${GridSpacing.Spacing_2}>
 					${renderProducts(props.catalog.products)}
 				</$Grid>
 				<div className=${classes.button}>

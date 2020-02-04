@@ -1,4 +1,5 @@
 package controller;
+import db.Group.GroupFlags;
 import db.UserGroup;
 import haxe.Http;
 import neko.Web;
@@ -21,10 +22,10 @@ class AmapAdmin extends Controller
 		var nav = new Array<Link>();
 		
 		if (app.user.getGroup().hasPayments()) {
-			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment") });
+			nav.push({id:"payments",link:"/amapadmin/payments",name: t._("Means of payment"),icon:"payment-type" });
 		}	
 		if(!app.user.getGroup().hasTaxonomy()){
-			nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories") });
+			nav.push({id:"categories",link:"/amapadmin/categories",name: t._("Customized categories"),icon:"tag" });
 		}
 		
 
@@ -33,7 +34,38 @@ class AmapAdmin extends Controller
 		view.nav = e.getParameters()[0];
 	}
 	
-	
+	@tpl("form.mtt")
+	function doMembership(){
+		
+		var form = new sugoi.form.Form("membership");
+		var group = app.user.getGroup();
+
+		//membership
+		form.addElement( new sugoi.form.elements.Checkbox("membership","Gestion des adhésions",group.flags.has(db.Group.GroupFlags.HasMembership)), 13);
+		form.addElement( new sugoi.form.elements.IntInput("membershipFee","Montant de l'adhésion (laisser vide si variable)",group.membershipFee), 14);
+		var dp = new sugoi.form.elements.DatePicker("membershipRenewalDate","Date de renouvellement annuelle des adhésions",group.membershipRenewalDate);
+		dp.format = "D MMMM";
+		form.addElement( dp ,15 );
+		
+		if (form.checkToken()) {
+
+			group.lock();
+			if(form.getValueOf("membership")==true){
+				group.flags.set(GroupFlags.HasMembership);
+			}else{
+				group.flags.unset(GroupFlags.HasMembership);
+			}
+			group.membershipFee = form.getValueOf("membershipFee");
+			group.membershipRenewalDate = form.getValueOf("membershipRenewalDate");
+			group.update();
+			throw Ok("/amapadmin","Paramètres d'adhésion mis à jour");
+			
+		}
+
+		view.form = form;
+		view.title = "Adhésions";
+	}
+
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
 		view.membersNum = UserGroup.manager.count($group == app.user.getGroup());

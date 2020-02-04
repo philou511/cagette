@@ -1,4 +1,7 @@
 package controller;
+import haxe.macro.Expr.Catch;
+import payment.Check;
+import service.WaitingListService;
 import db.Catalog;
 import service.OrderService;
 import db.MultiDistrib;
@@ -21,10 +24,10 @@ class Member extends Controller
 	
 	@logged
 	@tpl('member/default.mtt')
-	function doDefault(?args: { ?search:String, ?select:String } ) {
+	function doDefault(?args: { ?search:String, ?list:String } ) {
 		checkToken();
 		
-		var browse:Int->Int->List<Dynamic>;
+		var browse:Int->Int->Iterable<Dynamic>;
 		var uids = db.UserGroup.manager.search($group == app.user.getGroup(), false);
 		var uids = Lambda.map(uids, function(ua) return ua.user.id);
 		if (args != null && args.search != null) {
@@ -43,19 +46,19 @@ class Member extends Controller
 			}
 			view.search = args.search;
 			
-		}else if(args!=null && args.select!=null){
+		}else{
 			
 			//SELECTION
 			
-			switch(args.select) {
-				case "nocontract":
+			switch(args.list) {
+				case "hasNoOrders":
 					if (app.params.exists("csv")) {
 						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoContracts()), ["firstName", "lastName", "email"], t._("Without contracts"));
 						return;
 					}else {
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoContracts(index, limit); }	
 					}
-				case "contract":
+				case "hasOrders":
 					
 					if (app.params.exists("csv")) {
 						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_Contracts()), ["firstName", "lastName", "email"], t._("With orders"));
@@ -64,14 +67,27 @@ class Member extends Controller
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_Contracts(index, limit); }	
 					}
 					
-				case "nomembership" :
+				case "noMembership" :
+					var ms = new service.MembershipService(app.user.getGroup());
 					if (app.params.exists("csv")) {
-						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NoMembership()), ["firstName", "lastName", "email"], t._("Memberships to be renewed"));
+						sugoi.tools.Csv.printCsvDataFromObjects( ms.getNoMembershipUsers(), ["firstName", "lastName", "email"], t._("Memberships to be renewed"));
 						return;
 					}else {
-						browse = function(index:Int, limit:Int) { return db.User.getUsers_NoMembership(index, limit); }
+						browse = ms.getNoMembershipUsers;
 					}
-				case "newusers" :
+				case "membership" :
+					var ms = new service.MembershipService(app.user.getGroup());
+					if (app.params.exists("csv")) {
+						sugoi.tools.Csv.printCsvDataFromObjects( ms.getMembershipUsers() , ["firstName", "lastName", "email"], "Adhérents à jour" );
+						return;
+					}else {
+						browse = ms.getMembershipUsers;
+					}
+
+				case "waitingList" :
+					throw Redirect("/member/waiting");
+
+				case "newUsers" :
 					if (app.params.exists("csv")) {
 						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.getUsers_NewUsers()), ["firstName", "lastName", "email"], t._("Never connected"));
 						return;
@@ -79,33 +95,31 @@ class Member extends Controller
 						browse = function(index:Int, limit:Int) { return db.User.getUsers_NewUsers(index, limit); }
 					}
 				default:
-					throw t._("Unknown selection");
+					//all users
+					if (app.params.exists("csv")) {
+						var headers = ["firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
+						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, t._("Members"));
+						return;
+					}else {
+						browse = function(index:Int, limit:Int) {
+							return db.User.manager.search( $id in uids, { limit:[index,limit], orderBy:lastName }, false);
+						}
+					}
 			}
-			view.select = args.select;
+			view.list = args.list;
 			
-		}else {
-			if (app.params.exists("csv")) {
-				var headers = ["firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
-				sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, t._("Members"));
-				return;
-			}else {
-				//default display
-				browse = function(index:Int, limit:Int) {
-					return db.User.manager.search( $id in uids, { limit:[index,limit], orderBy:lastName }, false);
-				}
-			}
 		}
 		
 		var count = uids.length;
-		var rb = new sugoi.tools.ResultsBrowser(count, (args.select!=null||args.search!=null)?1000:10, browse);
+		var rb = new sugoi.tools.ResultsBrowser(count, (args.list!=null||args.search!=null)?1000:10, browse);
 		view.members = rb;
 		
-		if (args.select == null || args.select != "newusers") {
-			//count new users
-			view.newUsers = db.User.getUsers_NewUsers().length;	
+		var userLists = service.UserService.getUserLists(app.user.getGroup());
+		view.userLists = userLists;
+		view.getListName = function(listId){
+			var list = Lambda.find(userLists, l -> return l.id==listId );
+			return list==null ? "Liste inconnue" : list.name;
 		}
-		
-		view.waitingList = db.WaitingList.manager.count($group == app.user.getGroup());
 		
 	}
 	
@@ -123,8 +137,6 @@ class Member extends Controller
 		wl.insert();
 		
 		throw Ok("/member", u.getName() +" "+ t._("is now on waiting list.") );
-		
-		
 	}
 	
 	/**
@@ -148,6 +160,65 @@ class Member extends Controller
 		}
 		
 		view.waitingList = db.WaitingList.manager.search($group == app.user.getGroup(),{orderBy:-date});
+	}
+
+	/**
+		Batch actions on members
+	**/
+	function doBatch(){
+		if(!app.user.canAccessMembership()) throw "Forbidden";
+
+		var action = "";
+		var value = "";
+		for( k => v in app.params){
+			action = k;
+			value = v;
+			break;
+		}
+		var users = value.split("|").map(id -> return db.User.manager.get(id.parseInt()));
+		
+		var msg = null;
+		var group = app.user.getGroup();
+		switch (action){
+			case "waitingList" :
+				users.remove(app.user);//do not cut my hands
+				for( u in users){
+					var ug = u.getUserGroup(group);
+					if(ug!=null){
+						ug.lock();
+						ug.delete();
+					}
+					WaitingListService.registerToWl(u,group,"Mis en liste d'attente par "+app.user.getName()+" le "+Formatting.hDate(Date.now()),false);
+				}
+				msg = "Vous avez placé "+users.length+" membres en liste d'attente";
+
+			case "exclude" : 
+				users.remove(app.user);//do not cut my hands
+				for( u in users){
+					var ug = u.getUserGroup(group);
+					if(ug!=null){
+						ug.lock();
+						ug.delete();
+					}
+				}
+				msg = "Vous avez retiré "+users.length+" membres du groupe";
+
+			case "membership" :
+				var ms = new service.MembershipService(app.user.getGroup());
+				var now = Date.now();
+				try{
+					for( u in users){
+						ms.createMembership(u,now.getFullYear(),now,null,Check.TYPE);
+					}
+					msg = "Vous avez saisi "+users.length+" cotisations";
+				}catch(e:tink.core.Error){
+					msg = "Erreur : "+e.message;
+				}
+
+			default : throw "Unknown action";
+		}
+
+		throw Ok("/member",msg);
 	}
 	
 	/**

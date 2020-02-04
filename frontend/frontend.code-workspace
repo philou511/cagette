@@ -18,5 +18,9 @@
 		{
 			"path": "../www"
 		}
-	]
+	],
+	"settings": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4
+	}
 }

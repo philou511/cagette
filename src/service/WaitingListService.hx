@@ -5,7 +5,7 @@ import Common;
 class WaitingListService{
 
 
-	public static function registerToWl(user:db.User,group:db.Group,message:String){
+	public static function registerToWl(user:db.User,group:db.Group,message:String, ?sendEmail=true){
 		var t  = sugoi.i18n.Locale.texts;
 
 		canRegister(user,group);
@@ -16,24 +16,26 @@ class WaitingListService{
 		w.message = message;
 		w.insert();
 
-		//emails
-		var html = t._("<p><b>::name::</b> suscribed to the waiting list of <b>::group::</b> on ::date::</p>",{
-			group:group.name,
-			name:user.getName(),
-			date:App.current.view.hDate(Date.now())
-		});
-		if(message!=null && message!=""){
-			html += t._("<p>He/she left this message :<br/>\"::message::\"</p>",{message:message});
-		}
+		if(sendEmail){
+			//emails
+			var html = t._("<p><b>::name::</b> suscribed to the waiting list of <b>::group::</b> on ::date::</p>",{
+				group:group.name,
+				name:user.getName(),
+				date:App.current.view.hDate(Date.now())
+			});
+			if(message!=null && message!=""){
+				html += t._("<p>He/she left this message :<br/>\"::message::\"</p>",{message:message});
+			}
 
-		for( u in service.GroupService.getGroupMembersWithRights(group,[Right.GroupAdmin,Right.Membership]) ){
+			for( u in service.GroupService.getGroupMembersWithRights(group,[Right.GroupAdmin,Right.Membership]) ){
 
-			App.quickMail(
-				u.email,
-				t._("[::group::] ::name:: suscribed to the waiting list.",{group:group.name,name:user.getName()}),
-				html,
-				group
-			);
+				App.quickMail(
+					u.email,
+					t._("[::group::] ::name:: suscribed to the waiting list.",{group:group.name,name:user.getName()}),
+					html,
+					group
+				);
+			}
 		}
 	}
 
@@ -133,6 +135,10 @@ class WaitingListService{
 		}
 			
 		wl.delete();
+	}
+
+	public static function countUsersInWl(group:db.Group) {
+		return db.WaitingList.manager.count($group == group);	
 	}
 
 

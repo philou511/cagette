@@ -136,7 +136,7 @@ class Account extends Controller
 		}
 		
 		checkToken();
-		view.userAmap = ua;
+		view.userGroup = ua;
 	}
 	
 	@tpl('form.mtt')
@@ -192,6 +192,7 @@ class Account extends Controller
 	function doBasket(basket : db.Basket){
 		view.basket = basket;
 		view.orders = service.OrderService.prepare(basket.getOrders());
+		view.print = app.params["print"]!=null;
 	}
 	
 	/**

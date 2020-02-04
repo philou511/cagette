@@ -1,36 +1,76 @@
 ::use 'design.mtt'::
 <div class="col-md-9">
 <div class="article">
-	::if select!=null::
-		<h2>::_("Selection :||show a sublist of members which has been selected")::
-		::if select=="nocontract"::
-			::_("Members without any order")::
-		::elseif select=="nomembership"::
-			::_("Members whose membership should be renewed")::
-		::elseif select=="newusers"::
-			::_("Members who has never logged in")::
-		::elseif select=="contract"::
-			::_("Members with orders or contracts")::
-		::end::
+	::if list!=null::
+		<h2>Liste :
+		::getListName(list)::
 		</h2>
 	
 		<p>
 			<b>::members.current().length::</b> ::_("members")::.
 		</p>
 		
-		$$back()
+		<p>
+			
+
+			<script>			
+				var batchAction = function(action){
+					var ids = _.getCheckboxesId('form.members');
+					if(action==undefined){
+						alert("Action inconnue");
+					}
+					if(action=="membership"){
+						window.confirm("Cette action va saisir une cotisation par chèque pour l'année en cours pour tous les membres sélectionnés. Confirmez vous cette action ?");
+					}
+					if(ids.length==0){
+						alert("Vous devez sélectionner un ou plusieurs membres de ce groupe");
+					}else{
+						var l = document.location;
+						l.href = l.protocol +"//"+ l.host + "/member/batch?"+action+"="+ ids.join("|");
+					}
+					
+				};
+				
+				//check all
+				var check = function(){
+					var inputs = document.querySelectorAll('form.members input');
+					var value = inputs[0].checked==true;
+					for ( i of inputs ) {
+						i.checked = !value;
+					}
+				}
+				
+				</script>
+
+				<div class="btn-group" role="group">
+					$$back()					
+				</div>
+				<div class="btn-group" role="group" style="margin-left: 12px;">
+					Actions par lot :
+				</div>
+				<div class="btn-group" role="group">
+					
+					<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
+					<a class="btn btn-default btn-sm" onclick="batchAction('waitingList')">Remettre en liste d'attente</a>	
+					<a class="btn btn-default btn-sm" onclick="batchAction('exclude')">Retirer du groupe</a>	
+					<a class="btn btn-default btn-sm" onclick="batchAction('membership')">Saisir cotisation</a>	
+			</div>
+		</p>
 
 	::elseif search!=null::
 
 		<h2>::_("Search"):: : ::search::</h2>
+
 		$$back()
 		
-	::else::	
+	::else::
+
 		<h2>::_("Members")::</h2>
+
 	::end::
 	
 	
-	::if select=="newusers"::
+	::if list=="newUsers"::
 		<hr/>
 		<p style="text-align:center;">
 			::_("You can invite by email all the members who never logged in, in one single clic.")::			
@@ -40,11 +80,12 @@
 		</p>
 	::end::
 
+	<form method="GET" class="members">
 	<table class="table table-bordered table-hover table-striped"  style="width:100%;">
 	::foreach m members.current()::	
 	<tr>
-		
-		<td>
+		::if(list!=null)::<td><input type="checkbox" name="checkbox" value="::m.id::" /></td>::end::
+		<td>			
 			<a href="/member/view/::m.id::">
 			::m.lastName:: ::m.firstName:: 
 			::if m.lastName2!=null::
@@ -69,7 +110,7 @@
 	</tr>
 	::end::
 
-	<tr ::cond select==null && search==null::>
+	<tr ::cond list==null && search==null::>
 		<td colspan="2" class="text-center">
 
 			<ul class="pagination">
@@ -99,6 +140,7 @@
 	</tr>
 
 	</table>
+	</form>
 
 	<div>
 		
@@ -116,52 +158,45 @@
 	
 	
 	<div class="block">
-		<h3>::_("Selections")::</h3>
-		<ul>
-			<li><a href="/member/">::_("All members")::</a></li>
-			<li><a href="/member/?select=nocontract">::_("Without orders or contracts")::</a></li>
-			<li><a href="/member/?select=contract">::_("With orders or contracts")::</a></li>
-			<li><a href="/member/?select=newusers">::_("Never logged in")::</a></li>
-			<li ::cond user.getGroup().hasMembership()::><a href="/member/?select=nomembership">::_("Memberships to renew")::</a></li>
-			<li ::cond user.getGroup().hasPayments()::><a href="/member/balance">::_("Members balance")::</a></li>
-			
-		</ul>
-		
 		<form class="form-search" action="/member/" method="get">
 			<div class="input-group">
-				::if search==null::
-					::set ssearch=""::
-				::else::
-					::set ssearch=search::
-				::end::
-				<input type="text" class="form-control" name="search" value="::ssearch::" />
-				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"><i class="icon icon-search"></i> ::_("Search||search action button")::</button>
-				</span>
-				
-			  </div>
-		 </form>
+			::if search==null::
+				::set ssearch=""::
+			::else::
+				::set ssearch=search::
+			::end::
+			<input type="text" class="form-control" name="search" value="::ssearch::" />
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-default">
+					<i class="icon icon-search"></i> ::_("Search||search action button")::
+				</button>
+			</span>
+			
+			</div>
+		</form>
+
+		<h3>Listes</h3>
+		<ul>
+			::foreach list userLists::
+				<li>
+					<a href="/member/?list=::list.id::">::list.name::</a>
+					::if(list.count!=null)::
+					(<b>::list.count::</b>)
+					::end::
+				</li>
+			::end::
+		</ul>
+		
+		
 	</div>
 	
 	
-	<div class="block">
-		<h3>::_("Waiting list")::</h3>
-		<p>
-		::raw __("There is <b>::waitingList::</b> people on waiting list.",{waitingList:waitingList})::
-		<br/>
-		<a href="/member/waiting" class="btn btn-default btn-sm">::_("Display the list")::</a>
-		</p>
-	</div>
+
 	
 	
-	::if select!="newusers"::
 	<div class="block">		
-		<h3>::_("New members")::</h3>
-		::raw __("There is <b>::newUsers::</b> members who never logged in",{newUsers:newUsers})::
-		<br/>
-		<a href="/member/?select=newusers" class="btn btn-default btn-sm">::_("Display the list")::</a>
+		<a ::cond user.getGroup().hasPayments():: href="/member/balance" class="btn btn-default btn-sm">::_("Members balance")::</a>
 	</div>
-	::end::
 	
 </div>
 

@@ -75,20 +75,28 @@
 	
 	
 	::if user.getGroup().hasMembership()::
-	<h2>::_("Membership fee")::</h2>
-	<div class="article">
-		::if userGroup.hasValidMembership()::
-			$$bool(true) ::_("Membership up to date")::
+	<h2>Adhésion</h2>
+		::set hasValidMembership = userGroup.hasValidMembership()::
+		::if(hasValidMembership)::
+			::set css = "alert alert-success"::
 		::else::
-			$$bool(false) ::_("Membership to renew")::
+			::set css = "alert alert-danger"::
+		::end::
+
+		<div class="::css::">
+		$$check(::hasValidMembership::)
+		::if hasValidMembership::
+			::_("Membership up to date")::
+		::else::
+			 ::_("Membership to renew")::
 		::end::
 		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
 		<br/>
-		<a href="/membership/::member.id::" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+		
+		<a onclick="_.membershipBox(::member.id::,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
+
 		
 	</div>
-	::else::
-
 	::end::
 
 	

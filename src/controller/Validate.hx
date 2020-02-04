@@ -26,7 +26,8 @@ class Validate extends controller.Controller
 			view.operations = db.Operation.getLastOperations(user,place.group,10);
 			
 		}
-		view.balance = db.UserGroup.get(user, place.group).balance;
+		var ug = db.UserGroup.get(user, place.group);
+		view.balance = ug==null ? null : ug.balance;
 		var b = db.Basket.get(user, multiDistrib);			
 		view.orders = service.OrderService.prepare(b.getOrders());
 		view.place = place;
@@ -34,7 +35,8 @@ class Validate extends controller.Controller
 		view.basket = b;
 		view.onTheSpotAllowedPaymentTypes = service.PaymentService.getOnTheSpotAllowedPaymentTypes(app.user.getGroup());
 		view.md = multiDistrib;
-		view.userGroup = db.UserGroup.get(this.user, this.multiDistrib.getGroup());
+		view.distribution = multiDistrib;
+		view.userGroup = ug;
 		view.abs = Math.abs;
 		
 		checkToken();

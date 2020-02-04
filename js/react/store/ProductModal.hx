@@ -29,6 +29,7 @@ import mui.core.common.ShirtSize;
 import mui.core.Tooltip;
 import react.store.redux.action.CartAction;
 import react.mui.CagetteTheme;
+import mui.core.grid.GridSpacing;
 
 import Common;
 
@@ -145,7 +146,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                         </Button>
                     </Tooltip>
                     
-                    <Grid container spacing={24}>              
+                    <Grid container spacing=${GridSpacing.Spacing_2}>              
                         <Grid item xs={4} className=${classes.gridItem}>
                             <div>
                                 <img className=${classes.cover} src=${product.image}/>
@@ -175,7 +176,7 @@ class ProductModal extends ReactComponentOfProps<Props> {
                         </h2>
                     </div>
 
-                    <Grid container spacing={24}>
+                    <Grid container spacing=${GridSpacing.Spacing_2}>
                         <Grid item xs={4}>
                             <img className=${classes.cover} src=${portrait} />
                         </Grid>

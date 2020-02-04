@@ -136,26 +136,13 @@
 			::raw __content__::
 		</div>	
 		
-		<div class="row footer-info">
-
-			<!--
+		<!--<div class="row footer-info">
 			<div class="col-md-12 alert-danger text-center" style="border-radius: 8px;margin:8px 0;padding:8px 0;">
 				<span class="glyphicon glyphicon-cog"></span>
 				<b>Attention</b> : Cagette.net sera en maintenance le <b>mercredi 6 Février de 23h à 2h</b>.				
 				
 			</div>
-			-->
-			<div class="col-md-7">
-					<b>Connaissez-vous <a href="http://www.lilo.org" target="_blank">Lilo</a> ?</b> 
-					<br/>C'est un moteur de recherche alternatif qui soutient les projets à impact positif !
-			</div>
-			<div class="col-md-5">					
-				<a href="http://www.lilo.org/fr/cagette-net/?utm_source=cagette-net" target="_blank" class="btn btn-default">
-					<span class="glyphicon glyphicon-heart"></span>
-					Soutenez-nous en nous donnant vos gouttes d'eau
-				</a>
-			</div>
-		</div>
+		</div>-->
 	
 		$$footer()
 		

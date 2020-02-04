@@ -203,7 +203,8 @@ class Messages extends Controller
 			case "4":
 				return Lambda.array(db.User.getUsers_NoContracts());
 			case "5":
-				return Lambda.array(db.User.getUsers_NoMembership());
+				var ms = new service.MembershipService(app.user.getGroup());
+				return ms.getNoMembershipUsers();
 			}
 			
 			return out;

@@ -1,5 +1,6 @@
 package react.store;
 
+import mui.core.grid.GridSpacing;
 import js.Promise;
 import haxe.Json;
 import react.mui.CagetteTheme;
@@ -246,7 +247,7 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 
 	function renderLoader() {
 		return jsx('
-			<Grid  container spacing={0} direction=${Column} alignItems=${Center} justify=${Center} style={{ minHeight: "50vh" }}>
+			<Grid  container spacing=${GridSpacing.Spacing_0} direction=${Column} alignItems=${Center} justify=${Center} style={{ minHeight: "50vh" }}>
 				<Grid item xs={3}>
 					<CircularProgress />
 				</Grid>   

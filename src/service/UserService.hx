@@ -1,5 +1,7 @@
 package service;
+import db.Group.RegOption;
 import tink.core.Error;
+import Common;
 
 /**
  * User Service
@@ -175,6 +177,7 @@ class UserService
 		if(badTries==null) badTries = 0;
 		sugoi.db.Cache.set("ip-ban-"+ip,badTries+1, 60 * 10);
 	}
+
 	/**
 	 *  Checks that the user is at least 18 years old
 	 *  @param birthday - 
@@ -184,7 +187,6 @@ class UserService
 		//Check that the user is at least 18 years old
 		return birthday.getTime() < DateTools.delta(Date.now(), -1000*60*60*24*365.25*18).getTime()	? true : false;	
 	}
-
 
 	public static function prepareLoginBoxOptions(view:Dynamic,?group:db.Group){
 		if(group==null) group = App.current.getCurrentGroup();
@@ -197,4 +199,38 @@ class UserService
 		if(group.flags.has(AddressRequired)) loginBoxOptions.addressRequired = true;
 		view.loginBoxOptions = loginBoxOptions;
 	}
+
+	public static function getUserLists(group:db.Group):Array<UserList>{
+		var membersNum = group.getMembersNum();
+		
+		var lists = [
+			{id:"all",			name:"Membres du groupe", 			count:membersNum	},
+			{id:"hasOrders",	name:"Avec commande",				count:null		},
+			{id:"hasNoOrders",	name:"Sans commande",				count:null		},
+			{id:"newUsers",		name:"Ne s'est jamais connecté",	count:null		},
+		];
+
+		if(group.hasMembership()){
+			var ms = new service.MembershipService(group);
+			var upToDateMemberships = ms.countUpToDateMemberships();
+			lists.push({id:"noMembership",	name:"Adhésion à renouveller",	count:membersNum-upToDateMemberships});
+			lists.push({id:"membership",	name:"Adhésion à jour",			count:upToDateMemberships	});
+		}
+		
+		//if(group.regOption == RegOption.WaitingList){
+			lists.push({id:"waitingList",	name:"Liste d'attente",			count:service.WaitingListService.countUsersInWl(group)	});
+		//}
+
+		return lists;
+	}
+
+	/*public static function getListBrowseFunction(listId:String){
+		switch(listId){
+			case "allUsers" : 
+
+
+		}
+	}*/
+
+	
 }

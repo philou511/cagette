@@ -32,7 +32,7 @@
 							<i class="fa fa-shopping-basket" aria-hidden="true"></i> N°::basket.num::
 						</div>
 						
-						::member.getName()::
+						<a href="/member/view/::member.id::" target="_blank">::member.getName()::</a>
 					</td>
 				</tr>
 				<tr>
@@ -212,6 +212,9 @@
 			<p class="text-center" ::cond op!=null::>				
 				$$insert(::_("Key-in a refund")::,/validate/::md.id::/::member.id::/addRefund?basketid=::basket.id::)				
 				$$insert(::_("Key-in a payment")::,/validate/::md.id::/::member.id::/addPayment/)
+				<a href="/member/invoice/::member.id::/::md.id::" target="_blank" class="btn btn-default btn-sm">
+					<i class="icon icon-file"></i> Reçu
+				</a>
 			</p>
 			
 			<p class="text-center">	
@@ -231,20 +234,25 @@
 					<th class="text-center">::_("Membership")::</th>
 				</tr>
 				<tr>
-					<td class="text-center">
-						::if user.getGroup().hasMembership()::
+					::if (user.getGroup().hasMembership() && userGroup!=null)::
+						
 							::if userGroup.hasValidMembership()::
-								$$check(true) ::_("Membership up to date")::
+								<td class="text-center alert-success" style="padding:24px;">
+									$$check(true) ::_("Membership up to date"):: pour la période <b>::user.getGroup().getPeriodName(null)::</b>
+								</td>
 							::else::
-								$$check(false) ::_("Membership to renew")::
+								<td class="text-center alert-danger">
+									$$check(false) ::_("Membership to renew"):: pour la période <b>::user.getGroup().getPeriodName(null)::</b>
+									<br/>
+									<a onclick="_.membershipBox(::member.id::,::place._group.id::,'/validate/::distribution.id::/::member.id::',::distribution.id::)" class="btn btn-danger btn-sm">::_("Manage membership fees")::</a>
+								</td>
 							::end::
-							::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
-							<br/>
-							<a href="/membership/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
-						::else::
+			
+					::else::
+						<td>
 							<span class="disabled">Pas de gestion des adhésions dans ce groupe</span>
-						::end::
-					</td>
+						</td>
+					::end::
 				</tr>
 
 			</table>
@@ -258,13 +266,27 @@
 				<tr style="background-color:#DDD;">
 					<th class="text-center">Solde du membre</th>
 				</tr>
+				
 				<tr>
-					<td class="text-center">
+					::if(balance<0)::
+					<td class="text-center alert-danger">
 						<b>$$balance(::balance::)</b>
 						<br/>
-						<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">::_("Payment history of this member")::</a>
+						<a href="/member/payments/::member.id::" target="_blank" class="btn btn-danger btn-sm">
+							<i class="icon icon-euro"></i> ::_("Payment history of this member")::
+						</a>
 					</td>
+					::else::
+					<td class="text-center alert-success">
+						<b>$$balance(::balance::)</b>
+						<br/>
+						<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">
+							<i class="icon icon-euro"></i> ::_("Payment history of this member")::
+						</a>
+					</td>
+					::end::
 				</tr>
+
 
 			</table>
 		</div>
@@ -276,14 +298,6 @@
 			<p class="text-center">
 				<a href="/distribution/validate/::md.id::" class="btn btn-default btn-sm">
 					<i class="icon icon-chevron-left"></i> ::_("Back to the delivery validation")::
-				</a>
-
-				<a href="/member/payments/::member.id::" target="_blank" class="btn btn-default btn-sm">
-					<i class="icon icon-user"></i> ::_("Payment history of this member")::
-				</a>
-
-				<a href="/member/invoice/::member.id::/::md.id::" target="_blank" class="btn btn-default btn-sm">
-					<i class="icon icon-file"></i> Reçu
 				</a>
 			</p>		
 		</div>

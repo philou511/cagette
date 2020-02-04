@@ -183,13 +183,13 @@
 	<div  class="article">
 		<span style="font-size:1.3em;">
 			::_("Balance"):: : 
-			::if userAmap.balance<0:: 
+			::if userGroup.balance<0:: 
 				::set color = "C00"::
 			::else::
 				::set color = "0C0"::
 			::end::
 			<span style="color:#::color::;">
-				::userAmap.balance:: ::currency()::
+				::userGroup.balance:: ::currency()::
 			</span>
 		</span>
 		
@@ -199,6 +199,28 @@
 				::_("Payments details")::
 			</a>
 		</span>
+	</div>
+	::end::
+
+	<!--Membership-->
+	::if user.getGroup().hasMembership()::
+	<h3>Adhésion</h3>
+		::set hasValidMembership = userGroup.hasValidMembership()::
+		::if(hasValidMembership)::
+			::set css = "alert alert-success"::
+		::else::
+			::set css = "alert alert-danger"::
+		::end::
+
+		<div class="::css::">
+		$$check(::hasValidMembership::)
+		::if hasValidMembership::
+			::_("Membership up to date")::
+		::else::
+			 ::_("Membership to renew")::
+		::end::
+		::_("for the period||full sentence : Membership up to date for the period 2017-2018"):: <b>::user.getGroup().getPeriodName(null)::</b>
+		<br/>
 	</div>
 	::end::
 	
@@ -229,7 +251,8 @@
 		</table>
 		
 			::if stopTuto:: 
-			<div id="stopTuto" data-toggle="popover" title='::_("Tutorial stopped")::' data-placement="left" data-content="::_("You'll be able to restart it here.")::" ></div>
+			::set msg = _("You'll be able to restart it here.")::
+			<div id="stopTuto" data-toggle="popover" title='::_("Tutorial stopped")::' data-placement="left" data-content="::msg::" ></div>
 			<script>
 				$(function(){
 					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);
@@ -255,6 +278,8 @@
 			</b>
 		</p>
 	</div>
+
+	
 	
 </div>
 

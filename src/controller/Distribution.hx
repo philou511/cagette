@@ -1400,6 +1400,7 @@ class Distribution extends Controller
 	**/
 	@tpl('form.mtt')
 	function doMissingProduct(distrib:db.MultiDistrib){
+		checkHasDistributionSectionAccess();
 
 		var form = new sugoi.form.Form("missingProduct");
 
@@ -1441,7 +1442,7 @@ class Distribution extends Controller
 	**/
 	@tpl('form.mtt')
 	function doChangePrice(distrib:db.MultiDistrib){
-
+		checkHasDistributionSectionAccess();
 		var form = new sugoi.form.Form("changePrice");
 
 		var datas = [];
@@ -1493,6 +1494,7 @@ class Distribution extends Controller
 	**/
 	@tpl('validate/counter.mtt')
 	function doCounter(distribution:db.MultiDistrib){
+		checkHasDistributionSectionAccess();
 
 		if(app.params.get("counterBeforeDistrib")!=null){
 			distribution.lock();
@@ -1505,6 +1507,26 @@ class Distribution extends Controller
 		var sales = mangopay.MangopayPlugin.getMultiDistribDetailsForGroup(distribution);
 		view.sales = sales;
 		#end
+
+		//memberships
+		var membershipAmount = 0.0;
+		var membershipNum = 0;
+		if(distribution.group.hasMembership()){
+			//membership num
+			
+			var ms = new service.MembershipService(distribution.group);
+			var memberships = ms.getMembershipsFromDistrib(distribution);
+			membershipNum = memberships.length;
+			view.membershipNum = membershipNum;
+
+			//membership amount
+			
+			for( m in memberships){
+				membershipAmount += m.operation.amount;
+			}
+			view.membershipAmount = membershipAmount;
+
+		}
 
 		//orders total by VAT rate	
 		var ordersByVat = 	service.ReportService.getOrdersByVAT(distribution);
@@ -1545,6 +1567,7 @@ class Distribution extends Controller
 			out.push(['Encaissements en liquide',sales.cashTurnover.ttc.string()]);
 			out.push(['La caisse doit contenir',(distribution.counterBeforeDistrib+sales.cashTurnover.ttc).string()]);
 			out.push(['Encaissements en chèque',sales.checkTurnover.ttc.string()]);
+			out.push(['Encaissements en virement',sales.transferTurnover.ttc.string()]);
 			#end
 			out.push([]);
 			out.push(['Total commande par taux de TVA','HT','TTC']);
@@ -1563,6 +1586,10 @@ class Distribution extends Controller
 			out.push(['Avoirs']);
 			out.push(['Membre','Montant avoir']);
 			for(u in paidTooMuch) out.push( [ u.user.getName(), Formatting.formatNum(u.amount) ] );
+			out.push([]);
+			out.push(['Nombre de cotisations saisies',Formatting.formatNum(membershipNum)]);
+			out.push(['Montant des cotisations',Formatting.formatNum(membershipAmount)]);
+			
 
 			app.setTemplate(null);
 			sugoi.tools.Csv.printCsvDataFromStringArray(out,[],"Encaissements "+view.hDate(distribution.distribStartDate)+".csv");			

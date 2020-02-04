@@ -1,6 +1,8 @@
 package controller.api;
+import service.MembershipService;
 import haxe.Json;
 import tink.core.Error;
+import service.PaymentService;
 import Common;
 
 /**
@@ -8,6 +10,128 @@ import Common;
  */
 class User extends Controller
 {
+
+	public function doDefault(user:db.User){
+		//get a user
+	}
+
+	/**
+		get membership status of a user in a group
+	**/
+	public function doMembership(user:db.User,group:db.Group){
+
+		if(!app.user.canAccessMembership()){
+			throw new Error(Unauthorized,"Access forbidden");
+		}
+
+		var ug = db.UserGroup.get(user,group);
+		var ms = new MembershipService(group);
+
+		if(ug==null){
+			throw new Error(NotFound,"Not found");
+		}else{
+
+			var post = sugoi.Web.getMultipart(1024*1024);
+			if(post.count()>0){
+
+				//Add a membership
+				var params = post;
+				if(params["year"]==null) throw new Error("Missing 'year' param");
+				if(params["date"]==null) throw new Error("Missing 'date' param");
+				if(group.membershipFee==null && params["membershipFee"]==null) throw new Error("Missing 'membershipFee' param");
+				if(group.hasPayments() && params["paymentType"]==null) throw new Error("Missing 'paymentType' param");
+
+				var year = params["year"].parseInt();
+				var date = Date.fromString(params["date"]);
+				var membershipFee = params["membershipFee"].parseInt();
+				var paymentType = params["paymentType"];
+				var distribution = db.MultiDistrib.manager.get(params["distributionId"].parseInt(),false);
+
+				ms.createMembership(user,year,date,membershipFee,paymentType,distribution);
+
+			}
+
+			var out = {
+				userName:null,
+				availableYears: new Array<{name:String,id:Int}>(),
+				memberships: new Array<{name:String,id:Int,date:Date}>(),
+				membershipFee:null,
+				distributions: new Array<{name:String,id:Int}>(),
+				paymentTypes: new Array<{id:String,name:String}>(),
+			};
+
+			out.userName = user.getName();
+			out.membershipFee = group.membershipFee;
+			if(group.hasPayments()){
+				out.paymentTypes = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).map(p -> return {id:p.type,name:p.name});
+			}
+			out.memberships = ms.getUserMemberships(user).map(m->{
+				return {
+					id : m.year ,
+					name : ms.getPeriodName(m.year),
+					date : m.date
+				};
+			});
+
+			var from = tools.DateTool.deltaDays(Date.now(),-30);
+			var to = tools.DateTool.deltaDays(Date.now(),5);
+			out.distributions = db.MultiDistrib.getFromTimeRange(group,from,to).map(d->return {
+				id:d.id,
+				name:"Distribution du "+Formatting.hDate(d.distribStartDate)
+			});
+
+
+			out.availableYears = [];
+			var now = Date.now();
+			for ( x in -4...2) {
+				var yy = DateTools.delta(now, DateTools.days(365) * x);
+				out.availableYears.push({name : group.getPeriodName(yy) , id : group.getMembershipYear(yy)});
+			}
+
+			out.availableYears.reverse();
+			Sys.print(haxe.Json.stringify(out));
+		}
+	}
+
+
+	public function doDeleteMembership(user:db.User,group:db.Group,year:Int){
+
+		if(!app.user.canAccessMembership()){
+			throw new Error(Unauthorized,"Not found");
+		}
+
+		var ug = db.UserGroup.get(user,group);
+		if(ug==null){
+			throw new Error(NotFound,"Not found");
+		}else{
+			var ms = new MembershipService(group);
+			var membership = ms.getUserMembership(user,year);
+			if(membership!=null){
+				membership.lock();
+				if(membership.operation!=null){
+					var op = membership.operation;
+					op.lock();
+					op.relation.lock();
+					op.relation.delete();					
+					op.delete();
+					service.PaymentService.updateUserBalance(user,group);
+				}
+				membership.delete();
+
+				
+			}
+			var memberships = ms.getUserMemberships(user).map(m->{
+				return {
+					id : m.year ,
+					name : ms.getPeriodName(m.year),
+					date : m.date
+				};
+			});
+			Sys.print(haxe.Json.stringify({memberships:memberships}));
+		}
+	}
+	
+
 	
 	/**
 	 * Login

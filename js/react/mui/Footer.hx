@@ -1,4 +1,5 @@
 package react.mui;
+import mui.core.grid.GridSpacing;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
@@ -10,7 +11,7 @@ class Footer extends react.ReactComponent
 	override public function render(){
 		
 		return jsx('<div id="footer" style=${{width:"100%",backgroundColor:CGColors.Secondary,marginTop:32,paddingTop:24,paddingBottom:24,color:CGColors.White}}>
-			<Grid container spacing={0} direction=${Row} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
+			<Grid container spacing=${GridSpacing.Spacing_0} direction=${Row} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
                 
                 <Grid item md={3} xs={12} style=${{textAlign:"left"}}>
 					<a href="http://www.cagette.net" target="_blank">

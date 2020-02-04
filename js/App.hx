@@ -274,6 +274,24 @@ class App {
 		return false;
 	}
 
+	public function membershipBox(userId:Int,groupId:Int,?callbackUrl:String,?distributionId:Int){
+
+		var node = js.Browser.document.createDivElement();
+		node.id = "membershipBox-container";
+		js.Browser.document.body.appendChild(node);
+		ReactDOM.unmountComponentAtNode(node); //the previous modal DOM element is still there, so we need to destroy it
+	
+		ReactDOM.render(jsx('
+			<MuiThemeProvider theme=${CagetteTheme.get()}>
+				<>
+					<CssBaseline />
+					<MembershipDialog userId=$userId groupId=$groupId callbackUrl=$callbackUrl distributionId=$distributionId />							
+				</>
+			</MuiThemeProvider>
+		'), node );
+
+	}
+
 	private function createReactStore() {
 		// Store creation
 		var rootReducer = Redux.combineReducers({

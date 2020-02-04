@@ -476,21 +476,6 @@ class User extends Object {
 	}
 	
 	
-	public static function getUsers_NoMembership(?index:Int,?limit:Int):List<db.User> {
-		var ua = new List();
-		if (index == null && limit == null) {
-			ua = db.UserGroup.manager.search($group == App.current.user.getGroup(), false);	
-		}else {
-			ua = db.UserGroup.manager.search($group == App.current.user.getGroup(),{limit:[index,limit]}, false);
-		}
-		
-		for (u in Lambda.array(ua)) {
-			if (u.hasValidMembership()) ua.remove(u);
-		}
-		
-		return Lambda.map(ua, function(x) return x.user);	
-	}
-	
 	public static function getUsers_NewUsers(?index:Int, ?limit:Int):List<db.User> {
 		
 		var uas = db.UserGroup.manager.search($group == App.current.user.getGroup(), false);

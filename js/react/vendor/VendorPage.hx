@@ -1,5 +1,6 @@
 package react.vendor;
 
+import mui.core.grid.GridSpacing;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
@@ -46,7 +47,7 @@ class VendorPage extends react.ReactComponentOfProps<{vendorInfo: VendorInfos, c
 		
 		<div style=${{backgroundImage: 'url("${props.vendorInfo.images.banner}")', backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center", position: "relative", width: "100%", height: "250px"}}></div>
 		
-		<Grid container spacing={0} direction=${Row} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
+		<Grid container spacing=${GridSpacing.Spacing_0} direction=${Row} justify=${Center} style=${{maxWidth:"1240px",marginLeft:"auto",marginRight:"auto"}}>
 			
 			<Grid item xs={12} style=${{textAlign:"center"}}>
 

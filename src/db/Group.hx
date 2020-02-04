@@ -58,8 +58,8 @@ class Group extends Object
 	
 	public var extUrl : SNull<SString<64>>;   //lien sur logo du groupe
 
-	public var membershipRenewalDate : SNull<SDate>;
-	@hideInForms  public var membershipPrice : SNull<STinyInt>;
+	@hideInForms public var membershipRenewalDate : SNull<SDate>;
+	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
 	@hideInForms 
 	public var vatRates : SData<Map<String,Float>>;
