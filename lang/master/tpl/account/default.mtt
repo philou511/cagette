@@ -183,13 +183,13 @@
 	<div  class="article">
 		<span style="font-size:1.3em;">
 			::_("Balance"):: : 
-			::if userAmap.balance<0:: 
+			::if userGroup.balance<0:: 
 				::set color = "C00"::
 			::else::
 				::set color = "0C0"::
 			::end::
 			<span style="color:#::color::;">
-				::userAmap.balance:: ::currency()::
+				::userGroup.balance:: ::currency()::
 			</span>
 		</span>
 		
