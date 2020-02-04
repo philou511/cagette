@@ -34,6 +34,7 @@ class Tuto
 		
 		var t = App.instance.t;
 		if (t == null) trace("Gettext translator is null");
+
 		
 		if (s == null) {
 			/**
@@ -109,6 +110,7 @@ class Tuto
 			';
 
 			var popover = new bootstrap.Popover(s.element, {
+				trigger: "click",
 				container: "body",
 				title: tuto.name + ' <div class="pull-right">'+ (step+1) + '/' + tuto.steps.length + '</div>',
 				content: ''
@@ -117,30 +119,6 @@ class Tuto
 				placement: popoverPlacement,
 			});
 			popover.show();
-
-			var closeBtn = null;
-			switch(s.action) {
-				case TANext :
-					var nextIcon = Browser.document.createElement('i');
-					nextIcon.classList.add("icon");
-					nextIcon.classList.add("icon-chevron-right");
-					var link = Browser.document.createElement('a');
-					link.classList.add("btn");
-					link.classList.add("btn-default");
-					link.appendChild(nextIcon);
-					link.appendChild(Browser.document.createTextNode(" " + t._("Next")));
-					closeBtn = Browser.document.createElement('p');
-					closeBtn.appendChild(link);
-
-					closeBtn.onclick = function () {
-						new Tuto(name, step + 1);
-						popover.hide();
-						if (LAST_ELEMENT!=null) {
-							// x.classList.remove("highlight");
-						}
-					}
-				default:
-			}	
 
 			switch(s.action) {
 				case TANext :
