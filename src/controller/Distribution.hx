@@ -1,4 +1,5 @@
 package controller;
+import db.DistributionCycle;
 import db.UserOrder;
 import sugoi.form.Form;
 import sugoi.form.elements.HourDropDowns;
@@ -9,7 +10,6 @@ import Common;
 import service.VolunteerService;
 import service.DistributionService;
 using tools.DateTool;
-using Lambda;
 using Formatting;
 using Std;
 
@@ -36,29 +36,20 @@ class Distribution extends Controller
 		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);
 		var timeframe = new tools.Timeframe(from,to);
 
-
-		var distribs = [];
-		//Multidistribs
-		distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
-		
+		var distribs = db.MultiDistrib.getFromTimeRange(app.user.getGroup(),timeframe.from,timeframe.to);
 
 		if( app.user.getGroup().hasPayments() && app.params.get("_from")==null){
-
-	
-	
 
 			//include unvalidated distribs in the past
 			var unvalidated = db.MultiDistrib.getFromTimeRange(app.user.getGroup() , tools.DateTool.deltaDays(from,-60) , tools.DateTool.deltaDays(from,-1) );
 			for( md in unvalidated.copy()){
 				if( !md.isValidated() ) distribs.unshift(md);				
 			}
-			
-
 		}
 
 		view.distribs = distribs;
-		//cycle who have either startDate or EndDate in the timeframe
-		view.cycles = db.DistributionCycle.manager.search( $group==app.user.getGroup() && (($startDate > timeframe.from && $startDate < timeframe.to) || ($endDate > timeframe.from && $endDate < timeframe.to) ) , false);
+		
+		view.cycles = DistributionCycle.getFromTimeFrame(app.user.getGroup(), timeframe);
 		view.timeframe = timeframe;
 
 		checkToken();
@@ -807,6 +798,103 @@ class Distribution extends Controller
 	
 		view.form = form;
 		view.title = t._("Edit a general distribution");
+	}
+	
+	/**
+	 * create a distribution cycle for a contract
+	 */
+	@tpl("form.mtt")
+	public function doInsertCycle(contract:db.Catalog) {
+		
+		/*if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
+		
+		var dc = new db.DistributionCycle();
+		dc.place = contract.amap.getMainPlace();
+		var form = sugoi.form.Form.fromSpod(dc);
+		form.removeElementByName("contractId");
+		
+		form.getElement("startDate").value = DateTool.now();
+		form.getElement("endDate").value  = DateTool.now().deltaDays(30);
+		
+		//start hour
+		form.removeElementByName("startHour");
+		var x = new HourDropDowns("startHour", t._("Start time"), DateTool.now().setHourMinute( 19, 0) , true);
+		form.addElement(x, 5);
+		
+		//end hour
+		form.removeElement(form.getElement("endHour"));
+		var x = new HourDropDowns("endHour", t._("End time"), DateTool.now().setHourMinute(20, 0), true);
+		form.addElement(x, 6);
+		
+		if (contract.type == db.Catalog.TYPE_VARORDER){
+			
+			form.getElement("daysBeforeOrderStart").value = 10;
+			form.getElement("daysBeforeOrderStart").required = true;
+			form.removeElementByName("openingHour");
+			var x = new HourDropDowns("openingHour", t._("Opening time"), DateTool.now().setHourMinute(8, 0) , true);
+			form.addElement(x, 8);
+			
+			form.getElement("daysBeforeOrderEnd").value = 2;
+			form.getElement("daysBeforeOrderEnd").required = true;
+			form.removeElementByName("closingHour");
+			var x = new HourDropDowns("closingHour", t._("Closing time"), DateTool.now().setHourMinute(23, 0) , true);
+			form.addElement(x, 10);
+			
+		}else{
+			
+			form.removeElementByName("daysBeforeOrderStart");
+			form.removeElementByName("daysBeforeOrderEnd");	
+			form.removeElementByName("openingHour");
+			form.removeElementByName("closingHour");
+		}
+		
+		if (form.isValid()) {
+
+			var createdDistribCycle = null;
+			var daysBeforeOrderStart = null;
+			var daysBeforeOrderEnd = null;
+			var openingHour = null;
+			var closingHour = null;
+
+			try{
+				
+				if (contract.type == db.Catalog.TYPE_VARORDER) {
+					daysBeforeOrderStart = form.getValueOf("daysBeforeOrderStart");
+					daysBeforeOrderEnd = form.getValueOf("daysBeforeOrderEnd");
+					openingHour = form.getValueOf("openingHour");
+					closingHour = form.getValueOf("closingHour");
+				}
+
+				createdDistribCycle = service.DistributionService.createCycle(
+				contract,
+				form.getElement("cycleType").getValue(),
+				form.getValueOf("startDate"),	
+				form.getValueOf("endDate"),	
+				form.getValueOf("startHour"),
+				form.getValueOf("endHour"),											
+				daysBeforeOrderStart,											
+				daysBeforeOrderEnd,											
+				openingHour,	
+				closingHour,																	
+				form.getValueOf("placeId"));
+			}
+			catch(e:tink.core.Error){
+				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
+			}
+
+			if (createdDistribCycle != null) {
+				throw Ok('/contractAdmin/distributions/'+ contract.id, t._("The delivery has been saved"));
+			}
+			 
+		}
+		else{
+			dc.contract = contract;
+			app.event(PreNewDistribCycle(dc));
+		}
+		
+		view.form = form;
+		view.title = t._("Schedule a recurrent delivery");
+		*/
 	}
 
 	/**
