@@ -65,41 +65,54 @@ class ShopCart
 	
 	
 	function subAdd(pid, qt:Float ) {
-	
 		for ( p in order.products) {
 			if (p.productId == pid) {
-				
 				p.quantity += qt;
 				render();
 				return;
 			}
 		}
-			
-		order.products.push( { productId:pid, quantity:qt } );
+		order.products.push({ productId:pid, quantity:qt });
 	}
 	
 	/**
 	 * Render the shopping cart and total
 	 */
 	function render() {
-		var c = App.jq("#cart");
-		c.empty();
+		var cartEl = Browser.document.getElementById("cart");
+		cartEl.innerHTML = "";
 		
 		//render items in shopping cart
-		c.append( Lambda.map(order.products, function( x ) {
+		for (x in order.products) {
 			var p = this.products.get(x.productId);
-			if (p == null) {
-				//the product may have been disabled by an admin
-				return "";
+			if (p == null) return;
+
+			var row = Browser.document.createElement("div");
+			row.className = "row";
+			cartEl.appendChild(row);
+
+			var col1 = Browser.document.createElement("div");
+			col1.className = "order col-md-9";
+			col1.innerHTML = "<b> " + x.quantity + " </b> x " + p.name;
+			row.appendChild(col1);
+
+			var col2 = Browser.document.createElement("div");
+			col2.className = "col-md-3";
+			row.appendChild(col2);
+
+			var btn = Browser.document.createElement("a");
+			btn.className = "btn btn-default btn-xs";
+			for (att in [
+				{name: "data-toggle", value: "tooltip"},
+				{name: "data-placement", value: "top"},
+				{name: "title", value: "Retirer de la commande"},
+			]) {
+				btn.setAttribute(att.name, att.value);
 			}
-			
-			var btn = "<a onClick='cart.remove(" + p.id + ")' class='btn btn-default btn-xs' data-toggle='tooltip' data-placement='top' title='Retirer de la commande'><i class='icon icon-delete'></i></a>&nbsp;";
-			return "<div class='row'> 
-				<div class = 'order col-md-9' > <b> " + x.quantity + " </b> x " + p.name+" </div>
-				<div class = 'col-md-3'> "+btn+"</div>			
-			</div>";
-		}).join("\n") );
-		
+			btn.innerHTML = "<i class='icon icon-delete'></i>";
+			btn.onclick = () -> remove(p.id);
+			col2.appendChild(btn);
+		}
 		
 		//compute total price
 		var total = 0.0;
@@ -111,7 +124,10 @@ class ShopCart
 		var ffilter = new sugoi.form.filters.FloatFilter();
 		
 		var total = ffilter.filterString(Std.string(App.roundTo(total,2)));
-		c.append("<div class='total'>TOTAL : " + total + "</div>");
+		var totalEl = Browser.document.createElement("div");
+		totalEl.className = "total";
+		totalEl.innerHTML = "TOTAL : " + total;
+		cartEl.appendChild(totalEl);
 		
 		
 		if (order.products.length > 0){
