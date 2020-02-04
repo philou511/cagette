@@ -26,8 +26,6 @@ class Tuto
 	 */
 	function init(tuto) 
 	{
-		App.instance.tutoModal();
-
 		var s = tuto.steps[step];
 		
 		//close previous popovers
@@ -37,24 +35,31 @@ class Tuto
 		var t = App.instance.t;
 		if (t == null) trace("Gettext translator is null");
 		
+s = null;
+
 		if (s == null) {
 			/**
 			 * tutorial is finished : display a modal window
 			 */
-			var m = App.jq('#myModal');
-			untyped m.modal('show');
-			m.addClass("help");			
-			m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
-			m.find(".modal-body").html("<span class='glyphicon glyphicon-ok'></span> "+t._("This tutorial is over.")); 
-			var bt = App.jq("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> "+t._("Come back to tutorials page")+"</a>");
-			bt.click(function(?_) {
-				untyped m.modal('hide');
-				js.Browser.location.href = STOP_URL+name;
-			});
-			m.find(".modal-footer").append(bt);
-			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
-			
-		}else if (s.element == null) {
+			var modalElement = Browser.document.getElementById("myModal");
+			var modal = new bootstrap.Modal(modalElement);
+			modal.show();
+
+			modalElement.classList.add("help");
+			modalElement.querySelector(".modal-header").innerHTML = "<span class='glyphicon glyphicon-hand-right'></span> " + tuto.name;
+			modalElement.querySelector(".modal-body").innerHTML = "<span class='glyphicon glyphicon-ok'></span> "+t._("This tutorial is over.");
+			modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+
+			var btn = Browser.document.createElement("a");
+			btn.classList.add("btn");
+			btn.classList.add("btn-default");
+			btn.innerHTML = "<span class='glyphicon glyphicon-chevron-right'></span> " + t._("Come back to tutorials page");
+			btn.onclick = function() {
+				modal.hide();
+				js.Browser.location.href = STOP_URL + name;
+			};
+			modalElement.querySelector(".modal-footer").append(btn);			
+		} else if (s.element == null) {
 			/**
 			 * no element, make a modal window (usually its the first step of the tutorial)
 			 */
@@ -84,17 +89,12 @@ class Tuto
 				new Tuto(name, step + 1);
 			}; 	
 		} else {
-			trace("LLLLLAAAAAA");
-			//prepare Bootstrap "popover"
-			// var x = App.jq(s.element).first().attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
-			var x = Browser.document.querySelector(s.element);
-			x.setAttribute("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
 			
-			var text = "<p>" + s.text + "</p>";
-			var bt = null;
+			var elStr: String = cast s.element;
+			var el = Browser.document.querySelector(elStr);
+			var btn = null;
 
-			//configure and open popover			
-			var p = switch(s.placement) {
+			var popoverPlacement = switch(s.placement) {
 				case TPTop: "top";
 				case TPBottom : "bottom";
 				case TPLeft : "left";
@@ -102,8 +102,47 @@ class Tuto
 				default : null;
 			}
 
-			var popover = new bootstrap.Popover(x, { container: "body", content: text , placement: p });
+			var popoverFooterId = 'popover-footer-'+ (step+1);
+			var popoverFooter = '
+				<div id=$popoverFooterId class="footer">
+					<div class="pull-left"></div>
+					<div class="pull-right"></div>
+				</div>
+			';
+
+			var popover = new bootstrap.Popover(s.element, {
+				container: "body",
+				title: tuto.name + ' <div class="pull-right">'+ (step+1) + '/' + tuto.steps.length + '</div>',
+				content: ''
+				+ '<p>' + s.text + '</p>'
+				+ popoverFooter,
+				placement: popoverPlacement,
+			});
 			popover.show();
+
+			var closeBtn = null;
+			switch(s.action) {
+				case TANext :
+					var nextIcon = Browser.document.createElement('i');
+					nextIcon.classList.add("icon");
+					nextIcon.classList.add("icon-chevron-right");
+					var link = Browser.document.createElement('a');
+					link.classList.add("btn");
+					link.classList.add("btn-default");
+					link.appendChild(nextIcon);
+					link.appendChild(Browser.document.createTextNode(" " + t._("Next")));
+					closeBtn = Browser.document.createElement('p');
+					closeBtn.appendChild(link);
+
+					closeBtn.onclick = function () {
+						new Tuto(name, step + 1);
+						popover.hide();
+						if (LAST_ELEMENT!=null) {
+							// x.classList.remove("highlight");
+						}
+					}
+				default:
+			}	
 
 			switch(s.action) {
 				case TANext :
@@ -115,36 +154,27 @@ class Tuto
 					link.classList.add("btn-default");
 					link.appendChild(nextIcon);
 					link.appendChild(Browser.document.createTextNode(" " + t._("Next")));
-					bt = Browser.document.createElement('p');
-					bt.appendChild(link);
+					btn = Browser.document.createElement('p');
+					btn.appendChild(link);
 
-					bt.onclick = function () {
+					btn.onclick = function () {
 						new Tuto(name, step + 1);
 						popover.hide();
 						if (LAST_ELEMENT!=null) {
-							x.classList.remove("highlight");
+							el.classList.remove("highlight");
 						}
 					}
 				default:
-			}
+			}	
 			
-			
-			//add a footer
-			var footer = Browser.document.createElement("div");
-			footer.classList.add("footer");
-			footer.innerHTML = "<div class='pull-left'></div><div class='pull-right'></div>";
+			el.addEventListener("show.bs.popover", function () {
+				var footerEl = Browser.document.getElementById(popoverFooterId);
+				if (btn != null) footerEl.querySelector(".pull-right").append(btn);
+				footerEl.querySelector(".pull-left").append(createCloseButton(t._('Stop')));
+			});
 
-			if (bt != null) footer.querySelector(".pull-right").append(bt);
-			footer.querySelector(".pull-left").append(createCloseButton(t._('Stop')));
-			
-			x.addEventListener("show.bs.popover", function () {
-				trace("AADED", Browser.document.querySelector(".popover .popover-content"));
-				Browser.document.querySelector(".popover .popover-content").append(footer);
-			}, false);
-
-			
-			Browser.document.querySelector(s.element).classList.add("highlight");
-			LAST_ELEMENT = s.element;
+			el.classList.add("highlight");
+			LAST_ELEMENT = elStr;
 		}
 	}
 
@@ -159,6 +189,10 @@ class Tuto
 		btn.classList.add("btn");
 		btn.appendChild(icon);
 		btn.appendChild(Browser.document.createTextNode(text==null ? "" : text));
+
+		btn.onclick = function() {
+			js.Browser.location.href = STOP_URL + name;
+		};
 
 		return btn;
 	}
