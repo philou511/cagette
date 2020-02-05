@@ -190,7 +190,7 @@
                             <div class="actions">
 								::if(vendors.length>0)::
 																
-								<a href="#" onclick="$('#md::d.id::').toggle();return false;" class="btn btn-default btn-sm btn-noAntiDoubleClick">
+								<a href="#md::d.id::" data-toggle="collapse" class="btn btn-default btn-sm btn-noAntiDoubleClick">
 									<span class="caret"></span> Producteurs participants
 								</a>
 									
@@ -260,8 +260,7 @@
 
                 <!-- Farmers infos-->
 
-				<div id="md::d.id::" style="display:none;">
-					
+				<div id="md::d.id::" class="collapse">
 					<hr/>
 
 					<p>
