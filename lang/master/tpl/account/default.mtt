@@ -4,107 +4,74 @@
 
 	::set payments = user.getGroup().hasPayments()::
 	
-	::if constOrders.length>0::
 	<div class="article">
 		
-		<!-- CONSTANT ORDERS -->
-		
-		<h3>::_("CSA Contracts")::</h3>
-		
-		::foreach c constOrders::
-		
-		<h4>::c.contract.name::</h4>
-		<table class="table table-bordered table-condensed" >
-			<tr>
-				<th>::_("Qty||short version for quantity")::</th>
-				<th>::_("Product")::</th>
-				<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
-				<th>::_("Sub-total")::</th>
-				<th>::_("Fees")::</th>
-				<th>::_("Total")::</th>
-				<th ::cond !payments::>::_("Paid")::</th>
-			</tr>
-		::set total = 0::
-		::foreach m c.orders::
-			<tr>
-				<td>
-					::raw m.smartQt::
-				</td>
-				<td>
-					<a href="#" onclick="_.overlay('/shop/productInfo/::m.productId::','::m.productName::')">
-					<img src="::m.productImage::" style="width:32px;height:32px;" />
-					::m.productName::
-					</a>
-					::if m.userName2 != null::
-						<br /><span class="glyphicon glyphicon-refresh"></span> ::_("Order alternated with")::
-						::if user.id == m.userId::
-							::m.userName2::
-						::else::
-							::m.userName::
-						::end::
-					::end::
+	<!-- CONSTANT ORDERS -->
+	::if(count(subscriptionsByCatalog)>0)::
 
-				</td>
-				<td>
-					::formatNum(m.productPrice)::&nbsp;::currency()::
-				</td>
-				<td>
-					::formatNum(m.subTotal)::&nbsp;::currency()::
-				</td>
-				<td>
-					<!-- frais -->
-					::if m.percentageValue!=null::
-					<a href="#" data-toggle="tooltip" data-placement="top" title="::m.percentageName:: : ::m.percentageValue:: %">
-						::formatNum(m.fees)::&nbsp;::currency()::
-					</a>
-					::end::
-				</td>
-				<td>
-					<!-- total -->
-					::formatNum(m.total)::&nbsp;::currency()::	
-					::set total = total + m.total::
-				</td>
-				<td ::cond !payments::>
-					::if m.paid==true::
-					<span style="color:#00AA00;">::_("Paid")::</span>
+		<h4><i class="icon icon-refresh"></i> Contrats AMAP</h4>
+
+		::foreach catalog subscriptionsByCatalog.keys()::
+			<h5>::catalog.name::</h5>
+			<table class="table table-condensed table-bordered">
+				<tr class="greyhead">
+					<th class="text-center col-md-3">Engagement</th>
+					<th class="text-center col-md-4">Période d'engagement</th>
+					<th class="text-center col-md-2">Nombre de distributions</th>
+					<th class="text-center col-md-2">Total</th>
+					<th class="text-center col-md-1">Payé</th>
+				</tr>
+				::foreach subscription subscriptionsByCatalog.get(catalog)::
+					::set orderName = subscriptionService.getDescription(subscription)::
+					::if orderName == null::
+						::set class="danger text-danger"::
 					::else::
-					<span style="color:#DD0000;">::_("Unpaid")::</span>
+						::set class=""::
 					::end::
-				</td>
-				
-			</tr>
-		::end::	
-		<tr>
-			<td colspan="7" class="text-right">
-				<b>Total :
-				::formatNum(total)::&nbsp;::currency()::</b>
-			
-				::set d = c.contract.getDistribs(false,null).length::
-				( soit ::formatNum(d*total)::&nbsp;::currency():: pour ::d:: livraisons )
-			</td>
-		</tr>
-	
-		</table>
+					<tr style="text-align: center;">
+						<td class="::class::" style="vertical-align: middle;">
+							::if orderName == null::
+								AUCUNE COMMANDE
+							::else::
+								::raw orderName::
+							::end::
+						</td>
+						<td style="vertical-align: middle;">
+							Du ::sDate(subscription.startDate)::
+							au ::sDate(subscription.endDate)::
+						</td>
+						<td style="vertical-align: middle;">
+							::subscriptionService.getSubscriptionNbDistributions(subscription)::
+						</td>
+						<td style="vertical-align: middle;">
+							::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+						</td>
+						<td style="vertical-align: middle;">
+							$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+						</td>
+					</tr>
+				::end::
+			</table>
 		::end::
-		
-	</div>	
+		<hr/>
 	::end::
+	
+	
 
 	<!-- VARYING ORDERS -->
 	::if count(varOrders)>0::
-	<div class="article">
-	
+		<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
 		::foreach d varOrders::
-			<h4>::_("Order delivered on"):: ::hDate(d.date)::</h4>
+			<h5>::_("Order delivered on"):: ::hDate(d.date)::</h5>
 			<table class="table table-bordered table-condensed" >
-				<tr>
-					<th>::_("Qty||short version for quantity")::</th>
-					<th>::_("Product")::</th>
-					<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
-					<th>::_("Sub-total")::</th>
-					<th>::_("Fees")::</th>
-					<th>::_("Total")::</th>
-					<th ::cond !payments::>::_("Paid")::</th>			
+				<tr class="greyhead">
+					<th class="col-md-1">::_("Qty||short version for quantity")::</th>
+					<th class="col-md-4">::_("Product")::</th>
+					<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
+					<th class="col-md-2">::_("Sub-total")::</th>
+					<th class="col-md-1">::_("Fees")::</th>
+					<th class="col-md-1">::_("Total")::</th>
+					<th class="col-md-1" ::cond !payments::>::_("Paid")::</th>			
 				</tr>
 				::set total = 0::
 				::foreach o d.orders::
@@ -131,12 +98,8 @@
 							::formatNum(o.total)::&nbsp;::currency()::
 							::set total = total + o.total::
 						</td>
-						<td ::cond !payments::>
-							::if o.paid==true::
-							<span style="color:#00AA00;">::_("Paid")::</span>
-							::else::
-							<span style="color:#DD0000;">::_("Unpaid")::</span>
-							::end::
+						<td ::cond !payments:: class="text-center">
+							$$check(::o.paid::)
 						</td>
 					
 					</tr>
@@ -146,16 +109,15 @@
 						::if !user.getGroup().hasPayments():: 
 							$$edit(Modifier cette commande,/contract/editOrderByDate/::d.date::)
 						::end::
-						
 					</td>
 					<td>TOTAL</td>
 					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
 				</tr>
 			</table>
 		::end::
-	</div>
+	
 	::end::	
-
+	</div>
 	
 </div>
 <div class="col-md-4">

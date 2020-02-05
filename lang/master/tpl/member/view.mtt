@@ -95,7 +95,6 @@
 		
 		<a onclick="_.membershipBox(::member.id::,::userGroup._group.id::,'/member/view/::member.id::')" class="btn btn-default btn-sm">::_("Manage membership fees")::</a>
 
-		
 	</div>
 	::end::
 
@@ -105,16 +104,19 @@
 <div class="col-md-8">
 	<h2>::_("Orders")::</h2>
 	<div class="article">
-		::if(constOrders.length>0)::
-			<h4>Contrats AMAP</h4>
+		::if(count(subscriptionsByCatalog)>0)::
+
+			<h4><i class="icon icon-refresh"></i> Contrats AMAP</h4>
+
 			::foreach catalog subscriptionsByCatalog.keys()::
-				<h4>::catalog.name::</h4>
-				<table class="table table-striped table-bordered">
-					<tr>
-						<th style="text-align: center;">Engagement</th>
-						<th style="text-align: center;">Période d'engagement</th>
-						<th style="text-align: center;">Nombre de distributions</th>
-						<th style="text-align: center;">Total</th>
+				<h5>::catalog.name::</h5>
+				<table class="table table-condensed table-bordered">
+					<tr class="greyhead">
+						<th class="text-center col-md-3">Engagement</th>
+						<th class="text-center col-md-4">Période d'engagement</th>
+						<th class="text-center col-md-2">Nombre de distributions</th>
+						<th class="text-center col-md-2">Total</th>
+						<th class="text-center col-md-1">Payé</th>
 					</tr>
 					::foreach subscription subscriptionsByCatalog.get(catalog)::
 						::set orderName = subscriptionService.getDescription(subscription)::
@@ -128,12 +130,12 @@
 								::if orderName == null::
 									AUCUNE COMMANDE
 								::else::
-									::raw(orderName)::
+									::raw orderName::
 								::end::
 							</td>
 							<td style="vertical-align: middle;">
-								Du ::dateToString(subscription.startDate)::
-								au ::dateToString(subscription.endDate)::
+								Du ::sDate(subscription.startDate)::
+								au ::sDate(subscription.endDate)::
 							</td>
 							<td style="vertical-align: middle;">
 								::subscriptionService.getSubscriptionNbDistributions(subscription)::
@@ -141,29 +143,35 @@
 							<td style="vertical-align: middle;">
 								::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
 							</td>
+							<td style="vertical-align: middle;">
+								$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+							</td>
 						</tr>
 					::end::
 				</table>
 			::end::
+			<hr/>
 		::end::
-
+			
+		
 
 		::if distribs.length>0::
+			<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
 			::foreach d distribs::
 				::set orders = getUserOrders(d)::
 				::if(orders.length>0)::
-				<h4>::__("Order for ::date::",{date:hDate(d.getDate())})::</h4>
+				<h5>::__("Order for ::date::",{date:hDate(d.getDate())})::</h5>
 				
 				<table class="table table-bordered table-condensed" >
-					<tr>
-						<th>::_("Qty||short version for quantity")::</th>
-						<th>::_("Product")::</th>
-						<th><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of unit price")::</a></th>
-						<th>::_("Sub-total")::</th>
-						<th>::_("Fees")::</th>
-						<th>::_("Total")::</th>
-						<th>::_("Catalog")::</th>
-						
+					<tr class="greyhead">
+						<th class="col-md-1">::_("Qty||short version for quantity")::</th>
+						<th class="col-md-2">::_("Product")::</th>
+						<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of unit price")::</a></th>
+						<th class="col-md-1">::_("Sub-total")::</th>
+						<th class="col-md-1">::_("Fees")::</th>
+						<th class="col-md-1">::_("Total")::</th>
+						<th class="col-md-4">::_("Catalog")::</th>
+						<th class="col-md-1">Payé</th>
 					</tr>
 					::set total = 0::
 					::foreach p orders::
@@ -188,6 +196,9 @@
 							</td>
 							<td>
 								<a href="/contract/view/::p.catalogId::">::p.catalogName::</a>
+							</td>
+							<td class="text-center">
+								$$check(::p.paid::)
 							</td>
 						
 						</tr>

@@ -316,14 +316,14 @@ table.product{
 //separator between rows
 table.table{
 	
-	tr.head>td, thead tr td{
+	tr.head>td, thead tr td, tr.head>th,{
 		border-top: 3px solid #DDD;
 		height: 30px;
 		font-size:120%;
 		vertical-align: bottom; 
 	}
 
-	tr.darkhead>td{
+	tr.darkhead>td,tr.darkhead>th{
 		background-color:#777;
 		color:white;
 		//links are white, but not for btn buttons 
@@ -331,6 +331,13 @@ table.table{
 		height: 30px;
 		font-size:120%;
 		vertical-align: bottom; 
+	}
+
+	tr.greyhead>td,tr.greyhead>th{
+		background-color:#EEE;
+		vertical-align: middle; 
+		text-align: center;
+		font-weight: bold;
 	}
 
 	//sub-row, darker bg

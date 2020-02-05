@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import sugoi.form.Form;
 import sugoi.form.elements.StringSelect;
 import Common;
@@ -49,13 +50,8 @@ class Account extends Controller
 		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
 		
 		//constant orders
-		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_CONSTORDERS && $group == a && $endDate > oneMonthAgo, false);		
-		constOrders = [];
-		for ( c in contracts){
-			var orders = app.user.getOrdersFromContracts([c]);
-			if (orders.length == 0) continue;
-			constOrders.push({contract:c, orders:service.OrderService.prepare(orders) });
-		}
+		view.subscriptionsByCatalog = SubscriptionService.getUserActiveSubscriptionsByCatalog(app.user,app.user.getGroup());
+		view.subscriptionService = SubscriptionService;
 				
 		//variable orders, grouped by date
 		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_VARORDER && $group == a && $endDate > oneMonthAgo, false);

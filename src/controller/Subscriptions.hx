@@ -18,7 +18,6 @@ class Subscriptions extends controller.Controller
 
 		var catalogSubscriptions = db.Subscription.manager.search( $catalogId == catalog.id,false ).array();
 		catalogSubscriptions.sort( function(b, a) {
-		
 			return  a.user.getName() < b.user.getName() ? 1 : -1;
 		} );
 
@@ -27,7 +26,6 @@ class Subscriptions extends controller.Controller
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		view.validationsCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.isValidated; } );
-
 		view.dateToString = function( date : Date ) {
 
 			return DateTools.format( date, "%d/%m/%Y");

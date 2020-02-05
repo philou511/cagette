@@ -11,6 +11,7 @@ class Subscription extends Object {
 	public var startDate : SDate;
 	public var endDate : SDate;
 	@hideInForms public var isValidated : SBool;
+	@hideInForms public var isPaid : SBool;
 
 	public function populate() {
 		

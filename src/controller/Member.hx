@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import haxe.macro.Expr.Catch;
 import payment.Check;
 import service.WaitingListService;
@@ -321,36 +322,10 @@ class Member extends Controller
 		}
 
 		//const orders subscriptions
-		var constOrders = [];
-		var catalogs = app.user.getGroup().getActiveContracts();
-		for( c in catalogs ){
-			if(c.type==Catalog.TYPE_CONSTORDERS){
-				constOrders = constOrders.concat( OrderService.prepare(c.getUserOrders(member)) );
-			}
-		}
-		view.constOrders = constOrders;
 		view.subscriptionService = service.SubscriptionService;
-		view.dateToString = function( date : Date ) {
-
-			return DateTools.format( date, "%d/%m/%Y");
-		}
-		var subscriptionsByCatalog = new Map< db.Catalog, Array<db.Subscription> >();
-		var memberSubscriptions = db.Subscription.manager.search( $user == member, false );
-		for ( subscription in memberSubscriptions ) {
-
-			if ( subscriptionsByCatalog[subscription.catalog] == null ) {
-
-				subscriptionsByCatalog[subscription.catalog] = [];
-			}
-
-			subscriptionsByCatalog[subscription.catalog].push( subscription );
-
-		}
-		view.subscriptionsByCatalog = subscriptionsByCatalog;
-		
+		view.subscriptionsByCatalog = SubscriptionService.getUserActiveSubscriptionsByCatalog(member,app.user.getGroup());
 
 		checkToken(); //to insert a token in tpl
-		
 	}	
 	
 	/**

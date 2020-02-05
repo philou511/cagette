@@ -1,4 +1,6 @@
 package service;
+import db.Subscription;
+import db.Catalog;
 import Common;
 import tink.core.Error;
 using tools.DateTool;
@@ -18,6 +20,25 @@ enum SubscriptionServiceError {
  */
 class SubscriptionService
 {
+	/**
+		Get user subscriptions in active catalogs
+	**/
+	public static function getUserActiveSubscriptions(user:db.User,group:db.Group){
+		var catalogIds = group.getActiveContracts().filter(c -> return c.type==Catalog.TYPE_CONSTORDERS).map(c -> return c.id);
+		return db.Subscription.manager.search( $user == user && ($catalogId in catalogIds), false );
+	}
+
+	public static function getUserActiveSubscriptionsByCatalog(user,group):Map<db.Catalog,Array<db.Subscription>>{
+		var memberSubscriptions = SubscriptionService.getUserActiveSubscriptions(user,group);
+		var subscriptionsByCatalog = new Map<Catalog,Array<Subscription>>();
+		for ( subscription in memberSubscriptions ) {
+			if ( subscriptionsByCatalog[subscription.catalog] == null ) {
+				subscriptionsByCatalog[subscription.catalog] = [];
+			}
+			subscriptionsByCatalog[subscription.catalog].push( subscription );
+		}
+		return subscriptionsByCatalog;
+	}
 
 	public static function hasUserCatalogSubscription( user : db.User, catalog : db.Catalog, isValidated : Bool ) : Bool {
 
@@ -65,17 +86,15 @@ class SubscriptionService
 
 	public static function isSubscriptionPaid( subscription : db.Subscription ) : Bool {
 
+		/*
 		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in orders ) {
-
 			if ( !order.paid ) {
-
 				return false;
 			}
-			
 		}
-
-		return true;
+		return true;*/
+		return subscription.isPaid;
 
 	}
 
@@ -85,7 +104,6 @@ class SubscriptionService
 		if( subscriptionOrders.length == 0 )  return null;
 		var label : String = '';
 		for ( order in subscriptionOrders ) {
-
 			label += tools.FloatTool.clean( order.quantity ) + " x " + order.product.name + "<br />";
 		}
 
