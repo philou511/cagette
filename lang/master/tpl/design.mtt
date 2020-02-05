@@ -2,7 +2,8 @@
 		
 		::if getParam('__redirect')!=null::
 		<!-- need to login to go to this page-->
-		<script>$(function(){
+		<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
 		_.loginBox('::raw getParam("__redirect")::');
 		});</script>
 		::end::

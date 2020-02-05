@@ -418,7 +418,7 @@
 
 <script>
 	//<![CDATA[
-	$(function(){
+	document.addEventListener("DOMContentLoaded", function(event) {
 		/*window.setTimeout(function(){
 			var txt = "Cet onglet vous permet d'avoir une vue d'ensemble sur toutes vos distributions, leurs commandes et les producteurs qui y participent.";
 			txt += "<br/><br/><a href='https://wiki.cagette.net/admin:distributions' target='_blank'>En savoir plus</a>";

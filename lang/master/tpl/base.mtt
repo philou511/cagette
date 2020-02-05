@@ -102,13 +102,7 @@
 				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			})();
 		  
-		  
-			
-			$(function () {
-				//enable BS3 Tooltips & popovers
-				// $('[data-toggle="tooltip"]').tooltip();
-				// $('[data-toggle="popover"]').popover();
-			  
+			document.addEventListener("DOMContentLoaded", function(event) {
 				//init lang in js App
 				_.LANG = "::session.lang::";
 				

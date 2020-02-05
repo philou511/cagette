@@ -88,10 +88,7 @@
 		  
 		  
 			
-			$(function () {
-				//enable BS3 Tooltips & popovers
-				//$('[data-toggle="tooltip"]').tooltip();
-				//$('[data-toggle="popover"]').popover();
+			document.addEventListener("DOMContentLoaded", function(event) {
 			  
 				//init lang in js App
 				_.LANG = "::session.lang::";
