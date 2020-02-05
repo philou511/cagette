@@ -44,6 +44,7 @@ class App {
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
 	public var Modal = bootstrap.Modal;
+	public var Collapse = bootstrap.Collapse;
 
 	//i dont want to use redux now... saved state from react.OrderBox
 	public static var SAVED_ORDER_STATE : Dynamic;
