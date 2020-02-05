@@ -43,6 +43,7 @@ class App {
 	public var LANG : String;
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
+	public var Modal = bootstrap.Modal;
 
 	//i dont want to use redux now... saved state from react.OrderBox
 	public static var SAVED_ORDER_STATE : Dynamic;
@@ -55,7 +56,6 @@ class App {
 	}
 
 	/**
-	Returns a jquery object like $() in javascript
 	**/
 	public static inline function jq(r:Dynamic):js.jquery.JQuery{
 		trace("CALL JQUERY");
