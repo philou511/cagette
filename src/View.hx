@@ -1,3 +1,4 @@
+import sugoi.BaseView;
 import db.Basket;
 import sugoi.Web;
 using Std;
@@ -37,17 +38,15 @@ class View extends sugoi.BaseView {
 	/**
 	 * init view in main loop, just before rendering
 	 */
-	override function init() {
-		super.init();		
+	public static function init() {
+		BaseView.init();		
 		
 		//tuto widget display
 		var u = App.current.user;
 		if (u!=null && u.tutoState!=null) {
 			//trace("view init "+u.tutoState.name+" , "+u.tutoState.step);
-			this.displayTuto(u.tutoState.name, u.tutoState.step);	
+			//this.displayTuto(u.tutoState.name, u.tutoState.step);	
 		}
-
-		
 	}
 	
 	function getCurrentGroup(){

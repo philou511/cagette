@@ -12,7 +12,7 @@ class Place extends Controller
 		super();
 	}
 	
-	@tpl('place/view.mtt')
+	@tpl('place/view.twig')
 	function doView(place:db.Place) {
 		view.place = place;
 		
@@ -26,7 +26,7 @@ class Place extends Controller
 		view.addr = view.escapeJS(addr);
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit(p:db.Place) {
 		
 		var currentAddress = p.getAddress();
@@ -54,7 +54,7 @@ class Place extends Controller
 		view.title = t._("Edit a place");
 	}
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsert() {
 		
 		var d = new db.Place();

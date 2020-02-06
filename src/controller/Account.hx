@@ -16,7 +16,7 @@ class Account extends Controller
 	/**
 	 * "my account" page
 	 */
-	@tpl("account/default.mtt")
+	@tpl("account/default.twig")
 	function doDefault() {
 		
 		//Create the list of links to change the language
@@ -139,7 +139,7 @@ class Account extends Controller
 		view.userGroup = ua;
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit() {
 		
 		var form = db.User.getForm(app.user);
@@ -188,7 +188,7 @@ class Account extends Controller
 	/**
 		View a basket in a popup
 	**/
-	@tpl('account/basket.mtt')
+	@tpl('account/basket.twig')
 	function doBasket(basket : db.Basket){
 		view.basket = basket;
 		view.orders = service.OrderService.prepare(basket.getOrders());
@@ -198,7 +198,7 @@ class Account extends Controller
 	/**
 	 * user payments history
 	 */
-	@tpl('account/payments.mtt')
+	@tpl('account/payments.twig')
 	function doPayments(){
 		var m = app.user;
 		var browse:Int->Int->List<Dynamic>;

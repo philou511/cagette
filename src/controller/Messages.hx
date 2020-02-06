@@ -14,7 +14,7 @@ class Messages extends Controller
 		if (!app.user.canAccessMessages()) throw Redirect("/");
 	}
 	
-	@tpl("messages/default.mtt")
+	@tpl("messages/default.twig")
 	function doDefault() {
 			
 		var form = new Form("msg");		
@@ -62,7 +62,7 @@ class Messages extends Controller
 			//sender : default email ( explicitly tells that the server send an email on behalf of the user )
 			//e.setHeader("Sender", App.config.get("default_email"));
 			var text :String = form.getValueOf("text");
-			var html = app.processTemplate("mail/message.mtt", { text:text,group:app.user.getGroup(),list:getListName(listId) });		
+			var html = app.processTemplate("mail/message.twig", { text:text,group:app.user.getGroup(),list:getListName(listId) });		
 			e.setHtmlBody(html);
 		
 			App.sendMail(e,app.user.getGroup(),listId,app.user);		
@@ -92,7 +92,7 @@ class Messages extends Controller
 		
 	}
 	
-	@tpl("messages/message.mtt")
+	@tpl("messages/message.twig")
 	public function doMessage(msg:Message) {
 		if (msg.amap.id!=app.user.getGroup().id) throw Error("/", t._("Non authorized access"));
 		if (!app.user.isAmapManager() && msg.sender.id != app.user.id) throw Error("/", t._("Non authorized access"));

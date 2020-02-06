@@ -55,7 +55,7 @@ class VendorService{
 		e.addRecipient(vendor.email,vendor.name);
 		e.setSender(App.config.get("default_email"),"Cagette.net");			
 		
-		var html = App.current.processTemplate("mail/vendorInvitation.mtt", { 
+		var html = App.current.processTemplate("mail/vendorInvitation.twig", { 
 			source:source,
 			sourceGroup:group,
 			vendor:vendor,

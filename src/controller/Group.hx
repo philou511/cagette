@@ -15,7 +15,7 @@ class Group extends controller.Controller
 	/**
 	 * Public page of a group
 	 */
-	@tpl('group/view.mtt')
+	@tpl('group/view.twig')
 	function doDefault( group : db.Group ) {
 		
 		if ( group.regOption == db.Group.RegOption.Open ) {
@@ -54,7 +54,7 @@ class Group extends controller.Controller
 	 * Register to a waiting list.
 	 * the user can be logged or not !
 	 */
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doList(group:db.Group){
 		
 		//checks
@@ -114,7 +114,7 @@ class Group extends controller.Controller
 	 * 
 	 * 	the user can be logged or not !
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doRegister(group:db.Group){
 		
 		if (group.regOption != db.Group.RegOption.Open) throw Redirect("/group/" + group.id);
@@ -175,7 +175,7 @@ class Group extends controller.Controller
 	/**
 	 * create a new group
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doCreate() {
 		
 		view.title = t._("Create a new Cagette Group");
@@ -354,7 +354,7 @@ class Group extends controller.Controller
 	/**
 		Displays a google map in a popup
 	**/
-	@tpl('group/place.mtt')
+	@tpl('group/place.twig')
 	public function doPlace(place:db.Place){
 		view.place = place;
 		
@@ -371,7 +371,7 @@ class Group extends controller.Controller
 	/**
 	 * Groups map
 	 */
-	@tpl("group/map.mtt")
+	@tpl("group/map.twig")
 	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
 
 		view.container = "container-fluid";

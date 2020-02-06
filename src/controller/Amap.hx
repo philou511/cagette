@@ -13,7 +13,7 @@ class Amap extends Controller
 		super();
 	}
 	
-	@tpl("amap/default.mtt")
+	@tpl("amap/default.twig")
 	function doDefault() {
 		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false);
 		for ( c in Lambda.array(contracts).copy()) {
@@ -22,7 +22,7 @@ class Amap extends Controller
 		view.contracts = contracts;
 	}
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doEdit() {
 		
 		if (!app.user.isAmapManager()) throw t._("You don't have access to this section");

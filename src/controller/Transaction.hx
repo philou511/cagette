@@ -18,7 +18,7 @@ class Transaction extends controller.Controller
 	/**
 	 * A manager inserts manually a payment
 	 */
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	public function doInsertPayment(user:db.User){
 		
 		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
@@ -77,7 +77,7 @@ class Transaction extends controller.Controller
 	}
 	
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	public function doEdit(op:db.Operation){
 		
 		if (!app.user.canAccessMembership() || op.group.id != app.user.getGroup().id ) {
@@ -145,7 +145,7 @@ class Transaction extends controller.Controller
 	/**
 	 * Payment entry point
 	 */
-	@tpl("transaction/pay.mtt")
+	@tpl("transaction/pay.twig")
 	public function doPay(tmpBasket:db.TmpBasket) {
 
 		view.category = 'home';
@@ -168,7 +168,7 @@ class Transaction extends controller.Controller
 		view.futurebalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 	}
 
-	@tpl("transaction/tmpBasket.mtt")
+	@tpl("transaction/tmpBasket.twig")
 	public function doTmpBasket(tmpBasket:db.TmpBasket,?args:{cancel:Bool,confirm:Bool}){
 
 		if(args!=null){
@@ -195,7 +195,7 @@ class Transaction extends controller.Controller
 	/**
 	 * Use the money pot
 	 */
-	@tpl("transaction/moneypot.mtt")
+	@tpl("transaction/moneypot.twig")
 	public function doMoneypot(tmpBasket:db.TmpBasket){
 
 		if (tmpBasket == null) throw Redirect("/contract");
@@ -223,7 +223,7 @@ class Transaction extends controller.Controller
 	/**
 	 * Use on the spot payment
 	 */
-	@tpl("transaction/onthespot.mtt")
+	@tpl("transaction/onthespot.twig")
 	public function doOnthespot(tmpBasket:db.TmpBasket)
 	{
 		if (tmpBasket == null) throw Redirect("/contract");
@@ -254,7 +254,7 @@ class Transaction extends controller.Controller
 	/**
 	 * Pay by transfer
 	 */
-	@tpl("transaction/transfer.mtt")
+	@tpl("transaction/transfer.twig")
 	public function doTransfer(tmpBasket:db.TmpBasket){
 		
 		if (tmpBasket == null) throw Redirect("/contract");

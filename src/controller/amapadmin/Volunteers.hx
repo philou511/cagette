@@ -7,7 +7,7 @@ import service.VolunteerService;
 
 class Volunteers extends controller.Controller
 {
-	@tpl("amapadmin/volunteers/default.mtt")
+	@tpl("amapadmin/volunteers/default.twig")
 	function doDefault() {
 
 		view.volunteerRoles = VolunteerService.getRolesFromGroup(app.user.getGroup());
@@ -62,7 +62,7 @@ class Volunteers extends controller.Controller
 	/**
 		Insert a volunteer role
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doInsertRole() {
 
 		var role = new db.VolunteerRole();
@@ -95,7 +95,7 @@ class Volunteers extends controller.Controller
 	/**
 	 * Edit a volunteer role
 	 */
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEditRole(role:db.VolunteerRole) {
 
 		var form = new sugoi.form.Form("volunteerrole");

@@ -116,7 +116,7 @@ class Cron extends Controller
 					var emailBody = StringTools.replace( multidistrib.group.volunteersMailContent, "[DATE_DISTRIBUTION]", ddate );
 					emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 					emailBody = StringTools.replace( emailBody, "[LISTE_BENEVOLES]", volunteersList ); 
-					mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.group  } ) );
+					mail.setHtmlBody( app.processTemplate("mail/message.twig", { text: emailBody, group: multidistrib.group  } ) );
 					App.sendMail(mail);
 				}
 			}			
@@ -158,7 +158,7 @@ class Cron extends Controller
 				var emailBody = StringTools.replace( multidistrib.group.alertMailContent, "[DATE_DISTRIBUTION]", ddate );
 				emailBody = StringTools.replace( emailBody, "[LIEU_DISTRIBUTION]", multidistrib.place.name ); 
 				emailBody = StringTools.replace( emailBody, "[ROLES_MANQUANTS]", vacantVolunteerRolesList ); 										
-				mail.setHtmlBody( app.processTemplate("mail/message.mtt", { text: emailBody, group: multidistrib.getGroup()  } ) );
+				mail.setHtmlBody( app.processTemplate("mail/message.twig", { text: emailBody, group: multidistrib.getGroup()  } ) );
 
 				App.sendMail(mail);
 			}			
@@ -205,7 +205,7 @@ class Cron extends Controller
 			m.setSender(App.config.get("default_email"),"Cagette.net");
 			m.addRecipient(App.config.get("webmaster_email"));
 			m.setSubject(App.config.NAME+" Errors");
-			m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
+			m.setHtmlBody( app.processTemplate("mail/message.twig", { text:report.toString() } ) );
 			App.sendMail(m);
 		}
 		
@@ -428,7 +428,7 @@ class Cron extends Controller
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
 						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
-						m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
+						m.setHtmlBody( app.processTemplate("mail/message.twig", { text:text,group:group } ) );
 						App.sendMail(m , u.distrib.catalog.group);	
 					}catch (e:Dynamic){						
 						app.logError(e); //email could be invalid

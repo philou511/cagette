@@ -12,7 +12,7 @@ class Plugins extends controller.Controller
 		super();	
 	}
 	
-	@tpl("admin/plugins/default.mtt")
+	@tpl("admin/plugins/default.twig")
 	public function doDefault() {
 		view.plugins = App.current.plugins;
 	}

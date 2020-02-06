@@ -28,7 +28,7 @@ class Contract extends Controller
 	}
 
 	
-	@tpl("contract/view.mtt")
+	@tpl("contract/view.twig")
 	public function doView( catalog : db.Catalog ) {
 
 		view.category = 'amap';
@@ -43,7 +43,7 @@ class Contract extends Controller
 	/**
 	 * Edit a contract 
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doEdit(c:db.Catalog) {
 		
 		view.category = 'contractadmin';
@@ -115,7 +115,7 @@ class Contract extends Controller
 	/**
 		1- define the vendor
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doDefineVendor(?type=1){
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
@@ -132,7 +132,7 @@ class Contract extends Controller
 			//look for identical names
 			var vendors = service.VendorService.findVendors( f.getValueOf('name') , f.getValueOf('email') );
 
-			app.setTemplate('contractadmin/defineVendor.mtt');
+			app.setTemplate('contractadmin/defineVendor.twig');
 			view.vendors = vendors;
 			view.email = f.getValueOf('email');
 			view.name = f.getValueOf('name');
@@ -144,7 +144,7 @@ class Contract extends Controller
 	/**
 	  2- create vendor
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsertVendor(email:String,name:String) {
 				
 		var vendor = new db.Vendor();
@@ -172,7 +172,7 @@ class Contract extends Controller
 	/**
 		3 - Select VARIABLE ORDER / CSA Contract
 	**/
-	//@tpl("contract/insertChoose.mtt")
+	//@tpl("contract/insertChoose.twig")
 	function doInsertChoose(vendor:db.Vendor) {
 		throw Redirect("/contract/insert/"+vendor.id);
 	}
@@ -180,7 +180,7 @@ class Contract extends Controller
 	/**
 	 * 4 - create the contract
 	 */
-	@tpl("contract/insert.mtt")
+	@tpl("contract/insert.twig")
 	function doInsert(vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
@@ -272,7 +272,7 @@ class Contract extends Controller
 	 * or varying orders ( with as many columns as distributions dates )
 	 * 
 	 */
-	@tpl("contract/order.mtt")
+	@tpl("contract/order.twig")
 	function doOrder( c:db.Catalog ) {
 		
 		//checks
@@ -389,7 +389,7 @@ class Contract extends Controller
 	/**
 	 * Make an order by contract ( standard mode ) + payment process
 	 */
-	/*@tpl("contract/orderAndPay.mtt")
+	/*@tpl("contract/orderAndPay.twig")
 	function doOrderAndPay(c:db.Catalog ) {
 		
 		//checks
@@ -507,7 +507,7 @@ class Contract extends Controller
 	/**
 	 * A user edit an order for a multidistrib.
 	 */
-	@tpl("contract/orderByDate.mtt")
+	@tpl("contract/orderByDate.twig")
 	function doEditOrderByDate(date:Date) {
 		
 		if (app.user.getGroup().hasPayments()) {

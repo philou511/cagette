@@ -1,6 +1,6 @@
 package controller;
 import sys.db.RecordInfos;
-import neko.Utf8;
+import haxe.Utf8;
 import haxe.io.Encoding;
 import haxe.io.Bytes;
 import sugoi.form.Form;
@@ -19,7 +19,7 @@ class Product extends Controller
 		view.nav = ["contractadmin","products"];
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit(product:db.Product) {
 		
 		if (!app.user.canManageContract(product.catalog)) throw t._("Forbidden access");
@@ -61,7 +61,7 @@ class Product extends Controller
 		view.title = t._("Modify a product");
 	}
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsert(contract:db.Catalog ) {
 		
 		if (!app.user.isContractManager(contract)) throw Error("/", t._("Forbidden action")); 
@@ -122,7 +122,7 @@ class Product extends Controller
 	}
 	
 	
-	@tpl('product/import.mtt')
+	@tpl('product/import.twig')
 	function doImport(c:db.Catalog, ?args: { confirm:Bool } ) {
 		
 		if (!app.user.canManageContract(c)) throw t._("Forbidden access");
@@ -194,7 +194,7 @@ class Product extends Controller
 		view.step = csv.step;
 	}
 	
-	@tpl("product/categorize.mtt")
+	@tpl("product/categorize.twig")
 	public function doCategorize(contract:db.Catalog) {
 		
 		
@@ -273,7 +273,7 @@ class Product extends Controller
 
 
 	
-	/*@tpl('product/compose.mtt')
+	/*@tpl('product/compose.twig')
 	function doCompose(){}
 	*/
 

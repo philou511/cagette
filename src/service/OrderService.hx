@@ -449,7 +449,7 @@ class OrderService
 		m.setSubject('[${d.catalog.group.name}] Distribution du ${Formatting.dDate(d.date)} (${d.catalog.name})');
 		var orders = service.ReportService.getOrdersByProduct(d);
 
-		var html = App.current.processTemplate("mail/ordersByProduct.mtt", { 
+		var html = App.current.processTemplate("mail/ordersByProduct.twig", { 
 			contract:d.catalog,
 			distribution:d,
 			orders:orders,
@@ -483,7 +483,7 @@ class OrderService
 			m.setSubject(title);
 			var orders = prepare(d.catalog.getUserOrders(user,d));
 
-			var html = App.current.processTemplate("mail/orderSummaryForMember.mtt", { 
+			var html = App.current.processTemplate("mail/orderSummaryForMember.twig", { 
 				contract:d.catalog,
 				distribution:d,
 				orders:orders,

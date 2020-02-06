@@ -18,12 +18,12 @@ class Admin extends Controller {
 		
 	}
 
-	@tpl("admin/default.mtt")
+	@tpl("admin/default.twig")
 	function doDefault() {
 		view.now = Date.now();
 	}
 	
-	@tpl("admin/emails.mtt")
+	@tpl("admin/emails.twig")
 	function doEmails() {
 		var browse = function(index:Int, limit:Int) {
 			return sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
@@ -35,7 +35,7 @@ class Admin extends Controller {
 
 	}
 
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doSmtp() {
 		
 		var f = new sugoi.form.Form("emails");
@@ -75,7 +75,7 @@ class Admin extends Controller {
 	}
 	
 	
-	@tpl("admin/taxo.mtt")
+	@tpl("admin/taxo.twig")
 	function doTaxo(){
 		var categs = db.TxpCategory.manager.search(true,{orderBy:displayOrder});
 		view.categ = categs;
@@ -101,7 +101,7 @@ class Admin extends Controller {
 	/**
 	 *  Display errors logged in DB
 	 */
-	@tpl("admin/errors.mtt")
+	@tpl("admin/errors.twig")
 	function doErrors( args:{?user: Int, ?like: String, ?empty:Bool} ) {
 		view.now = Date.now();
 
@@ -125,7 +125,7 @@ class Admin extends Controller {
 		);
 	}
 
-	@tpl("admin/graph.mtt")
+	@tpl("admin/graph.twig")
 	function doGraph(?key:String,?year:Int,?month:Int){
 
 		if(key==null) {
@@ -178,7 +178,7 @@ class Admin extends Controller {
 		view.averageValue = averageValue;
 	}
 
-	@tpl("admin/default.mtt")
+	@tpl("admin/default.twig")
 	function doCreateTestGroups() {
 		
 		getOrCreateTestGroup( 'GT1 AMAP St Glinglin', Amap, Closed );

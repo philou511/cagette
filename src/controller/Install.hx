@@ -14,7 +14,7 @@ class Install extends controller.Controller
 	/**
 	 * checks if its a first install or an update
 	 */
-	@tpl("install/default.mtt")
+	@tpl("install/default.twig")
 	public function doDefault() {
 		if (db.User.manager.get(1) == null) {
 						
@@ -52,7 +52,7 @@ class Install extends controller.Controller
 	/**
 	 * First install 
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doFirstInstall(){
 		view.title = "Installation de Cagette.net";
 
@@ -75,7 +75,6 @@ class Install extends controller.Controller
 				amap.contact = user;
 
 				amap.flags.set(db.Group.GroupFlags.HasMembership);
-				//amap.flags.set(db.Group.GroupFlags.IsAmap);
 				amap.insert();
 				
 				var ua = new db.UserGroup();
@@ -92,53 +91,6 @@ class Install extends controller.Controller
 				place.zipCode = "00000";
 				place.city = t._("St Martin de la Cagette");
 				place.insert();
-				
-				var vendor = new db.Vendor();
-				vendor.name = t._("Jean Martin EURL");
-				vendor.email = "jean.martin@cagette.net";
-				vendor.zipCode = "00000";
-				vendor.city = "Martignac";
-				vendor.insert();
-				
-				var contract = new db.Catalog();
-				contract.name = t._("Vegetables Contract Example");
-				contract.group  = amap;
-				contract.type = 0;
-				contract.vendor = vendor;
-				contract.startDate = Date.now();
-				contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
-				contract.contact = user;
-				contract.distributorNum = 2;
-				contract.insert();
-				
-				var p = new db.Product();
-				p.name = t._("Big basket of vegetables");
-				p.price = 15;
-				p.vat = 5;
-				p.catalog = contract;
-				p.insert();
-				
-				var p = new db.Product();
-				p.name = t._("Small basket of vegetables");
-				p.price = 10;
-				p.vat = 5;
-				p.catalog = contract;
-				p.insert();
-			
-				var uc = new db.UserOrder();
-				uc.user = user;
-				uc.product = p;
-				uc.paid = true;
-				uc.quantity = 1;
-				uc.productPrice = 10;
-				uc.insert();
-				
-				var d = new db.Distribution();
-				d.catalog = contract;
-				d.date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-				d.end = DateTools.delta(d.date, 1000.0 * 60 * 90);
-				d.place = place;
-				d.insert();
 				
 				App.current.user = null;
 				App.current.session.setUser(user);

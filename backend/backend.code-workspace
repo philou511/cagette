@@ -16,6 +16,9 @@
 			"path": "../lang/master/tpl"
 		},
 		{
+			"path": "../tpl"
+		},
+		{
 			"path": "../src"
 		},
 		{

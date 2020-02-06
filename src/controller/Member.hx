@@ -23,7 +23,7 @@ class Member extends Controller
 	}
 	
 	@logged
-	@tpl('member/default.mtt')
+	@tpl('member/default.twig')
 	function doDefault(?args: { ?search:String, ?list:String } ) {
 		checkToken();
 		
@@ -142,7 +142,7 @@ class Member extends Controller
 	/**
 	 * Display waiting list
 	 */
-	@tpl('member/waiting.mtt')
+	@tpl('member/waiting.twig')
 	function doWaiting(?args:{?add:db.User,?remove:db.User}){
 		
 		if (args != null){
@@ -259,7 +259,7 @@ class Member extends Controller
 	}
 	
 	
-	@tpl("member/view.mtt")
+	@tpl("member/view.twig")
 	function doView(member:db.User) {
 		
 		view.member = member;
@@ -353,7 +353,7 @@ class Member extends Controller
 		throw Redirect("/member/view/" + member.id );
 	}
 	
-	@tpl('member/lastMessages.mtt')
+	@tpl('member/lastMessages.twig')
 	function doLastMessages(member:db.User){
 		
 		var out = new Array<{date:Date,subject:String,success:String,failure:String}>();
@@ -376,7 +376,7 @@ class Member extends Controller
 	/**
 	 * Edit a Member
 	 */
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit(member:db.User) {
 		
 		if (member.isAdmin() && !app.user.isAdmin()) throw Error("/", t._("You cannot modify the account of an administrator"));
@@ -445,7 +445,7 @@ class Member extends Controller
 					m.setSender(App.config.get("default_email"), t._("Cagette.net"));
 					m.addRecipient(member.email);
 					m.setSubject(t._("Change your e-mail in your account Cagette.net"));
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() + t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email")  } ) );
+					m.setHtmlBody( app.processTemplate("mail/message.twig", { text:app.user.getName() + t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email")  } ) );
 					App.sendMail(m);
 					
 				}
@@ -454,7 +454,7 @@ class Member extends Controller
 					m.setSender(App.config.get("default_email"),"Cagette.net");
 					m.addRecipient(member.email2);
 					m.setSubject(t._("Change the e-mail of your account Cagette.net"));
-					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:app.user.getName() +t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email2")  } ) );
+					m.setHtmlBody( app.processTemplate("mail/message.twig", { text:app.user.getName() +t._(" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:")+form.getValueOf("email2")  } ) );
 					App.sendMail(m);
 				}	
 			}
@@ -490,7 +490,7 @@ class Member extends Controller
 		}
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doMerge(user:db.User) {
 		
 		if (!app.user.canAccessMembership()) throw Error("/","Action interdite");
@@ -556,7 +556,7 @@ class Member extends Controller
 	}
 	
 	
-	@tpl('member/import.mtt')
+	@tpl('member/import.twig')
 	function doImport(?args: { confirm:Bool } ) {
 		
 		var step = 1;
@@ -713,7 +713,7 @@ class Member extends Controller
 		view.step = step;
 	}
 	
-	@tpl("user/insert.mtt")
+	@tpl("user/insert.twig")
 	public function doInsert() {
 		
 		if (!app.user.canAccessMembership()) throw Error("/", t._("Forbidden action"));
@@ -775,7 +775,7 @@ class Member extends Controller
 					App.quickMail(
 						app.user.getGroup().contact.email,
 						app.user.getGroup().name +" - "+ t._("New member") + " : " + u.getCoupleName(),
-						app.processTemplate("mail/message.mtt", { text:text } ) 
+						app.processTemplate("mail/message.twig", { text:text } ) 
 					);
 				}
 				
@@ -791,7 +791,7 @@ class Member extends Controller
 	/**
 	 * user payments history
 	 */
-	@tpl('member/payments.mtt')
+	@tpl('member/payments.twig')
 	function doPayments(m:db.User){
 		
 		service.PaymentService.updateUserBalance(m, app.user.getGroup());		
@@ -811,14 +811,14 @@ class Member extends Controller
 		checkToken();
 	}
 	
-	@tpl('member/balance.mtt')
+	@tpl('member/balance.twig')
 	function doBalance(){
 		view.balanced = db.UserGroup.manager.search($group == app.user.getGroup() && $balance == 0.0, false);
 		view.credit = db.UserGroup.manager.search($group == app.user.getGroup() && $balance > 0, false);
 		view.debt = db.UserGroup.manager.search($group == app.user.getGroup() && $balance < 0, false);
 	}
 
-	@tpl('member/invoice.mtt')
+	@tpl('member/invoice.twig')
 	function doInvoice(m:db.User,md:db.MultiDistrib){
 		
 		//orders grouped by vendors

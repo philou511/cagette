@@ -10,7 +10,7 @@ class Shop extends Controller
 	var contracts : List<db.Catalog>;
 	var tmpBasket : db.TmpBasket;
 
-	@tpl('shop/default.mtt')
+	@tpl('shop/default.twig')
 	public function doDefault(md:db.MultiDistrib) {
 
 		if(app.getCurrentGroup()==null){
@@ -145,7 +145,7 @@ class Shop extends Controller
 	/**
 	 * Overlay window loaded by Ajax for product Infos
 	 */
-	@tpl('shop/productInfo.mtt')
+	@tpl('shop/productInfo.twig')
 	public function doProductInfo(p:db.Product,?args:{distribution:db.Distribution}) {
 		var d = args!=null && args.distribution!=null ? args.distribution : null;
 		view.p = p.infos(null,null,d);
@@ -208,7 +208,7 @@ class Shop extends Controller
 		- ask to login is needed
 		- redirect to payment page if needed
 	**/
-	@tpl('shop/needLogin.mtt')
+	@tpl('shop/needLogin.twig')
 	public function doValidate(tmpBasket:db.TmpBasket){
 		
 		tmpBasket.lock();

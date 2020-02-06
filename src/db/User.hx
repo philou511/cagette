@@ -508,7 +508,7 @@ class User extends Object {
 		e.addRecipient(this.email,this.getName());
 		e.setSender(App.config.get("default_email"),t._("Cagette.net"));			
 		
-		var html = App.current.processTemplate("mail/invitation.mtt", { 
+		var html = App.current.processTemplate("mail/invitation.twig", { 
 			email:email,
 			email2:email2,
 			groupName:(group == null?null:group.name),			

@@ -2,7 +2,7 @@ package controller.amapadmin;
 
 class Categories extends controller.Controller
 {
-	@tpl("categories/default.mtt")
+	@tpl("categories/default.twig")
 	public function doDefault() {
 		
 		view.groups = db.CategoryGroup.manager.search($amap == app.user.getGroup(), false);
@@ -47,7 +47,7 @@ class Categories extends controller.Controller
 	/**
 	 * modifie un groupe de categories
 	 */
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEditGroup(g:db.CategoryGroup) {
 		
 		var form = sugoi.form.Form.fromSpod(g);
@@ -68,7 +68,7 @@ class Categories extends controller.Controller
 		view.form = form;
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doInsertGroup() {
 		var g = new db.CategoryGroup();
 		var form = sugoi.form.Form.fromSpod(g );
@@ -90,7 +90,7 @@ class Categories extends controller.Controller
 		view.form = form;
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doInsert(g:db.CategoryGroup) {
 		var c = new db.Category();
 		var form = sugoi.form.Form.fromSpod(c);
@@ -111,7 +111,7 @@ class Categories extends controller.Controller
 	}
 	
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit(c:db.Category) {
 		
 		var form = sugoi.form.Form.fromSpod(c);

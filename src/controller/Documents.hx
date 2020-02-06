@@ -12,7 +12,7 @@ class Documents extends controller.Controller
 
 	
 	//  View the documents for either a catalog or a group
-	@tpl("contractadmin/documents.mtt")
+	@tpl("contractadmin/documents.twig")
 	function doDefault( ?catalog : db.Catalog ) {
 
 		var documents : Array<sugoi.db.EntityFile>  = null;
@@ -36,7 +36,7 @@ class Documents extends controller.Controller
 		checkToken();
 	}
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doEdit( document : sugoi.db.EntityFile, ?catalog : db.Catalog ) {
 
 		var returnPath : String = null;
@@ -114,7 +114,7 @@ class Documents extends controller.Controller
 	}
 
 
-	@tpl("contractadmin/adddocument.mtt")
+	@tpl("contractadmin/adddocument.twig")
 	public function doInsert( ?catalog : db.Catalog ) {
 
 		var returnPath : String = null;

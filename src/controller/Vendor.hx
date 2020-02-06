@@ -15,7 +15,7 @@ class Vendor extends Controller
 	}
 	
 	/*@logged
-	@tpl('vendor/default.mtt')
+	@tpl('vendor/default.twig')
 	function doDefault() {
 		var browse:Int->Int->List<Dynamic>;
 		
@@ -30,12 +30,12 @@ class Vendor extends Controller
 	}*/
 	
 	
-	/*@tpl("vendor/view.mtt")
+	/*@tpl("vendor/view.twig")
 	function doView(vendor:db.Vendor) {
 		view.vendor = vendor;
 	}*/
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit(vendor:db.Vendor) {
 		
 		/*if(vendor.getGroups().length>1){
@@ -61,7 +61,7 @@ class Vendor extends Controller
 		view.form = form;
 	}
 	
-	@tpl('vendor/addimage.mtt')
+	@tpl('vendor/addimage.twig')
 	function doAddImage(vendor:db.Vendor) {
 		
 		/*if(vendor.getGroups().length>1){

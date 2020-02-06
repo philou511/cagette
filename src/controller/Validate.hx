@@ -15,7 +15,7 @@ class Validate extends controller.Controller
 	/**
 		Validate a distrib
 	**/
-	@tpl('validate/user.mtt')
+	@tpl('validate/user.twig')
 	public function doDefault(){
 		view.member = user;
 		var place = multiDistrib.getPlace();
@@ -75,7 +75,7 @@ class Validate extends controller.Controller
 		}
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	public function doAddRefund() {
 
 		var basketId = Std.parseInt(app.params.get("basketid"));
@@ -139,7 +139,7 @@ class Validate extends controller.Controller
 		view.form = f;		
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	public function doAddPayment(){
 			
 		if (!app.user.isContractManager()) throw Error("/",t._("Forbidden access"));

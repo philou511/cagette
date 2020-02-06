@@ -33,7 +33,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Contract admin main page
 	 */
-	@tpl("contractadmin/default.mtt")
+	@tpl("contractadmin/default.twig")
 	function doDefault(?args:{old:Bool}) {
 		
 		view.nav.push("default");
@@ -76,7 +76,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Manage products
 	 */
-	@tpl("contractadmin/products.mtt")
+	@tpl("contractadmin/products.twig")
 	function doProducts(contract:db.Catalog,?args:{?enable:String,?disable:String}) {
 		view.nav.push("products");
 		sendNav(contract);
@@ -118,7 +118,7 @@ class ContractAdmin extends Controller
 	 *  - hidden page -
 	 * copy products from a contract to an other
 	 */
-	@admin @tpl("form.mtt")
+	@admin @tpl("form.twig")
 	function doCopyProducts(contract:db.Catalog) {
 		view.title = t._("Copy products in: ")+contract.name;
 		var form = new Form("copy");
@@ -158,7 +158,7 @@ class ContractAdmin extends Controller
 	/**
 	 * global view on orders within a timeframe
 	 */
-	@tpl('contractadmin/ordersByTimeFrame.mtt')
+	@tpl('contractadmin/ordersByTimeFrame.twig')
 	function doOrdersByTimeFrame(?from:Date, ?to:Date/*, ?place:db.Place*/){
 		
 		if (from == null) {
@@ -183,7 +183,7 @@ class ContractAdmin extends Controller
 			
 			view.form = f;
 			view.title = t._("Global view of orders");
-			app.setTemplate("form.mtt");
+			app.setTemplate("form.twig");
 			
 			if (f.checkToken()) {
 				
@@ -243,7 +243,7 @@ class ContractAdmin extends Controller
 	 * 
 	 * @param	date
 	 */
-	@tpl('contractadmin/ordersByDate.mtt')
+	@tpl('contractadmin/ordersByDate.twig')
 	function doOrdersByDate(?date:Date,?place:db.Place){
 		if (date == null) {
 		
@@ -259,7 +259,7 @@ class ContractAdmin extends Controller
 			view.title = t._("Global view of orders");
 			view.text = t._("This page allows you to have a global view on orders of all catalogs");
 			view.text += t._("<br/>Select a delivery date:");
-			app.setTemplate("form.mtt");
+			app.setTemplate("form.twig");
 			
 			if (f.checkToken()) {
 				
@@ -316,7 +316,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Global view on orders, producer view
 	 */
-	@tpl('contractadmin/vendorsByDate.mtt')
+	@tpl('contractadmin/vendorsByDate.twig')
 	function doVendorsByDate(date:Date,place:db.Place){
 
 		//if ( distribs.length == 0 ) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
@@ -365,7 +365,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Global view on orders, producer view
 	 */
-	@tpl('contractadmin/vendorsByTimeFrame.mtt')
+	@tpl('contractadmin/vendorsByTimeFrame.twig')
 	function doVendorsByTimeFrame(from:Date,to:Date){
 			
 		var d1 = tools.DateTool.setHourMinute(from,0,0);
@@ -460,7 +460,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Overview of orders for this contract in backoffice
 	 */
-	@tpl("contractadmin/orders.mtt")
+	@tpl("contractadmin/orders.twig")
 	function doOrders(contract:db.Catalog, args:{?d:db.Distribution,?delete:db.UserOrder}) {
 		view.nav.push("orders");
 		sendNav(contract);
@@ -545,7 +545,7 @@ class ContractAdmin extends Controller
 	/**
 	 *  Duplicate a contract
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doDuplicate(contract:db.Catalog) {
 
 		sendNav(contract);
@@ -637,7 +637,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Orders grouped by product
 	 */
-	@tpl("contractadmin/ordersByProduct.mtt")
+	@tpl("contractadmin/ordersByProduct.twig")
 	function doOrdersByProduct(contract:db.Catalog, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
@@ -658,7 +658,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Purchase order to print
 	 */
-	@tpl("contractadmin/ordersByProductList.mtt")
+	@tpl("contractadmin/ordersByProductList.twig")
 	function doOrdersByProductList(contract:db.Catalog, args:{?d:db.Distribution}) {
 		
 		sendNav(contract);		
@@ -679,7 +679,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Lists deliveries for this contract
 	 */
-	@tpl("contractadmin/distributions.mtt")
+	@tpl("contractadmin/distributions.twig")
 	function doDistributions(contract:db.Catalog, ?args: { ?old:Bool,?participateToAllDistributions:Bool } ) {
 
 		view.nav.push("distributions");
@@ -731,7 +731,7 @@ class ContractAdmin extends Controller
 		throw Ok("/contractAdmin/distributions/"+contract.id,t._("Distribution date added"));
 	}
 	
-	@tpl("contractadmin/view.mtt")
+	@tpl("contractadmin/view.twig")
 	function doView(contract:db.Catalog) {
 		view.nav.push("view");
 		sendNav(contract);
@@ -745,7 +745,7 @@ class ContractAdmin extends Controller
 		dispatch.dispatch( new controller.Documents() );
 	}
 	
-	@tpl("contractadmin/stats.mtt")
+	@tpl("contractadmin/stats.twig")
 	function doStats(contract:db.Catalog, ?args: { stat:Int } ) {
 		sendNav(contract);
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
@@ -806,7 +806,7 @@ class ContractAdmin extends Controller
 	}
 	
 
-	@tpl("contractadmin/selectDistrib.mtt")
+	@tpl("contractadmin/selectDistrib.twig")
 	function doSelectDistrib(c:db.Catalog, ?args:{old:Bool}) {
 		view.nav.push("orders");
 		sendNav(c);
@@ -823,7 +823,7 @@ class ContractAdmin extends Controller
 	/**
 	 * Edit a user's orders
 	 */
-	/*@tpl("contractadmin/edit.mtt")
+	/*@tpl("contractadmin/edit.twig")
 	function doEdit(c:db.Catalog, ?user:db.User, args:{?d:db.Distribution}) {
 		view.nav.push("orders");
 		sendNav(c);

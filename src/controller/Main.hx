@@ -40,7 +40,7 @@ class Main extends Controller {
 	/**
 		NEW homepage
 	**/
-	@tpl("home.mtt")
+	@tpl("home.twig")
 	function doHome() {
 
 		addBc("home","Commandes","/home");
@@ -157,7 +157,7 @@ class Main extends Controller {
 		
 	}
 	
-	@tpl("cssDemo.mtt")
+	@tpl("cssDemo.twig")
 	function doCssdemo() {
 		//debug stringmap haxe4
 		var users = new Map<String,String>();
@@ -165,7 +165,7 @@ class Main extends Controller {
 		view.users = users;
 	}
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doInstall(d:Dispatch) {
 		d.dispatch(new controller.Install());
 	}
@@ -237,7 +237,7 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Shop());
 	}
 
-	@tpl('shop/default2.mtt')
+	@tpl('shop/default2.twig')
 	function doShop2(md:db.MultiDistrib) {
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 		view.category = 'shop';

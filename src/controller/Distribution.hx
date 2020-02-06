@@ -26,7 +26,7 @@ class Distribution extends Controller
 		if (!app.user.canManageAllContracts()) throw Error('/', t._('Forbidden action') );
 	}
 
-	@tpl('distribution/default.mtt')
+	@tpl('distribution/default.twig')
 	function doDefault(){
 
 		checkHasDistributionSectionAccess();
@@ -58,7 +58,7 @@ class Distribution extends Controller
 	/**
 	 * Attendance sheet by user-product (single distrib)
 	 */
-	@tpl('distribution/list.mtt')
+	@tpl('distribution/list.twig')
 	function doList(d:db.Distribution) {
 		view.distrib = d;
 		view.place = d.place;
@@ -71,7 +71,7 @@ class Distribution extends Controller
 	/**
 	 * Attendance sheet by product-user (single distrib)
 	 */
-	@tpl('distribution/listByProductUser.mtt')
+	@tpl('distribution/listByProductUser.twig')
 	function doListByProductUser(d:db.Distribution) {
 		view.distrib = d;
 		view.place = d.place;
@@ -137,7 +137,7 @@ class Distribution extends Controller
 	/**
 	 * Attendance sheet to print ( mutidistrib )
 	 */
-	@tpl('distribution/listByDate.mtt')
+	@tpl('distribution/listByDate.twig')
 	function doListByDate(date:Date,place:db.Place, ?type:String, ?fontSize:String) {
 		
 		if (!app.user.isContractManager()) throw Error('/', t._("Forbidden action"));
@@ -163,7 +163,7 @@ class Distribution extends Controller
 			], "S", "S", false));
 			
 			view.form = f;
-			app.setTemplate("form.mtt");
+			app.setTemplate("form.twig");
 			
 			if (f.checkToken()) {
 				var suburl = f.getValueOf("type")+"/"+f.getValueOf("fontSize");
@@ -185,11 +185,11 @@ class Distribution extends Controller
 			
 			switch(type) {
 				case "one":
-					app.setTemplate("distribution/listByDateOnePage.mtt");
+					app.setTemplate("distribution/listByDateOnePage.twig");
 				case "allshort" :
-					app.setTemplate("distribution/listByDateShort.mtt");
+					app.setTemplate("distribution/listByDateShort.twig");
 				case "contract" :
-					app.setTemplate("distribution/listByDateOnePageContract.mtt");
+					app.setTemplate("distribution/listByDateOnePageContract.twig");
 			}
 			
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
@@ -299,7 +299,7 @@ class Distribution extends Controller
 	/**
 		Edit a distribution
 	 */
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEdit(d:db.Distribution) {
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
 		var contract = d.catalog;
@@ -374,7 +374,7 @@ class Distribution extends Controller
 		view.title = t._("Attendance of ::farmer:: to the ::date:: distribution",{farmer:d.catalog.vendor.name,date:view.dDate(d.date)});
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doEditCycle(d:db.DistributionCycle) {
 		
 		/*checkHasDistributionSectionAccess();
@@ -395,7 +395,7 @@ class Distribution extends Controller
 	/**
 		Insert a distribution
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsert(contract:db.Catalog) {
 		
 		if (!app.user.isContractManager(contract)) throw Error('/', t._('Forbidden action') );
@@ -446,7 +446,7 @@ class Distribution extends Controller
 			if (createdDistrib.date == null) {
 				var html = t._("Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused.", {supplierName:contract.vendor.name});
 				var btn = "<a href='/contractAdmin/distributions/" + contract.id + "' class='btn btn-primary'>OK</a>";
-				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.mtt",{html:html,title:t._("Distribution request sent"),btn:btn} );
+				App.current.view.extraNotifBlock = App.current.processTemplate("block/modal.twig",{html:html,title:t._("Distribution request sent"),btn:btn} );
 			} else {
 				throw Ok('/contractAdmin/distributions/'+ createdDistrib.catalog.id , t._("The distribution has been recorded") );	
 			}
@@ -464,7 +464,7 @@ class Distribution extends Controller
 	/**
 		Invite farmers to a single distrib
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doInviteFarmers(distrib:db.MultiDistrib){
 		
 		var form = new sugoi.form.Form("invite");
@@ -600,7 +600,7 @@ class Distribution extends Controller
 		view.title = "Ajouter / supprimer des producteurs pour la distribution du "+view.dDate(distrib.getDate());
 	}
 
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doInviteFarmersCycle(cycle:db.DistributionCycle){
 
 		view.text = "Fonctionnalité bientôt disponible";
@@ -610,7 +610,7 @@ class Distribution extends Controller
 	/**
 		Insert a multidistribution
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsertMd() {
 		
 		checkHasDistributionSectionAccess();
@@ -681,7 +681,7 @@ class Distribution extends Controller
 	/**
 		Insert a multidistribution
 	**/
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doEditMd(md:db.MultiDistrib) {
 		
 		checkHasDistributionSectionAccess();
@@ -803,7 +803,7 @@ class Distribution extends Controller
 	/**
 	 * create a distribution cycle for a contract
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsertCycle(contract:db.Catalog) {
 		
 		/*if (!app.user.isContractManager(contract)) throw Error('/', t._("Forbidden action"));
@@ -900,7 +900,7 @@ class Distribution extends Controller
 	/**
 	 * create a multidistribution cycle
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doInsertMdCycle() {		
 
 		checkHasDistributionSectionAccess();
@@ -1008,7 +1008,7 @@ class Distribution extends Controller
 	 * @param	date
 	 * @param	place
 	 */
-	@tpl('distribution/validate.mtt')
+	@tpl('distribution/validate.twig')
 	public function doValidate(multiDistrib:db.MultiDistrib){
 		
 		checkHasDistributionSectionAccess();
@@ -1053,7 +1053,7 @@ class Distribution extends Controller
 	/**
 		Manage volunteer roles for the specified multidistrib
 	**/ 
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doVolunteerRoles(distrib: db.MultiDistrib) {
 		
 		var form = new sugoi.form.Form("volunteerroles");
@@ -1110,7 +1110,7 @@ class Distribution extends Controller
 	/**
 		Assign volunteer to roles for the specified multidistrib
 	**/  
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doVolunteers(distrib: db.MultiDistrib) {
 		
 		var form = new sugoi.form.Form("volunteers");
@@ -1148,7 +1148,7 @@ class Distribution extends Controller
 	}
 
 	//View volunteers list for this distribution and you can sign up for a role
-	@tpl('distribution/volunteersSummary.mtt')
+	@tpl('distribution/volunteersSummary.twig')
 	function doVolunteersSummary(distrib: db.MultiDistrib, ?args: { role: db.VolunteerRole }) {
 
 		var volunteerRoles: Array<db.VolunteerRole> = distrib.getVolunteerRoles();
@@ -1176,7 +1176,7 @@ class Distribution extends Controller
 	}
 
 	//Remove user from role for the specified multidistrib
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doUnsubscribeFromRole(distrib: db.MultiDistrib, role: db.VolunteerRole, ?args: { returnUrl: String, ?to: String } ) {
 		
 		if ( args != null && args.returnUrl != null ) {
@@ -1217,7 +1217,7 @@ class Distribution extends Controller
 	/**
 		Members can view volunteers planning for each role and multidistrib date
 	**/
-	@tpl('distribution/volunteersCalendar.mtt')
+	@tpl('distribution/volunteersCalendar.twig')
 	function doVolunteersCalendar(?args: { ?distrib: db.MultiDistrib, ?role: db.VolunteerRole, ?from: Date, ?to: Date } ) {
 		
 		var multidistribs : Array<db.MultiDistrib> = [];
@@ -1365,7 +1365,7 @@ class Distribution extends Controller
 	/**
 		Members can view volunteers planning for each role and multidistrib date
 	**/
-	@tpl('distribution/volunteersParticipation.mtt')
+	@tpl('distribution/volunteersParticipation.twig')
 	function doVolunteersParticipation(?args: { ?from: Date, ?to: Date } ) {
 				
 		var from: Date = null;
@@ -1486,7 +1486,7 @@ class Distribution extends Controller
 	/**
 		Remove a product from orders.
 	**/
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doMissingProduct(distrib:db.MultiDistrib){
 		checkHasDistributionSectionAccess();
 
@@ -1528,7 +1528,7 @@ class Distribution extends Controller
 	/**
 		Change a price in orders.
 	**/
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	function doChangePrice(distrib:db.MultiDistrib){
 		checkHasDistributionSectionAccess();
 		var form = new sugoi.form.Form("changePrice");
@@ -1580,7 +1580,7 @@ class Distribution extends Controller
 	/**
 		Counter management
 	**/
-	@tpl('validate/counter.mtt')
+	@tpl('validate/counter.twig')
 	function doCounter(distribution:db.MultiDistrib){
 		checkHasDistributionSectionAccess();
 

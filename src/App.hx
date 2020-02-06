@@ -80,7 +80,10 @@ class App extends sugoi.BaseApp {
 	
 	public static function log(t:Dynamic) {
 		if(App.config.DEBUG) {
+			#if neko
 			neko.Web.logMessage(Std.string(t)); //write in Apache error log
+			#end
+
 			#if weblog
 			Weblog.log(t); //write en Weblog console (https://lib.haxe.org/p/weblog/)
 			#end
@@ -288,7 +291,7 @@ class App extends sugoi.BaseApp {
 		e.setSubject(subject);
 		e.setRecipient(to);			
 		e.setSender(App.config.get("default_email"),"Cagette.net");				
-		var html = App.current.processTemplate("mail/message.mtt", {text:html,group:group});		
+		var html = App.current.processTemplate("mail/message.twig", {text:html,group:group});		
 		e.setHtmlBody(html);
 		App.sendMail(e);
 	}

@@ -1,23 +1,25 @@
--lib templo
 -lib hxevents
 -lib datetime
 -lib hscript
 -lib tink_core
 -lib tink_json
--lib tink_http
 -lib record-macros
--lib hx3compat
 -lib thx.csv
 -lib thx.semver
--lib hxtwig
-
 -lib sugoi
+-lib jstack
+-lib hx3compat
+-lib hxtwig
 
 
 -cp ../common
 -cp ../src
 -cp ../lang/master/tpl
 
+-D JSTACK_FORCE
+-D JSTACK_FORMAT=vscode
+-D JSTACK_HAXE_DEV
+-debug
 -php ../public
 
 -main App

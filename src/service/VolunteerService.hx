@@ -225,7 +225,7 @@ class VolunteerService
 				var subject = "["+multidistrib.group.name+"] ";
 				subject += t._( "A role has been left for ::date:: distribution",{date:date});
 				mail.setSubject( subject );
-				var html = App.current.processTemplate("mail/volunteerUnsuscribed.mtt", { fullname : user.getName(), role : role.name, reason : reason, group: multidistrib.group  } );
+				var html = App.current.processTemplate("mail/volunteerUnsuscribed.twig", { fullname : user.getName(), role : role.name, reason : reason, group: multidistrib.group  } );
 				mail.setHtmlBody( html );
 				App.sendMail(mail);
 

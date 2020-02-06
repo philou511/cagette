@@ -2,7 +2,7 @@ package controller;
 import db.Group.GroupFlags;
 import db.UserGroup;
 import haxe.Http;
-import neko.Web;
+import sugoi.Web;
 import sugoi.form.Form;
 import Common;
 import sugoi.form.elements.IntSelect;
@@ -34,7 +34,7 @@ class AmapAdmin extends Controller
 		view.nav = e.getParameters()[0];
 	}
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doMembership(){
 		
 		var form = new sugoi.form.Form("membership");
@@ -66,7 +66,7 @@ class AmapAdmin extends Controller
 		view.title = "Adhésions";
 	}
 
-	@tpl("amapadmin/default.mtt")
+	@tpl("amapadmin/default.twig")
 	function doDefault() {
 		view.membersNum = UserGroup.manager.count($group == app.user.getGroup());
 		view.contractsNum = app.user.getGroup().getActiveContracts().length;
@@ -84,7 +84,7 @@ class AmapAdmin extends Controller
 		
 	}
 	
-	@tpl("amapadmin/rights.mtt")
+	@tpl("amapadmin/rights.twig")
 	public function doRights() {
 		
 		//liste les gens qui ont des droits dans le groupe
@@ -124,7 +124,7 @@ class AmapAdmin extends Controller
 	}
 	
 	
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	public function doEditRight(?u:db.User) {
 		
 		var form = new sugoi.form.Form("editRight");
@@ -239,7 +239,7 @@ class AmapAdmin extends Controller
 		
 	}
 	
-	@tpl('form.mtt')
+	@tpl('form.twig')
 	public function doVatRates() {
 		
 		var f = new sugoi.form.Form("vat");
@@ -300,7 +300,7 @@ class AmapAdmin extends Controller
 	/**
 	 * Set up group currency. Default is EURO
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doCurrency(){
 		
 		view.title = t._("Currency used by your group.");
@@ -325,7 +325,7 @@ class AmapAdmin extends Controller
 	/**
 	 * payment configuration
 	 */
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doPayments(){
 		
 		var f = new sugoi.form.Form("paymentTypes");

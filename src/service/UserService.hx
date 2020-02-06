@@ -190,9 +190,9 @@ class UserService
 
 	public static function prepareLoginBoxOptions(view:Dynamic,?group:db.Group){
 		if(group==null) group = App.current.getCurrentGroup();
-		var loginBoxOptions : Dynamic = {};
+		var loginBoxOptions = {phoneRequired:false,addressRequired:false};
 		if(group==null || group.flags==null){
-			view.loginBoxOptions = {};
+			view.loginBoxOptions = loginBoxOptions;
 			return;
 		} 
 		if(group.flags.has(PhoneRequired)) loginBoxOptions.phoneRequired = true;

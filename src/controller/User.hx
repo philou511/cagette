@@ -14,13 +14,13 @@ class User extends Controller
 		super();
 	}
 	
-	@tpl("user/default.mtt")
+	@tpl("user/default.twig")
 	function doDefault() {
 		
 	}
 	
 	
-	@tpl("user/login.mtt")
+	@tpl("user/login.twig")
 	function doLogin() {
 		
 		if (App.current.user != null) {
@@ -41,7 +41,7 @@ class User extends Controller
 	 * Choose which group to connect to.
 	 */
 	@logged
-	@tpl("user/choose.mtt")
+	@tpl("user/choose.twig")
 	function doChoose(?args: { group:db.Group } ) {
 
 		//home page
@@ -87,7 +87,7 @@ class User extends Controller
 	 * Ask for password renewal by mail
 	 * when password is forgotten
 	 */
-	@tpl("user/forgottenPassword.mtt")
+	@tpl("user/forgottenPassword.twig")
 	function doForgottenPassword(?key:String, ?u:db.User){
 		
 		//STEP 1
@@ -135,7 +135,7 @@ class User extends Controller
 			m.setSender(App.config.get("default_email"), t._("Cagette.net"));					
 			m.setRecipient(email, user.getName());					
 			m.setSubject( "["+App.config.NAME+"] : "+t._("Password change"));
-			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.mtt', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
+			m.setHtmlBody( app.processTemplate('mail/forgottenPassword.twig', { user:user, link:'http://' + App.config.HOST + '/user/forgottenPassword/'+token+"/"+user.id }) );
 			App.sendMail(m);	
 		}
 		
@@ -175,7 +175,7 @@ class User extends Controller
 					password:pass,
 					NAME:App.config.NAME
 				}
-				m.setHtmlBody( app.processTemplate('mail/newPasswordConfirmed.mtt', params) );
+				m.setHtmlBody( app.processTemplate('mail/newPasswordConfirmed.twig', params) );
 				App.sendMail(m);	
 				
 			}else {
@@ -201,7 +201,7 @@ class User extends Controller
 	
 	
 	@logged
-	@tpl("form.mtt")
+	@tpl("form.twig")
 	function doDefinePassword(?key:String, ?u:db.User){
 		
 		if (app.user.isFullyRegistred()) throw Error("/", t._("You already have a password"));
@@ -276,7 +276,7 @@ class User extends Controller
 			App.quickMail(
 				group.contact.email,
 				group.name +" - "+ t._("New member") + " : " + user.getCoupleName(),
-				app.processTemplate("mail/message.mtt", { text:text } ) 
+				app.processTemplate("mail/message.twig", { text:text } ) 
 			);	
 		}
 		
@@ -287,7 +287,7 @@ class User extends Controller
 	/**
 		Quit a group.  Should work even if user is not logged in. ( link in emails footer )
 	**/
-	@tpl('account/quit.mtt')
+	@tpl('account/quit.twig')
 	function doQuitGroup(group:db.Group,user:db.User,key:String){
 		//return "https://"+App.config.HOST+"/account/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id);
 		if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) != key){
