@@ -4,7 +4,7 @@
 			"path": "."
 		},
 		{
-			"path": "../www"
+			"path": "../public"
 		},
 		{
 			"path": "../common"

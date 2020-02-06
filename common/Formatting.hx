@@ -214,11 +214,11 @@ class Formatting
 		// var bytes = haxe.io.Bytes.ofString(csvData);
 		try{
 			// if (!UnicodeString.validate(bytes,Encoding.UTF8)){
-			if(!neko.Utf8.validate(str)){
+			if(!haxe.Utf8.validate(str)){
 				/*trace("not UTF8");
 				csvData = bytes.getString(0,bytes.length,Encoding.RawNative);
 				trace(UnicodeString.validate(bytes,Encoding.UTF8));*/
-				str = neko.Utf8.encode(str);
+				str = haxe.Utf8.encode(str);
 				// trace(csvData);
 			}
 		}catch (e:Dynamic){ }

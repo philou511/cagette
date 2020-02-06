@@ -427,7 +427,7 @@ class Operation extends sys.db.Object
 				ordersGroup = tools.ObjectListTool.groupOrdersByKey(orders);
 			}catch(e:Dynamic){
 				App.current.logError(service.OrderService.prepare(orders));
-				neko.Lib.rethrow(e);
+				throw e;
 			}
 			
 			for ( orders in ordersGroup){

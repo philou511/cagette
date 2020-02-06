@@ -9,6 +9,7 @@
 -lib hx3compat
 -lib thx.csv
 -lib thx.semver
+-lib hxtwig
 
 -lib sugoi
 
@@ -17,6 +18,6 @@
 -cp ../src
 -cp ../lang/master/tpl
 
--neko ../www/index.n
+-php ../public
 
 -main App

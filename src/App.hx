@@ -306,12 +306,8 @@ class App extends sugoi.BaseApp {
 		ctx._ = App.current.view._;
 		ctx.__ = App.current.view.__;
 		
-		var tpl = loadTemplate(tpl);
-		var html = tpl.execute(ctx);	
-		#if php
-		if ( html.substr(0, 4) == "null") html = html.substr(4);
-		#end
-		return html;
+		var twig = loadTemplateEngine();
+		return twig.render(tpl,ctx);
 	}
 	
 	

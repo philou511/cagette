@@ -1,7 +1,7 @@
 package controller;
 import db.UserGroup;
 import haxe.Json;
-import neko.Web;
+import sugoi.Web;
 
 /**
  * REST JSON API
