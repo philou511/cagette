@@ -54,7 +54,7 @@
 
 		</div>
 		::end::
-	
+
 		<!-- Empty planning -->
 		::if distribs==null || count(distribs)==0::
 			<div class="homeBlock">				
@@ -331,6 +331,11 @@
 		<!-- end distrib-->
 		::end::
 	::end::
+
+
+	<div class="text-center" style="margin-bottom:24px;">
+		$$timeframe(::timeframe::)
+	</div>
 
 
 

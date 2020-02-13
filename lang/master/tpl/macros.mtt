@@ -304,14 +304,14 @@
 	</macro>
 
 	<macro name="timeframe(timeframe)">
-		::set next = timeframe.next()	::
-		::set previous = timeframe.previous()	::
-		<div>
-			<a href="?_from=::previous.from.toString().substr(0,10)::&_to=::previous.to.toString().substr(0,10)::" class="btn btn-default btn-sm">
+		::set next = timeframe.next()::
+		::set previous = timeframe.previous()::
+		<div class="btn-group">
+			<a href="?_from=::previous.from.toString().substr(0,10)::&_to=::previous.to.toString().substr(0,10)::" class="btn btn-default">
 				<i class="icon icon-chevron-left"></i>
 			</a>
-			Du ::dDate(timeframe.from):: au ::dDate(timeframe.to)::
-			<a href="?_from=::next.from.toString().substr(0,10)::&_to=::next.to.toString().substr(0,10)::" class="btn btn-default btn-sm">
+			<a class="btn btn-default disabled">Du ::dDate(timeframe.from):: au ::dDate(timeframe.to)::</a>
+			<a href="?_from=::next.from.toString().substr(0,10)::&_to=::next.to.toString().substr(0,10)::" class="btn btn-default">
 				<i class="icon icon-chevron-right"></i>
 			</a>
 		</div>

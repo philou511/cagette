@@ -37,9 +37,6 @@ class Main extends Controller {
 		d.dispatch(new controller.Group());
 	}
 
-	/**
-		NEW homepage
-	**/
 	@tpl("home.mtt")
 	function doHome() {
 
@@ -63,19 +60,23 @@ class Main extends Controller {
 			view.openContracts = openContracts;
 		}
 		
-		//register to become "distributor"
-		//view.contractsWithDistributors = app.user==null ? [] : Lambda.filter(app.user.getGroup().getActiveContracts(), function(c) return c.distributorNum > 0);
-		
 		//freshly created group
 		view.newGroup = app.session.data.newGroup == true;
-
+		
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var in3Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 3);
+		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 1);
+		var timeframe = new tools.Timeframe(now,in1Month);
 
-		var distribs = db.MultiDistrib.getFromTimeRange(group,now,in3Month);
-		//special case for farmers with one distrib , far in future.
-		if(distribs.length==0) distribs = db.MultiDistrib.getFromTimeRange(group,now,DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 12));
+		var distribs = db.MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);
+
+		//special case : only one distrib , far in future.
+		if(distribs.length==0) {
+			timeframe = new tools.Timeframe(now,DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 12));
+			distribs = db.MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);
+		}
+
+		view.timeframe = timeframe;
 		view.distribs = distribs;
 
 		//view functions
