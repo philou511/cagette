@@ -6,6 +6,7 @@ import sugoi.form.elements.Selectbox;
 import sugoi.form.Form;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.RadioGroup;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import Common;
 import datetime.DateTime;
 using tools.ObjectListTool;
@@ -169,11 +170,11 @@ class ContractAdmin extends Controller
 			var from = now.snap(Month(Down)).getDate();			
 			var to = now.snap(Month(Up)).add(Day(-1)).getDate();
 			
-			var el = new sugoi.form.elements.DatePicker("from", t._("Start date"), from,true);			
+			var el = new form.CagetteDatePicker("from", t._("Start date"), from, NativeDatePickerType.date, true);			
 			el.format = 'LL';
 			f.addElement(el);
 			
-			var el = new sugoi.form.elements.DatePicker("to", t._("End date"), to,true);
+			var el = new form.CagetteDatePicker("to", t._("End date"), to, NativeDatePickerType.date, true);
 			el.format = 'LL';
 			f.addElement(el);
 			
@@ -231,7 +232,7 @@ class ContractAdmin extends Controller
 		if (date == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);
-			var el = new sugoi.form.elements.DatePicker("date", t._("Delivery date"), true);
+			var el = new form.CagetteDatePicker("date", t._("Delivery date"),  NativeDatePickerType.date, true);
 			el.format = 'LL';
 			f.addElement(el);
 			

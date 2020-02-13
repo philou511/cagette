@@ -3,10 +3,10 @@ import tools.ObjectListTool;
 import db.DistributionCycle;
 import db.UserOrder;
 import sugoi.form.Form;
-import sugoi.form.elements.HourDropDowns;
 import tink.core.Error;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.TextArea;
+import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 import Common;
 import service.VolunteerService;
 import service.DistributionService;
@@ -288,7 +288,7 @@ class Distribution extends Controller
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
 		var contract = d.catalog;
 		
-		var form = sugoi.form.Form.fromSpod(d);
+		var form = form.CagetteForm.fromSpod(d);
 		form.removeElementByName("placeId");
 		form.removeElementByName("date");
 		form.removeElementByName("end");
@@ -306,8 +306,8 @@ class Distribution extends Controller
 
 		
 		if (d.catalog.type == db.Catalog.TYPE_VARORDER ) {
-			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
-			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
+			form.addElement(new form.CagetteDatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
+			form.addElement(new form.CagetteDatePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
 		}		
 		
 		if (form.isValid()) {
@@ -386,11 +386,11 @@ class Distribution extends Controller
 		
 		var d = new db.Distribution();
 		d.place = contract.group.getMainPlace();
-		var form = sugoi.form.Form.fromSpod(d);
+		var form = form.CagetteForm.fromSpod(d);
 		form.removeElement(form.getElement("contractId"));
 		form.removeElement(form.getElement("distributionCycleId"));
 		form.removeElement(form.getElement("end"));
-		var x = new sugoi.form.elements.HourDropDowns("end", t._("End time") );
+		var x = new form.CagetteDatePicker("end", t._("End time"), null, NativeDatePickerType.time);
 		form.addElement(x, 3);
 		
 		//default values
@@ -398,8 +398,8 @@ class Distribution extends Controller
 		form.getElement("end").value = DateTool.now().deltaDays(30).setHourMinute(20, 0);
 			
 		if (contract.type == db.Catalog.TYPE_VARORDER ) {
-			form.addElement(new sugoi.form.elements.DatePicker("orderStartDate", t._("Orders opening date"),DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
-			form.addElement(new sugoi.form.elements.DatePicker("orderEndDate", t._("Orders closing date"),DateTool.now().deltaDays(20).setHourMinute(23, 59)));
+			form.addElement(new form.CagetteDatePicker("orderStartDate", t._("Orders opening date"), DateTool.now().deltaDays(10).setHourMinute(8, 0)));	
+			form.addElement(new form.CagetteDatePicker("orderEndDate", t._("Orders closing date"), DateTool.now().deltaDays(20).setHourMinute(23, 59)));
 		}
 		
 		if (form.isValid()) {
@@ -601,21 +601,20 @@ class Distribution extends Controller
 		
 		var md = new db.MultiDistrib();
 		md.place = app.user.getGroup().getMainPlace();
-		var form = sugoi.form.Form.fromSpod(md);
+		var form = form.CagetteForm.fromSpod(md);
 
 		//date
-		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), null);	
-		untyped e.format = "LL";
+		var e = new form.CagetteDatePicker("date",t._("Distribution date"), null);	
 		form.addElement(e, 3);
 		
 		//start hour
 		form.removeElementByName("distribStartDate");
-		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time") );
+		var x = new form.CagetteDatePicker("startHour", t._("Start time"), null, NativeDatePickerType.time);
 		form.addElement(x, 3);
 		
 		//end hour
 		form.removeElementByName("distribEndDate");
-		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time") );
+		var x = new form.CagetteDatePicker("endHour", t._("End time"), null, NativeDatePickerType.time);
 		form.addElement(x, 4);		
 		
 		//default values		
@@ -661,6 +660,7 @@ class Distribution extends Controller
 		view.form = form;
 		view.title = t._("Create a general distribution");
 	}
+	
 
 	/**
 		Insert a multidistribution
@@ -671,23 +671,23 @@ class Distribution extends Controller
 		checkHasDistributionSectionAccess();
 		
 		md.place = app.user.getGroup().getMainPlace();
-		var form = sugoi.form.Form.fromSpod(md);
+		var form = form.CagetteForm.fromSpod(md);
 
 		//date
-		var e = new sugoi.form.elements.DatePicker("date",t._("Distribution date"), md.distribStartDate);	
+		var e = new form.CagetteDatePicker("date",t._("Distribution date"), md.distribStartDate);	
 		untyped e.format = "LL";
 		form.addElement(e, 3);
 		
 		//start hour
 		form.removeElementByName("distribStartDate");
 		md.distribStartDate = md.distribStartDate.setHourMinute( md.distribStartDate.getHours() , Math.floor(md.distribStartDate.getMinutes()/5) * 5 ); //minutes should be a multiple of 5
-		var x = new sugoi.form.elements.HourDropDowns("startHour", t._("Start time"), md.distribStartDate );
+		var x = new form.CagetteDatePicker("startHour", t._("Start time"), md.distribStartDate, NativeDatePickerType.time );
 		form.addElement(x, 3);
 		
 		//end hour
 		form.removeElementByName("distribEndDate");
 		md.distribEndDate = md.distribEndDate.setHourMinute( md.distribEndDate.getHours() , Math.floor(md.distribEndDate.getMinutes()/5) * 5 );//minutes should be a multiple of 5
-		var x = new sugoi.form.elements.HourDropDowns("endHour", t._("End time"), md.distribEndDate );
+		var x = new form.CagetteDatePicker("endHour", t._("End time"), md.distribEndDate, NativeDatePickerType.time );
 		form.addElement(x, 4);
 
 		//override dates
@@ -891,7 +891,7 @@ class Distribution extends Controller
 		
 		var dc = new db.DistributionCycle();
 		dc.place = app.user.getGroup().getMainPlace();
-		var form = sugoi.form.Form.fromSpod(dc);
+		var form = form.CagetteForm.fromSpod(dc);
 		
 		
 		form.getElement("startDate").value = DateTool.now();
@@ -899,24 +899,24 @@ class Distribution extends Controller
 		
 		//start hour
 		form.removeElementByName("startHour");
-		var x = new HourDropDowns("startHour", t._("Distributions start time"), DateTool.now().setHourMinute( 19, 0) , true);
+		var x = new form.CagetteDatePicker("startHour", t._("Distributions start time"), DateTool.now().setHourMinute( 19, 0), NativeDatePickerType.time, true);
 		form.addElement(x, 5);
 		
 		//end hour
 		form.removeElement(form.getElement("endHour"));
-		var x = new HourDropDowns("endHour", t._("Distributions end time"), DateTool.now().setHourMinute(20, 0), true);
+		var x = new form.CagetteDatePicker("endHour", t._("Distributions end time"), DateTool.now().setHourMinute(20, 0), NativeDatePickerType.time, true);
 		form.addElement(x, 6);
 			
 		form.getElement("daysBeforeOrderStart").value = 10;
 		form.getElement("daysBeforeOrderStart").required = true;
 		form.removeElementByName("openingHour");
-		var x = new HourDropDowns("openingHour", t._("Opening time"), DateTool.now().setHourMinute(8, 0) , true);
+		var x = new form.CagetteDatePicker("openingHour", t._("Opening time"), DateTool.now().setHourMinute(8, 0), NativeDatePickerType.time, true);
 		form.addElement(x, 8);
 		
 		form.getElement("daysBeforeOrderEnd").value = 2;
 		form.getElement("daysBeforeOrderEnd").required = true;
 		form.removeElementByName("closingHour");
-		var x = new HourDropDowns("closingHour", t._("Closing time"), DateTool.now().setHourMinute(23, 55) , true);
+		var x = new form.CagetteDatePicker("closingHour", t._("Closing time"), DateTool.now().setHourMinute(23, 55), NativeDatePickerType.time, true);
 		form.addElement(x, 10);
 
 		//vendors to add

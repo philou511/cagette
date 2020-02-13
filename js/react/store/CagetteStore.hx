@@ -88,18 +88,18 @@ class CagetteStore extends react.ReactComponentOfPropsAndState<CagetteStoreProps
 		var isValidBrowser = browser.satisfies({
 			"chrome" 	: ">=49",
 			"chromium" 	: ">=49",
-			"firefox" 	: ">=45",
-			"safari" 	: ">=9",
+			"firefox" 	: ">=52",
+			"safari" 	: ">=10",
 			"internet explorer" : ">=11",
 			"android webview" 	: ">=70",
 			"samsung" 	: ">=6.4",
-			"edge" 		: ">=17.17134"
+			"edge" 		: ">=14"
 		});
 		if(isValidBrowser!=true){
 			var navigo = '${browser.getBrowserName()} ${browser.getBrowserVersion()}';
 			setState({errorMessage:'Votre navigateur ($navigo) est trop ancien et n\'est pas pris en charge par Cagette.net.<br/>
-			Installez une version récente de <a href="http://www.mozilla.org/firefox/new/">Firefox</a>
-			 ou <a href="https://www.google.com/chrome/browser/desktop/">Chrome</a>.'});
+			Installez une version récente de <a href="http://www.mozilla.org/firefox">Firefox</a>
+			 ou <a href="https://www.google.com/chrome/">Chrome</a>.'});
 		}
 
 		//Loads init datas

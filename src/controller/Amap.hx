@@ -29,7 +29,7 @@ class Amap extends Controller
 		
 		var group = app.user.getGroup();
 		
-		var form = Form.fromSpod(group);
+		var form = form.CagetteForm.fromSpod(group);
 
 		//remove "membership", "shop mode", "marge a la place des %", "unused" from flags
 		var flags = form.getElement("flags");
