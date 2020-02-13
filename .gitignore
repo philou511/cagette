@@ -26,15 +26,15 @@ lang/de/tmp/*.n
 lang/es/tmp/*.n
 
 www/lang/*.mo
-
 www/file/*
-
 www/js/*
-
 www/css/.sass-cache
 www/css/*.css
+www/*.xls
+www/*.xlsx
 
 devLibs/
 
 backend/lang
+
 

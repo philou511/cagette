@@ -43,9 +43,7 @@ class AmapAdmin extends Controller
 		//membership
 		form.addElement( new sugoi.form.elements.Checkbox("membership","Gestion des adhésions",group.flags.has(db.Group.GroupFlags.HasMembership)), 13);
 		form.addElement( new sugoi.form.elements.IntInput("membershipFee","Montant de l'adhésion (laisser vide si variable)",group.membershipFee), 14);
-		var dp = new sugoi.form.elements.DatePicker("membershipRenewalDate","Date de renouvellement annuelle des adhésions",group.membershipRenewalDate);
-		dp.format = "D MMMM";
-		form.addElement( dp ,15 );
+		form.addElement( new form.CagetteDatePicker("membershipRenewalDate","Date de renouvellement annuelle des adhésions",group.membershipRenewalDate),15);
 		
 		if (form.checkToken()) {
 
