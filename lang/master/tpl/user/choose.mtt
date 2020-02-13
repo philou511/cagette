@@ -130,7 +130,7 @@
 	</div>
 	<script>
 			//<![CDATA[
-			/*$(function(){
+			/*document.addEventListener("DOMContentLoaded", function(event) {
 				window.setTimeout(function(){
 					var txt = "Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de Cagette.net.<br/>";
 					txt += "La gestion des distributions a aussi été revue.";

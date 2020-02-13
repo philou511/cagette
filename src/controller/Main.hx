@@ -19,7 +19,7 @@ class Main extends Controller {
 			addBc("g"+group.id, "Groupe Cagette : "+group.name, "/home");
 
 	}
-	
+
 	function doDefault(?permalink:String){
 
 		if(permalink==null || permalink=="") throw Redirect("/home");
@@ -313,6 +313,4 @@ Called from controller/Main.hx line 117
 		d.parts = []; //disable haxe.web.Dispatch
 		sys.db.admin.Admin.handler();
 	}
-	
-	
 }

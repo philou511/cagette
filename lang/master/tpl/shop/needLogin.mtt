@@ -30,11 +30,11 @@
 
 <script language="javascript">
 	::if(register==true)::
-	$(function(){
+	document.addEventListener("DOMContentLoaded", function(event) {
 		_.registerBox('::raw redirect::','::raw message::',::phoneRequired::);	
 	});
 	::else::
-	$(function(){
+	document.addEventListener("DOMContentLoaded", function(event) {
 		_.loginBox('::raw redirect::','::raw message::',::phoneRequired::);	
 	});
 	::end::

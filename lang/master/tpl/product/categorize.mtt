@@ -7,20 +7,19 @@
 	</p>
 	
 	<script language="javascript">
-	var tagger;
-	$(function(){
-		tagger = _.getTagger(::c.id::);
-		tagger.init();
-	});
+		var tagger;
+		document.addEventListener("DOMContentLoaded", function () {
+			tagger = _.getTagger(::c.id::);
+			tagger.init();
+		});
 
-	var check = function(){
-		var inputs = document.querySelectorAll('#tagger input');
-		var value = inputs[0].checked==true;
-		for ( i of inputs ) {
-			i.checked = !value;
+		var check = function(){
+			var inputs = document.querySelectorAll('#tagger input');
+			var value = inputs[0].checked==true;
+			for ( i of inputs ) {
+				i.checked = !value;
+			}
 		}
-		
-	}
 	</script>
 	
 	<div id="tagger">

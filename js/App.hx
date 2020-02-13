@@ -1,3 +1,5 @@
+import bootstrap.Modal;
+import js.Browser;
 import Common;
 
 //React lib
@@ -42,6 +44,8 @@ class App {
 	public var LANG : String;
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
+	public var Modal = bootstrap.Modal;
+	public var Collapse = bootstrap.Collapse;
 
 	//i dont want to use redux now... saved state from react.OrderBox
 	public static var SAVED_ORDER_STATE : Dynamic;
@@ -54,9 +58,9 @@ class App {
 	}
 
 	/**
-	Returns a jquery object like $() in javascript
 	**/
 	public static inline function jq(r:Dynamic):js.jquery.JQuery{
+		trace("CALL JQUERY");
 		return new js.jquery.JQuery(r);
 	}
 
@@ -99,9 +103,6 @@ class App {
 		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
 		
 		ReactDOM.render(jsx('<$VATBox ttc=${ttcprice} currency=${currency} vatRates=${rates} vat=${vat} formName=${formName} />'),  input.parentElement);
-		
-	
-		
 	}
 
 	/**
@@ -116,8 +117,8 @@ class App {
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
 			//dirty stuff to remove "real" input, and replace it by the react one
-			App.jq("form input[name='"+formName+"_name']").parent().parent().remove();
-			App.jq("form select[name='" + formName+"_txpProductId']").parent().parent().remove();
+			remove(Browser.document.querySelector("form input[name='"+formName+"_name']").parentElement.parentElement);
+			remove(Browser.document.querySelector("form select[name='" + formName+"_txpProductId']").parentElement.parentElement);
 
 			ReactDOM.render(jsx('<$ProductInput productName=${productName} txpProductId=${txpProductId} formName=${formName}/>'),  js.Browser.document.getElementById(divId));
 		});
@@ -215,8 +216,8 @@ class App {
 	**/
 	function postReact(){
 		haxe.Timer.delay(function(){
-			untyped jq('[data-toggle="tooltip"]').tooltip();
-			untyped jq('[data-toggle="popover"]').popover();
+		// 	untyped jq('[data-toggle="tooltip"]').tooltip();
+		// 	untyped jq('[data-toggle="popover"]').popover();
 		},500);
 		
 	}
@@ -236,11 +237,13 @@ class App {
 		var r = new haxe.Http(url);
 		r.onData = function(data) {
 			//setup body and title
-			var m = App.jq("#myModal");
-			m.find(".modal-body").html(data);
-			if (title != null) m.find(".modal-title").html(title);
-			if (!large) m.find(".modal-dialog").removeClass("modal-lg");
-			untyped App.jq('#myModal').modal(); //bootstrap 3 modal window
+
+			var modalElement = Browser.document.getElementById("myModal");
+			var modal = new Modal(modalElement);
+			modalElement.querySelector(".modal-body").innerHTML = data;
+			if (title != null) modalElement.querySelector(".modal-title").innerHTML = title;
+			if (!large) modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+			modal.show();
 		}
 		r.request();
 	}
@@ -248,11 +251,13 @@ class App {
 	/**
 	 * Displays a login box
 	 */
-	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-		var m = App.jq("#myModal");
-		m.find(".modal-title").html("S'identifier");
-		m.find(".modal-dialog").removeClass("modal-lg");
-		untyped m.modal();
+	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {	
+		var modalElement = Browser.document.getElementById("myModal");
+		modalElement.querySelector(".modal-title").innerHTML = "S'identifier";
+		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+		var modal = new bootstrap.Modal(modalElement);
+		modal.show();
+
 		ReactDOM.render(
 			jsx('<$LoginBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
@@ -264,10 +269,11 @@ class App {
 	 *  Displays a sign up box
 	 */
 	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-		var m = App.jq("#myModal");
-		m.find(".modal-title").html("S'inscrire");
-		m.find(".modal-dialog").removeClass("modal-lg");
-		untyped m.modal();
+		var modalElement = Browser.document.getElementById("myModal");
+		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
+		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+		var modal = new bootstrap.Modal(modalElement);
+		modal.show();
 		ReactDOM.render(
 			jsx('<$RegisterBox redirectUrl=$redirectUrl message=$message phoneRequired=$phoneRequired addressRequired=$addressRequired/>'),
 			js.Browser.document.querySelector('#myModal .modal-body')
@@ -426,34 +432,34 @@ class App {
 	/**
 		Display a notif about new features 3 times
 	**/
-	public function newFeature(selector:String,title:String,message:String,placement:String){
-		var element = js.Browser.document.querySelector(selector);
-		if(element==null) return;
+	// public function newFeature(selector:String,title:String,message:String,placement:String){
+	// 	var element = js.Browser.document.querySelector(selector);
+	// 	if(element==null) return;
 
-		//do not show after 3 times
-		var storage = js.Browser.getLocalStorage();
-		if (storage.getItem("newFeature."+selector) == "3") return;
+	// 	//do not show after 3 times
+	// 	var storage = js.Browser.getLocalStorage();
+	// 	if (storage.getItem("newFeature."+selector) == "3") return;
 
-		//prepare Bootstrap "popover"
-		var x = jq(element).first().attr("title",title);
-		var text = "<p>" + message + "</p>";
+	// 	//prepare Bootstrap "popover"
+	// 	var x = jq(element).first().attr("title",title);
+	// 	var text = "<p>" + message + "</p>";
 		
-		var options = { container:"body", content:text, html:true , placement:placement};
-		untyped  x.popover(options).popover('show');
-		//click anywhere to hide
-		App.jq("html").click(function(_) {
-			untyped x.popover('hide');				
-		});
+	// 	var options = { container:"body", content:text, html:true , placement:placement};
+	// 	untyped  x.popover(options).popover('show');
+	// 	//click anywhere to hide
+	// 	App.jq("html").click(function(_) {
+	// 		untyped x.popover('hide');				
+	// 	});
 		
 
-		var storage = js.Browser.getLocalStorage();
-		var i = storage.getItem("newFeature."+selector);
-		if(i==null) i = "0";
-		storage.setItem("newFeature."+selector, Std.string( Std.parseInt(i)+1 ) );
+	// 	var storage = js.Browser.getLocalStorage();
+	// 	var i = storage.getItem("newFeature."+selector);
+	// 	if(i==null) i = "0";
+	// 	storage.setItem("newFeature."+selector, Std.string( Std.parseInt(i)+1 ) );
 		
-		//highlight
-		//App.jq(element).first().addClass("highlight");	
-	}
+	// 	//highlight
+	// 	App.jq(element).first().addClass("highlight");	
+	// }
 
 	public function toggle(selector:String){
 		for ( el in js.Browser.document.querySelectorAll(selector)){

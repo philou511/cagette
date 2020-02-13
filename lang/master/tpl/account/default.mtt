@@ -216,8 +216,11 @@
 			::set msg = _("You'll be able to restart it here.")::
 			<div id="stopTuto" data-toggle="popover" title='::_("Tutorial stopped")::' data-placement="left" data-content="::msg::" ></div>
 			<script>
-				$(function(){
-					setTimeout(function() { $("#stopTuto").popover("show"); }, 1000);
+				document.addEventListener("DOMContentLoaded", function() {
+					setTimeout(function() {
+						var el = document.getElementById("stopTuto");
+						el.Popover.show();
+					}, 1000);
 				});
 			</script>
 			::end::		

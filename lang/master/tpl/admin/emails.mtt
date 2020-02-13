@@ -33,8 +33,8 @@
 					<td>::e.title::</td>
 					<td>						
 						::if e.htmlBody != null::
-							<a href="#" onclick="$(this).next().toggle(); return false;">[show]</a>
-							<div style="display:none;">
+							<a href="#mail-show-::e.id::" data-toggle="collapse">[show]</a>
+							<div id="mail-show-::e.id::" class="collapse">
 								::raw e.htmlBody::
 							</div>
 						::end::

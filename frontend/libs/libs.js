@@ -7,7 +7,6 @@
     //
     // list npm modules required in Haxe
     //
-    'bootstrap': require('bootstrap'),
     'react': require('react'),
     'redux': require('redux'),
     'react-avatar-editor': require('react-avatar-editor'),
@@ -25,13 +24,13 @@
     'react-router-dom':require('react-router-dom'),
     '@material-ui/core': require('@material-ui/core'),
     '@material-ui/core/styles': require('@material-ui/core/styles'),
-    '@material-ui/pickers': require('@material-ui/pickers'),
-    '@date-io/date-fns': require('@date-io/date-fns'),
+    '@material-ui/pickers': require('@material-ui/pickers'),    
     '@material-ui/icons': require('@material-ui/icons'),
     '@material-ui/lab': require('@material-ui/lab'),
     'date-fns': require('date-fns'),
     'date-fns/locale': require('date-fns/locale'),
     'date-fns/format': require('date-fns/format'),
+    '@date-io/date-fns': require('@date-io/date-fns'),
     'stickyfilljs': require('stickyfilljs'),
     'sticky-events': require('sticky-events'),
     'intersection-observer': require('intersection-observer'),//Polyfill for stick-events to work
@@ -40,11 +39,8 @@
     'bowser': require('bowser'),//browser version detection
     'formik': require('formik'),
     'formik-material-ui': require('formik-material-ui'),
-    'formik-material-ui-pickers': require('formik-material-ui-pickers'),
-    '@material-ui/pickers': require('@material-ui/pickers'),
-    '@date-io/date-fns': require('@date-io/date-fns'),
-    'date-fns': require('date-fns'),
-    'date-fns/locale': require('date-fns/locale'),
+    'formik-material-ui-pickers': require('formik-material-ui-pickers'),  
+    'bootstrap.native': require('bootstrap.native'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {

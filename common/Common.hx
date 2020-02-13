@@ -435,12 +435,12 @@ class TutoDatas {
 						placement : TPBottom
 
 					},{
-						element:".article .table td:first",
+						element:".article .table td",
 						text:t._("The purpose of this section is to administrate the list of your members.<br/>Every time that you register a new membrer, an account will be created for him/her. Now the member can join you at Cagette.net and order or consult the planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"),
 						action: TAPage("/member/view/*"),
 						placement : TPRight
 					},{
-						element:".article:first",
+						element:".article",
 						text:t._("This is the page of a member. Here you can : <ul><li>see and change their contact details</li><li>manage the membership fee of your group</li><li>see a summary of their orders</li></ul>"),
 						action: TANext,
 						placement : TPRight
@@ -475,13 +475,13 @@ class TutoDatas {
 					   placement : TPTop
 
 				   }*/,{
-					   element:"#contracts table .btn:first",
+					   element:"#contracts table .btn",
 					   text:t._("Let's look closer at how to manage a catalog. <b>Click on this button</b>"),
 					   action: TAPage("/contractAdmin/view/*"),
 					   placement : TPBottom
 
 				   },{
-					   element:".table.table-bordered:first",
+					   element:".table.table-bordered",
 					   text:t._("Here is a summary of the catalog.<br/>There are two types of contracts:<ul><li>CSA contracts: the member commits on buying the same products during the whole duration of the contract</li><li>Variable orders : the member can choose what he buys for each delivery.</li></ul>"),
 					   action: TANext,
 					   placement : TPRight

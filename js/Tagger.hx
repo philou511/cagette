@@ -1,6 +1,8 @@
 package ;
+import js.html.InputElement;
+import js.Browser;
 import Common;
-import js.jquery.JQuery;
+
 /**
  * 
  * Tag products with categories
@@ -15,8 +17,7 @@ class Tagger
 	var data:TaggerInfos;
 	var pids : Array<Int>; //selected product Ids
 	
-	public function new(cid:Int) 
-	{
+	public function new(cid:Int) {
 		contractId = cid;
 		pids = [];
 	}
@@ -28,13 +29,10 @@ class Tagger
 			render();
 		}
 		req.request();
-		
 	}
 	
 	function render() {
-
 		var html = new StringBuf();
-		
 		html.add("<table class='table'>");
 		for (p in data.products) {
 			html.add("<tr class='p"+p.product.id+"'>");
@@ -66,35 +64,33 @@ class Tagger
 			html.add("</tr>");
 		}
 		html.add("</table>");
-		App.jq("#tagger").html(html.toString());
-		App.jq("#tagger .tag").click(function(e) {
-			
-			var el : js.html.Element = cast e.currentTarget;
-			
-			//find tag Id
-			var tid = Std.parseInt(el.getAttribute('class').split(" ")[1].substr(1));
 
-			//find product Id					
-			var pid = Std.parseInt(el.parentElement.parentElement.getAttribute('class').substr(1));
-			
-			//remove element 
-			el.remove();
-			
-			//datas
-			remove(tid,pid);
-		});
-		
+		Browser.document.getElementById("tagger").innerHTML = html.toString();
+		var tagNdes = Browser.document.querySelectorAll("#tagger .tag");
+		for (n in tagNdes) {
+			var tag: js.html.Element = cast n;
+			tag.onclick = () -> {
+				var tid = Std.parseInt(tag.getAttribute('class').split(" ")[1].substr(1));
+				var pid = Std.parseInt(tag.parentElement.parentElement.getAttribute('class').substr(1));
+				tag.parentNode.removeChild(tag);
+				remove(tid,pid);
+			};
+		}
 	}
 	
 	public function add() {
-		var tagId = Std.parseInt(App.jq("#tag").val());
+		var tagEl: InputElement = cast Browser.document.getElementById("tag");
+		var tagId = Std.parseInt(tagEl.value);
 		
 		if (tagId == 0) js.Browser.alert("Impossible de trouver la catégorie selectionnée");
 		
 		pids = [];
-		for ( e in App.jq("#tagger input:checked").elements() ) {			
-			pids.push(Std.parseInt(e.attr("name").substr(1)));
+
+		for (n in Browser.document.querySelectorAll("#tagger input:checked")) {
+			var inputEl: js.html.InputElement = cast n;
+			pids.push(Std.parseInt(inputEl.getAttribute("name").substr(1)));
 		}
+
 		if (pids.length == 0) js.Browser.alert("Sélectionnez un produit afin de pouvoir lui attribuer une catégorie");
 		
 		for (p in pids) {
@@ -116,7 +112,6 @@ class Tagger
 	}
 	
 	function addTag(tagId:Int, productId:Int) {
-		
 		//check for doubles
 		for ( p in data.products) {
 			if (p.product.id == productId) {
@@ -133,11 +128,9 @@ class Tagger
 				break;
 			}
 		}
-		
 	}
 	
 	public function submit() {
-		
 		var req = new haxe.Http("/product/categorizeSubmit/" + contractId);
 		req.addParameter("data", haxe.Json.stringify(data));
 		req.onData = function(_data) {			
@@ -145,7 +138,5 @@ class Tagger
 			js.Browser.alert(_data);
 		}
 		req.request(true);
-		
 	}
-	
 }

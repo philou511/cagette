@@ -72,15 +72,15 @@
 				<td>
 					::e.shift()::
 					::if e.length > 0::
-						<a href="#" onclick="$(this).next().toggle(); return false;">[stack]</a>
-						<div style="display:none;">
+						<a href="#r-stack-::r.id::" data-toggle="collapse">[stack]</a>
+						<div id="r-stack-::r.id::" class="collapse">
 							<pre>Called::e.join("Called")::</pre>
 						</div>
 					::end::
 				</td>
 				<td>
-					<a href="#" onclick="$(this).next().toggle(); return false;">[infos]</a>
-						<div style="display:none;">
+					<a href="#r-infos-::r.id::" data-toggle="collapse">[infos]</a>
+						<div id="r-infos-::r.id::" class="collapse">
 							<b>IP: </b>::r.ip::<br/>
 							<b>User-Agent: </b>::r.userAgent::
 						</div>

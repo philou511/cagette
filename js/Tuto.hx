@@ -1,4 +1,5 @@
 package;
+import js.Browser;
 import Common;
 
 /**
@@ -25,106 +26,150 @@ class Tuto
 	 */
 	function init(tuto) 
 	{
-
 		var s = tuto.steps[step];
 		
 		//close previous popovers
-		var p = App.jq(".popover");
-		untyped p.popover('hide');
+		// var p = App.jq(".popover");
+		// untyped p.popover('hide');
 		
 		var t = App.instance.t;
 		if (t == null) trace("Gettext translator is null");
+
 		
 		if (s == null) {
 			/**
 			 * tutorial is finished : display a modal window
 			 */
-			var m = App.jq('#myModal');
-			untyped m.modal('show');
-			m.addClass("help");			
-			m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
-			m.find(".modal-body").html("<span class='glyphicon glyphicon-ok'></span> "+t._("This tutorial is over.")); 
-			var bt = App.jq("<a class='btn btn-default'><span class='glyphicon glyphicon-chevron-right'></span> "+t._("Come back to tutorials page")+"</a>");
-			bt.click(function(?_) {
-				untyped m.modal('hide');
-				js.Browser.location.href = STOP_URL+name;
-			});
-			m.find(".modal-footer").append(bt);
-			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
-			
-		}else if (s.element == null) {
-		
+			var modalElement = Browser.document.getElementById("myModal");
+			var modal = new bootstrap.Modal(modalElement);
+			modal.show();
+
+			modalElement.classList.add("help");
+			modalElement.querySelector(".modal-header").innerHTML = "<span class='glyphicon glyphicon-hand-right'></span> " + tuto.name;
+			modalElement.querySelector(".modal-body").innerHTML = "<span class='glyphicon glyphicon-ok'></span> "+t._("This tutorial is over.");
+			modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
+
+			var btn = Browser.document.createElement("a");
+			btn.classList.add("btn");
+			btn.classList.add("btn-default");
+			btn.innerHTML = "<span class='glyphicon glyphicon-chevron-right'></span> " + t._("Come back to tutorials page");
+			btn.onclick = function() {
+				modal.hide();
+				js.Browser.location.href = STOP_URL + name;
+			};
+			modalElement.querySelector(".modal-footer").append(btn);			
+		} else if (s.element == null) {
 			/**
 			 * no element, make a modal window (usually its the first step of the tutorial)
 			 */
-			var m = App.jq('#myModal');
-			untyped m.modal('show');
-			m.addClass("help");
-			m.find(".modal-body").html(s.text); 
-			m.find(".modal-header").html("<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name);
+			var modalElement = Browser.document.getElementById("myModal");
+			var modal = new bootstrap.Modal(modalElement);
+			modal.show();
 			
-			var bt = App.jq("<a class='btn btn-default'><i class='icon icon-chevron-right'></i> "+t._("OK")+"</a>");
-			bt.click(function(?_) {
-				untyped m.modal('hide');
+			modalElement.classList.add("help");
+			modalElement.querySelector('.modal-body').innerHTML = s.text;
+			modalElement.querySelector('.modal-header').innerHTML = "<span class='glyphicon glyphicon-hand-right'></span> "+tuto.name;
+			modalElement.querySelector('.modal-dialog').classList.remove("modal-lg");
+
+			var confirmButtonIcon = Browser.document.createElement('i');
+			confirmButtonIcon.classList.add("icon");
+			confirmButtonIcon.classList.add("icon-chevron-right");
+			
+			var confirmButton = Browser.document.createElement('a');
+			confirmButton.classList.add("btn");
+			confirmButton.classList.add("btn-default");
+			confirmButton.appendChild(confirmButtonIcon);
+			confirmButton.appendChild(Browser.document.createTextNode(" " + t._("OK")));
+
+			modalElement.querySelector(".modal-footer").append(confirmButton);
+			
+			confirmButton.onclick = function () {
+				modal.hide();
 				new Tuto(name, step + 1);
-			});
-			m.find(".modal-footer").append(bt);
-			m.find(".modal-dialog").removeClass("modal-lg"); //small window pls
+			}; 	
+		} else {
 			
-		}else {
-			
-			//prepare Bootstrap "popover"
-			var x = App.jq(s.element).first().attr("title", tuto.name+" <div class='pull-right'>"+(step+1)+"/"+tuto.steps.length+"</div>");
-			var text = "<p>" + s.text + "</p>";
-			var bt = null;
-			switch(s.action) {
-				case TANext :
-					
-					bt = App.jq("<p><a class='btn btn-default btn-sm'><i class='icon icon-chevron-right'></i> "+t._("Next")+"</a></p>");
-					bt.click(function(?_) {
-						//untyped m.modal('hide');
-						new Tuto(name, step + 1);
-						if(LAST_ELEMENT!=null) App.jq(s.element).removeClass("highlight");
-					});
-					
-				default:
-			}
-			
-			//configure and open popover			
-			var p = switch(s.placement) {
+			var elStr: String = cast s.element;
+			var el = Browser.document.querySelector(elStr);
+			var btn = null;
+
+			var popoverPlacement = switch(s.placement) {
 				case TPTop: "top";
 				case TPBottom : "bottom";
 				case TPLeft : "left";
 				case TPRight : "right";
 				default : null;
 			}
-			var options = { container:"body", content:text, html:true , placement:p};
-			untyped x.popover(options).popover('show');	
+
+			var popoverFooterId = 'popover-footer-'+ (step+1);
+			var popoverFooter = '
+				<div id=$popoverFooterId class="footer">
+					<div class="pull-left"></div>
+					<div class="pull-right"></div>
+				</div>
+			';
+
+			var popover = new bootstrap.Popover(s.element, {
+				trigger: "click",
+				container: "body",
+				title: tuto.name + ' <div class="pull-right">'+ (step+1) + '/' + tuto.steps.length + '</div>',
+				content: ''
+				+ '<p>' + s.text + '</p>'
+				+ popoverFooter,
+				placement: popoverPlacement,
+			});
+			popover.show();
+
+			switch(s.action) {
+				case TANext :
+					var nextIcon = Browser.document.createElement('i');
+					nextIcon.classList.add("icon");
+					nextIcon.classList.add("icon-chevron-right");
+					var link = Browser.document.createElement('a');
+					link.classList.add("btn");
+					link.classList.add("btn-default");
+					link.appendChild(nextIcon);
+					link.appendChild(Browser.document.createTextNode(" " + t._("Next")));
+					btn = Browser.document.createElement('p');
+					btn.appendChild(link);
+
+					btn.onclick = function () {
+						new Tuto(name, step + 1);
+						popover.hide();
+						if (LAST_ELEMENT!=null) {
+							el.classList.remove("highlight");
+						}
+					}
+				default:
+			}	
 			
-			
-			//add a footer
-			var footer = App.jq("<div class='footer'><div class='pull-left'></div><div class='pull-right'></div></div>");
-			
-			if (bt != null) footer.find(".pull-right").append(bt);
-			footer.find(".pull-left").append(makeCloseButton(t._('Stop')));
-			
-			App.jq(".popover .popover-content").append(footer);
-			
-			//highlight
-			App.jq(s.element).first().addClass("highlight");
-			LAST_ELEMENT = s.element;
+			el.addEventListener("show.bs.popover", function () {
+				var footerEl = Browser.document.getElementById(popoverFooterId);
+				if (btn != null) footerEl.querySelector(".pull-right").append(btn);
+				footerEl.querySelector(".pull-left").append(createCloseButton(t._('Stop')));
+			});
+
+			el.classList.add("highlight");
+			LAST_ELEMENT = elStr;
 		}
 	}
-	
-	/**
-	 * Make a "close" bt
-	 */
-	function makeCloseButton(?text) {
-		var bt = App.jq("<a class='btn btn-default btn-sm'><span class='glyphicon glyphicon-remove'></span> "+(text==null?"":text)+"</a>");
-		bt.click(function(?_) {			
-			js.Browser.location.href = STOP_URL+name;
-		});
-		return bt;
+
+	function createCloseButton(?text) {
+		var icon = Browser.document.createElement("span");
+		icon.classList.add("glyphicon");
+		icon.classList.add("glyphicon-remove");
+
+		var btn = Browser.document.createElement("a");
+		btn.classList.add("btn");
+		btn.classList.add("btn-default");
+		btn.classList.add("btn");
+		btn.appendChild(icon);
+		btn.appendChild(Browser.document.createTextNode(text==null ? "" : text));
+
+		btn.onclick = function() {
+			js.Browser.location.href = STOP_URL + name;
+		};
+
+		return btn;
 	}
-	
 }
