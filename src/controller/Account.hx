@@ -43,7 +43,6 @@ class Account extends Controller
 		var ua = db.UserGroup.get(app.user, app.user.getGroup());
 		if (ua == null) throw Error("/", t._("You are not a member of this group"));
 		
-		var constOrders = null;
 		var varOrders = new Map<String,Array<db.UserOrder>>();
 		
 		var a = App.current.user.getGroup();		
@@ -89,7 +88,6 @@ class Account extends Controller
 		});
 		
 		view.varOrders = varOrders2;
-		view.constOrders = constOrders;
 		
 		
 		// tutorials

@@ -28,10 +28,8 @@ class UserOrder extends Object
 	
 	public var paid : SBool;
 	
-	//if not null : varying orders
 	@:relation(distributionId)
-	public var distribution:SNull<db.Distribution>;
-
+	public var distribution:db.Distribution;
 	
 	@:relation(basketId)
 	public var basket:SNull<db.Basket>;

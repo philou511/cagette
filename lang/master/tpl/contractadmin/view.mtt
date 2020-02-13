@@ -37,11 +37,8 @@
 		</table>
 
 		<div>
-			$$edit(::_("Edit")::,/contract/edit/::c.id::)
-			
-			::if user.isAmapManager()::
+			$$edit(::_("Edit")::,/contract/edit/::c.id::)			
 			$$edit(::_("Duplicate")::,/contractAdmin/duplicate/::c.id::)
-			::end::
 		</div>
 
 		<hr/>

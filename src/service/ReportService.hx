@@ -13,15 +13,13 @@ class ReportService{
 	public static function getOrdersByProduct( distribution:db.Distribution, ?csv = false):Array<OrderByProduct>{
 		var view = App.current.view;
 		var t = sugoi.i18n.Locale.texts;
-		var where = "";
-
 		if(distribution==null) throw "distribution should not be null";
 		
 		var exportName = t._("Delivery ::contractName:: of the ", {contractName:distribution.catalog.name}) + distribution.date.toString().substr(0, 10);
-		where += ' and p.catalogId = ${distribution.catalog.id}';
-		if (distribution.catalog.type == db.Catalog.TYPE_VARORDER ) {
-			where += ' and up.distributionId = ${distribution.id}';
-		}
+		var where = ' and p.catalogId = ${distribution.catalog.id}';
+		//if (distribution.catalog.type == db.Catalog.TYPE_VARORDER ) {
+		where += ' and up.distributionId = ${distribution.id}';
+		//}
 
 		//Product price will be an average if price changed
 		var sql = 'select 

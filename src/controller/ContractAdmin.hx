@@ -169,7 +169,6 @@ class ContractAdmin extends Controller
 			var from = now.snap(Month(Down)).getDate();			
 			var to = now.snap(Month(Up)).add(Day(-1)).getDate();
 			
-			
 			var el = new sugoi.form.elements.DatePicker("from", t._("Start date"), from,true);			
 			el.format = 'LL';
 			f.addElement(el);
@@ -200,32 +199,16 @@ class ContractAdmin extends Controller
 			var d1 = tools.DateTool.setHourMinute(from,0,0);
 			var d2 = tools.DateTool.setHourMinute(to,23,59);
 			var contracts = app.user.getGroup().getActiveContracts(true);
-			var cconst = [];
-			var cvar = [];
-			for ( c in contracts) {
-				if (c.type == db.Catalog.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Catalog.TYPE_VARORDER) 	cvar.push(c.id);				
-			}
+			var cids = contracts.getIds();
 			
 			//distribs
-			var vdistribs = db.Distribution.manager.search(($catalogId in cvar)   && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);		
-			var cdistribs = db.Distribution.manager.search(($catalogId in cconst) && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);	
+			var distribs = db.Distribution.manager.search(($catalogId in cids)   && $date >= d1 && $date <= d2 /*&& place.id==$placeId*/, false);					
 			
-			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
+			if (distribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 			
-			//varying orders
-			var varorders = db.UserOrder.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
-			
-			//constant orders
-			var constorders = [];
-			for ( d in cdistribs) {
-				var orders2 = db.UserOrder.manager.search($productId in d.catalog.getProducts().getIds(), { orderBy:userId } );
-				constorders = constorders.concat(Lambda.array(orders2));
-			}
-			
-			//merge 2 lists
-			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
-			var orders = service.OrderService.prepare(Lambda.list(orders));
+
+			var orders = db.UserOrder.manager.search($distributionId in distribs.getIds()  , { orderBy:userId } );
+			var orders = service.OrderService.prepare(orders);
 			
 			view.orders = orders;
 			view.from = from;
@@ -276,32 +259,16 @@ class ContractAdmin extends Controller
 			var d1 = date.setHourMinute(0, 0);
 			var d2 = date.setHourMinute(23,59);
 			var contracts = app.user.getGroup().getActiveContracts(true);
-			var cconst = [];
-			var cvar = [];
-			for ( c in contracts) {
-				if (c.type == db.Catalog.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Catalog.TYPE_VARORDER) 	cvar.push(c.id);				
-			}
+			var cids = contracts.map(x->return x.id);
 			
 			//distribs
-			var vdistribs = db.Distribution.manager.search(($catalogId in cvar)   && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
-			var cdistribs = db.Distribution.manager.search(($catalogId in cconst) && $date >= d1 && $date <= d2 && place.id==$placeId, false);	
+			var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= d1 && $date <= d2 && place.id==$placeId, false);		
 			
-			if (vdistribs.length == 0 && cdistribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
+			if (distribs.length == 0) throw Error("/contractAdmin/ordersByDate", t._("There is no delivery at this date"));
 			
-			//varying orders
-			var varorders = db.UserOrder.manager.search($distributionId in vdistribs.getIds()  , { orderBy:userId } );
-			
-			//constant orders
-			var constorders = [];
-			for ( d in cdistribs) {
-				var orders2 = db.UserOrder.manager.search($productId in d.catalog.getProducts().getIds(), { orderBy:userId } );
-				constorders = constorders.concat(Lambda.array(orders2));
-			}
-			
-			//merge 2 lists
-			var orders = Lambda.array(varorders).concat(Lambda.array(constorders));
-			var orders = service.OrderService.prepare(Lambda.list(orders));
+			//orders
+			var orders = db.UserOrder.manager.search($distributionId in distribs.getIds()  , { orderBy:userId } );			
+			var orders = service.OrderService.prepare(orders);
 			
 			view.orders = orders;
 			view.date = date;
@@ -519,18 +486,18 @@ class ContractAdmin extends Controller
 	}
 	
 	/**
-	 *  Duplicate a contract
+	 *  Duplicate a catalog
 	 */
 	@tpl("form.mtt")
-	function doDuplicate(contract:db.Catalog) {
+	function doDuplicate(catalog:db.Catalog) {
 
-		sendNav(contract);
-		if (!app.user.isAmapManager()) throw Error("/", t._("You do not have the authorization to manage this contract"));
+		sendNav(catalog);
+		if (!app.user.canManageContract(catalog)) throw Error("/", t._("You do not have the authorization to manage this catalog"));
 		
-		view.title = "Dupliquer le contrat '"+contract.name+"'";
+		view.title = "Dupliquer le contrat '"+catalog.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name", t._("Name of the new catalog"), contract.name.substr(0,50)  + " - copy"));		
+		form.addElement(new StringInput("name", t._("Name of the new catalog"), catalog.name.substr(0,50)  + " - copy"));		
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
@@ -538,28 +505,28 @@ class ContractAdmin extends Controller
 
 			var nc = new db.Catalog();
 			nc.name = form.getValueOf("name");
-			nc.startDate = contract.startDate;
-			nc.endDate = contract.endDate;
-			nc.group = contract.group;
-			nc.contact = contract.contact;
-			nc.description = contract.description;
-			nc.distributorNum = contract.distributorNum;
-			nc.flags = contract.flags;
-			nc.type = contract.type;
-			nc.vendor = contract.vendor;
-			nc.percentageName = contract.percentageName;
-			nc.percentageValue = contract.percentageValue;
+			nc.startDate = catalog.startDate;
+			nc.endDate = catalog.endDate;
+			nc.group = catalog.group;
+			nc.contact = catalog.contact;
+			nc.description = catalog.description;
+			nc.distributorNum = catalog.distributorNum;
+			nc.flags = catalog.flags;
+			nc.type = catalog.type;
+			nc.vendor = catalog.vendor;
+			nc.percentageName = catalog.percentageName;
+			nc.percentageValue = catalog.percentageValue;
 			nc.insert();
 			
 			//give right to this contract
-			if(contract.contact!=null){
-				var ua = db.UserGroup.get(contract.contact, contract.group);
+			if(catalog.contact!=null){
+				var ua = db.UserGroup.get(catalog.contact, catalog.group);
 				ua.giveRight(ContractAdmin(nc.id));
 			}
 			
 			
 			if (form.getValueOf("copyProducts") == true) {
-				var prods = contract.getProducts();
+				var prods = catalog.getProducts();
 				for ( source_p in prods) {
 					var p = new db.Product();
 					p.name = source_p.name;
@@ -587,7 +554,7 @@ class ContractAdmin extends Controller
 			}
 			
 			if (form.getValueOf("copyDeliveries") == true) {
-				for ( ds in contract.getDistribs()) {
+				for ( ds in catalog.getDistribs()) {
 					var d = new db.Distribution();
 					d.catalog = nc;
 					d.date = ds.date;
@@ -600,7 +567,7 @@ class ContractAdmin extends Controller
 				}
 			}
 			
-			app.event(DuplicateContract(contract));
+			app.event(DuplicateContract(catalog));
 			
 			throw Ok("/contractAdmin/view/" + nc.id, t._("The catalog has been duplicated"));
 		}

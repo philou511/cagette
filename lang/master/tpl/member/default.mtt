@@ -20,7 +20,13 @@
 						alert("Action inconnue");
 					}
 					if(action=="membership"){
-						window.confirm("Cette action va saisir une cotisation par chèque pour l'année en cours pour tous les membres sélectionnés. Confirmez vous cette action ?");
+						if(!window.confirm("Cette action va saisir une cotisation par chèque pour l'année en cours pour tous les membres sélectionnés. Confirmez vous cette action ?")){
+							return;
+						}
+					}else if(action=="exclude"){
+						if(!window.confirm("Voulez vous vraiment retirer "+ids.length+" membres de votre groupe ?")){
+							return;
+						}
 					}
 					if(ids.length==0){
 						alert("Vous devez sélectionner un ou plusieurs membres de ce groupe");

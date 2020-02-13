@@ -1,4 +1,5 @@
 package controller;
+import tools.ObjectListTool;
 import db.DistributionCycle;
 import db.UserOrder;
 import sugoi.form.Form;
@@ -194,36 +195,19 @@ class Distribution extends Controller
 			
 			var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 			var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-			var contracts = app.user.getGroup().getActiveContracts(true);
-			//var cids = Lambda.map(contracts, function(c) return c.id);
-			var cconst = [];
-			var cvar = [];
-			for ( c in contracts) {
-				if (c.type == db.Catalog.TYPE_CONSTORDERS) cconst.push(c.id);
-				if (c.type == db.Catalog.TYPE_VARORDER) cvar.push(c.id);
-			}
-			
-			//commandes variables
-			var distribs = db.Distribution.manager.search(($catalogId in cvar) && $date >= d1 && $date <= d2 && $place==place, false);		
-			var orders = db.UserOrder.manager.search($distributionId in Lambda.map(distribs, function(d) return d.id)  , { orderBy:userId } );
-			
-			//commandes fixes
-			var distribs = db.Distribution.manager.search(($catalogId in cconst) && $date >= d1 && $date <= d2 && $place==place, false);
-			var orders = Lambda.array(orders);
-			for ( d in distribs) {
-				var orders2 = db.UserOrder.manager.search($productId in Lambda.map(d.catalog.getProducts(), function(d) return d.id)  , { orderBy:userId } );
-				orders = orders.concat(Lambda.array(orders2));
-			}
-
-			var orders3 = service.OrderService.prepare(Lambda.list(orders));
-			view.orders = orders3;
+			var catalogs = app.user.getGroup().getActiveContracts(true);
+			var cids = Lambda.map(catalogs, function(c) return c.id);
+			var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= d1 && $date <= d2 && $place==place, false);		
+			var orders = db.UserOrder.manager.search($distributionId in ObjectListTool.getIds(distribs)  , { orderBy:userId } );			
+			var orders = service.OrderService.prepare(orders);
+			view.orders = orders;
 			var md = db.MultiDistrib.get(date,place);
 			view.volunteers = md.getVolunteers();
 			
 			if (type == "csv") {
 				var data = new Array<Dynamic>();
 				
-				for (o in orders3) {
+				for (o in orders) {
 					data.push( { 
 						"userId":o.userId,
 						"userName":o.userName,
