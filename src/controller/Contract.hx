@@ -196,12 +196,19 @@ class Contract extends Controller
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
-		form.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue est un contrat AMAP",false));
-			
+		if(!app.user.getGroup().hasShopMode()){
+			form.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue est un contrat AMAP",false));
+		}
+		
 		if (form.checkToken()) {
 			form.toSpod(c);
 			c.group = app.user.getGroup();
-			c.type = form.getValueOf("csa")==true ? db.Catalog.TYPE_CONSTORDERS : db.Catalog.TYPE_VARORDER;
+			if(!app.user.getGroup().hasShopMode()){
+				c.type = form.getValueOf("csa")==true ? db.Catalog.TYPE_CONSTORDERS : db.Catalog.TYPE_VARORDER;
+			}else{
+				c.type = Catalog.TYPE_VARORDER;
+			}
+			
 			c.vendor = vendor;
 			c.insert();
 

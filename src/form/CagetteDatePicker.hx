@@ -10,7 +10,7 @@ class CagetteDatePicker extends NativeDatePicker {
   public var format: String = "EEEE d MMM yyyy";
 
   override public function render():String {
-    var inputName = this.parentForm.name + "_" + this.name;
+    var inputName = (parentForm==null?"":parentForm.name) + "_" + this.name;
     var inputType = renderInputType();
     var pValue = value != null ? ('"' + value.toString() + '"') : null;
     return '

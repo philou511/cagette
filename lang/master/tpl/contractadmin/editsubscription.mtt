@@ -96,13 +96,15 @@
 					Date de début
 				</label>
 				<div class="col-sm-5">
-					<div class="input-group date" id="startdatepicker">       
+					::raw startDate.render()::
+					<!--<div class="input-group date" id="startdatepicker">       
 						<span class="input-group-addon">
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
 						<input type="text" class="form-control" required="required"/>
 					</div>
 					<input type="hidden" name="startdate" id="startdate" value="::startdate::" />
+				-->
 				</div>
 
 			</div>
@@ -113,13 +115,16 @@
 					Date de fin
 				</label>
 				<div class="col-sm-5">
-					<div class="input-group date" name="enddatepicker" id="enddatepicker">       
+					::raw endDate.render()::
+					<!--
+						<div class="input-group date" name="enddatepicker" id="enddatepicker">       
 						<span class="input-group-addon">
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
 						<input type="text" class="form-control"  required="required"/>
 					</div>
 					<input type="hidden" name="enddate" id="enddate" value="::enddate::" />
+					-->
 				</div>
 
 			</div>
@@ -133,7 +138,7 @@
 				</div>
 
 			</div>
-
+<!--
 			<script type="text/javascript">
 
 				$(function () {
@@ -164,7 +169,7 @@
 
 				});
 						
-			</script>
+			</script>-->
 		
 		</form>
 		

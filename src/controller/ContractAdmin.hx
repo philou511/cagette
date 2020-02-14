@@ -685,12 +685,10 @@ class ContractAdmin extends Controller
 	}	
 
 	function doDocuments( dispatch : haxe.web.Dispatch ) {
-
 		dispatch.dispatch( new controller.Documents() );
 	}
 
 	function doSubscriptions( dispatch : haxe.web.Dispatch ) {
-
 		dispatch.dispatch( new controller.Subscriptions() );
 	}
 	

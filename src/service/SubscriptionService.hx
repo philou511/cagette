@@ -7,11 +7,11 @@ using tools.DateTool;
 using Lambda;
 
 enum SubscriptionServiceError {
-
 	NoSubscription;
 	PastDistributionsWithoutOrders;
 	PastOrders;
 	OverlappingSubscription;
+	InvalidParameters;
 }
 
 /**
@@ -116,20 +116,24 @@ class SubscriptionService
 	 */
 	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date, ?previousEndDate : Date  ) : Bool {
 
+		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
+			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );			
+		}
+
+		var catalogStartDate = new Date( subscription.catalog.startDate.getFullYear(), subscription.catalog.startDate.getMonth(), subscription.catalog.startDate.getDate(), 0, 0, 0 );
+		var catalogEndDate = new Date( subscription.catalog.endDate.getFullYear(), subscription.catalog.endDate.getMonth(), subscription.catalog.endDate.getDate(), 23, 59, 59 );
+		if ( subscription.startDate.getTime() < catalogStartDate.getTime() || subscription.startDate.getTime() >= catalogEndDate.getTime() ) {
+
+			throw new Error( 'La date de début de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
+		}
+		if ( subscription.endDate.getTime() <= catalogStartDate.getTime() || subscription.endDate.getTime() > catalogEndDate.getTime() ) {
+
+			throw new Error( 'La date de fin de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
+		}
+
 		if ( subscription.isValidated ) {
 
 			var view = App.current.view;
-	
-			var catalogStartDate = new Date( subscription.catalog.startDate.getFullYear(), subscription.catalog.startDate.getMonth(), subscription.catalog.startDate.getDate(), 0, 0, 0 );
-			var catalogEndDate = new Date( subscription.catalog.endDate.getFullYear(), subscription.catalog.endDate.getMonth(), subscription.catalog.endDate.getDate(), 23, 59, 59 );
-			if ( subscription.startDate.getTime() < catalogStartDate.getTime() || subscription.startDate.getTime() >= catalogEndDate.getTime() ) {
-
-				throw new Error( 'La date de début de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
-			}
-			if ( subscription.endDate.getTime() <= catalogStartDate.getTime() || subscription.endDate.getTime() > catalogEndDate.getTime() ) {
-
-				throw new Error( 'La date de fin de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
-			}
 
 			if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
 

@@ -10,7 +10,9 @@ class Subscriptions extends controller.Controller
 	}
 
 	
-	//  View all the subscriptions for a catalog
+	/**
+		View all the subscriptions for a catalog
+	**/
 	@tpl("contractadmin/subscriptions.mtt")
 	function doDefault( catalog : db.Catalog ) {
 
@@ -45,19 +47,13 @@ class Subscriptions extends controller.Controller
 		if ( checkToken() ) {
 
 			try {
-
 				service.SubscriptionService.deleteSubscription( subscription );
-
 			}
 			catch( error : Error ) {
-				
 				throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 			}
-
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscriptionUser.getName() + ' a bien été supprimée.' );
-			
 		}
-
 		throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, t._("Token error") );
 	}
 
@@ -67,6 +63,12 @@ class Subscriptions extends controller.Controller
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 
 		var catalogProducts = catalog.getProducts();
+
+		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",catalog.startDate.getTime() > Date.now().getTime() ? catalog.startDate : Date.now() );
+		view.startDate = startDateDP;
+
+		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
+		view.endDate = endDateDP;
 
 		if ( checkToken() ) {
 
@@ -87,8 +89,15 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe" );
 				}
 
-				var startDate = Date.fromString( app.params.get( "startdate" ) );
-				var endDate = Date.fromString( app.params.get( "enddate" ) );
+				//var startDate = Date.fromString( app.params.get( "startdate" ) );
+				//var endDate = Date.fromString( app.params.get( "enddate" ) );
+				
+				startDateDP.populate();
+				endDateDP.populate();
+				var startDate = startDateDP.getValue();
+				var endDate = endDateDP.getValue();
+				trace(startDate);
+				trace(endDate);
 				if ( startDate == null || endDate == null ) {
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
@@ -129,17 +138,14 @@ class Subscriptions extends controller.Controller
 				}
 
 				if ( ordersData.length == 0 ) {
-
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez entrer au moins une quantité pour un produit." );
 				}
 
-				service.SubscriptionService.createSubscription( user, catalog, startDate, endDate, ordersData );
+				service.SubscriptionService.createSubscription( user, catalog, startDate, endDate, ordersData, false );
 
 				throw Ok( '/contractAdmin/subscriptions/' + catalog.id, 'La souscription pour ' + user.getName() + ' a bien été ajoutée.' );
 
-			}
-			catch( error : Error ) {
-				
+			} catch( error : Error ) {
 				throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, error.message );
 			}
 
@@ -152,8 +158,6 @@ class Subscriptions extends controller.Controller
 		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
-		view.startdate = catalog.startDate.getTime() > Date.now().getTime() ? catalog.startDate : Date.now();
-		view.enddate = catalog.endDate;
 		view.nav.push( 'subscriptions' );
 
 	}
@@ -167,14 +171,24 @@ class Subscriptions extends controller.Controller
 
 		var canOrdersBeEdited = !service.SubscriptionService.hasPastDistribOrders( subscription );
 
+		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",subscription.startDate);
+		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",subscription.endDate);
+		view.endDate = endDateDP;
+		view.startDate = startDateDP;
+
 		if ( checkToken() ) {
 
 			try {
 
-				var startDate = Date.fromString( app.params.get( "startdate" ) );
-				var endDate = Date.fromString( app.params.get( "enddate" ) );
-				if ( startDate == null || endDate == null ) {
+				/*var startDate = Date.fromString( app.params.get( "startdate" ) );
+				var endDate = Date.fromString( app.params.get( "enddate" ) );*/
+				
+				startDateDP.populate();
+				endDateDP.populate();
+				var startDate = startDateDP.getValue();
+				var endDate = endDateDP.getValue();
 
+				if ( startDate == null || endDate == null ) {
 					throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 
@@ -223,8 +237,7 @@ class Subscriptions extends controller.Controller
 
 				service.SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData );
 
-			}
-			catch( error : Error ) {
+			} catch( error : Error ) {
 				
 				throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, error.message );
 			}
