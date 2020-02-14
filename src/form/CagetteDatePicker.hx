@@ -8,7 +8,7 @@ import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
 class CagetteDatePicker extends NativeDatePicker {
 
   public var format: String = "EEEE d MMM yyyy";
-
+  
   override public function render():String {
     var inputName = this.parentForm.name + "_" + this.name;
     var inputType = renderInputType();
@@ -17,7 +17,6 @@ class CagetteDatePicker extends NativeDatePicker {
       <div id="$inputName" ></div>
       <script>
         document.addEventListener("DOMContentLoaded", function() {
-          console.log($pValue);
           _.generateDatePicker("#$inputName", "$inputName", $pValue, "$inputType", $required);
         });
       </script>
@@ -28,8 +27,8 @@ class CagetteDatePicker extends NativeDatePicker {
     if(str=="") return null;
 
     var date = Date.now();
-    var rDate = ~/([A-zÀ-ú]*) ([0-9]*) ([A-zÀ-ú]*) ([0-9]*)/;
-    var rDatetime = ~/([A-zÀ-ú]*) ([0-9]*) ([A-zÀ-ú]*) ([0-9]*) à ([0-9]*)h([0-9]*)/;
+    var rDate = ~/([A-zÀ-ÿ]*) ([0-9]*) ([A-zÀ-ÿ]*) ([0-9]*)/;
+    var rDatetime = ~/([A-zÀ-ÿ]*) ([0-9]*) ([A-zÀ-ÿ]*) ([0-9]*) à ([0-9]*)h([0-9]*)/;
     var rTime = ~/([0-9]*)h([0-9])*/;
 
     switch (type) {
