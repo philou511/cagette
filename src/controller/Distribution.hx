@@ -742,52 +742,9 @@ class Distribution extends Controller
 					distribStartDate,
 					distribEndDate,
 					form.getValueOf("orderStartDate"),
-					form.getValueOf("orderEndDate")
+					form.getValueOf("orderEndDate"),
+					form.getValueOf("override")==true
 				);
-
-				//sync
-				for( d in md.getDistributions()){
-					d.lock();
-					d.date = md.distribStartDate;
-					d.end = md.distribEndDate;
-					d.place = md.place;
-					if(form.getValueOf("override")==true){
-						d.orderStartDate = md.orderStartDate;
-						d.orderEndDate = md.orderEndDate;
-					}
-					d.update();
-				}
-
-				/*var contractIds:Array<Int> = form.getValueOf("contracts").map(Std.parseInt);
-				for( cid in contractIds){
-					var d = Lambda.find(distributions, function(d) return d.catalog.id==cid );
-					if(d==null){
-						//create it
-						var contract = db.Catalog.manager.get(cid,false);
-						service.DistributionService.participate(md,contract);
-					}else if(form.getValueOf("override")==true){
-						//override dates
-						d.lock();
-						d.date = md.distribStartDate;
-						d.end = md.distribEndDate;
-						d.orderStartDate = md.orderStartDate;
-						d.orderEndDate = md.orderEndDate;
-						d.place = md.place;						
-						d.update();
-					}else{
-						//sync only place
-						d.lock();
-						d.place = md.place;
-						d.update();
-					}
-				}
-
-				// delete it
-				for( d in distributions){
-					if(!Lambda.has(contractIds,d.catalog.id)){
-						service.DistributionService.delete(d);
-					}
-				}*/
 
 			} catch(e:Error){
 				throw Error('/distribution/editMd/'+md.id  ,e.message);

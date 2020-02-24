@@ -39,17 +39,30 @@ class DistributionService
 	}
 
 
-	public static function checkMultiDistrib(md:db.MultiDistrib){
+	public static function checkMultiDistrib(d:db.MultiDistrib){
 
 		var t = sugoi.i18n.Locale.texts;
 
-		if (md.distribStartDate==null) {
+		if (d.distribStartDate==null) {
 			throw new Error(t._("This distribution has no date."));
 		}else{		
-			//fix end date
-			md.distribEndDate = new Date(md.distribStartDate.getFullYear(), md.distribStartDate.getMonth(), md.distribStartDate.getDate(), md.distribEndDate.getHours(), md.distribEndDate.getMinutes(), 0);
-			md.update();
+			// distrib end date is the same day as distrib start date
+			d.distribEndDate = new Date(d.distribStartDate.getFullYear(), d.distribStartDate.getMonth(), d.distribStartDate.getDate(), d.distribEndDate.getHours(), d.distribEndDate.getMinutes(), 0);
+			d.update();
 		}
+
+		if ( d.orderStartDate==null || d.orderEndDate==null ) {
+			throw new Error(t._("This distribution should have an order opening date and an order closing date."));
+		}
+		
+		if (d.distribStartDate.getTime() < d.orderEndDate.getTime() ){
+			throw new Error(t._("The distribution start date must be set after the orders end date."));
+		} 
+
+		if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ){
+			throw new Error(t._("The orders end date must be set after the orders start date !"));
+		} 
+		
 	}
 	
 	/**
@@ -63,12 +76,7 @@ class DistributionService
 		var view = App.current.view;
 		var c = d.catalog;
 
-		if (d.date==null) {
-			throw new Error(t._("This distribution has no date."));
-		}
-		if (c.type == db.Catalog.TYPE_VARORDER && (d.orderStartDate==null||d.orderEndDate==null)) {
-			throw new Error(t._("This distribution should have an order opening date and an order closing date."));
-		}	
+		
 
 		/*var distribs1;
 		var distribs2;	
@@ -95,22 +103,19 @@ class DistributionService
 			throw new Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
 		}*/
  
+		//check compat with catalog
 		if (d.date.getTime() > c.endDate.getTime()) throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
 		if (d.date.getTime() < c.startDate.getTime()) throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
 		
-		if (c.type == db.Catalog.TYPE_VARORDER ) {
-			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
-			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
-		}
+		
 
 	}
 
 	 /**
-	  *  Creates a new distribution and prevents distribution overlapping and other checks
-
-	  *  @return db.Distribution
+	  	Creates a new distribution and prevents distribution overlapping and other checks
+		@deprecated
 	  */
-	 public static function create(contract:db.Catalog,date:Date,end:Date,placeId:Int,?orderStartDate:Date,?orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {
+	 public static function create(contract:db.Catalog,date:Date,end:Date,placeId:Int,orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {
 
 		var d = new db.Distribution();
 		d.catalog = contract;
@@ -135,7 +140,7 @@ class DistributionService
 			md = db.MultiDistrib.get(d.date, d.place, true);
 		}
 		if(md==null){
-			md = createMd(d.place, d.date, d.end, d.orderStartDate, d.orderEndDate,[] );
+			md = createMd(d.place, d.date, d.end, orderStartDate, orderEndDate,[] );
 		}
 		d.multiDistrib = md;
 
@@ -149,8 +154,7 @@ class DistributionService
 		
 		md.update();
 		
-
-		DistributionService.checkDistrib(d);
+		checkDistrib(d);
 		
 		if(distributionCycle == null && dispatchEvent) {
 			var e :Event = NewDistrib(d);
@@ -203,7 +207,6 @@ class DistributionService
 			md.insert();
 		}
 			
-
 		checkMultiDistrib(md);
 
 		for( cid in contractIds){
@@ -217,9 +220,17 @@ class DistributionService
 	/**
 		Edit a multidistrib.		
 	**/
-	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date):db.MultiDistrib{
+	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date,?overrideDates=false):db.MultiDistrib{
 		
 		md.lock();
+
+		var oldDistrib = {
+			distribStartDate : md.distribStartDate,
+			distribEndDate   : md.distribEndDate,
+			orderStartDate   : md.orderStartDate,
+			orderEndDate     : md.orderEndDate,
+		};
+
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
 		md.orderStartDate 	= orderStartDate;
@@ -231,13 +242,33 @@ class DistributionService
 
 		//update related distributions
 		for( d in md.getDistributions()){
-			//sync distrib date
 			d.lock();
-			d.date =  d.date.setDateMonth(distribStartDate.getDate(),distribStartDate.getMonth()).setYear(distribStartDate.getFullYear());
-			d.end = d.end.setDateMonth(distribStartDate.getDate(),distribStartDate.getMonth()).setYear(distribStartDate.getFullYear());
+			d.date  = distribStartDate;
+			d.end   = distribEndDate;
+			d.place = place;			
+			
+			if(overrideDates){
+				d.orderStartDate = md.orderStartDate;
+				d.orderEndDate = md.orderEndDate;
+			}else{
+				//update startDate and endDate if was the same
+				if(d.orderStartDate.getTime()==oldDistrib.orderStartDate.getTime()){
+					d.orderStartDate = md.orderStartDate;
+				}
+				if(d.orderEndDate.getTime()==oldDistrib.orderEndDate.getTime()){
+					d.orderEndDate = md.orderEndDate;
+				}
+			}
 			d.update();
 
-			//let opening/closing date untouched
+		}
+
+
+		//sync
+		for( d in md.getDistributions()){
+			d.lock();
+			
+			d.update();
 		}
 
 		return md;
