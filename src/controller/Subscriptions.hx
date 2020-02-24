@@ -96,10 +96,8 @@ class Subscriptions extends controller.Controller
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
 				var endDate = endDateDP.getValue();
-				trace(startDate);
-				trace(endDate);
-				if ( startDate == null || endDate == null ) {
 
+				if ( startDate == null || endDate == null ) {
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 				
@@ -267,16 +265,13 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		try {
-			
-			service.SubscriptionService.updateSubscription( subscription, subscription.startDate, subscription.endDate, null, true );
-		}
-		catch( error : Error ) {
-			
+		try {			
+			service.SubscriptionService.validate( subscription );
+		} catch( error : Error ) {		
 			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 		}
 
-		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscription.user.getName() + ' a bien été validée.' );
+		throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription de ' + subscription.user.getName() + ' a bien été validée.' );
 		
 	}
 

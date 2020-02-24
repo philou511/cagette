@@ -216,30 +216,33 @@ class SubscriptionService
 	}
 
 
-	 public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
-	 ?ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?validateSubscription : Bool ) {
+	public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
+	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?validateSubscription:Bool ) {
 
 		if ( startDate == null || endDate == null ) {
-
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
 		}
 
 		subscription.lock();
 
 		if ( validateSubscription ) {
-
 			subscription.isValidated = true;
 		}
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 
 		if ( isSubscriptionValid( subscription ) ) {
-
 			subscription.update();
-			createCSARecurrentOrders( subscription, ordersData );
-			
+			createCSARecurrentOrders( subscription, ordersData );	
 		}
 
+	}
+
+	public static function validate(subscription:Subscription){
+		subscription.lock();
+		subscription.isValidated = true;
+		subscription.isPaid = true;
+		subscription.update();
 	}
 
 	 /**
