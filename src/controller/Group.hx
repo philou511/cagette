@@ -289,7 +289,7 @@ class Group extends controller.Controller
 					DateTools.delta(date, 1000.0 * 60 * 90),
 					place.id,
 					Date.now(),
-					DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 18)
+					DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
 				);	
 				OrderService.make(user, 1, p, null, true);
 				
@@ -343,7 +343,7 @@ class Group extends controller.Controller
 				DateTools.delta(date, 1000.0 * 60 * 90),
 				place.id,
 				Date.now(),
-				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 18)
+				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
 			);				
 			
 			OrderService.make(user, 2, egg, d.id);
