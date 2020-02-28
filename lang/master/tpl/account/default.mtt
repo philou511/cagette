@@ -59,10 +59,18 @@
 	
 
 	<!-- VARYING ORDERS -->
-	::if count(varOrders)>0::
+	::if count(distribs)>0::
 		<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
-		::foreach d varOrders::
-			<h5>::_("Order delivered on"):: ::hDate(d.date)::</h5>
+		
+		::foreach d distribs::
+
+			::set basket = d.getUserBasket(user)::
+			::if(basket!=null)::
+				::set orders = basket.getOrders(1)::
+			::end::
+			::if(orders!=null && orders.length>0)::
+
+			<h5>::_("Order delivered on"):: ::hDate(d.getDate())::</h5>
 			<table class="table table-bordered table-condensed" >
 				<tr class="greyhead">
 					<th class="col-md-1">::_("Qty||short version for quantity")::</th>
@@ -74,7 +82,7 @@
 					<th class="col-md-1" ::cond !payments::>::_("Paid")::</th>			
 				</tr>
 				::set total = 0::
-				::foreach o d.orders::
+				::foreach o prepare(orders)::
 					<tr>
 						<td>							
 							::raw o.smartQt::
@@ -107,13 +115,14 @@
 				<tr>
 					<td colspan="4">
 						::if !user.getGroup().hasPayments():: 
-							$$edit(Modifier cette commande,/contract/editOrderByDate/::d.date::)
+							$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
 						::end::
 					</td>
 					<td>TOTAL</td>
 					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
 				</tr>
 			</table>
+			::end::
 		::end::
 	
 	::end::	

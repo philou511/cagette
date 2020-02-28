@@ -1,4 +1,6 @@
 package controller;
+import service.OrderService;
+import db.MultiDistrib;
 import service.SubscriptionService;
 import sugoi.form.Form;
 import sugoi.form.elements.StringSelect;
@@ -45,54 +47,21 @@ class Account extends Controller
 		
 		var varOrders = new Map<String,Array<db.UserOrder>>();
 		
-		var a = App.current.user.getGroup();		
+		var group = App.current.user.getGroup();		
 		var oneMonthAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30);
+		var inOneMonth = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 30);
 		
 		//constant orders
-		view.subscriptionsByCatalog = SubscriptionService.getUserActiveSubscriptionsByCatalog(app.user,app.user.getGroup());
+		view.subscriptionsByCatalog = SubscriptionService.getUserActiveSubscriptionsByCatalog(app.user, group );
 		view.subscriptionService = SubscriptionService;
 				
 		//variable orders, grouped by date
-		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_VARORDER && $group == a && $endDate > oneMonthAgo, false);
-		
-		for (c in contracts) {
-			var ds = c.getDistribs(false);
-			for (d in ds) {
-				//store orders in a stringmap like "2015-01-01" => [order1,order2,...]
-				var k = d.date.toString().substr(0, 10);
-				var orders = app.user.getOrdersFromDistrib(d);
-				if (orders.length > 0) {
-					if (!varOrders.exists(k)) {
-						varOrders.set(k, Lambda.array(orders));
-					}else {
-						var z = varOrders.get(k).concat(Lambda.array(orders));
-						varOrders.set(k, z);
-					}	
-				}
-			}
-		}
-		
-		//final structure
-		var varOrders2 = new Array<{date:Date,orders:Array<UserOrder>}>();
-		for ( k in varOrders.keys()) {
-
-			var d = new Date(k.split("-")[0].parseInt(), k.split("-")[1].parseInt() - 1, k.split("-")[2].parseInt(), 0, 0, 0);
-			var orders = service.OrderService.prepare( Lambda.list(varOrders[k]) );
-			
-			varOrders2.push({date:d,orders:orders});
-		}
-		
-		//sort by date desc
-		varOrders2.sort(function(b, a) {
-			return Math.round(a.date.getTime()/1000)-Math.round(b.date.getTime()/1000);
-		});
-		
-		view.varOrders = varOrders2;
-		
+		var distribs = MultiDistrib.getFromTimeRange( group , oneMonthAgo , inOneMonth  );
+		view.distribs = distribs;
+		view.prepare = OrderService.prepare;
 		
 		// tutorials
 		if (app.user.isAmapManager()) {
-			
 			
 			//actions
 			if (app.params.exists('startTuto') ) {
@@ -103,7 +72,6 @@ class Account extends Controller
 				app.user.tutoState = {name:t,step:0};
 				app.user.update();
 			}
-			
 		
 			//tuto state
 			var tutos = new Array<{name:String,completion:Float,key:String}>();
@@ -183,9 +151,9 @@ class Account extends Controller
 		View a basket in a popup
 	**/
 	@tpl('account/basket.mtt')
-	function doBasket(basket : db.Basket){
+	function doBasket(basket : db.Basket, ?type:Int){
 		view.basket = basket;
-		view.orders = service.OrderService.prepare(basket.getOrders());
+		view.orders = service.OrderService.prepare(basket.getOrders(type));
 		view.print = app.params["print"]!=null;
 	}
 	

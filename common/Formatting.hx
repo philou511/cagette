@@ -119,6 +119,9 @@ class Formatting
 		return out;
 	}
 
+	/**
+		date with year
+	**/
 	public static  function dDate(date:Date):String{
 		return DAYS[date.getDay()] + " " + date.getDate() + " " + MONTHS[date.getMonth()] + " " + date.getFullYear();
 	}

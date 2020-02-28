@@ -1,4 +1,6 @@
 package controller;
+import service.SubscriptionService;
+import db.MultiDistrib;
 import db.Catalog;
 import db.UserOrder;
 import db.VolunteerRole;
@@ -26,16 +28,19 @@ class Contract extends Controller
 		throw Redirect("/account");
 	}
 
-	
+	/**
+		view catalog infos for shop mode groups
+	**/
 	@tpl("contract/view.mtt")
 	public function doView( catalog : db.Catalog ) {
+
+		if(!catalog.group.hasShopMode()) throw Redirect("/contract/order/"+catalog.id);
 
 		view.category = 'amap';
 		view.catalog = catalog;
 	
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
 		view.hasUserCatalogSubscription = service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true );
-		
 	}
 	
 
@@ -272,7 +277,7 @@ class Contract extends Controller
 	}
 	
 	/**
-	 * Make an order by contract ( CSA mode )
+	 * CSA mode : Make an order by contract
 	 * The form is prepopulated if orders have already been made.
 	 * 
 	 * It should work for constant orders ( will display one column )
@@ -281,18 +286,41 @@ class Contract extends Controller
 	 */
 	@tpl("contract/order.mtt")
 	function doOrder( catalog : db.Catalog ) {
+				
+		if(catalog.group.hasShopMode()) throw Redirect("/contract/view/"+catalog.id);
+
+		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
+		var subscriptions = SubscriptionService.getUserCatalogSubscriptions(app.user,catalog);
+		var isUserOrderAvailable = catalog.isUserOrderAvailable();
+		var unvalidatedSubscription = subscriptions.find(s -> return !s.isValidated);
+		view.subscriptions = subscriptions;		
+		view.subscriptionService = SubscriptionService;
+		view.unvalidatedSubscription = unvalidatedSubscription;
+		view.isUserOrderAvailable = isUserOrderAvailable;
+		view.c = view.contract = catalog;
+		view.isCSACatalog = catalog.type == db.Catalog.TYPE_CONSTORDERS;
+
+		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+			true;
+		}else{
+			if(subscriptions.length==0){
+				//has no sub
+				isUserOrderAvailable;
+			}else{
+				if(unvalidatedSubscription!=null){
+					//has an unvalidated sub
+					isUserOrderAvailable;
+				}else{
+					//has subs, but all are validated
+					false;
+				}
+			}
+		}
 		
-		//checks
-		//if (app.user.getGroup().hasPayments()) throw Redirect("/contract/orderAndPay/" + c.id);
-		if (app.user.getGroup().hasShopMode()) throw Redirect("/shop");
-		if ( !catalog.isUserOrderAvailable() ) throw Error( "/", t._("This catalog is not opened for orders") );
-		//When there is already a validated subscription we prevent the user from accesing this page and entering a new subscription
-		if ( service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true ) ) throw Redirect( '/contract/view/' + catalog.id );
 
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
 			distributions = db.Distribution.getOpenToOrdersDeliveries( catalog );
 		}else{
 			distributions = [null];
@@ -303,7 +331,7 @@ class Contract extends Controller
 		var products = catalog.getProducts();
 		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-			
+			//variable catalog
 			for ( d in distributions){
 				var data = [];
 				for ( p in products) {
@@ -315,22 +343,21 @@ class Contract extends Controller
 				userOrders.push( { distrib : d, data : data } );
 			}
 			
-		}
-		else {
-			
+		} else {
+			//CSA catalog
 			var data = [];
+			//search for an unvalidated sub
+			var subscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog );
+			
 			for ( product in products) {
 
 				var orderProduct = { order : null, product : product };
-				var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
-				// var subscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
-				// if ( subscription != null ) {
-
-				// 	var subscriptionOrders = service.SubscriptionService.getSubscriptionOrders( subscription );
-				// 	var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id ); ;
-					
-				// }
-				if ( order != null ) orderProduct.order = order;
+				//var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
+				if ( subscription != null ) {
+					var subscriptionOrders = service.SubscriptionService.getSubscriptionOrders( subscription );
+					var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id );
+					if ( order != null ) orderProduct.order = order;
+				}
 
 				data.push( orderProduct );
 			}
@@ -341,10 +368,11 @@ class Contract extends Controller
 		
 		//form check
 		if ( checkToken() ) {
+			
+			if ( !catalog.isUserOrderAvailable() ) throw Error( "/contract/order/"+catalog.id , t._("This catalog is not opened for orders") );
 
 			var orders = [];
-			var ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> ();
-
+			var ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> ();			
 
 			for ( k in app.params.keys() ) {
 				
@@ -401,46 +429,35 @@ class Contract extends Controller
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 				
 					if ( uo.order != null ) {
-
 						orders.push( OrderService.edit(uo.order, quantity));
-					}
-					else {
-
+					} else {
 						orders.push( OrderService.make(app.user, quantity, uo.product, did));
 					}
-				}
-				else {
-
+				} else {
 					ordersData.push( { productId : uo.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
 				}
 
 			}
 			
+			//create or edit subscription
 			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-
 				try {
-
 					var pendingSubscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
 					if ( pendingSubscription != null ) {
-
-						service.SubscriptionService.updateSubscription( pendingSubscription, catalog.startDate, catalog.endDate, ordersData, false );
-					}
-					else {
-
-						service.SubscriptionService.createSubscription( app.user, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, ordersData, false );
+					} else {
+						var now = Date.now();
+						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDay()+1,0,0,0);
+						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, ordersData, false );
 					}
 					
-				}
-				catch ( e : Dynamic ) { 
-				
+				} catch ( e : Dynamic ) { 
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
-
 			}
 
 			//create order operation only
 			if ( catalog.type == db.Catalog.TYPE_VARORDER && app.user.getGroup().hasPayments() ) {
-
 				var orderOps = db.Operation.onOrderConfirm(orders);
 			}
 
@@ -448,18 +465,18 @@ class Contract extends Controller
 			throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
 		}
 		
-		view.c = view.contract = catalog;
+		
 		view.userOrders = userOrders;
-		view.isCSACatalog = catalog.type == db.Catalog.TYPE_CONSTORDERS;
+		
 		
 	}
 
 	
 	/**
-	 * A user edit an order for a multidistrib.
+	 * Edit var orders for a multidistrib in CSA mode.
 	 */
-	@tpl("contract/orderByDate.mtt")
-	function doEditOrderByDate(date:Date) {
+	@tpl("contract/editVarOrders.mtt")
+	function doEditVarOrders(distrib:db.MultiDistrib) {
 		
 		if (app.user.getGroup().hasPayments()) {
 			//when payments are active, the user cannot modify his order
@@ -467,7 +484,7 @@ class Contract extends Controller
 		}
 		
 		// cannot edit order if date is in the past
-		if (Date.now().getTime() > date.getTime()) {
+		if (Date.now().getTime() > distrib.getDate().getTime()) {
 			
 			var msg = t._("This delivery has already taken place, you can no longer modify the order.");
 			if (app.user.isContractManager()) msg += t._("<br/>As the manager of the catalog you can modify the order from this page: <a href='/contractAdmin'>Catalog management</a>");
@@ -476,14 +493,15 @@ class Contract extends Controller
 		}
 		
 		// Il faut regarder le contrat de chaque produit et verifier si le contrat est toujours ouvert à la commande.		
-		var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+		/*var d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 		var d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
 		var cids = Lambda.map(app.user.getGroup().getActiveContracts(true), function(c) return c.id);
 		var distribs = db.Distribution.manager.search(($catalogId in cids) && $date >= d1 && $date <=d2 , false);
-		var orders = db.UserOrder.manager.search($userId==app.user.id && $distributionId in Lambda.map(distribs,function(d)return d.id)  );
+		var orders = db.UserOrder.manager.search($userId==app.user.id && $distributionId in Lambda.map(distribs,function(d)return d.id)  );*/
+		var orders = distrib.getUserBasket(app.user).getOrders(Catalog.TYPE_VARORDER);
 		view.orders = service.OrderService.prepare(orders);
-		view.date = date;
+		view.date = distrib.getDate();
 		
 		//form check
 		if (checkToken()) {

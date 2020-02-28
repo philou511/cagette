@@ -9,42 +9,38 @@
 
 		<div style="margin:8px 0;">
 
-			::if distribution!=null::
+			<!--::if distribution!=null::-->
 				<a class="btn btn-default btn-sm"
 					onclick="_.initOrderBox(null,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::',null,'::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::')">
 					<i class="icon icon-plus"></i>
 					::_("New order")::
 				</a>							
-			::else::
+			<!--::else::
 				<a class="btn btn-default btn-sm"
 					onclick="_.initOrderBox(null, null, ::c.id::,::c.type::, null, null, null,'::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::')">
 					<i class="icon icon-plus"></i>
 					::_("New order")::
 				</a>
-			::end::			
+			::end::	-->
 			
-			::if distribution!=null::
-				$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
-				<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
-					<i class="icon icon-products"></i>
-					::_("Summary by products")::
-				</a>
+			
+			$$export(/contractAdmin/orders/::c.id::?csv=1&d=::distribution.id::)
+			<a href="/contractAdmin/ordersByProduct/::c.id::?d=::distribution.id::" class="btn btn-default btn-sm">
+				<i class="icon icon-products"></i>
+				::_("Summary by products")::
+			</a>
 
-				<div class="dropdown" style="display:inline-block;">
-					<button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="icon icon-print"></i> ::_("Attendance sheet")::
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-						<li><a href="/distribution/list/::distribution.id::"> ::_("Standard")::</a></li>
-						<li><a href="/distribution/listByProductUser/::distribution.id::"> ::_("By Product-User")::</a></li>			
-					</ul>
-					</div>
+			<div class="dropdown" style="display:inline-block;">
+				<button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="icon icon-print"></i> ::_("Attendance sheet")::
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a href="/distribution/list/::distribution.id::"> ::_("Standard")::</a></li>
+					<li><a href="/distribution/listByProductUser/::distribution.id::"> ::_("By Product-User")::</a></li>			
+				</ul>
+			</div>
 			
-			::else::
-				$$export(/contractAdmin/orders/::c.id::?csv=1)
-				<a href="/contractAdmin/ordersByProduct/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-products"></i>
-					::_("Summary by products")::</a>
-			::end::
+			
 		</div>
 
 		::if disabledProducts > 0::
@@ -90,19 +86,19 @@
 							::set totalAdh = totalAdh+1::
 						</td>
 						<td>
-							::if distribution!=null::
+							<!--::if distribution!=null::-->
 							<a class="btn btn-default btn-xs"
 								onclick="_.initOrderBox(::m.userId::,::multiDistribId::,::distribution._catalog.id::,::distribution._catalog.type::,'::escapeJS(hDate(distribution.date))::','::escapeJS(distribution._place.toString())::','::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::?d=::distribution.id::')">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
 							</a>							
-							::else::
+							<!--::else::
 							<a class="btn btn-default btn-xs"
 								onclick="_.initOrderBox(::m.userId::, null, ::c.id::,::c.type::, null, null, '::escapeJS(m.userName)::','::user.getGroup().currency::', ::user.getGroup().hasPayments()::, '/contractAdmin/orders/::c.id::')">
 								<i class="icon icon-edit"></i>
 								::_("Edit")::
 							</a>
-							::end::
+							::end::-->
 							<div id="ordersdialog-container"></div>														
 						</td>
 					

@@ -397,7 +397,7 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders( catalog : db.Catalog, args : { ?d : db.Distribution, ?delete : db.UserOrder } ) {
+	function doOrders( catalog : db.Catalog, args : { d : db.Distribution, ?delete : db.UserOrder } ) {
 
 		view.nav.push( "orders" );
 		sendNav( catalog );

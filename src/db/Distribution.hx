@@ -111,12 +111,12 @@ class Distribution extends Object
 	**/
 	@:skip var pids : Array<Int>;
 	public function hasUserOrders(user:db.User):Bool{
-		if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
+		/*if ( this.catalog.type == db.Catalog.TYPE_CONSTORDERS){
 			if(pids==null) pids = tools.ObjectListTool.getIds(db.Product.manager.search($catalog == this.catalog, false));
 			return db.UserOrder.manager.search( (($productId in pids) && ($user==user || $user2==user) ),{limit:1}, false).length > 0; 
-		}else{
+		}else{*/
 			return db.UserOrder.manager.search($distribution == this  && $user==user,{limit:1}, false).length > 0; 
-		}
+		//}
 	}
 
 	public function getUserOrders(user:db.User):List<db.UserOrder>{

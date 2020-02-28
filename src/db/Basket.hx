@@ -89,8 +89,19 @@ class Basket extends Object
 	/**
 	 *  Get basket's orders
 	 */
-	public function getOrders():Array<db.UserOrder> {
-		return Lambda.array(db.UserOrder.manager.search($basket == this, false));
+	public function getOrders(?type:Int):Array<db.UserOrder> {
+		if(type==null){
+			//get all orders
+			return Lambda.array(db.UserOrder.manager.search($basket == this, false));
+		}else{
+			//get CSA/variable orders 
+			var out = new Array<db.UserOrder>();
+			for( d in getDistribution().getDistributions(type)){
+				out = out.concat( d.getUserOrders(this.user).array() );
+			}
+			return out;
+		}
+		
 	}
 	
 	/**
@@ -112,7 +123,6 @@ class Basket extends Object
 	 * @return Float
 	 */
 	public function getTotalPaid() : Float {
-		
 		var payments = getPaymentsOperations();
 		var totalPaid = 0.0;
 
@@ -120,24 +130,25 @@ class Basket extends Object
 		for( payment in payments ) {
 			totalPaid += payment.amount;
 		}
-
 		return totalPaid;
-
 	}
 
 	/**
 	 * Returns the total amount of all the orders in this basket
 	 * @return Float
 	 */
-	public function getOrdersTotal() : Float {
+	public function getOrdersTotal(?type:Int) : Float {
 
-		var total = 0.0;
-		for( order in getOrders())
-		{
+		/*var total = 0.0;
+		for( order in getOrders(type)){
 			total += order.quantity * (order.productPrice * (1+order.feesRate/100));
 		}
-
 		return total;
+		*/
+		return getOrders(type).fold( 
+			(order,total)-> return total + order.quantity * (order.productPrice * (1+order.feesRate/100))
+		, 0.0);
+		
 
 	}
 	

@@ -41,13 +41,19 @@ class SubscriptionService
 	}
 
 	public static function hasUserCatalogSubscription( user : db.User, catalog : db.Catalog, isValidated : Bool ) : Bool {
-
 		return db.Subscription.manager.count( $user == user && $catalog == catalog && $isValidated == isValidated ) != 0;
 	}
 
-	public static function getUserCatalogSubscription( user : db.User, catalog : db.Catalog, isValidated : Bool ) : db.Subscription {
+	public static function getUserCatalogSubscription( user : db.User, catalog : db.Catalog, ?isValidated : Bool ) : db.Subscription {
+		if(isValidated!=null){
+			return db.Subscription.manager.select( $user == user && $catalog == catalog && $isValidated == isValidated, false );
+		}else{
+			return db.Subscription.manager.select( $user == user && $catalog == catalog , false );
+		}		
+	}
 
-		return db.Subscription.manager.select( $user == user && $catalog == catalog && $isValidated == isValidated, false );
+	public static function getUserCatalogSubscriptions( user : db.User, catalog : db.Catalog ) : Array<db.Subscription> {
+		return db.Subscription.manager.search( $user == user && $catalog == catalog , false ).array();
 	}
 
 	public static function getSubscriptionDistributions( subscription : db.Subscription ) : List<db.Distribution> {

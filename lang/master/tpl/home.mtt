@@ -111,9 +111,9 @@
 						<div class="content orders text-center">
 							::set basket = d.getUserBasket(user)::
 							::set title = "Commande du "+hDate(d.getDate())::
-								<a onclick="_.overlay('/account/basket/::basket.id::','::title::')" class="btn btn-default btn-sm">
+								<a onclick="_.overlay('/account/basket/::basket.id::/1','::title::')" class="btn btn-default btn-sm">
 									
-									<i class="icon icon-basket"></i> ::_("My order"):: : ::formatNum(basket.getOrdersTotal()):: ::currency()::
+									<i class="icon icon-basket"></i> ::_("My order"):: : ::formatNum(basket.getOrdersTotal(1)):: ::currency()::
 								</a>
 							<!---::set orders = prepare(d.getUserOrders(user))::
 							
