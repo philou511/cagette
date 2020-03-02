@@ -450,7 +450,6 @@ class Contract extends Controller
 						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDay()+1,0,0,0);
 						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, ordersData, false );
 					}
-					
 				} catch ( e : Dynamic ) { 
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
