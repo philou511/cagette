@@ -41,7 +41,7 @@ typedef MembershipDialogState = {
 
     userName:String,
     availableYears:Array<{name:String,id:Int}>,
-    memberships:Array<{name:String,date:Date,id:Int}>,
+    memberships:Array<{name:String,date:Date,id:Int,amount:Float}>,
     distributions:Array<{name:String,id:Int}>,
     paymentTypes:Array<{id:String,name:String}>,
     ?membershipFee:Int,

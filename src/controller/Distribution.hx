@@ -1570,6 +1570,7 @@ class Distribution extends Controller
 				membershipAmount += m.operation.amount;
 			}
 			view.membershipAmount = membershipAmount;
+			view.memberships = memberships;
 
 		}
 

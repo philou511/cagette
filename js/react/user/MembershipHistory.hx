@@ -14,7 +14,7 @@ typedef MembershipHistoryProps = {
     isLocked: Bool,
     userId: Int,
     groupId: Int,
-    memberships: Array<{name:String,date:Date,id:Int}>,
+    memberships: Array<{name:String,date:Date,id:Int,amount:Float}>,
     ?onDelete: () -> Void,
     ?onDeleteComplete: () -> Void,
 };
@@ -53,6 +53,7 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
                         <TableRow>
                             <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}>Année</TableCell>
                             <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}>Date de cotis.</TableCell>
+                            <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}>Montant</TableCell>
                             <TableCell className={props.classes.headTableCell} align=${mui.core.common.Align.Center}></TableCell>
                         </TableRow>
                     </TableHead>
@@ -104,6 +105,7 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
             <TableRow key={row.id}>
                 <TableCell align=${mui.core.common.Align.Center}>{row.name}</TableCell>
                 <TableCell align=${mui.core.common.Align.Center}>{DateFns.format(Date.fromString(row.date), "d MMMM yyyy", {locale: DateFnsLocale.fr})}</TableCell>
+                <TableCell align=${mui.core.common.Align.Center}>{row.amount}&nbsp;&euro;</TableCell>
                 <TableCell align=${mui.core.common.Align.Center}>
                     <IconButton disabled=${props.isLocked} onClick=$onClick>
                         <Delete />
