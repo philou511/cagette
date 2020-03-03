@@ -21,6 +21,6 @@
     "noImplicitThis": true,
     "noImplicitAny": true
   },
-  "include": ["../src"],
+  "include": ["../src2"],
   "exclude": ["../node_modules", "../lib", "../build"]
 }

@@ -7,7 +7,7 @@ import del from 'rollup-plugin-delete'
 import pkg from '../package.json'
 
 export default {
-  input: 'src/index.tsx',
+  input: 'src2/index.tsx',
   output: [
     {
       file: pkg["main"],
