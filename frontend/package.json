@@ -12,6 +12,7 @@
     "@material-ui/pickers": "^3.2.10",
     "bootstrap": "^3.4.0",
     "bowser": "^2.1.0",
+    "cagette-react": "file:cagette-react",
     "date-fns": "^2.9.0",
     "eonasdan-bootstrap-datetimepicker": "^4.7.14",
     "formik": "^2.1.3",
