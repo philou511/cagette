@@ -1,11 +1,11 @@
 import React from 'react';
-import MyComponent from '../../components/MyComponent';
+import MyCustomComponent from '../../components/MyCustomComponent';
 
 const MyContainer = () => {
   return (
     <div>
       <div>MyContainer</div>
-      <MyComponent />
+      <MyCustomComponent />
     </div>
   );
 };

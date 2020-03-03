@@ -1,6 +1,5 @@
-import React from 'react';
-export declare class Hello extends React.Component {
-    render(): JSX.Element;
-}
-export declare const HelloF: () => JSX.Element;
-export declare const HelloFC: React.FC;
+/**
+ * LIB ENTRY POINT
+ */
+export * from './components';
+export * from './containers';
