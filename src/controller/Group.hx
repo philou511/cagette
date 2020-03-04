@@ -284,11 +284,19 @@ class Group extends controller.Controller
 				product.insert();
 				
 				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);
+				DistributionService.create(
+					contract,
+					date,
+					DateTools.delta(date, 1000.0 * 60 * 90),
+					place.id,
+					Date.now(),
+					DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
+				);	
 				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
 				var subscription = service.SubscriptionService.createSubscription( user, contract, contract.startDate, contract.endDate, ordersData );
-
+				
+				
 			}
 			
 			//contrat variable
@@ -331,14 +339,14 @@ class Group extends controller.Controller
 			p.catalog = contract;
 			p.insert();
 			
-			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);
+			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
 			var d = DistributionService.create(
 				contract,
 				date,
 				DateTools.delta(date, 1000.0 * 60 * 90),
 				place.id,
 				Date.now(),
-				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 18)
+				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
 			);				
 			
 			OrderService.make(user, 2, egg, d.id);

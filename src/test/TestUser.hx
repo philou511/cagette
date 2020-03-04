@@ -22,12 +22,15 @@ class TestUser extends utest.Test
 	}
 	
 	/**
-	 * Check that a user who has admin rights for his/her group can't view a contract from a group
-     he/she doesn't belong to
+		Check that a user who has admin rights for his/her group can't view a contract from a group
+    	he/she doesn't belong to
 	 */
 	function testViewContract(){        
-        var userAmap = db.UserGroup.getOrCreate(TestSuite.FRANCOIS, TestSuite.AMAP_DU_JARDIN);
-        userAmap.giveRight(Right.GroupAdmin);
+		db.UserGroup.CACHE.clear();
+        var userGroup = db.UserGroup.getOrCreate(TestSuite.FRANCOIS, TestSuite.AMAP_DU_JARDIN);
+		userGroup.giveRight(Right.GroupAdmin);
+		Assert.isNull( db.UserGroup.get(TestSuite.FRANCOIS , TestSuite.LOCAVORES) );
+
 		var catalog = TestSuite.LOCAVORES.getContracts().first();
         Assert.isFalse( TestSuite.FRANCOIS.canManageContract(catalog) );
 	}

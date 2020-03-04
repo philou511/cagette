@@ -23,7 +23,7 @@ class MembershipService{
 		return group.getPeriodNameFromYear(year);
 	}
 
-	public function createMembership(user:db.User,year:Int,date:Date,?membershipFee:Int,?paymentType:String,?distribution:db.MultiDistrib):db.Membership{
+	public function createMembership(user:db.User,year:Int,date:Date,?membershipFee:Float,?paymentType:String,?distribution:db.MultiDistrib):db.Membership{
 		
 		//check if exising
 		if(getUserMembership(user,year)!=null){
