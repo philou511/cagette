@@ -8,14 +8,18 @@ class Subscription extends Object {
 	public var id : SId;
 	@formPopulate("populate") @:relation(userId) public var user : db.User;
 	@:relation(catalogId) public var catalog : db.Catalog;
-	public var startDate : SDate;
-	public var endDate : SDate;
+	public var startDate : SDateTime;
+	public var endDate : SDateTime;
 	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
 
 	public function populate() {
 		
 		return App.current.user.getGroup().getMembersFormElementData();
+	}
+
+	public function getDistributions(){
+		return service.SubscriptionService.getSubscriptionDistributions(this);
 	}
 
 	public static function getLabels() {

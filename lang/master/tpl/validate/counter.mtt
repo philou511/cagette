@@ -68,7 +68,6 @@
                 <tr>
                     <td> <b>Encaissements Carte bancaire</b> </td>
                     <td>
-                        
                         ::sales.mpTurnover.ttc:: 
                         ::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc):: =
                         ::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;
@@ -80,26 +79,22 @@
                         <b>Total Commande par taux de TVA</b>
                     </td>
                     <td>
-                            <table class="table">
-            
-                                    <tr>
-                                        <td>Taux</td>
-                                        <td>HT</td>
-                                        <td>TTC</td>
-                                    </tr>
-                                ::foreach k ordersByVat.keys()::
-                                    <tr>
-                                        <th>::k/100::%</th>
-                                        <td>::formatNum(ordersByVat.get(k).ht)::</td>
-                                        <td>::formatNum(ordersByVat.get(k).ttc)::</td>
-                                    </tr>
-                                ::end::
-                                </table>
-
+                        <table class="table">
+                            <tr>
+                                <td>Taux</td>
+                                <td>HT</td>
+                                <td>TTC</td>
+                            </tr>
+                        ::foreach k ordersByVat.keys()::
+                            <tr>
+                                <th>::k/100::%</th>
+                                <td>::formatNum(ordersByVat.get(k).ht)::</td>
+                                <td>::formatNum(ordersByVat.get(k).ttc)::</td>
+                            </tr>
+                        ::end::
+                        </table>
                     </td>
                 </tr>
-
-                
                  
               
             </table>

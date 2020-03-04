@@ -281,12 +281,21 @@ class Distribution extends Controller
 	}
 	
 	/**
-		Edit a distribution
+		Shift a Distribution
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
 		var contract = d.catalog;
+
+		var text = "Si la date à laquelle vous souhaitez reporter la distribution n'est pas dans la liste, créez la dans l'onglet \"Distributions\".";
+		text += "<br/>Attention :";
+		text += "<br/>- Un décalage de distribution provoque une renumérotation des paniers de la distribution choisie.";
+		if(d.catalog.isCSACatalog()){
+			text += "<br/>- Un décalage de distribution peut provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distribution. Pensez à vérifier les souscriptions après avec effectué cette action.";
+		}
+		
+		view.text =  text;
 		
 		var form = form.CagetteForm.fromSpod(d);
 		form.removeElementByName("placeId");
@@ -297,11 +306,15 @@ class Distribution extends Controller
 
 		//date
 		var threeMonthAgo = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
+		if(threeMonthAgo.getTime()<Date.now().getTime()) threeMonthAgo = Date.now();
 		var inThreeMonth  = DateTools.delta(d.multiDistrib.distribStartDate , 1000.0*60*60*24*30.5*3); 
 		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,threeMonthAgo,inThreeMonth);
-		
-		var mds = mds.filter(function(md) return !md.isValidated() ).map(function(md) return {label:view.hDate(md.getDate()), value:md.id});
-		var e = new sugoi.form.elements.IntSelect("md",t._("Change distribution"), mds ,d.multiDistrib.id);			
+		//remove validated distribs, and the current one
+		mds = mds.filter( md -> return !md.isValidated() && md.id!=d.multiDistrib.id);
+		//remove already attended distribs
+		mds = mds.filter( md -> return md.getDistributionForContract(d.catalog)==null  );
+		var mds = mds.map( md -> return {label:view.hDate(md.getDate()), value:md.id});
+		var e = new sugoi.form.elements.IntSelect("md","Reporter la distribution au ", mds ,d.multiDistrib.id);			
 		form.addElement(e, 1);
 
 		
@@ -321,13 +334,11 @@ class Distribution extends Controller
 				}
 
 				var md = db.MultiDistrib.manager.get(form.getValueOf("md"));
-				
+
 				//do not launch event, avoid notifs for now
 				d = DistributionService.editAttendance(
 					d,
 					md,
-					/*form.getValueOf("startHour"),
-					form.getValueOf("endHour"),*/
 					orderStartDate,
 					orderEndDate,
 					false
@@ -339,8 +350,10 @@ class Distribution extends Controller
 			}
 			
 			if (d.date == null) {
+				
 				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
 				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
+
 			} else {
 
 				if(app.user.isGroupManager() || app.user.canManageAllContracts() ){

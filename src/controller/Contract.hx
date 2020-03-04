@@ -1,4 +1,5 @@
 package controller;
+import tools.DateTool;
 import service.SubscriptionService;
 import db.MultiDistrib;
 import db.Catalog;
@@ -10,9 +11,7 @@ import sugoi.form.Form;
 import Common;
 import plugin.Tutorial;
 import service.OrderService;
-using Std;
-using Lambda;
-
+import form.CagetteForm;
 
 class Contract extends Controller
 {
@@ -59,7 +58,12 @@ class Contract extends Controller
 		var group = c.group;
 		var currentContact = c.contact;
 		
-		var form = form.CagetteForm.fromSpod(c);
+		var customMap = new FieldTypeToElementMap();
+		customMap["DDate"] = CagetteForm.renderDDate;
+		customMap["DTimeStamp"] = CagetteForm.renderDDate;
+		customMap["DDateTime"] = CagetteForm.renderDDate;
+
+		var form = form.CagetteForm.fromSpod(c,customMap);
 		form.removeElement( form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("distributorNum"));
@@ -72,7 +76,9 @@ class Contract extends Controller
 			c.group = group;
 			
 			//checks & warnings
-			if (c.hasPercentageOnOrders() && c.percentageValue==null) throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and a label."));
+			if (c.hasPercentageOnOrders() && c.percentageValue==null) {
+				throw Error("/contract/edit/"+c.id, t._("If you would like to add fees to the order, define a rate (%) and a label."));
+			}
 			
 			if (c.hasStockManagement()) {
 				for (p in c.getProducts()) {
@@ -84,12 +90,11 @@ class Contract extends Controller
 			}
 			
 			//no stock mgmt for constant orders
-			if (c.hasStockManagement() && c.type==db.Catalog.TYPE_CONSTORDERS) {
+			/*if (c.hasStockManagement() && c.type==db.Catalog.TYPE_CONSTORDERS) {
 				c.flags.unset(CatalogFlags.StockManagement);
 				app.session.addMessage(t._("Managing stock is not available for CSA contracts"), true);
-			}
-			
-			
+			}*/
+
 			c.update();
 			
 			//update rights
@@ -193,7 +198,12 @@ class Contract extends Controller
 		
 		var c = new db.Catalog();
 
-		var form = form.CagetteForm.fromSpod(c);
+		var customMap = new FieldTypeToElementMap();
+		customMap["DDate"] = CagetteForm.renderDDate;
+		customMap["DTimeStamp"] = CagetteForm.renderDDate;
+		customMap["DDateTime"] = CagetteForm.renderDDate;
+
+		var form = form.CagetteForm.fromSpod(c,customMap);
 		form.removeElement(form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.getElement("name").value = "Commande "+vendor.name;

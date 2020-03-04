@@ -18,8 +18,8 @@ class Catalog extends Object
 	@formPopulate("populate") @:relation(userId) public var contact : SNull<User>;
 	@formPopulate("populateVendor") @:relation(vendorId) public var vendor : Vendor;
 	
-	public var startDate:SDate;
-	public var endDate :SDate;
+	public var startDate:SDateTime;
+	public var endDate :SDateTime;
 	
 	public var description:SNull<SText>;
 	
@@ -43,6 +43,13 @@ class Catalog extends Object
 		distributorNum = 0;		
 		flags.set(UsersCanOrder);
 	
+	}
+
+	/**
+		Is there a subscription management on this catalog ?
+	**/
+	public function hasSubscriptions(){
+		return type==TYPE_CONSTORDERS;
 	}
 	
 	/**
@@ -70,6 +77,10 @@ class Catalog extends Object
 			return d>0 && isVisibleInShop();
 		}
 		
+	}
+
+	public function isCSACatalog(){
+		return type == TYPE_CONSTORDERS;
 	}
 	
 	/**
@@ -229,20 +240,15 @@ class Catalog extends Object
 
 			if ( includeUser2 ) {
 
-				
-
 				var orders = db.UserOrder.manager.search( ($productId in pids) && ($user==u || $user2==u ), false );
 				if( orders.length != 0 ) {
-
 					ucs.push( orders.first() );
 				}
 				
-			}
-			else {
+			} else {
 
 				var orders = db.UserOrder.manager.search( ( $productId in pids ) && ( $user == u ), false );
 				if( orders.length != 0 ) {
-
 					ucs.push( orders.first() );
 				}
 			}
@@ -290,6 +296,12 @@ class Catalog extends Object
 	
 	public function populate() {
 		return App.current.user.getGroup().getMembersFormElementData();
+	}
+
+	override public function update(){
+		startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate()	, 0, 0, 0 );
+		endDate 	= new Date( endDate.getFullYear(),   endDate.getMonth(),   endDate.getDate()	, 23, 59, 59 );
+		super.update();
 	}
 	
 	/**

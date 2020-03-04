@@ -56,9 +56,9 @@ class SubscriptionService
 		return db.Subscription.manager.search( $user == user && $catalog == catalog , false ).array();
 	}
 
-	public static function getSubscriptionDistributions( subscription : db.Subscription ) : List<db.Distribution> {
+	public static function getSubscriptionDistributions( subscription : db.Subscription ) : Array<db.Distribution> {
 
-		return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, false );
+		return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate,{orderBy:date}, false ).array();
 	}
 
 	public static function getSubscriptionNbDistributions( subscription : db.Subscription ) : Int {

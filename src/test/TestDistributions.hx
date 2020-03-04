@@ -1,4 +1,5 @@
-package test;import utest.Assert;
+package test;import service.SubscriptionService;
+import utest.Assert;
 import service.DistributionService;
 
 /**
@@ -347,5 +348,7 @@ class TestDistributions extends utest.Test
 		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		Assert.equals(sebOperation.amount, -78);
 	}
+
+	
 
 }

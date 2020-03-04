@@ -27,7 +27,19 @@ class Product extends Controller
 		var f = form.CagetteForm.fromSpod(product);
 		
 		//stock mgmt ?
-		if (!product.catalog.hasStockManagement()) f.removeElementByName('stock');	
+		if (!product.catalog.hasStockManagement()){
+			f.removeElementByName('stock');	
+		} else {
+			if(product.catalog.isCSACatalog()){
+				//manage stocks by distributions for CSA contracts
+				var stock = f.getElement("stock");
+				stock.label = "Stock (par distribution)";				 
+				if(product.stock!=null){
+					stock.value = Math.floor( product.stock / product.catalog.getDistribs(false).length );
+				}
+				
+			}
+		}
 		
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
@@ -50,6 +62,12 @@ class Product extends Controller
 		
 		if (f.isValid()) {
 			f.toSpod(product);
+
+			//manage stocks by distributions for CSA contracts
+			if(product.catalog.isCSACatalog() && product.stock!=null){
+				product.stock = (f.getValueOf("stock"):Float) * product.catalog.getDistribs(false).length;
+			}
+
 			app.event(EditProduct(product));
 			product.update();
 			throw Ok('/contractAdmin/products/'+product.catalog.id, t._("The product has been updated"));

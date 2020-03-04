@@ -128,7 +128,7 @@
 		
 			<p class="text-right">
 				::if canOrder::
-					<input type="submit" class="btn btn-lg btn-primary" value="::_("Validate the order")::" name="submit" id="submit" />		
+					<input type="submit" class="btn btn-lg btn-primary" value="Enregistrer ma commande" name="submit" id="submit" />		
 				::end::
 				
 			</p>
@@ -139,7 +139,7 @@
 
 	<!--Subscription-->
 	<div class="article" ::cond isCSACatalog::>
-		<h4>Votre souscription</h4>
+		<h4>Ma souscription</h4>
 		::if(subscriptions==null || subscriptions.length==0)::
 			<p class="text-center">
 				Vous n'avez pas souscrit à ce contrat.
@@ -195,18 +195,18 @@
 
 		::if(catalog.description!=null)::
 		<div class="article">
-			<h4>Informations</h4>
+			<h4><i class="icon icon-info"></i> Informations</h4>
 			::nl2br(catalog.description)::
 		</div>
 		::end::
 
 		<div ::cond visibleDocuments.length != 0:: class="article">
-			<h4>Documents</h4>
-			<div>
+			<h4><i class="icon icon-file-pdf"></i> Documents</h4>
+			<ul>
 				::foreach doc visibleDocuments::
-					<i class="icon icon-file-pdf"></i><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					
+					<li><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
 				::end::
-			</div>
+			</ul>
 		</div>
 
 		<div class="article">
@@ -239,12 +239,24 @@
 			::end::
 		</div>
 
-		
-
-	
+		<div class="article">
+			<h3>Prochaines distributions</h3>
+			
+			::set distribs = catalog.getDistribs(true,null)::
+			<ul style="max-height:300px;overflow-y:auto;">
+				::foreach d distribs::
+				<li>				
+					<b>::dDate(d.date)::</b>
+					<br/>::d._place.name::		
+				</li>						
+				::end::	
+			</ul>
+			
+			::if distribs.length==0::
+			<p>
+				::_("No planned distributions.")::
+			</p>
+			::end::
+		</div>
 </div>
-
-
-
-
 ::end::

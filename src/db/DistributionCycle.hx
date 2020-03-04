@@ -34,7 +34,7 @@ class DistributionCycle extends Object
 	}
 
 	public function getDistributions():Array<db.MultiDistrib>{
-		return Lambda.array( db.MultiDistrib.manager.search($distributionCycle == this, false) );
+		return db.MultiDistrib.manager.search($distributionCycle == this,{orderBy:distribStartDate}, false).array();
 	}
 
 	/**

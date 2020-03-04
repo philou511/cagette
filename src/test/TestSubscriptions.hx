@@ -1,4 +1,5 @@
 package test;
+import db.Subscription;
 import Common;
 import service.DistributionService;
 import service.OrderService;
@@ -142,11 +143,8 @@ class TestSubscriptions extends utest.Test
 		error = null;
 		subscription = null;
 		try {
-			
 			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2000, 5, 1, 19, 0, 0), catalog.endDate, ordersData  );
-		}
-		catch( e : tink.core.Error ) {
-
+		} catch( e : tink.core.Error ) {
 			error = e;
 		}
 		Assert.equals( error.message, 'La date de début de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
@@ -155,20 +153,17 @@ class TestSubscriptions extends utest.Test
 
 		//No error for a pending subscription
 		//------------------------------------
-		error = null;
+		/*error = null;
 		subscription = null;
 		try {
-			
 			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2000, 5, 1, 19, 0, 0), catalog.endDate, ordersData, false  );
-		}
-		catch( e : tink.core.Error ) {
-
+		} catch( e : tink.core.Error ) {
 			error = e;
 		}
 		Assert.equals( error, null );
 		Assert.isTrue( subscription != null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 1 );
-		SubscriptionService.deleteSubscription( subscription );
+		SubscriptionService.deleteSubscription( subscription );*/
 
 		//-----------------------------------------------------------
 		//Test case : End date is outside catalog start and end dates
@@ -176,11 +171,8 @@ class TestSubscriptions extends utest.Test
 		error = null;
 		subscription = null;
 		try {
-			
 			subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, new Date(2036, 5, 1, 19, 0, 0), ordersData );
-		}
-		catch( e : tink.core.Error ) {
-
+		} catch( e : tink.core.Error ) {
 			error = e;
 		}
 		Assert.equals( error.message, 'La date de fin de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
@@ -189,20 +181,17 @@ class TestSubscriptions extends utest.Test
 
 		//No error for a pending subscription
 		//------------------------------------
-		error = null;
+		/*error = null;
 		subscription = null;
 		try {
-			
 			subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, new Date(2036, 5, 1, 19, 0, 0), ordersData, false );
-		}
-		catch( e : tink.core.Error ) {
-
+		} catch( e : tink.core.Error ) {
 			error = e;
 		}
 		Assert.equals( error, null );
 		Assert.isTrue( subscription != null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 1 );
-		SubscriptionService.deleteSubscription( subscription );
+		SubscriptionService.deleteSubscription( subscription );*/
 		
 		//----------------------------
 		//Test case : User 2 not found
@@ -211,11 +200,8 @@ class TestSubscriptions extends utest.Test
 		subscription = null;
 		ordersData = [ { productId : panierAmap.id, quantity : 1, invertSharedOrder : false, userId2 : 999999 } ];
 		try {
-			
 			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate, ordersData );
-		}
-		catch( e : tink.core.Error ) {
-
+		} catch( e : tink.core.Error ) {
 			error = e;
 		}
 		Assert.equals( error.message, "Unable to find user #999999" );
@@ -448,5 +434,81 @@ class TestSubscriptions extends utest.Test
 
 	}
 
+	/**
+		Test distribution shifting (décalage de date en contrat AMAP)
+	**/
+	function testDistributionShifting(){
 
+		var amapDistrib = TestSuite.DISTRIB_CONTRAT_AMAP;
+		var contract = amapDistrib.catalog;
+		var panier = TestSuite.PANIER_AMAP_LEGUMES;
+
+		//Add a distrib cycle in the future
+		var weeklyDistribCycle = DistributionService.createCycle(
+			contract.group,
+			Weekly,
+			new Date(2029, 11, 24, 0, 0, 0),
+			new Date(2030, 0, 24, 0, 0, 0),
+			new Date(2029, 5, 4, 13, 0, 0),
+			new Date(2029, 5, 4, 14, 0, 0),
+			10,
+			2,
+			new Date(2029, 5, 4, 8, 0, 0),
+			new Date(2029, 5, 4, 23, 0, 0),
+			TestSuite.PLACE_DU_VILLAGE.id,
+			[contract.id, TestSuite.APPLES.catalog.id]
+		);
+
+		var distributions = weeklyDistribCycle.getDistributions();
+		/**
+			create : 
+			#5 Multidistrib à Place du village le 2029-12-24 13:00:00,
+			#6 Multidistrib à Place du village le 2029-12-31 13:00:00,
+			#7 Multidistrib à Place du village le 2030-01-07 13:00:00,
+			#8 Multidistrib à Place du village le 2030-01-14 13:00:00,
+			#9 Multidistrib à Place du village le 2030-01-21 13:00:00
+			with 2 catalogs linked
+		**/	
+				
+		
+		//create subscription for 2 users for this cycle
+		var orders = [{productId:panier.id,quantity: 1.0,userId2:null,invertSharedOrder: null}];
+		var francoisSub = SubscriptionService.createSubscription(TestSuite.FRANCOIS,contract,weeklyDistribCycle.startDate,weeklyDistribCycle.endDate,orders,false);
+		var sebSub = SubscriptionService.createSubscription(TestSuite.SEB,contract,weeklyDistribCycle.startDate,weeklyDistribCycle.endDate,orders,false);
+
+		
+		//we should have 5 distribs
+		//SubscriptionService.getSubscriptionDistributions(sebSub).map(d -> trace("dist du "+d.date));
+		Assert.equals(SubscriptionService.getSubscriptionDistributions(sebSub).length , 5);
+		Assert.equals(SubscriptionService.getSubscriptionTotalPrice(sebSub) , (panier.price*5) );
+
+		//create a new MD out of subscriptions
+		var tpl = distributions[0];
+		var newMd = DistributionService.createMd(
+			tpl.getPlace(),
+			new Date(2030,2,3,19,0,0),
+			new Date(2030,2,3,20,0,0),
+			new Date(2030,2,3,10,0,0),
+			new Date(2030,2,3,18,0,0),
+			[]
+		);
+
+		//distrib of 2030-01-07 is shifted to 2030-03-03
+		var distrib = distributions[2].getDistributionForContract(contract);
+		Assert.equals(distrib.date.toString().substr(0,10) , "2030-01-07");
+		distrib = DistributionService.editAttendance( distrib, newMd, distrib.orderStartDate, distrib.orderEndDate, false );
+
+		Assert.equals( distrib.date.toString().substr(0,10) , "2030-03-03" );
+		sebSub = Subscription.manager.get(sebSub.id);//re-get
+		var sebDistribs = SubscriptionService.getSubscriptionDistributions(sebSub);
+		Assert.equals(sebDistribs.length , 5);
+		Assert.equals(SubscriptionService.getSubscriptionTotalPrice(sebSub) , (panier.price*5) );
+		// trace(sebDistribs);
+		Assert.equals(sebDistribs[4].id , distrib.id, "the last distrib of the subscription should be the one we shifted");
+
+		
+		// var sebBasket1 = d1.getUserBasket(TestSuite.SEB);
+		// Assert.isTrue(sebBasket1.num == 2);
+
+	}
 }

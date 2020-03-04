@@ -193,5 +193,12 @@ class Basket extends Object
 		
 		return !hasPendingOnTheSpotPayments;			
 	}
+
+	public function renumber(){
+		this.lock();
+		var max : Int = sys.db.Manager.cnx.request("select max(num) from Basket where multiDistribId="+this.multiDistrib.id).getIntResult(0);
+		this.num = max + 1;
+		this.update();
+	}
 	
 }

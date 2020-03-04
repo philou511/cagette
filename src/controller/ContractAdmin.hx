@@ -498,7 +498,7 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+catalog.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name", t._("Name of the new catalog"), catalog.name.substr(0,50)  + " - copy"));		
+		form.addElement(new StringInput("name", t._("Name of the new catalog"), catalog.name.substr(0,50)  + " - copie"));		
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
@@ -519,12 +519,16 @@ class ContractAdmin extends Controller
 			nc.percentageValue = catalog.percentageValue;
 			nc.insert();
 			
-			//give right to this contract
+			//give rights to this contract
 			if(catalog.contact!=null){
-				var ua = db.UserGroup.get(catalog.contact, catalog.group);
+				var ua = db.UserGroup.get(catalog.contact, catalog.group);				
 				ua.giveRight(ContractAdmin(nc.id));
 			}
-			
+
+			if(catalog.contact==null || app.user.id!=catalog.contact.id){
+				var ua = db.UserGroup.get(app.user, catalog.group);
+				ua.giveRight(ContractAdmin(nc.id));
+			}
 			
 			if (form.getValueOf("copyProducts") == true) {
 				var prods = catalog.getProducts();

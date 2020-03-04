@@ -1,4 +1,8 @@
 package service;
+import db.Subscription;
+import pro.payment.MangopayECPayment;
+import pro.payment.MangopayMPPayment;
+import service.PaymentService.PaymentContext;
 import Common;
 import tink.core.Error;
 using tools.DateTool;
@@ -94,15 +98,21 @@ class DistributionService
 		if (distribs1.length != 0 || distribs2.length != 0 || distribs3.length != 0) {
 			throw new Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
 		}*/
- 
-		if (d.date.getTime() > c.endDate.getTime()) throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
-		if (d.date.getTime() < c.startDate.getTime()) throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
+		var catalogStartDate = DateTool.setHourMinute(d.catalog.startDate,0,0);
+		var catalogEndDate = DateTool.setHourMinute(d.catalog.endDate,23,59);
+		
+		if (d.date.getTime() > catalogEndDate.getTime()){
+			throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
+		}
+
+		if (d.date.getTime() < catalogStartDate.getTime()){
+			throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
+		} 
 		
 		if (c.type == db.Catalog.TYPE_VARORDER ) {
 			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
 			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
 		}
-
 	}
 
 	 /**
@@ -258,26 +268,35 @@ class DistributionService
 	/**
 		Participate to a multidistrib.
 	**/
-	public static function participate(md:db.MultiDistrib,contract:db.Catalog){
+	public static function participate(md:db.MultiDistrib,catalog:db.Catalog){
 		var t = sugoi.i18n.Locale.texts;
 		md.lock();
 
 		for( d in md.getDistributions()){
-			if(d.catalog.id==contract.id){
+			if(d.catalog.id==catalog.id){
 				throw new Error(t._("This vendor is already participating to this distribution"));
 			}
 		}
 
-		if( contract.type == db.Catalog.TYPE_VARORDER){
+		if( catalog.type == db.Catalog.TYPE_VARORDER){
 			if(md.orderStartDate==null || md.orderEndDate==null){
 				var url = "/distribution/editMd/" + md.id;
 				throw new Error(t._("You can't participate to this distribution because no order start date has been defined. <a href='::url::' target='_blank'>Please update the general distribution first</a>.",{url:url}));
 			}
 		}
 
+		if( catalog.isCSACatalog() ){
+			//if there is at least one validated subscription, cancelation is not possible
+			if( db.Subscription.manager.count( $catalogId == catalog.id && $isValidated ) > 0){
+				throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions validées. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
+			} else if( db.Subscription.manager.count( $catalogId == catalog.id  ) > 0 ){
+				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous créez des distributions supplémentaires, le montant à payer va varier." , true);
+			}
+		}
+
 		md.deleteProductsExcerpt();
 		
-		return create(contract,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,true,md);
+		return create(catalog,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,true,md);
 
 	}
 
@@ -353,7 +372,7 @@ class DistributionService
 	/**
 		Edit attendance of a farmer to a distribution(md)
 	**/
-	public static function editAttendance(d:db.Distribution,md:db.MultiDistrib,/*distribStartHour:Date,distribEndHour:Date,*/orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
+	public static function editAttendance(d:db.Distribution,newMd:db.MultiDistrib,orderStartDate:Date,orderEndDate:Date,?dispatchEvent=true):db.Distribution {
 
 		//We prevent others from modifying it
 		d.lock();
@@ -363,29 +382,57 @@ class DistributionService
 			throw new Error(t._("You cannot edit a distribution which has been already validated."));
 		}
 
-		if(md.id!=d.multiDistrib.id){
+		if(newMd.id!=d.multiDistrib.id){
+
+			//check that the vendor does not already participate
+			if( newMd.getDistributionForContract(d.catalog) != null){
+				throw new Error(d.catalog.vendor.name+" participe déjà à la distribution du "+Formatting.hDate(newMd.getDate()));
+			}
+
 			/* 
 			FORBID THIS WITH CREDIT CARD PAYMENTS 
 			because it would make the order and payment ops out of sync
 			*/
 			var orders = d.getOrders();
+			#if plugins
 			if(d.catalog.group.hasPayments() && orders.length>0){
-				throw new Error(t._("Sorry, you can't move the distribution of this farmer to a different date when payments management is enabled in your group."));
+				var paymentTypes = PaymentService.getPaymentTypes( PaymentContext.PCPayment , newMd.getGroup() );
+				if( paymentTypes.find( p -> return p.type==MangopayECPayment.TYPE || p.type==MangopayMPPayment.TYPE ) != null ){
+					throw new Error("Les décalages de distributions sont interdits lorsque le paiement en ligne est activé et que des commandes sont déjà enregistrées.");
+				}
 			}
+			#end
 
-			//different multidistrib id ! should change the basket					
+			//different multidistrib id : should change the baskets					
 			for ( o in orders ){
 				o.lock();
 				//find new basket
-				o.basket = db.Basket.getOrCreate(o.user, md);
+				o.basket = db.Basket.getOrCreate(o.user, newMd);
 				o.update();
 			}
+
+			//renumbering baskets
+			for( b in newMd.getBaskets()){
+				b.renumber();
+			}
+
+			//extends subscriptions ?
+			if(d.catalog.hasSubscriptions()){
+				//get subscriptions that were concerned by this distribution
+				var subscriptions = Subscription.manager.search($catalog==d.catalog && $startDate <= d.date && $endDate >= d.date , true );
+				for ( sub in subscriptions ){
+					//if the subscription is closing before the new date, extends it
+					if(sub.endDate.getTime() < newMd.getDate().getTime()){
+						SubscriptionService.updateSubscription(sub, sub.startDate, newMd.getDate(), null, sub.isValidated );
+					}					
+				}
+			}
+			
 		}
 
-		d.multiDistrib = md;
-		//do not allow to customize distribution date anymore
-		d.date = md.distribStartDate;
-		d.end = md.distribEndDate;
+		d.multiDistrib = newMd;
+		d.date = newMd.distribStartDate;
+		d.end = newMd.distribEndDate;
 		
 		if(d.catalog.type==db.Catalog.TYPE_VARORDER){
 			d.orderStartDate = orderStartDate;
@@ -428,6 +475,16 @@ class DistributionService
 	 */
 	public static function cancelParticipation(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
+		
+		if( d.catalog.isCSACatalog() ){
+			//if there is at least one validated subscription, cancelation is not possible
+			if( db.Subscription.manager.count( $catalogId == d.catalog.id && $isValidated ) > 0){
+				throw new Error("Vous ne pouvez pas annuler cette distribution car il y a déjà des souscriptions validées. Vous pouvez cependant décaler cette distribution en fin de contrat afin de maintenir le même nombre dans les souscriptions des adhérents. Pour décaler une distribution, cliquez sur le bouton \"Dates\".");
+			} else if( db.Subscription.manager.count( $catalogId == d.catalog.id  ) > 0 ){
+				App.current.session.addMessage( "Attention, vous avez déjà des souscriptions enregistrées pour ce contrat. Si vous supprimez des distributions, le montant à payer va varier." , true);
+			}
+		}
+
 		if ( !canDelete(d) ) {
 			throw new Error(t._("Deletion not possible: orders are recorded for ::vendorName:: on ::date::.",{vendorName:d.catalog.vendor.name,date:Formatting.hDate(d.date)}));
 		}
