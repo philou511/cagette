@@ -70,7 +70,7 @@ class User extends Controller
 					id : m.year ,
 					name : ms.getPeriodName(m.year),
 					date : m.date,
-					amount : m.operation!=null ? m.operation.amount : null,
+					amount : m.operation!=null ? Math.abs(m.operation.amount) : null,
 				};
 			});
 
@@ -107,18 +107,7 @@ class User extends Controller
 			var ms = new MembershipService(group);
 			var membership = ms.getUserMembership(user,year);
 			if(membership!=null){
-				membership.lock();
-				if(membership.operation!=null){
-					var op = membership.operation;
-					op.lock();
-					op.relation.lock();
-					op.relation.delete();					
-					op.delete();
-					service.PaymentService.updateUserBalance(user,group);
-				}
-				membership.delete();
-
-				
+				ms.deleteMembership(membership);
 			}
 			var memberships = ms.getUserMemberships(user).map(m->{
 				return {
