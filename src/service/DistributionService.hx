@@ -459,6 +459,11 @@ class DistributionService
 						SubscriptionService.updateSubscription(sub, sub.startDate, newMd.getDate(), null, sub.isValidated );
 					}					
 				}
+				/**
+				2020-03-04 francois :
+				il peut se produire un bug pour une souscription concernée par la distrib reportée, si cette souscription est terminée de maniere anticipée.
+				le code actuel va reporter sa date de fin à la distrib reportée, ce qui va certainement englober d'autres distribs non souhaitées.
+				**/
 			}
 			
 		}
