@@ -43,7 +43,7 @@ class User extends Controller
 
 				var year = params["year"].parseInt();
 				var date = Date.fromString(params["date"]);
-				var membershipFee = params["membershipFee"].parseInt();
+				var membershipFee = params["membershipFee"].parseFloat();
 				var paymentType = params["paymentType"];
 				var distribution = db.MultiDistrib.manager.get(params["distributionId"].parseInt(),false);
 
@@ -54,7 +54,7 @@ class User extends Controller
 			var out = {
 				userName:null,
 				availableYears: new Array<{name:String,id:Int}>(),
-				memberships: new Array<{name:String,id:Int,date:Date}>(),
+				memberships: new Array<{name:String,id:Int,date:Date,amount:Float}>(),
 				membershipFee:null,
 				distributions: new Array<{name:String,id:Int}>(),
 				paymentTypes: new Array<{id:String,name:String}>(),
@@ -69,7 +69,8 @@ class User extends Controller
 				return {
 					id : m.year ,
 					name : ms.getPeriodName(m.year),
-					date : m.date
+					date : m.date,
+					amount : m.operation!=null ? m.operation.amount : null,
 				};
 			});
 
@@ -79,7 +80,6 @@ class User extends Controller
 				id:d.id,
 				name:"Distribution du "+Formatting.hDate(d.distribStartDate)
 			});
-
 
 			out.availableYears = [];
 			var now = Date.now();

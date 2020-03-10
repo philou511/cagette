@@ -21,7 +21,7 @@ class UserGroup extends Object
 	@:relation(userId) public var user : db.User;
 	public var rights : SNull<SData<Array<Right>>>;		// rights in this group
 	public var balance : SFloat; 						//account balance in group currency
-	static var CACHE = new Map<String,db.UserGroup>();
+	public static var CACHE = new Map<String,db.UserGroup>();
 	
 	
 	public function new(){

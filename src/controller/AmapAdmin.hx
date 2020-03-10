@@ -1,4 +1,6 @@
 package controller;
+import sugoi.form.elements.Input.InputType;
+import sugoi.form.elements.IntInput;
 import db.Group.GroupFlags;
 import db.UserGroup;
 import haxe.Http;
@@ -46,8 +48,14 @@ class AmapAdmin extends Controller
 		var dp = new sugoi.form.elements.DatePicker("membershipRenewalDate","Date de renouvellement annuelle des adhésions",group.membershipRenewalDate);
 		dp.format = "D MMMM";
 		form.addElement( dp ,15 );
-		
+		//avoid modifiying another group
+		var groupId = new sugoi.form.elements.IntInput("groupId","groupId",group.id);
+		groupId.inputType = InputType.ITHidden;
+		form.addElement( groupId );
+
 		if (form.checkToken()) {
+
+			if( form.getValueOf("groupId") != group.id ) throw "Vous avez changé de groupe.";
 
 			group.lock();
 			if(form.getValueOf("membership")==true){
@@ -334,25 +342,31 @@ class AmapAdmin extends Controller
 		var selected = app.user.getGroup().allowedPaymentsType;
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes", t._("Authorized payment types"),formdata, selected) );
 		
-		if (app.user.getGroup().checkOrder == ""){
-			app.user.getGroup().lock();
-			app.user.getGroup().checkOrder = app.user.getGroup().name;
-			app.user.getGroup().update();
+		var group = app.user.getGroup();
+
+		if (group.checkOrder == ""){
+			group.lock();
+			group.checkOrder = app.user.getGroup().name;
+			group.update();
 		}
 		f.addElement( new sugoi.form.elements.StringInput("checkOrder", t._("Make the check payable to"), app.user.getGroup().checkOrder, false)); 
 		f.addElement( new sugoi.form.elements.StringInput("IBAN", t._("IBAN of your bank account for transfers"), app.user.getGroup().IBAN, false)); 
-		f.addElement(new sugoi.form.elements.Checkbox("allowMoneyPotWithNegativeBalance", t._("Allow money pots with negative balance"), app.user.getGroup().allowMoneyPotWithNegativeBalance));
-		
+		f.addElement( new sugoi.form.elements.Checkbox("allowMoneyPotWithNegativeBalance", t._("Allow money pots with negative balance"), app.user.getGroup().allowMoneyPotWithNegativeBalance));
+		//avoid modifiying another group
+		var groupId = new sugoi.form.elements.IntInput("groupId","groupId",group.id);
+		groupId.inputType = InputType.ITHidden;
+		f.addElement( groupId );
+
 		if (f.isValid()){
 			
-			var p = f.getValueOf("paymentTypes");
-			var a = app.user.getGroup();
-			a.lock();
-			a.allowedPaymentsType = p;
-			a.checkOrder = f.getValueOf("checkOrder");
-			a.IBAN = f.getValueOf("IBAN");
-			a.allowMoneyPotWithNegativeBalance = f.getValueOf("allowMoneyPotWithNegativeBalance");
-			a.update();
+			if( f.getValueOf("groupId") != group.id ) throw "Vous avez changé de groupe.";
+
+			group.lock();
+			group.allowedPaymentsType = f.getValueOf("paymentTypes");
+			group.checkOrder = f.getValueOf("checkOrder");
+			group.IBAN = f.getValueOf("IBAN");
+			group.allowMoneyPotWithNegativeBalance = f.getValueOf("allowMoneyPotWithNegativeBalance");
+			group.update();
 			
 			throw Ok("/amapadmin/payments", t._("Payment options updated"));
 			

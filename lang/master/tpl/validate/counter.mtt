@@ -68,7 +68,6 @@
                 <tr>
                     <td> <b>Encaissements Carte bancaire</b> </td>
                     <td>
-                        
                         ::sales.mpTurnover.ttc:: 
                         ::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc):: =
                         ::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;
@@ -80,33 +79,25 @@
                         <b>Total Commande par taux de TVA</b>
                     </td>
                     <td>
-                            <table class="table">
-            
-                                    <tr>
-                                        <td>Taux</td>
-                                        <td>HT</td>
-                                        <td>TTC</td>
-                                    </tr>
-                                ::foreach k ordersByVat.keys()::
-                                    <tr>
-                                        <th>::k/100::%</th>
-                                        <td>::formatNum(ordersByVat.get(k).ht)::</td>
-                                        <td>::formatNum(ordersByVat.get(k).ttc)::</td>
-                                    </tr>
-                                ::end::
-                                </table>
-
+                        <table class="table">
+                            <tr>
+                                <th>Taux</th>
+                                <th>HT</th>
+                                <th>TTC</th>
+                            </tr>
+                            ::foreach k ordersByVat.keys()::
+                                <tr>
+                                    <th>::k/100::%</th>
+                                    <td>::formatNum(ordersByVat.get(k).ht)::</td>
+                                    <td>::formatNum(ordersByVat.get(k).ttc)::</td>
+                                </tr>
+                            ::end::
+                        </table>
                     </td>
                 </tr>
-
-                
-                 
               
             </table>
-
-            
         </div>
-        
 
         <div class="col-md-6">
                 <table class="table table-bordered">
@@ -151,24 +142,24 @@
     
                     </tr>
                     <tr>
-                            <td> <b>Avoirs</b></td>
-                            <td>
-                                ::if(paidTooMuch.length>0)::
-                                    ::set total = 0.0::
-                                    <ul>
-                                    ::foreach b paidTooMuch::
-                                        <li>::b.user.getName():: : avoir de ::formatNum(b.amount):: ::currency()::</li>
-                                        ::set total = total + b.amount::
-                                    ::end::
-                                    </ul>
-                                    Total avoirs : ::formatNum(total):: ::currency()::
-                                ::else::
-                                    Aucun
+                        <td> <b>Avoirs</b></td>
+                        <td>
+                            ::if(paidTooMuch.length>0)::
+                                ::set total = 0.0::
+                                <ul>
+                                ::foreach b paidTooMuch::
+                                    <li>::b.user.getName():: : avoir de ::formatNum(b.amount):: ::currency()::</li>
+                                    ::set total = total + b.amount::
                                 ::end::
-                                
-                            </td>
-        
-                        </tr>
+                                </ul>
+                                Total avoirs : ::formatNum(total):: ::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
+                            
+                        </td>
+    
+                    </tr>
                     
                   
                 </table>
@@ -185,6 +176,26 @@
                     <tr>
                         <th>Montant des cotisations</th>
                         <td>::formatNum(membershipAmount):: ::currency()::</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Détail cotisations</b></td>
+                        <td>
+                            <table class="table">
+                                <tr>
+                                    <th>Membre</th>
+                                    <th>Année</th>
+                                    <th>Montant</th>
+                                </tr>
+                            ::foreach m memberships::
+                                <tr>
+                                    <td>::m._user.getName()::</td>
+                                    <td>::m.year::</td>
+                                    <td>::formatNum(m._operation.amount):: ::currency()::</td>
+                                </tr>
+                            ::end::
+                            </table>
+                        </td>
+    
                     </tr>
 
                 </table>

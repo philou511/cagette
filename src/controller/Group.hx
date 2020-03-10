@@ -283,7 +283,14 @@ class Group extends controller.Controller
 				p.insert();
 				
 				var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
-				DistributionService.create(contract,date,DateTools.delta(date, 1000.0 * 60 * 90),place.id);				
+				DistributionService.create(
+					contract,
+					date,
+					DateTools.delta(date, 1000.0 * 60 * 90),
+					place.id,
+					Date.now(),
+					DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
+				);	
 				OrderService.make(user, 1, p, null, true);
 				
 				
@@ -329,14 +336,14 @@ class Group extends controller.Controller
 			p.catalog = contract;
 			p.insert();
 			
-			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 21);
+			var date = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 14);
 			var d = DistributionService.create(
 				contract,
 				date,
 				DateTools.delta(date, 1000.0 * 60 * 90),
 				place.id,
 				Date.now(),
-				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 18)
+				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
 			);				
 			
 			OrderService.make(user, 2, egg, d.id);

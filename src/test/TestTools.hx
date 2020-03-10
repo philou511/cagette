@@ -10,11 +10,6 @@ import Common;
 class TestTools extends utest.Test
 {
 	
-	public function new(){
-		super();
-	}
-	
-
 	function testDateRanges(){        
         // test last hour range
 		var now = Date.fromString("2018-01-01 00:30:12");
@@ -62,6 +57,7 @@ class TestTools extends utest.Test
 
 		TestSuite.initDB();
 		TestSuite.initDatas();
+		db.UserGroup.CACHE.clear();
 
 		//create initial state : francois and seb are member of a group.
 		var francois = TestSuite.FRANCOIS;
