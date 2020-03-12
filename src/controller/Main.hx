@@ -259,7 +259,7 @@ Called from controller/Main.hx line 117
 		d.dispatch(new controller.Amap());
 	}
 	
-	@logged
+	
 	function doContract(d:Dispatch) {
 		addBc("contract","Catalogues","/contractAdmin");
 		d.dispatch(new Contract());

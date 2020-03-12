@@ -1,4 +1,5 @@
 package service;
+import db.Group.RegOption;
 import db.Subscription;
 import db.Catalog;
 import Common;
@@ -122,19 +123,53 @@ class SubscriptionService
 	 */
 	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date, ?previousEndDate : Date  ) : Bool {
 
+		var subName = ' (souscription de ${subscription.user.getName()})';
+
+		//invalid dates
 		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
 			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );			
 		}
 
+		//dates should be inside catalog dates
 		var catalogStartDate = new Date( subscription.catalog.startDate.getFullYear(), subscription.catalog.startDate.getMonth(), subscription.catalog.startDate.getDate(), 0, 0, 0 );
 		var catalogEndDate = new Date( subscription.catalog.endDate.getFullYear(), subscription.catalog.endDate.getMonth(), subscription.catalog.endDate.getDate(), 23, 59, 59 );
 		if ( subscription.startDate.getTime() < catalogStartDate.getTime() || subscription.startDate.getTime() >= catalogEndDate.getTime() ) {
-
 			throw new Error( 'La date de début de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
 		}
 		if ( subscription.endDate.getTime() <= catalogStartDate.getTime() || subscription.endDate.getTime() > catalogEndDate.getTime() ) {
-
 			throw new Error( 'La date de fin de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
+		}
+
+		//dates overlap check
+		var subscriptions1;
+		var subscriptions2;	
+		var subscriptions3;	
+		//We are checking that there is no existing subscription with an overlapping time frame for the same user and catalog
+		if ( subscription.id == null ) { //We need to check there the id as $id != null doesn't work in the manager.search
+
+			//Looking for existing subscriptions with a time range overlapping the start of the about to be created subscription
+			subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
+															&& $startDate <= subscription.startDate && $endDate >= subscription.startDate, false );
+			//Looking for existing subscriptions with a time range overlapping the end of the about to be created subscription
+			subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
+															&& $startDate <= subscription.endDate && $endDate >= subscription.endDate, false );	
+			//Looking for existing subscriptions with a time range included in the time range of the about to be created subscription		
+			subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
+															&& $startDate >= subscription.startDate && $endDate <= subscription.endDate, false );	
+		} else {
+			//Looking for existing subscriptions with a time range overlapping the start of the about to be created subscription
+			subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
+															&& $startDate <= subscription.startDate && $endDate >= subscription.startDate, false );
+			//Looking for existing subscriptions with a time range overlapping the end of the about to be created subscription
+			subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
+															&& $startDate <= subscription.endDate && $endDate >= subscription.endDate, false );	
+			//Looking for existing subscriptions with a time range included in the time range of the about to be created subscription		
+			subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
+															&& $startDate >= subscription.startDate && $endDate <= subscription.endDate, false );	
+		}
+			
+		if ( subscriptions1.length != 0 || subscriptions2.length != 0 || subscriptions3.length != 0 ) {
+			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.', OverlappingSubscription );
 		}
 
 		if ( subscription.isValidated ) {
@@ -142,48 +177,14 @@ class SubscriptionService
 			var view = App.current.view;
 
 			if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
-
-				throw TypedError.typed( 'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée.', PastOrders );
+				throw TypedError.typed( 'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.', PastOrders );
 			}
 
 			if ( hasPastDistribsWithoutOrders( subscription ) ) {
-
-				throw TypedError.typed( 'La nouvelle période sélectionnée inclue des distributions déjà passées sans commande, Il faut choisir une date ultérieure.', PastDistributionsWithoutOrders );
+				throw TypedError.typed( 'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.', PastDistributionsWithoutOrders );
 			}
 			
-			var subscriptions1;
-			var subscriptions2;	
-			var subscriptions3;	
-			//We are checking that there is no existing subscription with an overlapping time frame for the same user and catalog
-			if ( subscription.id == null ) { //We need to check there the id as $id != null doesn't work in the manager.search
-
-				//Looking for existing subscriptions with a time range overlapping the start of the about to be created subscription
-				subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
-																&& $startDate <= subscription.startDate && $endDate >= subscription.startDate, false );
-				//Looking for existing subscriptions with a time range overlapping the end of the about to be created subscription
-				subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
-																&& $startDate <= subscription.endDate && $endDate >= subscription.endDate, false );	
-				//Looking for existing subscriptions with a time range included in the time range of the about to be created subscription		
-				subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
-																&& $startDate >= subscription.startDate && $endDate <= subscription.endDate, false );	
-			}
-			else {
-
-				//Looking for existing subscriptions with a time range overlapping the start of the about to be created subscription
-				subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
-																&& $startDate <= subscription.startDate && $endDate >= subscription.startDate, false );
-				//Looking for existing subscriptions with a time range overlapping the end of the about to be created subscription
-				subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
-																&& $startDate <= subscription.endDate && $endDate >= subscription.endDate, false );	
-				//Looking for existing subscriptions with a time range included in the time range of the about to be created subscription		
-				subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
-																&& $startDate >= subscription.startDate && $endDate <= subscription.endDate, false );	
-			}
-				
-			if ( subscriptions1.length != 0 || subscriptions2.length != 0 || subscriptions3.length != 0 ) {
-
-				throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.', OverlappingSubscription );
-			}
+			
 
 		}
 		
@@ -199,15 +200,19 @@ class SubscriptionService
 	 ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?isValidated : Bool = true ) : db.Subscription {
 
 		if ( startDate == null || endDate == null ) {
-
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
+		}
+
+		//if the user is not a member of the group, add him
+		if(!user.isMemberOf(catalog.group) && catalog.group.regOption==RegOption.Open){
+			user.makeMemberOf(catalog.group);
 		}
 
 		var subscription = new db.Subscription();
 		subscription.user = user;
 		subscription.catalog = catalog;
-		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
-		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
+		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		subscription.isValidated = isValidated;
 
 		if ( isSubscriptionValid( subscription ) ) {

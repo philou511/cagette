@@ -23,6 +23,7 @@ class Contract extends Controller
 	}
 	
 	//retrocompat
+	@logged
 	public function doDefault(){
 		throw Redirect("/account");
 	}
@@ -39,7 +40,7 @@ class Contract extends Controller
 		view.catalog = catalog;
 	
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
-		view.hasUserCatalogSubscription = service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true );
+		view.hasUserCatalogSubscription = app.user==null ? false : service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true );
 	}
 	
 
@@ -47,7 +48,7 @@ class Contract extends Controller
 	/**
 	 * Edit a contract 
 	 */
-	@tpl("form.mtt")
+	@logged @tpl("form.mtt")
 	function doEdit(c:db.Catalog) {
 		
 		view.category = 'contractadmin';
@@ -125,7 +126,7 @@ class Contract extends Controller
 	/**
 		1- define the vendor
 	**/
-	@tpl("form.mtt")
+	@logged @tpl("form.mtt")
 	function doDefineVendor(?type=1){
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
@@ -154,7 +155,7 @@ class Contract extends Controller
 	/**
 	  2- create vendor
 	**/
-	@tpl("form.mtt")
+	@logged @tpl("form.mtt")
 	public function doInsertVendor(email:String,name:String) {
 				
 		var vendor = new db.Vendor();
@@ -190,7 +191,7 @@ class Contract extends Controller
 	/**
 	 * 4 - create the contract
 	 */
-	@tpl("contract/insert.mtt")
+	@logged @tpl("contract/insert.mtt")
 	function doInsert(vendor:db.Vendor) {
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
@@ -248,6 +249,7 @@ class Contract extends Controller
 	/**
 	 * Delete a contract (... and its products, orders & distributions)
 	 */
+	@logged
 	function doDelete(c:db.Catalog) {
 		
 		if (!app.user.canManageAllContracts()) throw Error("/contractAdmin", t._("Forbidden access"));
@@ -298,6 +300,9 @@ class Contract extends Controller
 	function doOrder( catalog : db.Catalog ) {
 				
 		if(catalog.group.hasShopMode()) throw Redirect("/contract/view/"+catalog.id);
+
+		//if user is not logged, need to log-in
+		if(app.user==null) throw Redirect('/user/login?__redirect=/contract/order/'+catalog.id);
 
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions(app.user,catalog);
@@ -406,11 +411,9 @@ class Contract extends Controller
 				var uo = null;
 				for ( x in userOrders ) {
 
-					if (x.distrib!=null && x.distrib.id != did) {
-						
+					if (x.distrib!=null && x.distrib.id != did) {						
 						continue;
-					}
-					else {
+					} else {
 
 						for ( a in x.data ){
 							if (a.product.id == pid){
@@ -426,13 +429,9 @@ class Contract extends Controller
 				var quantity = 0.0;
 				
 				if ( uo.product.hasFloatQt ) {
-
 					var param = StringTools.replace(qt, ",", ".");
 					quantity = Std.parseFloat(param);
-
-				}
-				else {
-
+				}else {
 					quantity = Std.parseInt(qt);
 				}
 				
@@ -457,7 +456,7 @@ class Contract extends Controller
 						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, ordersData, false );
 					} else {
 						var now = Date.now();
-						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDay()+1,0,0,0);
+						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0);						
 						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, ordersData, false );
 					}
 				} catch ( e : Dynamic ) { 
@@ -484,7 +483,7 @@ class Contract extends Controller
 	/**
 	 * Edit var orders for a multidistrib in CSA mode.
 	 */
-	@tpl("contract/editVarOrders.mtt")
+	@logged @tpl("contract/editVarOrders.mtt")
 	function doEditVarOrders(distrib:db.MultiDistrib) {
 		
 		if (app.user.getGroup().hasPayments()) {

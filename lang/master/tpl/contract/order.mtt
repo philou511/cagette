@@ -1,10 +1,14 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-8">
+	
 	::set catalog = c::
+	::set distribs = catalog.getDistribs(true,null)::
+
 	<div class="article">
 		<h2>::c.name::</h2>
 
-		<p>::if isUserOrderAvailable::
+		<p>
+			::if isUserOrderAvailable::
 				::if isCSACatalog::
 					::if unvalidatedSubscription==null && subscriptions.length>0::				
 						Votre souscription a été validée, vous ne pouvez plus la modifier.
@@ -22,12 +26,14 @@
 			::end::
 		</p>
 		
+		<!-- order form -->
 		<form name="order" id="order" method="POST" action="">
 			<input type="hidden" name="token" value="::token::"/>
 			
 			::if distribution!=null::
 			<input type="hidden" name="distribution" value="::distribution.id::"/>
 			::end::
+
 			<table class="table table-bordered">
 			<tr>
 				<td></td>
@@ -139,13 +145,18 @@
 
 	<!--Subscription-->
 	<div class="article" ::cond isCSACatalog::>
-		<h4>Ma souscription</h4>
+		
 		::if(subscriptions==null || subscriptions.length==0)::
 			<p class="text-center">
-				Vous n'avez pas souscrit à ce contrat.
+				Si vous souscrivez à ce contrat,
+				vous vous engagerez pour la période<br/>
+				du <b>::dDate(now()):: au ::dDate(catalog.endDate)::</b><br/>
+				soit <b>::distribs.length::</b> distributions.
 			</p>
 		::else::
 			
+			<h4>Ma souscription</h4>
+
 			<table class="table table-condensed table-bordered">
 				<tr class="greyhead">
 					<th class="text-center col-md-3">Engagement</th>
@@ -242,7 +253,7 @@
 		<div class="article">
 			<h3>Prochaines distributions</h3>
 			
-			::set distribs = catalog.getDistribs(true,null)::
+			
 			<ul style="max-height:300px;overflow-y:auto;">
 				::foreach d distribs::
 				<li>				
