@@ -281,21 +281,14 @@ class Distribution extends Controller
 	}
 	
 	/**
-		Shift a Distribution
+		Change order dates of a Distribution
 	 */
 	@tpl('form.mtt')
 	function doEdit(d:db.Distribution) {
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
 		var contract = d.catalog;
 
-		var text = "Si la date à laquelle vous souhaitez reporter la distribution n'est pas dans la liste, créez la dans l'onglet \"Distributions\".";
-		text += "<br/>Attention :";
-		text += "<br/>- Un décalage de distribution provoque une renumérotation des paniers de la distribution choisie.";
-		if(d.catalog.isCSACatalog()){
-			text += "<br/>- Un décalage de distribution peut provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distribution. Pensez à vérifier les souscriptions après avec effectué cette action.";
-		}
-		
-		view.text =  text;
+		view.text = "Vous pouvez personnaliser les dates d'ouverture et de fermeture de commande uniquement pour ce catalogue.";
 		
 		var form = form.CagetteForm.fromSpod(d);
 		form.removeElementByName("placeId");
@@ -304,53 +297,33 @@ class Distribution extends Controller
 		form.removeElement(form.getElement("contractId"));		
 		form.removeElement(form.getElement("distributionCycleId"));
 
-		//date
-		var threeMonthAgo = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
-		if(threeMonthAgo.getTime()<Date.now().getTime()) threeMonthAgo = Date.now();
-		var inThreeMonth  = DateTools.delta(d.multiDistrib.distribStartDate , 1000.0*60*60*24*30.5*3); 
-		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,threeMonthAgo,inThreeMonth);
-		//remove validated distribs, and the current one
-		mds = mds.filter( md -> return !md.isValidated() && md.id!=d.multiDistrib.id);
-		//remove already attended distribs
-		mds = mds.filter( md -> return md.getDistributionForContract(d.catalog)==null  );
-		var mds = mds.map( md -> return {label:view.hDate(md.getDate()), value:md.id});
-		var e = new sugoi.form.elements.IntSelect("md","Reporter la distribution au ", mds ,d.multiDistrib.id);			
-		form.addElement(e, 1);
-
-		
 		if (d.catalog.type == db.Catalog.TYPE_VARORDER ) {
-			form.addElement(new form.CagetteDatePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
-			form.addElement(new form.CagetteDatePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
-		}		
+			form.addElement(new form.CagetteDateTimePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
+			form.addElement(new form.CagetteDateTimePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
+		}else{
+			throw Error("/distribution","Impossible de changer les dates d'ouverture de commande pour un contrat AMAP");
+		}
 		
 		if (form.isValid()) {
 
-			var orderStartDate = null;
-			var orderEndDate = null;
+			var orderStartDate = form.getValueOf("orderStartDate");
+			var orderEndDate = form.getValueOf("orderEndDate");
 			try{
-				if (d.catalog.type == db.Catalog.TYPE_VARORDER ) {
-					orderStartDate = form.getValueOf("orderStartDate");
-					orderEndDate = form.getValueOf("orderEndDate");
-				}
-
-				var md = db.MultiDistrib.manager.get(form.getValueOf("md"));
-
+			
 				//do not launch event, avoid notifs for now
 				d = DistributionService.editAttendance(
 					d,
-					md,
+					d.multiDistrib,
 					orderStartDate,
 					orderEndDate,
 					false
 				);							
-				
 
 			} catch(e:Error){
 				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
 			}
 			
 			if (d.date == null) {
-				
 				var msg = t._("The distribution has been proposed to the supplier, please wait for its validation");
 				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
 
@@ -369,6 +342,80 @@ class Distribution extends Controller
 		
 		view.form = form;
 		view.title = t._("Attendance of ::farmer:: to the ::date:: distribution",{farmer:d.catalog.vendor.name,date:view.dDate(d.date)});
+	}
+
+	/**
+		Shift a Distribution
+	 */
+	@tpl('form.mtt')
+	function doShift(d:db.Distribution,?args:{from:String}) {
+		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
+		var contract = d.catalog;
+
+		var text = "Si la date à laquelle vous souhaitez reporter la distribution n'est pas dans la liste, créez la dans l'onglet \"Distributions\".";
+		text += "<br/>Attention :";
+		text += "<br/>- Un décalage de distribution provoque une renumérotation des paniers de la distribution choisie.";
+		if(d.catalog.isCSACatalog()){
+			text += "<br/>- Un décalage de distribution peut provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distribution. Pensez à vérifier les souscriptions après avec effectué cette action.";
+		}
+		view.text =  text;
+		
+		var form = new sugoi.form.Form("distribShifting");
+		
+		//date
+		var from = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
+		if(from.getTime()<Date.now().getTime()) from = Date.now();
+		var to  = d.catalog.endDate; 
+		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,from,to);
+		//remove validated distribs, and the current one
+		mds = mds.filter( md -> return !md.isValidated() && md.id!=d.multiDistrib.id);
+		//remove already attended distribs
+		mds = mds.filter( md -> return md.getDistributionForContract(d.catalog)==null  );
+		var mds = mds.map( md -> return {label:view.hDate(md.getDate()), value:md.id});
+		var e = new sugoi.form.elements.IntSelect("md","Reporter la distribution au ", mds ,d.multiDistrib.id);			
+		form.addElement(e, 1);
+		
+		if (form.isValid()) {
+
+			var md : db.MultiDistrib = null;
+			var url = if( args!=null && args.from == "distribSection" ){
+				'/distribution';
+			}else{
+				'/contractAdmin/distributions/'+contract.id;
+			}
+
+			try{
+				var mdid = form.getValueOf("md");
+				if(mdid==null) throw "Sélectionnez une date de distribution";
+				md = db.MultiDistrib.manager.get(mdid);
+
+				//do not launch event, avoid notifs for now
+				d = DistributionService.editAttendance(
+					d,
+					md,
+					d.orderStartDate,
+					d.orderEndDate,
+					false
+				);							
+				
+
+			} catch(e:Error){
+				throw Error(url,e.message);
+			}
+			
+			if (d.date == null) {
+				throw Ok(url, t._("The distribution has been proposed to the supplier, please wait for its validation") );
+
+			} else {
+				throw Ok(url,"La distribution a été décalée au "+Formatting.hDate(md.distribStartDate));
+			}
+			
+		} else {
+			app.event(PreEditDistrib(d));
+		}
+		
+		view.form = form;
+		view.title = "Reporter la distribution de "+d.catalog.vendor.name+", initialement prévue le "+view.dDate(d.date);
 	}
 	
 	@tpl('form.mtt')

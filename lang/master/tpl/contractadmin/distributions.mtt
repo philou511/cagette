@@ -2,13 +2,15 @@
 
 <h2>Participation aux distributions</h2>
 
-	<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
-		<i class="icon icon-check"></i> Participer à toutes les distributions
-	</a>
-
-	<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
-		<i class="icon icon-archive"></i> ::_("Old distributions")::
-	</a>
+	<p>
+		<a href="/contractAdmin/distributions/::c.id::?participateToAllDistributions=1" class="btn btn-default btn-sm">
+			<i class="icon icon-check"></i> Participer à toutes les distributions
+		</a>
+	
+		<a href="/contractAdmin/distributions/::c.id::?old=1" class="btn btn-default btn-sm">
+			<i class="icon icon-archive"></i> ::_("Old distributions")::
+		</a>
+	</p>
 
 	<table class="table">
 		::set now = now().getTime()::
@@ -26,51 +28,67 @@
 			<tr style="::style::" >
 
 				::if(d==null)::
-				<td colspan="2" class="disabled">
-					Ne participe pas à la distribution
-					<br/>
-					du ::hDate(md.getDate())::
-				</td>
-				<td>
-					<a href="/contractAdmin/participate/::md.id::/::c.id::" class="btn btn-default btn-sm">
-						<i class="icon icon-plus"></i> ::_("Participate")::
-					</a>
-				</td>
+					<td colspan="2" class="disabled">
+						Ne participe pas à la distribution
+						<br/>
+						du ::hDate(md.getDate())::
+					</td>
+					<td>
+						<a href="/contractAdmin/participate/::md.id::/::c.id::" class="btn btn-default btn-sm">
+							<i class="icon icon-plus"></i> ::_("Participate")::
+						</a>
+					</td>
 				::else::
-				<span style="display:none;">::d.populate()::</span>
-				<td>
-					::if d.distributionCycleId!=null::
-					<i class="icon icon-refresh"></i>  
-					::end::
-					
-					::dDate(d.date):: 
-
-					de ::hHour(d.date):: à ::hHour(d.end)::
-				</td>
-				<td>
-					::md._place.name::
-				</td>
-				<td>
-					<div class="btn-group">
-						<a href="/distribution/delete/::d.id::" class="btn btn-default btn-sm">
-							<i class="icon icon-delete"></i>&nbsp;Ne plus participer
-						</a>
-
-						<a href="/distribution/edit/::d.id::" class="btn btn-default btn-sm">
-							<i class="icon icon-calendar"></i>&nbsp;::_("Dates")::
-						</a>						
-						
-						::if(d._catalog.type==1)::
-						<a href="/contractAdmin/orders/::d._catalog.id::?d=::d.id::" class="btn btn-default btn-sm">
-							<i class="icon icon-basket"></i>&nbsp;::_("Orders")::
-						</a>
+					<span style="display:none;">::d.populate()::</span>
+					<td>
+						::if d.distributionCycleId!=null::
+						<i class="icon icon-refresh"></i>  
 						::end::
+						
+						::dDate(d.date):: 
+						<br/><span class="disabled">de ::hHour(d.date):: à ::hHour(d.end)::</span>
+					</td>
+					<td>
+						::md._place.name::
+					</td>
+					<td>
+						<div class="btn-group">
 
-						<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm">
-							<i class="icon icon-print"></i>&nbsp;::_("Distribution list")::
-						</a>
-					</div>
-				</td>
+							<a href="/contractAdmin/orders/::d._catalog.id::?d=::d.id::" class="btn btn-default btn-sm">
+								<i class="icon icon-basket"></i>&nbsp;::_("Orders")::
+							</a>
+
+							<div class="btn-group">
+								<button type="button" class="btn-noAntiDoubleClick btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="caret"></span> ::_("Dates"):: 
+								</button>
+								<ul class="dropdown-menu">
+									<li>
+										::if(d._catalog.type!=0)::
+										<a href="/distribution/edit/::d.id::">
+											<i class="icon icon-calendar"></i> Personnaliser les dates d'ouverture et de fermeture de commande
+										</a>
+										::end::
+									</li>
+									<li>
+										<a href="/distribution/shift/::d.id::">
+											<i class="icon icon-calendar"></i> Reporter la distribution
+										</a>
+									</li>          
+								</ul>
+							</div>						
+							
+							<!--
+							<a href="/distribution/list/::d.id::" class="btn btn-default btn-sm">
+								<i class="icon icon-print"></i>&nbsp;::_("Distribution list")::
+							</a>-->
+
+							<a href="/distribution/delete/::d.id::" class="btn btn-default btn-sm">
+								<i class="icon icon-delete"></i>&nbsp;Ne plus participer
+							</a>
+
+						</div>
+					</td>
 				::end::
 			</tr>
 			

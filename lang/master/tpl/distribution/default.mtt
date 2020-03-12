@@ -166,7 +166,6 @@
 												<a href="/distribution/validate/::d.id::">Distribution validée</a>
 										</div>
 										
-										
 										::if isAdmin::
 										<br/>
 										<a href="/distribution/unvalidate/::d.id::" class="btn btn-danger btn-sm">
@@ -285,19 +284,6 @@
 										::contract._vendor.name::
 									</td>
 									<td>										
-									<!--
-										::if(d.distribStartDate.getTime() != dist.date.getTime())::
-										<div class="alert alert-warning">
-											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
-										</div>
-										::end::
-
-										::if(d.distribEndDate.getTime() != dist.end.getTime())::
-										<div class="alert alert-warning">
-											::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
-										</div>
-										::end::                                            
-									-->
 										<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
 											<i class="icon icon-delete"></i> Ne participe plus
 										</a>
@@ -320,19 +306,7 @@
 									<td>
 										::contract._vendor.name::
 									</td>
-									<td>
-										<!--::if(d.distribStartDate.getTime() != dist.date.getTime())::
-										<div class="alert alert-warning">
-											::_("Distribution start date is different from general distribution"):: : ::hDate(dist.date)::
-										</div>
-										::end::
-
-										::if(d.distribEndDate.getTime() != dist.end.getTime())::
-										<div class="alert alert-warning">
-											::_("Distribution end date is different from general distribution"):: : ::hDate(dist.end)::
-										</div>
-										::end::-->
-
+									<td class="text-left">
 										::if(d.orderStartDate!=null && d.orderStartDate.getTime() != dist.orderStartDate.getTime())::
 										<div class="alert alert-warning">
 											<i class="icon icon-info"></i> ::_("Order start date is different from general distribution"):: : <b>::hDate(dist.orderStartDate)::</b>
@@ -345,15 +319,34 @@
 										</div>
 										::end::
 
-										<p>
-											<a href="/distribution/edit/::dist.id::" class="btn btn-default btn-sm">
-												<i class="icon icon-calendar"></i> Changer dates
-											</a>
-
+										
+										<!--<a href="/distribution/edit/::dist.id::" class="btn btn-default btn-sm">
+											<i class="icon icon-calendar"></i> Changer dates
+										</a>-->
+										<div class="btn-group">
 											<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
 												<i class="icon icon-delete"></i> Ne participe plus
 											</a>
-										</p>
+										
+
+											<div class="btn-group">
+												<button type="button" class="btn-noAntiDoubleClick btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+													<span class="caret"></span> ::_("Dates"):: 
+												</button>
+												<ul class="dropdown-menu">
+													<li>
+														<a href="/distribution/edit/::dist.id::?from=distribSection">
+															<i class="icon icon-calendar"></i> Personnaliser les dates d'ouverture et fermeture de commande
+														</a>
+													</li>
+													<li>
+														<a href="/distribution/shift/::dist.id::?from=distribSection">
+															<i class="icon icon-calendar"></i> Reporter la distribution
+														</a>
+													</li>          
+												</ul>
+											</div>
+										</div>
 
 									</td>
 								</tr>
