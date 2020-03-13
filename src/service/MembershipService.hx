@@ -12,11 +12,11 @@ class MembershipService{
 	}
 	
 	public function getUserMemberships(user:db.User):Array<db.Membership>{
-		return db.Membership.manager.search($user == user && $amap == group,{orderBy:-year}, false).array();
+		return db.Membership.manager.search($user == user && $group == group,{orderBy:-year}, false).array();
 	}
 
 	public function getUserMembership(user:db.User,year:Int):db.Membership{
-		return db.Membership.manager.select($user == user && $amap == group && $year==year, false);
+		return db.Membership.manager.select($user == user && $group == group && $year==year, false);
 	}
 
 	public function getPeriodName(year:Int):String{
@@ -34,7 +34,7 @@ class MembershipService{
 		var paymentType = PaymentService.getPaymentTypes(PaymentContext.PCManualEntry, group).find(pt -> return paymentType==pt.type);
 
 		
-		var paymentOp : db.Operation = null;
+		var orderOp : db.Operation = null;
 		if(group.hasPayments()){
 
 			if(paymentType==null){
@@ -55,19 +55,19 @@ class MembershipService{
 			}
 
 			//debt operation
-			var op = new db.Operation();
-			op.user = user;			
-			op.group = group;
-			op.name = "Adhésion "+getPeriodName(year);
-			op.amount = 0 - membershipFee;
-			op.date = date;
-			op.type = Membership;
+			orderOp = new db.Operation();
+			orderOp.user = user;			
+			orderOp.group = group;
+			orderOp.name = "Adhésion "+getPeriodName(year);
+			orderOp.amount = 0 - membershipFee;
+			orderOp.date = date;
+			orderOp.type = Membership;
 			var data : MembershipInfos = {year:year};
-			op.data = data;			
-			op.pending = false;				
-			op.insert();	
+			orderOp.data = data;			
+			orderOp.pending = false;				
+			orderOp.insert();	
 			
-			paymentOp = db.Operation.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , op );
+			var paymentOp = db.Operation.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , orderOp );
 			paymentOp.date = date;
 			paymentOp.pending = false;
 			paymentOp.update();
@@ -76,16 +76,31 @@ class MembershipService{
 		}
 
 		var cotis = new db.Membership();
-		cotis.amap = group;
+		cotis.group = group;
 		cotis.user = user;
 		cotis.year = year;
 		cotis.date = date;
 		cotis.distribution = distribution;
-		cotis.operation = paymentOp;
+		cotis.operation = orderOp;
 		cotis.insert();
 
 		return cotis;
 
+	}
+
+	public function deleteMembership(membership:db.Membership){
+		membership.lock();
+		if(membership.operation!=null){
+			var op = membership.operation;
+			op.lock();
+			for( p in op.getRelatedPayments() ){
+				p.lock();
+				p.delete();					
+			}					
+			op.delete();
+			service.PaymentService.updateUserBalance(membership.user,membership.group);
+		}
+		membership.delete();
 	}
 
 	public function getMembershipsFromDistrib(distribution:db.MultiDistrib){
@@ -94,7 +109,7 @@ class MembershipService{
 
     public function countUpToDateMemberships(){
 		var year = group.getMembershipYear();
-		return db.Membership.manager.count( $amap == group && $year == year);
+		return db.Membership.manager.count( $group == group && $year == year);
     }
     
     /**
