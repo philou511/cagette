@@ -78,9 +78,7 @@ class DistributionService
 
 		var t = sugoi.i18n.Locale.texts;
 		var view = App.current.view;
-		var c = d.catalog;
-
-		
+		var catalog = d.catalog;
 
 		/*var distribs1;
 		var distribs2;	
@@ -106,18 +104,18 @@ class DistributionService
 		if (distribs1.length != 0 || distribs2.length != 0 || distribs3.length != 0) {
 			throw new Error(t._("There is already a distribution at this place overlapping with the time range you've selected."));
 		}*/
-		var catalogStartDate = DateTool.setHourMinute(d.catalog.startDate,0,0);
-		var catalogEndDate = DateTool.setHourMinute(d.catalog.endDate,23,59);
-		
+		var catalogStartDate = DateTool.setHourMinute(catalog.startDate,0,0);
+		var catalogEndDate = DateTool.setHourMinute(catalog.endDate,23,59);
+		// trace(catalogEndDate);
 		if (d.date.getTime() > catalogEndDate.getTime()){
-			throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(c.endDate)}));
+			throw new Error(t._("The date of the delivery must be prior to the end of the catalog (::contractEndDate::)", {contractEndDate:view.hDate(catalog.endDate)}));
 		}
 
 		if (d.date.getTime() < catalogStartDate.getTime()){
-			throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(c.startDate)}));
+			throw new Error(t._("The date of the delivery must be after the begining of the catalog (::contractBeginDate::)", {contractBeginDate:view.hDate(catalog.startDate)}));
 		} 
 		
-		if (c.type == db.Catalog.TYPE_VARORDER ) {
+		if (catalog.type == db.Catalog.TYPE_VARORDER ) {
 			if (d.date.getTime() < d.orderEndDate.getTime() ) throw new Error(t._("The distribution start date must be set after the orders end date."));
 			if (d.orderStartDate.getTime() > d.orderEndDate.getTime() ) throw new Error(t._("The orders end date must be set after the orders start date !"));
 		}
@@ -415,6 +413,7 @@ class DistributionService
 			throw new Error(t._("You cannot edit a distribution which has been already validated."));
 		}
 
+		//Distribution shift
 		if(newMd.id!=d.multiDistrib.id){
 
 			//check that the vendor does not already participate
@@ -436,7 +435,7 @@ class DistributionService
 			}
 			#end
 
-			//different multidistrib id : should change the baskets					
+			//different multidistrib id : should change the baskets	
 			for ( o in orders ){
 				o.lock();
 				//find new basket
@@ -447,6 +446,15 @@ class DistributionService
 			//renumbering baskets
 			for( b in newMd.getBaskets()){
 				b.renumber();
+			}
+
+			//extends contract if needed
+			if( newMd.distribStartDate.getTime() > d.catalog.endDate.getTime() ){
+				var catalog = d.catalog;
+				catalog.lock();
+				catalog.endDate = newMd.distribStartDate;
+				catalog.update();
+				// trace(catalog.endDate);
 			}
 
 			//extends subscriptions ?

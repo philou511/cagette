@@ -43,7 +43,7 @@
                                     </div>
                                     <div ::cond !subscription.isValidated:: >
                                         <br/>
-                                        <a href="/contractAdmin/subscriptions/validate/::subscription.id::" class="btn btn-md btn-primary" $$confirm(Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement.\n La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat.) >
+                                        <a href="/contractAdmin/subscriptions/validate/::subscription.id::" class="btn btn-md btn-primary" $$confirm(Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement. La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat.) >
                                             <i class="icon icon-check"></i> Valider
                                         </a>          
                                     </div>               

@@ -134,10 +134,10 @@ class SubscriptionService
 		var catalogStartDate = new Date( subscription.catalog.startDate.getFullYear(), subscription.catalog.startDate.getMonth(), subscription.catalog.startDate.getDate(), 0, 0, 0 );
 		var catalogEndDate = new Date( subscription.catalog.endDate.getFullYear(), subscription.catalog.endDate.getMonth(), subscription.catalog.endDate.getDate(), 23, 59, 59 );
 		if ( subscription.startDate.getTime() < catalogStartDate.getTime() || subscription.startDate.getTime() >= catalogEndDate.getTime() ) {
-			throw new Error( 'La date de début de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
+			throw new Error( 'La date de début de la souscription doit être comprise entre les dates de début et de fin du catalogue.'+subName );
 		}
 		if ( subscription.endDate.getTime() <= catalogStartDate.getTime() || subscription.endDate.getTime() > catalogEndDate.getTime() ) {
-			throw new Error( 'La date de fin de la souscription doit être comprise entre les dates de début et de fin du catalogue.' );
+			throw new Error( 'La date de fin de la souscription doit être comprise entre les dates de début et de fin du catalogue.'+subName );
 		}
 
 		//dates overlap check
@@ -183,13 +183,9 @@ class SubscriptionService
 			if ( hasPastDistribsWithoutOrders( subscription ) ) {
 				throw TypedError.typed( 'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.', PastDistributionsWithoutOrders );
 			}
-			
-			
-
 		}
 		
 		return true;
-
 	}
 
 	 /**

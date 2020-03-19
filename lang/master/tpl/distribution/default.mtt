@@ -283,10 +283,25 @@
 									<td>
 										::contract._vendor.name::
 									</td>
-									<td>										
-										<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
-											<i class="icon icon-delete"></i> Ne participe plus
-										</a>
+									<td>
+										<div class="btn-group">
+											<div class="btn-group">
+												<button type="button" class="btn-noAntiDoubleClick btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+													<span class="caret"></span> ::_("Dates"):: 
+												</button>
+												<ul class="dropdown-menu">
+													<li>
+														<a href="/distribution/shift/::dist.id::?from=distribSection">
+															<i class="icon icon-calendar"></i> Reporter la distribution
+														</a>
+													</li>          
+												</ul>
+											</div>
+
+											<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
+												<i class="icon icon-delete"></i> Ne participe plus
+											</a>
+										</div>
 									</td>
 								</tr>
 							::end::
@@ -319,15 +334,8 @@
 										</div>
 										::end::
 
-										
-										<!--<a href="/distribution/edit/::dist.id::" class="btn btn-default btn-sm">
-											<i class="icon icon-calendar"></i> Changer dates
-										</a>-->
 										<div class="btn-group">
-											<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
-												<i class="icon icon-delete"></i> Ne participe plus
-											</a>
-										
+																		
 
 											<div class="btn-group">
 												<button type="button" class="btn-noAntiDoubleClick btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -346,6 +354,11 @@
 													</li>          
 												</ul>
 											</div>
+
+											<a href="/distribution/notAttend/::dist.id::" class="btn btn-default btn-sm">
+												<i class="icon icon-delete"></i> Ne participe plus
+											</a>
+
 										</div>
 
 									</td>

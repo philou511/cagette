@@ -397,32 +397,26 @@ class ContractAdmin extends Controller
 	 * Overview of orders for this contract in backoffice
 	 */
 	@tpl("contractadmin/orders.mtt")
-	function doOrders( catalog : db.Catalog, args : { d : db.Distribution, ?delete : db.UserOrder } ) {
+	function doOrders( catalog : db.Catalog, ?args : { d : db.Distribution, ?delete : db.UserOrder } ) {
 
 		view.nav.push( "orders" );
 		sendNav( catalog );
 		
 		//Checking permissions
 		if ( !app.user.canManageContract( catalog ) ) throw Error( "/", t._("You do not have the authorization to manage this contract") );
-		if ( args != null && args.d == null ) throw Redirect( "/contractAdmin/selectDistrib/" + catalog.id );
+		if ( args == null || args.d == null ) throw Redirect( "/contractAdmin/selectDistrib/" + catalog.id );
 
 		//Delete specified order with quantity of zero
 		if ( checkToken() && args != null && args.delete != null ) {
 
 			try {
-
 				service.OrderService.delete(args.delete);
-			}
-			catch( e : tink.core.Error ) {
-
+			}	catch( e : tink.core.Error ) {
 				throw Error( "/contractAdmin/orders/" + catalog.id, e.message );
 			}
 			if( args.d != null ) {
-
 				throw Ok("/contractAdmin/orders/" + catalog.id + "?d="+args.d.id, t._("The order has been deleted."));
-			}
-			else {
-
+			} else {
 				throw Ok("/contractAdmin/orders/" + catalog.id, t._("The order has been deleted."));
 			}
 			

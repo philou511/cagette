@@ -28,12 +28,11 @@
 				</a>
 			</li>
 
-			<!--
 			<li id="orders" ::attr class if(nav[1]=="orders") 'active'::>
-				<a href="/contractAdmin/orders/::c.id::">
+				<a href="/contractAdmin/selectDistrib/::c.id::">
 					<i class="icon icon-basket"></i> ::_("Orders")::
 				</a>
-			</li>-->
+			</li>
 			
 			::if !c._group.hasShopMode() && c.type==0::
 				<li id="subscriptions" ::attr class if(nav[1]=="subscriptions") 'active'::>

@@ -126,13 +126,10 @@
 	::if(c._group._contact!=null)::
 	<div class="alert alert-warning">
 		<i class="icon icon-info"></i>
-		Pour créer de nouvelles distributions, il faut maintenant aller dans l'onglet "Distributions".<br/>
+		Pour créer de nouvelles distributions, il faut aller dans l'onglet <a href='/distribution'>Distributions</a>.<br/>
 		Si vous n'y avez pas acccès, demandez à <a href="mailto:<::c._group._contact.email::>::c._group._contact.getName()::">l'administrateur du groupe</a> de créer la distribution que vous souhaitez.
 	</div>
 	::end::
-	
-	
-	
-	
+		
 	
 ::end::

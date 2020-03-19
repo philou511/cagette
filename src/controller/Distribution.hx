@@ -284,8 +284,10 @@ class Distribution extends Controller
 		Change order dates of a Distribution
 	 */
 	@tpl('form.mtt')
-	function doEdit(d:db.Distribution) {
+	function doEdit(d:db.Distribution,?args:{from:String}) {
+		
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
+		if(d.catalog.isCSACatalog()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP" );	
 		var contract = d.catalog;
 
 		view.text = "Vous pouvez personnaliser les dates d'ouverture et de fermeture de commande uniquement pour ce catalogue.";
@@ -296,18 +298,18 @@ class Distribution extends Controller
 		form.removeElementByName("end");
 		form.removeElement(form.getElement("contractId"));		
 		form.removeElement(form.getElement("distributionCycleId"));
-
-		if (d.catalog.type == db.Catalog.TYPE_VARORDER ) {
-			form.addElement(new form.CagetteDateTimePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
-			form.addElement(new form.CagetteDateTimePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
-		}else{
-			throw Error("/distribution","Impossible de changer les dates d'ouverture de commande pour un contrat AMAP");
-		}
+		form.addElement(new form.CagetteDateTimePicker("orderStartDate", t._("Orders opening date"), d.orderStartDate));	
+		form.addElement(new form.CagetteDateTimePicker("orderEndDate", t._("Orders closing date"), d.orderEndDate));
 		
 		if (form.isValid()) {
 
 			var orderStartDate = form.getValueOf("orderStartDate");
 			var orderEndDate = form.getValueOf("orderEndDate");
+			var url = if( args!=null && args.from == "distribSection" ){
+				'/distribution';
+			}else{
+				'/contractAdmin/distributions/'+contract.id;
+			}
 			try{
 			
 				//do not launch event, avoid notifs for now
@@ -320,7 +322,7 @@ class Distribution extends Controller
 				);							
 
 			} catch(e:Error){
-				throw Error('/contractAdmin/distributions/' + contract.id,e.message);
+				throw Error(sugoi.Web.getURI(),e.message);
 			}
 			
 			if (d.date == null) {
@@ -328,12 +330,7 @@ class Distribution extends Controller
 				throw Ok('/contractAdmin/distributions/'+contract.id, msg );
 
 			} else {
-
-				if(app.user.isGroupManager() || app.user.canManageAllContracts() ){
-					throw Ok('/distribution', t._("The distribution has been recorded") );
-				}else{
-					throw Ok('/contractAdmin/distributions/'+contract.id, t._("The distribution has been recorded") );
-				}
+				throw Ok(url, t._("The distribution has been recorded") );
 			}
 			
 		} else {
@@ -353,19 +350,21 @@ class Distribution extends Controller
 		var contract = d.catalog;
 
 		var text = "Si la date à laquelle vous souhaitez reporter la distribution n'est pas dans la liste, créez la dans l'onglet \"Distributions\".";
-		text += "<br/>Attention :";
-		text += "<br/>- Un décalage de distribution provoque une renumérotation des paniers de la distribution choisie.";
+		text += "<div class='alert alert-warning'><i class='icon icon-info'></i> Attention, reporter une distribution peut... :<ul>";
+		text += "<li>Provoquer une renumérotation des paniers de la distribution cible.</li>";
+		text += "<li>Provoquer la modification de le date de fin du catalogue/contrat pour prendre en comtpe la nouvelle date.</li>";
 		if(d.catalog.isCSACatalog()){
-			text += "<br/>- Un décalage de distribution peut provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distribution. Pensez à vérifier les souscriptions après avec effectué cette action.";
+			text += "<li>Provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distributions. Pensez à vérifier les souscriptions après avec effectué cette action.</li>";
 		}
+		text +="</ul></div>";
 		view.text =  text;
 		
 		var form = new sugoi.form.Form("distribShifting");
 		
 		//date
 		var from = DateTools.delta(d.multiDistrib.distribStartDate ,-1000.0*60*60*24*30.5*3); 
-		if(from.getTime()<Date.now().getTime()) from = Date.now();
-		var to  = d.catalog.endDate; 
+		if(from.getTime()<Date.now().getTime()) from = Date.now();//$from cannot be in the past
+		var to  = DateTools.delta(d.catalog.endDate ,1000.0*60*60*24*30.5*6); //$to is 6 month after the end of catalog
 		var mds = db.MultiDistrib.getFromTimeRange(d.catalog.group,from,to);
 		//remove validated distribs, and the current one
 		mds = mds.filter( md -> return !md.isValidated() && md.id!=d.multiDistrib.id);
@@ -396,11 +395,10 @@ class Distribution extends Controller
 					d.orderStartDate,
 					d.orderEndDate,
 					false
-				);							
-				
+				);											
 
 			} catch(e:Error){
-				throw Error(url,e.message);
+				throw Error(sugoi.Web.getURI(),e.message);
 			}
 			
 			if (d.date == null) {
