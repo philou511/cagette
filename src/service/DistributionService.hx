@@ -257,7 +257,7 @@ class DistributionService
 			d.end   = distribEndDate;
 			d.place = place;			
 			
-			if(overrideDates){
+			if(overrideDates || d.orderStartDate==null){
 				d.orderStartDate = md.orderStartDate;
 				d.orderEndDate = md.orderEndDate;
 			}else{
@@ -270,9 +270,7 @@ class DistributionService
 				}
 			}
 			d.update();
-
 		}
-
 
 		//sync
 		for( d in md.getDistributions()){

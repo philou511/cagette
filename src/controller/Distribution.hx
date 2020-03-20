@@ -3,7 +3,6 @@ import tools.ObjectListTool;
 import db.DistributionCycle;
 import db.UserOrder;
 import sugoi.form.Form;
-import tink.core.Error;
 import sugoi.form.elements.IntSelect;
 import sugoi.form.elements.TextArea;
 import sugoi.form.elements.NativeDatePicker.NativeDatePickerType;
@@ -242,7 +241,7 @@ class Distribution extends Controller
 		var contractId = d.catalog.id;
 		try {
 			service.DistributionService.cancelParticipation(d,false);
-		} catch(e:Error){
+		} catch(e:tink.core.Error){
 			throw Error("/contractAdmin/distributions/" + contractId, e.message);
 		}		
 		throw Ok("/contractAdmin/distributions/" + contractId, "Ce producteur ne participe plus à la distribution");
@@ -255,7 +254,7 @@ class Distribution extends Controller
 		var contractId = d.catalog.id;
 		try {
 			service.DistributionService.cancelParticipation(d,false);
-		} catch(e:Error){
+		} catch(e:tink.core.Error){
 			throw Error('/distribution', e.message);
 		}		
 		throw Ok('/distribution', "Ce producteur ne participe plus à la distribution");
@@ -271,7 +270,7 @@ class Distribution extends Controller
 		if(checkToken()){
 			try{
 				service.DistributionService.deleteMd(md);
-			}catch(e:Error){
+			}catch(e:tink.core.Error){
 				throw Error("/distribution",e.message);
 			}
 			throw Ok("/distribution",t._("The distribution has been deleted"));
@@ -321,7 +320,7 @@ class Distribution extends Controller
 					false
 				);							
 
-			} catch(e:Error){
+			} catch(e:tink.core.Error){
 				throw Error(sugoi.Web.getURI(),e.message);
 			}
 			
@@ -397,7 +396,7 @@ class Distribution extends Controller
 					false
 				);											
 
-			} catch(e:Error){
+			} catch(e:tink.core.Error){
 				throw Error(sugoi.Web.getURI(),e.message);
 			}
 			
@@ -788,7 +787,7 @@ class Distribution extends Controller
 					form.getValueOf("override")==true
 				);
 
-			} catch(e:Error){
+			} catch(e:tink.core.Error){
 				throw Error('/distribution/editMd/'+md.id  ,e.message);
 			}
 			

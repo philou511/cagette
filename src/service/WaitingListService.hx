@@ -4,7 +4,9 @@ import Common;
 
 class WaitingListService{
 
-
+	/**
+		Register someone who is outside of the group to the waiting list.
+	**/
 	public static function registerToWl(user:db.User,group:db.Group,message:String, ?sendEmail=true){
 		var t  = sugoi.i18n.Locale.texts;
 
@@ -17,7 +19,7 @@ class WaitingListService{
 		w.insert();
 
 		if(sendEmail){
-			//emails
+			//send an email to admins
 			var html = t._("<p><b>::name::</b> suscribed to the waiting list of <b>::group::</b> on ::date::</p>",{
 				group:group.name,
 				name:user.getName(),
@@ -28,7 +30,6 @@ class WaitingListService{
 			}
 
 			for( u in service.GroupService.getGroupMembersWithRights(group,[Right.GroupAdmin,Right.Membership]) ){
-
 				App.quickMail(
 					u.email,
 					t._("[::group::] ::name:: suscribed to the waiting list.",{group:group.name,name:user.getName()}),
@@ -37,6 +38,29 @@ class WaitingListService{
 				);
 			}
 		}
+	}
+
+	/**
+		Put a member of the group back on waiting list
+	**/
+	public static function moveBackToWl(user:db.User,group:db.Group,message:String){
+		var t  = sugoi.i18n.Locale.texts;
+
+		//checks
+		var ug = db.UserGroup.get(user,group,true);
+		if( ug==null ) throw new Error(user.getName()+" ne fait pas partie de ce groupe.");
+		if( App.current.user.id==user.id ) throw new Error("Vous ne pouvez pas vous mettre vous-même en liste d'attente.");
+		if(ug.hasRight(GroupAdmin)) throw new Error("Vous ne pouvez pas mettre "+user.getName()+" en liste d'attente, car c'est un administrateur du groupe.");
+
+		ug.delete();
+
+		var w = new db.WaitingList();
+		w.user = user;
+		w.group = group;
+		w.message = message;
+		w.insert();
+
+		
 	}
 
 	public static function canRegister(user:db.User,group:db.Group){
@@ -98,7 +122,7 @@ class WaitingListService{
 	}
 
 	/**
-		an admin approves a request
+		an admin approves a request to enter the waiting list
 	**/
 	public static function approveRequest(user:db.User,group:db.Group){
 		var t  = sugoi.i18n.Locale.texts;

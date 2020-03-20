@@ -128,14 +128,11 @@ class Member extends Controller
 	 * Move to waiting list
 	 */
 	function doMovetowl(u:db.User){
-		
-		var ua = db.UserGroup.get(u, app.user.getGroup(), true);
-		ua.delete();
-		
-		var wl = new db.WaitingList();
-		wl.user = u;
-		wl.group = app.user.getGroup();
-		wl.insert();
+		try{
+			WaitingListService.moveBackToWl(u,app.user.getGroup(),"Remis en liste d'attente par "+app.user.getName());
+		}catch(e:tink.core.Error){
+			throw Error("/member/view/"+u.id, e.message );
+		}
 		
 		throw Ok("/member", u.getName() +" "+ t._("is now on waiting list.") );
 	}
@@ -178,20 +175,22 @@ class Member extends Controller
 		}
 		var users = value.split("|").map(id -> return db.User.manager.get(id.parseInt()));
 		
-		var msg = null;
+		var msg = [];
 		var group = app.user.getGroup();
+		var count = 0;
 		switch (action){
 			case "waitingList" :
-				users.remove(app.user);//do not cut my hands
+				users.remove(app.user);//do not cut my hands				
 				for( u in users){
-					var ug = u.getUserGroup(group);
-					if(ug!=null){
-						ug.lock();
-						ug.delete();
+					count++;
+					try{
+						WaitingListService.moveBackToWl(u,group,"Mis en liste d'attente par "+app.user.getName()+" le "+Formatting.hDate(Date.now()));
+					}catch(e:tink.core.Error){
+						count--;
+						msg.push("Erreur : "+e.message);
 					}
-					WaitingListService.registerToWl(u,group,"Mis en liste d'attente par "+app.user.getName()+" le "+Formatting.hDate(Date.now()),false);
 				}
-				msg = "Vous avez placé "+users.length+" membres en liste d'attente";
+				msg.push("Vous avez placé "+count+" membres en liste d'attente.");
 
 			case "exclude" : 
 				users.remove(app.user);//do not cut my hands
@@ -202,24 +201,27 @@ class Member extends Controller
 						ug.delete();
 					}
 				}
-				msg = "Vous avez retiré "+users.length+" membres du groupe";
+				msg.push("Vous avez retiré "+users.length+" membres du groupe.");
 
 			case "membership" :
 				var ms = new service.MembershipService(app.user.getGroup());
 				var now = Date.now();
-				try{
-					for( u in users){
+				for( u in users){
+					count++;
+					try{
 						ms.createMembership(u,now.getFullYear(),now,null,Check.TYPE);
+					}catch(e:tink.core.Error){
+						count--;
+						msg.push("Erreur : "+e.message);
 					}
-					msg = "Vous avez saisi "+users.length+" cotisations";
-				}catch(e:tink.core.Error){
-					msg = "Erreur : "+e.message;
 				}
+				msg.push("Vous avez saisi "+count+" cotisations.");
+				
 
 			default : throw "Unknown action";
 		}
 
-		throw Ok("/member",msg);
+		throw Ok("/member",msg.join("<br/>"));
 	}
 	
 	/**
