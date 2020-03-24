@@ -5,8 +5,9 @@ import Common;
 import tink.core.Error;
 
 /**
- * Order Service
+ * Order Service 
  * @author web-wizard,fbarbut
+ -
  */
 class OrderService
 {
@@ -21,7 +22,7 @@ class OrderService
 	 * @param	quantity
 	 * @param	productId
 	 */
-	public static function make(user:db.User, quantity:Float, product:db.Product, ?distribId:Int, ?paid:Bool, ?subscription : db.Subscription, ?user2:db.User, ?invert:Bool ) : Null<db.UserOrder> {
+	public static function make(user:db.User, quantity:Float, product:db.Product, distribId:Int, ?paid:Bool, ?subscription : db.Subscription, ?user2:db.User, ?invert:Bool ) : Null<db.UserOrder> {
 		
 		var t = sugoi.i18n.Locale.texts;
 
@@ -52,17 +53,9 @@ class OrderService
 		
 		//check for previous orders on the same distrib
 		var prevOrders = new List<db.UserOrder>();
-		if ( product.catalog.type == db.Catalog.TYPE_VARORDER ) {
-			
-			if (distribId == null) {
-
-				prevOrders = db.UserOrder.manager.search($product==product && $user==user, true);
+		prevOrders = db.UserOrder.manager.search($product==product && $user==user && $distributionId==distribId, true);
 			}
-			else {
-
-				prevOrders = db.UserOrder.manager.search($product==product && $user==user && $distributionId==distribId, true);
-			}
-		}
+		
 		
 		//Create order object
 		var order = new db.UserOrder();
@@ -239,7 +232,7 @@ class OrderService
 
 		//checks
 		var o = order;
-		if(o.distribution==null) throw new Error( "cant record an order for a variable catalog without a distribution linked");
+		if(o.distribution==null) throw new Error( "cant record an order which is not linked to a distribution");
 		if(o.basket==null) throw new Error( "this order should have a basket" );
 
 		App.current.event(e);	
