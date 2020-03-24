@@ -148,28 +148,29 @@ class SubscriptionService
 		if ( subscription.id == null ) { //We need to check there the id as $id != null doesn't work in the manager.search
 
 			//Looking for existing subscriptions with a time range overlapping the start of the about to be created subscription
-			subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
+			subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog 
 															&& $startDate <= subscription.startDate && $endDate >= subscription.startDate, false );
 			//Looking for existing subscriptions with a time range overlapping the end of the about to be created subscription
-			subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
+			subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog 
 															&& $startDate <= subscription.endDate && $endDate >= subscription.endDate, false );	
 			//Looking for existing subscriptions with a time range included in the time range of the about to be created subscription		
-			subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $isValidated == true
+			subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog 
 															&& $startDate >= subscription.startDate && $endDate <= subscription.endDate, false );	
 		} else {
 			//Looking for existing subscriptions with a time range overlapping the start of the about to be created subscription
-			subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
+			subscriptions1 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id 
 															&& $startDate <= subscription.startDate && $endDate >= subscription.startDate, false );
 			//Looking for existing subscriptions with a time range overlapping the end of the about to be created subscription
-			subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
+			subscriptions2 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id 
 															&& $startDate <= subscription.endDate && $endDate >= subscription.endDate, false );	
 			//Looking for existing subscriptions with a time range included in the time range of the about to be created subscription		
-			subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id && $isValidated == true
+			subscriptions3 = db.Subscription.manager.search( $user == subscription.user && $catalog == subscription.catalog && $id != subscription.id 
 															&& $startDate >= subscription.startDate && $endDate <= subscription.endDate, false );	
 		}
 			
 		if ( subscriptions1.length != 0 || subscriptions2.length != 0 || subscriptions3.length != 0 ) {
-			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.', OverlappingSubscription );
+			var subs = subscriptions1.concat(subscriptions2).concat(subscriptions3);
+			throw TypedError.typed( 'Il y a déjà une souscription pour ce membre pendant la période choisie.'+"("+subs.join(',')+")", OverlappingSubscription );
 		}
 
 		if ( subscription.isValidated ) {
@@ -177,11 +178,17 @@ class SubscriptionService
 			var view = App.current.view;
 
 			if ( subscription.id != null && hasPastDistribOrdersOutsideSubscription( subscription ) ) {
-				throw TypedError.typed( 'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.', PastOrders );
+				throw TypedError.typed( 
+					'La nouvelle période sélectionnée exclue des commandes déjà passées, Il faut élargir la période sélectionnée $subName.',
+					PastOrders
+				);
 			}
 
 			if ( hasPastDistribsWithoutOrders( subscription ) ) {
-				throw TypedError.typed( 'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.', PastDistributionsWithoutOrders );
+				throw TypedError.typed(
+					'La nouvelle période sélectionnée inclue des distributions déjà passées auxquelles le membre n\'a pas participé, Il faut choisir une date ultérieure $subName.',
+					PastDistributionsWithoutOrders
+				);
 			}
 		}
 		
@@ -308,16 +315,18 @@ class SubscriptionService
 
 
 	public static function hasPastDistribOrdersOutsideSubscription( subscription : db.Subscription ) : Bool {
-
+		//trace("hasPastDistribOrdersOutsideSubscription for sub "+subscription.startDate.toString().substr(0,10)+" to "+subscription.endDate.toString().substr(0,10));
 		var now = Date.now();
 		var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
 		var orders =  db.UserOrder.manager.search( $subscription == subscription, false ).array();
 		for ( order in orders ) {
-
-			if ( order.distribution != null && order.distribution.date.getTime() <= endOfToday.getTime() && ( order.distribution.date.getTime() < subscription.startDate.getTime() || order.distribution.date.getTime() > subscription.endDate.getTime() ) ) {
-
-				return true;
+			if (order.distribution !=null){
+				//trace(order.distribution.date);
+				if ( order.distribution.date.getTime() <= endOfToday.getTime() && ( order.distribution.date.getTime() < subscription.startDate.getTime() || order.distribution.date.getTime() > subscription.endDate.getTime() ) ) {					
+					return true;
+				}
 			}
+			
 		}
 		
 		return false;

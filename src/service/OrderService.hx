@@ -52,10 +52,7 @@ class OrderService
 		if (quantity <= 0) return null;
 		
 		//check for previous orders on the same distrib
-		var prevOrders = new List<db.UserOrder>();
-		prevOrders = db.UserOrder.manager.search($product==product && $user==user && $distributionId==distribId, true);
-			}
-		
+		var prevOrders = db.UserOrder.manager.search($product==product && $user==user && $distributionId==distribId, true);
 		
 		//Create order object
 		var order = new db.UserOrder();

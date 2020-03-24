@@ -90,7 +90,7 @@ class Distribution extends Object
 	 * String to identify this distribution (debug use only)
 	 */
 	override public function toString() {
-		return "#" + id + " Distribution - " + catalog.name;		
+		return "#" + id + " Distribution du "+date.toString().substr(0,10)+" - " + catalog.name;		
 	}
 	
 	public function getOrders() {

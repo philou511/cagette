@@ -22,6 +22,10 @@ class Subscription extends Object {
 		return service.SubscriptionService.getSubscriptionDistributions(this);
 	}
 
+	override public function toString(){
+		return "Souscription #"+id+" de "+user.getName()+" à "+catalog.name;
+	}
+
 	public static function getLabels() {
 
 		var t = sugoi.i18n.Locale.texts;

@@ -122,7 +122,7 @@ class DistributionService
 	}
 
 	 /**
-	  	Creates a new distribution and prevents distribution overlapping and other checks
+	  	Creates a new distribution (attendance to a multidistribution)
 		@deprecated
 	  */
 	 public static function create(contract:db.Catalog,date:Date,end:Date,placeId:Int,orderStartDate:Date,orderEndDate:Date,?distributionCycle:db.DistributionCycle,?dispatchEvent=true,?md:db.MultiDistrib):db.Distribution {
