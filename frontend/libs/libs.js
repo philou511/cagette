@@ -39,8 +39,13 @@
     'bowser': require('bowser'),//browser version detection
     'formik': require('formik'),
     'formik-material-ui': require('formik-material-ui'),
-    'formik-material-ui-pickers': require('formik-material-ui-pickers'),  
+    'formik-material-ui-pickers': require('formik-material-ui-pickers'),
     'bootstrap.native': require('bootstrap.native'),
+    '@material-ui/pickers': require('@material-ui/pickers'),
+    '@date-io/date-fns': require('@date-io/date-fns'),
+    'date-fns': require('date-fns'),
+    'date-fns/locale': require('date-fns/locale'),
+    'cagette-react': require('cagette-react'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {
