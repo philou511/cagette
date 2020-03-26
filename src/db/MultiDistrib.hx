@@ -5,6 +5,22 @@ import Common;
 using tools.ObjectListTool;
 using Lambda;
 
+typedef Slot = {
+	id: Int,
+  distribId: Int,
+  selectedUserIds: Array<Int>,
+	registeredUserIds: Array<Int>,
+	start: Date,
+  end: Date
+}
+
+typedef SlotResolver = {
+	id: Int,
+	selectedUserIds: Array<Int>,
+  potentialUserIds: Array<Int>,
+}
+
+
 /**
  * MultiDistrib represents a global distributions with many vendors. 	
  * @author fbarbut
@@ -17,6 +33,8 @@ class MultiDistrib extends Object
 	public var distribEndDate : SDateTime;	
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
+
+	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
@@ -587,4 +605,18 @@ class MultiDistrib extends Object
 		return null;
 	}
 
+	private function resolveUserMonoSlot() {
+		
+	}
+
+	public function resolveSlots() {
+		// TODO : distrib slots must be activated 
+		// TODO : distrib should be closed
+
+		var slotResolvers: Array<SlotResolver> = Lambda.map(this.slots, (slot) -> ({
+			id: slot.id,
+			selectedUserIds: slot.slot,
+			potentialUserIds: new Array<Int>()
+		}));
+	}
 }

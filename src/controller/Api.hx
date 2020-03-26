@@ -69,6 +69,10 @@ class Api extends Controller
 		d.dispatch(new controller.api.Order());
 	}	
 
+	public function doDistributions(d:haxe.web.Dispatch, distrib: db.MultiDistrib) {
+		d.dispatch(new controller.api.Distributions(distrib));
+	}	
+
 	/**
 	 * Get distribution planning for this group
 	 * 
