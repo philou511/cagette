@@ -484,14 +484,15 @@ class App {
 		name: String,
 		?date: String,
 		?type: String = "date",
-		?required: Bool = false
+        ?required: Bool = false,
+        ?openTo: String = "date"
 	) {
 		ReactDOM.render(
 			jsx('
 				<MuiThemeProvider theme=${CagetteTheme.get()}>
 					<>
 						<CssBaseline />
-						<CagetteDatePicker name=$name value=$date type=$type required=$required />
+						<CagetteDatePicker name=$name value=$date type=$type required=$required openTo=$openTo />
 					</>
 				</MuiThemeProvider>
 			'),

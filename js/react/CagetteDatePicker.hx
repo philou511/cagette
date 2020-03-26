@@ -19,6 +19,7 @@ typedef PublicProps = {
   type: String,
   ?value: String,
   ?required: Bool,
+  ?openTo: String,
 }
 
 typedef TClasses = Classes<[input, dialog]>;
@@ -62,14 +63,11 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
   }
 
 	public function new(props:Dynamic) {
-    super(props);
-    state = {};
-    if (props.value) {
-      state.date = Date.fromString(props.value);
-    }
-    // state = {
-    //   date: new Date(props.value)
-    // };
+        super(props);
+        state = {};
+        if (props.value) {
+            state.date = Date.fromString(props.value);
+        }
 	}
 	
 	override public function render() {
@@ -78,6 +76,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
     var datetimeFormat = dateFormat + " à " + timeFormat;
     var required = props.required == null ? false : props.required;
     var clearable = !required;
+    var openTo = props.openTo == null ? "date" : props.openTo;
     return jsx('
       <MuiPickersUtilsProvider utils=$FrLocalizedUtils locale=${DateFnsLocale.fr}>
         ${
@@ -148,6 +147,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 clearable=$clearable
                 clearLabel="Effacer"
                 cancelLabel="Annuler"
+                openTo=${openTo}
                 invalidDateMessage="Format de date invalide"
                 value=${state.date}
                 onChange=$onChange

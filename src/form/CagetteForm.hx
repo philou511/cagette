@@ -22,7 +22,14 @@ class CagetteForm extends Form {
 
 
 	public static function renderDDate(name: String, label: String, value: Dynamic, ?required: Bool) {
-		return new form.CagetteDatePicker(name, label, value, NativeDatePickerType.date, required);
+		// hack
+		var namesToOpenInYear = ['birthdate'];
+		var openTo = "date";
+		if (namesToOpenInYear.indexOf(name.toLowerCase()) != -1) {
+			openTo = "year";
+		}
+
+		return new form.CagetteDatePicker(name, label, value, NativeDatePickerType.date, required, "", openTo);
 	}
 
 	public static function renderDTimeStamp(name: String, label: String, value: Dynamic, ?required: Bool) {
