@@ -4,6 +4,7 @@ import sys.db.Types;
 import Common;
 using tools.ObjectListTool;
 using Lambda;
+import haxe.Json;
 
 typedef Slot = {
 	id: Int,
@@ -14,10 +15,42 @@ typedef Slot = {
   end: Date
 }
 
-typedef SlotResolver = {
-	id: Int,
-	selectedUserIds: Array<Int>,
-  potentialUserIds: Array<Int>,
+// typedef SlotResolver = {
+// 	id: Int,
+// 	selectedUserIds: Array<Int>,
+//   potentialUserIds: Array<Int>,
+// }
+
+class SlotResolver {
+	public var id(default, null): Int;
+	public var potentialUserIds(default, null): Array<Int>;
+	public var selectedUserIds(default, null) = new Array<Int>();
+
+	public function new (id: Int, potentialUserIds: Array<Int>) {
+		this.id = id;
+		this.potentialUserIds = potentialUserIds;
+	}
+
+	public function selectUser(userId: Int) {
+		var founded = false;
+		this.potentialUserIds = this.potentialUserIds.filter(id -> {
+			if (userId == id) {
+				founded = true;
+				return false;
+			}
+			return true;
+		});
+		if (founded == null) return;
+		this.selectedUserIds.push(userId);
+	}
+
+	public function removePotentialUser(userId: Int) {
+		this.potentialUserIds = this.potentialUserIds.filter(id -> id != userId);
+	}
+
+	public function isResolved() {
+		return this.potentialUserIds.length == 0;
+	}
 }
 
 
@@ -605,18 +638,161 @@ class MultiDistrib extends Object
 		return null;
 	}
 
-	private function resolveUserMonoSlot() {
+	/*** */
+	public function generateSlots(force: Bool = false) {
+		if (this.slots != null && !force) return;
+
+		this.lock();
+
+		var slotDuration = 1000 * 60 * 15;
+    var nbSlots = Math.floor((this.distribEndDate.getTime() - this.distribStartDate.getTime()) / slotDuration);
+    this.slots = new Array<Slot>();
+    for (slotId in 0...nbSlots) {
+      this.slots.push({
+        id: slotId,
+        distribId: this.id,
+        selectedUserIds: new Array<Int>(),
+        registeredUserIds: new Array<Int>(),
+        start: DateTools.delta(this.distribStartDate, slotDuration * slotId),
+        end: DateTools.delta(this.distribStartDate, (slotDuration + 1) * slotId),
+      });
+		}
 		
+		this.update();
+	}
+
+	public function registerUserToSlot(userId: Int, slotIds: Array<Int>) {
+		if (this.slots == null) return false;
+
+		this.lock();
+		this.slots = this.slots.map(slot -> {
+			if (slotIds.indexOf(slot.id) != -1) {
+				slot.registeredUserIds.push(userId);
+			}
+			return slot;
+		});
+		this.update();
+		return true;
+	}
+
+	/** */
+	private function getPotentialUserMap(slots: Array<SlotResolver>) {
+		var userMap = new Map<Int, Array<Int>>();
+
+		for (i in 0...slots.length) {
+			var slot = slots[i];
+			for (j in 0...slot.potentialUserIds.length) {
+				var userId = slot.potentialUserIds[j];
+				if (!userMap.exists(userId)) {
+					userMap.set(userId, new Array<Int>());
+				}
+				var values = userMap.get(userId);
+				values.push(slot.id);
+				userMap.set(userId, values);
+			}
+		}
+		return userMap;
+	}
+
+	private function resolveUserMonoSlot(s: Array<SlotResolver>): Array<SlotResolver> {
+		var slots = s.copy();
+		var potentialUserMap = this.getPotentialUserMap(slots);
+		var userIdResolved = new Array<Int>();
+
+		var it = potentialUserMap.keyValueIterator();
+		while (it.hasNext()) {
+			var v = it.next();
+			if (v.value.length == 1 && userIdResolved.indexOf(v.key) == -1) {
+				userIdResolved.push(v.key);
+				var slot = slots.find(slot -> slot.id == v.value[0]);
+				if (slot != null) slot.selectUser(v.key);
+			}
+		}
+		return slots;
+	}
+
+	private function resolve(s: Array<SlotResolver>) {
+		var slots = s.copy();
+		var workingSlots = slots.filter(slot -> !slot.isResolved());
+		if (workingSlots.length == 0) return slots;
+
+		var potentialUserMap = this.getPotentialUserMap(slots);
+		var initFold: Null<SlotResolver> = null;
+		var workingSlot = Lambda.fold(workingSlots, function(slot, acc) {
+			if (acc == null) return slot;
+
+			if (slot.selectedUserIds.length < acc.selectedUserIds.length) {
+				return slot;
+			}
+
+			if (slot.selectedUserIds.length == acc.selectedUserIds.length) {
+				var slotUserWeight = Lambda.fold(slot.potentialUserIds, function(userId, accWeight) {
+					return accWeight + potentialUserMap.get(userId).length;
+				}, 0);
+				var accUserWeight = Lambda.fold(acc.potentialUserIds, function(userId, accWeight) {
+					return accWeight + potentialUserMap.get(userId).length;
+				}, 0);
+				if (slotUserWeight < accUserWeight) return slot;
+			}
+
+
+			// if (slot.selectedUserIds.length < acc.selectedUserIds.length) {
+			// 	if (slot.potentialUserIds.length < acc.potentialUserIds.length) {
+					// var slotUserWeight = Lambda.fold(slot.potentialUserIds, function(userId, accWeight) {
+					// 	return accWeight + potentialUserMap.get(userId).length;
+					// }, 0);
+					// var accUserWeight = Lambda.fold(acc.potentialUserIds, function(userId, accWeight) {
+					// 	return accWeight + potentialUserMap.get(userId).length;
+					// }, 0);
+			// 		if (slotUserWeight < accUserWeight) return slot;
+			// 	}
+			// }
+			return acc;
+		}, initFold);
+
+		var workingUserId = Lambda.fold(workingSlot.potentialUserIds, function(userId, acc) {
+			if (acc == null) {
+				return userId;
+			}
+			if (potentialUserMap.get(userId).length < potentialUserMap.get(acc).length) {
+				return userId;
+			}
+			return acc;
+		}, null);
+
+		return resolve(slots.map(slot -> {
+			if (slot.id == workingSlot.id) {
+				slot.selectUser(workingUserId);
+			} else {
+				slot.removePotentialUser(workingUserId);
+			}
+			return slot;
+		}));
 	}
 
 	public function resolveSlots() {
-		// TODO : distrib slots must be activated 
+		// distrib slots must be activated
+		if (this.slots == null) return null;
+
 		// TODO : distrib should be closed
 
-		var slotResolvers: Array<SlotResolver> = Lambda.map(this.slots, (slot) -> ({
-			id: slot.id,
-			selectedUserIds: slot.slot,
-			potentialUserIds: new Array<Int>()
-		}));
+		// parse
+		// var slotResolvers: Array<SlotResolver> = this.parseSlotsToResolverSlots(this.slots);
+		var slotResolvers = this.slots.map(slot -> new SlotResolver(slot.id, slot.registeredUserIds));
+		slotResolvers = resolve(this.resolveUserMonoSlot(slotResolvers));
+		
+		this.lock();
+
+		this.slots = this.slots .map(function (slot) {
+			var resolver = slotResolvers.find(r -> r.id == slot.id);
+			if (resolver != null) {
+				slot.selectedUserIds = resolver.selectedUserIds;
+			}
+			return slot;
+		});
+
+		this.update();
+
+		return this.slots;
 	}
 }

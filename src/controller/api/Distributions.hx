@@ -21,24 +21,8 @@ class Distributions extends Controller {
     if (!App.current.user.isAmapManager()) throw new tink.core.Error(403, "Forbidden");
     if (this.distrib.slots != null) throw new tink.core.Error(403, "Forbidden");
 
-    this.distrib.lock();
+    this.distrib.generateSlots();
     
-    var slotDuration = 1000 * 60 * 15;
-    var nbSlots = Math.floor((this.distrib.distribEndDate.getTime() - this.distrib.distribStartDate.getTime()) / slotDuration);
-    this.distrib.slots = new Array<Slot>();
-    for (slotId in 0...nbSlots) {
-      this.distrib.slots.push({
-        id: slotId,
-        distribId: this.distrib.id,
-        selectedUserIds: new Array<Int>(),
-        registeredUserIds: new Array<Int>(),
-        start: DateTools.delta(this.distrib.distribStartDate, slotDuration * slotId),
-        end: DateTools.delta(this.distrib.distribStartDate, (slotDuration + 1) * slotId),
-      });
-    }
-
-    this.distrib.update();
-
     Sys.print(Json.stringify(this.distrib.slots));
   }
 
@@ -57,10 +41,14 @@ class Distributions extends Controller {
     // distrib slots must be activated 
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
 
-    this.distrib.lock();
+    // parse query to slotIds
+    var slotIds = new Array<Int>();
+    var strSlotIds = slotIdsQuery.split(",");
+    for (index in 0...strSlotIds.length) {
+      slotIds.push(Std.parseInt(strSlotIds[index]));
+    }
 
     // check slots validity
-    var slotIds = slotIdsQuery.split(",");
     if (slotIdsQuery == "" || slotIds.length < 1) throw new tink.core.Error(400, "Bad Request");
     for (slotId in 0...slotIds.length) {
       if (Lambda.find(this.distrib.slots, (slot) -> slot.id == slotId) == null) {
@@ -68,19 +56,36 @@ class Distributions extends Controller {
       }
     }
 
-    // add user to slots
-    var updatedSlots = Lambda.map(this.distrib.slots, (slot) -> {
-      if (slotIds.indexOf(Std.string(slot.id)) != -1) {
-        return slot;
-      }
-      var updatedSlot = slot;
-      updatedSlot.registeredUserIds.push(App.current.user.id);
-      return updatedSlot;
-    });
-
-    // this.distrib.slots = updatedSlots;
-    this.distrib.update();
+    this.distrib.registerUserToSlot(App.current.user.id, slotIds);
 
     Sys.print(Json.stringify({message: "success", slots: this.distrib.slots}));
+  }
+
+  public function doTest() {
+    var fakeUserIds = new Array<Int>();
+    for (i in 0...15) {
+      fakeUserIds.push(i);
+    }
+
+    this.distrib.generateSlots(true);
+
+    this.distrib.registerUserToSlot(fakeUserIds[0], [0]);
+    this.distrib.registerUserToSlot(fakeUserIds[1], [0, 1, 2, 3]);
+
+    for (userIndex in 2...fakeUserIds.length) {
+      var slotIds = new Array<Int>();
+      for (slotIndex in 0...this.distrib.slots.length) {
+        var slot = this.distrib.slots[slotIndex];
+        if (Math.random() > 0.7) {
+          slotIds.push(slot.id);
+        }
+      }
+      this.distrib.registerUserToSlot(fakeUserIds[userIndex], slotIds);
+    }
+
+    Sys.print(Json.stringify({
+      // slots: this.distrib.slots,
+      result: this.distrib.resolveSlots()
+    }));
   }
 }
