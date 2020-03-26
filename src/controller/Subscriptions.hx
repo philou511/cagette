@@ -275,5 +275,17 @@ class Subscriptions extends controller.Controller
 		
 	}
 
+	@admin
+	public function doUnvalidate(subscription : db.Subscription ){
+		if(checkToken()){
+			subscription.lock();
+			subscription.isValidated = false;
+			subscription.isPaid = false;
+			subscription.update();
+			throw Ok("/contractAdmin/subscriptions/"+subscription.catalog.id,'Souscription dévalidée');
+		}
+
+	}
+
 
 }

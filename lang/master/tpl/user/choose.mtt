@@ -33,7 +33,7 @@
 	</div>-->
 
 	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
-		<p>Connectez-vous à votre <b>compte producteur</b> :</p>
+		<p>Connectez-vous à votre <b>compte producteur Cagette Pro</b> :</p>
 	</div>
 
 

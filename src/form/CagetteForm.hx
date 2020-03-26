@@ -23,7 +23,7 @@ class CagetteForm extends Form {
 
 	public static function renderDDate(name: String, label: String, value: Dynamic, ?required: Bool) {
 		// hack
-		var namesToOpenInYear = ['birthdate'];
+		var namesToOpenInYear = ['birthdate','birthday'];
 		var openTo = "date";
 		if (namesToOpenInYear.indexOf(name.toLowerCase()) != -1) {
 			openTo = "year";

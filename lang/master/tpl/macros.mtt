@@ -491,5 +491,21 @@
 				<span>version ::VERSION::-::getPlatform()::</span>
 			</div>	
 	</macro>
+
+	<macro name="ga()">
+		
+
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async="1" src="https://www.googletagmanager.com/gtag/js?id=UA-81371329-2"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-81371329-2');
+		</script>
+		
+		
+
+	</macro>
 	
 </macros>

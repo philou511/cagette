@@ -206,9 +206,13 @@ class SubscriptionService
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
 		}
 
-		//if the user is not a member of the group, add him
-		if(!user.isMemberOf(catalog.group) && catalog.group.regOption==RegOption.Open){
-			user.makeMemberOf(catalog.group);
+		//if the user is not a member of the group
+		if(!user.isMemberOf(catalog.group)){
+			if(catalog.group.regOption==RegOption.Open){
+				user.makeMemberOf(catalog.group);
+			}else{
+				throw new Error(user.getName()+" n'est pas membre de "+catalog.group.name);
+			}
 		}
 
 		var subscription = new db.Subscription();

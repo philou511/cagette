@@ -398,23 +398,18 @@ class Contract extends Controller
 				var pid = null;
 				var did = null;
 				try {
-
 					pid = Std.parseInt(k.split("-")[1].substr(1));
 					did = Std.parseInt(k.split("-")[0].substr(1));
-				}
-				catch ( e:Dynamic ) { 
-				
+				} catch ( e:Dynamic ) { 
 					trace("unable to parse key "+k);
 				}
 				
 				//find related element in userOrders
 				var uo = null;
 				for ( x in userOrders ) {
-
 					if (x.distrib!=null && x.distrib.id != did) {						
 						continue;
 					} else {
-
 						for ( a in x.data ){
 							if (a.product.id == pid){
 								uo = a;
@@ -447,6 +442,11 @@ class Contract extends Controller
 				}
 
 			}
+
+			if(ordersData==null || ordersData.length==0){
+				throw Error(sugoi.Web.getURI(),"Merci de choisir quelle quantité de produits vous désirez");
+			}
+			
 			
 			//create or edit subscription
 			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {

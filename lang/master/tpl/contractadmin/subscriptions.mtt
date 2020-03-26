@@ -89,6 +89,14 @@
                                                     <i class="icon icon-delete"></i> ::_("Delete")::
                                                 </a>
                                             </li>	
+
+                                            ::if(user.isAdmin())::
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/unvalidate/::subscription.id::?token=::token::">
+                                                    <i class="icon icon-square"></i> Dévalider (Admin)
+                                                </a>
+                                            </li>	
+                                            ::end::
                                         </ul>
                                     </div>
                                 </td>
