@@ -249,8 +249,14 @@ typedef PlaceInfos = {
 typedef UserInfo = {
 	id:Int,
 	name:String,
+	firstName:String,
+	lastName:String,
 	email:String,
-	
+	?phone:String,
+	?city:String,
+	?zipCode:String,
+	?address1:String,
+	?address2:String,
 }
 
 typedef UserList = {

@@ -108,11 +108,10 @@
                 <div class="col-md-3 text-right">
                         <a href="/distribution/editMd/::d.id::" class="btn btn-default btn-sm">
                             <i class="icon icon-edit"></i> Modifier
-												</a>
-												
-												<a href="/distribution/activateSlots/::d.id::" class="btn btn-danger btn-sm">
-														<i class="icon icon-clock"></i> Activer les crénaux horaires
-												</a>
+                        </a>					
+                        <a href="/distribution/activateSlots/::d.id::" class="btn btn-danger btn-sm">
+                                <i class="icon icon-clock"></i> Activer les crénaux horaires
+                        </a>                       
     
                         <a href="/distribution/deleteMd/::d.id::?token=::token::" class="btn btn-default btn-sm">
                             <i class="icon icon-delete"></i> Suppr.

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
+    <script type="text/javascript" src="/js/::getVariable('js')::/libs.dev.js"></script>
+    <script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>
+</head>
+<body style="padding: 16px">
+    <div>Distrib #::distrib.id::</div>
+
+    <br />
+
+    <div>
+        <button id="reset-btn">RESET</button>
+    </div>
+
+    <br />
+
+    <div id="activate-slots-wrapper"></div>
+    <br />
+
+    <div>
+        <button id="gen-btn">GEN FAKE DATAS</button>
+    </div>
+    <br />
+    
+    ::if distrib.slotsIsActivated == false::
+        activate and reload
+        <br />
+    ::end::
+
+    <div id="users-slots-wrapper"></div>
+
+    <script>
+        var distribId = ::distrib.id::;
+        var activated = ::distrib.slotsIsActivated::;
+
+        function reset() {
+            console.log("reset");
+            fetch("http://localhost/api/distributions/"+distribId+"/desactivateSlots", {
+                method: "POST"
+            }).then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                document.location.reload(true);
+                return res;
+            }).catch(function(error) {
+                console.log(error)
+            })
+        }
+
+        function genDatas() {
+            console.log("genDatas");
+            fetch("http://localhost/api/distributions/"+distribId+"/generateFakeDatas", {
+                method: "POST"
+            }).then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                document.location.reload(true);
+                return res;
+            }).catch(function(error) {
+                console.log(error)
+            })
+        }
+
+        document.getElementById("reset-btn").addEventListener("click", reset);
+
+        var genBtnEl = document.getElementById("gen-btn");
+        if (genBtnEl) {
+            document.getElementById("gen-btn").addEventListener("click", genDatas);
+        }
+
+        _NeolithicViewsGenerator.activateDistribSlots("activate-slots-wrapper", {
+            activated: ::distrib.slotsIsActivated::,
+            start: new Date("::distrib.distribStartDate::"),
+            end: new Date("::distrib.distribEndDate::"),
+            slotDuration: 1000 * 60 * 15,
+            activateUrl: 'http://localhost/api/distributions/'+distribId+'/activateSlots',
+        })
+
+        if (activated) {        
+            _NeolithicViewsGenerator.userDistribSlotsSelector("users-slots-wrapper", {
+                fecthDistribUrl: "http://localhost/api/distributions/"+distribId+"",
+                fetchMeUrl: "http://localhost/api/user/me",
+                postMeUrl: "http://localhost/api/user/me",
+                postRegisterInNeedUrl: "http://localhost/api/distributions/"+distribId+"/registerInNeedUser",
+                postRegisterUserSlotsUrl: "http://localhost/api/distributions/"+distribId+"/registerUserSlots",
+                postRegisterUserVoluntary: "http://localhost/api/distributions/"+distribId+"/registerUserVoluntary",
+            }) 
+        }
+        
+    </script>
+
+    <!--
+
+    
+        _NeolithicViewsGenerator.userDistribSlotsSelector("users-slots-wrapper", {
+            fetchMeUrl: "http://localhost/api/user/me",
+            postMeUrl: "http://localhost/api/user/me",
+            postRegisterInNeedUrl: "",
+            postRegisterUserSlotsUrl: "http://localhost/api/distributions/35000/registerUserSlots",
+            postRegisterUserVonluntary: ,
+            slots: "",
+            inNeedUsers: "",
+        }) 
+    -->
+
+</body>
+</html>

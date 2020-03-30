@@ -68,6 +68,8 @@ class MultiDistrib extends Object
 	public var orderEndDate : SNull<SDateTime>;
 
 	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
+	@hideInForms public var inNeedUserIds : SNull<SData<Array<Int>>>;
+	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
@@ -657,12 +659,44 @@ class MultiDistrib extends Object
         end: DateTools.delta(this.distribStartDate, (slotDuration + 1) * slotId),
       });
 		}
+
+		this.inNeedUserIds = new Array<Int>();
 		
 		this.update();
 	}
 
+	public function registerVoluntary(userId: Int, forUserIds: Array<Int>) {
+		if (this.slots == null) return false;
+		if (this.userIsAlreadyAdded(userId)) return false;
+
+		this.lock();
+		if (this.voluntaryUsers == null) {
+			this.voluntaryUsers = new Map<Int, Array<Int>>();
+		}
+
+		if (this.voluntaryUsers.exists(userId)) return false;
+		this.voluntaryUsers.set(userId, forUserIds);
+		this.update();
+
+		return true;
+	}
+
+	public function registerInNeedUser(userId: Int) {
+		if (this.slots == null) return false;
+		if (this.userIsAlreadyAdded(userId)) return false;
+
+		this.lock();
+		if (this.inNeedUserIds == null) {
+			this.inNeedUserIds = new Array<Int>();
+		}
+		this.inNeedUserIds.push(userId);
+		this.update();
+		return true;
+	}
+
 	public function registerUserToSlot(userId: Int, slotIds: Array<Int>) {
 		if (this.slots == null) return false;
+		if (this.userIsAlreadyAdded(userId)) return false;
 
 		this.lock();
 		this.slots = this.slots.map(slot -> {
@@ -794,5 +828,24 @@ class MultiDistrib extends Object
 		this.update();
 
 		return this.slots;
+	}
+
+	private function userIsAlreadyAdded(userId: Int) {
+		if (this.slots == null) return false;
+
+		var founded = false;
+		Lambda.fold(this.slots, function(slot, acc) {
+			if (acc == true) return acc;
+			if (slot.registeredUserIds.indexOf(userId) != -1) {
+				return true;
+			}
+			return acc;
+		}, founded);
+
+		if (founded == true) return true;
+
+		if (this.inNeedUserIds == null) return false;
+
+		return this.inNeedUserIds.indexOf(userId) != -1;
 	}
 }

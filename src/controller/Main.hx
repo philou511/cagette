@@ -1,4 +1,5 @@
 package controller;
+import db.MultiDistrib;
 import db.Distribution;
 import db.UserOrder;
 import haxe.Json;
@@ -313,5 +314,13 @@ Called from controller/Main.hx line 117
 	function doDb(d:Dispatch) {
 		d.parts = []; //disable haxe.web.Dispatch
 		sys.db.admin.Admin.handler();
+	}
+
+	@tpl("test.html")
+	public function doTest() {
+		var distrib = db.MultiDistrib.manager.select($id == 35006);
+		var d: Dynamic = distrib;
+		d.slotsIsActivated = distrib.slots != null;
+		view.distrib = d;
 	}
 }

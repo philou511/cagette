@@ -558,7 +558,14 @@ class User extends Object {
 		return {
 			id:id,
 			name : getName(),
-			email : email
+			firstName: firstName,
+			lastName: lastName,
+			email : email,
+			phone: phone,
+			city: city,
+			zipCode: zipCode,
+			address1: address1,
+			address2: address2
 		};
 	}
 

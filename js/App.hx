@@ -29,6 +29,7 @@ import react.map.*;
 import react.user.*;
 import react.vendor.*;
 import react.CagetteDatePicker;
+import react.ReactComponent;
 
 //TODO
 import react.store.Cart;
@@ -37,6 +38,21 @@ import react.store.Cart;
 //require bootstrap JS since it's bundled with browserify
 //@:jsRequire('bootstrap') extern class Bootstrap{}
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
+
+
+@:jsRequire('cagette-front-core', 'NeolithicViewsGenerator')
+extern class NeolithicViewsGenerator {
+    static public function activateDistribSlots(
+        elementId: String,
+        props: {
+            activated: Bool,
+            start: Date,
+            end: Date,
+            slotDuration: Int,
+            activateUrl: String
+        }
+    ): Dynamic;
+}
 
 class App {
 
@@ -71,6 +87,7 @@ class App {
 		
 		//untyped js.Browser.window.$ = js.Lib.require("jQuery");
 		untyped js.Browser.window._ = new App();
+		untyped js.Browser.window._NeolithicViewsGenerator = NeolithicViewsGenerator;
 	}
 
 	/**
@@ -497,7 +514,7 @@ class App {
 			'),
 			js.Browser.document.querySelector(selector)
 		);
-	}
+    }
 }
 
 
