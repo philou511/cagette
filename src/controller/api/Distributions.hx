@@ -71,7 +71,10 @@ class Distributions extends Controller {
     // distrib slots must be activated 
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
 
-    this.distrib.registerInNeedUser(App.current.user.id);
+    var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
+    if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request");
+
+    this.distrib.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
 
     Sys.print(Json.stringify(this.parse()));
   }
@@ -143,11 +146,11 @@ class Distributions extends Controller {
       this.distrib.registerUserToSlot(fakeUserIds[userIndex], slotIds);
     }
 
-    this.distrib.registerInNeedUser(10);
-    this.distrib.registerInNeedUser(11);
-    this.distrib.registerInNeedUser(12);
-    this.distrib.registerInNeedUser(15);
-    this.distrib.registerInNeedUser(17);
+    this.distrib.registerInNeedUser(10, ["email"]);
+    this.distrib.registerInNeedUser(11, ["email", "address", "phone"]);
+    this.distrib.registerInNeedUser(12, ["email", "address", "phone"]);
+    this.distrib.registerInNeedUser(15, ["address"]);
+    this.distrib.registerInNeedUser(17, ["phone"]);
 
     this.distrib.registerVoluntary(1, [10, 11]);
 
@@ -155,28 +158,41 @@ class Distributions extends Controller {
   }
 
   private function parse() {
-    var users = null;
+    var users = new Array();
 
     if (this.distrib.inNeedUserIds != null) {
-      users = new Array<db.User>();
 
-      var inNeedUserIds = this.distrib.inNeedUserIds;
-
-      if (this.distrib.voluntaryUsers != null) {
-        var it = this.distrib.voluntaryUsers.keyValueIterator();
-        while (it.hasNext()) {
-          var v = it.next();
-          inNeedUserIds = inNeedUserIds.filter(uI -> {
-            if (v.value.indexOf(uI) != -1) return false;
-            return true;
-          });
-        }
+      // on récupère la liste des userInNeedIds
+      var inNeedUserIds = new Array<Int>();
+      var it = this.distrib.inNeedUserIds.keyValueIterator();
+      while (it.hasNext()) {
+        var v = it.next();
+        inNeedUserIds.push(v.key);
+        // inNeedUserIds = inNeedUserIds.filter(ui -> ui != v.key);
       }
 
-      for (index in 0...inNeedUserIds.length) {
-        users.push(
-          db.User.manager.select($id == inNeedUserIds[index])
-        );
+      // que l'on filtre avec ceux déjà servis
+      var it = this.distrib.voluntaryUsers.keyValueIterator();
+      while (it.hasNext()) {
+        var v = it.next();
+        inNeedUserIds = inNeedUserIds.filter(userId ->v.value.indexOf(userId) == -1);
+      }
+
+      // que l'on transforme avec les datas aurtorisées
+      for (i in 0...inNeedUserIds.length) {
+        var user = db.User.manager.select($id == inNeedUserIds[i]);
+        var userData: Dynamic = {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        };
+        if (this.distrib.inNeedUserIds.get(user.id).indexOf("address") != -1) {
+          userData.address1 = user.address1;
+          userData.address2 = user.address2;
+          userData.city = user.city;
+          userData.zipCode = user.zipCode;
+        }
+        users.push(userData);
       }
     }
 
@@ -185,7 +201,7 @@ class Distributions extends Controller {
       start: this.distrib.distribStartDate,
       end: this.distrib.distribEndDate,
       slots: this.distrib.slots,
-      inNeedUsers: users == null ? null : users.map(user -> user.infos())
+      inNeedUsers: users
     }
   }
 }

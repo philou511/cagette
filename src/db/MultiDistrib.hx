@@ -68,7 +68,7 @@ class MultiDistrib extends Object
 	public var orderEndDate : SNull<SDateTime>;
 
 	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
-	@hideInForms public var inNeedUserIds : SNull<SData<Array<Int>>>;
+	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
 	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;
@@ -660,7 +660,9 @@ class MultiDistrib extends Object
       });
 		}
 
-		this.inNeedUserIds = new Array<Int>();
+		this.voluntaryUsers = new Map<Int, Array<Int>>();
+
+		this.inNeedUserIds = new Map<Int, Array<String>>();
 		
 		this.update();
 	}
@@ -670,10 +672,6 @@ class MultiDistrib extends Object
 		if (this.userIsAlreadyAdded(userId)) return false;
 
 		this.lock();
-		if (this.voluntaryUsers == null) {
-			this.voluntaryUsers = new Map<Int, Array<Int>>();
-		}
-
 		if (this.voluntaryUsers.exists(userId)) return false;
 		this.voluntaryUsers.set(userId, forUserIds);
 		this.update();
@@ -681,15 +679,14 @@ class MultiDistrib extends Object
 		return true;
 	}
 
-	public function registerInNeedUser(userId: Int) {
+	public function registerInNeedUser(userId: Int, allowed: Array<String>) {
 		if (this.slots == null) return false;
+		if (this.inNeedUserIds == null) return false;
 		if (this.userIsAlreadyAdded(userId)) return false;
+		if (this.inNeedUserIds.exists(userId)) return false;
 
 		this.lock();
-		if (this.inNeedUserIds == null) {
-			this.inNeedUserIds = new Array<Int>();
-		}
-		this.inNeedUserIds.push(userId);
+		this.inNeedUserIds.set(userId, allowed);
 		this.update();
 		return true;
 	}
@@ -846,6 +843,6 @@ class MultiDistrib extends Object
 
 		if (this.inNeedUserIds == null) return false;
 
-		return this.inNeedUserIds.indexOf(userId) != -1;
+		return this.inNeedUserIds.exists(userId);
 	}
 }

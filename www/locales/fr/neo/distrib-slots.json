@@ -33,5 +33,8 @@
     "nophone": "Vous n'avez pas renseigné votre n° de téléphone.",
     "consentement": "Pour qu'une autre personne du groupe puisse retirer votre commande à votre place, vous devez nous autoriser à partager vos coordonnées avec les autres membres de votre groupe.",
     "userFormTitle": "Edition de votre profil"
+  },
+  "userInNeedSelected": {
+    "choose": "Ces personnes de votre groupe ne peuvent pas venir retiere leur commande. Vous pouvez en selectionner une ou plusieurs pour vous engagez à leur apporter."
   }
 }
