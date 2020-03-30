@@ -77,7 +77,20 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
     var required = props.required == null ? false : props.required;
     var clearable = !required;
     var openTo = props.openTo == null ? "date" : props.openTo;
+    var fieldName = "react_" + props.name;
+
+    var hiddenValue = "";
+    if (props.type == "time") {
+        hiddenValue = DateFns.format(state.date, "HH:mm");
+    } else if (props.type == "datetime-local") {
+        hiddenValue = DateFns.format(state.date, "yyyy-MM-dd'T'HH:mm:ss");
+    } else {
+        hiddenValue = DateFns.format(state.date, "yyyy-MM-dd");
+    }
+
     return jsx('
+      <>
+      <input type="hidden" name=${props.name} value=$hiddenValue />
       <MuiPickersUtilsProvider utils=$FrLocalizedUtils locale=${DateFnsLocale.fr}>
         ${
           switch (props.type) {
@@ -100,7 +113,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 clearLabel="Effacer"
                 cancelLabel="Annuler"
                 invalidDateMessage="Format de date invalide"
-                name=${props.name}
+                name=$fieldName
                 value=${state.date}
                 onChange=$onChange  
                 />
@@ -119,7 +132,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 }}
                 fullWidth
                 format=$datetimeFormat
-                name=${props.name}
+                name=$fieldName
                 ampm={false}
                 clearable=$clearable
                 clearLabel="Effacer"
@@ -142,7 +155,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
                 }}
                 fullWidth
                 format=$dateFormat
-                name=${props.name}
+                name=$fieldName
                 required=$required
                 clearable=$clearable
                 clearLabel="Effacer"
@@ -156,6 +169,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
           }
         }
       </MuiPickersUtilsProvider>
+      </>
     ');
   }
   
