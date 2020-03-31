@@ -65,9 +65,10 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
 	public function new(props:Dynamic) {
         super(props);
         state = {};
-        if (props.value) {
-            state.date = Date.fromString(props.value);
-        }
+        state.date = props.value != null ? Date.fromString(props.value) : Date.now();
+        // if (props.value) {
+        //     state.date = Date.fromString(props.value);
+        // }
 	}
 	
 	override public function render() {
