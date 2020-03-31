@@ -65,10 +65,7 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
 	public function new(props:Dynamic) {
         super(props);
         state = {};
-        state.date = props.value != null ? Date.fromString(props.value) : Date.now();
-        // if (props.value) {
-        //     state.date = Date.fromString(props.value);
-        // }
+        state.date = props.value != null ? Date.fromString(props.value) : null;
 	}
 	
 	override public function render() {
@@ -81,7 +78,9 @@ class CagetteDatePicker extends react.ReactComponentOfPropsAndState<CagetteDateP
     var fieldName = "react_" + props.name;
 
     var hiddenValue = "";
-    if (props.type == "time") {
+    if (state.date == null) {
+        hiddenValue = "";
+    } else if (props.type == "time") {
         hiddenValue = DateFns.format(state.date, "HH:mm");
     } else if (props.type == "datetime-local") {
         hiddenValue = DateFns.format(state.date, "yyyy-MM-dd'T'HH:mm:ss");
