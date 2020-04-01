@@ -13886,9 +13886,11 @@ var InNeedUsersSelector = function (_a) {
             React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: onConfirmClick }, t('validate')))));
 };
 
+var tFile$5 = 'neo/distrib-slots';
+var shortTKey$5 = tFile$5 + ":userSlotsSelector.end";
 var UserDistribSlotsSelectorView = function (_a) {
     var fecthDistribUrl = _a.fecthDistribUrl, fetchMeUrl = _a.fetchMeUrl, postMeUrl = _a.postMeUrl, postRegisterInNeedUrl = _a.postRegisterInNeedUrl, postRegisterUserSlotsUrl = _a.postRegisterUserSlotsUrl, postRegisterUserVoluntary = _a.postRegisterUserVoluntary;
-    var t = useTranslation(['translation']).t;
+    var t = useTranslation(['translation', tFile$5]).t;
     var _b = React__default.useState(false), loading = _b[0], toggleLoading = _b[1];
     var _c = React__default.useState(''), error = _c[0], setError = _c[1];
     var _d = React__default.useState(), slots = _d[0], setSlots = _d[1];
@@ -14072,12 +14074,15 @@ var UserDistribSlotsSelectorView = function (_a) {
         }
         if (confirmed) {
             if (mode === 'inNeed') {
-                return React__default.createElement(core.Box, { p: 2 }, "In need confirm message");
+                return (React__default.createElement(core.Box, { p: 2 },
+                    React__default.createElement(core.Typography, null, t(shortTKey$5 + ".inNeed"))));
             }
             if (mode === 'voluntary') {
-                return React__default.createElement(core.Box, { p: 2 }, "Voluntary confirm message");
+                return (React__default.createElement(core.Box, { p: 2 },
+                    React__default.createElement(core.Typography, null, t(shortTKey$5 + ".voluntary"))));
             }
-            return React__default.createElement(core.Box, { p: 2 }, "Solo confirm message");
+            return (React__default.createElement(core.Box, { p: 2 },
+                React__default.createElement(core.Typography, null, t(shortTKey$5 + ".solo"))));
         }
         if (!mode) {
             return (React__default.createElement(core.Box, { p: 2 },
