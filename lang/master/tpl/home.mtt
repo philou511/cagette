@@ -99,7 +99,7 @@
 					<div class="info">$$place(::place::)</div>
 
 				</div>
-
+                // CHOISIR MON CRENEAUX HORRAIS / VOI
 				<!--==== Variable order block ===-->
 				::if d.getDistributions(1).length>0::
 

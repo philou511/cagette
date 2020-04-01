@@ -1,0 +1,40 @@
+{
+  "activeDistrib": {
+    "activateBtn": "Activer les créneaux horaires",
+    "activatedBtn": "Voir les créneaux horaires",
+
+    "dialogTitle": "Distribution du {{date}}",
+    "alert": "En raison de l'épidémie en cours, vous pouvez mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présent simultanément au point de distribution.",
+    "slot-description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis vel eligendi fuga cum minus architecto eveniet iusto quaerat, assumenda minima libero possimus qui! Perspiciatis, voluptate repellat quaerat magni ut officia!.",
+    "slot-id": "Créneau n°{{id}}",
+    "confirmBtnLabel": "Activer ces créneaux"
+  },
+  "userSlotsSelector": {
+    "cardTitle": "Retrait de votre commande",
+    "alert": {
+      "p1": "En raison de l'épidémie en cours, ce groupe a décidé de mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présent simultanément au point de distribution.",
+      "p2": "Dans ce sens, nous vous encourageons à retirer, en plus de la vôtre, les commandes des gens proches de chez vous et à vous organiser pour les leur apporter."
+    },
+    "modeSelector": {
+      "inNeed": "😷 Je suis une personne à risque. J'ai besoin que l'on retire ma commande à ma place.",
+      "voluntary": "👍 Je suis disponible pour retirer ma commande ainsi que celles d'autres personnes.",
+      "solo": "Je ne peux retirer que ma commande."
+    },
+    "selector": {
+      "chooseSlot": "Choisissez les créneaux sur lesquels vous pouvez venir retirer votre commande.",
+      "chooseSlotSub": "À la clôture de la commande, vous recevrez un e-mail vous confirmant l'heure exacte à laquelle venir retirer votre commande parmi celles sélectionnées ci-dessous.",
+      "noneUsersInSlot": "Ce créneau est totalement libre.",
+      "usersInSlot": "Une personne a sélectionné ce créneau.",
+      "usersInSlot_plural": "{{count}} personnes ont déjà sélectionné ce créneau."
+    }
+  },
+  "userInNeed": {
+    "noaddress": "Vous n'avez pas renseigné votre adresse.",
+    "nophone": "Vous n'avez pas renseigné votre n° de téléphone.",
+    "consentement": "Pour qu'une autre personne du groupe puisse retirer votre commande à votre place, vous devez nous autoriser à partager vos coordonnées avec les autres membres de votre groupe.",
+    "userFormTitle": "Edition de votre profil"
+  },
+  "userInNeedSelected": {
+    "choose": "Ces personnes de votre groupe ne peuvent pas venir retiere leur commande. Vous pouvez en selectionner une ou plusieurs pour vous engagez à leur apporter."
+  }
+}

@@ -40,7 +40,7 @@ import react.store.Cart;
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
 
-@:jsRequire('cagette-front-core', 'NeolithicViewsGenerator')
+@:jsRequire('cagette-neo', 'NeolithicViewsGenerator')
 extern class NeolithicViewsGenerator {
     static public function activateDistribSlots(
         elementId: String,
