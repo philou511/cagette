@@ -1,4 +1,5 @@
 package controller;
+import pro.db.CagettePro;
 import haxe.crypto.Md5;
 import sugoi.form.elements.Input;
 import sugoi.form.Form;
@@ -74,7 +75,9 @@ class User extends Controller
 		
 		#if plugins
 		//vendor accounts
-		view.vendors = service.VendorService.getVendorsFromUser(app.user);
+		var vendors = service.VendorService.getVendorsFromUser(app.user);
+		view.vendors = vendors;
+		view.isCovid = vendors.count( v -> v.isCovid )>0;
 		#end
 	}
 	
@@ -289,7 +292,7 @@ class User extends Controller
 	**/
 	@tpl('account/quit.mtt')
 	function doQuitGroup(group:db.Group,user:db.User,key:String){
-		//return "https://"+App.config.HOST+"/account/quitGroup/"+group.id+"/"+this.id+"/"+haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id);
+
 		if (haxe.crypto.Md5.encode(App.config.KEY+group.id+user.id) != key){
 			throw Error("/","Lien invalide");
 		}

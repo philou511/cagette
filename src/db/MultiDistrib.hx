@@ -67,6 +67,7 @@ class MultiDistrib extends Object
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
 
+	//time slots management
 	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
 	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
 	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;

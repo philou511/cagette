@@ -3,18 +3,27 @@ import sys.db.Object;
 import sys.db.Types;
 import Common;
 
+typedef SiretInfos = {
+	date_creation:String,
+	code_postal:String,
+	activite_principale:String,//code NAF
+	geo_adresse:String,//adresse postale
+
+}
+
 /**
  * Vendor (farmer/producer/vendor)
  */
 class Vendor extends Object
 {
 	public var id : SId;
-	public var name : SString<128>;
+	public var name : SString<128>;	//Business name 
+	public var peopleName : SNull<SString<128>>; //Business owner(s) name
 	
 	//public var legalStatus : SNull<SEnum<LegalStatus>>;
 	@hideInForms public var profession : SNull<SInt>;
 
-	public var email : STinyText;
+	public var email:SNull<SString<128>>;
 	public var phone:SNull<SString<19>>;
 		
 	public var address1:SNull<SString<64>>;
@@ -24,6 +33,9 @@ class Vendor extends Object
 	public var country:SNull<SString<64>>;
 	
 	public var desc : SNull<SText>;
+
+	public var companyNumber : SNull<SString<128>>; //SIRET
+	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
@@ -36,6 +48,7 @@ class Vendor extends Object
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+	@hideInForms public var isCovid : SBool; //compte gratuit créé pendant le confinement
 
 	public static var PROFESSIONS:Array<{id:Int,name:String}>;
 	
@@ -44,10 +57,10 @@ class Vendor extends Object
 	{
 		super();
 		directory = true;
-		try{
+		/*try{
 			var t = sugoi.i18n.Locale.texts;
-			name = t._("Supplier");
-		}catch(e:Dynamic){}
+			name = "Ferme ";
+		}catch(e:Dynamic){}*/
 	}
 	
 	override function toString() {
@@ -166,7 +179,7 @@ class Vendor extends Object
 		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
 		
 		//profession
-		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,false),3);
+		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,false),4);
 		
 		return form;
 	}
@@ -191,9 +204,10 @@ class Vendor extends Object
 	public static function getLabels(){
 		var t = sugoi.i18n.Locale.texts;
 		return [
-			"name" 				=> t._("Supplier name"),
+			"name" 				=> "Nom de votre ferme/entreprise",
+			"peopleName" 		=> "Nom de l'exploitant",	
 			"desc" 				=> t._("Description"),
-			"email" 			=> t._("Email"),
+			"email" 			=> t._("Email pro"),
 			"legalStatus"		=> t._("Legal status"),
 			"phone" 			=> t._("Phone"),
 			"address1" 			=> t._("Address 1"),
@@ -202,6 +216,7 @@ class Vendor extends Object
 			"city" 				=> t._("City"),			
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
+			"companyNumber" 	=> "Numéro SIRET (14 chiffres)",	
 		];
 	}
 

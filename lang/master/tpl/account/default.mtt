@@ -67,6 +67,8 @@
 			::set basket = d.getUserBasket(user)::
 			::if(basket!=null)::
 				::set orders = basket.getOrders(1)::
+			::else:: 
+				::set orders = null::
 			::end::
 			::if(orders!=null && orders.length>0)::
 

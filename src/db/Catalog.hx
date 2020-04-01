@@ -35,6 +35,8 @@ class Catalog extends Object
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
 	@:skip var cache_hasActiveDistribs : Bool;
+
+
 	
 	public function new() 
 	{

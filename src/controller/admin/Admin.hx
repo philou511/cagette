@@ -351,5 +351,48 @@ class Admin extends Controller {
 
 	}
 
+
+	/**
+		clean files that are not linked to anything
+	**/
+	function doCleanFiles(from:Date,to:Date){
+		var files =  sugoi.db.File.manager.search($cdate >= from && $cdate < to,true);
+		Sys.println(files.length+" fichiers<br/>");
+
+		for( f in files){
+			//product file
+			if(db.Product.manager.select($image==f)!=null) continue;
+
+			//entity file 
+			if(sugoi.db.EntityFile.manager.select($file==f)!=null) continue;			
+			
+			//vendor logo
+			if(db.Group.manager.select($image==f)!=null) continue;
+
+			//group logo
+			if(db.Vendor.manager.select($image==f)!=null) continue;
+
+			#if plugins
+			if(pro.db.PProduct.manager.select($image==f)!=null) continue;
+			if(pro.db.POffer.manager.select($image==f)!=null) continue;
+			#end
+			
+			Sys.println("delete "+f.toString()+" <br/>");
+			f.delete();
+		}
+
+	}
+
+	/**
+		clean old product files
+	**/
+	function doCleanOldFiles() {
+		/*var max = new Date(2018,06,30,0,0,0);
+		for( c in Catalog.manager.search($endate < max,{limit:1000},false)){
+			Sys.println(c.name+"<br/>");
+		}*/
+		
+	}
+
 }
 
