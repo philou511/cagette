@@ -1,4 +1,5 @@
 package controller.api;
+import service.TimeSlotsService;
 import tink.core.Error;
 import db.UserGroup;
 import haxe.Json;
@@ -60,8 +61,8 @@ class Distributions extends Controller {
       Sys.print(Json.stringify(this.parse()));
       return;
     }
-
-    this.distrib.generateSlots();    
+	var s = new TimeSlotsService(this.distrib);
+    s.generateSlots();    
     Sys.print(Json.stringify(this.parse()));
   }
 
@@ -82,7 +83,8 @@ class Distributions extends Controller {
       userIds.push(Std.parseInt(strUserIds[index]));
     }
 
-    this.distrib.registerVoluntary(App.current.user.id, userIds);
+	var s = new TimeSlotsService(this.distrib);
+    s.registerVoluntary(App.current.user.id, userIds);    
 
     Sys.print(Json.stringify(this.parse()));
  
@@ -102,7 +104,8 @@ class Distributions extends Controller {
     var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
     if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request");
 
-    this.distrib.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
+	var s = new TimeSlotsService(this.distrib);
+    s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
 
     Sys.print(Json.stringify(this.parse()));
   }
@@ -134,7 +137,8 @@ class Distributions extends Controller {
       }
     }
 
-    this.distrib.registerUserToSlot(App.current.user.id, slotIds);
+	var s = new TimeSlotsService(this.distrib);
+    s.registerUserToSlot(App.current.user.id, slotIds);
 
     Sys.print(Json.stringify(this.parse()));
   }
@@ -157,9 +161,9 @@ class Distributions extends Controller {
   public function doGenerateFakeDatas() {
     var fakeUserIds = [1, 2, 6, 8, 9];
 
-    this.distrib.generateSlots(true);
-
-    this.distrib.registerUserToSlot(1, [1, 2]);
+	var s = new TimeSlotsService(this.distrib);
+    s.generateSlots(true);
+    s.registerUserToSlot(1, [1, 2]);
 
     for (userIndex in 1...fakeUserIds.length) {
       var slotIds = new Array<Int>();
@@ -169,16 +173,15 @@ class Distributions extends Controller {
           slotIds.push(slot.id);
         }
       }
-      this.distrib.registerUserToSlot(fakeUserIds[userIndex], slotIds);
+      s.registerUserToSlot(fakeUserIds[userIndex], slotIds);
     }
 
-    this.distrib.registerInNeedUser(10, ["email"]);
-    this.distrib.registerInNeedUser(11, ["email", "address", "phone"]);
-    this.distrib.registerInNeedUser(12, ["email", "address", "phone"]);
-    this.distrib.registerInNeedUser(15, ["address"]);
-    this.distrib.registerInNeedUser(17, ["phone"]);
-
-    this.distrib.registerVoluntary(1, [10, 11]);
+    s.registerInNeedUser(10, ["email"]);
+    s.registerInNeedUser(12, ["email", "address", "phone"]);
+    s.registerInNeedUser(11, ["email", "address", "phone"]);
+    s.registerInNeedUser(15, ["address"]);
+    s.registerInNeedUser(17, ["phone"]);
+	s.registerVoluntary(1, [10, 11]);
 
     Sys.print(Json.stringify(this.parse()));
   }
