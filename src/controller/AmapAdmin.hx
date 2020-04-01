@@ -76,19 +76,39 @@ class AmapAdmin extends Controller
 
 	@tpl("amapadmin/default.mtt")
 	function doDefault() {
-		view.membersNum = UserGroup.manager.count($group == app.user.getGroup());
-		view.contractsNum = app.user.getGroup().getActiveContracts().length;
+		var group = app.user.getGroup();
+		view.membersNum = UserGroup.manager.count($group == group);
+		view.contractsNum = group.getActiveContracts().length;
 		
-		//ping cagette groups directory
-		/*if (Std.random(10) == 0 && app.user.getGroup().flags.has(db.Group.GroupFlags.CagetteNetwork)){
-			var req = new Http("http://annuaire.cagette.net/api/ping?url="+StringTools.urlEncode( "http://" + App.config.HOST  ) );
-			try{
-				req.request();
-			}catch (e:Dynamic){
-				App.current.logError("Error while contacting annuaire.cagette.net : "+e);
-			}
-			
-		}*/
+		//visible on map
+		#if plugins
+		var h = hosted.db.Hosting.getOrCreate(group.id, true);
+		var o = h.updateVisible();
+		
+		var str = "";
+		if(!o.cagetteNetwork){
+			str += "L'option 'Me lister dans l'annuaire des groupes Cagette.net' n'est pas cochée. ";
+		}
+		if (!o.geoloc){
+			str += "Votre lieu de distribution n'a pas pu être géolocaliser, merci de compléter ou corriger son adresse. ";
+		}
+		if( ! o.distributions ){
+			str += "Vous devez avoir des distributions planifiées. ";
+		}
+		if(!o.members){
+			str += "Vous devez avoir au moins 3 personnes dans votre groupe. ";
+		}
+
+		view.visibleOnMapText = str;
+		view.visibleOnMap = o.visible;
+
+		#else
+		view.visibleOnMap = true;
+		#end
+
+		
+		
+
 		
 	}
 	

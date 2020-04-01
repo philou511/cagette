@@ -1,4 +1,6 @@
 package controller.api;
+import tink.core.Error;
+import db.UserGroup;
 import haxe.Json;
 import Common;
 import db.MultiDistrib;
@@ -16,34 +18,59 @@ class Distributions extends Controller {
     this.distrib = distrib;
   }
 
+  private function checkAdminRights(){
+    if (!App.current.user.isAmapManager() || app.user.getGroup().id!=this.distrib.getGroup().id){
+      throw new tink.core.Error(403, "Forbidden");
+    } 
+  }
+  
+  private function checkIsGroupMember(){
+    
+    // user must be logged
+    if (app.user == null) throw new tink.core.Error(403, "Forbidden");
+    
+    // user must be member of group
+    if(UserGroup.get(app.user,distrib.getGroup())==null){
+      throw new tink.core.Error(403, "User is not member of this group");
+    }
+  }
+
+  private function checkOrdersAreOpen() {
+    var now = Date.now();
+    if(distrib.orderEndDate!=null || !(distrib.orderStartDate.getTime() < now.getTime() && distrib.orderEndDate.getTime() > now.getTime()) ){
+      throw new Error(403,"Orders are not open");
+    }
+  }
+
   public function doDefault() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
-
+    checkIsGroupMember();
     Sys.print(Json.stringify(this.parse()));
   }
 
+  /**
+    an admin updates the slots
+  **/
   public function doActivateSlots() {
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-    if (!App.current.user.isAmapManager()) throw new tink.core.Error(403, "Forbidden");
-
+    checkAdminRights();
+    checkOrdersAreOpen();
+    
     if (this.distrib.slots != null) {
       Sys.print(Json.stringify(this.parse()));
       return;
     }
 
-    this.distrib.generateSlots();
-    
+    this.distrib.generateSlots();    
     Sys.print(Json.stringify(this.parse()));
   }
 
   public function doRegisterUserVoluntary() {
     // allow only POST method
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-    // user must be logged
-    if (App.current.user == null) throw new tink.core.Error(403, "Forbidden");
-    // user must be member of group
-    // TODO if (!App.current.user.isMemberOf(this.distrib.getGroup())) throw new tink.core.Error(403, "Forbidden");
-    // distrib slots must be activated 
+    checkIsGroupMember();
+    checkOrdersAreOpen();
+
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
 
     var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
@@ -62,12 +89,13 @@ class Distributions extends Controller {
   }
 
   public function doRegisterInNeedUser() {
+   
+
     // allow only POST method
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-    // user must be logged
-    if (App.current.user == null) throw new tink.core.Error(403, "Forbidden");
-    // user must be member of group
-    // TODO if (!App.current.user.isMemberOf(this.distrib.getGroup())) throw new tink.core.Error(403, "Forbidden");
+    checkIsGroupMember();
+    checkOrdersAreOpen();
+
     // distrib slots must be activated 
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
 
@@ -82,15 +110,9 @@ class Distributions extends Controller {
   public function doRegisterUserSlots() {
     // allow only POST method
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-
-    // TODO : distrib should be opened
-
-    // user must be logged
-    if (App.current.user == null) throw new tink.core.Error(403, "Forbidden");
-    
-    // user must be member of group
-    // TODO if (!App.current.user.isMemberOf(this.distrib.getGroup())) throw new tink.core.Error(403, "Forbidden");
-    
+    checkIsGroupMember();
+    checkOrdersAreOpen();
+   
     // distrib slots must be activated 
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
 
@@ -107,7 +129,7 @@ class Distributions extends Controller {
     // check slots validity
     if (slotIds.length < 1) throw new tink.core.Error(400, "Bad Request");
     for (slotId in 0...slotIds.length) {
-      if (Lambda.find(this.distrib.slots, (slot) -> slot.id == slotId) == null) {
+      if (this.distrib.slots.find( slot -> slot.id == slotId) == null) {
         throw new tink.core.Error(400, "Bad Request");
       }
     }
@@ -119,6 +141,9 @@ class Distributions extends Controller {
 
   // TODO: remove
   public function doDesactivateSlots() {
+
+    checkAdminRights();
+
     this.distrib.lock();
     this.distrib.slots = null;
     this.distrib.inNeedUserIds = null;
@@ -128,6 +153,7 @@ class Distributions extends Controller {
   }
 
   // TODO : remove
+  @admin
   public function doGenerateFakeDatas() {
     var fakeUserIds = [1, 2, 6, 8, 9];
 

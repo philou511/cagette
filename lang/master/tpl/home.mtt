@@ -138,10 +138,10 @@
 									::end::
 								</div>-->
 								
-								::if hasShopMode && active:: 
-								<a ::cond !amap.hasPayments():: href="/contract/editOrderByDate/::start.toString().substr(0,10)::" class="btn btn-default btn-sm">
-									<i class="icon icon-edit"></i> ::_("Edit")::
-								</a>
+								::if hasShopMode && active && !amap.hasPayments():: 							
+									
+									$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
+
 								::end::
 
 							

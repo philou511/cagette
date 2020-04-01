@@ -13,4 +13,5 @@ typedef IPickerProps = {
   ?required: Bool,
   ?clearLabel: String,
   ?invalidDateMessage: String,
+  ?openTo: String,
 };

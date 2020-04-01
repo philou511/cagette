@@ -1,5 +1,5 @@
 {
- "professions": [
+ "professions": [    
     {"id":1,"name":"Apiculteur"},
 	{"id":2,"name":"Arboriculteur"},
     {"id":3,"name":"Artisan non alimentaire"},
@@ -68,6 +68,7 @@
     {"id":68,"name":"Traiteur"},
     {"id":69,"name":"Tripier"},
     {"id":70,"name":"Viticulteur"},
-    {"id":71,"name":"Volailler"}
+    {"id":71,"name":"Volailler"},
+    {"id":0,"name":"Autres"}
     ]
 }

@@ -241,6 +241,10 @@ Called from controller/Main.hx line 117
 
 	@tpl('shop/default2.mtt')
 	function doShop2(md:db.MultiDistrib) {
+
+		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
+			throw  Redirect("/group/"+md.getGroup().id);
+		}
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 		view.category = 'shop';
 		view.place = md.getPlace();
@@ -318,7 +322,7 @@ Called from controller/Main.hx line 117
 
 	@tpl("test.html")
 	public function doTest() {
-		var distrib = db.MultiDistrib.manager.select($id == 35006);
+		var distrib = db.MultiDistrib.manager.select($id == 35066);
 		var d: Dynamic = distrib;
 		d.slotsIsActivated = distrib.slots != null;
 		view.distrib = d;
