@@ -205,7 +205,7 @@ class Vendor extends Object
 		var t = sugoi.i18n.Locale.texts;
 		return [
 			"name" 				=> "Nom de votre ferme/entreprise",
-			"peopleName" 		=> "Nom du ou des gérants.",	
+			"peopleName" 		=> "Nom de l'exploitant",	
 			"desc" 				=> t._("Description"),
 			"email" 			=> t._("Email pro"),
 			"legalStatus"		=> t._("Legal status"),

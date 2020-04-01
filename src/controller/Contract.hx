@@ -385,9 +385,11 @@ class Contract extends Controller
 		if ( checkToken() ) {
 			
 			if ( !catalog.isUserOrderAvailable() ) throw Error( "/contract/order/"+catalog.id , t._("This catalog is not opened for orders") );
-
-			var orders = [];
-			var ordersData = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> ();			
+			
+			//variable
+			var varOrders = []; 
+			//CSA orders
+			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
 
 			for ( k in app.params.keys() ) {
 				
@@ -433,40 +435,48 @@ class Contract extends Controller
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 				
 					if ( uo.order != null ) {
-						orders.push( OrderService.edit(uo.order, quantity));
+						varOrders.push( OrderService.edit(uo.order, quantity));
 					} else {
-						orders.push( OrderService.make(app.user, quantity, uo.product, did));
+						varOrders.push( OrderService.make(app.user, quantity, uo.product, did));
 					}
 				} else {
-					ordersData.push( { productId : uo.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
+					constOrders.push( { productId : uo.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
 				}
 
 			}
-
-			if(ordersData==null || ordersData.length==0){
-				throw Error(sugoi.Web.getURI(),"Merci de choisir quelle quantité de produits vous désirez");
-			}
 			
 			
-			//create or edit subscription
 			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+				
+				//create or edit subscription
+				if(constOrders==null || constOrders.length==0){
+					throw Error(sugoi.Web.getURI(),"Merci de choisir quelle quantité de produits vous désirez");
+				}
+
 				try {
 					var pendingSubscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
 					if ( pendingSubscription != null ) {
-						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, ordersData, false );
+						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders, false );
 					} else {
 						var now = Date.now();
 						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0);						
-						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, ordersData, false );
+						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, constOrders, false );
 					}
 				} catch ( e : Dynamic ) { 
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
+			}else{
+
+				//variable orders
+				if(varOrders.length==0)	{
+					throw Error(sugoi.Web.getURI(),"Merci de choisir quelle quantité de produits vous désirez");
+				}
+
 			}
 
 			//create order operation only
 			if ( catalog.type == db.Catalog.TYPE_VARORDER && app.user.getGroup().hasPayments() ) {
-				var orderOps = db.Operation.onOrderConfirm(orders);
+				var orderOps = db.Operation.onOrderConfirm(varOrders);
 			}
 
 

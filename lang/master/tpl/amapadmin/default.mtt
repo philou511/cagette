@@ -37,6 +37,18 @@
 				<a href="/group/::user.getGroup().id::" class="btn btn-default"><i class="icon icon-chevron-right"></i>&nbsp; ::_("Display")::</a>
 			</p>
 
+			
+			<p>
+				
+				::if(visibleOnMap)::
+				<div class="alert alert-success">$$check(true) Votre groupe est visible sur la carte.</div>
+				::else::
+				<div class="alert alert-danger">$$check(false) Votre groupe n'est pas visible sur la carte, pour les raisons suivantes : ::visibleOnMapText::</div>
+				::end::
+				
+			</p>
+			
+			
 			::if isAdmin::
 			<p>
 				<br/>
@@ -45,6 +57,8 @@
 				<a class="btn btn-danger btn-sm" href="/p/hosted/group/::user.getGroup().id::">Fiche sur le backoffice</a>
 			</p>
 			::end::
+
+
 			
 			
 		</div>

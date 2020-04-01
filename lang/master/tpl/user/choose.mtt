@@ -1,5 +1,62 @@
 ::use 'design.mtt'::
 
+	
+<!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
+	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
+		<div class="alert alert-warning">
+			
+			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
+				<i class="icon icon-info"></i> Kit d'urgence : créer son drive de producteur
+			</div>			
+		
+			<div class="row">
+				<div class="col-md-3 text-center">
+					
+					<a href="https://www.cagette.net/guide-express" class="btn btn-danger" target="_blank">
+						<i class="icon icon-youtube"></i> Guide Express
+					</a>
+
+					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>
+					
+				</div>
+				<div class="col-md-3 text-center">
+					
+					<a href="https://wiki.cagette.net/cpro:index" class="btn btn-warning" target="_blank">
+						<i class="icon icon-book"></i>
+						Documentation
+					</a>
+					<p style="font-size: 0.9em;margin-top:12px">Pour approfondir <br/>certaines fonctions</p>
+				</div>
+				<div class="col-md-3 text-center">
+					
+					<a href="https://www.facebook.com/groups/EntraideCagettePro/" class="btn btn-warning" target="_blank">
+						<i class="icon icon-facebook"></i>
+						Groupe Facebook
+					</a>
+					<p style="font-size: 0.9em;margin-top:12px">Pour échanger avec<br/>d'autres producteurs</p>
+				</div>
+				<div class="col-md-3 text-center">
+					<p>
+						<b>Questions-réponses<br/>avec les concepteurs :<br/></b>
+						<a href="https://zoom.us/webinar/register/WN_H8NrKcb9Q2eevRO1nCFiyA" target="_blank" >Lundi 30 Mars, 11h </a>
+						<a href="https://zoom.us/webinar/register/WN_JkrPtiV4RkCegUD0Hcj2QQ" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
+
+						<a href="https://zoom.us/webinar/register/WN_c2W9TeZ0SceKz5KcFKYYZQ" target="_blank" >Mercredi 1er Avril, 11h </a>
+						<a href="https://zoom.us/webinar/register/WN_c2W9TeZ0SceKz5KcFKYYZQ" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
+
+						<a href="https://zoom.us/webinar/register/WN_MaQL9Im5StOggIIUEpTlDA" target="_blank" >Vendredi 3 Avril, 11h </a>
+						<a href="https://zoom.us/webinar/register/WN_MaQL9Im5StOggIIUEpTlDA" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
+					
+					<!--<a href="https://wiki.cagette.net" class="btn btn-warning" target="_blank">
+						<i class="icon icon-youtube"></i> Visio-conférence</a>-->
+					</p>
+				</div>
+			</div>
+				
+			
+		</div>
+	</div>
+
 	<div class="col-md-12">
 		<h2>::_("Hello")::
 		::if whichUser()==0::
@@ -10,27 +67,6 @@
 		 !
 		</h2>				
 	</div>
-	
-	<!--<div class="col-md-8 col-md-offset-2" ::cond hasRights==true::>
-		<div class="alert alert-danger">
-			<p>
-				<i class="icon icon-info"></i> <b>Mise à jour de Septembre 2019</b>
-			</p>
-			<p>
-				Nous avons réorganisé certains menus et certaines pages pour une meilleure compréhension de l'interface de Cagette.net.	
-				Voici deux vidéos pour découvrir les nouveautés en quelques minutes  :
-			</p>
-
-			<p>
-				<a href='https://youtu.be/i-LytdsRB5I' class="btn btn-default btn-sm" target='_blank'>
-					<i class="icon icon-youtube"></i> Pour les administrateurs de groupe
-				</a>
-				<a href='https://www.youtube.com/watch?v=CiN9h8EFX0k' class="btn btn-default btn-sm" target='_blank'>
-					<i class="icon icon-youtube"></i> Pour les producteurs Cagette Pro
-				</a>
-			</p>
-		</div>
-	</div>-->
 
 	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
 		<p>Connectez-vous à votre <b>compte producteur Cagette Pro</b> :</p>

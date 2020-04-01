@@ -494,7 +494,6 @@
 
 	<macro name="ga()">
 		
-
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async="1" src="https://www.googletagmanager.com/gtag/js?id=UA-81371329-2"></script>
 		<script>
@@ -503,8 +502,6 @@
 		gtag('js', new Date());
 		gtag('config', 'UA-81371329-2');
 		</script>
-		
-		
 
 	</macro>
 	
