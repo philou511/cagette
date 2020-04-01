@@ -105,6 +105,8 @@ class TimeSlotsService{
 	}
 
     public function resolveSlots() {
+
+		distribution.lock();
 		// distrib slots must be activated
 		if (distribution.slots == null) return null;
 
@@ -114,8 +116,6 @@ class TimeSlotsService{
 		// var slotResolvers: Array<SlotResolver> = this.parseSlotsToResolverSlots(this.slots);
 		var slotResolvers = distribution.slots.map(slot -> new SlotResolver(slot.id, slot.registeredUserIds));
 		slotResolvers = resolve(resolveUserMonoSlot(slotResolvers));
-		
-		distribution.lock();
 
 		distribution.slots = distribution.slots .map(function (slot) {
 			var resolver = slotResolvers.find(r -> r.id == slot.id);
