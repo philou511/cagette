@@ -2,6 +2,7 @@
   "activeDistrib": {
     "activateBtn": "Activer les créneaux horaires",
     "activatedBtn": "Voir les créneaux horaires",
+    "hasActivatedBtn": "Créneaux horaires activés",
 
     "dialogTitle": "Distribution du {{date}}",
     "alert": "En raison de l'épidémie en cours, vous pouvez mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
@@ -41,5 +42,13 @@
   },
   "userInNeedSelected": {
     "choose": "Ces personnes de votre groupe ne peuvent pas venir retiere leur commande. Vous pouvez en selectionner une ou plusieurs pour vous engagez à leur apporter."
+  },
+  "resolver": {
+    "slotsNotActivated": "Les créneaux ne sont pas activés pour cette distribution.",
+    "distribNotClosed": "La distribution est toujours en cours.",
+    "slot": "Créneau",
+    "user": "Personne",
+    "getOrderFor": "Retire la commande de",
+    "userInNeedsNotLocked": "Ces personnes n'ont trouvé personne pour venir retirer leur commande."
   }
 }

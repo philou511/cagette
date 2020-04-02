@@ -22,11 +22,25 @@ export interface GroupVo {
     iban?: string;
     legalRepr?: UserVo;
 }
+export interface DistribSlotVo {
+    id: number;
+    distribId: number;
+    selectedUserIds: number[];
+    registeredUserIds: number[];
+    start: Date;
+    end: Date;
+}
 export interface DistribVo {
     id: number;
-    date?: Date;
+    start?: Date;
     end?: Date;
+    orderEndDate?: Date;
+    slots?: DistribSlotVo[];
+    inNeedUsers?: UserVo[];
 }
 /** */
 export declare const parseUserVo: (data: any) => UserVo;
 export declare const parseGroupVo: (data: any) => GroupVo;
+export declare const parseDistribVo: (data: any) => DistribVo;
+/** */
+export declare const formatUserAddress: (user: UserVo) => string | undefined;

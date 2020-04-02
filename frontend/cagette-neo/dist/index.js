@@ -85,6 +85,392 @@ function __spreadArrays() {
     return r;
 }
 
+/** */
+var parseUserVo = function (data) { return ({
+    id: data.id,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
+    phone: data.phone,
+    address1: data.address1,
+    address2: data.address2,
+    zipCode: data.zipCode,
+    city: data.city,
+    nationality: data.nationality,
+    countryOfResidence: data.countryOfResidence,
+    birthDate: data.birthDate,
+    firstName2: data.firstName2,
+    lastName2: data.lastName2,
+    email2: data.email2,
+    phone2: data.phone2,
+}); };
+var parseGroupVo = function (data) { return ({
+    id: data.id,
+    name: data.name,
+    iban: data.iban || undefined,
+    legalRepr: data.legalRepr ? parseUserVo(data.legalRepr) : undefined,
+}); };
+var parseSlotVo = function (data) {
+    return {
+        id: data.id,
+        distribId: data.distribId,
+        selectedUserIds: data.selectedUserIds,
+        registeredUserIds: data.registeredUserIds,
+        start: new Date(data.start),
+        end: new Date(data.end),
+    };
+};
+var parseDistribVo = function (data) { return ({
+    id: data.id,
+    start: data.start ? new Date(data.start) : undefined,
+    end: data.end ? new Date(data.end) : undefined,
+    orderEndDate: data.orderEndDate ? new Date(data.orderEndDate) : undefined,
+    slots: data.slots ? data.slots.map(parseSlotVo) : undefined,
+    inNeedUsers: data.slots ? data.inNeedUsers.map(parseUserVo) : undefined,
+}); };
+/** */
+var formatUserAddress = function (user) {
+    var res = '';
+    if (!user.city && !user.zipCode)
+        return undefined;
+    if (user.city)
+        res = user.city;
+    if (user.zipCode)
+        res = res + " (" + user.zipCode + ")";
+    if (user.address1)
+        res = user.address1 + " - " + res;
+    return res;
+};
+
+// import { TOKEN_STORAGE_KEY } from './constants';
+var checkRes = function (res) {
+    if (!res.ok)
+        throw new Error(res.statusText);
+    return res.json();
+};
+var request = function (url, init) { return __awaiter(void 0, void 0, void 0, function () {
+    var options, res, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                options = __assign({}, init);
+                return [4 /*yield*/, fetch(url, options).then(checkRes)];
+            case 1:
+                res = _a.sent();
+                return [2 /*return*/, res];
+            case 2:
+                error_1 = _a.sent();
+                // eslint-disable-next-line no-console
+                console.log(error_1);
+                return [2 /*return*/, null];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+var get = function (url) {
+    return request(url);
+};
+var post = function (url, data, type) {
+    if (type === void 0) { type = 'json'; }
+    return request(url, __assign({ method: 'POST', headers: __assign({}, (type === 'json'
+            ? {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+            : {})) }, (data
+        ? {
+            body: type === 'json' ? JSON.stringify(data) : data,
+        }
+        : {})));
+};
+var api = function () {
+    var apiUrl = "http://" + (process.env.API_HOSTNAME || 'localhost') + ":" + (process.env
+        .API_PORT || '3000');
+    return {
+        setUrl: function (url) {
+            apiUrl = url;
+        },
+        login: function (email, password) {
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, post(apiUrl + "/auth/login", {
+                                email: email,
+                                password: password,
+                            })];
+                        case 1:
+                            res = _a.sent();
+                            if (res) {
+                                localStorage.setItem('token', res.token);
+                                return [2 /*return*/, parseUserVo(res.user)];
+                            }
+                            return [2 /*return*/, null];
+                    }
+                });
+            });
+        },
+        me: function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, get(apiUrl + "/user/me")];
+                        case 1:
+                            res = _a.sent();
+                            if (res)
+                                return [2 /*return*/, parseUserVo(res)];
+                            return [2 /*return*/, null];
+                    }
+                });
+            });
+        },
+        updateMe: function (data, type) {
+            if (type === void 0) { type = 'json'; }
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, post(apiUrl + "/user/me", data, type)];
+                        case 1:
+                            res = _a.sent();
+                            if (res)
+                                return [2 /*return*/, parseUserVo(res)];
+                            return [2 /*return*/, null];
+                    }
+                });
+            });
+        },
+        getGroup: function (id) {
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, get(apiUrl + "/groups/" + id)];
+                        case 1:
+                            res = _a.sent();
+                            return [2 /*return*/, res ? parseGroupVo(res) : null];
+                    }
+                });
+            });
+        },
+        getUser: function (id) {
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, get(apiUrl + "/users/" + id)];
+                        case 1:
+                            res = _a.sent();
+                            return [2 /*return*/, res ? parseUserVo(res) : null];
+                    }
+                });
+            });
+        },
+        getGroupUsers: function (id) {
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, get(apiUrl + "/groups/" + id + "/users")];
+                        case 1:
+                            res = _a.sent();
+                            return [2 /*return*/, res ? res.map(parseUserVo) : null];
+                    }
+                });
+            });
+        },
+        distrib: {
+            getDistrib: function (id) {
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, get(apiUrl + "/distributions/" + id)];
+                            case 1:
+                                res = _a.sent();
+                                return [2 /*return*/, res ? parseDistribVo(res) : null];
+                        }
+                    });
+                });
+            },
+            getResolvedDistrib: function (id, parser) {
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, get(apiUrl + "/distributions/" + id + "/resolved")];
+                            case 1:
+                                res = _a.sent();
+                                return [2 /*return*/, res ? parser(res) : null];
+                        }
+                    });
+                });
+            },
+            activateSlots: function (id) {
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + id + "/activateSlots")];
+                            case 1:
+                                res = _a.sent();
+                                return [2 /*return*/, res ? parseDistribVo(res) : null];
+                        }
+                    });
+                });
+            },
+            addMeToInNeedUser: function (distribId, data, type) {
+                if (type === void 0) { type = 'json'; }
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + distribId + "/registerInNeedUser", data, type)];
+                            case 1:
+                                res = _a.sent();
+                                if (res.success)
+                                    return [2 /*return*/, res];
+                                throw new Error('Fail');
+                        }
+                    });
+                });
+            },
+            addMeToSlot: function (distribId, data, type) {
+                if (type === void 0) { type = 'json'; }
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + distribId + "/registerUserSlots", data, type)];
+                            case 1:
+                                res = _a.sent();
+                                if (res.success)
+                                    return [2 /*return*/, res];
+                                throw new Error('Fail');
+                        }
+                    });
+                });
+            },
+            addMeAsVoluntary: function (distribId, data, type) {
+                if (type === void 0) { type = 'json'; }
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + distribId + "/registerUserVoluntary", data, type)];
+                            case 1:
+                                res = _a.sent();
+                                if (res.success)
+                                    return [2 /*return*/, res];
+                                throw new Error('Fail');
+                        }
+                    });
+                });
+            },
+        },
+    };
+};
+var api$1 = api();
+
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var interopRequireDefault = createCommonjsModule(function (module) {
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+});
+
+unwrapExports(interopRequireDefault);
+
+var _extends_1 = createCommonjsModule(function (module) {
+function _extends() {
+  module.exports = _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+module.exports = _extends;
+});
+
+var createSvgIcon_1 = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createSvgIcon;
+
+var _extends2 = interopRequireDefault(_extends_1);
+
+var _react = interopRequireDefault(React__default);
+
+var _SvgIcon = interopRequireDefault(SvgIcon);
+
+function createSvgIcon(path, displayName) {
+  var Component = _react.default.memo(_react.default.forwardRef(function (props, ref) {
+    return _react.default.createElement(_SvgIcon.default, (0, _extends2.default)({
+      ref: ref
+    }, props), path);
+  }));
+
+  if (process.env.NODE_ENV !== 'production') {
+    Component.displayName = "".concat(displayName, "Icon");
+  }
+
+  Component.muiName = _SvgIcon.default.muiName;
+  return Component;
+}
+});
+
+unwrapExports(createSvgIcon_1);
+
+var Check = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+}), 'Check');
+
+exports.default = _default;
+});
+
+var CheckIcon = unwrapExports(Check);
+
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -101,14 +487,6 @@ function _defineProperty(obj, key, value) {
 }
 
 var defineProperty = _defineProperty;
-
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
 
 var _typeof_1 = createCommonjsModule(function (module) {
 function _typeof(obj) {
@@ -2837,6 +3215,36 @@ function cleanEscapedString(input) {
   return input.match(escapedStringRegExp)[1].replace(doubleQuoteRegExp, "'");
 }
 
+/**
+ * @name isBefore
+ * @category Common Helpers
+ * @summary Is the first date before the second one?
+ *
+ * @description
+ * Is the first date before the second one?
+ *
+ * ### v2.0.0 breaking changes:
+ *
+ * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
+ *
+ * @param {Date|Number} date - the date that should be before the other one to return true
+ * @param {Date|Number} dateToCompare - the date to compare with
+ * @returns {Boolean} the first date is before the second date
+ * @throws {TypeError} 2 arguments required
+ *
+ * @example
+ * // Is 10 July 1989 before 11 February 1987?
+ * var result = isBefore(new Date(1989, 6, 10), new Date(1987, 1, 11))
+ * //=> false
+ */
+
+function isBefore(dirtyDate, dirtyDateToCompare) {
+  requiredArgs(2, arguments);
+  var date = toDate(dirtyDate);
+  var dateToCompare = toDate(dirtyDateToCompare);
+  return date.getTime() < dateToCompare.getTime();
+}
+
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
@@ -4702,7 +5110,7 @@ function (_EventEmitter) {
   return Connector;
 }(EventEmitter);
 
-function get() {
+function get$1() {
   return {
     debug: false,
     initImmediate: true,
@@ -4861,7 +5269,7 @@ function (_EventEmitter) {
         options = {};
       }
 
-      this.options = _objectSpread$2({}, get(), this.options, transformOptions(options));
+      this.options = _objectSpread$2({}, get$1(), this.options, transformOptions(options));
       this.format = this.options.interpolation.format;
       if (!callback) callback = noop;
 
@@ -5939,25 +6347,23 @@ var computeStrOptions = function (str, options) {
 var format$1 = function (date, f, strOptions) { return computeStrOptions(format(date, f, { locale: locale$1 }), strOptions); };
 
 var useStyles = core.makeStyles(function (theme) { return ({
-    btn: {
-        padding: '5px 10px',
-        lineHeight: '21px',
-        textTransform: 'none',
-        border: '1px solid #ccc',
-        borderRadius: 3,
-        boxShadow: 'none',
-        backgroundColor: theme.palette.common.white,
+    btn: function (_a) {
+        var hasActivated = _a.hasActivated;
+        return (__assign({ padding: '5px 10px', lineHeight: '21px', textTransform: 'none', border: '1px solid #ccc', borderRadius: 3, boxShadow: 'none', backgroundColor: theme.palette.common.white }, (hasActivated ? { color: 'green' } : {})));
     },
 }); });
 var ActivateDistribSlotsView = function (_a) {
-    var activated = _a.activated, start = _a.start, end = _a.end, slotDuration = _a.slotDuration, activateUrl = _a.activateUrl;
+    var distribId = _a.distribId, slotDuration = _a.slotDuration;
     var t = useTranslation(['translation', 'neo/distrib-slots']).t;
     var _b = React__default.useState(false), opened = _b[0], toggleOpened = _b[1];
-    var _c = React__default.useState(activated), isActivated = _c[0], toggleActivated = _c[1];
+    var _c = React__default.useState(), distrib = _c[0], setDistrib = _c[1];
     var _d = React__default.useState(false), submitting = _d[0], toggleSubmitting = _d[1];
     var _e = React__default.useState(), error = _e[0], setError = _e[1];
-    var cs = useStyles();
-    var nbSlots = Math.floor((end.getTime() - start.getTime()) / slotDuration);
+    var _f = React__default.useState(false), hasActivated = _f[0], toggleHasActivated = _f[1];
+    var cs = useStyles({ hasActivated: hasActivated });
+    var nbSlots = distrib && distrib.end && distrib.start
+        ? Math.floor((distrib.end.getTime() - distrib.start.getTime()) / slotDuration)
+        : 0;
     /** */
     var closeDialog = function () {
         if (submitting)
@@ -5969,7 +6375,7 @@ var ActivateDistribSlotsView = function (_a) {
         toggleOpened(true);
     };
     var onConfirmClick = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
+        var res, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -5978,16 +6384,15 @@ var ActivateDistribSlotsView = function (_a) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch(activateUrl, { method: 'POST' }).then(function (res) {
-                            if (!res.ok)
-                                throw new Error(res.statusText);
-                            return res;
-                        })];
+                    return [4 /*yield*/, api$1.distrib.activateSlots(distribId)];
                 case 2:
-                    _a.sent();
-                    toggleSubmitting(false);
-                    toggleActivated(true);
-                    toggleOpened(false);
+                    res = _a.sent();
+                    if (res) {
+                        setDistrib(res);
+                        toggleSubmitting(false);
+                        toggleOpened(false);
+                        toggleHasActivated(true);
+                    }
                     return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
@@ -5999,18 +6404,45 @@ var ActivateDistribSlotsView = function (_a) {
         });
     }); };
     /** */
+    React__default.useEffect(function () {
+        var active = true;
+        var load = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, api$1.distrib.getDistrib(distribId)];
+                    case 1:
+                        res = _a.sent();
+                        if (active && res) {
+                            setDistrib(__assign(__assign({}, res), { slots: undefined }));
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        load();
+        return function () {
+            active = false;
+        };
+    }, []);
+    /** */
+    if (!distrib || !distrib.start || !distrib.end)
+        return (React__default.createElement(core.Box, { p: 2 },
+            React__default.createElement(core.CircularProgress, { size: 20 })));
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Button, { className: cs.btn, variant: "contained", onClick: onButtonClick },
-            React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" }),
+            hasActivated ? (React__default.createElement(CheckIcon, { fontSize: "small" })) : (React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" })),
             React__default.createElement(core.Box, { mr: 1 }),
-            t("neo/distrib-slots:activeDistrib." + (isActivated ? 'activatedBtn' : 'activateBtn'))),
+            distrib.slots
+                ? t("neo/distrib-slots:activeDistrib." + (hasActivated ? 'hasActivatedBtn' : 'activatedBtn'))
+                : t("neo/distrib-slots:activeDistrib." + 'activateBtn')),
         React__default.createElement(core.Dialog, { open: opened, onClose: closeDialog },
             React__default.createElement(React__default.Fragment, null,
                 React__default.createElement(core.Box, { p: 2, display: "flex", alignItems: "center" },
                     React__default.createElement(core.Box, { mr: 2 },
                         React__default.createElement("img", { height: 36, src: "/img/virus.svg", alt: "" })),
                     React__default.createElement(core.Typography, { variant: "h4" }, t('neo/distrib-slots:activeDistrib.dialogTitle', {
-                        date: format$1(start, 'EEEE dd MMMM yyyy'),
+                        date: format$1(distrib.start, 'EEEE dd MMMM yyyy'),
                     }))),
                 React__default.createElement(core.Box, { p: 2 },
                     React__default.createElement(lab.Alert, { severity: "error" }, t('neo/distrib-slots:activeDistrib.alert'))),
@@ -6023,50 +6455,19 @@ var ActivateDistribSlotsView = function (_a) {
                     React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
                         React__default.createElement(core.List, null, __spreadArrays(Array(nbSlots)).map(function (_v, i) { return i; })
                             .map(function (s) { return (React__default.createElement(core.ListItem, { key: s, alignItems: "center" },
-                            React__default.createElement(core.ListItemText, { primary: format$1(addMilliseconds(start, s * slotDuration), "HH'h'mm") + " - " + format$1(s === nbSlots - 1
-                                    ? end
-                                    : addMilliseconds(start, (s + 1) * slotDuration), "HH'h'mm"), secondary: React__default.createElement(core.Box, { display: "flex", justifyContent: "center", component: "span" },
+                            React__default.createElement(core.ListItemText, { primary: format$1(addMilliseconds(distrib.start, s * slotDuration), "HH'h'mm") + " - " + format$1(s === nbSlots - 1
+                                    ? distrib.end
+                                    : addMilliseconds(distrib.start, (s + 1) * slotDuration), "HH'h'mm"), secondary: React__default.createElement(core.Box, { display: "flex", justifyContent: "center", component: "span" },
                                     React__default.createElement(core.Typography, { component: "span", variant: "body2" }, t('neo/distrib-slots:activeDistrib.slot-id', {
                                         id: s + 1,
                                     }))) }))); }))),
                     React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
-                        React__default.createElement(core.Button, { onClick: closeDialog }, t(isActivated ? 'close' : 'cancel')),
-                        !isActivated && (React__default.createElement(React__default.Fragment, null,
+                        React__default.createElement(core.Button, { onClick: closeDialog }, t(distrib.slots ? 'close' : 'cancel')),
+                        !distrib.slots && (React__default.createElement(React__default.Fragment, null,
                             React__default.createElement(core.Box, { mx: 2 }),
                             React__default.createElement(core.Button, { variant: "outlined", color: "primary", onClick: onConfirmClick }, t('neo/distrib-slots:activeDistrib.confirmBtnLabel')))))))))));
 };
 var ActivateDistribSlotsView$1 = withNeolithicProvider(withi18n(ActivateDistribSlotsView));
-
-/** */
-var parseUserVo = function (data) { return ({
-    id: data.id,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    email: data.email,
-    phone: data.phone,
-    address1: data.address1,
-    address2: data.address2,
-    zipCode: data.zipCode,
-    city: data.city,
-    nationality: data.nationality,
-    countryOfResidence: data.countryOfResidence,
-    birthDate: data.birthDate,
-    firstName2: data.firstName2,
-    lastName2: data.lastName2,
-    email2: data.email2,
-    phone2: data.phone2,
-}); };
-
-var parseSlotVo = function (data) {
-    return {
-        id: data.id,
-        distribId: data.distribId,
-        selectedUserIds: data.selectedUserIds,
-        registeredUserIds: data.registeredUserIds,
-        start: new Date(data.start),
-        end: new Date(data.end),
-    };
-};
 
 var tFile = 'neo/distrib-slots';
 var shortTKey = tFile + ":userSlotsSelector";
@@ -6184,73 +6585,6 @@ var SlotsSelector = function (_a) {
             React__default.createElement(core.Button, { variant: isLastStep ? 'contained' : 'outlined', color: "primary", disabled: !valid, onClick: onNextClick }, t(isLastStep ? 'validate' : 'continue')))));
 };
 
-var interopRequireDefault = createCommonjsModule(function (module) {
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    "default": obj
-  };
-}
-
-module.exports = _interopRequireDefault;
-});
-
-unwrapExports(interopRequireDefault);
-
-var _extends_1 = createCommonjsModule(function (module) {
-function _extends() {
-  module.exports = _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-module.exports = _extends;
-});
-
-var createSvgIcon_1 = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createSvgIcon;
-
-var _extends2 = interopRequireDefault(_extends_1);
-
-var _react = interopRequireDefault(React__default);
-
-var _SvgIcon = interopRequireDefault(SvgIcon);
-
-function createSvgIcon(path, displayName) {
-  var Component = _react.default.memo(_react.default.forwardRef(function (props, ref) {
-    return _react.default.createElement(_SvgIcon.default, (0, _extends2.default)({
-      ref: ref
-    }, props), path);
-  }));
-
-  if (process.env.NODE_ENV !== 'production') {
-    Component.displayName = "".concat(displayName, "Icon");
-  }
-
-  Component.muiName = _SvgIcon.default.muiName;
-  return Component;
-}
-});
-
-unwrapExports(createSvgIcon_1);
-
 var Edit = createCommonjsModule(function (module, exports) {
 
 
@@ -6272,20 +6606,6 @@ exports.default = _default;
 });
 
 var EditIcon = unwrapExports(Edit);
-
-// eslint-disable-next-line import/prefer-default-export
-var formatUserAddress = function (user) {
-    var res = '';
-    if (!user.city && !user.zipCode)
-        return undefined;
-    if (user.city)
-        res = user.city;
-    if (user.zipCode)
-        res = res + " (" + user.zipCode + ")";
-    if (user.address1)
-        res = user.address1 + " - " + res;
-    return res;
-};
 
 var ExpandMore = createCommonjsModule(function (module, exports) {
 
@@ -10588,7 +10908,7 @@ function baseGet(object, path) {
  * _.get(object, 'a.b.c', 'default');
  * // => 'default'
  */
-function get$1(object, path, defaultValue) {
+function get$2(object, path, defaultValue) {
   var result = object == null ? undefined : baseGet(object, path);
   return result === undefined ? defaultValue : result;
 }
@@ -10652,7 +10972,7 @@ function baseMatchesProperty(path, srcValue) {
     return matchesStrictComparable(toKey(path), srcValue);
   }
   return function(object) {
-    var objValue = get$1(object, path);
+    var objValue = get$2(object, path);
     return (objValue === undefined && objValue === srcValue)
       ? hasIn(object, path)
       : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG$5 | COMPARE_UNORDERED_FLAG$3);
@@ -13522,7 +13842,7 @@ var CustomTextField = function (props) {
 function generateFields(fields, formikProps) {
     return fields.map(function (field) {
         if (field.type === 'default') {
-            return (React__default.createElement(formik.Field, { key: field.name, component: field.component || CustomTextField, fullWidth: true, margin: "normal", label: field.label, name: field.name, required: field.required || false }));
+            return (React__default.createElement(formik.Field, { key: field.name, component: field.component || CustomTextField, fullWidth: true, margin: "normal", label: field.label, name: field.name, disabled: field.disabled, required: field.required || false }));
         }
         return field.render(field.name, formikProps);
     });
@@ -13598,7 +13918,7 @@ var UserForm = function (_a) {
             name: 'email',
             initialValues: (user === null || user === void 0 ? void 0 : user.email) || '',
             label: t('email'),
-            required: true,
+            disabled: true,
         },
     ];
     var contactFields = [
@@ -13722,7 +14042,7 @@ var parseUserOptions = function (user, prevOptions) {
     return options;
 };
 var UserInNeedForm = function (_a) {
-    var fetchMeUrl = _a.fetchMeUrl, postMeUrl = _a.postMeUrl, onConfirm = _a.onConfirm, onCancel = _a.onCancel;
+    var onConfirm = _a.onConfirm, onCancel = _a.onCancel;
     var t = useTranslation(['translation', tFile$3]).t;
     var _b = React__default.useState(), me = _b[0], setMe = _b[1];
     var _c = React__default.useState(), error = _c[0], setError = _c[1];
@@ -13752,29 +14072,24 @@ var UserInNeedForm = function (_a) {
         onConfirm(options.filter(function (option) { return option.checked; }).map(function (option) { return option.name; }));
     };
     var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var formData, user, err_1;
+        var formData_1, user, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     toggleSubmitting(true);
-                    formData = new FormData();
-                    Object.keys(values).forEach(function (key) {
-                        formData.append(key, values[key]);
-                    });
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch(postMeUrl, {
-                            method: 'POST',
-                            body: formData,
-                        }).then(function (res) {
-                            if (!res.ok)
-                                throw new Error(res.statusText);
-                            return res.json();
-                        })];
+                    formData_1 = new FormData();
+                    Object.keys(values).forEach(function (key) {
+                        formData_1.append(key, values[key]);
+                    });
+                    return [4 /*yield*/, api$1.updateMe(formData_1, 'data')];
                 case 2:
                     user = _a.sent();
-                    setMe(parseUserVo(user));
+                    if (!user)
+                        throw new Error('');
+                    setMe(user);
                     setOptions(parseUserOptions(user, options));
                     toggleSubmitting(false);
                     bag.setErrors(t('error'));
@@ -13802,15 +14117,11 @@ var UserInNeedForm = function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, fetch(fetchMeUrl).then(function (res) {
-                                if (!res.ok)
-                                    throw new Error(res.statusText);
-                                return res.json();
-                            })];
+                        return [4 /*yield*/, api$1.me()];
                     case 1:
                         user = _a.sent();
-                        if (active) {
-                            setMe(parseUserVo(user));
+                        if (active && user) {
+                            setMe(user);
                             setOptions(parseUserOptions(user));
                         }
                         return [3 /*break*/, 3];
@@ -13826,7 +14137,7 @@ var UserInNeedForm = function (_a) {
         return function () {
             active = false;
         };
-    }, [fetchMeUrl]);
+    }, []);
     /** */
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Box, null,
@@ -13889,15 +14200,14 @@ var InNeedUsersSelector = function (_a) {
 var tFile$5 = 'neo/distrib-slots';
 var shortTKey$5 = tFile$5 + ":userSlotsSelector.end";
 var UserDistribSlotsSelectorView = function (_a) {
-    var fecthDistribUrl = _a.fecthDistribUrl, fetchMeUrl = _a.fetchMeUrl, postMeUrl = _a.postMeUrl, postRegisterInNeedUrl = _a.postRegisterInNeedUrl, postRegisterUserSlotsUrl = _a.postRegisterUserSlotsUrl, postRegisterUserVoluntary = _a.postRegisterUserVoluntary;
+    var distribId = _a.distribId;
     var t = useTranslation(['translation', tFile$5]).t;
     var _b = React__default.useState(false), loading = _b[0], toggleLoading = _b[1];
     var _c = React__default.useState(''), error = _c[0], setError = _c[1];
-    var _d = React__default.useState(), slots = _d[0], setSlots = _d[1];
-    var _e = React__default.useState(), inNeedUsers = _e[0], setInNeedUsers = _e[1];
-    var _f = React__default.useState(), mode = _f[0], setMode = _f[1];
-    var _g = React__default.useState(), selectedSlotIds = _g[0], setSelectedSlotIds = _g[1];
-    var _h = React__default.useState(false), confirmed = _h[0], setConfirmed = _h[1];
+    var _d = React__default.useState(), distrib = _d[0], setDistrib = _d[1];
+    var _e = React__default.useState(), mode = _e[0], setMode = _e[1];
+    var _f = React__default.useState(), selectedSlotIds = _f[0], setSelectedSlotIds = _f[1];
+    var _g = React__default.useState(false), confirmed = _g[0], setConfirmed = _g[1];
     /** */
     var reset = function () {
         setSelectedSlotIds(undefined);
@@ -13917,14 +14227,7 @@ var UserDistribSlotsSelectorView = function (_a) {
                     _a.trys.push([1, 3, , 4]);
                     formData = new FormData();
                     formData.append('slotIds', selectedSlotIds.join(','));
-                    return [4 /*yield*/, fetch(postRegisterUserSlotsUrl, {
-                            method: 'POST',
-                            body: formData,
-                        }).then(function (res) {
-                            if (!res.ok)
-                                throw new Error(res.statusText);
-                            return res.json();
-                        })];
+                    return [4 /*yield*/, api$1.distrib.addMeToSlot(distribId, formData, 'data')];
                 case 2:
                     _a.sent();
                     toggleLoading(false);
@@ -13956,14 +14259,7 @@ var UserDistribSlotsSelectorView = function (_a) {
                     _a.trys.push([1, 3, , 4]);
                     formData = new FormData();
                     formData.append('userIds', userIds.join(','));
-                    return [4 /*yield*/, fetch(postRegisterUserVoluntary, {
-                            method: 'POST',
-                            body: formData,
-                        }).then(function (res) {
-                            if (!res.ok)
-                                throw new Error(res.statusText);
-                            return res.json();
-                        })];
+                    return [4 /*yield*/, api$1.distrib.addMeAsVoluntary(distribId, formData, 'data')];
                 case 2:
                     _a.sent();
                     toggleLoading(false);
@@ -13991,14 +14287,7 @@ var UserDistribSlotsSelectorView = function (_a) {
                     _a.trys.push([1, 3, , 4]);
                     formData = new FormData();
                     formData.append('allowed', allowed.join(','));
-                    return [4 /*yield*/, fetch(postRegisterInNeedUrl, {
-                            method: 'POST',
-                            body: formData,
-                        }).then(function (res) {
-                            if (!res.ok)
-                                throw new Error(res.statusText);
-                            return res.json();
-                        })];
+                    return [4 /*yield*/, api$1.distrib.addMeToInNeedUser(distribId, formData, 'data')];
                 case 2:
                     _a.sent();
                     toggleLoading(false);
@@ -14026,7 +14315,7 @@ var UserDistribSlotsSelectorView = function (_a) {
     React__default.useEffect(function () {
         var active = true;
         var load = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var distrib, err_4;
+            var res, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -14034,16 +14323,11 @@ var UserDistribSlotsSelectorView = function (_a) {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, fetch(fecthDistribUrl).then(function (res) {
-                                if (!res.ok)
-                                    throw new Error(res.statusText);
-                                return res.json();
-                            })];
+                        return [4 /*yield*/, api$1.distrib.getDistrib(distribId)];
                     case 2:
-                        distrib = _a.sent();
-                        if (active) {
-                            setSlots(distrib.slots.map(parseSlotVo));
-                            setInNeedUsers(distrib.inNeedUsers ? distrib.inNeedUsers.map(parseUserVo) : []);
+                        res = _a.sent();
+                        if (active && res) {
+                            setDistrib(res);
                             toggleLoading(false);
                         }
                         return [3 /*break*/, 4];
@@ -14068,7 +14352,7 @@ var UserDistribSlotsSelectorView = function (_a) {
     }, [mode, selectedSlotIds]);
     /** */
     var renderContent = function () {
-        if (loading || !slots || !inNeedUsers) {
+        if (loading || !distrib || !distrib.slots) {
             return (React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
                 React__default.createElement(core.CircularProgress, null)));
         }
@@ -14090,15 +14374,15 @@ var UserDistribSlotsSelectorView = function (_a) {
         }
         if (mode === 'inNeed') {
             return (React__default.createElement(core.Box, { p: 2 },
-                React__default.createElement(UserInNeedForm, { fetchMeUrl: fetchMeUrl, postMeUrl: postMeUrl, onConfirm: onUserInNeedonConfirm, onCancel: reset })));
+                React__default.createElement(UserInNeedForm, { onConfirm: onUserInNeedonConfirm, onCancel: reset })));
         }
         if (mode === 'voluntary' && selectedSlotIds) {
             return (React__default.createElement(core.Box, { p: 2 },
-                React__default.createElement(InNeedUsersSelector, { inNeedUsers: inNeedUsers, onConfirm: onInNeedUsersSelectorConfirm, onCancel: onInNeedUsersSelectorCancel })));
+                React__default.createElement(InNeedUsersSelector, { inNeedUsers: distrib.inNeedUsers || [], onConfirm: onInNeedUsersSelectorConfirm, onCancel: onInNeedUsersSelectorCancel })));
         }
         if (mode === 'solo' || mode === 'voluntary') {
             return (React__default.createElement(core.Box, { p: 2 },
-                React__default.createElement(SlotsSelector, { slots: slots, isLastStep: mode === 'solo', onSelect: onSelectSlotsSelector, onCancel: reset })));
+                React__default.createElement(SlotsSelector, { slots: distrib.slots, isLastStep: mode === 'solo', onSelect: onSelectSlotsSelector, onCancel: reset })));
         }
         return React__default.createElement(React__default.Fragment, null);
     };
@@ -14110,17 +14394,125 @@ var UserDistribSlotsSelectorView = function (_a) {
 };
 var UserDistribSlotsSelectorView$1 = withNeolithicProvider(withi18n(UserDistribSlotsSelectorView));
 
+var tFile$6 = 'neo/distrib-slots';
+var shortTKey$6 = tFile$6 + ":resolver";
+var InNeedNotResolvedUsersTable = function (_a) {
+    var users = _a.users;
+    var t = useTranslation(['translation', tFile$6]).t;
+    /** */
+    return (React__default.createElement(core.Table, null,
+        React__default.createElement(core.TableHead, null,
+            React__default.createElement(core.TableRow, null,
+                React__default.createElement(core.TableCell, { colSpan: 2 },
+                    React__default.createElement(lab.Alert, { severity: "error" }, t(shortTKey$6 + ".userInNeedsNotLocked"))))),
+        React__default.createElement(core.TableBody, null, users.map(function (user) { return (React__default.createElement(core.TableRow, { key: user.id },
+            React__default.createElement(core.TableCell, null, user.firstName + " " + user.lastName),
+            React__default.createElement(core.TableCell, null, formatUserAddress(user)))); }))));
+};
+
+var tFile$7 = 'neo/distrib-slots';
+var shortTKey$7 = tFile$7 + ":resolver";
+var DistribSlotsResolver = function (_a) {
+    var distribId = _a.distribId;
+    var t = useTranslation(['translation', tFile$7]).t;
+    var _b = React__default.useState(), distrib = _b[0], setDistrib = _b[1];
+    /** */
+    var getInNeedUsersOfVoluntaryList = function (userId) {
+        if (!distrib)
+            return [];
+        if (!Object.keys(distrib.voluntaryMap).includes("" + userId))
+            return [];
+        var res = [];
+        var v = distrib.voluntaryMap["" + userId];
+        if (v) {
+            v.forEach(function (id) {
+                var inNeed = (distrib.inNeedUsers || []).find(function (u) { return u.id === id; });
+                if (inNeed)
+                    res.push(inNeed);
+            });
+        }
+        return res.map(function (u) { return u.firstName + " " + u.lastName; }).join(', ');
+    };
+    /** */
+    React__default.useEffect(function () {
+        var active = true;
+        var load = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, api$1.distrib.getResolvedDistrib(distribId, function (data) {
+                            return __assign(__assign({}, parseDistribVo(data)), { voluntaryMap: data.voluntaryMap ? data.voluntaryMap : {}, users: data.users ? data.users.map(parseUserVo) : [] });
+                        })];
+                    case 1:
+                        res = _a.sent();
+                        if (active && res) {
+                            setDistrib(res);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        load();
+        return function () {
+            active = false;
+        };
+    }, []);
+    /** */
+    if (!distrib)
+        return (React__default.createElement(core.Box, { p: 2 },
+            React__default.createElement(core.CircularProgress, null)));
+    if (!distrib.slots || !distrib.orderEndDate)
+        return (React__default.createElement(core.Box, { p: 2 },
+            React__default.createElement(core.Typography, null, t(shortTKey$7 + ".slotsNotActivated"))));
+    if (isBefore(new Date(), distrib.orderEndDate)) {
+        return (React__default.createElement(core.Box, { p: 2 },
+            React__default.createElement(core.Typography, null, t(shortTKey$7 + ".distribNotClosed"))));
+    }
+    var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spreadArrays(acc, vs); }, []);
+    var inNeedUsersNotLocked = (distrib.inNeedUsers || []).filter(function (u) { return !iNeedLockedUserIds.includes(u.id); });
+    return (React__default.createElement(core.Card, null,
+        inNeedUsersNotLocked.length > 0 && (React__default.createElement(core.CardContent, null,
+            React__default.createElement(InNeedNotResolvedUsersTable, { users: inNeedUsersNotLocked }))),
+        distrib.slots && (React__default.createElement(core.CardContent, null,
+            React__default.createElement(core.Table, null,
+                React__default.createElement(core.TableHead, null,
+                    React__default.createElement(core.TableRow, null,
+                        React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".slot")),
+                        React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".user")),
+                        React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".getOrderFor")))),
+                React__default.createElement(core.TableBody, null, distrib.slots
+                    .filter(function (slot) { return slot.selectedUserIds.length > 0; })
+                    .map(function (slot) {
+                    return slot.selectedUserIds.map(function (userId, i) {
+                        var user = distrib.users.find(function (u) { return u.id === userId; });
+                        return (React__default.createElement(core.TableRow, { key: userId }, user && (React__default.createElement(React__default.Fragment, null,
+                            i === 0 && (React__default.createElement(core.TableCell, { rowSpan: slot.selectedUserIds.length, style: { backgroundColor: '#F1F1F1' } }, "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"))),
+                            React__default.createElement(core.TableCell, null,
+                                React__default.createElement(core.Typography, { variant: "body2" }, user.firstName + " " + user.lastName)),
+                            React__default.createElement(core.TableCell, null,
+                                React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, getInNeedUsersOfVoluntaryList(user.id)))))));
+                    });
+                })))))));
+};
+var DistribSlotsResolver$1 = withNeolithicProvider(withi18n(DistribSlotsResolver));
+
 var createApp = function (elementId, children) {
     ReactDOM.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
 };
 var NeolithicViewsGenerator = /** @class */ (function () {
     function NeolithicViewsGenerator() {
     }
+    NeolithicViewsGenerator.setApiUrl = function (url) {
+        api$1.setUrl(url);
+    };
     NeolithicViewsGenerator.activateDistribSlots = function (elementId, props) {
         createApp(elementId, React__default.createElement(ActivateDistribSlotsView$1, __assign({}, props)));
     };
     NeolithicViewsGenerator.userDistribSlotsSelector = function (elementId, props) {
         createApp(elementId, React__default.createElement(UserDistribSlotsSelectorView$1, __assign({}, props)));
+    };
+    NeolithicViewsGenerator.distribSlotsResolver = function (elementId, props) {
+        createApp(elementId, React__default.createElement(DistribSlotsResolver$1, __assign({}, props)));
     };
     return NeolithicViewsGenerator;
 }());

@@ -1,7 +1,7 @@
 /// <reference types="react" />
-import { SlotVo } from './interfaces';
+import { DistribSlotVo } from '../../../vo';
 interface Props {
-    slots: SlotVo[];
+    slots: DistribSlotVo[];
     isLastStep: boolean;
     onSelect: (slotIds: number[]) => void;
     onCancel: () => void;

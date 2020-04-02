@@ -13,6 +13,7 @@ interface DefaultFieldGeneratorProps extends BaseFieldGeneratorProps {
     type: 'default';
     label?: string;
     required?: boolean;
+    disabled?: boolean;
     component?: any;
 }
 export declare type FieldGeneratorProps = CustomFieldGeneratorProps | DefaultFieldGeneratorProps;
