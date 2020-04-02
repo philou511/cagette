@@ -1,4 +1,5 @@
 package controller.api;
+import haxe.DynamicAccess;
 import service.TimeSlotsService;
 import tink.core.Error;
 import db.UserGroup;
@@ -86,7 +87,7 @@ class Distributions extends Controller {
 	var s = new TimeSlotsService(this.distrib);
     s.registerVoluntary(App.current.user.id, userIds);    
 
-    Sys.print(Json.stringify(this.parse()));
+    Sys.print(Json.stringify({succes: true}));
  
   }
 
@@ -107,7 +108,7 @@ class Distributions extends Controller {
 	var s = new TimeSlotsService(this.distrib);
     s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
 
-    Sys.print(Json.stringify(this.parse()));
+    Sys.print(Json.stringify({succes: true}));
   }
 
   public function doRegisterUserSlots() {
@@ -140,10 +141,88 @@ class Distributions extends Controller {
 	var s = new TimeSlotsService(this.distrib);
     s.registerUserToSlot(App.current.user.id, slotIds);
 
-    Sys.print(Json.stringify(this.parse()));
+    Sys.print(Json.stringify({succes: true}));
+  }
+
+  public function doResolved() {
+    if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
+    checkAdminRights();
+
+    if (this.distrib.slots == null) {
+      Sys.print(Json.stringify(this.parse()));
+      return;
+    }
+
+    var now = Date.now();
+    
+    if(distrib.orderEndDate==null || distrib.orderEndDate.getTime() > now.getTime()){
+      throw new Error(403,"Orders are not closed");
+    }
+
+    var it = this.distrib.inNeedUserIds.keys();
+    var inNeedUserIds = new Array<Int>();
+    while (it.hasNext()) {
+      inNeedUserIds.push(it.next());
+    }
+    var inNeedUsers = db.User.manager.search($id in inNeedUserIds, false).array();
+
+    var userIds = Lambda.fold(this.distrib.slots, (slot, acc: Array<Int>) -> {
+      return Lambda.fold(slot.selectedUserIds, (userId, acc2: Array<Int>) -> {
+        if (acc2.indexOf(userId) == -1) acc2.push(userId);
+        return acc2;
+      }, acc);
+    }, new Array<Int>());
+    var users = db.User.manager.search($id in userIds, false).array();
+
+    var it = this.distrib.voluntaryUsers.keyValueIterator();
+    var voluntaryMap = new haxe.DynamicAccess();
+    while (it.hasNext()) {
+      var v = it.next();
+      voluntaryMap.set(Std.string(v.key), v.value);
+    }
+
+    Sys.print(Json.stringify({
+      id: this.distrib.id,
+      start: this.distrib.distribStartDate,
+      end: this.distrib.distribEndDate,
+      orderEndDate: this.distrib.orderEndDate,
+      slots: this.distrib.slots,
+      voluntaryMap: voluntaryMap,
+      users: users.map(user -> ({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      })),
+      inNeedUsers: inNeedUsers.map(user -> {
+        var data: Dynamic =  {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        }
+        if (this.distrib.inNeedUserIds.get(user.id).indexOf("address") != -1) {
+          data.address1 = user.address1;
+          data.address2 = user.address2;
+          data.city = user.city;
+          data.zipCode = user.zipCode;
+        }
+        if (this.distrib.inNeedUserIds.get(user.id).indexOf("email") != -1) {
+          data.email = user.email;
+        }
+        if (this.distrib.inNeedUserIds.get(user.id).indexOf("phone") != -1) {
+          data.phone = user.phone;
+        }
+        return data;
+      })
+    }));
   }
 
   // TODO: remove
+  public function doResolve() {
+    checkAdminRights();
+    this.distrib.resolveSlots();
+    Sys.print(Json.stringify(this.parse()));
+  }
+
   public function doDesactivateSlots() {
 
     checkAdminRights();
@@ -223,12 +302,13 @@ class Distributions extends Controller {
         }
         users.push(userData);
       }
-    }
+    };
 
     return {
       id: this.distrib.id,
       start: this.distrib.distribStartDate,
       end: this.distrib.distribEndDate,
+      orderEndDate: this.distrib.orderEndDate,
       slots: this.distrib.slots,
       inNeedUsers: users
     }

@@ -1,0 +1,19 @@
+{
+  "h1": "Cagette.net",
+  "validateBtn": "Valider",
+  "lastName": "Nom",
+  "firstName": "Prénom",
+  "email": "Email",
+  "phone": "Téléphone",
+  "address": "Adresse",
+  "address1": "Adresse 1",
+  "address2": "Adresse 2",
+  "zipCode": "Code postal",
+  "city": "Ville",
+  "continue": "Continuer",
+  "validate": "Valider",
+  "ignore": "Ignorer",
+  "cancel": "Annuler",
+  "close": "Fermer",
+  "error": "Une erreur est survenue."
+}

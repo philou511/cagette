@@ -45,7 +45,7 @@
     '@date-io/date-fns': require('@date-io/date-fns'),
     'date-fns': require('date-fns'),
     'date-fns/locale': require('date-fns/locale'),
-    'cagette-front-core': require('cagette-front-core'),
+    'cagette-neo': require('cagette-neo'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {

@@ -30,6 +30,9 @@
     ::end::
 
     <div id="users-slots-wrapper"></div>
+    <br />
+
+    <div id="slots-resolver-wrapper"></div>
 
     <script>
         var distribId = ::distrib.id::;
@@ -69,23 +72,19 @@
         }
 
         _NeolithicViewsGenerator.activateDistribSlots("activate-slots-wrapper", {
-            activated: ::distrib.slotsIsActivated::,
-            start: new Date("::distrib.distribStartDate::"),
-            end: new Date("::distrib.distribEndDate::"),
+            distribId: ::distrib.id::,
             slotDuration: 1000 * 60 * 15,
-            activateUrl: 'http://localhost/api/distributions/'+distribId+'/activateSlots',
         })
 
         if (activated) {        
             _NeolithicViewsGenerator.userDistribSlotsSelector("users-slots-wrapper", {
-                fecthDistribUrl: "http://localhost/api/distributions/"+distribId+"",
-                fetchMeUrl: "http://localhost/api/user/me",
-                postMeUrl: "http://localhost/api/user/me",
-                postRegisterInNeedUrl: "http://localhost/api/distributions/"+distribId+"/registerInNeedUser",
-                postRegisterUserSlotsUrl: "http://localhost/api/distributions/"+distribId+"/registerUserSlots",
-                postRegisterUserVoluntary: "http://localhost/api/distributions/"+distribId+"/registerUserVoluntary",
+                distribId: ::distrib.id::,
             }) 
         }
+
+        _NeolithicViewsGenerator.distribSlotsResolver("slots-resolver-wrapper", {
+            distribId: ::distrib.id::
+        });
         
     </script>
 

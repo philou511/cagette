@@ -179,7 +179,7 @@ class TimeSlotsService{
 
 	public function registerVoluntary(userId: Int, forUserIds: Array<Int>) {
 		if (distribution.slots == null) return false;
-		if (userIsAlreadyAdded(userId)) return false;
+		if (!userIsAlreadyAdded(userId)) return false;
 
 		distribution.lock();
 		if (distribution.voluntaryUsers.exists(userId)) return false;

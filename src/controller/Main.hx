@@ -321,8 +321,8 @@ Called from controller/Main.hx line 117
 	}
 
 	@tpl("test.html")
-	public function doTest() {
-		var distrib = db.MultiDistrib.manager.select($id == 35066);
+	public function doTest(id: Int) {
+		var distrib = db.MultiDistrib.manager.select($id == id);
 		var d: Dynamic = distrib;
 		d.slotsIsActivated = distrib.slots != null;
 		view.distrib = d;

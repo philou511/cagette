@@ -40,18 +40,11 @@ import react.store.Cart;
 //@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
 
 
-@:jsRequire('cagette-front-core', 'NeolithicViewsGenerator')
+@:jsRequire('cagette-neo', 'NeolithicViewsGenerator')
 extern class NeolithicViewsGenerator {
-    static public function activateDistribSlots(
-        elementId: String,
-        props: {
-            activated: Bool,
-            start: Date,
-            end: Date,
-            slotDuration: Int,
-            activateUrl: String
-        }
-    ): Dynamic;
+    static public function setApiUrl(
+        url: String
+    ): Void;
 }
 
 class App {
@@ -86,7 +79,9 @@ class App {
 	public static function main() {
 		
 		//untyped js.Browser.window.$ = js.Lib.require("jQuery");
-		untyped js.Browser.window._ = new App();
+        untyped js.Browser.window._ = new App();
+        
+        NeolithicViewsGenerator.setApiUrl("/api");
 		untyped js.Browser.window._NeolithicViewsGenerator = NeolithicViewsGenerator;
 	}
 
