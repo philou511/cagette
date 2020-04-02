@@ -1,4 +1,5 @@
 package service; 
+import haxe.DynamicAccess;
 
 class TimeSlotsService{
 
@@ -130,24 +131,108 @@ class TimeSlotsService{
 		return distribution.slots;
 	}
 
-    public function userIsAlreadyAdded(userId: Int) {
+	public function userStatus(userId: Int) {
+		if (this.userIsAlreadyAdded(userId) == false) {
+			return {
+				registered: false
+			}
+		};
+
+		var res: Dynamic = {}
+		Reflect.setField(res, "registered", true);
+
+		var isResolved = false;
+		var selectedSlotId = -1;
+		var registeredSlotIds = new Array<Int>();
+		Lambda.foreach(distribution.slots, slot -> {
+			if (isResolved == false && slot.selectedUserIds.length > 0) {
+				isResolved = true;
+			}
+			if (slot.selectedUserIds.indexOf(userId) != -1) {
+				selectedSlotId = slot.id;
+			}
+			if (slot.registeredUserIds.indexOf(userId) != -1) {
+				registeredSlotIds.push(slot.id);
+			}
+			return true;
+		});
+
+		if (distribution.inNeedUserIds.exists(userId) == true) {
+			Reflect.setField(res, "has", "inNeed");
+
+			var it = distribution.voluntaryUsers.keyValueIterator();
+			var founded = false;
+			while (it.hasNext() && founded == false) {
+				var next = it.next();
+				if (next.value.indexOf(userId) != -1) {
+					founded = true;
+					Reflect.setField(res, "voluntaryOfId", next.key);
+					var user = db.User.manager.select($id == next.key);
+					Reflect.setField(res, "voluntaryOf", {
+						id: user.id,
+						firstName: user.firstName,
+						lastName: user.lastName
+					});
+				}
+			}
+
+		} else if (distribution.voluntaryUsers.exists(userId) == true) {
+			Reflect.setField(res, "has", "voluntary");
+			if (distribution.voluntaryUsers.exists(userId)) {
+				var inNeedUserId = distribution.voluntaryUsers.get(userId);
+				var users = db.User.manager.search($id in inNeedUserId, false).array().map(user -> {
+					var data: Dynamic =  {
+						id: user.id,
+						firstName: user.firstName,
+						lastName: user.lastName,
+					}
+					if (distribution.inNeedUserIds.get(user.id).indexOf("address") != -1) {
+						data.address1 = user.address1;
+						data.address2 = user.address2;
+						data.city = user.city;
+						data.zipCode = user.zipCode;
+					}
+					if (distribution.inNeedUserIds.get(user.id).indexOf("email") != -1) {
+						data.email = user.email;
+					}
+					if (distribution.inNeedUserIds.get(user.id).indexOf("phone") != -1) {
+						data.phone = user.phone;
+					}
+					return data;
+				});
+				Reflect.setField(res, "voluntaryForIds", inNeedUserId);
+				Reflect.setField(res, "voluntaryFor", users);
+			}
+		} else {
+			Reflect.setField(res, "has", "solo");
+		}
+
+		Reflect.setField(res, "isResolved", isResolved);
+		if (isResolved == true && selectedSlotId != -1) {
+			Reflect.setField(res, "selectedSlotId", selectedSlotId);
+		}
+		Reflect.setField(res, "registeredSlotIds", registeredSlotIds);
+
+		return res;
+	}
+
+	public function userIsAlreadyAdded(userId: Int) {
 		if (distribution.slots == null) return false;
 
-		var founded = false;
-		Lambda.fold(distribution.slots, function(slot, acc) {
+		var founded = Lambda.fold(distribution.slots, function(slot, acc) {
 			if (acc == true) return acc;
 			if (slot.registeredUserIds.indexOf(userId) != -1) {
 				return true;
 			}
 			return acc;
-		}, founded);
+		}, false);
 
 		if (founded == true) return true;
 
 		if (distribution.inNeedUserIds == null) return false;
 
 		return distribution.inNeedUserIds.exists(userId);
-    }
+	}
     
     /*** */
 	public function generateSlots(force: Bool = false) {
