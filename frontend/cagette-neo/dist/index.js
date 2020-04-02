@@ -14462,11 +14462,23 @@ var DistribSlotsResolver = function (_a) {
         return (React__default.createElement(core.Box, { p: 2 },
             React__default.createElement(core.CircularProgress, null)));
     if (!distrib.slots || !distrib.orderEndDate)
-        return (React__default.createElement(core.Box, { p: 2 },
-            React__default.createElement(core.Typography, null, t(shortTKey$7 + ".slotsNotActivated"))));
+        return (React__default.createElement(core.Card, null,
+            React__default.createElement(core.CardContent, null,
+                React__default.createElement(core.Typography, null, t(shortTKey$7 + ".slotsNotActivated")))));
     if (isBefore(new Date(), distrib.orderEndDate)) {
-        return (React__default.createElement(core.Box, { p: 2 },
-            React__default.createElement(core.Typography, null, t(shortTKey$7 + ".distribNotClosed"))));
+        return (React__default.createElement(core.Card, null,
+            React__default.createElement(core.CardContent, null,
+                React__default.createElement(core.Typography, null, t(shortTKey$7 + ".distribNotClosed")))));
+    }
+    var isResolved = distrib.slots.reduce(function (acc, slot) {
+        if (acc || slot.selectedUserIds.length > 0)
+            return true;
+        return acc;
+    }, false);
+    if (!isResolved) {
+        return (React__default.createElement(core.Card, null,
+            React__default.createElement(core.CardContent, null,
+                React__default.createElement(core.Typography, null, t(shortTKey$7 + ".resolving")))));
     }
     var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spreadArrays(acc, vs); }, []);
     var inNeedUsersNotLocked = (distrib.inNeedUsers || []).filter(function (u) { return !iNeedLockedUserIds.includes(u.id); });

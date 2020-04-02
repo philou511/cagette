@@ -39,7 +39,7 @@ class Distributions extends Controller {
 
   private function checkOrdersAreOpen() {
     var now = Date.now();
-    if(distrib.orderEndDate!=null || !(distrib.orderStartDate.getTime() < now.getTime() && distrib.orderEndDate.getTime() > now.getTime()) ){
+    if(distrib.orderEndDate==null || !(distrib.orderStartDate.getTime() < now.getTime() && distrib.orderEndDate.getTime() > now.getTime()) ){
       throw new Error(403,"Orders are not open");
     }
   }
@@ -67,6 +67,28 @@ class Distributions extends Controller {
     Sys.print(Json.stringify(this.parse()));
   }
 
+  public function doAmIAlreadyRegisteredInSlots() {
+    if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
+    checkIsGroupMember();
+    if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
+
+    var userId = App.current.user.id;
+    var s = new TimeSlotsService(this.distrib);
+    var registered = s.userIsAlreadyAdded(userId);
+    var has = "none";
+    if (registered == true) {
+      if (this.distrib.inNeedUserIds.exists(userId) == true) {
+        has = "inNeed";
+      } else if (this.distrib.voluntaryUsers.exists(userId) == true) {
+        has = "voluntary";
+      } else {
+        has = "solo";
+      }
+    }
+
+    Sys.print(Json.stringify(s.userStatus(userId))); 
+  }
+
   public function doRegisterUserVoluntary() {
     // allow only POST method
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
@@ -87,13 +109,11 @@ class Distributions extends Controller {
 	var s = new TimeSlotsService(this.distrib);
     s.registerVoluntary(App.current.user.id, userIds);    
 
-    Sys.print(Json.stringify({succes: true}));
+    Sys.print(Json.stringify({success: true}));
  
   }
 
   public function doRegisterInNeedUser() {
-   
-
     // allow only POST method
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
     checkIsGroupMember();
@@ -102,13 +122,17 @@ class Distributions extends Controller {
     // distrib slots must be activated 
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
 
+    var userId = App.current.user.id;
+    var s = new TimeSlotsService(this.distrib);
+
+    if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
+
     var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
     if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request");
 
-	var s = new TimeSlotsService(this.distrib);
-    s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
+    var success = s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
 
-    Sys.print(Json.stringify({succes: true}));
+    Sys.print(Json.stringify({success: success}));
   }
 
   public function doRegisterUserSlots() {
@@ -119,6 +143,11 @@ class Distributions extends Controller {
    
     // distrib slots must be activated 
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
+
+    var userId = App.current.user.id;
+    var s = new TimeSlotsService(this.distrib);
+
+    if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
 
     var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
     if (!request.exists("slotIds")) throw new tink.core.Error(400, "Bad Request");
@@ -138,10 +167,8 @@ class Distributions extends Controller {
       }
     }
 
-	var s = new TimeSlotsService(this.distrib);
-    s.registerUserToSlot(App.current.user.id, slotIds);
-
-    Sys.print(Json.stringify({succes: true}));
+    var success = s.registerUserToSlot(userId, slotIds);
+    Sys.print(Json.stringify({success: success}));
   }
 
   public function doResolved() {
@@ -156,7 +183,8 @@ class Distributions extends Controller {
     var now = Date.now();
     
     if(distrib.orderEndDate==null || distrib.orderEndDate.getTime() > now.getTime()){
-      throw new Error(403,"Orders are not closed");
+      Sys.print(Json.stringify(this.parse()));
+      return;
     }
 
     var it = this.distrib.inNeedUserIds.keys();
@@ -260,7 +288,9 @@ class Distributions extends Controller {
     s.registerInNeedUser(11, ["email", "address", "phone"]);
     s.registerInNeedUser(15, ["address"]);
     s.registerInNeedUser(17, ["phone"]);
-	s.registerVoluntary(1, [10, 11]);
+
+    // s.registerUserToSlot(55875, [0, 1]);
+	  // s.registerVoluntary(55875, [10, 11]);
 
     Sys.print(Json.stringify(this.parse()));
   }

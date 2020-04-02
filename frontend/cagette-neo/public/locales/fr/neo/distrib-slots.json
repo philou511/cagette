@@ -46,6 +46,7 @@
   "resolver": {
     "slotsNotActivated": "Les créneaux ne sont pas activés pour cette distribution.",
     "distribNotClosed": "La distribution est toujours en cours.",
+    "resolving": "Nous allons calculer la répartition des membres sur les créneaux. Ce calcul sera effectué dans l'heure.",
     "slot": "Créneau",
     "user": "Personne",
     "getOrderFor": "Retire la commande de",
