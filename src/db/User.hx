@@ -84,9 +84,9 @@ class User extends Object {
 		user.lock();
 		user.ldate = Date.now();
 		user.update();
+
+		App.current.session.data = {};
 		App.current.session.setUser(user);
-		if (App.current.session.data == null) App.current.session.data = {};
-		//Who's connected, user1 or user2 ?
 		App.current.session.data.whichUser = (email == user.email) ? 0 : 1; 	
 		
 	}
@@ -611,26 +611,33 @@ class User extends Object {
 	
 
 	public function getUserVoiceInfos():{type:String,id:Int,name:String}{
+		var infos = null;
+		if(App.current.session.user.id==this.id){
+			if(App.current.session.data.userVoiceInfos!=null){
+				return App.current.session.data.userVoiceInfos;
+			}
+		}
 		#if plugins
 		var uc = pro.db.PUserCompany.manager.select($user==this);
 		if(uc==null){
 			var g  = this.getGroup();
 			if(g==null) return null;
-			return {
+			infos = {
 				type:"Administrateur de groupe",
 				id:g.id,
 				name:g.name
 			};
 		}else{			
 			var vendor = uc.company.vendor;
-			return {
+			infos = {
 				type:"Cagette Pro",
 				id:vendor.id,
 				name:vendor.name
 			};
 		}
 		#end
-		return null;
+		App.current.session.data.userVoiceInfos = infos;
+		return infos;
 	}
 	
 	

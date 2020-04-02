@@ -1,4 +1,7 @@
 package controller;
+import haxe.display.Display.CompletionModeKind;
+import db.MultiDistrib;
+import sugoi.tools.TransactionWrappedTask;
 import sugoi.db.Cache;
 import sugoi.Web;
 import sugoi.mail.Mail;
@@ -38,6 +41,9 @@ class Cron extends Controller
 		}
 	}
 	
+	/**
+		Cron executed every minute
+	**/
 	public function doMinute() {
 		if (!canRun()) return;
 		
@@ -45,12 +51,12 @@ class Cron extends Controller
 
 		//managing buffered emails
 		for( i in 0...5){
-			var task = new sugoi.tools.TransactionWrappedTask(sendEmailsfromBuffer.bind(i*10));
+			var task = new TransactionWrappedTask(sendEmailsfromBuffer.bind(i*10));
 			task.execute(!App.config.DEBUG);
 		}
 		
 		//warns admin about emails that cannot be sent
-		var task = new sugoi.tools.TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask(function(){
 			for( e in sugoi.db.BufferedMail.manager.search($tries>20,{limit:50,orderBy:-cdate},true)  ){
 				if(e.sender.email != App.config.get("default_email")){
 					var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
@@ -62,7 +68,7 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 		//Delete old emails
-		var task = new sugoi.tools.TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask(function(){
 			var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
 			sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
 		});
@@ -71,24 +77,23 @@ class Cron extends Controller
 	
 	/**
 	 *  Hourly Cron
-	 *  
-	 *  this function can be locally tested with `neko index.n cron/hour > cron.log`				
+	 *  this can be locally tested with `neko index.n cron/hour > cron.log`				
 	 */
 	public function doHour() {
 		
 		app.event(HourlyCron(this.now));
 		
 		//instructions for dutyperiod volunteers
-		var task = new sugoi.tools.TransactionWrappedTask(function() {
+		var task = new TransactionWrappedTask(function() {
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
-			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
+			var multidistribs: Array<db.MultiDistrib> = db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
 				FROM MultiDistrib distrib INNER JOIN `Group` g
 				ON distrib.groupId = g.id
 				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY)
-				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false));
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false).array();
 			printTitle("Volunteers instruction mail");
 			
 			for (multidistrib  in multidistribs) {
@@ -124,7 +129,7 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 
-		var taskVolunteersAlert = new sugoi.tools.TransactionWrappedTask(function() {
+		var taskVolunteersAlert = new TransactionWrappedTask(function() {
 
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
@@ -165,9 +170,9 @@ class Cron extends Controller
 		});
 		taskVolunteersAlert.execute(!App.config.DEBUG);
 
-		var taskSubscriptionsToValidateAlert = new sugoi.tools.TransactionWrappedTask( function() {
-
-			//Let's get all the subscriptions that are not validated yet and for which there is a distribution that starts in the right time range
+		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range
+		var taskSubscriptionsToValidateAlert = new TransactionWrappedTask( function() {
+			
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var subscriptionsToValidate : Array< db.Subscription > = Lambda.array( db.Subscription.manager.unsafeObjects(
@@ -208,20 +213,17 @@ class Cron extends Controller
 					return  a.user.getName() < b.user.getName() ? 1 : -1;
 				} );
 				for ( subscription in subscriptionsToValidateByCatalog[ catalog ] ) {
-
 					message += '<li>' + subscription.user.getName() + '</li>';
-
 				}
 				message += '</ul>';
-
 				App.quickMail( catalog.contact.email, catalog.name + ' : Il y a des souscriptions à valider', message, catalog.group );
 			}
 			
-		});
+		});		
 		taskSubscriptionsToValidateAlert.execute(!App.config.DEBUG);
 
 		//Distrib notifications
-		var task = new sugoi.tools.TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask(function(){
 			distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
 			distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
@@ -229,8 +231,19 @@ class Cron extends Controller
 		task.execute(true);
 
 		//Distrib Validation notifications				
-		var task = new sugoi.tools.TransactionWrappedTask(distribValidationNotif);
+		var task = new TransactionWrappedTask(distribValidationNotif);
 		task.execute(true);
+
+		//time slot assignement when orders are closing
+		new TransactionWrappedTask(function(){
+			var range = tools.DateTool.getLastHourRange( now );
+			var distribs = MultiDistrib.manager.search($distribEndDate >= range.from && $distribEndDate < range.to && $slots!=null ,true);
+			for( d in distribs){
+				var s = new service.TimeSlotsService(d);
+				var slots = s.resolveSlots();
+			}
+		}).execute(!App.config.DEBUG);
+		
 
 	}
 	
@@ -278,7 +291,7 @@ class Cron extends Controller
 		
 		//Delete old documents of catalogs that have ended 18 months ago
 		printTitle("Delete old documents");
-		var task = new sugoi.tools.TransactionWrappedTask( function() {
+		var task = new TransactionWrappedTask( function() {
 
 			var eighteenMonthsAgo = DateTools.delta( Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 18 );
 			var oneDayBefore = DateTools.delta( eighteenMonthsAgo, -1000 * 60 * 60 * 24 );
