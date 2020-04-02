@@ -241,6 +241,20 @@ class Cron extends Controller
 			for( d in distribs){
 				var s = new service.TimeSlotsService(d);
 				var slots = s.resolveSlots();
+
+				//send an email to group admins
+				var admins = d.getGroup().getGroupAdmins().filter(ug-> return ug.isGroupManager() );
+				try{
+					var m = new Mail();
+					m.setSender(App.config.get("default_email"), "Cagette.net");
+					for ( u in admins )	m.addRecipient(u.user.email, u.user.getName());
+					m.setSubject( '[${group.name}] Crénaux horaires pour la distribution du '+Formatting.hDate(d.distribStartDate) );
+					var text = 'La commande vient de fermer, les crénaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeslots/${d.id}">Voir le récapitulatif des crénaux horaires</a>.';
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
+					App.sendMail(m , d.getGroup() );	
+				}catch (e:Dynamic){						
+					app.logError(e); //email could be invalid
+				}
 			}
 		}).execute(!App.config.DEBUG);
 		
@@ -284,7 +298,7 @@ class Cron extends Controller
 		}		
 		
 		//Old Messages cleaning
-		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 6));
+		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 3));
 		
 		//old sessions cleaning
 		sugoi.db.Session.clean();

@@ -314,6 +314,41 @@ class Group extends Object
 	public function getMembersNum():Int{
 		return UserGroup.manager.count($groupId == this.id);
 	}
+
+	/**
+		list of anyone having rights in this group
+	**/
+	public function getGroupAdmins():Array<db.UserGroup>{
+
+		var users = db.UserGroup.manager.search($rights != null && $group == this, false);
+		
+		//cleaning 
+		for ( u in users.array()) {
+			
+			//rights can be null (serialized null) and not null in DB
+			var rights : Null<Array<Right>> = cast u.rights;
+			if (rights == null || rights.length == 0) {
+				users.remove(u);
+				continue;
+			}
+			
+			//rights on a deleted catalog
+			for ( r in u.rights) {
+				switch(r) {
+					case ContractAdmin(cid):
+						if (cid == null) continue;
+						if (db.Catalog.manager.get(cid) == null) {
+							u.lock();
+							u.removeRight(r);
+							u.update();
+						}
+					default :
+				}
+			}
+		}
+
+		return users.array();
+	}
 	
 	public function getMembersFormElementData():FormData<Int> {
 		var m = getMembers();
