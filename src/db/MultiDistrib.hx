@@ -661,6 +661,7 @@ class MultiDistrib extends Object
       });
 		}
 
+
 		this.voluntaryUsers = new Map<Int, Array<Int>>();
 
 		this.inNeedUserIds = new Map<Int, Array<String>>();
@@ -670,7 +671,7 @@ class MultiDistrib extends Object
 
 	public function registerVoluntary(userId: Int, forUserIds: Array<Int>) {
 		if (this.slots == null) return false;
-		if (this.userIsAlreadyAdded(userId)) return false;
+		if (!this.userIsAlreadyRegisteredInSlots(userId)) return false;
 
 		this.lock();
 		if (this.voluntaryUsers.exists(userId)) return false;
@@ -683,7 +684,7 @@ class MultiDistrib extends Object
 	public function registerInNeedUser(userId: Int, allowed: Array<String>) {
 		if (this.slots == null) return false;
 		if (this.inNeedUserIds == null) return false;
-		if (this.userIsAlreadyAdded(userId)) return false;
+		if (this.userIsAlreadyRegisteredInSlots(userId)) return false;
 		if (this.inNeedUserIds.exists(userId)) return false;
 
 		this.lock();
@@ -694,7 +695,7 @@ class MultiDistrib extends Object
 
 	public function registerUserToSlot(userId: Int, slotIds: Array<Int>) {
 		if (this.slots == null) return false;
-		if (this.userIsAlreadyAdded(userId)) return false;
+		if (this.userIsAlreadyRegisteredInSlots(userId)) return false;
 
 		this.lock();
 		this.slots = this.slots.map(slot -> {
@@ -823,27 +824,27 @@ class MultiDistrib extends Object
 			return slot;
 		});
 
+
 		this.update();
 
 		return this.slots;
 	}
 
-	private function userIsAlreadyAdded(userId: Int) {
+	public function userIsAlreadyRegisteredInSlots(userId: Int) {
 		if (this.slots == null) return false;
 
-		var founded = false;
-		Lambda.fold(this.slots, function(slot, acc) {
+		var founded = Lambda.fold(this.slots, function(slot, acc) {
 			if (acc == true) return acc;
 			if (slot.registeredUserIds.indexOf(userId) != -1) {
 				return true;
 			}
 			return acc;
-		}, founded);
-
+		}, false);
+		
 		if (founded == true) return true;
-
+	
 		if (this.inNeedUserIds == null) return false;
-
+		
 		return this.inNeedUserIds.exists(userId);
 	}
 }

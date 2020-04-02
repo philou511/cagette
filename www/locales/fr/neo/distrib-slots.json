@@ -2,18 +2,19 @@
   "activeDistrib": {
     "activateBtn": "Activer les créneaux horaires",
     "activatedBtn": "Voir les créneaux horaires",
+    "hasActivatedBtn": "Créneaux horaires activés",
 
     "dialogTitle": "Distribution du {{date}}",
-    "alert": "En raison de l'épidémie en cours, vous pouvez mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présent simultanément au point de distribution.",
-    "slot-description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis vel eligendi fuga cum minus architecto eveniet iusto quaerat, assumenda minima libero possimus qui! Perspiciatis, voluptate repellat quaerat magni ut officia!.",
+    "alert": "En raison de l'épidémie en cours, vous pouvez mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
+    "slot-description": "Voici les crénaux de 15 minutes qui ont été automatiquement calculés à partir de vos heures de distribution. Une fois validés, vous ne pourrez plus les modifier, donc pensez à modifier la distribution avant si vous souhaiter étendre les horaires.",
     "slot-id": "Créneau n°{{id}}",
     "confirmBtnLabel": "Activer ces créneaux"
   },
   "userSlotsSelector": {
-    "cardTitle": "Retrait de votre commande",
+    "cardTitle": "Inscription à un crénau horaire",
     "alert": {
-      "p1": "En raison de l'épidémie en cours, ce groupe a décidé de mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présent simultanément au point de distribution.",
-      "p2": "Dans ce sens, nous vous encourageons à retirer, en plus de la vôtre, les commandes des gens proches de chez vous et à vous organiser pour les leur apporter."
+      "p1": "En raison de l'épidémie en cours, ce groupe a décidé de mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
+      "p2": "Dans ce sens, nous vous encourageons à retirer également les commandes des personnes proches de chez vous et à vous organiser pour les leur apporter."
     },
     "modeSelector": {
       "inNeed": "😷 Je suis une personne à risque. J'ai besoin que l'on retire ma commande à ma place.",
@@ -26,6 +27,11 @@
       "noneUsersInSlot": "Ce créneau est totalement libre.",
       "usersInSlot": "Une personne a sélectionné ce créneau.",
       "usersInSlot_plural": "{{count}} personnes ont déjà sélectionné ce créneau."
+    },
+    "end": {
+      "inNeed": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant qui pourra récupérer votre commande.",
+      "voluntary": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
+      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué."
     }
   },
   "userInNeed": {
@@ -36,5 +42,13 @@
   },
   "userInNeedSelected": {
     "choose": "Ces personnes de votre groupe ne peuvent pas venir retiere leur commande. Vous pouvez en selectionner une ou plusieurs pour vous engagez à leur apporter."
+  },
+  "resolver": {
+    "slotsNotActivated": "Les créneaux ne sont pas activés pour cette distribution.",
+    "distribNotClosed": "La distribution est toujours en cours.",
+    "slot": "Créneau",
+    "user": "Personne",
+    "getOrderFor": "Retire la commande de",
+    "userInNeedsNotLocked": "Ces personnes n'ont trouvé personne pour venir retirer leur commande."
   }
 }
