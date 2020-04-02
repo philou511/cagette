@@ -302,10 +302,10 @@ class MultiDistrib extends Object
 	**/
 	private static var DISTRIBUTIONS_CACHE  = [];
 	public function getDistributions(?type:Int){
-		
-		if(DISTRIBUTIONS_CACHE.length==0){
+		//make bugs
+		//if(DISTRIBUTIONS_CACHE.length==0){
 			DISTRIBUTIONS_CACHE = Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
-		}
+		//}
 
 		if(type==null){
 			return DISTRIBUTIONS_CACHE;

@@ -1692,4 +1692,12 @@ class Distribution extends Controller
 		view.partiallyPaid = partiallyPaid;
 
 	}
+
+	/**
+
+	**/
+	@tpl("distribution/userTimeSlot.mtt")
+	function doUserTimeSlot(d:db.MultiDistrib){
+		view.distribution = d;
+	}
 }

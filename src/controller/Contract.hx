@@ -209,6 +209,7 @@ class Contract extends Controller
 		form.removeElement(form.getElement("type"));
 		form.getElement("name").value = "Commande "+vendor.name;
 		form.getElement("userId").required = true;
+		form.getElement("startDate").value = Date.now();
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));

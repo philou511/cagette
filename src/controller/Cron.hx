@@ -241,9 +241,10 @@ class Cron extends Controller
 			for( d in distribs){
 				var s = new service.TimeSlotsService(d);
 				var slots = s.resolveSlots();
+				var group = d.getGroup();
 
 				//send an email to group admins
-				var admins = d.getGroup().getGroupAdmins().filter(ug-> return ug.isGroupManager() );
+				var admins = group.getGroupAdmins().filter(ug-> return ug.isGroupManager() );
 				try{
 					var m = new Mail();
 					m.setSender(App.config.get("default_email"), "Cagette.net");

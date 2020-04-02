@@ -31,15 +31,6 @@ import react.vendor.*;
 import react.CagetteDatePicker;
 import react.ReactComponent;
 
-//TODO
-import react.store.Cart;
-
-
-//require bootstrap JS since it's bundled with browserify
-//@:jsRequire('bootstrap') extern class Bootstrap{}
-//@:jsRequire('jquery') extern class JQ extends js.jquery.JQuery{}
-
-
 @:jsRequire('cagette-neo', 'NeolithicViewsGenerator')
 extern class NeolithicViewsGenerator {
     static public function setApiUrl(
@@ -56,8 +47,6 @@ class App {
 	public var Modal = bootstrap.Modal;
 	public var Collapse = bootstrap.Collapse;
 
-	//i dont want to use redux now... saved state from react.OrderBox
-	public static var SAVED_ORDER_STATE : Dynamic;
 
 	function new(?lang="fr",?currency="&euro;") {
 		//singleton
@@ -68,10 +57,10 @@ class App {
 
 	/**
 	**/
-	public static inline function jq(r:Dynamic):js.jquery.JQuery{
+	/*public static inline function jq(r:Dynamic):js.jquery.JQuery{
 		trace("CALL JQUERY");
 		return new js.jquery.JQuery(r);
-	}
+	}*/
 
 	/**
 	 * The JS App will be available as "_" in the document.
