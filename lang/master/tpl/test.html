@@ -4,35 +4,70 @@
     <link rel="stylesheet" type="text/css" href="/css/::getVariable('css')::/style.css"/>
     <script type="text/javascript" src="/js/::getVariable('js')::/libs.dev.js"></script>
     <script type="text/javascript" src="/js/::getVariable('js')::/app.js"></script>
+
+    <style>
+        .ablock{
+            margin-bottom: 20px
+        }
+
+        .ablock pre {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background-color: #ccc;
+        }
+    </style>
 </head>
 <body style="padding: 16px">
-    <div>Distrib #::distrib.id::</div>
+    <div>
+        <p>Distrib #::distrib.id::</p>
+        <p>Fin ::distrib.orderEndDate::</p>
+    </div>
 
     <br />
 
     <div>
         <button id="reset-btn">RESET</button>
-    </div>
-
-    <br />
-
-    <div id="activate-slots-wrapper"></div>
-    <br />
-
-    <div>
         <button id="gen-btn">GEN FAKE DATAS</button>
+        <button id="close-btn">CLOSE DISTRIB</button>
+        <button id="resolve-btn">RESOLVE</button>
     </div>
+
     <br />
+    <div class="ablock">
+        <h1>Actiev slot</h1>
+        <div id="activate-slots-wrapper"></div>
+        <pre>
+            _NeolithicViewsGenerator.activateDistribSlots(HTML_ELEMENT_ID, {
+                distribId: DISTRIB_ID,
+                slotDuration: NUMBER_TIME,
+            })
+        </pre>
+        <hr />
+    </div>
+
+    <div class="ablock">
+        <h1>Slots selector</h1>
+        <div id="users-slots-wrapper"></div>
+        <pre>
+            _NeolithicViewsGenerator.userDistribSlotsSelector(HTML_ELEMENT_ID, {
+                distribId: DISTRIB_ID,
+            }) 
+        </pre>
+        <hr />
+    </div>
+
+    <div class="ablock">
+        <h1>Slots resolved</h1>
+        <div id="slots-resolver-wrapper"></div>
+        <pre>
+            _NeolithicViewsGenerator.distribSlotsResolver(HTML_ELEMENT_ID, {
+                distribId: DISTRIB_ID
+            });
+        </pre>
+        <hr />
+    </div>
+
     
-    ::if distrib.slotsIsActivated == false::
-        activate and reload
-        <br />
-    ::end::
-
-    <div id="users-slots-wrapper"></div>
-    <br />
-
-    <div id="slots-resolver-wrapper"></div>
 
     <script>
         var distribId = ::distrib.id::;
@@ -64,12 +99,37 @@
             })
         }
 
-        document.getElementById("reset-btn").addEventListener("click", reset);
-
-        var genBtnEl = document.getElementById("gen-btn");
-        if (genBtnEl) {
-            document.getElementById("gen-btn").addEventListener("click", genDatas);
+        function closeDistrib() {
+            console.log("closeDistrib");
+            fetch("http://localhost/api/distributions/"+distribId+"/closeDistrib", {
+                method: "POST"
+            }).then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                document.location.reload(true);
+                return res;
+            }).catch(function(error) {
+                console.log(error)
+            })
         }
+
+        function resolveDistrib() {
+            console.log("resolve");
+            fetch("http://localhost/api/distributions/"+distribId+"/resolve", {
+                method: "POST"
+            }).then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                document.location.reload(true);
+                return res;
+            }).catch(function(error) {
+                console.log(error)
+            })
+        }
+
+        document.getElementById("reset-btn").addEventListener("click", reset);
+        document.getElementById("gen-btn").addEventListener("click", genDatas);
+        document.getElementById("close-btn").addEventListener("click", closeDistrib);
+        document.getElementById("resolve-btn").addEventListener("click", resolveDistrib);
+    
 
         _NeolithicViewsGenerator.activateDistribSlots("activate-slots-wrapper", {
             distribId: ::distrib.id::,

@@ -6414,7 +6414,7 @@ var ActivateDistribSlotsView = function (_a) {
                     case 1:
                         res = _a.sent();
                         if (active && res) {
-                            setDistrib(__assign(__assign({}, res), { slots: undefined }));
+                            setDistrib(__assign({}, res));
                         }
                         return [2 /*return*/];
                 }
