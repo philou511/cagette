@@ -118,6 +118,10 @@ class Main extends Controller {
 			var contracts = app.getCurrentGroup().deleteDemoContracts();
 			if(contracts.length>0 ) throw Ok("/","Contrats suivants effacés : "+contracts.map(function(c) return c.name).join(", "));
 		}
+		
+		view.timeSlotService = function(d:db.MultiDistrib){
+			return new service.TimeSlotsService(d);
+		}
 
 		view.visibleDocuments = group.getVisibleDocuments( isMemberOfGroup );
 

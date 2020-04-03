@@ -283,6 +283,9 @@
 				<!-- === END AMAP BLOCK === -->	
 				
 				<!-- TIME SLOTS -->
+
+					::timeSlotService(d).userStatus(user)::
+
 				::if(d.slots!=null && d.userHasOrders(user,null))::
 				<!-- not registred -->
 				<div class="content">

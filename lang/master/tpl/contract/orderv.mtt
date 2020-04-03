@@ -218,56 +218,60 @@
 		::end::
 	</div>
 
-
-
 </div>
-<div class="col-md-4">
 
-		::if(catalog.description!=null)::
-		<div class="article">
-			<h4><i class="icon icon-info"></i> Informations</h4>
-			::nl2br(catalog.description)::
-		</div>
-		::end::
+	<div class="col-md-3">
 
-		<div ::cond visibleDocuments.length != 0:: class="article">
-			<h4><i class="icon icon-file-pdf"></i> Documents</h4>
-			<ul>
-				::foreach doc visibleDocuments::
-					<li><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
-				::end::
-			</ul>
-		</div>
-
-		<div class="article">
-			::set vendor = catalog._vendor::
-			<h4><i class="icon icon-farmer"></i> ::_("Vendor")::</h4>
-			
-			<b>::vendor.name::</b><br/>			
-			<b>::vendor.city::</b> (::vendor.zipCode::)
-			<p ::cond vendor.desc!=null:: style="font-size: 13px;">
-				::raw nl2br(vendor.desc)::
-			</p>
-			
-			::if vendor.linkUrl!=null::
-			<p>
-				::if vendor.linkText!=null::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
-				::else::
-				<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
-				::end::
-			</p>
+			::if(catalog.description!=null)::
+			<div class="article">
+				<h4><i class="icon icon-info"></i> Informations</h4>
+				::nl2br(catalog.description)::
+			</div>
 			::end::
-		</div>
 
-		<div class="article">		
-			<h4><i class="icon icon-user"></i> ::_("Coordinator")::</h4>
-			::if catalog._contact!=null::
-			<b>::catalog._contact.firstName:: ::catalog._contact.lastName::</b><br/>
-			<span ::cond catalog._contact.email!=null::><i class="icon icon-mail"></i> <a href="mailto: ::catalog._contact.email::">::catalog._contact.email::</a><br/></span>
-			<span ::cond catalog._contact.phone!=null::><i class="icon icon-phone"></i> ::catalog._contact.phone::<br/></span>
-			::end::
-		</div>
+			<div ::cond visibleDocuments.length != 0:: class="article">
+				<h4><i class="icon icon-file-pdf"></i> Documents</h4>
+				<ul>
+					::foreach doc visibleDocuments::
+						<li><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
+					::end::
+				</ul>
+			</div>
+	</div>
+	<div class="col-md-3">
+
+			<div class="article">
+				::set vendor = catalog._vendor::
+				<h4><i class="icon icon-farmer"></i> ::_("Vendor")::</h4>
+				
+				<b>::vendor.name::</b><br/>			
+				<b>::vendor.city::</b> (::vendor.zipCode::)
+				<p ::cond vendor.desc!=null:: style="font-size: 13px;">
+					::raw nl2br(vendor.desc)::
+				</p>
+				
+				::if vendor.linkUrl!=null::
+				<p>
+					::if vendor.linkText!=null::
+					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
+					::else::
+					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
+					::end::
+				</p>
+				::end::
+			</div>
+	</div>
+	<div class="col-md-3">
+			<div class="article">		
+				<h4><i class="icon icon-user"></i> ::_("Coordinator")::</h4>
+				::if catalog._contact!=null::
+				<b>::catalog._contact.firstName:: ::catalog._contact.lastName::</b><br/>
+				<span ::cond catalog._contact.email!=null::><i class="icon icon-mail"></i> <a href="mailto: ::catalog._contact.email::">::catalog._contact.email::</a><br/></span>
+				<span ::cond catalog._contact.phone!=null::><i class="icon icon-phone"></i> ::catalog._contact.phone::<br/></span>
+				::end::
+			</div>
+	</div>
+	<div class="col-md-3">
 
 		<div class="article">
 			<h3>Prochaines distributions</h3>
@@ -288,5 +292,5 @@
 			</p>
 			::end::
 		</div>
-</div>
+	</div>	
 ::end::
