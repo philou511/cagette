@@ -6,7 +6,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = require('react');
 var React__default = _interopDefault(React);
-var ReactDOM = _interopDefault(require('react-dom'));
+var reactDom = _interopDefault(require('react-dom'));
 var core = require('@material-ui/core');
 var lab = require('@material-ui/lab');
 var SvgIcon = _interopDefault(require('@material-ui/core/SvgIcon'));
@@ -373,6 +373,8 @@ var api = function () {
     };
 };
 var api$1 = api();
+
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function unwrapExports (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -14394,6 +14396,50 @@ var UserDistribSlotsSelectorView = function (_a) {
 };
 var UserDistribSlotsSelectorView$1 = withNeolithicProvider(withi18n(UserDistribSlotsSelectorView));
 
+var Print = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
+}), 'Print');
+
+exports.default = _default;
+});
+
+var PrintIcon = unwrapExports(Print);
+
+var lib = createCommonjsModule(function (module, exports) {
+!function(t,e){module.exports=e(React__default,reactDom);}("undefined"!=typeof self?self:commonjsGlobal,(function(t,e){return function(t){var e={};function n(r){if(e[r])return e[r].exports;var o=e[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=t,n.c=e,n.d=function(t,e,r){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r});},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0});},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)n.d(r,o,function(e){return t[e]}.bind(null,o));return r},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=0)}([function(t,e,n){Object.defineProperty(e,"__esModule",{value:!0});var r=n(1),o=n(2),i=n(3),a=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.startPrint=function(t,n){var r=e.props.removeAfterPrint;setTimeout((function(){if(t.contentWindow.focus(),t.contentWindow.print(),n&&n(),r){var e=document.getElementById("printWindow");e&&document.body.removeChild(e);}}),500);},e.triggerPrint=function(t){var n=e.props,r=n.onAfterPrint,o=n.onBeforePrint,i=n.onPrintError;if(o){var a=o();a&&"function"==typeof a.then?a.then((function(){e.startPrint(t,r);})).catch((function(t){i&&i("onBeforePrint",t);})):e.startPrint(t,r);}else e.startPrint(t,r);},e.handleClick=function(){var t=e.props,n=t.onBeforeGetContent,r=t.onPrintError;if(n){var o=n();o&&"function"==typeof o.then?o.then(e.handlePrint).catch((function(t){r&&r("onBeforeGetContent",t);})):e.handlePrint();}else e.handlePrint();},e.handlePrint=function(){var t=e.props,n=t.bodyClass,r=void 0===n?"":n,o=t.content,a=t.copyStyles,u=void 0===a||a,c=t.pageStyle,l=t.suppressErrors,f=o();if(void 0!==f)if(null!==f){var s=document.createElement("iframe");s.style.position="absolute",s.style.top="-1000px",s.style.left="-1000px",s.id="printWindow",s.title="Print Window";var d=i.findDOMNode(f),p=document.querySelectorAll("link[rel='stylesheet'], img");e.linkTotal=p.length||0,e.linksLoaded=[],e.linksErrored=[];var y=function(t,n){n?e.linksLoaded.push(t):(l||console.error('"react-to-print" was unable to load a link. It may be invalid. "react-to-print" will continue attempting to print the page. The link the errored was:',t),e.linksErrored.push(t)),e.linksLoaded.length+e.linksErrored.length===e.linkTotal&&e.triggerPrint(s);};s.onload=function(){window.navigator&&window.navigator.userAgent.indexOf("Trident/7.0")>-1&&(s.onload=null);var t=s.contentDocument||s.contentWindow.document,n=d.querySelectorAll("canvas");if(t){t.open(),t.write(d.outerHTML),t.close();var o=void 0===c?"@page { size: auto;  margin: 0mm; } @media print { body { -webkit-print-color-adjust: exact; } }":c,i=t.createElement("style");i.appendChild(t.createTextNode(o)),t.head.appendChild(i),r.length&&t.body.classList.add(r);for(var a=t.querySelectorAll("canvas"),l=0,f=a.length;l<f;++l){var p=(v=a[l]).getContext("2d");p&&p.drawImage(n[l],0,0);}if(!1!==u)for(var h=document.querySelectorAll("style, link[rel='stylesheet'], img"),b=(l=0,h.length);l<b;++l){var v;if("STYLE"===(v=h[l]).tagName){var m=t.createElement(v.tagName),g=v.sheet;if(g){for(var w="",_=0,P=g.cssRules.length;_<P;++_)"string"==typeof g.cssRules[_].cssText&&(w+=g.cssRules[_].cssText+"\r\n");m.setAttribute("id","react-to-print-"+l),m.appendChild(t.createTextNode(w)),t.head.appendChild(m);}}else if(v.hasAttribute("href")&&v.getAttribute("href")||v.hasAttribute("src")&&v.getAttribute("src")){m=t.createElement(v.tagName),_=0;for(var x=v.attributes.length;_<x;++_){var O=v.attributes[_];O&&m.setAttribute(O.nodeName,O.nodeValue||"");}m.onload=y.bind(null,m,!0),m.onerror=y.bind(null,m,!1),t.head.appendChild(m);}else console.warn('"react-to-print" encountered a <link> tag with an empty "href" attribute. In addition to being invalid HTML, this can cause problems in many browsers, and so the <link> was not loaded. The <link> is:',v),y(v,!0);}}0!==e.linkTotal&&!1!==u||e.triggerPrint(s);};var h=document.getElementById("printWindow");h&&document.body.removeChild(h),document.body.appendChild(s);}else l||console.error('There is nothing to print because the "content" prop returned "null". Please ensure "content" is renderable before allowing "react-to-print" to be called.');else l||console.error('Refs are not available for stateless components. For "react-to-print" to work only Class based components can be printed');},e}return r.__extends(e,t),e.prototype.render=function(){var t=this.props.trigger;return o.cloneElement(t(),{onClick:this.handleClick})},e}(o.Component);e.default=a;},function(t,e,n){n.r(e),n.d(e,"__extends",(function(){return o})),n.d(e,"__assign",(function(){return i})),n.d(e,"__rest",(function(){return a})),n.d(e,"__decorate",(function(){return u})),n.d(e,"__param",(function(){return c})),n.d(e,"__metadata",(function(){return l})),n.d(e,"__awaiter",(function(){return f})),n.d(e,"__generator",(function(){return s})),n.d(e,"__exportStar",(function(){return d})),n.d(e,"__values",(function(){return p})),n.d(e,"__read",(function(){return y})),n.d(e,"__spread",(function(){return h})),n.d(e,"__await",(function(){return b})),n.d(e,"__asyncGenerator",(function(){return v})),n.d(e,"__asyncDelegator",(function(){return m})),n.d(e,"__asyncValues",(function(){return g})),n.d(e,"__makeTemplateObject",(function(){return w})),n.d(e,"__importStar",(function(){return _})),n.d(e,"__importDefault",(function(){return P}));
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+var r=function(t,e){return (r=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e;}||function(t,e){for(var n in e)e.hasOwnProperty(n)&&(t[n]=e[n]);})(t,e)};function o(t,e){function n(){this.constructor=t;}r(t,e),t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n);}var i=function(){return (i=Object.assign||function(t){for(var e,n=1,r=arguments.length;n<r;n++)for(var o in e=arguments[n])Object.prototype.hasOwnProperty.call(e,o)&&(t[o]=e[o]);return t}).apply(this,arguments)};function a(t,e){var n={};for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&e.indexOf(r)<0&&(n[r]=t[r]);if(null!=t&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(r=Object.getOwnPropertySymbols(t);o<r.length;o++)e.indexOf(r[o])<0&&(n[r[o]]=t[r[o]]);}return n}function u(t,e,n,r){var o,i=arguments.length,a=i<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,n):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(t,e,n,r);else for(var u=t.length-1;u>=0;u--)(o=t[u])&&(a=(i<3?o(a):i>3?o(e,n,a):o(e,n))||a);return i>3&&a&&Object.defineProperty(e,n,a),a}function c(t,e){return function(n,r){e(n,r,t);}}function l(t,e){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,e)}function f(t,e,n,r){return new(n||(n=Promise))((function(o,i){function a(t){try{c(r.next(t));}catch(t){i(t);}}function u(t){try{c(r.throw(t));}catch(t){i(t);}}function c(t){t.done?o(t.value):new n((function(e){e(t.value);})).then(a,u);}c((r=r.apply(t,e||[])).next());}))}function s(t,e){var n,r,o,i,a={label:0,sent:function(){if(1&o[0])throw o[1];return o[1]},trys:[],ops:[]};return i={next:u(0),throw:u(1),return:u(2)},"function"==typeof Symbol&&(i[Symbol.iterator]=function(){return this}),i;function u(i){return function(u){return function(i){if(n)throw new TypeError("Generator is already executing.");for(;a;)try{if(n=1,r&&(o=2&i[0]?r.return:i[0]?r.throw||((o=r.return)&&o.call(r),0):r.next)&&!(o=o.call(r,i[1])).done)return o;switch(r=0,o&&(i=[2&i[0],o.value]),i[0]){case 0:case 1:o=i;break;case 4:return a.label++,{value:i[1],done:!1};case 5:a.label++,r=i[1],i=[0];continue;case 7:i=a.ops.pop(),a.trys.pop();continue;default:if(!(o=(o=a.trys).length>0&&o[o.length-1])&&(6===i[0]||2===i[0])){a=0;continue}if(3===i[0]&&(!o||i[1]>o[0]&&i[1]<o[3])){a.label=i[1];break}if(6===i[0]&&a.label<o[1]){a.label=o[1],o=i;break}if(o&&a.label<o[2]){a.label=o[2],a.ops.push(i);break}o[2]&&a.ops.pop(),a.trys.pop();continue}i=e.call(t,a);}catch(t){i=[6,t],r=0;}finally{n=o=0;}if(5&i[0])throw i[1];return {value:i[0]?i[1]:void 0,done:!0}}([i,u])}}}function d(t,e){for(var n in t)e.hasOwnProperty(n)||(e[n]=t[n]);}function p(t){var e="function"==typeof Symbol&&t[Symbol.iterator],n=0;return e?e.call(t):{next:function(){return t&&n>=t.length&&(t=void 0),{value:t&&t[n++],done:!t}}}}function y(t,e){var n="function"==typeof Symbol&&t[Symbol.iterator];if(!n)return t;var r,o,i=n.call(t),a=[];try{for(;(void 0===e||e-- >0)&&!(r=i.next()).done;)a.push(r.value);}catch(t){o={error:t};}finally{try{r&&!r.done&&(n=i.return)&&n.call(i);}finally{if(o)throw o.error}}return a}function h(){for(var t=[],e=0;e<arguments.length;e++)t=t.concat(y(arguments[e]));return t}function b(t){return this instanceof b?(this.v=t,this):new b(t)}function v(t,e,n){if(!Symbol.asyncIterator)throw new TypeError("Symbol.asyncIterator is not defined.");var r,o=n.apply(t,e||[]),i=[];return r={},a("next"),a("throw"),a("return"),r[Symbol.asyncIterator]=function(){return this},r;function a(t){o[t]&&(r[t]=function(e){return new Promise((function(n,r){i.push([t,e,n,r])>1||u(t,e);}))});}function u(t,e){try{(n=o[t](e)).value instanceof b?Promise.resolve(n.value.v).then(c,l):f(i[0][2],n);}catch(t){f(i[0][3],t);}var n;}function c(t){u("next",t);}function l(t){u("throw",t);}function f(t,e){t(e),i.shift(),i.length&&u(i[0][0],i[0][1]);}}function m(t){var e,n;return e={},r("next"),r("throw",(function(t){throw t})),r("return"),e[Symbol.iterator]=function(){return this},e;function r(r,o){e[r]=t[r]?function(e){return (n=!n)?{value:b(t[r](e)),done:"return"===r}:o?o(e):e}:o;}}function g(t){if(!Symbol.asyncIterator)throw new TypeError("Symbol.asyncIterator is not defined.");var e,n=t[Symbol.asyncIterator];return n?n.call(t):(t=p(t),e={},r("next"),r("throw"),r("return"),e[Symbol.asyncIterator]=function(){return this},e);function r(n){e[n]=t[n]&&function(e){return new Promise((function(r,o){(function(t,e,n,r){Promise.resolve(r).then((function(e){t({value:e,done:n});}),e);})(r,o,(e=t[n](e)).done,e.value);}))};}}function w(t,e){return Object.defineProperty?Object.defineProperty(t,"raw",{value:e}):t.raw=e,t}function _(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var n in t)Object.hasOwnProperty.call(t,n)&&(e[n]=t[n]);return e.default=t,e}function P(t){return t&&t.__esModule?t:{default:t}}},function(e,n){e.exports=t;},function(t,n){t.exports=e;}])}));
+});
+
+var ReactToPrint = unwrapExports(lib);
+var lib_1 = lib.lib;
+
 var tFile$6 = 'neo/distrib-slots';
 var shortTKey$6 = tFile$6 + ":resolver";
 var InNeedNotResolvedUsersTable = function (_a) {
@@ -14412,10 +14458,9 @@ var InNeedNotResolvedUsersTable = function (_a) {
 
 var tFile$7 = 'neo/distrib-slots';
 var shortTKey$7 = tFile$7 + ":resolver";
-var DistribSlotsResolver = function (_a) {
-    var distribId = _a.distribId;
+var SlotsResolvedTable = function (_a) {
+    var distrib = _a.distrib;
     var t = useTranslation(['translation', tFile$7]).t;
-    var _b = React__default.useState(), distrib = _b[0], setDistrib = _b[1];
     /** */
     var getInNeedUsersOfVoluntaryList = function (userId) {
         if (!distrib)
@@ -14433,6 +14478,37 @@ var DistribSlotsResolver = function (_a) {
         }
         return res.map(function (u) { return u.firstName + " " + u.lastName; }).join(', ');
     };
+    /** */
+    return (React__default.createElement(core.CardContent, null,
+        React__default.createElement(core.Table, null,
+            React__default.createElement(core.TableHead, null,
+                React__default.createElement(core.TableRow, null,
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".slot")),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".user")),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".getOrderFor")))),
+            React__default.createElement(core.TableBody, null, distrib.slots &&
+                distrib.slots
+                    .filter(function (slot) { return slot.selectedUserIds.length > 0; })
+                    .map(function (slot) {
+                    return slot.selectedUserIds.map(function (userId, i) {
+                        var user = distrib.users.find(function (u) { return u.id === userId; });
+                        return (React__default.createElement(core.TableRow, { key: userId }, user && (React__default.createElement(React__default.Fragment, null,
+                            i === 0 && (React__default.createElement(core.TableCell, { rowSpan: slot.selectedUserIds.length, style: { backgroundColor: '#F1F1F1' } }, "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"))),
+                            React__default.createElement(core.TableCell, null,
+                                React__default.createElement(core.Typography, { variant: "body2" }, user.firstName + " " + user.lastName)),
+                            React__default.createElement(core.TableCell, null,
+                                React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, getInNeedUsersOfVoluntaryList(user.id)))))));
+                    });
+                })))));
+};
+
+var tFile$8 = 'neo/distrib-slots';
+var shortTKey$8 = tFile$8 + ":resolver";
+var DistribSlotsResolver = function (_a) {
+    var distribId = _a.distribId;
+    var t = useTranslation(['translation', tFile$8]).t;
+    var toPrintRef = React__default.useRef(null);
+    var _b = React__default.useState(), distrib = _b[0], setDistrib = _b[1];
     /** */
     React__default.useEffect(function () {
         var active = true;
@@ -14464,11 +14540,11 @@ var DistribSlotsResolver = function (_a) {
     if (!distrib.slots || !distrib.orderEndDate)
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$7 + ".slotsNotActivated")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$8 + ".slotsNotActivated")))));
     if (isBefore(new Date(), distrib.orderEndDate)) {
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$7 + ".distribNotClosed")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$8 + ".distribNotClosed")))));
     }
     var isResolved = distrib.slots.reduce(function (acc, slot) {
         if (acc || slot.selectedUserIds.length > 0)
@@ -14478,38 +14554,25 @@ var DistribSlotsResolver = function (_a) {
     if (!isResolved) {
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$7 + ".resolving")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$8 + ".resolving")))));
     }
     var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spreadArrays(acc, vs); }, []);
     var inNeedUsersNotLocked = (distrib.inNeedUsers || []).filter(function (u) { return !iNeedLockedUserIds.includes(u.id); });
-    return (React__default.createElement(core.Card, null,
-        inNeedUsersNotLocked.length > 0 && (React__default.createElement(core.CardContent, null,
-            React__default.createElement(InNeedNotResolvedUsersTable, { users: inNeedUsersNotLocked }))),
-        distrib.slots && (React__default.createElement(core.CardContent, null,
-            React__default.createElement(core.Table, null,
-                React__default.createElement(core.TableHead, null,
-                    React__default.createElement(core.TableRow, null,
-                        React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".slot")),
-                        React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".user")),
-                        React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$7 + ".getOrderFor")))),
-                React__default.createElement(core.TableBody, null, distrib.slots
-                    .filter(function (slot) { return slot.selectedUserIds.length > 0; })
-                    .map(function (slot) {
-                    return slot.selectedUserIds.map(function (userId, i) {
-                        var user = distrib.users.find(function (u) { return u.id === userId; });
-                        return (React__default.createElement(core.TableRow, { key: userId }, user && (React__default.createElement(React__default.Fragment, null,
-                            i === 0 && (React__default.createElement(core.TableCell, { rowSpan: slot.selectedUserIds.length, style: { backgroundColor: '#F1F1F1' } }, "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"))),
-                            React__default.createElement(core.TableCell, null,
-                                React__default.createElement(core.Typography, { variant: "body2" }, user.firstName + " " + user.lastName)),
-                            React__default.createElement(core.TableCell, null,
-                                React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, getInNeedUsersOfVoluntaryList(user.id)))))));
-                    });
-                })))))));
+    return (React__default.createElement(React__default.Fragment, null,
+        React__default.createElement(core.Card, null,
+            React__default.createElement("div", { ref: toPrintRef },
+                inNeedUsersNotLocked.length > 0 && (React__default.createElement(core.CardContent, null,
+                    React__default.createElement(InNeedNotResolvedUsersTable, { users: inNeedUsersNotLocked }))),
+                distrib.slots && (React__default.createElement(core.CardContent, null,
+                    React__default.createElement(SlotsResolvedTable, { distrib: distrib })))),
+            React__default.createElement(core.Box, { p: 2, pt: 0, display: "flex", justifyContent: "center" },
+                React__default.createElement(ReactToPrint, { trigger: function () { return (React__default.createElement(core.Button, { variant: "contained", color: "primary", startIcon: React__default.createElement(PrintIcon, null) },
+                        React__default.createElement(core.Typography, null, "Imprimer"))); }, content: function () { return toPrintRef.current; } })))));
 };
 var DistribSlotsResolver$1 = withNeolithicProvider(withi18n(DistribSlotsResolver));
 
 var createApp = function (elementId, children) {
-    ReactDOM.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
+    reactDom.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
 };
 var NeolithicViewsGenerator = /** @class */ (function () {
     function NeolithicViewsGenerator() {
