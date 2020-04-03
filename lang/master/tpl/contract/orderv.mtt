@@ -35,15 +35,19 @@
 			::end::
 
 <style>
-	tr{
+	td{
 		height: 60px;
+		overflow-y: hidden;
+	}
+	th{
+		height: 100px;
 		overflow-y: hidden;
 	}
 </style>
 
 			<!--products-->
 			<div class="row">
-				<div class="col-md-2" style="margin-right: 0;padding-right:0;">
+				<div class="col-md-3" style="margin-right: 0;padding-right:0;">
 				<table class="table table-bordered">
 					<tr>
 						<td></td>
@@ -58,11 +62,8 @@
 								<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
 							</td>
 							<td>
-								<span ::cond uo.product.organic:: title ="Agriculture biologique" data-toggle="tooltip" data-placement="bottom">
-									<img src="/img/AB.png"/>&nbsp;						
-								</span>
 								<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">							
-									::uo.product.getName()::
+									::short(uo.product.getName(),24)::
 								</a>
 							</td>
 							<td>
@@ -77,7 +78,7 @@
 				</div>
 
 				<!--orders-->
-				<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-10">
+				<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-9">
 					<table class="table table-bordered">
 						<tr>
 							::foreach d userOrders::

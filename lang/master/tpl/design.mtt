@@ -151,6 +151,7 @@
 			<div class="col-md-12">			
 				<!--  SQL LOG -->
 				<table class="sqlLog table table-bordered" ::cond sqlLog::>
+				<tr><th colspan="5">::sqlLog.length:: queries</th></tr>
 				::foreach r sqlLog::
 				<tr ::attr class if(r.bad) 'badSql'::>
 					<td>::r.t::ms</td>

@@ -208,37 +208,39 @@ class MultiDistrib extends Object
 	/**
 		prepare an excerpt of products ( and store it in cache )
 	**/
-	public function getProductsExcerpt(productNum:Int):Array<ProductInfo>{
-		var key = "productsExcerpt-"+getKey();
-		var cache:Array<Int> = sugoi.db.Cache.get(key);
+	static var PRODUCT_EXCERPT_KEY = "productsExcerpt";
+
+	public function getProductsExcerpt(productNum:Int):Array<{name:String,image:String}>{
+		var key = PRODUCT_EXCERPT_KEY+this.id;
+		var cache:Array<{rid:Int,name:String,image:String}> = sugoi.db.Cache.get(key);
 		if(cache!=null){
-			var out = [];
-			try{
-				for( pid in cache.array()){
-					var p = db.Product.manager.get(pid,false);
-					if(p!=null) out.push(p.infos());
-				}
-			}catch(e:Dynamic){
-			 	sugoi.db.Cache.destroy(key);
-			}			
-			return out;
+			return cache;
 		}else{
-			var products = [];
+			cache = [];
 			for( d in getDistributions(db.Catalog.TYPE_VARORDER)){
 				for ( p in d.catalog.getProductsPreview(productNum)){
-					products.push( p.infos(null,false) );	
+					cache.push( {
+						rid : p.image!=null ? Std.random(500)+500 : Std.random(500),
+						name:p.name,
+						image:p.getImage()
+					} );	
 				}
 			}
-			//products = thx.Arrays.shuffle(products);			
-			products = products.slice(0, productNum);
-			sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
-			return products;	
+
+			//randomize
+			cache.sort(function(a,b){
+				return b.rid - a.rid;
+			});
+			cache = cache.slice(0, productNum);
+
+			sugoi.db.Cache.set(key, cache , 3600*12 );
+			return cache;	
 		}
 
 	}
 
 	public function deleteProductsExcerpt(){
-		sugoi.db.Cache.destroy("productsExcerpt-"+getKey());
+		sugoi.db.Cache.destroy(PRODUCT_EXCERPT_KEY+this.id);
 	}
 
 	public function userHasOrders(user:db.User,type:Int):Bool{
@@ -300,18 +302,19 @@ class MultiDistrib extends Object
 	/**
 		Get distributions for constant orders or variable orders.
 	**/
-	private static var DISTRIBUTIONS_CACHE  = [];
+	@:skip private var distributionsCache:Array<db.Distribution>;
+	@:skip public var useCache:Bool;
 	public function getDistributions(?type:Int){
-		//make bugs
-		//if(DISTRIBUTIONS_CACHE.length==0){
-			DISTRIBUTIONS_CACHE = Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
-		//}
+		
+		if(distributionsCache==null || useCache!=true){
+			distributionsCache = Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
+		}
 
 		if(type==null){
-			return DISTRIBUTIONS_CACHE;
+			return distributionsCache;
 		}else{
 			var out = [];
-			for ( d in DISTRIBUTIONS_CACHE){
+			for ( d in distributionsCache){
 				if( d.catalog.type==type ) out.push(d);
 			}
 			return out;
@@ -428,10 +431,11 @@ class MultiDistrib extends Object
 		return isConfirmed();
 	}*/
 
-	//get key by date-place-type
+	/**
+		retrocomp
+	**/
 	public function getKey(){
 		return "md"+this.id;
-		//return distributions[0].getKey() + "-" + distributions[0].contract.type;
 	}
 
 	override public function toString(){

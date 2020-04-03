@@ -84,7 +84,8 @@ class Cron extends Controller
 		app.event(HourlyCron(this.now));
 		
 		//instructions for dutyperiod volunteers
-		var task = new TransactionWrappedTask(function() {
+		var task = new TransactionWrappedTask("Volunteers instruction mail");
+		task.setTask(function() {
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
@@ -94,13 +95,12 @@ class Cron extends Controller
 				ON distrib.groupId = g.id
 				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY)
 				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false).array();
-			printTitle("Volunteers instruction mail");
 			
 			for (multidistrib  in multidistribs) {
 
 				var volunteers: Array<db.Volunteer> = multidistrib.getVolunteers();
 				if ( volunteers.length != 0 ) {
-					print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
+					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
 					mail.setSender(App.config.get("default_email"),"Cagette.net");
 					var volunteersList = "<ul>";
@@ -129,7 +129,8 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 
-		var taskVolunteersAlert = new TransactionWrappedTask(function() {
+		var task = new TransactionWrappedTask("Volunteers alerts");
+		task.setTask(function() {
 
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
@@ -142,9 +143,9 @@ class Cron extends Controller
 				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
 
 			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
-			printTitle("Volunteers alerts");
+			
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
-				print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
+				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
 				mail.setSender(App.config.get("default_email"),"Cagette.net");
 				for ( member in multidistrib.group.getMembers() ) {
@@ -168,10 +169,11 @@ class Cron extends Controller
 				App.sendMail(mail);
 			}			
 		});
-		taskVolunteersAlert.execute(!App.config.DEBUG);
+		task.execute(!App.config.DEBUG);
 
 		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range
-		var taskSubscriptionsToValidateAlert = new TransactionWrappedTask( function() {
+		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
+		task.setTask(function() {
 			
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
@@ -187,20 +189,16 @@ class Cron extends Controller
 			
 			var subscriptionsToValidateByCatalog = new Map< db.Catalog, Array< db.Subscription > >();
 			for ( subscription in subscriptionsToValidate ) {
-
 				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
-
 					subscriptionsToValidateByCatalog[ subscription.catalog ] = new Array< db.Subscription >();
 				}
 				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
 			}
 
-			printTitle("Subscriptions to validate alert emails");
-						
 			//List of subscriptions grouped by catalog
 			for ( catalog in subscriptionsToValidateByCatalog.keys() ) {
 
-				print( catalog.name );
+				task.log( catalog.name );
 
 				var message : String = 'Bonjour, <br /><br />
 				Attention, les souscriptions suivantes n\'ont pas été validées, alors qu\'une distribution approche.
@@ -220,22 +218,22 @@ class Cron extends Controller
 			}
 			
 		});		
-		taskSubscriptionsToValidateAlert.execute(!App.config.DEBUG);
+		task.execute(!App.config.DEBUG);
 
 		//Distrib notifications
-		var task = new TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask("Distrib notifications",function(){
 			distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
 			distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
 		});
-		task.execute(true);
+		task.execute(!App.config.DEBUG);
 
 		//Distrib Validation notifications				
-		var task = new TransactionWrappedTask(distribValidationNotif);
-		task.execute(true);
+		var task = new TransactionWrappedTask("Distrib Validation notifications",distribValidationNotif);
+		task.execute(!App.config.DEBUG);
 
 		//time slot assignement when orders are closing
-		new TransactionWrappedTask(function(){
+		new TransactionWrappedTask("Time slots assignement",function(){
 			var range = tools.DateTool.getLastHourRange( now );
 			var distribs = MultiDistrib.manager.search($distribEndDate >= range.from && $distribEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){

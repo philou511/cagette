@@ -65,7 +65,7 @@ class Contract extends Controller
 		customMap["DDateTime"] = CagetteForm.renderDDate;
 
 		var form = form.CagetteForm.fromSpod(c,customMap);
-		form.removeElement( form.getElement("groupId") );
+		//form.removeElement( form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("distributorNum"));
 		form.getElement("userId").required = true;

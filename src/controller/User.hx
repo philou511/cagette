@@ -53,10 +53,10 @@ class User extends Controller
 		var groups = app.user.getGroups();
 		
 		view.noGroup = true; //force template to not display current group
-		view.hasRights = Lambda.find( groups, function(g){
+		/*view.hasRights = Lambda.find( groups, function(g){
 			var ua = db.UserGroup.get(app.user,g);			
 			return ua!=null && ua.rights!=null && ua.rights.length>0;
-		})!=null;
+		})!=null;*/
 
 		
 		if (args!=null && args.group!=null) {
