@@ -67,7 +67,7 @@ class Distributions extends Controller {
     Sys.print(Json.stringify(this.parse()));
   }
 
-  public function doAmIAlreadyRegisteredInSlots() {
+  public function doUserStatus() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkIsGroupMember();
     if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
@@ -251,6 +251,17 @@ class Distributions extends Controller {
     Sys.print(Json.stringify(this.parse()));
   }
 
+   // TODO: remove
+  public function doCloseDistrib() {
+    checkAdminRights();
+
+    this.distrib.lock();
+    this.distrib.orderEndDate = DateTools.delta(Date.now(), -(1000 * 60 * 60 * 24));
+    this.distrib.update();
+    Sys.print(Json.stringify(this.parse()));
+  }
+
+   // TODO: remove
   public function doDesactivateSlots() {
 
     checkAdminRights();
@@ -259,6 +270,7 @@ class Distributions extends Controller {
     this.distrib.slots = null;
     this.distrib.inNeedUserIds = null;
     this.distrib.voluntaryUsers = null;
+    this.distrib.orderEndDate  = DateTools.delta(Date.now(), 1000 * 60 * 60 * 24);
     this.distrib.update();
     Sys.print(Json.stringify(this.parse()));
   }
@@ -268,8 +280,14 @@ class Distributions extends Controller {
   public function doGenerateFakeDatas() {
     var fakeUserIds = [1, 2, 6, 8, 9];
 
-	var s = new TimeSlotsService(this.distrib);
-    s.generateSlots(true);
+  var s = new TimeSlotsService(this.distrib);
+    this.distrib.lock();
+    this.distrib.slots = null;
+    this.distrib.inNeedUserIds = null;
+    this.distrib.voluntaryUsers = null;
+    this.distrib.update();
+
+    s.generateSlots();
     s.registerUserToSlot(1, [1, 2]);
 
     for (userIndex in 1...fakeUserIds.length) {

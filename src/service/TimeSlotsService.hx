@@ -235,8 +235,8 @@ class TimeSlotsService{
 	}
     
     /*** */
-	public function generateSlots(force: Bool = false) {
-		if (distribution.slots != null && !force) return;
+	public function generateSlots() {
+		if (distribution.slots != null) return;
 
 		distribution.lock();
 
