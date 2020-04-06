@@ -89,28 +89,30 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
                             {renderStatus(formikProps.status)}
                             <CardContent>
                                 <FormControl fullWidth>
-                                    <DatePicker
-                                        InputProps={{
-                                            classes: {
-                                            input: ${props.classes.datePickerInput}
-                                            }
-                                        }}
-                                        label="Date de cotisation"
-                                        cancelLabel="Annuler"
-                                        name="date"
-                                        format="EEEE d MMMM yyyy"
-                                        required  />
-                                </FormControl>
+                                <Field
+                                    component={DatePicker}
+                                    InputProps={{
+                                        classes: {
+                                        input: ${props.classes.datePickerInput}
+                                        }
+                                    }}
+                                    label="Date de cotisation"
+                                    cancelLabel="Annuler"
+                                    name="date"
+                                    format="EEEE d MMMM yyyy"
+                                    required  />
+                            </FormControl>
                                 
                                 <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
-                                    <InputLabel id="mb-year">Année</InputLabel>
-                                    <Select labelId="mb-year" name="year" fullWidth required>
+                                    <InputLabel htmlFor="mb-year">Année</InputLabel>
+                                    <Field component={Select} inputProps={{id: "mb-year"}} name="year" fullWidth required>
                                         ${props.availableYears.map(y -> <MenuItem key=${y.id} value=${y.id}>${y.name}</MenuItem>)}
-                                    </Select>
+                                    </Field>
                                 </FormControl>
                                 
                                 <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
-                                    <TextField
+                                    <Field
+                                        component={TextField}
                                         fullWidth
                                         required
                                         name="membershipFee"
@@ -156,10 +158,10 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
             return null;
         }else{
             return <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
-                <InputLabel id="mb-payment">Paiement</InputLabel>
-                <Select labelId="mb-payment" name="paymentType" fullWidth required>
+                <InputLabel htmlFor="mb-payment">Paiement</InputLabel>
+                <Field component={Select} inputProps={{id: "mb-payment"}} name="paymentType" fullWidth required>
                     ${props.paymentTypes.map(p -> <MenuItem key=${p.id} value=${p.id}>${p.name}</MenuItem>)}
-                </Select>
+                </Field>
             </FormControl>;
         }
     }
@@ -168,11 +170,11 @@ class MemberShipForm extends ReactComponentOfProps<MemberShipFormPropsWithClasse
         if (props.distributions.length < 1) return null;
         return 
             <FormControl fullWidth margin=${mui.core.form.FormControlMargin.Normal}>
-                <InputLabel id="mb-distrib">Lors de la distribution</InputLabel>
-                <Select labelId="mb-distrib" name="distributionId" fullWidth>
+                <InputLabel htmlFor="mb-distrib">Lors de la distribution</InputLabel>
+                <Field component={Select} inputProps={{id: "mb-distrib"}} name="distributionId" fullWidth>
                     <MenuItem value={-1}><span>&nbsp;</span></MenuItem>
                     ${props.distributions.map(d -> <MenuItem key=${d.id} value=${d.id}>${d.name}</MenuItem>)}
-                </Select>
+                </Field>
             </FormControl>
         ;
     }
