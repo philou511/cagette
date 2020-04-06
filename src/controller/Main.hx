@@ -66,7 +66,7 @@ class Main extends Controller {
 		
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 1);
+		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 7);//reduce load
 		var timeframe = new tools.Timeframe(now,in1Month);
 
 		var distribs = db.MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);

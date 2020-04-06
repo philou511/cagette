@@ -233,7 +233,7 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 		//time slot assignement when orders are closing
-		new TransactionWrappedTask("Time slots assignement",function(){
+		/*new TransactionWrappedTask("Time slots assignement",function(){
 			var range = tools.DateTool.getLastHourRange( now );
 			var distribs = MultiDistrib.manager.search($distribEndDate >= range.from && $distribEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){
@@ -255,7 +255,7 @@ class Cron extends Controller
 					app.logError(e); //email could be invalid
 				}
 			}
-		}).execute(!App.config.DEBUG);
+		}).execute(!App.config.DEBUG);*/
 		
 
 	}

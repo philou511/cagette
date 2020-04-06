@@ -9,6 +9,7 @@ enum CatalogFlags {
 	PercentageOnOrders;		//calcul d'une commission supplémentaire 
 }
 
+@:index(startDate,endDate)
 class Catalog extends Object
 {
 	public var id : SId;
