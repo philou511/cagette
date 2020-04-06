@@ -132,52 +132,56 @@ class TimeSlotsService{
 	}
 
 	public function userStatus(userId: Int) {
-		if (this.userIsAlreadyAdded(userId) == false) {
-			return {
-				registered: false
-			}
-		};
+		var res = {
+			registered: this.userIsAlreadyAdded(userId),
+			isResolved: false,
+			selectedSlotId: null,
+			registeredSlotIds: null,
+			has: null,
+			voluntaryOfId: null,
+			voluntaryOf: null,
+			voluntaryForIds: null,
+			voluntaryFor: null,
+		}
 
-		var res: Dynamic = {}
-		Reflect.setField(res, "registered", true);
+		if (distribution.slots == null) {
+			return res;
+		}
 
-		var isResolved = false;
-		var selectedSlotId = -1;
-		var registeredSlotIds = new Array<Int>();
 		Lambda.foreach(distribution.slots, slot -> {
-			if (isResolved == false && slot.selectedUserIds.length > 0) {
-				isResolved = true;
+			if (res.isResolved == false && slot.selectedUserIds.length > 0) {
+				res.isResolved = true;
 			}
-			if (slot.selectedUserIds.indexOf(userId) != -1) {
-				selectedSlotId = slot.id;
+			if (res.registered == true && slot.selectedUserIds.indexOf(userId) != -1) {
+				res.selectedSlotId = slot.id;
 			}
-			if (slot.registeredUserIds.indexOf(userId) != -1) {
-				registeredSlotIds.push(slot.id);
+			if (res.registered == true && slot.registeredUserIds.indexOf(userId) != -1) {
+				if (res.registeredSlotIds == null) res.registeredSlotIds = new Array<Int>();
+				res.registeredSlotIds.push(slot.id);
 			}
 			return true;
 		});
 
 		if (distribution.inNeedUserIds.exists(userId) == true) {
-			Reflect.setField(res, "has", "inNeed");
-
+			res.has = "inNeed";
 			var it = distribution.voluntaryUsers.keyValueIterator();
 			var founded = false;
 			while (it.hasNext() && founded == false) {
 				var next = it.next();
 				if (next.value.indexOf(userId) != -1) {
 					founded = true;
-					Reflect.setField(res, "voluntaryOfId", next.key);
+					if (res.voluntaryOfId == null) res.voluntaryOfId = new Array<Int>();
+					res.voluntaryOfId.push(next.key);
 					var user = db.User.manager.select($id == next.key);
-					Reflect.setField(res, "voluntaryOf", {
+					res.voluntaryOf = {
 						id: user.id,
 						firstName: user.firstName,
 						lastName: user.lastName
-					});
+					};
 				}
 			}
-
 		} else if (distribution.voluntaryUsers.exists(userId) == true) {
-			Reflect.setField(res, "has", "voluntary");
+			res.has = "voluntary";
 			if (distribution.voluntaryUsers.exists(userId)) {
 				var inNeedUserId = distribution.voluntaryUsers.get(userId);
 				var users = db.User.manager.search($id in inNeedUserId, false).array().map(user -> {
@@ -200,19 +204,12 @@ class TimeSlotsService{
 					}
 					return data;
 				});
-				Reflect.setField(res, "voluntaryForIds", inNeedUserId);
-				Reflect.setField(res, "voluntaryFor", users);
+				res.voluntaryForIds = inNeedUserId;
+				res.voluntaryFor = users;
 			}
-		} else {
-			Reflect.setField(res, "has", "solo");
+		} else if (res.registered == true) {
+			res.has = "solo";
 		}
-
-		Reflect.setField(res, "isResolved", isResolved);
-		if (isResolved == true && selectedSlotId != -1) {
-			Reflect.setField(res, "selectedSlotId", selectedSlotId);
-		}
-		Reflect.setField(res, "registeredSlotIds", registeredSlotIds);
-
 		return res;
 	}
 

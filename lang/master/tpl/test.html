@@ -7,7 +7,7 @@
 
     <style>
         .ablock{
-            margin-bottom: 20px
+            margin-bottom: 40px
         }
 
         .ablock pre {
@@ -28,11 +28,19 @@
     <div>
         <button id="reset-btn">RESET</button>
         <button id="gen-btn">GEN FAKE DATAS</button>
+        <button id="add-vol-btn">Register me InNeed and add Vol</button>
         <button id="close-btn">CLOSE DISTRIB</button>
         <button id="resolve-btn">RESOLVE</button>
     </div>
-
     <br />
+
+    <div class="ablock">
+        <h1>Me status</h1>
+        <button id="status-btn">Refresh status</button>
+        <pre id="status" style="background-color: #f1f1f1"></pre>
+        <hr />
+    </div>
+
     <div class="ablock">
         <h1>Actiev slot</h1>
         <div id="activate-slots-wrapper"></div>
@@ -67,6 +75,13 @@
         <hr />
     </div>
 
+    <div class="ablock">
+        <h1>Trads</h1>
+        <p><b>A editer dans cagette-ts/packages/cagette-front-core/public/locales/fr/neo/distrib-slots.json</b></p>
+        <pre id="trads" style="background-color: #f1f1f1"></pre>
+        <hr />
+    </div>
+
     
 
     <script>
@@ -89,6 +104,19 @@
         function genDatas() {
             console.log("genDatas");
             fetch("http://localhost/api/distributions/"+distribId+"/generateFakeDatas", {
+                method: "POST"
+            }).then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                document.location.reload(true);
+                return res;
+            }).catch(function(error) {
+                console.log(error)
+            })
+        }
+
+        function addVol() {
+            console.log("addVol");
+            fetch("http://localhost/api/distributions/"+distribId+"/registerVoluntaryForMe", {
                 method: "POST"
             }).then(function(res) {
                 if (!res.ok) throw new Error(res.statusText);
@@ -125,10 +153,43 @@
             })
         }
 
+        function getStatus() {
+            console.log("getStatus");
+            fetch("http://localhost/api/distributions/"+distribId+"/slots/me")
+            .then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                return res.json();
+            }).then(function(res) {
+                document.getElementById("status").innerHTML= JSON.stringify(res, null, 2)
+                return res;
+            })
+            .catch(function(error) {
+                console.log(error)
+            })
+        }
+
+        function getTrads() {
+            console.log("getTrads");
+            fetch("http://localhost/locales/fr/neo/distrib-slots.json")
+            .then(function(res) {
+                if (!res.ok) throw new Error(res.statusText);
+                return res.json();
+            }).then(function(res) {
+                document.getElementById("trads").innerHTML= JSON.stringify(res, null, 2)
+                return res;
+            })
+            .catch(function(error) {
+                console.log(error)
+            })
+        }
+        
+
         document.getElementById("reset-btn").addEventListener("click", reset);
         document.getElementById("gen-btn").addEventListener("click", genDatas);
+        document.getElementById("add-vol-btn").addEventListener("click", addVol);
         document.getElementById("close-btn").addEventListener("click", closeDistrib);
         document.getElementById("resolve-btn").addEventListener("click", resolveDistrib);
+        document.getElementById("status-btn").addEventListener("click", getStatus);
     
 
         _NeolithicViewsGenerator.activateDistribSlots("activate-slots-wrapper", {
@@ -142,8 +203,13 @@
             }) 
         }
 
-        _NeolithicViewsGenerator.distribSlotsResolver("slots-resolver-wrapper", {
+        /* _NeolithicViewsGenerator.distribSlotsResolver("slots-resolver-wrapper", {
             distribId: ::distrib.id::
+        }); */
+
+        document.addEventListener("DOMContentLoaded", function() {
+            getStatus();
+            getTrads();
         });
         
     </script>
