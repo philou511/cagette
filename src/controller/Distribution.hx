@@ -47,7 +47,11 @@ class Distribution extends Controller
 			}
 		}
 
-		view.distribs = distribs;
+		view.distribs = distribs.map(distrib -> {
+			var d: Dynamic = distrib;
+			d.slotsIsActivated = distrib.slots != null;
+			return d;
+		});
 		
 		view.cycles = DistributionCycle.getFromTimeFrame(app.user.getGroup(), timeframe);
 		view.timeframe = timeframe;
@@ -1687,5 +1691,13 @@ class Distribution extends Controller
 		view.paidTooMuch = paidTooMuch;
 		view.partiallyPaid = partiallyPaid;
 
+	}
+
+	/**
+
+	**/
+	@tpl("distribution/userTimeSlot.mtt")
+	function doUserTimeSlot(d:db.MultiDistrib){
+		view.distribution = d;
 	}
 }

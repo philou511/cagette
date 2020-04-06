@@ -1,0 +1,9 @@
+{
+  "mixed": {
+    "required": "Ce champ est requis"
+  },
+  "string": {
+    "min": "Ce champ doit contenir au moin {{min}} caractères",
+    "max": "Ce champ doit contenir au maximun {{max}} caractères"
+  }
+}

@@ -1,4 +1,5 @@
 package controller;
+import db.MultiDistrib;
 import db.Distribution;
 import db.UserOrder;
 import haxe.Json;
@@ -65,7 +66,7 @@ class Main extends Controller {
 		
 		var n = Date.now();
 		var now = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 30 * 1);
+		var in1Month = DateTools.delta(now, 1000.0 * 60 * 60 * 24 * 7);//reduce load
 		var timeframe = new tools.Timeframe(now,in1Month);
 
 		var distribs = db.MultiDistrib.getFromTimeRange(group,timeframe.from,timeframe.to);
@@ -116,6 +117,10 @@ class Main extends Controller {
 		if(checkToken() && app.params.get('action')=='deleteDemoContracts'){
 			var contracts = app.getCurrentGroup().deleteDemoContracts();
 			if(contracts.length>0 ) throw Ok("/","Contrats suivants effacés : "+contracts.map(function(c) return c.name).join(", "));
+		}
+		
+		view.timeSlotService = function(d:db.MultiDistrib){
+			return new service.TimeSlotsService(d);
 		}
 
 		view.visibleDocuments = group.getVisibleDocuments( isMemberOfGroup );
@@ -240,6 +245,10 @@ Called from controller/Main.hx line 117
 
 	@tpl('shop/default2.mtt')
 	function doShop2(md:db.MultiDistrib) {
+
+		if( app.getCurrentGroup()==null || app.getCurrentGroup().id!=md.getGroup().id){
+			throw  Redirect("/group/"+md.getGroup().id);
+		}
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 		view.category = 'shop';
 		view.place = md.getPlace();
@@ -313,5 +322,13 @@ Called from controller/Main.hx line 117
 	function doDb(d:Dispatch) {
 		d.parts = []; //disable haxe.web.Dispatch
 		sys.db.admin.Admin.handler();
+	}
+
+	@tpl("test.html")
+	public function doTest(id: Int) {
+		var distrib = db.MultiDistrib.manager.select($id == id);
+		var d: Dynamic = distrib;
+		d.slotsIsActivated = distrib.slots != null;
+		view.distrib = d;
 	}
 }

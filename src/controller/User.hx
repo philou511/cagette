@@ -53,10 +53,10 @@ class User extends Controller
 		var groups = app.user.getGroups();
 		
 		view.noGroup = true; //force template to not display current group
-		view.hasRights = Lambda.find( groups, function(g){
+		/*view.hasRights = Lambda.find( groups, function(g){
 			var ua = db.UserGroup.get(app.user,g);			
 			return ua!=null && ua.rights!=null && ua.rights.length>0;
-		})!=null;
+		})!=null;*/
 
 		
 		if (args!=null && args.group!=null) {
@@ -66,7 +66,7 @@ class User extends Controller
 			app.session.data.newGroup = null;
 			app.session.data.amapId = args.group.id;
 			app.session.data.whichUser = which;
-			throw Redirect('/');
+			throw Redirect('/home');
 		}
 		
 		view.amaps = groups;
@@ -77,7 +77,6 @@ class User extends Controller
 		//vendor accounts
 		var vendors = service.VendorService.getVendorsFromUser(app.user);
 		view.vendors = vendors;
-		view.isCovid = vendors.count( v -> v.isCovid )>0;
 		#end
 	}
 	
@@ -282,7 +281,6 @@ class User extends Controller
 				app.processTemplate("mail/message.mtt", { text:text } ) 
 			);	
 		}
-		
 
 		throw Ok("/", t._("You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open", {group:group.name}));
 	}

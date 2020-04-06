@@ -115,39 +115,7 @@ class AmapAdmin extends Controller
 	@tpl("amapadmin/rights.mtt")
 	public function doRights() {
 		
-		//liste les gens qui ont des droits dans le groupe
-		var users = db.UserGroup.manager.search($rights != null && $group == app.user.getGroup(), false);
-		
-		//cleaning 
-		for ( u in Lambda.array(users)) {
-			
-			//rights can be null (serialized null) and not null in DB
-			var rights : Null<Array<Right>> = cast u.rights;
-			if (rights == null || rights.length == 0) {
-				/*u.lock();
-				Reflect.setField(u, "rights", null);
-				u.update();*/
-				users.remove(u);
-				continue;
-			}
-			
-			//rights on a deleted contract
-			for ( r in u.rights) {
-				switch(r) {
-					case ContractAdmin(cid):
-						if (cid == null) continue;
-						var c = db.Catalog.manager.get(cid);
-						if (c == null) {
-							u.lock();
-							u.removeRight(r);
-							u.update();
-						}
-					default :
-				}
-			}
-		}
-		
-		view.users = users;
+		view.users = app.user.getGroup().getGroupAdmins();
 		view.nav.push( 'rights' );
 	}
 	

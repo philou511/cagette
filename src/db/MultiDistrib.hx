@@ -4,11 +4,15 @@ import sys.db.Types;
 import Common;
 using tools.ObjectListTool;
 using Lambda;
+import haxe.Json;
+import service.TimeSlotsService;
+
 
 /**
  * MultiDistrib represents a global distributions with many vendors. 	
  * @author fbarbut
  */
+@:index(distribStartDate)
 class MultiDistrib extends Object
 {
 	public var id : SId;
@@ -17,6 +21,11 @@ class MultiDistrib extends Object
 	public var distribEndDate : SDateTime;	
 	public var orderStartDate : SNull<SDateTime>; 
 	public var orderEndDate : SNull<SDateTime>;
+
+	//time slots management
+	@hideInForms public var slots : SNull<SData<Array<Slot>>>;
+	@hideInForms public var inNeedUserIds : SNull<SData<Map<Int, Array<String>>>>;
+	@hideInForms public var voluntaryUsers : SNull<SData<Map<Int, Array<Int>>>>;
 	
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	@formPopulate("placePopulate") @:relation(placeId) public var place : Place;
@@ -199,37 +208,39 @@ class MultiDistrib extends Object
 	/**
 		prepare an excerpt of products ( and store it in cache )
 	**/
-	public function getProductsExcerpt(productNum:Int):Array<ProductInfo>{
-		var key = "productsExcerpt-"+getKey();
-		var cache:Array<Int> = sugoi.db.Cache.get(key);
+	static var PRODUCT_EXCERPT_KEY = "productsExcerpt";
+
+	public function getProductsExcerpt(productNum:Int):Array<{name:String,image:String}>{
+		var key = PRODUCT_EXCERPT_KEY+this.id;
+		var cache:Array<{rid:Int,name:String,image:String}> = sugoi.db.Cache.get(key);
 		if(cache!=null){
-			var out = [];
-			try{
-				for( pid in cache.array()){
-					var p = db.Product.manager.get(pid,false);
-					if(p!=null) out.push(p.infos());
-				}
-			}catch(e:Dynamic){
-			 	sugoi.db.Cache.destroy(key);
-			}			
-			return out;
+			return cache;
 		}else{
-			var products = [];
+			cache = [];
 			for( d in getDistributions(db.Catalog.TYPE_VARORDER)){
 				for ( p in d.catalog.getProductsPreview(productNum)){
-					products.push( p.infos(null,false) );	
+					cache.push( {
+						rid : p.image!=null ? Std.random(500)+500 : Std.random(500),
+						name:p.name,
+						image:p.getImage()
+					} );	
 				}
 			}
-			//products = thx.Arrays.shuffle(products);			
-			products = products.slice(0, productNum);
-			sugoi.db.Cache.set(key, products.map(function(p)return p.id).array(), 3600 );
-			return products;	
+
+			//randomize
+			cache.sort(function(a,b){
+				return b.rid - a.rid;
+			});
+			cache = cache.slice(0, productNum);
+
+			sugoi.db.Cache.set(key, cache , 3600*12 );
+			return cache;	
 		}
 
 	}
 
 	public function deleteProductsExcerpt(){
-		sugoi.db.Cache.destroy("productsExcerpt-"+getKey());
+		sugoi.db.Cache.destroy(PRODUCT_EXCERPT_KEY+this.id);
 	}
 
 	public function userHasOrders(user:db.User,type:Int):Bool{
@@ -291,13 +302,24 @@ class MultiDistrib extends Object
 	/**
 		Get distributions for constant orders or variable orders.
 	**/
+	@:skip private var distributionsCache:Array<db.Distribution>;
+	@:skip public var useCache:Bool;
 	public function getDistributions(?type:Int){
-		if(type==null) return Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
-		var out = [];
-		for ( d in db.Distribution.manager.search($multiDistrib==this,false)){
-			if( d.catalog.type==type ) out.push(d);
+		
+		if(distributionsCache==null || useCache!=true){
+			distributionsCache = Lambda.array( db.Distribution.manager.search($multiDistrib==this,false) );
 		}
-		return out;
+
+		if(type==null){
+			return distributionsCache;
+		}else{
+			var out = [];
+			for ( d in distributionsCache){
+				if( d.catalog.type==type ) out.push(d);
+			}
+			return out;
+		} 
+		
 	}
 
 	public function getDistributionForContract(contract:db.Catalog):db.Distribution{
@@ -409,10 +431,11 @@ class MultiDistrib extends Object
 		return isConfirmed();
 	}*/
 
-	//get key by date-place-type
+	/**
+		retrocomp
+	**/
 	public function getKey(){
 		return "md"+this.id;
-		//return distributions[0].getKey() + "-" + distributions[0].contract.type;
 	}
 
 	override public function toString(){
@@ -580,11 +603,18 @@ class MultiDistrib extends Object
 		for( d in getDistributions()){
 			for( p in d.catalog.getProducts(false)){
 				if(p.id==product.id) return d;
-
 			}
 		}
-
 		return null;
 	}
 
+		
+
+	public function resolveSlots() {
+		return new service.TimeSlotsService(this).resolveSlots();
+	}
+
+	private function userIsAlreadyAdded(userId: Int) {
+		return new service.TimeSlotsService(this).userIsAlreadyAdded(userId);
+	}
 }

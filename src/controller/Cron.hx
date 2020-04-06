@@ -1,4 +1,7 @@
 package controller;
+import haxe.display.Display.CompletionModeKind;
+import db.MultiDistrib;
+import sugoi.tools.TransactionWrappedTask;
 import sugoi.db.Cache;
 import sugoi.Web;
 import sugoi.mail.Mail;
@@ -38,6 +41,9 @@ class Cron extends Controller
 		}
 	}
 	
+	/**
+		Cron executed every minute
+	**/
 	public function doMinute() {
 		if (!canRun()) return;
 		
@@ -45,12 +51,12 @@ class Cron extends Controller
 
 		//managing buffered emails
 		for( i in 0...5){
-			var task = new sugoi.tools.TransactionWrappedTask(sendEmailsfromBuffer.bind(i*10));
+			var task = new TransactionWrappedTask(sendEmailsfromBuffer.bind(i*10));
 			task.execute(!App.config.DEBUG);
 		}
 		
 		//warns admin about emails that cannot be sent
-		var task = new sugoi.tools.TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask(function(){
 			for( e in sugoi.db.BufferedMail.manager.search($tries>20,{limit:50,orderBy:-cdate},true)  ){
 				if(e.sender.email != App.config.get("default_email")){
 					var str = t._("Sorry, the email entitled <b>::title::</b> could not be sent.",{title:e.title});
@@ -62,7 +68,7 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 		//Delete old emails
-		var task = new sugoi.tools.TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask(function(){
 			var threeMonthsAgo = DateTools.delta(Date.now(), -1000.0*60*60*24*30*3);
 			sugoi.db.BufferedMail.manager.delete($cdate < threeMonthsAgo);
 		});
@@ -71,31 +77,30 @@ class Cron extends Controller
 	
 	/**
 	 *  Hourly Cron
-	 *  
-	 *  this function can be locally tested with `neko index.n cron/hour > cron.log`				
+	 *  this can be locally tested with `neko index.n cron/hour > cron.log`				
 	 */
 	public function doHour() {
 		
 		app.event(HourlyCron(this.now));
 		
 		//instructions for dutyperiod volunteers
-		var task = new sugoi.tools.TransactionWrappedTask(function() {
+		var task = new TransactionWrappedTask("Volunteers instruction mail");
+		task.setTask(function() {
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
-			var multidistribs: Array<db.MultiDistrib> = Lambda.array( db.MultiDistrib.manager.unsafeObjects(
+			var multidistribs: Array<db.MultiDistrib> = db.MultiDistrib.manager.unsafeObjects(
 				'SELECT distrib.* 
 				FROM MultiDistrib distrib INNER JOIN `Group` g
 				ON distrib.groupId = g.id
 				WHERE distrib.distribStartDate >= DATE_ADD(\'${fromNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY)
-				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false));
-			printTitle("Volunteers instruction mail");
+				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.volunteersMailDaysBeforeDutyPeriod DAY);', false).array();
 			
 			for (multidistrib  in multidistribs) {
 
 				var volunteers: Array<db.Volunteer> = multidistrib.getVolunteers();
 				if ( volunteers.length != 0 ) {
-					print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
+					task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 					var mail = new Mail();
 					mail.setSender(App.config.get("default_email"),"Cagette.net");
 					var volunteersList = "<ul>";
@@ -124,7 +129,8 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 
-		var taskVolunteersAlert = new sugoi.tools.TransactionWrappedTask(function() {
+		var task = new TransactionWrappedTask("Volunteers alerts");
+		task.setTask(function() {
 
 			//Let's get all the multidistribs that start in the right time range
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
@@ -137,9 +143,9 @@ class Cron extends Controller
 				AND distrib.distribStartDate < DATE_ADD(\'${toNow}\', INTERVAL g.vacantVolunteerRolesMailDaysBeforeDutyPeriod DAY);', false));
 
 			var vacantVolunteerRolesMultidistribs = Lambda.filter( multidistribs, function(multidistrib) return multidistrib.hasVacantVolunteerRoles() );
-			printTitle("Volunteers alerts");
+			
 			for (multidistrib  in vacantVolunteerRolesMultidistribs) {
-				print(multidistrib.getGroup().name+" : "+multidistrib.getDate());
+				task.log(multidistrib.getGroup().name+" : "+multidistrib.getDate());
 				var mail = new Mail();
 				mail.setSender(App.config.get("default_email"),"Cagette.net");
 				for ( member in multidistrib.group.getMembers() ) {
@@ -163,11 +169,12 @@ class Cron extends Controller
 				App.sendMail(mail);
 			}			
 		});
-		taskVolunteersAlert.execute(!App.config.DEBUG);
+		task.execute(!App.config.DEBUG);
 
-		var taskSubscriptionsToValidateAlert = new sugoi.tools.TransactionWrappedTask( function() {
-
-			//Let's get all the subscriptions that are not validated yet and for which there is a distribution that starts in the right time range
+		//Send warnings about subscriptions that are not validated yet and for which there is a distribution that starts in the right time range
+		var task = new TransactionWrappedTask( "Subscriptions to validate alert emails");
+		task.setTask(function() {
+			
 			var fromNow = now.setHourMinute( now.getHours(), 0 );
 			var toNow = now.setHourMinute( now.getHours() + 1, 0);
 			var subscriptionsToValidate : Array< db.Subscription > = Lambda.array( db.Subscription.manager.unsafeObjects(
@@ -182,20 +189,16 @@ class Cron extends Controller
 			
 			var subscriptionsToValidateByCatalog = new Map< db.Catalog, Array< db.Subscription > >();
 			for ( subscription in subscriptionsToValidate ) {
-
 				if ( subscriptionsToValidateByCatalog[ subscription.catalog ] == null ) {
-
 					subscriptionsToValidateByCatalog[ subscription.catalog ] = new Array< db.Subscription >();
 				}
 				subscriptionsToValidateByCatalog[ subscription.catalog ].push( subscription );
 			}
 
-			printTitle("Subscriptions to validate alert emails");
-						
 			//List of subscriptions grouped by catalog
 			for ( catalog in subscriptionsToValidateByCatalog.keys() ) {
 
-				print( catalog.name );
+				task.log( catalog.name );
 
 				var message : String = 'Bonjour, <br /><br />
 				Attention, les souscriptions suivantes n\'ont pas été validées, alors qu\'une distribution approche.
@@ -208,29 +211,52 @@ class Cron extends Controller
 					return  a.user.getName() < b.user.getName() ? 1 : -1;
 				} );
 				for ( subscription in subscriptionsToValidateByCatalog[ catalog ] ) {
-
 					message += '<li>' + subscription.user.getName() + '</li>';
-
 				}
 				message += '</ul>';
-
 				App.quickMail( catalog.contact.email, catalog.name + ' : Il y a des souscriptions à valider', message, catalog.group );
 			}
 			
-		});
-		taskSubscriptionsToValidateAlert.execute(!App.config.DEBUG);
+		});		
+		task.execute(!App.config.DEBUG);
 
 		//Distrib notifications
-		var task = new sugoi.tools.TransactionWrappedTask(function(){
+		var task = new TransactionWrappedTask("Distrib notifications",function(){
 			distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
 			distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
 		});
-		task.execute(true);
+		task.execute(!App.config.DEBUG);
 
 		//Distrib Validation notifications				
-		var task = new sugoi.tools.TransactionWrappedTask(distribValidationNotif);
-		task.execute(true);
+		var task = new TransactionWrappedTask("Distrib Validation notifications",distribValidationNotif);
+		task.execute(!App.config.DEBUG);
+
+		//time slot assignement when orders are closing
+		/*new TransactionWrappedTask("Time slots assignement",function(){
+			var range = tools.DateTool.getLastHourRange( now );
+			var distribs = MultiDistrib.manager.search($distribEndDate >= range.from && $distribEndDate < range.to && $slots!=null ,true);
+			for( d in distribs){
+				var s = new service.TimeSlotsService(d);
+				var slots = s.resolveSlots();
+				var group = d.getGroup();
+
+				//send an email to group admins
+				var admins = group.getGroupAdmins().filter(ug-> return ug.isGroupManager() );
+				try{
+					var m = new Mail();
+					m.setSender(App.config.get("default_email"), "Cagette.net");
+					for ( u in admins )	m.addRecipient(u.user.email, u.user.getName());
+					m.setSubject( '[${group.name}] Crénaux horaires pour la distribution du '+Formatting.hDate(d.distribStartDate) );
+					var text = 'La commande vient de fermer, les crénaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeslots/${d.id}">Voir le récapitulatif des crénaux horaires</a>.';
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
+					App.sendMail(m , d.getGroup() );	
+				}catch (e:Dynamic){						
+					app.logError(e); //email could be invalid
+				}
+			}
+		}).execute(!App.config.DEBUG);*/
+		
 
 	}
 	
@@ -271,14 +297,14 @@ class Cron extends Controller
 		}		
 		
 		//Old Messages cleaning
-		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 6));
+		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 3));
 		
 		//old sessions cleaning
 		sugoi.db.Session.clean();
 		
 		//Delete old documents of catalogs that have ended 18 months ago
 		printTitle("Delete old documents");
-		var task = new sugoi.tools.TransactionWrappedTask( function() {
+		var task = new TransactionWrappedTask( function() {
 
 			var eighteenMonthsAgo = DateTools.delta( Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 18 );
 			var oneDayBefore = DateTools.delta( eighteenMonthsAgo, -1000 * 60 * 60 * 24 );

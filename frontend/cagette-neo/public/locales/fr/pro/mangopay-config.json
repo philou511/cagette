@@ -1,0 +1,21 @@
+{
+  "title": "Mon dossier Mangopay",
+  "stepper": {
+    "intro": "Introduction",
+    "legalRepr": "Représentant légal",
+    "structureType": "Structure",
+    "documents": "Justificatifs",
+    "iban": "IBAN"
+  },
+  "intro": {
+    "p1": "Afin d'ouvrir le paiement en ligne sur ce groupe, vous devez fournir quelques informations et justificatifs.",
+    "p2": "Ces informations concernent la structure légale (association ou entreprise) qui va collecter les paiements en ligne.",
+    "btn": "Prochaine étape"
+  },
+  "legalRepr": {
+    "chooseUserBtn": "Choisir un représentant légal",
+    "reChooseUserBtn": "Choisir un autre représentant légal",
+    "editUserBtn": "Editer le profil {{name}}",
+    "invalidMessage": "Le représentant légal doit avoir défini son adresse, pays de résidence, sa date de naissance ainsi que sa nationalité"
+  }
+}

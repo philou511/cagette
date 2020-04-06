@@ -3,6 +3,7 @@ import sys.db.Object;
 import sys.db.Types;
 import Common;
 
+@:index(lat,lng)
 class Place extends Object
 {
 

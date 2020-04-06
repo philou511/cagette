@@ -44,7 +44,8 @@
     '@material-ui/pickers': require('@material-ui/pickers'),
     '@date-io/date-fns': require('@date-io/date-fns'),
     'date-fns': require('date-fns'),
-    'date-fns/locale': require('date-fns/locale')
+    'date-fns/locale': require('date-fns/locale'),
+    'cagette-neo': require('cagette-neo'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {

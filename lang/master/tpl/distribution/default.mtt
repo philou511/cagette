@@ -108,7 +108,17 @@
                 <div class="col-md-3 text-right">
                         <a href="/distribution/editMd/::d.id::" class="btn btn-default btn-sm">
                             <i class="icon icon-edit"></i> Modifier
-                        </a>
+                        </a>					
+                       <!-- <span id="activate-slots-wrapper"></span>
+                        <script>
+                            _NeolithicViewsGenerator.activateDistribSlots("activate-slots-wrapper", {
+                                activated: ::d.slotsIsActivated::,
+                                start: new Date("::d.distribStartDate::"),
+                                end: new Date("::d.distribEndDate::"),
+                                slotDuration: 1000 * 60 * 15,
+                                activateUrl: '/api/distributions/::d.id::/activateSlots',
+                        })
+                        </script>                   -->
     
                         <a href="/distribution/deleteMd/::d.id::?token=::token::" class="btn btn-default btn-sm">
                             <i class="icon icon-delete"></i> Suppr.

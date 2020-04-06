@@ -7,6 +7,7 @@ import Common;
 /**
  * Distrib
  */
+@:index(date,orderStartDate,orderEndDate)
 class Distribution extends Object
 {
 	public var id : SId;	

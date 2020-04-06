@@ -62,9 +62,7 @@ class UserGroup extends Object
 		lock();
 		rights.push(r);
 		update();
-
 		sync();
-
 	}
 		
 	/**
@@ -80,7 +78,6 @@ class UserGroup extends Object
 		}
 		rights = newrights;
 		update();
-
 		sync();
 	}
 	

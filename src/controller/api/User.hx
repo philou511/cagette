@@ -15,6 +15,29 @@ class User extends Controller
 		//get a user
 	}
 
+	public function doMe() {
+		if (App.current.user == null) throw new Error(Unauthorized, "Access forbidden");
+		var current = App.current.user;
+
+		if (sugoi.Web.getMethod() == "GET") {
+			return Sys.print(haxe.Json.stringify(current.infos()));
+		} else if (sugoi.Web.getMethod() == "POST") {
+			var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
+
+			current.lock();
+			
+			if (request.exists("address1")) current.address1 = request.get("address1");
+			if (request.exists("address2")) current.address2 = request.get("address2");
+			if (request.exists("city")) current.city = request.get("city");
+			if (request.exists("zipCode")) current.zipCode = request.get("zipCode");
+			if (request.exists("phone")) current.phone = request.get("phone");
+
+			current.update();
+
+			return Sys.print(haxe.Json.stringify(current.infos()));
+		} else throw new Error(405, "Method Not Allowed");
+	}
+
 	/**
 		get membership status of a user in a group
 	**/
