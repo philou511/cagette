@@ -109,6 +109,14 @@ class Distributions extends Controller {
       voluntaryMap.set(Std.string(v.key), v.value);
     }
 
+    var otherUsers =  this.distrib.getOrders().filter(userOrder -> {
+      var founded = users.find(u -> u.id == userOrder.user.id);
+      if (founded != null) return false;
+      founded = inNeedUsers.find(u -> u.id == userOrder.user.id);
+      if (founded != null) return false;
+      return true;
+    });
+
     Sys.print(Json.stringify({
       id: this.distrib.id,
       start: this.distrib.distribStartDate,
@@ -116,6 +124,11 @@ class Distributions extends Controller {
       orderEndDate: this.distrib.orderEndDate,
       slots: this.distrib.slots,
       voluntaryMap: voluntaryMap,
+      otherUsers: otherUsers.map(userOrder -> ({
+        id: userOrder.user.id,
+        firstName: userOrder.user.firstName,
+        lastName: userOrder.user.lastName,
+      })),
       users: users.map(user -> ({
         id: user.id,
         firstName: user.firstName,

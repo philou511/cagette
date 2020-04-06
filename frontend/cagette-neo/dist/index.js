@@ -14530,7 +14530,7 @@ var DistribSlotsResolver = function (_a) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, api$1.distrib.getResolvedDistrib(distribId, function (data) {
-                            return __assign(__assign({}, parseDistribVo(data)), { voluntaryMap: data.voluntaryMap ? data.voluntaryMap : {}, users: data.users ? data.users.map(parseUserVo) : [] });
+                            return __assign(__assign({}, parseDistribVo(data)), { voluntaryMap: data.voluntaryMap ? data.voluntaryMap : {}, users: data.users ? data.users.map(parseUserVo) : [], otherUsers: data.otherUsers ? data.otherUsers.map(parseUserVo) : [] });
                         })];
                     case 1:
                         res = _a.sent();
@@ -14577,7 +14577,13 @@ var DistribSlotsResolver = function (_a) {
                 inNeedUsersNotLocked.length > 0 && (React__default.createElement(core.CardContent, null,
                     React__default.createElement(InNeedNotResolvedUsersTable, { users: inNeedUsersNotLocked }))),
                 distrib.slots && (React__default.createElement(core.CardContent, null,
-                    React__default.createElement(SlotsResolvedTable, { distrib: distrib })))),
+                    React__default.createElement(SlotsResolvedTable, { distrib: distrib }))),
+                distrib.otherUsers && distrib.otherUsers.length > 0 && (React__default.createElement(core.CardContent, null,
+                    React__default.createElement(core.Typography, null, t(shortTKey$a + ".otherUsersList", {
+                        list: distrib.otherUsers
+                            .map(function (u) { return u.firstName + " " + u.lastName; })
+                            .join(', '),
+                    }))))),
             React__default.createElement(core.Box, { p: 2, pt: 0, display: "flex", justifyContent: "center" },
                 React__default.createElement(ReactToPrint, { trigger: function () { return (React__default.createElement(core.Button, { variant: "contained", color: "primary", startIcon: React__default.createElement(PrintIcon, null) },
                         React__default.createElement(core.Typography, null, "Imprimer"))); }, content: function () { return toPrintRef.current; } })))));
