@@ -31,7 +31,8 @@
       "inNeed": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant qui pourra récupérer votre commande.",
       "voluntary": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
       "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué."
-    }
+    },
+    "selectedSlots": "Créneaux choisis"
   },
   "userInNeed": {
     "noaddress": "Vous n'avez pas renseigné votre adresse.",
