@@ -30,7 +30,8 @@
     "end": {
       "inNeed": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant qui pourra récupérer votre commande.",
       "voluntary": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
-      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué."
+      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
+      "voluntaryDetails": "Vous vous êtes engagé à retirer les commandes des personnes suivantes :"
     },
     "selectedSlots": "Créneaux choisis"
   },
@@ -51,5 +52,11 @@
     "user": "Personne",
     "getOrderFor": "Retire la commande de",
     "userInNeedsNotLocked": "Ces personnes n'ont trouvé personne pour venir retirer leur commande."
+  },
+  "resolved": {
+    "selectedSlot": "Vous pouvez venir retirer votre commande le {{date}}",
+    "voluntaryDetails": "Vous vous êtes engagé à retirer les commandes des personnes suivantes :",
+    "voluntaryOf": "{{name}} a accepté de retirer votre commande pour vous.",
+    "voluntaryOfNull": "Pour le moment, personne ne peut retirer votre commande à votre place. Les administrateurs de votre groupe sont au courant de cette situation et vont tenter de trouver une solution ou de vous contacter."
   }
 }

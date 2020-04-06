@@ -14148,11 +14148,16 @@ var UserInNeedForm = function (_a) {
 
 var InNeedUserListItem = function (_a) {
     var user = _a.user, userInfos = _a.userInfos, children = _a.children;
-    return (React__default.createElement(core.ListItem, null,
-        React__default.createElement(core.ListItemText, { primary: user.firstName + " " + user.lastName, secondary: React__default.createElement(core.Box, { component: "span" },
-                userInfos && userInfos.includes('address') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, formatUserAddress(user))),
-                userInfos && userInfos.includes('phone') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, user.phone)),
-                userInfos && userInfos.includes('email') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, user.email))) }),
+    return (React__default.createElement(core.ListItem, { alignItems: "center" },
+        React__default.createElement(core.ListItemText
+        // primary={`${user.firstName} ${user.lastName}`}
+        , { 
+            // primary={`${user.firstName} ${user.lastName}`}
+            primary: React__default.createElement(core.Box, { component: "span", display: "flex", justifyContent: "center" },
+                React__default.createElement(core.Typography, { component: "span" }, user.firstName + " " + user.lastName)), secondary: React__default.createElement(core.Box, { component: "span", display: "flex", flexDirection: "column", alignItems: "center" },
+                userInfos && userInfos.includes('address') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, formatUserAddress(user))),
+                userInfos && userInfos.includes('phone') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.phone)),
+                userInfos && userInfos.includes('email') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.email))) }),
         children && (React__default.createElement(core.ListItemSecondaryAction, null, children))));
 };
 
@@ -14199,39 +14204,47 @@ var RegisteredSlotsList = function (_a) {
                 React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm") }))); })))));
 };
 
+var tFile$6 = 'neo/distrib-slots';
+var shortTKey$6 = tFile$6 + ":resolved";
 var ResolvedState = function (_a) {
-    var status = _a.status;
-    console.log(status);
+    var distrib = _a.distrib, status = _a.status;
+    var t = useTranslation(['translation', tFile$6]).t;
     if (status.has === 'inNeed') {
         var message = '';
         if (status.voluntaryOf) {
-            message = status.voluntaryOf.firstName + " " + status.voluntaryOf.firstName + " a accept\u00E9 de retirer votre commande pour vous.";
+            message = t(shortTKey$6 + ".voluntaryOf", {
+                name: status.voluntaryOf.firstName + " " + status.voluntaryOf.firstName,
+            });
         }
         else {
-            message =
-                'Pour le moment, personne ne peut retirer votre commande à votre place. Les administrateurs de votre groupe sont au courant de cette situation et vont tenter de trouver une solution ou de vous contacter.';
+            message = t(shortTKey$6 + ".voluntaryOfNull");
         }
         return (React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
             React__default.createElement(core.Typography, null, message)));
     }
-    return React__default.createElement("div", null, "ResolvedState");
+    if (!distrib.slots)
+        return React__default.createElement(React__default.Fragment, null);
+    var slot = distrib.slots.find(function (s) { return s.id === status.selectedSlotId; });
+    if (!slot)
+        return React__default.createElement(React__default.Fragment, null);
+    var dateStr = format$1(slot.start, 'EEEE dd MMMM yyyy') + " de " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm");
+    return (React__default.createElement(core.Box, null,
+        React__default.createElement(core.Typography, { color: "primary", align: "center" }, t(shortTKey$6 + ".selectedSlot", { date: dateStr })),
+        status.voluntaryFor && status.voluntaryFor.length > 0 && (React__default.createElement(core.Box, { mt: 4 },
+            React__default.createElement(core.Typography, { align: "center" }, t(shortTKey$6 + ".voluntaryDetails")),
+            React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
+                React__default.createElement(core.List, null, status.voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })))))));
 };
 
-var tFile$6 = 'neo/distrib-slots';
-var shortTKey$6 = tFile$6 + ":userSlotsSelector.end";
+var tFile$7 = 'neo/distrib-slots';
+var shortTKey$7 = tFile$7 + ":userSlotsSelector.end";
 var UserDistribSlotsSelectorView = function (_a) {
     var distribId = _a.distribId;
-    var t = useTranslation(['translation', tFile$6]).t;
+    var t = useTranslation(['translation', tFile$7]).t;
     var _b = React__default.useState(false), loading = _b[0], toggleLoading = _b[1];
     var _c = React__default.useState(''), error = _c[0], setError = _c[1];
     var _d = React__default.useState(), distrib = _d[0], setDistrib = _d[1];
     var _e = React__default.useState(), status = _e[0], setStatus = _e[1];
-    // const [mode, setMode] = React.useState<Mode | undefined>();
-    // const [selectedSlotIds, setSelectedSlotIds] = React.useState<
-    //   number[] | undefined
-    // >();
-    // const [registered, toggleRegistered] = React.useState(false);
-    // const [confirmed, setConfirmed] = React.useState(false);
     /** */
     var registerUser = function () { return __awaiter(void 0, void 0, void 0, function () {
         var formData, res, err_1;
@@ -14260,7 +14273,6 @@ var UserDistribSlotsSelectorView = function (_a) {
                 case 2:
                     res = _a.sent();
                     setStatus(res);
-                    console.log(res);
                     toggleLoading(false);
                     return [3 /*break*/, 4];
                 case 3:
@@ -14339,38 +14351,27 @@ var UserDistribSlotsSelectorView = function (_a) {
         }
         if (status.isResolved) {
             return (React__default.createElement(core.Box, { p: 2 },
-                React__default.createElement(ResolvedState, { status: status })));
+                React__default.createElement(ResolvedState, { distrib: distrib, status: status })));
         }
         if (status.registered) {
             var confirmMessage = '';
             if (status.has === 'inNeed') {
-                confirmMessage = t(shortTKey$6 + ".inNeed");
+                confirmMessage = t(shortTKey$7 + ".inNeed");
             }
             else if (status.has === 'voluntary') {
-                confirmMessage = t(shortTKey$6 + ".voluntary");
+                confirmMessage = t(shortTKey$7 + ".voluntary");
             }
             else {
-                confirmMessage = t(shortTKey$6 + ".solo");
+                confirmMessage = t(shortTKey$7 + ".solo");
             }
             return (React__default.createElement(core.Box, { p: 2 },
                 React__default.createElement(core.Typography, null, confirmMessage),
                 status.registeredSlotIds && status.registeredSlotIds.length > 0 && (React__default.createElement(core.Box, { mt: 2 },
                     React__default.createElement(RegisteredSlotsList, { slots: distrib.slots.filter(function (s) { var _a; return ((_a = status.registeredSlotIds) === null || _a === void 0 ? void 0 : _a.includes(s.id)) || false; }) }))),
                 status.voluntaryFor && status.voluntaryFor.length > 0 && (React__default.createElement(core.Box, { mt: 2 },
-                    React__default.createElement(core.Typography, null, "Vous vous \u00EAtes engag\u00E9 \u00E0 retirer les commandes des personnes suivantes :"),
+                    React__default.createElement(core.Typography, null, t(shortTKey$7 + ".voluntaryDetails")),
                     React__default.createElement(core.List, null, status.voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); }))))));
         }
-        // if (status.registered && status.has === 'voluntary') {
-        //   return (
-        // <Box p={2}>
-        //   <InNeedUsersSelector
-        //     inNeedUsers={distrib.inNeedUsers || []}
-        //     onConfirm={onInNeedUsersSelectorConfirm}
-        //     onCancel={onInNeedUsersSelectorCancel}
-        //   />
-        // </Box>
-        //   );
-        // }
         if (!status.has) {
             return (React__default.createElement(core.Box, { p: 2 },
                 React__default.createElement(ModeSelector, { onSelect: function (mode) {
@@ -14388,7 +14389,7 @@ var UserDistribSlotsSelectorView = function (_a) {
         if (!status.registeredSlotIds || status.registeredSlotIds.length === 0) {
             return (React__default.createElement(core.Box, { p: 2 },
                 React__default.createElement(SlotsSelector, { slots: distrib.slots, isLastStep: true, onSelect: function (values) {
-                        return setStatus(__assign(__assign({}, status), { registeredSlotIds: values }));
+                        setStatus(__assign(__assign({}, status), { registeredSlotIds: values }));
                     }, onCancel: function () {
                         setStatus(__assign(__assign({}, status), { registeredSlotIds: null, has: null }));
                     } })));
@@ -14452,27 +14453,27 @@ var r=function(t,e){return (r=Object.setPrototypeOf||{__proto__:[]}instanceof Ar
 var ReactToPrint = unwrapExports(lib);
 var lib_1 = lib.lib;
 
-var tFile$7 = 'neo/distrib-slots';
-var shortTKey$7 = tFile$7 + ":resolver";
+var tFile$8 = 'neo/distrib-slots';
+var shortTKey$8 = tFile$8 + ":resolver";
 var InNeedNotResolvedUsersTable = function (_a) {
     var users = _a.users;
-    var t = useTranslation(['translation', tFile$7]).t;
+    var t = useTranslation(['translation', tFile$8]).t;
     /** */
     return (React__default.createElement(core.Table, null,
         React__default.createElement(core.TableHead, null,
             React__default.createElement(core.TableRow, null,
                 React__default.createElement(core.TableCell, { colSpan: 2 },
-                    React__default.createElement(lab.Alert, { severity: "error" }, t(shortTKey$7 + ".userInNeedsNotLocked"))))),
+                    React__default.createElement(lab.Alert, { severity: "error" }, t(shortTKey$8 + ".userInNeedsNotLocked"))))),
         React__default.createElement(core.TableBody, null, users.map(function (user) { return (React__default.createElement(core.TableRow, { key: user.id },
             React__default.createElement(core.TableCell, null, user.firstName + " " + user.lastName),
             React__default.createElement(core.TableCell, null, formatUserAddress(user)))); }))));
 };
 
-var tFile$8 = 'neo/distrib-slots';
-var shortTKey$8 = tFile$8 + ":resolver";
+var tFile$9 = 'neo/distrib-slots';
+var shortTKey$9 = tFile$9 + ":resolver";
 var SlotsResolvedTable = function (_a) {
     var distrib = _a.distrib;
-    var t = useTranslation(['translation', tFile$8]).t;
+    var t = useTranslation(['translation', tFile$9]).t;
     /** */
     var getInNeedUsersOfVoluntaryList = function (userId) {
         if (!distrib)
@@ -14495,9 +14496,9 @@ var SlotsResolvedTable = function (_a) {
         React__default.createElement(core.Table, null,
             React__default.createElement(core.TableHead, null,
                 React__default.createElement(core.TableRow, null,
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".slot")),
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".user")),
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".getOrderFor")))),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$9 + ".slot")),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$9 + ".user")),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$9 + ".getOrderFor")))),
             React__default.createElement(core.TableBody, null, distrib.slots &&
                 distrib.slots
                     .filter(function (slot) { return slot.selectedUserIds.length > 0; })
@@ -14514,11 +14515,11 @@ var SlotsResolvedTable = function (_a) {
                 })))));
 };
 
-var tFile$9 = 'neo/distrib-slots';
-var shortTKey$9 = tFile$9 + ":resolver";
+var tFile$a = 'neo/distrib-slots';
+var shortTKey$a = tFile$a + ":resolver";
 var DistribSlotsResolver = function (_a) {
     var distribId = _a.distribId;
-    var t = useTranslation(['translation', tFile$9]).t;
+    var t = useTranslation(['translation', tFile$a]).t;
     var toPrintRef = React__default.useRef(null);
     var _b = React__default.useState(), distrib = _b[0], setDistrib = _b[1];
     /** */
@@ -14552,11 +14553,11 @@ var DistribSlotsResolver = function (_a) {
     if (!distrib.slots || !distrib.orderEndDate)
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$9 + ".slotsNotActivated")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$a + ".slotsNotActivated")))));
     if (isBefore(new Date(), distrib.orderEndDate)) {
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$9 + ".distribNotClosed")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$a + ".distribNotClosed")))));
     }
     var isResolved = distrib.slots.reduce(function (acc, slot) {
         if (acc || slot.selectedUserIds.length > 0)
@@ -14566,7 +14567,7 @@ var DistribSlotsResolver = function (_a) {
     if (!isResolved) {
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$9 + ".resolving")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$a + ".resolving")))));
     }
     var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spreadArrays(acc, vs); }, []);
     var inNeedUsersNotLocked = (distrib.inNeedUsers || []).filter(function (u) { return !iNeedLockedUserIds.includes(u.id); });
