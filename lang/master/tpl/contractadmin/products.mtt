@@ -1,19 +1,27 @@
 ::use 'contractadmin/design.mtt'::
 	
 	<h3>::_("Products")::</h3>
-	
-	<div>
-		<p>
-		$$insert(::_("New product")::,/product/insert/::c.id::)
-		<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
-			
-		::if !c._group.hasTaxonomy()::	
-		<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-tag"></i> ::_("Categories")::</a>	
-		::end::
 		
-		</p>
-	</div>
+	$$insert(::_("New product")::,/product/insert/::c.id::)
+	<a href="/product/import/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-upload"></i> ::_("Import from Excel/CSV")::</a>
+		
+	::if !c._group.hasTaxonomy()::	
+	<a ::cond c.type==1:: href="/product/categorize/::c.id::" class="btn btn-default btn-sm"><i class="icon icon-tag"></i> ::_("Categories")::</a>	
+	::end::
 
+
+	<div class="btn-group" role="group" style="display: inline-block;">
+		<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
+		<a class="btn btn-default btn-sm" onclick="enableProducts()">
+				<i class="icon icon-square-check"></i> ::_("Enable")::
+		</a>	
+		<a class="btn btn-default btn-sm" onclick="disableProducts()">
+				<i class="icon icon-square"></i> ::_("Disable")::
+		</a>	
+	</div>
+	
+	<hr/>
+	
 	<script>
 	
 	//enable checked products
@@ -148,23 +156,5 @@
 
 	</form>
 	
-
-	
-	
-	<p>
-		<div class="btn-group" role="group">
-			<a onclick="check();" class="btn btn-default btn-sm btn-noAntiDoubleClick"> ::_("Check all")::</a>
-		</div>
-		
-		<div class="btn-group" role="group">
-			<a class="btn btn-default btn-sm" onclick="enableProducts()">
-					<i class="icon icon-square-check"></i> ::_("Enable")::
-			</a>	
-			<a class="btn btn-default btn-sm" onclick="disableProducts()">
-					<i class="icon icon-square"></i> ::_("Disable")::
-			</a>	
-		</div>
-		
-	</p>
 
 ::end::

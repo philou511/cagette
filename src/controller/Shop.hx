@@ -253,7 +253,7 @@ class Shop extends Controller
 			var p = db.Product.manager.get(o.productId, false);
 			
 			//check that the products are from this group (we never know...)
-			if (p.catalog.group.id != app.user.getGroup().id){
+			if (p.catalog.group.id != group.id){
 				throw Error("/", t._("This basket contains products from another group") );
 			}
 			
@@ -299,7 +299,7 @@ class Shop extends Controller
 		tmpBasket.data = {products:orders};		
 		tmpBasket.update();
 		
-		if (app.user.getGroup().hasPayments()){			
+		if (group.hasPayments()){			
 			//Go to payments page
 			throw Redirect("/transaction/pay/"+tmpBasket.id);
 		}else{

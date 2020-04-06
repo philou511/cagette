@@ -23,7 +23,7 @@ class Catalog extends Object
 	
 	public var description:SNull<SText>;
 	
-	@:hideInForms @:relation(groupId) public var group:db.Group;
+	@hideInForms @:relation(groupId) public var group:db.Group;
 	public var distributorNum:STinyInt;
 	public var flags : SFlags<CatalogFlags>;
 	
@@ -59,25 +59,22 @@ class Catalog extends Object
 	 * 
 	 * @deprecated it depends on distributions
 	 */
+	@:skip var userOrderAvailableCache:Bool;
 	public function isUserOrderAvailable():Bool {
 		
+		if(userOrderAvailableCache!=null) return userOrderAvailableCache;
+
 		if (type == TYPE_CONSTORDERS ) {
-			return isVisibleInShop();
+			userOrderAvailableCache = isVisibleInShop();
 		}else {
 		
-			//if ( cache_hasActiveDistribs != null ) return cache_hasActiveDistribs;
-			
-			//for varying orders, we need to know if there are some available deliveries
 			var n = Date.now();			
 			var d = db.Distribution.manager.count( $orderStartDate <= n && $orderEndDate >= n && $catalogId==this.id);
-			
-			//tmp : add the "old" deliveries which have a null orderStartDate
-			//d += db.Distribution.manager.count( $orderStartDate == null && $date > n  && $catalogId == this.id );
-			
-			//cache_hasActiveDistribs = d > 0;
-			//return cache_hasActiveDistribs && isVisibleInShop();
-			return d>0 && isVisibleInShop();
+		
+			userOrderAvailableCache = d>0 && isVisibleInShop();
 		}
+
+		return userOrderAvailableCache;
 		
 	}
 

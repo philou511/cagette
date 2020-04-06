@@ -64,7 +64,7 @@
 			
 			
 		::foreach d distribs::
-			
+			::d.useCache=true::
 			<div class="distrib">
 				::set place = d.getPlace():: 
 				::set active = d.isActive()::
@@ -282,7 +282,11 @@
 				::end::
 				<!-- === END AMAP BLOCK === -->	
 				
-				<!-- TIME SLOTS -->
+				<!-- TIME SLOTS 
+
+                    ::timeSlotService(d).userStatus(user)::
+                -->
+
 				::if(d.slots!=null && d.userHasOrders(user,null))::
 				<!-- not registred -->
 				<div class="content">

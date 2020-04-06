@@ -65,7 +65,7 @@ class Contract extends Controller
 		customMap["DDateTime"] = CagetteForm.renderDDate;
 
 		var form = form.CagetteForm.fromSpod(c,customMap);
-		form.removeElement( form.getElement("groupId") );
+		//form.removeElement( form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.removeElement(form.getElement("distributorNum"));
 		form.getElement("userId").required = true;
@@ -297,13 +297,19 @@ class Contract extends Controller
 	 * or varying orders ( with as many columns as distributions dates )
 	 * 
 	 */
-	@tpl("contract/order.mtt")
+	
 	function doOrder( catalog : db.Catalog ) {
 				
 		if(catalog.group.hasShopMode()) throw Redirect("/contract/view/"+catalog.id);
 
 		//if user is not logged, need to log-in
 		if(app.user==null) throw Redirect('/user/login?__redirect=/contract/order/'+catalog.id);
+
+		if(catalog.isCSACatalog()){
+			app.setTemplate("contract/orderc.mtt");
+		}else{
+			app.setTemplate("contract/orderv.mtt");
+		}
 
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions(app.user,catalog);

@@ -99,7 +99,7 @@ class Product extends Object
 	   @param	populateCategories=tru
 	   @return
 	**/
-	public function infos(?CategFromTaxo=false,?populateCategories=true,?distribution:db.Distribution):ProductInfo {
+	public function infos(?categFromTaxo=false,?populateCategories=true,?distribution:db.Distribution):ProductInfo {
 		var o :ProductInfo = {
 			id : id,
 			ref : ref,
@@ -129,12 +129,19 @@ class Product extends Object
 		}
 		
 		if(populateCategories){
-			if (CategFromTaxo){
+			//custom categories 
+			if (this.catalog.group.flags.has(CustomizedCategories)){
+
+				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
+				o.subcategories = o.categories;
+				
+			}else{
+				//standard categories
 				if(txpProduct!=null){
 					o.categories = [txpProduct.category.id];
 					o.subcategories = [txpProduct.subCategory.id];
 				}else{
-					//get the "others" catgory
+					//get the "Others" category
 					var txpOther = db.TxpProduct.manager.get(679,false);
 					if(txpOther!=null){
 						o.categories = [txpOther.category.id];
@@ -142,9 +149,6 @@ class Product extends Object
 					}
 				}
 				
-			}else{
-				o.categories = Lambda.array(Lambda.map(getCategories(), function(c) return c.id));
-				o.subcategories = o.categories;
 			}
 		}
 

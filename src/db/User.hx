@@ -316,8 +316,8 @@ class User extends Object {
 	 * Get groups this user belongs to.	 
 	 */
 	public function getGroups():Array<db.Group> {
-		var groups = Lambda.array(Lambda.map(UserGroup.manager.search($user == this, false), function(o) return o.group));
-		//alphabetical order
+		var ugs = db.UserGroup.manager.search($user == this, false);
+		var groups = db.Group.manager.search($id in (ugs.map(ug->return untyped ug.groupId)),false).array();
 		groups.sort(function(a,b) return a.name>b.name?1:-1 );
 		return groups;
 

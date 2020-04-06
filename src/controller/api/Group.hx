@@ -52,16 +52,24 @@ class Group extends Controller
 		var out  = new Array<GroupOnMap>();
 		var places  =  new List<db.Place>();
 		if (args.minLat != null && args.maxLat != null && args.minLng != null && args.maxLng != null){
+
+			if(args.maxLat-args.minLat > 1) {
+				//zone is too large
+			}else if(args.maxLng-args.minLng > 2) {
+				//zone is too large
+			}else{
+				//Request by zone
+				#if plugins
+				var sql = "select p.* from Place p, Hosting h where h.id=p.groupId and h.visible=1 and ";
+				sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng} LIMIT 200';			
+				#else
+				var sql = "select p.* from Place p where ";
+				sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng} LIMIT 200';
+				#end
+				places = db.Place.manager.unsafeObjects(sql, false);
+			}
 			
-			//Request by zone
-			#if plugins
-			var sql = "select p.* from Place p, Hosting h where h.id=p.groupId and h.visible=1 and ";
-			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';			
-			#else
-			var sql = "select p.* from Place p where ";
-			sql += 'p.lat > ${args.minLat} and p.lat < ${args.maxLat} and p.lng > ${args.minLng} and p.lng < ${args.maxLng}';
-			#end
-			places = db.Place.manager.unsafeObjects(sql, false);
+			
 			
 		}else if (args.lat!=null && args.lng!=null){
 			
@@ -96,7 +104,7 @@ class Group extends Controller
 	/**
 	 * ~~ Pythagore rulez ~~
 	 */
-	function findGroupByDist(lat:Float, lng:Float,?limit=5){
+	function findGroupByDist(lat:Float, lng:Float,?limit=10){
 		#if plugins
 		var sql = 'select p.*,SQRT( POW(p.lat-$lat,2) + POW(p.lng-$lng,2) ) as dist from Place p, Hosting h ';
 		sql += "where h.id=p.groupId and h.visible=1 and p.lat is not null ";		
