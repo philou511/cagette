@@ -247,7 +247,7 @@ class TimeSlotsService{
 				selectedUserIds: new Array<Int>(),
 				registeredUserIds: new Array<Int>(),
 				start: DateTools.delta(distribution.distribStartDate, slotDuration * slotId),
-				end: DateTools.delta(distribution.distribStartDate, (slotDuration + 1) * slotId),
+				end: DateTools.delta(distribution.distribStartDate, slotDuration * (slotId + 1)),
 			});
 		}
 
