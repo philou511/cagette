@@ -6,10 +6,11 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = require('react');
 var React__default = _interopDefault(React);
-var reactDom = _interopDefault(require('react-dom'));
 var core = require('@material-ui/core');
-var lab = require('@material-ui/lab');
+var Autocomplete = _interopDefault(require('@material-ui/lab/Autocomplete'));
 var SvgIcon = _interopDefault(require('@material-ui/core/SvgIcon'));
+var reactDom = _interopDefault(require('react-dom'));
+var lab = require('@material-ui/lab');
 var formik = require('formik');
 var formikMaterialUi = require('formik-material-ui');
 
@@ -84,6 +85,1017 @@ function __spreadArrays() {
             r[k] = a[j];
     return r;
 }
+
+var Colors = {
+    purple: '#a53fa1',
+    green: '#84BD55',
+    orange: '#E95219',
+    orangeLight: '#E5D3BF',
+    orangeExtraLight: '#F8F4E5',
+    withe: '#FFFFFF',
+    red: '#FF0000',
+};
+var theme = core.createMuiTheme({
+    palette: {
+        primary: {
+            main: Colors.purple,
+        },
+        secondary: { main: Colors.green },
+        background: {
+            default: Colors.orangeExtraLight,
+        },
+    },
+    typography: {
+        fontFamily: 'Cabin',
+    },
+});
+
+var withNeolithicProvider = function (Wrapped) {
+    var Wrapper = function (props) {
+        /** */
+        return (React__default.createElement(core.ThemeProvider, { theme: theme },
+            React__default.createElement(core.CssBaseline, null),
+            React__default.createElement(Wrapped, __assign({}, props))));
+    };
+    return Wrapper;
+};
+
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var interopRequireDefault = createCommonjsModule(function (module) {
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+});
+
+unwrapExports(interopRequireDefault);
+
+var _extends_1 = createCommonjsModule(function (module) {
+function _extends() {
+  module.exports = _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+module.exports = _extends;
+});
+
+var createSvgIcon_1 = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createSvgIcon;
+
+var _extends2 = interopRequireDefault(_extends_1);
+
+var _react = interopRequireDefault(React__default);
+
+var _SvgIcon = interopRequireDefault(SvgIcon);
+
+function createSvgIcon(path, displayName) {
+  var Component = _react.default.memo(_react.default.forwardRef(function (props, ref) {
+    return _react.default.createElement(_SvgIcon.default, (0, _extends2.default)({
+      ref: ref
+    }, props), path);
+  }));
+
+  if (process.env.NODE_ENV !== 'production') {
+    Component.displayName = "".concat(displayName, "Icon");
+  }
+
+  Component.muiName = _SvgIcon.default.muiName;
+  return Component;
+}
+});
+
+unwrapExports(createSvgIcon_1);
+
+var LocationOn = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+}), 'LocationOn');
+
+exports.default = _default;
+});
+
+var LocationOnIcon = unwrapExports(LocationOn);
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+var isObject_1 = isObject;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+var _freeGlobal = freeGlobal;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = _freeGlobal || freeSelf || Function('return this')();
+
+var _root = root;
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred invocation.
+ */
+var now = function() {
+  return _root.Date.now();
+};
+
+var now_1 = now;
+
+/** Built-in value references. */
+var Symbol$1 = _root.Symbol;
+
+var _Symbol = Symbol$1;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+var _getRawTag = getRawTag;
+
+/** Used for built-in method references. */
+var objectProto$1 = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString$1 = objectProto$1.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString$1.call(value);
+}
+
+var _objectToString = objectToString;
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag$1 && symToStringTag$1 in Object(value))
+    ? _getRawTag(value)
+    : _objectToString(value);
+}
+
+var _baseGetTag = baseGetTag;
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+var isObjectLike_1 = isObjectLike;
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike_1(value) && _baseGetTag(value) == symbolTag);
+}
+
+var isSymbol_1 = isSymbol;
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol_1(value)) {
+    return NAN;
+  }
+  if (isObject_1(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject_1(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+var toNumber_1 = toNumber;
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide `options` to indicate whether `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent
+ * calls to the debounced function return the result of the last `func`
+ * invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber_1(wait) || 0;
+  if (isObject_1(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber_1(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        timeWaiting = wait - timeSinceLastCall;
+
+    return maxing
+      ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now_1();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now_1());
+  }
+
+  function debounced() {
+    var time = now_1(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        clearTimeout(timerId);
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
+}
+
+var debounce_1 = debounce;
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT$1 = 'Expected a function';
+
+/**
+ * Creates a throttled function that only invokes `func` at most once per
+ * every `wait` milliseconds. The throttled function comes with a `cancel`
+ * method to cancel delayed `func` invocations and a `flush` method to
+ * immediately invoke them. Provide `options` to indicate whether `func`
+ * should be invoked on the leading and/or trailing edge of the `wait`
+ * timeout. The `func` is invoked with the last arguments provided to the
+ * throttled function. Subsequent calls to the throttled function return the
+ * result of the last `func` invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the throttled function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.throttle` and `_.debounce`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to throttle.
+ * @param {number} [wait=0] The number of milliseconds to throttle invocations to.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=true]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new throttled function.
+ * @example
+ *
+ * // Avoid excessively updating the position while scrolling.
+ * jQuery(window).on('scroll', _.throttle(updatePosition, 100));
+ *
+ * // Invoke `renewToken` when the click event is fired, but not more than once every 5 minutes.
+ * var throttled = _.throttle(renewToken, 300000, { 'trailing': false });
+ * jQuery(element).on('click', throttled);
+ *
+ * // Cancel the trailing throttled invocation.
+ * jQuery(window).on('popstate', throttled.cancel);
+ */
+function throttle(func, wait, options) {
+  var leading = true,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT$1);
+  }
+  if (isObject_1(options)) {
+    leading = 'leading' in options ? !!options.leading : leading;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+  return debounce_1(func, wait, {
+    'leading': leading,
+    'maxWait': wait,
+    'trailing': trailing
+  });
+}
+
+var throttle_1 = throttle;
+
+var diacritics = createCommonjsModule(function (module) {
+// Diacritics.js
+// 
+// Started as something to be an equivalent of the Google Java Library diacritics library for JavaScript.
+// Found this: http://jsperf.com/diacritics/6 and converted it into a reusable module.
+// 
+// @author Nijiko Yonskai
+// @license MIT
+// @copyright Nijikokun 2013 <nijikokun@gmail.com>
+(function (name, definition) {
+  if ( module.exports) module.exports = definition();
+  else this[name] = definition();
+})('Diacritics', function () {
+  // Create public object
+  var output = {
+    map: {}
+  };
+
+  // Create private reference map.
+  var reference = [
+    {'base':' ',    'letters':'\u00A0'},
+    {'base':'A',    'letters':'\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F'},
+    {'base':'AA',   'letters':'\uA732'},
+    {'base':'AE',   'letters':'\u00C6\u01FC\u01E2'},
+    {'base':'AO',   'letters':'\uA734'},
+    {'base':'AU',   'letters':'\uA736'},
+    {'base':'AV',   'letters':'\uA738\uA73A'},
+    {'base':'AY',   'letters':'\uA73C'},
+    {'base':'B',    'letters':'\u0042\u24B7\uFF22\u1E02\u1E04\u1E06\u0243\u0182\u0181'},
+    {'base':'C',    'letters':'\u0043\u24B8\uFF23\u0106\u0108\u010A\u010C\u00C7\u1E08\u0187\u023B\uA73E'},
+    {'base':'D',    'letters':'\u0044\u24B9\uFF24\u1E0A\u010E\u1E0C\u1E10\u1E12\u1E0E\u0110\u018B\u018A\u0189\uA779'},
+    {'base':'DZ',   'letters':'\u01F1\u01C4'},
+    {'base':'Dz',   'letters':'\u01F2\u01C5'},
+    {'base':'E',    'letters':'\u0045\u24BA\uFF25\u00C8\u00C9\u00CA\u1EC0\u1EBE\u1EC4\u1EC2\u1EBC\u0112\u1E14\u1E16\u0114\u0116\u00CB\u1EBA\u011A\u0204\u0206\u1EB8\u1EC6\u0228\u1E1C\u0118\u1E18\u1E1A\u0190\u018E'},
+    {'base':'F',    'letters':'\u0046\u24BB\uFF26\u1E1E\u0191\uA77B'},
+    {'base':'G',    'letters':'\u0047\u24BC\uFF27\u01F4\u011C\u1E20\u011E\u0120\u01E6\u0122\u01E4\u0193\uA7A0\uA77D\uA77E'},
+    {'base':'H',    'letters':'\u0048\u24BD\uFF28\u0124\u1E22\u1E26\u021E\u1E24\u1E28\u1E2A\u0126\u2C67\u2C75\uA78D'},
+    {'base':'I',    'letters':'\u0049\u24BE\uFF29\u00CC\u00CD\u00CE\u0128\u012A\u012C\u0130\u00CF\u1E2E\u1EC8\u01CF\u0208\u020A\u1ECA\u012E\u1E2C\u0197'},
+    {'base':'J',    'letters':'\u004A\u24BF\uFF2A\u0134\u0248'},
+    {'base':'K',    'letters':'\u004B\u24C0\uFF2B\u1E30\u01E8\u1E32\u0136\u1E34\u0198\u2C69\uA740\uA742\uA744\uA7A2'},
+    {'base':'L',    'letters':'\u004C\u24C1\uFF2C\u013F\u0139\u013D\u1E36\u1E38\u013B\u1E3C\u1E3A\u0141\u023D\u2C62\u2C60\uA748\uA746\uA780'},
+    {'base':'LJ',   'letters':'\u01C7'},
+    {'base':'Lj',   'letters':'\u01C8'},
+    {'base':'M',    'letters':'\u004D\u24C2\uFF2D\u1E3E\u1E40\u1E42\u2C6E\u019C'},
+    {'base':'N',    'letters':'\u004E\u24C3\uFF2E\u01F8\u0143\u00D1\u1E44\u0147\u1E46\u0145\u1E4A\u1E48\u0220\u019D\uA790\uA7A4'},
+    {'base':'NJ',   'letters':'\u01CA'},
+    {'base':'Nj',   'letters':'\u01CB'},
+    {'base':'O',    'letters':'\u004F\u24C4\uFF2F\u00D2\u00D3\u00D4\u1ED2\u1ED0\u1ED6\u1ED4\u00D5\u1E4C\u022C\u1E4E\u014C\u1E50\u1E52\u014E\u022E\u0230\u00D6\u022A\u1ECE\u0150\u01D1\u020C\u020E\u01A0\u1EDC\u1EDA\u1EE0\u1EDE\u1EE2\u1ECC\u1ED8\u01EA\u01EC\u00D8\u01FE\u0186\u019F\uA74A\uA74C'},
+    {'base':'OI',   'letters':'\u01A2'},
+    {'base':'OO',   'letters':'\uA74E'},
+    {'base':'OU',   'letters':'\u0222'},
+    {'base':'P',    'letters':'\u0050\u24C5\uFF30\u1E54\u1E56\u01A4\u2C63\uA750\uA752\uA754'},
+    {'base':'Q',    'letters':'\u0051\u24C6\uFF31\uA756\uA758\u024A'},
+    {'base':'R',    'letters':'\u0052\u24C7\uFF32\u0154\u1E58\u0158\u0210\u0212\u1E5A\u1E5C\u0156\u1E5E\u024C\u2C64\uA75A\uA7A6\uA782'},
+    {'base':'S',    'letters':'\u0053\u24C8\uFF33\u1E9E\u015A\u1E64\u015C\u1E60\u0160\u1E66\u1E62\u1E68\u0218\u015E\u2C7E\uA7A8\uA784'},
+    {'base':'T',    'letters':'\u0054\u24C9\uFF34\u1E6A\u0164\u1E6C\u021A\u0162\u1E70\u1E6E\u0166\u01AC\u01AE\u023E\uA786'},
+    {'base':'Th',   'letters':'\u00DE'},
+    {'base':'TZ',   'letters':'\uA728'},
+    {'base':'U',    'letters':'\u0055\u24CA\uFF35\u00D9\u00DA\u00DB\u0168\u1E78\u016A\u1E7A\u016C\u00DC\u01DB\u01D7\u01D5\u01D9\u1EE6\u016E\u0170\u01D3\u0214\u0216\u01AF\u1EEA\u1EE8\u1EEE\u1EEC\u1EF0\u1EE4\u1E72\u0172\u1E76\u1E74\u0244'},
+    {'base':'V',    'letters':'\u0056\u24CB\uFF36\u1E7C\u1E7E\u01B2\uA75E\u0245'},
+    {'base':'VY',   'letters':'\uA760'},
+    {'base':'W',    'letters':'\u0057\u24CC\uFF37\u1E80\u1E82\u0174\u1E86\u1E84\u1E88\u2C72'},
+    {'base':'X',    'letters':'\u0058\u24CD\uFF38\u1E8A\u1E8C'},
+    {'base':'Y',    'letters':'\u0059\u24CE\uFF39\u1EF2\u00DD\u0176\u1EF8\u0232\u1E8E\u0178\u1EF6\u1EF4\u01B3\u024E\u1EFE'},
+    {'base':'Z',    'letters':'\u005A\u24CF\uFF3A\u0179\u1E90\u017B\u017D\u1E92\u1E94\u01B5\u0224\u2C7F\u2C6B\uA762'},
+    {'base':'a',    'letters':'\u0061\u24D0\uFF41\u1E9A\u00E0\u00E1\u00E2\u1EA7\u1EA5\u1EAB\u1EA9\u00E3\u0101\u0103\u1EB1\u1EAF\u1EB5\u1EB3\u0227\u01E1\u00E4\u01DF\u1EA3\u00E5\u01FB\u01CE\u0201\u0203\u1EA1\u1EAD\u1EB7\u1E01\u0105\u2C65\u0250\u0251'},
+    {'base':'aa',   'letters':'\uA733'},
+    {'base':'ae',   'letters':'\u00E6\u01FD\u01E3'},
+    {'base':'ao',   'letters':'\uA735'},
+    {'base':'au',   'letters':'\uA737'},
+    {'base':'av',   'letters':'\uA739\uA73B'},
+    {'base':'ay',   'letters':'\uA73D'},
+    {'base':'b',    'letters':'\u0062\u24D1\uFF42\u1E03\u1E05\u1E07\u0180\u0183\u0253'},
+    {'base':'c',    'letters':'\u0063\u24D2\uFF43\u0107\u0109\u010B\u010D\u00E7\u1E09\u0188\u023C\uA73F\u2184'},
+    {'base':'d',    'letters':'\u0064\u24D3\uFF44\u1E0B\u010F\u1E0D\u1E11\u1E13\u1E0F\u0111\u018C\u0256\u0257\uA77A'},
+    {'base':'dz',   'letters':'\u01F3\u01C6'},
+    {'base':'e',    'letters':'\u0065\u24D4\uFF45\u00E8\u00E9\u00EA\u1EC1\u1EBF\u1EC5\u1EC3\u1EBD\u0113\u1E15\u1E17\u0115\u0117\u00EB\u1EBB\u011B\u0205\u0207\u1EB9\u1EC7\u0229\u1E1D\u0119\u1E19\u1E1B\u0247\u025B\u01DD'},
+    {'base':'f',    'letters':'\u0066\u24D5\uFF46\u1E1F\u0192\uA77C'},
+    {'base':'ff',   'letters':'\uFB00'},
+    {'base':'fi',   'letters':'\uFB01'},
+    {'base':'fl',   'letters':'\uFB02'},
+    {'base':'ffi',  'letters':'\uFB03'},
+    {'base':'ffl',  'letters':'\uFB04'},
+    {'base':'g',    'letters':'\u0067\u24D6\uFF47\u01F5\u011D\u1E21\u011F\u0121\u01E7\u0123\u01E5\u0260\uA7A1\u1D79\uA77F'},
+    {'base':'h',    'letters':'\u0068\u24D7\uFF48\u0125\u1E23\u1E27\u021F\u1E25\u1E29\u1E2B\u1E96\u0127\u2C68\u2C76\u0265'},
+    {'base':'hv',   'letters':'\u0195'},
+    {'base':'i',    'letters':'\u0069\u24D8\uFF49\u00EC\u00ED\u00EE\u0129\u012B\u012D\u00EF\u1E2F\u1EC9\u01D0\u0209\u020B\u1ECB\u012F\u1E2D\u0268\u0131'},
+    {'base':'j',    'letters':'\u006A\u24D9\uFF4A\u0135\u01F0\u0249'},
+    {'base':'k',    'letters':'\u006B\u24DA\uFF4B\u1E31\u01E9\u1E33\u0137\u1E35\u0199\u2C6A\uA741\uA743\uA745\uA7A3'},
+    {'base':'l',    'letters':'\u006C\u24DB\uFF4C\u0140\u013A\u013E\u1E37\u1E39\u013C\u1E3D\u1E3B\u017F\u0142\u019A\u026B\u2C61\uA749\uA781\uA747'},
+    {'base':'lj',   'letters':'\u01C9'},
+    {'base':'m',    'letters':'\u006D\u24DC\uFF4D\u1E3F\u1E41\u1E43\u0271\u026F'},
+    {'base':'n',    'letters':'\x6E\xF1\u006E\u24DD\uFF4E\u01F9\u0144\u00F1\u1E45\u0148\u1E47\u0146\u1E4B\u1E49\u019E\u0272\u0149\uA791\uA7A5\u043B\u0509'},
+    {'base':'nj',   'letters':'\u01CC'},
+    {'base':'o',    'letters':'\u07C0\u006F\u24DE\uFF4F\u00F2\u00F3\u00F4\u1ED3\u1ED1\u1ED7\u1ED5\u00F5\u1E4D\u022D\u1E4F\u014D\u1E51\u1E53\u014F\u022F\u0231\u00F6\u022B\u1ECF\u0151\u01D2\u020D\u020F\u01A1\u1EDD\u1EDB\u1EE1\u1EDF\u1EE3\u1ECD\u1ED9\u01EB\u01ED\u00F8\u01FF\u0254\uA74B\uA74D\u0275'},
+    {'base':'oe',   'letters':'\u0152\u0153'},
+    {'base':'oi',   'letters':'\u01A3'},
+    {'base':'ou',   'letters':'\u0223'},
+    {'base':'oo',   'letters':'\uA74F'},
+    {'base':'p',    'letters':'\u0070\u24DF\uFF50\u1E55\u1E57\u01A5\u1D7D\uA751\uA753\uA755'},
+    {'base':'q',    'letters':'\u0071\u24E0\uFF51\u024B\uA757\uA759'},
+    {'base':'r',    'letters':'\u0072\u24E1\uFF52\u0155\u1E59\u0159\u0211\u0213\u1E5B\u1E5D\u0157\u1E5F\u024D\u027D\uA75B\uA7A7\uA783'},
+    {'base':'s',    'letters':'\u0073\u24E2\uFF53\u00DF\u015B\u1E65\u015D\u1E61\u0161\u1E67\u1E63\u1E69\u0219\u015F\u023F\uA7A9\uA785\u1E9B'},
+    {'base':'ss',   'letters':'\xDF'},
+    {'base':'t',    'letters':'\u0074\u24E3\uFF54\u1E6B\u1E97\u0165\u1E6D\u021B\u0163\u1E71\u1E6F\u0167\u01AD\u0288\u2C66\uA787'},
+    {'base':'th',   'letters':'\u00FE'},
+    {'base':'tz',   'letters':'\uA729'},
+    {'base':'u',    'letters': '\u0075\u24E4\uFF55\u00F9\u00FA\u00FB\u0169\u1E79\u016B\u1E7B\u016D\u00FC\u01DC\u01D8\u01D6\u01DA\u1EE7\u016F\u0171\u01D4\u0215\u0217\u01B0\u1EEB\u1EE9\u1EEF\u1EED\u1EF1\u1EE5\u1E73\u0173\u1E77\u1E75\u0289'},
+    {'base':'v',    'letters':'\u0076\u24E5\uFF56\u1E7D\u1E7F\u028B\uA75F\u028C'},
+    {'base':'vy',   'letters':'\uA761'},
+    {'base':'w',    'letters':'\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73'},
+    {'base':'x',    'letters':'\u0078\u24E7\uFF58\u1E8B\u1E8D'},
+    {'base':'y',    'letters':'\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF'},
+    {'base':'z',    'letters':'\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763'}
+  ];
+
+  // Generate reference mapping
+  for (var i = 0, refLength = reference.length; i < refLength; i++){
+    var letters = reference[i].letters.split("");
+
+    for (var j = 0, letLength = letters.length; j < letLength; j++){
+      output.map[letters[j]] = reference[i].base;
+    }
+  }
+
+  /**
+   * Clean accents (diacritics) from string.
+   * 
+   * @param  {String} input String to be cleaned of diacritics.
+   * @return {String}
+   */
+  output.clean = function (input) {
+    if (!input || !input.length || input.length < 1) {
+      return "";
+    }
+
+    var string = "";
+    var letters = input.split("");
+    var index = 0;
+    var length = letters.length;
+    var letter;
+
+    for (; index < length; index++) {
+      letter = letters[index];
+      string += letter in output.map ? output.map[letter] : letter;
+    }
+
+    return string;
+  };
+
+  return output;
+});
+});
+
+var removeDiacritics = diacritics.clean;
+
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_special_characters
+var specialCharsRegex = /[.*+?^${}()|[\]\\]/g;
+
+// http://www.ecma-international.org/ecma-262/5.1/#sec-15.10.2.6
+var wordCharacterRegex = /[a-z0-9_]/i;
+
+var whitespacesRegex = /\s+/;
+
+function escapeRegexCharacters(str) {
+  return str.replace(specialCharsRegex, '\\$&');
+}
+
+var match = function match(text, query) {
+  text = removeDiacritics(text);
+  query = removeDiacritics(query);
+
+  return (
+    query
+      .trim()
+      .split(whitespacesRegex)
+      // If query is blank, we'll get empty string here, so let's filter it out.
+      .filter(function(word) {
+        return word.length > 0;
+      })
+      .reduce(function(result, word) {
+        var wordLen = word.length;
+        var prefix = wordCharacterRegex.test(word[0]) ? '\\b' : '';
+        var regex = new RegExp(prefix + escapeRegexCharacters(word), 'i');
+        var index = text.search(regex);
+
+        if (index > -1) {
+          result.push([index, index + wordLen]);
+
+          // Replace what we just found with spaces so we don't find it again.
+          text =
+            text.slice(0, index) +
+            new Array(wordLen + 1).join(' ') +
+            text.slice(index + wordLen);
+        }
+
+        return result;
+      }, [])
+      .sort(function(match1, match2) {
+        return match1[0] - match2[0];
+      })
+  );
+};
+
+var parse = function parse(text, matches) {
+  var result = [];
+
+  if (matches.length === 0) {
+    result.push({
+      text: text,
+      highlight: false
+    });
+  } else {
+    if (matches[0][0] > 0) {
+      result.push({
+        text: text.slice(0, matches[0][0]),
+        highlight: false
+      });
+    }
+  }
+
+  matches.forEach(function(match, i) {
+    var startIndex = match[0];
+    var endIndex = match[1];
+
+    result.push({
+      text: text.slice(startIndex, endIndex),
+      highlight: true
+    });
+
+    if (i === matches.length - 1) {
+      if (endIndex < text.length) {
+        result.push({
+          text: text.slice(endIndex, text.length),
+          highlight: false
+        });
+      }
+    } else if (endIndex < matches[i + 1][0]) {
+      result.push({
+        text: text.slice(endIndex, matches[i + 1][0]),
+        highlight: false
+      });
+    }
+  });
+
+  return result;
+};
+
+var mapboxApiUrlBuilder = function (service, request, options, mapboxToken) {
+    var url = "https://api.mapbox.com/geocoding/v5/" + service + "/" + request + ".json?access_token=" + (mapboxToken ||
+        process.env.MAPBOX_KEY);
+    if (options) {
+        url += '&';
+        url += Object.keys(options)
+            .map(function (key) { return key + "=" + options.get(key); })
+            .join('&');
+    }
+    return url;
+};
+var getOptionLabel = function (option) { return option.place_name; };
+var useStyles = core.makeStyles(function (theme) { return ({
+    optionIcon: {
+        marginRight: theme.spacing(2),
+        color: theme.palette.text.secondary,
+    },
+    textfield: function () { return ({}); },
+}); });
+var GeoAutocomplete = function (_a) {
+    var initialValue = _a.initialValue, label = _a.label, noOptionsText = _a.noOptionsText, mapboxToken = _a.mapboxToken, onChange = _a.onChange;
+    var _b = React__default.useState([]), options = _b[0], setOptions = _b[1];
+    var _c = React__default.useState(initialValue || ''), inputValue = _c[0], setInputValue = _c[1];
+    var _d = React__default.useState(initialValue && initialValue !== ''), needChange = _d[0], toggleNeedChange = _d[1];
+    var cs = useStyles();
+    /** */
+    var fetchAddress = React__default.useMemo(function () {
+        return throttle_1(function (request, callback) {
+            var fetchOptions = new Map();
+            fetchOptions.set('autocomplete', true);
+            fetch(mapboxApiUrlBuilder('mapbox.places', request, fetchOptions, mapboxToken))
+                .then(function (res) {
+                if (!res.ok)
+                    throw new Error(res.statusText);
+                return res.json();
+            })
+                .then(callback);
+        }, 200);
+    }, []);
+    /** */
+    var onInputChange = function (e) {
+        setInputValue(e.target.value);
+    };
+    var onAutocompleteChange = function (_e, value) {
+        if (value) {
+            setInputValue(getOptionLabel(value));
+        }
+        onChange(value);
+    };
+    /** */
+    React__default.useEffect(function () {
+        var active = true;
+        if (inputValue === '') {
+            setOptions([]);
+            return undefined;
+        }
+        fetchAddress(inputValue, function (results) {
+            if (active && results.features) {
+                setOptions(results.features);
+                if (needChange &&
+                    inputValue === initialValue &&
+                    results.features.length > 0) {
+                    toggleNeedChange(false);
+                    onChange(results.features[0]);
+                }
+            }
+        });
+        return function () {
+            active = false;
+        };
+    }, [inputValue, fetchAddress]);
+    /** */
+    var renderInput = function (inputProps) { return (React__default.createElement(core.TextField, __assign({ className: cs.textfield }, inputProps, { label: label, variant: "outlined", onChange: onInputChange }))); };
+    var renderOption = function (option) {
+        var optionValue = option.place_name;
+        var parts = parse(optionValue, match(optionValue, inputValue));
+        return (React__default.createElement(core.Grid, { container: true },
+            React__default.createElement(core.Grid, { item: true },
+                React__default.createElement(LocationOnIcon, { className: cs.optionIcon })),
+            React__default.createElement(core.Grid, { item: true, xs: true },
+                React__default.createElement(core.Typography, null),
+                parts.map(function (part, index) { return (React__default.createElement("span", { 
+                    // eslint-disable-next-line react/no-array-index-key
+                    key: index, style: { fontWeight: part.highlight ? 700 : 400 } }, part.text)); }))));
+    };
+    /** */
+    return (React__default.createElement(Autocomplete, { options: options, inputValue: inputValue, getOptionLabel: getOptionLabel, renderOption: renderOption, renderInput: renderInput, noOptionsText: noOptionsText, onChange: onAutocompleteChange }));
+};
 
 /** */
 var parseUserVo = function (data) { return ({
@@ -352,83 +1364,6 @@ var api = function () {
     };
 };
 var api$1 = api();
-
-var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var interopRequireDefault = createCommonjsModule(function (module) {
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    "default": obj
-  };
-}
-
-module.exports = _interopRequireDefault;
-});
-
-unwrapExports(interopRequireDefault);
-
-var _extends_1 = createCommonjsModule(function (module) {
-function _extends() {
-  module.exports = _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-module.exports = _extends;
-});
-
-var createSvgIcon_1 = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createSvgIcon;
-
-var _extends2 = interopRequireDefault(_extends_1);
-
-var _react = interopRequireDefault(React__default);
-
-var _SvgIcon = interopRequireDefault(SvgIcon);
-
-function createSvgIcon(path, displayName) {
-  var Component = _react.default.memo(_react.default.forwardRef(function (props, ref) {
-    return _react.default.createElement(_SvgIcon.default, (0, _extends2.default)({
-      ref: ref
-    }, props), path);
-  }));
-
-  if (process.env.NODE_ENV !== 'production') {
-    Component.displayName = "".concat(displayName, "Icon");
-  }
-
-  Component.muiName = _SvgIcon.default.muiName;
-  return Component;
-}
-});
-
-unwrapExports(createSvgIcon_1);
 
 var Check = createCommonjsModule(function (module, exports) {
 
@@ -1459,7 +2394,7 @@ var parseDayPeriodPatterns = {
     night: /night/i
   }
 };
-var match = {
+var match$1 = {
   ordinalNumber: buildMatchPatternFn({
     matchPattern: matchOrdinalNumberPattern,
     parsePattern: parseOrdinalNumberPattern,
@@ -1518,7 +2453,7 @@ var locale = {
   formatLong: formatLong,
   formatRelative: formatRelative,
   localize: localize,
-  match: match,
+  match: match$1,
   options: {
     weekStartsOn: 0
     /* Sunday */
@@ -5926,40 +6861,6 @@ var withi18n = function (Wrapped) {
     return Wrapper;
 };
 
-var Colors = {
-    purple: '#a53fa1',
-    green: '#84BD55',
-    orange: '#E95219',
-    orangeLight: '#E5D3BF',
-    orangeExtraLight: '#F8F4E5',
-    withe: '#FFFFFF',
-    red: '#FF0000',
-};
-var theme = core.createMuiTheme({
-    palette: {
-        primary: {
-            main: Colors.purple,
-        },
-        secondary: { main: Colors.green },
-        background: {
-            default: Colors.orangeExtraLight,
-        },
-    },
-    typography: {
-        fontFamily: 'Cabin',
-    },
-});
-
-var withNeolithicProvider = function (Wrapped) {
-    var Wrapper = function (props) {
-        /** */
-        return (React__default.createElement(core.ThemeProvider, { theme: theme },
-            React__default.createElement(core.CssBaseline, null),
-            React__default.createElement(Wrapped, __assign({}, props))));
-    };
-    return Wrapper;
-};
-
 var formatDistanceLocale$1 = {
   lessThanXSeconds: {
     one: 'moins d’une seconde',
@@ -6244,7 +7145,7 @@ var parseDayPeriodPatterns$1 = {
     night: /nuit/i
   }
 };
-var match$1 = {
+var match$2 = {
   ordinalNumber: buildMatchPatternFn({
     matchPattern: matchOrdinalNumberPattern$1,
     parsePattern: parseOrdinalNumberPattern$1,
@@ -6303,7 +7204,7 @@ var locale$1 = {
   formatLong: formatLong$1,
   formatRelative: formatRelative$1,
   localize: localize$1,
-  match: match$1,
+  match: match$2,
   options: {
     weekStartsOn: 1
     /* Monday */
@@ -6327,7 +7228,7 @@ var computeStrOptions = function (str, options) {
 };
 var format$1 = function (date, f, strOptions) { return computeStrOptions(format(date, f, { locale: locale$1 }), strOptions); };
 
-var useStyles = core.makeStyles(function (theme) { return ({
+var useStyles$1 = core.makeStyles(function (theme) { return ({
     btn: function (_a) {
         var hasActivated = _a.hasActivated;
         return (__assign({ padding: '5px 10px', lineHeight: '21px', textTransform: 'none', border: '1px solid #ccc', borderRadius: 3, boxShadow: 'none', backgroundColor: theme.palette.common.white }, (hasActivated ? { color: 'green' } : {})));
@@ -6341,7 +7242,7 @@ var ActivateDistribSlotsView = function (_a) {
     var _d = React__default.useState(false), submitting = _d[0], toggleSubmitting = _d[1];
     var _e = React__default.useState(), error = _e[0], setError = _e[1];
     var _f = React__default.useState(false), hasActivated = _f[0], toggleHasActivated = _f[1];
-    var cs = useStyles({ hasActivated: hasActivated });
+    var cs = useStyles$1({ hasActivated: hasActivated });
     var nbSlots = distrib && distrib.end && distrib.start
         ? Math.floor((distrib.end.getTime() - distrib.start.getTime()) / slotDuration)
         : 0;
@@ -6629,10 +7530,10 @@ function _extends() {
 }
 
 /** Used for built-in method references. */
-var objectProto = Object.prototype;
+var objectProto$2 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
+var hasOwnProperty$1 = objectProto$2.hasOwnProperty;
 
 /**
  * The base implementation of `_.has` without support for deep paths.
@@ -6643,7 +7544,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * @returns {boolean} Returns `true` if `key` exists, else `false`.
  */
 function baseHas(object, key) {
-  return object != null && hasOwnProperty.call(object, key);
+  return object != null && hasOwnProperty$1.call(object, key);
 }
 
 /**
@@ -6672,32 +7573,32 @@ function baseHas(object, key) {
 var isArray = Array.isArray;
 
 /** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+var freeGlobal$1 = typeof global == 'object' && global && global.Object === Object && global;
 
 /** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+var freeSelf$1 = typeof self == 'object' && self && self.Object === Object && self;
 
 /** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
+var root$1 = freeGlobal$1 || freeSelf$1 || Function('return this')();
 
 /** Built-in value references. */
-var Symbol$1 = root.Symbol;
+var Symbol$2 = root$1.Symbol;
 
 /** Used for built-in method references. */
-var objectProto$1 = Object.prototype;
+var objectProto$3 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
+var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
 
 /**
  * Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString = objectProto$1.toString;
+var nativeObjectToString$2 = objectProto$3.toString;
 
 /** Built-in value references. */
-var symToStringTag = Symbol$1 ? Symbol$1.toStringTag : undefined;
+var symToStringTag$2 = Symbol$2 ? Symbol$2.toStringTag : undefined;
 
 /**
  * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
@@ -6706,35 +7607,35 @@ var symToStringTag = Symbol$1 ? Symbol$1.toStringTag : undefined;
  * @param {*} value The value to query.
  * @returns {string} Returns the raw `toStringTag`.
  */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty$1.call(value, symToStringTag),
-      tag = value[symToStringTag];
+function getRawTag$1(value) {
+  var isOwn = hasOwnProperty$2.call(value, symToStringTag$2),
+      tag = value[symToStringTag$2];
 
   try {
-    value[symToStringTag] = undefined;
+    value[symToStringTag$2] = undefined;
     var unmasked = true;
   } catch (e) {}
 
-  var result = nativeObjectToString.call(value);
+  var result = nativeObjectToString$2.call(value);
   if (unmasked) {
     if (isOwn) {
-      value[symToStringTag] = tag;
+      value[symToStringTag$2] = tag;
     } else {
-      delete value[symToStringTag];
+      delete value[symToStringTag$2];
     }
   }
   return result;
 }
 
 /** Used for built-in method references. */
-var objectProto$2 = Object.prototype;
+var objectProto$4 = Object.prototype;
 
 /**
  * Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString$1 = objectProto$2.toString;
+var nativeObjectToString$3 = objectProto$4.toString;
 
 /**
  * Converts `value` to a string using `Object.prototype.toString`.
@@ -6743,16 +7644,16 @@ var nativeObjectToString$1 = objectProto$2.toString;
  * @param {*} value The value to convert.
  * @returns {string} Returns the converted string.
  */
-function objectToString(value) {
-  return nativeObjectToString$1.call(value);
+function objectToString$1(value) {
+  return nativeObjectToString$3.call(value);
 }
 
 /** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
+var nullTag$1 = '[object Null]',
+    undefinedTag$1 = '[object Undefined]';
 
 /** Built-in value references. */
-var symToStringTag$1 = Symbol$1 ? Symbol$1.toStringTag : undefined;
+var symToStringTag$3 = Symbol$2 ? Symbol$2.toStringTag : undefined;
 
 /**
  * The base implementation of `getTag` without fallbacks for buggy environments.
@@ -6761,13 +7662,13 @@ var symToStringTag$1 = Symbol$1 ? Symbol$1.toStringTag : undefined;
  * @param {*} value The value to query.
  * @returns {string} Returns the `toStringTag`.
  */
-function baseGetTag(value) {
+function baseGetTag$1(value) {
   if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
+    return value === undefined ? undefinedTag$1 : nullTag$1;
   }
-  return (symToStringTag$1 && symToStringTag$1 in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
+  return (symToStringTag$3 && symToStringTag$3 in Object(value))
+    ? getRawTag$1(value)
+    : objectToString$1(value);
 }
 
 /**
@@ -6794,12 +7695,12 @@ function baseGetTag(value) {
  * _.isObjectLike(null);
  * // => false
  */
-function isObjectLike(value) {
+function isObjectLike$1(value) {
   return value != null && typeof value == 'object';
 }
 
 /** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
+var symbolTag$1 = '[object Symbol]';
 
 /**
  * Checks if `value` is classified as a `Symbol` primitive or object.
@@ -6818,9 +7719,9 @@ var symbolTag = '[object Symbol]';
  * _.isSymbol('abc');
  * // => false
  */
-function isSymbol(value) {
+function isSymbol$1(value) {
   return typeof value == 'symbol' ||
-    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+    (isObjectLike$1(value) && baseGetTag$1(value) == symbolTag$1);
 }
 
 /** Used to match property names within property paths. */
@@ -6841,7 +7742,7 @@ function isKey(value, object) {
   }
   var type = typeof value;
   if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-      value == null || isSymbol(value)) {
+      value == null || isSymbol$1(value)) {
     return true;
   }
   return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
@@ -6873,7 +7774,7 @@ function isKey(value, object) {
  * _.isObject(null);
  * // => false
  */
-function isObject(value) {
+function isObject$1(value) {
   var type = typeof value;
   return value != null && (type == 'object' || type == 'function');
 }
@@ -6902,17 +7803,17 @@ var asyncTag = '[object AsyncFunction]',
  * // => false
  */
 function isFunction(value) {
-  if (!isObject(value)) {
+  if (!isObject$1(value)) {
     return false;
   }
   // The use of `Object#toString` avoids issues with the `typeof` operator
   // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
+  var tag = baseGetTag$1(value);
   return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
 }
 
 /** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
+var coreJsData = root$1['__core-js_shared__'];
 
 /** Used to detect methods masquerading as native. */
 var maskSrcKey = (function() {
@@ -6967,17 +7868,17 @@ var reIsHostCtor = /^\[object .+?Constructor\]$/;
 
 /** Used for built-in method references. */
 var funcProto$1 = Function.prototype,
-    objectProto$3 = Object.prototype;
+    objectProto$5 = Object.prototype;
 
 /** Used to resolve the decompiled source of functions. */
 var funcToString$1 = funcProto$1.toString;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
+var hasOwnProperty$3 = objectProto$5.hasOwnProperty;
 
 /** Used to detect if a method is native. */
 var reIsNative = RegExp('^' +
-  funcToString$1.call(hasOwnProperty$2).replace(reRegExpChar, '\\$&')
+  funcToString$1.call(hasOwnProperty$3).replace(reRegExpChar, '\\$&')
   .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
 );
 
@@ -6990,7 +7891,7 @@ var reIsNative = RegExp('^' +
  *  else `false`.
  */
 function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
+  if (!isObject$1(value) || isMasked(value)) {
     return false;
   }
   var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
@@ -7057,10 +7958,10 @@ function hashDelete(key) {
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
 
 /** Used for built-in method references. */
-var objectProto$4 = Object.prototype;
+var objectProto$6 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
+var hasOwnProperty$4 = objectProto$6.hasOwnProperty;
 
 /**
  * Gets the hash value for `key`.
@@ -7077,14 +7978,14 @@ function hashGet(key) {
     var result = data[key];
     return result === HASH_UNDEFINED ? undefined : result;
   }
-  return hasOwnProperty$3.call(data, key) ? data[key] : undefined;
+  return hasOwnProperty$4.call(data, key) ? data[key] : undefined;
 }
 
 /** Used for built-in method references. */
-var objectProto$5 = Object.prototype;
+var objectProto$7 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
+var hasOwnProperty$5 = objectProto$7.hasOwnProperty;
 
 /**
  * Checks if a hash value for `key` exists.
@@ -7097,7 +7998,7 @@ var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
  */
 function hashHas(key) {
   var data = this.__data__;
-  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty$4.call(data, key);
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty$5.call(data, key);
 }
 
 /** Used to stand-in for `undefined` hash values. */
@@ -7321,7 +8222,7 @@ ListCache.prototype.has = listCacheHas;
 ListCache.prototype.set = listCacheSet;
 
 /* Built-in method references that are verified to be native. */
-var Map$1 = getNative(root, 'Map');
+var Map$1 = getNative(root$1, 'Map');
 
 /**
  * Removes all key-value entries from the map.
@@ -7454,7 +8355,7 @@ MapCache.prototype.has = mapCacheHas;
 MapCache.prototype.set = mapCacheSet;
 
 /** Error message constants. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT$2 = 'Expected a function';
 
 /**
  * Creates a function that memoizes the result of `func`. If `resolver` is
@@ -7502,7 +8403,7 @@ var FUNC_ERROR_TEXT = 'Expected a function';
  */
 function memoize(func, resolver) {
   if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
-    throw new TypeError(FUNC_ERROR_TEXT);
+    throw new TypeError(FUNC_ERROR_TEXT$2);
   }
   var memoized = function() {
     var args = arguments,
@@ -7594,7 +8495,7 @@ function arrayMap(array, iteratee) {
 var INFINITY = 1 / 0;
 
 /** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol$1 ? Symbol$1.prototype : undefined,
+var symbolProto = Symbol$2 ? Symbol$2.prototype : undefined,
     symbolToString = symbolProto ? symbolProto.toString : undefined;
 
 /**
@@ -7614,7 +8515,7 @@ function baseToString(value) {
     // Recursively convert values (susceptible to call stack limits).
     return arrayMap(value, baseToString) + '';
   }
-  if (isSymbol(value)) {
+  if (isSymbol$1(value)) {
     return symbolToString ? symbolToString.call(value) : '';
   }
   var result = (value + '');
@@ -7672,17 +8573,17 @@ var argsTag = '[object Arguments]';
  * @returns {boolean} Returns `true` if `value` is an `arguments` object,
  */
 function baseIsArguments(value) {
-  return isObjectLike(value) && baseGetTag(value) == argsTag;
+  return isObjectLike$1(value) && baseGetTag$1(value) == argsTag;
 }
 
 /** Used for built-in method references. */
-var objectProto$6 = Object.prototype;
+var objectProto$8 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
+var hasOwnProperty$6 = objectProto$8.hasOwnProperty;
 
 /** Built-in value references. */
-var propertyIsEnumerable = objectProto$6.propertyIsEnumerable;
+var propertyIsEnumerable = objectProto$8.propertyIsEnumerable;
 
 /**
  * Checks if `value` is likely an `arguments` object.
@@ -7703,7 +8604,7 @@ var propertyIsEnumerable = objectProto$6.propertyIsEnumerable;
  * // => false
  */
 var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty$5.call(value, 'callee') &&
+  return isObjectLike$1(value) && hasOwnProperty$6.call(value, 'callee') &&
     !propertyIsEnumerable.call(value, 'callee');
 };
 
@@ -7776,7 +8677,7 @@ var INFINITY$1 = 1 / 0;
  * @returns {string|symbol} Returns the key.
  */
 function toKey(value) {
-  if (typeof value == 'string' || isSymbol(value)) {
+  if (typeof value == 'string' || isSymbol$1(value)) {
     return value;
   }
   var result = (value + '');
@@ -8000,10 +8901,10 @@ function baseAssignValue(object, key, value) {
 }
 
 /** Used for built-in method references. */
-var objectProto$7 = Object.prototype;
+var objectProto$9 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
+var hasOwnProperty$7 = objectProto$9.hasOwnProperty;
 
 /**
  * Assigns `value` to `key` of `object` if the existing value is not equivalent
@@ -8017,7 +8918,7 @@ var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
  */
 function assignValue(object, key, value) {
   var objValue = object[key];
-  if (!(hasOwnProperty$6.call(object, key) && eq(objValue, value)) ||
+  if (!(hasOwnProperty$7.call(object, key) && eq(objValue, value)) ||
       (value === undefined && !(key in object))) {
     baseAssignValue(object, key, value);
   }
@@ -8105,7 +9006,7 @@ var freeModule = freeExports && typeof module == 'object' && module && !module.n
 var moduleExports = freeModule && freeModule.exports === freeExports;
 
 /** Built-in value references. */
-var Buffer = moduleExports ? root.Buffer : undefined;
+var Buffer = moduleExports ? root$1.Buffer : undefined;
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
@@ -8180,8 +9081,8 @@ typedArrayTags[weakMapTag] = false;
  * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
  */
 function baseIsTypedArray(value) {
-  return isObjectLike(value) &&
-    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+  return isObjectLike$1(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag$1(value)];
 }
 
 /**
@@ -8207,7 +9108,7 @@ var freeModule$1 = freeExports$1 && typeof module == 'object' && module && !modu
 var moduleExports$1 = freeModule$1 && freeModule$1.exports === freeExports$1;
 
 /** Detect free variable `process` from Node.js. */
-var freeProcess = moduleExports$1 && freeGlobal.process;
+var freeProcess = moduleExports$1 && freeGlobal$1.process;
 
 /** Used to access faster Node.js helpers. */
 var nodeUtil = (function() {
@@ -8247,10 +9148,10 @@ var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
 var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
 
 /** Used for built-in method references. */
-var objectProto$8 = Object.prototype;
+var objectProto$a = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$7 = objectProto$8.hasOwnProperty;
+var hasOwnProperty$8 = objectProto$a.hasOwnProperty;
 
 /**
  * Creates an array of the enumerable property names of the array-like `value`.
@@ -8270,7 +9171,7 @@ function arrayLikeKeys(value, inherited) {
       length = result.length;
 
   for (var key in value) {
-    if ((inherited || hasOwnProperty$7.call(value, key)) &&
+    if ((inherited || hasOwnProperty$8.call(value, key)) &&
         !(skipIndexes && (
            // Safari 9 has enumerable `arguments.length` in strict mode.
            key == 'length' ||
@@ -8288,7 +9189,7 @@ function arrayLikeKeys(value, inherited) {
 }
 
 /** Used for built-in method references. */
-var objectProto$9 = Object.prototype;
+var objectProto$b = Object.prototype;
 
 /**
  * Checks if `value` is likely a prototype object.
@@ -8299,7 +9200,7 @@ var objectProto$9 = Object.prototype;
  */
 function isPrototype(value) {
   var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$9;
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$b;
 
   return value === proto;
 }
@@ -8322,10 +9223,10 @@ function overArg(func, transform) {
 var nativeKeys = overArg(Object.keys, Object);
 
 /** Used for built-in method references. */
-var objectProto$a = Object.prototype;
+var objectProto$c = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$8 = objectProto$a.hasOwnProperty;
+var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
 
 /**
  * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
@@ -8340,7 +9241,7 @@ function baseKeys(object) {
   }
   var result = [];
   for (var key in Object(object)) {
-    if (hasOwnProperty$8.call(object, key) && key != 'constructor') {
+    if (hasOwnProperty$9.call(object, key) && key != 'constructor') {
       result.push(key);
     }
   }
@@ -8441,10 +9342,10 @@ function nativeKeysIn(object) {
 }
 
 /** Used for built-in method references. */
-var objectProto$b = Object.prototype;
+var objectProto$d = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$9 = objectProto$b.hasOwnProperty;
+var hasOwnProperty$a = objectProto$d.hasOwnProperty;
 
 /**
  * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
@@ -8454,14 +9355,14 @@ var hasOwnProperty$9 = objectProto$b.hasOwnProperty;
  * @returns {Array} Returns the array of property names.
  */
 function baseKeysIn(object) {
-  if (!isObject(object)) {
+  if (!isObject$1(object)) {
     return nativeKeysIn(object);
   }
   var isProto = isPrototype(object),
       result = [];
 
   for (var key in object) {
-    if (!(key == 'constructor' && (isProto || !hasOwnProperty$9.call(object, key)))) {
+    if (!(key == 'constructor' && (isProto || !hasOwnProperty$a.call(object, key)))) {
       result.push(key);
     }
   }
@@ -8518,7 +9419,7 @@ var freeModule$2 = freeExports$2 && typeof module == 'object' && module && !modu
 var moduleExports$2 = freeModule$2 && freeModule$2.exports === freeExports$2;
 
 /** Built-in value references. */
-var Buffer$1 = moduleExports$2 ? root.Buffer : undefined,
+var Buffer$1 = moduleExports$2 ? root$1.Buffer : undefined,
     allocUnsafe = Buffer$1 ? Buffer$1.allocUnsafe : undefined;
 
 /**
@@ -8606,10 +9507,10 @@ function stubArray() {
 }
 
 /** Used for built-in method references. */
-var objectProto$c = Object.prototype;
+var objectProto$e = Object.prototype;
 
 /** Built-in value references. */
-var propertyIsEnumerable$1 = objectProto$c.propertyIsEnumerable;
+var propertyIsEnumerable$1 = objectProto$e.propertyIsEnumerable;
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeGetSymbols = Object.getOwnPropertySymbols;
@@ -8736,16 +9637,16 @@ function getAllKeysIn(object) {
 }
 
 /* Built-in method references that are verified to be native. */
-var DataView = getNative(root, 'DataView');
+var DataView = getNative(root$1, 'DataView');
 
 /* Built-in method references that are verified to be native. */
-var Promise$1 = getNative(root, 'Promise');
+var Promise$1 = getNative(root$1, 'Promise');
 
 /* Built-in method references that are verified to be native. */
-var Set$1 = getNative(root, 'Set');
+var Set$1 = getNative(root$1, 'Set');
 
 /* Built-in method references that are verified to be native. */
-var WeakMap = getNative(root, 'WeakMap');
+var WeakMap = getNative(root$1, 'WeakMap');
 
 /** `Object#toString` result references. */
 var mapTag$1 = '[object Map]',
@@ -8770,7 +9671,7 @@ var dataViewCtorString = toSource(DataView),
  * @param {*} value The value to query.
  * @returns {string} Returns the `toStringTag`.
  */
-var getTag = baseGetTag;
+var getTag = baseGetTag$1;
 
 // Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
 if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
@@ -8779,7 +9680,7 @@ if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
     (Set$1 && getTag(new Set$1) != setTag$1) ||
     (WeakMap && getTag(new WeakMap) != weakMapTag$1)) {
   getTag = function(value) {
-    var result = baseGetTag(value),
+    var result = baseGetTag$1(value),
         Ctor = result == objectTag$1 ? value.constructor : undefined,
         ctorString = Ctor ? toSource(Ctor) : '';
 
@@ -8799,10 +9700,10 @@ if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
 var getTag$1 = getTag;
 
 /** Used for built-in method references. */
-var objectProto$d = Object.prototype;
+var objectProto$f = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$a = objectProto$d.hasOwnProperty;
+var hasOwnProperty$b = objectProto$f.hasOwnProperty;
 
 /**
  * Initializes an array clone.
@@ -8816,7 +9717,7 @@ function initCloneArray(array) {
       result = new array.constructor(length);
 
   // Add properties assigned by `RegExp#exec`.
-  if (length && typeof array[0] == 'string' && hasOwnProperty$a.call(array, 'index')) {
+  if (length && typeof array[0] == 'string' && hasOwnProperty$b.call(array, 'index')) {
     result.index = array.index;
     result.input = array.input;
   }
@@ -8824,7 +9725,7 @@ function initCloneArray(array) {
 }
 
 /** Built-in value references. */
-var Uint8Array = root.Uint8Array;
+var Uint8Array = root$1.Uint8Array;
 
 /**
  * Creates a clone of `arrayBuffer`.
@@ -8869,7 +9770,7 @@ function cloneRegExp(regexp) {
 }
 
 /** Used to convert symbols to primitives and strings. */
-var symbolProto$1 = Symbol$1 ? Symbol$1.prototype : undefined,
+var symbolProto$1 = Symbol$2 ? Symbol$2.prototype : undefined,
     symbolValueOf = symbolProto$1 ? symbolProto$1.valueOf : undefined;
 
 /**
@@ -8904,7 +9805,7 @@ var boolTag$1 = '[object Boolean]',
     regexpTag$1 = '[object RegExp]',
     setTag$2 = '[object Set]',
     stringTag$1 = '[object String]',
-    symbolTag$1 = '[object Symbol]';
+    symbolTag$2 = '[object Symbol]';
 
 var arrayBufferTag$1 = '[object ArrayBuffer]',
     dataViewTag$2 = '[object DataView]',
@@ -8961,7 +9862,7 @@ function initCloneByTag(object, tag, isDeep) {
     case setTag$2:
       return new Ctor;
 
-    case symbolTag$1:
+    case symbolTag$2:
       return cloneSymbol(object);
   }
 }
@@ -8980,7 +9881,7 @@ var objectCreate = Object.create;
 var baseCreate = (function() {
   function object() {}
   return function(proto) {
-    if (!isObject(proto)) {
+    if (!isObject$1(proto)) {
       return {};
     }
     if (objectCreate) {
@@ -9017,7 +9918,7 @@ var mapTag$3 = '[object Map]';
  * @returns {boolean} Returns `true` if `value` is a map, else `false`.
  */
 function baseIsMap(value) {
-  return isObjectLike(value) && getTag$1(value) == mapTag$3;
+  return isObjectLike$1(value) && getTag$1(value) == mapTag$3;
 }
 
 /* Node.js helper references. */
@@ -9053,7 +9954,7 @@ var setTag$3 = '[object Set]';
  * @returns {boolean} Returns `true` if `value` is a set, else `false`.
  */
 function baseIsSet(value) {
-  return isObjectLike(value) && getTag$1(value) == setTag$3;
+  return isObjectLike$1(value) && getTag$1(value) == setTag$3;
 }
 
 /* Node.js helper references. */
@@ -9097,7 +9998,7 @@ var argsTag$2 = '[object Arguments]',
     regexpTag$2 = '[object RegExp]',
     setTag$4 = '[object Set]',
     stringTag$2 = '[object String]',
-    symbolTag$2 = '[object Symbol]',
+    symbolTag$3 = '[object Symbol]',
     weakMapTag$2 = '[object WeakMap]';
 
 var arrayBufferTag$2 = '[object ArrayBuffer]',
@@ -9122,7 +10023,7 @@ cloneableTags[int8Tag$2] = cloneableTags[int16Tag$2] =
 cloneableTags[int32Tag$2] = cloneableTags[mapTag$4] =
 cloneableTags[numberTag$2] = cloneableTags[objectTag$2] =
 cloneableTags[regexpTag$2] = cloneableTags[setTag$4] =
-cloneableTags[stringTag$2] = cloneableTags[symbolTag$2] =
+cloneableTags[stringTag$2] = cloneableTags[symbolTag$3] =
 cloneableTags[uint8Tag$2] = cloneableTags[uint8ClampedTag$2] =
 cloneableTags[uint16Tag$2] = cloneableTags[uint32Tag$2] = true;
 cloneableTags[errorTag$1] = cloneableTags[funcTag$2] =
@@ -9156,7 +10057,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
   if (result !== undefined) {
     return result;
   }
-  if (!isObject(value)) {
+  if (!isObject$1(value)) {
     return value;
   }
   var isArr = isArray(value);
@@ -9279,7 +10180,7 @@ var stringTag$3 = '[object String]';
  */
 function isString(value) {
   return typeof value == 'string' ||
-    (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag$3);
+    (!isArray(value) && isObjectLike$1(value) && baseGetTag$1(value) == stringTag$3);
 }
 
 /**
@@ -9472,7 +10373,7 @@ var mapTag$5 = '[object Map]',
     setTag$5 = '[object Set]';
 
 /** Built-in value references. */
-var symIterator = Symbol$1 ? Symbol$1.iterator : undefined;
+var symIterator = Symbol$2 ? Symbol$2.iterator : undefined;
 
 /**
  * Converts `value` to an array.
@@ -10190,7 +11091,7 @@ function runValidations(_ref3) {
   return collectErrors(options);
 }
 
-var isObject$1 = function isObject(obj) {
+var isObject$2 = function isObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]';
 };
 
@@ -10206,8 +11107,8 @@ function prependDeep(target, source) {
         continue;
       } else if (isSchema(targetVal)) {
         if (isSchema(sourceVal)) target[key] = sourceVal.concat(targetVal);
-      } else if (isObject$1(targetVal)) {
-        if (isObject$1(sourceVal)) target[key] = prependDeep(targetVal, sourceVal);
+      } else if (isObject$2(targetVal)) {
+        if (isObject$2(sourceVal)) target[key] = prependDeep(targetVal, sourceVal);
       } else if (Array.isArray(targetVal)) {
         if (Array.isArray(sourceVal)) target[key] = sourceVal.concat(targetVal);
       }
@@ -10444,13 +11345,13 @@ var boolTag$3 = '[object Boolean]',
     regexpTag$3 = '[object RegExp]',
     setTag$6 = '[object Set]',
     stringTag$4 = '[object String]',
-    symbolTag$3 = '[object Symbol]';
+    symbolTag$4 = '[object Symbol]';
 
 var arrayBufferTag$3 = '[object ArrayBuffer]',
     dataViewTag$4 = '[object DataView]';
 
 /** Used to convert symbols to primitives and strings. */
-var symbolProto$2 = Symbol$1 ? Symbol$1.prototype : undefined,
+var symbolProto$2 = Symbol$2 ? Symbol$2.prototype : undefined,
     symbolValueOf$1 = symbolProto$2 ? symbolProto$2.valueOf : undefined;
 
 /**
@@ -10527,7 +11428,7 @@ function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
       stack['delete'](object);
       return result;
 
-    case symbolTag$3:
+    case symbolTag$4:
       if (symbolValueOf$1) {
         return symbolValueOf$1.call(object) == symbolValueOf$1.call(other);
       }
@@ -10539,10 +11440,10 @@ function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
 var COMPARE_PARTIAL_FLAG$2 = 1;
 
 /** Used for built-in method references. */
-var objectProto$e = Object.prototype;
+var objectProto$g = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$b = objectProto$e.hasOwnProperty;
+var hasOwnProperty$c = objectProto$g.hasOwnProperty;
 
 /**
  * A specialized version of `baseIsEqualDeep` for objects with support for
@@ -10570,7 +11471,7 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
   var index = objLength;
   while (index--) {
     var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty$b.call(other, key))) {
+    if (!(isPartial ? key in other : hasOwnProperty$c.call(other, key))) {
       return false;
     }
   }
@@ -10630,10 +11531,10 @@ var argsTag$3 = '[object Arguments]',
     objectTag$3 = '[object Object]';
 
 /** Used for built-in method references. */
-var objectProto$f = Object.prototype;
+var objectProto$h = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$c = objectProto$f.hasOwnProperty;
+var hasOwnProperty$d = objectProto$h.hasOwnProperty;
 
 /**
  * A specialized version of `baseIsEqual` for arrays and objects which performs
@@ -10676,8 +11577,8 @@ function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
       : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
   }
   if (!(bitmask & COMPARE_PARTIAL_FLAG$3)) {
-    var objIsWrapped = objIsObj && hasOwnProperty$c.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty$c.call(other, '__wrapped__');
+    var objIsWrapped = objIsObj && hasOwnProperty$d.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty$d.call(other, '__wrapped__');
 
     if (objIsWrapped || othIsWrapped) {
       var objUnwrapped = objIsWrapped ? object.value() : object,
@@ -10712,7 +11613,7 @@ function baseIsEqual(value, other, bitmask, customizer, stack) {
   if (value === other) {
     return true;
   }
-  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+  if (value == null || other == null || (!isObjectLike$1(value) && !isObjectLike$1(other))) {
     return value !== value && other !== other;
   }
   return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
@@ -10785,7 +11686,7 @@ function baseIsMatch(object, source, matchData, customizer) {
  *  equality comparisons, else `false`.
  */
 function isStrictComparable(value) {
-  return value === value && !isObject(value);
+  return value === value && !isObject$1(value);
 }
 
 /**
@@ -13214,7 +14115,7 @@ function _templateObject() {
   return data;
 }
 
-var isObject$2 = function isObject(obj) {
+var isObject$3 = function isObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]';
 };
 
@@ -13272,7 +14173,7 @@ function ObjectSchema(spec) {
 }
 inherits(ObjectSchema, SchemaType, {
   _typeCheck: function _typeCheck(value) {
-    return isObject$2(value) || typeof value === 'function';
+    return isObject$3(value) || typeof value === 'function';
   },
   _cast: function _cast(_value, options) {
     var _this3 = this;
@@ -13344,7 +14245,7 @@ inherits(ObjectSchema, SchemaType, {
       originalValue: originalValue
     });
     return SchemaType.prototype._validate.call(this, _value, opts).catch(propagateErrors(endEarly, errors)).then(function (value) {
-      if (!recursive || !isObject$2(value)) {
+      if (!recursive || !isObject$3(value)) {
         // only iterate though actual objects
         if (errors.length) throw errors[0];
         return value;
@@ -14332,6 +15233,8 @@ var UserDistribSlotsSelectorView = function (_a) {
                     status.registeredSlotIds &&
                     status.registeredSlotIds.length > 0) ||
                     (status.has === 'voluntary' &&
+                        status.registeredSlotIds &&
+                        status.registeredSlotIds.length > 0 &&
                         (!distrib.inNeedUsers || distrib.inNeedUsers.length === 0))) {
                     registerUser();
                 }
@@ -14611,8 +15514,12 @@ var NeolithicViewsGenerator = /** @class */ (function () {
     return NeolithicViewsGenerator;
 }());
 
+function GeoAutocomplete$1(p) {
+    return withNeolithicProvider(GeoAutocomplete)(p);
+}
 var index = (function () { return null; });
 
+exports.GeoAutocomplete = GeoAutocomplete$1;
 exports.NeolithicViewsGenerator = NeolithicViewsGenerator;
 exports.default = index;
 //# sourceMappingURL=index.js.map
