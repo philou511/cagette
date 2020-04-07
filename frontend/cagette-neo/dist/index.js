@@ -15342,12 +15342,11 @@ var UserDistribSlotsSelectorView = function (_a) {
                 } })));
     };
     /** */
-    return (React__default.createElement(core.Modal, { open: opened, onClose: closePopup },
-        React__default.createElement(core.Box, { margin: "auto", maxWidth: 600, height: "100%", display: "flex", justifyContent: "center", alignItems: "center" },
-            React__default.createElement(MasterCard, { onClose: loading ? undefined : closePopup },
-                error && (React__default.createElement(core.Box, { p: 2 },
-                    React__default.createElement(lab.Alert, { severity: "error" }, error))),
-                renderContent()))));
+    return (React__default.createElement(core.Dialog, { open: opened, onClose: closePopup },
+        React__default.createElement(MasterCard, { onClose: loading ? undefined : closePopup },
+            error && (React__default.createElement(core.Box, { p: 2 },
+                React__default.createElement(lab.Alert, { severity: "error" }, error))),
+            renderContent())));
 };
 var UserDistribSlotsSelectorView$1 = withNeolithicProvider(withi18n(UserDistribSlotsSelectorView));
 
