@@ -15440,9 +15440,18 @@ var SlotsResolvedTable = function (_a) {
         React__default.createElement(core.Table, null,
             React__default.createElement(core.TableHead, null,
                 React__default.createElement(core.TableRow, null,
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".slot")),
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".user")),
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".getOrderFor")))),
+                    React__default.createElement(core.TableCell, { style: {
+                            backgroundColor: '#CCC',
+                            fontWeight: 700,
+                        } }, t(shortTKey$8 + ".slot")),
+                    React__default.createElement(core.TableCell, { style: {
+                            backgroundColor: '#CCC',
+                            fontWeight: 700,
+                        } }, t(shortTKey$8 + ".user")),
+                    React__default.createElement(core.TableCell, { style: {
+                            backgroundColor: '#CCC',
+                            fontWeight: 700,
+                        } }, t(shortTKey$8 + ".getOrderFor")))),
             React__default.createElement(core.TableBody, null, distrib.slots &&
                 distrib.slots
                     .filter(function (slot) { return slot.selectedUserIds.length > 0; })
