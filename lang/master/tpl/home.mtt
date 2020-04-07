@@ -282,20 +282,23 @@
 				::end::
 				<!-- === END AMAP BLOCK === -->	
 				
-				<!-- TIME SLOTS 
-
-                    ::timeSlotService(d).userStatus(user)::
-                -->
-
+				<!-- TIME SLOTS -->
 				::if(d.slots!=null && d.userHasOrders(user,null))::
+
+				::set status = timeSlotService(d).userStatus(user)::
+				<div id="distrib-time-slot::d.id::"></div>
+				::status::
+				::if(status.registered==false)::
 				<!-- not registred -->
 				<div class="content">
 					<div class="alert alert-danger text-center">
 						<img height="36" src="/img/virus.svg" style="width:22px;" alt="" />
 						&nbsp;&nbsp;<b>Précautions et entraide pendant la crise sanitaire :</b><br/>
-						<a href="/distribution/userTimeSlot/::d.id::" class="btn btn-danger">Inscrivez-vous à un crénau horaire</a>
+						<a onclick="_NeolithicViewsGenerator.userDistribSlotsSelector('distrib-time-slot::d.id::',{distribId: ::d.id::})" class="btn btn-danger">Inscrivez-vous à un crénau horaire</a>
+						 
 					</div>
 				</div>
+				::end::
 				<!-- registred but not yet assigned-->
 
 				<!-- assigned time slot -->

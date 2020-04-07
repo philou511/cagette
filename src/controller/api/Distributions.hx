@@ -249,12 +249,14 @@ class Distributions extends Controller {
   }
 
   // TODO: remove
+  @admin
   public function doResolve() {
     this.distrib.resolveSlots();
     Sys.print(Json.stringify(this.parse()));
   }
 
    // TODO: remove
+  @admin
   public function doCloseDistrib() {
     this.distrib.lock();
     this.distrib.orderEndDate = DateTools.delta(Date.now(), -(1000 * 60 * 60 * 24));
@@ -263,6 +265,7 @@ class Distributions extends Controller {
   }
 
    // TODO: remove
+   @admin
   public function doDesactivateSlots() {
     this.distrib.lock();
     this.distrib.slots = null;
@@ -274,6 +277,7 @@ class Distributions extends Controller {
   }
 
   // TODO: remove
+  @admin
   public function doRegisterVoluntaryForMe() {
 
     var userId = App.current.user.id;
