@@ -4,6 +4,8 @@ import react.ReactComponent;
 import react.ReactMacro.jsx;
 import utils.HttpUtil;
 import leaflet.L;
+import neo.GeoAutocomplete;
+import react.mui.Box;
 import Common;
 using Lambda;
 
@@ -171,15 +173,25 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
 		if (distance > 1000)
 			return Math.floor(distance / 100) / 10 + ' km';
 		return distance + ' m';
-	}
+    }
+    
+    function onAutocompleteChange(v: Dynamic) {
+        trace("onAutocompleteChange", v);
+        if (v != null) {
+            var coord = v.geometry.coordinates;
+            trace("coord", coord);
+            fetchGroups(coord[1], coord[0]);
+        }
+    }
 
   function handleSelect(address:String) {
 		setState({
 			address: address
-		});
+        });
 
 		geocodeByAddress(address)
 		.then(function(coord) {
+            trace("coord", coord);
 			fetchGroups(coord.lat, coord.lng);
 		})
 		.catchError(function(error) {
@@ -188,10 +200,11 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
   }
 
 	override public function componentDidMount() {
+        trace("componentDidMount", state.point, state.address);
 		if (state.point != null)
 			fetchGroups(state.point.lat, state.point.lng);
-		else if (state.address != '')
-			handleSelect(state.address);
+		// else if (state.address != '')
+			// handleSelect(state.address);
 	}
 
 	function renderSuggestion(obj:Dynamic) {
@@ -219,11 +232,18 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
 		return jsx('
 			<div className="group-map">
 				<div className="row">
-					<div id="logo" className="col-md-3">&nbsp;</div>
+                    <div id="logo" className="col-md-3">&nbsp;</div>
 					<div className="col-md-9">
 						<div className="form-group-container">
-						Trouvez un groupe Cagette près de chez vous &nbsp; 
-						<Autocomplete
+                        <Box width="50%" bgcolor="#fff" boxShadow={1}>
+                            <GeoAutocomplete
+                                initialValue={props.address}
+                                label="Trouvez un groupe Cagette près de chez vous"
+                                noOptionsText="Saisissez votre adresse"
+                                mapboxToken="pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"
+                                onChange=$onAutocompleteChange />
+                        </Box>
+                        <Autocomplete
 							inputProps=${inputProps}
 							onSelect=${handleSelect}
 							classNames=${cssClasses}
@@ -242,7 +262,7 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
 
 	function renderGroupMap() {
 		if (!state.isInit)
-			return null;
+            return null;
 		
 		return jsx('
 			<GroupMap

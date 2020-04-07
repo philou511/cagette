@@ -1,6 +1,7 @@
 package controller.api;
 import haxe.Json;
 import Common;
+import service.Mapbox;
 
 /**
  * Groups API
@@ -79,14 +80,14 @@ class Group extends Controller
 		}else{
 			//Request by address
 			if (args.address == null) throw "Please provide parameters";
+			var res = Mapbox.geocode(args.address);
+			places = findGroupByDist(res.geometry.coordinates[1], res.geometry.coordinates[0]);
 			
-			var geocode = new sugoi.apis.google.GeoCode(App.config.get("google_geocoding_key"));
-			var loc = geocode.geocode(args.address)[0].geometry.location;
-			
-			args.lat = loc.lat;
-			args.lng = loc.lng;
-			
-			places = findGroupByDist(args.lat, args.lng);
+			// var geocode = new sugoi.apis.google.GeoCode(App.config.get("google_geocoding_key"));
+			// var loc = geocode.geocode(args.address)[0].geometry.location;
+			// args.lat = loc.lat;
+			// args.lng = loc.lng;
+			// places = findGroupByDist(args.lat, args.lng);
 		}
 		
 		for ( p in places){

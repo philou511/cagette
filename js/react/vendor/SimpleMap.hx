@@ -65,7 +65,7 @@ class SimpleMap extends react.ReactComponentOfProps<{markers: Array<MarkerInfo>}
 			<LeafMap bounds=${getLatLngBounds()}>	
 					<TileLayer
 					attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-					url="https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 					id="bubar.cih3inmqd00tjuxm7oc2532l0"
 					/>
 					${props.markers.map(function(marker:MarkerInfo) {

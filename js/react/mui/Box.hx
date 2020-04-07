@@ -22,6 +22,9 @@ typedef BoxProps = {
     ?pb: Int,
     ?pl: Int,
     ?pr: Int,
+    ?bgcolor: String,
+    ?boxShadow: Int,
+    ?component: Dynamic,
 };
 
 @:jsRequire('@material-ui/core', 'Box')

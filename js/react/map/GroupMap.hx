@@ -185,29 +185,30 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
 
 	override public function render() {
     	var center = props.addressCoord == null
-      		? L.latLng(DEFAULT_LAT, DEFAULT_LNG)
-      		: props.addressCoord;
+      		? [DEFAULT_LAT, DEFAULT_LNG]
+              : [DEFAULT_LAT, DEFAULT_LNG];
 
     	var zoom = props.addressCoord == null
       		? INIT_ZOOM
-      		: DEFAULT_ZOOM;
+              : DEFAULT_ZOOM;
+        trace("GroupMap.render", center);
 
 		return jsx('
       		<LeafMap
-        	center=${center}
+        	center=${[DEFAULT_LAT, DEFAULT_LNG]}
         	zoom=${zoom}
         	ref=${getMap}
         	onMoveEnd=${handleMoveEnd}
       		>	
 				<TileLayer
 				attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-				url="https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				id="bubar.cih3inmqd00tjuxm7oc2532l0"
 				/>
-        		<FeatureGroup ref=${getFeatureGroup}>
-          			${renderGroupMarkers()}
-          			${renderHomeMarker()}
-        		</FeatureGroup>
+                <FeatureGroup ref=${getFeatureGroup}>
+                    ${renderGroupMarkers()}
+                    ${renderHomeMarker()}
+                </FeatureGroup> 
       		</LeafMap>
 		');
 	}
