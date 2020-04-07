@@ -9,7 +9,7 @@ var React__default = _interopDefault(React);
 var core = require('@material-ui/core');
 var Autocomplete = _interopDefault(require('@material-ui/lab/Autocomplete'));
 var SvgIcon = _interopDefault(require('@material-ui/core/SvgIcon'));
-var reactDom = _interopDefault(require('react-dom'));
+var ReactDOM = _interopDefault(require('react-dom'));
 var lab = require('@material-ui/lab');
 var formik = require('formik');
 var formikMaterialUi = require('formik-material-ui');
@@ -7351,17 +7351,42 @@ var ActivateDistribSlotsView = function (_a) {
 };
 var ActivateDistribSlotsView$1 = withNeolithicProvider(withi18n(ActivateDistribSlotsView));
 
+var Close = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+}), 'Close');
+
+exports.default = _default;
+});
+
+var CloseIcon = unwrapExports(Close);
+
 var tFile = 'neo/distrib-slots';
 var shortTKey = tFile + ":userSlotsSelector";
 var MasterCard = function (_a) {
-    var children = _a.children;
+    var children = _a.children, onClose = _a.onClose;
     var t = useTranslation(['translation', tFile]).t;
     /** */
     return (React__default.createElement(core.Card, null,
         React__default.createElement(core.Box, { p: 2, display: "flex", alignItems: "center" },
-            React__default.createElement(core.Box, { mr: 2 },
-                React__default.createElement("img", { height: 36, src: "/img/virus.svg", alt: "" })),
-            React__default.createElement(core.Typography, { variant: "h4" }, t(shortTKey + ".cardTitle"))),
+            React__default.createElement(core.Box, { flex: 1, display: "flex", alignItems: "center" },
+                React__default.createElement(core.Box, { mr: 2 },
+                    React__default.createElement("img", { height: 36, src: "/img/virus.svg", alt: "" })),
+                React__default.createElement(core.Typography, { variant: "h4" }, t(shortTKey + ".cardTitle"))),
+            React__default.createElement(core.Box, null, onClose && (React__default.createElement(core.IconButton, { onClick: onClose },
+                React__default.createElement(CloseIcon, null))))),
         React__default.createElement(core.CardContent, null,
             React__default.createElement(lab.Alert, { severity: "error" },
                 t(shortTKey + ".alert.p1"),
@@ -15140,13 +15165,24 @@ var ResolvedState = function (_a) {
 var tFile$7 = 'neo/distrib-slots';
 var shortTKey$7 = tFile$7 + ":userSlotsSelector.end";
 var UserDistribSlotsSelectorView = function (_a) {
-    var distribId = _a.distribId;
+    var distribId = _a.distribId, onRegister = _a.onRegister, onCancel = _a.onCancel;
     var t = useTranslation(['translation', tFile$7]).t;
     var _b = React__default.useState(false), loading = _b[0], toggleLoading = _b[1];
     var _c = React__default.useState(''), error = _c[0], setError = _c[1];
     var _d = React__default.useState(), distrib = _d[0], setDistrib = _d[1];
     var _e = React__default.useState(), status = _e[0], setStatus = _e[1];
+    var _f = React__default.useState(false), needReload = _f[0], toggleNeedReload = _f[1];
+    var _g = React__default.useState(true), opened = _g[0], toggleOpened = _g[1];
     /** */
+    var closePopup = function () {
+        if (loading)
+            return;
+        if (needReload)
+            onRegister();
+        else
+            onCancel();
+        toggleOpened(false);
+    };
     var registerUser = function () { return __awaiter(void 0, void 0, void 0, function () {
         var formData, res, err_1;
         return __generator(this, function (_a) {
@@ -15175,6 +15211,7 @@ var UserDistribSlotsSelectorView = function (_a) {
                     res = _a.sent();
                     setStatus(res);
                     toggleLoading(false);
+                    toggleNeedReload(true);
                     return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
@@ -15305,10 +15342,12 @@ var UserDistribSlotsSelectorView = function (_a) {
                 } })));
     };
     /** */
-    return (React__default.createElement(MasterCard, null,
-        error && (React__default.createElement(core.Box, { p: 2 },
-            React__default.createElement(lab.Alert, { severity: "error" }, error))),
-        renderContent()));
+    return (React__default.createElement(core.Modal, { open: opened, onClose: closePopup },
+        React__default.createElement(core.Box, { margin: "auto", maxWidth: 600, height: "100%", display: "flex", justifyContent: "center", alignItems: "center" },
+            React__default.createElement(MasterCard, { onClose: loading ? undefined : closePopup },
+                error && (React__default.createElement(core.Box, { p: 2 },
+                    React__default.createElement(lab.Alert, { severity: "error" }, error))),
+                renderContent()))));
 };
 var UserDistribSlotsSelectorView$1 = withNeolithicProvider(withi18n(UserDistribSlotsSelectorView));
 
@@ -15335,7 +15374,7 @@ exports.default = _default;
 var PrintIcon = unwrapExports(Print);
 
 var lib = createCommonjsModule(function (module, exports) {
-!function(t,e){module.exports=e(React__default,reactDom);}("undefined"!=typeof self?self:commonjsGlobal,(function(t,e){return function(t){var e={};function n(r){if(e[r])return e[r].exports;var o=e[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=t,n.c=e,n.d=function(t,e,r){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r});},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0});},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)n.d(r,o,function(e){return t[e]}.bind(null,o));return r},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=0)}([function(t,e,n){Object.defineProperty(e,"__esModule",{value:!0});var r=n(1),o=n(2),i=n(3),a=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.startPrint=function(t,n){var r=e.props.removeAfterPrint;setTimeout((function(){if(t.contentWindow.focus(),t.contentWindow.print(),n&&n(),r){var e=document.getElementById("printWindow");e&&document.body.removeChild(e);}}),500);},e.triggerPrint=function(t){var n=e.props,r=n.onAfterPrint,o=n.onBeforePrint,i=n.onPrintError;if(o){var a=o();a&&"function"==typeof a.then?a.then((function(){e.startPrint(t,r);})).catch((function(t){i&&i("onBeforePrint",t);})):e.startPrint(t,r);}else e.startPrint(t,r);},e.handleClick=function(){var t=e.props,n=t.onBeforeGetContent,r=t.onPrintError;if(n){var o=n();o&&"function"==typeof o.then?o.then(e.handlePrint).catch((function(t){r&&r("onBeforeGetContent",t);})):e.handlePrint();}else e.handlePrint();},e.handlePrint=function(){var t=e.props,n=t.bodyClass,r=void 0===n?"":n,o=t.content,a=t.copyStyles,u=void 0===a||a,c=t.pageStyle,l=t.suppressErrors,f=o();if(void 0!==f)if(null!==f){var s=document.createElement("iframe");s.style.position="absolute",s.style.top="-1000px",s.style.left="-1000px",s.id="printWindow",s.title="Print Window";var d=i.findDOMNode(f),p=document.querySelectorAll("link[rel='stylesheet'], img");e.linkTotal=p.length||0,e.linksLoaded=[],e.linksErrored=[];var y=function(t,n){n?e.linksLoaded.push(t):(l||console.error('"react-to-print" was unable to load a link. It may be invalid. "react-to-print" will continue attempting to print the page. The link the errored was:',t),e.linksErrored.push(t)),e.linksLoaded.length+e.linksErrored.length===e.linkTotal&&e.triggerPrint(s);};s.onload=function(){window.navigator&&window.navigator.userAgent.indexOf("Trident/7.0")>-1&&(s.onload=null);var t=s.contentDocument||s.contentWindow.document,n=d.querySelectorAll("canvas");if(t){t.open(),t.write(d.outerHTML),t.close();var o=void 0===c?"@page { size: auto;  margin: 0mm; } @media print { body { -webkit-print-color-adjust: exact; } }":c,i=t.createElement("style");i.appendChild(t.createTextNode(o)),t.head.appendChild(i),r.length&&t.body.classList.add(r);for(var a=t.querySelectorAll("canvas"),l=0,f=a.length;l<f;++l){var p=(v=a[l]).getContext("2d");p&&p.drawImage(n[l],0,0);}if(!1!==u)for(var h=document.querySelectorAll("style, link[rel='stylesheet'], img"),b=(l=0,h.length);l<b;++l){var v;if("STYLE"===(v=h[l]).tagName){var m=t.createElement(v.tagName),g=v.sheet;if(g){for(var w="",_=0,P=g.cssRules.length;_<P;++_)"string"==typeof g.cssRules[_].cssText&&(w+=g.cssRules[_].cssText+"\r\n");m.setAttribute("id","react-to-print-"+l),m.appendChild(t.createTextNode(w)),t.head.appendChild(m);}}else if(v.hasAttribute("href")&&v.getAttribute("href")||v.hasAttribute("src")&&v.getAttribute("src")){m=t.createElement(v.tagName),_=0;for(var x=v.attributes.length;_<x;++_){var O=v.attributes[_];O&&m.setAttribute(O.nodeName,O.nodeValue||"");}m.onload=y.bind(null,m,!0),m.onerror=y.bind(null,m,!1),t.head.appendChild(m);}else console.warn('"react-to-print" encountered a <link> tag with an empty "href" attribute. In addition to being invalid HTML, this can cause problems in many browsers, and so the <link> was not loaded. The <link> is:',v),y(v,!0);}}0!==e.linkTotal&&!1!==u||e.triggerPrint(s);};var h=document.getElementById("printWindow");h&&document.body.removeChild(h),document.body.appendChild(s);}else l||console.error('There is nothing to print because the "content" prop returned "null". Please ensure "content" is renderable before allowing "react-to-print" to be called.');else l||console.error('Refs are not available for stateless components. For "react-to-print" to work only Class based components can be printed');},e}return r.__extends(e,t),e.prototype.render=function(){var t=this.props.trigger;return o.cloneElement(t(),{onClick:this.handleClick})},e}(o.Component);e.default=a;},function(t,e,n){n.r(e),n.d(e,"__extends",(function(){return o})),n.d(e,"__assign",(function(){return i})),n.d(e,"__rest",(function(){return a})),n.d(e,"__decorate",(function(){return u})),n.d(e,"__param",(function(){return c})),n.d(e,"__metadata",(function(){return l})),n.d(e,"__awaiter",(function(){return f})),n.d(e,"__generator",(function(){return s})),n.d(e,"__exportStar",(function(){return d})),n.d(e,"__values",(function(){return p})),n.d(e,"__read",(function(){return y})),n.d(e,"__spread",(function(){return h})),n.d(e,"__await",(function(){return b})),n.d(e,"__asyncGenerator",(function(){return v})),n.d(e,"__asyncDelegator",(function(){return m})),n.d(e,"__asyncValues",(function(){return g})),n.d(e,"__makeTemplateObject",(function(){return w})),n.d(e,"__importStar",(function(){return _})),n.d(e,"__importDefault",(function(){return P}));
+!function(t,e){module.exports=e(React__default,ReactDOM);}("undefined"!=typeof self?self:commonjsGlobal,(function(t,e){return function(t){var e={};function n(r){if(e[r])return e[r].exports;var o=e[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=t,n.c=e,n.d=function(t,e,r){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r});},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0});},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)n.d(r,o,function(e){return t[e]}.bind(null,o));return r},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=0)}([function(t,e,n){Object.defineProperty(e,"__esModule",{value:!0});var r=n(1),o=n(2),i=n(3),a=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.startPrint=function(t,n){var r=e.props.removeAfterPrint;setTimeout((function(){if(t.contentWindow.focus(),t.contentWindow.print(),n&&n(),r){var e=document.getElementById("printWindow");e&&document.body.removeChild(e);}}),500);},e.triggerPrint=function(t){var n=e.props,r=n.onAfterPrint,o=n.onBeforePrint,i=n.onPrintError;if(o){var a=o();a&&"function"==typeof a.then?a.then((function(){e.startPrint(t,r);})).catch((function(t){i&&i("onBeforePrint",t);})):e.startPrint(t,r);}else e.startPrint(t,r);},e.handleClick=function(){var t=e.props,n=t.onBeforeGetContent,r=t.onPrintError;if(n){var o=n();o&&"function"==typeof o.then?o.then(e.handlePrint).catch((function(t){r&&r("onBeforeGetContent",t);})):e.handlePrint();}else e.handlePrint();},e.handlePrint=function(){var t=e.props,n=t.bodyClass,r=void 0===n?"":n,o=t.content,a=t.copyStyles,u=void 0===a||a,c=t.pageStyle,l=t.suppressErrors,f=o();if(void 0!==f)if(null!==f){var s=document.createElement("iframe");s.style.position="absolute",s.style.top="-1000px",s.style.left="-1000px",s.id="printWindow",s.title="Print Window";var d=i.findDOMNode(f),p=document.querySelectorAll("link[rel='stylesheet'], img");e.linkTotal=p.length||0,e.linksLoaded=[],e.linksErrored=[];var y=function(t,n){n?e.linksLoaded.push(t):(l||console.error('"react-to-print" was unable to load a link. It may be invalid. "react-to-print" will continue attempting to print the page. The link the errored was:',t),e.linksErrored.push(t)),e.linksLoaded.length+e.linksErrored.length===e.linkTotal&&e.triggerPrint(s);};s.onload=function(){window.navigator&&window.navigator.userAgent.indexOf("Trident/7.0")>-1&&(s.onload=null);var t=s.contentDocument||s.contentWindow.document,n=d.querySelectorAll("canvas");if(t){t.open(),t.write(d.outerHTML),t.close();var o=void 0===c?"@page { size: auto;  margin: 0mm; } @media print { body { -webkit-print-color-adjust: exact; } }":c,i=t.createElement("style");i.appendChild(t.createTextNode(o)),t.head.appendChild(i),r.length&&t.body.classList.add(r);for(var a=t.querySelectorAll("canvas"),l=0,f=a.length;l<f;++l){var p=(v=a[l]).getContext("2d");p&&p.drawImage(n[l],0,0);}if(!1!==u)for(var h=document.querySelectorAll("style, link[rel='stylesheet'], img"),b=(l=0,h.length);l<b;++l){var v;if("STYLE"===(v=h[l]).tagName){var m=t.createElement(v.tagName),g=v.sheet;if(g){for(var w="",_=0,P=g.cssRules.length;_<P;++_)"string"==typeof g.cssRules[_].cssText&&(w+=g.cssRules[_].cssText+"\r\n");m.setAttribute("id","react-to-print-"+l),m.appendChild(t.createTextNode(w)),t.head.appendChild(m);}}else if(v.hasAttribute("href")&&v.getAttribute("href")||v.hasAttribute("src")&&v.getAttribute("src")){m=t.createElement(v.tagName),_=0;for(var x=v.attributes.length;_<x;++_){var O=v.attributes[_];O&&m.setAttribute(O.nodeName,O.nodeValue||"");}m.onload=y.bind(null,m,!0),m.onerror=y.bind(null,m,!1),t.head.appendChild(m);}else console.warn('"react-to-print" encountered a <link> tag with an empty "href" attribute. In addition to being invalid HTML, this can cause problems in many browsers, and so the <link> was not loaded. The <link> is:',v),y(v,!0);}}0!==e.linkTotal&&!1!==u||e.triggerPrint(s);};var h=document.getElementById("printWindow");h&&document.body.removeChild(h),document.body.appendChild(s);}else l||console.error('There is nothing to print because the "content" prop returned "null". Please ensure "content" is renderable before allowing "react-to-print" to be called.');else l||console.error('Refs are not available for stateless components. For "react-to-print" to work only Class based components can be printed');},e}return r.__extends(e,t),e.prototype.render=function(){var t=this.props.trigger;return o.cloneElement(t(),{onClick:this.handleClick})},e}(o.Component);e.default=a;},function(t,e,n){n.r(e),n.d(e,"__extends",(function(){return o})),n.d(e,"__assign",(function(){return i})),n.d(e,"__rest",(function(){return a})),n.d(e,"__decorate",(function(){return u})),n.d(e,"__param",(function(){return c})),n.d(e,"__metadata",(function(){return l})),n.d(e,"__awaiter",(function(){return f})),n.d(e,"__generator",(function(){return s})),n.d(e,"__exportStar",(function(){return d})),n.d(e,"__values",(function(){return p})),n.d(e,"__read",(function(){return y})),n.d(e,"__spread",(function(){return h})),n.d(e,"__await",(function(){return b})),n.d(e,"__asyncGenerator",(function(){return v})),n.d(e,"__asyncDelegator",(function(){return m})),n.d(e,"__asyncValues",(function(){return g})),n.d(e,"__makeTemplateObject",(function(){return w})),n.d(e,"__importStar",(function(){return _})),n.d(e,"__importDefault",(function(){return P}));
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -15494,7 +15533,7 @@ var DistribSlotsResolver = function (_a) {
 var DistribSlotsResolver$1 = withNeolithicProvider(withi18n(DistribSlotsResolver));
 
 var createApp = function (elementId, children) {
-    reactDom.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
+    ReactDOM.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
 };
 var NeolithicViewsGenerator = /** @class */ (function () {
     function NeolithicViewsGenerator() {
@@ -15506,6 +15545,10 @@ var NeolithicViewsGenerator = /** @class */ (function () {
         createApp(elementId, React__default.createElement(ActivateDistribSlotsView$1, __assign({}, props)));
     };
     NeolithicViewsGenerator.userDistribSlotsSelector = function (elementId, props) {
+        var el = document.getElementById(elementId);
+        if (el) {
+            ReactDOM.unmountComponentAtNode(el);
+        }
         createApp(elementId, React__default.createElement(UserDistribSlotsSelectorView$1, __assign({}, props)));
     };
     NeolithicViewsGenerator.distribSlotsResolver = function (elementId, props) {

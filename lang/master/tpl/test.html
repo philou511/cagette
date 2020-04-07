@@ -55,6 +55,7 @@
 
     <div class="ablock">
         <h1>Slots selector</h1>
+        <button id="slots-selector-btn">OPEN</button>
         <div id="users-slots-wrapper"></div>
         <pre>
             _NeolithicViewsGenerator.userDistribSlotsSelector(HTML_ELEMENT_ID, {
@@ -183,6 +184,20 @@
             })
         }
         
+        function openSlotsSelector() {
+            if (activated) {        
+                _NeolithicViewsGenerator.userDistribSlotsSelector("users-slots-wrapper", {
+                    distribId: ::distrib.id::,
+                    onCancel: function() {
+                        console.log("onCancel", document.getElementById("users-slots-wrapper"), document.getElementById("users-slots-wrapper").innerHTML)
+                        document.getElementById("users-slots-wrapper").innerHTML=""
+                    },
+                    onConfirm: function() {
+                        document.location.reload(true);
+                    }
+                }) 
+            }
+        }
 
         document.getElementById("reset-btn").addEventListener("click", reset);
         document.getElementById("gen-btn").addEventListener("click", genDatas);
@@ -190,6 +205,7 @@
         document.getElementById("close-btn").addEventListener("click", closeDistrib);
         document.getElementById("resolve-btn").addEventListener("click", resolveDistrib);
         document.getElementById("status-btn").addEventListener("click", getStatus);
+        document.getElementById("slots-selector-btn").addEventListener("click", openSlotsSelector);
     
 
         _NeolithicViewsGenerator.activateDistribSlots("activate-slots-wrapper", {
@@ -197,11 +213,7 @@
             slotDuration: 1000 * 60 * 15,
         })
 
-        if (activated) {        
-            _NeolithicViewsGenerator.userDistribSlotsSelector("users-slots-wrapper", {
-                distribId: ::distrib.id::,
-            }) 
-        }
+       
 
          _NeolithicViewsGenerator.distribSlotsResolver("slots-resolver-wrapper", {
             distribId: ::distrib.id::
