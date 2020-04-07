@@ -71,110 +71,6 @@ class Distributions extends Controller {
     Sys.print(Json.stringify(this.parse()));
   }
 
-  // public function doUserStatus() {
-  //   if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
-  //   checkIsGroupMember();
-  //   if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-  //   var userId = App.current.user.id;
-  //   var s = new TimeSlotsService(this.distrib);
-  //   var registered = s.userIsAlreadyAdded(userId);
-  //   var has = "none";
-  //   if (registered == true) {
-  //     if (this.distrib.inNeedUserIds.exists(userId) == true) {
-  //       has = "inNeed";
-  //     } else if (this.distrib.voluntaryUsers.exists(userId) == true) {
-  //       has = "voluntary";
-  //     } else {
-  //       has = "solo";
-  //     }
-  //   }
-
-  //   Sys.print(Json.stringify(s.userStatus(userId))); 
-  // }
-
-  // public function doRegisterUserVoluntary() {
-  //   // allow only POST method
-  //   if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-  //   checkIsGroupMember();
-  //   checkOrdersAreOpen();
-
-  //   if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-  //   var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
-  //   if (!request.exists("userIds")) throw new tink.core.Error(400, "Bad Request");
-
-  //   var strUserIds = request.get("userIds").split(",");
-  //   var userIds = new Array<Int>();
-  //   for (index in 0...strUserIds.length) {
-  //     userIds.push(Std.parseInt(strUserIds[index]));
-  //   }
-
-	// var s = new TimeSlotsService(this.distrib);
-  //   s.registerVoluntary(App.current.user.id, userIds);    
-
-  //   Sys.print(Json.stringify({success: true}));
- 
-  // }
-
-  // public function doRegisterInNeedUser() {
-  //   // allow only POST method
-  //   if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-  //   checkIsGroupMember();
-  //   checkOrdersAreOpen();
-
-  //   // distrib slots must be activated 
-  //   if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-  //   var userId = App.current.user.id;
-  //   var s = new TimeSlotsService(this.distrib);
-
-  //   if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
-
-  //   var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
-  //   if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request");
-
-  //   var success = s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
-
-  //   Sys.print(Json.stringify({success: success}));
-  // }
-
-  // public function doRegisterUserSlots() {
-  //   // allow only POST method
-  //   if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-  //   checkIsGroupMember();
-  //   checkOrdersAreOpen();
-   
-  //   // distrib slots must be activated 
-  //   if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-  //   var userId = App.current.user.id;
-  //   var s = new TimeSlotsService(this.distrib);
-
-  //   if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
-
-  //   var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
-  //   if (!request.exists("slotIds")) throw new tink.core.Error(400, "Bad Request");
-    
-  //   // parse query to slotIds
-  //   var strSlotIds = request.get("slotIds").split(",");
-  //   var slotIds = new Array<Int>();
-  //   for (index in 0...strSlotIds.length) {
-  //     slotIds.push(Std.parseInt(strSlotIds[index]));
-  //   }
-
-  //   // check slots validity
-  //   if (slotIds.length < 1) throw new tink.core.Error(400, "Bad Request");
-  //   for (slotId in 0...slotIds.length) {
-  //     if (this.distrib.slots.find( slot -> slot.id == slotId) == null) {
-  //       throw new tink.core.Error(400, "Bad Request");
-  //     }
-  //   }
-
-  //   var success = s.registerUserToSlot(userId, slotIds);
-  //   Sys.print(Json.stringify({success: success}));
-  // }
-
   public function doResolved() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkAdminRights();
@@ -213,6 +109,14 @@ class Distributions extends Controller {
       voluntaryMap.set(Std.string(v.key), v.value);
     }
 
+    var otherUsers =  this.distrib.getOrders().filter(userOrder -> {
+      var founded = users.find(u -> u.id == userOrder.user.id);
+      if (founded != null) return false;
+      founded = inNeedUsers.find(u -> u.id == userOrder.user.id);
+      if (founded != null) return false;
+      return true;
+    });
+
     Sys.print(Json.stringify({
       id: this.distrib.id,
       start: this.distrib.distribStartDate,
@@ -220,6 +124,11 @@ class Distributions extends Controller {
       orderEndDate: this.distrib.orderEndDate,
       slots: this.distrib.slots,
       voluntaryMap: voluntaryMap,
+      otherUsers: otherUsers.map(userOrder -> ({
+        id: userOrder.user.id,
+        firstName: userOrder.user.firstName,
+        lastName: userOrder.user.lastName,
+      })),
       users: users.map(user -> ({
         id: user.id,
         firstName: user.firstName,

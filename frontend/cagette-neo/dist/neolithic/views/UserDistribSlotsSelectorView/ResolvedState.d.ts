@@ -1,7 +1,9 @@
 /// <reference types="react" />
 import { DistribUserStatusVO } from './interfaces';
+import { DistribVo } from '../../../vo';
 interface Props {
+    distrib: DistribVo;
     status: DistribUserStatusVO;
 }
-declare const ResolvedState: ({ status }: Props) => JSX.Element;
+declare const ResolvedState: ({ distrib, status }: Props) => JSX.Element;
 export default ResolvedState;
