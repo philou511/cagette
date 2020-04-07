@@ -7297,6 +7297,7 @@ var ActivateDistribSlotsView = function (_a) {
                         res = _a.sent();
                         if (active && res) {
                             setDistrib(__assign({}, res));
+                            console.log(res);
                         }
                         return [2 /*return*/];
                 }
@@ -7311,6 +7312,15 @@ var ActivateDistribSlotsView = function (_a) {
     if (!distrib || !distrib.start || !distrib.end)
         return (React__default.createElement(core.Box, { p: 2 },
             React__default.createElement(core.CircularProgress, { size: 20 })));
+    if (distrib.orderEndDate && !isBefore(new Date(), distrib.orderEndDate)) {
+        var goTo = function () {
+            document.location.href = "/distribution/timeSlots/" + distrib.id;
+        };
+        return (React__default.createElement(core.Button, { className: cs.btn, variant: "contained", onClick: goTo },
+            React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" }),
+            React__default.createElement(core.Box, { mr: 1 }),
+            t("neo/distrib-slots:activeDistrib.activatedBtn")));
+    }
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Button, { className: cs.btn, variant: "contained", onClick: onButtonClick },
             hasActivated ? (React__default.createElement(CheckIcon, { fontSize: "small" })) : (React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" })),
@@ -7374,32 +7384,10 @@ exports.default = _default;
 var CloseIcon = unwrapExports(Close);
 
 var tFile = 'neo/distrib-slots';
-var shortTKey = tFile + ":userSlotsSelector";
-var MasterCard = function (_a) {
-    var children = _a.children, onClose = _a.onClose;
-    var t = useTranslation(['translation', tFile]).t;
-    /** */
-    return (React__default.createElement(core.Card, null,
-        React__default.createElement(core.Box, { p: 2, display: "flex", alignItems: "center" },
-            React__default.createElement(core.Box, { flex: 1, display: "flex", alignItems: "center" },
-                React__default.createElement(core.Box, { mr: 2 },
-                    React__default.createElement("img", { height: 36, src: "/img/virus.svg", alt: "" })),
-                React__default.createElement(core.Typography, { variant: "h4" }, t(shortTKey + ".cardTitle"))),
-            React__default.createElement(core.Box, null, onClose && (React__default.createElement(core.IconButton, { onClick: onClose },
-                React__default.createElement(CloseIcon, null))))),
-        React__default.createElement(core.CardContent, null,
-            React__default.createElement(lab.Alert, { severity: "error" },
-                t(shortTKey + ".alert.p1"),
-                React__default.createElement("br", null),
-                t(shortTKey + ".alert.p2"))),
-        children));
-};
-
-var tFile$1 = 'neo/distrib-slots';
-var shortTKey$1 = tFile$1 + ":userSlotsSelector.modeSelector";
+var shortTKey = tFile + ":userSlotsSelector.modeSelector";
 var ModeSelector = function (_a) {
     var onSelect = _a.onSelect;
-    var t = useTranslation(['translation', tFile$1]).t;
+    var t = useTranslation(['translation', tFile]).t;
     var _b = React__default.useState(), mode = _b[0], setMode = _b[1];
     /** */
     var onModeChange = function (e) {
@@ -7412,15 +7400,15 @@ var ModeSelector = function (_a) {
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.FormControl, { component: "fieldset" },
             React__default.createElement(core.RadioGroup, { "aria-label": "slots-mode-selector", name: "slots-mode", value: mode || '', onChange: onModeChange },
-                React__default.createElement(core.FormControlLabel, { value: "inNeed", control: React__default.createElement(core.Radio, null), label: t(shortTKey$1 + ".inNeed") }),
-                React__default.createElement(core.FormControlLabel, { value: "voluntary", control: React__default.createElement(core.Radio, null), label: t(shortTKey$1 + ".voluntary") }),
-                React__default.createElement(core.FormControlLabel, { value: "solo", control: React__default.createElement(core.Radio, null), label: t(shortTKey$1 + ".solo") }))),
+                React__default.createElement(core.FormControlLabel, { value: "inNeed", control: React__default.createElement(core.Radio, null), label: t(shortTKey + ".inNeed") }),
+                React__default.createElement(core.FormControlLabel, { value: "voluntary", control: React__default.createElement(core.Radio, null), label: t(shortTKey + ".voluntary") }),
+                React__default.createElement(core.FormControlLabel, { value: "solo", control: React__default.createElement(core.Radio, null), label: t(shortTKey + ".solo") }))),
         React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
             React__default.createElement(core.Button, { variant: "outlined", color: "primary", style: { textTransform: 'none' }, disabled: !mode, onClick: onClick }, t('continue')))));
 };
 
-var tFile$2 = 'neo/distrib-slots';
-var shortTKey$2 = tFile$2 + ":userSlotsSelector.selector";
+var tFile$1 = 'neo/distrib-slots';
+var shortTKey$1 = tFile$1 + ":userSlotsSelector.selector";
 var GreenLinearProgress = core.withStyles({
     colorPrimary: {
         opacity: 0.5,
@@ -7441,7 +7429,7 @@ var OrangeLinearProgress = core.withStyles({
 })(core.LinearProgress);
 var SlotsSelector = function (_a) {
     var slots = _a.slots, isLastStep = _a.isLastStep, onSelect = _a.onSelect, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$2]).t;
+    var t = useTranslation(['translation', tFile$1]).t;
     var maxUserRegistered = slots.reduce(function (acc, slot) {
         if (acc < slot.registeredUserIds.length)
             return slot.registeredUserIds.length;
@@ -7474,12 +7462,12 @@ var SlotsSelector = function (_a) {
     /** */
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Box, { mb: 2 },
-            React__default.createElement(core.Typography, { color: "primary", variant: "h6", align: "center" }, t(shortTKey$2 + ".chooseSlot")),
+            React__default.createElement(core.Typography, { color: "primary", variant: "h6", align: "center" }, t(shortTKey$1 + ".chooseSlot")),
             React__default.createElement(core.Box, { mt: 1 },
-                React__default.createElement(core.Typography, { variant: "body2", align: "center" }, t(shortTKey$2 + ".chooseSlotSub")))),
+                React__default.createElement(core.Typography, { variant: "body2", align: "center" }, t(shortTKey$1 + ".chooseSlotSub")))),
         React__default.createElement(core.List, null, selection.map(function (slot) { return (React__default.createElement(React__default.Fragment, { key: slot.name },
             React__default.createElement(core.ListItem, null,
-                React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"), secondary: t(shortTKey$2 + "." + (slot.prc === 0 ? 'noneUsersInSlot' : 'usersInSlot'), {
+                React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"), secondary: t(shortTKey$1 + "." + (slot.prc === 0 ? 'noneUsersInSlot' : 'usersInSlot'), {
                         count: slot.nbUsers,
                     }) }),
                 React__default.createElement(core.ListItemSecondaryAction, null,
@@ -14908,8 +14896,8 @@ var UserForm = function (_a) {
             React__default.createElement(core.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, "Valider")))); }));
 };
 
-var tFile$3 = 'neo/distrib-slots';
-var shortTKey$3 = tFile$3 + ":userInNeed";
+var tFile$2 = 'neo/distrib-slots';
+var shortTKey$2 = tFile$2 + ":userInNeed";
 var parseUserOptions = function (user, prevOptions) {
     var options = [];
     var getChecked = function (name, value) {
@@ -14950,7 +14938,7 @@ var parseUserOptions = function (user, prevOptions) {
 };
 var UserInNeedForm = function (_a) {
     var onConfirm = _a.onConfirm, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$3]).t;
+    var t = useTranslation(['translation', tFile$2]).t;
     var _b = React__default.useState(), me = _b[0], setMe = _b[1];
     var _c = React__default.useState(), error = _c[0], setError = _c[1];
     var _d = React__default.useState([]), options = _d[0], setOptions = _d[1];
@@ -15048,12 +15036,12 @@ var UserInNeedForm = function (_a) {
     /** */
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Box, null,
-            React__default.createElement(core.Typography, { color: "primary" }, t(shortTKey$3 + ".consentement")),
+            React__default.createElement(core.Typography, { color: "primary" }, t(shortTKey$2 + ".consentement")),
             error && React__default.createElement(lab.Alert, { severity: "error" }, error),
             !me ? (React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
                 React__default.createElement(core.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null,
                 React__default.createElement(core.List, null, options.map(function (option) { return (React__default.createElement(core.ListItem, { key: option.name },
-                    React__default.createElement(core.ListItemText, { primary: t(option.label), secondary: option.value || t(shortTKey$3 + ".no" + option.label) }),
+                    React__default.createElement(core.ListItemText, { primary: t(option.label), secondary: option.value || t(shortTKey$2 + ".no" + option.label) }),
                     React__default.createElement(core.ListItemSecondaryAction, null,
                         option.canEdit && (React__default.createElement(core.ListItemIcon, null,
                             React__default.createElement(core.IconButton, { onClick: openDialog },
@@ -15067,7 +15055,7 @@ var UserInNeedForm = function (_a) {
         React__default.createElement(core.Dialog, { open: dialogOpened, onClose: closeDialog },
             React__default.createElement(React__default.Fragment, null, me && (React__default.createElement(React__default.Fragment, null,
                 React__default.createElement(core.Box, { pt: 2, px: 2 },
-                    React__default.createElement(core.Typography, { variant: "h6" }, t(shortTKey$3 + ".userFormTitle"))),
+                    React__default.createElement(core.Typography, { variant: "h6" }, t(shortTKey$2 + ".userFormTitle"))),
                 React__default.createElement(core.Box, { px: 2 },
                     React__default.createElement(UserForm, { user: me, onSubmit: onFormSubmit }))))))));
 };
@@ -15087,11 +15075,11 @@ var InNeedUserListItem = function (_a) {
         children && (React__default.createElement(core.ListItemSecondaryAction, null, children))));
 };
 
-var tFile$4 = 'neo/distrib-slots';
-var shortTKey$4 = tFile$4 + ":userInNeedSelected";
+var tFile$3 = 'neo/distrib-slots';
+var shortTKey$3 = tFile$3 + ":userInNeedSelected";
 var InNeedUsersSelector = function (_a) {
     var inNeedUsers = _a.inNeedUsers, onConfirm = _a.onConfirm, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$4]).t;
+    var t = useTranslation(['translation', tFile$3]).t;
     var _b = React__default.useState(inNeedUsers.map(function (user) { return (__assign(__assign({}, user), { fieldName: "user-" + user.id, checked: false })); })), users = _b[0], setUsers = _b[1];
     /** */
     var onCheckoxChange = function (e) {
@@ -15107,7 +15095,7 @@ var InNeedUsersSelector = function (_a) {
     };
     /** */
     return (React__default.createElement(core.Box, null,
-        React__default.createElement(core.Typography, { color: "primary" }, t(shortTKey$4 + ".choose")),
+        React__default.createElement(core.Typography, { color: "primary" }, t(shortTKey$3 + ".choose")),
         React__default.createElement(core.List, null, users.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['address'] },
             React__default.createElement(core.ListItemIcon, null,
                 React__default.createElement(core.Checkbox, { checked: user.checked, name: user.fieldName, tabIndex: -1, disableRipple: true, onChange: onCheckoxChange })))); })),
@@ -15117,33 +15105,33 @@ var InNeedUsersSelector = function (_a) {
             React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: onConfirmClick }, t('validate')))));
 };
 
-var tFile$5 = 'neo/distrib-slots';
-var shortTKey$5 = tFile$5 + ":userSlotsSelector";
+var tFile$4 = 'neo/distrib-slots';
+var shortTKey$4 = tFile$4 + ":userSlotsSelector";
 var RegisteredSlotsList = function (_a) {
     var slots = _a.slots;
-    var t = useTranslation(['translation', tFile$5]).t;
+    var t = useTranslation(['translation', tFile$4]).t;
     /** */
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Box, { display: "flex", flexDirection: "column", alignItems: "center" },
-            React__default.createElement(core.Typography, { variant: "h6", color: "primary" }, t(shortTKey$5 + ".selectedSlots")),
+            React__default.createElement(core.Typography, { variant: "h6", color: "primary" }, t(shortTKey$4 + ".selectedSlots")),
             React__default.createElement(core.List, null, slots.map(function (slot) { return (React__default.createElement(core.ListItem, { key: slot.id, alignItems: "center" },
                 React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm") }))); })))));
 };
 
-var tFile$6 = 'neo/distrib-slots';
-var shortTKey$6 = tFile$6 + ":resolved";
+var tFile$5 = 'neo/distrib-slots';
+var shortTKey$5 = tFile$5 + ":resolved";
 var ResolvedState = function (_a) {
     var distrib = _a.distrib, status = _a.status;
-    var t = useTranslation(['translation', tFile$6]).t;
+    var t = useTranslation(['translation', tFile$5]).t;
     if (status.has === 'inNeed') {
         var message = '';
         if (status.voluntaryOf) {
-            message = t(shortTKey$6 + ".voluntaryOf", {
+            message = t(shortTKey$5 + ".voluntaryOf", {
                 name: status.voluntaryOf.firstName + " " + status.voluntaryOf.firstName,
             });
         }
         else {
-            message = t(shortTKey$6 + ".voluntaryOfNull");
+            message = t(shortTKey$5 + ".voluntaryOfNull");
         }
         return (React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
             React__default.createElement(core.Typography, null, message)));
@@ -15155,18 +15143,18 @@ var ResolvedState = function (_a) {
         return React__default.createElement(React__default.Fragment, null);
     var dateStr = format$1(slot.start, 'EEEE dd MMMM yyyy') + " de " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm");
     return (React__default.createElement(core.Box, null,
-        React__default.createElement(core.Typography, { color: "primary", align: "center" }, t(shortTKey$6 + ".selectedSlot", { date: dateStr })),
+        React__default.createElement(core.Typography, { color: "primary", align: "center" }, t(shortTKey$5 + ".selectedSlot", { date: dateStr })),
         status.voluntaryFor && status.voluntaryFor.length > 0 && (React__default.createElement(core.Box, { mt: 4 },
-            React__default.createElement(core.Typography, { align: "center" }, t(shortTKey$6 + ".voluntaryDetails")),
+            React__default.createElement(core.Typography, { align: "center" }, t(shortTKey$5 + ".voluntaryDetails")),
             React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
                 React__default.createElement(core.List, null, status.voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })))))));
 };
 
-var tFile$7 = 'neo/distrib-slots';
-var shortTKey$7 = tFile$7 + ":userSlotsSelector.end";
+var tFile$6 = 'neo/distrib-slots';
+var shortTKey$6 = tFile$6 + ":userSlotsSelector";
 var UserDistribSlotsSelectorView = function (_a) {
     var distribId = _a.distribId, onRegister = _a.onRegister, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$7]).t;
+    var t = useTranslation(['translation', tFile$6]).t;
     var _b = React__default.useState(false), loading = _b[0], toggleLoading = _b[1];
     var _c = React__default.useState(''), error = _c[0], setError = _c[1];
     var _d = React__default.useState(), distrib = _d[0], setDistrib = _d[1];
@@ -15296,30 +15284,30 @@ var UserDistribSlotsSelectorView = function (_a) {
         if (status.registered) {
             var confirmMessage = '';
             if (status.has === 'inNeed') {
-                confirmMessage = t(shortTKey$7 + ".inNeed");
+                confirmMessage = t(shortTKey$6 + ".end.inNeed");
             }
             else if (status.has === 'voluntary') {
-                confirmMessage = t(shortTKey$7 + ".voluntary");
+                confirmMessage = t(shortTKey$6 + ".end.voluntary");
             }
             else {
-                confirmMessage = t(shortTKey$7 + ".solo");
+                confirmMessage = t(shortTKey$6 + ".end.solo");
             }
-            return (React__default.createElement(core.Box, { p: 2 },
+            return (React__default.createElement(core.Box, { py: 2 },
                 React__default.createElement(core.Typography, null, confirmMessage),
                 status.registeredSlotIds && status.registeredSlotIds.length > 0 && (React__default.createElement(core.Box, { mt: 2 },
                     React__default.createElement(RegisteredSlotsList, { slots: distrib.slots.filter(function (s) { var _a; return ((_a = status.registeredSlotIds) === null || _a === void 0 ? void 0 : _a.includes(s.id)) || false; }) }))),
                 status.voluntaryFor && status.voluntaryFor.length > 0 && (React__default.createElement(core.Box, { mt: 2 },
-                    React__default.createElement(core.Typography, null, t(shortTKey$7 + ".voluntaryDetails")),
+                    React__default.createElement(core.Typography, null, t(shortTKey$6 + ".end.voluntaryDetails")),
                     React__default.createElement(core.List, null, status.voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); }))))));
         }
         if (!status.has) {
-            return (React__default.createElement(core.Box, { p: 2 },
+            return (React__default.createElement(core.Box, { py: 2 },
                 React__default.createElement(ModeSelector, { onSelect: function (mode) {
                         setStatus(__assign(__assign({}, status), { has: mode }));
                     } })));
         }
         if (status.has === 'inNeed') {
-            return (React__default.createElement(core.Box, { p: 2 },
+            return (React__default.createElement(core.Box, { py: 2 },
                 React__default.createElement(UserInNeedForm, { onConfirm: function (allowed) {
                         setStatus(__assign(__assign({}, status), { has: 'inNeed', allowed: allowed }));
                     }, onCancel: function () {
@@ -15327,14 +15315,14 @@ var UserDistribSlotsSelectorView = function (_a) {
                     } })));
         }
         if (!status.registeredSlotIds || status.registeredSlotIds.length === 0) {
-            return (React__default.createElement(core.Box, { p: 2 },
+            return (React__default.createElement(core.Box, { py: 2 },
                 React__default.createElement(SlotsSelector, { slots: distrib.slots, isLastStep: true, onSelect: function (values) {
                         setStatus(__assign(__assign({}, status), { registeredSlotIds: values }));
                     }, onCancel: function () {
                         setStatus(__assign(__assign({}, status), { registeredSlotIds: null, has: null }));
                     } })));
         }
-        return (React__default.createElement(core.Box, { p: 2 },
+        return (React__default.createElement(core.Box, { py: 2 },
             React__default.createElement(InNeedUsersSelector, { inNeedUsers: distrib.inNeedUsers || [], onConfirm: function (userIds) {
                     setStatus(__assign(__assign({}, status), { voluntaryForIds: userIds }));
                 }, onCancel: function () {
@@ -15343,10 +15331,25 @@ var UserDistribSlotsSelectorView = function (_a) {
     };
     /** */
     return (React__default.createElement(core.Dialog, { open: opened, onClose: closePopup },
-        React__default.createElement(MasterCard, { onClose: loading ? undefined : closePopup },
-            error && (React__default.createElement(core.Box, { p: 2 },
-                React__default.createElement(lab.Alert, { severity: "error" }, error))),
-            renderContent())));
+        React__default.createElement(core.DialogTitle, null,
+            React__default.createElement(core.Box, { flex: 1, display: "flex", alignItems: "center" },
+                React__default.createElement(core.Box, { flex: 1, display: "flex", alignItems: "center" },
+                    React__default.createElement(core.Box, { mr: 2 },
+                        React__default.createElement("img", { height: 36, src: "/img/virus.svg", alt: "" })),
+                    React__default.createElement(core.Typography, { variant: "h4" }, t(shortTKey$6 + ".cardTitle"))),
+                React__default.createElement(core.Box, null, !loading && (React__default.createElement(core.IconButton, { onClick: closePopup },
+                    React__default.createElement(CloseIcon, null)))))),
+        React__default.createElement(core.DialogContent, null,
+            React__default.createElement(React__default.Fragment, null,
+                !status ||
+                    (!status.has && (React__default.createElement(core.Box, { py: 2 },
+                        React__default.createElement(lab.Alert, { severity: "error" },
+                            t(shortTKey$6 + ".alert.p1"),
+                            React__default.createElement("br", null),
+                            t(shortTKey$6 + ".alert.p2"))))),
+                error && (React__default.createElement(core.Box, { p: 2 },
+                    React__default.createElement(lab.Alert, { severity: "error" }, error))),
+                renderContent()))));
 };
 var UserDistribSlotsSelectorView$1 = withNeolithicProvider(withi18n(UserDistribSlotsSelectorView));
 
@@ -15394,27 +15397,27 @@ var r=function(t,e){return (r=Object.setPrototypeOf||{__proto__:[]}instanceof Ar
 var ReactToPrint = unwrapExports(lib);
 var lib_1 = lib.lib;
 
-var tFile$8 = 'neo/distrib-slots';
-var shortTKey$8 = tFile$8 + ":resolver";
+var tFile$7 = 'neo/distrib-slots';
+var shortTKey$7 = tFile$7 + ":resolver";
 var InNeedNotResolvedUsersTable = function (_a) {
     var users = _a.users;
-    var t = useTranslation(['translation', tFile$8]).t;
+    var t = useTranslation(['translation', tFile$7]).t;
     /** */
     return (React__default.createElement(core.Table, null,
         React__default.createElement(core.TableHead, null,
             React__default.createElement(core.TableRow, null,
                 React__default.createElement(core.TableCell, { colSpan: 2 },
-                    React__default.createElement(lab.Alert, { severity: "error" }, t(shortTKey$8 + ".userInNeedsNotLocked"))))),
+                    React__default.createElement(lab.Alert, { severity: "error" }, t(shortTKey$7 + ".userInNeedsNotLocked"))))),
         React__default.createElement(core.TableBody, null, users.map(function (user) { return (React__default.createElement(core.TableRow, { key: user.id },
             React__default.createElement(core.TableCell, null, user.firstName + " " + user.lastName),
             React__default.createElement(core.TableCell, null, formatUserAddress(user)))); }))));
 };
 
-var tFile$9 = 'neo/distrib-slots';
-var shortTKey$9 = tFile$9 + ":resolver";
+var tFile$8 = 'neo/distrib-slots';
+var shortTKey$8 = tFile$8 + ":resolver";
 var SlotsResolvedTable = function (_a) {
     var distrib = _a.distrib;
-    var t = useTranslation(['translation', tFile$9]).t;
+    var t = useTranslation(['translation', tFile$8]).t;
     /** */
     var getInNeedUsersOfVoluntaryList = function (userId) {
         if (!distrib)
@@ -15437,9 +15440,9 @@ var SlotsResolvedTable = function (_a) {
         React__default.createElement(core.Table, null,
             React__default.createElement(core.TableHead, null,
                 React__default.createElement(core.TableRow, null,
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$9 + ".slot")),
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$9 + ".user")),
-                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$9 + ".getOrderFor")))),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".slot")),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".user")),
+                    React__default.createElement(core.TableCell, { style: { backgroundColor: '#222', color: '#fff' } }, t(shortTKey$8 + ".getOrderFor")))),
             React__default.createElement(core.TableBody, null, distrib.slots &&
                 distrib.slots
                     .filter(function (slot) { return slot.selectedUserIds.length > 0; })
@@ -15456,11 +15459,11 @@ var SlotsResolvedTable = function (_a) {
                 })))));
 };
 
-var tFile$a = 'neo/distrib-slots';
-var shortTKey$a = tFile$a + ":resolver";
+var tFile$9 = 'neo/distrib-slots';
+var shortTKey$9 = tFile$9 + ":resolver";
 var DistribSlotsResolver = function (_a) {
     var distribId = _a.distribId;
-    var t = useTranslation(['translation', tFile$a]).t;
+    var t = useTranslation(['translation', tFile$9]).t;
     var toPrintRef = React__default.useRef(null);
     var _b = React__default.useState(), distrib = _b[0], setDistrib = _b[1];
     /** */
@@ -15494,11 +15497,11 @@ var DistribSlotsResolver = function (_a) {
     if (!distrib.slots || !distrib.orderEndDate)
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$a + ".slotsNotActivated")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$9 + ".slotsNotActivated")))));
     if (isBefore(new Date(), distrib.orderEndDate)) {
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$a + ".distribNotClosed")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$9 + ".distribNotClosed")))));
     }
     var isResolved = distrib.slots.reduce(function (acc, slot) {
         if (acc || slot.selectedUserIds.length > 0)
@@ -15508,7 +15511,7 @@ var DistribSlotsResolver = function (_a) {
     if (!isResolved) {
         return (React__default.createElement(core.Card, null,
             React__default.createElement(core.CardContent, null,
-                React__default.createElement(core.Typography, null, t(shortTKey$a + ".resolving")))));
+                React__default.createElement(core.Typography, null, t(shortTKey$9 + ".resolving")))));
     }
     var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spreadArrays(acc, vs); }, []);
     var inNeedUsersNotLocked = (distrib.inNeedUsers || []).filter(function (u) { return !iNeedLockedUserIds.includes(u.id); });
@@ -15520,7 +15523,7 @@ var DistribSlotsResolver = function (_a) {
                 distrib.slots && (React__default.createElement(core.CardContent, null,
                     React__default.createElement(SlotsResolvedTable, { distrib: distrib }))),
                 distrib.otherUsers && distrib.otherUsers.length > 0 && (React__default.createElement(core.CardContent, null,
-                    React__default.createElement(core.Typography, null, t(shortTKey$a + ".otherUsersList", {
+                    React__default.createElement(core.Typography, null, t(shortTKey$9 + ".otherUsersList", {
                         list: distrib.otherUsers
                             .map(function (u) { return u.firstName + " " + u.lastName; })
                             .join(', '),
