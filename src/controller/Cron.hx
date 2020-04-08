@@ -1,4 +1,5 @@
 package controller;
+import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
 import db.MultiDistrib;
 import sugoi.tools.TransactionWrappedTask;
@@ -18,6 +19,7 @@ class Cron extends Controller
 
 		//For testing purposes you can add an arg to build a "fake now"
 		this.now = App.current.params.exists("now") ? Date.fromString(App.current.params.get("now")) : Date.now();
+		Sys.println("now is "+this.now.toString());
 	}
 
 	public function doDefault(){}
@@ -221,19 +223,21 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 		//Distrib notifications
-		var task = new TransactionWrappedTask("Distrib notifications",function(){
-			distribNotif(4,db.User.UserFlags.HasEmailNotif4h); //4h before
-			distribNotif(24,db.User.UserFlags.HasEmailNotif24h); //24h before
-			distribNotif(0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
+		var task = new TransactionWrappedTask("Distrib notifications");
+		task.setTask(function(){
+			distribNotif(task,this.now,4,db.User.UserFlags.HasEmailNotif4h); //4h before
+			distribNotif(task,this.now,24,db.User.UserFlags.HasEmailNotif24h); //24h before
+			distribNotif(task,this.now,0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
 		});
 		task.execute(!App.config.DEBUG);
 
 		//Distrib Validation notifications				
-		var task = new TransactionWrappedTask("Distrib Validation notifications",distribValidationNotif);
+		var task = new TransactionWrappedTask("Distrib Validation notifications");
+		task.setTask(distribValidationNotif.bind(task));
 		task.execute(!App.config.DEBUG);
 
 		//time slot assignement when orders are closing
-		/*new TransactionWrappedTask("Time slots assignement",function(){
+		new TransactionWrappedTask("Time slots assignement",function(){
 			var range = tools.DateTool.getLastHourRange( now );
 			var distribs = MultiDistrib.manager.search($distribEndDate >= range.from && $distribEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){
@@ -247,15 +251,15 @@ class Cron extends Controller
 					var m = new Mail();
 					m.setSender(App.config.get("default_email"), "Cagette.net");
 					for ( u in admins )	m.addRecipient(u.user.email, u.user.getName());
-					m.setSubject( '[${group.name}] Crénaux horaires pour la distribution du '+Formatting.hDate(d.distribStartDate) );
-					var text = 'La commande vient de fermer, les crénaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeslots/${d.id}">Voir le récapitulatif des crénaux horaires</a>.';
+					m.setSubject( '[${group.name}] Créneaux horaires pour la distribution du '+Formatting.hDate(d.distribStartDate) );
+					var text = 'La commande vient de fermer, les créneaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeSlots/${d.id}">Voir le récapitulatif des créneaux horaires</a>.';
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					App.sendMail(m , d.getGroup() );	
 				}catch (e:Dynamic){						
 					app.logError(e); //email could be invalid
 				}
 			}
-		}).execute(!App.config.DEBUG);*/
+		}).execute(!App.config.DEBUG);
 		
 
 	}
@@ -268,47 +272,49 @@ class Cron extends Controller
 		
 		app.event(DailyCron(this.now));
 		
-		//ERRORS MONITORING
-		var n = Date.now();
-		var yest24h = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
-		var yest0h = DateTools.delta(yest24h, -1000 * 60 * 60 * 24);
-		
-		var errors = sugoi.db.Error.manager.search( $date < yest24h && $date > yest0h  );		
-		if (errors.length > 0) {
-			var report = new StringBuf();
-			report.add("<h1>" + App.config.NAME + " : ERRORS</h1>");
-			for (e in errors) {
-				report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
-			}
+		var task = new TransactionWrappedTask( "Send errors to admin by email", function() {
+			var n = Date.now();
+			var yest24h = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 0, 0, 0);
+			var yest0h = DateTools.delta(yest24h, -1000 * 60 * 60 * 24);
 			
-			var m = new Mail();
-			m.setSender(App.config.get("default_email"),"Cagette.net");
-			m.addRecipient(App.config.get("webmaster_email"));
-			m.setSubject(App.config.NAME+" Errors");
-			m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
-			App.sendMail(m);
-		}
+			var errors = sugoi.db.Error.manager.search( $date < yest24h && $date > yest0h  );		
+			if (errors.length > 0) {
+				var report = new StringBuf();
+				report.add("<h1>" + App.config.NAME + " : ERRORS</h1>");
+				for (e in errors) {
+					report.add("<div><pre>"+e.error + " at URL " + e.url + " ( user : " + (e.user!=null?e.user.toString():"none") + ", IP : " + e.ip + ")</pre></div><hr/>");
+				}
+				
+				var m = new Mail();
+				m.setSender(App.config.get("default_email"),"Cagette.net");
+				m.addRecipient(App.config.get("webmaster_email"));
+				m.setSubject(App.config.NAME+" Errors");
+				m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:report.toString() } ) );
+				App.sendMail(m);
+			}
+		});
+		task.execute(!App.config.DEBUG);
 		
-		//Demo contracts : deletion after 7 days
-		var sevenDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7);
-		var heightDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 8);
-		for( g in db.Group.manager.search($cdate<sevenDaysAgo && $cdate>heightDaysAgo) ){
-			g.deleteDemoContracts();
-		}		
+		var task = new TransactionWrappedTask( "Old datas cleaning", function() {
+			task.log("Delete old messages");
+			db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 3));
+			task.log("Delete old sessions");
+			sugoi.db.Session.clean();
+			task.log("Delete old demo catalogs");
+			var sevenDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 7);
+			var heightDaysAgo = DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 8);
+			for( g in db.Group.manager.search($cdate<sevenDaysAgo && $cdate>heightDaysAgo) ){
+				g.deleteDemoContracts();
+			}	
+		});
+		task.execute(!App.config.DEBUG);
 		
-		//Old Messages cleaning
-		db.Message.manager.delete($date < DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 3));
-		
-		//old sessions cleaning
-		sugoi.db.Session.clean();
 		
 		//Delete old documents of catalogs that have ended 18 months ago
-		printTitle("Delete old documents");
-		var task = new TransactionWrappedTask( function() {
-
+		var task = new TransactionWrappedTask( "Delete old documents", function() {
 			var eighteenMonthsAgo = DateTools.delta( Date.now(), -1000.0 * 60 * 60 * 24 * 30 * 18 );
 			var oneDayBefore = DateTools.delta( eighteenMonthsAgo, -1000 * 60 * 60 * 24 );
-			print('Catalogs that have ended between $oneDayBefore and $eighteenMonthsAgo');
+			task.log('Catalogs that have ended between $oneDayBefore and $eighteenMonthsAgo');
 			//Catalogs that have ended during that time range
 			var endedCatalogs = db.Catalog.manager.search( $endDate >= oneDayBefore && $endDate < eighteenMonthsAgo, false );
 			var documents : Array<sugoi.db.EntityFile>  = null;
@@ -330,78 +336,69 @@ class Cron extends Controller
 	 * @param	hour
 	 * @param	flag
 	 */
-	function distribNotif(hour:Int, flag:db.User.UserFlags) {
+	function distribNotif(task:TransactionWrappedTask,now:Date,hour:Int, flag:db.User.UserFlags) {
 		
 		//trouve les distrib qui commencent dans le nombre d'heures demandé
  		//on recherche celles qui commencent jusqu'à une heure avant pour ne pas en rater 
- 		var from = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * (hour-1));
- 		var to = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * hour);
-		
-		//if (App.config.DEBUG) from = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * -30);
+ 		var from = DateTools.delta(now, 1000.0 * 60 * 60 * (hour-1));
+ 		var to = DateTools.delta(now, 1000.0 * 60 * 60 * hour);
 		
 		// dans le cas HasEmailNotifOuverture la date à prendre est le orderStartDate
 		// et non pas date qui est la date de la distribution
 		var distribs;
-		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
+		if ( db.User.UserFlags.HasEmailNotifOuverture == flag ){
+			task.title('$flag : Look for distribs with orderStartDate between $from to $to');
 			distribs = db.Distribution.manager.search( $orderStartDate >= from && $orderStartDate <= to , false);
-		else
-			distribs = db.Distribution.manager.search( $date >= from && $date <= to , false);
-		
-		//Sys.print("distribNotif "+hour+" from "+from+" to "+to+"<br/>\n");
+		} else {
+			task.title('$flag : Look for distribs happening between $from to $to');
+			distribs = db.Distribution.manager.search( $date >= from && $date < to , false);
+		}
 		
 		//on s'arrete immédiatement si aucune distibution trouvée
  		if (distribs.length == 0) return;
 		
-		//cherche plus tard si on a pas une "grappe" de distrib
-		/*while (true) {
-			var extraDistribs ;
-			if ( db.User.UserFlags.HasEmailNotifOuverture != flag )
-				extraDistribs = db.Distribution.manager.search( $date >= to && $date <DateTools.delta(to,1000.0*60*60) , false);	
-			else	
-				extraDistribs = db.Distribution.manager.search( $orderStartDate >= to && $orderStartDate <DateTools.delta(to,1000.0*60*60) , false);
-			for ( e in extraDistribs) distribs.add(e);
-			if (extraDistribs.length > 0) {
-				//on fait un tour de plus avec une heure plus tard
-				to = DateTools.delta(h, 1000.0 * 60 * 60);
-			}else {
-				//plus de distribs
-				break;
-			}
-		}*/
-		
 		//on vérifie dans le cache du jour que ces distrib n'ont pas deja été traitées lors d'un cron précédent
+		var dist :Array<Int> = [];
 		var cacheId = Date.now().toString().substr(0, 10)+Std.string(flag);
-		var dist :Array<Int> = sugoi.db.Cache.get(cacheId);
-		if (dist != null) {
-			for (d in Lambda.array(distribs)) {
-				if (Lambda.exists(dist, function(x) return x == d.id)) {
-					// Comment this line in case of local test
-					distribs.remove(d);
+		if(!App.config.DEBUG) {
+			dist = sugoi.db.Cache.get(cacheId);
+			if (dist != null) {
+				for (d in Lambda.array(distribs)) {
+					if (Lambda.exists(dist, function(x) return x == d.id)) {
+						// Comment this line in case of local test
+						distribs.remove(d);
+					}
 				}
+			}else {
+				dist = [];
 			}
-		}else {
-			dist = [];
 		}
+		
 		
 		//toutes les distribs trouvées ont deja été traitées
 		if (distribs.length == 0) return;
 		
 		//stocke cache
-		for (d in distribs) dist.push(d.id);
-		Cache.set(cacheId, dist, 24 * 60 * 60);
+		for (d in distribs) {
+			dist.push(d.id);
+			task.log("Distrib : "+d.date+" de "+d.catalog.name+", groupe : "+d.catalog.group.name);
+		}
+		if(!App.config.DEBUG) Cache.set(cacheId, dist, 24 * 60 * 60);
+
+
 		
 		//We have now the distribs we want to notify about.
-		var distribsByContractId = new Map<Int,db.Distribution>();
+		/*var distribsByContractId = new Map<Int,db.Distribution>();
 		for (d in distribs) {			
 			if (d == null || d.catalog==null) continue;
 			distribsByContractId.set(d.catalog.id, d);
-		}
+		}*/
 
 		//Boucle sur les distributions pour gerer le cas de plusieurs distributions le même jour sur le même contrat
  		var orders = [];
  		for (d in distribs) {
 			if (d == null || d.catalog==null) continue;
- 			//get orders for both type of contracts
+ 			//get orders for both type of catalogs
 			for ( x in d.catalog.getOrders(d)) orders.push(x);
 		}
 		
@@ -411,27 +408,26 @@ class Cron extends Controller
 		*/
 		var users = new Map <String,{
 			user:db.User,
-			distrib:db.Distribution,
-			products:Array<db.UserOrder>,
+			distrib:db.MultiDistrib,
+			orders:Array<db.UserOrder>,
 			vendors:Array<db.Vendor>		
 		}>();
 		
 		for (o in orders) {
 			
 			var x = users.get(o.user.id+"-"+o.product.catalog.group.id);
-			if (x == null) x = {user:o.user,distrib:null,products:[],vendors:[]};
-			x.distrib = distribsByContractId.get(o.product.catalog.id);
-			x.products.push(o);			
+			if (x == null) x = {user:o.user,distrib:null,orders:[],vendors:[]};
+			x.distrib = o.distribution.multiDistrib;
+			x.orders.push(o);			
 			users.set(o.user.id+"-"+o.product.catalog.group.id, x);
 			 
 			// Prévenir également le deuxième user en cas des commandes alternées
  			if (o.user2 != null) {
  				var x = users.get(o.user2.id+"-"+o.product.catalog.group.id);
- 				if (x == null) x = {user:o.user2,distrib:null,products:[],vendors:[]};
- 				x.distrib = distribsByContractId.get(o.product.catalog.id);
- 				x.products.push(o);
-				 users.set(o.user2.id+"-"+o.product.catalog.group.id, x);
-				 
+ 				if (x == null) x = {user:o.user2,distrib:null,orders:[],vendors:[]};
+ 				x.distrib = o.distribution.multiDistrib;
+ 				x.orders.push(o);
+				users.set(o.user2.id+"-"+o.product.catalog.group.id, x);
  			}
 		}
 
@@ -439,7 +435,7 @@ class Cron extends Controller
 		for( k in users.keys()){
 			var x = users.get(k);
 			var total = 0.0;
-			for( o in x.products) total += o.quantity;
+			for( o in x.orders) total += o.quantity;
 			if(total==0.0) users.remove(k);
 		}
 		
@@ -450,28 +446,26 @@ class Cron extends Controller
 				var memberList = d.catalog.group.getMembers();
 				for (u in memberList) {
 					var x = users.get(u.id+"-"+d.catalog.group.id);
-					if (x == null) x = {user:u,distrib:null,products:[],vendors:[]};
-					x.distrib = distribsByContractId.get(d.catalog.id);
+					if (x == null) x = {user:u,distrib:null,orders:[],vendors:[]};
+					x.distrib = d.multiDistrib;
 					x.vendors.push(d.catalog.vendor);
 					users.set(u.id+"-"+d.catalog.group.id, x);
-					//print(u.id+"-"+d.catalog.amap.id, x);
 				}
 			}
 		}
 
-		for ( u in users) {
-			
-			if (u.user.flags.has(flag) ) {
-				
+		for ( u in users) {			
+			if (u.user.flags.has(flag) ) {				
 				if (u.user.email != null) {
-					var group = u.distrib.catalog.group;
+					var group = u.distrib.group;
+					task.log("=== "+u.user.getName()+" de "+group.name);
 					this.t = sugoi.i18n.Locale.init(u.user.lang); //switch to the user language
 
 					var text;
 					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) 
 					{
 						//order opening notif
-						text = t._("Opening of orders for the delivery of <b>::date::</b>", {date:view.hDate(u.distrib.date)});
+						text = t._("Opening of orders for the delivery of <b>::date::</b>", {date:view.hDate(u.distrib.distribStartDate)});
 						text += "<br/>";
 						text += t._("The following suppliers are involved :");
 						text += "<br/><ul>";
@@ -483,9 +477,9 @@ class Cron extends Controller
 					}else{
 						//Distribution notif to the users
 						var d = u.distrib;
-						text = t._("Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>", {day:view.dDate(d.date),from:view.hHour(d.date),to:view.hHour(d.end)});
+						text = t._("Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>", {day:view.dDate(d.distribStartDate),from:view.hHour(d.distribStartDate),to:view.hHour(d.distribEndDate)});
 						text += t._("Your products to collect :") + "<br/><ul>";
-						for ( p in u.products) {
+						for ( p in u.orders) {
 							text += "<li>"+p.quantity+" x "+p.product.getName();
 							// Gerer le cas des contrats en alternance
 							if (p.user2 != null) {
@@ -506,11 +500,27 @@ class Cron extends Controller
 						if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
 						m.addRecipient(u.user.email, u.user.getName());
 						if (u.user.email2 != null) m.addRecipient(u.user.email2);
-						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.date)})  );
-						m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
-						App.sendMail(m , u.distrib.catalog.group);	
+						m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(u.distrib.distribStartDate)})  );
+						
+						//time slots
+						var status = null;
+						if(u.distrib.slots!=null){
+							status = new service.TimeSlotsService(u.distrib).userStatus(u.user.id);
+						} 
+
+						m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { text:text,group:group,multiDistrib:u.distrib,user:u.user,status:status,hHour:Formatting.hHour } ) );
+						App.sendMail(m , u.distrib.group);	
+
+						if(App.config.DEBUG){
+							//task.log("distrib is "+u.distrib);
+							task.title(u.user.getName());
+							task.log(m.getHtmlBody());
+						}
+
 					}catch (e:Dynamic){						
 						app.logError(e); //email could be invalid
+						task.warning(e);
+						task.warning(haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
 					}
 					
 				}
@@ -524,7 +534,7 @@ class Cron extends Controller
 	 * 
 	 * Autovalidate it after 10 days
 	 */
-	function distribValidationNotif(){
+	function distribValidationNotif(task){
 		
 		var now = Date.now();
 
@@ -545,20 +555,13 @@ class Cron extends Controller
 				distribs.remove(d);
 			}
 		}
-		
-
 		var view = App.current.view;
-		
 		for ( d in distribs ){
-			
 			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
-			
 			var url = "http://" + App.config.HOST + "/distribution/validate/"+d.id;
-			
 			var html = t._("<p>Your distribution just finished, don't forget to <b>validate</b> it</p>");
 			html += explain;
 			html += t._("<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)", {distriburl:url});
-			
 			App.quickMail(d.getGroup().contact.email, subj, html);
 		}
 		
@@ -595,8 +598,8 @@ class Cron extends Controller
 		 */ 
 		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
-		print('<h3>Autovalidation of unvalidated distribs</h3>');
-		print('Find distributions from $from to $to');
+		task.log('<h3>Autovalidation of unvalidated distribs</h3>');
+		task.log('Find distributions from $from to $to');
 		var distribs = db.MultiDistrib.manager.search( !$validated && ($distribStartDate >= from) && ($distribStartDate < to) , false);
 		for ( d in Lambda.array(distribs)){
 			if ( !d.getGroup().hasPayments() ){
@@ -605,11 +608,11 @@ class Cron extends Controller
 		}
 
 		for (d in distribs){
-			print(d.toString());
+			task.log(d.toString());
 			try	{
 				service.PaymentService.validateDistribution(d);
 			}catch(e:tink.core.Error){
-				print(e.message);
+				task.log(e.message);
 				continue;
 			}
 		}

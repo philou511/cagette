@@ -200,7 +200,7 @@ class Distributions extends Controller {
   // TODO : remove
   @admin
   public function doGenerateFakeDatas() {
-    var fakeUserIds = [1, 2, 6, 8, 9];
+    var fakeUserIds : Array<Int> = this.distrib.group.getMembers().map(u->return u.id).array();
 
     var s = new TimeSlotsService(this.distrib);
     this.distrib.lock();
@@ -211,7 +211,7 @@ class Distributions extends Controller {
     this.distrib.update();
 
     s.generateSlots();
-    s.registerUserToSlot(1, [1, 2]);
+    s.registerUserToSlot(fakeUserIds[0], [1, 2]);
 
     for (userIndex in 1...fakeUserIds.length) {
       var slotIds = new Array<Int>();
@@ -224,11 +224,11 @@ class Distributions extends Controller {
       s.registerUserToSlot(fakeUserIds[userIndex], slotIds);
     }
     
-    s.registerInNeedUser(10, ["email"]);
-    s.registerInNeedUser(12, ["email", "address", "phone"]);
-    s.registerInNeedUser(11, ["email", "address", "phone"]);
-    s.registerInNeedUser(15, ["address"]);
-    s.registerInNeedUser(17, ["phone"]);
+    s.registerInNeedUser(fakeUserIds[10], ["email"]);
+    s.registerInNeedUser(fakeUserIds[12], ["email", "address", "phone"]);
+    s.registerInNeedUser(fakeUserIds[11], ["email", "address", "phone"]);
+    s.registerInNeedUser(fakeUserIds[15], ["address"]);
+    s.registerInNeedUser(fakeUserIds[17], ["phone"]);
 
     // s.registerUserToSlot(55875, [0, 1]);
 	  // s.registerVoluntary(55875, [10, 11]);

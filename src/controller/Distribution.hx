@@ -1695,9 +1695,17 @@ class Distribution extends Controller
 
 	/**
 
-	**/
+	
 	@tpl("distribution/userTimeSlot.mtt")
 	function doUserTimeSlot(d:db.MultiDistrib){
+		view.distribution = d;
+	}**/
+
+	/**
+		timeslot resolution for admins
+	**/
+	@tpl("distribution/timeSlots.mtt")
+	function doTimeSlots(d:db.MultiDistrib){
 		view.distribution = d;
 	}
 }
