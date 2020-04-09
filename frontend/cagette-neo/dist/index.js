@@ -15344,7 +15344,7 @@ var VoluntaryStep = function (_a) {
 var tFile$5 = 'neo/distrib-slots';
 var shortTKey$5 = tFile$5 + ":userSlotsSelector";
 var SummaryStep = function (_a) {
-    var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, onSalesProcess = _a.onSalesProcess, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds, close = _a.close;
+    var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, inNeedUsers = _a.inNeedUsers, onSalesProcess = _a.onSalesProcess, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds, close = _a.close;
     var t = useTranslation(['translation', tFile$5]).t;
     var confirmMessage = '';
     if (mode === 'inNeed') {
@@ -15371,9 +15371,9 @@ var SummaryStep = function (_a) {
             React__default.createElement(core.Divider, null)),
         voluntaryFor && voluntaryFor.length > 0 && (React__default.createElement(core.Box, null,
             React__default.createElement(core.Typography, { align: "center" }, t(shortTKey$5 + ".end.voluntaryDetails")),
-            React__default.createElement(core.List, null, voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })),
-            React__default.createElement(core.Box, { p: 1, display: "flex", justifyContent: "center" },
-                React__default.createElement(core.Button, { variant: !onSalesProcess ? 'contained' : 'outlined', color: "primary", onClick: addInNeeds }, t('add'))))),
+            React__default.createElement(core.List, null, voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })))),
+        mode === 'voluntary' && inNeedUsers && inNeedUsers.length > 0 && (React__default.createElement(core.Box, { p: 1, display: "flex", justifyContent: "center" },
+            React__default.createElement(core.Button, { variant: !onSalesProcess ? 'contained' : 'outlined', color: "primary", onClick: addInNeeds }, t('add')))),
         React__default.createElement(core.Box, { my: 2 },
             React__default.createElement(core.Divider, null)),
         React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
@@ -15398,7 +15398,7 @@ var UserDistribSlotsSelectorView = function (_a) {
             case 'select-inNeed':
                 return (React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back }));
             case 'summary':
-                return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, onSalesProcess: onSalesProcess, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
+                return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, inNeedUsers: inNeedUsers, onSalesProcess: onSalesProcess, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
             case 'resolved':
                 return React__default.createElement("div", null, "resolved");
             default:
