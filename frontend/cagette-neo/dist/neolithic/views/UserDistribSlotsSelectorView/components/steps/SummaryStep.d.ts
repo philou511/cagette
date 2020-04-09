@@ -8,6 +8,7 @@ interface Props {
     voluntaryFor?: UserVo[];
     changeSlots: () => void;
     addInNeeds: () => void;
+    close: () => void;
 }
-declare const SummaryStep: ({ mode, slots, registeredSlotIds, voluntaryFor, changeSlots, addInNeeds, }: Props) => JSX.Element;
+declare const SummaryStep: ({ mode, slots, registeredSlotIds, voluntaryFor, changeSlots, addInNeeds, close, }: Props) => JSX.Element;
 export default SummaryStep;

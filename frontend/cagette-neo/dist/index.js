@@ -7353,10 +7353,10 @@ var ActivateDistribSlotsView = function (_a) {
                                         id: s + 1,
                                     }))) }))); }))),
                     React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
-                        React__default.createElement(core.Button, { onClick: closeDialog }, t(distrib.slots ? 'close' : 'cancel')),
+                        React__default.createElement(core.Button, { variant: "outlined", onClick: closeDialog }, t(distrib.slots ? 'close' : 'cancel')),
                         !distrib.slots && (React__default.createElement(React__default.Fragment, null,
                             React__default.createElement(core.Box, { mx: 2 }),
-                            React__default.createElement(core.Button, { variant: "outlined", color: "primary", onClick: onConfirmClick }, t('neo/distrib-slots:activeDistrib.confirmBtnLabel')))))))))));
+                            React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: onConfirmClick }, t('neo/distrib-slots:activeDistrib.confirmBtnLabel')))))))))));
 };
 var ActivateDistribSlotsView$1 = withNeolithicProvider(withi18n(ActivateDistribSlotsView));
 
@@ -15344,7 +15344,7 @@ var VoluntaryStep = function (_a) {
 var tFile$5 = 'neo/distrib-slots';
 var shortTKey$5 = tFile$5 + ":userSlotsSelector";
 var SummaryStep = function (_a) {
-    var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds;
+    var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds, close = _a.close;
     var t = useTranslation(['translation', tFile$5]).t;
     var confirmMessage = '';
     if (mode === 'inNeed') {
@@ -15366,12 +15366,18 @@ var SummaryStep = function (_a) {
                     .map(function (slot) { return (React__default.createElement(core.ListItem, { key: slot.id, alignItems: "center" },
                     React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm") }))); })),
                 React__default.createElement(core.Box, { p: 1 },
-                    React__default.createElement(core.Button, { variant: "outlined", color: "primary", onClick: changeSlots }, t('change')))))),
-        voluntaryFor && voluntaryFor.length > 0 && (React__default.createElement(core.Box, { mt: 2 },
+                    React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: changeSlots }, t('change')))))),
+        React__default.createElement(core.Box, { my: 2 },
+            React__default.createElement(core.Divider, null)),
+        voluntaryFor && voluntaryFor.length > 0 && (React__default.createElement(core.Box, null,
             React__default.createElement(core.Typography, { align: "center" }, t(shortTKey$5 + ".end.voluntaryDetails")),
             React__default.createElement(core.List, null, voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })),
             React__default.createElement(core.Box, { p: 1, display: "flex", justifyContent: "center" },
-                React__default.createElement(core.Button, { variant: "outlined", color: "primary", onClick: addInNeeds }, t('add')))))));
+                React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: addInNeeds }, t('add'))))),
+        React__default.createElement(core.Box, { my: 2 },
+            React__default.createElement(core.Divider, null)),
+        React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
+            React__default.createElement(core.Button, { variant: "outlined", onClick: close }, t('close')))));
 };
 
 var UserDistribSlotsSelectorView = function () {
@@ -15391,7 +15397,7 @@ var UserDistribSlotsSelectorView = function () {
             case 'select-inNeed':
                 return (React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back }));
             case 'summary':
-                return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, changeSlots: changeSlots, addInNeeds: addInNeeds }));
+                return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
             case 'resolved':
                 return React__default.createElement("div", null, "resolved");
             default:
@@ -15503,12 +15509,7 @@ var SlotsResolvedTable = function (_a) {
         return res.map(formatUser).join(', ');
     };
     /** */
-    var renderSlot = function (slot) {
-        var users = slot.selectedUserIds
-            .map(function (id) { return distrib.users.find(function (u) { return u.id === id; }); })
-            .sort(function (u1, u2) {
-            return u1.lastName.toUpperCase().localeCompare(u2.lastName.toUpperCase());
-        });
+    var renderSlotHalfTable = function (users) {
         return (React__default.createElement(core.Table, { size: "small" },
             React__default.createElement(core.TableHead, null,
                 React__default.createElement(core.TableRow, null,
@@ -15524,6 +15525,19 @@ var SlotsResolvedTable = function (_a) {
                 React__default.createElement(core.TableCell, null, Object.keys(distrib.voluntaryMap).includes("" + user.id) ? (React__default.createElement("b", null, formatUser(user) + "*")) : (formatUser(user))),
                 React__default.createElement(core.TableCell, { align: "center" }, getInNeedUsersOfVoluntaryList(user.id)))); }))));
     };
+    var renderSlotTable = function (slot) {
+        var users = slot.selectedUserIds
+            .map(function (id) { return distrib.users.find(function (u) { return u.id === id; }); })
+            .sort(function (u1, u2) {
+            return u1.lastName.toUpperCase().localeCompare(u2.lastName.toUpperCase());
+        });
+        var half = Math.ceil(users.length / 2);
+        return (React__default.createElement(core.Box, { display: "flex" },
+            React__default.createElement(core.Box, { flex: 1 }, renderSlotHalfTable(users.slice(0, half))),
+            React__default.createElement(core.Box, { width: 2, border: "1px solid #ccc" }),
+            React__default.createElement(core.Box, { flex: 1 }, half + 1 <= users.length &&
+                renderSlotHalfTable(users.slice(half, users.length)))));
+    };
     /** */
     return (React__default.createElement(core.CardContent, null,
         distrib.slots &&
@@ -15533,7 +15547,7 @@ var SlotsResolvedTable = function (_a) {
                 React__default.createElement(core.Box, { mb: 2 },
                     React__default.createElement(core.Box, { p: 1, bgcolor: "#F5F5F5" },
                         React__default.createElement(core.Typography, { align: "center" }, formatSlot(slot))),
-                    renderSlot(slot)))); }),
+                    renderSlotTable(slot)))); }),
         React__default.createElement(core.Box, { pt: 2 },
             React__default.createElement(core.Typography, null,
                 React__default.createElement("b", null, "*"),
