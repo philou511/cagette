@@ -6,9 +6,10 @@ interface Props {
     slots: DistribSlotVo[];
     registeredSlotIds?: number[];
     voluntaryFor?: UserVo[];
+    onSalesProcess: boolean;
     changeSlots: () => void;
     addInNeeds: () => void;
     close: () => void;
 }
-declare const SummaryStep: ({ mode, slots, registeredSlotIds, voluntaryFor, changeSlots, addInNeeds, close, }: Props) => JSX.Element;
+declare const SummaryStep: ({ mode, slots, registeredSlotIds, voluntaryFor, onSalesProcess, changeSlots, addInNeeds, close, }: Props) => JSX.Element;
 export default SummaryStep;
