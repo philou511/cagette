@@ -200,7 +200,7 @@ class Distributions extends Controller {
   // TODO : remove
   @admin
   public function doGenerateFakeDatas() {
-    var fakeUserIds : Array<Int> = this.distrib.group.getMembers().map(u->return u.id).array();
+    var fakeUserIds : Array<Int> = this.distrib.group.getMembers().filter(u -> u.id != 55875).map(u->return u.id).array();
 
     var s = new TimeSlotsService(this.distrib);
     this.distrib.lock();
@@ -211,9 +211,20 @@ class Distributions extends Controller {
     this.distrib.update();
 
     s.generateSlots();
-    s.registerUserToSlot(fakeUserIds[0], [1, 2]);
 
-    for (userIndex in 1...fakeUserIds.length) {
+    var nbInNeed = Math.round(fakeUserIds.length * .2);
+
+    var inNeedUserIds = new Array<Int>();
+
+    s.registerUserToSlot(fakeUserIds[0], [0, 1]);
+    s.registerVoluntary(fakeUserIds[0], []);
+
+    for (userIndex in 1...nbInNeed) {
+      s.registerInNeedUser(fakeUserIds[userIndex], ["email"]);
+      inNeedUserIds.push(fakeUserIds[userIndex]);
+    }
+
+    for (userIndex in nbInNeed...fakeUserIds.length) {
       var slotIds = new Array<Int>();
       for (slotIndex in 0...this.distrib.slots.length) {
         var slot = this.distrib.slots[slotIndex];
@@ -222,17 +233,17 @@ class Distributions extends Controller {
         }
       }
       s.registerUserToSlot(fakeUserIds[userIndex], slotIds);
+
+      if (Math.random() > 0.3 && inNeedUserIds.length > 2) {
+        var i = Math.round(Math.min(Math.random() * 3 + 1, inNeedUserIds.length - 2));
+        var iii = new Array<Int>();
+        for (ii in 0...i) {
+          iii.push(inNeedUserIds.pop());
+        }
+        s.registerVoluntary(fakeUserIds[userIndex], iii);
+      }
     }
     
-    s.registerInNeedUser(fakeUserIds[10], ["email"]);
-    s.registerInNeedUser(fakeUserIds[12], ["email", "address", "phone"]);
-    s.registerInNeedUser(fakeUserIds[11], ["email", "address", "phone"]);
-    s.registerInNeedUser(fakeUserIds[15], ["address"]);
-    s.registerInNeedUser(fakeUserIds[17], ["phone"]);
-
-    // s.registerUserToSlot(55875, [0, 1]);
-	  // s.registerVoluntary(55875, [10, 11]);
-
     Sys.print(Json.stringify(this.parse()));
   }
 

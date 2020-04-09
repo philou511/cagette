@@ -15,5 +15,7 @@
   "ignore": "Ignorer",
   "cancel": "Annuler",
   "close": "Fermer",
-  "error": "Une erreur est survenue."
+  "error": "Une erreur est survenue.",
+  "change": "Modifier",
+  "add": "Ajouter"
 }

@@ -27,7 +27,28 @@ class DistributionsSlots extends Controller {
     var userId = App.current.user.id;
     var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
 
-    if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
+    if (s.userIsAlreadyAdded(userId)) {
+      var status = s.userStatus(userId);
+
+      if (status.has == "voluntary" && request.exists("userIds")) {
+        var userIds = request.get("userIds").split(",").map(Std.parseInt);
+        var success = s.updateVoluntary(App.current.user.id, userIds);
+        if (success == false) throw new tink.core.Error(500, "Can't update voluntary");
+      } 
+      
+      if ((status.has == "solo" || status.has == "voluntary") && request.exists("slotIds")) {
+        var slotIds = request.get("slotIds").split(",").map(Std.parseInt);
+        if (slotIds.length < 1) throw new tink.core.Error(400, "Bad Request - no slot");
+        slotIds.foreach(slotId -> {
+          if (this.distrib.slots.find(slot -> slot.id == slotId) == null) throw new tink.core.Error(400, "Bad Request - unknow slot id");
+          return true;
+        });
+        var success = s.updateUserToSlot(App.current.user.id, slotIds);
+        if (success == false) throw new tink.core.Error(500, "Can't update");
+      }
+
+      return Sys.print(Json.stringify(s.userStatus(userId)));
+    }
 
     if (!request.exists("has")) throw new tink.core.Error(400, "Bad Request - has required");
     var has = request.get("has");
