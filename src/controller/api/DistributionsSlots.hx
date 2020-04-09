@@ -74,8 +74,13 @@ class DistributionsSlots extends Controller {
     var success = s.registerUserToSlot(userId, slotIds);
     if (success == false) throw new tink.core.Error(500, "Can't register");
 
-    if (has == "voluntary" && request.exists("userIds")) {
-      var userIds = request.get("userIds").split(",").map(Std.parseInt);
+    if (has == "voluntary") {
+      var userIds: Array<Int>;
+      if (request.exists("userIds")) {
+        userIds = request.get("userIds").split(",").map(Std.parseInt);
+      } else {
+        userIds = [];
+      }
       success = s.registerVoluntary(App.current.user.id, userIds);
       if (success == false) throw new tink.core.Error(500, "Can't register voluntary");
     }
