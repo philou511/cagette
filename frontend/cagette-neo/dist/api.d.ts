@@ -10,9 +10,8 @@ declare const _default: {
         getDistrib(id: number): Promise<import("./vo").DistribVo | null>;
         getResolvedDistrib<T>(id: number, parser: (data: any) => T): Promise<T | null>;
         activateSlots(id: number): Promise<import("./vo").DistribVo | null>;
-        addMeToInNeedUser(distribId: number, data: any, type?: "json" | "data"): Promise<any>;
-        addMeToSlot(distribId: number, data: any, type?: "json" | "data"): Promise<any>;
-        addMeAsVoluntary(distribId: number, data: any, type?: "json" | "data"): Promise<any>;
+        registerMe(distribId: number, data: any, type?: "json" | "data"): Promise<any>;
+        getStatus(distribId: number): Promise<any>;
     };
 };
 export default _default;
