@@ -185,17 +185,16 @@ class GroupMap extends ReactComponentOfPropsAndState<GroupMapProps, GroupMapStat
 
 	override public function render() {
     	var center = props.addressCoord == null
-      		? [DEFAULT_LAT, DEFAULT_LNG]
-              : [DEFAULT_LAT, DEFAULT_LNG];
+      		? L.latLng(DEFAULT_LAT, DEFAULT_LNG)
+      		: props.addressCoord;
 
     	var zoom = props.addressCoord == null
       		? INIT_ZOOM
               : DEFAULT_ZOOM;
-        trace("GroupMap.render", center);
 
 		return jsx('
       		<LeafMap
-        	center=${[DEFAULT_LAT, DEFAULT_LNG]}
+            center=${center}
         	zoom=${zoom}
         	ref=${getMap}
         	onMoveEnd=${handleMoveEnd}

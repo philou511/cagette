@@ -184,21 +184,6 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
         }
     }
 
-  function handleSelect(address:String) {
-		setState({
-			address: address
-        });
-
-		geocodeByAddress(address)
-		.then(function(coord) {
-            trace("coord", coord);
-			fetchGroups(coord.lat, coord.lng);
-		})
-		.catchError(function(error) {
-			trace('Error', error);
-		});
-  }
-
 	override public function componentDidMount() {
         trace("componentDidMount", state.point, state.address);
 		if (state.point != null)
@@ -207,28 +192,8 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
 			// handleSelect(state.address);
 	}
 
-	function renderSuggestion(obj:Dynamic) {
-		return jsx('
-		<div className="autocomplete-item">
-			<i className="icon icon-map-marker autocomplete-icon" />
-			<strong>${obj.formattedSuggestion.mainText}</strong>&nbsp;
-			<small className="text-muted">${obj.formattedSuggestion.secondaryText}</small>
-		</div>
-		');
-	}
 
 	override public function render() {
-		var inputProps = {
-			value: state.address,
-			onChange: onChange
-		};
-
-		var cssClasses = {
-			root: 'form-group',
-			input: 'autocomplete-input',
-			autocompleteContainer: 'autocomplete-results',
-		};
-
 		return jsx('
 			<div className="group-map">
 				<div className="row">
@@ -243,13 +208,6 @@ class GroupMapRoot extends ReactComponentOf<GroupMapRootProps, GroupMapRootState
                                 mapboxToken="pk.eyJ1IjoiYnViYXIiLCJhIjoiY2loM2lubmZpMDBwcGtxbHlwdmw0bXRkbCJ9.rfgXPakoGnXZ3wIGA3-1kQ"
                                 onChange=$onAutocompleteChange />
                         </Box>
-                        <Autocomplete
-							inputProps=${inputProps}
-							onSelect=${handleSelect}
-							classNames=${cssClasses}
-							renderSuggestion=${renderSuggestion}
-							placeHolder="Saisissez votre adresse"
-						/>
 						</div>
 					</div>
       			</div>
