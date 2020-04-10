@@ -10,7 +10,7 @@
     "confirmBtnLabel": "Activer ces créneaux"
   },
   "userSlotsSelector": {
-    "cardTitle": "Inscription à un crénau horaire",
+    "cardTitle": "Inscription à un créneau horaire",
     "alert": {
       "p1": "En raison de l'épidémie en cours, ce groupe a décidé de mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
       "p2": "Dans ce sens, nous vous encourageons à retirer également les commandes des personnes proches de chez vous et à vous organiser pour les leur apporter."

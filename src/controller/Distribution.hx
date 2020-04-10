@@ -1,4 +1,6 @@
 package controller;
+import db.TmpBasket;
+import service.OrderFlowService;
 import tools.ObjectListTool;
 import db.DistributionCycle;
 import db.UserOrder;
@@ -1707,5 +1709,14 @@ class Distribution extends Controller
 	@tpl("distribution/timeSlots.mtt")
 	function doTimeSlots(d:db.MultiDistrib){
 		view.distribution = d;
+	}
+
+	@tpl("distribution/selectTimeSlots.mtt")
+	function doSelectTimeSlots(tmpBasket:TmpBasket){
+		
+		var flow = new OrderFlowService().setPlace(Place.TimeSlotSelection(tmpBasket));
+		view.url = flow.getPlaceUrl(flow.getNextPlace());
+
+		view.distribution = tmpBasket.multiDistrib;
 	}
 }
