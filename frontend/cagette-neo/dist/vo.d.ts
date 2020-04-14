@@ -39,7 +39,6 @@ export interface DistribVo {
     slots?: DistribSlotVo[];
     inNeedUsers?: UserVo[];
 }
-/** */
 export declare const parseUserVo: (data: any) => UserVo;
 export declare const parseGroupVo: (data: any) => GroupVo;
 export declare const parseDistribVo: (data: any) => DistribVo;

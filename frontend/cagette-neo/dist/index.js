@@ -1098,6 +1098,9 @@ var GeoAutocomplete = function (_a) {
 };
 
 /** */
+var parseDate = function (data) {
+    return new Date(data.replace(' ', 'T'));
+};
 var parseUserVo = function (data) { return ({
     id: data.id,
     firstName: data.firstName,
@@ -1128,19 +1131,21 @@ var parseSlotVo = function (data) {
         distribId: data.distribId,
         selectedUserIds: data.selectedUserIds,
         registeredUserIds: data.registeredUserIds,
-        start: new Date(data.start),
-        end: new Date(data.end),
+        start: parseDate(data.start),
+        end: parseDate(data.end),
     };
 };
-var parseDistribVo = function (data) { return ({
-    id: data.id,
-    mode: data.mode,
-    start: data.start ? new Date(data.start) : undefined,
-    end: data.end ? new Date(data.end) : undefined,
-    orderEndDate: data.orderEndDate ? new Date(data.orderEndDate) : undefined,
-    slots: data.slots ? data.slots.map(parseSlotVo) : undefined,
-    inNeedUsers: data.slots ? data.inNeedUsers.map(parseUserVo) : undefined,
-}); };
+var parseDistribVo = function (data) {
+    return {
+        id: data.id,
+        mode: data.mode,
+        start: data.start ? parseDate(data.start) : undefined,
+        end: data.end ? parseDate(data.end) : undefined,
+        orderEndDate: data.orderEndDate ? parseDate(data.orderEndDate) : undefined,
+        slots: data.slots ? data.slots.map(parseSlotVo) : undefined,
+        inNeedUsers: data.slots ? data.inNeedUsers.map(parseUserVo) : undefined,
+    };
+};
 /** */
 var formatUserAddress = function (user) {
     var res = '';
