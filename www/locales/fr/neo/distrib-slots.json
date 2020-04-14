@@ -10,7 +10,7 @@
     "confirmBtnLabel": "Activer ces créneaux"
   },
   "userSlotsSelector": {
-    "cardTitle": "Inscription à un crénau horaire",
+    "cardTitle": "Inscription à un créneau horaire",
     "alert": {
       "p1": "En raison de l'épidémie en cours, ce groupe a décidé de mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
       "p2": "Dans ce sens, nous vous encourageons à retirer également les commandes des personnes proches de chez vous et à vous organiser pour les leur apporter."
@@ -30,8 +30,10 @@
     "end": {
       "inNeed": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant qui pourra récupérer votre commande.",
       "voluntary": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
-      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué."
-    }
+      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
+      "voluntaryDetails": "Vous vous êtes engagé à retirer les commandes des personnes suivantes :"
+    },
+    "selectedSlots": "Créneaux choisis"
   },
   "userInNeed": {
     "noaddress": "Vous n'avez pas renseigné votre adresse.",
@@ -47,8 +49,16 @@
     "distribNotClosed": "La distribution est toujours en cours.",
     "resolving": "Nous allons calculer la répartition des membres sur les créneaux. Ce calcul sera effectué dans l'heure.",
     "slot": "Créneau",
-    "user": "Personne",
+    "user": "Membre",
+    "voluntaries": "Ces membres se sont portés volontaires pour retirer la commande d'autres personnes.",
     "getOrderFor": "Retire la commande de",
-    "userInNeedsNotLocked": "Ces personnes n'ont trouvé personne pour venir retirer leur commande."
+    "userInNeedsNotLocked": "Ces personnes n'ont trouvé personne pour venir retirer leur commande.",
+    "otherUsersList": "Les personnes suivantes n'ont pas sélectionné de créneaux : {{list}}"
+  },
+  "resolved": {
+    "selectedSlot": "Vous pouvez venir retirer votre commande le {{date}}",
+    "voluntaryDetails": "Vous vous êtes engagé à retirer les commandes des personnes suivantes :",
+    "voluntaryOf": "{{name}} a accepté de retirer votre commande pour vous.",
+    "voluntaryOfNull": "Pour le moment, personne ne peut retirer votre commande à votre place. Les administrateurs de votre groupe sont au courant de cette situation et vont tenter de trouver une solution ou de vous contacter."
   }
 }

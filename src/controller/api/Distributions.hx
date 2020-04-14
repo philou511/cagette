@@ -20,6 +20,10 @@ class Distributions extends Controller {
     this.distrib = distrib;
   }
 
+  public function doSlots(d:haxe.web.Dispatch) {
+		d.dispatch(new controller.api.DistributionsSlots(distrib));
+	}	
+
   private function checkAdminRights(){
     if (!App.current.user.isAmapManager() || app.user.getGroup().id!=this.distrib.getGroup().id){
       throw new tink.core.Error(403, "Forbidden");
@@ -67,110 +71,6 @@ class Distributions extends Controller {
     Sys.print(Json.stringify(this.parse()));
   }
 
-  public function doUserStatus() {
-    if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
-    checkIsGroupMember();
-    if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-    var userId = App.current.user.id;
-    var s = new TimeSlotsService(this.distrib);
-    var registered = s.userIsAlreadyAdded(userId);
-    var has = "none";
-    if (registered == true) {
-      if (this.distrib.inNeedUserIds.exists(userId) == true) {
-        has = "inNeed";
-      } else if (this.distrib.voluntaryUsers.exists(userId) == true) {
-        has = "voluntary";
-      } else {
-        has = "solo";
-      }
-    }
-
-    Sys.print(Json.stringify(s.userStatus(userId))); 
-  }
-
-  public function doRegisterUserVoluntary() {
-    // allow only POST method
-    if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-    checkIsGroupMember();
-    checkOrdersAreOpen();
-
-    if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-    var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
-    if (!request.exists("userIds")) throw new tink.core.Error(400, "Bad Request");
-
-    var strUserIds = request.get("userIds").split(",");
-    var userIds = new Array<Int>();
-    for (index in 0...strUserIds.length) {
-      userIds.push(Std.parseInt(strUserIds[index]));
-    }
-
-	var s = new TimeSlotsService(this.distrib);
-    s.registerVoluntary(App.current.user.id, userIds);    
-
-    Sys.print(Json.stringify({success: true}));
- 
-  }
-
-  public function doRegisterInNeedUser() {
-    // allow only POST method
-    if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-    checkIsGroupMember();
-    checkOrdersAreOpen();
-
-    // distrib slots must be activated 
-    if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-    var userId = App.current.user.id;
-    var s = new TimeSlotsService(this.distrib);
-
-    if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
-
-    var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
-    if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request");
-
-    var success = s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
-
-    Sys.print(Json.stringify({success: success}));
-  }
-
-  public function doRegisterUserSlots() {
-    // allow only POST method
-    if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
-    checkIsGroupMember();
-    checkOrdersAreOpen();
-   
-    // distrib slots must be activated 
-    if (this.distrib.slots == null) throw new tink.core.Error(403, "Forbidden");
-
-    var userId = App.current.user.id;
-    var s = new TimeSlotsService(this.distrib);
-
-    if (s.userIsAlreadyAdded(userId)) throw new tink.core.Error(403, "Already registerd");
-
-    var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
-    if (!request.exists("slotIds")) throw new tink.core.Error(400, "Bad Request");
-    
-    // parse query to slotIds
-    var strSlotIds = request.get("slotIds").split(",");
-    var slotIds = new Array<Int>();
-    for (index in 0...strSlotIds.length) {
-      slotIds.push(Std.parseInt(strSlotIds[index]));
-    }
-
-    // check slots validity
-    if (slotIds.length < 1) throw new tink.core.Error(400, "Bad Request");
-    for (slotId in 0...slotIds.length) {
-      if (this.distrib.slots.find( slot -> slot.id == slotId) == null) {
-        throw new tink.core.Error(400, "Bad Request");
-      }
-    }
-
-    var success = s.registerUserToSlot(userId, slotIds);
-    Sys.print(Json.stringify({success: success}));
-  }
-
   public function doResolved() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkAdminRights();
@@ -209,6 +109,14 @@ class Distributions extends Controller {
       voluntaryMap.set(Std.string(v.key), v.value);
     }
 
+    var otherUsers =  this.distrib.getOrders().filter(userOrder -> {
+      var founded = users.find(u -> u.id == userOrder.user.id);
+      if (founded != null) return false;
+      founded = inNeedUsers.find(u -> u.id == userOrder.user.id);
+      if (founded != null) return false;
+      return true;
+    });
+
     Sys.print(Json.stringify({
       id: this.distrib.id,
       start: this.distrib.distribStartDate,
@@ -216,6 +124,11 @@ class Distributions extends Controller {
       orderEndDate: this.distrib.orderEndDate,
       slots: this.distrib.slots,
       voluntaryMap: voluntaryMap,
+      otherUsers: otherUsers.map(userOrder -> ({
+        id: userOrder.user.id,
+        firstName: userOrder.user.firstName,
+        lastName: userOrder.user.lastName,
+      })),
       users: users.map(user -> ({
         id: user.id,
         firstName: user.firstName,
@@ -245,16 +158,15 @@ class Distributions extends Controller {
   }
 
   // TODO: remove
+  @admin
   public function doResolve() {
-    checkAdminRights();
     this.distrib.resolveSlots();
     Sys.print(Json.stringify(this.parse()));
   }
 
    // TODO: remove
+  @admin
   public function doCloseDistrib() {
-    checkAdminRights();
-
     this.distrib.lock();
     this.distrib.orderEndDate = DateTools.delta(Date.now(), -(1000 * 60 * 60 * 24));
     this.distrib.update();
@@ -262,10 +174,8 @@ class Distributions extends Controller {
   }
 
    // TODO: remove
+   @admin
   public function doDesactivateSlots() {
-
-    checkAdminRights();
-
     this.distrib.lock();
     this.distrib.slots = null;
     this.distrib.inNeedUserIds = null;
@@ -275,22 +185,46 @@ class Distributions extends Controller {
     Sys.print(Json.stringify(this.parse()));
   }
 
+  // TODO: remove
+  @admin
+  public function doRegisterVoluntaryForMe() {
+
+    var userId = App.current.user.id;
+    var s = new TimeSlotsService(this.distrib);
+    s.registerInNeedUser(userId, ["email"]);
+    s.registerVoluntary(1, [55875]);
+    
+    Sys.print(Json.stringify(this.parse()));
+  }
+
   // TODO : remove
   @admin
   public function doGenerateFakeDatas() {
-    var fakeUserIds = [1, 2, 6, 8, 9];
+    var fakeUserIds : Array<Int> = this.distrib.group.getMembers().filter(u -> u.id != 55875).map(u->return u.id).array();
 
-  var s = new TimeSlotsService(this.distrib);
+    var s = new TimeSlotsService(this.distrib);
     this.distrib.lock();
     this.distrib.slots = null;
     this.distrib.inNeedUserIds = null;
     this.distrib.voluntaryUsers = null;
+    this.distrib.orderEndDate  = DateTools.delta(Date.now(), 1000 * 60 * 60 * 24);
     this.distrib.update();
 
     s.generateSlots();
-    s.registerUserToSlot(1, [1, 2]);
 
-    for (userIndex in 1...fakeUserIds.length) {
+    var nbInNeed = Math.round(fakeUserIds.length * .2);
+
+    var inNeedUserIds = new Array<Int>();
+
+    s.registerUserToSlot(fakeUserIds[0], [0, 1]);
+    s.registerVoluntary(fakeUserIds[0], []);
+
+    for (userIndex in 1...nbInNeed) {
+      s.registerInNeedUser(fakeUserIds[userIndex], ["email"]);
+      inNeedUserIds.push(fakeUserIds[userIndex]);
+    }
+
+    for (userIndex in nbInNeed...fakeUserIds.length) {
       var slotIds = new Array<Int>();
       for (slotIndex in 0...this.distrib.slots.length) {
         var slot = this.distrib.slots[slotIndex];
@@ -299,17 +233,17 @@ class Distributions extends Controller {
         }
       }
       s.registerUserToSlot(fakeUserIds[userIndex], slotIds);
+
+      if (Math.random() > 0.3 && inNeedUserIds.length > 2) {
+        var i = Math.round(Math.min(Math.random() * 3 + 1, inNeedUserIds.length - 2));
+        var iii = new Array<Int>();
+        for (ii in 0...i) {
+          iii.push(inNeedUserIds.pop());
+        }
+        s.registerVoluntary(fakeUserIds[userIndex], iii);
+      }
     }
-
-    s.registerInNeedUser(10, ["email"]);
-    s.registerInNeedUser(12, ["email", "address", "phone"]);
-    s.registerInNeedUser(11, ["email", "address", "phone"]);
-    s.registerInNeedUser(15, ["address"]);
-    s.registerInNeedUser(17, ["phone"]);
-
-    // s.registerUserToSlot(55875, [0, 1]);
-	  // s.registerVoluntary(55875, [10, 11]);
-
+    
     Sys.print(Json.stringify(this.parse()));
   }
 
