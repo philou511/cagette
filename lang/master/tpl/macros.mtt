@@ -504,5 +504,89 @@
 		</script>
 
 	</macro>
+
+	<macro name="timeSlotUserMessage(slots,status,d)">
+		
+		::if(status.registered==false)::
+			<script>
+				var registerToTimeSlot = function(){
+					var elementId = 'distrib-time-slot::d.id::';
+					_NeolithicViewsGenerator.userDistribSlotsSelector(elementId,{
+						distribId: ::d.id::,
+						onCancel: function() {
+							document.getElementById(elementId).innerHTML=""
+						},
+						onRegister: function() {
+							document.location.reload(true);
+						}
+					});
+				};
+
+			</script>
+		
+			<a onclick="registerToTimeSlot()" class="btn btn-danger">Inscrivez-vous à un créneau horaire</a>
+
+		::elseif(status.has=="inNeed")::
+
+			
+			::if(status.voluntaryOf!=null)::
+				<b>::status.voluntaryOf.firstName:: ::status.voluntaryOf.lastName::</b> s'est engagé à retirer votre commande et à vous l'apporter.
+			::else::
+				Vous avez demandé à ce que votre commande soit retirée par quelqu'un d'autre.<br/>
+				Personne n'a encore proposé son aide pour retirer votre commande.
+			::end::
+
+		::elseif(status.has=="voluntary")::
+			<p ::cond status.voluntaryFor.length>0::>
+			Vous récupérez aussi la commande de :<br/>
+			::foreach u status.voluntaryFor::
+			<b>::u.firstName:: ::u.lastName::</b>, Tél: $$nullSafe(::u.phone::), Adresse : $$nullSafe(::u.address1::) $$nullSafe(::u.address2::) $$nullSafe(::u.zipCode::) $$nullSafe(::u.city::)  <br/>
+			::end::
+			</p>
+
+			::if(status.isResolved)::
+				<p>
+					<b style="text-decoration:underline;">
+						Merci de bien vouloir venir chercher votre commande entre 
+						::hHour(slots[status.selectedSlotId].start):: et ::hHour(slots[status.selectedSlotId].end)::
+					</b>									
+				</p>
+			
+			::else::
+				<p>
+					Créneaux choisis : <br/>
+					::foreach s status.registeredSlotIds::
+					<b>de ::hHour(slots[s].start):: à ::hHour(slots[s].end)::.</b><br/>
+					::end::
+				</p>
+				<p>
+					Votre créneau définitif vous sera attribué à la fermeture des commandes.
+				</p>
+			::end::
+			
+
+		::elseif(status.has=="solo")::
+
+			<p>Vous avez choisi de ne retirer que votre propre commande.</p>
+			
+			::if(status.isResolved)::
+				<p>
+					<b style="text-decoration:underline;">
+						Merci de bien vouloir venir chercher votre commande entre 
+						::hHour(slots[status.selectedSlotId].start):: et ::hHour(slots[status.selectedSlotId].end)::
+					</b>									
+				</p>
+			::else::
+				<p>Créneaux choisis : <br/>
+					::foreach s status.registeredSlotIds::
+					<b>de ::hHour(slots[s].start):: à ::hHour(slots[s].end)::.</b><br/>
+					::end::
+				</p>
+				<p>Votre créneau définitif vous sera attribué à la fermeture des commandes.</p>
+			::end::
+			
+		::end::
+
+	</macro>
 	
 </macros>
