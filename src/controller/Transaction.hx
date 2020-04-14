@@ -151,7 +151,7 @@ class Transaction extends controller.Controller
 
 		view.category = 'home';
 		
-		if (tmpBasket == null) throw Redirect("/");
+		if (tmpBasket == null) throw Error("Basket is null");
 		tmpBasket.lock();
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 

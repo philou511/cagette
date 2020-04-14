@@ -297,7 +297,7 @@
 						&nbsp;&nbsp;<b>Précautions et entraide pendant la crise sanitaire :</b><br/>
 						$$timeSlotUserMessage(::slots::,::status::,::d::)
 
-						::if(!status.isResolved && status.registered)::
+						::if(!status.isResolved && status.registered && status.has!="inNeed")::
 						<!-- edit timeslot button-->
 						<script>
 							var registerToTimeSlot = function(){
@@ -314,7 +314,7 @@
 							};			
 						</script>		
 						<p>
-							<a onclick="registerToTimeSlot()" class="btn btn-default btn-xs">Modifier mon créneau horaire</a>
+							<a onclick="registerToTimeSlot()" class="btn btn-default btn-xs">Modifier mon choix</a>
 						</p>			
 						
 						::end::

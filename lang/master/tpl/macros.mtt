@@ -528,10 +528,16 @@
 
 		::elseif(status.has=="inNeed")::
 
-			Vous avez demandé à ce que votre commande soit retirée par quelqu'un d'autre.
+			
+			::if(status.voluntaryOf!=null)::
+				<b>::status.voluntaryOf.firstName:: ::status.voluntaryOf.lastName::</b> s'est engagé à retirer votre commande et à vous l'apporter.
+			::else::
+				Vous avez demandé à ce que votre commande soit retirée par quelqu'un d'autre.<br/>
+				Personne n'a encore proposé son aide pour retirer votre commande.
+			::end::
 
 		::elseif(status.has=="voluntary")::
-			<p>
+			<p ::cond status.voluntaryFor.length>0::>
 			Vous récupérez aussi la commande de :<br/>
 			::foreach u status.voluntaryFor::
 			<b>::u.firstName:: ::u.lastName::</b>, Tél: $$nullSafe(::u.phone::), Adresse : $$nullSafe(::u.address1::) $$nullSafe(::u.address2::) $$nullSafe(::u.zipCode::) $$nullSafe(::u.city::)  <br/>

@@ -237,13 +237,17 @@ class Cron extends Controller
 		task.execute(!App.config.DEBUG);
 
 		//time slot assignement when orders are closing
-		new TransactionWrappedTask("Time slots assignement",function(){
+		var task = new TransactionWrappedTask("Time slots assignement");
+		task.setTask(function(){
 			var range = tools.DateTool.getLastHourRange( now );
-			var distribs = MultiDistrib.manager.search($distribEndDate >= range.from && $distribEndDate < range.to && $slots!=null ,true);
+			task.log('get distribs whith order ending between ${range.from} and ${range.to}');
+			var distribs = MultiDistrib.manager.search($orderEndDate >= range.from && $orderEndDate < range.to && $slots!=null ,true);
 			for( d in distribs){
+				
 				var s = new service.TimeSlotsService(d);
 				var slots = s.resolveSlots();
 				var group = d.getGroup();
+				task.log('Resolve slots for '+group.name);
 
 				//send an email to group admins
 				var admins = group.getGroupAdmins().filter(ug-> return ug.isGroupManager() );
@@ -255,11 +259,13 @@ class Cron extends Controller
 					var text = 'La commande vient de fermer, les créneaux horaires ont été attribués en fonction des choix des membres du groupe : <a href="https://${App.config.HOST}/distribution/timeSlots/${d.id}">Voir le récapitulatif des créneaux horaires</a>.';
 					m.setHtmlBody( app.processTemplate("mail/message.mtt", { text:text,group:group } ) );
 					App.sendMail(m , d.getGroup() );	
-				}catch (e:Dynamic){						
+				}catch (e:Dynamic){
+					task.warning(e);
 					app.logError(e); //email could be invalid
 				}
 			}
-		}).execute(!App.config.DEBUG);
+		});
+		task.execute(!App.config.DEBUG);
 		
 
 	}
