@@ -54,6 +54,8 @@ class DistributionsSlots extends Controller {
     var has = request.get("has");
     if (availableModes.indexOf(has) == -1) throw new tink.core.Error(400, "Bad Request - unknow has");
 
+    if (distrib.slotsMode == "solo-only") has = "solo";
+
     if (has == "inNeed") {
       if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request - allowed required");
       var success = s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));

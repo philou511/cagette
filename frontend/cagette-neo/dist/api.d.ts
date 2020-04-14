@@ -9,7 +9,7 @@ declare const _default: {
     distrib: {
         getDistrib(id: number): Promise<import("./vo").DistribVo | null>;
         getResolvedDistrib<T>(id: number, parser: (data: any) => T): Promise<T | null>;
-        activateSlots(id: number): Promise<import("./vo").DistribVo | null>;
+        activateSlots(id: number, data: any, type?: "json" | "data"): Promise<import("./vo").DistribVo | null>;
         registerMe(distribId: number, data: any, type?: "json" | "data"): Promise<any>;
         getStatus(distribId: number): Promise<any>;
     };

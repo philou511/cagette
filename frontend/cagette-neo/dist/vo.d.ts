@@ -35,6 +35,7 @@ export interface DistribVo {
     start?: Date;
     end?: Date;
     orderEndDate?: Date;
+    mode: 'solo-only' | 'default';
     slots?: DistribSlotVo[];
     inNeedUsers?: UserVo[];
 }

@@ -1134,6 +1134,7 @@ var parseSlotVo = function (data) {
 };
 var parseDistribVo = function (data) { return ({
     id: data.id,
+    mode: data.mode,
     start: data.start ? new Date(data.start) : undefined,
     end: data.end ? new Date(data.end) : undefined,
     orderEndDate: data.orderEndDate ? new Date(data.orderEndDate) : undefined,
@@ -1320,12 +1321,13 @@ var api = function () {
                     });
                 });
             },
-            activateSlots: function (id) {
+            activateSlots: function (id, data, type) {
+                if (type === void 0) { type = 'json'; }
                 return __awaiter(this, void 0, void 0, function () {
                     var res;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
-                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + id + "/activateSlots")];
+                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + id + "/activateSlots", data, type)];
                             case 1:
                                 res = _a.sent();
                                 return [2 /*return*/, res ? parseDistribVo(res) : null];
@@ -7242,6 +7244,7 @@ var ActivateDistribSlotsView = function (_a) {
     var _d = React__default.useState(false), submitting = _d[0], toggleSubmitting = _d[1];
     var _e = React__default.useState(), error = _e[0], setError = _e[1];
     var _f = React__default.useState(false), hasActivated = _f[0], toggleHasActivated = _f[1];
+    var _g = React__default.useState('solo-only'), mode = _g[0], setMode = _g[1];
     var cs = useStyles$1({ hasActivated: hasActivated });
     var nbSlots = distrib && distrib.end && distrib.start
         ? Math.floor((distrib.end.getTime() - distrib.start.getTime()) / slotDuration)
@@ -7253,11 +7256,14 @@ var ActivateDistribSlotsView = function (_a) {
         toggleOpened(false);
     };
     /** */
+    var onModeChange = function (e) {
+        setMode(e.target.value);
+    };
     var onButtonClick = function () {
         toggleOpened(true);
     };
     var onConfirmClick = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res, err_1;
+        var formData, res, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -7266,7 +7272,9 @@ var ActivateDistribSlotsView = function (_a) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, api$1.distrib.activateSlots(distribId)];
+                    formData = new FormData();
+                    formData.append('mode', mode);
+                    return [4 /*yield*/, api$1.distrib.activateSlots(distribId, formData, 'data')];
                 case 2:
                     res = _a.sent();
                     if (res) {
@@ -7352,6 +7360,14 @@ var ActivateDistribSlotsView = function (_a) {
                                     React__default.createElement(core.Typography, { component: "span", variant: "body2" }, t('neo/distrib-slots:activeDistrib.slot-id', {
                                         id: s + 1,
                                     }))) }))); }))),
+                    !distrib.slots ? (React__default.createElement(core.Box, { p: 2 },
+                        React__default.createElement(core.Typography, null, t('neo/distrib-slots:activeDistrib.modeLabel')),
+                        React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary" }, t('neo/distrib-slots:activeDistrib.modeSubLabel')),
+                        React__default.createElement(core.FormControl, { component: "fieldset" },
+                            React__default.createElement(core.RadioGroup, { "aria-label": "mode-selector", name: "mode", value: mode, onChange: onModeChange },
+                                React__default.createElement(core.FormControlLabel, { value: "default", control: React__default.createElement(core.Radio, null), label: t('yes') }),
+                                React__default.createElement(core.FormControlLabel, { value: "solo-only", control: React__default.createElement(core.Radio, null), label: t('no') }))))) : (React__default.createElement(React__default.Fragment, null, distrib.mode === 'default' && (React__default.createElement(core.Box, { p: 2 },
+                        React__default.createElement(core.Typography, { align: "center" }, t('neo/distrib-slots:activeDistrib.modeDefaultActivated')))))),
                     React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
                         React__default.createElement(core.Button, { variant: "outlined", onClick: closeDialog }, t(distrib.slots ? 'close' : 'cancel')),
                         !distrib.slots && (React__default.createElement(React__default.Fragment, null,
@@ -7387,14 +7403,22 @@ var ViewCtxProvider = function (_a) {
     var _h = React__default.useState(), workingStatus = _h[0], setWorkingStatus = _h[1];
     var _j = React__default.useState(false), needReload = _j[0], toggleNeedReload = _j[1];
     /** */
-    var updateStatus = function (newStatus) {
-        setStatus(newStatus);
-        setWorkingStatus(newStatus);
-        if (newStatus.isResolved) {
+    var updateStatus = function (newStatus, newDistrib) {
+        if (!distrib && !newDistrib)
+            throw new Error('?');
+        var d = newDistrib || distrib;
+        var s = d.mode === 'solo-only' ? __assign(__assign({}, newStatus), { has: 'solo' }) : newStatus;
+        setStatus(s);
+        setWorkingStatus(s);
+        console.log(s);
+        if (s.isResolved) {
             setStep('resolved');
         }
-        else if (newStatus.registered) {
+        else if (s.registered) {
             setStep('summary');
+        }
+        else if (s.has === 'solo') {
+            setStep('select-slots');
         }
         else {
             setStep('select-mode');
@@ -7525,7 +7549,7 @@ var ViewCtxProvider = function (_a) {
                         resStatus = _a.sent();
                         if (active && resDistrib && resStatus) {
                             setDistrib(resDistrib);
-                            updateStatus(resStatus);
+                            updateStatus(resStatus, resDistrib);
                             toggleLoading(false);
                         }
                         return [3 /*break*/, 5];
@@ -7549,6 +7573,7 @@ var ViewCtxProvider = function (_a) {
             open: open,
             loading: loading,
             error: error,
+            distribMode: (distrib === null || distrib === void 0 ? void 0 : distrib.mode) || 'default',
             mode: (workingStatus === null || workingStatus === void 0 ? void 0 : workingStatus.has) || undefined,
             slots: (distrib === null || distrib === void 0 ? void 0 : distrib.slots) || [],
             inNeedUsers: (distrib === null || distrib === void 0 ? void 0 : distrib.inNeedUsers) || [],
@@ -15291,8 +15316,8 @@ var SlotsStep = function (_a) {
                         React__default.createElement(core.Checkbox, { checked: slot.checked, name: slot.name, tabIndex: -1, disableRipple: true, onChange: onCheckoxChange })))),
             React__default.createElement(core.Box, { px: 2, pr: 4, mb: 2 }, slot.prc > 0.75 ? (React__default.createElement(OrangeLinearProgress, { variant: "determinate", value: slot.prc * 90 })) : (React__default.createElement(GreenLinearProgress, { variant: "determinate", value: slot.prc * 100 }))))); })),
         React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(core.Box, { mr: 2 },
-                React__default.createElement(core.Button, { onClick: onCancel }, t('cancel'))),
+            onCancel && (React__default.createElement(core.Box, { mr: 2 },
+                React__default.createElement(core.Button, { onClick: onCancel }, t('cancel')))),
             React__default.createElement(core.Button, { variant: isLastStep ? 'contained' : 'outlined', color: "primary", disabled: !valid, onClick: onNextClick }, t(isLastStep ? 'validate' : 'continue')))));
 };
 
@@ -15382,7 +15407,7 @@ var SummaryStep = function (_a) {
 
 var UserDistribSlotsSelectorView = function (_a) {
     var _b = _a.onSalesProcess, onSalesProcess = _b === void 0 ? false : _b;
-    var _c = useViewCtx(), currentStep = _c.currentStep, open = _c.open, loading = _c.loading, error = _c.error, mode = _c.mode, slots = _c.slots, inNeedUsers = _c.inNeedUsers, registeredSlotIds = _c.registeredSlotIds, voluntaryFor = _c.voluntaryFor, closeDialog = _c.closeDialog, back = _c.back, selectMode = _c.selectMode, selectPermissions = _c.selectPermissions, selectSlots = _c.selectSlots, selectInNeedUsers = _c.selectInNeedUsers, changeSlots = _c.changeSlots, addInNeeds = _c.addInNeeds;
+    var _c = useViewCtx(), currentStep = _c.currentStep, open = _c.open, loading = _c.loading, error = _c.error, distribMode = _c.distribMode, mode = _c.mode, slots = _c.slots, inNeedUsers = _c.inNeedUsers, registeredSlotIds = _c.registeredSlotIds, voluntaryFor = _c.voluntaryFor, closeDialog = _c.closeDialog, back = _c.back, selectMode = _c.selectMode, selectPermissions = _c.selectPermissions, selectSlots = _c.selectSlots, selectInNeedUsers = _c.selectInNeedUsers, changeSlots = _c.changeSlots, addInNeeds = _c.addInNeeds;
     /** */
     var renderStep = function () {
         if (currentStep === 'loading' || loading)
@@ -15394,7 +15419,7 @@ var UserDistribSlotsSelectorView = function (_a) {
             case 'select-permissions':
                 return (React__default.createElement(PermissionsStep, { onConfirm: selectPermissions, onCancel: back }));
             case 'select-slots':
-                return (React__default.createElement(SlotsStep, { slots: slots, isLastStep: mode === 'solo', onSelect: selectSlots, onCancel: back }));
+                return (React__default.createElement(SlotsStep, { slots: slots, isLastStep: mode === 'solo', onSelect: selectSlots, onCancel: distribMode === 'default' ? back : undefined }));
             case 'select-inNeed':
                 return (React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back }));
             case 'summary':

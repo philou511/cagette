@@ -61,13 +61,15 @@ class Distributions extends Controller {
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
     checkAdminRights();
     checkOrdersAreOpen();
-    
-    if (this.distrib.slots != null) {
-      Sys.print(Json.stringify(this.parse()));
-      return;
-    }
-	var s = new TimeSlotsService(this.distrib);
-    s.generateSlots();    
+
+    var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
+    if (!request.exists("mode")) throw new tink.core.Error(400, "Bad Request - missing mode");
+    var mode = request.get("mode");
+
+    if (mode != "solo-only" && mode != "default") throw new tink.core.Error(400, "Bad Request - invalid mode: " + mode);
+
+	  var s = new TimeSlotsService(this.distrib);
+    s.generateSlots(mode);    
     Sys.print(Json.stringify(this.parse()));
   }
 
@@ -177,6 +179,7 @@ class Distributions extends Controller {
    @admin
   public function doDesactivateSlots() {
     this.distrib.lock();
+    this.distrib.slotsMode = null;
     this.distrib.slots = null;
     this.distrib.inNeedUserIds = null;
     this.distrib.voluntaryUsers = null;
@@ -204,13 +207,14 @@ class Distributions extends Controller {
 
     var s = new TimeSlotsService(this.distrib);
     this.distrib.lock();
+    this.distrib.slotsMode = null;
     this.distrib.slots = null;
     this.distrib.inNeedUserIds = null;
     this.distrib.voluntaryUsers = null;
     this.distrib.orderEndDate  = DateTools.delta(Date.now(), 1000 * 60 * 60 * 24);
     this.distrib.update();
 
-    s.generateSlots();
+    s.generateSlots("default");
 
     var nbInNeed = Math.round(fakeUserIds.length * .2);
 
@@ -291,6 +295,7 @@ class Distributions extends Controller {
       start: this.distrib.distribStartDate,
       end: this.distrib.distribEndDate,
       orderEndDate: this.distrib.orderEndDate,
+      mode: this.distrib.slotsMode,
       slots: this.distrib.slots,
       inNeedUsers: users
     }

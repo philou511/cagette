@@ -17,5 +17,7 @@
   "close": "Fermer",
   "error": "Une erreur est survenue.",
   "change": "Modifier",
-  "add": "Ajouter"
+  "add": "Ajouter",
+  "yes": "Oui",
+  "no": "Non"
 }

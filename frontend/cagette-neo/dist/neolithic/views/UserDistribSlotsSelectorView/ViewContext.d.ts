@@ -6,6 +6,7 @@ interface ViewCtxProps {
     open: boolean;
     loading: boolean;
     error?: string;
+    distribMode?: 'solo-only' | 'default';
     mode?: Mode;
     slots: DistribSlotVo[];
     inNeedUsers: UserVo[];

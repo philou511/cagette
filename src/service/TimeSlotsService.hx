@@ -253,10 +253,12 @@ class TimeSlotsService{
 	}
     
     /*** */
-	public function generateSlots() {
+	public function generateSlots(mode: String) {
 		if (distribution.slots != null) return;
 
 		distribution.lock();
+
+		distribution.slotsMode = mode;
 
 		var slotDuration = 1000 * 60 * 15;
 		var nbSlots = Math.floor((distribution.distribEndDate.getTime() - distribution.distribStartDate.getTime()) / slotDuration);
@@ -276,12 +278,11 @@ class TimeSlotsService{
 		distribution.inNeedUserIds = new Map<Int, Array<String>>();
 		
 		distribution.update();
-    }
-    
-
+	}
 
 	public function registerVoluntary(userId: Int, forUserIds: Array<Int>) {
 		if (distribution.slots == null) return false;
+		if (distribution.slotsMode != "default") return false;
 		if (!userIsAlreadyAdded(userId)) return false;
 
 		distribution.lock();
@@ -294,6 +295,7 @@ class TimeSlotsService{
 
 	public function updateVoluntary(userId: Int, forUserIds: Array<Int>) {
 		if (distribution.slots == null) return false;
+		if (distribution.slotsMode != "default") return false;
 		if (!distribution.voluntaryUsers.exists(userId)) return false;
 
 		distribution.lock();
@@ -307,6 +309,7 @@ class TimeSlotsService{
 
 	public function registerInNeedUser(userId: Int, allowed: Array<String>) {
 		if (distribution.slots == null) return false;
+		if (distribution.slotsMode != "default") return false;
 		if (distribution.inNeedUserIds == null) return false;
 		if (userIsAlreadyAdded(userId)) return false;
 		if (distribution.inNeedUserIds.exists(userId)) return false;
