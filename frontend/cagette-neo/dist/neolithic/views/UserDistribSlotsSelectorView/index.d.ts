@@ -1,6 +1,7 @@
 /// <reference types="react" />
 export interface UserDistribSlotsSelectorViewProps {
     distribId: number;
+    onSalesProcess?: boolean;
     onRegister: () => void;
     onCancel: () => void;
 }
