@@ -15344,7 +15344,11 @@ var VoluntaryStep = function (_a) {
 var tFile$5 = 'neo/distrib-slots';
 var shortTKey$5 = tFile$5 + ":userSlotsSelector";
 var SummaryStep = function (_a) {
+<<<<<<< HEAD
     var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, inNeedUsers = _a.inNeedUsers, onSalesProcess = _a.onSalesProcess, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds, close = _a.close;
+=======
+    var mode = _a.mode, slots = _a.slots, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds, close = _a.close;
+>>>>>>> c60bb76d678815fe3badec8acdb152ceb33e5c7c
     var t = useTranslation(['translation', tFile$5]).t;
     var confirmMessage = '';
     if (mode === 'inNeed') {
@@ -15366,11 +15370,16 @@ var SummaryStep = function (_a) {
                     .map(function (slot) { return (React__default.createElement(core.ListItem, { key: slot.id, alignItems: "center" },
                     React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm") }))); })),
                 React__default.createElement(core.Box, { p: 1 },
+<<<<<<< HEAD
                     React__default.createElement(core.Button, { variant: !onSalesProcess ? 'contained' : 'outlined', color: "primary", onClick: changeSlots }, t('change')))))),
+=======
+                    React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: changeSlots }, t('change')))))),
+>>>>>>> c60bb76d678815fe3badec8acdb152ceb33e5c7c
         React__default.createElement(core.Box, { my: 2 },
             React__default.createElement(core.Divider, null)),
         voluntaryFor && voluntaryFor.length > 0 && (React__default.createElement(core.Box, null,
             React__default.createElement(core.Typography, { align: "center" }, t(shortTKey$5 + ".end.voluntaryDetails")),
+<<<<<<< HEAD
             React__default.createElement(core.List, null, voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })))),
         mode === 'voluntary' && inNeedUsers && inNeedUsers.length > 0 && (React__default.createElement(core.Box, { p: 1, display: "flex", justifyContent: "center" },
             React__default.createElement(core.Button, { variant: !onSalesProcess ? 'contained' : 'outlined', color: "primary", onClick: addInNeeds }, t('add')))),
@@ -15383,6 +15392,19 @@ var SummaryStep = function (_a) {
 var UserDistribSlotsSelectorView = function (_a) {
     var _b = _a.onSalesProcess, onSalesProcess = _b === void 0 ? false : _b;
     var _c = useViewCtx(), currentStep = _c.currentStep, open = _c.open, loading = _c.loading, error = _c.error, mode = _c.mode, slots = _c.slots, inNeedUsers = _c.inNeedUsers, registeredSlotIds = _c.registeredSlotIds, voluntaryFor = _c.voluntaryFor, closeDialog = _c.closeDialog, back = _c.back, selectMode = _c.selectMode, selectPermissions = _c.selectPermissions, selectSlots = _c.selectSlots, selectInNeedUsers = _c.selectInNeedUsers, changeSlots = _c.changeSlots, addInNeeds = _c.addInNeeds;
+=======
+            React__default.createElement(core.List, null, voluntaryFor.map(function (user) { return (React__default.createElement(InNeedUserListItem, { key: user.id, user: user, userInfos: ['adress', 'email', 'phone'] })); })),
+            React__default.createElement(core.Box, { p: 1, display: "flex", justifyContent: "center" },
+                React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: addInNeeds }, t('add'))))),
+        React__default.createElement(core.Box, { my: 2 },
+            React__default.createElement(core.Divider, null)),
+        React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
+            React__default.createElement(core.Button, { variant: "outlined", onClick: close }, t('close')))));
+};
+
+var UserDistribSlotsSelectorView = function () {
+    var _a = useViewCtx(), currentStep = _a.currentStep, open = _a.open, loading = _a.loading, error = _a.error, mode = _a.mode, slots = _a.slots, inNeedUsers = _a.inNeedUsers, registeredSlotIds = _a.registeredSlotIds, voluntaryFor = _a.voluntaryFor, closeDialog = _a.closeDialog, back = _a.back, selectMode = _a.selectMode, selectPermissions = _a.selectPermissions, selectSlots = _a.selectSlots, selectInNeedUsers = _a.selectInNeedUsers, changeSlots = _a.changeSlots, addInNeeds = _a.addInNeeds;
+>>>>>>> c60bb76d678815fe3badec8acdb152ceb33e5c7c
     /** */
     var renderStep = function () {
         if (currentStep === 'loading' || loading)
@@ -15398,7 +15420,11 @@ var UserDistribSlotsSelectorView = function (_a) {
             case 'select-inNeed':
                 return (React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back }));
             case 'summary':
+<<<<<<< HEAD
                 return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, inNeedUsers: inNeedUsers, onSalesProcess: onSalesProcess, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
+=======
+                return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
+>>>>>>> c60bb76d678815fe3badec8acdb152ceb33e5c7c
             case 'resolved':
                 return React__default.createElement("div", null, "resolved");
             default:
