@@ -282,8 +282,9 @@ class TimeSlotsService{
 
 	public function registerVoluntary(userId: Int, forUserIds: Array<Int>) {
 		if (distribution.slots == null) return false;
-		if (distribution.slotsMode != "default") return false;
+		if (distribution.slotsMode == "solo-only") return false;
 		if (!userIsAlreadyAdded(userId)) return false;
+		if (distribution.voluntaryUsers == null) return false;
 
 		distribution.lock();
 		if (distribution.voluntaryUsers.exists(userId)) return false;
@@ -295,7 +296,7 @@ class TimeSlotsService{
 
 	public function updateVoluntary(userId: Int, forUserIds: Array<Int>) {
 		if (distribution.slots == null) return false;
-		if (distribution.slotsMode != "default") return false;
+		if (distribution.slotsMode == "solo-only") return false;
 		if (!distribution.voluntaryUsers.exists(userId)) return false;
 
 		distribution.lock();
@@ -309,7 +310,7 @@ class TimeSlotsService{
 
 	public function registerInNeedUser(userId: Int, allowed: Array<String>) {
 		if (distribution.slots == null) return false;
-		if (distribution.slotsMode != "default") return false;
+		if (distribution.slotsMode == "solo-only") return false;
 		if (distribution.inNeedUserIds == null) return false;
 		if (userIsAlreadyAdded(userId)) return false;
 		if (distribution.inNeedUserIds.exists(userId)) return false;
