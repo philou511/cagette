@@ -233,8 +233,10 @@ class Transaction extends controller.Controller
 		try{
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var orderOps = db.Operation.onOrderConfirm(orders);
 			var total = tmpBasket.getTotal();
+
 			view.amount = total;
 			//var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 			view.balance = db.UserGroup.get(app.user, app.user.getGroup()).balance;

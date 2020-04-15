@@ -324,7 +324,7 @@ Called from controller/Main.hx line 117
 		sys.db.admin.Admin.handler();
 	}
 
-	@tpl("test.html")
+	@tpl("test.mtt")
 	public function doTest(id: Int) {
 		var distrib = db.MultiDistrib.manager.select($id == id);
 		var d: Dynamic = distrib;

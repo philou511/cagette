@@ -6,7 +6,7 @@
         <div class="alert alert-warning text-center">
             <span style="font-size: 1.2em;">
                 <i class="icon icon-alert"></i>
-                Vous avez un panier en attente !
+                Vous avez un panier en attente pour la distribution du ::hDate(tmpBasket._multiDistrib.distribStartDate)::
             </span>
             <p>
                 Que voulez-vous faire ?
