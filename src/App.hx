@@ -21,6 +21,10 @@ class App extends sugoi.BaseApp {
 	public function new(){
 		super();
 		breadcrumb = [];
+
+		if (App.config.DEBUG) {
+			this.headers.set('Access-Control-Allow-Origin', "*");
+		}
 	}
 	
 	public static function main() {
