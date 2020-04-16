@@ -7,10 +7,6 @@ import haxe.Json;
 import Common;
 import db.MultiDistrib;
 
-/**
- * Groups API
- * @author fbarbut
- */
 class Distributions extends Controller {
 
   private var distrib: db.MultiDistrib;
@@ -25,15 +21,18 @@ class Distributions extends Controller {
 	}	
 
   private function checkAdminRights(){
-    if (!App.current.user.isAmapManager() || app.user.getGroup().id!=this.distrib.getGroup().id){
-      throw new tink.core.Error(403, "Forbidden");
-    } 
+    if (!App.current.user.isGroupManager()){
+      throw new tink.core.Error(403, "Forbidden, you're not group manager");
+    }
+    if(app.user.getGroup().id!=this.distrib.getGroup().id) {
+      throw new tink.core.Error(403, "Forbidden, this distrib does not belong to the groupe you're connected to");
+    }
   }
   
   private function checkIsGroupMember(){
     
     // user must be logged
-    if (app.user == null) throw new tink.core.Error(403, "Forbidden");
+    if (app.user == null) throw new tink.core.Error(403, "Forbidden, user is null");
     
     // user must be member of group
     if(UserGroup.get(app.user,distrib.getGroup())==null){
@@ -41,10 +40,10 @@ class Distributions extends Controller {
     }
   }
 
-  private function checkOrdersAreOpen() {
+  private function checkCanEnableTimeSlots() {
     var now = Date.now();
-    if(distrib.orderEndDate==null || !(distrib.orderStartDate.getTime() < now.getTime() && distrib.orderEndDate.getTime() > now.getTime()) ){
-      throw new Error(403,"Orders are not open");
+    if(distrib.orderEndDate==null || distrib.orderEndDate.getTime() < now.getTime() ){
+      throw new tink.core.Error(403,"Orders are not open");
     }
   }
 
@@ -60,7 +59,7 @@ class Distributions extends Controller {
   public function doActivateSlots() {
     if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
     checkAdminRights();
-    checkOrdersAreOpen();
+    checkCanEnableTimeSlots();
 
     var request = sugoi.tools.Utils.getMultipart( 1024 * 1024 * 10 ); //10Mb	
     if (!request.exists("mode")) throw new tink.core.Error(400, "Bad Request - missing mode");

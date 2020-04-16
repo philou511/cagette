@@ -8,8 +8,8 @@
     "slot-description": "Voici les crénaux de 15 minutes qui ont été automatiquement calculés à partir de vos heures de distribution. Une fois validés, vous ne pourrez plus les modifier, donc pensez à modifier la distribution avant si vous souhaiter étendre les horaires.",
     "slot-id": "Créneau n°{{id}}",
     "confirmBtnLabel": "Activer ces créneaux",
-    "modeLabel": "Activer la possibilité que des membres puissent retirer les commandes d'autres membres du groupe ?",
-    "modeSubLabel": "Cette option, n'est pas adaptée au groupe possédant un grand nombre de membres",
+    "modeLabel": "Souhaitez vous que des membres puissent retirer les commandes d'autres membres du groupe ?",
+    "modeSubLabel": "Attention, il se peut que des membres ne trouvent personne pour récupérer leur commande. N'activez cette option que si vous avez le temps de vous occuper de ces personnes.",
     "modeDefaultActivated": "Vous avez activé l'option permettant aux membres de retirer la commande d'autres membres du groupe."
   },
   "userSlotsSelector": {

@@ -245,12 +245,28 @@ class Formatting
 		var s = date.toString().split(" ").join("T");
 		//add timezone
 		var tz = "";
-		if(true){
-			//summer french time
-			tz = "+02:00";
+		var summer = new Date(date.getFullYear(),2,29,2,0,0);
+		var winter = new Date(date.getFullYear(),9,25,3,0,0);
+		// var dateStr = date.toString().substr(5);
+		var winterTime = false;
+
+		if( date.getTime() < summer.getTime()  ){
+			//jan-march
+			winterTime = true;
+		}else if (  date.getTime() > summer.getTime() && date.getTime() < winter.getTime() )	{			
+			//summer
+			winterTime = false;
 		}else{
-			tz = "+01:00";
+			//oct-dec
+			winterTime = true;
 		}
+		
+		if(winterTime){
+			tz = "+01:00";
+		}else{
+			tz = "+02:00";
+		}
+
 		return s + tz;
 
 	}
