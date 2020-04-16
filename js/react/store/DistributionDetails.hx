@@ -129,14 +129,14 @@ class DistributionDetails extends react.ReactComponentOfPropsAndState<Distributi
 				if (order.contracts.length == 1) {
 					return jsx('
 						<span key=${order.date}>
-							La commande ${order.contracts[0]} ferme ${Formatting.timeToDate(Date.fromString(order.date))} 
+							La commande ${order.contracts[0]} ferme ${Formatting.timeToDate(Date.fromString(order.date))}.<br/> 
 						</span>
 					');
 				}
 
 				return jsx('
 					<span key=${order.date}>
-						Les autres commandes ferment ${Formatting.timeToDate(Date.fromString(order.date))} 
+						Les autres commandes ferment ${Formatting.timeToDate(Date.fromString(order.date))}. 
 					</span>
 				');
 			});

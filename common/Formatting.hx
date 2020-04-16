@@ -236,4 +236,30 @@ class Formatting
 		//}catch (e:Dynamic) return "#000000";
 	}
 	#end
+
+
+	/**
+		https://www.w3.org/TR/NOTE-datetime
+	**/
+	public static function dateToIso(date:Date):String{
+		var s = date.toString().split(" ").join("T");
+		//add timezone
+		var tz = "";
+		if(true){
+			//summer french time
+			tz = "+02:00";
+		}else{
+			tz = "+01:00";
+		}
+		return s + tz;
+
+	}
+
+	public static function jsonReplacer(key:Dynamic,value:Dynamic){
+		if(Std.is(value,Date)){
+			return dateToIso(value);
+		}else {
+			return value;
+		}
+	}
 }

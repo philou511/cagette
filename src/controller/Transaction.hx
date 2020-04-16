@@ -210,6 +210,7 @@ class Transaction extends controller.Controller
 		try{
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var ops = db.Operation.onOrderConfirm(orders);
 			
 		}catch(e:tink.core.Error){
@@ -274,6 +275,7 @@ class Transaction extends controller.Controller
 		try{			
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var orderOps = db.Operation.onOrderConfirm(orders);
 			
 			var name = t._("Transfer for the order of ::date::", {date:view.hDate(date)}) + " ("+code+")";

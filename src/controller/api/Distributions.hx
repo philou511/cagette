@@ -51,7 +51,7 @@ class Distributions extends Controller {
   public function doDefault() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkIsGroupMember();
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
   /**
@@ -70,7 +70,7 @@ class Distributions extends Controller {
 
 	  var s = new TimeSlotsService(this.distrib);
     s.generateSlots(mode);    
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
   public function doResolved() {
@@ -78,14 +78,14 @@ class Distributions extends Controller {
     checkAdminRights();
 
     if (this.distrib.slots == null) {
-      Sys.print(Json.stringify(this.parse()));
+     json(this.parse());
       return;
     }
 
     var now = Date.now();
     
     if(distrib.orderEndDate==null || distrib.orderEndDate.getTime() > now.getTime()){
-      Sys.print(Json.stringify(this.parse()));
+      json(this.parse());
       return;
     }
 
@@ -119,7 +119,7 @@ class Distributions extends Controller {
       return true;
     });
 
-    Sys.print(Json.stringify({
+    json({
       id: this.distrib.id,
       start: this.distrib.distribStartDate,
       end: this.distrib.distribEndDate,
@@ -156,14 +156,14 @@ class Distributions extends Controller {
         }
         return data;
       })
-    }));
+    });
   }
 
   // TODO: remove
   @admin
   public function doResolve() {
     this.distrib.resolveSlots();
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
    // TODO: remove
@@ -172,7 +172,7 @@ class Distributions extends Controller {
     this.distrib.lock();
     this.distrib.orderEndDate = DateTools.delta(Date.now(), -(1000 * 60 * 60 * 24));
     this.distrib.update();
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
    // TODO: remove
@@ -185,7 +185,7 @@ class Distributions extends Controller {
     this.distrib.voluntaryUsers = null;
     this.distrib.orderEndDate  = DateTools.delta(Date.now(), 1000 * 60 * 60 * 24);
     this.distrib.update();
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
   // TODO: remove
@@ -197,7 +197,7 @@ class Distributions extends Controller {
     s.registerInNeedUser(userId, ["email"]);
     s.registerVoluntary(1, [55875]);
     
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
   // TODO : remove
@@ -248,7 +248,7 @@ class Distributions extends Controller {
       }
     }
     
-    Sys.print(Json.stringify(this.parse()));
+    json(this.parse());
   }
 
   private function parse() {
@@ -300,4 +300,7 @@ class Distributions extends Controller {
       inNeedUsers: users
     }
   }
+
+  
+
 }

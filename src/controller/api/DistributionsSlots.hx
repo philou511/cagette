@@ -47,7 +47,7 @@ class DistributionsSlots extends Controller {
         if (success == false) throw new tink.core.Error(500, "Can't update");
       }
 
-      return Sys.print(Json.stringify(s.userStatus(userId)));
+      return json(s.userStatus(userId));
     }
 
     if (!request.exists("has")) throw new tink.core.Error(400, "Bad Request - has required");
@@ -60,7 +60,7 @@ class DistributionsSlots extends Controller {
       if (!request.exists("allowed")) throw new tink.core.Error(400, "Bad Request - allowed required");
       var success = s.registerInNeedUser(App.current.user.id, request.get("allowed").split(","));
       if (success == false) throw new tink.core.Error(500, "Can't register");
-      Sys.print(Json.stringify(s.userStatus(userId))); 
+      json(s.userStatus(userId)); 
       return;
     }
 
@@ -87,15 +87,17 @@ class DistributionsSlots extends Controller {
       if (success == false) throw new tink.core.Error(500, "Can't register voluntary");
     }
 
-    Sys.print(Json.stringify(s.userStatus(userId))); 
+    json(s.userStatus(userId)); 
   }
+
+
 
   public function doMe() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkIsGroupMember();
     var userId = App.current.user.id;
     var s = new TimeSlotsService(this.distrib);
-    Sys.print(Json.stringify(s.userStatus(userId))); 
+    json(s.userStatus(userId)); 
   }
 
 
