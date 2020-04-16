@@ -5,7 +5,7 @@
     "hasActivatedBtn": "Créneaux horaires activés",
     "dialogTitle": "Distribution du {{date}}",
     "alert": "En raison de l'épidémie en cours, vous pouvez mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
-    "slot-description": "Voici les créneaux de 15 minutes qui ont été automatiquement calculés à partir de vos heures de distribution. Une fois validés, vous ne pourrez plus les modifier, donc pensez à modifier la distribution avant si vous souhaiter étendre les horaires.",
+    "slot-description": "Voici les crénaux de 15 minutes qui ont été automatiquement calculés à partir de vos heures de distribution. Une fois validés, vous ne pourrez plus les modifier, donc pensez à modifier la distribution avant si vous souhaiter étendre les horaires.",
     "slot-id": "Créneau n°{{id}}",
     "confirmBtnLabel": "Activer ces créneaux",
     "modeLabel": "Activer la possibilité que des membres puissent retirer les commandes d'autres membres du groupe ?",
@@ -13,7 +13,7 @@
     "modeDefaultActivated": "Vous avez activé l'option permettant aux membres de retirer la commande d'autres membres du groupe."
   },
   "userSlotsSelector": {
-    "cardTitle": "Inscription à un créneau horaire",
+    "cardTitle": "Inscription à un crénau horaire",
     "alert": {
       "p1": "En raison de l'épidémie en cours, ce groupe a décidé de mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
       "p2": "Dans ce sens, nous vous encourageons à retirer également les commandes des personnes proches de chez vous et à vous organiser pour les leur apporter."
@@ -32,8 +32,8 @@
     },
     "end": {
       "inNeed": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant qui pourra récupérer votre commande.",
-      "voluntary": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel créneau vous a été attribué.",
-      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel créneau vous a été attribué.",
+      "voluntary": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
+      "solo": "Votre choix a été enregistré. Lorsque la commande fermera, vous recevrez un email vous indiquant quel crénau vous a été attribué.",
       "voluntaryDetails": "Vous vous êtes engagé à retirer les commandes des personnes suivantes :"
     },
     "selectedSlots": "Créneaux choisis"

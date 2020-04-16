@@ -2757,7 +2757,9 @@ var isomorphicUnfetch = commonjsGlobal.fetch = commonjsGlobal.fetch || (
 
 /** */
 var parseDate = function (data) {
-    return new Date(data.replace(' ', 'T'));
+    // let str = data.replace(' ', 'T');
+    // str = str.includes(':') && !str.endsWith('Z') ? `${str}Z` : str;
+    return new Date(data);
 };
 var parseUserVo = function (data) { return ({
     id: data.id,
@@ -2819,11 +2821,20 @@ var formatUserAddress = function (user) {
 };
 
 // import { TOKEN_STORAGE_KEY } from './constants';
-var checkRes = function (res) {
-    if (!res.ok)
-        throw new Error(res.statusText);
-    return res.json();
-};
+var checkRes = function (res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!!res.ok) return [3 /*break*/, 2];
+                return [4 /*yield*/, res.json()];
+            case 1:
+                error = _a.sent();
+                throw new Error("" + error.error.message);
+            case 2: return [2 /*return*/, res.json()];
+        }
+    });
+}); };
 var request = function (url, init) { return __awaiter(void 0, void 0, void 0, function () {
     var options, res, error_1;
     return __generator(this, function (_a) {
@@ -2839,7 +2850,7 @@ var request = function (url, init) { return __awaiter(void 0, void 0, void 0, fu
                 error_1 = _a.sent();
                 // eslint-disable-next-line no-console
                 console.error(error_1);
-                return [2 /*return*/, null];
+                throw new Error(error_1);
             case 3: return [2 /*return*/];
         }
     });
@@ -2963,7 +2974,9 @@ var api = function () {
                     var res;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
-                            case 0: return [4 /*yield*/, get(apiUrl + "/distributions/" + id)];
+                            case 0:
+                                console.log('getDistrib');
+                                return [4 /*yield*/, get(apiUrl + "/distributions/" + id)];
                             case 1:
                                 res = _a.sent();
                                 return [2 /*return*/, res ? parseDistribVo(res) : null];
@@ -8949,7 +8962,7 @@ var ActivateDistribSlotsView = function (_a) {
                     return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
-                    setError(t('error'));
+                    setError(t('error', { error: err_1 }));
                     toggleSubmitting(false);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -8960,16 +8973,23 @@ var ActivateDistribSlotsView = function (_a) {
     React__default.useEffect(function () {
         var active = true;
         var load = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
+            var res, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api$1.distrib.getDistrib(distribId)];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, api$1.distrib.getDistrib(distribId)];
                     case 1:
                         res = _a.sent();
                         if (active && res) {
                             setDistrib(__assign({}, res));
                         }
-                        return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        setError(t('error', { error: err_2 }));
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         }); };
@@ -8980,8 +9000,8 @@ var ActivateDistribSlotsView = function (_a) {
     }, []);
     /** */
     if (!distrib || !distrib.start || !distrib.end)
-        return (React__default.createElement(core.Box, { p: 2 },
-            React__default.createElement(core.CircularProgress, { size: 20 })));
+        return (React__default.createElement(core.Box, { p: 2 }, error ? (React__default.createElement(core.Box, { p: 2 },
+            React__default.createElement(lab.Alert, { severity: "error" }, error))) : (React__default.createElement(core.CircularProgress, { size: 20 }))));
     if (distrib.orderEndDate && !isBefore(new Date(), distrib.orderEndDate)) {
         var goTo = function () {
             document.location.href = "/distribution/timeSlots/" + distrib.id;
@@ -8999,13 +9019,14 @@ var ActivateDistribSlotsView = function (_a) {
                 ? t("neo/distrib-slots:activeDistrib." + (hasActivated ? 'hasActivatedBtn' : 'activatedBtn'))
                 : t("neo/distrib-slots:activeDistrib." + 'activateBtn')),
         React__default.createElement(core.Dialog, { open: opened, onClose: closeDialog },
-            React__default.createElement(React__default.Fragment, null,
-                React__default.createElement(core.Box, { p: 2, display: "flex", alignItems: "center" },
+            React__default.createElement(core.DialogTitle, null,
+                React__default.createElement(core.Box, { display: "flex", alignItems: "center" },
                     React__default.createElement(core.Box, { mr: 2 },
                         React__default.createElement("img", { height: 36, src: "/img/virus.svg", alt: "" })),
                     React__default.createElement(core.Typography, { variant: "h4" }, t('neo/distrib-slots:activeDistrib.dialogTitle', {
                         date: format$1(distrib.start, 'EEEE dd MMMM yyyy'),
-                    }))),
+                    })))),
+            React__default.createElement(core.DialogContent, null,
                 React__default.createElement(core.Box, { p: 2 },
                     React__default.createElement(lab.Alert, { severity: "error" }, t('neo/distrib-slots:activeDistrib.alert'))),
                 React__default.createElement(core.Box, { p: 2 },
@@ -9119,7 +9140,7 @@ var ViewCtxProvider = function (_a) {
                     return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
-                    setError(t('error'));
+                    setError(t('error', { error: err_1 }));
                     toggleLoading(false);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -9218,7 +9239,7 @@ var ViewCtxProvider = function (_a) {
                         return [3 /*break*/, 5];
                     case 4:
                         err_2 = _a.sent();
-                        setError(t('error'));
+                        setError(t('error', { error: err_2 }));
                         toggleLoading(false);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
@@ -16845,7 +16866,7 @@ var PermissionsStep = function (_a) {
                 case 3:
                     err_1 = _a.sent();
                     toggleSubmitting(false);
-                    bag.setStatus(t('error'));
+                    bag.setStatus(t('error', { error: err_1 }));
                     bag.setSubmitting(false);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
