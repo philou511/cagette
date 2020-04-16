@@ -97,6 +97,7 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
     }
 
     private function renderRow(row: Dynamic) {
+        
         var onClick = function(e: js.html.Event) {
             this.setState({yearToDelete: row.id});
         };
@@ -104,7 +105,7 @@ class MembershipHistory extends ReactComponentOfPropsAndState<MembershipHistoryP
         return 
             <TableRow key={row.id}>
                 <TableCell align=${mui.core.common.Align.Center}>{row.name}</TableCell>
-                <TableCell align=${mui.core.common.Align.Center}>{DateFns.format(Date.fromString(row.date), "d MMMM yyyy", {locale: DateFnsLocale.fr})}</TableCell>
+                <TableCell align=${mui.core.common.Align.Center}>{DateFns.format(new js.lib.Date(row.date), "d MMMM yyyy", {locale: DateFnsLocale.fr})}</TableCell>
                 <TableCell align=${mui.core.common.Align.Center}>{row.amount}&nbsp;&euro;</TableCell>
                 <TableCell align=${mui.core.common.Align.Center}>
                     <IconButton disabled=${props.isLocked} onClick=$onClick>
