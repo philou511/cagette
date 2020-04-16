@@ -1,4 +1,3 @@
-import 'isomorphic-unfetch';
 import { ActivateDistribSlotsViewProps } from './views/ActivateDistribSlotsView';
 import { UserDistribSlotsSelectorViewProps } from './views/UserDistribSlotsSelectorView';
 import { DistribSlotsResolverProps } from './views/DistribSlotsResolver';

@@ -32,7 +32,9 @@
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
 		<!-- Haxe JS + libs bundled with browserify -->
-		
+        
+        <script type="text/javascript" src="/js/::getVariable('js')::/fetch.umd.js"></script>
+
 		::if(DEBUG)::
 		<script type="text/javascript" src="/js/::getVariable('js')::/libs.dev.js"></script>
 		::else::
