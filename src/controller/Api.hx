@@ -73,6 +73,10 @@ class Api extends Controller
 		d.dispatch(new controller.api.Distributions(distrib));
 	}	
 
+	public function doPlaces(d:haxe.web.Dispatch, place: db.Place) {
+		d.dispatch(new controller.api.Places(place));
+	}	
+
 	/**
 	 * Get distribution planning for this group
 	 * 

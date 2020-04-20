@@ -96,9 +96,9 @@
 					</div>
 
 					<!-- distribution place -->	
-					<div class="info">$$place(::place::)</div>
+					<div class="info">$$placeOsm(::place::, ::d.id::)</div>
 
-				</div>
+                </div>
 				<!--==== Variable order block ===-->
 				::if d.getDistributions(1).length>0::
 

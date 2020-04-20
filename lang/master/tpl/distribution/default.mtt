@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="col-md-3 info">						
-                        $$place(::place::)
+                        $$placeOsm(::place::, ::d.id::)
                 </div>
                 <div class="col-md-3 text-right">
                         <a href="/distribution/editMd/::d.id::" class="btn btn-default btn-sm">

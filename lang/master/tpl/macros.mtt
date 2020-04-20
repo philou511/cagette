@@ -164,23 +164,25 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<i class="icon icon-map-marker"></i>
-				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>			
-			</div>
+                <i class="icon icon-map-marker"></i>
+                <span id="::dow::-::d::-::m::-::y::"></span>
+                <a onclick="_.openPlaceDialog('::dow::-::d::-::m::-::y::',::place.id::)">::place::</a>		
+            </div>
 			::end::
 		</div>		
-	</macro>
-
-	<macro name="place(place)">
-		<i class="icon icon-map-marker"></i>						
-		<a onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>	
+    </macro>
+    
+    <macro name="placeOsm(place,unique)">
+        <i class="icon icon-map-marker"></i>
+        <span id="::unique::"></span>					
+		<a onclick="_.openPlaceDialog('::unique::',::place.id::)">::place::</a>	
 		<br/>
 		<span class="address">
 			$$nullSafe(::place.address1::)
 			$$nullSafe(::place.address2::)
 			$$nullSafe(::place.zipCode::)
 			$$nullSafe(::place.city::)
-		</span>
+        </span>
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">
@@ -198,8 +200,9 @@
 			</div>
 			::if place!=null:: 
 			<div style="margin-top:6px;">
-				<i class="icon icon-map-marker"></i>
-				<a href="#" onclick="_.overlay('/group/place/::place.id::','::urlEncode(place.name)::')">::place::</a>
+                <i class="icon icon-map-marker"></i>
+                <span id="::dow::-::d::-::m::-::y::"></span>
+                <a onclick="_.openPlaceDialog('::dow::-::d::-::m::-::y::',::place.id::)">::place::</a>
 			</div>
 			::end::
 		</div>		

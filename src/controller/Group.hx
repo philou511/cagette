@@ -376,25 +376,5 @@ class Group extends controller.Controller
 		if (place.city != null) addr += " " + place.city;
 		
 		view.addr = view.escapeJS(addr);
-	}
-	
-	/**
-	 * Groups map
-	 */
-	@tpl("group/map.mtt")
-	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
-
-		view.container = "container-fluid";
-		
-		//if no param is sent, focus on Paris
-		if (args == null || (args.address == null && args.lat == null && args.lng == null)){
-			args = {lat:48.855675, lng:2.3472365};
-		}
-		
-		view.lat = args.lat;
-		view.lng = args.lng;
-		view.address = args.address;		
-	}
-	
-	
+	}	
 }

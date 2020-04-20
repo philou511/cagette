@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserVo } from '../../../vo';
+import { UserVo } from '../../../../vo';
 interface Props {
     user: UserVo;
     userInfos: string[];

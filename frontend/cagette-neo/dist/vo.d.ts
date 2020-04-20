@@ -35,12 +35,23 @@ export interface DistribVo {
     start?: Date;
     end?: Date;
     orderEndDate?: Date;
+    mode: 'solo-only' | 'default';
     slots?: DistribSlotVo[];
     inNeedUsers?: UserVo[];
 }
-/** */
+export interface PlaceVo {
+    id: number;
+    name: string;
+    address1?: string;
+    address2?: string;
+    city?: string;
+    zipCode?: string;
+    lat?: number;
+    lng?: number;
+}
 export declare const parseUserVo: (data: any) => UserVo;
 export declare const parseGroupVo: (data: any) => GroupVo;
 export declare const parseDistribVo: (data: any) => DistribVo;
+export declare const parsePlaceVo: (data: any) => PlaceVo;
 /** */
 export declare const formatUserAddress: (user: UserVo) => string | undefined;

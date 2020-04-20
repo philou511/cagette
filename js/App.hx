@@ -36,6 +36,7 @@ extern class NeolithicViewsGenerator {
     static public function setApiUrl(
         url: String
     ): Void;
+    static public function placeDialog(elementId: String, props: Dynamic): Void;
 }
 
 class App {
@@ -499,6 +500,15 @@ class App {
 			'),
 			js.Browser.document.querySelector(selector)
 		);
+    }
+
+    public function openPlaceDialog(
+        selector: String,
+        placeId: Int
+    ) {
+        NeolithicViewsGenerator.placeDialog(selector, {
+           placeId: placeId
+        });
     }
 }
 

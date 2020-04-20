@@ -7,7 +7,10 @@
     "alert": "En raison de l'épidémie en cours, vous pouvez mettre en place des créneaux horaires pour le retrait des commandes afin de limiter le nombre de personnes présentes simultanément au point de distribution.",
     "slot-description": "Voici les crénaux de 15 minutes qui ont été automatiquement calculés à partir de vos heures de distribution. Une fois validés, vous ne pourrez plus les modifier, donc pensez à modifier la distribution avant si vous souhaiter étendre les horaires.",
     "slot-id": "Créneau n°{{id}}",
-    "confirmBtnLabel": "Activer ces créneaux"
+    "confirmBtnLabel": "Activer ces créneaux",
+    "modeLabel": "Souhaitez vous que des membres puissent retirer les commandes d'autres membres du groupe ?",
+    "modeSubLabel": "Attention, il se peut que des membres ne trouvent personne pour récupérer leur commande. N'activez cette option que si vous avez le temps de vous occuper de ces personnes.",
+    "modeDefaultActivated": "Vous avez activé l'option permettant aux membres de retirer la commande d'autres membres du groupe."
   },
   "userSlotsSelector": {
     "cardTitle": "Inscription à un crénau horaire",
