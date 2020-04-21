@@ -260,9 +260,9 @@ class Catalog extends Object
 	public function getDistribs(excludeOld = true,?limit=999):List<Distribution> {
 		if (excludeOld) {
 			//still include deliveries which just expired in last 24h
-			return Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24) && $catalog == this, { orderBy:date,limit:limit } );
+			return Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24) && $catalog == this, { orderBy:date,limit:limit },false);
 		}else{
-			return Distribution.manager.search( $catalog == this, { orderBy:date,limit:limit } );
+			return Distribution.manager.search( $catalog == this, { orderBy:date,limit:limit } ,false);
 		}
 	}
 

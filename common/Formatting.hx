@@ -236,4 +236,46 @@ class Formatting
 		//}catch (e:Dynamic) return "#000000";
 	}
 	#end
+
+
+	/**
+		https://www.w3.org/TR/NOTE-datetime
+	**/
+	public static function dateToIso(date:Date):String{
+		var s = date.toString().split(" ").join("T");
+		//add timezone
+		var tz = "";
+		var summer = new Date(date.getFullYear(),2,29,2,0,0);
+		var winter = new Date(date.getFullYear(),9,25,3,0,0);
+		// var dateStr = date.toString().substr(5);
+		var winterTime = false;
+
+		if( date.getTime() < summer.getTime()  ){
+			//jan-march
+			winterTime = true;
+		}else if (  date.getTime() > summer.getTime() && date.getTime() < winter.getTime() )	{			
+			//summer
+			winterTime = false;
+		}else{
+			//oct-dec
+			winterTime = true;
+		}
+		
+		if(winterTime){
+			tz = "+01:00";
+		}else{
+			tz = "+02:00";
+		}
+
+		return s + tz;
+
+	}
+
+	public static function jsonReplacer(key:Dynamic,value:Dynamic){
+		if(Std.is(value,Date)){
+			return dateToIso(value);
+		}else {
+			return value;
+		}
+	}
 }

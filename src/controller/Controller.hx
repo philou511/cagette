@@ -36,6 +36,11 @@ class Controller extends sugoi.BaseController
 			throw new tink.core.Error(t._("You should be logged in to perform this action."));
 		}
 	}
+
+	
+	function json(data:Dynamic){
+		Sys.print(haxe.Json.stringify(data,Formatting.jsonReplacer));
+	}
 	
 
 }

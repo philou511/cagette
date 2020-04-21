@@ -112,7 +112,7 @@ class User extends Controller
 			}
 
 			out.availableYears.reverse();
-			Sys.print(haxe.Json.stringify(out));
+			json(out);
 		}
 	}
 
@@ -139,7 +139,7 @@ class User extends Controller
 					date : m.date
 				};
 			});
-			Sys.print(haxe.Json.stringify({memberships:memberships}));
+			json({memberships:memberships});
 		}
 	}
 	
@@ -175,7 +175,7 @@ class User extends Controller
 		
 		service.UserService.register(firstName, lastName, email, phone, pass, address, zipCode, city);
 		
-		Sys.print(Json.stringify({success:true}));
+		json({success:true});
 	}
 
 

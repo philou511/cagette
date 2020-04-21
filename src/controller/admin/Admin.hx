@@ -380,17 +380,24 @@ class Admin extends Controller {
 			Sys.println("delete "+f.toString()+" <br/>");
 			f.delete();
 		}
-
 	}
 
 	/**
-		clean old product files
+		clean old product files.
+		NE PAS FAIRE ca : car quand on copie un catalogue, ça réutilise d'anciennes images
 	**/
 	function doCleanOldFiles() {
-		/*var max = new Date(2018,06,30,0,0,0);
-		for( c in Catalog.manager.search($endate < max,{limit:1000},false)){
-			Sys.println(c.name+"<br/>");
-		}*/
+		var max = new Date(2018,6,30,0,0,0);
+		for( c in Catalog.manager.search($endDate < max,false)){
+			for(p in c.getProducts(false)){
+				if(p.image!=null){
+					p.image.lock();
+					p.image.delete();
+					Sys.println("delete image : "+p.name+"<br/>");
+				}
+			}
+			
+		}
 		
 	}
 

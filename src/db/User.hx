@@ -134,8 +134,12 @@ class User extends Object {
 	public function isAmapManager() {
 		var a = getGroup();
 		if (a == null) return false;
+
+		if(isAdmin()) return true;
+
 		var ua = getUserGroup(a);
 		if (ua == null) return false;
+
 		return ua.hasRight(Right.GroupAdmin);
 	}
 
