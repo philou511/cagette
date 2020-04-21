@@ -151,7 +151,7 @@ class Transaction extends controller.Controller
 
 		view.category = 'home';
 		
-		if (tmpBasket == null) throw Redirect("/");
+		if (tmpBasket == null) throw Error("Basket is null");
 		tmpBasket.lock();
 		if (tmpBasket.data.products.length == 0) throw Error("/", t._("Your cart is empty"));
 
@@ -210,6 +210,7 @@ class Transaction extends controller.Controller
 		try{
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var ops = db.Operation.onOrderConfirm(orders);
 			
 		}catch(e:tink.core.Error){
@@ -233,8 +234,10 @@ class Transaction extends controller.Controller
 		try{
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var orderOps = db.Operation.onOrderConfirm(orders);
 			var total = tmpBasket.getTotal();
+
 			view.amount = total;
 			//var futureBalance = db.UserGroup.get(app.user, app.user.getGroup()).balance - total;
 			view.balance = db.UserGroup.get(app.user, app.user.getGroup()).balance;
@@ -272,6 +275,7 @@ class Transaction extends controller.Controller
 		try{			
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
+			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
 			var orderOps = db.Operation.onOrderConfirm(orders);
 			
 			var name = t._("Transfer for the order of ::date::", {date:view.hDate(date)}) + " ("+code+")";

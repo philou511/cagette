@@ -58,10 +58,16 @@ private typedef TClasses = Classes<[
 	
 	]>
 
+@:build(lib.lodash.Lodash.build())
 @:publicProps(PublicProps)
 @:connect
 @:wrap(untyped Styles.withStyles(styles))
-class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
+class CartDetails extends react.ReactComponentOfPropsAndState<CartDetailsProps,{disabled:Bool}> {
+
+    public function new(props) {
+		super(props);
+        this.state = {disabled: false};
+    }
 	
 	public static function styles(theme:Theme):ClassesDef<TClasses> {
 		return {
@@ -258,17 +264,20 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
 				${productsToOrder}
 			</GridList>
 		');
-	}
+    }
+    
+    @:debounce(5000, {leading:true})
+    function submit(){
+        trace("submit");
+        if (props.order.products.length == 0) return;
+        props.submitOrder(props.order);
+        setState({disabled:true});
+
+    }
 
     function renderFooter() {
 		var classes = props.classes;
-		var submit = props.submitOrder.bind(props.order);
-		var disabled= false;
-		if (props.order.products.length == 0) {
-			submit = null;
-			disabled = true;
-		}
-
+		
 		return jsx('
 			<Grid className=${classes.cartFooter} container={true} direction=${css.FlexDirection.Column} key="footer">
 				<Grid item={true} xs={12}>
@@ -276,7 +285,7 @@ class CartDetails extends react.ReactComponentOfProps<CartDetailsProps> {
                         onClick=${submit}
                         variant=${Contained}
                         color=${Primary} 
-						disabled=${disabled}
+						disabled=${(props.order.products.length == 0) ? true : state.disabled}
                         >                        
                         COMMANDER
                     </Button>

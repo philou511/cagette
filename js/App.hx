@@ -411,7 +411,7 @@ class App {
 				x.classList.add("disabled");
 				haxe.Timer.delay(function(){
 					x.classList.remove("disabled");
-				},1000);
+				},3000);
 			});
 		}
 		

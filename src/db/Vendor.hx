@@ -34,7 +34,7 @@ class Vendor extends Object
 	
 	public var desc : SNull<SText>;
 
-	public var companyNumber : SNull<SString<128>>; //SIRET
+	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	
 	public var linkText:SNull<SString<256>>;

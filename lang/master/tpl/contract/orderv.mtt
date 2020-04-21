@@ -35,46 +35,63 @@
 			::end::
 
 <style>
+	
 	td{
+		overflow: hidden;
 		height: 60px;
-		overflow-y: hidden;
+		width: 80px;
+
 	}
 	th{
+		overflow: hidden;
 		height: 100px;
-		overflow-y: hidden;
+		width: 80px;
 	}
+
+	.sized{
+		border-top: 1px solid #ddd;
+		border-left: 1px solid #ddd;
+		padding: 8px;
+		overflow: hidden;
+	}
+	.cell{
+		height: 60px;
+		width: 100%;
+	}
+
+	.hcell{
+		height: 100px;
+		font-weight: bold;
+		width: 100%;
+	}
+	
 </style>
 
 			<!--products-->
 			<div class="row">
 				<div class="col-md-3" style="margin-right: 0;padding-right:0;">
-				<table class="table table-bordered">
-					<tr>
-						<td></td>
-						<th>::_("Product")::</th>
-						<th>::_("Price")::</th>
-					</tr>
+					<div class="hcell sized">
+						::_("Product")::
+					</div>
+						
 					::if userOrders.length>0::	
 						::foreach uo userOrders[0].data::
 
-						<tr>
-							<td>
+						<div class="cell sized">
+								
+							<a onclick="_.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">	
 								<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
-							</td>
-							<td>
-								<a href="#" onclick="_.overlay('/shop/productInfo/::uo.product.id::','::escapeJS(uo.product.getName())::')">							
-									::short(uo.product.getName(),24)::
-								</a>
-							</td>
-							<td>
+								::short(uo.product.getName(),24)::
+								
 								::set price = uo.product.price + uo.product._catalog.computeFees(uo.product.price)::
-								::formatNum(price)::&nbsp;::currency()::
-							</td>
-						</tr>
+								<b>::formatNum(price)::&nbsp;::currency()::</b>
+							</a>
+						</div>
 						::end::
 					::end::
-					<tr><th colspan="3" class="text-right">Total</th></tr>
-				</table>
+					
+					<div class="hcell sized">Total</div>
+				
 				</div>
 
 				<!--orders-->
@@ -83,9 +100,9 @@
 						<tr>
 							::foreach d userOrders::
 								::if d.distrib==null::
-									<th style="min-width: 80px;">::_("Qty")::</th>
+									<th>::_("Qty")::</th>
 								::else::
-									<th style="min-width: 80px;">::dDate(d.distrib.date)::</th>
+									<th>::dDate(d.distrib.date)::</th>
 								::end::
 							::end::
 						</tr>

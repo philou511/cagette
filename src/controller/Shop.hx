@@ -1,4 +1,5 @@
 package controller;
+import service.OrderFlowService;
 import Common;
 import tools.ArrayTool;
 import service.OrderService;
@@ -205,37 +206,14 @@ class Shop extends Controller
 		Confirms the temporary basket.
 		The user can come from the old or new shop, or from /transaction/tmpBasket.
 		- clean order
-		- ask to login is needed
-		- redirect to payment page if needed
+		- got to next step in the flow
 	**/
 	@tpl('shop/needLogin.mtt')
 	public function doValidate(tmpBasket:db.TmpBasket){
 		
 		tmpBasket.lock();
-
-		//Login is needed : display a loginbox
-		if (app.user == null) {
-			app.session.data.tmpBasketId = tmpBasket.id;
-			view.redirect = sugoi.Web.getURI();
-			view.group = tmpBasket.multiDistrib.getGroup();
-			view.register = true;
-			view.message =  t._("In order to confirm your order, You need to authenticate.");
-			return;
-		}else{
-			//case where the user just logged in
-			if(tmpBasket.user==null){
-				tmpBasket.user = app.user;
-				tmpBasket.update();
-			}
-		}
-
 		var md = tmpBasket.multiDistrib;
 		var group = md.getGroup();
-		
-		//Add the user to this group if needed
-		if (group.regOption == db.Group.RegOption.Open && db.UserGroup.get(app.user, group) == null){
-			app.user.makeMemberOf( group );			
-		}
 		
 		if (tmpBasket.data.products == null || tmpBasket.data.products.length == 0) {
 			throw Error("/", t._("Your basket is empty") );
@@ -298,16 +276,73 @@ class Shop extends Controller
 		//update tmp basket
 		tmpBasket.data = {products:orders};		
 		tmpBasket.update();
+
+
+		//whats next
+		var flow = new service.OrderFlowService().setPlace(SubmitOrder(tmpBasket));
+		throw Redirect(flow.getPlaceUrl(flow.getNextPlace()));		
+
 		
-		if (group.hasPayments()){			
+		/*if (group.hasPayments()){			
 			//Go to payments page
 			throw Redirect("/transaction/pay/"+tmpBasket.id);
 		}else{
 			//no payments, confirm direclty
 			OrderService.confirmTmpBasket(tmpBasket);			
 			throw Ok("/contract", t._("Your order has been confirmed") );	
+		}*/
+
+	}
+
+	/**
+		final confirmation of the basket
+	**/
+	function doConfirm(tmpBasket:db.TmpBasket){
+		if(tmpBasket!=null){
+			OrderService.confirmTmpBasket(tmpBasket);
+			throw Ok("/contract", t._("Your order has been confirmed") );
+		}else{
+			throw Redirect("/contract");
+		}
+	}
+
+	/**
+		a user made an order but is not logeed in
+		this page handles the login process
+	**/
+	@tpl('shop/needLogin.mtt')
+	function doLogin(tmpBasket:db.TmpBasket){
+
+		//Login is needed : display a loginbox
+		if (app.user == null) {
+
+			app.session.data.tmpBasketId = tmpBasket.id;
+			view.redirect = sugoi.Web.getURI();
+			view.group = tmpBasket.multiDistrib.getGroup();
+			view.register = true;
+			view.message =  t._("In order to confirm your order, You need to authenticate.");
+			
+
+		}else{
+			tmpBasket.lock();
+
+			//case where the user just logged in
+			if(tmpBasket.user==null){
+				tmpBasket.user = app.user;
+				tmpBasket.update();
+			}
+
+			//Add the user to this group if needed
+			var group = tmpBasket.multiDistrib.group;
+			if (group.regOption == db.Group.RegOption.Open && db.UserGroup.get(app.user, group) == null){
+				app.user.makeMemberOf( group );			
+			}
+
+			var flow = new OrderFlowService().setPlace(UserLogsIn(tmpBasket));
+			throw Redirect(flow.getPlaceUrl(flow.getNextPlace()));
 		}
 
+		
 	}
 
 	

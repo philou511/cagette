@@ -77,7 +77,11 @@ class HeaderWrapper extends react.ReactComponentOf<HeaderWrapperProps, HeaderWra
             e.addEventListener(sticky.StickyEvents.StickyEvent.CHANGE, function(e) {
                 //trace("We have an element changing sticky status");
                 //trace(e.target);
-                setState({isSticky: e.detail.isSticky});                    
+
+                //need to delay this, otherwise it causes flickering in some cases
+                haxe.Timer.delay(function(){
+                    setState({isSticky: e.detail.isSticky});                    
+                },200);
             });
         }
     }

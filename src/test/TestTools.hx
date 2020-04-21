@@ -103,6 +103,17 @@ class TestTools extends utest.Test
 		Assert.isTrue( Lambda.find(newList,function(ua) return ua.user.id==francois.id )!=null );
 	}
 
+	function testDateJSON(){
+
+		//winter time
+		var january = Formatting.dateToIso(new Date(2020,0,1,0,0,0));
+		Assert.equals("2020-01-01T00:00:00+01:00",january);
+
+		//summer time
+		var june = Formatting.dateToIso(new Date(2020,5,1,0,0,0));
+		Assert.equals("2020-06-01T00:00:00+02:00",june);
+	}
+
 /*
 	@admin
 	public function doTests() {
