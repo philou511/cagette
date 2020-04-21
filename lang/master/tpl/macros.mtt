@@ -165,16 +165,17 @@
 			::if place!=null:: 
 			<div style="margin-top:6px;">
                 <i class="icon icon-map-marker"></i>
-                <span id="::dow::-::d::-::m::-::y::"></span>
                 <a onclick="_.openPlaceDialog('::dow::-::d::-::m::-::y::',::place.id::)">::place::</a>		
             </div>
-			::end::
+            ::end::
+            <div style="width: 0px; height: 0px; overflow: hidden">
+                <span id="::dow::-::d::-::m::-::y::"></span>	
+            </div>
 		</div>		
     </macro>
     
     <macro name="placeOsm(place,unique)">
-        <i class="icon icon-map-marker"></i>
-        <span id="::unique::"></span>					
+        <i class="icon icon-map-marker"></i>		
 		<a onclick="_.openPlaceDialog('::unique::',::place.id::)">::place::</a>	
 		<br/>
 		<span class="address">
@@ -183,6 +184,9 @@
 			$$nullSafe(::place.zipCode::)
 			$$nullSafe(::place.city::)
         </span>
+        <div style="width: 0px; height: 0px; overflow: hidden">
+            <span id="::unique::"></span>	
+        </div>
 	</macro>
 	
 	<macro name="today(dow,d,m,y,h,place)">
