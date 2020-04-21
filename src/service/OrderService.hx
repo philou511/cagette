@@ -403,7 +403,7 @@ class OrderService
 		var user = tmpBasket.user;
 		var distributions = tmpBasket.multiDistrib.getDistributions();
 		for (o in tmpBasket.data.products){
-			var p = db.Product.manager.get(o.productId);
+			var p = db.Product.manager.get(o.productId,false);
 
 			//find related distrib
 			var distrib = null;
