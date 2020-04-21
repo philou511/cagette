@@ -364,17 +364,32 @@ class Group extends controller.Controller
 	/**
 		Displays a google map in a popup
 	**/
-	@tpl('group/place.mtt')
-	public function doPlace(place:db.Place){
-		view.place = place;
+	// @tpl('group/place.mtt')
+	// public function doPlace(place:db.Place){
+	// 	view.place = place;
 		
-		//build adress for google maps
-		var addr = "";
-		if (place.address1 != null) addr += place.address1;
-		if (place.address2 != null) addr += ", " + place.address2;
-		if (place.zipCode != null) addr += " " + place.zipCode;
-		if (place.city != null) addr += " " + place.city;
+	// 	//build adress for google maps
+	// 	var addr = "";
+	// 	if (place.address1 != null) addr += place.address1;
+	// 	if (place.address2 != null) addr += ", " + place.address2;
+	// 	if (place.zipCode != null) addr += " " + place.zipCode;
+	// 	if (place.city != null) addr += " " + place.city;
 		
-		view.addr = view.escapeJS(addr);
-	}	
+	// 	view.addr = view.escapeJS(addr);
+	// }
+
+	@tpl("group/map.mtt")
+	public function doMap(?args:{?lat:Float,?lng:Float,?address:String}){
+
+		view.container = "container-fluid";
+		
+		//if no param is sent, focus on Paris
+		if (args == null || (args.address == null && args.lat == null && args.lng == null)){
+			args = {lat:48.855675, lng:2.3472365};
+		}
+		
+		view.lat = args.lat;
+		view.lng = args.lng;
+		view.address = args.address;		
+	}
 }
