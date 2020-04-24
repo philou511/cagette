@@ -4,57 +4,56 @@
 <div class="row" style="margin-bottom:24px;">
 
 		<div class="col-md-6">
-				$$timeframe(::timeframe::)
-			</div>
+			$$timeframe(::timeframe::)
+		</div>
 			
-			<div class="col-md-6 text-right">
-				<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
-				<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
-			
-				<div class="btn-group">
-					<button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span class="caret"></span> ::_("Duty periods"):: 
-					</button>
-					<ul class="dropdown-menu">
-						<li><a href="/distribution/volunteersCalendar"><i class="icon icon-calendar"></i> ::_("Duty periods calendar")::</a></li>
-						<li><a href="/distribution/volunteersParticipation"><i class="icon icon-calendar"></i> ::_("Duty periods participations")::</a></li>          
-					</ul>
-				</div>
+		<div class="col-md-6 text-right">
+			<a href="/distribution/insertMd/" class="btn btn-default"><i class="icon icon-plus"></i> Distribution ponctuelle</a>
+			<a href="/distribution/insertMdCycle/" class="btn btn-default"><i class="icon icon-plus"></i> Cycle de distributions</a>
+		
+			<div class="btn-group">
+				<button type="button" class="btn-noAntiDoubleClick btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span> ::_("Duty periods"):: 
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="/distribution/volunteersCalendar"><i class="icon icon-calendar"></i> ::_("Duty periods calendar")::</a></li>
+					<li><a href="/distribution/volunteersParticipation"><i class="icon icon-calendar"></i> ::_("Duty periods participations")::</a></li>          
+				</ul>
 			</div>
-
+		</div>
 </div>
 
 
 <style>
-		.dashBoardBlock{
-			min-height: 150px;
-			border:solid 3px #CCC;
-			border-radius: 12px;
-			padding: 12px;
-			text-align: center;
-		}
-		.dashBoardBlock .title{
-			color:#AAA;
-			font-weight: bold;
-		}
-		.dashBoardBlock .number{
-			font-size: 2em;
-			font-weight: bold;
-		}
-		.dashBoardBlock .actions{
-			width:80%;
-			margin:12px auto 0 auto;
+	.dashBoardBlock{
+		min-height: 150px;
+		border:solid 3px #CCC;
+		border-radius: 12px;
+		padding: 12px;
+		text-align: center;
+	}
+	.dashBoardBlock .title{
+		color:#AAA;
+		font-weight: bold;
+	}
+	.dashBoardBlock .number{
+		font-size: 2em;
+		font-weight: bold;
+	}
+	.dashBoardBlock .actions{
+		width:80%;
+		margin:12px auto 0 auto;
 
-		}
-		.dashBoardBlock .actions .btn{
-			width:100%;
-			margin-bottom: 8px;
-		}
+	}
+	.dashBoardBlock .actions .btn{
+		width:100%;
+		margin-bottom: 8px;
+	}
 
-		.dashBoardBlock div.status{
-			font-size: 1.2em;
-			margin-top: 18px;
-		}
+	.dashBoardBlock div.status{
+		font-size: 1.2em;
+		margin-top: 18px;
+	}
 </style>
 
 ::if(distribs.length==0)::
@@ -130,7 +129,8 @@
                             
 							::set status = d.getState()::
 							
-							::if(status==null || vdistribs.length==0)::							
+							::if(status==null || vdistribs.length==0)::	
+
 								<span style="color:#AAA;">
 									<div class="number"><i class="icon icon-products"></i></div>
 									<div class="status" style="font-size:0.9em;">
@@ -138,6 +138,7 @@
 										Pas de dates de commande à gérer.
 									</div>
 								</span>
+
 							::else::
 
 								::if(status=="notYetOpen")::
@@ -152,13 +153,18 @@
 									<span style="color:#AAA;">
 										<div class="number"><i class="icon icon-basket"></i></div>
 										<div class="status">::_("Orders closed")::</div>
+										::if(d.getGroup().hasPayments() && isToday(d.getDate()))::
+										<a href="/distribution/validate/::d.id::" class="btn btn-primary">
+											<i class="icon icon-check"></i> Valider cette distribution
+										</a>
+										::end::
 									</span>
 								::elseif(status=="distributed")::
 									<span style="color:#AAA;">										
 										<div class="status">::_("Distribution done")::</div>
 										<br/>
 									</span>
-									::if(d._place._group.hasPayments())::
+									::if(d.getGroup().hasPayments())::
 									<a href="/distribution/validate/::d.id::" class="btn btn-primary">
 										<i class="icon icon-check"></i> Valider cette distribution
 									</a>

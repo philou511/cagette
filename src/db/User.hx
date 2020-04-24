@@ -18,7 +18,7 @@ enum RightSite {
 	Admin;
 }
 
-@:index(email,unique)
+@:index(email,unique) @:index(email2)
 class User extends Object {
 
 	public var id : SId;

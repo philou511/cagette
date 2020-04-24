@@ -125,12 +125,15 @@
 						<td>
 							::if(tt.pending)::
 								::if(tt._data.type != "onthespot")::
-									<a href="/validate/::md.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
-										<i class="icon icon-check"></i>
-										::_("I have received this payment")::
-									</a>
+									<p>
+										<a href="/validate/::md.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
+											<i class="icon icon-check"></i>
+											::_("I have received this payment")::
+										</a>
+									</p>
 								::else::
 									::foreach type onTheSpotAllowedPaymentTypes::
+									<p>
 										<a href="/validate/::md.id::/::member.id::/validateOp/::tt.id::?token=::token::&type=::type.type::" class="btn btn-primary btn-sm">
 											<i class="icon icon-check"></i>
 											::if(type.type == "cash")::
@@ -143,6 +146,7 @@
 												::__(" I have received this payment by ::paymentType::", {paymentType: type.name.toLowerCase()})::
 											::end::										
 										</a>
+									</p>
 									::end::
 								::end::
 								$$delete(::_("Del.")::,/validate/::md.id::/::member.id::/deleteOp/::tt.id::?token=::token::)
@@ -179,50 +183,63 @@
 
 		
 		
-		<!-- credit / debit / ok message -->
+		
 		<div class="col-md-12" style="margin-bottom: 24px;">
 			
-			::if(tpaid!=null && amount!=null)::
-			
-				::if(tpaid+amount != 0)::
-					::set class="danger"::
-				::else::
-					::set class="success"::
-				::end::
-				<div class="alert alert-::class:: text-center" style="width:50%;margin:12px auto">
-					::if(tpaid+amount > 0):: 
+			::if(basket.isValidated())::
 
-						$$check(::false::)		
-						::set str = formatNum(abs(tpaid+amount))+"&nbsp;"+currency()::
-						::raw __("Paid too much, credit of ::amount::",{amount:str})::
-						
-					::elseif(tpaid+amount < 0)::
-					
-						$$check(::false::)						
-						::_("Missing"):: ::formatNum(abs(tpaid+amount))::&nbsp;::currency()::
-						
-					::else::	
-					
-						$$check(::true::) ::_("Everything is allright !"):: 
-						
+				<div class="alert alert-success text-center" style="width:50%;margin:12px auto">$$check(::true::) Commande validée.</div>
+				<p class="text-center">
+					<a href="/member/invoice/::member.id::/::md.id::" target="_blank" class="btn btn-default btn-sm">
+						<i class="icon icon-file"></i> Reçu client
+					</a>
+				</p>
+
+			::else::
+
+				<!-- credit / debit / ok message -->
+				::if(tpaid!=null && amount!=null)::
+				
+					::if(tpaid+amount != 0)::
+						::set class="danger"::
+					::else::
+						::set class="success"::
 					::end::
-				</div>
+					<div class="alert alert-::class:: text-center" style="width:50%;margin:12px auto">
+						::if(tpaid+amount > 0):: 
+
+							$$check(::false::)		
+							::set str = formatNum(abs(tpaid+amount))+"&nbsp;"+currency()::
+							::raw __("Paid too much, credit of ::amount::",{amount:str})::
+							
+						::elseif(tpaid+amount < 0)::
+						
+							$$check(::false::)						
+							::_("Missing"):: ::formatNum(abs(tpaid+amount))::&nbsp;::currency()::
+							
+						::else::	
+						
+							$$check(::true::) ::_("Everything is allright !"):: 
+							
+						::end::
+					</div>
+				::end::
+
+				<!-- actions -->
+				<p class="text-center" ::cond op!=null::>				
+					$$insert(::_("Key-in a refund")::,/validate/::md.id::/::member.id::/addRefund?basketid=::basket.id::)				
+					$$insert(::_("Key-in a payment")::,/validate/::md.id::/::member.id::/addPayment/)
+					
+				</p>
+
+				<!-- validate button-->
+				<p class="text-center">	
+					<a href="/validate/::md.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
+						<i class="icon icon-check"></i>
+						::_("Validate this order")::
+					</a>
+				</p>
 			::end::
-		
-			<p class="text-center" ::cond op!=null::>				
-				$$insert(::_("Key-in a refund")::,/validate/::md.id::/::member.id::/addRefund?basketid=::basket.id::)				
-				$$insert(::_("Key-in a payment")::,/validate/::md.id::/::member.id::/addPayment/)
-				<a href="/member/invoice/::member.id::/::md.id::" target="_blank" class="btn btn-default btn-sm">
-					<i class="icon icon-file"></i> Reçu
-				</a>
-			</p>
-			
-			<p class="text-center">	
-				<a href="/validate/::md.id::/::member.id::/validate/?token=::token::" class="btn btn-primary btn-lg">
-					<i class="icon icon-check"></i>
-					::_("Validate this order")::
-				</a>
-			</p>
 		</div>
 
 

@@ -1,4 +1,5 @@
 package controller;
+import payment.MoneyPot;
 import sugoi.form.elements.Input.InputType;
 import sugoi.form.elements.IntInput;
 import db.Group.GroupFlags;
@@ -319,14 +320,14 @@ class AmapAdmin extends Controller
 	}
 	
 	/**
-	 * payment configuration
+	 * payment types config
 	 */
 	@tpl("form.mtt")
 	function doPayments(){
 		
 		var f = new sugoi.form.Form("paymentTypes");
 		var types = service.PaymentService.getPaymentTypes(PCGroupAdmin);
-		var formdata = [for (t in types){label:t.name, value:t.type}];		
+		var formdata = [for (t in types){label:t.name, value:t.type, desc:t.adminDesc, docLink:t.docLink}];		
 		var selected = app.user.getGroup().allowedPaymentsType;
 		f.addElement(new sugoi.form.elements.CheckboxGroup("paymentTypes", t._("Authorized payment types"),formdata, selected) );
 		
@@ -351,6 +352,11 @@ class AmapAdmin extends Controller
 
 			group.lock();
 			group.allowedPaymentsType = f.getValueOf("paymentTypes");
+
+			if(group.allowedPaymentsType.has(MoneyPot.TYPE) && group.allowedPaymentsType.length>1) {
+				throw Error(sugoi.Web.getURI(),"Le paiement Cagnotte ne peut pas être utilisé en même temps que d'autres moyens de paiements.");
+			}
+
 			group.checkOrder = f.getValueOf("checkOrder");
 			group.IBAN = f.getValueOf("IBAN");
 			group.allowMoneyPotWithNegativeBalance = f.getValueOf("allowMoneyPotWithNegativeBalance");

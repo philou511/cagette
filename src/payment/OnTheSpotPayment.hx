@@ -1,8 +1,9 @@
 package payment;
 
+import service.PaymentService;
+
 /**
- * ...
- * @author web-wizard
+ * Virtual payment type ( represents all "on the spot" payment types )
  */
 class OnTheSpotPayment extends payment.PaymentType
 {
@@ -13,6 +14,7 @@ class OnTheSpotPayment extends payment.PaymentType
 	public function new() 
 	{
 		var t = sugoi.i18n.Locale.texts;
+		this.onTheSpot = false;
 		this.type = TYPE;
 		this.icon = '<i class="icon icon-euro" aria-hidden="true"></i>';
 		this.name = t._("On the spot payment");
@@ -20,9 +22,10 @@ class OnTheSpotPayment extends payment.PaymentType
 		this.allowedPaymentTypes = [];
 	}
 
+	//get payment types wich are "on the spot"
 	public static function getPaymentTypes() : Array<String>
 	{
-		return [payment.Cash.TYPE, payment.Check.TYPE/*, payment.Transfer.TYPE*/];
+		return PaymentService.getPaymentTypes(PCAll).filter(p -> p.onTheSpot).map(p -> p.type);
 	}
 	
 }

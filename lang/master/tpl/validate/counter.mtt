@@ -58,19 +58,34 @@
 
                 <tr>
                     <td> <b>Encaissements en chèque</b> </td>
-                    <td>::sales.checkTurnover.ttc:: &euro;</td>
+                    <td>::sales.checkTurnover.ttc:: &euro; ( ::sales.checkNumber:: chèques )</td>
                 </tr>
                 <tr>
                     <td> <b>Encaissements par virement</b> </td>
                     <td>::sales.transferTurnover.ttc:: &euro;</td>
                 </tr>
-
                 <tr>
-                    <td> <b>Encaissements Carte bancaire</b> </td>
+                    <td> <b>Encaissements par carte bancaire sur place</b> </td>
+                    <td>::sales.cardTerminalTurnover.ttc:: &euro;</td>
+                </tr>
+                <tr>
+                    <td> <b>Encaissements Carte bancaire (Mangopay)</b> </td>
                     <td>
-                        ::sales.mpTurnover.ttc:: 
-                        ::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc):: =
-                        ::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;
+                        <table class="table">
+                            <tr>
+                                <th>Brut</th>
+                                <td>::sales.mpTurnover.ttc::</td>
+                            </tr>
+                            <tr>
+                                <th>Frais</th>
+                                <td>::(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)::</td>
+                            </tr>
+                            <tr>
+                                <th>Net</th>
+                                <td>::formatNum(sales.mpTurnover.ttc+(sales.mpFixedFees.ttc - sales.mpVariableFees.ttc)):: &euro;</td>
+                            </tr>
+                        </table>
+                                                
                     </td>
                 </tr>
 

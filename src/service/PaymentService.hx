@@ -33,7 +33,8 @@ class PaymentService
 					new payment.Check(),
 					new payment.Transfer(),	
 					new payment.MoneyPot(),
-					new payment.OnTheSpotPayment(),						
+					new payment.OnTheSpotPayment(),
+					new payment.OnTheSpotCardTerminal()						
 				];
 				var e = App.current.event(GetPaymentTypes({types:types}));
 				out = switch(e) {
@@ -41,7 +42,7 @@ class PaymentService
 						default : null;
 					}
 
-
+			//when selecting wich payment types to enable
 			case PCGroupAdmin:
 				var allPaymentTypes = getPaymentTypes(PCAll);
 				//Exclude On the spot payment
@@ -54,25 +55,21 @@ class PaymentService
 			case PCPayment:
 				if ( group.allowedPaymentsType == null ) return [];
 				//ontheSpot payment type replaces checks or cash
-				var onTheSpotPaymentTypes = payment.OnTheSpotPayment.getPaymentTypes();
+			
 				var hasOnTheSpotPaymentTypes = false;
-				var onTheSpotPaymentType = new payment.OnTheSpotPayment();
 				var all = getPaymentTypes(PCAll);
-				for ( paymentType in group.allowedPaymentsType )
-				{
-					var found = Lambda.find(all, function(a) return a.type == paymentType);
+				for ( paymentTypeId in group.allowedPaymentsType ){
+					var found = all.find(function(a) return a.type == paymentTypeId);
 					if (found != null)  {
-						if ( Lambda.has(onTheSpotPaymentTypes, found.type) ){
+						if(found.onTheSpot==true){
 							hasOnTheSpotPaymentTypes = true;
-							onTheSpotPaymentType.allowedPaymentTypes.push(found);
-							continue; //On the spot payment types are excluded
+						}else{
+							out.push(found);
 						}
-						out.push(found);
 					}
 				}
-				if(hasOnTheSpotPaymentTypes)
-				{
-					out.push(onTheSpotPaymentType);
+				if(hasOnTheSpotPaymentTypes){
+					out.push(new payment.OnTheSpotPayment());
 				}
 
 			
@@ -82,6 +79,11 @@ class PaymentService
 				var paymentTypesInAdmin = getPaymentTypes(PCGroupAdmin);
 				var moneyPot = Lambda.find(paymentTypesInAdmin, function(x) return x.type == payment.MoneyPot.TYPE);
 				paymentTypesInAdmin.remove(moneyPot);
+				#if plugins
+				//cannot make a mgp payment manually !!
+				var mgp = paymentTypesInAdmin.find( x -> x.type == pro.payment.MangopayMPPayment.TYPE || x.type == pro.payment.MangopayECPayment.TYPE );
+				paymentTypesInAdmin.remove(mgp);
+				#end
 				out = paymentTypesInAdmin;
 		}
 
@@ -122,13 +124,18 @@ class PaymentService
 	 * @param distrib
 	 */
 	public static function validateDistribution(distrib:db.MultiDistrib) {
+		distrib.lock();
+		
+		//cannot be in future
+		if(distrib.distribStartDate.getTime() > Date.now().getTime()){
+			throw new tink.core.Error("Vous ne pouvez pas valider cette distribution car elle n'a pas encore commencé");
+		}
 
 		for ( user in distrib.getUsers()){
 			var basket = db.Basket.get(user, distrib );
 			validateBasket(basket);
 		}
-		//finally validate distrib
-		distrib.lock();
+		//finally validate distrib		
 		distrib.validated = true;
 		distrib.update();
 	}

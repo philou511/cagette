@@ -12,8 +12,7 @@
 	::set confirmed = distribution.isValidated()::
 
 	<div class="col-md-12">
-		<div class="article">
-			
+		<div class="article">			
 			<div class="text-center">
 				<h3>
 					::_("Validate the delivery of the"):: ::hDate(date)::

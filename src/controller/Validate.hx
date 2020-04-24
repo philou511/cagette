@@ -85,6 +85,10 @@ class Validate extends controller.Controller
 			basket = db.Basket.manager.get(basketId, false);			
 		}
 
+		if(basket.isValidated()){
+			throw Error("/validate/" + multiDistrib.id + "/" + user.id, "Cette commande a déjà été validée, vous ne pouvez plus effectuer de remboursement.");
+		}
+
 		//Refund amount
 		var refundAmount = basket.getTotalPaid() - basket.getOrdersTotal();		
 		if(refundAmount <= 0) {
@@ -155,13 +159,17 @@ class Validate extends controller.Controller
 		f.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), NativeDatePickerType.date, true));
 		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.getGroup());
 		var out = [];
-		for (paymentType in paymentTypes)
-		{
+		for (paymentType in paymentTypes){
 			out.push({label: paymentType.name, value: paymentType.type});
 		}
 		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		var b = db.Basket.get(user, multiDistrib );
+		
+		if(b.isValidated()){
+			throw Error("/validate/" + multiDistrib.id + "/" + user.id, "Cette commande a déjà été validée, vous ne pouvez plus effectuer de remboursement.");
+		}
+
 		var op = b.getOrderOperation(false);
 		if(op==null) throw "unable to find related order operation";
 		

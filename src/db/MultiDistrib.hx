@@ -403,9 +403,7 @@ class MultiDistrib extends Object
 	
 	
 	public function isConfirmed():Bool{
-		//cannot be in future
-		if(getDate().getTime()>Date.now().getTime()) return false;
-		//var distributions = getDistributions(db.Catalog.TYPE_VARORDER);
+				
 		//return Lambda.count( distributions , function(d) return d.validated) == distributions.length;
 		return validated == true;
 	}

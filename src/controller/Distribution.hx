@@ -1029,7 +1029,7 @@ class Distribution extends Controller
 	public function doAutovalidate(md:db.MultiDistrib){
 
 		checkHasDistributionSectionAccess();
-		if(md.validated) return;
+		if(md.isValidated()) throw Redirect( "/distribution/validate/"+md.id);
 
 		try{
 			service.PaymentService.validateDistribution(md);

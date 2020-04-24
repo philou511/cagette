@@ -19,7 +19,7 @@ class Timeframe {
         }
         
         if(from.getTime()>to.getTime()){
-            throw new Error("'from' date should be earlier than 'to' date.");
+            throw new Error('"from" date should be earlier than "to" date. ( $from > $to ) ');
         }
         
     }

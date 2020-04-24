@@ -75,6 +75,7 @@ class View extends sugoi.BaseView {
 	 * @param	r
 	 */
 	public function roundTo(n:Float, r:Int):Float {
+		if(n==null) n = 0;
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;
 	}
 	

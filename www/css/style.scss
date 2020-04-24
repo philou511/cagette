@@ -10,6 +10,8 @@ $mediumGreen 	: #3c763d;
 $lightGreen 	: #84bd55; //primary buttons color
 $lightBrown 	: #f8f4e5; //background
 $darkGrey 		: #333;
+$mediumGrey		: #666;
+$lightGrey		:#AAA;
 
 
 html{
@@ -74,7 +76,13 @@ div.footer-info{
 
 }
 
-
+//description in checkboxes ( sugoi form element )
+form{
+	p.desc{
+		color:$mediumGrey;
+		font-size: 0.9em;		
+	}
+}
 
 
 

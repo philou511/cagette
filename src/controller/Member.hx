@@ -98,7 +98,7 @@ class Member extends Controller
 				default:
 					//all users
 					if (app.params.exists("csv")) {
-						var headers = ["firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
+						var headers = ["id","firstName", "lastName", "email","phone", "firstName2", "lastName2","email2","phone2", "address1","address2","zipCode","city"];
 						sugoi.tools.Csv.printCsvDataFromObjects(Lambda.array(db.User.manager.search( $id in uids, {orderBy:lastName}, false)), headers, t._("Members"));
 						return;
 					}else {
