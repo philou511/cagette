@@ -36,34 +36,34 @@ typedef OrderBoxProps = {
 	var error : String;	
 };
 
+typedef OrderBoxState = {
+    var processing: Bool;
+};
 
 /**
  * A box to edit/add orders of a member
  * @author fbarbut
  */
 @:connect
-class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
+class OrderBox extends react.ReactComponentOfPropsAndState<OrderBoxProps, OrderBoxState> {
 
-	public function new(props) {
-
-		super(props);
+	public function new(props: OrderBoxProps) {
+        super(props);
+        state = { processing: false };
 	}	
 	
 	override function componentDidMount() {
-
-		var userId = props.userId != null ? props.userId : props.selectedUserId;
+		var userId = this.getCurrentUserId();
 		if( userId != null ) {
-
 			props.fetchOrders( userId, props.multiDistribId, props.catalogId, props.catalogType );		
 		}
-		
 	}
 	
 	override public function render() {
 
 		js.html.Console.log( "OrderBox render");
 
-		var userId = props.userId != null ? props.userId : props.selectedUserId;
+		var userId = this.getCurrentUserId();
 		var userName = props.userName != null ? props.userName : props.selectedUserName;
 
 		//If there is no orders the user is redirected to the next screen
@@ -139,9 +139,17 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 			
 		var delivery = 	props.date == null ? null : jsx('<p>Pour la livraison du <b>${props.date}</b> à <b>${props.place}</b></p>');
 
-		var validateButton = jsx('<Button onClick=${props.updateOrders.bind( userId, props.callbackUrl, props.multiDistribId, props.catalogId )} variant={Contained} style=${{color:CGColors.White, backgroundColor:CGColors.Secondary}} >
-									${CagetteTheme.getIcon("chevron-right")}&nbsp;Valider
-								 </Button>');				
+        var validateButton = jsx('
+            <Button 
+                onClick=$onValidateClick
+                variant={Contained}
+                style=${{
+                    color:CGColors.White,
+                    backgroundColor: this.state.processing ? CGColors.LightGrey : CGColors.Secondary
+                }}
+                disabled=${this.state.processing} >
+                ${CagetteTheme.getIcon("chevron-right")}&nbsp;Valider
+            </Button>');				
 		
 		//Display user selector in the case we don't have a userId
 		var renderUserSelector = function( props : react.router.RouteRenderProps ) : react.ReactFragment {
@@ -171,7 +179,11 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 							<div key="footer" style=${{marginTop: 20}}>
 								${validateButton}						
 								&nbsp;																
-								<Button onClick=${function() { js.Browser.location.hash = this.props.catalogId == null ? "/catalogs" : "/insert"; }} size={Medium} variant={Outlined}>
+                                <Button
+                                    onClick=${function() { js.Browser.location.hash = this.props.catalogId == null ? "/catalogs" : "/insert"; }}
+                                    size={Medium}
+                                    variant={Outlined}
+                                    disabled=${this.state.processing}>
 									${CagetteTheme.getIcon("plus")}&nbsp;&nbsp;Ajouter un produit
 								</Button>			
 							</div>
@@ -207,12 +219,21 @@ class OrderBox extends react.ReactComponentOfProps<OrderBoxProps> {
 						</Switch>
 					</HashRouter>
 				</div>;
-	}	
+    }
+
+    function getCurrentUserId() {
+        return this.props.userId != null ? this.props.userId : this.props.selectedUserId;
+    }
+    
+    function onValidateClick() {
+        this.setState({ processing: true });
+        this.props.updateOrders(this.getCurrentUserId(), props.callbackUrl, props.multiDistribId, props.catalogId);
+    }
 
 	function onKeyPress(e : js.html.KeyboardEvent) {
 		
 		if ( e.key == "Enter" ) {
-			var userId = props.userId != null ? props.userId : props.selectedUserId;
+			var userId = this.getCurrentUserId();
 			props.updateOrders( userId, props.callbackUrl, props.multiDistribId, props.catalogId );
 		} 
 	}	
