@@ -19,10 +19,10 @@
 			"path": "../src"
 		},
 		{
-			"path": "/home/bubar/projects/cagette/app/devLibs/cagette-pro"
+			"path": "../devLibs/cagette-pro"
 		},
 		{
-			"path": "/home/bubar/projects/cagette/app/devLibs/sugoi"
+			"path": "../devLibs/sugoi"
 		}
 	]
 }

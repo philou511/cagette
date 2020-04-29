@@ -55,7 +55,8 @@
     "user": "Personne",
     "getOrderFor": "Retire la commande de",
     "userInNeedsNotLocked": "Ces personnes n'ont trouvé personne pour venir retirer leur commande.",
-    "otherUsersList": "Les personnes suivantes n'ont pas sélectionné de créneaux : {{list}}"
+    "otherUsersList": "Les personnes suivantes n'ont pas sélectionné de créneaux : {{list}}",
+    "voluntaries": "Ces membres se sont portés volontaires."
   },
   "resolved": {
     "selectedSlot": "Vous pouvez venir retirer votre commande le {{date}}",

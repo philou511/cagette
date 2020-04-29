@@ -6,5 +6,5 @@ interface Props {
     mapboxToken?: string;
     onChange: (value: any) => void;
 }
-declare const GeoAutocomplete: ({ initialValue, label, noOptionsText, mapboxToken, onChange, }: Props) => JSX.Element;
+declare const GeoAutocomplete: ({ initialValue, label, noOptionsText, mapboxToken, onChange }: Props) => JSX.Element;
 export default GeoAutocomplete;

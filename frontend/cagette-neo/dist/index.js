@@ -1010,8 +1010,7 @@ var parse = function parse(text, matches) {
 };
 
 var mapboxApiUrlBuilder = function (service, request, options, mapboxToken) {
-    var url = "https://api.mapbox.com/geocoding/v5/" + service + "/" + request + ".json?access_token=" + (mapboxToken ||
-        process.env.MAPBOX_KEY);
+    var url = "https://api.mapbox.com/geocoding/v5/" + service + "/" + request + ".json?access_token=" + (mapboxToken || process.env.MAPBOX_KEY) + "&language=fr&proximity=2.213749%2C46.227638";
     if (options) {
         url += '&';
         url += Object.keys(options)
@@ -1068,9 +1067,7 @@ var GeoAutocomplete = function (_a) {
         fetchAddress(inputValue, function (results) {
             if (active && results.features) {
                 setOptions(results.features);
-                if (needChange &&
-                    inputValue === initialValue &&
-                    results.features.length > 0) {
+                if (needChange && inputValue === initialValue && results.features.length > 0) {
                     toggleNeedChange(false);
                     onChange(results.features[0]);
                 }
@@ -1098,70 +1095,24 @@ var GeoAutocomplete = function (_a) {
     return (React__default.createElement(Autocomplete, { options: options, inputValue: inputValue, getOptionLabel: getOptionLabel, renderOption: renderOption, renderInput: renderInput, noOptionsText: noOptionsText, onChange: onAutocompleteChange }));
 };
 
-/** */
-var parseDate = function (data) {
-    // let str = data.replace(' ', 'T');
-    // str = str.includes(':') && !str.endsWith('Z') ? `${str}Z` : str;
-    return new Date(data);
-};
 var parseUserVo = function (data) { return ({
     id: data.id,
     firstName: data.firstName,
     lastName: data.lastName,
     email: data.email,
-    phone: data.phone,
-    address1: data.address1,
-    address2: data.address2,
-    zipCode: data.zipCode,
-    city: data.city,
-    nationality: data.nationality,
-    countryOfResidence: data.countryOfResidence,
-    birthDate: data.birthDate,
-    firstName2: data.firstName2,
-    lastName2: data.lastName2,
-    email2: data.email2,
-    phone2: data.phone2,
+    phone: data.phone || undefined,
+    address1: data.address1 || undefined,
+    address2: data.address2 || undefined,
+    zipCode: data.zipCode || undefined,
+    city: data.city || undefined,
+    nationality: data.nationality || undefined,
+    countryOfResidence: data.countryOfResidence || undefined,
+    birthDate: data.birthDate || undefined,
+    firstName2: data.firstName2 || undefined,
+    lastName2: data.lastName2 || undefined,
+    email2: data.email2 || undefined,
+    phone2: data.phone2 || undefined,
 }); };
-var parseGroupVo = function (data) { return ({
-    id: data.id,
-    name: data.name,
-    iban: data.iban || undefined,
-    legalRepr: data.legalRepr ? parseUserVo(data.legalRepr) : undefined,
-}); };
-var parseSlotVo = function (data) {
-    return {
-        id: data.id,
-        distribId: data.distribId,
-        selectedUserIds: data.selectedUserIds,
-        registeredUserIds: data.registeredUserIds,
-        start: parseDate(data.start),
-        end: parseDate(data.end),
-    };
-};
-var parseDistribVo = function (data) {
-    return {
-        id: data.id,
-        mode: data.mode,
-        start: data.start ? parseDate(data.start) : undefined,
-        end: data.end ? parseDate(data.end) : undefined,
-        orderEndDate: data.orderEndDate ? parseDate(data.orderEndDate) : undefined,
-        slots: data.slots ? data.slots.map(parseSlotVo) : undefined,
-        inNeedUsers: data.slots ? data.inNeedUsers.map(parseUserVo) : undefined,
-    };
-};
-var parsePlaceVo = function (data) {
-    return {
-        id: data.id,
-        name: data.name,
-        address1: data.address1 ? data.address1 : undefined,
-        address2: data.address2 ? data.address2 : undefined,
-        city: data.city ? data.city : undefined,
-        zipCode: data.zipCode ? data.zipCode : undefined,
-        lat: data.lat ? data.lat : undefined,
-        lng: data.lng ? data.lng : undefined,
-    };
-};
-/** */
 var formatUserAddress = function (user) {
     var res = '';
     if (!user.city && !user.zipCode)
@@ -1173,6 +1124,49 @@ var formatUserAddress = function (user) {
     if (user.address1)
         res = user.address1 + " - " + res;
     return res;
+};
+
+var parseSlotVo = function (data) {
+    return {
+        id: data.id,
+        distribId: data.distribId,
+        selectedUserIds: data.selectedUserIds,
+        registeredUserIds: data.registeredUserIds,
+        start: new Date(data.start),
+        end: new Date(data.end),
+    };
+};
+var parseDistribVo = function (data) {
+    return {
+        id: data.id,
+        mode: data.mode,
+        start: data.start ? new Date(data.start) : undefined,
+        end: data.end ? new Date(data.end) : undefined,
+        orderEndDate: data.orderEndDate ? new Date(data.orderEndDate) : undefined,
+        slots: data.slots ? data.slots.map(parseSlotVo) : undefined,
+        inNeedUsers: data.slots ? data.inNeedUsers.map(parseUserVo) : undefined,
+    };
+};
+
+var parseGroupPreviewVo = function (data) { return ({
+    id: data.id,
+    name: data.name,
+}); };
+var parseGroupVo = function (data) {
+    return __assign(__assign({}, parseGroupPreviewVo(data)), { iban: data.iban || undefined, user: data.user ? parseUserVo(data.user) : undefined });
+};
+
+var parsePlaceVo = function (data) {
+    return {
+        id: data.id,
+        name: data.name,
+        address1: data.address1 ? data.address1 : undefined,
+        address2: data.address2 ? data.address2 : undefined,
+        city: data.city ? data.city : undefined,
+        zipCode: data.zipCode ? data.zipCode : undefined,
+        lat: data.lat ? data.lat : undefined,
+        lng: data.lng ? data.lng : undefined,
+    };
 };
 
 // import { TOKEN_STORAGE_KEY } from './constants';
@@ -1220,8 +1214,7 @@ var post = function (url, data, type) {
         : {})));
 };
 var api = function () {
-    var apiUrl = "http://" + (process.env.API_HOSTNAME || 'localhost') + ":" + (process.env
-        .API_PORT || '3000');
+    var apiUrl = "http://" + (process.env.API_HOSTNAME || 'localhost') + ":" + (process.env.API_PORT || '3000');
     return {
         setUrl: function (url) {
             apiUrl = url;
@@ -1442,26 +1435,6 @@ function _defineProperty(obj, key, value) {
 }
 
 var defineProperty = _defineProperty;
-
-var _typeof_1 = createCommonjsModule(function (module) {
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
-});
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -1823,7 +1796,7 @@ function toInteger(dirtyNumber) {
 
 function requiredArgs(required, args) {
   if (args.length < required) {
-    throw new TypeError(required + ' argument' + required > 1 ? 's' : '' + ' required, but only ' + args.length + ' present');
+    throw new TypeError(required + ' argument' + (required > 1 ? 's' : '') + ' required, but only ' + args.length + ' present');
   }
 }
 
@@ -2347,11 +2320,11 @@ function buildMatchFn(args) {
 
     if (Object.prototype.toString.call(parsePatterns) === '[object Array]') {
       value = findIndex(parsePatterns, function (pattern) {
-        return pattern.test(string);
+        return pattern.test(matchedString);
       });
     } else {
       value = findKey(parsePatterns, function (pattern) {
-        return pattern.test(string);
+        return pattern.test(matchedString);
       });
     }
 
@@ -4358,6 +4331,14 @@ function _arrayWithHoles$1(arr) {
   if (Array.isArray(arr)) return arr;
 }
 
+function _nonIterableRest$1() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _toArray(arr) {
+  return _arrayWithHoles$1(arr) || _iterableToArray(arr) || _unsupportedIterableToArray$1(arr) || _nonIterableRest$1();
+}
+
 function _iterableToArrayLimit$1(arr, i) {
   if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
   var _arr = [];
@@ -4383,10 +4364,6 @@ function _iterableToArrayLimit$1(arr, i) {
   }
 
   return _arr;
-}
-
-function _nonIterableRest$1() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function _slicedToArray$1(arr, i) {
@@ -4681,6 +4658,7 @@ function escape(data) {
 
   return data;
 }
+var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
 
 var ResourceStore =
 /*#__PURE__*/
@@ -4698,7 +4676,10 @@ function (_EventEmitter) {
     _classCallCheck$1(this, ResourceStore);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ResourceStore).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     _this.data = data || {};
     _this.options = options;
@@ -4873,7 +4854,10 @@ function (_EventEmitter) {
     _classCallCheck$1(this, Translator);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Translator).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat', 'utils'], services, _assertThisInitialized(_this));
     _this.options = options;
@@ -5291,6 +5275,7 @@ function () {
       var found = fallbacks[code];
       if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
       if (!found) found = fallbacks[this.formatLanguageCode(code)];
+      if (!found) found = fallbacks[this.getLanguagePartFromCode(code)];
       if (!found) found = fallbacks["default"];
       return found || [];
     }
@@ -5753,6 +5738,8 @@ function () {
   }, {
     key: "nest",
     value: function nest(str, fc) {
+      var _this2 = this;
+
       var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       var match;
       var value;
@@ -5788,6 +5775,31 @@ function () {
 
 
       while (match = this.nestingRegexp.exec(str)) {
+        var formatters = [];
+        /**
+         * If there is more than one parameter (contains the format separator). E.g.:
+         *   - t(a, b)
+         *   - t(a, b, c)
+         *
+         * And those parameters are not dynamic values (parameters do not include curly braces). E.g.:
+         *   - Not t(a, { "key": "{{variable}}" })
+         *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
+         */
+
+        var doReduce = false;
+
+        if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
+          var _match$1$split$map = match[1].split(this.formatSeparator).map(function (elem) {
+            return elem.trim();
+          });
+
+          var _match$1$split$map2 = _toArray(_match$1$split$map);
+
+          match[1] = _match$1$split$map2[0];
+          formatters = _match$1$split$map2.slice(1);
+          doReduce = true;
+        }
+
         value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions); // is only the nesting key (key1 = '$(key2)') return the value without stringify
 
         if (value && match[0] === str && typeof value !== 'string') return value; // no string to include or empty
@@ -5797,6 +5809,12 @@ function () {
         if (!value) {
           this.logger.warn("missed to resolve ".concat(match[1], " for nesting ").concat(str));
           value = '';
+        }
+
+        if (doReduce) {
+          value = formatters.reduce(function (v, f) {
+            return _this2.format(v, f, options.lng, options);
+          }, value.trim());
         } // Nested keys should not be escaped by default #854
         // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
 
@@ -5834,7 +5852,10 @@ function (_EventEmitter) {
     _classCallCheck$1(this, Connector);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Connector).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     _this.backend = backend;
     _this.store = store;
@@ -6186,7 +6207,10 @@ function (_EventEmitter) {
     _classCallCheck$1(this, I18n);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(I18n).call(this));
-    EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+
+    if (isIE10) {
+      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+    }
 
     _this.options = transformOptions(options);
     _this.services = {};
@@ -6393,6 +6417,9 @@ function (_EventEmitter) {
   }, {
     key: "use",
     value: function use(module) {
+      if (!module) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()');
+      if (!module.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()');
+
       if (module.type === 'backend') {
         this.modules.backend = module;
       }
@@ -6886,15 +6913,11 @@ var i18nPromise = i18next
     },
 });
 
-var Loader = function () {
-    return (React__default.createElement(core.Box, { p: 2 },
-        React__default.createElement(core.CircularProgress, null)));
-};
-
 var withi18n = function (Wrapped) {
     var Wrapper = function (props) {
         /** */
-        return (React__default.createElement(React__default.Suspense, { fallback: React__default.createElement(Loader, null) },
+        return (React__default.createElement(React__default.Suspense, { fallback: React__default.createElement(core.Box, { p: 2 },
+                React__default.createElement(core.CircularProgress, null)) },
             React__default.createElement(Wrapped, __assign({}, props))));
     };
     return Wrapper;
@@ -7253,9 +7276,7 @@ var locale$1 = {
 };
 
 // eslint-disable-next-line import/prefer-default-export
-var firstLetterUppercase = function (str) {
-    return "" + str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-};
+var firstLetterUppercase = function (str) { return "" + str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(); };
 
 var computeStrOptions = function (str, options) {
     var res = str;
@@ -7265,7 +7286,9 @@ var computeStrOptions = function (str, options) {
     }
     return res;
 };
-var format$1 = function (date, f, strOptions) { return computeStrOptions(format(date, f, { locale: locale$1 }), strOptions); };
+var format$1 = function (date, f, strOptions) {
+    return computeStrOptions(format(date, f, { locale: locale$1 }), strOptions);
+};
 
 var useStyles$1 = core.makeStyles(function (theme) { return ({
     btn: function (_a) {
@@ -7374,7 +7397,7 @@ var ActivateDistribSlotsView = function (_a) {
     }
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Button, { className: cs.btn, variant: "contained", onClick: onButtonClick },
-            hasActivated ? (React__default.createElement(CheckIcon, { fontSize: "small" })) : (React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" })),
+            hasActivated ? React__default.createElement(CheckIcon, { fontSize: "small" }) : React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" }),
             React__default.createElement(core.Box, { mr: 1 }),
             distrib.slots
                 ? t("neo/distrib-slots:activeDistrib." + (hasActivated ? 'hasActivatedBtn' : 'activatedBtn'))
@@ -7399,9 +7422,7 @@ var ActivateDistribSlotsView = function (_a) {
                     React__default.createElement(core.Box, { display: "flex", justifyContent: "center" },
                         React__default.createElement(core.List, null, __spreadArrays(Array(nbSlots)).map(function (_v, i) { return i; })
                             .map(function (s) { return (React__default.createElement(core.ListItem, { key: s, alignItems: "center" },
-                            React__default.createElement(core.ListItemText, { primary: format$1(addMilliseconds(distrib.start, s * slotDuration), "HH'h'mm") + " - " + format$1(s === nbSlots - 1
-                                    ? distrib.end
-                                    : addMilliseconds(distrib.start, (s + 1) * slotDuration), "HH'h'mm"), secondary: React__default.createElement(core.Box, { display: "flex", justifyContent: "center", component: "span" },
+                            React__default.createElement(core.ListItemText, { primary: format$1(addMilliseconds(distrib.start, s * slotDuration), "HH'h'mm") + " - " + format$1(s === nbSlots - 1 ? distrib.end : addMilliseconds(distrib.start, (s + 1) * slotDuration), "HH'h'mm"), secondary: React__default.createElement(core.Box, { display: "flex", justifyContent: "center", component: "span" },
                                     React__default.createElement(core.Typography, { component: "span", variant: "body2" }, t('neo/distrib-slots:activeDistrib.slot-id', {
                                         id: s + 1,
                                     }))) }))); }))),
@@ -7455,7 +7476,6 @@ var ViewCtxProvider = function (_a) {
         var s = d.mode === 'solo-only' ? __assign(__assign({}, newStatus), { has: 'solo' }) : newStatus;
         setStatus(s);
         setWorkingStatus(s);
-        console.log(s);
         if (s.isResolved) {
             setStep('resolved');
         }
@@ -7521,250 +7541,7 @@ var ViewCtxProvider = function (_a) {
         if (status && status.registered) {
             setStep('summary');
         }
-        else if (currentStep === 'select-permissions' ||
-            currentStep === 'select-slots') {
-            setStep('select-mode');
-            setWorkingStatus(__assign(__assign({}, workingStatus), { has: null }));
-        }
-        else if (currentStep === 'select-inNeed') {
-            setStep('select-slots');
-            setWorkingStatus(__assign(__assign({}, workingStatus), { registeredSlotIds: null }));
-        }
-    };
-    var selectMode = function (mode) {
-        var newStatus = __assign(__assign({}, workingStatus), { has: mode });
-        setWorkingStatus(newStatus);
-        if (mode === 'inNeed') {
-            setStep('select-permissions');
-        }
-        else {
-            setStep('select-slots');
-        }
-    };
-    var selectPermissions = function (permissions) {
-        var newStatus = __assign(__assign({}, workingStatus), { allowed: permissions });
-        setWorkingStatus(newStatus);
-        registerUser(newStatus);
-    };
-    var selectSlots = function (slotIds) {
-        var newStatus = __assign(__assign({}, workingStatus), { registeredSlotIds: slotIds });
-        setWorkingStatus(newStatus);
-        if (newStatus.has === 'solo' ||
-            !distrib.inNeedUsers ||
-            distrib.inNeedUsers.length === 0 ||
-            (status && status.registered)) {
-            registerUser(newStatus);
-        }
-        else {
-            setStep('select-inNeed');
-        }
-    };
-    var selectInNeedUsers = function (userIds) {
-        var newStatus = __assign(__assign({}, workingStatus), { voluntaryForIds: userIds });
-        registerUser(newStatus);
-        setWorkingStatus(newStatus);
-    };
-    var changeSlots = function () {
-        var newStatus = __assign(__assign({}, workingStatus), { registeredSlotIds: null });
-        setWorkingStatus(newStatus);
-        setStep('select-slots');
-    };
-    var addInNeeds = function () {
-        var newStatus = __assign({}, workingStatus);
-        setWorkingStatus(newStatus);
-        setStep('select-inNeed');
-    };
-    /** */
-    React__default.useEffect(function () {
-        var active = true;
-        var load = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var resDistrib, resStatus, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        toggleLoading(true);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, api$1.distrib.getDistrib(distribId)];
-                    case 2:
-                        resDistrib = _a.sent();
-                        return [4 /*yield*/, api$1.distrib.getStatus(distribId)];
-                    case 3:
-                        resStatus = _a.sent();
-                        if (active && resDistrib && resStatus) {
-                            setDistrib(resDistrib);
-                            updateStatus(resStatus, resDistrib);
-                            toggleLoading(false);
-                        }
-                        return [3 /*break*/, 5];
-                    case 4:
-                        err_2 = _a.sent();
-                        setError(t('error', { error: err_2 }));
-                        toggleLoading(false);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        }); };
-        load();
-        return function () {
-            active = false;
-        };
-    }, []);
-    /** */
-    return (React__default.createElement(ViewCtx.Provider, { value: {
-            currentStep: currentStep,
-            open: open,
-            loading: loading,
-            error: error,
-            distribMode: (distrib === null || distrib === void 0 ? void 0 : distrib.mode) || 'default',
-            mode: (workingStatus === null || workingStatus === void 0 ? void 0 : workingStatus.has) || undefined,
-            slots: (distrib === null || distrib === void 0 ? void 0 : distrib.slots) || [],
-            inNeedUsers: (distrib === null || distrib === void 0 ? void 0 : distrib.inNeedUsers) || [],
-            registeredSlotIds: (status === null || status === void 0 ? void 0 : status.registeredSlotIds) || undefined,
-            voluntaryFor: (status === null || status === void 0 ? void 0 : status.voluntaryFor) || undefined,
-            closeDialog: closeDialog,
-            back: back,
-            selectMode: selectMode,
-            selectPermissions: selectPermissions,
-            selectSlots: selectSlots,
-            selectInNeedUsers: selectInNeedUsers,
-            changeSlots: changeSlots,
-            addInNeeds: addInNeeds,
-        } }, children));
-};
-var useViewCtx = function () {
-    var ctx = React__default.useContext(ViewCtx);
-    if (!ctx)
-        throw new Error('useViewCtx must be used within a ViewCtxProvider');
-    return ctx;
-};
-
-var Close = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-}), 'Close');
-
-exports.default = _default;
-});
-
-var CloseIcon = unwrapExports(Close);
-
-var ViewCtx = React__default.createContext({
-    currentStep: 'loading',
-    open: true,
-    loading: true,
-    slots: [],
-    inNeedUsers: [],
-    closeDialog: function () { },
-    back: function () { },
-    selectMode: function () { },
-    selectPermissions: function () { },
-    selectSlots: function () { },
-    selectInNeedUsers: function () { },
-    changeSlots: function () { },
-    addInNeeds: function () { },
-});
-var ViewCtxProvider = function (_a) {
-    var distribId = _a.distribId, children = _a.children, onRegister = _a.onRegister, onCancel = _a.onCancel;
-    var t = useTranslation(['translation']).t;
-    var _b = React__default.useState(true), open = _b[0], toggleOpen = _b[1];
-    var _c = React__default.useState(false), loading = _c[0], toggleLoading = _c[1];
-    var _d = React__default.useState(), error = _d[0], setError = _d[1];
-    var _e = React__default.useState('loading'), currentStep = _e[0], setStep = _e[1];
-    var _f = React__default.useState(), distrib = _f[0], setDistrib = _f[1];
-    var _g = React__default.useState(), status = _g[0], setStatus = _g[1];
-    var _h = React__default.useState(), workingStatus = _h[0], setWorkingStatus = _h[1];
-    var _j = React__default.useState(false), needReload = _j[0], toggleNeedReload = _j[1];
-    /** */
-    var updateStatus = function (newStatus, newDistrib) {
-        if (!distrib && !newDistrib)
-            throw new Error('?');
-        var d = newDistrib || distrib;
-        var s = d.mode === 'solo-only' ? __assign(__assign({}, newStatus), { has: 'solo' }) : newStatus;
-        setStatus(s);
-        setWorkingStatus(s);
-        console.log(s);
-        if (s.isResolved) {
-            setStep('resolved');
-        }
-        else if (s.registered) {
-            setStep('summary');
-        }
-        else if (s.has === 'solo') {
-            setStep('select-slots');
-        }
-        else {
-            setStep('select-mode');
-        }
-    };
-    var registerUser = function (s) { return __awaiter(void 0, void 0, void 0, function () {
-        var formData, res, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!s.has)
-                        return [2 /*return*/];
-                    setError(undefined);
-                    toggleLoading(true);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    formData = new FormData();
-                    formData.append('has', s.has);
-                    if (s.allowed) {
-                        formData.append('allowed', s.allowed.join(','));
-                    }
-                    if (s.registeredSlotIds) {
-                        formData.append('slotIds', s.registeredSlotIds.join(','));
-                    }
-                    if (s.voluntaryForIds) {
-                        formData.append('userIds', s.voluntaryForIds.join(','));
-                    }
-                    return [4 /*yield*/, api$1.distrib.registerMe(distribId, formData, 'data')];
-                case 2:
-                    res = _a.sent();
-                    updateStatus(res);
-                    toggleLoading(false);
-                    toggleNeedReload(true);
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    setError(t('error', { error: err_1 }));
-                    toggleLoading(false);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var closeDialog = function () {
-        if (loading)
-            return;
-        if (needReload)
-            onRegister();
-        else
-            onCancel();
-        toggleOpen(false);
-    };
-    var back = function () {
-        if (status && status.registered) {
-            setStep('summary');
-        }
-        else if (currentStep === 'select-permissions' ||
-            currentStep === 'select-slots') {
+        else if (currentStep === 'select-permissions' || currentStep === 'select-slots') {
             setStep('select-mode');
             setWorkingStatus(__assign(__assign({}, workingStatus), { has: null }));
         }
@@ -10990,7 +10767,7 @@ var date = {
 };
 var boolean = {};
 var object = {
-  noUnknown: '${path} field cannot have keys not specified in the object shape'
+  noUnknown: '${path} field has unspecified keys: ${unknown}'
 };
 var array = {
   min: '${path} field must have at least ${min} items',
@@ -12798,9 +12575,12 @@ var trim = function trim(part) {
 };
 
 function getIn(schema, path, value, context) {
-  var parent, lastPart, lastPartDebug; // if only one "value" arg then use it for both
+  if (context === void 0) {
+    context = value;
+  }
 
-  context = context || value;
+  var parent, lastPart, lastPartDebug; // root path: ''
+
   if (!path) return {
     parent: parent,
     parentPath: path,
@@ -12808,38 +12588,37 @@ function getIn(schema, path, value, context) {
   };
   propertyExpr_7(path, function (_part, isBracket, isArray) {
     var part = isBracket ? trim(_part) : _part;
+    schema = schema.resolve({
+      context: context,
+      parent: parent,
+      value: value
+    });
 
-    if (isArray || has(schema, '_subType')) {
-      // we skipped an array: foo[].bar
+    if (schema.innerType) {
       var idx = isArray ? parseInt(part, 10) : 0;
-      schema = schema.resolve({
-        context: context,
-        parent: parent,
-        value: value
-      })._subType;
 
-      if (value) {
-        if (isArray && idx >= value.length) {
-          throw new Error("Yup.reach cannot resolve an array item at index: " + _part + ", in the path: " + path + ". " + "because there is no value at that index. ");
-        }
-
-        value = value[idx];
+      if (value && idx >= value.length) {
+        throw new Error("Yup.reach cannot resolve an array item at index: " + _part + ", in the path: " + path + ". " + "because there is no value at that index. ");
       }
-    }
+
+      parent = value;
+      value = value && value[idx];
+      schema = schema.innerType;
+    } // sometimes the array index part of a path doesn't exist: "nested.arr.child"
+    // in these cases the current part is the next schema and should be processed
+    // in this iteration. For cases where the index signature is included this
+    // check will fail and we'll handle the `child` part on the next iteration like normal
+
 
     if (!isArray) {
-      schema = schema.resolve({
-        context: context,
-        parent: parent,
-        value: value
-      });
-      if (!has(schema, 'fields') || !has(schema.fields, part)) throw new Error("The schema does not contain the path: " + path + ". " + ("(failed at: " + lastPartDebug + " which is a type: \"" + schema._type + "\") "));
-      schema = schema.fields[part];
+      if (!schema.fields || !schema.fields[part]) throw new Error("The schema does not contain the path: " + path + ". " + ("(failed at: " + lastPartDebug + " which is a type: \"" + schema._type + "\")"));
       parent = value;
       value = value && value[part];
-      lastPart = part;
-      lastPartDebug = isBracket ? '[' + _part + ']' : '.' + _part;
+      schema = schema.fields[part];
     }
+
+    lastPart = part;
+    lastPartDebug = isBracket ? '[' + _part + ']' : '.' + _part;
   });
   return {
     schema: schema,
@@ -12934,6 +12713,8 @@ function SchemaType(options) {
     _this.typeError(mixed.notType);
   });
   if (has(options, 'default')) this._defaultDefault = options.default;
+  this.type = options.type || 'mixed'; // TODO: remove
+
   this._type = options.type || 'mixed';
 }
 var proto = SchemaType.prototype = {
@@ -14834,7 +14615,12 @@ inherits(ObjectSchema, SchemaType, {
       exclusive: true,
       message: message,
       test: function test(value) {
-        return value == null || !noAllow || unknown(this.schema, value).length === 0;
+        var unknownKeys = unknown(this.schema, value);
+        return value == null || !noAllow || unknownKeys.length === 0 || this.createError({
+          params: {
+            unknown: unknownKeys.join(', ')
+          }
+        });
       }
     });
     next._options.stripUnknown = noAllow;
@@ -14908,6 +14694,7 @@ function ArraySchema(type) {
   // "no subtype"
 
   this._subType = undefined;
+  this.innerType = undefined;
   this.withMutation(function () {
     _this.transform(function (values) {
       if (typeof values === 'string') try {
@@ -14932,10 +14719,10 @@ inherits(ArraySchema, SchemaType, {
     var value = SchemaType.prototype._cast.call(this, _value, _opts); //should ignore nulls here
 
 
-    if (!this._typeCheck(value) || !this._subType) return value;
+    if (!this._typeCheck(value) || !this.innerType) return value;
     var isChanged = false;
     var castArray = value.map(function (v, idx) {
-      var castElement = _this2._subType.cast(v, _extends({}, _opts, {
+      var castElement = _this2.innerType.cast(v, _extends({}, _opts, {
         path: makePath(_templateObject$1(), _opts.path, idx)
       }));
 
@@ -14957,7 +14744,7 @@ inherits(ArraySchema, SchemaType, {
     var errors = [];
     var sync = options.sync;
     var path = options.path;
-    var subType = this._subType;
+    var innerType = this.innerType;
 
     var endEarly = this._option('abortEarly', options);
 
@@ -14965,7 +14752,7 @@ inherits(ArraySchema, SchemaType, {
 
     var originalValue = options.originalValue != null ? options.originalValue : _value;
     return SchemaType.prototype._validate.call(this, _value, options).catch(propagateErrors(endEarly, errors)).then(function (value) {
-      if (!recursive || !subType || !_this3._typeCheck(value)) {
+      if (!recursive || !innerType || !_this3._typeCheck(value)) {
         if (errors.length) throw errors[0];
         return value;
       }
@@ -14981,7 +14768,7 @@ inherits(ArraySchema, SchemaType, {
           originalValue: originalValue[idx]
         });
 
-        if (subType.validate) return subType.validate(item, innerOptions);
+        if (innerType.validate) return innerType.validate(item, innerOptions);
         return true;
       });
       return runValidations({
@@ -15001,6 +14788,7 @@ inherits(ArraySchema, SchemaType, {
     var next = this.clone();
     if (schema !== false && !isSchema(schema)) throw new TypeError('`array.of()` sub-schema must be a valid yup schema, or `false` to negate a current sub-schema. ' + 'not: ' + printValue(schema));
     next._subType = schema;
+    next.innerType = schema;
     return next;
   },
   min: function min(_min, message) {
@@ -15054,7 +14842,7 @@ inherits(ArraySchema, SchemaType, {
   },
   describe: function describe() {
     var base = SchemaType.prototype.describe.call(this);
-    if (this._subType) base.innerType = this._subType.describe();
+    if (this.innerType) base.innerType = this.innerType.describe();
     return base;
   }
 });
@@ -15149,6 +14937,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 
+// eslint-disable-next-line import/prefer-default-export
+(function (MangopayLegalStatus) {
+    MangopayLegalStatus["ORGANIZATION"] = "ORGANIZATION";
+    MangopayLegalStatus["BUSINESS"] = "BUSINESS";
+})(exports.MangopayLegalStatus || (exports.MangopayLegalStatus = {}));
+
 es.setLocale({
     mixed: {
         required: 'mixed.required',
@@ -15161,29 +14955,38 @@ es.setLocale({
     },
 });
 
+// eslint-disable-next-line import/prefer-default-export
 var loginSchema = es.object().shape({
-    email: es
-        .string()
-        .email()
-        .required(),
+    email: es.string().email().required(),
     password: es.string().required(),
 });
 
+// eslint-disable-next-line import/prefer-default-export
 var userSchema = es.object().shape({
-    firstName: es
-        .string()
-        .min(2)
-        .required(),
+    firstName: es.string().min(2).required(),
 });
 
+// eslint-disable-next-line import/prefer-default-export
+var groupLegalReprSchema = es.object().shape({
+    address1: es.string().required(),
+    zipCode: es.string().required(),
+    city: es.string().required(),
+    nationality: es.string().required(),
+    countryOfResidence: es.string().required(),
+    birthDate: es.date().required(),
+});
+
+exports.groupLegalReprSchema = groupLegalReprSchema;
 exports.loginSchema = loginSchema;
 exports.userSchema = userSchema;
 
 });
 
 unwrapExports(dist);
-var dist_1 = dist.loginSchema;
-var dist_2 = dist.userSchema;
+var dist_1 = dist.MangopayLegalStatus;
+var dist_2 = dist.groupLegalReprSchema;
+var dist_3 = dist.loginSchema;
+var dist_4 = dist.userSchema;
 
 var CustomTextField = function (props) {
     var t = useTranslation(['yup']).t;
@@ -15348,7 +15151,7 @@ var UserForm = function (_a) {
         },
     ];
     var initialValues = __assign(__assign(__assign({}, generateInitialValues(fields)), generateInitialValues(contactFields)), generateInitialValues(spouseInformations));
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_2, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_4, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
         formikProps.status && (React__default.createElement(core.Box, { my: 2 },
             React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
         React__default.createElement(core.Box, null,
@@ -15562,9 +15365,7 @@ var SlotsStep = function (_a) {
         return acc;
     }, 0);
     var _b = React__default.useState(slots.map(function (slot) {
-        var prc = maxUserRegistered > 0
-            ? slot.registeredUserIds.length / maxUserRegistered
-            : 0;
+        var prc = maxUserRegistered > 0 ? slot.registeredUserIds.length / maxUserRegistered : 0;
         return __assign(__assign({}, slot), { name: "slot-" + slot.id, checked: prc <= 0.75, nbUsers: slot.registeredUserIds.length, prc: prc });
     })), selection = _b[0], setSelection = _b[1];
     var valid = !!selection.find(function (slot) { return slot.checked; });
@@ -15620,97 +15421,7 @@ var InNeedUserListItem = function (_a) {
                 userInfos && userInfos.includes('address') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, formatUserAddress(user))),
                 userInfos && userInfos.includes('phone') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.phone)),
                 userInfos && userInfos.includes('email') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.email))) }),
-        children && (React__default.createElement(core.ListItemSecondaryAction, null, children))));
-};
-
-var tFile$3 = 'neo/distrib-slots';
-var shortTKey$3 = tFile$3 + ":userSlotsSelector.selector";
-var GreenLinearProgress = core.withStyles({
-    colorPrimary: {
-        opacity: 0.5,
-        backgroundColor: '#e8f5e9',
-    },
-    barColorPrimary: {
-        backgroundColor: '#4caf50',
-    },
-})(core.LinearProgress);
-var OrangeLinearProgress = core.withStyles({
-    colorPrimary: {
-        opacity: 0.5,
-        backgroundColor: '#fff3e0',
-    },
-    barColorPrimary: {
-        backgroundColor: '#e65100',
-    },
-})(core.LinearProgress);
-var SlotsStep = function (_a) {
-    var slots = _a.slots, isLastStep = _a.isLastStep, onSelect = _a.onSelect, onCancel = _a.onCancel;
-    var t = useTranslation(['translation', tFile$3]).t;
-    var maxUserRegistered = slots.reduce(function (acc, slot) {
-        if (acc < slot.registeredUserIds.length)
-            return slot.registeredUserIds.length;
-        return acc;
-    }, 0);
-    var _b = React__default.useState(slots.map(function (slot) {
-        var prc = maxUserRegistered > 0
-            ? slot.registeredUserIds.length / maxUserRegistered
-            : 0;
-        return __assign(__assign({}, slot), { name: "slot-" + slot.id, checked: prc <= 0.75, nbUsers: slot.registeredUserIds.length, prc: prc });
-    })), selection = _b[0], setSelection = _b[1];
-    var valid = !!selection.find(function (slot) { return slot.checked; });
-    /** */
-    var onCheckoxChange = function (e) {
-        setSelection(selection.map(function (slot) {
-            if (slot.name === e.target.name) {
-                return __assign(__assign({}, slot), { checked: e.target.checked });
-            }
-            return slot;
-        }));
-    };
-    var onNextClick = function () {
-        if (!valid)
-            return;
-        onSelect(selection.reduce(function (acc, slot) {
-            if (slot.checked) {
-                acc.push(slot.id);
-            }
-            return acc;
-        }, []));
-    };
-    /** */
-    return (React__default.createElement(React__default.Fragment, null,
-        React__default.createElement(core.Box, { mb: 2 },
-            React__default.createElement(core.Typography, { color: "primary", variant: "h6", align: "center" }, t(shortTKey$3 + ".chooseSlot")),
-            React__default.createElement(core.Box, { mt: 1 },
-                React__default.createElement(core.Typography, { variant: "body2", align: "center" }, t(shortTKey$3 + ".chooseSlotSub")))),
-        React__default.createElement(core.List, null, selection.map(function (slot) { return (React__default.createElement(React__default.Fragment, { key: slot.name },
-            React__default.createElement(core.ListItem, null,
-                React__default.createElement(core.ListItemText, { primary: "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"), secondary: t(shortTKey$3 + "." + (slot.prc === 0 ? 'noneUsersInSlot' : 'usersInSlot'), {
-                        count: slot.nbUsers,
-                    }) }),
-                React__default.createElement(core.ListItemSecondaryAction, null,
-                    React__default.createElement(core.ListItemIcon, null,
-                        React__default.createElement(core.Checkbox, { checked: slot.checked, name: slot.name, tabIndex: -1, disableRipple: true, onChange: onCheckoxChange })))),
-            React__default.createElement(core.Box, { px: 2, pr: 4, mb: 2 }, slot.prc > 0.75 ? (React__default.createElement(OrangeLinearProgress, { variant: "determinate", value: slot.prc * 90 })) : (React__default.createElement(GreenLinearProgress, { variant: "determinate", value: slot.prc * 100 }))))); })),
-        React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
-            onCancel && (React__default.createElement(core.Box, { mr: 2 },
-                React__default.createElement(core.Button, { onClick: onCancel }, t('cancel')))),
-            React__default.createElement(core.Button, { variant: isLastStep ? 'contained' : 'outlined', color: "primary", disabled: !valid, onClick: onNextClick }, t(isLastStep ? 'validate' : 'continue')))));
-};
-
-var InNeedUserListItem = function (_a) {
-    var user = _a.user, userInfos = _a.userInfos, children = _a.children;
-    return (React__default.createElement(core.ListItem, { alignItems: "center" },
-        React__default.createElement(core.ListItemText
-        // primary={`${user.firstName} ${user.lastName}`}
-        , { 
-            // primary={`${user.firstName} ${user.lastName}`}
-            primary: React__default.createElement(core.Box, { component: "span", display: "flex", justifyContent: "center" },
-                React__default.createElement(core.Typography, { component: "span" }, user.firstName + " " + user.lastName)), secondary: React__default.createElement(core.Box, { component: "span", display: "flex", flexDirection: "column", alignItems: "center" },
-                userInfos && userInfos.includes('address') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, formatUserAddress(user))),
-                userInfos && userInfos.includes('phone') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.phone)),
-                userInfos && userInfos.includes('email') && (React__default.createElement(core.Typography, { variant: "body2", color: "textSecondary", component: "span" }, user.email))) }),
-        children && (React__default.createElement(core.ListItemSecondaryAction, null, children))));
+        children && React__default.createElement(core.ListItemSecondaryAction, null, children)));
 };
 
 var tFile$4 = 'neo/distrib-slots';
@@ -15794,11 +15505,11 @@ var UserDistribSlotsSelectorView = function (_a) {
             case 'select-mode':
                 return React__default.createElement(ModeStep, { onSelect: selectMode });
             case 'select-permissions':
-                return (React__default.createElement(PermissionsStep, { onConfirm: selectPermissions, onCancel: back }));
+                return React__default.createElement(PermissionsStep, { onConfirm: selectPermissions, onCancel: back });
             case 'select-slots':
                 return (React__default.createElement(SlotsStep, { slots: slots, isLastStep: mode === 'solo', onSelect: selectSlots, onCancel: distribMode === 'default' ? back : undefined }));
             case 'select-inNeed':
-                return (React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back }));
+                return React__default.createElement(VoluntaryStep, { inNeedUsers: inNeedUsers, onConfirm: selectInNeedUsers, onCancel: back });
             case 'summary':
                 return (React__default.createElement(SummaryStep, { mode: mode, slots: slots, registeredSlotIds: registeredSlotIds, voluntaryFor: voluntaryFor, inNeedUsers: inNeedUsers, onSalesProcess: onSalesProcess, changeSlots: changeSlots, addInNeeds: addInNeeds, close: closeDialog }));
             case 'resolved':
@@ -15884,12 +15595,9 @@ var InNeedNotResolvedUsersTable = function (_a) {
 
 var tFile$7 = 'neo/distrib-slots';
 var shortTKey$7 = tFile$7 + ":resolver";
-var formatSlot = function (slot) {
-    return "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm");
-};
+var formatSlot = function (slot) { return "De " + format$1(slot.start, "HH'h'mm") + " \u00E0 " + format$1(slot.end, "HH'h'mm"); };
 var formatUser = function (user) {
-    return user.firstName.charAt(0).toUpperCase() +
-        user.firstName.slice(1) + " " + user.lastName.toUpperCase() + "\n ";
+    return user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) + " " + user.lastName.toUpperCase() + "\n ";
 };
 var SlotsResolvedTable = function (_a) {
     var distrib = _a.distrib;
@@ -15931,15 +15639,12 @@ var SlotsResolvedTable = function (_a) {
     var renderSlotTable = function (slot) {
         var users = slot.selectedUserIds
             .map(function (id) { return distrib.users.find(function (u) { return u.id === id; }); })
-            .sort(function (u1, u2) {
-            return u1.lastName.toUpperCase().localeCompare(u2.lastName.toUpperCase());
-        });
+            .sort(function (u1, u2) { return u1.lastName.toUpperCase().localeCompare(u2.lastName.toUpperCase()); });
         var half = Math.ceil(users.length / 2);
         return (React__default.createElement(core.Box, { display: "flex" },
             React__default.createElement(core.Box, { flex: 1 }, renderSlotHalfTable(users.slice(0, half))),
             React__default.createElement(core.Box, { width: 2, border: "1px solid #ccc" }),
-            React__default.createElement(core.Box, { flex: 1 }, half + 1 <= users.length &&
-                renderSlotHalfTable(users.slice(half, users.length)))));
+            React__default.createElement(core.Box, { flex: 1 }, half + 1 <= users.length && renderSlotHalfTable(users.slice(half, users.length)))));
     };
     /** */
     return (React__default.createElement(core.CardContent, null,
@@ -16022,9 +15727,7 @@ var DistribSlotsResolver = function (_a) {
                     React__default.createElement(SlotsResolvedTable, { distrib: distrib }))),
                 distrib.otherUsers && distrib.otherUsers.length > 0 && (React__default.createElement(core.CardContent, null,
                     React__default.createElement(core.Typography, null, t(shortTKey$8 + ".otherUsersList", {
-                        list: distrib.otherUsers
-                            .map(function (u) { return u.firstName + " " + u.lastName; })
-                            .join(', '),
+                        list: distrib.otherUsers.map(function (u) { return u.firstName + " " + u.lastName; }).join(', '),
                     }))))),
             React__default.createElement(core.Box, { p: 2, pt: 0, display: "flex", justifyContent: "center" },
                 React__default.createElement(ReactToPrint, { trigger: function () { return (React__default.createElement(core.Button, { variant: "contained", color: "primary", startIcon: React__default.createElement(PrintIcon, null) },
@@ -16038,9 +15741,7 @@ var useStyles$2 = core.makeStyles(function () { return ({
         height: '100%',
     },
 }); });
-var firstLetterToUpperCase = function (s) {
-    return "" + s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase();
-};
+var firstLetterToUpperCase = function (s) { return "" + s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase(); };
 var formatAddress = function (place) {
     var res = '';
     if (place.address1) {
