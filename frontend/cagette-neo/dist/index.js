@@ -7387,6 +7387,8 @@ var ActivateDistribSlotsView = function (_a) {
         return (React__default.createElement(core.Box, { p: 2 }, error ? (React__default.createElement(core.Box, { p: 2 },
             React__default.createElement(lab.Alert, { severity: "error" }, error))) : (React__default.createElement(core.CircularProgress, { size: 20 }))));
     if (distrib.orderEndDate && !isBefore(new Date(), distrib.orderEndDate)) {
+        if (!distrib.slots)
+            return React__default.createElement(React__default.Fragment, null);
         var goTo = function () {
             document.location.href = "/distribution/timeSlots/" + distrib.id;
         };
@@ -14937,11 +14939,14 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 
-// eslint-disable-next-line import/prefer-default-export
 (function (MangopayLegalStatus) {
     MangopayLegalStatus["ORGANIZATION"] = "ORGANIZATION";
     MangopayLegalStatus["BUSINESS"] = "BUSINESS";
 })(exports.MangopayLegalStatus || (exports.MangopayLegalStatus = {}));
+(function (MangopayKYCLevel) {
+    MangopayKYCLevel["LIGHT"] = "LIGHT";
+    MangopayKYCLevel["REGULAR"] = "REGULAR";
+})(exports.MangopayKYCLevel || (exports.MangopayKYCLevel = {}));
 
 es.setLocale({
     mixed: {
@@ -14984,9 +14989,10 @@ exports.userSchema = userSchema;
 
 unwrapExports(dist);
 var dist_1 = dist.MangopayLegalStatus;
-var dist_2 = dist.groupLegalReprSchema;
-var dist_3 = dist.loginSchema;
-var dist_4 = dist.userSchema;
+var dist_2 = dist.MangopayKYCLevel;
+var dist_3 = dist.groupLegalReprSchema;
+var dist_4 = dist.loginSchema;
+var dist_5 = dist.userSchema;
 
 var CustomTextField = function (props) {
     var t = useTranslation(['yup']).t;
@@ -15151,7 +15157,7 @@ var UserForm = function (_a) {
         },
     ];
     var initialValues = __assign(__assign(__assign({}, generateInitialValues(fields)), generateInitialValues(contactFields)), generateInitialValues(spouseInformations));
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_4, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_5, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
         formikProps.status && (React__default.createElement(core.Box, { my: 2 },
             React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
         React__default.createElement(core.Box, null,
