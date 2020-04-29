@@ -3,12 +3,19 @@ import sys.db.Object;
 import sys.db.Types;
 import Common;
 
+/**
+	infos from https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/
+**/
 typedef SiretInfos = {
 	date_creation:String,
-	code_postal:String,
 	activite_principale:String,//code NAF
-	geo_adresse:String,//adresse postale
-
+	geo_adresse:String,//adresse postale complete
+	libelle_commune:String,
+	libelle_voie:String,
+	code_postal:String,
+	type_voie:String,
+	latitude:Float,
+	longitude:Float,
 }
 
 /**
@@ -33,6 +40,7 @@ class Vendor extends Object
 	public var country:SNull<SString<64>>;
 	
 	public var desc : SNull<SText>;
+	@hideInForms public var cdate : SNull<SDate>; // date de création
 
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
@@ -50,6 +58,9 @@ class Vendor extends Object
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
 	@hideInForms public var isCovid : SBool; //compte gratuit créé pendant le confinement
 
+	@hideInForms public var lat:SNull<SFloat>;
+	@hideInForms public var lng:SNull<SFloat>;
+
 	public static var PROFESSIONS:Array<{id:Int,name:String}>;
 	
 	
@@ -57,10 +68,8 @@ class Vendor extends Object
 	{
 		super();
 		directory = true;
-		/*try{
-			var t = sugoi.i18n.Locale.texts;
-			name = "Ferme ";
-		}catch(e:Dynamic){}*/
+		cdate = Date.now();
+
 	}
 	
 	override function toString() {
@@ -235,6 +244,31 @@ class Vendor extends Object
 		if(zipCode!=null) str.add(", "+zipCode);
 		if(city!=null) str.add(" "+city);
 		return str.toString();
+	}
+
+	public function getAddressFromSiretInfos(){
+		if(siretInfos==null) return null;
+		
+		var addr = {
+			address1:"",
+			address2:"",
+			zipCode:siretInfos.code_postal,
+			city:siretInfos.libelle_commune,
+			lat:siretInfos.latitude,
+			lng:siretInfos.longitude
+		}
+
+		//find address1
+		var a = [];
+		for( k in ["numero_voie","type_voie","libelle_voie"] ){
+			var v = Reflect.field(siretInfos,k);
+			if(v!=null && v!=""){
+				a.push(v);
+			}
+		}
+		addr.address1 = a.join(" ");
+
+		return addr;
 	}
 	
 }

@@ -8,9 +8,17 @@ class TimeSlotsService{
 
     public function new(d:db.MultiDistrib){
         distribution = d;
+	}
 
-    }
+	public function isResolved(){
 
+		for( s in distribution.slots ){
+			if(s.selectedUserIds.length>0) return true;
+		}
+
+		return false;
+	}
+	
     private function resolveUserMonoSlot(s: Array<SlotResolver>): Array<SlotResolver> {
 		var slots = s.copy();
 		var potentialUserMap = this.getPotentialUserMap(slots);

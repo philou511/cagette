@@ -1704,10 +1704,16 @@ class Distribution extends Controller
 	}**/
 
 	/**
-		timeslot resolution for admins
+		See timeslot resolution for admins
 	**/
 	@tpl("distribution/timeSlots.mtt")
 	function doTimeSlots(d:db.MultiDistrib){
+
+		var s = new service.TimeSlotsService(d);
+		if(Date.now().getTime() > d.orderEndDate.getTime() && !s.isResolved()){
+			s.resolveSlots();
+		}
+
 		view.distribution = d;
 	}
 

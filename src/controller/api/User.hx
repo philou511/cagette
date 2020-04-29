@@ -189,7 +189,7 @@ class User extends Controller
 			throw new tink.core.Error(403,"Access forbidden");
 		}
 
-		var members:Array<UserInfo> = service.UserService.getFromGroup(app.user.getGroup()).map(function(m) return m.infos() );
+		var members:Array<UserInfo> = service.UserService.getFromGroup(app.user.getGroup()).map( m -> m.infos() );
 		Sys.print(tink.Json.stringify({users:members}));
 	}
 	
