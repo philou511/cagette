@@ -158,11 +158,23 @@ class Distributions extends Controller {
     });
   }
 
+  @admin
+  public function doUnresolve() {
+    if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
+    if (this.distrib.slots == null) return json({message: "slot not activated"});
+    this.distrib.lock();
+    this.distrib.slots.map(slot -> {
+      slot.selectedUserIds = [];
+      return slot;
+    });
+    this.distrib.update();
+    json({message: "slots unresolved"});
+  }
+
   // TODO: remove
   @admin
   public function doResolve() {
     this.distrib.resolveSlots();
-    json(this.parse());
   }
 
    // TODO: remove
