@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 18:57+0000\n"
-"Last-Translator: Aram <aramollis@gmail.com>\n"
+"PO-Revision-Date: 2020-05-01 19:00+0000\n"
+"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -154,7 +154,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:6329
 msgid "Define a vendor"
-msgstr "Definir un productor"
+msgstr "Sel.lecciona un productor/a"
 
 #: ../src/controller/Contract.hx:6367
 msgid ""
