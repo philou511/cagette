@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2020-05-01 20:33+0000\n"
-"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
+"Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -1386,6 +1386,7 @@ msgstr "[::group::] Validació de la distribució de ::date::"
 #: ../src/controller/Cron.hx:17410
 msgid "<p>Your distribution just finished, don't forget to <b>validate</b> it</p>"
 msgstr ""
+"<p>La vostra distribució està acabada, no us oblideu de <b>validar-la</b></p>"
 
 #: ../src/controller/Cron.hx:17524
 msgid ""
