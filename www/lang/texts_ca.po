@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 20:33+0000\n"
-"Last-Translator: Aram <aramollis@gmail.com>\n"
+"PO-Revision-Date: 2020-05-01 20:42+0000\n"
+"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -1723,39 +1723,39 @@ msgstr "S'han enregistrat els voluntaris  per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:26903
 msgid "Select a volunteer for each role for this multidistrib"
-msgstr ""
+msgstr "Seleccioneu un/a voluntari/a per cada rol d'aquesta distribució"
 
 #: ../src/controller/Distribution.hx:27349
 msgid "There are no volunteer roles defined for this distribution"
-msgstr ""
+msgstr "Els rols dels voluntaris no s'han definit per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:27734
 msgid "You have been successfully added to the selected role."
-msgstr ""
+msgstr "Heu estat enregistrats per aquest rol."
 
 #: ../src/controller/Distribution.hx:28620
 msgid "There is no volunteer to remove for this role!"
-msgstr ""
+msgstr "No hi ha cap voluntari a eliminar per aquest rol!"
 
 #: ../src/controller/Distribution.hx:28753
 msgid "You can only remove yourself from a role."
-msgstr ""
+msgstr "Només podeu retirar-vos a vosaltres mateixos d'un rol."
 
 #: ../src/controller/Distribution.hx:28866
 msgid "Reason for leaving the role"
-msgstr ""
+msgstr "Raó per la qual us retireu"
 
 #: ../src/controller/Distribution.hx:29225
 msgid "You have been successfully removed from this role."
-msgstr ""
+msgstr "Us heu desinscrit correctament d'aquest rol."
 
 #: ../src/controller/Distribution.hx:29306
 msgid "Enter the reason why you are leaving this role."
-msgstr ""
+msgstr "Trieu la raó per la qual us desinscriviu d'aquest rol."
 
 #: ../src/controller/Distribution.hx:30127 ../src/controller/Distribution.hx:30299
 msgid "You have been successfully assigned to the selected role."
-msgstr ""
+msgstr "Heu estat enregistrats per aquest rol."
 
 #: ../src/App.hx:8733
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
