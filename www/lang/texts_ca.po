@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2020-05-01 19:00+0000\n"
-"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
+"Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -161,14 +161,16 @@ msgid ""
 "Before creating a record for the vendor you want to work with, let's search "
 "our database to check if he's not already referenced."
 msgstr ""
+"Abans de crear un registre per al productor amb el qual voleu treballar, "
+"busquem a la nostra base de dades per comprovar si aquest ja existeix."
 
 #: ../src/controller/Contract.hx:6608
 msgid "Vendor or farm name"
-msgstr ""
+msgstr "Nom del venedor o productor"
 
 #: ../src/controller/Contract.hx:6707
 msgid "Vendor email"
-msgstr ""
+msgstr "Adreça electrònica del productor"
 
 #: ../src/controller/Contract.hx:6801 ../lang/master/tpl/member/import.mtt:932 ../lang/master/tpl/member/import.mtt:1638
 msgid "zip code"
@@ -180,7 +182,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:7780 ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:1267 ../lang/master/tpl/contractadmin/defineVendor.mtt:1259
 msgid "Key-in a new vendor"
-msgstr ""
+msgstr "Afegir un nou productor"
 
 #: ../src/controller/Contract.hx:7824
 msgid ""
