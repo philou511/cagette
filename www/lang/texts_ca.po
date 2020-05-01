@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2020-05-01 21:45+0000\n"
-"Last-Translator: Aram <aramollis@gmail.com>\n"
+"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -1768,12 +1768,16 @@ msgid ""
 "This distribution should have an order opening date and an order closing "
 "date."
 msgstr ""
+"Aquesta distribució hauria de tenir una data d'obertura de comandes i una "
+"data de tancament de comandes."
 
 #: ../src/service/DistributionService.hx:4140
 msgid ""
 "There is already a distribution at this place overlapping with the time range "
 "you've selected."
 msgstr ""
+"Ja hi ha una distribució en aquest lloc que es solapa amb el període que heu "
+"seleccionat."
 
 #: ../src/service/DistributionService.hx:4312 ../src/service/DistributionService.hx:18621
 msgid "The date of the delivery must be prior to the end of the contract (::contractEndDate::)"
@@ -1786,10 +1790,14 @@ msgstr ""
 #: ../src/service/DistributionService.hx:4778
 msgid "The distribution start date must be set after the orders end date."
 msgstr ""
+"La data d'inici de la distribució ha de ser posterior al tancament de "
+"comandes."
 
 #: ../src/service/DistributionService.hx:4933
 msgid "The orders end date must be set after the orders start date !"
 msgstr ""
+"La data de tancament de comandes ha de ser posterior a la data d'obertura de "
+"comandes!"
 
 #: ../src/service/DistributionService.hx:8518
 msgid "Deletion not possible: some orders are recorded for this distribution."
