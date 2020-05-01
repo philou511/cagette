@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2020-05-01 18:53+0000\n"
-"Last-Translator: Aram <aramollis@gmail.com>\n"
+"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -92,7 +92,7 @@ msgstr "Pagament puntual per a la comanda de ::date::"
 
 #: ../src/controller/Transaction.hx:7467
 msgid "Payment on the spot"
-msgstr ""
+msgstr "Pagament presencial"
 
 #: ../src/controller/Transaction.hx:8429
 msgid "Transfer for the order of ::date::"
