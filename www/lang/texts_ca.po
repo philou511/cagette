@@ -1394,7 +1394,7 @@ msgid ""
 "must be connected to your group Cagette)"
 msgstr ""
 "<p><a href='::distriburl::'>Clicka aquí per validar la distribució</a> (Has "
-"d'estar connecta't al teu grup Cagette)"
+"d'estar connecta't al teu grup Cagette.net)"
 
 #: ../src/controller/Cron.hx:18414
 msgid ": Validation of the delivery of the "
