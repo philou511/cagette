@@ -154,7 +154,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:6329
 msgid "Define a vendor"
-msgstr ""
+msgstr "Definir un productor"
 
 #: ../src/controller/Contract.hx:6367
 msgid ""
