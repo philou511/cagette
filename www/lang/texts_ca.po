@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 20:46+0000\n"
+"PO-Revision-Date: 2020-05-01 21:45+0000\n"
 "Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
@@ -1794,10 +1794,12 @@ msgstr ""
 #: ../src/service/DistributionService.hx:8518
 msgid "Deletion not possible: some orders are recorded for this distribution."
 msgstr ""
+"No es pot suprimir: hi ha algunes comandes registrades per a aquesta "
+"distribució."
 
 #: ../src/service/DistributionService.hx:8928
 msgid "This contract is already participating to this distribution"
-msgstr ""
+msgstr "Aquest contracte ja participa en aquesta distribució"
 
 #: ../src/service/DistributionService.hx:9182
 msgid ""
@@ -1805,30 +1807,34 @@ msgid ""
 "been defined. <a href='::url::' target='_blank'>Please update the general "
 "distribution first</a>."
 msgstr ""
+"No podeu participar en aquesta distribució perquè no s’ha definit cap data d’"
+"obertura de la comanda. <a href='::url::' target='_blank'>Actualitzeu primer "
+"la distribució general</a>."
 
 #: ../src/service/DistributionService.hx:10080
 msgid "You cannot edit a distribution which has been already validated."
-msgstr ""
+msgstr "No podeu modificar una distribució que ja hagi estat validada."
 
 #: ../src/service/DistributionService.hx:10334
 msgid "The distribution date is different from the date of the general distribution."
-msgstr ""
+msgstr "La data de distribució és diferent de la distribució principal."
 
 #: ../src/service/DistributionService.hx:10515
 msgid "The distribution place is different from the place of the general distribution."
 msgstr ""
+"El lloc de distribució és diferent del lloc de la distribució principal."
 
 #: ../src/service/DistributionService.hx:12027
 msgid "Deletion not possible: some orders are saved for this delivery."
-msgstr ""
+msgstr "Impossible suprimir: hi ha comandes registrades per aquest enviament."
 
 #: ../src/service/DistributionService.hx:13187
 msgid "daysBeforeOrderEnd or daysBeforeOrderStart is null"
-msgstr ""
+msgstr "daysBeforeOrderEnd o daysBeforeOrderStart no és vàlid"
 
 #: ../src/service/DistributionService.hx:14204
 msgid "this distributionCycle has not been recorded"
-msgstr ""
+msgstr "Aquest cicle de distribució no s'ha registrat"
 
 #: ../src/service/DistributionService.hx:16784
 msgid "The delivery of the ::delivDate:: could not be deleted because it has orders."
@@ -1837,6 +1843,7 @@ msgstr ""
 #: ../src/service/OrderService.hx:810 ../src/service/OrderService.hx:4359
 msgid "Error : product \"::product::\" quantity should be integer"
 msgstr ""
+"Error: la quantitat del producte \"::product::\" ha de ser un nombre enter"
 
 #: ../src/service/OrderService.hx:1070
 msgid "multi-weighing products should be ordered only with integer quantities"
@@ -1854,11 +1861,11 @@ msgstr ""
 
 #: ../src/service/OrderService.hx:6662
 msgid "This order has already been deleted."
-msgstr ""
+msgstr "La comanda ja s'ha suprimit."
 
 #: ../src/service/OrderService.hx:7860
 msgid "Deletion not possible: quantity is not zero."
-msgstr ""
+msgstr "Impossible eliminar: la quantitat no és igual a zero."
 
 #: ../src/service/OrderService.hx:9093 ../lang/master/tpl/home.mtt:3963 ../lang/master/tpl/home.mtt:7207 ../lang/master/tpl/distribution/listByDateShort.mtt:1761 ../lang/master/tpl/distribution/listByDateOnePageContract.mtt:2766 ../lang/master/tpl/distribution/listByDate.mtt:1817 ../lang/master/tpl/distribution/list.mtt:2680 ../lang/master/tpl/distribution/listByDateOnePage.mtt:2299 ../lang/master/tpl/contractadmin/orders.mtt:5092 ../lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:2156 ../lang/master/tpl/contractadmin/ordersByDate.mtt:2941 ../lang/master/tpl/home_old.mtt:4387
 msgid "Canceled"
@@ -1867,6 +1874,8 @@ msgstr ""
 #: ../src/service/OrderService.hx:10670
 msgid "Orders are closed for \"::contract::\", please modify your order."
 msgstr ""
+"Les comandes estan tancades per a \"::contract::\", si us plau, modifiqueu "
+"la vostra comanda."
 
 #: ../src/service/OrderService.hx:13284 ../src/service/ReportService.hx:466
 msgid "Delivery ::contractName:: of the "
@@ -1881,6 +1890,8 @@ msgid ""
 "Since you failed to login more than 4 times, your IP address has been banned "
 "for 10 minutes."
 msgstr ""
+"Heu intentat connectar-vos sense èxit més de 4 vegades, la vostra adreça IP "
+"està bloquejada durant 10 minuts."
 
 #: ../src/service/UserService.hx:875
 msgid ""
@@ -1902,23 +1913,25 @@ msgstr ""
 
 #: ../src/service/UserService.hx:2550
 msgid "Members of this group should provide a phone number"
-msgstr ""
+msgstr "Els membres d’aquest grup han de proporcionar el seu número de telèfon"
 
 #: ../src/service/UserService.hx:2781
 msgid "Members of this group should provide an address"
-msgstr ""
+msgstr "Els membres d’aquest grup han de proporcionar la seva adreça"
 
 #: ../src/service/WaitingListService.hx:363
 msgid "<p><b>::name::</b> suscribed to the waiting list of <b>::group::</b> on ::date::</p>"
 msgstr ""
+"<p><b>::name::</b> subscrit a la llista d'espera de <b>::group::</b> el "
+"::date::</p>"
 
 #: ../src/service/WaitingListService.hx:592
 msgid "<p>He/she left this message :<br/>\"::message::\"</p>"
-msgstr ""
+msgstr "<p>Ell/a va deixar aquest missatge:<br/>\"::message::\"</p>"
 
 #: ../src/service/WaitingListService.hx:818
 msgid "[::group::] ::name:: suscribed to the waiting list."
-msgstr ""
+msgstr "[::group::] ::name:: s'ha inscrit a la llista d’espera."
 
 #: ../src/service/WaitingListService.hx:1155
 msgid "You are already in the waiting list of this group"
@@ -1926,135 +1939,164 @@ msgstr ""
 
 #: ../src/service/WaitingListService.hx:1560
 msgid "You should be logged in."
-msgstr ""
+msgstr "Has d'haver iniciat sessió."
 
 #: ../src/service/WaitingListService.hx:1725
 msgid "You are not in the waiting list of this group"
-msgstr ""
+msgstr "No esteu a la llista d’espera d’aquest grup"
 
 #: ../src/service/WaitingListService.hx:2197
 msgid "[::group::] Membership request refused."
-msgstr ""
+msgstr "[::group::] La vostra sol·licitud d'inscripció s'ha rebutjat."
 
 #: ../src/service/WaitingListService.hx:2267
 msgid "Your membership request for <b>::group::</b> has been refused."
-msgstr ""
+msgstr "La vostra sol·licitud d'inscripció a <b>::group::</b> s'ha rebutjat."
 
 #: ../src/service/WaitingListService.hx:2568
 msgid "[::group::] ::name:: membership request has been refused by ::admin::."
 msgstr ""
+"[::group::] La sol·licitud d'inscripció de ::name:: ha estat rebutjada per "
+"::admin::."
 
 #: ../src/service/WaitingListService.hx:2715
 msgid ""
 "<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> "
 "has refused his/her request.</p>"
 msgstr ""
+"<p><b>::name::</b> s'ha registrat a la llista d'espera. "
+"</p><p><b>::admin::</b> ha rebutjat la seva sol·licitud. </p>"
 
 #: ../src/service/WaitingListService.hx:3486
 msgid "[::group::] Membership request accepted."
-msgstr ""
+msgstr "[::group::] Sol·licitud d'inscripció acceptada."
 
 #: ../src/service/WaitingListService.hx:3557
 msgid ""
 "<p>Your membership request for <b>::group::</b> has been accepted !</p><p>You're "
 "now a member of the group.</p>"
 msgstr ""
+"<p>La vostra sol·licitud d’inscripció a <b>::group::</b> ha estat "
+"acceptada!</p><p>Ara ets membre d'aquest grup.</p>"
 
 #: ../src/service/WaitingListService.hx:3917
 msgid "[::group::] ::name:: membership request has been accepted by ::admin::."
 msgstr ""
+"[::group::] La sol·licitud d'inscripció de ::name:: ha estat acceptada per "
+"::admin::."
 
 #: ../src/service/WaitingListService.hx:4065
 msgid ""
 "<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> "
 "has accepted his/her request.</p>"
 msgstr ""
+"<p><b>::name::</b> s'ha inscrit a la llista d'espera.</p><p><b>::admin::</b> "
+"ha acceptat la seva petició.</p>"
 
 #: ../src/service/VolunteerService.hx:932
 msgid ""
 "You can't delete this role because there are volunteers assigned to this "
 "role. You need to delete the volunteers first."
 msgstr ""
+"No podeu suprimir aquest rol perquè hi ha voluntaris assignats a aquest rol. "
+"Primer has de suprimir els voluntaris."
 
 #: ../src/service/VolunteerService.hx:1386
 msgid "You need to first select the volunteer roles for this distribution."
-msgstr ""
+msgstr "Primer heu de definir els rols per a aquesta distribució."
 
 #: ../src/service/VolunteerService.hx:2698 ../src/service/VolunteerService.hx:4610
 msgid "A volunteer can't be assigned to multiple roles for the same distribution!"
 msgstr ""
+"Un voluntari no es pot assignar a diversos rols per a la mateixa distribució!"
 
 #: ../src/service/VolunteerService.hx:4347
 msgid "This distribution has already been validated"
-msgstr ""
+msgstr "La distribució ja ha estat validada"
 
 #: ../src/service/VolunteerService.hx:5047
 msgid "This role is already filled by a volunteer!"
-msgstr ""
+msgstr "Aquest rol ja el fa un altre voluntari/a!"
 
 #: ../src/service/VolunteerService.hx:6935
 msgid "A role has been left for ::date:: distribution"
-msgstr ""
+msgstr "S'ha abandonat un rol per a la distribució del ::date::"
 
 #: ../src/service/VolunteerService.hx:7382
 msgid "This user is not assigned to this role!"
-msgstr ""
+msgstr "Aquest membre no té assignat aquest rol!"
 
 #: ../src/service/VolunteerService.hx:7473
 msgid "Missing distribution or role in the url!"
-msgstr ""
+msgstr "Falta la distribució o el rol a la URL (adreça web)!"
 
 #: ../src/service/VolunteerService.hx:8145
 msgid ""
 "You can't remove some roles because there are volunteers assigned to those "
 "roles. You need to delete the volunteers first."
 msgstr ""
+"No podeu suprimir aquests rols perquè hi ha voluntaris registrats per a "
+"aquests rols. Dona de baixa aquests voluntaris primer."
 
 #: ../src/service/VolunteerService.hx:8482
 msgid "Duty period"
-msgstr ""
+msgstr "Torns"
 
 #: ../src/service/VolunteerService.hx:8884
 msgid ""
 "The number of days before the volunteers can join a duty period needs to "
 "be greater than 6 days."
 msgstr ""
+"El nombre de dies abans que els voluntaris puguin incorporar-se a un torn ha "
+"de ser superior a 6 dies."
 
 #: ../src/service/VolunteerService.hx:9068
 msgid ""
 "The number of days before the volunteers can join a duty period needs to "
 "be lower than 181 days."
 msgstr ""
+"El nombre de dies abans que els voluntaris puguin incorporar-se a un torn ha "
+"de ser inferior a 181 dies."
 
 #: ../src/service/VolunteerService.hx:9277
 msgid ""
 "The number of days before the duty periods to send the instructions mail "
 "to all the volunteers needs to be greater than 1 day."
 msgstr ""
+"El nombre de dies anteriors als torns per enviar el correu electrònic d’"
+"instruccions a tots els voluntaris ha de ser superior a 1 dia."
 
 #: ../src/service/VolunteerService.hx:9490
 msgid ""
 "The number of days before the duty periods to send the instructions mail "
 "to all the volunteers needs to be lower than 15 days."
 msgstr ""
+"El nombre de dies abans dels torns per enviar el correu electrònic d’"
+"instruccions a tots els voluntaris ha de ser inferior a 15 dies."
 
 #: ../src/service/VolunteerService.hx:9728
 msgid ""
 "The number of days before the duty periods to send the vacant roles mail "
 "to all members needs to be greater than 1 day."
 msgstr ""
+"El nombre de dies anteriors als torns per enviar el correu amb els rols o "
+"tasques vacants a tots els membres ha de ser superior a 1 dia."
 
 #: ../src/service/VolunteerService.hx:9934
 msgid ""
 "The number of days before the duty periods to send the instructions mail "
 "to all members needs to be lower than 15 days."
 msgstr ""
+"El nombre de dies anteriors als torns per enviar el correu electrònic d’"
+"instruccions a tots els membres ha de ser inferior a 15 dies."
 
 #: ../src/service/VolunteerService.hx:10118
 msgid ""
 "One or more numbers of days you entered is not an integer. You can only use "
 "integers. "
 msgstr ""
+"El nombre de dies que heu introduït no és un nombre enter. Només podeu fer "
+"servir nombres enters. "
 
 #. kilogramms
 #: ../src/View.hx:3369 ../common/Formatting.hx:1326
@@ -2089,7 +2131,7 @@ msgstr ""
 #. milliliter
 #: ../src/View.hx:3635
 msgid "ml."
-msgstr ""
+msgstr "ml"
 
 #: ../src/View.hx:4170
 msgid "Sunday"
@@ -2194,11 +2236,11 @@ msgstr ""
 
 #: ../src/db/UserAmap.hx:2405
 msgid "Deleted contract"
-msgstr ""
+msgstr "Contracte eliminat"
 
 #: ../src/db/UserAmap.hx:2447
 msgid "::name:: contract management"
-msgstr ""
+msgstr "Gestió del contracte ::name::"
 
 #: ../src/db/Vendor.hx:1297 ../lang/master/tpl/vendor/view.mtt:98
 msgid "Supplier"
@@ -2206,7 +2248,7 @@ msgstr ""
 
 #: ../src/db/Vendor.hx:4082
 msgid "Profession"
-msgstr ""
+msgstr "Professió"
 
 #: ../src/db/Vendor.hx:4305
 msgid "Supplier name"
@@ -2222,7 +2264,7 @@ msgstr ""
 
 #: ../src/db/Vendor.hx:4416 ../src/db/Amap.hx:11567
 msgid "Legal status"
-msgstr ""
+msgstr "Condició legal"
 
 #: ../src/db/Vendor.hx:4633
 msgid "Link text"
@@ -2270,7 +2312,7 @@ msgstr ""
 
 #: ../src/db/Contract.hx:8325
 msgid "Number of required volunteers for a duty period"
-msgstr ""
+msgstr "Nombre de voluntaris necessaris per als torns"
 
 #: ../src/db/Contract.hx:8398 ../src/db/User.hx:17871 ../src/db/Amap.hx:11850
 msgid "Options"
@@ -2298,43 +2340,43 @@ msgstr ""
 
 #: ../src/db/User.hx:2927 ../src/db/User.hx:17708
 msgid "Nationality"
-msgstr ""
+msgstr "Nacionalitat"
 
 #: ../src/db/User.hx:3177 ../src/db/User.hx:17756
 msgid "Country of residence"
-msgstr ""
+msgstr "País de residència"
 
 #: ../src/db/User.hx:3372
 msgid "French"
-msgstr ""
+msgstr "Francès"
 
 #: ../src/db/User.hx:3410
 msgid "Belgian"
-msgstr ""
+msgstr "Belga"
 
 #: ../src/db/User.hx:3449
 msgid "Italian"
-msgstr ""
+msgstr "Italià"
 
 #: ../src/db/User.hx:3488
 msgid "Spanish"
-msgstr ""
+msgstr "Espanyol"
 
 #: ../src/db/User.hx:3527
 msgid "German"
-msgstr ""
+msgstr "Alemany"
 
 #: ../src/db/User.hx:3565
 msgid "Swiss"
-msgstr ""
+msgstr "Suís"
 
 #: ../src/db/User.hx:3603
 msgid "Canadian"
-msgstr ""
+msgstr "Canadenc"
 
 #: ../src/db/User.hx:3643
 msgid "Other"
-msgstr ""
+msgstr "Altre"
 
 #: ../src/db/User.hx:15490
 msgid "This user cannot receive an invitation"
@@ -2350,11 +2392,11 @@ msgstr ""
 
 #: ../src/db/User.hx:17213 ../lang/master/tpl/member/import.mtt:592 ../lang/master/tpl/member/import.mtt:1308
 msgid "First name"
-msgstr ""
+msgstr "Nom"
 
 #: ../src/db/User.hx:17249 ../lang/master/tpl/member/import.mtt:626 ../lang/master/tpl/member/import.mtt:1341
 msgid "Last name"
-msgstr ""
+msgstr "Cognoms"
 
 #: ../src/db/User.hx:17343 ../lang/master/tpl/member/import.mtt:717 ../lang/master/tpl/member/import.mtt:1429
 msgid "Partner first name"
@@ -2378,7 +2420,7 @@ msgstr ""
 
 #: ../src/db/User.hx:17668
 msgid "Birth date"
-msgstr ""
+msgstr "Data de naixement"
 
 #: ../src/db/User.hx:17830 ../lang/master/tpl/member/waiting.mtt:236
 msgid "Registration date"
@@ -3092,39 +3134,39 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/default.mtt:2496
 msgid "Orders end date"
-msgstr ""
+msgstr "Data de tancament de les comandes"
 
 #: ../lang/master/tpl/distribution/default.mtt:4723
 msgid "Orders not yet open"
-msgstr ""
+msgstr "La comanda encara no està oberta"
 
 #: ../lang/master/tpl/distribution/default.mtt:4956
 msgid "Orders open"
-msgstr ""
+msgstr "Comanda en curs"
 
 #: ../lang/master/tpl/distribution/default.mtt:5203
 msgid "Orders closed"
-msgstr ""
+msgstr "Comanda tancada"
 
 #: ../lang/master/tpl/distribution/default.mtt:5457
 msgid "Distribution done"
-msgstr ""
+msgstr "Distribució realitzada"
 
 #: ../lang/master/tpl/distribution/default.mtt:5713
 msgid "Distribution confirmed"
-msgstr ""
+msgstr "Distribució confirmada"
 
 #: ../lang/master/tpl/distribution/default.mtt:6042
 msgid "Vendors"
-msgstr ""
+msgstr "Productors"
 
 #: ../lang/master/tpl/distribution/default.mtt:7660 ../lang/master/tpl/amapadmin/volunteers/default.mtt:69
 msgid "Volunteer roles"
-msgstr ""
+msgstr "Rols de voluntaris"
 
 #: ../lang/master/tpl/distribution/default.mtt:7910
 msgid "Registred volunteers"
-msgstr ""
+msgstr "Voluntaris inscrits"
 
 #: ../lang/master/tpl/distribution/default.mtt:8280 ../lang/master/tpl/distribution/default.mtt:8961 ../lang/master/tpl/contractadmin/orders.mtt:45 ../lang/master/tpl/contractadmin/distributions.mtt:1346 ../lang/master/tpl/contractadmin/design.mtt:1039 ../lang/master/tpl/contractadmin/contract.mtt:305 ../lang/master/tpl/contractadmin/selectDistrib.mtt:83 ../lang/master/tpl/contractadmin/selectDistrib.mtt:691
 msgid "Orders"
@@ -3133,18 +3175,26 @@ msgstr ""
 #: ../lang/master/tpl/distribution/default.mtt:10875 ../lang/master/tpl/distribution/default.mtt:12899
 msgid "Distribution start date is different from general distribution"
 msgstr ""
+"La data d'inici de la distribució és diferent de la data de distribució "
+"principal"
 
 #: ../lang/master/tpl/distribution/default.mtt:11301 ../lang/master/tpl/distribution/default.mtt:13325
 msgid "Distribution end date is different from general distribution"
 msgstr ""
+"La data de finalització de la distribució és diferent de la data de "
+"finalització de la distribució principal"
 
 #: ../lang/master/tpl/distribution/default.mtt:13785
 msgid "Order start date is different from general distribution"
 msgstr ""
+"La data d'obertura de la comanda és diferent de la data de distribució "
+"principal"
 
 #: ../lang/master/tpl/distribution/default.mtt:14245
 msgid "Order end date is different from general distribution"
 msgstr ""
+"La data de tancament de les comandes és diferent de la de la distribució "
+"principal"
 
 #: ../lang/master/tpl/distribution/listByDate.mtt:2965
 msgid "Payment:"
@@ -3164,7 +3214,7 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/list.mtt:213 ../lang/master/tpl/distribution/listByProductUser.mtt:213
 msgid "Distribution of the ::date::, from ::from:: to ::to::"
-msgstr ""
+msgstr "Distribució del ::date::, de ::from:: a ::to::"
 
 #: ../lang/master/tpl/distribution/list.mtt:651 ../lang/master/tpl/distribution/listByProductUser.mtt:651
 msgid "Contact in charge of the contract"
@@ -3172,11 +3222,11 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/list.mtt:918
 msgid "Volunteers on duty"
-msgstr ""
+msgstr "Voluntaris"
 
 #: ../lang/master/tpl/distribution/list.mtt:1110
 msgid "Instructions"
-msgstr ""
+msgstr "Instruccions"
 
 #: ../lang/master/tpl/distribution/list.mtt:2340 ../lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1610 ../lang/master/tpl/contractadmin/ordersByDate.mtt:2370 ../lang/master/tpl/validate/user.mtt:791
 msgid "Ref"
@@ -3211,15 +3261,15 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/volunteersCalendar.mtt:2022
 msgid "Role"
-msgstr ""
+msgstr "Rol"
 
 #: ../lang/master/tpl/distribution/volunteersCalendar.mtt:3998
 msgid "Duty periods open for volunteers ::days:: days before the duty period"
-msgstr ""
+msgstr "Inscripcions obertes als torns ::days:: dies abans del dia del torn"
 
 #: ../lang/master/tpl/distribution/volunteersCalendar.mtt:4324
 msgid "There are no distributions in the specified time range"
-msgstr ""
+msgstr "No hi ha distribucions durant aquest període"
 
 #: ../lang/master/tpl/distribution/listByProductUser.mtt:918
 msgid "Members on duty"
@@ -3227,11 +3277,11 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/volunteersParticipation.mtt:89
 msgid "Duty periods participation"
-msgstr ""
+msgstr "Assistència als torns"
 
 #: ../lang/master/tpl/distribution/volunteersParticipation.mtt:2026
 msgid "Duty periods done / to do"
-msgstr ""
+msgstr "Torns fets / per fer"
 
 #: ../lang/master/tpl/member/view.mtt:52 ../lang/master/tpl/member/payments.mtt:52
 msgid "Contact informations"
@@ -3551,19 +3601,19 @@ msgstr ""
 
 #: ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:89 ../lang/master/tpl/contractadmin/defineVendor.mtt:78
 msgid "Select a vendor"
-msgstr ""
+msgstr "Escolliu un productor/a"
 
 #: ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:207 ../lang/master/tpl/contractadmin/defineVendor.mtt:197
 msgid "We found these vendors in our database :"
-msgstr ""
+msgstr "Hem trobat a aquests productors a la base de dades:"
 
 #: ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:908 ../lang/master/tpl/contractadmin/defineVendor.mtt:873
 msgid "We could not find any vendor matching your search"
-msgstr ""
+msgstr "No hem trobat cap productor que correspongui amb la vostra cerca"
 
 #: ../lang/master/tpl/plugin/pro/company/defineVendor.mtt:1106
 msgid "The vendor you want to work with is not in this list ?"
-msgstr ""
+msgstr "El productor/a amb el qual voleu treballar no és a la llista?"
 
 #: ../lang/master/tpl/install/default.mtt:78 ../lang/master/tpl/install/default.mtt:400
 msgid "Update"
@@ -3597,23 +3647,23 @@ msgstr ""
 
 #: ../lang/master/tpl/amapadmin/volunteers/default.mtt:108
 msgid "Here you can define volunteers roles."
-msgstr ""
+msgstr "Aquí podeu definir els rols dels voluntaris."
 
 #: ../lang/master/tpl/amapadmin/volunteers/default.mtt:214
 msgid "Volunteer Role"
-msgstr ""
+msgstr "Rol de voluntari/a"
 
 #: ../lang/master/tpl/amapadmin/volunteers/default.mtt:256
 msgid "Contract Name"
-msgstr ""
+msgstr "Nom del contracte"
 
 #: ../lang/master/tpl/amapadmin/volunteers/default.mtt:772
 msgid "Add a role"
-msgstr ""
+msgstr "Afegir un rol"
 
 #: ../lang/master/tpl/amapadmin/volunteers/default.mtt:834
 msgid "Delays and messages"
-msgstr ""
+msgstr "Terminis i missatges"
 
 #: ../lang/master/tpl/amapadmin/design.mtt:162
 msgid "My group"
@@ -3629,7 +3679,7 @@ msgstr ""
 
 #: ../lang/master/tpl/amapadmin/design.mtt:503
 msgid "Duty Periods"
-msgstr ""
+msgstr "Torns"
 
 #: ../lang/master/tpl/amapadmin/design.mtt:572
 msgid "Currency"
@@ -3661,11 +3711,11 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:1331
 msgid "Standard"
-msgstr ""
+msgstr "Estàndard"
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:1431
 msgid "By Product-User"
-msgstr ""
+msgstr "Per producte membre"
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:1783
 msgid ""
@@ -3694,6 +3744,8 @@ msgid ""
 "Do you really want to delete this order row for the product \"::productName::\" "
 "?"
 msgstr ""
+"Esteu segur que voleu suprimir aquesta comanda del producte \":: productName "
+"::\"?"
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:7164
 msgid "<b>::totalAdh::</b> member(s) in this distribution."
@@ -3701,7 +3753,7 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/distributions.mtt:662
 msgid "Participate"
-msgstr ""
+msgstr "Participar"
 
 #: ../lang/master/tpl/contractadmin/distributions.mtt:1677 ../lang/master/tpl/contractadmin/distributions.mtt:2223
 msgid "Distribution cycle"
@@ -3880,7 +3932,7 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/defineVendor.mtt:1069
 msgid "if you have not found your vendor, enter a new record"
-msgstr ""
+msgstr "Si no heu trobat el vostre productor/a, introduïu un nou registre"
 
 #: ../lang/master/tpl/contractadmin/vendorsByDate.mtt:84
 msgid "Global view of orders - delivery of"
@@ -3968,11 +4020,11 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/distributionp.mtt:651
 msgid "Suscriber"
-msgstr ""
+msgstr "Subscriptors/es"
 
 #: ../lang/master/tpl/contractadmin/distributionp.mtt:705 ../lang/master/tpl/contractadmin/distributionp.mtt:1380
 msgid "Number of attendances to deliveries"
-msgstr ""
+msgstr "Assistència a les distribucions"
 
 #: ../lang/master/tpl/contractadmin/distributionp.mtt:1081
 msgid "Insufficient"
@@ -3980,7 +4032,7 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/distributionp.mtt:1298
 msgid "Member without order in this contract"
-msgstr ""
+msgstr "Membre sense comanda en aquest contracte"
 
 #: ../lang/master/tpl/contractadmin/contract.mtt:228 ../lang/master/tpl/contractadmin/contract.mtt:849
 msgid "Deliveries"
@@ -4004,11 +4056,11 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:864
 msgid "Total HT"
-msgstr ""
+msgstr "Total HT"
 
 #: ../lang/master/tpl/contractadmin/vendorsByTimeFrame.mtt:895
 msgid "Total TTC"
-msgstr ""
+msgstr "Total TTC"
 
 #: ../lang/master/tpl/contractadmin/stats.mtt:102
 msgid "Seniority of subscribers"
@@ -4128,11 +4180,11 @@ msgstr ""
 
 #: ../lang/master/tpl/user/choose.mtt:2480
 msgid "Request sent on ::date::"
-msgstr ""
+msgstr "Petició enviada el ::date::"
 
 #: ../lang/master/tpl/user/choose.mtt:2669
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·lar"
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:55
 msgid "Choose a type of contract:"
@@ -4301,19 +4353,22 @@ msgstr ""
 
 #: ../lang/master/tpl/error.mtt:315
 msgid "Ouch !"
-msgstr ""
+msgstr "Ups!"
 
 #: ../lang/master/tpl/error.mtt:349
 msgid "An error occurred."
-msgstr ""
+msgstr "Hi ha hagut un error."
 
 #: ../lang/master/tpl/error.mtt:409
 msgid "If the website is unavailable, please try again in few minutes."
 msgstr ""
+"Si el lloc web no està disponible, torneu-ho a provar d'aquí a uns minuts."
 
 #: ../lang/master/tpl/error.mtt:498
 msgid "If this happen repeatedly, please let us know so we can solve the issue."
 msgstr ""
+"Si això succeeix repetidament, feu-nos-ho saber perquè puguem solucionar el "
+"problema."
 
 #: ../lang/master/tpl/error.mtt:602
 msgid "Technical description of the error"
@@ -4426,7 +4481,7 @@ msgstr ""
 
 #: ../lang/master/tpl/design.mtt:1482
 msgid "Database"
-msgstr ""
+msgstr "Base de dades"
 
 #: ../lang/master/tpl/design.mtt:1897
 msgid "Look for another group"
@@ -4480,23 +4535,23 @@ msgstr ""
 
 #: ../lang/master/tpl/validate/user.mtt:3108
 msgid "I have received this payment"
-msgstr ""
+msgstr "He rebut aquest pagament"
 
 #: ../lang/master/tpl/validate/user.mtt:3480
 msgid " I have received this payment in cash"
-msgstr ""
+msgstr " He rebut aquest pagament en efectiu"
 
 #: ../lang/master/tpl/validate/user.mtt:3583
 msgid " I have received this payment by check"
-msgstr ""
+msgstr " He rebut aquest pagament mitjançant xec"
 
 #: ../lang/master/tpl/validate/user.mtt:3693
 msgid " I have received this payment by transfer"
-msgstr ""
+msgstr " He rebut aquest pagament per transferència bancària"
 
 #: ../lang/master/tpl/validate/user.mtt:3788
 msgid " I have received this payment by ::paymentType::"
-msgstr ""
+msgstr " He rebut aquest pagament mitjançant ::paymentType::"
 
 #: ../lang/master/tpl/validate/user.mtt:4336
 msgid "Total paid"
@@ -4615,7 +4670,7 @@ msgstr ""
 
 #: ../lang/master/tpl/shop/default.mtt:4452
 msgid "Sign up and validate the order"
-msgstr ""
+msgstr "Registra't i valida la comanda"
 
 #: ../lang/master/tpl/shop/default.mtt:4814
 msgid "All products"
@@ -4647,15 +4702,17 @@ msgstr ""
 
 #: ../lang/master/tpl/mail/newPasswordConfirmed.mtt:81
 msgid "A new password has been defined for ::site::"
-msgstr ""
+msgstr "S'ha definit una nova contrasenya per ::site::"
 
 #: ../lang/master/tpl/mail/newPasswordConfirmed.mtt:160
 msgid "The new password is <b>::pass::</b>, don't forget it !"
-msgstr ""
+msgstr "La nova contrasenya és <b>::pass::</b>, no ho oblidis!"
 
 #: ../lang/master/tpl/mail/newPasswordConfirmed.mtt:255
 msgid "You can use the following emails to log into your account : <b>::emails::</b>"
 msgstr ""
+"Podeu utilitzar els correus electrònics següents per iniciar la sessió al "
+"vostre compte: <b>::emails::</b>"
 
 #: ../lang/master/tpl/mail/forgottenPassword.mtt:80
 msgid "You asked to modify your password,"
@@ -4698,6 +4755,8 @@ msgstr ""
 #: ../lang/master/tpl/mail/volunteerUnsuscribed.mtt:43
 msgid "<b>::fullname::</b> has left the role <b>::role::</b> for the following reason:"
 msgstr ""
+"<b>::fullname::</b> es va donar de baixa del rol <b>::role::</b> i va "
+"indicar el següent motiu:"
 
 #: ../lang/master/tpl/mail/volunteerUnsuscribed.mtt:213
 msgid "This role needs to be assigned to another person."
