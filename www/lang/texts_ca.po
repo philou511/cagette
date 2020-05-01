@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 21:45+0000\n"
-"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
+"PO-Revision-Date: 2020-05-01 22:08+0000\n"
+"Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -2439,6 +2439,8 @@ msgid ""
 "You need to select manually the type of pending payments on the spot to be "
 "able to validate this distribution."
 msgstr ""
+"Per poder validar aquesta distribució, heu de seleccionar manualment els "
+"tipus de pagament insitu."
 
 #: ../src/db/Amap.hx:6113
 msgid "Product type"
@@ -2484,7 +2486,7 @@ msgstr ""
 
 #: ../src/db/Amap.hx:12019
 msgid "Legal representative"
-msgstr ""
+msgstr "Representant legal"
 
 #: ../src/db/Place.hx:1445
 msgid "Latitude"
@@ -2504,23 +2506,23 @@ msgstr ""
 
 #: ../src/db/DistributionCycle.hx:891
 msgid "Fréquence"
-msgstr ""
+msgstr "Freqüència"
 
 #: ../src/db/DistributionCycle.hx:929
 msgid "Date de début"
-msgstr ""
+msgstr "Data d’inici"
 
 #: ../src/db/DistributionCycle.hx:969
 msgid "Date de fin"
-msgstr ""
+msgstr "Data de fi"
 
 #: ../src/db/DistributionCycle.hx:1020
 msgid "Ouverture de commande (nbre de jours avant distribution)"
-msgstr ""
+msgstr "Obertura de la comanda (nombre de dies abans del lliurament)"
 
 #: ../src/db/DistributionCycle.hx:1116
 msgid "Fermeture de commande (nbre de jours avant distribution)"
-msgstr ""
+msgstr "Obertura de la comanda (nombre de dies abans de la distribució)"
 
 #: ../src/db/Product.hx:5333
 msgid "Product name"
@@ -2646,15 +2648,15 @@ msgstr ""
 
 #: ../lang/master/tpl/transaction/onthespot.mtt:343
 msgid "You chose to pay on the spot at the product distribution"
-msgstr ""
+msgstr "Heu triat pagar insitu durant la distribució"
 
 #: ../lang/master/tpl/transaction/onthespot.mtt:438
 msgid "Please prepare the following amount for the distribution"
-msgstr ""
+msgstr "Prepareu l’import següent per a la distribució"
 
 #: ../lang/master/tpl/transaction/pay.mtt:89
 msgid "Select a mean of payment :"
-msgstr ""
+msgstr "Escolliu un mètode de pagament:"
 
 #: ../lang/master/tpl/transaction/pay.mtt:177
 msgid "Amount to pay"
@@ -2672,21 +2674,23 @@ msgstr ""
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:343
 msgid "You chose to pay with your money pot."
-msgstr ""
+msgstr "Heu decidit pagar amb el vostre moneder."
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:419
 msgid ""
 "Please remember to clear your balance at the time agreed with the coordinator "
 "of your group."
 msgstr ""
+"No oblideu reequilibrar el vostre saldo en el termini acordat amb les "
+"persones responsables del grup."
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:549
 msgid "Your current balance is : ::balance:: ::currency::"
-msgstr ""
+msgstr "El vostre saldo actual és: ::balance:: ::currency::"
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:896
 msgid "Check my payments history"
-msgstr ""
+msgstr "Veure el meu historial de pagaments"
 
 #: ../lang/master/tpl/maintain.mtt:141
 msgid "Maintenance"
@@ -2734,7 +2738,7 @@ msgstr ""
 
 #: ../lang/master/tpl/account/payments.mtt:823 ../lang/master/tpl/member/payments.mtt:867 ../lang/master/tpl/contract/default.mtt:4732
 msgid "Payments"
-msgstr ""
+msgstr "Pagaments"
 
 #: ../lang/master/tpl/account/payments.mtt:1014 ../lang/master/tpl/member/view.mtt:5491 ../lang/master/tpl/member/payments.mtt:1058 ../lang/master/tpl/contract/default.mtt:4816
 msgid "Balance"
@@ -2763,7 +2767,7 @@ msgstr ""
 
 #: ../lang/master/tpl/home.mtt:981 ../lang/master/tpl/home_old.mtt:940
 msgid "Delete example orders and contracts"
-msgstr ""
+msgstr "Eliminar exemples de comandes i contractes"
 
 #: ../lang/master/tpl/home.mtt:1212 ../lang/master/tpl/home_old.mtt:1264
 msgid "Open orders"
@@ -2771,7 +2775,7 @@ msgstr ""
 
 #: ../lang/master/tpl/home.mtt:1502 ../lang/master/tpl/home_old.mtt:1554
 msgid "There is no planned order currently."
-msgstr ""
+msgstr "Actualment no hi ha cap comanda oberta."
 
 #. Delivery from 18:00 to 19:30
 #: ../lang/master/tpl/home.mtt:2439 ../lang/master/tpl/distribution/default.mtt:2142 ../lang/master/tpl/home_old.mtt:9538
@@ -2784,7 +2788,7 @@ msgstr ""
 
 #: ../lang/master/tpl/home.mtt:3273 ../lang/master/tpl/home.mtt:6516 ../lang/master/tpl/home_old.mtt:3710
 msgid "Distribution"
-msgstr ""
+msgstr "Distribució"
 
 #: ../lang/master/tpl/home.mtt:4304 ../lang/master/tpl/home.mtt:4629 ../lang/master/tpl/home_old.mtt:2579 ../lang/master/tpl/home_old.mtt:6514
 msgid "Modify my order"
@@ -2809,7 +2813,7 @@ msgstr ""
 
 #: ../lang/master/tpl/home.mtt:6089
 msgid "My CSA contracts"
-msgstr ""
+msgstr "Els meus contractes de grups de consum"
 
 #: ../lang/master/tpl/home.mtt:7659 ../lang/master/tpl/home_old.mtt:4824
 msgid "alternated with ::mate::"
@@ -2830,22 +2834,24 @@ msgstr ""
 #: ../lang/master/tpl/home.mtt:9150
 msgid "Please be aware that you or your spouse is a volunteer for the role:"
 msgstr ""
+"Tingues en compte que tu o els teus companys/es d'unitat de consum quedareu "
+"inscrits com a voluntaris per a aquest rol:"
 
 #: ../lang/master/tpl/home.mtt:9438
 msgid "Duty period details"
-msgstr ""
+msgstr "Detalls del torn"
 
 #: ../lang/master/tpl/home.mtt:9651 ../lang/master/tpl/distribution/volunteersSummary.mtt:1136 ../lang/master/tpl/distribution/volunteersCalendar.mtt:3621
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Donar-se de baixa"
 
 #: ../lang/master/tpl/home.mtt:9976
 msgid "We need <b>::rolesNum::</b> volunteer(s) for the following roles:"
-msgstr ""
+msgstr "Necessitem <b>::rolesNum::</b> voluntaris per als següents rols:"
 
 #: ../lang/master/tpl/home.mtt:12239 ../lang/master/tpl/distribution/default.mtt:674 ../lang/master/tpl/distribution/volunteersCalendar.mtt:90 ../lang/master/tpl/home_old.mtt:11594
 msgid "Duty periods calendar"
-msgstr ""
+msgstr "Calendari de torns"
 
 #: ../lang/master/tpl/home.mtt:12378 ../lang/master/tpl/home_old.mtt:11733
 msgid "Warning, you don't have defined a password yet !"
@@ -2858,6 +2864,7 @@ msgstr ""
 #: ../lang/master/tpl/admin/emails.mtt:103
 msgid "Emails are temporarily stored in a buffer, waiting to be sent by the cron"
 msgstr ""
+"Els correus electrònics estan temporalment aturats, a l’espera de ser enviats"
 
 #: ../lang/master/tpl/macros.mtt:651 ../lang/master/tpl/macros.mtt:681
 msgid "Previous"
@@ -2917,7 +2924,7 @@ msgstr ""
 
 #: ../lang/master/tpl/macros.mtt:5558
 msgid "You need to pay on the spot at the collection of products"
-msgstr ""
+msgstr "Heu de pagar in situ a la recollida de productes"
 
 #: ../lang/master/tpl/macros.mtt:9470 ../lang/master/tpl/member/view.mtt:1322 ../lang/master/tpl/member/payments.mtt:1557 ../lang/master/tpl/plugin/pro/delivery/orders.mtt:1170 ../lang/master/tpl/amapadmin/volunteers/default.mtt:578 ../lang/master/tpl/contractadmin/orders.mtt:3244 ../lang/master/tpl/contractadmin/orders.mtt:3424 ../lang/master/tpl/contractadmin/orders.mtt:3968 ../lang/master/tpl/contractadmin/orders.mtt:4309 ../lang/master/tpl/contractadmin/distributions.mtt:1056 ../lang/master/tpl/contractadmin/view.mtt:545 ../lang/master/tpl/contractadmin/products.mtt:3313 ../lang/master/tpl/contractadmin/default.mtt:3542 ../lang/master/tpl/contractadmin/default.mtt:4315 ../lang/master/tpl/contract/default.mtt:4648 ../lang/master/tpl/amap/default.mtt:612
 msgid "Edit"
@@ -3122,7 +3129,7 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/volunteersSummary.mtt:1354 ../lang/master/tpl/distribution/volunteersCalendar.mtt:3924
 msgid "Join"
-msgstr ""
+msgstr "Uneix-te"
 
 #: ../lang/master/tpl/distribution/default.mtt:97 ../lang/master/tpl/contractadmin/distributions.mtt:42 ../lang/master/tpl/contractadmin/design.mtt:853 ../lang/master/tpl/design.mtt:3568
 msgid "Distributions"
@@ -3130,15 +3137,15 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/default.mtt:507 ../lang/master/tpl/distribution/default.mtt:7108 ../lang/master/tpl/amapadmin/volunteers/default.mtt:37
 msgid "Duty periods"
-msgstr ""
+msgstr "Torns"
 
 #: ../lang/master/tpl/distribution/default.mtt:810
 msgid "Duty periods participations"
-msgstr ""
+msgstr "Participació als torns"
 
 #: ../lang/master/tpl/distribution/default.mtt:2373
 msgid "Orders start date"
-msgstr ""
+msgstr "Data d'obertura de les comandes"
 
 #: ../lang/master/tpl/distribution/default.mtt:2496
 msgid "Orders end date"
