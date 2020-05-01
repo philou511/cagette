@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 20:42+0000\n"
+"PO-Revision-Date: 2020-05-01 20:44+0000\n"
 "Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
@@ -1743,15 +1743,15 @@ msgstr "Raó per la qual us retireu"
 
 #: ../src/controller/Distribution.hx:29225
 msgid "You have been successfully removed from this role."
-msgstr "Us heu desinscrit correctament d'aquest rol."
+msgstr "Us heu donat de baixa correctament d'aquest rol."
 
 #: ../src/controller/Distribution.hx:29306
 msgid "Enter the reason why you are leaving this role."
-msgstr "Trieu la raó per la qual us desinscriviu d'aquest rol."
+msgstr "Trieu la raó per la qual us doneu de baixa d'aquest rol."
 
 #: ../src/controller/Distribution.hx:30127 ../src/controller/Distribution.hx:30299
 msgid "You have been successfully assigned to the selected role."
-msgstr "Heu estat enregistrats per aquest rol."
+msgstr "Heu estat inscrits en aquest rol."
 
 #: ../src/App.hx:8733
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
