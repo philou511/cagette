@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 19:00+0000\n"
+"PO-Revision-Date: 2020-05-01 19:46+0000\n"
 "Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
@@ -189,6 +189,8 @@ msgid ""
 "We will send him/her an email to explain that your group is going to organize "
 "orders for him very soon"
 msgstr ""
+"Us enviarem un correu electrònic per explicar-vos que el vostre grup "
+"organitzarà comandes molt aviat"
 
 #: ../src/controller/Contract.hx:8454
 msgid "Create a contract with fixed orders"
@@ -200,7 +202,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:9015
 msgid "Vendor"
-msgstr ""
+msgstr "Productor"
 
 #: ../src/controller/Contract.hx:9594
 msgid "New contract created"
@@ -258,7 +260,7 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:361 ../src/controller/AmapAdmin.hx:1432 ../src/controller/ContractAdmin.hx:2082
 msgid "Access forbidden"
-msgstr ""
+msgstr "Accés prohibit"
 
 #: ../src/controller/AmapAdmin.hx:609 ../src/controller/AmapAdmin.hx:10026
 msgid "Means of payment"
@@ -266,11 +268,11 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:1677
 msgid "The sent image was too big. The maximum allowed size is 12MB"
-msgstr ""
+msgstr "La imatge enviada era massa gran. La mida màxim permesa és de 12MB"
 
 #: ../src/controller/AmapAdmin.hx:3540 ../lang/master/tpl/distribution/volunteersParticipation.mtt:1930
 msgid "Member"
-msgstr ""
+msgstr "Membre"
 
 #: ../src/controller/AmapAdmin.hx:3797
 msgid "Group administrator"
@@ -322,7 +324,7 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:6996 ../src/controller/AmapAdmin.hx:7220
 msgid "Rate"
-msgstr ""
+msgstr "Taxa"
 
 #: ../src/controller/AmapAdmin.hx:7543
 msgid "Rate updated"
@@ -362,7 +364,7 @@ msgstr ""
 
 #: ../src/controller/AmapAdmin.hx:9509
 msgid "Allow money pots with negative balance"
-msgstr ""
+msgstr "Permetre moneders amb saldo negatiu"
 
 #: ../src/controller/AmapAdmin.hx:9967
 msgid "Payment options updated"
@@ -374,7 +376,7 @@ msgstr ""
 
 #: ../src/controller/admin/Admin.hx:2181
 msgid "Email service configuration"
-msgstr ""
+msgstr "Configuració del servei de correu electrònic"
 
 #: ../src/controller/Messages.hx:795
 msgid "Sender name"
@@ -398,7 +400,7 @@ msgstr ""
 
 #: ../src/controller/Messages.hx:1603
 msgid "The message body is empty !"
-msgstr ""
+msgstr "El cos del missatge està buit!"
 
 #: ../src/controller/Messages.hx:2758
 msgid "The message has been sent"
@@ -458,7 +460,7 @@ msgstr ""
 
 #: ../src/controller/User.hx:3609
 msgid "Password change"
-msgstr ""
+msgstr "Modifica la contrasenya"
 
 #: ../src/controller/User.hx:4015
 msgid "Invalid request"
@@ -466,7 +468,7 @@ msgstr ""
 
 #: ../src/controller/User.hx:4671
 msgid "New password confirmed"
-msgstr ""
+msgstr "S'ha confirmat la nova contrasenya"
 
 #: ../src/controller/User.hx:5037 ../src/controller/User.hx:6206
 msgid "You must key-in two times the same password"
@@ -497,6 +499,9 @@ msgid ""
 "A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> "
 "<a href='::url::'>See contact details</a>"
 msgstr ""
+"Un nou membre s'ha unit al grup sense fer cap comanda: <br/"
+"><strong>::newMember::</strong><br/> <a href='::url::'>Veure les dades de "
+"contacte</a>"
 
 #: ../src/controller/User.hx:7846 ../src/controller/Member.hx:22757 ../lang/master/tpl/member/default.mtt:2537
 msgid "New member"
@@ -507,30 +512,32 @@ msgid ""
 "You're now a member of \"::group::\" ! You'll receive an email as soon as "
 "next order will open"
 msgstr ""
+"Ara ets membre de \"::group::\"! Rebràs un correu electrònic tan bon punt s’"
+"obrirà la següent comanda"
 
 #: ../src/controller/Controller.hx:535
 msgid "You should be logged in to perform this action."
-msgstr ""
+msgstr "Per realitzar aquesta acció heu d’iniciar la sessió."
 
 #: ../src/controller/Amap.hx:515
 msgid "You don't have access to this section"
-msgstr ""
+msgstr "No teniu accés a aquesta secció"
 
 #: ../src/controller/Amap.hx:802
 msgid "Shop Mode"
-msgstr ""
+msgstr "Mode botiga"
 
 #: ../src/controller/Amap.hx:844
 msgid "CSA Mode"
-msgstr ""
+msgstr "Mode grup de consum"
 
 #: ../src/controller/Amap.hx:1019
 msgid "Ordering Mode"
-msgstr ""
+msgstr "Mode de comanda"
 
 #: ../src/controller/Amap.hx:1912
 msgid "The group has been updated."
-msgstr ""
+msgstr "El grup s’ha actualitzat."
 
 #: ../src/controller/Member.hx:1391
 msgid "Without contracts"
@@ -562,7 +569,7 @@ msgstr ""
 
 #: ../src/controller/Member.hx:4419
 msgid "Membership request refused"
-msgstr ""
+msgstr "Sol·licitud d'adhesió denegada"
 
 #: ../src/controller/Member.hx:4753
 msgid "Invitation sent."
@@ -598,7 +605,7 @@ msgstr ""
 
 #: ../src/controller/Member.hx:9389 ../src/db/User.hx:17901
 msgid "Password"
-msgstr ""
+msgstr "Contrasenya"
 
 #: ../src/controller/Member.hx:9651 ../src/controller/Member.hx:22012
 msgid "Phone number is required in this group."
@@ -733,6 +740,8 @@ msgstr ""
 #: ../src/controller/Member.hx:16087
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
 msgstr ""
+"El correu electrònic <b>::email::</b> no és vàlid, si us plau actualitzeu el "
+"vostre fitxer"
 
 #: ../src/controller/Member.hx:16355
 msgid "You must fill the name and the firstname of the person. This line is incomplete: "
@@ -970,31 +979,35 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Volunteers.hx:521
 msgid "Number of days before duty periods open to volunteers (between 7 and 180"
-msgstr ""
+msgstr "Nombre de dies abans de la distribució per obrir inscripció als torns"
 
 #: ../src/controller/amapadmin/Volunteers.hx:699
 msgid "Number of days before duty period to send mail"
 msgstr ""
+"Nombre de dies abans de la distribució per notificar per correu electrònic "
+"als voluntaris"
 
 #: ../src/controller/amapadmin/Volunteers.hx:870
 msgid "Email body sent to volunteers"
-msgstr ""
+msgstr "Cos del missatge enviat als voluntaris per correu electrònic"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1330
 msgid "Number of days before duty period to send mail for vacant volunteer roles"
 msgstr ""
+"Nombre de dies anteriors als torns per enviar un correu electrònic als "
+"voluntaris/es amb funcions o tasques vacants"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1533
 msgid "Alert email body"
-msgstr ""
+msgstr "Cos del correu electrònic d’alerta"
 
 #: ../src/controller/amapadmin/Volunteers.hx:2812
 msgid "Your changes have been successfully saved."
-msgstr ""
+msgstr "S'han desat correctament els canvis."
 
 #: ../src/controller/amapadmin/Volunteers.hx:3114 ../src/controller/amapadmin/Volunteers.hx:4112
 msgid "Volunteer role name"
-msgstr ""
+msgstr "Nom del rol de voluntari"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3359 ../src/controller/amapadmin/Volunteers.hx:4437 ../lang/master/tpl/distribution/listByDateOnePageContract.mtt:460 ../lang/master/tpl/member/view.mtt:3034 ../lang/master/tpl/member/view.mtt:4277 ../lang/master/tpl/contractadmin/ordersByTimeFrame.mtt:1549 ../lang/master/tpl/contractadmin/ordersByDate.mtt:2309 ../lang/master/tpl/validate/user.mtt:732
 msgid "Contract"
@@ -1002,19 +1015,19 @@ msgstr ""
 
 #: ../src/controller/amapadmin/Volunteers.hx:3783
 msgid "Volunteer Role has been successfully added"
-msgstr ""
+msgstr "Rol de voluntari afegit correctament"
 
 #: ../src/controller/amapadmin/Volunteers.hx:3859 ../src/controller/amapadmin/Volunteers.hx:4928
 msgid "Create a volunteer role"
-msgstr ""
+msgstr "Crear un rol de voluntari"
 
 #: ../src/controller/amapadmin/Volunteers.hx:4850
 msgid "Volunteer Role has been successfully updated"
-msgstr ""
+msgstr "El rol de voluntari s'ha actualitzat correctament"
 
 #: ../src/controller/amapadmin/Volunteers.hx:5312
 msgid "Volunteer Role has been successfully deleted"
-msgstr ""
+msgstr "El rol de voluntari s'ha suprimit correctament"
 
 #: ../src/controller/Group.hx:1345 ../src/controller/Group.hx:3429 ../src/controller/Install.hx:1583
 msgid "Your firstname"
@@ -1044,7 +1057,7 @@ msgstr ""
 
 #: ../src/controller/Group.hx:2628
 msgid "You've been removed from the waiting list"
-msgstr ""
+msgstr "Heu estat retirat de la llista d'espera"
 
 #: ../src/controller/Group.hx:3068 ../src/service/WaitingListService.hx:1320
 msgid "You are already member of this group."
@@ -1252,7 +1265,7 @@ msgstr ""
 
 #: ../src/controller/ContractAdmin.hx:15162 ../src/controller/ContractAdmin.hx:15262
 msgid "The order has been deleted."
-msgstr ""
+msgstr "S'ha suprimit la comanda."
 
 #: ../src/controller/ContractAdmin.hx:16740
 msgid "Prices are now up to date."
@@ -1277,6 +1290,8 @@ msgstr ""
 #: ../src/controller/ContractAdmin.hx:20182
 msgid "There is no delivery in this contract, please create at least one distribution."
 msgstr ""
+"No hi ha cap distribució en aquest contracte, creeu almenys una distribució "
+"com a mínim."
 
 #: ../src/controller/ContractAdmin.hx:21146
 msgid "No delivery in this contract"
@@ -1284,7 +1299,7 @@ msgstr ""
 
 #: ../src/controller/ContractAdmin.hx:22739
 msgid "Distribution date added"
-msgstr ""
+msgstr "S'ha afegit la data de distribució"
 
 #: ../src/controller/ContractAdmin.hx:26793
 msgid "The contract has been canceled"
@@ -1301,22 +1316,24 @@ msgstr ""
 #: ../src/controller/Cron.hx:1300
 msgid "Sorry, the email entitled <b>::title::</b> could not be sent."
 msgstr ""
+"Ho sentim, no s'ha pogut enviar el correu electrònic amb el títol "
+"<b>::title::</b>."
 
 #: ../src/controller/Cron.hx:1420
 msgid "Email not sent"
-msgstr ""
+msgstr "Correu electrònic no enviat"
 
 #: ../src/controller/Cron.hx:3564
 msgid "Instructions for the volunteers of the ::date:: distribution"
-msgstr ""
+msgstr "Instruccions per als voluntaris de la distribució de ::date::"
 
 #: ../src/controller/Cron.hx:3745 ../src/controller/Cron.hx:6250
 msgid "::date:: from ::startHour:: to ::endHour::"
-msgstr ""
+msgstr "::date:: de ::startHour:: a ::endHour::"
 
 #: ../src/controller/Cron.hx:6038
 msgid "[::group::] We need more volunteers for ::date:: distribution"
-msgstr ""
+msgstr "[::group::] Necessitem voluntaris per la distribució del ::date::"
 
 #: ../src/controller/Cron.hx:14260
 msgid "Opening of orders for the delivery of <b>::date::</b>"
@@ -1328,11 +1345,11 @@ msgstr ""
 
 #: ../src/controller/Cron.hx:14663
 msgid "Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>"
-msgstr ""
+msgstr "No oblideu la distribució de <b>::day::</b> de ::from:: a ::to::<br/>"
 
 #: ../src/controller/Cron.hx:14830
 msgid "Your products to collect :"
-msgstr ""
+msgstr "Els vostres productes a recollir:"
 
 #: ../src/controller/Cron.hx:15072 ../lang/master/tpl/contractadmin/orders.mtt:2835
 msgid "alternated with"
@@ -1360,11 +1377,11 @@ msgstr ""
 
 #: ../src/controller/Cron.hx:17065
 msgid "Validation of the ::date:: distribution"
-msgstr ""
+msgstr "Validació de la distribució de ::date::"
 
 #: ../src/controller/Cron.hx:17153 ../src/controller/Cron.hx:18506 ../src/controller/Cron.hx:20204
 msgid "[::group::] Validation of the ::date:: distribution"
-msgstr ""
+msgstr "[::group::] Validació de la distribució de ::date::"
 
 #: ../src/controller/Cron.hx:17410
 msgid "<p>Your distribution just finished, don't forget to <b>validate</b> it</p>"
