@@ -1,9 +1,16 @@
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: francois@alilo.fr\n"
+"PO-Revision-Date: 2020-05-01 18:53+0000\n"
+"Last-Translator: Aram <aramollis@gmail.com>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
+"translations/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: ../src/payment/Cash.hx:276
 msgid "Cash"
@@ -11,11 +18,11 @@ msgstr ""
 
 #: ../src/payment/MoneyPot.hx:291
 msgid "Money pot"
-msgstr ""
+msgstr "Moneder"
 
 #: ../src/payment/OnTheSpotPayment.hx:377
 msgid "On the spot payment"
-msgstr ""
+msgstr "Pagament puntual"
 
 #: ../src/payment/Transfer.hx:312 ../src/controller/Transaction.hx:8761
 msgid "Bank transfer"
@@ -77,10 +84,11 @@ msgstr ""
 #: ../src/controller/Transaction.hx:5733 ../lang/master/tpl/transaction/pay.mtt:1181
 msgid "You do not have sufficient funds to pay this order with your money pot."
 msgstr ""
+"No teniu fons suficients per pagar aquesta comanda amb el vostre moneder."
 
 #: ../src/controller/Transaction.hx:7077
 msgid "Payment on the spot for the order of ::date::"
-msgstr ""
+msgstr "Pagament puntual per a la comanda de ::date::"
 
 #: ../src/controller/Transaction.hx:7467
 msgid "Payment on the spot"
