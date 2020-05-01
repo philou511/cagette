@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2020-05-01 20:44+0000\n"
-"Last-Translator: Aram <aramollis@gmail.com>\n"
+"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -1756,10 +1756,11 @@ msgstr "Heu estat inscrits en aquest rol."
 #: ../src/App.hx:8733
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
 msgstr ""
+"Configureu l'enviament d'emails en <href='/admin/emails'>aquesta secció</a>"
 
 #: ../src/service/DistributionService.hx:1306 ../src/service/DistributionService.hx:1947
 msgid "This distribution has no date."
-msgstr ""
+msgstr "Aquesta distribució no té data."
 
 #: ../src/service/DistributionService.hx:2105
 msgid ""
