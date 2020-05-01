@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 19:46+0000\n"
+"PO-Revision-Date: 2020-05-01 20:33+0000\n"
 "Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
@@ -202,7 +202,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:9015
 msgid "Vendor"
-msgstr "Productor"
+msgstr "Productor/a"
 
 #: ../src/controller/Contract.hx:9594
 msgid "New contract created"
@@ -1392,6 +1392,8 @@ msgid ""
 "<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
 "must be connected to your group Cagette)"
 msgstr ""
+"<p><a href='::distriburl::'>Clicka aquí per validar la distribució</a> (Has "
+"d'estar connecta't al teu grup Cagette)"
 
 #: ../src/controller/Cron.hx:18414
 msgid ": Validation of the delivery of the "
@@ -1406,6 +1408,8 @@ msgid ""
 "<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
 "must be connected to your Cagette group)"
 msgstr ""
+"<p><a href='::distriburl::'>Clica aquí per validar la distribució</a> (heu "
+"d'estar connectats/des al vostre grup Cagette.net )</p>"
 
 #: ../src/controller/Cron.hx:20108
 msgid ": Validation of the distribution of the "
@@ -1423,7 +1427,7 @@ msgstr ""
 
 #: ../src/controller/Validate.hx:2106
 msgid "There is nothing to refund"
-msgstr ""
+msgstr "No hi ha diners a retornar"
 
 #: ../src/controller/Validate.hx:2558
 msgid "payment"
@@ -1505,33 +1509,35 @@ msgstr ""
 
 #: ../src/controller/Main.hx:546
 msgid "The link \"::link::\" does not exists."
-msgstr ""
+msgstr "El link \"::link::\" no existeix."
 
 #: ../src/controller/Main.hx:3367 ../src/controller/Main.hx:6387
 msgid ""
 "Members of this group should provide an address. <a href='/account/edit'>Please "
 "click here to update your account</a>."
 msgstr ""
+"Els membres d'aquest grup han de donar la seva adreça. <a href='/account/"
+"edit'>Clica aquí per actualitzar el vostre compte</a>."
 
 #: ../src/controller/Account.hx:586 ../src/controller/Account.hx:777
 msgid "Email ::em:: is invalid"
-msgstr ""
+msgstr "L'email ::em:: és invalid"
 
 #: ../src/controller/Account.hx:1041
 msgid "This email is already used by another account."
-msgstr ""
+msgstr "Aquest email ja està sent utilitzat per un altre compte."
 
 #: ../src/controller/Account.hx:1361
 msgid "Your account has been updated"
-msgstr ""
+msgstr "El vostre compte s'ha actualitzat"
 
 #: ../src/controller/Account.hx:1442
 msgid "Modify my account"
-msgstr ""
+msgstr "Modificar el compte"
 
 #: ../src/controller/Account.hx:1716
 msgid "You left the group ::groupName::"
-msgstr ""
+msgstr "Acabeu d'abandonar el grup ::groupName::"
 
 #: ../src/controller/Product.hx:1491
 msgid "The product has been updated"
@@ -1583,7 +1589,7 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:7033 ../src/controller/Distribution.hx:7421
 msgid "The distribution has been deleted"
-msgstr ""
+msgstr "La distribució s'ha eliminat"
 
 #: ../src/controller/Distribution.hx:7504
 msgid "Bad token"
@@ -1604,6 +1610,7 @@ msgstr ""
 #: ../src/controller/Distribution.hx:8946
 msgid "The distribution has been proposed to the supplier, please wait for its validation"
 msgstr ""
+"S'ha proposat la distribució al productor/a, espereu ara la seva validació"
 
 #: ../src/controller/Distribution.hx:9172 ../src/controller/Distribution.hx:12202 ../src/controller/Distribution.hx:14733
 msgid "The distribution has been recorded"
@@ -1638,23 +1645,26 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:13793
 msgid "Contrats"
-msgstr ""
+msgstr "Contractes"
 
 #: ../src/controller/Distribution.hx:14820
+#, fuzzy
 msgid "Create a general distribution"
-msgstr ""
+msgstr "Crear una distribució general"
 
 #: ../src/controller/Distribution.hx:15348 ../lang/master/tpl/contractadmin/default.mtt:1104 ../lang/master/tpl/design.mtt:3816
 msgid "Contracts"
 msgstr ""
 
 #: ../src/controller/Distribution.hx:17066
+#, fuzzy
 msgid "The distribution has been updated"
-msgstr ""
+msgstr "La distribució s'ha actualitzat"
 
 #: ../src/controller/Distribution.hx:17152
+#, fuzzy
 msgid "Edit a general distribution"
-msgstr ""
+msgstr "Editar una distribució"
 
 #: ../src/controller/Distribution.hx:17810
 msgid "Start time"
@@ -1681,8 +1691,9 @@ msgid "Recurrent deliveries deleted"
 msgstr ""
 
 #: ../src/controller/Distribution.hx:23013
+#, fuzzy
 msgid "This distribution have been validated"
-msgstr ""
+msgstr "La distribució s'ha validat"
 
 #: ../src/controller/Distribution.hx:23352
 msgid "This distribution have been Unvalidated"
@@ -1690,23 +1701,24 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:25313
 msgid "Volunteer Roles have been saved for this distribution"
-msgstr ""
+msgstr "Els rols dels voluntaris s'han definit per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:25396
 msgid "Select volunteer roles for this multidistrib"
-msgstr ""
+msgstr "Seleccioneu els rols dels voluntaris per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:25804
 msgid "You need to first select the volunteer roles for this distribution"
 msgstr ""
+"Primer heu de seleccionar els rols dels voluntaris per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:26370
 msgid "No volunteer assigned"
-msgstr ""
+msgstr "Cap voluntari assignat"
 
 #: ../src/controller/Distribution.hx:26813
 msgid "Volunteers have been assigned to roles for this distribution"
-msgstr ""
+msgstr "S'han enregistrat els voluntaris  per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:26903
 msgid "Select a volunteer for each role for this multidistrib"
