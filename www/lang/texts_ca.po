@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "PO-Revision-Date: 2020-05-01 20:42+0000\n"
-"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
+"Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -1394,7 +1394,7 @@ msgid ""
 "must be connected to your group Cagette)"
 msgstr ""
 "<p><a href='::distriburl::'>Clicka aquí per validar la distribució</a> (Has "
-"d'estar connecta't al teu grup Cagette.net)"
+"d'estar connecta't al teu grup Cagette.net)</p>"
 
 #: ../src/controller/Cron.hx:18414
 msgid ": Validation of the delivery of the "
@@ -1594,7 +1594,7 @@ msgstr "La distribució s'ha eliminat"
 
 #: ../src/controller/Distribution.hx:7504
 msgid "Bad token"
-msgstr ""
+msgstr "Token erroni"
 
 #: ../src/controller/Distribution.hx:8003 ../src/controller/Distribution.hx:10375 ../src/controller/Distribution.hx:12806 ../src/controller/Distribution.hx:15256 ../src/controller/Distribution.hx:18005
 msgid "End time"
@@ -1649,7 +1649,6 @@ msgid "Contrats"
 msgstr "Contractes"
 
 #: ../src/controller/Distribution.hx:14820
-#, fuzzy
 msgid "Create a general distribution"
 msgstr "Crear una distribució general"
 
@@ -1658,12 +1657,10 @@ msgid "Contracts"
 msgstr ""
 
 #: ../src/controller/Distribution.hx:17066
-#, fuzzy
 msgid "The distribution has been updated"
 msgstr "La distribució s'ha actualitzat"
 
 #: ../src/controller/Distribution.hx:17152
-#, fuzzy
 msgid "Edit a general distribution"
 msgstr "Editar una distribució"
 
@@ -1692,13 +1689,12 @@ msgid "Recurrent deliveries deleted"
 msgstr ""
 
 #: ../src/controller/Distribution.hx:23013
-#, fuzzy
 msgid "This distribution have been validated"
 msgstr "La distribució s'ha validat"
 
 #: ../src/controller/Distribution.hx:23352
 msgid "This distribution have been Unvalidated"
-msgstr ""
+msgstr "Aquesta distribució no s'ha validat"
 
 #: ../src/controller/Distribution.hx:25313
 msgid "Volunteer Roles have been saved for this distribution"
