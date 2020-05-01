@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 18:53+0000\n"
-"Last-Translator: Maria Diaz de Quijano <m.diaz.de.quijano@gmail.com>\n"
+"PO-Revision-Date: 2020-05-01 18:57+0000\n"
+"Last-Translator: Aram <aramollis@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
 "translations/ca/>\n"
 "Language: ca\n"
@@ -22,7 +22,7 @@ msgstr "Moneder"
 
 #: ../src/payment/OnTheSpotPayment.hx:377
 msgid "On the spot payment"
-msgstr "Pagament puntual"
+msgstr "Pagament al local"
 
 #: ../src/payment/Transfer.hx:312 ../src/controller/Transaction.hx:8761
 msgid "Bank transfer"
@@ -88,11 +88,11 @@ msgstr ""
 
 #: ../src/controller/Transaction.hx:7077
 msgid "Payment on the spot for the order of ::date::"
-msgstr "Pagament puntual per a la comanda de ::date::"
+msgstr "Pagament al local per a la comanda de ::date::"
 
 #: ../src/controller/Transaction.hx:7467
 msgid "Payment on the spot"
-msgstr "Pagament presencial"
+msgstr "Pagament al local"
 
 #: ../src/controller/Transaction.hx:8429
 msgid "Transfer for the order of ::date::"
@@ -107,10 +107,12 @@ msgid ""
 "You can't edit this vendor profile because he's active in more than one group. "
 "If you want him to update his profile, please ask him to do so."
 msgstr ""
+"No podeu editar aquest perfil de productor perquè està actiu en més d'un "
+"grup. Si voleu que actualitzi el seu perfil, demaneu que ho faci."
 
 #: ../src/controller/Vendor.hx:1533 ../src/controller/Place.hx:746 ../src/controller/Place.hx:1468 ../src/db/Vendor.hx:3937 ../src/db/Place.hx:1416
 msgid "Country"
-msgstr ""
+msgstr "País"
 
 #: ../src/controller/Vendor.hx:1696
 msgid "This supplier has been updated"
@@ -118,7 +120,7 @@ msgstr ""
 
 #: ../src/controller/Vendor.hx:3190 ../src/controller/AmapAdmin.hx:2442
 msgid "Image updated"
-msgstr ""
+msgstr "Imatge actualitzada"
 
 #: ../src/controller/Contract.hx:1292
 msgid "You are not a member of this group"
@@ -130,7 +132,7 @@ msgstr ""
 
 #: ../src/controller/Contract.hx:4355
 msgid "Edit contract ::contractName::"
-msgstr ""
+msgstr "Editar contracte ::contractName::"
 
 #: ../src/controller/Contract.hx:4878
 msgid "If you would like to add fees to the order, define a rate (%) and a label."
