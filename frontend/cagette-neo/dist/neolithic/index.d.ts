@@ -1,4 +1,4 @@
-import { ActivateDistribSlotsViewProps } from './views/ActivateDistribSlotsView';
+import { ActivateDistribSlotsViewProps } from './views/ActivateDistribSlotsView/ActivateDistribSlotsView';
 import { UserDistribSlotsSelectorViewProps } from './views/UserDistribSlotsSelectorView';
 import { DistribSlotsResolverProps } from './views/DistribSlotsResolver';
 import { PlaceDialogViewProps } from './views/PlaceDialogView';

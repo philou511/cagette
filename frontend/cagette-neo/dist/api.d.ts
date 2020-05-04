@@ -13,6 +13,7 @@ declare const _default: {
         getDistrib(id: number): Promise<import("./vo").DistribVo | null>;
         getResolvedDistrib<T>(id: number, parser: (data: any) => T): Promise<T | null>;
         activateSlots(id: number, data: any, type?: "json" | "data"): Promise<import("./vo").DistribVo | null>;
+        disableSlots(id: number): Promise<import("./vo").DistribVo | null>;
         registerMe(distribId: number, data: any, type?: "json" | "data"): Promise<any>;
         getStatus(distribId: number): Promise<any>;
     };
