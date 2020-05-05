@@ -21,15 +21,11 @@ class App extends sugoi.BaseApp {
 	public function new(){
 		super();
 
-		if (App.config.DEBUG) {
-			headers.set("Access-Control-Allow-Origin", "*");
-			headers.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-		}
-
 		breadcrumb = [];
 
 		if (App.config.DEBUG) {
 			this.headers.set('Access-Control-Allow-Origin', "*");
+			this.headers.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		}
 	}
 	

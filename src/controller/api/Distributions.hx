@@ -47,6 +47,16 @@ class Distributions extends Controller {
     }
   }
 
+  private function isResolved() {
+    var resolved = false;
+    if (distrib.slots == null) return true;
+    distrib.slots.foreach(slot -> {
+      if (slot.selectedUserIds.length > 0) resolved = true;
+      return true;
+    });
+    return resolved;
+  }
+
   public function doDefault() {
     if (sugoi.Web.getMethod() != "GET") throw new tink.core.Error(405, "Method Not Allowed");
     checkIsGroupMember();
@@ -69,6 +79,28 @@ class Distributions extends Controller {
 
 	  var s = new TimeSlotsService(this.distrib);
     s.generateSlots(mode);    
+    json(this.parse());
+  }
+
+  /**
+   * deactivate slots
+   */
+  public function doDesactivateSlots() {
+    if (sugoi.Web.getMethod() != "POST") throw new tink.core.Error(405, "Method Not Allowed");
+    checkAdminRights();
+
+    if (isResolved()) {
+      json(this.parse());
+      return;
+    }
+    
+    this.distrib.lock();
+    this.distrib.slotsMode = null;
+    this.distrib.slots = null;
+    this.distrib.inNeedUserIds = null;
+    this.distrib.voluntaryUsers = null;
+    this.distrib.update();
+
     json(this.parse());
   }
 
@@ -187,17 +219,17 @@ class Distributions extends Controller {
   }
 
    // TODO: remove
-   @admin
-  public function doDesactivateSlots() {
-    this.distrib.lock();
-    this.distrib.slotsMode = null;
-    this.distrib.slots = null;
-    this.distrib.inNeedUserIds = null;
-    this.distrib.voluntaryUsers = null;
-    this.distrib.orderEndDate  = DateTools.delta(Date.now(), 1000 * 60 * 60 * 24);
-    this.distrib.update();
-    json(this.parse());
-  }
+  //  @admin
+  // public function doDesactivateSlots() {
+  //   this.distrib.lock();
+  //   this.distrib.slotsMode = null;
+  //   this.distrib.slots = null;
+  //   this.distrib.inNeedUserIds = null;
+  //   this.distrib.voluntaryUsers = null;
+  //   this.distrib.orderEndDate  = DateTools.delta(Date.now(), 1000 * 60 * 60 * 24);
+  //   this.distrib.update();
+  //   json(this.parse());
+  // }
 
   // TODO: remove
   @admin

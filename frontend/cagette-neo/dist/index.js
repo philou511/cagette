@@ -1365,6 +1365,19 @@ var api = function () {
                     });
                 });
             },
+            disableSlots: function (id) {
+                return __awaiter(this, void 0, void 0, function () {
+                    var res;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, post(apiUrl + "/distributions/" + id + "/desactivateSlots")];
+                            case 1:
+                                res = _a.sent();
+                                return [2 /*return*/, res ? parseDistribVo(res) : null];
+                        }
+                    });
+                });
+            },
             registerMe: function (distribId, data, type) {
                 if (type === void 0) { type = 'json'; }
                 return __awaiter(this, void 0, void 0, function () {
@@ -4171,6 +4184,43 @@ function isBefore(dirtyDate, dirtyDateToCompare) {
   var date = toDate(dirtyDate);
   var dateToCompare = toDate(dirtyDateToCompare);
   return date.getTime() < dateToCompare.getTime();
+}
+
+var ConfirmDialog = function (_a) {
+    var open = _a.open, cancelButtonLabel = _a.cancelButtonLabel, confirmButtonLabel = _a.confirmButtonLabel, title = _a.title, message = _a.message, onCancel = _a.onCancel, onConfirm = _a.onConfirm;
+    return (React__default.createElement(core.Dialog, { open: open },
+        title && React__default.createElement(core.DialogTitle, null, title),
+        message && (React__default.createElement(core.DialogContent, null,
+            React__default.createElement(core.Typography, null, message))),
+        React__default.createElement(core.DialogActions, null,
+            React__default.createElement(core.Button, { onClick: onCancel }, cancelButtonLabel),
+            React__default.createElement(core.Button, { autoFocus: true, variant: "outlined", color: "primary", onClick: onConfirm }, confirmButtonLabel))));
+};
+
+function withConfirmDialog (Component, dialogProps) {
+    var Wrapper = function (props) {
+        var _a = React__default.useState(false), open = _a[0], toggleOpen = _a[1];
+        /** */
+        var close = function () {
+            toggleOpen(false);
+        };
+        /** */
+        // eslint-disable-next-line no-underscore-dangle
+        var _onClick = function () {
+            toggleOpen(true);
+        };
+        var onConfirm = function () {
+            close();
+            // @ts-ignore
+            if (props.onClick)
+                props.onClick();
+        };
+        /** */
+        return (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(Component, __assign({}, props, { onClick: _onClick })),
+            React__default.createElement(ConfirmDialog, __assign({}, dialogProps, { open: open, onCancel: close, onConfirm: onConfirm }))));
+    };
+    return Wrapper;
 }
 
 function _typeof(obj) {
@@ -7353,11 +7403,41 @@ var ActivateDistribSlotsView = function (_a) {
             }
         });
     }); };
+    var onDisableSlotsClick = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var formData, res, err_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setError(undefined);
+                    toggleSubmitting(true);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    formData = new FormData();
+                    formData.append('mode', mode);
+                    return [4 /*yield*/, api$1.distrib.disableSlots(distribId)];
+                case 2:
+                    res = _a.sent();
+                    if (res) {
+                        setDistrib(res);
+                        toggleSubmitting(false);
+                        toggleOpened(false);
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_2 = _a.sent();
+                    setError(t('error', { error: err_2 }));
+                    toggleSubmitting(false);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
     /** */
     React__default.useEffect(function () {
         var active = true;
         var load = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res, err_2;
+            var res, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -7370,8 +7450,8 @@ var ActivateDistribSlotsView = function (_a) {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        err_2 = _a.sent();
-                        setError(t('error', { error: err_2 }));
+                        err_3 = _a.sent();
+                        setError(t('error', { error: err_3 }));
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
@@ -7397,6 +7477,11 @@ var ActivateDistribSlotsView = function (_a) {
             React__default.createElement(core.Box, { mr: 1 }),
             t("neo/distrib-slots:activeDistrib.activatedBtn")));
     }
+    var ButtonWithConfirmDialog = withConfirmDialog(core.Button, {
+        title: t('neo/distrib-slots:activeDistrib.disableSlotsAlertTitle'),
+        cancelButtonLabel: t('cancel'),
+        confirmButtonLabel: t('confirm'),
+    });
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core.Button, { className: cs.btn, variant: "contained", onClick: onButtonClick },
             hasActivated ? React__default.createElement(CheckIcon, { fontSize: "small" }) : React__default.createElement("img", { width: 14, height: 14, src: "/img/virus.svg", alt: "" }),
@@ -7437,10 +7522,13 @@ var ActivateDistribSlotsView = function (_a) {
                                 React__default.createElement(core.FormControlLabel, { value: "solo-only", control: React__default.createElement(core.Radio, null), label: t('no') }))))) : (React__default.createElement(React__default.Fragment, null, distrib.mode === 'default' && (React__default.createElement(core.Box, { p: 2 },
                         React__default.createElement(core.Typography, { align: "center" }, t('neo/distrib-slots:activeDistrib.modeDefaultActivated')))))),
                     React__default.createElement(core.Box, { p: 2, display: "flex", justifyContent: "center" },
-                        React__default.createElement(core.Button, { variant: "outlined", onClick: closeDialog }, t(distrib.slots ? 'close' : 'cancel')),
+                        distrib.slots && (React__default.createElement(core.Box, { mx: 1, color: "error.main" },
+                            React__default.createElement(ButtonWithConfirmDialog, { variant: "outlined", color: "inherit", onClick: onDisableSlotsClick }, t('neo/distrib-slots:activeDistrib.disableSlotsButtonLabel')))),
+                        React__default.createElement(core.Box, { mx: 1 },
+                            React__default.createElement(core.Button, { variant: "outlined", onClick: closeDialog }, t(distrib.slots ? 'close' : 'cancel'))),
                         !distrib.slots && (React__default.createElement(React__default.Fragment, null,
-                            React__default.createElement(core.Box, { mx: 2 }),
-                            React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: onConfirmClick }, t('neo/distrib-slots:activeDistrib.confirmBtnLabel')))))))))));
+                            React__default.createElement(core.Box, { mx: 1 },
+                                React__default.createElement(core.Button, { variant: "contained", color: "primary", onClick: onConfirmClick }, t('neo/distrib-slots:activeDistrib.confirmBtnLabel'))))))))))));
 };
 var ActivateDistribSlotsView$1 = withNeolithicProvider(withi18n(ActivateDistribSlotsView));
 
@@ -14942,6 +15030,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 (function (MangopayLegalStatus) {
     MangopayLegalStatus["ORGANIZATION"] = "ORGANIZATION";
     MangopayLegalStatus["BUSINESS"] = "BUSINESS";
+    MangopayLegalStatus["SOLETRADER"] = "SOLETRADER";
 })(exports.MangopayLegalStatus || (exports.MangopayLegalStatus = {}));
 (function (MangopayKYCLevel) {
     MangopayKYCLevel["LIGHT"] = "LIGHT";

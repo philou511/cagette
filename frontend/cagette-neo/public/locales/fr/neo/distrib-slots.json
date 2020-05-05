@@ -10,7 +10,9 @@
     "confirmBtnLabel": "Activer ces créneaux",
     "modeLabel": "Souhaitez vous que des membres puissent retirer les commandes d'autres membres du groupe ?",
     "modeSubLabel": "Attention, il se peut que des membres ne trouvent personne pour récupérer leur commande. N'activez cette option que si vous avez le temps de vous occuper de ces personnes.",
-    "modeDefaultActivated": "Vous avez activé l'option permettant aux membres de retirer la commande d'autres membres du groupe."
+    "modeDefaultActivated": "Vous avez activé l'option permettant aux membres de retirer la commande d'autres membres du groupe.",
+    "disableSlotsButtonLabel": "Supprimer les créneaux",
+    "disableSlotsAlertTitle": "Vous allez désactiver les créneaux pour cette distribution"
   },
   "userSlotsSelector": {
     "cardTitle": "Inscription à un crénau horaire",
