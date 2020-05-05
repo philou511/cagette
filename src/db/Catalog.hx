@@ -1,4 +1,5 @@
 package db;
+import haxe.io.Encoding;
 import sugoi.form.ListData.FormData;
 import sys.db.Object;
 import sys.db.Types;
@@ -137,6 +138,27 @@ class Catalog extends Object
 			//add a percentage
 			return percentageValue / 100 * basePrice;
 		}
+	}
+
+	public function check(){
+
+		if( this.description!=null && !UnicodeString.validate( haxe.io.Bytes.ofString(this.description), Encoding.UTF8 )){
+			App.current.session.addMessage('La description du catalogue est mal encodée et risque de poser des problèmes d\'affichage.',true);
+		}
+
+		for( p in getProducts(false)){
+			if( p.ref!=null && !UnicodeString.validate( haxe.io.Bytes.ofString(p.ref), Encoding.UTF8 )){
+				App.current.session.addMessage('La référence du produit "${p.ref}" est mal encodé et risque de poser des problèmes d\'affichage.',true);
+			}
+
+			if( p.name!=null && !UnicodeString.validate( haxe.io.Bytes.ofString(p.name), Encoding.UTF8 )){
+				App.current.session.addMessage('Le nom du produit "${p.name}" est mal encodé et risque de poser des problèmes d\'affichage.',true);
+			}
+			if( p.desc!=null && !UnicodeString.validate( haxe.io.Bytes.ofString(p.desc), Encoding.UTF8 )){
+				App.current.session.addMessage('La description du produit "${p.name}" est mal encodée et risque de poser des problèmes d\'affichage.',true);
+			}
+		}
+
 	}
 	
 	/**

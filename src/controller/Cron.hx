@@ -666,7 +666,8 @@ class Cron extends Controller
 		}
 	}
 	
-	public static function print(text){
+	public static function print(text:Dynamic){
+		var text = Std.string(text);
 		Sys.println( "<pre>"+ text + "</pre>" );
 	}
 

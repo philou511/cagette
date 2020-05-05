@@ -156,9 +156,9 @@ class Main extends Controller {
 
 			//manage other errors			
 			sugoi.Web.setReturnCode(500);			
-			var stack = if ( App.config.DEBUG ) haxe.CallStack.toString(haxe.CallStack.exceptionStack()) else "";
+			var stack = haxe.CallStack.toString(haxe.CallStack.exceptionStack());
 			App.current.logError(e, stack);
-			Sys.print(Json.stringify( {error:{code:500,message : Std.string(e), stack:stack }} ));
+			Sys.print(Json.stringify( {error:{code:500,message : Std.string(e), stack: stack }} ));
 		}
 		
 	}

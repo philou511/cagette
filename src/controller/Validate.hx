@@ -133,6 +133,7 @@ class Validate extends controller.Controller
 			operation.relation = orderOperation;
 			operation.amount = 0 - Math.abs(operation.amount);
 			operation.insert();
+			
 			App.current.event(NewOperation(operation));
 			App.current.event(Refund(operation,basket));
 			service.PaymentService.updateUserBalance(user, app.user.getGroup());

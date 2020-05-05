@@ -678,6 +678,8 @@ class ContractAdmin extends Controller
 	function doView(contract:db.Catalog) {
 		view.nav.push("view");
 		sendNav(contract);
+
+		contract.check();
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 		view.c = view.contract = contract;

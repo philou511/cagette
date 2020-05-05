@@ -55,14 +55,12 @@ class ShopApi extends Controller
 	**/
 	public function doAllProducts(args:{multiDistrib:db.MultiDistrib}){
 		
-		if ( args == null ) throw "You should provide a date and a place";
-		//var categsFromTaxo = args.place.group.flags.has(ShopCategoriesFromTaxonomy);	
-		var categsFromTaxo = true;
+		if ( args == null ) throw "You should provide a distrib id";		
 			
-		var products = getProducts(args.multiDistrib, categsFromTaxo );
+		var products = getProducts(args.multiDistrib, true );
 		
 		//to productInfos
-		var productsInfos : Array<ProductInfo> = products.map( function(p) return p.infos(categsFromTaxo,true) ).array();
+		var productsInfos : Array<ProductInfo> = products.map( p -> p.infos(true,true) ).array();
 		Sys.print(Json.stringify( {products:productsInfos} ));									
 	}
 	
