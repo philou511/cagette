@@ -2,7 +2,8 @@
 
 	
 <!--<div class="col-md-8 col-md-offset-2" ::cond isCovid==true::>-->
-	<div class="col-md-12" ::cond vendors!=null && vendors.length>0::>
+	::if(vendors!=null && vendors.length>0)::
+	<div class="col-md-12" >
 		<div class="alert alert-warning">
 			
 			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
@@ -38,13 +39,8 @@
 				<div class="col-md-3 text-center">
 					<p>
 						<b>Questions-réponses<br/>avec les concepteurs :<br/></b>
-						<a href="https://us02web.zoom.us/webinar/register/WN_NAlqyf7xQq2wTz2VF4sgbQ" target="_blank" >Mardi 5 mai, à 10h30 avec l'InterAMAP 44</a>
-						<a href="https://us02web.zoom.us/webinar/register/WN_NAlqyf7xQq2wTz2VF4sgbQ" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
-
-						
-						<a href="https://us02web.zoom.us/webinar/register/WN_UyFxzDvpS2ORvlmedBKoWg" target="_blank" >Vendredi 8 mai, 10h30</a>
-						<a href="https://us02web.zoom.us/webinar/register/WN_UyFxzDvpS2ORvlmedBKoWg" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
-
+						<a href="https://us02web.zoom.us/webinar/register/WN_p8dhnUDsSjK63rUawLQPLQ" target="_blank" >Mercredi 13 Mai à 10h30</a>
+						<a href="https://us02web.zoom.us/webinar/register/WN_p8dhnUDsSjK63rUawLQPLQ" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
 					</p>
 				</div>
 			</div>
@@ -52,6 +48,58 @@
 			
 		</div>
 	</div>
+	::elseif(isGroupAdmin)::
+	<div class="col-md-12" >
+		<div class="alert alert-warning">
+			
+			<div style="font-size:1.3em;font-weight:bold;text-align:center;margin:16px;">
+				<i class="icon icon-info"></i> Pour administrer votre groupe Cagette
+			</div>			
+		
+			<div class="row">
+				<div class="col-md-3 text-center">
+					
+					<a href="https://www.cagette.net/guide-express-coordinateur/" class="btn btn-danger" target="_blank">
+						<i class="icon icon-youtube"></i> Guide Express
+					</a>
+
+					<p style="font-size: 0.9em;margin-top:12px"><b>Commencez par ici !</b><br/> Des vidéos qui vont guideront pas à pas</p>
+					
+				</div>
+				<div class="col-md-3 text-center">
+					
+					<a href="https://wiki.cagette.net/admin:index" class="btn btn-warning" target="_blank">
+						<i class="icon icon-book"></i>
+						Documentation
+					</a>
+					<p style="font-size: 0.9em;margin-top:12px">Pour approfondir <br/>certaines fonctions</p>
+				</div>
+				<div class="col-md-3 text-center">
+					
+					<a href="https://www.facebook.com/groups/EntraideCagette/" class="btn btn-warning" target="_blank">
+						<i class="icon icon-facebook"></i>
+						Groupe Facebook
+					</a>
+					<p style="font-size: 0.9em;margin-top:12px">Pour échanger avec<br/>d'autres administrateurs de groupe</p>
+				</div>
+				<div class="col-md-3 text-center">
+					<!--<p>
+						<b>Questions-réponses<br/>avec les concepteurs :<br/></b>
+						<a href="https://us02web.zoom.us/webinar/register/WN_NAlqyf7xQq2wTz2VF4sgbQ" target="_blank" >Mardi 5 mai, à 10h30 avec l'InterAMAP 44</a>
+						<a href="https://us02web.zoom.us/webinar/register/WN_NAlqyf7xQq2wTz2VF4sgbQ" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
+
+						
+						<a href="https://us02web.zoom.us/webinar/register/WN_UyFxzDvpS2ORvlmedBKoWg" target="_blank" >Vendredi 8 mai, 10h30</a>
+						<a href="https://us02web.zoom.us/webinar/register/WN_UyFxzDvpS2ORvlmedBKoWg" target="_blank" class="btn btn-default btn-xs">S'inscrire</a><br/>
+
+					</p>-->
+				</div>
+			</div>
+				
+			
+		</div>
+	</div>
+	::end::
 
 	<div class="col-md-12">
 		<h2>::_("Hello")::

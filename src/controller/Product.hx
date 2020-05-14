@@ -185,6 +185,7 @@ class Product extends Controller
 							case "l" : Litre;
 							case "cl" : Centilitre;
 							case "litre" : Litre;
+							case "ml" : Millilitre;
 							default : Piece;
 						}
 					}

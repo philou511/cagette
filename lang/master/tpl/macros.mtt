@@ -512,6 +512,24 @@
 
 	</macro>
 
+	<macro name="vendorType(s)">		
+		::if(s==0)::
+			Cagette Pro				
+		::elseif(s==1)::
+			Gratuit
+		::elseif(s==2)::
+			Invité
+		::elseif(s==3)::
+			Invité sur un Cagette Pro
+		::elseif(s==4)::
+			Cagette Pro en test 
+		::elseif(s==5)::
+			Cagette Pro pédagogique
+		::elseif(s==6)::
+			Cagette Pro inscrit à une formation
+		::end::
+	</macro>
+
 	<macro name="timeSlotUserMessage(slots,status,d)">
 		
 		::if(status.registered==false)::

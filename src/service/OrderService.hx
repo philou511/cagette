@@ -68,7 +68,7 @@ class OrderService
 			if ( invert ) order.flags.set(InvertSharedOrder);
 		}
 		if (paid != null) order.paid = paid;
-		if (distribId != null) order.distribution = db.Distribution.manager.get(distribId);
+		if (distribId != null) order.distribution = db.Distribution.manager.get(distribId,false);
 		
 		//cumulate quantities if there is a similar previous order
 		if (prevOrders.length > 0 && !product.multiWeight) {

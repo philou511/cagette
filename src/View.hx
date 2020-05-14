@@ -1,3 +1,4 @@
+import haxe.EnumTools.EnumValueTools;
 import db.Basket;
 import sugoi.Web;
 using Std;
@@ -324,6 +325,10 @@ class View extends sugoi.BaseView {
 			return this.formatNum(orderQt * productQt) + "&nbsp;" + this.unit(unit,orderQt*productQt>1);	
 		}
 		
+	}
+
+	public function enumIndex(e:EnumValue){
+		return EnumValueTools.getIndex(e);
 	}
 
 }

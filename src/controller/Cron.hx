@@ -642,13 +642,10 @@ class Cron extends Controller
 	function sendEmailsfromBuffer(index:Int){
 		printTitle("Send 10 Emails from Buffer");		
 		//send
-		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,10],orderBy:-cdate},false)  ){
-			e.lock();
-			if(e.isSent()) continue;
-			
+		for( e in sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,10],orderBy:-cdate},true)  ){
+			if(e.isSent()) continue;			
 			print('#${e.id} - ${e.title}');
 			e.finallySend();
-			Sys.sleep(0.1);
 		}
 	}
 

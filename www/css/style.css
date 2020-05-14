@@ -397,6 +397,11 @@ table.product a.productName {
 }
 
 /* GLOBAL TABLE SKINNING */
+table.table {
+  /*tr.disabled td,tr.inactive td{
+  	opacity:0.4;
+  }*/
+}
 table.table tr.head > td, table.table thead tr td, table.table tr.head > th {
   border-top: 3px solid #DDD;
   height: 30px;
@@ -421,9 +426,6 @@ table.table tr.greyhead > td, table.table tr.greyhead > th {
 }
 table.table tr.subrow {
   background-color: #EEE;
-}
-table.table tr.disabled td, table.table tr.inactive td {
-  opacity: 0.4;
 }
 
 table.listing tr td {

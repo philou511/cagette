@@ -78,6 +78,9 @@ class User extends Controller
 		var vendors = service.VendorService.getVendorsFromUser(app.user);
 		view.vendors = vendors;
 		#end
+
+		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;
+
 	}
 	
 	function doLogout() {

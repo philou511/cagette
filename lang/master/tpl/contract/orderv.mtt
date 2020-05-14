@@ -38,7 +38,7 @@
 	
 	td{
 		overflow: hidden;
-		height: 60px;
+		height: 80px;
 		width: 80px;
 
 	}
@@ -55,7 +55,7 @@
 		overflow: hidden;
 	}
 	.cell{
-		height: 60px;
+		height: 80px;
 		width: 100%;
 	}
 
@@ -69,7 +69,7 @@
 
 			<!--products-->
 			<div class="row">
-				<div class="col-md-3" style="margin-right: 0;padding-right:0;">
+				<div class="col-md-4" style="margin-right: 0;padding-right:0;">
 					<div class="hcell sized">
 						::_("Product")::
 					</div>
@@ -78,14 +78,24 @@
 						::foreach uo userOrders[0].data::
 
 						<div class="cell sized">
-								
-							<a onclick="_.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">	
-								<img src="::uo.product.getImage()::" style="width:32px;height:32px;" />
-								::short(uo.product.getName(),24)::
-								
-								::set price = uo.product.price + uo.product._catalog.computeFees(uo.product.price)::
-								<b>::formatNum(price)::&nbsp;::currency()::</b>
-							</a>
+
+							<div class="row">
+								<div class="col-md-2">
+										<div style="background-image:url('::uo.product.getImage()::')" class="productImg sm" />
+								</div>
+								<div class="col-md-7">
+										<a onclick="_.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">
+											::short(uo.product.getName(),36)::
+										</a>
+								</div>
+								<div class="col-md-3">
+
+										::set price = uo.product.price + uo.product._catalog.computeFees(uo.product.price)::
+										<b>::formatNum(price)::&nbsp;::currency()::</b>
+
+								</div>
+							</div>
+							
 						</div>
 						::end::
 					::end::
@@ -95,7 +105,7 @@
 				</div>
 
 				<!--orders-->
-				<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-9">
+				<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-8">
 					<table class="table table-bordered">
 						<tr>
 							::foreach d userOrders::

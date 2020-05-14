@@ -56,7 +56,7 @@ class Vendor extends Object
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
-	@hideInForms public var isCovid : SBool; //compte gratuit créé pendant le confinement
+	@hideInForms public var isTest : SBool; //cpro testing account
 
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;
@@ -99,7 +99,6 @@ class Vendor extends Object
 			logo:null,
 			portrait:null,
 			banner:null,
-			// farm:[],
 			farm1:null,				
 			farm2:null,				
 			farm3:null,				
@@ -112,7 +111,6 @@ class Vendor extends Object
 				case "logo" 	: out.logo 		= f.file;
 				case "portrait" : out.portrait 	= f.file;
 				case "banner" 	: out.banner 	= f.file;
-				// case "farm" 	: out.farm.push(f.file);
 				case "farm1" 	: out.farm1 	= f.file;
 				case "farm2" 	: out.farm2 	= f.file;
 				case "farm3" 	: out.farm3 	= f.file;
@@ -121,12 +119,6 @@ class Vendor extends Object
 		}
 
 		if(out.logo==null) out.logo = this.image;
-
-		//sort and splice farm images
-		// out.farm.sort(function(a,b){
-		// 	return Math.round((b.cdate.getTime() - a.cdate.getTime())/1000);
-		// });
-		// out.farm = out.farm.splice(0,4);
 
 		return out;
 	}
