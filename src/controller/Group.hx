@@ -209,12 +209,12 @@ class Group extends controller.Controller
 
 			case Amap : 
 				g.flags.unset(ShopMode);
-				g.flags.set(HasMembership);
+				g.hasMembership=true;
 				g.regOption = WaitingList;
 				
 			case GroupedOrders :
 				g.flags.set(ShopMode);
-				g.flags.set(HasMembership);
+				g.hasMembership=true;
 				g.betaFlags.set(ShopV2);
 				// g.flags.set(ShopCategoriesFromTaxonomy);
 				g.regOption = WaitingList;

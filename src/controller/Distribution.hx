@@ -1603,7 +1603,7 @@ class Distribution extends Controller
 		//memberships
 		var membershipAmount = 0.0;
 		var membershipNum = 0;
-		if(distribution.group.hasMembership()){
+		if(distribution.group.hasMembership){
 			//membership num
 			
 			var ms = new service.MembershipService(distribution.group);

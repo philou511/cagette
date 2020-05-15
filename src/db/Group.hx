@@ -6,7 +6,7 @@ import Common;
 using tools.DateTool;
 
 enum GroupFlags {
-	HasMembership; 	//membership management
+	__HasMembership; 	//DEPRECATED membership management  
 	ShopMode; 		//shop mode / standard mode
 	HasPayments; 	//manage payments and user balance
 	ComputeMargin;	//compute margin instead of percentage
@@ -49,8 +49,7 @@ class Group extends Object
 	
 	@formPopulate("getMembersFormElementData")
 	@:relation(userId)
-	public var contact : SNull<User>;
-	
+	public var contact : SNull<User>;	
 	
 	public var txtIntro:SNull<SText>; 	//introduction de l'amap
 	public var txtHome:SNull<SText>; 	//texte accueil adhérents
@@ -61,11 +60,12 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	@hideInForms 
-	public var vatRates : SData<Map<String,Float>>;
+	@hideInForms public var vatRates : SData<Map<String,Float>>;
 	
+	//options and flags
 	public var flags:SFlags<GroupFlags>;
 	public var betaFlags:SFlags<BetaFlags>;
+	@hideInForms public var hasMembership:SBool;
 
 	public var groupType:SNull<SEnum<GroupType>>;
 	
@@ -79,8 +79,6 @@ class Group extends Object
 	
 	@hideInForms public var currency:SString<12>; //name or symbol.
 	@hideInForms public var currencyCode:SString<3>; //https://fr.wikipedia.org/wiki/ISO_4217
-
-	//@hideInForms public var legalStatus : SNull<STinyUInt>; //0 soletrader,1 organization,2 business
 
 	@formPopulate("getMembersFormElementData") @:relation(legalReprId) public var legalRepresentative : SNull<db.User>;
 	
@@ -173,14 +171,6 @@ class Group extends Object
 				return null;	
 			}
 		}
-	}
-	
-	/**
-	 * Methods to get flags in templates
-	 */
-	
-	public function hasMembership():Bool {
-		return flags != null && flags.has(HasMembership);
 	}
 	
 	public function hasShopMode() {

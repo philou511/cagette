@@ -10,6 +10,7 @@ class Membership extends Object
 	@:relation(distributionId) public var distribution : SNull<MultiDistrib>;
 	@:relation(operationId) public var operation : SNull<Operation>; //membership debt operation
 	
+	public var amount : SFloat; //membership cost
 	public var year : Int; //année de cotisation (année la plus ancienne si a cheval sur deux années : 2014-2015  -> 2014)
 	public var date : SNull<SDate>;
 	

@@ -93,7 +93,7 @@ class User extends Controller
 					id : m.year ,
 					name : ms.getPeriodName(m.year),
 					date : m.date,
-					amount : m.operation!=null ? Math.abs(m.operation.amount) : null,
+					amount : m.operation!=null ? Math.abs(m.operation.amount) : m.amount,
 				};
 			});
 

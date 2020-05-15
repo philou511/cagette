@@ -179,7 +179,7 @@
                   
                 </table>
     
-                ::if(distribution.getGroup().hasMembership())::
+                ::if(distribution.getGroup().hasMembership)::
                 <table class="table table-bordered">
                     <tr class="darkhead">
                         <td colspan="2">Adhésions</td>

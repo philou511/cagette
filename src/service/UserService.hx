@@ -211,7 +211,7 @@ class UserService
 			{id:"newUsers",		name:"Ne s'est jamais connecté",	count:null		},
 		];
 
-		if(group.hasMembership()){
+		if(group.hasMembership){
 			var ms = new service.MembershipService(group);
 			var upToDateMemberships = ms.countUpToDateMemberships();
 			lists.push({id:"noMembership",	name:"Adhésion à renouveller",	count:membersNum-upToDateMemberships});

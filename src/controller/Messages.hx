@@ -121,7 +121,7 @@ class Messages extends Controller
 		
 		out.push( { value:'3', label: t._("TEST: me + spouse") } );
 		out.push( { value:'4', label: t._("Members without any order") } );
-		if(app.user.getGroup().hasMembership()) out.push( { value:'5', label:t._("Memberships to be renewed")} );
+		if(app.user.getGroup().hasMembership) out.push( { value:'5', label:t._("Memberships to be renewed")} );
 		
 		
 		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(),true);

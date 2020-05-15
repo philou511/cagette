@@ -13,16 +13,23 @@
             <h2 class="text-center">Reçu</h2>  
 
             <p>
-                Client : <b>::member.getName()::</b><br/>
-                Distribution du ::hDate(md.getDate())::<br/>
-                Groupe : ::md.getGroup().name::<br/>
-                Lieu : ::md.getPlace().getAddress()::
+                ::md.getGroup().name::<br/>
+                Distribution du ::hDate(md.getDate())::<br/>                
+                Lieu : ::md.getPlace().name::, ::md.getPlace().getAddress()::
+            </p>
+
+            <p>
+                <b>Client : </b><br/>
+                ::member.getName():: (#::member.id::)<br/>                
+                ::member.getAddress()::<br/>
+                ::member.email::
             </p>
             
             ::foreach orders ordersByVendors::
                 ::set vendor = getVendor(orders[0].product.vendorId)::
                 <p>
-                    <b>::vendor.name.toUpperCase()::</b><br/>
+                    <b>Producteur : </b><br/>
+                    ::vendor.name.toUpperCase()::  (#::vendor.id::)<br/>
                     ::vendor.getAddress()::<br/>
                     ::vendor.email::
                 </p>

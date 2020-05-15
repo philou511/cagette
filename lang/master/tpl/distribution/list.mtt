@@ -18,9 +18,11 @@
 		<i class="icon icon-map-marker"></i><b>::_("Place"):: : </b>
 		::distrib._place.toString()::, ::distrib._place.getAddress()::
 	</p>
-	<p>
-		::set c = contract._contact::
-		::set v = contract._vendor::
+
+	::set c = contract._contact::
+	::set v = contract._vendor::
+	
+	<p ::cond c!=null::>		
 		<b>::_("Contact in charge of the catalog") :</b>  ::c.firstName:: ::c.lastName::, ::c.email::, ::c.phone::
 	</p>
 	<p>

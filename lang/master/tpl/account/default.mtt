@@ -176,7 +176,7 @@
 	::end::
 
 	<!--Membership-->
-	::if user.getGroup().hasMembership()::
+	::if user.getGroup().hasMembership::
 	<h3>Adhésion</h3>
 		::set hasValidMembership = userGroup.hasValidMembership()::
 		::if(hasValidMembership)::

@@ -82,6 +82,7 @@ class MembershipService{
 		cotis.date = date;
 		cotis.distribution = distribution;
 		cotis.operation = orderOp;
+		cotis.amount = membershipFee;
 		cotis.insert();
 
 		return cotis;

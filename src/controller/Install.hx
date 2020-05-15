@@ -75,7 +75,7 @@ class Install extends controller.Controller
 				amap.name = f.getValueOf("amapName");
 				amap.contact = user;
 
-				amap.flags.set(db.Group.GroupFlags.HasMembership);
+				amap.hasMembership = true;
 				//amap.flags.set(db.Group.GroupFlags.IsAmap);
 				amap.insert();
 				

@@ -44,7 +44,7 @@ class AmapAdmin extends Controller
 		var group = app.user.getGroup();
 
 		//membership
-		form.addElement( new sugoi.form.elements.Checkbox("membership","Gestion des adhésions",group.flags.has(db.Group.GroupFlags.HasMembership)), 13);
+		form.addElement( new sugoi.form.elements.Checkbox("membership","Gestion des adhésions",group.hasMembership), 13);
 		form.addElement( new sugoi.form.elements.IntInput("membershipFee","Montant de l'adhésion (laisser vide si variable)",group.membershipFee), 14);
 		var dp = new form.CagetteDatePicker("membershipRenewalDate","Date de renouvellement annuelle des adhésions",group.membershipRenewalDate);
 		// dp.format = "D MMMM";
@@ -59,11 +59,7 @@ class AmapAdmin extends Controller
 			if( form.getValueOf("groupId") != group.id ) throw "Vous avez changé de groupe.";
 
 			group.lock();
-			if(form.getValueOf("membership")==true){
-				group.flags.set(GroupFlags.HasMembership);
-			}else{
-				group.flags.unset(GroupFlags.HasMembership);
-			}
+			group.hasMembership = form.getValueOf("membership")==true;			
 			group.membershipFee = form.getValueOf("membershipFee");
 			group.membershipRenewalDate = form.getValueOf("membershipRenewalDate");
 			group.update();

@@ -74,7 +74,7 @@
 	</div>
 	
 	
-	::if user.getGroup().hasMembership()::
+	::if user.getGroup().hasMembership::
 	<h2>Adhésion</h2>
 		::set hasValidMembership = userGroup.hasValidMembership()::
 		::if(hasValidMembership)::

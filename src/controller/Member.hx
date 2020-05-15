@@ -814,6 +814,9 @@ class Member extends Controller
 		view.debt = db.UserGroup.manager.search($group == app.user.getGroup() && $balance < 0, false);
 	}
 
+	/**
+		invoice for user
+	**/
 	@tpl('member/invoice.mtt')
 	function doInvoice(m:db.User,md:db.MultiDistrib){
 		
