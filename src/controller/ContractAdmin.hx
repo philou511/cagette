@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import tink.core.Error;
 import db.UserOrder;
 import sugoi.form.elements.Checkbox;
@@ -493,7 +494,10 @@ class ContractAdmin extends Controller
 		view.title = "Dupliquer le contrat '"+catalog.name+"'";
 		var form = new Form("duplicate");
 		
-		form.addElement(new StringInput("name", t._("Name of the new catalog"), catalog.name.substr(0,50)  + " - copie"));		
+		form.addElement(new StringInput("name", t._("Name of the new catalog"), catalog.name.substr(0,50)  + " - copie"));	
+		if(!catalog.group.hasShopMode()){
+			form.addElement(new Checkbox("csa", "Contrat AMAP",catalog.isCSACatalog()));
+		}		
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
@@ -508,7 +512,11 @@ class ContractAdmin extends Controller
 			nc.description = catalog.description;
 			nc.distributorNum = catalog.distributorNum;
 			nc.flags = catalog.flags;
-			nc.type = catalog.type;
+			if(catalog.group.hasShopMode()){
+				nc.type = Catalog.TYPE_VARORDER;
+			}else{
+				nc.type = form.getValueOf("csa")==true ? Catalog.TYPE_CONSTORDERS : Catalog.TYPE_VARORDER;
+			}		
 			nc.vendor = catalog.vendor;
 			nc.percentageName = catalog.percentageName;
 			nc.percentageValue = catalog.percentageValue;

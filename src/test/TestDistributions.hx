@@ -349,6 +349,61 @@ class TestDistributions extends utest.Test
 		Assert.equals(sebOperation.amount, -78);
 	}
 
+	/**
+		cant have 2 multidistribs on same day, same place
+	**/
+	function testCantCreateDistribOnSameDay(){
+		//create first ditribs
+		var md1 = DistributionService.createMd(
+			TestSuite.PLACE_DU_VILLAGE,
+			new Date(2020,1,1,19,0,0),
+			new Date(2020,1,1,21,0,0),
+			new Date(2020,0,1,0,0,0),
+			new Date(2020,0,30,0,0,0),
+			[]
+		);
+		
+		Assert.isTrue(md1 != null,"md1 should be created");
+
+		//cant create a multidistrib on same day
+		Assert.raises(
+			() -> DistributionService.createMd(md1.place,md1.distribStartDate,md1.distribEndDate,md1.orderStartDate,md1.orderEndDate,[]),
+			tink.core.Error,
+			"an error should have been thrown"
+		);
+
+		// can create on another day
+		var md2 = DistributionService.createMd(
+			TestSuite.PLACE_DU_VILLAGE,
+			new Date(2020,2,1,19,0,0),
+			new Date(2020,2,1,21,0,0),
+			new Date(2020,1,1,0,0,0),
+			new Date(2020,1,30,0,0,0),
+			[]
+		);
+		Assert.isTrue(md2 != null,"md2 should be created");
+
+		//cannot update it to same date as md1
+		Assert.raises(
+			() -> DistributionService.editMd(md2,md2.place,md1.distribStartDate,md1.distribEndDate,md1.orderStartDate,md1.orderEndDate),
+			tink.core.Error,
+			"an error should have been thrown"
+		);
+
+		//can edit it and plan it on another day
+		md2 = DistributionService.editMd(
+			md2,
+			md2.place,
+			new Date(2020,1,20,19,0,0),
+			new Date(2020,1,20,20,0,0),
+			md1.orderStartDate,
+			md1.orderEndDate
+		);
+		Assert.isTrue(md2 != null,"md2 should be created");
+		Assert.equals(md2.distribStartDate.toString(),new Date(2020,1,20,19,0,0).toString());
+
+	}
+
 	
 
 }

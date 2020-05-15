@@ -186,13 +186,14 @@ class DistributionService
 
 	public static function createMd(place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date,contractIds:Array<Int>,?cycle:db.DistributionCycle):db.MultiDistrib{
 
-		var md = db.MultiDistrib.get(distribStartDate,place,true);
-		if(md==null){
-			md = new db.MultiDistrib();
-			md.group = place.group;
-			md.place = place;
+		
+		if(db.MultiDistrib.get(distribStartDate,place) != null){
+			throw new Error(Conflict,'Il y a déjà une distribution à cette date.');
 		}
 		
+		var md = new db.MultiDistrib();
+		md.group = place.group;
+		md.place = place;
 		md.distribStartDate = distribStartDate;
 		md.distribEndDate 	= distribEndDate;
 		md.orderStartDate 	= orderStartDate;
@@ -201,21 +202,11 @@ class DistributionService
 		md.place = place;
 		
 
-		if(md.id!=null){
-
-			//do not touch existing volunteerRolesIds
-
-			md.update();
-
-		} else {
-
-			//add default general roles
-			var roles = service.VolunteerService.getRolesFromGroup(place.group);
-			var generalRoles = Lambda.array(Lambda.filter(roles,function(r) return r.catalog==null));
-			md.volunteerRolesIds = generalRoles.map( function(r) return Std.string(r.id) ).join(",");
-
-			md.insert();
-		}
+		//add default general roles
+		var roles = service.VolunteerService.getRolesFromGroup(place.group);
+		var generalRoles = Lambda.array(Lambda.filter(roles,function(r) return r.catalog==null));
+		md.volunteerRolesIds = generalRoles.map( function(r) return Std.string(r.id) ).join(",");
+		md.insert();
 			
 		checkMultiDistrib(md);
 
@@ -233,6 +224,10 @@ class DistributionService
 	public static function editMd(md:db.MultiDistrib, place:db.Place,distribStartDate:Date,distribEndDate:Date,orderStartDate:Date,orderEndDate:Date,?overrideDates=false):db.MultiDistrib{
 		
 		md.lock();
+
+		if(db.MultiDistrib.manager.select($distribStartDate==distribStartDate && $place==place && $id!=md.id) != null){
+			throw new Error(Conflict,'Il y a déjà une distribution à cette date.');
+		}
 
 		var oldDistrib = {
 			distribStartDate : md.distribStartDate,
