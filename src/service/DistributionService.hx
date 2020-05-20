@@ -229,6 +229,13 @@ class DistributionService
 			throw new Error(Conflict,'Il y a déjà une distribution à cette date.');
 		}
 
+		if(md.slots!=null){
+			if(md.distribStartDate.getTime()!=distribEndDate.getTime() || md.distribEndDate.getTime()!=distribEndDate.getTime() ){
+				throw new Error(Conflict,'Vous ne pouvez plus changer les horaires de distribution car vous avez activé la gestion des créneaux horaires.');
+			}
+		}
+		
+
 		var oldDistrib = {
 			distribStartDate : md.distribStartDate,
 			distribEndDate   : md.distribEndDate,

@@ -4,59 +4,21 @@
 
 		<h3>::_("Duty periods calendar")::</h3>
 
-		<div>
+		<form >
 			<div style="float:left;width:50px;">Du</div>
-			<div style="width:210px;float:left;margin-right: 20px;" class="input-group date" id="datetimepicker-from">       
-				<span class="input-group-addon">					
-					<span class="glyphicon glyphicon-calendar"></span>
-				</span>
-				<input type="text" class="form-control"/>
+			<div style="width:210px;float:left;margin-right: 20px;">       
+				::raw fromField.render()::
 			</div>
 			<div style="float:left;width:50px;">au</div>
-			<div style="width:210px;float:left;margin-right:20px;" class="input-group date" id="datetimepicker-to">       
-				<span class="input-group-addon">					
-					<span class="glyphicon glyphicon-calendar"></span>
-				</span>
-				<input type="text" class="form-control"/>
+			<div style="width:210px;float:left;margin-right:20px;">       
+				::raw toField.render()::
 			</div>
 
-			<a id ="okdatepicker" href="::initialUrl::" class="btn btn-primary">OK</a>			
+			<input type="submit" class="btn btn-primary" value="OK" />
 			
-			<script type="text/javascript">
-				document.addEventListener("DOMContentLoaded", function(event) {
-					$('#datetimepicker-from').datetimepicker(
-						{
-							locale:'fr',
-							format:'LL',
-							defaultDate:moment("::from::", "YYYY-MM-DD")
-						}
-					);
-					$('#datetimepicker-to').datetimepicker(
-						{
-							locale:'fr',
-							format:'LL',
-							defaultDate:moment("::to::", "YYYY-MM-DD")
-						}
-					);
-					
-					$('#datetimepicker-from').on('dp.change',function(e){
-						setDatesUrl();
-					});
-					$('#datetimepicker-to').on('dp.change',function(e){
-						setDatesUrl();					
-					});
+			
 
-
-				});
-
-				function setDatesUrl() {
-					var fromDate = $('#datetimepicker-from').data('DateTimePicker').date().format('YYYY-MM-DD');
-					var toDate = $('#datetimepicker-to').data('DateTimePicker').date().format('YYYY-MM-DD');
-					$('#okdatepicker').attr("href", "?from=" + fromDate + "&to=" + toDate);     				
-				}
-			</script>
-
-		</div>
+		</form>
 
 		::if(done >= toBeDone)::
 			::set class="success text-success"::

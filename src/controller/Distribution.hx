@@ -1222,7 +1222,7 @@ class Distribution extends Controller
 		Members can view volunteers planning for each role and multidistrib date
 	**/
 	@tpl('distribution/volunteersCalendar.mtt')
-	function doVolunteersCalendar(?args: { ?distrib: db.MultiDistrib, ?role: db.VolunteerRole, ?from: Date, ?to: Date } ) {
+	function doVolunteersCalendar(?args: { ?distrib: db.MultiDistrib, ?role: db.VolunteerRole, ?_from: Date, ?_to: Date } ) {
 		
 		var multidistribs : Array<db.MultiDistrib> = [];
 		var from: Date = null;
@@ -1230,25 +1230,22 @@ class Distribution extends Controller
 
 		if ( args != null ) {
 
+			//register to a role
 			if ( args.distrib != null && args.role != null ) {
 
 				try {
 					service.VolunteerService.addUserToRole( app.user, args.distrib, args.role );
-				}
-				catch(e: tink.core.Error) {
+				} catch(e: tink.core.Error) {
 					throw Error("/distribution/volunteersCalendar", e.message);
 				}
 		
-				if ( args.from == null || args.to == null ) {
-					throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));
-				} else {
-					throw Ok("/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to, t._("You have been successfully assigned to the selected role."));
-				}
+				throw Ok("/distribution/volunteersCalendar", t._("You have been successfully assigned to the selected role."));				
 			}
 			
-			if ( args.from != null && args.to != null ) {
-				from = args.from;
-				to = args.to;
+			//set timeframe
+			if ( args._from != null && args._to != null ) {
+				from = args._from;
+				to = args._to;
 			}
 		}
 
@@ -1256,6 +1253,10 @@ class Distribution extends Controller
 			from = Date.now();
 			to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * app.user.getGroup().daysBeforeDutyPeriodsOpen );			
 		}
+
+		view.fromField = new form.CagetteDatePicker("from","Date de début",from );
+		view.toField = new form.CagetteDatePicker("to","Date de fin",to );
+		
 
 		multidistribs = db.MultiDistrib.getFromTimeRange( app.user.getGroup(), from, to );
 		
@@ -1282,7 +1283,7 @@ class Distribution extends Controller
 			return  a_str < b_str ? 1 : -1;
 		});
 		view.uniqueRoles = uniqueRoles;
-		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
+		//view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
 		view.from = from.toString().substr(0,10);
 		view.to = to.toString().substr(0,10);
 
