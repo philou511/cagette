@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-01-14 09:21+0000\n"
-"Last-Translator: Francesco Bisignani <tassobaramba2@gmail.com>\n"
+"PO-Revision-Date: 2020-05-22 13:41+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/cagette/"
 "translations/it/>\n"
 "Language: it\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
 msgid "Cash"
@@ -214,15 +214,15 @@ msgstr ""
 
 #: src/controller/Categories.hx:1042
 msgid "Certified organic agriculture"
-msgstr ""
+msgstr "Agricoltura biologica certificata"
 
 #: src/controller/Categories.hx:1080
 msgid "Uncertified organic agriculture"
-msgstr ""
+msgstr "Agricoltura biologica non certificata"
 
 #: src/controller/Categories.hx:1120
 msgid "Non organic"
-msgstr ""
+msgstr "Non biologico"
 
 #: src/controller/Categories.hx:1182
 msgid "Default categories have been created"
@@ -230,19 +230,19 @@ msgstr ""
 
 #: src/controller/Categories.hx:1520 src/db/CategoryGroup.hx:1044
 msgid "Color"
-msgstr ""
+msgstr "Colore"
 
 #: src/controller/Categories.hx:1663
 msgid "Group modified"
-msgstr ""
+msgstr "Gruppo modificato"
 
 #: src/controller/Categories.hx:1713
 msgid "Modify the group "
-msgstr ""
+msgstr "Modifica il gruppo "
 
 #: src/controller/Categories.hx:2191
 msgid "Group added"
-msgstr ""
+msgstr "Gruppo aggiunto"
 
 #: src/controller/Categories.hx:2238
 msgid "Create a group of categories"
@@ -426,7 +426,7 @@ msgstr ""
 
 #: src/controller/AmapAdmin.hx:6835 src/controller/AmapAdmin.hx:7099
 msgid "Name "
-msgstr ""
+msgstr "Nome "
 
 #: src/controller/AmapAdmin.hx:6898 src/controller/AmapAdmin.hx:7163
 msgid "Rate "
@@ -482,15 +482,15 @@ msgstr ""
 
 #: src/controller/admin/Admin.hx:2180
 msgid "Email service configuration"
-msgstr ""
+msgstr "Configurazione del servizio di posta elettronica"
 
 #: src/controller/Messages.hx:795
 msgid "Sender name"
-msgstr ""
+msgstr "Nome mittente"
 
 #: src/controller/Messages.hx:882
 msgid "Sender E-Mail"
-msgstr ""
+msgstr "E-mail del mittente"
 
 #: src/controller/Messages.hx:966
 msgid "Recipients"
@@ -542,7 +542,7 @@ msgstr ""
 
 #: src/controller/User.hx:2007
 msgid "Please key-in your E-Mail address"
-msgstr ""
+msgstr "Inserisci il tuo indirizzo e-mail"
 
 #: src/controller/User.hx:2165 src/controller/User.hx:4623
 msgid "Your new password"
@@ -554,7 +554,7 @@ msgstr ""
 
 #: src/controller/User.hx:2778
 msgid "This E-mail is not linked to a known account"
-msgstr ""
+msgstr "Questa e-mail non è collegata ad un account conosciuto"
 
 #: src/controller/User.hx:3067 src/controller/Member.hx:11952
 #: src/db/User.hx:14600 lang/master/tpl/design.mtt:4337
@@ -576,11 +576,11 @@ msgstr ""
 
 #: src/controller/User.hx:4509
 msgid "You already have a password"
-msgstr ""
+msgstr "Hai già una password"
 
 #: src/controller/User.hx:5034
 msgid "Congratulations, your account is now protected by a password."
-msgstr ""
+msgstr "Congratulazioni, il tuo account è ora protetto da una password."
 
 #: src/controller/User.hx:5237
 msgid "Create a password for your account"
@@ -642,6 +642,7 @@ msgstr ""
 #: src/controller/Member.hx:5367 src/controller/Member.hx:5906
 msgid "An error occurred while sending emails, please retry"
 msgstr ""
+"Si è verificato un errore durante l'invio di e-mail, si prega di riprovare"
 
 #: src/controller/Member.hx:5474
 msgid "Invitation sent."
@@ -664,6 +665,8 @@ msgid ""
 "For security reasons, you cannot modify the e-mail of this person because "
 "this person is a member of more than 1 group."
 msgstr ""
+"Per motivi di sicurezza, non è possibile modificare l'e-mail di questa "
+"persona perché questa persona fa parte di più di 1 gruppo."
 
 #: src/controller/Member.hx:10073
 msgid ""
@@ -680,10 +683,14 @@ msgid ""
 "This e-mail was used by another user account. As this user account was not "
 "used, it has been merged into the current user account."
 msgstr ""
+"Questa e-mail è stata utilizzata da un altro account utente. Poiché questo "
+"account utente non è stato utilizzato, è stato unito all'account utente "
+"attuale."
 
 #: src/controller/Member.hx:11259
 msgid "Warning, this e-mail or this name already exists for another account : "
 msgstr ""
+"Attenzione, questa e-mail o questo nome esiste già per un altro account: "
 
 #: src/controller/Member.hx:11482
 msgid "These accounts can't be merged because the second account has orders"
@@ -691,17 +698,19 @@ msgstr ""
 
 #: src/controller/Member.hx:12026
 msgid "Change your e-mail in your account Cagette.net"
-msgstr ""
+msgstr "Cambia la tua e-mail nel tuo account Cagette.net"
 
 #: src/controller/Member.hx:12170 src/controller/Member.hx:12698
 msgid ""
 " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
 "now:"
 msgstr ""
+" appena modificato la tua e-mail nel tuo account Cagette.net.<br/>La tua e-"
+"mail è ora:"
 
 #: src/controller/Member.hx:12556
 msgid "Change the e-mail of your account Cagette.net"
-msgstr ""
+msgstr "Cambia l'e-mail del tuo account Cagette.net"
 
 #: src/controller/Member.hx:12896
 msgid "This member has beed updated"
@@ -709,7 +718,7 @@ msgstr ""
 
 #: src/controller/Member.hx:13153
 msgid "You cannot do that."
-msgstr ""
+msgstr "Non puoi farlo."
 
 #: src/controller/Member.hx:13251
 msgid "You cannot delete yourself."
@@ -743,74 +752,75 @@ msgstr ""
 
 #: src/controller/Member.hx:14717
 msgid "Account 1"
-msgstr ""
+msgstr "Account 1"
 
 #: src/controller/Member.hx:14833
 msgid "Account 2"
-msgstr ""
+msgstr "Account 2"
 
 #: src/controller/Member.hx:15990
 msgid "Both accounts have been merged"
-msgstr ""
+msgstr "Entrambi gli account sono stati uniti"
 
 #: src/controller/Member.hx:16385
 msgid "Firstname"
-msgstr ""
+msgstr "Nome"
 
 #: src/controller/Member.hx:16403
 msgid "Lastname"
-msgstr ""
+msgstr "Cognome"
 
 #: src/controller/Member.hx:16420 lang/master/tpl/member/view.mtt:613
 #: lang/master/tpl/member/view.mtt:737
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 #: src/controller/Member.hx:16435
 msgid "Mobile phone"
-msgstr ""
+msgstr "Cellulare"
 
 #: src/controller/Member.hx:16456
 msgid "Partner's firstname"
-msgstr ""
+msgstr "Nome del partner"
 
 #: src/controller/Member.hx:16484
 msgid "Partner's lastname"
-msgstr ""
+msgstr "Cognome del partner"
 
 #: src/controller/Member.hx:16511
 msgid "Partner's e-mail"
-msgstr ""
+msgstr "E-mail del partner"
 
 #: src/controller/Member.hx:16536
 msgid "Partner's Mobile phone"
-msgstr ""
+msgstr "Cellulare del partner"
 
 #: src/controller/Member.hx:16567 src/db/Vendor.hx:1229 src/db/User.hx:15937
 #: src/db/Place.hx:1372 lang/master/tpl/member/import.mtt:866
 #: lang/master/tpl/member/import.mtt:1574
 msgid "Address 1"
-msgstr ""
+msgstr "Indirizzo 1"
 
 #: src/controller/Member.hx:16585 src/db/Vendor.hx:1267 src/db/User.hx:15972
 #: src/db/Place.hx:1407 lang/master/tpl/member/import.mtt:899
 #: lang/master/tpl/member/import.mtt:1606
 msgid "Address 2"
-msgstr ""
+msgstr "Indirizzo 2"
 
 #: src/controller/Member.hx:16603
 msgid "Post code"
-msgstr ""
+msgstr "Codice postale"
 
 #: src/controller/Member.hx:16621 src/controller/Group.hx:3774
 #: src/db/Vendor.hx:1338 src/db/User.hx:16037 src/db/Place.hx:1472
 #: lang/master/tpl/member/import.mtt:964 lang/master/tpl/member/import.mtt:1669
 msgid "City"
-msgstr ""
+msgstr "Città"
 
 #: src/controller/Member.hx:16957
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
 msgstr ""
+"L'email <b>::email:::</b> non è valida, si prega di aggiornare il file CSV"
 
 #: src/controller/Member.hx:17225
 msgid ""
@@ -823,20 +833,24 @@ msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
 msgstr ""
+"Ogni persona deve avere un'e-mail per poter effettuare l'accesso. ::utente0::"
+" ::utente1::: non ce l'ho. "
 
 #: src/controller/Member.hx:19245
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
-msgstr ""
+msgstr "L'e-mail ::useremail:: non è valida, si prega di modificare il file"
 
 #: src/controller/Member.hx:19573
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::"
 "userEmail::' is invalid, please check your file"
 msgstr ""
+"L'e-mail del partner di ::userFirstName:: ::userLastName:: «::userEmail:::» "
+"non è valido, si prega di controllare il file"
 
 #: src/controller/Member.hx:21541
 msgid "Send an E-mail to the person in charge of the group"
-msgstr ""
+msgstr "Invia un'e-mail al responsabile del gruppo"
 
 #: src/controller/Member.hx:22239
 msgid "This person is already member of this group"
@@ -985,7 +999,7 @@ msgstr ""
 
 #: src/controller/Group.hx:1530 src/controller/Group.hx:3476
 msgid "Your e-mail"
-msgstr ""
+msgstr "La tua e-mail"
 
 #: src/controller/Group.hx:1626
 msgid "Leave a message"
@@ -1000,6 +1014,8 @@ msgid ""
 "Your subscription to the waiting list has been recorded. You will receive an "
 "e-mail as soon as your request is processed."
 msgstr ""
+"La vostra iscrizione alla lista d'attesa è stata registrata. Riceverai un'e-"
+"mail non appena la tua richiesta verrà elaborata."
 
 #: src/controller/Group.hx:2462
 msgid "Subscription to \"::groupeName::\" waiting list"
@@ -1431,6 +1447,8 @@ msgid ""
 "Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
 "password is 'admin'"
 msgstr ""
+"Gruppo e utente «admin» creato. La tua e-mail è «admin@cagette.net» e la tua "
+"password è «admin»"
 
 #: src/controller/Install.hx:4181
 msgid "You must update your database to version "
@@ -1454,11 +1472,11 @@ msgstr ""
 
 #: src/controller/Account.hx:853 src/controller/Account.hx:1044
 msgid "Email ::em:: is invalid"
-msgstr "Email ::em:: non valida"
+msgstr "E-mail ::em:: non valida"
 
 #: src/controller/Account.hx:1308
 msgid "This email is already used by another account."
-msgstr ""
+msgstr "Questa e-mail è già utilizzata da un altro account."
 
 #: src/controller/Account.hx:1473
 msgid "Your account has been updated"
@@ -1572,6 +1590,9 @@ msgid ""
 "patient, you will receive an e-mail indicating if the request has been "
 "validated or refused."
 msgstr ""
+"La tua richiesta di consegna è stata inviata a <b>::supplierName::</b>.<br/> "
+"Sii paziente, riceverai un'e-mail che ti indicherà se la richiesta è stata "
+"convalidata o rifiutata."
 
 #: src/controller/Distribution.hx:8397
 msgid "Distribution request sent"
@@ -1640,17 +1661,20 @@ msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
 msgstr ""
-"Configurare le impostazioni email in <href='/admin/emails'>questa sezione</a>"
+"Si prega di configurare le impostazioni e-mail in <href='/admin/"
+"emails'>questa sezione</a>"
 
 #: src/service/UserService.hx:501
 msgid "There is no account with this email"
-msgstr ""
+msgstr "Non c'è nessun account con questa e-mail"
 
 #: src/service/UserService.hx:634
 msgid ""
 "Your account have not been validated yet. We sent an e-mail to ::email:: to "
 "finalize your subscription!"
 msgstr ""
+"Il tuo account non è stato ancora convalidato. Abbiamo inviato un'e-mail a "
+"::e-mail::: per finalizzare la tua iscrizione!"
 
 #: src/service/UserService.hx:901
 msgid "Invalid password"
@@ -1658,11 +1682,11 @@ msgstr ""
 
 #: src/service/UserService.hx:1453
 msgid "Invalid email address"
-msgstr ""
+msgstr "Indirizzo e-mail non valido"
 
 #: src/service/UserService.hx:1564
 msgid "We already have an account with this email address"
-msgstr ""
+msgstr "Abbiamo già un account con questo indirizzo e-mail"
 
 #. kilogramms
 #: src/View.hx:3308 common/Formatting.hx:1337
@@ -1822,7 +1846,7 @@ msgstr ""
 #: lang/master/tpl/member/waiting.mtt:195
 #: lang/master/tpl/contractadmin/view.mtt:898
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: src/db/Vendor.hx:1374
 msgid "Link text"
@@ -1919,7 +1943,7 @@ msgstr ""
 #: src/db/User.hx:15830 lang/master/tpl/member/import.mtt:800
 #: lang/master/tpl/member/import.mtt:1510
 msgid "Partner email"
-msgstr ""
+msgstr "E-mail del partner"
 
 #: src/db/User.hx:15867
 msgid "Partner phone"
@@ -2138,7 +2162,7 @@ msgstr ""
 
 #: lang/master/tpl/messages/default.mtt:626
 msgid "Send an e-mail"
-msgstr ""
+msgstr "Invia un'e-mail"
 
 #: lang/master/tpl/base.mtt:3362
 msgid "Close"
@@ -2409,6 +2433,8 @@ msgstr ""
 msgid ""
 "Emails are temporarily stored in a buffer, waiting to be sent by the cron"
 msgstr ""
+"Le e-mail sono temporaneamente memorizzate in un buffer, in attesa di essere "
+"inviate dal cron"
 
 #: lang/master/tpl/macros.mtt:653 lang/master/tpl/macros.mtt:683
 msgid "Previous"
@@ -3102,6 +3128,8 @@ msgid ""
 "You can invite by email all the members who never logged in, in one single "
 "clic."
 msgstr ""
+"Puoi invitare via e-mail tutti i membri che non hanno mai effettuato "
+"l'accesso, in un solo clic."
 
 #: lang/master/tpl/member/default.mtt:1124
 msgid "Send invitations"
@@ -3747,11 +3775,14 @@ msgid ""
 "If you have forgotten your password or if you would like to change it, "
 "please key-in below your e-mail address:"
 msgstr ""
+"Se hai dimenticato la password o se desideri cambiarla, inserisci sotto il "
+"tuo indirizzo e-mail:"
 
 #: lang/master/tpl/user/definePassword.mtt:326
 #: lang/master/tpl/user/forgottenPassword.mtt:446
 msgid "An e-mail was sent to you to allow you changing your password."
 msgstr ""
+"Un'e-mail è stata inviata per consentire la modifica della propria password."
 
 #: lang/master/tpl/user/definePassword.mtt:433
 #: lang/master/tpl/user/forgottenPassword.mtt:563
@@ -4343,6 +4374,8 @@ msgstr ""
 #: lang/master/tpl/mail/invitation.mtt:809
 msgid "You will then be able to connect anytime by using your e-mail"
 msgstr ""
+"Sarai quindi in grado di connetterti in qualsiasi momento utilizzando la tua "
+"e-mail"
 
 #: lang/master/tpl/mail/invitation.mtt:949
 msgid "and your password on the website"
@@ -4354,7 +4387,7 @@ msgstr ""
 
 #: lang/master/tpl/mail/design.mtt:218
 msgid "This e-mail was sent from"
-msgstr ""
+msgstr "Questa e-mail è stata inviata da"
 
 #: lang/master/tpl/mail/design.mtt:336
 msgid "You receive this message because you are part of"
@@ -4499,6 +4532,12 @@ msgid ""
 "<p>E-mails are sent with your e-mail address as sender, so you will receive "
 "answers in your own mailbox.</p>"
 msgstr ""
+"<p>La sezione di messaggistica ti consente di inviare e-mail a diversi "
+"elenchi di membri. Non è più necessario mantenere molti elenchi di e-mail a "
+"seconda dei contratti, poiché tutti questi elenchi vengono generati "
+"automaticamente.</p> <p>Le e-mail vengono inviate con il tuo indirizzo e-"
+"mail come mittente, quindi riceverai le risposte nella tua casella di posta. "
+"</p>"
 
 #: common/Common.hx:12182
 msgid "Click here now on this page"
@@ -4511,6 +4550,10 @@ msgid ""
 "can define other coordinators among members. They will then be able to "
 "manage one or many contracts, send emails, etc.</p>"
 msgstr ""
+"<p>In quest'ultima pagina, puoi configurare tutto ciò che è collegato al tuo "
+"gruppo.</p> <p> La pagina <b>Diritti di accesso</b> è importante in quanto è "
+"dove puoi definire altri coordinatori tra i membri. Saranno quindi in grado "
+"di gestire uno o più contratti, inviare e-mail, ecc.</p>"
 
 #: common/Common.hx:12722
 msgid ""
