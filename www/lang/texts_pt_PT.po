@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-01-07 11:21+0000\n"
+"PO-Revision-Date: 2020-05-22 13:41+0000\n"
 "Last-Translator: Manuela Silva <mmsrs@sky.com>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "cagette/translations/pt_PT/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.10.1-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: ../src/payment/Cash.hx:276
 msgid "Cash"
@@ -1868,7 +1868,7 @@ msgstr "Endereço de e-mail inválido"
 
 #: ../src/service/UserService.hx:1967 ../src/service/UserService.hx:3342
 msgid "We already have an account with this email address"
-msgstr "Nós já temos uma conta com este endereço de e-mail."
+msgstr "Nós já temos uma conta com este endereço de ''e-mail''"
 
 #: ../src/service/UserService.hx:2550
 msgid "Members of this group should provide a phone number"
@@ -3647,7 +3647,7 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4421
 msgid "Prod. ID"
-msgstr "Id. do Prod."
+msgstr "Id. do Produto"
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4582
 msgid "Unit price including taxes"
