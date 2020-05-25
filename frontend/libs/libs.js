@@ -46,6 +46,7 @@
     'date-fns': require('date-fns'),
     'date-fns/locale': require('date-fns/locale'),
     'cagette-neo': require('cagette-neo'),
+    '@sentry/browser': require('@sentry/browser'),
   });
 
   /*if (process.env.NODE_ENV !== 'production') {

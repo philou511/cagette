@@ -67,7 +67,9 @@ class App {
 	 * The JS App will be available as "_" in the document.
 	 */
 	public static function main() {
-		
+        
+        sentry.Sentry.init({dsn: "https://505d95e8dea34941be60ceb06195de50@o394906.ingest.sentry.io/5245923"});
+
 		//untyped js.Browser.window.$ = js.Lib.require("jQuery");
         untyped js.Browser.window._ = new App();
         

@@ -214,7 +214,7 @@ class UserService
 		if(group.hasMembership){
 			var ms = new service.MembershipService(group);
 			var upToDateMemberships = ms.countUpToDateMemberships();
-			lists.push({id:"noMembership",	name:"Adhésion à renouveller",	count:membersNum-upToDateMemberships});
+			lists.push({id:"noMembership",	name:"Adhésion à renouveler",	count:membersNum-upToDateMemberships});
 			lists.push({id:"membership",	name:"Adhésion à jour",			count:upToDateMemberships	});
 		}
 		

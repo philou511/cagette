@@ -10,6 +10,7 @@
     "@material-ui/icons": "3.0.1",
     "@material-ui/lab": "^4.0.0-alpha.40",
     "@material-ui/pickers": "^3.2.10",
+    "@sentry/browser": "^5.15.5",
     "bootstrap.native": "^2.0.27",
     "bowser": "^2.1.0",
     "cagette-neo": "file:./cagette-neo",
