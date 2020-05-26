@@ -1,6 +1,7 @@
 import bootstrap.Modal;
 import js.Browser;
 import Common;
+import thx.semver.Version;
 
 //React lib
 import react.ReactMacro.jsx;
@@ -41,18 +42,24 @@ extern class NeolithicViewsGenerator {
 
 class App {
 
-	public static var instance : App;
-	public var LANG : String;
+    public static var instance : App;    
+    public static var VERSION = ([0,14]  : Version).withPre(GitMacros.getGitShortSHA(), GitMacros.getGitCommitDate());
+    	
 	public var currency : String; //currency symbol like &euro; or $
 	public var t : sugoi.i18n.GetText;//gettext translator
 	public var Modal = bootstrap.Modal;
-	public var Collapse = bootstrap.Collapse;
+    public var Collapse = bootstrap.Collapse;
+    public var lang : String;
+    public var userId : Int;
+    public var userName : String;
+    public var userEmail : String;
+    
 
 
 	function new(?lang="fr",?currency="&euro;") {
 		//singleton
 		instance = this;
-		if(lang!=null) this.LANG = lang;
+		if(lang!=null) this.lang = lang;
 		this.currency = currency;
 	}
 
@@ -68,27 +75,52 @@ class App {
 	 */
 	public static function main() {
         
-        sentry.Sentry.init({dsn: "https://505d95e8dea34941be60ceb06195de50@o394906.ingest.sentry.io/5245923"});
-
-		//untyped js.Browser.window.$ = js.Lib.require("jQuery");
         untyped js.Browser.window._ = new App();
         
         NeolithicViewsGenerator.setApiUrl("/api");
 		untyped js.Browser.window._NeolithicViewsGenerator = NeolithicViewsGenerator;
-	}
+    }
+    
+
+    var sentryInited:Bool;
+
+    public function initSentry(){
+
+        if(sentryInited) return;
+
+        sentry.Sentry.init({
+            dsn: "https://505d95e8dea34941be60ceb06195de50@o394906.ingest.sentry.io/5245923",
+            release: App.VERSION.toString()
+        });
+
+        if(this.userEmail!=null){
+            untyped sentry.Sentry.configureScope(function(scope) {
+                scope.setUser({
+                    "email": this.userEmail,
+                    "userName" : this.userName,
+                    "id" : this.userId,
+                });
+            });
+        }
+
+        sentryInited = true;
+    }
 
 	/**
 		Old Shop
 	**/
 	public function getCart() {
+        initSentry();
 		return new ShopCart();
 	}
 
 	public function getTagger(cid:Int ) {
+        initSentry();
 		return new Tagger(cid);
 	}
 
 	public function getTuto(name:String, step:Int) {
+        initSentry();
 		new Tuto(name,step);
 	}
 	
@@ -101,7 +133,7 @@ class App {
 	}
 	
 	public function getVATBox(ttcprice:Float,currency:String,rates:String,vat:Float,formName:String){
-		
+		initSentry();
 		var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
 		
 		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
@@ -117,7 +149,7 @@ class App {
 	 * @param	formName
 	 */
 	public function getProductInput(divId:String, productName:String, txpProductId:Null<Int>, formName:String ){
-
+        initSentry();
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
 			//dirty stuff to remove "real" input, and replace it by the react one
@@ -134,8 +166,10 @@ class App {
 	 * @param	vendorId
 	 */
 	public function getVendorPage(divId:String, vendorId:Int, catalogId:Int ) {
-
+        
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
+
+            initSentry();
 
 			//Load data from API
 			var vendorInfo:VendorInfos = null;
@@ -171,6 +205,7 @@ class App {
 	}
 
 	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
+        initSentry();
 		var node = js.Browser.document.createDivElement();
 		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); 
@@ -181,10 +216,12 @@ class App {
 	}
 	
 	public function initReportHeader(){
+        initSentry();
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
 	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
+        initSentry();
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "ordersdialog-container";
@@ -207,6 +244,7 @@ class App {
 	}
 
 	private function createOrderBoxReduxStore() {
+        
 		// Store creation
 		var rootReducer = Redux.combineReducers({ reduxApp : mapReducer(react.order.redux.actions.OrderBoxAction, new react.order.redux.reducers.OrderBoxReducer()) });
 		// create middleware normally, excepted you must use
@@ -215,16 +253,7 @@ class App {
 		return createStore( rootReducer, null, middleWare );
 	}
 
-	/**
-		Trigger bootstrap actions after React comps init
-	**/
-	function postReact(){
-		haxe.Timer.delay(function(){
-		// 	untyped jq('[data-toggle="tooltip"]').tooltip();
-		// 	untyped jq('[data-toggle="popover"]').popover();
-		},500);
-		
-	}
+	
 
 	public static function roundTo(n:Float, r:Int):Float {
 		return Math.round(n * Math.pow(10,r)) / Math.pow(10,r) ;
@@ -256,6 +285,8 @@ class App {
 	 * Displays a login box
 	 */
 	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {	
+        initSentry();
+
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'identifier";
 		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
@@ -273,6 +304,8 @@ class App {
 	 *  Displays a sign up box
 	 */
 	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
+        initSentry();
+
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
 		modalElement.querySelector(".modal-dialog").classList.remove("modal-lg");
@@ -286,6 +319,7 @@ class App {
 	}
 
 	public function membershipBox(userId:Int,groupId:Int,?callbackUrl:String,?distributionId:Int){
+        initSentry();
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
@@ -319,10 +353,10 @@ class App {
 	}
 
 	/**
-		instanciates mui shop
+		instanciates shop2
 	**/
 	public function shop(multiDistribId:Int) {
-
+        initSentry();
 
 		var elements = js.Browser.window.document.querySelectorAll('.sticky');
 		sticky.Stickyfill.add(elements);
@@ -357,6 +391,8 @@ class App {
 
 	
 	public function groupMap(lat:Float,lng:Float,address:String) {
+        initSentry();
+
 		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
 	}
 

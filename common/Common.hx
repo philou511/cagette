@@ -398,7 +398,7 @@ class TutoDatas {
 	//async 
 	public static function get(tuto:String, callback:Dynamic->Void){
 		#if !test
-		sugoi.i18n.Locale.init(App.instance.LANG, function(t:sugoi.i18n.GetText){			
+		sugoi.i18n.Locale.init(App.instance.lang, function(t:sugoi.i18n.GetText){			
 			App.instance.t = t;
 			init(t);
 			var tuto = TUTOS.get(tuto);

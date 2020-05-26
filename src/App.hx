@@ -1,6 +1,7 @@
 import db.User;
 import thx.semver.Version;
 import Common;
+import GitMacros;
  
 class App extends sugoi.BaseApp {
 
@@ -16,7 +17,7 @@ class App extends sugoi.BaseApp {
 	 * Version management
 	 * @doc https://github.com/fponticelli/thx.semver
 	 */ 
-	public static var VERSION = ([0,14]  : Version).withPre(MyMacros.getGitShortSHA(), MyMacros.getGitCommitDate());
+	public static var VERSION = ([0,14]  : Version).withPre(GitMacros.getGitShortSHA(), GitMacros.getGitCommitDate());
 	
 	public function new(){
 		super();

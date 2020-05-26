@@ -16,6 +16,7 @@
 -lib tink_json
 -lib haxe-lodash
 -lib jQueryExtern
+-lib thx.semver
 
 
 -main App

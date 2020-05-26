@@ -2,7 +2,7 @@ import haxe.macro.Expr;
 import haxe.macro.Context;
 import StringTools;
 
-class MyMacros {
+class GitMacros {
 	/* based on 
 	http://code.haxe.org/category/macros/add-git-commit-hash-in-build.html 
 	http://stackoverflow.com/questions/8611486/how-to-get-the-last-commit-date-for-a-bunch-of-files-in-git*/
