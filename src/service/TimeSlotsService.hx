@@ -119,12 +119,20 @@ class TimeSlotsService{
 		// distrib slots must be activated
 		if (distribution.slots == null) return null;
 
-		// TODO : distrib should be closed
+		var userOrders = distribution.getOrders();
+
+		// on récupère les slots resolvers
+		var slots = distribution.slots.map(slot -> 
+			return new SlotResolver(slot.id, slot.registeredUserIds.filter(userId -> {
+				var founded = userOrders.find(uo -> {
+					return  uo.user.id == userId;
+				});
+				return founded != null;
+			}))
+		);
 
 		// parse
-		var slotResolvers = resolve(resolveUserMonoSlot(
-			distribution.slots.map(slot -> new SlotResolver(slot.id, slot.registeredUserIds))
-		));
+		var slotResolvers = resolve(resolveUserMonoSlot(slots));
 
 		var registeredAndInNeedUserIds = new Array<Int>();
 		var it = distribution.inNeedUserIds.keys();
@@ -142,7 +150,7 @@ class TimeSlotsService{
 			.map(userOrder -> userOrder.user.id);
 		
 
-			// RESOLVE 2
+		// RESOLVE 2
 		slotResolvers = resolve(slotResolvers.map(resolved -> 
 			new SlotResolver(resolved.id, notInSoltUserOrderIds, resolved.selectedUserIds)
 		));
