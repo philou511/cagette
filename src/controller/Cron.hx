@@ -609,7 +609,7 @@ class Cron extends Controller
 		/*
 		 * Autovalidate unvalidated distributions after 10 days
 		 */ 
-		var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
+		/*var from = now.setHourMinute( now.getHours() , 0 ).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 		var to = now.setHourMinute( now.getHours() + 1 , 0).deltaDays( 0 - db.Distribution.DISTRIBUTION_VALIDATION_LIMIT );
 		task.log('<h3>Autovalidation of unvalidated distribs</h3>');
 		task.log('Find distributions from $from to $to');
@@ -635,7 +635,7 @@ class Cron extends Controller
 			var subj = t._("[::group::] Validation of the ::date:: distribution",{group : d.getGroup().name , date : view.hDate(d.distribStartDate)});
 			var html = t._("<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>", {deliveryDate:App.current.view.hDate(d.distribStartDate)});
 			App.quickMail(d.getGroup().contact.email, subj, html);
-		}
+		}*/
 		
 	}
 	
