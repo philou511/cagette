@@ -101,10 +101,10 @@ class ReportService{
 			}
 
 			sugoi.tools.Csv.printCsvDataFromObjects(data, ["quantity", "pname","ref", "priceHT","priceTTC","totalHT","totalTTC"],"Export-"+exportName+"-par produits");
-			return null;
-		}else{
-			return orders;		
 		}
+		
+		return orders;		
+		
 	}
 
 
@@ -130,7 +130,7 @@ class ReportService{
 		var multiDistrib = db.MultiDistrib.get(date, place);
 		if ( multiDistrib.getDistributions().length == 0 ) throw new Error(t._("There is no delivery at this date"));
 		
-		var vendorDataByVendorId = new Map<Int,Dynamic>();//key : vendor id
+		var vendorDataByVendorId = new Map<Int,{contract:db.Catalog,distrib:db.Distribution,orders:Array<OrderByProduct>}>();//key : vendor id
 		
 		for (d in multiDistrib.getDistributions(db.Catalog.TYPE_VARORDER)) {
 
@@ -139,21 +139,20 @@ class ReportService{
 			
 			if (vendorData == null) {
 				vendorDataByVendorId.set( vendorId, {contract:d.catalog, distrib:d, orders:service.ReportService.getOrdersByProduct(d)});	
-			}
-			else {
+			} else {
 				
 				//add orders with existing ones
 				for ( productOrder in service.ReportService.getOrdersByProduct(d)){
 					
 					//find record in existing orders
-					var vendorProductOrders  : Dynamic = Lambda.find(vendorData.orders, function(a) return a.pid == productOrder.pid);
+					var vendorProductOrders  : OrderByProduct = vendorData.orders.find( (a:OrderByProduct) -> return a.pid == productOrder.pid);
 					if (vendorProductOrders == null){
 						//new product order
 						vendorData.orders.push(productOrder);						
 					}else{
 						//increment existing
-						vendorProductOrders.quantity += untyped productOrder.quantity;
-						vendorProductOrders.total += untyped productOrder.total;
+						vendorProductOrders.quantity += productOrder.quantity;
+						vendorProductOrders.totalTTC += productOrder.totalTTC;
 					}
 				}
 				vendorDataByVendorId.set(vendorId, vendorData);
