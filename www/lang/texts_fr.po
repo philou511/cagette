@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Weblate 4.1-dev\n"
 
 #: ../src/payment/Cash.hx:293
 msgid "Cash"
@@ -199,7 +199,7 @@ msgstr "Nom du producteur ou de la ferme"
 
 #: ../src/controller/Contract.hx:3355
 msgid "Vendor email"
-msgstr "Email du producteur"
+msgstr "Courriel du producteur"
 
 #: ../src/controller/Contract.hx:3449 ../lang/master/tpl/member/import.mtt:932
 #: ../lang/master/tpl/member/import.mtt:1638
@@ -221,8 +221,8 @@ msgid ""
 "We will send him/her an email to explain that your group is going to "
 "organize orders for him very soon"
 msgstr ""
-"Nous lui enverrons un email pour lui expliquer que votre groupe va organiser "
-"des commandes pour lui très bientôt."
+"Nous lui enverrons un courriel pour lui expliquer que votre groupe va "
+"organiser des commandes pour lui très bientôt"
 
 #: ../src/controller/Contract.hx:5003
 msgid "Create a catalog"
@@ -434,7 +434,7 @@ msgstr "Configuration mise à jour"
 
 #: ../src/controller/admin/Admin.hx:2224
 msgid "Email service configuration"
-msgstr "Configuration du service d'email"
+msgstr "Configuration du service de courriel"
 
 #: ../src/controller/Messages.hx:793
 msgid "Sender name"
@@ -442,7 +442,7 @@ msgstr "Nom expéditeur"
 
 #: ../src/controller/Messages.hx:881
 msgid "Sender E-Mail"
-msgstr "Email expéditeur"
+msgstr "Courriel expéditeur"
 
 #: ../src/controller/Messages.hx:967
 msgid "Recipients"
@@ -500,7 +500,7 @@ msgstr "Vous n'êtes pas connecté"
 
 #: ../src/controller/User.hx:2233
 msgid "Please key-in your E-Mail address"
-msgstr "Saisissez votre email"
+msgstr "Saisissez votre courriel"
 
 #: ../src/controller/User.hx:2391 ../src/controller/User.hx:5615
 msgid "Your new password"
@@ -512,7 +512,7 @@ msgstr "Retapez votre mot de passe pour vérification"
 
 #: ../src/controller/User.hx:3119
 msgid "This E-mail is not linked to a known account"
-msgstr "Cet email n'est lié à aucun compte connu"
+msgstr "Ce courriel n'est lié à aucun compte connu"
 
 #: ../src/controller/User.hx:3408 ../src/controller/User.hx:4397
 #: ../src/controller/Member.hx:12079 ../src/db/User.hx:17210
@@ -574,7 +574,7 @@ msgid ""
 "You're now a member of \"::group::\" ! You'll receive an email as soon as "
 "next order will open"
 msgstr ""
-"Vous êtes maintenant membre de \"::group::\" ! Vous recevrez un email dès "
+"Vous êtes maintenant membre de « ::group:: » ! Vous recevrez un courriel dès "
 "que la prochaine commande ouvrira"
 
 #: ../src/controller/User.hx:8885
@@ -645,7 +645,7 @@ msgstr "Invitation envoyée."
 #: ../src/controller/Member.hx:5322
 msgid "An error occurred while sending emails, please retry"
 msgstr ""
-"Une erreur temporaire est survenue pendant l'envoi des emails, merci de "
+"Une erreur temporaire est survenue pendant l'envoi des courriels, merci de "
 "réessayer"
 
 #: ../src/controller/Member.hx:5422
@@ -665,8 +665,8 @@ msgid ""
 "For security reasons, you cannot modify the e-mail of this person because "
 "this person is a member of more than 1 group."
 msgstr ""
-"Par sécurité, vous ne pouvez pas modifier l'email de cette personne car elle "
-"est membre de plusieurs groupes."
+"Par sécurité, vous ne pouvez pas modifier le courriel de cette personne car "
+"elle est membre de plusieurs groupes."
 
 #: ../src/controller/Member.hx:10137
 msgid ""
@@ -683,41 +683,41 @@ msgstr "Mot de passe"
 
 #: ../src/controller/Member.hx:10651 ../src/controller/Member.hx:22885
 msgid "Phone number is required in this group."
-msgstr "Le numéro de téléphone est obligatoire pour ce groupe"
+msgstr "Le numéro de téléphone est obligatoire pour ce groupe."
 
 #: ../src/controller/Member.hx:11212
 msgid ""
 "This e-mail was used by another user account. As this user account was not "
 "used, it has been merged into the current user account."
 msgstr ""
-"Cet email était utilisé dans une autre fiche de membre, comme cette fiche "
+"Ce courriel était utilisé dans une autre fiche de membre, comme cette fiche "
 "était inutilisée, elle a été fusionnée avec la fiche courante."
 
 #: ../src/controller/Member.hx:11386
 msgid "Warning, this e-mail or this name already exists for another account : "
-msgstr "Attention, cet email ou ce nom existe déjà pour un autre compte : "
+msgstr "Attention, ce courriel ou ce nom existe déjà pour un autre compte : "
 
 #: ../src/controller/Member.hx:11609
 msgid "These accounts can't be merged because the second account has orders"
 msgstr ""
 "Ces comptes ne peuvent pas être fusionnés car le second compte a des "
-"commandes "
+"commandes"
 
 #: ../src/controller/Member.hx:12153
 msgid "Change your e-mail in your account Cagette.net"
-msgstr "Changement d'email sur votre compte Cagette.net"
+msgstr "Changement de courriel sur votre compte Cagette.net"
 
 #: ../src/controller/Member.hx:12297 ../src/controller/Member.hx:12825
 msgid ""
 " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
 "now:"
 msgstr ""
-" vient de modifier votre email dans votre compte Cagette.net.<br/>Votre "
-"email est maintenant :"
+" vient de modifier votre courriel dans votre compte Cagette.net.<br/>Votre "
+"courriel est maintenant :"
 
 #: ../src/controller/Member.hx:12683
 msgid "Change the e-mail of your account Cagette.net"
-msgstr "Changement d'email sur votre compte Cagette.net"
+msgstr "Changement de courriel sur votre compte Cagette.net"
 
 #: ../src/controller/Member.hx:13023
 msgid "This member has beed updated"
@@ -787,7 +787,7 @@ msgstr "Nom"
 #: ../src/controller/Member.hx:16563 ../lang/master/tpl/member/view.mtt:611
 #: ../lang/master/tpl/member/view.mtt:735
 msgid "E-mail"
-msgstr "Email"
+msgstr "Courriel"
 
 #: ../src/controller/Member.hx:16578
 msgid "Mobile phone"
@@ -803,7 +803,7 @@ msgstr "Nom conjoint(e)"
 
 #: ../src/controller/Member.hx:16654
 msgid "Partner's e-mail"
-msgstr "Email conjoint(e)"
+msgstr "Courriel conjoint(e)"
 
 #: ../src/controller/Member.hx:16679
 msgid "Partner's Mobile phone"
@@ -836,7 +836,8 @@ msgstr "Ville"
 
 #: ../src/controller/Member.hx:17022
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
-msgstr "Le mail <b>::email::</b> est invalide, merci de modifier votre fichier"
+msgstr ""
+"Le courriel <b>::email::</b> est invalide, merci de modifier votre fichier"
 
 #: ../src/controller/Member.hx:17290
 msgid ""
@@ -851,24 +852,24 @@ msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
 msgstr ""
-"Chaque personne doit avoir un email pour pouvoir se connecter. ::user0:: ::"
-"user1:: n'en a pas. "
+"Chaque personne doit avoir un courriel pour pouvoir se connecter. ::user0:: "
+"::user1:: n'en a pas. "
 
 #: ../src/controller/Member.hx:19201
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
-msgstr "L'email ::useremail:: est invalide, merci de modifier votre fichier"
+msgstr "Le courriel ::useremail:: est invalide, merci de modifier votre fichier"
 
 #: ../src/controller/Member.hx:19529
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::"
 "userEmail::' is invalid, please check your file"
 msgstr ""
-"L'email du conjoint(e) de ::userFirstName:: ::userLastName:: '::userEmail::' "
-"est invalide, vérifiez votre fichier"
+"Le courriel du conjoint(e) de ::userFirstName:: ::userLastName:: « "
+"::userEmail:: » est invalide, vérifiez votre fichier"
 
 #: ../src/controller/Member.hx:21268
 msgid "Send an E-mail to the person in charge of the group"
-msgstr "Envoyer un mail au responsable du groupe"
+msgstr "Envoyer un courriel au responsable du groupe"
 
 #: ../src/controller/Member.hx:21973
 msgid "This person is already member of this group"
@@ -1019,7 +1020,7 @@ msgstr "Boulangerie"
 
 #: ../src/controller/amapadmin/Categories.hx:1006
 msgid "Grocery"
-msgstr "Epicerie"
+msgstr "Épicerie"
 
 #: ../src/controller/amapadmin/Categories.hx:1022
 msgid "Beverages"
@@ -1031,7 +1032,7 @@ msgstr "Libellés"
 
 #: ../src/controller/amapadmin/Categories.hx:1067
 msgid "Certified organic agriculture"
-msgstr "Agriculture biologique"
+msgstr "Agriculture biologique certifiée"
 
 #: ../src/controller/amapadmin/Categories.hx:1105
 msgid "Uncertified organic agriculture"
@@ -1039,7 +1040,7 @@ msgstr "Agriculture biologique non certifiée"
 
 #: ../src/controller/amapadmin/Categories.hx:1145
 msgid "Non organic"
-msgstr "Conventionnel"
+msgstr "Non biologique"
 
 #: ../src/controller/amapadmin/Categories.hx:1207
 msgid "Default categories have been created"
@@ -1102,22 +1103,23 @@ msgstr ""
 #: ../src/controller/amapadmin/Volunteers.hx:711
 msgid "Number of days before duty period to send mail"
 msgstr ""
-"Envoi du mail d'information aux bénévoles (en jours avant la distribution)"
+"Envoi du courriel d'information aux bénévoles (en jours avant la "
+"distribution)"
 
 #: ../src/controller/amapadmin/Volunteers.hx:888
 msgid "Email body sent to volunteers"
-msgstr "Corps de l'email envoyé aux bénévoles"
+msgstr "Corps du courriel envoyé aux bénévoles"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1351
 msgid ""
 "Number of days before duty period to send mail for vacant volunteer roles"
 msgstr ""
-"Envoi d'un email d'alerte si il manque des bénévoles (en jours avant la "
-"distribution) "
+"Nombre de jours avant la permanence pour envoyer un courriel pour les rôles "
+"de bénévole vacants"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1560
 msgid "Alert email body"
-msgstr "Corps de l'email d'alerte"
+msgstr "Corps du courriel d'alerte"
 
 #: ../src/controller/amapadmin/Volunteers.hx:2849
 msgid "Your changes have been successfully saved."
@@ -1169,7 +1171,7 @@ msgstr "Votre nom de famille"
 
 #: ../src/controller/Group.hx:2034 ../src/controller/Group.hx:4116
 msgid "Your e-mail"
-msgstr "Votre email"
+msgstr "Votre courriel"
 
 #: ../src/controller/Group.hx:2130
 msgid "Leave a message"
@@ -1181,7 +1183,7 @@ msgid ""
 "e-mail as soon as your request is processed."
 msgstr ""
 "Votre demande d'enregistrement en liste d'attente a été prise en compte. "
-"Vous recevrez un email dès que votre demande sera traitée."
+"Vous recevrez un courriel dès que votre demande sera traitée."
 
 #: ../src/controller/Group.hx:2791
 msgid "Subscription to \"::groupeName::\" waiting list"
@@ -1467,15 +1469,15 @@ msgstr "La commande a été mise à jour"
 
 #: ../src/controller/Cron.hx:1300
 msgid "Sorry, the email entitled <b>::title::</b> could not be sent."
-msgstr "Désolé, l'email intitulé <b>::title::</b> n'a pas pu être envoyé."
+msgstr "Désolé, le courriel intitulé <b>::title::</b> n'a pas pu être envoyé."
 
 #: ../src/controller/Cron.hx:1420
 msgid "Email not sent"
-msgstr "Email non envoyé"
+msgstr "Courriel non envoyé"
 
 #: ../src/controller/Cron.hx:3555
 msgid "Instructions for the volunteers of the ::date:: distribution"
-msgstr "Instructions pour les bénévoles de la distribution du ::date:: "
+msgstr "Instructions pour les bénévoles de la distribution du ::date::"
 
 #: ../src/controller/Cron.hx:3736 ../src/controller/Cron.hx:6188
 msgid "::date:: from ::startHour:: to ::endHour::"
@@ -1637,8 +1639,8 @@ msgid ""
 "Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
 "password is 'admin'"
 msgstr ""
-"Groupe et utilisateur 'admin' créé. Votre email est 'admin@cagette.net' et "
-"votre mot de passe est 'admin'"
+"Groupe et utilisateur « admin » créé. Votre courriel est « admin@cagette.net "
+"» et votre mot de passe est « admin »"
 
 #: ../src/controller/Install.hx:4652
 msgid "You must update your database to version "
@@ -1678,11 +1680,11 @@ msgstr "Vous n'êtes pas membre de ce groupe"
 
 #: ../src/controller/Account.hx:4219 ../src/controller/Account.hx:4410
 msgid "Email ::em:: is invalid"
-msgstr "L'email ::em:: est invalide"
+msgstr "Le courriel ::em:: est invalide"
 
 #: ../src/controller/Account.hx:4674
 msgid "This email is already used by another account."
-msgstr "Cet email est déjà utilisé par un autre compte."
+msgstr "Ce courriel est déjà utilisé par un autre compte."
 
 #: ../src/controller/Account.hx:4994
 msgid "Your account has been updated"
@@ -1811,8 +1813,8 @@ msgid ""
 "patient, you will receive an e-mail indicating if the request has been "
 "validated or refused."
 msgstr ""
-"Votre demande de livraison a été envoyée à <b>::supplierName::</b>.<br/"
-">Soyez patient(e), Vous recevrez un email qui vous indiquera si votre "
+"Votre demande de livraison a été envoyée à <b>::supplierName::</b>.<br/> "
+"Soyez patient(e), vous recevrez un courriel qui vous indiquera si votre "
 "demande a été acceptée ou refusée."
 
 #: ../src/controller/Distribution.hx:14685
@@ -1934,7 +1936,7 @@ msgstr "Il n'y a pas de bénévole à effacer pour ce rôle !"
 
 #: ../src/controller/Distribution.hx:39100
 msgid "You can only remove yourself from a role."
-msgstr ""
+msgstr "Vous ne pouvez que vous retirer vous-même d'un rôle."
 
 #: ../src/controller/Distribution.hx:39213
 msgid "Reason for leaving the role"
@@ -1991,13 +1993,13 @@ msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
 msgstr ""
-"Veuillez configurer l'envoi d'emails dans <href='/admin/emails'>cette "
+"Veuillez configurer l'envoi de courriels dans <href='/admin/emails'>cette "
 "rubrique</a>"
 
 #: ../src/service/DistributionService.hx:1322
 #: ../src/service/DistributionService.hx:1962
 msgid "This distribution has no date."
-msgstr "Cette distribution n'a pas de date"
+msgstr "Cette distribution n'a pas de date."
 
 #: ../src/service/DistributionService.hx:2119
 msgid ""
@@ -2034,8 +2036,8 @@ msgstr ""
 #: ../src/service/DistributionService.hx:4793
 msgid "The distribution start date must be set after the orders end date."
 msgstr ""
-"La date de début de distribution doit être située après la fermeture des "
-"commandes"
+"La date de début de distribution doit être établie après la fermeture des "
+"commandes."
 
 #: ../src/service/DistributionService.hx:4948
 msgid "The orders end date must be set after the orders start date !"
@@ -2093,7 +2095,7 @@ msgstr ""
 
 #: ../src/service/DistributionService.hx:16536
 msgid "daysBeforeOrderEnd or daysBeforeOrderStart is null"
-msgstr "daysBeforeOrderEnd or daysBeforeOrderStart is null"
+msgstr "daysBeforeOrderEnd ou daysBeforeOrderStart est vide"
 
 #: ../src/service/DistributionService.hx:17578
 msgid "this distributionCycle has not been recorded"
@@ -2176,7 +2178,7 @@ msgstr "Par membre"
 
 #: ../src/service/UserService.hx:506
 msgid "There is no account with this email"
-msgstr "Il n'y a pas de compte avec cet email"
+msgstr "Il n'y a pas de compte avec ce courriel"
 
 #: ../src/service/UserService.hx:633
 msgid ""
@@ -2191,8 +2193,8 @@ msgid ""
 "Your account have not been validated yet. We sent an e-mail to ::email:: to "
 "finalize your subscription!"
 msgstr ""
-"Votre compte n'a pas encore été validé. Nous vous avons envoyé un email à ::"
-"email:: pour finaliser votre inscription !"
+"Votre compte n'a pas encore été validé. Nous vous avons envoyé un courriel à "
+"::email:: pour finaliser votre inscription !"
 
 #: ../src/service/UserService.hx:1213
 msgid "Invalid password"
@@ -2201,11 +2203,11 @@ msgstr "Mot de passe invalide"
 #: ../src/service/UserService.hx:1858 ../src/service/UserService.hx:3222
 #: ../src/service/UserService.hx:3775
 msgid "Invalid email address"
-msgstr "L'email que vous avez saisi est invalide"
+msgstr "Adresse courriel invalide"
 
 #: ../src/service/UserService.hx:1969 ../src/service/UserService.hx:3345
 msgid "We already have an account with this email address"
-msgstr "Nous avons déjà un compte avec cette adresse email"
+msgstr "Nous avons déjà un compte avec cette adresse courriel"
 
 #: ../src/service/UserService.hx:2553
 msgid "Members of this group should provide a phone number"
@@ -2319,7 +2321,7 @@ msgstr "Ce membre n'est pas assigné à ce rôle !"
 
 #: ../src/service/VolunteerService.hx:7645
 msgid "Missing distribution or role in the url!"
-msgstr ""
+msgstr "Distribution manquante ou rôle dans l'URL !"
 
 #: ../src/service/VolunteerService.hx:8783
 msgid "Duty period"
@@ -2346,28 +2348,32 @@ msgid ""
 "The number of days before the duty periods to send the instructions mail to "
 "all the volunteers needs to be greater than 1 day."
 msgstr ""
-"Le nombre de jours pour l'envoi du mail d'instructions doit être supérieur à "
-"1."
+"Le nombre de jours avant les permanences pour l'envoi du courriel "
+"d'instructions doit être supérieur à 1."
 
 #: ../src/service/VolunteerService.hx:9704
 msgid ""
 "The number of days before the duty periods to send the instructions mail to "
 "all the volunteers needs to be lower than 15 days."
 msgstr ""
-"Le nombre de jours pour l'envoi du mail d'instructions doit être inférieur à "
-"15."
+"Le nombre de jours avant les permanences pour l'envoi du courriel "
+"d'instructions à tous les bénévoles doit être inférieur à 15."
 
 #: ../src/service/VolunteerService.hx:9927
 msgid ""
 "The number of days before the duty periods to send the vacant roles mail to "
 "all members needs to be greater than 1 day."
 msgstr ""
+"Le nombre de jours avant les permanences avant l'envoi du courriel pour les "
+"rôles vacants à tous les membres doit être de plus de 1."
 
 #: ../src/service/VolunteerService.hx:10119
 msgid ""
 "The number of days before the duty periods to send the instructions mail to "
 "all members needs to be lower than 15 days."
 msgstr ""
+"Le nombre de jours avant les permanences pour envoyer le courriel "
+"d'instructions à tous les membres doit être inférieur à 15."
 
 #. kilogramms
 #: ../src/View.hx:3151 ../common/Formatting.hx:1336
@@ -2398,12 +2404,12 @@ msgstr "L"
 #. centiliter
 #: ../src/View.hx:3372 ../common/Formatting.hx:1500
 msgid "cl."
-msgstr "cl"
+msgstr "cL"
 
 #. milliliter
 #: ../src/View.hx:3417
 msgid "ml."
-msgstr "ml."
+msgstr "mL"
 
 #: ../src/View.hx:3718
 msgid "Sunday"
@@ -2544,7 +2550,7 @@ msgstr "Nom du producteur"
 #: ../lang/master/tpl/member/waiting.mtt:180
 #: ../lang/master/tpl/contractadmin/view.mtt:1263
 msgid "Email"
-msgstr "Email"
+msgstr "Courriel"
 
 #: ../src/db/Vendor.hx:5009 ../src/db/Group.hx:12197
 msgid "Legal status"
@@ -2647,7 +2653,7 @@ msgstr "Nom conjoint"
 #: ../src/db/User.hx:18769 ../lang/master/tpl/member/import.mtt:800
 #: ../lang/master/tpl/member/import.mtt:1510
 msgid "Partner email"
-msgstr "Email conjoint"
+msgstr "Courriel conjoint(e)"
 
 #: ../src/db/User.hx:18806
 msgid "Partner phone"
@@ -2895,7 +2901,7 @@ msgstr "Derniers messages envoyés"
 
 #: ../lang/master/tpl/messages/default.mtt:626
 msgid "Send an e-mail"
-msgstr "Envoyer un email"
+msgstr "Envoyer un courriel"
 
 #: ../lang/master/tpl/base.mtt:3511
 msgid "Close"
@@ -2967,7 +2973,7 @@ msgstr ""
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:343
 msgid "You chose to pay with your money pot."
-msgstr "Vous avez choisi de payer avec votre cagnotte"
+msgstr "Vous avez choisi de payer avec votre cagnotte."
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:419
 msgid ""
@@ -3377,7 +3383,7 @@ msgstr "Définir mon mot de passe"
 msgid ""
 "Emails are temporarily stored in a buffer, waiting to be sent by the cron"
 msgstr ""
-"Les emails sont temporairement stockés dans cette liste d'attente, en "
+"Les courriels sont temporairement stockés dans cette liste d'attente, en "
 "attendant d'être envoyés"
 
 #: ../lang/master/tpl/macros.mtt:675
@@ -3481,7 +3487,7 @@ msgstr "Ce virement doit être validé par un coordinateur"
 
 #: ../lang/master/tpl/macros.mtt:8093
 msgid "You need to pay on the spot at the collection of products"
-msgstr "Vous paierez votre commande sur place."
+msgstr "Vous paierez votre commande sur place à la livraison de vos produits"
 
 #: ../lang/master/tpl/macros.mtt:13395
 msgid "HELP"
@@ -3584,7 +3590,7 @@ msgid ""
 "the order of columns"
 msgstr ""
 "Remplissez ce fichier, ou modifiez un fichier existant en respectant l'ordre "
-"des colonnes du fichier de démonstration."
+"des colonnes du fichier de démonstration"
 
 #: ../lang/master/tpl/product/import.mtt:2994
 msgid ""
@@ -3828,26 +3834,26 @@ msgstr "Commandes"
 msgid "Distribution start date is different from general distribution"
 msgstr ""
 "La date de début de distribution est différente de la date de la "
-"distribution principale."
+"distribution principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:11064
 #: ../lang/master/tpl/distribution/default.mtt:12276
 msgid "Distribution end date is different from general distribution"
 msgstr ""
 "La date de fin de distribution est différente de la date de fin de la "
-"distribution principale."
+"distribution principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:12597
 msgid "Order start date is different from general distribution"
 msgstr ""
 "La date d'ouverture des commandes est différente de celle de la distribution "
-"principale."
+"principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:12923
 msgid "Order end date is different from general distribution"
 msgstr ""
 "La date de fermeture des commandes est différente de celle de la "
-"distribution principale."
+"distribution principale"
 
 #: ../lang/master/tpl/distribution/default.mtt:13648
 #: ../lang/master/tpl/contractadmin/distributions.mtt:2222
@@ -3938,7 +3944,7 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/volunteersCalendar.mtt:4878
 msgid "There are no distributions in the specified time range"
-msgstr "Il n'y a pas de distributions dans cette fenêtre de temps."
+msgstr "Il n'y a pas de distributions sur cette période"
 
 #: ../lang/master/tpl/distribution/listByProductUser.mtt:920
 msgid "Members on duty"
@@ -4123,16 +4129,16 @@ msgstr ""
 "><ul><li>Pour commencer, <a href=\"/adherents.xls\">téléchargez ce fichier "
 "de démonstration.</a></li><li>Remplissez correctement ce fichier, ou "
 "modifiez votre fichier existant pour respecter scrupuleusement l'ordre des "
-"colonnes.</li><li>Une fois votre fichier rempli, cliquez sur \"enregistrer "
-"sous\" dans votre tableur, et choisissez le format \"CSV\"</"
-"li><li>Choisissez les options suivantes : caractère de séparation : "
-"<b>virgule</b> ou <b>point virgule</b>, encodage : <b>Unicode UTF-8</b></"
-"li><li>Enregistrez votre fichier</li><li>Ensuite, cliquez sur le bouton "
-"\"choisissez un fichier\" ci-dessus et envoyez votre fichier</li></ul>"
+"colonnes.</li><li>Une fois votre fichier rempli, cliquez sur « enregistrer "
+"sous » dans votre tableur, et choisissez le format CSV</li><li>Choisissez "
+"les options suivantes : caractère de séparation : <b>virgule</b> ou <b>point "
+"virgule</b>, encodage : <b>Unicode UTF-8</b></li><li>Enregistrez votre "
+"fichier</li><li>Ensuite, cliquez sur le bouton « choisissez un fichier » ci-"
+"dessus et envoyez votre fichier</li></ul>"
 
 #: ../lang/master/tpl/member/lastMessages.mtt:75
 msgid "Subject"
-msgstr "Sujet du message"
+msgstr "Objet"
 
 #: ../lang/master/tpl/member/payments.mtt:1695
 #: ../lang/master/tpl/plugin/pro/delivery/default.mtt:4145
@@ -4407,7 +4413,7 @@ msgstr ""
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4388
 msgid "Prod. ID"
-msgstr "Ref."
+msgstr "Réf."
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4549
 msgid "Unit price including taxes"
@@ -4774,14 +4780,15 @@ msgid ""
 "If you have forgotten your password or if you would like to change it, "
 "please key-in below your e-mail address:"
 msgstr ""
-"Si vous avez oublié votre mot de passe ou que vous souhaitez le changer,   "
-"saisissez ci-dessous votre email :"
+"Si vous avez oublié votre mot de passe ou que vous souhaitez le changer, "
+"saisissez ci-dessous votre courriel :"
 
 #: ../lang/master/tpl/user/definePassword.mtt:326
 #: ../lang/master/tpl/user/forgottenPassword.mtt:446
 msgid "An e-mail was sent to you to allow you changing your password."
 msgstr ""
-"Un email vous a été envoyé afin que vous puissiez changer votre mot de passe."
+"Un courriel vous a été envoyé afin que vous puissiez changer votre mot de "
+"passe."
 
 #: ../lang/master/tpl/user/definePassword.mtt:433
 #: ../lang/master/tpl/user/forgottenPassword.mtt:563
@@ -4887,7 +4894,7 @@ msgstr ""
 "Vous pouvez modifier ici une commande déjà réalisée. Si vous souhaitez "
 "enlever un article, mettez simplement la quantité à zéro.<br/>\n"
 "Vous ne pourrez pas forcément modifier tous les articles car la commande "
-"peut être close pour certains fournisseurs."
+"peut être close pour certains fournisseurs"
 
 #: ../lang/master/tpl/contract/orderByDate.mtt:1538
 msgid "Order closed or already paid"
@@ -5077,19 +5084,19 @@ msgstr "J'ai reçu ce paiement"
 
 #: ../lang/master/tpl/validate/user.mtt:3894
 msgid " I have received this payment in cash"
-msgstr "J'ai reçu ce paiement en liquide"
+msgstr " J'ai reçu ce paiement en liquide"
 
 #: ../lang/master/tpl/validate/user.mtt:3997
 msgid " I have received this payment by check"
-msgstr "J'ai reçu ce paiement par chèque"
+msgstr " J'ai reçu ce paiement par chèque"
 
 #: ../lang/master/tpl/validate/user.mtt:4107
 msgid " I have received this payment by transfer"
-msgstr "J'ai reçu ce paiement par virement"
+msgstr " J'ai reçu ce paiement par virement"
 
 #: ../lang/master/tpl/validate/user.mtt:4202
 msgid " I have received this payment by ::paymentType::"
-msgstr "J'ai reçu ce paiement par ::paymentType::"
+msgstr " J'ai reçu ce paiement par ::paymentType::"
 
 #: ../lang/master/tpl/validate/user.mtt:4738
 msgid "Total paid"
@@ -5222,8 +5229,8 @@ msgstr "Le nouveau mot de passe est <b>::pass::</b>, ne l'oubliez pas !"
 msgid ""
 "You can use the following emails to log into your account : <b>::emails::</b>"
 msgstr ""
-"Vous pouvez utiliser les emails suivants pour vous connecter à votre "
-"compte : <b>::emails::</b>"
+"Vous pouvez utiliser les courriels suivants pour vous connecter à votre "
+"compte : <b>::emails::</b>"
 
 #: ../lang/master/tpl/mail/forgottenPassword.mtt:80
 msgid "You asked to modify your password,"
@@ -5260,13 +5267,13 @@ msgstr ""
 msgid "In order to finalize the subscription, please choose your password"
 msgstr ""
 "Afin de finaliser votre inscription, vous êtes invité(e) à définir votre mot "
-"de passe."
+"de passe"
 
 #: ../lang/master/tpl/mail/invitation.mtt:790
 msgid "You will then be able to connect anytime by using your e-mail"
 msgstr ""
 "Vous pourrez ensuite vous connecter quand vous le souhaitez en utilisant "
-"votre email"
+"votre courriel"
 
 #: ../lang/master/tpl/mail/invitation.mtt:930
 msgid "and your password on the website"
@@ -5286,7 +5293,7 @@ msgstr "Ce rôle doit être attribué à une autre personne."
 
 #: ../lang/master/tpl/mail/design.mtt:577
 msgid "This e-mail was sent from"
-msgstr "Cet email a été envoyé depuis"
+msgstr "Ce courriel a été envoyé depuis"
 
 #: ../lang/master/tpl/mail/design.mtt:695
 msgid "You receive this message because you are part of"
