@@ -181,6 +181,8 @@ class Vendor extends Object
 		
 		//profession
 		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,false),4);
+
+		form.getElement("email").required = true;
 		
 		return form;
 	}

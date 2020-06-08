@@ -1,5 +1,8 @@
 package service;
 
+import haxe.macro.Expr.Error;
+import sugoi.form.validators.EmailValidator;
+
 class VendorService{
 
 	public function new(){}
@@ -101,8 +104,34 @@ class VendorService{
 		}
 		#end
 
-
 		return vendors;
+	}
+
+
+	/**
+		Create a vendor
+	**/
+	public static function create(vendor:db.Vendor){
+
+		if(vendor.id!=null) throw new tink.core.Error("Ce producteur est déjà dans la base de données");
+		
+		//email
+		if( vendor.email==null ) throw new tink.core.Error("Vous devez définir un email pour ce producteur.");
+		if( !EmailValidator.check(vendor.email) ) throw new tink.core.Error("Email invalide.");
+
+		//already exists ?
+		var vendors = db.Vendor.manager.search($email==vendor.email,false).array();
+		#if plugins
+		for( v in vendors.copy()){
+			//remove training pro accounts
+			var cpro = pro.db.CagettePro.getFromVendor(v);
+			if(cpro!=null && cpro.training) vendors.remove(v);
+		}
+		#end
+		if(vendors.length>0) throw new tink.core.Error("Un producteur est déjà référencé avec cet email dans notre base de données");
+
+		
+		vendor.insert();
 	}
 
 

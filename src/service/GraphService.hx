@@ -34,9 +34,10 @@ class GraphService{
         var day = date.getDate();
         var _from = new Date(year,month,day,0,0,0);
         var _to = new Date(year,month,day,23,59,59);
-        // trace(_from);
-        //do not record stats in the future
+
+        //do not record stats for today or in the future
         if(_from.getTime()>Date.now().getTime()) return null;
+        if(_from.toString().substr(0,10)==Date.now().toString().substr(0,10)) return null;
 
         var g = Graph.manager.select($key==key && $date==_from,false);
 

@@ -1,4 +1,7 @@
 package controller;
+import sugoi.Web;
+import tink.core.Error;
+import service.VendorService;
 import tools.DateTool;
 import service.SubscriptionService;
 import db.MultiDistrib;
@@ -160,12 +163,15 @@ class Contract extends Controller
 				
 		var vendor = new db.Vendor();
 		var form = db.Vendor.getForm(vendor);
-		
 				
 		if (form.isValid()) {
-			form.toSpod(vendor);
-			vendor.insert();
-
+			try{
+				form.toSpod(vendor);			
+				VendorService.create(vendor);
+			}catch(e:Error){
+				throw Error(Web.getURI(),e.message);
+			}
+			
 			/*service.VendorService.getOrCreateRelatedUser(vendor);
 			service.VendorService.sendEmailOnAccountCreation(vendor,app.user,app.user.getGroup());*/
 			
