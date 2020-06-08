@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-05-06 16:47+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"PO-Revision-Date: 2020-05-22 13:41+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
 "Language: de\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
@@ -507,7 +507,7 @@ msgstr "Name des Sender"
 
 #: src/controller/Messages.hx:882
 msgid "Sender E-Mail"
-msgstr "Email des Senders"
+msgstr "E-Mail des Senders"
 
 #: src/controller/Messages.hx:966
 msgid "Recipients"
@@ -559,7 +559,7 @@ msgstr "Sie sind nicht verbunden"
 
 #: src/controller/User.hx:2007
 msgid "Please key-in your E-Mail address"
-msgstr "Bitte geben Sie ihre Email-Adresse ein"
+msgstr "Bitte geben Sie ihre E-Mail-Adresse ein"
 
 #: src/controller/User.hx:2165 src/controller/User.hx:4623
 msgid "Your new password"
@@ -571,7 +571,7 @@ msgstr "Bestätigen des Passwortes"
 
 #: src/controller/User.hx:2778
 msgid "This E-mail is not linked to a known account"
-msgstr "Diese Emailadresse kann zu keinem Konto zugeordnet werden"
+msgstr "Diese E-Mail-Adresse kann zu keinem Konto zugeordnet werden"
 
 #: src/controller/User.hx:3067 src/controller/Member.hx:11952
 #: src/db/User.hx:14600 lang/master/tpl/design.mtt:4337
@@ -685,7 +685,7 @@ msgid ""
 "For security reasons, you cannot modify the e-mail of this person because "
 "this person is a member of more than 1 group."
 msgstr ""
-"Aus Sicherheitsgründen können Sie die Email dieser Person nicht ändern, da "
+"Aus Sicherheitsgründen können Sie die E-Mail dieser Person nicht ändern, da "
 "sie ein Mitglied mehrerer Gruppen ist."
 
 #: src/controller/Member.hx:10073
@@ -706,14 +706,14 @@ msgid ""
 "This e-mail was used by another user account. As this user account was not "
 "used, it has been merged into the current user account."
 msgstr ""
-"Diese Email wurde von einem anderen User-Konto benutzt. Da dieses Konto "
+"Diese E-Mail wurde von einem anderen User-Konto benutzt. Da dieses Konto "
 "nicht genutzt wird, haben wir die beiden Konten fusioniert."
 
 #: src/controller/Member.hx:11259
 msgid "Warning, this e-mail or this name already exists for another account : "
 msgstr ""
 "Warnung, diese E-Mail oder dieser Name wird bereits für ein anderes Konto "
-"verwendet : "
+"verwendet: "
 
 #: src/controller/Member.hx:11482
 msgid "These accounts can't be merged because the second account has orders"
@@ -723,19 +723,19 @@ msgstr ""
 
 #: src/controller/Member.hx:12026
 msgid "Change your e-mail in your account Cagette.net"
-msgstr "Ändern Sie ihre Email in ihrem Konto Lemilo.de"
+msgstr "Ändern Sie ihre E-Mail in ihrem Konto Lemilo.de"
 
 #: src/controller/Member.hx:12170 src/controller/Member.hx:12698
 msgid ""
 " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
 "now:"
 msgstr ""
-" wurde ihre Email von ihrem Konto Lemilo.de geändert<br/>Ihre Email ist "
+" wurde ihre E-Mail von ihrem Konto Lemilo.de geändert<br/>Ihre E-Mail ist "
 "jetzt:"
 
 #: src/controller/Member.hx:12556
 msgid "Change the e-mail of your account Cagette.net"
-msgstr "Die Email in ihrem Konto Lemilo.de ändern"
+msgstr "Die E-Mail in ihrem Konto Lemilo.de ändern"
 
 #: src/controller/Member.hx:12896
 msgid "This member has beed updated"
@@ -805,11 +805,11 @@ msgstr "Nachname"
 #: src/controller/Member.hx:16420 lang/master/tpl/member/view.mtt:613
 #: lang/master/tpl/member/view.mtt:737
 msgid "E-mail"
-msgstr "E-mail"
+msgstr "E-Mail"
 
 #: src/controller/Member.hx:16435
 msgid "Mobile phone"
-msgstr "Handynummer"
+msgstr "Mobiltelefonnummer"
 
 #: src/controller/Member.hx:16456
 msgid "Partner's firstname"
@@ -821,11 +821,11 @@ msgstr "Nachname (Partner)"
 
 #: src/controller/Member.hx:16511
 msgid "Partner's e-mail"
-msgstr "Email (Partner)"
+msgstr "E-Mail (Partner)"
 
 #: src/controller/Member.hx:16536
 msgid "Partner's Mobile phone"
-msgstr "Handynummer (Partner)"
+msgstr "Mobiltelefonnummer (Partner)"
 
 #: src/controller/Member.hx:16567 src/db/Vendor.hx:1229 src/db/User.hx:15937
 #: src/db/Place.hx:1372 lang/master/tpl/member/import.mtt:866
@@ -866,24 +866,24 @@ msgid ""
 "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
 "don't have one. "
 msgstr ""
-"Jede Person muss eine Emailadresse haben um sich einzuloggen. ::user0:: ::"
-"user1:: hat keine. "
+"Jede Person muss eine E-Mail-Adresse haben um sich einzuloggen. ::user0:: "
+"::user1:: hat keine. "
 
 #: src/controller/Member.hx:19245
 msgid "The E-mail ::useremail:: is invalid, please modify your file"
-msgstr "Die Email ::useremail:: ist ungültig, bitte ändern Sie ihre Datei"
+msgstr "Die E-Mail ::useremail:: ist ungültig, bitte ändern Sie ihre Datei"
 
 #: src/controller/Member.hx:19573
 msgid ""
 "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::"
 "userEmail::' is invalid, please check your file"
 msgstr ""
-"Die Emailadresse ihres Parteners ::userFirstName:: ::userLastName:: ‘::"
-"userEmail::’ ist ungültig, bitte ändern Sie ihre Datei"
+"Die E-Mail-Adresse ihres Parteners ::userFirstName:: ::userLastName:: "
+"„::userEmail::“ ist ungültig, bitte ändern Sie ihre Datei"
 
 #: src/controller/Member.hx:21541
 msgid "Send an E-mail to the person in charge of the group"
-msgstr "Mail an Gruppenverantwortlichen senden"
+msgstr "E-Mail an Gruppenverantwortlichen senden"
 
 #: src/controller/Member.hx:22239
 msgid "This person is already member of this group"
@@ -1043,7 +1043,7 @@ msgstr "Nachname"
 
 #: src/controller/Group.hx:1530 src/controller/Group.hx:3476
 msgid "Your e-mail"
-msgstr "Email"
+msgstr "Ihre E-Mail"
 
 #: src/controller/Group.hx:1626
 msgid "Leave a message"
@@ -1060,12 +1060,12 @@ msgid ""
 "Your subscription to the waiting list has been recorded. You will receive an "
 "e-mail as soon as your request is processed."
 msgstr ""
-"Sie wurden auf der Warteliste eingetragen. Sobald ihre Email bearbeitet "
+"Sie wurden auf der Warteliste eingetragen. Sobald ihre E-Mail bearbeitet "
 "wurde, erhalten Sie eine Nachricht."
 
 #: src/controller/Group.hx:2462
 msgid "Subscription to \"::groupeName::\" waiting list"
-msgstr "Tragen Sie sich in die “::groupeName::” Warteliste ein"
+msgstr "Tragen Sie sich in die „::groupeName::“ Warteliste ein"
 
 #: src/controller/Group.hx:3082
 msgid "Join the group"
@@ -1526,8 +1526,8 @@ msgid ""
 "Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
 "password is 'admin'"
 msgstr ""
-"Gruppe und Benutzer „admin” angelegt. Ihre E-Mail ist „admin@cagette.net” "
-"und Ihr Passwort ist „admin”."
+"Gruppe und Benutzer „admin“ angelegt. Ihre E-Mail ist „admin@cagette.net“ "
+"und Ihr Passwort ist „admin“."
 
 #: src/controller/Install.hx:4181
 msgid "You must update your database to version "
@@ -1551,7 +1551,7 @@ msgstr "Folgende Updates wurden vorgenommen:<ul>"
 
 #: src/controller/Account.hx:853 src/controller/Account.hx:1044
 msgid "Email ::em:: is invalid"
-msgstr "Email ::em:: ist bestätigt"
+msgstr "E-Mail ::em:: ist bestätigt"
 
 #: src/controller/Account.hx:1308
 msgid "This email is already used by another account."
@@ -1676,9 +1676,9 @@ msgid ""
 "patient, you will receive an e-mail indicating if the request has been "
 "validated or refused."
 msgstr ""
-"Ihre Nachfrage nach einer Lieferung wurde gesandt an <b>::supplierName::</b>."
-"<br/>Bitte haben Sie Geduld, Sie erhalten eine Email, die ihrer Nachfrage "
-"nachkommt oder diese ablehnt."
+"Ihre Nachfrage nach einer Lieferung wurde gesandt an "
+"<b>::supplierName::</b>.<br/>Bitte haben Sie Geduld, Sie erhalten eine E-"
+"Mail, die ihrer Nachfrage nachkommt oder diese ablehnt."
 
 #: src/controller/Distribution.hx:8397
 msgid "Distribution request sent"
@@ -1751,7 +1751,7 @@ msgid ""
 "Please configure the email settings in a <href='/admin/emails'>this section</"
 "a>"
 msgstr ""
-"Bitte richten Sie die Email-Einstellungen ein <href=‘/admin/emails’>this "
+"Bitte richten Sie die E-Mail-Einstellungen ein <href='/admin/emails'>this "
 "section</a>"
 
 #: src/service/UserService.hx:501
@@ -1781,12 +1781,12 @@ msgstr "Wir haben bereits ein Konto mit dieser E-Mail-Adresse"
 #. kilogramms
 #: src/View.hx:3308 common/Formatting.hx:1337
 msgid "Kg."
-msgstr "Kg."
+msgstr "kg"
 
 #. gramms
 #: src/View.hx:3349 common/Formatting.hx:1377
 msgid "g."
-msgstr "g."
+msgstr "g"
 
 #. unit of a product)
 #: src/View.hx:3400
@@ -1801,12 +1801,12 @@ msgstr "Anzahl"
 #. liter
 #: src/View.hx:3490 common/Formatting.hx:1462
 msgid "L."
-msgstr "L."
+msgstr "L"
 
 #. centiliter
 #: src/View.hx:3529 common/Formatting.hx:1501
 msgid "cl."
-msgstr "cl."
+msgstr "cL"
 
 #: src/View.hx:4064
 msgid "Sunday"
@@ -1936,7 +1936,7 @@ msgstr "Beschreibung"
 #: lang/master/tpl/member/waiting.mtt:195
 #: lang/master/tpl/contractadmin/view.mtt:898
 msgid "Email"
-msgstr "E-mail"
+msgstr "E-Mail"
 
 #: src/db/Vendor.hx:1374
 msgid "Link text"
@@ -2260,7 +2260,7 @@ msgstr "Letzte gesendete Nachricht"
 
 #: lang/master/tpl/messages/default.mtt:626
 msgid "Send an e-mail"
-msgstr "Email senden"
+msgstr "E-Mail senden"
 
 #: lang/master/tpl/base.mtt:3362
 msgid "Close"
@@ -3224,13 +3224,13 @@ msgstr ""
 "einer einfachen Excel- oder Libre-Office-Datei importieren.<br/><ul><li>>Der "
 "erste Schritt besteht darin, <a href=\"/adherents.xls\">diese Demo-Datei "
 "herunterzuladen.</a></li><li>Füllen Sie die Tabelle aus, um Ihre bestehende "
-"Datei so zu ändern, dass sie genau der Spaltenreihenfolge "
-"entspricht.</li><li>Wenn Ihre Datei fertig ist, klicken Sie auf \"Speichern "
-"unter\" in Ihrer Tabellenkalkulationssoftware und wählen Sie \"CSV\""
-"-Format</li><li>Wählen Sie aus folgenden Optionen: Trennzeichen: <b>Komma</b>"
-" oder <b>Semikolon</b>, Kodierung: <b>Unicode UTF-8</b></li><li>Speichern "
-"Sie die Datei</li><li>schließlich, klicken Sie auf \"eine Datei auswählen\" "
-"auf dieser Seite und laden Sie sie hoch.</li></ul>"
+"Datei so zu ändern, dass sie genau der Spaltenreihenfolge entspricht.</"
+"li><li>Wenn Ihre Datei fertig ist, klicken Sie auf „Speichern unter“ in "
+"Ihrer Tabellenkalkulationssoftware und wählen Sie CSV-Format</li><li>Wählen "
+"Sie aus folgenden Optionen: Trennzeichen: <b>Komma</b> oder <b>Semikolon</"
+"b>, Kodierung: <b>Unicode UTF-8</b></li><li>Speichern Sie die Datei</"
+"li><li>schließlich, klicken Sie auf „eine Datei auswählen“ auf dieser Seite "
+"und laden Sie sie hoch.</li></ul>"
 
 #: lang/master/tpl/member/lastMessages.mtt:75
 msgid "Subject"
@@ -4603,7 +4603,7 @@ msgstr ""
 
 #: lang/master/tpl/mail/invitation.mtt:809
 msgid "You will then be able to connect anytime by using your e-mail"
-msgstr "Mit ihrer Emailadresse können Sie sich jederzeit verbinden"
+msgstr "Mit ihrer E-Mail-Adresse können Sie sich jederzeit verbinden"
 
 #: lang/master/tpl/mail/invitation.mtt:949
 msgid "and your password on the website"
@@ -4615,7 +4615,7 @@ msgstr "Anmeldung abschließen"
 
 #: lang/master/tpl/mail/design.mtt:218
 msgid "This e-mail was sent from"
-msgstr "Email gesendet von"
+msgstr "E-Mail gesendet aus"
 
 #: lang/master/tpl/mail/design.mtt:336
 msgid "You receive this message because you are part of"
@@ -4821,11 +4821,11 @@ msgid ""
 "<p>E-mails are sent with your e-mail address as sender, so you will receive "
 "answers in your own mailbox.</p>"
 msgstr ""
-"<p>Die Software ermöglicht es Mails direkt an verschiedene Gruppen zu "
+"<p>Die Software ermöglicht es, E-Mails direkt an verschiedene Gruppen zu "
 "verschicken. Es ist nicht nötig verschiedene Mailisten anzulegen, denn alle "
 "Listen sind automatisiert, je nachdem welches Angebot ein Mitglied gewählt "
-"hat, .</p> <p>Die Mails werden mit Ihrer E-Mailadresse als Absender "
-"verschickt, so dass Sie wie gewöhnlich die Anworten in ihrer Mailbox "
+"hat, .</p> <p>Die E-Mails werden mit Ihrer E-Mail-Adresse als Absender "
+"verschickt, so dass Sie wie gewöhnlich die Anworten in ihrem Postfach "
 "vorfinden.</p>"
 
 #: common/Common.hx:12182
