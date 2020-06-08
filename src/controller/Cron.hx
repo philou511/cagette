@@ -1,4 +1,5 @@
 package controller;
+import service.GraphService;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
 import db.MultiDistrib;
@@ -342,6 +343,17 @@ class Cron extends Controller
 			}
 		});
 		task.execute(!App.config.DEBUG);
+
+		//stats
+		var task = new TransactionWrappedTask( "Stats", function() {
+			var yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 0, 0, 0);
+
+			for( k in GraphService.getAllGraphKeys()){
+				GraphService.getDay(k,yesterday);
+			}
+
+		});
+		task.execute();
 	}
 	
 	/**

@@ -1,4 +1,6 @@
 package controller.admin;
+import tools.Timeframe;
+import service.GraphService;
 import db.Catalog;
 import db.MultiDistrib;
 import haxe.web.Dispatch;
@@ -126,28 +128,34 @@ class Admin extends Controller {
 	}
 
 	@tpl("admin/graph.mtt")
-	function doGraph(?key:String,?year:Int,?month:Int){
+	function doGraph(?key:String,?month:Int,?year:Int){
+		
+		if(month==null){
+			var now = Date.now();
+			year = now.getFullYear();
+			month = now.getMonth();
+		}
+		
 
 		if(key==null) {
-			var now = Date.now();
-			view.year = now.getFullYear();
-			view.month = now.getMonth();
+			//display graphs index						
 			return;
 		}
 
 		var from = new Date(year,month,1,0,0,0);
 		var to = new Date(year,month+1,0,23,59,59);
 
-		if(app.params.exists("recompute")){
+
+		/*if(app.params.exists("recompute")){
 
 			switch(key){
 				case "basket":
 					for( d in 1...to.getDate()){
 						var _from = new Date(year,month,d,0,0,0);
 						var _to = new Date(year,month,d,23,59,59);
-						var value = db.Basket.manager.count($cdate>=_from && $cdate<=_to);
+						var value = service.GraphService.baskets(_from,_to);
 						var g = db.Graph.record(key,value, _from );
-						// trace(value,_from,g);
+
 					}
 				case "turnover":
 					for( d in 1...to.getDate()){
@@ -162,20 +170,29 @@ class Admin extends Controller {
 						
 					}
 			}
-		}
+		}*/
 
-		var data = db.Graph.getRange(key,from,to);
-		view.data = data;
-		view.from = from;
-		view.to = to;
-		view.key = key;
-
+		var data = GraphService.getRange(key,from,to);
+		
 		var averageValue = 0.0;
 		var total = 0.0;
+		var estimatedTotal = 0.0;
+
 		for( d in data) total += d.value;
 		averageValue = total/data.length;
-		view.total = total;
-		view.averageValue = averageValue;
+		estimatedTotal = total + ((31-data.length)*averageValue);
+
+		view.data = data;
+		view.averageValue = Formatting.formatNum(averageValue);
+		view.total = Formatting.formatNum(total);
+		view.estimatedTotal = Formatting.formatNum(estimatedTotal); 
+		view.key = key;
+		view.year = year;
+		view.month = month;
+		view.from = from;
+		view.to = to;
+
+
 	}
 
 	@tpl("admin/default.mtt")

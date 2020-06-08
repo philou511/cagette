@@ -3,9 +3,14 @@
 	::if(key!=null)::
 		<h3>::key::</h3>
 		<p>
-			Du ::hDate(from):: au ::hDate(to)::<br/>
+			<a href="/admin/graph/::key::/::month-1::/::year::" class="btn btn-default btn-sm">Précédent</a>
+			Du ::dDate(from):: au ::dDate(to)::
+			<a href="/admin/graph/::key::/::month+1::/::year::" class="btn btn-default btn-sm">Suivant</a><br/>
+
+
 			Total : <b>::total::</b><br/>
-			Moyenne : <b>::averageValue::</b>
+			Moyenne : <b>::averageValue::</b><br/>
+			Estimation : <b>::estimatedTotal::</b>
 
 		</p>
 		<p>
@@ -56,10 +61,13 @@
 
 		<ul>
 			<li>
-				<a href="/admin/graph/basket/::year::/::month::">Nbre de Paniers</a>
+				<a href="/admin/graph/basket">Nbre de Paniers</a>
 			</li>
 			<li>
-				<a href="/admin/graph/turnover/::year::/::month::">Chiffre d'affaires</a>
+				<a href="/admin/graph/turnover">Chiffre d'affaires</a>
+			</li>
+			<li>
+				<a href="/admin/graph/mangopay">C.A Mangopay</a>
 			</li>
 		</ul>
 
