@@ -1,16 +1,17 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
-"PO-Revision-Date: 2020-05-01 22:08+0000\n"
+"PO-Revision-Date: 2020-06-09 11:38+0200\n"
 "Last-Translator: Aram <aramollis@gmail.com>\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/"
-"translations/ca/>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/cagette/translations/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Poedit 2.0.6\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
 
 #: ../src/payment/Cash.hx:276
 msgid "Cash"
@@ -83,8 +84,7 @@ msgstr ""
 
 #: ../src/controller/Transaction.hx:5733 ../lang/master/tpl/transaction/pay.mtt:1181
 msgid "You do not have sufficient funds to pay this order with your money pot."
-msgstr ""
-"No teniu fons suficients per pagar aquesta comanda amb el vostre moneder."
+msgstr "No teniu fons suficients per pagar aquesta comanda amb el vostre moneder."
 
 #: ../src/controller/Transaction.hx:7077
 msgid "Payment on the spot for the order of ::date::"
@@ -103,12 +103,8 @@ msgid "Forbidden access"
 msgstr ""
 
 #: ../src/controller/Vendor.hx:885 ../src/controller/Vendor.hx:1910
-msgid ""
-"You can't edit this vendor profile because he's active in more than one group. "
-"If you want him to update his profile, please ask him to do so."
-msgstr ""
-"No podeu editar aquest perfil de productor perquè està actiu en més d'un "
-"grup. Si voleu que actualitzi el seu perfil, demaneu que ho faci."
+msgid "You can't edit this vendor profile because he's active in more than one group. If you want him to update his profile, please ask him to do so."
+msgstr "No podeu editar aquest perfil de productor perquè està actiu en més d'un grup. Si voleu que actualitzi el seu perfil, demaneu que ho faci."
 
 #: ../src/controller/Vendor.hx:1533 ../src/controller/Place.hx:746 ../src/controller/Place.hx:1468 ../src/db/Vendor.hx:3937 ../src/db/Place.hx:1416
 msgid "Country"
@@ -139,9 +135,7 @@ msgid "If you would like to add fees to the order, define a rate (%) and a label
 msgstr ""
 
 #: ../src/controller/Contract.hx:5089
-msgid ""
-"Warning about management of stock. Please fill the field \"stock\" for all "
-"your products"
+msgid "Warning about management of stock. Please fill the field \"stock\" for all your products"
 msgstr ""
 
 #: ../src/controller/Contract.hx:5417
@@ -157,12 +151,8 @@ msgid "Define a vendor"
 msgstr "Sel.lecciona un productor/a"
 
 #: ../src/controller/Contract.hx:6367
-msgid ""
-"Before creating a record for the vendor you want to work with, let's search "
-"our database to check if he's not already referenced."
-msgstr ""
-"Abans de crear un registre per al productor amb el qual voleu treballar, "
-"busquem a la nostra base de dades per comprovar si aquest ja existeix."
+msgid "Before creating a record for the vendor you want to work with, let's search our database to check if he's not already referenced."
+msgstr "Abans de crear un registre per al productor amb el qual voleu treballar, busquem a la nostra base de dades per comprovar si aquest ja existeix."
 
 #: ../src/controller/Contract.hx:6608
 msgid "Vendor or farm name"
@@ -185,12 +175,8 @@ msgid "Key-in a new vendor"
 msgstr "Afegir un nou productor"
 
 #: ../src/controller/Contract.hx:7824
-msgid ""
-"We will send him/her an email to explain that your group is going to organize "
-"orders for him very soon"
-msgstr ""
-"Li enviarem un correu electrònic per explicar-li que el vostre grup "
-"organitzarà comandes molt aviat."
+msgid "We will send him/her an email to explain that your group is going to organize orders for him very soon"
+msgstr "Li enviarem un correu electrònic per explicar-li que el vostre grup organitzarà comandes molt aviat."
 
 #: ../src/controller/Contract.hx:8454
 msgid "Create a contract with fixed orders"
@@ -249,9 +235,7 @@ msgid "This delivery has already taken place, you can no longer modify the order
 msgstr ""
 
 #: ../src/controller/Contract.hx:18089
-msgid ""
-"<br/>As the manager of the contract you can modify the order from this page: "
-"<a href='/contractAdmin'>Management of contracts</a>"
+msgid "<br/>As the manager of the contract you can modify the order from this page: <a href='/contractAdmin'>Management of contracts</a>"
 msgstr ""
 
 #: ../src/controller/Contract.hx:19376
@@ -495,25 +479,16 @@ msgid "Congratulations ::userName::, your account is validated!"
 msgstr ""
 
 #: ../src/controller/User.hx:7602
-msgid ""
-"A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> "
-"<a href='::url::'>See contact details</a>"
-msgstr ""
-"Un nou membre s'ha unit al grup sense fer cap comanda: <br/"
-"><strong>::newMember::</strong><br/> <a href='::url::'>Veure les dades de "
-"contacte</a>"
+msgid "A new member joined the group without ordering : <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>"
+msgstr "Un nou membre s'ha unit al grup sense fer cap comanda: <br/><strong>::newMember::</strong><br/> <a href='::url::'>Veure les dades de contacte</a>"
 
 #: ../src/controller/User.hx:7846 ../src/controller/Member.hx:22757 ../lang/master/tpl/member/default.mtt:2537
 msgid "New member"
 msgstr ""
 
 #: ../src/controller/User.hx:7978
-msgid ""
-"You're now a member of \"::group::\" ! You'll receive an email as soon as "
-"next order will open"
-msgstr ""
-"Ara ets membre de \"::group::\"! Rebràs un correu electrònic tan bon punt s’"
-"obrirà la següent comanda"
+msgid "You're now a member of \"::group::\" ! You'll receive an email as soon as next order will open"
+msgstr "Ara ets membre de \"::group::\"! Rebràs un correu electrònic tan bon punt s’obrirà la següent comanda"
 
 #: ../src/controller/Controller.hx:535
 msgid "You should be logged in to perform this action."
@@ -592,15 +567,11 @@ msgid "You cannot modify the account of an administrator"
 msgstr ""
 
 #: ../src/controller/Member.hx:8887
-msgid ""
-"For security reasons, you cannot modify the e-mail of this person because "
-"this person is a member of more than 1 group."
+msgid "For security reasons, you cannot modify the e-mail of this person because this person is a member of more than 1 group."
 msgstr ""
 
 #: ../src/controller/Member.hx:9145
-msgid ""
-"This person did not define yet a password. You are exceptionaly authorized "
-"to do it. Please don't forget to tell this person."
+msgid "This person did not define yet a password. You are exceptionaly authorized to do it. Please don't forget to tell this person."
 msgstr ""
 
 #: ../src/controller/Member.hx:9389 ../src/db/User.hx:17901
@@ -612,9 +583,7 @@ msgid "Phone number is required in this group."
 msgstr ""
 
 #: ../src/controller/Member.hx:10215
-msgid ""
-"This e-mail was used by another user account. As this user account was not "
-"used, it has been merged into the current user account."
+msgid "This e-mail was used by another user account. As this user account was not used, it has been merged into the current user account."
 msgstr ""
 
 #: ../src/controller/Member.hx:10389
@@ -630,9 +599,7 @@ msgid "Change your e-mail in your account Cagette.net"
 msgstr ""
 
 #: ../src/controller/Member.hx:11300 ../src/controller/Member.hx:11828
-msgid ""
-" just modified your e-mail in your account Cagette.net.<br/>Your e-mail is "
-"now:"
+msgid " just modified your e-mail in your account Cagette.net.<br/>Your e-mail is now:"
 msgstr ""
 
 #: ../src/controller/Member.hx:11686
@@ -652,9 +619,7 @@ msgid "You cannot delete yourself."
 msgstr ""
 
 #: ../src/controller/Member.hx:12567
-msgid ""
-"Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Remove "
-"anyway</a>"
+msgid "Warning, this account has orders. <a class='btn btn-default btn-xs' href='/member/delete/::userid::?token=::argstoken::&confirm=1'>Remove anyway</a>"
 msgstr ""
 
 #: ../src/controller/Member.hx:12891
@@ -670,11 +635,7 @@ msgid "Merge an account with another one"
 msgstr ""
 
 #: ../src/controller/Member.hx:13364
-msgid ""
-"This action allows you to merge two accounts (when you have duplicates in "
-"the database for example).<br/>Contracts of account 2 will be moved to account "
-"1, and account 2 will be deleted. Warning, it is not possible to cancel this "
-"action."
+msgid "This action allows you to merge two accounts (when you have duplicates in the database for example).<br/>Contracts of account 2 will be moved to account 1, and account 2 will be deleted. Warning, it is not possible to cancel this action."
 msgstr ""
 
 #: ../src/controller/Member.hx:13847
@@ -739,18 +700,14 @@ msgstr ""
 
 #: ../src/controller/Member.hx:16087
 msgid "The email <b>::email::</b> is invalid, please update your CSV file"
-msgstr ""
-"El correu electrònic <b>::email::</b> no és vàlid, si us plau actualitzeu el "
-"vostre fitxer"
+msgstr "El correu electrònic <b>::email::</b> no és vàlid, si us plau actualitzeu el vostre fitxer"
 
 #: ../src/controller/Member.hx:16355
 msgid "You must fill the name and the firstname of the person. This line is incomplete: "
 msgstr ""
 
 #: ../src/controller/Member.hx:16521
-msgid ""
-"Each person must have an e-mail to be able to log in. ::user0:: ::user1:: "
-"don't have one. "
+msgid "Each person must have an e-mail to be able to log in. ::user0:: ::user1:: don't have one. "
 msgstr ""
 
 #: ../src/controller/Member.hx:18375
@@ -758,9 +715,7 @@ msgid "The E-mail ::useremail:: is invalid, please modify your file"
 msgstr ""
 
 #: ../src/controller/Member.hx:18703
-msgid ""
-"The E-mail of the partner of ::userFirstName:: ::userLastName:: '::userEmail::' "
-"is invalid, please check your file"
+msgid "The E-mail of the partner of ::userFirstName:: ::userLastName:: '::userEmail::' is invalid, please check your file"
 msgstr ""
 
 #: ../src/controller/Member.hx:20418
@@ -772,21 +727,15 @@ msgid "This person is already member of this group"
 msgstr ""
 
 #: ../src/controller/Member.hx:21461
-msgid ""
-"This person already had an account on Cagette.net, and is now member of your "
-"group."
+msgid "This person already had an account on Cagette.net, and is now member of your group."
 msgstr ""
 
 #: ../src/controller/Member.hx:21663
-msgid ""
-"Not possible to add this person because there are already some people in "
-"the database having the same firstname and name. Please contact the administrator."
+msgid "Not possible to add this person because there are already some people in the database having the same firstname and name. Please contact the administrator."
 msgstr ""
 
 #: ../src/controller/Member.hx:22453
-msgid ""
-"::admin:: just keyed-in contact details of a new member: <br/><strong>::newMember::</strong><br/> "
-"<a href='::url::'>See contact details</a>"
+msgid "::admin:: just keyed-in contact details of a new member: <br/><strong>::newMember::</strong><br/> <a href='::url::'>See contact details</a>"
 msgstr ""
 
 #: ../src/controller/Member.hx:22911
@@ -822,9 +771,7 @@ msgid "Subscription deleted"
 msgstr ""
 
 #: ../src/controller/Place.hx:1009
-msgid ""
-"Oops, we're unable to find where is located this address. This place will "
-"not be shown on the map."
+msgid "Oops, we're unable to find where is located this address. This place will not be shown on the map."
 msgstr ""
 
 #: ../src/controller/Place.hx:1188
@@ -844,9 +791,7 @@ msgid "Register a new delivery place"
 msgstr ""
 
 #: ../src/controller/Place.hx:1974
-msgid ""
-"You can't delete this place because one or more distributions are linked "
-"to this place."
+msgid "You can't delete this place because one or more distributions are linked to this place."
 msgstr ""
 
 #: ../src/controller/Place.hx:2134
@@ -983,9 +928,7 @@ msgstr "Nombre de dies abans de la distribució per obrir inscripció als torns"
 
 #: ../src/controller/amapadmin/Volunteers.hx:699
 msgid "Number of days before duty period to send mail"
-msgstr ""
-"Nombre de dies abans de la distribució per notificar per correu electrònic "
-"als voluntaris"
+msgstr "Nombre de dies abans de la distribució per notificar per correu electrònic als voluntaris"
 
 #: ../src/controller/amapadmin/Volunteers.hx:870
 msgid "Email body sent to volunteers"
@@ -993,9 +936,7 @@ msgstr "Cos del missatge enviat als voluntaris per correu electrònic"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1330
 msgid "Number of days before duty period to send mail for vacant volunteer roles"
-msgstr ""
-"Nombre de dies anteriors als torns per enviar un correu electrònic als "
-"voluntaris/es amb funcions o tasques vacants"
+msgstr "Nombre de dies anteriors als torns per enviar un correu electrònic als voluntaris/es amb funcions o tasques vacants"
 
 #: ../src/controller/amapadmin/Volunteers.hx:1533
 msgid "Alert email body"
@@ -1046,9 +987,7 @@ msgid "Leave a message"
 msgstr ""
 
 #: ../src/controller/Group.hx:2020
-msgid ""
-"Your subscription to the waiting list has been recorded. You will receive "
-"an e-mail as soon as your request is processed."
+msgid "Your subscription to the waiting list has been recorded. You will receive an e-mail as soon as your request is processed."
 msgstr ""
 
 #: ../src/controller/Group.hx:2267
@@ -1132,9 +1071,7 @@ msgid "CSA contract Vegetables - Example"
 msgstr ""
 
 #: ../src/controller/Group.hx:7209
-msgid ""
-"This contract is an example where the customer has to commit to buy the whole "
-"year as with AMAPs"
+msgid "This contract is an example where the customer has to commit to buy the whole year as with AMAPs"
 msgstr ""
 
 #: ../src/controller/Group.hx:7642 ../src/controller/Install.hx:3252
@@ -1158,9 +1095,7 @@ msgid "Chicken Contract - Example"
 msgstr ""
 
 #: ../src/controller/Group.hx:8619
-msgid ""
-"Example of contract with variable orders. It is allowed to order something "
-"else at every delivery."
+msgid "Example of contract with variable orders. It is allowed to order something else at every delivery."
 msgstr ""
 
 #: ../src/controller/Group.hx:9111
@@ -1172,9 +1107,7 @@ msgid "Chicken"
 msgstr ""
 
 #: ../src/controller/Shop.hx:761 ../src/controller/Main.hx:3066 ../src/controller/Main.hx:6086
-msgid ""
-"Members of this group should provide a phone number. <a href='/account/edit'>Please "
-"click here to update your account</a>."
+msgid "Members of this group should provide a phone number. <a href='/account/edit'>Please click here to update your account</a>."
 msgstr ""
 
 #: ../src/controller/Shop.hx:4848
@@ -1206,9 +1139,7 @@ msgid "You don't have the authorization to manage contracts"
 msgstr ""
 
 #: ../src/controller/ContractAdmin.hx:2330
-msgid ""
-"Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click "
-"here to add categories</a>"
+msgid "Warning, at least one product does not have any category. <a href='/product/categorize/::contractid::'>Click here to add categories</a>"
 msgstr ""
 
 #: ../src/controller/ContractAdmin.hx:3211
@@ -1289,9 +1220,7 @@ msgstr ""
 
 #: ../src/controller/ContractAdmin.hx:20182
 msgid "There is no delivery in this contract, please create at least one distribution."
-msgstr ""
-"No hi ha cap distribució en aquest contracte, creeu almenys una distribució "
-"com a mínim."
+msgstr "No hi ha cap distribució en aquest contracte, creeu almenys una distribució com a mínim."
 
 #: ../src/controller/ContractAdmin.hx:21146
 msgid "No delivery in this contract"
@@ -1315,9 +1244,7 @@ msgstr ""
 
 #: ../src/controller/Cron.hx:1300
 msgid "Sorry, the email entitled <b>::title::</b> could not be sent."
-msgstr ""
-"Ho sentim, no s'ha pogut enviar el correu electrònic amb el títol "
-"<b>::title::</b>."
+msgstr "Ho sentim, no s'ha pogut enviar el correu electrònic amb el títol <b>::title::</b>."
 
 #: ../src/controller/Cron.hx:1420
 msgid "Email not sent"
@@ -1364,15 +1291,11 @@ msgid "<p>This step is important in order to:</p>"
 msgstr ""
 
 #: ../src/controller/Cron.hx:16322
-msgid ""
-"<ul><li>Update orders if delivered quantities are different from ordered "
-"quantities</li>"
+msgid "<ul><li>Update orders if delivered quantities are different from ordered quantities</li>"
 msgstr ""
 
 #: ../src/controller/Cron.hx:16432
-msgid ""
-"<li>Confirm the reception of payments (checks, cash, transfers) in order "
-"to mark orders as 'paid'</li></ul>"
+msgid "<li>Confirm the reception of payments (checks, cash, transfers) in order to mark orders as 'paid'</li></ul>"
 msgstr ""
 
 #: ../src/controller/Cron.hx:17065
@@ -1385,16 +1308,11 @@ msgstr "[::group::] Validació de la distribució de ::date::"
 
 #: ../src/controller/Cron.hx:17410
 msgid "<p>Your distribution just finished, don't forget to <b>validate</b> it</p>"
-msgstr ""
-"<p>La vostra distribució està acabada, no us oblideu de <b>validar-la</b></p>"
+msgstr "<p>La vostra distribució està acabada, no us oblideu de <b>validar-la</b></p>"
 
 #: ../src/controller/Cron.hx:17524
-msgid ""
-"<p><a href='::distriburl::'>Click here to validate the distribution</a> (You "
-"must be connected to your group Cagette)"
-msgstr ""
-"<p><a href='::distriburl::'>Clicka aquí per validar la distribució</a> (Has "
-"d'estar connecta't al teu grup Cagette.net)</p>"
+msgid "<p><a href='::distriburl::'>Click here to validate the distribution</a> (You must be connected to your group Cagette)"
+msgstr "<p><a href='::distriburl::'>Clicka aquí per validar la distribució</a> (Has d'estar connecta't al teu grup Cagette.net)</p>"
 
 #: ../src/controller/Cron.hx:18414
 msgid ": Validation of the delivery of the "
@@ -1405,21 +1323,15 @@ msgid "<p>Reminder: you have a delivery to validate.</p>"
 msgstr ""
 
 #: ../src/controller/Cron.hx:18852
-msgid ""
-"<p><a href='::distriburl::'>Click here to validate the delivery</a> (You "
-"must be connected to your Cagette group)"
-msgstr ""
-"<p><a href='::distriburl::'>Clica aquí per validar la distribució</a> (heu "
-"d'estar connectats/des al vostre grup Cagette.net )</p>"
+msgid "<p><a href='::distriburl::'>Click here to validate the delivery</a> (You must be connected to your Cagette group)"
+msgstr "<p><a href='::distriburl::'>Clica aquí per validar la distribució</a> (heu d'estar connectats/des al vostre grup Cagette.net )</p>"
 
 #: ../src/controller/Cron.hx:20108
 msgid ": Validation of the distribution of the "
 msgstr ""
 
 #: ../src/controller/Cron.hx:20337
-msgid ""
-"<p>As you did not validate it manually after 10 days, <br/>the delivery of "
-"the ::deliveryDate:: has been validated automatically</p>"
+msgid "<p>As you did not validate it manually after 10 days, <br/>the delivery of the ::deliveryDate:: has been validated automatically</p>"
 msgstr ""
 
 #: ../src/controller/Validate.hx:1640
@@ -1483,9 +1395,7 @@ msgid "Vegetables Contract Example"
 msgstr ""
 
 #: ../src/controller/Install.hx:4057
-msgid ""
-"Group and user 'admin' created. Your email is 'admin@cagette.net' and your "
-"password is 'admin'"
+msgid "Group and user 'admin' created. Your email is 'admin@cagette.net' and your password is 'admin'"
 msgstr ""
 
 #: ../src/controller/Install.hx:4652
@@ -1513,12 +1423,8 @@ msgid "The link \"::link::\" does not exists."
 msgstr "El link \"::link::\" no existeix."
 
 #: ../src/controller/Main.hx:3367 ../src/controller/Main.hx:6387
-msgid ""
-"Members of this group should provide an address. <a href='/account/edit'>Please "
-"click here to update your account</a>."
-msgstr ""
-"Els membres d'aquest grup han de donar la seva adreça. <a href='/account/"
-"edit'>Clica aquí per actualitzar el vostre compte</a>."
+msgid "Members of this group should provide an address. <a href='/account/edit'>Please click here to update your account</a>."
+msgstr "Els membres d'aquest grup han de donar la seva adreça. <a href='/account/edit'>Clica aquí per actualitzar el vostre compte</a>."
 
 #: ../src/controller/Account.hx:586 ../src/controller/Account.hx:777
 msgid "Email ::em:: is invalid"
@@ -1610,8 +1516,7 @@ msgstr ""
 
 #: ../src/controller/Distribution.hx:8946
 msgid "The distribution has been proposed to the supplier, please wait for its validation"
-msgstr ""
-"S'ha proposat la distribució al productor/a, espereu ara la seva validació"
+msgstr "S'ha proposat la distribució al productor/a, espereu ara la seva validació"
 
 #: ../src/controller/Distribution.hx:9172 ../src/controller/Distribution.hx:12202 ../src/controller/Distribution.hx:14733
 msgid "The distribution has been recorded"
@@ -1630,10 +1535,7 @@ msgid "Modify a delivery"
 msgstr ""
 
 #: ../src/controller/Distribution.hx:11646
-msgid ""
-"Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be "
-"patient, you will receive an e-mail indicating if the request has been validated "
-"or refused."
+msgid "Your request for a delivery has been sent to <b>::supplierName::</b>.<br/>Be patient, you will receive an e-mail indicating if the request has been validated or refused."
 msgstr ""
 
 #: ../src/controller/Distribution.hx:12070
@@ -1706,8 +1608,7 @@ msgstr "Seleccioneu els rols dels voluntaris per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:25804
 msgid "You need to first select the volunteer roles for this distribution"
-msgstr ""
-"Primer heu de seleccionar els rols dels voluntaris per aquesta distribució"
+msgstr "Primer heu de seleccionar els rols dels voluntaris per aquesta distribució"
 
 #: ../src/controller/Distribution.hx:26370
 msgid "No volunteer assigned"
@@ -1755,29 +1656,19 @@ msgstr "Heu estat inscrits en aquest rol."
 
 #: ../src/App.hx:8733
 msgid "Please configure the email settings in a <href='/admin/emails'>this section</a>"
-msgstr ""
-"Configureu l'enviament de correus electrònics en <href='/admin/emails'>"
-"aquesta secció</a>"
+msgstr "Configureu l'enviament de correus electrònics en <href='/admin/emails'>aquesta secció</a>"
 
 #: ../src/service/DistributionService.hx:1306 ../src/service/DistributionService.hx:1947
 msgid "This distribution has no date."
 msgstr "Aquesta distribució no té data."
 
 #: ../src/service/DistributionService.hx:2105
-msgid ""
-"This distribution should have an order opening date and an order closing "
-"date."
-msgstr ""
-"Aquesta distribució hauria de tenir una data d'obertura de comandes i una "
-"data de tancament de comandes."
+msgid "This distribution should have an order opening date and an order closing date."
+msgstr "Aquesta distribució hauria de tenir una data d'obertura de comandes i una data de tancament de comandes."
 
 #: ../src/service/DistributionService.hx:4140
-msgid ""
-"There is already a distribution at this place overlapping with the time range "
-"you've selected."
-msgstr ""
-"Ja hi ha una distribució en aquest lloc que es solapa amb el període que heu "
-"seleccionat."
+msgid "There is already a distribution at this place overlapping with the time range you've selected."
+msgstr "Ja hi ha una distribució en aquest lloc que es solapa amb el període que heu seleccionat."
 
 #: ../src/service/DistributionService.hx:4312 ../src/service/DistributionService.hx:18621
 msgid "The date of the delivery must be prior to the end of the contract (::contractEndDate::)"
@@ -1789,35 +1680,23 @@ msgstr ""
 
 #: ../src/service/DistributionService.hx:4778
 msgid "The distribution start date must be set after the orders end date."
-msgstr ""
-"La data d'inici de la distribució ha de ser posterior al tancament de "
-"comandes."
+msgstr "La data d'inici de la distribució ha de ser posterior al tancament de comandes."
 
 #: ../src/service/DistributionService.hx:4933
 msgid "The orders end date must be set after the orders start date !"
-msgstr ""
-"La data de tancament de comandes ha de ser posterior a la data d'obertura de "
-"comandes!"
+msgstr "La data de tancament de comandes ha de ser posterior a la data d'obertura de comandes!"
 
 #: ../src/service/DistributionService.hx:8518
 msgid "Deletion not possible: some orders are recorded for this distribution."
-msgstr ""
-"No es pot suprimir: hi ha algunes comandes registrades per a aquesta "
-"distribució."
+msgstr "No es pot suprimir: hi ha algunes comandes registrades per a aquesta distribució."
 
 #: ../src/service/DistributionService.hx:8928
 msgid "This contract is already participating to this distribution"
 msgstr "Aquest contracte ja participa en aquesta distribució"
 
 #: ../src/service/DistributionService.hx:9182
-msgid ""
-"You can't participate to this distribution because no order start date has "
-"been defined. <a href='::url::' target='_blank'>Please update the general "
-"distribution first</a>."
-msgstr ""
-"No podeu participar en aquesta distribució perquè no s’ha definit cap data d’"
-"obertura de la comanda. <a href='::url::' target='_blank'>Actualitzeu primer "
-"la distribució general</a>."
+msgid "You can't participate to this distribution because no order start date has been defined. <a href='::url::' target='_blank'>Please update the general distribution first</a>."
+msgstr "No podeu participar en aquesta distribució perquè no s’ha definit cap data d’obertura de la comanda. <a href='::url::' target='_blank'>Actualitzeu primer la distribució general</a>."
 
 #: ../src/service/DistributionService.hx:10080
 msgid "You cannot edit a distribution which has been already validated."
@@ -1829,8 +1708,7 @@ msgstr "La data de distribució és diferent de la distribució principal."
 
 #: ../src/service/DistributionService.hx:10515
 msgid "The distribution place is different from the place of the general distribution."
-msgstr ""
-"El lloc de distribució és diferent del lloc de la distribució principal."
+msgstr "El lloc de distribució és diferent del lloc de la distribució principal."
 
 #: ../src/service/DistributionService.hx:12027
 msgid "Deletion not possible: some orders are saved for this delivery."
@@ -1850,8 +1728,7 @@ msgstr ""
 
 #: ../src/service/OrderService.hx:810 ../src/service/OrderService.hx:4359
 msgid "Error : product \"::product::\" quantity should be integer"
-msgstr ""
-"Error: la quantitat del producte \"::product::\" ha de ser un nombre enter"
+msgstr "Error: la quantitat del producte \"::product::\" ha de ser un nombre enter"
 
 #: ../src/service/OrderService.hx:1070
 msgid "multi-weighing products should be ordered only with integer quantities"
@@ -1862,9 +1739,7 @@ msgid "There is no more '::productName::' in stock, we removed it from your orde
 msgstr ""
 
 #: ../src/service/OrderService.hx:3356 ../src/service/OrderService.hx:5653
-msgid ""
-"We reduced your order of '::productName::' to quantity ::oQuantity:: because "
-"there is no available products anymore"
+msgid "We reduced your order of '::productName::' to quantity ::oQuantity:: because there is no available products anymore"
 msgstr ""
 
 #: ../src/service/OrderService.hx:6662
@@ -1881,9 +1756,7 @@ msgstr ""
 
 #: ../src/service/OrderService.hx:10670
 msgid "Orders are closed for \"::contract::\", please modify your order."
-msgstr ""
-"Les comandes estan tancades per a \"::contract::\", si us plau, modifiqueu "
-"la vostra comanda."
+msgstr "Les comandes estan tancades per a \"::contract::\", si us plau, modifiqueu la vostra comanda."
 
 #: ../src/service/OrderService.hx:13284 ../src/service/ReportService.hx:466
 msgid "Delivery ::contractName:: of the "
@@ -1894,17 +1767,11 @@ msgid "There is no account with this email"
 msgstr ""
 
 #: ../src/service/UserService.hx:633
-msgid ""
-"Since you failed to login more than 4 times, your IP address has been banned "
-"for 10 minutes."
-msgstr ""
-"Heu intentat connectar-vos sense èxit més de 4 vegades, la vostra adreça IP "
-"està bloquejada durant 10 minuts."
+msgid "Since you failed to login more than 4 times, your IP address has been banned for 10 minutes."
+msgstr "Heu intentat connectar-vos sense èxit més de 4 vegades, la vostra adreça IP està bloquejada durant 10 minuts."
 
 #: ../src/service/UserService.hx:875
-msgid ""
-"Your account have not been validated yet. We sent an e-mail to ::email:: "
-"to finalize your subscription!"
+msgid "Your account have not been validated yet. We sent an e-mail to ::email:: to finalize your subscription!"
 msgstr ""
 
 #: ../src/service/UserService.hx:1213
@@ -1929,9 +1796,7 @@ msgstr "Els membres d’aquest grup han de proporcionar la seva adreça"
 
 #: ../src/service/WaitingListService.hx:363
 msgid "<p><b>::name::</b> suscribed to the waiting list of <b>::group::</b> on ::date::</p>"
-msgstr ""
-"<p><b>::name::</b> subscrit a la llista d'espera de <b>::group::</b> el "
-"::date::</p>"
+msgstr "<p><b>::name::</b> subscrit a la llista d'espera de <b>::group::</b> el ::date::</p>"
 
 #: ../src/service/WaitingListService.hx:592
 msgid "<p>He/she left this message :<br/>\"::message::\"</p>"
@@ -1963,51 +1828,31 @@ msgstr "La vostra sol·licitud d'inscripció a <b>::group::</b> s'ha rebutjat."
 
 #: ../src/service/WaitingListService.hx:2568
 msgid "[::group::] ::name:: membership request has been refused by ::admin::."
-msgstr ""
-"[::group::] La sol·licitud d'inscripció de ::name:: ha estat rebutjada per "
-"::admin::."
+msgstr "[::group::] La sol·licitud d'inscripció de ::name:: ha estat rebutjada per ::admin::."
 
 #: ../src/service/WaitingListService.hx:2715
-msgid ""
-"<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> "
-"has refused his/her request.</p>"
-msgstr ""
-"<p><b>::name::</b> s'ha registrat a la llista d'espera. "
-"</p><p><b>::admin::</b> ha rebutjat la seva sol·licitud. </p>"
+msgid "<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has refused his/her request.</p>"
+msgstr "<p><b>::name::</b> s'ha registrat a la llista d'espera. </p><p><b>::admin::</b> ha rebutjat la seva sol·licitud. </p>"
 
 #: ../src/service/WaitingListService.hx:3486
 msgid "[::group::] Membership request accepted."
 msgstr "[::group::] Sol·licitud d'inscripció acceptada."
 
 #: ../src/service/WaitingListService.hx:3557
-msgid ""
-"<p>Your membership request for <b>::group::</b> has been accepted !</p><p>You're "
-"now a member of the group.</p>"
-msgstr ""
-"<p>La vostra sol·licitud d’inscripció a <b>::group::</b> ha estat "
-"acceptada!</p><p>Ara ets membre d'aquest grup.</p>"
+msgid "<p>Your membership request for <b>::group::</b> has been accepted !</p><p>You're now a member of the group.</p>"
+msgstr "<p>La vostra sol·licitud d’inscripció a <b>::group::</b> ha estat acceptada!</p><p>Ara ets membre d'aquest grup.</p>"
 
 #: ../src/service/WaitingListService.hx:3917
 msgid "[::group::] ::name:: membership request has been accepted by ::admin::."
-msgstr ""
-"[::group::] La sol·licitud d'inscripció de ::name:: ha estat acceptada per "
-"::admin::."
+msgstr "[::group::] La sol·licitud d'inscripció de ::name:: ha estat acceptada per ::admin::."
 
 #: ../src/service/WaitingListService.hx:4065
-msgid ""
-"<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> "
-"has accepted his/her request.</p>"
-msgstr ""
-"<p><b>::name::</b> s'ha inscrit a la llista d'espera.</p><p><b>::admin::</b> "
-"ha acceptat la seva petició.</p>"
+msgid "<p><b>::name::</b> was registred to the waiting list.</p><p><b>::admin::</b> has accepted his/her request.</p>"
+msgstr "<p><b>::name::</b> s'ha inscrit a la llista d'espera.</p><p><b>::admin::</b> ha acceptat la seva petició.</p>"
 
 #: ../src/service/VolunteerService.hx:932
-msgid ""
-"You can't delete this role because there are volunteers assigned to this "
-"role. You need to delete the volunteers first."
-msgstr ""
-"No podeu suprimir aquest rol perquè hi ha voluntaris assignats a aquest rol. "
-"Primer has de suprimir els voluntaris."
+msgid "You can't delete this role because there are volunteers assigned to this role. You need to delete the volunteers first."
+msgstr "No podeu suprimir aquest rol perquè hi ha voluntaris assignats a aquest rol. Primer has de suprimir els voluntaris."
 
 #: ../src/service/VolunteerService.hx:1386
 msgid "You need to first select the volunteer roles for this distribution."
@@ -2015,8 +1860,7 @@ msgstr "Primer heu de definir els rols per a aquesta distribució."
 
 #: ../src/service/VolunteerService.hx:2698 ../src/service/VolunteerService.hx:4610
 msgid "A volunteer can't be assigned to multiple roles for the same distribution!"
-msgstr ""
-"Un voluntari no es pot assignar a diversos rols per a la mateixa distribució!"
+msgstr "Un voluntari no es pot assignar a diversos rols per a la mateixa distribució!"
 
 #: ../src/service/VolunteerService.hx:4347
 msgid "This distribution has already been validated"
@@ -2039,72 +1883,40 @@ msgid "Missing distribution or role in the url!"
 msgstr "Falta la distribució o el rol a la URL (adreça web)!"
 
 #: ../src/service/VolunteerService.hx:8145
-msgid ""
-"You can't remove some roles because there are volunteers assigned to those "
-"roles. You need to delete the volunteers first."
-msgstr ""
-"No podeu suprimir aquests rols perquè hi ha voluntaris registrats per a "
-"aquests rols. Dona de baixa aquests voluntaris primer."
+msgid "You can't remove some roles because there are volunteers assigned to those roles. You need to delete the volunteers first."
+msgstr "No podeu suprimir aquests rols perquè hi ha voluntaris registrats per a aquests rols. Dona de baixa aquests voluntaris primer."
 
 #: ../src/service/VolunteerService.hx:8482
 msgid "Duty period"
 msgstr "Torns"
 
 #: ../src/service/VolunteerService.hx:8884
-msgid ""
-"The number of days before the volunteers can join a duty period needs to "
-"be greater than 6 days."
-msgstr ""
-"El nombre de dies abans que els voluntaris puguin incorporar-se a un torn ha "
-"de ser superior a 6 dies."
+msgid "The number of days before the volunteers can join a duty period needs to be greater than 6 days."
+msgstr "El nombre de dies abans que els voluntaris puguin incorporar-se a un torn ha de ser superior a 6 dies."
 
 #: ../src/service/VolunteerService.hx:9068
-msgid ""
-"The number of days before the volunteers can join a duty period needs to "
-"be lower than 181 days."
-msgstr ""
-"El nombre de dies abans que els voluntaris puguin incorporar-se a un torn ha "
-"de ser inferior a 181 dies."
+msgid "The number of days before the volunteers can join a duty period needs to be lower than 181 days."
+msgstr "El nombre de dies abans que els voluntaris puguin incorporar-se a un torn ha de ser inferior a 181 dies."
 
 #: ../src/service/VolunteerService.hx:9277
-msgid ""
-"The number of days before the duty periods to send the instructions mail "
-"to all the volunteers needs to be greater than 1 day."
-msgstr ""
-"El nombre de dies anteriors als torns per enviar el correu electrònic d’"
-"instruccions a tots els voluntaris ha de ser superior a 1 dia."
+msgid "The number of days before the duty periods to send the instructions mail to all the volunteers needs to be greater than 1 day."
+msgstr "El nombre de dies anteriors als torns per enviar el correu electrònic d’instruccions a tots els voluntaris ha de ser superior a 1 dia."
 
 #: ../src/service/VolunteerService.hx:9490
-msgid ""
-"The number of days before the duty periods to send the instructions mail "
-"to all the volunteers needs to be lower than 15 days."
-msgstr ""
-"El nombre de dies abans dels torns per enviar el correu electrònic d’"
-"instruccions a tots els voluntaris ha de ser inferior a 15 dies."
+msgid "The number of days before the duty periods to send the instructions mail to all the volunteers needs to be lower than 15 days."
+msgstr "El nombre de dies abans dels torns per enviar el correu electrònic d’instruccions a tots els voluntaris ha de ser inferior a 15 dies."
 
 #: ../src/service/VolunteerService.hx:9728
-msgid ""
-"The number of days before the duty periods to send the vacant roles mail "
-"to all members needs to be greater than 1 day."
-msgstr ""
-"El nombre de dies anteriors als torns per enviar el correu amb els rols o "
-"tasques vacants a tots els membres ha de ser superior a 1 dia."
+msgid "The number of days before the duty periods to send the vacant roles mail to all members needs to be greater than 1 day."
+msgstr "El nombre de dies anteriors als torns per enviar el correu amb els rols o tasques vacants a tots els membres ha de ser superior a 1 dia."
 
 #: ../src/service/VolunteerService.hx:9934
-msgid ""
-"The number of days before the duty periods to send the instructions mail "
-"to all members needs to be lower than 15 days."
-msgstr ""
-"El nombre de dies anteriors als torns per enviar el correu electrònic d’"
-"instruccions a tots els membres ha de ser inferior a 15 dies."
+msgid "The number of days before the duty periods to send the instructions mail to all members needs to be lower than 15 days."
+msgstr "El nombre de dies anteriors als torns per enviar el correu electrònic d’instruccions a tots els membres ha de ser inferior a 15 dies."
 
 #: ../src/service/VolunteerService.hx:10118
-msgid ""
-"One or more numbers of days you entered is not an integer. You can only use "
-"integers. "
-msgstr ""
-"El nombre de dies que heu introduït no és un nombre enter. Només podeu fer "
-"servir nombres enters. "
+msgid "One or more numbers of days you entered is not an integer. You can only use integers. "
+msgstr "El nombre de dies que heu introduït no és un nombre enter. Només podeu fer servir nombres enters. "
 
 #. kilogramms
 #: ../src/View.hx:3369 ../common/Formatting.hx:1326
@@ -2435,12 +2247,8 @@ msgid "Registration date"
 msgstr ""
 
 #: ../src/db/Basket.hx:4908
-msgid ""
-"You need to select manually the type of pending payments on the spot to be "
-"able to validate this distribution."
-msgstr ""
-"Per poder validar aquesta distribució, heu de seleccionar manualment els "
-"tipus de pagament insitu."
+msgid "You need to select manually the type of pending payments on the spot to be able to validate this distribution."
+msgstr "Per poder validar aquesta distribució, heu de seleccionar manualment els tipus de pagament insitu."
 
 #: ../src/db/Amap.hx:6113
 msgid "Product type"
@@ -2448,8 +2256,8 @@ msgstr ""
 
 #: ../src/db/Amap.hx:10736
 msgid ""
-"Welcome in the group of ::name::!\n You can look at the delivery planning "
-"or make a new order."
+"Welcome in the group of ::name::!\n"
+" You can look at the delivery planning or make a new order."
 msgstr ""
 
 #: ../src/db/Amap.hx:11527
@@ -2637,9 +2445,7 @@ msgid "IBAN:"
 msgstr ""
 
 #: ../lang/master/tpl/transaction/transfer.mtt:606
-msgid ""
-"Mention this reference in the label of the transfer in order to facilitate "
-"its process:"
+msgid "Mention this reference in the label of the transfer in order to facilitate its process:"
 msgstr ""
 
 #: ../lang/master/tpl/transaction/transfer.mtt:884 ../lang/master/tpl/transaction/onthespot.mtt:667 ../lang/master/tpl/transaction/moneypot.mtt:765
@@ -2663,9 +2469,7 @@ msgid "Amount to pay"
 msgstr ""
 
 #: ../lang/master/tpl/transaction/pay.mtt:265
-msgid ""
-"Your basket has been recorded, please select a payment method to confirm "
-"it."
+msgid "Your basket has been recorded, please select a payment method to confirm it."
 msgstr ""
 
 #: ../lang/master/tpl/transaction/pay.mtt:519
@@ -2677,12 +2481,8 @@ msgid "You chose to pay with your money pot."
 msgstr "Heu decidit pagar amb el vostre moneder."
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:419
-msgid ""
-"Please remember to clear your balance at the time agreed with the coordinator "
-"of your group."
-msgstr ""
-"No oblideu reequilibrar el vostre saldo en el termini acordat amb les "
-"persones responsables del grup."
+msgid "Please remember to clear your balance at the time agreed with the coordinator of your group."
+msgstr "No oblideu reequilibrar el vostre saldo en el termini acordat amb les persones responsables del grup."
 
 #: ../lang/master/tpl/transaction/moneypot.mtt:549
 msgid "Your current balance is : ::balance:: ::currency::"
@@ -2749,16 +2549,11 @@ msgid "Welcome to Cagette.net !"
 msgstr ""
 
 #: ../lang/master/tpl/home.mtt:328 ../lang/master/tpl/home_old.mtt:287
-msgid ""
-"Congratulations, you just created a new group !<br/>As an example, we created "
-"a fake farmer and fake products.<br/>It will show you how things work together "
-"in Cagette.net.<br/>Of course, you'll be able to delete them."
+msgid "Congratulations, you just created a new group !<br/>As an example, we created a fake farmer and fake products.<br/>It will show you how things work together in Cagette.net.<br/>Of course, you'll be able to delete them."
 msgstr ""
 
 #: ../lang/master/tpl/home.mtt:588 ../lang/master/tpl/home_old.mtt:547
-msgid ""
-"As a starter, we recommand you to follow the <b>guided tour</b> to discover "
-"step by step the main sections of the software."
+msgid "As a starter, we recommand you to follow the <b>guided tour</b> to discover step by step the main sections of the software."
 msgstr ""
 
 #: ../lang/master/tpl/home.mtt:847 ../lang/master/tpl/home_old.mtt:806
@@ -2833,9 +2628,7 @@ msgstr ""
 
 #: ../lang/master/tpl/home.mtt:9150
 msgid "Please be aware that you or your spouse is a volunteer for the role:"
-msgstr ""
-"Tingues en compte que tu o els teus companys/es d'unitat de consum quedareu "
-"inscrits com a voluntaris per a aquest rol:"
+msgstr "Tingues en compte que tu o els teus companys/es d'unitat de consum quedareu inscrits com a voluntaris per a aquest rol:"
 
 #: ../lang/master/tpl/home.mtt:9438
 msgid "Duty period details"
@@ -2863,8 +2656,7 @@ msgstr ""
 
 #: ../lang/master/tpl/admin/emails.mtt:103
 msgid "Emails are temporarily stored in a buffer, waiting to be sent by the cron"
-msgstr ""
-"Els correus electrònics estan temporalment aturats, a l’espera de ser enviats"
+msgstr "Els correus electrònics estan temporalment aturats, a l’espera de ser enviats"
 
 #: ../lang/master/tpl/macros.mtt:651 ../lang/master/tpl/macros.mtt:681
 msgid "Previous"
@@ -2955,10 +2747,7 @@ msgid "Warning"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:972
-msgid ""
-"Before validating the import, please check if the table above is correctly "
-"filled.<br/>If data are not in line or not corresponding to the right column, "
-"it means that your CSV file is not correct."
+msgid "Before validating the import, please check if the table above is correctly filled.<br/>If data are not in line or not corresponding to the right column, it means that your CSV file is not correct."
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:1344
@@ -2982,9 +2771,7 @@ msgid "Congratulations! You have imported ::num:: products in your database"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:2323
-msgid ""
-"You did not import anything in your database because your file was empty "
-"or contained products already present in the database."
+msgid "You did not import anything in your database because your file was empty or contained products already present in the database."
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:2630 ../lang/master/tpl/member/import.mtt:3228
@@ -2992,9 +2779,7 @@ msgid "Help"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:2651
-msgid ""
-"This page will allow you to import a large number of products in your database "
-"from an Excel file."
+msgid "This page will allow you to import a large number of products in your database from an Excel file."
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:2785
@@ -3002,21 +2787,15 @@ msgid "To start, <a href=\"/produits.xls\">Download this demo file</a>"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:2874
-msgid ""
-"Fill correctly this file, or modify your existing file to respect strictly "
-"the order of columns"
+msgid "Fill correctly this file, or modify your existing file to respect strictly the order of columns"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:2995
-msgid ""
-"When your file is ready, click on\"Save as\" in your Excel sheet and choose "
-"the format CSV"
+msgid "When your file is ready, click on\"Save as\" in your Excel sheet and choose the format CSV"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:3111
-msgid ""
-"Choose the following options: separation characters: <b>comma</b>, encoding: "
-"<b>Unicode UTF8<b/>"
+msgid "Choose the following options: separation characters: <b>comma</b>, encoding: <b>Unicode UTF8<b/>"
 msgstr ""
 
 #: ../lang/master/tpl/product/import.mtt:3234
@@ -3032,11 +2811,7 @@ msgid "Categories"
 msgstr ""
 
 #: ../lang/master/tpl/product/categorize.mtt:81
-msgid ""
-"You can link your products to categories, in order to better organize them "
-"in the \"shop mode\".<br/><b>To add categories: </b>select checkboxes of "
-"products and then select a category in the list at the bottom of the page. "
-"Click then on \"add\".<br /><b>To remove a category:<b/> click on it."
+msgid "You can link your products to categories, in order to better organize them in the \"shop mode\".<br/><b>To add categories: </b>select checkboxes of products and then select a category in the list at the bottom of the page. Click then on \"add\".<br /><b>To remove a category:<b/> click on it."
 msgstr ""
 
 #: ../lang/master/tpl/product/categorize.mtt:857
@@ -3189,27 +2964,19 @@ msgstr ""
 
 #: ../lang/master/tpl/distribution/default.mtt:10875 ../lang/master/tpl/distribution/default.mtt:12899
 msgid "Distribution start date is different from general distribution"
-msgstr ""
-"La data d'inici de la distribució és diferent de la data de distribució "
-"principal"
+msgstr "La data d'inici de la distribució és diferent de la data de distribució principal"
 
 #: ../lang/master/tpl/distribution/default.mtt:11301 ../lang/master/tpl/distribution/default.mtt:13325
 msgid "Distribution end date is different from general distribution"
-msgstr ""
-"La data de finalització de la distribució és diferent de la data de "
-"finalització de la distribució principal"
+msgstr "La data de finalització de la distribució és diferent de la data de finalització de la distribució principal"
 
 #: ../lang/master/tpl/distribution/default.mtt:13785
 msgid "Order start date is different from general distribution"
-msgstr ""
-"La data d'obertura de la comanda és diferent de la data de distribució "
-"principal"
+msgstr "La data d'obertura de la comanda és diferent de la data de distribució principal"
 
 #: ../lang/master/tpl/distribution/default.mtt:14245
 msgid "Order end date is different from general distribution"
-msgstr ""
-"La data de tancament de les comandes és diferent de la de la distribució "
-"principal"
+msgstr "La data de tancament de les comandes és diferent de la de la distribució principal"
 
 #: ../lang/master/tpl/distribution/listByDate.mtt:2965
 msgid "Payment:"
@@ -3260,10 +3027,7 @@ msgid "Planning of deliveries:"
 msgstr ""
 
 #: ../lang/master/tpl/distribution/planning.mtt:161
-msgid ""
-"Subscribe now by selecting checkboxes corresponding to dates which are convenient "
-"for you. The goal of attendances consists in helping during the delivery "
-"of products."
+msgid "Subscribe now by selecting checkboxes corresponding to dates which are convenient for you. The goal of attendances consists in helping during the delivery of products."
 msgstr ""
 
 #: ../lang/master/tpl/distribution/planning.mtt:1997 ../lang/master/tpl/distribution/planning.mtt:2199
@@ -3397,10 +3161,7 @@ msgid "Existing accounts"
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:1925
-msgid ""
-"Before validating this import, please check that this table est correctly "
-"filled.<br/>If some datas are shifted or are not linked to the right column, "
-"please check your CSV file."
+msgid "Before validating this import, please check that this table est correctly filled.<br/>If some datas are shifted or are not linked to the right column, please check your CSV file."
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:2153 ../lang/master/tpl/member/import.mtt:2548
@@ -3416,27 +3177,19 @@ msgid "Oups !"
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:2366
-msgid ""
-"It looks like there is no data to import. Please check your CSV file or check "
-"that the users you want to import are not already registred."
+msgid "It looks like there is no data to import. Please check your CSV file or check that the users you want to import are not already registred."
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:2705
-msgid ""
-"Congratulations ! You just imported <b>::numImported::</b> users in your "
-"group."
+msgid "Congratulations ! You just imported <b>::numImported::</b> users in your group."
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:2851
-msgid ""
-"You may now consider <a href='/member/?select=newusers'>inviting them</a> "
-"to log into Cagette.net"
+msgid "You may now consider <a href='/member/?select=newusers'>inviting them</a> to log into Cagette.net"
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:2981
-msgid ""
-"You did'nt import anything in your database because your file was empty, "
-"or contained already registred users"
+msgid "You did'nt import anything in your database because your file was empty, or contained already registred users"
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:3138
@@ -3444,15 +3197,7 @@ msgid "Go back to the main page"
 msgstr ""
 
 #: ../lang/master/tpl/member/import.mtt:3253
-msgid ""
-"Here you can import a large amount of members in your database from a simple "
-"Excel or Libre Office file.<br/><ul><li>The first step is to <a href=\"/adherents.xls\">download "
-"this demo file.</a></li><li>Fill out the table, of modify your existing file "
-"to striclty match the columns order.</li><li>Once your file is completed, "
-"click on \"save as\" in your spreadsheet software, and select \"CSV\" format</li><li>Select "
-"the following options : separator : <b>coma</b> or <b>dot-coma</b>, encoding "
-": <b>Unicode UTF-8</b></li><li>Save the file</li><li>finally, click on  \"select "
-"a file\" on this page and upload it.</li></ul>"
+msgid "Here you can import a large amount of members in your database from a simple Excel or Libre Office file.<br/><ul><li>The first step is to <a href=\"/adherents.xls\">download this demo file.</a></li><li>Fill out the table, of modify your existing file to striclty match the columns order.</li><li>Once your file is completed, click on \"save as\" in your spreadsheet software, and select \"CSV\" format</li><li>Select the following options : separator : <b>coma</b> or <b>dot-coma</b>, encoding : <b>Unicode UTF-8</b></li><li>Save the file</li><li>finally, click on  \"select a file\" on this page and upload it.</li></ul>"
 msgstr ""
 
 #: ../lang/master/tpl/member/lastMessages.mtt:75
@@ -3497,9 +3242,7 @@ msgid "Search"
 msgstr ""
 
 #: ../lang/master/tpl/member/default.mtt:791
-msgid ""
-"You can invite by email all the members who never logged in, in one single "
-"clic."
+msgid "You can invite by email all the members who never logged in, in one single clic."
 msgstr ""
 
 #: ../lang/master/tpl/member/default.mtt:1031
@@ -3651,9 +3394,7 @@ msgid "Edit properties"
 msgstr ""
 
 #: ../lang/master/tpl/amapadmin/default.mtt:501
-msgid ""
-"Your group has a public page, You can use it as a micro-website.<br/>Copy-paste "
-"the address of this page and share it !"
+msgid "Your group has a public page, You can use it as a micro-website.<br/>Copy-paste the address of this page and share it !"
 msgstr ""
 
 #: ../lang/master/tpl/amapadmin/default.mtt:963
@@ -3733,9 +3474,7 @@ msgid "By Product-User"
 msgstr "Per producte membre"
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:1783
-msgid ""
-"Be careful, there are <b>::disabledProducts::</b> order(s) containing <b>disabled "
-"products</b>."
+msgid "Be careful, there are <b>::disabledProducts::</b> order(s) containing <b>disabled products</b>."
 msgstr ""
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:4421
@@ -3755,12 +3494,8 @@ msgid "Not paid"
 msgstr ""
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:6233 ../lang/master/tpl/contractadmin/orders.mtt:6591
-msgid ""
-"Do you really want to delete this order row for the product \"::productName::\" "
-"?"
-msgstr ""
-"Esteu segur que voleu suprimir aquesta comanda del producte \":: productName "
-"::\"?"
+msgid "Do you really want to delete this order row for the product \"::productName::\" ?"
+msgstr "Esteu segur que voleu suprimir aquesta comanda del producte \":: productName ::\"?"
 
 #: ../lang/master/tpl/contractadmin/orders.mtt:7164
 msgid "<b>::totalAdh::</b> member(s) in this distribution."
@@ -3815,10 +3550,7 @@ msgid "Summary table per product"
 msgstr ""
 
 #: ../lang/master/tpl/contractadmin/ordersByProductList.mtt:1172 ../lang/master/tpl/contractadmin/ordersByProduct.mtt:255
-msgid ""
-"Be careful, if the price of the product was modified during the sale, every "
-"order of a member is taken into account with the price as it was at the time "
-"of the creation of the order"
+msgid "Be careful, if the price of the product was modified during the sale, every order of a member is taken into account with the price as it was at the time of the creation of the order"
 msgstr ""
 
 #: ../lang/master/tpl/contractadmin/ordersByProductList.mtt:1509 ../lang/master/tpl/contractadmin/ordersByProduct.mtt:561
@@ -4122,9 +3854,7 @@ msgid "Change of password"
 msgstr ""
 
 #: ../lang/master/tpl/user/definePassword.mtt:154 ../lang/master/tpl/user/forgottenPassword.mtt:231
-msgid ""
-"If you have forgotten your password or if you would like to change it, please "
-"key-in below your e-mail address:"
+msgid "If you have forgotten your password or if you would like to change it, please key-in below your e-mail address:"
 msgstr ""
 
 #: ../lang/master/tpl/user/definePassword.mtt:326 ../lang/master/tpl/user/forgottenPassword.mtt:446
@@ -4168,9 +3898,7 @@ msgid "Hello"
 msgstr ""
 
 #: ../lang/master/tpl/user/choose.mtt:268
-msgid ""
-"Connect to your <b>Cagette Pro</b> account to manage your products, catalogs "
-"and deliveries."
+msgid "Connect to your <b>Cagette Pro</b> account to manage your products, catalogs and deliveries."
 msgstr ""
 
 #: ../lang/master/tpl/user/choose.mtt:915
@@ -4210,16 +3938,11 @@ msgid "Create a <b>CSA</b> contract"
 msgstr ""
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:357
-msgid ""
-"It is a contract with a duration of one year or for one season. Products "
-"are always the same at each delivery"
+msgid "It is a contract with a duration of one year or for one season. Products are always the same at each delivery"
 msgstr ""
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:505
-msgid ""
-"Example: there is a contract for vegetables that is 1 year long. Jean takes "
-"a basket that costs 10&euro; per delivery, and Brigitte takes a basket that "
-"costs 15&euro; per delivery."
+msgid "Example: there is a contract for vegetables that is 1 year long. Jean takes a basket that costs 10&euro; per delivery, and Brigitte takes a basket that costs 15&euro; per delivery."
 msgstr ""
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:916
@@ -4227,15 +3950,11 @@ msgid "Create a contract with <b>variable orders</b>"
 msgstr ""
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:997
-msgid ""
-"It is a contract in which members can change their orders at each delivery. "
-"There is a different order for each delivery."
+msgid "It is a contract in which members can change their orders at each delivery. There is a different order for each delivery."
 msgstr ""
 
 #: ../lang/master/tpl/contract/insertChoose.mtt:1154
-msgid ""
-"Example: Jean orders a basket that costs 10&euro; for the first delivery, "
-"then nothing for the second delivery, then a basket for 20&euro; etc."
+msgid "Example: Jean orders a basket that costs 10&euro; for the first delivery, then nothing for the second delivery, then a basket for 20&euro; etc."
 msgstr ""
 
 #: ../lang/master/tpl/contract/view.mtt:1803 ../lang/master/tpl/shop/productInfo.mtt:2239
@@ -4263,10 +3982,7 @@ msgid "Modify the order delivered on ::date::"
 msgstr ""
 
 #: ../lang/master/tpl/contract/orderByDate.mtt:184
-msgid ""
-"You can modify here an existing order. If you would like to remove a product, "
-"just key-in the quantity 0.<br/>You may not be able to modify all elements "
-"as the order could be closed for some suppliers"
+msgid "You can modify here an existing order. If you would like to remove a product, just key-in the quantity 0.<br/>You may not be able to modify all elements as the order could be closed for some suppliers"
 msgstr ""
 
 #: ../lang/master/tpl/contract/orderByDate.mtt:1538
@@ -4278,10 +3994,7 @@ msgid "Update the order"
 msgstr ""
 
 #: ../lang/master/tpl/contract/order.mtt:245
-msgid ""
-"As long as orders are open, you can come back on this page and modify your "
-"order.<br/>You can check any time your current orders on the following page "
-"<a href='/contract'>my account</a>."
+msgid "As long as orders are open, you can come back on this page and modify your order.<br/>You can check any time your current orders on the following page <a href='/contract'>my account</a>."
 msgstr ""
 
 #: ../lang/master/tpl/contract/order.mtt:2413 ../lang/master/tpl/contract/orderAndPay.mtt:2495
@@ -4321,10 +4034,7 @@ msgid "Profile"
 msgstr ""
 
 #: ../lang/master/tpl/contract/default.mtt:4375
-msgid ""
-"Do you really want to quit this group ? You won't be a member anymore: you "
-"won't receive any new message and won't be able to see your previous orders "
-"in this group."
+msgid "Do you really want to quit this group ? You won't be a member anymore: you won't receive any new message and won't be able to see your previous orders in this group."
 msgstr ""
 
 #: ../lang/master/tpl/contract/default.mtt:4593
@@ -4360,10 +4070,7 @@ msgid "Current language is"
 msgstr ""
 
 #: ../lang/master/tpl/contract/orderAndPay.mtt:259
-msgid ""
-"Key-in here your orders in advance for this supplier.<br/>You can check your "
-"current orders any time on the following page <a href=\"/contract\">my account</a>.<br/>Tip: "
-"to remove an order please key-in the quantity 0"
+msgid "Key-in here your orders in advance for this supplier.<br/>You can check your current orders any time on the following page <a href=\"/contract\">my account</a>.<br/>Tip: to remove an order please key-in the quantity 0"
 msgstr ""
 
 #: ../lang/master/tpl/error.mtt:315
@@ -4376,30 +4083,22 @@ msgstr "Hi ha hagut un error."
 
 #: ../lang/master/tpl/error.mtt:409
 msgid "If the website is unavailable, please try again in few minutes."
-msgstr ""
-"Si el lloc web no està disponible, torneu-ho a provar d'aquí a uns minuts."
+msgstr "Si el lloc web no està disponible, torneu-ho a provar d'aquí a uns minuts."
 
 #: ../lang/master/tpl/error.mtt:498
 msgid "If this happen repeatedly, please let us know so we can solve the issue."
-msgstr ""
-"Si això succeeix repetidament, feu-nos-ho saber perquè puguem solucionar el "
-"problema."
+msgstr "Si això succeeix repetidament, feu-nos-ho saber perquè puguem solucionar el problema."
 
 #: ../lang/master/tpl/error.mtt:602
 msgid "Technical description of the error"
 msgstr ""
 
 #: ../lang/master/tpl/categories/default.mtt:73
-msgid ""
-"Categories allow to sort your products per category, for example \"vegetables, "
-"meet, backery, etc.\"<br/>	It is possible to create many groups of categories "
-"in order to sort products as we wish."
+msgid "Categories allow to sort your products per category, for example \"vegetables, meet, backery, etc.\"<br/>\tIt is possible to create many groups of categories in order to sort products as we wish."
 msgstr ""
 
 #: ../lang/master/tpl/categories/default.mtt:314
-msgid ""
-"You currently have no category. Would you like to create the list of categories "
-"by default ?"
+msgid "You currently have no category. Would you like to create the list of categories by default ?"
 msgstr ""
 
 #: ../lang/master/tpl/categories/default.mtt:482
@@ -4431,9 +4130,7 @@ msgid "Go to my account"
 msgstr ""
 
 #: ../lang/master/tpl/group/view.mtt:1407
-msgid ""
-"Contact the person in charge in order to subscribe to this group and get "
-"to know membership conditions."
+msgid "Contact the person in charge in order to subscribe to this group and get to know membership conditions."
 msgstr ""
 
 #: ../lang/master/tpl/group/view.mtt:1742
@@ -4441,9 +4138,7 @@ msgid "Membership request"
 msgstr ""
 
 #: ../lang/master/tpl/group/view.mtt:1829
-msgid ""
-"This group accepts subscriptions on waiting list. A coordinator will contact "
-"you."
+msgid "This group accepts subscriptions on waiting list. A coordinator will contact you."
 msgstr ""
 
 #: ../lang/master/tpl/group/view.mtt:2067
@@ -4539,9 +4234,7 @@ msgid "FOLLOW US"
 msgstr ""
 
 #: ../lang/master/tpl/design.mtt:7676
-msgid ""
-"Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img "
-"src='/img/alilo-trans-black.png' /></a>"
+msgid "Cagette.net is made by <a href='https://www.alilo.fr' target='_blank'><img src='/img/alilo-trans-black.png' /></a>"
 msgstr ""
 
 #: ../lang/master/tpl/validate/user.mtt:2120
@@ -4601,9 +4294,7 @@ msgid "Validate this order"
 msgstr ""
 
 #: ../lang/master/tpl/validate/user.mtt:6062
-msgid ""
-"You cannot validate this order because the amount paid<br/> by the member "
-"does not correspond to the total amount of his order!"
+msgid "You cannot validate this order because the amount paid<br/> by the member does not correspond to the total amount of his order!"
 msgstr ""
 
 #: ../lang/master/tpl/validate/user.mtt:6786
@@ -4725,9 +4416,7 @@ msgstr "La nova contrasenya és <b>::pass::</b>, no ho oblidis!"
 
 #: ../lang/master/tpl/mail/newPasswordConfirmed.mtt:255
 msgid "You can use the following emails to log into your account : <b>::emails::</b>"
-msgstr ""
-"Podeu utilitzar els correus electrònics següents per iniciar la sessió al "
-"vostre compte: <b>::emails::</b>"
+msgstr "Podeu utilitzar els correus electrònics següents per iniciar la sessió al vostre compte: <b>::emails::</b>"
 
 #: ../lang/master/tpl/mail/forgottenPassword.mtt:80
 msgid "You asked to modify your password,"
@@ -4750,9 +4439,7 @@ msgid "you have been pre-registered on Cagette.net"
 msgstr ""
 
 #: ../lang/master/tpl/mail/invitation.mtt:566
-msgid ""
-"This software makes the organisation of the group easy by informing you about "
-"the next delivery dates, orders and current contracts"
+msgid "This software makes the organisation of the group easy by informing you about the next delivery dates, orders and current contracts"
 msgstr ""
 
 #: ../lang/master/tpl/mail/invitation.mtt:720
@@ -4769,9 +4456,7 @@ msgstr ""
 
 #: ../lang/master/tpl/mail/volunteerUnsuscribed.mtt:43
 msgid "<b>::fullname::</b> has left the role <b>::role::</b> for the following reason:"
-msgstr ""
-"<b>::fullname::</b> es va donar de baixa del rol <b>::role::</b> i va "
-"indicar el següent motiu:"
+msgstr "<b>::fullname::</b> es va donar de baixa del rol <b>::role::</b> i va indicar el següent motiu:"
 
 #: ../lang/master/tpl/mail/volunteerUnsuscribed.mtt:213
 msgid "This role needs to be assigned to another person."
@@ -4802,63 +4487,35 @@ msgid "Guided tour for the coordinator"
 msgstr ""
 
 #: ../common/Common.hx:8340
-msgid ""
-"<p>In order to better discover Cagette.net, we propose to do a guided tour "
-"of the user interface of the software. <br/> You will then have a global "
-"overview on the different tools that are available to you.</p><p>You will "
-"be able to stop and start again this tutorial whenever you want.</p>"
+msgid "<p>In order to better discover Cagette.net, we propose to do a guided tour of the user interface of the software. <br/> You will then have a global overview on the different tools that are available to you.</p><p>You will be able to stop and start again this tutorial whenever you want.</p>"
 msgstr ""
 
 #: ../common/Common.hx:8746
-msgid ""
-"This part of the navigation bar is visible by all members.</br>It allows "
-"to access to the three main pages:	<ul><li> The <b>home page</b> which displays "
-"orders and the delivery planning.</li><li> On the <b>My account</b> page, "
-"you can update your personal information and check your orders history</li><li> "
-"On the <b>Farmers</b> page,  you can see all farmers and coordinators of "
-"the group</ul>"
+msgid "This part of the navigation bar is visible by all members.</br>It allows to access to the three main pages:\t<ul><li> The <b>home page</b> which displays orders and the delivery planning.</li><li> On the <b>My account</b> page, you can update your personal information and check your orders history</li><li> On the <b>Farmers</b> page,  you can see all farmers and coordinators of the group</ul>"
 msgstr ""
 
 #: ../common/Common.hx:9262
-msgid ""
-"This part is <b>for coordinators only.</b>Here you will be able to manage "
-"the register of members, orders,  products, etc.<br/><p>Now click on the "
-"<b>Members</b> section</p>"
+msgid "This part is <b>for coordinators only.</b>Here you will be able to manage the register of members, orders,  products, etc.<br/><p>Now click on the <b>Members</b> section</p>"
 msgstr ""
 
 #: ../common/Common.hx:9567
-msgid ""
-"The purpose of this section is to administrate the list of your members.<br/>Every "
-"time that you register a new membrer, an account will be created for him/her. "
-"Now the member can join you at Cagette.net and order or consult the planning "
-"of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
+msgid "The purpose of this section is to administrate the list of your members.<br/>Every time that you register a new membrer, an account will be created for him/her. Now the member can join you at Cagette.net and order or consult the planning of the deliveries.<p>Now click on a <b>member</b> in the list</p>"
 msgstr ""
 
 #: ../common/Common.hx:9997
-msgid ""
-"This is the page of a member. Here you can : <ul><li>see and change their "
-"contact details</li><li>manage the membership fee of your group</li><li>see "
-"a summary of their orders</li></ul>"
+msgid "This is the page of a member. Here you can : <ul><li>see and change their contact details</li><li>manage the membership fee of your group</li><li>see a summary of their orders</li></ul>"
 msgstr ""
 
 #: ../common/Common.hx:10298
-msgid ""
-"Now let's have a look at the <b>contracts</b> section which is very important "
-"for coordinators."
+msgid "Now let's have a look at the <b>contracts</b> section which is very important for coordinators."
 msgstr ""
 
 #: ../common/Common.hx:10517
-msgid ""
-"Here you find the list of <b>contracts</b>.They inculde a start date, a end "
-"date, and represent your relationship with a farmer. <br/><p>Here you can "
-"manage :<ul><li>the list of products of this farmer</li><li>the orders of "
-"members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
+msgid "Here you find the list of <b>contracts</b>.They inculde a start date, a end date, and represent your relationship with a farmer. <br/><p>Here you can manage :<ul><li>the list of products of this farmer</li><li>the orders of members for this farmer</li><li>and plan the delivery schedule</li></ul></p>"
 msgstr ""
 
 #: ../common/Common.hx:10922
-msgid ""
-"Here you can manage the list of <b>delivery places</b>.<br/>Don't forget "
-"to key-in the complete address as a map will be displayed based on this address"
+msgid "Here you can manage the list of <b>delivery places</b>.<br/>Don't forget to key-in the complete address as a map will be displayed based on this address"
 msgstr ""
 
 #: ../common/Common.hx:11205
@@ -4866,11 +4523,7 @@ msgid "Let's look closer at how to manage a contract. <b>Click on this button</b
 msgstr ""
 
 #: ../common/Common.hx:11438
-msgid ""
-"Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant "
-"contracts: the member commits on buying the same products during the whole "
-"duration of the contract</li><li>Variable contracts: the member can choose "
-"what he buys for each delivery.</li></ul>"
+msgid "Here is a summary of the contract.<br/>There are two types of contracts:<ul><li>Constant contracts: the member commits on buying the same products during the whole duration of the contract</li><li>Variable contracts: the member can choose what he buys for each delivery.</li></ul>"
 msgstr ""
 
 #: ../common/Common.hx:11841
@@ -4878,10 +4531,7 @@ msgid "Let's see now the page <b>Products</b>"
 msgstr ""
 
 #: ../common/Common.hx:12027
-msgid ""
-"On this page, you can manage the list of products offered by this supplier.<br/>Define "
-"at least the name and the price of products. It is also possible to add a "
-"description and a picture."
+msgid "On this page, you can manage the list of products offered by this supplier.<br/>Define at least the name and the price of products. It is also possible to add a description and a picture."
 msgstr ""
 
 #: ../common/Common.hx:12337
@@ -4889,10 +4539,7 @@ msgid "Let's see the <b>deliveries</b> page"
 msgstr ""
 
 #: ../common/Common.hx:12526
-msgid ""
-"Here we can manage the list of deliveries for this supplier.<br/>In the software, "
-"a delivery has a date, a start time, and an end time. The location of the "
-"delivery must also be defined, by using the list that we have already seen."
+msgid "Here we can manage the list of deliveries for this supplier.<br/>In the software, a delivery has a date, a start time, and an end time. The location of the delivery must also be defined, by using the list that we have already seen."
 msgstr ""
 
 #: ../common/Common.hx:12877
@@ -4900,27 +4547,15 @@ msgid "Let's see now the <b>Orders</b> page"
 msgstr ""
 
 #: ../common/Common.hx:13127
-msgid ""
-"Here we can manage the list of orders for this supplier.<br/>If you choose "
-"to \"open orders\" to members, they will be able to make their orders online "
-"themselves.<br/>This page will centralize automatically the orders for this "
-"supplier.  Otherwise, as a coordinator, you will be able to enter orders "
-"on behalf of a member."
+msgid "Here we can manage the list of orders for this supplier.<br/>If you choose to \"open orders\" to members, they will be able to make their orders online themselves.<br/>This page will centralize automatically the orders for this supplier.  Otherwise, as a coordinator, you will be able to enter orders on behalf of a member."
 msgstr ""
 
 #: ../common/Common.hx:13571
-msgid ""
-"<p>We have seen the main features related to contracts.</p><p>Let's see the "
-"<b>messaging</b> section.</p>"
+msgid "<p>We have seen the main features related to contracts.</p><p>Let's see the <b>messaging</b> section.</p>"
 msgstr ""
 
 #: ../common/Common.hx:13798
-msgid ""
-"<p>The messaging section allows you to send e-mails to different lists of "
-"members. It is not necessary anymore to maintain a lot of lists of e-mails "
-"depending on contracts, as all these lists are automatically generated.</p> "
-" <p>E-mails are sent with your e-mail address as sender, so you will receive "
-"answers in your own mailbox.</p>"
+msgid "<p>The messaging section allows you to send e-mails to different lists of members. It is not necessary anymore to maintain a lot of lists of e-mails depending on contracts, as all these lists are automatically generated.</p>  <p>E-mails are sent with your e-mail address as sender, so you will receive answers in your own mailbox.</p>"
 msgstr ""
 
 #: ../common/Common.hx:14252
@@ -4928,17 +4563,9 @@ msgid "Click here now on this page"
 msgstr ""
 
 #: ../common/Common.hx:14408
-msgid ""
-"<p>In this last page, you can configure everything that is related to your "
-"group.</p><p>The page <b>Access rights</b> is important as it is where you "
-"can define other coordinators among members. They will then be able to manage "
-"one or many contracts, send emails, etc.</p>"
+msgid "<p>In this last page, you can configure everything that is related to your group.</p><p>The page <b>Access rights</b> is important as it is where you can define other coordinators among members. They will then be able to manage one or many contracts, send emails, etc.</p>"
 msgstr ""
 
 #: ../common/Common.hx:14792
-msgid ""
-"<p>This is the last step of this tutorial. I hope that it gave you a good "
-"overview of this software.<br/>To go further, do not hesitate to look at "
-"the <b>documentation</b>. The link is always available at the bottom of the "
-"screen.</p>"
+msgid "<p>This is the last step of this tutorial. I hope that it gave you a good overview of this software.<br/>To go further, do not hesitate to look at the <b>documentation</b>. The link is always available at the bottom of the screen.</p>"
 msgstr ""

@@ -53,15 +53,10 @@ class Cron extends Controller
 		app.event(MinutelyCron(this.now));
 
 		//managing buffered emails
-		for( i in 0...5){
-			var task = new TransactionWrappedTask("Send 10 Emails from Buffer");
-			task.setTask(
-				function(){
-					sendEmailsfromBuffer(i*10,task);
-				}
-			);
-			task.execute(!App.config.DEBUG);
-		}
+		var task = new TransactionWrappedTask("Send 50 Emails from Buffer");
+		task.setTask(sendEmailsfromBuffer.bind(50,task));
+		task.execute(!App.config.DEBUG);
+		
 		
 		//warns admin about emails that cannot be sent
 		var task = new TransactionWrappedTask("warns admin about emails that cannot be sent");
