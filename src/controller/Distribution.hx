@@ -1151,7 +1151,9 @@ class Distribution extends Controller
 
 	}
 
-	//View volunteers list for this distribution and you can sign up for a role
+	/**
+		View volunteers list for this distribution and you can sign up for a role
+	**/
 	@tpl('distribution/volunteersSummary.mtt')
 	function doVolunteersSummary(distrib: db.MultiDistrib, ?args: { role: db.VolunteerRole }) {
 
@@ -1371,23 +1373,22 @@ class Distribution extends Controller
 		Members can view volunteers planning for each role and multidistrib date
 	**/
 	@tpl('distribution/volunteersParticipation.mtt')
-	function doVolunteersParticipation(?args: { ?from: Date, ?to: Date } ) {
+	function doVolunteersParticipation(?args: { ?_from: Date, ?_to: Date } ) {
 				
 		var from: Date = null;
 		var to: Date = null;
 
-		if ( args != null ) {
-			if ( args.from != null && args.to != null ) {
-				from = args.from;
-				to = args.to;
-			}
-		}
-
-		if ( from == null || to == null ) {
+		if ( args != null && args._from != null && args._to != null) {
+			from = args._from;
+			to = args._to;
+		} else {
 			var timeframe = app.user.getGroup().getMembershipTimeframe(Date.now());
 			from = timeframe.from;
 			to = timeframe.to;
 		}
+
+		view.fromField = new form.CagetteDatePicker("from","Date de début",from );
+		view.toField = new form.CagetteDatePicker("to","Date de fin",to );
 
 		var multiDistribs = db.MultiDistrib.getFromTimeRange( app.user.getGroup(), from, to );
 		var members = app.user.getGroup().getMembers();
@@ -1483,7 +1484,6 @@ class Distribution extends Controller
 		view.totalRolesToBeDone = totalRolesToBeDone;
 		view.totalRolesDone = totalRolesDone;
 		
-		view.initialUrl = args != null && args.from != null && args.to != null ? "/distribution/volunteersCalendar?from=" + args.from + "&to=" + args.to : "/distribution/volunteersCalendar";		
 		view.from = from.toString().substr(0,10);
 		view.to = to.toString().substr(0,10);		
 	}
