@@ -1,4 +1,5 @@
 package controller;
+import service.ProductService;
 import db.Catalog;
 import tink.core.Error;
 import db.UserOrder;
@@ -536,28 +537,9 @@ class ContractAdmin extends Controller
 			if (form.getValueOf("copyProducts") == true) {
 				var prods = catalog.getProducts();
 				for ( source_p in prods) {
-					var p = new db.Product();
-					p.name = source_p.name;
-					p.price = source_p.price;
+					var p = ProductService.duplicate(source_p);
 					p.catalog = nc;
-					p.image = source_p.image;
-					p.desc = source_p.desc;
-					p.ref = source_p.ref;
-					p.stock = source_p.stock;
-					p.vat = source_p.vat;
-					p.organic = source_p.organic;
-					p.txpProduct = source_p.txpProduct;
-					p.unitType = source_p.unitType;
-					p.multiWeight = source_p.multiWeight;
-					p.variablePrice = source_p.variablePrice;
-					p.insert();
-					
-					for (source_cat in source_p.getCategories()){
-						var cat = new db.ProductCategory();
-						cat.product = p;
-						cat.category = source_cat;
-						cat.insert();
-					}
+					p.update();
 				}
 			}
 			

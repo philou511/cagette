@@ -1,4 +1,5 @@
 package controller;
+import service.SubscriptionService;
 import tink.core.Error;
 using Lambda;
 
@@ -18,11 +19,16 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		var catalogSubscriptions = db.Subscription.manager.search( $catalogId == catalog.id,false ).array();
-		catalogSubscriptions.sort( function(b, a) {
-			return  a.user.getName() < b.user.getName() ? 1 : -1;
-		} );
-
+		var catalogSubscriptions = SubscriptionService.getSubscriptions(catalog);
+		//sort by validation, then username
+		catalogSubscriptions.sort(function(a,b){
+			if( (a.isValidated?"1":"0")+a.user.lastName > (b.isValidated?"1":"0")+b.user.lastName ){
+				return 1;
+			}else{
+				return -1;
+			}
+		});
+		
 		view.catalog = catalog;
 		view.group = db.Group.manager.get( catalog.group.id );
 		view.c = catalog;

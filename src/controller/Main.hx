@@ -86,16 +86,8 @@ class Main extends Controller {
 		}
 		
 		//register to group without ordering block
-		var hasOneOpenDistrib = false;
-		for( md in distribs){
-			if(md.isActive()) {
-				hasOneOpenDistrib = true;
-				break;
-			}
-		}
-
 		var isMemberOfGroup = app.user==null ? false : app.user.isMemberOf(group);
-		var registerWithoutOrdering = ( !isMemberOfGroup && group.regOption==db.Group.RegOption.Open && !hasOneOpenDistrib );
+		var registerWithoutOrdering = ( !isMemberOfGroup && group.regOption==db.Group.RegOption.Open );
 		view.registerWithoutOrdering = registerWithoutOrdering;
 		if(registerWithoutOrdering) service.UserService.prepareLoginBoxOptions(view,group);		
 

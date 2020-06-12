@@ -21,6 +21,15 @@ enum SubscriptionServiceError {
  */
 class SubscriptionService
 {
+
+	/**
+		get subscriptions of a catalog
+	**/
+	public static function getSubscriptions(catalog:db.Catalog){
+
+		return db.Subscription.manager.search( $catalogId == catalog.id,false ).array();
+	}
+
 	/**
 		Get user subscriptions in active catalogs
 	**/
