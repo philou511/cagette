@@ -225,12 +225,19 @@ class Cron extends Controller
 		});		
 		task.execute(!App.config.DEBUG);
 
-		//Distrib notifications
+		//Distribution time notifications
 		var task = new TransactionWrappedTask("Distrib notifications");
 		task.setTask(function(){
 			distribNotif(task,this.now,4,db.User.UserFlags.HasEmailNotif4h); //4h before
 			distribNotif(task,this.now,24,db.User.UserFlags.HasEmailNotif24h); //24h before
-			distribNotif(task,this.now,0, db.User.UserFlags.HasEmailNotifOuverture); //on command open
+			
+		});
+		task.execute(!App.config.DEBUG);
+
+		//opening orders notification
+		var task = new TransactionWrappedTask("Opening orders notifications");
+		task.setTask(function(){
+			openingOrdersNotif(task);
 		});
 		task.execute(!App.config.DEBUG);
 
@@ -366,13 +373,9 @@ class Cron extends Controller
 		// dans le cas HasEmailNotifOuverture la date à prendre est le orderStartDate
 		// et non pas date qui est la date de la distribution
 		var distribs;
-		if ( db.User.UserFlags.HasEmailNotifOuverture == flag ){
-			task.title('$flag : Look for distribs with orderStartDate between $from to $to');
-			distribs = db.Distribution.manager.search( $orderStartDate >= from && $orderStartDate <= to , false);
-		} else {
-			task.title('$flag : Look for distribs happening between $from to $to');
-			distribs = db.Distribution.manager.search( $date >= from && $date < to , false);
-		}
+		task.title('$flag : Look for distribs happening between $from to $to');
+		distribs = db.Distribution.manager.search( $date >= from && $date < to , false);
+		
 		
 		//on s'arrete immédiatement si aucune distibution trouvée
  		if (distribs.length == 0) return;
@@ -405,16 +408,6 @@ class Cron extends Controller
 		}
 		if(!App.config.DEBUG) Cache.set(cacheId, dist, 24 * 60 * 60);
 
-
-		
-		//We have now the distribs we want to notify about.
-		/*var distribsByContractId = new Map<Int,db.Distribution>();
-		for (d in distribs) {			
-			if (d == null || d.catalog==null) continue;
-			distribsByContractId.set(d.catalog.id, d);
-		}*/
-
-		//Boucle sur les distributions pour gerer le cas de plusieurs distributions le même jour sur le même contrat
  		var orders = [];
  		for (d in distribs) {
 			if (d == null || d.catalog==null) continue;
@@ -458,21 +451,6 @@ class Cron extends Controller
 			for( o in x.orders) total += o.quantity;
 			if(total==0.0) users.remove(k);
 		}
-		
-		// Dans le cas de l'ouverture de commande, ce sont tous les users qu'il faut intégrer
-		if ( db.User.UserFlags.HasEmailNotifOuverture == flag )
-		{
- 			for (d in distribs) {
-				var memberList = d.catalog.group.getMembers();
-				for (u in memberList) {
-					var x = users.get(u.id+"-"+d.catalog.group.id);
-					if (x == null) x = {user:u,distrib:null,orders:[],vendors:[]};
-					x.distrib = d.multiDistrib;
-					x.vendors.push(d.catalog.vendor);
-					users.set(u.id+"-"+d.catalog.group.id, x);
-				}
-			}
-		}
 
 		for ( u in users) {			
 			if (u.user.flags.has(flag) ) {				
@@ -482,37 +460,24 @@ class Cron extends Controller
 					this.t = sugoi.i18n.Locale.init(u.user.lang); //switch to the user language
 
 					var text;
-					if ( db.User.UserFlags.HasEmailNotifOuverture == flag ) 
-					{
-						//order opening notif
-						text = t._("Opening of orders for the delivery of <b>::date::</b>", {date:view.hDate(u.distrib.distribStartDate)});
-						text += "<br/>";
-						text += t._("The following suppliers are involved :");
-						text += "<br/><ul>";
-						for ( v in u.vendors) {
-							text += "<li>" + v + "</li>";
+					
+					//Distribution notif to the users
+					var d = u.distrib;
+					text = t._("Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>", {day:view.dDate(d.distribStartDate),from:view.hHour(d.distribStartDate),to:view.hHour(d.distribEndDate)});
+					text += t._("Your products to collect :") + "<br/><ul>";
+					for ( p in u.orders) {
+						text += "<li>"+p.quantity+" x "+p.product.getName();
+						// Gerer le cas des contrats en alternance
+						if (p.user2 != null) {
+							text += " " + t._("alternated with") + " ";
+							if (u.user == p.user)
+								text += p.user2.getCoupleName();
+							else
+								text += p.user.getCoupleName();
 						}
-						text += "</ul>";
-						
-					}else{
-						//Distribution notif to the users
-						var d = u.distrib;
-						text = t._("Do not forget the delivery on <b>::day::</b> from ::from:: to ::to::<br/>", {day:view.dDate(d.distribStartDate),from:view.hHour(d.distribStartDate),to:view.hHour(d.distribEndDate)});
-						text += t._("Your products to collect :") + "<br/><ul>";
-						for ( p in u.orders) {
-							text += "<li>"+p.quantity+" x "+p.product.getName();
-							// Gerer le cas des contrats en alternance
-							if (p.user2 != null) {
-								text += " " + t._("alternated with") + " ";
-								if (u.user == p.user)
-									text += p.user2.getCoupleName();
-								else
-									text += p.user.getCoupleName();
-							}
-							text += "</li>";
-						}
-						text += "</ul>";
+						text += "</li>";
 					}
+					text += "</ul>";
 				
 					try{
 						var m = new Mail();
@@ -543,6 +508,92 @@ class Cron extends Controller
 						task.warning(haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
 					}
 					
+				}
+			}
+		}
+	}
+
+
+	function openingOrdersNotif(task:TransactionWrappedTask) {
+		
+		var from = now.setHourMinute( now.getHours(), 0 );
+		var to = now.setHourMinute( now.getHours()+1 , 0);		
+		var distribs = db.Distribution.manager.search( $orderStartDate >= from && $orderStartDate < to , false);		
+		task.title('Look for distribs with orderStartDate between $from to $to (${distribs.length})');
+ 		if (distribs.length == 0) return;		
+		
+		//exclude CSA catalogs
+		distribs = distribs.filter( (d) -> return d.catalog.type!=db.Catalog.TYPE_CONSTORDERS );
+		distribs.map(  (d) -> task.log("Distrib : "+d.date+" de "+d.catalog.name+", groupe : "+d.catalog.group.name) );
+				
+		/*
+		 * Group distribs by group
+		 * Map key is $groupId
+		*/
+		var data = new Map <Int,{distributions:Array<db.Distribution>,vendors:Array<db.Vendor>}>();
+		
+		for (d in distribs) {			
+			var x = data.get(d.catalog.group.id);
+			if (x == null) x = {distributions:[],vendors:[]};
+			x.distributions.push(d);
+			x.vendors.push(d.catalog.vendor);			
+			data.set(d.catalog.group.id, x);						
+		}
+		for( d in data){
+			//deduplicate vendors
+			d.vendors = tools.ObjectListTool.deduplicate(d.vendors);
+		}
+
+		for(g in data){
+			if(g.distributions.length==0) continue;
+			var group = g.distributions[0].catalog.group;
+			var md = g.distributions[0].multiDistrib;
+			for ( user in group.getMembers()) {			
+				if (user.flags.has(db.User.UserFlags.HasEmailNotifOuverture) ) {				
+
+					if (user.email != null) {
+						task.log("=== "+user.getName()+" de "+group.name);
+						this.t = sugoi.i18n.Locale.init(user.lang); //switch to the user language
+						
+						//order opening notif
+						var text = t._("Opening of orders for the delivery of <b>::date::</b>", {date:view.hDate(md.distribStartDate)});
+						text += "<br/>";
+						text += t._("The following suppliers are involved :");
+						text += "<br/><ul>";
+						for ( v in g.vendors) {
+							text += "<li>" + v.name + "</li>";
+						}
+						text += "</ul>";						
+											
+						try{
+							var m = new Mail();
+							m.setSender(App.config.get("default_email"), "Cagette.net");
+							if(group.contact!=null) m.setReplyTo(group.contact.email, group.name);
+							m.addRecipient(user.email, user.getName());
+							if (user.email2 != null) m.addRecipient(user.email2);
+							m.setSubject( group.name+" : "+t._("Distribution on ::date::",{date:app.view.hDate(md.distribStartDate)})  );
+							
+							m.setHtmlBody( app.processTemplate("mail/orderNotif.mtt", { 
+								text:text,
+								group:group,
+								multiDistrib:md,
+								user:user,
+								hHour:Formatting.hHour 
+							} ) );
+							App.sendMail(m , group);	
+	
+							if(App.config.DEBUG){
+								task.title(user.getName());
+								task.log(m.getHtmlBody());
+							}
+	
+						}catch (e:Dynamic){						
+							app.logError(e); //email could be invalid
+							task.warning(e);
+							task.warning(haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
+						}
+						
+					}
 				}
 			}
 		}
