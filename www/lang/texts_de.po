@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2020-06-22 15:41+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Last-Translator: nimradium <nimra242001@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
 "Language: de\n"
@@ -73,7 +73,7 @@ msgstr "Erfassung der Bezahlung für ::user::"
 
 #: src/controller/Transaction.hx:2481
 msgid "Editing a credit card payment is not allowed"
-msgstr "Die Bearbeitung einer Kreditkartenzahlung ist nicht erlaubt"
+msgstr "Es ist verboten eine Kreditkartenzahlung zu bearbeiten"
 
 #: src/controller/Transaction.hx:2961
 msgid "Confirmed"
