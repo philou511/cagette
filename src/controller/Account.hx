@@ -57,6 +57,10 @@ class Account extends Controller
 				
 		//variable orders, grouped by date
 		var distribs = MultiDistrib.getFromTimeRange( group , oneMonthAgo , inOneMonth  );
+		//sort by date desc
+		distribs.sort(function(a,b){
+			return Math.round(b.distribStartDate.getTime()/1000) - Math.round(a.distribStartDate.getTime()/1000);
+		});
 		view.distribs = distribs;
 		view.prepare = OrderService.prepare;
 		
