@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cagette.net\n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-05-22 13:41+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2020-06-22 15:41+0000\n"
+"Last-Translator: nimradium <nimra242001@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cagette/"
 "translations/de/>\n"
 "Language: de\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.2-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
@@ -73,7 +73,7 @@ msgstr "Erfassung der Bezahlung für ::user::"
 
 #: src/controller/Transaction.hx:2481
 msgid "Editing a credit card payment is not allowed"
-msgstr "Die Bearbeitung einer Kreditkartenzahlung ist nicht erlaubt"
+msgstr "Es ist verboten eine Kreditkartenzahlung zu bearbeiten"
 
 #: src/controller/Transaction.hx:2961
 msgid "Confirmed"
@@ -4558,7 +4558,7 @@ msgstr "Lieferung wählen"
 
 #: lang/master/tpl/shop/choose.mtt:222
 msgid "There is currently no delivery planned."
-msgstr "Derzeit keine  Lieferung geplant."
+msgstr "Derzeit keine Lieferung geplant."
 
 #: lang/master/tpl/shop/choose.mtt:2197
 msgid "Opening of orders"
@@ -4781,7 +4781,7 @@ msgid ""
 msgstr ""
 "Auf dieser Seite können Sie die List der Lieferungen für diesen Landwirt "
 "bearbeiten.<br/> Eine Lieferung beinhaltet bei dieser Software immer ein "
-"Datum mit Startzeit und einer einer Endzeit. Der Lieferort wird ebenfalls in "
+"Datum mit Startzeit und einer mit Endzeit. Der Lieferort wird ebenfalls in "
 "der Liste ausgewählt, die wir zuvor gesehen haben. Wenn sie einen neuen "
 "Lieferort bestimmen möchten, müssen Sie zu dieser Liste zurück kehren."
 
@@ -4811,7 +4811,8 @@ msgid ""
 "<b>messaging</b> section.</p>"
 msgstr ""
 "<p>Was die Angebote betrifft, so haben wir jetzt eine kleine Übersicht "
-"erhalten.</p><p>Die Erkundung geht weiter mit dem Featur Nachrichten.</p>"
+"erhalten.</p><p>Die Erkundung geht weiter mit dem Abschnitt "
+"<b>Nachrichten</b>.</p>"
 
 #: common/Common.hx:11728
 msgid ""
