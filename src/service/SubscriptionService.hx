@@ -66,15 +66,79 @@ class SubscriptionService
 		return db.Subscription.manager.search( $user == user && $catalog == catalog , false ).array();
 	}
 
-	public static function getSubscriptionDistributions( subscription : db.Subscription ) : Array<db.Distribution> {
+	public static function getSubscriptionDistribs( subscription : db.Subscription, type : String ) : Array<db.Distribution> {
 
-		return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate,{orderBy:date}, false ).array();
+		var subscriptionDistribs = null;
+		if ( type == "all" ) {
+
+			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, { orderBy : date }, false );
+		}
+		else if ( type == "past" ) {
+
+			var now = Date.now();
+			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );			
+			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate, false );
+		}
+		
+		if ( subscription.absencesNb != null && subscription.absencesNb != 0 ) {
+
+			var absentDistribIds = subscription.getAbsentDistribIds();
+			if ( absentDistribIds.length != 0 ) {
+
+				for ( distribId in absentDistribIds ) {
+
+					subscriptionDistribs = subscriptionDistribs.filter( distrib -> return distrib.id != distribId );
+					// subscriptionDistribs = Lambda.filter( subscriptionDistribs, function(x) return x.id != distribId);
+					// subscriptionDistribs.filter( ( distrib ) -> return d.catalog.type!=db.Catalog.TYPE_CONSTORDERS )
+				}
+			}
+			else {
+
+				//JB A FAIRE
+
+			}
+		}
+		
+		return subscriptionDistribs.array();
 	}
 
-	public static function getSubscriptionNbDistributions( subscription : db.Subscription ) : Int {
+	// public static function getSubscriptionDistributions( subscription : db.Subscription ) : Array<db.Distribution> {
 
-		return db.Distribution.manager.count( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate );
+	// 	return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate,{orderBy:date}, false ).array();
+	// }
+
+	public static function getAbsencesDistribs( catalog : db.Catalog ) : Array<db.Distribution> {
+
+		return db.Distribution.manager.search( $catalog == catalog && $date >= catalog.absencesStartDate && $end <= catalog.absencesEndDate, { orderBy : date }, false ).array();
 	}
+
+	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String = null ) : Int {
+
+		var subscriptionDistribsNb = 0;
+		if ( type == null ) {
+
+			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate );
+		}
+		else if ( type == "past" ) {
+
+			var now = Date.now();
+			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );			
+			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $end <= subscription.endDate );
+		}
+
+		if ( subscription.absencesNb != null && subscription.absencesNb != 0 ) {
+
+			subscriptionDistribsNb = subscriptionDistribsNb - subscription.absencesNb;
+		}
+		
+		return subscriptionDistribsNb;
+	}
+
+
+	// public static function getSubscriptionNbDistributions( subscription : db.Subscription ) : Int {
+
+	// 	return db.Distribution.manager.count( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate );
+	// }
 
 	public static function getSubscriptionTotalPrice( subscription : db.Subscription ) : Float {
 
@@ -209,7 +273,8 @@ class SubscriptionService
 	  *  @return db.Subscription
 	  */
 	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date,
-	 ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >, ?isValidated : Bool = true ) : db.Subscription {
+	 ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >,
+	 ?isValidated : Bool = true, ?absencesNb : Int = null, ?absentDistribIds : String  = null ) : db.Subscription {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -230,6 +295,8 @@ class SubscriptionService
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		subscription.isValidated = isValidated;
+		subscription.absencesNb = absencesNb;
+		subscription.setAbsentDistribIds( absentDistribIds );
 
 		if ( isSubscriptionValid( subscription ) ) {
 
@@ -244,7 +311,8 @@ class SubscriptionService
 
 
 	public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
-	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?validateSubscription:Bool ) {
+	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?validateSubscription:Bool,
+	 ?absencesNb : Int = null, ?absentDistribIds : String  = null ) {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -257,6 +325,8 @@ class SubscriptionService
 		}
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+		subscription.absencesNb = absencesNb;
+		subscription.setAbsentDistribIds( absentDistribIds );
 
 		if ( isSubscriptionValid( subscription ) ) {
 			subscription.update();
@@ -309,9 +379,7 @@ class SubscriptionService
 		}
 		else {
 
-			var now = Date.now();
-			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
-			var pastDistributions : List<db.Distribution> = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate, false );
+			var pastDistributions = getSubscriptionDistribs( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
 
 				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) != 0 ) {
@@ -354,9 +422,7 @@ class SubscriptionService
 		}
 		else {
 
-			var now = Date.now();
-			var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
-			var pastDistributions : List<db.Distribution> = db.Distribution.manager.search( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate, false );
+			var pastDistributions = getSubscriptionDistribs( subscription, 'past' );
 			for ( distribution in pastDistributions ) {
 
 				if ( db.UserOrder.manager.count( $distribution == distribution && $subscription == subscription ) == 0 ) {
@@ -373,10 +439,7 @@ class SubscriptionService
 	
 	public static function hasPastDistributions( subscription : db.Subscription ) : Bool {
 
-		//Check if there are distributions in the past for this subscription
-		var now = Date.now();
-		var endOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59 );
-		return db.Distribution.manager.count( $catalog == subscription.catalog  && $date <= endOfToday && $date >= subscription.startDate && $date <= subscription.endDate ) != 0;
+		return getSubscriptionDistribsNb( subscription, 'past' ) != 0;
 	}
 
 
@@ -405,7 +468,7 @@ class SubscriptionService
 			order.delete();
 		}
 
-		var subscriptionDistributions = getSubscriptionDistributions( subscription );
+		var subscriptionDistributions = getSubscriptionDistribs( subscription, 'all' );
 
 		var t = sugoi.i18n.Locale.texts;
 	

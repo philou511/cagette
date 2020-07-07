@@ -138,7 +138,7 @@
 								au ::sDate(subscription.endDate)::
 							</td>
 							<td style="vertical-align: middle;">
-								::subscriptionService.getSubscriptionNbDistributions(subscription)::
+								::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
 							</td>
 							<td style="vertical-align: middle;">
 								::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
@@ -148,6 +148,20 @@
 							</td>
 						</tr>
 					::end::
+					<tr class="greyhead text-center">
+						<th class="text-center col-md-12" colspan="3">Mes absences</th>						
+					</tr>
+					<tr style="text-align: center;">
+						<td style="vertical-align: middle;" colspan="3">
+							15/08/2020<br/>
+							22/08/2020<br/>
+							01/09/2020<br/>
+							06/09/2020
+						</td>
+						<td style="vertical-align: middle;" colspan="2">
+							BOUTON GERER MES ABSENCES
+						</td>
+					</tr>
 				</table>
 			::end::
 			<hr/>

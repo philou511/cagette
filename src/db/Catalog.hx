@@ -34,6 +34,10 @@ class Catalog extends Object
 	
 	public var type : SInt;
 
+	public var absentDistribsMaxNb : SNull<SInt>;
+	public var absencesStartDate : SNull<SDateTime>;
+	public var absencesEndDate : SNull<SDateTime>;
+
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
 	@:skip var cache_hasActiveDistribs : Bool;
@@ -351,8 +355,11 @@ class Catalog extends Object
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
 			"percentageName" 	=> t._("Fees label"),			
-			"contact" 			=> t._("Contact"),			
-			"vendor" 			=> t._("Farmer"),			
+			"contact" 			=> t._("Contact"),
+			"vendor" 			=> t._("Farmer"),
+			"absentDistribsMaxNb" => "Nombre maximum d'absences",
+			"absencesStartDate" => "Date de début de la période d'absences",
+			"absencesEndDate" => "Date de fin de la période d'absences",
 		];
 	}
 	

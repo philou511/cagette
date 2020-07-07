@@ -234,8 +234,6 @@ class App extends sugoi.BaseApp {
 		out.set("percent", "Pourcentage");
 		out.set("pinned", "Mets en avant les produits");
 		
-		
-		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");
 
@@ -244,6 +242,12 @@ class App extends sugoi.BaseApp {
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
 		out.set("variablePrice", "Prix variable selon pesée");
+
+		//Abscences
+		out.set("absentDistribsMaxNb", "Nombre maximum d'absences");
+		out.set("absencesStartDate", "Date de début de la période d'absences");
+		out.set("absencesEndDate", "Date de fin de la période d'absences");
+		
 		return out;
 	}
 	

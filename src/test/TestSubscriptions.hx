@@ -363,7 +363,7 @@ class TestSubscriptions extends utest.Test
 			error = e;
 		}
 		Assert.equals( error, null );
-		Assert.equals( 2 , service.SubscriptionService.getSubscriptionNbDistributions( subscription ));
+		Assert.equals( 2 , service.SubscriptionService.getSubscriptionDistribsNb( subscription ));
 		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
 		var subscriptionAllOrders = SubscriptionService.getSubscriptionAllOrders( subscription );
 		Assert.equals( subscriptionAllOrders.length, 2 * subscriptionDistributions.length );

@@ -327,6 +327,11 @@ class Contract extends Controller
 		view.isUserOrderAvailable = isUserOrderAvailable;
 		view.c = view.contract = catalog;
 		view.isCSACatalog = catalog.type == db.Catalog.TYPE_CONSTORDERS;
+		catalog.absentDistribsMaxNb = 4;
+		catalog.absencesStartDate = new Date( 2020, 7, 1, 0, 0, 0);
+		catalog.absencesEndDate = new Date( 2020, 7, 31, 0, 0, 0);
+		view.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
+		view.absencesDistribs = SubscriptionService.getAbsencesDistribs(catalog);
 
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			true;
@@ -404,6 +409,17 @@ class Contract extends Controller
 			//CSA orders
 			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
 
+			// var obj = app.params.keys();
+			// for( field in Reflect.fields(obj) ) {
+			// 	trace(" obj." + field + " = " + Reflect.field(obj, field));
+			// }
+
+			// for ( k in app.params.keys() ) {
+				
+			// 	if ( k.substr(0, 1) != "d" ) continue;
+			// 	var qt = app.params.get( k );
+			// }
+
 			for ( k in app.params.keys() ) {
 				
 				if ( k.substr(0, 1) != "d" ) continue;
@@ -458,7 +474,6 @@ class Contract extends Controller
 
 			}
 			
-			
 			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 				
 				//create or edit subscription
@@ -469,11 +484,13 @@ class Contract extends Controller
 				try {
 					var pendingSubscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
 					if ( pendingSubscription != null ) {
-						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders, false );
+						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders, false,
+						Std.parseInt(app.params.get( "absences" ) ), app.params.get( "absence0" ) + ',' + app.params.get( "absence1" ) + ',' + app.params.get( "absence2" ) + ',' + app.params.get( "absence3" ) );
 					} else {
 						var now = Date.now();
 						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0);						
-						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, constOrders, false );
+						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, constOrders, false, Std.parseInt(app.params.get( "absences" ) ),
+						app.params.get( "absence0" ) + ',' + app.params.get( "absence1" ) + ',' + app.params.get( "absence2" ) + ',' + app.params.get( "absence3" ) );
 					}
 				} catch ( e : Dynamic ) { 
 					throw Error( "/contract/order/" + catalog.id, e.message );

@@ -130,7 +130,60 @@
 					</th>
 				::end::
 			</tr>
-			</table>
+			<tr>
+				<td colspan="3" class="text-left">
+					Pour la période du 01/07/2020 au 31/08/2020 nombre de distributions où je serai absent(e)
+				</td>
+				<td>
+					<input type="text" class="form-control" name="absences" id="absences" value="0" />
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="4" class="text-center">
+					<!-- <select name="absence1" id="absence1" class="form-control" style="width: 18%;display: inherit;">
+						<option value="0">Pas d'absence</option>
+						<option value="01-07-2020">1 Juillet 2020</option>
+						<option value="08-07-2020">8 Juillet 2020</option>
+						<option value="15-08-2020">15 Août 2020</option>
+					</select>
+					<select name="absence2" id="absence2" class="form-control" style="width: 18%;display: inherit;">
+						<option value="0">Pas d'absence</option>
+						<option value="01-07-2020">1 Juillet 2020</option>				
+						<option value="08-07-2020">8 Juillet 2020</option>				
+						<option value="15-08-2020">15 Août 2020</option>				
+					</select>
+					<select name="absence3" id="absence3" class="form-control" style="width: 18%;display: inherit;">
+						<option value="0">Pas d'absence</option>
+						<option value="01-07-2020">1 Juillet 2020</option>				
+						<option value="08-07-2020">8 Juillet 2020</option>				
+						<option value="15-08-2020">15 Août 2020</option>				
+					</select>
+					<select name="absence4" id="absence4" class="form-control" style="width: 18%;display: inherit;">
+						<option value="0">Pas d'absence</option>
+						<option value="01-07-2020">1 Juillet 2020</option>				
+						<option value="08-07-2020">8 Juillet 2020</option>				
+						<option value="15-08-2020">15 Août 2020</option>				
+					</select>
+					<select name="absence5" id="absence5" class="form-control" style="width: 18%;display: inherit;">
+						<option value="0">Pas d'absence</option>
+						<option value="01-07-2020">1 Juillet 2020</option>				
+						<option value="08-07-2020">8 Juillet 2020</option>				
+						<option value="15-08-2020">15 Août 2020</option>				
+					</select> -->
+
+					::foreach i loopList(0, absentDistribsMaxNb)::
+						<select name="absence::i::" id="absence::i::" class="form-control" style="width: 200px;">
+							<option value="0">Pas d'absence</option>
+							::foreach distrib absencesDistribs::
+								<option value="::distrib.id::">::distrib.date::</option>
+							::end::
+						</select>
+					::end::
+				</td>			
+			</tr>
+
+		</table>
 		
 			<p class="text-right">
 				::if canOrder::
@@ -185,7 +238,7 @@
 							au ::sDate(subscription.endDate)::
 						</td>
 						<td style="vertical-align: middle;">
-							::subscriptionService.getSubscriptionNbDistributions(subscription)::
+							::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
 						</td>
 						<td style="vertical-align: middle;">
 							::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
@@ -193,8 +246,22 @@
 						<td style="vertical-align: middle;">
 							$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
 						</td>
-					</tr>
+					</tr>					
 				::end::
+				<tr class="greyhead text-center">
+					<th class="text-center col-md-12" colspan="3">Mes absences</th>						
+				</tr>
+				<tr style="text-align: center;">
+					<td style="vertical-align: middle;" colspan="3">
+						15/08/2020<br/>
+						22/08/2020<br/>
+						01/09/2020<br/>
+						06/09/2020
+					</td>
+					<td style="vertical-align: middle;" colspan="2">
+						BOUTON GERER MES ABSENCES
+					</td>
+				</tr>
 			</table>
 		::end::
 	</div>

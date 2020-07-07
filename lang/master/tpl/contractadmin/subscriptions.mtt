@@ -60,7 +60,7 @@
                                     au ::dateToString(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionNbDistributions(subscription)::
+                                    ::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
                                 </td>
                                 <td style="vertical-align: middle;">
                                     ::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
