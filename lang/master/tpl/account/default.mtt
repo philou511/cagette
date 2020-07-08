@@ -8,20 +8,33 @@
 		
 	<!-- CONSTANT ORDERS -->
 	::if(count(subscriptionsByCatalog)>0)::
-
+	
 		<h4><i class="icon icon-refresh"></i> Contrats AMAP</h4>
 
 		::foreach catalog subscriptionsByCatalog.keys()::
 			<h5>::catalog.name::</h5>
+
+			::set subscriptions = subscriptionsByCatalog.get(catalog)::
+			::set hasAbsences = false::
+			::foreach subscription subscriptions::
+				::if subscription.absencesNb != null && subscription.absencesNb != 0 ::
+					::set hasAbsences = true::
+				::end::
+			::end::
+
 			<table class="table table-condensed table-bordered">
 				<tr class="greyhead">
-					<th class="text-center col-md-3">Engagement</th>
-					<th class="text-center col-md-4">Période d'engagement</th>
+					<th class="text-center col-md-4">Engagement</th>
+					<th class="text-center col-md-2">Période d'engagement</th>
+					::if hasAbsences ::
+						<th class="text-center col-md-1">Nombre initial de distributions</th>
+						<th class="text-center col-md-1">Nombre d'absences</th>
+					::end::
 					<th class="text-center col-md-2">Nombre de distributions</th>
-					<th class="text-center col-md-2">Total</th>
+					<th class="text-center col-md-1">Total</th>
 					<th class="text-center col-md-1">Payé</th>
 				</tr>
-				::foreach subscription subscriptionsByCatalog.get(catalog)::
+				::foreach subscription subscriptions::
 					::set orderName = subscriptionService.getDescription(subscription)::
 					::if orderName == null::
 						::set class="danger text-danger"::
@@ -37,9 +50,19 @@
 							::end::
 						</td>
 						<td style="vertical-align: middle;">
-							Du ::sDate(subscription.startDate)::
+							du ::sDate(subscription.startDate)::<br/>
 							au ::sDate(subscription.endDate)::
 						</td>
+						::if subscription.absencesNb != null && subscription.absencesNb != 0 ::
+							<td style="vertical-align: middle;">
+								::subscriptionService.getSubscriptionDistribsNb(subscription, null) + subscription.absencesNb::
+							</td>
+							<td style="vertical-align: middle;">
+								<a href="/subscriptions/absences/::subscription.id::" style="font-weight:bold;color:rgb(0, 206, 4);">
+									::subscription.absencesNb::
+								</a>
+							</td>
+						::end::
 						<td style="vertical-align: middle;">
 							::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
 						</td>
@@ -51,20 +74,6 @@
 						</td>
 					</tr>
 				::end::
-				<tr class="greyhead text-center">
-					<th class="text-center col-md-12" colspan="3">Mes absences</th>						
-				</tr>
-				<tr style="text-align: center;">
-					<td style="vertical-align: middle;" colspan="3">
-						15/08/2020<br/>
-						22/08/2020<br/>
-						01/09/2020<br/>
-						06/09/2020
-					</td>
-					<td style="vertical-align: middle;" colspan="2">
-						BOUTON GERER MES ABSENCES
-					</td>
-				</tr>
 			</table>
 		::end::
 		<hr/>

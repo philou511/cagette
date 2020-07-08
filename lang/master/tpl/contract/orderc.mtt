@@ -132,14 +132,24 @@
 			</tr>
 			<tr>
 				<td colspan="3" class="text-left">
-					Pour la période du 01/07/2020 au 31/08/2020 nombre de distributions où je serai absent(e)
+					Pour la période du 01/07/2020 au 31/08/2020 je vais manquer
 				</td>
 				<td>
-					<input type="text" class="form-control" name="absences" id="absences" value="0" />
+					<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
+						::set label = ""::
+						::foreach i loopList(0, absentDistribsMaxNb + 1)::
+							::if i > 1::
+								::set label = "distributions"::
+							::else::
+								::set label = "distribution"::
+							::end::
+							<option value="::i::">::i:: ::label::</option>
+						::end::
+					</select>
 				</td>
 			</tr>
 
-			<tr>
+			<!-- <tr>
 				<td colspan="4" class="text-center">
 					<!-- <select name="absence1" id="absence1" class="form-control" style="width: 18%;display: inherit;">
 						<option value="0">Pas d'absence</option>
@@ -172,7 +182,7 @@
 						<option value="15-08-2020">15 Août 2020</option>				
 					</select> -->
 
-					::foreach i loopList(0, absentDistribsMaxNb)::
+					<!-- ::foreach i loopList(0, absentDistribsMaxNb)::
 						<select name="absence::i::" id="absence::i::" class="form-control" style="width: 200px;">
 							<option value="0">Pas d'absence</option>
 							::foreach distrib absencesDistribs::
@@ -181,7 +191,7 @@
 						</select>
 					::end::
 				</td>			
-			</tr>
+			</tr> -->
 
 		</table>
 		
@@ -212,10 +222,12 @@
 
 			<table class="table table-condensed table-bordered">
 				<tr class="greyhead">
-					<th class="text-center col-md-3">Engagement</th>
-					<th class="text-center col-md-4">Période d'engagement</th>
+					<th class="text-center col-md-4">Engagement</th>
+					<th class="text-center col-md-2">Période d'engagement</th>
+					<th class="text-center col-md-1">Nombre initial de distributions</th>
+					<th class="text-center col-md-1">Nombre d'absences</th>
 					<th class="text-center col-md-2">Nombre de distributions</th>
-					<th class="text-center col-md-2">Total</th>
+					<th class="text-center col-md-1">Total</th>
 					<th class="text-center col-md-1">Payé</th>
 				</tr>
 				::foreach subscription subscriptions::
@@ -234,8 +246,14 @@
 							::end::
 						</td>
 						<td style="vertical-align: middle;">
-							Du ::sDate(subscription.startDate)::
+							du ::sDate(subscription.startDate)::<br/>
 							au ::sDate(subscription.endDate)::
+						</td>
+						<td style="vertical-align: middle;">
+							::subscriptionService.getSubscriptionDistribsNb(subscription, null) + subscription.absencesNb::
+						</td>
+						<td style="vertical-align: middle;">
+							::subscription.absencesNb::
 						</td>
 						<td style="vertical-align: middle;">
 							::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
@@ -246,23 +264,25 @@
 						<td style="vertical-align: middle;">
 							$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
 						</td>
-					</tr>					
+					</tr>
+					<tr class="greyhead text-center">
+						<th class="text-center col-md-12" colspan="7" >Mes absences</th>						
+					</tr>
+					<tr>
+						<td colspan="7">
+							<div style="text-align: right; width: 45%; float: left; padding-top: 10px;">
+								Jeudi 2 Juillet 2020<br/>
+								Mardi 7 Juillet 2020<br/>
+								Jeudi 9 Juillet 2020
+							</div>
+							<div style="text-align: center; width: 45%; float: left; padding-top: 20px;">
+								$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::)
+							</div>
+						</td>
+					</tr>
 				::end::
-				<tr class="greyhead text-center">
-					<th class="text-center col-md-12" colspan="3">Mes absences</th>						
-				</tr>
-				<tr style="text-align: center;">
-					<td style="vertical-align: middle;" colspan="3">
-						15/08/2020<br/>
-						22/08/2020<br/>
-						01/09/2020<br/>
-						06/09/2020
-					</td>
-					<td style="vertical-align: middle;" colspan="2">
-						BOUTON GERER MES ABSENCES
-					</td>
-				</tr>
-			</table>
+			</table>		
+
 		::end::
 	</div>
 

@@ -156,6 +156,7 @@ class Subscriptions extends controller.Controller
 		}
 	
 		view.title = 'Nouvelle souscription';
+		view.edit = false;
 		view.canOrdersBeEdited = true;
 		view.c = catalog;
 		view.catalog = catalog;
@@ -250,6 +251,7 @@ class Subscriptions extends controller.Controller
 		}
 
 		view.title = 'Modification de la souscription pour ' + subscription.user.getName();
+		view.edit = true;
 		view.canOrdersBeEdited = canOrdersBeEdited;
 		view.c = subscription.catalog;
 		view.catalog = subscription.catalog;
@@ -262,6 +264,7 @@ class Subscriptions extends controller.Controller
 		};
 		view.startdate = subscription.startDate;
 		view.enddate = subscription.endDate;
+		view.absencesNb = subscription.absencesNb;
 		view.nav.push( 'subscriptions' );
 
 	}
@@ -290,6 +293,53 @@ class Subscriptions extends controller.Controller
 			subscription.update();
 			throw Ok("/contractAdmin/subscriptions/"+subscription.catalog.id,'Souscription dévalidée');
 		}
+
+	}
+
+	@logged @tpl("form.mtt")
+	function doAbsences( subscription : db.Subscription ) {
+				
+		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+
+		//TODO GET SUBSCRIPTION FOR THE ABSENCES PERIOD
+		view.subscription = subscription;
+		view.subscriptionService = SubscriptionService;
+		view.catalog = subscription.catalog;
+		subscription.catalog.absentDistribsMaxNb = 4;
+		subscription.catalog.absencesStartDate = new Date( 2020, 6, 1, 0, 0, 0);
+		subscription.catalog.absencesEndDate = new Date( 2020, 7, 31, 0, 0, 0);
+		view.absentDistribsMaxNb = subscription.catalog.absentDistribsMaxNb;
+		view.absencesDistribs = SubscriptionService.getAbsencesDistribs(subscription.catalog);
+
+		var form = new sugoi.form.Form("subscriptionAbsences");
+		var absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog ), function( distrib ) return { label : view.hDate( distrib.date ), value : distrib.id } );
+		for ( i in 0...subscription.absencesNb ) {
+
+			form.addElement(new sugoi.form.elements.IntSelect( "absentDistribId" + i, "Je ne pourrai pas venir le :", Lambda.array( absencesDistribs ), null, true ));
+		}
+		view.form = form;
+		
+		//form check
+		// if ( checkToken() ) {
+
+		// 	try {
+
+		// 		service.SubscriptionService.updateSubscription( subscription, subscription.startDate, subscription.endDate, constOrders, false,
+		// 		Std.parseInt(app.params.get( "absences" ) ), app.params.get( "absence0" ) + ',' + app.params.get( "absence1" ) + ',' + app.params.get( "absence2" ) + ',' + app.params.get( "absence3" ) );
+				
+		// 	}
+		// 	catch ( e : Dynamic ) {
+
+		// 		throw Error( "/account", e.message );
+		// 	}
+
+		// 	//create order operation only
+		// 	if ( catalog.type == db.Catalog.TYPE_VARORDER && app.user.getGroup().hasPayments() ) {
+		// 		var orderOps = db.Operation.onOrderConfirm(varOrders);
+		// 	}
+
+		// 	throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
+		// }
 
 	}
 

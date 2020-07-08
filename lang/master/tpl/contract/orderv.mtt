@@ -228,7 +228,7 @@
 							::end::
 						</td>
 						<td style="vertical-align: middle;">
-							Du ::sDate(subscription.startDate)::
+							du ::sDate(subscription.startDate)::<br/>
 							au ::sDate(subscription.endDate)::
 						</td>
 						<td style="vertical-align: middle;">

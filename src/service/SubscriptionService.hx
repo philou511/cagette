@@ -507,5 +507,28 @@ class SubscriptionService
 		return orders;
 		
 	}
+
+	public static function updateSubscriptionAbsences( subscription : db.Subscription, absentDistribIds : String  = null ) {
+   
+		subscription.lock();
+		subscription.setAbsentDistribIds( absentDistribIds );
+		subscription.update();
+		//FAIRE 2 listes une pour les anciennes dates/distribs d'absences et une autre pour les nouvelles dates
+		//Enlever des 2 listes les dates/distribs en commun puis pour chaque date différente apply l'autre distrib au basket et à l'order
+		//LOGIC FOR SWAPPING ORDERS TO DIFFERENT DISTRIB
+		// for ( o in orders ){
+		// 	o.lock();
+		// 	//find new basket
+		// 	o.basket = db.Basket.getOrCreate(o.user, newMd);
+		// o.distribution = ;
+		// 	o.update();
+		// }
+
+		// //renumbering baskets
+		// for( b in newMd.getBaskets()){
+		// 	b.renumber();
+		// }
+
+   	}
 	
 }

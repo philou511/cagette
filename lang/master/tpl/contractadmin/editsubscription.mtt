@@ -135,52 +135,46 @@
 					Absences du 01/07/2020 au 31/08/2020
 				</label>
 				<div class="col-sm-2">
-					<input class="form-control" type="text" name="absences" id="absences" value="0" />
+					::if edit ::
+						::absencesNb::
+					::else::
+						<input class="form-control" type="text" name="absences" id="absences" value="0" />
+					::end::
 				</div>
 
 			</div>
 
-			<div class="form-group">
+			::if edit ::
+				<div class="form-group">
 
-				<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
-					Dates des absences
-				</label>
-				<div class="col-sm-9">
+					<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
+						Dates des absences
+					</label>
+					<div class="col-sm-9">
 
-					<select name="absence1" id="absence1" class="form-control" style="width: 30%;display: inherit;">
-						<option value="0">Pas d'absence</option>
-						<option value="01-07-2020">1 Juillet 2020</option>
-						<option value="08-07-2020">8 Juillet 2020</option>
-						<option value="15-08-2020">15 Août 2020</option>
-					</select>
-					<select name="absence2" id="absence2" class="form-control" style="width: 30%;display: inherit;">
-						<option value="0">Pas d'absence</option>
-						<option value="01-07-2020">1 Juillet 2020</option>				
-						<option value="08-07-2020">8 Juillet 2020</option>				
-						<option value="15-08-2020">15 Août 2020</option>				
-					</select>
-					<select name="absence3" id="absence3" class="form-control" style="width: 30%;display: inherit;">
-						<option value="0">Pas d'absence</option>
-						<option value="01-07-2020">1 Juillet 2020</option>				
-						<option value="08-07-2020">8 Juillet 2020</option>				
-						<option value="15-08-2020">15 Août 2020</option>				
-					</select>
-					<select name="absence4" id="absence4" class="form-control" style="width: 30%;display: inherit;">
-						<option value="0">Pas d'absence</option>
-						<option value="01-07-2020">1 Juillet 2020</option>				
-						<option value="08-07-2020">8 Juillet 2020</option>				
-						<option value="15-08-2020">15 Août 2020</option>				
-					</select>
-					<select name="absence5" id="absence5" class="form-control" style="width: 30%;display: inherit;">
-						<option value="0">Pas d'absence</option>
-						<option value="01-07-2020">1 Juillet 2020</option>				
-						<option value="08-07-2020">8 Juillet 2020</option>				
-						<option value="15-08-2020">15 Août 2020</option>				
-					</select>
+						<select name="absence1" id="absence1" class="form-control" style="width: 300px;display: inherit;">
+							<option value="0">Jeudi 2 Juillet 2020 à 19:00</option>
+							<option value="01-07-2020">Vendre</option>
+							<option value="08-07-2020">8 Juillet 2020</option>
+							<option value="15-08-2020">15 Août 2020</option>
+						</select>
+						<select name="absence2" id="absence2" class="form-control" style="width: 300px;display: inherit;">
+							<option value="0">Vendredi 31 Juillet 2020 à 19:00</option>
+							<option value="01-07-2020">1 Juillet 2020</option>				
+							<option value="08-07-2020">8 Juillet 2020</option>				
+							<option value="15-08-2020">15 Août 2020</option>				
+						</select>
+						<select name="absence3" id="absence3" class="form-control" style="width: 300px;display: inherit;">
+							<option value="0">Vendredi 21 Aout 2020 à 19:00</option>
+							<option value="01-07-2020">1 Juillet 2020</option>				
+							<option value="08-07-2020">8 Juillet 2020</option>				
+							<option value="15-08-2020">15 Août 2020</option>				
+						</select>					
+
+					</div>
 
 				</div>
-
-			</div>				
+			::end::
 
 			<div class="form-group">
 
