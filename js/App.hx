@@ -37,6 +37,9 @@ extern class NeolithicViewsGenerator {
     static public function setApiUrl(
         url: String
     ): Void;
+    static public function setGraphUrl(
+        url: String
+    ): Void;
     static public function placeDialog(elementId: String, props: Dynamic): Void;
 }
 
@@ -78,6 +81,8 @@ class App {
         untyped js.Browser.window._ = new App();
         
         NeolithicViewsGenerator.setApiUrl("/api");
+        // NeolithicViewsGenerator.setGraphUrl(sugoi.db.Variable.get("cagette_api") + "/graphql");
+        // NeolithicViewsGenerator.setGraphUrl(App.config.get("cagette_api") + "/graphql");
 		untyped js.Browser.window._NeolithicViewsGenerator = NeolithicViewsGenerator;
     }
     

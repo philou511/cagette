@@ -4,6 +4,7 @@ import haxe.Json;
 import tink.core.Error;
 import service.PaymentService;
 import Common;
+import jwt.JWT;
 
 /**
  * Public user API
@@ -153,8 +154,14 @@ class User extends Controller
 		//cleaning
 		var email = StringTools.trim(App.current.params.get("email")).toLowerCase();
 		var pass = StringTools.trim(App.current.params.get("password"));
-		service.UserService.login(email, pass);
-		Sys.print(Json.stringify({success:true}));
+		var user = service.UserService.login(email, pass);
+		var token : String = JWT.sign({ email: email, id: user.id }, App.config.get("key"));
+		Sys.print(
+			Json.stringify({ 
+				success: true,
+				token:token 
+			})
+		);
 	}
 	
 	/**
