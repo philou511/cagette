@@ -61,10 +61,8 @@
 		::set basketValidated=0::
 		<table class="table table-bordered table-hover table-condensed"  style="width:100%;">
 			
-			::foreach u users::
-				
-				::set basket = getBasket2(u,distribution)::
-				
+			::foreach basket baskets::
+				::set u = basket._user::
 				::if(basket.isValidated()==true)::
 					::set basketValidated = basketValidated+1::
 					::set class="success"::
@@ -104,7 +102,7 @@
 		::if(!confirmed)::
 		<p class="text-center">
 
-				::if(basketValidated < users.length)::
+				::if(basketValidated < baskets.length)::
 				<a href="/distribution/autovalidate/::distribution.id::" class="btn btn-lg btn-danger" $$confirm(Confirmez-vous que les commandes et les paiements de cette distribution sont bien à jour ? Il ne sera plus possible de modifier les commandes après avoir validé cette distribution)>
 					<i class="icon icon-check"></i> Valider la distribution
 				</a>

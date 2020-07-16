@@ -475,12 +475,12 @@ class MultiDistrib extends Object
 		TODO : refacto with foreign key with multidistrib
 	**/
 	public function getBaskets():Array<db.Basket>{
-		var baskets = [];
+		/*var baskets = [];
 		for( o in getOrders()){
 			if(o.basket!=null) baskets.push(o.basket);
 		}
-		return baskets.deduplicate();
-		//return Lambda.array(db.Basket.manager.search($multiDistrib==this,false));
+		return baskets.deduplicate();*/
+		return Lambda.array(db.Basket.manager.search($multiDistrib==this,false));
 	}
 
 	public function getTmpBaskets():Array<db.TmpBasket>{

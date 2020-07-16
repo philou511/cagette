@@ -354,11 +354,28 @@ class Group extends controller.Controller
 			
 			App.current.session.data.amapId  = g.id;
 			app.session.data.newGroup = true;
+
+
+			#if plugins
+			//crm.CrmService.syncToSiB(app.user,true,"group_created",{groupName:g.name,userName:app.user.firstName});
+			#end
+
+
 			throw Redirect("/");
 		}
 		
 		view.form= f;
 		
+	}
+
+	@admin
+	function doTest(){
+		#if plugins
+		var user = db.User.manager.get(1,false);
+
+		crm.CrmService.syncToSiB(user,true,"group_created",{groupName:"mon Groupe",userName:user.firstName});
+
+		#end
 	}
 	
 	/**
