@@ -290,9 +290,15 @@ class DistributionService
 	public static function deleteMd(md:db.MultiDistrib){
 		var t = sugoi.i18n.Locale.texts;
 		md.lock();
+
+		App.current.event(PreDeleteMultiDistrib(md));
+
+		//will delete participations and related orders if qt is zero
 		for(d in md.getDistributions()){
 			cancelParticipation(d,false);
 		}
+
+		
 		md.delete();
 	}
 

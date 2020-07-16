@@ -92,7 +92,7 @@ class Basket extends Object
 	public function getOrders(?type:Int):Array<db.UserOrder> {
 		if(type==null){
 			//get all orders
-			return Lambda.array(db.UserOrder.manager.search($basket == this, false));
+			return db.UserOrder.manager.search($basket == this, false).array();
 		}else{
 			//get CSA/variable orders 
 			var out = new Array<db.UserOrder>();
@@ -157,12 +157,10 @@ class Basket extends Object
 	**/
 	public function getOrderOperation(?onlyPending=true):db.Operation {
 
-		var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
-        if(order==null) return null;
+		/* var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
+        if(order==null) return null;*/
 
-		//var key = db.Distribution.makeKey(order.distribution.multiDistrib.getDate(), order.distribution.multiDistrib.getPlace());
 		return db.Operation.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
-		
 	}
 	
 	public function isValidated() {

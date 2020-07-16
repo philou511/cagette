@@ -108,7 +108,6 @@
 				</tr>
 				
 				::set op = basket.getOrderOperation(false)::
-				
 				::if op!=null::
 					<tr>
 						$$operation(::op::)
