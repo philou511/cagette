@@ -56,6 +56,7 @@ class Vendor extends Object
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+	
 	@hideInForms public var isTest : SBool; //cpro testing account
 
 	@hideInForms public var lat:SNull<SFloat>;

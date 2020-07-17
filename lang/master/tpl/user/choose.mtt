@@ -107,7 +107,7 @@
 	</div>
 	::end::
 
-
+	::if(hasCagetteProTest==true)::
 	<script>
 		//<![CDATA[
 		//display once a day
@@ -129,6 +129,7 @@
 		}
 		//]]>
 	</script>
+	::end::
 	
 
 	<div class="col-md-12">
