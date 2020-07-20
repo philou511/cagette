@@ -7,11 +7,13 @@ class Subscription extends Object {
 
 	public var id : SId;
 	@formPopulate("populate") @:relation(userId) public var user : db.User;
+	@hideInForms @:relation(userId2) public var user2 : SNull<db.User>;
 	@:relation(catalogId) public var catalog : db.Catalog;
 	public var startDate : SDateTime;
 	public var endDate : SDateTime;
 	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
+	
 
 	public function populate() {
 		

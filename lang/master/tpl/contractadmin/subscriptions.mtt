@@ -39,7 +39,12 @@
                             <tr style="text-align: center;">
                                 <td style="vertical-align: middle;">
                                     <div style="overflow-wrap: break-word;">
-                                        <i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  <a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+                                        <i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+                                        
+                                        <a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+                                        ::if(subscription._user2!=null)::
+                                        <br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
+                                        ::end::
                                     </div>
                                     <div ::cond !subscription.isValidated:: >
                                         <br/>
@@ -50,7 +55,7 @@
                                 </td>
                                 <td class="::class::" style="vertical-align: middle;">
                                     ::if orderName == null::
-                                        AUCUNE COMMANDE
+                                        Aucune commande
                                     ::else::
                                         ::raw(orderName)::
                                     ::end::
