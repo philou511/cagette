@@ -527,6 +527,8 @@
 			Cagette Pro pédagogique
 		::elseif(s==6)::
 			Cagette Pro inscrit à une formation
+		::elseif(s==7)::
+			Cagette Découverte
 		::end::
 	</macro>
 

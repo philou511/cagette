@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import db.Message;
 import db.UserOrder;
 import sugoi.form.ListData;
@@ -149,17 +150,23 @@ class Messages extends Controller
 	}
 	
 	function getSelection(listId:String) {
+
+		//suscribers of contract X
 		if (listId.substr(0, 1) == "c") {
-			//contrats
-			var contract = Std.parseInt(listId.substr(1));
+			var cid = Std.parseInt(listId.substr(1));
 			
-			var pids = db.Product.manager.search($catalogId == contract, false);
+			var pids = db.Product.manager.search($catalogId == cid, false);
 			var pids = Lambda.map(pids, function(x) return x.id);
 			var up = db.UserOrder.manager.search($productId in pids, false);
+			var contract = Catalog.manager.get(cid,false);
+			var members = contract.group.getMembers();
 			
 			
 			var users = [];
 			for ( order in up) {
+				//exclude non members
+				if(members.find( m-> return m.id==order.user.id )==null) continue;
+
 				if (!Lambda.has(users, order.user)) {
 					users.push(order.user);					
 				}
