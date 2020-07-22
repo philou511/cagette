@@ -11,10 +11,14 @@ class MembershipService{
         this.group = group;
 	}
 	
+	/**
+		@migrated
+	**/
 	public function getUserMemberships(user:db.User):Array<db.Membership>{
 		return db.Membership.manager.search($user == user && $group == group,{orderBy:-year}, false).array();
 	}
 
+	//@migrated
 	public function getUserMembership(user:db.User,year:Int):db.Membership{
 		return db.Membership.manager.select($user == user && $group == group && $year==year, false);
 	}
@@ -67,7 +71,7 @@ class MembershipService{
 			orderOp.pending = false;				
 			orderOp.insert();	
 			
-			var paymentOp = db.Operation.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , orderOp );
+			var paymentOp = service.PaymentService.makePaymentOperation(user,group, paymentType.type, membershipFee, "Paiement adhésion "+getPeriodName(year) , orderOp );
 			paymentOp.date = date;
 			paymentOp.pending = false;
 			paymentOp.update();

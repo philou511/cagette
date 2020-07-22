@@ -1524,7 +1524,7 @@ class Distribution extends Controller
 				if(product.id==order.product.id){
 					//set qt to 0
 					service.OrderService.edit(order,0);
-					db.Operation.onOrderConfirm([order]);//updates payments
+					service.PaymentService.onOrderConfirm([order]);//updates payments
 					count++;
 				}
 			}
@@ -1571,7 +1571,7 @@ class Distribution extends Controller
 					order.productPrice = price;
 					order.update();
 
-					db.Operation.onOrderConfirm([order]);//updates payments
+					service.PaymentService.onOrderConfirm([order]);//updates payments
 					count++;
 				}
 			}

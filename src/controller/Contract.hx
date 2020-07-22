@@ -489,7 +489,7 @@ class Contract extends Controller
 
 			//create order operation only
 			if ( catalog.type == db.Catalog.TYPE_VARORDER && app.user.getGroup().hasPayments() ) {
-				var orderOps = db.Operation.onOrderConfirm(varOrders);
+				var orderOps = service.PaymentService.onOrderConfirm(varOrders);
 			}
 
 

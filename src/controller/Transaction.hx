@@ -211,7 +211,7 @@ class Transaction extends controller.Controller
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
-			var ops = db.Operation.onOrderConfirm(orders);
+			var ops = service.PaymentService.onOrderConfirm(orders);
 			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
@@ -235,7 +235,7 @@ class Transaction extends controller.Controller
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
-			var orderOps = db.Operation.onOrderConfirm(orders);
+			var orderOps = service.PaymentService.onOrderConfirm(orders);
 			var total = tmpBasket.getTotal();
 
 			view.amount = total;
@@ -246,7 +246,7 @@ class Transaction extends controller.Controller
 			
 			//all orders are for the same multidistrib
 			var name = t._("Payment on the spot for the order of ::date::", {date:view.hDate(date)});
-			db.Operation.makePaymentOperation(app.user,app.user.getGroup(), payment.OnTheSpotPayment.TYPE, total, name, orderOps[0] );	
+			service.PaymentService.makePaymentOperation(app.user,app.user.getGroup(), payment.OnTheSpotPayment.TYPE, total, name, orderOps[0] );	
 			
 		}catch(e:tink.core.Error){
 			throw Error("/transaction/pay/",e.message);
@@ -276,10 +276,10 @@ class Transaction extends controller.Controller
 			//record order
 			var orders = OrderService.confirmTmpBasket(tmpBasket);
 			if(orders.length==0) throw Error('/home',"Votre panier est vide.");
-			var orderOps = db.Operation.onOrderConfirm(orders);
+			var orderOps = service.PaymentService.onOrderConfirm(orders);
 			
 			var name = t._("Transfer for the order of ::date::", {date:view.hDate(date)}) + " ("+code+")";
-			db.Operation.makePaymentOperation(app.user,app.user.getGroup(),payment.Transfer.TYPE, total, name, orderOps[0] );
+			service.PaymentService.makePaymentOperation(app.user,app.user.getGroup(),payment.Transfer.TYPE, total, name, orderOps[0] );
 
 			
 		}catch(e:tink.core.Error){

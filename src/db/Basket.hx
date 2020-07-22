@@ -160,7 +160,7 @@ class Basket extends Object
 		/* var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
         if(order==null) return null;*/
 
-		return db.Operation.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
+		return service.PaymentService.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
 	}
 	
 	public function isValidated() {
