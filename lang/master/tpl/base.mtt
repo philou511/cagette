@@ -95,9 +95,8 @@
 				::end::
 
 				_.antiDoubleClick();
-
-				NeolithicViewsGenerator.setGraphUrl("::getGraphqlUrl()::");
-			  
+				
+				_NeolithicViewsGenerator.setGraphUrl("::getGraphqlUrl()::");		  
 			})
 
 			//tracking 24x7
