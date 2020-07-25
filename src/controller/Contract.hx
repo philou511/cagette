@@ -203,14 +203,26 @@ class Contract extends Controller
 		
 		view.title = t._("Create a catalog");
 		
-		var c = new db.Catalog();
+		var catalog = new db.Catalog();
 
 		var customMap = new FieldTypeToElementMap();
 		customMap["DDate"] = CagetteForm.renderDDate;
 		customMap["DTimeStamp"] = CagetteForm.renderDDate;
 		customMap["DDateTime"] = CagetteForm.renderDDate;
 
-		var form = form.CagetteForm.fromSpod(c,customMap);
+		var form = form.CagetteForm.fromSpod( catalog, customMap );
+		if( !app.user.getGroup().hasShopMode() ) {
+
+			// form.addElement( new sugoi.form.elements.Checkbox("csa","Type de catalogue", false), 0);
+			var catalogTypes = [ { label : 'Contrat AMAP classique', value : 0 }, { label : 'Contrat AMAP variable', value : 1 } ];
+			form.addElement( new sugoi.form.elements.IntSelect( 'catalogtype', 'Type de catalogue', catalogTypes, null, true ), 0 );
+			form.addElement( new sugoi.form.elements.Html( "minimums",
+			'<input type="checkbox" style="float:left;" class="form-horizontal" name="requiresordering" id="requiresordering" value="1"><label for="requiresordering" style="float:left;" class="">&nbsp;&nbsp;Obligation de commande</label><label for="minimum" id="minimumlabel">&nbsp;&nbsp;&nbsp;&nbsp;Minimum de commande (en €) </label><input style="margin-left:55%;width:50px;" type="text" name="minimum" id="minimum" value="0">',
+			'Engagement par distribution' ) );
+			form.addElement( new sugoi.form.elements.Html( "minimums",
+			'<label for="obligation" style="float:left;" class="">&nbsp;&nbsp;Minimum de commandes (en €)</label><input style="width:50px;" type="text" name="obligation" id="obligation" value="0"><label for="minimum" id="minimumlabel">&nbsp;&nbsp;&nbsp;&nbsp;Maximum de commandes (en €) </label><input style="margin-left:55%;width:50px;" type="text" name="minimum" id="minimum" value="0">',
+			'Engagement sur la durée du contrat' ) );
+		}
 		form.removeElement(form.getElement("groupId") );
 		form.removeElement(form.getElement("type"));
 		form.getElement("name").value = "Commande "+vendor.name;
@@ -219,35 +231,39 @@ class Contract extends Controller
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
-		if(!app.user.getGroup().hasShopMode()){
-			form.addElement( new sugoi.form.elements.Checkbox("csa","Ce catalogue est un contrat AMAP",false));
-		}
 		
-		if (form.checkToken()) {
-			form.toSpod(c);
-			c.group = app.user.getGroup();
-			if(!app.user.getGroup().hasShopMode()){
-				c.type = form.getValueOf("csa")==true ? db.Catalog.TYPE_CONSTORDERS : db.Catalog.TYPE_VARORDER;
-			}else{
-				c.type = Catalog.TYPE_VARORDER;
+		if ( form.checkToken() ) {
+
+			form.toSpod( catalog );
+			catalog.group = app.user.getGroup();
+			if( !app.user.getGroup().hasShopMode() ) {
+
+				catalog.type = form.getValueOf("catalogtype");
+				catalog.requiresOrdering = form.getValueOf( "requiresordering" );
+				// catalog.type = form.getValueOf("csa")==true ? db.Catalog.TYPE_CONSTORDERS : db.Catalog.TYPE_VARORDER;
+			}
+			else {
+
+				catalog.type = Catalog.TYPE_VARORDER;
 			}
 			
-			c.vendor = vendor;
-			c.insert();
+			catalog.vendor = vendor;
+			catalog.insert();
 
 			//Let's add the Volunteer Roles for the number of volunteers needed
-			service.VolunteerService.createRoleForContract(c,form.getValueOf("distributorNum"));
+			service.VolunteerService.createRoleForContract( catalog, form.getValueOf("distributorNum") );
 			
 			//right
-			if (c.contact != null) {
-				var ua = db.UserGroup.get(c.contact, app.user.getGroup(), true);
-				ua.giveRight(ContractAdmin(c.id));
+			if ( catalog.contact != null ) {
+
+				var ua = db.UserGroup.get( catalog.contact, app.user.getGroup(), true );
+				ua.giveRight(ContractAdmin( catalog.id ));
 				ua.giveRight(Messages);
 				ua.giveRight(Membership);
 				ua.update();
 			}
 			
-			throw Ok("/contractAdmin/view/"+c.id, t._("New catalog created"));
+			throw Ok( "/contractAdmin/view/" + catalog.id, t._("New catalog created") );
 		}
 		
 		view.form = form;
@@ -408,17 +424,6 @@ class Contract extends Controller
 			var varOrders = []; 
 			//CSA orders
 			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
-
-			// var obj = app.params.keys();
-			// for( field in Reflect.fields(obj) ) {
-			// 	trace(" obj." + field + " = " + Reflect.field(obj, field));
-			// }
-
-			// for ( k in app.params.keys() ) {
-				
-			// 	if ( k.substr(0, 1) != "d" ) continue;
-			// 	var qt = app.params.get( k );
-			// }
 
 			for ( k in app.params.keys() ) {
 				

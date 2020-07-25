@@ -1,4 +1,6 @@
 package controller;
+import sugoi.db.Cache;
+import db.Catalog;
 import service.SubscriptionService;
 import tink.core.Error;
 using Lambda;
@@ -30,7 +32,6 @@ class Subscriptions extends controller.Controller
 		});
 		
 		view.catalog = catalog;
-		view.group = db.Group.manager.get( catalog.group.id );
 		view.c = catalog;
 		view.subscriptions = catalogSubscriptions;
 		view.validationsCount = catalogSubscriptions.count( function( subscription ) { return  !subscription.isValidated; } );
@@ -107,12 +108,16 @@ class Subscriptions extends controller.Controller
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez sélectionner une date de début et de fin pour la souscription." );
 				}
 				
-				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
+				var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 				for ( product in catalogProducts ) {
 
 					var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
 					var user2 : db.User = null;
-					var userId2 : Int = Std.parseInt( app.params.get( 'user2' + product.id ) );
+					var userId2 : Int = null;
+					if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
+
+						userId2 = Std.parseInt( app.params.get( 'user2' + product.id ) );
+					}
 					var invert = false;
 					if ( userId2 != null && userId2 != 0 ) {
 
@@ -136,7 +141,15 @@ class Subscriptions extends controller.Controller
 
 					if ( quantity != 0 ) {
 
-						ordersData.push( { productId : product.id, quantity : quantity, invertSharedOrder : invert, userId2 : userId2 } );
+						if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
+
+							ordersData.push( { productId : product.id, quantity : quantity, userId2 : userId2, invertSharedOrder : invert } );
+						}
+						else {
+
+							ordersData.push( { productId : product.id, quantity : quantity } );
+						}
+						
 					}
 					
 				}
@@ -259,8 +272,13 @@ class Subscriptions extends controller.Controller
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.getProductOrder = function( productId : Int ) {
-
+		
 			return service.SubscriptionService.getSubscriptionOrders( subscription ).find( function( order ) return order.product.id == productId );
+		};
+		view.getDefaultOrder = function( productId : Int ) {
+
+			var defaultOrder : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( subscription.defaultOrder ).defaultOrder;
+			return defaultOrder.find( function( order ) return order.productId == productId );			
 		};
 		view.startdate = subscription.startDate;
 		view.enddate = subscription.endDate;
@@ -312,7 +330,7 @@ class Subscriptions extends controller.Controller
 		view.absencesDistribs = SubscriptionService.getAbsencesDistribs(subscription.catalog);
 
 		var form = new sugoi.form.Form("subscriptionAbsences");
-		var absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog ), function( distrib ) return { label : view.hDate( distrib.date ), value : distrib.id } );
+		var absencesDistribs = Lambda.map( SubscriptionService.getAbsencesDistribs( subscription.catalog ), function( distrib ) return { label : view.hDate( distrib.date, true ), value : distrib.id } );
 		for ( i in 0...subscription.absencesNb ) {
 
 			form.addElement(new sugoi.form.elements.IntSelect( "absentDistribId" + i, "Je ne pourrai pas venir le :", Lambda.array( absencesDistribs ), null, true ));

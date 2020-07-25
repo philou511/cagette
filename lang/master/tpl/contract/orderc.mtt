@@ -224,7 +224,7 @@
 				<tr class="greyhead">
 					<th class="text-center col-md-4">Engagement</th>
 					<th class="text-center col-md-2">Période d'engagement</th>
-					<th class="text-center col-md-1">Nombre initial de distributions</th>
+					<th class="text-center col-md-1">Nombre max de distributions</th>
 					<th class="text-center col-md-1">Nombre d'absences</th>
 					<th class="text-center col-md-2">Nombre de distributions</th>
 					<th class="text-center col-md-1">Total</th>
@@ -250,7 +250,11 @@
 							au ::sDate(subscription.endDate)::
 						</td>
 						<td style="vertical-align: middle;">
-							::subscriptionService.getSubscriptionDistribsNb(subscription, null) + subscription.absencesNb::
+							::if subscription.absencesNb != null::
+								::subscriptionService.getSubscriptionDistribsNb(subscription, null) + subscription.absencesNb::
+							::else::
+								::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
+							::end::
 						</td>
 						<td style="vertical-align: middle;">
 							::subscription.absencesNb::

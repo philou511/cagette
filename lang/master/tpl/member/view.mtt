@@ -124,7 +124,7 @@
 						<th class="text-center col-md-4">Engagement</th>
 						<th class="text-center col-md-2">Période d'engagement</th>
 						::if hasAbsences ::
-							<th class="text-center col-md-1">Nombre initial de distributions</th>
+							<th class="text-center col-md-1">Nombre max de distributions</th>
 							<th class="text-center col-md-1">Nombre d'absences</th>
 						::end::
 						<th class="text-center col-md-2">Nombre de distributions</th>

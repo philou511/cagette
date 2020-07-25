@@ -39,29 +39,44 @@
 				<hr/>
 			::end::
 
-			::if canOrdersBeEdited ::
-				<div class="form-group" style="font-weight: bold;">
+			::if (catalog.type == 0 && canOrdersBeEdited) || catalog.requiresOrdering ::
 
+				::if catalog.requiresOrdering ::
+					<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">
+						Commande par défaut
+					</h4>
+				::end::
+
+				<div class="form-group" style="font-weight: bold;">
+					
 					<div class="col-sm-3"></div>
 					<div class="col-sm-2">Quantité</div>
-					<div class="col-sm-5">Alterner avec</div>
-					<div class="col-sm-2">Inverser alternance</div>
+					::if catalog.type == 0::
+						<div class="col-sm-5">Alterner avec</div>
+						<div class="col-sm-2">Inverser alternance</div>
+					::end::
 
 				</div>
 				
 				::foreach product products::
 
 					::set quantity = 0::
-					::set user2Id = null::
-					::set invert = false::
-					::if getProductOrder ::
-						::set productOrder = getProductOrder(product.id)::
-						::if productOrder != null::
-							::set quantity = productOrder.quantity::
-							::set user2Id = productOrder.userId2::
-							::set invert = productOrder.hasInvertSharedOrder()::
+
+					::if catalog.type == 0::
+						::set user2Id = null::
+						::set invert = false::
+						::if getProductOrder ::
+							::set productOrder = getProductOrder(product.id)::
+							::if productOrder != null::
+								::set quantity = productOrder.quantity::
+								::set user2Id = productOrder.userId2::
+								::set invert = productOrder.hasInvertSharedOrder()::
+							::end::
 						::end::
+					::else::
+						::set quantity = getDefaultOrder(product.id).quantity::
 					::end::
+
 
 					<div class="form-group">
 
@@ -71,18 +86,20 @@
 						<div class="col-sm-2">
 							<input class="form-control" type="text" name="quantity::product.id::" id="quantity::product.id::" value="::quantity::" />
 						</div>
-						<div class="col-sm-6">
-							<select name="user2::product.id::" id="user2::product.id::" class="form-control">
-								<option value="0">-</option>
-								::foreach member members::
-									<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
-								::end::
-							</select>
+						::if catalog.type == 0::
+							<div class="col-sm-6">
+								<select name="user2::product.id::" id="user2::product.id::" class="form-control">
+									<option value="0">-</option>
+									::foreach member members::
+										<option value="::member.value::" ::attr selected if( member.value == user2Id ) '1' ::>::member.label::</option>
+									::end::
+								</select>
 
-						</div>
-						<div class="col-sm-1">
-							<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
-						</div>
+							</div>
+							<div class="col-sm-1">
+								<input data-toggle="tooltip" title="::_("Reverse the alternation")::" type="checkbox" name="invert::product.id::" id="invert::product.id::" value="true" ::attr checked if( invert ) '1' :: />
+							</div>
+						::end::
 
 					</div>
 				::end::

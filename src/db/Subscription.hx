@@ -12,6 +12,7 @@ class Subscription extends Object {
 	public var endDate : SDateTime;
 	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
+	public var defaultOrder : SNull<SText>;
 	public var absencesNb : SNull<SInt>;
 	var absentDistribIds : SNull<SText>;
 

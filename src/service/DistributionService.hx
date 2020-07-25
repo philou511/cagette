@@ -458,7 +458,8 @@ class DistributionService
 			}
 
 			//extends subscriptions ?
-			if(d.catalog.hasSubscriptions()){
+			if( !d.catalog.group.hasShopMode() ) { //When a group is in csa mode all catalogs have subscriptions management
+
 				//get subscriptions that were concerned by this distribution
 				var subscriptions = Subscription.manager.search($catalog==d.catalog && $startDate <= d.date && $endDate >= d.date , true );
 				for ( sub in subscriptions ){

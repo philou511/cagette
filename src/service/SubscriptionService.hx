@@ -273,7 +273,7 @@ class SubscriptionService
 	  *  @return db.Subscription
 	  */
 	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date,
-	 ordersData : Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool } >,
+	 ordersData : Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >,
 	 ?isValidated : Bool = true, ?absencesNb : Int = null, ?absentDistribIds : String  = null ) : db.Subscription {
 
 		if ( startDate == null || endDate == null ) {
@@ -295,13 +295,21 @@ class SubscriptionService
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		subscription.isValidated = isValidated;
+		if( catalog.type == db.Catalog.TYPE_VARORDER ) {
+			
+			subscription.defaultOrder = haxe.Json.stringify( { defaultOrder : ordersData } );
+		}
 		subscription.absencesNb = absencesNb;
 		subscription.setAbsentDistribIds( absentDistribIds );
 
 		if ( isSubscriptionValid( subscription ) ) {
 
 			subscription.insert();
-			createCSARecurrentOrders( subscription, ordersData );
+
+			if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+
+				createCSARecurrentOrders( subscription, ordersData );
+			}
 			
 		}
 
