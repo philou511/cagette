@@ -46,7 +46,15 @@ class Operation extends sys.db.Object
 	@hideInForms @:relation(contractId) public var contract : SNull<Catalog>; 	//relation to contract for CSA orders
 	@hideInForms public var data2 : SNull<SString<256>>; 						//json data
 
-	
+	public function setData(data:Dynamic){
+		this.data2 = haxe.Json.stringify(data);
+	}
+
+	public function getData():Dynamic{
+		return haxe.Json.parse(this.data2);
+	}
+
+
 	public function getTypeIndex(){
 		var e : OperationType = type;		
 		return e.getIndex();
@@ -63,8 +71,8 @@ class Operation extends sys.db.Object
 	public function getPaymentType():String{
 		switch(type){
 			case Payment: 
-				var x : PaymentInfos = this.data;
-				if (data == null){
+				var x : PaymentInfos = this.getData();
+				if (x == null){
 					return null;
 				}else{
 					return x.type;
@@ -94,14 +102,14 @@ class Operation extends sys.db.Object
 	
 	public function getOrderInfos(){
 		return switch(type){
-			case COrder, VOrder : this.data;				
+			case COrder, VOrder : this.getData();				
 			default : null;
 		}
 	}
 	
 	public function getPaymentInfos():PaymentInfos{
 		return switch(type){
-			case Payment : this.data;
+			case Payment : this.getData();
 			default : null;
 		}
 	}
@@ -112,9 +120,6 @@ class Operation extends sys.db.Object
 	
 	/**
 	 *  get all  user operations
-	 *  @param user - 
-	 *  @param group - 
-	 *  @param reverse=false - 
 	 */
 	public static function getOperations(user:db.User, group:db.Group,?reverse=false ){
 		if(reverse) {
@@ -130,12 +135,6 @@ class Operation extends sys.db.Object
 		return manager.search($user == user && $group == group, { limit:[index,limit], orderBy:date },false);		
 	}
 	
-	/*public static function getOrder_Operations(user:db.User, group:db.Group,?limit=50 ){		
-		//return manager.search($user == user && $group == group && $type!=Payment,{orderBy:date},false);		
-		//return manager.search($user == user && $group == group && $relation==null,{orderBy:date},false);		
-		return manager.search($user == user && $group == group,{orderBy:date,limit:limit},false);		
-	}*/
-	
 	public static function getLastOperations(user:db.User, group:db.Group, ?limit = 50){
 		
 		var c = manager.count($user == user && $group == group);
@@ -144,12 +143,31 @@ class Operation extends sys.db.Object
 		return manager.search($user == user && $group == group,{orderBy:date,limit:[c,limit]},false);	
 	}
 	
-	
-	
 	public function populate(){
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
-	
 
-	
+	function check(){
+		if(type==Payment && getPaymentType()==null){
+			throw new tink.core.Error("Payment operation should have a type");
+		}
+
+		if(type==VOrder && this.basket==null){
+			throw new tink.core.Error("Variable Order operation should have a basket");
+		}
+
+		if(type==COrder && this.contract==null){
+			throw new tink.core.Error("CSA Order operation should have a contract");
+		}
+	}
+
+	override function update(){
+		check();
+		super.update();
+	}
+
+	override function insert(){
+		check();
+		super.insert();
+	}
 }

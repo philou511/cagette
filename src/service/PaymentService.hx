@@ -1,4 +1,6 @@
 package service;
+import db.Catalog;
+import haxe.Json;
 import db.Operation;
 import Common;
 import tink.core.Error;
@@ -32,7 +34,7 @@ class PaymentService
 			if(relation != null){
 				var relatedPaymentOperations = relation.getRelatedPayments();
 				for (operation in relatedPaymentOperations){
-					if(operation.data.type == payment.OnTheSpotPayment.TYPE || Lambda.has(payment.OnTheSpotPayment.getPaymentTypes(), operation.data.type)){
+					if(operation.getData().type == payment.OnTheSpotPayment.TYPE || Lambda.has(payment.OnTheSpotPayment.getPaymentTypes(), operation.getData().type)){
 						//if we already had an onTheSpot payment, lets reuse it.
 						return updatePaymentOperation(user, group, operation, amount);						
 					}
@@ -52,7 +54,7 @@ class PaymentService
 		if ( remoteOpId != null ) {
 			data.remoteOpId = remoteOpId;
 		}
-		operation.data = data;
+		operation.setData(data);
 		if(relation != null) operation.relation = relation;
 		operation.insert();
 		
@@ -60,6 +62,8 @@ class PaymentService
 		
 		return operation;
 	}
+
+	
 
 	/**
 	 * Update a payment operation
@@ -74,14 +78,19 @@ class PaymentService
 	}
 
 	/**
-	 * Create a new transaction
-	 * @param	orders
+	 * Create a new order operation
 	 */
-	 public static function makeOrderOperation(orders: Array<db.UserOrder>, ?basket:db.Basket){
+	 public static function makeOrderOperation(orders: Array<db.UserOrder>, ?basket:db.Basket, ?csaContract:Catalog){
 		
 		if (orders == null) throw "orders are null";
 		if (orders.length == 0) throw "no orders";
 		if (orders[0].user == null ) throw "no user in order";
+		//check that we dont have a mix of variable and CSA
+		var catalog = orders[0].product.catalog;
+		for( o in orders){
+			if(o.product.catalog.type!=catalog.type) throw new Error("Cannot record an order operation with catalogs of different types");
+		}
+
 		var t = sugoi.i18n.Locale.texts;
 		
 		var _amount = 0.0;
@@ -90,28 +99,32 @@ class PaymentService
 			_amount += t + t * (o.feesRate / 100);
 		}
 		
-		var contract = orders[0].product.catalog;
-		
 		var op = new db.Operation();
 		var user = orders[0].user;
-		var group = orders[0].product.catalog.group;
+		var group = catalog.group;
 		
-		if (contract.type == db.Catalog.TYPE_CONSTORDERS){
+		if (catalog.type == db.Catalog.TYPE_CONSTORDERS){
 			//Constant orders			
-			var dNum = contract.getDistribs(false).length;
-			op.name = "" + contract.name + " (" + contract.vendor.name+") " + dNum + " " + t._("deliveries");
+			if(csaContract==null || csaContract.type!=db.Catalog.TYPE_CONSTORDERS) throw new Error("A CSA contract should be provided");			
+			//check orders are from the same contract
+			for (o in orders){
+				if(o.product.catalog.id!=csaContract.id) throw new Error("CSA Orders should be from the same contract");
+			}
+
+			var dNum = csaContract.getDistribs(false).length;
+			op.name = "" + csaContract.name + " (" + csaContract.vendor.name+") " + dNum + " " + t._("deliveries");
 			op.amount = dNum * (0 - _amount);
 			op.date = Date.now();
 			op.type = COrder;
-			var data : COrderInfos = {contractId:contract.id};
-			op.data = data;			
+			op.contract = csaContract;
 			op.user = user;
 			op.group = group;
 			op.pending = true;					
 			
 		}else{
 			
-			if (basket == null) throw "varying contract orders should have a basket";
+			if (basket == null) throw new Error("variable orders should have a basket");
+			if(basket.user.id!=user.id) throw new Error("user and basket mismatch");
 			
 			//varying orders
 			var date = App.current.view.dDate(orders[0].distribution.date);
@@ -119,17 +132,14 @@ class PaymentService
 			op.amount = 0 - _amount;
 			op.date = Date.now();
 			op.type = VOrder;
-			var data : VOrderInfos = {basketId:basket.id};
-			op.data = data;
+			op.basket = basket;
 			op.user = user;			
 			op.group = group;
 			op.pending = true;		
 		}
 		
-		op.insert();
-		
-		service.PaymentService.updateUserBalance(op.user, op.group);
-		
+		op.insert();		
+		updateUserBalance(op.user, op.group);		
 		return op;	
 	}
 	
@@ -178,30 +188,14 @@ class PaymentService
 		//throw 'find $dkey for user ${user.id} in group ${group.id} , onlyPending:$onlyPending';
 		if(distrib==null) throw "Distrib is null";
 		if(user==null) throw "User is null";
-
-		var operations  = new List();
-		if (onlyPending){
-			operations = db.Operation.manager.search($user == user && $group == distrib.getGroup() && $pending == true && $type==VOrder , {orderBy:-date}, true);
-		}else{
-			operations = db.Operation.manager.search($user == user && $group == distrib.getGroup() && $type==VOrder , {orderBy:-date}, true);
-		}
-		
 		var basket = db.Basket.get(user, distrib);
-		if(basket==null) throw new Error('No basket found for user #'+user.id+', md #'+distrib.id );
-		
-		
-		for ( t in operations ){
-			switch(t.type){
-				case VOrder :
-					var data : VOrderInfos = t.data;
-					if ( data == null) continue;
-					if (data.basketId == basket.id) return t;
-				default : 
-					continue;				
-			}
+		if(basket==null) return null;/*throw new Error('No basket found for user #'+user.id+', md #'+distrib.id );*/		
+
+		if (onlyPending){
+			return db.Operation.manager.select($basket == basket && $type==VOrder && $pending == true, true);
+		}else{
+			return db.Operation.manager.select($basket == basket && $type==VOrder, true);
 		}
-		
-		return null;
 	}
 	
 	/**
@@ -209,39 +203,8 @@ class PaymentService
 	 */
 	public static function findCOrderOperation(contract:db.Catalog, user:db.User):db.Operation{
 		
-		if (contract.type != db.Catalog.TYPE_CONSTORDERS) throw "catalog type should be TYPE_CONSTORDERS";
-		
-		var transactions = db.Operation.manager.search($user == user && $group == contract.group && $amount<=0 && $type==COrder, {orderBy:date,limit:100}, true);
-		
-		for ( t in transactions){
-			
-			switch(t.type){
-				
-				case COrder :
-					
-					//var id = Lambda.find(orders, function(x) return db.UserOrder.manager.get(x, false) != null);					
-					//if (id == null) {						
-						////all orders in this transaction dont exists anymore
-						//t.delete();
-						//continue;
-					//}else{
-						//for ( i in orders){
-							//var order = db.UserOrder.manager.get(i);
-							//if (order == null) continue;
-							//if (order.product.contract.id == contract.id) return t;
-						//}	
-					//}
-					var data : COrderInfos = t.data;
-					if (data == null) continue;
-					if (data.contractId == contract.id) return t;
-					
-					
-				default : 
-					continue;				
-			}
-		}
-		
-		return null;
+		if (contract.type != db.Catalog.TYPE_CONSTORDERS) throw new Error("catalog type should be TYPE_CONSTORDERS");		
+		return db.Operation.manager.select($user == user && $contract == contract && $type==COrder, true);
 		
 	}
 	
