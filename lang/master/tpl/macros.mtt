@@ -436,7 +436,6 @@
 						</a>  
 					</div>
 					<div class="col-md-3" >
-						::_("HELP")::
 						<ul>
 							<li> 
 								<a href="http://www.cagette.net/wiki" target="_blank">::_("Documentation")::</a> 
@@ -449,6 +448,15 @@
 							</li>
 							<li>
 								::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
+							</li>
+							<li>
+								<a href="https://www.cagette.net/mentions-legales" target="_blank">Mentions légales</a> 
+							</li>
+							<li>
+								<a href="https://www.cagette.net/conditions-generales-dutilisation" target="_blank">Conditions générales d'utilisation</a> 
+							</li>
+							<li>
+								<a href="https://www.cagette.net/wp-content/uploads/2019/03/psp_mangopay_fr.pdf" target="_blank">C.G.U Mangopay</a> 
 							</li>
 						</ul>
 						
@@ -527,6 +535,8 @@
 			Cagette Pro pédagogique
 		::elseif(s==6)::
 			Cagette Pro inscrit à une formation
+		::elseif(s==7)::
+			Cagette Découverte
 		::end::
 	</macro>
 

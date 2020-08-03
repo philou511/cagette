@@ -27,7 +27,7 @@ class DistributionService
 			for ( user in users ){
 
 				//Get the one operation for this amap contract and user
-				var operation = db.Operation.findCOrderOperation(contract, user);
+				var operation = service.PaymentService.findCOrderOperation(contract, user);
 
 				if (operation != null)
 				{
@@ -35,7 +35,7 @@ class DistributionService
 					var orders = contract.getUserOrders(user);
 					//Update this operation with the new number of distributions, this will affect the name of the operation
 					//as well as the total amount to pay
-					db.Operation.updateOrderOperation(operation, orders);
+					service.PaymentService.updateOrderOperation(operation, orders);
 				}
 
 			}

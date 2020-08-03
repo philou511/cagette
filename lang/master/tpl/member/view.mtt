@@ -112,10 +112,11 @@
 				<h5>::catalog.name::</h5>
 				<table class="table table-condensed table-bordered">
 					<tr class="greyhead">
+						<th class="text-center col-md-3">Membre</th>
 						<th class="text-center col-md-3">Engagement</th>
-						<th class="text-center col-md-4">Période d'engagement</th>
+						<th class="text-center col-md-2">Période d'engagement</th>
 						<th class="text-center col-md-2">Nombre de distributions</th>
-						<th class="text-center col-md-2">Total</th>
+						<th class="text-center col-md-1">Total</th>
 						<th class="text-center col-md-1">Payé</th>
 					</tr>
 					::foreach subscription subscriptionsByCatalog.get(catalog)::
@@ -126,9 +127,17 @@
 							::set class=""::
 						::end::
 						<tr style="text-align: center;">
+							<td>
+								<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+								
+								<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+								::if(subscription._user2!=null)::
+								<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
+								::end::
+							</td>
 							<td class="::class::" style="vertical-align: middle;">
 								::if orderName == null::
-									AUCUNE COMMANDE
+									Aucune commande
 								::else::
 									::raw orderName::
 								::end::

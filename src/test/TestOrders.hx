@@ -2,7 +2,7 @@ package test;import utest.Assert;
 import Common;
 import service.DistributionService;
 import service.OrderService;
-
+import service.PaymentService;
 
 /**
  * Test order making, updating and deleting
@@ -270,7 +270,7 @@ class TestOrders extends utest.Test
 		var amapContract = amapDistrib.catalog;
 		var order = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
 		var orderId = order.id;
-		db.Operation.onOrderConfirm([order]);
+		service.PaymentService.onOrderConfirm([order]);
 		var e1 = null;
 		try {
 			service.OrderService.delete(order);
@@ -298,16 +298,16 @@ class TestOrders extends utest.Test
 		//Check that first order is deleted but operation amount is at 0 
 		//Check that operation is deleted only at the second order deletion
 		var order1 = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
-		db.Operation.onOrderConfirm([order1]);
+		service.PaymentService.onOrderConfirm([order1]);
 		var order1Id = order1.id;
 		order1 = OrderService.edit(order1, 0);
-		db.Operation.onOrderConfirm([order1]);
+		service.PaymentService.onOrderConfirm([order1]);
 		var order2 = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.PANIER_AMAP_LEGUMES, amapDistrib.id);
-		db.Operation.onOrderConfirm([order2]);
+		service.PaymentService.onOrderConfirm([order2]);
 		var order2Id = order2.id;
 		order2 = OrderService.edit(order2, 0);
-		db.Operation.onOrderConfirm([order2]);
-		var operation = db.Operation.findCOrderOperation(amapContract, TestSuite.FRANCOIS);
+		service.PaymentService.onOrderConfirm([order2]);
+		var operation = service.PaymentService.findCOrderOperation(amapContract, TestSuite.FRANCOIS);
 		var operationId = operation.id;
 		var e3 = null;
 		try {
@@ -343,9 +343,9 @@ class TestOrders extends utest.Test
 		
 		var order = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
 		var orderId = order.id;
-		db.Operation.onOrderConfirm([order]);
+		service.PaymentService.onOrderConfirm([order]);
 		order = OrderService.edit(order, 0);
-		db.Operation.onOrderConfirm([order]);
+		service.PaymentService.onOrderConfirm([order]);
 		var e1 = null;
 		try {
 			service.OrderService.delete(order);
@@ -369,26 +369,26 @@ class TestOrders extends utest.Test
 		Assert.isTrue(variableContract.group.hasPayments());
 
 		var order1 = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.STRAWBERRIES, variableDistrib.id);
-		db.Operation.onOrderConfirm([order1]);
+		service.PaymentService.onOrderConfirm([order1]);
 		var order1Id = order1.id;
 		
 		var order2 = OrderService.make(TestSuite.FRANCOIS, 3, TestSuite.APPLES, variableDistrib.id);
-		db.Operation.onOrderConfirm([order2]);
+		service.PaymentService.onOrderConfirm([order2]);
 		var order2Id = order2.id;
 		
 		order1 = OrderService.edit(order1, 0);
-		db.Operation.onOrderConfirm([order1]);
+		service.PaymentService.onOrderConfirm([order1]);
 		
 		order2 = OrderService.edit(order2, 0);
-		db.Operation.onOrderConfirm([order2]);
+		service.PaymentService.onOrderConfirm([order2]);
 
 		Assert.equals(2, variableContract.getUserOrders(TestSuite.FRANCOIS,variableDistrib).length); //François has 2 orders
 		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib.multiDistrib);
 		Assert.equals(2, basket.getOrders().length);
 
-		var operation1 = db.Operation.findVOrderOperation(order1.distribution.multiDistrib, TestSuite.FRANCOIS);
+		var operation1 = PaymentService.findVOrderOperation(order1.distribution.multiDistrib, TestSuite.FRANCOIS);
 		var operation1Id = operation1.id;
-		var operation2 = db.Operation.findVOrderOperation(order2.distribution.multiDistrib, TestSuite.FRANCOIS);
+		var operation2 = PaymentService.findVOrderOperation(order2.distribution.multiDistrib, TestSuite.FRANCOIS);
 		var operation2Id = operation2.id;
 		Assert.equals(operation1Id,operation2Id);
 		var e2 = null;
@@ -428,25 +428,25 @@ class TestOrders extends utest.Test
 		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib1.multiDistrib);
 		Assert.isTrue(basket!=null);
 		Assert.equals(1, basket.getOrders().length);
-		db.Operation.onOrderConfirm([order1]);
+		service.PaymentService.onOrderConfirm([order1]);
 		var order1Id = order1.id;
 		
 		var variableDistrib2 = TestSuite.DISTRIB_PATISSERIES;
 		var order2 = OrderService.make(TestSuite.FRANCOIS, 3, TestSuite.FLAN, variableDistrib2.id);
-		db.Operation.onOrderConfirm([order2]);
+		service.PaymentService.onOrderConfirm([order2]);
 		var order2Id = order2.id;
 		
 		order1 = OrderService.edit(order1, 0);
-		db.Operation.onOrderConfirm([order1]);
+		service.PaymentService.onOrderConfirm([order1]);
 
 		order2 = OrderService.edit(order2, 0);
-		db.Operation.onOrderConfirm([order2]);
+		service.PaymentService.onOrderConfirm([order2]);
 
 		//check basket
 		var basket = db.Basket.get(TestSuite.FRANCOIS,variableDistrib1.multiDistrib);
 		Assert.equals(2, basket.getOrders().length);
 
-		var operation = db.Operation.findVOrderOperation(order1.distribution.multiDistrib, TestSuite.FRANCOIS);
+		var operation = PaymentService.findVOrderOperation(order1.distribution.multiDistrib, TestSuite.FRANCOIS);
 		var operationId = operation.id;
 
 
