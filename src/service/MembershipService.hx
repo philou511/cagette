@@ -67,7 +67,7 @@ class MembershipService{
 			orderOp.date = date;
 			orderOp.type = Membership;
 			var data : MembershipInfos = {year:year};
-			orderOp.data = data;			
+			orderOp.setData( data );			
 			orderOp.pending = false;				
 			orderOp.insert();	
 			

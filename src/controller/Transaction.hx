@@ -48,9 +48,8 @@ class Transaction extends controller.Controller
 		
 		if (f.isValid()){
 			f.toSpod(op);
-			op.type = db.Operation.OperationType.Payment;
-			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
-			op.data = data;
+			op.type = db.Operation.OperationType.Payment;			
+			op.setPaymentData({type:f.getValueOf("Mtype")});
 			op.group = app.user.getGroup();
 			op.user = user;
 			

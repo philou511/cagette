@@ -38,8 +38,8 @@ class Operation extends sys.db.Object
 	@hideInForms @:relation(groupId) public var group : db.Group;
 	public var pending : SBool; //a pending payment means the payment has not been confirmed, a pending order means the ordre can still change before closing.
 
-	//deprecated
-	public var data : SData<Dynamic>;
+	//@deprecated
+	// public var data : SData<Dynamic>;
 
 	//new fields
 	@hideInForms @:relation(basketId) public var basket : SNull<db.Basket>; 	//relation to basket for variable orders
@@ -50,8 +50,26 @@ class Operation extends sys.db.Object
 		this.data2 = haxe.Json.stringify(data);
 	}
 
+	public function setPaymentData(d:PaymentInfos){
+		setData(d);
+	}
+
 	public function getData():Dynamic{
 		return haxe.Json.parse(this.data2);
+	}
+
+	public function getOrderData(){
+		return switch(type){
+			case COrder, VOrder : this.getData();				
+			default : null;
+		}
+	}
+	
+	public function getPaymentData():PaymentInfos{
+		return switch(type){
+			case Payment : this.getData();
+			default : null;
+		}
 	}
 
 
@@ -80,6 +98,8 @@ class Operation extends sys.db.Object
 			default : return null;
 		}		
 	}
+
+	
 	
 	/**
 	 * get translated payment type name
@@ -100,19 +120,7 @@ class Operation extends sys.db.Object
 		return db.Operation.manager.search($relation == this && $type == Payment, false);
 	}
 	
-	public function getOrderInfos(){
-		return switch(type){
-			case COrder, VOrder : this.getData();				
-			default : null;
-		}
-	}
 	
-	public function getPaymentInfos():PaymentInfos{
-		return switch(type){
-			case Payment : this.getData();
-			default : null;
-		}
-	}
 
 	public static function countOperations(user:db.User, group:db.Group):Int{	
 		return manager.count($user == user && $group == group);		
@@ -150,13 +158,9 @@ class Operation extends sys.db.Object
 	function check(){
 		if(type==Payment && getPaymentType()==null){
 			throw new tink.core.Error("Payment operation should have a type");
-		}
-
-		if(type==VOrder && this.basket==null){
+		} else if (type==VOrder && this.basket==null){
 			throw new tink.core.Error("Variable Order operation should have a basket");
-		}
-
-		if(type==COrder && this.contract==null){
+		} else if (type==COrder && this.contract==null){
 			throw new tink.core.Error("CSA Order operation should have a contract");
 		}
 	}
