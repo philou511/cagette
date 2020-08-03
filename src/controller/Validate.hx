@@ -64,9 +64,8 @@ class Validate extends controller.Controller
 		{
 			operation.lock();
 			operation.pending = false;
-			if (app.params.exists("type"))
-			{
-				operation.data.type = app.params.get("type"); 				
+			if (app.params.exists("type")){
+				operation.setPaymentData({type:app.params.get("type")}); 				
 			}			
 			operation.update();
 			
@@ -126,8 +125,7 @@ class Validate extends controller.Controller
 			
 			f.toSpod(operation);
 			operation.type = db.Operation.OperationType.Payment;
-			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
-			operation.data = data;
+			operation.setPaymentData({type:f.getValueOf("Mtype")});
 			operation.group = app.user.getGroup();
 			operation.user = user;
 			operation.relation = orderOperation;
@@ -177,8 +175,7 @@ class Validate extends controller.Controller
 		if (f.isValid()){
 			f.toSpod(o);
 			o.type = db.Operation.OperationType.Payment;
-			var data : db.Operation.PaymentInfos = {type:f.getValueOf("Mtype")};
-			o.data = data;
+			o.setPaymentData({type:f.getValueOf("Mtype")});
 			o.group = app.user.getGroup();
 			o.user = user;
 			o.relation = op;			

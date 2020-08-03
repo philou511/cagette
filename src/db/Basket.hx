@@ -34,6 +34,7 @@ class Basket extends Object
 	public static function get(user:db.User,distrib:db.MultiDistrib, ?lock = false):db.Basket{
 		return manager.select($user==user && $multiDistrib==distrib,lock);
 	}
+
 	/*public static function get(user:db.User,md:db.MultiDistrib, ?lock = false):db.Basket{
 		
 		//date = tools.DateTool.setHourMinute(date, 0, 0);
@@ -160,7 +161,7 @@ class Basket extends Object
 		/* var order = Lambda.find(getOrders(),function(o) return o.distribution!=null );
         if(order==null) return null;*/
 
-		return db.Operation.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
+		return service.PaymentService.findVOrderOperation(this.multiDistrib,this.user, onlyPending );
 	}
 	
 	public function isValidated() {
@@ -178,14 +179,12 @@ class Basket extends Object
 		return multiDistrib.group;
 	}
 
-
 	public function canBeValidated()
 	{
 		var t = sugoi.i18n.Locale.texts;
-		var hasPendingOnTheSpotPayments = Lambda.count(getPaymentsOperations(), function(x) return x.pending && x.data.type == payment.OnTheSpotPayment.TYPE) != 0;
+		var hasPendingOnTheSpotPayments = getPaymentsOperations().count( (op) -> return op.pending && op.getData().type == payment.OnTheSpotPayment.TYPE ) != 0;
 
-		if (hasPendingOnTheSpotPayments)
-		{
+		if (hasPendingOnTheSpotPayments){
 			throw new tink.core.Error(t._("You need to select manually the type of pending payments on the spot to be able to validate this distribution."));
 		}
 		

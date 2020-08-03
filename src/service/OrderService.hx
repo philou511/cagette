@@ -261,7 +261,7 @@ class OrderService
 				if( contract.group.hasPayments() ){
 					var orders = contract.getUserOrders(user);
 					if( orders.length == 0 ){
-						var operation = db.Operation.findCOrderOperation(contract, user);
+						var operation = service.PaymentService.findCOrderOperation(contract, user);
 						if(operation!=null) operation.delete();
 					}
 				}
@@ -276,7 +276,7 @@ class OrderService
 					var orders = basket.getOrders();
 					//Check if it is the last order, if yes then delete the related operation
 					if( orders.length == 1 && orders[0].id==order.id ){
-						var operation = db.Operation.findVOrderOperation(basket.multiDistrib, user);
+						var operation = service.PaymentService.findVOrderOperation(basket.multiDistrib, user);
 						if(operation!=null) operation.delete();
 					}
 
@@ -744,7 +744,7 @@ class OrderService
 		}
 
 		App.current.event( MakeOrder( orders ) );
-		db.Operation.onOrderConfirm( orders );
+		service.PaymentService.onOrderConfirm( orders );
 
 		return orders;
 		

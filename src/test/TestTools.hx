@@ -114,23 +114,11 @@ class TestTools extends utest.Test
 		Assert.equals("2020-06-01T00:00:00+02:00",june);
 	}
 
-/*
-	@admin
-	public function doTests() {
+
+	function testMembership() {		
 		
-		var Assert.isTrue = function(val, ?desc="") {
-			if (val) {
-				Sys.println("OK : <br/>");
-			}else {
-				Sys.println("ERROR : "+desc+"<br/>");
-			}
-		}
-		
-		
-		//test les fonctions de cotisation
-		
-		var amap = db.Group.manager.get(1);
-		
+		//test les fonctions de cotisation		
+		var amap = db.Group.manager.get(1);		
 		amap.membershipRenewalDate = new Date(2015, 0, 1,0,0,0);
 		amap.update();
 		
@@ -158,6 +146,6 @@ class TestTools extends utest.Test
 		Assert.isTrue(amap.getPeriodName(d) == "2013-2014", "le 12 oct 2013, on doit etre en 2013-2014 , là c " + amap.getPeriodName(d) );
 		
 		
-	}*/
+	}
 
 }
