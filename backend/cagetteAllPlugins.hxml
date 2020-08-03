@@ -11,6 +11,7 @@
 
 -lib sugoi
 -lib cagette-pro
+-lib jwt
 
 -cp ../common
 -cp ../src

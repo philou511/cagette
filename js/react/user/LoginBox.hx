@@ -1,4 +1,5 @@
 package react.user;
+import js.Browser;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import Common;
@@ -122,7 +123,10 @@ class LoginBox extends react.ReactComponentOfPropsAndState<LoginBoxProps,LoginBo
 			
 			var d = haxe.Json.parse(d);
 			if (Reflect.hasField(d, "error"))	setError(d.error.message);
-			if (Reflect.hasField(d, "success")) js.Browser.window.location.href = props.redirectUrl;
+			if (Reflect.hasField(d, "success")) {
+                Browser.getLocalStorage().setItem("token", d.token);
+                js.Browser.window.location.href = props.redirectUrl;
+            };
 		}
 		req.request(true);
 	}

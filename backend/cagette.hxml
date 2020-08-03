@@ -10,7 +10,7 @@
 -lib thx.semver
 
 -lib sugoi
-
+-lib jwt
 
 -cp ../common
 -cp ../src

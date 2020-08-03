@@ -310,6 +310,10 @@ class View extends sugoi.BaseView {
 	public function getParamsString(){
 		return Web.getParamsString();
 	}
+
+	public function getGraphqlUrl() {
+		return App.config.get("cagette_api") + "/graphql";
+	}
 	
 	/** 
 	 * Smart quantity (tm) : displays human readable quantity
