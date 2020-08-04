@@ -17762,6 +17762,21 @@ var api = function () {
         setUrl: function (url) {
             apiUrl = url;
         },
+        getToken: function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, get(apiUrl + "/user/getToken")];
+                        case 1:
+                            res = _a.sent();
+                            if (res)
+                                return [2 /*return*/, res.token];
+                            return [2 /*return*/, null];
+                    }
+                });
+            });
+        },
         login: function (email, password) {
             return __awaiter(this, void 0, void 0, function () {
                 var res;
@@ -29383,7 +29398,7 @@ var LocalizedUtils = /** @class */ (function (_super) {
     };
     return LocalizedUtils;
 }(DateFnsUtils));
-var getApolloClient = function () {
+var getApolloClient = function (token) {
     if (!apolloClient) {
         var httpLink = createUploadLink({
             uri: graphUrl,
@@ -29391,7 +29406,7 @@ var getApolloClient = function () {
         });
         var authLink = setContext(function (_, _a) {
             var headers = _a.headers;
-            var token = localStorage.getItem('token');
+            // const token = localStorage.getItem('token');
             return {
                 headers: __assign(__assign({}, headers), { authorization: token ? "Bearer " + token : '' }),
             };
@@ -29406,9 +29421,38 @@ var getApolloClient = function () {
 var createApp = function (elementId, children) {
     ReactDOM.render(React__default.createElement(React__default.Fragment, null, children), document.getElementById(elementId));
 };
-var createAppWithApolloProvider = function (elementId, children) {
-    return createApp(elementId, React__default.createElement(ApolloProvider, { client: getApolloClient() }, children));
-};
+function withApolloProvider(Component) {
+    var _this = this;
+    var Wrapper = function (props) {
+        var _a = React__default.useState(localStorage.getItem('token')), token = _a[0], setToken = _a[1];
+        /** */
+        React__default.useEffect(function () {
+            var loadToken = function () { return __awaiter(_this, void 0, void 0, function () {
+                var t;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, api$1.getToken()];
+                        case 1:
+                            t = _a.sent();
+                            setToken(t);
+                            localStorage.setItem('token', t);
+                            return [2 /*return*/];
+                    }
+                });
+            }); };
+            if (!token) {
+                loadToken();
+            }
+        }, [token]);
+        /** */
+        if (!token)
+            return React__default.createElement(React__default.Fragment, null);
+        return (React__default.createElement(ApolloProvider, { client: getApolloClient(token) },
+            React__default.createElement(Component, __assign({}, props))));
+    };
+    Wrapper.displayName = 'WithApolloProviderWrapper';
+    return Wrapper;
+}
 var NeolithicViewsGenerator = /** @class */ (function () {
     function NeolithicViewsGenerator() {
     }
@@ -29444,8 +29488,8 @@ var NeolithicViewsGenerator = /** @class */ (function () {
         createApp(elementId, React__default.createElement(PlaceView$1, __assign({}, props)));
     };
     NeolithicViewsGenerator.mangopayModule = function (elementId, props) {
-        var MangopayModuleWrapped = withNeolithicProvider(withi18n(MangopayModule));
-        createAppWithApolloProvider(elementId, React__default.createElement(pickers.MuiPickersUtilsProvider, { utils: LocalizedUtils, locale: locale },
+        var MangopayModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(MangopayModule)));
+        createApp(elementId, React__default.createElement(pickers.MuiPickersUtilsProvider, { utils: LocalizedUtils, locale: locale },
             React__default.createElement(MangopayModuleWrapped, __assign({}, props))));
     };
     return NeolithicViewsGenerator;
