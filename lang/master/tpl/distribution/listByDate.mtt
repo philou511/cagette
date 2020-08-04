@@ -144,7 +144,7 @@
 											::formatNum(p.amount):: ::currency()::
 											::set tpaid = p.amount+tpaid::
 										</td>
-										::if(p._data.type != "onthespot")::
+										::if(p.getPaymentData().type != "onthespot")::
 											<td colspan="10" style="vertical-align: middle;">
 												::p.getPaymentTypeName()::
 											</td>
