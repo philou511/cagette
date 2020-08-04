@@ -39,7 +39,7 @@ class Operation extends sys.db.Object
 	public var pending : SBool; //a pending payment means the payment has not been confirmed, a pending order means the ordre can still change before closing.
 
 	//@deprecated
-	// public var data : SData<Dynamic>;
+	public var data : SData<Dynamic>;
 
 	//new fields
 	@hideInForms @:relation(basketId) public var basket : SNull<db.Basket>; 	//relation to basket for variable orders
