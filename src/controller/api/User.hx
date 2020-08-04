@@ -199,5 +199,16 @@ class User extends Controller
 		var members:Array<UserInfo> = service.UserService.getFromGroup(app.user.getGroup()).map( m -> m.infos() );
 		Sys.print(tink.Json.stringify({users:members}));
 	}
+
+
+	@logged
+	function doGetToken() {
+		var token : String = JWT.sign({ email: App.current.user.email, id: App.current.user.id }, App.config.get("key"));
+		Sys.print(
+			Json.stringify({ 
+				token:token 
+			})
+		);
+	} 
 	
 }
