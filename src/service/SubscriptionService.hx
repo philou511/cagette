@@ -8,11 +8,13 @@ using tools.DateTool;
 using Lambda;
 
 enum SubscriptionServiceError {
+
 	NoSubscription;
 	PastDistributionsWithoutOrders;
 	PastOrders;
 	OverlappingSubscription;
 	InvalidParameters;
+	CatalogRequirementsNotMet;
 }
 
 /**
@@ -88,8 +90,6 @@ class SubscriptionService
 				for ( distribId in absentDistribIds ) {
 
 					subscriptionDistribs = subscriptionDistribs.filter( distrib -> return distrib.id != distribId );
-					// subscriptionDistribs = Lambda.filter( subscriptionDistribs, function(x) return x.id != distribId);
-					// subscriptionDistribs.filter( ( distrib ) -> return d.catalog.type!=db.Catalog.TYPE_CONSTORDERS )
 				}
 			}
 			else {
@@ -102,14 +102,22 @@ class SubscriptionService
 		return subscriptionDistribs.array();
 	}
 
-	// public static function getSubscriptionDistributions( subscription : db.Subscription ) : Array<db.Distribution> {
+	public static function getCatalogAbsencesDistribsForSubscription( catalog : db.Catalog, ?subscription : db.Subscription = null ) : Array<db.Distribution> {
 
-	// 	return db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate,{orderBy:date}, false ).array();
-	// }
+		var absencesStartDate : Date = null;
+		var absencesEndDate : Date = null;
+		if ( subscription == null ) {
 
-	public static function getAbsencesDistribs( catalog : db.Catalog ) : Array<db.Distribution> {
+			absencesStartDate = catalog.absencesStartDate;
+			absencesEndDate = catalog.absencesEndDate;
+		}
+		else {
 
-		return db.Distribution.manager.search( $catalog == catalog && $date >= catalog.absencesStartDate && $end <= catalog.absencesEndDate, { orderBy : date }, false ).array();
+			absencesStartDate = subscription.startDate.getTime() < catalog.absencesStartDate.getTime() ? catalog.absencesStartDate : subscription.startDate;
+			absencesEndDate = catalog.absencesEndDate.getTime() < subscription.endDate.getTime() ? catalog.absencesEndDate : subscription.endDate;
+		}
+		return db.Distribution.manager.search( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate, { orderBy : date }, false ).array();
+
 	}
 
 	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String = null ) : Int {
@@ -144,7 +152,7 @@ class SubscriptionService
 
 		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
 		var totalPrice = 0.0;
-		
+
 		for ( order in orders ) {
 
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
@@ -180,13 +188,42 @@ class SubscriptionService
 
 	public static function getDescription( subscription : db.Subscription ) {
 
-		var subscriptionOrders = getSubscriptionOrders( subscription );
-		if( subscriptionOrders.length == 0 )  return null;
 		var label : String = '';
-		for ( order in subscriptionOrders ) {
-			label += tools.FloatTool.clean( order.quantity ) + " x " + order.product.name + "<br />";
-		}
+		if ( subscription.catalog.type == db.Catalog.TYPE_VARORDER ) {
 
+			if ( subscription.catalog.requiresOrdering ) {
+				
+				label += 'Obligation de commander à chaque distribution<br />';
+			}
+
+			if ( subscription.catalog.distribMinOrdersTotal != null && subscription.catalog.distribMinOrdersTotal != 0 ) {
+				
+				label += 'Minimum de commande par distribution : ' + subscription.catalog.distribMinOrdersTotal + ' €<br />';
+			}
+
+			if ( subscription.catalog.catalogMinOrdersTotal != null && subscription.catalog.catalogMinOrdersTotal != 0 ) {
+				
+				label += 'Minimum de commandes sur la durée du contrat : ' + subscription.catalog.catalogMinOrdersTotal + ' €<br />';
+			}
+
+			if ( subscription.catalog.allowedOverspend != null && subscription.catalog.allowedOverspend != 0 ) {
+				
+				label += 'Dépassement autorisé : ' + subscription.catalog.allowedOverspend + ' €<br />';
+			}
+
+		}
+		else {
+
+			var subscriptionOrders = getSubscriptionOrders( subscription );
+
+			if( subscriptionOrders.length == 0 ) return null;
+			for ( order in subscriptionOrders ) {
+
+				label += tools.FloatTool.clean( order.quantity ) + ' x ' + order.product.name + '<br />';
+			}
+
+		}
+		
 		return label;
 	}
 
@@ -200,7 +237,7 @@ class SubscriptionService
 
 		//invalid dates
 		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
-			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );			
+			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
 		}
 
 		//dates should be inside catalog dates
@@ -268,13 +305,64 @@ class SubscriptionService
 		return true;
 	}
 
+
+	/**
+	 * Checks if variable orders for a given distribution meet all the catalog requirements
+	 * @param distribution
+	 * @param quantitiesPrices
+	 */
+	 public static function areDistribVarOrdersValid( subscription : db.Subscription, distribution : db.Distribution, quantitiesPrices :  Array< { productQuantity : Float, productPrice : Float } >, ?showCatalogName : Bool = false ) : Bool {
+
+		//JULIETODO Rajouter la logique avec tous les paramètres à null pour return true
+		if ( distribution.catalog.distribMinOrdersTotal == null || distribution.catalog.distribMinOrdersTotal == 0 ) {
+
+			return true;
+		}
+
+		var totalPrice = 0.0;
+		for ( quantityPrice in quantitiesPrices ) {
+
+			totalPrice += Formatting.roundTo( quantityPrice.productQuantity * quantityPrice.productPrice, 2 );
+		}
+
+		var distribTotalPrice = Formatting.roundTo( totalPrice, 2 );
+
+		var subscriptionTotalPrice = getSubscriptionTotalPrice( subscription );
+
+		if ( subscriptionTotalPrice + distribTotalPrice > distribution.catalog.catalogMinOrdersTotal + distribution.catalog.allowedOverspend ) {
+
+			var message = '<strong>Distribution du ' + Formatting.hDate( distribution.date ) + ' :</strong><br/>';
+			if ( showCatalogName ) message = '<strong>Engagement du catalogue :</strong> ' + distribution.catalog.name + '<br/>';
+			message += 'Le total de vos commandes sur la durée du contrat doit être inférieur à ' + ( distribution.catalog.catalogMinOrdersTotal + distribution.catalog.allowedOverspend ) + ' €. Veuillez enlever des produits.';
+			throw TypedError.typed( message, CatalogRequirementsNotMet );
+		}
+
+		//JULIETODO
+		//EN FAIT C'EST PLUS COMPLIQUE QUE CA CAR IL FAUT FAIRE LE TOTAL DES COMMANDES ET DES NOUVELLES COMMANDES RENTREES
+
+		if ( distribTotalPrice < distribution.catalog.distribMinOrdersTotal ) {
+
+			var message = '<strong>Distribution du ' + Formatting.hDate( distribution.date ) + ' :</strong><br/>';
+			if ( showCatalogName ) message = '<strong>Engagement du catalogue :</strong> ' + distribution.catalog.name + '<br/>';
+			message += 'Le total de votre commande effectuée pour une distribution donnée doit être d\'au moins ' + distribution.catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
+			throw TypedError.typed( message, CatalogRequirementsNotMet );
+		}
+
+		
+
+
+
+		return true;
+
+	}
+
 	 /**
 	  *  Creates a new subscription and prevents subscription overlapping and other checks
 	  *  @return db.Subscription
 	  */
 	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date,
 	 ordersData : Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >,
-	 ?isValidated : Bool = true, ?absencesNb : Int = null, ?absentDistribIds : String  = null ) : db.Subscription {
+	 ?isValidated : Bool = true, ?absencesNb : Int = null ) : db.Subscription {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -297,10 +385,9 @@ class SubscriptionService
 		subscription.isValidated = isValidated;
 		if( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			
-			subscription.defaultOrder = haxe.Json.stringify( { defaultOrder : ordersData } );
+			subscription.setDefaultOrders( ordersData );
 		}
 		subscription.absencesNb = absencesNb;
-		subscription.setAbsentDistribIds( absentDistribIds );
 
 		if ( isSubscriptionValid( subscription ) ) {
 
@@ -319,8 +406,7 @@ class SubscriptionService
 
 
 	public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
-	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?validateSubscription:Bool,
-	 ?absencesNb : Int = null, ?absentDistribIds : String  = null ) {
+	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?validateSubscription:Bool, ?absentDistribIds : Array<Int>  = null ) {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
@@ -333,12 +419,19 @@ class SubscriptionService
 		}
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		subscription.absencesNb = absencesNb;
+		if( subscription.catalog.type == db.Catalog.TYPE_VARORDER ) {
+			
+			subscription.setDefaultOrders( ordersData );
+		}
 		subscription.setAbsentDistribIds( absentDistribIds );
 
 		if ( isSubscriptionValid( subscription ) ) {
+
 			subscription.update();
-			createCSARecurrentOrders( subscription, ordersData );	
+			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
+
+				createCSARecurrentOrders( subscription, ordersData );
+			}
 		}
 
 	}
@@ -516,27 +609,31 @@ class SubscriptionService
 		
 	}
 
-	public static function updateSubscriptionAbsences( subscription : db.Subscription, absentDistribIds : String  = null ) {
+	public static function canAbsencesBeEdited( catalog : db.Catalog ) : Bool {
+		
+		var catalogDistribs = Lambda.array( catalog.getDistribs( false ) );
+		var lastDistribBeforeAbsences : db.Distribution = catalogDistribs[0];
+		for ( distrib in catalogDistribs ) {
+
+			if ( distrib.date.getTime() < catalog.absencesStartDate.getTime() ) {
+
+				lastDistribBeforeAbsences = distrib;
+			}
+			else {
+
+				break;
+			}
+
+		}
+
+		return Date.now().getTime() < lastDistribBeforeAbsences.date.getTime();
+	}
+
+	public static function updateSubscriptionAbsences( subscription : db.Subscription, absentDistribIds : Array<Int> = null ) {
    
 		subscription.lock();
 		subscription.setAbsentDistribIds( absentDistribIds );
 		subscription.update();
-		//FAIRE 2 listes une pour les anciennes dates/distribs d'absences et une autre pour les nouvelles dates
-		//Enlever des 2 listes les dates/distribs en commun puis pour chaque date différente apply l'autre distrib au basket et à l'order
-		//LOGIC FOR SWAPPING ORDERS TO DIFFERENT DISTRIB
-		// for ( o in orders ){
-		// 	o.lock();
-		// 	//find new basket
-		// 	o.basket = db.Basket.getOrCreate(o.user, newMd);
-		// o.distribution = ;
-		// 	o.update();
-		// }
-
-		// //renumbering baskets
-		// for( b in newMd.getBaskets()){
-		// 	b.renumber();
-		// }
-
    	}
 	
 }

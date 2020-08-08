@@ -241,12 +241,7 @@ class App extends sugoi.BaseApp {
 		out.set("ByProduct"	, "Par produit (produits vrac, stockés sans conditionnement)");
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
-		out.set("variablePrice", "Prix variable selon pesée");
-
-		//Abscences
-		out.set("absentDistribsMaxNb", "Nombre maximum d'absences");
-		out.set("absencesStartDate", "Date de début de la période d'absences");
-		out.set("absencesEndDate", "Date de fin de la période d'absences");
+		out.set("variablePrice", "Prix variable selon pesée");		
 		
 		return out;
 	}

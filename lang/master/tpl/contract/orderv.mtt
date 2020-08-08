@@ -1,11 +1,10 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
 	
-	::set catalog = c::
 	::set distribs = catalog.getDistribs(true,null)::
 
 	<div class="article">
-		<h2>::c.name::</h2>
+		<h2>::catalog.name::</h2>
 
 		<p>
 			::if isUserOrderAvailable::
@@ -101,6 +100,10 @@
 					::end::
 					
 					<div class="hcell sized">Total</div>
+
+					<div class="hcell sized" ::cond subscriptions == null || subscriptions.length == 0::>
+						Pour la période du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate):: je vais manquer
+					</div>
 				
 				</div>
 
@@ -172,13 +175,39 @@
 								</th>
 							::end::
 						</tr>
+						<tr ::cond subscriptions == null || subscriptions.length == 0::>
+							<td colspan="::userOrders.length::" class="text-left">
+								<select name="absencesNb" id="absencesNb" class="form-control" style="width: 150px;">
+									::set label = ""::
+									::foreach i loopList(0, catalog.absentDistribsMaxNb + 1)::
+										::if i > 1::
+											::set label = "distributions"::
+										::else::
+											::set label = "distribution"::
+										::end::
+										<option value="::i::">::i:: ::label::</option>
+									::end::
+								</select>
+							</td>
+						</tr>
 					</table>
 				</div>
 			</div>
 
-
+			::if subscriptions == null || subscriptions.length == 0::
 			
-		
+				<h5>Prochaines dates des distributions pendant la période des absences :</h5>
+				
+				::foreach date absencesDistribDates::
+					<div style="width: 185px; float:left;">
+						::date::
+					</div>
+				::end::
+				
+				<br/><br/><br/><br/><br/>
+
+			::end::
+
 			<p class="text-right">
 				::if canOrder::
 					<input type="submit" class="btn btn-lg btn-primary" value="Enregistrer ma commande" name="submit" id="submit" />		
@@ -191,7 +220,7 @@
 	</div>
 
 	<!--Subscription-->
-	<div class="article" ::cond isCSACatalog::>
+	<div class="article">
 		
 		::if(subscriptions==null || subscriptions.length==0)::
 			<p class="text-center">
@@ -206,25 +235,20 @@
 
 			<table class="table table-condensed table-bordered">
 				<tr class="greyhead">
-					<th class="text-center col-md-3">Engagement</th>
-					<th class="text-center col-md-4">Période d'engagement</th>
-					<th class="text-center col-md-2">Nombre de distributions</th>
-					<th class="text-center col-md-2">Total</th>
+					<th class="text-center col-md-4">Engagement</th>
+					<th class="text-center col-md-1">Période d'engagement</th>
+					<th class="text-center col-md-1">Nombre de distributions</th>
+					<th class="text-center col-md-1">Total</th>
 					<th class="text-center col-md-1">Payé</th>
 				</tr>
 				::foreach subscription subscriptions::
-					::set orderName = subscriptionService.getDescription(subscription)::
-					::if orderName == null::
-						::set class="danger text-danger"::
-					::else::
-						::set class=""::
-					::end::
+					::set label = subscriptionService.getDescription(subscription)::					
 					<tr style="text-align: center;">
-						<td class="::class::" style="vertical-align: middle;">
-							::if orderName == null::
-								AUCUNE COMMANDE
+						<td style="vertical-align: middle;">
+							::if label != null:
+								::raw label::
 							::else::
-								::raw orderName::
+								Pas de contraintes
 							::end::
 						</td>
 						<td style="vertical-align: middle;">
@@ -241,21 +265,36 @@
 							$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
 						</td>
 					</tr>
+					<tr class="greyhead text-center">
+						<th class="text-center col-md-7" colspan="2" >Ma commande par défaut</th>
+						<th class="text-center col-md-5" colspan="3" >Mes absences</th>
+					</tr>
+					<tr style="text-align: center;">
+						<td colspan="2">
+							<div style="width: 45%; float: left; padding-top: 10px;">
+								::raw subscription.getDefaultOrdersToString()::
+							</div>
+							<div style="width: 45%; float: left; padding-top: 20px;">
+								$$edit(::_("Edit")::,/subscriptions/absences)
+							</div>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							::set position = 'float: left; width: 60%;'::
+							::set canAbsencesBeEdited = subscriptionService.canAbsencesBeEdited( subscription._catalog )::
+							::if !canAbsencesBeEdited::
+								::set position = 'float: none;'::
+							::end::
+							<div style="::position:: padding-top: 10px;">
+								Jeudi 2 Juillet 2020<br/>
+								Mardi 7 Juillet 2020<br/>
+								Jeudi 9 Juillet 2020
+							</div>
+							<div style="float: left; padding-top: 20px;" ::cond canAbsencesBeEdited::>
+								$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::)
+							</div>
+						</td>
+					</tr>
 				::end::
-				<tr class="greyhead text-center">
-					<th class="text-center col-md-12" colspan="3">Mes absences</th>						
-				</tr>
-				<tr style="text-align: center;">
-					<td style="vertical-align: middle;" colspan="3">
-						15/08/2020<br/>
-						22/08/2020<br/>
-						01/09/2020<br/>
-						06/09/2020
-					</td>
-					<td style="vertical-align: middle;" colspan="2">
-						BOUTON GERER MES ABSENCES
-					</td>
-				</tr>
 			</table>
 		::end::
 	</div>

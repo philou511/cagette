@@ -15,6 +15,8 @@ class Catalog extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
+
+	public var type : SInt;
 	
 	//responsable
 	@formPopulate("populate") @:relation(userId) public var contact : SNull<User>;
@@ -32,13 +34,14 @@ class Catalog extends Object
 	public var percentageValue : SNull<SFloat>; 		//fees percentage
 	public var percentageName : SNull<SString<64>>;		//fee name
 	
-	public var type : SInt;
+	public var requiresOrdering : SNull<Bool>;
+	public var distribMinOrdersTotal : SNull<SFloat>;
+	public var catalogMinOrdersTotal : SNull<SFloat>;
+	public var allowedOverspend : SNull<SFloat>;
 
 	public var absentDistribsMaxNb : SNull<SInt>;
 	public var absencesStartDate : SNull<SDateTime>;
 	public var absencesEndDate : SNull<SDateTime>;
-
-	public var requiresOrdering : SNull<Bool>;
 
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
@@ -349,9 +352,13 @@ class Catalog extends Object
 			"distributorNum" 	=> t._("Number of required volunteers during a distribution"),
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
-			"percentageName" 	=> t._("Fees label"),			
+			"percentageName" 	=> t._("Fees label"),
 			"contact" 			=> t._("Contact"),
 			"vendor" 			=> t._("Farmer"),
+			"requiresOrdering" => "Obligation de commander à chaque distribution",
+			"distribMinOrdersTotal" => "Minimum de commande par distribution (en €)",
+			"catalogMinOrdersTotal" => "Minimum de commandes sur la durée du contrat (en €)",
+			"allowedOverspend" => "Dépassement autorisé (en €)",
 			"absentDistribsMaxNb" => "Nombre maximum d'absences",
 			"absencesStartDate" => "Date de début de la période d'absences",
 			"absencesEndDate" => "Date de fin de la période d'absences",

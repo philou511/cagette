@@ -139,7 +139,7 @@
 				::end::	
 				<tr>
 					<td colspan="4">
-						::if !user.getGroup().hasPayments():: 
+						::if user.getGroup().hasShopMode() && !user.getGroup().hasPayments():: 
 							$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
 						::end::
 					</td>

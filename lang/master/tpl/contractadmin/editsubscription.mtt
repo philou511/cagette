@@ -39,7 +39,7 @@
 				<hr/>
 			::end::
 
-			::if (catalog.type == 0 && canOrdersBeEdited) || catalog.requiresOrdering ::
+			::if (catalog.type == TYPE_CONSTORDERS && canOrdersBeEdited) || catalog.requiresOrdering ::
 
 				::if catalog.requiresOrdering ::
 					<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">
@@ -51,7 +51,7 @@
 					
 					<div class="col-sm-3"></div>
 					<div class="col-sm-2">Quantité</div>
-					::if catalog.type == 0::
+					::if catalog.type == TYPE_CONSTORDERS::
 						<div class="col-sm-5">Alterner avec</div>
 						<div class="col-sm-2">Inverser alternance</div>
 					::end::
@@ -61,20 +61,23 @@
 				::foreach product products::
 
 					::set quantity = 0::
+					::set user2Id = null::
+					::set invert = false::
 
-					::if catalog.type == 0::
-						::set user2Id = null::
-						::set invert = false::
-						::if getProductOrder ::
+					::if edit ::
+						::if catalog.type == TYPE_CONSTORDERS::
 							::set productOrder = getProductOrder(product.id)::
 							::if productOrder != null::
 								::set quantity = productOrder.quantity::
 								::set user2Id = productOrder.userId2::
 								::set invert = productOrder.hasInvertSharedOrder()::
 							::end::
+						::else::
+							::set defaultProductOrder = subscription.getDefaultOrders(product.id)[0]::
+							::if defaultProductOrder != null ::
+								::set quantity = defaultProductOrder.quantity::
+							::end::
 						::end::
-					::else::
-						::set quantity = getDefaultOrder(product.id).quantity::
 					::end::
 
 
@@ -86,7 +89,7 @@
 						<div class="col-sm-2">
 							<input class="form-control" type="text" name="quantity::product.id::" id="quantity::product.id::" value="::quantity::" />
 						</div>
-						::if catalog.type == 0::
+						::if catalog.type == TYPE_CONSTORDERS::
 							<div class="col-sm-6">
 								<select name="user2::product.id::" id="user2::product.id::" class="form-control">
 									<option value="0">-</option>
@@ -114,14 +117,6 @@
 				</label>
 				<div class="col-sm-5">
 					::raw startDate.render()::
-					<!--<div class="input-group date" id="startdatepicker">       
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-						<input type="text" class="form-control" required="required"/>
-					</div>
-					<input type="hidden" name="startdate" id="startdate" value="::startdate::" />
-				-->
 				</div>
 
 			</div>
@@ -133,64 +128,92 @@
 				</label>
 				<div class="col-sm-5">
 					::raw endDate.render()::
-					<!--
-						<div class="input-group date" name="enddatepicker" id="enddatepicker">       
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-						<input type="text" class="form-control"  required="required"/>
-					</div>
-					<input type="hidden" name="enddate" id="enddate" value="::enddate::" />
-					-->
 				</div>
 
 			</div>
 
-			<div class="form-group">
+			::if catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0::
+				
+				<hr/>
 
-				<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
-					Absences du 01/07/2020 au 31/08/2020
-				</label>
-				<div class="col-sm-2">
-					::if edit ::
-						::absencesNb::
-					::else::
-						<input class="form-control" type="text" name="absences" id="absences" value="0" />
-					::end::
-				</div>
+				::if edit ::
 
-			</div>
+					<div class="form-group">
 
-			::if edit ::
-				<div class="form-group">
-
-					<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
-						Dates des absences
-					</label>
-					<div class="col-sm-9">
-
-						<select name="absence1" id="absence1" class="form-control" style="width: 300px;display: inherit;">
-							<option value="0">Jeudi 2 Juillet 2020 à 19:00</option>
-							<option value="01-07-2020">Vendre</option>
-							<option value="08-07-2020">8 Juillet 2020</option>
-							<option value="15-08-2020">15 Août 2020</option>
-						</select>
-						<select name="absence2" id="absence2" class="form-control" style="width: 300px;display: inherit;">
-							<option value="0">Vendredi 31 Juillet 2020 à 19:00</option>
-							<option value="01-07-2020">1 Juillet 2020</option>				
-							<option value="08-07-2020">8 Juillet 2020</option>				
-							<option value="15-08-2020">15 Août 2020</option>				
-						</select>
-						<select name="absence3" id="absence3" class="form-control" style="width: 300px;display: inherit;">
-							<option value="0">Vendredi 21 Aout 2020 à 19:00</option>
-							<option value="01-07-2020">1 Juillet 2020</option>				
-							<option value="08-07-2020">8 Juillet 2020</option>				
-							<option value="15-08-2020">15 Août 2020</option>				
-						</select>					
+						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
+							Absences du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate)::
+						</label>
+						<div class="col-sm-2" style="padding-top: 7px;">
+							::subscription.absencesNb::
+						</div>
 
 					</div>
 
-				</div>
+					<div class="form-group" ::cond subscription.absencesNb != 0 ::>
+
+						<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
+							Dates des absences
+						</label>
+						<div class="col-sm-9">
+
+							::set absentDistribIds = subscription.getAbsentDistribIds()::
+							::if canAbsencesBeEdited::
+								::foreach i loopList(0, subscription.absencesNb)::
+									<select name="absence::i::" id="absence::i::" class="form-control" style="width: 300px;display: inherit;">
+									::foreach distribIdDate absencesDistribs::
+										<option value="::distribIdDate.value::" ::attr selected if( distribIdDate.value == absentDistribIds[i] ) '1' :: >::distribIdDate.label::</option>
+									::end::
+									</select>
+								::end::
+							::else::
+								::foreach distrib absentDistribs::
+									::dDate(distrib.date)::<br/>
+								::end::
+							::end::
+
+						</div>
+
+					</div>
+				::else::
+
+					<div class="form-group">
+
+						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
+							Absences du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate)::
+						</label>
+						<div class="col-sm-2">
+
+							<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
+								::set label = ""::
+								::foreach i loopList(0, catalog.absentDistribsMaxNb + 1)::
+									::if i > 1::
+										::set label = "distributions"::
+									::else::
+										::set label = "distribution"::
+									::end::
+									<option value="::i::">::i:: ::label::</option>
+								::end::
+							</select>
+
+						</div>
+
+					</div>
+
+					<h5>Prochaines dates des distributions pendant la période des absences :</h5>
+
+					<div style="text-align: center;">
+
+						::foreach date absencesDistribDates::
+							<div style="width: 25%; float:left;">
+								::date::
+							</div>
+						::end::
+
+					</div>
+					<br/><br/><br/><br/><br/>
+				
+				::end::
+
 			::end::
 
 			<div class="form-group">
@@ -202,39 +225,7 @@
 				</div>
 
 			</div>
-<!--
-			<script type="text/javascript">
 
-				$(function () {
-
-					$('#startdatepicker').datetimepicker(
-						{
-							locale:'fr',
-							format:'LL',
-							defaultDate:moment("::startdate::", "YYYY-MM-DD")
-						}
-					);
-					$('#enddatepicker').datetimepicker(
-						{
-							locale:'fr',
-							format:'LL',
-							defaultDate:moment("::enddate::", "YYYY-MM-DD")
-						}
-					);
-					//stores the date in mysql format in a hidden input element	
-					$('#startdatepicker').on( 'dp.change', function(e) {
-
-						$('#startdate').val( $('#startdatepicker').data('DateTimePicker').date().format('YYYY-MM-DD') );
-					});
-					$('#enddatepicker').on('dp.change', function(e) {
-
-						$('#enddate').val( $('#enddatepicker').data('DateTimePicker').date().format('YYYY-MM-DD') );				
-					});
-
-				});
-						
-			</script>-->
-		
 		</form>
 		
 	</div>

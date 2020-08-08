@@ -64,7 +64,7 @@
 								</button>
 								<ul class="dropdown-menu">
 									<li>
-										::if(d._catalog.type!=0)::
+										::if d._catalog.type != TYPE_CONSTORDERS::
 										<a href="/distribution/edit/::d.id::">
 											<i class="icon icon-calendar"></i> Personnaliser les dates d'ouverture et de fermeture de commande
 										</a>
