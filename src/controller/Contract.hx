@@ -43,7 +43,7 @@ class Contract extends Controller
 		view.catalog = catalog;
 	
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
-		view.hasUserCatalogSubscription = app.user==null ? false : service.SubscriptionService.hasUserCatalogSubscription( app.user, catalog, true );
+		view.hasUserValidatedSubscription = app.user==null ? false : service.SubscriptionService.hasUserValidatedSubscription( app.user, catalog );
 	}
 	
 	/**
@@ -133,6 +133,7 @@ class Contract extends Controller
 		var form = form.CagetteForm.fromSpod( catalog, customMap );
 		if ( app.user.getGroup().hasShopMode() ) {
 
+			form.removeElement(form.getElement("orderPreparationHours"));
 			form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));
@@ -230,6 +231,7 @@ class Contract extends Controller
 
 		 if ( app.user.getGroup().hasShopMode() ) {
 
+			form.removeElement(form.getElement("orderPreparationHours"));
 			form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));
@@ -375,7 +377,7 @@ class Contract extends Controller
 		view.catalog = catalog;
 		view.isCSACatalog = catalog.type == db.Catalog.TYPE_CONSTORDERS;
 		view.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
-		var subscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog );
+		var subscription = service.SubscriptionService.getUserSubscription( app.user, catalog );
 		view.absencesDistribDates = Lambda.array( Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) ) );
 
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
@@ -542,16 +544,21 @@ class Contract extends Controller
 				}
 
 				try {
-					var pendingSubscription = service.SubscriptionService.getUserCatalogSubscription( app.user, catalog, false );
+
+					var pendingSubscription = service.SubscriptionService.getUserSubscription( app.user, catalog, false );
 					if ( pendingSubscription != null ) {
-						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders, false,
+
+						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders,
 						[Std.parseInt(app.params.get( "absence0" )), Std.parseInt(app.params.get( "absence1" )), Std.parseInt(app.params.get( "absence2" )), Std.parseInt(app.params.get( "absence3" )) ] );
-					} else {
-						var now = Date.now();
-						var tomorrow = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0);						
-						service.SubscriptionService.createSubscription( app.user, catalog, tomorrow, catalog.endDate, constOrders, false, Std.parseInt( app.params.get( "absences" ) ) );
+
 					}
-				} catch ( e : Dynamic ) { 
+					else {
+						
+						service.SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absences" ) ) );
+					}
+				}
+				catch ( e : Dynamic ) {
+
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
 			}

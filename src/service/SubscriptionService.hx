@@ -52,16 +52,22 @@ class SubscriptionService
 		return subscriptionsByCatalog;
 	}
 
-	public static function hasUserCatalogSubscription( user : db.User, catalog : db.Catalog, isValidated : Bool ) : Bool {
-		return db.Subscription.manager.count( $user == user && $catalog == catalog && $isValidated == isValidated ) != 0;
+	public static function hasUserValidatedSubscription( user : db.User, catalog : db.Catalog ) : Bool {
+
+		return db.Subscription.manager.count( $user == user && $catalog == catalog && $isValidated == true ) != 0;
 	}
 
-	public static function getUserCatalogSubscription( user : db.User, catalog : db.Catalog, ?isValidated : Bool ) : db.Subscription {
-		if(isValidated!=null){
+	public static function getUserSubscription( user : db.User, catalog : db.Catalog, ?isValidated : Bool ) : db.Subscription {
+
+		if( isValidated != null ) {
+
 			return db.Subscription.manager.select( $user == user && $catalog == catalog && $isValidated == isValidated, false );
-		}else{
+		}
+		else {
+
 			return db.Subscription.manager.select( $user == user && $catalog == catalog , false );
-		}		
+		}
+		
 	}
 
 	public static function getUserCatalogSubscriptions( user : db.User, catalog : db.Catalog ) : Array<db.Subscription> {
@@ -233,6 +239,11 @@ class SubscriptionService
 	 */
 	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date, ?previousEndDate : Date  ) : Bool {
 
+		//When creating a new subscription the startDate needs to be for the next not closed coming 
+		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
+			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
+		}
+
 		var subName = ' (souscription de ${subscription.user.getName()})';
 
 		//invalid dates
@@ -348,11 +359,23 @@ class SubscriptionService
 			throw TypedError.typed( message, CatalogRequirementsNotMet );
 		}
 
-		
-
-
-
 		return true;
+
+	}
+
+	public static function getFirstOpenDayForSubscription( catalog : db.Catalog ) : Date {
+
+		var now = Date.now();
+		var startOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
+		var closedFutureDistribs = Lambda.array( db.Distribution.manager.search( $catalog == catalog && $end > startOfToday  && $orderEndDate <= now, { orderBy : date }, false ) );
+		if ( closedFutureDistribs.length == 0 ) {
+
+			return startOfToday;
+		}
+		else {
+
+			return DateTools.delta( closedFutureDistribs[closedFutureDistribs.length - 1].end, 1000 * 60 * 60 * 24 );
+		}
 
 	}
 
@@ -360,14 +383,20 @@ class SubscriptionService
 	  *  Creates a new subscription and prevents subscription overlapping and other checks
 	  *  @return db.Subscription
 	  */
-	 public static function createSubscription( user : db.User, catalog : db.Catalog, startDate : Date, endDate : Date,
-	 ordersData : Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >,
-	 ?isValidated : Bool = true, ?absencesNb : Int = null ) : db.Subscription {
+	 public static function createSubscription( user : db.User, catalog : db.Catalog,
+		?ordersData : Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >,
+		?absencesNb : Int, ?startDate : Date, ?endDate : Date ) : db.Subscription {
 
-		if ( startDate == null || endDate == null ) {
-			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
+		if ( startDate == null ) {
+			
+			startDate = getFirstOpenDayForSubscription( catalog );
 		}
 
+		if ( endDate == null ) {
+			
+			endDate = catalog.endDate;
+		}
+		
 		//if the user is not a member of the group
 		if(!user.isMemberOf(catalog.group)){
 			if(catalog.group.regOption==RegOption.Open){
@@ -382,12 +411,25 @@ class SubscriptionService
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		subscription.isValidated = isValidated;
+		subscription.isValidated = false;
 		if( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			
 			subscription.setDefaultOrders( ordersData );
 		}
 		subscription.absencesNb = absencesNb;
+		//Let's select the absencesNb first distribs of the absences period in the subscription time range
+		if ( absencesNb != null && absencesNb != 0 ) {
+
+			var absencesDistribsForSubscription = getCatalogAbsencesDistribsForSubscription( catalog, subscription );
+			var absentDistribIds = new Array<Int>();
+			for ( i in 0...absencesNb ) {
+
+				absentDistribIds.push( absencesDistribsForSubscription[i].id );
+			}
+
+			subscription.setAbsentDistribIds( absentDistribIds );
+		}
+
 
 		if ( isSubscriptionValid( subscription ) ) {
 
@@ -406,17 +448,14 @@ class SubscriptionService
 
 
 	public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
-	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?validateSubscription:Bool, ?absentDistribIds : Array<Int>  = null ) {
+	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?absentDistribIds : Array<Int>  = null ) {
 
 		if ( startDate == null || endDate == null ) {
 			throw new Error( 'La date de début et de fin de la souscription doivent être définies.' );
 		}
 
 		subscription.lock();
-
-		if ( validateSubscription ) {
-			subscription.isValidated = true;
-		}
+	
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		if( subscription.catalog.type == db.Catalog.TYPE_VARORDER ) {
@@ -436,10 +475,20 @@ class SubscriptionService
 
 	}
 
-	public static function validate(subscription:Subscription){
+	public static function setValidation( subscription : Subscription, ?validate : Bool = true ){
+
 		subscription.lock();
-		subscription.isValidated = true;
-		subscription.isPaid = true;
+		if ( validate ) {
+
+			subscription.isValidated = true;
+			subscription.isPaid = true;
+		}
+		else {
+
+			subscription.isValidated = false;
+			subscription.isPaid = false;
+		}
+
 		subscription.update();
 	}
 

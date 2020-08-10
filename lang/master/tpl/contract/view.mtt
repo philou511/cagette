@@ -116,10 +116,10 @@
 		</p>
 		::else::
 			<!--
-				<p ::cond !hasUserCatalogSubscription && !user.getGroup().hasShopMode():: class="text-center">
+				<p ::cond !hasUserValidatedSubscription && !user.getGroup().hasShopMode():: class="text-center">
 					<a href="/contract/order/::catalog.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
 				</p>
-				<p ::cond hasUserCatalogSubscription:: class="text-center">
+				<p ::cond hasUserValidatedSubscription:: class="text-center">
 					<br />
 					Votre souscription à ce contrat a déjà été validée. Vous ne pouvez plus la modifier.
 				</p>

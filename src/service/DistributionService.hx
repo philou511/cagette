@@ -326,8 +326,14 @@ class DistributionService
 		}
 
 		md.deleteProductsExcerpt();
+
+		var orderEndDate = md.orderEndDate;
+		if ( !catalog.group.hasShopMode() && catalog.orderPreparationHours != null && catalog.orderPreparationHours != 0 ) {
+
+			orderEndDate = DateTools.delta( md.distribStartDate, -(1000 * 60 * 60 * catalog.orderPreparationHours));
+		}
 		
-		return create(catalog,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,true,md);
+		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, md.orderStartDate, orderEndDate, null, true, md );
 
 	}
 
@@ -465,7 +471,7 @@ class DistributionService
 				for ( sub in subscriptions ){
 					//if the subscription is closing before the new date, extends it
 					if(sub.endDate.getTime() < newMd.getDate().getTime()){
-						SubscriptionService.updateSubscription(sub, sub.startDate, newMd.getDate(), null, sub.isValidated );
+						SubscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate(), null );
 					}					
 				}
 				/**

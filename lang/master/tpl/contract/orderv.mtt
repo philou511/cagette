@@ -101,7 +101,7 @@
 					
 					<div class="hcell sized">Total</div>
 
-					<div class="hcell sized" ::cond subscriptions == null || subscriptions.length == 0::>
+					<div class="hcell sized" ::cond catalog.absencesStartDate != null && ( subscriptions == null || subscriptions.length == 0 )::>
 						Pour la période du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate):: je vais manquer
 					</div>
 				
@@ -175,7 +175,7 @@
 								</th>
 							::end::
 						</tr>
-						<tr ::cond subscriptions == null || subscriptions.length == 0::>
+						<tr ::cond (catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0) && (subscriptions == null || subscriptions.length == 0)::>
 							<td colspan="::userOrders.length::" class="text-left">
 								<select name="absencesNb" id="absencesNb" class="form-control" style="width: 150px;">
 									::set label = ""::
@@ -194,7 +194,7 @@
 				</div>
 			</div>
 
-			::if subscriptions == null || subscriptions.length == 0::
+			::if absencesDistribDates.length != 0 && (subscriptions == null || subscriptions.length == 0)::
 			
 				<h5>Prochaines dates des distributions pendant la période des absences :</h5>
 				
@@ -285,9 +285,10 @@
 								::set position = 'float: none;'::
 							::end::
 							<div style="::position:: padding-top: 10px;">
-								Jeudi 2 Juillet 2020<br/>
-								Mardi 7 Juillet 2020<br/>
-								Jeudi 9 Juillet 2020
+								::set absentDistribs = subscription.getAbsentDistribs()::
+								::foreach distrib absentDistribs::
+									::dDate(distrib.date)::<br/>
+								::end::
 							</div>
 							<div style="float: left; padding-top: 20px;" ::cond canAbsencesBeEdited::>
 								$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::)

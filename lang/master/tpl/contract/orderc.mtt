@@ -150,8 +150,8 @@
 
 		</table>
 
-		::if subscriptions == null || subscriptions.length == 0::
-			
+		::if absencesDistribDates.length != 0 && (subscriptions == null || subscriptions.length == 0)::
+
 			<h5>Prochaines dates des distributions pendant la période des absences :</h5>
 
 			<div style="text-align: center;">
@@ -243,13 +243,19 @@
 						<th class="text-center col-md-12" colspan="7" >Mes absences</th>						
 					</tr>
 					<tr>
-						<td colspan="7">
-							<div style="text-align: right; width: 45%; float: left; padding-top: 10px;">
-								Jeudi 2 Juillet 2020<br/>
-								Mardi 7 Juillet 2020<br/>
-								Jeudi 9 Juillet 2020
+						<td colspan="7"  style="text-align: center;">
+							::set position = 'float: left; width: 50%;text-align : right;padding-right:30px;'::
+							::set canAbsencesBeEdited = subscriptionService.canAbsencesBeEdited( subscription._catalog )::
+							::if !canAbsencesBeEdited::
+								::set position = 'float: none;'::
+							::end::
+							<div style="::position:: padding-top: 10px;">
+								::set absentDistribs = subscription.getAbsentDistribs()::
+								::foreach distrib absentDistribs::
+									::dDate(distrib.date)::<br/>
+								::end::
 							</div>
-							<div style="text-align: center; width: 45%; float: left; padding-top: 20px;">
+							<div style="text-align: left; float: left; padding-top: 20px;" ::cond canAbsencesBeEdited::>
 								$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::)
 							</div>
 						</td>

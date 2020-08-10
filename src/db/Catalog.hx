@@ -34,6 +34,8 @@ class Catalog extends Object
 	public var percentageValue : SNull<SFloat>; 		//fees percentage
 	public var percentageName : SNull<SString<64>>;		//fee name
 	
+	public var orderPreparationHours : SNull<SInt>;
+
 	public var requiresOrdering : SNull<Bool>;
 	public var distribMinOrdersTotal : SNull<SFloat>;
 	public var catalogMinOrdersTotal : SNull<SFloat>;
@@ -355,6 +357,7 @@ class Catalog extends Object
 			"percentageName" 	=> t._("Fees label"),
 			"contact" 			=> t._("Contact"),
 			"vendor" 			=> t._("Farmer"),
+			"orderPreparationHours" => "Nombre d'heures pour préparer une commande",
 			"requiresOrdering" => "Obligation de commander à chaque distribution",
 			"distribMinOrdersTotal" => "Minimum de commande par distribution (en €)",
 			"catalogMinOrdersTotal" => "Minimum de commandes sur la durée du contrat (en €)",

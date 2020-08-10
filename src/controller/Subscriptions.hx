@@ -159,7 +159,7 @@ class Subscriptions extends controller.Controller
 				}
 
 				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
-				service.SubscriptionService.createSubscription( user, catalog, startDate, endDate, ordersData, false, absencesNb );
+				service.SubscriptionService.createSubscription( user, catalog, ordersData, absencesNb, startDate, endDate );
 
 				throw Ok( '/contractAdmin/subscriptions/' + catalog.id, 'La souscription pour ' + user.getName() + ' a bien été ajoutée.' );
 
@@ -273,7 +273,7 @@ class Subscriptions extends controller.Controller
 				
 					absentDistribIds.push( Std.parseInt( app.params.get( 'absence' + i ) ) );
 				}
-				service.SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, null, absentDistribIds );
+				service.SubscriptionService.updateSubscription( subscription, startDate, endDate, ordersData, absentDistribIds );
 
 			} catch( error : Error ) {
 				
@@ -309,9 +309,13 @@ class Subscriptions extends controller.Controller
 
 		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
 
-		try {			
-			service.SubscriptionService.validate( subscription );
-		} catch( error : Error ) {		
+		try {
+
+			service.SubscriptionService.setValidation( subscription );			
+
+		}
+		catch( error : Error ) {
+
 			throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 		}
 
@@ -320,13 +324,12 @@ class Subscriptions extends controller.Controller
 	}
 
 	@admin
-	public function doUnvalidate(subscription : db.Subscription ){
-		if(checkToken()){
-			subscription.lock();
-			subscription.isValidated = false;
-			subscription.isPaid = false;
-			subscription.update();
-			throw Ok("/contractAdmin/subscriptions/"+subscription.catalog.id,'Souscription dévalidée');
+	public function doUnvalidate( subscription : db.Subscription ) {
+
+		if( checkToken() ) {
+
+			service.SubscriptionService.setValidation( subscription, false );
+			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'Souscription dévalidée' );
 		}
 
 	}

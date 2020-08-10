@@ -294,7 +294,7 @@ class Group extends controller.Controller
 				);	
 				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
-				var subscription = service.SubscriptionService.createSubscription( user, contract, contract.startDate, contract.endDate, ordersData );
+				var subscription = service.SubscriptionService.createSubscription( user, contract, ordersData, null, contract.startDate, contract.endDate );
 				
 				
 			}
