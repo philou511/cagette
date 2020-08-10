@@ -1,5 +1,6 @@
 declare const _default: {
     setUrl(url: string): void;
+    getToken(): Promise<any>;
     login(email: string, password: string): Promise<import("./vo").UserVo | null>;
     me(): Promise<import("./vo").UserVo | null>;
     updateMe(data: any, type?: "json" | "data"): Promise<import("./vo").UserVo | null>;

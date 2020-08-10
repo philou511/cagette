@@ -9,7 +9,7 @@
 	</tr>
 	<tr>
 		<td>Data</td>
-		<td>::op._data::</td>
+		<td>::op.getData()::</td>
 	</tr>
 	<tr>
 		<td>Infos</td>

@@ -602,7 +602,7 @@ class Contract extends Controller
 					//Create order operation only
 					if ( app.user.getGroup().hasPayments() ) {
 
-						db.Operation.onOrderConfirm( varOrders );
+						service.PaymentService.onOrderConfirm( varOrders );
 					}
 
 				}

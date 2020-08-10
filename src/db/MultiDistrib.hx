@@ -71,7 +71,7 @@ class MultiDistrib extends Object
 		});
 
 		//trigger event
-		for(md in multidistribs) App.current.event(MultiDistribEvent(md));
+		for(md in multidistribs) App.current.event(GetMultiDistrib(md));
 
 		return multidistribs;
 	}
@@ -475,16 +475,16 @@ class MultiDistrib extends Object
 		TODO : refacto with foreign key with multidistrib
 	**/
 	public function getBaskets():Array<db.Basket>{
-		var baskets = [];
+		/*var baskets = [];
 		for( o in getOrders()){
 			if(o.basket!=null) baskets.push(o.basket);
 		}
-		return baskets.deduplicate();
-		//return Lambda.array(db.Basket.manager.search($multiDistrib==this,false));
+		return baskets.deduplicate();*/
+		return db.Basket.manager.search($multiDistrib==this,false).array();
 	}
 
 	public function getTmpBaskets():Array<db.TmpBasket>{
-		return Lambda.array(db.TmpBasket.manager.search($multiDistrib==this,false));
+		return db.TmpBasket.manager.search($multiDistrib==this,false).array();
 	}
 
 	public function getUserBasket(user:db.User){

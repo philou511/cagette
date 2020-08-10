@@ -324,7 +324,8 @@ enum Event {
 	DeleteDistrib(distrib:db.Distribution);
 	PreNewDistribCycle(cycle:db.DistributionCycle);	
 	NewDistribCycle(cycle:db.DistributionCycle);
-	MultiDistribEvent(md:db.MultiDistrib);
+	GetMultiDistrib(md:db.MultiDistrib);
+	PreDeleteMultiDistrib(md:db.MultiDistrib);
 	
 	//Products
 	PreNewProduct(contract:db.Catalog);	//when displaying the insert distribution form

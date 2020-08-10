@@ -1,0 +1,78 @@
+{
+  "config": {
+    "allPending": "Tous vos documents sont en attente de validations.",
+    "stepper": {
+      "open": "Ouverture de votre dossier",
+      "legal": {
+        "label": "Infomations légales",
+        "info": "Afin d'ouvrir le paiement en ligne sur ce groupe, vous devez fournir quelques informations et justificatifs. Ces informations concernent la structure légale (association ou entreprise) qui va collecter les paiements en ligne."
+      },
+      "documents": {
+        "label": "Justificatifs",
+        "info": "Afin d'ouvrir le paiement en ligne sur ce groupe, vous devez fournir quelques informations et justificatifs. Ces informations concernent la structure légale (association ou entreprise) qui va collecter les paiements en ligne."
+      }
+    },
+    "openStep": {
+      "p1": "Il est possible de collecter des paiements en ligne dans ce groupe Cagette. Nous travaillons avec Mangopay qui prend en charge la gestion technique des paiements.",
+      "alert": "Lisez attentivement ce guide pour bien vérifier si cela correspond à vos besoins : ",
+      "guideLinkTarget": "https://docs.google.com/document/d/1lMg4oLmcYXn2nmwoirEUqB2VjunJHWLR68GFzjmD3bE",
+      "guildeLinkLabel": "consulter le guide",
+      "btn": "Ouvrir un dossier Mangopay"
+    },
+    "legalStep": {
+      "structure": "Structure",
+      "structureName": "Nom de la structure",
+      "structureEmail": "Email de la structure",
+      "structureType": "Statut légal",
+      "ORGANIZATION": "Association",
+      "BUSINESS": "Société",
+      "SOLETRADER": "Micro-entreprise",
+      "companyNumber": "Numéro (SIRET ou SIREN)",
+      "legalRepr": "Représentant légal",
+      "headquarters": "Siège social",
+      "headquartersAddress": {
+        "address1": "Adresse 1 du siège social",
+        "address2": "Adresse 2 du siège social",
+        "city": "Ville du siège social",
+        "postalCode": "Code postal du siège social",
+        "country": "Pays du siège social"
+      }
+    },
+    "documentsStep": {
+      "IDENTITY_PROOF": "Carte d'identité",
+      "ARTICLES_OF_ASSOCIATION": "Statuts signés",
+      "REGISTRATION_PROOF": "Preuve d'enregistrement (ex : kbis de moins de 3 mois)",
+      "SHAREHOLDER_DECLARATION": "Liste des actionnaires détenant plus de 25% de la société",
+
+      "CREATED": "Le document est en cours de validation",
+      "VALIDATION_ASKED": "Le document est en cours de validation",
+      "REFUSED": "Le document a été refusé",
+      "VALIDATED": "Le document a été validé",
+
+      "INCOMPLETE": "Le document est incomplet",
+
+      "DOCUMENT_UNREADABLE": "Document illisible",
+      "DOCUMENT_NOT_ACCEPTED": "Document pas accepté",
+      "DOCUMENT_HAS_EXPIRED": "Document expiré",
+      "DOCUMENT_INCOMPLETE": "Document incomplet",
+      "DOCUMENT_MISSING": "Document manquant",
+      "DOCUMENT_DO_NOT_MATCH_USER_DATA": "Document ne correspond pas à ce compte",
+      "DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA": "Document ne correspond pas à ce compte",
+      "SPECIFIC_CASE": "Cas particulier",
+      "DOCUMENT_FALSIFIED": "Faux document",
+      "UNDERAGE_PERSON": "Pesonne mineure",
+
+      "MISSING_UBO": "Actionnaire manquant",
+      "WRONG_UBO_INFORMATION": "Mauvaise information",
+      "UBO_IDENTITY_NEEDED": "Identité d'un actionnaire requis",
+      "SHAREHOLDERS_DECLARATION_NEEDED": "Liste des actionnaires requises",
+      "ORGANIZATION_CHART_NEEDED": "Organigramme nécessaire",
+      "DOCUMENTS_NEEDED": "Document requis",
+      "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION": "Déclaration ne correspond pas aux informations de la liste des actionnaires",
+
+      "ubo": "Bénéficiaire effectif",
+      "addFileBtn": "Ajouter un fichier",
+      "tooLargeFile": "Fichier trop volumineux. La taille du fichier ne doit pas dépasser 7 Mo."
+    }
+  }
+}

@@ -282,15 +282,15 @@ class TestDistributions extends utest.Test
 		var contract = amapDistrib.catalog;
 		var panier = TestSuite.PANIER_AMAP_LEGUMES;
 		var francoisOrder = service.OrderService.make(TestSuite.FRANCOIS, 1, panier, amapDistrib.id);
-		db.Operation.onOrderConfirm([francoisOrder]);
+		service.PaymentService.onOrderConfirm([francoisOrder]);
 		var sebOrder = service.OrderService.make(TestSuite.SEB, 3, panier, amapDistrib.id);
-		db.Operation.onOrderConfirm([sebOrder]);
+		service.PaymentService.onOrderConfirm([sebOrder]);
 
 		//Check initial operation names and amounts
-		var francoisOperation = db.Operation.findCOrderOperation(contract, TestSuite.FRANCOIS);
+		var francoisOperation = service.PaymentService.findCOrderOperation(contract, TestSuite.FRANCOIS);
 		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
 		Assert.equals(francoisOperation.amount, -13);
-		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
+		var sebOperation = service.PaymentService.findCOrderOperation(contract, TestSuite.SEB);
 		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 1 deliveries");
 		Assert.equals(sebOperation.amount, -39);
 
@@ -313,7 +313,7 @@ class TestDistributions extends utest.Test
 		//Check names and amounts are modified accordingly
 		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		Assert.equals(francoisOperation.amount, -26);
-		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
+		var sebOperation = service.PaymentService.findCOrderOperation(contract, TestSuite.SEB);
 		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		Assert.equals(sebOperation.amount, -78);
 
@@ -335,7 +335,7 @@ class TestDistributions extends utest.Test
 		//Check names and amounts are modified accordingly
 		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
 		Assert.equals(francoisOperation.amount, -91);
-		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
+		var sebOperation = service.PaymentService.findCOrderOperation(contract, TestSuite.SEB);
 		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 7 deliveries");
 		Assert.equals(sebOperation.amount, -273);
 
@@ -344,7 +344,7 @@ class TestDistributions extends utest.Test
 		//Check names and amounts are modified accordingly
 		Assert.equals(francoisOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		Assert.equals(francoisOperation.amount, -26);
-		var sebOperation = db.Operation.findCOrderOperation(contract, TestSuite.SEB);
+		var sebOperation = service.PaymentService.findCOrderOperation(contract, TestSuite.SEB);
 		Assert.equals(sebOperation.name, "Contrat AMAP Légumes (La ferme de la Galinette) 2 deliveries");
 		Assert.equals(sebOperation.amount, -78);
 	}

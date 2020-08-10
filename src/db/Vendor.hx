@@ -44,6 +44,8 @@ class Vendor extends Object
 
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
+	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
+	public var vendorPolicy:SBool; //charte producteurs
 	
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
@@ -56,7 +58,8 @@ class Vendor extends Object
 	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
-	@hideInForms public var isTest : SBool; //cpro testing account
+	
+	@hideInForms public var isTest : SBool; //cpro test account
 
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;
@@ -171,7 +174,7 @@ class Vendor extends Object
 		return manager.select($email==email && $status==status,false);
 	}
 
-	public static function getForm(vendor:db.Vendor){
+	public static function getForm(vendor:db.Vendor,?full=false){
 		var t = sugoi.i18n.Locale.texts;
 		var form = form.CagetteForm.fromSpod(vendor);
 		
@@ -180,9 +183,17 @@ class Vendor extends Object
 		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
 		
 		//profession
-		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,false),4);
+		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,true),4);
 
+		//email is required
 		form.getElement("email").required = true;
+
+		if(full){
+
+			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
+			
+
+		}
 		
 		return form;
 	}
@@ -198,6 +209,12 @@ class Vendor extends Object
 		return json.professions;
 	}
 
+	public static function getActivityCodes():Array<{id:String,name:String}>{
+		var filePath = sugoi.Web.getCwd()+"../data/codesNAF.json";
+		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
+		return json;
+	}
+
 	#if plugins
 	public function getCpro(){
 		return pro.db.CagettePro.getFromVendor(this);
@@ -208,7 +225,7 @@ class Vendor extends Object
 		var t = sugoi.i18n.Locale.texts;
 		return [
 			"name" 				=> "Nom de votre ferme/entreprise",
-			"peopleName" 		=> "Nom de l'exploitant",	
+			"peopleName" 		=> "Nom de l'exploitant(e)",	
 			"desc" 				=> t._("Description"),
 			"email" 			=> t._("Email pro"),
 			"legalStatus"		=> t._("Legal status"),
@@ -220,6 +237,7 @@ class Vendor extends Object
 			"linkText" 			=> t._("Link text"),			
 			"linkUrl" 			=> t._("Link URL"),			
 			"companyNumber" 	=> "Numéro SIRET (14 chiffres)",	
+			"vendorPolicy"		=> "Je m'engage à respecter la <a href=\"https://www.cagette.net/charte-producteurs\" target=\"_blank\">Charte Producteurs Cagette.net</a>"
 		];
 	}
 

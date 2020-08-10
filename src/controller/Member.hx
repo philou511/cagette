@@ -272,45 +272,6 @@ class Member extends Controller
 		view.userGroup = userGroup; 
 		view.canLoginAs = (db.UserGroup.manager.count($userId == member.id) == 1 && app.user.isAmapManager()) || app.user.isAdmin(); 
 		
-		/*
-		//orders
-		var row = {constOrders:new Array<UserOrder>(), varOrders:{distribution:null,orders:new Array<UserOrder>>()};
-			
-		//CSA orders
-		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_CONSTORDERS && $group == app.user.getGroup() && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
-		var orders = member.getOrdersFromContracts(contracts);
-		row.constOrders = service.OrderService.prepare(orders);
-		
-		//commandes variables groupées par date de distrib
-		var contracts = db.Catalog.manager.search($type == db.Catalog.TYPE_VARORDER && $group == app.user.getGroup() && $endDate > DateTools.delta(Date.now(),-1000.0*60*60*24*30), false);
-		var distribs = new Map<String,List<db.UserOrder>>();
-		for (c in contracts) {
-			var ds = c.getDistribs();
-			for (d in ds) {
-				var k = d.date.toString().substr(0, 10);
-				var orders = member.getOrdersFromDistrib(d);
-				if (orders.length > 0) {
-					if (!distribs.exists(k)) {
-						distribs.set(k, orders);
-					}else {
-						
-						var v = distribs.get(k);
-						for ( o in orders  ) v.add(o);
-						distribs.set(k, v);
-					}	
-				}
-			}
-		}
-		for ( k in distribs.keys()){
-			var d = distribs.get(k);
-			var d2 = service.OrderService.prepare(d);
-			row.varOrders.set(k,d2);
-		}
-		
-		
-		view.userContracts = row;
-		*/
-
 		var now = Date.now();
 		var from = new Date(now.getFullYear(), now.getMonth(), now.getDate()-7, 0, 0, 0);
 		var to = DateTools.delta(from, 1000.0 * 60 * 60 * 24 * 28 * 3);

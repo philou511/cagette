@@ -58,6 +58,7 @@ class UserService
 			user.makeMemberOf(group);			
 		}
 		
+		return user;
 	}
 	
 	/**

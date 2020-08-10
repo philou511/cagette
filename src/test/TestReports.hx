@@ -95,17 +95,17 @@ class TestReports extends utest.Test
 		//User 1 buys products for a multidistrib
 		var francoisOrder1 = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.POTATOES, TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE.id);
 		var francoisOrder2 = OrderService.make(TestSuite.FRANCOIS, 2, TestSuite.LAITUE, TestSuite.DISTRIB_LAITUE.id);
-		var francoisOrderOperation = db.Operation.onOrderConfirm([francoisOrder1, francoisOrder2]);
+		var francoisOrderOperation = service.PaymentService.onOrderConfirm([francoisOrder1, francoisOrder2]);
 
 		//User 2 buys products for a multidistrib
 		var sebOrder1 = OrderService.make(TestSuite.SEB, 3, TestSuite.COURGETTES, TestSuite.DISTRIB_LEGUMES_RUE_SAUCISSE.id);
 		var sebOrder2 = OrderService.make(TestSuite.SEB, 7, TestSuite.CARROTS, TestSuite.DISTRIB_CAROTTES.id);
-		var sebOrderOperation = db.Operation.onOrderConfirm([sebOrder1, sebOrder2]);
+		var sebOrderOperation = service.PaymentService.onOrderConfirm([sebOrder1, sebOrder2]);
 
 		//User 3 buys products for the same multidistrib
 		var julieOrder1 = OrderService.make(TestSuite.JULIE, 3, TestSuite.LAITUE, TestSuite.DISTRIB_LAITUE.id);
 		var julieOrder2 = OrderService.make(TestSuite.JULIE, 5, TestSuite.CARROTS, TestSuite.DISTRIB_CAROTTES.id);
-		var julieOrderOperation = db.Operation.onOrderConfirm([julieOrder1, julieOrder2]);
+		var julieOrderOperation = service.PaymentService.onOrderConfirm([julieOrder1, julieOrder2]);
 		
 		//They all pay by credit card
 		// var francoisPayment = db.Operation.makePaymentOperation(TestSuite.FRANCOIS,distrib1.catalog.amap, payment.Transfer.TYPE, TestSuite.POTATOES.price + 2 * TestSuite.LAITUE.price, "Payment by transfer", francoisOrderOperation[0]);

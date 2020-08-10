@@ -1017,7 +1017,13 @@ class Distribution extends Controller
 		
 		checkHasDistributionSectionAccess();
 			
-		view.users = multiDistrib.getUsers(db.Catalog.TYPE_VARORDER);
+		//view.users = multiDistrib.getUsers(db.Catalog.TYPE_VARORDER);
+
+		var baskets = multiDistrib.getBaskets();
+		baskets.sort(function(a,b){
+			if(a.user.lastName > b.user.lastName) return 1 else return -1;
+		});
+		view.baskets = baskets;
 		view.distribution = multiDistrib;
 
 	}
@@ -1518,7 +1524,7 @@ class Distribution extends Controller
 				if(product.id==order.product.id){
 					//set qt to 0
 					service.OrderService.edit(order,0);
-					db.Operation.onOrderConfirm([order]);//updates payments
+					service.PaymentService.onOrderConfirm([order]);//updates payments
 					count++;
 				}
 			}
@@ -1565,7 +1571,7 @@ class Distribution extends Controller
 					order.productPrice = price;
 					order.update();
 
-					db.Operation.onOrderConfirm([order]);//updates payments
+					service.PaymentService.onOrderConfirm([order]);//updates payments
 					count++;
 				}
 			}

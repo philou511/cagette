@@ -37,9 +37,13 @@ class SubscriptionService
 	**/
 	public static function getUserActiveSubscriptions(user:db.User,group:db.Group){
 		var catalogIds = group.getActiveContracts().filter(c -> return c.type==Catalog.TYPE_CONSTORDERS).map(c -> return c.id);
-		return db.Subscription.manager.search( $user == user && ($catalogId in catalogIds), false );
+		return db.Subscription.manager.search( ($user == user || $user2 ==user) && ($catalogId in catalogIds), false );
 	}
 
+	/**
+		Get user active subscriptions, ordered by catalogs.
+		This includes the subscriptions as a secondary user.
+	**/
 	public static function getUserActiveSubscriptionsByCatalog(user,group):Map<db.Catalog,Array<db.Subscription>>{
 		var memberSubscriptions = SubscriptionService.getUserActiveSubscriptions(user,group);
 		var subscriptionsByCatalog = new Map<Catalog,Array<Subscription>>();
@@ -173,8 +177,7 @@ class SubscriptionService
 	}
 
 	public static function getSubscriptionOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
-
-		var oneDistrib = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate, false ).first();
+		var oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate, false );
 		return Lambda.array( db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib, false ) );
 	}
 
@@ -406,12 +409,15 @@ class SubscriptionService
 			}
 		}
 
+		var user2 = checkUser2(ordersData);
+
 		var subscription = new db.Subscription();
 		subscription.user = user;
 		subscription.catalog = catalog;
 		subscription.startDate 	= new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		subscription.isValidated = false;
+		subscription.user2 = db.User.manager.get(user2,false);
 		if( catalog.type == db.Catalog.TYPE_VARORDER ) {
 			
 			subscription.setDefaultOrders( ordersData );
@@ -446,6 +452,21 @@ class SubscriptionService
 
 	}
 
+	public static function checkUser2(ordersData:Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }>):Int{
+		//check that there is only one secondary user
+		var user2= null;
+		for( order in ordersData){
+			if(order.userId2!=null){
+				if(user2==null){
+					user2=order.userId2;
+				}else if(user2!=order.userId2){
+					throw new Error("Il n'est pas possible d'alterner vos paniers avec plusieurs personnes. Choisissez un seul binôme.");
+				}
+			}
+		}
+		return user2;
+	}
+
 
 	public static function updateSubscription( subscription : db.Subscription, startDate : Date, endDate : Date, 
 	 ?ordersData : Array<{ productId:Int, quantity:Float, userId2:Int, invertSharedOrder:Bool }>, ?absentDistribIds : Array<Int>  = null ) {
@@ -463,6 +484,12 @@ class SubscriptionService
 			subscription.setDefaultOrders( ordersData );
 		}
 		subscription.setAbsentDistribIds( absentDistribIds );
+
+		//check secondary user
+		var userId2 = checkUser2(ordersData);
+		if(userId2!=null){
+			subscription.user2 = db.User.manager.get(userId2,false);
+		}
 
 		if ( isSubscriptionValid( subscription ) ) {
 
@@ -652,7 +679,10 @@ class SubscriptionService
 		}
 		
 		App.current.event( MakeOrder( orders ) );
-		db.Operation.onOrderConfirm( orders );
+
+		if(subscription.catalog.group.hasPayments()){
+			service.PaymentService.onOrderConfirm( orders );
+		}
 
 		return orders;
 		
