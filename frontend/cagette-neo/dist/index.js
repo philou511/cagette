@@ -30348,7 +30348,6 @@ var MangopayConfig = function (_a) {
     var _g = React__default.useState(false), submitting = _g[0], setSubmitting = _g[1];
     var _h = React__default.useState(false), infosPanelOpen = _h[0], setInfosPanelOpen = _h[1];
     var _j = React__default.useState(false), documentsPanelOpen = _j[0], setDocumentsPanelOpen = _j[1];
-    console.log(legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr);
     /** */
     React__default.useEffect(function () {
         setSelectedLegalRepr(legalRepr);
