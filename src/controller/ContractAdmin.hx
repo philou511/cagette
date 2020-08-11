@@ -164,6 +164,8 @@ class ContractAdmin extends Controller
 	 */
 	@tpl('contractadmin/ordersByTimeFrame.mtt')
 	function doOrdersByTimeFrame(?from:Date, ?to:Date/*, ?place:db.Place*/){
+
+		if(!app.user.canManageAllContracts())  throw Error('/',"Accès interdit");
 		
 		if (from == null) {
 		
@@ -232,6 +234,9 @@ class ContractAdmin extends Controller
 	 */
 	@tpl('contractadmin/ordersByDate.mtt')
 	function doOrdersByDate(?date:Date,?place:db.Place){
+
+		if(!app.user.canManageAllContracts())  throw Error('/',"Accès interdit");
+
 		if (date == null) {
 		
 			var f = new sugoi.form.Form("listBydate", null, sugoi.form.Form.FormMethod.GET);

@@ -65,6 +65,8 @@
 		::end::
 
 		<a href="/contractAdmin?old=1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-folder-close"></span> Anciens catalogues</a>
+
+		::if user.canManageAllContracts():: 
 		<div class="dropdown" style="display:inline-block;">
 		  <button class="btn btn-default btn-sm dropdown-toggle btn-noAntiDoubleClick" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 			<i class="icon icon-list"></i> ::_("Global orders view")::
@@ -75,6 +77,7 @@
 			<li><a href="/contractAdmin/ordersByTimeFrame">::_("Timeframe")::</a></li>			
 		  </ul>
 		</div>
+		::end::
 		
 	</div>
 	
