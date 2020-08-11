@@ -466,7 +466,10 @@ class SubscriptionService
 		}
 		
 		App.current.event( MakeOrder( orders ) );
-		service.PaymentService.onOrderConfirm( orders );
+
+		if(subscription.catalog.group.hasPayments()){
+			service.PaymentService.onOrderConfirm( orders );
+		}
 
 		return orders;
 		

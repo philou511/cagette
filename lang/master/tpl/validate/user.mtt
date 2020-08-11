@@ -123,7 +123,7 @@
 						::end::
 						<td>
 							::if(tt.pending)::
-								::if(tt._data.type != "onthespot")::
+								::if(tt.getPaymentData().type != "onthespot")::
 									<p>
 										<a href="/validate/::md.id::/::member.id::/validateOp/::tt.id::?token=::token::" class="btn btn-primary btn-sm">
 											<i class="icon icon-check"></i>
