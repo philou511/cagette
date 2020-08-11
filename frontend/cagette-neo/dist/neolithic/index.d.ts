@@ -3,7 +3,7 @@ import { UserDistribSlotsSelectorViewProps } from './views/UserDistribSlotsSelec
 import { DistribSlotsResolverProps } from './views/DistribSlotsResolver';
 import { PlaceDialogViewProps } from './views/PlaceDialogView';
 import { PlaceViewProps } from './views/PlaceView';
-import { MangopayModuleProps } from '../modules/Mangopay/MangopayModule';
+import { MangopayConfigProps } from '../modules/Mangopay/MangopayConfig';
 export default class NeolithicViewsGenerator {
     static setApiUrl(url: string): void;
     static setGraphUrl(url: string): void;
@@ -12,5 +12,5 @@ export default class NeolithicViewsGenerator {
     static distribSlotsResolver(elementId: string, props: DistribSlotsResolverProps): void;
     static placeDialog(elementId: string, props: Omit<PlaceDialogViewProps, 'onClose'>): void;
     static place(elementId: string, props: PlaceViewProps): void;
-    static mangopayModule(elementId: string, props: MangopayModuleProps): void;
+    static mangopayModule(elementId: string, props: MangopayConfigProps): void;
 }

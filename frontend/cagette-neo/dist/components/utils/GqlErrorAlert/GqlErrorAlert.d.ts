@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { ApolloError } from 'apollo-boost';
+import { ApolloError } from '@apollo/client/core';
 interface Props {
     error?: ApolloError;
 }
