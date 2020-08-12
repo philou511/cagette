@@ -384,12 +384,18 @@ class AmapAdmin extends Controller
 		form.addElement( new form.CagetteDatePicker("endDate","Date de fin", to.getDate() ) );
 		
 		if(form.isValid()){
-
+			app.setTemplate('amapadmin/stats.mtt');
 			var startDate : Date = form.getValueOf("startDate");
 			var endDate : Date = form.getValueOf("endDate");
-			endDate = endDate.setHourMinute(23,59);
+			
+			var s = new service.GroupStatsService(app.getCurrentGroup(),startDate,endDate);
+			view.from = startDate;
+			view.to = endDate;
+			view.baskets = s.getBasketNumber();
+			view.sales = s.getSalesAmount();
+			view.memberships = s.getMembershipNumber();
+			view.membershipsAmount = s.getMembershipAmount();
 
-			//
 		}
 
 		view.form = form;

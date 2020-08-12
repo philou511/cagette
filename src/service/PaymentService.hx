@@ -176,10 +176,6 @@ class PaymentService
 	}
 	
 	
-
-
-	
-	
 	/**
 	 * when updating a (varying) order , we need to update the existing pending transaction
 	 */

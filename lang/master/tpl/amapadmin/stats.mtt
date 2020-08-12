@@ -1,0 +1,44 @@
+::use 'amapadmin/design.mtt'::
+
+    <h3>Statistiques</h3>		
+    <h4>Du ::hDate(from):: ::hDate(to)::</h4>
+	
+	<table class="table table-bordered">
+        <thead>
+            <tr class="darkhead">
+                <th colspan="2">Ventes</th>                
+            </tr>
+        </thead>
+
+        <tbody>
+        <tr>            
+            <td class="col-md-6">Nbre de paniers</td>
+            <td class="col-md-6">::baskets::</td>
+        </tr>
+        <tr>
+            <td class="col-md-6">C.A total</td>
+            <td class="col-md-6">::formatNum(sales):: ::currency()::</td>
+        </tr>      
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr class="darkhead">
+                <th colspan="2">Adhésions</th>                
+            </tr>
+        </thead>
+
+        <tbody>        
+        <tr>
+            <td class="col-md-6">Nbre d'adhésions faites sur cette période</td>
+            <td class="col-md-6">::memberships::</td>
+        </tr>
+        <tr>
+            <td class="col-md-6">Montant des adhésions faites sur cette période</td>
+            <td class="col-md-6">::formatNum(membershipsAmount):: ::currency()::</td>
+        </tr> 
+        </tbody>
+    </table>
+
+::end::
