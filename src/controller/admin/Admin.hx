@@ -1,4 +1,5 @@
 package controller.admin;
+import hosted.db.Hosting;
 import tools.Timeframe;
 import service.GraphService;
 import db.Catalog;
@@ -136,7 +137,6 @@ class Admin extends Controller {
 			month = now.getMonth();
 		}
 		
-
 		if(key==null) {
 			//display graphs index						
 			return;
@@ -144,33 +144,6 @@ class Admin extends Controller {
 
 		var from = new Date(year,month,1,0,0,0);
 		var to = new Date(year,month+1,0,23,59,59);
-
-
-		/*if(app.params.exists("recompute")){
-
-			switch(key){
-				case "basket":
-					for( d in 1...to.getDate()){
-						var _from = new Date(year,month,d,0,0,0);
-						var _to = new Date(year,month,d,23,59,59);
-						var value = service.GraphService.baskets(_from,_to);
-						var g = db.Graph.record(key,value, _from );
-
-					}
-				case "turnover":
-					for( d in 1...to.getDate()){
-						var _from = new Date(year,month,d,0,0,0);
-						var _to = new Date(year,month,d,23,59,59);
-						var baskets = db.Basket.manager.search($cdate>=_from && $cdate<=_to);
-						var value = 0.0;
-						for( b in baskets){
-							value += b.getOrdersTotal();
-						}
-						var g = db.Graph.record(key , Math.round(value) , _from );
-						
-					}
-			}
-		}*/
 
 		var data = GraphService.getRange(key,from,to);
 		
@@ -191,8 +164,42 @@ class Admin extends Controller {
 		view.month = month;
 		view.from = from;
 		view.to = to;
+	}
 
+	@tpl("admin/stats.mtt")
+	function doStats(?month:Int,?year:Int){
+		var now = Date.now();
+		if(month==null){
+			
+			year = now.getFullYear();
+			month = now.getMonth();
+		}
+		var from = new Date(year,month,1,0,0,0);
+		var to = new Date(year,month+1,0,23,59,59);
+		view.year = year;
+		view.month = month;
+		view.from = from;
+		view.to = to;
 
+		view.newVendors = db.Vendor.manager.count($cdate >= from && $cdate < to);
+		view.activeVendors = sys.db.Manager.cnx.request("SELECT count(v.id) FROM Vendor v, VendorStats vs where vs.vendorId=v.id and vs.active=1").getIntResult(0);
+
+		view.activeVendorsByType = sys.db.Manager.cnx.request('SELECT count(v.id) as count, vs.type
+		FROM Vendor v, VendorStats vs 
+		WHERE vs.vendorId=v.id AND active=1
+		group by vs.type
+		order by type').results();
+
+		view.newVendorsByType = sys.db.Manager.cnx.request('SELECT count(v.id) as count, vs.type
+		FROM Vendor v, VendorStats vs 
+		WHERE vs.vendorId=v.id AND cdate > "${from.toString()}" and cdate <= "${to.toString()}"
+		group by vs.type
+		order by type').results();
+
+		view.activeGroups = Hosting.manager.count($active);
+		view.activeUsers = sys.db.Manager.cnx.request('SELECT sum(h.membersNum) FROM `Group` g, Hosting h where g.id=h.id and h.active=1').getIntResult(0);
+		view.newUsers = sys.db.Manager.cnx.request('SELECT count(id) FROM `User` where cdate > "${from.toString()}" and cdate <= "${to.toString()}"').getIntResult(0);
+		view.newGroups = db.Group.manager.count($cdate >= from && $cdate < to);
 	}
 
 	@tpl("admin/default.mtt")
