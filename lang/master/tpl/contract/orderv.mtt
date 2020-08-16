@@ -8,18 +8,7 @@
 
 		<p>
 			::if isUserOrderAvailable::
-				::if isCSACatalog::
-					::if unvalidatedSubscription==null && subscriptions.length>0::				
-						Votre souscription a été validée, vous ne pouvez plus la modifier.
-					::elseif(subscriptions.length==0)::
-						Si vous souhaitez souscrire à ce contrat, saisissez votre commande sur cette page.
-					::else::
-						Tant que votre souscription n'a pas encore été validée, vous pouvez revenir sur cette page et modifier votre commande. 				
-						::_("Tip: to remove an order please key-in the quantity 0")::				
-					::end::
-				::else::
-					Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
-				::end::
+				Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
 			::else::
 				Les commandes sont fermées pour ce contrat.
 			::end::
@@ -136,13 +125,7 @@
 									::end::
 									
 									::if canOrder::							
-										::if isCSACatalog::
-											<!-- CSA catalog -->							
-											<input type="text" class="form-control" name="::"d-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-										::else::
-											<!-- Variable -->
-											<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-										::end::
+										<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
 									::else::
 										::q::
 									::end::
@@ -196,7 +179,7 @@
 
 			::if absencesDistribDates.length != 0 && (subscriptions == null || subscriptions.length == 0)::
 			
-				<h5>Prochaines dates des distributions pendant la période des absences :</h5>
+				<h5>Dates des distributions pendant la période des absences :</h5>
 				
 				::foreach date absencesDistribDates::
 					<div style="width: 185px; float:left;">
@@ -267,7 +250,7 @@
 					</tr>
 					<tr class="greyhead text-center">
 						<th class="text-center col-md-7" colspan="2" >Ma commande par défaut</th>
-						<th class="text-center col-md-5" colspan="3" >Mes absences</th>
+						<th class="text-center col-md-5" colspan="3" >Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
 					</tr>
 					<tr style="text-align: center;">
 						<td colspan="2">
@@ -291,7 +274,7 @@
 								::end::
 							</div>
 							<div style="float: left; padding-top: 20px;" ::cond canAbsencesBeEdited::>
-								$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::)
+								$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::?returnUrl=/contract/order/::catalog.id::)
 							</div>
 						</td>
 					</tr>

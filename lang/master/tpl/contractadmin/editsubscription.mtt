@@ -136,7 +136,9 @@
 				
 				<hr/>
 
-				::if edit ::
+				::if edit && subscription.isValidated::
+
+					::set absencesNb = subscription.getAbsencesNb()::
 
 					<div class="form-group">
 
@@ -144,12 +146,12 @@
 							Absences du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate)::
 						</label>
 						<div class="col-sm-2" style="padding-top: 7px;">
-							::subscription.absencesNb::
+							::absencesNb::
 						</div>
 
 					</div>
 
-					<div class="form-group" ::cond subscription.absencesNb != 0 ::>
+					<div class="form-group" ::cond absencesNb != 0::>
 
 						<label class="col-sm-3 control-label" for="datesabs" id="datesabsLabel">
 							Dates des absences
@@ -158,10 +160,10 @@
 
 							::set absentDistribIds = subscription.getAbsentDistribIds()::
 							::if canAbsencesBeEdited::
-								::foreach i loopList(0, subscription.absencesNb)::
+								::foreach i loopList(0, absencesNb)::
 									<select name="absence::i::" id="absence::i::" class="form-control" style="width: 300px;display: inherit;">
 									::foreach distribIdDate absencesDistribs::
-										<option value="::distribIdDate.value::" ::attr selected if( distribIdDate.value == absentDistribIds[i] ) '1' :: >::distribIdDate.label::</option>
+										<option value="::distribIdDate.value::" ::attr selected if( absentDistribIds != null && distribIdDate.value == absentDistribIds[i] ) '1' :: >::distribIdDate.label::</option>
 									::end::
 									</select>
 								::end::
@@ -191,7 +193,7 @@
 									::else::
 										::set label = "distribution"::
 									::end::
-									<option value="::i::">::i:: ::label::</option>
+									<option value="::i::" ::attr selected if( subscription != null && i == subscription.getAbsencesNb() ) '1':: >::i:: ::label::</option>
 								::end::
 							</select>
 
@@ -199,7 +201,7 @@
 
 					</div>
 
-					<h5>Prochaines dates des distributions pendant la période des absences :</h5>
+					<h5>Dates des distributions pendant la période des absences :</h5>
 
 					<div style="text-align: center;">
 

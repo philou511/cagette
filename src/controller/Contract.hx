@@ -2,8 +2,8 @@ package controller;
 import sugoi.Web;
 import tink.core.Error;
 import service.VendorService;
-import tools.DateTool;
 import service.SubscriptionService;
+import tools.DateTool;
 import db.MultiDistrib;
 import db.Catalog;
 import db.UserOrder;
@@ -43,7 +43,7 @@ class Contract extends Controller
 		view.catalog = catalog;
 	
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
-		view.hasUserValidatedSubscription = app.user==null ? false : service.SubscriptionService.hasUserValidatedSubscription( app.user, catalog );
+		view.hasUserValidatedSubscription = app.user==null ? false : SubscriptionService.hasUserValidatedSubscription( app.user, catalog );
 	}
 	
 	/**
@@ -133,7 +133,7 @@ class Contract extends Controller
 		var form = form.CagetteForm.fromSpod( catalog, customMap );
 		if ( app.user.getGroup().hasShopMode() ) {
 
-			form.removeElement(form.getElement("orderPreparationHours"));
+			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
 			form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));
@@ -170,11 +170,29 @@ class Contract extends Controller
 
 			form.toSpod( catalog );
 			catalog.group = app.user.getGroup();
+
 			if( !app.user.getGroup().hasShopMode() ) {
 
+				var absentDistribsMaxNb = form.getElement("absentDistribsMaxNb").value;
+				var absencesStartDate = form.getElement("absencesStartDate").value;
+				var absencesEndDate = form.getElement("absencesEndDate").value;
+
+				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
+
+					throw Error( '/contract/insert/' + vendor.id, 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner une période d\'absences.' );
+				}
+
 				catalog.type = form.getValueOf("catalogtype");
-				//catalog.requiresOrdering = form.getValueOf( "requiresordering" );
-				// catalog.type = form.getValueOf("csa")==true ? db.Catalog.TYPE_CONSTORDERS : db.Catalog.TYPE_VARORDER;
+				
+				if( absencesStartDate != null ) {
+
+					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+				}
+				 
+				if( absencesEndDate != null ) {
+
+					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+				}
 			}
 			else {
 
@@ -231,7 +249,7 @@ class Contract extends Controller
 
 		 if ( app.user.getGroup().hasShopMode() ) {
 
-			form.removeElement(form.getElement("orderPreparationHours"));
+			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
 			form.removeElement(form.getElement("requiresOrdering"));
 			form.removeElement(form.getElement("distribMinOrdersTotal"));
 			form.removeElement(form.getElement("catalogMinOrdersTotal"));
@@ -259,7 +277,38 @@ class Contract extends Controller
 		 if ( form.checkToken() ) {
 			 form.toSpod( catalog );
 			 catalog.group = group;
-			 
+
+			 if ( !app.user.getGroup().hasShopMode() ) {
+
+			 	var absencesStartDate = form.getElement("absencesStartDate").value;
+				var absencesEndDate = form.getElement("absencesEndDate").value;
+				var absencesDistribsNb = SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
+				var absentDistribsMaxNb = form.getElement("absentDistribsMaxNb").value;
+				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absentDistribsMaxNb > absencesDistribsNb || absencesDistribsNb == null ) ) {
+
+					if ( absencesDistribsNb != null ) {
+
+						throw Error( '/contract/edit/' + catalog.id, 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+						Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
+					}
+					else {
+
+						throw Error( '/contract/edit/' + catalog.id, 'Ce catalogue ne participe à aucune distribution. Veuillez en rajouter pour pouvoir
+						définir les champs liés aux absences.' );
+					}
+				}
+
+				if( absencesStartDate != null ) {
+
+					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+				}
+				 
+				if( absencesEndDate != null ) {
+
+					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+				}
+			 	
+			 }
 			 //checks & warnings
 			 if ( catalog.hasPercentageOnOrders() && catalog.percentageValue==null ) {
 
@@ -372,28 +421,23 @@ class Contract extends Controller
 		var unvalidatedSubscription = subscriptions.find(s -> return !s.isValidated);
 		view.subscriptions = subscriptions;		
 		view.subscriptionService = SubscriptionService;
-		view.unvalidatedSubscription = unvalidatedSubscription;
 		view.isUserOrderAvailable = isUserOrderAvailable;		
 		view.catalog = catalog;
-		view.isCSACatalog = catalog.type == db.Catalog.TYPE_CONSTORDERS;
 		view.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
-		var subscription = service.SubscriptionService.getUserSubscription( app.user, catalog );
-		view.absencesDistribDates = Lambda.array( Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) ) );
+		var comingDistribSubscription = SubscriptionService.getComingDistribSubscription( app.user, catalog );
+		view.comingDistribSubscription = comingDistribSubscription;
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog, comingDistribSubscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
 
-		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-			true;
-		}else{
-			if(subscriptions.length==0){
-				//has no sub
+		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
+		else {
+
+			if( comingDistribSubscription == null || !comingDistribSubscription.isValidated ) {
+				
 				isUserOrderAvailable;
-			}else{
-				if(unvalidatedSubscription!=null){
-					//has an unvalidated sub
-					isUserOrderAvailable;
-				}else{
-					//has subs, but all are validated
-					false;
-				}
+			}
+			else {
+				
+				false;
 			}
 		}
 		
@@ -401,7 +445,7 @@ class Contract extends Controller
 		var distributions = [];
 		// If its a varying contract, we display a column by distribution
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-			distributions = db.Distribution.getOpenDistribs( catalog, subscription );
+			distributions = db.Distribution.getOpenDistribs( catalog, comingDistribSubscription );
 		}else{
 			distributions = [null];
 		}
@@ -432,8 +476,8 @@ class Contract extends Controller
 
 				var orderProduct = { order : null, product : product };
 				//var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
-				if ( subscription != null ) {
-					var subscriptionOrders = service.SubscriptionService.getSubscriptionOrders( subscription );
+				if ( comingDistribSubscription != null ) {
+					var subscriptionOrders = SubscriptionService.getCSARecurrentOrders( comingDistribSubscription, null );
 					var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id );
 					if ( order != null ) orderProduct.order = order;
 				}
@@ -545,16 +589,17 @@ class Contract extends Controller
 
 				try {
 
-					var pendingSubscription = service.SubscriptionService.getUserSubscription( app.user, catalog, false );
+					var pendingSubscription = SubscriptionService.getComingDistribSubscription( app.user, catalog, false );
 					if ( pendingSubscription != null ) {
-
-						service.SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders,
-						[Std.parseInt(app.params.get( "absence0" )), Std.parseInt(app.params.get( "absence1" )), Std.parseInt(app.params.get( "absence2" )), Std.parseInt(app.params.get( "absence3" )) ] );
+						
+						// trace("On arrive");
+						SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						// trace("Ca marche !");
 
 					}
 					else {
 						
-						service.SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absences" ) ) );
+						SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
 				}
 				catch ( e : Dynamic ) {
@@ -574,7 +619,7 @@ class Contract extends Controller
 
 					for ( distrib in pricesQuantitiesByDistrib.keys() ) {
 
-						if ( !service.SubscriptionService.areDistribVarOrdersValid( subscription, distrib, pricesQuantitiesByDistrib[ distrib ] ) ) {
+						if ( !SubscriptionService.areDistribVarOrdersValid( comingDistribSubscription, distrib, pricesQuantitiesByDistrib[ distrib ] ) ) {
 	
 							allOrdersAreValid = false; 
 							break;
@@ -596,7 +641,7 @@ class Contract extends Controller
 
 					for ( orderToMake in varOrdersToMake ) {
 
-						varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, subscription ) );
+						varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, comingDistribSubscription ) );
 					}
 
 					//Create order operation only

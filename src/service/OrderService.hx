@@ -669,7 +669,7 @@ class OrderService
 			}
 			else {
 
-				orders = SubscriptionService.getSubscriptionOrders( subscription );
+				orders = SubscriptionService.getCSARecurrentOrders( subscription, null );
 			}
 				
 		}

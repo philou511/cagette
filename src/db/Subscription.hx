@@ -14,7 +14,7 @@ class Subscription extends Object {
 	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
 	var defaultOrders : SNull<SText>;
-	public var absencesNb : SNull<SInt>;
+	// public var absencesNb : SNull<SInt>;
 	var absentDistribIds : SNull<SText>;
 
 	public function populate() {
@@ -56,20 +56,66 @@ class Subscription extends Object {
 
 	public function setAbsentDistribIds( distribIds : Array<Int> ) {
 
-		distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
-		this.absentDistribIds = distribIds.join(',');
-	}	
+		if( distribIds != null ) {
+
+			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
+			this.absentDistribIds = distribIds.join(',');
+		}
+		else {
+
+			this.absentDistribIds = null;
+		}
+		
+	}
+
+	public function getAbsencesNb() : Int {
+
+		if ( this.absentDistribIds == null ) return 0;
+		var distribIds = this.absentDistribIds.split(',');
+		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
+
+			return this.catalog.absentDistribsMaxNb;
+		}
+
+		return distribIds.length;
+	}
 	
 	public function getAbsentDistribIds() : Array<Int> {
 
-		if ( this.absentDistribIds == null ) return [];
-		return this.absentDistribIds.split(',').map( Std.parseInt );
+		if ( this.absentDistribIds == null ) return null;
+		var distribIds : Array<Int> = this.absentDistribIds.split(',').map( Std.parseInt );
+		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
+
+			var shortenedDistribIds = new Array<Int>();
+			for ( i in 0...this.catalog.absentDistribsMaxNb ) {
+
+				shortenedDistribIds.push( distribIds[i] );
+			}
+
+			return shortenedDistribIds;
+		}
+
+		return distribIds;
 	}
 
 	public function getAbsentDistribs() : Array<db.Distribution> {
 
 		var absentDistribIds : Array<Int> = getAbsentDistribIds();
-		return absentDistribIds.map( function( distribId ) { return  db.Distribution.manager.get( distribId ); } );
+		if ( absentDistribIds == null ) return [];
+
+		var absentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
+		for ( distribId in absentDistribIds ) {
+
+			var distribution = db.Distribution.manager.get( distribId );
+			if ( distribution != null && this.catalog.absencesStartDate.toString() <= distribution.date.toString()
+				&& distribution.date.toString() <= this.catalog.absencesEndDate.toString() ) {
+
+				absentDistribs.push( distribution );
+			}
+			
+		}
+
+		return absentDistribs;
 	}
 
 	override public function toString(){

@@ -334,9 +334,9 @@ class DistributionService
 		md.deleteProductsExcerpt();
 
 		var orderEndDate = md.orderEndDate;
-		if ( !catalog.group.hasShopMode() && catalog.orderPreparationHours != null && catalog.orderPreparationHours != 0 ) {
+		if ( !catalog.group.hasShopMode() && catalog.orderEndHoursBeforeDistrib != null && catalog.orderEndHoursBeforeDistrib != 0 ) {
 
-			orderEndDate = DateTools.delta( md.distribStartDate, -(1000 * 60 * 60 * catalog.orderPreparationHours));
+			orderEndDate = DateTools.delta( md.distribStartDate, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib));
 		}
 		
 		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, md.orderStartDate, orderEndDate, null, true, md );

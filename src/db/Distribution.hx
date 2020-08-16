@@ -298,7 +298,8 @@ class Distribution extends Object
      */
     public static function getOpenDistribs( catalog : db.Catalog, ?subscription : db.Subscription = null ) {
 
-		var distribs = Lambda.array( manager.search( $catalog == catalog && $orderStartDate <= Date.now() && $orderEndDate > Date.now(), { orderBy : date }, false ) );
+		var now = Date.now();
+		var distribs = Lambda.array( manager.search( $catalog == catalog && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ) );
 		if ( subscription != null ) {
 
 			var absentDistribIds = subscription.getAbsentDistribIds();

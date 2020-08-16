@@ -114,7 +114,7 @@
 				::set subscriptions = subscriptionsByCatalog.get(catalog)::
 				::set hasAbsences = false::
 				::foreach subscription subscriptions::
-					::if subscription.absencesNb != null && subscription.absencesNb != 0 ::
+					::if subscription.getAbsencesNb() != 0 ::
 						::set hasAbsences = true::
 					::end::
 				::end::
@@ -158,13 +158,14 @@
 								du ::sDate(subscription.startDate)::<br/>
 								au ::sDate(subscription.endDate)::
 							</td>
-							::if subscription.absencesNb != null && subscription.absencesNb != 0 ::
+							::set absencesNb = subscription.getAbsencesNb()::
+							::if absencesNb != 0 ::
 								<td style="vertical-align: middle;">
-									::subscriptionService.getSubscriptionDistribsNb(subscription, null) + subscription.absencesNb::
+									::subscriptionService.getSubscriptionDistribsNb(subscription, null) + absencesNb::
 								</td>
 								<td style="vertical-align: middle;">
-									<a href="/subscriptions/absences/::subscription.id::" style="font-weight:bold;color:rgb(0, 206, 4);">
-										::subscription.absencesNb::
+									<a href="/subscriptions/absences/::subscription.id::?returnUrl=/member/view/::member.id::" style="font-weight:bold;color:rgb(0, 206, 4);">
+										::absencesNb::
 									</a>
 								</td>
 							::end::
