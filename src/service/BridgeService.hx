@@ -2,7 +2,7 @@ package service;
 
 class BridgeService {
 	public static function call(uri: String) {
-		var baseUrl = App.config.get("cagette_api") + "/bridge";
+		var baseUrl = App.config.get("cagette_bridge_api") + "/bridge";
         var headers = [
 			"Authorization" => "Bearer " + App.config.get("key"),
 			"Content-type" 	=> "application/json;charset=utf-8",
