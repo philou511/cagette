@@ -84,6 +84,7 @@ class Group extends Object
 	
 	//payments
 	@hideInForms public var allowedPaymentsType:SNull<SData<Array<String>>>;
+	@hideInForms public var allowedPaymentsType2:SNull<SText>;
 	@hideInForms public var checkOrder:SNull<SString<64>>;
 	@hideInForms public var IBAN:SNull<SString<40>>;
 	@hideInForms public var allowMoneyPotWithNegativeBalance:SNull<SBool>;
@@ -495,5 +496,14 @@ class Group extends Object
 			"contact" 		=> t._("Main contact"),
 			"legalRepresentative" => t._("Legal representative")			
 		];
+	}
+
+	override function update() {
+		sync();
+		super.update();
+	}
+
+	public function sync() {
+		this.allowedPaymentsType2 = this.allowedPaymentsType != null ? haxe.Json.stringify(this.allowedPaymentsType) : null;
 	}
 }
