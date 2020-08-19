@@ -305,9 +305,11 @@ class PaymentService {
 		var url = switch (context) {
 			case PCAll: "/payments/getPaymentTypes?context=PCAll";
 			case PCGroupAdmin: "/payments/getPaymentTypes?context=PCGroupAdmin";
-			case PCPayment: "/payments/getPaymentTypes?context=PCPayment&groupId=" + group.id;
+			case PCPayment: "/payments/getPaymentTypes?context=PCPayment";
 			case PCManualEntry: "/payments/getPaymentTypes?context=PCManualEntry";
 		}
+		url += "&groupId=" + (group == null ?  App.current.getCurrentGroup().id : group.id);
+
 		var res:Array<{id:String}> = service.BridgeService.call(url);
 		var out:Array<payment.PaymentType> = [];
 		for (p in res) {
