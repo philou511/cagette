@@ -52,7 +52,7 @@ class Account extends Controller
 		var inOneMonth = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 30);
 		
 		//constant orders
-		view.subscriptionsByCatalog = SubscriptionService.getUserActiveSubscriptionsByCatalog(app.user, group );
+		view.subscriptionsByCatalog = SubscriptionService.getActiveSubscriptionsByCatalog( app.user, group );
 		view.subscriptionService = SubscriptionService;
 				
 		//variable orders, grouped by date

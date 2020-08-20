@@ -161,7 +161,7 @@
 							::set absencesNb = subscription.getAbsencesNb()::
 							::if absencesNb != 0 ::
 								<td style="vertical-align: middle;">
-									::subscriptionService.getSubscriptionDistribsNb(subscription, null) + absencesNb::
+									::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
 								</td>
 								<td style="vertical-align: middle;">
 									<a href="/subscriptions/absences/::subscription.id::?returnUrl=/member/view/::member.id::" style="font-weight:bold;color:rgb(0, 206, 4);">
@@ -170,7 +170,7 @@
 								</td>
 							::end::
 							<td style="vertical-align: middle;">
-								::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
+								::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 							</td>
 							<td style="vertical-align: middle;">
 								::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::

@@ -114,16 +114,6 @@
 		<p>
 			::_("No planned distributions.")::
 		</p>
-		::else::
-			<!--
-				<p ::cond !hasUserValidatedSubscription && !user.getGroup().hasShopMode():: class="text-center">
-					<a href="/contract/order/::catalog.id::" class="btn btn-primary"><i class="icon icon-chevron-right"></i> ::_("Order")::</a>	
-				</p>
-				<p ::cond hasUserValidatedSubscription:: class="text-center">
-					<br />
-					Votre souscription à ce contrat a déjà été validée. Vous ne pouvez plus la modifier.
-				</p>
-			-->
 		::end::
 	</div>
 	

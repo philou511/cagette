@@ -7,7 +7,7 @@
 		<h2>::catalog.name::</h2>
 
 		<p>
-			::if isUserOrderAvailable::
+			::if catalog.isUserOrderAvailable()::
 				Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
 			::else::
 				Les commandes sont fermées pour ce contrat.
@@ -63,7 +63,7 @@
 					</div>
 						
 					::if userOrders.length>0::	
-						::foreach uo userOrders[0].data::
+						::foreach uo userOrders[0].ordersProducts::
 
 						<div class="cell sized">
 
@@ -90,7 +90,7 @@
 					
 					<div class="hcell sized">Total</div>
 
-					<div class="hcell sized" ::cond catalog.absencesStartDate != null && ( subscriptions == null || subscriptions.length == 0 )::>
+					<div class="hcell sized" ::cond subscriptionService.canAbsencesNbBeEdited( catalog, comingDistribSubscription )::>
 						Pour la période du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate):: je vais manquer
 					</div>
 				
@@ -111,13 +111,13 @@
 							
 						::if userOrders.length>0::	
 						
-							::foreach uo userOrders[0].data::
+							::foreach uo userOrders[0].ordersProducts::
 							<tr>
 												
 								::set i = repeat.uo.index::
 								::foreach d userOrders::
 								<td>
-									::set o = d.data[i]::
+									::set o = d.ordersProducts[i]::
 									::if o.order==null::
 										::set q = ""::
 									::else::
@@ -147,7 +147,7 @@
 							::foreach d userOrders::
 								<th>
 								::set total=0::
-								::foreach o d.data::
+								::foreach o d.ordersProducts::
 									::if o.order!=null::
 										::set q = o.order.quantity::
 										::set price = o.product.price + o.product._catalog.computeFees(o.product.price)::
@@ -158,17 +158,21 @@
 								</th>
 							::end::
 						</tr>
-						<tr ::cond (catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0) && (subscriptions == null || subscriptions.length == 0)::>
+						<tr ::cond subscriptionService.canAbsencesNbBeEdited( catalog, comingDistribSubscription )::>
 							<td colspan="::userOrders.length::" class="text-left">
-								<select name="absencesNb" id="absencesNb" class="form-control" style="width: 150px;">
+								<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
 									::set label = ""::
+									::set selectedId = 0::
+									::if comingDistribSubscription != null::
+										::set selectedId = comingDistribSubscription.getAbsencesNb()::
+									::end::
 									::foreach i loopList(0, catalog.absentDistribsMaxNb + 1)::
 										::if i > 1::
 											::set label = "distributions"::
 										::else::
 											::set label = "distribution"::
 										::end::
-										<option value="::i::">::i:: ::label::</option>
+										<option value="::i::" ::attr selected if( i == selectedId ) '1' ::>::i:: ::label::</option>
 									::end::
 								</select>
 							</td>
@@ -177,7 +181,7 @@
 				</div>
 			</div>
 
-			::if absencesDistribDates.length != 0 && (subscriptions == null || subscriptions.length == 0)::
+			::if subscriptionService.canAbsencesNbBeEdited( catalog, comingDistribSubscription )::
 			
 				<h5>Dates des distributions pendant la période des absences :</h5>
 				
@@ -192,9 +196,7 @@
 			::end::
 
 			<p class="text-right">
-				::if canOrder::
-					<input type="submit" class="btn btn-lg btn-primary" value="Enregistrer ma commande" name="submit" id="submit" />		
-				::end::
+				<input type="submit" class="btn btn-lg btn-primary" value="Enregistrer ma commande" name="submit" id="submit" />
 				
 			</p>
 					
@@ -205,27 +207,32 @@
 	<!--Subscription-->
 	<div class="article">
 		
-		::if(subscriptions==null || subscriptions.length==0)::
+		::if comingDistribSubscription == null::
 			<p class="text-center">
 				Si vous souscrivez à ce contrat,
 				vous vous engagerez pour la période<br/>
-				du <b>::dDate(now()):: au ::dDate(catalog.endDate)::</b><br/>
+				du <b>::dDate( subscriptionService.getFirstOpenDayForSubscription(catalog) ):: au ::dDate(catalog.endDate)::</b><br/>
 				soit <b>::distribs.length::</b> distributions.
 			</p>
 		::else::
 			
-			<h4>Ma souscription</h4>
+			<h4 ::cond subscriptions.length == 1::>Ma souscription</h4>
+			<h4 ::cond subscriptions.length > 1::>Mes souscriptions</h4>
 
-			<table class="table table-condensed table-bordered">
-				<tr class="greyhead">
-					<th class="text-center col-md-4">Engagement</th>
-					<th class="text-center col-md-1">Période d'engagement</th>
-					<th class="text-center col-md-1">Nombre de distributions</th>
-					<th class="text-center col-md-1">Total</th>
-					<th class="text-center col-md-1">Payé</th>
-				</tr>
-				::foreach subscription subscriptions::
-					::set label = subscriptionService.getDescription(subscription)::					
+			::foreach subscription subscriptions::
+
+				::set absencesNb = subscription.getAbsencesNb()::
+				<table class="table table-condensed table-bordered">
+					
+					<tr class="greyhead">
+						<th class="text-center col-md-4">Engagement</th>
+						<th class="text-center col-md-1">Période d'engagement</th>
+						<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre max de distributions</th>
+						<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
+						<th class="text-center col-md-1">Nombre de distributions</th>
+						<th class="text-center col-md-1">Total</th>
+					</tr>
+					::set label = subscriptionService.getDescription(subscription)::
 					<tr style="text-align: center;">
 						<td style="vertical-align: middle;">
 							::if label != null:
@@ -238,30 +245,33 @@
 							du ::sDate(subscription.startDate)::<br/>
 							au ::sDate(subscription.endDate)::
 						</td>
+						<td style="vertical-align: middle;" ::cond absencesNb != 0::>
+							::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
+						</td>
+						<td style="vertical-align: middle;" ::cond absencesNb != 0::>
+							::absencesNb::
+						</td>
 						<td style="vertical-align: middle;">
-							::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
+							::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 						</td>
 						<td style="vertical-align: middle;">
 							::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
 						</td>
-						<td style="vertical-align: middle;">
-							$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-						</td>
 					</tr>
 					<tr class="greyhead text-center">
-						<th class="text-center col-md-7" colspan="2" >Ma commande par défaut</th>
-						<th class="text-center col-md-5" colspan="3" >Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
+						<th class="text-center col-md-7" colspan="2" ::cond catalog.requiresOrdering::>Ma commande par défaut</th>
+						<th class="text-center col-md-5" colspan="3" ::cond catalog.hasAbsencesManagement() && absencesNb != 0::>Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
 					</tr>
 					<tr style="text-align: center;">
-						<td colspan="2">
+						<td colspan="2" ::cond catalog.requiresOrdering::>
 							<div style="width: 45%; float: left; padding-top: 10px;">
 								::raw subscription.getDefaultOrdersToString()::
 							</div>
 							<div style="width: 45%; float: left; padding-top: 20px;">
-								$$edit(::_("Edit")::,/subscriptions/absences)
+								$$edit(::_("Edit")::,/subscriptions/defaultOrders/::subscription.id::)
 							</div>
 						</td>
-						<td colspan="3" style="text-align: center;">
+						<td colspan="3" style="text-align: center;" ::cond catalog.hasAbsencesManagement() && absencesNb != 0 ::>
 							::set position = 'float: left; width: 60%;'::
 							::set canAbsencesBeEdited = subscriptionService.canAbsencesBeEdited( subscription._catalog )::
 							::if !canAbsencesBeEdited::
@@ -278,8 +288,9 @@
 							</div>
 						</td>
 					</tr>
-				::end::
-			</table>
+				</table>
+
+			::end::
 		::end::
 	</div>
 

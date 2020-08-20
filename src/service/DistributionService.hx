@@ -338,7 +338,7 @@ class DistributionService
 
 			orderEndDate = DateTools.delta( md.distribStartDate, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib));
 		}
-		
+
 		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, md.orderStartDate, orderEndDate, null, true, md );
 
 	}

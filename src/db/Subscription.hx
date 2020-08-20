@@ -14,7 +14,6 @@ class Subscription extends Object {
 	@hideInForms public var isValidated : SBool;
 	@hideInForms public var isPaid : SBool;
 	var defaultOrders : SNull<SText>;
-	// public var absencesNb : SNull<SInt>;
 	var absentDistribIds : SNull<SText>;
 
 	public function populate() {
@@ -22,14 +21,14 @@ class Subscription extends Object {
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 
-	public function setDefaultOrders( ordersData : Array< { productId : Int, quantity : Float } > ) {
+	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {
 
-		this.defaultOrders = haxe.Json.stringify( ordersData );
+		this.defaultOrders = haxe.Json.stringify( defaultOrders );
 	}	
 	
 	public function getDefaultOrders( ?productId : Int ) : Array< { productId : Int, quantity : Float } > {
 
-		if ( this.defaultOrders == null ) return null;
+		if ( this.defaultOrders == null ) return [];
 		
 		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
 		if ( productId != null ) {
@@ -46,10 +45,19 @@ class Subscription extends Object {
 		
 		var label : String = '';
 		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
+		var totalPrice = 0.0;
 		for ( order in defaultOrders ) {
 
-			label += tools.FloatTool.clean( order.quantity ) + ' x ' + db.Product.manager.get( order.productId ).name + '<br />';
+			var product = db.Product.manager.get( order.productId );
+			if ( product != null && order.quantity != 0 ) {
+
+				label += tools.FloatTool.clean( order.quantity ) + ' x ' + product.name + '<br />';
+				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
+			}
+			
 		}
+
+		label += 'Total : ' + Formatting.roundTo( totalPrice, 2 ) + ' €';
 
 		return label;
 	}
@@ -82,7 +90,7 @@ class Subscription extends Object {
 	
 	public function getAbsentDistribIds() : Array<Int> {
 
-		if ( this.absentDistribIds == null ) return null;
+		if ( this.absentDistribIds == null ) return [];
 		var distribIds : Array<Int> = this.absentDistribIds.split(',').map( Std.parseInt );
 		if ( this.catalog.absentDistribsMaxNb < distribIds.length ) {
 

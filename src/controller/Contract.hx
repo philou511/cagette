@@ -43,7 +43,6 @@ class Contract extends Controller
 		view.catalog = catalog;
 	
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
-		view.hasUserValidatedSubscription = app.user==null ? false : SubscriptionService.hasUserValidatedSubscription( app.user, catalog );
 	}
 	
 	/**
@@ -151,7 +150,6 @@ class Contract extends Controller
 				form.removeElement(form.getElement("distribMinOrdersTotal"));
 				form.removeElement(form.getElement("catalogMinOrdersTotal"));
 				form.removeElement(form.getElement("allowedOverspend"));
-				
 			}
 
 			var catalogTypes = [ { label : 'Contrat AMAP classique', value : 0 }, { label : 'Contrat AMAP variable', value : 1 } ];
@@ -165,6 +163,7 @@ class Contract extends Controller
 		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
 		form.removeElement(form.getElement("vendorId"));
 		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
+		form.getElement("orderEndHoursBeforeDistrib").value = 24;
 		
 		if ( form.checkToken() ) {
 
@@ -173,6 +172,26 @@ class Contract extends Controller
 
 			if( !app.user.getGroup().hasShopMode() ) {
 
+				catalog.type = form.getValueOf("catalogtype");
+
+				if( catalog.type == db.Catalog.TYPE_VARORDER ) {
+					
+					var distribMinOrdersTotal = form.getValueOf("distribMinOrdersTotal");
+					if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
+
+						catalog.requiresOrdering = true;
+					}
+				}
+
+				if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+					
+					var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
+					if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
+
+						throw Error( '/contract/insert/' + vendor.id, 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
+					}
+				}
+				
 				var absentDistribsMaxNb = form.getElement("absentDistribsMaxNb").value;
 				var absencesStartDate = form.getElement("absencesStartDate").value;
 				var absencesEndDate = form.getElement("absencesEndDate").value;
@@ -181,8 +200,6 @@ class Contract extends Controller
 
 					throw Error( '/contract/insert/' + vendor.id, 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner une période d\'absences.' );
 				}
-
-				catalog.type = form.getValueOf("catalogtype");
 				
 				if( absencesStartDate != null ) {
 
@@ -279,6 +296,24 @@ class Contract extends Controller
 			 catalog.group = group;
 
 			 if ( !app.user.getGroup().hasShopMode() ) {
+
+				if( catalog.type == db.Catalog.TYPE_VARORDER ) {
+					
+					var distribMinOrdersTotal = form.getValueOf("distribMinOrdersTotal");
+					if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
+
+						catalog.requiresOrdering = true;
+					}
+				}
+
+				if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+					
+					var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
+					if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
+
+						throw Error( '/contract/edit/' + catalog.id, 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
+					}
+				}
 
 			 	var absencesStartDate = form.getElement("absencesStartDate").value;
 				var absencesEndDate = form.getElement("absencesEndDate").value;
@@ -404,79 +439,52 @@ class Contract extends Controller
 	
 	function doOrder( catalog : db.Catalog ) {
 
-		if(catalog.group.hasShopMode()) throw Redirect("/contract/view/"+catalog.id);
+		if( catalog.group.hasShopMode() ) throw Redirect( '/contract/view/' + catalog.id );
 
-		//if user is not logged, need to log-in
-		if(app.user==null) throw Redirect('/user/login?__redirect=/contract/order/'+catalog.id);
+		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 
-		if(catalog.isCSACatalog()){
-			app.setTemplate("contract/orderc.mtt");
-		}else{
-			app.setTemplate("contract/orderv.mtt");
+		if( catalog.isCSACatalog() ) {
+
+			app.setTemplate( 'contract/orderc.mtt' );
 		}
-
-		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
-		var subscriptions = SubscriptionService.getUserCatalogSubscriptions(app.user,catalog);
-		var isUserOrderAvailable = catalog.isUserOrderAvailable();
-		var unvalidatedSubscription = subscriptions.find(s -> return !s.isValidated);
-		view.subscriptions = subscriptions;		
-		view.subscriptionService = SubscriptionService;
-		view.isUserOrderAvailable = isUserOrderAvailable;		
-		view.catalog = catalog;
-		view.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
-		var comingDistribSubscription = SubscriptionService.getComingDistribSubscription( app.user, catalog );
-		view.comingDistribSubscription = comingDistribSubscription;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog, comingDistribSubscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
-
-		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
 		else {
 
-			if( comingDistribSubscription == null || !comingDistribSubscription.isValidated ) {
-				
-				isUserOrderAvailable;
-			}
-			else {
-				
-				false;
-			}
+			app.setTemplate( 'contract/orderv.mtt' );
 		}
-		
 
-		var distributions = [];
-		// If its a varying contract, we display a column by distribution
-		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-			distributions = db.Distribution.getOpenDistribs( catalog, comingDistribSubscription );
-		}else{
-			distributions = [null];
-		}
-		
-		//list of distribs with a list of product and optionnaly an order
-		var userOrders = new Array< { distrib : db.Distribution, data : Array< { order : db.UserOrder, product : db.Product }> } >();
+		var comingDistribSubscription = SubscriptionService.getComingDistribSubscription( app.user, catalog );
+		var userOrders = new Array< { distrib : db.Distribution, ordersProducts : Array< { order : db.UserOrder, product : db.Product }> } >();
 		var products = catalog.getProducts();
-
+		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-			//variable catalog
-			for ( d in distributions){
+
+			var openDistributions : Array<db.Distribution> = db.Distribution.getOpenDistribs( catalog, comingDistribSubscription );
+	
+			for ( distrib in openDistributions ) {
+
 				var data = [];
-				for ( p in products) {
-					var ua = { order:null, product:p };
-					var order = db.UserOrder.manager.select($user == app.user && $productId == p.id && $distributionId==d.id, true);						
-					if (order != null) ua.order = order;
-					data.push(ua);
-				}				
-				userOrders.push( { distrib : d, data : data } );
+				for ( product in products ) {
+
+					var orderProduct = { order : null, product : product };
+					var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id && $distributionId == distrib.id, true );
+					if ( order != null ) orderProduct.order = order;
+
+					data.push( orderProduct );
+				}
+
+				userOrders.push( { distrib : distrib, ordersProducts : data } );
+
 			}
 			
-		} else {
-			//CSA catalog
+		}
+		else {
+
 			var data = [];
-			//search for an unvalidated sub
-			
-			for ( product in products) {
+			for ( product in products ) {
 
 				var orderProduct = { order : null, product : product };
-				//var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id, true );
 				if ( comingDistribSubscription != null ) {
+
 					var subscriptionOrders = SubscriptionService.getCSARecurrentOrders( comingDistribSubscription, null );
 					var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id );
 					if ( order != null ) orderProduct.order = order;
@@ -485,131 +493,137 @@ class Contract extends Controller
 				data.push( orderProduct );
 			}
 			
-			userOrders.push( { distrib : null, data : data } );
+			userOrders.push( { distrib : null, ordersProducts : data } );
 		}
 
-
-		//TODO
-
-		
-		//form check
 		if ( checkToken() ) {
 			
-			if ( !catalog.isUserOrderAvailable() ) throw Error( "/contract/order/"+catalog.id , t._("This catalog is not opened for orders") );
+			if ( !catalog.isUserOrderAvailable() ) throw Error( '/contract/order/' + catalog.id , t._("This catalog is not opened for orders") );
 			
-			//variable
+			//For variable catalogs
 			var varOrders = []; 
 			var varOrdersToEdit = [];
 			var varOrdersToMake = [];
 			var pricesQuantitiesByDistrib = new Map< db.Distribution, Array< { productQuantity : Float, productPrice : Float } > >();
-			//CSA orders
+			//For const catalogs
 			var constOrders = new Array< { productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }> (); 
 
-			for ( k in app.params.keys() ) {
+			var firstDistrib = null;
+			var varDefaultOrders = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+
+			for ( key in app.params.keys() ) {
 				
-				if ( k.substr(0, 1) != "d" ) continue;
-				var qt = app.params.get( k );
-				if ( qt == "" ) continue;
+				if ( key.substr(0, 1) != "d" ) continue;
+				var qty = app.params.get( key );
+				if ( qty == "" ) continue;
 				
 				var productId = null;
 				var distribId = null;
 				var distribution = null;
 				try {
 
-					productId = Std.parseInt(k.split("-")[1].substr(1));
-					distribId = Std.parseInt(k.split("-")[0].substr(1));
+					productId = Std.parseInt( key.split("-")[1].substr(1) );
+					distribId = Std.parseInt( key.split("-")[0].substr(1) );
 					distribution = db.Distribution.manager.get( distribId, false );
 				}
 				catch ( e:Dynamic ) {
 
-					trace("unable to parse key "+k);
+					trace( 'unable to parse key' + key );
 				}
 				
-				//find related element in userOrders
-				var uo = null;
-				for ( x in userOrders ) {
-					if (x.distrib!=null && x.distrib.id != distribId) {						
+				var orderProduct = null;
+				for ( userOrder in userOrders ) {
+
+					if ( userOrder.distrib != null && userOrder.distrib.id != distribId ) {
+
 						continue;
-					} else {
-						for ( a in x.data ){
-							if (a.product.id == productId){
-								uo = a;
+					}
+					else {
+
+						for ( x in userOrder.ordersProducts ) {
+
+							if ( x.product.id == productId ) {
+
+								orderProduct = x;
 								break;
 							}
 						}
 					}
 				}
 				
-				if (uo == null) throw t._("Could not find the product ::product:: and delivery ::delivery::", { product : productId, delivery : distribId });
+				if ( orderProduct == null ) throw t._( "Could not find the product ::product:: and delivery ::delivery::", { product : productId, delivery : distribId } );
 				
 				var quantity = 0.0;
 				
-				if ( uo.product.hasFloatQt ) {
-					var param = StringTools.replace(qt, ",", ".");
-					quantity = Std.parseFloat(param);
-				}else {
-					quantity = Std.parseInt(qt);
+				if ( orderProduct.product.hasFloatQt ) {
+
+					var param = StringTools.replace( qty, ",", "." );
+					quantity = Std.parseFloat( param );
+
+				}
+				else {
+
+					quantity = Std.parseInt( qty );
 				}
 				
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 				
-					if ( uo.order != null ) {
+					if ( orderProduct.order != null ) {
 
-						// varOrders.push( OrderService.edit(uo.order, quantity));
-						varOrdersToEdit.push( { order : uo.order, quantity : quantity });
-						if ( pricesQuantitiesByDistrib[uo.order.distribution] == null ) {
+						varOrdersToEdit.push( { order : orderProduct.order, quantity : quantity } );
+						if ( pricesQuantitiesByDistrib[orderProduct.order.distribution] == null ) {
 	
-							pricesQuantitiesByDistrib[uo.order.distribution] = [];
+							pricesQuantitiesByDistrib[orderProduct.order.distribution] = [];
 						}
-						pricesQuantitiesByDistrib[uo.order.distribution].push( { productQuantity : quantity, productPrice : uo.order.productPrice } );
+						pricesQuantitiesByDistrib[orderProduct.order.distribution].push( { productQuantity : quantity, productPrice : orderProduct.order.productPrice } );
 					}
 					else {
 
-						// varOrders.push( OrderService.make(app.user, quantity, uo.product, distribId));
-						varOrdersToMake.push( { distribId : distribId, product : uo.product, quantity : quantity } );
+						varOrdersToMake.push( { distribId : distribId, product : orderProduct.product, quantity : quantity } );
 						if ( pricesQuantitiesByDistrib[distribution] == null ) {
 	
 							pricesQuantitiesByDistrib[distribution] = [];
 						}
-						pricesQuantitiesByDistrib[distribution].push( { productQuantity : quantity, productPrice : uo.product.price } );
+						pricesQuantitiesByDistrib[distribution].push( { productQuantity : quantity, productPrice : orderProduct.product.price } );
 					}
-				} else {
-					constOrders.push( { productId : uo.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
+
+					if ( catalog.requiresOrdering ) {
+
+						if ( firstDistrib == null && quantity != null && quantity != 0 ) {
+
+							firstDistrib = distribution;
+						}
+	
+						if ( firstDistrib != null && distribution.date.getTime() < firstDistrib.date.getTime() ) {
+	
+							firstDistrib = distribution;
+							varDefaultOrders = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+						}
+	
+						if( firstDistrib != null && distribution.id == firstDistrib.id ) {
+	
+							if ( orderProduct.order != null ) {
+	
+								varDefaultOrders.push( { productId : orderProduct.order.product.id, quantity : quantity } );
+							}
+							else {
+	
+								varDefaultOrders.push( { productId : orderProduct.product.id, quantity : quantity } );
+							}
+						}
+					}
+
+				}
+				else {
+
+					constOrders.push( { productId : orderProduct.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
 				}
 
 			}
 
-			
-			if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-				
-				//create or edit subscription
-				if(constOrders==null || constOrders.length==0){
-					throw Error(sugoi.Web.getURI(),"Merci de choisir quelle quantité de produits vous désirez");
-				}
+			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
-				try {
-
-					var pendingSubscription = SubscriptionService.getComingDistribSubscription( app.user, catalog, false );
-					if ( pendingSubscription != null ) {
-						
-						// trace("On arrive");
-						SubscriptionService.updateSubscription( pendingSubscription, pendingSubscription.startDate, pendingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
-						// trace("Ca marche !");
-
-					}
-					else {
-						
-						SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
-					}
-				}
-				catch ( e : Dynamic ) {
-
-					throw Error( "/contract/order/" + catalog.id, e.message );
-				}
-			}
-			else {
-
-				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 )	{
+				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 ) {
 
 					throw Error( sugoi.Web.getURI(), "Merci de choisir quelle quantité de produits vous désirez" );
 				}
@@ -626,39 +640,98 @@ class Contract extends Controller
 						}
 					}
 
+					//Catalog Constraints to respect
+					if( allOrdersAreValid ) {
+
+						if ( comingDistribSubscription == null ) {
+
+							comingDistribSubscription = SubscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						}
+						else if ( !comingDistribSubscription.isValidated ) {
+							
+							SubscriptionService.updateSubscription( comingDistribSubscription, comingDistribSubscription.startDate, comingDistribSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						}
+						else if ( catalog.requiresOrdering && comingDistribSubscription.getDefaultOrders().length == 0 ) {
+
+							SubscriptionService.updateDefaultOrders( comingDistribSubscription, varDefaultOrders );
+						}
+
+						for ( orderToEdit in varOrdersToEdit ) {
+
+							varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
+						}
+
+						for ( orderToMake in varOrdersToMake ) {
+
+							varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, comingDistribSubscription ) );
+						}
+
+						//Create order operation only
+						if ( app.user.getGroup().hasPayments() ) {
+
+							service.PaymentService.onOrderConfirm( varOrders );
+						}
+
+					}
+
 				}
-				catch ( e : Dynamic ) {
+				catch ( e : Error ) {
 
 					throw Error( "/contract/order/" + catalog.id, e.message );
 				}
 
-				if( allOrdersAreValid ) {
+			}
+			else {
+				
+				//Create or edit an existing subscription for the coming distribution
+				if( constOrders == null || constOrders.length == 0 ){
 
-					for ( orderToEdit in varOrdersToEdit ) {
-
-						varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
-					}
-
-					for ( orderToMake in varOrdersToMake ) {
-
-						varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, comingDistribSubscription ) );
-					}
-
-					//Create order operation only
-					if ( app.user.getGroup().hasPayments() ) {
-
-						service.PaymentService.onOrderConfirm( varOrders );
-					}
-
+					throw Error( sugoi.Web.getURI(), 'Merci de choisir quelle quantité de produits vous désirez' );
 				}
 
+				try {
+
+					if ( comingDistribSubscription == null ) {
+						
+						SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+					}
+					else if ( !comingDistribSubscription.isValidated ) {
+						
+						SubscriptionService.updateSubscription( comingDistribSubscription, comingDistribSubscription.startDate, comingDistribSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+					}
+					
+				}
+				catch ( e : Error ) {
+
+					throw Error( "/contract/order/" + catalog.id, e.message );
+				}
 			}
 
 			throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
 
 		}
 		
+		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" }, { link : "/home", name : "Commandes", id : "home" } ]; 
+		view.subscriptionService = SubscriptionService;
+		view.catalog = catalog;
+		view.comingDistribSubscription = comingDistribSubscription;
+		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
+		else {
+
+			if( comingDistribSubscription == null || !comingDistribSubscription.isValidated ) {
+				
+				catalog.isUserOrderAvailable();
+			}
+			else {
+				
+				false;
+			}
+		}
 		view.userOrders = userOrders;
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog, comingDistribSubscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );
+		view.subscriptions = subscriptions;
+		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
 		
 	}
 

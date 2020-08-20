@@ -34,13 +34,25 @@
                             ::end::
                         </td>
                         <td class="::class::" style="vertical-align: middle;">
-                            ::catalog.distribMinOrdersTotal::&nbsp;::currency()::
+                            ::if catalog.distribMinOrdersTotal != null::
+                                ::catalog.distribMinOrdersTotal::&nbsp;::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
                         </td>
                         <td style="vertical-align: middle;">
-                            ::catalog.catalogMinOrdersTotal::&nbsp;::currency()::
+                            ::if catalog.catalogMinOrdersTotal != null::
+                                ::catalog.catalogMinOrdersTotal::&nbsp;::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
                         </td>
                         <td style="vertical-align: middle;">
-                            ::catalog.allowedOverspend::&nbsp;::currency()::
+                            ::if catalog.allowedOverspend != null::
+                                ::catalog.allowedOverspend::&nbsp;::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
                         </td>
                     </tr>
                 </table>
@@ -61,7 +73,7 @@
                             <th>Période d'engagement</th>
                             <th>Nombre de distributions</th>
                             <th>Total</th>
-                            <th>Payé</th>
+                            <th ::cond catalog.type == TYPE_CONSTORDERS::>Payé</th>
                         </tr>
                         ::foreach subscription subscriptions::
                             ::set orderName = subscriptionService.getDescription(subscription)::
@@ -99,12 +111,12 @@
                                     au ::dateToString(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionDistribsNb(subscription, null)::
+                                    ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
                                 </td>
                                 <td style="vertical-align: middle;">
                                     ::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
                                 </td>
-                                <td style="vertical-align: middle;">
+                                <td  ::cond catalog.type == TYPE_CONSTORDERS:: style="vertical-align: middle;">
                                     $$check(::subscriptionService.isSubscriptionPaid(subscription)::)
                                 </td>
                                 <td style="vertical-align: middle;">

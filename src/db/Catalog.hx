@@ -124,6 +124,16 @@ class Catalog extends Object
 	public function hasStockManagement():Bool {
 		return flags.has(StockManagement);
 	}
+
+	public function hasConstraints() : Bool {
+
+		return this.type == TYPE_VARORDER && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
+	}
+
+	public function hasAbsencesManagement() : Bool {
+
+		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+	}
 	
 	/**
 	 * computes a 'percentage' fee or a 'margin' fee 

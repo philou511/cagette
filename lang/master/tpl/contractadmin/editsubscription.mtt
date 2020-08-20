@@ -73,9 +73,9 @@
 								::set invert = productOrder.hasInvertSharedOrder()::
 							::end::
 						::else::
-							::set defaultProductOrder = subscription.getDefaultOrders(product.id)[0]::
-							::if defaultProductOrder != null ::
-								::set quantity = defaultProductOrder.quantity::
+							::set defaultProductOrder = subscription.getDefaultOrders(product.id)::
+							::if defaultProductOrder.length != 0 && defaultProductOrder[0] != null::
+								::set quantity = defaultProductOrder[0].quantity::
 							::end::
 						::end::
 					::end::

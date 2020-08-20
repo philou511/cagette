@@ -71,7 +71,7 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = catalog.getProducts();
 
-		var startDateDP = new form.CagetteDatePicker("startDate","Date de début",catalog.startDate.getTime() > Date.now().getTime() ? catalog.startDate : Date.now() );
+		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getFirstOpenDayForSubscription( catalog ) );
 		view.startDate = startDateDP;
 
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
@@ -398,6 +398,55 @@ class Subscriptions extends controller.Controller
 			}
 
 			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
+
+		}
+
+	}
+
+
+	@logged @tpl("form.mtt")
+	function doDefaultOrders( subscription : db.Subscription ) {
+
+		if( subscription.catalog.group.hasShopMode() ) throw Redirect( "/contract/view/" + subscription.catalog.id );
+		if( subscription.catalog.requiresOrdering == null || !subscription.catalog.requiresOrdering ) throw Redirect( "/contract/order/" + subscription.catalog.id );
+		
+		var form = new sugoi.form.Form("subscriptionDefaultOrders");
+		view.form = form;
+
+		form.addElement( new sugoi.form.elements.Html( 'title', '<h4 style="font-style: normal; text-align: center; margin-bottom: 20px;">Ma commande par défaut</h4>' ) );
+
+		var catalogProducts = subscription.catalog.getProducts();
+		for ( product in catalogProducts ) {
+
+			var defaultProductOrder = subscription.getDefaultOrders( product.id );
+			var defaultQuantity : Float = 0;
+			if ( defaultProductOrder.length != 0 && defaultProductOrder[0] != null ) {
+
+				defaultQuantity = defaultProductOrder[0].quantity;
+			}
+			form.addElement( new sugoi.form.elements.FloatInput( "quantity" + product.id, product.name + ' ' + product.price + ' €', defaultQuantity ) );
+		}
+		
+		
+		if ( form.checkToken() ) {
+
+			try {
+
+				var defaultOrders = new Array< { productId : Int, quantity : Float } >();
+				for ( product in catalogProducts ) {
+
+					var quantity : Float = form.getValueOf( 'quantity' + product.id );
+					defaultOrders.push( { productId : product.id, quantity : quantity } );
+				}
+
+				SubscriptionService.updateDefaultOrders( subscription, defaultOrders );
+			}
+			catch( error : Error ) {
+			
+				throw Error( '/subscriptions/defaultOrders/' + subscription.id, error.message );
+			}
+
+			throw Ok( '/contract/order/' + subscription.catalog.id, 'Votre commande par défaut a bien été mise à jour.' );
 
 		}
 
