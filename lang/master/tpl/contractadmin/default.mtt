@@ -22,7 +22,7 @@
 				::end::
 				<tr  class="::class::" >
 					<td>
-						::if c.type == type_constorders::
+						::if c.type == TYPE_CONSTORDERS::
 						<div class="tag big" style="background-color:#e5d3bf;" data-toggle="tooltip" title="Contrat AMAP">
 							<i class="icon icon-refresh"></i>
 						</div>

@@ -191,12 +191,11 @@ class SubscriptionService
 	}
 
 	public static function getSubscriptionTotalPrice( subscription : db.Subscription ) : Float {
-
+		if(subscription==null) return 0.0;
 		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
 		var totalPrice = 0.0;
 
 		for ( order in orders ) {
-
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
 
