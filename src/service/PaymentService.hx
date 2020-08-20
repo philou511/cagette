@@ -126,8 +126,8 @@ class PaymentService
 			
 			if (basket == null) throw new Error("variable orders should have a basket");
 			if(basket.user.id!=user.id) throw new Error("user and basket mismatch");
-			if( findVOrderOperation(basket.multiDistrib,user,false)!=null ){
-				throw new Error('An order op already exists for user #${user.id} and multidistrib #${multiDistrib.id}');
+			if( findVOrderOperation(basket.multiDistrib , user , false) != null ){
+				throw new Error('An order op already exists for user #${user.id} and multidistrib #${basket.multiDistrib.id}');
 			} 
 
 			//variable orders
