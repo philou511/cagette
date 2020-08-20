@@ -1,0 +1,68 @@
+::use 'admin/design.mtt'::
+
+		<h3>Stats mensuelles</h3>
+		<p>
+			<a href="/admin/stats/::month-1::/::year::" class="btn btn-default btn-sm">Précédent</a>
+			Du ::dDate(from):: au ::dDate(to)::
+			<a href="/admin/stats/::month+1::/::year::" class="btn btn-default btn-sm">Suivant</a><br/>
+
+
+		</p>
+		
+		<p>
+			<h4>Producteurs</h4>
+			<table class="table table-bordered table-striped">				
+				<tr>
+					<td>Nouveaux producteurs</td>
+					<td>::newVendors::</td>
+				</tr>	
+				<tr>
+					<td>Nouveaux producteurs par type</td>
+					<td>
+						::foreach s newVendorsByType::
+						::s.count:: $$vendorType(::s.type::)<br/>
+						::end::
+					</td>
+				</tr>	
+				<tr>
+					<td>Producteurs actifs (maintenant)</td>
+					<td>::activeVendors::</td>
+				</tr>	
+				<tr>
+					<td>Producteurs actifs par type (maintenant)</td>
+					<td>
+						::foreach s activeVendorsByType::
+						::s.count:: $$vendorType(::s.type::)<br/>
+						::end::
+					</td>
+				</tr>		
+            </table>
+            
+			<h4>Groupes</h4>
+
+			<table class="table table-bordered table-striped">				
+				<tr>
+					<td>Nouveaux groupes</td>
+					<td>::newGroups::</td>
+				</tr>	
+				<tr>
+					<td>Nouveaux foyers</td>
+					<td>::newUsers::</td>
+				</tr>
+				<tr>
+					<td>Groupes actifs (maintenant)</td>
+					<td>
+						::activeGroups::
+					</td>
+				</tr>	
+				<tr>
+					<td>Foyers actifs (maintenant)</td>
+					<td>::activeUsers::</td>
+				</tr>	
+			
+            </table>
+			
+		</p>
+
+
+::end::

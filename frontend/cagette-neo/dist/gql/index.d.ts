@@ -1,5 +1,5 @@
 import * as ApolloReactCommon from '@apollo/react-common';
-import * as ApolloReactHooks from '@apollo/react-hooks';
+import * as ApolloReactHooks from '@apollo/client';
 export declare type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export declare type Scalars = {
@@ -48,6 +48,14 @@ export declare type CreateMangopayLegalUserInput = {
 export declare type CreateMangopayUboDeclarationInput = {
     groupId: Scalars['Int'];
 };
+export declare type CreateMembershipInput = {
+    userId: Scalars['Int'];
+    groupId: Scalars['Int'];
+    year: Scalars['Int'];
+    date: Scalars['Date'];
+    distributionId?: Maybe<Scalars['Int']>;
+    membershipFee: Scalars['Float'];
+};
 export declare type CreateOrUpdateMangopayUboInput = {
     id?: Maybe<Scalars['Int']>;
     declarationId: Scalars['Int'];
@@ -58,6 +66,10 @@ export declare type CreateOrUpdateMangopayUboInput = {
     Nationality: Scalars['String'];
     Birthday: Scalars['Date'];
     Birthplace: CreateMangopayBirthplace;
+};
+export declare type GetMangopayLegalUserByLegalRepr = {
+    legalReprId: Scalars['Int'];
+    groupId: Scalars['Int'];
 };
 export declare type Group = {
     __typename?: 'Group';
@@ -73,18 +85,22 @@ export declare type GroupPreview = {
     id: Scalars['Int'];
     name: Scalars['String'];
 };
+export declare type LinkMangopayLegalUserToGroupInput = {
+    groupId: Scalars['Int'];
+    legalReprId: Scalars['Int'];
+};
 export declare type LoginInput = {
     email: Scalars['String'];
     password: Scalars['String'];
 };
 export declare type MangopayAddress = {
     __typename?: 'MangopayAddress';
-    AddressLine1: Scalars['String'];
+    AddressLine1?: Maybe<Scalars['String']>;
     AddressLine2?: Maybe<Scalars['String']>;
-    City: Scalars['String'];
+    City?: Maybe<Scalars['String']>;
     Region?: Maybe<Scalars['String']>;
-    PostalCode: Scalars['String'];
-    Country: Scalars['String'];
+    PostalCode?: Maybe<Scalars['String']>;
+    Country?: Maybe<Scalars['String']>;
 };
 export declare type MangopayBirthplace = {
     __typename?: 'MangopayBirthplace';
@@ -156,7 +172,7 @@ export declare type MangopayLegalUser = {
     CompanyNumber: Scalars['String'];
     Email: Scalars['String'];
     KYCLevel: MangopayKycLevel;
-    HeadquartersAddress: MangopayAddress;
+    HeadquartersAddress?: Maybe<MangopayAddress>;
     LegalRepresentativeAddress: MangopayAddress;
     KycDocuments?: Maybe<Array<MangopayKycDocument>>;
     UboDeclarations?: Maybe<Array<MangopayUboDeclaration>>;
@@ -199,21 +215,37 @@ export declare enum MangopayUboReasonType {
     DECLARATION_DO_NOT_MATCH_UBO_INFORMATION = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION",
     SPECIFIC_CASE = "SPECIFIC_CASE"
 }
+export declare type Membership = {
+    __typename?: 'Membership';
+    user?: Maybe<User>;
+    group?: Maybe<Group>;
+    date: Scalars['Date'];
+    amount: Scalars['Float'];
+    distributionId?: Maybe<Scalars['Int']>;
+    year: Scalars['Int'];
+};
 export declare type Mutation = {
     __typename?: 'Mutation';
     updateUser: User;
     createMangopayLegalUser: MangopayLegalUser;
+    updateMangopayLegalUser: MangopayLegalUser;
     createMangopayKycDocument: MangopayKycDocument;
     createMangopayUboDeclaration: MangopayUboDeclaration;
     submitMangopayUboDeclaration: MangopayUboDeclaration;
     createOrUpdateMangopayUbo: MangopayUbo;
+    linkMangopayLegalUserToGroup: MangopayLegalUser;
     login: UserAndToken;
+    createMembership: Membership;
+    deleteMembership: Array<Membership>;
 };
 export declare type MutationUpdateUserArgs = {
     input: UpdateUserInput;
 };
 export declare type MutationCreateMangopayLegalUserArgs = {
     input: CreateMangopayLegalUserInput;
+};
+export declare type MutationUpdateMangopayLegalUserArgs = {
+    input: UpdateMangopayLegalUserInput;
 };
 export declare type MutationCreateMangopayKycDocumentArgs = {
     input: CreateMangopayKycDocumentInput;
@@ -227,23 +259,41 @@ export declare type MutationSubmitMangopayUboDeclarationArgs = {
 export declare type MutationCreateOrUpdateMangopayUboArgs = {
     input: CreateOrUpdateMangopayUboInput;
 };
+export declare type MutationLinkMangopayLegalUserToGroupArgs = {
+    input: LinkMangopayLegalUserToGroupInput;
+};
 export declare type MutationLoginArgs = {
     input: LoginInput;
+};
+export declare type MutationCreateMembershipArgs = {
+    input: CreateMembershipInput;
+};
+export declare type MutationDeleteMembershipArgs = {
+    year: Scalars['Int'];
+    userId: Scalars['Int'];
+    groupId: Scalars['Int'];
 };
 export declare type Query = {
     __typename?: 'Query';
     me: User;
     user: User;
     mangopayLegalUser?: Maybe<MangopayLegalUser>;
+    mangopayLegalUserByLegalRepr?: Maybe<MangopayLegalUser>;
     mangopayGroup: MangopayGroup;
     group: Group;
     groupPreview: GroupPreview;
+    groupPreviews: Array<GroupPreview>;
+    groupPreviews2: Array<GroupPreview>;
+    getUserMemberships: Array<Membership>;
 };
 export declare type QueryUserArgs = {
     id: Scalars['Int'];
 };
 export declare type QueryMangopayLegalUserArgs = {
     groupId: Scalars['Int'];
+};
+export declare type QueryMangopayLegalUserByLegalReprArgs = {
+    input: GetMangopayLegalUserByLegalRepr;
 };
 export declare type QueryMangopayGroupArgs = {
     id: Scalars['Int'];
@@ -254,9 +304,28 @@ export declare type QueryGroupArgs = {
 export declare type QueryGroupPreviewArgs = {
     id: Scalars['Int'];
 };
+export declare type QueryGetUserMembershipsArgs = {
+    userId: Scalars['Int'];
+    groupId: Scalars['Int'];
+};
 export declare type SubmitMangopayUboDeclarationInput = {
     groupId: Scalars['Int'];
     declarationId: Scalars['Int'];
+};
+export declare type UpdateMangopayLegalUserInput = {
+    groupId: Scalars['Int'];
+    Name?: Maybe<Scalars['String']>;
+    Email?: Maybe<Scalars['String']>;
+    LegalPersonType: MangopayLegalPersonType;
+    CompanyNumber?: Maybe<Scalars['String']>;
+    LegalRepresentativeFirstName?: Maybe<Scalars['String']>;
+    LegalRepresentativeLastName?: Maybe<Scalars['String']>;
+    LegalRepresentativeEmail?: Maybe<Scalars['String']>;
+    LegalRepresentativeBirthday?: Maybe<Scalars['Date']>;
+    LegalRepresentativeNationality?: Maybe<Scalars['String']>;
+    LegalRepresentativeCountryOfResidence?: Maybe<Scalars['String']>;
+    LegalRepresentativeAddress?: Maybe<CreateMangopayAddress>;
+    HeadquartersAddress?: Maybe<CreateMangopayAddress>;
 };
 export declare type UpdateUserInput = {
     id: Scalars['Int'];
@@ -317,9 +386,27 @@ export declare type GroupPreviewQuery = ({
         __typename?: 'GroupPreview';
     } & Pick<GroupPreview, 'id' | 'name'>);
 });
+export declare type GetUserMembershipsQueryVariables = {
+    userId: Scalars['Int'];
+    groupId: Scalars['Int'];
+};
+export declare type GetUserMembershipsQuery = ({
+    __typename?: 'Query';
+} & {
+    getUserMemberships: Array<({
+        __typename?: 'Membership';
+    } & Pick<Membership, 'year'> & {
+        user?: Maybe<({
+            __typename?: 'User';
+        } & Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>)>;
+        group?: Maybe<({
+            __typename?: 'Group';
+        } & Pick<Group, 'id' | 'name'>)>;
+    })>;
+});
 export declare type MangopayAddressFragment = ({
     __typename?: 'MangopayAddress';
-} & Pick<MangopayAddress, 'AddressLine1' | 'AddressLine2' | 'City' | 'PostalCode'>);
+} & Pick<MangopayAddress, 'AddressLine1' | 'AddressLine2' | 'City' | 'PostalCode' | 'Country'>);
 export declare type MangopayBirthplaceFragment = ({
     __typename?: 'MangopayBirthplace';
 } & Pick<MangopayBirthplace, 'City' | 'Country'>);
@@ -345,10 +432,10 @@ export declare type MangopayUboDeclarationFragment = ({
 });
 export declare type MangopayLegalUserFragment = ({
     __typename?: 'MangopayLegalUser';
-} & Pick<MangopayLegalUser, 'Name' | 'CompanyNumber' | 'Email' | 'LegalPersonType' | 'LegalRepresentativeFirstName' | 'LegalRepresentativeLastName' | 'LegalRepresentativeEmail' | 'LegalRepresentativeBirthday' | 'LegalRepresentativeNationality' | 'LegalRepresentativeCountryOfResidence' | 'KYCLevel'> & {
-    HeadquartersAddress: ({
+} & Pick<MangopayLegalUser, 'KYCLevel' | 'Name' | 'CompanyNumber' | 'Email' | 'LegalPersonType' | 'LegalRepresentativeFirstName' | 'LegalRepresentativeLastName' | 'LegalRepresentativeEmail' | 'LegalRepresentativeBirthday' | 'LegalRepresentativeNationality' | 'LegalRepresentativeCountryOfResidence'> & {
+    HeadquartersAddress?: Maybe<({
         __typename?: 'MangopayAddress';
-    } & MangopayAddressFragment);
+    } & MangopayAddressFragment)>;
     LegalRepresentativeAddress: ({
         __typename?: 'MangopayAddress';
     } & MangopayAddressFragment);
@@ -358,6 +445,9 @@ export declare type MangopayLegalUserFragment = ({
     UboDeclarations?: Maybe<Array<({
         __typename?: 'MangopayUboDeclaration';
     } & MangopayUboDeclarationFragment)>>;
+    legalRepr?: Maybe<({
+        __typename?: 'User';
+    } & Pick<User, 'id' | 'firstName' | 'lastName' | 'email' | 'address1' | 'address2' | 'zipCode' | 'city' | 'nationality' | 'countryOfResidence' | 'birthDate'>)>;
 });
 export declare type MangopayGroupQueryVariables = {
     id: Scalars['Int'];
@@ -398,6 +488,16 @@ export declare type MangopayGroupConfigQuery = ({
         })>;
     });
 });
+export declare type MangopayLegalUserByLegalReprQueryVariables = {
+    input: GetMangopayLegalUserByLegalRepr;
+};
+export declare type MangopayLegalUserByLegalReprQuery = ({
+    __typename?: 'Query';
+} & {
+    mangopayLegalUserByLegalRepr?: Maybe<({
+        __typename?: 'MangopayLegalUser';
+    } & MangopayLegalUserFragment)>;
+});
 export declare type CreateMangopayLegalUserMutationVariables = {
     input: CreateMangopayLegalUserInput;
 };
@@ -405,6 +505,26 @@ export declare type CreateMangopayLegalUserMutation = ({
     __typename?: 'Mutation';
 } & {
     createMangopayLegalUser: ({
+        __typename?: 'MangopayLegalUser';
+    } & MangopayLegalUserFragment);
+});
+export declare type UpdateMangopayLegalUserMutationVariables = {
+    input: UpdateMangopayLegalUserInput;
+};
+export declare type UpdateMangopayLegalUserMutation = ({
+    __typename?: 'Mutation';
+} & {
+    updateMangopayLegalUser: ({
+        __typename?: 'MangopayLegalUser';
+    } & MangopayLegalUserFragment);
+});
+export declare type LinkMangopayLegalUserToGroupMutationVariables = {
+    input: LinkMangopayLegalUserToGroupInput;
+};
+export declare type LinkMangopayLegalUserToGroupMutation = ({
+    __typename?: 'Mutation';
+} & {
+    linkMangopayLegalUserToGroup: ({
         __typename?: 'MangopayLegalUser';
     } & MangopayLegalUserFragment);
 });
@@ -448,14 +568,14 @@ export declare type CreateOrUpdateMangopayUboMutation = ({
         __typename?: 'MangopayUbo';
     } & MangopayUboFragment);
 });
-export declare const UserFragmentDoc: import("graphql").DocumentNode;
-export declare const MangopayAddressFragmentDoc: import("graphql").DocumentNode;
-export declare const MangopayKycDocumentFragmentDoc: import("graphql").DocumentNode;
-export declare const MangopayBirthplaceFragmentDoc: import("graphql").DocumentNode;
-export declare const MangopayUboFragmentDoc: import("graphql").DocumentNode;
-export declare const MangopayUboDeclarationFragmentDoc: import("graphql").DocumentNode;
-export declare const MangopayLegalUserFragmentDoc: import("graphql").DocumentNode;
-export declare const LoginDocument: import("graphql").DocumentNode;
+export declare const UserFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayAddressFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayKycDocumentFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayBirthplaceFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayUboFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayUboDeclarationFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayLegalUserFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const LoginDocument: ApolloReactHooks.DocumentNode;
 export declare type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>;
 /**
  * __useLoginMutation__
@@ -478,7 +598,7 @@ export declare function useLoginMutation(baseOptions?: ApolloReactHooks.Mutation
 export declare type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export declare type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>;
 export declare type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export declare const MeDocument: import("graphql").DocumentNode;
+export declare const MeDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useMeQuery__
  *
@@ -494,12 +614,12 @@ export declare const MeDocument: import("graphql").DocumentNode;
  *   },
  * });
  */
-export declare function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>): ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>;
+export declare function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>): ApolloReactHooks.QueryResult<MeQuery, MeQueryVariables>;
 export declare function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MeQuery, MeQueryVariables>): ApolloReactHooks.QueryTuple<MeQuery, MeQueryVariables>;
 export declare type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export declare type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export declare type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>;
-export declare const GroupPreviewDocument: import("graphql").DocumentNode;
+export declare const GroupPreviewDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useGroupPreviewQuery__
  *
@@ -516,12 +636,35 @@ export declare const GroupPreviewDocument: import("graphql").DocumentNode;
  *   },
  * });
  */
-export declare function useGroupPreviewQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GroupPreviewQuery, GroupPreviewQueryVariables>): ApolloReactCommon.QueryResult<GroupPreviewQuery, GroupPreviewQueryVariables>;
+export declare function useGroupPreviewQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GroupPreviewQuery, GroupPreviewQueryVariables>): ApolloReactHooks.QueryResult<GroupPreviewQuery, GroupPreviewQueryVariables>;
 export declare function useGroupPreviewLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GroupPreviewQuery, GroupPreviewQueryVariables>): ApolloReactHooks.QueryTuple<GroupPreviewQuery, GroupPreviewQueryVariables>;
 export declare type GroupPreviewQueryHookResult = ReturnType<typeof useGroupPreviewQuery>;
 export declare type GroupPreviewLazyQueryHookResult = ReturnType<typeof useGroupPreviewLazyQuery>;
 export declare type GroupPreviewQueryResult = ApolloReactCommon.QueryResult<GroupPreviewQuery, GroupPreviewQueryVariables>;
-export declare const MangopayGroupDocument: import("graphql").DocumentNode;
+export declare const GetUserMembershipsDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useGetUserMembershipsQuery__
+ *
+ * To run a query within a React component, call `useGetUserMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserMembershipsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useGetUserMembershipsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserMembershipsQuery, GetUserMembershipsQueryVariables>): ApolloReactHooks.QueryResult<GetUserMembershipsQuery, GetUserMembershipsQueryVariables>;
+export declare function useGetUserMembershipsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserMembershipsQuery, GetUserMembershipsQueryVariables>): ApolloReactHooks.QueryTuple<GetUserMembershipsQuery, GetUserMembershipsQueryVariables>;
+export declare type GetUserMembershipsQueryHookResult = ReturnType<typeof useGetUserMembershipsQuery>;
+export declare type GetUserMembershipsLazyQueryHookResult = ReturnType<typeof useGetUserMembershipsLazyQuery>;
+export declare type GetUserMembershipsQueryResult = ApolloReactCommon.QueryResult<GetUserMembershipsQuery, GetUserMembershipsQueryVariables>;
+export declare const MangopayGroupDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useMangopayGroupQuery__
  *
@@ -538,12 +681,12 @@ export declare const MangopayGroupDocument: import("graphql").DocumentNode;
  *   },
  * });
  */
-export declare function useMangopayGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MangopayGroupQuery, MangopayGroupQueryVariables>): ApolloReactCommon.QueryResult<MangopayGroupQuery, MangopayGroupQueryVariables>;
+export declare function useMangopayGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MangopayGroupQuery, MangopayGroupQueryVariables>): ApolloReactHooks.QueryResult<MangopayGroupQuery, MangopayGroupQueryVariables>;
 export declare function useMangopayGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MangopayGroupQuery, MangopayGroupQueryVariables>): ApolloReactHooks.QueryTuple<MangopayGroupQuery, MangopayGroupQueryVariables>;
 export declare type MangopayGroupQueryHookResult = ReturnType<typeof useMangopayGroupQuery>;
 export declare type MangopayGroupLazyQueryHookResult = ReturnType<typeof useMangopayGroupLazyQuery>;
 export declare type MangopayGroupQueryResult = ApolloReactCommon.QueryResult<MangopayGroupQuery, MangopayGroupQueryVariables>;
-export declare const MangopayGroupConfigDocument: import("graphql").DocumentNode;
+export declare const MangopayGroupConfigDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useMangopayGroupConfigQuery__
  *
@@ -560,12 +703,34 @@ export declare const MangopayGroupConfigDocument: import("graphql").DocumentNode
  *   },
  * });
  */
-export declare function useMangopayGroupConfigQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>): ApolloReactCommon.QueryResult<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>;
+export declare function useMangopayGroupConfigQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>): ApolloReactHooks.QueryResult<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>;
 export declare function useMangopayGroupConfigLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>): ApolloReactHooks.QueryTuple<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>;
 export declare type MangopayGroupConfigQueryHookResult = ReturnType<typeof useMangopayGroupConfigQuery>;
 export declare type MangopayGroupConfigLazyQueryHookResult = ReturnType<typeof useMangopayGroupConfigLazyQuery>;
 export declare type MangopayGroupConfigQueryResult = ApolloReactCommon.QueryResult<MangopayGroupConfigQuery, MangopayGroupConfigQueryVariables>;
-export declare const CreateMangopayLegalUserDocument: import("graphql").DocumentNode;
+export declare const MangopayLegalUserByLegalReprDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useMangopayLegalUserByLegalReprQuery__
+ *
+ * To run a query within a React component, call `useMangopayLegalUserByLegalReprQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMangopayLegalUserByLegalReprQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMangopayLegalUserByLegalReprQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useMangopayLegalUserByLegalReprQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MangopayLegalUserByLegalReprQuery, MangopayLegalUserByLegalReprQueryVariables>): ApolloReactHooks.QueryResult<MangopayLegalUserByLegalReprQuery, MangopayLegalUserByLegalReprQueryVariables>;
+export declare function useMangopayLegalUserByLegalReprLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MangopayLegalUserByLegalReprQuery, MangopayLegalUserByLegalReprQueryVariables>): ApolloReactHooks.QueryTuple<MangopayLegalUserByLegalReprQuery, MangopayLegalUserByLegalReprQueryVariables>;
+export declare type MangopayLegalUserByLegalReprQueryHookResult = ReturnType<typeof useMangopayLegalUserByLegalReprQuery>;
+export declare type MangopayLegalUserByLegalReprLazyQueryHookResult = ReturnType<typeof useMangopayLegalUserByLegalReprLazyQuery>;
+export declare type MangopayLegalUserByLegalReprQueryResult = ApolloReactCommon.QueryResult<MangopayLegalUserByLegalReprQuery, MangopayLegalUserByLegalReprQueryVariables>;
+export declare const CreateMangopayLegalUserDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateMangopayLegalUserMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayLegalUserMutation, CreateMangopayLegalUserMutationVariables>;
 /**
  * __useCreateMangopayLegalUserMutation__
@@ -588,7 +753,53 @@ export declare function useCreateMangopayLegalUserMutation(baseOptions?: ApolloR
 export declare type CreateMangopayLegalUserMutationHookResult = ReturnType<typeof useCreateMangopayLegalUserMutation>;
 export declare type CreateMangopayLegalUserMutationResult = ApolloReactCommon.MutationResult<CreateMangopayLegalUserMutation>;
 export declare type CreateMangopayLegalUserMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayLegalUserMutation, CreateMangopayLegalUserMutationVariables>;
-export declare const CreateMangopayKycDocumentDocument: import("graphql").DocumentNode;
+export declare const UpdateMangopayLegalUserDocument: ApolloReactHooks.DocumentNode;
+export declare type UpdateMangopayLegalUserMutationFn = ApolloReactCommon.MutationFunction<UpdateMangopayLegalUserMutation, UpdateMangopayLegalUserMutationVariables>;
+/**
+ * __useUpdateMangopayLegalUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateMangopayLegalUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMangopayLegalUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMangopayLegalUserMutation, { data, loading, error }] = useUpdateMangopayLegalUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useUpdateMangopayLegalUserMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateMangopayLegalUserMutation, UpdateMangopayLegalUserMutationVariables>): ApolloReactHooks.MutationTuple<UpdateMangopayLegalUserMutation, UpdateMangopayLegalUserMutationVariables>;
+export declare type UpdateMangopayLegalUserMutationHookResult = ReturnType<typeof useUpdateMangopayLegalUserMutation>;
+export declare type UpdateMangopayLegalUserMutationResult = ApolloReactCommon.MutationResult<UpdateMangopayLegalUserMutation>;
+export declare type UpdateMangopayLegalUserMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateMangopayLegalUserMutation, UpdateMangopayLegalUserMutationVariables>;
+export declare const LinkMangopayLegalUserToGroupDocument: ApolloReactHooks.DocumentNode;
+export declare type LinkMangopayLegalUserToGroupMutationFn = ApolloReactCommon.MutationFunction<LinkMangopayLegalUserToGroupMutation, LinkMangopayLegalUserToGroupMutationVariables>;
+/**
+ * __useLinkMangopayLegalUserToGroupMutation__
+ *
+ * To run a mutation, you first call `useLinkMangopayLegalUserToGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLinkMangopayLegalUserToGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [linkMangopayLegalUserToGroupMutation, { data, loading, error }] = useLinkMangopayLegalUserToGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useLinkMangopayLegalUserToGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<LinkMangopayLegalUserToGroupMutation, LinkMangopayLegalUserToGroupMutationVariables>): ApolloReactHooks.MutationTuple<LinkMangopayLegalUserToGroupMutation, LinkMangopayLegalUserToGroupMutationVariables>;
+export declare type LinkMangopayLegalUserToGroupMutationHookResult = ReturnType<typeof useLinkMangopayLegalUserToGroupMutation>;
+export declare type LinkMangopayLegalUserToGroupMutationResult = ApolloReactCommon.MutationResult<LinkMangopayLegalUserToGroupMutation>;
+export declare type LinkMangopayLegalUserToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<LinkMangopayLegalUserToGroupMutation, LinkMangopayLegalUserToGroupMutationVariables>;
+export declare const CreateMangopayKycDocumentDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateMangopayKycDocumentMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
 /**
  * __useCreateMangopayKycDocumentMutation__
@@ -611,7 +822,7 @@ export declare function useCreateMangopayKycDocumentMutation(baseOptions?: Apoll
 export declare type CreateMangopayKycDocumentMutationHookResult = ReturnType<typeof useCreateMangopayKycDocumentMutation>;
 export declare type CreateMangopayKycDocumentMutationResult = ApolloReactCommon.MutationResult<CreateMangopayKycDocumentMutation>;
 export declare type CreateMangopayKycDocumentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
-export declare const CreateMangopayUboDeclarationDocument: import("graphql").DocumentNode;
+export declare const CreateMangopayUboDeclarationDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateMangopayUboDeclarationMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayUboDeclarationMutation, CreateMangopayUboDeclarationMutationVariables>;
 /**
  * __useCreateMangopayUboDeclarationMutation__
@@ -634,7 +845,7 @@ export declare function useCreateMangopayUboDeclarationMutation(baseOptions?: Ap
 export declare type CreateMangopayUboDeclarationMutationHookResult = ReturnType<typeof useCreateMangopayUboDeclarationMutation>;
 export declare type CreateMangopayUboDeclarationMutationResult = ApolloReactCommon.MutationResult<CreateMangopayUboDeclarationMutation>;
 export declare type CreateMangopayUboDeclarationMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayUboDeclarationMutation, CreateMangopayUboDeclarationMutationVariables>;
-export declare const SubmitMangopayUboDeclarationDocument: import("graphql").DocumentNode;
+export declare const SubmitMangopayUboDeclarationDocument: ApolloReactHooks.DocumentNode;
 export declare type SubmitMangopayUboDeclarationMutationFn = ApolloReactCommon.MutationFunction<SubmitMangopayUboDeclarationMutation, SubmitMangopayUboDeclarationMutationVariables>;
 /**
  * __useSubmitMangopayUboDeclarationMutation__
@@ -657,7 +868,7 @@ export declare function useSubmitMangopayUboDeclarationMutation(baseOptions?: Ap
 export declare type SubmitMangopayUboDeclarationMutationHookResult = ReturnType<typeof useSubmitMangopayUboDeclarationMutation>;
 export declare type SubmitMangopayUboDeclarationMutationResult = ApolloReactCommon.MutationResult<SubmitMangopayUboDeclarationMutation>;
 export declare type SubmitMangopayUboDeclarationMutationOptions = ApolloReactCommon.BaseMutationOptions<SubmitMangopayUboDeclarationMutation, SubmitMangopayUboDeclarationMutationVariables>;
-export declare const CreateOrUpdateMangopayUboDocument: import("graphql").DocumentNode;
+export declare const CreateOrUpdateMangopayUboDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateOrUpdateMangopayUboMutationFn = ApolloReactCommon.MutationFunction<CreateOrUpdateMangopayUboMutation, CreateOrUpdateMangopayUboMutationVariables>;
 /**
  * __useCreateOrUpdateMangopayUboMutation__
