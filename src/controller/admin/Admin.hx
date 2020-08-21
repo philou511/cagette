@@ -1,4 +1,5 @@
 package controller.admin;
+import db.BufferedJsonMail;
 import hosted.db.Hosting;
 import tools.Timeframe;
 import service.GraphService;
@@ -29,13 +30,12 @@ class Admin extends Controller {
 	@tpl("admin/emails.mtt")
 	function doEmails() {
 		var browse = function(index:Int, limit:Int) {
-			return sugoi.db.BufferedMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
+			return BufferedJsonMail.manager.search($sdate==null,{limit:[index,limit],orderBy:-cdate},false);
 		}
 
-		var count = sugoi.db.BufferedMail.manager.count($sdate==null);
+		var count = BufferedJsonMail.manager.count($sdate==null);
 		view.browser = new sugoi.tools.ResultsBrowser(count,10,browse);
 		view.num = count;
-
 	}
 
 	@tpl("form.mtt")
