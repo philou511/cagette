@@ -319,18 +319,11 @@ class Contract extends Controller
 				var absencesEndDate = form.getElement("absencesEndDate").value;
 				var absencesDistribsNb = SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
 				var absentDistribsMaxNb = form.getElement("absentDistribsMaxNb").value;
-				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absentDistribsMaxNb > absencesDistribsNb || absencesDistribsNb == null ) ) {
+				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
 
-					if ( absencesDistribsNb != null ) {
-
-						throw Error( '/contract/edit/' + catalog.id, 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
-						Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
-					}
-					else {
-
-						throw Error( '/contract/edit/' + catalog.id, 'Ce catalogue ne participe à aucune distribution. Veuillez en rajouter pour pouvoir
-						définir les champs liés aux absences.' );
-					}
+					throw Error( '/contract/edit/' + catalog.id, 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+					Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
+					
 				}
 
 				if( absencesStartDate != null ) {
@@ -728,7 +721,7 @@ class Contract extends Controller
 			}
 		}
 		view.userOrders = userOrders;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog, comingDistribSubscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, comingDistribSubscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );
 		view.subscriptions = subscriptions;
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );

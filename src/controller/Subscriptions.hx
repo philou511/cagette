@@ -177,7 +177,7 @@ class Subscriptions extends controller.Controller
 		view.showmember = true;
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
 
 		view.nav.push( 'subscriptions' );
 
@@ -307,11 +307,11 @@ class Subscriptions extends controller.Controller
 		view.enddate = subscription.endDate;
 		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
-		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
 		if( !subscription.isValidated ) {
-			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( subscription.catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
+			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		}
 
 	}
@@ -368,10 +368,10 @@ class Subscriptions extends controller.Controller
 		view.subscriptionService = SubscriptionService;
 		view.catalog = subscription.catalog;
 		view.absentDistribsMaxNb = subscription.catalog.absentDistribsMaxNb;
-		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribsForSubscription( subscription.catalog, subscription );
+		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription );
 
 		var form = new sugoi.form.Form("subscriptionAbsences");
-		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribsForSubscription( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
+		var absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		var absentDistribIds = subscription.getAbsentDistribIds();
 		for ( i in 0...absencesNb ) {
 

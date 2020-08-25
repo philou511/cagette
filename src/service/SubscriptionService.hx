@@ -27,9 +27,9 @@ class SubscriptionService
 	/**
 		get subscriptions of a catalog
 	**/
-	public static function getSubscriptions(catalog:db.Catalog){
+	public static function getSubscriptions( catalog : db.Catalog ) {
 
-		return db.Subscription.manager.search( $catalogId == catalog.id,false ).array();
+		return db.Subscription.manager.search( $catalogId == catalog.id, false ).array();
 	}
 
 	/**
@@ -45,9 +45,11 @@ class SubscriptionService
 		Get user active subscriptions, ordered by catalogs.
 		This includes the subscriptions as a secondary user.
 	**/
-	public static function getActiveSubscriptionsByCatalog( user, group ) : Map<db.Catalog,Array<db.Subscription>> {
+	public static function getActiveSubscriptionsByCatalog( user : db.User, group : db.Group ) : Map< db.Catalog, Array< db.Subscription > > {
 
-		var memberSubscriptions = SubscriptionService.getActiveSubscriptions( user, group );
+		if( user == null || user.id == null ) throw new Error( 'Le membre que vous cherchez n\'existe pas');
+
+		var memberSubscriptions = getActiveSubscriptions( user, group );
 		var subscriptionsByCatalog = new Map<Catalog,Array<Subscription>>();
 		for ( subscription in memberSubscriptions ) {
 
@@ -62,11 +64,15 @@ class SubscriptionService
 
 	public static function getComingDistribSubscription( user : db.User, catalog : db.Catalog, ?isValidated : Bool ) : db.Subscription {
 
-		//JB TODO Voir ce qi'il se passe dans le cas où catalog.orderEndHoursBeforeDistrib est null ou à 0
 		var now = Date.now();
 		var notClosedComingDistrib : db.Distribution = null;
 		var subscription : db.Subscription = null;
 		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+			if ( catalog.orderEndHoursBeforeDistrib == null || catalog.orderEndHoursBeforeDistrib == 0 ) {
+
+				throw new Error( 'Vous devez définir obligatoirement le nombre d\'heures avant distribution pour la fermeture des commandes.' );
+			}
 
 			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false ).array();
 			for ( distrib in futureDistribs ) {
@@ -83,17 +89,23 @@ class SubscriptionService
 		else {
 
 			var notClosedFutureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false ).array();
-			notClosedComingDistrib = notClosedFutureDistribs[0];
+			if ( notClosedFutureDistribs.length != 0 ) { 
+
+				notClosedComingDistrib = notClosedFutureDistribs[0];
+			}
 		}
 
 
-		if( isValidated != null ) {
+		if( notClosedComingDistrib != null ) {
 
-			subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= notClosedComingDistrib.date && $endDate >= notClosedComingDistrib.end && $isValidated == isValidated, false );
-		}
-		else {
+			if( isValidated != null ) {
 
-			subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= notClosedComingDistrib.date && $endDate >= notClosedComingDistrib.end, false );
+				subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= notClosedComingDistrib.date && $endDate >= notClosedComingDistrib.end && $isValidated == isValidated, false );
+			}
+			else {
+		
+				subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= notClosedComingDistrib.date && $endDate >= notClosedComingDistrib.end, false );
+			}
 		}
 		
 		//JB TODO EXCLUDE ABSENTDISTRIB
@@ -103,10 +115,15 @@ class SubscriptionService
 	}
 
 	public static function getUserCatalogSubscriptions( user : db.User, catalog : db.Catalog ) : Array<db.Subscription> {
+		
+		if( user == null || user.id == null ) throw new Error( 'Le membre que vous cherchez n\'existe pas');
+
 		return db.Subscription.manager.search( $user == user && $catalog == catalog , false ).array();
 	}
 
-	public static function getSubscriptionDistribs( subscription : db.Subscription, type : String ) : Array<db.Distribution> {
+	public static function getSubscriptionDistribs( subscription : db.Subscription, type : String = 'all' ) : Array<db.Distribution> {
+
+		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
 		var subscriptionDistribs = null;
 		if ( type == "all" ) {
@@ -120,7 +137,7 @@ class SubscriptionService
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $end <= endOfToday && $date >= subscription.startDate && $end <= subscription.endDate, false );
 		}
 		
-		if ( subscription.catalog.hasAbsencesManagement() ) {
+		if ( subscriptionDistribs.length != 0 && subscription.catalog.hasAbsencesManagement() ) {
 
 			var absentDistribs = subscription.getAbsentDistribs();
 			for ( absentDistrib in absentDistribs ) {
@@ -132,7 +149,7 @@ class SubscriptionService
 		return subscriptionDistribs.array();
 	}
 
-	public static function getCatalogAbsencesDistribsForSubscription( catalog : db.Catalog, ?subscription : db.Subscription = null ) : Array<db.Distribution> {
+	public static function getCatalogAbsencesDistribs( catalog : db.Catalog, ?subscription : db.Subscription = null ) : Array<db.Distribution> {
 
 		if ( !catalog.hasAbsencesManagement() ) return [];
 
@@ -148,27 +165,26 @@ class SubscriptionService
 			absencesStartDate = subscription.startDate.getTime() < catalog.absencesStartDate.getTime() ? catalog.absencesStartDate : subscription.startDate;
 			absencesEndDate = catalog.absencesEndDate.getTime() < subscription.endDate.getTime() ? catalog.absencesEndDate : subscription.endDate;
 		}
-		return db.Distribution.manager.search( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate, { orderBy : date }, false ).array();
 
+		return db.Distribution.manager.search( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate, { orderBy : date }, false ).array();
 	}
 
 	public static function getCatalogAbsencesDistribsNb( catalog : db.Catalog, ?absStartDate : Date, ?absEndDate : Date ) : Int {
 
 		var absencesStartDate : Date = absStartDate != null ? absStartDate : catalog.absencesStartDate;
 		var absencesEndDate : Date = absEndDate != null ? absEndDate : catalog.absencesEndDate;
-		var absencesDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= catalog.absencesStartDate && $end <= catalog.absencesEndDate );
-		if( absencesDistribsNb == 0 ) {
+		if ( absencesStartDate == null || absencesEndDate == null ) {
 
-			if( db.Distribution.manager.count( $catalog == catalog ) == 0 ) {
-
-				return null;
-			}
+			return 0;
 		}
 
-		return absencesDistribsNb;
+		return db.Distribution.manager.count( $catalog == catalog && $date >= absencesStartDate && $end <= absencesEndDate );
+
 	}
 
 	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String = null, excludeAbsences : Bool = true ) : Int {
+
+		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
 		var subscriptionDistribsNb = 0;
 		if ( type == null ) {
@@ -191,25 +207,33 @@ class SubscriptionService
 	}
 
 	public static function getSubscriptionTotalPrice( subscription : db.Subscription ) : Float {
-		if(subscription==null) return 0.0;
-		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
-		var totalPrice = 0.0;
 
+		if( subscription == null || subscription.id == null ) return 0;
+
+		var totalPrice : Float = 0;
+		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in orders ) {
+
 			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
 		}
 
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 
-	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : List<db.UserOrder> {
+	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
 
-		return db.UserOrder.manager.search( $subscription == subscription, false );
+		if( subscription == null || subscription.id == null ) return [];
+
+		return db.UserOrder.manager.search( $subscription == subscription, false ).array();
 	}
 
 	public static function getCSARecurrentOrders( subscription : db.Subscription, oldAbsentDistribIds : Array<Int> ) : Array<db.UserOrder> {
 		
+		if( subscription == null || subscription.id == null ) return [];
+
 		var oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate, false );
+		if( oneDistrib == null ) return [];
+
 		var oneDistriborders = db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib, false ).array();
 		if ( oneDistriborders.length == 0 && subscription.getAbsencesNb() != 0 ) {
 
@@ -225,7 +249,7 @@ class SubscriptionService
 				isAbsentDistrib = false;
 				for ( distribId in absentDistribIds ) {
 
-					if ( oneDistrib.id == distribId ) {
+					if ( oneDistrib != null && oneDistrib.id == distribId ) {
 
 						isAbsentDistrib = true;
 						oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date > oneDistrib.date && $date <= subscription.endDate, false );
@@ -256,6 +280,7 @@ class SubscriptionService
 
 	}
 
+	//REPRENDRE A PARTIR D'ICI POUR LA CONSOLIDATION ET RECHERHCE DE POSSIBLES NULL OU 0
 	public static function getDescription( subscription : db.Subscription ) {
 
 		var label : String = '';
@@ -596,7 +621,7 @@ class SubscriptionService
 			if ( subscription.id == null || currentAbsencesNb == 0 ) {
 
 				//Let's select the newAbsencesNb first distribs of the absences period in the subscription time range
-				var absencesDistribsForSubscription = getCatalogAbsencesDistribsForSubscription( subscription.catalog, subscription );
+				var absencesDistribsForSubscription = getCatalogAbsencesDistribs( subscription.catalog, subscription );
 				for ( i in 0...newAbsencesNb ) {
 					
 					absentDistribIds.push( absencesDistribsForSubscription[i].id );
@@ -620,7 +645,7 @@ class SubscriptionService
 						absentDistribIds.push( currentAbsentDistribIds[i] );
 					}
 
-					var absencesDistribsForSubscription = getCatalogAbsencesDistribsForSubscription( subscription.catalog, subscription );
+					var absencesDistribsForSubscription = getCatalogAbsencesDistribs( subscription.catalog, subscription );
 					for ( i in 0...absencesNbDiff ) {
 
 						absentDistribIds.push( absencesDistribsForSubscription[ i + currentAbsencesNb ].id );
@@ -770,7 +795,7 @@ class SubscriptionService
 		else if ( hasPastDistribOrders( subscription ) ) {
 
 			throw TypedError.typed( 'Il y a des commandes pour des distributions passées. Les commandes du passé ne pouvant être modifiées il faut modifier la date de fin de
-			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionService.SubscriptionServiceError.PastOrders );
+			la souscription et en recréer une nouvelle pour la nouvelle période. Vous pourrez ensuite définir une nouvelle commande pour cette nouvelle souscription.', SubscriptionServiceError.PastOrders );
 		}
 
 		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
@@ -780,7 +805,7 @@ class SubscriptionService
 			order.delete();
 		}
 
-		var subscriptionDistributions = getSubscriptionDistribs( subscription, 'all' );
+		var subscriptionDistributions = getSubscriptionDistribs( subscription );
 
 		var t = sugoi.i18n.Locale.texts;
 	
@@ -898,10 +923,12 @@ class SubscriptionService
 
 	public static function updateDefaultOrders( subscription : db.Subscription, defaultOrders : Array< { productId : Int, quantity : Float } > ) {
 
+		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
+		if( defaultOrders.length == 0 ) throw new Error( 'La commande par défaut n\'est pas définie.' );
 		if( !subscription.catalog.requiresOrdering ) return;
 
-		var totalPrice : Float = 0.0;
-		var totalQuantity : Float = 0.0;
+		var totalPrice : Float = 0;
+		var totalQuantity : Float = 0;
 		for ( order in defaultOrders ) {
 
 			var product = db.Product.manager.get( order.productId );
