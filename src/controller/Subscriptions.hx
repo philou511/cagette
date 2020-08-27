@@ -71,7 +71,7 @@ class Subscriptions extends controller.Controller
 
 		var catalogProducts = catalog.getProducts();
 
-		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getFirstOpenDayForSubscription( catalog ) );
+		var startDateDP = new form.CagetteDatePicker("startDate","Date de début", SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.startDate = startDateDP;
 
 		var endDateDP = new form.CagetteDatePicker("endDate","Date de fin",catalog.endDate);
@@ -178,6 +178,7 @@ class Subscriptions extends controller.Controller
 		view.members = app.user.getGroup().getMembersFormElementData();
 		view.products = catalogProducts;
 		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		view.subscriptionService = SubscriptionService;
 
 		view.nav.push( 'subscriptions' );
 
@@ -307,11 +308,12 @@ class Subscriptions extends controller.Controller
 		view.enddate = subscription.endDate;
 		view.subscription = subscription;
 		view.nav.push( 'subscriptions' );
+		view.subscriptionService = SubscriptionService;
 		view.absencesDistribs = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return { label : Formatting.hDate( distrib.date, true ), value : distrib.id } );
 		view.canAbsencesBeEdited = SubscriptionService.canAbsencesBeEdited( subscription.catalog );
 		view.absentDistribs = subscription.getAbsentDistribs();
 		if( !subscription.isValidated ) {
-			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog ), function( distrib ) return Formatting.dDate( distrib.date ) );
+			view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
 		}
 
 	}
@@ -367,7 +369,7 @@ class Subscriptions extends controller.Controller
 		view.subscription = subscription;
 		view.subscriptionService = SubscriptionService;
 		view.catalog = subscription.catalog;
-		view.absentDistribsMaxNb = subscription.catalog.absentDistribsMaxNb;
+		view.absentDistribsMaxNb = SubscriptionService.getAbsentDistribsMaxNb( subscription.catalog, subscription );
 		view.absencesDistribs = SubscriptionService.getCatalogAbsencesDistribs( subscription.catalog, subscription );
 
 		var form = new sugoi.form.Form("subscriptionAbsences");

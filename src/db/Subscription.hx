@@ -64,7 +64,7 @@ class Subscription extends Object {
 
 	public function setAbsentDistribIds( distribIds : Array<Int> ) {
 
-		if( distribIds != null ) {
+		if( distribIds != null && distribIds.length != 0 ) {
 
 			distribIds.sort( function(b, a) { return  a < b ? 1 : -1; } );
 			this.absentDistribIds = distribIds.join(',');

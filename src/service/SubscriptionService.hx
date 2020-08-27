@@ -149,7 +149,7 @@ class SubscriptionService
 		return subscriptionDistribs.array();
 	}
 
-	public static function getCatalogAbsencesDistribs( catalog : db.Catalog, ?subscription : db.Subscription = null ) : Array<db.Distribution> {
+	public static function getCatalogAbsencesDistribs( catalog : db.Catalog, ?subscription : db.Subscription ) : Array<db.Distribution> {
 
 		if ( !catalog.hasAbsencesManagement() ) return [];
 
@@ -408,84 +408,170 @@ class SubscriptionService
 	}
 
 
-	/**
-	 * Checks if variable orders for a given distribution meet all the catalog requirements
-	 * @param distribution
-	 * @param quantitiesPrices
-	 */
-	 public static function areDistribVarOrdersValid( subscription : db.Subscription, distribution : db.Distribution, quantitiesPrices :  Array< { productQuantity : Float, productPrice : Float } >, ?showCatalogName : Bool = false ) : Bool {
+	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, subscription : db.Subscription ) : Float {
 
-		//JULIETODO Rajouter la logique avec tous les paramètres à null pour return true
-		if ( distribution.catalog.distribMinOrdersTotal == null || distribution.catalog.distribMinOrdersTotal == 0 ) {
+		if ( subscription == null ) {
+
+			return catalog.catalogMinOrdersTotal;
+		}
+		
+		var subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
+		var catalogAllDistribsNb = db.Distribution.manager.count( $catalog == catalog );
+		var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
+		return Formatting.roundTo( ratio * catalog.catalogMinOrdersTotal, 2 );
+	}
+
+	 /*
+	  *	Checks if variable orders for one or several distributions meet all the catalog requirements 
+	  * @param subscription 
+	  * @param pricesQuantitiesByDistrib 
+	  * @return Bool
+	  */
+	 public static function areVarOrdersValid( subscription : db.Subscription, pricesQuantitiesByDistrib : Map< db.Distribution, Array< { productQuantity : Float, productPrice : Float } > > ) : Bool {
+
+		var catalog : db.Catalog = null;
+		if ( subscription != null ) {
+
+			catalog = subscription.catalog;
+		}
+		else {
+
+			catalog = pricesQuantitiesByDistrib.keys().next().catalog;
+		}
+
+		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 ) ) {
 
 			return true;
 		}
+	
 
-		var totalPrice = 0.0;
-		for ( quantityPrice in quantitiesPrices ) {
+		if ( catalog.catalogMinOrdersTotal != null && catalog.catalogMinOrdersTotal != 0 && catalog.allowedOverspend != null && catalog.allowedOverspend != 0 ) {
 
-			totalPrice += Formatting.roundTo( quantityPrice.productQuantity * quantityPrice.productPrice, 2 );
+			//Computes the new orders total
+			var ordersTotal : Float = 0;
+			var ordersDistribIds = new Array<Int>();
+			for ( distrib in pricesQuantitiesByDistrib.keys() ) {
+
+				ordersDistribIds.push( distrib.id );
+				for ( quantityPrice in pricesQuantitiesByDistrib[distrib] ) {
+
+					ordersTotal += Formatting.roundTo( quantityPrice.productQuantity * quantityPrice.productPrice, 2 );
+				}
+
+			}
+			ordersTotal = Formatting.roundTo( ordersTotal, 2 );
+
+			var otherDistribsTotal : Float = 0;
+			if( subscription != null && subscription.id != null ) {
+				
+				var orders = db.UserOrder.manager.search( $subscription == subscription, false );
+				for ( order in orders ) {
+
+					//We are are adding up all the orders prices for the distribs that are not among the new submitted orders
+					if ( ordersDistribIds.find( id -> id == order.distribution.id ) == null ) {
+
+						otherDistribsTotal += Formatting.roundTo( order.quantity * order.productPrice, 2 );
+					}
+				}
+
+				otherDistribsTotal = Formatting.roundTo( otherDistribsTotal, 2 );
+			}
+			var newSubscriptionTotal = otherDistribsTotal + ordersTotal;
+
+			//Checks that the orders total is higher than the required minimum
+			var lastDistrib : db.Distribution = null;
+			if( subscription != null ) {
+
+				var allSubsriptionDistribs = getSubscriptionDistribs( subscription, 'all' );
+				lastDistrib = allSubsriptionDistribs[ allSubsriptionDistribs.length - 1 ];
+			}
+			else {
+
+				lastDistrib = catalog.getDistribs().last();
+			}
+
+			if( lastDistrib != null ) {
+
+				var now = Date.now();
+				var doCheckMin = false;
+				if ( catalog.requiresOrdering ) {
+
+					if ( ordersDistribIds.find( id -> id == lastDistrib.id ) != null ) {
+	
+						doCheckMin = true;
+					}
+				}
+				else if ( lastDistrib.orderStartDate.getTime() <= now.getTime() &&  now.getTime() < lastDistrib.orderEndDate.getTime() ) {
+	
+					doCheckMin = true;
+				}
+
+				if ( doCheckMin ) {
+
+					if ( newSubscriptionTotal < catalog.catalogMinOrdersTotal ) {
+	
+						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de ' +  newSubscriptionTotal + ' € alors qu\'il doit être supérieur à ' + catalog.catalogMinOrdersTotal + ' €. Veuillez rajouter des produits.';
+						throw TypedError.typed( message, CatalogRequirementsNotMet );
+					}
+				}
+			}
+
+			//Checks that the orders total is lower than the allowed overspend
+			var maxAllowedTotal = catalog.catalogMinOrdersTotal + catalog.allowedOverspend;
+			if ( maxAllowedTotal < newSubscriptionTotal ) {
+
+				var message = 'Le nouveau total de toutes vos commandes serait de ' +  newSubscriptionTotal + ' € alors qu\'il doit être inférieur à ' + maxAllowedTotal + ' €. Veuillez enlever des produits.';
+				throw TypedError.typed( message, CatalogRequirementsNotMet );
+			}
+
 		}
+	
 
-		var distribTotalPrice = Formatting.roundTo( totalPrice, 2 );
+		// if ( distribTotalPrice < distribution.catalog.distribMinOrdersTotal ) {
 
-		var subscriptionTotalPrice = getSubscriptionTotalPrice( subscription );
-
-		if ( subscriptionTotalPrice + distribTotalPrice > distribution.catalog.catalogMinOrdersTotal + distribution.catalog.allowedOverspend ) {
-
-			var message = '<strong>Distribution du ' + Formatting.hDate( distribution.date ) + ' :</strong><br/>';
-			if ( showCatalogName ) message = '<strong>Engagement du catalogue :</strong> ' + distribution.catalog.name + '<br/>';
-			message += 'Le total de vos commandes sur la durée du contrat doit être inférieur à ' + ( distribution.catalog.catalogMinOrdersTotal + distribution.catalog.allowedOverspend ) + ' €. Veuillez enlever des produits.';
-			throw TypedError.typed( message, CatalogRequirementsNotMet );
-		}
-
-		if ( distribTotalPrice < distribution.catalog.distribMinOrdersTotal ) {
-
-			var message = '<strong>Distribution du ' + Formatting.hDate( distribution.date ) + ' :</strong><br/>';
-			if ( showCatalogName ) message = '<strong>Engagement du catalogue :</strong> ' + distribution.catalog.name + '<br/>';
-			message += 'Le total de votre commande effectuée pour une distribution donnée doit être d\'au moins ' + distribution.catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
-			throw TypedError.typed( message, CatalogRequirementsNotMet );
-		}
+		// 	var message = '<strong>Distribution du ' + Formatting.hDate( distribution.date ) + ' :</strong><br/>';
+		// 	if ( showCatalogName ) message = '<strong>Engagement du catalogue :</strong> ' + distribution.catalog.name + '<br/>';
+		// 	message += 'Le total de votre commande effectuée pour une distribution donnée doit être d\'au moins ' + distribution.catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
+		// 	throw TypedError.typed( message, CatalogRequirementsNotMet );
+		// }
 
 		return true;
 
 	}
 
-	public static function getFirstOpenDayForSubscription( catalog : db.Catalog ) : Date {
+	public static function getNewSubscriptionStartDate( catalog : db.Catalog ) : Date {
 
 		var now = Date.now();
-		var startOfToday = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
-		var closedFutureDistribs : Array< db.Distribution > = new Array<db.Distribution>();
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+		var comingOpenDistrib : db.Distribution = null;
 
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $end > startOfToday, { orderBy : date }, false ).array();
+		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+			comingOpenDistrib = db.Distribution.manager.search( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).first();
+		}
+		else {
+
+			if ( catalog.orderEndHoursBeforeDistrib == null || catalog.orderEndHoursBeforeDistrib == 0 ) throw new Error( 'Il faut définir un nombre d\'heures pour la fermeture des commandes.' );
+
+			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false );
 			for ( distrib in futureDistribs ) {
 
 				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
-				if ( orderEndDate.getTime() <= now.getTime() ) {
+				if ( orderEndDate.getTime() > now.getTime() ) {
 
-					closedFutureDistribs.push( distrib );
-				}
-				else {
-
+					comingOpenDistrib = distrib;
 					break;
 				}
 			}
 			
 		}
-		else {
-
-			//JB TODO FAIRE LE CAS POUR VARIABLES
-			closedFutureDistribs = db.Distribution.manager.search( $catalog == catalog && $end > startOfToday  && $orderEndDate <= now, { orderBy : date }, false ).array();
-		}
 		
-		if ( closedFutureDistribs.length == 0 ) {
+		if ( comingOpenDistrib != null ) {
 
-			return catalog.startDate.getTime() < startOfToday.getTime() ? startOfToday : catalog.startDate;
+			return comingOpenDistrib.date;
 		}
 		else {
 
-			return DateTools.delta( closedFutureDistribs[closedFutureDistribs.length - 1].end, 1000 * 60 * 60 * 24 );
+			throw new Error( 'Impossible de souscrire car il n\'y a pas de distribution ouverte à la commande.' );
 		}
 
 	}
@@ -500,7 +586,7 @@ class SubscriptionService
 
 		if ( startDate == null ) {
 			
-			startDate = getFirstOpenDayForSubscription( catalog );
+			startDate = getNewSubscriptionStartDate( catalog );
 		}
 
 		if ( endDate == null ) {
@@ -609,7 +695,45 @@ class SubscriptionService
 
 	}
 
+	public static function getAbsentDistribsMaxNb( catalog : Catalog, ?subscription : Subscription ) {
+
+		if ( subscription == null || subscription.startDate == null || subscription.endDate == null ||
+			( subscription.startDate.getTime() <= catalog.absencesStartDate.getTime() && subscription.endDate.getTime() >= catalog.absencesEndDate.getTime() ) ) {
+
+			return catalog.absentDistribsMaxNb;
+		}
+		else {
+
+			var absencesDistribsNbDuringSubscription = 0;
+			if ( subscription.startDate.getTime() > catalog.absencesStartDate.getTime() && subscription.endDate.getTime() < catalog.absencesEndDate.getTime() ) {
+
+				absencesDistribsNbDuringSubscription = db.Distribution.manager.count( $catalog == catalog && $date >= subscription.startDate && $end <= subscription.endDate );
+			}
+			else if ( subscription.startDate.getTime() > catalog.absencesStartDate.getTime() ) {
+
+				absencesDistribsNbDuringSubscription = db.Distribution.manager.count( $catalog == catalog && $date >= subscription.startDate && $end <= catalog.absencesEndDate );
+			}
+			else {
+
+				absencesDistribsNbDuringSubscription = db.Distribution.manager.count( $catalog == catalog && $date >= catalog.absencesStartDate && $end <= subscription.endDate );
+			}
+
+			if ( absencesDistribsNbDuringSubscription <= catalog.absentDistribsMaxNb ) {
+
+				return absencesDistribsNbDuringSubscription;
+			}
+			else {
+
+				return catalog.absentDistribsMaxNb;
+			}
+
+		}
+	
+	}
+
 	public static function updateAbsencesNb( subscription : Subscription, newAbsencesNb : Int ) {
+
+		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
 		var currentAbsencesNb = subscription.getAbsencesNb();
 		if ( newAbsencesNb == currentAbsencesNb ) { return; }
@@ -621,10 +745,14 @@ class SubscriptionService
 			if ( subscription.id == null || currentAbsencesNb == 0 ) {
 
 				//Let's select the newAbsencesNb first distribs of the absences period in the subscription time range
-				var absencesDistribsForSubscription = getCatalogAbsencesDistribs( subscription.catalog, subscription );
+				var absencesDistribs = getCatalogAbsencesDistribs( subscription.catalog, subscription );
+
+				if ( newAbsencesNb > absencesDistribs.length ) {
+					throw new Error( 'Il n\'y a seulement que ' + absencesDistribs.length +  ' distributions pendant la période des absences.' );
+				}
 				for ( i in 0...newAbsencesNb ) {
 					
-					absentDistribIds.push( absencesDistribsForSubscription[i].id );
+					absentDistribIds.push( absencesDistribs[i].id );
 				}
 			}
 			else {
@@ -645,10 +773,15 @@ class SubscriptionService
 						absentDistribIds.push( currentAbsentDistribIds[i] );
 					}
 
-					var absencesDistribsForSubscription = getCatalogAbsencesDistribs( subscription.catalog, subscription );
+					var absencesDistribs = getCatalogAbsencesDistribs( subscription.catalog, subscription );
+					var absencesDistribsNb = absencesDistribs.length;
+
 					for ( i in 0...absencesNbDiff ) {
 
-						absentDistribIds.push( absencesDistribsForSubscription[ i + currentAbsencesNb ].id );
+						if ( ( i + currentAbsencesNb ) > ( absencesDistribsNb - 1 ) ) {
+							throw new Error( 'Il n\'y a seulement que ' + absencesDistribsNb +  ' distributions pendant la période des absences.' );
+						}
+						absentDistribIds.push( absencesDistribs[ i + currentAbsencesNb ].id );
 					}
 				}
 

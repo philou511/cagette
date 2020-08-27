@@ -14,7 +14,7 @@
 	<div class="article">
 
 		<!-- VARYING ORDERS FOR SHOP MODE -->
-		::if user.getGroup().hasShopMode() && count(distribs)>0::
+		::if user.getGroup().hasShopMode() && distribs.length > 0::
 			<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
 	
 			::foreach d distribs::
@@ -90,8 +90,11 @@
 				
 				<h4>
 					::if i == 0::
+						<br/>
 						<i class="icon icon-refresh"></i> Contrats AMAP classiques
 					::else::
+						<hr/>
+						<br/>
 						<i class="icon icon-basket"></i> Contrats AMAP variables
 					::end::
 				</h4>
@@ -100,10 +103,12 @@
 
 					::if ( i == 0 && catalog.type == TYPE_CONSTORDERS ) || ( i == 1 && catalog.type == TYPE_VARORDER )::
 
+						<br/>
 						<h5>::catalog.name::</h5>
 
 						::set subscriptions = subscriptionsByCatalog.get(catalog)::
 						::foreach subscription subscriptions::
+
 							<table class="table table-condensed table-bordered">
 								<tr class="greyhead">
 									<th class="text-center col-md-3" ::cond i == 0 && subscription._user2 != null::>Membre</th>
@@ -117,68 +122,66 @@
 									<th class="text-center col-md-1">Total</th>
 									<th class="text-center col-md-1" ::cond i == 0::>Payé</th>
 								</tr>
-									::set orderName = subscriptionService.getDescription(subscription)::
-									::if i == 0 && orderName == null::
-										::set class="danger text-danger"::
-									::else::
-										::set class=""::
-									::end::
-									<tr style="text-align: center;">
-										<td ::cond i == 0 && subscription._user2 != null::>
-											<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
-											<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
-											<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
-										</td>
-										<td class="::class::" style="vertical-align: middle;">
-											::if orderName == null::
-												::if i == 0::
-													Aucune commande
-												::else::
-													Pas de contraintes
-												::end::
+								::set orderName = subscriptionService.getDescription(subscription)::
+								::if i == 0 && orderName == null::
+									::set class="danger text-danger"::
+								::else::
+									::set class=""::
+								::end::
+								<tr style="text-align: center;">
+									<td ::cond i == 0 && subscription._user2 != null::>
+										<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+										<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+										<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
+									</td>
+									<td class="::class::" style="vertical-align: middle;">
+										::if orderName == null::
+											::if i == 0::
+												Aucune commande
 											::else::
-												::raw orderName::
+												Pas de contraintes
 											::end::
-										</td>
-										<td style="vertical-align: middle;">
-											du ::sDate(subscription.startDate)::<br/>
-											au ::sDate(subscription.endDate)::
-										</td>
-											::set absencesNb = subscription.getAbsencesNb()::
-										::if absencesNb != 0 ::
-											<td style="vertical-align: middle;">
-												::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
-											</td>
-											<td style="vertical-align: middle;">
-												<a href="/subscriptions/absences/::subscription.id::?returnUrl=/account" style="font-weight:bold;color:rgb(0, 206, 4);">
-													::absencesNb::
-												</a>
-											</td>
+										::else::
+											::raw orderName::
 										::end::
+									</td>
+									<td style="vertical-align: middle;">
+										du ::sDate(subscription.startDate)::<br/>
+										au ::sDate(subscription.endDate)::
+									</td>
+									::set absencesNb = subscription.getAbsencesNb()::
+									::if absencesNb != 0 ::
 										<td style="vertical-align: middle;">
-											::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+											::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
 										</td>
 										<td style="vertical-align: middle;">
-											::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+											&nbsp;&nbsp;::absencesNb::
+											<a href="/subscriptions/absences/::subscription.id::?returnUrl=/account" class="btn btn-default btn-sm" style="border-style: none;">
+												<i class="icon icon-edit"></i>
+											</a>
 										</td>
-										<td style="vertical-align: middle;" ::cond i == 0::>
-											$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-										</td>
-									</tr>
+									::end::
+									<td style="vertical-align: middle;">
+										::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+									</td>
+									<td style="vertical-align: middle;">
+										::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+									</td>
+									<td style="vertical-align: middle;" ::cond i == 0::>
+										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+									</td>
+								</tr>
 							</table>
 						::end::
 					::end::
-				
 				::end::
-				<hr/>
-
+				<br/>
 			::end::
-			
 		::end::
-	
+
 	</div>
-	
 </div>
+
 <div class="col-md-4">
 
 	<h3>::_("Profile")::</h3>

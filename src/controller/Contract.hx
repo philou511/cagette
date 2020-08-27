@@ -181,6 +181,13 @@ class Contract extends Controller
 
 						catalog.requiresOrdering = true;
 					}
+
+					var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
+					var allowedOverspend = form.getValueOf("allowedOverspend");
+					if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null || allowedOverspend == 0 ) ) {
+
+						throw Error( '/contract/edit/' + catalog.id, 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes sur la durée du contrat.');
+					}
 				}
 
 				if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
@@ -248,7 +255,7 @@ class Contract extends Controller
 		 view.category = 'contractadmin';
 		 if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
  
-		 view.title = t._("Edit catalog \"::catalogName::\"", { catalogName : catalog.name } );
+		 view.title = t._("Edit catalog \"::contractName::\"", { contractName : catalog.name } );
  
 		 var group = catalog.group;
 		 var currentContact = catalog.contact;
@@ -303,6 +310,13 @@ class Contract extends Controller
 					if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
 
 						catalog.requiresOrdering = true;
+					}
+
+					var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
+					var allowedOverspend = form.getValueOf("allowedOverspend");
+					if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null || allowedOverspend == 0 ) ) {
+
+						throw Error( '/contract/edit/' + catalog.id, 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes sur la durée du contrat.');
 					}
 				}
 
@@ -621,20 +635,11 @@ class Contract extends Controller
 					throw Error( sugoi.Web.getURI(), "Merci de choisir quelle quantité de produits vous désirez" );
 				}
 
-				var allOrdersAreValid = true;
+				
 				try {
 
-					for ( distrib in pricesQuantitiesByDistrib.keys() ) {
-
-						if ( !SubscriptionService.areDistribVarOrdersValid( comingDistribSubscription, distrib, pricesQuantitiesByDistrib[ distrib ] ) ) {
-	
-							allOrdersAreValid = false; 
-							break;
-						}
-					}
-
 					//Catalog Constraints to respect
-					if( allOrdersAreValid ) {
+					if( SubscriptionService.areVarOrdersValid( comingDistribSubscription, pricesQuantitiesByDistrib ) ) {
 
 						if ( comingDistribSubscription == null ) {
 
@@ -708,6 +713,7 @@ class Contract extends Controller
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		view.comingDistribSubscription = comingDistribSubscription;
+		view.newSubscriptionDistribsNb = comingDistribSubscription != null ? null : db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
 		else {
 
@@ -721,7 +727,7 @@ class Contract extends Controller
 			}
 		}
 		view.userOrders = userOrders;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, comingDistribSubscription ), function( distrib ) return Formatting.dDate( distrib.date ) );
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, comingDistribSubscription ), function( distrib ) return StringTools.replace( StringTools.replace( Formatting.dDate( distrib.date ), "Vendredi", "Ven." ), "Mercredi", "Mer." ) );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );
 		view.subscriptions = subscriptions;
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );

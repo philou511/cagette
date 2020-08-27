@@ -132,8 +132,10 @@
 
 			</div>
 
-			::if catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0::
-				
+			::if (!edit && catalog.absentDistribsMaxNb != null && catalog.absentDistribsMaxNb != 0) ||
+				(edit && subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) != null && subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) != 0)
+			::
+	
 				<hr/>
 
 				::if edit && subscription.isValidated::
@@ -143,7 +145,17 @@
 					<div class="form-group">
 
 						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
-							Absences du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate)::
+							::set start = catalog.absencesStartDate ::
+							::set end = catalog.absencesEndDate::
+							::if subscription != null::
+								:: if start.getTime() < subscription.startDate.getTime()::
+									::set start = subscription.startDate::
+								::end::
+								:: if end.getTime() > subscription.endDate.getTime()::
+									::set end = subscription.endDate::
+								::end::
+							::end::
+							Nombre d'absences du ::sDate(start):: au ::sDate(end)::
 						</label>
 						<div class="col-sm-2" style="padding-top: 7px;">
 							::absencesNb::
@@ -181,13 +193,23 @@
 					<div class="form-group">
 
 						<label class="col-sm-3 control-label" for="absences" id="absencesLabel">
-							Absences du ::sDate(catalog.absencesStartDate):: au ::sDate(catalog.absencesEndDate)::
+							::set start = catalog.absencesStartDate ::
+							::set end = catalog.absencesEndDate::
+							::if subscription != null::
+								:: if start.getTime() < subscription.startDate.getTime()::
+									::set start = subscription.startDate::
+								::end::
+								:: if end.getTime() > subscription.endDate.getTime()::
+									::set end = subscription.endDate::
+								::end::
+							::end::
+							Nombre d'absences du ::sDate(start):: au ::sDate(end)::
 						</label>
 						<div class="col-sm-2">
 
 							<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
 								::set label = ""::
-								::foreach i loopList(0, catalog.absentDistribsMaxNb + 1)::
+								::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, subscription ) + 1 )::
 									::if i > 1::
 										::set label = "distributions"::
 									::else::
@@ -201,7 +223,7 @@
 
 					</div>
 
-					<h5>Dates des distributions pendant la période des absences :</h5>
+					<h5>Dates des distributions que vous pouvez manquer :</h5>
 
 					<div style="text-align: center;">
 
