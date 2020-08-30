@@ -70,7 +70,8 @@ class Contract extends Controller
 			view.email = f.getValueOf('email');
 			view.name = f.getValueOf('name');
 		}
-
+		
+		view.shopMode = app.user.getGroup().hasShopMode();
 		view.form = f;
 	}
 
@@ -106,138 +107,61 @@ class Contract extends Controller
 	}
 
 	/**
-		3 - Select VARIABLE ORDER / CSA Contract
+		Select CSA Variable / CSA Constant Contract
 	**/
-	//@tpl("contract/insertChoose.mtt")
+	@tpl("contract/insertChoose.mtt")
 	function doInsertChoose(vendor:db.Vendor) {
-		throw Redirect("/contract/insert/"+vendor.id);
+
+		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
+		view.vendor = vendor;
+		
 	}
 	
 	/**
 	 * 4 - create the contract
 	 */
 	@logged @tpl("contract/insert.mtt")
-	function doInsert(vendor:db.Vendor) {
+	function doInsert( vendor : db.Vendor, ?type = 1 ) {
+
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
 		view.title = t._("Create a catalog");
 		
 		var catalog = new db.Catalog();
+		catalog.type = type;
+		catalog.group = app.user.getGroup();
+		catalog.vendor = vendor;
 
-		var customMap = new FieldTypeToElementMap();
-		customMap["DDate"] = CagetteForm.renderDDate;
-		customMap["DTimeStamp"] = CagetteForm.renderDDate;
-		customMap["DDateTime"] = CagetteForm.renderDDate;
-
-		var form = form.CagetteForm.fromSpod( catalog, customMap );
-		if ( app.user.getGroup().hasShopMode() ) {
-
-			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
-			form.removeElement(form.getElement("requiresOrdering"));
-			form.removeElement(form.getElement("distribMinOrdersTotal"));
-			form.removeElement(form.getElement("catalogMinOrdersTotal"));
-			form.removeElement(form.getElement("allowedOverspend"));
-			form.removeElement(form.getElement("absentDistribsMaxNb"));
-			form.removeElement(form.getElement("absencesStartDate"));
-			form.removeElement(form.getElement("absencesEndDate"));
-			
-		}
-		else {
-
-			if ( catalog.type == Catalog.TYPE_CONSTORDERS ) {
-
-				form.removeElement(form.getElement("requiresOrdering"));
-				form.removeElement(form.getElement("distribMinOrdersTotal"));
-				form.removeElement(form.getElement("catalogMinOrdersTotal"));
-				form.removeElement(form.getElement("allowedOverspend"));
-			}
-
-			var catalogTypes = [ { label : 'Contrat AMAP classique', value : 0 }, { label : 'Contrat AMAP variable', value : 1 } ];
-			form.addElement( new sugoi.form.elements.IntSelect( 'catalogtype', 'Type de catalogue', catalogTypes, null, true ), 0 );
-		}
-		form.removeElement(form.getElement("groupId") );
-		form.removeElement(form.getElement("type"));
-		form.getElement("name").value = "Commande "+vendor.name;
-		form.getElement("userId").required = true;
-		form.getElement("startDate").value = Date.now();
-		form.getElement("endDate").value = DateTools.delta(Date.now(),365.25*24*60*60*1000);
-		form.removeElement(form.getElement("vendorId"));
-		form.addElement(new sugoi.form.elements.Html("vendorHtml",'<b>${vendor.name}</b> (${vendor.zipCode} ${vendor.city})', t._("Vendor")));
-		form.getElement("orderEndHoursBeforeDistrib").value = 24;
+		var form = catalog.getForm();
 		
 		if ( form.checkToken() ) {
 
 			form.toSpod( catalog );
-			catalog.group = app.user.getGroup();
+			
+			try {
 
-			if( !app.user.getGroup().hasShopMode() ) {
+				catalog.checkFormData( form );
+			
+				catalog.insert();
 
-				catalog.type = form.getValueOf("catalogtype");
-
-				if( catalog.type == db.Catalog.TYPE_VARORDER ) {
-					
-					var distribMinOrdersTotal = form.getValueOf("distribMinOrdersTotal");
-					if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
-
-						catalog.requiresOrdering = true;
-					}
-
-					var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
-					var allowedOverspend = form.getValueOf("allowedOverspend");
-					if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null || allowedOverspend == 0 ) ) {
-
-						throw Error( '/contract/edit/' + catalog.id, 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes sur la durée du contrat.');
-					}
-				}
-
-				if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-					
-					var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
-					if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
-
-						throw Error( '/contract/insert/' + vendor.id, 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
-					}
-				}
+				//Let's add the Volunteer Roles for the number of volunteers needed
+				service.VolunteerService.createRoleForContract( catalog, form.getValueOf("distributorNum") );
 				
-				var absentDistribsMaxNb = form.getElement("absentDistribsMaxNb").value;
-				var absencesStartDate = form.getElement("absencesStartDate").value;
-				var absencesEndDate = form.getElement("absencesEndDate").value;
+				//right
+				if ( catalog.contact != null ) {
 
-				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
-
-					throw Error( '/contract/insert/' + vendor.id, 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner une période d\'absences.' );
-				}
-				
-				if( absencesStartDate != null ) {
-
-					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
-				}
-				 
-				if( absencesEndDate != null ) {
-
-					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+					var ua = db.UserGroup.get( catalog.contact, app.user.getGroup(), true );
+					ua.giveRight(ContractAdmin( catalog.id ));
+					ua.giveRight(Messages);
+					ua.giveRight(Membership);
+					ua.update();
 				}
 			}
-			else {
+			catch ( e : Error ) {
 
-				catalog.type = Catalog.TYPE_VARORDER;
+				throw Error( '/contract/insert/' + vendor.id, e.message );
 			}
 			
-			catalog.vendor = vendor;
-			catalog.insert();
-
-			//Let's add the Volunteer Roles for the number of volunteers needed
-			service.VolunteerService.createRoleForContract( catalog, form.getValueOf("distributorNum") );
-			
-			//right
-			if ( catalog.contact != null ) {
-
-				var ua = db.UserGroup.get( catalog.contact, app.user.getGroup(), true );
-				ua.giveRight(ContractAdmin( catalog.id ));
-				ua.giveRight(Messages);
-				ua.giveRight(Membership);
-				ua.update();
-			}
 			
 			throw Ok( "/contractAdmin/view/" + catalog.id, t._("New catalog created") );
 		}
@@ -259,133 +183,45 @@ class Contract extends Controller
  
 		 var group = catalog.group;
 		 var currentContact = catalog.contact;
+
+		 var form = catalog.getForm();
 		 
-		 var customMap = new FieldTypeToElementMap();
-		 customMap["DDate"] = CagetteForm.renderDDate;
-		 customMap["DTimeStamp"] = CagetteForm.renderDDate;
-		 customMap["DDateTime"] = CagetteForm.renderDDate;
- 
-		 var form = form.CagetteForm.fromSpod( catalog, customMap );
-		 //form.removeElement( form.getElement("groupId") );
-		 form.removeElement(form.getElement("type"));
-		 form.removeElement(form.getElement("distributorNum"));
-		 form.getElement("userId").required = true;
-
-		 if ( app.user.getGroup().hasShopMode() ) {
-
-			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
-			form.removeElement(form.getElement("requiresOrdering"));
-			form.removeElement(form.getElement("distribMinOrdersTotal"));
-			form.removeElement(form.getElement("catalogMinOrdersTotal"));
-			form.removeElement(form.getElement("allowedOverspend"));
-			form.removeElement(form.getElement("absentDistribsMaxNb"));
-			form.removeElement(form.getElement("absencesStartDate"));
-			form.removeElement(form.getElement("absencesEndDate"));
-			
-		}
-		else {
-
-			if ( catalog.type == Catalog.TYPE_CONSTORDERS ) {
-
-				form.removeElement(form.getElement("requiresOrdering"));
-				form.removeElement(form.getElement("distribMinOrdersTotal"));
-				form.removeElement(form.getElement("catalogMinOrdersTotal"));
-				form.removeElement(form.getElement("allowedOverspend"));
-				
-			}
-
-		}
- 
 		 app.event( EditContract( catalog, form ) );
 		 
 		 if ( form.checkToken() ) {
+
 			 form.toSpod( catalog );
-			 catalog.group = group;
+			
+			 try {
 
-			 if ( !app.user.getGroup().hasShopMode() ) {
-
-				if( catalog.type == db.Catalog.TYPE_VARORDER ) {
+				catalog.checkFormData( form );
+		 
+				catalog.update();
+				
+				//update rights
+				if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
+					var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
+					ua.giveRight(ContractAdmin(catalog.id));
+					ua.giveRight(Messages);
+					ua.giveRight(Membership);
+					ua.update();
 					
-					var distribMinOrdersTotal = form.getValueOf("distribMinOrdersTotal");
-					if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
-
-						catalog.requiresOrdering = true;
+					//remove rights to old contact
+					if (currentContact != null) {
+						var x = db.UserGroup.get(currentContact, catalog.group, true);
+						if (x != null) {
+							x.removeRight(ContractAdmin(catalog.id));
+							x.update();
+						}
 					}
-
-					var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
-					var allowedOverspend = form.getValueOf("allowedOverspend");
-					if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null || allowedOverspend == 0 ) ) {
-
-						throw Error( '/contract/edit/' + catalog.id, 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes sur la durée du contrat.');
-					}
-				}
-
-				if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
-					
-					var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
-					if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
-
-						throw Error( '/contract/edit/' + catalog.id, 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
-					}
-				}
-
-			 	var absencesStartDate = form.getElement("absencesStartDate").value;
-				var absencesEndDate = form.getElement("absencesEndDate").value;
-				var absencesDistribsNb = SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
-				var absentDistribsMaxNb = form.getElement("absentDistribsMaxNb").value;
-				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
-
-					throw Error( '/contract/edit/' + catalog.id, 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
-					Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
 					
 				}
 
-				if( absencesStartDate != null ) {
+			 }
+			 catch ( e : Error ) {
 
-					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
-				}
-				 
-				if( absencesEndDate != null ) {
-
-					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
-				}
-			 	
-			 }
-			 //checks & warnings
-			 if ( catalog.hasPercentageOnOrders() && catalog.percentageValue==null ) {
-
-				 throw Error( "/contract/edit/" + catalog.id, t._("If you would like to add fees to the order, define a rate (%) and a label.") );
-			 }
-			 
-			 if (catalog.hasStockManagement()) {
-				 for (p in catalog.getProducts()) {
-					 if (p.stock == null) {
-						 app.session.addMessage(t._("Warning about management of stock. Please fill the field \"stock\" for all your products"), true);
-						 break;
-					 }
-				 }
-			 }
- 
-			 catalog.update();
-			 
-			 //update rights
-			 if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
-				 var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
-				 ua.giveRight(ContractAdmin(catalog.id));
-				 ua.giveRight(Messages);
-				 ua.giveRight(Membership);
-				 ua.update();
-				 
-				 //remove rights to old contact
-				 if (currentContact != null) {
-					 var x = db.UserGroup.get(currentContact, catalog.group, true);
-					 if (x != null) {
-						 x.removeRight(ContractAdmin(catalog.id));
-						 x.update();
-					 }
-				 }
-				 
-			 }
+				throw Error( '/contract/edit/' + catalog.id, e.message );
+			}
 			 
 			 throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") );
 		 }

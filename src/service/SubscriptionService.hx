@@ -173,6 +173,7 @@ class SubscriptionService
 
 		var absencesStartDate : Date = absStartDate != null ? absStartDate : catalog.absencesStartDate;
 		var absencesEndDate : Date = absEndDate != null ? absEndDate : catalog.absencesEndDate;
+		
 		if ( absencesStartDate == null || absencesEndDate == null ) {
 
 			return 0;
@@ -296,13 +297,10 @@ class SubscriptionService
 				label += 'Minimum de commande par distribution : ' + subscription.catalog.distribMinOrdersTotal + ' €<br />';
 			}
 
-			if ( subscription.catalog.catalogMinOrdersTotal != null && subscription.catalog.catalogMinOrdersTotal != 0 ) {
+			var catalogMinOrdersTotal = getCatalogMinOrdersTotal( subscription.catalog, subscription );
+			if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && subscription.catalog.allowedOverspend != null && subscription.catalog.allowedOverspend != 0 ) {
 				
-				label += 'Minimum de commandes sur la durée du contrat : ' + subscription.catalog.catalogMinOrdersTotal + ' €<br />';
-			}
-
-			if ( subscription.catalog.allowedOverspend != null && subscription.catalog.allowedOverspend != 0 ) {
-				
+				label += 'Minimum de commandes sur la durée du contrat : ' + catalogMinOrdersTotal + ' €<br />';
 				label += 'Dépassement autorisé : ' + subscription.catalog.allowedOverspend + ' €<br />';
 			}
 
@@ -410,15 +408,26 @@ class SubscriptionService
 
 	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, subscription : db.Subscription ) : Float {
 
-		if ( subscription == null ) {
+		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
 
-			return catalog.catalogMinOrdersTotal;
+			return null;
+		}
+
+		var subscriptionDistribsNb = 0;
+		if ( subscription != null ) {
+		
+			subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
+		}
+		else {
+
+			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		}
 		
-		var subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
 		var catalogAllDistribsNb = db.Distribution.manager.count( $catalog == catalog );
+		if ( catalogAllDistribsNb == 0 ) return null;
 		var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
-		return Formatting.roundTo( ratio * catalog.catalogMinOrdersTotal, 2 );
+
+		return Formatting.roundTo( ratio * catalog.catalogMinOrdersTotal, 0 );
 	}
 
 	 /*
@@ -439,13 +448,36 @@ class SubscriptionService
 			catalog = pricesQuantitiesByDistrib.keys().next().catalog;
 		}
 
-		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 ) ) {
+		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
+		if ( ( catalog.distribMinOrdersTotal == null || catalog.distribMinOrdersTotal == 0 ) && ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) ) {
 
 			return true;
 		}
-	
 
-		if ( catalog.catalogMinOrdersTotal != null && catalog.catalogMinOrdersTotal != 0 && catalog.allowedOverspend != null && catalog.allowedOverspend != 0 ) {
+		if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {
+
+			var distribTotal : Float = 0;
+			for ( distrib in pricesQuantitiesByDistrib.keys() ) {
+
+				distribTotal = 0;
+				for ( quantityPrice in pricesQuantitiesByDistrib[distrib] ) {
+
+					distribTotal += Formatting.roundTo( quantityPrice.productQuantity * quantityPrice.productPrice, 2 );
+				}
+
+				distribTotal = Formatting.roundTo( distribTotal, 2 );
+
+				if ( distribTotal < catalog.distribMinOrdersTotal ) {
+
+					var message = '<strong>Distribution du ' + Formatting.hDate( distrib.date ) + ' :</strong><br/>';
+					message += 'Le total de votre commande effectuée pour une distribution donnée doit être d\'au moins ' + catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
+					throw TypedError.typed( message, CatalogRequirementsNotMet );
+				}
+
+			}
+		}
+
+		if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && catalog.allowedOverspend != null && catalog.allowedOverspend != 0 ) {
 
 			//Computes the new orders total
 			var ordersTotal : Float = 0;
@@ -508,35 +540,27 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 
-					if ( newSubscriptionTotal < catalog.catalogMinOrdersTotal ) {
+					if ( newSubscriptionTotal < catalogMinOrdersTotal ) {
 	
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de ' +  newSubscriptionTotal + ' € alors qu\'il doit être supérieur à ' + catalog.catalogMinOrdersTotal + ' €. Veuillez rajouter des produits.';
+						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de '+  newSubscriptionTotal
+						+ ' € alors qu\'il doit être supérieur à ' + catalogMinOrdersTotal + ' €. Veuillez rajouter des produits.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
 				}
 			}
 
 			//Checks that the orders total is lower than the allowed overspend
-			var maxAllowedTotal = catalog.catalogMinOrdersTotal + catalog.allowedOverspend;
+			var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
 			if ( maxAllowedTotal < newSubscriptionTotal ) {
 
-				var message = 'Le nouveau total de toutes vos commandes serait de ' +  newSubscriptionTotal + ' € alors qu\'il doit être inférieur à ' + maxAllowedTotal + ' €. Veuillez enlever des produits.';
+				var message = 'Le nouveau total de toutes vos commandes serait de ' +  newSubscriptionTotal
+				+ ' € alors qu\'il doit être inférieur à ' + maxAllowedTotal + ' €. Veuillez enlever des produits.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
 
 		}
-	
-
-		// if ( distribTotalPrice < distribution.catalog.distribMinOrdersTotal ) {
-
-		// 	var message = '<strong>Distribution du ' + Formatting.hDate( distribution.date ) + ' :</strong><br/>';
-		// 	if ( showCatalogName ) message = '<strong>Engagement du catalogue :</strong> ' + distribution.catalog.name + '<br/>';
-		// 	message += 'Le total de votre commande effectuée pour une distribution donnée doit être d\'au moins ' + distribution.catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
-		// 	throw TypedError.typed( message, CatalogRequirementsNotMet );
-		// }
 
 		return true;
-
 	}
 
 	public static function getNewSubscriptionStartDate( catalog : db.Catalog ) : Date {

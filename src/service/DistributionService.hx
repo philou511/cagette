@@ -333,14 +333,22 @@ class DistributionService
 
 		md.deleteProductsExcerpt();
 
+		var orderStartDate = md.orderStartDate;
 		var orderEndDate = md.orderEndDate;
-		if ( !catalog.group.hasShopMode() && catalog.orderEndHoursBeforeDistrib != null && catalog.orderEndHoursBeforeDistrib != 0 ) {
+		if ( !catalog.group.hasShopMode() ) {
 
-			orderEndDate = DateTools.delta( md.distribStartDate, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib));
+			if ( catalog.orderStartDaysBeforeDistrib != null && catalog.orderStartDaysBeforeDistrib != 0 ) {
+
+				orderStartDate = DateTools.delta( md.distribStartDate, -1000.0 * 60 * 60 * 24 * catalog.orderStartDaysBeforeDistrib );
+			}
+
+			if ( catalog.orderEndHoursBeforeDistrib != null && catalog.orderEndHoursBeforeDistrib != 0 ) {
+
+				orderEndDate = DateTools.delta( md.distribStartDate, -1000.0 * 60 * 60 * catalog.orderEndHoursBeforeDistrib );
+			}
 		}
 
-		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, md.orderStartDate, orderEndDate, null, true, md );
-
+		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, orderStartDate, orderEndDate, null, true, md );
 	}
 
 	 /**

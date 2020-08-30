@@ -267,6 +267,7 @@ class Group extends controller.Controller
 				contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
 				contract.contact = user;
 				contract.distributorNum = 2;
+				contract.orderStartDaysBeforeDistrib = 365;
 				contract.orderEndHoursBeforeDistrib = 24;
 				contract.insert();
 				
