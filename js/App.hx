@@ -58,7 +58,6 @@ class App {
     public var userEmail : String;
     
 
-
 	function new(?lang="fr",?currency="&euro;") {
 		//singleton
 		instance = this;
@@ -87,7 +86,7 @@ class App {
     }
     
 
-    var sentryInited:Bool;
+    /*var sentryInited:Bool;
 
     public function initSentry(){
 
@@ -109,23 +108,23 @@ class App {
         }
 
         sentryInited = true;
-    }
+    }*/
 
 	/**
 		Old Shop
 	**/
 	public function getCart() {
-        initSentry();
+        // //initSentry();
 		return new ShopCart();
 	}
 
 	public function getTagger(cid:Int ) {
-        initSentry();
+        // //initSentry();
 		return new Tagger(cid);
 	}
 
 	public function getTuto(name:String, step:Int) {
-        initSentry();
+        // //initSentry();
 		new Tuto(name,step);
 	}
 	
@@ -138,7 +137,7 @@ class App {
 	}
 	
 	public function getVATBox(ttcprice:Float,currency:String,rates:String,vat:Float,formName:String){
-		initSentry();
+		// //initSentry();
 		var input = js.Browser.document.querySelector('form input[name="${formName}_price"]');
 		
 		remove( js.Browser.document.querySelector('form input[name="${formName}_vat"]').parentElement.parentElement );
@@ -154,7 +153,7 @@ class App {
 	 * @param	formName
 	 */
 	public function getProductInput(divId:String, productName:String, txpProductId:Null<Int>, formName:String ){
-        initSentry();
+        // //initSentry();
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
 			//dirty stuff to remove "real" input, and replace it by the react one
@@ -174,7 +173,7 @@ class App {
         
 		js.Browser.document.addEventListener("DOMContentLoaded", function(event) {
 
-            initSentry();
+            // //initSentry();
 
 			//Load data from API
 			var vendorInfo:VendorInfos = null;
@@ -210,7 +209,7 @@ class App {
 	}
 
 	public function openImageUploader( uploadURL : String, uploadedImageURL : String, width:Int, height:Int, ?formFieldName: String ) {
-        initSentry();
+        //initSentry();
 		var node = js.Browser.document.createDivElement();
 		js.Browser.document.body.appendChild(node);
 		ReactDOM.unmountComponentAtNode(node); 
@@ -221,12 +220,12 @@ class App {
 	}
 	
 	public function initReportHeader(){
-        initSentry();
+        // //initSentry();
 		ReactDOM.render(jsx('<$ReportHeader />'),  js.Browser.document.querySelector('div.reportHeaderContainer'));
 	}
 	
 	public function initOrderBox(userId : Int, multiDistribId : Int, catalogId : Int, catalogType : Int, date : String, place : String, userName : String, currency : String, hasPayments : Bool, callbackUrl : String) {
-        initSentry();
+        // //initSentry();
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "ordersdialog-container";
@@ -290,7 +289,7 @@ class App {
 	 * Displays a login box
 	 */
 	public function loginBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {	
-        initSentry();
+        // //initSentry();
 
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'identifier";
@@ -309,7 +308,7 @@ class App {
 	 *  Displays a sign up box
 	 */
 	public function registerBox(redirectUrl:String,?message:String,?phoneRequired=false,?addressRequired=false) {
-        initSentry();
+        //initSentry();
 
 		var modalElement = Browser.document.getElementById("myModal");
 		modalElement.querySelector(".modal-title").innerHTML = "S'inscrire";
@@ -324,7 +323,7 @@ class App {
 	}
 
 	public function membershipBox(userId:Int,groupId:Int,?callbackUrl:String,?distributionId:Int){
-        initSentry();
+        //initSentry();
 
 		var node = js.Browser.document.createDivElement();
 		node.id = "membershipBox-container";
@@ -361,7 +360,7 @@ class App {
 		instanciates shop2
 	**/
 	public function shop(multiDistribId:Int) {
-        initSentry();
+        //initSentry();
 
 		var elements = js.Browser.window.document.querySelectorAll('.sticky');
 		sticky.Stickyfill.add(elements);
@@ -396,7 +395,7 @@ class App {
 
 	
 	public function groupMap(lat:Float,lng:Float,address:String) {
-        initSentry();
+        //initSentry();
 
 		ReactDOM.render(jsx('<$GroupMapRoot lat=$lat lng=$lng address=$address />'),  js.Browser.document.querySelector('#map'));
 	}
