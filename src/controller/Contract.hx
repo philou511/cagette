@@ -125,8 +125,13 @@ class Contract extends Controller
 
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = t._("Create a catalog");
-		
+		view.title = if(app.getCurrentGroup().hasShopMode()){
+			t._("Create a catalog");
+		}else if (type==1){
+			"Créer un contrat AMAP variable";
+		}else{
+			"Créer un contrat AMAP classique";
+		}		
 		var catalog = new db.Catalog();
 		catalog.type = type;
 		catalog.group = app.user.getGroup();

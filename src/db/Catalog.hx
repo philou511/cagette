@@ -170,25 +170,37 @@ class Catalog extends Object
 			form.removeElement(form.getElement("absencesEndDate"));
 		}
 		else {
+			//CSA MODE
+			form.removeElementByName("percentageValue");
+			form.removeElementByName("percentageName");
+			untyped form.getElement("flags").excluded = [2];// remove "PercentageOnOrders" flag
 
-			var absencesIndex = 18;
+			var absencesIndex = 16;
 			if ( this.type == TYPE_VARORDER ) {
-
-				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<hr/><p style="font-weight:bold;"><strong>Engagement par distribution</p>', '' ), 12 );
-				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<hr/><p style="font-weight:bold;"><strong>Engagement sur la durée du contrat</p>', '' ), 15 );
+				//VAR
+				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<h4>Engagement par distribution</h4>', '' ), 10 );
+				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<h4>Engagement sur la durée du contrat</h4>', '' ), 13 );
 			}
 			else { 
-
+				//CONST
 				form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
 				form.removeElement(form.getElement("requiresOrdering"));
 				form.removeElement(form.getElement("distribMinOrdersTotal"));
 				form.removeElement(form.getElement("catalogMinOrdersTotal"));
 				form.removeElement(form.getElement("allowedOverspend"));
 
-				absencesIndex = 11;
+				form.getElement("orderEndHoursBeforeDistrib").label = "Délai maximum pour saisir une souscription (nbre d'heures avant prochaine distribution)";
+
+				absencesIndex = 9;
 			}
 
-			form.addElement( new sugoi.form.elements.Html( 'absences', '<hr/><p style="font-weight:bold;">Gestion des absences</p>', '' ), absencesIndex );
+			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>
+            <p><i class='icon icon-info'></i> 
+				Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
+				Cette option est souvent utilisée pour avoir des \"jokers\" pendant les vacances d'été.
+            </p></div>";
+			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
+			
 
 			if ( this.id == null ) {
 
@@ -200,6 +212,7 @@ class Catalog extends Object
 			}
 		}
 		
+		//For all types and modes
 		if ( this.id != null ) {
 
 			form.removeElement(form.getElement("distributorNum"));
