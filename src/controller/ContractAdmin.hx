@@ -59,7 +59,6 @@ class ContractAdmin extends Controller
 		}
 		
 		view.contracts = contracts;
-		view.type_constorders = db.Catalog.TYPE_CONSTORDERS;
 		view.vendors = app.user.getGroup().getActiveVendors();
 		view.places = app.user.getGroup().getPlaces();
 		checkToken();
@@ -665,14 +664,16 @@ class ContractAdmin extends Controller
 	}
 	
 	@tpl("contractadmin/view.mtt")
-	function doView(contract:db.Catalog) {
-		view.nav.push("view");
-		sendNav(contract);
+	function doView( catalog : db.Catalog ) {
 
-		contract.check();
+		view.nav.push("view");
+		sendNav(catalog);
+
+		catalog.check();
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		view.c = view.contract = contract;
+		if ( !app.user.canManageContract( catalog ) ) throw Error("/", t._("You do not have the authorization to manage this contract"));
+
+		view.c = view.contract = catalog;
 	}	
 
 	function doDocuments( dispatch : haxe.web.Dispatch ) {

@@ -1,0 +1,44 @@
+::use 'design.mtt'::
+
+    <div class="col-md-12"><h2>Choisissez le type de contrat que vous voulez créer</h2></div>
+    
+    <br/><br/><br/><br/><br/>
+
+	<div class="col-md-6">
+		<div class="article">
+
+            <br/><br/>
+			<div style="text-align:center;margin-bottom:12px;">
+				<a href="/contract/insert/::vendor.id::/0" class="btn btn-default btn-lg">Contrat AMAP classique</a>
+            </div>
+            <br/>
+            <div style="text-align: center;">
+                <p>
+                    Les produits pour ce type de contrat sont les même à chaque distribution.<br/>
+                    <i>Exemple : Brigitte reçoit un panier qui coûte 15 € à chaque distribution.</i>
+                </p>
+                <br/>
+            </div>
+
+		</div>
+	</div>
+	
+	<div class="col-md-6">
+		<div class="article">
+
+			<br/><br/>
+			<div style="text-align:center;margin-bottom:12px;">	
+				<a href="/contract/insert/::vendor.id::/1" class="btn btn-default btn-lg">Contrat AMAP variable</a>
+            </div>
+            <br/>
+            <div style="text-align: center;">
+                <p>
+                    Avec ce type de contrat vos client(e)s pourront avoir des commandes différentes pour chaque distribution.<br/>
+                    <i>Exemple : Jean commande un panier qui coûte 10 € pour une distribution puis rien à la prochaine puis un panier de 20 € etc.</i>
+                </p>
+            </div>
+
+		</div>
+	</div>
+
+::end::

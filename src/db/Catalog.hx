@@ -15,6 +15,8 @@ class Catalog extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
+
+	public var type : SInt;
 	
 	//responsable
 	@formPopulate("populate") @:relation(userId) public var contact : SNull<User>;
@@ -32,7 +34,17 @@ class Catalog extends Object
 	public var percentageValue : SNull<SFloat>; 		//fees percentage
 	public var percentageName : SNull<SString<64>>;		//fee name
 	
-	public var type : SInt;
+	public var orderStartDaysBeforeDistrib : SNull<SInt>;
+	public var orderEndHoursBeforeDistrib : SNull<SInt>;
+
+	public var requiresOrdering : SNull<Bool>;
+	public var distribMinOrdersTotal : SNull<SFloat>;
+	public var catalogMinOrdersTotal : SNull<SFloat>;
+	public var allowedOverspend : SNull<SFloat>;
+
+	public var absentDistribsMaxNb : SNull<SInt>;
+	public var absencesStartDate : SNull<SDateTime>;
+	public var absencesEndDate : SNull<SDateTime>;
 
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
@@ -47,14 +59,7 @@ class Catalog extends Object
 		distributorNum = 0;		
 		flags.set(UsersCanOrder);
 	
-	}
-
-	/**
-		Is there a subscription management on this catalog ?
-	**/
-	public function hasSubscriptions(){
-		return type==TYPE_CONSTORDERS;
-	}
+	}	
 	
 	/**
 	 * The products can be ordered currently ?
@@ -120,6 +125,202 @@ class Catalog extends Object
 	public function hasStockManagement():Bool {
 		return flags.has(StockManagement);
 	}
+
+	public function hasConstraints() : Bool {
+
+		return this.type == TYPE_VARORDER && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
+	}
+
+	public function hasAbsencesManagement() : Bool {
+
+		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+	}
+
+
+	public function getForm() : sugoi.form.Form {
+
+		if ( this.group == null || this.type == null || this.vendor == null ) {
+
+			throw new tink.core.Error( "Un des éléments suivants est manquant : le groupe, le type, ou le producteur." );
+		}
+
+		var t = sugoi.i18n.Locale.texts;
+
+		var customMap = new form.CagetteForm.FieldTypeToElementMap();
+		customMap["DDate"] = form.CagetteForm.renderDDate;
+		customMap["DTimeStamp"] = form.CagetteForm.renderDDate;
+		customMap["DDateTime"] = form.CagetteForm.renderDDate;
+
+		var form = form.CagetteForm.fromSpod( this, customMap );
+		
+		form.removeElement(form.getElement("groupId") );
+		form.removeElement(form.getElement("type"));
+		form.removeElement(form.getElement("vendorId"));
+		
+		if ( this.group.hasShopMode() ) {
+
+			form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
+			form.removeElement(form.getElement("orderEndHoursBeforeDistrib"));
+			form.removeElement(form.getElement("requiresOrdering"));
+			form.removeElement(form.getElement("distribMinOrdersTotal"));
+			form.removeElement(form.getElement("catalogMinOrdersTotal"));
+			form.removeElement(form.getElement("allowedOverspend"));
+			form.removeElement(form.getElement("absentDistribsMaxNb"));
+			form.removeElement(form.getElement("absencesStartDate"));
+			form.removeElement(form.getElement("absencesEndDate"));
+		}
+		else {
+
+			var absencesIndex = 18;
+			if ( this.type == TYPE_VARORDER ) {
+
+				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<hr/><p style="font-weight:bold;"><strong>Engagement par distribution</p>', '' ), 12 );
+				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<hr/><p style="font-weight:bold;"><strong>Engagement sur la durée du contrat</p>', '' ), 15 );
+			}
+			else { 
+
+				form.removeElement(form.getElement("orderStartDaysBeforeDistrib"));
+				form.removeElement(form.getElement("requiresOrdering"));
+				form.removeElement(form.getElement("distribMinOrdersTotal"));
+				form.removeElement(form.getElement("catalogMinOrdersTotal"));
+				form.removeElement(form.getElement("allowedOverspend"));
+
+				absencesIndex = 11;
+			}
+
+			form.addElement( new sugoi.form.elements.Html( 'absences', '<hr/><p style="font-weight:bold;">Gestion des absences</p>', '' ), absencesIndex );
+
+			if ( this.id == null ) {
+
+				if ( this.type == TYPE_VARORDER ) {
+
+					form.getElement("orderStartDaysBeforeDistrib").value = 365;
+				}
+				form.getElement("orderEndHoursBeforeDistrib").value = 24;
+			}
+		}
+		
+		if ( this.id != null ) {
+
+			form.removeElement(form.getElement("distributorNum"));
+		}
+		else {
+
+			form.getElement("name").value = "Commande " + this.vendor.name;
+			form.getElement("startDate").value = Date.now();
+			form.getElement("endDate").value = DateTools.delta( Date.now(), 365.25 * 24 * 60 * 60 * 1000 );
+		}
+
+		form.addElement( new sugoi.form.elements.Html( "vendorHtml", '<b>${this.vendor.name}</b> ( ${this.vendor.zipCode} ${this.vendor.city} )', t._( "Vendor" ) ), 3 );
+
+		var contact = form.getElement("userId");
+		form.removeElement( contact );
+		form.addElement( contact, 4 );
+		contact.required = true;
+			
+		return form;
+	}
+
+	public function checkFormData( form : sugoi.form.Form ) {
+
+		if( !this.group.hasShopMode() ) {
+
+			var t = sugoi.i18n.Locale.texts;
+
+			if( this.type == TYPE_VARORDER ) {
+
+				var orderStartDaysBeforeDistrib = form.getValueOf("orderStartDaysBeforeDistrib");
+				if( orderStartDaysBeforeDistrib == 0 ) {
+
+					throw new tink.core.Error( 'L\'ouverture des commandes ne peut pas être à zéro.
+					Si vous voulez utiliser l\'ouverture par défaut des distributions laissez le champ vide.');
+				}
+				
+				var distribMinOrdersTotal = form.getValueOf("distribMinOrdersTotal");
+				if( distribMinOrdersTotal != null && distribMinOrdersTotal != 0 ) {
+
+					this.requiresOrdering = true;
+				}
+
+				var catalogMinOrdersTotal = form.getValueOf("catalogMinOrdersTotal");
+				var allowedOverspend = form.getValueOf("allowedOverspend");
+				if( ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 ) && ( allowedOverspend == null || allowedOverspend == 0 ) ) {
+
+					throw new tink.core.Error( 'Vous devez obligatoirement définir un dépassement autorisé car vous avez rentré un minimum de commandes sur la durée du contrat.');
+				}
+			}
+
+			if( this.type == TYPE_CONSTORDERS ) {
+				
+				var orderEndHoursBeforeDistrib = form.getValueOf("orderEndHoursBeforeDistrib");
+				if( orderEndHoursBeforeDistrib == null || orderEndHoursBeforeDistrib == 0 ) {
+
+					throw new tink.core.Error( 'Vous devez obligatoirement définir un nombre d\'heures avant distribution pour la fermeture des commandes.');
+				}
+			}
+
+			var absentDistribsMaxNb = form.getValueOf('absentDistribsMaxNb');
+			var absencesStartDate : Date = form.getValueOf('absencesStartDate');
+			var absencesEndDate : Date = form.getValueOf('absencesEndDate');
+
+			if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
+
+				throw new tink.core.Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
+			}
+
+			if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
+
+				throw new tink.core.Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
+			}
+
+			if ( absencesStartDate != null && absencesEndDate != null ) {
+
+				if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
+
+					throw new tink.core.Error( 'La date de début des absences doit être avant la date de fin des absences.' );
+				}
+
+				var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( this, absencesStartDate, absencesEndDate );
+				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
+
+					throw new tink.core.Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+					Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
+					
+				}
+
+				if ( absencesStartDate.getTime() < this.startDate.getTime() || absencesEndDate.getTime() > this.endDate.getTime() ) {
+
+					throw new tink.core.Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
+				}
+
+				this.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+				this.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+			}
+
+			if ( this.id != null ) {
+
+				if ( this.hasPercentageOnOrders() && this.percentageValue == null ) {
+
+					throw new tink.core.Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
+				}
+				
+				if ( this.hasStockManagement()) {
+
+					for ( p in this.getProducts()) {
+
+						if ( p.stock == null ) {
+
+							App.current.session.addMessage(t._("Warning about management of stock. Please fill the field \"stock\" for all your products"), true );
+							break;
+						}
+					}
+				}
+
+			}
+
+		}
+	}
+
 	
 	/**
 	 * computes a 'percentage' fee or a 'margin' fee 
@@ -252,7 +453,7 @@ class Catalog extends Object
 
 		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserOrder>();
-		if (d != null && d.catalog.type==db.Catalog.TYPE_VARORDER) {
+		if (d != null && d.catalog.type==TYPE_VARORDER) {
 			if(includeUser2){
 				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
 			}else{
@@ -291,7 +492,7 @@ class Catalog extends Object
 	public function getVisibleDocuments( user : db.User ) : List<sugoi.db.EntityFile> {
 
 		var isSubscribedToCatalog = false;
-		if ( user != null && this.type == db.Catalog.TYPE_CONSTORDERS ) { //Amap catalog
+		if ( user != null && this.type == TYPE_CONSTORDERS ) { //Amap catalog
 
 			var userCatalogs : Array<db.Catalog> = user.getContracts(this.group);
 			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == this.id ); 
@@ -350,9 +551,18 @@ class Catalog extends Object
 			"distributorNum" 	=> t._("Number of required volunteers during a distribution"),
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
-			"percentageName" 	=> t._("Fees label"),			
-			"contact" 			=> t._("Contact"),			
-			"vendor" 			=> t._("Farmer"),			
+			"percentageName" 	=> t._("Fees label"),
+			"contact" 			=> t._("Contact"),
+			"vendor" 			=> t._("Farmer"),
+			"orderStartDaysBeforeDistrib" => "Ouverture des commandes (nbre de jours avant distribution)",
+			"orderEndHoursBeforeDistrib" => "Fermeture des commandes (nbre d'heures avant distribution)",
+			"requiresOrdering" => "Obligation de commander à chaque distribution",
+			"distribMinOrdersTotal" => "Minimum de commande par distribution (en €)",
+			"catalogMinOrdersTotal" => "Minimum de commandes sur la durée du contrat (en €)",
+			"allowedOverspend" => "Dépassement autorisé (en €)",
+			"absentDistribsMaxNb" => "Nombre maximum d'absences",
+			"absencesStartDate" => "Date de début de la période d'absences",
+			"absencesEndDate" => "Date de fin de la période d'absences",
 		];
 	}
 	

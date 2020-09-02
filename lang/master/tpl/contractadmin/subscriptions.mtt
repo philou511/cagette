@@ -12,6 +12,52 @@
 				</div>
 			</div>
 
+        </div>
+        
+        <div class="row" ::cond catalog.type == TYPE_VARORDER:: >
+
+			<div id="content" class="col-md-12">
+                <p style="font-weight: bold;">Contraintes du contrat</p>
+				<table class="table table-striped table-bordered">
+                    <tr class="greyhead">
+                        <th>Obligation de commander à chaque distribution</th>
+                        <th>Minimum de commande par distribution</th>
+                        <th>Minimum de commandes sur la durée du contrat</th>
+                        <th>Dépassement autorisé</th>                        
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td style="vertical-align: middle;">
+                            ::if catalog.requiresOrdering::
+                                Oui
+                            ::else::
+                                Non
+                            ::end::
+                        </td>
+                        <td class="::class::" style="vertical-align: middle;">
+                            ::if catalog.distribMinOrdersTotal != null::
+                                ::catalog.distribMinOrdersTotal::&nbsp;::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
+                        </td>
+                        <td style="vertical-align: middle;">
+                            ::if catalog.catalogMinOrdersTotal != null::
+                                ::catalog.catalogMinOrdersTotal::&nbsp;::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
+                        </td>
+                        <td style="vertical-align: middle;">
+                            ::if catalog.allowedOverspend != null::
+                                ::catalog.allowedOverspend::&nbsp;::currency()::
+                            ::else::
+                                Aucun
+                            ::end::
+                        </td>
+                    </tr>
+                </table>
+			</div>
+
 		</div>
 	
         <br/>
@@ -23,11 +69,11 @@
                     <table class="table table-striped table-bordered">
                         <tr class="greyhead">
                             <th>Membre</th>
-                            <th>Engagement</th>
+                            <th ::cond catalog.type == TYPE_CONSTORDERS::>Engagement</th>
                             <th>Période d'engagement</th>
                             <th>Nombre de distributions</th>
                             <th>Total</th>
-                            <th>Payé</th>
+                            <th ::cond catalog.type == TYPE_CONSTORDERS::>Payé</th>
                         </tr>
                         ::foreach subscription subscriptions::
                             ::set orderName = subscriptionService.getDescription(subscription)::
@@ -53,7 +99,7 @@
                                         </a>          
                                     </div>               
                                 </td>
-                                <td class="::class::" style="vertical-align: middle;">
+                                <td  ::cond catalog.type == TYPE_CONSTORDERS:: class="::class::" style="vertical-align: middle;">
                                     ::if orderName == null::
                                         Aucune commande
                                     ::else::
@@ -61,16 +107,16 @@
                                     ::end::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    Du ::dateToString(subscription.startDate)::
+                                    du ::dateToString(subscription.startDate)::<br/>
                                     au ::dateToString(subscription.endDate)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionNbDistributions(subscription)::
+                                    ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+                                    ::subscription.getTotalPrice()::&nbsp;::currency()::
                                 </td>
-                                <td style="vertical-align: middle;">
+                                <td  ::cond catalog.type == TYPE_CONSTORDERS:: style="vertical-align: middle;">
                                     $$check(::subscriptionService.isSubscriptionPaid(subscription)::)
                                 </td>
                                 <td style="vertical-align: middle;">
@@ -83,12 +129,7 @@
                                                 <a href="/contractAdmin/subscriptions/edit/::subscription.id::">
                                                     <i class="icon icon-edit"></i> ::_("Edit")::
                                                 </a>
-                                            </li>
-                                            <!-- <li>
-                                                <a href="/distribution/list">
-                                                    <i class="icon icon-card"></i> ::_("Payment")::
-                                                </a>
-                                            </li> -->
+                                            </li>                                    
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/delete/::subscription.id::?token=::token::">
                                                     <i class="icon icon-delete"></i> ::_("Delete")::

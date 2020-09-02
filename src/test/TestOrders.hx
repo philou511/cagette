@@ -58,20 +58,6 @@ class TestOrders extends utest.Test
 		var o = OrderService.make(TestSuite.FRANCOIS, 1, TestSuite.APPLES, d.id);
 		Assert.equals(1, o.basket.num);
 
-		//check bug of 2018-07 : changing the date and place of the distribution leads to lost basket (because basket were indexed on user-date-place)
-		/*d.lock();
-		d.date = new Date(2028,1,1,0,0,0);
-
-		var place = new db.Place();
-		place.name = "Chez Momo";
-		place.zipCode = "54";
-		place.group = d.catalog.group;
-		place.insert();
-
-		d.place = place;
-		d.update();*/
-		
-
 		//Seb's basket is still 2
 		var basket = db.Basket.get(TestSuite.SEB,d.multiDistrib);
 		Assert.equals(2, basket.num);

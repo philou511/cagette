@@ -332,9 +332,23 @@ class DistributionService
 		}
 
 		md.deleteProductsExcerpt();
-		
-		return create(catalog,md.distribStartDate,md.distribEndDate,md.place.id,md.orderStartDate,md.orderEndDate,null,true,md);
 
+		var orderStartDate = md.orderStartDate;
+		var orderEndDate = md.orderEndDate;
+		if ( !catalog.group.hasShopMode() ) {
+
+			if ( catalog.orderStartDaysBeforeDistrib != null && catalog.orderStartDaysBeforeDistrib != 0 ) {
+
+				orderStartDate = DateTools.delta( md.distribStartDate, -1000.0 * 60 * 60 * 24 * catalog.orderStartDaysBeforeDistrib );
+			}
+
+			if ( catalog.orderEndHoursBeforeDistrib != null && catalog.orderEndHoursBeforeDistrib != 0 ) {
+
+				orderEndDate = DateTools.delta( md.distribStartDate, -1000.0 * 60 * 60 * catalog.orderEndHoursBeforeDistrib );
+			}
+		}
+
+		return create( catalog, md.distribStartDate, md.distribEndDate, md.place.id, orderStartDate, orderEndDate, null, true, md );
 	}
 
 	 /**
@@ -464,13 +478,14 @@ class DistributionService
 			}
 
 			//extends subscriptions ?
-			if(d.catalog.hasSubscriptions()){
+			if( !d.catalog.group.hasShopMode() ) { //When a group is in csa mode all catalogs have subscriptions management
+
 				//get subscriptions that were concerned by this distribution
 				var subscriptions = Subscription.manager.search($catalog==d.catalog && $startDate <= d.date && $endDate >= d.date , true );
 				for ( sub in subscriptions ){
 					//if the subscription is closing before the new date, extends it
 					if(sub.endDate.getTime() < newMd.getDate().getTime()){
-						SubscriptionService.updateSubscription(sub, sub.startDate, newMd.getDate(), null, sub.isValidated );
+						SubscriptionService.updateSubscription( sub, sub.startDate, newMd.getDate(), null );
 					}					
 				}
 				/**

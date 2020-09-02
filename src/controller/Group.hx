@@ -267,6 +267,8 @@ class Group extends controller.Controller
 				contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
 				contract.contact = user;
 				contract.distributorNum = 2;
+				contract.orderStartDaysBeforeDistrib = 365;
+				contract.orderEndHoursBeforeDistrib = 24;
 				contract.insert();
 				
 				var product = new db.Product();
@@ -294,9 +296,7 @@ class Group extends controller.Controller
 				);	
 				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
-				var subscription = service.SubscriptionService.createSubscription( user, contract, contract.startDate, contract.endDate, ordersData );
-				
-				
+				service.SubscriptionService.createSubscription( user, contract, ordersData, null );
 			}
 			
 			//contrat variable
@@ -347,10 +347,15 @@ class Group extends controller.Controller
 				place.id,
 				Date.now(),
 				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
-			);				
+			);
+
+			var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+			ordersData.push( { productId : egg.id, quantity : 2 } );
+			ordersData.push( { productId : p.id, quantity : 1 } );
+			var subscription = service.SubscriptionService.createSubscription( user, contract, ordersData, null );
 			
-			OrderService.make(user, 2, egg, d.id);
-			OrderService.make(user, 1, p, d.id);
+			OrderService.make(user, 2, egg, d.id, false, subscription );
+			OrderService.make(user, 1, p, d.id, false, subscription );
 			
 			App.current.session.data.amapId  = g.id;
 			app.session.data.newGroup = true;

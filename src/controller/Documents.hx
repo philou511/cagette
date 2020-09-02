@@ -124,7 +124,6 @@ class Documents extends controller.Controller
 			if ( !app.user.canManageContract( catalog ) ) throw Error( '/', t._('Access forbidden') );
 			view.c = catalog;
 			view.catalog = catalog;
-			view.type_constorders = db.Catalog.TYPE_CONSTORDERS;
 			view.catalog = catalog;
 			returnPath = '/contractAdmin/documents/' + catalog.id;
 			errorPath = '/contractAdmin/documents/insert/' + catalog.id;

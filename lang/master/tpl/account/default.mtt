@@ -1,146 +1,189 @@
 ::use 'design.mtt'::
 <div class="col-md-8">
-	<h2>::_("Last orders")::</h2>
+
+	<h2>
+		::if user.getGroup().hasShopMode()::
+			::_("Last orders")::
+		::else::
+			Mes souscriptions
+		::end::
+	</h2>
 
 	::set payments = user.getGroup().hasPayments()::
 	
 	<div class="article">
-		
-	<!-- CONSTANT ORDERS -->
-	::if(count(subscriptionsByCatalog)>0)::
 
-		<h4><i class="icon icon-refresh"></i> Contrats AMAP</h4>
+		<!-- VARYING ORDERS FOR SHOP MODE -->
+		::if user.getGroup().hasShopMode() && distribs.length > 0::
+			<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
+	
+			::foreach d distribs::
 
-		::foreach catalog subscriptionsByCatalog.keys()::
-			<h5>::catalog.name::</h5>
-			<table class="table table-condensed table-bordered">
-				<tr class="greyhead">
-					<th class="text-center col-md-3">Membre</th>
-					<th class="text-center col-md-3">Engagement</th>
-					<th class="text-center col-md-2">Période d'engagement</th>
-					<th class="text-center col-md-2">Nombre de distributions</th>
-					<th class="text-center col-md-1">Total</th>
-					<th class="text-center col-md-1">Payé</th>
-				</tr>
-				::foreach subscription subscriptionsByCatalog.get(catalog)::
-					::set orderName = subscriptionService.getDescription(subscription)::
-					::if orderName == null::
-						::set class="danger text-danger"::
-					::else::
-						::set class=""::
-					::end::
-					<tr style="text-align: center;">
-						<td>
-							<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
-							
-							<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
-							::if(subscription._user2!=null)::
-							<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
-							::end::
-						</td>
-						<td class="::class::" style="vertical-align: middle;">
-							::if orderName == null::
-								AUCUNE COMMANDE
-							::else::
-								::raw orderName::
-							::end::
-						</td>
-						<td style="vertical-align: middle;">
-							Du ::sDate(subscription.startDate)::
-							au ::sDate(subscription.endDate)::
-						</td>
-						<td style="vertical-align: middle;">
-							::subscriptionService.getSubscriptionNbDistributions(subscription)::
-						</td>
-						<td style="vertical-align: middle;">
-							::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
-						</td>
-						<td style="vertical-align: middle;">
-							$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-						</td>
-					</tr>
+				::set basket = d.getUserBasket(user)::
+				::if(basket!=null)::
+					::set orders = basket.getOrders(1)::
+				::else:: 
+					::set orders = null::
 				::end::
-			</table>
-		::end::
-		<hr/>
-	::end::
-	
-	
+				::if(orders!=null && orders.length>0)::
 
-	<!-- VARYING ORDERS -->
-	::if count(distribs)>0::
-		<h4><i class="icon icon-basket"></i>  Commandes variables</h4>
-		
-		::foreach d distribs::
-
-			::set basket = d.getUserBasket(user)::
-			::if(basket!=null)::
-				::set orders = basket.getOrders(1)::
-			::else:: 
-				::set orders = null::
+					<h5>::_("Order delivered on"):: ::hDate(d.getDate())::</h5>
+					<table class="table table-bordered table-condensed" >
+						<tr class="greyhead">
+							<th class="col-md-1">::_("Qty||short version for quantity")::</th>
+							<th class="col-md-4">::_("Product")::</th>
+							<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
+							<th class="col-md-2">::_("Sub-total")::</th>
+							<th class="col-md-1">::_("Fees")::</th>
+							<th class="col-md-1">::_("Total")::</th>
+							<th class="col-md-1" ::cond !payments::>::_("Paid")::</th>			
+						</tr>
+						::set total = 0::
+						::foreach o prepare(orders)::
+							<tr>
+								<td>							
+									::raw o.smartQt::
+								</td>
+								<td>
+									<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
+										<img src="::o.productImage::" style="width:32px;height:32px;" />
+										::o.productName::
+									</a>
+								</td>
+								<td>
+									::formatNum(o.productPrice)::&nbsp;::currency()::
+								</td>
+								<td>
+									::formatNum(o.subTotal)::&nbsp;::currency()::
+								</td>
+								<td>							
+									$$nullSafe(::formatNum(o.fees)::)
+								</td>
+								<td>
+									::formatNum(o.total)::&nbsp;::currency()::
+									::set total = total + o.total::
+								</td>
+								<td ::cond !payments:: class="text-center">
+									$$check(::o.paid::)
+								</td>
+							
+							</tr>
+						::end::	
+						<tr>
+							<td colspan="4">
+								::if user.getGroup().hasShopMode() && !user.getGroup().hasPayments():: 
+									$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
+								::end::
+							</td>
+							<td>TOTAL</td>
+							<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
+						</tr>
+					</table>
+				::end::
 			::end::
-			::if(orders!=null && orders.length>0)::
+		::end::
 
-			<h5>::_("Order delivered on"):: ::hDate(d.getDate())::</h5>
-			<table class="table table-bordered table-condensed" >
-				<tr class="greyhead">
-					<th class="col-md-1">::_("Qty||short version for quantity")::</th>
-					<th class="col-md-4">::_("Product")::</th>
-					<th class="col-md-1"><a href="#" data-toggle="tooltip" data-placement="top" title="::_('Unit price including taxes')::">::_("U.P||short version of price per unit")::</a></th>
-					<th class="col-md-2">::_("Sub-total")::</th>
-					<th class="col-md-1">::_("Fees")::</th>
-					<th class="col-md-1">::_("Total")::</th>
-					<th class="col-md-1" ::cond !payments::>::_("Paid")::</th>			
-				</tr>
-				::set total = 0::
-				::foreach o prepare(orders)::
-					<tr>
-						<td>							
-							::raw o.smartQt::
-						</td>
-						<td>
-							<a href="#" onclick="_.overlay('/shop/productInfo/::o.productId::','::o.productName::')">
-								<img src="::o.productImage::" style="width:32px;height:32px;" />
-								 ::o.productName::
-							</a>
-						</td>
-						<td>
-							::formatNum(o.productPrice)::&nbsp;::currency()::
-						</td>
-						<td>
-							::formatNum(o.subTotal)::&nbsp;::currency()::
-						</td>
-						<td>							
-							$$nullSafe(::formatNum(o.fees)::)
-						</td>
-						<td>
-							::formatNum(o.total)::&nbsp;::currency()::
-							::set total = total + o.total::
-						</td>
-						<td ::cond !payments:: class="text-center">
-							$$check(::o.paid::)
-						</td>
-					
-					</tr>
-				::end::	
-				<tr>
-					<td colspan="4">
-						::if !user.getGroup().hasPayments():: 
-							$$edit(Modifier cette commande,/contract/editVarOrders/::d.id::)
+		<!-- SUBSCRIPTIONS FOR CSA MODE -->
+		::if !user.getGroup().hasShopMode() && count( subscriptionsByCatalog ) > 0 ::
+
+			::foreach i loopList(0, 2)::
+				
+				<h4>
+					::if i == 0::
+						<br/>
+						<i class="icon icon-refresh"></i> Contrats AMAP classiques
+					::else::
+						<hr/>
+						<br/>
+						<i class="icon icon-basket"></i> Contrats AMAP variables
+					::end::
+				</h4>
+
+				::foreach catalog subscriptionsByCatalog.keys()::
+
+					::if ( i == 0 && catalog.type == TYPE_CONSTORDERS ) || ( i == 1 && catalog.type == TYPE_VARORDER )::
+
+						<br/>
+						<h5>::catalog.name::</h5>
+
+						::set subscriptions = subscriptionsByCatalog.get(catalog)::
+						::foreach subscription subscriptions::
+
+							<table class="table table-condensed table-bordered">
+								<tr class="greyhead">
+									<th class="text-center col-md-3" ::cond i == 0 && subscription._user2 != null::>Membre</th>
+									<th class="text-center col-md-4">Engagement</th>
+									<th class="text-center col-md-2">Période d'engagement</th>
+									::if subscription.getAbsencesNb() != 0 ::
+										<th class="text-center col-md-1">Nombre max de distributions</th>
+										<th class="text-center col-md-1">Nombre d'absences</th>
+									::end::
+									<th class="text-center col-md-2">Nombre de distributions</th>
+									<th class="text-center col-md-1">Total</th>
+									<th class="text-center col-md-1" ::cond i == 0::>Payé</th>
+								</tr>
+								::set orderName = subscriptionService.getDescription(subscription)::
+								::if i == 0 && orderName == null::
+									::set class="danger text-danger"::
+								::else::
+									::set class=""::
+								::end::
+								<tr style="text-align: center;">
+									<td ::cond i == 0 && subscription._user2 != null::>
+										<i ::cond !subscription.isValidated:: class="icon icon-alert" style="color: #a94442;"></i>  
+										<a href="/member/view/::subscription._user.id::" target="_blank">::subscription._user.getName()::</a>
+										<br/> ( alterné avec <a href="/member/view/::subscription._user2.id::" target="_blank">::subscription._user2.getName()::</a> )
+									</td>
+									<td class="::class::" style="vertical-align: middle;">
+										::if orderName == null::
+											::if i == 0::
+												Aucune commande
+											::else::
+												Pas de contraintes
+											::end::
+										::else::
+											::raw orderName::
+										::end::
+									</td>
+									<td style="vertical-align: middle;">
+										du ::sDate(subscription.startDate)::<br/>
+										au ::sDate(subscription.endDate)::
+									</td>
+									::set absencesNb = subscription.getAbsencesNb()::
+									::if absencesNb != 0 ::
+										<td style="vertical-align: middle;">
+											::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
+										</td>
+										<td style="vertical-align: middle;">
+											&nbsp;&nbsp;::absencesNb::
+											<a href="/subscriptions/absences/::subscription.id::?returnUrl=/account" class="btn btn-default btn-sm" style="border-style: none;">
+												<i class="icon icon-edit"></i>
+											</a>
+										</td>
+									::end::
+									<td style="vertical-align: middle;">
+										::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+									</td>
+									<td style="vertical-align: middle;">
+										::subscription.getTotalPrice()::&nbsp;::currency()::
+									</td>
+									<td style="vertical-align: middle;" ::cond i == 0::>
+										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
+									</td>
+								</tr>
+							</table>
 						::end::
-					</td>
-					<td>TOTAL</td>
-					<td><b>::formatNum(total)::&nbsp;::currency()::</b></td>
-				</tr>
-			</table>
+					::end::
+				::end::
+				<br/>
 			::end::
 		::end::
-	
-	::end::	
+
 	</div>
-	
 </div>
+
 <div class="col-md-4">
+
 	<h3>::_("Profile")::</h3>
 	<div class="article">
 		
