@@ -86,7 +86,7 @@ class Subscriptions extends controller.Controller
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, 'Veuillez sélectionner un membre.' );
 				}
-				var user = db.User.manager.get( userId );
+				var user = db.User.manager.get( userId, false );
 				if ( user == null ) {
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId } ) );
@@ -120,7 +120,7 @@ class Subscriptions extends controller.Controller
 					var invert = false;
 					if ( userId2 != null && userId2 != 0 ) {
 
-						user2 = db.User.manager.get( userId2 );
+						user2 = db.User.manager.get( userId2, false );
 						if ( user2 == null ) {
 
 							throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, t._( "Unable to find user #::num::", { num : userId2 } ) );
@@ -229,7 +229,7 @@ class Subscriptions extends controller.Controller
 						var invert = false;
 						if ( userId2 != null && userId2 != 0 ) {
 
-							user2 = db.User.manager.get( userId2 );
+							user2 = db.User.manager.get( userId2, false );
 							if ( user2 == null ) {
 
 								throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, t._( "Unable to find user #::num::", { num : userId2 } ) );

@@ -1124,7 +1124,7 @@ class SubscriptionService
 		var totalQuantity : Float = 0;
 		for ( order in defaultOrders ) {
 
-			var product = db.Product.manager.get( order.productId );
+			var product = db.Product.manager.get( order.productId, false );
 			if ( product != null && order.quantity != null && order.quantity != 0 ) {
 
 				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
