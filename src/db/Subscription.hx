@@ -62,7 +62,7 @@ class Subscription extends Object {
 		var totalPrice = 0.0;
 		for ( order in defaultOrders ) {
 
-			var product = db.Product.manager.get( order.productId );
+			var product = db.Product.manager.get( order.productId, false );
 			if ( product != null && order.quantity != null && order.quantity != 0 ) {
 
 				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
@@ -83,7 +83,7 @@ class Subscription extends Object {
 		var totalPrice = 0.0;
 		for ( order in defaultOrders ) {
 
-			var product = db.Product.manager.get( order.productId );
+			var product = db.Product.manager.get( order.productId, false );
 			if ( product != null && order.quantity != 0 ) {
 
 				label += tools.FloatTool.clean( order.quantity ) + ' x ' + product.name + '<br />';
@@ -149,7 +149,7 @@ class Subscription extends Object {
 		var absentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
 		for ( distribId in absentDistribIds ) {
 
-			var distribution = db.Distribution.manager.get( distribId );
+			var distribution = db.Distribution.manager.get( distribId, false );
 			if ( distribution != null && this.catalog.absencesStartDate.toString() <= distribution.date.toString()
 				&& distribution.date.toString() <= this.catalog.absencesEndDate.toString() ) {
 

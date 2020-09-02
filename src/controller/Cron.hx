@@ -310,7 +310,7 @@ class Cron extends Controller
 									var automatedOrders = [];
 									for ( order in defaultOrders ) {
 
-										var product = db.Product.manager.get( order.productId );
+										var product = db.Product.manager.get( order.productId, false );
 										if ( product != null && order.quantity != null && order.quantity != 0 ) {
 
 											automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
