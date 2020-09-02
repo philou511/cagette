@@ -56,7 +56,7 @@
 					<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank"><i class="icon icon-facebook"></i> Groupe Facebook</a> 
 				</li>
 				<li>
-					<a href="https://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formations pour producteurs</a> 
+					<a href="http://www.cagette.pro" target="_blank"><i class="icon icon-student"></i> Formations pour producteurs</a> 
 				</li>				
 			</ul>
 			
@@ -447,7 +447,7 @@
 								<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">::_("Facebook group")::</a> 
 							</li>
 							<li>
-								<a href="https://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
+								<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
 							</li>
 							<li>
 								::if (user!=null && user.isAmapManager()):: <a href="https://cagette.uservoice.com" target="_blank">::_("Propose features")::</a>  ::end::
