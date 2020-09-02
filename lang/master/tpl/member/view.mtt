@@ -257,7 +257,7 @@
 										::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 									</td>
 									<td style="vertical-align: middle;">
-										::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+										::subscription.getTotalPrice()::&nbsp;::currency()::
 									</td>
 									<td style="vertical-align: middle;" ::cond i == 0::>
 										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)

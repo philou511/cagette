@@ -21,6 +21,21 @@ class Subscription extends Object {
 		return App.current.user.getGroup().getMembersFormElementData();
 	}
 
+	public function getTotalPrice() : Float {
+
+		if( this.id == null ) return 0;
+
+		var totalPrice : Float = 0;
+		var orders = db.UserOrder.manager.search( $subscription == this, false );
+		for ( order in orders ) {
+
+			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
+		}
+
+		return Formatting.roundTo( totalPrice, 2 );
+	}
+
+
 	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {
 
 		this.defaultOrders = haxe.Json.stringify( defaultOrders );
@@ -38,6 +53,26 @@ class Subscription extends Object {
 
 		return defaultOrders;
 	}
+
+	public function getDefaultOrdersTotal() : Float {
+
+		if ( this.defaultOrders == null ) return 0;
+		
+		var defaultOrders : Array< { productId : Int, quantity : Float } > = haxe.Json.parse( this.defaultOrders );
+		var totalPrice = 0.0;
+		for ( order in defaultOrders ) {
+
+			var product = db.Product.manager.get( order.productId );
+			if ( product != null && order.quantity != null && order.quantity != 0 ) {
+
+				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
+			}
+			
+		}
+
+		return Formatting.roundTo( totalPrice, 2 );
+	}
+
 
 	public function getDefaultOrdersToString() : String {
 

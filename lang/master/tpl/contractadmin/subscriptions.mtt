@@ -114,7 +114,7 @@
                                     ::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    ::subscriptionService.getSubscriptionTotalPrice(subscription)::&nbsp;::currency()::
+                                    ::subscription.getTotalPrice()::&nbsp;::currency()::
                                 </td>
                                 <td  ::cond catalog.type == TYPE_CONSTORDERS:: style="vertical-align: middle;">
                                     $$check(::subscriptionService.isSubscriptionPaid(subscription)::)

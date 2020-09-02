@@ -207,20 +207,6 @@ class SubscriptionService
 		return subscriptionDistribsNb;
 	}
 
-	public static function getSubscriptionTotalPrice( subscription : db.Subscription ) : Float {
-
-		if( subscription == null || subscription.id == null ) return 0;
-
-		var totalPrice : Float = 0;
-		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
-		for ( order in orders ) {
-
-			totalPrice += Formatting.roundTo( order.quantity * order.productPrice, 2 );
-		}
-
-		return Formatting.roundTo( totalPrice, 2 );
-	}
-
 	public static function getSubscriptionAllOrders( subscription : db.Subscription ) : Array<db.UserOrder> {
 
 		if( subscription == null || subscription.id == null ) return [];
@@ -232,7 +218,7 @@ class SubscriptionService
 		
 		if( subscription == null || subscription.id == null ) return [];
 
-		var oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date >= subscription.startDate && $date <= subscription.endDate, false );
+		var oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, false );
 		if( oneDistrib == null ) return [];
 
 		var oneDistriborders = db.UserOrder.manager.search( $subscription == subscription && $distribution == oneDistrib, false ).array();
@@ -253,7 +239,7 @@ class SubscriptionService
 					if ( oneDistrib != null && oneDistrib.id == distribId ) {
 
 						isAbsentDistrib = true;
-						oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date > oneDistrib.date && $date <= subscription.endDate, false );
+						oneDistrib = db.Distribution.manager.select( $catalog == subscription.catalog && $date > oneDistrib.date && $end <= subscription.endDate, false );
 						break;
 					}
 				}
@@ -326,19 +312,36 @@ class SubscriptionService
 	 * Checks if dates are correct and if there is no other subscription for this user in that same time range
 	 * @param subscription
 	 */
-	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date, ?previousEndDate : Date  ) : Bool {
+	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
 
 		//When creating a new subscription the startDate needs to be for the next not closed coming 
 		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
 			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
 		}
 
-		var subName = ' (souscription de ${subscription.user.getName()})';
+		//Check new subscription Start Date
+		var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
+		if( subscription.id == null ) {
 
-		//invalid dates
-		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
-			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
+			if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
+
+				throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution ouverte aux commandes : '
+										+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+			}
 		}
+		else {
+			
+			if ( previousStartDate.toString() != subscription.startDate.toString() ) {
+
+				if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
+
+					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution ouverte aux commandes : '
+										+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
+				}
+			}
+		}
+
+		var subName = ' (souscription de ${subscription.user.getName()})';
 
 		//dates should be inside catalog dates
 		var catalogStartDate = new Date( subscription.catalog.startDate.getFullYear(), subscription.catalog.startDate.getMonth(), subscription.catalog.startDate.getDate(), 0, 0, 0 );
@@ -431,6 +434,40 @@ class SubscriptionService
 	}
 
 	 /*
+	  *	Checks if automated orders are valid
+	  * @param subscription 
+	  * @param distribution 
+	  * @return Bool
+	  */
+	  public static function areAutomatedOrdersValid( subscription : db.Subscription, distribution : db.Distribution ) : Bool {
+
+		var catalog = subscription.catalog;
+		
+		var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
+		if ( catalogMinOrdersTotal == null || catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
+
+			return true;
+		}
+
+		if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && catalog.allowedOverspend != null && catalog.allowedOverspend != 0 ) {
+
+			//Computes the new orders total
+			var subscriptionNewTotal = subscription.getTotalPrice() + subscription.getDefaultOrdersTotal();
+
+			//Checks that the orders total is lower than the allowed overspend
+			var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
+			if ( maxAllowedTotal < subscriptionNewTotal ) {
+
+				return false;
+			}
+
+		}
+
+		return true;
+	}
+
+
+	 /*
 	  *	Checks if variable orders for one or several distributions meet all the catalog requirements 
 	  * @param subscription 
 	  * @param pricesQuantitiesByDistrib 
@@ -508,7 +545,7 @@ class SubscriptionService
 
 				otherDistribsTotal = Formatting.roundTo( otherDistribsTotal, 2 );
 			}
-			var newSubscriptionTotal = otherDistribsTotal + ordersTotal;
+			var subscriptionNewTotal = otherDistribsTotal + ordersTotal;
 
 			//Checks that the orders total is higher than the required minimum
 			var lastDistrib : db.Distribution = null;
@@ -540,9 +577,9 @@ class SubscriptionService
 
 				if ( doCheckMin ) {
 
-					if ( newSubscriptionTotal < catalogMinOrdersTotal ) {
+					if ( subscriptionNewTotal < catalogMinOrdersTotal ) {
 	
-						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de '+  newSubscriptionTotal
+						var message = 'Le nouveau total de toutes vos commandes sur la durée du contrat serait de '+  subscriptionNewTotal
 						+ ' € alors qu\'il doit être supérieur à ' + catalogMinOrdersTotal + ' €. Veuillez rajouter des produits.';
 						throw TypedError.typed( message, CatalogRequirementsNotMet );
 					}
@@ -551,9 +588,9 @@ class SubscriptionService
 
 			//Checks that the orders total is lower than the allowed overspend
 			var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
-			if ( maxAllowedTotal < newSubscriptionTotal ) {
+			if ( maxAllowedTotal < subscriptionNewTotal ) {
 
-				var message = 'Le nouveau total de toutes vos commandes serait de ' +  newSubscriptionTotal
+				var message = 'Le nouveau total de toutes vos commandes serait de ' +  subscriptionNewTotal
 				+ ' € alors qu\'il doit être inférieur à ' + maxAllowedTotal + ' €. Veuillez enlever des produits.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
@@ -591,7 +628,7 @@ class SubscriptionService
 		
 		if ( comingOpenDistrib != null ) {
 
-			return comingOpenDistrib.date;
+			return new Date( comingOpenDistrib.date.getFullYear(), comingOpenDistrib.date.getMonth(), comingOpenDistrib.date.getDate(), 0, 0, 0 );
 		}
 		else {
 
@@ -634,11 +671,7 @@ class SubscriptionService
 		subscription.endDate 	= new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
 		subscription.isValidated = false;
 		
-		if( catalog.type == db.Catalog.TYPE_VARORDER && catalog.requiresOrdering ) {
-			
-			subscription.setDefaultOrders( ordersData );
-		}
-		else {
+		if( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 			var user2 = checkUser2( ordersData );
 			subscription.user2 = db.User.manager.get( user2, false );
@@ -657,8 +690,9 @@ class SubscriptionService
 			
 		}
 
-		return subscription;
+		updateDefaultOrders( subscription, ordersData );
 
+		return subscription;
 	}
 
 	public static function checkUser2(ordersData:Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }>):Int{
@@ -685,14 +719,11 @@ class SubscriptionService
 		}
 
 		subscription.lock();
+
+		var previousStartDate = subscription.startDate;
 	
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
-		if( subscription.catalog.type == db.Catalog.TYPE_VARORDER ) {
-			
-			subscription.setDefaultOrders( ordersData );
-		}
-		
 		if ( absentDistribIds != null ) {
 
 			if ( subscription.isValidated ) {
@@ -708,7 +739,7 @@ class SubscriptionService
 			subscription.user2 = db.User.manager.get(userId2,false);
 		}
 
-		if ( isSubscriptionValid( subscription ) ) {
+		if ( isSubscriptionValid( subscription, previousStartDate ) ) {
 
 			subscription.update();
 			if( subscription.catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
@@ -717,9 +748,13 @@ class SubscriptionService
 			}
 		}
 
+		updateDefaultOrders( subscription, ordersData );
+
 	}
 
 	public static function getAbsentDistribsMaxNb( catalog : Catalog, ?subscription : Subscription ) {
+
+		if ( !catalog.hasAbsencesManagement() ) return 0;
 
 		if ( subscription == null || subscription.startDate == null || subscription.endDate == null ||
 			( subscription.startDate.getTime() <= catalog.absencesStartDate.getTime() && subscription.endDate.getTime() >= catalog.absencesEndDate.getTime() ) ) {
@@ -758,6 +793,7 @@ class SubscriptionService
 	public static function updateAbsencesNb( subscription : Subscription, newAbsencesNb : Int ) {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
+		if( !subscription.catalog.hasAbsencesManagement() ) return;
 
 		var currentAbsencesNb = subscription.getAbsencesNb();
 		if ( newAbsencesNb == currentAbsencesNb ) { return; }
@@ -1081,23 +1117,22 @@ class SubscriptionService
 	public static function updateDefaultOrders( subscription : db.Subscription, defaultOrders : Array< { productId : Int, quantity : Float } > ) {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
+		if( subscription.catalog.requiresOrdering != true ) return;
 		if( defaultOrders.length == 0 ) throw new Error( 'La commande par défaut n\'est pas définie.' );
-		if( !subscription.catalog.requiresOrdering ) return;
-
+		
 		var totalPrice : Float = 0;
 		var totalQuantity : Float = 0;
 		for ( order in defaultOrders ) {
 
 			var product = db.Product.manager.get( order.productId );
-			if ( product != null && order.quantity != 0 ) {
+			if ( product != null && order.quantity != null && order.quantity != 0 ) {
 
 				totalPrice += Formatting.roundTo( order.quantity * product.price, 2 );
 				totalQuantity += order.quantity;
 			}
 		}
-
 		totalPrice = Formatting.roundTo( totalPrice, 2 );
-
+		
 		//Let's check that it meets the constraint when there is one
 		if ( subscription.catalog.distribMinOrdersTotal != null && subscription.catalog.distribMinOrdersTotal != 0 ) {
 
@@ -1113,12 +1148,10 @@ class SubscriptionService
 			if ( totalQuantity < 0.1 ) {
 
 				var message = '<strong>Engagement du catalogue :</strong> ' + subscription.catalog.name + '<br/>';
-				message += 'Vous devez obligatoirement commander quelque chose. Les quantités ne peuvent pas être à 0.';
+				message += 'La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
 		}
-
-
 
 		subscription.lock();
 		subscription.setDefaultOrders( defaultOrders );

@@ -273,12 +273,12 @@ class Catalog extends Object
 				throw new tink.core.Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
 			}
 
-			if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
-
-				throw new tink.core.Error( 'La date de début des absences doit être avant la date de fin des absences.' );
-			}
-
 			if ( absencesStartDate != null && absencesEndDate != null ) {
+
+				if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
+
+					throw new tink.core.Error( 'La date de début des absences doit être avant la date de fin des absences.' );
+				}
 
 				var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( this, absencesStartDate, absencesEndDate );
 				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {

@@ -85,7 +85,7 @@ class Cron extends Controller
 	 *  this can be locally tested with `neko index.n cron/hour > cron.log`				
 	 */
 	public function doHour() {
-		
+
 		app.event(HourlyCron(this.now));
 		
 		//instructions for dutyperiod volunteers
@@ -276,7 +276,74 @@ class Cron extends Controller
 			}
 		});
 		task.execute(!App.config.DEBUG);
+
+		var task = new TransactionWrappedTask( 'Automated orders for CSA variable contracts with compulsory ordering' );
+		task.setTask( function() {
+
+			var range = tools.DateTool.getLastHourRange( now );
+
+			var distributionsToCheckForMissingOrders : List< db.Distribution > = db.Distribution.manager.unsafeObjects(
+			'SELECT Distribution.* 
+			FROM Distribution INNER JOIN Catalog
+			ON Distribution.catalogId = Catalog.id
+			WHERE Catalog.requiresOrdering = true
+			AND Distribution.orderEndDate >= \'${range.from}\'
+			AND Distribution.orderEndDate < \'${range.to}\';', false );
+				
+			for ( distrib in distributionsToCheckForMissingOrders ) {
+
+				if ( distrib.catalog.requiresOrdering ) {
+
+					var distribSubscriptions = db.Subscription.manager.search( $catalog == distrib.catalog && $startDate <= distrib.date && $endDate >= distrib.date, false );
+
+					for ( subscription in distribSubscriptions ) {
+
+						if ( subscription.getAbsentDistribIds().find( id -> id == distrib.id ) == null ) {
+						
+							var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
+							if ( distribSubscriptionOrders.length == 0 ) {
+
+								if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
+
+									var defaultOrders : Array< { productId : Int, quantity : Float } > = subscription.getDefaultOrders();
+
+									var automatedOrders = [];
+									for ( order in defaultOrders ) {
+
+										var product = db.Product.manager.get( order.productId );
+										if ( product != null && order.quantity != null && order.quantity != 0 ) {
+
+											automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
+										}
+									}
+
+									if( automatedOrders.length != 0 ) {
+
+										var message : String = 'Bonjour ' + subscription.user.firstName + ', <br /><br />
+										Une commande automatique a été créée par Cagette pour la distribution du ' +  view.hDate( distrib.date ) + '<br /><br />
+										Votre commande automatique : <br /><br />'
+										+ subscription.getDefaultOrdersToString();
+
+										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande Automatique', message, distrib.catalog.group );
+									}
+								
+									//Create order operation only
+									if ( distrib.catalog.group.hasPayments() ) {
+			
+										service.PaymentService.onOrderConfirm( automatedOrders );
+									}
+
+								}
+							}
+
+						}
+					}
+				
+				}
+			}
 		
+		});
+		task.execute(!App.config.DEBUG);
 
 	}
 	

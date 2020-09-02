@@ -95,9 +95,6 @@ class Subscriptions extends controller.Controller
 
 					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, user + " ne fait pas partie de ce groupe" );
 				}
-
-				//var startDate = Date.fromString( app.params.get( "startdate" ) );
-				//var endDate = Date.fromString( app.params.get( "enddate" ) );
 				
 				startDateDP.populate();
 				endDateDP.populate();
@@ -111,7 +108,9 @@ class Subscriptions extends controller.Controller
 				var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
 				for ( product in catalogProducts ) {
 
-					var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
+					var quantity : Float = 0;
+					var qtyParam = app.params.get( 'quantity' + product.id );
+					if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
 					var user2 : db.User = null;
 					var userId2 : Int = null;
 					if( catalog.type == Catalog.TYPE_CONSTORDERS ) {
@@ -155,7 +154,8 @@ class Subscriptions extends controller.Controller
 				}
 
 				if ( ordersData.length == 0 ) {
-					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "Vous devez entrer au moins une quantité pour un produit." );
+
+					throw Error( '/contractAdmin/subscriptions/insert/' + catalog.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
 				}
 
 				var absencesNb = Std.parseInt( app.params.get( 'absencesNb' ) );
@@ -202,9 +202,6 @@ class Subscriptions extends controller.Controller
 
 			try {
 
-				/*var startDate = Date.fromString( app.params.get( "startdate" ) );
-				var endDate = Date.fromString( app.params.get( "enddate" ) );*/
-				
 				startDateDP.populate();
 				endDateDP.populate();
 				var startDate = startDateDP.getValue();
@@ -220,7 +217,9 @@ class Subscriptions extends controller.Controller
 
 					for ( product in catalogProducts ) {
 
-						var quantity : Float = Std.parseFloat( app.params.get( 'quantity' + product.id ) );
+						var quantity : Float = 0;
+						var qtyParam = app.params.get( 'quantity' + product.id );
+						if ( qtyParam != "" ) quantity = Std.parseFloat( qtyParam );
 						var user2 : db.User = null;
 						var userId2 : Int = null;
 						if( subscription.catalog.type == Catalog.TYPE_CONSTORDERS ) {
@@ -265,7 +264,7 @@ class Subscriptions extends controller.Controller
 
 					if ( ordersData.length == 0 ) {
 
-						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "Vous devez entrer au moins une quantité pour un produit." );
+						throw Error( '/contractAdmin/subscriptions/edit/' + subscription.id, "La commande par défaut ne peut pas être vide. Vous devez obligatoirement commander quelque chose." );
 					}
 				}
 
