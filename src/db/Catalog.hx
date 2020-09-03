@@ -189,7 +189,7 @@ class Catalog extends Object
 				form.removeElement(form.getElement("catalogMinOrdersTotal"));
 				form.removeElement(form.getElement("allowedOverspend"));
 
-				form.getElement("orderEndHoursBeforeDistrib").label = "Délai maximum pour saisir une souscription (nbre d'heures avant prochaine distribution)";
+				form.getElement("orderEndHoursBeforeDistrib").label = "Délai minimum pour saisir une souscription (nbre d'heures avant prochaine distribution)";
 
 				absencesIndex = 9;
 			}
