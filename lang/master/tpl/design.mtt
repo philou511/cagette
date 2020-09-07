@@ -163,7 +163,17 @@
 				::end::
 				</table>
 			</div>
-		</div>
+        </div>
+        
+        <div id="browser-detection-container"></div>
+        <script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+                setTimeout(function() {
+                    _NeolithicViewsGenerator.browserDetectionModule("browser-detection-container");		  
+                }, 50);
+			})
+        </script>
+
 		
 			::if (user!=null && user.isAmapManager())::
 			<script>
@@ -211,5 +221,5 @@
 			// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
 			//UserVoice.push(['autoprompt', {}]);
 			</script>
-			::end::
+            ::end::
 ::end::

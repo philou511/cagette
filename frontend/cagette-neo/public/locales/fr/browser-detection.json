@@ -1,0 +1,5 @@
+{
+  "title": "Attention !",
+  "content": "Votre navigateur Internet est trop ancien pour afficher Cagette.net. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.",
+  "download": "Télécharger {{ browser }}"
+}

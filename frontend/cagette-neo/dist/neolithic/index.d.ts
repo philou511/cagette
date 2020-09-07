@@ -13,4 +13,5 @@ export default class NeolithicViewsGenerator {
     static placeDialog(elementId: string, props: Omit<PlaceDialogViewProps, 'onClose'>): void;
     static place(elementId: string, props: PlaceViewProps): void;
     static mangopayModule(elementId: string, props: MangopayConfigProps): void;
+    static browserDetectionModule(elementId: string): void;
 }
