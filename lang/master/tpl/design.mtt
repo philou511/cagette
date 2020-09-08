@@ -163,8 +163,7 @@
 				::end::
 				</table>
 			</div>
-        </div>
-
+		</div>
 		
 			::if (user!=null && user.isAmapManager())::
 			<script>
@@ -212,5 +211,5 @@
 			// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
 			//UserVoice.push(['autoprompt', {}]);
 			</script>
-            ::end::
+			::end::
 ::end::
