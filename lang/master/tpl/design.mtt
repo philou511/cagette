@@ -164,15 +164,6 @@
 				</table>
 			</div>
         </div>
-        
-        <div id="browser-detection-container"></div>
-        <script>
-			document.addEventListener("DOMContentLoaded", function(event) {
-                setTimeout(function() {
-                    _NeolithicViewsGenerator.browserDetectionModule("browser-detection-container");		  
-                }, 50);
-			})
-        </script>
 
 		
 			::if (user!=null && user.isAmapManager())::
