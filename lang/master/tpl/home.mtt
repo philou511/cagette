@@ -1,6 +1,6 @@
 ::use 'design.mtt'::
 
-
+$$browserDetection()
 <div style="margin-top:12px;"></div>
 
 ::set hasShopMode = amap.hasShopMode()::

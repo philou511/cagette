@@ -625,6 +625,140 @@
 			
 		::end::
 
-	</macro>
+    </macro>
+    
+    <macro name="browserDetection()">
+        <script type="text/javascript" src="/js/browser-detect.js"></script>
+        <div id="browser-detection-container"></div>
+        <script>
+        if (window.IsValidBrowser === true) {
+            var browserDetectionContainer = document.getElementById(
+            "browser-detection-container"
+            );
+
+            var style = document.createElement("style");
+            style.innerHTML =
+            "#browser-detection-container {" +
+            "margin-left: auto;" +
+            "margin-right: auto;" +
+            "left: 0;" +
+            "right: 0;" +
+            "text-align: center;" +
+            "}" +
+            ".browser-detection-card {" +
+            "background-color: #fff;" +
+            "border-radius: 4px;" +
+            "box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0,0,0,.12);" +
+            "margin: 32px;" +
+            "position: relative;" +
+            "width: 600px;" +
+            "height: 260px;" +
+            "margin-left: auto;" +
+            "margin-right: auto;" +
+            "z-index: 1;" +
+            "}" +
+            ".browser-detection-title-root {" +
+            "margin: 0;" +
+            "padding: 16px 24px;" +
+            "}" +
+            ".browser-detection-title {" +
+            "color: #777;" +
+            "margin: 0;" +
+            "font-size: 1.25rem;" +
+            "line-height: 1.6;" +
+            "text-align: left;" +
+            "font-style: normal;" +
+            "}" +
+            ".browser-detection-content-root {" +
+            "padding: 8px 24px;" +
+            "}" +
+            ".browser-detection-content {" +
+            "color: #777;" +
+            "margin: 0;" +
+            "line-height: 1.5;" +
+            "white-space: pre-line;" +
+            "text-align: left;" +
+            "}" +
+            ".browser-detection-buttons-root {" +
+            "padding-top: 16px;" +
+            "padding-bottom: 16px;" +
+            "}" +
+            ".browser-detection-icon-root {" +
+            "display: inherit;" +
+            "margin-left: -4px;" +
+            "margin-right: 8px;" +
+            "}";
+
+            var ref = document.querySelector("script");
+            ref.parentNode.insertBefore(style, ref);
+
+            var box = document.createElement("div");
+            box.classList.add("browser-detection-card");
+
+            var titleContainer = document.createElement("div");
+            titleContainer.classList.add("browser-detection-title-root");
+            var title = document.createElement("h2");
+            title.classList.add("browser-detection-title");
+            title.textContent = "Attention votre navigateur est trop ancien.";
+            titleContainer.append(title);
+            box.append(titleContainer);
+
+            var contentContainer = document.createElement("div");
+            contentContainer.classList.add("browser-detection-content-root");
+            var content = document.createElement("p");
+            content.classList.add("browser-detection-content");
+            content.textContent =
+            "Votre navigateur Internet est trop ancien pour afficher Cagette.net. \n Cela peut entraîner des problèmes d'affichage. \n Nous vous conseillons fortement de télécharger un navigateur plus récent, comme Firefox ou Brave.";
+            contentContainer.append(content);
+            box.append(contentContainer);
+
+            var buttonsContainer = document.createElement("div");
+            buttonsContainer.classList.add("browser-detection-buttons-root");
+            box.append(buttonsContainer);
+
+            var firefoxLink = document.createElement("a");
+            firefoxLink.href = "https://www.mozilla.org/firefox/new/";
+            firefoxLink.classList.add("btn", "btn-default");
+            firefoxLink.style.marginRight = "30px";
+            firefoxLink.target = "_blank";
+            firefoxLink.rel = "noopener";
+            var firefoxLabel = document.createElement("span");
+            firefoxLabel.style.display = "flex";
+            firefoxLabel.style["align-items"] = "center";
+            var firefoxIconContainer = document.createElement("span");
+            firefoxIconContainer.classList.add("browser-detection-icon-root");
+            var firefoxIcon = document.createElement("img");
+            firefoxIcon.src = "/img/firefox.svg";
+            firefoxIcon.style.height = "0.875rem";
+            firefoxLabel.textContent = "Télécharger Firefox";
+            firefoxIconContainer.append(firefoxIcon);
+            firefoxLabel.prepend(firefoxIconContainer);
+            firefoxLink.append(firefoxLabel);
+            buttonsContainer.append(firefoxLink);
+
+            var braveLink = document.createElement("a");
+            braveLink.href = "https://www.brave.com/";
+            braveLink.classList.add("btn", "btn-default");
+            braveLink.style.marginLeft = "30px";
+            braveLink.target = "_blank";
+            braveLink.rel = "noopener";
+            var braveLabel = document.createElement("span");
+            braveLabel.style.display = "flex";
+            braveLabel.style["align-items"] = "center";
+            var braveIconContainer = document.createElement("span");
+            braveIconContainer.classList.add("browser-detection-icon-root");
+            var braveIcon = document.createElement("img");
+            braveIcon.src = "/img/brave.svg";
+            braveIcon.style.height = "0.875rem";
+            braveLabel.textContent = "Télécharger Brave";
+            braveIconContainer.append(braveIcon);
+            braveLabel.prepend(braveIconContainer);
+            braveLink.append(braveLabel);
+            buttonsContainer.append(braveLink);
+
+            browserDetectionContainer.appendChild(box);
+        }
+        </script>
+    </macro>
 	
 </macros>
