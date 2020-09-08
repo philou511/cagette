@@ -631,7 +631,7 @@
         <script type="text/javascript" src="/js/browser-detect.js"></script>
         <div id="browser-detection-container"></div>
         <script>
-        if (window.IsValidBrowser === true) {
+        if (window.IsValidBrowser === false) {
             var browserDetectionContainer = document.getElementById(
             "browser-detection-container"
             );
