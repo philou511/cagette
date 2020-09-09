@@ -612,26 +612,17 @@ class ContractAdmin extends Controller
 	 * Lists deliveries for this contract
 	 */
 	@tpl("contractadmin/distributions.mtt")
-	function doDistributions(contract:db.Catalog, ?args: { ?old:Bool,?participateToAllDistributions:Bool } ) {
+	function doDistributions(contract:db.Catalog, ?args: { ?participateToAllDistributions:Bool } ) {
 
 		view.nav.push("distributions");
 		sendNav(contract);
 		
 		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
 
-		var multidistribs = [];
 		var now = Date.now();
+		var timeframe = new tools.Timeframe(now,DateTools.delta(now,1000.0*60*60*24*365));
 
-		if (args != null && args.old) {
-			//display also old deliveries
-			//distributions = Lambda.array(contract.getDistribs(false));	
-
-			multidistribs = db.MultiDistrib.getFromTimeRange(contract.group, DateTools.delta(now,1000.0*60*60*24*-365) , now);
-
-		}else {
-			//distributions = Lambda.array(db.Distribution.manager.search($end > DateTools.delta(Date.now(), -1000.0 * 60 * 60 * 24 * 30) && $contract == contract, { orderBy:date} ));
-			multidistribs = db.MultiDistrib.getFromTimeRange(contract.group, now , DateTools.delta(now,1000.0*60*60*24*365) );			
-		}
+		var multidistribs =  db.MultiDistrib.getFromTimeRange(contract.group,timeframe.from , timeframe.to);
 
 		if(args!=null && args.participateToAllDistributions){
 			for( d in multidistribs){
@@ -649,6 +640,7 @@ class ContractAdmin extends Controller
 		view.multidistribs = multidistribs;
 		view.c = contract;
 		view.contract = contract;
+		view.timeframe = timeframe;
 
 				
 	}

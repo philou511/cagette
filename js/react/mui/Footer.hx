@@ -29,7 +29,7 @@ class Footer extends react.ReactComponent
 							<a href="https://www.facebook.com/groups/EntraideCagette/" target="_blank">Groupe Facebook</a> 
 						</li>
 						<li>
-							<a href="https://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
+							<a href="http://www.cagette.pro" target="_blank">Formations pour producteurs</a> 
 						</li>
 					</ul>					
 				</Grid>

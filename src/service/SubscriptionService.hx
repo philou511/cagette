@@ -876,7 +876,7 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if ( hasPastDistribOrders( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
+		if ( hasPastDistribOrders( subscription ) && !subscription.catalog.isDemoCatalog() ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
@@ -884,15 +884,15 @@ class SubscriptionService
 		//Delete all the orders for this subscription
 		var subscriptionOrders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in subscriptionOrders ) {
-
-			order.lock();
-			order.delete();
+			OrderService.delete(order,true);
 		}
 		//Delete the subscription
 		subscription.lock();
 		subscription.delete();
 
 	}
+
+	
 
 	/**
 	 *  Checks whether there are orders with non zero quantity in the past
@@ -993,9 +993,7 @@ class SubscriptionService
 
 		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
 		for ( order in subscriptionAllOrders ) {
-
-			order.lock();
-			order.delete();
+			OrderService.delete(order,true);
 		}
 
 		var subscriptionDistributions = getSubscriptionDistribs( subscription );
