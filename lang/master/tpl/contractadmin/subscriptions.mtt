@@ -83,7 +83,7 @@
                             <th ::cond catalog.type == TYPE_CONSTORDERS::>Payé</th>
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getDescription(subscription)::
+                            ::set orderName = subscriptionService.getDescription(subscription, catalog)::
                             ::if orderName == null::
                                 ::set class="danger text-danger"::
                             ::else::

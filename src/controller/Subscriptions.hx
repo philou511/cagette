@@ -401,9 +401,10 @@ class Subscriptions extends controller.Controller
 			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
 
 		}
+	}
 		
 	@admin
-	public  function doUnvalidateAll(catalog : db.Catalog){
+	public function doUnvalidateAll(catalog : db.Catalog){
 		for ( subscription in SubscriptionService.getSubscriptions(catalog)){
 			subscription.lock();
 			subscription.isValidated = false;
