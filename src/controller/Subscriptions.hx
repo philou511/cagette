@@ -347,6 +347,7 @@ class Subscriptions extends controller.Controller
 
 	}
 
+<<<<<<< HEAD
 	@logged @tpl("form.mtt")
 	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
 
@@ -401,10 +402,22 @@ class Subscriptions extends controller.Controller
 			throw Ok( App.current.session.data.absencesReturnUrl, 'Vos dates d\'absences ont bien été mises à jour.' );
 
 		}
+=======
+	@admin
+	public  function doUnvalidateAll(catalog : db.Catalog){
+		for ( subscription in SubscriptionService.getSubscriptions(catalog)){
+			subscription.lock();
+			subscription.isValidated = false;
+			subscription.isPaid = false;
+			subscription.update();
+		}
+		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
+>>>>>>> master
 
 	}
 
 
+<<<<<<< HEAD
 	@logged @tpl("form.mtt")
 	function doDefaultOrders( subscription : db.Subscription ) {
 
@@ -452,5 +465,7 @@ class Subscriptions extends controller.Controller
 		}
 
 	}
+=======
+>>>>>>> master
 
 }

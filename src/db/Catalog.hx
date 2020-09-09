@@ -521,9 +521,12 @@ class Catalog extends Object
 			return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document' && $data != 'subscribers', false);
 		}
 		
-		
 		return sugoi.db.EntityFile.manager.search( $entityType == 'catalog' && $entityId == this.id && $documentType == 'document' && $data == 'public', false);
 
+	}
+
+	public function isDemoCatalog():Bool{
+		return this.vendor.email != 'jean@cagette.net' && this.vendor.email != 'galinette@cagette.net';
 	}
 	
 	override function toString() {

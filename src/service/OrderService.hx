@@ -241,23 +241,33 @@ class OrderService
 	/**
 	 *  Delete an order
 	 */
-	public static function delete(order:db.UserOrder) {
+	public static function delete(order:db.UserOrder,?force=false) {
 		var t = sugoi.i18n.Locale.texts;
 
 		if(order==null) throw new Error( t._( "This order has already been deleted." ) );
 		
 		order.lock();
 		
-		if (order.quantity == 0) {
+		if (order.quantity == 0 || force) {
 
 			var contract = order.product.catalog;
 			var user = order.user;
+			var product = order.product;
 
-			//Amap Contract
+			//stock mgmt
+			if (contract.hasStockManagement()) {
+				//re-increment stock
+				product.lock();
+				product.stock +=  order.quantity;
+				product.update();
+				// e = StockMove({product:product, move:0-order.quantity });
+			}
+
 			if ( contract.type == db.Catalog.TYPE_CONSTORDERS ) {
 
 				order.delete();
 
+				//delete related operation
 				if( contract.group.hasPayments() ){
 					var orders = contract.getUserOrders(user);
 					if( orders.length == 0 ){
@@ -265,9 +275,9 @@ class OrderService
 						if(operation!=null) operation.delete();
 					}
 				}
-			}
-			else { //Variable orders contract
-				
+
+			} else {
+
 				//Get the basket for this user
 				var place = order.distribution.place;
 				var basket = db.Basket.get(user, order.distribution.multiDistrib);
@@ -279,13 +289,12 @@ class OrderService
 						var operation = service.PaymentService.findVOrderOperation(basket.multiDistrib, user);
 						if(operation!=null) operation.delete();
 					}
-
 				}
 
 				order.delete();
 			}
-		}
-		else {
+			
+		} else {
 			throw new Error( t._( "Deletion not possible: quantity is not zero." ) );
 		}
 
