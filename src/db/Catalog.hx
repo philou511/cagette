@@ -180,6 +180,9 @@ class Catalog extends Object
 				//VAR
 				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<h4>Engagement par distribution</h4>', '' ), 10 );
 				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<h4>Engagement sur la durée du contrat</h4>', '' ), 13 );
+
+				form.getElement("orderStartDaysBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables";
+				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:contratsamapvariables";
 				
 				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
 				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
@@ -224,7 +227,14 @@ class Catalog extends Object
 		}
 		else {
 
-			form.getElement("name").value = "Commande " + this.vendor.name;
+			if ( this.group.hasShopMode() ) {
+
+				form.getElement("name").value = "Commande " + this.vendor.name;
+			}
+			else {
+
+				form.getElement("name").value = "Contrat AMAP " + ( this.type == TYPE_VARORDER ? "variable" : "classique" ) + " - " + this.vendor.name;
+			}
 			form.getElement("startDate").value = Date.now();
 			form.getElement("endDate").value = DateTools.delta( Date.now(), 365.25 * 24 * 60 * 60 * 1000 );
 		}
