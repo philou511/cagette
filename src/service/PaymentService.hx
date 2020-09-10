@@ -85,6 +85,7 @@ class PaymentService
 		if (orders == null) throw "orders are null";
 		if (orders.length == 0) throw "no orders";
 		if (orders[0].user == null ) throw "no user in order";
+
 		//check that we dont have a mix of variable and CSA
 		var catalog = orders[0].product.catalog;
 		for( o in orders){
@@ -125,8 +126,11 @@ class PaymentService
 			
 			if (basket == null) throw new Error("variable orders should have a basket");
 			if(basket.user.id!=user.id) throw new Error("user and basket mismatch");
-			
-			//varying orders
+			if( findVOrderOperation(basket.multiDistrib , user , false) != null ){
+				throw new Error('An order op already exists for user #${user.id} and multidistrib #${basket.multiDistrib.id}');
+			} 
+
+			//variable orders
 			var date = App.current.view.dDate(orders[0].distribution.date);
 			op.name = t._("Order for ::date::",{date:date});
 			op.amount = 0 - _amount;
@@ -174,10 +178,6 @@ class PaymentService
 		service.PaymentService.updateUserBalance(op.user, op.group);
 		return op;
 	}
-	
-	
-
-
 	
 	
 	/**

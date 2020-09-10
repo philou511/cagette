@@ -37,6 +37,7 @@ www/*.xlsx
 !www/js/libs.dev.js
 !www/js/libs.prod.js
 !www/js/fetch.umd.js
+!www/js/browser-detect.js
 
 devLibs/
 

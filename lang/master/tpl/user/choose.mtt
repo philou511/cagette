@@ -123,7 +123,7 @@
 		
 		if( date==null || now.getTime() > oneDayLater.getTime() ){
 			localStorage.cagetteProTestWindow = now.toJSON();
-			_.overlay("/data/cagetteProTest.html","Bonne nouvelle !");
+			_.overlay("/data/cagetteProTest2.html","On s'organise !");
 		}else{
 			console.log("no popup for now");
 		}

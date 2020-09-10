@@ -253,10 +253,9 @@ class App extends sugoi.BaseApp {
 	
 	public static function getMailer():sugoi.mail.IMailer {
 		
-		var mailer : sugoi.mail.IMailer = new sugoi.mail.BufferedMailer();
-		
+		var mailer : sugoi.mail.IMailer = new mail.BufferedJsonMailer();		
 
-		if(App.config.DEBUG || App.config.HOST=="pp.cagette.net" || App.config.HOST=="localhost"){ 
+		/*if(App.config.DEBUG || App.config.HOST=="pp.cagette.net" || App.config.HOST=="localhost"){ 
 
 			//Dev env : emails are written to tmp folder
 			mailer = new sugoi.mail.DebugMailer();
@@ -274,7 +273,7 @@ class App extends sugoi.BaseApp {
 				//Buffered emails with SMTP
 				untyped mailer.defineFinalMailer("smtp");
 			}
-		}
+		}*/
 		return mailer;
 	}
 	

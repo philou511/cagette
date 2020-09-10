@@ -15,7 +15,14 @@
 		</div>
 	
         <br/>
+
         $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
+
+        ::if(user.isAdmin)::
+        <a href="/contractAdmin/subscriptions/unvalidateAll/::catalog.id::" class="btn btn-default btn-sm">
+            <i class="icon icon-square"></i> Admin : Dévalider toutes les souscriptions
+        </a>
+        ::end::
         
         <div class="row" style="margin-top: 10px; margin-bottom: 24px;">
             <div class="col-md-12">
@@ -98,7 +105,7 @@
                                             ::if(user.isAdmin())::
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/unvalidate/::subscription.id::?token=::token::">
-                                                    <i class="icon icon-square"></i> Dévalider (Admin)
+                                                    <i class="icon icon-square"></i> Admin : Dévalider
                                                 </a>
                                             </li>	
                                             ::end::
