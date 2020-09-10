@@ -180,6 +180,9 @@ class Catalog extends Object
 				//VAR
 				form.addElement( new sugoi.form.elements.Html( 'distribconstraints', '<h4>Engagement par distribution</h4>', '' ), 10 );
 				form.addElement( new sugoi.form.elements.Html( 'catalogconstraints', '<h4>Engagement sur la durée du contrat</h4>', '' ), 13 );
+				
+				form.getElement("catalogMinOrdersTotal").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#minimum_de_commandes_sur_la_duree_du_contrat";
+				form.getElement("allowedOverspend").docLink = "https://wiki.cagette.net/admin:contratsamapvariables#depassement_autorise";
 			}
 			else { 
 				//CONST
@@ -190,6 +193,7 @@ class Catalog extends Object
 				form.removeElement(form.getElement("allowedOverspend"));
 
 				form.getElement("orderEndHoursBeforeDistrib").label = "Délai minimum pour saisir une souscription (nbre d'heures avant prochaine distribution)";
+				form.getElement("orderEndHoursBeforeDistrib").docLink = "https://wiki.cagette.net/admin:admin_contratsamap#champs_delai_minimum_pour_saisir_une_souscription";
 
 				absencesIndex = 9;
 			}
@@ -197,16 +201,17 @@ class Catalog extends Object
 			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>
             <p><i class='icon icon-info'></i> 
 				Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
-				Cette option est souvent utilisée pour avoir des \"jokers\" pendant les vacances d'été.
+				<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
             </p></div>";
 			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 			
-
+			//if catalog is new
 			if ( this.id == null ) {
 
 				if ( this.type == TYPE_VARORDER ) {
 
 					form.getElement("orderStartDaysBeforeDistrib").value = 365;
+					form.getElement("allowedOverspend").value = 500;
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
 			}
