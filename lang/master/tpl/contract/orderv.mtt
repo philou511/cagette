@@ -1,5 +1,7 @@
 ::use 'design.mtt'::
 <div id="content" class="col-md-12">
+
+	<h2>::catalog.name::</h2>
 	
 	::set distribs = catalog.getDistribs(true,null)::
 
@@ -67,8 +69,6 @@
 
 	<div class="article">
 
-		<h2>::catalog.name::</h2>
-
 		<p>
 			::if catalog.isUserOrderAvailable()::
 				Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
@@ -87,15 +87,15 @@
 
 <style>
 	
-	td{
+	table.orderTable td{
 		overflow: hidden;
-		/* height: 80px; */
+		height: 80px;
 		width: 80px;
 
 	}
-	th{
+	table.orderTable th{
 		overflow: hidden;
-		/*height: 100px;*/
+		height: 100px;
 		padding-top: 20px;
 		width: 80px;
 	}
@@ -158,7 +158,7 @@
 
 				<!--orders-->
 				<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-8">
-					<table class="table table-bordered">
+					<table class="table table-bordered orderTable">
 						<tr>
 							::foreach d userOrders::
 								::if d.distrib==null::
@@ -275,7 +275,13 @@
 			::end::
 
 			<p class="text-right">
-				<input type="submit" class="btn btn-lg btn-primary" value="Enregistrer ma commande" name="submit" id="submit" />
+				::if(comingDistribSubscription == null)::
+				::set text = "Souscrire à ce contrat"::
+				::else::
+				::set text = "Mettre à jour"::
+				::end::
+				<input type="submit" class="btn btn-lg btn-primary" value="::text::" name="submit" id="submit" />	
+				
 				
 			</p>
 					

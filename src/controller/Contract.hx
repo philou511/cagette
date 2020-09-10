@@ -546,7 +546,7 @@ class Contract extends Controller
 				}
 			}
 
-			throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
+			throw Ok( "/contract/order/" + catalog.id, "Votre souscription a bien été mise à jour");
 
 		}
 		
