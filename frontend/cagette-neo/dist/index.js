@@ -27574,20 +27574,16 @@ var countrySpecs = {
 };
 
 var mangopayBankAccountSchema = es.object().shape({
-    ownerName: es.string().required(),
-    address1: es.string().required(),
-    address2: es.string(),
-    city: es.string().required(),
-    zipCode: es.string().required(),
-    country: es.string().length(2).required(),
-    iban: es
+    OwnerName: es.string().required(),
+    OwnerAddress: mangopayAddressSchema,
+    IBAN: es
         .string()
         .required()
-        .test('iban', 'custom.iban', function (value) { return isValidIBAN(value || ''); }),
-    bic: es
+        .test('IBAN', 'custom.iban', function (value) { return isValidIBAN(value || ''); }),
+    BIC: es
         .string()
         .notRequired()
-        .test('bic', 'custom.bic', function (value) { return (!value || value === '' ? true : isValidBIC(value || '')); }),
+        .test('BIC', 'custom.bic', function (value) { return (!value || value === '' ? true : isValidBIC(value || '')); }),
 });
 
 var isLuhn = (function (toCheck) {
@@ -28811,94 +28807,6 @@ var PlaceView = function (_a) {
 };
 var PlaceView$1 = withNeolithicProvider(withi18n(PlaceView));
 
-var Business = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"
-}), 'Business');
-
-exports.default = _default;
-});
-
-var BusinessIcon = unwrapExports(Business);
-
-var Face = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"
-}), 'Face');
-
-exports.default = _default;
-});
-
-var FaceIcon = unwrapExports(Face);
-
-var ExpandLess = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
-}), 'ExpandLess');
-
-exports.default = _default;
-});
-
-var ExpandLessIcon = unwrapExports(ExpandLess);
-
-var Folder = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
-}), 'Folder');
-
-exports.default = _default;
-});
-
-var FolderIcon = unwrapExports(Folder);
-
 var parse$4 = parser$1.parse;
 
 // Strip insignificant whitespace
@@ -29078,6 +28986,14 @@ gql$1.disableExperimentalFragmentVariables = disableExperimentalFragmentVariable
 
 var src$1 = gql$1;
 
+var MangopayBankAccountType;
+(function (MangopayBankAccountType) {
+    MangopayBankAccountType["IBAN"] = "IBAN";
+    MangopayBankAccountType["GB"] = "GB";
+    MangopayBankAccountType["US"] = "US";
+    MangopayBankAccountType["CA"] = "CA";
+    MangopayBankAccountType["OTHER"] = "OTHER";
+})(MangopayBankAccountType || (MangopayBankAccountType = {}));
 var MangopayKycDocumentRefusedReasonType;
 (function (MangopayKycDocumentRefusedReasonType) {
     MangopayKycDocumentRefusedReasonType["DOCUMENT_UNREADABLE"] = "DOCUMENT_UNREADABLE";
@@ -29135,19 +29051,25 @@ var MangopayUboReasonType;
     MangopayUboReasonType["DECLARATION_DO_NOT_MATCH_UBO_INFORMATION"] = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION";
     MangopayUboReasonType["SPECIFIC_CASE"] = "SPECIFIC_CASE";
 })(MangopayUboReasonType || (MangopayUboReasonType = {}));
+var MangopayUsBankAccountDepositAccountType;
+(function (MangopayUsBankAccountDepositAccountType) {
+    MangopayUsBankAccountDepositAccountType["CHECKING"] = "CHECKING";
+    MangopayUsBankAccountDepositAccountType["SAVINGS"] = "SAVINGS";
+})(MangopayUsBankAccountDepositAccountType || (MangopayUsBankAccountDepositAccountType = {}));
 var UserFragmentDoc = src$1(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n}\n    "], ["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n}\n    "])));
 var MangopayAddressFragmentDoc = src$1(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "], ["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "])));
 var MangopayKycDocumentFragmentDoc = src$1(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "], ["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "])));
 var MangopayBirthplaceFragmentDoc = src$1(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "], ["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "])));
-var MangopayUboFragmentDoc = src$1(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""], ["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""])), MangopayAddressFragmentDoc, MangopayBirthplaceFragmentDoc);
+var MangopayUboFragmentDoc = src$1(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""], ["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""])), MangopayAddressFragmentDoc, MangopayBirthplaceFragmentDoc);
 var MangopayUboDeclarationFragmentDoc = src$1(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
-var MangopayLegalUserFragmentDoc = src$1(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", ""], ["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", ""])), MangopayAddressFragmentDoc, MangopayKycDocumentFragmentDoc, MangopayUboDeclarationFragmentDoc);
-var LoginDocument = src$1(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""], ["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""])), UserFragmentDoc);
-var MeDocument = src$1(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""], ["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""])), UserFragmentDoc);
-var GroupPreviewDocument = src$1(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "])));
-var GetUserMembershipsDocument = src$1(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "], ["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "])));
-var MangopayGroupDocument = src$1(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "], ["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "])));
-var MangopayGroupConfigDocument = src$1(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""], ["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var MangopayIbanBankAccountFragmentDoc = src$1(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""], ["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""])), MangopayAddressFragmentDoc);
+var MangopayLegalUserFragmentDoc = src$1(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""], ["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""])), MangopayAddressFragmentDoc, MangopayKycDocumentFragmentDoc, MangopayUboDeclarationFragmentDoc, MangopayIbanBankAccountFragmentDoc);
+var LoginDocument = src$1(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""], ["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""])), UserFragmentDoc);
+var MeDocument = src$1(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""], ["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""])), UserFragmentDoc);
+var GroupPreviewDocument = src$1(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "])));
+var GetUserMembershipsDocument = src$1(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "], ["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "])));
+var MangopayGroupDocument = src$1(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "], ["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "])));
+var MangopayGroupConfigDocument = src$1(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""], ["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useMangopayGroupConfigQuery__
  *
@@ -29167,11 +29089,11 @@ var MangopayGroupConfigDocument = src$1(templateObject_13 || (templateObject_13 
 function useMangopayGroupConfigQuery(baseOptions) {
     return useQuery(MangopayGroupConfigDocument, baseOptions);
 }
-var MangopayLegalUserByLegalReprDocument = src$1(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var MangopayLegalUserByLegalReprDocument = src$1(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 function useMangopayLegalUserByLegalReprLazyQuery(baseOptions) {
     return useLazyQuery(MangopayLegalUserByLegalReprDocument, baseOptions);
 }
-var CreateMangopayLegalUserDocument = src$1(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var CreateMangopayLegalUserDocument = src$1(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useCreateMangopayLegalUserMutation__
  *
@@ -29192,7 +29114,7 @@ var CreateMangopayLegalUserDocument = src$1(templateObject_15 || (templateObject
 function useCreateMangopayLegalUserMutation(baseOptions) {
     return useMutation(CreateMangopayLegalUserDocument, baseOptions);
 }
-var UpdateMangopayLegalUserDocument = src$1(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var UpdateMangopayLegalUserDocument = src$1(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useUpdateMangopayLegalUserMutation__
  *
@@ -29213,7 +29135,7 @@ var UpdateMangopayLegalUserDocument = src$1(templateObject_16 || (templateObject
 function useUpdateMangopayLegalUserMutation(baseOptions) {
     return useMutation(UpdateMangopayLegalUserDocument, baseOptions);
 }
-var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useLinkMangopayLegalUserToGroupMutation__
  *
@@ -29234,28 +29156,28 @@ var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_17 || (templateO
 function useLinkMangopayLegalUserToGroupMutation(baseOptions) {
     return useMutation(LinkMangopayLegalUserToGroupDocument, baseOptions);
 }
-var CreateMangopayKycDocumentDocument = src$1(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation CreateMangopayKycDocument($input: CreateMangopayKycDocumentInput!) {\n  createMangopayKycDocument(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayKycDocument($input: CreateMangopayKycDocumentInput!) {\n  createMangopayKycDocument(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""])), MangopayKycDocumentFragmentDoc);
+var CreateMangopayKycDocumentsDocument = src$1(templateObject_19 || (templateObject_19 = __makeTemplateObject(["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""])), MangopayKycDocumentFragmentDoc);
 /**
- * __useCreateMangopayKycDocumentMutation__
+ * __useCreateMangopayKycDocumentsMutation__
  *
- * To run a mutation, you first call `useCreateMangopayKycDocumentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayKycDocumentMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateMangopayKycDocumentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayKycDocumentsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createMangopayKycDocumentMutation, { data, loading, error }] = useCreateMangopayKycDocumentMutation({
+ * const [createMangopayKycDocumentsMutation, { data, loading, error }] = useCreateMangopayKycDocumentsMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-function useCreateMangopayKycDocumentMutation(baseOptions) {
-    return useMutation(CreateMangopayKycDocumentDocument, baseOptions);
+function useCreateMangopayKycDocumentsMutation(baseOptions) {
+    return useMutation(CreateMangopayKycDocumentsDocument, baseOptions);
 }
-var CreateMangopayUboDeclarationDocument = src$1(templateObject_19 || (templateObject_19 = __makeTemplateObject(["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
+var CreateMangopayUboDeclarationDocument = src$1(templateObject_20 || (templateObject_20 = __makeTemplateObject(["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
 /**
  * __useCreateMangopayUboDeclarationMutation__
  *
@@ -29276,7 +29198,7 @@ var CreateMangopayUboDeclarationDocument = src$1(templateObject_19 || (templateO
 function useCreateMangopayUboDeclarationMutation(baseOptions) {
     return useMutation(CreateMangopayUboDeclarationDocument, baseOptions);
 }
-var SubmitMangopayUboDeclarationDocument = src$1(templateObject_20 || (templateObject_20 = __makeTemplateObject(["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
+var SubmitMangopayUboDeclarationDocument = src$1(templateObject_21 || (templateObject_21 = __makeTemplateObject(["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
 /**
  * __useSubmitMangopayUboDeclarationMutation__
  *
@@ -29297,7 +29219,7 @@ var SubmitMangopayUboDeclarationDocument = src$1(templateObject_20 || (templateO
 function useSubmitMangopayUboDeclarationMutation(baseOptions) {
     return useMutation(SubmitMangopayUboDeclarationDocument, baseOptions);
 }
-var CreateOrUpdateMangopayUboDocument = src$1(templateObject_21 || (templateObject_21 = __makeTemplateObject(["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
+var CreateOrUpdateMangopayUboDocument = src$1(templateObject_22 || (templateObject_22 = __makeTemplateObject(["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
 /**
  * __useCreateOrUpdateMangopayUboMutation__
  *
@@ -29318,7 +29240,70 @@ var CreateOrUpdateMangopayUboDocument = src$1(templateObject_21 || (templateObje
 function useCreateOrUpdateMangopayUboMutation(baseOptions) {
     return useMutation(CreateOrUpdateMangopayUboDocument, baseOptions);
 }
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21;
+var CreateMangopayIbanBankAccountDocument = src$1(templateObject_23 || (templateObject_23 = __makeTemplateObject(["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""])), MangopayIbanBankAccountFragmentDoc);
+/**
+ * __useCreateMangopayIbanBankAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayIbanBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayIbanBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayIbanBankAccountMutation, { data, loading, error }] = useCreateMangopayIbanBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMangopayIbanBankAccountMutation(baseOptions) {
+    return useMutation(CreateMangopayIbanBankAccountDocument, baseOptions);
+}
+var DeactivateMangopayBankAccountDocument = src$1(templateObject_24 || (templateObject_24 = __makeTemplateObject(["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "], ["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "])));
+/**
+ * __useDeactivateMangopayBankAccountMutation__
+ *
+ * To run a mutation, you first call `useDeactivateMangopayBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeactivateMangopayBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deactivateMangopayBankAccountMutation, { data, loading, error }] = useDeactivateMangopayBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useDeactivateMangopayBankAccountMutation(baseOptions) {
+    return useMutation(DeactivateMangopayBankAccountDocument, baseOptions);
+}
+var SelectMangopayBankAccountIdDocument = src$1(templateObject_25 || (templateObject_25 = __makeTemplateObject(["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "], ["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "])));
+/**
+ * __useSelectMangopayBankAccountIdMutation__
+ *
+ * To run a mutation, you first call `useSelectMangopayBankAccountIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelectMangopayBankAccountIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selectMangopayBankAccountIdMutation, { data, loading, error }] = useSelectMangopayBankAccountIdMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useSelectMangopayBankAccountIdMutation(baseOptions) {
+    return useMutation(SelectMangopayBankAccountIdDocument, baseOptions);
+}
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25;
 
 /* eslint-disable no-console */
 var canLog = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
@@ -29347,82 +29332,64 @@ var GqlErrorAlert = function (_a) {
         })) : (React__default.createElement(core$1.Typography, { variant: "caption" }, error.message)))));
 };
 
-var firstLetterUpercase = function (s) { return "" + s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
-var formatUboNames = function (ubo) {
-    return firstLetterUpercase(ubo.FirstName) + " " + firstLetterUpercase(ubo.LastName);
-};
-var formatUserName = function (user) {
-    return "" + user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1).toLowerCase() + " " + user.lastName
-        .charAt(0)
-        .toUpperCase() + user.lastName.slice(1).toLowerCase();
+var Business = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"
+}), 'Business');
+
+exports.default = _default;
+});
+
+var BusinessIcon = unwrapExports(Business);
+
+var ExpandLess = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+}), 'ExpandLess');
+
+exports.default = _default;
+});
+
+var ExpandLessIcon = unwrapExports(ExpandLess);
+
+var TwoColumnsGrid = function (_a) {
+    var left = _a.left, right = _a.right;
+    var theme = core$1.useTheme();
+    var matches = core$1.useMediaQuery(theme.breakpoints.up('sm'));
+    /** */
+    return (React__default.createElement(core$1.Grid, { container: true, spacing: matches ? 2 : 0 },
+        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, left),
+        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, right)));
 };
 
-var tFile$9 = 'pro/mangopay';
-var tKey = 'config.legalRepCard';
-var LegalReprSelectorContainer = function (_a) {
-    var groupId = _a.groupId, users = _a.users, currentLegalRepr = _a.currentLegalRepr, onSelect = _a.onSelect;
-    var _b = useMangopayLegalUserByLegalReprLazyQuery(), getMangopayLegalUserByLegalRepr = _b[0], _c = _b[1], dataLegalUser = _c.data, errorLegalUser = _c.error, loadingLegalUser = _c.loading;
-    var _d = useLinkMangopayLegalUserToGroupMutation(), linkLegalUserToGroup = _d[0], _f = _d[1], errorLink = _f.error, loadingLink = _f.loading;
-    /** TRANS */
-    var _t = useTranslation(['translation', tFile$9]).t;
-    var t = function (key, options) { return _t(tFile$9 + ":" + tKey + "." + key, options); };
-    /** EXTRACTED */
-    var error = errorLegalUser || errorLink;
-    var loading = loadingLegalUser || loadingLink;
-    var legalUser = dataLegalUser === null || dataLegalUser === void 0 ? void 0 : dataLegalUser.mangopayLegalUserByLegalRepr;
-    /** STATES */
-    var _g = React__default.useState(), selectLegalRepr = _g[0], setSelectedLegalRepr = _g[1];
-    /** */
-    var onLinkAccount = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (!selectLegalRepr)
-                return [2 /*return*/];
-            linkLegalUserToGroup({
-                variables: { input: { groupId: groupId, legalReprId: selectLegalRepr.id } },
-                refetchQueries: ['MangopayGroupConfig'],
-            });
-            return [2 /*return*/];
-        });
-    }); };
-    /** */
-    React__default.useEffect(function () {
-        if (selectLegalRepr) {
-            getMangopayLegalUserByLegalRepr({ variables: { input: { groupId: groupId, legalReprId: selectLegalRepr.id } } });
-        }
-    }, [selectLegalRepr]);
-    /** */
-    return (React__default.createElement(core$1.Box, null,
-        error && React__default.createElement(GqlErrorAlert, { error: error }),
-        !loading && selectLegalRepr ? (React__default.createElement(React__default.Fragment, null, legalUser ? (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(core$1.Typography, null, formatUserName(selectLegalRepr)),
-            React__default.createElement(core$1.Typography, null,
-                React__default.createElement("span", null, legalUser.Name),
-                legalUser.CompanyNumber && React__default.createElement("span", null, " (" + legalUser.CompanyNumber + ")")),
-            React__default.createElement(core$1.Typography, null, legalUser.Email),
-            React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Box, { mx: 2 },
-                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
-                            setSelectedLegalRepr(undefined);
-                        } }, _t('cancel'))),
-                React__default.createElement(core$1.Box, { mx: 2 },
-                    React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: onLinkAccount }, t('linkBtn', { name: legalUser.Name })))))) : (React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Box, { mx: 2 },
-                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
-                        setSelectedLegalRepr(undefined);
-                    } }, _t('cancel'))),
-            React__default.createElement(core$1.Box, { mx: 2 },
-                React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: function () {
-                        onSelect(selectLegalRepr);
-                    } }, t('selectReprBtn', { name: formatUserName(selectLegalRepr) }))))))) : (React__default.createElement(React__default.Fragment, null,
-            React__default.createElement(core$1.Box, { mb: 2 },
-                React__default.createElement(lab.Alert, { severity: "info" }, t('alert.p1'))),
-            React__default.createElement(lab.Autocomplete, { options: users || [], value: selectLegalRepr || null, getOptionLabel: formatUserName, getOptionSelected: function (v, o) { return v.id === o.id; }, disabled: loading, renderInput: function (params) { return (React__default.createElement(core$1.TextField, __assign({ variant: "outlined", margin: "normal", label: t('usersSelectorLabel'), name: "legalReprId", required: true }, params))); }, onChange: function (_e, v) {
-                    if (currentLegalRepr && v && currentLegalRepr.id === v.id)
-                        onSelect(currentLegalRepr);
-                    setSelectedLegalRepr(v || undefined);
-                } }))),
-        loading && (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(core$1.LinearProgress, null)))));
+var CustomTextField$1 = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
+var SimpleField = function (_a) {
+    var name = _a.name, label = _a.label, _b = _a.required, required = _b === void 0 ? true : _b, other = __rest(_a, ["name", "label", "required"]);
+    return (React__default.createElement(formik.Field, __assign({ fullWidth: true, margin: "normal", variant: "outlined", name: name, label: label, required: required, component: CustomTextField$1 }, other)));
 };
 
 var URL = '/data/<LOCALE>/iso-3166-1.json';
@@ -29526,53 +29493,56 @@ var ISO31661Selector = function (_a) {
         React__default.createElement(Autocomplete, __assign({}, autocompleteProps, { defaultValue: getDefaultValue(), options: data, getOptionLabel: getOptionLabel, getOptionSelected: getOptionSelected, renderInput: renderInput, onChange: onAutocompleteChange }))));
 };
 
-var CustomTextField$1 = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
-var SimpleField = function (_a) {
-    var name = _a.name, label = _a.label, _b = _a.required, required = _b === void 0 ? true : _b, other = __rest(_a, ["name", "label", "required"]);
-    return (React__default.createElement(formik.Field, __assign({ fullWidth: true, margin: "normal", variant: "outlined", name: name, label: label, required: required, component: CustomTextField$1 }, other)));
+var MangopayConfigCardHeader = function (_a) {
+    var icon = _a.icon, title = _a.title, actions = _a.actions;
+    return (React__default.createElement(core$1.CardHeader, { title: React__default.createElement(core$1.Box, { display: "flex", justifyContent: "space-between", alignItems: "center" },
+            React__default.createElement(core$1.Box, { display: "flex", alignItems: "center" },
+                icon && (React__default.createElement(core$1.Box, { mr: 1, display: "flex", alignItems: "center" }, icon)),
+                title && React__default.createElement(core$1.Typography, { variant: "h5" }, title)),
+            actions) }));
 };
 
-var TwoColumnsGrid = function (_a) {
-    var left = _a.left, right = _a.right;
-    var theme = core$1.useTheme();
-    var matches = core$1.useMediaQuery(theme.breakpoints.up('sm'));
-    /** */
-    return (React__default.createElement(core$1.Grid, { container: true, spacing: matches ? 2 : 0 },
-        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, left),
-        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, right)));
+var FormTitle = function (_a) {
+    var label = _a.label, _b = _a.mt, mt = _b === void 0 ? 2 : _b;
+    return (React__default.createElement(core$1.Box, { mb: 2, mt: mt },
+        React__default.createElement(core$1.Typography, { variant: "h6" }, label)));
 };
 
-var tFile$a = 'pro/mangopay';
-var tKey$1 = tFile$a + ":config.legalUserCard.form";
-var MangopayLegalUserFormContainer = function (_a) {
-    var groupId = _a.groupId, legalRepr = _a.legalRepr, legalUser = _a.legalUser, _b = _a.disabled, disabled = _b === void 0 ? false : _b, onSubmit = _a.onSubmit, onSubmitComplete = _a.onSubmitComplete, onSubmitFail = _a.onSubmitFail;
-    var _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+var tFile$9 = 'pro/mangopay';
+var tKey = 'config.legalUserCard';
+var MangopayLegalUserCard = function (_a) {
+    var group = _a.group, defaultLegalRepr = _a.defaultLegalRepr, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel, onSubmit = _a.onSubmit, onSubmitComplete = _a.onSubmitComplete, onSubmitFail = _a.onSubmitFail;
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
     var createMangopayLegalUser = useCreateMangopayLegalUserMutation()[0];
     var updateMangopayLegalUser = useUpdateMangopayLegalUserMutation()[0];
+    /** TRANS */
+    var _t = useTranslation(['translation', 'yup', tFile$9]).t;
+    var t = function (key, options) { return _t(tFile$9 + ":" + tKey + "." + key, options); };
+    var tForm = function (key, options) { return _t(tFile$9 + ":" + tKey + ".form." + key, options); };
+    var tYup = function (key, values) { return _t("yup:" + key, values); };
+    /** COMPUTED */
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var isRegular = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.KYCLevel) === MangopayKycLevel.REGULAR;
     /** */
-    var _t = useTranslation(['translation', 'yup', tFile$a], { useSuspense: false }).t;
-    /** EXTRACTED */
-    var t = function (s) { return _t(tKey$1 + "." + s); };
-    var tYup = function (s, values) { return _t("yup:" + s, values); };
     var initialValues = {
         Name: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.Name) || '',
         LegalPersonType: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalPersonType) || MangopayLegalPersonType.ORGANIZATION,
         Email: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.Email) || '',
         CompanyNumber: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.CompanyNumber) || '',
-        LegalRepresentativeFirstName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeFirstName) || legalRepr.firstName || '',
-        LegalRepresentativeLastName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeLastName) || legalRepr.lastName || '',
-        LegalRepresentativeEmail: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeEmail) || legalRepr.email || '',
-        LegalRepresentativeBirthday: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeBirthday) || legalRepr.birthDate || new Date(),
-        LegalRepresentativeNationality: ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeNationality) === null || _c === void 0 ? void 0 : _c.toLocaleLowerCase()) || ((_d = legalRepr.nationality) === null || _d === void 0 ? void 0 : _d.toLocaleLowerCase()) ||
+        LegalRepresentativeFirstName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeFirstName) || defaultLegalRepr.firstName || '',
+        LegalRepresentativeLastName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeLastName) || defaultLegalRepr.lastName || '',
+        LegalRepresentativeEmail: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeEmail) || defaultLegalRepr.email || '',
+        LegalRepresentativeBirthday: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeBirthday) || defaultLegalRepr.birthDate || new Date(),
+        LegalRepresentativeNationality: ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeNationality) === null || _c === void 0 ? void 0 : _c.toLocaleLowerCase()) || ((_d = defaultLegalRepr.nationality) === null || _d === void 0 ? void 0 : _d.toLocaleLowerCase()) ||
             '',
-        LegalRepresentativeCountryOfResidence: ((_e = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeCountryOfResidence) === null || _e === void 0 ? void 0 : _e.toLocaleLowerCase()) || ((_f = legalRepr.countryOfResidence) === null || _f === void 0 ? void 0 : _f.toLocaleLowerCase()) ||
+        LegalRepresentativeCountryOfResidence: ((_e = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeCountryOfResidence) === null || _e === void 0 ? void 0 : _e.toLocaleLowerCase()) || ((_f = defaultLegalRepr.countryOfResidence) === null || _f === void 0 ? void 0 : _f.toLocaleLowerCase()) ||
             '',
         LegalRepresentativeAddress: {
-            AddressLine1: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine1) || legalRepr.address1 || '',
-            AddressLine2: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine2) || legalRepr.address2 || '',
-            City: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.City) || legalRepr.city || '',
-            PostalCode: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.PostalCode) || legalRepr.zipCode || '',
-            Country: ((_g = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.Country) === null || _g === void 0 ? void 0 : _g.toLocaleLowerCase()) || ((_h = legalRepr.countryOfResidence) === null || _h === void 0 ? void 0 : _h.toLocaleLowerCase()) ||
+            AddressLine1: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine1) || defaultLegalRepr.address1 || '',
+            AddressLine2: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine2) || defaultLegalRepr.address2 || '',
+            City: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.City) || defaultLegalRepr.city || '',
+            PostalCode: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.PostalCode) || defaultLegalRepr.zipCode || '',
+            Country: ((_g = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.Country) === null || _g === void 0 ? void 0 : _g.toLocaleLowerCase()) || ((_h = defaultLegalRepr.countryOfResidence) === null || _h === void 0 ? void 0 : _h.toLocaleLowerCase()) ||
                 '',
         },
         HeadquartersAddress: {
@@ -29596,12 +29566,15 @@ var MangopayLegalUserFormContainer = function (_a) {
                 case 1:
                     _a.trys.push([1, 6, , 7]);
                     if (!legalUser) return [3 /*break*/, 3];
-                    return [4 /*yield*/, updateMangopayLegalUser({ variables: { input: __assign(__assign({}, values), { groupId: groupId }) } })];
+                    return [4 /*yield*/, updateMangopayLegalUser({
+                            variables: { input: __assign(__assign({}, values), { groupId: group.id }) },
+                            refetchQueries: ['MangopayGroupConfig'],
+                        })];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 5];
                 case 3: return [4 /*yield*/, createMangopayLegalUser({
-                        variables: { input: __assign({ groupId: groupId, legalReprId: legalRepr.id }, values) },
+                        variables: { input: __assign({ groupId: group.id, legalReprId: defaultLegalRepr.id }, values) },
                         refetchQueries: ['MangopayGroupConfig'],
                     })];
                 case 4:
@@ -29621,104 +29594,122 @@ var MangopayLegalUserFormContainer = function (_a) {
         });
     }); };
     /** */
-    var renderFormTitle = function (label, mt) {
-        if (mt === void 0) { mt = 2; }
-        return (React__default.createElement(core$1.Box, { mb: 2, mt: mt },
-            React__default.createElement(core$1.Typography, { variant: "h6" }, label)));
-    };
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(BusinessIcon, null), title: t('title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                        onTogglePanel(!open);
+                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+        React__default.createElement(core$1.Collapse, { in: open },
+            React__default.createElement(core$1.CardContent, null,
+                isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
+                    React__default.createElement(lab.Alert, { severity: "info" }, t('editAlert')))),
+                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_10, onSubmit: _onSubmit }, function (formikProps) {
+                    var _a, _b, _c, _d, _e, _f, _g, _h;
+                    return (React__default.createElement(formik.Form, null,
+                        React__default.createElement(FormTitle, { label: tForm('structure'), mt: 0 }),
+                        formikProps.status && (React__default.createElement(core$1.Box, { p: 2 },
+                            React__default.createElement(GqlErrorAlert, { error: formikProps.status }))),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Name", label: tForm('structureName'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "Email", label: tForm('structureEmail'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(SimpleField, { name: "LegalPersonType", label: tForm('structureType'), select: true, required: true, disabled: formikProps.isSubmitting || isRegular },
+                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.ORGANIZATION }, tForm('ORGANIZATION')),
+                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.SOLETRADER }, tForm('SOLETRADER')),
+                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.BUSINESS }, tForm('BUSINESS'))),
+                        formikProps.values.LegalPersonType !== MangopayLegalPersonType.ORGANIZATION && (React__default.createElement(SimpleField, { name: "CompanyNumber", label: tForm('companyNumber'), disabled: formikProps.isSubmitting || isRegular })),
+                        React__default.createElement(FormTitle, { label: tForm('legalRepr') }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeFirstName", label: _t('firstName'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeLastName", label: _t('lastName'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(SimpleField, { name: "LegalRepresentativeEmail", label: _t('email'), disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(pickers.DatePicker, { fullWidth: true, name: "LegalRepresentativeBirthday", margin: "normal", inputVariant: "outlined", disabled: formikProps.isSubmitting || isRegular, label: _t('birthDate'), format: "d MMM yyyy", openTo: "year", cancelLabel: _t('cancel'), error: Boolean(formikProps.touched.LegalRepresentativeBirthday && formikProps.errors.LegalRepresentativeBirthday), helperText: formikProps.touched.LegalRepresentativeBirthday &&
+                                yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeBirthday), required: true, value: formikProps.values.LegalRepresentativeBirthday, onChange: function (v) { return formikProps.setFieldValue('LegalRepresentativeBirthday', v); }, onClose: function () { return formikProps.setFieldTouched('LegalRepresentativeBirthday'); } }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                    margin: 'normal',
+                                    name: 'LegalRepresentativeNationality',
+                                    required: true,
+                                    label: _t('nationality'),
+                                    error: Boolean(formikProps.touched.LegalRepresentativeNationality &&
+                                        formikProps.errors.LegalRepresentativeNationality),
+                                    helperText: formikProps.touched.LegalRepresentativeNationality &&
+                                        yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeNationality),
+                                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeNationality'); },
+                                }, defaultValue: formikProps.values.LegalRepresentativeNationality || '', onChange: function (v) {
+                                    formikProps.setFieldTouched('LegalRepresentativeNationality');
+                                    formikProps.setFieldValue('LegalRepresentativeNationality', v || '');
+                                } }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                    margin: 'normal',
+                                    name: 'LegalRepresentativeCountryOfResidence',
+                                    required: true,
+                                    label: _t('countryOfResidence'),
+                                    error: Boolean(formikProps.touched.LegalRepresentativeCountryOfResidence &&
+                                        formikProps.errors.LegalRepresentativeCountryOfResidence),
+                                    helperText: formikProps.touched.LegalRepresentativeCountryOfResidence &&
+                                        yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeCountryOfResidence),
+                                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence'); },
+                                }, defaultValue: formikProps.values.LegalRepresentativeCountryOfResidence || '', onChange: function (v) {
+                                    formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence');
+                                    formikProps.setFieldValue('LegalRepresentativeCountryOfResidence', v || '');
+                                } }) }),
+                        React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine1", label: _t('address1'), disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine2", label: _t('address2'), required: false, disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.City", label: _t('city'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.PostalCode", label: _t('zipCode'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                margin: 'normal',
+                                name: 'LegalRepresentativeAddress.Country',
+                                required: true,
+                                label: _t('country'),
+                                error: Boolean(((_a = formikProps.touched.LegalRepresentativeAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.LegalRepresentativeAddress) === null || _b === void 0 ? void 0 : _b.Country)),
+                                helperText: ((_c = formikProps.touched.LegalRepresentativeAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
+                                    yupHelperTextTranslator(tYup, (_d = formikProps.errors.LegalRepresentativeAddress) === null || _d === void 0 ? void 0 : _d.Country),
+                                onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeAddress.Country'); },
+                            }, defaultValue: formikProps.values.LegalRepresentativeAddress.Country || '', onChange: function (v) {
+                                formikProps.setFieldTouched('LegalRepresentativeAddress.Country');
+                                formikProps.setFieldValue('LegalRepresentativeAddress.Country', v || '');
+                            } }),
+                        React__default.createElement(FormTitle, { label: tForm('headquarters') }),
+                        React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine1", label: tForm('headquartersAddress.address1'), disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine2", label: tForm('headquartersAddress.address2'), required: false, disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "HeadquartersAddress.City", label: tForm('headquartersAddress.city'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "HeadquartersAddress.PostalCode", label: tForm('headquartersAddress.postalCode'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                margin: 'normal',
+                                name: 'HeadquartersAddress.Country',
+                                required: true,
+                                label: tForm('headquartersAddress.country'),
+                                error: Boolean(((_e = formikProps.touched.HeadquartersAddress) === null || _e === void 0 ? void 0 : _e.Country) && ((_f = formikProps.errors.HeadquartersAddress) === null || _f === void 0 ? void 0 : _f.Country)),
+                                helperText: ((_g = formikProps.touched.HeadquartersAddress) === null || _g === void 0 ? void 0 : _g.Country) &&
+                                    yupHelperTextTranslator(tYup, (_h = formikProps.errors.HeadquartersAddress) === null || _h === void 0 ? void 0 : _h.Country),
+                                onBlur: function () { return formikProps.setFieldTouched('HeadquartersAddress.Country'); },
+                            }, defaultValue: initialValues.HeadquartersAddress.Country || '', onChange: function (v) {
+                                formikProps.setFieldTouched('HeadquartersAddress.Country');
+                                formikProps.setFieldValue('HeadquartersAddress.Country', v || '');
+                            } }),
+                        !isRegular && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+                            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, _t('validateBtn'))))));
+                })))));
+};
+
+var tFile$a = 'pro/mangopay';
+var tKey$1 = 'config.infoCard';
+var MangopayInfoCard = function (_a) {
+    var isRegular = _a.isRegular;
+    /** TRANS */
+    var _t = useTranslation([tFile$a]).t;
+    var t = function (key, options) { return _t(tFile$a + ":" + tKey$1 + "." + key, options); };
     /** */
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_10, onSubmit: _onSubmit }, function (formikProps) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
-        return (React__default.createElement(formik.Form, null,
-            renderFormTitle(t('structure'), 0),
-            formikProps.status && (React__default.createElement(core$1.Box, { p: 2 },
-                React__default.createElement(GqlErrorAlert, { error: formikProps.status }))),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Name", label: t('structureName'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "Email", label: t('structureEmail'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(SimpleField, { name: "LegalPersonType", label: t('structureType'), select: true, required: true, disabled: formikProps.isSubmitting || disabled },
-                React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.ORGANIZATION }, t('ORGANIZATION')),
-                React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.SOLETRADER }, t('SOLETRADER')),
-                React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.BUSINESS }, t('BUSINESS'))),
-            formikProps.values.LegalPersonType !== MangopayLegalPersonType.ORGANIZATION && (React__default.createElement(SimpleField, { name: "CompanyNumber", label: t('companyNumber'), disabled: formikProps.isSubmitting || disabled })),
-            renderFormTitle(t('legalRepr')),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeFirstName", label: _t('firstName'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeLastName", label: _t('lastName'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(SimpleField, { name: "LegalRepresentativeEmail", label: _t('email'), disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(pickers.DatePicker, { fullWidth: true, name: "LegalRepresentativeBirthday", margin: "normal", inputVariant: "outlined", disabled: formikProps.isSubmitting || disabled, label: _t('birthDate'), format: "d MMM yyyy", openTo: "year", cancelLabel: _t('cancel'), error: Boolean(formikProps.touched.LegalRepresentativeBirthday && formikProps.errors.LegalRepresentativeBirthday), helperText: formikProps.touched.LegalRepresentativeBirthday &&
-                    yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeBirthday), required: true, value: formikProps.values.LegalRepresentativeBirthday, onChange: function (v) { return formikProps.setFieldValue('LegalRepresentativeBirthday', v); }, onClose: function () { return formikProps.setFieldTouched('LegalRepresentativeBirthday'); } }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                        margin: 'normal',
-                        name: 'LegalRepresentativeNationality',
-                        required: true,
-                        label: _t('nationality'),
-                        error: Boolean(formikProps.touched.LegalRepresentativeNationality &&
-                            formikProps.errors.LegalRepresentativeNationality),
-                        helperText: formikProps.touched.LegalRepresentativeNationality &&
-                            yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeNationality),
-                        onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeNationality'); },
-                    }, defaultValue: formikProps.values.LegalRepresentativeNationality || '', onChange: function (v) {
-                        formikProps.setFieldTouched('LegalRepresentativeNationality');
-                        formikProps.setFieldValue('LegalRepresentativeNationality', v || '');
-                    } }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                        margin: 'normal',
-                        name: 'LegalRepresentativeCountryOfResidence',
-                        required: true,
-                        label: _t('countryOfResidence'),
-                        error: Boolean(formikProps.touched.LegalRepresentativeCountryOfResidence &&
-                            formikProps.errors.LegalRepresentativeCountryOfResidence),
-                        helperText: formikProps.touched.LegalRepresentativeCountryOfResidence &&
-                            yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeCountryOfResidence),
-                        onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence'); },
-                    }, defaultValue: formikProps.values.LegalRepresentativeCountryOfResidence || '', onChange: function (v) {
-                        formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence');
-                        formikProps.setFieldValue('LegalRepresentativeCountryOfResidence', v || '');
-                    } }) }),
-            React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine1", label: _t('address1'), disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine2", label: _t('address2'), required: false, disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.City", label: _t('city'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.PostalCode", label: _t('zipCode'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                    margin: 'normal',
-                    name: 'LegalRepresentativeAddress.Country',
-                    required: true,
-                    label: _t('country'),
-                    error: Boolean(((_a = formikProps.touched.LegalRepresentativeAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.LegalRepresentativeAddress) === null || _b === void 0 ? void 0 : _b.Country)),
-                    helperText: ((_c = formikProps.touched.LegalRepresentativeAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
-                        yupHelperTextTranslator(tYup, (_d = formikProps.errors.LegalRepresentativeAddress) === null || _d === void 0 ? void 0 : _d.Country),
-                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeAddress.Country'); },
-                }, defaultValue: formikProps.values.LegalRepresentativeAddress.Country || '', onChange: function (v) {
-                    formikProps.setFieldTouched('LegalRepresentativeAddress.Country');
-                    formikProps.setFieldValue('LegalRepresentativeAddress.Country', v || '');
-                } }),
-            renderFormTitle(t('headquarters')),
-            React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine1", label: t('headquartersAddress.address1'), disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine2", label: t('headquartersAddress.address2'), required: false, disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "HeadquartersAddress.City", label: t('headquartersAddress.city'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "HeadquartersAddress.PostalCode", label: t('headquartersAddress.postalCode'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                    margin: 'normal',
-                    name: 'HeadquartersAddress.Country',
-                    required: true,
-                    label: t('headquartersAddress.country'),
-                    error: Boolean(((_e = formikProps.touched.HeadquartersAddress) === null || _e === void 0 ? void 0 : _e.Country) && ((_f = formikProps.errors.HeadquartersAddress) === null || _f === void 0 ? void 0 : _f.Country)),
-                    helperText: ((_g = formikProps.touched.HeadquartersAddress) === null || _g === void 0 ? void 0 : _g.Country) &&
-                        yupHelperTextTranslator(tYup, (_h = formikProps.errors.HeadquartersAddress) === null || _h === void 0 ? void 0 : _h.Country),
-                    onBlur: function () { return formikProps.setFieldTouched('HeadquartersAddress.Country'); },
-                }, defaultValue: initialValues.HeadquartersAddress.Country || '', onChange: function (v) {
-                    formikProps.setFieldTouched('HeadquartersAddress.Country');
-                    formikProps.setFieldValue('HeadquartersAddress.Country', v || '');
-                } }),
-            !disabled && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, _t('validateBtn'))))));
-    }));
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(core$1.CardContent, null,
+            React__default.createElement("img", { height: "48px", src: "https://www.mangopay.com/wp-content/themes/mangopay/assets/images/mangopay.svg", alt: "mangopay-logo" })),
+        React__default.createElement(core$1.CardContent, null,
+            !isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
+                React__default.createElement(core$1.Typography, null, t('p1')))),
+            React__default.createElement(core$1.Box, null,
+                React__default.createElement(lab.Alert, { severity: "info" },
+                    React__default.createElement(core$1.Box, null,
+                        React__default.createElement("span", null, t('alert.s1')),
+                        React__default.createElement("a", { href: t('alert.guideLinkTarget'), target: "_blank", rel: "noopener noreferrer" }, t('alert.guildeLinkLabel')),
+                        React__default.createElement("span", null, t('alert.s2'))))),
+            isRegular && (React__default.createElement(core$1.Box, { mt: 2 },
+                React__default.createElement(lab.Alert, { severity: "success" }, t('regular')))))));
 };
 
-var MangopayConfigCardHeader = function (_a) {
-    var icon = _a.icon, title = _a.title, actions = _a.actions;
-    return (React__default.createElement(core$1.CardHeader, { title: React__default.createElement(core$1.Box, { display: "flex", justifyContent: "space-between", alignItems: "center" },
-            React__default.createElement(core$1.Box, { display: "flex", alignItems: "center" },
-                icon && (React__default.createElement(core$1.Box, { mr: 1, display: "flex", alignItems: "center" }, icon)),
-                title && React__default.createElement(core$1.Typography, { variant: "h5" }, title)),
-            actions) }));
-};
-
-var Delete = createCommonjsModule(function (module, exports) {
+var Face = createCommonjsModule(function (module, exports) {
 
 
 
@@ -29732,13 +29723,179 @@ var _react = interopRequireDefault(React__default);
 var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
 
 var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-}), 'Delete');
+  d: "M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"
+}), 'Face');
 
 exports.default = _default;
 });
 
-var DeleteIcon = unwrapExports(Delete);
+var FaceIcon = unwrapExports(Face);
+
+var firstLetterUpercase = function (s) { return "" + s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
+var formatUboNames = function (ubo) {
+    return firstLetterUpercase(ubo.FirstName) + " " + firstLetterUpercase(ubo.LastName);
+};
+var formatUserName = function (user) {
+    return "" + user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1).toLowerCase() + " " + user.lastName
+        .charAt(0)
+        .toUpperCase() + user.lastName.slice(1).toLowerCase();
+};
+
+var tFile$b = 'pro/mangopay';
+var tKey$2 = 'config.legalRepCard';
+var MangopayLegalReprCard = function (_a) {
+    var group = _a.group, disabledActions = _a.disabledActions, selectedLegalRepr = _a.selectedLegalRepr, setSelectedLegalRepr = _a.setSelectedLegalRepr;
+    var _b, _c, _d;
+    var _f = useMangopayLegalUserByLegalReprLazyQuery(), getMangopayLegalUserByLegalRepr = _f[0], _g = _f[1], dataLegalUser = _g.data, errorLegalUser = _g.error, loadingLegalUser = _g.loading;
+    var _h = useLinkMangopayLegalUserToGroupMutation(), linkLegalUserToGroup = _h[0], _j = _h[1], errorLink = _j.error, loadingLink = _j.loading;
+    /** TRANS */
+    var _t = useTranslation(['translation', tFile$b]).t;
+    var t = function (key, options) { return _t(tFile$b + ":" + tKey$2 + "." + key, options); };
+    /** COMPUTED */
+    var legalUser = (_b = group === null || group === void 0 ? void 0 : group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var legalRepr = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr;
+    var isRegular = ((_d = (_c = group.mangopayGroup) === null || _c === void 0 ? void 0 : _c.legalUser) === null || _d === void 0 ? void 0 : _d.KYCLevel) === MangopayKycLevel.REGULAR;
+    var error = errorLegalUser || errorLink;
+    var loading = loadingLegalUser || loadingLink;
+    var legalUserProposal = dataLegalUser === null || dataLegalUser === void 0 ? void 0 : dataLegalUser.mangopayLegalUserByLegalRepr;
+    /** STATES */
+    var _k = React__default.useState(), _selectedLegalRepr = _k[0], _setSelectedLegalRepr = _k[1];
+    /** */
+    var onLinkAccount = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (!_selectedLegalRepr)
+                return [2 /*return*/];
+            linkLegalUserToGroup({
+                variables: { input: { groupId: group.id, legalReprId: _selectedLegalRepr.id } },
+                refetchQueries: ['MangopayGroupConfig'],
+            });
+            return [2 /*return*/];
+        });
+    }); };
+    /** */
+    React__default.useEffect(function () {
+        if (_selectedLegalRepr) {
+            getMangopayLegalUserByLegalRepr({
+                variables: { input: { groupId: group.id, legalReprId: _selectedLegalRepr.id } },
+            });
+        }
+    }, [_selectedLegalRepr]);
+    /** */
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FaceIcon, null), title: t('title', {
+                name: selectedLegalRepr ? ": " + formatUserName(selectedLegalRepr) : undefined,
+            }), actions: !isRegular &&
+                selectedLegalRepr && (React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                    setSelectedLegalRepr(undefined);
+                } },
+                React__default.createElement(EditIcon, null))) }),
+        !selectedLegalRepr && (React__default.createElement(core$1.CardContent, null,
+            error && React__default.createElement(GqlErrorAlert, { error: error }),
+            !loading && _selectedLegalRepr ? (React__default.createElement(React__default.Fragment, null, legalUserProposal ? (React__default.createElement(core$1.Box, { mt: 2 },
+                React__default.createElement(core$1.Typography, null, formatUserName(_selectedLegalRepr)),
+                React__default.createElement(core$1.Typography, null,
+                    React__default.createElement("span", null, legalUserProposal.Name),
+                    legalUserProposal.CompanyNumber && React__default.createElement("span", null, " (" + legalUserProposal.CompanyNumber + ")")),
+                React__default.createElement(core$1.Typography, null, legalUserProposal.Email),
+                React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                    React__default.createElement(core$1.Box, { mx: 2 },
+                        React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
+                                _setSelectedLegalRepr(undefined);
+                            } }, _t('cancel'))),
+                    React__default.createElement(core$1.Box, { mx: 2 },
+                        React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: onLinkAccount }, t('linkBtn', { name: legalUserProposal.Name })))))) : (React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                React__default.createElement(core$1.Box, { mx: 2 },
+                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
+                            _setSelectedLegalRepr(undefined);
+                        } }, _t('cancel'))),
+                React__default.createElement(core$1.Box, { mx: 2 },
+                    React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: function () {
+                            setSelectedLegalRepr(_selectedLegalRepr);
+                        } }, t('selectReprBtn', { name: formatUserName(_selectedLegalRepr) }))))))) : (React__default.createElement(React__default.Fragment, null,
+                React__default.createElement(core$1.Box, { mb: 2 },
+                    React__default.createElement(lab.Alert, { severity: "info" }, t('alert.p1'))),
+                React__default.createElement(lab.Autocomplete, { options: group.users || [], value: _selectedLegalRepr || null, getOptionLabel: formatUserName, getOptionSelected: function (v, o) { return v.id === o.id; }, disabled: loading, renderInput: function (params) { return (React__default.createElement(core$1.TextField, __assign({ variant: "outlined", margin: "normal", label: t('usersSelectorLabel'), name: "legalReprId", required: true }, params))); }, onChange: function (_e, v) {
+                        if (legalRepr && v && legalRepr.id === v.id)
+                            setSelectedLegalRepr(legalRepr);
+                        _setSelectedLegalRepr(v || undefined);
+                    } }))),
+            loading && (React__default.createElement(core$1.Box, { mt: 2 },
+                React__default.createElement(core$1.LinearProgress, null)))))));
+};
+
+var Folder = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+}), 'Folder');
+
+exports.default = _default;
+});
+
+var FolderIcon = unwrapExports(Folder);
+
+var getCurrentKycDocumentOfType = function (kycDocuments, type) {
+    var res = kycDocuments.filter(function (d) { return d.Type === type; }).sort(function (d1, d2) { return d2.Id - d1.Id; });
+    return res.length > 0 ? res[0] : undefined;
+};
+var allMangopayKycDocumentStatusesArePending = function (_a) {
+    var LegalPersonType = _a.LegalPersonType, KycDocuments = _a.KycDocuments;
+    if (!LegalPersonType)
+        return false;
+    if (!KycDocuments)
+        return false;
+    var currentDocs = dist_5(LegalPersonType).map(function (type) {
+        return getCurrentKycDocumentOfType(KycDocuments, type);
+    });
+    if (currentDocs.indexOf(undefined) !== -1)
+        return false;
+    if (currentDocs.find(function (d) { return (d === null || d === void 0 ? void 0 : d.Status) !== MangopayKycDocumentStatus.VALIDATION_ASKED; }))
+        return false;
+    return true;
+};
+var formatMangopayBankAccount = function (bankAccount) {
+    var res = bankAccount.OwnerName;
+    if (bankAccount.Type === MangopayBankAccountType.IBAN) {
+        res = res + " - " + bankAccount.IBAN;
+    }
+    return res;
+};
+var formatMangopayAddress = function (address) {
+    return address.AddressLine1 + " " + address.City + " " + address.Country;
+};
+
+var Add = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+}), 'Add');
+
+exports.default = _default;
+});
+
+var AddIcon = unwrapExports(Add);
 
 var Image = createCommonjsModule(function (module, exports) {
 
@@ -29806,7 +29963,170 @@ exports.default = _default;
 
 var PictureAsPdfIcon = unwrapExports(PictureAsPdf);
 
-var InsertDriveFile = createCommonjsModule(function (module, exports) {
+var uniqueId = 0;
+var getId = function () {
+    uniqueId += 1;
+    return "" + uniqueId;
+};
+var useStyles$4 = core$1.makeStyles(function () { return ({
+    input: {
+        display: 'none !important',
+    },
+}); });
+var FileIcon = function (_a) {
+    var file = _a.file, props = __rest(_a, ["file"]);
+    if (file.type && file.type.startsWith('image/'))
+        return React__default.createElement(ImageIcon, __assign({}, props));
+    if (file.type && file.type === 'application/pdf')
+        return React__default.createElement(PictureAsPdfIcon, __assign({}, props));
+    return React__default.createElement(HelpIcon, __assign({}, props));
+};
+var tFile$c = 'pro/mangopay';
+var tKey$3 = tFile$c + ":config.documentsCard.form";
+var MangopayKycFileField = function (_a) {
+    var label = _a.label, value = _a.value, disabled = _a.disabled, onChange = _a.onChange;
+    var inputRef = React__default.useRef(null);
+    /** TRANS */
+    var _t = useTranslation(['translation', tFile$c], { useSuspense: false }).t;
+    var t = function (s) { return _t(tKey$3 + "." + s); };
+    /** STATES */
+    var _b = React__default.useState(false), fileMaxSizeDialogOpen = _b[0], setFileMaxSizeDialogOpen = _b[1];
+    /** STYLES */
+    var cs = useStyles$4();
+    /** */
+    var id = getId();
+    /** */
+    var closeDialog = function () {
+        setFileMaxSizeDialogOpen(false);
+    };
+    /** */
+    var onInputChange = function (e) {
+        if (!e.target.files)
+            return;
+        var file = e.target.files[0];
+        if (file.size > 7 * 1000 * 1000) {
+            setFileMaxSizeDialogOpen(true);
+            return;
+        }
+        onChange(__spreadArrays(value, [file]));
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+    };
+    /** */
+    return (React__default.createElement(React__default.Fragment, null,
+        React__default.createElement(core$1.Box, { onClick: function () {
+                if (value.length === 0 && inputRef.current) {
+                    inputRef.current.click();
+                }
+            } },
+            React__default.createElement(core$1.FormControl, { fullWidth: true, margin: "normal", variant: "outlined" },
+                label && React__default.createElement(core$1.InputLabel, { htmlFor: "file-field-" + id }, label),
+                React__default.createElement(core$1.OutlinedInput, { id: "file-field-" + id, label: label, disabled: true, startAdornment: value.map(function (file) { return (React__default.createElement(core$1.Box, { key: file.name, mr: 1 },
+                        React__default.createElement(core$1.Chip, { label: file.name, icon: React__default.createElement(FileIcon, { file: file }), onDelete: disabled
+                                ? undefined
+                                : function () {
+                                    onChange(value.filter(function (f) { return file !== f; }));
+                                } }))); }), endAdornment: React__default.createElement(core$1.IconButton, { disabled: disabled, onClick: function (e) {
+                            e.preventDefault();
+                            if (inputRef.current) {
+                                inputRef.current.click();
+                            }
+                        } },
+                        React__default.createElement(AddIcon, null)) }))),
+        React__default.createElement("input", { ref: inputRef, className: cs.input, type: "file", accept: "image/*,application/pdf", onChange: onInputChange }),
+        React__default.createElement(core$1.Dialog, { open: fileMaxSizeDialogOpen, onClose: closeDialog },
+            React__default.createElement(core$1.DialogTitle, null, t('tooLargeFileAlert.title')),
+            React__default.createElement(core$1.DialogContent, null,
+                React__default.createElement(core$1.DialogContentText, null, t('tooLargeFileAlert.content'))),
+            React__default.createElement(core$1.DialogActions, null,
+                React__default.createElement(core$1.Button, { onClick: closeDialog, color: "primary", autoFocus: true }, t('tooLargeFileAlert.btn'))))));
+};
+
+var tFile$d = 'pro/mangopay';
+var tKey$4 = 'config.documentsCard';
+var getAlertSeverity = function (docStatus) {
+    if (docStatus === MangopayKycDocumentStatus.REFUSED)
+        return 'error';
+    if (docStatus === MangopayKycDocumentStatus.VALIDATED)
+        return 'success';
+    return 'info';
+};
+var MangopayKycDocumentsCard = function (_a) {
+    var group = _a.group, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel;
+    var _b;
+    var _c = useCreateMangopayKycDocumentsMutation(), createMangopayKycDocuments = _c[0], _d = _c[1], loading = _d.loading, error = _d.error;
+    /** TRANS */
+    var _t = useTranslation([tFile$d]).t;
+    var t = function (key, options) { return _t(tFile$d + ":" + tKey$4 + "." + key, options); };
+    var tForm = function (key, options) { return _t(tFile$d + ":" + tKey$4 + ".form." + key, options); };
+    /** STATES */
+    var _e = React__default.useState({}), documents = _e[0], setDocuments = _e[1];
+    /** COMPUTED */
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    /** */
+    var onSendNextDocuments = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, createMangopayKycDocuments({
+                        variables: {
+                            input: {
+                                groupId: group.id,
+                                documents: Object.keys(documents).map(function (key) { return ({
+                                    Type: key,
+                                    files: documents[key],
+                                }); }),
+                            },
+                        },
+                        refetchQueries: ['MangopayGroupConfig'],
+                    })];
+                case 1:
+                    _a.sent();
+                    setDocuments({});
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    /** */
+    if (!legalUser)
+        return React__default.createElement(React__default.Fragment, null);
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FolderIcon, null), title: t('kycTitle'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                        onTogglePanel(!open);
+                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+        React__default.createElement(core$1.Collapse, { in: open },
+            React__default.createElement(core$1.CardContent, null,
+                error && (React__default.createElement(core$1.Box, { my: 2 },
+                    React__default.createElement(GqlErrorAlert, { error: error }))),
+                allMangopayKycDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('allPending'))) : (React__default.createElement(React__default.Fragment, null,
+                    dist_5(legalUser.LegalPersonType).map(function (documentType) {
+                        var last = getCurrentKycDocumentOfType(legalUser.KycDocuments || [], documentType);
+                        return (React__default.createElement(core$1.Box, { key: documentType },
+                            React__default.createElement(FormTitle, { label: tForm(documentType) }),
+                            last && (React__default.createElement(core$1.Box, { my: 2 },
+                                React__default.createElement(lab.Alert, { severity: getAlertSeverity(last.Status) },
+                                    React__default.createElement(core$1.Typography, null,
+                                        React__default.createElement("span", null, tForm(last.Status)),
+                                        last.RefusedReasonType && React__default.createElement("span", null, " : " + tForm(last.RefusedReasonType))),
+                                    last.Status === MangopayKycDocumentStatus.REFUSED && (React__default.createElement(core$1.Typography, null, last.RefusedReasonMessage))))),
+                            (!last || last.Status === MangopayKycDocumentStatus.REFUSED) && (React__default.createElement(MangopayKycFileField, { label: tForm('addFilesLabel'), value: documents ? documents[documentType] || [] : [], disabled: loading, onChange: function (files) {
+                                    var n = __assign({}, documents);
+                                    n[documentType] = files;
+                                    setDocuments(n);
+                                } }))));
+                    }),
+                    React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                        React__default.createElement(core$1.Button, { variant: "contained", color: "primary", disabled: loading ||
+                                !Object.keys(documents).reduce(function (acc, key) {
+                                    if (documents[key].length > 0)
+                                        return true;
+                                    return acc;
+                                }, false), onClick: onSendNextDocuments }, _t('validate'))))))),
+        loading && React__default.createElement(core$1.LinearProgress, null)));
+};
+
+var People = createCommonjsModule(function (module, exports) {
 
 
 
@@ -29820,54 +30140,13 @@ var _react = interopRequireDefault(React__default);
 var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
 
 var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"
-}), 'InsertDriveFile');
+  d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+}), 'People');
 
 exports.default = _default;
 });
 
-var InsertDriveFileIcon = unwrapExports(InsertDriveFile);
-
-var uniqueId = 0;
-var getId = function () {
-    uniqueId += 1;
-    return uniqueId;
-};
-var useStyles$4 = core$1.makeStyles(function (theme) {
-    return core$1.createStyles({
-        root: {
-            '& > *': {
-                margin: theme.spacing(1),
-            },
-        },
-        input: {
-            display: 'none !important',
-        },
-    });
-});
-var WhiteCircularProgress = core$1.withStyles({
-    root: {
-        color: 'white',
-    },
-})(core$1.CircularProgress);
-var UploadButton = function (_a) {
-    var accept = _a.accept, multiple = _a.multiple, _b = _a.loading, loading = _b === void 0 ? false : _b, onChange = _a.onChange, children = _a.children, buttonProps = __rest(_a, ["accept", "multiple", "loading", "onChange", "children"]);
-    var inputRef = React__default.useRef(null);
-    var cs = useStyles$4();
-    var id = getId();
-    /** */
-    var onInputChange = function (e) {
-        onChange(e.target.files);
-        if (inputRef.current) {
-            inputRef.current.value = '';
-        }
-    };
-    /** */
-    return (React__default.createElement("div", { className: cs.root },
-        React__default.createElement("label", { htmlFor: "upload-button$-" + id },
-            React__default.createElement(core$1.Button, __assign({}, buttonProps, { component: "span" }), loading ? React__default.createElement(WhiteCircularProgress, { size: 24 }) : children),
-            React__default.createElement("input", { ref: inputRef, id: "upload-button$-" + id, type: "file", className: cs.input, accept: accept, multiple: multiple, onChange: onInputChange }))));
-};
+var PeopleIcon = unwrapExports(People);
 
 var ProgressButton = function (_a) {
     var _b = _a.loading, loading = _b === void 0 ? false : _b, variant = _a.variant, color = _a.color, disabled = _a.disabled, children = _a.children, circularProgressProps = _a.circularProgressProps, other = __rest(_a, ["loading", "variant", "color", "disabled", "children", "circularProgressProps"]);
@@ -29878,172 +30157,6 @@ var ProgressButton = function (_a) {
             React__default.createElement(core$1.Box, { visibility: loading ? 'hidden' : 'visible' }, children),
             loading && (React__default.createElement(core$1.Box, { position: "absolute", top: 0, bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center" },
                 React__default.createElement(core$1.CircularProgress, __assign({ color: color === 'default' ? 'primary' : color, size: theme.typography.button.fontSize }, circularProgressProps)))))));
-};
-
-var tFile$b = 'pro/mangopay';
-var tKey$2 = tFile$b + ":config.documentsCard.form";
-var KycDocumentForm = function (_a) {
-    var onSubmit = _a.onSubmit;
-    var _b = React__default.useState([]), files = _b[0], setFiles = _b[1];
-    var _c = React__default.useState(false), submitting = _c[0], setSubmitting = _c[1];
-    var _d = React__default.useState(), status = _d[0], setStatus = _d[1];
-    var _t = useTranslation(['translation', tFile$b], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$2 + "." + s); };
-    /** */
-    var addFile = function (file) {
-        var found = files.find(function (f) { return f.name === file.name && f.size === file.size && f.type === file.type; });
-        if (!found) {
-            setFiles(__spreadArrays(files, [file]));
-        }
-    };
-    var deleteFile = function (file) {
-        setFiles(files.filter(function (f) { return f !== file; }));
-    };
-    /** */
-    var onUploadChange = function (fileList) {
-        setStatus(undefined);
-        if (fileList) {
-            var file = fileList.item(0);
-            if (file) {
-                if (file.size > 7 * 1000 * 1000)
-                    setStatus(t('tooLargeFile'));
-                else
-                    addFile(file);
-            }
-        }
-    };
-    var onSubmitClick = function () {
-        setStatus(undefined);
-        setSubmitting(true);
-        onSubmit(files, {
-            setSubmitting: setSubmitting,
-            setStatus: setStatus,
-        });
-    };
-    /** */
-    var renderListItemIcon = function (file) {
-        var type = file.type || undefined;
-        if (type && type.startsWith('image/'))
-            return React__default.createElement(ImageIcon, null);
-        if (type && type === 'application/pdf')
-            return React__default.createElement(PictureAsPdfIcon, null);
-        return React__default.createElement(HelpIcon, null);
-    };
-    /** */
-    return (React__default.createElement(core$1.Box, null,
-        status && (React__default.createElement(core$1.Box, null,
-            React__default.createElement(lab.Alert, { severity: "error" }, status))),
-        React__default.createElement(core$1.List, null, files.map(function (file) { return (React__default.createElement(core$1.ListItem, { key: file.name },
-            React__default.createElement(core$1.ListItemIcon, null, renderListItemIcon(file)),
-            React__default.createElement(core$1.ListItemText, { primary: file.name }),
-            React__default.createElement(core$1.ListItemSecondaryAction, null,
-                React__default.createElement(core$1.IconButton, { edge: "end", "aria-label": "delete", disabled: submitting, onClick: function () {
-                        deleteFile(file);
-                    } },
-                    React__default.createElement(DeleteIcon, null))))); })),
-        React__default.createElement(core$1.Box, { pt: 1, pb: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(UploadButton, { variant: "outlined", color: "primary", accept: "image/*,application/pdf", startIcon: React__default.createElement(InsertDriveFileIcon, null), disabled: submitting, onChange: onUploadChange }, t('addFileBtn')),
-            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: submitting, disabled: files.length === 0 || submitting, onClick: onSubmitClick }, _t('validate')))));
-};
-
-var tFile$c = 'pro/mangopay';
-var tKey$3 = tFile$c + ":config.documentsCard.form";
-var KycDocument = function (_a) {
-    var type = _a.type, last = _a.last, onSubmit = _a.onSubmit;
-    var _t = useTranslation(['translation', tFile$c], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$3 + "." + s); };
-    /** */
-    var formatStatus = function (status, refusedReasonType) {
-        var res = t(status);
-        // TODO: translate punctuation
-        if (refusedReasonType)
-            res = res + " : " + t(refusedReasonType);
-        return res;
-    };
-    var getAlertSeverity = function (status) {
-        if (status === MangopayKycDocumentStatus.REFUSED)
-            return 'error';
-        if (status === MangopayKycDocumentStatus.VALIDATED)
-            return 'success';
-        return 'info';
-    };
-    /** */
-    return (React__default.createElement(core$1.Box, { p: 2, border: "1px solid #ccc", borderRadius: 4 },
-        React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.Typography, { align: "center", variant: "h6" }, t(type))),
-        last && (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(lab.Alert, { severity: getAlertSeverity(last.Status) },
-                React__default.createElement(core$1.Typography, null, formatStatus(last.Status, last.RefusedReasonType || undefined)),
-                last.Status === MangopayKycDocumentStatus.REFUSED && (React__default.createElement(React__default.Fragment, null,
-                    React__default.createElement(core$1.Typography, null, last.RefusedReasonMessage)))))),
-        (!last || last.Status === MangopayKycDocumentStatus.REFUSED) && React__default.createElement(KycDocumentForm, { onSubmit: onSubmit })));
-};
-
-var getCurrentKycDocumentOfType = function (kycDocuments, type) {
-    var res = kycDocuments.filter(function (d) { return d.Type === type; }).sort(function (d1, d2) { return d2.Id - d1.Id; });
-    return res.length > 0 ? res[0] : undefined;
-};
-var getCurrentUboDeclaration = function (uboDeclarations) {
-    return uboDeclarations ? uboDeclarations.sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
-};
-var allMangopayDocumentStatusesArePending = function (_a) {
-    var LegalPersonType = _a.LegalPersonType, KycDocuments = _a.KycDocuments, UboDeclarations = _a.UboDeclarations;
-    if (!LegalPersonType)
-        return false;
-    if (!KycDocuments)
-        return false;
-    var requiredKycDocumentTypes = dist_5(LegalPersonType);
-    var currentDocs = requiredKycDocumentTypes.map(function (type) {
-        return getCurrentKycDocumentOfType(KycDocuments, type);
-    });
-    if (currentDocs.indexOf(undefined) !== -1)
-        return false;
-    if (currentDocs.find(function (d) { return (d === null || d === void 0 ? void 0 : d.Status) !== MangopayKycDocumentStatus.VALIDATION_ASKED; }))
-        return false;
-    if (dist_9(LegalPersonType)) {
-        var currentUboDeclaration = getCurrentUboDeclaration(UboDeclarations);
-        if (!currentUboDeclaration)
-            return false;
-        if (currentUboDeclaration.Status !== MangopayUboDeclarationStatus.VALIDATION_ASKED)
-            return false;
-    }
-    return true;
-};
-
-var KycDocumentsContainer = function (_a) {
-    var groupId = _a.groupId, mangopayLegalUser = _a.mangopayLegalUser;
-    var createMangopayKycDocument = useCreateMangopayKycDocumentMutation()[0];
-    /** */
-    var onCreateKycDocument = function (type, files, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, 3, 4]);
-                    return [4 /*yield*/, createMangopayKycDocument({
-                            variables: { input: { groupId: groupId, Type: type, files: files } },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 4];
-                case 2:
-                    err_1 = _a.sent();
-                    bag.setStatus(err_1.message);
-                    return [3 /*break*/, 4];
-                case 3:
-                    bag.setSubmitting(false);
-                    return [7 /*endfinally*/];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    var requiredKYCDocumentTypes = dist_5(mangopayLegalUser.LegalPersonType);
-    return (React__default.createElement(core$1.Box, null, requiredKYCDocumentTypes.map(function (documentType) { return (React__default.createElement(core$1.Box, { key: documentType, my: 2 },
-        React__default.createElement(KycDocument, { type: documentType, last: getCurrentKycDocumentOfType(mangopayLegalUser.KycDocuments || [], documentType), onSubmit: function (files, bag) {
-                return onCreateKycDocument(documentType, files, bag);
-            } }))); })));
 };
 
 var DialogTitleActions = function (_a) {
@@ -30063,22 +30176,31 @@ var DialogTitleClosable = function (_a) {
     return (React__default.createElement(DialogTitleActions, { disableTypography: disableTypography, actions: renderActions() }, children));
 };
 
-var UboForm = function (_a) {
+var MangopayUboForm = function (_a) {
     var ubo = _a.ubo, onSubmit = _a.onSubmit;
-    var _b;
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    /** TRANS */
     var _t = useTranslation(['translation', 'yup'], { useSuspense: false }).t;
     var tYup = function (s, values) { return _t("yup:" + s, values); };
+    /** FORM VALUES */
     var initialValues = {
         FirstName: (ubo === null || ubo === void 0 ? void 0 : ubo.FirstName) || '',
         LastName: (ubo === null || ubo === void 0 ? void 0 : ubo.LastName) || '',
-        Address: __assign(__assign({}, ((ubo === null || ubo === void 0 ? void 0 : ubo.Address) ? ubo.Address : {})), { AddressLine1: '', AddressLine2: '', City: '', Country: '', PostalCode: '' }),
-        Nationality: ((_b = ubo === null || ubo === void 0 ? void 0 : ubo.Nationality) === null || _b === void 0 ? void 0 : _b.toLowerCase()) || '',
+        Address: {
+            AddressLine1: ((_b = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _b === void 0 ? void 0 : _b.AddressLine1) || '',
+            AddressLine2: ((_c = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _c === void 0 ? void 0 : _c.AddressLine2) || '',
+            City: ((_d = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _d === void 0 ? void 0 : _d.City) || '',
+            Country: ((_f = (_e = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _e === void 0 ? void 0 : _e.Country) === null || _f === void 0 ? void 0 : _f.toLowerCase()) || '',
+            PostalCode: ((_g = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _g === void 0 ? void 0 : _g.PostalCode) || '',
+        },
+        Nationality: ((_h = ubo === null || ubo === void 0 ? void 0 : ubo.Nationality) === null || _h === void 0 ? void 0 : _h.toLowerCase()) || '',
         Birthday: (ubo === null || ubo === void 0 ? void 0 : ubo.Birthday) ? new Date(ubo.Birthday) : new Date(),
-        Birthplace: (ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) || {
-            City: '',
-            Country: '',
+        Birthplace: {
+            City: ((_j = ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) === null || _j === void 0 ? void 0 : _j.City) || '',
+            Country: ((_l = (_k = ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) === null || _k === void 0 ? void 0 : _k.Country) === null || _l === void 0 ? void 0 : _l.toLowerCase()) || '',
         },
     };
+    console.log(ubo);
     /** */
     return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_11, onSubmit: onSubmit }, function (formikProps) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
@@ -30135,158 +30257,93 @@ var UboForm = function (_a) {
     }));
 };
 
-var tFile$d = 'pro/mangopay';
-var tKey$4 = tFile$d + ":config.documentsCard.form";
-var UboDeclarationContainer = function (_a) {
-    var groupId = _a.groupId, uboDeclaration = _a.uboDeclaration;
-    var createOrUpdateUbo = useCreateOrUpdateMangopayUboMutation()[0];
-    var submitDeclaration = useSubmitMangopayUboDeclarationMutation()[0];
-    var _t = useTranslation(['translation', tFile$d], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$4 + "." + s); };
-    var _b = React__default.useState(), uboSelected = _b[0], setUboSelected = _b[1];
-    var _c = React__default.useState(false), formOpen = _c[0], setOpenForm = _c[1];
-    var _d = React__default.useState(false), isSubmiting = _d[0], setSubmiting = _d[1];
-    var _e = React__default.useState(), error = _e[0], setError = _e[1];
+var tFile$e = 'pro/mangopay';
+var tKey$5 = 'config.documentsCard';
+var MangopayUbosCard = function (_a) {
+    var group = _a.group, disabledActions = _a.disabledActions, open = _a.open, onTogglePanel = _a.onTogglePanel;
+    var _b;
+    var _c = useCreateMangopayUboDeclarationMutation(), createMangopayUboDeclaration = _c[0], _d = _c[1], createDeclarationLoaging = _d.loading, createDecalarationError = _d.error;
+    var _e = useCreateOrUpdateMangopayUboMutation(), createOrUpdateUbo = _e[0], _f = _e[1], createOrUpdateUboLoading = _f.loading, createOrUpdateUboError = _f.error;
+    var _g = useSubmitMangopayUboDeclarationMutation(), submitDeclaration = _g[0], _h = _g[1], submitDeclarationLoading = _h.loading, submitDeclarationError = _h.error;
+    /** TRANS */
+    var _t = useTranslation(['translation', tFile$e]).t;
+    var t = function (key, options) { return _t(tFile$e + ":" + tKey$5 + "." + key, options); };
+    var tForm = function (key, options) { return _t(tFile$e + ":" + tKey$5 + ".form." + key, options); };
+    /** STATES */
+    var _j = React__default.useState(false), formOpen = _j[0], setOpenForm = _j[1];
+    var _k = React__default.useState(), uboSelected = _k[0], setUboSelected = _k[1];
+    /** COMPUTED */
+    var loading = createDeclarationLoaging || createOrUpdateUboLoading || submitDeclarationLoading;
+    var error = createDecalarationError || createOrUpdateUboError || submitDeclarationError;
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var uboDeclarations = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.UboDeclarations) || [];
+    var currentDeclaration = uboDeclarations.length > 0 ? uboDeclarations.slice().sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
     /** */
-    var openForm = function () {
+    var openForm = function (ubo) {
+        if (ubo)
+            setUboSelected(ubo);
         setOpenForm(true);
     };
     var closeForm = function () {
-        if (isSubmiting)
-            return;
+        setUboSelected(undefined);
         setOpenForm(false);
     };
-    /** */
+    var createDeclaration = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, createMangopayUboDeclaration({
+                        variables: { input: { groupId: group.id } },
+                        refetchQueries: ['MangopayGroupConfig'],
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); };
     var onUboFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
         var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    setSubmiting(true);
+                    if (!currentDeclaration)
+                        return [2 /*return*/];
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, 4, 5]);
+                    _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, createOrUpdateUbo({
-                            variables: { input: __assign(__assign({}, values), { declarationId: uboDeclaration.Id, groupId: groupId, id: uboSelected === null || uboSelected === void 0 ? void 0 : uboSelected.Id }) },
+                            variables: {
+                                input: __assign(__assign({}, values), { declarationId: currentDeclaration.Id, groupId: group.id, id: uboSelected === null || uboSelected === void 0 ? void 0 : uboSelected.Id }),
+                            },
                             refetchQueries: ['MangopayGroupConfig'],
                         })];
                 case 2:
                     _a.sent();
-                    setOpenForm(false);
-                    return [3 /*break*/, 5];
+                    closeForm();
+                    return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
                     bag.setSubmitting(false);
                     bag.setStatus(err_1.message);
-                    return [3 /*break*/, 5];
-                case 4:
-                    setSubmiting(false);
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
+    /** */
     var onDeclarationSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    setSubmiting(true);
-                    setError(undefined);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, 4, 5]);
+                    if (!currentDeclaration)
+                        return [2 /*return*/];
                     return [4 /*yield*/, submitDeclaration({
-                            variables: { input: { groupId: groupId, declarationId: uboDeclaration.Id } },
+                            variables: { input: { groupId: group.id, declarationId: currentDeclaration.Id } },
                             refetchQueries: ['MangopayGroupConfig'],
                         })];
-                case 2:
-                    _a.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    err_2 = _a.sent();
-                    setError(err_2);
-                    return [3 /*break*/, 5];
-                case 4:
-                    setSubmiting(false);
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    var renderUboListItem = function (ubo) {
-        var onItemClick = function () {
-            setUboSelected(ubo);
-            openForm();
-        };
-        return (React__default.createElement(core$1.ListItem, { key: ubo.Id },
-            React__default.createElement(core$1.ListItemText, { primary: formatUboNames(ubo) }),
-            React__default.createElement(core$1.ListItemSecondaryAction, null,
-                React__default.createElement(core$1.IconButton, { onClick: onItemClick },
-                    React__default.createElement(EditIcon, null)))));
-    };
-    var renderUboList = function (ubos) {
-        if (!ubos)
-            return null;
-        return React__default.createElement(core$1.List, null, ubos.map(renderUboListItem));
-    };
-    return (React__default.createElement(React__default.Fragment, null,
-        error && (React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(GqlErrorAlert, { error: error }))),
-        uboDeclaration.Ubos && renderUboList(uboDeclaration.Ubos),
-        React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-            (!uboDeclaration.Ubos || uboDeclaration.Ubos.length < 4) && (React__default.createElement(core$1.Box, { mx: 1 },
-                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: openForm }, _t('add')))),
-            uboDeclaration.Ubos && uboDeclaration.Ubos.length > 0 && (React__default.createElement(core$1.Box, { mx: 1 },
-                React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: isSubmiting, onClick: onDeclarationSubmit }, _t('validate'))))),
-        React__default.createElement(core$1.Dialog, { fullWidth: true, open: formOpen, onClose: closeForm },
-            React__default.createElement(DialogTitleClosable, { disableCloseBtn: isSubmiting, onClose: closeForm }, t('ubo')),
-            React__default.createElement(core$1.DialogContent, null,
-                React__default.createElement(UboForm, { ubo: uboSelected, onSubmit: onUboFormSubmit })))));
-};
-
-var tFile$e = 'pro/mangopay';
-var tKey$5 = tFile$e + ":config.documentsCard.form";
-/** */
-var UboDeclarationsContainer = function (_a) {
-    var groupId = _a.groupId, mangopayLegalUser = _a.mangopayLegalUser;
-    var createMangopayUboDeclaration = useCreateMangopayUboDeclarationMutation()[0];
-    /** TRANS */
-    var _t = useTranslation(['translation', tFile$e], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$5 + "." + s); };
-    /** STATES */
-    var _b = React__default.useState(false), submiting = _b[0], setSubmiting = _b[1];
-    var _c = React__default.useState(), creationError = _c[0], setCreationError = _c[1];
-    /** EXTRACTED */
-    var uboDeclarations = mangopayLegalUser.UboDeclarations || [];
-    var current = uboDeclarations.length > 1 ? uboDeclarations.slice().sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
-    /** */
-    var createDeclaration = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setSubmiting(true);
-                    setCreationError(undefined);
-                    _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, 4, 5]);
-                    return [4 /*yield*/, createMangopayUboDeclaration({
-                            variables: { input: { groupId: groupId } },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 2:
                     _a.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    err_1 = _a.sent();
-                    setCreationError(err_1);
-                    return [3 /*break*/, 5];
-                case 4:
-                    setSubmiting(false);
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
+                    return [2 /*return*/];
             }
         });
     }); };
@@ -30294,10 +30351,10 @@ var UboDeclarationsContainer = function (_a) {
     var renderStatus = function (uboDeclaration) {
         var Status = uboDeclaration.Status, Reason = uboDeclaration.Reason, Message = uboDeclaration.Message;
         var formatStatus = function (s, refusedReasonType) {
-            var res = t(s);
+            var res = tForm(s);
             // TODO: translate punctuation
             if (refusedReasonType)
-                res = res + " : " + t(refusedReasonType);
+                res = res + " : " + tForm(refusedReasonType);
             return res;
         };
         var getSeverity = function (s) {
@@ -30312,42 +30369,353 @@ var UboDeclarationsContainer = function (_a) {
         /** */
         if (Status === MangopayUboDeclarationStatus.CREATED)
             return null;
-        return (React__default.createElement(lab.Alert, { severity: getSeverity(Status) },
-            React__default.createElement(core$1.Typography, null, formatStatus(Status, Reason || undefined)),
-            Status === MangopayUboDeclarationStatus.REFUSED && React__default.createElement(core$1.Typography, null, Message)));
+        return (React__default.createElement(core$1.Box, { p: 2 },
+            React__default.createElement(lab.Alert, { severity: getSeverity(Status) },
+                React__default.createElement(core$1.Typography, null, formatStatus(Status, Reason || undefined)),
+                Status === MangopayUboDeclarationStatus.REFUSED && React__default.createElement(core$1.Typography, null, Message))));
     };
-    return (React__default.createElement(core$1.Box, { p: 2, border: "1px solid #ccc", borderRadius: 4 },
-        React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.Typography, { align: "center", variant: "h6" }, t('SHAREHOLDER_DECLARATION'))),
-        creationError && (React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(GqlErrorAlert, { error: creationError }))),
-        current && React__default.createElement(core$1.Box, { mt: 2 }, renderStatus(current)),
-        (!current || current.Status === MangopayUboDeclarationStatus.REFUSED) && (React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: submiting, onClick: createDeclaration }, _t('create')))),
-        current &&
-            (current.Status === MangopayUboDeclarationStatus.CREATED ||
-                current.Status === MangopayUboDeclarationStatus.INCOMPLETE) && (React__default.createElement(UboDeclarationContainer, { groupId: groupId, uboDeclaration: current }))));
+    /** */
+    return (React__default.createElement(React__default.Fragment, null,
+        React__default.createElement(core$1.Card, null,
+            React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(PeopleIcon, null), title: t('uboTitle'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                    React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                            onTogglePanel(!open);
+                        } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+            React__default.createElement(core$1.Collapse, { in: open },
+                React__default.createElement(React__default.Fragment, null,
+                    error && (React__default.createElement(core$1.Box, { p: 2 },
+                        React__default.createElement(GqlErrorAlert, { error: error }))),
+                    currentDeclaration && React__default.createElement(core$1.Box, { mt: 2 }, renderStatus(currentDeclaration)),
+                    (!currentDeclaration || currentDeclaration.Status === MangopayUboDeclarationStatus.REFUSED) && (React__default.createElement(core$1.CardContent, null,
+                        React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center" },
+                            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: loading, onClick: createDeclaration }, t('createUboDeclaration'))))),
+                    currentDeclaration &&
+                        (currentDeclaration.Status === MangopayUboDeclarationStatus.CREATED ||
+                            currentDeclaration.Status === MangopayUboDeclarationStatus.INCOMPLETE) && (React__default.createElement(core$1.CardContent, null,
+                        currentDeclaration.Ubos && (React__default.createElement(core$1.List, null, currentDeclaration.Ubos.map(function (ubo) { return (React__default.createElement(core$1.ListItem, { key: ubo.Id },
+                            React__default.createElement(core$1.ListItemText, { primary: formatUboNames(ubo) }),
+                            React__default.createElement(core$1.ListItemSecondaryAction, null,
+                                React__default.createElement(core$1.IconButton, { onClick: function () {
+                                        openForm(ubo);
+                                    } },
+                                    React__default.createElement(EditIcon, null))))); }))),
+                        React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                            (!currentDeclaration.Ubos || currentDeclaration.Ubos.length < 4) && (React__default.createElement(core$1.Box, { mx: 1 },
+                                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
+                                        openForm();
+                                    } }, _t('add')))),
+                            currentDeclaration.Ubos && currentDeclaration.Ubos.length > 0 && (React__default.createElement(core$1.Box, { mx: 1 },
+                                React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: loading, onClick: onDeclarationSubmit }, _t('validate'))))))))),
+            loading && React__default.createElement(core$1.LinearProgress, null)),
+        React__default.createElement(core$1.Dialog, { fullWidth: true, open: formOpen, onClose: closeForm },
+            React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeForm }, tForm('ubo')),
+            React__default.createElement(core$1.DialogContent, null,
+                React__default.createElement(MangopayUboForm, { ubo: uboSelected, onSubmit: onUboFormSubmit })))));
 };
 
+var AccountBalance = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M4 10h3v7H4zM10.5 10h3v7h-3zM2 19h20v3H2zM17 10h3v7h-3zM12 1L2 6v2h20V6z"
+}), 'AccountBalance');
+
+exports.default = _default;
+});
+
+var AccountBalanceIcon = unwrapExports(AccountBalance);
+
+var Visibility = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+}), 'Visibility');
+
+exports.default = _default;
+});
+
+var VisibilityIcon = unwrapExports(Visibility);
+
+var Delete = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+}), 'Delete');
+
+exports.default = _default;
+});
+
+var DeleteIcon = unwrapExports(Delete);
+
+var CheckBoxOutlineBlank = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+}), 'CheckBoxOutlineBlank');
+
+exports.default = _default;
+});
+
+var CheckBoxOutlineBlankIcon = unwrapExports(CheckBoxOutlineBlank);
+
+var CheckBox = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+}), 'CheckBox');
+
+exports.default = _default;
+});
+
+var CheckBoxIcon = unwrapExports(CheckBox);
+
 var tFile$f = 'pro/mangopay';
-var tKey$6 = 'config';
+var tKey$6 = 'config.bankAccountCard';
+var MangopayBankAccountForm = function (_a) {
+    var bankAccount = _a.bankAccount, _b = _a.disabled, disabled = _b === void 0 ? false : _b, onSubmit = _a.onSubmit;
+    var _c, _d, _e, _f, _g;
+    /** TRANS */
+    var _t = useTranslation(['translation', 'yup', tFile$f]).t;
+    var tYup = function (key, values) { return _t("yup:" + key, values); };
+    var tForm = function (key, options) { return _t(tFile$f + ":" + tKey$6 + ".form." + key, options); };
+    /** */
+    var initialValues = {
+        Type: (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) || MangopayBankAccountType.IBAN,
+        OwnerAddress: {
+            AddressLine1: ((_c = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _c === void 0 ? void 0 : _c.AddressLine1) || '',
+            AddressLine2: ((_d = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _d === void 0 ? void 0 : _d.AddressLine2) || '',
+            City: ((_e = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _e === void 0 ? void 0 : _e.City) || '',
+            Country: ((_f = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _f === void 0 ? void 0 : _f.Country) || '',
+            PostalCode: ((_g = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _g === void 0 ? void 0 : _g.PostalCode) || '',
+        },
+        OwnerName: (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerName) || '',
+        /** IBAN */
+        IBAN: bankAccount && (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) === MangopayBankAccountType.IBAN
+            ? bankAccount.IBAN || ''
+            : undefined,
+        BIC: bankAccount && (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) === MangopayBankAccountType.IBAN
+            ? bankAccount.IBAN || ''
+            : undefined,
+    };
+    /** */
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, onSubmit: onSubmit }, function (formikProps) {
+        var _a, _b, _c, _d;
+        return (React__default.createElement(formik.Form, null,
+            React__default.createElement(core$1.FormControl, { fullWidth: true, variant: "outlined", disabled: formikProps.isSubmitting || disabled },
+                React__default.createElement(core$1.InputLabel, { htmlFor: "bank-account-type-label" }, tForm('Type')),
+                React__default.createElement(formik.Field, { required: true, name: "Type", label: tForm('Type'), component: formikMaterialUi.Select, inputProps: {
+                        id: 'bank-account-type',
+                    } },
+                    React__default.createElement(core$1.MenuItem, { value: MangopayBankAccountType.IBAN }, tForm(MangopayBankAccountType.IBAN)))),
+            React__default.createElement(SimpleField, { label: tForm('OwnerName'), name: "OwnerName", disabled: formikProps.isSubmitting || disabled }),
+            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { label: _t('address1'), name: "OwnerAddress.AddressLine1", disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { label: _t('address2'), name: "OwnerAddress.AddressLine2", required: false, disabled: formikProps.isSubmitting || disabled }) }),
+            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { label: _t('city'), name: "OwnerAddress.City", disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { label: _t('zipCode'), name: "OwnerAddress.PostalCode", disabled: formikProps.isSubmitting || disabled }) }),
+            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
+                    margin: 'normal',
+                    name: 'OwnerAddress.Country',
+                    required: true,
+                    label: _t('country'),
+                    error: Boolean(((_a = formikProps.touched.OwnerAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.OwnerAddress) === null || _b === void 0 ? void 0 : _b.Country)),
+                    helperText: ((_c = formikProps.touched.OwnerAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
+                        yupHelperTextTranslator(tYup, (_d = formikProps.errors.OwnerAddress) === null || _d === void 0 ? void 0 : _d.Country),
+                    onBlur: function () { return formikProps.setFieldTouched('OwnerAddress.Country'); },
+                }, defaultValue: formikProps.values.OwnerAddress.Country || '', onChange: function (v) {
+                    formikProps.setFieldTouched('OwnerAddress.Country');
+                    formikProps.setFieldValue('OwnerAddress.Country', v || '');
+                } }),
+            formikProps.values.Type === MangopayBankAccountType.IBAN && (React__default.createElement(React__default.Fragment, null,
+                React__default.createElement(SimpleField, { label: tForm('IBAN'), name: "IBAN", disabled: formikProps.isSubmitting || disabled }),
+                React__default.createElement(SimpleField, { label: tForm('BIC'), name: "BIC", required: false, disabled: formikProps.isSubmitting || disabled }))),
+            !disabled && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+                React__default.createElement(core$1.Button, { color: "primary", variant: "contained", type: "submit", disabled: formikProps.isSubmitting }, _t('validate'))))));
+    }));
+};
+
+var tFile$g = 'pro/mangopay';
+var tKey$7 = 'config.bankAccountCard';
+var MangopayBankAccountsCard = function (_a) {
+    var group = _a.group, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel;
+    var _b, _c;
+    var _d = useCreateMangopayIbanBankAccountMutation(), createMangopayIbanBankAccount = _d[0], _e = _d[1], loadingCreate = _e.loading, errorCreate = _e.error;
+    var _f = useDeactivateMangopayBankAccountMutation(), deactivateMangopayBankAccount = _f[0], _g = _f[1], loadingDeactivate = _g.loading, errorDeactivate = _g.error;
+    var selectMangopayBankAccountId = useSelectMangopayBankAccountIdMutation()[0];
+    /** TRANS */
+    var _t = useTranslation(['translation', 'yup', tFile$g]).t;
+    var t = function (key, options) { return _t(tFile$g + ":" + tKey$7 + "." + key, options); };
+    /** COMPUTED */
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var bankAccounts = (_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.BankAccounts) === null || _c === void 0 ? void 0 : _c.filter(function (b) { return b.Active; });
+    var loading = loadingCreate || loadingDeactivate;
+    var error = errorCreate || errorDeactivate;
+    /** STATES */
+    var _h = React__default.useState(false), dialogOpen = _h[0], setDialogOpen = _h[1];
+    var _j = React__default.useState(), selectedBankAccount = _j[0], setSelectedBanAccount = _j[1];
+    /** */
+    var IconButtonWithConfirmDialog = withConfirmDialog(core$1.IconButton, {
+        title: t('deleteDialog.title'),
+        cancelButtonLabel: _t('cancel'),
+        confirmButtonLabel: _t('confirm'),
+        message: t('deleteDialog.message'),
+    });
+    /** */
+    var openDialog = function (bankAccount) {
+        setSelectedBanAccount(bankAccount);
+        setDialogOpen(true);
+    };
+    var closeDialog = function () {
+        if (loading)
+            return;
+        setSelectedBanAccount(undefined);
+        setDialogOpen(false);
+    };
+    /** */
+    var onDeactivate = function (bankAccount) {
+        deactivateMangopayBankAccount({
+            variables: { input: { groupId: group.id, bankAccountId: bankAccount.Id } },
+            refetchQueries: ['MangopayGroupConfig'],
+        });
+    };
+    var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
+        var err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, createMangopayIbanBankAccount({
+                            variables: {
+                                input: __assign(__assign({ groupId: group.id }, values), { IBAN: values.IBAN !== '' ? values.IBAN : undefined, BIC: values.BIC !== '' ? values.BIC : undefined }),
+                            },
+                            refetchQueries: ['MangopayGroupConfig'],
+                        })];
+                case 1:
+                    _a.sent();
+                    bag.setSubmitting(false);
+                    setSelectedBanAccount(undefined);
+                    setDialogOpen(false);
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    bag.setSubmitting(false);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var onSelectBankAccount = function (bankAccount) {
+        if (!legalUser)
+            return;
+        var bId = parseInt(bankAccount.Id, 10);
+        var id = bId === legalUser.bankAccountId ? null : bId;
+        selectMangopayBankAccountId({
+            variables: { input: { groupId: group.id, bankAccountId: id } },
+            refetchQueries: ['MangopayGroupConfig'],
+        });
+    };
+    /** */
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(AccountBalanceIcon, null), title: t('title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                        onTogglePanel(!open);
+                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+        React__default.createElement(core$1.Collapse, { in: open && !loading },
+            React__default.createElement(React__default.Fragment, null,
+                error && (React__default.createElement(core$1.CardContent, null,
+                    React__default.createElement(GqlErrorAlert, { error: error }))),
+                bankAccounts && bankAccounts.length > 0 && (React__default.createElement(core$1.CardContent, null,
+                    React__default.createElement(core$1.List, null, bankAccounts.map(function (bankAccount) { return (React__default.createElement(core$1.ListItem, { key: bankAccount.Id },
+                        React__default.createElement(core$1.ListItemText, { primary: formatMangopayBankAccount(bankAccount), secondary: formatMangopayAddress(bankAccount.OwnerAddress) }),
+                        React__default.createElement(core$1.ListItemSecondaryAction, null,
+                            React__default.createElement(IconButtonWithConfirmDialog, { onClick: function () {
+                                    onDeactivate(bankAccount);
+                                } },
+                                React__default.createElement(DeleteIcon, null)),
+                            React__default.createElement(core$1.IconButton, { onClick: function () {
+                                    openDialog(bankAccount);
+                                } },
+                                React__default.createElement(VisibilityIcon, null)),
+                            React__default.createElement(core$1.IconButton, { onClick: function () {
+                                    onSelectBankAccount(bankAccount);
+                                } }, (legalUser === null || legalUser === void 0 ? void 0 : legalUser.bankAccountId) === parseInt(bankAccount.Id, 10) ? (React__default.createElement(CheckBoxIcon, { color: "primary" })) : (React__default.createElement(CheckBoxOutlineBlankIcon, null)))))); })))),
+                React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () { return openDialog(); } }, _t('add'))))),
+        React__default.createElement(core$1.Dialog, { open: dialogOpen, fullWidth: true, maxWidth: "md", onClose: closeDialog },
+            React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeDialog }, t('bankAccount')),
+            React__default.createElement(core$1.DialogContent, null,
+                React__default.createElement(MangopayBankAccountForm, { disabled: !!selectedBankAccount, bankAccount: selectedBankAccount, onSubmit: onFormSubmit }))),
+        loading && React__default.createElement(core$1.LinearProgress, null)));
+};
+
 var MangopayConfig = function (_a) {
     var groupId = _a.groupId;
-    var _b, _c, _d;
-    var _e = useMangopayGroupConfigQuery({ variables: { id: groupId } }), data = _e.data, loading = _e.loading, error = _e.error;
-    /** TRANS */
-    var _t = useTranslation([tFile$f]).t;
-    var t = function (key, options) { return _t(tFile$f + ":" + tKey$6 + "." + key, options); };
+    var _b, _c;
+    var _d = useMangopayGroupConfigQuery({ variables: { id: groupId } }), data = _d.data, loading = _d.loading, error = _d.error;
     /** EXTRACTED */
     var group = data === null || data === void 0 ? void 0 : data.group;
     var legalUser = (_b = group === null || group === void 0 ? void 0 : group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
     var legalRepr = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr;
     var isRegular = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.KYCLevel) === MangopayKycLevel.REGULAR;
     /** STATES */
-    var _f = React__default.useState(legalRepr), selectedLegalRepr = _f[0], setSelectedLegalRepr = _f[1];
-    var _g = React__default.useState(false), submitting = _g[0], setSubmitting = _g[1];
-    var _h = React__default.useState(false), infosPanelOpen = _h[0], setInfosPanelOpen = _h[1];
-    var _j = React__default.useState(false), documentsPanelOpen = _j[0], setDocumentsPanelOpen = _j[1];
+    var _e = React__default.useState(legalRepr), selectedLegalRepr = _e[0], setSelectedLegalRepr = _e[1];
+    var _f = React__default.useState(false), submitting = _f[0], setSubmitting = _f[1];
+    var _g = React__default.useState(), openedPanel = _g[0], setOpenedPanel = _g[1];
+    /** */
+    var closePanels = function () {
+        setOpenedPanel(undefined);
+    };
     /** */
     React__default.useEffect(function () {
         setSelectedLegalRepr(legalRepr);
@@ -30355,81 +30723,59 @@ var MangopayConfig = function (_a) {
     React__default.useEffect(function () {
         var _a;
         if (legalUser && selectedLegalRepr && ((_a = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _a === void 0 ? void 0 : _a.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id)) {
-            setInfosPanelOpen(false);
-            setDocumentsPanelOpen(true);
+            if (allMangopayKycDocumentStatusesArePending(legalUser))
+                setOpenedPanel('ubos');
+            else
+                setOpenedPanel('kyc');
         }
         else {
-            setInfosPanelOpen(true);
-            setDocumentsPanelOpen(false);
+            setOpenedPanel('legalUser');
         }
     }, [selectedLegalRepr, legalUser]);
-    React__default.useEffect(function () {
-        if (infosPanelOpen)
-            setDocumentsPanelOpen(false);
-    }, [infosPanelOpen]);
-    React__default.useEffect(function () {
-        if (documentsPanelOpen)
-            setInfosPanelOpen(false);
-    }, [documentsPanelOpen]);
     /** */
     return (React__default.createElement(React__default.Fragment, null,
         error && React__default.createElement(GqlErrorAlert, { error: error }),
-        React__default.createElement(core$1.Card, null,
-            React__default.createElement(core$1.CardContent, null,
-                React__default.createElement("img", { height: "48px", src: "https://www.mangopay.com/wp-content/themes/mangopay/assets/images/mangopay.svg", alt: "mangopay-logo" })),
-            React__default.createElement(core$1.CardContent, null,
-                !isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
-                    React__default.createElement(core$1.Typography, null, t('infoCard.p1')))),
-                React__default.createElement(core$1.Box, null,
-                    React__default.createElement(lab.Alert, { severity: "info" },
-                        React__default.createElement(core$1.Box, null,
-                            React__default.createElement("span", null, t('infoCard.alert.s1')),
-                            React__default.createElement("a", { href: t('infoCard.alert.guideLinkTarget'), target: "_blank", rel: "noopener noreferrer" }, t('infoCard.alert.guildeLinkLabel')),
-                            React__default.createElement("span", null, t('infoCard.alert.s2'))))),
-                isRegular && (React__default.createElement(core$1.Box, { mt: 2 },
-                    React__default.createElement(lab.Alert, { severity: "success" }, t('infoCard.regular')))))),
-        loading && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+        React__default.createElement(MangopayInfoCard, { isRegular: isRegular }),
+        loading && (React__default.createElement(core$1.Box, { p: 2, mt: 6, display: "flex", justifyContent: "center" },
             React__default.createElement(core$1.CircularProgress, null))),
         group && (React__default.createElement(core$1.Box, { mt: 4 },
-            React__default.createElement(core$1.Card, null,
-                React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FaceIcon, null), title: t('legalRepCard.title', {
-                        name: selectedLegalRepr ? ": " + formatUserName(selectedLegalRepr) : undefined,
-                    }), actions: !isRegular &&
-                        selectedLegalRepr && (React__default.createElement(core$1.IconButton, { size: "small", disabled: submitting, onClick: function () {
-                            setSelectedLegalRepr(undefined);
-                        } },
-                        React__default.createElement(EditIcon, null))) }),
-                !selectedLegalRepr && (React__default.createElement(core$1.CardContent, null,
-                    React__default.createElement(LegalReprSelectorContainer, { groupId: groupId, currentLegalRepr: legalRepr, users: group.users || [], onSelect: setSelectedLegalRepr })))))),
-        selectedLegalRepr && (React__default.createElement(core$1.Box, { mt: 4 },
-            React__default.createElement(core$1.Card, null,
-                React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(BusinessIcon, null), title: t('legalUserCard.title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                        React__default.createElement(core$1.IconButton, { size: "small", disabled: submitting, onClick: function () {
-                                setInfosPanelOpen(!infosPanelOpen);
-                            } }, infosPanelOpen ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-                React__default.createElement(core$1.Collapse, { in: infosPanelOpen },
-                    React__default.createElement(core$1.CardContent, null,
-                        isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
-                            React__default.createElement(lab.Alert, { severity: "info" }, t('legalUserCard.editAlert')))),
-                        React__default.createElement(MangopayLegalUserFormContainer, { groupId: groupId, legalRepr: selectedLegalRepr, legalUser: legalUser && selectedLegalRepr && ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _c === void 0 ? void 0 : _c.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id)
-                                ? legalUser
-                                : undefined, disabled: isRegular, onSubmit: function () {
-                                setSubmitting(true);
-                            }, onSubmitComplete: function () {
-                                setSubmitting(false);
-                            }, onSubmitFail: function () {
-                                setSubmitting(false);
-                            } })))))),
-        !isRegular && legalUser && selectedLegalRepr && ((_d = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _d === void 0 ? void 0 : _d.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id) && (React__default.createElement(core$1.Box, { my: 4 },
-            React__default.createElement(core$1.Card, null,
-                React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FolderIcon, null), title: t('documentsCard.title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                        React__default.createElement(core$1.IconButton, { size: "small", disabled: submitting, onClick: function () {
-                                setDocumentsPanelOpen(!documentsPanelOpen);
-                            } }, documentsPanelOpen ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-                React__default.createElement(core$1.Collapse, { in: documentsPanelOpen },
-                    React__default.createElement(core$1.CardContent, null, allMangopayDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('documentsCard.allPending'))) : (React__default.createElement(React__default.Fragment, null,
-                        React__default.createElement(KycDocumentsContainer, { groupId: groupId, mangopayLegalUser: legalUser }),
-                        dist_9(legalUser.LegalPersonType) && (React__default.createElement(UboDeclarationsContainer, { groupId: groupId, mangopayLegalUser: legalUser })))))))))));
+            React__default.createElement(MangopayLegalReprCard, { group: group, disabledActions: submitting, selectedLegalRepr: selectedLegalRepr, setSelectedLegalRepr: setSelectedLegalRepr }))),
+        group && selectedLegalRepr && (React__default.createElement(core$1.Box, { mt: 4 },
+            React__default.createElement(MangopayLegalUserCard, { group: group, defaultLegalRepr: selectedLegalRepr, open: openedPanel === 'legalUser', disabledActions: submitting, onTogglePanel: function (v) {
+                    if (v)
+                        setOpenedPanel('legalUser');
+                    else
+                        closePanels();
+                }, onSubmit: function () {
+                    setSubmitting(true);
+                }, onSubmitComplete: function () {
+                    setSubmitting(false);
+                }, onSubmitFail: function () {
+                    setSubmitting(false);
+                } }))),
+        group && !isRegular && legalUser && selectedLegalRepr && ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _c === void 0 ? void 0 : _c.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id) && (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(core$1.Box, { my: 4 },
+                React__default.createElement(MangopayKycDocumentsCard, { group: group, disabledActions: submitting, open: openedPanel === 'kyc', onTogglePanel: function (v) {
+                        if (v)
+                            setOpenedPanel('kyc');
+                        else
+                            closePanels();
+                    } })),
+            dist_9(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
+                React__default.createElement(MangopayUbosCard, { group: group, disabledActions: submitting, open: openedPanel === 'ubos', onTogglePanel: function (v) {
+                        if (v)
+                            setOpenedPanel('ubos');
+                        else
+                            closePanels();
+                    } }))))),
+        group && isRegular && (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(core$1.Box, { my: 4 },
+                React__default.createElement(MangopayBankAccountsCard, { group: group, disabledActions: submitting, open: openedPanel === 'bankAccount', onTogglePanel: function (v) {
+                        if (v)
+                            setOpenedPanel('bankAccount');
+                        else
+                            closePanels();
+                    } }))))));
 };
 
 var apolloClient = null;
