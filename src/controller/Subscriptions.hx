@@ -403,9 +403,8 @@ class Subscriptions extends controller.Controller
 		}
 	}
 	
-	
 	@admin
-	public  function doUnvalidateAll(catalog : db.Catalog){
+	public function doUnvalidateAll(catalog : db.Catalog){
 		for ( subscription in SubscriptionService.getSubscriptions(catalog)){
 			subscription.lock();
 			subscription.isValidated = false;

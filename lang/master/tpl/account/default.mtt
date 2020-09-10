@@ -122,7 +122,7 @@
 									<th class="text-center col-md-1">Total</th>
 									<th class="text-center col-md-1" ::cond i == 0::>Payé</th>
 								</tr>
-								::set orderName = subscriptionService.getDescription(subscription)::
+								::set orderName = subscriptionService.getDescription(subscription, catalog)::
 								::if i == 0 && orderName == null::
 									::set class="danger text-danger"::
 								::else::
