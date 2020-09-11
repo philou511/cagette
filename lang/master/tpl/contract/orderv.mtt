@@ -6,7 +6,7 @@
 	
 		  
 	<!-- Nav tabs -->
-	<ul class="nav nav-tabs" role="tablist">
+	<ul class="nav nav-tabs" role="tablist" id="subscriptionTabs">
 		<li role="presentation" class="active">
 			<a href="#pres" aria-controls="home" role="tab" data-toggle="tab">Présentation</a>
 		</li>
@@ -34,7 +34,7 @@
 					</p>
 					::end::
 		
-					<div ::cond visibleDocuments.length != 0:: class="article">
+					<div ::cond visibleDocuments.length != 0::>
 						<h4><i class="icon icon-file-pdf"></i> Documents</h4>
 						<ul>
 							::foreach doc visibleDocuments::
@@ -384,8 +384,8 @@
 				<!--Subscription-->
 				<div ::cond subscriptions.length != 0:: class="col-md-12">
 			
-					<h4 ::cond subscriptions.length == 1::>Ma souscription</h4>
-					<h4 ::cond subscriptions.length > 1::>Mes souscriptions</h4>
+					<!--<h4 ::cond subscriptions.length == 1::>Ma souscription</h4>
+					<h4 ::cond subscriptions.length > 1::>Mes souscriptions</h4>-->
 			
 					::foreach subscription subscriptions::
 			
@@ -475,8 +475,22 @@
 </div>
 
 
+<script>	
+	::if(comingDistribSubscription != null)::
+	var pres = document.getElementById("pres");
+	var sub = document.getElementById("sub");
+	var presBtn = document.querySelector(".nav-tabs li:nth-child(1)")
+	var subBtn = document.querySelector(".nav-tabs li:nth-child(2)")
+
+	pres.classList.remove("active");
+	sub.classList.add("active");
 	
-	
+	presBtn.classList.remove("active");
+	subBtn.classList.add("active");
+	::end::
+
+</script>
+
 
 	
 ::end::

@@ -1155,3 +1155,9 @@ tr.danger td div.basketNumber{
 .distributions-map .leaflet-container {
 	height: 500px; 
 } 
+
+
+//active tabs are always white
+ul#subscriptionTabs.nav.nav-tabs>li.active>a{
+	background-color: white !important;
+}
