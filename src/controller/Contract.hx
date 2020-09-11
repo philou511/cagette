@@ -612,7 +612,7 @@ class Contract extends Controller
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		view.comingDistribSubscription = comingDistribSubscription;
-		view.newSubscriptionDistribsNb = comingDistribSubscription != null ? null : db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
+		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
 		else {
 
@@ -701,5 +701,22 @@ class Contract extends Controller
 				
 			throw Ok("/account", t._("Your order has been updated"));
 		}
+	}
+
+	/**
+		the user deletes his subscription
+	**/
+	function doDeleteSubscription(subscription:db.Subscription){
+		if( subscription.user.id!=app.user.id ) throw Error( '/', t._('Access forbidden') );
+		
+		var subscriptionUser = subscription.user;
+	
+		try {
+			SubscriptionService.deleteSubscription( subscription );
+		} catch( error : tink.core.Error ) {
+			throw Error( '/contract/order/' + subscription.catalog.id, error.message );
+		}
+		throw Ok( '/contract/order/' + subscription.catalog.id, 'La souscription a bien été supprimée.' );
+		
 	}
 }

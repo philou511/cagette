@@ -309,8 +309,7 @@ class SubscriptionService
 				label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
 			}
 
-		}
-		else {
+		} else {
 
 			var subscriptionOrders = getCSARecurrentOrders( subscription, null );
 
@@ -436,7 +435,7 @@ class SubscriptionService
 	}
 
 
-	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, subscription : db.Subscription ) : Float {
+	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, ?subscription : db.Subscription ) : Float {
 
 		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
 
@@ -902,6 +901,10 @@ class SubscriptionService
 	  *  @return db.Subscription
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
+
+		if(subscription.isValidated){
+			throw new Error("Impossible de supprimer une souscription qui a été validée");
+		}
 
 		if ( hasPastDistribOrders( subscription ) && !subscription.catalog.isDemoCatalog() ) {
 

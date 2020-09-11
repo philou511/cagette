@@ -300,8 +300,8 @@
 							
 					</form>
 				</div>
-				<!--Subscription-->
 
+				<!--Subscription-->
 				<div class="col-md-12" ::cond subscriptions.length != 0:: style="margin-top:24px;">
 						
 					<!--<h4 ::cond subscriptions.length == 1::>Ma souscription</h4>
@@ -398,9 +398,9 @@
 </div>
 
 
-
+::if(subscriptions.length > 0)::
 <script>	
-	::if(subscriptions.length != 0)::
+	
 	var pres = document.getElementById("pres");
 	var sub = document.getElementById("sub");
 	var presBtn = document.querySelector(".nav-tabs li:nth-child(1)")
@@ -411,8 +411,7 @@
 	
 	presBtn.classList.remove("active");
 	subBtn.classList.add("active");
-	::end::
-
+	
 </script>
-
+::end::
 ::end::
