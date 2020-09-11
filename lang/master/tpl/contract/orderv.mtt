@@ -2,448 +2,481 @@
 <div id="content" class="col-md-12">
 
 	<h2>::catalog.name::</h2>
+
 	
-	::set distribs = catalog.getDistribs(true,null)::
-
+		  
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active">
+			<a href="#pres" aria-controls="home" role="tab" data-toggle="tab">Présentation</a>
+		</li>
+		<li role="presentation">
+			<a href="#sub" aria-controls="profile" role="tab" data-toggle="tab">Ma souscription</a>
+		</li>		  
+	</ul>
+	  
 	<div class="article">
+		<div class="tab-content row">
+			<!--INFORMATION TAB -->
 
-		::if comingDistribSubscription == null::
-			<p class="text-center">
-				Si vous souscrivez à ce contrat, vous vous engagerez avec les conditions suivantes :
-			</p>
-			<table class="table table-striped table-bordered" style="margin-bottom: 0px;">
-				<tr class="greyhead">
-					<th style="width:45%;">Engagement</th>
-					<th>Période d'engagement</th>
-					<th style="width:10%;">Nombre de distributions</th>
-					<th>Absences</th>                        
-				</tr>
-				<tr style="text-align: center;">
-					::set label = subscriptionService.getDescription(subscription, catalog)::
-					<td style="vertical-align: middle;">
-						::if label != null:
-							::raw label::
-						::else::
-							Pas de contraintes
-						::end::
-					</td>
-					<td class="::class::" style="vertical-align: middle;">
-						du ::dDate( subscriptionService.getNewSubscriptionStartDate(catalog) )::<br/>
-						au ::dDate(catalog.endDate)::
-					</td>
-					<td style="vertical-align: middle;">
-						::newSubscriptionDistribsNb::
-					</td>
-					<td style="vertical-align: middle;">
-						::subscriptionService.getAbsencesDescription(catalog)::
-					</td>
-				</tr>
-			</table>
-		::else::
-			<table class="table table-striped table-bordered" style="margin-bottom: 0px;">
-				<tr class="greyhead">
-					<th>Engagement</th>
-					<th style="width:20%;">Nombre de distributions restantes</th>
-					<th style="width:10%;">Total de vos commandes</th>                 
-				</tr>
-				<tr style="text-align: center;">
-					::set label = subscriptionService.getDescription(comingDistribSubscription, catalog)::
-					<td style="vertical-align: middle;">
-						::if label != null:
-							::raw label::
-						::else::
-							Pas de contraintes
-						::end::
-					</td>
-					<td class="::class::" style="vertical-align: middle;">
-						::subscriptionService.getSubscriptionRemainingDistribsNb(comingDistribSubscription)::
-					</td>
-					<td style="vertical-align: middle;">
-						::comingDistribSubscription.getTotalPrice()::&nbsp;::currency()::
-					</td>
-				</tr>
-			</table>
-		::end::
-	
-	</div>
+		  	<div role="tabpanel" class="tab-pane active" id="pres">
 
-	<div class="article">
+				<!-- informations blocks-->
+				<div class="col-md-3">
 
-		<p>
-			::if catalog.isUserOrderAvailable()::
-				Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
-			::else::
-				Les commandes sont fermées pour ce contrat.
-			::end::
-		</p>
+					::if(catalog.description!=null)::
+					<h4><i class="icon icon-info"></i> Informations</h4>
+					<p>
+						<b>Contrat AMAP Variable</b>
+					</p>
+					<p>
+						::nl2br(catalog.description)::
+					</p>
+					::end::
 		
-		<!-- order form -->
-		<form name="order" id="order" method="POST" action="">
-			<input type="hidden" name="token" value="::token::"/>
-			
-			::if distribution!=null::
-			<input type="hidden" name="distribution" value="::distribution.id::"/>
-			::end::
-
-<style>
-	
-	table.orderTable td{
-		overflow: hidden;
-		height: 80px;
-		width: 80px;
-
-	}
-	table.orderTable th{
-		overflow: hidden;
-		height: 100px;
-		padding-top: 20px;
-		width: 80px;
-	}
-
-	.sized{
-		border-top: 1px solid #ddd;
-		border-left: 1px solid #ddd;
-		padding: 8px;
-		overflow: hidden;
-	}
-	.cell{
-		height: 80px;
-		width: 100%;
-	}
-
-	.hcell{
-		height: 100px;
-		font-weight: bold;
-		width: 100%;
-	}
-	
-</style>
-
-			<!--products-->
-			<div class="row">
-				<div class="col-md-4" style="margin-right: 0;padding-right:0;">
-					<div class="hcell sized">
-						::_("Product")::
+					<div ::cond visibleDocuments.length != 0:: class="article">
+						<h4><i class="icon icon-file-pdf"></i> Documents</h4>
+						<ul>
+							::foreach doc visibleDocuments::
+								<li><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
+							::end::
+						</ul>
 					</div>
+				</div>
+				<div class="col-md-3">
+					::set vendor = catalog._vendor::
+					<h4><i class="icon icon-farmer"></i> ::_("Vendor")::</h4>
+					
+					<b>::vendor.name::</b><br/>			
+					<b>::vendor.city::</b> (::vendor.zipCode::)
+					<p ::cond vendor.desc!=null:: style="font-size: 13px;">
+						::raw nl2br(vendor.desc)::
+					</p>
+					
+					::if vendor.linkUrl!=null::
+					<p>
+						::if vendor.linkText!=null::
+						<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
+						::else::
+						<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
+						::end::
+					</p>
+					::end::
+				</div>
+				<div class="col-md-3">
+								
+					<h4><i class="icon icon-user"></i> ::_("Coordinator")::</h4>
+					::if catalog._contact!=null::
+					<b>::catalog._contact.firstName:: ::catalog._contact.lastName::</b><br/>
+					<span ::cond catalog._contact.email!=null::><i class="icon icon-mail"></i> <a href="mailto: ::catalog._contact.email::">::catalog._contact.email::</a><br/></span>
+					<span ::cond catalog._contact.phone!=null::><i class="icon icon-phone"></i> ::catalog._contact.phone::<br/></span>
+					::end::
+				</div>
+				<div class="col-md-3">
+			
+					<h4><i class="icon icon-calendar"></i> Prochaines distributions</h4>
+					
+					::set distribs = catalog.getDistribs(true,null)::
+					<ul style="max-height:150px;overflow-y:auto;">
+						::foreach d distribs::
+						<li>				
+							<b>::dDate(d.date)::</b>
+							<br/>::d._place.name::		
+						</li>						
+						::end::	
+					</ul>
+					
+					::if distribs.length==0::
+					<p>
+						::_("No planned distributions.")::
+					</p>
+					::end::
+					
+				</div>	
+
+				<!-- subscription summary -->
+				<div class="col-md-12" style="margin-top:24px;">
+					::if comingDistribSubscription == null::
+						<p class="text-center">
+							Si vous souscrivez à ce contrat, vous vous engagerez avec les conditions suivantes :
+						</p>
+						<table class="table table-striped table-bordered" style="margin-bottom: 0px;">
+							<tr class="greyhead">
+								<th style="width:45%;">Engagement</th>
+								<th>Période d'engagement</th>
+								<th style="width:10%;">Nombre de distributions</th>
+								<th>Absences</th>                        
+							</tr>
+							<tr style="text-align: center;">
+								::set label = subscriptionService.getDescription(subscription, catalog)::
+								<td style="vertical-align: middle;">
+									::if label != null:
+										::raw label::
+									::else::
+										Pas de contraintes
+									::end::
+								</td>
+								<td class="::class::" style="vertical-align: middle;">
+									du ::dDate( subscriptionService.getNewSubscriptionStartDate(catalog) )::<br/>
+									au ::dDate(catalog.endDate)::
+								</td>
+								<td style="vertical-align: middle;">
+									::newSubscriptionDistribsNb::
+								</td>
+								<td style="vertical-align: middle;">
+									::subscriptionService.getAbsencesDescription(catalog)::
+								</td>
+							</tr>
+						</table>
+					::else::
+						<table class="table table-striped table-bordered" style="margin-bottom: 0px;">
+							<tr class="greyhead">
+								<th>Engagement</th>
+								<th style="width:20%;">Nombre de distributions restantes</th>
+								<th style="width:10%;">Total de vos commandes</th>                 
+							</tr>
+							<tr style="text-align: center;">
+								::set label = subscriptionService.getDescription(comingDistribSubscription, catalog)::
+								<td style="vertical-align: middle;">
+									::if label != null:
+										::raw label::
+									::else::
+										Pas de contraintes
+									::end::
+								</td>
+								<td class="::class::" style="vertical-align: middle;">
+									::subscriptionService.getSubscriptionRemainingDistribsNb(comingDistribSubscription)::
+								</td>
+								<td style="vertical-align: middle;">
+									::comingDistribSubscription.getTotalPrice()::&nbsp;::currency()::
+								</td>
+							</tr>
+						</table>
+					::end::
+					</div>
+			<!-- END PRESENTATION PANEL -->
+			</div>	
+				
+		  	<!--SUBSCRIPTION TAB -->
+		  	<div role="tabpanel" class="tab-pane" id="sub">
+
+				<!-- ORDER FORM-->
+		  		<div class="col-md-12">
+				<p>
+					::if catalog.isUserOrderAvailable()::
+						Tant que les commandes sont ouvertes, vous pouvez revenir sur cette page et modifier votre commande.
+					::else::
+						Les commandes sont fermées pour ce contrat.
+					::end::
+				</p>
+					
+				<!-- order form -->
+				<form name="order" id="order" method="POST" action="">
+					<input type="hidden" name="token" value="::token::"/>
+					
+					::if distribution!=null::
+					<input type="hidden" name="distribution" value="::distribution.id::"/>
+					::end::
+			
+					<style>
 						
-					::if userOrders.length>0::	
-						::foreach uo userOrders[0].ordersProducts::
-
-						<div class="cell sized">
-
-							<div class="row">
-								<div class="col-md-2">
-										<div style="background-image:url('::uo.product.getImage()::')" class="productImg sm" />
+						table.orderTable td{
+							overflow: hidden;
+							height: 80px;
+							width: 80px;
+					
+						}
+						table.orderTable th{
+							overflow: hidden;
+							height: 100px;
+							padding-top: 20px;
+							width: 80px;
+						}
+					
+						.sized{
+							border-top: 1px solid #ddd;
+							border-left: 1px solid #ddd;
+							padding: 8px;
+							overflow: hidden;
+						}
+						.cell{
+							height: 80px;
+							width: 100%;
+						}
+					
+						.hcell{
+							height: 100px;
+							font-weight: bold;
+							width: 100%;
+						}
+						
+					</style>
+			
+						<!--products-->
+						<div class="row">
+							<div class="col-md-4" style="margin-right: 0;padding-right:0;">
+								<div class="hcell sized">
+									::_("Product")::
 								</div>
-								<div class="col-md-7">
-										<a onclick="_.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">
-											::short(uo.product.getName(),36)::
-										</a>
-								</div>
-								<div class="col-md-3">
-
-										::set price = uo.product.price + uo.product._catalog.computeFees(uo.product.price)::
-										<b>::formatNum(price)::&nbsp;::currency()::</b>
-
-								</div>
+									
+								::if userOrders.length>0::	
+									::foreach uo userOrders[0].ordersProducts::
+			
+									<div class="cell sized">
+			
+										<div class="row">
+											<div class="col-md-2">
+													<div style="background-image:url('::uo.product.getImage()::')" class="productImg sm" />
+											</div>
+											<div class="col-md-7">
+													<a onclick="_.overlay('/shop/productInfo/::uo.product.id::','::urlEncode(uo.product.getName())::')">
+														::short(uo.product.getName(),36)::
+													</a>
+											</div>
+											<div class="col-md-3">
+			
+													::set price = uo.product.price + uo.product._catalog.computeFees(uo.product.price)::
+													<b>::formatNum(price)::&nbsp;::currency()::</b>
+			
+											</div>
+										</div>
+										
+									</div>
+									::end::
+								::end::
+								
+								<div class="hcell sized">Total</div>
+							
+							</div>
+			
+							<!--orders-->
+							<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-8">
+								<table class="table table-bordered orderTable">
+									<tr>
+										::foreach d userOrders::
+											::if d.distrib==null::
+												<th>::_("Qty")::</th>
+											::else::
+												<th>::dDate(d.distrib.date)::</th>
+											::end::
+										::end::
+									</tr>
+										
+									::if userOrders.length>0::	
+									
+										::foreach uo userOrders[0].ordersProducts::
+										<tr>
+															
+											::set i = repeat.uo.index::
+											::foreach d userOrders::
+											<td>
+												::set o = d.ordersProducts[i]::
+												::if o.order==null::
+													::set q = ""::
+												::else::
+													::set q = o.order.quantity::
+												::end::
+												
+												::if canOrder::							
+													<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
+												::else::
+													::q::
+												::end::
+												
+											</td>
+											::end::
+										</tr>
+										::end::
+									
+									::else::
+										<tr>
+											<td colspan="4">::_("There is currently no open order")::</td>
+										</tr>
+									::end::
+									
+									<!--TOTAL-->
+									<tr>
+										<!--<th colspan="3" class="text-right">Total</th>-->
+										::foreach d userOrders::
+											<th>
+											::set total=0::
+											::foreach o d.ordersProducts::
+												::if o.order!=null::
+													::set q = o.order.quantity::
+													::set price = o.product.price + o.product._catalog.computeFees(o.product.price)::
+													::set total = total+(q*price)::
+												::end::
+											::end::
+											::formatNum(total)::&nbsp;::currency()::
+											</th>
+										::end::
+									</tr>
+								</table>
+							</div>
+						</div>
+			
+						<br/>
+						::if subscriptionService.canAbsencesNbBeEdited( catalog, comingDistribSubscription )::
+			
+							<div style="width:480px;float:left;font-weight:bold;">
+								::set start = catalog.absencesStartDate ::
+								::set end = catalog.absencesEndDate::
+								::if comingDistribSubscription != null::
+									:: if start.getTime() < comingDistribSubscription.startDate.getTime()::
+										::set start = comingDistribSubscription.startDate::
+									::end::
+									:: if end.getTime() > comingDistribSubscription.endDate.getTime()::
+										::set end = comingDistribSubscription.endDate::
+									::end::
+								::end::
+								Pour la période du ::sDate(start):: au ::sDate(end):: je vais manquer :
+							</div>
+			
+							<div style="float:left;">
+			
+								<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
+									::set label = ""::
+									::set selectedId = 0::
+									::if comingDistribSubscription != null::
+										::set selectedId = comingDistribSubscription.getAbsencesNb()::
+									::end::
+									::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, comingDistribSubscription ) + 1)::
+										::if i > 1::
+											::set label = "distributions"::
+										::else::
+											::set label = "distribution"::
+										::end::
+										<option value="::i::" ::attr selected if( i == selectedId ) '1' ::>::i:: ::label::</option>
+									::end::
+								</select>
+			
+							</div>
+					
+							<br/><br/>
+							<div style="text-align:center;text-decoration: underline;">
+								Dates des distributions que vous pouvez manquer
 							</div>
 							
-						</div>
-						::end::
-					::end::
-					
-					<div class="hcell sized">Total</div>
-				
-				</div>
-
-				<!--orders-->
-				<div style="overflow-x: scroll;margin-left: 0;padding-left:0;" class="col-md-8">
-					<table class="table table-bordered orderTable">
-						<tr>
-							::foreach d userOrders::
-								::if d.distrib==null::
-									<th>::_("Qty")::</th>
-								::else::
-									<th>::dDate(d.distrib.date)::</th>
-								::end::
+							::foreach date absencesDistribDates::
+								<div style="width: 185px; float:left;">
+									::date::
+								</div>
 							::end::
-						</tr>
 							
-						::if userOrders.length>0::	
-						
-							::foreach uo userOrders[0].ordersProducts::
-							<tr>
-												
-								::set i = repeat.uo.index::
-								::foreach d userOrders::
-								<td>
-									::set o = d.ordersProducts[i]::
-									::if o.order==null::
-										::set q = ""::
-									::else::
-										::set q = o.order.quantity::
-									::end::
-									
-									::if canOrder::							
-										<input type="text" class="form-control" name="::"d"+d.distrib.id+"-p"+o.product.id::" id="product::o.product.id::" value="::q::" />
-									::else::
-										::q::
-									::end::
-									
-								</td>
-								::end::
-							</tr>
-							::end::
-						
-						::else::
-							<tr>
-								<td colspan="4">::_("There is currently no open order")::</td>
-							</tr>
+							<br/><br/><br/><br/><br/>
+			
 						::end::
-						
-						<!--TOTAL-->
-						<tr>
-							<!--<th colspan="3" class="text-right">Total</th>-->
-							::foreach d userOrders::
-								<th>
-								::set total=0::
-								::foreach o d.ordersProducts::
-									::if o.order!=null::
-										::set q = o.order.quantity::
-										::set price = o.product.price + o.product._catalog.computeFees(o.product.price)::
-										::set total = total+(q*price)::
-									::end::
-								::end::
-								::formatNum(total)::&nbsp;::currency()::
-								</th>
-							::end::
-						</tr>
-					</table>
-				</div>
-			</div>
-
-			<br/>
-			::if subscriptionService.canAbsencesNbBeEdited( catalog, comingDistribSubscription )::
-
-				<div style="width:480px;float:left;font-weight:bold;">
-					::set start = catalog.absencesStartDate ::
-					::set end = catalog.absencesEndDate::
-					::if comingDistribSubscription != null::
-						:: if start.getTime() < comingDistribSubscription.startDate.getTime()::
-							::set start = comingDistribSubscription.startDate::
-						::end::
-						:: if end.getTime() > comingDistribSubscription.endDate.getTime()::
-							::set end = comingDistribSubscription.endDate::
-						::end::
-					::end::
-					Pour la période du ::sDate(start):: au ::sDate(end):: je vais manquer :
-				</div>
-
-				<div style="float:left;">
-
-					<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
-						::set label = ""::
-						::set selectedId = 0::
-						::if comingDistribSubscription != null::
-							::set selectedId = comingDistribSubscription.getAbsencesNb()::
-						::end::
-						::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, comingDistribSubscription ) + 1)::
-							::if i > 1::
-								::set label = "distributions"::
+			
+						<p class="text-right">
+							::if(comingDistribSubscription == null)::
+							::set text = "Souscrire à ce contrat"::
 							::else::
-								::set label = "distribution"::
+							::set text = "Mettre à jour"::
 							::end::
-							<option value="::i::" ::attr selected if( i == selectedId ) '1' ::>::i:: ::label::</option>
+							<input type="submit" class="btn btn-lg btn-primary" value="::text::" name="submit" id="submit" />	
+						</p>
+								
+					</form>
+				
+		  		</div>
+			
+			
+				<!--Subscription-->
+				<div ::cond subscriptions.length != 0:: class="col-md-12">
+			
+					<h4 ::cond subscriptions.length == 1::>Ma souscription</h4>
+					<h4 ::cond subscriptions.length > 1::>Mes souscriptions</h4>
+			
+					::foreach subscription subscriptions::
+			
+						::set absencesNb = subscription.getAbsencesNb()::
+						<table class="table table-condensed table-bordered">
+							
+							<tr class="greyhead">
+								<th class="text-center col-md-4">Engagement</th>
+								<th class="text-center col-md-1">Période d'engagement</th>
+								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre max de distributions</th>
+								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
+								<th class="text-center col-md-1">Nombre de distributions</th>
+								<th class="text-center col-md-1">Total</th>
+							</tr>
+							::set label = subscriptionService.getDescription(subscription, catalog)::
+							<tr style="text-align: center;">
+								<td style="vertical-align: middle;">
+									::if label != null:
+										::raw label::
+									::else::
+										Pas de contraintes
+									::end::
+								</td>
+								<td style="vertical-align: middle;">
+									du ::sDate(subscription.startDate)::<br/>
+									au ::sDate(subscription.endDate)::
+								</td>
+								<td style="vertical-align: middle;" ::cond absencesNb != 0::>
+									::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
+								</td>
+								<td style="vertical-align: middle;" ::cond absencesNb != 0::>
+									::absencesNb::
+								</td>
+								<td style="vertical-align: middle;">
+									::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
+								</td>
+								<td style="vertical-align: middle;">
+									::subscription.getTotalPrice()::&nbsp;::currency()::
+								</td>
+							</tr>
+							<tr class="greyhead text-center">
+								<th class="text-center col-md-7" colspan="2" ::cond catalog.requiresOrdering::>Ma commande par défaut</th>
+								<th class="text-center col-md-5" colspan="3" ::cond catalog.hasAbsencesManagement() && absencesNb != 0::>Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
+							</tr>
+							<tr style="text-align: center;">
+								<td colspan="2" ::cond catalog.requiresOrdering::>
+									<div style="width: 45%; float: left; padding-top: 10px;">
+										::raw subscription.getDefaultOrdersToString()::
+									</div>
+									<div style="width: 45%; float: left; padding-top: 20px;">
+										$$edit(::_("Edit")::,/subscriptions/defaultOrders/::subscription.id::)
+									</div>
+								</td>
+								<td colspan="3" style="text-align: center;" ::cond catalog.hasAbsencesManagement() && absencesNb != 0 ::>
+									::set position = 'float: left; width: 60%;'::
+									::set canAbsencesBeEdited = subscriptionService.canAbsencesBeEdited( subscription._catalog )::
+									::if !canAbsencesBeEdited::
+										::set position = 'float: none;'::
+									::end::
+									<div style="::position:: padding-top: 10px;">
+										::set absentDistribs = subscription.getAbsentDistribs()::
+										::foreach distrib absentDistribs::
+											::dDate(distrib.date)::<br/>
+										::end::
+									</div>
+									<div style="float: left; padding-top: 20px;" ::cond canAbsencesBeEdited::>
+										$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::?returnUrl=/contract/order/::catalog.id::)
+									</div>
+								</td>
+							</tr>
+						</table>
+			
+						
+						::if(!subscription.isValidated)::
+						$$delete(Annuler la souscription,/contract/deleteSubscription/::subscription.id::)
 						::end::
-					</select>
-
+			
+					::end::
+				
 				</div>
-		
-				<br/><br/>
-				<div style="text-align:center;text-decoration: underline;">
-					Dates des distributions que vous pouvez manquer
-				</div>
-				
-				::foreach date absencesDistribDates::
-					<div style="width: 185px; float:left;">
-						::date::
-					</div>
-				::end::
-				
-				<br/><br/><br/><br/><br/>
-
-			::end::
-
-			<p class="text-right">
-				::if(comingDistribSubscription == null)::
-				::set text = "Souscrire à ce contrat"::
-				::else::
-				::set text = "Mettre à jour"::
-				::end::
-				<input type="submit" class="btn btn-lg btn-primary" value="::text::" name="submit" id="submit" />	
-				
-				
-			</p>
-					
-		</form>
-	
+			
+			</div>
+			
+		</div>
 	</div>
-
-
-	<!--Subscription-->
-	<div class="article" ::cond subscriptions.length != 0::>
-
-		<h4 ::cond subscriptions.length == 1::>Ma souscription</h4>
-		<h4 ::cond subscriptions.length > 1::>Mes souscriptions</h4>
-
-		::foreach subscription subscriptions::
-
-			::set absencesNb = subscription.getAbsencesNb()::
-			<table class="table table-condensed table-bordered">
-				
-				<tr class="greyhead">
-					<th class="text-center col-md-4">Engagement</th>
-					<th class="text-center col-md-1">Période d'engagement</th>
-					<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre max de distributions</th>
-					<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
-					<th class="text-center col-md-1">Nombre de distributions</th>
-					<th class="text-center col-md-1">Total</th>
-				</tr>
-				::set label = subscriptionService.getDescription(subscription, catalog)::
-				<tr style="text-align: center;">
-					<td style="vertical-align: middle;">
-						::if label != null:
-							::raw label::
-						::else::
-							Pas de contraintes
-						::end::
-					</td>
-					<td style="vertical-align: middle;">
-						du ::sDate(subscription.startDate)::<br/>
-						au ::sDate(subscription.endDate)::
-					</td>
-					<td style="vertical-align: middle;" ::cond absencesNb != 0::>
-						::subscriptionService.getSubscriptionDistribsNb(subscription, null, false)::
-					</td>
-					<td style="vertical-align: middle;" ::cond absencesNb != 0::>
-						::absencesNb::
-					</td>
-					<td style="vertical-align: middle;">
-						::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
-					</td>
-					<td style="vertical-align: middle;">
-						::subscription.getTotalPrice()::&nbsp;::currency()::
-					</td>
-				</tr>
-				<tr class="greyhead text-center">
-					<th class="text-center col-md-7" colspan="2" ::cond catalog.requiresOrdering::>Ma commande par défaut</th>
-					<th class="text-center col-md-5" colspan="3" ::cond catalog.hasAbsencesManagement() && absencesNb != 0::>Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
-				</tr>
-				<tr style="text-align: center;">
-					<td colspan="2" ::cond catalog.requiresOrdering::>
-						<div style="width: 45%; float: left; padding-top: 10px;">
-							::raw subscription.getDefaultOrdersToString()::
-						</div>
-						<div style="width: 45%; float: left; padding-top: 20px;">
-							$$edit(::_("Edit")::,/subscriptions/defaultOrders/::subscription.id::)
-						</div>
-					</td>
-					<td colspan="3" style="text-align: center;" ::cond catalog.hasAbsencesManagement() && absencesNb != 0 ::>
-						::set position = 'float: left; width: 60%;'::
-						::set canAbsencesBeEdited = subscriptionService.canAbsencesBeEdited( subscription._catalog )::
-						::if !canAbsencesBeEdited::
-							::set position = 'float: none;'::
-						::end::
-						<div style="::position:: padding-top: 10px;">
-							::set absentDistribs = subscription.getAbsentDistribs()::
-							::foreach distrib absentDistribs::
-								::dDate(distrib.date)::<br/>
-							::end::
-						</div>
-						<div style="float: left; padding-top: 20px;" ::cond canAbsencesBeEdited::>
-							$$edit(::_("Edit")::,/subscriptions/absences/::subscription.id::?returnUrl=/contract/order/::catalog.id::)
-						</div>
-					</td>
-				</tr>
-			</table>
-
-		::end::
-	
-	</div>
-
+	  
 </div>
 
-	<div class="col-md-3">
 
-			::if(catalog.description!=null)::
-			<div class="article">
-				<h4><i class="icon icon-info"></i> Informations</h4>
-				::nl2br(catalog.description)::
-			</div>
-			::end::
+	
+	
 
-			<div ::cond visibleDocuments.length != 0:: class="article">
-				<h4><i class="icon icon-file-pdf"></i> Documents</h4>
-				<ul>
-					::foreach doc visibleDocuments::
-						<li><a href="::file(doc._file)::" target="_blank">  ::doc._file.name::</a><br/>					</li>
-					::end::
-				</ul>
-			</div>
-	</div>
-	<div class="col-md-3">
-
-			<div class="article">
-				::set vendor = catalog._vendor::
-				<h4><i class="icon icon-farmer"></i> ::_("Vendor")::</h4>
-				
-				<b>::vendor.name::</b><br/>			
-				<b>::vendor.city::</b> (::vendor.zipCode::)
-				<p ::cond vendor.desc!=null:: style="font-size: 13px;">
-					::raw nl2br(vendor.desc)::
-				</p>
-				
-				::if vendor.linkUrl!=null::
-				<p>
-					::if vendor.linkText!=null::
-					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::vendor.linkText::</a>
-					::else::
-					<a href="::vendor.linkUrl::" target="_blank" class="btn btn-default btn-sm"><i class="icon icon-chevron-right"></i> ::_("Read more")::</a>
-					::end::
-				</p>
-				::end::
-			</div>
-	</div>
-	<div class="col-md-3">
-			<div class="article">		
-				<h4><i class="icon icon-user"></i> ::_("Coordinator")::</h4>
-				::if catalog._contact!=null::
-				<b>::catalog._contact.firstName:: ::catalog._contact.lastName::</b><br/>
-				<span ::cond catalog._contact.email!=null::><i class="icon icon-mail"></i> <a href="mailto: ::catalog._contact.email::">::catalog._contact.email::</a><br/></span>
-				<span ::cond catalog._contact.phone!=null::><i class="icon icon-phone"></i> ::catalog._contact.phone::<br/></span>
-				::end::
-			</div>
-	</div>
-	<div class="col-md-3">
-
-		<div class="article">
-			<h3>Prochaines distributions</h3>
-			
-			
-			<ul style="max-height:300px;overflow-y:auto;">
-				::foreach d distribs::
-				<li>				
-					<b>::dDate(d.date)::</b>
-					<br/>::d._place.name::		
-				</li>						
-				::end::	
-			</ul>
-			
-			::if distribs.length==0::
-			<p>
-				::_("No planned distributions.")::
-			</p>
-			::end::
-		</div>
-	</div>	
+	
 ::end::

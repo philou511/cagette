@@ -6,7 +6,9 @@
 	::set distribs = catalog.getDistribs(true,null)::
 
 	<div class="article" ::cond comingDistribSubscription == null::>
-		
+		<p class="text-center">
+			Si vous souscrivez à ce contrat, vous vous engagerez avec les conditions suivantes :
+		</p>
 		<table class="table table-striped table-bordered" style="margin-bottom: 0px;">
 			<tr class="greyhead">
 				<th>Période d'engagement</th>
@@ -306,7 +308,12 @@
 		::if(catalog.description!=null)::
 		<div class="article">
 			<h4><i class="icon icon-info"></i> Informations</h4>
-			::nl2br(catalog.description)::
+			<p>
+				<b>Contrat AMAP classique</b>
+			</p>
+			<p>
+				::nl2br(catalog.description)::
+			</p>
 		</div>
 		::end::
 
