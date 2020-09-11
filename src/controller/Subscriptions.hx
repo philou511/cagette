@@ -405,11 +405,10 @@ class Subscriptions extends controller.Controller
 	
 	@admin
 	public function doUnvalidateAll(catalog : db.Catalog){
-		for ( subscription in SubscriptionService.getSubscriptions(catalog)){
-			subscription.lock();
-			subscription.isValidated = false;
-			subscription.isPaid = false;
-			subscription.update();
+
+		for ( subscription in SubscriptionService.getSubscriptions(catalog) ) {
+
+			SubscriptionService.updateValidation( subscription, false );
 		}
 		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
 

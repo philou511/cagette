@@ -61,8 +61,8 @@ class Documents extends controller.Controller
 						  { value : "members", label : "Membres du groupe" },
 						  { value : "public", label : "Public" } ];
 
-		//In case of a group or a variable orders catalog
-		if ( catalog == null || catalog.type != 0 ) {
+		//In case of a group or shop mode
+		if ( catalog == null || catalog.group.hasShopMode() ) {
 
 			options = [	{ value : "members", label : "Membres du groupe" }, { value : "public", label : "Public" } ];
 		}

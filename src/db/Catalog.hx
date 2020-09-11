@@ -520,7 +520,7 @@ class Catalog extends Object
 	public function getVisibleDocuments( user : db.User ) : List<sugoi.db.EntityFile> {
 
 		var isSubscribedToCatalog = false;
-		if ( user != null && this.type == TYPE_CONSTORDERS ) { //Amap catalog
+		if ( user != null && !this.group.hasShopMode() ) { //CSA Mode
 
 			var userCatalogs : Array<db.Catalog> = user.getContracts(this.group);
 			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == this.id ); 

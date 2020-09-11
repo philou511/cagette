@@ -461,24 +461,33 @@ class Contract extends Controller
 				}
 				
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-				
+
 					if ( orderProduct.order != null && orderProduct.order.id != null ) {
 
-						varOrdersToEdit.push( { order : orderProduct.order, quantity : quantity } );
-						if ( pricesQuantitiesByDistrib[orderProduct.order.distribution] == null ) {
-	
-							pricesQuantitiesByDistrib[orderProduct.order.distribution] = [];
+						if ( orderProduct.order.distribution.orderEndDate.getTime() > Date.now().getTime() ) {
+
+							varOrdersToEdit.push( { order : orderProduct.order, quantity : quantity } );
+							if ( pricesQuantitiesByDistrib[orderProduct.order.distribution] == null ) {
+		
+								pricesQuantitiesByDistrib[orderProduct.order.distribution] = [];
+							}
+							pricesQuantitiesByDistrib[orderProduct.order.distribution].push( { productQuantity : quantity, productPrice : orderProduct.order.productPrice } );
+
 						}
-						pricesQuantitiesByDistrib[orderProduct.order.distribution].push( { productQuantity : quantity, productPrice : orderProduct.order.productPrice } );
+						
 					}
 					else {
 
-						varOrdersToMake.push( { distribId : distribId, product : orderProduct.product, quantity : quantity } );
-						if ( pricesQuantitiesByDistrib[distribution] == null ) {
-	
-							pricesQuantitiesByDistrib[distribution] = [];
+						if ( distribution.orderEndDate.getTime() > Date.now().getTime() ) {
+
+							varOrdersToMake.push( { distribId : distribId, product : orderProduct.product, quantity : quantity } );
+							if ( pricesQuantitiesByDistrib[distribution] == null ) {
+		
+								pricesQuantitiesByDistrib[distribution] = [];
+							}
+							pricesQuantitiesByDistrib[distribution].push( { productQuantity : quantity, productPrice : orderProduct.product.price } );
+					
 						}
-						pricesQuantitiesByDistrib[distribution].push( { productQuantity : quantity, productPrice : orderProduct.product.price } );
 					}
 
 					if ( catalog.requiresOrdering ) {
@@ -527,6 +536,7 @@ class Contract extends Controller
 				try {
 
 					//Catalog Constraints to respect
+					//We check again that the distrib is not closed to prevent automated orders and actual orders for a given distrib
 					if( SubscriptionService.areVarOrdersValid( comingDistribSubscription, pricesQuantitiesByDistrib ) ) {
 
 						if ( comingDistribSubscription == null ) {

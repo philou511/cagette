@@ -316,12 +316,11 @@ class Install extends controller.Controller
 
 		var activeCSAVariableCatalogs : List< db.Catalog > = db.Catalog.manager.unsafeObjects(
 			'SELECT Catalog.* 
-			FROM Catalog INNER JOIN db.Group
-			ON Catalog.groupId = db.Group.id
-			WHERE (db.Group.flags & 2=0)
-			AND Catalog.type = 1;
-			AND Catalog.startDate >= \'2019-09-01 00:00:00\'
-			AND Catalog.endDate >= NOw();', false );
+			FROM Catalog INNER JOIN `Group`
+			ON Catalog.groupId = `Group`.id
+			WHERE (`Group`.flags & 2=0)
+			AND Catalog.type = 1
+			AND Catalog.endDate >= NOW();', false );
 
 		for ( catalog in activeCSAVariableCatalogs ) {
 			
@@ -354,12 +353,16 @@ class Install extends controller.Controller
 					trace( "****GROUP***** " + catalog.group );
 					trace( "****CATALOG***** " + catalog );
 
-					var startDate = new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
-					var endDate = new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
-
-					var subscription = SubscriptionService.createSubscription( user, catalog, null, null, startDate, endDate );
-					SubscriptionService.updateValidation( subscription );
-
+					var subscription = new db.Subscription();
+					subscription.user = user;
+					subscription.catalog = catalog;
+					subscription.startDate 	= new Date( catalog.startDate.getFullYear(), catalog.startDate.getMonth(), catalog.startDate.getDate(), 0, 0, 0 );
+					subscription.endDate 	= new Date( catalog.endDate.getFullYear(), catalog.endDate.getMonth(), catalog.endDate.getDate(), 23, 59, 59 );
+					subscription.isValidated = true;
+					subscription.isPaid = true;
+					subscription.insert();
+		
+		
 					for ( order in ordersByUser[user] ) {
 
 						trace( order );
@@ -371,9 +374,6 @@ class Install extends controller.Controller
 				}
 
 			}
-
-			// catalog.migrated = true;
-			// catalog.update();
 		
 		}
 

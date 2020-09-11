@@ -883,17 +883,8 @@ class SubscriptionService
 	public static function updateValidation( subscription : Subscription, ?validate : Bool = true ){
 
 		subscription.lock();
-		if ( validate ) {
-
-			subscription.isValidated = true;
-			subscription.isPaid = true;
-		}
-		else {
-
-			subscription.isValidated = false;
-			subscription.isPaid = false;
-		}
-
+		subscription.isValidated = validate;
+		subscription.isPaid = validate;
 		subscription.update();
 	}
 
