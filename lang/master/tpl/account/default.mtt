@@ -122,7 +122,7 @@
 									<th class="text-center col-md-1">Total</th>
 									<th class="text-center col-md-1" ::cond i == 0::>Payé</th>
 								</tr>
-								::set orderName = subscriptionService.getDescription(subscription)::
+								::set orderName = subscriptionService.getDescription(subscription, catalog)::
 								::if i == 0 && orderName == null::
 									::set class="danger text-danger"::
 								::else::
@@ -156,7 +156,7 @@
 										</td>
 										<td style="vertical-align: middle;">
 											&nbsp;&nbsp;::absencesNb::
-											<a href="/subscriptions/absences/::subscription.id::?returnUrl=/account" class="btn btn-default btn-sm" style="border-style: none;">
+											<a ::cond subscriptionService.canAbsencesBeEdited( catalog ):: href="/subscriptions/absences/::subscription.id::?returnUrl=/account" class="btn btn-default btn-sm" style="border-style: none;">
 												<i class="icon icon-edit"></i>
 											</a>
 										</td>

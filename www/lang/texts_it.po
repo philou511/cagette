@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: francois@alilo.fr\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-05-22 13:41+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2020-09-08 17:36+0000\n"
+"Last-Translator: IvanDan <ivandanza@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/cagette/"
 "translations/it/>\n"
 "Language: it\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: src/payment/Cash.hx:294 src/controller/Validate.hx:3284
 msgid "Cash"
@@ -174,7 +174,7 @@ msgstr "Immagine aggiornata"
 
 #: src/controller/Categories.hx:461
 msgid "The category list is not empty."
-msgstr ""
+msgstr "L'elenco delle categorie non è vuoto."
 
 #: src/controller/Categories.hx:877
 msgid "Product types"
@@ -210,7 +210,7 @@ msgstr "Bevande"
 
 #: src/controller/Categories.hx:1024
 msgid "Labels"
-msgstr ""
+msgstr "Etichette"
 
 #: src/controller/Categories.hx:1042
 msgid "Certified organic agriculture"
@@ -226,7 +226,7 @@ msgstr "Non biologico"
 
 #: src/controller/Categories.hx:1182
 msgid "Default categories have been created"
-msgstr ""
+msgstr "Sono state create categorie predefinite"
 
 #: src/controller/Categories.hx:1520 src/db/CategoryGroup.hx:1044
 msgid "Color"
@@ -245,20 +245,24 @@ msgid "Group added"
 msgstr "Gruppo aggiunto"
 
 #: src/controller/Categories.hx:2238
+#, fuzzy
 msgid "Create a group of categories"
-msgstr ""
+msgstr "Crea un gruppo di categorie"
 
 #: src/controller/Categories.hx:2606
+#, fuzzy
 msgid "Category added"
-msgstr ""
+msgstr "Categoria aggiunta"
 
 #: src/controller/Categories.hx:2656
+#, fuzzy
 msgid "Create a category"
-msgstr ""
+msgstr "Crea una categoria"
 
 #: src/controller/Categories.hx:3004
+#, fuzzy
 msgid "Modify the category "
-msgstr ""
+msgstr "Modifica la categoria "
 
 #: src/controller/Categories.hx:3235
 msgid ""
@@ -266,16 +270,18 @@ msgid ""
 msgstr ""
 
 #: src/controller/Categories.hx:3386
+#, fuzzy
 msgid "Group deleted"
-msgstr ""
+msgstr "Gruppo eliminato"
 
 #: src/controller/Categories.hx:3619
+#, fuzzy
 msgid "Category deleted"
-msgstr ""
+msgstr "Categoria eliminata"
 
 #: src/controller/Contract.hx:1205
 msgid "You are not a member of this group"
-msgstr ""
+msgstr "Non sei un membro di questo gruppo"
 
 #: src/controller/Contract.hx:4631
 msgid ""
@@ -293,8 +299,9 @@ msgid "Managing stock is not available for CSA contracts"
 msgstr ""
 
 #: src/controller/Contract.hx:5843
+#, fuzzy
 msgid "Contract updated"
-msgstr ""
+msgstr "Contratto aggiornato"
 
 #: src/controller/Contract.hx:6286
 msgid "Create a contract with fixed orders"
@@ -306,35 +313,38 @@ msgstr ""
 
 #: src/controller/Contract.hx:7016
 msgid "New contract created"
-msgstr ""
+msgstr "Nuovo contratto creato"
 
 #: src/controller/Contract.hx:7267
+#, fuzzy
 msgid "You don't have the authorization to remove a contract"
-msgstr ""
+msgstr "Non hai l'autorizzazione per rimuovere un contratto"
 
 #: src/controller/Contract.hx:7708
 msgid "You cannot delete this contract because some orders are linked to it."
 msgstr ""
+"Non è possibile eliminare questo contratto perché alcuni ordini sono "
+"collegati ad esso."
 
 #: src/controller/Contract.hx:8104
 msgid "Contract deleted"
-msgstr ""
+msgstr "Contratto eliminato"
 
 #: src/controller/Contract.hx:8169 src/controller/Product.hx:3572
 msgid "Token error"
-msgstr ""
+msgstr "Errore token"
 
 #: src/controller/Contract.hx:8735 src/controller/Contract.hx:11987
 msgid "This contract is not opened for orders"
-msgstr ""
+msgstr "Questo contratto non è aperto per gli ordini"
 
 #: src/controller/Contract.hx:10965 src/controller/Contract.hx:14052
 msgid "Could not find the product ::produ:: and delivery ::deliv::"
-msgstr ""
+msgstr "Impossibile trovare il prodotto ::produ:: e la consegna ::deliv::"
 
 #: src/controller/Contract.hx:11523 src/controller/Contract.hx:17285
 msgid "Your order has been updated"
-msgstr ""
+msgstr "Il tuo ordine è stato aggiornato"
 
 #: src/controller/Contract.hx:14697
 msgid "Your CSA order has been saved"
@@ -342,12 +352,13 @@ msgstr ""
 
 #: src/controller/Contract.hx:14780
 msgid "In order to save your order, please choose a means of payment."
-msgstr ""
+msgstr "Per salvare il vostro ordine, scegliete un mezzo di pagamento."
 
 #: src/controller/Contract.hx:15322
 msgid ""
 "This delivery has already taken place, you can no longer modify the order."
 msgstr ""
+"Questa consegna è già avvenuta, non è più possibile modificare l'ordine."
 
 #: src/controller/Contract.hx:15449
 msgid ""
@@ -357,22 +368,24 @@ msgstr ""
 
 #: src/controller/Contract.hx:16731
 msgid "Error, could not find the order"
-msgstr ""
+msgstr "Errore, impossibile trovare l'ordine"
 
 #: src/controller/AmapAdmin.hx:322 src/controller/AmapAdmin.hx:1383
 #: src/controller/ContractAdmin.hx:2334
 msgid "Access forbidden"
-msgstr ""
+msgstr "Accesso vietato"
 
 #: src/controller/AmapAdmin.hx:569 lang/master/tpl/account/payments.mtt:823
 #: lang/master/tpl/member/payments.mtt:867
 #: lang/master/tpl/contract/default.mtt:4525
 msgid "Payments"
-msgstr ""
+msgstr "Pagamenti"
 
 #: src/controller/AmapAdmin.hx:1628
 msgid "The sent image was too big. The maximum allowed size is 12MB"
 msgstr ""
+"L'immagine inviata era troppo grande. La dimensione massima consentita è 12 "
+"MB"
 
 #: src/controller/AmapAdmin.hx:3440
 msgid "Member"

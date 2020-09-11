@@ -125,8 +125,13 @@ class Contract extends Controller
 
 		if (!app.user.canManageAllContracts()) throw Error('/', t._("Forbidden action"));
 		
-		view.title = t._("Create a catalog");
-		
+		view.title = if(app.getCurrentGroup().hasShopMode()){
+			t._("Create a catalog");
+		}else if (type==1){
+			"Créer un contrat AMAP variable";
+		}else{
+			"Créer un contrat AMAP classique";
+		}		
 		var catalog = new db.Catalog();
 		catalog.type = type;
 		catalog.group = app.user.getGroup();
@@ -309,8 +314,54 @@ class Contract extends Controller
 				for ( product in products ) {
 
 					var orderProduct = { order : null, product : product };
-					var order = db.UserOrder.manager.select( $user == app.user && $productId == product.id && $distributionId == distrib.id, true );
-					if ( order != null ) orderProduct.order = order;
+					var order : db.UserOrder = db.UserOrder.manager.select( $user == app.user && $productId == product.id && $distributionId == distrib.id, true );
+					var useOrder = false;
+
+					if ( !app.params.exists("token") ) {
+						
+						if ( order != null ) {
+							
+							orderProduct.order = order;
+						}
+					
+					}
+					else {
+
+						var paramKey = 'd' + distrib.id + '-p' + product.id;
+						if( app.params.exists( paramKey ) ) {
+
+							var paramQuantity = app.params.get( paramKey );
+							if ( paramQuantity != null && paramQuantity != '' ) {
+
+								if ( order == null ) {
+									
+									order = new db.UserOrder();
+									order.distribution = distrib;
+									order.product = product;
+									order.productPrice = product.price;
+								}
+								if ( product.hasFloatQt ) {
+
+									order.quantity = Std.parseFloat( StringTools.replace( paramQuantity, ",", "." ) );
+				
+								}
+								else {
+				
+									order.quantity = Std.parseInt( paramQuantity );
+								}
+
+								useOrder = true;
+
+							}
+
+						}
+
+						if ( useOrder ) {
+							
+							orderProduct.order = order;
+						}
+
+					}
 
 					data.push( orderProduct );
 				}
@@ -340,7 +391,7 @@ class Contract extends Controller
 		}
 
 		if ( checkToken() ) {
-			
+
 			if ( !catalog.isUserOrderAvailable() ) throw Error( '/contract/order/' + catalog.id , t._("This catalog is not opened for orders") );
 			
 			//For variable catalogs
@@ -411,7 +462,7 @@ class Contract extends Controller
 				
 				if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 				
-					if ( orderProduct.order != null ) {
+					if ( orderProduct.order != null && orderProduct.order.id != null ) {
 
 						varOrdersToEdit.push( { order : orderProduct.order, quantity : quantity } );
 						if ( pricesQuantitiesByDistrib[orderProduct.order.distribution] == null ) {
@@ -445,7 +496,7 @@ class Contract extends Controller
 	
 						if( firstDistrib != null && distribution.id == firstDistrib.id ) {
 	
-							if ( orderProduct.order != null ) {
+							if ( orderProduct.order != null && orderProduct.order.id != null ) {
 	
 								varDefaultOrders.push( { productId : orderProduct.order.product.id, quantity : quantity } );
 							}
@@ -464,6 +515,7 @@ class Contract extends Controller
 
 			}
 
+			var hasRequirementsError = false;
 			if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
 				if( varOrdersToEdit.length == 0  && varOrdersToMake.length == 0 ) {
@@ -511,7 +563,15 @@ class Contract extends Controller
 				}
 				catch ( e : Error ) {
 
-					throw Error( "/contract/order/" + catalog.id, e.message );
+					if( e.data == SubscriptionServiceError.CatalogRequirementsNotMet ) {
+
+						hasRequirementsError = true;
+						App.current.session.addMessage( e.message, true );
+					}
+					else {
+
+						throw Error( "/contract/order/" + catalog.id, e.message );
+					}
 				}
 
 			}
@@ -541,7 +601,10 @@ class Contract extends Controller
 				}
 			}
 
-			throw Ok( "/contract/order/" + catalog.id, t._("Your order has been updated") );
+			if ( !hasRequirementsError ) {
+
+				throw Ok( "/contract/order/" + catalog.id, "Votre souscription a bien été mise à jour");
+			}
 
 		}
 		
@@ -549,7 +612,7 @@ class Contract extends Controller
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		view.comingDistribSubscription = comingDistribSubscription;
-		view.newSubscriptionDistribsNb = comingDistribSubscription != null ? null : db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
+		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
 		else {
 
@@ -638,5 +701,22 @@ class Contract extends Controller
 				
 			throw Ok("/account", t._("Your order has been updated"));
 		}
+	}
+
+	/**
+		the user deletes his subscription
+	**/
+	function doDeleteSubscription(subscription:db.Subscription){
+		if( subscription.user.id!=app.user.id ) throw Error( '/', t._('Access forbidden') );
+		
+		var subscriptionUser = subscription.user;
+	
+		try {
+			SubscriptionService.deleteSubscription( subscription );
+		} catch( error : tink.core.Error ) {
+			throw Error( '/contract/order/' + subscription.catalog.id, error.message );
+		}
+		throw Ok( '/contract/order/' + subscription.catalog.id, 'La souscription a bien été supprimée.' );
+		
 	}
 }

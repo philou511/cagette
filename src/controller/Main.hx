@@ -55,10 +55,9 @@ class Main extends Controller {
 		//has unconfirmed basket ?
 		service.OrderService.checkTmpBasket(app.user,app.getCurrentGroup());
 
-		//contract with open orders
+		//contract not ended with UserCanOrder flag
 		if(!group.hasShopMode()){
-			var openContracts = Lambda.filter(group.getActiveContracts(), function(c) return c.isUserOrderAvailable());
-			view.openContracts = openContracts;
+			view.openContracts = group.getActiveContracts().filter( (c)-> return c.flags.has(UsersCanOrder)   );
 		}
 		
 		//freshly created group

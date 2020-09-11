@@ -61,7 +61,14 @@
 		</div>
 	
         <br/>
+
         $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
+
+        ::if(user.isAdmin)::
+        <a href="/contractAdmin/subscriptions/unvalidateAll/::catalog.id::" class="btn btn-default btn-sm">
+            <i class="icon icon-square"></i> Admin : Dévalider toutes les souscriptions
+        </a>
+        ::end::
         
         <div class="row" style="margin-top: 10px; margin-bottom: 24px;">
             <div class="col-md-12">
@@ -76,7 +83,7 @@
                             <th ::cond catalog.type == TYPE_CONSTORDERS::>Payé</th>
                         </tr>
                         ::foreach subscription subscriptions::
-                            ::set orderName = subscriptionService.getDescription(subscription)::
+                            ::set orderName = subscriptionService.getDescription(subscription, catalog)::
                             ::if orderName == null::
                                 ::set class="danger text-danger"::
                             ::else::
@@ -94,7 +101,14 @@
                                     </div>
                                     <div ::cond !subscription.isValidated:: >
                                         <br/>
-                                        <a href="/contractAdmin/subscriptions/validate/::subscription.id::" class="btn btn-md btn-primary" $$confirm(Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement. La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat.) >
+                                        ::if(catalog.type == TYPE_CONSTORDERS)::                                        
+                                        ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le paiement. La commande saisie dans Cagette correspond bien à ce qui est inscrit sur le contrat."::
+                                        ::else::
+                                        ::set confirmTxt = "Vous confirmez avoir reçu le contrat signé de cet adhérent avec le chèque d'acompte. Si il y a un minimum de commande sur la durée du contrat, le chèque doit correspondre à ce minimum."::
+                                        ::end::
+
+
+                                        <a href="/contractAdmin/subscriptions/validate/::subscription.id::" class="btn btn-md btn-primary" $$confirm(::confirmTxt::) >
                                             <i class="icon icon-check"></i> Valider
                                         </a>          
                                     </div>               
@@ -139,7 +153,7 @@
                                             ::if(user.isAdmin())::
                                             <li>
                                                 <a href="/contractAdmin/subscriptions/unvalidate/::subscription.id::?token=::token::">
-                                                    <i class="icon icon-square"></i> Dévalider (Admin)
+                                                    <i class="icon icon-square"></i> Admin : Dévalider
                                                 </a>
                                             </li>	
                                             ::end::

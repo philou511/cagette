@@ -9,13 +9,20 @@
 
             <br/><br/>
 			<div style="text-align:center;margin-bottom:12px;">
-				<a href="/contract/insert/::vendor.id::/0" class="btn btn-default btn-lg">Contrat AMAP classique</a>
+                <a href="/contract/insert/::vendor.id::/0" class="btn btn-default btn-lg">
+                    <i class="icon icon-refresh"></i> Contrat AMAP classique</a>
             </div>
             <br/>
-            <div style="text-align: center;">
+            <div>
                 <p>
-                    Les produits pour ce type de contrat sont les même à chaque distribution.<br/>
-                    <i>Exemple : Brigitte reçoit un panier qui coûte 15 € à chaque distribution.</i>
+                    Avec ce type de contrat, les produits commandés sont les mêmes à chaque distribution.<br/>
+                    <i>Exemple : Julie reçoit un panier de légumes à 15 € chaque semaine.</i>
+                </p>
+                <p>
+                    Options disponibles : 
+                    <ul>
+                        <li>Possibilité de définir une plage de temps pendant laquelle les membres peuvent déclarer des absences.</li>
+                    </ul>
                 </p>
                 <br/>
             </div>
@@ -28,13 +35,25 @@
 
 			<br/><br/>
 			<div style="text-align:center;margin-bottom:12px;">	
-				<a href="/contract/insert/::vendor.id::/1" class="btn btn-default btn-lg">Contrat AMAP variable</a>
+                <a href="/contract/insert/::vendor.id::/1" class="btn btn-default btn-lg">
+                    <i class="icon icon-basket"></i> 
+                    Contrat AMAP variable
+                </a>
             </div>
             <br/>
-            <div style="text-align: center;">
+            <div>
                 <p>
-                    Avec ce type de contrat vos client(e)s pourront avoir des commandes différentes pour chaque distribution.<br/>
-                    <i>Exemple : Jean commande un panier qui coûte 10 € pour une distribution puis rien à la prochaine puis un panier de 20 € etc.</i>
+                    Avec ce type de contrat les membres peuvent faire des commandes différentes pour chaque distribution.<br/>
+                    <i>Exemple : Jean fait une commande de miel pour 10 € pour une distribution, puis rien à la prochaine, puis une autre commande pour 20 € etc.</i>
+                </p>
+                <p>
+                    Options disponibles : 
+                    <ul>
+                        <li>Obligation de commander à chaque distribution</li>
+                        <li>Montant minimum de commande par distribution</li>
+                        <li>Montant minimum de commande sur la durée du contrat, et accepter ou pas des dépassements</li>
+                        <li>Possibilité de définir une plage de temps pendant laquelle les membres peuvent déclarer des absences.</li>
+                    </ul>
                 </p>
             </div>
 

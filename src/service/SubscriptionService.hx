@@ -149,6 +149,25 @@ class SubscriptionService
 		return subscriptionDistribs.array();
 	}
 
+	public static function getSubscriptionRemainingDistribsNb( subscription : db.Subscription ) : Int {
+
+		if( subscription == null ) return 0;
+
+		var remainingSubscriptionDistribs = null;
+		remainingSubscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $date >= Date.now() && $end <= subscription.endDate, false );
+			
+		if ( remainingSubscriptionDistribs.length != 0 && subscription.catalog.hasAbsencesManagement() ) {
+
+			var absentDistribs = subscription.getAbsentDistribs();
+			for ( absentDistrib in absentDistribs ) {
+
+				remainingSubscriptionDistribs = remainingSubscriptionDistribs.filter( distrib -> return distrib.id != absentDistrib.id );
+			}
+		}
+		
+		return remainingSubscriptionDistribs.length;
+	}
+
 	public static function getCatalogAbsencesDistribs( catalog : db.Catalog, ?subscription : db.Subscription ) : Array<db.Distribution> {
 
 		if ( !catalog.hasAbsencesManagement() ) return [];
@@ -267,31 +286,30 @@ class SubscriptionService
 
 	}
 
-	//REPRENDRE A PARTIR D'ICI POUR LA CONSOLIDATION ET RECHERHCE DE POSSIBLES NULL OU 0
-	public static function getDescription( subscription : db.Subscription ) {
+	public static function getDescription( subscription : db.Subscription, catalog : db.Catalog ) {
 
 		var label : String = '';
-		if ( subscription.catalog.type == db.Catalog.TYPE_VARORDER ) {
+		if ( subscription == null || catalog.type == db.Catalog.TYPE_VARORDER ) {
 
-			if ( subscription.catalog.requiresOrdering ) {
+			if ( catalog.requiresOrdering ) {
 				
-				label += 'Obligation de commander à chaque distribution<br />';
+				label += 'Commande obligatoire à chaque distribution';
 			}
 
-			if ( subscription.catalog.distribMinOrdersTotal != null && subscription.catalog.distribMinOrdersTotal != 0 ) {
+			if ( catalog.distribMinOrdersTotal != null && catalog.distribMinOrdersTotal != 0 ) {
 				
-				label += 'Minimum de commande par distribution : ' + subscription.catalog.distribMinOrdersTotal + ' €<br />';
+				label += ' d\'au moins : ' + catalog.distribMinOrdersTotal + ' €';
 			}
 
-			var catalogMinOrdersTotal = getCatalogMinOrdersTotal( subscription.catalog, subscription );
-			if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && subscription.catalog.allowedOverspend != null && subscription.catalog.allowedOverspend != 0 ) {
+			var catalogMinOrdersTotal = getCatalogMinOrdersTotal( catalog, subscription );
+			if ( catalogMinOrdersTotal != null && catalogMinOrdersTotal != 0 && catalog.allowedOverspend != null && catalog.allowedOverspend != 0 ) {
 				
-				label += 'Minimum de commandes sur la durée du contrat : ' + catalogMinOrdersTotal + ' €<br />';
-				label += 'Dépassement autorisé : ' + subscription.catalog.allowedOverspend + ' €<br />';
+				label += '<br />Minimum de commandes sur la durée du contrat : ' + catalogMinOrdersTotal + ' €';
+				label += '<br />Maximum de commandes sur la durée du contrat : '  + ( catalogMinOrdersTotal + catalog.allowedOverspend ) + ' €';
+				label += '<br /><b>NB : </b>Les seuils de commandes sur la durée du contrat sont calculés au prorata du nombre de vos distributions.';
 			}
 
-		}
-		else {
+		} else {
 
 			var subscriptionOrders = getCSARecurrentOrders( subscription, null );
 
@@ -306,6 +324,14 @@ class SubscriptionService
 		if( label == '' ) return null;
 
 		return label;
+	}
+
+	public static function getAbsencesDescription( catalog : db.Catalog ) {
+
+		if ( !canAbsencesBeEdited( catalog ) ) return "Pas d'absences autorisées";
+
+		return catalog.absentDistribsMaxNb + ' absences maximum autorisées
+			   du ' + DateTools.format( catalog.absencesStartDate, "%d/%m/%Y" ) + ' au ' + DateTools.format( catalog.absencesEndDate, "%d/%m/%Y" );
 	}
 
 	/**
@@ -409,7 +435,7 @@ class SubscriptionService
 	}
 
 
-	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, subscription : db.Subscription ) : Float {
+	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, ?subscription : db.Subscription ) : Float {
 
 		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
 
@@ -876,7 +902,11 @@ class SubscriptionService
 	  */
 	 public static function deleteSubscription( subscription : db.Subscription ) {
 
-		if ( hasPastDistribOrders( subscription ) && subscription.catalog.vendor.email != 'jean@cagette.net' && subscription.catalog.vendor.email != 'galinette@cagette.net' ) {
+		if(subscription.isValidated){
+			throw new Error("Impossible de supprimer une souscription qui a été validée");
+		}
+
+		if ( hasPastDistribOrders( subscription ) && !subscription.catalog.isDemoCatalog() ) {
 
 			throw TypedError.typed( 'Impossible de supprimer cette souscription car il y a des distributions passées avec des commandes.', PastOrders );
 		}
@@ -884,15 +914,15 @@ class SubscriptionService
 		//Delete all the orders for this subscription
 		var subscriptionOrders = db.UserOrder.manager.search( $subscription == subscription, false );
 		for ( order in subscriptionOrders ) {
-
-			order.lock();
-			order.delete();
+			OrderService.delete(order,true);
 		}
 		//Delete the subscription
 		subscription.lock();
 		subscription.delete();
 
 	}
+
+	
 
 	/**
 	 *  Checks whether there are orders with non zero quantity in the past
@@ -993,9 +1023,7 @@ class SubscriptionService
 
 		var subscriptionAllOrders = getSubscriptionAllOrders( subscription );
 		for ( order in subscriptionAllOrders ) {
-
-			order.lock();
-			order.delete();
+			OrderService.delete(order,true);
 		}
 
 		var subscriptionDistributions = getSubscriptionDistribs( subscription );
