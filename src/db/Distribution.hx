@@ -291,29 +291,6 @@ class Distribution extends Object
 
 	}
 	
-	
-	/**
-     * Get open to orders deliveries
-     * @param	catalog
-     */
-    public static function getOpenDistribs( catalog : db.Catalog, ?subscription : db.Subscription = null ) {
-
-		var now = Date.now();
-		var distribs = Lambda.array( manager.search( $catalog == catalog && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ) );
-		if ( subscription != null ) {
-
-			var absentDistribIds = subscription.getAbsentDistribIds();
-			for ( distribId in absentDistribIds ) {
-
-				distribs = distribs.filter( function ( distrib ) return distrib.id != distribId );
-			}
-
-		}
-
-        return distribs;
-
-    }
-
 	/**
 	 * Return a string like $placeId-$date.
 	 * 

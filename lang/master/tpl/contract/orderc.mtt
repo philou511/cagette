@@ -122,11 +122,11 @@
 				<div class="col-md-12">
 					<p>
 						::if catalog.isUserOrderAvailable()::
-							::if comingDistribSubscription == null::
+							::if currentOrComingSubscription == null::
 								Si vous souhaitez souscrire à ce contrat, saisissez votre commande sur cette page.
 								Votre souscription débutera le <strong>::dDate( subscriptionService.getNewSubscriptionStartDate(catalog) )::</strong>
 								car il faut s'inscrire au plus tard <strong>::catalog.orderEndHoursBeforeDistrib:: heures</strong> avant une distribution pour qu'elle soit prise en compte.
-							::elseif comingDistribSubscription.isValidated::
+							::elseif currentOrComingSubscription.isValidated::
 								Votre souscription a été validée, vous ne pouvez plus la modifier.
 							::else::
 								Tant que votre souscription n'a pas encore été validée, vous pouvez revenir sur cette page et modifier votre commande. 				
@@ -235,17 +235,17 @@
 						</tr>
 					</table>
 			
-					::if canOrder && subscriptionService.canAbsencesNbBeEdited( catalog, comingDistribSubscription ) ::
+					::if canOrder && subscriptionService.canAbsencesNbBeEdited( catalog, currentOrComingSubscription ) ::
 			
 						<div style="width:450px;float:left;font-weight:bold;">
 							::set start = catalog.absencesStartDate ::
 							::set end = catalog.absencesEndDate::
-							::if comingDistribSubscription != null::
-								:: if start.getTime() < comingDistribSubscription.startDate.getTime()::
-									::set start = comingDistribSubscription.startDate::
+							::if currentOrComingSubscription != null::
+								:: if start.getTime() < currentOrComingSubscription.startDate.getTime()::
+									::set start = currentOrComingSubscription.startDate::
 								::end::
-								:: if end.getTime() > comingDistribSubscription.endDate.getTime()::
-									::set end = comingDistribSubscription.endDate::
+								:: if end.getTime() > currentOrComingSubscription.endDate.getTime()::
+									::set end = currentOrComingSubscription.endDate::
 								::end::
 							::end::
 							Pour la période du ::sDate(start):: au ::sDate(end):: je vais manquer : 
@@ -256,10 +256,10 @@
 							<select name="absencesNb" id="absencesNb" class="form-control" style="width: 200px;">
 								::set label = ""::
 								::set selectedId = 0::
-								::if comingDistribSubscription != null::
-									::set selectedId = comingDistribSubscription.getAbsencesNb()::
+								::if currentOrComingSubscription != null::
+									::set selectedId = currentOrComingSubscription.getAbsencesNb()::
 								::end::
-								::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, comingDistribSubscription ) + 1)::
+								::foreach i loopList(0, subscriptionService.getAbsentDistribsMaxNb( catalog, currentOrComingSubscription ) + 1)::
 									::if i > 1::
 										::set label = "distributions"::
 									::else::
@@ -289,7 +289,7 @@
 					
 					<p class="text-right">
 						::if canOrder::
-							::if(comingDistribSubscription == null)::
+							::if(currentOrComingSubscription == null)::
 							::set text = "Souscrire à ce contrat"::
 							::else::
 							::set text = "Mettre à jour"::
