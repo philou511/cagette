@@ -300,13 +300,13 @@ class Contract extends Controller
 			app.setTemplate( 'contract/orderv.mtt' );
 		}
 
-		var comingDistribSubscription = SubscriptionService.getComingDistribSubscription( app.user, catalog );
+		var currentOrComingSubscription = SubscriptionService.getCurrentOrComingSubscription( app.user, catalog );
 		var userOrders = new Array< { distrib : db.Distribution, ordersProducts : Array< { order : db.UserOrder, product : db.Product }> } >();
 		var products = catalog.getProducts();
 		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
-			var openDistributions : Array<db.Distribution> = db.Distribution.getOpenDistribs( catalog, comingDistribSubscription );
+			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
 	
 			for ( distrib in openDistributions ) {
 
@@ -377,9 +377,9 @@ class Contract extends Controller
 			for ( product in products ) {
 
 				var orderProduct = { order : null, product : product };
-				if ( comingDistribSubscription != null ) {
+				if ( currentOrComingSubscription != null ) {
 
-					var subscriptionOrders = SubscriptionService.getCSARecurrentOrders( comingDistribSubscription, null );
+					var subscriptionOrders = SubscriptionService.getCSARecurrentOrders( currentOrComingSubscription, null );
 					var order = subscriptionOrders.find( function ( order ) return order.product.id == product.id );
 					if ( order != null ) orderProduct.order = order;
 				}
@@ -537,19 +537,19 @@ class Contract extends Controller
 
 					//Catalog Constraints to respect
 					//We check again that the distrib is not closed to prevent automated orders and actual orders for a given distrib
-					if( SubscriptionService.areVarOrdersValid( comingDistribSubscription, pricesQuantitiesByDistrib ) ) {
+					if( SubscriptionService.areVarOrdersValid( currentOrComingSubscription, pricesQuantitiesByDistrib ) ) {
 
-						if ( comingDistribSubscription == null ) {
+						if ( currentOrComingSubscription == null ) {
 
-							comingDistribSubscription = SubscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
+							currentOrComingSubscription = SubscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 						}
-						else if ( !comingDistribSubscription.isValidated ) {
+						else if ( !currentOrComingSubscription.isValidated ) {
 							
-							SubscriptionService.updateSubscription( comingDistribSubscription, comingDistribSubscription.startDate, comingDistribSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+							SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, varDefaultOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 						}
-						else if ( catalog.requiresOrdering && comingDistribSubscription.getDefaultOrders().length == 0 ) {
+						else if ( catalog.requiresOrdering && currentOrComingSubscription.getDefaultOrders().length == 0 ) {
 
-							SubscriptionService.updateDefaultOrders( comingDistribSubscription, varDefaultOrders );
+							SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
 						}
 
 						for ( orderToEdit in varOrdersToEdit ) {
@@ -559,7 +559,7 @@ class Contract extends Controller
 
 						for ( orderToMake in varOrdersToMake ) {
 
-							varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, comingDistribSubscription ) );
+							varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, currentOrComingSubscription ) );
 						}
 
 						//Create order operation only
@@ -595,13 +595,13 @@ class Contract extends Controller
 
 				try {
 
-					if ( comingDistribSubscription == null ) {
+					if ( currentOrComingSubscription == null ) {
 						
 						SubscriptionService.createSubscription( app.user, catalog, constOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
-					else if ( !comingDistribSubscription.isValidated ) {
+					else if ( !currentOrComingSubscription.isValidated ) {
 						
-						SubscriptionService.updateSubscription( comingDistribSubscription, comingDistribSubscription.startDate, comingDistribSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
+						SubscriptionService.updateSubscription( currentOrComingSubscription, currentOrComingSubscription.startDate, currentOrComingSubscription.endDate, constOrders, null, Std.parseInt( app.params.get( "absencesNb" ) ) );
 					}
 					
 				}
@@ -621,12 +621,12 @@ class Contract extends Controller
 		App.current.breadcrumb = [ { link : "/home", name : "Commandes", id : "home" }, { link : "/home", name : "Commandes", id : "home" } ]; 
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
-		view.comingDistribSubscription = comingDistribSubscription;
+		view.currentOrComingSubscription = currentOrComingSubscription;
 		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
 		else {
 
-			if( comingDistribSubscription == null || !comingDistribSubscription.isValidated ) {
+			if( currentOrComingSubscription == null || !currentOrComingSubscription.isValidated ) {
 				
 				catalog.isUserOrderAvailable();
 			}
@@ -636,7 +636,7 @@ class Contract extends Controller
 			}
 		}
 		view.userOrders = userOrders;
-		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, comingDistribSubscription ), function( distrib ) return StringTools.replace( StringTools.replace( Formatting.dDate( distrib.date ), "Vendredi", "Ven." ), "Mercredi", "Mer." ) );
+		view.absencesDistribDates = Lambda.map( SubscriptionService.getCatalogAbsencesDistribs( catalog, currentOrComingSubscription ), function( distrib ) return StringTools.replace( StringTools.replace( Formatting.dDate( distrib.date ), "Vendredi", "Ven." ), "Mercredi", "Mer." ) );
 		var subscriptions = SubscriptionService.getUserCatalogSubscriptions( app.user, catalog );
 		view.subscriptions = subscriptions;
 		view.visibleDocuments = catalog.getVisibleDocuments( app.user );
