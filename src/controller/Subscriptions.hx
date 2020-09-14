@@ -360,7 +360,6 @@ class Subscriptions extends controller.Controller
 		var absencesNb = subscription.getAbsencesNb();
 
 		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) || absencesNb == 0 ) {
-
 			throw Redirect( App.current.session.data.absencesReturnUrl );
 		}
 

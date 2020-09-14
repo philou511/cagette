@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import service.GraphService;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
@@ -345,6 +346,8 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
+		
+
 	}
 	
 	/**
@@ -352,8 +355,51 @@ class Cron extends Controller
 	**/
 	public function doDaily() {
 		if (!canRun()) return;
-		
+
 		app.event(DailyCron(this.now));
+
+		var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
+		task.setTask(function(){
+			//look at next month
+			var from = new Date(this.now.getFullYear(),this.now.getMonth()+1,1,0,0,0);
+			var to   = new Date(this.now.getFullYear(),this.now.getMonth()+1,31,0,0,0);
+			var inOneWeek = new Date(this.now.getFullYear(),this.now.getMonth(),now.getDate()+7,0,0,0);
+			//catalog having absences starting in one month
+			var catalogs = db.Catalog.manager.search($absencesStartDate>=from && $absencesStartDate<to && $absentDistribsMaxNb>0);
+			task.log("catalogs having absencesStartDate between "+from+" and "+to);
+			for( c in catalogs){
+				if(c.group.hasShopMode()) continue;				
+				var limitDate = service.SubscriptionService.getLastDistribBeforeAbsences( c ).date;
+				if(limitDate.toString().substr(0,10)==inOneWeek.toString().substr(0,10)){
+					task.log("- "+c.name+" : deadline in one week ("+limitDate+")");
+
+					var m = new Mail();
+					m.setSender(App.config.get("default_email"), "Cagette.net");
+					if(c.contact!=null) m.setReplyTo(c.contact.email, c.contact.getName());
+					for( sub in service.SubscriptionService.getSubscriptions(c)){
+						if(sub.getAbsentDistribIds().length>0){
+							m.addRecipient(sub.user.email);
+							if(sub.user.email2!=null) m.addRecipient(sub.user.email2);
+						}
+					}					
+					m.setSubject( 'Pensez à définir vos dates d\'absence pour le contrat "${c.name}"' );
+					var text = 'Il vous reste une semaine pour définir vos dates d\'absence pour le contrat <b>"${c.name}"</b>.<br/>';
+					text += 'Vous avez jusqu\'au ${Formatting.dDate(limitDate)} pour définir vos absences et permettre au producteur de s\'organiser.<br/>';
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { 
+						text:text,
+						group:c.group
+					} ) );
+					App.sendMail(m , c.group);	
+
+
+				}
+
+
+			}
+
+
+		});
+		task.execute(!App.config.DEBUG);
 		
 		var task = new TransactionWrappedTask( "Send errors to admin by email", function() {
 			var n = Date.now();
