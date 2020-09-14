@@ -189,10 +189,7 @@ class Vendor extends Object
 		form.getElement("email").required = true;
 
 		if(full){
-
 			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
-			
-
 		}
 		
 		return form;

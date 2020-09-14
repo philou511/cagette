@@ -15,6 +15,7 @@ import Common;
 import plugin.Tutorial;
 import service.OrderService;
 import form.CagetteForm;
+import service.CatalogService;
 
 class Contract extends Controller
 {
@@ -137,7 +138,7 @@ class Contract extends Controller
 		catalog.group = app.user.getGroup();
 		catalog.vendor = vendor;
 
-		var form = catalog.getForm();
+		var form = CatalogService.getForm(catalog);
 		
 		if ( form.checkToken() ) {
 
@@ -145,7 +146,7 @@ class Contract extends Controller
 			
 			try {
 
-				catalog.checkFormData( form );
+				CatalogService.checkFormData(catalog,form);
 			
 				catalog.insert();
 
@@ -181,58 +182,56 @@ class Contract extends Controller
 	 @logged @tpl("form.mtt")
 	 function doEdit( catalog : db.Catalog ) {
 		 
-		 view.category = 'contractadmin';
-		 if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
- 
-		 view.title = t._("Edit catalog \"::contractName::\"", { contractName : catalog.name } );
- 
-		 var group = catalog.group;
-		 var currentContact = catalog.contact;
+		view.category = 'contractadmin';
+		if (!app.user.isContractManager( catalog )) throw Error('/', t._("Forbidden action"));
 
-		 var form = catalog.getForm();
-		 
-		 app.event( EditContract( catalog, form ) );
-		 
-		 if ( form.checkToken() ) {
+		view.title = t._("Edit catalog \"::contractName::\"", { contractName : catalog.name } );
 
-			 form.toSpod( catalog );
+		var group = catalog.group;
+		var currentContact = catalog.contact;
+
+		var form = CatalogService.getForm(catalog);
+		
+		app.event( EditContract( catalog, form ) );
+		
+		if ( form.checkToken() ) {
+
+			form.toSpod( catalog );
+		
+			try {
+
+			CatalogService.checkFormData(catalog,  form );
+		
+			catalog.update();
 			
-			 try {
-
-				catalog.checkFormData( form );
-		 
-				catalog.update();
+			//update rights
+			if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
+				var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
+				ua.giveRight(ContractAdmin(catalog.id));
+				ua.giveRight(Messages);
+				ua.giveRight(Membership);
+				ua.update();
 				
-				//update rights
-				if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
-					var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
-					ua.giveRight(ContractAdmin(catalog.id));
-					ua.giveRight(Messages);
-					ua.giveRight(Membership);
-					ua.update();
-					
-					//remove rights to old contact
-					if (currentContact != null) {
-						var x = db.UserGroup.get(currentContact, catalog.group, true);
-						if (x != null) {
-							x.removeRight(ContractAdmin(catalog.id));
-							x.update();
-						}
+				//remove rights to old contact
+				if (currentContact != null) {
+					var x = db.UserGroup.get(currentContact, catalog.group, true);
+					if (x != null) {
+						x.removeRight(ContractAdmin(catalog.id));
+						x.update();
 					}
-					
 				}
+				
+			}
 
-			 }
-			 catch ( e : Error ) {
-
+			} catch ( e : Error ) {
 				throw Error( '/contract/edit/' + catalog.id, e.message );
 			}
 			 
-			 throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") );
-		 }
+			throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") );
+		}
 		 
-		 view.form = form;
-	 }
+		view.form = form;
+	}
 	
 	/**
 	 * Delete a contract (... and its products, orders & distributions)
