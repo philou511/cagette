@@ -1,4 +1,5 @@
 package service;
+import tools.DateTool;
 import db.Catalog;
 import tink.core.Error;
 
@@ -123,12 +124,17 @@ class CatalogService{
     public static function checkFormData( catalog:db.Catalog, form : sugoi.form.Form ) {
 
         //distributions should always happen between catalog dates
-        for( distribution in catalog.getDistribs(false)){
-            if(distribution.date.getTime() < form.getValueOf("startDate").getTime()){
-                throw new Error("Il y a des distributions antérieures à la date de début du catalogue");
-            }
-            if(distribution.date.getTime()> form.getValueOf("endDate").getTime()){
-                throw new Error("Il y a des distributions postérieures à la date de fin du catalogue");
+        if(form.getElement("startDate")!=null){
+            for( distribution in catalog.getDistribs(false)){
+                //accept a distrib on the last day of catalog
+                var endDate =  DateTool.setHourMinute(form.getValueOf("endDate"),23,59);
+
+                if(distribution.date.getTime() < form.getValueOf("startDate").getTime()){
+                    throw new Error("Il y a des distributions antérieures à la date de début du catalogue");
+                }
+                if(distribution.date.getTime()> endDate.getTime()){
+                    throw new Error("Il y a des distributions postérieures à la date de fin du catalogue");
+                }
             }
         }
         

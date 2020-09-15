@@ -341,6 +341,11 @@ class SubscriptionService
 	 */
 	public static function isSubscriptionValid( subscription : db.Subscription, ?previousStartDate : Date ) : Bool {
 
+		//catalog should have distribs
+		if(subscription.catalog.getDistribs().length==0){
+			throw new Error("Ce catalogue n'a pas de distributions planifiées");
+		}
+
 		//When creating a new subscription the startDate needs to be for the next not closed coming 
 		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
 			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
