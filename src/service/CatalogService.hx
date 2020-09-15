@@ -68,13 +68,6 @@ class CatalogService{
 
 				absencesIndex = 9;
 			}
-
-			var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>
-            <p><i class='icon icon-info'></i> 
-				Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
-				<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
-            </p></div>";
-			form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 			
 			//if catalog is new
 			if ( catalog.id == null ) {
@@ -85,6 +78,19 @@ class CatalogService{
 					form.getElement("allowedOverspend").value = 500;
 				}
 				form.getElement("orderEndHoursBeforeDistrib").value = 24;
+
+				form.removeElement(form.getElement("absentDistribsMaxNb"));
+				form.removeElement(form.getElement("absencesStartDate"));
+				form.removeElement(form.getElement("absencesEndDate"));
+			}
+			else {
+
+				var html = "<h4>Gestion des absences</h4><div class='alert alert-warning'>
+				<p><i class='icon icon-info'></i> 
+					Vous pouvez définir une période pendant laquelle les membres pourront choisir d'être absent.<br/>
+					<a href='https://wiki.cagette.net/admin:absences' target='_blank'>Consulter la documentation.</a>
+				</p></div>";
+				form.addElement( new sugoi.form.elements.Html( 'absences', html, '' ), absencesIndex );
 			}
 		}
 		
@@ -169,46 +175,46 @@ class CatalogService{
 				}
 			}
 
-			var absentDistribsMaxNb = form.getValueOf('absentDistribsMaxNb');
-			var absencesStartDate : Date = form.getValueOf('absencesStartDate');
-			var absencesEndDate : Date = form.getValueOf('absencesEndDate');
-
-			if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
-
-				throw new tink.core.Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
-			}
-
-			if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
-
-				throw new tink.core.Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
-			}
-
-			if ( absencesStartDate != null && absencesEndDate != null ) {
-
-				if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
-
-					throw new tink.core.Error( 'La date de début des absences doit être avant la date de fin des absences.' );
-				}
-
-				var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
-				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
-
-					throw new tink.core.Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
-					Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
-					
-				}
-
-				if ( absencesStartDate.getTime() < catalog.startDate.getTime() || absencesEndDate.getTime() > catalog.endDate.getTime() ) {
-
-					throw new tink.core.Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
-				}
-
-				catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
-				catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
-			}
-
 			if ( catalog.id != null ) {
 
+				var absentDistribsMaxNb = form.getValueOf('absentDistribsMaxNb');
+				var absencesStartDate : Date = form.getValueOf('absencesStartDate');
+				var absencesEndDate : Date = form.getValueOf('absencesEndDate');
+
+				if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && ( absencesStartDate == null || absencesEndDate == null ) ) {
+
+					throw new tink.core.Error( 'Vous avez défini un nombre maximum d\'absences alors vous devez sélectionner des dates pour la période d\'absences.' );
+				}
+
+				if ( ( absencesStartDate != null || absencesEndDate != null ) && ( absentDistribsMaxNb == null || absentDistribsMaxNb == 0 ) ) {
+
+					throw new tink.core.Error( 'Vous avez défini des dates pour la période d\'absences alors vous devez entrer un nombre maximum d\'absences.' );
+				}
+			
+				if ( absencesStartDate != null && absencesEndDate != null ) {
+
+					if ( absencesStartDate.getTime() >= absencesEndDate.getTime() ) {
+
+						throw new tink.core.Error( 'La date de début des absences doit être avant la date de fin des absences.' );
+					}
+
+					var absencesDistribsNb = service.SubscriptionService.getCatalogAbsencesDistribsNb( catalog, absencesStartDate, absencesEndDate );
+					if ( ( absentDistribsMaxNb != null && absentDistribsMaxNb != 0 ) && absentDistribsMaxNb > absencesDistribsNb ) {
+
+						throw new tink.core.Error( 'Le nombre maximum d\'absences que vous avez saisi est trop grand.
+						Il doit être inférieur ou égal au nombre de distributions dans la période d\'absences : ' + absencesDistribsNb );
+						
+					}
+
+					if ( absencesStartDate.getTime() < catalog.startDate.getTime() || absencesEndDate.getTime() > catalog.endDate.getTime() ) {
+
+						throw new tink.core.Error( 'Les dates d\'absences doivent être comprises entre le début et la fin du contrat.' );
+					}
+
+					catalog.absencesStartDate = new Date( absencesStartDate.getFullYear(), absencesStartDate.getMonth(), absencesStartDate.getDate(), 0, 0, 0 );
+					catalog.absencesEndDate = new Date( absencesEndDate.getFullYear(), absencesEndDate.getMonth(), absencesEndDate.getDate(), 23, 59, 59 );
+				}
+			
 				if ( catalog.hasPercentageOnOrders() && catalog.percentageValue == null ) {
 
 					throw new tink.core.Error( t._("If you would like to add fees to the order, define a rate (%) and a label.") );
