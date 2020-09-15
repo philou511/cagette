@@ -303,9 +303,12 @@ class Contract extends Controller
 		var userOrders = new Array< { distrib : db.Distribution, ordersProducts : Array< { order : db.UserOrder, product : db.Product }> } >();
 		var products = catalog.getProducts();
 		
+		var hasComingOpenDistrib = false;
+
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
 			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
+			hasComingOpenDistrib = openDistributions.length != 0;
 	
 			for ( distrib in openDistributions ) {
 
@@ -371,6 +374,8 @@ class Contract extends Controller
 			
 		}
 		else {
+
+			hasComingOpenDistrib = SubscriptionService.getComingOpenDistrib( catalog ) != null;
 
 			var data = [];
 			for ( product in products ) {
@@ -518,7 +523,8 @@ class Contract extends Controller
 				}
 				else {
 
-					constOrders.push( { productId : orderProduct.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );
+					constOrders.push( { productId : orderProduct.product.id, quantity : quantity, userId2 : null, invertSharedOrder : false } );					
+
 				}
 
 			}
@@ -538,8 +544,11 @@ class Contract extends Controller
 					//We check again that the distrib is not closed to prevent automated orders and actual orders for a given distrib
 					if( SubscriptionService.areVarOrdersValid( currentOrComingSubscription, pricesQuantitiesByDistrib ) ) {
 
+						var subscriptionIsNew = false;
+
 						if ( currentOrComingSubscription == null ) {
 
+							subscriptionIsNew = true;
 							currentOrComingSubscription = SubscriptionService.createSubscription( app.user, catalog, varDefaultOrders, Std.parseInt( app.params.get( "absencesNb" ) ) );
 						}
 						else if ( !currentOrComingSubscription.isValidated ) {
@@ -551,14 +560,27 @@ class Contract extends Controller
 							SubscriptionService.updateDefaultOrders( currentOrComingSubscription, varDefaultOrders );
 						}
 
+						var newSubscriptionAbsentDistribs : Array<db.Distribution> = new Array<db.Distribution>();
+						if( subscriptionIsNew ) {
+
+							newSubscriptionAbsentDistribs = currentOrComingSubscription.getAbsentDistribs();
+						}
+
 						for ( orderToEdit in varOrdersToEdit ) {
 
-							varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
+							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToEdit.order.distribution.id ) == null ) {
+								
+								varOrders.push( OrderService.edit( orderToEdit.order, orderToEdit.quantity ) );
+							}
+							
 						}
 
 						for ( orderToMake in varOrdersToMake ) {
 
-							varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, currentOrComingSubscription ) );
+							if( newSubscriptionAbsentDistribs.length == 0 || newSubscriptionAbsentDistribs.find( d -> d.id == orderToMake.distribId ) == null ) {
+								
+								varOrders.push( OrderService.make( app.user, orderToMake.quantity, orderToMake.product, orderToMake.distribId, null, currentOrComingSubscription ) );
+							}
 						}
 
 						//Create order operation only
@@ -621,6 +643,8 @@ class Contract extends Controller
 		view.subscriptionService = SubscriptionService;
 		view.catalog = catalog;
 		view.currentOrComingSubscription = currentOrComingSubscription;
+		view.hasComingOpenDistrib = hasComingOpenDistrib;
+		view.catalogDistribsNb = db.Distribution.manager.count( $catalog == catalog );
 		view.newSubscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		view.canOrder = if ( catalog.type == db.Catalog.TYPE_VARORDER ) { true; }
 		else {
