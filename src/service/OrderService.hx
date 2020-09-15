@@ -255,7 +255,7 @@ class OrderService
 			var product = order.product;
 
 			//stock mgmt
-			if (contract.hasStockManagement()) {
+			if (contract.hasStockManagement() && product.stock!=null && order.quantity!=null) {
 				//re-increment stock
 				product.lock();
 				product.stock +=  order.quantity;

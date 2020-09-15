@@ -233,6 +233,7 @@
 								height: 100px;
 								padding-top: 20px;
 								width: 80px;
+								white-space: nowrap;
 							}
 						
 							.sized{
@@ -302,7 +303,7 @@
 												::if d.distrib==null::
 													<th>::_("Qty")::</th>
 												::else::
-													<th>::dDate(d.distrib.date)::</th>
+													<th>::shortDate(d.distrib.date)::</th>
 												::end::
 											::end::
 										</tr>

@@ -200,28 +200,26 @@ class Contract extends Controller
 		
 			try {
 
-			CatalogService.checkFormData(catalog,  form );
-		
-			catalog.update();
-			
-			//update rights
-			if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
-				var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
-				ua.giveRight(ContractAdmin(catalog.id));
-				ua.giveRight(Messages);
-				ua.giveRight(Membership);
-				ua.update();
+				CatalogService.checkFormData(catalog,  form );
+				catalog.update();
 				
-				//remove rights to old contact
-				if (currentContact != null) {
-					var x = db.UserGroup.get(currentContact, catalog.group, true);
-					if (x != null) {
-						x.removeRight(ContractAdmin(catalog.id));
-						x.update();
+				//update rights
+				if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
+					var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
+					ua.giveRight(ContractAdmin(catalog.id));
+					ua.giveRight(Messages);
+					ua.giveRight(Membership);
+					ua.update();
+					
+					//remove rights to old contact
+					if (currentContact != null) {
+						var x = db.UserGroup.get(currentContact, catalog.group, true);
+						if (x != null) {
+							x.removeRight(ContractAdmin(catalog.id));
+							x.update();
+						}
 					}
 				}
-				
-			}
 
 			} catch ( e : Error ) {
 				throw Error( '/contract/edit/' + catalog.id, e.message );
@@ -291,11 +289,8 @@ class Contract extends Controller
 		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 
 		if( catalog.isCSACatalog() ) {
-
 			app.setTemplate( 'contract/orderc.mtt' );
-		}
-		else {
-
+		} else {
 			app.setTemplate( 'contract/orderv.mtt' );
 		}
 
@@ -306,6 +301,11 @@ class Contract extends Controller
 		var hasComingOpenDistrib = false;
 
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+			view.shortDate = function(d:Date){
+				var date = Formatting.getDate(d);
+				return date.dow+" "+date.d+" "+date.m.substr(0,4)+". "+date.y;
+			}
 
 			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
 			hasComingOpenDistrib = openDistributions.length != 0;
