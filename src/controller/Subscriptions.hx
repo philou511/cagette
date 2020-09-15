@@ -360,11 +360,9 @@ class Subscriptions extends controller.Controller
 		var absencesNb = subscription.getAbsencesNb();
 
 		if( !SubscriptionService.canAbsencesBeEdited( subscription.catalog ) || absencesNb == 0 ) {
-
 			throw Redirect( App.current.session.data.absencesReturnUrl );
 		}
-
-		//TODO GET SUBSCRIPTION FOR THE ABSENCES PERIOD
+		
 		view.subscription = subscription;
 		view.subscriptionService = SubscriptionService;
 		view.catalog = subscription.catalog;
@@ -405,11 +403,10 @@ class Subscriptions extends controller.Controller
 	
 	@admin
 	public function doUnvalidateAll(catalog : db.Catalog){
-		for ( subscription in SubscriptionService.getSubscriptions(catalog)){
-			subscription.lock();
-			subscription.isValidated = false;
-			subscription.isPaid = false;
-			subscription.update();
+
+		for ( subscription in SubscriptionService.getSubscriptions(catalog) ) {
+
+			SubscriptionService.updateValidation( subscription, false );
 		}
 		throw Ok("/contractAdmin/subscriptions/"+catalog.id,'Souscriptions dévalidées');
 

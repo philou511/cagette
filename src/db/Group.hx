@@ -487,11 +487,11 @@ class Group extends Object
 			"txtIntro" 		=> t._("Short description"),
 			"txtHome" 		=> t._("Homepage text"),
 			"txtDistrib" 	=> t._("Text for distribution lists"),
-			"extUrl" 		=> t._("Group website URL"),
+			"extUrl" 		=> "URL de votre site web",
 			"membershipRenewalDate" => t._("Membership renewal date"),
 			"flags" 		=> t._("Options"),
 			"betaFlags" 	=> t._("Nouvelles fonctionnalités"),
-			"groupType" 	=> t._("Group type"),
+			"groupType" 	=> "Type de groupe (déclaratif)",
 			"regOption" 	=> t._("Registration setting"),
 			"contact" 		=> t._("Main contact"),
 			"legalRepresentative" => t._("Legal representative")			

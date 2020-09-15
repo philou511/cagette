@@ -60,59 +60,68 @@ class SubscriptionService
 		}
 
 		return subscriptionsByCatalog;
-	}	
+	}
 
-	public static function getComingDistribSubscription( user : db.User, catalog : db.Catalog, ?isValidated : Bool ) : db.Subscription {
+	public static function getComingOpenDistrib( catalog : db.Catalog ) : db.Distribution {
 
 		var now = Date.now();
-		var notClosedComingDistrib : db.Distribution = null;
-		var subscription : db.Subscription = null;
-		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+		
+		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+			return db.Distribution.manager.search( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).first();
+		}
+		else {
 
 			if ( catalog.orderEndHoursBeforeDistrib == null || catalog.orderEndHoursBeforeDistrib == 0 ) {
 
 				throw new Error( 'Vous devez définir obligatoirement le nombre d\'heures avant distribution pour la fermeture des commandes.' );
 			}
 
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false ).array();
+			var openComingDistrib : db.Distribution = null;
+			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false );
 			for ( distrib in futureDistribs ) {
 
 				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
 				if ( now.getTime() < orderEndDate.getTime() ) {
 
-					notClosedComingDistrib = distrib;
+					openComingDistrib = distrib;
 					break;
 				}
 			}
-			
+
+			return openComingDistrib;
+
+		}
+
+	}
+
+
+	public static function getOpenDistribsForSubscription( user : db.User, catalog : db.Catalog, currentOrComingSubscription : db.Subscription ) : Array< db.Distribution > {
+
+		var openDistribs = new Array< db.Distribution >();
+
+		if ( currentOrComingSubscription != null ) {
+
+			openDistribs = getSubscriptionDistribs( currentOrComingSubscription, "open" );
 		}
 		else {
 
-			var notClosedFutureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false ).array();
-			if ( notClosedFutureDistribs.length != 0 ) { 
-
-				notClosedComingDistrib = notClosedFutureDistribs[0];
-			}
+			var now = Date.now();
+			openDistribs = db.Distribution.manager.search( $catalog == catalog && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).array();
 		}
 
+		return openDistribs;
+    }
 
-		if( notClosedComingDistrib != null ) {
 
-			if( isValidated != null ) {
+	public static function getCurrentOrComingSubscription( user : db.User, catalog : db.Catalog ) : db.Subscription {
 
-				subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= notClosedComingDistrib.date && $endDate >= notClosedComingDistrib.end && $isValidated == isValidated, false );
-			}
-			else {
-		
-				subscription = db.Subscription.manager.select( $user == user && $catalog == catalog && $startDate <= notClosedComingDistrib.date && $endDate >= notClosedComingDistrib.end, false );
-			}
-		}
-		
-		//JB TODO EXCLUDE ABSENTDISTRIB
+		var comingOpenDistrib : db.Distribution = getComingOpenDistrib( catalog );
+		var fromDate : Date = comingOpenDistrib != null ? comingOpenDistrib.date : Date.now();
 
-		return subscription;
-		
+		return db.Subscription.manager.select( $user == user && $catalog == catalog && $endDate >= fromDate, false );
 	}
+
 
 	public static function getUserCatalogSubscriptions( user : db.User, catalog : db.Catalog ) : Array<db.Subscription> {
 		
@@ -129,6 +138,11 @@ class SubscriptionService
 		if ( type == "all" ) {
 
 			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog && $date >= subscription.startDate && $end <= subscription.endDate, { orderBy : date }, false );
+		}
+		else if ( type == "open" ) {
+
+			var now = Date.now();
+			subscriptionDistribs = db.Distribution.manager.search( $catalog == subscription.catalog  && $orderStartDate <= now && $orderEndDate > now && $date >= subscription.startDate && $end <= subscription.endDate, { orderBy : date }, false );
 		}
 		else if ( type == "past" ) {
 
@@ -272,19 +286,6 @@ class SubscriptionService
 		return oneDistriborders;
 	}
 
-	public static function isSubscriptionPaid( subscription : db.Subscription ) : Bool {
-
-		/*
-		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
-		for ( order in orders ) {
-			if ( !order.paid ) {
-				return false;
-			}
-		}
-		return true;*/
-		return subscription.isPaid;
-
-	}
 
 	public static function getDescription( subscription : db.Subscription, catalog : db.Catalog ) {
 
@@ -628,37 +629,14 @@ class SubscriptionService
 
 	public static function getNewSubscriptionStartDate( catalog : db.Catalog ) : Date {
 
-		var now = Date.now();
-		var comingOpenDistrib : db.Distribution = null;
-
-		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
-
-			comingOpenDistrib = db.Distribution.manager.search( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).first();
-		}
-		else {
-
-			if ( catalog.orderEndHoursBeforeDistrib == null || catalog.orderEndHoursBeforeDistrib == 0 ) throw new Error( 'Il faut définir un nombre d\'heures pour la fermeture des commandes.' );
-
-			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false );
-			for ( distrib in futureDistribs ) {
-
-				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
-				if ( orderEndDate.getTime() > now.getTime() ) {
-
-					comingOpenDistrib = distrib;
-					break;
-				}
-			}
-			
-		}
-		
+		var comingOpenDistrib = getComingOpenDistrib( catalog );
 		if ( comingOpenDistrib != null ) {
 
 			return new Date( comingOpenDistrib.date.getFullYear(), comingOpenDistrib.date.getMonth(), comingOpenDistrib.date.getDate(), 0, 0, 0 );
 		}
 		else {
 
-			throw new Error( 'Impossible de souscrire car il n\'y a pas de distribution ouverte à la commande.' );
+			return null;
 		}
 
 	}
@@ -882,17 +860,8 @@ class SubscriptionService
 	public static function updateValidation( subscription : Subscription, ?validate : Bool = true ){
 
 		subscription.lock();
-		if ( validate ) {
-
-			subscription.isValidated = true;
-			subscription.isPaid = true;
-		}
-		else {
-
-			subscription.isValidated = false;
-			subscription.isPaid = false;
-		}
-
+		subscription.isValidated = validate;
+		subscription.isPaid = validate;
 		subscription.update();
 	}
 
@@ -1069,6 +1038,21 @@ class SubscriptionService
 		
 	}
 
+
+	public static function isSubscriptionPaid( subscription : db.Subscription ) : Bool {
+
+		/*
+		var orders = db.UserOrder.manager.search( $subscription == subscription, false );
+		for ( order in orders ) {
+			if ( !order.paid ) {
+				return false;
+			}
+		}
+		return true;*/
+		return subscription.isPaid;
+
+	}
+
 	public static function getLastDistribBeforeAbsences( catalog : db.Catalog ) : db.Distribution {
 
 		if ( !catalog.hasAbsencesManagement() ) return null;
@@ -1092,15 +1076,23 @@ class SubscriptionService
 	}
 
 	public static function canAbsencesNbBeEdited( catalog : db.Catalog, subscription : db.Subscription ) : Bool {
-		
-		return catalog.hasAbsencesManagement() && ( subscription == null || !subscription.isValidated );
+
+		if( !catalog.hasAbsencesManagement() ) return false;
+
+		var lastDistribBeforeAbsences = getLastDistribBeforeAbsences( catalog );
+		if( lastDistribBeforeAbsences == null ) return false;
+
+		var deadline = lastDistribBeforeAbsences.date.getTime();
+		var beforeDeadline = Date.now().getTime() < deadline;
+		var subscriptionInAbsencesPeriod = subscription == null || ( subscription.startDate.getTime() < deadline && subscription.endDate.getTime() > catalog.absencesStartDate.getTime() );
+		var notValidatedSub = subscription == null || !subscription.isValidated;
+
+		return notValidatedSub && beforeDeadline && subscriptionInAbsencesPeriod;
 	}
 
 	public static function canAbsencesBeEdited( catalog : db.Catalog ) : Bool {
 
-		if ( !catalog.hasAbsencesManagement() ) return false;
-
-		return Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
+		return catalog.hasAbsencesManagement() && Date.now().getTime() < getLastDistribBeforeAbsences( catalog ).date.getTime();
 	}
 
 	public static function updateAbsencesDates( subscription : db.Subscription, newAbsentDistribIds : Array<Int> ) {
