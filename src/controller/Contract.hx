@@ -306,6 +306,7 @@ class Contract extends Controller
 				var date = Formatting.getDate(d);
 				return date.dow+" "+date.d+" "+date.m.substr(0,4)+". "+date.y;
 			}
+			view.json = function(d) return haxe.Json.stringify(d);
 
 			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
 			hasComingOpenDistrib = openDistributions.length != 0;

@@ -489,6 +489,31 @@
 									</div>
 									<div style="width: 45%; float: left; padding-top: 20px;">
 										$$edit(::_("Edit")::,/subscriptions/defaultOrders/::subscription.id::)
+										<script>
+											var defOrders = ::raw json(subscription.getDefaultOrders(null))::;
+
+											var fillWithDefaultOrders = function(){
+												for( input of document.querySelectorAll("form#order input")){
+													if(input.name.substr(0,1)!="d") continue;
+													if(input.value==null || input.value==""){
+														var inputProductId = input.name.split("-")[1].substr(1);
+														for(o of defOrders){
+															if(o.productId==inputProductId){
+																input.value = o.quantity;
+																break;
+															}
+														}
+													}
+												}
+												window.alert("Votre commande par défaut a été appliquée à toutes les cases vides du formulaire de commande. N'oubliez pas de valider le formulaire.");
+
+											};
+										</script>
+										
+
+										<a href="#" class='btn btn-default btn-sm' onclick="fillWithDefaultOrders()">
+											<i class="icon icon-basket"></i> Remplir le formulaire avec<br/>ma commande par défaut</a>
+
 									</div>
 								</td>
 								<td colspan="3" style="text-align: center;" ::cond catalog.hasAbsencesManagement() && absencesNb != 0 ::>
