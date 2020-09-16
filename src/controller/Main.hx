@@ -316,11 +316,26 @@ Called from controller/Main.hx line 117
 		sys.db.admin.Admin.handler();
 	}
 
-	// @tpl("test.mtt")
-	// public function doTest(id: Int) {
-	// 	var distrib = db.MultiDistrib.manager.select($id == id);
-	// 	var d: Dynamic = distrib;
-	// 	d.slotsIsActivated = distrib.slots != null;
-	// 	view.distrib = d;
-	// }
+	
+	//CGU
+	public function doCgu() {
+		throw Redirect("https://www.cagette.net/conditions-generales-dutilisation/");
+	}
+
+	//CGV
+	public function doCgv() {
+		throw Redirect("https://www.cagette.net/conditions-generales-dutilisation/");
+	}
+
+	//CGU MGP
+	public function doMgp() {
+		throw Redirect("https://www.cagette.net/wp-content/uploads/2019/03/psp_mangopay_fr.pdf");
+	}
+
+	//charte
+	public function doCharte() {
+		throw Redirect("https://www.cagette.net/charte-producteurs/");
+	}
+
+
 }
