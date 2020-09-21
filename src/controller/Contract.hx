@@ -304,19 +304,45 @@ class Contract extends Controller
 
 			view.shortDate = function( d : Date ) {
 
+				if ( d == null ) return "Pas de date";
 				var date = Formatting.getDate( d );
 				
 				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
 
-					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ". " + date.y;
+					return date.dow + " " + date.d + " " + date.m.substr(0,3) + ". " + date.y;
 				}
 				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
 
-					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ". " + date.y;
+					return date.dow + " " + date.d + " " + date.m.substr(0,4) + ". " + date.y;
 				}
 				
-				return date.dow + "<br/>" + date.d + " " + date.m + " " + date.y;
+				return date.dow + " " + date.d + " " + date.m + " " + date.y;
 			}
+			view.closingDate  = function( d : Date ) {
+
+				if ( d == null ) return "Pas de date";
+				var date = Formatting.getDate( d );
+
+				var closingDate = '(Fermeture<br/>des commandes : <br/>';
+				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
+
+					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,3) + ".";
+				}
+				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
+
+					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,4) + ".";
+				}
+				else {
+
+					closingDate += date.dow + " " + date.d + " " + date.m;
+				}
+
+				closingDate += "<br/>à " + StringTools.lpad( Std.string( d.getHours() ), "0", 2 ) + ":" + StringTools.lpad( Std.string( d.getMinutes() ), "0", 2 );
+				closingDate += ")" ;
+
+				return closingDate;
+			}
+			
 			view.json = function(d) return haxe.Json.stringify(d);
 
 			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
