@@ -230,7 +230,7 @@
 							}
 							table.orderTable th{
 								overflow: hidden;
-								height: 100px;
+								height: 160px;
 								padding-top: 20px;
 								width: 80px;
 								white-space: nowrap;
@@ -248,9 +248,14 @@
 							}
 						
 							.hcell{
-								height: 100px;
+								height: 160px;
 								font-weight: bold;
 								width: 100%;
+							}
+
+							.closingDate{
+								font-size: 0.7rem;
+								color:#AAA;
 							}
 							
 						</style>
@@ -303,7 +308,10 @@
 												::if d.distrib==null::
 													<th>::_("Qty")::</th>
 												::else::
-													<th>::raw shortDate(d.distrib.date)::</th>
+													<th>
+														::raw shortDate(d.distrib.date)::<br/>
+														::raw closingDate(d.distrib.orderEndDate)::
+													</th>
 												::end::
 											::end::
 										</tr>
