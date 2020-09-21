@@ -308,14 +308,14 @@ class Contract extends Controller
 				
 				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
 
-					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ". " + date.y;
+					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ".<br/>" + date.y;
 				}
 				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
 
-					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ". " + date.y;
+					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ".<br/>" + date.y;
 				}
 				
-				return date.dow + "<br/>" + date.d + " " + date.m + " " + date.y;
+				return date.dow + "<br/>" + date.d + " " + date.m + "<br/>" + date.y;
 			}
 			view.json = function(d) return haxe.Json.stringify(d);
 

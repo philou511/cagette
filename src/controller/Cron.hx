@@ -87,8 +87,6 @@ class Cron extends Controller
 	 */
 	public function doHour() {
 
-		app.event(HourlyCron(this.now));
-		
 		//instructions for dutyperiod volunteers
 		var task = new TransactionWrappedTask("Volunteers instruction mail");
 		task.setTask(function() {
@@ -278,16 +276,16 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
-		var task = new TransactionWrappedTask( 'Automated orders for CSA variable contracts with compulsory ordering' );
+		var task = new TransactionWrappedTask( 'default automated orders for CSA variable contracts with compulsory ordering' );
 		task.setTask( function() {
 
 			var range = tools.DateTool.getLastHourRange( now );
 
-			var distributionsToCheckForMissingOrders : List< db.Distribution > = db.Distribution.manager.unsafeObjects(
+			var distributionsToCheckForMissingOrders = db.Distribution.manager.unsafeObjects(
 			'SELECT Distribution.* 
 			FROM Distribution INNER JOIN Catalog
 			ON Distribution.catalogId = Catalog.id
-			WHERE Catalog.requiresOrdering = true
+			WHERE Catalog.requiresOrdering = 1
 			AND Distribution.orderEndDate >= \'${range.from}\'
 			AND Distribution.orderEndDate < \'${range.to}\';', false );
 				
@@ -320,12 +318,16 @@ class Cron extends Controller
 
 									if( automatedOrders.length != 0 ) {
 
-										var message : String = 'Bonjour ' + subscription.user.firstName + ', <br /><br />
-										Une commande automatique a été créée par Cagette pour la distribution du ' +  view.hDate( distrib.date ) + '<br /><br />
-										Votre commande automatique : <br /><br />'
-										+ subscription.getDefaultOrdersToString();
+										var message = 'Bonjour ${subscription.user.firstName},<br /><br />
+										A défaut de commande de votre part, votre commande par défaut a été appliquée automatiquement 
+										à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
+										<br /><br />
+										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
+										<br/>br/>
+										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
+										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
 
-										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande Automatique', message, distrib.catalog.group );
+										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
 									}
 								
 									//Create order operation only
@@ -346,6 +348,10 @@ class Cron extends Controller
 		});
 		task.execute(!App.config.DEBUG);
 
+		/**
+			orders notif in cpro, should be sent AFTER default automated orders
+		**/
+		app.event(HourlyCron(this.now));
 		
 
 	}
