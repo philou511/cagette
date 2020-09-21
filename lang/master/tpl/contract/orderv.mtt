@@ -537,7 +537,10 @@
 			
 						
 						::if(!subscription.isValidated)::
-						$$delete(Annuler la souscription,/contract/deleteSubscription/::subscription.id::)
+							<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
+								<i class="icon icon-delete"></i>
+								&nbsp;Annuler la souscription
+							</a>
 						::end::
 			
 					::end::
