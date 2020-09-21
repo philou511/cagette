@@ -18,7 +18,7 @@
 
         $$insert( Nouvelle souscription, /contractAdmin/subscriptions/insert/::catalog.id:: )
 
-        ::if(user.isAdmin)::
+        ::if(user.isAdmin())::
         <a href="/contractAdmin/subscriptions/unvalidateAll/::catalog.id::" class="btn btn-default btn-sm">
             <i class="icon icon-square"></i> Admin : Dévalider toutes les souscriptions
         </a>
