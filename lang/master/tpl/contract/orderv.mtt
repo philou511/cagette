@@ -474,7 +474,10 @@
 									<br/>
 									::set catalogMinOrdersTotal = subscriptionService.getCatalogMinOrdersTotal(subscription._catalog,subscription)::
 									::if catalogMinOrdersTotal != null ::
-										( Reste ::catalogMinOrdersTotal - subscription.getTotalPrice()::&nbsp;::currency():: à dépenser )
+										::set remaining = catalogMinOrdersTotal - subscription.getTotalPrice()::
+										::if remaining > 0::
+											( Reste ::remaining::&nbsp;::currency():: à dépenser )
+										::end::
 									::end::
 								</td>
 							</tr>
