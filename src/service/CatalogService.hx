@@ -242,4 +242,56 @@ class CatalogService{
 
 		}
 	}
+
+	public static function updateFutureDistribsStartEndOrdersDates( catalog : db.Catalog, newOrderStartDays : Int, newOrderEndHours : Int ) : String {
+
+		if ( catalog.group.hasShopMode() ) return '';
+
+		if ( newOrderStartDays != null || newOrderEndHours != null ) {
+
+			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > Date.now(), { orderBy : date }, true );
+			for ( distrib in futureDistribs ) {
+
+				distrib.lock();
+
+				if ( newOrderStartDays != null ) {
+	
+					distrib.orderStartDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * 24 * newOrderStartDays );
+				}
+	
+				if ( newOrderEndHours != null ) {
+	
+					distrib.orderEndDate = DateTools.delta( distrib.date, -1000.0 * 60 * 60 * newOrderEndHours );
+				}
+
+				distrib.update();
+				
+			}
+
+			var message = '<br/>Attention ! ';
+			
+			if ( newOrderStartDays != null && newOrderEndHours != null ) {
+
+				message += 'Les nouveaux délais d\'ouverture et de fermeture ont été réappliqués à toutes les distributions à venir. 
+						   Si vous aviez personnalisé des dates d\'ouverture ou de fermeture celles-ci ont été écrasées.';
+			}
+			else if ( newOrderStartDays != null ) {
+
+				message += 'Le nouveau délai d\'ouverture a été réappliqué à toutes les distributions à venir. 
+						   Si vous aviez personnalisé des dates d\'ouverture celles-ci ont été écrasées.';
+			}
+			else {
+
+				message += 'Le nouveau délai de fermeture a été réappliqué à toutes les distributions à venir. 
+						   Si vous aviez personnalisé des dates de fermeture celles-ci ont été écrasées.';
+			}
+
+			return message;
+
+		}
+
+		return '';
+
+	}
+
 }

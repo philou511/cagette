@@ -189,6 +189,9 @@ class Contract extends Controller
 
 		var group = catalog.group;
 		var currentContact = catalog.contact;
+		var previousOrderStartDays = catalog.orderStartDaysBeforeDistrib;
+		var previousOrderEndHours = catalog.orderEndHoursBeforeDistrib;
+		var message : String;
 
 		var form = CatalogService.getForm(catalog);
 		
@@ -202,6 +205,11 @@ class Contract extends Controller
 
 				CatalogService.checkFormData(catalog,  form );
 				catalog.update();
+
+				//Update future distribs start and end orders dates
+				var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
+				var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
+				message = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );  
 				
 				//update rights
 				if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
@@ -225,7 +233,7 @@ class Contract extends Controller
 				throw Error( '/contract/edit/' + catalog.id, e.message );
 			}
 			 
-			throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") );
+			throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") + message );
 		}
 		 
 		view.form = form;
