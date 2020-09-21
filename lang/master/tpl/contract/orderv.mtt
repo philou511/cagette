@@ -303,7 +303,7 @@
 												::if d.distrib==null::
 													<th>::_("Qty")::</th>
 												::else::
-													<th>::shortDate(d.distrib.date)::</th>
+													<th>::raw shortDate(d.distrib.date)::</th>
 												::end::
 											::end::
 										</tr>
