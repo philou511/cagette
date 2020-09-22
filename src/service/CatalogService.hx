@@ -272,18 +272,18 @@ class CatalogService{
 			
 			if ( newOrderStartDays != null && newOrderEndHours != null ) {
 
-				message += 'Les nouveaux délais d\'ouverture et de fermeture ont été réappliqués à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates d\'ouverture ou de fermeture celles-ci ont été écrasées.';
+				message += 'Les nouveaux délais d\'ouverture et de fermeture de commande ont été appliqués à toutes les distributions à venir. 
+						   Si vous aviez personnalisé des dates d\'ouverture ou de fermeture, ces personnalisations ont été écrasées.';
 			}
 			else if ( newOrderStartDays != null ) {
 
-				message += 'Le nouveau délai d\'ouverture a été réappliqué à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates d\'ouverture celles-ci ont été écrasées.';
+				message += 'Le nouveau délai d\'ouverture de commande a été appliqué à toutes les distributions à venir. 
+						   Si vous aviez personnalisé des dates d\'ouverture, ces personnalisations ont été écrasées.';
 			}
 			else {
 
-				message += 'Le nouveau délai de fermeture a été réappliqué à toutes les distributions à venir. 
-						   Si vous aviez personnalisé des dates de fermeture celles-ci ont été écrasées.';
+				message += 'Le nouveau délai de fermeture de commande a été appliqué à toutes les distributions à venir. 
+						   Si vous aviez personnalisé des dates de fermeture, ces personnalisations ont été écrasées.';
 			}
 
 			return message;
