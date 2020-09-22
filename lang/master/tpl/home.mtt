@@ -198,7 +198,7 @@ $$browserDetection()
 				::if d.userHasOrders(user,0)::
 					
 					<div class="content myorder" style="border-top:2px solid #EEE;">
-						::_("My CSA contracts"):: :
+						Mes contrats AMAP classiques :
 					</div>
 					<div class="content orders">
 						::foreach dist d.getDistributions(0)::

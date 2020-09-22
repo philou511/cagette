@@ -43,8 +43,10 @@
       }
     },
     "documentsCard": {
-      "title": "Justificatifs",
+      "kycTitle": "Documents justificatifs",
+      "uboTitle": "Liste des actionnaires détenant plus de 25% de la société",
       "allPending": "Tous vos documents sont en attente de validation.",
+      "createUboDeclaration": "Créer un déclaration",
       "form": {
         "IDENTITY_PROOF": "Carte d'identité ou passeport",
         "ARTICLES_OF_ASSOCIATION": "Statuts signés",
@@ -79,7 +81,30 @@
 
         "ubo": "Bénéficiaire effectif",
         "addFileBtn": "Ajouter un fichier",
-        "tooLargeFile": "Fichier trop volumineux. La taille du fichier ne doit pas dépasser 7 Mo."
+        "tooLargeFileAlert": {
+          "title": "Fichier trop volumineux",
+          "content": "La taille du fichier ne doit pas dépasser 7 Mo.",
+          "btn": "Continuer"
+        },
+        "addFilesLabel": "Ajouter un ou plusieurs documents"
+      }
+    },
+    "bankAccountCard": {
+      "title": "Comptes bancaires",
+      "bankAccount": "Compte bancaire",
+      "form": {
+        "Type": "Type",
+        "IBAN": "IBAN",
+        "GB": "GB",
+        "US": "US",
+        "CA": "CA",
+        "OTHER": "OTHER",
+        "BIC": "BIC",
+        "OwnerName": "Nom du propriétaire"
+      },
+      "deleteDialog": {
+        "title": "Suppression du compte bancaire",
+        "message": "Cette action est irreversible."
       }
     }
   },

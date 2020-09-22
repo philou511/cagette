@@ -189,6 +189,9 @@ class Contract extends Controller
 
 		var group = catalog.group;
 		var currentContact = catalog.contact;
+		var previousOrderStartDays = catalog.orderStartDaysBeforeDistrib;
+		var previousOrderEndHours = catalog.orderEndHoursBeforeDistrib;
+		var message : String;
 
 		var form = CatalogService.getForm(catalog);
 		
@@ -200,34 +203,37 @@ class Contract extends Controller
 		
 			try {
 
-			CatalogService.checkFormData(catalog,  form );
-		
-			catalog.update();
-			
-			//update rights
-			if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
-				var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
-				ua.giveRight(ContractAdmin(catalog.id));
-				ua.giveRight(Messages);
-				ua.giveRight(Membership);
-				ua.update();
+				CatalogService.checkFormData(catalog,  form );
+				catalog.update();
+
+				//Update future distribs start and end orders dates
+				var newOrderStartDays = catalog.orderStartDaysBeforeDistrib != previousOrderStartDays ? catalog.orderStartDaysBeforeDistrib : null;
+				var newOrderEndHours = catalog.orderEndHoursBeforeDistrib != previousOrderEndHours ? catalog.orderEndHoursBeforeDistrib : null;
+				message = CatalogService.updateFutureDistribsStartEndOrdersDates( catalog, newOrderStartDays, newOrderEndHours );  
 				
-				//remove rights to old contact
-				if (currentContact != null) {
-					var x = db.UserGroup.get(currentContact, catalog.group, true);
-					if (x != null) {
-						x.removeRight(ContractAdmin(catalog.id));
-						x.update();
+				//update rights
+				if ( catalog.contact != null && (currentContact==null || catalog.contact.id!=currentContact.id) ) {
+					var ua = db.UserGroup.get( catalog.contact, catalog.group, true );
+					ua.giveRight(ContractAdmin(catalog.id));
+					ua.giveRight(Messages);
+					ua.giveRight(Membership);
+					ua.update();
+					
+					//remove rights to old contact
+					if (currentContact != null) {
+						var x = db.UserGroup.get(currentContact, catalog.group, true);
+						if (x != null) {
+							x.removeRight(ContractAdmin(catalog.id));
+							x.update();
+						}
 					}
 				}
-				
-			}
 
 			} catch ( e : Error ) {
 				throw Error( '/contract/edit/' + catalog.id, e.message );
 			}
 			 
-			throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") );
+			throw Ok( "/contractAdmin/view/" + catalog.id, t._("Catalog updated") + message );
 		}
 		 
 		view.form = form;
@@ -291,11 +297,8 @@ class Contract extends Controller
 		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 
 		if( catalog.isCSACatalog() ) {
-
 			app.setTemplate( 'contract/orderc.mtt' );
-		}
-		else {
-
+		} else {
 			app.setTemplate( 'contract/orderv.mtt' );
 		}
 
@@ -306,6 +309,49 @@ class Contract extends Controller
 		var hasComingOpenDistrib = false;
 
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+
+			view.shortDate = function( d : Date ) {
+
+				if ( d == null ) return "Pas de date";
+				var date = Formatting.getDate( d );
+				
+				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
+
+					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ".<br/>" + date.y;
+				}
+				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
+
+					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ".<br/>" + date.y;
+				}
+				
+				return date.dow + "<br/>" + date.d + " " + date.m + "<br/>" + date.y;
+			}
+			view.closingDate  = function( d : Date ) {
+
+				if ( d == null ) return "Pas de date";
+				var date = Formatting.getDate( d );
+
+				var closingDate = '<div class="closingDate">Fermeture<br/>des commandes : <br/>';
+				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
+
+					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,3) + ".";
+				}
+				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
+
+					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,4) + ".";
+				}
+				else {
+
+					closingDate += date.dow + " " + date.d + " " + date.m;
+				}
+
+				closingDate += "<br/>à " + StringTools.lpad( Std.string( d.getHours() ), "0", 2 ) + ":" + StringTools.lpad( Std.string( d.getMinutes() ), "0", 2 );
+				closingDate += "</div>" ;
+
+				return closingDate;
+			}
+			
+			view.json = function(d) return haxe.Json.stringify(d);
 
 			var openDistributions : Array<db.Distribution> = SubscriptionService.getOpenDistribsForSubscription( app.user, catalog, currentOrComingSubscription );
 			hasComingOpenDistrib = openDistributions.length != 0;

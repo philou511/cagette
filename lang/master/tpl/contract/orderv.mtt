@@ -230,9 +230,10 @@
 							}
 							table.orderTable th{
 								overflow: hidden;
-								height: 100px;
+								height: 160px;
 								padding-top: 20px;
 								width: 80px;
+								white-space: nowrap;
 							}
 						
 							.sized{
@@ -247,9 +248,14 @@
 							}
 						
 							.hcell{
-								height: 100px;
+								height: 160px;
 								font-weight: bold;
 								width: 100%;
+							}
+
+							.closingDate{
+								font-size: 0.7rem;
+								color:#AAA;
 							}
 							
 						</style>
@@ -302,7 +308,10 @@
 												::if d.distrib==null::
 													<th>::_("Qty")::</th>
 												::else::
-													<th>::dDate(d.distrib.date)::</th>
+													<th>
+														::raw shortDate(d.distrib.date)::<br/>
+														::raw closingDate(d.distrib.orderEndDate)::
+													</th>
 												::end::
 											::end::
 										</tr>
@@ -473,7 +482,10 @@
 									<br/>
 									::set catalogMinOrdersTotal = subscriptionService.getCatalogMinOrdersTotal(subscription._catalog,subscription)::
 									::if catalogMinOrdersTotal != null ::
-										( Reste ::catalogMinOrdersTotal - subscription.getTotalPrice()::&nbsp;::currency():: à dépenser )
+										::set remaining = catalogMinOrdersTotal - subscription.getTotalPrice()::
+										::if remaining > 0::
+											( Reste ::remaining::&nbsp;::currency():: à dépenser )
+										::end::
 									::end::
 								</td>
 							</tr>
@@ -488,6 +500,31 @@
 									</div>
 									<div style="width: 45%; float: left; padding-top: 20px;">
 										$$edit(::_("Edit")::,/subscriptions/defaultOrders/::subscription.id::)
+										<script>
+											var defOrders = ::raw json(subscription.getDefaultOrders(null))::;
+
+											var fillWithDefaultOrders = function(){
+												for( input of document.querySelectorAll("form#order input")){
+													if(input.name.substr(0,1)!="d") continue;
+													if(input.value==null || input.value==""){
+														var inputProductId = input.name.split("-")[1].substr(1);
+														for(o of defOrders){
+															if(o.productId==inputProductId){
+																input.value = o.quantity;
+																break;
+															}
+														}
+													}
+												}
+												window.alert("Votre commande par défaut a été appliquée à toutes les cases vides du formulaire de commande. N'oubliez pas de valider le formulaire.");
+
+											};
+										</script>
+										
+
+										<a href="#" class='btn btn-default btn-sm' onclick="fillWithDefaultOrders()">
+											<i class="icon icon-basket"></i> Remplir le formulaire avec<br/>ma commande par défaut</a>
+
 									</div>
 								</td>
 								<td colspan="3" style="text-align: center;" ::cond catalog.hasAbsencesManagement() && absencesNb != 0 ::>
@@ -511,7 +548,10 @@
 			
 						
 						::if(!subscription.isValidated)::
-						$$delete(Annuler la souscription,/contract/deleteSubscription/::subscription.id::)
+							<a href="/contract/deleteSubscription/::subscription.id::" class="btn btn-danger btn-sm" onclick="return confirm('Effacer ?')">
+								<i class="icon icon-delete"></i>
+								&nbsp;Annuler la souscription
+							</a>
 						::end::
 			
 					::end::

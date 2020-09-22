@@ -24,10 +24,17 @@ export declare type CreateMangopayBirthplace = {
     City: Scalars['String'];
     Country: Scalars['String'];
 };
-export declare type CreateMangopayKycDocumentInput = {
+export declare type CreateMangopayIbanBankAccountInput = {
     groupId: Scalars['Int'];
-    Type: MangopayKycDocumentType;
-    files: Array<Scalars['Upload']>;
+    Type: MangopayBankAccountType;
+    OwnerAddress: CreateMangopayAddress;
+    OwnerName: Scalars['String'];
+    IBAN?: Maybe<Scalars['String']>;
+    BIC?: Maybe<Scalars['String']>;
+};
+export declare type CreateMangopayKycDocumentsInput = {
+    groupId: Scalars['Int'];
+    documents: Array<MangopayKycDocumentFilesTypeInput>;
 };
 export declare type CreateMangopayLegalUserInput = {
     groupId: Scalars['Int'];
@@ -67,6 +74,10 @@ export declare type CreateOrUpdateMangopayUboInput = {
     Birthday: Scalars['Date'];
     Birthplace: CreateMangopayBirthplace;
 };
+export declare type DeactivateMangopayBankAccountInput = {
+    groupId: Scalars['Int'];
+    bankAccountId: Scalars['String'];
+};
 export declare type GetMangopayLegalUserByLegalRepr = {
     legalReprId: Scalars['Int'];
     groupId: Scalars['Int'];
@@ -93,6 +104,13 @@ export declare type LoginInput = {
     email: Scalars['String'];
     password: Scalars['String'];
 };
+export declare type MangopayAbstractBankAccount = {
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+};
 export declare type MangopayAddress = {
     __typename?: 'MangopayAddress';
     AddressLine1?: Maybe<Scalars['String']>;
@@ -102,15 +120,55 @@ export declare type MangopayAddress = {
     PostalCode?: Maybe<Scalars['String']>;
     Country?: Maybe<Scalars['String']>;
 };
+export declare type MangopayBankAccount = MangopayIbanBankAccount | MangopayUsBankAccount | MangopayCaBankAccount | MangopayGbBankAccount | MangopayOtherBankAccount;
+export declare enum MangopayBankAccountType {
+    IBAN = "IBAN",
+    GB = "GB",
+    US = "US",
+    CA = "CA",
+    OTHER = "OTHER"
+}
 export declare type MangopayBirthplace = {
     __typename?: 'MangopayBirthplace';
     City: Scalars['String'];
     Country: Scalars['String'];
 };
+export declare type MangopayCaBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayCaBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    InstitutionNumber: Scalars['String'];
+    AccountNumber: Scalars['String'];
+    BranchCode: Scalars['String'];
+    BankName: Scalars['String'];
+};
+export declare type MangopayGbBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayGbBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    SortCode: Scalars['String'];
+    AccountNumber: Scalars['String'];
+};
 export declare type MangopayGroup = {
     __typename?: 'MangopayGroup';
     legalUser?: Maybe<MangopayLegalUser>;
     walletId?: Maybe<Scalars['Int']>;
+};
+export declare type MangopayIbanBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayIbanBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    IBAN: Scalars['String'];
+    BIC?: Maybe<Scalars['String']>;
 };
 export declare type MangopayKycDocument = {
     __typename?: 'MangopayKycDocument';
@@ -120,6 +178,10 @@ export declare type MangopayKycDocument = {
     ProcessedDate?: Maybe<Scalars['Date']>;
     RefusedReasonType?: Maybe<MangopayKycDocumentRefusedReasonType>;
     RefusedReasonMessage?: Maybe<Scalars['String']>;
+};
+export declare type MangopayKycDocumentFilesTypeInput = {
+    Type: MangopayKycDocumentType;
+    files: Array<Scalars['Upload']>;
 };
 export declare enum MangopayKycDocumentRefusedReasonType {
     DOCUMENT_UNREADABLE = "DOCUMENT_UNREADABLE",
@@ -161,6 +223,7 @@ export declare type MangopayLegalUser = {
     fixedFeeAmount?: Maybe<Scalars['Float']>;
     variableFeeRate?: Maybe<Scalars['Float']>;
     legalRepr?: Maybe<User>;
+    bankAccountId?: Maybe<Scalars['Int']>;
     Name: Scalars['String'];
     LegalPersonType: MangopayLegalPersonType;
     LegalRepresentativeFirstName: Scalars['String'];
@@ -176,6 +239,18 @@ export declare type MangopayLegalUser = {
     LegalRepresentativeAddress: MangopayAddress;
     KycDocuments?: Maybe<Array<MangopayKycDocument>>;
     UboDeclarations?: Maybe<Array<MangopayUboDeclaration>>;
+    BankAccounts?: Maybe<Array<MangopayBankAccount>>;
+};
+export declare type MangopayOtherBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayOtherBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    Country: Scalars['String'];
+    BIC: Scalars['String'];
+    AccountNumber: Scalars['String'];
 };
 export declare type MangopayUbo = {
     __typename?: 'MangopayUbo';
@@ -215,6 +290,21 @@ export declare enum MangopayUboReasonType {
     DECLARATION_DO_NOT_MATCH_UBO_INFORMATION = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION",
     SPECIFIC_CASE = "SPECIFIC_CASE"
 }
+export declare type MangopayUsBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayUsBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    AccountNumber: Scalars['String'];
+    ABA: Scalars['String'];
+    DepositAccountType?: Maybe<MangopayUsBankAccountDepositAccountType>;
+};
+export declare enum MangopayUsBankAccountDepositAccountType {
+    CHECKING = "CHECKING",
+    SAVINGS = "SAVINGS"
+}
 export declare type Membership = {
     __typename?: 'Membership';
     user?: Maybe<User>;
@@ -229,10 +319,13 @@ export declare type Mutation = {
     updateUser: User;
     createMangopayLegalUser: MangopayLegalUser;
     updateMangopayLegalUser: MangopayLegalUser;
-    createMangopayKycDocument: MangopayKycDocument;
+    createMangopayKycDocuments: Array<MangopayKycDocument>;
     createMangopayUboDeclaration: MangopayUboDeclaration;
     submitMangopayUboDeclaration: MangopayUboDeclaration;
     createOrUpdateMangopayUbo: MangopayUbo;
+    createMangopayIbanBankAccount: MangopayBankAccount;
+    deactivateMangopayBankAccount: Scalars['Int'];
+    selectMangopayBankAccountId: MangopayLegalUser;
     linkMangopayLegalUserToGroup: MangopayLegalUser;
     login: UserAndToken;
     createMembership: Membership;
@@ -247,8 +340,8 @@ export declare type MutationCreateMangopayLegalUserArgs = {
 export declare type MutationUpdateMangopayLegalUserArgs = {
     input: UpdateMangopayLegalUserInput;
 };
-export declare type MutationCreateMangopayKycDocumentArgs = {
-    input: CreateMangopayKycDocumentInput;
+export declare type MutationCreateMangopayKycDocumentsArgs = {
+    input: CreateMangopayKycDocumentsInput;
 };
 export declare type MutationCreateMangopayUboDeclarationArgs = {
     input: CreateMangopayUboDeclarationInput;
@@ -258,6 +351,15 @@ export declare type MutationSubmitMangopayUboDeclarationArgs = {
 };
 export declare type MutationCreateOrUpdateMangopayUboArgs = {
     input: CreateOrUpdateMangopayUboInput;
+};
+export declare type MutationCreateMangopayIbanBankAccountArgs = {
+    input: CreateMangopayIbanBankAccountInput;
+};
+export declare type MutationDeactivateMangopayBankAccountArgs = {
+    input: DeactivateMangopayBankAccountInput;
+};
+export declare type MutationSelectMangopayBankAccountIdArgs = {
+    input: SelectMangopayLegalUserBankAccount;
 };
 export declare type MutationLinkMangopayLegalUserToGroupArgs = {
     input: LinkMangopayLegalUserToGroupInput;
@@ -307,6 +409,10 @@ export declare type QueryGroupPreviewArgs = {
 export declare type QueryGetUserMembershipsArgs = {
     userId: Scalars['Int'];
     groupId: Scalars['Int'];
+};
+export declare type SelectMangopayLegalUserBankAccount = {
+    groupId: Scalars['Int'];
+    bankAccountId?: Maybe<Scalars['Int']>;
 };
 export declare type SubmitMangopayUboDeclarationInput = {
     groupId: Scalars['Int'];
@@ -415,7 +521,7 @@ export declare type MangopayKycDocumentFragment = ({
 } & Pick<MangopayKycDocument, 'Id' | 'Type' | 'ProcessedDate' | 'Status' | 'RefusedReasonType' | 'RefusedReasonMessage'>);
 export declare type MangopayUboFragment = ({
     __typename?: 'MangopayUbo';
-} & Pick<MangopayUbo, 'Id' | 'CreationDate' | 'FirstName' | 'LastName' | 'Birthday'> & {
+} & Pick<MangopayUbo, 'Id' | 'CreationDate' | 'FirstName' | 'LastName' | 'Nationality' | 'Birthday'> & {
     Address: ({
         __typename?: 'MangopayAddress';
     } & MangopayAddressFragment);
@@ -430,9 +536,16 @@ export declare type MangopayUboDeclarationFragment = ({
         __typename?: 'MangopayUbo';
     } & MangopayUboFragment)>;
 });
+export declare type MangopayIbanBankAccountFragment = ({
+    __typename?: 'MangopayIbanBankAccount';
+} & Pick<MangopayIbanBankAccount, 'Id' | 'Type' | 'OwnerName' | 'Active' | 'IBAN' | 'BIC'> & {
+    OwnerAddress: ({
+        __typename?: 'MangopayAddress';
+    } & MangopayAddressFragment);
+});
 export declare type MangopayLegalUserFragment = ({
     __typename?: 'MangopayLegalUser';
-} & Pick<MangopayLegalUser, 'KYCLevel' | 'Name' | 'CompanyNumber' | 'Email' | 'LegalPersonType' | 'LegalRepresentativeFirstName' | 'LegalRepresentativeLastName' | 'LegalRepresentativeEmail' | 'LegalRepresentativeBirthday' | 'LegalRepresentativeNationality' | 'LegalRepresentativeCountryOfResidence'> & {
+} & Pick<MangopayLegalUser, 'bankAccountId' | 'KYCLevel' | 'Name' | 'CompanyNumber' | 'Email' | 'LegalPersonType' | 'LegalRepresentativeFirstName' | 'LegalRepresentativeLastName' | 'LegalRepresentativeEmail' | 'LegalRepresentativeBirthday' | 'LegalRepresentativeNationality' | 'LegalRepresentativeCountryOfResidence'> & {
     HeadquartersAddress?: Maybe<({
         __typename?: 'MangopayAddress';
     } & MangopayAddressFragment)>;
@@ -445,6 +558,17 @@ export declare type MangopayLegalUserFragment = ({
     UboDeclarations?: Maybe<Array<({
         __typename?: 'MangopayUboDeclaration';
     } & MangopayUboDeclarationFragment)>>;
+    BankAccounts?: Maybe<Array<({
+        __typename?: 'MangopayIbanBankAccount';
+    } & MangopayIbanBankAccountFragment) | {
+        __typename?: 'MangopayUsBankAccount';
+    } | {
+        __typename?: 'MangopayCaBankAccount';
+    } | {
+        __typename?: 'MangopayGbBankAccount';
+    } | {
+        __typename?: 'MangopayOtherBankAccount';
+    }>>;
     legalRepr?: Maybe<({
         __typename?: 'User';
     } & Pick<User, 'id' | 'firstName' | 'lastName' | 'email' | 'address1' | 'address2' | 'zipCode' | 'city' | 'nationality' | 'countryOfResidence' | 'birthDate'>)>;
@@ -528,15 +652,15 @@ export declare type LinkMangopayLegalUserToGroupMutation = ({
         __typename?: 'MangopayLegalUser';
     } & MangopayLegalUserFragment);
 });
-export declare type CreateMangopayKycDocumentMutationVariables = {
-    input: CreateMangopayKycDocumentInput;
+export declare type CreateMangopayKycDocumentsMutationVariables = {
+    input: CreateMangopayKycDocumentsInput;
 };
-export declare type CreateMangopayKycDocumentMutation = ({
+export declare type CreateMangopayKycDocumentsMutation = ({
     __typename?: 'Mutation';
 } & {
-    createMangopayKycDocument: ({
+    createMangopayKycDocuments: Array<({
         __typename?: 'MangopayKycDocument';
-    } & MangopayKycDocumentFragment);
+    } & MangopayKycDocumentFragment)>;
 });
 export declare type CreateMangopayUboDeclarationMutationVariables = {
     input: CreateMangopayUboDeclarationInput;
@@ -568,12 +692,47 @@ export declare type CreateOrUpdateMangopayUboMutation = ({
         __typename?: 'MangopayUbo';
     } & MangopayUboFragment);
 });
+export declare type CreateMangopayIbanBankAccountMutationVariables = {
+    input: CreateMangopayIbanBankAccountInput;
+};
+export declare type CreateMangopayIbanBankAccountMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createMangopayIbanBankAccount: ({
+        __typename?: 'MangopayIbanBankAccount';
+    } & MangopayIbanBankAccountFragment) | {
+        __typename?: 'MangopayUsBankAccount';
+    } | {
+        __typename?: 'MangopayCaBankAccount';
+    } | {
+        __typename?: 'MangopayGbBankAccount';
+    } | {
+        __typename?: 'MangopayOtherBankAccount';
+    };
+});
+export declare type DeactivateMangopayBankAccountMutationVariables = {
+    input: DeactivateMangopayBankAccountInput;
+};
+export declare type DeactivateMangopayBankAccountMutation = ({
+    __typename?: 'Mutation';
+} & Pick<Mutation, 'deactivateMangopayBankAccount'>);
+export declare type SelectMangopayBankAccountIdMutationVariables = {
+    input: SelectMangopayLegalUserBankAccount;
+};
+export declare type SelectMangopayBankAccountIdMutation = ({
+    __typename?: 'Mutation';
+} & {
+    selectMangopayBankAccountId: ({
+        __typename?: 'MangopayLegalUser';
+    } & Pick<MangopayLegalUser, 'mangopayUserId' | 'bankAccountId'>);
+});
 export declare const UserFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayAddressFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayKycDocumentFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayBirthplaceFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayUboFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayUboDeclarationFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayIbanBankAccountFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayLegalUserFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const LoginDocument: ApolloReactHooks.DocumentNode;
 export declare type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>;
@@ -799,29 +958,29 @@ export declare function useLinkMangopayLegalUserToGroupMutation(baseOptions?: Ap
 export declare type LinkMangopayLegalUserToGroupMutationHookResult = ReturnType<typeof useLinkMangopayLegalUserToGroupMutation>;
 export declare type LinkMangopayLegalUserToGroupMutationResult = ApolloReactCommon.MutationResult<LinkMangopayLegalUserToGroupMutation>;
 export declare type LinkMangopayLegalUserToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<LinkMangopayLegalUserToGroupMutation, LinkMangopayLegalUserToGroupMutationVariables>;
-export declare const CreateMangopayKycDocumentDocument: ApolloReactHooks.DocumentNode;
-export declare type CreateMangopayKycDocumentMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
+export declare const CreateMangopayKycDocumentsDocument: ApolloReactHooks.DocumentNode;
+export declare type CreateMangopayKycDocumentsMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>;
 /**
- * __useCreateMangopayKycDocumentMutation__
+ * __useCreateMangopayKycDocumentsMutation__
  *
- * To run a mutation, you first call `useCreateMangopayKycDocumentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayKycDocumentMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateMangopayKycDocumentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayKycDocumentsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createMangopayKycDocumentMutation, { data, loading, error }] = useCreateMangopayKycDocumentMutation({
+ * const [createMangopayKycDocumentsMutation, { data, loading, error }] = useCreateMangopayKycDocumentsMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export declare function useCreateMangopayKycDocumentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>): ApolloReactHooks.MutationTuple<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
-export declare type CreateMangopayKycDocumentMutationHookResult = ReturnType<typeof useCreateMangopayKycDocumentMutation>;
-export declare type CreateMangopayKycDocumentMutationResult = ApolloReactCommon.MutationResult<CreateMangopayKycDocumentMutation>;
-export declare type CreateMangopayKycDocumentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
+export declare function useCreateMangopayKycDocumentsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>): ApolloReactHooks.MutationTuple<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>;
+export declare type CreateMangopayKycDocumentsMutationHookResult = ReturnType<typeof useCreateMangopayKycDocumentsMutation>;
+export declare type CreateMangopayKycDocumentsMutationResult = ApolloReactCommon.MutationResult<CreateMangopayKycDocumentsMutation>;
+export declare type CreateMangopayKycDocumentsMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>;
 export declare const CreateMangopayUboDeclarationDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateMangopayUboDeclarationMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayUboDeclarationMutation, CreateMangopayUboDeclarationMutationVariables>;
 /**
@@ -891,3 +1050,72 @@ export declare function useCreateOrUpdateMangopayUboMutation(baseOptions?: Apoll
 export declare type CreateOrUpdateMangopayUboMutationHookResult = ReturnType<typeof useCreateOrUpdateMangopayUboMutation>;
 export declare type CreateOrUpdateMangopayUboMutationResult = ApolloReactCommon.MutationResult<CreateOrUpdateMangopayUboMutation>;
 export declare type CreateOrUpdateMangopayUboMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateOrUpdateMangopayUboMutation, CreateOrUpdateMangopayUboMutationVariables>;
+export declare const CreateMangopayIbanBankAccountDocument: ApolloReactHooks.DocumentNode;
+export declare type CreateMangopayIbanBankAccountMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>;
+/**
+ * __useCreateMangopayIbanBankAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayIbanBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayIbanBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayIbanBankAccountMutation, { data, loading, error }] = useCreateMangopayIbanBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useCreateMangopayIbanBankAccountMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>): ApolloReactHooks.MutationTuple<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>;
+export declare type CreateMangopayIbanBankAccountMutationHookResult = ReturnType<typeof useCreateMangopayIbanBankAccountMutation>;
+export declare type CreateMangopayIbanBankAccountMutationResult = ApolloReactCommon.MutationResult<CreateMangopayIbanBankAccountMutation>;
+export declare type CreateMangopayIbanBankAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>;
+export declare const DeactivateMangopayBankAccountDocument: ApolloReactHooks.DocumentNode;
+export declare type DeactivateMangopayBankAccountMutationFn = ApolloReactCommon.MutationFunction<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>;
+/**
+ * __useDeactivateMangopayBankAccountMutation__
+ *
+ * To run a mutation, you first call `useDeactivateMangopayBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeactivateMangopayBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deactivateMangopayBankAccountMutation, { data, loading, error }] = useDeactivateMangopayBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useDeactivateMangopayBankAccountMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>): ApolloReactHooks.MutationTuple<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>;
+export declare type DeactivateMangopayBankAccountMutationHookResult = ReturnType<typeof useDeactivateMangopayBankAccountMutation>;
+export declare type DeactivateMangopayBankAccountMutationResult = ApolloReactCommon.MutationResult<DeactivateMangopayBankAccountMutation>;
+export declare type DeactivateMangopayBankAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>;
+export declare const SelectMangopayBankAccountIdDocument: ApolloReactHooks.DocumentNode;
+export declare type SelectMangopayBankAccountIdMutationFn = ApolloReactCommon.MutationFunction<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;
+/**
+ * __useSelectMangopayBankAccountIdMutation__
+ *
+ * To run a mutation, you first call `useSelectMangopayBankAccountIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelectMangopayBankAccountIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selectMangopayBankAccountIdMutation, { data, loading, error }] = useSelectMangopayBankAccountIdMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useSelectMangopayBankAccountIdMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>): ApolloReactHooks.MutationTuple<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;
+export declare type SelectMangopayBankAccountIdMutationHookResult = ReturnType<typeof useSelectMangopayBankAccountIdMutation>;
+export declare type SelectMangopayBankAccountIdMutationResult = ApolloReactCommon.MutationResult<SelectMangopayBankAccountIdMutation>;
+export declare type SelectMangopayBankAccountIdMutationOptions = ApolloReactCommon.BaseMutationOptions<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;

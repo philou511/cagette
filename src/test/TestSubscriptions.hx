@@ -84,7 +84,7 @@ class TestSubscriptions extends utest.Test
 		//-----------------------------------------------
 		try {
 			
-			subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null );
 			subscription.isValidated = true;
 			subscription.update();
 			SubscriptionService.deleteSubscription( subscription );
@@ -96,7 +96,7 @@ class TestSubscriptions extends utest.Test
 		Assert.equals( error.data, PastOrders );
 		Assert.isTrue( subscription != null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 1 );
-		Assert.equals( SubscriptionService.getSubscriptionOrders( subscription ).length, 1 );
+		Assert.equals( SubscriptionService.getSubscriptionAllOrders( subscription ).length, 1 );
 
 		//No error for a pending subscription
 		//------------------------------------
@@ -113,7 +113,7 @@ class TestSubscriptions extends utest.Test
 		}
 		Assert.equals( error, null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 0 );
-		Assert.equals( SubscriptionService.getSubscriptionOrders( subscription ).length, 0 );
+		Assert.equals( SubscriptionService.getSubscriptionAllOrders( subscription ).length, 0 );
 
 
 		//---------------------------------------
@@ -123,7 +123,7 @@ class TestSubscriptions extends utest.Test
 		subscription = null;
 		try {
 			
-			subscription = SubscriptionService.createSubscription( bob, catalog, Date.now(), catalog.endDate, ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, Date.now(), catalog.endDate );
 			SubscriptionService.deleteSubscription( subscription );
 		}
 	    catch( e : tink.core.Error ) {
@@ -132,7 +132,7 @@ class TestSubscriptions extends utest.Test
 		}
 		Assert.equals( error, null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 0 );
-		Assert.equals( SubscriptionService.getSubscriptionOrders( subscription ).length, 0 );
+		Assert.equals( SubscriptionService.getSubscriptionAllOrders( subscription ).length, 0 );
 
 
 	}
@@ -149,7 +149,7 @@ class TestSubscriptions extends utest.Test
 		//Test case : Start and end dates are null
 		//----------------------------------------
 		try {
-			subscription = SubscriptionService.createSubscription( bob, catalog, null, null, ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -163,7 +163,7 @@ class TestSubscriptions extends utest.Test
 		error = null;
 		subscription = null;
 		try {
-			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2000, 5, 1, 19, 0, 0), catalog.endDate, ordersData  );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2000, 5, 1, 19, 0, 0), catalog.endDate  );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -177,7 +177,7 @@ class TestSubscriptions extends utest.Test
 		error = null;
 		subscription = null;
 		try {
-			subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, new Date(2036, 5, 1, 19, 0, 0), ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, catalog.startDate, new Date(2036, 5, 1, 19, 0, 0) );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -192,7 +192,7 @@ class TestSubscriptions extends utest.Test
 		subscription = null;
 		ordersData = [ { productId : panierAmap.id, quantity : 1, invertSharedOrder : false, userId2 : 999999 } ];
 		try {
-			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate, ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -207,7 +207,7 @@ class TestSubscriptions extends utest.Test
 		subscription = null;
 		ordersData = [ { productId : panierAmap.id, quantity : 1, invertSharedOrder : false, userId2 : bob.id } ];
 		try {			
-			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate, ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -221,7 +221,7 @@ class TestSubscriptions extends utest.Test
 		error = null;
 		subscription = null;
 		try {			
-			subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, catalog.endDate, ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -239,7 +239,7 @@ class TestSubscriptions extends utest.Test
 		ordersData.push( {  productId : panierAmap.id, quantity : 2, invertSharedOrder : false, userId2 : null } );
 		try {
 
-			subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate, ordersData );
+			subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate );
 		}
 		catch( e : tink.core.Error ) {
 
@@ -249,7 +249,7 @@ class TestSubscriptions extends utest.Test
 		Assert.isTrue( subscription != null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 1 );
 
-		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
+		var subscriptionDistributions = SubscriptionService.getSubscriptionDistribs( subscription );
 		Assert.equals( 2 , subscriptionDistributions.length , "should have 2 distribs in the subscription");
 
 		var subscriptionAllOrders = SubscriptionService.getSubscriptionAllOrders( subscription );
@@ -275,7 +275,7 @@ class TestSubscriptions extends utest.Test
 			Assert.equals( otherOrder2.quantity, 2 );
 		}
 
-		var subscriptionOrders = SubscriptionService.getSubscriptionOrders( subscription );
+		var subscriptionOrders = SubscriptionService.getSubscriptionAllOrders( subscription );
 
 		Assert.equals( subscriptionOrders.length, 2 );
 		var order1 = Lambda.array( subscriptionOrders )[0];
@@ -313,8 +313,8 @@ class TestSubscriptions extends utest.Test
 		//Test case : Moving the subscription start date to an earlier date when there are already past distributions
 		//-----------------------------------------------------------------------------------------------------------
 		Assert.equals( 0, db.Subscription.manager.count( $user == bob ) );
-		var subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 0, 0, 0), catalog.endDate, ordersData, true );
-		Assert.equals( 2, SubscriptionService.getSubscriptionDistributions(subscription).length );
+		var subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2019, 5, 1, 0, 0, 0), catalog.endDate );
+		Assert.equals( 2, SubscriptionService.getSubscriptionDistribs(subscription).length );
 		Assert.isTrue(subscription.isValidated);
 		var error = null;
 		try {
@@ -330,7 +330,7 @@ class TestSubscriptions extends utest.Test
 		//--------------------------------------------------------------------------------------------------
 		
 		//trick to create a valid subscription that has been created in the past.
-		var subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+		var subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null );
 		subscription.isValidated = true;
 		subscription.update();
 
@@ -352,7 +352,7 @@ class TestSubscriptions extends utest.Test
 		//--------------------------------------------------------------------------------------------------
 		
 		//trick to create a valid subscription that has been created in the past.
-		var subscription = SubscriptionService.createSubscription( bob, catalog, catalog.startDate, catalog.endDate, ordersData, false );
+		var subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null );
 		subscription.isValidated = true;
 		subscription.update();
 
@@ -364,7 +364,7 @@ class TestSubscriptions extends utest.Test
 		}
 		Assert.equals( error, null );
 		Assert.equals( 2 , service.SubscriptionService.getSubscriptionDistribsNb( subscription ));
-		var subscriptionDistributions = SubscriptionService.getSubscriptionDistributions( subscription );
+		var subscriptionDistributions = SubscriptionService.getSubscriptionDistribs( subscription );
 		var subscriptionAllOrders = SubscriptionService.getSubscriptionAllOrders( subscription );
 		Assert.equals( subscriptionAllOrders.length, 2 * subscriptionDistributions.length );
 
@@ -379,7 +379,7 @@ class TestSubscriptions extends utest.Test
 			{ productId : panierAmap.id, quantity : 2.0, invertSharedOrder : false, userId2 : null }
 		];
 
-		var subscription = SubscriptionService.createSubscription( bob, catalog, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate, ordersData );
+		var subscription = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2019, 5, 1, 19, 0, 0), catalog.endDate );
 
 		Assert.isTrue( subscription != null );
 		Assert.equals( db.Subscription.manager.count( $user == bob ), 1 );
@@ -394,7 +394,7 @@ class TestSubscriptions extends utest.Test
 		var error = null;
 		try {
 
-			subscription2 = SubscriptionService.createSubscription( bob, catalog, new Date(2025, 4, 1, 19, 0, 0), catalog.endDate, ordersData );
+			subscription2 = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2025, 4, 1, 19, 0, 0), catalog.endDate );
 		}
 		catch( e : tink.core.Error ) {
 
@@ -409,7 +409,7 @@ class TestSubscriptions extends utest.Test
 		//------------------------------------------------------------------------------------------------------
 		error = null;
 		try {
-			subscription2 = SubscriptionService.createSubscription( bob, catalog, new Date(2025, 5, 2, 19, 0, 0), catalog.endDate, ordersData );
+			subscription2 = SubscriptionService.createSubscription( bob, catalog, ordersData, null, new Date(2025, 5, 2, 19, 0, 0), catalog.endDate );
 		} catch( e : tink.core.Error ) {
 			error = e;
 		}
@@ -458,14 +458,14 @@ class TestSubscriptions extends utest.Test
 		
 		//create subscription for 2 users for this cycle
 		var orders = [{productId:panier.id,quantity: 1.0,userId2:null,invertSharedOrder: null}];
-		var francoisSub = SubscriptionService.createSubscription(TestSuite.FRANCOIS,contract,weeklyDistribCycle.startDate,weeklyDistribCycle.endDate,orders,false);
-		var sebSub = SubscriptionService.createSubscription(TestSuite.SEB,contract,weeklyDistribCycle.startDate,weeklyDistribCycle.endDate,orders,false);
+		var francoisSub = SubscriptionService.createSubscription(TestSuite.FRANCOIS,contract, orders, null );
+		var sebSub = SubscriptionService.createSubscription(TestSuite.SEB,contract, orders, null );
 
 		
 		//we should have 5 distribs
-		//SubscriptionService.getSubscriptionDistributions(sebSub).map(d -> trace("dist du "+d.date));
-		Assert.equals(SubscriptionService.getSubscriptionDistributions(sebSub).length , 5);
-		Assert.equals(SubscriptionService.getSubscriptionTotalPrice(sebSub) , (panier.price*5) );
+		//SubscriptionService.getSubscriptionDistribs(sebSub).map(d -> trace("dist du "+d.date));
+		Assert.equals(SubscriptionService.getSubscriptionDistribs(sebSub).length , 5);
+		Assert.equals(sebSub.getTotalPrice(), (panier.price*5) );
 
 		//create a new MD out of subscriptions
 		var tpl = distributions[0];
@@ -485,9 +485,9 @@ class TestSubscriptions extends utest.Test
 
 		Assert.equals( distrib.date.toString().substr(0,10) , "2030-03-03" );
 		sebSub = Subscription.manager.get(sebSub.id);//re-get
-		var sebDistribs = SubscriptionService.getSubscriptionDistributions(sebSub);
+		var sebDistribs = SubscriptionService.getSubscriptionDistribs(sebSub);
 		Assert.equals(sebDistribs.length , 5);
-		Assert.equals(SubscriptionService.getSubscriptionTotalPrice(sebSub) , (panier.price*5) );
+		Assert.equals(sebSub.getTotalPrice() , (panier.price*5) );
 		// trace(sebDistribs);
 		Assert.equals(sebDistribs[4].id , distrib.id, "the last distrib of the subscription should be the one we shifted");
 
