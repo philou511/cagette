@@ -15,6 +15,7 @@ var lab = require('@material-ui/lab');
 var i18n = _interopDefault(require('i18next'));
 var formik = require('formik');
 var formikMaterialUi = require('formik-material-ui');
+var MenuItem = _interopDefault(require('@material-ui/core/MenuItem'));
 var reactLeaflet = require('react-leaflet');
 var TextField = _interopDefault(require('@material-ui/core/TextField'));
 
@@ -106,6 +107,29 @@ function __generator(thisArg, body) {
         } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spread() {
+    for (var ar = [], i = 0; i < arguments.length; i++)
+        ar = ar.concat(__read(arguments[i]));
+    return ar;
 }
 
 function __spreadArrays() {
@@ -1072,9 +1096,9 @@ var useStyles = core$1.makeStyles(function (theme) { return ({
 }); });
 var GeoAutocomplete = function (_a) {
     var initialValue = _a.initialValue, label = _a.label, noOptionsText = _a.noOptionsText, mapboxToken = _a.mapboxToken, onChange = _a.onChange;
-    var _b = React__default.useState([]), options = _b[0], setOptions = _b[1];
-    var _c = React__default.useState(initialValue || ''), inputValue = _c[0], setInputValue = _c[1];
-    var _d = React__default.useState(initialValue && initialValue !== ''), needChange = _d[0], toggleNeedChange = _d[1];
+    var _b = __read(React__default.useState([]), 2), options = _b[0], setOptions = _b[1];
+    var _c = __read(React__default.useState(initialValue || ''), 2), inputValue = _c[0], setInputValue = _c[1];
+    var _d = __read(React__default.useState(initialValue && initialValue !== ''), 2), needChange = _d[0], toggleNeedChange = _d[1];
     var cs = useStyles();
     /** */
     var fetchAddress = React__default.useMemo(function () {
@@ -18309,6 +18333,97 @@ var DateFnsUtils = /** @class */ (function () {
     return DateFnsUtils;
 }());
 
+/**
+ * @name isToday
+ * @category Day Helpers
+ * @summary Is the given date today?
+ * @pure false
+ *
+ * @description
+ * Is the given date today?
+ *
+ * > ⚠️ Please note that this function is not present in the FP submodule as
+ * > it uses `Date.now()` internally hence impure and can't be safely curried.
+ *
+ * ### v2.0.0 breaking changes:
+ *
+ * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
+ *
+ * @param {Date|Number} date - the date to check
+ * @returns {Boolean} the date is today
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // If today is 6 October 2014, is 6 October 14:00:00 today?
+ * var result = isToday(new Date(2014, 9, 6, 14, 0))
+ * //=> true
+ */
+
+function isToday(dirtyDate) {
+  requiredArgs(1, arguments);
+  return isSameDay(dirtyDate, Date.now());
+}
+
+/**
+ * @name subDays
+ * @category Day Helpers
+ * @summary Subtract the specified number of days from the given date.
+ *
+ * @description
+ * Subtract the specified number of days from the given date.
+ *
+ * ### v2.0.0 breaking changes:
+ *
+ * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
+ *
+ * @param {Date|Number} date - the date to be changed
+ * @param {Number} amount - the amount of days to be subtracted. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
+ * @returns {Date} the new date with the days subtracted
+ * @throws {TypeError} 2 arguments required
+ *
+ * @example
+ * // Subtract 10 days from 1 September 2014:
+ * var result = subDays(new Date(2014, 8, 1), 10)
+ * //=> Fri Aug 22 2014 00:00:00
+ */
+
+function subDays(dirtyDate, dirtyAmount) {
+  requiredArgs(2, arguments);
+  var amount = toInteger(dirtyAmount);
+  return addDays(dirtyDate, -amount);
+}
+
+/**
+ * @name isYesterday
+ * @category Day Helpers
+ * @summary Is the given date yesterday?
+ * @pure false
+ *
+ * @description
+ * Is the given date yesterday?
+ *
+ * > ⚠️ Please note that this function is not present in the FP submodule as
+ * > it uses `Date.now()` internally hence impure and can't be safely curried.
+ *
+ * ### v2.0.0 breaking changes:
+ *
+ * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
+ *
+ * @param {Date|Number} date - the date to check
+ * @returns {Boolean} the date is yesterday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // If today is 6 October 2014, is 5 October 14:00:00 yesterday?
+ * var result = isYesterday(new Date(2014, 9, 5, 14, 0))
+ * //=> true
+ */
+
+function isYesterday(dirtyDate) {
+  requiredArgs(1, arguments);
+  return isSameDay(dirtyDate, subDays(Date.now(), 1));
+}
+
 var parseUserVo = function (data) { return ({
     id: data.id,
     firstName: data.firstName,
@@ -19033,7 +19148,7 @@ var ConfirmDialog = function (_a) {
 
 function withConfirmDialog (Component, dialogProps) {
     var Wrapper = function (props) {
-        var _a = React__default.useState(false), open = _a[0], toggleOpen = _a[1];
+        var _a = __read(React__default.useState(false), 2), open = _a[0], toggleOpen = _a[1];
         /** */
         var close = function () {
             toggleOpen(false);
@@ -19385,12 +19500,12 @@ var useStyles$1 = core$1.makeStyles(function (theme) { return ({
 var ActivateDistribSlotsView = function (_a) {
     var distribId = _a.distribId, slotDuration = _a.slotDuration;
     var t = useTranslation(['translation', 'neo/distrib-slots']).t;
-    var _b = React__default.useState(false), opened = _b[0], toggleOpened = _b[1];
-    var _c = React__default.useState(), distrib = _c[0], setDistrib = _c[1];
-    var _d = React__default.useState(false), submitting = _d[0], toggleSubmitting = _d[1];
-    var _e = React__default.useState(), error = _e[0], setError = _e[1];
-    var _f = React__default.useState(false), hasActivated = _f[0], toggleHasActivated = _f[1];
-    var _g = React__default.useState('solo-only'), mode = _g[0], setMode = _g[1];
+    var _b = __read(React__default.useState(false), 2), opened = _b[0], toggleOpened = _b[1];
+    var _c = __read(React__default.useState(), 2), distrib = _c[0], setDistrib = _c[1];
+    var _d = __read(React__default.useState(false), 2), submitting = _d[0], toggleSubmitting = _d[1];
+    var _e = __read(React__default.useState(), 2), error = _e[0], setError = _e[1];
+    var _f = __read(React__default.useState(false), 2), hasActivated = _f[0], toggleHasActivated = _f[1];
+    var _g = __read(React__default.useState('solo-only'), 2), mode = _g[0], setMode = _g[1];
     var cs = useStyles$1({ hasActivated: hasActivated });
     var nbSlots = distrib && distrib.end && distrib.start
         ? Math.floor((distrib.end.getTime() - distrib.start.getTime()) / slotDuration)
@@ -19543,7 +19658,7 @@ var ActivateDistribSlotsView = function (_a) {
                 submitting ? (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
                     React__default.createElement(core$1.CircularProgress, null))) : (React__default.createElement(React__default.Fragment, null,
                     React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center" },
-                        React__default.createElement(core$1.List, null, __spreadArrays(Array(nbSlots)).map(function (_v, i) { return i; })
+                        React__default.createElement(core$1.List, null, __spread(Array(nbSlots)).map(function (_v, i) { return i; })
                             .map(function (s) { return (React__default.createElement(core$1.ListItem, { key: s, alignItems: "center" },
                             React__default.createElement(core$1.ListItemText, { primary: format$1(addMilliseconds(distrib.start, s * slotDuration), "HH'h'mm") + " - " + format$1(s === nbSlots - 1 ? distrib.end : addMilliseconds(distrib.start, (s + 1) * slotDuration), "HH'h'mm"), secondary: React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center", component: "span" },
                                     React__default.createElement(core$1.Typography, { component: "span", variant: "body2" }, t('neo/distrib-slots:activeDistrib.slot-id', {
@@ -19586,14 +19701,14 @@ var ViewCtx = React__default.createContext({
 var ViewCtxProvider = function (_a) {
     var distribId = _a.distribId, children = _a.children, onRegister = _a.onRegister, onCancel = _a.onCancel;
     var t = useTranslation(['translation']).t;
-    var _b = React__default.useState(true), open = _b[0], toggleOpen = _b[1];
-    var _c = React__default.useState(false), loading = _c[0], toggleLoading = _c[1];
-    var _d = React__default.useState(), error = _d[0], setError = _d[1];
-    var _e = React__default.useState('loading'), currentStep = _e[0], setStep = _e[1];
-    var _f = React__default.useState(), distrib = _f[0], setDistrib = _f[1];
-    var _g = React__default.useState(), status = _g[0], setStatus = _g[1];
-    var _h = React__default.useState(), workingStatus = _h[0], setWorkingStatus = _h[1];
-    var _j = React__default.useState(false), needReload = _j[0], toggleNeedReload = _j[1];
+    var _b = __read(React__default.useState(true), 2), open = _b[0], toggleOpen = _b[1];
+    var _c = __read(React__default.useState(false), 2), loading = _c[0], toggleLoading = _c[1];
+    var _d = __read(React__default.useState(), 2), error = _d[0], setError = _d[1];
+    var _e = __read(React__default.useState('loading'), 2), currentStep = _e[0], setStep = _e[1];
+    var _f = __read(React__default.useState(), 2), distrib = _f[0], setDistrib = _f[1];
+    var _g = __read(React__default.useState(), 2), status = _g[0], setStatus = _g[1];
+    var _h = __read(React__default.useState(), 2), workingStatus = _h[0], setWorkingStatus = _h[1];
+    var _j = __read(React__default.useState(false), 2), needReload = _j[0], toggleNeedReload = _j[1];
     /** */
     var updateStatus = function (newStatus, newDistrib) {
         if (!distrib && !newDistrib)
@@ -19832,7 +19947,7 @@ var shortTKey$1 = tFile$1 + ":userSlotsSelector";
 var ModeStep = function (_a) {
     var onSelect = _a.onSelect;
     var t = useTranslation(['translation', tFile$1]).t;
-    var _b = React__default.useState(), mode = _b[0], setMode = _b[1];
+    var _b = __read(React__default.useState(), 2), mode = _b[0], setMode = _b[1];
     /** */
     var onModeChange = function (e) {
         setMode(e.target.value);
@@ -27574,20 +27689,16 @@ var countrySpecs = {
 };
 
 var mangopayBankAccountSchema = es.object().shape({
-    ownerName: es.string().required(),
-    address1: es.string().required(),
-    address2: es.string(),
-    city: es.string().required(),
-    zipCode: es.string().required(),
-    country: es.string().length(2).required(),
-    iban: es
+    OwnerName: es.string().required(),
+    OwnerAddress: mangopayAddressSchema,
+    IBAN: es
         .string()
         .required()
-        .test('iban', 'custom.iban', function (value) { return isValidIBAN(value || ''); }),
-    bic: es
+        .test('IBAN', 'custom.iban', function (value) { return isValidIBAN(value || ''); }),
+    BIC: es
         .string()
         .notRequired()
-        .test('bic', 'custom.bic', function (value) { return (!value || value === '' ? true : isValidBIC(value || '')); }),
+        .test('BIC', 'custom.bic', function (value) { return (!value || value === '' ? true : isValidBIC(value || '')); }),
 });
 
 var isLuhn = (function (toCheck) {
@@ -27921,11 +28032,10936 @@ function withHelperTextTranslation(Wrapped, tranformPropsFunc) {
     return Wrapper;
 }
 
+var lib = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+/**
+ * Constants.
+ */
+
+var IS_MAC = typeof window != 'undefined' && /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
+
+var MODIFIERS = {
+  alt: 'altKey',
+  control: 'ctrlKey',
+  meta: 'metaKey',
+  shift: 'shiftKey'
+};
+
+var ALIASES = {
+  add: '+',
+  break: 'pause',
+  cmd: 'meta',
+  command: 'meta',
+  ctl: 'control',
+  ctrl: 'control',
+  del: 'delete',
+  down: 'arrowdown',
+  esc: 'escape',
+  ins: 'insert',
+  left: 'arrowleft',
+  mod: IS_MAC ? 'meta' : 'control',
+  opt: 'alt',
+  option: 'alt',
+  return: 'enter',
+  right: 'arrowright',
+  space: ' ',
+  spacebar: ' ',
+  up: 'arrowup',
+  win: 'meta',
+  windows: 'meta'
+};
+
+var CODES = {
+  backspace: 8,
+  tab: 9,
+  enter: 13,
+  shift: 16,
+  control: 17,
+  alt: 18,
+  pause: 19,
+  capslock: 20,
+  escape: 27,
+  ' ': 32,
+  pageup: 33,
+  pagedown: 34,
+  end: 35,
+  home: 36,
+  arrowleft: 37,
+  arrowup: 38,
+  arrowright: 39,
+  arrowdown: 40,
+  insert: 45,
+  delete: 46,
+  meta: 91,
+  numlock: 144,
+  scrolllock: 145,
+  ';': 186,
+  '=': 187,
+  ',': 188,
+  '-': 189,
+  '.': 190,
+  '/': 191,
+  '`': 192,
+  '[': 219,
+  '\\': 220,
+  ']': 221,
+  '\'': 222
+};
+
+for (var f = 1; f < 20; f++) {
+  CODES['f' + f] = 111 + f;
+}
+
+/**
+ * Is hotkey?
+ */
+
+function isHotkey(hotkey, options, event) {
+  if (options && !('byKey' in options)) {
+    event = options;
+    options = null;
+  }
+
+  if (!Array.isArray(hotkey)) {
+    hotkey = [hotkey];
+  }
+
+  var array = hotkey.map(function (string) {
+    return parseHotkey(string, options);
+  });
+  var check = function check(e) {
+    return array.some(function (object) {
+      return compareHotkey(object, e);
+    });
+  };
+  var ret = event == null ? check : check(event);
+  return ret;
+}
+
+function isCodeHotkey(hotkey, event) {
+  return isHotkey(hotkey, event);
+}
+
+function isKeyHotkey(hotkey, event) {
+  return isHotkey(hotkey, { byKey: true }, event);
+}
+
+/**
+ * Parse.
+ */
+
+function parseHotkey(hotkey, options) {
+  var byKey = options && options.byKey;
+  var ret = {};
+
+  // Special case to handle the `+` key since we use it as a separator.
+  hotkey = hotkey.replace('++', '+add');
+  var values = hotkey.split('+');
+  var length = values.length;
+
+  // Ensure that all the modifiers are set to false unless the hotkey has them.
+
+  for (var k in MODIFIERS) {
+    ret[MODIFIERS[k]] = false;
+  }
+
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var value = _step.value;
+
+      var optional = value.endsWith('?') && value.length > 1;
+
+      if (optional) {
+        value = value.slice(0, -1);
+      }
+
+      var name = toKeyName(value);
+      var modifier = MODIFIERS[name];
+
+      if (length === 1 || !modifier) {
+        if (byKey) {
+          ret.key = name;
+        } else {
+          ret.which = toKeyCode(value);
+        }
+      }
+
+      if (modifier) {
+        ret[modifier] = optional ? null : true;
+      }
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  return ret;
+}
+
+/**
+ * Compare.
+ */
+
+function compareHotkey(object, event) {
+  for (var key in object) {
+    var expected = object[key];
+    var actual = void 0;
+
+    if (expected == null) {
+      continue;
+    }
+
+    if (key === 'key' && event.key != null) {
+      actual = event.key.toLowerCase();
+    } else if (key === 'which') {
+      actual = expected === 91 && event.which === 93 ? 91 : event.which;
+    } else {
+      actual = event[key];
+    }
+
+    if (actual == null && expected === false) {
+      continue;
+    }
+
+    if (actual !== expected) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Utils.
+ */
+
+function toKeyCode(name) {
+  name = toKeyName(name);
+  var code = CODES[name] || name.toUpperCase().charCodeAt(0);
+  return code;
+}
+
+function toKeyName(name) {
+  name = name.toLowerCase();
+  name = ALIASES[name] || name;
+  return name;
+}
+
+/**
+ * Export.
+ */
+
+exports.default = isHotkey;
+exports.isHotkey = isHotkey;
+exports.isCodeHotkey = isCodeHotkey;
+exports.isKeyHotkey = isKeyHotkey;
+exports.parseHotkey = parseHotkey;
+exports.compareHotkey = compareHotkey;
+exports.toKeyCode = toKeyCode;
+exports.toKeyName = toKeyName;
+});
+
+var isHotkey = unwrapExports(lib);
+var lib_1 = lib.isHotkey;
+var lib_2 = lib.isCodeHotkey;
+var lib_3 = lib.isKeyHotkey;
+var lib_4 = lib.parseHotkey;
+var lib_5 = lib.compareHotkey;
+var lib_6 = lib.toKeyCode;
+var lib_7 = lib.toKeyName;
+
+/*!
+ * isobject <https://github.com/jonschlinkert/isobject>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObject$6(val) {
+  return val != null && typeof val === 'object' && Array.isArray(val) === false;
+}
+
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObjectObject(o) {
+  return isObject$6(o) === true
+    && Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function isPlainObject(o) {
+  var ctor,prot;
+
+  if (isObjectObject(o) === false) return false;
+
+  // If has modified constructor
+  ctor = o.constructor;
+  if (typeof ctor !== 'function') return false;
+
+  // If has modified prototype
+  prot = ctor.prototype;
+  if (isObjectObject(prot) === false) return false;
+
+  // If constructor does not have an Object-specific method
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+
+  // Most likely a plain Object
+  return true;
+}
+
+// Should be no imports here!
+var _a$2; // SOme things that should be evaluated before all else...
+
+
+var hasSymbol = typeof Symbol !== "undefined";
+var hasMap = typeof Map !== "undefined";
+var hasSet = typeof Set !== "undefined";
+/**
+ * The sentinel value returned by producers to replace the draft with undefined.
+ */
+
+var NOTHING = hasSymbol ? Symbol("immer-nothing") : (_a$2 = {}, _a$2["immer-nothing"] = true, _a$2);
+/**
+ * To let Immer treat your class instances as plain immutable objects
+ * (albeit with a custom prototype), you must define either an instance property
+ * or a static property on each of your custom classes.
+ *
+ * Otherwise, your class instance will never be drafted, which means it won't be
+ * safe to mutate in a produce callback.
+ */
+
+var DRAFTABLE = hasSymbol ? Symbol("immer-draftable") : "__$immer_draftable";
+var DRAFT_STATE = hasSymbol ? Symbol("immer-state") : "__$immer_state";
+var iteratorSymbol = hasSymbol ? Symbol.iterator : "@@iterator";
+
+/* istanbul ignore next */
+var extendStatics$1 = function (d, b) {
+  extendStatics$1 = Object.setPrototypeOf || {
+    __proto__: []
+  } instanceof Array && function (d, b) {
+    d.__proto__ = b;
+  } || function (d, b) {
+    for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } }
+  };
+
+  return extendStatics$1(d, b);
+}; // Ugly hack to resolve #502 and inherit built in Map / Set
+
+
+function __extends$1(d, b) {
+  extendStatics$1(d, b);
+
+  function __() {
+    this.constructor = d;
+  }
+
+  d.prototype = ( // @ts-ignore
+  __.prototype = b.prototype, new __());
+}
+
+var Archtype;
+
+(function (Archtype) {
+  Archtype[Archtype["Object"] = 0] = "Object";
+  Archtype[Archtype["Array"] = 1] = "Array";
+  Archtype[Archtype["Map"] = 2] = "Map";
+  Archtype[Archtype["Set"] = 3] = "Set";
+})(Archtype || (Archtype = {}));
+
+var ProxyType;
+
+(function (ProxyType) {
+  ProxyType[ProxyType["ProxyObject"] = 0] = "ProxyObject";
+  ProxyType[ProxyType["ProxyArray"] = 1] = "ProxyArray";
+  ProxyType[ProxyType["ES5Object"] = 2] = "ES5Object";
+  ProxyType[ProxyType["ES5Array"] = 3] = "ES5Array";
+  ProxyType[ProxyType["Map"] = 4] = "Map";
+  ProxyType[ProxyType["Set"] = 5] = "Set";
+})(ProxyType || (ProxyType = {}));
+
+/** Returns true if the given value is an Immer draft */
+
+function isDraft(value) {
+  return !!value && !!value[DRAFT_STATE];
+}
+/** Returns true if the given value can be drafted by Immer */
+
+function isDraftable(value) {
+  if (!value) { return false; }
+  return isPlainObject$1(value) || Array.isArray(value) || !!value[DRAFTABLE] || !!value.constructor[DRAFTABLE] || isMap$1(value) || isSet$1(value);
+}
+function isPlainObject$1(value) {
+  if (!value || typeof value !== "object") { return false; }
+  var proto = Object.getPrototypeOf(value);
+  return !proto || proto === Object.prototype;
+}
+var ownKeys$2 = typeof Reflect !== "undefined" && Reflect.ownKeys ? Reflect.ownKeys : typeof Object.getOwnPropertySymbols !== "undefined" ? function (obj) {
+  return Object.getOwnPropertyNames(obj).concat(Object.getOwnPropertySymbols(obj));
+} :
+/* istanbul ignore next */
+Object.getOwnPropertyNames;
+function each$1(obj, iter) {
+  if (getArchtype(obj) === Archtype.Object) {
+    ownKeys$2(obj).forEach(function (key) {
+      return iter(key, obj[key], obj);
+    });
+  } else {
+    obj.forEach(function (entry, index) {
+      return iter(index, entry, obj);
+    });
+  }
+}
+function isEnumerable(base, prop) {
+  var desc = Object.getOwnPropertyDescriptor(base, prop);
+  return desc && desc.enumerable ? true : false;
+}
+function getArchtype(thing) {
+  /* istanbul ignore next */
+  if (!thing) { die(); }
+
+  if (thing[DRAFT_STATE]) {
+    switch (thing[DRAFT_STATE].type) {
+      case ProxyType.ES5Object:
+      case ProxyType.ProxyObject:
+        return Archtype.Object;
+
+      case ProxyType.ES5Array:
+      case ProxyType.ProxyArray:
+        return Archtype.Array;
+
+      case ProxyType.Map:
+        return Archtype.Map;
+
+      case ProxyType.Set:
+        return Archtype.Set;
+    }
+  }
+
+  return Array.isArray(thing) ? Archtype.Array : isMap$1(thing) ? Archtype.Map : isSet$1(thing) ? Archtype.Set : Archtype.Object;
+}
+function has$1(thing, prop) {
+  return getArchtype(thing) === Archtype.Map ? thing.has(prop) : Object.prototype.hasOwnProperty.call(thing, prop);
+}
+function get$2(thing, prop) {
+  // @ts-ignore
+  return getArchtype(thing) === Archtype.Map ? thing.get(prop) : thing[prop];
+}
+function set(thing, propOrOldValue, value) {
+  switch (getArchtype(thing)) {
+    case Archtype.Map:
+      thing.set(propOrOldValue, value);
+      break;
+
+    case Archtype.Set:
+      thing.delete(propOrOldValue);
+      thing.add(value);
+      break;
+
+    default:
+      thing[propOrOldValue] = value;
+  }
+}
+function is(x, y) {
+  // From: https://github.com/facebook/fbjs/blob/c69904a511b900266935168223063dd8772dfc40/packages/fbjs/src/core/shallowEqual.js
+  if (x === y) {
+    return x !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+function isMap$1(target) {
+  return hasMap && target instanceof Map;
+}
+function isSet$1(target) {
+  return hasSet && target instanceof Set;
+}
+function latest(state) {
+  return state.copy || state.base;
+}
+function shallowCopy(base, invokeGetters) {
+  if (invokeGetters === void 0) {
+    invokeGetters = false;
+  }
+
+  if (Array.isArray(base)) { return base.slice(); }
+  var clone = Object.create(Object.getPrototypeOf(base));
+  ownKeys$2(base).forEach(function (key) {
+    if (key === DRAFT_STATE) {
+      return; // Never copy over draft state.
+    }
+
+    var desc = Object.getOwnPropertyDescriptor(base, key);
+    var value = desc.value;
+
+    if (desc.get) {
+      if (!invokeGetters) {
+        throw new Error("Immer drafts cannot have computed properties");
+      }
+
+      value = desc.get.call(base);
+    }
+
+    if (desc.enumerable) {
+      clone[key] = value;
+    } else {
+      Object.defineProperty(clone, key, {
+        value: value,
+        writable: true,
+        configurable: true
+      });
+    }
+  });
+  return clone;
+}
+function freeze(obj, deep) {
+  if (!isDraftable(obj) || isDraft(obj) || Object.isFrozen(obj)) { return; }
+  var type = getArchtype(obj);
+
+  if (type === Archtype.Set) {
+    obj.add = obj.clear = obj.delete = dontMutateFrozenCollections;
+  } else if (type === Archtype.Map) {
+    obj.set = obj.clear = obj.delete = dontMutateFrozenCollections;
+  }
+
+  Object.freeze(obj);
+  if (deep) { each$1(obj, function (_, value) {
+    return freeze(value, true);
+  }); }
+}
+
+function dontMutateFrozenCollections() {
+  throw new Error("This object has been frozen and should not be mutated");
+}
+
+function createHiddenProperty(target, prop, value) {
+  Object.defineProperty(target, prop, {
+    value: value,
+    enumerable: false,
+    writable: true
+  });
+}
+/* istanbul ignore next */
+
+function die() {
+  throw new Error("Illegal state, please file a bug");
+}
+
+/** Each scope represents a `produce` call. */
+
+var ImmerScope =
+/** @class */
+function () {
+  function ImmerScope(parent, immer) {
+    this.drafts = [];
+    this.parent = parent;
+    this.immer = immer; // Whenever the modified draft contains a draft from another scope, we
+    // need to prevent auto-freezing so the unowned draft can be finalized.
+
+    this.canAutoFreeze = true;
+  }
+
+  ImmerScope.prototype.usePatches = function (patchListener) {
+    if (patchListener) {
+      this.patches = [];
+      this.inversePatches = [];
+      this.patchListener = patchListener;
+    }
+  };
+
+  ImmerScope.prototype.revoke = function () {
+    this.leave();
+    this.drafts.forEach(revoke); // @ts-ignore
+
+    this.drafts = null;
+  };
+
+  ImmerScope.prototype.leave = function () {
+    if (this === ImmerScope.current) {
+      ImmerScope.current = this.parent;
+    }
+  };
+
+  ImmerScope.enter = function (immer) {
+    var scope = new ImmerScope(ImmerScope.current, immer);
+    ImmerScope.current = scope;
+    return scope;
+  };
+
+  return ImmerScope;
+}();
+
+function revoke(draft) {
+  var state = draft[DRAFT_STATE];
+  if (state.type === ProxyType.ProxyObject || state.type === ProxyType.ProxyArray) { state.revoke(); }else { state.revoked = true; }
+}
+
+function processResult(immer, result, scope) {
+  var baseDraft = scope.drafts[0];
+  var isReplaced = result !== undefined && result !== baseDraft;
+  immer.willFinalize(scope, result, isReplaced);
+
+  if (isReplaced) {
+    if (baseDraft[DRAFT_STATE].modified) {
+      scope.revoke();
+      throw new Error("An immer producer returned a new value *and* modified its draft. Either return a new value *or* modify the draft."); // prettier-ignore
+    }
+
+    if (isDraftable(result)) {
+      // Finalize the result in case it contains (or is) a subset of the draft.
+      result = finalize(immer, result, scope);
+      if (!scope.parent) { maybeFreeze(immer, result); }
+    }
+
+    if (scope.patches) {
+      scope.patches.push({
+        op: "replace",
+        path: [],
+        value: result
+      });
+      scope.inversePatches.push({
+        op: "replace",
+        path: [],
+        value: baseDraft[DRAFT_STATE].base
+      });
+    }
+  } else {
+    // Finalize the base draft.
+    result = finalize(immer, baseDraft, scope, []);
+  }
+
+  scope.revoke();
+
+  if (scope.patches) {
+    scope.patchListener(scope.patches, scope.inversePatches);
+  }
+
+  return result !== NOTHING ? result : undefined;
+}
+
+function finalize(immer, draft, scope, path) {
+  var state = draft[DRAFT_STATE];
+
+  if (!state) {
+    if (Object.isFrozen(draft)) { return draft; }
+    return finalizeTree(immer, draft, scope);
+  } // Never finalize drafts owned by another scope.
+
+
+  if (state.scope !== scope) {
+    return draft;
+  }
+
+  if (!state.modified) {
+    maybeFreeze(immer, state.base, true);
+    return state.base;
+  }
+
+  if (!state.finalized) {
+    state.finalized = true;
+    finalizeTree(immer, state.draft, scope, path); // We cannot really delete anything inside of a Set. We can only replace the whole Set.
+
+    if (immer.onDelete && state.type !== ProxyType.Set) {
+      // The `assigned` object is unreliable with ES5 drafts.
+      if (immer.useProxies) {
+        var assigned = state.assigned;
+        each$1(assigned, function (prop, exists) {
+          if (!exists) { immer.onDelete(state, prop); }
+        });
+      } else {
+        var base = state.base,
+            copy_1 = state.copy;
+        each$1(base, function (prop) {
+          if (!has$1(copy_1, prop)) { immer.onDelete(state, prop); }
+        });
+      }
+    }
+
+    if (immer.onCopy) {
+      immer.onCopy(state);
+    } // At this point, all descendants of `state.copy` have been finalized,
+    // so we can be sure that `scope.canAutoFreeze` is accurate.
+
+
+    if (immer.autoFreeze && scope.canAutoFreeze) {
+      freeze(state.copy, false);
+    }
+
+    if (path && scope.patches) {
+      generatePatches(state, path, scope.patches, scope.inversePatches);
+    }
+  }
+
+  return state.copy;
+}
+
+function finalizeTree(immer, root, scope, rootPath) {
+  var state = root[DRAFT_STATE];
+
+  if (state) {
+    if (state.type === ProxyType.ES5Object || state.type === ProxyType.ES5Array) {
+      // Create the final copy, with added keys and without deleted keys.
+      state.copy = shallowCopy(state.draft, true);
+    }
+
+    root = state.copy;
+  }
+
+  each$1(root, function (key, value) {
+    return finalizeProperty(immer, scope, root, state, root, key, value, rootPath);
+  });
+  return root;
+}
+
+function finalizeProperty(immer, scope, root, rootState, parentValue, prop, childValue, rootPath) {
+  if (childValue === parentValue) {
+    throw Error("Immer forbids circular references");
+  } // In the `finalizeTree` method, only the `root` object may be a draft.
+
+
+  var isDraftProp = !!rootState && parentValue === root;
+  var isSetMember = isSet$1(parentValue);
+
+  if (isDraft(childValue)) {
+    var path = rootPath && isDraftProp && !isSetMember && // Set objects are atomic since they have no keys.
+    !has$1(rootState.assigned, prop) // Skip deep patches for assigned keys.
+    ? rootPath.concat(prop) : undefined; // Drafts owned by `scope` are finalized here.
+
+    childValue = finalize(immer, childValue, scope, path);
+    set(parentValue, prop, childValue); // Drafts from another scope must prevent auto-freezing.
+
+    if (isDraft(childValue)) {
+      scope.canAutoFreeze = false;
+    }
+  } // Unchanged draft properties are ignored.
+  else if (isDraftProp && is(childValue, get$2(rootState.base, prop))) {
+      return;
+    } // Search new objects for unfinalized drafts. Frozen objects should never contain drafts.
+    // TODO: the recursion over here looks weird, shouldn't non-draft stuff have it's own recursion?
+    // especially the passing on of root and rootState doesn't make sense...
+    else if (isDraftable(childValue)) {
+        each$1(childValue, function (key, grandChild) {
+          return finalizeProperty(immer, scope, root, rootState, childValue, key, grandChild, rootPath);
+        });
+        if (!scope.parent) { maybeFreeze(immer, childValue); }
+      }
+
+  if (isDraftProp && immer.onAssign && !isSetMember) {
+    immer.onAssign(rootState, prop, childValue);
+  }
+}
+
+function maybeFreeze(immer, value, deep) {
+  if (deep === void 0) {
+    deep = false;
+  }
+
+  if (immer.autoFreeze && !isDraft(value)) {
+    freeze(value, deep);
+  }
+}
+
+/**
+ * Returns a new draft of the `base` object.
+ *
+ * The second argument is the parent draft-state (used internally).
+ */
+
+function createProxy(base, parent) {
+  var isArray = Array.isArray(base);
+  var state = {
+    type: isArray ? ProxyType.ProxyArray : ProxyType.ProxyObject,
+    // Track which produce call this is associated with.
+    scope: parent ? parent.scope : ImmerScope.current,
+    // True for both shallow and deep changes.
+    modified: false,
+    // Used during finalization.
+    finalized: false,
+    // Track which properties have been assigned (true) or deleted (false).
+    assigned: {},
+    // The parent draft state.
+    parent: parent,
+    // The base state.
+    base: base,
+    // The base proxy.
+    draft: null,
+    // Any property proxies.
+    drafts: {},
+    // The base copy with any updated values.
+    copy: null,
+    // Called by the `produce` function.
+    revoke: null,
+    isManual: false
+  }; // the traps must target something, a bit like the 'real' base.
+  // but also, we need to be able to determine from the target what the relevant state is
+  // (to avoid creating traps per instance to capture the state in closure,
+  // and to avoid creating weird hidden properties as well)
+  // So the trick is to use 'state' as the actual 'target'! (and make sure we intercept everything)
+  // Note that in the case of an array, we put the state in an array to have better Reflect defaults ootb
+
+  var target = state;
+  var traps = objectTraps;
+
+  if (isArray) {
+    target = [state];
+    traps = arrayTraps;
+  } // TODO: optimization: might be faster, cheaper if we created a non-revocable proxy
+  // and administrate revoking ourselves
+
+
+  var _a = Proxy.revocable(target, traps),
+      revoke = _a.revoke,
+      proxy = _a.proxy;
+
+  state.draft = proxy;
+  state.revoke = revoke;
+  return proxy;
+}
+/**
+ * Object drafts
+ */
+
+var objectTraps = {
+  get: function (state, prop) {
+    if (prop === DRAFT_STATE) { return state; }
+    var drafts = state.drafts; // Check for existing draft in unmodified state.
+
+    if (!state.modified && has$1(drafts, prop)) {
+      return drafts[prop];
+    }
+
+    var value = latest(state)[prop];
+
+    if (state.finalized || !isDraftable(value)) {
+      return value;
+    } // Check for existing draft in modified state.
+
+
+    if (state.modified) {
+      // Assigned values are never drafted. This catches any drafts we created, too.
+      if (value !== peek(state.base, prop)) { return value; } // Store drafts on the copy (when one exists).
+      // @ts-ignore
+
+      drafts = state.copy;
+    }
+
+    return drafts[prop] = state.scope.immer.createProxy(value, state);
+  },
+  has: function (state, prop) {
+    return prop in latest(state);
+  },
+  ownKeys: function (state) {
+    return Reflect.ownKeys(latest(state));
+  },
+  set: function (state, prop
+  /* strictly not, but helps TS */
+  , value) {
+    if (!state.modified) {
+      var baseValue = peek(state.base, prop); // Optimize based on value's truthiness. Truthy values are guaranteed to
+      // never be undefined, so we can avoid the `in` operator. Lastly, truthy
+      // values may be drafts, but falsy values are never drafts.
+
+      var isUnchanged = value ? is(baseValue, value) || value === state.drafts[prop] : is(baseValue, value) && prop in state.base;
+      if (isUnchanged) { return true; }
+      prepareCopy(state);
+      markChanged(state);
+    }
+
+    state.assigned[prop] = true; // @ts-ignore
+
+    state.copy[prop] = value;
+    return true;
+  },
+  deleteProperty: function (state, prop) {
+    // The `undefined` check is a fast path for pre-existing keys.
+    if (peek(state.base, prop) !== undefined || prop in state.base) {
+      state.assigned[prop] = false;
+      prepareCopy(state);
+      markChanged(state);
+    } else if (state.assigned[prop]) {
+      // if an originally not assigned property was deleted
+      delete state.assigned[prop];
+    } // @ts-ignore
+
+
+    if (state.copy) { delete state.copy[prop]; }
+    return true;
+  },
+  // Note: We never coerce `desc.value` into an Immer draft, because we can't make
+  // the same guarantee in ES5 mode.
+  getOwnPropertyDescriptor: function (state, prop) {
+    var owner = latest(state);
+    var desc = Reflect.getOwnPropertyDescriptor(owner, prop);
+
+    if (desc) {
+      desc.writable = true;
+      desc.configurable = state.type !== ProxyType.ProxyArray || prop !== "length";
+    }
+
+    return desc;
+  },
+  defineProperty: function () {
+    throw new Error("Object.defineProperty() cannot be used on an Immer draft"); // prettier-ignore
+  },
+  getPrototypeOf: function (state) {
+    return Object.getPrototypeOf(state.base);
+  },
+  setPrototypeOf: function () {
+    throw new Error("Object.setPrototypeOf() cannot be used on an Immer draft"); // prettier-ignore
+  }
+};
+/**
+ * Array drafts
+ */
+
+var arrayTraps = {};
+each$1(objectTraps, function (key, fn) {
+  // @ts-ignore
+  arrayTraps[key] = function () {
+    arguments[0] = arguments[0][0];
+    return fn.apply(this, arguments);
+  };
+});
+
+arrayTraps.deleteProperty = function (state, prop) {
+  if (isNaN(parseInt(prop))) {
+    throw new Error("Immer only supports deleting array indices"); // prettier-ignore
+  }
+
+  return objectTraps.deleteProperty.call(this, state[0], prop);
+};
+
+arrayTraps.set = function (state, prop, value) {
+  if (prop !== "length" && isNaN(parseInt(prop))) {
+    throw new Error("Immer only supports setting array indices and the 'length' property"); // prettier-ignore
+  }
+
+  return objectTraps.set.call(this, state[0], prop, value, state[0]);
+};
+/**
+ * Map drafts
+ */
+// Access a property without creating an Immer draft.
+
+
+function peek(draft, prop) {
+  var state = draft[DRAFT_STATE];
+  var desc = Reflect.getOwnPropertyDescriptor(state ? latest(state) : draft, prop);
+  return desc && desc.value;
+}
+
+function markChanged(state) {
+  if (!state.modified) {
+    state.modified = true;
+
+    if (state.type === ProxyType.ProxyObject || state.type === ProxyType.ProxyArray) {
+      var copy_1 = state.copy = shallowCopy(state.base);
+      each$1(state.drafts, function (key, value) {
+        // @ts-ignore
+        copy_1[key] = value;
+      });
+      state.drafts = undefined;
+    }
+
+    if (state.parent) {
+      markChanged(state.parent);
+    }
+  }
+}
+
+function prepareCopy(state) {
+  if (!state.copy) {
+    state.copy = shallowCopy(state.base);
+  }
+}
+
+function willFinalizeES5(scope, result, isReplaced) {
+  scope.drafts.forEach(function (draft) {
+    draft[DRAFT_STATE].finalizing = true;
+  });
+
+  if (!isReplaced) {
+    if (scope.patches) {
+      markChangesRecursively(scope.drafts[0]);
+    } // This is faster when we don't care about which attributes changed.
+
+
+    markChangesSweep(scope.drafts);
+  } // When a child draft is returned, look for changes.
+  else if (isDraft(result) && result[DRAFT_STATE].scope === scope) {
+      markChangesSweep(scope.drafts);
+    }
+}
+function createES5Proxy(base, parent) {
+  var isArray = Array.isArray(base);
+  var draft = clonePotentialDraft(base);
+  each$1(draft, function (prop) {
+    proxyProperty(draft, prop, isArray || isEnumerable(base, prop));
+  });
+  var state = {
+    type: isArray ? ProxyType.ES5Array : ProxyType.ES5Object,
+    scope: parent ? parent.scope : ImmerScope.current,
+    modified: false,
+    finalizing: false,
+    finalized: false,
+    assigned: {},
+    parent: parent,
+    base: base,
+    draft: draft,
+    copy: null,
+    revoked: false,
+    isManual: false
+  };
+  createHiddenProperty(draft, DRAFT_STATE, state);
+  return draft;
+} // Access a property without creating an Immer draft.
+
+function peek$1(draft, prop) {
+  var state = draft[DRAFT_STATE];
+
+  if (state && !state.finalizing) {
+    state.finalizing = true;
+    var value = draft[prop];
+    state.finalizing = false;
+    return value;
+  }
+
+  return draft[prop];
+}
+
+function get$1$1(state, prop) {
+  assertUnrevoked(state);
+  var value = peek$1(latest(state), prop);
+  if (state.finalizing) { return value; } // Create a draft if the value is unmodified.
+
+  if (value === peek$1(state.base, prop) && isDraftable(value)) {
+    prepareCopy$1(state); // @ts-ignore
+
+    return state.copy[prop] = state.scope.immer.createProxy(value, state);
+  }
+
+  return value;
+}
+
+function set$1(state, prop, value) {
+  assertUnrevoked(state);
+  state.assigned[prop] = true;
+
+  if (!state.modified) {
+    if (is(value, peek$1(latest(state), prop))) { return; }
+    markChangedES5(state);
+    prepareCopy$1(state);
+  } // @ts-ignore
+
+
+  state.copy[prop] = value;
+}
+
+function markChangedES5(state) {
+  if (!state.modified) {
+    state.modified = true;
+    if (state.parent) { markChangedES5(state.parent); }
+  }
+}
+
+function prepareCopy$1(state) {
+  if (!state.copy) { state.copy = clonePotentialDraft(state.base); }
+}
+
+function clonePotentialDraft(base) {
+  var state = base && base[DRAFT_STATE];
+
+  if (state) {
+    state.finalizing = true;
+    var draft = shallowCopy(state.draft, true);
+    state.finalizing = false;
+    return draft;
+  }
+
+  return shallowCopy(base);
+} // property descriptors are recycled to make sure we don't create a get and set closure per property,
+// but share them all instead
+
+
+var descriptors = {};
+
+function proxyProperty(draft, prop, enumerable) {
+  var desc = descriptors[prop];
+
+  if (desc) {
+    desc.enumerable = enumerable;
+  } else {
+    descriptors[prop] = desc = {
+      configurable: true,
+      enumerable: enumerable,
+      get: function () {
+        return get$1$1(this[DRAFT_STATE], prop);
+      },
+      set: function (value) {
+        set$1(this[DRAFT_STATE], prop, value);
+      }
+    };
+  }
+
+  Object.defineProperty(draft, prop, desc);
+}
+
+function assertUnrevoked(state) {
+  if (state.revoked === true) { throw new Error("Cannot use a proxy that has been revoked. Did you pass an object from inside an immer function to an async process? " + JSON.stringify(latest(state))); }
+} // This looks expensive, but only proxies are visited, and only objects without known changes are scanned.
+
+function markChangesSweep(drafts) {
+  // The natural order of drafts in the `scope` array is based on when they
+  // were accessed. By processing drafts in reverse natural order, we have a
+  // better chance of processing leaf nodes first. When a leaf node is known to
+  // have changed, we can avoid any traversal of its ancestor nodes.
+  for (var i = drafts.length - 1; i >= 0; i--) {
+    var state = drafts[i][DRAFT_STATE];
+
+    if (!state.modified) {
+      switch (state.type) {
+        case ProxyType.ES5Array:
+          if (hasArrayChanges(state)) { markChangedES5(state); }
+          break;
+
+        case ProxyType.ES5Object:
+          if (hasObjectChanges(state)) { markChangedES5(state); }
+          break;
+      }
+    }
+  }
+}
+
+function markChangesRecursively(object) {
+  if (!object || typeof object !== "object") { return; }
+  var state = object[DRAFT_STATE];
+  if (!state) { return; }
+  var base = state.base,
+      draft = state.draft,
+      assigned = state.assigned,
+      type = state.type;
+
+  if (type === ProxyType.ES5Object) {
+    // Look for added keys.
+    // TODO: looks quite duplicate to hasObjectChanges,
+    // probably there is a faster way to detect changes, as sweep + recurse seems to do some
+    // unnecessary work.
+    // also: probably we can store the information we detect here, to speed up tree finalization!
+    each$1(draft, function (key) {
+      if (key === DRAFT_STATE) { return; } // The `undefined` check is a fast path for pre-existing keys.
+
+      if (base[key] === undefined && !has$1(base, key)) {
+        assigned[key] = true;
+        markChangedES5(state);
+      } else if (!assigned[key]) {
+        // Only untouched properties trigger recursion.
+        markChangesRecursively(draft[key]);
+      }
+    }); // Look for removed keys.
+
+    each$1(base, function (key) {
+      // The `undefined` check is a fast path for pre-existing keys.
+      if (draft[key] === undefined && !has$1(draft, key)) {
+        assigned[key] = false;
+        markChangedES5(state);
+      }
+    });
+  } else if (type === ProxyType.ES5Array) {
+    if (hasArrayChanges(state)) {
+      markChangedES5(state);
+      assigned.length = true;
+    }
+
+    if (draft.length < base.length) {
+      for (var i = draft.length; i < base.length; i++) { assigned[i] = false; }
+    } else {
+      for (var i = base.length; i < draft.length; i++) { assigned[i] = true; }
+    } // Minimum count is enough, the other parts has been processed.
+
+
+    var min = Math.min(draft.length, base.length);
+
+    for (var i = 0; i < min; i++) {
+      // Only untouched indices trigger recursion.
+      if (assigned[i] === undefined) { markChangesRecursively(draft[i]); }
+    }
+  }
+}
+
+function hasObjectChanges(state) {
+  var base = state.base,
+      draft = state.draft; // Search for added keys and changed keys. Start at the back, because
+  // non-numeric keys are ordered by time of definition on the object.
+
+  var keys = Object.keys(draft);
+
+  for (var i = keys.length - 1; i >= 0; i--) {
+    var key = keys[i];
+    var baseValue = base[key]; // The `undefined` check is a fast path for pre-existing keys.
+
+    if (baseValue === undefined && !has$1(base, key)) {
+      return true;
+    } // Once a base key is deleted, future changes go undetected, because its
+    // descriptor is erased. This branch detects any missed changes.
+    else {
+        var value = draft[key];
+        var state_1 = value && value[DRAFT_STATE];
+
+        if (state_1 ? state_1.base !== baseValue : !is(value, baseValue)) {
+          return true;
+        }
+      }
+  } // At this point, no keys were added or changed.
+  // Compare key count to determine if keys were deleted.
+
+
+  return keys.length !== Object.keys(base).length;
+}
+
+function hasArrayChanges(state) {
+  var draft = state.draft;
+  if (draft.length !== state.base.length) { return true; } // See #116
+  // If we first shorten the length, our array interceptors will be removed.
+  // If after that new items are added, result in the same original length,
+  // those last items will have no intercepting property.
+  // So if there is no own descriptor on the last position, we know that items were removed and added
+  // N.B.: splice, unshift, etc only shift values around, but not prop descriptors, so we only have to check
+  // the last one
+
+  var descriptor = Object.getOwnPropertyDescriptor(draft, draft.length - 1); // descriptor can be null, but only for newly created sparse arrays, eg. new Array(10)
+
+  if (descriptor && !descriptor.get) { return true; } // For all other cases, we don't have to compare, as they would have been picked up by the index setters
+
+  return false;
+}
+
+var DraftMap = function (_super) {
+  if (!_super) {
+    /* istanbul ignore next */
+    throw new Error("Map is not polyfilled");
+  }
+
+  __extends$1(DraftMap, _super); // Create class manually, cause #502
+
+
+  function DraftMap(target, parent) {
+    this[DRAFT_STATE] = {
+      type: ProxyType.Map,
+      parent: parent,
+      scope: parent ? parent.scope : ImmerScope.current,
+      modified: false,
+      finalized: false,
+      copy: undefined,
+      assigned: undefined,
+      base: target,
+      draft: this,
+      isManual: false,
+      revoked: false
+    };
+    return this;
+  }
+
+  var p = DraftMap.prototype; // TODO: smaller build size if we create a util for Object.defineProperty
+
+  Object.defineProperty(p, "size", {
+    get: function () {
+      return latest(this[DRAFT_STATE]).size;
+    },
+    enumerable: true,
+    configurable: true
+  });
+
+  p.has = function (key) {
+    return latest(this[DRAFT_STATE]).has(key);
+  };
+
+  p.set = function (key, value) {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+
+    if (latest(state).get(key) !== value) {
+      prepareCopy$2(state);
+      state.scope.immer.markChanged(state);
+      state.assigned.set(key, true);
+      state.copy.set(key, value);
+      state.assigned.set(key, true);
+    }
+
+    return this;
+  };
+
+  p.delete = function (key) {
+    if (!this.has(key)) {
+      return false;
+    }
+
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    prepareCopy$2(state);
+    state.scope.immer.markChanged(state);
+    state.assigned.set(key, false);
+    state.copy.delete(key);
+    return true;
+  };
+
+  p.clear = function () {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    prepareCopy$2(state);
+    state.scope.immer.markChanged(state);
+    state.assigned = new Map();
+    return state.copy.clear();
+  };
+
+  p.forEach = function (cb, thisArg) {
+    var _this = this;
+
+    var state = this[DRAFT_STATE];
+    latest(state).forEach(function (_value, key, _map) {
+      cb.call(thisArg, _this.get(key), key, _this);
+    });
+  };
+
+  p.get = function (key) {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    var value = latest(state).get(key);
+
+    if (state.finalized || !isDraftable(value)) {
+      return value;
+    }
+
+    if (value !== state.base.get(key)) {
+      return value; // either already drafted or reassigned
+    } // despite what it looks, this creates a draft only once, see above condition
+
+
+    var draft = state.scope.immer.createProxy(value, state);
+    prepareCopy$2(state);
+    state.copy.set(key, draft);
+    return draft;
+  };
+
+  p.keys = function () {
+    return latest(this[DRAFT_STATE]).keys();
+  };
+
+  p.values = function () {
+    var _a;
+
+    var _this = this;
+
+    var iterator = this.keys();
+    return _a = {}, _a[iteratorSymbol] = function () {
+      return _this.values();
+    }, _a.next = function () {
+      var r = iterator.next();
+      /* istanbul ignore next */
+
+      if (r.done) { return r; }
+
+      var value = _this.get(r.value);
+
+      return {
+        done: false,
+        value: value
+      };
+    }, _a;
+  };
+
+  p.entries = function () {
+    var _a;
+
+    var _this = this;
+
+    var iterator = this.keys();
+    return _a = {}, _a[iteratorSymbol] = function () {
+      return _this.entries();
+    }, _a.next = function () {
+      var r = iterator.next();
+      /* istanbul ignore next */
+
+      if (r.done) { return r; }
+
+      var value = _this.get(r.value);
+
+      return {
+        done: false,
+        value: [r.value, value]
+      };
+    }, _a;
+  };
+
+  p[iteratorSymbol] = function () {
+    return this.entries();
+  };
+
+  return DraftMap;
+}(Map);
+
+function proxyMap(target, parent) {
+  // @ts-ignore
+  return new DraftMap(target, parent);
+}
+
+function prepareCopy$2(state) {
+  if (!state.copy) {
+    state.assigned = new Map();
+    state.copy = new Map(state.base);
+  }
+}
+
+var DraftSet = function (_super) {
+  if (!_super) {
+    /* istanbul ignore next */
+    throw new Error("Set is not polyfilled");
+  }
+
+  __extends$1(DraftSet, _super); // Create class manually, cause #502
+
+
+  function DraftSet(target, parent) {
+    this[DRAFT_STATE] = {
+      type: ProxyType.Set,
+      parent: parent,
+      scope: parent ? parent.scope : ImmerScope.current,
+      modified: false,
+      finalized: false,
+      copy: undefined,
+      base: target,
+      draft: this,
+      drafts: new Map(),
+      revoked: false,
+      isManual: false
+    };
+    return this;
+  }
+
+  var p = DraftSet.prototype;
+  Object.defineProperty(p, "size", {
+    get: function () {
+      return latest(this[DRAFT_STATE]).size;
+    },
+    enumerable: true,
+    configurable: true
+  });
+
+  p.has = function (value) {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state); // bit of trickery here, to be able to recognize both the value, and the draft of its value
+
+    if (!state.copy) {
+      return state.base.has(value);
+    }
+
+    if (state.copy.has(value)) { return true; }
+    if (state.drafts.has(value) && state.copy.has(state.drafts.get(value))) { return true; }
+    return false;
+  };
+
+  p.add = function (value) {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+
+    if (state.copy) {
+      state.copy.add(value);
+    } else if (!state.base.has(value)) {
+      prepareCopy$3(state);
+      state.scope.immer.markChanged(state);
+      state.copy.add(value);
+    }
+
+    return this;
+  };
+
+  p.delete = function (value) {
+    if (!this.has(value)) {
+      return false;
+    }
+
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    prepareCopy$3(state);
+    state.scope.immer.markChanged(state);
+    return state.copy.delete(value) || (state.drafts.has(value) ? state.copy.delete(state.drafts.get(value)) :
+    /* istanbul ignore next */
+    false);
+  };
+
+  p.clear = function () {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    prepareCopy$3(state);
+    state.scope.immer.markChanged(state);
+    return state.copy.clear();
+  };
+
+  p.values = function () {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    prepareCopy$3(state);
+    return state.copy.values();
+  };
+
+  p.entries = function entries() {
+    var state = this[DRAFT_STATE];
+    assertUnrevoked(state);
+    prepareCopy$3(state);
+    return state.copy.entries();
+  };
+
+  p.keys = function () {
+    return this.values();
+  };
+
+  p[iteratorSymbol] = function () {
+    return this.values();
+  };
+
+  p.forEach = function forEach(cb, thisArg) {
+    var iterator = this.values();
+    var result = iterator.next();
+
+    while (!result.done) {
+      cb.call(thisArg, result.value, result.value, this);
+      result = iterator.next();
+    }
+  };
+
+  return DraftSet;
+}(Set);
+
+function proxySet(target, parent) {
+  // @ts-ignore
+  return new DraftSet(target, parent);
+}
+
+function prepareCopy$3(state) {
+  if (!state.copy) {
+    // create drafts for all entries to preserve insertion order
+    state.copy = new Set();
+    state.base.forEach(function (value) {
+      if (isDraftable(value)) {
+        var draft = state.scope.immer.createProxy(value, state);
+        state.drafts.set(value, draft);
+        state.copy.add(draft);
+      } else {
+        state.copy.add(value);
+      }
+    });
+  }
+}
+
+function generatePatches(state, basePath, patches, inversePatches) {
+  switch (state.type) {
+    case ProxyType.ProxyObject:
+    case ProxyType.ES5Object:
+    case ProxyType.Map:
+      return generatePatchesFromAssigned(state, basePath, patches, inversePatches);
+
+    case ProxyType.ES5Array:
+    case ProxyType.ProxyArray:
+      return generateArrayPatches(state, basePath, patches, inversePatches);
+
+    case ProxyType.Set:
+      return generateSetPatches(state, basePath, patches, inversePatches);
+  }
+}
+
+function generateArrayPatches(state, basePath, patches, inversePatches) {
+  var _a, _b;
+
+  var base = state.base,
+      assigned = state.assigned,
+      copy = state.copy;
+  /* istanbul ignore next */
+
+  if (!copy) { die(); } // Reduce complexity by ensuring `base` is never longer.
+
+  if (copy.length < base.length) {
+    _a = [copy, base], base = _a[0], copy = _a[1];
+    _b = [inversePatches, patches], patches = _b[0], inversePatches = _b[1];
+  }
+
+  var delta = copy.length - base.length; // Find the first replaced index.
+
+  var start = 0;
+
+  while (base[start] === copy[start] && start < base.length) {
+    ++start;
+  } // Find the last replaced index. Search from the end to optimize splice patches.
+
+
+  var end = base.length;
+
+  while (end > start && base[end - 1] === copy[end + delta - 1]) {
+    --end;
+  } // Process replaced indices.
+
+
+  for (var i = start; i < end; ++i) {
+    if (assigned[i] && copy[i] !== base[i]) {
+      var path = basePath.concat([i]);
+      patches.push({
+        op: "replace",
+        path: path,
+        value: copy[i]
+      });
+      inversePatches.push({
+        op: "replace",
+        path: path,
+        value: base[i]
+      });
+    }
+  }
+
+  var replaceCount = patches.length; // Process added indices.
+
+  for (var i = end + delta - 1; i >= end; --i) {
+    var path = basePath.concat([i]);
+    patches[replaceCount + i - end] = {
+      op: "add",
+      path: path,
+      value: copy[i]
+    };
+    inversePatches.push({
+      op: "remove",
+      path: path
+    });
+  }
+} // This is used for both Map objects and normal objects.
+
+
+function generatePatchesFromAssigned(state, basePath, patches, inversePatches) {
+  var base = state.base,
+      copy = state.copy;
+  each$1(state.assigned, function (key, assignedValue) {
+    var origValue = get$2(base, key);
+    var value = get$2(copy, key);
+    var op = !assignedValue ? "remove" : has$1(base, key) ? "replace" : "add";
+    if (origValue === value && op === "replace") { return; }
+    var path = basePath.concat(key);
+    patches.push(op === "remove" ? {
+      op: op,
+      path: path
+    } : {
+      op: op,
+      path: path,
+      value: value
+    });
+    inversePatches.push(op === "add" ? {
+      op: "remove",
+      path: path
+    } : op === "remove" ? {
+      op: "add",
+      path: path,
+      value: origValue
+    } : {
+      op: "replace",
+      path: path,
+      value: origValue
+    });
+  });
+}
+
+function generateSetPatches(state, basePath, patches, inversePatches) {
+  var base = state.base,
+      copy = state.copy;
+  var i = 0;
+  base.forEach(function (value) {
+    if (!copy.has(value)) {
+      var path = basePath.concat([i]);
+      patches.push({
+        op: "remove",
+        path: path,
+        value: value
+      });
+      inversePatches.unshift({
+        op: "add",
+        path: path,
+        value: value
+      });
+    }
+
+    i++;
+  });
+  i = 0;
+  copy.forEach(function (value) {
+    if (!base.has(value)) {
+      var path = basePath.concat([i]);
+      patches.push({
+        op: "add",
+        path: path,
+        value: value
+      });
+      inversePatches.unshift({
+        op: "remove",
+        path: path,
+        value: value
+      });
+    }
+
+    i++;
+  });
+}
+
+function applyPatches(draft, patches) {
+  patches.forEach(function (patch) {
+    var path = patch.path,
+        op = patch.op;
+    /* istanbul ignore next */
+
+    if (!path.length) { die(); }
+    var base = draft;
+
+    for (var i = 0; i < path.length - 1; i++) {
+      base = get$2(base, path[i]);
+      if (!base || typeof base !== "object") { throw new Error("Cannot apply patch, path doesn't resolve: " + path.join("/")); } // prettier-ignore
+    }
+
+    var type = getArchtype(base);
+    var value = deepClonePatchValue(patch.value); // used to clone patch to ensure original patch is not modified, see #411
+
+    var key = path[path.length - 1];
+
+    switch (op) {
+      case "replace":
+        switch (type) {
+          case Archtype.Map:
+            return base.set(key, value);
+
+          /* istanbul ignore next */
+
+          case Archtype.Set:
+            throw new Error('Sets cannot have "replace" patches.');
+
+          default:
+            // if value is an object, then it's assigned by reference
+            // in the following add or remove ops, the value field inside the patch will also be modifyed
+            // so we use value from the cloned patch
+            // @ts-ignore
+            return base[key] = value;
+        }
+
+      case "add":
+        switch (type) {
+          case Archtype.Array:
+            return base.splice(key, 0, value);
+
+          case Archtype.Map:
+            return base.set(key, value);
+
+          case Archtype.Set:
+            return base.add(value);
+
+          default:
+            return base[key] = value;
+        }
+
+      case "remove":
+        switch (type) {
+          case Archtype.Array:
+            return base.splice(key, 1);
+
+          case Archtype.Map:
+            return base.delete(key);
+
+          case Archtype.Set:
+            return base.delete(patch.value);
+
+          default:
+            return delete base[key];
+        }
+
+      default:
+        throw new Error("Unsupported patch operation: " + op);
+    }
+  });
+  return draft;
+}
+
+function deepClonePatchValue(obj) {
+  if (!obj || typeof obj !== "object") { return obj; }
+  if (Array.isArray(obj)) { return obj.map(deepClonePatchValue); }
+  if (isMap$1(obj)) { return new Map(Array.from(obj.entries()).map(function (_a) {
+    var k = _a[0],
+        v = _a[1];
+    return [k, deepClonePatchValue(v)];
+  })); }
+  if (isSet$1(obj)) { return new Set(Array.from(obj).map(deepClonePatchValue)); }
+  var cloned = Object.create(Object.getPrototypeOf(obj));
+
+  for (var key in obj) { cloned[key] = deepClonePatchValue(obj[key]); }
+
+  return cloned;
+}
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+function __spreadArrays$1() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
+/* istanbul ignore next */
+
+function verifyMinified() {}
+
+var configDefaults = {
+  useProxies: typeof Proxy !== "undefined" && typeof Proxy.revocable !== "undefined" && typeof Reflect !== "undefined",
+  autoFreeze: typeof process !== "undefined" ? process.env.NODE_ENV !== "production" :
+  /* istanbul ignore next */
+  verifyMinified.name === "verifyMinified",
+  onAssign: null,
+  onDelete: null,
+  onCopy: null
+};
+
+var Immer =
+/** @class */
+function () {
+  function Immer(config) {
+    var _this = this;
+
+    this.useProxies = false;
+    this.autoFreeze = false;
+    each$1(configDefaults, function (key, value) {
+      var _a, _b; // @ts-ignore
+
+
+      _this[key] = (_b = (_a = config) === null || _a === void 0 ? void 0 : _a[key], _b !== null && _b !== void 0 ? _b : value);
+    });
+    this.setUseProxies(this.useProxies);
+    this.produce = this.produce.bind(this);
+    this.produceWithPatches = this.produceWithPatches.bind(this);
+  }
+  /**
+   * The `produce` function takes a value and a "recipe function" (whose
+   * return value often depends on the base state). The recipe function is
+   * free to mutate its first argument however it wants. All mutations are
+   * only ever applied to a __copy__ of the base state.
+   *
+   * Pass only a function to create a "curried producer" which relieves you
+   * from passing the recipe function every time.
+   *
+   * Only plain objects and arrays are made mutable. All other objects are
+   * considered uncopyable.
+   *
+   * Note: This function is __bound__ to its `Immer` instance.
+   *
+   * @param {any} base - the initial state
+   * @param {Function} producer - function that receives a proxy of the base state as first argument and which can be freely modified
+   * @param {Function} patchListener - optional function that will be called with all the patches produced here
+   * @returns {any} a new state, or the initial state if nothing was modified
+   */
+
+
+  Immer.prototype.produce = function (base, recipe, patchListener) {
+    var _this = this; // curried invocation
+
+
+    if (typeof base === "function" && typeof recipe !== "function") {
+      var defaultBase_1 = recipe;
+      recipe = base;
+      var self_1 = this;
+      return function curriedProduce(base) {
+        var arguments$1 = arguments;
+
+        var _this = this;
+
+        if (base === void 0) {
+          base = defaultBase_1;
+        }
+
+        var args = [];
+
+        for (var _i = 1; _i < arguments.length; _i++) {
+          args[_i - 1] = arguments$1[_i];
+        }
+
+        return self_1.produce(base, function (draft) {
+          return recipe.call.apply(recipe, __spreadArrays$1([_this, draft], args));
+        }); // prettier-ignore
+      };
+    } // prettier-ignore
+
+
+    {
+      if (typeof recipe !== "function") {
+        throw new Error("The first or second argument to `produce` must be a function");
+      }
+
+      if (patchListener !== undefined && typeof patchListener !== "function") {
+        throw new Error("The third argument to `produce` must be a function or undefined");
+      }
+    }
+    var result; // Only plain objects, arrays, and "immerable classes" are drafted.
+
+    if (isDraftable(base)) {
+      var scope_1 = ImmerScope.enter(this);
+      var proxy = this.createProxy(base, undefined);
+      var hasError = true;
+
+      try {
+        result = recipe(proxy);
+        hasError = false;
+      } finally {
+        // finally instead of catch + rethrow better preserves original stack
+        if (hasError) { scope_1.revoke(); }else { scope_1.leave(); }
+      }
+
+      if (typeof Promise !== "undefined" && result instanceof Promise) {
+        return result.then(function (result) {
+          scope_1.usePatches(patchListener);
+          return processResult(_this, result, scope_1);
+        }, function (error) {
+          scope_1.revoke();
+          throw error;
+        });
+      }
+
+      scope_1.usePatches(patchListener);
+      return processResult(this, result, scope_1);
+    } else {
+      result = recipe(base);
+      if (result === NOTHING) { return undefined; }
+      if (result === undefined) { result = base; }
+      maybeFreeze(this, result, true);
+      return result;
+    }
+  };
+
+  Immer.prototype.produceWithPatches = function (arg1, arg2, arg3) {
+    var _this = this;
+
+    if (typeof arg1 === "function") {
+      return function (state) {
+        var arguments$1 = arguments;
+
+        var args = [];
+
+        for (var _i = 1; _i < arguments.length; _i++) {
+          args[_i - 1] = arguments$1[_i];
+        }
+
+        return _this.produceWithPatches(state, function (draft) {
+          return arg1.apply(void 0, __spreadArrays$1([draft], args));
+        });
+      };
+    } // non-curried form
+
+    /* istanbul ignore next */
+
+
+    if (arg3) { die(); }
+    var patches, inversePatches;
+    var nextState = this.produce(arg1, arg2, function (p, ip) {
+      patches = p;
+      inversePatches = ip;
+    });
+    return [nextState, patches, inversePatches];
+  };
+
+  Immer.prototype.createDraft = function (base) {
+    if (!isDraftable(base)) {
+      throw new Error("First argument to `createDraft` must be a plain object, an array, or an immerable object"); // prettier-ignore
+    }
+
+    var scope = ImmerScope.enter(this);
+    var proxy = this.createProxy(base, undefined);
+    proxy[DRAFT_STATE].isManual = true;
+    scope.leave();
+    return proxy;
+  };
+
+  Immer.prototype.finishDraft = function (draft, patchListener) {
+    var state = draft && draft[DRAFT_STATE];
+
+    if (!state || !state.isManual) {
+      throw new Error("First argument to `finishDraft` must be a draft returned by `createDraft`"); // prettier-ignore
+    }
+
+    if (state.finalized) {
+      throw new Error("The given draft is already finalized"); // prettier-ignore
+    }
+
+    var scope = state.scope;
+    scope.usePatches(patchListener);
+    return processResult(this, undefined, scope);
+  };
+  /**
+   * Pass true to automatically freeze all copies created by Immer.
+   *
+   * By default, auto-freezing is disabled in production.
+   */
+
+
+  Immer.prototype.setAutoFreeze = function (value) {
+    this.autoFreeze = value;
+  };
+  /**
+   * Pass true to use the ES2015 `Proxy` class when creating drafts, which is
+   * always faster than using ES5 proxies.
+   *
+   * By default, feature detection is used, so calling this is rarely necessary.
+   */
+
+
+  Immer.prototype.setUseProxies = function (value) {
+    this.useProxies = value;
+  };
+
+  Immer.prototype.applyPatches = function (base, patches) {
+    // If a patch replaces the entire state, take that replacement as base
+    // before applying patches
+    var i;
+
+    for (i = patches.length - 1; i >= 0; i--) {
+      var patch = patches[i];
+
+      if (patch.path.length === 0 && patch.op === "replace") {
+        base = patch.value;
+        break;
+      }
+    }
+
+    if (isDraft(base)) {
+      // N.B: never hits if some patch a replacement, patches are never drafts
+      return applyPatches(base, patches);
+    } // Otherwise, produce a copy of the base state.
+
+
+    return this.produce(base, function (draft) {
+      return applyPatches(draft, patches.slice(i + 1));
+    });
+  };
+
+  Immer.prototype.createProxy = function (value, parent) {
+    // precondition: createProxy should be guarded by isDraftable, so we know we can safely draft
+    var draft = isMap$1(value) ? proxyMap(value, parent) : isSet$1(value) ? proxySet(value, parent) : this.useProxies ? createProxy(value, parent) : createES5Proxy(value, parent);
+    var scope = parent ? parent.scope : ImmerScope.current;
+    scope.drafts.push(draft);
+    return draft;
+  };
+
+  Immer.prototype.willFinalize = function (scope, thing, isReplaced) {
+    if (!this.useProxies) { willFinalizeES5(scope, thing, isReplaced); }
+  };
+
+  Immer.prototype.markChanged = function (state) {
+    if (this.useProxies) {
+      markChanged(state);
+    } else {
+      markChangedES5(state);
+    }
+  };
+
+  return Immer;
+}();
+
+var immer = new Immer();
+/**
+ * The `produce` function takes a value and a "recipe function" (whose
+ * return value often depends on the base state). The recipe function is
+ * free to mutate its first argument however it wants. All mutations are
+ * only ever applied to a __copy__ of the base state.
+ *
+ * Pass only a function to create a "curried producer" which relieves you
+ * from passing the recipe function every time.
+ *
+ * Only plain objects and arrays are made mutable. All other objects are
+ * considered uncopyable.
+ *
+ * Note: This function is __bound__ to its `Immer` instance.
+ *
+ * @param {any} base - the initial state
+ * @param {Function} producer - function that receives a proxy of the base state as first argument and which can be freely modified
+ * @param {Function} patchListener - optional function that will be called with all the patches produced here
+ * @returns {any} a new state, or the initial state if nothing was modified
+ */
+
+var produce = immer.produce;
+/**
+ * Like `produce`, but `produceWithPatches` always returns a tuple
+ * [nextState, patches, inversePatches] (instead of just the next state)
+ */
+
+var produceWithPatches = immer.produceWithPatches.bind(immer);
+/**
+ * Pass true to automatically freeze all copies created by Immer.
+ *
+ * By default, auto-freezing is disabled in production.
+ */
+
+var setAutoFreeze = immer.setAutoFreeze.bind(immer);
+/**
+ * Pass true to use the ES2015 `Proxy` class when creating drafts, which is
+ * always faster than using ES5 proxies.
+ *
+ * By default, feature detection is used, so calling this is rarely necessary.
+ */
+
+var setUseProxies = immer.setUseProxies.bind(immer);
+/**
+ * Apply an array of Immer patches to the first argument.
+ *
+ * This function is a producer, which means copy-on-write is in effect.
+ */
+
+var applyPatches$1 = immer.applyPatches.bind(immer);
+/**
+ * Create an Immer draft from the given base state, which may be a draft itself.
+ * The draft can be modified until you finalize it with the `finishDraft` function.
+ */
+
+var createDraft = immer.createDraft.bind(immer);
+/**
+ * Finalize an Immer draft from a `createDraft` call, returning the base state
+ * (if no changes were made) or a modified copy. The draft must *not* be
+ * mutated afterwards.
+ *
+ * Pass a function as the 2nd argument to generate Immer patches based on the
+ * changes that were made.
+ */
+
+var finishDraft = immer.finishDraft.bind(immer);
+
+var esrever = createCommonjsModule(function (module, exports) {
+(function(root) {
+
+	// Detect free variables `exports`
+	var freeExports =  exports;
+
+	// Detect free variable `module`
+	var freeModule =  module &&
+		module.exports == freeExports && module;
+
+	// Detect free variable `global`, from Node.js or Browserified code,
+	// and use it as `root`
+	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var regexSymbolWithCombiningMarks = /([\0-\u02FF\u0370-\u1AAF\u1B00-\u1DBF\u1E00-\u20CF\u2100-\uD7FF\uE000-\uFE1F\uFE30-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])([\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF\u20D0-\u20FF\uFE20-\uFE2F]+)/g;
+	var regexSurrogatePair = /([\uD800-\uDBFF])([\uDC00-\uDFFF])/g;
+
+	var reverse = function(string) {
+		// Step 1: deal with combining marks and astral symbols (surrogate pairs)
+		string = string
+			// Swap symbols with their combining marks so the combining marks go first
+			.replace(regexSymbolWithCombiningMarks, function($0, $1, $2) {
+				// Reverse the combining marks so they will end up in the same order
+				// later on (after another round of reversing)
+				return reverse($2) + $1;
+			})
+			// Swap high and low surrogates so the low surrogates go first
+			.replace(regexSurrogatePair, '$2$1');
+		// Step 2: reverse the code units in the string
+		var result = '';
+		var index = string.length;
+		while (index--) {
+			result += string.charAt(index);
+		}
+		return result;
+	};
+
+	/*--------------------------------------------------------------------------*/
+
+	var esrever = {
+		'version': '0.2.0',
+		'reverse': reverse
+	};
+
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js, io.js, or RingoJS v0.8.0+
+			freeModule.exports = esrever;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			for (var key in esrever) {
+				esrever.hasOwnProperty(key) && (freeExports[key] = esrever[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.esrever = esrever;
+	}
+
+}(commonjsGlobal));
+});
+var esrever_1 = esrever.reverse;
+
+function _defineProperty$1(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutPropertiesLoose$1(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$1(source, excluded);
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+var DIRTY_PATHS = new WeakMap();
+var FLUSHING = new WeakMap();
+var NORMALIZING = new WeakMap();
+var PATH_REFS = new WeakMap();
+var POINT_REFS = new WeakMap();
+var RANGE_REFS = new WeakMap();
+
+/**
+ * Constants for string distance checking.
+ */
+var SPACE = /\s/;
+var PUNCTUATION = /[\u0021-\u0023\u0025-\u002A\u002C-\u002F\u003A\u003B\u003F\u0040\u005B-\u005D\u005F\u007B\u007D\u00A1\u00A7\u00AB\u00B6\u00B7\u00BB\u00BF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E3B\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]/;
+var CHAMELEON = /['\u2018\u2019]/;
+var SURROGATE_START = 0xd800;
+var SURROGATE_END = 0xdfff;
+var ZERO_WIDTH_JOINER = 0x200d;
+/**
+ * Get the distance to the end of the first character in a string of text.
+ */
+
+var getCharacterDistance = text => {
+  var offset = 0; // prev types:
+  // SURR: surrogate pair
+  // MOD: modifier (technically also surrogate pair)
+  // ZWJ: zero width joiner
+  // VAR: variation selector
+  // BMP: sequenceable character from basic multilingual plane
+
+  var prev = null;
+  var charCode = text.charCodeAt(0);
+
+  while (charCode) {
+    if (isSurrogate(charCode)) {
+      var modifier = isModifier(charCode, text, offset); // Early returns are the heart of this function, where we decide if previous and current
+      // codepoints should form a single character (in terms of how many of them should selection
+      // jump over).
+
+      if (prev === 'SURR' || prev === 'BMP') {
+        break;
+      }
+
+      offset += 2;
+      prev = modifier ? 'MOD' : 'SURR';
+      charCode = text.charCodeAt(offset); // Absolutely fine to `continue` without any checks because if `charCode` is NaN (which
+      // is the case when out of `text` range), next `while` loop won"t execute and we"re done.
+
+      continue;
+    }
+
+    if (charCode === ZERO_WIDTH_JOINER) {
+      offset += 1;
+      prev = 'ZWJ';
+      charCode = text.charCodeAt(offset);
+      continue;
+    }
+
+    if (isBMPEmoji(charCode)) {
+      if (prev && prev !== 'ZWJ' && prev !== 'VAR') {
+        break;
+      }
+
+      offset += 1;
+      prev = 'BMP';
+      charCode = text.charCodeAt(offset);
+      continue;
+    }
+
+    if (isVariationSelector(charCode)) {
+      if (prev && prev !== 'ZWJ') {
+        break;
+      }
+
+      offset += 1;
+      prev = 'VAR';
+      charCode = text.charCodeAt(offset);
+      continue;
+    } // Modifier 'groups up' with what ever character is before that (even whitespace), need to
+    // look ahead.
+
+
+    if (prev === 'MOD') {
+      offset += 1;
+      break;
+    } // If while loop ever gets here, we're done (e.g latin chars).
+
+
+    break;
+  }
+
+  return offset || 1;
+};
+/**
+ * Get the distance to the end of the first word in a string of text.
+ */
+
+var getWordDistance = text => {
+  var length = 0;
+  var i = 0;
+  var started = false;
+  var char;
+
+  while (char = text.charAt(i)) {
+    var l = getCharacterDistance(char);
+    char = text.slice(i, i + l);
+    var rest = text.slice(i + l);
+
+    if (isWordCharacter(char, rest)) {
+      started = true;
+      length += l;
+    } else if (!started) {
+      length += l;
+    } else {
+      break;
+    }
+
+    i += l;
+  }
+
+  return length;
+};
+/**
+ * Check if a character is a word character. The `remaining` argument is used
+ * because sometimes you must read subsequent characters to truly determine it.
+ */
+
+var isWordCharacter = (char, remaining) => {
+  if (SPACE.test(char)) {
+    return false;
+  } // Chameleons count as word characters as long as they're in a word, so
+  // recurse to see if the next one is a word character or not.
+
+
+  if (CHAMELEON.test(char)) {
+    var next = remaining.charAt(0);
+    var length = getCharacterDistance(next);
+    next = remaining.slice(0, length);
+    var rest = remaining.slice(length);
+
+    if (isWordCharacter(next, rest)) {
+      return true;
+    }
+  }
+
+  if (PUNCTUATION.test(char)) {
+    return false;
+  }
+
+  return true;
+};
+/**
+ * Determines if `code` is a surrogate
+ */
+
+
+var isSurrogate = code => SURROGATE_START <= code && code <= SURROGATE_END;
+/**
+ * Does `code` form Modifier with next one.
+ *
+ * https://emojipedia.org/modifiers/
+ */
+
+
+var isModifier = (code, text, offset) => {
+  if (code === 0xd83c) {
+    var next = text.charCodeAt(offset + 1);
+    return next <= 0xdfff && next >= 0xdffb;
+  }
+
+  return false;
+};
+/**
+ * Is `code` a Variation Selector.
+ *
+ * https://codepoints.net/variation_selectors
+ */
+
+
+var isVariationSelector = code => {
+  return code <= 0xfe0f && code >= 0xfe00;
+};
+/**
+ * Is `code` one of the BMP codes used in emoji sequences.
+ *
+ * https://emojipedia.org/emoji-zwj-sequences/
+ */
+
+
+var isBMPEmoji = code => {
+  // This requires tiny bit of maintanance, better ideas?
+  // Fortunately it only happens if new Unicode Standard
+  // is released. Fails gracefully if upkeep lags behind,
+  // same way Slate previously behaved with all emojis.
+  return code === 0x2764 || // heart (❤)
+  code === 0x2642 || // male (♂)
+  code === 0x2640 || // female (♀)
+  code === 0x2620 || // scull (☠)
+  code === 0x2695 || // medical (⚕)
+  code === 0x2708 || // plane (✈️)
+  code === 0x25ef // large circle (◯)
+  ;
+};
+
+function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var Editor = {
+  /**
+   * Get the ancestor above a location in the document.
+   */
+  above(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      voids = false,
+      mode = 'lowest',
+      at = editor.selection,
+      match
+    } = options;
+
+    if (!at) {
+      return;
+    }
+
+    var path = Editor.path(editor, at);
+    var reverse = mode === 'lowest';
+
+    for (var [n, p] of Editor.levels(editor, {
+      at: path,
+      voids,
+      match,
+      reverse
+    })) {
+      if (!Text.isText(n) && !Path.equals(path, p)) {
+        return [n, p];
+      }
+    }
+  },
+
+  /**
+   * Add a custom property to the leaf text nodes in the current selection.
+   *
+   * If the selection is currently collapsed, the marks will be added to the
+   * `editor.marks` property instead, and applied when text is inserted next.
+   */
+  addMark(editor, key, value) {
+    editor.addMark(key, value);
+  },
+
+  /**
+   * Get the point after a location.
+   */
+  after(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var anchor = Editor.point(editor, at, {
+      edge: 'end'
+    });
+    var focus = Editor.end(editor, []);
+    var range = {
+      anchor,
+      focus
+    };
+    var {
+      distance = 1
+    } = options;
+    var d = 0;
+    var target;
+
+    for (var p of Editor.positions(editor, _objectSpread$2({}, options, {
+      at: range
+    }))) {
+      if (d > distance) {
+        break;
+      }
+
+      if (d !== 0) {
+        target = p;
+      }
+
+      d++;
+    }
+
+    return target;
+  },
+
+  /**
+   * Get the point before a location.
+   */
+  before(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var anchor = Editor.start(editor, []);
+    var focus = Editor.point(editor, at, {
+      edge: 'start'
+    });
+    var range = {
+      anchor,
+      focus
+    };
+    var {
+      distance = 1
+    } = options;
+    var d = 0;
+    var target;
+
+    for (var p of Editor.positions(editor, _objectSpread$2({}, options, {
+      at: range,
+      reverse: true
+    }))) {
+      if (d > distance) {
+        break;
+      }
+
+      if (d !== 0) {
+        target = p;
+      }
+
+      d++;
+    }
+
+    return target;
+  },
+
+  /**
+   * Delete content in the editor backward from the current selection.
+   */
+  deleteBackward(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      unit = 'character'
+    } = options;
+    editor.deleteBackward(unit);
+  },
+
+  /**
+   * Delete content in the editor forward from the current selection.
+   */
+  deleteForward(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      unit = 'character'
+    } = options;
+    editor.deleteForward(unit);
+  },
+
+  /**
+   * Delete the content in the current selection.
+   */
+  deleteFragment(editor) {
+    editor.deleteFragment();
+  },
+
+  /**
+   * Get the start and end points of a location.
+   */
+  edges(editor, at) {
+    return [Editor.start(editor, at), Editor.end(editor, at)];
+  },
+
+  /**
+   * Get the end point of a location.
+   */
+  end(editor, at) {
+    return Editor.point(editor, at, {
+      edge: 'end'
+    });
+  },
+
+  /**
+   * Get the first node at a location.
+   */
+  first(editor, at) {
+    var path = Editor.path(editor, at, {
+      edge: 'start'
+    });
+    return Editor.node(editor, path);
+  },
+
+  /**
+   * Get the fragment at a location.
+   */
+  fragment(editor, at) {
+    var range = Editor.range(editor, at);
+    var fragment = Node$1.fragment(editor, range);
+    return fragment;
+  },
+
+  /**
+   * Check if a node has block children.
+   */
+  hasBlocks(editor, element) {
+    return element.children.some(n => Editor.isBlock(editor, n));
+  },
+
+  /**
+   * Check if a node has inline and text children.
+   */
+  hasInlines(editor, element) {
+    return element.children.some(n => Text.isText(n) || Editor.isInline(editor, n));
+  },
+
+  /**
+   * Check if a node has text children.
+   */
+  hasTexts(editor, element) {
+    return element.children.every(n => Text.isText(n));
+  },
+
+  /**
+   * Insert a block break at the current selection.
+   *
+   * If the selection is currently expanded, it will be deleted first.
+   */
+  insertBreak(editor) {
+    editor.insertBreak();
+  },
+
+  /**
+   * Insert a fragment at the current selection.
+   *
+   * If the selection is currently expanded, it will be deleted first.
+   */
+  insertFragment(editor, fragment) {
+    editor.insertFragment(fragment);
+  },
+
+  /**
+   * Insert a node at the current selection.
+   *
+   * If the selection is currently expanded, it will be deleted first.
+   */
+  insertNode(editor, node) {
+    editor.insertNode(node);
+  },
+
+  /**
+   * Insert text at the current selection.
+   *
+   * If the selection is currently expanded, it will be deleted first.
+   */
+  insertText(editor, text) {
+    editor.insertText(text);
+  },
+
+  /**
+   * Check if a value is a block `Element` object.
+   */
+  isBlock(editor, value) {
+    return Element.isElement(value) && !editor.isInline(value);
+  },
+
+  /**
+   * Check if a value is an `Editor` object.
+   */
+  isEditor(value) {
+    return isPlainObject(value) && typeof value.addMark === 'function' && typeof value.apply === 'function' && typeof value.deleteBackward === 'function' && typeof value.deleteForward === 'function' && typeof value.deleteFragment === 'function' && typeof value.insertBreak === 'function' && typeof value.insertFragment === 'function' && typeof value.insertNode === 'function' && typeof value.insertText === 'function' && typeof value.isInline === 'function' && typeof value.isVoid === 'function' && typeof value.normalizeNode === 'function' && typeof value.onChange === 'function' && typeof value.removeMark === 'function' && (value.marks === null || isPlainObject(value.marks)) && (value.selection === null || Range.isRange(value.selection)) && Node$1.isNodeList(value.children) && Operation.isOperationList(value.operations);
+  },
+
+  /**
+   * Check if a point is the end point of a location.
+   */
+  isEnd(editor, point, at) {
+    var end = Editor.end(editor, at);
+    return Point.equals(point, end);
+  },
+
+  /**
+   * Check if a point is an edge of a location.
+   */
+  isEdge(editor, point, at) {
+    return Editor.isStart(editor, point, at) || Editor.isEnd(editor, point, at);
+  },
+
+  /**
+   * Check if an element is empty, accounting for void nodes.
+   */
+  isEmpty(editor, element) {
+    var {
+      children
+    } = element;
+    var [first] = children;
+    return children.length === 0 || children.length === 1 && Text.isText(first) && first.text === '' && !editor.isVoid(element);
+  },
+
+  /**
+   * Check if a value is an inline `Element` object.
+   */
+  isInline(editor, value) {
+    return Element.isElement(value) && editor.isInline(value);
+  },
+
+  /**
+   * Check if the editor is currently normalizing after each operation.
+   */
+  isNormalizing(editor) {
+    var isNormalizing = NORMALIZING.get(editor);
+    return isNormalizing === undefined ? true : isNormalizing;
+  },
+
+  /**
+   * Check if a point is the start point of a location.
+   */
+  isStart(editor, point, at) {
+    // PERF: If the offset isn't `0` we know it's not the start.
+    if (point.offset !== 0) {
+      return false;
+    }
+
+    var start = Editor.start(editor, at);
+    return Point.equals(point, start);
+  },
+
+  /**
+   * Check if a value is a void `Element` object.
+   */
+  isVoid(editor, value) {
+    return Element.isElement(value) && editor.isVoid(value);
+  },
+
+  /**
+   * Get the last node at a location.
+   */
+  last(editor, at) {
+    var path = Editor.path(editor, at, {
+      edge: 'end'
+    });
+    return Editor.node(editor, path);
+  },
+
+  /**
+   * Get the leaf text node at a location.
+   */
+  leaf(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var path = Editor.path(editor, at, options);
+    var node = Node$1.leaf(editor, path);
+    return [node, path];
+  },
+
+  /**
+   * Iterate through all of the levels at a location.
+   */
+  *levels(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      at = editor.selection,
+      reverse = false,
+      voids = false
+    } = options;
+    var {
+      match
+    } = options;
+
+    if (match == null) {
+      match = () => true;
+    }
+
+    if (!at) {
+      return;
+    }
+
+    var levels = [];
+    var path = Editor.path(editor, at);
+
+    for (var [n, p] of Node$1.levels(editor, path)) {
+      if (!match(n)) {
+        continue;
+      }
+
+      levels.push([n, p]);
+
+      if (!voids && Editor.isVoid(editor, n)) {
+        break;
+      }
+    }
+
+    if (reverse) {
+      levels.reverse();
+    }
+
+    yield* levels;
+  },
+
+  /**
+   * Get the marks that would be added to text at the current selection.
+   */
+  marks(editor) {
+    var {
+      marks,
+      selection
+    } = editor;
+
+    if (!selection) {
+      return null;
+    }
+
+    if (marks) {
+      return marks;
+    }
+
+    if (Range.isExpanded(selection)) {
+      var [match] = Editor.nodes(editor, {
+        match: Text.isText
+      });
+
+      if (match) {
+        var [_node] = match;
+
+        var _rest = _objectWithoutProperties(_node, ["text"]);
+
+        return _rest;
+      } else {
+        return {};
+      }
+    }
+
+    var {
+      anchor
+    } = selection;
+    var {
+      path
+    } = anchor;
+    var [node] = Editor.leaf(editor, path);
+
+    if (anchor.offset === 0) {
+      var prev = Editor.previous(editor, {
+        at: path,
+        match: Text.isText
+      });
+      var block = Editor.above(editor, {
+        match: n => Editor.isBlock(editor, n)
+      });
+
+      if (prev && block) {
+        var [prevNode, prevPath] = prev;
+        var [, blockPath] = block;
+
+        if (Path.isAncestor(blockPath, prevPath)) {
+          node = prevNode;
+        }
+      }
+    }
+
+    var rest = _objectWithoutProperties(node, ["text"]);
+
+    return rest;
+  },
+
+  /**
+   * Get the matching node in the branch of the document after a location.
+   */
+  next(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      mode = 'lowest',
+      voids = false
+    } = options;
+    var {
+      match,
+      at = editor.selection
+    } = options;
+
+    if (!at) {
+      return;
+    }
+
+    var [, from] = Editor.last(editor, at);
+    var [, to] = Editor.last(editor, []);
+    var span = [from, to];
+
+    if (Path.isPath(at) && at.length === 0) {
+      throw new Error("Cannot get the next node from the root node!");
+    }
+
+    if (match == null) {
+      if (Path.isPath(at)) {
+        var [parent] = Editor.parent(editor, at);
+
+        match = n => parent.children.includes(n);
+      } else {
+        match = () => true;
+      }
+    }
+
+    var [, next] = Editor.nodes(editor, {
+      at: span,
+      match,
+      mode,
+      voids
+    });
+    return next;
+  },
+
+  /**
+   * Get the node at a location.
+   */
+  node(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var path = Editor.path(editor, at, options);
+    var node = Node$1.get(editor, path);
+    return [node, path];
+  },
+
+  /**
+   * Iterate through all of the nodes in the Editor.
+   */
+  *nodes(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      at = editor.selection,
+      mode = 'all',
+      universal = false,
+      reverse = false,
+      voids = false
+    } = options;
+    var {
+      match
+    } = options;
+
+    if (!match) {
+      match = () => true;
+    }
+
+    if (!at) {
+      return;
+    }
+
+    var from;
+    var to;
+
+    if (Span.isSpan(at)) {
+      from = at[0];
+      to = at[1];
+    } else {
+      var first = Editor.path(editor, at, {
+        edge: 'start'
+      });
+      var last = Editor.path(editor, at, {
+        edge: 'end'
+      });
+      from = reverse ? last : first;
+      to = reverse ? first : last;
+    }
+
+    var iterable = Node$1.nodes(editor, {
+      reverse,
+      from,
+      to,
+      pass: (_ref) => {
+        var [n] = _ref;
+        return voids ? false : Editor.isVoid(editor, n);
+      }
+    });
+    var matches = [];
+    var hit;
+
+    for (var [node, path] of iterable) {
+      var isLower = hit && Path.compare(path, hit[1]) === 0; // In highest mode any node lower than the last hit is not a match.
+
+      if (mode === 'highest' && isLower) {
+        continue;
+      }
+
+      if (!match(node)) {
+        // If we've arrived at a leaf text node that is not lower than the last
+        // hit, then we've found a branch that doesn't include a match, which
+        // means the match is not universal.
+        if (universal && !isLower && Text.isText(node)) {
+          return;
+        } else {
+          continue;
+        }
+      } // If there's a match and it's lower than the last, update the hit.
+
+
+      if (mode === 'lowest' && isLower) {
+        hit = [node, path];
+        continue;
+      } // In lowest mode we emit the last hit, once it's guaranteed lowest.
+
+
+      var emit = mode === 'lowest' ? hit : [node, path];
+
+      if (emit) {
+        if (universal) {
+          matches.push(emit);
+        } else {
+          yield emit;
+        }
+      }
+
+      hit = [node, path];
+    } // Since lowest is always emitting one behind, catch up at the end.
+
+
+    if (mode === 'lowest' && hit) {
+      if (universal) {
+        matches.push(hit);
+      } else {
+        yield hit;
+      }
+    } // Universal defers to ensure that the match occurs in every branch, so we
+    // yield all of the matches after iterating.
+
+
+    if (universal) {
+      yield* matches;
+    }
+  },
+
+  /**
+   * Normalize any dirty objects in the editor.
+   */
+  normalize(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      force = false
+    } = options;
+
+    var getDirtyPaths = editor => {
+      return DIRTY_PATHS.get(editor) || [];
+    };
+
+    if (!Editor.isNormalizing(editor)) {
+      return;
+    }
+
+    if (force) {
+      var allPaths = Array.from(Node$1.nodes(editor), (_ref2) => {
+        var [, p] = _ref2;
+        return p;
+      });
+      DIRTY_PATHS.set(editor, allPaths);
+    }
+
+    if (getDirtyPaths(editor).length === 0) {
+      return;
+    }
+
+    Editor.withoutNormalizing(editor, () => {
+      var max = getDirtyPaths(editor).length * 42; // HACK: better way?
+
+      var m = 0;
+
+      while (getDirtyPaths(editor).length !== 0) {
+        if (m > max) {
+          throw new Error("\n            Could not completely normalize the editor after ".concat(max, " iterations! This is usually due to incorrect normalization logic that leaves a node in an invalid state.\n          "));
+        }
+
+        var path = getDirtyPaths(editor).pop();
+        var entry = Editor.node(editor, path);
+        editor.normalizeNode(entry);
+        m++;
+      }
+    });
+  },
+
+  /**
+   * Get the parent node of a location.
+   */
+  parent(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var path = Editor.path(editor, at, options);
+    var parentPath = Path.parent(path);
+    var entry = Editor.node(editor, parentPath);
+    return entry;
+  },
+
+  /**
+   * Get the path of a location.
+   */
+  path(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      depth,
+      edge
+    } = options;
+
+    if (Path.isPath(at)) {
+      if (edge === 'start') {
+        var [, firstPath] = Node$1.first(editor, at);
+        at = firstPath;
+      } else if (edge === 'end') {
+        var [, lastPath] = Node$1.last(editor, at);
+        at = lastPath;
+      }
+    }
+
+    if (Range.isRange(at)) {
+      if (edge === 'start') {
+        at = Range.start(at);
+      } else if (edge === 'end') {
+        at = Range.end(at);
+      } else {
+        at = Path.common(at.anchor.path, at.focus.path);
+      }
+    }
+
+    if (Point.isPoint(at)) {
+      at = at.path;
+    }
+
+    if (depth != null) {
+      at = at.slice(0, depth);
+    }
+
+    return at;
+  },
+
+  /**
+   * Create a mutable ref for a `Path` object, which will stay in sync as new
+   * operations are applied to the editor.
+   */
+  pathRef(editor, path) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      affinity = 'forward'
+    } = options;
+    var ref = {
+      current: path,
+      affinity,
+
+      unref() {
+        var {
+          current
+        } = ref;
+        var pathRefs = Editor.pathRefs(editor);
+        pathRefs.delete(ref);
+        ref.current = null;
+        return current;
+      }
+
+    };
+    var refs = Editor.pathRefs(editor);
+    refs.add(ref);
+    return ref;
+  },
+
+  /**
+   * Get the set of currently tracked path refs of the editor.
+   */
+  pathRefs(editor) {
+    var refs = PATH_REFS.get(editor);
+
+    if (!refs) {
+      refs = new Set();
+      PATH_REFS.set(editor, refs);
+    }
+
+    return refs;
+  },
+
+  /**
+   * Get the start or end point of a location.
+   */
+  point(editor, at) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      edge = 'start'
+    } = options;
+
+    if (Path.isPath(at)) {
+      var path;
+
+      if (edge === 'end') {
+        var [, lastPath] = Node$1.last(editor, at);
+        path = lastPath;
+      } else {
+        var [, firstPath] = Node$1.first(editor, at);
+        path = firstPath;
+      }
+
+      var node = Node$1.get(editor, path);
+
+      if (!Text.isText(node)) {
+        throw new Error("Cannot get the ".concat(edge, " point in the node at path [").concat(at, "] because it has no ").concat(edge, " text node."));
+      }
+
+      return {
+        path,
+        offset: edge === 'end' ? node.text.length : 0
+      };
+    }
+
+    if (Range.isRange(at)) {
+      var [start, end] = Range.edges(at);
+      return edge === 'start' ? start : end;
+    }
+
+    return at;
+  },
+
+  /**
+   * Create a mutable ref for a `Point` object, which will stay in sync as new
+   * operations are applied to the editor.
+   */
+  pointRef(editor, point) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      affinity = 'forward'
+    } = options;
+    var ref = {
+      current: point,
+      affinity,
+
+      unref() {
+        var {
+          current
+        } = ref;
+        var pointRefs = Editor.pointRefs(editor);
+        pointRefs.delete(ref);
+        ref.current = null;
+        return current;
+      }
+
+    };
+    var refs = Editor.pointRefs(editor);
+    refs.add(ref);
+    return ref;
+  },
+
+  /**
+   * Get the set of currently tracked point refs of the editor.
+   */
+  pointRefs(editor) {
+    var refs = POINT_REFS.get(editor);
+
+    if (!refs) {
+      refs = new Set();
+      POINT_REFS.set(editor, refs);
+    }
+
+    return refs;
+  },
+
+  /**
+   * Iterate through all of the positions in the document where a `Point` can be
+   * placed.
+   *
+   * By default it will move forward by individual offsets at a time,  but you
+   * can pass the `unit: 'character'` option to moved forward one character, word,
+   * or line at at time.
+   *
+   * Note: void nodes are treated as a single point, and iteration will not
+   * happen inside their content.
+   */
+  *positions(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      at = editor.selection,
+      unit = 'offset',
+      reverse: reverse$1 = false
+    } = options;
+
+    if (!at) {
+      return;
+    }
+
+    var range = Editor.range(editor, at);
+    var [start, end] = Range.edges(range);
+    var first = reverse$1 ? end : start;
+    var string = '';
+    var available = 0;
+    var offset = 0;
+    var distance = null;
+    var isNewBlock = false;
+
+    var advance = () => {
+      if (distance == null) {
+        if (unit === 'character') {
+          distance = getCharacterDistance(string);
+        } else if (unit === 'word') {
+          distance = getWordDistance(string);
+        } else if (unit === 'line' || unit === 'block') {
+          distance = string.length;
+        } else {
+          distance = 1;
+        }
+
+        string = string.slice(distance);
+      } // Add or substract the offset.
+
+
+      offset = reverse$1 ? offset - distance : offset + distance; // Subtract the distance traveled from the available text.
+
+      available = available - distance; // If the available had room to spare, reset the distance so that it will
+      // advance again next time. Otherwise, set it to the overflow amount.
+
+      distance = available >= 0 ? null : 0 - available;
+    };
+
+    for (var [node, path] of Editor.nodes(editor, {
+      at,
+      reverse: reverse$1
+    })) {
+      if (Element.isElement(node)) {
+        // Void nodes are a special case, since we don't want to iterate over
+        // their content. We instead always just yield their first point.
+        if (editor.isVoid(node)) {
+          yield Editor.start(editor, path);
+          continue;
+        }
+
+        if (editor.isInline(node)) {
+          continue;
+        }
+
+        if (Editor.hasInlines(editor, node)) {
+          var e = Path.isAncestor(path, end.path) ? end : Editor.end(editor, path);
+          var s = Path.isAncestor(path, start.path) ? start : Editor.start(editor, path);
+          var text = Editor.string(editor, {
+            anchor: s,
+            focus: e
+          });
+          string = reverse$1 ? esrever_1(text) : text;
+          isNewBlock = true;
+        }
+      }
+
+      if (Text.isText(node)) {
+        var isFirst = Path.equals(path, first.path);
+        available = node.text.length;
+        offset = reverse$1 ? available : 0;
+
+        if (isFirst) {
+          available = reverse$1 ? first.offset : available - first.offset;
+          offset = first.offset;
+        }
+
+        if (isFirst || isNewBlock || unit === 'offset') {
+          yield {
+            path,
+            offset
+          };
+        }
+
+        while (true) {
+          // If there's no more string, continue to the next block.
+          if (string === '') {
+            break;
+          } else {
+            advance();
+          } // If the available space hasn't overflow, we have another point to
+          // yield in the current text node.
+
+
+          if (available >= 0) {
+            yield {
+              path,
+              offset
+            };
+          } else {
+            break;
+          }
+        }
+
+        isNewBlock = false;
+      }
+    }
+  },
+
+  /**
+   * Get the matching node in the branch of the document before a location.
+   */
+  previous(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      mode = 'lowest',
+      voids = false
+    } = options;
+    var {
+      match,
+      at = editor.selection
+    } = options;
+
+    if (!at) {
+      return;
+    }
+
+    var [, from] = Editor.first(editor, at);
+    var [, to] = Editor.first(editor, []);
+    var span = [from, to];
+
+    if (Path.isPath(at) && at.length === 0) {
+      throw new Error("Cannot get the previous node from the root node!");
+    }
+
+    if (match == null) {
+      if (Path.isPath(at)) {
+        var [parent] = Editor.parent(editor, at);
+
+        match = n => parent.children.includes(n);
+      } else {
+        match = () => true;
+      }
+    }
+
+    var [, previous] = Editor.nodes(editor, {
+      reverse: true,
+      at: span,
+      match,
+      mode,
+      voids
+    });
+    return previous;
+  },
+
+  /**
+   * Get a range of a location.
+   */
+  range(editor, at, to) {
+    if (Range.isRange(at) && !to) {
+      return at;
+    }
+
+    var start = Editor.start(editor, at);
+    var end = Editor.end(editor, to || at);
+    return {
+      anchor: start,
+      focus: end
+    };
+  },
+
+  /**
+   * Create a mutable ref for a `Range` object, which will stay in sync as new
+   * operations are applied to the editor.
+   */
+  rangeRef(editor, range) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      affinity = 'forward'
+    } = options;
+    var ref = {
+      current: range,
+      affinity,
+
+      unref() {
+        var {
+          current
+        } = ref;
+        var rangeRefs = Editor.rangeRefs(editor);
+        rangeRefs.delete(ref);
+        ref.current = null;
+        return current;
+      }
+
+    };
+    var refs = Editor.rangeRefs(editor);
+    refs.add(ref);
+    return ref;
+  },
+
+  /**
+   * Get the set of currently tracked range refs of the editor.
+   */
+  rangeRefs(editor) {
+    var refs = RANGE_REFS.get(editor);
+
+    if (!refs) {
+      refs = new Set();
+      RANGE_REFS.set(editor, refs);
+    }
+
+    return refs;
+  },
+
+  /**
+   * Remove a custom property from all of the leaf text nodes in the current
+   * selection.
+   *
+   * If the selection is currently collapsed, the removal will be stored on
+   * `editor.marks` and applied to the text inserted next.
+   */
+  removeMark(editor, key) {
+    editor.removeMark(key);
+  },
+
+  /**
+   * Get the start point of a location.
+   */
+  start(editor, at) {
+    return Editor.point(editor, at, {
+      edge: 'start'
+    });
+  },
+
+  /**
+   * Get the text string content of a location.
+   *
+   * Note: the text of void nodes is presumed to be an empty string, regardless
+   * of what their actual content is.
+   */
+  string(editor, at) {
+    var range = Editor.range(editor, at);
+    var [start, end] = Range.edges(range);
+    var text = '';
+
+    for (var [node, path] of Editor.nodes(editor, {
+      at: range,
+      match: Text.isText
+    })) {
+      var t = node.text;
+
+      if (Path.equals(path, end.path)) {
+        t = t.slice(0, end.offset);
+      }
+
+      if (Path.equals(path, start.path)) {
+        t = t.slice(start.offset);
+      }
+
+      text += t;
+    }
+
+    return text;
+  },
+
+  /**
+   * Transform the editor by an operation.
+   */
+  transform(editor, op) {
+    editor.children = createDraft(editor.children);
+    var selection = editor.selection && createDraft(editor.selection);
+
+    switch (op.type) {
+      case 'insert_node':
+        {
+          var {
+            path,
+            node
+          } = op;
+          var parent = Node$1.parent(editor, path);
+          var index = path[path.length - 1];
+          parent.children.splice(index, 0, node);
+
+          if (selection) {
+            for (var [point, key] of Range.points(selection)) {
+              selection[key] = Point.transform(point, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'insert_text':
+        {
+          var {
+            path: _path,
+            offset,
+            text
+          } = op;
+
+          var _node2 = Node$1.leaf(editor, _path);
+
+          var before = _node2.text.slice(0, offset);
+
+          var after = _node2.text.slice(offset);
+
+          _node2.text = before + text + after;
+
+          if (selection) {
+            for (var [_point, _key] of Range.points(selection)) {
+              selection[_key] = Point.transform(_point, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'merge_node':
+        {
+          var {
+            path: _path2
+          } = op;
+
+          var _node3 = Node$1.get(editor, _path2);
+
+          var prevPath = Path.previous(_path2);
+          var prev = Node$1.get(editor, prevPath);
+
+          var _parent = Node$1.parent(editor, _path2);
+
+          var _index = _path2[_path2.length - 1];
+
+          if (Text.isText(_node3) && Text.isText(prev)) {
+            prev.text += _node3.text;
+          } else if (!Text.isText(_node3) && !Text.isText(prev)) {
+            prev.children.push(..._node3.children);
+          } else {
+            throw new Error("Cannot apply a \"merge_node\" operation at path [".concat(_path2, "] to nodes of different interaces: ").concat(_node3, " ").concat(prev));
+          }
+
+          _parent.children.splice(_index, 1);
+
+          if (selection) {
+            for (var [_point2, _key2] of Range.points(selection)) {
+              selection[_key2] = Point.transform(_point2, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'move_node':
+        {
+          var {
+            path: _path3,
+            newPath
+          } = op;
+
+          if (Path.isAncestor(_path3, newPath)) {
+            throw new Error("Cannot move a path [".concat(_path3, "] to new path [").concat(newPath, "] because the destination is inside itself."));
+          }
+
+          var _node4 = Node$1.get(editor, _path3);
+
+          var _parent2 = Node$1.parent(editor, _path3);
+
+          var _index2 = _path3[_path3.length - 1]; // This is tricky, but since the `path` and `newPath` both refer to
+          // the same snapshot in time, there's a mismatch. After either
+          // removing the original position, the second step's path can be out
+          // of date. So instead of using the `op.newPath` directly, we
+          // transform `op.path` to ascertain what the `newPath` would be after
+          // the operation was applied.
+
+          _parent2.children.splice(_index2, 1);
+
+          var truePath = Path.transform(_path3, op);
+          var newParent = Node$1.get(editor, Path.parent(truePath));
+          var newIndex = truePath[truePath.length - 1];
+          newParent.children.splice(newIndex, 0, _node4);
+
+          if (selection) {
+            for (var [_point3, _key3] of Range.points(selection)) {
+              selection[_key3] = Point.transform(_point3, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'remove_node':
+        {
+          var {
+            path: _path4
+          } = op;
+          var _index3 = _path4[_path4.length - 1];
+
+          var _parent3 = Node$1.parent(editor, _path4);
+
+          _parent3.children.splice(_index3, 1); // Transform all of the points in the value, but if the point was in the
+          // node that was removed we need to update the range or remove it.
+
+
+          if (selection) {
+            for (var [_point4, _key4] of Range.points(selection)) {
+              var result = Point.transform(_point4, op);
+
+              if (selection != null && result != null) {
+                selection[_key4] = result;
+              } else {
+                var _prev = void 0;
+
+                var next = void 0;
+
+                for (var [n, p] of Node$1.texts(editor)) {
+                  if (Path.compare(p, _path4) === -1) {
+                    _prev = [n, p];
+                  } else {
+                    next = [n, p];
+                    break;
+                  }
+                }
+
+                if (_prev) {
+                  _point4.path = _prev[1];
+                  _point4.offset = _prev[0].text.length;
+                } else if (next) {
+                  _point4.path = next[1];
+                  _point4.offset = 0;
+                } else {
+                  selection = null;
+                }
+              }
+            }
+          }
+
+          break;
+        }
+
+      case 'remove_text':
+        {
+          var {
+            path: _path5,
+            offset: _offset,
+            text: _text2
+          } = op;
+
+          var _node5 = Node$1.leaf(editor, _path5);
+
+          var _before = _node5.text.slice(0, _offset);
+
+          var _after = _node5.text.slice(_offset + _text2.length);
+
+          _node5.text = _before + _after;
+
+          if (selection) {
+            for (var [_point5, _key5] of Range.points(selection)) {
+              selection[_key5] = Point.transform(_point5, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'set_node':
+        {
+          var {
+            path: _path6,
+            newProperties
+          } = op;
+
+          if (_path6.length === 0) {
+            throw new Error("Cannot set properties on the root node!");
+          }
+
+          var _node6 = Node$1.get(editor, _path6);
+
+          for (var _key6 in newProperties) {
+            if (_key6 === 'children' || _key6 === 'text') {
+              throw new Error("Cannot set the \"".concat(_key6, "\" property of nodes!"));
+            }
+
+            var value = newProperties[_key6];
+
+            if (value == null) {
+              delete _node6[_key6];
+            } else {
+              _node6[_key6] = value;
+            }
+          }
+
+          break;
+        }
+
+      case 'set_selection':
+        {
+          var {
+            newProperties: _newProperties
+          } = op;
+
+          if (_newProperties == null) {
+            selection = _newProperties;
+          } else if (selection == null) {
+            if (!Range.isRange(_newProperties)) {
+              throw new Error("Cannot apply an incomplete \"set_selection\" operation properties ".concat(JSON.stringify(_newProperties), " when there is no current selection."));
+            }
+
+            selection = _newProperties;
+          } else {
+            Object.assign(selection, _newProperties);
+          }
+
+          break;
+        }
+
+      case 'split_node':
+        {
+          var {
+            path: _path7,
+            position,
+            properties
+          } = op;
+
+          if (_path7.length === 0) {
+            throw new Error("Cannot apply a \"split_node\" operation at path [".concat(_path7, "] because the root node cannot be split."));
+          }
+
+          var _node7 = Node$1.get(editor, _path7);
+
+          var _parent4 = Node$1.parent(editor, _path7);
+
+          var _index4 = _path7[_path7.length - 1];
+          var newNode;
+
+          if (Text.isText(_node7)) {
+            var _before2 = _node7.text.slice(0, position);
+
+            var _after2 = _node7.text.slice(position);
+
+            _node7.text = _before2;
+            newNode = _objectSpread$2({}, _node7, {}, properties, {
+              text: _after2
+            });
+          } else {
+            var _before3 = _node7.children.slice(0, position);
+
+            var _after3 = _node7.children.slice(position);
+
+            _node7.children = _before3;
+            newNode = _objectSpread$2({}, _node7, {}, properties, {
+              children: _after3
+            });
+          }
+
+          _parent4.children.splice(_index4 + 1, 0, newNode);
+
+          if (selection) {
+            for (var [_point6, _key7] of Range.points(selection)) {
+              selection[_key7] = Point.transform(_point6, op);
+            }
+          }
+
+          break;
+        }
+    }
+
+    editor.children = finishDraft(editor.children);
+
+    if (selection) {
+      editor.selection = isDraft(selection) ? finishDraft(selection) : selection;
+    } else {
+      editor.selection = null;
+    }
+  },
+
+  /**
+   * Convert a range into a non-hanging one.
+   */
+  unhangRange(editor, range) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      voids = false
+    } = options;
+    var [start, end] = Range.edges(range); // PERF: exit early if we can guarantee that the range isn't hanging.
+
+    if (start.offset !== 0 || end.offset !== 0 || Range.isCollapsed(range)) {
+      return range;
+    }
+
+    var endBlock = Editor.above(editor, {
+      at: end,
+      match: n => Editor.isBlock(editor, n)
+    });
+    var blockPath = endBlock ? endBlock[1] : [];
+    var first = Editor.start(editor, []);
+    var before = {
+      anchor: first,
+      focus: end
+    };
+    var skip = true;
+
+    for (var [node, path] of Editor.nodes(editor, {
+      at: before,
+      match: Text.isText,
+      reverse: true,
+      voids
+    })) {
+      if (skip) {
+        skip = false;
+        continue;
+      }
+
+      if (node.text !== '' || Path.isBefore(path, blockPath)) {
+        end = {
+          path,
+          offset: node.text.length
+        };
+        break;
+      }
+    }
+
+    return {
+      anchor: start,
+      focus: end
+    };
+  },
+
+  /**
+   * Match a void node in the current branch of the editor.
+   */
+  void(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    return Editor.above(editor, _objectSpread$2({}, options, {
+      match: n => Editor.isVoid(editor, n)
+    }));
+  },
+
+  /**
+   * Call a function, deferring normalization until after it completes.
+   */
+  withoutNormalizing(editor, fn) {
+    var value = Editor.isNormalizing(editor);
+    NORMALIZING.set(editor, false);
+    fn();
+    NORMALIZING.set(editor, value);
+    Editor.normalize(editor);
+  }
+
+};
+
+var Element = {
+  /**
+   * Check if a value implements the `Element` interface.
+   */
+  isElement(value) {
+    return isPlainObject(value) && Node$1.isNodeList(value.children) && !Editor.isEditor(value);
+  },
+
+  /**
+   * Check if a value is an array of `Element` objects.
+   */
+  isElementList(value) {
+    return Array.isArray(value) && (value.length === 0 || Element.isElement(value[0]));
+  },
+
+  /**
+   * Check if an element matches set of properties.
+   *
+   * Note: this checks custom properties, and it does not ensure that any
+   * children are equivalent.
+   */
+  matches(element, props) {
+    for (var key in props) {
+      if (key === 'children') {
+        continue;
+      }
+
+      if (element[key] !== props[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+};
+var Span = {
+  /**
+   * Check if a value implements the `Span` interface.
+   */
+  isSpan(value) {
+    return Array.isArray(value) && value.length === 2 && value.every(Path.isPath);
+  }
+
+};
+
+var Node$1 = {
+  /**
+   * Get the node at a specific path, asserting that it's an ancestor node.
+   */
+  ancestor(root, path) {
+    var node = Node$1.get(root, path);
+
+    if (Text.isText(node)) {
+      throw new Error("Cannot get the ancestor node at path [".concat(path, "] because it refers to a text node instead: ").concat(node));
+    }
+
+    return node;
+  },
+
+  /**
+   * Return an iterable of all the ancestor nodes above a specific path.
+   *
+   * By default the order is bottom-up, from lowest to highest ancestor in
+   * the tree, but you can pass the `reverse: true` option to go top-down.
+   */
+  *ancestors(root, path) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    for (var p of Path.ancestors(path, options)) {
+      var n = Node$1.ancestor(root, p);
+      var entry = [n, p];
+      yield entry;
+    }
+  },
+
+  /**
+   * Get the child of a node at a specific index.
+   */
+  child(root, index) {
+    if (Text.isText(root)) {
+      throw new Error("Cannot get the child of a text node: ".concat(JSON.stringify(root)));
+    }
+
+    var c = root.children[index];
+
+    if (c == null) {
+      throw new Error("Cannot get child at index `".concat(index, "` in node: ").concat(JSON.stringify(root)));
+    }
+
+    return c;
+  },
+
+  /**
+   * Iterate over the children of a node at a specific path.
+   */
+  *children(root, path) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      reverse = false
+    } = options;
+    var ancestor = Node$1.ancestor(root, path);
+    var {
+      children
+    } = ancestor;
+    var index = reverse ? children.length - 1 : 0;
+
+    while (reverse ? index >= 0 : index < children.length) {
+      var child = Node$1.child(ancestor, index);
+      var childPath = path.concat(index);
+      yield [child, childPath];
+      index = reverse ? index - 1 : index + 1;
+    }
+  },
+
+  /**
+   * Get an entry for the common ancesetor node of two paths.
+   */
+  common(root, path, another) {
+    var p = Path.common(path, another);
+    var n = Node$1.get(root, p);
+    return [n, p];
+  },
+
+  /**
+   * Get the node at a specific path, asserting that it's a descendant node.
+   */
+  descendant(root, path) {
+    var node = Node$1.get(root, path);
+
+    if (Editor.isEditor(node)) {
+      throw new Error("Cannot get the descendant node at path [".concat(path, "] because it refers to the root editor node instead: ").concat(node));
+    }
+
+    return node;
+  },
+
+  /**
+   * Return an iterable of all the descendant node entries inside a root node.
+   */
+  *descendants(root) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    for (var [node, path] of Node$1.nodes(root, options)) {
+      if (path.length !== 0) {
+        // NOTE: we have to coerce here because checking the path's length does
+        // guarantee that `node` is not a `Editor`, but TypeScript doesn't know.
+        yield [node, path];
+      }
+    }
+  },
+
+  /**
+   * Return an iterable of all the element nodes inside a root node. Each iteration
+   * will return an `ElementEntry` tuple consisting of `[Element, Path]`. If the
+   * root node is an element it will be included in the iteration as well.
+   */
+  *elements(root) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    for (var [node, path] of Node$1.nodes(root, options)) {
+      if (Element.isElement(node)) {
+        yield [node, path];
+      }
+    }
+  },
+
+  /**
+   * Get the first node entry in a root node from a path.
+   */
+  first(root, path) {
+    var p = path.slice();
+    var n = Node$1.get(root, p);
+
+    while (n) {
+      if (Text.isText(n) || n.children.length === 0) {
+        break;
+      } else {
+        n = n.children[0];
+        p.push(0);
+      }
+    }
+
+    return [n, p];
+  },
+
+  /**
+   * Get the sliced fragment represented by a range inside a root node.
+   */
+  fragment(root, range) {
+    if (Text.isText(root)) {
+      throw new Error("Cannot get a fragment starting from a root text node: ".concat(JSON.stringify(root)));
+    }
+
+    var newRoot = produce(root, r => {
+      var [start, end] = Range.edges(range);
+      var iterable = Node$1.nodes(r, {
+        reverse: true,
+        pass: (_ref) => {
+          var [, path] = _ref;
+          return !Range.includes(range, path);
+        }
+      });
+
+      for (var [, path] of iterable) {
+        if (!Range.includes(range, path)) {
+          var parent = Node$1.parent(r, path);
+          var index = path[path.length - 1];
+          parent.children.splice(index, 1);
+        }
+
+        if (Path.equals(path, end.path)) {
+          var leaf = Node$1.leaf(r, path);
+          leaf.text = leaf.text.slice(0, end.offset);
+        }
+
+        if (Path.equals(path, start.path)) {
+          var _leaf = Node$1.leaf(r, path);
+
+          _leaf.text = _leaf.text.slice(start.offset);
+        }
+      }
+
+      delete r.selection;
+    });
+    return newRoot.children;
+  },
+
+  /**
+   * Get the descendant node referred to by a specific path. If the path is an
+   * empty array, it refers to the root node itself.
+   */
+  get(root, path) {
+    var node = root;
+
+    for (var i = 0; i < path.length; i++) {
+      var p = path[i];
+
+      if (Text.isText(node) || !node.children[p]) {
+        throw new Error("Cannot find a descendant at path [".concat(path, "] in node: ").concat(JSON.stringify(root)));
+      }
+
+      node = node.children[p];
+    }
+
+    return node;
+  },
+
+  /**
+   * Check if a descendant node exists at a specific path.
+   */
+  has(root, path) {
+    var node = root;
+
+    for (var i = 0; i < path.length; i++) {
+      var p = path[i];
+
+      if (Text.isText(node) || !node.children[p]) {
+        return false;
+      }
+
+      node = node.children[p];
+    }
+
+    return true;
+  },
+
+  /**
+   * Check if a value implements the `Node` interface.
+   */
+  isNode(value) {
+    return Text.isText(value) || Element.isElement(value) || Editor.isEditor(value);
+  },
+
+  /**
+   * Check if a value is a list of `Node` objects.
+   */
+  isNodeList(value) {
+    return Array.isArray(value) && (value.length === 0 || Node$1.isNode(value[0]));
+  },
+
+  /**
+   * Get the lash node entry in a root node from a path.
+   */
+  last(root, path) {
+    var p = path.slice();
+    var n = Node$1.get(root, p);
+
+    while (n) {
+      if (Text.isText(n) || n.children.length === 0) {
+        break;
+      } else {
+        var i = n.children.length - 1;
+        n = n.children[i];
+        p.push(i);
+      }
+    }
+
+    return [n, p];
+  },
+
+  /**
+   * Get the node at a specific path, ensuring it's a leaf text node.
+   */
+  leaf(root, path) {
+    var node = Node$1.get(root, path);
+
+    if (!Text.isText(node)) {
+      throw new Error("Cannot get the leaf node at path [".concat(path, "] because it refers to a non-leaf node: ").concat(node));
+    }
+
+    return node;
+  },
+
+  /**
+   * Return an iterable of the in a branch of the tree, from a specific path.
+   *
+   * By default the order is top-down, from lowest to highest node in the tree,
+   * but you can pass the `reverse: true` option to go bottom-up.
+   */
+  *levels(root, path) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    for (var p of Path.levels(path, options)) {
+      var n = Node$1.get(root, p);
+      yield [n, p];
+    }
+  },
+
+  /**
+   * Check if a node matches a set of props.
+   */
+  matches(node, props) {
+    return Element.isElement(node) && Element.matches(node, props) || Text.isText(node) && Text.matches(node, props);
+  },
+
+  /**
+   * Return an iterable of all the node entries of a root node. Each entry is
+   * returned as a `[Node, Path]` tuple, with the path referring to the node's
+   * position inside the root node.
+   */
+  *nodes(root) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      pass,
+      reverse = false
+    } = options;
+    var {
+      from = [],
+      to
+    } = options;
+    var visited = new Set();
+    var p = [];
+    var n = root;
+
+    while (true) {
+      if (to && (reverse ? Path.isBefore(p, to) : Path.isAfter(p, to))) {
+        break;
+      }
+
+      if (!visited.has(n)) {
+        yield [n, p];
+      } // If we're allowed to go downward and we haven't decsended yet, do.
+
+
+      if (!visited.has(n) && !Text.isText(n) && n.children.length !== 0 && (pass == null || pass([n, p]) === false)) {
+        visited.add(n);
+        var nextIndex = reverse ? n.children.length - 1 : 0;
+
+        if (Path.isAncestor(p, from)) {
+          nextIndex = from[p.length];
+        }
+
+        p = p.concat(nextIndex);
+        n = Node$1.get(root, p);
+        continue;
+      } // If we're at the root and we can't go down, we're done.
+
+
+      if (p.length === 0) {
+        break;
+      } // If we're going forward...
+
+
+      if (!reverse) {
+        var newPath = Path.next(p);
+
+        if (Node$1.has(root, newPath)) {
+          p = newPath;
+          n = Node$1.get(root, p);
+          continue;
+        }
+      } // If we're going backward...
+
+
+      if (reverse && p[p.length - 1] !== 0) {
+        var _newPath = Path.previous(p);
+
+        p = _newPath;
+        n = Node$1.get(root, p);
+        continue;
+      } // Otherwise we're going upward...
+
+
+      p = Path.parent(p);
+      n = Node$1.get(root, p);
+      visited.add(n);
+    }
+  },
+
+  /**
+   * Get the parent of a node at a specific path.
+   */
+  parent(root, path) {
+    var parentPath = Path.parent(path);
+    var p = Node$1.get(root, parentPath);
+
+    if (Text.isText(p)) {
+      throw new Error("Cannot get the parent of path [".concat(path, "] because it does not exist in the root."));
+    }
+
+    return p;
+  },
+
+  /**
+   * Get the concatenated text string of a node's content.
+   *
+   * Note that this will not include spaces or line breaks between block nodes.
+   * It is not a user-facing string, but a string for performing offset-related
+   * computations for a node.
+   */
+  string(node) {
+    if (Text.isText(node)) {
+      return node.text;
+    } else {
+      return node.children.map(Node$1.string).join('');
+    }
+  },
+
+  /**
+   * Return an iterable of all leaf text nodes in a root node.
+   */
+  *texts(root) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    for (var [node, path] of Node$1.nodes(root, options)) {
+      if (Text.isText(node)) {
+        yield [node, path];
+      }
+    }
+  }
+
+};
+
+function ownKeys$1$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$1$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var Operation = {
+  /**
+   * Check of a value is a `NodeOperation` object.
+   */
+  isNodeOperation(value) {
+    return Operation.isOperation(value) && value.type.endsWith('_node');
+  },
+
+  /**
+   * Check of a value is an `Operation` object.
+   */
+  isOperation(value) {
+    if (!isPlainObject(value)) {
+      return false;
+    }
+
+    switch (value.type) {
+      case 'insert_node':
+        return Path.isPath(value.path) && Node$1.isNode(value.node);
+
+      case 'insert_text':
+        return typeof value.offset === 'number' && typeof value.text === 'string' && Path.isPath(value.path);
+
+      case 'merge_node':
+        return typeof value.position === 'number' && Path.isPath(value.path) && isPlainObject(value.properties);
+
+      case 'move_node':
+        return Path.isPath(value.path) && Path.isPath(value.newPath);
+
+      case 'remove_node':
+        return Path.isPath(value.path) && Node$1.isNode(value.node);
+
+      case 'remove_text':
+        return typeof value.offset === 'number' && typeof value.text === 'string' && Path.isPath(value.path);
+
+      case 'set_node':
+        return Path.isPath(value.path) && isPlainObject(value.properties) && isPlainObject(value.newProperties);
+
+      case 'set_selection':
+        return value.properties === null && Range.isRange(value.newProperties) || value.newProperties === null && Range.isRange(value.properties) || isPlainObject(value.properties) && isPlainObject(value.newProperties);
+
+      case 'split_node':
+        return Path.isPath(value.path) && typeof value.position === 'number' && isPlainObject(value.properties);
+
+      default:
+        return false;
+    }
+  },
+
+  /**
+   * Check if a value is a list of `Operation` objects.
+   */
+  isOperationList(value) {
+    return Array.isArray(value) && (value.length === 0 || Operation.isOperation(value[0]));
+  },
+
+  /**
+   * Check of a value is a `SelectionOperation` object.
+   */
+  isSelectionOperation(value) {
+    return Operation.isOperation(value) && value.type.endsWith('_selection');
+  },
+
+  /**
+   * Check of a value is a `TextOperation` object.
+   */
+  isTextOperation(value) {
+    return Operation.isOperation(value) && value.type.endsWith('_text');
+  },
+
+  /**
+   * Invert an operation, returning a new operation that will exactly undo the
+   * original when applied.
+   */
+  inverse(op) {
+    switch (op.type) {
+      case 'insert_node':
+        {
+          return _objectSpread$1$1({}, op, {
+            type: 'remove_node'
+          });
+        }
+
+      case 'insert_text':
+        {
+          return _objectSpread$1$1({}, op, {
+            type: 'remove_text'
+          });
+        }
+
+      case 'merge_node':
+        {
+          return _objectSpread$1$1({}, op, {
+            type: 'split_node',
+            path: Path.previous(op.path)
+          });
+        }
+
+      case 'move_node':
+        {
+          var {
+            newPath,
+            path
+          } = op; // PERF: in this case the move operation is a no-op anyways.
+
+          if (Path.equals(newPath, path)) {
+            return op;
+          } // If the move happens completely within a single parent the path and
+          // newPath are stable with respect to each other.
+
+
+          if (Path.isSibling(path, newPath)) {
+            return _objectSpread$1$1({}, op, {
+              path: newPath,
+              newPath: path
+            });
+          } // If the move does not happen within a single parent it is possible
+          // for the move to impact the true path to the location where the node
+          // was removed from and where it was inserted. We have to adjust for this
+          // and find the original path. We can accomplish this (only in non-sibling)
+          // moves by looking at the impact of the move operation on the node
+          // after the original move path.
+
+
+          var inversePath = Path.transform(path, op);
+          var inverseNewPath = Path.transform(Path.next(path), op);
+          return _objectSpread$1$1({}, op, {
+            path: inversePath,
+            newPath: inverseNewPath
+          });
+        }
+
+      case 'remove_node':
+        {
+          return _objectSpread$1$1({}, op, {
+            type: 'insert_node'
+          });
+        }
+
+      case 'remove_text':
+        {
+          return _objectSpread$1$1({}, op, {
+            type: 'insert_text'
+          });
+        }
+
+      case 'set_node':
+        {
+          var {
+            properties,
+            newProperties
+          } = op;
+          return _objectSpread$1$1({}, op, {
+            properties: newProperties,
+            newProperties: properties
+          });
+        }
+
+      case 'set_selection':
+        {
+          var {
+            properties: _properties,
+            newProperties: _newProperties
+          } = op;
+
+          if (_properties == null) {
+            return _objectSpread$1$1({}, op, {
+              properties: _newProperties,
+              newProperties: null
+            });
+          } else if (_newProperties == null) {
+            return _objectSpread$1$1({}, op, {
+              properties: null,
+              newProperties: _properties
+            });
+          } else {
+            return _objectSpread$1$1({}, op, {
+              properties: _newProperties,
+              newProperties: _properties
+            });
+          }
+        }
+
+      case 'split_node':
+        {
+          return _objectSpread$1$1({}, op, {
+            type: 'merge_node',
+            path: Path.next(op.path)
+          });
+        }
+    }
+  }
+
+};
+
+var Path = {
+  /**
+   * Get a list of ancestor paths for a given path.
+   *
+   * The paths are sorted from deepest to shallowest ancestor. However, if the
+   * `reverse: true` option is passed, they are reversed.
+   */
+  ancestors(path) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      reverse = false
+    } = options;
+    var paths = Path.levels(path, options);
+
+    if (reverse) {
+      paths = paths.slice(1);
+    } else {
+      paths = paths.slice(0, -1);
+    }
+
+    return paths;
+  },
+
+  /**
+   * Get the common ancestor path of two paths.
+   */
+  common(path, another) {
+    var common = [];
+
+    for (var i = 0; i < path.length && i < another.length; i++) {
+      var av = path[i];
+      var bv = another[i];
+
+      if (av !== bv) {
+        break;
+      }
+
+      common.push(av);
+    }
+
+    return common;
+  },
+
+  /**
+   * Compare a path to another, returning an integer indicating whether the path
+   * was before, at, or after the other.
+   *
+   * Note: Two paths of unequal length can still receive a `0` result if one is
+   * directly above or below the other. If you want exact matching, use
+   * [[Path.equals]] instead.
+   */
+  compare(path, another) {
+    var min = Math.min(path.length, another.length);
+
+    for (var i = 0; i < min; i++) {
+      if (path[i] < another[i]) return -1;
+      if (path[i] > another[i]) return 1;
+    }
+
+    return 0;
+  },
+
+  /**
+   * Check if a path ends after one of the indexes in another.
+   */
+  endsAfter(path, another) {
+    var i = path.length - 1;
+    var as = path.slice(0, i);
+    var bs = another.slice(0, i);
+    var av = path[i];
+    var bv = another[i];
+    return Path.equals(as, bs) && av > bv;
+  },
+
+  /**
+   * Check if a path ends at one of the indexes in another.
+   */
+  endsAt(path, another) {
+    var i = path.length;
+    var as = path.slice(0, i);
+    var bs = another.slice(0, i);
+    return Path.equals(as, bs);
+  },
+
+  /**
+   * Check if a path ends before one of the indexes in another.
+   */
+  endsBefore(path, another) {
+    var i = path.length - 1;
+    var as = path.slice(0, i);
+    var bs = another.slice(0, i);
+    var av = path[i];
+    var bv = another[i];
+    return Path.equals(as, bs) && av < bv;
+  },
+
+  /**
+   * Check if a path is exactly equal to another.
+   */
+  equals(path, another) {
+    return path.length === another.length && path.every((n, i) => n === another[i]);
+  },
+
+  /**
+   * Check if a path is after another.
+   */
+  isAfter(path, another) {
+    return Path.compare(path, another) === 1;
+  },
+
+  /**
+   * Check if a path is an ancestor of another.
+   */
+  isAncestor(path, another) {
+    return path.length < another.length && Path.compare(path, another) === 0;
+  },
+
+  /**
+   * Check if a path is before another.
+   */
+  isBefore(path, another) {
+    return Path.compare(path, another) === -1;
+  },
+
+  /**
+   * Check if a path is a child of another.
+   */
+  isChild(path, another) {
+    return path.length === another.length + 1 && Path.compare(path, another) === 0;
+  },
+
+  /**
+   * Check if a path is equal to or an ancestor of another.
+   */
+  isCommon(path, another) {
+    return path.length <= another.length && Path.compare(path, another) === 0;
+  },
+
+  /**
+   * Check if a path is a descendant of another.
+   */
+  isDescendant(path, another) {
+    return path.length > another.length && Path.compare(path, another) === 0;
+  },
+
+  /**
+   * Check if a path is the parent of another.
+   */
+  isParent(path, another) {
+    return path.length + 1 === another.length && Path.compare(path, another) === 0;
+  },
+
+  /**
+   * Check is a value implements the `Path` interface.
+   */
+  isPath(value) {
+    return Array.isArray(value) && (value.length === 0 || typeof value[0] === 'number');
+  },
+
+  /**
+   * Check if a path is a sibling of another.
+   */
+  isSibling(path, another) {
+    if (path.length !== another.length) {
+      return false;
+    }
+
+    var as = path.slice(0, -1);
+    var bs = another.slice(0, -1);
+    var al = path[path.length - 1];
+    var bl = another[another.length - 1];
+    return al !== bl && Path.equals(as, bs);
+  },
+
+  /**
+   * Get a list of paths at every level down to a path. Note: this is the same
+   * as `Path.ancestors`, but including the path itself.
+   *
+   * The paths are sorted from shallowest to deepest. However, if the `reverse:
+   * true` option is passed, they are reversed.
+   */
+  levels(path) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      reverse = false
+    } = options;
+    var list = [];
+
+    for (var i = 0; i <= path.length; i++) {
+      list.push(path.slice(0, i));
+    }
+
+    if (reverse) {
+      list.reverse();
+    }
+
+    return list;
+  },
+
+  /**
+   * Given a path, get the path to the next sibling node.
+   */
+  next(path) {
+    if (path.length === 0) {
+      throw new Error("Cannot get the next path of a root path [".concat(path, "], because it has no next index."));
+    }
+
+    var last = path[path.length - 1];
+    return path.slice(0, -1).concat(last + 1);
+  },
+
+  /**
+   * Given a path, return a new path referring to the parent node above it.
+   */
+  parent(path) {
+    if (path.length === 0) {
+      throw new Error("Cannot get the parent path of the root path [".concat(path, "]."));
+    }
+
+    return path.slice(0, -1);
+  },
+
+  /**
+   * Given a path, get the path to the previous sibling node.
+   */
+  previous(path) {
+    if (path.length === 0) {
+      throw new Error("Cannot get the previous path of a root path [".concat(path, "], because it has no previous index."));
+    }
+
+    var last = path[path.length - 1];
+
+    if (last <= 0) {
+      throw new Error("Cannot get the previous path of a first child path [".concat(path, "] because it would result in a negative index."));
+    }
+
+    return path.slice(0, -1).concat(last - 1);
+  },
+
+  /**
+   * Get a path relative to an ancestor.
+   */
+  relative(path, ancestor) {
+    if (!Path.isAncestor(ancestor, path) && !Path.equals(path, ancestor)) {
+      throw new Error("Cannot get the relative path of [".concat(path, "] inside ancestor [").concat(ancestor, "], because it is not above or equal to the path."));
+    }
+
+    return path.slice(ancestor.length);
+  },
+
+  /**
+   * Transform a path by an operation.
+   */
+  transform(path, operation) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return produce(path, p => {
+      var {
+        affinity = 'forward'
+      } = options; // PERF: Exit early if the operation is guaranteed not to have an effect.
+
+      if (path.length === 0) {
+        return;
+      }
+
+      switch (operation.type) {
+        case 'insert_node':
+          {
+            var {
+              path: op
+            } = operation;
+
+            if (Path.equals(op, p) || Path.endsBefore(op, p) || Path.isAncestor(op, p)) {
+              p[op.length - 1] += 1;
+            }
+
+            break;
+          }
+
+        case 'remove_node':
+          {
+            var {
+              path: _op
+            } = operation;
+
+            if (Path.equals(_op, p) || Path.isAncestor(_op, p)) {
+              return null;
+            } else if (Path.endsBefore(_op, p)) {
+              p[_op.length - 1] -= 1;
+            }
+
+            break;
+          }
+
+        case 'merge_node':
+          {
+            var {
+              path: _op2,
+              position
+            } = operation;
+
+            if (Path.equals(_op2, p) || Path.endsBefore(_op2, p)) {
+              p[_op2.length - 1] -= 1;
+            } else if (Path.isAncestor(_op2, p)) {
+              p[_op2.length - 1] -= 1;
+              p[_op2.length] += position;
+            }
+
+            break;
+          }
+
+        case 'split_node':
+          {
+            var {
+              path: _op3,
+              position: _position
+            } = operation;
+
+            if (Path.equals(_op3, p)) {
+              if (affinity === 'forward') {
+                p[p.length - 1] += 1;
+              } else if (affinity === 'backward') ; else {
+                return null;
+              }
+            } else if (Path.endsBefore(_op3, p)) {
+              p[_op3.length - 1] += 1;
+            } else if (Path.isAncestor(_op3, p) && path[_op3.length] >= _position) {
+              p[_op3.length - 1] += 1;
+              p[_op3.length] -= _position;
+            }
+
+            break;
+          }
+
+        case 'move_node':
+          {
+            var {
+              path: _op4,
+              newPath: onp
+            } = operation; // If the old and new path are the same, it's a no-op.
+
+            if (Path.equals(_op4, onp)) {
+              return;
+            }
+
+            if (Path.isAncestor(_op4, p) || Path.equals(_op4, p)) {
+              var copy = onp.slice();
+
+              if (Path.endsBefore(_op4, onp) && _op4.length < onp.length) {
+                copy[_op4.length - 1] -= 1;
+              }
+
+              return copy.concat(p.slice(_op4.length));
+            } else if (Path.isSibling(_op4, onp) && (Path.isAncestor(onp, p) || Path.equals(onp, p))) {
+              if (Path.endsBefore(_op4, p)) {
+                p[_op4.length - 1] -= 1;
+              } else {
+                p[_op4.length - 1] += 1;
+              }
+            } else if (Path.endsBefore(onp, p) || Path.equals(onp, p) || Path.isAncestor(onp, p)) {
+              if (Path.endsBefore(_op4, p)) {
+                p[_op4.length - 1] -= 1;
+              }
+
+              p[onp.length - 1] += 1;
+            } else if (Path.endsBefore(_op4, p)) {
+              if (Path.equals(onp, p)) {
+                p[onp.length - 1] += 1;
+              }
+
+              p[_op4.length - 1] -= 1;
+            }
+
+            break;
+          }
+      }
+    });
+  }
+
+};
+
+var PathRef = {
+  /**
+   * Transform the path ref's current value by an operation.
+   */
+  transform(ref, op) {
+    var {
+      current,
+      affinity
+    } = ref;
+
+    if (current == null) {
+      return;
+    }
+
+    var path = Path.transform(current, op, {
+      affinity
+    });
+    ref.current = path;
+
+    if (path == null) {
+      ref.unref();
+    }
+  }
+
+};
+
+function ownKeys$2$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$2$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var Point = {
+  /**
+   * Compare a point to another, returning an integer indicating whether the
+   * point was before, at, or after the other.
+   */
+  compare(point, another) {
+    var result = Path.compare(point.path, another.path);
+
+    if (result === 0) {
+      if (point.offset < another.offset) return -1;
+      if (point.offset > another.offset) return 1;
+      return 0;
+    }
+
+    return result;
+  },
+
+  /**
+   * Check if a point is after another.
+   */
+  isAfter(point, another) {
+    return Point.compare(point, another) === 1;
+  },
+
+  /**
+   * Check if a point is before another.
+   */
+  isBefore(point, another) {
+    return Point.compare(point, another) === -1;
+  },
+
+  /**
+   * Check if a point is exactly equal to another.
+   */
+  equals(point, another) {
+    // PERF: ensure the offsets are equal first since they are cheaper to check.
+    return point.offset === another.offset && Path.equals(point.path, another.path);
+  },
+
+  /**
+   * Check if a value implements the `Point` interface.
+   */
+  isPoint(value) {
+    return isPlainObject(value) && typeof value.offset === 'number' && Path.isPath(value.path);
+  },
+
+  /**
+   * Transform a point by an operation.
+   */
+  transform(point, op) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    return produce(point, p => {
+      var {
+        affinity = 'forward'
+      } = options;
+      var {
+        path,
+        offset
+      } = p;
+
+      switch (op.type) {
+        case 'insert_node':
+        case 'move_node':
+          {
+            p.path = Path.transform(path, op, options);
+            break;
+          }
+
+        case 'insert_text':
+          {
+            if (Path.equals(op.path, path) && op.offset <= offset) {
+              p.offset += op.text.length;
+            }
+
+            break;
+          }
+
+        case 'merge_node':
+          {
+            if (Path.equals(op.path, path)) {
+              p.offset += op.position;
+            }
+
+            p.path = Path.transform(path, op, options);
+            break;
+          }
+
+        case 'remove_text':
+          {
+            if (Path.equals(op.path, path) && op.offset <= offset) {
+              p.offset -= Math.min(offset - op.offset, op.text.length);
+            }
+
+            break;
+          }
+
+        case 'remove_node':
+          {
+            if (Path.equals(op.path, path) || Path.isAncestor(op.path, path)) {
+              return null;
+            }
+
+            p.path = Path.transform(path, op, options);
+            break;
+          }
+
+        case 'split_node':
+          {
+            if (Path.equals(op.path, path)) {
+              if (op.position === offset && affinity == null) {
+                return null;
+              } else if (op.position < offset || op.position === offset && affinity === 'forward') {
+                p.offset -= op.position;
+                p.path = Path.transform(path, op, _objectSpread$2$1({}, options, {
+                  affinity: 'forward'
+                }));
+              }
+            } else {
+              p.path = Path.transform(path, op, options);
+            }
+
+            break;
+          }
+      }
+    });
+  }
+
+};
+
+var PointRef = {
+  /**
+   * Transform the point ref's current value by an operation.
+   */
+  transform(ref, op) {
+    var {
+      current,
+      affinity
+    } = ref;
+
+    if (current == null) {
+      return;
+    }
+
+    var point = Point.transform(current, op, {
+      affinity
+    });
+    ref.current = point;
+
+    if (point == null) {
+      ref.unref();
+    }
+  }
+
+};
+
+function ownKeys$3$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var Range = {
+  /**
+   * Get the start and end points of a range, in the order in which they appear
+   * in the document.
+   */
+  edges(range) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      reverse = false
+    } = options;
+    var {
+      anchor,
+      focus
+    } = range;
+    return Range.isBackward(range) === reverse ? [anchor, focus] : [focus, anchor];
+  },
+
+  /**
+   * Get the end point of a range.
+   */
+  end(range) {
+    var [, end] = Range.edges(range);
+    return end;
+  },
+
+  /**
+   * Check if a range is exactly equal to another.
+   */
+  equals(range, another) {
+    return Point.equals(range.anchor, another.anchor) && Point.equals(range.focus, another.focus);
+  },
+
+  /**
+   * Check if a range includes a path, a point or part of another range.
+   */
+  includes(range, target) {
+    if (Range.isRange(target)) {
+      if (Range.includes(range, target.anchor) || Range.includes(range, target.focus)) {
+        return true;
+      }
+
+      var [rs, re] = Range.edges(range);
+      var [ts, te] = Range.edges(target);
+      return Point.isBefore(rs, ts) && Point.isAfter(re, te);
+    }
+
+    var [start, end] = Range.edges(range);
+    var isAfterStart = false;
+    var isBeforeEnd = false;
+
+    if (Point.isPoint(target)) {
+      isAfterStart = Point.compare(target, start) >= 0;
+      isBeforeEnd = Point.compare(target, end) <= 0;
+    } else {
+      isAfterStart = Path.compare(target, start.path) >= 0;
+      isBeforeEnd = Path.compare(target, end.path) <= 0;
+    }
+
+    return isAfterStart && isBeforeEnd;
+  },
+
+  /**
+   * Get the intersection of a range with another.
+   */
+  intersection(range, another) {
+    var rest = _objectWithoutProperties(range, ["anchor", "focus"]);
+
+    var [s1, e1] = Range.edges(range);
+    var [s2, e2] = Range.edges(another);
+    var start = Point.isBefore(s1, s2) ? s2 : s1;
+    var end = Point.isBefore(e1, e2) ? e1 : e2;
+
+    if (Point.isBefore(end, start)) {
+      return null;
+    } else {
+      return _objectSpread$3({
+        anchor: start,
+        focus: end
+      }, rest);
+    }
+  },
+
+  /**
+   * Check if a range is backward, meaning that its anchor point appears in the
+   * document _after_ its focus point.
+   */
+  isBackward(range) {
+    var {
+      anchor,
+      focus
+    } = range;
+    return Point.isAfter(anchor, focus);
+  },
+
+  /**
+   * Check if a range is collapsed, meaning that both its anchor and focus
+   * points refer to the exact same position in the document.
+   */
+  isCollapsed(range) {
+    var {
+      anchor,
+      focus
+    } = range;
+    return Point.equals(anchor, focus);
+  },
+
+  /**
+   * Check if a range is expanded.
+   *
+   * This is the opposite of [[Range.isCollapsed]] and is provided for legibility.
+   */
+  isExpanded(range) {
+    return !Range.isCollapsed(range);
+  },
+
+  /**
+   * Check if a range is forward.
+   *
+   * This is the opposite of [[Range.isBackward]] and is provided for legibility.
+   */
+  isForward(range) {
+    return !Range.isBackward(range);
+  },
+
+  /**
+   * Check if a value implements the [[Range]] interface.
+   */
+  isRange(value) {
+    return isPlainObject(value) && Point.isPoint(value.anchor) && Point.isPoint(value.focus);
+  },
+
+  /**
+   * Iterate through all of the point entries in a range.
+   */
+  *points(range) {
+    yield [range.anchor, 'anchor'];
+    yield [range.focus, 'focus'];
+  },
+
+  /**
+   * Get the start point of a range.
+   */
+  start(range) {
+    var [start] = Range.edges(range);
+    return start;
+  },
+
+  /**
+   * Transform a range by an operation.
+   */
+  transform(range, op, options) {
+    var {
+      affinity = 'inward'
+    } = options;
+    var affinityAnchor;
+    var affinityFocus;
+
+    if (affinity === 'inward') {
+      if (Range.isForward(range)) {
+        affinityAnchor = 'forward';
+        affinityFocus = 'backward';
+      } else {
+        affinityAnchor = 'backward';
+        affinityFocus = 'forward';
+      }
+    } else if (affinity === 'outward') {
+      if (Range.isForward(range)) {
+        affinityAnchor = 'backward';
+        affinityFocus = 'forward';
+      } else {
+        affinityAnchor = 'forward';
+        affinityFocus = 'backward';
+      }
+    } else {
+      affinityAnchor = affinity;
+      affinityFocus = affinity;
+    }
+
+    return produce(range, r => {
+      var anchor = Point.transform(r.anchor, op, {
+        affinity: affinityAnchor
+      });
+      var focus = Point.transform(r.focus, op, {
+        affinity: affinityFocus
+      });
+
+      if (!anchor || !focus) {
+        return null;
+      }
+
+      r.anchor = anchor;
+      r.focus = focus;
+    });
+  }
+
+};
+
+var RangeRef = {
+  /**
+   * Transform the range ref's current value by an operation.
+   */
+  transform(ref, op) {
+    var {
+      current,
+      affinity
+    } = ref;
+
+    if (current == null) {
+      return;
+    }
+
+    var path = Range.transform(current, op, {
+      affinity
+    });
+    ref.current = path;
+
+    if (path == null) {
+      ref.unref();
+    }
+  }
+
+};
+
+function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var Text = {
+  /**
+   * Check if two text nodes are equal.
+   */
+  equals(text, another) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      loose = false
+    } = options;
+
+    for (var key in text) {
+      if (loose && key === 'text') {
+        continue;
+      }
+
+      if (text[key] !== another[key]) {
+        return false;
+      }
+    }
+
+    for (var _key in another) {
+      if (loose && _key === 'text') {
+        continue;
+      }
+
+      if (text[_key] !== another[_key]) {
+        return false;
+      }
+    }
+
+    return true;
+  },
+
+  /**
+   * Check if a value implements the `Text` interface.
+   */
+  isText(value) {
+    return isPlainObject(value) && typeof value.text === 'string';
+  },
+
+  /**
+   * Check if a value is a list of `Text` objects.
+   */
+  isTextList(value) {
+    return Array.isArray(value) && (value.length === 0 || Text.isText(value[0]));
+  },
+
+  /**
+   * Check if an text matches set of properties.
+   *
+   * Note: this is for matching custom properties, and it does not ensure that
+   * the `text` property are two nodes equal.
+   */
+  matches(text, props) {
+    for (var key in props) {
+      if (key === 'text') {
+        continue;
+      }
+
+      if (text[key] !== props[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  },
+
+  /**
+   * Get the leaves for a text node given decorations.
+   */
+  decorations(node, decorations) {
+    var leaves = [_objectSpread$4({}, node)];
+
+    for (var dec of decorations) {
+      var rest = _objectWithoutProperties(dec, ["anchor", "focus"]);
+
+      var [start, end] = Range.edges(dec);
+      var next = [];
+      var o = 0;
+
+      for (var leaf of leaves) {
+        var {
+          length
+        } = leaf.text;
+        var offset = o;
+        o += length; // If the range encompases the entire leaf, add the range.
+
+        if (start.offset <= offset && end.offset >= offset + length) {
+          Object.assign(leaf, rest);
+          next.push(leaf);
+          continue;
+        } // If the range starts after the leaf, or ends before it, continue.
+
+
+        if (start.offset > offset + length || end.offset < offset || end.offset === offset && offset !== 0) {
+          next.push(leaf);
+          continue;
+        } // Otherwise we need to split the leaf, at the start, end, or both,
+        // and add the range to the middle intersecting section. Do the end
+        // split first since we don't need to update the offset that way.
+
+
+        var middle = leaf;
+        var before = void 0;
+        var after = void 0;
+
+        if (end.offset < offset + length) {
+          var off = end.offset - offset;
+          after = _objectSpread$4({}, middle, {
+            text: middle.text.slice(off)
+          });
+          middle = _objectSpread$4({}, middle, {
+            text: middle.text.slice(0, off)
+          });
+        }
+
+        if (start.offset > offset) {
+          var _off = start.offset - offset;
+
+          before = _objectSpread$4({}, middle, {
+            text: middle.text.slice(0, _off)
+          });
+          middle = _objectSpread$4({}, middle, {
+            text: middle.text.slice(_off)
+          });
+        }
+
+        Object.assign(middle, rest);
+
+        if (before) {
+          next.push(before);
+        }
+
+        next.push(middle);
+
+        if (after) {
+          next.push(after);
+        }
+      }
+
+      leaves = next;
+    }
+
+    return leaves;
+  }
+
+};
+
+function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var GeneralTransforms = {
+  /**
+   * Transform the editor by an operation.
+   */
+  transform(editor, op) {
+    editor.children = createDraft(editor.children);
+    var selection = editor.selection && createDraft(editor.selection);
+
+    switch (op.type) {
+      case 'insert_node':
+        {
+          var {
+            path,
+            node
+          } = op;
+          var parent = Node$1.parent(editor, path);
+          var index = path[path.length - 1];
+          parent.children.splice(index, 0, node);
+
+          if (selection) {
+            for (var [point, key] of Range.points(selection)) {
+              selection[key] = Point.transform(point, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'insert_text':
+        {
+          var {
+            path: _path,
+            offset,
+            text
+          } = op;
+
+          var _node = Node$1.leaf(editor, _path);
+
+          var before = _node.text.slice(0, offset);
+
+          var after = _node.text.slice(offset);
+
+          _node.text = before + text + after;
+
+          if (selection) {
+            for (var [_point, _key] of Range.points(selection)) {
+              selection[_key] = Point.transform(_point, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'merge_node':
+        {
+          var {
+            path: _path2
+          } = op;
+
+          var _node2 = Node$1.get(editor, _path2);
+
+          var prevPath = Path.previous(_path2);
+          var prev = Node$1.get(editor, prevPath);
+
+          var _parent = Node$1.parent(editor, _path2);
+
+          var _index = _path2[_path2.length - 1];
+
+          if (Text.isText(_node2) && Text.isText(prev)) {
+            prev.text += _node2.text;
+          } else if (!Text.isText(_node2) && !Text.isText(prev)) {
+            prev.children.push(..._node2.children);
+          } else {
+            throw new Error("Cannot apply a \"merge_node\" operation at path [".concat(_path2, "] to nodes of different interaces: ").concat(_node2, " ").concat(prev));
+          }
+
+          _parent.children.splice(_index, 1);
+
+          if (selection) {
+            for (var [_point2, _key2] of Range.points(selection)) {
+              selection[_key2] = Point.transform(_point2, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'move_node':
+        {
+          var {
+            path: _path3,
+            newPath
+          } = op;
+
+          if (Path.isAncestor(_path3, newPath)) {
+            throw new Error("Cannot move a path [".concat(_path3, "] to new path [").concat(newPath, "] because the destination is inside itself."));
+          }
+
+          var _node3 = Node$1.get(editor, _path3);
+
+          var _parent2 = Node$1.parent(editor, _path3);
+
+          var _index2 = _path3[_path3.length - 1]; // This is tricky, but since the `path` and `newPath` both refer to
+          // the same snapshot in time, there's a mismatch. After either
+          // removing the original position, the second step's path can be out
+          // of date. So instead of using the `op.newPath` directly, we
+          // transform `op.path` to ascertain what the `newPath` would be after
+          // the operation was applied.
+
+          _parent2.children.splice(_index2, 1);
+
+          var truePath = Path.transform(_path3, op);
+          var newParent = Node$1.get(editor, Path.parent(truePath));
+          var newIndex = truePath[truePath.length - 1];
+          newParent.children.splice(newIndex, 0, _node3);
+
+          if (selection) {
+            for (var [_point3, _key3] of Range.points(selection)) {
+              selection[_key3] = Point.transform(_point3, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'remove_node':
+        {
+          var {
+            path: _path4
+          } = op;
+          var _index3 = _path4[_path4.length - 1];
+
+          var _parent3 = Node$1.parent(editor, _path4);
+
+          _parent3.children.splice(_index3, 1); // Transform all of the points in the value, but if the point was in the
+          // node that was removed we need to update the range or remove it.
+
+
+          if (selection) {
+            for (var [_point4, _key4] of Range.points(selection)) {
+              var result = Point.transform(_point4, op);
+
+              if (selection != null && result != null) {
+                selection[_key4] = result;
+              } else {
+                var _prev = void 0;
+
+                var next = void 0;
+
+                for (var [n, p] of Node$1.texts(editor)) {
+                  if (Path.compare(p, _path4) === -1) {
+                    _prev = [n, p];
+                  } else {
+                    next = [n, p];
+                    break;
+                  }
+                }
+
+                if (_prev) {
+                  _point4.path = _prev[1];
+                  _point4.offset = _prev[0].text.length;
+                } else if (next) {
+                  _point4.path = next[1];
+                  _point4.offset = 0;
+                } else {
+                  selection = null;
+                }
+              }
+            }
+          }
+
+          break;
+        }
+
+      case 'remove_text':
+        {
+          var {
+            path: _path5,
+            offset: _offset,
+            text: _text
+          } = op;
+
+          var _node4 = Node$1.leaf(editor, _path5);
+
+          var _before = _node4.text.slice(0, _offset);
+
+          var _after = _node4.text.slice(_offset + _text.length);
+
+          _node4.text = _before + _after;
+
+          if (selection) {
+            for (var [_point5, _key5] of Range.points(selection)) {
+              selection[_key5] = Point.transform(_point5, op);
+            }
+          }
+
+          break;
+        }
+
+      case 'set_node':
+        {
+          var {
+            path: _path6,
+            newProperties
+          } = op;
+
+          if (_path6.length === 0) {
+            throw new Error("Cannot set properties on the root node!");
+          }
+
+          var _node5 = Node$1.get(editor, _path6);
+
+          for (var _key6 in newProperties) {
+            if (_key6 === 'children' || _key6 === 'text') {
+              throw new Error("Cannot set the \"".concat(_key6, "\" property of nodes!"));
+            }
+
+            var value = newProperties[_key6];
+
+            if (value == null) {
+              delete _node5[_key6];
+            } else {
+              _node5[_key6] = value;
+            }
+          }
+
+          break;
+        }
+
+      case 'set_selection':
+        {
+          var {
+            newProperties: _newProperties
+          } = op;
+
+          if (_newProperties == null) {
+            selection = _newProperties;
+          } else if (selection == null) {
+            if (!Range.isRange(_newProperties)) {
+              throw new Error("Cannot apply an incomplete \"set_selection\" operation properties ".concat(JSON.stringify(_newProperties), " when there is no current selection."));
+            }
+
+            selection = _newProperties;
+          } else {
+            Object.assign(selection, _newProperties);
+          }
+
+          break;
+        }
+
+      case 'split_node':
+        {
+          var {
+            path: _path7,
+            position,
+            properties
+          } = op;
+
+          if (_path7.length === 0) {
+            throw new Error("Cannot apply a \"split_node\" operation at path [".concat(_path7, "] because the root node cannot be split."));
+          }
+
+          var _node6 = Node$1.get(editor, _path7);
+
+          var _parent4 = Node$1.parent(editor, _path7);
+
+          var _index4 = _path7[_path7.length - 1];
+          var newNode;
+
+          if (Text.isText(_node6)) {
+            var _before2 = _node6.text.slice(0, position);
+
+            var _after2 = _node6.text.slice(position);
+
+            _node6.text = _before2;
+            newNode = _objectSpread$5({}, _node6, {}, properties, {
+              text: _after2
+            });
+          } else {
+            var _before3 = _node6.children.slice(0, position);
+
+            var _after3 = _node6.children.slice(position);
+
+            _node6.children = _before3;
+            newNode = _objectSpread$5({}, _node6, {}, properties, {
+              children: _after3
+            });
+          }
+
+          _parent4.children.splice(_index4 + 1, 0, newNode);
+
+          if (selection) {
+            for (var [_point6, _key7] of Range.points(selection)) {
+              selection[_key7] = Point.transform(_point6, op);
+            }
+          }
+
+          break;
+        }
+    }
+
+    editor.children = finishDraft(editor.children);
+
+    if (selection) {
+      editor.selection = isDraft(selection) ? finishDraft(selection) : selection;
+    } else {
+      editor.selection = null;
+    }
+  }
+
+};
+
+function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var NodeTransforms = {
+  /**
+   * Insert nodes at a specific location in the Editor.
+   */
+  insertNodes(editor, nodes) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        hanging = false,
+        voids = false,
+        mode = 'lowest'
+      } = options;
+      var {
+        at,
+        match,
+        select
+      } = options;
+
+      if (Node$1.isNode(nodes)) {
+        nodes = [nodes];
+      }
+
+      if (nodes.length === 0) {
+        return;
+      }
+
+      var [node] = nodes; // By default, use the selection as the target location. But if there is
+      // no selection, insert at the end of the document since that is such a
+      // common use case when inserting from a non-selected state.
+
+      if (!at) {
+        if (editor.selection) {
+          at = editor.selection;
+        } else if (editor.children.length > 0) {
+          at = Editor.end(editor, []);
+        } else {
+          at = [0];
+        }
+
+        select = true;
+      }
+
+      if (select == null) {
+        select = false;
+      }
+
+      if (Range.isRange(at)) {
+        if (!hanging) {
+          at = Editor.unhangRange(editor, at);
+        }
+
+        if (Range.isCollapsed(at)) {
+          at = at.anchor;
+        } else {
+          var [, end] = Range.edges(at);
+          var pointRef = Editor.pointRef(editor, end);
+          Transforms.delete(editor, {
+            at
+          });
+          at = pointRef.unref();
+        }
+      }
+
+      if (Point.isPoint(at)) {
+        if (match == null) {
+          if (Text.isText(node)) {
+            match = n => Text.isText(n);
+          } else if (editor.isInline(node)) {
+            match = n => Text.isText(n) || Editor.isInline(editor, n);
+          } else {
+            match = n => Editor.isBlock(editor, n);
+          }
+        }
+
+        var [entry] = Editor.nodes(editor, {
+          at: at.path,
+          match,
+          mode,
+          voids
+        });
+
+        if (entry) {
+          var [, _matchPath] = entry;
+          var pathRef = Editor.pathRef(editor, _matchPath);
+          var isAtEnd = Editor.isEnd(editor, at, _matchPath);
+          Transforms.splitNodes(editor, {
+            at,
+            match,
+            mode,
+            voids
+          });
+          var path = pathRef.unref();
+          at = isAtEnd ? Path.next(path) : path;
+        } else {
+          return;
+        }
+      }
+
+      var parentPath = Path.parent(at);
+      var index = at[at.length - 1];
+
+      if (!voids && Editor.void(editor, {
+        at: parentPath
+      })) {
+        return;
+      }
+
+      for (var _node of nodes) {
+        var _path = parentPath.concat(index);
+
+        index++;
+        editor.apply({
+          type: 'insert_node',
+          path: _path,
+          node: _node
+        });
+      }
+
+      if (select) {
+        var point = Editor.end(editor, at);
+
+        if (point) {
+          Transforms.select(editor, point);
+        }
+      }
+    });
+  },
+
+  /**
+   * Lift nodes at a specific location upwards in the document tree, splitting
+   * their parent in two if necessary.
+   */
+  liftNodes(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        at = editor.selection,
+        mode = 'lowest',
+        voids = false
+      } = options;
+      var {
+        match
+      } = options;
+
+      if (match == null) {
+        match = Path.isPath(at) ? matchPath(editor, at) : n => Editor.isBlock(editor, n);
+      }
+
+      if (!at) {
+        return;
+      }
+
+      var matches = Editor.nodes(editor, {
+        at,
+        match,
+        mode,
+        voids
+      });
+      var pathRefs = Array.from(matches, (_ref) => {
+        var [, p] = _ref;
+        return Editor.pathRef(editor, p);
+      });
+
+      for (var pathRef of pathRefs) {
+        var path = pathRef.unref();
+
+        if (path.length < 2) {
+          throw new Error("Cannot lift node at a path [".concat(path, "] because it has a depth of less than `2`."));
+        }
+
+        var parentNodeEntry = Editor.node(editor, Path.parent(path));
+        var [parent, parentPath] = parentNodeEntry;
+        var index = path[path.length - 1];
+        var {
+          length
+        } = parent.children;
+
+        if (length === 1) {
+          var toPath = Path.next(parentPath);
+          Transforms.moveNodes(editor, {
+            at: path,
+            to: toPath,
+            voids
+          });
+          Transforms.removeNodes(editor, {
+            at: parentPath,
+            voids
+          });
+        } else if (index === 0) {
+          Transforms.moveNodes(editor, {
+            at: path,
+            to: parentPath,
+            voids
+          });
+        } else if (index === length - 1) {
+          var _toPath = Path.next(parentPath);
+
+          Transforms.moveNodes(editor, {
+            at: path,
+            to: _toPath,
+            voids
+          });
+        } else {
+          var splitPath = Path.next(path);
+
+          var _toPath2 = Path.next(parentPath);
+
+          Transforms.splitNodes(editor, {
+            at: splitPath,
+            voids
+          });
+          Transforms.moveNodes(editor, {
+            at: path,
+            to: _toPath2,
+            voids
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * Merge a node at a location with the previous node of the same depth,
+   * removing any empty containing nodes after the merge if necessary.
+   */
+  mergeNodes(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        match,
+        at = editor.selection
+      } = options;
+      var {
+        hanging = false,
+        voids = false,
+        mode = 'lowest'
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (match == null) {
+        if (Path.isPath(at)) {
+          var [parent] = Editor.parent(editor, at);
+
+          match = n => parent.children.includes(n);
+        } else {
+          match = n => Editor.isBlock(editor, n);
+        }
+      }
+
+      if (!hanging && Range.isRange(at)) {
+        at = Editor.unhangRange(editor, at);
+      }
+
+      if (Range.isRange(at)) {
+        if (Range.isCollapsed(at)) {
+          at = at.anchor;
+        } else {
+          var [, end] = Range.edges(at);
+          var pointRef = Editor.pointRef(editor, end);
+          Transforms.delete(editor, {
+            at
+          });
+          at = pointRef.unref();
+
+          if (options.at == null) {
+            Transforms.select(editor, at);
+          }
+        }
+      }
+
+      var [current] = Editor.nodes(editor, {
+        at,
+        match,
+        voids,
+        mode
+      });
+      var prev = Editor.previous(editor, {
+        at,
+        match,
+        voids,
+        mode
+      });
+
+      if (!current || !prev) {
+        return;
+      }
+
+      var [node, path] = current;
+      var [prevNode, prevPath] = prev;
+
+      if (path.length === 0 || prevPath.length === 0) {
+        return;
+      }
+
+      var newPath = Path.next(prevPath);
+      var commonPath = Path.common(path, prevPath);
+      var isPreviousSibling = Path.isSibling(path, prevPath);
+      var levels = Array.from(Editor.levels(editor, {
+        at: path
+      }), (_ref2) => {
+        var [n] = _ref2;
+        return n;
+      }).slice(commonPath.length).slice(0, -1); // Determine if the merge will leave an ancestor of the path empty as a
+      // result, in which case we'll want to remove it after merging.
+
+      var emptyAncestor = Editor.above(editor, {
+        at: path,
+        mode: 'highest',
+        match: n => levels.includes(n) && Element.isElement(n) && n.children.length === 1
+      });
+      var emptyRef = emptyAncestor && Editor.pathRef(editor, emptyAncestor[1]);
+      var properties;
+      var position; // Ensure that the nodes are equivalent, and figure out what the position
+      // and extra properties of the merge will be.
+
+      if (Text.isText(node) && Text.isText(prevNode)) {
+        var rest = _objectWithoutProperties(node, ["text"]);
+
+        position = prevNode.text.length;
+        properties = rest;
+      } else if (Element.isElement(node) && Element.isElement(prevNode)) {
+        var rest = _objectWithoutProperties(node, ["children"]);
+
+        position = prevNode.children.length;
+        properties = rest;
+      } else {
+        throw new Error("Cannot merge the node at path [".concat(path, "] with the previous sibling because it is not the same kind: ").concat(JSON.stringify(node), " ").concat(JSON.stringify(prevNode)));
+      } // If the node isn't already the next sibling of the previous node, move
+      // it so that it is before merging.
+
+
+      if (!isPreviousSibling) {
+        Transforms.moveNodes(editor, {
+          at: path,
+          to: newPath,
+          voids
+        });
+      } // If there was going to be an empty ancestor of the node that was merged,
+      // we remove it from the tree.
+
+
+      if (emptyRef) {
+        Transforms.removeNodes(editor, {
+          at: emptyRef.current,
+          voids
+        });
+      } // If the target node that we're merging with is empty, remove it instead
+      // of merging the two. This is a common rich text editor behavior to
+      // prevent losing formatting when deleting entire nodes when you have a
+      // hanging selection.
+
+
+      if (Element.isElement(prevNode) && Editor.isEmpty(editor, prevNode) || Text.isText(prevNode) && prevNode.text === '') {
+        Transforms.removeNodes(editor, {
+          at: prevPath,
+          voids
+        });
+      } else {
+        editor.apply({
+          type: 'merge_node',
+          path: newPath,
+          position,
+          properties
+        });
+      }
+
+      if (emptyRef) {
+        emptyRef.unref();
+      }
+    });
+  },
+
+  /**
+   * Move the nodes at a location to a new location.
+   */
+  moveNodes(editor, options) {
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        to,
+        at = editor.selection,
+        mode = 'lowest',
+        voids = false
+      } = options;
+      var {
+        match
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (match == null) {
+        match = Path.isPath(at) ? matchPath(editor, at) : n => Editor.isBlock(editor, n);
+      }
+
+      var toRef = Editor.pathRef(editor, to);
+      var targets = Editor.nodes(editor, {
+        at,
+        match,
+        mode,
+        voids
+      });
+      var pathRefs = Array.from(targets, (_ref3) => {
+        var [, p] = _ref3;
+        return Editor.pathRef(editor, p);
+      });
+
+      for (var pathRef of pathRefs) {
+        var path = pathRef.unref();
+        var newPath = toRef.current;
+
+        if (path.length !== 0) {
+          editor.apply({
+            type: 'move_node',
+            path,
+            newPath
+          });
+        }
+      }
+
+      toRef.unref();
+    });
+  },
+
+  /**
+   * Remove the nodes at a specific location in the document.
+   */
+  removeNodes(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        hanging = false,
+        voids = false,
+        mode = 'lowest'
+      } = options;
+      var {
+        at = editor.selection,
+        match
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (match == null) {
+        match = Path.isPath(at) ? matchPath(editor, at) : n => Editor.isBlock(editor, n);
+      }
+
+      if (!hanging && Range.isRange(at)) {
+        at = Editor.unhangRange(editor, at);
+      }
+
+      var depths = Editor.nodes(editor, {
+        at,
+        match,
+        mode,
+        voids
+      });
+      var pathRefs = Array.from(depths, (_ref4) => {
+        var [, p] = _ref4;
+        return Editor.pathRef(editor, p);
+      });
+
+      for (var pathRef of pathRefs) {
+        var path = pathRef.unref();
+
+        if (path) {
+          var [node] = Editor.node(editor, path);
+          editor.apply({
+            type: 'remove_node',
+            path,
+            node
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * Set new properties on the nodes at a location.
+   */
+  setNodes(editor, props) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        match,
+        at = editor.selection
+      } = options;
+      var {
+        hanging = false,
+        mode = 'lowest',
+        split = false,
+        voids = false
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (match == null) {
+        match = Path.isPath(at) ? matchPath(editor, at) : n => Editor.isBlock(editor, n);
+      }
+
+      if (!hanging && Range.isRange(at)) {
+        at = Editor.unhangRange(editor, at);
+      }
+
+      if (split && Range.isRange(at)) {
+        var rangeRef = Editor.rangeRef(editor, at, {
+          affinity: 'inward'
+        });
+        var [start, end] = Range.edges(at);
+        var splitMode = mode === 'lowest' ? 'lowest' : 'highest';
+        Transforms.splitNodes(editor, {
+          at: end,
+          match,
+          mode: splitMode,
+          voids
+        });
+        Transforms.splitNodes(editor, {
+          at: start,
+          match,
+          mode: splitMode,
+          voids
+        });
+        at = rangeRef.unref();
+
+        if (options.at == null) {
+          Transforms.select(editor, at);
+        }
+      }
+
+      for (var [node, path] of Editor.nodes(editor, {
+        at,
+        match,
+        mode,
+        voids
+      })) {
+        var properties = {};
+        var newProperties = {}; // You can't set properties on the editor node.
+
+        if (path.length === 0) {
+          continue;
+        }
+
+        for (var k in props) {
+          if (k === 'children' || k === 'text') {
+            continue;
+          }
+
+          if (props[k] !== node[k]) {
+            properties[k] = node[k];
+            newProperties[k] = props[k];
+          }
+        }
+
+        if (Object.keys(newProperties).length !== 0) {
+          editor.apply({
+            type: 'set_node',
+            path,
+            properties,
+            newProperties
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * Split the nodes at a specific location.
+   */
+  splitNodes(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        mode = 'lowest',
+        voids = false
+      } = options;
+      var {
+        match,
+        at = editor.selection,
+        height = 0,
+        always = false
+      } = options;
+
+      if (match == null) {
+        match = n => Editor.isBlock(editor, n);
+      }
+
+      if (Range.isRange(at)) {
+        at = deleteRange(editor, at);
+      } // If the target is a path, the default height-skipping and position
+      // counters need to account for us potentially splitting at a non-leaf.
+
+
+      if (Path.isPath(at)) {
+        var path = at;
+        var point = Editor.point(editor, path);
+        var [parent] = Editor.parent(editor, path);
+
+        match = n => n === parent;
+
+        height = point.path.length - path.length + 1;
+        at = point;
+        always = true;
+      }
+
+      if (!at) {
+        return;
+      }
+
+      var beforeRef = Editor.pointRef(editor, at, {
+        affinity: 'backward'
+      });
+      var [highest] = Editor.nodes(editor, {
+        at,
+        match,
+        mode,
+        voids
+      });
+
+      if (!highest) {
+        return;
+      }
+
+      var voidMatch = Editor.void(editor, {
+        at,
+        mode: 'highest'
+      });
+      var nudge = 0;
+
+      if (!voids && voidMatch) {
+        var [voidNode, voidPath] = voidMatch;
+
+        if (Element.isElement(voidNode) && editor.isInline(voidNode)) {
+          var after = Editor.after(editor, voidPath);
+
+          if (!after) {
+            var text = {
+              text: ''
+            };
+            var afterPath = Path.next(voidPath);
+            Transforms.insertNodes(editor, text, {
+              at: afterPath,
+              voids
+            });
+            after = Editor.point(editor, afterPath);
+          }
+
+          at = after;
+          always = true;
+        }
+
+        var siblingHeight = at.path.length - voidPath.length;
+        height = siblingHeight + 1;
+        always = true;
+      }
+
+      var afterRef = Editor.pointRef(editor, at);
+      var depth = at.path.length - height;
+      var [, highestPath] = highest;
+      var lowestPath = at.path.slice(0, depth);
+      var position = height === 0 ? at.offset : at.path[depth] + nudge;
+
+      for (var [node, _path2] of Editor.levels(editor, {
+        at: lowestPath,
+        reverse: true,
+        voids
+      })) {
+        var split = false;
+
+        if (_path2.length < highestPath.length || _path2.length === 0 || !voids && Editor.isVoid(editor, node)) {
+          break;
+        }
+
+        var _point = beforeRef.current;
+        var isEnd = Editor.isEnd(editor, _point, _path2);
+
+        if (always || !beforeRef || !Editor.isEdge(editor, _point, _path2)) {
+          split = true;
+
+          var properties = _objectWithoutProperties(node, ["text", "children"]);
+
+          editor.apply({
+            type: 'split_node',
+            path: _path2,
+            position,
+            properties
+          });
+        }
+
+        position = _path2[_path2.length - 1] + (split || isEnd ? 1 : 0);
+      }
+
+      if (options.at == null) {
+        var _point2 = afterRef.current || Editor.end(editor, []);
+
+        Transforms.select(editor, _point2);
+      }
+
+      beforeRef.unref();
+      afterRef.unref();
+    });
+  },
+
+  /**
+   * Unset properties on the nodes at a location.
+   */
+  unsetNodes(editor, props) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+    if (!Array.isArray(props)) {
+      props = [props];
+    }
+
+    var obj = {};
+
+    for (var key of props) {
+      obj[key] = null;
+    }
+
+    Transforms.setNodes(editor, obj, options);
+  },
+
+  /**
+   * Unwrap the nodes at a location from a parent node, splitting the parent if
+   * necessary to ensure that only the content in the range is unwrapped.
+   */
+  unwrapNodes(editor, options) {
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        mode = 'lowest',
+        split = false,
+        voids = false
+      } = options;
+      var {
+        at = editor.selection,
+        match
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (match == null) {
+        match = Path.isPath(at) ? matchPath(editor, at) : n => Editor.isBlock(editor, n);
+      }
+
+      if (Path.isPath(at)) {
+        at = Editor.range(editor, at);
+      }
+
+      var rangeRef = Range.isRange(at) ? Editor.rangeRef(editor, at) : null;
+      var matches = Editor.nodes(editor, {
+        at,
+        match,
+        mode,
+        voids
+      });
+      var pathRefs = Array.from(matches, (_ref5) => {
+        var [, p] = _ref5;
+        return Editor.pathRef(editor, p);
+      });
+
+      var _loop = function _loop(pathRef) {
+        var path = pathRef.unref();
+        var [node] = Editor.node(editor, path);
+        var range = Editor.range(editor, path);
+
+        if (split && rangeRef) {
+          range = Range.intersection(rangeRef.current, range);
+        }
+
+        Transforms.liftNodes(editor, {
+          at: range,
+          match: n => node.children.includes(n),
+          voids
+        });
+      };
+
+      for (var pathRef of pathRefs) {
+        _loop(pathRef);
+      }
+
+      if (rangeRef) {
+        rangeRef.unref();
+      }
+    });
+  },
+
+  /**
+   * Wrap the nodes at a location in a new container node, splitting the edges
+   * of the range first to ensure that only the content in the range is wrapped.
+   */
+  wrapNodes(editor, element) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        mode = 'lowest',
+        split = false,
+        voids = false
+      } = options;
+      var {
+        match,
+        at = editor.selection
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (match == null) {
+        if (Path.isPath(at)) {
+          match = matchPath(editor, at);
+        } else if (editor.isInline(element)) {
+          match = n => Editor.isInline(editor, n) || Text.isText(n);
+        } else {
+          match = n => Editor.isBlock(editor, n);
+        }
+      }
+
+      if (split && Range.isRange(at)) {
+        var [start, end] = Range.edges(at);
+        var rangeRef = Editor.rangeRef(editor, at, {
+          affinity: 'inward'
+        });
+        Transforms.splitNodes(editor, {
+          at: end,
+          match,
+          voids
+        });
+        Transforms.splitNodes(editor, {
+          at: start,
+          match,
+          voids
+        });
+        at = rangeRef.unref();
+
+        if (options.at == null) {
+          Transforms.select(editor, at);
+        }
+      }
+
+      var roots = Array.from(Editor.nodes(editor, {
+        at,
+        match: editor.isInline(element) ? n => Editor.isBlock(editor, n) : n => Editor.isEditor(n),
+        mode: 'lowest',
+        voids
+      }));
+
+      for (var [, rootPath] of roots) {
+        var a = Range.isRange(at) ? Range.intersection(at, Editor.range(editor, rootPath)) : at;
+
+        if (!a) {
+          continue;
+        }
+
+        var matches = Array.from(Editor.nodes(editor, {
+          at: a,
+          match,
+          mode,
+          voids
+        }));
+
+        if (matches.length > 0) {
+          (function () {
+            var [first] = matches;
+            var last = matches[matches.length - 1];
+            var [, firstPath] = first;
+            var [, lastPath] = last;
+            var commonPath = Path.equals(firstPath, lastPath) ? Path.parent(firstPath) : Path.common(firstPath, lastPath);
+            var range = Editor.range(editor, firstPath, lastPath);
+            var commonNodeEntry = Editor.node(editor, commonPath);
+            var [commonNode] = commonNodeEntry;
+            var depth = commonPath.length + 1;
+            var wrapperPath = Path.next(lastPath.slice(0, depth));
+
+            var wrapper = _objectSpread$6({}, element, {
+              children: []
+            });
+
+            Transforms.insertNodes(editor, wrapper, {
+              at: wrapperPath,
+              voids
+            });
+            Transforms.moveNodes(editor, {
+              at: range,
+              match: n => commonNode.children.includes(n),
+              to: wrapperPath.concat(0),
+              voids
+            });
+          })();
+        }
+      }
+    });
+  }
+
+};
+/**
+ * Convert a range into a point by deleting it's content.
+ */
+
+var deleteRange = (editor, range) => {
+  if (Range.isCollapsed(range)) {
+    return range.anchor;
+  } else {
+    var [, end] = Range.edges(range);
+    var pointRef = Editor.pointRef(editor, end);
+    Transforms.delete(editor, {
+      at: range
+    });
+    return pointRef.unref();
+  }
+};
+
+var matchPath = (editor, path) => {
+  var [node] = Editor.node(editor, path);
+  return n => n === node;
+};
+
+function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var SelectionTransforms = {
+  /**
+   * Collapse the selection.
+   */
+  collapse(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      edge = 'anchor'
+    } = options;
+    var {
+      selection
+    } = editor;
+
+    if (!selection) {
+      return;
+    } else if (edge === 'anchor') {
+      Transforms.select(editor, selection.anchor);
+    } else if (edge === 'focus') {
+      Transforms.select(editor, selection.focus);
+    } else if (edge === 'start') {
+      var [start] = Range.edges(selection);
+      Transforms.select(editor, start);
+    } else if (edge === 'end') {
+      var [, end] = Range.edges(selection);
+      Transforms.select(editor, end);
+    }
+  },
+
+  /**
+   * Unset the selection.
+   */
+  deselect(editor) {
+    var {
+      selection
+    } = editor;
+
+    if (selection) {
+      editor.apply({
+        type: 'set_selection',
+        properties: selection,
+        newProperties: null
+      });
+    }
+  },
+
+  /**
+   * Move the selection's point forward or backward.
+   */
+  move(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var {
+      selection
+    } = editor;
+    var {
+      distance = 1,
+      unit = 'character',
+      reverse = false
+    } = options;
+    var {
+      edge = null
+    } = options;
+
+    if (!selection) {
+      return;
+    }
+
+    if (edge === 'start') {
+      edge = Range.isBackward(selection) ? 'focus' : 'anchor';
+    }
+
+    if (edge === 'end') {
+      edge = Range.isBackward(selection) ? 'anchor' : 'focus';
+    }
+
+    var {
+      anchor,
+      focus
+    } = selection;
+    var opts = {
+      distance,
+      unit
+    };
+    var props = {};
+
+    if (edge == null || edge === 'anchor') {
+      var point = reverse ? Editor.before(editor, anchor, opts) : Editor.after(editor, anchor, opts);
+
+      if (point) {
+        props.anchor = point;
+      }
+    }
+
+    if (edge == null || edge === 'focus') {
+      var _point = reverse ? Editor.before(editor, focus, opts) : Editor.after(editor, focus, opts);
+
+      if (_point) {
+        props.focus = _point;
+      }
+    }
+
+    Transforms.setSelection(editor, props);
+  },
+
+  /**
+   * Set the selection to a new value.
+   */
+  select(editor, target) {
+    var {
+      selection
+    } = editor;
+    target = Editor.range(editor, target);
+
+    if (selection) {
+      Transforms.setSelection(editor, target);
+      return;
+    }
+
+    if (!Range.isRange(target)) {
+      throw new Error("When setting the selection and the current selection is `null` you must provide at least an `anchor` and `focus`, but you passed: ".concat(JSON.stringify(target)));
+    }
+
+    editor.apply({
+      type: 'set_selection',
+      properties: selection,
+      newProperties: target
+    });
+  },
+
+  /**
+   * Set new properties on one of the selection's points.
+   */
+  setPoint(editor, props, options) {
+    var {
+      selection
+    } = editor;
+    var {
+      edge = 'both'
+    } = options;
+
+    if (!selection) {
+      return;
+    }
+
+    if (edge === 'start') {
+      edge = Range.isBackward(selection) ? 'focus' : 'anchor';
+    }
+
+    if (edge === 'end') {
+      edge = Range.isBackward(selection) ? 'anchor' : 'focus';
+    }
+
+    var {
+      anchor,
+      focus
+    } = selection;
+    var point = edge === 'anchor' ? anchor : focus;
+    Transforms.setSelection(editor, {
+      [edge === 'anchor' ? 'anchor' : 'focus']: _objectSpread$7({}, point, {}, props)
+    });
+  },
+
+  /**
+   * Set new properties on the selection.
+   */
+  setSelection(editor, props) {
+    var {
+      selection
+    } = editor;
+    var oldProps = {};
+    var newProps = {};
+
+    if (!selection) {
+      return;
+    }
+
+    for (var k in props) {
+      if (k === 'anchor' && props.anchor != null && !Point.equals(props.anchor, selection.anchor) || k === 'focus' && props.focus != null && !Point.equals(props.focus, selection.focus) || k !== 'anchor' && k !== 'focus' && props[k] !== selection[k]) {
+        oldProps[k] = selection[k];
+        newProps[k] = props[k];
+      }
+    }
+
+    if (Object.keys(oldProps).length > 0) {
+      editor.apply({
+        type: 'set_selection',
+        properties: oldProps,
+        newProperties: newProps
+      });
+    }
+  }
+
+};
+
+var TextTransforms = {
+  /**
+   * Delete content in the editor.
+   */
+  delete(editor) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        reverse = false,
+        unit = 'character',
+        distance = 1,
+        voids = false
+      } = options;
+      var {
+        at = editor.selection,
+        hanging = false
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (Range.isRange(at) && Range.isCollapsed(at)) {
+        at = at.anchor;
+      }
+
+      if (Point.isPoint(at)) {
+        var furthestVoid = Editor.void(editor, {
+          at,
+          mode: 'highest'
+        });
+
+        if (!voids && furthestVoid) {
+          var [, voidPath] = furthestVoid;
+          at = voidPath;
+        } else {
+          var opts = {
+            unit,
+            distance
+          };
+          var target = reverse ? Editor.before(editor, at, opts) || Editor.start(editor, []) : Editor.after(editor, at, opts) || Editor.end(editor, []);
+          at = {
+            anchor: at,
+            focus: target
+          };
+          hanging = true;
+        }
+      }
+
+      if (Path.isPath(at)) {
+        Transforms.removeNodes(editor, {
+          at,
+          voids
+        });
+        return;
+      }
+
+      if (Range.isCollapsed(at)) {
+        return;
+      }
+
+      if (!hanging) {
+        at = Editor.unhangRange(editor, at, {
+          voids
+        });
+      }
+
+      var [start, end] = Range.edges(at);
+      var startBlock = Editor.above(editor, {
+        match: n => Editor.isBlock(editor, n),
+        at: start,
+        voids
+      });
+      var endBlock = Editor.above(editor, {
+        match: n => Editor.isBlock(editor, n),
+        at: end,
+        voids
+      });
+      var isAcrossBlocks = startBlock && endBlock && !Path.equals(startBlock[1], endBlock[1]);
+      var isSingleText = Path.equals(start.path, end.path);
+      var startVoid = voids ? null : Editor.void(editor, {
+        at: start,
+        mode: 'highest'
+      });
+      var endVoid = voids ? null : Editor.void(editor, {
+        at: end,
+        mode: 'highest'
+      }); // If the start or end points are inside an inline void, nudge them out.
+
+      if (startVoid) {
+        var before = Editor.before(editor, start);
+
+        if (before && startBlock && Path.isAncestor(startBlock[1], before.path)) {
+          start = before;
+        }
+      }
+
+      if (endVoid) {
+        var after = Editor.after(editor, end);
+
+        if (after && endBlock && Path.isAncestor(endBlock[1], after.path)) {
+          end = after;
+        }
+      } // Get the highest nodes that are completely inside the range, as well as
+      // the start and end nodes.
+
+
+      var matches = [];
+      var lastPath;
+
+      for (var entry of Editor.nodes(editor, {
+        at,
+        voids
+      })) {
+        var [node, path] = entry;
+
+        if (lastPath && Path.compare(path, lastPath) === 0) {
+          continue;
+        }
+
+        if (!voids && Editor.isVoid(editor, node) || !Path.isCommon(path, start.path) && !Path.isCommon(path, end.path)) {
+          matches.push(entry);
+          lastPath = path;
+        }
+      }
+
+      var pathRefs = Array.from(matches, (_ref) => {
+        var [, p] = _ref;
+        return Editor.pathRef(editor, p);
+      });
+      var startRef = Editor.pointRef(editor, start);
+      var endRef = Editor.pointRef(editor, end);
+
+      if (!isSingleText && !startVoid) {
+        var _point = startRef.current;
+        var [_node] = Editor.leaf(editor, _point);
+        var {
+          path: _path
+        } = _point;
+        var {
+          offset
+        } = start;
+
+        var text = _node.text.slice(offset);
+
+        editor.apply({
+          type: 'remove_text',
+          path: _path,
+          offset,
+          text
+        });
+      }
+
+      for (var pathRef of pathRefs) {
+        var _path2 = pathRef.unref();
+
+        Transforms.removeNodes(editor, {
+          at: _path2,
+          voids
+        });
+      }
+
+      if (!endVoid) {
+        var _point2 = endRef.current;
+        var [_node2] = Editor.leaf(editor, _point2);
+        var {
+          path: _path3
+        } = _point2;
+
+        var _offset = isSingleText ? start.offset : 0;
+
+        var _text = _node2.text.slice(_offset, end.offset);
+
+        editor.apply({
+          type: 'remove_text',
+          path: _path3,
+          offset: _offset,
+          text: _text
+        });
+      }
+
+      if (!isSingleText && isAcrossBlocks && endRef.current && startRef.current) {
+        Transforms.mergeNodes(editor, {
+          at: endRef.current,
+          hanging: true,
+          voids
+        });
+      }
+
+      var point = endRef.unref() || startRef.unref();
+
+      if (options.at == null && point) {
+        Transforms.select(editor, point);
+      }
+    });
+  },
+
+  /**
+   * Insert a fragment at a specific location in the editor.
+   */
+  insertFragment(editor, fragment) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        hanging = false,
+        voids = false
+      } = options;
+      var {
+        at = editor.selection
+      } = options;
+
+      if (!fragment.length) {
+        return;
+      }
+
+      if (!at) {
+        return;
+      } else if (Range.isRange(at)) {
+        if (!hanging) {
+          at = Editor.unhangRange(editor, at);
+        }
+
+        if (Range.isCollapsed(at)) {
+          at = at.anchor;
+        } else {
+          var [, end] = Range.edges(at);
+
+          if (!voids && Editor.void(editor, {
+            at: end
+          })) {
+            return;
+          }
+
+          var pointRef = Editor.pointRef(editor, end);
+          Transforms.delete(editor, {
+            at
+          });
+          at = pointRef.unref();
+        }
+      } else if (Path.isPath(at)) {
+        at = Editor.start(editor, at);
+      }
+
+      if (!voids && Editor.void(editor, {
+        at
+      })) {
+        return;
+      } // If the insert point is at the edge of an inline node, move it outside
+      // instead since it will need to be split otherwise.
+
+
+      var inlineElementMatch = Editor.above(editor, {
+        at,
+        match: n => Editor.isInline(editor, n),
+        mode: 'highest',
+        voids
+      });
+
+      if (inlineElementMatch) {
+        var [, _inlinePath] = inlineElementMatch;
+
+        if (Editor.isEnd(editor, at, _inlinePath)) {
+          var after = Editor.after(editor, _inlinePath);
+          at = after;
+        } else if (Editor.isStart(editor, at, _inlinePath)) {
+          var before = Editor.before(editor, _inlinePath);
+          at = before;
+        }
+      }
+
+      var blockMatch = Editor.above(editor, {
+        match: n => Editor.isBlock(editor, n),
+        at,
+        voids
+      });
+      var [, blockPath] = blockMatch;
+      var isBlockStart = Editor.isStart(editor, at, blockPath);
+      var isBlockEnd = Editor.isEnd(editor, at, blockPath);
+      var mergeStart = !isBlockStart || isBlockStart && isBlockEnd;
+      var mergeEnd = !isBlockEnd;
+      var [, firstPath] = Node$1.first({
+        children: fragment
+      }, []);
+      var [, lastPath] = Node$1.last({
+        children: fragment
+      }, []);
+      var matches = [];
+
+      var matcher = (_ref2) => {
+        var [n, p] = _ref2;
+
+        if (mergeStart && Path.isAncestor(p, firstPath) && Element.isElement(n) && !editor.isVoid(n) && !editor.isInline(n)) {
+          return false;
+        }
+
+        if (mergeEnd && Path.isAncestor(p, lastPath) && Element.isElement(n) && !editor.isVoid(n) && !editor.isInline(n)) {
+          return false;
+        }
+
+        return true;
+      };
+
+      for (var entry of Node$1.nodes({
+        children: fragment
+      }, {
+        pass: matcher
+      })) {
+        if (entry[1].length > 0 && matcher(entry)) {
+          matches.push(entry);
+        }
+      }
+
+      var starts = [];
+      var middles = [];
+      var ends = [];
+      var starting = true;
+      var hasBlocks = false;
+
+      for (var [node] of matches) {
+        if (Element.isElement(node) && !editor.isInline(node)) {
+          starting = false;
+          hasBlocks = true;
+          middles.push(node);
+        } else if (starting) {
+          starts.push(node);
+        } else {
+          ends.push(node);
+        }
+      }
+
+      var [inlineMatch] = Editor.nodes(editor, {
+        at,
+        match: n => Text.isText(n) || Editor.isInline(editor, n),
+        mode: 'highest',
+        voids
+      });
+      var [, inlinePath] = inlineMatch;
+      var isInlineStart = Editor.isStart(editor, at, inlinePath);
+      var isInlineEnd = Editor.isEnd(editor, at, inlinePath);
+      var middleRef = Editor.pathRef(editor, isBlockEnd ? Path.next(blockPath) : blockPath);
+      var endRef = Editor.pathRef(editor, isInlineEnd ? Path.next(inlinePath) : inlinePath);
+      Transforms.splitNodes(editor, {
+        at,
+        match: n => hasBlocks ? Editor.isBlock(editor, n) : Text.isText(n) || Editor.isInline(editor, n),
+        mode: hasBlocks ? 'lowest' : 'highest',
+        voids
+      });
+      var startRef = Editor.pathRef(editor, !isInlineStart || isInlineStart && isInlineEnd ? Path.next(inlinePath) : inlinePath);
+      Transforms.insertNodes(editor, starts, {
+        at: startRef.current,
+        match: n => Text.isText(n) || Editor.isInline(editor, n),
+        mode: 'highest',
+        voids
+      });
+      Transforms.insertNodes(editor, middles, {
+        at: middleRef.current,
+        match: n => Editor.isBlock(editor, n),
+        mode: 'lowest',
+        voids
+      });
+      Transforms.insertNodes(editor, ends, {
+        at: endRef.current,
+        match: n => Text.isText(n) || Editor.isInline(editor, n),
+        mode: 'highest',
+        voids
+      });
+
+      if (!options.at) {
+        var path;
+
+        if (ends.length > 0) {
+          path = Path.previous(endRef.current);
+        } else if (middles.length > 0) {
+          path = Path.previous(middleRef.current);
+        } else {
+          path = Path.previous(startRef.current);
+        }
+
+        var _end = Editor.end(editor, path);
+
+        Transforms.select(editor, _end);
+      }
+
+      startRef.unref();
+      middleRef.unref();
+      endRef.unref();
+    });
+  },
+
+  /**
+   * Insert a string of text in the Editor.
+   */
+  insertText(editor, text) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    Editor.withoutNormalizing(editor, () => {
+      var {
+        voids = false
+      } = options;
+      var {
+        at = editor.selection
+      } = options;
+
+      if (!at) {
+        return;
+      }
+
+      if (Path.isPath(at)) {
+        at = Editor.range(editor, at);
+      }
+
+      if (Range.isRange(at)) {
+        if (Range.isCollapsed(at)) {
+          at = at.anchor;
+        } else {
+          var end = Range.end(at);
+
+          if (!voids && Editor.void(editor, {
+            at: end
+          })) {
+            return;
+          }
+
+          var pointRef = Editor.pointRef(editor, end);
+          Transforms.delete(editor, {
+            at,
+            voids
+          });
+          at = pointRef.unref();
+          Transforms.setSelection(editor, {
+            anchor: at,
+            focus: at
+          });
+        }
+      }
+
+      if (!voids && Editor.void(editor, {
+        at
+      })) {
+        return;
+      }
+
+      var {
+        path,
+        offset
+      } = at;
+      editor.apply({
+        type: 'insert_text',
+        path,
+        offset,
+        text
+      });
+    });
+  }
+
+};
+
+function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var Transforms = _objectSpread$8({}, GeneralTransforms, {}, NodeTransforms, {}, SelectionTransforms, {}, TextTransforms);
+
+function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+/**
+ * Create a new Slate `Editor` object.
+ */
+
+var createEditor = () => {
+  var editor = {
+    children: [],
+    operations: [],
+    selection: null,
+    marks: null,
+    isInline: () => false,
+    isVoid: () => false,
+    onChange: () => {},
+    apply: op => {
+      for (var ref of Editor.pathRefs(editor)) {
+        PathRef.transform(ref, op);
+      }
+
+      for (var _ref of Editor.pointRefs(editor)) {
+        PointRef.transform(_ref, op);
+      }
+
+      for (var _ref2 of Editor.rangeRefs(editor)) {
+        RangeRef.transform(_ref2, op);
+      }
+
+      var set = new Set();
+      var dirtyPaths = [];
+
+      var add = path => {
+        if (path) {
+          var key = path.join(',');
+
+          if (!set.has(key)) {
+            set.add(key);
+            dirtyPaths.push(path);
+          }
+        }
+      };
+
+      var oldDirtyPaths = DIRTY_PATHS.get(editor) || [];
+      var newDirtyPaths = getDirtyPaths(op);
+
+      for (var path of oldDirtyPaths) {
+        var newPath = Path.transform(path, op);
+        add(newPath);
+      }
+
+      for (var _path of newDirtyPaths) {
+        add(_path);
+      }
+
+      DIRTY_PATHS.set(editor, dirtyPaths);
+      Editor.transform(editor, op);
+      editor.operations.push(op);
+      Editor.normalize(editor); // Clear any formats applied to the cursor if the selection changes.
+
+      if (op.type === 'set_selection') {
+        editor.marks = null;
+      }
+
+      if (!FLUSHING.get(editor)) {
+        FLUSHING.set(editor, true);
+        Promise.resolve().then(() => {
+          FLUSHING.set(editor, false);
+          editor.onChange();
+          editor.operations = [];
+        });
+      }
+    },
+    addMark: (key, value) => {
+      var {
+        selection
+      } = editor;
+
+      if (selection) {
+        if (Range.isExpanded(selection)) {
+          Transforms.setNodes(editor, {
+            [key]: value
+          }, {
+            match: Text.isText,
+            split: true
+          });
+        } else {
+          var marks = _objectSpread$9({}, Editor.marks(editor) || {}, {
+            [key]: value
+          });
+
+          editor.marks = marks;
+          editor.onChange();
+        }
+      }
+    },
+    deleteBackward: unit => {
+      var {
+        selection
+      } = editor;
+
+      if (selection && Range.isCollapsed(selection)) {
+        Transforms.delete(editor, {
+          unit,
+          reverse: true
+        });
+      }
+    },
+    deleteForward: unit => {
+      var {
+        selection
+      } = editor;
+
+      if (selection && Range.isCollapsed(selection)) {
+        Transforms.delete(editor, {
+          unit
+        });
+      }
+    },
+    deleteFragment: () => {
+      var {
+        selection
+      } = editor;
+
+      if (selection && Range.isExpanded(selection)) {
+        Transforms.delete(editor);
+      }
+    },
+    getFragment: () => {
+      var {
+        selection
+      } = editor;
+
+      if (selection) {
+        return Node$1.fragment(editor, selection);
+      }
+
+      return [];
+    },
+    insertBreak: () => {
+      Transforms.splitNodes(editor, {
+        always: true
+      });
+    },
+    insertFragment: fragment => {
+      Transforms.insertFragment(editor, fragment);
+    },
+    insertNode: node => {
+      Transforms.insertNodes(editor, node);
+    },
+    insertText: text => {
+      var {
+        selection,
+        marks
+      } = editor;
+
+      if (selection) {
+        // If the cursor is at the end of an inline, move it outside of
+        // the inline before inserting
+        if (Range.isCollapsed(selection)) {
+          var inline = Editor.above(editor, {
+            match: n => Editor.isInline(editor, n),
+            mode: 'highest'
+          });
+
+          if (inline) {
+            var [, inlinePath] = inline;
+
+            if (Editor.isEnd(editor, selection.anchor, inlinePath)) {
+              var point = Editor.after(editor, inlinePath);
+              Transforms.setSelection(editor, {
+                anchor: point,
+                focus: point
+              });
+            }
+          }
+        }
+
+        if (marks) {
+          var node = _objectSpread$9({
+            text
+          }, marks);
+
+          Transforms.insertNodes(editor, node);
+        } else {
+          Transforms.insertText(editor, text);
+        }
+
+        editor.marks = null;
+      }
+    },
+    normalizeNode: entry => {
+      var [node, path] = entry; // There are no core normalizations for text nodes.
+
+      if (Text.isText(node)) {
+        return;
+      } // Ensure that block and inline nodes have at least one text child.
+
+
+      if (Element.isElement(node) && node.children.length === 0) {
+        var child = {
+          text: ''
+        };
+        Transforms.insertNodes(editor, child, {
+          at: path.concat(0),
+          voids: true
+        });
+        return;
+      } // Determine whether the node should have block or inline children.
+
+
+      var shouldHaveInlines = Editor.isEditor(node) ? false : Element.isElement(node) && (editor.isInline(node) || node.children.length === 0 || Text.isText(node.children[0]) || editor.isInline(node.children[0])); // Since we'll be applying operations while iterating, keep track of an
+      // index that accounts for any added/removed nodes.
+
+      var n = 0;
+
+      for (var i = 0; i < node.children.length; i++, n++) {
+        var _child = node.children[i];
+        var prev = node.children[i - 1];
+        var isLast = i === node.children.length - 1;
+        var isInlineOrText = Text.isText(_child) || Element.isElement(_child) && editor.isInline(_child); // Only allow block nodes in the top-level children and parent blocks
+        // that only contain block nodes. Similarly, only allow inline nodes in
+        // other inline nodes, or parent blocks that only contain inlines and
+        // text.
+
+        if (isInlineOrText !== shouldHaveInlines) {
+          Transforms.removeNodes(editor, {
+            at: path.concat(n),
+            voids: true
+          });
+          n--;
+        } else if (Element.isElement(_child)) {
+          // Ensure that inline nodes are surrounded by text nodes.
+          if (editor.isInline(_child)) {
+            if (prev == null || !Text.isText(prev)) {
+              var newChild = {
+                text: ''
+              };
+              Transforms.insertNodes(editor, newChild, {
+                at: path.concat(n),
+                voids: true
+              });
+              n++;
+            } else if (isLast) {
+              var _newChild = {
+                text: ''
+              };
+              Transforms.insertNodes(editor, _newChild, {
+                at: path.concat(n + 1),
+                voids: true
+              });
+              n++;
+            }
+          }
+        } else {
+          // Merge adjacent text nodes that are empty or match.
+          if (prev != null && Text.isText(prev)) {
+            if (Text.equals(_child, prev, {
+              loose: true
+            })) {
+              Transforms.mergeNodes(editor, {
+                at: path.concat(n),
+                voids: true
+              });
+              n--;
+            } else if (prev.text === '') {
+              Transforms.removeNodes(editor, {
+                at: path.concat(n - 1),
+                voids: true
+              });
+              n--;
+            } else if (isLast && _child.text === '') {
+              Transforms.removeNodes(editor, {
+                at: path.concat(n),
+                voids: true
+              });
+              n--;
+            }
+          }
+        }
+      }
+    },
+    removeMark: key => {
+      var {
+        selection
+      } = editor;
+
+      if (selection) {
+        if (Range.isExpanded(selection)) {
+          Transforms.unsetNodes(editor, key, {
+            match: Text.isText,
+            split: true
+          });
+        } else {
+          var marks = _objectSpread$9({}, Editor.marks(editor) || {});
+
+          delete marks[key];
+          editor.marks = marks;
+          editor.onChange();
+        }
+      }
+    }
+  };
+  return editor;
+};
+/**
+ * Get the "dirty" paths generated from an operation.
+ */
+
+var getDirtyPaths = op => {
+  switch (op.type) {
+    case 'insert_text':
+    case 'remove_text':
+    case 'set_node':
+      {
+        var {
+          path
+        } = op;
+        return Path.levels(path);
+      }
+
+    case 'insert_node':
+      {
+        var {
+          node,
+          path: _path2
+        } = op;
+        var levels = Path.levels(_path2);
+        var descendants = Text.isText(node) ? [] : Array.from(Node$1.nodes(node), (_ref3) => {
+          var [, p] = _ref3;
+          return _path2.concat(p);
+        });
+        return [...levels, ...descendants];
+      }
+
+    case 'merge_node':
+      {
+        var {
+          path: _path3
+        } = op;
+        var ancestors = Path.ancestors(_path3);
+        var previousPath = Path.previous(_path3);
+        return [...ancestors, previousPath];
+      }
+
+    case 'move_node':
+      {
+        var {
+          path: _path4,
+          newPath
+        } = op;
+
+        if (Path.equals(_path4, newPath)) {
+          return [];
+        }
+
+        var oldAncestors = [];
+        var newAncestors = [];
+
+        for (var ancestor of Path.ancestors(_path4)) {
+          var p = Path.transform(ancestor, op);
+          oldAncestors.push(p);
+        }
+
+        for (var _ancestor of Path.ancestors(newPath)) {
+          var _p = Path.transform(_ancestor, op);
+
+          newAncestors.push(_p);
+        }
+
+        return [...oldAncestors, ...newAncestors];
+      }
+
+    case 'remove_node':
+      {
+        var {
+          path: _path5
+        } = op;
+
+        var _ancestors = Path.ancestors(_path5);
+
+        return [..._ancestors];
+      }
+
+    case 'split_node':
+      {
+        var {
+          path: _path6
+        } = op;
+
+        var _levels = Path.levels(_path6);
+
+        var nextPath = Path.next(_path6);
+        return [..._levels, nextPath];
+      }
+
+    default:
+      {
+        return [];
+      }
+  }
+};
+
+function t(t){return null!=t&&"object"==typeof t&&1===t.nodeType}function e(t,e){return (!e||"hidden"!==t)&&"visible"!==t&&"clip"!==t}function n(t,n){if(t.clientHeight<t.scrollHeight||t.clientWidth<t.scrollWidth){var r=getComputedStyle(t,null);return e(r.overflowY,n)||e(r.overflowX,n)||function(t){var e=function(t){if(!t.ownerDocument||!t.ownerDocument.defaultView)return null;try{return t.ownerDocument.defaultView.frameElement}catch(t){return null}}(t);return !!e&&(e.clientHeight<t.scrollHeight||e.clientWidth<t.scrollWidth)}(t)}return !1}function r(t,e,n,r,i,o,l,d){return o<t&&l>e||o>t&&l<e?0:o<=t&&d<=n||l>=e&&d>=n?o-t-r:l>e&&d<n||o<t&&d>n?l-e+i:0}function compute(e,i){var o=window,l=i.scrollMode,d=i.block,u=i.inline,h=i.boundary,a=i.skipOverflowHiddenElements,c="function"==typeof h?h:function(t){return t!==h};if(!t(e))throw new TypeError("Invalid target");for(var f=document.scrollingElement||document.documentElement,s=[],p=e;t(p)&&c(p);){if((p=p.parentNode)===f){s.push(p);break}p===document.body&&n(p)&&!n(document.documentElement)||n(p,a)&&s.push(p);}for(var g=o.visualViewport?o.visualViewport.width:innerWidth,m=o.visualViewport?o.visualViewport.height:innerHeight,w=window.scrollX||pageXOffset,v=window.scrollY||pageYOffset,W=e.getBoundingClientRect(),b=W.height,H=W.width,y=W.top,M=W.right,E=W.bottom,V=W.left,x="start"===d||"nearest"===d?y:"end"===d?E:y+b/2,I="center"===u?V+H/2:"end"===u?M:V,C=[],T=0;T<s.length;T++){var k=s[T],B=k.getBoundingClientRect(),D=B.height,O=B.width,R=B.top,X=B.right,Y=B.bottom,L=B.left;if("if-needed"===l&&y>=0&&V>=0&&E<=m&&M<=g&&y>=R&&E<=Y&&V>=L&&M<=X)return C;var S=getComputedStyle(k),j=parseInt(S.borderLeftWidth,10),N=parseInt(S.borderTopWidth,10),q=parseInt(S.borderRightWidth,10),z=parseInt(S.borderBottomWidth,10),A=0,F=0,G="offsetWidth"in k?k.offsetWidth-k.clientWidth-j-q:0,J="offsetHeight"in k?k.offsetHeight-k.clientHeight-N-z:0;if(f===k)A="start"===d?x:"end"===d?x-m:"nearest"===d?r(v,v+m,m,N,z,v+x,v+x+b,b):x-m/2,F="start"===u?I:"center"===u?I-g/2:"end"===u?I-g:r(w,w+g,g,j,q,w+I,w+I+H,H),A=Math.max(0,A+v),F=Math.max(0,F+w);else {A="start"===d?x-R-N:"end"===d?x-Y+z+J:"nearest"===d?r(R,Y,D,N,z+J,x,x+b,b):x-(R+D/2)+J/2,F="start"===u?I-L-j:"center"===u?I-(L+O/2)+G/2:"end"===u?I-X+q+G:r(L,X,O,j,q+G,I,I+H,H);var K=k.scrollLeft,P=k.scrollTop;x+=P-(A=Math.max(0,Math.min(P+A,k.scrollHeight-D+J))),I+=K-(F=Math.max(0,Math.min(K+F,k.scrollWidth-O+G)));}C.push({el:k,top:A,left:F});}return C}
+
+function isOptionsObject(options) {
+  return options === Object(options) && Object.keys(options).length !== 0;
+}
+
+function defaultBehavior(actions, behavior) {
+  if (behavior === void 0) {
+    behavior = 'auto';
+  }
+
+  var canSmoothScroll = ('scrollBehavior' in document.body.style);
+  actions.forEach(function (_ref) {
+    var el = _ref.el,
+        top = _ref.top,
+        left = _ref.left;
+
+    if (el.scroll && canSmoothScroll) {
+      el.scroll({
+        top: top,
+        left: left,
+        behavior: behavior
+      });
+    } else {
+      el.scrollTop = top;
+      el.scrollLeft = left;
+    }
+  });
+}
+
+function getOptions(options) {
+  if (options === false) {
+    return {
+      block: 'end',
+      inline: 'nearest'
+    };
+  }
+
+  if (isOptionsObject(options)) {
+    return options;
+  }
+
+  return {
+    block: 'start',
+    inline: 'nearest'
+  };
+}
+
+function scrollIntoView(target, options) {
+  var targetIsDetached = !target.ownerDocument.documentElement.contains(target);
+
+  if (isOptionsObject(options) && typeof options.behavior === 'function') {
+    return options.behavior(targetIsDetached ? [] : compute(target, options));
+  }
+
+  if (targetIsDetached) {
+    return;
+  }
+
+  var computeOptions = getOptions(options);
+  return defaultBehavior(compute(target, computeOptions), computeOptions.behavior);
+}
+
+var direction_1 = direction;
+
+var RTL = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC';
+var LTR =
+  'A-Za-z\u00C0-\u00D6\u00D8-\u00F6' +
+  '\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF\u200E\u2C00-\uFB1C' +
+  '\uFE00-\uFE6F\uFEFD-\uFFFF';
+
+var rtl = new RegExp('^[^' + LTR + ']*[' + RTL + ']');
+var ltr = new RegExp('^[^' + RTL + ']*[' + LTR + ']');
+
+function direction(value) {
+  value = String(value || '');
+
+  if (rtl.test(value)) {
+    return 'rtl'
+  }
+
+  if (ltr.test(value)) {
+    return 'ltr'
+  }
+
+  return 'neutral'
+}
+
+function _defineProperty$2(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectWithoutPropertiesLoose$2(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties$1(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$2(source, excluded);
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+/**
+ * An auto-incrementing identifier for keys.
+ */
+var n$1 = 0;
+/**
+ * A class that keeps track of a key string. We use a full class here because we
+ * want to be able to use them as keys in `WeakMap` objects.
+ */
+
+class Key {
+  constructor() {
+    this.id = "".concat(n$1++);
+  }
+
+}
+
+/**
+ * Two weak maps that allow us rebuild a path given a node. They are populated
+ * at render time such that after a render occurs we can always backtrack.
+ */
+var NODE_TO_INDEX = new WeakMap();
+var NODE_TO_PARENT = new WeakMap();
+/**
+ * Weak maps that allow us to go between Slate nodes and DOM nodes. These
+ * are used to resolve DOM event-related logic into Slate actions.
+ */
+
+var EDITOR_TO_ELEMENT = new WeakMap();
+var ELEMENT_TO_NODE = new WeakMap();
+var KEY_TO_ELEMENT = new WeakMap();
+var NODE_TO_ELEMENT = new WeakMap();
+var NODE_TO_KEY = new WeakMap();
+/**
+ * Weak maps for storing editor-related state.
+ */
+
+var IS_READ_ONLY = new WeakMap();
+var IS_FOCUSED = new WeakMap();
+/**
+ * Weak map for associating the context `onChange` context with the plugin.
+ */
+
+var EDITOR_TO_ON_CHANGE = new WeakMap();
+/**
+ * Symbols.
+ */
+
+var PLACEHOLDER_SYMBOL = Symbol('placeholder');
+
+/**
+ * Types.
+ */
+/**
+ * Check if a DOM node is a comment node.
+ */
+
+var isDOMComment = value => {
+  return isDOMNode(value) && value.nodeType === 8;
+};
+/**
+ * Check if a DOM node is an element node.
+ */
+
+var isDOMElement = value => {
+  return isDOMNode(value) && value.nodeType === 1;
+};
+/**
+ * Check if a value is a DOM node.
+ */
+
+var isDOMNode = value => {
+  return value instanceof Node;
+};
+/**
+ * Check if a DOM node is an element node.
+ */
+
+var isDOMText = value => {
+  return isDOMNode(value) && value.nodeType === 3;
+};
+/**
+ * Checks whether a paste event is a plaintext-only event.
+ */
+
+var isPlainTextOnlyPaste = event => {
+  return event.clipboardData && event.clipboardData.getData('text/plain') !== '' && event.clipboardData.types.length === 1;
+};
+/**
+ * Normalize a DOM point so that it always refers to a text node.
+ */
+
+var normalizeDOMPoint = domPoint => {
+  var [node, offset] = domPoint; // If it's an element node, its offset refers to the index of its children
+  // including comment nodes, so try to find the right text child node.
+
+  if (isDOMElement(node) && node.childNodes.length) {
+    var isLast = offset === node.childNodes.length;
+    var direction = isLast ? 'backward' : 'forward';
+    var index = isLast ? offset - 1 : offset;
+    node = getEditableChild(node, index, direction); // If the node has children, traverse until we have a leaf node. Leaf nodes
+    // can be either text nodes, or other void DOM nodes.
+
+    while (isDOMElement(node) && node.childNodes.length) {
+      var i = isLast ? node.childNodes.length - 1 : 0;
+      node = getEditableChild(node, i, direction);
+    } // Determine the new offset inside the text node.
+
+
+    offset = isLast && node.textContent != null ? node.textContent.length : 0;
+  } // Return the node and offset.
+
+
+  return [node, offset];
+};
+/**
+ * Get the nearest editable child at `index` in a `parent`, preferring
+ * `direction`.
+ */
+
+var getEditableChild = (parent, index, direction) => {
+  var {
+    childNodes
+  } = parent;
+  var child = childNodes[index];
+  var i = index;
+  var triedForward = false;
+  var triedBackward = false; // While the child is a comment node, or an element node with no children,
+  // keep iterating to find a sibling non-void, non-comment node.
+
+  while (isDOMComment(child) || isDOMElement(child) && child.childNodes.length === 0 || isDOMElement(child) && child.getAttribute('contenteditable') === 'false') {
+    if (triedForward && triedBackward) {
+      break;
+    }
+
+    if (i >= childNodes.length) {
+      triedForward = true;
+      i = index - 1;
+      direction = 'backward';
+      continue;
+    }
+
+    if (i < 0) {
+      triedBackward = true;
+      i = index + 1;
+      direction = 'forward';
+      continue;
+    }
+
+    child = childNodes[i];
+    i += direction === 'forward' ? 1 : -1;
+  }
+
+  return child;
+};
+/**
+ * Get a plaintext representation of the content of a node, accounting for block
+ * elements which get a newline appended.
+ *
+ * The domNode must be attached to the DOM.
+ */
+
+var getPlainText = domNode => {
+  var text = '';
+
+  if (isDOMText(domNode) && domNode.nodeValue) {
+    return domNode.nodeValue;
+  }
+
+  if (isDOMElement(domNode)) {
+    for (var childNode of Array.from(domNode.childNodes)) {
+      text += getPlainText(childNode);
+    }
+
+    var display = getComputedStyle(domNode).getPropertyValue('display');
+
+    if (display === 'block' || display === 'list' || domNode.tagName === 'BR') {
+      text += '\n';
+    }
+  }
+
+  return text;
+};
+
+var ReactEditor = {
+  /**
+   * Find a key for a Slate node.
+   */
+  findKey(editor, node) {
+    var key = NODE_TO_KEY.get(node);
+
+    if (!key) {
+      key = new Key();
+      NODE_TO_KEY.set(node, key);
+    }
+
+    return key;
+  },
+
+  /**
+   * Find the path of Slate node.
+   */
+  findPath(editor, node) {
+    var path = [];
+    var child = node;
+
+    while (true) {
+      var parent = NODE_TO_PARENT.get(child);
+
+      if (parent == null) {
+        if (Editor.isEditor(child)) {
+          return path;
+        } else {
+          break;
+        }
+      }
+
+      var i = NODE_TO_INDEX.get(child);
+
+      if (i == null) {
+        break;
+      }
+
+      path.unshift(i);
+      child = parent;
+    }
+
+    throw new Error("Unable to find the path for Slate node: ".concat(JSON.stringify(node)));
+  },
+
+  /**
+   * Check if the editor is focused.
+   */
+  isFocused(editor) {
+    return !!IS_FOCUSED.get(editor);
+  },
+
+  /**
+   * Check if the editor is in read-only mode.
+   */
+  isReadOnly(editor) {
+    return !!IS_READ_ONLY.get(editor);
+  },
+
+  /**
+   * Blur the editor.
+   */
+  blur(editor) {
+    var el = ReactEditor.toDOMNode(editor, editor);
+    IS_FOCUSED.set(editor, false);
+
+    if (window.document.activeElement === el) {
+      el.blur();
+    }
+  },
+
+  /**
+   * Focus the editor.
+   */
+  focus(editor) {
+    var el = ReactEditor.toDOMNode(editor, editor);
+    IS_FOCUSED.set(editor, true);
+
+    if (window.document.activeElement !== el) {
+      el.focus({
+        preventScroll: true
+      });
+    }
+  },
+
+  /**
+   * Deselect the editor.
+   */
+  deselect(editor) {
+    var {
+      selection
+    } = editor;
+    var domSelection = window.getSelection();
+
+    if (domSelection && domSelection.rangeCount > 0) {
+      domSelection.removeAllRanges();
+    }
+
+    if (selection) {
+      Transforms.deselect(editor);
+    }
+  },
+
+  /**
+   * Check if a DOM node is within the editor.
+   */
+  hasDOMNode(editor, target) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var {
+      editable = false
+    } = options;
+    var editorEl = ReactEditor.toDOMNode(editor, editor);
+    var targetEl; // COMPAT: In Firefox, reading `target.nodeType` will throw an error if
+    // target is originating from an internal "restricted" element (e.g. a
+    // stepper arrow on a number input). (2018/05/04)
+    // https://github.com/ianstormtaylor/slate/issues/1819
+
+    try {
+      targetEl = isDOMElement(target) ? target : target.parentElement;
+    } catch (err) {
+      if (!err.message.includes('Permission denied to access property "nodeType"')) {
+        throw err;
+      }
+    }
+
+    if (!targetEl) {
+      return false;
+    }
+
+    return targetEl.closest("[data-slate-editor]") === editorEl && (!editable || targetEl.isContentEditable || !!targetEl.getAttribute('data-slate-zero-width'));
+  },
+
+  /**
+   * Insert data from a `DataTransfer` into the editor.
+   */
+  insertData(editor, data) {
+    editor.insertData(data);
+  },
+
+  /**
+   * Sets data from the currently selected fragment on a `DataTransfer`.
+   */
+  setFragmentData(editor, data) {
+    editor.setFragmentData(data);
+  },
+
+  /**
+   * Find the native DOM element from a Slate node.
+   */
+  toDOMNode(editor, node) {
+    var domNode = Editor.isEditor(node) ? EDITOR_TO_ELEMENT.get(editor) : KEY_TO_ELEMENT.get(ReactEditor.findKey(editor, node));
+
+    if (!domNode) {
+      throw new Error("Cannot resolve a DOM node from Slate node: ".concat(JSON.stringify(node)));
+    }
+
+    return domNode;
+  },
+
+  /**
+   * Find a native DOM selection point from a Slate point.
+   */
+  toDOMPoint(editor, point) {
+    var [node] = Editor.node(editor, point.path);
+    var el = ReactEditor.toDOMNode(editor, node);
+    var domPoint; // If we're inside a void node, force the offset to 0, otherwise the zero
+    // width spacing character will result in an incorrect offset of 1
+
+    if (Editor.void(editor, {
+      at: point
+    })) {
+      point = {
+        path: point.path,
+        offset: 0
+      };
+    } // For each leaf, we need to isolate its content, which means filtering
+    // to its direct text and zero-width spans. (We have to filter out any
+    // other siblings that may have been rendered alongside them.)
+
+
+    var selector = "[data-slate-string], [data-slate-zero-width]";
+    var texts = Array.from(el.querySelectorAll(selector));
+    var start = 0;
+
+    for (var text of texts) {
+      var domNode = text.childNodes[0];
+
+      if (domNode == null || domNode.textContent == null) {
+        continue;
+      }
+
+      var {
+        length
+      } = domNode.textContent;
+      var attr = text.getAttribute('data-slate-length');
+      var trueLength = attr == null ? length : parseInt(attr, 10);
+      var end = start + trueLength;
+
+      if (point.offset <= end) {
+        var offset = Math.min(length, Math.max(0, point.offset - start));
+        domPoint = [domNode, offset];
+        break;
+      }
+
+      start = end;
+    }
+
+    if (!domPoint) {
+      throw new Error("Cannot resolve a DOM point from Slate point: ".concat(JSON.stringify(point)));
+    }
+
+    return domPoint;
+  },
+
+  /**
+   * Find a native DOM range from a Slate `range`.
+   */
+  toDOMRange(editor, range) {
+    var {
+      anchor,
+      focus
+    } = range;
+    var isBackward = Range.isBackward(range);
+    var domAnchor = ReactEditor.toDOMPoint(editor, anchor);
+    var domFocus = Range.isCollapsed(range) ? domAnchor : ReactEditor.toDOMPoint(editor, focus);
+    var domRange = window.document.createRange();
+    var [startNode, startOffset] = isBackward ? domFocus : domAnchor;
+    var [endNode, endOffset] = isBackward ? domAnchor : domFocus; // A slate Point at zero-width Leaf always has an offset of 0 but a native DOM selection at
+    // zero-width node has an offset of 1 so we have to check if we are in a zero-width node and
+    // adjust the offset accordingly.
+
+    var startEl = isDOMElement(startNode) ? startNode : startNode.parentElement;
+    var isStartAtZeroWidth = !!startEl.getAttribute('data-slate-zero-width');
+    var endEl = isDOMElement(endNode) ? endNode : endNode.parentElement;
+    var isEndAtZeroWidth = !!endEl.getAttribute('data-slate-zero-width');
+    domRange.setStart(startNode, isStartAtZeroWidth ? 1 : startOffset);
+    domRange.setEnd(endNode, isEndAtZeroWidth ? 1 : endOffset);
+    return domRange;
+  },
+
+  /**
+   * Find a Slate node from a native DOM `element`.
+   */
+  toSlateNode(editor, domNode) {
+    var domEl = isDOMElement(domNode) ? domNode : domNode.parentElement;
+
+    if (domEl && !domEl.hasAttribute('data-slate-node')) {
+      domEl = domEl.closest("[data-slate-node]");
+    }
+
+    var node = domEl ? ELEMENT_TO_NODE.get(domEl) : null;
+
+    if (!node) {
+      throw new Error("Cannot resolve a Slate node from DOM node: ".concat(domEl));
+    }
+
+    return node;
+  },
+
+  /**
+   * Get the target range from a DOM `event`.
+   */
+  findEventRange(editor, event) {
+    if ('nativeEvent' in event) {
+      event = event.nativeEvent;
+    }
+
+    var {
+      clientX: x,
+      clientY: y,
+      target
+    } = event;
+
+    if (x == null || y == null) {
+      throw new Error("Cannot resolve a Slate range from a DOM event: ".concat(event));
+    }
+
+    var node = ReactEditor.toSlateNode(editor, event.target);
+    var path = ReactEditor.findPath(editor, node); // If the drop target is inside a void node, move it into either the
+    // next or previous node, depending on which side the `x` and `y`
+    // coordinates are closest to.
+
+    if (Editor.isVoid(editor, node)) {
+      var rect = target.getBoundingClientRect();
+      var isPrev = editor.isInline(node) ? x - rect.left < rect.left + rect.width - x : y - rect.top < rect.top + rect.height - y;
+      var edge = Editor.point(editor, path, {
+        edge: isPrev ? 'start' : 'end'
+      });
+      var point = isPrev ? Editor.before(editor, edge) : Editor.after(editor, edge);
+
+      if (point) {
+        var _range = Editor.range(editor, point);
+
+        return _range;
+      }
+    } // Else resolve a range from the caret position where the drop occured.
+
+
+    var domRange;
+    var {
+      document
+    } = window; // COMPAT: In Firefox, `caretRangeFromPoint` doesn't exist. (2016/07/25)
+
+    if (document.caretRangeFromPoint) {
+      domRange = document.caretRangeFromPoint(x, y);
+    } else {
+      var position = document.caretPositionFromPoint(x, y);
+
+      if (position) {
+        domRange = document.createRange();
+        domRange.setStart(position.offsetNode, position.offset);
+        domRange.setEnd(position.offsetNode, position.offset);
+      }
+    }
+
+    if (!domRange) {
+      throw new Error("Cannot resolve a Slate range from a DOM event: ".concat(event));
+    } // Resolve a Slate range from the DOM range.
+
+
+    var range = ReactEditor.toSlateRange(editor, domRange);
+    return range;
+  },
+
+  /**
+   * Find a Slate point from a DOM selection's `domNode` and `domOffset`.
+   */
+  toSlatePoint(editor, domPoint) {
+    var [nearestNode, nearestOffset] = normalizeDOMPoint(domPoint);
+    var parentNode = nearestNode.parentNode;
+    var textNode = null;
+    var offset = 0;
+
+    if (parentNode) {
+      var voidNode = parentNode.closest('[data-slate-void="true"]');
+      var leafNode = parentNode.closest('[data-slate-leaf]');
+      var domNode = null; // Calculate how far into the text node the `nearestNode` is, so that we
+      // can determine what the offset relative to the text node is.
+
+      if (leafNode) {
+        textNode = leafNode.closest('[data-slate-node="text"]');
+        var range = window.document.createRange();
+        range.setStart(textNode, 0);
+        range.setEnd(nearestNode, nearestOffset);
+        var contents = range.cloneContents();
+        var removals = [...contents.querySelectorAll('[data-slate-zero-width]'), ...contents.querySelectorAll('[contenteditable=false]')];
+        removals.forEach(el => {
+          el.parentNode.removeChild(el);
+        }); // COMPAT: Edge has a bug where Range.prototype.toString() will
+        // convert \n into \r\n. The bug causes a loop when slate-react
+        // attempts to reposition its cursor to match the native position. Use
+        // textContent.length instead.
+        // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/10291116/
+
+        offset = contents.textContent.length;
+        domNode = textNode;
+      } else if (voidNode) {
+        // For void nodes, the element with the offset key will be a cousin, not an
+        // ancestor, so find it by going down from the nearest void parent.
+        leafNode = voidNode.querySelector('[data-slate-leaf]');
+        textNode = leafNode.closest('[data-slate-node="text"]');
+        domNode = leafNode;
+        offset = domNode.textContent.length;
+      } // COMPAT: If the parent node is a Slate zero-width space, editor is
+      // because the text node should have no characters. However, during IME
+      // composition the ASCII characters will be prepended to the zero-width
+      // space, so subtract 1 from the offset to account for the zero-width
+      // space character.
+
+
+      if (domNode && offset === domNode.textContent.length && parentNode.hasAttribute('data-slate-zero-width')) {
+        offset--;
+      }
+    }
+
+    if (!textNode) {
+      throw new Error("Cannot resolve a Slate point from DOM point: ".concat(domPoint));
+    } // COMPAT: If someone is clicking from one Slate editor into another,
+    // the select event fires twice, once for the old editor's `element`
+    // first, and then afterwards for the correct `element`. (2017/03/03)
+
+
+    var slateNode = ReactEditor.toSlateNode(editor, textNode);
+    var path = ReactEditor.findPath(editor, slateNode);
+    return {
+      path,
+      offset
+    };
+  },
+
+  /**
+   * Find a Slate range from a DOM range or selection.
+   */
+  toSlateRange(editor, domRange) {
+    var el = domRange instanceof Selection ? domRange.anchorNode : domRange.startContainer;
+    var anchorNode;
+    var anchorOffset;
+    var focusNode;
+    var focusOffset;
+    var isCollapsed;
+
+    if (el) {
+      if (domRange instanceof Selection) {
+        anchorNode = domRange.anchorNode;
+        anchorOffset = domRange.anchorOffset;
+        focusNode = domRange.focusNode;
+        focusOffset = domRange.focusOffset;
+        isCollapsed = domRange.isCollapsed;
+      } else {
+        anchorNode = domRange.startContainer;
+        anchorOffset = domRange.startOffset;
+        focusNode = domRange.endContainer;
+        focusOffset = domRange.endOffset;
+        isCollapsed = domRange.collapsed;
+      }
+    }
+
+    if (anchorNode == null || focusNode == null || anchorOffset == null || focusOffset == null) {
+      throw new Error("Cannot resolve a Slate range from DOM range: ".concat(domRange));
+    }
+
+    var anchor = ReactEditor.toSlatePoint(editor, [anchorNode, anchorOffset]);
+    var focus = isCollapsed ? anchor : ReactEditor.toSlatePoint(editor, [focusNode, focusOffset]);
+    return {
+      anchor,
+      focus
+    };
+  }
+
+};
+
+/**
+ * A React context for sharing the `focused` state of the editor.
+ */
+
+var FocusedContext = React.createContext(false);
+
+/**
+ * A React context for sharing the editor object.
+ */
+
+var EditorContext = React.createContext(null);
+/**
+ * Get the current editor object from the React context.
+ */
+
+var useEditor = () => {
+  var editor = React.useContext(EditorContext);
+
+  if (!editor) {
+    throw new Error("The `useEditor` hook must be used inside the <Slate> component's context.");
+  }
+
+  return editor;
+};
+
+/**
+ * A React context for sharing the editor object, in a way that re-renders the
+ * context whenever changes occur.
+ */
+
+var SlateContext = React.createContext(null);
+/**
+ * Get the current editor object from the React context.
+ */
+
+var useSlate = () => {
+  var context = React.useContext(SlateContext);
+
+  if (!context) {
+    throw new Error("The `useSlate` hook must be used inside the <SlateProvider> component's context.");
+  }
+
+  var [editor] = context;
+  return editor;
+};
+
+/**
+ * A wrapper around the provider to handle `onChange` events, because the editor
+ * is a mutable singleton so it won't ever register as "changed" otherwise.
+ */
+
+var Slate = props => {
+  var {
+    editor,
+    children,
+    onChange,
+    value
+  } = props,
+      rest = _objectWithoutProperties$1(props, ["editor", "children", "onChange", "value"]);
+
+  var [key, setKey] = React.useState(0);
+  var context = React.useMemo(() => {
+    editor.children = value;
+    Object.assign(editor, rest);
+    return [editor];
+  }, [key, value, ...Object.values(rest)]);
+  var onContextChange = React.useCallback(() => {
+    onChange(editor.children);
+    setKey(key + 1);
+  }, [key, onChange]);
+  EDITOR_TO_ON_CHANGE.set(editor, onContextChange);
+  React.useEffect(() => {
+    return () => {
+      EDITOR_TO_ON_CHANGE.set(editor, () => {});
+    };
+  }, []);
+  return React__default.createElement(SlateContext.Provider, {
+    value: context
+  }, React__default.createElement(EditorContext.Provider, {
+    value: editor
+  }, React__default.createElement(FocusedContext.Provider, {
+    value: ReactEditor.isFocused(editor)
+  }, children)));
+};
+
+/**
+ * A React context for sharing the `readOnly` state of the editor.
+ */
+
+var ReadOnlyContext = React.createContext(false);
+/**
+ * Get the current `readOnly` state of the editor.
+ */
+
+var useReadOnly = () => {
+  return React.useContext(ReadOnlyContext);
+};
+
+/**
+ * A React context for sharing the `selected` state of an element.
+ */
+
+var SelectedContext = React.createContext(false);
+
+/**
+ * `withReact` adds React and DOM specific behaviors to the editor.
+ */
+
+var withReact = editor => {
+  var e = editor;
+  var {
+    apply,
+    onChange
+  } = e;
+
+  e.apply = op => {
+    var matches = [];
+
+    switch (op.type) {
+      case 'insert_text':
+      case 'remove_text':
+      case 'set_node':
+        {
+          for (var [node, path] of Editor.levels(e, {
+            at: op.path
+          })) {
+            var key = ReactEditor.findKey(e, node);
+            matches.push([path, key]);
+          }
+
+          break;
+        }
+
+      case 'insert_node':
+      case 'remove_node':
+      case 'merge_node':
+      case 'split_node':
+        {
+          for (var [_node, _path] of Editor.levels(e, {
+            at: Path.parent(op.path)
+          })) {
+            var _key = ReactEditor.findKey(e, _node);
+
+            matches.push([_path, _key]);
+          }
+
+          break;
+        }
+    }
+
+    apply(op);
+
+    for (var [_path2, _key2] of matches) {
+      var [_node2] = Editor.node(e, _path2);
+      NODE_TO_KEY.set(_node2, _key2);
+    }
+  };
+
+  e.setFragmentData = data => {
+    var {
+      selection
+    } = e;
+
+    if (!selection) {
+      return;
+    }
+
+    var [start, end] = Range.edges(selection);
+    var startVoid = Editor.void(e, {
+      at: start.path
+    });
+    var endVoid = Editor.void(e, {
+      at: end.path
+    });
+
+    if (Range.isCollapsed(selection) && !startVoid) {
+      return;
+    } // Create a fake selection so that we can add a Base64-encoded copy of the
+    // fragment to the HTML, to decode on future pastes.
+
+
+    var domRange = ReactEditor.toDOMRange(e, selection);
+    var contents = domRange.cloneContents();
+    var attach = contents.childNodes[0]; // Make sure attach is non-empty, since empty nodes will not get copied.
+
+    contents.childNodes.forEach(node => {
+      if (node.textContent && node.textContent.trim() !== '') {
+        attach = node;
+      }
+    }); // COMPAT: If the end node is a void node, we need to move the end of the
+    // range from the void node's spacer span, to the end of the void node's
+    // content, since the spacer is before void's content in the DOM.
+
+    if (endVoid) {
+      var [voidNode] = endVoid;
+      var r = domRange.cloneRange();
+      var domNode = ReactEditor.toDOMNode(e, voidNode);
+      r.setEndAfter(domNode);
+      contents = r.cloneContents();
+    } // COMPAT: If the start node is a void node, we need to attach the encoded
+    // fragment to the void node's content node instead of the spacer, because
+    // attaching it to empty `<div>/<span>` nodes will end up having it erased by
+    // most browsers. (2018/04/27)
+
+
+    if (startVoid) {
+      attach = contents.querySelector('[data-slate-spacer]');
+    } // Remove any zero-width space spans from the cloned DOM so that they don't
+    // show up elsewhere when pasted.
+
+
+    Array.from(contents.querySelectorAll('[data-slate-zero-width]')).forEach(zw => {
+      var isNewline = zw.getAttribute('data-slate-zero-width') === 'n';
+      zw.textContent = isNewline ? '\n' : '';
+    }); // Set a `data-slate-fragment` attribute on a non-empty node, so it shows up
+    // in the HTML, and can be used for intra-Slate pasting. If it's a text
+    // node, wrap it in a `<span>` so we have something to set an attribute on.
+
+    if (isDOMText(attach)) {
+      var span = document.createElement('span'); // COMPAT: In Chrome and Safari, if we don't add the `white-space` style
+      // then leading and trailing spaces will be ignored. (2017/09/21)
+
+      span.style.whiteSpace = 'pre';
+      span.appendChild(attach);
+      contents.appendChild(span);
+      attach = span;
+    }
+
+    var fragment = e.getFragment();
+    var string = JSON.stringify(fragment);
+    var encoded = window.btoa(encodeURIComponent(string));
+    attach.setAttribute('data-slate-fragment', encoded);
+    data.setData('application/x-slate-fragment', encoded); // Add the content to a <div> so that we can get its inner HTML.
+
+    var div = document.createElement('div');
+    div.appendChild(contents);
+    div.setAttribute('hidden', 'true');
+    document.body.appendChild(div);
+    data.setData('text/html', div.innerHTML);
+    data.setData('text/plain', getPlainText(div));
+    document.body.removeChild(div);
+  };
+
+  e.insertData = data => {
+    var fragment = data.getData('application/x-slate-fragment');
+
+    if (fragment) {
+      var decoded = decodeURIComponent(window.atob(fragment));
+      var parsed = JSON.parse(decoded);
+      Transforms.insertFragment(e, parsed);
+      return;
+    }
+
+    var text = data.getData('text/plain');
+
+    if (text) {
+      var lines = text.split(/\r\n|\r|\n/);
+      var split = false;
+
+      for (var line of lines) {
+        if (split) {
+          Transforms.splitNodes(e, {
+            always: true
+          });
+        }
+
+        Transforms.insertText(e, line);
+        split = true;
+      }
+    }
+  };
+
+  e.onChange = () => {
+    // COMPAT: React doesn't batch `setState` hook calls, which means that the
+    // children and selection can get out of sync for one render pass. So we
+    // have to use this unstable API to ensure it batches them. (2019/12/03)
+    // https://github.com/facebook/react/issues/14259#issuecomment-439702367
+    ReactDOM.unstable_batchedUpdates(() => {
+      var onContextChange = EDITOR_TO_ON_CHANGE.get(e);
+
+      if (onContextChange) {
+        onContextChange();
+      }
+
+      onChange();
+    });
+  };
+
+  return e;
+};
+
+/**
+ * Leaf content strings.
+ */
+
+var String$1 = props => {
+  var {
+    isLast,
+    leaf,
+    parent,
+    text
+  } = props;
+  var editor = useEditor();
+  var path = ReactEditor.findPath(editor, text);
+  var parentPath = Path.parent(path); // COMPAT: Render text inside void nodes with a zero-width space.
+  // So the node can contain selection but the text is not visible.
+
+  if (editor.isVoid(parent)) {
+    return React__default.createElement(ZeroWidthString, {
+      length: Node$1.string(parent).length
+    });
+  } // COMPAT: If this is the last text node in an empty block, render a zero-
+  // width space that will convert into a line break when copying and pasting
+  // to support expected plain text.
+
+
+  if (leaf.text === '' && parent.children[parent.children.length - 1] === text && !editor.isInline(parent) && Editor.string(editor, parentPath) === '') {
+    return React__default.createElement(ZeroWidthString, {
+      isLineBreak: true
+    });
+  } // COMPAT: If the text is empty, it's because it's on the edge of an inline
+  // node, so we render a zero-width space so that the selection can be
+  // inserted next to it still.
+
+
+  if (leaf.text === '') {
+    return React__default.createElement(ZeroWidthString, null);
+  } // COMPAT: Browsers will collapse trailing new lines at the end of blocks,
+  // so we need to add an extra trailing new lines to prevent that.
+
+
+  if (isLast && leaf.text.slice(-1) === '\n') {
+    return React__default.createElement(TextString, {
+      isTrailing: true,
+      text: leaf.text
+    });
+  }
+
+  return React__default.createElement(TextString, {
+    text: leaf.text
+  });
+};
+/**
+ * Leaf strings with text in them.
+ */
+
+
+var TextString = props => {
+  var {
+    text,
+    isTrailing = false
+  } = props;
+  return React__default.createElement("span", {
+    "data-slate-string": true
+  }, text, isTrailing ? '\n' : null);
+};
+/**
+ * Leaf strings without text, render as zero-width strings.
+ */
+
+
+var ZeroWidthString = props => {
+  var {
+    length = 0,
+    isLineBreak = false
+  } = props;
+  return React__default.createElement("span", {
+    "data-slate-zero-width": isLineBreak ? 'n' : 'z',
+    "data-slate-length": length
+  }, '\uFEFF', isLineBreak ? React__default.createElement("br", null) : null);
+};
+
+/**
+ * Individual leaves in a text node with unique formatting.
+ */
+
+var Leaf = props => {
+  var {
+    leaf,
+    isLast,
+    text,
+    parent,
+    renderLeaf = props => React__default.createElement(DefaultLeaf, Object.assign({}, props))
+  } = props;
+  var children = React__default.createElement(String$1, {
+    isLast: isLast,
+    leaf: leaf,
+    parent: parent,
+    text: text
+  });
+
+  if (leaf[PLACEHOLDER_SYMBOL]) {
+    children = React__default.createElement(React__default.Fragment, null, React__default.createElement("span", {
+      contentEditable: false,
+      style: {
+        pointerEvents: 'none',
+        display: 'inline-block',
+        width: '0',
+        maxWidth: '100%',
+        whiteSpace: 'nowrap',
+        opacity: '0.333',
+        userSelect: 'none',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        textDecoration: 'none'
+      }
+    }, leaf.placeholder), children);
+  } // COMPAT: Having the `data-` attributes on these leaf elements ensures that
+  // in certain misbehaving browsers they aren't weirdly cloned/destroyed by
+  // contenteditable behaviors. (2019/05/08)
+
+
+  var attributes = {
+    'data-slate-leaf': true
+  };
+  return renderLeaf({
+    attributes,
+    children,
+    leaf,
+    text
+  });
+};
+
+var MemoizedLeaf = React__default.memo(Leaf, (prev, next) => {
+  return next.parent === prev.parent && next.isLast === prev.isLast && next.renderLeaf === prev.renderLeaf && next.text === prev.text && Text.matches(next.leaf, prev.leaf);
+});
+/**
+ * The default custom leaf renderer.
+ */
+
+var DefaultLeaf = props => {
+  var {
+    attributes,
+    children
+  } = props;
+  return React__default.createElement("span", Object.assign({}, attributes), children);
+};
+
+/**
+ * Prevent warning on SSR by falling back to useEffect when window is not defined
+ */
+
+var useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+
+/**
+ * Text.
+ */
+
+var Text$1 = props => {
+  var {
+    decorations,
+    isLast,
+    parent,
+    renderLeaf,
+    text
+  } = props;
+  var editor = useEditor();
+  var ref = React.useRef(null);
+  var leaves = Text.decorations(text, decorations);
+  var key = ReactEditor.findKey(editor, text);
+  var children = [];
+
+  for (var i = 0; i < leaves.length; i++) {
+    var leaf = leaves[i];
+    children.push(React__default.createElement(MemoizedLeaf, {
+      isLast: isLast && i === leaves.length - 1,
+      key: "".concat(key.id, "-").concat(i),
+      leaf: leaf,
+      text: text,
+      parent: parent,
+      renderLeaf: renderLeaf
+    }));
+  } // Update element-related weak maps with the DOM element ref.
+
+
+  useIsomorphicLayoutEffect(() => {
+    if (ref.current) {
+      KEY_TO_ELEMENT.set(key, ref.current);
+      NODE_TO_ELEMENT.set(text, ref.current);
+      ELEMENT_TO_NODE.set(ref.current, text);
+    } else {
+      KEY_TO_ELEMENT.delete(key);
+      NODE_TO_ELEMENT.delete(text);
+    }
+  });
+  return React__default.createElement("span", {
+    "data-slate-node": "text",
+    ref: ref
+  }, children);
+};
+
+var MemoizedText = React__default.memo(Text$1, (prev, next) => {
+  return next.parent === prev.parent && next.isLast === prev.isLast && next.renderLeaf === prev.renderLeaf && next.text === prev.text;
+});
+
+/**
+ * Element.
+ */
+
+var Element$1 = props => {
+  var {
+    decorate,
+    decorations,
+    element,
+    renderElement = p => React__default.createElement(DefaultElement, Object.assign({}, p)),
+    renderLeaf,
+    selection
+  } = props;
+  var ref = React.useRef(null);
+  var editor = useEditor();
+  var readOnly = useReadOnly();
+  var isInline = editor.isInline(element);
+  var key = ReactEditor.findKey(editor, element);
+  var children = React__default.createElement(Children, {
+    decorate: decorate,
+    decorations: decorations,
+    node: element,
+    renderElement: renderElement,
+    renderLeaf: renderLeaf,
+    selection: selection
+  }); // Attributes that the developer must mix into the element in their
+  // custom node renderer component.
+
+  var attributes = {
+    'data-slate-node': 'element',
+    ref
+  };
+
+  if (isInline) {
+    attributes['data-slate-inline'] = true;
+  } // If it's a block node with inline children, add the proper `dir` attribute
+  // for text direction.
+
+
+  if (!isInline && Editor.hasInlines(editor, element)) {
+    var text = Node$1.string(element);
+    var dir = direction_1(text);
+
+    if (dir === 'rtl') {
+      attributes.dir = dir;
+    }
+  } // If it's a void node, wrap the children in extra void-specific elements.
+
+
+  if (Editor.isVoid(editor, element)) {
+    attributes['data-slate-void'] = true;
+
+    if (!readOnly && isInline) {
+      attributes.contentEditable = false;
+    }
+
+    var Tag = isInline ? 'span' : 'div';
+    var [[_text]] = Node$1.texts(element);
+    children = readOnly ? null : React__default.createElement(Tag, {
+      "data-slate-spacer": true,
+      style: {
+        height: '0',
+        color: 'transparent',
+        outline: 'none',
+        position: 'absolute'
+      }
+    }, React__default.createElement(MemoizedText, {
+      decorations: [],
+      isLast: false,
+      parent: element,
+      text: _text
+    }));
+    NODE_TO_INDEX.set(_text, 0);
+    NODE_TO_PARENT.set(_text, element);
+  } // Update element-related weak maps with the DOM element ref.
+
+
+  useIsomorphicLayoutEffect(() => {
+    if (ref.current) {
+      KEY_TO_ELEMENT.set(key, ref.current);
+      NODE_TO_ELEMENT.set(element, ref.current);
+      ELEMENT_TO_NODE.set(ref.current, element);
+    } else {
+      KEY_TO_ELEMENT.delete(key);
+      NODE_TO_ELEMENT.delete(element);
+    }
+  });
+  return React__default.createElement(SelectedContext.Provider, {
+    value: !!selection
+  }, renderElement({
+    attributes,
+    children,
+    element
+  }));
+};
+
+var MemoizedElement = React__default.memo(Element$1, (prev, next) => {
+  return prev.decorate === next.decorate && prev.element === next.element && prev.renderElement === next.renderElement && prev.renderLeaf === next.renderLeaf && isRangeListEqual(prev.decorations, next.decorations) && (prev.selection === next.selection || !!prev.selection && !!next.selection && Range.equals(prev.selection, next.selection));
+});
+/**
+ * The default element renderer.
+ */
+
+var DefaultElement = props => {
+  var {
+    attributes,
+    children,
+    element
+  } = props;
+  var editor = useEditor();
+  var Tag = editor.isInline(element) ? 'span' : 'div';
+  return React__default.createElement(Tag, Object.assign({}, attributes, {
+    style: {
+      position: 'relative'
+    }
+  }), children);
+};
+/**
+ * Check if a list of ranges is equal to another.
+ *
+ * PERF: this requires the two lists to also have the ranges inside them in the
+ * same order, but this is an okay constraint for us since decorations are
+ * kept in order, and the odd case where they aren't is okay to re-render for.
+ */
+
+var isRangeListEqual = (list, another) => {
+  if (list.length !== another.length) {
+    return false;
+  }
+
+  for (var i = 0; i < list.length; i++) {
+    var range = list[i];
+    var other = another[i];
+
+    if (!Range.equals(range, other)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Children.
+ */
+
+var Children = props => {
+  var {
+    decorate,
+    decorations,
+    node,
+    renderElement,
+    renderLeaf,
+    selection
+  } = props;
+  var editor = useEditor();
+  var path = ReactEditor.findPath(editor, node);
+  var children = [];
+  var isLeafBlock = Element.isElement(node) && !editor.isInline(node) && Editor.hasInlines(editor, node);
+
+  for (var i = 0; i < node.children.length; i++) {
+    var p = path.concat(i);
+    var n = node.children[i];
+    var key = ReactEditor.findKey(editor, n);
+    var range = Editor.range(editor, p);
+    var sel = selection && Range.intersection(range, selection);
+    var ds = decorate([n, p]);
+
+    for (var dec of decorations) {
+      var d = Range.intersection(dec, range);
+
+      if (d) {
+        ds.push(d);
+      }
+    }
+
+    if (Element.isElement(n)) {
+      children.push(React__default.createElement(MemoizedElement, {
+        decorate: decorate,
+        decorations: ds,
+        element: n,
+        key: key.id,
+        renderElement: renderElement,
+        renderLeaf: renderLeaf,
+        selection: sel
+      }));
+    } else {
+      children.push(React__default.createElement(MemoizedText, {
+        decorations: ds,
+        key: key.id,
+        isLast: isLeafBlock && i === node.children.length - 1,
+        parent: node,
+        renderLeaf: renderLeaf,
+        text: n
+      }));
+    }
+
+    NODE_TO_INDEX.set(n, i);
+    NODE_TO_PARENT.set(n, node);
+  }
+
+  return React__default.createElement(React__default.Fragment, null, children);
+};
+
+var IS_IOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+var IS_APPLE = typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent);
+var IS_FIREFOX = typeof navigator !== 'undefined' && /^(?!.*Seamonkey)(?=.*Firefox).*/i.test(navigator.userAgent);
+var IS_SAFARI = typeof navigator !== 'undefined' && /Version\/[\d\.]+.*Safari/.test(navigator.userAgent); // "modern" Edge was released at 79.x
+
+var IS_EDGE_LEGACY = typeof navigator !== 'undefined' && /Edge?\/(?:[0-6][0-9]|[0-7][0-8])/i.test(navigator.userAgent); // Native beforeInput events don't work well with react on Chrome 75 and older, Chrome 76+ can use beforeInput
+
+var IS_CHROME_LEGACY = typeof navigator !== 'undefined' && /Chrome?\/(?:[0-7][0-5]|[0-6][0-9])/i.test(navigator.userAgent);
+
+/**
+ * Hotkey mappings for each platform.
+ */
+
+var HOTKEYS = {
+  bold: 'mod+b',
+  compose: ['down', 'left', 'right', 'up', 'backspace', 'enter'],
+  moveBackward: 'left',
+  moveForward: 'right',
+  moveWordBackward: 'ctrl+left',
+  moveWordForward: 'ctrl+right',
+  deleteBackward: 'shift?+backspace',
+  deleteForward: 'shift?+delete',
+  extendBackward: 'shift+left',
+  extendForward: 'shift+right',
+  italic: 'mod+i',
+  splitBlock: 'shift?+enter',
+  undo: 'mod+z'
+};
+var APPLE_HOTKEYS = {
+  moveLineBackward: 'opt+up',
+  moveLineForward: 'opt+down',
+  moveWordBackward: 'opt+left',
+  moveWordForward: 'opt+right',
+  deleteBackward: ['ctrl+backspace', 'ctrl+h'],
+  deleteForward: ['ctrl+delete', 'ctrl+d'],
+  deleteLineBackward: 'cmd+shift?+backspace',
+  deleteLineForward: ['cmd+shift?+delete', 'ctrl+k'],
+  deleteWordBackward: 'opt+shift?+backspace',
+  deleteWordForward: 'opt+shift?+delete',
+  extendLineBackward: 'opt+shift+up',
+  extendLineForward: 'opt+shift+down',
+  redo: 'cmd+shift+z',
+  transposeCharacter: 'ctrl+t'
+};
+var WINDOWS_HOTKEYS = {
+  deleteWordBackward: 'ctrl+shift?+backspace',
+  deleteWordForward: 'ctrl+shift?+delete',
+  redo: ['ctrl+y', 'ctrl+shift+z']
+};
+/**
+ * Create a platform-aware hotkey checker.
+ */
+
+var create = key => {
+  var generic = HOTKEYS[key];
+  var apple = APPLE_HOTKEYS[key];
+  var windows = WINDOWS_HOTKEYS[key];
+  var isGeneric = generic && lib_3(generic);
+  var isApple = apple && lib_3(apple);
+  var isWindows = windows && lib_3(windows);
+  return event => {
+    if (isGeneric && isGeneric(event)) return true;
+    if (IS_APPLE && isApple && isApple(event)) return true;
+    if (!IS_APPLE && isWindows && isWindows(event)) return true;
+    return false;
+  };
+};
+/**
+ * Hotkeys.
+ */
+
+
+var Hotkeys = {
+  isBold: create('bold'),
+  isCompose: create('compose'),
+  isMoveBackward: create('moveBackward'),
+  isMoveForward: create('moveForward'),
+  isDeleteBackward: create('deleteBackward'),
+  isDeleteForward: create('deleteForward'),
+  isDeleteLineBackward: create('deleteLineBackward'),
+  isDeleteLineForward: create('deleteLineForward'),
+  isDeleteWordBackward: create('deleteWordBackward'),
+  isDeleteWordForward: create('deleteWordForward'),
+  isExtendBackward: create('extendBackward'),
+  isExtendForward: create('extendForward'),
+  isExtendLineBackward: create('extendLineBackward'),
+  isExtendLineForward: create('extendLineForward'),
+  isItalic: create('italic'),
+  isMoveLineBackward: create('moveLineBackward'),
+  isMoveLineForward: create('moveLineForward'),
+  isMoveWordBackward: create('moveWordBackward'),
+  isMoveWordForward: create('moveWordForward'),
+  isRedo: create('redo'),
+  isSplitBlock: create('splitBlock'),
+  isTransposeCharacter: create('transposeCharacter'),
+  isUndo: create('undo')
+};
+
+function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+// Chrome Legacy doesn't support `beforeinput` correctly
+
+var HAS_BEFORE_INPUT_SUPPORT = !(IS_FIREFOX || IS_EDGE_LEGACY || IS_CHROME_LEGACY);
+/**
+ * Editable.
+ */
+
+var Editable = props => {
+  var {
+    autoFocus,
+    decorate = defaultDecorate,
+    onDOMBeforeInput: propsOnDOMBeforeInput,
+    placeholder,
+    readOnly = false,
+    renderElement,
+    renderLeaf,
+    style = {},
+    as: Component = 'div'
+  } = props,
+      attributes = _objectWithoutProperties$1(props, ["autoFocus", "decorate", "onDOMBeforeInput", "placeholder", "readOnly", "renderElement", "renderLeaf", "style", "as"]);
+
+  var editor = useSlate();
+  var ref = React.useRef(null); // Update internal state on each render.
+
+  IS_READ_ONLY.set(editor, readOnly); // Keep track of some state for the event handler logic.
+
+  var state = React.useMemo(() => ({
+    isComposing: false,
+    isUpdatingSelection: false,
+    latestElement: null
+  }), []); // Update element-related weak maps with the DOM element ref.
+
+  useIsomorphicLayoutEffect(() => {
+    if (ref.current) {
+      EDITOR_TO_ELEMENT.set(editor, ref.current);
+      NODE_TO_ELEMENT.set(editor, ref.current);
+      ELEMENT_TO_NODE.set(ref.current, editor);
+    } else {
+      NODE_TO_ELEMENT.delete(editor);
+    }
+  }); // Whenever the editor updates, make sure the DOM selection state is in sync.
+
+  useIsomorphicLayoutEffect(() => {
+    var {
+      selection
+    } = editor;
+    var domSelection = window.getSelection();
+
+    if (state.isComposing || !domSelection || !ReactEditor.isFocused(editor)) {
+      return;
+    }
+
+    var hasDomSelection = domSelection.type !== 'None'; // If the DOM selection is properly unset, we're done.
+
+    if (!selection && !hasDomSelection) {
+      return;
+    } // verify that the dom selection is in the editor
+
+
+    var editorElement = EDITOR_TO_ELEMENT.get(editor);
+    var hasDomSelectionInEditor = false;
+
+    if (editorElement.contains(domSelection.anchorNode) && editorElement.contains(domSelection.focusNode)) {
+      hasDomSelectionInEditor = true;
+    } // If the DOM selection is in the editor and the editor selection is already correct, we're done.
+
+
+    if (hasDomSelection && hasDomSelectionInEditor && selection && Range.equals(ReactEditor.toSlateRange(editor, domSelection), selection)) {
+      return;
+    } // Otherwise the DOM selection is out of sync, so update it.
+
+
+    var el = ReactEditor.toDOMNode(editor, editor);
+    state.isUpdatingSelection = true;
+    domSelection.removeAllRanges();
+    var newDomRange = selection && ReactEditor.toDOMRange(editor, selection);
+
+    if (newDomRange) {
+      domSelection.addRange(newDomRange);
+      var leafEl = newDomRange.startContainer.parentElement;
+      scrollIntoView(leafEl, {
+        scrollMode: 'if-needed',
+        boundary: el
+      });
+    }
+
+    setTimeout(() => {
+      // COMPAT: In Firefox, it's not enough to create a range, you also need
+      // to focus the contenteditable element too. (2016/11/16)
+      if (newDomRange && IS_FIREFOX) {
+        el.focus();
+      }
+
+      state.isUpdatingSelection = false;
+    });
+  }); // The autoFocus TextareaHTMLAttribute doesn't do anything on a div, so it
+  // needs to be manually focused.
+
+  React.useEffect(() => {
+    if (ref.current && autoFocus) {
+      ref.current.focus();
+    }
+  }, [autoFocus]); // Listen on the native `beforeinput` event to get real "Level 2" events. This
+  // is required because React's `beforeinput` is fake and never really attaches
+  // to the real event sadly. (2019/11/01)
+  // https://github.com/facebook/react/issues/11211
+
+  var onDOMBeforeInput = React.useCallback(event => {
+    if (!readOnly && hasEditableTarget(editor, event.target) && !isDOMEventHandled(event, propsOnDOMBeforeInput)) {
+      var {
+        selection
+      } = editor;
+      var {
+        inputType: type
+      } = event;
+      var data = event.dataTransfer || event.data || undefined; // These two types occur while a user is composing text and can't be
+      // cancelled. Let them through and wait for the composition to end.
+
+      if (type === 'insertCompositionText' || type === 'deleteCompositionText') {
+        return;
+      }
+
+      event.preventDefault(); // COMPAT: For the deleting forward/backward input types we don't want
+      // to change the selection because it is the range that will be deleted,
+      // and those commands determine that for themselves.
+
+      if (!type.startsWith('delete') || type.startsWith('deleteBy')) {
+        var [targetRange] = event.getTargetRanges();
+
+        if (targetRange) {
+          var range = ReactEditor.toSlateRange(editor, targetRange);
+
+          if (!selection || !Range.equals(selection, range)) {
+            Transforms.select(editor, range);
+          }
+        }
+      } // COMPAT: If the selection is expanded, even if the command seems like
+      // a delete forward/backward command it should delete the selection.
+
+
+      if (selection && Range.isExpanded(selection) && type.startsWith('delete')) {
+        Editor.deleteFragment(editor);
+        return;
+      }
+
+      switch (type) {
+        case 'deleteByComposition':
+        case 'deleteByCut':
+        case 'deleteByDrag':
+          {
+            Editor.deleteFragment(editor);
+            break;
+          }
+
+        case 'deleteContent':
+        case 'deleteContentForward':
+          {
+            Editor.deleteForward(editor);
+            break;
+          }
+
+        case 'deleteContentBackward':
+          {
+            Editor.deleteBackward(editor);
+            break;
+          }
+
+        case 'deleteEntireSoftLine':
+          {
+            Editor.deleteBackward(editor, {
+              unit: 'line'
+            });
+            Editor.deleteForward(editor, {
+              unit: 'line'
+            });
+            break;
+          }
+
+        case 'deleteHardLineBackward':
+          {
+            Editor.deleteBackward(editor, {
+              unit: 'block'
+            });
+            break;
+          }
+
+        case 'deleteSoftLineBackward':
+          {
+            Editor.deleteBackward(editor, {
+              unit: 'line'
+            });
+            break;
+          }
+
+        case 'deleteHardLineForward':
+          {
+            Editor.deleteForward(editor, {
+              unit: 'block'
+            });
+            break;
+          }
+
+        case 'deleteSoftLineForward':
+          {
+            Editor.deleteForward(editor, {
+              unit: 'line'
+            });
+            break;
+          }
+
+        case 'deleteWordBackward':
+          {
+            Editor.deleteBackward(editor, {
+              unit: 'word'
+            });
+            break;
+          }
+
+        case 'deleteWordForward':
+          {
+            Editor.deleteForward(editor, {
+              unit: 'word'
+            });
+            break;
+          }
+
+        case 'insertLineBreak':
+        case 'insertParagraph':
+          {
+            Editor.insertBreak(editor);
+            break;
+          }
+
+        case 'insertFromComposition':
+        case 'insertFromDrop':
+        case 'insertFromPaste':
+        case 'insertFromYank':
+        case 'insertReplacementText':
+        case 'insertText':
+          {
+            if (data instanceof DataTransfer) {
+              ReactEditor.insertData(editor, data);
+            } else if (typeof data === 'string') {
+              Editor.insertText(editor, data);
+            }
+
+            break;
+          }
+      }
+    }
+  }, [readOnly]); // Attach a native DOM event handler for `beforeinput` events, because React's
+  // built-in `onBeforeInput` is actually a leaky polyfill that doesn't expose
+  // real `beforeinput` events sadly... (2019/11/04)
+  // https://github.com/facebook/react/issues/11211
+
+  useIsomorphicLayoutEffect(() => {
+    if (ref.current && HAS_BEFORE_INPUT_SUPPORT) {
+      // @ts-ignore The `beforeinput` event isn't recognized.
+      ref.current.addEventListener('beforeinput', onDOMBeforeInput);
+    }
+
+    return () => {
+      if (ref.current && HAS_BEFORE_INPUT_SUPPORT) {
+        // @ts-ignore The `beforeinput` event isn't recognized.
+        ref.current.removeEventListener('beforeinput', onDOMBeforeInput);
+      }
+    };
+  }, [onDOMBeforeInput]); // Listen on the native `selectionchange` event to be able to update any time
+  // the selection changes. This is required because React's `onSelect` is leaky
+  // and non-standard so it doesn't fire until after a selection has been
+  // released. This causes issues in situations where another change happens
+  // while a selection is being dragged.
+
+  var onDOMSelectionChange = React.useCallback(throttle_1(() => {
+    if (!readOnly && !state.isComposing && !state.isUpdatingSelection) {
+      var {
+        activeElement
+      } = window.document;
+      var el = ReactEditor.toDOMNode(editor, editor);
+      var domSelection = window.getSelection();
+
+      if (activeElement === el) {
+        state.latestElement = activeElement;
+        IS_FOCUSED.set(editor, true);
+      } else {
+        IS_FOCUSED.delete(editor);
+      }
+
+      if (!domSelection) {
+        return Transforms.deselect(editor);
+      }
+
+      var {
+        anchorNode,
+        focusNode
+      } = domSelection;
+      var anchorNodeSelectable = hasEditableTarget(editor, anchorNode) || isTargetInsideVoid(editor, anchorNode);
+      var focusNodeSelectable = hasEditableTarget(editor, focusNode) || isTargetInsideVoid(editor, focusNode);
+
+      if (anchorNodeSelectable && focusNodeSelectable) {
+        var range = ReactEditor.toSlateRange(editor, domSelection);
+        Transforms.select(editor, range);
+      } else {
+        Transforms.deselect(editor);
+      }
+    }
+  }, 100), [readOnly]); // Attach a native DOM event handler for `selectionchange`, because React's
+  // built-in `onSelect` handler doesn't fire for all selection changes. It's a
+  // leaky polyfill that only fires on keypresses or clicks. Instead, we want to
+  // fire for any change to the selection inside the editor. (2019/11/04)
+  // https://github.com/facebook/react/issues/5785
+
+  useIsomorphicLayoutEffect(() => {
+    window.document.addEventListener('selectionchange', onDOMSelectionChange);
+    return () => {
+      window.document.removeEventListener('selectionchange', onDOMSelectionChange);
+    };
+  }, [onDOMSelectionChange]);
+  var decorations = decorate([editor, []]);
+
+  if (placeholder && editor.children.length === 1 && Array.from(Node$1.texts(editor)).length === 1 && Node$1.string(editor) === '') {
+    var start = Editor.start(editor, []);
+    decorations.push({
+      [PLACEHOLDER_SYMBOL]: true,
+      placeholder,
+      anchor: start,
+      focus: start
+    });
+  }
+
+  return React__default.createElement(ReadOnlyContext.Provider, {
+    value: readOnly
+  }, React__default.createElement(Component // COMPAT: The Grammarly Chrome extension works by changing the DOM
+  // out from under `contenteditable` elements, which leads to weird
+  // behaviors so we have to disable it like editor. (2017/04/24)
+  , Object.assign({
+    "data-gramm": false,
+    role: readOnly ? undefined : 'textbox'
+  }, attributes, {
+    // COMPAT: Certain browsers don't support the `beforeinput` event, so we'd
+    // have to use hacks to make these replacement-based features work.
+    spellCheck: !HAS_BEFORE_INPUT_SUPPORT ? undefined : attributes.spellCheck,
+    autoCorrect: !HAS_BEFORE_INPUT_SUPPORT ? undefined : attributes.autoCorrect,
+    autoCapitalize: !HAS_BEFORE_INPUT_SUPPORT ? undefined : attributes.autoCapitalize,
+    "data-slate-editor": true,
+    "data-slate-node": "value",
+    contentEditable: readOnly ? undefined : true,
+    suppressContentEditableWarning: true,
+    ref: ref,
+    style: _objectSpread$a({
+      // Prevent the default outline styles.
+      outline: 'none',
+      // Preserve adjacent whitespace and new lines.
+      whiteSpace: 'pre-wrap',
+      // Allow words to break if they are too long.
+      wordWrap: 'break-word'
+    }, style),
+    onBeforeInput: React.useCallback(event => {
+      // COMPAT: Certain browsers don't support the `beforeinput` event, so we
+      // fall back to React's leaky polyfill instead just for it. It
+      // only works for the `insertText` input type.
+      if (!HAS_BEFORE_INPUT_SUPPORT && !readOnly && !isEventHandled(event, attributes.onBeforeInput) && hasEditableTarget(editor, event.target)) {
+        event.preventDefault();
+        var text = event.data;
+        Editor.insertText(editor, text);
+      }
+    }, [readOnly]),
+    onBlur: React.useCallback(event => {
+      if (readOnly || state.isUpdatingSelection || !hasEditableTarget(editor, event.target) || isEventHandled(event, attributes.onBlur)) {
+        return;
+      } // COMPAT: If the current `activeElement` is still the previous
+      // one, this is due to the window being blurred when the tab
+      // itself becomes unfocused, so we want to abort early to allow to
+      // editor to stay focused when the tab becomes focused again.
+
+
+      if (state.latestElement === window.document.activeElement) {
+        return;
+      }
+
+      var {
+        relatedTarget
+      } = event;
+      var el = ReactEditor.toDOMNode(editor, editor); // COMPAT: The event should be ignored if the focus is returning
+      // to the editor from an embedded editable element (eg. an <input>
+      // element inside a void node).
+
+      if (relatedTarget === el) {
+        return;
+      } // COMPAT: The event should be ignored if the focus is moving from
+      // the editor to inside a void node's spacer element.
+
+
+      if (isDOMElement(relatedTarget) && relatedTarget.hasAttribute('data-slate-spacer')) {
+        return;
+      } // COMPAT: The event should be ignored if the focus is moving to a
+      // non- editable section of an element that isn't a void node (eg.
+      // a list item of the check list example).
+
+
+      if (relatedTarget != null && isDOMNode(relatedTarget) && ReactEditor.hasDOMNode(editor, relatedTarget)) {
+        var node = ReactEditor.toSlateNode(editor, relatedTarget);
+
+        if (Element.isElement(node) && !editor.isVoid(node)) {
+          return;
+        }
+      }
+
+      IS_FOCUSED.delete(editor);
+    }, [readOnly, attributes.onBlur]),
+    onClick: React.useCallback(event => {
+      if (!readOnly && hasTarget(editor, event.target) && !isEventHandled(event, attributes.onClick) && isDOMNode(event.target)) {
+        var node = ReactEditor.toSlateNode(editor, event.target);
+        var path = ReactEditor.findPath(editor, node);
+
+        var _start = Editor.start(editor, path);
+
+        var end = Editor.end(editor, path);
+        var startVoid = Editor.void(editor, {
+          at: _start
+        });
+        var endVoid = Editor.void(editor, {
+          at: end
+        });
+
+        if (startVoid && endVoid && Path.equals(startVoid[1], endVoid[1])) {
+          var range = Editor.range(editor, _start);
+          Transforms.select(editor, range);
+        }
+      }
+    }, [readOnly, attributes.onClick]),
+    onCompositionEnd: React.useCallback(event => {
+      if (hasEditableTarget(editor, event.target) && !isEventHandled(event, attributes.onCompositionEnd)) {
+        state.isComposing = false; // COMPAT: In Chrome, `beforeinput` events for compositions
+        // aren't correct and never fire the "insertFromComposition"
+        // type that we need. So instead, insert whenever a composition
+        // ends since it will already have been committed to the DOM.
+
+        if (!IS_SAFARI && !IS_FIREFOX && event.data) {
+          Editor.insertText(editor, event.data);
+        }
+      }
+    }, [attributes.onCompositionEnd]),
+    onCompositionStart: React.useCallback(event => {
+      if (hasEditableTarget(editor, event.target) && !isEventHandled(event, attributes.onCompositionStart)) {
+        state.isComposing = true;
+      }
+    }, [attributes.onCompositionStart]),
+    onCopy: React.useCallback(event => {
+      if (hasEditableTarget(editor, event.target) && !isEventHandled(event, attributes.onCopy)) {
+        event.preventDefault();
+        ReactEditor.setFragmentData(editor, event.clipboardData);
+      }
+    }, [attributes.onCopy]),
+    onCut: React.useCallback(event => {
+      if (!readOnly && hasEditableTarget(editor, event.target) && !isEventHandled(event, attributes.onCut)) {
+        event.preventDefault();
+        ReactEditor.setFragmentData(editor, event.clipboardData);
+        var {
+          selection
+        } = editor;
+
+        if (selection && Range.isExpanded(selection)) {
+          Editor.deleteFragment(editor);
+        }
+      }
+    }, [readOnly, attributes.onCut]),
+    onDragOver: React.useCallback(event => {
+      if (hasTarget(editor, event.target) && !isEventHandled(event, attributes.onDragOver)) {
+        // Only when the target is void, call `preventDefault` to signal
+        // that drops are allowed. Editable content is droppable by
+        // default, and calling `preventDefault` hides the cursor.
+        var node = ReactEditor.toSlateNode(editor, event.target);
+
+        if (Editor.isVoid(editor, node)) {
+          event.preventDefault();
+        }
+      }
+    }, [attributes.onDragOver]),
+    onDragStart: React.useCallback(event => {
+      if (hasTarget(editor, event.target) && !isEventHandled(event, attributes.onDragStart)) {
+        var node = ReactEditor.toSlateNode(editor, event.target);
+        var path = ReactEditor.findPath(editor, node);
+        var voidMatch = Editor.void(editor, {
+          at: path
+        }); // If starting a drag on a void node, make sure it is selected
+        // so that it shows up in the selection's fragment.
+
+        if (voidMatch) {
+          var range = Editor.range(editor, path);
+          Transforms.select(editor, range);
+        }
+
+        ReactEditor.setFragmentData(editor, event.dataTransfer);
+      }
+    }, [attributes.onDragStart]),
+    onDrop: React.useCallback(event => {
+      if (hasTarget(editor, event.target) && !readOnly && !isEventHandled(event, attributes.onDrop)) {
+        // COMPAT: Certain browsers don't fire `beforeinput` events at all, and
+        // Chromium browsers don't properly fire them for files being
+        // dropped into a `contenteditable`. (2019/11/26)
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1028668
+        if (!HAS_BEFORE_INPUT_SUPPORT || !IS_SAFARI && event.dataTransfer.files.length > 0) {
+          event.preventDefault();
+          var range = ReactEditor.findEventRange(editor, event);
+          var data = event.dataTransfer;
+          Transforms.select(editor, range);
+          ReactEditor.insertData(editor, data);
+        }
+      }
+    }, [readOnly, attributes.onDrop]),
+    onFocus: React.useCallback(event => {
+      if (!readOnly && !state.isUpdatingSelection && hasEditableTarget(editor, event.target) && !isEventHandled(event, attributes.onFocus)) {
+        var el = ReactEditor.toDOMNode(editor, editor);
+        state.latestElement = window.document.activeElement; // COMPAT: If the editor has nested editable elements, the focus
+        // can go to them. In Firefox, this must be prevented because it
+        // results in issues with keyboard navigation. (2017/03/30)
+
+        if (IS_FIREFOX && event.target !== el) {
+          el.focus();
+          return;
+        }
+
+        IS_FOCUSED.set(editor, true);
+      }
+    }, [readOnly, attributes.onFocus]),
+    onKeyDown: React.useCallback(event => {
+      if (!readOnly && hasEditableTarget(editor, event.target) && !isEventHandled(event, attributes.onKeyDown)) {
+        var {
+          nativeEvent
+        } = event;
+        var {
+          selection
+        } = editor; // COMPAT: Since we prevent the default behavior on
+        // `beforeinput` events, the browser doesn't think there's ever
+        // any history stack to undo or redo, so we have to manage these
+        // hotkeys ourselves. (2019/11/06)
+
+        if (Hotkeys.isRedo(nativeEvent)) {
+          event.preventDefault();
+
+          if (typeof editor.redo === 'function') {
+            editor.redo();
+          }
+
+          return;
+        }
+
+        if (Hotkeys.isUndo(nativeEvent)) {
+          event.preventDefault();
+
+          if (typeof editor.undo === 'function') {
+            editor.undo();
+          }
+
+          return;
+        } // COMPAT: Certain browsers don't handle the selection updates
+        // properly. In Chrome, the selection isn't properly extended.
+        // And in Firefox, the selection isn't properly collapsed.
+        // (2017/10/17)
+
+
+        if (Hotkeys.isMoveLineBackward(nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, {
+            unit: 'line',
+            reverse: true
+          });
+          return;
+        }
+
+        if (Hotkeys.isMoveLineForward(nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, {
+            unit: 'line'
+          });
+          return;
+        }
+
+        if (Hotkeys.isExtendLineBackward(nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, {
+            unit: 'line',
+            edge: 'focus',
+            reverse: true
+          });
+          return;
+        }
+
+        if (Hotkeys.isExtendLineForward(nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, {
+            unit: 'line',
+            edge: 'focus'
+          });
+          return;
+        } // COMPAT: If a void node is selected, or a zero-width text node
+        // adjacent to an inline is selected, we need to handle these
+        // hotkeys manually because browsers won't be able to skip over
+        // the void node with the zero-width space not being an empty
+        // string.
+
+
+        if (Hotkeys.isMoveBackward(nativeEvent)) {
+          event.preventDefault();
+
+          if (selection && Range.isCollapsed(selection)) {
+            Transforms.move(editor, {
+              reverse: true
+            });
+          } else {
+            Transforms.collapse(editor, {
+              edge: 'start'
+            });
+          }
+
+          return;
+        }
+
+        if (Hotkeys.isMoveForward(nativeEvent)) {
+          event.preventDefault();
+
+          if (selection && Range.isCollapsed(selection)) {
+            Transforms.move(editor);
+          } else {
+            Transforms.collapse(editor, {
+              edge: 'end'
+            });
+          }
+
+          return;
+        }
+
+        if (Hotkeys.isMoveWordBackward(nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, {
+            unit: 'word',
+            reverse: true
+          });
+          return;
+        }
+
+        if (Hotkeys.isMoveWordForward(nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, {
+            unit: 'word'
+          });
+          return;
+        } // COMPAT: Certain browsers don't support the `beforeinput` event, so we
+        // fall back to guessing at the input intention for hotkeys.
+        // COMPAT: In iOS, some of these hotkeys are handled in the
+
+
+        if (!HAS_BEFORE_INPUT_SUPPORT) {
+          // We don't have a core behavior for these, but they change the
+          // DOM if we don't prevent them, so we have to.
+          if (Hotkeys.isBold(nativeEvent) || Hotkeys.isItalic(nativeEvent) || Hotkeys.isTransposeCharacter(nativeEvent)) {
+            event.preventDefault();
+            return;
+          }
+
+          if (Hotkeys.isSplitBlock(nativeEvent)) {
+            event.preventDefault();
+            Editor.insertBreak(editor);
+            return;
+          }
+
+          if (Hotkeys.isDeleteBackward(nativeEvent)) {
+            event.preventDefault();
+
+            if (selection && Range.isExpanded(selection)) {
+              Editor.deleteFragment(editor);
+            } else {
+              Editor.deleteBackward(editor);
+            }
+
+            return;
+          }
+
+          if (Hotkeys.isDeleteForward(nativeEvent)) {
+            event.preventDefault();
+
+            if (selection && Range.isExpanded(selection)) {
+              Editor.deleteFragment(editor);
+            } else {
+              Editor.deleteForward(editor);
+            }
+
+            return;
+          }
+
+          if (Hotkeys.isDeleteLineBackward(nativeEvent)) {
+            event.preventDefault();
+
+            if (selection && Range.isExpanded(selection)) {
+              Editor.deleteFragment(editor);
+            } else {
+              Editor.deleteBackward(editor, {
+                unit: 'line'
+              });
+            }
+
+            return;
+          }
+
+          if (Hotkeys.isDeleteLineForward(nativeEvent)) {
+            event.preventDefault();
+
+            if (selection && Range.isExpanded(selection)) {
+              Editor.deleteFragment(editor);
+            } else {
+              Editor.deleteForward(editor, {
+                unit: 'line'
+              });
+            }
+
+            return;
+          }
+
+          if (Hotkeys.isDeleteWordBackward(nativeEvent)) {
+            event.preventDefault();
+
+            if (selection && Range.isExpanded(selection)) {
+              Editor.deleteFragment(editor);
+            } else {
+              Editor.deleteBackward(editor, {
+                unit: 'word'
+              });
+            }
+
+            return;
+          }
+
+          if (Hotkeys.isDeleteWordForward(nativeEvent)) {
+            event.preventDefault();
+
+            if (selection && Range.isExpanded(selection)) {
+              Editor.deleteFragment(editor);
+            } else {
+              Editor.deleteForward(editor, {
+                unit: 'word'
+              });
+            }
+
+            return;
+          }
+        }
+      }
+    }, [readOnly, attributes.onKeyDown]),
+    onPaste: React.useCallback(event => {
+      // COMPAT: Certain browsers don't support the `beforeinput` event, so we
+      // fall back to React's `onPaste` here instead.
+      // COMPAT: Firefox, Chrome and Safari are not emitting `beforeinput` events
+      // when "paste without formatting" option is used.
+      // This unfortunately needs to be handled with paste events instead.
+      if (!isEventHandled(event, attributes.onPaste) && (!HAS_BEFORE_INPUT_SUPPORT || isPlainTextOnlyPaste(event.nativeEvent)) && !readOnly && hasEditableTarget(editor, event.target)) {
+        event.preventDefault();
+        ReactEditor.insertData(editor, event.clipboardData);
+      }
+    }, [readOnly, attributes.onPaste])
+  }), React__default.createElement(Children, {
+    decorate: decorate,
+    decorations: decorations,
+    node: editor,
+    renderElement: renderElement,
+    renderLeaf: renderLeaf,
+    selection: editor.selection
+  })));
+};
+/**
+ * A default memoized decorate function.
+ */
+
+var defaultDecorate = () => [];
+/**
+ * Check if the target is in the editor.
+ */
+
+
+var hasTarget = (editor, target) => {
+  return isDOMNode(target) && ReactEditor.hasDOMNode(editor, target);
+};
+/**
+ * Check if the target is editable and in the editor.
+ */
+
+
+var hasEditableTarget = (editor, target) => {
+  return isDOMNode(target) && ReactEditor.hasDOMNode(editor, target, {
+    editable: true
+  });
+};
+/**
+ * Check if the target is inside void and in the editor.
+ */
+
+
+var isTargetInsideVoid = (editor, target) => {
+  var slateNode = hasTarget(editor, target) && ReactEditor.toSlateNode(editor, target);
+  return Editor.isVoid(editor, slateNode);
+};
+/**
+ * Check if an event is overrided by a handler.
+ */
+
+
+var isEventHandled = (event, handler) => {
+  if (!handler) {
+    return false;
+  }
+
+  handler(event);
+  return event.isDefaultPrevented() || event.isPropagationStopped();
+};
+/**
+ * Check if a DOM event is overrided by a handler.
+ */
+
+
+var isDOMEventHandled = (event, handler) => {
+  if (!handler) {
+    return false;
+  }
+
+  handler(event);
+  return event.defaultPrevented;
+};
+
+function _extends$1() {
+  _extends$1 = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends$1.apply(this, arguments);
+}
+
+function createSvgIcon(path, displayName) {
+  var Component = React__default.memo(React__default.forwardRef(function (props, ref) {
+    return React__default.createElement(SvgIcon, _extends$1({
+      ref: ref
+    }, props), path);
+  }));
+
+  if (process.env.NODE_ENV !== 'production') {
+    Component.displayName = "".concat(displayName, "Icon");
+  }
+
+  Component.muiName = SvgIcon.muiName;
+  return Component;
+}
+
+var FormatAlignCenter = createSvgIcon(React__default.createElement("path", {
+  d: "M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"
+}), 'FormatAlignCenter');
+
+var FormatAlignLeft = createSvgIcon(React__default.createElement("path", {
+  d: "M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"
+}), 'FormatAlignLeft');
+
+var FormatBold = createSvgIcon(React__default.createElement("path", {
+  d: "M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"
+}), 'FormatBold');
+
+var FormatItalic = createSvgIcon(React__default.createElement("path", {
+  d: "M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"
+}), 'FormatItalic');
+
+var FormatListBulleted = createSvgIcon(React__default.createElement("path", {
+  d: "M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"
+}), 'FormatListBulleted');
+
+var FormatListNumbered = createSvgIcon(React__default.createElement("path", {
+  d: "M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
+}), 'FormatListNumbered');
+
+var FormatQuote = createSvgIcon(React__default.createElement("path", {
+  d: "M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"
+}), 'FormatQuote');
+
+var FormatUnderlined = createSvgIcon(React__default.createElement("path", {
+  d: "M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"
+}), 'FormatUnderlined');
+
+var LooksOne = createSvgIcon(React__default.createElement("path", {
+  d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z"
+}), 'LooksOne');
+
+var LooksTwo = createSvgIcon(React__default.createElement("path", {
+  d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 8c0 1.11-.9 2-2 2h-2v2h4v2H9v-4c0-1.11.9-2 2-2h2V9H9V7h4c1.1 0 2 .89 2 2v2z"
+}), 'LooksTwo');
+
+/*!
+ * isobject <https://github.com/jonschlinkert/isobject>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObject$7(val) {
+  return val != null && typeof val === 'object' && Array.isArray(val) === false;
+}
+
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObjectObject$1(o) {
+  return isObject$7(o) === true
+    && Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function isPlainObject$2(o) {
+  var ctor,prot;
+
+  if (isObjectObject$1(o) === false) return false;
+
+  // If has modified constructor
+  ctor = o.constructor;
+  if (typeof ctor !== 'function') return false;
+
+  // If has modified prototype
+  prot = ctor.prototype;
+  if (isObjectObject$1(prot) === false) return false;
+
+  // If constructor does not have an Object-specific method
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+
+  // Most likely a plain Object
+  return true;
+}
+
+var History = {
+  /**
+   * Check if a value is a `History` object.
+   */
+  isHistory(value) {
+    return isPlainObject$2(value) && Array.isArray(value.redos) && Array.isArray(value.undos) && (value.redos.length === 0 || Operation.isOperationList(value.redos[0])) && (value.undos.length === 0 || Operation.isOperationList(value.undos[0]));
+  }
+
+};
+var SAVING = new WeakMap();
+var MERGING = new WeakMap();
+var HistoryEditor = {
+  /**
+   * Check if a value is a `HistoryEditor` object.
+   */
+  isHistoryEditor(value) {
+    return Editor.isEditor(value) && History.isHistory(value.history);
+  },
+
+  /**
+   * Get the merge flag's current value.
+   */
+  isMerging(editor) {
+    return MERGING.get(editor);
+  },
+
+  /**
+   * Get the saving flag's current value.
+   */
+  isSaving(editor) {
+    return SAVING.get(editor);
+  },
+
+  /**
+   * Redo to the previous saved state.
+   */
+  redo(editor) {
+    editor.redo();
+  },
+
+  /**
+   * Undo to the previous saved state.
+   */
+  undo(editor) {
+    editor.undo();
+  },
+
+  /**
+   * Apply a series of changes inside a synchronous `fn`, without merging any of
+   * the new operations into previous save point in the history.
+   */
+  withoutMerging(editor, fn) {
+    var prev = HistoryEditor.isMerging(editor);
+    MERGING.set(editor, false);
+    fn();
+    MERGING.set(editor, prev);
+  },
+
+  /**
+   * Apply a series of changes inside a synchronous `fn`, without saving any of
+   * their operations into the history.
+   */
+  withoutSaving(editor, fn) {
+    var prev = HistoryEditor.isSaving(editor);
+    SAVING.set(editor, false);
+    fn();
+    SAVING.set(editor, prev);
+  }
+
+};
+
+/**
+ * The `withHistory` plugin keeps track of the operation history of a Slate
+ * editor as operations are applied to it, using undo and redo stacks.
+ */
+
+var withHistory = editor => {
+  var e = editor;
+  var {
+    apply
+  } = e;
+  e.history = {
+    undos: [],
+    redos: []
+  };
+
+  e.redo = () => {
+    var {
+      history
+    } = e;
+    var {
+      redos
+    } = history;
+
+    if (redos.length > 0) {
+      var batch = redos[redos.length - 1];
+      HistoryEditor.withoutSaving(e, () => {
+        Editor.withoutNormalizing(e, () => {
+          for (var op of batch) {
+            e.apply(op);
+          }
+        });
+      });
+      history.redos.pop();
+      history.undos.push(batch);
+    }
+  };
+
+  e.undo = () => {
+    var {
+      history
+    } = e;
+    var {
+      undos
+    } = history;
+
+    if (undos.length > 0) {
+      var batch = undos[undos.length - 1];
+      HistoryEditor.withoutSaving(e, () => {
+        Editor.withoutNormalizing(e, () => {
+          var inverseOps = batch.map(Operation.inverse).reverse();
+
+          for (var op of inverseOps) {
+            // If the final operation is deselecting the editor, skip it. This is
+            if (op === inverseOps[inverseOps.length - 1] && op.type === 'set_selection' && op.newProperties == null) {
+              continue;
+            } else {
+              e.apply(op);
+            }
+          }
+        });
+      });
+      history.redos.push(batch);
+      history.undos.pop();
+    }
+  };
+
+  e.apply = op => {
+    var {
+      operations,
+      history
+    } = e;
+    var {
+      undos
+    } = history;
+    var lastBatch = undos[undos.length - 1];
+    var lastOp = lastBatch && lastBatch[lastBatch.length - 1];
+    var overwrite = shouldOverwrite(op, lastOp);
+    var save = HistoryEditor.isSaving(e);
+    var merge = HistoryEditor.isMerging(e);
+
+    if (save == null) {
+      save = shouldSave(op);
+    }
+
+    if (save) {
+      if (merge == null) {
+        if (lastBatch == null) {
+          merge = false;
+        } else if (operations.length !== 0) {
+          merge = true;
+        } else {
+          merge = shouldMerge(op, lastOp) || overwrite;
+        }
+      }
+
+      if (lastBatch && merge) {
+        if (overwrite) {
+          lastBatch.pop();
+        }
+
+        lastBatch.push(op);
+      } else {
+        var batch = [op];
+        undos.push(batch);
+      }
+
+      while (undos.length > 100) {
+        undos.shift();
+      }
+
+      if (shouldClear(op)) {
+        history.redos = [];
+      }
+    }
+
+    apply(op);
+  };
+
+  return e;
+};
+/**
+ * Check whether to merge an operation into the previous operation.
+ */
+
+var shouldMerge = (op, prev) => {
+  if (op.type === 'set_selection') {
+    return true;
+  }
+
+  if (prev && op.type === 'insert_text' && prev.type === 'insert_text' && op.offset === prev.offset + prev.text.length && Path.equals(op.path, prev.path)) {
+    return true;
+  }
+
+  if (prev && op.type === 'remove_text' && prev.type === 'remove_text' && op.offset + op.text.length === prev.offset && Path.equals(op.path, prev.path)) {
+    return true;
+  }
+
+  return false;
+};
+/**
+ * Check whether an operation needs to be saved to the history.
+ */
+
+
+var shouldSave = (op, prev) => {
+  if (op.type === 'set_selection' && op.newProperties == null) {
+    return false;
+  }
+
+  return true;
+};
+/**
+ * Check whether an operation should overwrite the previous one.
+ */
+
+
+var shouldOverwrite = (op, prev) => {
+  if (prev && op.type === 'set_selection' && prev.type === 'set_selection') {
+    return true;
+  }
+
+  return false;
+};
+/**
+ * Check whether an operation should clear the redos stack.
+ */
+
+
+var shouldClear = op => {
+  if (op.type === 'set_selection') {
+    return false;
+  }
+
+  return true;
+};
+
+var EditorButton = function (_a) {
+    var active = _a.active, onMouseDown = _a.onMouseDown, children = _a.children;
+    return (React__default.createElement(core$1.Box, { onMouseDown: onMouseDown, color: "" + (active ? 'black' : 'grey.500'), style: { cursor: 'pointer' } }, children));
+};
+var useStyles$2 = core$1.makeStyles(function (theme) { return ({
+    menu: {
+        '& > *': {
+            display: 'inline-block',
+            verticalAlign: 'middle',
+        },
+        '& > * + *': {
+            marginLeft: theme.spacing(2),
+        },
+    },
+}); });
+var Menu = function (_a) {
+    var children = _a.children;
+    var cs = useStyles$2();
+    return React__default.createElement("div", { className: cs.menu }, children);
+};
+var Toolbar = function (_a) {
+    var children = _a.children;
+    return (React__default.createElement(core$1.Box, { position: "relative", bgcolor: "divider", p: 1 },
+        React__default.createElement(Menu, null, children)));
+};
+
+var FormatTypes;
+(function (FormatTypes) {
+    FormatTypes["bold"] = "bold";
+    FormatTypes["italic"] = "italic";
+    FormatTypes["underline"] = "underline";
+    FormatTypes["headingOne"] = "heading-one";
+    FormatTypes["headingTwo"] = "heading-two";
+    FormatTypes["blockQuote"] = "block-quote";
+    FormatTypes["numberedList"] = "numbered-list";
+    FormatTypes["bulletedList"] = "bulleted-list";
+    FormatTypes["listItem"] = "list-item";
+    FormatTypes["paragraph"] = "paragraph";
+    FormatTypes["alignCenter"] = "align-center";
+    FormatTypes["alignLeft"] = "align-left";
+})(FormatTypes || (FormatTypes = {}));
+var isFormatList = function (format) { return format === FormatTypes.numberedList || format === FormatTypes.bulletedList; };
+var isFormatListItem = function (format) { return format === FormatTypes.listItem; };
+var isFormatAlignment = function (format) { return format === FormatTypes.alignCenter || format === FormatTypes.alignLeft; };
+var isFormatHeading = function (format) { return format === FormatTypes.headingOne || format === FormatTypes.headingTwo; };
+var getOtherListFormat = function (format) {
+    if (format === FormatTypes.numberedList) {
+        return FormatTypes.bulletedList;
+    }
+    return FormatTypes.numberedList;
+};
+var HOTKEYS$1 = {
+    'mod+b': FormatTypes.bold,
+    'mod+i': FormatTypes.italic,
+    'mod+u': FormatTypes.underline,
+};
+var isBlockActive = function (editor, format) {
+    if (format === FormatTypes.alignLeft) {
+        var _a = __read(Editor.nodes(editor, {
+            match: function (n) { return n.types && n.types.includes(FormatTypes.alignCenter); },
+        }), 1), alignCenterMatch = _a[0];
+        return !alignCenterMatch;
+    }
+    var _b = __read(Editor.nodes(editor, {
+        match: function (n) { return n.types && n.types.includes(format); },
+    }), 1), match = _b[0];
+    return !!match;
+};
+var isMarkActive = function (editor, format) {
+    var marks = Editor.marks(editor);
+    return marks ? marks[format] === true : false;
+};
+var toggleBlock = function (editor, format) {
+    var isActive = isBlockActive(editor, format);
+    var isList = isFormatList(format);
+    if (isList) {
+        var isOtherListFormatActive = isBlockActive(editor, getOtherListFormat(format));
+        if (isActive || isOtherListFormatActive) {
+            Transforms.unwrapNodes(editor, {
+                match: function (n) {
+                    var hasFormatList = false;
+                    if (n.types) {
+                        n.types.forEach(function (t) {
+                            if (isFormatList(t)) {
+                                hasFormatList = true;
+                            }
+                        });
+                    }
+                    return hasFormatList;
+                },
+                split: true,
+            });
+        }
+    }
+    var newFormatType = isList ? FormatTypes.listItem : format;
+    var types = [];
+    var selectedNode = editor.selection && editor.children[editor.selection.anchor.path[0]];
+    var selectedNodeTypes = selectedNode ? selectedNode.types : [];
+    if (selectedNode && selectedNode.children.length > 0 && selectedNode.children[0].types) {
+        selectedNodeTypes = selectedNode.children[0].types;
+    }
+    if (!(selectedNodeTypes.length && selectedNodeTypes[0] === FormatTypes.paragraph)) {
+        types.push.apply(types, __spread(selectedNodeTypes));
+    }
+    if (isActive) {
+        var currentIndex = selectedNodeTypes.findIndex(function (t) { return t === newFormatType; });
+        types.splice(currentIndex, 1);
+    }
+    else if (isFormatAlignment(newFormatType)) {
+        var previousAlignmentIndex = selectedNodeTypes.findIndex(function (t) { return isFormatAlignment(t); });
+        if (previousAlignmentIndex !== -1) {
+            types.splice(previousAlignmentIndex, 1, newFormatType);
+        }
+        else {
+            types.push(newFormatType);
+        }
+    }
+    else if (isFormatHeading(newFormatType)) {
+        var previousHeadingIndex = selectedNodeTypes.findIndex(function (t) { return isFormatHeading(t); });
+        if (previousHeadingIndex !== -1) {
+            types.splice(previousHeadingIndex, 1, newFormatType);
+        }
+        else {
+            types.push(newFormatType);
+        }
+    }
+    else if (isList) {
+        var previousListIndex = selectedNodeTypes.findIndex(function (t) { return isFormatListItem(t); });
+        if (previousListIndex === -1) {
+            types.push(newFormatType);
+        }
+    }
+    else {
+        types.push(newFormatType);
+    }
+    Transforms.setNodes(editor, {
+        types: types,
+    });
+    if (!isActive && isList) {
+        var block = { types: [format], children: [] };
+        Transforms.wrapNodes(editor, block);
+    }
+};
+var toggleMark = function (editor, format) {
+    var isActive = isMarkActive(editor, format);
+    if (isActive) {
+        Editor.removeMark(editor, format);
+    }
+    else {
+        Editor.addMark(editor, format, true);
+    }
+};
+var Element$2 = function (_a) {
+    var attributes = _a.attributes, children = _a.children, element = _a.element;
+    var block = children;
+    element.types.forEach(function (type) {
+        switch (type) {
+            case FormatTypes.blockQuote:
+                block = React__default.createElement("blockquote", __assign({}, attributes), block);
+                break;
+            case FormatTypes.bulletedList:
+                block = React__default.createElement("ul", __assign({}, attributes), block);
+                break;
+            case FormatTypes.headingOne:
+                block = React__default.createElement("h1", __assign({}, attributes), block);
+                break;
+            case FormatTypes.headingTwo:
+                block = React__default.createElement("h2", __assign({}, attributes), block);
+                break;
+            case FormatTypes.listItem:
+                block = React__default.createElement("li", __assign({}, attributes), block);
+                break;
+            case FormatTypes.numberedList:
+                block = React__default.createElement("ol", __assign({}, attributes), block);
+                break;
+            case FormatTypes.alignCenter:
+                block = (React__default.createElement("div", __assign({}, attributes, { style: { textAlign: 'center' } }), block));
+                break;
+            case FormatTypes.alignLeft:
+                break;
+            default:
+                block = React__default.createElement("p", __assign({}, attributes), block);
+        }
+    });
+    return block;
+};
+var Leaf$1 = function (_a) {
+    var attributes = _a.attributes, children = _a.children, leaf = _a.leaf;
+    var updatedChildren = children;
+    if (leaf.bold) {
+        updatedChildren = React__default.createElement("strong", null, children);
+    }
+    if (leaf.italic) {
+        updatedChildren = React__default.createElement("em", null, children);
+    }
+    if (leaf.underline) {
+        updatedChildren = React__default.createElement("u", null, children);
+    }
+    return React__default.createElement("span", __assign({}, attributes), updatedChildren);
+};
+var BlockButton = function (_a) {
+    var format = _a.format, icon = _a.icon;
+    var editor = useSlate();
+    var isActive = isBlockActive(editor, format);
+    return (React__default.createElement(EditorButton, { active: isActive, onMouseDown: function (event) {
+            event.preventDefault();
+            toggleBlock(editor, format);
+        } }, icon));
+};
+var MarkButton = function (_a) {
+    var format = _a.format, icon = _a.icon;
+    var editor = useSlate();
+    return (React__default.createElement(EditorButton, { active: isMarkActive(editor, format), onMouseDown: function (event) {
+            event.preventDefault();
+            toggleMark(editor, format);
+        } }, icon));
+};
+var INITIAL_VALUE = [
+    {
+        types: [FormatTypes.paragraph],
+        children: [{ text: '' }],
+    },
+];
+var useStyles$3 = core$1.makeStyles(function (theme) { return ({
+    editor: {
+        '&:hover': {
+            borderBottom: '2px solid #777',
+        },
+    },
+    editorFocused: {
+        borderBottom: "2px solid " + theme.palette.primary.main,
+    },
+}); });
+var serialize = function (node) {
+    if (Text.isText(node)) {
+        var updatedNode = node.text;
+        if (node.bold) {
+            updatedNode = "<strong>" + updatedNode + "</strong>";
+        }
+        if (node.italic) {
+            updatedNode = "<em>" + updatedNode + "</em>";
+        }
+        if (node.underline) {
+            updatedNode = "<u>" + updatedNode + "</u>";
+        }
+        return updatedNode;
+    }
+    var children = node.children.map(function (n) { return serialize(n); }).join('');
+    if (!node.types)
+        return children;
+    var block = children;
+    node.types.forEach(function (type) {
+        switch (type) {
+            case FormatTypes.blockQuote:
+                block = "<blockquote>" + block + "</blockquote>";
+                break;
+            case FormatTypes.bulletedList:
+                block = "<ul>" + block + "</ul>";
+                break;
+            case FormatTypes.headingOne:
+                block = "<h1>" + block + "</h1>";
+                break;
+            case FormatTypes.headingTwo:
+                block = "<h2>" + block + "</h2>";
+                break;
+            case FormatTypes.listItem:
+                block = "<li>" + block + "</li>";
+                break;
+            case FormatTypes.numberedList:
+                block = "<ol>" + block + "</ol>";
+                break;
+            case FormatTypes.alignCenter:
+                block = "<div style='text-align: center'>" + block + "</div>";
+                break;
+            case FormatTypes.alignLeft:
+                break;
+            default:
+                block = "<p>" + block + "</p>";
+        }
+    });
+    return block;
+};
+var MessageEditor = function (_a) {
+    var name = _a.name, onBlur = _a.onBlur, onChange = _a.onChange, formikValue = _a.value;
+    var t = useTranslation(['messages/default']).t;
+    var cs = useStyles$3();
+    var _b = __read(React.useState(INITIAL_VALUE), 2), value = _b[0], setValue = _b[1];
+    var _c = __read(React.useState(false), 2), isFocused = _c[0], setIsFocused = _c[1];
+    var renderElement = React.useCallback(function (props) { return React__default.createElement(Element$2, __assign({}, props)); }, []);
+    var renderLeaf = React.useCallback(function (props) { return React__default.createElement(Leaf$1, __assign({}, props)); }, []);
+    var editor = React.useMemo(function () { return withHistory(withReact(createEditor())); }, []);
+    React.useEffect(function () {
+        if (formikValue === '') {
+            // Form has been reset
+            editor.selection = null;
+            setValue(INITIAL_VALUE);
+        }
+    }, [formikValue]);
+    var onValueChange = function (v) {
+        setIsFocused(ReactEditor.isFocused(editor));
+        setValue(v);
+    };
+    var onBlurEditor = function (onBlurEvent) {
+        onBlur(name)(onBlurEvent);
+        onChange(name)(serialize(editor));
+    };
+    return (React__default.createElement(core$1.Box, { border: 1, borderColor: "divider", className: isFocused ? cs.editorFocused : cs.editor, mt: 2, mb: 1 },
+        React__default.createElement(Slate, { editor: editor, value: value, onChange: onValueChange },
+            React__default.createElement(Toolbar, null,
+                React__default.createElement(MarkButton, { format: FormatTypes.bold, icon: React__default.createElement(FormatBold, { style: { display: 'block' } }) }),
+                React__default.createElement(MarkButton, { format: FormatTypes.italic, icon: React__default.createElement(FormatItalic, { style: { display: 'block' } }) }),
+                React__default.createElement(MarkButton, { format: FormatTypes.underline, icon: React__default.createElement(FormatUnderlined, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.headingOne, icon: React__default.createElement(LooksOne, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.headingTwo, icon: React__default.createElement(LooksTwo, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.blockQuote, icon: React__default.createElement(FormatQuote, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.alignLeft, icon: React__default.createElement(FormatAlignLeft, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.alignCenter, icon: React__default.createElement(FormatAlignCenter, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.numberedList, icon: React__default.createElement(FormatListNumbered, { style: { display: 'block' } }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes.bulletedList, icon: React__default.createElement(FormatListBulleted, { style: { display: 'block' } }) })),
+            React__default.createElement(Editable, { renderElement: renderElement, renderLeaf: renderLeaf, placeholder: t('form.placeholder'), spellCheck: true, onBlur: onBlurEditor, style: { minHeight: '350px', padding: '8px' }, onKeyDown: function (event) {
+                    Object.keys(HOTKEYS$1).forEach(function (hotkey) {
+                        if (isHotkey(hotkey, event)) {
+                            event.preventDefault();
+                            var mark = HOTKEYS$1[hotkey];
+                            toggleMark(editor, mark);
+                        }
+                    });
+                } }))));
+};
+
+var FieldTypes;
+(function (FieldTypes) {
+    FieldTypes["Custom"] = "custom";
+    FieldTypes["Default"] = "default";
+    FieldTypes["Select"] = "select";
+    FieldTypes["Editor"] = "Editor";
+})(FieldTypes || (FieldTypes = {}));
 var CustomTextField = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
 function generateFields(fields, formikProps) {
     return fields.map(function (field) {
-        if (field.type === 'default') {
-            return (React__default.createElement(formik.Field, { key: field.name, component: field.component || CustomTextField, fullWidth: true, margin: "normal", label: field.label, name: field.name, disabled: field.disabled, required: field.required || false }));
+        if (field.type === FieldTypes.Default || field.type === FieldTypes.Select || field.type === FieldTypes.Editor) {
+            var component = field.type !== FieldTypes.Editor && (field.component || CustomTextField);
+            return (React__default.createElement(formik.Field, { key: field.name, component: component, fullWidth: true, margin: "normal", label: field.label, name: field.name, disabled: field.disabled, required: field.required || false, select: field.type === FieldTypes.Select, as: field.type === FieldTypes.Editor && MessageEditor }, field.type === FieldTypes.Select &&
+                field.selectOptions.map(function (o) { return (React__default.createElement(MenuItem, { key: o.value + "_" + o.label, value: o.value, onClick: function () { return field.onSelectOption && field.onSelectOption(o.value); } }, o.label)); })));
         }
         return field.render(field.name, formikProps);
     });
@@ -27977,21 +39013,21 @@ var UserForm = function (_a) {
     var t = useTranslation(['translation', 'users/form']).t;
     var fields = [
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'firstName',
             initialValues: (user === null || user === void 0 ? void 0 : user.firstName) || '',
             label: t('firstName'),
             required: true,
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'lastName',
             initialValues: (user === null || user === void 0 ? void 0 : user.lastName) || '',
             label: t('lastName'),
             required: true,
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'email',
             initialValues: (user === null || user === void 0 ? void 0 : user.email) || '',
             label: t('email'),
@@ -28000,31 +39036,31 @@ var UserForm = function (_a) {
     ];
     var contactFields = [
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'phone',
             initialValues: (user === null || user === void 0 ? void 0 : user.phone) || '',
             label: t('phone'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'address1',
             initialValues: (user === null || user === void 0 ? void 0 : user.address1) || '',
             label: t('address1'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'address2',
             initialValues: (user === null || user === void 0 ? void 0 : user.address2) || '',
             label: t('address2'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'zipCode',
             initialValues: (user === null || user === void 0 ? void 0 : user.zipCode) || '',
             label: t('zipCode'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'city',
             initialValues: (user === null || user === void 0 ? void 0 : user.city) || '',
             label: t('city'),
@@ -28032,25 +39068,25 @@ var UserForm = function (_a) {
     ];
     var spouseInformations = [
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'firstName2',
             initialValues: (user === null || user === void 0 ? void 0 : user.firstName2) || '',
             label: t('users/form:firstName2'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'lastName2',
             initialValues: (user === null || user === void 0 ? void 0 : user.lastName2) || '',
             label: t('users/form:lastName2'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'email2',
             initialValues: (user === null || user === void 0 ? void 0 : user.email2) || '',
             label: t('users/form:email2'),
         },
         {
-            type: 'default',
+            type: FieldTypes.Default,
             name: 'phone2',
             initialValues: (user === null || user === void 0 ? void 0 : user.phone2) || '',
             label: t('users/form:phone2'),
@@ -28121,11 +39157,11 @@ var parseUserOptions = function (user, prevOptions) {
 var PermissionsStep = function (_a) {
     var onConfirm = _a.onConfirm, onCancel = _a.onCancel;
     var t = useTranslation(['translation', tFile$2]).t;
-    var _b = React__default.useState(), me = _b[0], setMe = _b[1];
-    var _c = React__default.useState(), error = _c[0], setError = _c[1];
-    var _d = React__default.useState([]), options = _d[0], setOptions = _d[1];
-    var _e = React__default.useState(false), dialogOpened = _e[0], toggleDialogOpened = _e[1];
-    var _f = React__default.useState(false), submitting = _f[0], toggleSubmitting = _f[1];
+    var _b = __read(React__default.useState(), 2), me = _b[0], setMe = _b[1];
+    var _c = __read(React__default.useState(), 2), error = _c[0], setError = _c[1];
+    var _d = __read(React__default.useState([]), 2), options = _d[0], setOptions = _d[1];
+    var _e = __read(React__default.useState(false), 2), dialogOpened = _e[0], toggleDialogOpened = _e[1];
+    var _f = __read(React__default.useState(false), 2), submitting = _f[0], toggleSubmitting = _f[1];
     var valid = options && !!options.find(function (option) { return option.checked; });
     /** */
     var openDialog = function () {
@@ -28270,10 +39306,10 @@ var SlotsStep = function (_a) {
             return slot.registeredUserIds.length;
         return acc;
     }, 0);
-    var _b = React__default.useState(slots.map(function (slot) {
+    var _b = __read(React__default.useState(slots.map(function (slot) {
         var prc = maxUserRegistered > 0 ? slot.registeredUserIds.length / maxUserRegistered : 0;
         return __assign(__assign({}, slot), { name: "slot-" + slot.id, checked: prc <= 0.75, nbUsers: slot.registeredUserIds.length, prc: prc });
-    })), selection = _b[0], setSelection = _b[1];
+    })), 2), selection = _b[0], setSelection = _b[1];
     var valid = !!selection.find(function (slot) { return slot.checked; });
     /** */
     var onCheckoxChange = function (e) {
@@ -28335,7 +39371,7 @@ var shortTKey$4 = tFile$4 + ":userInNeedSelected";
 var VoluntaryStep = function (_a) {
     var inNeedUsers = _a.inNeedUsers, onConfirm = _a.onConfirm, onCancel = _a.onCancel;
     var t = useTranslation(['translation', tFile$4]).t;
-    var _b = React__default.useState(inNeedUsers.map(function (user) { return (__assign(__assign({}, user), { fieldName: "user-" + user.id, checked: false })); })), users = _b[0], setUsers = _b[1];
+    var _b = __read(React__default.useState(inNeedUsers.map(function (user) { return (__assign(__assign({}, user), { fieldName: "user-" + user.id, checked: false })); })), 2), users = _b[0], setUsers = _b[1];
     /** */
     var onCheckoxChange = function (e) {
         setUsers(users.map(function (user) {
@@ -28458,7 +39494,7 @@ exports.default = _default;
 
 var PrintIcon = unwrapExports(Print);
 
-var lib = createCommonjsModule(function (module, exports) {
+var lib$1 = createCommonjsModule(function (module, exports) {
 !function(t,e){module.exports=e(React__default,ReactDOM);}("undefined"!=typeof self?self:commonjsGlobal,(function(t,e){return function(t){var e={};function n(r){if(e[r])return e[r].exports;var o=e[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=t,n.c=e,n.d=function(t,e,r){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r});},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0});},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)n.d(r,o,function(e){return t[e]}.bind(null,o));return r},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=0)}([function(t,e,n){Object.defineProperty(e,"__esModule",{value:!0});var r=n(1),o=n(2),i=n(3),a=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.startPrint=function(t,n){var r=e.props.removeAfterPrint;setTimeout((function(){if(t.contentWindow.focus(),t.contentWindow.print(),n&&n(),r){var e=document.getElementById("printWindow");e&&document.body.removeChild(e);}}),500);},e.triggerPrint=function(t){var n=e.props,r=n.onAfterPrint,o=n.onBeforePrint,i=n.onPrintError;if(o){var a=o();a&&"function"==typeof a.then?a.then((function(){e.startPrint(t,r);})).catch((function(t){i&&i("onBeforePrint",t);})):e.startPrint(t,r);}else e.startPrint(t,r);},e.handleClick=function(){var t=e.props,n=t.onBeforeGetContent,r=t.onPrintError;if(n){var o=n();o&&"function"==typeof o.then?o.then(e.handlePrint).catch((function(t){r&&r("onBeforeGetContent",t);})):e.handlePrint();}else e.handlePrint();},e.handlePrint=function(){var t=e.props,n=t.bodyClass,r=void 0===n?"":n,o=t.content,a=t.copyStyles,u=void 0===a||a,c=t.pageStyle,l=t.suppressErrors,f=o();if(void 0!==f)if(null!==f){var s=document.createElement("iframe");s.style.position="absolute",s.style.top="-1000px",s.style.left="-1000px",s.id="printWindow",s.title="Print Window";var d=i.findDOMNode(f),p=document.querySelectorAll("link[rel='stylesheet'], img");e.linkTotal=p.length||0,e.linksLoaded=[],e.linksErrored=[];var y=function(t,n){n?e.linksLoaded.push(t):(l||console.error('"react-to-print" was unable to load a link. It may be invalid. "react-to-print" will continue attempting to print the page. The link the errored was:',t),e.linksErrored.push(t)),e.linksLoaded.length+e.linksErrored.length===e.linkTotal&&e.triggerPrint(s);};s.onload=function(){window.navigator&&window.navigator.userAgent.indexOf("Trident/7.0")>-1&&(s.onload=null);var t=s.contentDocument||s.contentWindow.document,n=d.querySelectorAll("canvas");if(t){t.open(),t.write(d.outerHTML),t.close();var o=void 0===c?"@page { size: auto;  margin: 0mm; } @media print { body { -webkit-print-color-adjust: exact; } }":c,i=t.createElement("style");i.appendChild(t.createTextNode(o)),t.head.appendChild(i),r.length&&t.body.classList.add(r);for(var a=t.querySelectorAll("canvas"),l=0,f=a.length;l<f;++l){var p=(v=a[l]).getContext("2d");p&&p.drawImage(n[l],0,0);}if(!1!==u)for(var h=document.querySelectorAll("style, link[rel='stylesheet'], img"),b=(l=0,h.length);l<b;++l){var v;if("STYLE"===(v=h[l]).tagName){var m=t.createElement(v.tagName),g=v.sheet;if(g){for(var w="",_=0,P=g.cssRules.length;_<P;++_)"string"==typeof g.cssRules[_].cssText&&(w+=g.cssRules[_].cssText+"\r\n");m.setAttribute("id","react-to-print-"+l),m.appendChild(t.createTextNode(w)),t.head.appendChild(m);}}else if(v.hasAttribute("href")&&v.getAttribute("href")||v.hasAttribute("src")&&v.getAttribute("src")){m=t.createElement(v.tagName),_=0;for(var x=v.attributes.length;_<x;++_){var O=v.attributes[_];O&&m.setAttribute(O.nodeName,O.nodeValue||"");}m.onload=y.bind(null,m,!0),m.onerror=y.bind(null,m,!1),t.head.appendChild(m);}else console.warn('"react-to-print" encountered a <link> tag with an empty "href" attribute. In addition to being invalid HTML, this can cause problems in many browsers, and so the <link> was not loaded. The <link> is:',v),y(v,!0);}}0!==e.linkTotal&&!1!==u||e.triggerPrint(s);};var h=document.getElementById("printWindow");h&&document.body.removeChild(h),document.body.appendChild(s);}else l||console.error('There is nothing to print because the "content" prop returned "null". Please ensure "content" is renderable before allowing "react-to-print" to be called.');else l||console.error('Refs are not available for stateless components. For "react-to-print" to work only Class based components can be printed');},e}return r.__extends(e,t),e.prototype.render=function(){var t=this.props.trigger;return o.cloneElement(t(),{onClick:this.handleClick})},e}(o.Component);e.default=a;},function(t,e,n){n.r(e),n.d(e,"__extends",(function(){return o})),n.d(e,"__assign",(function(){return i})),n.d(e,"__rest",(function(){return a})),n.d(e,"__decorate",(function(){return u})),n.d(e,"__param",(function(){return c})),n.d(e,"__metadata",(function(){return l})),n.d(e,"__awaiter",(function(){return f})),n.d(e,"__generator",(function(){return s})),n.d(e,"__exportStar",(function(){return d})),n.d(e,"__values",(function(){return p})),n.d(e,"__read",(function(){return y})),n.d(e,"__spread",(function(){return h})),n.d(e,"__await",(function(){return b})),n.d(e,"__asyncGenerator",(function(){return v})),n.d(e,"__asyncDelegator",(function(){return m})),n.d(e,"__asyncValues",(function(){return g})),n.d(e,"__makeTemplateObject",(function(){return w})),n.d(e,"__importStar",(function(){return _})),n.d(e,"__importDefault",(function(){return P}));
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -28477,8 +39513,8 @@ and limitations under the License.
 var r=function(t,e){return (r=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e;}||function(t,e){for(var n in e)e.hasOwnProperty(n)&&(t[n]=e[n]);})(t,e)};function o(t,e){function n(){this.constructor=t;}r(t,e),t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n);}var i=function(){return (i=Object.assign||function(t){for(var e,n=1,r=arguments.length;n<r;n++)for(var o in e=arguments[n])Object.prototype.hasOwnProperty.call(e,o)&&(t[o]=e[o]);return t}).apply(this,arguments)};function a(t,e){var n={};for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&e.indexOf(r)<0&&(n[r]=t[r]);if(null!=t&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(r=Object.getOwnPropertySymbols(t);o<r.length;o++)e.indexOf(r[o])<0&&(n[r[o]]=t[r[o]]);}return n}function u(t,e,n,r){var o,i=arguments.length,a=i<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,n):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(t,e,n,r);else for(var u=t.length-1;u>=0;u--)(o=t[u])&&(a=(i<3?o(a):i>3?o(e,n,a):o(e,n))||a);return i>3&&a&&Object.defineProperty(e,n,a),a}function c(t,e){return function(n,r){e(n,r,t);}}function l(t,e){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,e)}function f(t,e,n,r){return new(n||(n=Promise))((function(o,i){function a(t){try{c(r.next(t));}catch(t){i(t);}}function u(t){try{c(r.throw(t));}catch(t){i(t);}}function c(t){t.done?o(t.value):new n((function(e){e(t.value);})).then(a,u);}c((r=r.apply(t,e||[])).next());}))}function s(t,e){var n,r,o,i,a={label:0,sent:function(){if(1&o[0])throw o[1];return o[1]},trys:[],ops:[]};return i={next:u(0),throw:u(1),return:u(2)},"function"==typeof Symbol&&(i[Symbol.iterator]=function(){return this}),i;function u(i){return function(u){return function(i){if(n)throw new TypeError("Generator is already executing.");for(;a;)try{if(n=1,r&&(o=2&i[0]?r.return:i[0]?r.throw||((o=r.return)&&o.call(r),0):r.next)&&!(o=o.call(r,i[1])).done)return o;switch(r=0,o&&(i=[2&i[0],o.value]),i[0]){case 0:case 1:o=i;break;case 4:return a.label++,{value:i[1],done:!1};case 5:a.label++,r=i[1],i=[0];continue;case 7:i=a.ops.pop(),a.trys.pop();continue;default:if(!(o=(o=a.trys).length>0&&o[o.length-1])&&(6===i[0]||2===i[0])){a=0;continue}if(3===i[0]&&(!o||i[1]>o[0]&&i[1]<o[3])){a.label=i[1];break}if(6===i[0]&&a.label<o[1]){a.label=o[1],o=i;break}if(o&&a.label<o[2]){a.label=o[2],a.ops.push(i);break}o[2]&&a.ops.pop(),a.trys.pop();continue}i=e.call(t,a);}catch(t){i=[6,t],r=0;}finally{n=o=0;}if(5&i[0])throw i[1];return {value:i[0]?i[1]:void 0,done:!0}}([i,u])}}}function d(t,e){for(var n in t)e.hasOwnProperty(n)||(e[n]=t[n]);}function p(t){var e="function"==typeof Symbol&&t[Symbol.iterator],n=0;return e?e.call(t):{next:function(){return t&&n>=t.length&&(t=void 0),{value:t&&t[n++],done:!t}}}}function y(t,e){var n="function"==typeof Symbol&&t[Symbol.iterator];if(!n)return t;var r,o,i=n.call(t),a=[];try{for(;(void 0===e||e-- >0)&&!(r=i.next()).done;)a.push(r.value);}catch(t){o={error:t};}finally{try{r&&!r.done&&(n=i.return)&&n.call(i);}finally{if(o)throw o.error}}return a}function h(){for(var t=[],e=0;e<arguments.length;e++)t=t.concat(y(arguments[e]));return t}function b(t){return this instanceof b?(this.v=t,this):new b(t)}function v(t,e,n){if(!Symbol.asyncIterator)throw new TypeError("Symbol.asyncIterator is not defined.");var r,o=n.apply(t,e||[]),i=[];return r={},a("next"),a("throw"),a("return"),r[Symbol.asyncIterator]=function(){return this},r;function a(t){o[t]&&(r[t]=function(e){return new Promise((function(n,r){i.push([t,e,n,r])>1||u(t,e);}))});}function u(t,e){try{(n=o[t](e)).value instanceof b?Promise.resolve(n.value.v).then(c,l):f(i[0][2],n);}catch(t){f(i[0][3],t);}var n;}function c(t){u("next",t);}function l(t){u("throw",t);}function f(t,e){t(e),i.shift(),i.length&&u(i[0][0],i[0][1]);}}function m(t){var e,n;return e={},r("next"),r("throw",(function(t){throw t})),r("return"),e[Symbol.iterator]=function(){return this},e;function r(r,o){e[r]=t[r]?function(e){return (n=!n)?{value:b(t[r](e)),done:"return"===r}:o?o(e):e}:o;}}function g(t){if(!Symbol.asyncIterator)throw new TypeError("Symbol.asyncIterator is not defined.");var e,n=t[Symbol.asyncIterator];return n?n.call(t):(t=p(t),e={},r("next"),r("throw"),r("return"),e[Symbol.asyncIterator]=function(){return this},e);function r(n){e[n]=t[n]&&function(e){return new Promise((function(r,o){(function(t,e,n,r){Promise.resolve(r).then((function(e){t({value:e,done:n});}),e);})(r,o,(e=t[n](e)).done,e.value);}))};}}function w(t,e){return Object.defineProperty?Object.defineProperty(t,"raw",{value:e}):t.raw=e,t}function _(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var n in t)Object.hasOwnProperty.call(t,n)&&(e[n]=t[n]);return e.default=t,e}function P(t){return t&&t.__esModule?t:{default:t}}},function(e,n){e.exports=t;},function(t,n){t.exports=e;}])}));
 });
 
-var ReactToPrint = unwrapExports(lib);
-var lib_1 = lib.lib;
+var ReactToPrint = unwrapExports(lib$1);
+var lib_1$1 = lib$1.lib;
 
 var tFile$6 = 'neo/distrib-slots';
 var shortTKey$6 = tFile$6 + ":resolver";
@@ -28574,7 +39610,7 @@ var DistribSlotsResolver = function (_a) {
     var distribId = _a.distribId;
     var t = useTranslation(['translation', tFile$8]).t;
     var toPrintRef = React__default.useRef(null);
-    var _b = React__default.useState(), distrib = _b[0], setDistrib = _b[1];
+    var _b = __read(React__default.useState(), 2), distrib = _b[0], setDistrib = _b[1];
     /** */
     React__default.useEffect(function () {
         var active = true;
@@ -28622,7 +39658,7 @@ var DistribSlotsResolver = function (_a) {
             React__default.createElement(core$1.CardContent, null,
                 React__default.createElement(core$1.Typography, null, t(shortTKey$8 + ".resolving")))));
     }
-    var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spreadArrays(acc, vs); }, []);
+    var iNeedLockedUserIds = Object.values(distrib.voluntaryMap).reduce(function (acc, vs) { return __spread(acc, vs); }, []);
     var inNeedUsersNotLocked = (distrib.inNeedUsers || []).filter(function (u) { return !iNeedLockedUserIds.includes(u.id); });
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement(core$1.Card, null,
@@ -28641,7 +39677,7 @@ var DistribSlotsResolver = function (_a) {
 };
 var DistribSlotsResolver$1 = withNeolithicProvider(withi18n(DistribSlotsResolver));
 
-var useStyles$2 = core$1.makeStyles(function () { return ({
+var useStyles$4 = core$1.makeStyles(function () { return ({
     map: {
         width: '100%',
         height: '100%',
@@ -28667,10 +39703,10 @@ var formatAddress = function (place) {
 };
 var PlaceDialogView = function (_a) {
     var placeId = _a.placeId, onClose = _a.onClose;
-    var _b = React__default.useState(), place = _b[0], setPlace = _b[1];
-    var _c = React__default.useState(), error = _c[0], setError = _c[1];
-    var _d = React__default.useState(false), loading = _d[0], toggleLoaging = _d[1];
-    var cs = useStyles$2();
+    var _b = __read(React__default.useState(), 2), place = _b[0], setPlace = _b[1];
+    var _c = __read(React__default.useState(), 2), error = _c[0], setError = _c[1];
+    var _d = __read(React__default.useState(false), 2), loading = _d[0], toggleLoaging = _d[1];
+    var cs = useStyles$4();
     /** */
     React__default.useEffect(function () {
         var active = true;
@@ -28748,7 +39784,7 @@ var PlaceDialogView = function (_a) {
 };
 var PlaceDialogView$1 = withNeolithicProvider(withi18n(PlaceDialogView));
 
-var useStyles$3 = core$1.makeStyles(function () { return ({
+var useStyles$5 = core$1.makeStyles(function () { return ({
     map: {
         width: '100%',
         height: '100%',
@@ -28756,10 +39792,10 @@ var useStyles$3 = core$1.makeStyles(function () { return ({
 }); });
 var PlaceView = function (_a) {
     var placeId = _a.placeId;
-    var _b = React__default.useState(), place = _b[0], setPlace = _b[1];
-    var _c = React__default.useState(), error = _c[0], setError = _c[1];
-    var _d = React__default.useState(false), loading = _d[0], toggleLoaging = _d[1];
-    var cs = useStyles$3();
+    var _b = __read(React__default.useState(), 2), place = _b[0], setPlace = _b[1];
+    var _c = __read(React__default.useState(), 2), error = _c[0], setError = _c[1];
+    var _d = __read(React__default.useState(false), 2), loading = _d[0], toggleLoaging = _d[1];
+    var cs = useStyles$5();
     /** */
     React__default.useEffect(function () {
         var active = true;
@@ -28810,94 +39846,6 @@ var PlaceView = function (_a) {
         React__default.createElement(reactLeaflet.Marker, { position: center })));
 };
 var PlaceView$1 = withNeolithicProvider(withi18n(PlaceView));
-
-var Business = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"
-}), 'Business');
-
-exports.default = _default;
-});
-
-var BusinessIcon = unwrapExports(Business);
-
-var Face = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"
-}), 'Face');
-
-exports.default = _default;
-});
-
-var FaceIcon = unwrapExports(Face);
-
-var ExpandLess = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
-}), 'ExpandLess');
-
-exports.default = _default;
-});
-
-var ExpandLessIcon = unwrapExports(ExpandLess);
-
-var Folder = createCommonjsModule(function (module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = interopRequireDefault(React__default);
-
-var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
-
-var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
-}), 'Folder');
-
-exports.default = _default;
-});
-
-var FolderIcon = unwrapExports(Folder);
 
 var parse$4 = parser$1.parse;
 
@@ -29078,6 +40026,14 @@ gql$1.disableExperimentalFragmentVariables = disableExperimentalFragmentVariable
 
 var src$1 = gql$1;
 
+var MangopayBankAccountType;
+(function (MangopayBankAccountType) {
+    MangopayBankAccountType["IBAN"] = "IBAN";
+    MangopayBankAccountType["GB"] = "GB";
+    MangopayBankAccountType["US"] = "US";
+    MangopayBankAccountType["CA"] = "CA";
+    MangopayBankAccountType["OTHER"] = "OTHER";
+})(MangopayBankAccountType || (MangopayBankAccountType = {}));
 var MangopayKycDocumentRefusedReasonType;
 (function (MangopayKycDocumentRefusedReasonType) {
     MangopayKycDocumentRefusedReasonType["DOCUMENT_UNREADABLE"] = "DOCUMENT_UNREADABLE";
@@ -29135,19 +40091,63 @@ var MangopayUboReasonType;
     MangopayUboReasonType["DECLARATION_DO_NOT_MATCH_UBO_INFORMATION"] = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION";
     MangopayUboReasonType["SPECIFIC_CASE"] = "SPECIFIC_CASE";
 })(MangopayUboReasonType || (MangopayUboReasonType = {}));
-var UserFragmentDoc = src$1(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n}\n    "], ["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n}\n    "])));
+var MangopayUsBankAccountDepositAccountType;
+(function (MangopayUsBankAccountDepositAccountType) {
+    MangopayUsBankAccountDepositAccountType["CHECKING"] = "CHECKING";
+    MangopayUsBankAccountDepositAccountType["SAVINGS"] = "SAVINGS";
+})(MangopayUsBankAccountDepositAccountType || (MangopayUsBankAccountDepositAccountType = {}));
+var UserFragmentDoc = src$1(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n  email\n  email2\n  firstName2\n  lastName2\n}\n    "], ["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n  email\n  email2\n  firstName2\n  lastName2\n}\n    "])));
 var MangopayAddressFragmentDoc = src$1(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "], ["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "])));
 var MangopayKycDocumentFragmentDoc = src$1(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "], ["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "])));
 var MangopayBirthplaceFragmentDoc = src$1(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "], ["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "])));
-var MangopayUboFragmentDoc = src$1(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""], ["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""])), MangopayAddressFragmentDoc, MangopayBirthplaceFragmentDoc);
+var MangopayUboFragmentDoc = src$1(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""], ["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""])), MangopayAddressFragmentDoc, MangopayBirthplaceFragmentDoc);
 var MangopayUboDeclarationFragmentDoc = src$1(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
-var MangopayLegalUserFragmentDoc = src$1(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", ""], ["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", ""])), MangopayAddressFragmentDoc, MangopayKycDocumentFragmentDoc, MangopayUboDeclarationFragmentDoc);
-var LoginDocument = src$1(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""], ["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""])), UserFragmentDoc);
-var MeDocument = src$1(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""], ["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""])), UserFragmentDoc);
-var GroupPreviewDocument = src$1(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "])));
-var GetUserMembershipsDocument = src$1(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "], ["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "])));
-var MangopayGroupDocument = src$1(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "], ["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "])));
-var MangopayGroupConfigDocument = src$1(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""], ["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var MangopayIbanBankAccountFragmentDoc = src$1(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""], ["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""])), MangopayAddressFragmentDoc);
+var MangopayLegalUserFragmentDoc = src$1(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""], ["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""])), MangopayAddressFragmentDoc, MangopayKycDocumentFragmentDoc, MangopayUboDeclarationFragmentDoc, MangopayIbanBankAccountFragmentDoc);
+var LoginDocument = src$1(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""], ["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""])), UserFragmentDoc);
+var MeDocument = src$1(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""], ["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""])), UserFragmentDoc);
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+function useMeQuery(baseOptions) {
+    return useQuery(MeDocument, baseOptions);
+}
+var GroupPreviewDocument = src$1(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "])));
+var GetUserMembershipsDocument = src$1(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "], ["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "])));
+var IsGroupAdminDocument = src$1(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query isGroupAdmin($groupId: Int!) {\n  isGroupAdmin(groupId: $groupId)\n}\n    "], ["\n    query isGroupAdmin($groupId: Int!) {\n  isGroupAdmin(groupId: $groupId)\n}\n    "])));
+/**
+ * __useIsGroupAdminQuery__
+ *
+ * To run a query within a React component, call `useIsGroupAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsGroupAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsGroupAdminQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+function useIsGroupAdminQuery(baseOptions) {
+    return useQuery(IsGroupAdminDocument, baseOptions);
+}
+var MangopayGroupDocument = src$1(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "], ["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "])));
+var MangopayGroupConfigDocument = src$1(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""], ["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useMangopayGroupConfigQuery__
  *
@@ -29167,11 +40167,11 @@ var MangopayGroupConfigDocument = src$1(templateObject_13 || (templateObject_13 
 function useMangopayGroupConfigQuery(baseOptions) {
     return useQuery(MangopayGroupConfigDocument, baseOptions);
 }
-var MangopayLegalUserByLegalReprDocument = src$1(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var MangopayLegalUserByLegalReprDocument = src$1(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 function useMangopayLegalUserByLegalReprLazyQuery(baseOptions) {
     return useLazyQuery(MangopayLegalUserByLegalReprDocument, baseOptions);
 }
-var CreateMangopayLegalUserDocument = src$1(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var CreateMangopayLegalUserDocument = src$1(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useCreateMangopayLegalUserMutation__
  *
@@ -29192,7 +40192,7 @@ var CreateMangopayLegalUserDocument = src$1(templateObject_15 || (templateObject
 function useCreateMangopayLegalUserMutation(baseOptions) {
     return useMutation(CreateMangopayLegalUserDocument, baseOptions);
 }
-var UpdateMangopayLegalUserDocument = src$1(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var UpdateMangopayLegalUserDocument = src$1(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useUpdateMangopayLegalUserMutation__
  *
@@ -29213,7 +40213,7 @@ var UpdateMangopayLegalUserDocument = src$1(templateObject_16 || (templateObject
 function useUpdateMangopayLegalUserMutation(baseOptions) {
     return useMutation(UpdateMangopayLegalUserDocument, baseOptions);
 }
-var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_19 || (templateObject_19 = __makeTemplateObject(["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
 /**
  * __useLinkMangopayLegalUserToGroupMutation__
  *
@@ -29234,28 +40234,28 @@ var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_17 || (templateO
 function useLinkMangopayLegalUserToGroupMutation(baseOptions) {
     return useMutation(LinkMangopayLegalUserToGroupDocument, baseOptions);
 }
-var CreateMangopayKycDocumentDocument = src$1(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation CreateMangopayKycDocument($input: CreateMangopayKycDocumentInput!) {\n  createMangopayKycDocument(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayKycDocument($input: CreateMangopayKycDocumentInput!) {\n  createMangopayKycDocument(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""])), MangopayKycDocumentFragmentDoc);
+var CreateMangopayKycDocumentsDocument = src$1(templateObject_20 || (templateObject_20 = __makeTemplateObject(["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""])), MangopayKycDocumentFragmentDoc);
 /**
- * __useCreateMangopayKycDocumentMutation__
+ * __useCreateMangopayKycDocumentsMutation__
  *
- * To run a mutation, you first call `useCreateMangopayKycDocumentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayKycDocumentMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateMangopayKycDocumentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayKycDocumentsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createMangopayKycDocumentMutation, { data, loading, error }] = useCreateMangopayKycDocumentMutation({
+ * const [createMangopayKycDocumentsMutation, { data, loading, error }] = useCreateMangopayKycDocumentsMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-function useCreateMangopayKycDocumentMutation(baseOptions) {
-    return useMutation(CreateMangopayKycDocumentDocument, baseOptions);
+function useCreateMangopayKycDocumentsMutation(baseOptions) {
+    return useMutation(CreateMangopayKycDocumentsDocument, baseOptions);
 }
-var CreateMangopayUboDeclarationDocument = src$1(templateObject_19 || (templateObject_19 = __makeTemplateObject(["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
+var CreateMangopayUboDeclarationDocument = src$1(templateObject_21 || (templateObject_21 = __makeTemplateObject(["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
 /**
  * __useCreateMangopayUboDeclarationMutation__
  *
@@ -29276,7 +40276,7 @@ var CreateMangopayUboDeclarationDocument = src$1(templateObject_19 || (templateO
 function useCreateMangopayUboDeclarationMutation(baseOptions) {
     return useMutation(CreateMangopayUboDeclarationDocument, baseOptions);
 }
-var SubmitMangopayUboDeclarationDocument = src$1(templateObject_20 || (templateObject_20 = __makeTemplateObject(["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
+var SubmitMangopayUboDeclarationDocument = src$1(templateObject_22 || (templateObject_22 = __makeTemplateObject(["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
 /**
  * __useSubmitMangopayUboDeclarationMutation__
  *
@@ -29297,7 +40297,7 @@ var SubmitMangopayUboDeclarationDocument = src$1(templateObject_20 || (templateO
 function useSubmitMangopayUboDeclarationMutation(baseOptions) {
     return useMutation(SubmitMangopayUboDeclarationDocument, baseOptions);
 }
-var CreateOrUpdateMangopayUboDocument = src$1(templateObject_21 || (templateObject_21 = __makeTemplateObject(["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
+var CreateOrUpdateMangopayUboDocument = src$1(templateObject_23 || (templateObject_23 = __makeTemplateObject(["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
 /**
  * __useCreateOrUpdateMangopayUboMutation__
  *
@@ -29318,7 +40318,185 @@ var CreateOrUpdateMangopayUboDocument = src$1(templateObject_21 || (templateObje
 function useCreateOrUpdateMangopayUboMutation(baseOptions) {
     return useMutation(CreateOrUpdateMangopayUboDocument, baseOptions);
 }
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21;
+var CreateMangopayIbanBankAccountDocument = src$1(templateObject_24 || (templateObject_24 = __makeTemplateObject(["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""])), MangopayIbanBankAccountFragmentDoc);
+/**
+ * __useCreateMangopayIbanBankAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayIbanBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayIbanBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayIbanBankAccountMutation, { data, loading, error }] = useCreateMangopayIbanBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMangopayIbanBankAccountMutation(baseOptions) {
+    return useMutation(CreateMangopayIbanBankAccountDocument, baseOptions);
+}
+var DeactivateMangopayBankAccountDocument = src$1(templateObject_25 || (templateObject_25 = __makeTemplateObject(["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "], ["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "])));
+/**
+ * __useDeactivateMangopayBankAccountMutation__
+ *
+ * To run a mutation, you first call `useDeactivateMangopayBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeactivateMangopayBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deactivateMangopayBankAccountMutation, { data, loading, error }] = useDeactivateMangopayBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useDeactivateMangopayBankAccountMutation(baseOptions) {
+    return useMutation(DeactivateMangopayBankAccountDocument, baseOptions);
+}
+var SelectMangopayBankAccountIdDocument = src$1(templateObject_26 || (templateObject_26 = __makeTemplateObject(["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "], ["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "])));
+/**
+ * __useSelectMangopayBankAccountIdMutation__
+ *
+ * To run a mutation, you first call `useSelectMangopayBankAccountIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelectMangopayBankAccountIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selectMangopayBankAccountIdMutation, { data, loading, error }] = useSelectMangopayBankAccountIdMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useSelectMangopayBankAccountIdMutation(baseOptions) {
+    return useMutation(SelectMangopayBankAccountIdDocument, baseOptions);
+}
+var MessagesGroupDocument = src$1(templateObject_27 || (templateObject_27 = __makeTemplateObject(["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "], ["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "])));
+/**
+ * __useMessagesGroupQuery__
+ *
+ * To run a query within a React component, call `useMessagesGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+function useMessagesGroupQuery(baseOptions) {
+    return useQuery(MessagesGroupDocument, baseOptions);
+}
+var CatalogDocument = src$1(templateObject_28 || (templateObject_28 = __makeTemplateObject(["\n    query Catalog($id: Int!) {\n  catalog(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query Catalog($id: Int!) {\n  catalog(id: $id) {\n    id\n    name\n  }\n}\n    "])));
+var UserListsDocument = src$1(templateObject_29 || (templateObject_29 = __makeTemplateObject(["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    id\n    count\n  }\n}\n    "], ["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    id\n    count\n  }\n}\n    "])));
+/**
+ * __useUserListsQuery__
+ *
+ * To run a query within a React component, call `useUserListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListsQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+function useUserListsQuery(baseOptions) {
+    return useQuery(UserListsDocument, baseOptions);
+}
+var GetUserListInGroupByListIdDocument = src$1(templateObject_30 || (templateObject_30 = __makeTemplateObject(["\n    query getUserListInGroupByListId($listId: String!, $groupId: Int!) {\n  getUserListInGroupByListId(listId: $listId, groupId: $groupId) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "], ["\n    query getUserListInGroupByListId($listId: String!, $groupId: Int!) {\n  getUserListInGroupByListId(listId: $listId, groupId: $groupId) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "])));
+function useGetUserListInGroupByListIdLazyQuery(baseOptions) {
+    return useLazyQuery(GetUserListInGroupByListIdDocument, baseOptions);
+}
+var CreateBufferedJsonMailDocument = src$1(templateObject_31 || (templateObject_31 = __makeTemplateObject(["\n    mutation CreateBufferedJsonMail($input: CreateBufferedJsonMailInput!) {\n  createBufferedJsonMail(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation CreateBufferedJsonMail($input: CreateBufferedJsonMailInput!) {\n  createBufferedJsonMail(input: $input) {\n    id\n  }\n}\n    "])));
+/**
+ * __useCreateBufferedJsonMailMutation__
+ *
+ * To run a mutation, you first call `useCreateBufferedJsonMailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBufferedJsonMailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBufferedJsonMailMutation, { data, loading, error }] = useCreateBufferedJsonMailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateBufferedJsonMailMutation(baseOptions) {
+    return useMutation(CreateBufferedJsonMailDocument, baseOptions);
+}
+var CreateMessageDocument = src$1(templateObject_32 || (templateObject_32 = __makeTemplateObject(["\n    mutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "])));
+/**
+ * __useCreateMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMessageMutation(baseOptions) {
+    return useMutation(CreateMessageDocument, baseOptions);
+}
+var GetMessagesForGroupDocument = src$1(templateObject_33 || (templateObject_33 = __makeTemplateObject(["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
+function useGetMessagesForGroupLazyQuery(baseOptions) {
+    return useLazyQuery(GetMessagesForGroupDocument, baseOptions);
+}
+var GetUserMessagesForGroupDocument = src$1(templateObject_34 || (templateObject_34 = __makeTemplateObject(["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
+function useGetUserMessagesForGroupLazyQuery(baseOptions) {
+    return useLazyQuery(GetUserMessagesForGroupDocument, baseOptions);
+}
+var GetMessageByIdDocument = src$1(templateObject_35 || (templateObject_35 = __makeTemplateObject(["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n  }\n}\n    "], ["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n  }\n}\n    "])));
+/**
+ * __useGetMessageByIdQuery__
+ *
+ * To run a query within a React component, call `useGetMessageByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessageByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessageByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+function useGetMessageByIdQuery(baseOptions) {
+    return useQuery(GetMessageByIdDocument, baseOptions);
+}
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34, templateObject_35;
 
 /* eslint-disable no-console */
 var canLog = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
@@ -29347,91 +40525,73 @@ var GqlErrorAlert = function (_a) {
         })) : (React__default.createElement(core$1.Typography, { variant: "caption" }, error.message)))));
 };
 
-var firstLetterUpercase = function (s) { return "" + s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
-var formatUboNames = function (ubo) {
-    return firstLetterUpercase(ubo.FirstName) + " " + firstLetterUpercase(ubo.LastName);
-};
-var formatUserName = function (user) {
-    return "" + user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1).toLowerCase() + " " + user.lastName
-        .charAt(0)
-        .toUpperCase() + user.lastName.slice(1).toLowerCase();
+var Business = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"
+}), 'Business');
+
+exports.default = _default;
+});
+
+var BusinessIcon = unwrapExports(Business);
+
+var ExpandLess = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+}), 'ExpandLess');
+
+exports.default = _default;
+});
+
+var ExpandLessIcon = unwrapExports(ExpandLess);
+
+var TwoColumnsGrid = function (_a) {
+    var left = _a.left, right = _a.right;
+    var theme = core$1.useTheme();
+    var matches = core$1.useMediaQuery(theme.breakpoints.up('sm'));
+    /** */
+    return (React__default.createElement(core$1.Grid, { container: true, spacing: matches ? 2 : 0 },
+        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, left),
+        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, right)));
 };
 
-var tFile$9 = 'pro/mangopay';
-var tKey = 'config.legalRepCard';
-var LegalReprSelectorContainer = function (_a) {
-    var groupId = _a.groupId, users = _a.users, currentLegalRepr = _a.currentLegalRepr, onSelect = _a.onSelect;
-    var _b = useMangopayLegalUserByLegalReprLazyQuery(), getMangopayLegalUserByLegalRepr = _b[0], _c = _b[1], dataLegalUser = _c.data, errorLegalUser = _c.error, loadingLegalUser = _c.loading;
-    var _d = useLinkMangopayLegalUserToGroupMutation(), linkLegalUserToGroup = _d[0], _f = _d[1], errorLink = _f.error, loadingLink = _f.loading;
-    /** TRANS */
-    var _t = useTranslation(['translation', tFile$9]).t;
-    var t = function (key, options) { return _t(tFile$9 + ":" + tKey + "." + key, options); };
-    /** EXTRACTED */
-    var error = errorLegalUser || errorLink;
-    var loading = loadingLegalUser || loadingLink;
-    var legalUser = dataLegalUser === null || dataLegalUser === void 0 ? void 0 : dataLegalUser.mangopayLegalUserByLegalRepr;
-    /** STATES */
-    var _g = React__default.useState(), selectLegalRepr = _g[0], setSelectedLegalRepr = _g[1];
-    /** */
-    var onLinkAccount = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (!selectLegalRepr)
-                return [2 /*return*/];
-            linkLegalUserToGroup({
-                variables: { input: { groupId: groupId, legalReprId: selectLegalRepr.id } },
-                refetchQueries: ['MangopayGroupConfig'],
-            });
-            return [2 /*return*/];
-        });
-    }); };
-    /** */
-    React__default.useEffect(function () {
-        if (selectLegalRepr) {
-            getMangopayLegalUserByLegalRepr({ variables: { input: { groupId: groupId, legalReprId: selectLegalRepr.id } } });
-        }
-    }, [selectLegalRepr]);
-    /** */
-    return (React__default.createElement(core$1.Box, null,
-        error && React__default.createElement(GqlErrorAlert, { error: error }),
-        !loading && selectLegalRepr ? (React__default.createElement(React__default.Fragment, null, legalUser ? (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(core$1.Typography, null, formatUserName(selectLegalRepr)),
-            React__default.createElement(core$1.Typography, null,
-                React__default.createElement("span", null, legalUser.Name),
-                legalUser.CompanyNumber && React__default.createElement("span", null, " (" + legalUser.CompanyNumber + ")")),
-            React__default.createElement(core$1.Typography, null, legalUser.Email),
-            React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Box, { mx: 2 },
-                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
-                            setSelectedLegalRepr(undefined);
-                        } }, _t('cancel'))),
-                React__default.createElement(core$1.Box, { mx: 2 },
-                    React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: onLinkAccount }, t('linkBtn', { name: legalUser.Name })))))) : (React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Box, { mx: 2 },
-                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
-                        setSelectedLegalRepr(undefined);
-                    } }, _t('cancel'))),
-            React__default.createElement(core$1.Box, { mx: 2 },
-                React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: function () {
-                        onSelect(selectLegalRepr);
-                    } }, t('selectReprBtn', { name: formatUserName(selectLegalRepr) }))))))) : (React__default.createElement(React__default.Fragment, null,
-            React__default.createElement(core$1.Box, { mb: 2 },
-                React__default.createElement(lab.Alert, { severity: "info" }, t('alert.p1'))),
-            React__default.createElement(lab.Autocomplete, { options: users || [], value: selectLegalRepr || null, getOptionLabel: formatUserName, getOptionSelected: function (v, o) { return v.id === o.id; }, disabled: loading, renderInput: function (params) { return (React__default.createElement(core$1.TextField, __assign({ variant: "outlined", margin: "normal", label: t('usersSelectorLabel'), name: "legalReprId", required: true }, params))); }, onChange: function (_e, v) {
-                    if (currentLegalRepr && v && currentLegalRepr.id === v.id)
-                        onSelect(currentLegalRepr);
-                    setSelectedLegalRepr(v || undefined);
-                } }))),
-        loading && (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(core$1.LinearProgress, null)))));
+var CustomTextField$1 = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
+var SimpleField = function (_a) {
+    var name = _a.name, label = _a.label, _b = _a.required, required = _b === void 0 ? true : _b, other = __rest(_a, ["name", "label", "required"]);
+    return (React__default.createElement(formik.Field, __assign({ fullWidth: true, margin: "normal", variant: "outlined", name: name, label: label, required: required, component: CustomTextField$1 }, other)));
 };
 
 var URL = '/data/<LOCALE>/iso-3166-1.json';
 var ISO31661Selector = function (_a) {
     var defaultValue = _a.defaultValue, _b = _a.format, format = _b === void 0 ? 'full-iso' : _b, autocompleteProps = _a.autocompleteProps, textFieldProps = _a.textFieldProps, onChange = _a.onChange;
     var t = useTranslation().t;
-    var _c = React__default.useState(false), loading = _c[0], toggleLoading = _c[1];
-    var _d = React__default.useState(), error = _d[0], setError = _d[1];
-    var _f = React__default.useState(undefined), data = _f[0], setData = _f[1];
+    var _c = __read(React__default.useState(false), 2), loading = _c[0], toggleLoading = _c[1];
+    var _d = __read(React__default.useState(), 2), error = _d[0], setError = _d[1];
+    var _f = __read(React__default.useState(undefined), 2), data = _f[0], setData = _f[1];
     /** */
     var onAutocompleteChange = function (_e, value) {
         if (!value) {
@@ -29526,53 +40686,56 @@ var ISO31661Selector = function (_a) {
         React__default.createElement(Autocomplete, __assign({}, autocompleteProps, { defaultValue: getDefaultValue(), options: data, getOptionLabel: getOptionLabel, getOptionSelected: getOptionSelected, renderInput: renderInput, onChange: onAutocompleteChange }))));
 };
 
-var CustomTextField$1 = withHelperTextTranslation(core$1.TextField, formikMaterialUi.fieldToTextField);
-var SimpleField = function (_a) {
-    var name = _a.name, label = _a.label, _b = _a.required, required = _b === void 0 ? true : _b, other = __rest(_a, ["name", "label", "required"]);
-    return (React__default.createElement(formik.Field, __assign({ fullWidth: true, margin: "normal", variant: "outlined", name: name, label: label, required: required, component: CustomTextField$1 }, other)));
+var MangopayConfigCardHeader = function (_a) {
+    var icon = _a.icon, title = _a.title, actions = _a.actions;
+    return (React__default.createElement(core$1.CardHeader, { title: React__default.createElement(core$1.Box, { display: "flex", justifyContent: "space-between", alignItems: "center" },
+            React__default.createElement(core$1.Box, { display: "flex", alignItems: "center" },
+                icon && (React__default.createElement(core$1.Box, { mr: 1, display: "flex", alignItems: "center" }, icon)),
+                title && React__default.createElement(core$1.Typography, { variant: "h5" }, title)),
+            actions) }));
 };
 
-var TwoColumnsGrid = function (_a) {
-    var left = _a.left, right = _a.right;
-    var theme = core$1.useTheme();
-    var matches = core$1.useMediaQuery(theme.breakpoints.up('sm'));
-    /** */
-    return (React__default.createElement(core$1.Grid, { container: true, spacing: matches ? 2 : 0 },
-        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, left),
-        React__default.createElement(core$1.Grid, { item: true, sm: 6, xs: 12 }, right)));
+var FormTitle = function (_a) {
+    var label = _a.label, _b = _a.mt, mt = _b === void 0 ? 2 : _b;
+    return (React__default.createElement(core$1.Box, { mb: 2, mt: mt },
+        React__default.createElement(core$1.Typography, { variant: "h6" }, label)));
 };
 
-var tFile$a = 'pro/mangopay';
-var tKey$1 = tFile$a + ":config.legalUserCard.form";
-var MangopayLegalUserFormContainer = function (_a) {
-    var groupId = _a.groupId, legalRepr = _a.legalRepr, legalUser = _a.legalUser, _b = _a.disabled, disabled = _b === void 0 ? false : _b, onSubmit = _a.onSubmit, onSubmitComplete = _a.onSubmitComplete, onSubmitFail = _a.onSubmitFail;
-    var _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-    var createMangopayLegalUser = useCreateMangopayLegalUserMutation()[0];
-    var updateMangopayLegalUser = useUpdateMangopayLegalUserMutation()[0];
+var tFile$9 = 'pro/mangopay';
+var tKey = 'config.legalUserCard';
+var MangopayLegalUserCard = function (_a) {
+    var group = _a.group, defaultLegalRepr = _a.defaultLegalRepr, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel, onSubmit = _a.onSubmit, onSubmitComplete = _a.onSubmitComplete, onSubmitFail = _a.onSubmitFail;
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var _q = __read(useCreateMangopayLegalUserMutation(), 1), createMangopayLegalUser = _q[0];
+    var _r = __read(useUpdateMangopayLegalUserMutation(), 1), updateMangopayLegalUser = _r[0];
+    /** TRANS */
+    var _t = useTranslation(['translation', 'yup', tFile$9]).t;
+    var t = function (key, options) { return _t(tFile$9 + ":" + tKey + "." + key, options); };
+    var tForm = function (key, options) { return _t(tFile$9 + ":" + tKey + ".form." + key, options); };
+    var tYup = function (key, values) { return _t("yup:" + key, values); };
+    /** COMPUTED */
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var isRegular = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.KYCLevel) === MangopayKycLevel.REGULAR;
     /** */
-    var _t = useTranslation(['translation', 'yup', tFile$a], { useSuspense: false }).t;
-    /** EXTRACTED */
-    var t = function (s) { return _t(tKey$1 + "." + s); };
-    var tYup = function (s, values) { return _t("yup:" + s, values); };
     var initialValues = {
         Name: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.Name) || '',
         LegalPersonType: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalPersonType) || MangopayLegalPersonType.ORGANIZATION,
         Email: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.Email) || '',
         CompanyNumber: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.CompanyNumber) || '',
-        LegalRepresentativeFirstName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeFirstName) || legalRepr.firstName || '',
-        LegalRepresentativeLastName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeLastName) || legalRepr.lastName || '',
-        LegalRepresentativeEmail: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeEmail) || legalRepr.email || '',
-        LegalRepresentativeBirthday: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeBirthday) || legalRepr.birthDate || new Date(),
-        LegalRepresentativeNationality: ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeNationality) === null || _c === void 0 ? void 0 : _c.toLocaleLowerCase()) || ((_d = legalRepr.nationality) === null || _d === void 0 ? void 0 : _d.toLocaleLowerCase()) ||
+        LegalRepresentativeFirstName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeFirstName) || defaultLegalRepr.firstName || '',
+        LegalRepresentativeLastName: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeLastName) || defaultLegalRepr.lastName || '',
+        LegalRepresentativeEmail: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeEmail) || defaultLegalRepr.email || '',
+        LegalRepresentativeBirthday: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeBirthday) || defaultLegalRepr.birthDate || new Date(),
+        LegalRepresentativeNationality: ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeNationality) === null || _c === void 0 ? void 0 : _c.toLocaleLowerCase()) || ((_d = defaultLegalRepr.nationality) === null || _d === void 0 ? void 0 : _d.toLocaleLowerCase()) ||
             '',
-        LegalRepresentativeCountryOfResidence: ((_e = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeCountryOfResidence) === null || _e === void 0 ? void 0 : _e.toLocaleLowerCase()) || ((_f = legalRepr.countryOfResidence) === null || _f === void 0 ? void 0 : _f.toLocaleLowerCase()) ||
+        LegalRepresentativeCountryOfResidence: ((_e = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeCountryOfResidence) === null || _e === void 0 ? void 0 : _e.toLocaleLowerCase()) || ((_f = defaultLegalRepr.countryOfResidence) === null || _f === void 0 ? void 0 : _f.toLocaleLowerCase()) ||
             '',
         LegalRepresentativeAddress: {
-            AddressLine1: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine1) || legalRepr.address1 || '',
-            AddressLine2: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine2) || legalRepr.address2 || '',
-            City: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.City) || legalRepr.city || '',
-            PostalCode: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.PostalCode) || legalRepr.zipCode || '',
-            Country: ((_g = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.Country) === null || _g === void 0 ? void 0 : _g.toLocaleLowerCase()) || ((_h = legalRepr.countryOfResidence) === null || _h === void 0 ? void 0 : _h.toLocaleLowerCase()) ||
+            AddressLine1: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine1) || defaultLegalRepr.address1 || '',
+            AddressLine2: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.AddressLine2) || defaultLegalRepr.address2 || '',
+            City: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.City) || defaultLegalRepr.city || '',
+            PostalCode: (legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.PostalCode) || defaultLegalRepr.zipCode || '',
+            Country: ((_g = legalUser === null || legalUser === void 0 ? void 0 : legalUser.LegalRepresentativeAddress.Country) === null || _g === void 0 ? void 0 : _g.toLocaleLowerCase()) || ((_h = defaultLegalRepr.countryOfResidence) === null || _h === void 0 ? void 0 : _h.toLocaleLowerCase()) ||
                 '',
         },
         HeadquartersAddress: {
@@ -29596,12 +40759,15 @@ var MangopayLegalUserFormContainer = function (_a) {
                 case 1:
                     _a.trys.push([1, 6, , 7]);
                     if (!legalUser) return [3 /*break*/, 3];
-                    return [4 /*yield*/, updateMangopayLegalUser({ variables: { input: __assign(__assign({}, values), { groupId: groupId }) } })];
+                    return [4 /*yield*/, updateMangopayLegalUser({
+                            variables: { input: __assign(__assign({}, values), { groupId: group.id }) },
+                            refetchQueries: ['MangopayGroupConfig'],
+                        })];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 5];
                 case 3: return [4 /*yield*/, createMangopayLegalUser({
-                        variables: { input: __assign({ groupId: groupId, legalReprId: legalRepr.id }, values) },
+                        variables: { input: __assign({ groupId: group.id, legalReprId: defaultLegalRepr.id }, values) },
                         refetchQueries: ['MangopayGroupConfig'],
                     })];
                 case 4:
@@ -29621,104 +40787,122 @@ var MangopayLegalUserFormContainer = function (_a) {
         });
     }); };
     /** */
-    var renderFormTitle = function (label, mt) {
-        if (mt === void 0) { mt = 2; }
-        return (React__default.createElement(core$1.Box, { mb: 2, mt: mt },
-            React__default.createElement(core$1.Typography, { variant: "h6" }, label)));
-    };
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(BusinessIcon, null), title: t('title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                        onTogglePanel(!open);
+                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+        React__default.createElement(core$1.Collapse, { in: open },
+            React__default.createElement(core$1.CardContent, null,
+                isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
+                    React__default.createElement(lab.Alert, { severity: "info" }, t('editAlert')))),
+                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_10, onSubmit: _onSubmit }, function (formikProps) {
+                    var _a, _b, _c, _d, _e, _f, _g, _h;
+                    return (React__default.createElement(formik.Form, null,
+                        React__default.createElement(FormTitle, { label: tForm('structure'), mt: 0 }),
+                        formikProps.status && (React__default.createElement(core$1.Box, { p: 2 },
+                            React__default.createElement(GqlErrorAlert, { error: formikProps.status }))),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Name", label: tForm('structureName'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "Email", label: tForm('structureEmail'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(SimpleField, { name: "LegalPersonType", label: tForm('structureType'), select: true, required: true, disabled: formikProps.isSubmitting || isRegular },
+                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.ORGANIZATION }, tForm('ORGANIZATION')),
+                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.SOLETRADER }, tForm('SOLETRADER')),
+                            React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.BUSINESS }, tForm('BUSINESS'))),
+                        formikProps.values.LegalPersonType !== MangopayLegalPersonType.ORGANIZATION && (React__default.createElement(SimpleField, { name: "CompanyNumber", label: tForm('companyNumber'), disabled: formikProps.isSubmitting || isRegular })),
+                        React__default.createElement(FormTitle, { label: tForm('legalRepr') }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeFirstName", label: _t('firstName'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeLastName", label: _t('lastName'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(SimpleField, { name: "LegalRepresentativeEmail", label: _t('email'), disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(pickers.DatePicker, { fullWidth: true, name: "LegalRepresentativeBirthday", margin: "normal", inputVariant: "outlined", disabled: formikProps.isSubmitting || isRegular, label: _t('birthDate'), format: "d MMM yyyy", openTo: "year", cancelLabel: _t('cancel'), error: Boolean(formikProps.touched.LegalRepresentativeBirthday && formikProps.errors.LegalRepresentativeBirthday), helperText: formikProps.touched.LegalRepresentativeBirthday &&
+                                yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeBirthday), required: true, value: formikProps.values.LegalRepresentativeBirthday, onChange: function (v) { return formikProps.setFieldValue('LegalRepresentativeBirthday', v); }, onClose: function () { return formikProps.setFieldTouched('LegalRepresentativeBirthday'); } }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                    margin: 'normal',
+                                    name: 'LegalRepresentativeNationality',
+                                    required: true,
+                                    label: _t('nationality'),
+                                    error: Boolean(formikProps.touched.LegalRepresentativeNationality &&
+                                        formikProps.errors.LegalRepresentativeNationality),
+                                    helperText: formikProps.touched.LegalRepresentativeNationality &&
+                                        yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeNationality),
+                                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeNationality'); },
+                                }, defaultValue: formikProps.values.LegalRepresentativeNationality || '', onChange: function (v) {
+                                    formikProps.setFieldTouched('LegalRepresentativeNationality');
+                                    formikProps.setFieldValue('LegalRepresentativeNationality', v || '');
+                                } }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                    margin: 'normal',
+                                    name: 'LegalRepresentativeCountryOfResidence',
+                                    required: true,
+                                    label: _t('countryOfResidence'),
+                                    error: Boolean(formikProps.touched.LegalRepresentativeCountryOfResidence &&
+                                        formikProps.errors.LegalRepresentativeCountryOfResidence),
+                                    helperText: formikProps.touched.LegalRepresentativeCountryOfResidence &&
+                                        yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeCountryOfResidence),
+                                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence'); },
+                                }, defaultValue: formikProps.values.LegalRepresentativeCountryOfResidence || '', onChange: function (v) {
+                                    formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence');
+                                    formikProps.setFieldValue('LegalRepresentativeCountryOfResidence', v || '');
+                                } }) }),
+                        React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine1", label: _t('address1'), disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine2", label: _t('address2'), required: false, disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.City", label: _t('city'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.PostalCode", label: _t('zipCode'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                margin: 'normal',
+                                name: 'LegalRepresentativeAddress.Country',
+                                required: true,
+                                label: _t('country'),
+                                error: Boolean(((_a = formikProps.touched.LegalRepresentativeAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.LegalRepresentativeAddress) === null || _b === void 0 ? void 0 : _b.Country)),
+                                helperText: ((_c = formikProps.touched.LegalRepresentativeAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
+                                    yupHelperTextTranslator(tYup, (_d = formikProps.errors.LegalRepresentativeAddress) === null || _d === void 0 ? void 0 : _d.Country),
+                                onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeAddress.Country'); },
+                            }, defaultValue: formikProps.values.LegalRepresentativeAddress.Country || '', onChange: function (v) {
+                                formikProps.setFieldTouched('LegalRepresentativeAddress.Country');
+                                formikProps.setFieldValue('LegalRepresentativeAddress.Country', v || '');
+                            } }),
+                        React__default.createElement(FormTitle, { label: tForm('headquarters') }),
+                        React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine1", label: tForm('headquartersAddress.address1'), disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine2", label: tForm('headquartersAddress.address2'), required: false, disabled: formikProps.isSubmitting || isRegular }),
+                        React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "HeadquartersAddress.City", label: tForm('headquartersAddress.city'), disabled: formikProps.isSubmitting || isRegular }), right: React__default.createElement(SimpleField, { name: "HeadquartersAddress.PostalCode", label: tForm('headquartersAddress.postalCode'), disabled: formikProps.isSubmitting || isRegular }) }),
+                        React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || isRegular }, textFieldProps: {
+                                margin: 'normal',
+                                name: 'HeadquartersAddress.Country',
+                                required: true,
+                                label: tForm('headquartersAddress.country'),
+                                error: Boolean(((_e = formikProps.touched.HeadquartersAddress) === null || _e === void 0 ? void 0 : _e.Country) && ((_f = formikProps.errors.HeadquartersAddress) === null || _f === void 0 ? void 0 : _f.Country)),
+                                helperText: ((_g = formikProps.touched.HeadquartersAddress) === null || _g === void 0 ? void 0 : _g.Country) &&
+                                    yupHelperTextTranslator(tYup, (_h = formikProps.errors.HeadquartersAddress) === null || _h === void 0 ? void 0 : _h.Country),
+                                onBlur: function () { return formikProps.setFieldTouched('HeadquartersAddress.Country'); },
+                            }, defaultValue: initialValues.HeadquartersAddress.Country || '', onChange: function (v) {
+                                formikProps.setFieldTouched('HeadquartersAddress.Country');
+                                formikProps.setFieldValue('HeadquartersAddress.Country', v || '');
+                            } }),
+                        !isRegular && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+                            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, _t('validateBtn'))))));
+                })))));
+};
+
+var tFile$a = 'pro/mangopay';
+var tKey$1 = 'config.infoCard';
+var MangopayInfoCard = function (_a) {
+    var isRegular = _a.isRegular;
+    /** TRANS */
+    var _t = useTranslation([tFile$a]).t;
+    var t = function (key, options) { return _t(tFile$a + ":" + tKey$1 + "." + key, options); };
     /** */
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_10, onSubmit: _onSubmit }, function (formikProps) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
-        return (React__default.createElement(formik.Form, null,
-            renderFormTitle(t('structure'), 0),
-            formikProps.status && (React__default.createElement(core$1.Box, { p: 2 },
-                React__default.createElement(GqlErrorAlert, { error: formikProps.status }))),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "Name", label: t('structureName'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "Email", label: t('structureEmail'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(SimpleField, { name: "LegalPersonType", label: t('structureType'), select: true, required: true, disabled: formikProps.isSubmitting || disabled },
-                React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.ORGANIZATION }, t('ORGANIZATION')),
-                React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.SOLETRADER }, t('SOLETRADER')),
-                React__default.createElement(core$1.MenuItem, { value: MangopayLegalPersonType.BUSINESS }, t('BUSINESS'))),
-            formikProps.values.LegalPersonType !== MangopayLegalPersonType.ORGANIZATION && (React__default.createElement(SimpleField, { name: "CompanyNumber", label: t('companyNumber'), disabled: formikProps.isSubmitting || disabled })),
-            renderFormTitle(t('legalRepr')),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeFirstName", label: _t('firstName'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeLastName", label: _t('lastName'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(SimpleField, { name: "LegalRepresentativeEmail", label: _t('email'), disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(pickers.DatePicker, { fullWidth: true, name: "LegalRepresentativeBirthday", margin: "normal", inputVariant: "outlined", disabled: formikProps.isSubmitting || disabled, label: _t('birthDate'), format: "d MMM yyyy", openTo: "year", cancelLabel: _t('cancel'), error: Boolean(formikProps.touched.LegalRepresentativeBirthday && formikProps.errors.LegalRepresentativeBirthday), helperText: formikProps.touched.LegalRepresentativeBirthday &&
-                    yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeBirthday), required: true, value: formikProps.values.LegalRepresentativeBirthday, onChange: function (v) { return formikProps.setFieldValue('LegalRepresentativeBirthday', v); }, onClose: function () { return formikProps.setFieldTouched('LegalRepresentativeBirthday'); } }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                        margin: 'normal',
-                        name: 'LegalRepresentativeNationality',
-                        required: true,
-                        label: _t('nationality'),
-                        error: Boolean(formikProps.touched.LegalRepresentativeNationality &&
-                            formikProps.errors.LegalRepresentativeNationality),
-                        helperText: formikProps.touched.LegalRepresentativeNationality &&
-                            yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeNationality),
-                        onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeNationality'); },
-                    }, defaultValue: formikProps.values.LegalRepresentativeNationality || '', onChange: function (v) {
-                        formikProps.setFieldTouched('LegalRepresentativeNationality');
-                        formikProps.setFieldValue('LegalRepresentativeNationality', v || '');
-                    } }), right: React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                        margin: 'normal',
-                        name: 'LegalRepresentativeCountryOfResidence',
-                        required: true,
-                        label: _t('countryOfResidence'),
-                        error: Boolean(formikProps.touched.LegalRepresentativeCountryOfResidence &&
-                            formikProps.errors.LegalRepresentativeCountryOfResidence),
-                        helperText: formikProps.touched.LegalRepresentativeCountryOfResidence &&
-                            yupHelperTextTranslator(tYup, formikProps.errors.LegalRepresentativeCountryOfResidence),
-                        onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence'); },
-                    }, defaultValue: formikProps.values.LegalRepresentativeCountryOfResidence || '', onChange: function (v) {
-                        formikProps.setFieldTouched('LegalRepresentativeCountryOfResidence');
-                        formikProps.setFieldValue('LegalRepresentativeCountryOfResidence', v || '');
-                    } }) }),
-            React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine1", label: _t('address1'), disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.AddressLine2", label: _t('address2'), required: false, disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.City", label: _t('city'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "LegalRepresentativeAddress.PostalCode", label: _t('zipCode'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                    margin: 'normal',
-                    name: 'LegalRepresentativeAddress.Country',
-                    required: true,
-                    label: _t('country'),
-                    error: Boolean(((_a = formikProps.touched.LegalRepresentativeAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.LegalRepresentativeAddress) === null || _b === void 0 ? void 0 : _b.Country)),
-                    helperText: ((_c = formikProps.touched.LegalRepresentativeAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
-                        yupHelperTextTranslator(tYup, (_d = formikProps.errors.LegalRepresentativeAddress) === null || _d === void 0 ? void 0 : _d.Country),
-                    onBlur: function () { return formikProps.setFieldTouched('LegalRepresentativeAddress.Country'); },
-                }, defaultValue: formikProps.values.LegalRepresentativeAddress.Country || '', onChange: function (v) {
-                    formikProps.setFieldTouched('LegalRepresentativeAddress.Country');
-                    formikProps.setFieldValue('LegalRepresentativeAddress.Country', v || '');
-                } }),
-            renderFormTitle(t('headquarters')),
-            React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine1", label: t('headquartersAddress.address1'), disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(SimpleField, { name: "HeadquartersAddress.AddressLine2", label: t('headquartersAddress.address2'), required: false, disabled: formikProps.isSubmitting || disabled }),
-            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { name: "HeadquartersAddress.City", label: t('headquartersAddress.city'), disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { name: "HeadquartersAddress.PostalCode", label: t('headquartersAddress.postalCode'), disabled: formikProps.isSubmitting || disabled }) }),
-            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
-                    margin: 'normal',
-                    name: 'HeadquartersAddress.Country',
-                    required: true,
-                    label: t('headquartersAddress.country'),
-                    error: Boolean(((_e = formikProps.touched.HeadquartersAddress) === null || _e === void 0 ? void 0 : _e.Country) && ((_f = formikProps.errors.HeadquartersAddress) === null || _f === void 0 ? void 0 : _f.Country)),
-                    helperText: ((_g = formikProps.touched.HeadquartersAddress) === null || _g === void 0 ? void 0 : _g.Country) &&
-                        yupHelperTextTranslator(tYup, (_h = formikProps.errors.HeadquartersAddress) === null || _h === void 0 ? void 0 : _h.Country),
-                    onBlur: function () { return formikProps.setFieldTouched('HeadquartersAddress.Country'); },
-                }, defaultValue: initialValues.HeadquartersAddress.Country || '', onChange: function (v) {
-                    formikProps.setFieldTouched('HeadquartersAddress.Country');
-                    formikProps.setFieldValue('HeadquartersAddress.Country', v || '');
-                } }),
-            !disabled && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
-                React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, _t('validateBtn'))))));
-    }));
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(core$1.CardContent, null,
+            React__default.createElement("img", { height: "48px", src: "https://www.mangopay.com/wp-content/themes/mangopay/assets/images/mangopay.svg", alt: "mangopay-logo" })),
+        React__default.createElement(core$1.CardContent, null,
+            !isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
+                React__default.createElement(core$1.Typography, null, t('p1')))),
+            React__default.createElement(core$1.Box, null,
+                React__default.createElement(lab.Alert, { severity: "info" },
+                    React__default.createElement(core$1.Box, null,
+                        React__default.createElement("span", null, t('alert.s1')),
+                        React__default.createElement("a", { href: t('alert.guideLinkTarget'), target: "_blank", rel: "noopener noreferrer" }, t('alert.guildeLinkLabel')),
+                        React__default.createElement("span", null, t('alert.s2'))))),
+            isRegular && (React__default.createElement(core$1.Box, { mt: 2 },
+                React__default.createElement(lab.Alert, { severity: "success" }, t('regular')))))));
 };
 
-var MangopayConfigCardHeader = function (_a) {
-    var icon = _a.icon, title = _a.title, actions = _a.actions;
-    return (React__default.createElement(core$1.CardHeader, { title: React__default.createElement(core$1.Box, { display: "flex", justifyContent: "space-between", alignItems: "center" },
-            React__default.createElement(core$1.Box, { display: "flex", alignItems: "center" },
-                icon && (React__default.createElement(core$1.Box, { mr: 1, display: "flex", alignItems: "center" }, icon)),
-                title && React__default.createElement(core$1.Typography, { variant: "h5" }, title)),
-            actions) }));
-};
-
-var Delete = createCommonjsModule(function (module, exports) {
+var Face = createCommonjsModule(function (module, exports) {
 
 
 
@@ -29732,13 +40916,204 @@ var _react = interopRequireDefault(React__default);
 var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
 
 var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-}), 'Delete');
+  d: "M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"
+}), 'Face');
 
 exports.default = _default;
 });
 
-var DeleteIcon = unwrapExports(Delete);
+var FaceIcon = unwrapExports(Face);
+
+var firstLetterUpercase = function (s) { return "" + s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
+var formatUboNames = function (ubo) {
+    return firstLetterUpercase(ubo.FirstName) + " " + firstLetterUpercase(ubo.LastName);
+};
+var formatUserName = function (user) {
+    return "" + user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1).toLowerCase() + " " + user.lastName
+        .charAt(0)
+        .toUpperCase() + user.lastName.slice(1).toLowerCase();
+};
+var formatDate = function (date, withTime) {
+    if (withTime === void 0) { withTime = false; }
+    var formattedDate = '';
+    if (isYesterday(date)) {
+        var pattern = withTime ? "'Hier à' k'h'mm" : "'hier'";
+        formattedDate = format(date, pattern, {
+            locale: locale,
+        });
+    }
+    else if (isToday(date)) {
+        var pattern = withTime ? "'Aujourd''hui à' k'h'mm" : "'aujourd''hui'";
+        formattedDate = format(date, pattern, {
+            locale: locale,
+        });
+    }
+    else {
+        var pattern = 'EEEE	d MMMM';
+        if (withTime)
+            pattern += "' à' k'h'mm";
+        formattedDate = format(date, pattern, {
+            locale: locale,
+        });
+    }
+    return formattedDate;
+};
+
+var tFile$b = 'pro/mangopay';
+var tKey$2 = 'config.legalRepCard';
+var MangopayLegalReprCard = function (_a) {
+    var group = _a.group, disabledActions = _a.disabledActions, selectedLegalRepr = _a.selectedLegalRepr, setSelectedLegalRepr = _a.setSelectedLegalRepr;
+    var _b, _c, _d;
+    var _f = __read(useMangopayLegalUserByLegalReprLazyQuery(), 2), getMangopayLegalUserByLegalRepr = _f[0], _g = _f[1], dataLegalUser = _g.data, errorLegalUser = _g.error, loadingLegalUser = _g.loading;
+    var _h = __read(useLinkMangopayLegalUserToGroupMutation(), 2), linkLegalUserToGroup = _h[0], _j = _h[1], errorLink = _j.error, loadingLink = _j.loading;
+    /** TRANS */
+    var _t = useTranslation(['translation', tFile$b]).t;
+    var t = function (key, options) { return _t(tFile$b + ":" + tKey$2 + "." + key, options); };
+    /** COMPUTED */
+    var legalUser = (_b = group === null || group === void 0 ? void 0 : group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var legalRepr = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr;
+    var isRegular = ((_d = (_c = group.mangopayGroup) === null || _c === void 0 ? void 0 : _c.legalUser) === null || _d === void 0 ? void 0 : _d.KYCLevel) === MangopayKycLevel.REGULAR;
+    var error = errorLegalUser || errorLink;
+    var loading = loadingLegalUser || loadingLink;
+    var legalUserProposal = dataLegalUser === null || dataLegalUser === void 0 ? void 0 : dataLegalUser.mangopayLegalUserByLegalRepr;
+    /** STATES */
+    var _k = __read(React__default.useState(), 2), _selectedLegalRepr = _k[0], _setSelectedLegalRepr = _k[1];
+    /** */
+    var onLinkAccount = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (!_selectedLegalRepr)
+                return [2 /*return*/];
+            linkLegalUserToGroup({
+                variables: { input: { groupId: group.id, legalReprId: _selectedLegalRepr.id } },
+                refetchQueries: ['MangopayGroupConfig'],
+            });
+            return [2 /*return*/];
+        });
+    }); };
+    /** */
+    React__default.useEffect(function () {
+        if (_selectedLegalRepr) {
+            getMangopayLegalUserByLegalRepr({
+                variables: { input: { groupId: group.id, legalReprId: _selectedLegalRepr.id } },
+            });
+        }
+    }, [_selectedLegalRepr]);
+    /** */
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FaceIcon, null), title: t('title', {
+                name: selectedLegalRepr ? ": " + formatUserName(selectedLegalRepr) : undefined,
+            }), actions: !isRegular &&
+                selectedLegalRepr && (React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                    setSelectedLegalRepr(undefined);
+                } },
+                React__default.createElement(EditIcon, null))) }),
+        !selectedLegalRepr && (React__default.createElement(core$1.CardContent, null,
+            error && React__default.createElement(GqlErrorAlert, { error: error }),
+            !loading && _selectedLegalRepr ? (React__default.createElement(React__default.Fragment, null, legalUserProposal ? (React__default.createElement(core$1.Box, { mt: 2 },
+                React__default.createElement(core$1.Typography, null, formatUserName(_selectedLegalRepr)),
+                React__default.createElement(core$1.Typography, null,
+                    React__default.createElement("span", null, legalUserProposal.Name),
+                    legalUserProposal.CompanyNumber && React__default.createElement("span", null, " (" + legalUserProposal.CompanyNumber + ")")),
+                React__default.createElement(core$1.Typography, null, legalUserProposal.Email),
+                React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                    React__default.createElement(core$1.Box, { mx: 2 },
+                        React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
+                                _setSelectedLegalRepr(undefined);
+                            } }, _t('cancel'))),
+                    React__default.createElement(core$1.Box, { mx: 2 },
+                        React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: onLinkAccount }, t('linkBtn', { name: legalUserProposal.Name })))))) : (React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                React__default.createElement(core$1.Box, { mx: 2 },
+                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
+                            _setSelectedLegalRepr(undefined);
+                        } }, _t('cancel'))),
+                React__default.createElement(core$1.Box, { mx: 2 },
+                    React__default.createElement(core$1.Button, { variant: "contained", color: "primary", onClick: function () {
+                            setSelectedLegalRepr(_selectedLegalRepr);
+                        } }, t('selectReprBtn', { name: formatUserName(_selectedLegalRepr) }))))))) : (React__default.createElement(React__default.Fragment, null,
+                React__default.createElement(core$1.Box, { mb: 2 },
+                    React__default.createElement(lab.Alert, { severity: "info" }, t('alert.p1'))),
+                React__default.createElement(lab.Autocomplete, { options: group.users || [], value: _selectedLegalRepr || null, getOptionLabel: formatUserName, getOptionSelected: function (v, o) { return v.id === o.id; }, disabled: loading, renderInput: function (params) { return (React__default.createElement(core$1.TextField, __assign({ variant: "outlined", margin: "normal", label: t('usersSelectorLabel'), name: "legalReprId", required: true }, params))); }, onChange: function (_e, v) {
+                        if (legalRepr && v && legalRepr.id === v.id)
+                            setSelectedLegalRepr(legalRepr);
+                        _setSelectedLegalRepr(v || undefined);
+                    } }))),
+            loading && (React__default.createElement(core$1.Box, { mt: 2 },
+                React__default.createElement(core$1.LinearProgress, null)))))));
+};
+
+var Folder = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+}), 'Folder');
+
+exports.default = _default;
+});
+
+var FolderIcon = unwrapExports(Folder);
+
+var getCurrentKycDocumentOfType = function (kycDocuments, type) {
+    var res = kycDocuments.filter(function (d) { return d.Type === type; }).sort(function (d1, d2) { return d2.Id - d1.Id; });
+    return res.length > 0 ? res[0] : undefined;
+};
+var allMangopayKycDocumentStatusesArePending = function (_a) {
+    var LegalPersonType = _a.LegalPersonType, KycDocuments = _a.KycDocuments;
+    if (!LegalPersonType)
+        return false;
+    if (!KycDocuments)
+        return false;
+    var currentDocs = dist_5(LegalPersonType).map(function (type) {
+        return getCurrentKycDocumentOfType(KycDocuments, type);
+    });
+    if (currentDocs.indexOf(undefined) !== -1)
+        return false;
+    if (currentDocs.find(function (d) { return (d === null || d === void 0 ? void 0 : d.Status) !== MangopayKycDocumentStatus.VALIDATION_ASKED; }))
+        return false;
+    return true;
+};
+var formatMangopayBankAccount = function (bankAccount) {
+    var res = bankAccount.OwnerName;
+    if (bankAccount.Type === MangopayBankAccountType.IBAN) {
+        res = res + " - " + bankAccount.IBAN;
+    }
+    return res;
+};
+var formatMangopayAddress = function (address) {
+    return address.AddressLine1 + " " + address.City + " " + address.Country;
+};
+
+var Add = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+}), 'Add');
+
+exports.default = _default;
+});
+
+var AddIcon = unwrapExports(Add);
 
 var Image = createCommonjsModule(function (module, exports) {
 
@@ -29806,7 +41181,170 @@ exports.default = _default;
 
 var PictureAsPdfIcon = unwrapExports(PictureAsPdf);
 
-var InsertDriveFile = createCommonjsModule(function (module, exports) {
+var uniqueId = 0;
+var getId = function () {
+    uniqueId += 1;
+    return "" + uniqueId;
+};
+var useStyles$6 = core$1.makeStyles(function () { return ({
+    input: {
+        display: 'none !important',
+    },
+}); });
+var FileIcon = function (_a) {
+    var file = _a.file, props = __rest(_a, ["file"]);
+    if (file.type && file.type.startsWith('image/'))
+        return React__default.createElement(ImageIcon, __assign({}, props));
+    if (file.type && file.type === 'application/pdf')
+        return React__default.createElement(PictureAsPdfIcon, __assign({}, props));
+    return React__default.createElement(HelpIcon, __assign({}, props));
+};
+var tFile$c = 'pro/mangopay';
+var tKey$3 = tFile$c + ":config.documentsCard.form";
+var MangopayKycFileField = function (_a) {
+    var label = _a.label, value = _a.value, disabled = _a.disabled, onChange = _a.onChange;
+    var inputRef = React__default.useRef(null);
+    /** TRANS */
+    var _t = useTranslation(['translation', tFile$c], { useSuspense: false }).t;
+    var t = function (s) { return _t(tKey$3 + "." + s); };
+    /** STATES */
+    var _b = __read(React__default.useState(false), 2), fileMaxSizeDialogOpen = _b[0], setFileMaxSizeDialogOpen = _b[1];
+    /** STYLES */
+    var cs = useStyles$6();
+    /** */
+    var id = getId();
+    /** */
+    var closeDialog = function () {
+        setFileMaxSizeDialogOpen(false);
+    };
+    /** */
+    var onInputChange = function (e) {
+        if (!e.target.files)
+            return;
+        var file = e.target.files[0];
+        if (file.size > 7 * 1000 * 1000) {
+            setFileMaxSizeDialogOpen(true);
+            return;
+        }
+        onChange(__spread(value, [file]));
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+    };
+    /** */
+    return (React__default.createElement(React__default.Fragment, null,
+        React__default.createElement(core$1.Box, { onClick: function () {
+                if (value.length === 0 && inputRef.current) {
+                    inputRef.current.click();
+                }
+            } },
+            React__default.createElement(core$1.FormControl, { fullWidth: true, margin: "normal", variant: "outlined" },
+                label && React__default.createElement(core$1.InputLabel, { htmlFor: "file-field-" + id }, label),
+                React__default.createElement(core$1.OutlinedInput, { id: "file-field-" + id, label: label, disabled: true, startAdornment: value.map(function (file) { return (React__default.createElement(core$1.Box, { key: file.name, mr: 1 },
+                        React__default.createElement(core$1.Chip, { label: file.name, icon: React__default.createElement(FileIcon, { file: file }), onDelete: disabled
+                                ? undefined
+                                : function () {
+                                    onChange(value.filter(function (f) { return file !== f; }));
+                                } }))); }), endAdornment: React__default.createElement(core$1.IconButton, { disabled: disabled, onClick: function (e) {
+                            e.preventDefault();
+                            if (inputRef.current) {
+                                inputRef.current.click();
+                            }
+                        } },
+                        React__default.createElement(AddIcon, null)) }))),
+        React__default.createElement("input", { ref: inputRef, className: cs.input, type: "file", accept: "image/*,application/pdf", onChange: onInputChange }),
+        React__default.createElement(core$1.Dialog, { open: fileMaxSizeDialogOpen, onClose: closeDialog },
+            React__default.createElement(core$1.DialogTitle, null, t('tooLargeFileAlert.title')),
+            React__default.createElement(core$1.DialogContent, null,
+                React__default.createElement(core$1.DialogContentText, null, t('tooLargeFileAlert.content'))),
+            React__default.createElement(core$1.DialogActions, null,
+                React__default.createElement(core$1.Button, { onClick: closeDialog, color: "primary", autoFocus: true }, t('tooLargeFileAlert.btn'))))));
+};
+
+var tFile$d = 'pro/mangopay';
+var tKey$4 = 'config.documentsCard';
+var getAlertSeverity = function (docStatus) {
+    if (docStatus === MangopayKycDocumentStatus.REFUSED)
+        return 'error';
+    if (docStatus === MangopayKycDocumentStatus.VALIDATED)
+        return 'success';
+    return 'info';
+};
+var MangopayKycDocumentsCard = function (_a) {
+    var group = _a.group, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel;
+    var _b;
+    var _c = __read(useCreateMangopayKycDocumentsMutation(), 2), createMangopayKycDocuments = _c[0], _d = _c[1], loading = _d.loading, error = _d.error;
+    /** TRANS */
+    var _t = useTranslation([tFile$d]).t;
+    var t = function (key, options) { return _t(tFile$d + ":" + tKey$4 + "." + key, options); };
+    var tForm = function (key, options) { return _t(tFile$d + ":" + tKey$4 + ".form." + key, options); };
+    /** STATES */
+    var _e = __read(React__default.useState({}), 2), documents = _e[0], setDocuments = _e[1];
+    /** COMPUTED */
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    /** */
+    var onSendNextDocuments = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, createMangopayKycDocuments({
+                        variables: {
+                            input: {
+                                groupId: group.id,
+                                documents: Object.keys(documents).map(function (key) { return ({
+                                    Type: key,
+                                    files: documents[key],
+                                }); }),
+                            },
+                        },
+                        refetchQueries: ['MangopayGroupConfig'],
+                    })];
+                case 1:
+                    _a.sent();
+                    setDocuments({});
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    /** */
+    if (!legalUser)
+        return React__default.createElement(React__default.Fragment, null);
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FolderIcon, null), title: t('kycTitle'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                        onTogglePanel(!open);
+                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+        React__default.createElement(core$1.Collapse, { in: open },
+            React__default.createElement(core$1.CardContent, null,
+                error && (React__default.createElement(core$1.Box, { my: 2 },
+                    React__default.createElement(GqlErrorAlert, { error: error }))),
+                allMangopayKycDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('allPending'))) : (React__default.createElement(React__default.Fragment, null,
+                    dist_5(legalUser.LegalPersonType).map(function (documentType) {
+                        var last = getCurrentKycDocumentOfType(legalUser.KycDocuments || [], documentType);
+                        return (React__default.createElement(core$1.Box, { key: documentType },
+                            React__default.createElement(FormTitle, { label: tForm(documentType) }),
+                            last && (React__default.createElement(core$1.Box, { my: 2 },
+                                React__default.createElement(lab.Alert, { severity: getAlertSeverity(last.Status) },
+                                    React__default.createElement(core$1.Typography, null,
+                                        React__default.createElement("span", null, tForm(last.Status)),
+                                        last.RefusedReasonType && React__default.createElement("span", null, " : " + tForm(last.RefusedReasonType))),
+                                    last.Status === MangopayKycDocumentStatus.REFUSED && (React__default.createElement(core$1.Typography, null, last.RefusedReasonMessage))))),
+                            (!last || last.Status === MangopayKycDocumentStatus.REFUSED) && (React__default.createElement(MangopayKycFileField, { label: tForm('addFilesLabel'), value: documents ? documents[documentType] || [] : [], disabled: loading, onChange: function (files) {
+                                    var n = __assign({}, documents);
+                                    n[documentType] = files;
+                                    setDocuments(n);
+                                } }))));
+                    }),
+                    React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                        React__default.createElement(core$1.Button, { variant: "contained", color: "primary", disabled: loading ||
+                                !Object.keys(documents).reduce(function (acc, key) {
+                                    if (documents[key].length > 0)
+                                        return true;
+                                    return acc;
+                                }, false), onClick: onSendNextDocuments }, _t('validate'))))))),
+        loading && React__default.createElement(core$1.LinearProgress, null)));
+};
+
+var People = createCommonjsModule(function (module, exports) {
 
 
 
@@ -29820,54 +41358,13 @@ var _react = interopRequireDefault(React__default);
 var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
 
 var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
-  d: "M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"
-}), 'InsertDriveFile');
+  d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+}), 'People');
 
 exports.default = _default;
 });
 
-var InsertDriveFileIcon = unwrapExports(InsertDriveFile);
-
-var uniqueId = 0;
-var getId = function () {
-    uniqueId += 1;
-    return uniqueId;
-};
-var useStyles$4 = core$1.makeStyles(function (theme) {
-    return core$1.createStyles({
-        root: {
-            '& > *': {
-                margin: theme.spacing(1),
-            },
-        },
-        input: {
-            display: 'none !important',
-        },
-    });
-});
-var WhiteCircularProgress = core$1.withStyles({
-    root: {
-        color: 'white',
-    },
-})(core$1.CircularProgress);
-var UploadButton = function (_a) {
-    var accept = _a.accept, multiple = _a.multiple, _b = _a.loading, loading = _b === void 0 ? false : _b, onChange = _a.onChange, children = _a.children, buttonProps = __rest(_a, ["accept", "multiple", "loading", "onChange", "children"]);
-    var inputRef = React__default.useRef(null);
-    var cs = useStyles$4();
-    var id = getId();
-    /** */
-    var onInputChange = function (e) {
-        onChange(e.target.files);
-        if (inputRef.current) {
-            inputRef.current.value = '';
-        }
-    };
-    /** */
-    return (React__default.createElement("div", { className: cs.root },
-        React__default.createElement("label", { htmlFor: "upload-button$-" + id },
-            React__default.createElement(core$1.Button, __assign({}, buttonProps, { component: "span" }), loading ? React__default.createElement(WhiteCircularProgress, { size: 24 }) : children),
-            React__default.createElement("input", { ref: inputRef, id: "upload-button$-" + id, type: "file", className: cs.input, accept: accept, multiple: multiple, onChange: onInputChange }))));
-};
+var PeopleIcon = unwrapExports(People);
 
 var ProgressButton = function (_a) {
     var _b = _a.loading, loading = _b === void 0 ? false : _b, variant = _a.variant, color = _a.color, disabled = _a.disabled, children = _a.children, circularProgressProps = _a.circularProgressProps, other = __rest(_a, ["loading", "variant", "color", "disabled", "children", "circularProgressProps"]);
@@ -29878,172 +41375,6 @@ var ProgressButton = function (_a) {
             React__default.createElement(core$1.Box, { visibility: loading ? 'hidden' : 'visible' }, children),
             loading && (React__default.createElement(core$1.Box, { position: "absolute", top: 0, bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center" },
                 React__default.createElement(core$1.CircularProgress, __assign({ color: color === 'default' ? 'primary' : color, size: theme.typography.button.fontSize }, circularProgressProps)))))));
-};
-
-var tFile$b = 'pro/mangopay';
-var tKey$2 = tFile$b + ":config.documentsCard.form";
-var KycDocumentForm = function (_a) {
-    var onSubmit = _a.onSubmit;
-    var _b = React__default.useState([]), files = _b[0], setFiles = _b[1];
-    var _c = React__default.useState(false), submitting = _c[0], setSubmitting = _c[1];
-    var _d = React__default.useState(), status = _d[0], setStatus = _d[1];
-    var _t = useTranslation(['translation', tFile$b], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$2 + "." + s); };
-    /** */
-    var addFile = function (file) {
-        var found = files.find(function (f) { return f.name === file.name && f.size === file.size && f.type === file.type; });
-        if (!found) {
-            setFiles(__spreadArrays(files, [file]));
-        }
-    };
-    var deleteFile = function (file) {
-        setFiles(files.filter(function (f) { return f !== file; }));
-    };
-    /** */
-    var onUploadChange = function (fileList) {
-        setStatus(undefined);
-        if (fileList) {
-            var file = fileList.item(0);
-            if (file) {
-                if (file.size > 7 * 1000 * 1000)
-                    setStatus(t('tooLargeFile'));
-                else
-                    addFile(file);
-            }
-        }
-    };
-    var onSubmitClick = function () {
-        setStatus(undefined);
-        setSubmitting(true);
-        onSubmit(files, {
-            setSubmitting: setSubmitting,
-            setStatus: setStatus,
-        });
-    };
-    /** */
-    var renderListItemIcon = function (file) {
-        var type = file.type || undefined;
-        if (type && type.startsWith('image/'))
-            return React__default.createElement(ImageIcon, null);
-        if (type && type === 'application/pdf')
-            return React__default.createElement(PictureAsPdfIcon, null);
-        return React__default.createElement(HelpIcon, null);
-    };
-    /** */
-    return (React__default.createElement(core$1.Box, null,
-        status && (React__default.createElement(core$1.Box, null,
-            React__default.createElement(lab.Alert, { severity: "error" }, status))),
-        React__default.createElement(core$1.List, null, files.map(function (file) { return (React__default.createElement(core$1.ListItem, { key: file.name },
-            React__default.createElement(core$1.ListItemIcon, null, renderListItemIcon(file)),
-            React__default.createElement(core$1.ListItemText, { primary: file.name }),
-            React__default.createElement(core$1.ListItemSecondaryAction, null,
-                React__default.createElement(core$1.IconButton, { edge: "end", "aria-label": "delete", disabled: submitting, onClick: function () {
-                        deleteFile(file);
-                    } },
-                    React__default.createElement(DeleteIcon, null))))); })),
-        React__default.createElement(core$1.Box, { pt: 1, pb: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(UploadButton, { variant: "outlined", color: "primary", accept: "image/*,application/pdf", startIcon: React__default.createElement(InsertDriveFileIcon, null), disabled: submitting, onChange: onUploadChange }, t('addFileBtn')),
-            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: submitting, disabled: files.length === 0 || submitting, onClick: onSubmitClick }, _t('validate')))));
-};
-
-var tFile$c = 'pro/mangopay';
-var tKey$3 = tFile$c + ":config.documentsCard.form";
-var KycDocument = function (_a) {
-    var type = _a.type, last = _a.last, onSubmit = _a.onSubmit;
-    var _t = useTranslation(['translation', tFile$c], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$3 + "." + s); };
-    /** */
-    var formatStatus = function (status, refusedReasonType) {
-        var res = t(status);
-        // TODO: translate punctuation
-        if (refusedReasonType)
-            res = res + " : " + t(refusedReasonType);
-        return res;
-    };
-    var getAlertSeverity = function (status) {
-        if (status === MangopayKycDocumentStatus.REFUSED)
-            return 'error';
-        if (status === MangopayKycDocumentStatus.VALIDATED)
-            return 'success';
-        return 'info';
-    };
-    /** */
-    return (React__default.createElement(core$1.Box, { p: 2, border: "1px solid #ccc", borderRadius: 4 },
-        React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.Typography, { align: "center", variant: "h6" }, t(type))),
-        last && (React__default.createElement(core$1.Box, { mt: 2 },
-            React__default.createElement(lab.Alert, { severity: getAlertSeverity(last.Status) },
-                React__default.createElement(core$1.Typography, null, formatStatus(last.Status, last.RefusedReasonType || undefined)),
-                last.Status === MangopayKycDocumentStatus.REFUSED && (React__default.createElement(React__default.Fragment, null,
-                    React__default.createElement(core$1.Typography, null, last.RefusedReasonMessage)))))),
-        (!last || last.Status === MangopayKycDocumentStatus.REFUSED) && React__default.createElement(KycDocumentForm, { onSubmit: onSubmit })));
-};
-
-var getCurrentKycDocumentOfType = function (kycDocuments, type) {
-    var res = kycDocuments.filter(function (d) { return d.Type === type; }).sort(function (d1, d2) { return d2.Id - d1.Id; });
-    return res.length > 0 ? res[0] : undefined;
-};
-var getCurrentUboDeclaration = function (uboDeclarations) {
-    return uboDeclarations ? uboDeclarations.sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
-};
-var allMangopayDocumentStatusesArePending = function (_a) {
-    var LegalPersonType = _a.LegalPersonType, KycDocuments = _a.KycDocuments, UboDeclarations = _a.UboDeclarations;
-    if (!LegalPersonType)
-        return false;
-    if (!KycDocuments)
-        return false;
-    var requiredKycDocumentTypes = dist_5(LegalPersonType);
-    var currentDocs = requiredKycDocumentTypes.map(function (type) {
-        return getCurrentKycDocumentOfType(KycDocuments, type);
-    });
-    if (currentDocs.indexOf(undefined) !== -1)
-        return false;
-    if (currentDocs.find(function (d) { return (d === null || d === void 0 ? void 0 : d.Status) !== MangopayKycDocumentStatus.VALIDATION_ASKED; }))
-        return false;
-    if (dist_9(LegalPersonType)) {
-        var currentUboDeclaration = getCurrentUboDeclaration(UboDeclarations);
-        if (!currentUboDeclaration)
-            return false;
-        if (currentUboDeclaration.Status !== MangopayUboDeclarationStatus.VALIDATION_ASKED)
-            return false;
-    }
-    return true;
-};
-
-var KycDocumentsContainer = function (_a) {
-    var groupId = _a.groupId, mangopayLegalUser = _a.mangopayLegalUser;
-    var createMangopayKycDocument = useCreateMangopayKycDocumentMutation()[0];
-    /** */
-    var onCreateKycDocument = function (type, files, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, 3, 4]);
-                    return [4 /*yield*/, createMangopayKycDocument({
-                            variables: { input: { groupId: groupId, Type: type, files: files } },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 4];
-                case 2:
-                    err_1 = _a.sent();
-                    bag.setStatus(err_1.message);
-                    return [3 /*break*/, 4];
-                case 3:
-                    bag.setSubmitting(false);
-                    return [7 /*endfinally*/];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    var requiredKYCDocumentTypes = dist_5(mangopayLegalUser.LegalPersonType);
-    return (React__default.createElement(core$1.Box, null, requiredKYCDocumentTypes.map(function (documentType) { return (React__default.createElement(core$1.Box, { key: documentType, my: 2 },
-        React__default.createElement(KycDocument, { type: documentType, last: getCurrentKycDocumentOfType(mangopayLegalUser.KycDocuments || [], documentType), onSubmit: function (files, bag) {
-                return onCreateKycDocument(documentType, files, bag);
-            } }))); })));
 };
 
 var DialogTitleActions = function (_a) {
@@ -30063,22 +41394,31 @@ var DialogTitleClosable = function (_a) {
     return (React__default.createElement(DialogTitleActions, { disableTypography: disableTypography, actions: renderActions() }, children));
 };
 
-var UboForm = function (_a) {
+var MangopayUboForm = function (_a) {
     var ubo = _a.ubo, onSubmit = _a.onSubmit;
-    var _b;
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    /** TRANS */
     var _t = useTranslation(['translation', 'yup'], { useSuspense: false }).t;
     var tYup = function (s, values) { return _t("yup:" + s, values); };
+    /** FORM VALUES */
     var initialValues = {
         FirstName: (ubo === null || ubo === void 0 ? void 0 : ubo.FirstName) || '',
         LastName: (ubo === null || ubo === void 0 ? void 0 : ubo.LastName) || '',
-        Address: __assign(__assign({}, ((ubo === null || ubo === void 0 ? void 0 : ubo.Address) ? ubo.Address : {})), { AddressLine1: '', AddressLine2: '', City: '', Country: '', PostalCode: '' }),
-        Nationality: ((_b = ubo === null || ubo === void 0 ? void 0 : ubo.Nationality) === null || _b === void 0 ? void 0 : _b.toLowerCase()) || '',
+        Address: {
+            AddressLine1: ((_b = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _b === void 0 ? void 0 : _b.AddressLine1) || '',
+            AddressLine2: ((_c = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _c === void 0 ? void 0 : _c.AddressLine2) || '',
+            City: ((_d = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _d === void 0 ? void 0 : _d.City) || '',
+            Country: ((_f = (_e = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _e === void 0 ? void 0 : _e.Country) === null || _f === void 0 ? void 0 : _f.toLowerCase()) || '',
+            PostalCode: ((_g = ubo === null || ubo === void 0 ? void 0 : ubo.Address) === null || _g === void 0 ? void 0 : _g.PostalCode) || '',
+        },
+        Nationality: ((_h = ubo === null || ubo === void 0 ? void 0 : ubo.Nationality) === null || _h === void 0 ? void 0 : _h.toLowerCase()) || '',
         Birthday: (ubo === null || ubo === void 0 ? void 0 : ubo.Birthday) ? new Date(ubo.Birthday) : new Date(),
-        Birthplace: (ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) || {
-            City: '',
-            Country: '',
+        Birthplace: {
+            City: ((_j = ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) === null || _j === void 0 ? void 0 : _j.City) || '',
+            Country: ((_l = (_k = ubo === null || ubo === void 0 ? void 0 : ubo.Birthplace) === null || _k === void 0 ? void 0 : _k.Country) === null || _l === void 0 ? void 0 : _l.toLowerCase()) || '',
         },
     };
+    console.log(ubo);
     /** */
     return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_11, onSubmit: onSubmit }, function (formikProps) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
@@ -30135,158 +41475,93 @@ var UboForm = function (_a) {
     }));
 };
 
-var tFile$d = 'pro/mangopay';
-var tKey$4 = tFile$d + ":config.documentsCard.form";
-var UboDeclarationContainer = function (_a) {
-    var groupId = _a.groupId, uboDeclaration = _a.uboDeclaration;
-    var createOrUpdateUbo = useCreateOrUpdateMangopayUboMutation()[0];
-    var submitDeclaration = useSubmitMangopayUboDeclarationMutation()[0];
-    var _t = useTranslation(['translation', tFile$d], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$4 + "." + s); };
-    var _b = React__default.useState(), uboSelected = _b[0], setUboSelected = _b[1];
-    var _c = React__default.useState(false), formOpen = _c[0], setOpenForm = _c[1];
-    var _d = React__default.useState(false), isSubmiting = _d[0], setSubmiting = _d[1];
-    var _e = React__default.useState(), error = _e[0], setError = _e[1];
+var tFile$e = 'pro/mangopay';
+var tKey$5 = 'config.documentsCard';
+var MangopayUbosCard = function (_a) {
+    var group = _a.group, disabledActions = _a.disabledActions, open = _a.open, onTogglePanel = _a.onTogglePanel;
+    var _b;
+    var _c = __read(useCreateMangopayUboDeclarationMutation(), 2), createMangopayUboDeclaration = _c[0], _d = _c[1], createDeclarationLoaging = _d.loading, createDecalarationError = _d.error;
+    var _e = __read(useCreateOrUpdateMangopayUboMutation(), 2), createOrUpdateUbo = _e[0], _f = _e[1], createOrUpdateUboLoading = _f.loading, createOrUpdateUboError = _f.error;
+    var _g = __read(useSubmitMangopayUboDeclarationMutation(), 2), submitDeclaration = _g[0], _h = _g[1], submitDeclarationLoading = _h.loading, submitDeclarationError = _h.error;
+    /** TRANS */
+    var _t = useTranslation(['translation', tFile$e]).t;
+    var t = function (key, options) { return _t(tFile$e + ":" + tKey$5 + "." + key, options); };
+    var tForm = function (key, options) { return _t(tFile$e + ":" + tKey$5 + ".form." + key, options); };
+    /** STATES */
+    var _j = __read(React__default.useState(false), 2), formOpen = _j[0], setOpenForm = _j[1];
+    var _k = __read(React__default.useState(), 2), uboSelected = _k[0], setUboSelected = _k[1];
+    /** COMPUTED */
+    var loading = createDeclarationLoaging || createOrUpdateUboLoading || submitDeclarationLoading;
+    var error = createDecalarationError || createOrUpdateUboError || submitDeclarationError;
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var uboDeclarations = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.UboDeclarations) || [];
+    var currentDeclaration = uboDeclarations.length > 0 ? uboDeclarations.slice().sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
     /** */
-    var openForm = function () {
+    var openForm = function (ubo) {
+        if (ubo)
+            setUboSelected(ubo);
         setOpenForm(true);
     };
     var closeForm = function () {
-        if (isSubmiting)
-            return;
+        setUboSelected(undefined);
         setOpenForm(false);
     };
-    /** */
+    var createDeclaration = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, createMangopayUboDeclaration({
+                        variables: { input: { groupId: group.id } },
+                        refetchQueries: ['MangopayGroupConfig'],
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); };
     var onUboFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
         var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    setSubmiting(true);
+                    if (!currentDeclaration)
+                        return [2 /*return*/];
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, 4, 5]);
+                    _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, createOrUpdateUbo({
-                            variables: { input: __assign(__assign({}, values), { declarationId: uboDeclaration.Id, groupId: groupId, id: uboSelected === null || uboSelected === void 0 ? void 0 : uboSelected.Id }) },
+                            variables: {
+                                input: __assign(__assign({}, values), { declarationId: currentDeclaration.Id, groupId: group.id, id: uboSelected === null || uboSelected === void 0 ? void 0 : uboSelected.Id }),
+                            },
                             refetchQueries: ['MangopayGroupConfig'],
                         })];
                 case 2:
                     _a.sent();
-                    setOpenForm(false);
-                    return [3 /*break*/, 5];
+                    closeForm();
+                    return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
                     bag.setSubmitting(false);
                     bag.setStatus(err_1.message);
-                    return [3 /*break*/, 5];
-                case 4:
-                    setSubmiting(false);
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
+    /** */
     var onDeclarationSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    setSubmiting(true);
-                    setError(undefined);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, 4, 5]);
+                    if (!currentDeclaration)
+                        return [2 /*return*/];
                     return [4 /*yield*/, submitDeclaration({
-                            variables: { input: { groupId: groupId, declarationId: uboDeclaration.Id } },
+                            variables: { input: { groupId: group.id, declarationId: currentDeclaration.Id } },
                             refetchQueries: ['MangopayGroupConfig'],
                         })];
-                case 2:
-                    _a.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    err_2 = _a.sent();
-                    setError(err_2);
-                    return [3 /*break*/, 5];
-                case 4:
-                    setSubmiting(false);
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
-            }
-        });
-    }); };
-    /** */
-    var renderUboListItem = function (ubo) {
-        var onItemClick = function () {
-            setUboSelected(ubo);
-            openForm();
-        };
-        return (React__default.createElement(core$1.ListItem, { key: ubo.Id },
-            React__default.createElement(core$1.ListItemText, { primary: formatUboNames(ubo) }),
-            React__default.createElement(core$1.ListItemSecondaryAction, null,
-                React__default.createElement(core$1.IconButton, { onClick: onItemClick },
-                    React__default.createElement(EditIcon, null)))));
-    };
-    var renderUboList = function (ubos) {
-        if (!ubos)
-            return null;
-        return React__default.createElement(core$1.List, null, ubos.map(renderUboListItem));
-    };
-    return (React__default.createElement(React__default.Fragment, null,
-        error && (React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(GqlErrorAlert, { error: error }))),
-        uboDeclaration.Ubos && renderUboList(uboDeclaration.Ubos),
-        React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-            (!uboDeclaration.Ubos || uboDeclaration.Ubos.length < 4) && (React__default.createElement(core$1.Box, { mx: 1 },
-                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: openForm }, _t('add')))),
-            uboDeclaration.Ubos && uboDeclaration.Ubos.length > 0 && (React__default.createElement(core$1.Box, { mx: 1 },
-                React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: isSubmiting, onClick: onDeclarationSubmit }, _t('validate'))))),
-        React__default.createElement(core$1.Dialog, { fullWidth: true, open: formOpen, onClose: closeForm },
-            React__default.createElement(DialogTitleClosable, { disableCloseBtn: isSubmiting, onClose: closeForm }, t('ubo')),
-            React__default.createElement(core$1.DialogContent, null,
-                React__default.createElement(UboForm, { ubo: uboSelected, onSubmit: onUboFormSubmit })))));
-};
-
-var tFile$e = 'pro/mangopay';
-var tKey$5 = tFile$e + ":config.documentsCard.form";
-/** */
-var UboDeclarationsContainer = function (_a) {
-    var groupId = _a.groupId, mangopayLegalUser = _a.mangopayLegalUser;
-    var createMangopayUboDeclaration = useCreateMangopayUboDeclarationMutation()[0];
-    /** TRANS */
-    var _t = useTranslation(['translation', tFile$e], { useSuspense: false }).t;
-    var t = function (s) { return _t(tKey$5 + "." + s); };
-    /** STATES */
-    var _b = React__default.useState(false), submiting = _b[0], setSubmiting = _b[1];
-    var _c = React__default.useState(), creationError = _c[0], setCreationError = _c[1];
-    /** EXTRACTED */
-    var uboDeclarations = mangopayLegalUser.UboDeclarations || [];
-    var current = uboDeclarations.length > 1 ? uboDeclarations.slice().sort(function (d1, d2) { return d2.Id - d1.Id; })[0] : undefined;
-    /** */
-    var createDeclaration = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setSubmiting(true);
-                    setCreationError(undefined);
-                    _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, 4, 5]);
-                    return [4 /*yield*/, createMangopayUboDeclaration({
-                            variables: { input: { groupId: groupId } },
-                            refetchQueries: ['MangopayGroupConfig'],
-                        })];
-                case 2:
                     _a.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    err_1 = _a.sent();
-                    setCreationError(err_1);
-                    return [3 /*break*/, 5];
-                case 4:
-                    setSubmiting(false);
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
+                    return [2 /*return*/];
             }
         });
     }); };
@@ -30294,10 +41569,10 @@ var UboDeclarationsContainer = function (_a) {
     var renderStatus = function (uboDeclaration) {
         var Status = uboDeclaration.Status, Reason = uboDeclaration.Reason, Message = uboDeclaration.Message;
         var formatStatus = function (s, refusedReasonType) {
-            var res = t(s);
+            var res = tForm(s);
             // TODO: translate punctuation
             if (refusedReasonType)
-                res = res + " : " + t(refusedReasonType);
+                res = res + " : " + tForm(refusedReasonType);
             return res;
         };
         var getSeverity = function (s) {
@@ -30312,42 +41587,353 @@ var UboDeclarationsContainer = function (_a) {
         /** */
         if (Status === MangopayUboDeclarationStatus.CREATED)
             return null;
-        return (React__default.createElement(lab.Alert, { severity: getSeverity(Status) },
-            React__default.createElement(core$1.Typography, null, formatStatus(Status, Reason || undefined)),
-            Status === MangopayUboDeclarationStatus.REFUSED && React__default.createElement(core$1.Typography, null, Message)));
+        return (React__default.createElement(core$1.Box, { p: 2 },
+            React__default.createElement(lab.Alert, { severity: getSeverity(Status) },
+                React__default.createElement(core$1.Typography, null, formatStatus(Status, Reason || undefined)),
+                Status === MangopayUboDeclarationStatus.REFUSED && React__default.createElement(core$1.Typography, null, Message))));
     };
-    return (React__default.createElement(core$1.Box, { p: 2, border: "1px solid #ccc", borderRadius: 4 },
-        React__default.createElement(core$1.Box, null,
-            React__default.createElement(core$1.Typography, { align: "center", variant: "h6" }, t('SHAREHOLDER_DECLARATION'))),
-        creationError && (React__default.createElement(core$1.Box, { p: 2 },
-            React__default.createElement(GqlErrorAlert, { error: creationError }))),
-        current && React__default.createElement(core$1.Box, { mt: 2 }, renderStatus(current)),
-        (!current || current.Status === MangopayUboDeclarationStatus.REFUSED) && (React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
-            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: submiting, onClick: createDeclaration }, _t('create')))),
-        current &&
-            (current.Status === MangopayUboDeclarationStatus.CREATED ||
-                current.Status === MangopayUboDeclarationStatus.INCOMPLETE) && (React__default.createElement(UboDeclarationContainer, { groupId: groupId, uboDeclaration: current }))));
+    /** */
+    return (React__default.createElement(React__default.Fragment, null,
+        React__default.createElement(core$1.Card, null,
+            React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(PeopleIcon, null), title: t('uboTitle'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                    React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                            onTogglePanel(!open);
+                        } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+            React__default.createElement(core$1.Collapse, { in: open },
+                React__default.createElement(React__default.Fragment, null,
+                    error && (React__default.createElement(core$1.Box, { p: 2 },
+                        React__default.createElement(GqlErrorAlert, { error: error }))),
+                    currentDeclaration && React__default.createElement(core$1.Box, { mt: 2 }, renderStatus(currentDeclaration)),
+                    (!currentDeclaration || currentDeclaration.Status === MangopayUboDeclarationStatus.REFUSED) && (React__default.createElement(core$1.CardContent, null,
+                        React__default.createElement(core$1.Box, { display: "flex", justifyContent: "center" },
+                            React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: loading, onClick: createDeclaration }, t('createUboDeclaration'))))),
+                    currentDeclaration &&
+                        (currentDeclaration.Status === MangopayUboDeclarationStatus.CREATED ||
+                            currentDeclaration.Status === MangopayUboDeclarationStatus.INCOMPLETE) && (React__default.createElement(core$1.CardContent, null,
+                        currentDeclaration.Ubos && (React__default.createElement(core$1.List, null, currentDeclaration.Ubos.map(function (ubo) { return (React__default.createElement(core$1.ListItem, { key: ubo.Id },
+                            React__default.createElement(core$1.ListItemText, { primary: formatUboNames(ubo) }),
+                            React__default.createElement(core$1.ListItemSecondaryAction, null,
+                                React__default.createElement(core$1.IconButton, { onClick: function () {
+                                        openForm(ubo);
+                                    } },
+                                    React__default.createElement(EditIcon, null))))); }))),
+                        React__default.createElement(core$1.Box, { mt: 2, display: "flex", justifyContent: "center" },
+                            (!currentDeclaration.Ubos || currentDeclaration.Ubos.length < 4) && (React__default.createElement(core$1.Box, { mx: 1 },
+                                React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () {
+                                        openForm();
+                                    } }, _t('add')))),
+                            currentDeclaration.Ubos && currentDeclaration.Ubos.length > 0 && (React__default.createElement(core$1.Box, { mx: 1 },
+                                React__default.createElement(ProgressButton, { variant: "contained", color: "primary", loading: loading, onClick: onDeclarationSubmit }, _t('validate'))))))))),
+            loading && React__default.createElement(core$1.LinearProgress, null)),
+        React__default.createElement(core$1.Dialog, { fullWidth: true, open: formOpen, onClose: closeForm },
+            React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeForm }, tForm('ubo')),
+            React__default.createElement(core$1.DialogContent, null,
+                React__default.createElement(MangopayUboForm, { ubo: uboSelected, onSubmit: onUboFormSubmit })))));
 };
 
+var AccountBalance = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M4 10h3v7H4zM10.5 10h3v7h-3zM2 19h20v3H2zM17 10h3v7h-3zM12 1L2 6v2h20V6z"
+}), 'AccountBalance');
+
+exports.default = _default;
+});
+
+var AccountBalanceIcon = unwrapExports(AccountBalance);
+
+var Visibility = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+}), 'Visibility');
+
+exports.default = _default;
+});
+
+var VisibilityIcon = unwrapExports(Visibility);
+
+var Delete = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+}), 'Delete');
+
+exports.default = _default;
+});
+
+var DeleteIcon = unwrapExports(Delete);
+
+var CheckBoxOutlineBlank = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+}), 'CheckBoxOutlineBlank');
+
+exports.default = _default;
+});
+
+var CheckBoxOutlineBlankIcon = unwrapExports(CheckBoxOutlineBlank);
+
+var CheckBox = createCommonjsModule(function (module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = interopRequireDefault(React__default);
+
+var _createSvgIcon = interopRequireDefault(createSvgIcon_1);
+
+var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", {
+  d: "M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+}), 'CheckBox');
+
+exports.default = _default;
+});
+
+var CheckBoxIcon = unwrapExports(CheckBox);
+
 var tFile$f = 'pro/mangopay';
-var tKey$6 = 'config';
+var tKey$6 = 'config.bankAccountCard';
+var MangopayBankAccountForm = function (_a) {
+    var bankAccount = _a.bankAccount, _b = _a.disabled, disabled = _b === void 0 ? false : _b, onSubmit = _a.onSubmit;
+    var _c, _d, _e, _f, _g;
+    /** TRANS */
+    var _t = useTranslation(['translation', 'yup', tFile$f]).t;
+    var tYup = function (key, values) { return _t("yup:" + key, values); };
+    var tForm = function (key, options) { return _t(tFile$f + ":" + tKey$6 + ".form." + key, options); };
+    /** */
+    var initialValues = {
+        Type: (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) || MangopayBankAccountType.IBAN,
+        OwnerAddress: {
+            AddressLine1: ((_c = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _c === void 0 ? void 0 : _c.AddressLine1) || '',
+            AddressLine2: ((_d = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _d === void 0 ? void 0 : _d.AddressLine2) || '',
+            City: ((_e = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _e === void 0 ? void 0 : _e.City) || '',
+            Country: ((_f = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _f === void 0 ? void 0 : _f.Country) || '',
+            PostalCode: ((_g = bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerAddress) === null || _g === void 0 ? void 0 : _g.PostalCode) || '',
+        },
+        OwnerName: (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.OwnerName) || '',
+        /** IBAN */
+        IBAN: bankAccount && (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) === MangopayBankAccountType.IBAN
+            ? bankAccount.IBAN || ''
+            : undefined,
+        BIC: bankAccount && (bankAccount === null || bankAccount === void 0 ? void 0 : bankAccount.Type) === MangopayBankAccountType.IBAN
+            ? bankAccount.IBAN || ''
+            : undefined,
+    };
+    /** */
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, onSubmit: onSubmit }, function (formikProps) {
+        var _a, _b, _c, _d;
+        return (React__default.createElement(formik.Form, null,
+            React__default.createElement(core$1.FormControl, { fullWidth: true, variant: "outlined", disabled: formikProps.isSubmitting || disabled },
+                React__default.createElement(core$1.InputLabel, { htmlFor: "bank-account-type-label" }, tForm('Type')),
+                React__default.createElement(formik.Field, { required: true, name: "Type", label: tForm('Type'), component: formikMaterialUi.Select, inputProps: {
+                        id: 'bank-account-type',
+                    } },
+                    React__default.createElement(core$1.MenuItem, { value: MangopayBankAccountType.IBAN }, tForm(MangopayBankAccountType.IBAN)))),
+            React__default.createElement(SimpleField, { label: tForm('OwnerName'), name: "OwnerName", disabled: formikProps.isSubmitting || disabled }),
+            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { label: _t('address1'), name: "OwnerAddress.AddressLine1", disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { label: _t('address2'), name: "OwnerAddress.AddressLine2", required: false, disabled: formikProps.isSubmitting || disabled }) }),
+            React__default.createElement(TwoColumnsGrid, { left: React__default.createElement(SimpleField, { label: _t('city'), name: "OwnerAddress.City", disabled: formikProps.isSubmitting || disabled }), right: React__default.createElement(SimpleField, { label: _t('zipCode'), name: "OwnerAddress.PostalCode", disabled: formikProps.isSubmitting || disabled }) }),
+            React__default.createElement(ISO31661Selector, { format: "alpha2", autocompleteProps: { disabled: formikProps.isSubmitting || disabled }, textFieldProps: {
+                    margin: 'normal',
+                    name: 'OwnerAddress.Country',
+                    required: true,
+                    label: _t('country'),
+                    error: Boolean(((_a = formikProps.touched.OwnerAddress) === null || _a === void 0 ? void 0 : _a.Country) && ((_b = formikProps.errors.OwnerAddress) === null || _b === void 0 ? void 0 : _b.Country)),
+                    helperText: ((_c = formikProps.touched.OwnerAddress) === null || _c === void 0 ? void 0 : _c.Country) &&
+                        yupHelperTextTranslator(tYup, (_d = formikProps.errors.OwnerAddress) === null || _d === void 0 ? void 0 : _d.Country),
+                    onBlur: function () { return formikProps.setFieldTouched('OwnerAddress.Country'); },
+                }, defaultValue: formikProps.values.OwnerAddress.Country || '', onChange: function (v) {
+                    formikProps.setFieldTouched('OwnerAddress.Country');
+                    formikProps.setFieldValue('OwnerAddress.Country', v || '');
+                } }),
+            formikProps.values.Type === MangopayBankAccountType.IBAN && (React__default.createElement(React__default.Fragment, null,
+                React__default.createElement(SimpleField, { label: tForm('IBAN'), name: "IBAN", disabled: formikProps.isSubmitting || disabled }),
+                React__default.createElement(SimpleField, { label: tForm('BIC'), name: "BIC", required: false, disabled: formikProps.isSubmitting || disabled }))),
+            !disabled && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+                React__default.createElement(core$1.Button, { color: "primary", variant: "contained", type: "submit", disabled: formikProps.isSubmitting }, _t('validate'))))));
+    }));
+};
+
+var tFile$g = 'pro/mangopay';
+var tKey$7 = 'config.bankAccountCard';
+var MangopayBankAccountsCard = function (_a) {
+    var group = _a.group, open = _a.open, disabledActions = _a.disabledActions, onTogglePanel = _a.onTogglePanel;
+    var _b, _c;
+    var _d = __read(useCreateMangopayIbanBankAccountMutation(), 2), createMangopayIbanBankAccount = _d[0], _e = _d[1], loadingCreate = _e.loading, errorCreate = _e.error;
+    var _f = __read(useDeactivateMangopayBankAccountMutation(), 2), deactivateMangopayBankAccount = _f[0], _g = _f[1], loadingDeactivate = _g.loading, errorDeactivate = _g.error;
+    var _h = __read(useSelectMangopayBankAccountIdMutation(), 1), selectMangopayBankAccountId = _h[0];
+    /** TRANS */
+    var _t = useTranslation(['translation', 'yup', tFile$g]).t;
+    var t = function (key, options) { return _t(tFile$g + ":" + tKey$7 + "." + key, options); };
+    /** COMPUTED */
+    var legalUser = (_b = group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
+    var bankAccounts = (_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.BankAccounts) === null || _c === void 0 ? void 0 : _c.filter(function (b) { return b.Active; });
+    var loading = loadingCreate || loadingDeactivate;
+    var error = errorCreate || errorDeactivate;
+    /** STATES */
+    var _j = __read(React__default.useState(false), 2), dialogOpen = _j[0], setDialogOpen = _j[1];
+    var _k = __read(React__default.useState(), 2), selectedBankAccount = _k[0], setSelectedBanAccount = _k[1];
+    /** */
+    var IconButtonWithConfirmDialog = withConfirmDialog(core$1.IconButton, {
+        title: t('deleteDialog.title'),
+        cancelButtonLabel: _t('cancel'),
+        confirmButtonLabel: _t('confirm'),
+        message: t('deleteDialog.message'),
+    });
+    /** */
+    var openDialog = function (bankAccount) {
+        setSelectedBanAccount(bankAccount);
+        setDialogOpen(true);
+    };
+    var closeDialog = function () {
+        if (loading)
+            return;
+        setSelectedBanAccount(undefined);
+        setDialogOpen(false);
+    };
+    /** */
+    var onDeactivate = function (bankAccount) {
+        deactivateMangopayBankAccount({
+            variables: { input: { groupId: group.id, bankAccountId: bankAccount.Id } },
+            refetchQueries: ['MangopayGroupConfig'],
+        });
+    };
+    var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
+        var err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, createMangopayIbanBankAccount({
+                            variables: {
+                                input: __assign(__assign({ groupId: group.id }, values), { IBAN: values.IBAN !== '' ? values.IBAN : undefined, BIC: values.BIC !== '' ? values.BIC : undefined }),
+                            },
+                            refetchQueries: ['MangopayGroupConfig'],
+                        })];
+                case 1:
+                    _a.sent();
+                    bag.setSubmitting(false);
+                    setSelectedBanAccount(undefined);
+                    setDialogOpen(false);
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    bag.setSubmitting(false);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var onSelectBankAccount = function (bankAccount) {
+        if (!legalUser)
+            return;
+        var bId = parseInt(bankAccount.Id, 10);
+        var id = bId === legalUser.bankAccountId ? null : bId;
+        selectMangopayBankAccountId({
+            variables: { input: { groupId: group.id, bankAccountId: id } },
+            refetchQueries: ['MangopayGroupConfig'],
+        });
+    };
+    /** */
+    return (React__default.createElement(core$1.Card, null,
+        React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(AccountBalanceIcon, null), title: t('title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
+                React__default.createElement(core$1.IconButton, { size: "small", disabled: disabledActions, onClick: function () {
+                        onTogglePanel(!open);
+                    } }, open ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
+        React__default.createElement(core$1.Collapse, { in: open && !loading },
+            React__default.createElement(React__default.Fragment, null,
+                error && (React__default.createElement(core$1.CardContent, null,
+                    React__default.createElement(GqlErrorAlert, { error: error }))),
+                bankAccounts && bankAccounts.length > 0 && (React__default.createElement(core$1.CardContent, null,
+                    React__default.createElement(core$1.List, null, bankAccounts.map(function (bankAccount) { return (React__default.createElement(core$1.ListItem, { key: bankAccount.Id },
+                        React__default.createElement(core$1.ListItemText, { primary: formatMangopayBankAccount(bankAccount), secondary: formatMangopayAddress(bankAccount.OwnerAddress) }),
+                        React__default.createElement(core$1.ListItemSecondaryAction, null,
+                            React__default.createElement(IconButtonWithConfirmDialog, { onClick: function () {
+                                    onDeactivate(bankAccount);
+                                } },
+                                React__default.createElement(DeleteIcon, null)),
+                            React__default.createElement(core$1.IconButton, { onClick: function () {
+                                    openDialog(bankAccount);
+                                } },
+                                React__default.createElement(VisibilityIcon, null)),
+                            React__default.createElement(core$1.IconButton, { onClick: function () {
+                                    onSelectBankAccount(bankAccount);
+                                } }, (legalUser === null || legalUser === void 0 ? void 0 : legalUser.bankAccountId) === parseInt(bankAccount.Id, 10) ? (React__default.createElement(CheckBoxIcon, { color: "primary" })) : (React__default.createElement(CheckBoxOutlineBlankIcon, null)))))); })))),
+                React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+                    React__default.createElement(core$1.Button, { variant: "outlined", color: "primary", onClick: function () { return openDialog(); } }, _t('add'))))),
+        React__default.createElement(core$1.Dialog, { open: dialogOpen, fullWidth: true, maxWidth: "md", onClose: closeDialog },
+            React__default.createElement(DialogTitleClosable, { disableCloseBtn: loading, onClose: closeDialog }, t('bankAccount')),
+            React__default.createElement(core$1.DialogContent, null,
+                React__default.createElement(MangopayBankAccountForm, { disabled: !!selectedBankAccount, bankAccount: selectedBankAccount, onSubmit: onFormSubmit }))),
+        loading && React__default.createElement(core$1.LinearProgress, null)));
+};
+
 var MangopayConfig = function (_a) {
     var groupId = _a.groupId;
-    var _b, _c, _d;
-    var _e = useMangopayGroupConfigQuery({ variables: { id: groupId } }), data = _e.data, loading = _e.loading, error = _e.error;
-    /** TRANS */
-    var _t = useTranslation([tFile$f]).t;
-    var t = function (key, options) { return _t(tFile$f + ":" + tKey$6 + "." + key, options); };
+    var _b, _c;
+    var _d = useMangopayGroupConfigQuery({ variables: { id: groupId } }), data = _d.data, loading = _d.loading, error = _d.error;
     /** EXTRACTED */
     var group = data === null || data === void 0 ? void 0 : data.group;
     var legalUser = (_b = group === null || group === void 0 ? void 0 : group.mangopayGroup) === null || _b === void 0 ? void 0 : _b.legalUser;
     var legalRepr = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr;
     var isRegular = (legalUser === null || legalUser === void 0 ? void 0 : legalUser.KYCLevel) === MangopayKycLevel.REGULAR;
     /** STATES */
-    var _f = React__default.useState(legalRepr), selectedLegalRepr = _f[0], setSelectedLegalRepr = _f[1];
-    var _g = React__default.useState(false), submitting = _g[0], setSubmitting = _g[1];
-    var _h = React__default.useState(false), infosPanelOpen = _h[0], setInfosPanelOpen = _h[1];
-    var _j = React__default.useState(false), documentsPanelOpen = _j[0], setDocumentsPanelOpen = _j[1];
+    var _e = __read(React__default.useState(legalRepr), 2), selectedLegalRepr = _e[0], setSelectedLegalRepr = _e[1];
+    var _f = __read(React__default.useState(false), 2), submitting = _f[0], setSubmitting = _f[1];
+    var _g = __read(React__default.useState(), 2), openedPanel = _g[0], setOpenedPanel = _g[1];
+    /** */
+    var closePanels = function () {
+        setOpenedPanel(undefined);
+    };
     /** */
     React__default.useEffect(function () {
         setSelectedLegalRepr(legalRepr);
@@ -30355,81 +41941,410 @@ var MangopayConfig = function (_a) {
     React__default.useEffect(function () {
         var _a;
         if (legalUser && selectedLegalRepr && ((_a = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _a === void 0 ? void 0 : _a.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id)) {
-            setInfosPanelOpen(false);
-            setDocumentsPanelOpen(true);
+            if (allMangopayKycDocumentStatusesArePending(legalUser))
+                setOpenedPanel('ubos');
+            else
+                setOpenedPanel('kyc');
         }
         else {
-            setInfosPanelOpen(true);
-            setDocumentsPanelOpen(false);
+            setOpenedPanel('legalUser');
         }
     }, [selectedLegalRepr, legalUser]);
-    React__default.useEffect(function () {
-        if (infosPanelOpen)
-            setDocumentsPanelOpen(false);
-    }, [infosPanelOpen]);
-    React__default.useEffect(function () {
-        if (documentsPanelOpen)
-            setInfosPanelOpen(false);
-    }, [documentsPanelOpen]);
     /** */
     return (React__default.createElement(React__default.Fragment, null,
         error && React__default.createElement(GqlErrorAlert, { error: error }),
-        React__default.createElement(core$1.Card, null,
-            React__default.createElement(core$1.CardContent, null,
-                React__default.createElement("img", { height: "48px", src: "https://www.mangopay.com/wp-content/themes/mangopay/assets/images/mangopay.svg", alt: "mangopay-logo" })),
-            React__default.createElement(core$1.CardContent, null,
-                !isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
-                    React__default.createElement(core$1.Typography, null, t('infoCard.p1')))),
-                React__default.createElement(core$1.Box, null,
-                    React__default.createElement(lab.Alert, { severity: "info" },
-                        React__default.createElement(core$1.Box, null,
-                            React__default.createElement("span", null, t('infoCard.alert.s1')),
-                            React__default.createElement("a", { href: t('infoCard.alert.guideLinkTarget'), target: "_blank", rel: "noopener noreferrer" }, t('infoCard.alert.guildeLinkLabel')),
-                            React__default.createElement("span", null, t('infoCard.alert.s2'))))),
-                isRegular && (React__default.createElement(core$1.Box, { mt: 2 },
-                    React__default.createElement(lab.Alert, { severity: "success" }, t('infoCard.regular')))))),
-        loading && (React__default.createElement(core$1.Box, { p: 2, display: "flex", justifyContent: "center" },
+        React__default.createElement(MangopayInfoCard, { isRegular: isRegular }),
+        loading && (React__default.createElement(core$1.Box, { p: 2, mt: 6, display: "flex", justifyContent: "center" },
             React__default.createElement(core$1.CircularProgress, null))),
         group && (React__default.createElement(core$1.Box, { mt: 4 },
-            React__default.createElement(core$1.Card, null,
-                React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FaceIcon, null), title: t('legalRepCard.title', {
-                        name: selectedLegalRepr ? ": " + formatUserName(selectedLegalRepr) : undefined,
-                    }), actions: !isRegular &&
-                        selectedLegalRepr && (React__default.createElement(core$1.IconButton, { size: "small", disabled: submitting, onClick: function () {
-                            setSelectedLegalRepr(undefined);
-                        } },
-                        React__default.createElement(EditIcon, null))) }),
-                !selectedLegalRepr && (React__default.createElement(core$1.CardContent, null,
-                    React__default.createElement(LegalReprSelectorContainer, { groupId: groupId, currentLegalRepr: legalRepr, users: group.users || [], onSelect: setSelectedLegalRepr })))))),
-        selectedLegalRepr && (React__default.createElement(core$1.Box, { mt: 4 },
-            React__default.createElement(core$1.Card, null,
-                React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(BusinessIcon, null), title: t('legalUserCard.title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                        React__default.createElement(core$1.IconButton, { size: "small", disabled: submitting, onClick: function () {
-                                setInfosPanelOpen(!infosPanelOpen);
-                            } }, infosPanelOpen ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-                React__default.createElement(core$1.Collapse, { in: infosPanelOpen },
-                    React__default.createElement(core$1.CardContent, null,
-                        isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
-                            React__default.createElement(lab.Alert, { severity: "info" }, t('legalUserCard.editAlert')))),
-                        React__default.createElement(MangopayLegalUserFormContainer, { groupId: groupId, legalRepr: selectedLegalRepr, legalUser: legalUser && selectedLegalRepr && ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _c === void 0 ? void 0 : _c.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id)
-                                ? legalUser
-                                : undefined, disabled: isRegular, onSubmit: function () {
-                                setSubmitting(true);
-                            }, onSubmitComplete: function () {
-                                setSubmitting(false);
-                            }, onSubmitFail: function () {
-                                setSubmitting(false);
-                            } })))))),
-        !isRegular && legalUser && selectedLegalRepr && ((_d = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _d === void 0 ? void 0 : _d.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id) && (React__default.createElement(core$1.Box, { my: 4 },
-            React__default.createElement(core$1.Card, null,
-                React__default.createElement(MangopayConfigCardHeader, { icon: React__default.createElement(FolderIcon, null), title: t('documentsCard.title'), actions: legalUser && (React__default.createElement(core$1.Box, null,
-                        React__default.createElement(core$1.IconButton, { size: "small", disabled: submitting, onClick: function () {
-                                setDocumentsPanelOpen(!documentsPanelOpen);
-                            } }, documentsPanelOpen ? React__default.createElement(ExpandLessIcon, null) : React__default.createElement(ExpandMoreIcon, null)))) }),
-                React__default.createElement(core$1.Collapse, { in: documentsPanelOpen },
-                    React__default.createElement(core$1.CardContent, null, allMangopayDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('documentsCard.allPending'))) : (React__default.createElement(React__default.Fragment, null,
-                        React__default.createElement(KycDocumentsContainer, { groupId: groupId, mangopayLegalUser: legalUser }),
-                        dist_9(legalUser.LegalPersonType) && (React__default.createElement(UboDeclarationsContainer, { groupId: groupId, mangopayLegalUser: legalUser })))))))))));
+            React__default.createElement(MangopayLegalReprCard, { group: group, disabledActions: submitting, selectedLegalRepr: selectedLegalRepr, setSelectedLegalRepr: setSelectedLegalRepr }))),
+        group && selectedLegalRepr && (React__default.createElement(core$1.Box, { mt: 4 },
+            React__default.createElement(MangopayLegalUserCard, { group: group, defaultLegalRepr: selectedLegalRepr, open: openedPanel === 'legalUser', disabledActions: submitting, onTogglePanel: function (v) {
+                    if (v)
+                        setOpenedPanel('legalUser');
+                    else
+                        closePanels();
+                }, onSubmit: function () {
+                    setSubmitting(true);
+                }, onSubmitComplete: function () {
+                    setSubmitting(false);
+                }, onSubmitFail: function () {
+                    setSubmitting(false);
+                } }))),
+        group && !isRegular && legalUser && selectedLegalRepr && ((_c = legalUser === null || legalUser === void 0 ? void 0 : legalUser.legalRepr) === null || _c === void 0 ? void 0 : _c.id) === (selectedLegalRepr === null || selectedLegalRepr === void 0 ? void 0 : selectedLegalRepr.id) && (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(core$1.Box, { my: 4 },
+                React__default.createElement(MangopayKycDocumentsCard, { group: group, disabledActions: submitting, open: openedPanel === 'kyc', onTogglePanel: function (v) {
+                        if (v)
+                            setOpenedPanel('kyc');
+                        else
+                            closePanels();
+                    } })),
+            dist_9(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
+                React__default.createElement(MangopayUbosCard, { group: group, disabledActions: submitting, open: openedPanel === 'ubos', onTogglePanel: function (v) {
+                        if (v)
+                            setOpenedPanel('ubos');
+                        else
+                            closePanels();
+                    } }))))),
+        group && isRegular && (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(core$1.Box, { my: 4 },
+                React__default.createElement(MangopayBankAccountsCard, { group: group, disabledActions: submitting, open: openedPanel === 'bankAccount', onTogglePanel: function (v) {
+                        if (v)
+                            setOpenedPanel('bankAccount');
+                        else
+                            closePanels();
+                    } }))))));
+};
+
+var Lists = /** @class */ (function () {
+    function Lists(value) {
+        this.value = value;
+    }
+    Lists.getLists = function () {
+        return [Lists.ALL, Lists.TEST];
+    };
+    Lists.ALL = new Lists('all');
+    Lists.TEST = new Lists('test');
+    return Lists;
+}());
+
+var MessagesForm = function (_a) {
+    var user = _a.user, isPartnerConnected = _a.isPartnerConnected, userLists = _a.userLists, onSubmit = _a.onSubmit, onSelectOption = _a.onSelectOption;
+    var t = useTranslation(['messages/default']).t;
+    var recipientsOptions = userLists.map(function (ul) { return ({
+        value: ul.id,
+        label: ul.count ? t("lists." + ul.id) + " (" + ul.count + ")" : t("lists." + ul.id),
+    }); });
+    var testLists = Lists.TEST;
+    recipientsOptions.push({ value: testLists.value, label: t("lists." + testLists.value) });
+    var senderEmail;
+    var senderName;
+    if (isPartnerConnected && user.email2 !== null) {
+        senderEmail = user.email2;
+        senderName = user.firstName2 + " " + user.lastName2;
+    }
+    else {
+        senderEmail = user.email;
+        senderName = user.firstName + " " + user.lastName;
+    }
+    var fields = [
+        {
+            type: FieldTypes.Default,
+            name: 'firstName',
+            initialValues: senderName,
+            label: t('form.name'),
+            required: true,
+        },
+        {
+            type: FieldTypes.Default,
+            name: 'senderEmail',
+            initialValues: senderEmail,
+            label: t('form.email'),
+            required: true,
+        },
+        {
+            type: FieldTypes.Select,
+            name: 'recipientsList',
+            initialValues: recipientsOptions[0].value,
+            label: t('form.recipients'),
+            required: true,
+            selectOptions: recipientsOptions,
+            onSelectOption: onSelectOption,
+        },
+        {
+            type: FieldTypes.Default,
+            name: 'object',
+            initialValues: '',
+            label: t('form.object'),
+            required: true,
+        },
+        {
+            type: FieldTypes.Editor,
+            name: 'message',
+            initialValues: '',
+            label: t('form.message'),
+            required: true,
+        },
+    ];
+    var initialValues = __assign({}, generateInitialValues(fields));
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
+        formikProps.status && Object.keys(formikProps.errors).length > 0 && (React__default.createElement(core$1.Box, { my: 2 },
+            React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
+        formikProps.status && Object.keys(formikProps.errors).length === 0 && (React__default.createElement(core$1.Box, { my: 2 },
+            React__default.createElement(lab.Alert, { severity: "success" }, formikProps.status))),
+        React__default.createElement(core$1.Box, null,
+            React__default.createElement(ExpansionPanel, { expanded: true },
+                React__default.createElement(core$1.ExpansionPanelDetails, null,
+                    React__default.createElement(core$1.Box, { width: "100%" }, generateFields(fields, formikProps))))),
+        React__default.createElement(core$1.Box, { mb: 3, display: "flex", justifyContent: "center" },
+            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, t('form.send'))))); }));
+};
+
+var MessagingService = function (_a) {
+    var groupId = _a.groupId, whichUser = _a.whichUser;
+    var t = useTranslation(['messages/default']).t;
+    var _b = useMeQuery(), meData = _b.data, meloading = _b.loading;
+    var groupData = useMessagesGroupQuery({ variables: { id: groupId } }).data;
+    var userListsData = useUserListsQuery({ variables: { groupId: groupId } }).data;
+    var _c = __read(React__default.useState('all'), 2), selectedListId = _c[0], setSelectedListId = _c[1];
+    var _d = __read(useGetUserListInGroupByListIdLazyQuery({
+        variables: { listId: selectedListId, groupId: groupId },
+    }), 2), getUserListInGroupByListId = _d[0], userListInGroupByListId = _d[1].data;
+    var _e = __read(React__default.useState(), 2), recipients = _e[0], setRecipients = _e[1];
+    var _f = __read(useCreateBufferedJsonMailMutation(), 1), createBufferedJsonMail = _f[0];
+    var _g = __read(useCreateMessageMutation(), 1), createMessage = _g[0];
+    var me = meData && meData.me;
+    var userLists = userListsData ? userListsData.getUserLists : [];
+    React__default.useEffect(function () {
+        if (selectedListId === 'test') {
+            setRecipients([me]);
+        }
+        else {
+            getUserListInGroupByListId();
+        }
+    }, [selectedListId]);
+    var onSelectOption = function (value) {
+        setSelectedListId(value);
+    };
+    React__default.useEffect(function () {
+        if (!userListInGroupByListId)
+            return;
+        if (selectedListId === 'test')
+            return;
+        setRecipients(userListInGroupByListId.getUserListInGroupByListId);
+    }, [userListInGroupByListId]);
+    var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
+        var sender, recipientsList_1, bufferedJsonEmailInput, messageInput, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    bag.setStatus(undefined);
+                    if (!recipients) {
+                        bag.setErrors({ recipientsList: 'no recipient list selected' });
+                        bag.setSubmitting(false);
+                        return [2 /*return*/];
+                    }
+                    if (values.message.length === 0) {
+                        bag.setErrors({ message: 'empty message' });
+                        bag.setStatus(t('form.errorEmptyMessage'));
+                        bag.setSubmitting(false);
+                        return [2 /*return*/];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    sender = {
+                        name: values.firstName,
+                        email: values.senderEmail,
+                    };
+                    recipientsList_1 = [];
+                    recipients.forEach(function (r) {
+                        if (r.email)
+                            recipientsList_1.push({ name: r.firstName + " " + r.lastName, email: r.email, userId: r.id });
+                        if (r.email2)
+                            recipientsList_1.push({ name: r.firstName2 + " " + r.lastName2, email: r.email2, userId: r.id });
+                    });
+                    bufferedJsonEmailInput = {
+                        title: values.object,
+                        htmlBody: values.message,
+                        sender: sender,
+                        recipients: recipientsList_1,
+                        replyToHeader: values.senderEmail,
+                        listName: t("lists." + selectedListId),
+                    };
+                    if (groupData) {
+                        bufferedJsonEmailInput.group = { name: groupData.group.name, id: groupData.group.id };
+                    }
+                    return [4 /*yield*/, createBufferedJsonMail({
+                            variables: {
+                                input: bufferedJsonEmailInput,
+                            },
+                        })];
+                case 2:
+                    _a.sent();
+                    messageInput = {
+                        title: values.object,
+                        body: values.message,
+                        senderId: me.id,
+                        recipients: recipientsList_1.map(function (r) { return r.email; }),
+                        date: new Date(),
+                        groupId: groupId,
+                        listId: selectedListId,
+                    };
+                    return [4 /*yield*/, createMessage({
+                            variables: {
+                                input: messageInput,
+                            },
+                        })];
+                case 3:
+                    _a.sent();
+                    bag.resetForm();
+                    setSelectedListId('all');
+                    bag.setStatus(t('form.success'));
+                    window.scrollTo(0, 0);
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _a.sent();
+                    bag.setStatus('error'); // TODO: Comment gérer les erreurs ?
+                    bag.setErrors({ message: error_1 });
+                    bag.setSubmitting(false);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    /** */
+    if (meloading)
+        return React__default.createElement(core$1.CircularProgress, null);
+    return (React__default.createElement(core$1.Box, null, me && (React__default.createElement(MessagesForm, { user: me, isPartnerConnected: whichUser, userLists: userLists, onSubmit: onFormSubmit, onSelectOption: onSelectOption }))));
+};
+
+var ListItemLink = function (_a) {
+    var href = _a.href, children = _a.children, listItemProps = __rest(_a, ["href", "children"]);
+    return (React__default.createElement(core$1.ListItem, __assign({ button: true, component: "a", href: href }, listItemProps), children));
+};
+
+var useStyles$7 = core$1.makeStyles(function () {
+    return core$1.createStyles({
+        listItemText: {
+            '& p:first-letter': {
+                textTransform: 'capitalize',
+            },
+        },
+    });
+});
+var SentMessageList = function (_a) {
+    var groupId = _a.groupId, isGroupAdmin = _a.isGroupAdmin;
+    var _b = __read(useGetMessagesForGroupLazyQuery({ variables: { groupId: groupId } }), 2), getAllMessages = _b[0], allMessages = _b[1].data;
+    var _c = __read(useGetUserMessagesForGroupLazyQuery({ variables: { groupId: groupId } }), 2), getUserMessages = _c[0], userMessages = _c[1].data;
+    var cs = useStyles$7();
+    React__default.useEffect(function () {
+        if (isGroupAdmin === undefined)
+            return;
+        if (isGroupAdmin) {
+            getAllMessages();
+        }
+        else {
+            getUserMessages();
+        }
+    }, [isGroupAdmin]);
+    var messages = [];
+    if (isGroupAdmin !== undefined) {
+        if (isGroupAdmin && !!allMessages) {
+            messages = allMessages.getMessagesForGroup;
+        }
+        else if (!isGroupAdmin && !!userMessages) {
+            messages = userMessages.getUserMessagesForGroup;
+        }
+    }
+    return (React__default.createElement(core$1.Box, { overflow: "scroll", style: { height: '600px' } },
+        React__default.createElement(core$1.List, null, messages.map(function (m) { return (React__default.createElement(ListItemLink, { href: "/messages/message/" + m.id, divider: true, key: m.id },
+            React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: m.title, secondary: formatDate(new Date(m.date), true) }))); }))));
+};
+
+var Messages = function (_a) {
+    var groupId = _a.groupId, whichUser = _a.whichUser;
+    var t = useTranslation(['messages/default']).t;
+    var isGroupAdminData = useIsGroupAdminQuery({ variables: { groupId: groupId } }).data;
+    var isGroupAdmin = isGroupAdminData === null || isGroupAdminData === void 0 ? void 0 : isGroupAdminData.isGroupAdmin;
+    /** */
+    return (React__default.createElement(core$1.Box, { mb: 2 },
+        React__default.createElement(core$1.Grid, { container: true, spacing: 4 },
+            React__default.createElement(core$1.Grid, { item: true, xs: 3 },
+                React__default.createElement(core$1.Paper, null,
+                    React__default.createElement(core$1.Box, { p: 2 },
+                        React__default.createElement("b", null, isGroupAdmin ? t('allSentMessages') : t('lastSentMessages')),
+                        React__default.createElement(SentMessageList, { isGroupAdmin: isGroupAdmin, groupId: groupId })))),
+            React__default.createElement(core$1.Grid, { item: true, xs: 9 },
+                React__default.createElement(core$1.Paper, null,
+                    React__default.createElement(core$1.Box, { p: 2 },
+                        React__default.createElement(core$1.Typography, { variant: "h3", gutterBottom: true }, t('title')),
+                        React__default.createElement(MessagingService, { groupId: groupId, whichUser: whichUser })))))));
+};
+
+var LegacyLists = /** @class */ (function () {
+    function LegacyLists(value, label) {
+        this.value = value;
+        this.label = label;
+    }
+    LegacyLists.getLists = function () {
+        return [
+            LegacyLists.ALL,
+            LegacyLists.BOARD,
+            LegacyLists.TEST,
+            LegacyLists.MEMBERS_WITHOUT_ORDER,
+            LegacyLists.MEMBERSHIP_TO_BE_RENEWED,
+        ];
+    };
+    LegacyLists.ALL = new LegacyLists('1', 'all');
+    LegacyLists.BOARD = new LegacyLists('2', 'board');
+    LegacyLists.TEST = new LegacyLists('3', 'test');
+    LegacyLists.MEMBERS_WITHOUT_ORDER = new LegacyLists('4', 'membersWithoutOrder');
+    LegacyLists.MEMBERSHIP_TO_BE_RENEWED = new LegacyLists('5', 'membershipsToBeRenewed');
+    return LegacyLists;
+}());
+
+function getListName(listId) {
+    var legacyLists = LegacyLists.getLists();
+    var lists = Lists.getLists();
+    var list = lists.find(function (l) {
+        return l.value === listId;
+    });
+    if (list) {
+        return list && list.value;
+    }
+    var legacyList = legacyLists.find(function (l) {
+        return l.value === listId;
+    });
+    return legacyList && legacyList.label;
+}
+var MessageTable = function (_a) {
+    var messageId = _a.messageId;
+    var t = useTranslation(['messages/default']).t;
+    var _b = useGetMessageByIdQuery({ variables: { id: messageId } }), messageData = _b.data, messageLoading = _b.loading;
+    var message = messageData === null || messageData === void 0 ? void 0 : messageData.message;
+    var listName = (message === null || message === void 0 ? void 0 : message.recipientListId) && getListName(message.recipientListId);
+    var TableTitleCell = function (_a) {
+        var title = _a.title;
+        return (React__default.createElement(core$1.TableCell, { align: "right", style: { whiteSpace: 'nowrap' } }, title));
+    };
+    if (messageLoading)
+        return React__default.createElement(core$1.CircularProgress, null);
+    return (React__default.createElement(core$1.Paper, { elevation: 2 }, message && (React__default.createElement(core$1.Table, null,
+        React__default.createElement(core$1.TableRow, null,
+            React__default.createElement(TableTitleCell, { title: t('subject') + " :" }),
+            React__default.createElement(core$1.TableCell, null, message.title)),
+        React__default.createElement(core$1.TableRow, null,
+            React__default.createElement(TableTitleCell, { title: t('sentOnThe') + " :" }),
+            React__default.createElement(core$1.TableCell, null, message.date)),
+        React__default.createElement(core$1.TableRow, null,
+            React__default.createElement(TableTitleCell, { title: t('sender') + " :" }),
+            React__default.createElement(core$1.TableCell, null, message.sender === null ? 'inconnu' : message.sender.firstName + " " + message.sender.lastName)),
+        React__default.createElement(core$1.TableRow, null,
+            React__default.createElement(TableTitleCell, { title: t('receivers') + " :" }),
+            listName ? (React__default.createElement(core$1.TableCell, null, t("lists." + listName))) : (React__default.createElement(core$1.TableCell, null,
+                React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.recipients.map(function (r) { return (React__default.createElement(core$1.Box, { m: 0.5 },
+                    React__default.createElement(core$1.Chip, { label: r }))); }))))),
+        React__default.createElement(core$1.TableRow, null,
+            React__default.createElement(core$1.TableCell, null),
+            React__default.createElement(core$1.TableCell, { dangerouslySetInnerHTML: { __html: message.body } }))))));
+};
+
+var Message = function () {
+    var t = useTranslation(['translation']).t;
+    var urlMatch = window.location.pathname.match(/message\/(\d+)/);
+    var messageId = urlMatch && urlMatch.length > 0 && urlMatch[1];
+    if (!messageId) {
+        window.location.pathname = '/home';
+        return null;
+    }
+    /** */
+    return (React__default.createElement(core$1.Box, { mb: 2 },
+        React__default.createElement(core$1.Paper, { elevation: 0 },
+            React__default.createElement(core$1.Box, { p: 2 },
+                React__default.createElement(core$1.Box, { mb: 2 },
+                    React__default.createElement(MessageTable, { messageId: parseInt(messageId, 10) })),
+                React__default.createElement(core$1.Button, { href: "/messages", variant: "contained", color: "primary" }, t('back'))))));
 };
 
 var apolloClient = null;
@@ -30470,7 +42385,7 @@ var createApp = function (elementId, children) {
 function withApolloProvider(Component) {
     var _this = this;
     var Wrapper = function (props) {
-        var _a = React__default.useState(localStorage.getItem('token')), token = _a[0], setToken = _a[1];
+        var _a = __read(React__default.useState(localStorage.getItem('token')), 2), token = _a[0], setToken = _a[1];
         /** */
         React__default.useEffect(function () {
             var loadToken = function () { return __awaiter(_this, void 0, void 0, function () {
@@ -30537,6 +42452,14 @@ var NeolithicViewsGenerator = /** @class */ (function () {
         var MangopayModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(MangopayConfig)));
         createApp(elementId, React__default.createElement(pickers.MuiPickersUtilsProvider, { utils: LocalizedUtils, locale: locale },
             React__default.createElement(MangopayModuleWrapped, __assign({}, props))));
+    };
+    NeolithicViewsGenerator.messagesModule = function (elementId, props) {
+        var MessagesModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(Messages)));
+        createApp(elementId, React__default.createElement(MessagesModuleWrapped, __assign({}, props)));
+    };
+    NeolithicViewsGenerator.messageModule = function (elementId) {
+        var MessageModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(Message)));
+        createApp(elementId, React__default.createElement(MessageModuleWrapped, null));
     };
     return NeolithicViewsGenerator;
 }());

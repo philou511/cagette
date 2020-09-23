@@ -1,0 +1,12 @@
+{
+  "name": "Nom expéditeur·rice",
+  "email": "Courriel expéditeur·rice",
+  "recipients": "Destinataires",
+  "object": "Sujet",
+  "message": "Message",
+  "all": "Membres du groupe",
+  "test": "TEST : moi + conjoint·e",
+  "success": "Le message a bien été envoyé",
+  "errorEmptyMessage": "Le corps du message est vide !",
+  "send": "Envoyer"
+}

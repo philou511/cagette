@@ -1,0 +1,27 @@
+{
+  "title": "Envoyer un courriel",
+  "allSentMessages": "Tous les messages envoyés",
+  "lastSentMessages": "Derniers messages envoyés",
+  "subject": "Objet",
+  "sentOnThe": "Envoyé le",
+  "receivers": "Destinataire(s)",
+  "sender": "Expéditeur",
+  "form": {
+    "name": "Nom expéditeur·rice",
+    "email": "Courriel expéditeur·rice",
+    "recipients": "Destinataires",
+    "object": "Sujet",
+    "message": "Message",
+    "success": "Le message a bien été envoyé",
+    "errorEmptyMessage": "Le corps du message est vide !",
+    "send": "Envoyer",
+    "placeholder": "Votre message..."
+  },
+  "lists": {
+    "board": "Le bureau : les gens qui ont des droits d'administration dans ce groupe",
+    "membersWithoutOrder": "Membres sans commande",
+    "membershipsToBeRenewed": "Adhésions à renouveler",
+    "all": "Membres du groupe",
+    "test": "TEST : moi + conjoint·e"
+  }
+}

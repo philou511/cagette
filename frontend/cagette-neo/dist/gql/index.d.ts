@@ -11,6 +11,36 @@ export declare type Scalars = {
     /** Date custom scalar type */
     Date: any;
     Upload: any;
+    /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+    JSON: any;
+};
+export declare type BufferedJsonMail = {
+    __typename?: 'BufferedJsonMail';
+    id: Scalars['Int'];
+    title: Scalars['String'];
+    htmlBody?: Maybe<Scalars['String']>;
+    textBody?: Maybe<Scalars['String']>;
+    headers: Scalars['JSON'];
+    sender: MailUser;
+    recipients: Array<MailUser>;
+    cdate: Scalars['Date'];
+};
+export declare type Catalog = {
+    __typename?: 'Catalog';
+    id: Scalars['Int'];
+    name: Scalars['String'];
+    groupId: Scalars['Int'];
+    startDate?: Maybe<Scalars['Date']>;
+    endDate?: Maybe<Scalars['Date']>;
+};
+export declare type CreateBufferedJsonMailInput = {
+    title: Scalars['String'];
+    htmlBody: Scalars['String'];
+    replyToHeader: Scalars['String'];
+    sender: MailUserInput;
+    recipients: Array<MailUserInput>;
+    group?: Maybe<MailGroupInput>;
+    listName?: Maybe<Scalars['String']>;
 };
 export declare type CreateMangopayAddress = {
     AddressLine1: Scalars['String'];
@@ -24,10 +54,17 @@ export declare type CreateMangopayBirthplace = {
     City: Scalars['String'];
     Country: Scalars['String'];
 };
-export declare type CreateMangopayKycDocumentInput = {
+export declare type CreateMangopayIbanBankAccountInput = {
     groupId: Scalars['Int'];
-    Type: MangopayKycDocumentType;
-    files: Array<Scalars['Upload']>;
+    Type: MangopayBankAccountType;
+    OwnerAddress: CreateMangopayAddress;
+    OwnerName: Scalars['String'];
+    IBAN?: Maybe<Scalars['String']>;
+    BIC?: Maybe<Scalars['String']>;
+};
+export declare type CreateMangopayKycDocumentsInput = {
+    groupId: Scalars['Int'];
+    documents: Array<MangopayKycDocumentFilesTypeInput>;
 };
 export declare type CreateMangopayLegalUserInput = {
     groupId: Scalars['Int'];
@@ -56,6 +93,15 @@ export declare type CreateMembershipInput = {
     distributionId?: Maybe<Scalars['Int']>;
     membershipFee: Scalars['Float'];
 };
+export declare type CreateMessageInput = {
+    title: Scalars['String'];
+    body: Scalars['String'];
+    date: Scalars['Date'];
+    groupId: Scalars['Int'];
+    senderId: Scalars['Int'];
+    recipients: Array<Scalars['String']>;
+    listId?: Maybe<Scalars['String']>;
+};
 export declare type CreateOrUpdateMangopayUboInput = {
     id?: Maybe<Scalars['Int']>;
     declarationId: Scalars['Int'];
@@ -66,6 +112,10 @@ export declare type CreateOrUpdateMangopayUboInput = {
     Nationality: Scalars['String'];
     Birthday: Scalars['Date'];
     Birthplace: CreateMangopayBirthplace;
+};
+export declare type DeactivateMangopayBankAccountInput = {
+    groupId: Scalars['Int'];
+    bankAccountId: Scalars['String'];
 };
 export declare type GetMangopayLegalUserByLegalRepr = {
     legalReprId: Scalars['Int'];
@@ -79,6 +129,7 @@ export declare type Group = {
     users?: Maybe<Array<User>>;
     user?: Maybe<User>;
     mangopayGroup?: Maybe<MangopayGroup>;
+    hasMembership?: Maybe<Scalars['Boolean']>;
 };
 export declare type GroupPreview = {
     __typename?: 'GroupPreview';
@@ -93,6 +144,28 @@ export declare type LoginInput = {
     email: Scalars['String'];
     password: Scalars['String'];
 };
+export declare type MailGroupInput = {
+    id: Scalars['Int'];
+    name: Scalars['String'];
+};
+export declare type MailUser = {
+    __typename?: 'MailUser';
+    email: Scalars['String'];
+    name: Scalars['String'];
+    userId?: Maybe<Scalars['Int']>;
+};
+export declare type MailUserInput = {
+    email?: Maybe<Scalars['String']>;
+    name?: Maybe<Scalars['String']>;
+    userId?: Maybe<Scalars['Int']>;
+};
+export declare type MangopayAbstractBankAccount = {
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+};
 export declare type MangopayAddress = {
     __typename?: 'MangopayAddress';
     AddressLine1?: Maybe<Scalars['String']>;
@@ -102,15 +175,55 @@ export declare type MangopayAddress = {
     PostalCode?: Maybe<Scalars['String']>;
     Country?: Maybe<Scalars['String']>;
 };
+export declare type MangopayBankAccount = MangopayIbanBankAccount | MangopayUsBankAccount | MangopayCaBankAccount | MangopayGbBankAccount | MangopayOtherBankAccount;
+export declare enum MangopayBankAccountType {
+    IBAN = "IBAN",
+    GB = "GB",
+    US = "US",
+    CA = "CA",
+    OTHER = "OTHER"
+}
 export declare type MangopayBirthplace = {
     __typename?: 'MangopayBirthplace';
     City: Scalars['String'];
     Country: Scalars['String'];
 };
+export declare type MangopayCaBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayCaBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    InstitutionNumber: Scalars['String'];
+    AccountNumber: Scalars['String'];
+    BranchCode: Scalars['String'];
+    BankName: Scalars['String'];
+};
+export declare type MangopayGbBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayGbBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    SortCode: Scalars['String'];
+    AccountNumber: Scalars['String'];
+};
 export declare type MangopayGroup = {
     __typename?: 'MangopayGroup';
     legalUser?: Maybe<MangopayLegalUser>;
     walletId?: Maybe<Scalars['Int']>;
+};
+export declare type MangopayIbanBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayIbanBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    IBAN: Scalars['String'];
+    BIC?: Maybe<Scalars['String']>;
 };
 export declare type MangopayKycDocument = {
     __typename?: 'MangopayKycDocument';
@@ -120,6 +233,10 @@ export declare type MangopayKycDocument = {
     ProcessedDate?: Maybe<Scalars['Date']>;
     RefusedReasonType?: Maybe<MangopayKycDocumentRefusedReasonType>;
     RefusedReasonMessage?: Maybe<Scalars['String']>;
+};
+export declare type MangopayKycDocumentFilesTypeInput = {
+    Type: MangopayKycDocumentType;
+    files: Array<Scalars['Upload']>;
 };
 export declare enum MangopayKycDocumentRefusedReasonType {
     DOCUMENT_UNREADABLE = "DOCUMENT_UNREADABLE",
@@ -161,6 +278,7 @@ export declare type MangopayLegalUser = {
     fixedFeeAmount?: Maybe<Scalars['Float']>;
     variableFeeRate?: Maybe<Scalars['Float']>;
     legalRepr?: Maybe<User>;
+    bankAccountId?: Maybe<Scalars['Int']>;
     Name: Scalars['String'];
     LegalPersonType: MangopayLegalPersonType;
     LegalRepresentativeFirstName: Scalars['String'];
@@ -176,6 +294,18 @@ export declare type MangopayLegalUser = {
     LegalRepresentativeAddress: MangopayAddress;
     KycDocuments?: Maybe<Array<MangopayKycDocument>>;
     UboDeclarations?: Maybe<Array<MangopayUboDeclaration>>;
+    BankAccounts?: Maybe<Array<MangopayBankAccount>>;
+};
+export declare type MangopayOtherBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayOtherBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    Country: Scalars['String'];
+    BIC: Scalars['String'];
+    AccountNumber: Scalars['String'];
 };
 export declare type MangopayUbo = {
     __typename?: 'MangopayUbo';
@@ -215,6 +345,21 @@ export declare enum MangopayUboReasonType {
     DECLARATION_DO_NOT_MATCH_UBO_INFORMATION = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION",
     SPECIFIC_CASE = "SPECIFIC_CASE"
 }
+export declare type MangopayUsBankAccount = MangopayAbstractBankAccount & {
+    __typename?: 'MangopayUsBankAccount';
+    Id: Scalars['String'];
+    Type: MangopayBankAccountType;
+    OwnerAddress: MangopayAddress;
+    OwnerName: Scalars['String'];
+    Active: Scalars['Boolean'];
+    AccountNumber: Scalars['String'];
+    ABA: Scalars['String'];
+    DepositAccountType?: Maybe<MangopayUsBankAccountDepositAccountType>;
+};
+export declare enum MangopayUsBankAccountDepositAccountType {
+    CHECKING = "CHECKING",
+    SAVINGS = "SAVINGS"
+}
 export declare type Membership = {
     __typename?: 'Membership';
     user?: Maybe<User>;
@@ -224,19 +369,36 @@ export declare type Membership = {
     distributionId?: Maybe<Scalars['Int']>;
     year: Scalars['Int'];
 };
+export declare type Message = {
+    __typename?: 'Message';
+    id: Scalars['Int'];
+    title: Scalars['String'];
+    body: Scalars['String'];
+    date: Scalars['Date'];
+    amapId: Scalars['Int'];
+    senderId: Scalars['Int'];
+    recipients: Array<Scalars['String']>;
+    recipientListId?: Maybe<Scalars['String']>;
+    sender: User;
+};
 export declare type Mutation = {
     __typename?: 'Mutation';
     updateUser: User;
     createMangopayLegalUser: MangopayLegalUser;
     updateMangopayLegalUser: MangopayLegalUser;
-    createMangopayKycDocument: MangopayKycDocument;
+    createMangopayKycDocuments: Array<MangopayKycDocument>;
     createMangopayUboDeclaration: MangopayUboDeclaration;
     submitMangopayUboDeclaration: MangopayUboDeclaration;
     createOrUpdateMangopayUbo: MangopayUbo;
+    createMangopayIbanBankAccount: MangopayBankAccount;
+    deactivateMangopayBankAccount: Scalars['Int'];
+    selectMangopayBankAccountId: MangopayLegalUser;
     linkMangopayLegalUserToGroup: MangopayLegalUser;
     login: UserAndToken;
     createMembership: Membership;
     deleteMembership: Array<Membership>;
+    createBufferedJsonMail: BufferedJsonMail;
+    createMessage: Message;
 };
 export declare type MutationUpdateUserArgs = {
     input: UpdateUserInput;
@@ -247,8 +409,8 @@ export declare type MutationCreateMangopayLegalUserArgs = {
 export declare type MutationUpdateMangopayLegalUserArgs = {
     input: UpdateMangopayLegalUserInput;
 };
-export declare type MutationCreateMangopayKycDocumentArgs = {
-    input: CreateMangopayKycDocumentInput;
+export declare type MutationCreateMangopayKycDocumentsArgs = {
+    input: CreateMangopayKycDocumentsInput;
 };
 export declare type MutationCreateMangopayUboDeclarationArgs = {
     input: CreateMangopayUboDeclarationInput;
@@ -258,6 +420,15 @@ export declare type MutationSubmitMangopayUboDeclarationArgs = {
 };
 export declare type MutationCreateOrUpdateMangopayUboArgs = {
     input: CreateOrUpdateMangopayUboInput;
+};
+export declare type MutationCreateMangopayIbanBankAccountArgs = {
+    input: CreateMangopayIbanBankAccountInput;
+};
+export declare type MutationDeactivateMangopayBankAccountArgs = {
+    input: DeactivateMangopayBankAccountInput;
+};
+export declare type MutationSelectMangopayBankAccountIdArgs = {
+    input: SelectMangopayLegalUserBankAccount;
 };
 export declare type MutationLinkMangopayLegalUserToGroupArgs = {
     input: LinkMangopayLegalUserToGroupInput;
@@ -273,21 +444,37 @@ export declare type MutationDeleteMembershipArgs = {
     userId: Scalars['Int'];
     groupId: Scalars['Int'];
 };
+export declare type MutationCreateBufferedJsonMailArgs = {
+    input: CreateBufferedJsonMailInput;
+};
+export declare type MutationCreateMessageArgs = {
+    input: CreateMessageInput;
+};
 export declare type Query = {
     __typename?: 'Query';
     me: User;
     user: User;
+    isGroupAdmin: Scalars['Boolean'];
     mangopayLegalUser?: Maybe<MangopayLegalUser>;
     mangopayLegalUserByLegalRepr?: Maybe<MangopayLegalUser>;
     mangopayGroup: MangopayGroup;
     group: Group;
+    getUserLists: Array<UserList>;
+    getUserListInGroupByListId: Array<User>;
     groupPreview: GroupPreview;
     groupPreviews: Array<GroupPreview>;
     groupPreviews2: Array<GroupPreview>;
     getUserMemberships: Array<Membership>;
+    catalog: Catalog;
+    getMessagesForGroup: Array<Message>;
+    getUserMessagesForGroup: Array<Message>;
+    message: Message;
 };
 export declare type QueryUserArgs = {
     id: Scalars['Int'];
+};
+export declare type QueryIsGroupAdminArgs = {
+    groupId: Scalars['Int'];
 };
 export declare type QueryMangopayLegalUserArgs = {
     groupId: Scalars['Int'];
@@ -301,12 +488,35 @@ export declare type QueryMangopayGroupArgs = {
 export declare type QueryGroupArgs = {
     id: Scalars['Int'];
 };
+export declare type QueryGetUserListsArgs = {
+    groupId: Scalars['Int'];
+};
+export declare type QueryGetUserListInGroupByListIdArgs = {
+    groupId: Scalars['Int'];
+    listId: Scalars['String'];
+};
 export declare type QueryGroupPreviewArgs = {
     id: Scalars['Int'];
 };
 export declare type QueryGetUserMembershipsArgs = {
     userId: Scalars['Int'];
     groupId: Scalars['Int'];
+};
+export declare type QueryCatalogArgs = {
+    id: Scalars['Int'];
+};
+export declare type QueryGetMessagesForGroupArgs = {
+    groupId: Scalars['Int'];
+};
+export declare type QueryGetUserMessagesForGroupArgs = {
+    groupId: Scalars['Int'];
+};
+export declare type QueryMessageArgs = {
+    id: Scalars['Int'];
+};
+export declare type SelectMangopayLegalUserBankAccount = {
+    groupId: Scalars['Int'];
+    bankAccountId?: Maybe<Scalars['Int']>;
 };
 export declare type SubmitMangopayUboDeclarationInput = {
     groupId: Scalars['Int'];
@@ -345,15 +555,23 @@ export declare type User = {
     nationality?: Maybe<Scalars['String']>;
     countryOfResidence?: Maybe<Scalars['String']>;
     birthDate?: Maybe<Scalars['Date']>;
+    email2?: Maybe<Scalars['String']>;
+    firstName2?: Maybe<Scalars['String']>;
+    lastName2?: Maybe<Scalars['String']>;
 };
 export declare type UserAndToken = {
     __typename?: 'UserAndToken';
     user: User;
     token: Scalars['String'];
 };
+export declare type UserList = {
+    __typename?: 'UserList';
+    id: Scalars['String'];
+    count?: Maybe<Scalars['Float']>;
+};
 export declare type UserFragment = ({
     __typename?: 'User';
-} & Pick<User, 'id' | 'firstName' | 'lastName' | 'address1' | 'address2' | 'zipCode' | 'city' | 'nationality' | 'countryOfResidence' | 'birthDate'>);
+} & Pick<User, 'id' | 'firstName' | 'lastName' | 'address1' | 'address2' | 'zipCode' | 'city' | 'nationality' | 'countryOfResidence' | 'birthDate' | 'email' | 'email2' | 'firstName2' | 'lastName2'>);
 export declare type LoginMutationVariables = {
     input: LoginInput;
 };
@@ -404,6 +622,12 @@ export declare type GetUserMembershipsQuery = ({
         } & Pick<Group, 'id' | 'name'>)>;
     })>;
 });
+export declare type IsGroupAdminQueryVariables = {
+    groupId: Scalars['Int'];
+};
+export declare type IsGroupAdminQuery = ({
+    __typename?: 'Query';
+} & Pick<Query, 'isGroupAdmin'>);
 export declare type MangopayAddressFragment = ({
     __typename?: 'MangopayAddress';
 } & Pick<MangopayAddress, 'AddressLine1' | 'AddressLine2' | 'City' | 'PostalCode' | 'Country'>);
@@ -415,7 +639,7 @@ export declare type MangopayKycDocumentFragment = ({
 } & Pick<MangopayKycDocument, 'Id' | 'Type' | 'ProcessedDate' | 'Status' | 'RefusedReasonType' | 'RefusedReasonMessage'>);
 export declare type MangopayUboFragment = ({
     __typename?: 'MangopayUbo';
-} & Pick<MangopayUbo, 'Id' | 'CreationDate' | 'FirstName' | 'LastName' | 'Birthday'> & {
+} & Pick<MangopayUbo, 'Id' | 'CreationDate' | 'FirstName' | 'LastName' | 'Nationality' | 'Birthday'> & {
     Address: ({
         __typename?: 'MangopayAddress';
     } & MangopayAddressFragment);
@@ -430,9 +654,16 @@ export declare type MangopayUboDeclarationFragment = ({
         __typename?: 'MangopayUbo';
     } & MangopayUboFragment)>;
 });
+export declare type MangopayIbanBankAccountFragment = ({
+    __typename?: 'MangopayIbanBankAccount';
+} & Pick<MangopayIbanBankAccount, 'Id' | 'Type' | 'OwnerName' | 'Active' | 'IBAN' | 'BIC'> & {
+    OwnerAddress: ({
+        __typename?: 'MangopayAddress';
+    } & MangopayAddressFragment);
+});
 export declare type MangopayLegalUserFragment = ({
     __typename?: 'MangopayLegalUser';
-} & Pick<MangopayLegalUser, 'KYCLevel' | 'Name' | 'CompanyNumber' | 'Email' | 'LegalPersonType' | 'LegalRepresentativeFirstName' | 'LegalRepresentativeLastName' | 'LegalRepresentativeEmail' | 'LegalRepresentativeBirthday' | 'LegalRepresentativeNationality' | 'LegalRepresentativeCountryOfResidence'> & {
+} & Pick<MangopayLegalUser, 'bankAccountId' | 'KYCLevel' | 'Name' | 'CompanyNumber' | 'Email' | 'LegalPersonType' | 'LegalRepresentativeFirstName' | 'LegalRepresentativeLastName' | 'LegalRepresentativeEmail' | 'LegalRepresentativeBirthday' | 'LegalRepresentativeNationality' | 'LegalRepresentativeCountryOfResidence'> & {
     HeadquartersAddress?: Maybe<({
         __typename?: 'MangopayAddress';
     } & MangopayAddressFragment)>;
@@ -445,6 +676,17 @@ export declare type MangopayLegalUserFragment = ({
     UboDeclarations?: Maybe<Array<({
         __typename?: 'MangopayUboDeclaration';
     } & MangopayUboDeclarationFragment)>>;
+    BankAccounts?: Maybe<Array<({
+        __typename?: 'MangopayIbanBankAccount';
+    } & MangopayIbanBankAccountFragment) | {
+        __typename?: 'MangopayUsBankAccount';
+    } | {
+        __typename?: 'MangopayCaBankAccount';
+    } | {
+        __typename?: 'MangopayGbBankAccount';
+    } | {
+        __typename?: 'MangopayOtherBankAccount';
+    }>>;
     legalRepr?: Maybe<({
         __typename?: 'User';
     } & Pick<User, 'id' | 'firstName' | 'lastName' | 'email' | 'address1' | 'address2' | 'zipCode' | 'city' | 'nationality' | 'countryOfResidence' | 'birthDate'>)>;
@@ -528,15 +770,15 @@ export declare type LinkMangopayLegalUserToGroupMutation = ({
         __typename?: 'MangopayLegalUser';
     } & MangopayLegalUserFragment);
 });
-export declare type CreateMangopayKycDocumentMutationVariables = {
-    input: CreateMangopayKycDocumentInput;
+export declare type CreateMangopayKycDocumentsMutationVariables = {
+    input: CreateMangopayKycDocumentsInput;
 };
-export declare type CreateMangopayKycDocumentMutation = ({
+export declare type CreateMangopayKycDocumentsMutation = ({
     __typename?: 'Mutation';
 } & {
-    createMangopayKycDocument: ({
+    createMangopayKycDocuments: Array<({
         __typename?: 'MangopayKycDocument';
-    } & MangopayKycDocumentFragment);
+    } & MangopayKycDocumentFragment)>;
 });
 export declare type CreateMangopayUboDeclarationMutationVariables = {
     input: CreateMangopayUboDeclarationInput;
@@ -568,12 +810,142 @@ export declare type CreateOrUpdateMangopayUboMutation = ({
         __typename?: 'MangopayUbo';
     } & MangopayUboFragment);
 });
+export declare type CreateMangopayIbanBankAccountMutationVariables = {
+    input: CreateMangopayIbanBankAccountInput;
+};
+export declare type CreateMangopayIbanBankAccountMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createMangopayIbanBankAccount: ({
+        __typename?: 'MangopayIbanBankAccount';
+    } & MangopayIbanBankAccountFragment) | {
+        __typename?: 'MangopayUsBankAccount';
+    } | {
+        __typename?: 'MangopayCaBankAccount';
+    } | {
+        __typename?: 'MangopayGbBankAccount';
+    } | {
+        __typename?: 'MangopayOtherBankAccount';
+    };
+});
+export declare type DeactivateMangopayBankAccountMutationVariables = {
+    input: DeactivateMangopayBankAccountInput;
+};
+export declare type DeactivateMangopayBankAccountMutation = ({
+    __typename?: 'Mutation';
+} & Pick<Mutation, 'deactivateMangopayBankAccount'>);
+export declare type SelectMangopayBankAccountIdMutationVariables = {
+    input: SelectMangopayLegalUserBankAccount;
+};
+export declare type SelectMangopayBankAccountIdMutation = ({
+    __typename?: 'Mutation';
+} & {
+    selectMangopayBankAccountId: ({
+        __typename?: 'MangopayLegalUser';
+    } & Pick<MangopayLegalUser, 'mangopayUserId' | 'bankAccountId'>);
+});
+export declare type MessagesGroupQueryVariables = {
+    id: Scalars['Int'];
+};
+export declare type MessagesGroupQuery = ({
+    __typename?: 'Query';
+} & {
+    group: ({
+        __typename?: 'Group';
+    } & Pick<Group, 'id' | 'name' | 'hasMembership'>);
+});
+export declare type CatalogQueryVariables = {
+    id: Scalars['Int'];
+};
+export declare type CatalogQuery = ({
+    __typename?: 'Query';
+} & {
+    catalog: ({
+        __typename?: 'Catalog';
+    } & Pick<Catalog, 'id' | 'name'>);
+});
+export declare type UserListsQueryVariables = {
+    groupId: Scalars['Int'];
+};
+export declare type UserListsQuery = ({
+    __typename?: 'Query';
+} & {
+    getUserLists: Array<({
+        __typename?: 'UserList';
+    } & Pick<UserList, 'id' | 'count'>)>;
+});
+export declare type GetUserListInGroupByListIdQueryVariables = {
+    listId: Scalars['String'];
+    groupId: Scalars['Int'];
+};
+export declare type GetUserListInGroupByListIdQuery = ({
+    __typename?: 'Query';
+} & {
+    getUserListInGroupByListId: Array<({
+        __typename?: 'User';
+    } & Pick<User, 'id' | 'firstName' | 'lastName' | 'firstName2' | 'lastName2' | 'email' | 'email2'>)>;
+});
+export declare type CreateBufferedJsonMailMutationVariables = {
+    input: CreateBufferedJsonMailInput;
+};
+export declare type CreateBufferedJsonMailMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createBufferedJsonMail: ({
+        __typename?: 'BufferedJsonMail';
+    } & Pick<BufferedJsonMail, 'id'>);
+});
+export declare type CreateMessageMutationVariables = {
+    input: CreateMessageInput;
+};
+export declare type CreateMessageMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createMessage: ({
+        __typename?: 'Message';
+    } & Pick<Message, 'id'>);
+});
+export declare type GetMessagesForGroupQueryVariables = {
+    groupId: Scalars['Int'];
+};
+export declare type GetMessagesForGroupQuery = ({
+    __typename?: 'Query';
+} & {
+    getMessagesForGroup: Array<({
+        __typename?: 'Message';
+    } & Pick<Message, 'id' | 'title' | 'date'>)>;
+});
+export declare type GetUserMessagesForGroupQueryVariables = {
+    groupId: Scalars['Int'];
+};
+export declare type GetUserMessagesForGroupQuery = ({
+    __typename?: 'Query';
+} & {
+    getUserMessagesForGroup: Array<({
+        __typename?: 'Message';
+    } & Pick<Message, 'id' | 'title' | 'date'>)>;
+});
+export declare type GetMessageByIdQueryVariables = {
+    id: Scalars['Int'];
+};
+export declare type GetMessageByIdQuery = ({
+    __typename?: 'Query';
+} & {
+    message: ({
+        __typename?: 'Message';
+    } & Pick<Message, 'id' | 'title' | 'date' | 'recipientListId' | 'body' | 'recipients'> & {
+        sender: ({
+            __typename?: 'User';
+        } & Pick<User, 'id' | 'firstName' | 'lastName'>);
+    });
+});
 export declare const UserFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayAddressFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayKycDocumentFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayBirthplaceFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayUboFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayUboDeclarationFragmentDoc: ApolloReactHooks.DocumentNode;
+export declare const MangopayIbanBankAccountFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayLegalUserFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const LoginDocument: ApolloReactHooks.DocumentNode;
 export declare type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>;
@@ -664,6 +1036,28 @@ export declare function useGetUserMembershipsLazyQuery(baseOptions?: ApolloReact
 export declare type GetUserMembershipsQueryHookResult = ReturnType<typeof useGetUserMembershipsQuery>;
 export declare type GetUserMembershipsLazyQueryHookResult = ReturnType<typeof useGetUserMembershipsLazyQuery>;
 export declare type GetUserMembershipsQueryResult = ApolloReactCommon.QueryResult<GetUserMembershipsQuery, GetUserMembershipsQueryVariables>;
+export declare const IsGroupAdminDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useIsGroupAdminQuery__
+ *
+ * To run a query within a React component, call `useIsGroupAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsGroupAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsGroupAdminQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useIsGroupAdminQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<IsGroupAdminQuery, IsGroupAdminQueryVariables>): ApolloReactHooks.QueryResult<IsGroupAdminQuery, IsGroupAdminQueryVariables>;
+export declare function useIsGroupAdminLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<IsGroupAdminQuery, IsGroupAdminQueryVariables>): ApolloReactHooks.QueryTuple<IsGroupAdminQuery, IsGroupAdminQueryVariables>;
+export declare type IsGroupAdminQueryHookResult = ReturnType<typeof useIsGroupAdminQuery>;
+export declare type IsGroupAdminLazyQueryHookResult = ReturnType<typeof useIsGroupAdminLazyQuery>;
+export declare type IsGroupAdminQueryResult = ApolloReactCommon.QueryResult<IsGroupAdminQuery, IsGroupAdminQueryVariables>;
 export declare const MangopayGroupDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useMangopayGroupQuery__
@@ -799,29 +1193,29 @@ export declare function useLinkMangopayLegalUserToGroupMutation(baseOptions?: Ap
 export declare type LinkMangopayLegalUserToGroupMutationHookResult = ReturnType<typeof useLinkMangopayLegalUserToGroupMutation>;
 export declare type LinkMangopayLegalUserToGroupMutationResult = ApolloReactCommon.MutationResult<LinkMangopayLegalUserToGroupMutation>;
 export declare type LinkMangopayLegalUserToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<LinkMangopayLegalUserToGroupMutation, LinkMangopayLegalUserToGroupMutationVariables>;
-export declare const CreateMangopayKycDocumentDocument: ApolloReactHooks.DocumentNode;
-export declare type CreateMangopayKycDocumentMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
+export declare const CreateMangopayKycDocumentsDocument: ApolloReactHooks.DocumentNode;
+export declare type CreateMangopayKycDocumentsMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>;
 /**
- * __useCreateMangopayKycDocumentMutation__
+ * __useCreateMangopayKycDocumentsMutation__
  *
- * To run a mutation, you first call `useCreateMangopayKycDocumentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayKycDocumentMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateMangopayKycDocumentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayKycDocumentsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createMangopayKycDocumentMutation, { data, loading, error }] = useCreateMangopayKycDocumentMutation({
+ * const [createMangopayKycDocumentsMutation, { data, loading, error }] = useCreateMangopayKycDocumentsMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export declare function useCreateMangopayKycDocumentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>): ApolloReactHooks.MutationTuple<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
-export declare type CreateMangopayKycDocumentMutationHookResult = ReturnType<typeof useCreateMangopayKycDocumentMutation>;
-export declare type CreateMangopayKycDocumentMutationResult = ApolloReactCommon.MutationResult<CreateMangopayKycDocumentMutation>;
-export declare type CreateMangopayKycDocumentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayKycDocumentMutation, CreateMangopayKycDocumentMutationVariables>;
+export declare function useCreateMangopayKycDocumentsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>): ApolloReactHooks.MutationTuple<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>;
+export declare type CreateMangopayKycDocumentsMutationHookResult = ReturnType<typeof useCreateMangopayKycDocumentsMutation>;
+export declare type CreateMangopayKycDocumentsMutationResult = ApolloReactCommon.MutationResult<CreateMangopayKycDocumentsMutation>;
+export declare type CreateMangopayKycDocumentsMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayKycDocumentsMutation, CreateMangopayKycDocumentsMutationVariables>;
 export declare const CreateMangopayUboDeclarationDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateMangopayUboDeclarationMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayUboDeclarationMutation, CreateMangopayUboDeclarationMutationVariables>;
 /**
@@ -891,3 +1285,273 @@ export declare function useCreateOrUpdateMangopayUboMutation(baseOptions?: Apoll
 export declare type CreateOrUpdateMangopayUboMutationHookResult = ReturnType<typeof useCreateOrUpdateMangopayUboMutation>;
 export declare type CreateOrUpdateMangopayUboMutationResult = ApolloReactCommon.MutationResult<CreateOrUpdateMangopayUboMutation>;
 export declare type CreateOrUpdateMangopayUboMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateOrUpdateMangopayUboMutation, CreateOrUpdateMangopayUboMutationVariables>;
+export declare const CreateMangopayIbanBankAccountDocument: ApolloReactHooks.DocumentNode;
+export declare type CreateMangopayIbanBankAccountMutationFn = ApolloReactCommon.MutationFunction<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>;
+/**
+ * __useCreateMangopayIbanBankAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayIbanBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayIbanBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayIbanBankAccountMutation, { data, loading, error }] = useCreateMangopayIbanBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useCreateMangopayIbanBankAccountMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>): ApolloReactHooks.MutationTuple<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>;
+export declare type CreateMangopayIbanBankAccountMutationHookResult = ReturnType<typeof useCreateMangopayIbanBankAccountMutation>;
+export declare type CreateMangopayIbanBankAccountMutationResult = ApolloReactCommon.MutationResult<CreateMangopayIbanBankAccountMutation>;
+export declare type CreateMangopayIbanBankAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMangopayIbanBankAccountMutation, CreateMangopayIbanBankAccountMutationVariables>;
+export declare const DeactivateMangopayBankAccountDocument: ApolloReactHooks.DocumentNode;
+export declare type DeactivateMangopayBankAccountMutationFn = ApolloReactCommon.MutationFunction<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>;
+/**
+ * __useDeactivateMangopayBankAccountMutation__
+ *
+ * To run a mutation, you first call `useDeactivateMangopayBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeactivateMangopayBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deactivateMangopayBankAccountMutation, { data, loading, error }] = useDeactivateMangopayBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useDeactivateMangopayBankAccountMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>): ApolloReactHooks.MutationTuple<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>;
+export declare type DeactivateMangopayBankAccountMutationHookResult = ReturnType<typeof useDeactivateMangopayBankAccountMutation>;
+export declare type DeactivateMangopayBankAccountMutationResult = ApolloReactCommon.MutationResult<DeactivateMangopayBankAccountMutation>;
+export declare type DeactivateMangopayBankAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<DeactivateMangopayBankAccountMutation, DeactivateMangopayBankAccountMutationVariables>;
+export declare const SelectMangopayBankAccountIdDocument: ApolloReactHooks.DocumentNode;
+export declare type SelectMangopayBankAccountIdMutationFn = ApolloReactCommon.MutationFunction<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;
+/**
+ * __useSelectMangopayBankAccountIdMutation__
+ *
+ * To run a mutation, you first call `useSelectMangopayBankAccountIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelectMangopayBankAccountIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selectMangopayBankAccountIdMutation, { data, loading, error }] = useSelectMangopayBankAccountIdMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useSelectMangopayBankAccountIdMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>): ApolloReactHooks.MutationTuple<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;
+export declare type SelectMangopayBankAccountIdMutationHookResult = ReturnType<typeof useSelectMangopayBankAccountIdMutation>;
+export declare type SelectMangopayBankAccountIdMutationResult = ApolloReactCommon.MutationResult<SelectMangopayBankAccountIdMutation>;
+export declare type SelectMangopayBankAccountIdMutationOptions = ApolloReactCommon.BaseMutationOptions<SelectMangopayBankAccountIdMutation, SelectMangopayBankAccountIdMutationVariables>;
+export declare const MessagesGroupDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useMessagesGroupQuery__
+ *
+ * To run a query within a React component, call `useMessagesGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export declare function useMessagesGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MessagesGroupQuery, MessagesGroupQueryVariables>): ApolloReactHooks.QueryResult<MessagesGroupQuery, MessagesGroupQueryVariables>;
+export declare function useMessagesGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MessagesGroupQuery, MessagesGroupQueryVariables>): ApolloReactHooks.QueryTuple<MessagesGroupQuery, MessagesGroupQueryVariables>;
+export declare type MessagesGroupQueryHookResult = ReturnType<typeof useMessagesGroupQuery>;
+export declare type MessagesGroupLazyQueryHookResult = ReturnType<typeof useMessagesGroupLazyQuery>;
+export declare type MessagesGroupQueryResult = ApolloReactCommon.QueryResult<MessagesGroupQuery, MessagesGroupQueryVariables>;
+export declare const CatalogDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useCatalogQuery__
+ *
+ * To run a query within a React component, call `useCatalogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export declare function useCatalogQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CatalogQuery, CatalogQueryVariables>): ApolloReactHooks.QueryResult<CatalogQuery, CatalogQueryVariables>;
+export declare function useCatalogLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CatalogQuery, CatalogQueryVariables>): ApolloReactHooks.QueryTuple<CatalogQuery, CatalogQueryVariables>;
+export declare type CatalogQueryHookResult = ReturnType<typeof useCatalogQuery>;
+export declare type CatalogLazyQueryHookResult = ReturnType<typeof useCatalogLazyQuery>;
+export declare type CatalogQueryResult = ApolloReactCommon.QueryResult<CatalogQuery, CatalogQueryVariables>;
+export declare const UserListsDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useUserListsQuery__
+ *
+ * To run a query within a React component, call `useUserListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListsQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useUserListsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UserListsQuery, UserListsQueryVariables>): ApolloReactHooks.QueryResult<UserListsQuery, UserListsQueryVariables>;
+export declare function useUserListsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserListsQuery, UserListsQueryVariables>): ApolloReactHooks.QueryTuple<UserListsQuery, UserListsQueryVariables>;
+export declare type UserListsQueryHookResult = ReturnType<typeof useUserListsQuery>;
+export declare type UserListsLazyQueryHookResult = ReturnType<typeof useUserListsLazyQuery>;
+export declare type UserListsQueryResult = ApolloReactCommon.QueryResult<UserListsQuery, UserListsQueryVariables>;
+export declare const GetUserListInGroupByListIdDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useGetUserListInGroupByListIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserListInGroupByListIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserListInGroupByListIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserListInGroupByListIdQuery({
+ *   variables: {
+ *      listId: // value for 'listId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useGetUserListInGroupByListIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>): ApolloReactHooks.QueryResult<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>;
+export declare function useGetUserListInGroupByListIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>): ApolloReactHooks.QueryTuple<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>;
+export declare type GetUserListInGroupByListIdQueryHookResult = ReturnType<typeof useGetUserListInGroupByListIdQuery>;
+export declare type GetUserListInGroupByListIdLazyQueryHookResult = ReturnType<typeof useGetUserListInGroupByListIdLazyQuery>;
+export declare type GetUserListInGroupByListIdQueryResult = ApolloReactCommon.QueryResult<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>;
+export declare const CreateBufferedJsonMailDocument: ApolloReactHooks.DocumentNode;
+export declare type CreateBufferedJsonMailMutationFn = ApolloReactCommon.MutationFunction<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>;
+/**
+ * __useCreateBufferedJsonMailMutation__
+ *
+ * To run a mutation, you first call `useCreateBufferedJsonMailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBufferedJsonMailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBufferedJsonMailMutation, { data, loading, error }] = useCreateBufferedJsonMailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useCreateBufferedJsonMailMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>): ApolloReactHooks.MutationTuple<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>;
+export declare type CreateBufferedJsonMailMutationHookResult = ReturnType<typeof useCreateBufferedJsonMailMutation>;
+export declare type CreateBufferedJsonMailMutationResult = ApolloReactCommon.MutationResult<CreateBufferedJsonMailMutation>;
+export declare type CreateBufferedJsonMailMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>;
+export declare const CreateMessageDocument: ApolloReactHooks.DocumentNode;
+export declare type CreateMessageMutationFn = ApolloReactCommon.MutationFunction<CreateMessageMutation, CreateMessageMutationVariables>;
+/**
+ * __useCreateMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export declare function useCreateMessageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMessageMutation, CreateMessageMutationVariables>): ApolloReactHooks.MutationTuple<CreateMessageMutation, CreateMessageMutationVariables>;
+export declare type CreateMessageMutationHookResult = ReturnType<typeof useCreateMessageMutation>;
+export declare type CreateMessageMutationResult = ApolloReactCommon.MutationResult<CreateMessageMutation>;
+export declare type CreateMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMessageMutation, CreateMessageMutationVariables>;
+export declare const GetMessagesForGroupDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useGetMessagesForGroupQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesForGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesForGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesForGroupQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useGetMessagesForGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetMessagesForGroupQuery, GetMessagesForGroupQueryVariables>): ApolloReactHooks.QueryResult<GetMessagesForGroupQuery, GetMessagesForGroupQueryVariables>;
+export declare function useGetMessagesForGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetMessagesForGroupQuery, GetMessagesForGroupQueryVariables>): ApolloReactHooks.QueryTuple<GetMessagesForGroupQuery, GetMessagesForGroupQueryVariables>;
+export declare type GetMessagesForGroupQueryHookResult = ReturnType<typeof useGetMessagesForGroupQuery>;
+export declare type GetMessagesForGroupLazyQueryHookResult = ReturnType<typeof useGetMessagesForGroupLazyQuery>;
+export declare type GetMessagesForGroupQueryResult = ApolloReactCommon.QueryResult<GetMessagesForGroupQuery, GetMessagesForGroupQueryVariables>;
+export declare const GetUserMessagesForGroupDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useGetUserMessagesForGroupQuery__
+ *
+ * To run a query within a React component, call `useGetUserMessagesForGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserMessagesForGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserMessagesForGroupQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useGetUserMessagesForGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserMessagesForGroupQuery, GetUserMessagesForGroupQueryVariables>): ApolloReactHooks.QueryResult<GetUserMessagesForGroupQuery, GetUserMessagesForGroupQueryVariables>;
+export declare function useGetUserMessagesForGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserMessagesForGroupQuery, GetUserMessagesForGroupQueryVariables>): ApolloReactHooks.QueryTuple<GetUserMessagesForGroupQuery, GetUserMessagesForGroupQueryVariables>;
+export declare type GetUserMessagesForGroupQueryHookResult = ReturnType<typeof useGetUserMessagesForGroupQuery>;
+export declare type GetUserMessagesForGroupLazyQueryHookResult = ReturnType<typeof useGetUserMessagesForGroupLazyQuery>;
+export declare type GetUserMessagesForGroupQueryResult = ApolloReactCommon.QueryResult<GetUserMessagesForGroupQuery, GetUserMessagesForGroupQueryVariables>;
+export declare const GetMessageByIdDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useGetMessageByIdQuery__
+ *
+ * To run a query within a React component, call `useGetMessageByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessageByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessageByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export declare function useGetMessageByIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetMessageByIdQuery, GetMessageByIdQueryVariables>): ApolloReactHooks.QueryResult<GetMessageByIdQuery, GetMessageByIdQueryVariables>;
+export declare function useGetMessageByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetMessageByIdQuery, GetMessageByIdQueryVariables>): ApolloReactHooks.QueryTuple<GetMessageByIdQuery, GetMessageByIdQueryVariables>;
+export declare type GetMessageByIdQueryHookResult = ReturnType<typeof useGetMessageByIdQuery>;
+export declare type GetMessageByIdLazyQueryHookResult = ReturnType<typeof useGetMessageByIdLazyQuery>;
+export declare type GetMessageByIdQueryResult = ApolloReactCommon.QueryResult<GetMessageByIdQuery, GetMessageByIdQueryVariables>;
