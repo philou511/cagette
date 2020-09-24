@@ -14,9 +14,10 @@ class Amap extends Controller
 	
 	@tpl("amap/default.mtt")
 	function doDefault() {
-		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false);
-		for ( c in Lambda.array(contracts).copy()) {
-			if (c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
+		var contracts = db.Catalog.getActiveContracts(app.user.getGroup(), true, false).array();
+		for ( c in contracts.copy()) {
+			if( c.endDate.getTime() < Date.now().getTime() ) contracts.remove(c);
+			if( c.vendor.isDisabled()) contracts.remove(c);
 		}
 		view.contracts = contracts;
 	}

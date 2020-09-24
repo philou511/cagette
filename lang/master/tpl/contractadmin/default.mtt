@@ -94,6 +94,12 @@
 					<td>
 						<b>::v.name::</b><br/>
 						::v.zipCode:: ::v.city::
+
+						::if(v.disabled!=null)::
+						<div class="disabled"><i class="icon icon-alert"></i> Producteur désactivé : ::v.getDisabledReason()::</div>
+						::end::
+
+
 					</td>
 					<td>
 						<div class="btn-group" role="group">

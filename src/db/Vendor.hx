@@ -3,6 +3,11 @@ import sys.db.Object;
 import sys.db.Types;
 import Common;
 
+enum DisabledReason{
+	IncompleteLegalInfos; //incomplete legal infos
+	NotCompliantWithPolicy; //not compliant with policy (charte des producteurs)
+}
+
 /**
 	infos from https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/
 **/
@@ -16,6 +21,9 @@ typedef SiretInfos = {
 	type_voie:String,
 	latitude:Float,
 	longitude:Float,
+	unite_legale:{
+		categorie_juridique:Int,//code juridique de niveau III
+	}
 }
 
 /**
@@ -43,6 +51,10 @@ class Vendor extends Object
 	@hideInForms public var cdate : SNull<SDate>; // date de création
 
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
+	@hideInForms public var vatNumber : SNull<SString<128>>; //VAT number
+	@hideInForms public var legalStatus : SNull<SInt>; //statut juridique
+	@hideInForms public var companyCapital : SNull<SInt>; //capital social
+
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
 	public var vendorPolicy:SBool; //charte producteurs
@@ -55,18 +67,16 @@ class Vendor extends Object
 	@hideInForms public var offCagette 	: SNull<SText>;
 	
 	@hideInForms @:relation(imageId) 	public var image : SNull<sugoi.db.File>;
-	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor
+	@hideInForms @:relation(userId) 	public var user : SNull<db.User>; //owner of this vendor (when not cpro)
 	
 	@hideInForms public var status : SNull<SString<32>>; //temporaire , pour le dédoublonnage
+	@hideInForms public var disabled : SNull<SEnum<DisabledReason>>; // vendor is disabled
 	
 	@hideInForms public var isTest : SBool; //cpro test account
 
 	@hideInForms public var lat:SNull<SFloat>;
 	@hideInForms public var lng:SNull<SFloat>;
 
-	public static var PROFESSIONS:Array<{id:Int,name:String}>;
-	
-	
 	public function new() 
 	{
 		super();
@@ -148,7 +158,7 @@ class Vendor extends Object
 		};
 
 		if(this.profession!=null){
-			out.profession = Lambda.find(getVendorProfessions(),function(x) return x.id==this.profession).name;
+			out.profession = Lambda.find(service.VendorService.getVendorProfessions(),function(x) return x.id==this.profession).name;
 		}
 
 		if(withImages){
@@ -168,51 +178,6 @@ class Vendor extends Object
 		var contracts = getActiveContracts();
 		var groups = Lambda.map(contracts,function(c) return c.group);
 		return tools.ObjectListTool.deduplicate(groups);
-	}
-
-	public static function get(email:String,status:String){
-		return manager.select($email==email && $status==status,false);
-	}
-
-	public static function getForm(vendor:db.Vendor,?full=false){
-		var t = sugoi.i18n.Locale.texts;
-		var form = form.CagetteForm.fromSpod(vendor);
-		
-		//country
-		form.removeElementByName("country");
-		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
-		
-		//profession
-		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(getVendorProfessions()),vendor.profession,true),4);
-
-		//email is required
-		form.getElement("email").required = true;
-
-		if(full){
-
-			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
-			
-
-		}
-		
-		return form;
-	}
-
-	/**
-		Loads vendors professions from json
-	**/
-	public static function getVendorProfessions():Array<{id:Int,name:String}>{
-		if( PROFESSIONS!=null ) return PROFESSIONS;
-		var filePath = sugoi.Web.getCwd()+"../data/vendorProfessions.json";
-		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
-		PROFESSIONS = json.professions;
-		return json.professions;
-	}
-
-	public static function getActivityCodes():Array<{id:String,name:String}>{
-		var filePath = sugoi.Web.getCwd()+"../data/codesNAF.json";
-		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
-		return json;
 	}
 
 	#if plugins
@@ -247,8 +212,6 @@ class Vendor extends Object
 		return permalink==null ? "/p/pro/public/vendor/"+id : "/"+permalink.link;		
 	}
 
-
-
 	public function getAddress(){
 		var str = new StringBuf();
 		if(address1!=null) str.add(address1);
@@ -281,6 +244,49 @@ class Vendor extends Object
 		addr.address1 = a.join(" ");
 
 		return addr;
+	}
+
+	public function isDisabled(){
+		return disabled!=null;
+	}
+
+	public function getDisabledReason():Null<String>{
+		return switch(this.disabled){
+			case null : null;
+			case DisabledReason.IncompleteLegalInfos : "Informations légales incomplètes";
+			case DisabledReason.NotCompliantWithPolicy : "Producteur incompatible avec la charte producteur de Cagette.net";
+		};
+	}
+
+	/**
+		like "GAEC au capital de 5000€"
+	**/
+	public function getLegalStatus(?full=true){
+
+		var str = "";
+
+		//legal status
+		for ( c in service.VendorService.getLegalStatuses()){
+			if(c.id == this.legalStatus) {
+				str += c.name;
+				break;
+			}
+		}
+		if(str=="") str = "???";
+
+		if(full){
+			//capital
+			if(this.companyCapital!=null) str += " au capital de "+companyCapital+" €";
+
+			//VAT
+			if(vatNumber!=null){
+				str += ". Numéro de TVA : "+vatNumber;
+			}else{
+				str += ". Entreprise non assujetie à TVA";
+			}
+		}
+		
+		return str;
 	}
 	
 }

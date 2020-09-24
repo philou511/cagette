@@ -1,9 +1,19 @@
 package service;
 
-import haxe.macro.Expr.Error;
+import tink.core.Error;
 import sugoi.form.validators.EmailValidator;
 
+typedef VendorDto = {
+	name:String,
+	email:String,
+	linkUrl:String,
+	companyNumber:String
+
+}
+
 class VendorService{
+
+	public static var PROFESSIONS:Array<{id:Int,name:String}>; //cache
 
 	public function new(){}
 
@@ -111,16 +121,10 @@ class VendorService{
 	/**
 		Create a vendor
 	**/
-	public static function create(vendor:db.Vendor){
-
-		if(vendor.id!=null) throw new tink.core.Error("Ce producteur est déjà dans la base de données");
-		
-		//email
-		if( vendor.email==null ) throw new tink.core.Error("Vous devez définir un email pour ce producteur.");
-		if( !EmailValidator.check(vendor.email) ) throw new tink.core.Error("Email invalide.");
+	public static function create(data:VendorDto):db.Vendor{
 
 		//already exists ?
-		var vendors = db.Vendor.manager.search($email==vendor.email,false).array();
+		var vendors = db.Vendor.manager.search($email==data.email,false).array();
 		#if plugins
 		for( v in vendors.copy()){
 			//remove training pro accounts
@@ -128,10 +132,128 @@ class VendorService{
 			if(cpro!=null && cpro.training) vendors.remove(v);
 		}
 		#end
-		if(vendors.length>0) throw new tink.core.Error("Un producteur est déjà référencé avec cet email dans notre base de données");
+		if(vendors.length>0) throw new Error("Un producteur est déjà référencé avec cet email dans notre base de données");
 
-		
+		var vendor = update(new db.Vendor(),cast data);
+
 		vendor.insert();
+		return vendor;
+	}
+
+	public static function get(email:String,status:String){
+		return db.Vendor.manager.select($email==email && $status==status,false);
+	}
+
+	public static function getForm(vendor:db.Vendor):sugoi.form.Form {
+		var t = sugoi.i18n.Locale.texts;
+		var form = form.CagetteForm.fromSpod(vendor);
+		
+		//country
+		form.removeElementByName("country");
+		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		
+		//profession
+		form.addElement(new sugoi.form.elements.IntSelect('profession',t._("Profession"),sugoi.form.ListData.fromSpod(service.VendorService.getVendorProfessions()),vendor.profession,true),4);
+
+		//email is required
+		form.getElement("email").required = true;
+
+		form.addElement(new sugoi.form.elements.Html("html","<h4>Informations légales obligatoires</h4>"));
+
+		//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
+		if(vendor.legalStatus!=null){
+			form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
+		}
+
+		form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
+		form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
+		form.addElement(new sugoi.form.elements.IntInput("companyCapital","Capital social en € (sauf pour associations et entreprises individuelles)",vendor.companyCapital,false));
+		
+		return form;
+	}
+
+	/**
+		update a vendor
+	**/
+	public static function update(vendor:db.Vendor,data:VendorDto){
+
+		//apply changes
+		for( f in Reflect.fields(data)){
+			var v = Reflect.field(data,f);
+			Reflect.setProperty(vendor,f,v);
+			// trace('$f -> $v');
+		}
+
+		if(data.linkUrl!=null && data.linkUrl.indexOf("http://")==-1 && data.linkUrl.indexOf("https://")==-1){
+			vendor.linkUrl = "http://"+data.linkUrl;
+		}
+
+		//email
+		if( vendor.email==null ) throw new Error("Vous devez définir un email pour ce producteur.");
+		if( !EmailValidator.check(vendor.email) ) throw new Error("Email invalide.");
+
+		//check SIRET
+		//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
+		var c = new sugoi.apis.linux.Curl();
+		var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
+		if(siret=="" || siret==null) throw new Error("Le numéro SIRET est requis.");
+		var sameSiret = db.Vendor.manager.search($companyNumber==siret).array();
+		if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id){
+			throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
+		}
+		
+		var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
+		var res = haxe.Json.parse(raw);
+		if(res.message!=null){
+			throw new Error("Erreur avec le numéro SIRET : "+res.message+". Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
+		}else{
+			vendor.companyNumber = siret;
+			vendor.siretInfos = res.etablissement;
+			//take adress from siretInfos
+			var addr = vendor.getAddressFromSiretInfos();
+			if(addr!=null){
+				vendor.address1 = addr.address1;
+				vendor.zipCode = addr.zipCode;
+				vendor.city = addr.city;
+				if(vendor.lat==null){
+					vendor.lat = addr.lat;
+					vendor.lng = addr.lng;
+				}
+			}
+			
+			if(vendor.activityCode==null){
+				vendor.activityCode = res.etablissement.activite_principale;
+			}
+			if(vendor.legalStatus==null){
+				vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
+			}
+		}
+
+		return vendor;
+	}
+
+
+	/**
+		Loads vendors professions from json
+	**/
+	public static function getVendorProfessions():Array<{id:Int,name:String}>{
+		if( PROFESSIONS!=null ) return PROFESSIONS;
+		var filePath = sugoi.Web.getCwd()+"../data/vendorProfessions.json";
+		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
+		PROFESSIONS = json.professions;
+		return json.professions;
+	}
+
+	public static function getActivityCodes():Array<{id:String,name:String}>{
+		var filePath = sugoi.Web.getCwd()+"../data/codesNAF.json";
+		var json = haxe.Json.parse(sys.io.File.getContent(filePath));
+		return json;
+	}
+
+	public static function getLegalStatuses():Array<{id:Int,name:String}>{
+		var filePath = sugoi.Web.getCwd()+"../data/categoriesJuridiques.json";
+		var json:Array<{id:Int,name:String}> = haxe.Json.parse(sys.io.File.getContent(filePath));
+		return json;
 	}
 
 

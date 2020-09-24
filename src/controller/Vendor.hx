@@ -1,4 +1,5 @@
 package controller;
+import service.VendorService;
 import sugoi.form.Form;
 import sugoi.tools.Utils;
 
@@ -48,16 +49,19 @@ class Vendor extends Controller
 		if(pro.db.CagettePro.getFromVendor(vendor)!=null) throw Error("/contractAdmin","Vous ne pouvez pas modifier la fiche de ce producteur, car il gère lui même sa fiche depuis Cagette Pro");
 		#end
 
-		var form = form.CagetteForm.fromSpod(vendor);
-		form.removeElementByName("country");
-		form.addElement(new sugoi.form.elements.StringSelect('country',t._("Country"),db.Place.getCountries(),vendor.country,true));
+		var form = VendorService.getForm(vendor);
 		
-		if (form.isValid()) {
-			form.toSpod(vendor);
-			vendor.update();
+		if (form.isValid()){
+			vendor.lock();
+			try{
+				vendor = VendorService.update(vendor,form.getDatasAsObject());
+			}catch(e:tink.core.Error){
+				throw Error(sugoi.Web.getURI(),e.message);
+			}			
+			vendor.update();		
 			throw Ok('/contractAdmin', t._("This supplier has been updated"));
 		}
-		
+
 		view.form = form;
 	}
 	
