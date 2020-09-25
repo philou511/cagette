@@ -338,11 +338,9 @@ class User extends Controller
 			app.user.update();
 			throw Redirect('/');
 		}
-
 		
 		view.title = "Mise à jour des conditions générales d'utilisation de Cagette.net"+' ( v. $tosVersion )';
 		view.form = form;
-
 	}
 	
 }

@@ -50,14 +50,16 @@ class Vendor extends Object
 	public var desc : SNull<SText>;
 	@hideInForms public var cdate : SNull<SDate>; // date de création
 
+	//legal infos
 	@hideInForms public var companyNumber : SNull<SString<128>>; //SIRET
 	@hideInForms public var vatNumber : SNull<SString<128>>; //VAT number
 	@hideInForms public var legalStatus : SNull<SInt>; //statut juridique
 	@hideInForms public var companyCapital : SNull<SInt>; //capital social
-
 	@hideInForms public var siretInfos : SNull<SData<SiretInfos>>; //infos from SIRET API
 	@hideInForms public var activityCode:SNull<SString<8>>;//code NAF (NAFRev2)
+	
 	public var vendorPolicy:SBool; //charte producteurs
+	@hideInForms public var tosVersion: SNull<SInt>; //CGV version checked
 	
 	public var linkText:SNull<SString<256>>;
 	public var linkUrl:SNull<SString<256>>;
