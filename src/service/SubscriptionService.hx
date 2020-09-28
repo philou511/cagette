@@ -216,7 +216,7 @@ class SubscriptionService
 
 	}
 
-	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String = null, excludeAbsences : Bool = true ) : Int {
+	public static function getSubscriptionDistribsNb( subscription : db.Subscription, ?type : String, ?excludeAbsences = true ) : Int {
 
 		if( subscription == null ) throw new Error( 'La souscription n\'existe pas' );
 
@@ -444,17 +444,13 @@ class SubscriptionService
 	public static function getCatalogMinOrdersTotal( catalog : db.Catalog, ?subscription : db.Subscription ) : Float {
 
 		if ( catalog.catalogMinOrdersTotal == null || catalog.catalogMinOrdersTotal == 0 || catalog.allowedOverspend == null || catalog.allowedOverspend == 0 ) {
-
 			return null;
 		}
 
 		var subscriptionDistribsNb = 0;
 		if ( subscription != null ) {
-		
 			subscriptionDistribsNb = getSubscriptionDistribsNb( subscription, null, true );
-		}
-		else {
-
+		} else {
 			subscriptionDistribsNb = db.Distribution.manager.count( $catalog == catalog && $date >= SubscriptionService.getNewSubscriptionStartDate( catalog ) );
 		}
 		
@@ -462,7 +458,8 @@ class SubscriptionService
 		if ( catalogAllDistribsNb == 0 ) return null;
 		var ratio = subscriptionDistribsNb / catalogAllDistribsNb;
 
-		return Formatting.roundTo( ratio * catalog.catalogMinOrdersTotal, 0 );
+		// safer to do a "floor" than a "round"
+		return Math.floor(ratio * catalog.catalogMinOrdersTotal);
 	}
 
 	 /*
@@ -542,7 +539,6 @@ class SubscriptionService
 					message += 'Le total de votre commande effectuée pour une distribution donnée doit être d\'au moins ' + catalog.distribMinOrdersTotal + ' €. Veuillez rajouter des produits.';
 					throw TypedError.typed( message, CatalogRequirementsNotMet );
 				}
-
 			}
 		}
 
@@ -622,8 +618,8 @@ class SubscriptionService
 			var maxAllowedTotal = catalogMinOrdersTotal + catalog.allowedOverspend;
 			if ( maxAllowedTotal < subscriptionNewTotal ) {
 
-				var message = 'Le nouveau total de toutes vos commandes serait de ' +  subscriptionNewTotal
-				+ ' € alors qu\'il doit être inférieur à ' + maxAllowedTotal + ' €. Veuillez enlever des produits.';
+				var message = 'Le nouveau total de toutes vos commandes serait de $subscriptionNewTotal
+				€ alors qu\'il doit être inférieur à $maxAllowedTotal €. Veuillez enlever des produits.';
 				throw TypedError.typed( message, CatalogRequirementsNotMet );
 			}
 
