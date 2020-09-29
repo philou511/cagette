@@ -37,7 +37,7 @@
 						
 		<p class="text-center">
 			
-				<a class="btn btn-default btn-sm" onclick="_.initOrderBox(null, ::distribution.id::, null, 1,'::date::','::place::', null, '€', true, '/distribution/validate/::distribution.id::')">
+				<a class="btn btn-default btn-sm" onclick="_.initOrderBox(null, ::distribution.id::, null, 1,'::date::','::escapeJS(place.name)::', null, '€', true, '/distribution/validate/::distribution.id::')">
 					<i class="icon icon-plus"></i>
 					Nouvelle commande
 				</a>
