@@ -1,4 +1,5 @@
 package controller;
+import db.Catalog;
 import service.GraphService;
 import haxe.CallStack;
 import haxe.display.Display.CompletionModeKind;
@@ -85,9 +86,7 @@ class Cron extends Controller
 	 *  this can be locally tested with `neko index.n cron/hour > cron.log`				
 	 */
 	public function doHour() {
-		
-		app.event(HourlyCron(this.now));
-		
+
 		//instructions for dutyperiod volunteers
 		var task = new TransactionWrappedTask("Volunteers instruction mail");
 		task.setTask(function() {
@@ -276,6 +275,83 @@ class Cron extends Controller
 			}
 		});
 		task.execute(!App.config.DEBUG);
+
+		var task = new TransactionWrappedTask( 'default automated orders for CSA variable contracts with compulsory ordering' );
+		task.setTask( function() {
+
+			var range = tools.DateTool.getLastHourRange( now );
+
+			var distributionsToCheckForMissingOrders = db.Distribution.manager.unsafeObjects(
+			'SELECT Distribution.* 
+			FROM Distribution INNER JOIN Catalog
+			ON Distribution.catalogId = Catalog.id
+			WHERE Catalog.requiresOrdering = 1
+			AND Distribution.orderEndDate >= \'${range.from}\'
+			AND Distribution.orderEndDate < \'${range.to}\';', false );
+				
+			for ( distrib in distributionsToCheckForMissingOrders ) {
+
+				if ( distrib.catalog.requiresOrdering ) {
+
+					var distribSubscriptions = db.Subscription.manager.search( $catalog == distrib.catalog && $startDate <= distrib.date && $endDate >= distrib.date, false );
+
+					for ( subscription in distribSubscriptions ) {
+
+						if ( subscription.getAbsentDistribIds().find( id -> id == distrib.id ) == null ) {
+						
+							var distribSubscriptionOrders = db.UserOrder.manager.search( $subscription == subscription && $distribution == distrib );
+							if ( distribSubscriptionOrders.length == 0 ) {
+
+								if ( service.SubscriptionService.areAutomatedOrdersValid( subscription, distrib ) ) {
+
+									var defaultOrders : Array< { productId : Int, quantity : Float } > = subscription.getDefaultOrders();
+
+									var automatedOrders = [];
+									for ( order in defaultOrders ) {
+
+										var product = db.Product.manager.get( order.productId, false );
+										if ( product != null && order.quantity != null && order.quantity != 0 ) {
+
+											automatedOrders.push( service.OrderService.make( subscription.user, order.quantity, product, distrib.id, null, subscription ) );	
+										}
+									}
+
+									if( automatedOrders.length != 0 ) {
+
+										var message = 'Bonjour ${subscription.user.firstName},<br /><br />
+										A défaut de commande de votre part, votre commande par défaut a été appliquée automatiquement 
+										à la distribution du ${view.hDate( distrib.date )} du contrat "${subscription.catalog.name}".
+										<br /><br />
+										Votre commande par défaut : <br /><br />${subscription.getDefaultOrdersToString()}
+										<br/>br/>
+										La commande à chaque distribution est obligatoire dans le contrat "${subscription.catalog.name}". 
+										Vous pouvez modifier votre commande par défaut en accédant à votre souscription à ce contrat depuis la page "commandes" sur Cagette.net';
+
+										App.quickMail( subscription.user.email, distrib.catalog.name + ' : Commande par défaut', message, distrib.catalog.group );
+									}
+								
+									//Create order operation only
+									if ( distrib.catalog.group.hasPayments() ) {
+			
+										service.PaymentService.onOrderConfirm( automatedOrders );
+									}
+
+								}
+							}
+
+						}
+					}
+				
+				}
+			}
+		
+		});
+		task.execute(!App.config.DEBUG);
+
+		/**
+			orders notif in cpro, should be sent AFTER default automated orders
+		**/
+		app.event(HourlyCron(this.now));
 		
 
 	}
@@ -285,8 +361,51 @@ class Cron extends Controller
 	**/
 	public function doDaily() {
 		if (!canRun()) return;
-		
+
 		app.event(DailyCron(this.now));
+
+		var task = new TransactionWrappedTask("Warn CSA members about absences dates to define, 7 days before deadline");
+		task.setTask(function(){
+			//look at next month
+			var from = new Date(this.now.getFullYear(),this.now.getMonth()+1,1,0,0,0);
+			var to   = new Date(this.now.getFullYear(),this.now.getMonth()+1,31,0,0,0);
+			var inOneWeek = new Date(this.now.getFullYear(),this.now.getMonth(),now.getDate()+7,0,0,0);
+			//catalog having absences starting in one month
+			var catalogs = db.Catalog.manager.search($absencesStartDate>=from && $absencesStartDate<to && $absentDistribsMaxNb>0);
+			task.log("catalogs having absencesStartDate between "+from+" and "+to);
+			for( c in catalogs){
+				if(c.group.hasShopMode()) continue;				
+				var limitDate = service.SubscriptionService.getLastDistribBeforeAbsences( c ).date;
+				if(limitDate.toString().substr(0,10)==inOneWeek.toString().substr(0,10)){
+					task.log("- "+c.name+" : deadline in one week ("+limitDate+")");
+
+					var m = new Mail();
+					m.setSender(App.config.get("default_email"), "Cagette.net");
+					if(c.contact!=null) m.setReplyTo(c.contact.email, c.contact.getName());
+					for( sub in service.SubscriptionService.getSubscriptions(c)){
+						if(sub.getAbsentDistribIds().length>0){
+							m.addRecipient(sub.user.email);
+							if(sub.user.email2!=null) m.addRecipient(sub.user.email2);
+						}
+					}					
+					m.setSubject( 'Pensez à définir vos dates d\'absence pour le contrat "${c.name}"' );
+					var text = 'Il vous reste une semaine pour définir vos dates d\'absence pour le contrat <b>"${c.name}"</b>.<br/>';
+					text += 'Vous avez jusqu\'au ${Formatting.dDate(limitDate)} pour définir vos absences et permettre au producteur de s\'organiser.<br/>';
+					m.setHtmlBody( app.processTemplate("mail/message.mtt", { 
+						text:text,
+						group:c.group
+					} ) );
+					App.sendMail(m , c.group);	
+
+
+				}
+
+
+			}
+
+
+		});
+		task.execute(!App.config.DEBUG);
 		
 		var task = new TransactionWrappedTask( "Send errors to admin by email", function() {
 			var n = Date.now();

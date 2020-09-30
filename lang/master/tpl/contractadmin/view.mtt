@@ -18,11 +18,12 @@
 					</div>
 					::end::
 
-
-					::if contract.type==0::
-					::_("CSA Contract")::
+					::if contract._group.hasShopMode() ::
+						Catalogue standard ( commande variable )
+					::elseif contract.type == 0::
+						Contrat AMAP classique
 					::else::
-					Catalogue standard (commande variable)
+						Contrat AMAP variable
 					::end::
 				</td>
 			</tr>

@@ -1,4 +1,5 @@
 package controller;
+import sugoi.form.elements.Html;
 import sugoi.form.elements.StringInput;
 import sugoi.form.elements.Checkbox;
 import db.UserOrder;
@@ -34,15 +35,11 @@ class Amap extends Controller
 		var flags = form.getElement("flags");
 		untyped flags.excluded = [0,1,3,9];
 
-		//add a custom field for "shopmode"
-		var data = [
-			{label:t._("Shop Mode"),value:"shop"},
-			{label:t._("CSA Mode"),value:"CSA"},
-		];
-		var selected = group.flags.has(db.Group.GroupFlags.ShopMode) ? "shop" : "CSA";
-		form.addElement( new sugoi.form.elements.RadioGroup("mode",t._("Ordering Mode"),data, selected), 8);
-
-		
+		//group mode
+		var mode = group.flags.has(db.Group.GroupFlags.ShopMode) ? "Mode Boutique" : "Mode AMAP";
+		var html = new sugoi.form.elements.Html("mode",mode,"Mode de commande");
+		html.docLink = "https://wiki.cagette.net/admin:admin_boutique";
+		form.addElement(html ,7);
 	
 		if (form.checkToken()) {
 			

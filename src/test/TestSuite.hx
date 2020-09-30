@@ -230,6 +230,7 @@ class TestSuite
 		c.vendor = v;
 		c.group = a;
 		c.type = db.Catalog.TYPE_CONSTORDERS;
+		c.orderEndHoursBeforeDistrib = 24;
 		c.insert();
 
 		CONTRAT_AMAP = c;

@@ -44,6 +44,13 @@ class DateTool
 		return {from:from,to:to};
 	}
 
+	public static  function getLastDayRange(?now:Date){
+		if(now==null) now = Date.now();
+		var from = new Date(now.getFullYear(),now.getMonth(),now.getDate()-1,0,0,0);
+		var to   = new Date(now.getFullYear(),now.getMonth(),now.getDate()-1,23,59,59);
+		return {from:from,to:to};
+	}
+
 	public static function getWhichNthDayOfMonth(date:Date):Int {
   		return Math.floor((date.getDate() - 1) / 7) + 1;
 	}

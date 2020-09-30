@@ -292,7 +292,7 @@ class Distribution extends Controller
 	function doEdit(d:db.Distribution,?args:{from:String}) {
 		
 		if (!app.user.isContractManager(d.catalog)) throw Error('/', t._('Forbidden action') );		
-		if(d.catalog.isCSACatalog()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP" );	
+		if(d.catalog.isCSACatalog()) throw Error('/', "Impossible de changer les dates d'ouverture de commande pour un contrat AMAP classique" );	
 		var contract = d.catalog;
 
 		view.text = "Vous pouvez personnaliser les dates d'ouverture et de fermeture de commande uniquement pour ce catalogue.";
