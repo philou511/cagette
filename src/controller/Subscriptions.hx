@@ -55,8 +55,7 @@ class Subscriptions extends controller.Controller
 
 			try {
 				SubscriptionService.deleteSubscription( subscription );
-			}
-			catch( error : Error ) {
+			} catch( error : Error ) {
 				throw Error( '/contractAdmin/subscriptions/' + subscription.catalog.id, error.message );
 			}
 			throw Ok( '/contractAdmin/subscriptions/' + subscription.catalog.id, 'La souscription pour ' + subscriptionUser.getName() + ' a bien été supprimée.' );
