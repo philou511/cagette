@@ -96,31 +96,6 @@
 	</div>
 	::end::
 
-	::if(hasCagetteProTest==true)::
-	<script>
-		//<![CDATA[
-		//display once a day
-		var dateString = localStorage.cagetteProTestWindow;
-		var date = null;
-		var now = new Date();
-		if(dateString!=null){
-			date = new Date(dateString); 
-			var oneDayLater = date;
-			oneDayLater.setDate(date.getDate()+1);
-		}
-		console.log(date);
-		
-		if( date==null || now.getTime() > oneDayLater.getTime() ){
-			localStorage.cagetteProTestWindow = now.toJSON();
-			_.overlay("/data/cagetteProTest2.html","On s'organise !");
-		}else{
-			console.log("no popup for now");
-		}
-		//]]>
-	</script>
-	::end::
-	
-
 	<div class="col-md-12">
 		<h2>::_("Hello")::
 		::if whichUser()==0::
