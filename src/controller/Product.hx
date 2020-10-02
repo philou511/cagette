@@ -44,7 +44,7 @@ class Product extends Controller
 		//VAT selector
 		f.removeElement( f.getElement('vat') );		
 		var data :FormData<Float> = [];
-		for (k in app.user.getGroup().vatRates.keys()) {
+		for (k in app.user.getGroup().getVatRates().keys()) {
 			data.push( { label:k, value:app.user.getGroup().vatRates[k] } );
 		}
 		f.addElement( new FloatSelect("vat", "TVA", data, product.vat ) );

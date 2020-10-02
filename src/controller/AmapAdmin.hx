@@ -239,18 +239,11 @@ class AmapAdmin extends Controller
 		var f = new sugoi.form.Form("vat");
 		var a = app.user.getGroup();
 		
-		if (a.vatRates == null) {
-			a.lock();
-			var x = new db.Group();
-			a.vatRates = x.vatRates;
-			a.update();
-		}
-		
 		var i = 1;
 		//create field with a value
-		for (k in a.vatRates.keys()) {
+		for (k in a.getVatRates().keys()) {
 			f.addElement(new StringInput(i+"-k", t._("Name") +" "+ i, k));
-			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, a.vatRates.get(k) ));
+			f.addElement(new FloatInput(i + "-v", t._("Rate") +" "+ i, a.getVatRates().get(k) ));
 			i++;
 		}
 		

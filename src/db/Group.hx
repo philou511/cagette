@@ -60,7 +60,7 @@ class Group extends Object
 	@hideInForms public var membershipRenewalDate : SNull<SDate>;
 	@hideInForms public var membershipFee : SNull<STinyInt>;
 	
-	@hideInForms public var vatRates : SData<Map<String,Float>>;
+	@hideInForms public var vatRates : SNull<SData<Map<String,Float>>>;
 	
 	//options and flags
 	public var flags:SFlags<GroupFlags>;
@@ -126,6 +126,22 @@ class Group extends Object
 		Cliquez sur \"calendrier des permanences\" pour vous inscrire !";
 		vacantVolunteerRolesMailDaysBeforeDutyPeriod = 7;
 		
+	}
+
+	/**
+		serialization error proof getter
+	**/
+	public function getVatRates():Map<String,Float>{
+		try{
+			if(this.vatRates==null){
+				return ["5,5%" => 5.5, "20%" => 20];
+			} else return this.vatRates;
+		}catch(e:Dynamic){
+			this.lock();
+			this.vatRates = ["5,5%" => 5.5, "20%" => 20];
+			this.update();
+			return this.vatRates;
+		}
 	}
 	
 	/**
