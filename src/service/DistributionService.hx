@@ -474,7 +474,6 @@ class DistributionService
 				catalog.lock();
 				catalog.endDate = newMd.distribStartDate;
 				catalog.update();
-				// trace(catalog.endDate);
 			}
 
 			//extends subscriptions ?

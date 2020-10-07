@@ -311,43 +311,29 @@ class Contract extends Controller
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
 
 			view.shortDate = function( d : Date ) {
-
 				if ( d == null ) return "Pas de date";
 				var date = Formatting.getDate( d );
-				
 				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
-
 					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,3) + ".<br/>" + date.y;
-				}
-				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
-
+				} else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
 					return date.dow + "<br/>" + date.d + " " + date.m.substr(0,4) + ".<br/>" + date.y;
 				}
-				
 				return date.dow + "<br/>" + date.d + " " + date.m + "<br/>" + date.y;
 			}
+			
 			view.closingDate  = function( d : Date ) {
-
 				if ( d == null ) return "Pas de date";
 				var date = Formatting.getDate( d );
-
 				var closingDate = '<div class="closingDate">Fermeture<br/>des commandes : <br/>';
 				if ( date.m == 'Janvier' || date.m == 'Avril' || date.m == 'Octobre' || date.m == 'Novembre' ) {
-
 					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,3) + ".";
-				}
-				else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
-
+				} else if ( date.m == 'Février' || date.m == 'Juillet' || date.m == 'Septembre' || date.m == 'Décembre' ) {
 					closingDate += date.dow + " " + date.d + " " + date.m.substr(0,4) + ".";
-				}
-				else {
-
+				} else {
 					closingDate += date.dow + " " + date.d + " " + date.m;
 				}
-
 				closingDate += "<br/>à " + StringTools.lpad( Std.string( d.getHours() ), "0", 2 ) + ":" + StringTools.lpad( Std.string( d.getMinutes() ), "0", 2 );
 				closingDate += "</div>" ;
-
 				return closingDate;
 			}
 			
@@ -367,13 +353,11 @@ class Contract extends Controller
 
 					if ( !app.params.exists("token") ) {
 						
-						if ( order != null ) {
-							
+						if ( order != null ) {							
 							orderProduct.order = order;
 						}
 					
-					}
-					else {
+					} else {
 
 						var paramKey = 'd' + distrib.id + '-p' + product.id;
 						if( app.params.exists( paramKey ) ) {
@@ -382,19 +366,14 @@ class Contract extends Controller
 							if ( paramQuantity != null && paramQuantity != '' ) {
 
 								if ( order == null ) {
-									
 									order = new db.UserOrder();
 									order.distribution = distrib;
 									order.product = product;
 									order.productPrice = product.price;
 								}
 								if ( product.hasFloatQt ) {
-
-									order.quantity = Std.parseFloat( StringTools.replace( paramQuantity, ",", "." ) );
-				
-								}
-								else {
-				
+									order.quantity = Std.parseFloat( StringTools.replace( paramQuantity, ",", "." ) );				
+								} else {				
 									order.quantity = Std.parseInt( paramQuantity );
 								}
 
@@ -404,8 +383,7 @@ class Contract extends Controller
 
 						}
 
-						if ( useOrder ) {
-							
+						if ( useOrder ) {							
 							orderProduct.order = order;
 						}
 
@@ -418,9 +396,9 @@ class Contract extends Controller
 
 			}
 			
-		}
-		else {
+		} else {
 
+			//CSA contracts
 			hasComingOpenDistrib = SubscriptionService.getComingOpenDistrib( catalog ) != null;
 
 			var data = [];
@@ -477,17 +455,11 @@ class Contract extends Controller
 				
 				var orderProduct = null;
 				for ( userOrder in userOrders ) {
-
 					if ( userOrder.distrib != null && userOrder.distrib.id != distribId ) {
-
 						continue;
-					}
-					else {
-
+					} else {
 						for ( x in userOrder.ordersProducts ) {
-
 							if ( x.product.id == productId ) {
-
 								orderProduct = x;
 								break;
 							}
@@ -504,8 +476,7 @@ class Contract extends Controller
 					var param = StringTools.replace( qty, ",", "." );
 					quantity = Std.parseFloat( param );
 
-				}
-				else {
+				} else {
 
 					quantity = Std.parseInt( qty );
 				}
@@ -698,8 +669,7 @@ class Contract extends Controller
 			if( currentOrComingSubscription == null || !currentOrComingSubscription.isValidated ) {
 				
 				catalog.isUserOrderAvailable();
-			}
-			else {
+			} else {
 				
 				false;
 			}

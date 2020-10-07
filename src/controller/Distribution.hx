@@ -357,7 +357,7 @@ class Distribution extends Controller
 		var text = "Si la date à laquelle vous souhaitez reporter la distribution n'est pas dans la liste, créez la dans l'onglet \"Distributions\".";
 		text += "<div class='alert alert-warning'><i class='icon icon-info'></i> Attention, reporter une distribution peut... :<ul>";
 		text += "<li>Provoquer une renumérotation des paniers de la distribution cible.</li>";
-		text += "<li>Provoquer la modification de le date de fin du catalogue/contrat pour prendre en comtpe la nouvelle date.</li>";
+		text += "<li>Provoquer la modification de le date de fin du catalogue/contrat pour prendre en compte la nouvelle date.</li>";
 		if(d.catalog.isCSACatalog()){
 			text += "<li>Provoquer l'extension des souscriptions pour prendre en compte la nouvelle date tout en préservant le même nombre de distributions. Pensez à vérifier les souscriptions après avec effectué cette action.</li>";
 		}

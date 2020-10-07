@@ -346,7 +346,7 @@ class SubscriptionService
 			throw new Error("Ce catalogue n'a pas de distributions planifiées");
 		}
 
-		//When creating a new subscription the startDate needs to be for the next not closed coming 
+		//startDate should be later than endDate
 		if(subscription.startDate.getTime() >= subscription.endDate.getTime()){
 			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
 		}
@@ -357,17 +357,15 @@ class SubscriptionService
 
 			if ( subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
 
-				throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution ouverte aux commandes : '
+				throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
 										+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
 			}
-		}
-		else {
-			
+		} else {			
 			if ( previousStartDate.toString() != subscription.startDate.toString() ) {
 
 				if ( Date.now().getTime() <= subscription.startDate.getTime() && subscription.startDate.getTime() < newSubscriptionStartDate.getTime() ) {
 
-					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution ouverte aux commandes : '
+					throw TypedError.typed( 'La date de début de la souscription ne doit pas être avant la date de la prochaine distribution : '
 										+ Formatting.dDate( newSubscriptionStartDate ), InvalidParameters );
 				}
 			}
@@ -628,18 +626,21 @@ class SubscriptionService
 		return true;
 	}
 
+	/**
+		Find date of next unclosed distribution
+	**/
 	public static function getNewSubscriptionStartDate( catalog : db.Catalog ) : Date {
 
-		var comingOpenDistrib = getComingOpenDistrib( catalog );
+		//bug with this : creating a sub with no open future distrib was causing an exception, because getNewSubscriptionStartDate()==null
+		// var comingOpenDistrib = getComingOpenDistrib( catalog );
+		
+		var comingOpenDistrib = db.Distribution.manager.select( $catalog == catalog && $orderEndDate > Date.now(), { orderBy : date }, false );
+
 		if ( comingOpenDistrib != null ) {
-
 			return new Date( comingOpenDistrib.date.getFullYear(), comingOpenDistrib.date.getMonth(), comingOpenDistrib.date.getDate(), 0, 0, 0 );
-		}
-		else {
-
+		} else {
 			return null;
 		}
-
 	}
 
 	 /**
@@ -702,7 +703,7 @@ class SubscriptionService
 
 	public static function checkUser2(ordersData:Array<{ productId : Int, quantity : Float, userId2 : Int, invertSharedOrder : Bool }>):Int{
 		//check that there is only one secondary user
-		var user2= null;
+		var user2 = null;
 		for( order in ordersData){
 			if(order.userId2!=null){
 				if(user2==null){
@@ -729,20 +730,22 @@ class SubscriptionService
 	
 		subscription.startDate = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0 );
 		subscription.endDate = new Date( endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59 );
+
 		if ( absentDistribIds != null ) {
-
 			if ( subscription.isValidated ) {
-
 				subscription.setAbsentDistribIds( absentDistribIds );
 			}
 		}
 		updateAbsencesNb( subscription, absencesNb );
 		
 		//check secondary user
-		var userId2 = checkUser2(ordersData);
-		if(userId2!=null){
-			subscription.user2 = db.User.manager.get(userId2,false);
+		if(ordersData!=null){
+			var userId2 = checkUser2(ordersData);
+			if(userId2!=null){
+				subscription.user2 = db.User.manager.get(userId2,false);
+			}
 		}
+		
 
 		if ( isSubscriptionValid( subscription, previousStartDate ) ) {
 

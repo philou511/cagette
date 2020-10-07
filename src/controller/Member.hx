@@ -742,8 +742,7 @@ class Member extends Controller
 		}
 		
 		view.form = form;
-	}
-	
+	}	
 	
 	/**
 	 * user payments history
