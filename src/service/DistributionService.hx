@@ -322,7 +322,7 @@ class DistributionService
 			}
 		}
 
-		if( catalog.isCSACatalog() ){
+		if( catalog.isConstantOrders() ){
 			//if there is at least one validated subscription, cancelation is not possible
 			if( db.Subscription.manager.count( $catalogId == catalog.id && $isValidated ) > 0){
 				throw new Error("Vous ne pouvez pas participer à cette distribution car il y a déjà des souscriptions validées. Vous devez maintenir le même nombre de distributions dans les souscriptions des adhérents.");
@@ -542,7 +542,7 @@ class DistributionService
 	public static function cancelParticipation(d:db.Distribution,?dispatchEvent=true) {
 		var t = sugoi.i18n.Locale.texts;
 		
-		if( d.catalog.isCSACatalog() ){
+		if( d.catalog.isConstantOrders() ){
 			//if there is at least one validated subscription, cancelation is not possible
 			if( db.Subscription.manager.count( $catalogId == d.catalog.id && $isValidated ) > 0){
 				throw new Error("Vous ne pouvez pas annuler cette distribution car il y a déjà des souscriptions validées. Vous pouvez cependant décaler cette distribution en fin de contrat afin de maintenir le même nombre dans les souscriptions des adhérents. Pour décaler une distribution, cliquez sur le bouton \"Dates\".");

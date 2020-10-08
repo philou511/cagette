@@ -296,7 +296,7 @@ class Contract extends Controller
 
 		if( app.user == null ) throw Redirect( '/user/login?__redirect=/contract/order/' + catalog.id );
 
-		if( catalog.isCSACatalog() ) {
+		if( catalog.isConstantOrders() ) {
 			app.setTemplate( 'contract/orderc.mtt' );
 		} else {
 			app.setTemplate( 'contract/orderv.mtt' );

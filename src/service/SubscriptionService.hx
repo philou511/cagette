@@ -62,20 +62,18 @@ class SubscriptionService
 		return subscriptionsByCatalog;
 	}
 
+	/**
+		get next open ditrib
+	**/
 	public static function getComingOpenDistrib( catalog : db.Catalog ) : db.Distribution {
 
 		var now = Date.now();
 		
 		if ( catalog.type == db.Catalog.TYPE_VARORDER ) {
+			return db.Distribution.manager.select( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false );
+		} else {
 
-			return db.Distribution.manager.search( $catalog == catalog && $date > now && $orderStartDate <= now && $orderEndDate > now, { orderBy : date }, false ).first();
-		}
-		else {
-
-			if ( catalog.orderEndHoursBeforeDistrib == null || catalog.orderEndHoursBeforeDistrib == 0 ) {
-
-				throw new Error( 'Vous devez définir obligatoirement le nombre d\'heures avant distribution pour la fermeture des commandes.' );
-			}
+			if ( catalog.orderEndHoursBeforeDistrib == null ) catalog.orderEndHoursBeforeDistrib = 0;
 
 			var openComingDistrib : db.Distribution = null;
 			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false );
@@ -88,12 +86,42 @@ class SubscriptionService
 					break;
 				}
 			}
-
 			return openComingDistrib;
-
 		}
-
 	}
+
+	public static function getComingUnclosedDistrib(catalog:db.Catalog) {
+		//bug with this : creating a sub with no open future distrib was causing an exception, because getNewSubscriptionStartDate()==null
+		// var comingOpenDistrib = getComingOpenDistrib( catalog );
+
+		var notClosedComingDistrib = null;
+		var now = Date.now();
+
+		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) {
+
+			//apply dynamically catalog.orderEndHoursBeforeDistrib to distrib.date
+			//TODO : store orderEndDate directly in db.Distribution on participate()
+
+			if ( catalog.orderEndHoursBeforeDistrib == null ) catalog.orderEndHoursBeforeDistrib = 0;				
+
+			var futureDistribs = db.Distribution.manager.search( $catalog == catalog && $date > now, { orderBy : date }, false ).array();
+			for ( distrib in futureDistribs ) {
+				var orderEndDate = DateTools.delta( distrib.date, -(1000 * 60 * 60 * catalog.orderEndHoursBeforeDistrib) );
+				if ( now.getTime() < orderEndDate.getTime() ) {
+					notClosedComingDistrib = distrib;
+					break;
+				}
+			}
+			
+		} else {
+			notClosedComingDistrib = db.Distribution.manager.select( $catalog == catalog && $date > now && $orderEndDate > now, { orderBy : date }, false );
+			
+		}
+		return notClosedComingDistrib;
+		
+	}
+
+
 
 
 	public static function getOpenDistribsForSubscription( user : db.User, catalog : db.Catalog, currentOrComingSubscription : db.Subscription ) : Array< db.Distribution > {
@@ -351,7 +379,7 @@ class SubscriptionService
 			throw TypedError.typed( 'La date de début de la souscription doit être antérieure à la date de fin.', InvalidParameters );
 		}
 
-		//Check new subscription Start Date
+		//start date should be next unclosed distrib, or later, but not before.
 		var newSubscriptionStartDate = getNewSubscriptionStartDate( subscription.catalog );
 		if( subscription.id == null ) {
 
@@ -631,13 +659,10 @@ class SubscriptionService
 	**/
 	public static function getNewSubscriptionStartDate( catalog : db.Catalog ) : Date {
 
-		//bug with this : creating a sub with no open future distrib was causing an exception, because getNewSubscriptionStartDate()==null
-		// var comingOpenDistrib = getComingOpenDistrib( catalog );
+		var notClosedComingDistrib = getComingUnclosedDistrib(catalog);
 		
-		var comingOpenDistrib = db.Distribution.manager.select( $catalog == catalog && $orderEndDate > Date.now(), { orderBy : date }, false );
-
-		if ( comingOpenDistrib != null ) {
-			return new Date( comingOpenDistrib.date.getFullYear(), comingOpenDistrib.date.getMonth(), comingOpenDistrib.date.getDate(), 0, 0, 0 );
+		if ( notClosedComingDistrib != null ) {
+			return new Date( notClosedComingDistrib.date.getFullYear(), notClosedComingDistrib.date.getMonth(), notClosedComingDistrib.date.getDate(), 0, 0, 0 );
 		} else {
 			return null;
 		}
