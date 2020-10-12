@@ -4,8 +4,13 @@
   "lastSentMessages": "Derniers messages envoyés",
   "subject": "Objet",
   "sentOnThe": "Envoyé le",
-  "receivers": "Destinataire(s)",
+  "receiver": "Destinataire",
+  "receiver_plural": "Destinataires",
   "sender": "Expéditeur",
+  "apply": "Appliquer",
+  "attachment": "Pièce jointe",
+  "attachment_plural": "Pièces jointes",
+  "attachmentsNotStoredOnServer": "Les pièces jointes ne sont pas conservées sur le serveur.",
   "form": {
     "name": "Nom expéditeur·rice",
     "email": "Courriel expéditeur·rice",
@@ -14,14 +19,20 @@
     "message": "Message",
     "success": "Le message a bien été envoyé",
     "errorEmptyMessage": "Le corps du message est vide !",
+    "errorNoRecipient": "Aucun destinataire n'a été sélectionné",
+    "errorMessageTooBig": "La taille totale du message doit être inférieure à 25 Mo. Veuillez retirer des pièces jointes ou des images du corps du message.",
     "send": "Envoyer",
-    "placeholder": "Votre message..."
+    "placeholder": "Votre message...",
+    "fromDevice": "Depuis mon appareil",
+    "fromCatalog": "Depuis un catalogue",
+    "chooseCatalog": "Catalogues"
   },
   "lists": {
-    "board": "Le bureau : les gens qui ont des droits d'administration dans ce groupe",
-    "membersWithoutOrder": "Membres sans commande",
-    "membershipsToBeRenewed": "Adhésions à renouveler",
-    "all": "Membres du groupe",
-    "test": "TEST : moi + conjoint·e"
+    "all": "Tous les membres du groupe",
+    "test": "TEST : moi + conjoint·e",
+    "admins": "Les administrateurs",
+    "noOrders": "Membres sans commande",
+    "membershipToBeRenewed": "Adhésions à renouveler",
+    "contractSubscribers": "{{name}} du {{startDate}} au {{endDate}}"
   }
 }

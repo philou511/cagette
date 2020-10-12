@@ -1,7 +1,9 @@
 /// <reference types="react" />
 export interface SentMessageListProps {
-    groupId: number;
     isGroupAdmin: boolean | undefined;
+    selectedMessageId: number | undefined;
+    onSelectMessage: (messageId: number) => void;
+    toggleRefetch: boolean | undefined;
 }
-declare const SentMessageList: ({ groupId, isGroupAdmin }: SentMessageListProps) => JSX.Element;
+declare const SentMessageList: ({ isGroupAdmin, selectedMessageId, onSelectMessage, toggleRefetch }: SentMessageListProps) => JSX.Element;
 export default SentMessageList;

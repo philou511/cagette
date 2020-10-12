@@ -1,7 +1,6 @@
 /// <reference types="react" />
-export interface MessagesProps {
-    groupId: number;
-    whichUser: boolean;
+interface MessagingServiceProps {
+    onMessageSent: () => void;
 }
-declare const MessagingService: ({ groupId, whichUser }: MessagesProps) => JSX.Element;
+declare const MessagingService: ({ onMessageSent }: MessagingServiceProps) => JSX.Element;
 export default MessagingService;

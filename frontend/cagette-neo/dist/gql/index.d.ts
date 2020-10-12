@@ -11,36 +11,22 @@ export declare type Scalars = {
     /** Date custom scalar type */
     Date: any;
     Upload: any;
-    /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-    JSON: any;
 };
-export declare type BufferedJsonMail = {
-    __typename?: 'BufferedJsonMail';
-    id: Scalars['Int'];
-    title: Scalars['String'];
-    htmlBody?: Maybe<Scalars['String']>;
-    textBody?: Maybe<Scalars['String']>;
-    headers: Scalars['JSON'];
-    sender: MailUser;
-    recipients: Array<MailUser>;
-    cdate: Scalars['Date'];
+export declare type AttachmentFileInput = {
+    contentType: Scalars['String'];
+    filename: Scalars['String'];
+    content: Scalars['String'];
+    encoding: Scalars['String'];
 };
 export declare type Catalog = {
     __typename?: 'Catalog';
     id: Scalars['Int'];
     name: Scalars['String'];
     groupId: Scalars['Int'];
-    startDate?: Maybe<Scalars['Date']>;
-    endDate?: Maybe<Scalars['Date']>;
-};
-export declare type CreateBufferedJsonMailInput = {
-    title: Scalars['String'];
-    htmlBody: Scalars['String'];
-    replyToHeader: Scalars['String'];
-    sender: MailUserInput;
-    recipients: Array<MailUserInput>;
-    group?: Maybe<MailGroupInput>;
-    listName?: Maybe<Scalars['String']>;
+    startDate: Scalars['Date'];
+    endDate: Scalars['Date'];
+    vendorId: Scalars['Int'];
+    vendor: Vendor;
 };
 export declare type CreateMangopayAddress = {
     AddressLine1: Scalars['String'];
@@ -95,12 +81,13 @@ export declare type CreateMembershipInput = {
 };
 export declare type CreateMessageInput = {
     title: Scalars['String'];
-    body: Scalars['String'];
-    date: Scalars['Date'];
-    groupId: Scalars['Int'];
-    senderId: Scalars['Int'];
-    recipients: Array<Scalars['String']>;
-    listId?: Maybe<Scalars['String']>;
+    htmlBody: Scalars['String'];
+    replyToHeader: Scalars['String'];
+    whichUser: Scalars['Boolean'];
+    recipients: Array<MailUserInput>;
+    group: MailGroupInput;
+    list?: Maybe<MailListInput>;
+    attachments?: Maybe<Array<AttachmentFileInput>>;
 };
 export declare type CreateOrUpdateMangopayUboInput = {
     id?: Maybe<Scalars['Int']>;
@@ -116,6 +103,13 @@ export declare type CreateOrUpdateMangopayUboInput = {
 export declare type DeactivateMangopayBankAccountInput = {
     groupId: Scalars['Int'];
     bankAccountId: Scalars['String'];
+};
+export declare type File = {
+    __typename?: 'File';
+    id: Scalars['Int'];
+    name: Scalars['String'];
+    data: Scalars['String'];
+    cDate?: Maybe<Scalars['Date']>;
 };
 export declare type GetMangopayLegalUserByLegalRepr = {
     legalReprId: Scalars['Int'];
@@ -148,11 +142,9 @@ export declare type MailGroupInput = {
     id: Scalars['Int'];
     name: Scalars['String'];
 };
-export declare type MailUser = {
-    __typename?: 'MailUser';
-    email: Scalars['String'];
+export declare type MailListInput = {
+    id: Scalars['String'];
     name: Scalars['String'];
-    userId?: Maybe<Scalars['Int']>;
 };
 export declare type MailUserInput = {
     email?: Maybe<Scalars['String']>;
@@ -379,6 +371,7 @@ export declare type Message = {
     senderId: Scalars['Int'];
     recipients: Array<Scalars['String']>;
     recipientListId?: Maybe<Scalars['String']>;
+    attachments?: Maybe<Array<Scalars['String']>>;
     sender: User;
 };
 export declare type Mutation = {
@@ -397,7 +390,6 @@ export declare type Mutation = {
     login: UserAndToken;
     createMembership: Membership;
     deleteMembership: Array<Membership>;
-    createBufferedJsonMail: BufferedJsonMail;
     createMessage: Message;
 };
 export declare type MutationUpdateUserArgs = {
@@ -444,9 +436,6 @@ export declare type MutationDeleteMembershipArgs = {
     userId: Scalars['Int'];
     groupId: Scalars['Int'];
 };
-export declare type MutationCreateBufferedJsonMailArgs = {
-    input: CreateBufferedJsonMailInput;
-};
 export declare type MutationCreateMessageArgs = {
     input: CreateMessageInput;
 };
@@ -460,12 +449,13 @@ export declare type Query = {
     mangopayGroup: MangopayGroup;
     group: Group;
     getUserLists: Array<UserList>;
-    getUserListInGroupByListId: Array<User>;
+    getUserListInGroupByListType: Array<User>;
     groupPreview: GroupPreview;
     groupPreviews: Array<GroupPreview>;
     groupPreviews2: Array<GroupPreview>;
     getUserMemberships: Array<Membership>;
     catalog: Catalog;
+    getActiveContracts: Array<Catalog>;
     getMessagesForGroup: Array<Message>;
     getUserMessagesForGroup: Array<Message>;
     message: Message;
@@ -491,9 +481,10 @@ export declare type QueryGroupArgs = {
 export declare type QueryGetUserListsArgs = {
     groupId: Scalars['Int'];
 };
-export declare type QueryGetUserListInGroupByListIdArgs = {
+export declare type QueryGetUserListInGroupByListTypeArgs = {
+    data?: Maybe<Scalars['String']>;
     groupId: Scalars['Int'];
-    listId: Scalars['String'];
+    listType: Scalars['String'];
 };
 export declare type QueryGroupPreviewArgs = {
     id: Scalars['Int'];
@@ -504,6 +495,9 @@ export declare type QueryGetUserMembershipsArgs = {
 };
 export declare type QueryCatalogArgs = {
     id: Scalars['Int'];
+};
+export declare type QueryGetActiveContractsArgs = {
+    groupId: Scalars['Int'];
 };
 export declare type QueryGetMessagesForGroupArgs = {
     groupId: Scalars['Int'];
@@ -566,8 +560,21 @@ export declare type UserAndToken = {
 };
 export declare type UserList = {
     __typename?: 'UserList';
-    id: Scalars['String'];
+    type: Scalars['String'];
     count?: Maybe<Scalars['Float']>;
+    data?: Maybe<Scalars['String']>;
+};
+export declare type Vendor = {
+    __typename?: 'Vendor';
+    id: Scalars['Int'];
+    name: Scalars['String'];
+    email: Scalars['String'];
+    zipCode: Scalars['String'];
+    city: Scalars['String'];
+    address1?: Maybe<Scalars['String']>;
+    address2?: Maybe<Scalars['String']>;
+    imageId?: Maybe<Scalars['Int']>;
+    image: File;
 };
 export declare type UserFragment = ({
     __typename?: 'User';
@@ -854,16 +861,6 @@ export declare type MessagesGroupQuery = ({
         __typename?: 'Group';
     } & Pick<Group, 'id' | 'name' | 'hasMembership'>);
 });
-export declare type CatalogQueryVariables = {
-    id: Scalars['Int'];
-};
-export declare type CatalogQuery = ({
-    __typename?: 'Query';
-} & {
-    catalog: ({
-        __typename?: 'Catalog';
-    } & Pick<Catalog, 'id' | 'name'>);
-});
 export declare type UserListsQueryVariables = {
     groupId: Scalars['Int'];
 };
@@ -872,28 +869,19 @@ export declare type UserListsQuery = ({
 } & {
     getUserLists: Array<({
         __typename?: 'UserList';
-    } & Pick<UserList, 'id' | 'count'>)>;
+    } & Pick<UserList, 'type' | 'count' | 'data'>)>;
 });
-export declare type GetUserListInGroupByListIdQueryVariables = {
-    listId: Scalars['String'];
+export declare type GetUserListInGroupByListTypeQueryVariables = {
+    listType: Scalars['String'];
     groupId: Scalars['Int'];
+    data?: Maybe<Scalars['String']>;
 };
-export declare type GetUserListInGroupByListIdQuery = ({
+export declare type GetUserListInGroupByListTypeQuery = ({
     __typename?: 'Query';
 } & {
-    getUserListInGroupByListId: Array<({
+    getUserListInGroupByListType: Array<({
         __typename?: 'User';
     } & Pick<User, 'id' | 'firstName' | 'lastName' | 'firstName2' | 'lastName2' | 'email' | 'email2'>)>;
-});
-export declare type CreateBufferedJsonMailMutationVariables = {
-    input: CreateBufferedJsonMailInput;
-};
-export declare type CreateBufferedJsonMailMutation = ({
-    __typename?: 'Mutation';
-} & {
-    createBufferedJsonMail: ({
-        __typename?: 'BufferedJsonMail';
-    } & Pick<BufferedJsonMail, 'id'>);
 });
 export declare type CreateMessageMutationVariables = {
     input: CreateMessageInput;
@@ -933,11 +921,29 @@ export declare type GetMessageByIdQuery = ({
 } & {
     message: ({
         __typename?: 'Message';
-    } & Pick<Message, 'id' | 'title' | 'date' | 'recipientListId' | 'body' | 'recipients'> & {
+    } & Pick<Message, 'id' | 'title' | 'date' | 'recipientListId' | 'body' | 'recipients' | 'attachments'> & {
         sender: ({
             __typename?: 'User';
         } & Pick<User, 'id' | 'firstName' | 'lastName'>);
     });
+});
+export declare type GetActiveContractsQueryVariables = {
+    groupId: Scalars['Int'];
+};
+export declare type GetActiveContractsQuery = ({
+    __typename?: 'Query';
+} & {
+    getActiveContracts: Array<({
+        __typename?: 'Catalog';
+    } & {
+        vendor: ({
+            __typename?: 'Vendor';
+        } & Pick<Vendor, 'name'> & {
+            image: ({
+                __typename?: 'File';
+            } & Pick<File, 'data'>);
+        });
+    })>;
 });
 export declare const UserFragmentDoc: ApolloReactHooks.DocumentNode;
 export declare const MangopayAddressFragmentDoc: ApolloReactHooks.DocumentNode;
@@ -1376,28 +1382,6 @@ export declare function useMessagesGroupLazyQuery(baseOptions?: ApolloReactHooks
 export declare type MessagesGroupQueryHookResult = ReturnType<typeof useMessagesGroupQuery>;
 export declare type MessagesGroupLazyQueryHookResult = ReturnType<typeof useMessagesGroupLazyQuery>;
 export declare type MessagesGroupQueryResult = ApolloReactCommon.QueryResult<MessagesGroupQuery, MessagesGroupQueryVariables>;
-export declare const CatalogDocument: ApolloReactHooks.DocumentNode;
-/**
- * __useCatalogQuery__
- *
- * To run a query within a React component, call `useCatalogQuery` and pass it any options that fit your needs.
- * When your component renders, `useCatalogQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCatalogQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export declare function useCatalogQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CatalogQuery, CatalogQueryVariables>): ApolloReactHooks.QueryResult<CatalogQuery, CatalogQueryVariables>;
-export declare function useCatalogLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CatalogQuery, CatalogQueryVariables>): ApolloReactHooks.QueryTuple<CatalogQuery, CatalogQueryVariables>;
-export declare type CatalogQueryHookResult = ReturnType<typeof useCatalogQuery>;
-export declare type CatalogLazyQueryHookResult = ReturnType<typeof useCatalogLazyQuery>;
-export declare type CatalogQueryResult = ApolloReactCommon.QueryResult<CatalogQuery, CatalogQueryVariables>;
 export declare const UserListsDocument: ApolloReactHooks.DocumentNode;
 /**
  * __useUserListsQuery__
@@ -1420,52 +1404,30 @@ export declare function useUserListsLazyQuery(baseOptions?: ApolloReactHooks.Laz
 export declare type UserListsQueryHookResult = ReturnType<typeof useUserListsQuery>;
 export declare type UserListsLazyQueryHookResult = ReturnType<typeof useUserListsLazyQuery>;
 export declare type UserListsQueryResult = ApolloReactCommon.QueryResult<UserListsQuery, UserListsQueryVariables>;
-export declare const GetUserListInGroupByListIdDocument: ApolloReactHooks.DocumentNode;
+export declare const GetUserListInGroupByListTypeDocument: ApolloReactHooks.DocumentNode;
 /**
- * __useGetUserListInGroupByListIdQuery__
+ * __useGetUserListInGroupByListTypeQuery__
  *
- * To run a query within a React component, call `useGetUserListInGroupByListIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserListInGroupByListIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetUserListInGroupByListTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserListInGroupByListTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUserListInGroupByListIdQuery({
+ * const { data, loading, error } = useGetUserListInGroupByListTypeQuery({
  *   variables: {
- *      listId: // value for 'listId'
+ *      listType: // value for 'listType'
  *      groupId: // value for 'groupId'
+ *      data: // value for 'data'
  *   },
  * });
  */
-export declare function useGetUserListInGroupByListIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>): ApolloReactHooks.QueryResult<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>;
-export declare function useGetUserListInGroupByListIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>): ApolloReactHooks.QueryTuple<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>;
-export declare type GetUserListInGroupByListIdQueryHookResult = ReturnType<typeof useGetUserListInGroupByListIdQuery>;
-export declare type GetUserListInGroupByListIdLazyQueryHookResult = ReturnType<typeof useGetUserListInGroupByListIdLazyQuery>;
-export declare type GetUserListInGroupByListIdQueryResult = ApolloReactCommon.QueryResult<GetUserListInGroupByListIdQuery, GetUserListInGroupByListIdQueryVariables>;
-export declare const CreateBufferedJsonMailDocument: ApolloReactHooks.DocumentNode;
-export declare type CreateBufferedJsonMailMutationFn = ApolloReactCommon.MutationFunction<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>;
-/**
- * __useCreateBufferedJsonMailMutation__
- *
- * To run a mutation, you first call `useCreateBufferedJsonMailMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateBufferedJsonMailMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createBufferedJsonMailMutation, { data, loading, error }] = useCreateBufferedJsonMailMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export declare function useCreateBufferedJsonMailMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>): ApolloReactHooks.MutationTuple<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>;
-export declare type CreateBufferedJsonMailMutationHookResult = ReturnType<typeof useCreateBufferedJsonMailMutation>;
-export declare type CreateBufferedJsonMailMutationResult = ApolloReactCommon.MutationResult<CreateBufferedJsonMailMutation>;
-export declare type CreateBufferedJsonMailMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateBufferedJsonMailMutation, CreateBufferedJsonMailMutationVariables>;
+export declare function useGetUserListInGroupByListTypeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserListInGroupByListTypeQuery, GetUserListInGroupByListTypeQueryVariables>): ApolloReactHooks.QueryResult<GetUserListInGroupByListTypeQuery, GetUserListInGroupByListTypeQueryVariables>;
+export declare function useGetUserListInGroupByListTypeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserListInGroupByListTypeQuery, GetUserListInGroupByListTypeQueryVariables>): ApolloReactHooks.QueryTuple<GetUserListInGroupByListTypeQuery, GetUserListInGroupByListTypeQueryVariables>;
+export declare type GetUserListInGroupByListTypeQueryHookResult = ReturnType<typeof useGetUserListInGroupByListTypeQuery>;
+export declare type GetUserListInGroupByListTypeLazyQueryHookResult = ReturnType<typeof useGetUserListInGroupByListTypeLazyQuery>;
+export declare type GetUserListInGroupByListTypeQueryResult = ApolloReactCommon.QueryResult<GetUserListInGroupByListTypeQuery, GetUserListInGroupByListTypeQueryVariables>;
 export declare const CreateMessageDocument: ApolloReactHooks.DocumentNode;
 export declare type CreateMessageMutationFn = ApolloReactCommon.MutationFunction<CreateMessageMutation, CreateMessageMutationVariables>;
 /**
@@ -1555,3 +1517,25 @@ export declare function useGetMessageByIdLazyQuery(baseOptions?: ApolloReactHook
 export declare type GetMessageByIdQueryHookResult = ReturnType<typeof useGetMessageByIdQuery>;
 export declare type GetMessageByIdLazyQueryHookResult = ReturnType<typeof useGetMessageByIdLazyQuery>;
 export declare type GetMessageByIdQueryResult = ApolloReactCommon.QueryResult<GetMessageByIdQuery, GetMessageByIdQueryVariables>;
+export declare const GetActiveContractsDocument: ApolloReactHooks.DocumentNode;
+/**
+ * __useGetActiveContractsQuery__
+ *
+ * To run a query within a React component, call `useGetActiveContractsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActiveContractsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActiveContractsQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export declare function useGetActiveContractsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetActiveContractsQuery, GetActiveContractsQueryVariables>): ApolloReactHooks.QueryResult<GetActiveContractsQuery, GetActiveContractsQueryVariables>;
+export declare function useGetActiveContractsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetActiveContractsQuery, GetActiveContractsQueryVariables>): ApolloReactHooks.QueryTuple<GetActiveContractsQuery, GetActiveContractsQueryVariables>;
+export declare type GetActiveContractsQueryHookResult = ReturnType<typeof useGetActiveContractsQuery>;
+export declare type GetActiveContractsLazyQueryHookResult = ReturnType<typeof useGetActiveContractsLazyQuery>;
+export declare type GetActiveContractsQueryResult = ApolloReactCommon.QueryResult<GetActiveContractsQuery, GetActiveContractsQueryVariables>;

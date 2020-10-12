@@ -1,4 +1,7 @@
 /// <reference types="react" />
-import { MessagesProps } from './containers/MessagingService';
+export interface MessagesProps {
+    groupId: number;
+    whichUser: boolean;
+}
 declare const Messages: ({ groupId, whichUser }: MessagesProps) => JSX.Element;
 export default Messages;

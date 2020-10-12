@@ -1,3 +1,7 @@
 /// <reference types="react" />
-declare const Message: () => JSX.Element | null;
+interface MessageProps {
+    messageId: number;
+    onBack: () => void;
+}
+declare const Message: ({ messageId, onBack }: MessageProps) => JSX.Element;
 export default Message;

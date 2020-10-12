@@ -7,6 +7,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 var core$1 = require('@material-ui/core');
+var locale$3 = require('@material-ui/core/locale');
 var Autocomplete = _interopDefault(require('@material-ui/lab/Autocomplete'));
 var SvgIcon = _interopDefault(require('@material-ui/core/SvgIcon'));
 var ReactDOM = _interopDefault(require('react-dom'));
@@ -16,6 +17,9 @@ var i18n = _interopDefault(require('i18next'));
 var formik = require('formik');
 var formikMaterialUi = require('formik-material-ui');
 var MenuItem = _interopDefault(require('@material-ui/core/MenuItem'));
+var styles$1 = require('@material-ui/core/styles');
+var Popover = _interopDefault(require('@material-ui/core/Popover'));
+var Button = _interopDefault(require('@material-ui/core/Button'));
 var reactLeaflet = require('react-leaflet');
 var TextField = _interopDefault(require('@material-ui/core/TextField'));
 
@@ -172,7 +176,7 @@ var theme = core$1.createMuiTheme({
             textTransform: 'none',
         },
     },
-});
+}, locale$3.frFR);
 
 var withNeolithicProvider = function (Wrapped) {
     var Wrapper = function (props) {
@@ -19197,9 +19201,9 @@ if (typeof fetch === 'function') {
 }
 
 if (typeof require !== 'undefined' && (typeof window === 'undefined' || typeof window.document === 'undefined')) {
-  var f = fetchApi || require('node-fetch');
-  if (f.default) f = f.default;
-  exports.default = f;
+  var f$1 = fetchApi || require('node-fetch');
+  if (f$1.default) f$1 = f$1.default;
+  exports.default = f$1;
   module.exports = exports.default;
 }
 
@@ -22141,7 +22145,7 @@ function getAllKeysIn(object) {
 }
 
 /* Built-in method references that are verified to be native. */
-var DataView = getNative(root$2, 'DataView');
+var DataView$1 = getNative(root$2, 'DataView');
 
 /* Built-in method references that are verified to be native. */
 var Promise$1 = getNative(root$2, 'Promise');
@@ -22162,7 +22166,7 @@ var mapTag$1 = '[object Map]',
 var dataViewTag$1 = '[object DataView]';
 
 /** Used to detect maps, sets, and weakmaps. */
-var dataViewCtorString = toSource(DataView),
+var dataViewCtorString = toSource(DataView$1),
     mapCtorString = toSource(Map$1),
     promiseCtorString = toSource(Promise$1),
     setCtorString = toSource(Set$1),
@@ -22178,7 +22182,7 @@ var dataViewCtorString = toSource(DataView),
 var getTag = baseGetTag$1;
 
 // Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
+if ((DataView$1 && getTag(new DataView$1(new ArrayBuffer(1))) != dataViewTag$1) ||
     (Map$1 && getTag(new Map$1) != mapTag$1) ||
     (Promise$1 && getTag(Promise$1.resolve()) != promiseTag) ||
     (Set$1 && getTag(new Set$1) != setTag$1) ||
@@ -22229,7 +22233,7 @@ function initCloneArray(array) {
 }
 
 /** Built-in value references. */
-var Uint8Array = root$2.Uint8Array;
+var Uint8Array$1 = root$2.Uint8Array;
 
 /**
  * Creates a clone of `arrayBuffer`.
@@ -22240,7 +22244,7 @@ var Uint8Array = root$2.Uint8Array;
  */
 function cloneArrayBuffer(arrayBuffer) {
   var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
-  new Uint8Array(result).set(new Uint8Array(arrayBuffer));
+  new Uint8Array$1(result).set(new Uint8Array$1(arrayBuffer));
   return result;
 }
 
@@ -23887,7 +23891,7 @@ function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
 
     case arrayBufferTag$3:
       if ((object.byteLength != other.byteLength) ||
-          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+          !equalFunc(new Uint8Array$1(object), new Uint8Array$1(other))) {
         return false;
       }
       return true;
@@ -27977,9 +27981,43 @@ var mangopayUboSchema = es.object().shape({
     Birthplace: mangopayBirthplaceSchema,
 });
 
+(function (UserListsType) {
+    UserListsType["all"] = "all";
+    UserListsType["test"] = "test";
+    UserListsType["admins"] = "admins";
+    UserListsType["noOrders"] = "noOrders";
+    UserListsType["membershipToBeRenewed"] = "membershipToBeRenewed";
+    UserListsType["contractSubscribers"] = "contractSubscribers";
+})(exports.UserListsType || (exports.UserListsType = {}));
+var UserLists = /** @class */ (function () {
+    function UserLists(type) {
+        this.type = type;
+    }
+    UserLists.getLists = function () {
+        return [
+            UserLists.ALL,
+            UserLists.ADMINS,
+            UserLists.NO_ORDERS,
+            UserLists.MEMBERSHIP_TO_BE_RENEWED,
+            UserLists.CONTRACT_SUBSCRIBERS,
+        ];
+    };
+    UserLists.prototype.setData = function (data) {
+        this.data = data;
+    };
+    UserLists.ALL = new UserLists(exports.UserListsType.all);
+    UserLists.TEST = new UserLists(exports.UserListsType.test);
+    UserLists.ADMINS = new UserLists(exports.UserListsType.admins);
+    UserLists.NO_ORDERS = new UserLists(exports.UserListsType.noOrders);
+    UserLists.MEMBERSHIP_TO_BE_RENEWED = new UserLists(exports.UserListsType.membershipToBeRenewed);
+    UserLists.CONTRACT_SUBSCRIBERS = new UserLists(exports.UserListsType.contractSubscribers);
+    return UserLists;
+}());
+
 exports.MangopayBusineddKYCDocumentTypes = MangopayBusineddKYCDocumentTypes;
 exports.MangopayOrganizationKYCDocumentTypes = MangopayOrganizationKYCDocumentTypes;
 exports.MangopaySoletraderKYCDocumentTypes = MangopaySoletraderKYCDocumentTypes;
+exports.UserLists = UserLists;
 exports.customYup = es;
 exports.getMangopayRequiredKYCDocumentTypes = getMangopayRequiredKYCDocumentTypes;
 exports.loginSchema = loginSchema;
@@ -27993,18 +28031,20 @@ exports.userSchema = userSchema;
 });
 
 unwrapExports(dist);
-var dist_1 = dist.MangopayBusineddKYCDocumentTypes;
-var dist_2 = dist.MangopayOrganizationKYCDocumentTypes;
-var dist_3 = dist.MangopaySoletraderKYCDocumentTypes;
-var dist_4 = dist.customYup;
-var dist_5 = dist.getMangopayRequiredKYCDocumentTypes;
-var dist_6 = dist.loginSchema;
-var dist_7 = dist.mangopayAddressSchema;
-var dist_8 = dist.mangopayBankAccountSchema;
-var dist_9 = dist.mangopayLegalPersonTypeRequiredUbo;
-var dist_10 = dist.mangopayLegalUserSchema;
-var dist_11 = dist.mangopayUboSchema;
-var dist_12 = dist.userSchema;
+var dist_1 = dist.UserListsType;
+var dist_2 = dist.MangopayBusineddKYCDocumentTypes;
+var dist_3 = dist.MangopayOrganizationKYCDocumentTypes;
+var dist_4 = dist.MangopaySoletraderKYCDocumentTypes;
+var dist_5 = dist.UserLists;
+var dist_6 = dist.customYup;
+var dist_7 = dist.getMangopayRequiredKYCDocumentTypes;
+var dist_8 = dist.loginSchema;
+var dist_9 = dist.mangopayAddressSchema;
+var dist_10 = dist.mangopayBankAccountSchema;
+var dist_11 = dist.mangopayLegalPersonTypeRequiredUbo;
+var dist_12 = dist.mangopayLegalUserSchema;
+var dist_13 = dist.mangopayUboSchema;
+var dist_14 = dist.userSchema;
 
 var yupHelperTextTranslator = (function (t, helperText) {
     if (helperText) {
@@ -36630,6 +36670,13 @@ var ReactEditor = {
  */
 
 var FocusedContext = React.createContext(false);
+/**
+ * Get the current `focused` state of the editor.
+ */
+
+var useFocused = () => {
+  return React.useContext(FocusedContext);
+};
 
 /**
  * A React context for sharing the editor object.
@@ -36728,6 +36775,13 @@ var useReadOnly = () => {
  */
 
 var SelectedContext = React.createContext(false);
+/**
+ * Get the current `selected` state of an element.
+ */
+
+var useSelected = () => {
+  return React.useContext(SelectedContext);
+};
 
 /**
  * `withReact` adds React and DOM specific behaviors to the editor.
@@ -38286,6 +38340,10 @@ function createSvgIcon(path, displayName) {
   return Component;
 }
 
+var AttachFile = createSvgIcon(React__default.createElement("path", {
+  d: "M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
+}), 'AttachFile');
+
 var FormatAlignCenter = createSvgIcon(React__default.createElement("path", {
   d: "M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"
 }), 'FormatAlignCenter');
@@ -38293,6 +38351,10 @@ var FormatAlignCenter = createSvgIcon(React__default.createElement("path", {
 var FormatAlignLeft = createSvgIcon(React__default.createElement("path", {
   d: "M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"
 }), 'FormatAlignLeft');
+
+var FormatAlignRight = createSvgIcon(React__default.createElement("path", {
+  d: "M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"
+}), 'FormatAlignRight');
 
 var FormatBold = createSvgIcon(React__default.createElement("path", {
   d: "M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"
@@ -38310,13 +38372,17 @@ var FormatListNumbered = createSvgIcon(React__default.createElement("path", {
   d: "M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
 }), 'FormatListNumbered');
 
-var FormatQuote = createSvgIcon(React__default.createElement("path", {
-  d: "M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"
-}), 'FormatQuote');
-
 var FormatUnderlined = createSvgIcon(React__default.createElement("path", {
   d: "M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"
 }), 'FormatUnderlined');
+
+var Image$1 = createSvgIcon(React__default.createElement("path", {
+  d: "M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+}), 'Image');
+
+var InsertLink = createSvgIcon(React__default.createElement("path", {
+  d: "M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"
+}), 'InsertLink');
 
 var LooksOne = createSvgIcon(React__default.createElement("path", {
   d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z"
@@ -38618,10 +38684,6 @@ var shouldClear = op => {
   return true;
 };
 
-var EditorButton = function (_a) {
-    var active = _a.active, onMouseDown = _a.onMouseDown, children = _a.children;
-    return (React__default.createElement(core$1.Box, { onMouseDown: onMouseDown, color: "" + (active ? 'black' : 'grey.500'), style: { cursor: 'pointer' } }, children));
-};
 var useStyles$2 = core$1.makeStyles(function (theme) { return ({
     menu: {
         '& > *': {
@@ -38632,7 +38694,15 @@ var useStyles$2 = core$1.makeStyles(function (theme) { return ({
             marginLeft: theme.spacing(2),
         },
     },
+    button: {
+        cursor: 'pointer',
+    },
 }); });
+var EditorButton = function (_a) {
+    var active = _a.active, onMouseDown = _a.onMouseDown, onMouseUp = _a.onMouseUp, children = _a.children;
+    var cs = useStyles$2();
+    return (React__default.createElement(core$1.Box, { onMouseDown: onMouseDown, onMouseUp: onMouseUp, color: "" + (active ? 'black' : 'grey.500'), className: cs.button }, children));
+};
 var Menu = function (_a) {
     var children = _a.children;
     var cs = useStyles$2();
@@ -38658,31 +38728,2397 @@ var FormatTypes;
     FormatTypes["paragraph"] = "paragraph";
     FormatTypes["alignCenter"] = "align-center";
     FormatTypes["alignLeft"] = "align-left";
+    FormatTypes["alignRight"] = "align-right";
+    FormatTypes["hyperlink"] = "hyperlink";
+    FormatTypes["image"] = "image";
 })(FormatTypes || (FormatTypes = {}));
-var isFormatList = function (format) { return format === FormatTypes.numberedList || format === FormatTypes.bulletedList; };
+var isFormatList = function (format) {
+    return format === FormatTypes.numberedList || format === FormatTypes.bulletedList;
+};
 var isFormatListItem = function (format) { return format === FormatTypes.listItem; };
-var isFormatAlignment = function (format) { return format === FormatTypes.alignCenter || format === FormatTypes.alignLeft; };
-var isFormatHeading = function (format) { return format === FormatTypes.headingOne || format === FormatTypes.headingTwo; };
-var getOtherListFormat = function (format) {
-    if (format === FormatTypes.numberedList) {
-        return FormatTypes.bulletedList;
+var isFormatAlignment = function (format) {
+    return format === FormatTypes.alignCenter || format === FormatTypes.alignLeft || format === FormatTypes.alignRight;
+};
+var isFormatHeading = function (format) {
+    return format === FormatTypes.headingOne || format === FormatTypes.headingTwo;
+};
+var FormatTypes$1 = FormatTypes;
+
+/* eslint-disable no-useless-escape */
+var URL_PATTERN = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+var FINISHED_URL_PATTERN = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)\s/;
+var isUrl = function (text) {
+    return URL_PATTERN.test(text);
+};
+var isFinishedUrl = function (text) {
+    return FINISHED_URL_PATTERN.test(text);
+};
+
+var isLinkActive = function (editor) {
+    var _a = __read(Editor.nodes(editor, { match: function (n) { return n.type === FormatTypes$1.hyperlink; } }), 1), link = _a[0];
+    return !!link;
+};
+var unwrapLink = function (editor) {
+    Transforms.unwrapNodes(editor, { match: function (n) { return n.type === FormatTypes$1.hyperlink; } });
+};
+var wrapLink = function (editor, url, text) {
+    if (isLinkActive(editor)) {
+        unwrapLink(editor);
     }
-    return FormatTypes.numberedList;
+    var selection = editor.selection;
+    var isCollapsed = selection && Range.isCollapsed(selection);
+    var link = {
+        type: FormatTypes$1.hyperlink,
+        url: url,
+        children: isCollapsed ? [{ text: text || url }] : [],
+    };
+    if (isCollapsed) {
+        Transforms.insertNodes(editor, link);
+    }
+    else {
+        Transforms.wrapNodes(editor, link, { split: true });
+        Transforms.collapse(editor, { edge: 'end' });
+    }
+};
+var insertLink = function (editor, url, text) {
+    if (editor.selection) {
+        wrapLink(editor, url, text);
+    }
+};
+var withLinks = function (editor) {
+    var e = editor;
+    var insertData = e.insertData, insertText = e.insertText, isInline = e.isInline, normalizeNode = e.normalizeNode;
+    var isWrapingNodeEntry;
+    e.isInline = function (element) {
+        return element.type === FormatTypes$1.hyperlink ? true : isInline(element);
+    };
+    e.insertText = function (text) {
+        if (text && isUrl(text)) {
+            wrapLink(e, text);
+        }
+        else {
+            insertText(text);
+        }
+    };
+    e.insertData = function (data) {
+        var text = data.getData('text/plain');
+        var trimmedText = text && text.trim();
+        if (trimmedText && isUrl(trimmedText)) {
+            wrapLink(e, trimmedText);
+        }
+        else {
+            insertData(data);
+        }
+    };
+    e.normalizeNode = function (entry) {
+        var node = entry[0];
+        if (node.text) {
+            var text = node.text;
+            if (!(isWrapingNodeEntry && isWrapingNodeEntry[0].text.trim() === text)) {
+                if (text && isFinishedUrl(text)) {
+                    var url = text.match(URL_PATTERN)[0];
+                    isWrapingNodeEntry = entry;
+                    var selection = e.selection;
+                    var focus_1 = selection.focus;
+                    var anchor = selection.anchor;
+                    var startIndexOfUrl = text.indexOf(url);
+                    var endIndexOfUrl = startIndexOfUrl + url.length;
+                    Transforms.setSelection(e, {
+                        focus: { offset: endIndexOfUrl, path: focus_1.path },
+                        anchor: { offset: startIndexOfUrl, path: anchor.path },
+                    });
+                    wrapLink(e, url);
+                    return;
+                }
+            }
+            else {
+                isWrapingNodeEntry = undefined;
+            }
+        }
+        normalizeNode(entry);
+    };
+    return e;
+};
+var useStyles$3 = styles$1.makeStyles(function () { return ({
+    popoverContent: {
+        flexGrow: 1,
+    },
+    icon: {
+        display: 'block',
+    },
+}); });
+var DEFAULT_SELECTION = {
+    anchor: {
+        path: [0, 0],
+        offset: 0,
+    },
+    focus: {
+        path: [0, 0],
+        offset: 0,
+    },
+};
+var LinkButton = function () {
+    var t = useTranslation(['messages/default']).t;
+    var editor = useSlate();
+    var cs = useStyles$3();
+    var _a = __read(React__default.useState(null), 2), anchorEl = _a[0], setAnchorEl = _a[1];
+    var _b = __read(React__default.useState(), 2), textInput = _b[0], setTextInput = _b[1];
+    var _c = __read(React__default.useState(), 2), urlInput = _c[0], setUrlInput = _c[1];
+    var _d = __read(React__default.useState(null), 2), selection = _d[0], setSelection = _d[1];
+    var _e = __read(React__default.useState(false), 2), isActive = _e[0], setIsActive = _e[1];
+    var reset = function () {
+        setTextInput('');
+        setUrlInput('');
+        setSelection(null);
+    };
+    var onMouseDown = function (event) {
+        event.preventDefault();
+        setIsActive(true);
+        setSelection(editor.selection);
+        setAnchorEl(event.currentTarget);
+    };
+    var handleClose = function () {
+        setAnchorEl(null);
+        reset();
+        setIsActive(false);
+    };
+    var handleTextChange = function (event) {
+        setTextInput(event.target.value);
+    };
+    var handleUrlChange = function (event) {
+        setUrlInput(event.target.value);
+    };
+    var onAddLink = function () {
+        if (!urlInput)
+            return;
+        editor.selection = selection || DEFAULT_SELECTION;
+        var url = urlInput;
+        if (!urlInput.startsWith('http://') || !urlInput.startsWith('https://')) {
+            url = "http://" + urlInput;
+        }
+        insertLink(editor, url, textInput);
+        handleClose();
+    };
+    var open = Boolean(anchorEl);
+    var id = open ? 'link-popover' : undefined;
+    return (React__default.createElement(React__default.Fragment, null,
+        React__default.createElement(EditorButton, { "aria-describedby": id, active: isActive || isLinkActive(editor), onMouseDown: onMouseDown },
+            React__default.createElement(InsertLink, { className: cs.icon })),
+        React__default.createElement(Popover, { id: id, open: open, anchorEl: anchorEl, onClose: handleClose, anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'center',
+            }, transformOrigin: {
+                vertical: 'top',
+                horizontal: 'center',
+            } },
+            React__default.createElement(core$1.Box, { className: cs.popoverContent, p: 2 },
+                React__default.createElement(core$1.Grid, { container: true, spacing: 1 },
+                    React__default.createElement(core$1.Grid, { item: true, xs: 9 },
+                        React__default.createElement(core$1.TextField, { label: "Texte", variant: "outlined", fullWidth: true, value: textInput, onChange: handleTextChange })),
+                    React__default.createElement(core$1.Grid, { item: true, container: true, xs: 12, direction: "row", alignItems: "center" },
+                        React__default.createElement(core$1.Grid, { item: true, xs: 9 },
+                            React__default.createElement(core$1.TextField, { label: "Lien", variant: "outlined", fullWidth: true, value: urlInput, onChange: handleUrlChange })),
+                        React__default.createElement(core$1.Grid, { item: true, xs: 3, container: true, justify: "center" },
+                            React__default.createElement(Button, { variant: "contained", onClick: onAddLink }, t('apply')))))))));
+};
+
+var __extends$2 = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign$1 = (undefined && undefined.__assign) || function () {
+    __assign$1 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$1.apply(this, arguments);
+};
+var styles = {
+    top: {
+        width: '100%',
+        height: '10px',
+        top: '-5px',
+        left: '0px',
+        cursor: 'row-resize',
+    },
+    right: {
+        width: '10px',
+        height: '100%',
+        top: '0px',
+        right: '-5px',
+        cursor: 'col-resize',
+    },
+    bottom: {
+        width: '100%',
+        height: '10px',
+        bottom: '-5px',
+        left: '0px',
+        cursor: 'row-resize',
+    },
+    left: {
+        width: '10px',
+        height: '100%',
+        top: '0px',
+        left: '-5px',
+        cursor: 'col-resize',
+    },
+    topRight: {
+        width: '20px',
+        height: '20px',
+        position: 'absolute',
+        right: '-10px',
+        top: '-10px',
+        cursor: 'ne-resize',
+    },
+    bottomRight: {
+        width: '20px',
+        height: '20px',
+        position: 'absolute',
+        right: '-10px',
+        bottom: '-10px',
+        cursor: 'se-resize',
+    },
+    bottomLeft: {
+        width: '20px',
+        height: '20px',
+        position: 'absolute',
+        left: '-10px',
+        bottom: '-10px',
+        cursor: 'sw-resize',
+    },
+    topLeft: {
+        width: '20px',
+        height: '20px',
+        position: 'absolute',
+        left: '-10px',
+        top: '-10px',
+        cursor: 'nw-resize',
+    },
+};
+var Resizer = /** @class */ (function (_super) {
+    __extends$2(Resizer, _super);
+    function Resizer() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.onMouseDown = function (e) {
+            _this.props.onResizeStart(e, _this.props.direction);
+        };
+        _this.onTouchStart = function (e) {
+            _this.props.onResizeStart(e, _this.props.direction);
+        };
+        return _this;
+    }
+    Resizer.prototype.render = function () {
+        return (React.createElement("div", { className: this.props.className || '', style: __assign$1(__assign$1({ position: 'absolute', userSelect: 'none' }, styles[this.props.direction]), (this.props.replaceStyles || {})), onMouseDown: this.onMouseDown, onTouchStart: this.onTouchStart }, this.props.children));
+    };
+    return Resizer;
+}(React.PureComponent));
+
+//
+// Main
+//
+
+function memoize$1 (fn, options) {
+  var cache = options && options.cache
+    ? options.cache
+    : cacheDefault;
+
+  var serializer = options && options.serializer
+    ? options.serializer
+    : serializerDefault;
+
+  var strategy = options && options.strategy
+    ? options.strategy
+    : strategyDefault;
+
+  return strategy(fn, {
+    cache: cache,
+    serializer: serializer
+  })
+}
+
+//
+// Strategy
+//
+
+function isPrimitive (value) {
+  return value == null || typeof value === 'number' || typeof value === 'boolean' // || typeof value === "string" 'unsafe' primitive for our needs
+}
+
+function monadic (fn, cache, serializer, arg) {
+  var cacheKey = isPrimitive(arg) ? arg : serializer(arg);
+
+  var computedValue = cache.get(cacheKey);
+  if (typeof computedValue === 'undefined') {
+    computedValue = fn.call(this, arg);
+    cache.set(cacheKey, computedValue);
+  }
+
+  return computedValue
+}
+
+function variadic (fn, cache, serializer) {
+  var args = Array.prototype.slice.call(arguments, 3);
+  var cacheKey = serializer(args);
+
+  var computedValue = cache.get(cacheKey);
+  if (typeof computedValue === 'undefined') {
+    computedValue = fn.apply(this, args);
+    cache.set(cacheKey, computedValue);
+  }
+
+  return computedValue
+}
+
+function assemble (fn, context, strategy, cache, serialize) {
+  return strategy.bind(
+    context,
+    fn,
+    cache,
+    serialize
+  )
+}
+
+function strategyDefault (fn, options) {
+  var strategy = fn.length === 1 ? monadic : variadic;
+
+  return assemble(
+    fn,
+    this,
+    strategy,
+    options.cache.create(),
+    options.serializer
+  )
+}
+
+function strategyVariadic (fn, options) {
+  var strategy = variadic;
+
+  return assemble(
+    fn,
+    this,
+    strategy,
+    options.cache.create(),
+    options.serializer
+  )
+}
+
+function strategyMonadic (fn, options) {
+  var strategy = monadic;
+
+  return assemble(
+    fn,
+    this,
+    strategy,
+    options.cache.create(),
+    options.serializer
+  )
+}
+
+//
+// Serializer
+//
+
+function serializerDefault () {
+  return JSON.stringify(arguments)
+}
+
+//
+// Cache
+//
+
+function ObjectWithoutPrototypeCache () {
+  this.cache = Object.create(null);
+}
+
+ObjectWithoutPrototypeCache.prototype.has = function (key) {
+  return (key in this.cache)
+};
+
+ObjectWithoutPrototypeCache.prototype.get = function (key) {
+  return this.cache[key]
+};
+
+ObjectWithoutPrototypeCache.prototype.set = function (key, value) {
+  this.cache[key] = value;
+};
+
+var cacheDefault = {
+  create: function create () {
+    return new ObjectWithoutPrototypeCache()
+  }
+};
+
+//
+// API
+//
+
+var src$1 = memoize$1;
+var strategies = {
+  variadic: strategyVariadic,
+  monadic: strategyMonadic
+};
+src$1.strategies = strategies;
+
+var __extends$3 = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign$2 = (undefined && undefined.__assign) || function () {
+    __assign$2 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$2.apply(this, arguments);
+};
+var DEFAULT_SIZE = {
+    width: 'auto',
+    height: 'auto',
+};
+var clamp = src$1(function (n, min, max) { return Math.max(Math.min(n, max), min); });
+var snap = src$1(function (n, size) { return Math.round(n / size) * size; });
+var hasDirection = src$1(function (dir, target) {
+    return new RegExp(dir, 'i').test(target);
+});
+// INFO: In case of window is a Proxy and does not porxy Events correctly, use isTouchEvent & isMouseEvent to distinguish event type instead of `instanceof`.
+var isTouchEvent = function (event) {
+    return Boolean(event.touches && event.touches.length);
+};
+var isMouseEvent = function (event) {
+    return Boolean((event.clientX || event.clientX === 0) &&
+        (event.clientY || event.clientY === 0));
+};
+var findClosestSnap = src$1(function (n, snapArray, snapGap) {
+    if (snapGap === void 0) { snapGap = 0; }
+    var closestGapIndex = snapArray.reduce(function (prev, curr, index) { return (Math.abs(curr - n) < Math.abs(snapArray[prev] - n) ? index : prev); }, 0);
+    var gap = Math.abs(snapArray[closestGapIndex] - n);
+    return snapGap === 0 || gap < snapGap ? snapArray[closestGapIndex] : n;
+});
+var endsWith$1 = src$1(function (str, searchStr) {
+    return str.substr(str.length - searchStr.length, searchStr.length) === searchStr;
+});
+var getStringSize = src$1(function (n) {
+    n = n.toString();
+    if (n === 'auto') {
+        return n;
+    }
+    if (endsWith$1(n, 'px')) {
+        return n;
+    }
+    if (endsWith$1(n, '%')) {
+        return n;
+    }
+    if (endsWith$1(n, 'vh')) {
+        return n;
+    }
+    if (endsWith$1(n, 'vw')) {
+        return n;
+    }
+    if (endsWith$1(n, 'vmax')) {
+        return n;
+    }
+    if (endsWith$1(n, 'vmin')) {
+        return n;
+    }
+    return n + "px";
+});
+var getPixelSize = function (size, parentSize, innerWidth, innerHeight) {
+    if (size && typeof size === 'string') {
+        if (endsWith$1(size, 'px')) {
+            return Number(size.replace('px', ''));
+        }
+        if (endsWith$1(size, '%')) {
+            var ratio = Number(size.replace('%', '')) / 100;
+            return parentSize * ratio;
+        }
+        if (endsWith$1(size, 'vw')) {
+            var ratio = Number(size.replace('vw', '')) / 100;
+            return innerWidth * ratio;
+        }
+        if (endsWith$1(size, 'vh')) {
+            var ratio = Number(size.replace('vh', '')) / 100;
+            return innerHeight * ratio;
+        }
+    }
+    return size;
+};
+var calculateNewMax = src$1(function (parentSize, innerWidth, innerHeight, maxWidth, maxHeight, minWidth, minHeight) {
+    maxWidth = getPixelSize(maxWidth, parentSize.width, innerWidth, innerHeight);
+    maxHeight = getPixelSize(maxHeight, parentSize.height, innerWidth, innerHeight);
+    minWidth = getPixelSize(minWidth, parentSize.width, innerWidth, innerHeight);
+    minHeight = getPixelSize(minHeight, parentSize.height, innerWidth, innerHeight);
+    return {
+        maxWidth: typeof maxWidth === 'undefined' ? undefined : Number(maxWidth),
+        maxHeight: typeof maxHeight === 'undefined' ? undefined : Number(maxHeight),
+        minWidth: typeof minWidth === 'undefined' ? undefined : Number(minWidth),
+        minHeight: typeof minHeight === 'undefined' ? undefined : Number(minHeight),
+    };
+});
+var definedProps = [
+    'as',
+    'style',
+    'className',
+    'grid',
+    'snap',
+    'bounds',
+    'size',
+    'defaultSize',
+    'minWidth',
+    'minHeight',
+    'maxWidth',
+    'maxHeight',
+    'lockAspectRatio',
+    'lockAspectRatioExtraWidth',
+    'lockAspectRatioExtraHeight',
+    'enable',
+    'handleStyles',
+    'handleClasses',
+    'handleWrapperStyle',
+    'handleWrapperClass',
+    'children',
+    'onResizeStart',
+    'onResize',
+    'onResizeStop',
+    'handleComponent',
+    'scale',
+    'resizeRatio',
+    'snapGap',
+];
+// HACK: This class is used to calculate % size.
+var baseClassName = '__resizable_base__';
+var Resizable = /** @class */ (function (_super) {
+    __extends$3(Resizable, _super);
+    function Resizable(props) {
+        var _this = _super.call(this, props) || this;
+        _this.ratio = 1;
+        _this.resizable = null;
+        // For parent boundary
+        _this.parentLeft = 0;
+        _this.parentTop = 0;
+        // For boundary
+        _this.resizableLeft = 0;
+        _this.resizableTop = 0;
+        // For target boundary
+        _this.targetLeft = 0;
+        _this.targetTop = 0;
+        _this.appendBase = function () {
+            if (!_this.resizable || !_this.window) {
+                return null;
+            }
+            var parent = _this.parentNode;
+            if (!parent) {
+                return null;
+            }
+            var element = _this.window.document.createElement('div');
+            element.style.width = '100%';
+            element.style.height = '100%';
+            element.style.position = 'absolute';
+            element.style.transform = 'scale(0, 0)';
+            element.style.left = '0';
+            element.style.flex = '0';
+            if (element.classList) {
+                element.classList.add(baseClassName);
+            }
+            else {
+                element.className += baseClassName;
+            }
+            parent.appendChild(element);
+            return element;
+        };
+        _this.removeBase = function (base) {
+            var parent = _this.parentNode;
+            if (!parent) {
+                return;
+            }
+            parent.removeChild(base);
+        };
+        _this.ref = function (c) {
+            if (c) {
+                _this.resizable = c;
+            }
+        };
+        _this.state = {
+            isResizing: false,
+            width: typeof (_this.propsSize && _this.propsSize.width) === 'undefined'
+                ? 'auto'
+                : _this.propsSize && _this.propsSize.width,
+            height: typeof (_this.propsSize && _this.propsSize.height) === 'undefined'
+                ? 'auto'
+                : _this.propsSize && _this.propsSize.height,
+            direction: 'right',
+            original: {
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0,
+            },
+            backgroundStyle: {
+                height: '100%',
+                width: '100%',
+                backgroundColor: 'rgba(0,0,0,0)',
+                cursor: 'auto',
+                opacity: 0,
+                position: 'fixed',
+                zIndex: 9999,
+                top: '0',
+                left: '0',
+                bottom: '0',
+                right: '0',
+            },
+            flexBasis: undefined,
+        };
+        _this.onResizeStart = _this.onResizeStart.bind(_this);
+        _this.onMouseMove = _this.onMouseMove.bind(_this);
+        _this.onMouseUp = _this.onMouseUp.bind(_this);
+        return _this;
+    }
+    Object.defineProperty(Resizable.prototype, "parentNode", {
+        get: function () {
+            if (!this.resizable) {
+                return null;
+            }
+            return this.resizable.parentNode;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Resizable.prototype, "window", {
+        get: function () {
+            if (!this.resizable) {
+                return null;
+            }
+            if (!this.resizable.ownerDocument) {
+                return null;
+            }
+            return this.resizable.ownerDocument.defaultView;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Resizable.prototype, "propsSize", {
+        get: function () {
+            return this.props.size || this.props.defaultSize || DEFAULT_SIZE;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Resizable.prototype, "size", {
+        get: function () {
+            var width = 0;
+            var height = 0;
+            if (this.resizable && this.window) {
+                var orgWidth = this.resizable.offsetWidth;
+                var orgHeight = this.resizable.offsetHeight;
+                // HACK: Set position `relative` to get parent size.
+                //       This is because when re-resizable set `absolute`, I can not get base width correctly.
+                var orgPosition = this.resizable.style.position;
+                if (orgPosition !== 'relative') {
+                    this.resizable.style.position = 'relative';
+                }
+                // INFO: Use original width or height if set auto.
+                width = this.resizable.style.width !== 'auto' ? this.resizable.offsetWidth : orgWidth;
+                height = this.resizable.style.height !== 'auto' ? this.resizable.offsetHeight : orgHeight;
+                // Restore original position
+                this.resizable.style.position = orgPosition;
+            }
+            return { width: width, height: height };
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Resizable.prototype, "sizeStyle", {
+        get: function () {
+            var _this = this;
+            var size = this.props.size;
+            var getSize = function (key) {
+                if (typeof _this.state[key] === 'undefined' || _this.state[key] === 'auto') {
+                    return 'auto';
+                }
+                if (_this.propsSize && _this.propsSize[key] && endsWith$1(_this.propsSize[key].toString(), '%')) {
+                    if (endsWith$1(_this.state[key].toString(), '%')) {
+                        return _this.state[key].toString();
+                    }
+                    var parentSize = _this.getParentSize();
+                    var value = Number(_this.state[key].toString().replace('px', ''));
+                    var percent = (value / parentSize[key]) * 100;
+                    return percent + "%";
+                }
+                return getStringSize(_this.state[key]);
+            };
+            var width = size && typeof size.width !== 'undefined' && !this.state.isResizing
+                ? getStringSize(size.width)
+                : getSize('width');
+            var height = size && typeof size.height !== 'undefined' && !this.state.isResizing
+                ? getStringSize(size.height)
+                : getSize('height');
+            return { width: width, height: height };
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Resizable.prototype.getParentSize = function () {
+        if (!this.parentNode) {
+            if (!this.window) {
+                return { width: 0, height: 0 };
+            }
+            return { width: this.window.innerWidth, height: this.window.innerHeight };
+        }
+        var base = this.appendBase();
+        if (!base) {
+            return { width: 0, height: 0 };
+        }
+        // INFO: To calculate parent width with flex layout
+        var wrapChanged = false;
+        var wrap = this.parentNode.style.flexWrap;
+        if (wrap !== 'wrap') {
+            wrapChanged = true;
+            this.parentNode.style.flexWrap = 'wrap';
+            // HACK: Use relative to get parent padding size
+        }
+        base.style.position = 'relative';
+        base.style.minWidth = '100%';
+        var size = {
+            width: base.offsetWidth,
+            height: base.offsetHeight,
+        };
+        if (wrapChanged) {
+            this.parentNode.style.flexWrap = wrap;
+        }
+        this.removeBase(base);
+        return size;
+    };
+    Resizable.prototype.bindEvents = function () {
+        if (this.window) {
+            this.window.addEventListener('mouseup', this.onMouseUp);
+            this.window.addEventListener('mousemove', this.onMouseMove);
+            this.window.addEventListener('mouseleave', this.onMouseUp);
+            this.window.addEventListener('touchmove', this.onMouseMove, {
+                capture: true,
+                passive: false,
+            });
+            this.window.addEventListener('touchend', this.onMouseUp);
+        }
+    };
+    Resizable.prototype.unbindEvents = function () {
+        if (this.window) {
+            this.window.removeEventListener('mouseup', this.onMouseUp);
+            this.window.removeEventListener('mousemove', this.onMouseMove);
+            this.window.removeEventListener('mouseleave', this.onMouseUp);
+            this.window.removeEventListener('touchmove', this.onMouseMove, true);
+            this.window.removeEventListener('touchend', this.onMouseUp);
+        }
+    };
+    Resizable.prototype.componentDidMount = function () {
+        if (!this.resizable || !this.window) {
+            return;
+        }
+        var computedStyle = this.window.getComputedStyle(this.resizable);
+        this.setState({
+            width: this.state.width || this.size.width,
+            height: this.state.height || this.size.height,
+            flexBasis: computedStyle.flexBasis !== 'auto' ? computedStyle.flexBasis : undefined,
+        });
+    };
+    Resizable.prototype.componentWillUnmount = function () {
+        if (this.window) {
+            this.unbindEvents();
+        }
+    };
+    Resizable.prototype.createSizeForCssProperty = function (newSize, kind) {
+        var propsSize = this.propsSize && this.propsSize[kind];
+        return this.state[kind] === 'auto' &&
+            this.state.original[kind] === newSize &&
+            (typeof propsSize === 'undefined' || propsSize === 'auto')
+            ? 'auto'
+            : newSize;
+    };
+    Resizable.prototype.calculateNewMaxFromBoundary = function (maxWidth, maxHeight) {
+        if (this.props.bounds === 'parent') {
+            var parent_1 = this.parentNode;
+            if (parent_1) {
+                var boundWidth = parent_1.offsetWidth + (this.parentLeft - this.resizableLeft);
+                var boundHeight = parent_1.offsetHeight + (this.parentTop - this.resizableTop);
+                maxWidth = maxWidth && maxWidth < boundWidth ? maxWidth : boundWidth;
+                maxHeight = maxHeight && maxHeight < boundHeight ? maxHeight : boundHeight;
+            }
+        }
+        else if (this.props.bounds === 'window') {
+            if (this.window) {
+                var boundWidth = this.window.innerWidth - this.resizableLeft;
+                var boundHeight = this.window.innerHeight - this.resizableTop;
+                maxWidth = maxWidth && maxWidth < boundWidth ? maxWidth : boundWidth;
+                maxHeight = maxHeight && maxHeight < boundHeight ? maxHeight : boundHeight;
+            }
+        }
+        else if (this.props.bounds) {
+            var boundWidth = this.props.bounds.offsetWidth + (this.targetLeft - this.resizableLeft);
+            var boundHeight = this.props.bounds.offsetHeight + (this.targetTop - this.resizableTop);
+            maxWidth = maxWidth && maxWidth < boundWidth ? maxWidth : boundWidth;
+            maxHeight = maxHeight && maxHeight < boundHeight ? maxHeight : boundHeight;
+        }
+        return { maxWidth: maxWidth, maxHeight: maxHeight };
+    };
+    Resizable.prototype.calculateNewSizeFromDirection = function (clientX, clientY) {
+        var scale = this.props.scale || 1;
+        var resizeRatio = this.props.resizeRatio || 1;
+        var _a = this.state, direction = _a.direction, original = _a.original;
+        var _b = this.props, lockAspectRatio = _b.lockAspectRatio, lockAspectRatioExtraHeight = _b.lockAspectRatioExtraHeight, lockAspectRatioExtraWidth = _b.lockAspectRatioExtraWidth;
+        var newWidth = original.width;
+        var newHeight = original.height;
+        var extraHeight = lockAspectRatioExtraHeight || 0;
+        var extraWidth = lockAspectRatioExtraWidth || 0;
+        if (hasDirection('right', direction)) {
+            newWidth = original.width + ((clientX - original.x) * resizeRatio) / scale;
+            if (lockAspectRatio) {
+                newHeight = (newWidth - extraWidth) / this.ratio + extraHeight;
+            }
+        }
+        if (hasDirection('left', direction)) {
+            newWidth = original.width - ((clientX - original.x) * resizeRatio) / scale;
+            if (lockAspectRatio) {
+                newHeight = (newWidth - extraWidth) / this.ratio + extraHeight;
+            }
+        }
+        if (hasDirection('bottom', direction)) {
+            newHeight = original.height + ((clientY - original.y) * resizeRatio) / scale;
+            if (lockAspectRatio) {
+                newWidth = (newHeight - extraHeight) * this.ratio + extraWidth;
+            }
+        }
+        if (hasDirection('top', direction)) {
+            newHeight = original.height - ((clientY - original.y) * resizeRatio) / scale;
+            if (lockAspectRatio) {
+                newWidth = (newHeight - extraHeight) * this.ratio + extraWidth;
+            }
+        }
+        return { newWidth: newWidth, newHeight: newHeight };
+    };
+    Resizable.prototype.calculateNewSizeFromAspectRatio = function (newWidth, newHeight, max, min) {
+        var _a = this.props, lockAspectRatio = _a.lockAspectRatio, lockAspectRatioExtraHeight = _a.lockAspectRatioExtraHeight, lockAspectRatioExtraWidth = _a.lockAspectRatioExtraWidth;
+        var computedMinWidth = typeof min.width === 'undefined' ? 10 : min.width;
+        var computedMaxWidth = typeof max.width === 'undefined' || max.width < 0 ? newWidth : max.width;
+        var computedMinHeight = typeof min.height === 'undefined' ? 10 : min.height;
+        var computedMaxHeight = typeof max.height === 'undefined' || max.height < 0 ? newHeight : max.height;
+        var extraHeight = lockAspectRatioExtraHeight || 0;
+        var extraWidth = lockAspectRatioExtraWidth || 0;
+        if (lockAspectRatio) {
+            var extraMinWidth = (computedMinHeight - extraHeight) * this.ratio + extraWidth;
+            var extraMaxWidth = (computedMaxHeight - extraHeight) * this.ratio + extraWidth;
+            var extraMinHeight = (computedMinWidth - extraWidth) / this.ratio + extraHeight;
+            var extraMaxHeight = (computedMaxWidth - extraWidth) / this.ratio + extraHeight;
+            var lockedMinWidth = Math.max(computedMinWidth, extraMinWidth);
+            var lockedMaxWidth = Math.min(computedMaxWidth, extraMaxWidth);
+            var lockedMinHeight = Math.max(computedMinHeight, extraMinHeight);
+            var lockedMaxHeight = Math.min(computedMaxHeight, extraMaxHeight);
+            newWidth = clamp(newWidth, lockedMinWidth, lockedMaxWidth);
+            newHeight = clamp(newHeight, lockedMinHeight, lockedMaxHeight);
+        }
+        else {
+            newWidth = clamp(newWidth, computedMinWidth, computedMaxWidth);
+            newHeight = clamp(newHeight, computedMinHeight, computedMaxHeight);
+        }
+        return { newWidth: newWidth, newHeight: newHeight };
+    };
+    Resizable.prototype.setBoundingClientRect = function () {
+        // For parent boundary
+        if (this.props.bounds === 'parent') {
+            var parent_2 = this.parentNode;
+            if (parent_2) {
+                var parentRect = parent_2.getBoundingClientRect();
+                this.parentLeft = parentRect.left;
+                this.parentTop = parentRect.top;
+            }
+        }
+        // For target(html element) boundary
+        if (this.props.bounds && typeof this.props.bounds !== 'string') {
+            var targetRect = this.props.bounds.getBoundingClientRect();
+            this.targetLeft = targetRect.left;
+            this.targetTop = targetRect.top;
+        }
+        // For boundary
+        if (this.resizable) {
+            var _a = this.resizable.getBoundingClientRect(), left = _a.left, top_1 = _a.top;
+            this.resizableLeft = left;
+            this.resizableTop = top_1;
+        }
+    };
+    Resizable.prototype.onResizeStart = function (event, direction) {
+        if (!this.resizable || !this.window) {
+            return;
+        }
+        var clientX = 0;
+        var clientY = 0;
+        if (event.nativeEvent && isMouseEvent(event.nativeEvent)) {
+            clientX = event.nativeEvent.clientX;
+            clientY = event.nativeEvent.clientY;
+            // When user click with right button the resize is stuck in resizing mode
+            // until users clicks again, dont continue if right click is used.
+            // HACK: MouseEvent does not have `which` from flow-bin v0.68.
+            if (event.nativeEvent.which === 3) {
+                return;
+            }
+        }
+        else if (event.nativeEvent && isTouchEvent(event.nativeEvent)) {
+            clientX = event.nativeEvent.touches[0].clientX;
+            clientY = event.nativeEvent.touches[0].clientY;
+        }
+        if (this.props.onResizeStart) {
+            if (this.resizable) {
+                var startResize = this.props.onResizeStart(event, direction, this.resizable);
+                if (startResize === false) {
+                    return;
+                }
+            }
+        }
+        // Fix #168
+        if (this.props.size) {
+            if (typeof this.props.size.height !== 'undefined' && this.props.size.height !== this.state.height) {
+                this.setState({ height: this.props.size.height });
+            }
+            if (typeof this.props.size.width !== 'undefined' && this.props.size.width !== this.state.width) {
+                this.setState({ width: this.props.size.width });
+            }
+        }
+        // For lockAspectRatio case
+        this.ratio =
+            typeof this.props.lockAspectRatio === 'number' ? this.props.lockAspectRatio : this.size.width / this.size.height;
+        var flexBasis;
+        var computedStyle = this.window.getComputedStyle(this.resizable);
+        if (computedStyle.flexBasis !== 'auto') {
+            var parent_3 = this.parentNode;
+            if (parent_3) {
+                var dir = this.window.getComputedStyle(parent_3).flexDirection;
+                this.flexDir = dir.startsWith('row') ? 'row' : 'column';
+                flexBasis = computedStyle.flexBasis;
+            }
+        }
+        // For boundary
+        this.setBoundingClientRect();
+        this.bindEvents();
+        var state = {
+            original: {
+                x: clientX,
+                y: clientY,
+                width: this.size.width,
+                height: this.size.height,
+            },
+            isResizing: true,
+            backgroundStyle: __assign$2(__assign$2({}, this.state.backgroundStyle), { cursor: this.window.getComputedStyle(event.target).cursor || 'auto' }),
+            direction: direction,
+            flexBasis: flexBasis,
+        };
+        this.setState(state);
+    };
+    Resizable.prototype.onMouseMove = function (event) {
+        if (!this.state.isResizing || !this.resizable || !this.window) {
+            return;
+        }
+        if (this.window.TouchEvent && isTouchEvent(event)) {
+            try {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            catch (e) {
+                // Ignore on fail
+            }
+        }
+        var _a = this.props, maxWidth = _a.maxWidth, maxHeight = _a.maxHeight, minWidth = _a.minWidth, minHeight = _a.minHeight;
+        var clientX = isTouchEvent(event) ? event.touches[0].clientX : event.clientX;
+        var clientY = isTouchEvent(event) ? event.touches[0].clientY : event.clientY;
+        var _b = this.state, direction = _b.direction, original = _b.original, width = _b.width, height = _b.height;
+        var parentSize = this.getParentSize();
+        var max = calculateNewMax(parentSize, this.window.innerWidth, this.window.innerHeight, maxWidth, maxHeight, minWidth, minHeight);
+        maxWidth = max.maxWidth;
+        maxHeight = max.maxHeight;
+        minWidth = max.minWidth;
+        minHeight = max.minHeight;
+        // Calculate new size
+        var _c = this.calculateNewSizeFromDirection(clientX, clientY), newHeight = _c.newHeight, newWidth = _c.newWidth;
+        // Calculate max size from boundary settings
+        var boundaryMax = this.calculateNewMaxFromBoundary(maxWidth, maxHeight);
+        // Calculate new size from aspect ratio
+        var newSize = this.calculateNewSizeFromAspectRatio(newWidth, newHeight, { width: boundaryMax.maxWidth, height: boundaryMax.maxHeight }, { width: minWidth, height: minHeight });
+        newWidth = newSize.newWidth;
+        newHeight = newSize.newHeight;
+        if (this.props.grid) {
+            var newGridWidth = snap(newWidth, this.props.grid[0]);
+            var newGridHeight = snap(newHeight, this.props.grid[1]);
+            var gap = this.props.snapGap || 0;
+            newWidth = gap === 0 || Math.abs(newGridWidth - newWidth) <= gap ? newGridWidth : newWidth;
+            newHeight = gap === 0 || Math.abs(newGridHeight - newHeight) <= gap ? newGridHeight : newHeight;
+        }
+        if (this.props.snap && this.props.snap.x) {
+            newWidth = findClosestSnap(newWidth, this.props.snap.x, this.props.snapGap);
+        }
+        if (this.props.snap && this.props.snap.y) {
+            newHeight = findClosestSnap(newHeight, this.props.snap.y, this.props.snapGap);
+        }
+        var delta = {
+            width: newWidth - original.width,
+            height: newHeight - original.height,
+        };
+        if (width && typeof width === 'string') {
+            if (endsWith$1(width, '%')) {
+                var percent = (newWidth / parentSize.width) * 100;
+                newWidth = percent + "%";
+            }
+            else if (endsWith$1(width, 'vw')) {
+                var vw = (newWidth / this.window.innerWidth) * 100;
+                newWidth = vw + "vw";
+            }
+            else if (endsWith$1(width, 'vh')) {
+                var vh = (newWidth / this.window.innerHeight) * 100;
+                newWidth = vh + "vh";
+            }
+        }
+        if (height && typeof height === 'string') {
+            if (endsWith$1(height, '%')) {
+                var percent = (newHeight / parentSize.height) * 100;
+                newHeight = percent + "%";
+            }
+            else if (endsWith$1(height, 'vw')) {
+                var vw = (newHeight / this.window.innerWidth) * 100;
+                newHeight = vw + "vw";
+            }
+            else if (endsWith$1(height, 'vh')) {
+                var vh = (newHeight / this.window.innerHeight) * 100;
+                newHeight = vh + "vh";
+            }
+        }
+        var newState = {
+            width: this.createSizeForCssProperty(newWidth, 'width'),
+            height: this.createSizeForCssProperty(newHeight, 'height'),
+        };
+        if (this.flexDir === 'row') {
+            newState.flexBasis = newState.width;
+        }
+        else if (this.flexDir === 'column') {
+            newState.flexBasis = newState.height;
+        }
+        this.setState(newState);
+        if (this.props.onResize) {
+            this.props.onResize(event, direction, this.resizable, delta);
+        }
+    };
+    Resizable.prototype.onMouseUp = function (event) {
+        var _a = this.state, isResizing = _a.isResizing, direction = _a.direction, original = _a.original;
+        if (!isResizing || !this.resizable) {
+            return;
+        }
+        var delta = {
+            width: this.size.width - original.width,
+            height: this.size.height - original.height,
+        };
+        if (this.props.onResizeStop) {
+            this.props.onResizeStop(event, direction, this.resizable, delta);
+        }
+        if (this.props.size) {
+            this.setState(this.props.size);
+        }
+        this.unbindEvents();
+        this.setState({
+            isResizing: false,
+            backgroundStyle: __assign$2(__assign$2({}, this.state.backgroundStyle), { cursor: 'auto' }),
+        });
+    };
+    Resizable.prototype.updateSize = function (size) {
+        this.setState({ width: size.width, height: size.height });
+    };
+    Resizable.prototype.renderResizer = function () {
+        var _this = this;
+        var _a = this.props, enable = _a.enable, handleStyles = _a.handleStyles, handleClasses = _a.handleClasses, handleWrapperStyle = _a.handleWrapperStyle, handleWrapperClass = _a.handleWrapperClass, handleComponent = _a.handleComponent;
+        if (!enable) {
+            return null;
+        }
+        var resizers = Object.keys(enable).map(function (dir) {
+            if (enable[dir] !== false) {
+                return (React.createElement(Resizer, { key: dir, direction: dir, onResizeStart: _this.onResizeStart, replaceStyles: handleStyles && handleStyles[dir], className: handleClasses && handleClasses[dir] }, handleComponent && handleComponent[dir] ? handleComponent[dir] : null));
+            }
+            return null;
+        });
+        // #93 Wrap the resize box in span (will not break 100% width/height)
+        return (React.createElement("span", { className: handleWrapperClass, style: handleWrapperStyle }, resizers));
+    };
+    Resizable.prototype.render = function () {
+        var _this = this;
+        var extendsProps = Object.keys(this.props).reduce(function (acc, key) {
+            if (definedProps.indexOf(key) !== -1) {
+                return acc;
+            }
+            acc[key] = _this.props[key];
+            return acc;
+        }, {});
+        var style = __assign$2(__assign$2(__assign$2({ position: 'relative', userSelect: this.state.isResizing ? 'none' : 'auto' }, this.props.style), this.sizeStyle), { maxWidth: this.props.maxWidth, maxHeight: this.props.maxHeight, minWidth: this.props.minWidth, minHeight: this.props.minHeight, boxSizing: 'border-box', flexShrink: 0 });
+        if (this.state.flexBasis) {
+            style.flexBasis = this.state.flexBasis;
+        }
+        var Wrapper = this.props.as || 'div';
+        return (React.createElement(Wrapper, __assign$2({ ref: this.ref, style: style, className: this.props.className }, extendsProps),
+            this.state.isResizing && React.createElement("div", { style: this.state.backgroundStyle }),
+            this.props.children,
+            this.renderResizer()));
+    };
+    Resizable.defaultProps = {
+        as: 'div',
+        onResizeStart: function () { },
+        onResize: function () { },
+        onResizeStop: function () { },
+        enable: {
+            top: true,
+            right: true,
+            bottom: true,
+            left: true,
+            topRight: true,
+            bottomRight: true,
+            bottomLeft: true,
+            topLeft: true,
+        },
+        style: {},
+        grid: [1, 1],
+        lockAspectRatio: false,
+        lockAspectRatioExtraWidth: 0,
+        lockAspectRatioExtraHeight: 0,
+        scale: 1,
+        resizeRatio: 1,
+        snapGap: 0,
+    };
+    return Resizable;
+}(React.PureComponent));
+
+/**
+ * Browser Image Compression
+ * v1.0.12
+ * by Donald <donaldcwl@gmail.com>
+ * https://github.com/Donaldcwl/browser-image-compression
+ */
+
+function _defineProperty$3(e,r,n){return r in e?Object.defineProperty(e,r,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[r]=n,e}function ownKeys$b(e,r){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var t=Object.getOwnPropertySymbols(e);r&&(t=t.filter((function(r){return Object.getOwnPropertyDescriptor(e,r).enumerable}))),n.push.apply(n,t);}return n}function _objectSpread2(e){for(var r=1;r<arguments.length;r++){var n=null!=arguments[r]?arguments[r]:{};r%2?ownKeys$b(Object(n),!0).forEach((function(r){_defineProperty$3(e,r,n[r]);})):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):ownKeys$b(Object(n)).forEach((function(r){Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(n,r));}));}return e}function _slicedToArray$1(e,r){return function _arrayWithHoles(e){if(Array.isArray(e))return e}(e)||function _iterableToArrayLimit(e,r){if("undefined"==typeof Symbol||!(Symbol.iterator in Object(e)))return;var n=[],t=!0,a=!1,i=void 0;try{for(var o,s=e[Symbol.iterator]();!(t=(o=s.next()).done)&&(n.push(o.value),!r||n.length!==r);t=!0);}catch(e){a=!0,i=e;}finally{try{t||null==s.return||s.return();}finally{if(a)throw i}}return n}(e,r)||function _unsupportedIterableToArray(e,r){if(!e)return;if("string"==typeof e)return _arrayLikeToArray$1(e,r);var n=Object.prototype.toString.call(e).slice(8,-1);"Object"===n&&e.constructor&&(n=e.constructor.name);if("Map"===n||"Set"===n)return Array.from(e);if("Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray$1(e,r)}(e,r)||function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function _arrayLikeToArray$1(e,r){(null==r||r>e.length)&&(r=e.length);for(var n=0,t=new Array(r);n<r;n++)t[n]=e[n];return t}var e$1="undefined"!=typeof window,r$1=e$1&&window.cordova&&window.cordova.require&&window.cordova.require("cordova/modulemapper"),CustomFile=e$1&&(r$1&&r$1.getOriginalSymbol(window,"File")||File),CustomFileReader=e$1&&(r$1&&r$1.getOriginalSymbol(window,"FileReader")||FileReader),n$2=e$1&&new Promise((function(e,r){var n,t,a,i;return getFilefromDataUrl("data:image/jpeg;base64,/9j/4QAiRXhpZgAATU0AKgAAAAgAAQESAAMAAAABAAYAAAAAAAD/2wCEAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAf/AABEIAAEAAgMBEQACEQEDEQH/xABKAAEAAAAAAAAAAAAAAAAAAAALEAEAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8H//2Q==","test.jpg",Date.now()).then((function(o){try{return drawFileInCanvas(n=o).then((function(o){try{return canvasToFile(t=o[1],n.type,n.name,n.lastModified).then((function(n){try{return a=n,cleanupCanvasMemory(t),getDataUrlFromFile(a).then((function(n){try{return loadImage(n).then((function(n){try{return e(1===(i=n).width&&2===i.height)}catch(e){return r(e)}}),r)}catch(e){return r(e)}}),r)}catch(e){return r(e)}}),r)}catch(e){return r(e)}}),r)}catch(e){return r(e)}}),r)}));function getDataUrlFromFile(e){return new Promise((function(r,n){var t=new CustomFileReader;t.onload=function(){return r(t.result)},t.onerror=function(e){return n(e)},t.readAsDataURL(e);}))}function getFilefromDataUrl(e,r){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:Date.now();return new Promise((function(t){for(var a=e.split(","),i=a[0].match(/:(.*?);/)[1],o=window.atob(a[1]),s=o.length,c=new Uint8Array(s);s--;)c[s]=o.charCodeAt(s);var u=new Blob([c],{type:i});u.name=r,u.lastModified=n,t(u);}))}function loadImage(e){return new Promise((function(r,n){var t=new Image;t.onload=function(){return r(t)},t.onerror=function(e){return n(e)},t.src=e;}))}function drawImageInCanvas(e){var r=_slicedToArray$1(getNewCanvasAndCtx(e.width,e.height),2),n=r[0];return r[1].drawImage(e,0,0,n.width,n.height),n}function drawFileInCanvas(e){return new Promise((function(r,n){var t,a,i=function $Try_1_Post(){try{return a=drawImageInCanvas(t),r([t,a])}catch(e){return n(e)}},o=function $Try_1_Catch(r){try{return getDataUrlFromFile(e).then((function(e){try{return loadImage(e).then((function(e){try{return t=e,i()}catch(e){return n(e)}}),n)}catch(e){return n(e)}}),n)}catch(e){return n(e)}};try{return createImageBitmap(e).then((function(e){try{return t=e,i()}catch(e){return o()}}),o)}catch(e){o();}}))}function canvasToFile(e,r,n,t){var a=arguments.length>4&&void 0!==arguments[4]?arguments[4]:1;return new Promise((function(i,o){var s;return "function"==typeof OffscreenCanvas&&e instanceof OffscreenCanvas?e.convertToBlob({type:r,quality:a}).then(function(e){try{return (s=e).name=n,s.lastModified=t,$If_4.call(this)}catch(e){return o(e)}}.bind(this),o):getFilefromDataUrl(e.toDataURL(r,a),n,t).then(function(e){try{return s=e,$If_4.call(this)}catch(e){return o(e)}}.bind(this),o);function $If_4(){return i(s)}}))}function getExifOrientation(e){return new Promise((function(r,n){var t=new CustomFileReader;t.onload=function(e){var n=new DataView(e.target.result);if(65496!=n.getUint16(0,!1))return r(-2);for(var t=n.byteLength,a=2;a<t;){if(n.getUint16(a+2,!1)<=8)return r(-1);var i=n.getUint16(a,!1);if(a+=2,65505==i){if(1165519206!=n.getUint32(a+=2,!1))return r(-1);var o=18761==n.getUint16(a+=6,!1);a+=n.getUint32(a+4,o);var s=n.getUint16(a,o);a+=2;for(var c=0;c<s;c++)if(274==n.getUint16(a+12*c,o))return r(n.getUint16(a+12*c+8,o))}else {if(65280!=(65280&i))break;a+=n.getUint16(a,!1);}}return r(-1)},t.onerror=function(e){return n(e)},t.readAsArrayBuffer(e);}))}function handleMaxWidthOrHeight(e,r){var n,t=e.width,a=e.height,i=r.maxWidthOrHeight,o=e;if(isFinite(i)&&(t>i||a>i)){var s=_slicedToArray$1(getNewCanvasAndCtx(t,a),2);o=s[0],n=s[1],t>a?(o.width=i,o.height=a/t*i):(o.width=t/a*i,o.height=i),n.drawImage(e,0,0,o.width,o.height),cleanupCanvasMemory(e);}return o}function followExifOrientation(e,r){var n=e.width,t=e.height,a=_slicedToArray$1(getNewCanvasAndCtx(n,t),2),i=a[0],o=a[1];switch(4<r&&r<9?(i.width=t,i.height=n):(i.width=n,i.height=t),r){case 2:o.transform(-1,0,0,1,n,0);break;case 3:o.transform(-1,0,0,-1,n,t);break;case 4:o.transform(1,0,0,-1,0,t);break;case 5:o.transform(0,1,1,0,0,0);break;case 6:o.transform(0,1,-1,0,t,0);break;case 7:o.transform(0,-1,-1,0,t,n);break;case 8:o.transform(0,-1,1,0,0,n);}return o.drawImage(e,0,0,n,t),cleanupCanvasMemory(e),i}function getNewCanvasAndCtx(e,r){var n,t;try{if(null===(t=(n=new OffscreenCanvas(e,r)).getContext("2d")))throw new Error("getContext of OffscreenCanvas returns null")}catch(e){t=(n=document.createElement("canvas")).getContext("2d");}return n.width=e,n.height=r,[n,t]}function cleanupCanvasMemory(e){e.width=0,e.height=0;}function compress(e,r){return new Promise((function(t,a){var i,o,s,c,u,l,f,m,g,A,d,p,h,y,v,w;function incProgress(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:5;i+=e,r.onProgress(Math.min(i,100));}function setProgress(e){i=Math.min(Math.max(e,i),100),r.onProgress(i);}return i=0,o=r.maxIteration||10,s=1024*r.maxSizeMB*1024,incProgress(),drawFileInCanvas(e).then(function(i){try{var C=_slicedToArray$1(i,2);return C[0],c=C[1],incProgress(),u=handleMaxWidthOrHeight(c,r),incProgress(),new Promise((function(n,t){var a;if(!(a=r.exifOrientation))return getExifOrientation(e).then(function(e){try{return a=e,$If_2.call(this)}catch(e){return t(e)}}.bind(this),t);function $If_2(){return n(a)}return $If_2.call(this)})).then(function(i){try{return r.exifOrientation=i,incProgress(),n$2.then(function(n){try{return l=n?u:followExifOrientation(u,r.exifOrientation),incProgress(),f=1,canvasToFile(l,r.fileType||e.type,e.name,e.lastModified,f).then(function(n){try{{if(m=n,incProgress(),g=m.size>s,A=m.size>e.size,!g&&!A)return setProgress(100),t(m);var i;function $Loop_3(){if(o--&&(h>s||h>d)){var n,t,i=_slicedToArray$1(getNewCanvasAndCtx(n=g?.95*w.width:w.width,t=g?.95*w.height:w.height),2);return v=i[0],i[1].drawImage(w,0,0,n,t),"image/jpeg"===e.type&&(f*=.95),canvasToFile(v,r.fileType||e.type,e.name,e.lastModified,f).then((function(e){try{return y=e,cleanupCanvasMemory(w),w=v,h=y.size,setProgress(Math.min(99,Math.floor((p-h)/(p-s)*100))),$Loop_3}catch(e){return a(e)}}),a)}return [1]}return d=e.size,p=m.size,h=p,w=l,(i=function(e){for(;e;){if(e.then)return void e.then(i,a);try{if(e.pop){if(e.length)return e.pop()?$Loop_3_exit.call(this):e;e=$Loop_3;}else e=e.call(this);}catch(e){return a(e)}}}.bind(this))($Loop_3);function $Loop_3_exit(){return cleanupCanvasMemory(w),cleanupCanvasMemory(v),cleanupCanvasMemory(u),cleanupCanvasMemory(l),cleanupCanvasMemory(c),setProgress(100),t(y)}}}catch(e){return a(e)}}.bind(this),a)}catch(e){return a(e)}}.bind(this),a)}catch(e){return a(e)}}.bind(this),a)}catch(e){return a(e)}}.bind(this),a)}))}e$1&&(Number.isInteger=Number.isInteger||function(e){return "number"==typeof e&&isFinite(e)&&Math.floor(e)===e});var t$1,a,i=0;function generateLib(){return function createSourceObject(e){return URL.createObjectURL(new Blob([e],{type:"application/javascript"}))}("\n    function imageCompression (){return (".concat(imageCompression,").apply(null, arguments)}\n\n    imageCompression.getDataUrlFromFile = ").concat(imageCompression.getDataUrlFromFile,"\n    imageCompression.getFilefromDataUrl = ").concat(imageCompression.getFilefromDataUrl,"\n    imageCompression.loadImage = ").concat(imageCompression.loadImage,"\n    imageCompression.drawImageInCanvas = ").concat(imageCompression.drawImageInCanvas,"\n    imageCompression.drawFileInCanvas = ").concat(imageCompression.drawFileInCanvas,"\n    imageCompression.canvasToFile = ").concat(imageCompression.canvasToFile,"\n    imageCompression.getExifOrientation = ").concat(imageCompression.getExifOrientation,"\n    imageCompression.handleMaxWidthOrHeight = ").concat(imageCompression.handleMaxWidthOrHeight,"\n    imageCompression.followExifOrientation = ").concat(imageCompression.followExifOrientation,"\n    imageCompression.cleanupMemory = ").concat(imageCompression.cleanupMemory,"\n\n    getDataUrlFromFile = imageCompression.getDataUrlFromFile\n    getFilefromDataUrl = imageCompression.getFilefromDataUrl\n    loadImage = imageCompression.loadImage\n    drawImageInCanvas = imageCompression.drawImageInCanvas\n    drawFileInCanvas = imageCompression.drawFileInCanvas\n    canvasToFile = imageCompression.canvasToFile\n    getExifOrientation = imageCompression.getExifOrientation\n    handleMaxWidthOrHeight = imageCompression.handleMaxWidthOrHeight\n    followExifOrientation = imageCompression.followExifOrientation\n    cleanupMemory = imageCompression.cleanupMemory\n\n    getNewCanvasAndCtx = ").concat(getNewCanvasAndCtx,"\n    \n    CustomFileReader = FileReader\n    \n    CustomFile = File\n    \n    function _slicedToArray(arr, n) { return arr }\n    \n    function _typeof(a) { return typeof a }\n\n    function compress (){return (").concat(compress,").apply(null, arguments)}\n    "))}function generateWorkerScript(){return function createWorker(e){return "function"==typeof e&&(e="(".concat(f,")()")),new Worker(URL.createObjectURL(new Blob([e])))}("\n    let scriptImported = false\n    self.addEventListener('message', async (e) => {\n      const { file, id, imageCompressionLibUrl, options } = e.data\n      options.onProgress = (progress) => self.postMessage({ progress, id })\n      try {\n        if (!scriptImported) {\n          // console.log('[worker] importScripts', imageCompressionLibUrl)\n          self.importScripts(imageCompressionLibUrl)\n          scriptImported = true\n        }\n        // console.log('[worker] self', self)\n        const compressedFile = await imageCompression(file, options)\n        self.postMessage({ file: compressedFile, id })\n      } catch (e) {\n        // console.error('[worker] error', e)\n        self.postMessage({ error: e.message + '\\n' + e.stack, id })\n      }\n    })\n  ")}function imageCompression(e,r){return new Promise((function(n,o){var s,c,u;if(r.maxSizeMB=r.maxSizeMB||Number.POSITIVE_INFINITY,c="boolean"!=typeof r.useWebWorker||r.useWebWorker,delete r.useWebWorker,void 0===r.onProgress&&(r.onProgress=function(){}),!(e instanceof Blob||e instanceof CustomFile))return o(new Error("The file given is not an instance of Blob or File"));if(!/^image/.test(e.type))return o(new Error("The file given is not an image"));if(u="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope,!c||"function"!=typeof Worker||u)return compress(e,r).then(function(e){try{return s=e,$If_3.call(this)}catch(e){return o(e)}}.bind(this),o);var l=function(){try{return $If_3.call(this)}catch(e){return o(e)}}.bind(this),f=function $Try_1_Catch(n){try{return compress(e,r).then((function(e){try{return s=e,l()}catch(e){return o(e)}}),o)}catch(e){return o(e)}};try{return function compressOnWebWorker(e,r){return new Promise((function(n,o){return new Promise((function(s,c){var u=i++;return t$1||(t$1=generateLib()),a||(a=generateWorkerScript()),a.addEventListener("message",(function handler(e){if(e.data.id===u){if(void 0!==e.data.progress)return void r.onProgress(e.data.progress);a.removeEventListener("message",handler),e.data.error&&o(new Error(e.data.error)),n(e.data.file);}})),a.addEventListener("error",o),a.postMessage({file:e,id:u,imageCompressionLibUrl:t$1,options:_objectSpread2(_objectSpread2({},r),{},{onProgress:void 0})}),s()}))}))}(e,r).then((function(e){try{return s=e,l()}catch(e){return f()}}),f)}catch(e){f();}function $If_3(){try{s.name=e.name,s.lastModified=e.lastModified;}catch(e){}return n(s)}}))}imageCompression.getDataUrlFromFile=getDataUrlFromFile,imageCompression.getFilefromDataUrl=getFilefromDataUrl,imageCompression.loadImage=loadImage,imageCompression.drawImageInCanvas=drawImageInCanvas,imageCompression.drawFileInCanvas=drawFileInCanvas,imageCompression.canvasToFile=canvasToFile,imageCompression.getExifOrientation=getExifOrientation,imageCompression.handleMaxWidthOrHeight=handleMaxWidthOrHeight,imageCompression.followExifOrientation=followExifOrientation,imageCompression.cleanupMemory=cleanupCanvasMemory,imageCompression.version="1.0.12";
+
+var IMAGE_EXTENSIONS = [
+    'ase',
+    'art',
+    'bmp',
+    'blp',
+    'cd5',
+    'cit',
+    'cpt',
+    'cr2',
+    'cut',
+    'dds',
+    'dib',
+    'djvu',
+    'egt',
+    'exif',
+    'gif',
+    'gpl',
+    'grf',
+    'icns',
+    'ico',
+    'iff',
+    'jng',
+    'jpeg',
+    'jpg',
+    'jfif',
+    'jp2',
+    'jps',
+    'lbm',
+    'max',
+    'miff',
+    'mng',
+    'msp',
+    'nitf',
+    'ota',
+    'pbm',
+    'pc1',
+    'pc2',
+    'pc3',
+    'pcf',
+    'pcx',
+    'pdn',
+    'pgm',
+    'PI1',
+    'PI2',
+    'PI3',
+    'pict',
+    'pct',
+    'pnm',
+    'pns',
+    'ppm',
+    'psb',
+    'psd',
+    'pdd',
+    'psp',
+    'px',
+    'pxm',
+    'pxr',
+    'qfx',
+    'raw',
+    'rle',
+    'sct',
+    'sgi',
+    'rgb',
+    'int',
+    'bw',
+    'tga',
+    'tiff',
+    'tif',
+    'vtf',
+    'xbm',
+    'xcf',
+    'xpm',
+    '3dv',
+    'amf',
+    'ai',
+    'awg',
+    'cgm',
+    'cdr',
+    'cmx',
+    'dxf',
+    'e2d',
+    'egt',
+    'eps',
+    'fs',
+    'gbr',
+    'odg',
+    'svg',
+    'stl',
+    'vrml',
+    'x3d',
+    'sxd',
+    'v2d',
+    'vnd',
+    'wmf',
+    'emf',
+    'art',
+    'xar',
+    'png',
+    'webp',
+    'jxr',
+    'hdp',
+    'wdp',
+    'cur',
+    'ecw',
+    'iff',
+    'lbm',
+    'liff',
+    'nrrd',
+    'pam',
+    'pcx',
+    'pgf',
+    'sgi',
+    'rgb',
+    'rgba',
+    'bw',
+    'int',
+    'inta',
+    'sid',
+    'ras',
+    'sun',
+    'tga',
+];
+
+var ImageUploader = {
+    getBase64FromFile: function (file) {
+        var reader = new FileReader();
+        return new Promise(function (accept, fail) {
+            reader.onload = function () { return accept(reader.result); };
+            reader.onerror = function () { return fail(reader.error); };
+            reader.readAsDataURL(file);
+        });
+    },
+};
+
+/* eslint-disable no-console */
+var canLog = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
+var logError = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    if (canLog)
+        console.error(args);
+};
+
+var parse$4 = parser$1.parse;
+
+// Strip insignificant whitespace
+// Note that this could do a lot more, such as reorder fields etc.
+function normalize$1(string) {
+  return string.replace(/[\s,]+/g, ' ').trim();
+}
+
+// A map docString -> graphql document
+var docCache$1 = {};
+
+// A map fragmentName -> [normalized source]
+var fragmentSourceMap$1 = {};
+
+function cacheKeyFromLoc$1(loc) {
+  return normalize$1(loc.source.body.substring(loc.start, loc.end));
+}
+
+// For testing.
+function resetCaches$2() {
+  docCache$1 = {};
+  fragmentSourceMap$1 = {};
+}
+
+// Take a unstripped parsed document (query/mutation or even fragment), and
+// check all fragment definitions, checking for name->source uniqueness.
+// We also want to make sure only unique fragments exist in the document.
+var printFragmentWarnings$1 = true;
+function processFragments$1(ast) {
+  var astFragmentMap = {};
+  var definitions = [];
+
+  for (var i = 0; i < ast.definitions.length; i++) {
+    var fragmentDefinition = ast.definitions[i];
+
+    if (fragmentDefinition.kind === 'FragmentDefinition') {
+      var fragmentName = fragmentDefinition.name.value;
+      var sourceKey = cacheKeyFromLoc$1(fragmentDefinition.loc);
+
+      // We know something about this fragment
+      if (fragmentSourceMap$1.hasOwnProperty(fragmentName) && !fragmentSourceMap$1[fragmentName][sourceKey]) {
+
+        // this is a problem because the app developer is trying to register another fragment with
+        // the same name as one previously registered. So, we tell them about it.
+        if (printFragmentWarnings$1) {
+          console.warn("Warning: fragment with name " + fragmentName + " already exists.\n"
+            + "graphql-tag enforces all fragment names across your application to be unique; read more about\n"
+            + "this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names");
+        }
+
+        fragmentSourceMap$1[fragmentName][sourceKey] = true;
+
+      } else if (!fragmentSourceMap$1.hasOwnProperty(fragmentName)) {
+        fragmentSourceMap$1[fragmentName] = {};
+        fragmentSourceMap$1[fragmentName][sourceKey] = true;
+      }
+
+      if (!astFragmentMap[sourceKey]) {
+        astFragmentMap[sourceKey] = true;
+        definitions.push(fragmentDefinition);
+      }
+    } else {
+      definitions.push(fragmentDefinition);
+    }
+  }
+
+  ast.definitions = definitions;
+  return ast;
+}
+
+function disableFragmentWarnings$2() {
+  printFragmentWarnings$1 = false;
+}
+
+function stripLoc$1(doc, removeLocAtThisLevel) {
+  var docType = Object.prototype.toString.call(doc);
+
+  if (docType === '[object Array]') {
+    return doc.map(function (d) {
+      return stripLoc$1(d, removeLocAtThisLevel);
+    });
+  }
+
+  if (docType !== '[object Object]') {
+    throw new Error('Unexpected input.');
+  }
+
+  // We don't want to remove the root loc field so we can use it
+  // for fragment substitution (see below)
+  if (removeLocAtThisLevel && doc.loc) {
+    delete doc.loc;
+  }
+
+  // https://github.com/apollographql/graphql-tag/issues/40
+  if (doc.loc) {
+    delete doc.loc.startToken;
+    delete doc.loc.endToken;
+  }
+
+  var keys = Object.keys(doc);
+  var key;
+  var value;
+  var valueType;
+
+  for (key in keys) {
+    if (keys.hasOwnProperty(key)) {
+      value = doc[keys[key]];
+      valueType = Object.prototype.toString.call(value);
+
+      if (valueType === '[object Object]' || valueType === '[object Array]') {
+        doc[keys[key]] = stripLoc$1(value, true);
+      }
+    }
+  }
+
+  return doc;
+}
+
+var experimentalFragmentVariables$1 = false;
+function parseDocument$1(doc) {
+  var cacheKey = normalize$1(doc);
+
+  if (docCache$1[cacheKey]) {
+    return docCache$1[cacheKey];
+  }
+
+  var parsed = parse$4(doc, { experimentalFragmentVariables: experimentalFragmentVariables$1 });
+  if (!parsed || parsed.kind !== 'Document') {
+    throw new Error('Not a valid GraphQL document.');
+  }
+
+  // check that all "new" fragments inside the documents are consistent with
+  // existing fragments of the same name
+  parsed = processFragments$1(parsed);
+  parsed = stripLoc$1(parsed, false);
+  docCache$1[cacheKey] = parsed;
+
+  return parsed;
+}
+
+function enableExperimentalFragmentVariables$2() {
+  experimentalFragmentVariables$1 = true;
+}
+
+function disableExperimentalFragmentVariables$2() {
+  experimentalFragmentVariables$1 = false;
+}
+
+// XXX This should eventually disallow arbitrary string interpolation, like Relay does
+function gql$1(/* arguments */) {
+  var args = Array.prototype.slice.call(arguments);
+
+  var literals = args[0];
+
+  // We always get literals[0] and then matching post literals for each arg given
+  var result = (typeof(literals) === "string") ? literals : literals[0];
+
+  for (var i = 1; i < args.length; i++) {
+    if (args[i] && args[i].kind && args[i].kind === 'Document') {
+      result += args[i].loc.source.body;
+    } else {
+      result += args[i];
+    }
+
+    result += literals[i];
+  }
+
+  return parseDocument$1(result);
+}
+
+// Support typescript, which isn't as nice as Babel about default exports
+gql$1.default = gql$1;
+gql$1.resetCaches = resetCaches$2;
+gql$1.disableFragmentWarnings = disableFragmentWarnings$2;
+gql$1.enableExperimentalFragmentVariables = enableExperimentalFragmentVariables$2;
+gql$1.disableExperimentalFragmentVariables = disableExperimentalFragmentVariables$2;
+
+var src$2 = gql$1;
+
+var MangopayBankAccountType;
+(function (MangopayBankAccountType) {
+    MangopayBankAccountType["IBAN"] = "IBAN";
+    MangopayBankAccountType["GB"] = "GB";
+    MangopayBankAccountType["US"] = "US";
+    MangopayBankAccountType["CA"] = "CA";
+    MangopayBankAccountType["OTHER"] = "OTHER";
+})(MangopayBankAccountType || (MangopayBankAccountType = {}));
+var MangopayKycDocumentRefusedReasonType;
+(function (MangopayKycDocumentRefusedReasonType) {
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_UNREADABLE"] = "DOCUMENT_UNREADABLE";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_NOT_ACCEPTED"] = "DOCUMENT_NOT_ACCEPTED";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_HAS_EXPIRED"] = "DOCUMENT_HAS_EXPIRED";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_INCOMPLETE"] = "DOCUMENT_INCOMPLETE";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_MISSING"] = "DOCUMENT_MISSING";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_DO_NOT_MATCH_USER_DATA"] = "DOCUMENT_DO_NOT_MATCH_USER_DATA";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA"] = "DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA";
+    MangopayKycDocumentRefusedReasonType["SPECIFIC_CASE"] = "SPECIFIC_CASE";
+    MangopayKycDocumentRefusedReasonType["DOCUMENT_FALSIFIED"] = "DOCUMENT_FALSIFIED";
+    MangopayKycDocumentRefusedReasonType["UNDERAGE_PERSON"] = "UNDERAGE_PERSON";
+})(MangopayKycDocumentRefusedReasonType || (MangopayKycDocumentRefusedReasonType = {}));
+var MangopayKycDocumentStatus;
+(function (MangopayKycDocumentStatus) {
+    MangopayKycDocumentStatus["CREATED"] = "CREATED";
+    MangopayKycDocumentStatus["VALIDATION_ASKED"] = "VALIDATION_ASKED";
+    MangopayKycDocumentStatus["REFUSED"] = "REFUSED";
+    MangopayKycDocumentStatus["VALIDATED"] = "VALIDATED";
+})(MangopayKycDocumentStatus || (MangopayKycDocumentStatus = {}));
+var MangopayKycDocumentType;
+(function (MangopayKycDocumentType) {
+    MangopayKycDocumentType["IDENTITY_PROOF"] = "IDENTITY_PROOF";
+    MangopayKycDocumentType["ARTICLES_OF_ASSOCIATION"] = "ARTICLES_OF_ASSOCIATION";
+    MangopayKycDocumentType["REGISTRATION_PROOF"] = "REGISTRATION_PROOF";
+    MangopayKycDocumentType["SHAREHOLDER_DECLARATION"] = "SHAREHOLDER_DECLARATION";
+})(MangopayKycDocumentType || (MangopayKycDocumentType = {}));
+var MangopayKycLevel;
+(function (MangopayKycLevel) {
+    MangopayKycLevel["LIGHT"] = "LIGHT";
+    MangopayKycLevel["REGULAR"] = "REGULAR";
+})(MangopayKycLevel || (MangopayKycLevel = {}));
+var MangopayLegalPersonType;
+(function (MangopayLegalPersonType) {
+    MangopayLegalPersonType["ORGANIZATION"] = "ORGANIZATION";
+    MangopayLegalPersonType["BUSINESS"] = "BUSINESS";
+    MangopayLegalPersonType["SOLETRADER"] = "SOLETRADER";
+})(MangopayLegalPersonType || (MangopayLegalPersonType = {}));
+var MangopayUboDeclarationStatus;
+(function (MangopayUboDeclarationStatus) {
+    MangopayUboDeclarationStatus["CREATED"] = "CREATED";
+    MangopayUboDeclarationStatus["VALIDATION_ASKED"] = "VALIDATION_ASKED";
+    MangopayUboDeclarationStatus["INCOMPLETE"] = "INCOMPLETE";
+    MangopayUboDeclarationStatus["VALIDATED"] = "VALIDATED";
+    MangopayUboDeclarationStatus["REFUSED"] = "REFUSED";
+})(MangopayUboDeclarationStatus || (MangopayUboDeclarationStatus = {}));
+var MangopayUboReasonType;
+(function (MangopayUboReasonType) {
+    MangopayUboReasonType["MISSING_UBO"] = "MISSING_UBO";
+    MangopayUboReasonType["WRONG_UBO_INFORMATION"] = "WRONG_UBO_INFORMATION";
+    MangopayUboReasonType["UBO_IDENTITY_NEEDED"] = "UBO_IDENTITY_NEEDED";
+    MangopayUboReasonType["SHAREHOLDERS_DECLARATION_NEEDED"] = "SHAREHOLDERS_DECLARATION_NEEDED";
+    MangopayUboReasonType["ORGANIZATION_CHART_NEEDED"] = "ORGANIZATION_CHART_NEEDED";
+    MangopayUboReasonType["DOCUMENTS_NEEDED"] = "DOCUMENTS_NEEDED";
+    MangopayUboReasonType["DECLARATION_DO_NOT_MATCH_UBO_INFORMATION"] = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION";
+    MangopayUboReasonType["SPECIFIC_CASE"] = "SPECIFIC_CASE";
+})(MangopayUboReasonType || (MangopayUboReasonType = {}));
+var MangopayUsBankAccountDepositAccountType;
+(function (MangopayUsBankAccountDepositAccountType) {
+    MangopayUsBankAccountDepositAccountType["CHECKING"] = "CHECKING";
+    MangopayUsBankAccountDepositAccountType["SAVINGS"] = "SAVINGS";
+})(MangopayUsBankAccountDepositAccountType || (MangopayUsBankAccountDepositAccountType = {}));
+var UserFragmentDoc = src$2(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n  email\n  email2\n  firstName2\n  lastName2\n}\n    "], ["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n  email\n  email2\n  firstName2\n  lastName2\n}\n    "])));
+var MangopayAddressFragmentDoc = src$2(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "], ["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "])));
+var MangopayKycDocumentFragmentDoc = src$2(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "], ["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "])));
+var MangopayBirthplaceFragmentDoc = src$2(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "], ["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "])));
+var MangopayUboFragmentDoc = src$2(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""], ["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""])), MangopayAddressFragmentDoc, MangopayBirthplaceFragmentDoc);
+var MangopayUboDeclarationFragmentDoc = src$2(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
+var MangopayIbanBankAccountFragmentDoc = src$2(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""], ["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""])), MangopayAddressFragmentDoc);
+var MangopayLegalUserFragmentDoc = src$2(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""], ["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""])), MangopayAddressFragmentDoc, MangopayKycDocumentFragmentDoc, MangopayUboDeclarationFragmentDoc, MangopayIbanBankAccountFragmentDoc);
+var LoginDocument = src$2(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""], ["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""])), UserFragmentDoc);
+var MeDocument = src$2(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""], ["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""])), UserFragmentDoc);
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+function useMeQuery(baseOptions) {
+    return useQuery(MeDocument, baseOptions);
+}
+var GroupPreviewDocument = src$2(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "])));
+var GetUserMembershipsDocument = src$2(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "], ["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "])));
+var IsGroupAdminDocument = src$2(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query isGroupAdmin($groupId: Int!) {\n  isGroupAdmin(groupId: $groupId)\n}\n    "], ["\n    query isGroupAdmin($groupId: Int!) {\n  isGroupAdmin(groupId: $groupId)\n}\n    "])));
+/**
+ * __useIsGroupAdminQuery__
+ *
+ * To run a query within a React component, call `useIsGroupAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsGroupAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsGroupAdminQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+function useIsGroupAdminQuery(baseOptions) {
+    return useQuery(IsGroupAdminDocument, baseOptions);
+}
+var MangopayGroupDocument = src$2(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "], ["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "])));
+var MangopayGroupConfigDocument = src$2(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""], ["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+/**
+ * __useMangopayGroupConfigQuery__
+ *
+ * To run a query within a React component, call `useMangopayGroupConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMangopayGroupConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMangopayGroupConfigQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+function useMangopayGroupConfigQuery(baseOptions) {
+    return useQuery(MangopayGroupConfigDocument, baseOptions);
+}
+var MangopayLegalUserByLegalReprDocument = src$2(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+function useMangopayLegalUserByLegalReprLazyQuery(baseOptions) {
+    return useLazyQuery(MangopayLegalUserByLegalReprDocument, baseOptions);
+}
+var CreateMangopayLegalUserDocument = src$2(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+/**
+ * __useCreateMangopayLegalUserMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayLegalUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayLegalUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayLegalUserMutation, { data, loading, error }] = useCreateMangopayLegalUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMangopayLegalUserMutation(baseOptions) {
+    return useMutation(CreateMangopayLegalUserDocument, baseOptions);
+}
+var UpdateMangopayLegalUserDocument = src$2(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+/**
+ * __useUpdateMangopayLegalUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateMangopayLegalUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMangopayLegalUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMangopayLegalUserMutation, { data, loading, error }] = useUpdateMangopayLegalUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useUpdateMangopayLegalUserMutation(baseOptions) {
+    return useMutation(UpdateMangopayLegalUserDocument, baseOptions);
+}
+var LinkMangopayLegalUserToGroupDocument = src$2(templateObject_19 || (templateObject_19 = __makeTemplateObject(["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
+/**
+ * __useLinkMangopayLegalUserToGroupMutation__
+ *
+ * To run a mutation, you first call `useLinkMangopayLegalUserToGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLinkMangopayLegalUserToGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [linkMangopayLegalUserToGroupMutation, { data, loading, error }] = useLinkMangopayLegalUserToGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useLinkMangopayLegalUserToGroupMutation(baseOptions) {
+    return useMutation(LinkMangopayLegalUserToGroupDocument, baseOptions);
+}
+var CreateMangopayKycDocumentsDocument = src$2(templateObject_20 || (templateObject_20 = __makeTemplateObject(["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""])), MangopayKycDocumentFragmentDoc);
+/**
+ * __useCreateMangopayKycDocumentsMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayKycDocumentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayKycDocumentsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayKycDocumentsMutation, { data, loading, error }] = useCreateMangopayKycDocumentsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMangopayKycDocumentsMutation(baseOptions) {
+    return useMutation(CreateMangopayKycDocumentsDocument, baseOptions);
+}
+var CreateMangopayUboDeclarationDocument = src$2(templateObject_21 || (templateObject_21 = __makeTemplateObject(["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
+/**
+ * __useCreateMangopayUboDeclarationMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayUboDeclarationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayUboDeclarationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayUboDeclarationMutation, { data, loading, error }] = useCreateMangopayUboDeclarationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMangopayUboDeclarationMutation(baseOptions) {
+    return useMutation(CreateMangopayUboDeclarationDocument, baseOptions);
+}
+var SubmitMangopayUboDeclarationDocument = src$2(templateObject_22 || (templateObject_22 = __makeTemplateObject(["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
+/**
+ * __useSubmitMangopayUboDeclarationMutation__
+ *
+ * To run a mutation, you first call `useSubmitMangopayUboDeclarationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitMangopayUboDeclarationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitMangopayUboDeclarationMutation, { data, loading, error }] = useSubmitMangopayUboDeclarationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useSubmitMangopayUboDeclarationMutation(baseOptions) {
+    return useMutation(SubmitMangopayUboDeclarationDocument, baseOptions);
+}
+var CreateOrUpdateMangopayUboDocument = src$2(templateObject_23 || (templateObject_23 = __makeTemplateObject(["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
+/**
+ * __useCreateOrUpdateMangopayUboMutation__
+ *
+ * To run a mutation, you first call `useCreateOrUpdateMangopayUboMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrUpdateMangopayUboMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrUpdateMangopayUboMutation, { data, loading, error }] = useCreateOrUpdateMangopayUboMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateOrUpdateMangopayUboMutation(baseOptions) {
+    return useMutation(CreateOrUpdateMangopayUboDocument, baseOptions);
+}
+var CreateMangopayIbanBankAccountDocument = src$2(templateObject_24 || (templateObject_24 = __makeTemplateObject(["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""])), MangopayIbanBankAccountFragmentDoc);
+/**
+ * __useCreateMangopayIbanBankAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateMangopayIbanBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMangopayIbanBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMangopayIbanBankAccountMutation, { data, loading, error }] = useCreateMangopayIbanBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMangopayIbanBankAccountMutation(baseOptions) {
+    return useMutation(CreateMangopayIbanBankAccountDocument, baseOptions);
+}
+var DeactivateMangopayBankAccountDocument = src$2(templateObject_25 || (templateObject_25 = __makeTemplateObject(["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "], ["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "])));
+/**
+ * __useDeactivateMangopayBankAccountMutation__
+ *
+ * To run a mutation, you first call `useDeactivateMangopayBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeactivateMangopayBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deactivateMangopayBankAccountMutation, { data, loading, error }] = useDeactivateMangopayBankAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useDeactivateMangopayBankAccountMutation(baseOptions) {
+    return useMutation(DeactivateMangopayBankAccountDocument, baseOptions);
+}
+var SelectMangopayBankAccountIdDocument = src$2(templateObject_26 || (templateObject_26 = __makeTemplateObject(["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "], ["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "])));
+/**
+ * __useSelectMangopayBankAccountIdMutation__
+ *
+ * To run a mutation, you first call `useSelectMangopayBankAccountIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelectMangopayBankAccountIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selectMangopayBankAccountIdMutation, { data, loading, error }] = useSelectMangopayBankAccountIdMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useSelectMangopayBankAccountIdMutation(baseOptions) {
+    return useMutation(SelectMangopayBankAccountIdDocument, baseOptions);
+}
+var MessagesGroupDocument = src$2(templateObject_27 || (templateObject_27 = __makeTemplateObject(["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "], ["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "])));
+/**
+ * __useMessagesGroupQuery__
+ *
+ * To run a query within a React component, call `useMessagesGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+function useMessagesGroupQuery(baseOptions) {
+    return useQuery(MessagesGroupDocument, baseOptions);
+}
+var UserListsDocument = src$2(templateObject_28 || (templateObject_28 = __makeTemplateObject(["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    type\n    count\n    data\n  }\n}\n    "], ["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    type\n    count\n    data\n  }\n}\n    "])));
+/**
+ * __useUserListsQuery__
+ *
+ * To run a query within a React component, call `useUserListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListsQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+function useUserListsQuery(baseOptions) {
+    return useQuery(UserListsDocument, baseOptions);
+}
+var GetUserListInGroupByListTypeDocument = src$2(templateObject_29 || (templateObject_29 = __makeTemplateObject(["\n    query getUserListInGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "], ["\n    query getUserListInGroupByListType($listType: String!, $groupId: Int!, $data: String) {\n  getUserListInGroupByListType(listType: $listType, groupId: $groupId, data: $data) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "])));
+function useGetUserListInGroupByListTypeLazyQuery(baseOptions) {
+    return useLazyQuery(GetUserListInGroupByListTypeDocument, baseOptions);
+}
+var CreateMessageDocument = src$2(templateObject_30 || (templateObject_30 = __makeTemplateObject(["\n    mutation createMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation createMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "])));
+/**
+ * __useCreateMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+function useCreateMessageMutation(baseOptions) {
+    return useMutation(CreateMessageDocument, baseOptions);
+}
+var GetMessagesForGroupDocument = src$2(templateObject_31 || (templateObject_31 = __makeTemplateObject(["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
+function useGetMessagesForGroupLazyQuery(baseOptions) {
+    return useLazyQuery(GetMessagesForGroupDocument, baseOptions);
+}
+var GetUserMessagesForGroupDocument = src$2(templateObject_32 || (templateObject_32 = __makeTemplateObject(["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
+function useGetUserMessagesForGroupLazyQuery(baseOptions) {
+    return useLazyQuery(GetUserMessagesForGroupDocument, baseOptions);
+}
+var GetMessageByIdDocument = src$2(templateObject_33 || (templateObject_33 = __makeTemplateObject(["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n    attachments\n  }\n}\n    "], ["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n    attachments\n  }\n}\n    "])));
+function useGetMessageByIdLazyQuery(baseOptions) {
+    return useLazyQuery(GetMessageByIdDocument, baseOptions);
+}
+var GetActiveContractsDocument = src$2(templateObject_34 || (templateObject_34 = __makeTemplateObject(["\n    query getActiveContracts($groupId: Int!) {\n  getActiveContracts(groupId: $groupId) {\n    vendor {\n      name\n      image {\n        data\n      }\n    }\n  }\n}\n    "], ["\n    query getActiveContracts($groupId: Int!) {\n  getActiveContracts(groupId: $groupId) {\n    vendor {\n      name\n      image {\n        data\n      }\n    }\n  }\n}\n    "])));
+/**
+ * __useGetActiveContractsQuery__
+ *
+ * To run a query within a React component, call `useGetActiveContractsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActiveContractsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActiveContractsQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+function useGetActiveContractsQuery(baseOptions) {
+    return useQuery(GetActiveContractsDocument, baseOptions);
+}
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34;
+
+var MessagesContext = React__default.createContext({
+    groupId: -1,
+    whichUser: true,
+    attachments: [],
+    addAttachment: function () { },
+    removeAttachment: function () { },
+    resetAttachments: function () { },
+});
+var MessagesContextProvider = function (_a) {
+    var children = _a.children, groupId = _a.groupId, whichUser = _a.whichUser;
+    var _b = __read(React__default.useState([]), 2), attachments = _b[0], setAttachments = _b[1];
+    var addAttachment = function (attachment) {
+        if (attachments.findIndex(function (a) { return a.name === attachment.name; }) !== -1)
+            return;
+        var newAttachments = __spread(attachments);
+        newAttachments.push(attachment);
+        setAttachments(newAttachments);
+    };
+    var removeAttachment = function (attachment) {
+        var newAttachments = __spread(attachments);
+        var index = newAttachments.indexOf(attachment);
+        if (index === -1)
+            return;
+        newAttachments.splice(index, 1);
+        setAttachments(newAttachments);
+    };
+    var resetAttachments = function () {
+        setAttachments([]);
+    };
+    /** */
+    return (React__default.createElement(MessagesContext.Provider, { value: {
+            groupId: groupId,
+            whichUser: whichUser,
+            attachments: attachments,
+            addAttachment: addAttachment,
+            removeAttachment: removeAttachment,
+            resetAttachments: resetAttachments,
+        } }, children));
+};
+
+var MIN_DIAGONAL = 100;
+var MAX_DIAGONAL = 600;
+var isRefDiagonalSmallerThanMinimum = function (refDiagonal) { return refDiagonal < MIN_DIAGONAL; };
+var isRefDiagonalBiggerThanMaximum = function (refDiagonal) { return refDiagonal > MAX_DIAGONAL; };
+var useStyles$4 = core$1.makeStyles(function (theme) { return ({
+    image: {
+        display: 'block',
+        maxWidth: '100%',
+        maxHeight: '100%',
+        boxShadow: 'none',
+    },
+    selectedAndFocusedImage: {
+        boxShadow: '0 0 0 3px #B4D5FF',
+    },
+    alignLeft: {
+        float: 'left',
+        marginRight: theme.spacing(2),
+    },
+    alignCenter: {
+        display: 'block',
+        margin: '0px auto',
+    },
+    alignRight: {
+        float: 'right',
+        marginLeft: theme.spacing(2),
+    },
+    icon: {
+        display: 'block',
+    },
+    deviceMenuItem: {
+        height: '56px',
+        paddingLeft: '30px',
+    },
+}); });
+var isImageUrl = function (url) {
+    if (!url)
+        return false;
+    if (!isUrl(url))
+        return false;
+    var extension = url.split('.').pop();
+    return extension && IMAGE_EXTENSIONS.includes(extension);
+};
+var insertImage = function (editor, urlOrBase64) {
+    var text = { text: '' };
+    var image = { type: FormatTypes$1.image, imageSource: urlOrBase64, children: [text] };
+    var emptyNode = {
+        types: [FormatTypes$1.paragraph],
+        children: [{ text: '' }],
+    };
+    Transforms.insertNodes(editor, [image, emptyNode]);
+};
+var withImages = function (editor) {
+    var e = editor;
+    var insertData = e.insertData, isVoid = e.isVoid;
+    e.isVoid = function (element) {
+        return element.type === FormatTypes$1.image ? true : isVoid(element);
+    };
+    e.insertData = function (data) {
+        var text = data.getData('text/plain');
+        var files = data.files;
+        if (files && files.length > 0) {
+            var filesArray = Array.from(files);
+            filesArray.forEach(function (file) {
+                var reader = new FileReader();
+                var _a = __read(file.type.split('/'), 1), mime = _a[0];
+                if (mime === 'image') {
+                    reader.addEventListener('load', function () {
+                        var url = reader.result;
+                        insertImage(editor, url);
+                    });
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        else if (isImageUrl(text)) {
+            insertImage(editor, text);
+        }
+        else {
+            insertData(data);
+        }
+    };
+    return e;
+};
+var ImageElement = function (_a) {
+    var attributes = _a.attributes, children = _a.children, element = _a.element;
+    var cs = useStyles$4();
+    var selected = useSelected();
+    var focused = useFocused();
+    var editor = useSlate();
+    var _b = __read(React.useState(element.width || 200), 2), width = _b[0], setWidth = _b[1];
+    var _c = __read(React.useState(element.height || 200), 2), height = _c[0], setHeight = _c[1];
+    var _d = __read(React.useState(Math.PI / 4), 2), theta = _d[0], setTheta = _d[1]; // 45 degrees or aspect ratio = 1
+    var imgRef = React__default.useRef(null);
+    function getElementPath() {
+        return ReactEditor.findPath(editor, element);
+    }
+    function updateElementDimensions(newWidth, newHeight) {
+        Transforms.setNodes(editor, { width: newWidth, height: newHeight }, { at: getElementPath() });
+    }
+    function onResizeStart() {
+        ReactEditor.focus(editor);
+        Transforms.select(editor, getElementPath());
+    }
+    function onResizeStop(_event, _direction, _refToElement, delta) {
+        var newWidth = width + delta.width;
+        var newHeight = height + delta.height;
+        updateElementDimensions(newWidth, newHeight);
+        setWidth(newWidth);
+        setHeight(newHeight);
+    }
+    function setBestImageDimensions() {
+        var refWidth = element.width || imgRef.current.naturalWidth;
+        var refHeight = element.height || imgRef.current.naturalHeight;
+        var refTheta = Math.atan(refHeight / refWidth);
+        var refDiagonal = Math.sqrt(Math.pow(refWidth, 2) + Math.pow(refHeight, 2));
+        var newWidth = refWidth;
+        var newHeight = refHeight;
+        if (isRefDiagonalSmallerThanMinimum(refDiagonal)) {
+            newWidth = MIN_DIAGONAL * Math.cos(refTheta);
+            newHeight = MIN_DIAGONAL * Math.sin(refTheta);
+        }
+        else if (isRefDiagonalBiggerThanMaximum(refDiagonal)) {
+            newWidth = MAX_DIAGONAL * Math.cos(refTheta);
+            newHeight = MAX_DIAGONAL * Math.sin(refTheta);
+        }
+        updateElementDimensions(newWidth, newHeight);
+        setWidth(newWidth);
+        setHeight(newHeight);
+        setTheta(refTheta);
+    }
+    var resizableClass = cs.alignCenter;
+    if (element.align === FormatTypes$1.alignLeft || !element.align) {
+        resizableClass = cs.alignLeft;
+    }
+    else if (element.align === FormatTypes$1.alignRight) {
+        resizableClass = cs.alignRight;
+    }
+    return (React__default.createElement("div", __assign({}, attributes),
+        React__default.createElement("div", { contentEditable: false },
+            React__default.createElement(Resizable, { size: { width: width, height: height }, onResizeStart: onResizeStart, onResizeStop: onResizeStop, lockAspectRatio: true, minWidth: MIN_DIAGONAL * Math.cos(theta), minHeight: MIN_DIAGONAL * Math.sin(theta), maxWidth: MAX_DIAGONAL * Math.cos(theta), maxHeight: MAX_DIAGONAL * Math.sin(theta), className: resizableClass },
+                React__default.createElement("img", { ref: imgRef, src: element.imageSource, alt: "", className: selected && focused ? cs.selectedAndFocusedImage + " " + cs.image : cs.image, onLoad: setBestImageDimensions }))),
+        children));
+};
+var InsertImageButton = function () {
+    var t = useTranslation(['messages/default']).t;
+    var cs = useStyles$4();
+    var context = React__default.useContext(MessagesContext);
+    var groupId = context.groupId;
+    var activeContractsData = useGetActiveContractsQuery({
+        variables: { groupId: groupId },
+    }).data;
+    var editor = useEditor();
+    var imageInput = React__default.useRef(null);
+    var _a = __read(React__default.useState(false), 2), loading = _a[0], setLoading = _a[1];
+    var _b = __read(React__default.useState(null), 2), anchorEl = _b[0], setAnchorEl = _b[1];
+    var _c = __read(React__default.useState(false), 2), isActive = _c[0], setIsActive = _c[1];
+    var _d = __read(React__default.useState(null), 1), catalogValue = _d[0];
+    var _e = __read(React__default.useState(''), 2), catalogInputValue = _e[0], setCatalogInputValue = _e[1];
+    var openMenu = function (event) {
+        setIsActive(true);
+        setAnchorEl(event.currentTarget);
+    };
+    var closeMenu = function () {
+        setAnchorEl(null);
+        setIsActive(false);
+    };
+    var onMouseDown = function (event) {
+        event.preventDefault();
+        openMenu(event);
+    };
+    var openUploadImageInput = function () {
+        if (!imageInput || !imageInput.current)
+            return;
+        closeMenu();
+        imageInput.current.value = '';
+        imageInput.current.click();
+    };
+    var uploadImage = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+        var previousCursor, file, options, compressedFile, base64, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!event || !event.target || !event.target.files || event.target.files.length === 0)
+                        return [2 /*return*/];
+                    setLoading(true);
+                    previousCursor = document.body.style.cursor;
+                    document.body.style.cursor = 'wait';
+                    file = event.target.files[0];
+                    options = {
+                        maxSizeMB: 1,
+                        maxWidthOrHeight: 600,
+                        useWebWorker: true,
+                    };
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, imageCompression(file, options)];
+                case 2:
+                    compressedFile = _a.sent();
+                    return [4 /*yield*/, ImageUploader.getBase64FromFile(compressedFile)];
+                case 3:
+                    base64 = _a.sent();
+                    insertImage(editor, base64);
+                    setLoading(false);
+                    document.body.style.cursor = previousCursor;
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _a.sent();
+                    setLoading(false);
+                    document.body.style.cursor = previousCursor;
+                    logError(error_1);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    var onCatalogSelected = function (_event, newValue) {
+        if (!newValue)
+            return;
+        closeMenu();
+        insertImage(editor, "data:image/jpg;base64," + newValue.vendor.image.data);
+        setCatalogInputValue('');
+    };
+    return (React__default.createElement(EditorButton, { active: isActive, onMouseDown: onMouseDown, "aria-controls": "image-upload-menu", "aria-haspopup": "true" },
+        loading ? React__default.createElement(core$1.CircularProgress, { size: 24 - 3.6 }) : React__default.createElement(Image$1, { className: cs.icon }),
+        React__default.createElement(core$1.Menu, { id: "image-upload-menu", anchorEl: anchorEl, anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'center',
+            }, transformOrigin: {
+                vertical: 'top',
+                horizontal: 'center',
+            }, getContentAnchorEl: null, keepMounted: true, open: Boolean(anchorEl), onClose: closeMenu },
+            React__default.createElement(core$1.MenuItem, { onClick: openUploadImageInput, className: cs.deviceMenuItem }, t('form.fromDevice')),
+            (activeContractsData === null || activeContractsData === void 0 ? void 0 : activeContractsData.getActiveContracts) !== undefined && (React__default.createElement(core$1.ListItem, null,
+                React__default.createElement(lab.Autocomplete, { options: activeContractsData.getActiveContracts, getOptionLabel: function (option) { return (option ? option.vendor.name : ''); }, renderInput: function (params) { return React__default.createElement(core$1.TextField, __assign({}, params, { label: t('form.fromCatalog'), variant: "outlined" })); }, disableClearable: true, autoSelect: true, autoHighlight: true, fullWidth: true, style: { width: 300 }, clearOnEscape: true, clearOnBlur: true, value: catalogValue, onChange: onCatalogSelected, inputValue: catalogInputValue, onInputChange: function (_event, newInputValue) {
+                        setCatalogInputValue(newInputValue);
+                    } })))),
+        React__default.createElement(core$1.Box, { display: "none" },
+            React__default.createElement("input", { type: "file", accept: "image/*", ref: imageInput, onChange: uploadImage }))));
+};
+
+var useStyles$5 = core$1.makeStyles(function (theme) { return ({
+    icon: {
+        display: 'block',
+    },
+    chip: {
+        maxWidth: '100%',
+    },
+    attachments: {
+        borderRight: "solid " + theme.palette.divider,
+        borderBottom: "solid " + theme.palette.divider,
+        borderLeft: "solid " + theme.palette.divider,
+        flexDirection: 'row',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+    },
+}); });
+var BINARY_TO_BASE64_SIZE_FACTOR = 1.33;
+var getSizeAsString = function (octet) {
+    var units = ['o', ' Ko', ' Mo', ' Go'];
+    if (octet < 1000) {
+        return "" + octet + units[0];
+    }
+    if (octet < 1000000) {
+        var ko = Math.round(octet / 1024);
+        return "" + ko + units[1];
+    }
+    var mo = octet / (1024 * 1024);
+    return "" + Math.round(mo * 10) / 10 + units[2];
+};
+var AttachmentList = function () {
+    var cs = useStyles$5();
+    var context = React__default.useContext(MessagesContext);
+    var attachments = context.attachments, removeAttachment = context.removeAttachment;
+    if (attachments.length === 0)
+        return null;
+    return (React__default.createElement(core$1.Box, { position: "relative", className: cs.attachments, p: 1 },
+        React__default.createElement(AttachFile, { className: cs.icon }),
+        attachments.map(function (a) { return (React__default.createElement(core$1.Box, { m: 0.5, key: a.name, maxWidth: "100%" },
+            React__default.createElement(core$1.Chip, { label: a.name + " (" + getSizeAsString(a.size * BINARY_TO_BASE64_SIZE_FACTOR) + ")", size: "small", onDelete: function () { return removeAttachment(a); }, className: cs.chip }))); })));
+};
+var InsertAttachmentButton = function () {
+    var cs = useStyles$5();
+    var context = React__default.useContext(MessagesContext);
+    var addAttachment = context.addAttachment;
+    var attachmentInput = React__default.useRef(null);
+    var _a = __read(React__default.useState(false), 2), isActive = _a[0], setIsActive = _a[1];
+    var openUploadAttachmentInput = function () {
+        if (!attachmentInput || !attachmentInput.current)
+            return;
+        attachmentInput.current.value = '';
+        attachmentInput.current.click();
+    };
+    var onMouseDown = function (event) {
+        event.preventDefault();
+        setIsActive(true);
+        openUploadAttachmentInput();
+    };
+    var onMouseUp = function () {
+        setIsActive(false);
+    };
+    var uploadAttachment = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+        var file;
+        return __generator(this, function (_a) {
+            if (!event || !event.target || !event.target.files || event.target.files.length === 0)
+                return [2 /*return*/];
+            file = event.target.files[0];
+            addAttachment(file);
+            return [2 /*return*/];
+        });
+    }); };
+    return (React__default.createElement(EditorButton, { active: isActive, onMouseDown: onMouseDown, "aria-controls": "attachment-upload-menu", "aria-haspopup": "true", onMouseUp: onMouseUp },
+        React__default.createElement(AttachFile, { className: cs.icon }),
+        React__default.createElement(core$1.Box, { display: "none" },
+            React__default.createElement("input", { type: "file", accept: "*", ref: attachmentInput, onChange: uploadAttachment }))));
+};
+
+var useStyles$6 = core$1.makeStyles(function (theme) { return ({
+    editor: {
+        '&:hover': {
+            borderBottom: '2px solid #777',
+        },
+    },
+    editorFocused: {
+        borderBottom: "2px solid " + theme.palette.primary.main,
+    },
+    icon: {
+        display: 'block',
+    },
+    editable: {
+        minHeight: '350px',
+        padding: '8px',
+        overflow: 'hidden',
+    },
+    alignCenter: {
+        textAlign: 'center',
+    },
+    alignRight: {
+        textAlign: 'right',
+    },
+}); });
+var getOtherListFormat = function (format) {
+    if (format === FormatTypes$1.numberedList) {
+        return FormatTypes$1.bulletedList;
+    }
+    return FormatTypes$1.numberedList;
 };
 var HOTKEYS$1 = {
-    'mod+b': FormatTypes.bold,
-    'mod+i': FormatTypes.italic,
-    'mod+u': FormatTypes.underline,
+    'mod+b': FormatTypes$1.bold,
+    'mod+i': FormatTypes$1.italic,
+    'mod+u': FormatTypes$1.underline,
 };
 var isBlockActive = function (editor, format) {
-    if (format === FormatTypes.alignLeft) {
+    if (format === FormatTypes$1.alignLeft) {
         var _a = __read(Editor.nodes(editor, {
-            match: function (n) { return n.types && n.types.includes(FormatTypes.alignCenter); },
-        }), 1), alignCenterMatch = _a[0];
-        return !alignCenterMatch;
+            match: function (n) {
+                if (!n.types) {
+                    if (n.type && n.type === FormatTypes$1.image) {
+                        return !(!n.align || n.align === format);
+                    }
+                    return false;
+                }
+                var types = n.types;
+                return types.includes(FormatTypes$1.alignCenter) || types.includes(FormatTypes$1.alignRight);
+            },
+        }), 1), alignNotLeftMatch = _a[0];
+        return !alignNotLeftMatch;
     }
     var _b = __read(Editor.nodes(editor, {
-        match: function (n) { return n.types && n.types.includes(format); },
+        match: function (n) {
+            if (!n.types) {
+                if (n.type && n.type === FormatTypes$1.image) {
+                    if (isFormatAlignment(format)) {
+                        return n.align === format;
+                    }
+                }
+                return false;
+            }
+            var types = n.types;
+            return types.includes(format);
+        },
     }), 1), match = _b[0];
     return !!match;
 };
@@ -38712,14 +41148,22 @@ var toggleBlock = function (editor, format) {
             });
         }
     }
-    var newFormatType = isList ? FormatTypes.listItem : format;
+    var newFormatType = isList ? FormatTypes$1.listItem : format;
     var types = [];
     var selectedNode = editor.selection && editor.children[editor.selection.anchor.path[0]];
+    if (selectedNode && selectedNode.type && selectedNode.type === FormatTypes$1.image) {
+        if (isFormatAlignment(newFormatType)) {
+            Transforms.setNodes(editor, {
+                align: newFormatType,
+            });
+        }
+        return;
+    }
     var selectedNodeTypes = selectedNode ? selectedNode.types : [];
     if (selectedNode && selectedNode.children.length > 0 && selectedNode.children[0].types) {
         selectedNodeTypes = selectedNode.children[0].types;
     }
-    if (!(selectedNodeTypes.length && selectedNodeTypes[0] === FormatTypes.paragraph)) {
+    if (!(selectedNodeTypes.length && selectedNodeTypes[0] === FormatTypes$1.paragraph)) {
         types.push.apply(types, __spread(selectedNodeTypes));
     }
     if (isActive) {
@@ -38772,31 +41216,40 @@ var toggleMark = function (editor, format) {
 };
 var Element$2 = function (_a) {
     var attributes = _a.attributes, children = _a.children, element = _a.element;
+    var cs = useStyles$6();
     var block = children;
+    if (element.type) {
+        if (element.type === FormatTypes$1.hyperlink) {
+            return (React__default.createElement("a", __assign({}, attributes, { href: element.url }), children));
+        }
+        if (element.type === FormatTypes$1.image) {
+            return (React__default.createElement(ImageElement, { attributes: attributes, element: element }, children));
+        }
+    }
     element.types.forEach(function (type) {
         switch (type) {
-            case FormatTypes.blockQuote:
-                block = React__default.createElement("blockquote", __assign({}, attributes), block);
-                break;
-            case FormatTypes.bulletedList:
+            case FormatTypes$1.bulletedList:
                 block = React__default.createElement("ul", __assign({}, attributes), block);
                 break;
-            case FormatTypes.headingOne:
+            case FormatTypes$1.headingOne:
                 block = React__default.createElement("h1", __assign({}, attributes), block);
                 break;
-            case FormatTypes.headingTwo:
+            case FormatTypes$1.headingTwo:
                 block = React__default.createElement("h2", __assign({}, attributes), block);
                 break;
-            case FormatTypes.listItem:
+            case FormatTypes$1.listItem:
                 block = React__default.createElement("li", __assign({}, attributes), block);
                 break;
-            case FormatTypes.numberedList:
+            case FormatTypes$1.numberedList:
                 block = React__default.createElement("ol", __assign({}, attributes), block);
                 break;
-            case FormatTypes.alignCenter:
-                block = (React__default.createElement("div", __assign({}, attributes, { style: { textAlign: 'center' } }), block));
+            case FormatTypes$1.alignCenter:
+                block = (React__default.createElement("div", __assign({}, attributes, { className: cs.alignCenter }), block));
                 break;
-            case FormatTypes.alignLeft:
+            case FormatTypes$1.alignRight:
+                block = (React__default.createElement("div", __assign({}, attributes, { className: cs.alignRight }), block));
+                break;
+            case FormatTypes$1.alignLeft:
                 break;
             default:
                 block = React__default.createElement("p", __assign({}, attributes), block);
@@ -38837,20 +41290,13 @@ var MarkButton = function (_a) {
 };
 var INITIAL_VALUE = [
     {
-        types: [FormatTypes.paragraph],
+        types: [FormatTypes$1.paragraph],
         children: [{ text: '' }],
     },
 ];
-var useStyles$3 = core$1.makeStyles(function (theme) { return ({
-    editor: {
-        '&:hover': {
-            borderBottom: '2px solid #777',
-        },
-    },
-    editorFocused: {
-        borderBottom: "2px solid " + theme.palette.primary.main,
-    },
-}); });
+var hasImageNode = function (nodes) {
+    return nodes.find(function (n) { return n.type && n.type === FormatTypes$1.image; }) !== null;
+};
 var serialize = function (node) {
     if (Text.isText(node)) {
         var updatedNode = node.text;
@@ -38866,33 +41312,50 @@ var serialize = function (node) {
         return updatedNode;
     }
     var children = node.children.map(function (n) { return serialize(n); }).join('');
-    if (!node.types)
+    if (node.type) {
+        if (node.type === FormatTypes$1.hyperlink) {
+            return "<a href=\"" + node.url + "\">" + children + "</a>";
+        }
+        if (node.type === FormatTypes$1.image) {
+            var alignStyle = 'float: left;';
+            if (node.align === FormatTypes$1.alignCenter)
+                alignStyle = "display: 'block'; margin: '0px auto';";
+            if (node.align === FormatTypes$1.alignRight)
+                alignStyle = 'float: right;';
+            return "<div style=\"width: " + node.width + "px; height: " + node.height + "px; " + alignStyle + "\"><img src=\"" + node.imageSource + "\" style=\"max-width: 100%; max-height: 100%;\"/></div>";
+        }
+    }
+    if (!node.types) {
+        if (hasImageNode(node.children)) {
+            return "<div style=\"overflow:auto;\">" + children + "</div>";
+        }
         return children;
+    }
     var block = children;
     node.types.forEach(function (type) {
         switch (type) {
-            case FormatTypes.blockQuote:
-                block = "<blockquote>" + block + "</blockquote>";
-                break;
-            case FormatTypes.bulletedList:
+            case FormatTypes$1.bulletedList:
                 block = "<ul>" + block + "</ul>";
                 break;
-            case FormatTypes.headingOne:
+            case FormatTypes$1.headingOne:
                 block = "<h1>" + block + "</h1>";
                 break;
-            case FormatTypes.headingTwo:
+            case FormatTypes$1.headingTwo:
                 block = "<h2>" + block + "</h2>";
                 break;
-            case FormatTypes.listItem:
+            case FormatTypes$1.listItem:
                 block = "<li>" + block + "</li>";
                 break;
-            case FormatTypes.numberedList:
+            case FormatTypes$1.numberedList:
                 block = "<ol>" + block + "</ol>";
                 break;
-            case FormatTypes.alignCenter:
+            case FormatTypes$1.alignCenter:
                 block = "<div style='text-align: center'>" + block + "</div>";
                 break;
-            case FormatTypes.alignLeft:
+            case FormatTypes$1.alignRight:
+                block = "<div style='text-align: right'>" + block + "</div>";
+                break;
+            case FormatTypes$1.alignLeft:
                 break;
             default:
                 block = "<p>" + block + "</p>";
@@ -38903,12 +41366,12 @@ var serialize = function (node) {
 var MessageEditor = function (_a) {
     var name = _a.name, onBlur = _a.onBlur, onChange = _a.onChange, formikValue = _a.value;
     var t = useTranslation(['messages/default']).t;
-    var cs = useStyles$3();
+    var cs = useStyles$6();
     var _b = __read(React.useState(INITIAL_VALUE), 2), value = _b[0], setValue = _b[1];
     var _c = __read(React.useState(false), 2), isFocused = _c[0], setIsFocused = _c[1];
     var renderElement = React.useCallback(function (props) { return React__default.createElement(Element$2, __assign({}, props)); }, []);
     var renderLeaf = React.useCallback(function (props) { return React__default.createElement(Leaf$1, __assign({}, props)); }, []);
-    var editor = React.useMemo(function () { return withHistory(withReact(createEditor())); }, []);
+    var editor = React.useMemo(function () { return withImages(withLinks(withHistory(withReact(createEditor())))); }, []);
     React.useEffect(function () {
         if (formikValue === '') {
             // Form has been reset
@@ -38927,17 +41390,21 @@ var MessageEditor = function (_a) {
     return (React__default.createElement(core$1.Box, { border: 1, borderColor: "divider", className: isFocused ? cs.editorFocused : cs.editor, mt: 2, mb: 1 },
         React__default.createElement(Slate, { editor: editor, value: value, onChange: onValueChange },
             React__default.createElement(Toolbar, null,
-                React__default.createElement(MarkButton, { format: FormatTypes.bold, icon: React__default.createElement(FormatBold, { style: { display: 'block' } }) }),
-                React__default.createElement(MarkButton, { format: FormatTypes.italic, icon: React__default.createElement(FormatItalic, { style: { display: 'block' } }) }),
-                React__default.createElement(MarkButton, { format: FormatTypes.underline, icon: React__default.createElement(FormatUnderlined, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.headingOne, icon: React__default.createElement(LooksOne, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.headingTwo, icon: React__default.createElement(LooksTwo, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.blockQuote, icon: React__default.createElement(FormatQuote, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.alignLeft, icon: React__default.createElement(FormatAlignLeft, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.alignCenter, icon: React__default.createElement(FormatAlignCenter, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.numberedList, icon: React__default.createElement(FormatListNumbered, { style: { display: 'block' } }) }),
-                React__default.createElement(BlockButton, { format: FormatTypes.bulletedList, icon: React__default.createElement(FormatListBulleted, { style: { display: 'block' } }) })),
-            React__default.createElement(Editable, { renderElement: renderElement, renderLeaf: renderLeaf, placeholder: t('form.placeholder'), spellCheck: true, onBlur: onBlurEditor, style: { minHeight: '350px', padding: '8px' }, onKeyDown: function (event) {
+                React__default.createElement(MarkButton, { format: FormatTypes$1.bold, icon: React__default.createElement(FormatBold, { className: cs.icon }) }),
+                React__default.createElement(MarkButton, { format: FormatTypes$1.italic, icon: React__default.createElement(FormatItalic, { className: cs.icon }) }),
+                React__default.createElement(MarkButton, { format: FormatTypes$1.underline, icon: React__default.createElement(FormatUnderlined, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.headingOne, icon: React__default.createElement(LooksOne, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.headingTwo, icon: React__default.createElement(LooksTwo, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.alignLeft, icon: React__default.createElement(FormatAlignLeft, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.alignCenter, icon: React__default.createElement(FormatAlignCenter, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.alignRight, icon: React__default.createElement(FormatAlignRight, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.numberedList, icon: React__default.createElement(FormatListNumbered, { className: cs.icon }) }),
+                React__default.createElement(BlockButton, { format: FormatTypes$1.bulletedList, icon: React__default.createElement(FormatListBulleted, { className: cs.icon }) }),
+                React__default.createElement(LinkButton, null),
+                React__default.createElement(InsertImageButton, null),
+                React__default.createElement(InsertAttachmentButton, null)),
+            React__default.createElement(AttachmentList, null),
+            React__default.createElement(Editable, { renderElement: renderElement, renderLeaf: renderLeaf, placeholder: t('form.placeholder'), spellCheck: true, onBlur: onBlurEditor, className: cs.editable, onKeyDown: function (event) {
                     Object.keys(HOTKEYS$1).forEach(function (hotkey) {
                         if (isHotkey(hotkey, event)) {
                             event.preventDefault();
@@ -39093,7 +41560,7 @@ var UserForm = function (_a) {
         },
     ];
     var initialValues = __assign(__assign(__assign({}, generateInitialValues(fields)), generateInitialValues(contactFields)), generateInitialValues(spouseInformations));
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_14, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
         formikProps.status && (React__default.createElement(core$1.Box, { my: 2 },
             React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
         React__default.createElement(core$1.Box, null,
@@ -39677,7 +42144,7 @@ var DistribSlotsResolver = function (_a) {
 };
 var DistribSlotsResolver$1 = withNeolithicProvider(withi18n(DistribSlotsResolver));
 
-var useStyles$4 = core$1.makeStyles(function () { return ({
+var useStyles$7 = core$1.makeStyles(function () { return ({
     map: {
         width: '100%',
         height: '100%',
@@ -39706,7 +42173,7 @@ var PlaceDialogView = function (_a) {
     var _b = __read(React__default.useState(), 2), place = _b[0], setPlace = _b[1];
     var _c = __read(React__default.useState(), 2), error = _c[0], setError = _c[1];
     var _d = __read(React__default.useState(false), 2), loading = _d[0], toggleLoaging = _d[1];
-    var cs = useStyles$4();
+    var cs = useStyles$7();
     /** */
     React__default.useEffect(function () {
         var active = true;
@@ -39784,7 +42251,7 @@ var PlaceDialogView = function (_a) {
 };
 var PlaceDialogView$1 = withNeolithicProvider(withi18n(PlaceDialogView));
 
-var useStyles$5 = core$1.makeStyles(function () { return ({
+var useStyles$8 = core$1.makeStyles(function () { return ({
     map: {
         width: '100%',
         height: '100%',
@@ -39795,7 +42262,7 @@ var PlaceView = function (_a) {
     var _b = __read(React__default.useState(), 2), place = _b[0], setPlace = _b[1];
     var _c = __read(React__default.useState(), 2), error = _c[0], setError = _c[1];
     var _d = __read(React__default.useState(false), 2), loading = _d[0], toggleLoaging = _d[1];
-    var cs = useStyles$5();
+    var cs = useStyles$8();
     /** */
     React__default.useEffect(function () {
         var active = true;
@@ -39846,668 +42313,6 @@ var PlaceView = function (_a) {
         React__default.createElement(reactLeaflet.Marker, { position: center })));
 };
 var PlaceView$1 = withNeolithicProvider(withi18n(PlaceView));
-
-var parse$4 = parser$1.parse;
-
-// Strip insignificant whitespace
-// Note that this could do a lot more, such as reorder fields etc.
-function normalize$1(string) {
-  return string.replace(/[\s,]+/g, ' ').trim();
-}
-
-// A map docString -> graphql document
-var docCache$1 = {};
-
-// A map fragmentName -> [normalized source]
-var fragmentSourceMap$1 = {};
-
-function cacheKeyFromLoc$1(loc) {
-  return normalize$1(loc.source.body.substring(loc.start, loc.end));
-}
-
-// For testing.
-function resetCaches$2() {
-  docCache$1 = {};
-  fragmentSourceMap$1 = {};
-}
-
-// Take a unstripped parsed document (query/mutation or even fragment), and
-// check all fragment definitions, checking for name->source uniqueness.
-// We also want to make sure only unique fragments exist in the document.
-var printFragmentWarnings$1 = true;
-function processFragments$1(ast) {
-  var astFragmentMap = {};
-  var definitions = [];
-
-  for (var i = 0; i < ast.definitions.length; i++) {
-    var fragmentDefinition = ast.definitions[i];
-
-    if (fragmentDefinition.kind === 'FragmentDefinition') {
-      var fragmentName = fragmentDefinition.name.value;
-      var sourceKey = cacheKeyFromLoc$1(fragmentDefinition.loc);
-
-      // We know something about this fragment
-      if (fragmentSourceMap$1.hasOwnProperty(fragmentName) && !fragmentSourceMap$1[fragmentName][sourceKey]) {
-
-        // this is a problem because the app developer is trying to register another fragment with
-        // the same name as one previously registered. So, we tell them about it.
-        if (printFragmentWarnings$1) {
-          console.warn("Warning: fragment with name " + fragmentName + " already exists.\n"
-            + "graphql-tag enforces all fragment names across your application to be unique; read more about\n"
-            + "this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names");
-        }
-
-        fragmentSourceMap$1[fragmentName][sourceKey] = true;
-
-      } else if (!fragmentSourceMap$1.hasOwnProperty(fragmentName)) {
-        fragmentSourceMap$1[fragmentName] = {};
-        fragmentSourceMap$1[fragmentName][sourceKey] = true;
-      }
-
-      if (!astFragmentMap[sourceKey]) {
-        astFragmentMap[sourceKey] = true;
-        definitions.push(fragmentDefinition);
-      }
-    } else {
-      definitions.push(fragmentDefinition);
-    }
-  }
-
-  ast.definitions = definitions;
-  return ast;
-}
-
-function disableFragmentWarnings$2() {
-  printFragmentWarnings$1 = false;
-}
-
-function stripLoc$1(doc, removeLocAtThisLevel) {
-  var docType = Object.prototype.toString.call(doc);
-
-  if (docType === '[object Array]') {
-    return doc.map(function (d) {
-      return stripLoc$1(d, removeLocAtThisLevel);
-    });
-  }
-
-  if (docType !== '[object Object]') {
-    throw new Error('Unexpected input.');
-  }
-
-  // We don't want to remove the root loc field so we can use it
-  // for fragment substitution (see below)
-  if (removeLocAtThisLevel && doc.loc) {
-    delete doc.loc;
-  }
-
-  // https://github.com/apollographql/graphql-tag/issues/40
-  if (doc.loc) {
-    delete doc.loc.startToken;
-    delete doc.loc.endToken;
-  }
-
-  var keys = Object.keys(doc);
-  var key;
-  var value;
-  var valueType;
-
-  for (key in keys) {
-    if (keys.hasOwnProperty(key)) {
-      value = doc[keys[key]];
-      valueType = Object.prototype.toString.call(value);
-
-      if (valueType === '[object Object]' || valueType === '[object Array]') {
-        doc[keys[key]] = stripLoc$1(value, true);
-      }
-    }
-  }
-
-  return doc;
-}
-
-var experimentalFragmentVariables$1 = false;
-function parseDocument$1(doc) {
-  var cacheKey = normalize$1(doc);
-
-  if (docCache$1[cacheKey]) {
-    return docCache$1[cacheKey];
-  }
-
-  var parsed = parse$4(doc, { experimentalFragmentVariables: experimentalFragmentVariables$1 });
-  if (!parsed || parsed.kind !== 'Document') {
-    throw new Error('Not a valid GraphQL document.');
-  }
-
-  // check that all "new" fragments inside the documents are consistent with
-  // existing fragments of the same name
-  parsed = processFragments$1(parsed);
-  parsed = stripLoc$1(parsed, false);
-  docCache$1[cacheKey] = parsed;
-
-  return parsed;
-}
-
-function enableExperimentalFragmentVariables$2() {
-  experimentalFragmentVariables$1 = true;
-}
-
-function disableExperimentalFragmentVariables$2() {
-  experimentalFragmentVariables$1 = false;
-}
-
-// XXX This should eventually disallow arbitrary string interpolation, like Relay does
-function gql$1(/* arguments */) {
-  var args = Array.prototype.slice.call(arguments);
-
-  var literals = args[0];
-
-  // We always get literals[0] and then matching post literals for each arg given
-  var result = (typeof(literals) === "string") ? literals : literals[0];
-
-  for (var i = 1; i < args.length; i++) {
-    if (args[i] && args[i].kind && args[i].kind === 'Document') {
-      result += args[i].loc.source.body;
-    } else {
-      result += args[i];
-    }
-
-    result += literals[i];
-  }
-
-  return parseDocument$1(result);
-}
-
-// Support typescript, which isn't as nice as Babel about default exports
-gql$1.default = gql$1;
-gql$1.resetCaches = resetCaches$2;
-gql$1.disableFragmentWarnings = disableFragmentWarnings$2;
-gql$1.enableExperimentalFragmentVariables = enableExperimentalFragmentVariables$2;
-gql$1.disableExperimentalFragmentVariables = disableExperimentalFragmentVariables$2;
-
-var src$1 = gql$1;
-
-var MangopayBankAccountType;
-(function (MangopayBankAccountType) {
-    MangopayBankAccountType["IBAN"] = "IBAN";
-    MangopayBankAccountType["GB"] = "GB";
-    MangopayBankAccountType["US"] = "US";
-    MangopayBankAccountType["CA"] = "CA";
-    MangopayBankAccountType["OTHER"] = "OTHER";
-})(MangopayBankAccountType || (MangopayBankAccountType = {}));
-var MangopayKycDocumentRefusedReasonType;
-(function (MangopayKycDocumentRefusedReasonType) {
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_UNREADABLE"] = "DOCUMENT_UNREADABLE";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_NOT_ACCEPTED"] = "DOCUMENT_NOT_ACCEPTED";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_HAS_EXPIRED"] = "DOCUMENT_HAS_EXPIRED";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_INCOMPLETE"] = "DOCUMENT_INCOMPLETE";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_MISSING"] = "DOCUMENT_MISSING";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_DO_NOT_MATCH_USER_DATA"] = "DOCUMENT_DO_NOT_MATCH_USER_DATA";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA"] = "DOCUMENT_DO_NOT_MATCH_ACCOUNT_DATA";
-    MangopayKycDocumentRefusedReasonType["SPECIFIC_CASE"] = "SPECIFIC_CASE";
-    MangopayKycDocumentRefusedReasonType["DOCUMENT_FALSIFIED"] = "DOCUMENT_FALSIFIED";
-    MangopayKycDocumentRefusedReasonType["UNDERAGE_PERSON"] = "UNDERAGE_PERSON";
-})(MangopayKycDocumentRefusedReasonType || (MangopayKycDocumentRefusedReasonType = {}));
-var MangopayKycDocumentStatus;
-(function (MangopayKycDocumentStatus) {
-    MangopayKycDocumentStatus["CREATED"] = "CREATED";
-    MangopayKycDocumentStatus["VALIDATION_ASKED"] = "VALIDATION_ASKED";
-    MangopayKycDocumentStatus["REFUSED"] = "REFUSED";
-    MangopayKycDocumentStatus["VALIDATED"] = "VALIDATED";
-})(MangopayKycDocumentStatus || (MangopayKycDocumentStatus = {}));
-var MangopayKycDocumentType;
-(function (MangopayKycDocumentType) {
-    MangopayKycDocumentType["IDENTITY_PROOF"] = "IDENTITY_PROOF";
-    MangopayKycDocumentType["ARTICLES_OF_ASSOCIATION"] = "ARTICLES_OF_ASSOCIATION";
-    MangopayKycDocumentType["REGISTRATION_PROOF"] = "REGISTRATION_PROOF";
-    MangopayKycDocumentType["SHAREHOLDER_DECLARATION"] = "SHAREHOLDER_DECLARATION";
-})(MangopayKycDocumentType || (MangopayKycDocumentType = {}));
-var MangopayKycLevel;
-(function (MangopayKycLevel) {
-    MangopayKycLevel["LIGHT"] = "LIGHT";
-    MangopayKycLevel["REGULAR"] = "REGULAR";
-})(MangopayKycLevel || (MangopayKycLevel = {}));
-var MangopayLegalPersonType;
-(function (MangopayLegalPersonType) {
-    MangopayLegalPersonType["ORGANIZATION"] = "ORGANIZATION";
-    MangopayLegalPersonType["BUSINESS"] = "BUSINESS";
-    MangopayLegalPersonType["SOLETRADER"] = "SOLETRADER";
-})(MangopayLegalPersonType || (MangopayLegalPersonType = {}));
-var MangopayUboDeclarationStatus;
-(function (MangopayUboDeclarationStatus) {
-    MangopayUboDeclarationStatus["CREATED"] = "CREATED";
-    MangopayUboDeclarationStatus["VALIDATION_ASKED"] = "VALIDATION_ASKED";
-    MangopayUboDeclarationStatus["INCOMPLETE"] = "INCOMPLETE";
-    MangopayUboDeclarationStatus["VALIDATED"] = "VALIDATED";
-    MangopayUboDeclarationStatus["REFUSED"] = "REFUSED";
-})(MangopayUboDeclarationStatus || (MangopayUboDeclarationStatus = {}));
-var MangopayUboReasonType;
-(function (MangopayUboReasonType) {
-    MangopayUboReasonType["MISSING_UBO"] = "MISSING_UBO";
-    MangopayUboReasonType["WRONG_UBO_INFORMATION"] = "WRONG_UBO_INFORMATION";
-    MangopayUboReasonType["UBO_IDENTITY_NEEDED"] = "UBO_IDENTITY_NEEDED";
-    MangopayUboReasonType["SHAREHOLDERS_DECLARATION_NEEDED"] = "SHAREHOLDERS_DECLARATION_NEEDED";
-    MangopayUboReasonType["ORGANIZATION_CHART_NEEDED"] = "ORGANIZATION_CHART_NEEDED";
-    MangopayUboReasonType["DOCUMENTS_NEEDED"] = "DOCUMENTS_NEEDED";
-    MangopayUboReasonType["DECLARATION_DO_NOT_MATCH_UBO_INFORMATION"] = "DECLARATION_DO_NOT_MATCH_UBO_INFORMATION";
-    MangopayUboReasonType["SPECIFIC_CASE"] = "SPECIFIC_CASE";
-})(MangopayUboReasonType || (MangopayUboReasonType = {}));
-var MangopayUsBankAccountDepositAccountType;
-(function (MangopayUsBankAccountDepositAccountType) {
-    MangopayUsBankAccountDepositAccountType["CHECKING"] = "CHECKING";
-    MangopayUsBankAccountDepositAccountType["SAVINGS"] = "SAVINGS";
-})(MangopayUsBankAccountDepositAccountType || (MangopayUsBankAccountDepositAccountType = {}));
-var UserFragmentDoc = src$1(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n  email\n  email2\n  firstName2\n  lastName2\n}\n    "], ["\n    fragment User on User {\n  id\n  firstName\n  lastName\n  address1\n  address2\n  zipCode\n  city\n  nationality\n  countryOfResidence\n  birthDate\n  email\n  email2\n  firstName2\n  lastName2\n}\n    "])));
-var MangopayAddressFragmentDoc = src$1(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "], ["\n    fragment MangopayAddress on MangopayAddress {\n  AddressLine1\n  AddressLine2\n  City\n  PostalCode\n  Country\n}\n    "])));
-var MangopayKycDocumentFragmentDoc = src$1(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "], ["\n    fragment MangopayKycDocument on MangopayKycDocument {\n  Id\n  Type\n  ProcessedDate\n  Status\n  RefusedReasonType\n  RefusedReasonMessage\n}\n    "])));
-var MangopayBirthplaceFragmentDoc = src$1(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "], ["\n    fragment MangopayBirthplace on MangopayBirthplace {\n  City\n  Country\n}\n    "])));
-var MangopayUboFragmentDoc = src$1(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""], ["\n    fragment MangopayUbo on MangopayUbo {\n  Id\n  CreationDate\n  FirstName\n  LastName\n  Address {\n    ...MangopayAddress\n  }\n  Nationality\n  Birthday\n  Birthplace {\n    ...MangopayBirthplace\n  }\n}\n    ", "\n", ""])), MangopayAddressFragmentDoc, MangopayBirthplaceFragmentDoc);
-var MangopayUboDeclarationFragmentDoc = src$1(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    fragment MangopayUboDeclaration on MangopayUboDeclaration {\n  Id\n  Status\n  Reason\n  Message\n  Ubos {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
-var MangopayIbanBankAccountFragmentDoc = src$1(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""], ["\n    fragment MangopayIbanBankAccount on MangopayIbanBankAccount {\n  Id\n  Type\n  OwnerAddress {\n    ...MangopayAddress\n  }\n  OwnerName\n  Active\n  IBAN\n  BIC\n}\n    ", ""])), MangopayAddressFragmentDoc);
-var MangopayLegalUserFragmentDoc = src$1(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""], ["\n    fragment MangopayLegalUser on MangopayLegalUser {\n  bankAccountId\n  KYCLevel\n  Name\n  CompanyNumber\n  Email\n  LegalPersonType\n  LegalRepresentativeFirstName\n  LegalRepresentativeLastName\n  LegalRepresentativeEmail\n  LegalRepresentativeBirthday\n  LegalRepresentativeNationality\n  LegalRepresentativeCountryOfResidence\n  HeadquartersAddress {\n    ...MangopayAddress\n  }\n  LegalRepresentativeAddress {\n    ...MangopayAddress\n  }\n  KycDocuments {\n    ...MangopayKycDocument\n  }\n  UboDeclarations {\n    ...MangopayUboDeclaration\n  }\n  BankAccounts {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n  legalRepr {\n    id\n    firstName\n    lastName\n    email\n    address1\n    address2\n    zipCode\n    city\n    nationality\n    countryOfResidence\n    birthDate\n  }\n}\n    ", "\n", "\n", "\n", ""])), MangopayAddressFragmentDoc, MangopayKycDocumentFragmentDoc, MangopayUboDeclarationFragmentDoc, MangopayIbanBankAccountFragmentDoc);
-var LoginDocument = src$1(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""], ["\n    mutation Login($input: LoginInput!) {\n  login(input: $input) {\n    user {\n      ...User\n    }\n    token\n  }\n}\n    ", ""])), UserFragmentDoc);
-var MeDocument = src$1(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""], ["\n    query Me {\n  me {\n    ...User\n  }\n}\n    ", ""])), UserFragmentDoc);
-/**
- * __useMeQuery__
- *
- * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeQuery({
- *   variables: {
- *   },
- * });
- */
-function useMeQuery(baseOptions) {
-    return useQuery(MeDocument, baseOptions);
-}
-var GroupPreviewDocument = src$1(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query GroupPreview($id: Int!) {\n  groupPreview(id: $id) {\n    id\n    name\n  }\n}\n    "])));
-var GetUserMembershipsDocument = src$1(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "], ["\n    query getUserMemberships($userId: Int!, $groupId: Int!) {\n  getUserMemberships(userId: $userId, groupId: $groupId) {\n    user {\n      id\n      firstName\n      lastName\n      email\n    }\n    group {\n      id\n      name\n    }\n    year\n  }\n}\n    "])));
-var IsGroupAdminDocument = src$1(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query isGroupAdmin($groupId: Int!) {\n  isGroupAdmin(groupId: $groupId)\n}\n    "], ["\n    query isGroupAdmin($groupId: Int!) {\n  isGroupAdmin(groupId: $groupId)\n}\n    "])));
-/**
- * __useIsGroupAdminQuery__
- *
- * To run a query within a React component, call `useIsGroupAdminQuery` and pass it any options that fit your needs.
- * When your component renders, `useIsGroupAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useIsGroupAdminQuery({
- *   variables: {
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-function useIsGroupAdminQuery(baseOptions) {
-    return useQuery(IsGroupAdminDocument, baseOptions);
-}
-var MangopayGroupDocument = src$1(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "], ["\n    query MangopayGroup($id: Int!) {\n  group(id: $id) {\n    id\n    mangopayGroup {\n      legalUser {\n        KYCLevel\n      }\n    }\n  }\n}\n    "])));
-var MangopayGroupConfigDocument = src$1(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""], ["\n    query MangopayGroupConfig($id: Int!) {\n  group(id: $id) {\n    id\n    users {\n      id\n      firstName\n      lastName\n      email\n      address1\n      address2\n      zipCode\n      city\n      nationality\n      countryOfResidence\n      birthDate\n    }\n    mangopayGroup {\n      legalUser {\n        ...MangopayLegalUser\n      }\n    }\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
-/**
- * __useMangopayGroupConfigQuery__
- *
- * To run a query within a React component, call `useMangopayGroupConfigQuery` and pass it any options that fit your needs.
- * When your component renders, `useMangopayGroupConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMangopayGroupConfigQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-function useMangopayGroupConfigQuery(baseOptions) {
-    return useQuery(MangopayGroupConfigDocument, baseOptions);
-}
-var MangopayLegalUserByLegalReprDocument = src$1(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    query MangopayLegalUserByLegalRepr($input: GetMangopayLegalUserByLegalRepr!) {\n  mangopayLegalUserByLegalRepr(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
-function useMangopayLegalUserByLegalReprLazyQuery(baseOptions) {
-    return useLazyQuery(MangopayLegalUserByLegalReprDocument, baseOptions);
-}
-var CreateMangopayLegalUserDocument = src$1(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayLegalUser($input: CreateMangopayLegalUserInput!) {\n  createMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
-/**
- * __useCreateMangopayLegalUserMutation__
- *
- * To run a mutation, you first call `useCreateMangopayLegalUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayLegalUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMangopayLegalUserMutation, { data, loading, error }] = useCreateMangopayLegalUserMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateMangopayLegalUserMutation(baseOptions) {
-    return useMutation(CreateMangopayLegalUserDocument, baseOptions);
-}
-var UpdateMangopayLegalUserDocument = src$1(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation UpdateMangopayLegalUser($input: UpdateMangopayLegalUserInput!) {\n  updateMangopayLegalUser(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
-/**
- * __useUpdateMangopayLegalUserMutation__
- *
- * To run a mutation, you first call `useUpdateMangopayLegalUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateMangopayLegalUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateMangopayLegalUserMutation, { data, loading, error }] = useUpdateMangopayLegalUserMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useUpdateMangopayLegalUserMutation(baseOptions) {
-    return useMutation(UpdateMangopayLegalUserDocument, baseOptions);
-}
-var LinkMangopayLegalUserToGroupDocument = src$1(templateObject_19 || (templateObject_19 = __makeTemplateObject(["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""], ["\n    mutation LinkMangopayLegalUserToGroup($input: LinkMangopayLegalUserToGroupInput!) {\n  linkMangopayLegalUserToGroup(input: $input) {\n    ...MangopayLegalUser\n  }\n}\n    ", ""])), MangopayLegalUserFragmentDoc);
-/**
- * __useLinkMangopayLegalUserToGroupMutation__
- *
- * To run a mutation, you first call `useLinkMangopayLegalUserToGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLinkMangopayLegalUserToGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [linkMangopayLegalUserToGroupMutation, { data, loading, error }] = useLinkMangopayLegalUserToGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useLinkMangopayLegalUserToGroupMutation(baseOptions) {
-    return useMutation(LinkMangopayLegalUserToGroupDocument, baseOptions);
-}
-var CreateMangopayKycDocumentsDocument = src$1(templateObject_20 || (templateObject_20 = __makeTemplateObject(["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayKycDocuments($input: CreateMangopayKycDocumentsInput!) {\n  createMangopayKycDocuments(input: $input) {\n    ...MangopayKycDocument\n  }\n}\n    ", ""])), MangopayKycDocumentFragmentDoc);
-/**
- * __useCreateMangopayKycDocumentsMutation__
- *
- * To run a mutation, you first call `useCreateMangopayKycDocumentsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayKycDocumentsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMangopayKycDocumentsMutation, { data, loading, error }] = useCreateMangopayKycDocumentsMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateMangopayKycDocumentsMutation(baseOptions) {
-    return useMutation(CreateMangopayKycDocumentsDocument, baseOptions);
-}
-var CreateMangopayUboDeclarationDocument = src$1(templateObject_21 || (templateObject_21 = __makeTemplateObject(["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayUboDeclaration($input: CreateMangopayUboDeclarationInput!) {\n  createMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
-/**
- * __useCreateMangopayUboDeclarationMutation__
- *
- * To run a mutation, you first call `useCreateMangopayUboDeclarationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayUboDeclarationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMangopayUboDeclarationMutation, { data, loading, error }] = useCreateMangopayUboDeclarationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateMangopayUboDeclarationMutation(baseOptions) {
-    return useMutation(CreateMangopayUboDeclarationDocument, baseOptions);
-}
-var SubmitMangopayUboDeclarationDocument = src$1(templateObject_22 || (templateObject_22 = __makeTemplateObject(["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""], ["\n    mutation SubmitMangopayUboDeclaration($input: SubmitMangopayUboDeclarationInput!) {\n  submitMangopayUboDeclaration(input: $input) {\n    ...MangopayUboDeclaration\n  }\n}\n    ", ""])), MangopayUboDeclarationFragmentDoc);
-/**
- * __useSubmitMangopayUboDeclarationMutation__
- *
- * To run a mutation, you first call `useSubmitMangopayUboDeclarationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSubmitMangopayUboDeclarationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [submitMangopayUboDeclarationMutation, { data, loading, error }] = useSubmitMangopayUboDeclarationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useSubmitMangopayUboDeclarationMutation(baseOptions) {
-    return useMutation(SubmitMangopayUboDeclarationDocument, baseOptions);
-}
-var CreateOrUpdateMangopayUboDocument = src$1(templateObject_23 || (templateObject_23 = __makeTemplateObject(["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""], ["\n    mutation CreateOrUpdateMangopayUbo($input: CreateOrUpdateMangopayUboInput!) {\n  createOrUpdateMangopayUbo(input: $input) {\n    ...MangopayUbo\n  }\n}\n    ", ""])), MangopayUboFragmentDoc);
-/**
- * __useCreateOrUpdateMangopayUboMutation__
- *
- * To run a mutation, you first call `useCreateOrUpdateMangopayUboMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOrUpdateMangopayUboMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOrUpdateMangopayUboMutation, { data, loading, error }] = useCreateOrUpdateMangopayUboMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateOrUpdateMangopayUboMutation(baseOptions) {
-    return useMutation(CreateOrUpdateMangopayUboDocument, baseOptions);
-}
-var CreateMangopayIbanBankAccountDocument = src$1(templateObject_24 || (templateObject_24 = __makeTemplateObject(["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""], ["\n    mutation CreateMangopayIbanBankAccount($input: CreateMangopayIbanBankAccountInput!) {\n  createMangopayIbanBankAccount(input: $input) {\n    ... on MangopayIbanBankAccount {\n      ...MangopayIbanBankAccount\n    }\n  }\n}\n    ", ""])), MangopayIbanBankAccountFragmentDoc);
-/**
- * __useCreateMangopayIbanBankAccountMutation__
- *
- * To run a mutation, you first call `useCreateMangopayIbanBankAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMangopayIbanBankAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMangopayIbanBankAccountMutation, { data, loading, error }] = useCreateMangopayIbanBankAccountMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateMangopayIbanBankAccountMutation(baseOptions) {
-    return useMutation(CreateMangopayIbanBankAccountDocument, baseOptions);
-}
-var DeactivateMangopayBankAccountDocument = src$1(templateObject_25 || (templateObject_25 = __makeTemplateObject(["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "], ["\n    mutation DeactivateMangopayBankAccount($input: DeactivateMangopayBankAccountInput!) {\n  deactivateMangopayBankAccount(input: $input)\n}\n    "])));
-/**
- * __useDeactivateMangopayBankAccountMutation__
- *
- * To run a mutation, you first call `useDeactivateMangopayBankAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeactivateMangopayBankAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deactivateMangopayBankAccountMutation, { data, loading, error }] = useDeactivateMangopayBankAccountMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useDeactivateMangopayBankAccountMutation(baseOptions) {
-    return useMutation(DeactivateMangopayBankAccountDocument, baseOptions);
-}
-var SelectMangopayBankAccountIdDocument = src$1(templateObject_26 || (templateObject_26 = __makeTemplateObject(["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "], ["\n    mutation selectMangopayBankAccountId($input: SelectMangopayLegalUserBankAccount!) {\n  selectMangopayBankAccountId(input: $input) {\n    mangopayUserId\n    bankAccountId\n  }\n}\n    "])));
-/**
- * __useSelectMangopayBankAccountIdMutation__
- *
- * To run a mutation, you first call `useSelectMangopayBankAccountIdMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSelectMangopayBankAccountIdMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [selectMangopayBankAccountIdMutation, { data, loading, error }] = useSelectMangopayBankAccountIdMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useSelectMangopayBankAccountIdMutation(baseOptions) {
-    return useMutation(SelectMangopayBankAccountIdDocument, baseOptions);
-}
-var MessagesGroupDocument = src$1(templateObject_27 || (templateObject_27 = __makeTemplateObject(["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "], ["\n    query MessagesGroup($id: Int!) {\n  group(id: $id) {\n    id\n    name\n    hasMembership\n  }\n}\n    "])));
-/**
- * __useMessagesGroupQuery__
- *
- * To run a query within a React component, call `useMessagesGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useMessagesGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMessagesGroupQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-function useMessagesGroupQuery(baseOptions) {
-    return useQuery(MessagesGroupDocument, baseOptions);
-}
-var CatalogDocument = src$1(templateObject_28 || (templateObject_28 = __makeTemplateObject(["\n    query Catalog($id: Int!) {\n  catalog(id: $id) {\n    id\n    name\n  }\n}\n    "], ["\n    query Catalog($id: Int!) {\n  catalog(id: $id) {\n    id\n    name\n  }\n}\n    "])));
-var UserListsDocument = src$1(templateObject_29 || (templateObject_29 = __makeTemplateObject(["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    id\n    count\n  }\n}\n    "], ["\n    query UserLists($groupId: Int!) {\n  getUserLists(groupId: $groupId) {\n    id\n    count\n  }\n}\n    "])));
-/**
- * __useUserListsQuery__
- *
- * To run a query within a React component, call `useUserListsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserListsQuery({
- *   variables: {
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-function useUserListsQuery(baseOptions) {
-    return useQuery(UserListsDocument, baseOptions);
-}
-var GetUserListInGroupByListIdDocument = src$1(templateObject_30 || (templateObject_30 = __makeTemplateObject(["\n    query getUserListInGroupByListId($listId: String!, $groupId: Int!) {\n  getUserListInGroupByListId(listId: $listId, groupId: $groupId) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "], ["\n    query getUserListInGroupByListId($listId: String!, $groupId: Int!) {\n  getUserListInGroupByListId(listId: $listId, groupId: $groupId) {\n    id\n    firstName\n    lastName\n    firstName2\n    lastName2\n    email\n    email2\n  }\n}\n    "])));
-function useGetUserListInGroupByListIdLazyQuery(baseOptions) {
-    return useLazyQuery(GetUserListInGroupByListIdDocument, baseOptions);
-}
-var CreateBufferedJsonMailDocument = src$1(templateObject_31 || (templateObject_31 = __makeTemplateObject(["\n    mutation CreateBufferedJsonMail($input: CreateBufferedJsonMailInput!) {\n  createBufferedJsonMail(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation CreateBufferedJsonMail($input: CreateBufferedJsonMailInput!) {\n  createBufferedJsonMail(input: $input) {\n    id\n  }\n}\n    "])));
-/**
- * __useCreateBufferedJsonMailMutation__
- *
- * To run a mutation, you first call `useCreateBufferedJsonMailMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateBufferedJsonMailMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createBufferedJsonMailMutation, { data, loading, error }] = useCreateBufferedJsonMailMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateBufferedJsonMailMutation(baseOptions) {
-    return useMutation(CreateBufferedJsonMailDocument, baseOptions);
-}
-var CreateMessageDocument = src$1(templateObject_32 || (templateObject_32 = __makeTemplateObject(["\n    mutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "], ["\n    mutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n  }\n}\n    "])));
-/**
- * __useCreateMessageMutation__
- *
- * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-function useCreateMessageMutation(baseOptions) {
-    return useMutation(CreateMessageDocument, baseOptions);
-}
-var GetMessagesForGroupDocument = src$1(templateObject_33 || (templateObject_33 = __makeTemplateObject(["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetMessagesForGroup($groupId: Int!) {\n  getMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
-function useGetMessagesForGroupLazyQuery(baseOptions) {
-    return useLazyQuery(GetMessagesForGroupDocument, baseOptions);
-}
-var GetUserMessagesForGroupDocument = src$1(templateObject_34 || (templateObject_34 = __makeTemplateObject(["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "], ["\n    query GetUserMessagesForGroup($groupId: Int!) {\n  getUserMessagesForGroup(groupId: $groupId) {\n    id\n    title\n    date\n  }\n}\n    "])));
-function useGetUserMessagesForGroupLazyQuery(baseOptions) {
-    return useLazyQuery(GetUserMessagesForGroupDocument, baseOptions);
-}
-var GetMessageByIdDocument = src$1(templateObject_35 || (templateObject_35 = __makeTemplateObject(["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n  }\n}\n    "], ["\n    query GetMessageById($id: Int!) {\n  message(id: $id) {\n    id\n    title\n    date\n    recipientListId\n    sender {\n      id\n      firstName\n      lastName\n    }\n    body\n    recipients\n  }\n}\n    "])));
-/**
- * __useGetMessageByIdQuery__
- *
- * To run a query within a React component, call `useGetMessageByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMessageByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMessageByIdQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-function useGetMessageByIdQuery(baseOptions) {
-    return useQuery(GetMessageByIdDocument, baseOptions);
-}
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34, templateObject_35;
-
-/* eslint-disable no-console */
-var canLog = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
-var logError = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    if (canLog)
-        console.error(args);
-};
 
 var GqlErrorAlert = function (_a) {
     var error = _a.error;
@@ -40585,7 +42390,7 @@ var SimpleField = function (_a) {
     return (React__default.createElement(formik.Field, __assign({ fullWidth: true, margin: "normal", variant: "outlined", name: name, label: label, required: required, component: CustomTextField$1 }, other)));
 };
 
-var URL = '/data/<LOCALE>/iso-3166-1.json';
+var URL$1 = '/data/<LOCALE>/iso-3166-1.json';
 var ISO31661Selector = function (_a) {
     var defaultValue = _a.defaultValue, _b = _a.format, format = _b === void 0 ? 'full-iso' : _b, autocompleteProps = _a.autocompleteProps, textFieldProps = _a.textFieldProps, onChange = _a.onChange;
     var t = useTranslation().t;
@@ -40618,7 +42423,7 @@ var ISO31661Selector = function (_a) {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, 4, 5]);
-                        url = URL.replace('<LOCALE>', 'fr');
+                        url = URL$1.replace('<LOCALE>', 'fr');
                         url = url.startsWith('http') ? url : "" + window.location.origin + url;
                         return [4 /*yield*/, fetch(url).then(function (res) {
                                 if (!res.ok)
@@ -40796,7 +42601,7 @@ var MangopayLegalUserCard = function (_a) {
             React__default.createElement(core$1.CardContent, null,
                 isRegular && (React__default.createElement(core$1.Box, { mb: 2 },
                     React__default.createElement(lab.Alert, { severity: "info" }, t('editAlert')))),
-                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_10, onSubmit: _onSubmit }, function (formikProps) {
+                React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: _onSubmit }, function (formikProps) {
                     var _a, _b, _c, _d, _e, _f, _g, _h;
                     return (React__default.createElement(formik.Form, null,
                         React__default.createElement(FormTitle, { label: tForm('structure'), mt: 0 }),
@@ -41073,7 +42878,7 @@ var allMangopayKycDocumentStatusesArePending = function (_a) {
         return false;
     if (!KycDocuments)
         return false;
-    var currentDocs = dist_5(LegalPersonType).map(function (type) {
+    var currentDocs = dist_7(LegalPersonType).map(function (type) {
         return getCurrentKycDocumentOfType(KycDocuments, type);
     });
     if (currentDocs.indexOf(undefined) !== -1)
@@ -41115,7 +42920,7 @@ exports.default = _default;
 
 var AddIcon = unwrapExports(Add);
 
-var Image = createCommonjsModule(function (module, exports) {
+var Image$2 = createCommonjsModule(function (module, exports) {
 
 
 
@@ -41135,7 +42940,7 @@ var _default = (0, _createSvgIcon.default)(_react.default.createElement("path", 
 exports.default = _default;
 });
 
-var ImageIcon = unwrapExports(Image);
+var ImageIcon = unwrapExports(Image$2);
 
 var Help = createCommonjsModule(function (module, exports) {
 
@@ -41186,7 +42991,7 @@ var getId = function () {
     uniqueId += 1;
     return "" + uniqueId;
 };
-var useStyles$6 = core$1.makeStyles(function () { return ({
+var useStyles$9 = core$1.makeStyles(function () { return ({
     input: {
         display: 'none !important',
     },
@@ -41210,7 +43015,7 @@ var MangopayKycFileField = function (_a) {
     /** STATES */
     var _b = __read(React__default.useState(false), 2), fileMaxSizeDialogOpen = _b[0], setFileMaxSizeDialogOpen = _b[1];
     /** STYLES */
-    var cs = useStyles$6();
+    var cs = useStyles$9();
     /** */
     var id = getId();
     /** */
@@ -41318,7 +43123,7 @@ var MangopayKycDocumentsCard = function (_a) {
                 error && (React__default.createElement(core$1.Box, { my: 2 },
                     React__default.createElement(GqlErrorAlert, { error: error }))),
                 allMangopayKycDocumentStatusesArePending(legalUser) ? (React__default.createElement(lab.Alert, { severity: "info" }, t('allPending'))) : (React__default.createElement(React__default.Fragment, null,
-                    dist_5(legalUser.LegalPersonType).map(function (documentType) {
+                    dist_7(legalUser.LegalPersonType).map(function (documentType) {
                         var last = getCurrentKycDocumentOfType(legalUser.KycDocuments || [], documentType);
                         return (React__default.createElement(core$1.Box, { key: documentType },
                             React__default.createElement(FormTitle, { label: tForm(documentType) }),
@@ -41420,7 +43225,7 @@ var MangopayUboForm = function (_a) {
     };
     console.log(ubo);
     /** */
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_11, onSubmit: onSubmit }, function (formikProps) {
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_13, onSubmit: onSubmit }, function (formikProps) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         return (React__default.createElement(formik.Form, null,
             formikProps.status && (React__default.createElement(core$1.Box, null,
@@ -41979,7 +43784,7 @@ var MangopayConfig = function (_a) {
                         else
                             closePanels();
                     } })),
-            dist_9(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
+            dist_11(legalUser.LegalPersonType) && (React__default.createElement(core$1.Box, { my: 4 },
                 React__default.createElement(MangopayUbosCard, { group: group, disabledActions: submitting, open: openedPanel === 'ubos', onTogglePanel: function (v) {
                         if (v)
                             setOpenedPanel('ubos');
@@ -41996,27 +43801,30 @@ var MangopayConfig = function (_a) {
                     } }))))));
 };
 
-var Lists = /** @class */ (function () {
-    function Lists(value) {
-        this.value = value;
-    }
-    Lists.getLists = function () {
-        return [Lists.ALL, Lists.TEST];
-    };
-    Lists.ALL = new Lists('all');
-    Lists.TEST = new Lists('test');
-    return Lists;
-}());
-
 var MessagesForm = function (_a) {
-    var user = _a.user, isPartnerConnected = _a.isPartnerConnected, userLists = _a.userLists, onSubmit = _a.onSubmit, onSelectOption = _a.onSelectOption;
+    var user = _a.user, isPartnerConnected = _a.isPartnerConnected, userLists = _a.userLists, onSubmit = _a.onSubmit, onSelectOption = _a.onSelectOption, isSuccessful = _a.isSuccessful;
     var t = useTranslation(['messages/default']).t;
-    var recipientsOptions = userLists.map(function (ul) { return ({
-        value: ul.id,
-        label: ul.count ? t("lists." + ul.id) + " (" + ul.count + ")" : t("lists." + ul.id),
-    }); });
-    var testLists = Lists.TEST;
-    recipientsOptions.push({ value: testLists.value, label: t("lists." + testLists.value) });
+    var recipientsOptions = userLists.map(function (ul) {
+        var label = "" + t("lists." + ul.type);
+        var value = ul.type;
+        if (ul.type === dist_1.contractSubscribers && ul.data) {
+            var contract = JSON.parse(ul.data);
+            if (contract) {
+                label = t("lists." + ul.type, {
+                    name: contract.name,
+                    startDate: new Date(contract.startDate).toLocaleDateString(),
+                    endDate: new Date(contract.endDate).toLocaleDateString(),
+                });
+                value += contract.id;
+            }
+        }
+        return {
+            value: value,
+            label: ul.count ? label + " (" + ul.count + ")" : label,
+        };
+    });
+    var testLists = dist_5.TEST;
+    recipientsOptions.push({ value: testLists.type, label: t("lists." + testLists.type) });
     var senderEmail;
     var senderName;
     if (isPartnerConnected && user.email2 !== null) {
@@ -42067,76 +43875,130 @@ var MessagesForm = function (_a) {
         },
     ];
     var initialValues = __assign({}, generateInitialValues(fields));
-    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_12, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
-        formikProps.status && Object.keys(formikProps.errors).length > 0 && (React__default.createElement(core$1.Box, { my: 2 },
+    return (React__default.createElement(formik.Formik, { initialValues: initialValues, validationSchema: dist_14, onSubmit: onSubmit }, function (formikProps) { return (React__default.createElement(formik.Form, null,
+        formikProps.status && !isSuccessful && (React__default.createElement(core$1.Box, { my: 2 },
             React__default.createElement(lab.Alert, { severity: "error" }, formikProps.status))),
-        formikProps.status && Object.keys(formikProps.errors).length === 0 && (React__default.createElement(core$1.Box, { my: 2 },
-            React__default.createElement(lab.Alert, { severity: "success" }, formikProps.status))),
+        isSuccessful && !formikProps.status && (React__default.createElement(core$1.Box, { my: 2 },
+            React__default.createElement(lab.Alert, { severity: "success" }, t('form.success')))),
         React__default.createElement(core$1.Box, null,
             React__default.createElement(ExpansionPanel, { expanded: true },
                 React__default.createElement(core$1.ExpansionPanelDetails, null,
                     React__default.createElement(core$1.Box, { width: "100%" }, generateFields(fields, formikProps))))),
         React__default.createElement(core$1.Box, { mb: 3, display: "flex", justifyContent: "center" },
-            React__default.createElement(core$1.Button, { variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, t('form.send'))))); }));
+            React__default.createElement(ProgressButton, { loading: formikProps.isSubmitting, variant: "contained", color: "primary", type: "submit", disabled: formikProps.isSubmitting }, t('form.send'))))); }));
 };
 
+/* eslint-disable import/prefer-default-export */
+var encodeFileToBase64String = function (file) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, new Promise(function (resolve) {
+                var reader = new FileReader();
+                reader.onloadend = function () {
+                    var dataURI = reader.result;
+                    var b64 = dataURI.replace(/^data:.+;base64,/, '');
+                    return resolve(b64);
+                };
+                reader.readAsDataURL(file);
+            })];
+    });
+}); };
+
+var MESSAGE_MAX_SIZE = 24 * 1024 * 1024; // 24mo
+var ATTACHMENTS_MAX_SIZE = 16777215; // mysql mediumtext maxium size
 var MessagingService = function (_a) {
-    var groupId = _a.groupId, whichUser = _a.whichUser;
-    var t = useTranslation(['messages/default']).t;
-    var _b = useMeQuery(), meData = _b.data, meloading = _b.loading;
-    var groupData = useMessagesGroupQuery({ variables: { id: groupId } }).data;
-    var userListsData = useUserListsQuery({ variables: { groupId: groupId } }).data;
-    var _c = __read(React__default.useState('all'), 2), selectedListId = _c[0], setSelectedListId = _c[1];
-    var _d = __read(useGetUserListInGroupByListIdLazyQuery({
-        variables: { listId: selectedListId, groupId: groupId },
-    }), 2), getUserListInGroupByListId = _d[0], userListInGroupByListId = _d[1].data;
-    var _e = __read(React__default.useState(), 2), recipients = _e[0], setRecipients = _e[1];
-    var _f = __read(useCreateBufferedJsonMailMutation(), 1), createBufferedJsonMail = _f[0];
-    var _g = __read(useCreateMessageMutation(), 1), createMessage = _g[0];
+    var onMessageSent = _a.onMessageSent;
+    var context = React__default.useContext(MessagesContext);
+    var groupId = context.groupId, whichUser = context.whichUser, attachments = context.attachments, resetAttachments = context.resetAttachments;
+    var t = useTranslation(['messages/default', 'translation']).t;
+    var _b = useMeQuery(), meData = _b.data, meloading = _b.loading, meError = _b.error;
+    var _c = useMessagesGroupQuery({ variables: { id: groupId } }), groupData = _c.data, groupError = _c.error;
+    var _d = useUserListsQuery({ variables: { groupId: groupId } }), userListsData = _d.data, userListsError = _d.error;
+    var _e = __read(React__default.useState(dist_1.all), 2), selectedListType = _e[0], setSelectedListType = _e[1];
+    var _f = __read(useGetUserListInGroupByListTypeLazyQuery(), 2), getUserListInGroupByListType = _f[0], _g = _f[1], userListInGroupByListTypeData = _g.data, userListInGroupByListTypeError = _g.error;
+    var _h = __read(React__default.useState(), 2), recipients = _h[0], setRecipients = _h[1];
+    var _j = __read(useCreateMessageMutation(), 1), createMail = _j[0];
+    var _k = __read(React__default.useState(false), 2), isSuccessful = _k[0], setIsSuccessful = _k[1];
     var me = meData && meData.me;
+    var error = meError || groupError || userListsError || userListInGroupByListTypeError;
     var userLists = userListsData ? userListsData.getUserLists : [];
     React__default.useEffect(function () {
-        if (selectedListId === 'test') {
+        if (selectedListType === dist_1.test) {
             setRecipients([me]);
         }
         else {
-            getUserListInGroupByListId();
+            var listType = selectedListType;
+            var data = void 0;
+            if (selectedListType.startsWith(dist_1.contractSubscribers)) {
+                var contractId = selectedListType.substring(dist_1.contractSubscribers.length);
+                data = contractId;
+                listType = dist_1.contractSubscribers;
+            }
+            getUserListInGroupByListType({
+                variables: { listType: listType, groupId: groupId, data: data },
+            });
         }
-    }, [selectedListId]);
+    }, [selectedListType]);
     var onSelectOption = function (value) {
-        setSelectedListId(value);
+        setSelectedListType(value);
+    };
+    var setFormError = function (bag, errorMessage) {
+        bag.setStatus(errorMessage);
+        bag.setSubmitting(false);
+        setIsSuccessful(false);
+        window.scrollTo(0, 0);
+    };
+    var byteCount = function (s) {
+        return encodeURI(s).split(/%..|./).length - 1;
     };
     React__default.useEffect(function () {
-        if (!userListInGroupByListId)
+        if (!userListInGroupByListTypeData)
             return;
-        if (selectedListId === 'test')
+        if (selectedListType === dist_1.test)
             return;
-        setRecipients(userListInGroupByListId.getUserListInGroupByListId);
-    }, [userListInGroupByListId]);
+        setRecipients(userListInGroupByListTypeData.getUserListInGroupByListType);
+    }, [userListInGroupByListTypeData]);
     var onFormSubmit = function (values, bag) { return __awaiter(void 0, void 0, void 0, function () {
-        var sender, recipientsList_1, bufferedJsonEmailInput, messageInput, error_1;
+        var messageSize, base64EncodedAttachmentsSize, encodedAttachments, stringifiedEncodedAttachments, recipientsList_1, group, messageInput, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     bag.setStatus(undefined);
                     if (!recipients) {
-                        bag.setErrors({ recipientsList: 'no recipient list selected' });
-                        bag.setSubmitting(false);
+                        setFormError(bag, t('form.errorNoRecipient'));
                         return [2 /*return*/];
                     }
-                    if (values.message.length === 0) {
-                        bag.setErrors({ message: 'empty message' });
-                        bag.setStatus(t('form.errorEmptyMessage'));
-                        bag.setSubmitting(false);
+                    if (values.message.length === 0 || values.message === "<div style=\"overflow:auto;\"><p></p></div>") {
+                        setFormError(bag, t('form.errorEmptyMessage'));
                         return [2 /*return*/];
                     }
-                    _a.label = 1;
+                    messageSize = byteCount(values.message);
+                    base64EncodedAttachmentsSize = 0;
+                    if (!attachments) return [3 /*break*/, 2];
+                    return [4 /*yield*/, Promise.all(attachments.map(function (a) { return __awaiter(void 0, void 0, void 0, function () {
+                            var encodedContent;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, encodeFileToBase64String(a)];
+                                    case 1:
+                                        encodedContent = _a.sent();
+                                        return [2 /*return*/, { filename: a.name, contentType: a.type, encoding: 'base64', content: encodedContent }];
+                                }
+                            });
+                        }); }))];
                 case 1:
-                    _a.trys.push([1, 4, , 5]);
-                    sender = {
-                        name: values.firstName,
-                        email: values.senderEmail,
-                    };
+                    encodedAttachments = _a.sent();
+                    stringifiedEncodedAttachments = JSON.stringify(encodedAttachments);
+                    base64EncodedAttachmentsSize = byteCount(stringifiedEncodedAttachments);
+                    _a.label = 2;
+                case 2:
+                    if (base64EncodedAttachmentsSize >= ATTACHMENTS_MAX_SIZE ||
+                        messageSize + base64EncodedAttachmentsSize >= MESSAGE_MAX_SIZE) {
+                        setFormError(bag, t('form.errorMessageTooBig'));
+                        return [2 /*return*/];
+                    }
+                    _a.label = 3;
+                case 3:
+                    _a.trys.push([3, 5, , 6]);
                     recipientsList_1 = [];
                     recipients.forEach(function (r) {
                         if (r.email)
@@ -42144,80 +44006,83 @@ var MessagingService = function (_a) {
                         if (r.email2)
                             recipientsList_1.push({ name: r.firstName2 + " " + r.lastName2, email: r.email2, userId: r.id });
                     });
-                    bufferedJsonEmailInput = {
-                        title: values.object,
-                        htmlBody: values.message,
-                        sender: sender,
-                        recipients: recipientsList_1,
-                        replyToHeader: values.senderEmail,
-                        listName: t("lists." + selectedListId),
-                    };
+                    group = { id: groupId, name: '' };
                     if (groupData) {
-                        bufferedJsonEmailInput.group = { name: groupData.group.name, id: groupData.group.id };
+                        group.name = groupData.group.name;
                     }
-                    return [4 /*yield*/, createBufferedJsonMail({
-                            variables: {
-                                input: bufferedJsonEmailInput,
-                            },
-                        })];
-                case 2:
-                    _a.sent();
                     messageInput = {
                         title: values.object,
-                        body: values.message,
-                        senderId: me.id,
-                        recipients: recipientsList_1.map(function (r) { return r.email; }),
-                        date: new Date(),
-                        groupId: groupId,
-                        listId: selectedListId,
+                        htmlBody: values.message,
+                        whichUser: whichUser,
+                        recipients: recipientsList_1,
+                        replyToHeader: values.senderEmail,
+                        group: group,
+                        list: { id: selectedListType, name: t("lists." + selectedListType) },
+                        attachments: encodedAttachments,
                     };
-                    return [4 /*yield*/, createMessage({
+                    return [4 /*yield*/, createMail({
                             variables: {
                                 input: messageInput,
                             },
                         })];
-                case 3:
+                case 4:
                     _a.sent();
                     bag.resetForm();
-                    setSelectedListId('all');
-                    bag.setStatus(t('form.success'));
+                    resetAttachments();
+                    setSelectedListType(dist_1.all);
+                    setIsSuccessful(true);
+                    onMessageSent();
                     window.scrollTo(0, 0);
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _a.sent();
-                    bag.setStatus('error'); // TODO: Comment gérer les erreurs ?
-                    bag.setErrors({ message: error_1 });
-                    bag.setSubmitting(false);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 5:
+                    e_1 = _a.sent();
+                    setFormError(bag, t('translation:error', { error: e_1 }));
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     }); };
     /** */
+    if (error)
+        return React__default.createElement(GqlErrorAlert, { error: error });
     if (meloading)
         return React__default.createElement(core$1.CircularProgress, null);
-    return (React__default.createElement(core$1.Box, null, me && (React__default.createElement(MessagesForm, { user: me, isPartnerConnected: whichUser, userLists: userLists, onSubmit: onFormSubmit, onSelectOption: onSelectOption }))));
+    return (React__default.createElement(core$1.Box, null, me && (React__default.createElement(MessagesForm, { user: me, isPartnerConnected: whichUser, userLists: userLists, onSubmit: onFormSubmit, onSelectOption: onSelectOption, isSuccessful: isSuccessful }))));
 };
 
-var ListItemLink = function (_a) {
-    var href = _a.href, children = _a.children, listItemProps = __rest(_a, ["href", "children"]);
-    return (React__default.createElement(core$1.ListItem, __assign({ button: true, component: "a", href: href }, listItemProps), children));
-};
-
-var useStyles$7 = core$1.makeStyles(function () {
+var useStyles$a = core$1.makeStyles(function (theme) {
     return core$1.createStyles({
         listItemText: {
             '& p:first-letter': {
                 textTransform: 'capitalize',
             },
         },
+        container: {
+            maxHeight: '800px',
+            overflowY: 'auto',
+        },
+        pagination: {
+            '& ul': {
+                justifyContent: 'center',
+                flexWrap: 'initial',
+            },
+            paddingTop: theme.spacing(1),
+        },
     });
 });
+var NUMBER_OF_MESSAGE_PER_PAGE = 11;
 var SentMessageList = function (_a) {
-    var groupId = _a.groupId, isGroupAdmin = _a.isGroupAdmin;
-    var _b = __read(useGetMessagesForGroupLazyQuery({ variables: { groupId: groupId } }), 2), getAllMessages = _b[0], allMessages = _b[1].data;
-    var _c = __read(useGetUserMessagesForGroupLazyQuery({ variables: { groupId: groupId } }), 2), getUserMessages = _c[0], userMessages = _c[1].data;
-    var cs = useStyles$7();
+    var isGroupAdmin = _a.isGroupAdmin, selectedMessageId = _a.selectedMessageId, onSelectMessage = _a.onSelectMessage, toggleRefetch = _a.toggleRefetch;
+    var context = React__default.useContext(MessagesContext);
+    var groupId = context.groupId;
+    var _b = __read(useGetMessagesForGroupLazyQuery({
+        variables: { groupId: groupId },
+    }), 2), getAllMessages = _b[0], _c = _b[1], allMessages = _c.data, refetchAllMessages = _c.refetch;
+    var _d = __read(useGetUserMessagesForGroupLazyQuery({
+        variables: { groupId: groupId },
+    }), 2), getUserMessages = _d[0], _e = _d[1], userMessages = _e.data, refetchUserMessages = _e.refetch;
+    var cs = useStyles$a();
+    var _f = __read(React__default.useState(1), 2), currentPage = _f[0], setCurrentPage = _f[1];
     React__default.useEffect(function () {
         if (isGroupAdmin === undefined)
             return;
@@ -42228,7 +44093,23 @@ var SentMessageList = function (_a) {
             getUserMessages();
         }
     }, [isGroupAdmin]);
+    React__default.useEffect(function () {
+        if (toggleRefetch === undefined)
+            return;
+        if (isGroupAdmin) {
+            if (refetchAllMessages)
+                refetchAllMessages();
+        }
+        else if (refetchUserMessages)
+            refetchUserMessages();
+    }, [toggleRefetch]);
+    var handlePageChange = function (_event, value) {
+        setCurrentPage(value);
+    };
     var messages = [];
+    var maxPage = 1;
+    var startIndex = 0;
+    var endIndex = 0;
     if (isGroupAdmin !== undefined) {
         if (isGroupAdmin && !!allMessages) {
             messages = allMessages.getMessagesForGroup;
@@ -42236,115 +44117,148 @@ var SentMessageList = function (_a) {
         else if (!isGroupAdmin && !!userMessages) {
             messages = userMessages.getUserMessagesForGroup;
         }
+        maxPage = Math.ceil(messages.length / NUMBER_OF_MESSAGE_PER_PAGE);
+        startIndex = (currentPage - 1) * NUMBER_OF_MESSAGE_PER_PAGE;
+        endIndex = Math.min(startIndex + NUMBER_OF_MESSAGE_PER_PAGE - 1, messages.length - 1);
     }
-    return (React__default.createElement(core$1.Box, { overflow: "scroll", style: { height: '600px' } },
-        React__default.createElement(core$1.List, null, messages.map(function (m) { return (React__default.createElement(ListItemLink, { href: "/messages/message/" + m.id, divider: true, key: m.id },
-            React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: m.title, secondary: formatDate(new Date(m.date), true) }))); }))));
+    return (React__default.createElement(core$1.Box, null,
+        React__default.createElement(core$1.Box, { className: cs.container },
+            React__default.createElement(core$1.List, null, messages.slice(startIndex, endIndex).map(function (m) { return (React__default.createElement(core$1.ListItem, { button: true, divider: true, key: m.id, selected: selectedMessageId === m.id, onClick: function () { return onSelectMessage(m.id); } },
+                React__default.createElement(core$1.ListItemText, { className: cs.listItemText, primary: m.title, secondary: formatDate(new Date(m.date), true) }))); }))),
+        React__default.createElement(lab.Pagination, { count: maxPage, page: currentPage, onChange: handlePageChange, className: cs.pagination })));
 };
 
-var Messages = function (_a) {
-    var groupId = _a.groupId, whichUser = _a.whichUser;
-    var t = useTranslation(['messages/default']).t;
-    var isGroupAdminData = useIsGroupAdminQuery({ variables: { groupId: groupId } }).data;
-    var isGroupAdmin = isGroupAdminData === null || isGroupAdminData === void 0 ? void 0 : isGroupAdminData.isGroupAdmin;
-    /** */
-    return (React__default.createElement(core$1.Box, { mb: 2 },
-        React__default.createElement(core$1.Grid, { container: true, spacing: 4 },
-            React__default.createElement(core$1.Grid, { item: true, xs: 3 },
-                React__default.createElement(core$1.Paper, null,
-                    React__default.createElement(core$1.Box, { p: 2 },
-                        React__default.createElement("b", null, isGroupAdmin ? t('allSentMessages') : t('lastSentMessages')),
-                        React__default.createElement(SentMessageList, { isGroupAdmin: isGroupAdmin, groupId: groupId })))),
-            React__default.createElement(core$1.Grid, { item: true, xs: 9 },
-                React__default.createElement(core$1.Paper, null,
-                    React__default.createElement(core$1.Box, { p: 2 },
-                        React__default.createElement(core$1.Typography, { variant: "h3", gutterBottom: true }, t('title')),
-                        React__default.createElement(MessagingService, { groupId: groupId, whichUser: whichUser })))))));
-};
-
-var LegacyLists = /** @class */ (function () {
-    function LegacyLists(value, label) {
+var LegacyMailingLists = /** @class */ (function () {
+    function LegacyMailingLists(value, label) {
         this.value = value;
         this.label = label;
     }
-    LegacyLists.getLists = function () {
+    LegacyMailingLists.getLists = function () {
         return [
-            LegacyLists.ALL,
-            LegacyLists.BOARD,
-            LegacyLists.TEST,
-            LegacyLists.MEMBERS_WITHOUT_ORDER,
-            LegacyLists.MEMBERSHIP_TO_BE_RENEWED,
+            LegacyMailingLists.ALL,
+            LegacyMailingLists.BOARD,
+            LegacyMailingLists.TEST,
+            LegacyMailingLists.MEMBERS_WITHOUT_ORDER,
+            LegacyMailingLists.MEMBERSHIP_TO_BE_RENEWED,
         ];
     };
-    LegacyLists.ALL = new LegacyLists('1', 'all');
-    LegacyLists.BOARD = new LegacyLists('2', 'board');
-    LegacyLists.TEST = new LegacyLists('3', 'test');
-    LegacyLists.MEMBERS_WITHOUT_ORDER = new LegacyLists('4', 'membersWithoutOrder');
-    LegacyLists.MEMBERSHIP_TO_BE_RENEWED = new LegacyLists('5', 'membershipsToBeRenewed');
-    return LegacyLists;
+    LegacyMailingLists.ALL = new LegacyMailingLists('1', dist_1.all);
+    LegacyMailingLists.BOARD = new LegacyMailingLists('2', dist_1.admins);
+    LegacyMailingLists.TEST = new LegacyMailingLists('3', dist_1.test);
+    LegacyMailingLists.MEMBERS_WITHOUT_ORDER = new LegacyMailingLists('4', dist_1.noOrders);
+    LegacyMailingLists.MEMBERSHIP_TO_BE_RENEWED = new LegacyMailingLists('5', dist_1.membershipToBeRenewed);
+    return LegacyMailingLists;
 }());
 
 function getListName(listId) {
-    var legacyLists = LegacyLists.getLists();
-    var lists = Lists.getLists();
+    var legacyLists = LegacyMailingLists.getLists();
+    var lists = dist_5.getLists();
     var list = lists.find(function (l) {
-        return l.value === listId;
+        return l.type === listId;
     });
     if (list) {
-        return list && list.value;
+        return list && list.type;
     }
     var legacyList = legacyLists.find(function (l) {
         return l.value === listId;
     });
     return legacyList && legacyList.label;
 }
+var useStyles$b = core$1.makeStyles(function () { return ({
+    table: {
+        tableLayout: 'fixed',
+    },
+    tableTitleCelle: {
+        whiteSpace: 'nowrap',
+        width: '20%',
+    },
+    chip: {
+        maxWidth: '100%',
+    },
+}); });
 var MessageTable = function (_a) {
     var messageId = _a.messageId;
     var t = useTranslation(['messages/default']).t;
-    var _b = useGetMessageByIdQuery({ variables: { id: messageId } }), messageData = _b.data, messageLoading = _b.loading;
+    var cs = useStyles$b();
+    var _b = __read(useGetMessageByIdLazyQuery(), 2), getMessageById = _b[0], _c = _b[1], messageData = _c.data, messageLoading = _c.loading, messageError = _c.error;
+    React__default.useEffect(function () {
+        getMessageById({
+            variables: { id: messageId },
+        });
+    }, [messageId]);
     var message = messageData === null || messageData === void 0 ? void 0 : messageData.message;
     var listName = (message === null || message === void 0 ? void 0 : message.recipientListId) && getListName(message.recipientListId);
     var TableTitleCell = function (_a) {
         var title = _a.title;
-        return (React__default.createElement(core$1.TableCell, { align: "right", style: { whiteSpace: 'nowrap' } }, title));
+        return (React__default.createElement(core$1.TableCell, { align: "right", className: cs.tableTitleCelle }, title));
     };
+    if (messageError)
+        return React__default.createElement(GqlErrorAlert, { error: messageError });
     if (messageLoading)
         return React__default.createElement(core$1.CircularProgress, null);
-    return (React__default.createElement(core$1.Paper, { elevation: 2 }, message && (React__default.createElement(core$1.Table, null,
-        React__default.createElement(core$1.TableRow, null,
-            React__default.createElement(TableTitleCell, { title: t('subject') + " :" }),
-            React__default.createElement(core$1.TableCell, null, message.title)),
-        React__default.createElement(core$1.TableRow, null,
-            React__default.createElement(TableTitleCell, { title: t('sentOnThe') + " :" }),
-            React__default.createElement(core$1.TableCell, null, message.date)),
-        React__default.createElement(core$1.TableRow, null,
-            React__default.createElement(TableTitleCell, { title: t('sender') + " :" }),
-            React__default.createElement(core$1.TableCell, null, message.sender === null ? 'inconnu' : message.sender.firstName + " " + message.sender.lastName)),
-        React__default.createElement(core$1.TableRow, null,
-            React__default.createElement(TableTitleCell, { title: t('receivers') + " :" }),
-            listName ? (React__default.createElement(core$1.TableCell, null, t("lists." + listName))) : (React__default.createElement(core$1.TableCell, null,
-                React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.recipients.map(function (r) { return (React__default.createElement(core$1.Box, { m: 0.5 },
-                    React__default.createElement(core$1.Chip, { label: r }))); }))))),
-        React__default.createElement(core$1.TableRow, null,
-            React__default.createElement(core$1.TableCell, null),
-            React__default.createElement(core$1.TableCell, { dangerouslySetInnerHTML: { __html: message.body } }))))));
+    return (React__default.createElement(React__default.Fragment, null, message && (React__default.createElement(core$1.Table, { className: cs.table },
+        React__default.createElement(core$1.TableBody, null,
+            React__default.createElement(core$1.TableRow, null,
+                React__default.createElement(TableTitleCell, { title: t('subject') + " :" }),
+                React__default.createElement(core$1.TableCell, null, message.title)),
+            React__default.createElement(core$1.TableRow, null,
+                React__default.createElement(TableTitleCell, { title: t('sentOnThe') + " :" }),
+                React__default.createElement(core$1.TableCell, null, message.date)),
+            React__default.createElement(core$1.TableRow, null,
+                React__default.createElement(TableTitleCell, { title: t('sender') + " :" }),
+                React__default.createElement(core$1.TableCell, null, message.sender === null ? 'inconnu' : message.sender.firstName + " " + message.sender.lastName)),
+            React__default.createElement(core$1.TableRow, null,
+                React__default.createElement(TableTitleCell, { title: t('receiver', { count: message.recipients.length }) + " :" }),
+                listName ? (React__default.createElement(core$1.TableCell, null, t("lists." + listName, { count: 1 }))) : (React__default.createElement(core$1.TableCell, null,
+                    React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.recipients.map(function (a) { return (React__default.createElement(core$1.Box, { m: 0.5, key: a },
+                        React__default.createElement(core$1.Chip, { label: a }))); }))))),
+            message.attachments && (React__default.createElement(core$1.TableRow, null,
+                React__default.createElement(TableTitleCell, { title: t('attachment', { count: message.attachments.length }) + " :" }),
+                React__default.createElement(core$1.TableCell, null,
+                    React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.attachments.map(function (r) { return (React__default.createElement(core$1.Box, { m: 0.5, key: r, className: cs.chip },
+                        React__default.createElement(core$1.Tooltip, { title: "" + t('attachmentsNotStoredOnServer') },
+                            React__default.createElement(core$1.Chip, { label: r, className: cs.chip })))); }))))),
+            React__default.createElement(core$1.TableRow, null,
+                React__default.createElement(core$1.TableCell, null),
+                React__default.createElement(core$1.TableCell, { dangerouslySetInnerHTML: { __html: message.body } })))))));
 };
 
-var Message = function () {
+var Message = function (_a) {
+    var messageId = _a.messageId, onBack = _a.onBack;
     var t = useTranslation(['translation']).t;
-    var urlMatch = window.location.pathname.match(/message\/(\d+)/);
-    var messageId = urlMatch && urlMatch.length > 0 && urlMatch[1];
-    if (!messageId) {
-        window.location.pathname = '/home';
-        return null;
-    }
     /** */
-    return (React__default.createElement(core$1.Box, { mb: 2 },
-        React__default.createElement(core$1.Paper, { elevation: 0 },
-            React__default.createElement(core$1.Box, { p: 2 },
-                React__default.createElement(core$1.Box, { mb: 2 },
-                    React__default.createElement(MessageTable, { messageId: parseInt(messageId, 10) })),
-                React__default.createElement(core$1.Button, { href: "/messages", variant: "contained", color: "primary" }, t('back'))))));
+    return (React__default.createElement(core$1.Box, null,
+        React__default.createElement(core$1.Box, { mb: 2 },
+            React__default.createElement(MessageTable, { messageId: messageId })),
+        React__default.createElement(core$1.Button, { onClick: onBack, variant: "contained", color: "primary" }, t('back'))));
+};
+
+var Messages = function (_a) {
+    var groupId = _a.groupId, whichUser = _a.whichUser;
+    var t = useTranslation(['messages/default']).t;
+    var _b = __read(React__default.useState(), 2), selectedMessageId = _b[0], setSelectedMessageId = _b[1];
+    var _c = __read(React__default.useState(), 2), toggleRefetch = _c[0], setToggleRefetch = _c[1];
+    var isGroupAdminData = useIsGroupAdminQuery({ variables: { groupId: groupId } }).data;
+    var isGroupAdmin = isGroupAdminData === null || isGroupAdminData === void 0 ? void 0 : isGroupAdminData.isGroupAdmin;
+    var onSelectMessage = function (messageId) { return setSelectedMessageId(messageId); };
+    var onUnselectMessage = function () { return setSelectedMessageId(undefined); };
+    var onMessageSent = function () {
+        setToggleRefetch(!toggleRefetch);
+    };
+    /** */
+    return (React__default.createElement(MessagesContextProvider, { groupId: groupId, whichUser: whichUser },
+        React__default.createElement(core$1.Box, { mb: 2 },
+            React__default.createElement(core$1.Grid, { container: true, spacing: 4 },
+                React__default.createElement(core$1.Grid, { item: true, xs: 3 },
+                    React__default.createElement(core$1.Paper, null,
+                        React__default.createElement(core$1.Box, { p: 2 },
+                            React__default.createElement("b", null, isGroupAdmin ? t('allSentMessages') : t('lastSentMessages')),
+                            React__default.createElement(SentMessageList, { isGroupAdmin: isGroupAdmin, selectedMessageId: selectedMessageId, onSelectMessage: onSelectMessage, toggleRefetch: toggleRefetch })))),
+                React__default.createElement(core$1.Grid, { item: true, xs: 9 },
+                    React__default.createElement(core$1.Paper, null,
+                        React__default.createElement(core$1.Box, { p: 2 }, selectedMessageId ? (React__default.createElement(Message, { messageId: selectedMessageId, onBack: onUnselectMessage })) : (React__default.createElement(React__default.Fragment, null,
+                            React__default.createElement(core$1.Typography, { variant: "h3", gutterBottom: true }, t('title')),
+                            React__default.createElement(MessagingService, { onMessageSent: onMessageSent }))))))))));
 };
 
 var apolloClient = null;
@@ -42455,11 +44369,7 @@ var NeolithicViewsGenerator = /** @class */ (function () {
     };
     NeolithicViewsGenerator.messagesModule = function (elementId, props) {
         var MessagesModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(Messages)));
-        createApp(elementId, React__default.createElement(MessagesModuleWrapped, __assign({}, props)));
-    };
-    NeolithicViewsGenerator.messageModule = function (elementId) {
-        var MessageModuleWrapped = withApolloProvider(withNeolithicProvider(withi18n(Message)));
-        createApp(elementId, React__default.createElement(MessageModuleWrapped, null));
+        createApp(elementId, React__default.createElement(MessagesModuleWrapped, { groupId: props.groupId, whichUser: Boolean(props.whichUser) }));
     };
     return NeolithicViewsGenerator;
 }());

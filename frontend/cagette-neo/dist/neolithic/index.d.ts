@@ -4,7 +4,7 @@ import { DistribSlotsResolverProps } from './views/DistribSlotsResolver';
 import { PlaceDialogViewProps } from './views/PlaceDialogView';
 import { PlaceViewProps } from './views/PlaceView';
 import { MangopayConfigProps } from '../modules/Mangopay/MangopayConfig';
-import { MessagesProps } from '../modules/Messages/containers/MessagingService';
+import { MessagesProps } from '../modules/Messages/Messages';
 export default class NeolithicViewsGenerator {
     static setApiUrl(url: string): void;
     static setGraphUrl(url: string): void;
@@ -15,5 +15,4 @@ export default class NeolithicViewsGenerator {
     static place(elementId: string, props: PlaceViewProps): void;
     static mangopayModule(elementId: string, props: MangopayConfigProps): void;
     static messagesModule(elementId: string, props: MessagesProps): void;
-    static messageModule(elementId: string): void;
 }
