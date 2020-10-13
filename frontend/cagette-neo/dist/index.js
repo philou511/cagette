@@ -44212,7 +44212,7 @@ var MessageTable = function (_a) {
                 listName ? (React__default.createElement(core$1.TableCell, null, t("lists." + listName, { count: 1 }))) : (React__default.createElement(core$1.TableCell, null,
                     React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.recipients.map(function (a) { return (React__default.createElement(core$1.Box, { m: 0.5, key: a },
                         React__default.createElement(core$1.Chip, { label: a }))); }))))),
-            message.attachments && (React__default.createElement(core$1.TableRow, null,
+            message.attachments && message.attachments.length > 0 && (React__default.createElement(core$1.TableRow, null,
                 React__default.createElement(TableTitleCell, { title: t('attachment', { count: message.attachments.length }) + " :" }),
                 React__default.createElement(core$1.TableCell, null,
                     React__default.createElement(core$1.Box, { display: "flex", flexWrap: "wrap" }, message.attachments.map(function (r) { return (React__default.createElement(core$1.Box, { m: 0.5, key: r, className: cs.chip },
