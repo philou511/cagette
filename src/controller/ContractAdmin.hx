@@ -59,7 +59,6 @@ class ContractAdmin extends Controller
 		}
 		
 		view.contracts = contracts;
-		view.type_constorders = db.Catalog.TYPE_CONSTORDERS;
 		view.vendors = app.user.getGroup().getActiveVendors();
 		view.places = app.user.getGroup().getPlaces();
 		checkToken();
@@ -496,9 +495,11 @@ class ContractAdmin extends Controller
 		var form = new Form("duplicate");
 		
 		form.addElement(new StringInput("name", t._("Name of the new catalog"), catalog.name.substr(0,50)  + " - copie"));	
-		if(!catalog.group.hasShopMode()){
-			form.addElement(new Checkbox("csa", "Contrat AMAP",catalog.isCSACatalog()));
-		}		
+		if( !catalog.group.hasShopMode() ) {
+
+			var catalogTypes = [ { label : 'Contrat AMAP classique', value : 0 }, { label : 'Contrat AMAP variable', value : 1 } ];
+			form.addElement( new sugoi.form.elements.IntSelect( 'catalogtype', 'Type de catalogue', catalogTypes, catalog.type, true ) );
+		}
 		form.addElement(new Checkbox("copyProducts", t._("Copy products"),true));
 		form.addElement(new Checkbox("copyDeliveries", t._("Copy deliveries"),true));
 		
@@ -513,11 +514,28 @@ class ContractAdmin extends Controller
 			nc.description = catalog.description;
 			nc.distributorNum = catalog.distributorNum;
 			nc.flags = catalog.flags;
-			if(catalog.group.hasShopMode()){
+			if( catalog.group.hasShopMode() ) {
+
 				nc.type = Catalog.TYPE_VARORDER;
-			}else{
-				nc.type = form.getValueOf("csa")==true ? Catalog.TYPE_CONSTORDERS : Catalog.TYPE_VARORDER;
-			}		
+			}
+			else {
+
+				nc.type = form.getValueOf("catalogtype");
+
+				nc.orderEndHoursBeforeDistrib = catalog.orderEndHoursBeforeDistrib;
+				nc.absentDistribsMaxNb = catalog.absentDistribsMaxNb;
+				nc.absencesStartDate = catalog.absencesStartDate;
+				nc.absencesEndDate = catalog.absencesEndDate;
+
+				if ( nc.type == Catalog.TYPE_VARORDER ) {
+
+					nc.orderStartDaysBeforeDistrib = catalog.type == Catalog.TYPE_VARORDER ? catalog.orderStartDaysBeforeDistrib : 365;
+					nc.requiresOrdering = catalog.requiresOrdering;
+					nc.distribMinOrdersTotal = catalog.distribMinOrdersTotal;
+					nc.catalogMinOrdersTotal = catalog.catalogMinOrdersTotal;
+					nc.allowedOverspend = catalog.type == Catalog.TYPE_VARORDER ? catalog.allowedOverspend : 500;
+				}
+			}
 			nc.vendor = catalog.vendor;
 			nc.percentageName = catalog.percentageName;
 			nc.percentageValue = catalog.percentageValue;
@@ -657,14 +675,16 @@ class ContractAdmin extends Controller
 	}
 	
 	@tpl("contractadmin/view.mtt")
-	function doView(contract:db.Catalog) {
-		view.nav.push("view");
-		sendNav(contract);
+	function doView( catalog : db.Catalog ) {
 
-		contract.check();
+		view.nav.push("view");
+		sendNav(catalog);
+
+		catalog.check();
 		
-		if (!app.user.canManageContract(contract)) throw Error("/", t._("You do not have the authorization to manage this contract"));
-		view.c = view.contract = contract;
+		if ( !app.user.canManageContract( catalog ) ) throw Error("/", t._("You do not have the authorization to manage this contract"));
+
+		view.c = view.contract = catalog;
 	}	
 
 	function doDocuments( dispatch : haxe.web.Dispatch ) {

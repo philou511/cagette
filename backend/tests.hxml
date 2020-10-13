@@ -9,6 +9,7 @@
 -lib thx.csv
 -lib thx.semver
 -lib utest
+-lib jwt
 
 -lib sugoi
 -lib cagette-pro

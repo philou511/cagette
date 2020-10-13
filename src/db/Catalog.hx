@@ -15,6 +15,8 @@ class Catalog extends Object
 {
 	public var id : SId;
 	public var name : SString<64>;
+
+	public var type : SInt;
 	
 	//responsable
 	@formPopulate("populate") @:relation(userId) public var contact : SNull<User>;
@@ -32,7 +34,17 @@ class Catalog extends Object
 	public var percentageValue : SNull<SFloat>; 		//fees percentage
 	public var percentageName : SNull<SString<64>>;		//fee name
 	
-	public var type : SInt;
+	public var orderStartDaysBeforeDistrib : SNull<SInt>;
+	public var orderEndHoursBeforeDistrib : SNull<SInt>;
+
+	public var requiresOrdering : SNull<Bool>;			// ordering at each distrib is a compulsory
+	public var distribMinOrdersTotal : SNull<SFloat>;
+	public var catalogMinOrdersTotal : SNull<SFloat>;
+	public var allowedOverspend : SNull<SFloat>;
+
+	public var absentDistribsMaxNb : SNull<SInt>;
+	public var absencesStartDate : SNull<SDateTime>;
+	public var absencesEndDate : SNull<SDateTime>;
 
 	@:skip inline public static var TYPE_CONSTORDERS = 0; 	//CSA catalog 
 	@:skip inline public static var TYPE_VARORDER = 1;		//variable orders catalog
@@ -47,14 +59,7 @@ class Catalog extends Object
 		distributorNum = 0;		
 		flags.set(UsersCanOrder);
 	
-	}
-
-	/**
-		Is there a subscription management on this catalog ?
-	**/
-	public function hasSubscriptions(){
-		return type==TYPE_CONSTORDERS;
-	}
+	}	
 	
 	/**
 	 * The products can be ordered currently ?
@@ -80,7 +85,7 @@ class Catalog extends Object
 		
 	}
 
-	public function isCSACatalog(){
+	public function isConstantOrders(){
 		return type == TYPE_CONSTORDERS;
 	}
 	
@@ -102,14 +107,16 @@ class Catalog extends Object
 	/**
 	 * is currently open to orders
 	 */
-	public function hasRunningOrders(){
+	public function hasOpenOrders(){
 		var now = Date.now();
-		var n = now.getTime();
-		
-		var contractOpen = flags.has(UsersCanOrder) && n < this.endDate.getTime() && n > this.startDate.getTime();
-		var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
-		
-		return contractOpen && d > 0;
+		var contractOpen = flags.has(UsersCanOrder) && now.getTime() < this.endDate.getTime() && now.getTime() > this.startDate.getTime();
+
+		if(this.isConstantOrders()){
+			return contractOpen;
+		}else{			
+			var d = db.Distribution.manager.count( $orderStartDate <= now && $orderEndDate > now && $catalogId==this.id);
+			return contractOpen && d > 0;
+		}		
 	}
 	
 	
@@ -120,6 +127,22 @@ class Catalog extends Object
 	public function hasStockManagement():Bool {
 		return flags.has(StockManagement);
 	}
+
+	public function hasConstraints() : Bool {
+
+		return this.type == TYPE_VARORDER && ( this.requiresOrdering || ( this.distribMinOrdersTotal != null &&  this.distribMinOrdersTotal != 0 ) || ( this.catalogMinOrdersTotal != null &&  this.catalogMinOrdersTotal != 0 ) );
+	}
+
+	public function hasAbsencesManagement() : Bool {
+
+		return this.absentDistribsMaxNb != null && this.absentDistribsMaxNb != 0 && this.absencesStartDate != null && this.absencesEndDate != null;
+	}
+
+
+	
+
+	
+
 	
 	/**
 	 * computes a 'percentage' fee or a 'margin' fee 
@@ -252,7 +275,7 @@ class Catalog extends Object
 
 		var pids = getProducts(false).map(function(x) return x.id);
 		var ucs = new List<db.UserOrder>();
-		if (d != null && d.catalog.type==db.Catalog.TYPE_VARORDER) {
+		if (d != null && d.catalog.type==TYPE_VARORDER) {
 			if(includeUser2){
 				ucs = db.UserOrder.manager.search( ($productId in pids) && $distribution==d && ($user==u || $user2==u ), false);
 			}else{
@@ -291,7 +314,7 @@ class Catalog extends Object
 	public function getVisibleDocuments( user : db.User ) : List<sugoi.db.EntityFile> {
 
 		var isSubscribedToCatalog = false;
-		if ( user != null && this.type == db.Catalog.TYPE_CONSTORDERS ) { //Amap catalog
+		if ( user != null && !this.group.hasShopMode() ) { //CSA Mode
 
 			var userCatalogs : Array<db.Catalog> = user.getContracts(this.group);
 			isSubscribedToCatalog = Lambda.exists( userCatalogs, function( usercatalog ) return usercatalog.id == this.id ); 
@@ -353,9 +376,18 @@ class Catalog extends Object
 			"distributorNum" 	=> t._("Number of required volunteers during a distribution"),
 			"flags" 			=> t._("Options"),
 			"percentageValue" 	=> t._("Fees percentage"),
-			"percentageName" 	=> t._("Fees label"),			
-			"contact" 			=> t._("Contact"),			
-			"vendor" 			=> t._("Farmer"),			
+			"percentageName" 	=> t._("Fees label"),
+			"contact" 			=> t._("Contact"),
+			"vendor" 			=> t._("Farmer"),
+			"orderStartDaysBeforeDistrib" => "Ouverture des commandes (nbre de jours avant distribution)",
+			"orderEndHoursBeforeDistrib" => "Fermeture des commandes (nbre d'heures avant distribution)",
+			"requiresOrdering" => "Obligation de commander à chaque distribution",
+			"distribMinOrdersTotal" => "Minimum de commande par distribution (en €)",
+			"catalogMinOrdersTotal" => "Minimum de commandes sur la durée du contrat (en €)",
+			"allowedOverspend" => "Dépassement autorisé (en €)",
+			"absentDistribsMaxNb" => "Nombre maximum d'absences",
+			"absencesStartDate" => "Date de début de la période d'absences",
+			"absencesEndDate" => "Date de fin de la période d'absences",
 		];
 	}
 	

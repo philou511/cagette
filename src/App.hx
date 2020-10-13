@@ -234,8 +234,6 @@ class App extends sugoi.BaseApp {
 		out.set("percent", "Pourcentage");
 		out.set("pinned", "Mets en avant les produits");
 		
-		
-		
 		out.set("byMember", "Par adhérent");
 		out.set("byProduct", "Par produit");
 
@@ -243,7 +241,8 @@ class App extends sugoi.BaseApp {
 		out.set("ByProduct"	, "Par produit (produits vrac, stockés sans conditionnement)");
 		out.set("ByOffer"	, "Par offre (produits stockés déja conditionnés)");
 				
-		out.set("variablePrice", "Prix variable selon pesée");
+		out.set("variablePrice", "Prix variable selon pesée");		
+		
 		return out;
 	}
 	

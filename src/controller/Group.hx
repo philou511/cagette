@@ -185,10 +185,26 @@ class Group extends controller.Controller
 		
 		//group type
 		var data = [
-			{label:t._("CSA"),value:"0"},
-			{label:t._("Grouped orders"),value:"1"},
-			{label:"En direct d'un collectif de producteurs",value:"2"},
-			{label:"En direct d'un producteur",value:"3"},
+			{ 
+				label:t._("CSA"),
+				value:"0",
+				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_amap' target='_blank'>Mode AMAP</a> ( contrats AMAP classiques ou variables ), groupe fermé avec liste d'attente et gestion des adhésions."
+			},
+			{
+				label:t._("Grouped orders"),
+				value:"1",
+				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe fermé avec liste d'attente et gestion des adhésions."
+			},
+			{
+				label:"En direct d'un collectif de producteurs",
+				value:"2",
+				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe ouvert : n'importe qui peut commander."
+			},
+			{
+				label:"En direct d'un producteur",
+				value:"3",
+				desc : "Commandes en <a href='https://wiki.cagette.net/admin:admin_boutique#mode_boutique' target='_blank'>Mode Boutique</a>, groupe ouvert : n'importe qui peut commander."
+			},
 		];	
 		var gt = new sugoi.form.elements.RadioGroup("type", t._("Group type"), data ,"1", Std.string( db.Catalog.TYPE_VARORDER ), true, true, true);
 		f.addElement(gt);
@@ -216,14 +232,12 @@ class Group extends controller.Controller
 				g.flags.set(ShopMode);
 				g.hasMembership=true;
 				g.betaFlags.set(ShopV2);
-				// g.flags.set(ShopCategoriesFromTaxonomy);
 				g.regOption = WaitingList;
 				
 			case ProducerDrive,FarmShop : 
 				g.flags.set(ShopMode);								
 				g.flags.set(PhoneRequired);
 				g.betaFlags.set(ShopV2);
-				// g.flags.set(ShopCategoriesFromTaxonomy);
 				g.regOption = Open;
 			}
 			
@@ -267,6 +281,8 @@ class Group extends controller.Controller
 				contract.endDate = DateTools.delta(Date.now(), 1000.0 * 60 * 60 * 24 * 364);
 				contract.contact = user;
 				contract.distributorNum = 2;
+				contract.orderStartDaysBeforeDistrib = 365;
+				contract.orderEndHoursBeforeDistrib = 24;
 				contract.insert();
 				
 				var product = new db.Product();
@@ -294,9 +310,7 @@ class Group extends controller.Controller
 				);	
 				var ordersData = new Array< { productId : Int, quantity : Float, invertSharedOrder : Bool, userId2 : Int } >();
 				ordersData.push( { productId : product.id, quantity : 1, invertSharedOrder : false, userId2 : null } );
-				var subscription = service.SubscriptionService.createSubscription( user, contract, contract.startDate, contract.endDate, ordersData );
-				
-				
+				service.SubscriptionService.createSubscription( user, contract, ordersData, null );
 			}
 			
 			//contrat variable
@@ -347,10 +361,15 @@ class Group extends controller.Controller
 				place.id,
 				Date.now(),
 				DateTools.delta( Date.now(), 1000.0 * 60 * 60 * 24 * 13)
-			);				
+			);
+
+			var ordersData = new Array< { productId : Int, quantity : Float, ?userId2 : Int, ?invertSharedOrder : Bool } >();
+			ordersData.push( { productId : egg.id, quantity : 2 } );
+			ordersData.push( { productId : p.id, quantity : 1 } );
+			var subscription = service.SubscriptionService.createSubscription( user, contract, ordersData, null );
 			
-			OrderService.make(user, 2, egg, d.id);
-			OrderService.make(user, 1, p, d.id);
+			OrderService.make(user, 2, egg, d.id, false, subscription );
+			OrderService.make(user, 1, p, d.id, false, subscription );
 			
 			App.current.session.data.amapId  = g.id;
 			app.session.data.newGroup = true;

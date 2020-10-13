@@ -81,14 +81,6 @@ class User extends Controller
 		//vendor accounts
 		var vendors = service.VendorService.getVendorsFromUser(app.user);
 		view.vendors = vendors;
-
-		var hasCagetteProTest = vendors.find(v-> v.isTest) != null;
-		var beforeSept = Date.now().getTime() < Date.fromString("2020-09-30 00:00:00").getTime();
-		if(hasCagetteProTest && beforeSept){
-			view.hasCagetteProTest = true;
-		}
-
-
 		#end
 
 		view.isGroupAdmin = app.user.getUserGroups().find(ug -> return ug.isGroupManager()) != null;

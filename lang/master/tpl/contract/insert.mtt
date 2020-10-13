@@ -13,12 +13,16 @@
 <div class="col-md-3">
         <div class="alert alert-warning">
             <i class="icon icon-info"></i>
-            <b>Option "Ce catalogue est un contrat AMAP"</b>
+            <b>Configuration des contrats AMAP</b>
             <p>
-                Si vous cochez cette option, les commandes seront identiques pour chaque distribution, sans possibilité de variation.<br/>
-            </p>
-            <p>
-                Si vous décochez cette option, vous créérez un <b>catalogue standard</b> qui permet de faire une commande différente à chaque distribution (commande variable).			
+                Pour comprendre en détail comment configurer vos contrats AMAP, 
+                nous vous recommandons de consulter 
+                la documentation. 
+                <ul>
+                    <li><a href="https://wiki.cagette.net/admin:admin_contratsamap" target="_blank">contrats AMAP classique</a></li>
+                    <li><a href="https://wiki.cagette.net/admin:contratsamapvariables" target="_blank">contrats AMAP variables</a></li>
+                </ul> 
+                
             </p>
         </div>
 </div>

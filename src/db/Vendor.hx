@@ -182,6 +182,10 @@ class Vendor extends Object
 		return tools.ObjectListTool.deduplicate(groups);
 	}
 
+	public static function get(email:String,status:String){
+		return manager.select($email==email && $status==status,false);
+	}
+
 	#if plugins
 	public function getCpro(){
 		return pro.db.CagettePro.getFromVendor(this);

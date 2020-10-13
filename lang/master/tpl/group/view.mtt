@@ -165,8 +165,9 @@
 				
 						::foreach catalog contracts::
 						<p>
-							<b>::catalog.name::</b><br/>
-							::catalog._vendor.name::, $$nullSafe(::catalog._vendor.zipCode::) $$nullSafe(::catalog._vendor.city::)
+							<a href="::catalog._vendor.getLink()::" target="_blank"><b>::catalog._vendor.name::</b></a> <br/>			
+							$$nullSafe(::catalog._vendor.city::)<br/>
+
 							<div class="row">
 								::foreach p catalog.getProductsPreview(6)::
 								<div class="col-md-2" data-toggle="tooltip" data-placement="top" title="::p.name::" >									
@@ -204,10 +205,8 @@
 	</div>
 	
 	<div class="col-md-12">
-		<div id="footer">
-			<a href="::_("http://www.cagette.net")::">::_("Cagette.net, the free software of food direct-selling")::</a>.	
-		</div>
 		
+		$$footer()
 	</div>
 
 ::end::

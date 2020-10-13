@@ -144,7 +144,7 @@ class VendorService{
 		return db.Vendor.manager.select($email==email && $status==status,false);
 	}
 
-	public static function getForm(vendor:db.Vendor):sugoi.form.Form {
+	public static function getForm(vendor:db.Vendor,?legalInfos=true):sugoi.form.Form {
 		var t = sugoi.i18n.Locale.texts;
 		var form = form.CagetteForm.fromSpod(vendor);
 		
@@ -158,16 +158,18 @@ class VendorService{
 		//email is required
 		form.getElement("email").required = true;
 
-		form.addElement(new sugoi.form.elements.Html("html","<h4>Informations légales obligatoires</h4>"));
+		if(legalInfos){
+			form.addElement(new sugoi.form.elements.Html("html","<h4>Informations légales obligatoires</h4>"));
 
-		//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
-		if(vendor.legalStatus!=null){
-			form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
+			//form.addElement(new sugoi.form.elements.IntSelect('legalStatus',"Statut juridique",sugoi.form.ListData.fromSpod(service.VendorService.getLegalStatuses()),vendor.legalStatus,true));
+			if(vendor.legalStatus!=null){
+				form.addElement(new sugoi.form.elements.Html("html",vendor.getLegalStatus(false),"Statut juridique"));
+			}
+
+			form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
+			form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
+			form.addElement(new sugoi.form.elements.IntInput("companyCapital","Capital social en € (sauf pour associations et entreprises individuelles)",vendor.companyCapital,false));
 		}
-
-		form.addElement(new sugoi.form.elements.StringInput("companyNumber","Numéro SIRET (14 chiffres)",vendor.companyNumber,true));
-		form.addElement(new sugoi.form.elements.StringInput("vatNumber","Numéro de TVA (si assujeti)",vendor.vatNumber,false));
-		form.addElement(new sugoi.form.elements.IntInput("companyCapital","Capital social en € (sauf pour associations et entreprises individuelles)",vendor.companyCapital,false));
 		
 		return form;
 	}
@@ -175,7 +177,7 @@ class VendorService{
 	/**
 		update a vendor
 	**/
-	public static function update(vendor:db.Vendor,data:VendorDto){
+	public static function update(vendor:db.Vendor,data:VendorDto,?legalInfos=true){
 
 		//apply changes
 		for( f in Reflect.fields(data)){
@@ -193,41 +195,45 @@ class VendorService{
 		if( !EmailValidator.check(vendor.email) ) throw new Error("Email invalide.");
 
 		//check SIRET
-		//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
-		var c = new sugoi.apis.linux.Curl();
-		var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
-		if(siret=="" || siret==null) throw new Error("Le numéro SIRET est requis.");
-		var sameSiret = db.Vendor.manager.search($companyNumber==siret).array();
-		if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id){
-			throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
-		}
-		
-		var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
-		var res = haxe.Json.parse(raw);
-		if(res.message!=null){
-			throw new Error("Erreur avec le numéro SIRET : "+res.message+". Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
-		}else{
-			vendor.companyNumber = siret;
-			vendor.siretInfos = res.etablissement;
-			//take adress from siretInfos
-			var addr = vendor.getAddressFromSiretInfos();
-			if(addr!=null){
-				vendor.address1 = addr.address1;
-				vendor.zipCode = addr.zipCode;
-				vendor.city = addr.city;
-				if(vendor.lat==null){
-					vendor.lat = addr.lat;
-					vendor.lng = addr.lng;
-				}
+		if(legalInfos){
+			//https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/82902831500010
+			var c = new sugoi.apis.linux.Curl();
+			var siret = ~/[^\d]/g.replace(data.companyNumber,"");//remove non numbers
+			if(siret=="" || siret==null) throw new Error("Le numéro SIRET est requis.");
+			var sameSiret = db.Vendor.manager.search($companyNumber==siret).array();
+			if( !App.config.DEBUG && sameSiret.length>0 && sameSiret[0].id!=vendor.id){
+				throw new Error("Il y a déjà un producteur enregistré avec ce numéro SIRET");			
 			}
 			
-			if(vendor.activityCode==null){
-				vendor.activityCode = res.etablissement.activite_principale;
+			var raw = c.call("GET","https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/"+siret);
+			var res = haxe.Json.parse(raw);
+			if(res.message!=null){
+				throw new Error("Erreur avec le numéro SIRET : "+res.message+". Si votre numéro SIRET est correct mais non reconnu, contactez nous sur support@cagette.net");
+			}else{
+				vendor.companyNumber = siret;
+				vendor.siretInfos = res.etablissement;
+				//take adress from siretInfos
+				var addr = vendor.getAddressFromSiretInfos();
+				if(addr!=null){
+					vendor.address1 = addr.address1;
+					vendor.zipCode = addr.zipCode;
+					vendor.city = addr.city;
+					if(vendor.lat==null){
+						vendor.lat = addr.lat;
+						vendor.lng = addr.lng;
+					}
+				}
+				
+				if(vendor.activityCode==null){
+					vendor.activityCode = res.etablissement.activite_principale;
+				}
+				if(vendor.legalStatus==null){
+					vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
+				}
 			}
-			if(vendor.legalStatus==null){
-				vendor.legalStatus = res.etablissement.unite_legale.categorie_juridique;
-			}
+
 		}
+		
 
 		return vendor;
 	}
@@ -255,6 +261,5 @@ class VendorService{
 		var json:Array<{id:Int,name:String}> = haxe.Json.parse(sys.io.File.getContent(filePath));
 		return json;
 	}
-
 
 }
