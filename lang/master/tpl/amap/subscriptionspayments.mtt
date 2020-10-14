@@ -1,0 +1,166 @@
+::use 'design.mtt'::
+
+<div class="col-md-3">
+	<h2>::_("Contact informations")::</h2>
+	<div class="article">
+		
+		<div style="font-weight:bold;font-size:120%;">::member.firstName:: ::member.lastName::
+		::if member.firstName2!=null && member.lastName2!=null::
+			& ::member.firstName2:: ::member.lastName2::
+			
+		::end::</div>
+		
+		$$nullSafe(::member.address1::)<br/>
+		$$nullSafe(::member.address2::)<br/>
+		$$nullSafe(::member.zipCode::) 
+		$$nullSafe(::member.city::)<br/>
+		<br/>
+		
+		::if member.phone!=null::
+			::_("Phone"):: : ::member.phone::<br/>
+		::end::
+
+		::if member.email!=null::
+			::_("Email"):: : <a href="mailto: ::member.email::">::member.email::</a><br/>
+		::end::
+		
+		::if member.email2!=null::
+			::_("Email"):: : <a href="mailto: ::member.email2::">::member.email2::</a><br/>
+		::end::
+		
+		
+	</div>
+	
+</div>
+
+<div class="col-md-9">
+	<h2>::_("Payments")::</h2>
+	<div class="article">
+
+		::set globalBalance = 0::
+
+		::foreach catalog subscriptionsByCatalog.keys()::
+
+			::set subscriptions = subscriptionsByCatalog.get(catalog)::
+			::foreach subscription subscriptions::
+
+				::set subscriptionTotal = subscription.getTotalPrice()::
+				::set subscriptionPayments = subscription.getPaymentsTotal()::
+
+				<table class="table table-condensed table-bordered" style="margin-top: 50px;">
+
+					<tr class="text-center" style="font-size:1.1em;font-weight:bold;background-color:#EEE;">
+						<td colspan="2" style="vertical-align: middle;">
+							::catalog.name::<br/>
+							::catalog._vendor.name::
+						</td>
+						<td style="vertical-align: middle;">
+							::_("Balance")::&nbsp;:
+							::set balance = subscriptionPayments - subscriptionTotal::
+							::set globalBalance = globalBalance + balance::
+							::if balance < 0::
+								<span style="color:#C00;">::balance::&nbsp;::currency()::</span>
+							::else::
+								<span style="color:#0C0;">::balance::&nbsp;::currency()::</span>
+							::end::
+						</td>
+					</tr>
+
+				::foreach operation operationsBySubscription.get(subscription)::
+
+					<tr class="text-center">
+						::set x = operation.getTypeIndex()::
+						<td style="vertical-align: middle;">
+							::if x==0::
+								<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::_("Order")::
+							::elseif x==1::
+								<i class="icon icon-basket" aria-hidden="true"></i>&nbsp;::raw _("CSA&nbsp;contract")::
+							::elseif x==2::
+								<i class="icon icon-euro" aria-hidden="true"></i> ::operation.getPaymentTypeName()::
+							::else::
+								<i class="fa fa-user" aria-hidden="true"></i> Souscription
+							::end::
+						</td>
+						
+						<td style="font-size:1em;text-align:center;width:300px;vertical-align: middle;">
+							
+							::operation.name::<br/>
+							
+							::if x==2 && operation.pending==true::		
+								::if(operation.getPaymentType()=="check")::
+									<span style="color:red;">::_("Check to be given at the collection of products")::</span>
+								::elseif(operation.getPaymentType()=="cash")::
+									<span style="color:red;">::_("Cash to be given at the collection of products")::</span>
+								::elseif(operation.getPaymentType()=="transfer")::
+									<span style="color:red;">::_("This transfer must be validated by a coordinator")::</span>		
+								::elseif(operation.getPaymentType()=="onthespot")::
+									<span style="color:red;">::_("You need to pay on the spot at the collection of products")::</span>
+								::end::
+								
+							::else::
+								<span style="font-size:0.90em;color:#AAA;">::hDate(operation.date)::</span>
+							::end::
+						</td>
+						<td class="text-center" style="vertical-align: middle;">
+							&nbsp;&nbsp;::formatNum(operation.amount)::&nbsp;::currency()::
+						</td>
+						<!-- <td class="text-right" ::cond !account::>
+							::if operation.type==2::
+							<div class="btn-group" role="group">
+								$$edit(::_("Edit")::,/transaction/edit/::operation.id::)
+								$$delete(::_("Del.")::,/transaction/delete/::operation.id::?token=::token::)						
+							</div>
+							::elseif isAdmin::
+								<a href="/transaction/delete/::t.id::?token=::token::" $$confirm(::_("Delete ?")::) class="btn btn-danger btn-sm" >
+									<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+								</a>
+							::end::
+							
+						</td> -->
+					</tr>
+					
+				::end::
+
+					<tr class="text-center">
+						<td style="vertical-align: middle;">
+							<i class="fa fa-user" aria-hidden="true"></i> Souscription
+						</td>
+						<td style="font-size:1em;width:300px;vertical-align: middle;">
+							Dépenses totales
+						</td>
+						<td style="vertical-align: middle;">
+							-&nbsp;::formatNum(subscriptionTotal)::&nbsp;::currency()::
+						</td>
+					</tr>
+
+				</table>
+
+			::end::
+
+		::end::
+
+		<div style="font-size:1.3em;top: 10px;position: absolute;left: 20px;">
+
+			Solde global :
+			::if globalBalance < 0:: 
+				::set style = "color:#C00;font-weight:bold;"::
+			::else::
+				::set style = "color:#0C0;"::
+			::end::
+			<span style="::style::">
+				::globalBalance:: ::currency()::
+			</span>
+			
+		</div>
+		
+		::if !account::
+			$$insert(::_("Insert a payement")::,/transaction/insertPayment/::member.id::)
+		::end::
+		
+	</div>
+</div>
+
+
+
+
+::end::

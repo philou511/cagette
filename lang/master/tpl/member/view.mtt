@@ -212,7 +212,8 @@
 									::end::
 									<th class="text-center col-md-2">Nombre de distributions</th>
 									<th class="text-center col-md-1">Total</th>
-									<th class="text-center col-md-1" ::cond i == 0::>Payé</th>
+									<th class="text-center col-md-1">Solde</th>
+									<!-- <th class="text-center col-md-1" ::cond i == 0::>Payé</th> -->
 								</tr>
 								::set orderName = subscriptionService.getDescription(subscription, catalog)::
 								::if i == 0 && orderName == null::
@@ -256,12 +257,21 @@
 									<td style="vertical-align: middle;">
 										::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 									</td>
+									::set subscriptionTotal = subscription.getTotalPrice()::
+									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
+									::set style = "color:#C00;font-weight:bold;"::
+									::if balance >= 0::
+										::set style = "color:#0C0;"::
+									::end::
 									<td style="vertical-align: middle;">
-										::subscription.getTotalPrice()::&nbsp;::currency()::
+										::subscriptionTotal::&nbsp;::currency()::
 									</td>
-									<td style="vertical-align: middle;" ::cond i == 0::>
+									<td style="vertical-align: middle;::style::">
+										::balance::&nbsp;::currency()::
+									</td>
+									<!-- <td style="vertical-align: middle;" ::cond i == 0::>
 										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-									</td>
+									</td> -->
 								</tr>
 							</table>
 						::end::

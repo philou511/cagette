@@ -331,10 +331,10 @@ class Cron extends Controller
 									}
 								
 									//Create order operation only
-									if ( distrib.catalog.group.hasPayments() ) {
+									/* JB if ( distrib.catalog.group.hasPayments() ) {
 			
 										service.PaymentService.onOrderConfirm( automatedOrders );
-									}
+									}*/
 
 								}
 							}

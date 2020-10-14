@@ -601,10 +601,10 @@ class Contract extends Controller
 						}
 
 						//Create order operation only
-						if ( app.user.getGroup().hasPayments() ) {
+						/* JB if ( app.user.getGroup().hasPayments() ) {
 
 							service.PaymentService.onOrderConfirm( varOrders );
-						}
+						} */
 
 					}
 

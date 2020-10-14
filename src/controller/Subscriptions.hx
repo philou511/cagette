@@ -346,6 +346,40 @@ class Subscriptions extends controller.Controller
 
 	}
 
+	@tpl("contractadmin/subscriptionpayments.mtt")
+	public function doPayments( subscription : db.Subscription ) {
+
+		if ( !app.user.canManageContract( subscription.catalog ) ) throw Error( '/', t._('Access forbidden') );
+
+		var user = subscription.user;
+		var group = subscription.catalog.group;
+
+		// service.PaymentService.updateUserBalance(m, app.user.getGroup());
+      	// var browse : Int->Int->List<Dynamic>;
+		
+		//default display
+		// browse = function(index:Int, limit:Int) {
+
+		// 	return db.Operation.getOperationsWithIndex( user, group, index, limit, true );
+		// }
+
+		var operations = db.Operation.manager.search( $user == user && $subscription == subscription, null, false );
+		
+		/*var count = db.Operation.countOperations( user, group);
+		var rb = new sugoi.tools.ResultsBrowser(count, 10, browse);*/
+		view.operations = operations;
+		view.member = user;
+		view.subscription = subscription;
+		view.subscriptionTotal = subscription.getTotalPrice();
+		view.subscriptionPayments = subscription.getPaymentsTotal();
+		
+		view.nav.push( 'subscriptions' );
+		view.c = subscription.catalog;
+		
+		checkToken();
+	}
+
+
 	@logged @tpl("form.mtt")
 	function doAbsences( subscription : db.Subscription, ?args: { returnUrl: String } ) {
 

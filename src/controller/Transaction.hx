@@ -20,124 +20,211 @@ class Transaction extends controller.Controller
 	 * A manager inserts manually a payment
 	 */
 	@tpl('form.mtt')
-	public function doInsertPayment(user:db.User){
+	public function doInsertPayment( user : db.User, ?subscription : db.Subscription ) {
 		
 		if (!app.user.isContractManager()) throw Error("/", t._("Action forbidden"));	
 		var t = sugoi.i18n.Locale.texts;
+
+		var group = app.user.getGroup();
+		var hasShopMode = group.hasShopMode();
+		// var subscription :db.Subscription = null;
 		
 		var op = new db.Operation();
 		op.user = user;
 		op.date = Date.now();
 		
-		var f = new sugoi.form.Form("payement");
-		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
-		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
-		f.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), NativeDatePickerType.date, true));
-		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, app.user.getGroup());
+		var form = new sugoi.form.Form("payement");
+
+		if ( !hasShopMode ) {
+
+			form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
+
+
+			// if ( args != null && args.s != null ) {
+
+			// 	subscription = db.Subscription.manager.get( args.s );
+
+			// 	if ( subscription != null ) {
+
+			// 		form.addElement( new sugoi.form.elements.Html( "subscription", '<div class="control-label" style="text-align:left;"> ${ subscription.catalog.name } - ${ subscription.catalog.vendor.name } </div>', 'Souscription' ) );
+			// 	}
+			// }
+
+			// TODO JB Ajouter erreur si subscription est à null
+			// App.current.session.data.absencesReturnUrl = args.returnUrl;
+			//RETURN /contractAdmin/subscriptions/payments/338
+		}
+
+		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), null, true));
+		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), null, true));
+		form.addElement(new form.CagetteDatePicker("date", t._("Date"), Date.now(), NativeDatePickerType.date, true));
+		var paymentTypes = service.PaymentService.getPaymentTypes(PCManualEntry, group);
 		var out = [];
 		for (paymentType in paymentTypes)
 		{
 			out.push({label: paymentType.name, value: paymentType.type});
 		}
-		f.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
+		form.addElement(new sugoi.form.elements.StringSelect("Mtype", t._("Payment type"), out, null, true));
 		
 		//related operation
-		var unpaid = db.Operation.manager.search($user == user && $group == app.user.getGroup() && $type != Payment ,{limit:20,orderBy:-date});
-		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
-		f.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
+		if( hasShopMode ) {
+
+			var unpaid = db.Operation.manager.search($user == user && $group == group && $type != Payment ,{limit:20,orderBy:-date});
+			var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
+			form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, null, false));
+		}
 		
-		if (f.isValid()){
-			f.toSpod(op);
+		// new(name:String, label:String, ?value:T, ?required:Bool = false, ?display:Bool = false,  ?attributes:String = "")
+		
+		if (form.isValid()){
+			form.toSpod(op);
 			op.type = db.Operation.OperationType.Payment;			
-			op.setPaymentData({type:f.getValueOf("Mtype")});
-			op.group = app.user.getGroup();
+			op.setPaymentData({type:form.getValueOf("Mtype")});
+			op.group = group;
 			op.user = user;
 			
-			if (f.getValueOf("unpaid") != null){
-				var t2 = db.Operation.manager.get(f.getValueOf("unpaid"));
-				op.relation = t2;
-				if (t2.amount + op.amount == 0) {
-					op.pending = false;
-					t2.lock();
-					t2.pending = false;
-					t2.update();
+			if( hasShopMode ) {
+
+				if (form.getValueOf("unpaid") != null){
+					var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
+					op.relation = t2;
+					if (t2.amount + op.amount == 0) {
+						op.pending = false;
+						t2.lock();
+						t2.pending = false;
+						t2.update();
+					}
 				}
+			}
+			else {
+
+				op.subscription = subscription;
 			}
 			
 			op.insert();
 			
-			service.PaymentService.updateUserBalance(user, app.user.getGroup());
+			service.PaymentService.updateUserBalance(user, group);
+
+			if( hasShopMode ) {
 			
-			throw Ok("/member/payments/" + user.id, t._("Payment recorded") );
+				throw Ok( '/member/payments/' + user.id, t._("Payment recorded") );
+			}
+			else {
+
+				throw Ok( '/contractAdmin/subscriptions/payments/' + subscription.id, t._("Payment recorded") );
+			}
 			
 		}
 		
 		view.title = t._("Record a payment for ::user::",{user:user.getCoupleName()}) ;
-		view.form = f;		
+		view.form = form;
 	}
 	
 	
 	@tpl('form.mtt')
-	public function doEdit(op:db.Operation){
+	public function doEdit( operation : db.Operation ) {
+
+		var hasShopMode = operation.group.hasShopMode();
 		
-		if (!app.user.canAccessMembership() || op.group.id != app.user.getGroup().id ) {
-			throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));		
+		if (!app.user.canAccessMembership() || operation.group.id != app.user.getGroup().id ) {
+			throw Error("/member/payments/" + operation.user.id, t._("Action forbidden"));		
+		}
+
+		if( !hasShopMode && operation.subscription == null ) {
+
+			throw Error( '/', 'Cette opération n\'est rattachée à aucune souscription' );
 		}
 		
-		App.current.event(PreOperationEdit(op));
+		App.current.event( PreOperationEdit( operation ) );
 		
-		op.lock();
+		operation.lock();
 		
-		var f = new sugoi.form.Form("payement");
-		f.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), op.name, true));
-		f.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), op.amount, true));
-		f.addElement(new form.CagetteDatePicker("date", t._("Date"), op.date, NativeDatePickerType.date, true));
-		//f.addElement(new sugoi.form.elements.DatePicker("pending", t._("Confirmed"), !op.pending, true));
+		var form = new sugoi.form.Form("payement");
+		form.addElement(new sugoi.form.elements.StringInput("name", t._("Label||label or name for a payment"), operation.name, true));
+		form.addElement(new sugoi.form.elements.FloatInput("amount", t._("Amount"), operation.amount, true));
+		form.addElement(new form.CagetteDatePicker("date", t._("Date"), operation.date, NativeDatePickerType.date, true));
+		//form.addElement(new sugoi.form.elements.DatePicker("pending", t._("Confirmed"), !operation.pending, true));
 		//related operation
-		var unpaid = db.Operation.manager.search( $user == op.user && $group == op.group && $type != Payment ,{limit:20,orderBy:-date});
-		var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
-		if (op.relation != null) data.push({label:op.relation.name,value:op.relation.id});
-		f.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, op.relation!=null ? op.relation.id : null, false));
+		if ( hasShopMode ) {
+
+			var unpaid = db.Operation.manager.search( $user == operation.user && $group == operation.group && $type != Payment ,{limit:20,orderBy:-date});
+			var data = unpaid.map(function(x) return {label:x.name, value:x.id}).array();
+			if (operation.relation != null) data.push({label:operation.relation.name,value:operation.relation.id});
+			form.addElement(new sugoi.form.elements.IntSelect("unpaid", t._("As a payment for :"), data, operation.relation!=null ? operation.relation.id : null, false));
+		}
 		
-		
-		if (f.isValid()){
-			f.toSpod(op);
-			op.pending = false;
+		if ( form.isValid() ) {
+
+			form.toSpod( operation );
+			operation.pending = false;
 			
-			if (f.getValueOf("unpaid") != null){
-				var t2 = db.Operation.manager.get(f.getValueOf("unpaid"));
-				op.relation = t2;
-				if (t2.amount + op.amount == 0) {
-					op.pending = false;
-					t2.lock();
-					t2.pending = false;
-					t2.update();
+			if( hasShopMode ) {
+
+				if ( form.getValueOf("unpaid") != null ) {
+
+					var t2 = db.Operation.manager.get(form.getValueOf("unpaid"));
+					operation.relation = t2;
+					if (t2.amount + operation.amount == 0) {
+						operation.pending = false;
+						t2.lock();
+						t2.pending = false;
+						t2.update();
+					}
 				}
 			}
+
+			operation.update();
+
+			if( hasShopMode ) {
 			
-			op.update();
-			throw Ok("/member/payments/" + op.user.id, t._("Operation updated"));
+				throw Ok( '/member/payments/' + operation.user.id, t._("Operation updated"));
+			}
+			else {
+
+				throw Ok( '/contractAdmin/subscriptions/payments/' + operation.subscription.id, t._("Operation updated") );
+			}
+			
 		}
 		
-		view.form = f;
-	}	
+		view.form = form;
+	}
 	
 	/**
 	 * Delete an operation
 	 */
-	public function doDelete(op:db.Operation){	
-		if (!app.user.canAccessMembership() || op.group.id != app.user.getGroup().id ) throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));	
-		
-		App.current.event(PreOperationDelete(op));
+	public function doDelete( operation : db.Operation ) {
 
-		//only an admin can delete an order op
-		if((op.type == db.Operation.OperationType.VOrder || op.type == db.Operation.OperationType.COrder) && !app.user.isAdmin()){
-			throw Error("/member/payments/" + op.user.id, t._("Action forbidden"));
+		var hasShopMode = operation.group.hasShopMode();
+
+		if( !hasShopMode && operation.subscription == null ) {
+
+			throw Error( '/', 'Cette opération n\'est rattachée à aucune souscription' );
 		}
 
-		if (checkToken()){
-			op.delete();
-			throw Ok("/member/payments/" + op.user.id, t._("Operation deleted"));
+		if ( !app.user.canAccessMembership() || operation.group.id != app.user.getGroup().id ) throw Error("/member/payments/" + operation.user.id, t._("Action forbidden"));	
+		
+		App.current.event( PreOperationDelete( operation ) );
+
+		//only an admin can delete an order op
+		if( ( operation.type == db.Operation.OperationType.VOrder || operation.type == db.Operation.OperationType.COrder ) && !app.user.isAdmin() ) {
+
+			throw Error("/member/payments/" + operation.user.id, t._("Action forbidden"));
+		}
+
+		if ( checkToken() ) {
+
+			operation.delete();
+
+
+			if( hasShopMode ) {
+			
+				throw Ok( '/member/payments/' + operation.user.id, t._("Operation deleted") );
+			}
+			else {
+
+				throw Ok( '/contractAdmin/subscriptions/payments/' + operation.subscription.id, t._("Operation deleted") );
+			}
+
 		}
 	}
 	

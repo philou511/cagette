@@ -23,7 +23,7 @@ class DistributionService
 		//Update all operations for this amap contract when payments are enabled
 		if (contract.type == db.Catalog.TYPE_CONSTORDERS && contract.group.hasPayments()) {
 			//Get all the users who have orders for this contract
-			var users = contract.getUsers();
+			/* var users = contract.getUsers();
 			for ( user in users ){
 
 				//Get the one operation for this amap contract and user
@@ -38,7 +38,7 @@ class DistributionService
 					service.PaymentService.updateOrderOperation(operation, orders);
 				}
 
-			}
+			}*/
 		}
 	}
 

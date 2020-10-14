@@ -272,13 +272,13 @@ class OrderService
 				order.delete();
 
 				//delete related operation
-				if( contract.group.hasPayments() ){
+				/* JB if( contract.group.hasPayments() ){
 					var orders = contract.getUserOrders(user);
 					if( orders.length == 0 ){
 						var operation = service.PaymentService.findCOrderOperation(contract, user);
 						if(operation!=null) operation.delete();
 					}
-				}
+				} */
 
 			} else {
 

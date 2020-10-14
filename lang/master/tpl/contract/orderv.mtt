@@ -454,6 +454,7 @@
 								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
 								<th class="text-center col-md-1">Nombre de distributions</th>
 								<th class="text-center col-md-1">Total</th>
+								<th class="text-center col-md-1">Solde</th>
 							</tr>
 							::set label = subscriptionService.getDescription(subscription, catalog)::
 							<tr style="text-align: center;">
@@ -477,8 +478,9 @@
 								<td style="vertical-align: middle;">
 									::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 								</td>
+								::set subscriptionTotal = subscription.getTotalPrice()::
 								<td style="vertical-align: middle;">
-									::subscription.getTotalPrice()::&nbsp;::currency()::
+									::subscriptionTotal::&nbsp;::currency()::
 									<br/>
 									::set catalogMinOrdersTotal = subscriptionService.getCatalogMinOrdersTotal(subscription._catalog,subscription)::
 									::if catalogMinOrdersTotal != null ::
@@ -487,6 +489,9 @@
 											( Reste ::remaining::&nbsp;::currency():: à dépenser )
 										::end::
 									::end::
+								</td>
+								<td style="vertical-align: middle;">
+									::subscription.getPaymentsTotal() - subscriptionTotal::&nbsp;::currency()::
 								</td>
 							</tr>
 							<tr class="greyhead text-center">

@@ -18,7 +18,7 @@ typedef PaymentInfos = {
 }; 
 
 typedef VOrderInfos = {basketId:Int};
-typedef COrderInfos = {contractId:Int};
+typedef COrderInfos = {subscriptionId:Int};
 typedef MembershipInfos = {year:Int};
 
 /**
@@ -43,7 +43,7 @@ class Operation extends sys.db.Object
 
 	//new fields
 	@hideInForms @:relation(basketId) public var basket : SNull<db.Basket>; 	//relation to basket for variable orders
-	@hideInForms @:relation(contractId) public var contract : SNull<Catalog>; 	//relation to contract for CSA orders
+	@hideInForms @:relation(subscriptionId) public var subscription : SNull<Subscription>; 	//relation to contract for CSA orders
 	@hideInForms public var data2 : SNull<SString<256>>; 						//json data
 
 	public function setData(data:Dynamic){
@@ -160,8 +160,8 @@ class Operation extends sys.db.Object
 			throw new tink.core.Error("Payment operation should have a type");
 		} else if (type==VOrder && this.basket==null){
 			throw new tink.core.Error("Variable Order operation should have a basket");
-		} else if (type==COrder && this.contract==null){
-			throw new tink.core.Error("CSA Order operation should have a contract");
+		} else if (type==COrder && this.subscription==null){
+			throw new tink.core.Error("CSA Order operation should have a subscription");
 		}
 	}
 

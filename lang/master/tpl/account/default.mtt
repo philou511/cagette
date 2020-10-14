@@ -85,7 +85,8 @@
 
 		<!-- SUBSCRIPTIONS FOR CSA MODE -->
 		::if !user.getGroup().hasShopMode() && count( subscriptionsByCatalog ) > 0 ::
-
+			
+			::set globalBalance = 0::
 			::foreach i loopList(0, 2)::
 				
 				<h4>
@@ -120,7 +121,8 @@
 									::end::
 									<th class="text-center col-md-2">Nombre de distributions</th>
 									<th class="text-center col-md-1">Total</th>
-									<th class="text-center col-md-1" ::cond i == 0::>Payé</th>
+									<th class="text-center col-md-1">Solde</th>
+									<!-- <th class="text-center col-md-1" ::cond i == 0::>Payé</th> -->
 								</tr>
 								::set orderName = subscriptionService.getDescription(subscription, catalog)::
 								::if i == 0 && orderName == null::
@@ -164,12 +166,22 @@
 									<td style="vertical-align: middle;">
 										::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 									</td>
+									::set subscriptionTotal = subscription.getTotalPrice()::
+									::set balance = subscription.getPaymentsTotal() - subscriptionTotal::
+									::set style = "color:#C00;font-weight:bold;"::
+									::set globalBalance = globalBalance + balance::
+									::if balance >= 0::
+										::set style = "color:#0C0;"::
+									::end::
 									<td style="vertical-align: middle;">
-										::subscription.getTotalPrice()::&nbsp;::currency()::
+										::subscriptionTotal::&nbsp;::currency()::
 									</td>
-									<td style="vertical-align: middle;" ::cond i == 0::>
+									<td style="vertical-align: middle;::style::">
+										::balance::&nbsp;::currency()::
+									</td>
+									<!-- <td style="vertical-align: middle;" ::cond i == 0::>
 										$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-									</td>
+									</td> -->
 								</tr>
 							</table>
 						::end::
@@ -207,19 +219,38 @@
 	<h3>::_("Payments")::</h3>
 	<div  class="article">
 		<span style="font-size:1.3em;">
-			::_("Balance"):: : 
-			::if userGroup.balance<0:: 
-				::set color = "C00"::
+			::_("Balance"):: :
+			::if user.getGroup().hasShopMode()::
+
+				::if userGroup.balance<0:: 
+					::set color = "C00"::
+				::else::
+					::set color = "0C0"::
+				::end::
+				<span style="color:#::color::;">
+					::userGroup.balance:: ::currency()::
+				</span>
+			
 			::else::
-				::set color = "0C0"::
+
+				::if globalBalance < 0:: 
+					::set style = "color:#C00;font-weight:bold;"::
+				::else::
+					::set style = "color:#0C0;"::
+				::end::
+				<span style="::style::">
+					::globalBalance:: ::currency()::
+				</span>
+
 			::end::
-			<span style="color:#::color::;">
-				::userGroup.balance:: ::currency()::
-			</span>
 		</span>
 		
 		<span style="margin-left:30px;">
-			<a href="/account/payments" class="btn btn-default btn-small">
+			::set link = "/account/payments"::
+			::if !user.getGroup().hasShopMode()::
+				::set link = "/amap/payments/" + user.id + "?account=true"::
+			::end::
+			<a href="::link::" class="btn btn-default btn-small">
 				<i class="fa fa-credit-card" aria-hidden="true"></i>
 				::_("Payments details")::
 			</a>

@@ -80,7 +80,7 @@ class PaymentService
 	/**
 	 * Create a new order operation
 	 */
-	 public static function makeOrderOperation(orders: Array<db.UserOrder>, ?basket:db.Basket, ?csaContract:Catalog){
+	 public static function makeOrderOperation( orders : Array<db.UserOrder>, ?basket : db.Basket, ?subscription : db.Subscription ) {
 		
 		if (orders == null) throw "orders are null";
 		if (orders.length == 0) throw "no orders";
@@ -104,20 +104,21 @@ class PaymentService
 		var user = orders[0].user;
 		var group = catalog.group;
 		
-		if (catalog.type == db.Catalog.TYPE_CONSTORDERS){
+		if ( catalog.type == db.Catalog.TYPE_CONSTORDERS ) { 
 			//Constant orders			
-			if(csaContract==null || csaContract.type!=db.Catalog.TYPE_CONSTORDERS) throw new Error("A CSA contract should be provided");			
+			// JB if(csaContract==null || csaContract.type!=db.Catalog.TYPE_CONSTORDERS) throw new Error("A CSA contract should be provided");
+			// TODO check catalog is the same as susbcription.catalog
 			//check orders are from the same contract
-			for (o in orders){
+			/* JB for (o in orders){
 				if(o.product.catalog.id!=csaContract.id) throw new Error("CSA Orders should be from the same contract");
-			}
+			}*/
 
-			var dNum = csaContract.getDistribs(false).length;
-			op.name = "" + csaContract.name + " (" + csaContract.vendor.name+") " + dNum + " " + t._("deliveries");
+			var dNum = catalog.getDistribs(false).length;
+			op.name = "" + catalog.name + " (" + catalog.vendor.name+") " + dNum + " " + t._("deliveries");
 			op.amount = dNum * (0 - _amount);
 			op.date = Date.now();
 			op.type = COrder;
-			op.contract = csaContract;
+			op.subscription = subscription;
 			op.user = user;
 			op.group = group;
 			op.pending = true;					
@@ -201,12 +202,14 @@ class PaymentService
 	/**
 	 * when updating a constant order, we need to update the existing operation.
 	 */
-	public static function findCOrderOperation(contract:db.Catalog, user:db.User):db.Operation{
-		
-		if (contract.type != db.Catalog.TYPE_CONSTORDERS) throw new Error("catalog type should be TYPE_CONSTORDERS");		
-		return db.Operation.manager.select($user == user && $contract == contract && $type==COrder, true);
-		
-	}
+	/* JB 
+		public static function findCOrderOperation(contract:db.Catalog, user:db.User):db.Operation{
+			
+			if (contract.type != db.Catalog.TYPE_CONSTORDERS) throw new Error("catalog type should be TYPE_CONSTORDERS");		
+			return db.Operation.manager.select($user == user && $contract == contract && $type==COrder, true);
+			
+		}
+	*/
 	
 	/**
 		Create/update the needed order operations and returns the related operations.
@@ -285,14 +288,14 @@ class PaymentService
 		}else{
 			// constant contract
 			// create/update a transaction computed like $distribNumber * $price.
-			var contract = orders[0].product.catalog;
+			/* JB var contract = orders[0].product.catalog;
 			
 			var existing = findCOrderOperation( contract , user);
 			if (existing != null){
 				out.push( updateOrderOperation(existing, contract.getUserOrders(user) ) );
 			}else{
 				out.push( makeOrderOperation( contract.getUserOrders(user) ) );
-			}
+			}*/
 		}
 		
 		return out;

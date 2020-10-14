@@ -80,6 +80,7 @@
                             <th>Période d'engagement</th>
                             <th>Nombre de distributions</th>
                             <th>Total</th>
+                            <th>Solde</th>
                             <th ::cond catalog.type == TYPE_CONSTORDERS::>Payé</th>
                         </tr>
                         ::foreach subscription subscriptions::
@@ -130,6 +131,9 @@
                                 <td style="vertical-align: middle;">
                                     ::subscription.getTotalPrice()::&nbsp;::currency()::
                                 </td>
+                                <td style="vertical-align: middle;">
+                                    ::subscription.getPaymentsTotal() - subscription.getTotalPrice()::&nbsp;::currency()::
+                                </td>
                                 <td  ::cond catalog.type == TYPE_CONSTORDERS:: style="vertical-align: middle;">
                                     $$check(::subscriptionService.isSubscriptionPaid(subscription)::)
                                 </td>
@@ -157,6 +161,12 @@
                                                 </a>
                                             </li>	
                                             ::end::
+
+                                            <li>
+                                                <a href="/contractAdmin/subscriptions/payments/::subscription.id::">
+                                                    <i class="icon icon-euro"></i> ::_("Payments")::
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </td>

@@ -35,6 +35,19 @@ class Subscription extends Object {
 		return Formatting.roundTo( totalPrice, 2 );
 	}
 
+	public function getPaymentsTotal() : Float {
+
+		if( this.id == null ) return 0;
+
+		var paymentsTotal : Float = 0;
+		var operations = db.Operation.manager.search( $user == user && $subscription == this, null, false );
+		for ( operation in operations ) {
+
+			paymentsTotal += Formatting.roundTo( operation.amount, 2 );
+		}
+
+		return Formatting.roundTo( paymentsTotal, 2 );
+	}
 
 	public function setDefaultOrders( defaultOrders : Array< { productId : Int, quantity : Float } > ) {
 

@@ -283,7 +283,6 @@
 								</tr>
 							::end::
 							
-							<!--TOTAL-->
 							<tr>
 								<th colspan="3" class="text-right">Total</th>
 								::foreach d userOrders::
@@ -388,7 +387,8 @@
 								<th class="text-center col-md-1" ::cond absencesNb != 0::>Nombre d'absences</th>
 								<th class="text-center col-md-2">Nombre de distributions</th>
 								<th class="text-center col-md-1">Total</th>
-								<th class="text-center col-md-1">Payé</th>
+								<th class="text-center col-md-1">Solde</th>
+								<!-- <th class="text-center col-md-1">Payé</th> -->
 							</tr>					
 							<tr style="text-align: center;">
 								<td ::cond subscription._user2 != null::>
@@ -416,12 +416,16 @@
 								<td style="vertical-align: middle;">
 									::subscriptionService.getSubscriptionDistribsNb(subscription, null, true)::
 								</td>
+								::set subscriptionTotal = subscription.getTotalPrice()::
 								<td style="vertical-align: middle;">
-									::subscription.getTotalPrice()::&nbsp;::currency()::
+									::subscriptionTotal::&nbsp;::currency()::
 								</td>
 								<td style="vertical-align: middle;">
+									::subscription.getPaymentsTotal() - subscriptionTotal::&nbsp;::currency()::
+								</td>
+								<!-- <td style="vertical-align: middle;">
 									$$check(::subscriptionService.isSubscriptionPaid(subscription)::)
-								</td>
+								</td> -->
 							</tr>
 							<tr class="greyhead text-center" ::cond  catalog.hasAbsencesManagement() && absencesNb != 0::>
 								<th class="text-center col-md-12" colspan="7" >Mes absences (modifiables jusqu'au ::dDate( subscriptionService.getLastDistribBeforeAbsences( catalog ).date )::)</th>
